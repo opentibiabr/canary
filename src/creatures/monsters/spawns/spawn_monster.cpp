@@ -87,7 +87,7 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 				);
 
 				int32_t boostedrate = 1;
-				
+
 				if (nameAttribute.value() == boostedNameGet) {
 					boostedrate = 2;
 				}

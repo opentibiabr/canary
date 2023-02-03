@@ -11,5 +11,5 @@ __References__:
 
 - [Tibia Wiki](https://www.tibiawiki.com.br/wiki/Mini_World_Changes#Full_Moon)
 
-### General Position 
+### General Position
 `33919,31047,8`

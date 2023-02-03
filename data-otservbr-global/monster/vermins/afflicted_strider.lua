@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 1,
 	Locations = "Antrum of the Fallen"
 }
-	
+
 monster.health = 10000
 monster.maxHealth = 10000
 monster.race = "blood"

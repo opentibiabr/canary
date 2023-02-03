@@ -49,7 +49,7 @@ class Scheduler : public ThreadHolder<Scheduler>
 {
 	public:
 		Scheduler() = default;
-		
+
 		Scheduler(Scheduler const&) = delete;
 		void operator=(Scheduler const&) = delete;
 

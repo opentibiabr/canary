@@ -52,7 +52,7 @@ for i = 45, 60 do
 						if specCreature:isMage() then
 							specCreature:addCondition(condition2)
 						end
-						
+
 						if specCreature:isPaladin() then
 							specCreature:addCondition(condition3)
 						end

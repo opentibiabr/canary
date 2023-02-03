@@ -442,7 +442,7 @@ function Player.getFinalBaseRateExperience(self)
 	local rateExperience = configManager.getNumber(configKeys.RATE_EXPERIENCE)
 	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
 		baseRate = getRateFromTable(experienceStages, self:getLevel(), rateExperience)
-	else 
+	else
 		baseRate = rateExperience
 	end
 	-- Event scheduler

@@ -59,7 +59,7 @@ function createItem.onSay(player, words, param)
 		if tier <= 0 or tier > 10 then
 			player:sendCancelMessage("Invalid tier count.")
 			return false
-		else 
+		else
 			result = player:addItem(itemType:getId(), count, true, 0, CONST_SLOT_WHEREEVER, tier)
 		end
 	end

@@ -82,7 +82,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({"Some residents are in need of ingredients to finish a ritual. You can help?"}, npc, creature)-- It needs to be revised, it's not the same as the global
 			npcHandler:setTopic(playerId, 1)
 			npcHandler:setTopic(playerId, 1)
-		end	
+		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
 		if player:getStorageValue(Storage.Kilmaresh.Sixth.Favor) == 11 then
 			npcHandler:say({"Search for the NPCs Yonan, Narsai, Shimun and Tefrit."}, npc, creature)-- It needs to be revised, it's not the same as the global
@@ -119,7 +119,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({"Did you check all the points and bring the Symbol of Sun and Sea?"}, npc, creature)-- It needs to be revised, it's not the same as the global
 			npcHandler:setTopic(playerId, 5)
 			npcHandler:setTopic(playerId, 5)
-		end	
+		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 5 and player:getStorageValue(Storage.Kilmaresh.Eleven.Basin) == 1 then
 		if player:getStorageValue(Storage.Kilmaresh.Eleven.Basin) == 1 and player:getItemById(31431, 1) then
 			player:addItem(31572, 1)

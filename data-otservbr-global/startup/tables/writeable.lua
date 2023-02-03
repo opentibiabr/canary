@@ -830,8 +830,8 @@ Leave the grave of my master alone or feel my wrath!
 		text = [[
 In memory of my beloved master.
 One day you will see from your place in heaven that I was right. I AM NOT MAD!
-And it was not my fault! 
-It's your own fault that you are dead now. 
+And it was not my fault!
+It's your own fault that you are dead now.
 Not mine!
 		]]
 	},

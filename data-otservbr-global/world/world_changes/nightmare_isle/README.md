@@ -8,15 +8,15 @@ __References__:
 
 ## Ankrahmun (North)
 
-### General Position 
+### General Position
 [33254,32677,7](https://tibiamaps.io/map#33254,32677,7:1)
 
 ## Darashia (North)
 
-### General Position 
+### General Position
 [33219,32276,7](https://tibiamaps.io/map#33219,32276,7:1)
 
 ## Darashia (West)
 
-### General Position 
+### General Position
 [33029,32404,7](https://tibiamaps.io/map#33029,32404,7:1)

@@ -72,7 +72,7 @@ monster.light = {
 
 monster.voices = {
 	interval = 5000,
-	chance = 10,	
+	chance = 10,
 	{text = "I could be your evil twin!", yell = false},
 	{text = "I'll take your place when you are gone.", yell = false}
 }

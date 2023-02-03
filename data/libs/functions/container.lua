@@ -24,16 +24,16 @@ function Container.createLootItem(self, item, charm)
 	if randvalue < chanceTo then
 		if lootBlockType:isStackable() then
 			local maxc, minc = item.maxCount or 1, item.minCount or 1
-			itemCount = math.max(0, randvalue % (maxc - minc + 1)) + minc			
+			itemCount = math.max(0, randvalue % (maxc - minc + 1)) + minc
 		else
 			itemCount = 1
 		end
 	end
-	
+
 	while (itemCount > 0) do
 		local n = math.min(itemCount, 100)
 		itemCount = itemCount - n
-		
+
 		local tmpItem = self:addItem(item.itemId, n)
 		if not tmpItem then
 			return false

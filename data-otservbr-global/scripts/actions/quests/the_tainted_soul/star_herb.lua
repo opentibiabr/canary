@@ -1,4 +1,4 @@
-local config = { 
+local config = {
 	antlers = 10297,
 	antler_talisman = 22008
 }

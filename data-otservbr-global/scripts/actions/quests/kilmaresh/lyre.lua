@@ -9,7 +9,7 @@ function lyre.onUse(player, item, frompos, item2, topos)
     else
         player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The bag can not be opened.")
     end
-	
+
     return true
 end
 

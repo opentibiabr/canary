@@ -93,7 +93,7 @@ function stonePile.onUse(player, item, frompos, item2, topos)
 			player:setStorageValue(Storage.TheRookieGuard.Mission02, 2)
 		end
 		-- Gather delay
-		if player:getStorageValue(Storage.TheRookieGuard.StonePileTimer) - os.time() <= 0 then		
+		if player:getStorageValue(Storage.TheRookieGuard.StonePileTimer) - os.time() <= 0 then
 			player:setStorageValue(Storage.TheRookieGuard.StonePileTimer, os.time() + 2 * 60)
 			player:addItemEx(Game.createItem(12724, 1), true, CONST_SLOT_WHEREEVER)
 		else
@@ -131,7 +131,7 @@ function heavyStone.onUse(player, item, frompos, item2, topos)
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You loaded the last stone on the catapults. Time to return to Vascalir.")
 			end
 			player:setStorageValue(Storage.TheRookieGuard.Mission02, missionState + 1)
-			player:setStorageValue(Storage.TheRookieGuard.Catapults, catapultsState + catapults[item2.actionid])			
+			player:setStorageValue(Storage.TheRookieGuard.Catapults, catapultsState + catapults[item2.actionid])
 			player:addExperience(5, true)
 			player:removeItem(12724, 1)
 		else

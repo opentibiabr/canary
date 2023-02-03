@@ -467,7 +467,7 @@ int NpcFunctions::luaNpcGetId(lua_State* L)
 		lua_pushnil(L);
 		return 1;
 	}
-	
+
 	lua_pushnumber(L, npc->getID());
 	return 1;
 }

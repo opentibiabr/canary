@@ -208,7 +208,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			for i = 1, #products[answerType[playerId]][answerLevel[playerId]].itens do
 				neededCap = neededCap + ItemType(products[answerType[playerId]][answerLevel[playerId]].itens[i].id):getWeight() * products[answerType[playerId]][answerLevel[playerId]].itens[i].amount
 			end
-			npcHandler:say({imbueLevel.text.."...", 
+			npcHandler:say({imbueLevel.text.."...",
 							"Make sure that you have ".. #products[answerType[playerId]][answerLevel[playerId]].itens .." free slot and that you can carry ".. string.format("%.2f",neededCap/100) .." oz in addition to that."}, npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end

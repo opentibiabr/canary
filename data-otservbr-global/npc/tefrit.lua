@@ -84,7 +84,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 and player:getStorageValue(Storage.Kilmaresh.Eighth.Tefrit) == 1 then
-		if player:getStorageValue(Storage.Kilmaresh.Eighth.Tefrit) == 1 then	
+		if player:getStorageValue(Storage.Kilmaresh.Eighth.Tefrit) == 1 then
 			player:addItem(31716, 1)
 			npcHandler:say({"Here is the list with the missing ingredients to complete the ritual."}, npc, creature)-- It needs to be revised, it's not the same as the global
 			player:setStorageValue(Storage.Kilmaresh.Eighth.Tefrit, 2)
@@ -99,9 +99,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({"Did you bring all the materials I informed you about?"}, npc, creature)-- It needs to be revised, it's not the same as the global
 			npcHandler:setTopic(playerId, 3)
 			npcHandler:setTopic(playerId, 3)
-		end	
+		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 3 and player:getStorageValue(Storage.Kilmaresh.Eighth.Tefrit) == 2 then
-		if player:getStorageValue(Storage.Kilmaresh.Eighth.Tefrit) == 2 and player:getItemById(31329, 20) and player:getItemById(31339, 25) and player:getItemById(31330, 15) then	
+		if player:getStorageValue(Storage.Kilmaresh.Eighth.Tefrit) == 2 and player:getItemById(31329, 20) and player:getItemById(31339, 25) and player:getItemById(31330, 15) then
 			player:removeItem(10272, 5)
 			player:removeItem(31329, 20)
 			player:removeItem(31339, 25)

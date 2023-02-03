@@ -8,7 +8,7 @@ function blacktp.onUse(player, item, frompos, item2, topos)
     else
         player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "sorry")
     end
-	
+
     return true
 end
 

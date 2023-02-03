@@ -82,9 +82,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			doPlayerAddItem(creature,6126,1)
 		end
 	elseif (player:getStorageValue(Storage.TibiaTales.TheCursedCrystal.Oneeyedjoe) >= 0) and (player:getStorageValue(Storage.TibiaTales.TheCursedCrystal.Oneeyedjoe) < 3) then
-		npcHandler:say("Ah, the brave adventurer who sought to destroy the evil crystal down there. Have you been succesful?", npc, creature)			
+		npcHandler:say("Ah, the brave adventurer who sought to destroy the evil crystal down there. Have you been succesful?", npc, creature)
 	elseif MsgContains(message, "mission") and (player:getStorageValue(Storage.TibiaTales.TheCursedCrystal.Oneeyedjoe) < 0) and npcHandler:getTopic(playerId) < 1 then
-		npcHandler:setTopic(playerId, 1) 
+		npcHandler:setTopic(playerId, 1)
 		npcHandler:say({
 			"As for myself I haven't been down there. But I heard some disturbing rumours. In these caves are wonderful crystal formations. Some more poetically inclined fellows call them the crystal gardens. ...",
 			"At first glance it seems to be a beautiful - and precious - surrounding. But in truth, deep down in these caverns exists an old evil. Want to hear more?"
@@ -115,7 +115,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			"A certain amount of the crystals is ground to crystal dust with a special kind of mill. Don't ask me why. Some kind of magical component perhaps that they sell to mages and sorcerers."
 		}, npc, creature)
 	elseif MsgContains(message, "cursed") and (player:getStorageValue(Storage.TibiaTales.TheCursedCrystal.Oneeyedjoe) < 0) and npcHandler:getTopic(playerId) < 1 then
-		npcHandler:setTopic(playerId, 1) 
+		npcHandler:setTopic(playerId, 1)
 		npcHandler:say({
 			"As for myself I haven't been down there. But I heard some disturbing rumours. In these caves are wonderful crystal formations. Some more poetically inclined fellows call them the crystal gardens. ...",
 			"At first glance it seems to be a beautiful - and precious - surrounding. But in truth, deep down in these caverns exists an old evil. Want to hear more?"
@@ -130,8 +130,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "name") then
 		npcHandler:say({"I'm One-Eyed Joe. From Josephina, got that? And I regard this eye patch as a personal feature of beauty!"}, npc, creature)
 	elseif MsgContains(message, "bye") then
-		npcHandler:say("Good bye adventurer. It was nice to talk with you.", npc, creature)	
-		npcHandler:removeInteraction(npc, creature) 
+		npcHandler:say("Good bye adventurer. It was nice to talk with you.", npc, creature)
+		npcHandler:removeInteraction(npc, creature)
 	end
 	return true
 end

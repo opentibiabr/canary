@@ -4,7 +4,7 @@ for index, value in ipairs(windowTable) do
 	if not table.contains(windowId, value.openWindow) then
 		table.insert(windowId, value.openWindow)
 	end
-	
+
 	if not table.contains(windowId, value.closedWindow) then
 		table.insert(windowId, value.closedWindow)
 	end
@@ -19,7 +19,7 @@ function windows.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			return true
 		end
 	end
-	
+
 	local tile = fromPosition:getTile()
 	local house = tile and tile:getHouse()
 	if not house then
@@ -39,7 +39,7 @@ function windows.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			return false
 		end
 	end
-	
+
 	for index, value in ipairs(windowTable) do
 		if value.openWindow == item.itemid then
 			item:transform(value.closedWindow)

@@ -32,7 +32,7 @@ function fieryHeartThink.onThink(creature)
 			end
 		end
 	end
-	
+
 	if creature:getName():lower() == "fiery heart" then
 		if creature then
 			addEvent(transformFieryHeart, 20*1000, creature:getId())

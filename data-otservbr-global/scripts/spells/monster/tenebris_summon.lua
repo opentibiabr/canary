@@ -5,7 +5,7 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_RED)
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	local mid = Game.createMonster("shadow fiend", Position(math.random(32906, 32918), math.random(31594, 31604), 14)) 
+	local mid = Game.createMonster("shadow fiend", Position(math.random(32906, 32918), math.random(31594, 31604), 14))
     if not mid then
 		return
 	end

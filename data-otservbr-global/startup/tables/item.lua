@@ -390,7 +390,7 @@ ItemUnique = {
 		itemId = 31269,
 		itemPos = {x = 33879, y = 31490, z = 6}
 	},
-	
+
 	[40033] = { -- Gryphon mask
 		itemId = 31630,
 		itemPos = {x = 33841, y = 31682, z = 3}

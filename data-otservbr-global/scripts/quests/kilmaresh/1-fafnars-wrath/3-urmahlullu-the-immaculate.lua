@@ -24,12 +24,12 @@ function leverboss.onUse(player, item, fromPosition, target, toPosition, isHotke
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You can\'t start the battle.")
 			return true
 		end
-		
+
 		local team, participant = {}
 
 		for i = 1, #config.playerPositions do
 			participant = Tile(config.playerPositions[i]):getTopCreature()
-			
+
 			-- Check there is a participant player
 			if participant and participant:isPlayer() then
 				-- Check participant level
@@ -72,7 +72,7 @@ function leverboss.onUse(player, item, fromPosition, target, toPosition, isHotke
 			-- Assign boss timer
 			team[i]:setStorageValue(Storage.Kilmaresh.UrmahlulluTimer, os.time() + 20*60*60) -- 20 hours
 		end
-		
+
 		config.teleportPosition:sendMagicEffect(CONST_ME_ENERGYAREA)
 	end
 

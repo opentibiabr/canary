@@ -324,7 +324,7 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target)
 					}
 				}
 			}
-			
+
 			if (attacker->getMonster() && (!attackerMaster || attackerMaster->getMonster())) {
 				if (attacker->getFaction() != FACTION_DEFAULT && !attacker->getMonster()->isEnemyFaction(targetPlayer->getFaction())) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
@@ -537,7 +537,7 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 			damage.secondary.value += static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
 		}
 	}
-	
+
 	// Monster attacking player
 	if (attackerMonster && targetPlayer) {
 		const PreySlot* slot = targetPlayer->getPreyWithMonster(attackerMonster->getRaceId());
@@ -580,7 +580,7 @@ CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage dama
 		/* If damage imbuement is set, we can return without checking other slots */
 		break;
 	}
-	
+
 	return damage;
 }
 

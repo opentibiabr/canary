@@ -14,8 +14,8 @@ function theCursedMiscItem.onUse(cid, item, frompos, item2, topos)
 			Tile(TCC_VORTEX_POSITION):getItemById(7804):setActionId(35001)
 			doSendMagicEffect(user1:getPosition(), CONST_ME_SOUND_WHITE)
 			user1:sendTextMessage(MESSAGE_EVENT_ADVANCE, "As you use the small bell an unearthly sound rings out sweetly. At the same moment, the lake's waters begin to whirl.")
-				addEvent(function() 
-					Tile(TCC_VORTEX_POSITION):getItemById(7804):remove() 
+				addEvent(function()
+					Tile(TCC_VORTEX_POSITION):getItemById(7804):remove()
 				end, 10000)
 		end
 	end

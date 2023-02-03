@@ -29,7 +29,7 @@ local foundItem = data[item.itemid]
 	end
 	if (player:getStorageValue(foundItem.ExhaustStor)) < os.time() then
 		if foundItem.Type == "mana" then
-			player:addMana(player:getMaxMana())	
+			player:addMana(player:getMaxMana())
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your mana has been refilled.")
 		elseif foundItem.Type == "health" then
 			player:addHealth(player:getMaxHealth())
@@ -40,7 +40,7 @@ local foundItem = data[item.itemid]
 		end
 		player:say("Mmmm.",TALKTYPE_ORANGE_1)
 		item:remove(1)
-		player:setStorageValue(foundItem.ExhaustStor, os.time() + (foundItem.timestamp * 60))	
+		player:setStorageValue(foundItem.ExhaustStor, os.time() + (foundItem.timestamp * 60))
 	else
 		player:sendTextMessage(MESSAGE_FAILURE, "You need to wait before using it again.")
 	end

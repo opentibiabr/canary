@@ -158,7 +158,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 	}
 	else if (it.isSplash() || it.isFluidContainer())
 	{
-		msg.addByte(static_cast<uint8_t>(item->getFluidType()));  
+		msg.addByte(static_cast<uint8_t>(item->getFluidType()));
 	}
 	else if (it.isContainer())
 	{
@@ -4574,7 +4574,7 @@ void ProtocolGame::sendForgeHistory(uint8_t page)
 			msg.addByte((history.bonus >= 1 && history.bonus < 8) ? 0x01 : 0x00);
 		}
 	}
-	
+
 	writeToOutputBuffer(msg);
 }
 
@@ -6225,7 +6225,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 		msg.addByte(player->isPremium() ? 0x01 : 0x00);
 	} else if (slot->state == PreyDataState_Inactive) {
 			// Empty
-	} else if (slot->state == PreyDataState_Active) {	
+	} else if (slot->state == PreyDataState_Active) {
 		if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId)) {
 			msg.addString(mtype->name);
 			const Outfit_t outfit = mtype->info.outfit;
@@ -7329,7 +7329,7 @@ void ProtocolGame::parseDepotSearchItemRequest(NetworkMessage &msg)
 	if (Item::items[itemId].upgradeClassification > 0) {
 		itemTier = msg.getByte();
 	}
-	
+
 	addGameTask(&Game::playerRequestDepotSearchItem, player->getID(), itemId, itemTier);
 }
 
@@ -7341,7 +7341,7 @@ void ProtocolGame::parseRetrieveDepotSearch(NetworkMessage &msg)
 		itemTier = msg.getByte();
 	}
 	uint8_t type = msg.getByte();
-	
+
 	addGameTask(&Game::playerRequestDepotSearchRetrieve, player->getID(), itemId, itemTier, type);
 }
 
@@ -7355,7 +7355,7 @@ void ProtocolGame::parseOpenParentContainer(NetworkMessage &msg)
 void ProtocolGame::sendUpdateCreature(const Creature* creature)
 {
 	if (!creature || !player) {
-		return; 
+		return;
 	}
 
 	if (!canSee(creature))
@@ -7366,7 +7366,7 @@ void ProtocolGame::sendUpdateCreature(const Creature* creature)
 		return;
 	}
 
-	NetworkMessage msg; 
+	NetworkMessage msg;
 	msg.addByte(0x6B);
 	msg.addPosition(creature->getPosition());
 	msg.addByte(static_cast<uint8_t>(stackPos));

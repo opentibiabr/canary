@@ -10,11 +10,11 @@ function bounacEntrance.onUse(player, item, fromPosition, target, toPosition, is
 			toPosition:sendMagicEffect(CONST_ME_WATERSPLASH)
 			Position({x = 32423, y = 32448, z = 7}):sendMagicEffect(CONST_ME_WATERSPLASH)
 		end
-	elseif item:getActionId() == 59603 then		
+	elseif item:getActionId() == 59603 then
 		player:teleportTo({x = 33183, y = 31756, z = 7})
 		Position({x = 33183, y = 31756, z = 7}):sendMagicEffect(CONST_ME_WATERSPLASH)
 		toPosition:sendMagicEffect(CONST_ME_WATERSPLASH)
-	end	
+	end
 	return true
 end
 bounacEntrance:aid(59602)

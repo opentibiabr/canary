@@ -73,7 +73,7 @@ class Party
 			return sharedExpEnabled;
 		}
 		bool canUseSharedExperience(const Player* player) const;
-		SharedExpStatus_t getMemberSharedExperienceStatus(const Player* player) const;		
+		SharedExpStatus_t getMemberSharedExperienceStatus(const Player* player) const;
 		void updateSharedExperience();
 
 		void updatePlayerTicks(Player* player, uint32_t points);

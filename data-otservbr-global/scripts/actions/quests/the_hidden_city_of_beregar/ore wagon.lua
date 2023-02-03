@@ -203,7 +203,7 @@ function wagons.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			wagonposin[i+1]:sendMagicEffect(CONST_ME_POFF)
 			return true
 		end
-	end		
+	end
 	for i = 1, #wagonposout do
 		if	fromPosition == wagonposout[i] and i < #wagonposout and Tile(wagonposout[i]):getItemById(7921) then
 			local wagon = Tile(wagonposout[i]):getItemById(7131)

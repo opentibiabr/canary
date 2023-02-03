@@ -12,7 +12,7 @@ ulimit -c unlimited
 set -o pipefail
 
 
-while true; do gdb --batch -return-child-result --command=gdb_debug --args ./canary 2>&1 | awk '{ print strftime("%F %T - "), 
+while true; do gdb --batch -return-child-result --command=gdb_debug --args ./canary 2>&1 | awk '{ print strftime("%F %T - "),
 $0; fflush(); }' | tee "logs/$(date +"%F %H-%M-%S.log")"
 
 if [ $? -eq 0 ]; then

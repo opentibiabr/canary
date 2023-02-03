@@ -67,7 +67,7 @@ class Events {
 	};
 
 	public:
-	
+
 		Events();
 
 		bool loadFromXml();

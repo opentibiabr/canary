@@ -81,7 +81,7 @@ function vocationReward.onUse(player, item, fromPosition, itemEx, toPosition)
 	end
 	for i = 1, #reward.commonItems do
 		rewardsWeight = rewardsWeight + (ItemType(reward.commonItems[i].id):getWeight() * reward.commonItems[i].amount)
-	end	
+	end
 	-- Check if enough weight capacity
 	if player:getFreeCapacity() < rewardsWeight then
 		player:sendTextMessage(
@@ -112,7 +112,7 @@ function vocationReward.onUse(player, item, fromPosition, itemEx, toPosition)
 		else
 			container:addItem(reward.commonItems[i].id, reward.commonItems[i].amount)
 		end
-	end	
+	end
 	-- Add vocation items
 	for i = #vocationItems, 1, -1 do
 		container:addItem(vocationItems[i].id, vocationItems[i].amount)

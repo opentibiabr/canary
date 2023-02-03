@@ -2521,7 +2521,7 @@ int PlayerFunctions::luaPlayerOpenImbuementWindow(lua_State* L) {
 		pushBoolean(L, false);
 		return 1;
 	}
-	
+
 	Item* item = getUserdata<Item>(L, 2);
 	if (!item) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
@@ -3207,7 +3207,7 @@ int PlayerFunctions::luaPlayerGetFaction(lua_State* L) {
 		pushBoolean(L, false);
 		return 0;
 	}
-	
+
 	lua_pushnumber(L, player->getFaction());
 	return 1;
 }

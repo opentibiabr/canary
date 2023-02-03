@@ -866,7 +866,7 @@ void Game::playerMoveThing(uint32_t playerId, const Position& fromPos,
 	if (!player) {
 		return;
 	}
-	
+
 	// Prevent the player from being able to move the item within the imbuement window
 	if (player->hasImbuingItem()) {
         return;
@@ -1556,7 +1556,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 	}
 
 	Item* quiver = toCylinder->getItem();
-	if (quiver && quiver->isQuiver() 
+	if (quiver && quiver->isQuiver()
                && quiver->getHoldingPlayer()
                && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
@@ -5754,7 +5754,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				{
 					continue;
 				}
-				
+
 				if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
 					ss.str({});
 					ss << "You heal " << target->getNameDescription() << " for " << damageString;
@@ -5864,7 +5864,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			if (charmRune_t activeCharm = g_iobestiary().getCharmFromTarget(targetPlayer, g_monsters().getMonsterTypeByRaceId(attackerMonster->getRaceId()));
 				activeCharm != CHARM_NONE && activeCharm != CHARM_CLEANSE) {
 				if (Charm* charm = g_iobestiary().getBestiaryCharm(activeCharm);
-					charm->type == CHARM_DEFENSIVE && charm->chance > normal_random(0, 100) && 
+					charm->type == CHARM_DEFENSIVE && charm->chance > normal_random(0, 100) &&
 					g_iobestiary().parseCharmCombat(charm, targetPlayer, attacker, (damage.primary.value + damage.secondary.value))) {
 					return false; // Dodge charm
 				}
@@ -6031,7 +6031,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			if (normal_random(0, 100) < lifeChance) {
 				// Vampiric charm rune
 				if (targetMonster) {
-					if (uint16_t playerCharmRaceidVamp = attackerPlayer->parseRacebyCharm(CHARM_VAMP, false, 0); 
+					if (uint16_t playerCharmRaceidVamp = attackerPlayer->parseRacebyCharm(CHARM_VAMP, false, 0);
 						playerCharmRaceidVamp != 0 && playerCharmRaceidVamp == targetMonster->getRaceId()) {
 						if (const Charm* lifec = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
 							lifeSkill += lifec->percent;
@@ -8597,7 +8597,7 @@ void Game::updateForgeableMonsters()
 			removeFiendishMonster(monsterId);
 		}
 	}
-	
+
 	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
 	if (fiendishMonsters.size() < fiendishLimit)
 		createFiendishMonsters();

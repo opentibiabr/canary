@@ -79,7 +79,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	if (message == "event shop") then
 		npcHandler:say("In our website enter in {Events} => {Events Shop}.", npc, creature)
 	end
-	
+
 	if (eventShopItems[message]) then
 		npcHandler:setTopic(playerId, 0)
 		local itemId, itemCount, itemPrice = eventShopItems[message][1], eventShopItems[message][2], eventShopItems[message][3]
@@ -91,7 +91,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			return true
 		end
 	end
-	
+
 	if (eventShopItems[npcHandler:getTopic(playerId)]) then
 		local itemId, itemCount, itemPrice = eventShopItems[npcHandler:getTopic(playerId)][1], eventShopItems[npcHandler:getTopic(playerId)][2], eventShopItems[npcHandler:getTopic(playerId)][3]
 		if message == "no" then

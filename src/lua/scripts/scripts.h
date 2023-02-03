@@ -103,7 +103,7 @@ class Script {
 	virtual LuaScriptInterface* getScriptInterface() const {
 		return scriptInterface;
 	}
-	
+
 	virtual void setScriptInterface(LuaScriptInterface* newInterface) {
 		scriptInterface = newInterface;
 	}

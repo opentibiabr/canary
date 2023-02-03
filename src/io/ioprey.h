@@ -42,7 +42,7 @@ enum PreyBonus_t : uint8_t {
 	PreyBonus_Last = PreyBonus_Loot
 };
 
-enum PreyOption_t : uint8_t {	
+enum PreyOption_t : uint8_t {
 	PreyOption_None = 0,
 	PreyOption_AutomaticReroll = 1,
 	PreyOption_Locked = 2

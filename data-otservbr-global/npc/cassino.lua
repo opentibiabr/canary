@@ -26,7 +26,7 @@ npcConfig.flags = {
 local config = {
 	bet = {
 		min = 10000, -- gold coins // 30k
-		max = 10000000000, 
+		max = 10000000000,
 		win = 180, -- 170% high/low
 		winNum = 500, -- 300% numbers
 	},
@@ -81,7 +81,7 @@ local function getBetValue()
 		if not items or #items == 0 then
 			return 0
 		end
-		
+
 		local tempMoney = {}
 		for _, item in pairs(items) do
 			if table.contains({3043, 3035, 3031}, item:getId()) then
@@ -89,7 +89,7 @@ local function getBetValue()
 				tempMoney[#tempMoney + 1] = item
 			end
 		end
-		
+
 		if value >= config.bet.min and value <= config.bet.max then -- valid bet
 			for _, item in pairs(tempMoney) do
 				item:remove()
@@ -110,13 +110,13 @@ local function createMoney(money)
 		table[#table + 1] = {3043, count}
 		crystals = crystals - count
 	end
-	
+
 	local platinums = math.floor(currentMoney / 100)
 	if platinums ~= 0 then
 		table[#table + 1] = {3035, platinums}
 		currentMoney = currentMoney - platinums * 100
 	end
-	
+
 	if currentMoney ~= 0 then
 		table[#table + 1] = {3031, currentMoney}
 	end
@@ -156,7 +156,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 		player:say(message, TALKTYPE_SAY, false, true, player:getPosition())
 		local number = math.random(6)
-		
+
 		local dadimid = {5792, 5793, 5794, 5795, 5796, 5797}
 		local daddd = 0
 		local haveDie = false
@@ -183,9 +183,9 @@ local function creatureSayCallback(npc, creature, type, message)
 					Game.createItem(coin[1], coin[2], config.dicerCounter)
 				end
 			else
-				
+
 				npc:say("You have lost your "..bet.." gold coins.", TALKTYPE_SAY)
-				
+
 			end
 		elseif table.contains({"high", "h"}, message) then
 			if table.contains({4, 5, 6}, number) then
@@ -196,9 +196,9 @@ local function creatureSayCallback(npc, creature, type, message)
 					Game.createItem(coin[1], coin[2], config.dicerCounter)
 				end
 			else
-				
+
 				npc:say("You have lost your "..bet.." gold coins.", TALKTYPE_SAY)
-				
+
 			end
 		elseif table.contains({"odd", "impar"}, message) then
 			if table.contains({1, 3, 5}, number) then
@@ -209,9 +209,9 @@ local function creatureSayCallback(npc, creature, type, message)
 					Game.createItem(coin[1], coin[2], config.dicerCounter)
 				end
 			else
-				
+
 				npc:say("You have lost your "..bet.." gold coins.", TALKTYPE_SAY)
-				
+
 			end
 		elseif table.contains({"par", "even"}, message) then
 			if table.contains({2, 4, 6}, number) then
@@ -222,9 +222,9 @@ local function creatureSayCallback(npc, creature, type, message)
 					Game.createItem(coin[1], coin[2], config.dicerCounter)
 				end
 			else
-				
+
 				npc:say("You have lost your "..bet.." gold coins.", TALKTYPE_SAY)
-				
+
 			end
 		elseif table.contains({"1", "2", "3", "4", "5", "6"}, message) then
 			if number == tonumber(message) then
@@ -235,9 +235,9 @@ local function creatureSayCallback(npc, creature, type, message)
 					Game.createItem(coin[1], coin[2], config.dicerCounter)
 				end
 			else
-				
+
 				npc:say("You have lost your "..bet.." gold coins.", TALKTYPE_SAY)
-				
+
 			end
 		end
 	end

@@ -14,7 +14,7 @@ function StepInCursedCrystal.onStepIn(creature, item, position, fromPosition)
 local player = creature:getPlayer()
 	if not player then
 		return false
-	end	
+	end
 	for index, value in pairs(teleports) do
 		if item:getPosition() == index then
 			if item:getPosition() == TCC_MEDUSACRYSTAL_ENTRY_MAP then
@@ -39,7 +39,7 @@ local player = creature:getPlayer()
 				doSendMagicEffect(player:getPosition(), CONST_ME_TELEPORT)
 				player:teleportTo(value.position)
 				doSendMagicEffect(value.position, CONST_ME_TELEPORT)
-				return			
+				return
 			end
 		end
 	end

@@ -34,7 +34,7 @@ function loadLuaMapAction(tablename)
 				if value.itemId ~= false and tile:getItemCountById(value.itemId) > 0 then
 					item = tile:getItemById(value.itemId)
 				end
-				
+
 				-- If he found the item, add the action id.
 				if item and value.itemId ~= false then
 					item:setAttribute(ITEM_ATTRIBUTE_ACTIONID, index)

@@ -17,7 +17,7 @@ burstarrow.onUseWeapon = function(player, variant)
 	if player:getSkull() == SKULL_BLACK then
 		return false
 	end
-	
+
 	return burstCombat:execute(player, variant)
 end
 
@@ -36,7 +36,7 @@ poisonarrow.onUseWeapon = function(player, variant)
 	if not poisonCombat:execute(player, variant) then
 		return false
 	end
-	
+
 	player:addDamageCondition(Creature(variant:getNumber()), CONDITION_POISON, DAMAGELIST_LOGARITHMIC_DAMAGE, 3)
 	return true
 end
@@ -56,11 +56,11 @@ viperstar.onUseWeapon = function(player, variant)
 	if not viperCombat:execute(player, variant) then
 		return false
 	end
-	
+
 	if math.random(1, 100) <= 90 then
 		return false
 	end
-	
+
 	player:addDamageCondition(Creature(variant:getNumber()), CONDITION_POISON, DAMAGELIST_LOGARITHMIC_DAMAGE, 2)
 	return true
 end

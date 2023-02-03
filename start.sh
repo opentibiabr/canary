@@ -11,5 +11,5 @@ fi
 ulimit -c unlimited
 set -o pipefail
 
-while true; do ./canary 2>&1 | awk '{ print strftime("%F %T - "), 
+while true; do ./canary 2>&1 | awk '{ print strftime("%F %T - "),
 $0; fflush(); }' | tee "logs/$(date +"%F %H-%M-%S.log")" done;

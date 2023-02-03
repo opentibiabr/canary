@@ -47,7 +47,7 @@ class NpcFunctions final : LuaScriptInterface {
 				registerMethod(L, "Npc", "sellItem", NpcFunctions::luaNpcSellItem);
 
 				registerMethod(L, "Npc", "getDistanceTo", NpcFunctions::luaNpcGetDistanceTo);
-				
+
 				ShopFunctions::init(L);
 				NpcTypeFunctions::init(L);
 			}

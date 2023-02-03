@@ -163,7 +163,7 @@ function onUsePickAtTunnelPillar(player, item, fromPosition, itemEx, toPosition)
 			end
 			player:say("<crack>", TALKTYPE_MONSTER_SAY, false, player, toPosition)
 			toPosition:sendMagicEffect(CONST_ME_HITAREA)
-			player:setStorageValue(Storage.TheRookieGuard.Mission09, newMissionState)			
+			player:setStorageValue(Storage.TheRookieGuard.Mission09, newMissionState)
 			player:setStorageValue(Storage.TheRookieGuard.TunnelPillars, pillarsState + pillarId)
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You've already weakened this beam. Better leave it alone now so it won't collapse before you are out of here.")

@@ -295,11 +295,11 @@ void IOPrey::CheckPlayerPreys(Player* player, uint8_t amount) const
 	}
 }
 
-void IOPrey::ParsePreyAction(Player* player, 
-							PreySlot_t slotId, 
-							PreyAction_t action, 
-							PreyOption_t option, 
-							int8_t index, 
+void IOPrey::ParsePreyAction(Player* player,
+							PreySlot_t slotId,
+							PreyAction_t action,
+							PreyOption_t option,
+							int8_t index,
 							uint16_t raceId) const
 {
 	PreySlot* slot = player->getPreySlotById(slotId);
@@ -401,10 +401,10 @@ void IOPrey::ParsePreyAction(Player* player,
 	player->reloadPreySlot(slotId);
 }
 
-void IOPrey::ParseTaskHuntingAction(Player* player, 
-									PreySlot_t slotId, 
-									PreyTaskAction_t action, 
-									bool upgrade, 
+void IOPrey::ParseTaskHuntingAction(Player* player,
+									PreySlot_t slotId,
+									PreyTaskAction_t action,
+									bool upgrade,
 									uint16_t raceId) const
 {
 	TaskHuntingSlot* slot = player->getTaskHuntingSlotById(slotId);

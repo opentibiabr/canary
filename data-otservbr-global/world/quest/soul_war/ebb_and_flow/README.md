@@ -10,7 +10,7 @@ __References__:
 
 The empty version is where the hunting grounds are available.
 
-### General Position 
+### General Position
 [33919,31047,8](https://tibiamaps.io/map#33919,31047,8:2) (TibiaMaps shows a mix of both maps)
 
 
@@ -19,5 +19,5 @@ The empty version is where the hunting grounds are available.
 The inundate map where the hunting grounds are unavailable and everyone on the hunting ground will be teleported to the entrance
 
 
-### General Position 
+### General Position
 [33919,31047,8](https://tibiamaps.io/map#33919,31047,8:2) (TibiaMaps shows a mix of both maps)

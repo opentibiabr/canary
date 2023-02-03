@@ -10,7 +10,7 @@ function peelerfun.onUse(player, item, fromPosition, target, toPosition, isHotke
 	else
 		player:sendTextMessage(MESSAGE_FAILURE, "Sorry, not possible.")
 	end
-	
+
     return true
 end
 

@@ -30,11 +30,11 @@ ReturnValue Reward::queryAdd(int32_t, const Thing& thing, uint32_t,
 	if (!item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
-	
+
 	if (item == this) {
 		return RETURNVALUE_THISISIMPOSSIBLE;
 	}
-	
+
 	if (!item->isPickupable()) {
 		return RETURNVALUE_CANNOTPICKUP;
 	}

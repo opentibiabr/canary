@@ -8635,7 +8635,7 @@ local items = {
 		type = "equip",
 		slot = "hand",
 		level = 120
-		
+
 	},
 	{
 		-- mycological mace
@@ -9142,7 +9142,7 @@ local items = {
 		type = "equip",
 		slot = "hand",
 		level = 48
-		
+
 	},
 	{
 		-- deepling squelcher
@@ -16952,7 +16952,7 @@ local items = {
 		itemid = 3320,
 		type = "equip",
 		slot = "hand",
-        level = 35		
+        level = 35
 	},
 	{
 		-- fire axe

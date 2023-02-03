@@ -36,18 +36,18 @@ end
 
 local secretBrokul = Action()
 function secretBrokul.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-   
+
     if item.itemid == 2773 then
         local bossConfig = bossConfig[item:getActionId()]
         if not bossConfig then
             return false
         end
- 
+
         if (getGlobalStorageValue(bossConfig.bossGlobalStorage) > 0) then
             player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There is already a team inside. Please wait.")
             return true
         end
- 
+
         local errorMsg
         local rPlayers = {}
         for index, ipos in pairs(bossConfig.playerPositions) do
@@ -66,7 +66,7 @@ function secretBrokul.onUse(player, item, fromPosition, target, toPosition, isHo
                 end
             end
         end
- 
+
         if (#rPlayers >= bossConfig.minPlayersRequired) then
             for _, pid in pairs(rPlayers) do
                 local rplayer = Player(pid)
@@ -91,10 +91,10 @@ function secretBrokul.onUse(player, item, fromPosition, target, toPosition, isHo
             end
             return true
         end
- 
+
     end
     item:transform(item.itemid == 2773 and 2772 or 2773)
- 
+
     return true
 end
 

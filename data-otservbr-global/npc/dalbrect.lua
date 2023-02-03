@@ -107,7 +107,7 @@ keywordHandler:addKeyword({"passage"}, StdModule.say,
 		text = "I have only sailed to the isle of the kings once or twice. \z
 				I dare not anger the monks by bringing travelers there without their permission."
 	},
-	
+
 function(player)
 	return player:getStorageValue(Storage.WhiteRavenMonastery.Passage) ~= 1
 end)
@@ -150,7 +150,7 @@ keywordHandler:addKeyword({"legacy"}, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Once my family was once noble and wealthy, but {fate} turned against us and threw us into poverty."
-	
+
 	}
 )
 keywordHandler:addKeyword({"poverty"}, StdModule.say,

@@ -25,12 +25,12 @@ local function finditem(self, cylinder, conv)
 				end
 			else
 				for fromid, toid in pairs(data.coins) do
-					if item:getId() == fromid and item:getCount() == 100 then						
+					if item:getId() == fromid and item:getCount() == 100 then
 						item:remove()
 						if not(cylinder:addItem(toid, 1)) then
 							player:addItem(toid, 1)
 						end
-						
+
 						conv:setAttribute(ITEM_ATTRIBUTE_CHARGES, conv:getAttribute(ITEM_ATTRIBUTE_CHARGES) - 1)
 
 						return true
@@ -46,7 +46,7 @@ end
 local function start_converter(pid, itemid)
 	local player = Player(pid)
 	if player ~= nil then
-	
+
 	local item = player:getItemById(itemid,true)
 		if player:getItemCount(itemid) >= 1 then
 			if item:hasAttribute(ITEM_ATTRIBUTE_CHARGES) then

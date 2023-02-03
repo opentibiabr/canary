@@ -89,7 +89,7 @@ keywordHandler:addKeyword(
 		"But there is only one way to achieve this: You have to find a Ring of {Secret Thoughts}. Legend has it that a monstrous being called {Urmahlullu} has such a ring. If the myths are true you can find this creature in a subterranean tomb south of Issavi."
 	}},
 	function (player) return player:getStorageValue(Storage.Kilmaresh.Second.Investigating) == 5 end,
-	function (player) 
+	function (player)
 		player:setStorageValue(Storage.Kilmaresh.Second.Investigating, 6)
 		player:setStorageValue(Storage.Kilmaresh.Third.Recovering, 1)
 	end
@@ -98,9 +98,9 @@ keywordHandler:addKeyword(
 keywordHandler:addKeyword(
 	{"mission"}, StdModule.say, { npcHandler = npcHandler,
 	text = "You haven\'t investigated all the evidence." },
-	function (player) 
+	function (player)
 		return player:getStorageValue(Storage.Kilmaresh.Second.Investigating) >= 0 and
-			player:getStorageValue(Storage.Kilmaresh.Second.Investigating) < 5  
+			player:getStorageValue(Storage.Kilmaresh.Second.Investigating) < 5
 	end
 )
 
@@ -122,7 +122,7 @@ keywordHandler:addKeyword(
 -- Fifth
 
 keywordHandler:addKeyword(
-	{"mission"}, StdModule.say, { npcHandler = npcHandler, 
+	{"mission"}, StdModule.say, { npcHandler = npcHandler,
 	text = "This is the proof we need! Very well done! You have to report this to our {Empress}. She will grant you an audience now."},
 	function (player) return player:getStorageValue(Storage.Kilmaresh.Fifth.Memories) == 4 end,
 	function (player) player:setStorageValue(Storage.Kilmaresh.Fifth.Memories, 5) end

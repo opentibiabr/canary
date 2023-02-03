@@ -755,7 +755,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 					int32_t money = 0;
 					for (Item* item : corpse->getContainer()->getItems()) {
 						if (uint32_t worth = item->getWorth(); worth > 0) {
-							money += worth; 
+							money += worth;
 							g_game().internalRemoveItem(item);
 						}
 					}

@@ -4,7 +4,7 @@
 #  LUAJIT_INCLUDE_DIRS
 #  LUAJIT_LIBRARIES
 #
-# For use in OBS: 
+# For use in OBS:
 #
 #  LUAJIT_INCLUDE_DIR
 

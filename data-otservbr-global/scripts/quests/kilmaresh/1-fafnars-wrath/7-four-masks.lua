@@ -8,7 +8,7 @@ local masks = {
         storage = 2,
         successMessage = "You have found a silver mask.",
         emptyMessage = "This palm is empty."
-    }, 
+    },
     [31371] = { -- For Ivory mask action see data\scripts\actions\other\gems.lua
         storage = 4
     },

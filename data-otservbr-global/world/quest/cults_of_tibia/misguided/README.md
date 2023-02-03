@@ -12,12 +12,12 @@ __References__:
 
 The hunting ground is beautiful with marble walls and gold around the floor.
 
-### General Position 
+### General Position
 [32541,32350,10](https://tibiamaps.io/map#32541,32350,10:2)
 
 ## Reality
 
 The illusion is gone, the hunting ground is dirt with multiple leaves, dirt ground and walls made of wood.
 
-### General Position 
+### General Position
 [32541,32350,10](https://tibiamaps.io/map#32541,32350,10:2)

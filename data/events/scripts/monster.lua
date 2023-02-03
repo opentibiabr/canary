@@ -86,8 +86,8 @@ function Monster:onSpawn(position)
 
 	-- We won't run anything from here on down if we're opening the global pack
 	if IsRunningGlobalDatapack() then
-		if self:getName():lower() == "cobra scout" or 
-			self:getName():lower() == "cobra vizier" or 
+		if self:getName():lower() == "cobra scout" or
+			self:getName():lower() == "cobra vizier" or
 			self:getName():lower() == "cobra assassin" then
 			if getGlobalStorageValue(GlobalStorage.CobraBastionFlask) >= os.time() then
 				self:setHealth(self:getMaxHealth() * 0.75)

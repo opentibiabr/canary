@@ -8,15 +8,15 @@ __References__:
 
 ## Carlin
 
-### General Position 
+### General Position
 [32400,31815,6](https://tibiamaps.io/map#32400,31815,6:1)
 
 ## Libery Bay
 
-### General Position 
+### General Position
 [32314,32895,6](https://tibiamaps.io/map#32314,32895,6:1)
 
 ## Ankrahmun
 
-### General Position 
+### General Position
 [33102,32884,6](https://tibiamaps.io/map#33768,31051,7:1)

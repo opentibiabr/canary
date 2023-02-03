@@ -112,7 +112,7 @@ void Connection::accept(bool toggleParseHeader /* = true */)
 	try {
 		readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
 		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
-		
+
 		// If toggleParseHeader is true, execute the parseHeader, if not, execute parseProxyIdentification
 		if (toggleParseHeader) {
 			// Read size of the first packet

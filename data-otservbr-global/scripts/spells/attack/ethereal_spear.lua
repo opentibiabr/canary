@@ -6,7 +6,7 @@ combat:setParameter(COMBAT_PARAM_BLOCKARMOR, 1)
 
 function onGetFormulaValues(player, skill, attack, factor)
 	local level = player:getLevel()
-	
+
 	local min = (level / 5) + (skill + 25) / 3
 	local max = (level / 5) + skill + 25
 

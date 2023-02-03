@@ -84,7 +84,7 @@ class SpawnsNpc
 		bool setStarted(bool setStarted) {
 			return started = setStarted;
 		}
-		
+
 		bool isLoaded() const {
 			return loaded;
 		}

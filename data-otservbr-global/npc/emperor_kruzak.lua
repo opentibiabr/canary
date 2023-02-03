@@ -98,7 +98,7 @@ local function creatureSayCallback(npc, creature, type, message)
 							player:setStorageValue(Storage.OutfitQuest.GoldenOutfit, 1)
 					else
 						npcHandler:say("Please make sure you have free slots in your store inbox.", npc, creature)
-					end				
+					end
 				else
 					npcHandler:say("You do not have enough money to donate that amount.", npc, creature)
 				end
@@ -179,7 +179,7 @@ end
 local node1 = keywordHandler:addKeyword({'promot'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'I can promote you for 20000 gold coins. Do you want me to promote you?'})
 	node1:addChildKeyword({'yes'}, StdModule.promotePlayer, {npcHandler = npcHandler, cost = 20000, level = 20, text = 'Congratulations! You are now promoted.'})
 	node1:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'Alright then, come back when you are ready.', reset = true})
-	
+
 -- Greeting message
 keywordHandler:addGreetKeyword({"hail emperor"}, {npcHandler = npcHandler, text = "Hiho, may fire and earth bless you, my child. Are you looking for a promotion?"})
 keywordHandler:addGreetKeyword({"salutations emperor"}, {npcHandler = npcHandler, text = "Hiho, may fire and earth bless you, my child. Are you looking for a promotion?"})

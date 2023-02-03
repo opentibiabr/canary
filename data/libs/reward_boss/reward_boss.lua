@@ -61,7 +61,7 @@ function InsertRewardItems(playerGuid, timestamp, itemList)
 			local lastPid = Result.getDataInt(query, 'pid') or 0
 			local bagSid = Result.getDataInt(query, 'sid') or 100
 			local lastSid = Result.getDataInt(query, 'max_sid') or 101
-			if lastPid ~= 0 then 
+			if lastPid ~= 0 then
 				db.query('UPDATE `player_rewards` SET `sid` = `sid`+1 WHERE `sid`> '..bagSid..' ORDER BY `sid` DESC')
 				lastSid = lastSid+1
 			end

@@ -9,7 +9,7 @@ local theCursedMedusa = Action()
 function theCursedMedusa.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if (item.itemid == 21506) and (item2.itemid == 10420) then
 		if(player:getStorageValue(Storage.TibiaTales.TheCursedCrystal.Oneeyedjoe) == 2)then
-			if not(((Player(player):getPosition().x - TCC_PILLARPETRIFIED.x) < 5) and ((Player(player):getPosition().x - TCC_PILLARPETRIFIED.x) > -5) and 
+			if not(((Player(player):getPosition().x - TCC_PILLARPETRIFIED.x) < 5) and ((Player(player):getPosition().x - TCC_PILLARPETRIFIED.x) > -5) and
 			((Player(player):getPosition().y - TCC_PILLARPETRIFIED.y) < 5) and ((Player(player):getPosition().y - TCC_PILLARPETRIFIED.y) > -5) and (Player(player):getPosition().z == TCC_PILLARPETRIFIED.z)) then
 				return
 			end
@@ -21,7 +21,7 @@ function theCursedMedusa.onUse(player, item, fromPosition, target, toPosition, i
 			doSendMagicEffect(stone:getPosition(), CONST_ME_POFF)
 			stone:transform(10870)
 			addEvent(
-				function() 
+				function()
 					stone:transform(10797)
 				end, 5000)
 		end
@@ -31,7 +31,7 @@ function theCursedMedusa.onUse(player, item, fromPosition, target, toPosition, i
 			return
 		end
 		if (Player(player) == Player(Tile(topos):getTopCreature())) and (player:getStorageValue(Storage.TibiaTales.TheCursedCrystal.Oneeyedjoe) < 2) then
-			if not(((Player(player):getPosition().x - TCC_PILLARPETRIFIED.x) < 5) and ((Player(player):getPosition().x - TCC_PILLARPETRIFIED.x) > -5) and 
+			if not(((Player(player):getPosition().x - TCC_PILLARPETRIFIED.x) < 5) and ((Player(player):getPosition().x - TCC_PILLARPETRIFIED.x) > -5) and
 			((Player(player):getPosition().y - TCC_PILLARPETRIFIED.y) < 5) and ((Player(player):getPosition().y - TCC_PILLARPETRIFIED.y) > -5) and (Player(player):getPosition().z == TCC_PILLARPETRIFIED.z)) then
 				return
 			end

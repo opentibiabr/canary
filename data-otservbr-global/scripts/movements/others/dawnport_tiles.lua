@@ -111,7 +111,7 @@ function tutorialTile.onStepIn(creature, item, position, fromPosition)
 			Position({x = 32075, y = 31900, z = 6}):sendMagicEffect(effects[i])
 		end
 	end
-	
+
 	return true
 end
 
@@ -215,7 +215,7 @@ function tutorialTile4.onStepIn(creature, item, position, fromPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:setStorageValue(Storage.Dawnport.MessageStair, 1)
 	end
-	
+
 	return true
 end
 

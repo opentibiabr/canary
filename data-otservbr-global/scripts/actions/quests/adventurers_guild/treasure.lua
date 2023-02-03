@@ -16,7 +16,7 @@ function adventurersTreasure.onUse(player, item, fromPosition, target, toPositio
     if player:getStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter) >= 50 then
         local treasure = items[math.random(#items)]
         player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "It is impossible to take along all of the treasures here. Buy you pick out " .. treasure.description)
-        for _, item in ipairs(treasure.items) do 
+        for _, item in ipairs(treasure.items) do
             player:addItem(item.id, item.count)
         end
 

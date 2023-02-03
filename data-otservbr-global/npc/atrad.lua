@@ -53,7 +53,7 @@ end
 local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local fire = player:getCondition(CONDITION_FIRE)
-	
+
 	if fire and (player:hasOutfit(156) or player:hasOutfit(152)) then
 		return true
 	end

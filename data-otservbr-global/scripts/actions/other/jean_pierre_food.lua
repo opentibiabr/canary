@@ -195,7 +195,7 @@ function jeanPierreFood.onUse(player, item, frompos, item2, topos)
 		else
 			r_m_am = 1
 		end
-		
+
 		for i = 1, 10 do
 			doPlayerAddItem(cid, r_t[ring.itemid], r_m_am)
 		end
@@ -204,7 +204,7 @@ function jeanPierreFood.onUse(player, item, frompos, item2, topos)
 		return true
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This ring cannot be multiplied.")
-		player:getPosition():sendMagicEffect(CONST_ME_POFF)	 
+		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return true
 		end
 	end

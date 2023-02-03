@@ -155,7 +155,7 @@ class Container : public Item, public Cylinder
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override final;
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t, uint32_t>& countMap) const override final;
 		Thing* getThing(size_t index) const override final;
-		
+
 		ItemVector getItems(bool recursive = false) const;
 
 		void postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;

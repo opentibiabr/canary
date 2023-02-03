@@ -10,7 +10,7 @@ function pickenchanted.onUse(player, item, fromPosition, target, toPosition, isH
 	else
 		player:sendTextMessage(MESSAGE_FAILURE, "Sorry, not possible.")
 	end
-	
+
     return true
 end
 

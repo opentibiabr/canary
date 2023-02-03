@@ -277,7 +277,7 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 
 	-- Delay potion
 	playerDelayPotion[player:getId()] = systemTime() + 500
-	
+
 	if potion.func then
 		potion.func(player)
 		player:say("Aaaah...", MESSAGE_POTION)

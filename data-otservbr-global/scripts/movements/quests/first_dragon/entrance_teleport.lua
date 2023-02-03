@@ -76,7 +76,7 @@ function entranceTeleport.onStepIn(creature, item, position, fromPosition)
 		player:say("You don't have permission to use this portal", TALKTYPE_MONSTER_SAY)
 		return true
 	end
-	
+
 	if player:getStorageValue(setting.storage) >= setting.value then
 		local monster = Game.createMonster(setting.bossName, setting.bossPos, true, true)
 		if not monster then

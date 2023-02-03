@@ -326,9 +326,9 @@ class Items
 
 		/**
 		 * @brief Check if the itemid "hasId" is stored on "items", if not, return false
-		 * 
+		 *
 		 * @param hasId check item id
-		 * @return true if the item exist 
+		 * @return true if the item exist
 		 * @return false if the item not exist
 		 */
 		bool hasItemType(size_t hasId) const;

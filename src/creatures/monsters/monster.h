@@ -273,7 +273,7 @@ class Monster final : public Creature
 			return getForgeStack() == 0 && !isSummon() && !isRewardBoss() && canDropLoot() && isForgeCreature() && getRaceId() > 0;
 		}
 
-		
+
 		bool isForgeCreature() const {
 			return mType->info.isForgeCreature;
 		}

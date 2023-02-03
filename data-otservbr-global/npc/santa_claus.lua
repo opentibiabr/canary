@@ -99,31 +99,31 @@ end
 
 local function creatureSayCallback(npc, creature, type, message)
 	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or creature
-	
+
 	if MsgContains(message, 'present') then
 		local player = Player(creature)
 		if (player:getStorageValue(840293) == 1) then
 			npcHandler:say("You can't get other present.", npc, creature)
 			return false
 		end
-		
+
 		local reward = getReward()
 		local cont = Container(Player(creature):addItem(6510):getUniqueId())
 		local count = 1
-		
+
 		for i = 1, #reward do
 			if (reward[i] == 2992 or
 			reward[i] == 3599) then
 				count = 10
 			end
-			
+
 			cont:addItem(reward[i], count)
 		end
-		
+
 		player:setStorageValue(840293, 1)
 		npcHandler:say("Merry Christmas!", npc, creature)
 	end
-	
+
 	return true
 end
 

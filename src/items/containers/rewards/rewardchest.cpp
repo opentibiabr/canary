@@ -25,7 +25,7 @@ ReturnValue RewardChest::queryAdd(int32_t, const Thing&, uint32_t,
 	if (actor) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
-		
+
 	return RETURNVALUE_NOERROR;
 }
 

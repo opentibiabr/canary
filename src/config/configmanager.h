@@ -27,7 +27,7 @@ class ConfigManager
 			// Instantiated on first use
 			return instance;
 		}
-	
+
 		bool load();
 		bool reload();
 

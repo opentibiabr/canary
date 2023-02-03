@@ -44,7 +44,7 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 
 		toPosition:sendMagicEffect(CONST_ME_WATERSPLASH)
 		target:transform(target.itemid + 1)
-		
+
 		local chance = math.random(10000)
 		for i = 1, #elementals.chances do
 			local randomItem = elementals.chances[i]

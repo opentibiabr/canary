@@ -3555,7 +3555,7 @@ Appearance::Appearance(const Appearance& from)
     _impl_.name_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (from._internal_has_name()) {
-    _this->_impl_.name_.Set(from._internal_name(), 
+    _this->_impl_.name_.Set(from._internal_name(),
       _this->GetArenaForAllocation());
   }
   _impl_.description_.InitDefault();
@@ -3563,7 +3563,7 @@ Appearance::Appearance(const Appearance& from)
     _impl_.description_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (from._internal_has_description()) {
-    _this->_impl_.description_.Set(from._internal_description(), 
+    _this->_impl_.description_.Set(from._internal_description(),
       _this->GetArenaForAllocation());
   }
   if (from._internal_has_flags()) {
@@ -8170,7 +8170,7 @@ AppearanceFlagNPC::AppearanceFlagNPC(const AppearanceFlagNPC& from)
     _impl_.name_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (from._internal_has_name()) {
-    _this->_impl_.name_.Set(from._internal_name(), 
+    _this->_impl_.name_.Set(from._internal_name(),
       _this->GetArenaForAllocation());
   }
   _impl_.location_.InitDefault();
@@ -8178,7 +8178,7 @@ AppearanceFlagNPC::AppearanceFlagNPC(const AppearanceFlagNPC& from)
     _impl_.location_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (from._internal_has_location()) {
-    _this->_impl_.location_.Set(from._internal_location(), 
+    _this->_impl_.location_.Set(from._internal_location(),
       _this->GetArenaForAllocation());
   }
   _impl_.currency_quest_flag_display_name_.InitDefault();
@@ -8186,7 +8186,7 @@ AppearanceFlagNPC::AppearanceFlagNPC(const AppearanceFlagNPC& from)
     _impl_.currency_quest_flag_display_name_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (from._internal_has_currency_quest_flag_display_name()) {
-    _this->_impl_.currency_quest_flag_display_name_.Set(from._internal_currency_quest_flag_display_name(), 
+    _this->_impl_.currency_quest_flag_display_name_.Set(from._internal_currency_quest_flag_display_name(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.sale_price_, &from._impl_.sale_price_,

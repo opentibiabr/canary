@@ -71,7 +71,7 @@ struct ForgeHistory {
 	bool tierLoss = false;
 	bool successCore = false;
 	bool tierCore = false;
-	
+
 	std::string description;
 	std::string firstItemName;
 	std::string secondItemName;
@@ -382,7 +382,7 @@ class Player final : public Creature, public Cylinder
 		uint8_t getBlessingCount(uint8_t index) const {
 			return blessings[index - 1];
 		}
-		std::string getBlessingsName() const; 
+		std::string getBlessingsName() const;
 
 		bool isOffline() const {
 			return (getID() == 0);
@@ -2085,7 +2085,7 @@ class Player final : public Creature, public Cylinder
 		void forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId);
 		void forgeResourceConversion(uint8_t action);
 		void forgeHistory(uint8_t page) const;
-		
+
 		void sendOpenForge() const
 		{
 			if (client)

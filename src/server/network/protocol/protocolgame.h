@@ -252,7 +252,7 @@ private:
 	void closeImbuementWindow();
 
 	void sendItemsPrice();
-	
+
 	//Forge System
 	void sendForgingData();
 	void sendOpenForge();
@@ -291,7 +291,7 @@ private:
 
 	// Unjust Panel
 	void sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration);
-  
+
 	void sendCancelWalk();
 	void sendChangeSpeed(const Creature *creature, uint16_t speed);
 	void sendCancelTarget();

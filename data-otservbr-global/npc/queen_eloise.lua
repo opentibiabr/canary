@@ -93,7 +93,7 @@ local function creatureSayCallback(npc, creature, type, message)
 							player:setStorageValue(Storage.OutfitQuest.GoldenOutfit, 1)
 					else
 						npcHandler:say("Please make sure you have free slots in your store inbox.", npc, creature)
-					end				
+					end
 				else
 					npcHandler:say("You do not have enough money to donate that amount.", npc, creature)
 				end

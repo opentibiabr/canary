@@ -10,7 +10,7 @@ __References__:
 
 The included map adds [The Percht Queen's Island](https://www.tibiawiki.com.br/wiki/The_Percht_Queen%27s_Island)
 
-### General Position 
+### General Position
 [33768,31051,7](https://tibiamaps.io/map#33768,31051,7:1)
 
 ### Notes

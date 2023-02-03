@@ -31,7 +31,7 @@ class EventsScheduler
 
 		// Event schedule xml load
 		bool loadScheduleEventFromXml() const;
-		
+
 		// Event schedule
 		uint16_t getExpSchedule() const {
 			return expSchedule;
@@ -60,7 +60,7 @@ class EventsScheduler
 		void setSkillSchedule(uint16_t skillrate) {
 			skillSchedule = (skillSchedule * skillrate)/100;
 		}
-		
+
 	private:
 		// Event schedule
 		uint16_t expSchedule = 100;

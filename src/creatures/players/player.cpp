@@ -1363,7 +1363,7 @@ void Player::sendMarketEnter(uint32_t depotId)
 	if (!client || this->getLastDepotId() == -1 || !depotId) {
 		return;
 	}
-	
+
 	client->sendMarketEnter(depotId);
 }
 
@@ -5973,7 +5973,7 @@ std::string Player::getBlessingsName() const
 	std::ostringstream os;
 	for (uint8_t i = 1; i <= 8; i++) {
 		if (hasBlessing(i)) {
-			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i)); 
+			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i));
 			blessName != BlessingNames.end()) {
 				os << (*blessName).second;
 			} else {

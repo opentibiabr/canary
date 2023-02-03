@@ -117,7 +117,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:removeMoneyBank(5000)
 			player:addItem(10302, 1)
 		end
-		npcHandler:setTopic(playerId, 0)  
+		npcHandler:setTopic(playerId, 0)
 	end
 	return true
 end

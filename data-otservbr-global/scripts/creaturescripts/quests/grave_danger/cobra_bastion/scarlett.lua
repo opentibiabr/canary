@@ -16,7 +16,7 @@ local function isMirrorsCorrect(fromPosition, toPosition)
 	local Pillar2 = Tile(Position(fromPosition.x + 4, fromPosition.y, fromPosition.z)):getItemById(31475)
 	local Pillar3 = Tile(Position(toPosition.x - 4, toPosition.y, toPosition.z)):getItemById(31477)
 	local Pillar4 = Tile(toPosition):getItemById(31476)
-	
+
 	if Pillar1 and Pillar2 and Pillar3 and Pillar4 then
 		return true
 	end
@@ -76,7 +76,7 @@ function scarlettThink.onThink(creature)
 
 	local mirrorsCount = 0
 	for _, p in pairs(rooms) do
-		if creature:getPosition():isInRange(p.fromPos, p.toPos) then	
+		if creature:getPosition():isInRange(p.fromPos, p.toPos) then
 			if isMirrorsCorrect(p.fromPos, p.toPos) then
 				addEvent(changeScarlett, 0.5*1000, creature:getId())
 				return true

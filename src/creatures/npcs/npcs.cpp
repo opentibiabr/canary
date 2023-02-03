@@ -87,7 +87,7 @@ void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock)
 	if (shopBlock.itemBuyPrice > iType.buyPrice) {
 		iType.buyPrice = shopBlock.itemBuyPrice;
 	}
-	
+
 	if (shopBlock.childShop.empty()) {
 		bool isContainer = iType.isContainer();
 		if (isContainer) {

@@ -336,7 +336,7 @@ keywordHandler:addKeyword({"adventurers guild"}, StdModule.say,
 	npcHandler = npcHandler,
 	text = {
 		"Those fellows help still green adventurers like you, so you learn the lay of the Tibian Mainlands. \z
-		With the adventurer's stone you can reach their guild hall from all major temples. ...", 
+		With the adventurer's stone you can reach their guild hall from all major temples. ...",
 		"I recommend you travel there as soon as possible."
 	}
 })
@@ -416,7 +416,7 @@ local sailNode = keywordHandler:addKeyword({"sail"}, StdModule.say,
 local confirmNode = KeywordNode:new({"yes"}, townTravelHandler, {confirm = true})
 local declineNode = KeywordNode:new({"no"}, townTravelHandler, {decline = true})
 for id, town in pairs(towns) do
-	local townSailNode = KeywordNode:new({town.name:lower()}, townTravelHandler, {townId = id})	
+	local townSailNode = KeywordNode:new({town.name:lower()}, townTravelHandler, {townId = id})
 	townSailNode:addChildKeywordNode(confirmNode)
 	townSailNode:addChildKeywordNode(declineNode)
 	sailNode:addChildKeywordNode(townSailNode)
@@ -425,7 +425,7 @@ end
 keywordHandler:addAliasKeyword({"passage"})
 keywordHandler:addAliasKeyword({"travel"})
 -- Donate topic nodes
-local donateNode = keywordHandler:addKeyword({"donate"}, donationHandler, {}, 
+local donateNode = keywordHandler:addKeyword({"donate"}, donationHandler, {},
 function(player) return player:getMoney() > 500 end
 )
 donateNode:addChildKeywordNode(KeywordNode:new({"yes"}, donationHandler, {confirm = true}))

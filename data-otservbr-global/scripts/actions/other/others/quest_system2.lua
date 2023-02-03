@@ -485,7 +485,7 @@ function questSystem2.onUse(player, item, fromPosition, target, toPosition, isHo
 		if items[1].text then
 			reward:setText(items[1].text)
 		end
-		
+
 		if items[1].name then
 			reward:setName(items[1].name)
 		end
@@ -513,7 +513,7 @@ function questSystem2.onUse(player, item, fromPosition, target, toPosition, isHo
 				if items[i].text then
 					tmp:setText(items[i].text)
 				end
-				
+
 				if items[i].name then
 					tmp:setName(items[i].name)
 				end

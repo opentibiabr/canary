@@ -2766,7 +2766,7 @@ void Player::despawn()
 			player->sendRemoveTileThing(tile->getPosition(), oldStackPosVector[i++]);
 		}
 
-		spectator->onRemoveCreature(this, false)
+		spectator->onRemoveCreature(this, false);
 	}
 
 	tile->removeCreature(this);

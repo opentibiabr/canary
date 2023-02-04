@@ -165,10 +165,20 @@ protected:
 	}
 
 	const std::underlying_type_t<ItemAttribute_t>& getAttributeBits() const {
-		return initAttributePtr()->getAttributeBits();
+		static std::underlying_type_t<ItemAttribute_t> emptyType = {};
+		if (!attributePtr) {
+			return emptyType;
+		}
+
+		return attributePtr->getAttributeBits();
 	}
 	const std::vector<Attributes>& getAttributeVector() const {
-		return initAttributePtr()->getAttributeVector();
+		static std::vector<Attributes> emptyVector = {};
+		if (!attributePtr) {
+			return emptyVector;
+		}
+
+		return attributePtr->getAttributeVector();
 	}
 
 	const int64_t& getInteger(ItemAttribute_t type) const {
@@ -188,6 +198,15 @@ protected:
 		return attributePtr->getAttributeString(type);
 	}
 
+	bool isInitializedAttributePtr() const {
+		if (!attributePtr) {
+			return false;
+		}
+
+		return true;
+	}
+
+private:
 	std::unique_ptr<ItemAttribute> attributePtr;
 };
 

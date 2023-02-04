@@ -158,7 +158,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 	}
 	else if (it.isSplash() || it.isFluidContainer())
 	{
-		msg.addByte(static_cast<uint8_t>(item->getFluidType()));  
+		msg.addByte(static_cast<uint8_t>(item->getFluidType()));
 	}
 	else if (it.isContainer())
 	{
@@ -3185,58 +3185,14 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 	auto startCombats = msg.getBufferPosition();
 	msg.skipBytes(1);
 
-	alignas(16) int16_t absorbs[COMBAT_COUNT] = {};
-	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot)
-	{
-		if (!player->isItemAbilityEnabled(static_cast<Slots_t>(slot)))
-		{
-			continue;
-		}
-
-		Item *item = player->getInventoryItem(static_cast<Slots_t>(slot));
-		if (!item)
-		{
-			continue;
-		}
-
-		const ItemType &it = Item::items[item->getID()];
-		if (!it.abilities)
-		{
-			continue;
-		}
-
-		if (COMBAT_COUNT == 12)
-		{
-			absorbs[0] += it.abilities->absorbPercent[0];
-			absorbs[1] += it.abilities->absorbPercent[1];
-			absorbs[2] += it.abilities->absorbPercent[2];
-			absorbs[3] += it.abilities->absorbPercent[3];
-			absorbs[4] += it.abilities->absorbPercent[4];
-			absorbs[5] += it.abilities->absorbPercent[5];
-			absorbs[6] += it.abilities->absorbPercent[6];
-			absorbs[7] += it.abilities->absorbPercent[7];
-			absorbs[8] += it.abilities->absorbPercent[8];
-			absorbs[9] += it.abilities->absorbPercent[9];
-			absorbs[10] += it.abilities->absorbPercent[10];
-			absorbs[11] += it.abilities->absorbPercent[11];
-		}
-		else
-		{
-			for (size_t i = 0; i < COMBAT_COUNT; ++i)
-			{
-				absorbs[i] += it.abilities->absorbPercent[i];
-			}
-		}
-	}
-
+	const std::array<double_t, COMBAT_COUNT> &damageReduction = player->getFinalDamageReduction();
 	static const Cipbia_Elementals_t cipbiaCombats[] = {CIPBIA_ELEMENTAL_PHYSICAL, CIPBIA_ELEMENTAL_ENERGY, CIPBIA_ELEMENTAL_EARTH, CIPBIA_ELEMENTAL_FIRE, CIPBIA_ELEMENTAL_UNDEFINED,
 														CIPBIA_ELEMENTAL_LIFEDRAIN, CIPBIA_ELEMENTAL_UNDEFINED, CIPBIA_ELEMENTAL_HEALING, CIPBIA_ELEMENTAL_DROWN, CIPBIA_ELEMENTAL_ICE, CIPBIA_ELEMENTAL_HOLY, CIPBIA_ELEMENTAL_DEATH};
-	for (size_t i = 0; i < COMBAT_COUNT; ++i)
-	{
-		if (absorbs[i] != 0)
-		{
+	for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+		auto finalDamage = std::clamp<uint8_t>(static_cast<uint8_t>(damageReduction[i]), 0, 255);
+		if (finalDamage != 0) {
 			msg.addByte(cipbiaCombats[i]);
-			msg.addByte(std::max<int16_t>(-100, std::min<int16_t>(100, absorbs[i])));
+			msg.addByte(finalDamage);
 			++combats;
 		}
 	}
@@ -4574,7 +4530,7 @@ void ProtocolGame::sendForgeHistory(uint8_t page)
 			msg.addByte((history.bonus >= 1 && history.bonus < 8) ? 0x01 : 0x00);
 		}
 	}
-	
+
 	writeToOutputBuffer(msg);
 }
 
@@ -6225,7 +6181,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 		msg.addByte(player->isPremium() ? 0x01 : 0x00);
 	} else if (slot->state == PreyDataState_Inactive) {
 			// Empty
-	} else if (slot->state == PreyDataState_Active) {	
+	} else if (slot->state == PreyDataState_Active) {
 		if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId)) {
 			msg.addString(mtype->name);
 			const Outfit_t outfit = mtype->info.outfit;
@@ -7329,7 +7285,7 @@ void ProtocolGame::parseDepotSearchItemRequest(NetworkMessage &msg)
 	if (Item::items[itemId].upgradeClassification > 0) {
 		itemTier = msg.getByte();
 	}
-	
+
 	addGameTask(&Game::playerRequestDepotSearchItem, player->getID(), itemId, itemTier);
 }
 
@@ -7341,7 +7297,7 @@ void ProtocolGame::parseRetrieveDepotSearch(NetworkMessage &msg)
 		itemTier = msg.getByte();
 	}
 	uint8_t type = msg.getByte();
-	
+
 	addGameTask(&Game::playerRequestDepotSearchRetrieve, player->getID(), itemId, itemTier, type);
 }
 
@@ -7355,7 +7311,7 @@ void ProtocolGame::parseOpenParentContainer(NetworkMessage &msg)
 void ProtocolGame::sendUpdateCreature(const Creature* creature)
 {
 	if (!creature || !player) {
-		return; 
+		return;
 	}
 
 	if (!canSee(creature))
@@ -7366,7 +7322,7 @@ void ProtocolGame::sendUpdateCreature(const Creature* creature)
 		return;
 	}
 
-	NetworkMessage msg; 
+	NetworkMessage msg;
 	msg.addByte(0x6B);
 	msg.addPosition(creature->getPosition());
 	msg.addByte(static_cast<uint8_t>(stackPos));

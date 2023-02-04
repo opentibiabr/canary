@@ -674,6 +674,8 @@ class Game
 
 		std::vector<ItemClassification*> itemsClassifications;
 
+		bool isTryingToStow(const Position &toPos, Cylinder *toCylinder) const;
+
 		void sendDamageMessageAndEffects(
 			const Creature *attacker, Creature *target, const CombatDamage &damage, const Position &targetPos,
 			Player *attackerPlayer, Player *targetPlayer, TextMessage &message,

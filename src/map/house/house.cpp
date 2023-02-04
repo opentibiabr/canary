@@ -270,8 +270,7 @@ void House::handleWrapableItem(ItemList &moveItemList, Item *item) const {
 }
 
 void House::handleContainer(ItemList &moveItemList, Item *item) const {
-	Container* container;
-	if (container = item->getContainer()) {
+	if (const auto container = item->getContainer()) {
 		for (Item* containerItem : container->getItemList()) {
 			moveItemList.push_back(containerItem);
 		}

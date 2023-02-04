@@ -222,39 +222,42 @@ Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const
 		return nullptr;
 	}
 
-  if (!ignoreAmmo && weaponType == WEAPON_DISTANCE) {
-    const ItemType& it = Item::items[item->getID()];
-    if (it.ammoType != AMMO_NONE) {
-        item = getQuiverAmmoOfType(it);
-    }
-  }
+	if (!ignoreAmmo && weaponType == WEAPON_DISTANCE) {
+		const ItemType& it = Item::items[item->getID()];
+		if (it.ammoType != AMMO_NONE) {
+			item = getQuiverAmmoOfType(it);
+		}
+	}
+
 	return item;
 }
 
 bool Player::hasQuiverEquipped() const {
-    Item* quiver = inventory[CONST_SLOT_RIGHT];
-    return quiver && quiver->isQuiver() && quiver->getContainer();
+	Item* quiver = inventory[CONST_SLOT_RIGHT];
+	return quiver && quiver->isQuiver() && quiver->getContainer();
 }
 
 bool Player::hasWeaponDistanceEquipped() const{
-    const Item* item = inventory[CONST_SLOT_LEFT];
-    return item && item->getWeaponType() == WEAPON_DISTANCE;
+	const Item* item = inventory[CONST_SLOT_LEFT];
+	return item && item->getWeaponType() == WEAPON_DISTANCE;
 }
 
 Item* Player::getQuiverAmmoOfType(const ItemType &it) const {
-    if(!hasQuiverEquipped()){
-        return nullptr;
-    }
-    Item* quiver = inventory[CONST_SLOT_RIGHT];
-    for (Container *container = quiver->getContainer();
-	Item* ammoItem : container->getItemList()) {
-      if (ammoItem->getAmmoType() == it.ammoType) {
-        if (level >= Item::items[ammoItem->getID()].minReqLevel) {
-            return ammoItem;
-        }
-      }
-    }
-    return nullptr;
+	if (!hasQuiverEquipped()) {
+		return nullptr;
+	}
+
+	Item* quiver = inventory[CONST_SLOT_RIGHT];
+	for (Container *container = quiver->getContainer();
+		Item* ammoItem : container->getItemList())
+	{
+		if (ammoItem->getAmmoType() == it.ammoType) {
+			if (level >= Item::items[ammoItem->getID()].minReqLevel) {
+				return ammoItem;
+			}
+		}
+	}
+	return nullptr;
 }
 
 Item* Player::getWeapon(bool ignoreAmmo/* = false*/) const

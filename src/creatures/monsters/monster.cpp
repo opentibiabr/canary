@@ -2221,22 +2221,24 @@ bool Monster::canDropLoot() const {
 }
 
 std::vector<std::pair<int8_t, int8_t>> Monster::getPushItemLocationOptions(const Direction &direction) {
-	if(direction == DIRECTION_WEST || direction == DIRECTION_EAST){
+	if (direction == DIRECTION_WEST || direction == DIRECTION_EAST) {
 		return {{0, -1}, {0, 1}};
 	}
-	if(direction == DIRECTION_NORTH || direction == DIRECTION_SOUTH){
+	if (direction == DIRECTION_NORTH || direction == DIRECTION_SOUTH) {
 		return {{-1, 0}, {1, 0}};
 	}
-	if(direction == DIRECTION_NORTHWEST){
+	if (direction == DIRECTION_NORTHWEST) {
 		return {{0, -1}, {-1, 0}};
 	}
-	if(direction == DIRECTION_NORTHEAST){
+	if (direction == DIRECTION_NORTHEAST) {
 		return {{0, -1}, {1, 0}};
 	}
-	if(direction == DIRECTION_SOUTHWEST){
+	if (direction == DIRECTION_SOUTHWEST) {
 		return {{0, 1}, {-1, 0}};
 	}
-	if(direction == DIRECTION_SOUTHEAST){
+	if (direction == DIRECTION_SOUTHEAST) {
 		return {{0, 1}, {1, 0}};
 	}
+
+	return {};
 }

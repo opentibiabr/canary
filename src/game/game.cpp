@@ -6070,9 +6070,9 @@ void Game::updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, const Playe
 }
 
 void Game::sendDamageMessageAndEffects(
-	const Creature *attacker, Creature *target, CombatDamage &damage,
+	const Creature *attacker, Creature *target, const CombatDamage &damage,
 	const Position &targetPos, Player *attackerPlayer, Player *targetPlayer,
-	TextMessage &message, SpectatorHashSet &spectators, int32_t realDamage
+	TextMessage &message, const SpectatorHashSet &spectators, int32_t realDamage
 )
 {
 	message.primary.value = damage.primary.value;
@@ -6092,9 +6092,9 @@ bool Game::shouldSendMessage(const TextMessage &message) const
 }
 
 void Game::sendMessages(
-	const Creature *attacker, const Creature *target, CombatDamage &damage,
+	const Creature *attacker, const Creature *target, const CombatDamage &damage,
 	const Position &targetPos, Player *attackerPlayer, Player *targetPlayer,
-	TextMessage &message, SpectatorHashSet &spectators, int32_t realDamage
+	TextMessage &message, const SpectatorHashSet &spectators, int32_t realDamage
 ) const
 {
 	if (attackerPlayer) {
@@ -6213,7 +6213,7 @@ void Game::buildMessageAsAttacker(
 }
 
 void Game::sendEffects(
-	Creature *target, CombatDamage &damage, const Position &targetPos, TextMessage &message,
+	Creature *target, const CombatDamage &damage, const Position &targetPos, TextMessage &message,
 	const SpectatorHashSet &spectators
 )
 {
@@ -6250,7 +6250,7 @@ void Game::applyCharmRune(
 }
 
 void Game::applyManaLeech(
-	Player* attackerPlayer, Monster* targetMonster, CombatDamage& damage, int32_t& realDamage
+	Player* attackerPlayer, const Monster* targetMonster, const CombatDamage& damage, const int32_t& realDamage
 ) const
 {
 	uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE);
@@ -6279,7 +6279,7 @@ void Game::applyManaLeech(
 }
 
 void Game::applyLifeLeech(
-	Player* attackerPlayer, Monster* targetMonster, CombatDamage& damage, int32_t& realDamage
+	Player* attackerPlayer, const Monster* targetMonster, const CombatDamage& damage, const int32_t& realDamage
 ) const
 {
 	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE);

@@ -442,8 +442,14 @@ class Game
 
 		bool combatChangeHealth(Creature* attacker, Creature* target, CombatDamage& damage, bool isEvent = false);
 		void applyCharmRune(const Monster* targetMonster, Player* attackerPlayer, Creature* target, const int32_t& realDamage) const;
-		void applyManaLeech(Player* attackerPlayer, Monster* targetMonster, CombatDamage& damage, int32_t& realDamage) const;
-		void applyLifeLeech(Player* attackerPlayer, Monster* targetMonster, CombatDamage& damage, int32_t& realDamage) const;
+		void applyManaLeech(
+			Player* attackerPlayer, const Monster* targetMonster,
+			const CombatDamage& damage, const int32_t& realDamage
+		) const;
+		void applyLifeLeech(
+			Player* attackerPlayer, const Monster* targetMonster,
+			const CombatDamage& damage, const int32_t& realDamage
+		) const;
 		int32_t calculateLeechAmount(const int32_t& realDamage, const uint16_t& skillAmount, int targetsAffected) const;
 		bool combatChangeMana(Creature* attacker, Creature* target, CombatDamage& damage);
 
@@ -669,22 +675,22 @@ class Game
 		std::vector<ItemClassification*> itemsClassifications;
 
 		void sendDamageMessageAndEffects(
-			const Creature *attacker, Creature *target, CombatDamage &damage, const Position &targetPos,
+			const Creature *attacker, Creature *target, const CombatDamage &damage, const Position &targetPos,
 			Player *attackerPlayer, Player *targetPlayer, TextMessage &message,
-			SpectatorHashSet &spectators,int32_t realDamage
+			const SpectatorHashSet &spectators, int32_t realDamage
 		);
 
 		void updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, const Player *player) const;
 
 		void sendEffects(
-			Creature *target, CombatDamage &damage, const Position &targetPos,
+			Creature *target, const CombatDamage &damage, const Position &targetPos,
 			TextMessage &message, const SpectatorHashSet &spectators
 		);
 
 		void sendMessages(
-			const Creature *attacker, const Creature *target, CombatDamage &damage,
+			const Creature *attacker, const Creature *target, const CombatDamage &damage,
 			const Position &targetPos, Player *attackerPlayer, Player *targetPlayer,
-			TextMessage &message, SpectatorHashSet &spectators, int32_t realDamage
+			TextMessage &message, const SpectatorHashSet &spectators, int32_t realDamage
 		) const;
 
 		bool shouldSendMessage(const TextMessage &message) const;

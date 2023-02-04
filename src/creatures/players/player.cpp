@@ -3721,15 +3721,18 @@ std::vector<Item*> Player::getInventoryItemsFromId(uint16_t itemId, bool ignore 
 }
 
 std::array<double_t, COMBAT_COUNT> Player::getFinalDamageReduction() const {
-    std::array<double_t, COMBAT_COUNT> combatReductionArray;
+	std::array<double_t, COMBAT_COUNT> combatReductionArray;
 	combatReductionArray.fill(0);
-    calculateDamageReductionFromEquipedItems(combatReductionArray);
+	calculateDamageReductionFromEquipedItems(combatReductionArray);
 	for (int combatTypeIndex = 0; combatTypeIndex < COMBAT_COUNT; combatTypeIndex++) {
-		combatReductionArray[combatTypeIndex] = std::clamp<int8_t>(std::floor(combatReductionArray[combatTypeIndex]), -100, 100);
+		combatReductionArray[combatTypeIndex] = std::clamp<double_t>(
+			std::floor(combatReductionArray[combatTypeIndex]),
+			-100.,
+			100.
+		);
 	}
-    return combatReductionArray;
+	return combatReductionArray;
 }
-
 
 void Player::calculateDamageReductionFromEquipedItems(std::array<double_t, COMBAT_COUNT> &combatReductionArray) const {
 	for (uint8_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {

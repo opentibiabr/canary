@@ -229,6 +229,9 @@ class House
 		Position posEntry = {};
 
 		bool isLoaded = false;
+
+		void handleContainer(ItemList &moveItemList, Item *item) const;
+		void handleWrapableItem(ItemList &moveItemList, Item *item) const;
 };
 
 using HouseMap = std::map<uint32_t, House*>;

@@ -406,7 +406,7 @@ void Creature::onRemoveCreature(Creature* creature, bool)
 		}
 	}
 
-	// Remove player from monster target list (avoid memory usage after clean)
+	// Update player from monster target list (avoid memory usage after clean)
 	if (auto monster = getMonster(); monster && monster->getAttackedCreature() == creature) {
 		monster->setAttackedCreature(creature);
 		monster->setFollowCreature(creature);

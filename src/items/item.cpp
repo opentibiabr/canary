@@ -1681,7 +1681,7 @@ std::string Item::parseShowAttributesDescription(const Item *item, const uint16_
 					itemDescription << ", ";
 				}
 
-				itemDescription << fmt::format("speed {:+}", show);
+				itemDescription << fmt::format("speed {:+}", itemType.abilities->speed);
 			}
 		}
 

@@ -2525,6 +2525,12 @@ class Player final : public Creature, public Cylinder
 
 		account::Account *account_;
 
+		bool hasQuiverEquipped() const;
+
+		bool hasWeaponDistanceEquipped() const;
+
+		Item* getQuiverAmmoOfType(const ItemType &it) const;
+
 		std::array<double_t, COMBAT_COUNT> getFinalDamageReduction() const;
 		void calculateDamageReductionFromEquipedItems(std::array<double_t, COMBAT_COUNT> &combatReductionMap) const;
 		void calculateDamageReductionFromItem(std::array<double_t, COMBAT_COUNT> &combatReductionMap, Item *item) const;

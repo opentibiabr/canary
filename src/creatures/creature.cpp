@@ -492,7 +492,11 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 			stopEventWalk();
 		}
 
-		checkSummonMove(newPos, g_configManager().getBoolean(TELEPORT_SUMMONS));
+		bool configTeleportSummons = g_configManager().getBoolean(TELEPORT_SUMMONS);
+		checkSummonMove(newPos, configTeleportSummons);
+		if(isLostSummon()) {
+			handleLostSummon(configTeleportSummons);
+		}
 
 		if (Player* player = creature->getPlayer()) {
 			if (player->isExerciseTraining()){
@@ -755,7 +759,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 					int32_t money = 0;
 					for (Item* item : corpse->getContainer()->getItems()) {
 						if (uint32_t worth = item->getWorth(); worth > 0) {
-							money += worth; 
+							money += worth;
 							g_game().internalRemoveItem(item);
 						}
 					}
@@ -946,9 +950,13 @@ void Creature::getPathSearchParams(const Creature*, FindPathParams& fpp) const
 void Creature::goToFollowCreature()
 {
 	if (followCreature) {
+		if(isSummon() && !getMonster()->isFamiliar() && !canFollowMaster()){
+			hasFollowPath = false;
+			return;
+		}
+
 		FindPathParams fpp;
 		getPathSearchParams(followCreature, fpp);
-
 		Monster* monster = getMonster();
 		if (monster && !monster->getMaster() && (monster->isFleeing() || fpp.maxTargetDist > 1)) {
 			Direction dir = DIRECTION_NONE;
@@ -988,6 +996,10 @@ void Creature::goToFollowCreature()
 	}
 
 	onFollowCreatureComplete(followCreature);
+}
+
+bool Creature::canFollowMaster() const {
+	return !master->getTile()->hasFlag(TILESTATE_PROTECTIONZONE) && (canSeeInvisibility() || !master->isInvisible());
 }
 
 bool Creature::setFollowCreature(Creature* creature)
@@ -1695,4 +1707,22 @@ void Creature::turnToCreature(Creature* creature)
 		}
 	}
 	g_game().internalCreatureTurn(this, dir);
+}
+
+bool Creature::isLostSummon() const {
+	if (!isSummon()) {
+		return false;
+	}
+	const Position &masterPosition = getMaster()->getPosition();
+	return std::max<int32_t>(Position::getDistanceX(getPosition(), masterPosition),
+							 Position::getDistanceY(getPosition(), masterPosition)) > 30;
+}
+
+void Creature::handleLostSummon(bool teleportSummons) {
+	if (teleportSummons) {
+		g_game().internalTeleport(this, getMaster()->getPosition(), true);
+	} else {
+		g_game().removeCreature(this, true);
+	}
+	g_game().addMagicEffect(getPosition(), CONST_ME_POFF);
 }

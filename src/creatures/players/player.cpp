@@ -248,7 +248,7 @@ Item* Player::getQuiverAmmoOfType(const ItemType &it) const {
 	}
 
 	Item* quiver = inventory[CONST_SLOT_RIGHT];
-	for (Container *container = quiver->getContainer();
+	for (const Container *container = quiver->getContainer();
 		Item* ammoItem : container->getItemList())
 	{
 		if (ammoItem->getAmmoType() == it.ammoType) {

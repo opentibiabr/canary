@@ -223,7 +223,7 @@ Item::Item(const Item& i) :
 	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap)
 {
 	if (i.initAttributePtr()) {
-		initAttributePtr().reset(new ItemAttribute());
+		initAttributePtr().reset(new ItemAttribute(*i.attributePtr));
 	}
 }
 
@@ -236,7 +236,7 @@ Item* Item::clone() const
 	}
 
 	if (initAttributePtr()) {
-		item->initAttributePtr().reset(new ItemAttribute());
+		item->initAttributePtr().reset(new ItemAttribute(*attributePtr));
 	}
 
 	return item;
@@ -244,16 +244,29 @@ Item* Item::clone() const
 
 bool Item::equals(const Item* compareItem) const
 {
-	if (!compareItem || id != compareItem->id) {
+	if (!compareItem) {
 		return false;
 	}
 
-	if (getAttributeBits() != compareItem->getAttributeBits()) {
+	if (id != compareItem->id) {
 		return false;
 	}
 
-	for (const auto& attribute : getAttributeVector()) {
-		for (const auto& compareAttribute : compareItem->getAttributeVector()) {
+	if (!attributePtr) {
+		return !compareItem->attributePtr;
+	}
+
+	const auto& otherAttributes = compareItem->attributePtr;
+	if (!otherAttributes) {
+		return false;
+	}
+
+	if (attributePtr->getAttributeBits() != compareItem->attributePtr->getAttributeBits()) {
+		return false;
+	}
+
+	for (const auto& attribute : attributePtr->getAttributeVector()) {
+		for (const auto& compareAttribute : compareItem->attributePtr->getAttributeVector()) {
 			if (attribute.getAttributeType() != compareAttribute.getAttributeType()) {
 				continue;
 			}
@@ -2545,7 +2558,7 @@ void Item::stopDecaying()
 
 bool Item::hasMarketAttributes() const
 {
-	if (!isInitializedAttributePtr()) {
+	if (!attributePtr) {
 		return true;
 	}
 

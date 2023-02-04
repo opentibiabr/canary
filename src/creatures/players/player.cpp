@@ -2767,9 +2767,13 @@ void Player::despawn()
 		}
 
 		spectator->onRemoveCreature(this, false);
-		// Remove player from spectator target list
-		spectator->setAttackedCreature(nullptr);
-		spectator->setFollowCreature(nullptr);
+		// Remove player from monster target list (avoid memory usage after clean)
+		if (auto monster = spectator->getMonster()) {
+			if (auto monsterTarget = monster->getAttackedCreature()) {
+				monster->setAttackedCreature(this);
+				monster->setFollowCreature(this);
+			}
+		}
 	}
 
 	tile->removeCreature(this);

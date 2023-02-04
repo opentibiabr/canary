@@ -49,7 +49,7 @@ void DatabaseTasks::threadMain()
 				flushSignal.notify_one();
 			}
 			taskSignal.wait(taskLockUnique, [this] {
-				return !tasks.empty();
+				return tasks.empty();
 			});
 		}
 

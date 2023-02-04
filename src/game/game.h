@@ -663,6 +663,8 @@ class Game
 		uint16_t itemsSaleCount;
 
 		std::vector<ItemClassification*> itemsClassifications;
+
+		bool isTryingToStow(const Position &toPos, Cylinder *toCylinder) const;
 };
 
 constexpr auto g_game = &Game::getInstance;

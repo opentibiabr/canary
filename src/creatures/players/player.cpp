@@ -222,30 +222,42 @@ Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const
 		return nullptr;
 	}
 
-  if (!ignoreAmmo && weaponType == WEAPON_DISTANCE) {
-    const ItemType& it = Item::items[item->getID()];
-    if (it.ammoType != AMMO_NONE) {
-      Item* quiver = inventory[CONST_SLOT_RIGHT];
-      if (!quiver || !quiver->isQuiver())
-        return nullptr;
-      Container* container = quiver->getContainer();
-      if (!container)
-        return nullptr;
-      bool found = false;
-      for (Item* ammoItem : container->getItemList()) {
-        if (ammoItem->getAmmoType() == it.ammoType) {
-          if (level >= Item::items[ammoItem->getID()].minReqLevel) {
-            item = ammoItem;
-            found = true;
-            break;
-          }
-        }
-      }
-      if (!found)
-        return nullptr;
-    }
-  }
+	if (!ignoreAmmo && weaponType == WEAPON_DISTANCE) {
+		const ItemType& it = Item::items[item->getID()];
+		if (it.ammoType != AMMO_NONE) {
+			item = getQuiverAmmoOfType(it);
+		}
+	}
+
 	return item;
+}
+
+bool Player::hasQuiverEquipped() const {
+	Item* quiver = inventory[CONST_SLOT_RIGHT];
+	return quiver && quiver->isQuiver() && quiver->getContainer();
+}
+
+bool Player::hasWeaponDistanceEquipped() const{
+	const Item* item = inventory[CONST_SLOT_LEFT];
+	return item && item->getWeaponType() == WEAPON_DISTANCE;
+}
+
+Item* Player::getQuiverAmmoOfType(const ItemType &it) const {
+	if (!hasQuiverEquipped()) {
+		return nullptr;
+	}
+
+	Item* quiver = inventory[CONST_SLOT_RIGHT];
+	for (const Container *container = quiver->getContainer();
+		Item* ammoItem : container->getItemList())
+	{
+		if (ammoItem->getAmmoType() == it.ammoType) {
+			if (level >= Item::items[ammoItem->getID()].minReqLevel) {
+				return ammoItem;
+			}
+		}
+	}
+	return nullptr;
 }
 
 Item* Player::getWeapon(bool ignoreAmmo/* = false*/) const
@@ -4056,6 +4068,8 @@ void Player::doAttacking(uint32_t)
 			} else {
 				result = weapon->useWeapon(this, tool, attackedCreature);
 			}
+		} else if(hasWeaponDistanceEquipped()) {
+			return;
 		} else {
 			result = Weapon::useFist(this, attackedCreature);
 		}

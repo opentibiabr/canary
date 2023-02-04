@@ -2521,7 +2521,13 @@ class Player final : public Creature, public Cylinder
 		friend class MoveEvent;
 		friend class BedItem;
 
-  account::Account *account_;
+		account::Account *account_;
+
+		bool hasQuiverEquipped() const;
+
+		bool hasWeaponDistanceEquipped() const;
+
+		Item* getQuiverAmmoOfType(const ItemType &it) const;
 };
 
 #endif  // SRC_CREATURES_PLAYERS_PLAYER_H_

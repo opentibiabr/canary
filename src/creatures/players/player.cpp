@@ -2502,7 +2502,7 @@ void Player::death(Creature* lastHitCreature)
 			}
 		}
 		bool pvpDeath = false;
-		if(playerDmg > 0 || othersDmg > 0){
+		if (playerDmg > 0 || othersDmg > 0){
 			pvpDeath = (Player::lastHitIsPlayer(lastHitCreature) || playerDmg / (playerDmg + static_cast<double>(othersDmg)) >= 0.05);
 		}
 		if (pvpDeath && sumLevels > level) {
@@ -3576,7 +3576,7 @@ void Player::stashContainer(StashContainerList itemDict)
 	}
 
 	for (auto it : stashItems) {
-		if(!stashItemDict[it.first]) {
+		if (!stashItemDict[it.first]) {
 			stashItemDict[it.first] = it.second;
 		} else {
 			stashItemDict[it.first] += it.second;
@@ -3732,7 +3732,8 @@ std::vector<Item*> Player::getInventoryItemsFromId(uint16_t itemId, bool ignore 
 	return itemVector;
 }
 
-std::array<double_t, COMBAT_COUNT> Player::getFinalDamageReduction() const {
+std::array<double_t, COMBAT_COUNT> Player::getFinalDamageReduction() const
+{
 	std::array<double_t, COMBAT_COUNT> combatReductionArray;
 	combatReductionArray.fill(0);
 	calculateDamageReductionFromEquipedItems(combatReductionArray);
@@ -3746,7 +3747,8 @@ std::array<double_t, COMBAT_COUNT> Player::getFinalDamageReduction() const {
 	return combatReductionArray;
 }
 
-void Player::calculateDamageReductionFromEquipedItems(std::array<double_t, COMBAT_COUNT> &combatReductionArray) const {
+void Player::calculateDamageReductionFromEquipedItems(std::array<double_t, COMBAT_COUNT> &combatReductionArray) const
+{
 	for (uint8_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
 		Item *item = inventory[slot];
 		if (item) {
@@ -3755,27 +3757,37 @@ void Player::calculateDamageReductionFromEquipedItems(std::array<double_t, COMBA
 	}
 }
 
-void Player::calculateDamageReductionFromItem(std::array<double_t, COMBAT_COUNT> &combatReductionArray, Item *item) const {
+void Player::calculateDamageReductionFromItem(std::array<double_t, COMBAT_COUNT> &combatReductionArray, Item *item) const
+{
 	for (uint16_t combatTypeIndex = 0; combatTypeIndex < COMBAT_COUNT; combatTypeIndex++) {
 		updateDamageReductionFromItemImbuement(combatReductionArray, item, combatTypeIndex);
 		updateDamageReductionFromItemAbility(combatReductionArray, item, combatTypeIndex);
 	}
 }
 
-void Player::updateDamageReductionFromItemImbuement(std::array<double_t, COMBAT_COUNT> &combatReductionArray, Item *item, uint16_t combatTypeIndex) const {
+void Player::updateDamageReductionFromItemImbuement(
+	std::array<double_t, COMBAT_COUNT> &combatReductionArray, Item *item, uint16_t combatTypeIndex
+) const
+{
 	for (uint8_t imbueSlotId = 0; imbueSlotId < item->getImbuementSlot(); imbueSlotId++) {
 		ImbuementInfo imbuementInfo;
 		if (item->getImbuementInfo(imbueSlotId, &imbuementInfo) && imbuementInfo.imbuement) {
 			int16_t imbuementAbsorption = imbuementInfo.imbuement->absorbPercent[combatTypeIndex];
-			if(imbuementAbsorption != 0) {
+			if (imbuementAbsorption != 0) {
 				combatReductionArray[combatTypeIndex] = calculateDamageReduction(combatReductionArray[combatTypeIndex], imbuementAbsorption);
 			}
 		}
 	}
 }
 
-void Player::updateDamageReductionFromItemAbility(std::array<double_t, COMBAT_COUNT> &combatReductionArray, const Item *item, uint16_t combatTypeIndex) const {
-	if(!item) return;
+void Player::updateDamageReductionFromItemAbility(
+	std::array<double_t, COMBAT_COUNT> &combatReductionArray, const Item *item, uint16_t combatTypeIndex
+) const
+{
+	if (!item) {
+		return;
+	}
+
 	const ItemType &itemType = Item::items[item->getID()];
 	if (itemType.abilities) {
 		int16_t elementReduction = itemType.abilities->absorbPercent[combatTypeIndex];
@@ -3785,7 +3797,8 @@ void Player::updateDamageReductionFromItemAbility(std::array<double_t, COMBAT_CO
 	}
 }
 
-double_t Player::calculateDamageReduction(double_t currentTotal, int16_t resistance) const {
+double_t Player::calculateDamageReduction(double_t currentTotal, int16_t resistance) const
+{
 	return (100 - currentTotal) / 100.0 * resistance + currentTotal;
 }
 
@@ -4126,7 +4139,7 @@ void Player::doAttacking(uint32_t)
 			} else {
 				result = weapon->useWeapon(this, tool, attackedCreature);
 			}
-		} else if(hasWeaponDistanceEquipped()) {
+		} else if (hasWeaponDistanceEquipped()) {
 			return;
 		} else {
 			result = Weapon::useFist(this, attackedCreature);

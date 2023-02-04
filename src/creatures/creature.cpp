@@ -399,12 +399,18 @@ void Creature::onCreatureAppear(Creature* creature, bool isLogin)
 
 void Creature::onRemoveCreature(Creature* creature, bool)
 {
-  onCreatureDisappear(creature, true);
-  if (creature != this && isMapLoaded) {
-    if (creature->getPosition().z == getPosition().z) {
-      updateTileCache(creature->getTile(), creature->getPosition());
-    }
-  }
+	onCreatureDisappear(creature, true);
+	if (creature != this && isMapLoaded) {
+		if (creature->getPosition().z == getPosition().z) {
+		updateTileCache(creature->getTile(), creature->getPosition());
+		}
+	}
+
+	// Update player from monster target list (avoid memory usage after clean)
+	if (auto monster = getMonster(); monster && monster->getAttackedCreature() == creature) {
+		monster->setAttackedCreature(creature);
+		monster->setFollowCreature(creature);
+	}
 }
 
 void Creature::onCreatureDisappear(const Creature* creature, bool isLogout)

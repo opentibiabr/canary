@@ -2709,7 +2709,7 @@ bool Player::spawn()
 	}
 
 	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, position, false, true);
+	g_game().map.getSpectators(spectators, position);
 	for (Creature* spectator : spectators) {
 		if (!spectator) {
 			continue;
@@ -2767,9 +2767,6 @@ void Player::despawn()
 		}
 
 		spectator->onRemoveCreature(this, false);
-		// Remove player from spectator target list
-		spectator->setAttackedCreature(nullptr);
-		spectator->setFollowCreature(nullptr);
 	}
 
 	tile->removeCreature(this);

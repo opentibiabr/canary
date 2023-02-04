@@ -4071,8 +4071,8 @@ void Player::doAttacking(uint32_t)
 		} else if(hasWeaponDistanceEquipped()) {
 			return;
 		} else {
-            result = Weapon::useFist(this, attackedCreature);
-        }
+			result = Weapon::useFist(this, attackedCreature);
+		}
 
 		SchedulerTask* task = createSchedulerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
 		if (!classicSpeed) {

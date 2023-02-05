@@ -696,10 +696,9 @@ void Player::removeEmptyRewards()
 }
 
 bool Player::hasAnykindOfRewardContainerOpen() const {
-	return std::ranges::any_of(openContainers.begin(), openContainers.end(),
-					   [](const auto& containerPair) {
-						   return containerPair.second.container->isAnykindOfRewardContainer();
-					   });
+	return std::ranges::any_of(openContainers.begin(), openContainers.end(),[](const auto& containerPair) {
+		return containerPair.second.container->isAnykindOfRewardContainer();
+	});
 }
 
 void Player::setContainerIndex(uint8_t cid, uint16_t index)

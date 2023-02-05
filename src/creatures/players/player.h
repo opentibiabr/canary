@@ -2181,6 +2181,8 @@ class Player final : public Creature, public Cylinder
 
 		void registerForgeHistoryDescription(ForgeHistory history);
 
+		std::map<uint16_t, Item*> getEquippedItemsWithEnabledAbilitiesBySlot() const;
+
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
 
@@ -2521,11 +2523,24 @@ class Player final : public Creature, public Cylinder
 		friend class MoveEvent;
 		friend class BedItem;
 
-  account::Account *account_;
+		account::Account *account_;
 
-	  void removeEmptyRewards();
+		bool hasQuiverEquipped() const;
 
-	  bool hasAnykindOfRewardContainerOpen() const;
+		bool hasWeaponDistanceEquipped() const;
+
+		Item* getQuiverAmmoOfType(const ItemType &it) const;
+
+		std::array<double_t, COMBAT_COUNT> getFinalDamageReduction() const;
+		void calculateDamageReductionFromEquipedItems(std::array<double_t, COMBAT_COUNT> &combatReductionMap) const;
+		void calculateDamageReductionFromItem(std::array<double_t, COMBAT_COUNT> &combatReductionMap, Item *item) const;
+		void updateDamageReductionFromItemImbuement(std::array<double_t, COMBAT_COUNT> &combatReductionMap, Item *item, uint16_t combatTypeIndex) const;
+		void updateDamageReductionFromItemAbility(std::array<double_t, COMBAT_COUNT> &combatReductionMap, const Item *item, uint16_t combatTypeIndex) const;
+		double_t calculateDamageReduction(double_t currentTotal, int16_t resistance) const;
+
+		void removeEmptyRewards();
+		bool hasAnykindOfRewardContainerOpen() const;
 };
+
 
 #endif  // SRC_CREATURES_PLAYERS_PLAYER_H_

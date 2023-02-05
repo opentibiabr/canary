@@ -2,7 +2,7 @@
 <items>
 	<!--  Liquids -->
 	<!--  Fluid type 0 is same as water (id="1") -->
-	<item id="1" name="water" /> 
+	<item id="1" name="water" />
 	<item id="2" name="wine" />
 	<item id="3" name="beer" />
 	<item id="4" name="mud" />
@@ -20752,7 +20752,7 @@
 	</item>
 	<item id="11258" article="a" name="unknown item">
 		<attribute key="duration" value="10"/>
-		<attribute key="decayTo" value="11257"/>		
+		<attribute key="decayTo" value="11257"/>
 	</item>
 	<item fromid="11259" toid="11262" article="a" name="banner"/>
 	<item fromid="11263" toid="11264" article="a" name="tapestry"/>
@@ -35287,7 +35287,7 @@
 		<attribute key="healthgain" value="3"/>
 		<attribute key="speed" value="30"/>
 		<attribute key="duration" value="3600"/>
-		<attribute key="transformdeequipto" value="23477"/> 
+		<attribute key="transformdeequipto" value="23477"/>
 		<attribute key="decayTo" value="0"/>
 		<attribute key="armor" value="2"/>
 		<attribute key="weight" value="1500"/>
@@ -48846,7 +48846,7 @@
 	</item>
 	<item id="34090" article="a" name="soultainter">
 		<attribute key="weaponType" value="wand"/>
-		<attribute key="shootType" value="death"/>
+		<attribute key="shootType" value="suddendeath"/>
 		<attribute key="absorbpercentdeath" value="12"/>
 		<attribute key="magicpoints" value="5"/>
 		<attribute key="criticalhitdamage" value="10"/>
@@ -52606,7 +52606,7 @@
 		<attribute key="description" value="Juding by the pinching of his beak, this one seems to be born to joust"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
-	<!--  Unmoveable decorative items --> 
+	<!--  Unmoveable decorative items -->
 	<item id="37213" article="a" name="blue balloon"/>
 	<item id="37214" article="a" name="green balloon"/>
 	<item id="37215" article="an" name="orange balloon"/>
@@ -52664,7 +52664,7 @@
 	<item id="37297" article="a" name="blue Tibia carpet"/>
 	<item id="37298" article="a" name="purple Tibia carpet"/>
 	<item id="37299" article="a" name="pink Tibia carpet"/>
-	<!-- End of Unmoveable Decorative items--> 
+	<!-- End of Unmoveable Decorative items-->
 	<item id="37303" article="a" name="half empty picture album">
 		<attribute key="description" value="Eight pictures are missing. Under the first missing one you read: &quot;Banner of the Falcon Order&quot;" />
 		<attribute key="weight" value="500"/>

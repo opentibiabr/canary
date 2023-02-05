@@ -244,15 +244,15 @@ Item* Item::clone() const
 
 bool Item::equals(const Item* compareItem) const
 {
-	if (!compareItem || id != compareItem->id) {
+	if (!compareItem) {
 		return false;
 	}
 
-	if (getAttributeBits() != compareItem->getAttributeBits()) {
+	if (id != compareItem->id) {
 		return false;
 	}
 
-	for (const auto& attribute : getAttributeVector()) {
+	for (const auto& attribute : initAttributePtr()->getAttributeVector()) {
 		for (const auto& compareAttribute : compareItem->getAttributeVector()) {
 			if (attribute.getAttributeType() != compareAttribute.getAttributeType()) {
 				continue;

@@ -10,6 +10,7 @@
     "protobuf",
     "parallel-hashmap",
     "magic-enum",
+    "zlib",
     {"name": "mio", "version>=": "2019-02-10"},
     {
       "name": "luajit",

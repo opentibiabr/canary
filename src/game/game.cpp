@@ -4908,7 +4908,7 @@ void Game::playerToggleMount(uint32_t playerId, bool mount)
 	player->toggleMount(mount);
 }
 
-void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit)
+void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMountRandomized/* = 0*/)
 {
 	if (!g_configManager().getBoolean(ALLOW_CHANGEOUTFIT)) {
 		return;
@@ -4917,6 +4917,13 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit)
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
+	}
+
+	player->setRandomMount(isMountRandomized);
+
+	if (isMountRandomized && outfit.lookMount != 0 && player->hasAnyMount()) {
+		auto randomMount = mounts.getMountByID(player->getRandomMountId());
+		outfit.lookMount = randomMount->clientId;
 	}
 
 	const Outfit* playerOutfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
@@ -4934,17 +4941,23 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit)
 			return;
 		}
 
+		const Tile* playerTile = player->getTile();
+		if (!playerTile) {
+			return;
+		}
+
+		if (playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+			outfit.lookMount = 0;
+		}
+
 		if (player->isMounted()) {
 			Mount* prevMount = mounts.getMountByID(player->getCurrentMount());
 			if (prevMount) {
 				changeSpeed(player, mount->speed - prevMount->speed);
 			}
-
-			player->setCurrentMount(mount->id);
-		} else {
-			player->setCurrentMount(mount->id);
-			outfit.lookMount = 0;
 		}
+
+		player->setCurrentMount(mount->id);
 	} else if (player->isMounted()) {
 		player->dismount();
 	}

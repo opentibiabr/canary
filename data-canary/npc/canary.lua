@@ -155,7 +155,7 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "Yeah, good bye and don't come again!")
 -- Walkaway message
 npcHandler:setMessage(MESSAGE_WALKAWAY, "You not have education?")
 
-npcHandler:addModule(FocusModule:new())
+npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- Register npc
 npcType:register(npcConfig)

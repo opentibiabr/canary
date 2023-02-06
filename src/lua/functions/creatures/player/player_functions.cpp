@@ -662,7 +662,7 @@ int PlayerFunctions::luaPlayerRemoveReward(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetRewardList(lua_State* L) {
 	// player:getRewardList()
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
@@ -674,7 +674,7 @@ int PlayerFunctions::luaPlayerGetRewardList(lua_State* L) {
 
 	int index = 0;
 	for (const auto& rewardId : rewardVec) {
-		lua_pushnumber(L, rewardId);
+		lua_pushnumber(L, static_cast<lua_Number>(rewardId));
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;

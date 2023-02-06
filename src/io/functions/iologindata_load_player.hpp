@@ -19,7 +19,7 @@ public:
 	static void loadRewardItems(Player *player);
 private:
 	static void bindRewardBag(Player *player, ItemMap &itemMap);
-	static void insertItensIntoRewardBag(ItemMap &itemMap);
+	static void insertItemsIntoRewardBag(ItemMap &itemMap);
 };
 
 #endif  // SRC_IO_FUNCTIONS_IOLOGINDATALOAD_HPP_

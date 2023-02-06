@@ -272,7 +272,7 @@ bool Container::isHoldingItem(const Item* item) const
 bool Container::isHoldingItemWithId(const uint16_t id) const
 {
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		Item* item = *it;
+		const Item* item = *it;
 		if (item->getID() == id) {
 			return true;
 		}

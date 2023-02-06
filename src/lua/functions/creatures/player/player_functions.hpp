@@ -571,6 +571,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetForgeCores(lua_State* L);
   	static int luaPlayerIsUIExhausted(lua_State* L);
     static int luaPlayerUpdateUIExhausted(lua_State* L);
+
 		friend class CreatureFunctions;
 };
 

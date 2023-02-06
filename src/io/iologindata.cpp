@@ -548,7 +548,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     }
   }
 
-  loadRewardItems(player, result);
+  IOLoginDataLoad::loadRewardItems(player);
 
   //load inbox items
   itemMap.clear();
@@ -691,58 +691,6 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->updateInventoryWeight();
   player->updateItemsLight(true);
   return true;
-}
-
-void IOLoginData::loadRewardItems(Player *player, DBResult_ptr &result) {
-	Database &db = Database::getInstance();
-	ItemMap itemMap;
-	std::ostringstream query;
-	query.str(std::string());
-	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_rewards` WHERE `player_id` = "
-		  << player->getGUID() << " ORDER BY `pid`, `sid` ASC";
-	if ((result = db.storeQuery(query.str()))) {
-		loadItems(itemMap, result);
-		loadRewardBag(player, itemMap);
-		insertItensIntoRewardBag(itemMap);
-	}
-}
-
-void IOLoginData::insertItensIntoRewardBag(IOLoginData::ItemMap &itemMap) {
-	for (const auto &it: std::views::reverse(itemMap)) {
-		const std::pair<Item *, int32_t> &pair = it.second;
-		Item *item = pair.first;
-		int32_t pid = pair.second;
-		if (pid == 0) {
-			break;
-		}
-
-		ItemMap::const_iterator it2 = itemMap.find(pid);
-		if (it2 == itemMap.end()) {
-			continue;
-		}
-
-		Container *container = it2->second.first->getContainer();
-		if (container) {
-			container->internalAddThing(item);
-		}
-	}
-}
-
-void IOLoginData::loadRewardBag(Player *player, IOLoginData::ItemMap &itemMap) {
-	for (auto &it: itemMap) {
-		const std::pair<Item *, int32_t> &pair = it.second;
-		Item *item = pair.first;
-		int32_t pid = pair.second;
-		if (pid == 0) {
-			Reward *reward = player->getReward(item->getIntAttr(ITEM_ATTRIBUTE_DATE), true);
-			if (reward) {
-				it.second = std::pair<Item *, int32_t>(reward->getItem(),
-													   player->getRewardChest()->getID());
-			}
-		} else {
-			break;
-		}
-	}
 }
 
 bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList, DBInsert& query_insert, PropWriteStream& propWriteStream)

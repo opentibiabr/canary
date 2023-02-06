@@ -36,7 +36,7 @@ void IOLoginDataLoad::loadRewardItems(Player *player) {
 	if (auto result = Database::getInstance().storeQuery(query.str())) {
 		loadItems(itemMap, result);
 		bindRewardBag(player, itemMap);
-		insertItensIntoRewardBag(itemMap);
+		insertItemsIntoRewardBag(itemMap);
 	}
 }
 
@@ -57,7 +57,7 @@ void IOLoginDataLoad::bindRewardBag(Player *player, IOLoginData::ItemMap &itemMa
 	}
 }
 
-void IOLoginDataLoad::insertItensIntoRewardBag(IOLoginData::ItemMap &itemMap) {
+void IOLoginDataLoad::insertItemsIntoRewardBag(IOLoginData::ItemMap &itemMap) {
 	for (const auto &it: std::views::reverse(itemMap)) {
 		const std::pair<Item *, int32_t> &pair = it.second;
 		Item *item = pair.first;

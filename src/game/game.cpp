@@ -3469,7 +3469,7 @@ Item* Game::wrapItem(Item *item) {
 	uint16_t oldItemID = item->getID();
 	Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
 	newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
-	item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + itemName + ">.");
+	item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + item->getName() + ">.");
 	if (hiddenCharges > 0) {
 		item->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
 	}

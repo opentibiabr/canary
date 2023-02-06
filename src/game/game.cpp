@@ -3462,16 +3462,15 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 }
 
 Item* Game::wrapItem(Item *item) {
-	uint16_t hiddenCharges = 0;
-	if (isCaskItem(item->getID())) {
-		hiddenCharges = item->getSubType();
-	}
 	uint16_t oldItemID = item->getID();
 	Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
 	newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
 	item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + item->getName() + ">.");
-	if (hiddenCharges > 0) {
-		item->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
+	if (isCaskItem(item->getID())) {
+		auto hiddenCharges = item->getSubType();
+		if(hiddenCharges > 0) {
+			item->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
+		}
 	}
 	newItem->startDecaying();
 	return newItem;

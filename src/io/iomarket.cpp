@@ -128,7 +128,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 
 		const uint32_t playerId = result->getNumber<uint32_t>("player_id");
 		const uint16_t amount = result->getNumber<uint16_t>("amount");
-		const auto tier = getTierFromDatabaseTable(result->getString("tier"));
+		auto tier = getTierFromDatabaseTable(result->getString("tier"));
 		if (result->getNumber<uint16_t>("sale") == 1) {
 			const ItemType& itemType = Item::items[result->getNumber<uint16_t>("itemtype")];
 			if (itemType.id == 0) {
@@ -157,7 +157,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 					}
 
 					if (tier != 0) {
-						item->setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
+						item->setAttribute(ItemAttribute_t::TIER, tier);
 					}
 
 					tmpAmount -= stackCount;
@@ -178,7 +178,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 					}
 
 					if (tier != 0) {
-						item->setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
+						item->setAttribute(ItemAttribute_t::TIER, tier);
 					}
 				}
 			}
@@ -330,7 +330,7 @@ void IOMarket::updateStatistics()
 
 	do {
 		MarketStatistics* statistics = nullptr;
-		auto tier = getTierFromDatabaseTable(result->getString("tier"));
+		const auto tier = getTierFromDatabaseTable(result->getString("tier"));
 		auto itemId = result->getNumber<uint16_t>("itemtype");
 		if (result->getNumber<uint16_t>("sale") == MARKETACTION_BUY) {
 			statistics = &purchaseStatistics[itemId][tier];

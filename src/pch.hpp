@@ -26,7 +26,9 @@
 #include <regex>
 #include <set>
 #include <queue>
+#include <variant>
 #include <vector>
+#include <variant>
 
 #include <asio.hpp>
 #include <curl/curl.h>

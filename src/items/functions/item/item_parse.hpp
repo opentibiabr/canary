@@ -7,8 +7,8 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#ifndef SRC_ITEMS_FUNCTIONS_ITEM_PARSE_HPP_
-#define SRC_ITEMS_FUNCTIONS_ITEM_PARSE_HPP_
+#ifndef SRC_ITEMS_FUNCTIONS_ITEM_ITEM_PARSE_HPP_
+#define SRC_ITEMS_FUNCTIONS_ITEM_ITEM_PARSE_HPP_
 
 #include "creatures/combat/condition.h"
 #include "declarations.hpp"
@@ -223,7 +223,7 @@ const phmap::flat_hash_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
 class ItemParse : public Items
 {
 	public:
-	static void initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute keyAttribute, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType);
 
 	protected:
 	static void parseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
@@ -280,7 +280,7 @@ class ItemParse : public Items
 
 	private:
 	// Parent of the function: static void parseField
-	static std::tuple<ConditionId_t, ConditionType_t, std::string, pugi::xml_attribute> parseFieldConditions(ConditionId_t conditionId, ConditionType_t conditionType, std::string lowerStringValue, pugi::xml_attribute valueAttribute);
+	static std::tuple<ConditionId_t, ConditionType_t> parseFieldConditions(std::string lowerStringValue, pugi::xml_attribute valueAttribute);
 	static CombatType_t parseFieldCombatType(std::string string, pugi::xml_attribute valueAttribute);
 	static void parseFieldCombatDamage(ConditionDamage *conditionDamage, std::string stringValue, pugi::xml_node attributeNode);
 };

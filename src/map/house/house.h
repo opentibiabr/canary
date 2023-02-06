@@ -63,10 +63,10 @@ class Door final : public Item
 		void serializeAttr(PropWriteStream&) const override {}
 
 		void setDoorId(uint32_t doorId) {
-			setIntAttr(ITEM_ATTRIBUTE_DOORID, doorId);
+			setAttribute(ItemAttribute_t::DOORID, doorId);
 		}
 		uint32_t getDoorId() const {
-			return getIntAttr(ITEM_ATTRIBUTE_DOORID);
+			return getAttribute<uint32_t>(ItemAttribute_t::DOORID);
 		}
 
 		bool canUse(const Player* player);

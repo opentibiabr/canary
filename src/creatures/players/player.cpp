@@ -693,19 +693,15 @@ void Player::closeContainer(uint8_t cid)
 
 }
 
-void Player::removeEmptyRewards()
-{
-	auto container = rewardMap.begin();
-	while ( container != rewardMap.end()) {
-		if (container->second->empty()) {
-			auto &toRemove = container->second;
-			container = rewardMap.erase(container);
-			getRewardChest()->removeThing(toRemove, 1);
-			delete toRemove;
-		} else {
-			container++;
+void Player::removeEmptyRewards() {
+	erase_if(rewardMap, [this](auto const &rewardBag) {
+		auto [id, reward] = rewardBag;
+		if(reward->empty()){
+			this->getRewardChest()->removeThing(reward.get(), 1);
+			return true;
 		}
-	}
+		return false;
+	});
 }
 
 bool Player::hasAnykindOfRewardContainerOpen() const {
@@ -1105,7 +1101,7 @@ RewardChest* Player::getRewardChest()
 	return rewardChest;
 }
 
-Reward* Player::getReward(uint64_t rewardId, bool autoCreate)
+const std::shared_ptr<Reward>& Player::getReward(const uint64_t rewardId, const bool autoCreate)
 {
 	auto it = rewardMap.find(rewardId);
 	if (it != rewardMap.end()) {
@@ -1113,15 +1109,15 @@ Reward* Player::getReward(uint64_t rewardId, bool autoCreate)
 	}
 
 	if (!autoCreate) {
-		return nullptr;
+		return {};
 	}
 
-	Reward* reward = new Reward();
+	const auto reward = std::make_shared<Reward>();
 	reward->incrementReferenceCounter();
 	reward->setIntAttr(ITEM_ATTRIBUTE_DATE, rewardId);
 	rewardMap[rewardId] = reward;
 
-	g_game().internalAddItem(getRewardChest(), reward, INDEX_WHEREEVER, FLAG_NOLIMIT);
+	g_game().internalAddItem(getRewardChest(), reward.get(), INDEX_WHEREEVER, FLAG_NOLIMIT);
 
 	return reward;
 }

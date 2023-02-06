@@ -41,12 +41,12 @@ void IOLoginDataLoad::loadRewardItems(Player *player) {
 }
 
 void IOLoginDataLoad::bindRewardBag(Player *player, IOLoginData::ItemMap &itemMap) {
-	for (auto &it: itemMap) {
-		const auto [item, pid] = it.second;
+	for (auto &[id, itemPair]: itemMap) {
+		const auto [item, pid] = itemPair;
 		if (pid == 0) {
-			Reward *reward = player->getReward(item->getIntAttr(ITEM_ATTRIBUTE_DATE), true);
+			auto reward = player->getReward(item->getIntAttr(ITEM_ATTRIBUTE_DATE), true);
 			if (reward) {
-				it.second = std::pair<Item *, int32_t>(reward->getItem(), player->getRewardChest()->getID());
+				itemPair = std::pair<Item *, int32_t>(reward->getItem(), player->getRewardChest()->getID());
 			}
 		} else {
 			break;

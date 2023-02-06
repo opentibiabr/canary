@@ -62,7 +62,7 @@ bool IOLoginDataSave::saveRewardItems(Player *player) {
 			auto rewardTime = std::chrono::system_clock::time_point(std::chrono::seconds((rewardId / 1000)));
 			auto timeDiff = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - rewardTime);
 			if (!reward->empty() && (timeDiff.count() <= 60 * 60 * 24 * 7)) {
-				itemList.emplace_back(0, reward);
+				itemList.emplace_back(0, reward.get());
 			}
 		}
 

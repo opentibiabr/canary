@@ -257,11 +257,10 @@ function parseTransferCoins(playerId, msg)
 	end
 
 	if player:isUIExhausted(2000) then
-        return addPlayerEvent(sendStoreError, 250, playerId, GameStore.StoreErrors.STORE_ERROR_TRANSFER, "You are exhausted.")
-    end
- 	
+		return addPlayerEvent(sendStoreError, 250, playerId, GameStore.StoreErrors.STORE_ERROR_TRANSFER, "You are exhausted.")
+	end
+
 	player:updateUIExhausted()
-	
 	local reciver = msg:getString()
 	local amount = msg:getU32()
 

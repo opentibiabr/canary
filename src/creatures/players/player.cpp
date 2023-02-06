@@ -2706,7 +2706,7 @@ bool Player::spawn()
 	}
 
 	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, position);
+	g_game().map.getSpectators(spectators, position, true);
 	for (Creature* spectator : spectators) {
 		if (!spectator) {
 			continue;

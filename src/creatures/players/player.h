@@ -141,7 +141,16 @@ class Player final : public Creature, public Cylinder
 		bool tameMount(uint8_t mountId);
 		bool untameMount(uint8_t mountId);
 		bool hasMount(const Mount* mount) const;
+		bool hasAnyMount() const;
+		uint8_t getRandomMountId() const;
 		void dismount();
+
+		uint8_t isRandomMounted() const {
+			return randomMount;
+		}
+		void setRandomMount(uint8_t isMountRandomized) {
+			randomMount = isMountRandomized;
+		}
 
 		void sendFYIBox(const std::string& message) {
 			if (client) {
@@ -2385,6 +2394,7 @@ class Player final : public Creature, public Cylinder
 		int32_t idleTime = 0;
 		uint32_t coinBalance = 0;
 		uint16_t expBoostStamina = 0;
+		uint8_t randomMount = 0;
 
 		uint16_t lastStatsTrainingTime = 0;
 		uint16_t staminaMinutes = 2520;

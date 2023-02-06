@@ -5256,6 +5256,33 @@ void Player::setCurrentMount(uint8_t mount)
 	addStorageValue(PSTRG_MOUNTS_CURRENTMOUNT, mount);
 }
 
+bool Player::hasAnyMount() const
+{
+	for (const auto& mounts = g_game().mounts.getMounts();
+		const Mount& mount : mounts) {
+		if (hasMount(&mount)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+uint8_t Player::getRandomMountId() const
+{
+	std::vector<uint8_t> playerMounts;
+
+	for (const auto& mounts = g_game().mounts.getMounts();
+		const Mount& mount : mounts) {
+		if (hasMount(&mount)) {
+			playerMounts.push_back(mount.id);
+		}
+	}
+
+	auto playerMountsSize = static_cast<int32_t>(playerMounts.size() - 1);
+	auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerMountsSize));
+	return playerMounts.at(randomIndex);
+}
+
 bool Player::toggleMount(bool mount)
 {
 	if ((OTSYS_TIME() - lastToggleMount) < 3000 && !wasMounted) {
@@ -5284,6 +5311,10 @@ bool Player::toggleMount(bool mount)
 			return false;
 		}
 
+		if (isRandomMounted()) {
+			currentMountId = getRandomMountId();
+		}
+
 		const Mount* currentMount = g_game().mounts.getMountByID(currentMountId);
 		if (!currentMount) {
 			return false;
@@ -5306,6 +5337,7 @@ bool Player::toggleMount(bool mount)
 		}
 
 		defaultOutfit.lookMount = currentMount->clientId;
+		setCurrentMount(currentMount->id);
 
 		if (currentMount->speed != 0) {
 			g_game().changeSpeed(this, currentMount->speed);

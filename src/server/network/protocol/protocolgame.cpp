@@ -1224,7 +1224,8 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg)
 			newOutfit.lookMountLegs = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookFamiliarsType = msg.get<uint16_t>();
-			g_game().playerChangeOutfit(player->getID(), newOutfit);
+			uint8_t isMountRandomized = msg.getByte();
+			g_game().playerChangeOutfit(player->getID(), newOutfit, isMountRandomized);
 		}
 		else if (outfitType == 1)
 		{
@@ -5938,15 +5939,34 @@ void ProtocolGame::sendOutfitWindow()
 
 	for (const Outfit& outfit : outfits) {
 		uint8_t addons;
-		if (!player->getOutfitAddons(outfit, addons)) {
-			continue;
+		if (player->getOutfitAddons(outfit, addons)) {
+			msg.add<uint16_t>(outfit.lookType);
+			msg.addString(outfit.name);
+			msg.addByte(addons);
+			msg.addByte(0x00);
+			++outfitSize;
+		} else if (outfit.lookType == 1210 || outfit.lookType == 1211) {
+			msg.add<uint16_t>(outfit.lookType);
+			msg.addString(outfit.name);
+			msg.addByte(3);
+			msg.addByte(0x02);
+			++outfitSize;
+		} else if (outfit.lookType == 1456 || outfit.lookType == 1457) {
+			msg.add<uint16_t>(outfit.lookType);
+			msg.addString(outfit.name);
+			msg.addByte(3);
+			msg.addByte(0x03);
+			++outfitSize;
+		} else if (outfit.from == "store") {
+			msg.add<uint16_t>(outfit.lookType);
+			msg.addString(outfit.name);
+			msg.addByte(outfit.lookType >= 962 && outfit.lookType <= 975 ? 0 : 3);
+			msg.addByte(0x01);
+			msg.add<uint32_t>(0x00);
+			++outfitSize;
 		}
 
-		msg.add<uint16_t>(outfit.lookType);
-		msg.addString(outfit.name);
-		msg.addByte(addons);
-		msg.addByte(0x00);
-		if (++outfitSize == limitOutfits) {
+		if (outfitSize == limitOutfits) {
 			break;
 		}
 	}
@@ -5967,9 +5987,17 @@ void ProtocolGame::sendOutfitWindow()
 			msg.add<uint16_t>(mount.clientId);
 			msg.addString(mount.name);
 			msg.addByte(0x00);
-			if (++mountSize == limitMounts) {
-				break;
-			}
+			++mountSize;
+		} else if (mount.type == "store") {
+			msg.add<uint16_t>(mount.clientId);
+			msg.addString(mount.name);
+			msg.addByte(0x01);
+			msg.add<uint32_t>(0x00);
+			++mountSize;
+		}
+
+		if (mountSize == limitMounts) {
+			break;
 		}
 	}
 
@@ -6006,8 +6034,8 @@ void ProtocolGame::sendOutfitWindow()
 	msg.addByte(0x00); //Try outfit
 	msg.addByte(mounted ? 0x01 : 0x00);
 
-	// Version 12.81 - Random outfit 'bool'
-	msg.addByte(0);
+	// Version 12.81 - Random mount 'bool'
+	msg.addByte(player->isRandomMounted() ? 0x01 : 0x00);
 
 	writeToOutputBuffer(msg);
 }

@@ -105,7 +105,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
   player->setGUID(result->getNumber<uint32_t>("id"));
   Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
   if (!group) {
-    SPDLOG_ERROR("Player {} has group id {} whitch doesn't exist", player->name,
+    SPDLOG_ERROR("Player {} has group id {} which doesn't exist", player->name,
 			result->getNumber<uint16_t>("group_id"));
     return false;
   }
@@ -164,7 +164,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
   Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
   if (!group) {
-    SPDLOG_ERROR("Player {} has group id {} whitch doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
+    SPDLOG_ERROR("Player {} has group id {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
     return false;
   }
   player->setGroup(group);
@@ -216,7 +216,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   }
 
   if (!player->setVocation(result->getNumber<uint16_t>("vocation"))) {
-    SPDLOG_ERROR("Player {} has vocation id {} whitch doesn't exist",
+    SPDLOG_ERROR("Player {} has vocation id {} which doesn't exist",
 			player->name, result->getNumber<uint16_t>("vocation"));
     return false;
   }
@@ -282,6 +282,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->addTaskHuntingPoints(result->getNumber<uint64_t>("task_points"));
   player->addForgeDusts(result->getNumber<uint64_t>("forge_dusts"));
   player->addForgeDustLevel(result->getNumber<uint64_t>("forge_dust_level"));
+  player->setRandomMount(result->getNumber<uint16_t>("randomize_mount"));
 
   player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
   player->lastLogout = result->getNumber<time_t>("lastlogout");
@@ -292,7 +293,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
   Town* town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
   if (!town) {
-    SPDLOG_ERROR("Player {} has town id {} whitch doesn't exist", player->name,
+    SPDLOG_ERROR("Player {} has town id {} which doesn't exist", player->name,
 			result->getNumber<uint16_t>("town_id"));
     return false;
   }
@@ -891,6 +892,7 @@ bool IOLoginData::savePlayer(Player* player)
   query << "`task_points` = " << player->getTaskHuntingPoints() << ',';
   query << "`forge_dusts` = " << player->getForgeDusts() << ',';
   query << "`forge_dust_level` = " << player->getForgeDustLevel() << ',';
+  query << "`randomize_mount` = " << static_cast<uint16_t>(player->isRandomMounted()) << ',';
 
   query << "`cap` = " << (player->capacity / 100) << ',';
   query << "`sex` = " << static_cast<uint16_t>(player->sex) << ',';

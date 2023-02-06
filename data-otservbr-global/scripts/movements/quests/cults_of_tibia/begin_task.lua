@@ -26,11 +26,11 @@ function beginTask.onEquip(player, item, slot, isCheck)
 
 	if player:getStorageValue(Storage.CultsOfTibia.Misguided.Mission) >= 2 and
 	player:getStorageValue(Storage.CultsOfTibia.Misguided.Mission) <= 3 then
-		local equippedBefore = item:getSpecialAttribute("task") or 0
+		local equippedBefore = item:getCustomAttribute("task") or 0
 		if equippedBefore ~= player:getGuid() and
 		player:getStorageValue(Storage.CultsOfTibia.Misguided.Monsters) < 10 then
 			player:setStorageValue(Storage.CultsOfTibia.Misguided.Monsters, 0)
-			item:setSpecialAttribute("task", player:getGuid())
+			item:setCustomAttribute("task", player:getGuid())
 		end
 		if player:getStorageValue(Storage.CultsOfTibia.Misguided.Mission) == 2 then
 			player:setStorageValue(Storage.CultsOfTibia.Misguided.Mission, 3)

@@ -32,14 +32,14 @@ function taskTeleport.onStepIn(creature, item, position, fromPosition)
 		local teleport = Tile(position):getItemById(index)
 		if teleport then
 			local storage = (player:getStorageValue(value.storage) < 0 and 0 or player:getStorageValue(value.storage))
-			local attribute = teleport:getSpecialAttribute("task") or ''
+			local attribute = teleport:getCustomAttribute("task") or ''
 			if attribute:find(player:getName()) or storage >= value.max then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
 				"The power of these souls is now within you. You cannot absorb any more souls.")
 				return false
 			end
 			attribute = string.format("%s, %s", attribute, player:getName())
-			teleport:setSpecialAttribute("task", attribute)
+			teleport:setCustomAttribute("task", attribute)
 			player:setStorageValue(value.storage, storage + 1)
 			player:getPosition():sendMagicEffect(value.effect)
 			teleport:remove()

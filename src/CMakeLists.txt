@@ -212,7 +212,9 @@ PRIVATE
 	items/decay/decay.cpp
 	items/item.cpp
 	items/items.cpp
-	items/functions/item_parse.cpp
+	items/functions/item/attribute.cpp
+	items/functions/item/custom_attribute.cpp
+	items/functions/item/item_parse.cpp
 	items/thing.cpp
 	items/tile.cpp
 	items/trashholder.cpp

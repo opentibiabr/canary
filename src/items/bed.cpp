@@ -31,7 +31,7 @@ Attr_ReadValue BedItem::readAttr(AttrTypes_t attr, PropStream& propStream)
 			if (guid != 0) {
 				std::string name = IOLoginData::getNameByGuid(guid);
 				if (!name.empty()) {
-					setSpecialDescription(name + " is sleeping there.");
+					setAttribute(ItemAttribute_t::DESCRIPTION, name + " is sleeping there.");
 					g_game().setBedSleeper(this, guid);
 					sleeperGUID = guid;
 				}
@@ -253,12 +253,12 @@ void BedItem::internalSetSleeper(const Player* player)
 
 	sleeperGUID = player->getGUID();
 	sleepStart = time(nullptr);
-	setSpecialDescription(desc_str);
+	setAttribute(ItemAttribute_t::DESCRIPTION, desc_str);
 }
 
 void BedItem::internalRemoveSleeper()
 {
 	sleeperGUID = 0;
 	sleepStart = 0;
-	setSpecialDescription("Nobody is sleeping there.");
+	setAttribute(ItemAttribute_t::DESCRIPTION, "Nobody is sleeping there.");
 }

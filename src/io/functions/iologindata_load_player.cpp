@@ -26,3 +26,54 @@ void IOLoginDataLoad::loadPlayerForgeHistory(Player *player, DBResult_ptr result
 		} while (result->next());
 	}
 }
+
+void IOLoginDataLoad::loadRewardItems(Player *player) {
+	ItemMap itemMap;
+	std::ostringstream query;
+	query.str(std::string());
+	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_rewards` WHERE `player_id` = "
+		  << player->getGUID() << " ORDER BY `pid`, `sid` ASC";
+	if (auto result = Database::getInstance().storeQuery(query.str())) {
+		loadItems(itemMap, result);
+		bindRewardBag(player, itemMap);
+		insertItensIntoRewardBag(itemMap);
+	}
+}
+
+void IOLoginDataLoad::bindRewardBag(Player *player, IOLoginData::ItemMap &itemMap) {
+	for (auto &it: itemMap) {
+		const std::pair<Item *, int32_t> &pair = it.second;
+		Item *item = pair.first;
+		int32_t pid = pair.second;
+		if (pid == 0) {
+			Reward *reward = player->getReward(item->getIntAttr(ITEM_ATTRIBUTE_DATE), true);
+			if (reward) {
+				it.second = std::pair<Item *, int32_t>(reward->getItem(),
+													   player->getRewardChest()->getID());
+			}
+		} else {
+			break;
+		}
+	}
+}
+
+void IOLoginDataLoad::insertItensIntoRewardBag(IOLoginData::ItemMap &itemMap) {
+	for (const auto &it: std::views::reverse(itemMap)) {
+		const std::pair<Item *, int32_t> &pair = it.second;
+		Item *item = pair.first;
+		int32_t pid = pair.second;
+		if (pid == 0) {
+			break;
+		}
+
+		ItemMap::const_iterator it2 = itemMap.find(pid);
+		if (it2 == itemMap.end()) {
+			continue;
+		}
+
+		Container *container = it2->second.first->getContainer();
+		if (container) {
+			container->internalAddThing(item);
+		}
+	}
+}

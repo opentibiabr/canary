@@ -657,7 +657,7 @@ class Player final : public Creature, public Cylinder
 		void addConditionSuppressions(uint32_t conditions);
 		void removeConditionSuppressions(uint32_t conditions);
 
-		std::shared_ptr<Reward> getReward(const uint64_t rewardId, const bool autoCreate);
+		const std::shared_ptr<Reward>& getReward(const uint64_t rewardId, const bool autoCreate);
 		void removeReward(uint64_t rewardId);
 		void getRewardList(std::vector<uint64_t>& rewards) const;
 		RewardChest* getRewardChest();

@@ -1105,7 +1105,8 @@ const std::shared_ptr<Reward>& Player::getReward(const uint64_t rewardId, const 
 		return it->second;
 	}
 	if (!autoCreate) {
-		return std::shared_ptr<Reward>();
+		static std::shared_ptr<Reward> emptyReward;
+		return emptyReward;
 	}
 
 	const auto reward = std::make_shared<Reward>();

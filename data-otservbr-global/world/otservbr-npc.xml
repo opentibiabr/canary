@@ -780,8 +780,11 @@
 	<npc centerx="32034" centery="32273" centerz="6" radius="1">
 		<npc name="Santiago" x="0" y="0" z="6" spawntime="60" />
 	</npc>
-	<npc centerx="32201" centery="32292" centerz="6" radius="1">
+	<npc centerx="32204" centery="32292" centerz="6" radius="1">
 		<npc name="Jorge" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="32197" centery="32292" centerz="6" radius="1">
+		<npc name="Emael" x="0" y="0" z="6" spawntime="60" />
 	</npc>
 	<npc centerx="32210" centery="32296" centerz="6" radius="1">
 		<npc name="Charos" x="0" y="0" z="6" spawntime="60" />

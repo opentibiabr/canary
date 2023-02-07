@@ -191,6 +191,7 @@ PRIVATE
 	game/scheduling/tasks.cpp
 	io/fileloader.cpp
 	io/iobestiary.cpp
+	io/io_bosstiary.cpp
 	io/ioguild.cpp
 	io/iologindata.cpp
 	io/functions/iologindata_load_player.cpp

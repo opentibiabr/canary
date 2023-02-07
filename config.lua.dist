@@ -105,6 +105,11 @@ forgeFiendishLimit = 3
 forgeFiendishIntervalType = "hour"
 forgeFiendishIntervalTime = "1"
 
+-- Bosstiary system
+boostedBossSlot = true
+boostedBossLootBonus = 250
+boostedBossKillBonus = 3
+
 -- NOTE: Access only for Premium Account
 onlyPremiumAccount = false
 

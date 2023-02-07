@@ -16,6 +16,7 @@ class IOLoginDataLoad : public IOLoginData
 {
 public:
 	static void loadPlayerForgeHistory(Player *player, DBResult_ptr result);
+	static void loadPlayerBosstiary(Player *player, DBResult_ptr result);
 };
 
 #endif  // SRC_IO_FUNCTIONS_IOLOGINDATALOAD_HPP_

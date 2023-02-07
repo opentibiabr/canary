@@ -1018,10 +1018,10 @@ std::vector<std::pair<std::string, std::string>>
 	if (item) {
 		const std::string& specialDescription = item->getAttribute<std::string>(ItemAttribute_t::DESCRIPTION);
 		if (!specialDescription.empty()) {
-        descriptions.emplace_back("Description", specialDescription);
-    } else if (!it.description.empty()) {
-        descriptions.emplace_back("Description", it.description);
-    }
+			descriptions.emplace_back("Description", specialDescription);
+		} else if (!it.description.empty()) {
+			descriptions.emplace_back("Description", it.description);
+		}
 
 		if (it.showCharges) {
 			auto charges = item->getAttribute<int32_t>(ItemAttribute_t::CHARGES);
@@ -1036,10 +1036,10 @@ std::vector<std::pair<std::string, std::string>>
 				ss.str("");
 				ss << attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 				descriptions.emplace_back("Attack", ss.str());
-      } else {
+			} else {
 				descriptions.emplace_back("Attack", std::to_string(attack));
-      }
-     }
+			}
+		}
 
 		int32_t hitChance = item->getHitChance();
 		if (hitChance != 0) {
@@ -1052,9 +1052,9 @@ std::vector<std::pair<std::string, std::string>>
 				ss.str("");
 				ss << defense << ' ' << std::showpos << extraDefense << std::noshowpos;
 				descriptions.emplace_back("Defense", ss.str());
-      } else {
+			} else {
 				descriptions.emplace_back("Defense", std::to_string(defense));
-      }
+			}
 		}
 
 		int32_t armor = item->getArmor();

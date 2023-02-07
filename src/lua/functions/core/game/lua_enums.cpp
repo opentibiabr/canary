@@ -9,11 +9,12 @@
 
 #include "pch.hpp"
 
-#include "config/configmanager.h"
 
 #include "lua/functions/core/game/lua_enums.hpp"
 
 #include "creatures/players/account/account.hpp"
+#include "io/io_bosstiary.hpp"
+#include "config/configmanager.h"
 #include "creatures/creature.h"
 #include "lua/creature/creatureevent.h"
 #include "declarations.hpp"
@@ -74,6 +75,7 @@ void LuaEnums::init(lua_State* L) {
 	initCreaturesEventEnums(L);
 	initForgeEnums(L);
 	initWebhookEnums(L);
+	initBosstiaryEnums(L);
 }
 
 void LuaEnums::initOthersEnums(lua_State* L) {
@@ -1099,4 +1101,11 @@ void LuaEnums::initWebhookEnums(lua_State* L) {
 	registerEnum(L, WEBHOOK_COLOR_OFFLINE);
 	registerEnum(L, WEBHOOK_COLOR_WARNING);
 	registerEnum(L, WEBHOOK_COLOR_RAID);
+}
+
+// Webhook default colors
+void LuaEnums::initBosstiaryEnums(lua_State* L) {
+	for (auto value : magic_enum::enum_values<BosstiaryRarity_t>()) {
+		registerEnumClass(L, value);
+	}
 }

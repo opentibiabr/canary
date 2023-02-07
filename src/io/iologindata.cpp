@@ -283,6 +283,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->addForgeDusts(result->getNumber<uint64_t>("forge_dusts"));
   player->addForgeDustLevel(result->getNumber<uint64_t>("forge_dust_level"));
   player->setRandomMount(result->getNumber<uint16_t>("randomize_mount"));
+  player->addBossPoints(result->getNumber<uint32_t>("boss_points"));
 
   player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
   player->lastLogout = result->getNumber<time_t>("lastlogout");
@@ -688,6 +689,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   }
 
   IOLoginDataLoad::loadPlayerForgeHistory(player, result);
+  IOLoginDataLoad::loadPlayerBosstiary(player, result);
 
   // Load task hunting class
   if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
@@ -893,6 +895,7 @@ bool IOLoginData::savePlayer(Player* player)
   query << "`forge_dusts` = " << player->getForgeDusts() << ',';
   query << "`forge_dust_level` = " << player->getForgeDustLevel() << ',';
   query << "`randomize_mount` = " << static_cast<uint16_t>(player->isRandomMounted()) << ',';
+  query << "`boss_points` = " << player->getBossPoints() << ',';
 
   query << "`cap` = " << (player->capacity / 100) << ',';
   query << "`sex` = " << static_cast<uint16_t>(player->sex) << ',';
@@ -1265,6 +1268,7 @@ bool IOLoginData::savePlayer(Player* player)
   }
 
   IOLoginDataSave::savePlayerForgeHistory(player);
+  IOLoginDataSave::savePlayerBosstiary(player);
 
   query.str(std::string());
   query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();

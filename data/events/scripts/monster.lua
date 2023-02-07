@@ -1,3 +1,14 @@
+local function calculateBonus(bonus)
+	local bonusCount = math.floor(bonus/100)
+	local remainder = bonus % 100
+	if remainder > 0 then
+		local probability = math.random(0, 100)
+		bonusCount = bonusCount + (probability < remainder and 1 or 0)
+	end
+
+	return bonusCount
+end
+
 function Monster:onDropLoot(corpse)
 	if configManager.getNumber(configKeys.RATE_LOOT) == 0 then
 		return
@@ -48,9 +59,36 @@ function Monster:onDropLoot(corpse)
 				end
 			end
 
+
+			local isBoostedBoss = self:getName():lower() == (Game.getBoostedBoss()):lower()
+			local bossRaceIds = {player:getSlotBossId(1), player:getSlotBossId(2)}
+			local isBoss = table.contains(bossRaceIds, mType:bossRaceId()) or isBoostedBoss
+			if isBoss then
+				local bonus
+				if mType:bossRaceId() == player:getSlotBossId(1) then
+					bonus = player:getBossBonus(1)
+				elseif mType:bossRaceId() == player:getSlotBossId(2) then
+					bonus = player:getBossBonus(2)
+				else
+					bonus = configManager.getNumber(configKeys.BOOSTED_BOSS_LOOT_BONUS)
+				end
+
+				local bonusNumber = calculateBonus(bonus)
+				for _ = 1, bonusNumber, 1 do
+					for i, _ in pairs(monsterLoot) do
+						local item = corpse:createLootItem(monsterLoot[i], charmBonus)
+						if not item then
+							Spdlog.warn(string.format("[3][Monster:onDropLoot] - Could not add loot item to monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
+						end
+					end
+				end
+			end
+
 			local text = {}
 			if self:getName():lower() == (Game.getBoostedCreature()):lower() then
 				text = ("Loot of %s: %s (boosted loot)"):format(mType:getNameDescription(), corpse:getContentDescription())
+			elseif isBoostedBoss then
+				text = ("Loot of %s: %s (Boss bonus)"):format(mType:getNameDescription(), corpse:getContentDescription())
 			else
 				text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())
 			end

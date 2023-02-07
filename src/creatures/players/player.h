@@ -2192,6 +2192,61 @@ class Player final : public Creature, public Cylinder
 
 		std::map<uint16_t, Item*> getEquippedItemsWithEnabledAbilitiesBySlot() const;
 
+		void setBossPoints(uint32_t amount)
+		{
+			bossPoints = amount;
+		}
+		void addBossPoints(uint32_t amount)
+		{
+			bossPoints += amount;
+
+		}
+		void removeBossPoints(uint32_t amount)
+		{
+			bossPoints = std::max<uint32_t>(0, bossPoints - amount);
+		}
+		uint32_t getBossPoints() const
+		{
+			return bossPoints;
+		}
+
+		void setSlotBossId(uint8_t slotId, uint32_t bossId)
+		{
+			if (slotId == 1)
+				bossIdSlotOne = bossId;
+			else
+				bossIdSlotTwo = bossId;
+			if (client) {
+				client->parseSendBosstiarySlots();
+			}
+		}
+		uint32_t getSlotBossId(uint8_t slotId) const
+		{
+			if (slotId == 1)
+				return bossIdSlotOne;
+			else
+				return bossIdSlotTwo;
+		}
+
+		void addRemoveTime()
+		{
+			bossRemoveTimes = bossRemoveTimes + 1;
+		}
+		void setRemoveBossTime(uint8_t newRemoveTimes) {
+			bossRemoveTimes = newRemoveTimes;
+		}
+		uint8_t getRemoveTimes() const
+		{
+			return bossRemoveTimes;
+		}
+
+		void sendBossPodiumWindow(const Item* podium, const Position& position,
+                              uint16_t itemId, uint8_t stackpos) const {
+			if (client) {
+				client->sendBossPodiumWindow(podium, position, itemId, stackpos);
+			}
+		}
+
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
 
@@ -2325,6 +2380,10 @@ class Player final : public Creature, public Cylinder
 		uint64_t lastQuestlogUpdate = 0;
 		uint64_t preyCards = 0;
 		uint64_t taskHuntingPoints = 0;
+		uint32_t bossPoints = 0;
+		uint32_t bossIdSlotOne = 0;
+		uint32_t bossIdSlotTwo = 0;
+		uint8_t bossRemoveTimes = 1;
 		uint64_t forgeDusts = 0;
 		uint64_t forgeDustLevel = 0;
 		int64_t lastFailedFollow = 0;

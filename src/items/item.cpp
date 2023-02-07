@@ -1040,8 +1040,8 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 				ss << "attack +" << attack;
 				separator = true;
 			}
-			int32_t hitChance = item->getHitChance();
-			if (hitChance != 0)
+			if (int32_t hitChance = item->getHitChance();
+				hitChance != 0)
 			{
 				if (separator) {
 					ss << ", ";
@@ -1049,8 +1049,8 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 				ss << "chance to hit +" << static_cast<int16_t>(hitChance) << "%";
 				separator = true;
 			}
-			int32_t shootRange = item->getShootRange();
-			if (shootRange != 0)
+			if (int32_t shootRange = item->getShootRange();
+				shootRange != 0)
 			{
 				if (separator) {
 					ss << ", ";
@@ -1102,8 +1102,7 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 					ss << ", ";
 				}
 
-				ss << getCombatName(indexToCombatType(i)) << ' '
-					<< std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
+				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->fieldAbsorbPercent[i]);
 				protection = true;
 			}
 			if (protection) {
@@ -1207,9 +1206,9 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 		std::string slotName;
 		if (item->getImbuementSlot() > 0) {
 			for (size_t i = 0; i < item->getImbuementSlot(); ++i) {
-				slotName = "Imbuement Slot " + std::to_string(i + 1);
+				slotName = fmt::format("Imbuement Slot {}", i + 1);
 				ss.str("");
-				Item* castItem = const_cast<Item*>(item);
+				auto castItem = const_cast<Item*>(item);
 				if (!castItem)
 				{
 					continue;
@@ -1231,10 +1230,8 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 
 				auto minutes = imbuementInfo.duration / 60;
 				auto hours = minutes / 60;
-				ss << baseImbuement->name << " "
-					<< imbuementInfo.imbuement->getName() << " (" << imbuementInfo.imbuement->getDescription() << "), lasts "
-					<< std::setw(2) << std::setfill('0') << hours << ":"
-					<< std::setw(2) << std::setfill('0') << (minutes % 60) << "h while fighting.";
+				ss << fmt::format("{} {} ({}), lasts {:02}:{:02}h while fighting.",
+					baseImbuement->name, imbuementInfo.imbuement->getName(), imbuementInfo.imbuement->getDescription(), hours, minutes % 60);
 				isTradeable = false;
 				descriptions.emplace_back(slotName, ss.str());
 			}
@@ -1374,8 +1371,8 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 				ss << "attack +" << attack;
 				separator = true;
 			}
-			int32_t hitChance = it.hitChance;
-			if (hitChance != 0)
+			if (int32_t hitChance = it.hitChance;
+				hitChance != 0)
 			{
 				if (separator) {
 					ss << ", ";
@@ -1383,8 +1380,8 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 				ss << "chance to hit +" << static_cast<int16_t>(hitChance) << "%";
 				separator = true;
 			}
-			int32_t shootRange = it.shootRange;
-			if (shootRange != 0)
+			if (int32_t shootRange = it.shootRange;
+				shootRange != 0)
 			{
 				if (separator) {
 					ss << ", ";

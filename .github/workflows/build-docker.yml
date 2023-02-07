@@ -10,6 +10,7 @@ on:
 
 jobs:
   build_docker_x86:
+    if: github.event.pull_request.draft == 'false'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

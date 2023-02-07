@@ -14,6 +14,7 @@ env:
 
 jobs:
   job:
+    if: github.event.pull_request.draft == 'false'
     name: ${{ matrix.os }}-${{ matrix.buildtype }}
     runs-on: ${{ matrix.os }}
 

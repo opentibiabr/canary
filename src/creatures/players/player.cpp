@@ -1107,10 +1107,12 @@ const std::shared_ptr<Reward>& Player::getReward(const uint64_t rewardId, const 
 	if (!autoCreate) {
 		return {};
 	}
+
 	const auto reward = std::make_shared<Reward>();
 	reward->setAttribute(ItemAttribute_t::DATE, rewardId);
 	rewardMap[rewardId] = reward;
 	g_game().internalAddItem(getRewardChest(), reward.get(), INDEX_WHEREEVER, FLAG_NOLIMIT);
+
 	return reward;
 }
 

@@ -105,6 +105,7 @@ function Creature:setSummon(monster)
 	end
 
 	summon:setMaster(self, true)
+	summon:setTarget(self.attackedCreature)
 	return true
 end
 

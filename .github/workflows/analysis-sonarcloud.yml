@@ -16,7 +16,7 @@ env:
 
 jobs:
   sonarcloud:
-    if: github.event.pull_request.draft == 'false'
+    if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
     name: SonarCloud
     runs-on: ubuntu-22.04
 

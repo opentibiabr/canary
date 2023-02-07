@@ -1098,7 +1098,7 @@ RewardChest* Player::getRewardChest()
 	return rewardChest;
 }
 
-const std::shared_ptr<Reward>& Player::getReward(const uint64_t rewardId, const bool autoCreate)
+std::shared_ptr<Reward> Player::getReward(const uint64_t rewardId, const bool autoCreate)
 {
 	auto it = rewardMap.find(rewardId);
 	if (it != rewardMap.end()) {

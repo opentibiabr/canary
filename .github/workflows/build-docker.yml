@@ -9,6 +9,7 @@ on:
       - main
 
 jobs:
+  if: github.event.pull_request.draft == 'false'
   build_docker_x86:
     if: github.event.pull_request.draft == 'false'
     runs-on: ubuntu-latest

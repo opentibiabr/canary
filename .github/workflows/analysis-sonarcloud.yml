@@ -16,6 +16,7 @@ env:
 
 jobs:
   sonarcloud:
+    if: github.event.pull_request.draft == 'false'
     name: SonarCloud
     runs-on: ubuntu-22.04
 

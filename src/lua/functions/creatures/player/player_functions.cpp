@@ -1834,11 +1834,13 @@ int PlayerFunctions::luaPlayerAddMoney(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerRemoveMoney(lua_State* L) {
-	// player:removeMoney(money)
+	// player:removeMoney(money[, flags = 0[, useBank = true]])
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
 		uint64_t money = getNumber<uint64_t>(L, 2);
-		pushBoolean(L, g_game().removeMoney(player, money));
+		int32_t flags = getNumber<int32_t>(L, 3, 0);
+		bool useBank = getBoolean(L, 4, true);
+		pushBoolean(L, g_game().removeMoney(player, money, flags, useBank));
 	} else {
 		lua_pushnil(L);
 	}
@@ -1891,7 +1893,7 @@ int PlayerFunctions::luaPlayerShowTextDialog(lua_State* L) {
 	}
 
 	if (!text.empty()) {
-		item->setText(text);
+		item->setAttribute(ItemAttribute_t::TEXT, text);
 		length = std::max<int32_t>(text.size(), length);
 	}
 

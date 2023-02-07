@@ -146,6 +146,7 @@ find_package(spdlog REQUIRED)
 find_package(unofficial-libmariadb CONFIG REQUIRED)
 find_package(mio REQUIRED)
 find_package(Threads REQUIRED)
+find_package(ZLIB REQUIRED)
 
 include(GNUInstallDirs)
 
@@ -211,7 +212,9 @@ PRIVATE
 	items/decay/decay.cpp
 	items/item.cpp
 	items/items.cpp
-	items/functions/item_parse.cpp
+	items/functions/item/attribute.cpp
+	items/functions/item/custom_attribute.cpp
+	items/functions/item/item_parse.cpp
 	items/thing.cpp
 	items/tile.cpp
 	items/trashholder.cpp
@@ -347,6 +350,7 @@ if (MSVC)
 			spdlog::spdlog
 			unofficial::libmariadb
 			unofficial::mariadbclient
+			ZLIB::ZLIB
 	)
 
 else()
@@ -374,6 +378,7 @@ else()
 			spdlog::spdlog
 			unofficial::libmariadb
 			unofficial::mariadbclient
+			ZLIB::ZLIB
 
 			Threads::Threads
 	)

@@ -396,11 +396,11 @@ class Creature : virtual public Thing
 
 		/**
 		 * @brief Check if the summon can move/spawn and if the familiar can teleport to the master
-		 * 
+		 *
 		 * @param newPos New position to teleport
 		 * @param teleportSummon Can teleport normal summon? Default value is "false"
-		 * @return true 
-		 * @return false 
+		 * @return true
+		 * @return false
 		 */
 		void checkSummonMove(const Position& newPos, bool teleportSummon = false) const;
 		virtual void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
@@ -423,7 +423,7 @@ class Creature : virtual public Thing
 
 		/**
 		 * @brief Check if the "summons" list is empty
-		 * 
+		 *
 		 * @return true = not empty
 		 * @return false = empty
 		 */
@@ -433,7 +433,7 @@ class Creature : virtual public Thing
 			}
 			return false;
 		}
-		
+
 		void setDropLoot(bool newLootDrop) {
 			this->lootDrop = newLootDrop;
 		}
@@ -610,6 +610,11 @@ class Creature : virtual public Thing
 		friend class Game;
 		friend class Map;
 		friend class CreatureFunctions;
+
+	private:
+		bool canFollowMaster() const;
+		bool isLostSummon() const;
+		void handleLostSummon(bool teleportSummons);
 };
 
 #endif  // SRC_CREATURES_CREATURE_H_

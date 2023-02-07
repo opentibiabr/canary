@@ -1007,58 +1007,58 @@ CombatType_t indexToCombatType(size_t v)
 	return static_cast<CombatType_t>(1 << v);
 }
 
-ItemAttrTypes stringToItemAttribute(const std::string& str)
+ItemAttribute_t stringToItemAttribute(const std::string& str)
 {
 	if (str == "aid") {
-		return ITEM_ATTRIBUTE_ACTIONID;
+		return ItemAttribute_t::ACTIONID;
 	} else if (str == "uid") {
-		return ITEM_ATTRIBUTE_UNIQUEID;
+		return ItemAttribute_t::UNIQUEID;
 	} else if (str == "description") {
-		return ITEM_ATTRIBUTE_DESCRIPTION;
+		return ItemAttribute_t::DESCRIPTION;
 	} else if (str == "text") {
-		return ITEM_ATTRIBUTE_TEXT;
+		return ItemAttribute_t::TEXT;
 	} else if (str == "date") {
-		return ITEM_ATTRIBUTE_DATE;
+		return ItemAttribute_t::DATE;
 	} else if (str == "writer") {
-		return ITEM_ATTRIBUTE_WRITER;
+		return ItemAttribute_t::WRITER;
 	} else if (str == "name") {
-		return ITEM_ATTRIBUTE_NAME;
+		return ItemAttribute_t::NAME;
 	} else if (str == "article") {
-		return ITEM_ATTRIBUTE_ARTICLE;
+		return ItemAttribute_t::ARTICLE;
 	} else if (str == "pluralname") {
-		return ITEM_ATTRIBUTE_PLURALNAME;
+		return ItemAttribute_t::PLURALNAME;
 	} else if (str == "weight") {
-		return ITEM_ATTRIBUTE_WEIGHT;
+		return ItemAttribute_t::WEIGHT;
 	} else if (str == "attack") {
-		return ITEM_ATTRIBUTE_ATTACK;
+		return ItemAttribute_t::ATTACK;
 	} else if (str == "defense") {
-		return ITEM_ATTRIBUTE_DEFENSE;
+		return ItemAttribute_t::DEFENSE;
 	} else if (str == "extradefense") {
-		return ITEM_ATTRIBUTE_EXTRADEFENSE;
+		return ItemAttribute_t::EXTRADEFENSE;
 	} else if (str == "armor") {
-		return ITEM_ATTRIBUTE_ARMOR;
+		return ItemAttribute_t::ARMOR;
 	} else if (str == "hitchance") {
-		return ITEM_ATTRIBUTE_HITCHANCE;
+		return ItemAttribute_t::HITCHANCE;
 	} else if (str == "shootrange") {
-		return ITEM_ATTRIBUTE_SHOOTRANGE;
+		return ItemAttribute_t::SHOOTRANGE;
 	} else if (str == "owner") {
-		return ITEM_ATTRIBUTE_OWNER;
+		return ItemAttribute_t::OWNER;
 	} else if (str == "duration") {
-		return ITEM_ATTRIBUTE_DURATION;
+		return ItemAttribute_t::DURATION;
 	} else if (str == "decaystate") {
-		return ITEM_ATTRIBUTE_DECAYSTATE;
+		return ItemAttribute_t::DECAYSTATE;
 	} else if (str == "corpseowner") {
-		return ITEM_ATTRIBUTE_CORPSEOWNER;
+		return ItemAttribute_t::CORPSEOWNER;
 	} else if (str == "charges") {
-		return ITEM_ATTRIBUTE_CHARGES;
+		return ItemAttribute_t::CHARGES;
 	} else if (str == "fluidtype") {
-		return ITEM_ATTRIBUTE_FLUIDTYPE;
+		return ItemAttribute_t::FLUIDTYPE;
 	} else if (str == "doorid") {
-		return ITEM_ATTRIBUTE_DOORID;
+		return ItemAttribute_t::DOORID;
 	} else if (str == "timestamp") {
-		return ITEM_ATTRIBUTE_DURATION_TIMESTAMP;
+		return ItemAttribute_t::DURATION_TIMESTAMP;
 	}
-	return ITEM_ATTRIBUTE_NONE;
+	return ItemAttribute_t::NONE;
 }
 
 std::string getFirstLine(const std::string& str)

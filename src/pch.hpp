@@ -27,6 +27,7 @@
 #include <set>
 #include <queue>
 #include <vector>
+#include <variant>
 
 #include <asio.hpp>
 #include <curl/curl.h>

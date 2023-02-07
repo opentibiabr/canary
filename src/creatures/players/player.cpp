@@ -222,30 +222,42 @@ Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const
 		return nullptr;
 	}
 
-  if (!ignoreAmmo && (weaponType == WEAPON_DISTANCE || weaponType == WEAPON_MISSILE)) {
-    const ItemType& it = Item::items[item->getID()];
-    if (it.ammoType != AMMO_NONE) {
-      Item* quiver = inventory[CONST_SLOT_RIGHT];
-      if (!quiver || !quiver->isQuiver())
-        return nullptr;
-      Container* container = quiver->getContainer();
-      if (!container)
-        return nullptr;
-      bool found = false;
-      for (Item* ammoItem : container->getItemList()) {
-        if (ammoItem->getAmmoType() == it.ammoType) {
-          if (level >= Item::items[ammoItem->getID()].minReqLevel) {
-            item = ammoItem;
-            found = true;
-            break;
-          }
-        }
-      }
-      if (!found)
-        return nullptr;
-    }
-  }
+	if (!ignoreAmmo && (weaponType == WEAPON_DISTANCE || weaponType == WEAPON_MISSILE)) {
+		const ItemType& it = Item::items[item->getID()];
+		if (it.ammoType != AMMO_NONE) {
+			item = getQuiverAmmoOfType(it);
+		}
+	}
+
 	return item;
+}
+
+bool Player::hasQuiverEquipped() const {
+	Item* quiver = inventory[CONST_SLOT_RIGHT];
+	return quiver && quiver->isQuiver() && quiver->getContainer();
+}
+
+bool Player::hasWeaponDistanceEquipped() const{
+	const Item* item = inventory[CONST_SLOT_LEFT];
+	return item && item->getWeaponType() == WEAPON_DISTANCE;
+}
+
+Item* Player::getQuiverAmmoOfType(const ItemType &it) const {
+	if (!hasQuiverEquipped()) {
+		return nullptr;
+	}
+
+	Item* quiver = inventory[CONST_SLOT_RIGHT];
+	for (const Container *container = quiver->getContainer();
+		Item* ammoItem : container->getItemList())
+	{
+		if (ammoItem->getAmmoType() == it.ammoType) {
+			if (level >= Item::items[ammoItem->getID()].minReqLevel) {
+				return ammoItem;
+			}
+		}
+	}
+	return nullptr;
 }
 
 Item* Player::getWeapon(bool ignoreAmmo/* = false*/) const
@@ -475,6 +487,7 @@ void Player::updateInventoryImbuement()
 	for (auto item : getAllInventoryItems())
 	{
 		// Iterate through all imbuement slots on the item
+
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
 		{
 			ImbuementInfo imbuementInfo;
@@ -886,9 +899,9 @@ Container* Player::setLootContainer(ObjectCategory_t category, Container* contai
 
 		container->incrementReferenceCounter();
 		if (!loading) {
-			int64_t flags = container->getIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+			auto flags = container->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
 			auto sendAttribute = flags | 1 << category;
-			container->setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, sendAttribute);
+			container->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, sendAttribute);
 		}
 		return previousContainer;
 	} else {
@@ -896,12 +909,12 @@ Container* Player::setLootContainer(ObjectCategory_t category, Container* contai
 			it != quickLootContainers.end() && !loading)
 		{
 			previousContainer = (*it).second;
-			int64_t flags = previousContainer->getIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+			auto flags = previousContainer->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
 			flags &= ~(1 << category);
 			if (flags == 0) {
-				previousContainer->removeAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+				previousContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
 			} else {
-				previousContainer->setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, flags);
+				previousContainer->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, flags);
 			}
 
 			previousContainer->decrementReferenceCounter();
@@ -956,7 +969,7 @@ void Player::checkLootContainers(const Item* item)
 		if (remove) {
 			shouldSend = true;
 			it = quickLootContainers.erase(it);
-			lootContainer->removeAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+			lootContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
 			lootContainer->decrementReferenceCounter();
 		} else {
 			++it;
@@ -1076,7 +1089,7 @@ Reward* Player::getReward(uint32_t rewardId, bool autoCreate)
 
 	Reward* reward = new Reward();
 	reward->incrementReferenceCounter();
-	reward->setIntAttr(ITEM_ATTRIBUTE_DATE, rewardId);
+	reward->setAttribute(ItemAttribute_t::DATE, rewardId);
 	rewardMap[rewardId] = reward;
 
 	g_game().internalAddItem(getRewardChest(), reward, INDEX_WHEREEVER, FLAG_NOLIMIT);
@@ -1364,7 +1377,7 @@ void Player::sendMarketEnter(uint32_t depotId)
 	if (!client || this->getLastDepotId() == -1 || !depotId) {
 		return;
 	}
-	
+
 	client->sendMarketEnter(depotId);
 }
 
@@ -2395,10 +2408,9 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 			const ItemType& it = Item::items[item->getID()];
 			if (it.abilities) {
 				const int16_t& absorbPercent = it.abilities->absorbPercent[combatTypeToIndex(combatType)];
+				auto charges = item->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
 				if (absorbPercent != 0) {
 					damage -= std::round(damage * (absorbPercent / 100.));
-
-					uint16_t charges = item->getCharges();
 					if (charges != 0) {
 						g_game().transformItem(item, item->getID(), charges - 1);
 					}
@@ -2408,8 +2420,6 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 					const int16_t& fieldAbsorbPercent = it.abilities->fieldAbsorbPercent[combatTypeToIndex(combatType)];
 					if (fieldAbsorbPercent != 0) {
 						damage -= std::round(damage * (fieldAbsorbPercent / 100.));
-
-						uint16_t charges = item->getCharges();
 						if (charges != 0) {
 							g_game().transformItem(item, item->getID(), charges - 1);
 						}
@@ -2490,7 +2500,7 @@ void Player::death(Creature* lastHitCreature)
 			}
 		}
 		bool pvpDeath = false;
-		if(playerDmg > 0 || othersDmg > 0){
+		if (playerDmg > 0 || othersDmg > 0){
 			pvpDeath = (Player::lastHitIsPlayer(lastHitCreature) || playerDmg / (playerDmg + static_cast<double>(othersDmg)) >= 0.05);
 		}
 		if (pvpDeath && sumLevels > level) {
@@ -2697,7 +2707,7 @@ bool Player::spawn()
 	}
 
 	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, position, false, true);
+	g_game().map.getSpectators(spectators, position, true);
 	for (Creature* spectator : spectators) {
 		if (!spectator) {
 			continue;
@@ -2755,9 +2765,6 @@ void Player::despawn()
 		}
 
 		spectator->onRemoveCreature(this, false);
-		// Remove player from spectator target list
-		spectator->setAttackedCreature(nullptr);
-		spectator->setFollowCreature(nullptr);
 	}
 
 	tile->removeCreature(this);
@@ -2795,7 +2802,7 @@ Item* Player::getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature)
 			ss << "You recognize " << getNameDescription() << '.';
 		}
 
-		corpse->setSpecialDescription(ss.str());
+		corpse->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
 	}
 	return corpse;
 }
@@ -3564,7 +3571,7 @@ void Player::stashContainer(StashContainerList itemDict)
 	}
 
 	for (auto it : stashItems) {
-		if(!stashItemDict[it.first]) {
+		if (!stashItemDict[it.first]) {
 			stashItemDict[it.first] = it.second;
 		} else {
 			stashItemDict[it.first] += it.second;
@@ -3720,6 +3727,76 @@ std::vector<Item*> Player::getInventoryItemsFromId(uint16_t itemId, bool ignore 
 	return itemVector;
 }
 
+std::array<double_t, COMBAT_COUNT> Player::getFinalDamageReduction() const
+{
+	std::array<double_t, COMBAT_COUNT> combatReductionArray;
+	combatReductionArray.fill(0);
+	calculateDamageReductionFromEquipedItems(combatReductionArray);
+	for (int combatTypeIndex = 0; combatTypeIndex < COMBAT_COUNT; combatTypeIndex++) {
+		combatReductionArray[combatTypeIndex] = std::clamp<double_t>(
+			std::floor(combatReductionArray[combatTypeIndex]),
+			-100.,
+			100.
+		);
+	}
+	return combatReductionArray;
+}
+
+void Player::calculateDamageReductionFromEquipedItems(std::array<double_t, COMBAT_COUNT> &combatReductionArray) const
+{
+	for (uint8_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		Item *item = inventory[slot];
+		if (item) {
+			calculateDamageReductionFromItem(combatReductionArray, item);
+		}
+	}
+}
+
+void Player::calculateDamageReductionFromItem(std::array<double_t, COMBAT_COUNT> &combatReductionArray, Item *item) const
+{
+	for (uint16_t combatTypeIndex = 0; combatTypeIndex < COMBAT_COUNT; combatTypeIndex++) {
+		updateDamageReductionFromItemImbuement(combatReductionArray, item, combatTypeIndex);
+		updateDamageReductionFromItemAbility(combatReductionArray, item, combatTypeIndex);
+	}
+}
+
+void Player::updateDamageReductionFromItemImbuement(
+	std::array<double_t, COMBAT_COUNT> &combatReductionArray, Item *item, uint16_t combatTypeIndex
+) const
+{
+	for (uint8_t imbueSlotId = 0; imbueSlotId < item->getImbuementSlot(); imbueSlotId++) {
+		ImbuementInfo imbuementInfo;
+		if (item->getImbuementInfo(imbueSlotId, &imbuementInfo) && imbuementInfo.imbuement) {
+			int16_t imbuementAbsorption = imbuementInfo.imbuement->absorbPercent[combatTypeIndex];
+			if (imbuementAbsorption != 0) {
+				combatReductionArray[combatTypeIndex] = calculateDamageReduction(combatReductionArray[combatTypeIndex], imbuementAbsorption);
+			}
+		}
+	}
+}
+
+void Player::updateDamageReductionFromItemAbility(
+	std::array<double_t, COMBAT_COUNT> &combatReductionArray, const Item *item, uint16_t combatTypeIndex
+) const
+{
+	if (!item) {
+		return;
+	}
+
+	const ItemType &itemType = Item::items[item->getID()];
+	if (itemType.abilities) {
+		int16_t elementReduction = itemType.abilities->absorbPercent[combatTypeIndex];
+		if (elementReduction != 0) {
+			combatReductionArray[combatTypeIndex] = calculateDamageReduction(combatReductionArray[combatTypeIndex], elementReduction);
+		}
+	}
+}
+
+double_t Player::calculateDamageReduction(double_t currentTotal, int16_t resistance) const
+{
+	return (100 - currentTotal) / 100.0 * resistance + currentTotal;
+}
+
 std::vector<Item*> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/) const
 {
 	std::vector<Item*> itemVector;
@@ -3746,7 +3823,7 @@ std::vector<Item*> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/) 
 
 std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uint32_t>& countMap) const
 {
-	for (auto item : getAllInventoryItems()) {
+	for (const auto item : getAllInventoryItems()) {
 		countMap[static_cast<uint32_t>(item->getID())] += Item::countByType(item, -1);
 	}
 	return countMap;
@@ -3754,7 +3831,7 @@ std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uin
 
 std::map<uint16_t, uint16_t>& Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const
 {
-	for (auto item : getAllInventoryItems()) {
+	for (const auto item : getAllInventoryItems()) {
 		if (item->getTier() > 0) {
 			continue;
 		}
@@ -3769,10 +3846,10 @@ std::map<uint16_t, uint16_t>& Player::getAllSaleItemIdAndCount(std::map<uint16_t
 
 void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const
 {
-	for (auto item : getAllInventoryItems()) {
+	for (const auto item : getAllInventoryItems()) {
 		uint16_t itemId = item->getID();
 		if (Item::items[itemId].isFluidContainer()) {
-			countMap[static_cast<uint32_t>(itemId) | (static_cast<uint32_t>(item->getFluidType()) << 16)] += item->getItemCount();
+			countMap[static_cast<uint32_t>(itemId) | (item->getAttribute<uint32_t>(ItemAttribute_t::FLUIDTYPE)) << 16] += item->getItemCount();
 		} else {
 			countMap[static_cast<uint32_t>(itemId)] += item->getItemCount();
 		}
@@ -4057,6 +4134,8 @@ void Player::doAttacking(uint32_t)
 			} else {
 				result = weapon->useWeapon(this, tool, attackedCreature);
 			}
+		} else if (hasWeaponDistanceEquipped()) {
+			return;
 		} else {
 			result = Weapon::useFist(this, attackedCreature);
 		}
@@ -5178,6 +5257,33 @@ void Player::setCurrentMount(uint8_t mount)
 	addStorageValue(PSTRG_MOUNTS_CURRENTMOUNT, mount);
 }
 
+bool Player::hasAnyMount() const
+{
+	for (const auto& mounts = g_game().mounts.getMounts();
+		const Mount& mount : mounts) {
+		if (hasMount(&mount)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+uint8_t Player::getRandomMountId() const
+{
+	std::vector<uint8_t> playerMounts;
+
+	for (const auto& mounts = g_game().mounts.getMounts();
+		const Mount& mount : mounts) {
+		if (hasMount(&mount)) {
+			playerMounts.push_back(mount.id);
+		}
+	}
+
+	auto playerMountsSize = static_cast<int32_t>(playerMounts.size() - 1);
+	auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerMountsSize));
+	return playerMounts.at(randomIndex);
+}
+
 bool Player::toggleMount(bool mount)
 {
 	if ((OTSYS_TIME() - lastToggleMount) < 3000 && !wasMounted) {
@@ -5206,6 +5312,10 @@ bool Player::toggleMount(bool mount)
 			return false;
 		}
 
+		if (isRandomMounted()) {
+			currentMountId = getRandomMountId();
+		}
+
 		const Mount* currentMount = g_game().mounts.getMountByID(currentMountId);
 		if (!currentMount) {
 			return false;
@@ -5228,6 +5338,7 @@ bool Player::toggleMount(bool mount)
 		}
 
 		defaultOutfit.lookMount = currentMount->clientId;
+		setCurrentMount(currentMount->id);
 
 		if (currentMount->speed != 0) {
 			g_game().changeSpeed(this, currentMount->speed);
@@ -5886,14 +5997,14 @@ void Player::openPlayerContainers()
 
 		Container* itemContainer = item->getContainer();
 		if (itemContainer) {
-			int64_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
+			auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
 			if (cid > 0) {
 				openContainersList.emplace_back(std::make_pair(cid, itemContainer));
 			}
 			for (ContainerIterator it = itemContainer->iterator(); it.hasNext(); it.advance()) {
 				Container* subContainer = (*it)->getContainer();
 				if (subContainer) {
-					uint8_t subcid = (*it)->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
+					auto subcid = (*it)->getAttribute<uint8_t>(ItemAttribute_t::OPENCONTAINER);
 					if (subcid > 0) {
 						openContainersList.emplace_back(std::make_pair(subcid, subContainer));
 					}
@@ -5974,7 +6085,7 @@ std::string Player::getBlessingsName() const
 	std::ostringstream os;
 	for (uint8_t i = 1; i <= 8; i++) {
 		if (hasBlessing(i)) {
-			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i)); 
+			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i));
 			blessName != BlessingNames.end()) {
 				os << (*blessName).second;
 			} else {

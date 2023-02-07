@@ -373,7 +373,7 @@ class Game
 		void playerShowQuestLine(uint32_t playerId, uint16_t questId);
 		void playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type,
                       const std::string& receiver, const std::string& text);
-		void playerChangeOutfit(uint32_t playerId, Outfit_t outfit);
+		void playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMountRandomized = 0);
 		void playerInviteToParty(uint32_t playerId, uint32_t invitedId);
 		void playerJoinParty(uint32_t playerId, uint32_t leaderId);
 		void playerRevokePartyInvitation(uint32_t playerId, uint32_t invitedId);
@@ -441,6 +441,16 @@ class Game
 		void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t& color, uint8_t& effect);
 
 		bool combatChangeHealth(Creature* attacker, Creature* target, CombatDamage& damage, bool isEvent = false);
+		void applyCharmRune(const Monster* targetMonster, Player* attackerPlayer, Creature* target, const int32_t& realDamage) const;
+		void applyManaLeech(
+			Player* attackerPlayer, const Monster* targetMonster,
+			const CombatDamage& damage, const int32_t& realDamage
+		) const;
+		void applyLifeLeech(
+			Player* attackerPlayer, const Monster* targetMonster,
+			const CombatDamage& damage, const int32_t& realDamage
+		) const;
+		int32_t calculateLeechAmount(const int32_t& realDamage, const uint16_t& skillAmount, int targetsAffected) const;
 		bool combatChangeMana(Creature* attacker, Creature* target, CombatDamage& damage);
 
 		// Animation help functions
@@ -663,6 +673,46 @@ class Game
 		uint16_t itemsSaleCount;
 
 		std::vector<ItemClassification*> itemsClassifications;
+
+		bool isTryingToStow(const Position &toPos, Cylinder *toCylinder) const;
+
+		void sendDamageMessageAndEffects(
+			const Creature *attacker, Creature *target, const CombatDamage &damage, const Position &targetPos,
+			Player *attackerPlayer, Player *targetPlayer, TextMessage &message,
+			const SpectatorHashSet &spectators, int32_t realDamage
+		);
+
+		void updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, const Player *player) const;
+
+		void sendEffects(
+			Creature *target, const CombatDamage &damage, const Position &targetPos,
+			TextMessage &message, const SpectatorHashSet &spectators
+		);
+
+		void sendMessages(
+			const Creature *attacker, const Creature *target, const CombatDamage &damage,
+			const Position &targetPos, Player *attackerPlayer, Player *targetPlayer,
+			TextMessage &message, const SpectatorHashSet &spectators, int32_t realDamage
+		) const;
+
+		bool shouldSendMessage(const TextMessage &message) const;
+
+		void buildMessageAsAttacker(
+			const Creature *target, const CombatDamage &damage, TextMessage &message,
+			std::stringstream &ss, const std::string &damageString
+		) const;
+
+		void buildMessageAsTarget(
+			const Creature *attacker, const CombatDamage &damage, const Player *attackerPlayer,
+			const Player *targetPlayer, TextMessage &message, std::stringstream &ss,
+			const std::string &damageString
+		) const;
+
+		void buildMessageAsSpectator(
+			const Creature *attacker, const Creature *target, const CombatDamage &damage,
+			const Player *targetPlayer, TextMessage &message, std::stringstream &ss,
+			const std::string &damageString, std::string &spectatorMessage
+		) const;
 };
 
 constexpr auto g_game = &Game::getInstance;

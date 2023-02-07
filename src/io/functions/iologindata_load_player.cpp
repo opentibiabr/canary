@@ -41,7 +41,7 @@ void IOLoginDataLoad::loadRewardItems(Player *player) {
 }
 
 void IOLoginDataLoad::bindRewardBag(Player *player, IOLoginData::ItemMap &itemMap) {
-	for (auto &[id, itemPair]: itemMap) {
+	for ([[maybe_unused]] auto &[id, itemPair]: itemMap) {
 		const auto [item, pid] = itemPair;
 		if (pid == 0) {
 			auto reward = player->getReward(item->getAttribute<uint64_t>(ItemAttribute_t::DATE), true);

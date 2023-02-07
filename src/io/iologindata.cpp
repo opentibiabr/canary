@@ -1091,7 +1091,7 @@ bool IOLoginData::savePlayer(Player* player)
 	  return false;
   }
 
-	//save inbox items
+  //save inbox items
   query.str(std::string());
   query << "DELETE FROM `player_inboxitems` WHERE `player_id` = " << player->getGUID();
   if (!db.executeQuery(query.str())) {

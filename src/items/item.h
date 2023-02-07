@@ -48,7 +48,6 @@ public:
 		return T();
 	}
 
-
 	bool hasAttribute(ItemAttribute_t type) const {
 		if (!attributePtr) {
 			return false;

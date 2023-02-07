@@ -676,7 +676,7 @@ void Player::closeContainer(uint8_t cid)
 	Container* container = openContainer.container;
 	openContainers.erase(it);
 
-	if(!container){
+	if (!container){
 		return;
 	}
 
@@ -691,9 +691,9 @@ void Player::closeContainer(uint8_t cid)
 }
 
 void Player::removeEmptyRewards() {
-	erase_if(rewardMap, [this](auto const &rewardBag) {
+	std::erase_if(rewardMap, [this](auto const &rewardBag) {
 		auto [id, reward] = rewardBag;
-		if(reward->empty()){
+		if (reward->empty()){
 			this->getRewardChest()->removeThing(reward.get(), 1);
 			return true;
 		}

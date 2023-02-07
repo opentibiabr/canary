@@ -2547,9 +2547,9 @@ class Player final : public Creature, public Cylinder
 		void updateDamageReductionFromItemImbuement(std::array<double_t, COMBAT_COUNT> &combatReductionMap, Item *item, uint16_t combatTypeIndex) const;
 		void updateDamageReductionFromItemAbility(std::array<double_t, COMBAT_COUNT> &combatReductionMap, const Item *item, uint16_t combatTypeIndex) const;
 		double_t calculateDamageReduction(double_t currentTotal, int16_t resistance) const;
-		
+
 		void removeEmptyRewards();
-		bool hasAnykindOfRewardContainerOpen();
+		bool hasAnykindOfRewardContainerOpen() const;
 
 };
 

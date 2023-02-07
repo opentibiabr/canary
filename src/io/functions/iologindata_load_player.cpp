@@ -34,7 +34,7 @@ void IOLoginDataLoad::loadRewardItems(Player *player) {
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_rewards` WHERE `player_id` = "
 		  << player->getGUID() << " ORDER BY `pid`, `sid` ASC";
 	if (auto result = Database::getInstance().storeQuery(query.str())) {
-		loadItems(itemMap, result);
+		loadItems(itemMap, result, *player);
 		bindRewardBag(player, itemMap);
 		insertItemsIntoRewardBag(itemMap);
 	}
@@ -44,7 +44,7 @@ void IOLoginDataLoad::bindRewardBag(Player *player, IOLoginData::ItemMap &itemMa
 	for (auto &[id, itemPair]: itemMap) {
 		const auto [item, pid] = itemPair;
 		if (pid == 0) {
-			auto reward = player->getReward(item->getIntAttr(ITEM_ATTRIBUTE_DATE), true);
+			auto reward = player->getReward(item->getAttribute<uint64_t>(ItemAttribute_t::DATE), true);
 			if (reward) {
 				itemPair = std::pair<Item *, int32_t>(reward->getItem(), player->getRewardChest()->getID());
 			}

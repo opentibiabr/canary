@@ -791,7 +791,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 					return ATTR_READ_ERROR;
 				};
 
-				
+
 				CustomAttribute customAttribute;
 				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
 					SPDLOG_ERROR("[{}] failed to read custom value", __FUNCTION__);
@@ -856,7 +856,7 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 		propWriteStream.writeString(text);
 	}
 
-	if (const uint32_t writtenDate = getAttribute<uint32_t>(ItemAttribute_t::DATE)) {
+	if (const uint64_t writtenDate = getAttribute<uint64_t>(ItemAttribute_t::DATE)) {
 		propWriteStream.write<uint8_t>(ATTR_WRITTENDATE);
 		propWriteStream.write<uint64_t>(writtenDate);
 	}

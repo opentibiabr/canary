@@ -11,7 +11,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 	-- Make sure it is a boss
 	if monsterType and monsterType:isRewardBoss() then
 		local bossId = creature:getId()
-		local timestamp = os.time()
+		local timestamp = systemTime()
 
 		ResetAndSetTargetList(creature)
 

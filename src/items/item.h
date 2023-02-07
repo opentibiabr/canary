@@ -48,6 +48,7 @@ public:
 		return T();
 	}
 
+
 	bool hasAttribute(ItemAttribute_t type) const {
 		if (!attributePtr) {
 			return false;
@@ -554,7 +555,7 @@ class Item : virtual public Thing, public ItemProperties
 		void addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration);
 		/**
 		 * @brief Decay imbuement time duration, only use this for decay the imbuement time
-		 * 
+		 *
 		 * @param slot Slot id to decay
 		 * @param imbuementId Imbuement id to decay
 		 * @param duration New duration
@@ -643,6 +644,7 @@ class Item : virtual public Thing, public ItemProperties
 
 		bool loadedFromMap = false;
 		bool isLootTrackeable = false;
+
 	private:
 		void setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration);
 		//Don't add variables here, use the ItemAttribute class.

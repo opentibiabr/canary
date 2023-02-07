@@ -118,6 +118,7 @@ class Container : public Item, public Cylinder
 		StashContainerList getStowableItems() const;
 		Item* getItemByIndex(size_t index) const;
 		bool isHoldingItem(const Item* item) const;
+		bool isHoldingItemWithId(const uint16_t id) const;
 
 		uint32_t getItemHoldingCount() const;
 		uint32_t getContainerHoldingCount() const;
@@ -155,7 +156,7 @@ class Container : public Item, public Cylinder
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override final;
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t, uint32_t>& countMap) const override final;
 		Thing* getThing(size_t index) const override final;
-		
+
 		ItemVector getItems(bool recursive = false) const;
 
 		void postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
@@ -165,6 +166,9 @@ class Container : public Item, public Cylinder
 		void internalAddThing(uint32_t index, Thing* thing) override final;
 		void startDecaying() override;
 		void stopDecaying() override;
+
+		bool isAnykindOfRewardContainer() const;
+		bool isBrowseFieldAndHoldsRewardContainer() const;
 
 	protected:
 		std::ostringstream& getContentDescription(std::ostringstream& os) const;
@@ -188,6 +192,7 @@ class Container : public Item, public Cylinder
 
 		friend class ContainerIterator;
 		friend class IOMapSerialize;
+
 };
 
 #endif  // SRC_ITEMS_CONTAINERS_CONTAINER_H_

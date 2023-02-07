@@ -9,7 +9,6 @@ on:
       - main
 
 jobs:
-  if: github.event.pull_request.draft == 'false'
   build_docker_x86:
     if: github.event.pull_request.draft == 'false'
     runs-on: ubuntu-latest
@@ -73,6 +72,7 @@ jobs:
         run: echo ${{ steps.docker_build.outputs.digest }}
 
   build_docker_arm:
+    if: github.event.pull_request.draft == 'false'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

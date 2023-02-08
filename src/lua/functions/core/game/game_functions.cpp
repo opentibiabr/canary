@@ -250,7 +250,7 @@ int GameFunctions::luaGameGetReturnMessage(lua_State* L) {
 }
 
 int GameFunctions::luaGameCreateItem(lua_State* L) {
-	// Game.createItem(itemId[, count[, position]])
+	// Game.createItem(itemId or name[, count[, position]])
 	uint16_t itemId;
 	if (isNumber(L, 1)) {
 		itemId = getNumber<uint16_t>(L, 1);

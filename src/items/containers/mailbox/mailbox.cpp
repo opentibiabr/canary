@@ -92,19 +92,19 @@ bool Mailbox::sendItem(Item* item) const
 	std::string writer;
 	time_t date = time(0);
 	std::string text;
-	if (item && item->getID() == ITEM_LETTER && item->getWriter() != "") {
-		writer = item->getWriter();
-		date = item->getDate();
-		text = item->getText();
+	if (item && item->getID() == ITEM_LETTER && !item->getAttribute<std::string>(ItemAttribute_t::WRITER).empty()) {
+		writer = item->getAttribute<std::string>(ItemAttribute_t::WRITER);
+		date = item->getAttribute<time_t>(ItemAttribute_t::DATE);
+		text = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
 	}
 	if (player && item) {
 		if (g_game().internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER,
                                    item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
 			Item* newItem = g_game().transformItem(item, item->getID() + 1);
 			if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && writer != "") {
-				newItem->setWriter(writer);
-				newItem->setDate(date);
-				newItem->setText(text);
+				newItem->setAttribute(ItemAttribute_t::WRITER, writer);
+				newItem->setAttribute(ItemAttribute_t::DATE, date);
+				newItem->setAttribute(ItemAttribute_t::TEXT, text);
 			}
 			player->onReceiveMail();
 			return true;
@@ -119,9 +119,9 @@ bool Mailbox::sendItem(Item* item) const
                                    item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
 			Item* newItem = g_game().transformItem(item, item->getID() + 1);
 			if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && writer != "") {
-				newItem->setWriter(writer);
-				newItem->setDate(date);
-				newItem->setText(text);
+				newItem->setAttribute(ItemAttribute_t::WRITER, writer);
+				newItem->setAttribute(ItemAttribute_t::DATE, date);
+				newItem->setAttribute(ItemAttribute_t::TEXT, text);
 			}
 			IOLoginData::savePlayer(&tmpPlayer);
 			return true;
@@ -142,7 +142,7 @@ bool Mailbox::getReceiver(Item* item, std::string& name) const
 		return false;
 	}
 
-	const std::string& text = item->getText();
+	const std::string& text = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
 	if (text.empty()) {
 		return false;
 	}

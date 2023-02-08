@@ -1150,6 +1150,9 @@ bool Monster::pushItem(Item *item, const Direction& nextDirection)
 
 void Monster::pushItems(Tile *tile, const Direction& nextDirection)
 {
+	// We can not use iterators here since we can push the item to another tile
+	// which will invalidate the iterator.
+	// start from the end to minimize the amount of traffic
 	TileItemVector* items;
 	if (!(items = tile->getItemList())) {
 		return;
@@ -1160,7 +1163,7 @@ void Monster::pushItems(Tile *tile, const Direction& nextDirection)
 	while (it != items->end()) {
 		Item* item = *it;
 		if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH)
-				|| item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getActionId() != 100 /* non-moveable action*/) {
+				|| item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != 100 /* non-moveable action*/) {
 			if (moveCount < 20 && pushItem(item, nextDirection)) {
 				++moveCount;
 			} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
@@ -1927,11 +1930,11 @@ Item* Monster::getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature
 	if (corpse) {
 		if (mostDamageCreature) {
 			if (mostDamageCreature->getPlayer()) {
-				corpse->setCorpseOwner(mostDamageCreature->getID());
+				corpse->setAttribute(ItemAttribute_t::CORPSEOWNER, mostDamageCreature->getID());
 			} else {
 				const Creature* mostDamageCreatureMaster = mostDamageCreature->getMaster();
 				if (mostDamageCreatureMaster && mostDamageCreatureMaster->getPlayer()) {
-					corpse->setCorpseOwner(mostDamageCreatureMaster->getID());
+					corpse->setAttribute(ItemAttribute_t::CORPSEOWNER, mostDamageCreatureMaster->getID());
 				}
 			}
 		}

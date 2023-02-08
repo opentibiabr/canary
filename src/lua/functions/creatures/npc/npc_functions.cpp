@@ -548,7 +548,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L)
 			uint8_t internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
 			Item* item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
 			if (actionId != 0) {
-				item->setActionId(actionId);
+				item->setAttribute(ItemAttribute_t::ACTIONID, actionId);
 			}
 
 			while (remainingAmount > 0) {
@@ -567,7 +567,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L)
 		uint8_t internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
 		Item* item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
 		if (actionId != 0) {
-			item->setActionId(actionId);
+			item->setAttribute(ItemAttribute_t::ACTIONID, actionId);
 		}
 
 		while (remainingAmount > 0) {

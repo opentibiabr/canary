@@ -168,8 +168,8 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType, Slots_t slot)
 		default: slotp = 0; break;
 	}
 
-	if (item.hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
-		std::map<int32_t, MoveEventList>::iterator it = actionIdMap.find(item.getActionId());
+	if (item.hasAttribute(ItemAttribute_t::ACTIONID)) {
+		std::map<int32_t, MoveEventList>::iterator it = actionIdMap.find(item.getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
 		if (it != actionIdMap.end()) {
 			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
 			for (MoveEvent& moveEvent : moveEventList) {
@@ -194,8 +194,8 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType, Slots_t slot)
 
 MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 	std::map<int32_t, MoveEventList>::iterator it;
-	if (item.hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
-		it = uniqueIdMap.find(item.getUniqueId());
+	if (item.hasAttribute(ItemAttribute_t::UNIQUEID)) {
+		it = uniqueIdMap.find(item.getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID));
 		if (it != uniqueIdMap.end()) {
 			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
 			if (!moveEventList.empty()) {
@@ -204,8 +204,8 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 		}
 	}
 
-	if (item.hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
-		it = actionIdMap.find(item.getActionId());
+	if (item.hasAttribute(ItemAttribute_t::ACTIONID)) {
+		it = actionIdMap.find(item.getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
 		if (it != actionIdMap.end()) {
 			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
 			if (!moveEventList.empty()) {

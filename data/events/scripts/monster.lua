@@ -9,6 +9,16 @@ local function calculateBonus(bonus)
 	return bonusCount
 end
 
+local function checkItemType(itemId)
+	local itemType = ItemType(itemId):getType()
+	-- Based on enum ItemTypes_t
+	if (itemType > 0 and itemType < 4) or itemType == 7 or itemType == 8 or
+		itemType == 11 or itemType == 13 or (itemType > 15 and itemType < 22) then
+		return true
+	end
+	return false
+end
+
 function Monster:onDropLoot(corpse)
 	if configManager.getNumber(configKeys.RATE_LOOT) == 0 then
 		return
@@ -59,7 +69,7 @@ function Monster:onDropLoot(corpse)
 				end
 			end
 
-
+			local boostedMessage
 			local isBoostedBoss = self:getName():lower() == (Game.getBoostedBoss()):lower()
 			local bossRaceIds = {player:getSlotBossId(1), player:getSlotBossId(2)}
 			local isBoss = table.contains(bossRaceIds, mType:bossRaceId()) or isBoostedBoss
@@ -73,12 +83,15 @@ function Monster:onDropLoot(corpse)
 					bonus = configManager.getNumber(configKeys.BOOSTED_BOSS_LOOT_BONUS)
 				end
 
-				local bonusNumber = calculateBonus(bonus)
-				for _ = 1, bonusNumber, 1 do
-					for i, _ in pairs(monsterLoot) do
-						local item = corpse:createLootItem(monsterLoot[i], charmBonus)
-						if not item then
-							Spdlog.warn(string.format("[3][Monster:onDropLoot] - Could not add loot item to monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
+				local items = corpse:getItems(true)
+				for i = 1, #items do
+					local itemId = items[i]:getId()
+					local isValidItem = checkItemType(itemId)
+					if isValidItem then
+						local realBonus = calculateBonus(bonus)
+						for _ = 1, realBonus do
+							corpse:addItem(itemId)
+							boostedMessage = true
 						end
 					end
 				end
@@ -87,7 +100,7 @@ function Monster:onDropLoot(corpse)
 			local text = {}
 			if self:getName():lower() == (Game.getBoostedCreature()):lower() then
 				text = ("Loot of %s: %s (boosted loot)"):format(mType:getNameDescription(), corpse:getContentDescription())
-			elseif isBoostedBoss then
+			elseif boostedMessage then
 				text = ("Loot of %s: %s (Boss bonus)"):format(mType:getNameDescription(), corpse:getContentDescription())
 			else
 				text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())

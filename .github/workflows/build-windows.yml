@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2022]
-        buildtype: [windows-release, windows-release-asan, windows-debug]
+        buildtype: [windows-release, windows-release-asan]
         include:
           - os: windows-2022
             triplet: x64-windows

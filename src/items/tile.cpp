@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -522,7 +512,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t tileF
 			}
 
 			if (monster->isSummon()) {
-				if (ground->getID() >= ITEM_WALKABLE_SEA_START && ground->getID() <= ITEM_WALKABLE_SEA_END) { 
+				if (ground->getID() >= ITEM_WALKABLE_SEA_START && ground->getID() <= ITEM_WALKABLE_SEA_END) {
 					return RETURNVALUE_NOTPOSSIBLE;
 				}
 			}
@@ -596,6 +586,10 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t tileF
 				}
 			}
 
+			if(hasBitSet(FLAG_PATHFINDING, tileFlags) && hasFlag(TILESTATE_MAGICFIELD) && !fieldIsUnharmable()){
+				return RETURNVALUE_NOTPOSSIBLE;
+			}
+
 			if (player->getParent() == nullptr && hasFlag(TILESTATE_NOLOGOUT)) {
 				//player is trying to login to a "no logout" tile
 				return RETURNVALUE_NOTPOSSIBLE;
@@ -649,7 +643,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t tileF
 			//FLAG_IGNOREBLOCKITEM is set
 			if (ground) {
 				const ItemType& iiType = Item::items[ground->getID()];
-				if (iiType.blockSolid && (!iiType.moveable || ground->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID))) {
+				if (iiType.blockSolid && (!iiType.moveable || ground->hasAttribute(ItemAttribute_t::UNIQUEID))) {
 					return RETURNVALUE_NOTPOSSIBLE;
 				}
 			}
@@ -657,7 +651,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t tileF
 			if (const auto items = getItemList()) {
 				for (const Item* item : *items) {
 					const ItemType& iiType = Item::items[item->getID()];
-					if (iiType.blockSolid && (!iiType.moveable || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID))) {
+					if (iiType.blockSolid && (!iiType.moveable || item->hasAttribute(ItemAttribute_t::UNIQUEID))) {
 						return RETURNVALUE_NOTPOSSIBLE;
 					}
 				}
@@ -734,6 +728,11 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t tileF
 		}
 	}
 	return RETURNVALUE_NOERROR;
+}
+
+bool Tile::fieldIsUnharmable() const {
+	uint16_t fieldId = getFieldItem()->getID();
+	return fieldId == ITEM_FIREFIELD_PVP_SMALL || fieldId == ITEM_FIREFIELD_PERSISTENT_SMALL;
 }
 
 ReturnValue Tile::queryMaxCount(int32_t, const Thing&, uint32_t count, uint32_t& maxQueryCount, uint32_t) const
@@ -1230,10 +1229,10 @@ int32_t Tile::getClientIndexOfCreature(const Player* player, const Creature* cre
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
-		for (const Creature* c : boost::adaptors::reverse(*creatures)) {
-			if (c == creature) {
+		for (auto it = creatures->rbegin(); it != creatures->rend(); ++it) {
+			if (*it == creature) {
 				return n;
-			} else if (player->canSeeCreature(c)) {
+			} else if (player->canSeeCreature(*it)) {
 				++n;
 			}
 		}
@@ -1259,10 +1258,10 @@ int32_t Tile::getStackposOfCreature(const Player* player, const Creature* creatu
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
-		for (const Creature* c : boost::adaptors::reverse(*creatures)) {
-			if (c == creature) {
+		for (auto it = creatures->rbegin(); it != creatures->rend(); ++it) {
+			if (*it == creature) {
 				return n;
-			} else if (player->canSeeCreature(c)) {
+			} else if (player->canSeeCreature(*it)) {
 				if (++n >= 10) {
 					return -1;
 				}

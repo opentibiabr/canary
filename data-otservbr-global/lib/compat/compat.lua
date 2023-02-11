@@ -16,6 +16,9 @@ MESSAGE_EVENT_DEFAULT = MESSAGE_STATUS
 MESSAGE_EVENT_ORANGE = TALKTYPE_MONSTER_SAY
 MESSAGE_STATUS_CONSOLE_ORANGE = TALKTYPE_MONSTER_YELL
 
+if type(result) then
+	result = Result
+end
 result.getDataInt = result.getNumber
 result.getDataLong = result.getNumber
 result.getDataString = result.getString

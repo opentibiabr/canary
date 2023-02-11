@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_ITEMS_TILE_H_
 #define SRC_ITEMS_TILE_H_
@@ -187,7 +177,7 @@ class Tile : public Cylinder
 			} else if (hasFlag(TILESTATE_NOPVPZONE)) {
 				return ZONE_NOPVP;
 			} else if (hasFlag(TILESTATE_NOLOGOUT)) {
-				return ZONE_NOLOGOUT;				
+				return ZONE_NOLOGOUT;
 			} else if (hasFlag(TILESTATE_PVPZONE)) {
 				return ZONE_PVP;
 			} else {
@@ -259,11 +249,13 @@ class Tile : public Cylinder
 
 		void setTileFlags(const Item* item);
 		void resetTileFlags(const Item* item);
+		bool fieldIsUnharmable() const;
 
 	protected:
 		Item* ground = nullptr;
 		Position tilePos;
 		uint32_t flags = 0;
+
 };
 
 // Used for walkable tiles, where there is high likeliness of

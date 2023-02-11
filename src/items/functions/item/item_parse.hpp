@@ -1,24 +1,14 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2018-2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * It under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
 */
 
-#ifndef SRC_ITEMS_FUNCTIONS_ITEM_PARSE_HPP_
-#define SRC_ITEMS_FUNCTIONS_ITEM_PARSE_HPP_
+#ifndef SRC_ITEMS_FUNCTIONS_ITEM_ITEM_PARSE_HPP_
+#define SRC_ITEMS_FUNCTIONS_ITEM_ITEM_PARSE_HPP_
 
 #include "creatures/combat/condition.h"
 #include "declarations.hpp"
@@ -233,7 +223,7 @@ const phmap::flat_hash_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
 class ItemParse : public Items
 {
 	public:
-	static void initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute keyAttribute, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType);
 
 	protected:
 	static void parseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
@@ -290,7 +280,7 @@ class ItemParse : public Items
 
 	private:
 	// Parent of the function: static void parseField
-	static std::tuple<ConditionId_t, ConditionType_t, std::string, pugi::xml_attribute> parseFieldConditions(ConditionId_t conditionId, ConditionType_t conditionType, std::string lowerStringValue, pugi::xml_attribute valueAttribute);
+	static std::tuple<ConditionId_t, ConditionType_t> parseFieldConditions(std::string lowerStringValue, pugi::xml_attribute valueAttribute);
 	static CombatType_t parseFieldCombatType(std::string string, pugi::xml_attribute valueAttribute);
 	static void parseFieldCombatDamage(ConditionDamage *conditionDamage, std::string stringValue, pugi::xml_node attributeNode);
 };

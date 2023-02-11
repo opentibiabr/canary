@@ -2,12 +2,7 @@
   "name": "canary",
   "version-string": "1.0.0",
   "dependencies": [
-    "boost-asio",
-    "boost-lockfree",
-    "boost-variant",
-    "boost-filesystem",
-    "boost-iostreams",
-    "boost-system",
+    "asio",
     "pugixml",
     "spdlog",
     "curl",
@@ -15,11 +10,14 @@
     "protobuf",
     "parallel-hashmap",
     "magic-enum",
+    "zlib",
+    {"name": "mio", "version>=": "2019-02-10"},
     {
       "name": "luajit",
       "platform": "!arm"
     },
-    { "name": "libmariadb",
+    {
+      "name": "libmariadb",
       "features": [ "mariadbclient" ]
     },
     {
@@ -30,5 +28,6 @@
       "name": "mpir",
       "platform": "windows"
     }
-  ]
+  ],
+  "builtin-baseline":"0e67f312e831b4b897c7f492cf1e2858522c6e18"
 }

@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_CREATURES_MONSTERS_MONSTER_H_
 #define SRC_CREATURES_MONSTERS_MONSTER_H_
@@ -283,7 +273,7 @@ class Monster final : public Creature
 			return getForgeStack() == 0 && !isSummon() && !isRewardBoss() && canDropLoot() && isForgeCreature() && getRaceId() > 0;
 		}
 
-		
+
 		bool isForgeCreature() const {
 			return mType->info.isForgeCreature;
 		}
@@ -393,8 +383,8 @@ class Monster final : public Creature
 		bool isInSpawnRange(const Position& pos) const;
 		bool canWalkTo(Position pos, Direction direction) const;
 
-		static bool pushItem(Item* item);
-		static void pushItems(Tile* tile);
+		static bool pushItem(Item *item, const Direction& nextDirection);
+		static void pushItems(Tile *tile, const Direction& nextDirection);
 		static bool pushCreature(Creature* creature);
 		static void pushCreatures(Tile* tile);
 
@@ -425,6 +415,11 @@ class Monster final : public Creature
 
 		friend class MonsterFunctions;
 		friend class Map;
+
+		static std::vector<std::pair<int8_t, int8_t>> getPushItemLocationOptions(const Direction &direction);
+
+		void doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &result);
+		void doRandomStep(Direction &nextDirection, bool &result);
 };
 
 #endif  // SRC_CREATURES_MONSTERS_MONSTER_H_

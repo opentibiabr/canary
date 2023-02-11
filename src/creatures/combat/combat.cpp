@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -63,7 +53,7 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 					damage.secondary.type = weapon->getElementType();
 					damage.secondary.value = weapon->getElementDamage(player, target, tool);
 					if (params.useCharges) {
-						uint16_t charges = tool->getCharges();
+						auto charges = tool->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
 						if (charges != 0) {
 							g_game().transformItem(tool, tool->getID(), charges - 1);
 						}
@@ -183,7 +173,7 @@ ReturnValue Combat::canTargetCreature(Player* player, Creature* target)
 		return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 	}
 
-	if (!player->hasFlag(PlayerFlag_IgnoreProtectionZone)) {
+	if (!player->hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 		//pz-zone
 		if (player->getZone() == ZONE_PROTECTION) {
 			return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
@@ -205,7 +195,7 @@ ReturnValue Combat::canTargetCreature(Player* player, Creature* target)
 		}
 	}
 
-	if (player->hasFlag(PlayerFlag_CannotUseCombat) || !target->isAttackable()) {
+	if (player->hasFlag(PlayerFlags_t::CannotUseCombat) || !target->isAttackable()) {
 		if (target->getPlayer()) {
 			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 		} else {
@@ -250,7 +240,7 @@ ReturnValue Combat::canDoCombat(Creature* caster, Tile* tile, bool aggressive)
 		}
 
 		if (const Player* player = caster->getPlayer()) {
-			if (player->hasFlag(PlayerFlag_IgnoreProtectionZone)) {
+			if (player->hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 				return RETURNVALUE_NOERROR;
 			}
 		}
@@ -292,12 +282,12 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target)
 	if (attacker) {
 		const Creature* attackerMaster = attacker->getMaster();
 		if (const Player* targetPlayer = target->getPlayer()) {
-			if (targetPlayer->hasFlag(PlayerFlag_CannotBeAttacked)) {
+			if (targetPlayer->hasFlag(PlayerFlags_t::CannotBeAttacked)) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 			}
 
 			if (const Player* attackerPlayer = attacker->getPlayer()) {
-				if (attackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer)) {
+				if (attackerPlayer->hasFlag(PlayerFlags_t::CannotAttackPlayer)) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 				}
 
@@ -306,17 +296,22 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target)
 				}
 
 				//nopvp-zone
-				const Tile* targetPlayerTile = targetPlayer->getTile();
-				if (targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
+				if (const Tile* targetPlayerTile = targetPlayer->getTile();
+						targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE))
+				{
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 				} else if (attackerPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE) && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)) {
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
+				}
+
+				if (attackerPlayer->getFaction() != FACTION_DEFAULT && attackerPlayer->getFaction() != FACTION_PLAYER && attackerPlayer->getFaction() == targetPlayer->getFaction()) {
+					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 				}
 			}
 
 			if (attackerMaster) {
 				if (const Player* masterAttackerPlayer = attackerMaster->getPlayer()) {
-					if (masterAttackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer)) {
+					if (masterAttackerPlayer->hasFlag(PlayerFlags_t::CannotAttackPlayer)) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 					}
 
@@ -342,7 +337,7 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target)
 			}
 
 			if (const Player* attackerPlayer = attacker->getPlayer()) {
-				if (attackerPlayer->hasFlag(PlayerFlag_CannotAttackMonster)) {
+				if (attackerPlayer->hasFlag(PlayerFlags_t::CannotAttackMonster)) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 				}
 
@@ -594,7 +589,7 @@ void Combat::CombatManaFunc(Creature* caster, Creature* target, const CombatPara
 	assert(data);
 	CombatDamage damage = *data;
 	if (damage.primary.value < 0) {
-		if (caster && caster->getPlayer() && target->getSkull() != SKULL_BLACK && target->getPlayer()) {
+		if (caster && target && caster->getPlayer() && target->getSkull() != SKULL_BLACK && target->getPlayer()) {
 			damage.primary.value /= 2;
 		}
 	}
@@ -611,8 +606,11 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 	}
 
 	for (const auto& condition : params.conditionList) {
+		Player* player = nullptr;
+		if (target) {
+			player = target->getPlayer();
+		}
 		//Cleanse charm rune (target as player)
-		Player* player = target->getPlayer();
 		if (player) {
 			if (player->isImmuneCleanse(condition->getType())) {
 				player->sendCancelMessage("You are still immune against this spell.");
@@ -636,14 +634,16 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 			}
 		}
 
-		if (caster == target || !target->isImmune(condition->getType())) {
+		if (caster == target || target && !target->isImmune(condition->getType())) {
 			Condition* conditionCopy = condition->clone();
 			if (caster) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
 			}
 
 			//TODO: infight condition until all aggressive conditions has ended
-			target->addCombatCondition(conditionCopy);
+			if (target) {
+				target->addCombatCondition(conditionCopy);
+			}
 		}
 	}
 }
@@ -727,7 +727,7 @@ void Combat::combatTileEffects(const SpectatorHashSet& spectators, Creature* cas
 
 		Item* item = Item::CreateItem(itemId);
 		if (caster) {
-			item->setOwner(caster->getID());
+			item->setAttribute(ItemAttribute_t::OWNER, caster->getID());
 		}
 
 		ReturnValue ret = g_game().internalAddItem(tile, item);
@@ -933,7 +933,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
-	if (params.combatType == COMBAT_HEALING && target->getMonster()){
+	if (target && params.combatType == COMBAT_HEALING && target->getMonster()){
 		if (target != caster) {
 			return;
 		}
@@ -961,10 +961,12 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 		}
 
-		// fatal hit (onslaught)
-		if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
-			double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
-			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
+		// Fatal hit (onslaught)
+		if (auto playerWeapon = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
+			playerWeapon != nullptr && playerWeapon->getTier()) {
+			double_t fatalChance = playerWeapon->getFatalChance();
+			double_t randomChance = uniform_random(0, 10000) / 100;
+			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && randomChance < fatalChance) {
 				damage.fatal = true;
 				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
 				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
@@ -996,11 +998,13 @@ void Combat::doCombatHealth(Creature* caster, const Position& position, const Ar
 			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 		}
 
-		// fatal hit (onslaught)
-		if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr)
+		// Fatal hit (onslaught)
+		if (auto playerWeapon = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
+			playerWeapon != nullptr && playerWeapon->getTier() > 0)
 		{
-			double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
-			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
+			double_t fatalChance = playerWeapon->getFatalChance();
+			double_t randomChance = uniform_random(0, 10000) / 100;
+			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && randomChance < fatalChance) {
 				damage.fatal = true;
 				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
 				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
@@ -1032,7 +1036,7 @@ void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage& dama
 	}
 
 	if (canCombat) {
-		if (caster && params.distanceEffect != CONST_ANI_NONE) {
+		if (caster && target && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
 		}
 
@@ -1072,7 +1076,7 @@ void Combat::doCombatCondition(Creature* caster, Creature* target, const CombatP
 	}
 
 	if (canCombat) {
-		if (caster && params.distanceEffect != CONST_ANI_NONE) {
+		if (caster && target && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
 		}
 
@@ -1203,7 +1207,7 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage& damage, bool u
 				}
 
 				if (useCharges) {
-					uint16_t charges = tool->getCharges();
+					auto charges = tool->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
 					if (charges != 0) {
 						g_game().transformItem(tool, tool->getID(), charges - 1);
 					}
@@ -1645,7 +1649,7 @@ void MagicField::onStepInField(Creature& creature)
 	const ItemType& it = items[getID()];
 	if (it.conditionDamage) {
 		Condition* conditionCopy = it.conditionDamage->clone();
-		uint32_t ownerId = getOwner();
+		auto ownerId = getAttribute<uint32_t>(ItemAttribute_t::OWNER);
 		if (ownerId) {
 			bool harmfulField = true;
 

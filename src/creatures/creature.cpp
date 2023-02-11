@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -409,12 +399,18 @@ void Creature::onCreatureAppear(Creature* creature, bool isLogin)
 
 void Creature::onRemoveCreature(Creature* creature, bool)
 {
-  onCreatureDisappear(creature, true);
-  if (creature != this && isMapLoaded) {
-    if (creature->getPosition().z == getPosition().z) {
-      updateTileCache(creature->getTile(), creature->getPosition());
-    }
-  }
+	onCreatureDisappear(creature, true);
+	if (creature != this && isMapLoaded) {
+		if (creature->getPosition().z == getPosition().z) {
+		updateTileCache(creature->getTile(), creature->getPosition());
+		}
+	}
+
+	// Update player from monster target list (avoid memory usage after clean)
+	if (auto monster = getMonster(); monster && monster->getAttackedCreature() == creature) {
+		monster->setAttackedCreature(creature);
+		monster->setFollowCreature(creature);
+	}
 }
 
 void Creature::onCreatureDisappear(const Creature* creature, bool isLogout)
@@ -502,7 +498,11 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 			stopEventWalk();
 		}
 
-		checkSummonMove(newPos, g_configManager().getBoolean(TELEPORT_SUMMONS));
+		bool configTeleportSummons = g_configManager().getBoolean(TELEPORT_SUMMONS);
+		checkSummonMove(newPos, configTeleportSummons);
+		if(isLostSummon()) {
+			handleLostSummon(configTeleportSummons);
+		}
 
 		if (Player* player = creature->getPlayer()) {
 			if (player->isExerciseTraining()){
@@ -765,7 +765,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 					int32_t money = 0;
 					for (Item* item : corpse->getContainer()->getItems()) {
 						if (uint32_t worth = item->getWorth(); worth > 0) {
-							money += worth; 
+							money += worth;
 							g_game().internalRemoveItem(item);
 						}
 					}
@@ -956,9 +956,13 @@ void Creature::getPathSearchParams(const Creature*, FindPathParams& fpp) const
 void Creature::goToFollowCreature()
 {
 	if (followCreature) {
+		if(isSummon() && !getMonster()->isFamiliar() && !canFollowMaster()){
+			hasFollowPath = false;
+			return;
+		}
+
 		FindPathParams fpp;
 		getPathSearchParams(followCreature, fpp);
-
 		Monster* monster = getMonster();
 		if (monster && !monster->getMaster() && (monster->isFleeing() || fpp.maxTargetDist > 1)) {
 			Direction dir = DIRECTION_NONE;
@@ -998,6 +1002,10 @@ void Creature::goToFollowCreature()
 	}
 
 	onFollowCreatureComplete(followCreature);
+}
+
+bool Creature::canFollowMaster() const {
+	return !master->getTile()->hasFlag(TILESTATE_PROTECTIONZONE) && (canSeeInvisibility() || !master->isInvisible());
 }
 
 bool Creature::setFollowCreature(Creature* creature)
@@ -1191,7 +1199,7 @@ void Creature::onGainExperience(uint64_t gainExp, Creature* target)
 			return;
 		}
 
-		TextMessage message(MESSAGE_EXPERIENCE_OTHERS, ucfirst(getNameDescription()) + " gained " + std::to_string(gainExp) + (gainExp != 1 ? " experience points." : " experience point."));
+		TextMessage message(MESSAGE_EXPERIENCE_OTHERS, fmt::format("{} gained {} experience point{}.", ucfirst(getNameDescription()), gainExp, (gainExp != 1 ? "s" : "")));
 		message.position = position;
 		message.primary.color = TEXTCOLOR_WHITE_EXP;
 		message.primary.value = gainExp;
@@ -1705,4 +1713,22 @@ void Creature::turnToCreature(Creature* creature)
 		}
 	}
 	g_game().internalCreatureTurn(this, dir);
+}
+
+bool Creature::isLostSummon() const {
+	if (!isSummon()) {
+		return false;
+	}
+	const Position &masterPosition = getMaster()->getPosition();
+	return std::max<int32_t>(Position::getDistanceX(getPosition(), masterPosition),
+							 Position::getDistanceY(getPosition(), masterPosition)) > 30;
+}
+
+void Creature::handleLostSummon(bool teleportSummons) {
+	if (teleportSummons) {
+		g_game().internalTeleport(this, getMaster()->getPosition(), true);
+	} else {
+		g_game().removeCreature(this, true);
+	}
+	g_game().addMagicEffect(getPosition(), CONST_ME_POFF);
 }

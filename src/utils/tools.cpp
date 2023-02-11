@@ -1,29 +1,17 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
 #include "core.hpp"
-
 #include "utils/tools.h"
 
-#include <fmt/chrono.h>
 
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
@@ -358,14 +346,9 @@ void trimString(std::string& str)
 
 std::string convertIPToString(uint32_t ip)
 {
-	char buffer[17];
-
-	int res = sprintf(buffer, "%u.%u.%u.%u", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24));
-	if (res < 0) {
-		return {};
-	}
-
-	return buffer;
+    char buffer[17];
+    fmt::format_to_n(buffer, sizeof(buffer), "{}.{}.{}.{}", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24));
+    return buffer;
 }
 
 std::string formatDate(time_t time)
@@ -1024,58 +1007,58 @@ CombatType_t indexToCombatType(size_t v)
 	return static_cast<CombatType_t>(1 << v);
 }
 
-ItemAttrTypes stringToItemAttribute(const std::string& str)
+ItemAttribute_t stringToItemAttribute(const std::string& str)
 {
 	if (str == "aid") {
-		return ITEM_ATTRIBUTE_ACTIONID;
+		return ItemAttribute_t::ACTIONID;
 	} else if (str == "uid") {
-		return ITEM_ATTRIBUTE_UNIQUEID;
+		return ItemAttribute_t::UNIQUEID;
 	} else if (str == "description") {
-		return ITEM_ATTRIBUTE_DESCRIPTION;
+		return ItemAttribute_t::DESCRIPTION;
 	} else if (str == "text") {
-		return ITEM_ATTRIBUTE_TEXT;
+		return ItemAttribute_t::TEXT;
 	} else if (str == "date") {
-		return ITEM_ATTRIBUTE_DATE;
+		return ItemAttribute_t::DATE;
 	} else if (str == "writer") {
-		return ITEM_ATTRIBUTE_WRITER;
+		return ItemAttribute_t::WRITER;
 	} else if (str == "name") {
-		return ITEM_ATTRIBUTE_NAME;
+		return ItemAttribute_t::NAME;
 	} else if (str == "article") {
-		return ITEM_ATTRIBUTE_ARTICLE;
+		return ItemAttribute_t::ARTICLE;
 	} else if (str == "pluralname") {
-		return ITEM_ATTRIBUTE_PLURALNAME;
+		return ItemAttribute_t::PLURALNAME;
 	} else if (str == "weight") {
-		return ITEM_ATTRIBUTE_WEIGHT;
+		return ItemAttribute_t::WEIGHT;
 	} else if (str == "attack") {
-		return ITEM_ATTRIBUTE_ATTACK;
+		return ItemAttribute_t::ATTACK;
 	} else if (str == "defense") {
-		return ITEM_ATTRIBUTE_DEFENSE;
+		return ItemAttribute_t::DEFENSE;
 	} else if (str == "extradefense") {
-		return ITEM_ATTRIBUTE_EXTRADEFENSE;
+		return ItemAttribute_t::EXTRADEFENSE;
 	} else if (str == "armor") {
-		return ITEM_ATTRIBUTE_ARMOR;
+		return ItemAttribute_t::ARMOR;
 	} else if (str == "hitchance") {
-		return ITEM_ATTRIBUTE_HITCHANCE;
+		return ItemAttribute_t::HITCHANCE;
 	} else if (str == "shootrange") {
-		return ITEM_ATTRIBUTE_SHOOTRANGE;
+		return ItemAttribute_t::SHOOTRANGE;
 	} else if (str == "owner") {
-		return ITEM_ATTRIBUTE_OWNER;
+		return ItemAttribute_t::OWNER;
 	} else if (str == "duration") {
-		return ITEM_ATTRIBUTE_DURATION;
+		return ItemAttribute_t::DURATION;
 	} else if (str == "decaystate") {
-		return ITEM_ATTRIBUTE_DECAYSTATE;
+		return ItemAttribute_t::DECAYSTATE;
 	} else if (str == "corpseowner") {
-		return ITEM_ATTRIBUTE_CORPSEOWNER;
+		return ItemAttribute_t::CORPSEOWNER;
 	} else if (str == "charges") {
-		return ITEM_ATTRIBUTE_CHARGES;
+		return ItemAttribute_t::CHARGES;
 	} else if (str == "fluidtype") {
-		return ITEM_ATTRIBUTE_FLUIDTYPE;
+		return ItemAttribute_t::FLUIDTYPE;
 	} else if (str == "doorid") {
-		return ITEM_ATTRIBUTE_DOORID;
+		return ItemAttribute_t::DOORID;
 	} else if (str == "timestamp") {
-		return ITEM_ATTRIBUTE_DURATION_TIMESTAMP;
+		return ItemAttribute_t::DURATION_TIMESTAMP;
 	}
-	return ITEM_ATTRIBUTE_NONE;
+	return ItemAttribute_t::NONE;
 }
 
 std::string getFirstLine(const std::string& str)
@@ -1402,12 +1385,15 @@ void consoleHandlerExit()
 
 NameEval_t validateName(const std::string &name)
 {
-
 	StringVector prohibitedWords = {"owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "cm", "gm", "tutor", "counsellor", "god"};
 	StringVector toks;
 	std::regex regexValidChars("^[a-zA-Z' ]+$");
 
-	boost::split(toks, name, boost::is_any_of(" '"));
+	std::stringstream ss(name);
+	std::istream_iterator<std::string> begin(ss);
+	std::istream_iterator<std::string> end;
+	std::copy(begin, end, std::back_inserter(toks));
+
 	if(name.length()<3 || name.length()>14) {
 		return INVALID_LENGTH;
 	}
@@ -1426,6 +1412,7 @@ NameEval_t validateName(const std::string &name)
 
 	return VALID;
 }
+
 bool isCaskItem(uint16_t itemId)
 {
 	return (itemId >= ITEM_HEALTH_CASK_START && itemId <= ITEM_HEALTH_CASK_END) ||

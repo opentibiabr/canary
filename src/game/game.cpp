@@ -6742,6 +6742,7 @@ void Game::shutdown()
 	ConnectionManager::getInstance().closeAll();
 
 	SPDLOG_INFO("Done!");
+	exit(0);
 }
 
 void Game::cleanup()

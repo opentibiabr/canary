@@ -1247,7 +1247,7 @@ bool ConditionDamage::doDamage(Creature* creature, int32_t healthChange) {
 	}
 
 	if (!creature->isAttackable() || Combat::canDoCombat(attacker, creature) != RETURNVALUE_NOERROR) {
-		if (!creature->isInGhostMode()) {
+		if (!creature->isInGhostMode() && !creature->getNpc()) {
 			g_game().addMagicEffect(creature->getPosition(), CONST_ME_POFF);
 		}
 		return false;

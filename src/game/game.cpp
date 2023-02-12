@@ -3468,7 +3468,7 @@ Item* Game::wrapItem(Item *item) {
 	item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + item->getName() + ">.");
 	if (isCaskItem(item->getID())) {
 		auto hiddenCharges = item->getSubType();
-		if(hiddenCharges > 0) {
+		if (hiddenCharges > 0) {
 			item->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
 		}
 	}

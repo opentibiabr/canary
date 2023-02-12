@@ -65,8 +65,8 @@ function Player:onLook(thing, position, distance)
 		end
 	end
 
-	if(thing:isItem()) then
-		if(thing:getActionId() == NOT_TRADEABLE_ACTION) then
+	if thing:isItem() then
+		if thing:getActionId() == NOT_TRADEABLE_ACTION then
 			description = string.format("%s\nThis item cannot be traded.", description)
 		end
 	end

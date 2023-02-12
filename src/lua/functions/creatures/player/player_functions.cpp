@@ -3207,3 +3207,31 @@ int PlayerFunctions::luaPlayerGetFaction(lua_State* L) {
 	lua_pushnumber(L, player->getFaction());
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerIsUIExhausted(lua_State *L) {
+	// player:isUIExhausted()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	uint16_t time = getNumber<uint16_t>(L, 2);
+	pushBoolean(L, player->isUIExhausted(time));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerUpdateUIExhausted(lua_State *L) {
+	// player:updateUIExhausted(exhaustionTime = 250)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->updateUIExhausted();
+	pushBoolean(L, true);
+	return 1;
+}

@@ -282,6 +282,8 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "getForgeSlivers", PlayerFunctions::luaPlayerGetForgeSlivers);
 			registerMethod(L, "Player", "getForgeCores", PlayerFunctions::luaPlayerGetForgeCores);
+			registerMethod(L, "Player", "isUIExhausted", PlayerFunctions::luaPlayerIsUIExhausted);
+			registerMethod(L, "Player", "updateUIExhausted", PlayerFunctions::luaPlayerUpdateUIExhausted);
 
 			registerMethod(L, "Player", "setFaction", PlayerFunctions::luaPlayerSetFaction);
 			registerMethod(L, "Player", "getFaction", PlayerFunctions::luaPlayerGetFaction);
@@ -560,6 +562,8 @@ class PlayerFunctions final : LuaScriptInterface {
 
 		static int luaPlayerGetForgeSlivers(lua_State* L);
 		static int luaPlayerGetForgeCores(lua_State* L);
+  	static int luaPlayerIsUIExhausted(lua_State* L);
+    static int luaPlayerUpdateUIExhausted(lua_State* L);
 
 		static int luaPlayerSetFaction(lua_State* L);
 		static int luaPlayerGetFaction(lua_State* L);

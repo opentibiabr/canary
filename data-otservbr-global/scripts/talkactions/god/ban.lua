@@ -29,7 +29,7 @@ function ban.onSay(player, words, param)
 
 	local resultId = db.storeQuery("SELECT 1 FROM `account_bans` WHERE `account_id` = " .. accountId)
 	if resultId ~= false then
-		result.free(resultId)
+		Result.free(resultId)
 		return false
 	end
 

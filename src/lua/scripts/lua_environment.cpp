@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -86,35 +76,29 @@ LuaScriptInterface * LuaEnvironment::getTestInterface() {
 	return testInterface;
 }
 
-Combat * LuaEnvironment::getCombatObject(uint32_t id) const {
+std::shared_ptr<Combat> LuaEnvironment::getCombatObject(uint32_t id) const {
 	auto it = combatMap.find(id);
 	if (it == combatMap.end()) {
 		return nullptr;
 	}
-	return it -> second;
+	return it->second;
 }
 
-Combat * LuaEnvironment::createCombatObject(LuaScriptInterface * interface) {
-	Combat * combat = new Combat;
+std::shared_ptr<Combat> LuaEnvironment::createCombatObject(LuaScriptInterface *interface) {
+	auto combat = std::make_shared<Combat>();
 	combatMap[++lastCombatId] = combat;
 	combatIdMap[interface].push_back(lastCombatId);
 	return combat;
 }
 
-void LuaEnvironment::clearCombatObjects(LuaScriptInterface * interface) {
+void LuaEnvironment::clearCombatObjects(LuaScriptInterface *interface) {
 	auto it = combatIdMap.find(interface);
 	if (it == combatIdMap.end()) {
 		return;
 	}
 
-	for (uint32_t id: it -> second) {
-		auto itt = combatMap.find(id);
-		if (itt != combatMap.end()) {
-			delete itt -> second;
-			combatMap.erase(itt);
-		}
-	}
-	it -> second.clear();
+	it->second.clear();
+	combatMap.clear();
 }
 
 AreaCombat * LuaEnvironment::getAreaObject(uint32_t id) const {
@@ -160,7 +144,7 @@ void LuaEnvironment::executeTimerEvent(uint32_t eventIndex) {
 	lua_rawgeti(luaState, LUA_REGISTRYINDEX, timerEventDesc.function);
 
 	// push parameters
-	for (auto parameter: boost::adaptors::reverse(timerEventDesc.parameters)) {
+	for (auto parameter: std::views::reverse(timerEventDesc.parameters)) {
 		lua_rawgeti(luaState, LUA_REGISTRYINDEX, parameter);
 	}
 

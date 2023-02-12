@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -56,16 +46,7 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 }
 
 int GameFunctions::luaGameCreateNpcType(lua_State* L) {
-	// Game.createNpcType(name)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
-		reportErrorFunc("NpcType can only be registered in the Scripts interface.");
-		lua_pushnil(L);
-		return 1;
-	}
-
-	NpcTypeFunctions::luaNpcTypeCreate(L);
-
-	return 1;
+	return NpcTypeFunctions::luaNpcTypeCreate(L);
 }
 
 int GameFunctions::luaGameGetSpectators(lua_State* L) {
@@ -165,6 +146,15 @@ int GameFunctions::luaGameLoadMap(lua_State* L) {
 	return 0;
 }
 
+int GameFunctions::luaGameloadMapChunk(lua_State* L) {
+	// Game.loadMapChunk(path, position, remove)
+	const std::string& path = getString(L, 1);
+	const Position& position = getPosition(L, 2);
+	bool unload = getBoolean(L, 3);
+	g_dispatcher().addTask(createTask([path, position, unload]() {g_game().loadMap(path, position, unload); }));
+	return 0;
+}
+
 int GameFunctions::luaGameGetMonsterCount(lua_State* L) {
 	// Game.getMonsterCount()
 	lua_pushnumber(L, g_game().getMonstersOnline());
@@ -260,7 +250,7 @@ int GameFunctions::luaGameGetReturnMessage(lua_State* L) {
 }
 
 int GameFunctions::luaGameCreateItem(lua_State* L) {
-	// Game.createItem(itemId[, count[, position]])
+	// Game.createItem(itemId or name[, count[, position]])
 	uint16_t itemId;
 	if (isNumber(L, 1)) {
 		itemId = getNumber<uint16_t>(L, 1);
@@ -508,12 +498,6 @@ int GameFunctions::luaGameGetBestiaryCharm(lua_State* L) {
 
 int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 	// Game.createBestiaryCharm(id)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
-		reportErrorFunc("Charm bestiary can only be registered in the Scripts interface.");
-		lua_pushnil(L);
-		return 1;
-	}
-
 	if (Charm* charm = g_iobestiary().getBestiaryCharm(static_cast<charmRune_t>(getNumber<int8_t>(L, 1, 0)), true)) {
 		pushUserdata<Charm>(L, charm);
 		setMetatable(L, -1, "Charm");
@@ -525,15 +509,9 @@ int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 
 int GameFunctions::luaGameCreateItemClassification(lua_State* L) {
 	// Game.createItemClassification(id)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
-		reportErrorFunc("Item classification can only be registered in the Scripts interface.");
-		lua_pushnil(L);
-		return 1;
-	}
-
-	ItemClassification* itemClassification = g_game().getItemsClassification(getNumber<uint8_t>(L, 1), true);
+	const ItemClassification* itemClassification = g_game().getItemsClassification(getNumber<uint8_t>(L, 1), true);
 	if (itemClassification) {
-		pushUserdata<ItemClassification>(L, itemClassification);
+		pushUserdata<const ItemClassification>(L, itemClassification);
 		setMetatable(L, -1, "ItemClassification");
 	} else {
 		lua_pushnil(L);
@@ -567,7 +545,8 @@ int GameFunctions::luaGameGetClientVersion(lua_State* L) {
 	lua_createtable(L, 0, 3);
 	setField(L, "min", CLIENT_VERSION);
 	setField(L, "max", CLIENT_VERSION);
-	setField(L, "string", std::to_string(CLIENT_VERSION_UPPER) + "." + std::to_string(CLIENT_VERSION_LOWER));
+	std::string version = fmt::format("{}.{}",CLIENT_VERSION_UPPER,CLIENT_VERSION_LOWER);
+	setField(L, "string", version);
 	return 1;
 }
 

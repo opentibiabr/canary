@@ -15,9 +15,9 @@ function unban.onSay(player, words, param)
 		return false
 	end
 
-	db.asyncQuery("DELETE FROM `account_bans` WHERE `account_id` = " .. result.getNumber(resultId, "account_id"))
-	db.asyncQuery("DELETE FROM `ip_bans` WHERE `ip` = " .. result.getNumber(resultId, "lastip"))
-	result.free(resultId)
+	db.asyncQuery("DELETE FROM `account_bans` WHERE `account_id` = " .. Result.getNumber(resultId, "account_id"))
+	db.asyncQuery("DELETE FROM `ip_bans` WHERE `ip` = " .. Result.getNumber(resultId, "lastip"))
+	Result.free(resultId)
 	player:sendTextMessage(MESSAGE_ADMINISTRADOR, param .. " has been unbanned.")
 	return false
 end

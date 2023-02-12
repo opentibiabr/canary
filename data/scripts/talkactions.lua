@@ -50,7 +50,9 @@ function Player.reloadTalkaction(self, param)
 		["talkaction"] = RELOAD_TYPE_TALKACTION,
 		["talkactions"] = RELOAD_TYPE_TALKACTION,
 		["talk"] = RELOAD_TYPE_TALKACTION,
-		["commands"] = RELOAD_TYPE_TALKACTION
+
+		["group"] = RELOAD_TYPE_GROUPS,
+		["groups"] = RELOAD_TYPE_GROUPS
 	}
 
 	if notAccountTypeGod(self) then

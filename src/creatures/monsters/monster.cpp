@@ -1,23 +1,11 @@
 /**
- * @file monster.cpp
- *
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -367,12 +355,12 @@ void Monster::removeTarget(Creature* creature)
 
 	auto it = std::find(targetList.begin(), targetList.end(), creature);
 	if (it != targetList.end()) {
-		creature->decrementReferenceCounter();
-		targetList.erase(it);
-
 		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen--;
 		}
+
+		creature->decrementReferenceCounter();
+		targetList.erase(it);
 	}
 }
 
@@ -481,7 +469,7 @@ bool Monster::isOpponent(const Creature* creature) const
 		if (creature != getMaster()) {
 			return true;
 		}
-	} else if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) {
+	} else if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
 		return false;
 	} else {
 		if (getFaction() != FACTION_DEFAULT) {
@@ -1147,20 +1135,11 @@ void Monster::onThinkYell(uint32_t interval)
 	}
 }
 
-bool Monster::pushItem(Item* item)
+bool Monster::pushItem(Item *item, const Direction& nextDirection)
 {
 	const Position& centerPos = item->getPosition();
-
-	static std::vector<std::pair<int32_t, int32_t>> relList {
-		{-1, -1}, {0, -1}, {1, -1},
-		{-1,  0},          {1,  0},
-		{-1,  1}, {0,  1}, {1,  1}
-	};
-
-	std::shuffle(relList.begin(), relList.end(), getRandomGenerator());
-
-	for (const auto& it : relList) {
-		Position tryPos(centerPos.x + it.first, centerPos.y + it.second, centerPos.z);
+	for (const auto& [x, y] : getPushItemLocationOptions(nextDirection)) {
+		Position tryPos(centerPos.x + x, centerPos.y + y, centerPos.z);
 		Tile* tile = g_game().map.getTile(tryPos);
 		if (tile && g_game().canThrowObjectTo(centerPos, tryPos) && g_game().internalMoveItem(item->getParent(), tile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
 			return true;
@@ -1169,31 +1148,33 @@ bool Monster::pushItem(Item* item)
 	return false;
 }
 
-void Monster::pushItems(Tile* tile)
+void Monster::pushItems(Tile *tile, const Direction& nextDirection)
 {
-	//We can not use iterators here since we can push the item to another tile
-	//which will invalidate the iterator.
-	//start from the end to minimize the amount of traffic
-	if (TileItemVector* items = tile->getItemList()) {
-		uint32_t moveCount = 0;
-		uint32_t removeCount = 0;
-
-		int32_t downItemSize = tile->getDownItemCount();
-		for (int32_t i = downItemSize; --i >= 0;) {
-			Item* item = items->at(i);
-			if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH)
-					|| item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getActionId() != 100 /* non-moveable action*/) {
-				if (moveCount < 20 && Monster::pushItem(item)) {
-					++moveCount;
-				} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
-					++removeCount;
-				}
+	// We can not use iterators here since we can push the item to another tile
+	// which will invalidate the iterator.
+	// start from the end to minimize the amount of traffic
+	TileItemVector* items;
+	if (!(items = tile->getItemList())) {
+		return;
+	}
+	uint32_t moveCount = 0;
+	uint32_t removeCount = 0;
+	auto it = items->begin();
+	while (it != items->end()) {
+		Item* item = *it;
+		if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH)
+				|| item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != 100 /* non-moveable action*/) {
+			if (moveCount < 20 && pushItem(item, nextDirection)) {
+				++moveCount;
+			} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
+				++removeCount;
 			}
+		} else {
+			it++;
 		}
-
-		if (removeCount > 0) {
-			g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
-		}
+	}
+	if(removeCount > 0){
+		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
 	}
 }
 
@@ -1255,38 +1236,19 @@ bool Monster::getNextStep(Direction& nextDirection, uint32_t& flags)
 	}
 
 	bool result = false;
-	if ((!followCreature || !hasFollowPath) && (!isSummon() || !isMasterInRange)) {
-		if (getTimeSinceLastMove() >= 1000) {
-			randomStepping = true;
-			//choose a random direction
-			result = getRandomStep(getPosition(), nextDirection);
-		}
-	} else if ((isSummon() && isMasterInRange) || followCreature) {
-		randomStepping = false;
-		result = Creature::getNextStep(nextDirection, flags);
-		if (result) {
-			flags |= FLAG_PATHFINDING;
-		} else {
-			if (ignoreFieldDamage) {
-				updateMapCache();
-			}
-			//target dancing
-			if (attackedCreature && attackedCreature == followCreature) {
-				if (isFleeing()) {
-					result = getDanceStep(getPosition(), nextDirection, false, false);
-				} else if (mType->info.staticAttackChance < static_cast<uint32_t>(uniform_random(1, 100))) {
-					result = getDanceStep(getPosition(), nextDirection);
-				}
-			}
-		}
+
+	if (followCreature && hasFollowPath) {
+		doFollowCreature(flags, nextDirection, result);
+	} else {
+		doRandomStep(nextDirection, result);
 	}
 
 	if (result && (canPushItems() || canPushCreatures())) {
-		const Position& pos = Spells::getCasterPosition(this, direction);
+		const Position& pos = getNextPosition(nextDirection, getPosition());
 		Tile* posTile = g_game().map.getTile(pos);
 		if (posTile) {
 			if (canPushItems()) {
-				Monster::pushItems(posTile);
+				Monster::pushItems(posTile, nextDirection);
 			}
 
 			if (canPushCreatures()) {
@@ -1296,6 +1258,33 @@ bool Monster::getNextStep(Direction& nextDirection, uint32_t& flags)
 	}
 
 	return result;
+}
+
+void Monster::doRandomStep(Direction &nextDirection, bool &result) {
+	if (getTimeSinceLastMove() >= 1000) {
+		randomStepping = true;
+		result = getRandomStep(getPosition(), nextDirection);
+	}
+}
+
+void Monster::doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &result) {
+	randomStepping = false;
+	result = Creature::getNextStep(nextDirection, flags);
+	if (result) {
+		flags |= FLAG_PATHFINDING;
+	} else {
+		if (ignoreFieldDamage) {
+			updateMapCache();
+		}
+		//target dancing
+		if (attackedCreature && attackedCreature == followCreature) {
+			if (isFleeing()) {
+				result = getDanceStep(getPosition(), nextDirection, false, false);
+			} else if (mType->info.staticAttackChance < static_cast<uint32_t>(uniform_random(1, 100))) {
+				result = getDanceStep(getPosition(), nextDirection);
+			}
+		}
+	}
 }
 
 bool Monster::getRandomStep(const Position& creaturePos, Direction& moveDirection) const
@@ -1941,11 +1930,11 @@ Item* Monster::getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature
 	if (corpse) {
 		if (mostDamageCreature) {
 			if (mostDamageCreature->getPlayer()) {
-				corpse->setCorpseOwner(mostDamageCreature->getID());
+				corpse->setAttribute(ItemAttribute_t::CORPSEOWNER, mostDamageCreature->getID());
 			} else {
 				const Creature* mostDamageCreatureMaster = mostDamageCreature->getMaster();
 				if (mostDamageCreatureMaster && mostDamageCreatureMaster->getPlayer()) {
-					corpse->setCorpseOwner(mostDamageCreatureMaster->getID());
+					corpse->setAttribute(ItemAttribute_t::CORPSEOWNER, mostDamageCreatureMaster->getID());
 				}
 			}
 		}
@@ -2232,4 +2221,27 @@ void Monster::setMonsterIcon(uint16_t iconcount, uint16_t iconnumber)
 
 bool Monster::canDropLoot() const {
 	return !mType->info.lootItems.empty();
+}
+
+std::vector<std::pair<int8_t, int8_t>> Monster::getPushItemLocationOptions(const Direction &direction) {
+	if (direction == DIRECTION_WEST || direction == DIRECTION_EAST) {
+		return {{0, -1}, {0, 1}};
+	}
+	if (direction == DIRECTION_NORTH || direction == DIRECTION_SOUTH) {
+		return {{-1, 0}, {1, 0}};
+	}
+	if (direction == DIRECTION_NORTHWEST) {
+		return {{0, -1}, {-1, 0}};
+	}
+	if (direction == DIRECTION_NORTHEAST) {
+		return {{0, -1}, {1, 0}};
+	}
+	if (direction == DIRECTION_SOUTHWEST) {
+		return {{0, 1}, {-1, 0}};
+	}
+	if (direction == DIRECTION_SOUTHEAST) {
+		return {{0, 1}, {1, 0}};
+	}
+
+	return {};
 }

@@ -30,15 +30,8 @@
 ]]
 
 ChestAction = {
-	[false] = {
-		itemId = false,
-		itemPos = {
-			{x = 33057, y = 31029, z = 7},
-			{x = 33055, y = 31029, z = 7},
-			{x = 33053, y = 31029, z = 7}
-		}
-	},
-	-- Keys quest
+	--[[
+	-- Example of usage
 	[5000] = {
 		itemId = xxxx,
 		itemPos = {
@@ -48,6 +41,15 @@ ChestAction = {
 		action = xxxx,
 		reward = {{xxxx, 1}},
 		storage = storage
+	},]]
+	-- Keys quest
+	[5000] = {
+		itemId = false,
+		itemPos = {
+			{x = 33057, y = 31029, z = 7},
+			{x = 33055, y = 31029, z = 7},
+			{x = 33053, y = 31029, z = 7}
+		}
 	},
 	-- The New Frontier Quest
 	[5001] = { -- Reward Outfit

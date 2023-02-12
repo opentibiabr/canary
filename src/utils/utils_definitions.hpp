@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_UTILS_UTILS_DEFINITIONS_HPP_
 #define SRC_UTILS_UTILS_DEFINITIONS_HPP_
@@ -522,7 +512,7 @@ enum NameEval_t : uint8_t {
 	INVALID_CHARACTER
 };
 
-enum item_t : uint16_t {
+enum ItemID_t : uint16_t {
 	ITEM_BROWSEFIELD = 470, // for internal use
 	ITEM_SUPPLY_STASH_INDEX = 1, //for internal use
 	ITEM_DEPOT_NULL = 22796, // for internal use - Actual Item ID: 168
@@ -665,13 +655,17 @@ enum item_t : uint16_t {
 	ITEM_PRISMATIC_RING = 16114,
 	ITEM_PRISMATIC_RING_ACTIVATED = 16264,
 
+	HIRELING_LAMP = 29432,
+
 	ITEM_FORGE_SLIVER = 37109,
 	ITEM_FORGE_CORE = 37110,
-	ITEM_EXALTATION_CHEST = 37561
+	ITEM_EXALTATION_CHEST = 37561,
+
+	ITEM_NONE = 0
 };
 
 // A map which contains items that, when on creating, should be transformed to the default type.
-const phmap::flat_hash_map<item_t, item_t> ItemTransformationMap = {
+const phmap::flat_hash_map<ItemID_t, ItemID_t> ItemTransformationMap = {
 	{ITEM_SWORD_RING_ACTIVATED, ITEM_SWORD_RING},
 	{ITEM_CLUB_RING_ACTIVATED, ITEM_CLUB_RING},
 	{ITEM_DWARVEN_RING_ACTIVATED, ITEM_DWARVEN_RING},
@@ -684,50 +678,50 @@ const phmap::flat_hash_map<item_t, item_t> ItemTransformationMap = {
 	{ITEM_OLD_DIAMOND_ARROW, ITEM_DIAMOND_ARROW},
 };
 
-enum PlayerFlags : uint64_t {
-	PlayerFlag_CannotUseCombat = 1 << 0,
-	PlayerFlag_CannotAttackPlayer = 1 << 1,
-	PlayerFlag_CannotAttackMonster = 1 << 2,
-	PlayerFlag_CannotBeAttacked = 1 << 3,
-	PlayerFlag_CanConvinceAll = 1 << 4,
-	PlayerFlag_CanSummonAll = 1 << 5,
-	PlayerFlag_CanIllusionAll = 1 << 6,
-	PlayerFlag_CanSenseInvisibility = 1 << 7,
-	PlayerFlag_IgnoredByMonsters = 1 << 8,
-	PlayerFlag_NotGainInFight = 1 << 9,
-	PlayerFlag_HasInfiniteMana = 1 << 10,
-	PlayerFlag_HasInfiniteSoul = 1 << 11,
-	PlayerFlag_HasNoExhaustion = 1 << 12,
-	PlayerFlag_CannotUseSpells = 1 << 13,
-	PlayerFlag_CannotPickupItem = 1 << 14,
-	PlayerFlag_CanAlwaysLogin = 1 << 15,
-	PlayerFlag_CanBroadcast = 1 << 16,
-	PlayerFlag_CanEditHouses = 1 << 17,
-	PlayerFlag_CannotBeBanned = 1 << 18,
-	PlayerFlag_CannotBePushed = 1 << 19,
-	PlayerFlag_HasInfiniteCapacity = 1 << 20,
-	PlayerFlag_CanPushAllCreatures = 1 << 21,
-	PlayerFlag_CanTalkRedPrivate = 1 << 22,
-	PlayerFlag_CanTalkRedChannel = 1 << 23,
-	PlayerFlag_TalkOrangeHelpChannel = 1 << 24,
-	PlayerFlag_NotGainExperience = 1 << 25,
-	PlayerFlag_NotGainMana = 1 << 26,
-	PlayerFlag_NotGainHealth = 1 << 27,
-	PlayerFlag_NotGainSkill = 1 << 28,
-	PlayerFlag_SetMaxSpeed = 1 << 29,
-	PlayerFlag_SpecialVIP = 1 << 30,
-	PlayerFlag_NotGenerateLoot = static_cast<uint64_t>(1) << 31,
-	PlayerFlag_CanTalkRedChannelAnonymous = static_cast<uint64_t>(1) << 32,
-	PlayerFlag_IgnoreProtectionZone = static_cast<uint64_t>(1) << 33,
-	PlayerFlag_IgnoreSpellCheck = static_cast<uint64_t>(1) << 34,
-	PlayerFlag_IgnoreWeaponCheck = static_cast<uint64_t>(1) << 35,
-	PlayerFlag_CannotBeMuted = static_cast<uint64_t>(1) << 36,
-	PlayerFlag_IsAlwaysPremium = static_cast<uint64_t>(1) << 37,
-};
+enum class PlayerFlags_t : uint8_t {
+	CannotUseCombat,
+	CannotAttackPlayer,
+	CannotAttackMonster,
+	CannotBeAttacked,
+	CanConvinceAll,
+	CanSummonAll,
+	CanIllusionAll,
+	CanSenseInvisibility,
+	IgnoredByMonsters,
+	NotGainInFight,
+	HasInfiniteMana,
+	HasInfiniteSoul,
+	HasNoExhaustion,
+	CannotUseSpells,
+	CannotPickupItem,
+	CanAlwaysLogin,
+	CanBroadcast,
+	CanEditHouses,
+	CannotBeBanned,
+	CannotBePushed,
+	HasInfiniteCapacity,
+	CanPushAllCreatures,
+	CanTalkRedPrivate,
+	CanTalkRedChannel,
+	TalkOrangeHelpChannel,
+	NotGainExperience,
+	NotGainMana,
+	NotGainHealth,
+	NotGainSkill,
+	SetMaxSpeed,
+	SpecialVIP,
+	NotGenerateLoot,
+	CanTalkRedChannelAnonymous,
+	IgnoreProtectionZone,
+	IgnoreSpellCheck,
+	IgnoreWeaponCheck,
+	CannotBeMuted,
+	IsAlwaysPremium,
+	CanMapClickTeleport,
+	IgnoredByNpcs,
 
-enum PlayerCustomFlags : uint64_t {
-	PlayerCustomFlag_CanMapClickTeleport = 1 << 0,
-	PlayerCustomFlag_IgnoredByNpcs = 1 << 1
+	// Must always be the last
+	FlagLast
 };
 
 enum Blessings_t : uint8_t {

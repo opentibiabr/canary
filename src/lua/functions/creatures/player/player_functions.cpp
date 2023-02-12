@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -1588,12 +1578,7 @@ int PlayerFunctions::luaPlayerGetStorageValue(lua_State* L) {
 	}
 
 	uint32_t key = getNumber<uint32_t>(L, 2);
-	int32_t value;
-	if (player->getStorageValue(key, value)) {
-		lua_pushnumber(L, value);
-	} else {
-		lua_pushnumber(L, -1);
-	}
+	lua_pushnumber(L, player->getStorageValue(key));
 	return 1;
 }
 
@@ -1849,11 +1834,13 @@ int PlayerFunctions::luaPlayerAddMoney(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerRemoveMoney(lua_State* L) {
-	// player:removeMoney(money)
+	// player:removeMoney(money[, flags = 0[, useBank = true]])
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
 		uint64_t money = getNumber<uint64_t>(L, 2);
-		pushBoolean(L, g_game().removeMoney(player, money));
+		int32_t flags = getNumber<int32_t>(L, 3, 0);
+		bool useBank = getBoolean(L, 4, true);
+		pushBoolean(L, g_game().removeMoney(player, money, flags, useBank));
 	} else {
 		lua_pushnil(L);
 	}
@@ -1906,7 +1893,7 @@ int PlayerFunctions::luaPlayerShowTextDialog(lua_State* L) {
 	}
 
 	if (!text.empty()) {
-		item->setText(text);
+		item->setAttribute(ItemAttribute_t::TEXT, text);
 		length = std::max<int32_t>(text.size(), length);
 	}
 
@@ -2459,7 +2446,7 @@ int PlayerFunctions::luaPlayerCanLearnSpell(lua_State* L) {
 		return 1;
 	}
 
-	if (player->hasFlag(PlayerFlag_IgnoreSpellCheck)) {
+	if (player->hasFlag(PlayerFlags_t::IgnoreSpellCheck)) {
 		pushBoolean(L, true);
 		return 1;
 	}
@@ -3200,6 +3187,33 @@ int PlayerFunctions::luaPlayerGetForgeCores(lua_State *L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerSetFaction(lua_State* L) {
+	// player:setFaction(factionId)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+	Faction_t factionId = getNumber<Faction_t>(L, 2);
+	player->setFaction(factionId);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetFaction(lua_State* L) {
+	// player:getFaction()
+	const Player* player = getUserdata<Player>(L, 1);
+	if (player == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	lua_pushnumber(L, player->getFaction());
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerIsUIExhausted(lua_State *L) {
 	// player:isUIExhausted()
 	Player* player = getUserdata<Player>(L, 1);
@@ -3208,6 +3222,7 @@ int PlayerFunctions::luaPlayerIsUIExhausted(lua_State *L) {
 		pushBoolean(L, false);
 		return 0;
 	}
+
 	uint16_t time = getNumber<uint16_t>(L, 2);
 	pushBoolean(L, player->isUIExhausted(time));
 	return 1;

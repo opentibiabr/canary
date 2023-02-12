@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -137,7 +127,7 @@ void House::updateDoorDescription() const
 	}
 
 	for (const auto& it : doorList) {
-		it->setSpecialDescription(ss.str());
+		it->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
 	}
 }
 
@@ -153,7 +143,7 @@ AccessHouseLevel_t House::getHouseAccessLevel(const Player* player)
 		}
 	}
 
-	if (player->hasFlag(PlayerFlag_CanEditHouses)) {
+	if (player->hasFlag(PlayerFlags_t::CanEditHouses)) {
 		return HOUSE_OWNER;
 	}
 
@@ -183,7 +173,7 @@ bool House::kickPlayer(Player* player, Player* target)
 		return false;
 	}
 
-	if (getHouseAccessLevel(player) < getHouseAccessLevel(target) || target->hasFlag(PlayerFlag_CanEditHouses)) {
+	if (getHouseAccessLevel(player) < getHouseAccessLevel(target) || target->hasFlag(PlayerFlags_t::CanEditHouses)) {
 		return false;
 	}
 
@@ -250,50 +240,16 @@ bool House::transferToDepot(Player* player) const
 	if (townId == 0 || owner == 0) {
 		return false;
 	}
-
 	ItemList moveItemList;
 	for (HouseTile* tile : houseTiles) {
 		if (const TileItemVector* items = tile->getItemList()) {
-			for (auto it = items->rbegin(), end = items->rend(); it != end; ++it) {
-				Item* item = (*it);
+			for (Item* item : *items) {
 				if (item->isWrapable()) {
-					Container* container = item->getContainer();
-					if (container) {
-						for (Item* containerItem : container->getItemList()) {
-							moveItemList.push_back(containerItem);
-						}
-					}
-
-					uint16_t hiddenCharges = 0;
-					if (isCaskItem(item->getID())) {
-						hiddenCharges = item->getSubType();
-					}
-					
-					std::string itemName = item->getName();
-					uint16_t itemID = item->getID();
-					Item* newItem = g_game().transformItem(item, ITEM_DECORATION_KIT);
-					ItemAttributes::CustomAttribute val;
-					val.set<int64_t>(itemID);
-					std::string key = "unWrapId";
-					newItem->setCustomAttribute(key, val);
-					std::ostringstream ss;
-					ss << "Unwrap it in your own house to create a <" << itemName << ">.";
-					newItem->setStrAttr(ITEM_ATTRIBUTE_DESCRIPTION, ss.str());
-					
-					if (hiddenCharges > 0) {
-						item->setDate(hiddenCharges);
-					}
-					
-					moveItemList.push_back(newItem);
+					handleWrapableItem(moveItemList, item);
 				} else if (item->isPickupable()) {
 					moveItemList.push_back(item);
 				} else {
-					Container* container = item->getContainer();
-					if (container) {
-						for (Item* containerItem : container->getItemList()) {
-							moveItemList.push_back(containerItem);
-						}
-					}
+					handleContainer(moveItemList, item);
 				}
 			}
 		}
@@ -303,6 +259,22 @@ bool House::transferToDepot(Player* player) const
 		g_game().internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT);
 	}
 	return true;
+}
+
+void House::handleWrapableItem(ItemList &moveItemList, Item *item) const {
+	if (item->isWrapContainer()) {
+		handleContainer(moveItemList, item);
+	}
+	Item *newItem = g_game().wrapItem(item);
+	moveItemList.push_back(newItem);
+}
+
+void House::handleContainer(ItemList &moveItemList, Item *item) const {
+	if (const auto container = item->getContainer()) {
+		for (Item* containerItem : container->getItemList()) {
+			moveItemList.push_back(containerItem);
+		}
+	}
 }
 
 bool House::getAccessList(uint32_t listId, std::string& list) const
@@ -417,7 +389,7 @@ HouseTransferItem* HouseTransferItem::createHouseTransferItem(House* house)
 	transferItem->setSubType(1);
 	std::ostringstream ss;
 	ss << "It is a house transfer document for '" << house->getName() << "'.";
-	transferItem->setSpecialDescription(ss.str());
+	transferItem->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
 	return transferItem;
 }
 
@@ -769,7 +741,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const
 
 				std::ostringstream ss;
 				ss << "Warning! \nThe " << period << " rent of " << house->getRent() << " gold for your house \"" << house->getName() << "\" is payable. Have it within " << daysLeft << " days or you will lose this house.";
-				letter->setText(ss.str());
+				letter->setAttribute(ItemAttribute_t::TEXT, ss.str());
 				g_game().internalAddItem(player.getInbox(), letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
 				house->setPayRentWarnings(house->getPayRentWarnings() + 1);
 			} else {

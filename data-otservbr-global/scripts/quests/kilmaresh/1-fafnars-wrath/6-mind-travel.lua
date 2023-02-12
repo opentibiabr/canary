@@ -77,9 +77,6 @@ rightMirror:register()
 
 
 -- Memories
-
-local shardIds = {31354, 31355, 31356}
-
 local memoriesWords = {
     "The Ambassador tells another dignitary: Rathleton must never be surpassed! I will procure that the Empire falters!",
     "Through a dimensional gate you can see the Ambassador of Rathleton wearing a cloak with a black sphinx on it.",
@@ -112,7 +109,7 @@ function memoryShards.onUse(player, item, fromPosition, target, toPosition, isHo
     return false
 end
 
-memoryShards:id(shardIds) -- Green, blue and purple memory shards
+memoryShards:id(31354, 31355, 31356) -- Green, blue and purple memory shards
 memoryShards:register()
 
 
@@ -130,6 +127,7 @@ function energyField.onStepIn(creature, item, position, fromPosition)
 
     local playerShardIds = {}
 
+		local shardIds = {31354, 31355, 31356}
     -- Get player owned shards
     for i = 1, #shardIds do
         if player:getItemById(shardIds[i], true) then

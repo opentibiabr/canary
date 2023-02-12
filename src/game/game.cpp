@@ -2135,7 +2135,9 @@ ReturnValue Game::internalTeleport(Thing* thing, const Position& newPos, bool pu
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	if (thing->isRemoved()) {
+	if (newPos == thing->getPosition()) {
+		return RETURNVALUE_CONTACTADMINISTRATOR;
+	} else if (thing->isRemoved()) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 

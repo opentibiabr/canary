@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -19,10 +19,8 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "server/signals.h"
 
-
-Signals::Signals(asio::io_service& service) :
-	set(service)
-{
+Signals::Signals(asio::io_service &service) :
+	set(service) {
 	set.add(SIGINT);
 	set.add(SIGTERM);
 #ifndef _WIN32
@@ -38,12 +36,12 @@ Signals::Signals(asio::io_service& service) :
 	asyncWait();
 }
 
-void Signals::asyncWait()
-{
-	set.async_wait([this] (std::error_code err, int signal) {
+void Signals::asyncWait() {
+	set.async_wait([this](std::error_code err, int signal) {
 		if (err) {
 			SPDLOG_ERROR("[Signals::asyncWait] - "
-                         "Signal handling error: {}", err.message());
+						 "Signal handling error: {}",
+						 err.message());
 			return;
 		}
 		dispatchSignalHandler(signal);
@@ -54,24 +52,23 @@ void Signals::asyncWait()
 // On Windows this function does not need to be signal-safe,
 // as it is called in a new thread.
 // https://github.com/otland/forgottenserver/pull/2473
-void Signals::dispatchSignalHandler(int signal)
-{
-	switch(signal) {
-		case SIGINT: //Shuts the server down
+void Signals::dispatchSignalHandler(int signal) {
+	switch (signal) {
+		case SIGINT: // Shuts the server down
 			g_dispatcher().addTask(createTask(sigintHandler));
 			break;
-		case SIGTERM: //Shuts the server down
+		case SIGTERM: // Shuts the server down
 			g_dispatcher().addTask(createTask(sigtermHandler));
 			break;
 #ifndef _WIN32
-		case SIGHUP: //Reload config/data
+		case SIGHUP: // Reload config/data
 			g_dispatcher().addTask(createTask(sighupHandler));
 			break;
-		case SIGUSR1: //Saves game state
+		case SIGUSR1: // Saves game state
 			g_dispatcher().addTask(createTask(sigusr1Handler));
 			break;
 #else
-		case SIGBREAK: //Shuts the server down
+		case SIGBREAK: // Shuts the server down
 			g_dispatcher().addTask(createTask(sigbreakHandler));
 			// hold the thread until other threads end
 			g_scheduler().join();
@@ -84,30 +81,26 @@ void Signals::dispatchSignalHandler(int signal)
 	}
 }
 
-void Signals::sigbreakHandler()
-{
-	//Dispatcher thread
+void Signals::sigbreakHandler() {
+	// Dispatcher thread
 	SPDLOG_INFO("SIGBREAK received, shutting game server down...");
 	g_game().setGameState(GAME_STATE_SHUTDOWN);
 }
 
-void Signals::sigtermHandler()
-{
-	//Dispatcher thread
+void Signals::sigtermHandler() {
+	// Dispatcher thread
 	SPDLOG_INFO("SIGTERM received, shutting game server down...");
 	g_game().setGameState(GAME_STATE_SHUTDOWN);
 }
 
-void Signals::sigusr1Handler()
-{
-	//Dispatcher thread
+void Signals::sigusr1Handler() {
+	// Dispatcher thread
 	SPDLOG_INFO("SIGUSR1 received, saving the game state...");
 	g_game().saveGameState();
 }
 
-void Signals::sighupHandler()
-{
-	//Dispatcher thread
+void Signals::sighupHandler() {
+	// Dispatcher thread
 	SPDLOG_INFO("SIGHUP received, reloading config files...");
 
 	g_configManager().reload();
@@ -135,9 +128,8 @@ void Signals::sighupHandler()
 	lua_gc(g_luaEnvironment.getLuaState(), LUA_GCCOLLECT, 0);
 }
 
-void Signals::sigintHandler()
-{
-	//Dispatcher thread
+void Signals::sigintHandler() {
+	// Dispatcher thread
 	SPDLOG_INFO("SIGINT received, shutting game server down...");
 	g_game().setGameState(GAME_STATE_SHUTDOWN);
 }

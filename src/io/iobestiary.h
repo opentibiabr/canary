@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_IO_IOBESTIARY_H_
 #define SRC_IO_IOBESTIARY_H_
@@ -16,41 +16,38 @@
 
 class Game;
 
-class Charm
-{
- public:
-	Charm() = default;
-	Charm(std::string initname, charmRune_t initcharmRune_t, std::string initdescription, charm_t inittype, uint16_t initpoints, int32_t initbinary) :
-		name(initname), id(initcharmRune_t), description(initdescription), type(inittype), points(initpoints), binary(initbinary) {}
-	virtual ~Charm() = default;
+class Charm {
+	public:
+		Charm() = default;
+		Charm(std::string initname, charmRune_t initcharmRune_t, std::string initdescription, charm_t inittype, uint16_t initpoints, int32_t initbinary) :
+			name(initname), id(initcharmRune_t), description(initdescription), type(inittype), points(initpoints), binary(initbinary) { }
+		virtual ~Charm() = default;
 
-	std::string name;
-	std::string cancelMsg;
-	std::string logMsg;
-	std::string description;
+		std::string name;
+		std::string cancelMsg;
+		std::string logMsg;
+		std::string description;
 
-	charm_t type;
-	charmRune_t id = CHARM_NONE;
-	CombatType_t dmgtype = COMBAT_NONE;
-	uint8_t effect = CONST_ME_NONE;
+		charm_t type;
+		charmRune_t id = CHARM_NONE;
+		CombatType_t dmgtype = COMBAT_NONE;
+		uint8_t effect = CONST_ME_NONE;
 
-	int8_t percent = 0;
-	int8_t chance = 0;
-	uint16_t points = 0;
-	int32_t binary = 0;
-
+		int8_t percent = 0;
+		int8_t chance = 0;
+		uint16_t points = 0;
+		int32_t binary = 0;
 };
 
-class IOBestiary
-{
+class IOBestiary {
 	public:
 		IOBestiary() = default;
 
 		// non-copyable
-		IOBestiary(IOBestiary const&) = delete;
-		void operator=(IOBestiary const&) = delete;
+		IOBestiary(const IOBestiary &) = delete;
+		void operator=(const IOBestiary &) = delete;
 
-		static IOBestiary& getInstance() {
+		static IOBestiary &getInstance() {
 			// Guaranteed to be destroyed
 			static IOBestiary instance;
 			// Instantiated on first use
@@ -82,9 +79,8 @@ class IOBestiary
 		std::map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(Player* player, std::map<uint16_t, std::string> mtype_list) const;
 		std::map<uint8_t, int16_t> getMonsterElements(MonsterType* mtype) const;
 		std::map<uint16_t, std::string> findRaceByName(const std::string &race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
-
 };
 
 constexpr auto g_iobestiary = &IOBestiary::getInstance;
 
-#endif  // SRC_IO_IOBESTIARY_H_
+#endif // SRC_IO_IOBESTIARY_H_

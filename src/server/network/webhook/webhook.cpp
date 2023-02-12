@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -16,7 +16,7 @@
 // Go back while you still can.
 
 static bool init = false;
-static curl_slist *headers = NULL;
+static curl_slist* headers = NULL;
 
 void webhook_init() {
 	if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
@@ -34,7 +34,7 @@ void webhook_init() {
 	init = true;
 }
 
-static int webhook_send_message_(const char *url, const char *payload, std::string *response_body);
+static int webhook_send_message_(const char* url, const char* payload, std::string* response_body);
 static std::string get_payload(std::string title, std::string message, int color);
 
 void webhook_send_message(std::string title, std::string message, int color, std::string url) {
@@ -49,7 +49,7 @@ void webhook_send_message(std::string title, std::string message, int color, std
 
 	if (title.empty() || message.empty()) {
 		SPDLOG_ERROR("Failed to send webhook message; "
-                     "title or message to send was empty");
+					 "title or message to send was empty");
 		return;
 	}
 
@@ -59,9 +59,9 @@ void webhook_send_message(std::string title, std::string message, int color, std
 
 	if (response_code != 204 && response_code != -1) {
 		SPDLOG_ERROR("Failed to send webhook message; "
-                     "HTTP request failed with code: {}"
-                     "response body: {} request body: {}",
-                     response_code, response_body, payload);
+					 "HTTP request failed with code: {}"
+					 "response body: {} request body: {}",
+					 response_code, response_body, payload);
 	}
 }
 
@@ -71,9 +71,9 @@ static std::string get_payload(std::string title, std::string message, int color
 	struct tm tm;
 
 #ifdef _MSC_VER
-  gmtime_s(&tm, &now);
+	gmtime_s(&tm, &now);
 #else
-  gmtime_r(&now, &tm);
+	gmtime_r(&now, &tm);
 #endif
 
 	char time_buf[sizeof "00:00"];
@@ -81,9 +81,9 @@ static std::string get_payload(std::string title, std::string message, int color
 
 	std::stringstream footer_text;
 	footer_text
-			<< g_configManager().getString(IP) << ":"
-			<< g_configManager().getNumber(GAME_PORT) << " | "
-			<< time_buf << " UTC";
+		<< g_configManager().getString(IP) << ":"
+		<< g_configManager().getNumber(GAME_PORT) << " | "
+		<< time_buf << " UTC";
 
 	Json::Value footer(Json::objectValue);
 	footer["text"] = Json::Value(footer_text.str());
@@ -112,18 +112,18 @@ static std::string get_payload(std::string title, std::string message, int color
 	return out.str();
 }
 
-static int webhook_send_message_(const char *url, const char *payload, std::string *response_body) {
-	CURL *curl = curl_easy_init();
+static int webhook_send_message_(const char* url, const char* payload, std::string* response_body) {
+	CURL* curl = curl_easy_init();
 	if (!curl) {
 		SPDLOG_ERROR("Failed to send webhook message; curl_easy_init failed");
 		return -1;
 	}
 
 	curl_easy_setopt(curl, CURLOPT_URL, url);
-	curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+	curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_3);
 	curl_easy_setopt(curl, CURLOPT_POST, 1L);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, reinterpret_cast<void *>(&response_body));
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, reinterpret_cast<void*>(&response_body));
 	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 	curl_easy_setopt(curl, CURLOPT_USERAGENT, "canary (https://github.com/Hydractify/canary)");
 
@@ -133,8 +133,7 @@ static int webhook_send_message_(const char *url, const char *payload, std::stri
 	if (res == CURLE_OK) {
 		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
 	} else {
-		SPDLOG_ERROR("Failed to send webhook message with the error: {}",
-						curl_easy_strerror(res));
+		SPDLOG_ERROR("Failed to send webhook message with the error: {}", curl_easy_strerror(res));
 	}
 
 	curl_easy_cleanup(curl);

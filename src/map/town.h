@@ -5,22 +5,22 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_MAP_TOWN_H_
 #define SRC_MAP_TOWN_H_
 
 #include "game/movement/position.h"
 
-class Town
-{
+class Town {
 	public:
-		explicit Town(uint32_t initId) : id(initId) {}
+		explicit Town(uint32_t initId) :
+			id(initId) { }
 
-		const Position& getTemplePosition() const {
+		const Position &getTemplePosition() const {
 			return templePosition;
 		}
-		const std::string& getName() const {
+		const std::string &getName() const {
 			return name;
 		}
 
@@ -42,26 +42,25 @@ class Town
 
 using TownMap = std::map<uint32_t, Town*>;
 
-class Towns
-{
+class Towns {
 	public:
 		Towns() = default;
 		~Towns() {
-			for (const auto& it : townMap) {
+			for (const auto &it : townMap) {
 				delete it.second;
 			}
 		}
 
 		// non-copyable
-		Towns(const Towns&) = delete;
-		Towns& operator=(const Towns&) = delete;
+		Towns(const Towns &) = delete;
+		Towns &operator=(const Towns &) = delete;
 
 		bool addTown(uint32_t townId, Town* town) {
 			return townMap.emplace(townId, town).second;
 		}
 
-		Town* getTown(const std::string& townName) const {
-			for (const auto& it : townMap) {
+		Town* getTown(const std::string &townName) const {
+			for (const auto &it : townMap) {
 				if (strcasecmp(townName.c_str(), it.second->getName().c_str()) == 0) {
 					return it.second;
 				}
@@ -77,7 +76,7 @@ class Towns
 			return it->second;
 		}
 
-		const TownMap& getTowns() const {
+		const TownMap &getTowns() const {
 			return townMap;
 		}
 
@@ -85,4 +84,4 @@ class Towns
 		TownMap townMap;
 };
 
-#endif  // SRC_MAP_TOWN_H_
+#endif // SRC_MAP_TOWN_H_

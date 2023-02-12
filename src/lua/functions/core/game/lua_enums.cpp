@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -20,16 +20,20 @@
 #include "game/functions/game_reload.hpp"
 #include "game/game.h"
 
-#define registerEnumClass(luaState, enumClassType) { \
-	auto number = magic_enum::enum_integer(enumClassType); \
-	auto name = magic_enum::enum_name(enumClassType).data(); \
-	registerGlobalVariable(luaState, name, number); \
-} void(0)
+#define registerEnumClass(luaState, enumClassType)               \
+	{                                                            \
+		auto number = magic_enum::enum_integer(enumClassType);   \
+		auto name = magic_enum::enum_name(enumClassType).data(); \
+		registerGlobalVariable(luaState, name, number);          \
+	}                                                            \
+	void(0)
 
-#define registerEnum(L, value) { \
-	std::string enumName = #value; \
-	registerGlobalVariable(L, enumName.substr(enumName.find_last_of(':') + 1), value); \
-} void(0)
+#define registerEnum(L, value)                                                             \
+	{                                                                                      \
+		std::string enumName = #value;                                                     \
+		registerGlobalVariable(L, enumName.substr(enumName.find_last_of(':') + 1), value); \
+	}                                                                                      \
+	void(0)
 
 void LuaEnums::init(lua_State* L) {
 	initOthersEnums(L);
@@ -121,7 +125,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, ORIGIN_SPELL);
 	registerEnum(L, ORIGIN_MELEE);
 	registerEnum(L, ORIGIN_RANGED);
-	
+
 	registerEnum(L, PLAYERSEX_FEMALE);
 	registerEnum(L, PLAYERSEX_MALE);
 

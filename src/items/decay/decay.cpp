@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -13,8 +13,7 @@
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 
-void Decay::startDecay(Item* item)
-{
+void Decay::startDecay(Item* item) {
 	if (!item) {
 		return;
 	}
@@ -57,20 +56,19 @@ void Decay::startDecay(Item* item)
 	}
 }
 
-void Decay::stopDecay(Item* item)
-{
+void Decay::stopDecay(Item* item) {
 	if (item->hasAttribute(ItemAttribute_t::DECAYSTATE)) {
 		auto timestamp = item->getAttribute<int64_t>(ItemAttribute_t::DURATION_TIMESTAMP);
 		if (item->hasAttribute(ItemAttribute_t::DURATION_TIMESTAMP)) {
 			auto it = decayMap.find(timestamp);
 			if (it != decayMap.end()) {
-				std::vector<Item*>& decayItems = it->second;
+				std::vector<Item*> &decayItems = it->second;
 
 				size_t i = 0, end = decayItems.size();
 				if (end == 1) {
 					if (item == decayItems[i]) {
 						if (item->hasAttribute(ItemAttribute_t::DURATION)) {
-							//Incase we removed duration attribute don't assign new duration
+							// Incase we removed duration attribute don't assign new duration
 							item->setDuration(item->getDuration());
 						}
 						item->removeAttribute(ItemAttribute_t::DECAYSTATE);
@@ -83,7 +81,7 @@ void Decay::stopDecay(Item* item)
 				while (i < end) {
 					if (item == decayItems[i]) {
 						if (item->hasAttribute(ItemAttribute_t::DURATION)) {
-							//Incase we removed duration attribute don't assign new duration
+							// Incase we removed duration attribute don't assign new duration
 							item->setDuration(item->getDuration());
 						}
 						item->removeAttribute(ItemAttribute_t::DECAYSTATE);
@@ -103,12 +101,11 @@ void Decay::stopDecay(Item* item)
 	}
 }
 
-void Decay::checkDecay()
-{
+void Decay::checkDecay() {
 	int64_t timestamp = OTSYS_TIME();
 
 	std::vector<Item*> tempItems;
-	tempItems.reserve(32);// Small preallocation
+	tempItems.reserve(32); // Small preallocation
 
 	auto it = decayMap.begin(), end = decayMap.end();
 	while (it != end) {
@@ -117,7 +114,7 @@ void Decay::checkDecay()
 		}
 
 		// Iterating here is unsafe so let's copy our items into temporary vector
-		std::vector<Item*>& decayItems = it->second;
+		std::vector<Item*> &decayItems = it->second;
 		tempItems.insert(tempItems.end(), decayItems.begin(), decayItems.end());
 		it = decayMap.erase(it);
 	}
@@ -139,9 +136,8 @@ void Decay::checkDecay()
 	}
 }
 
-void Decay::internalDecayItem(Item* item)
-{
-	const ItemType& it = Item::items[item->getID()];
+void Decay::internalDecayItem(Item* item) {
+	const ItemType &it = Item::items[item->getID()];
 	if (it.decayTo != 0) {
 		Player* player = item->getHoldingPlayer();
 		if (player) {
@@ -187,8 +183,8 @@ void Decay::internalDecayItem(Item* item)
 		ReturnValue ret = g_game().internalRemoveItem(item);
 		if (ret != RETURNVALUE_NOERROR) {
 			SPDLOG_ERROR("[Decay::internalDecayItem] - internalDecayItem failed, "
-                         "error code: {}, item id: {}",
-                         static_cast<uint32_t>(ret), item->getID());
+						 "error code: {}, item id: {}",
+						 static_cast<uint32_t>(ret), item->getID());
 		}
 	}
 }

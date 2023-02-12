@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_ITEMS_ITEM_TYPE_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_ITEMS_ITEM_TYPE_FUNCTIONS_HPP_
@@ -76,7 +76,7 @@ class ItemTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "ItemType", "getBaseSpeed", ItemTypeFunctions::luaItemTypeGetBaseSpeed);
 
 			registerMethod(L, "ItemType", "hasSubType", ItemTypeFunctions::luaItemTypeHasSubType);
-			
+
 			ItemClassificationFunctions::init(L);
 		}
 
@@ -106,7 +106,7 @@ class ItemTypeFunctions final : LuaScriptInterface {
 		static int luaItemTypeGetPluralName(lua_State* L);
 		static int luaItemTypeGetArticle(lua_State* L);
 		static int luaItemTypeGetDescription(lua_State* L);
-		static int luaItemTypeGetSlotPosition(lua_State *L);
+		static int luaItemTypeGetSlotPosition(lua_State* L);
 
 		static int luaItemTypeGetCharges(lua_State* L);
 		static int luaItemTypeGetFluidSource(lua_State* L);
@@ -141,4 +141,4 @@ class ItemTypeFunctions final : LuaScriptInterface {
 		static int luaItemTypeHasSubType(lua_State* L);
 };
 
-#endif  // SRC_LUA_FUNCTIONS_ITEMS_ITEM_TYPE_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_ITEMS_ITEM_TYPE_FUNCTIONS_HPP_

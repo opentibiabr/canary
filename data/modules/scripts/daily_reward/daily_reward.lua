@@ -461,10 +461,10 @@ function Player.selectDailyReward(self, msg)
 		for k, v in ipairs(items) do
 			if dailyTable.itemCharges then
 				for i = 1, v.count do
-					inbox:addItem(v.ItemId, dailyTable.itemCharges):setActionId(NOT_TRADEABLE_ACTION) -- adding charges for each item
+					inbox:addItem(v.itemId, dailyTable.itemCharges):setActionId(NOT_TRADEABLE_ACTION) -- adding charges for each item
 				end
 			else
-				inbox:addItem(v.ItemId, v.count):setActionId(NOT_TRADEABLE_ACTION) -- adding single item w/o charges
+				inbox:addItem(v.itemId, v.count):setActionId(NOT_TRADEABLE_ACTION) -- adding single item w/o charges
 			end
 			if k ~= columnsPicked then
 				description = description .. "" .. v.count .. "x " .. ItemType(v.itemId):getName() .. ", "

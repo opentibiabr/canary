@@ -465,9 +465,17 @@ void Tile::onUpdateTile(const SpectatorHashSet &spectators) {
 }
 
 ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileFlags, Creature*) const {
+	if (hasBitSet(FLAG_NOLIMIT, tileFlags)) {
+		return RETURNVALUE_NOERROR;
+	}
+
 	if (const Creature* creature = thing.getCreature()) {
-		if (hasBitSet(FLAG_NOLIMIT, tileFlags)) {
-			return RETURNVALUE_NOERROR;
+
+		if (creature->getNpc()) {
+			ReturnValue returnValue = checkNpcCanWalkIntoTile();
+			if (returnValue != RETURNVALUE_NOERROR) {
+				return returnValue;
+			}
 		}
 
 		if (hasBitSet(FLAG_PATHFINDING, tileFlags) && hasFlag(TILESTATE_FLOORCHANGE | TILESTATE_TELEPORT)) {
@@ -525,9 +533,8 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 				}
 			}
 
-			MagicField* field = getFieldItem();
-			if (field && !field->isBlocking() && field->getDamage() != 0) {
-				CombatType_t combatType = field->getCombatType();
+			if (hasHarmfulField()) {
+				CombatType_t combatType = getFieldItem()->getCombatType();
 
 				// There is 3 options for a monster to enter a magic field
 				// 1) Monster is immune
@@ -557,7 +564,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 				}
 			}
 
-			if (hasBitSet(FLAG_PATHFINDING, tileFlags) && hasFlag(TILESTATE_MAGICFIELD) && !fieldIsUnharmable()) {
+			if (hasBitSet(FLAG_PATHFINDING, tileFlags) && hasHarmfulField()) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
 
@@ -633,10 +640,6 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
-		if (hasBitSet(FLAG_NOLIMIT, tileFlags)) {
-			return RETURNVALUE_NOERROR;
-		}
-
 		bool itemIsHangable = item->isHangable();
 		if (ground == nullptr && !itemIsHangable) {
 			return RETURNVALUE_NOTPOSSIBLE;
@@ -700,9 +703,16 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 	return RETURNVALUE_NOERROR;
 }
 
-bool Tile::fieldIsUnharmable() const {
-	uint16_t fieldId = getFieldItem()->getID();
-	return fieldId == ITEM_FIREFIELD_PVP_SMALL || fieldId == ITEM_FIREFIELD_PERSISTENT_SMALL;
+ReturnValue Tile::checkNpcCanWalkIntoTile() const {
+	if (hasHarmfulField()) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	} else {
+		return RETURNVALUE_NOERROR;
+	}
+}
+
+bool Tile::hasHarmfulField() const {
+	return hasFlag(TILESTATE_MAGICFIELD) && getFieldItem() && !getFieldItem()->isBlocking() && getFieldItem()->getDamage() > 0;
 }
 
 ReturnValue Tile::queryMaxCount(int32_t, const Thing &, uint32_t count, uint32_t &maxQueryCount, uint32_t) const {

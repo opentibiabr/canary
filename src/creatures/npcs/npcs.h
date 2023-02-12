@@ -32,7 +32,7 @@ class NpcType {
 
 				LightInfo light = {};
 
-				uint8_t speechBubble;
+				uint8_t speechBubble = SPEECHBUBBLE_NORMAL;
 
 				uint16_t currencyId = ITEM_GOLD_COIN;
 

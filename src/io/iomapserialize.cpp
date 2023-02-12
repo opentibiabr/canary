@@ -56,7 +56,7 @@ bool IOMapSerialize::saveHouseItems() {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 
-	//Start the transaction
+	// Start the transaction
 	DBTransaction transaction1;
 	if (!transaction1.start()) {
 		return false;
@@ -64,7 +64,7 @@ bool IOMapSerialize::saveHouseItems() {
 
 	DBTransactionGuard guard(transaction1);
 
-	//clear old tile data
+	// clear old tile data
 	if (!db.executeQuery("DELETE FROM `tile_store`")) {
 		return false;
 	}

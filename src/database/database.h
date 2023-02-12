@@ -33,9 +33,9 @@ class Database {
 
 		bool connect();
 
-		bool executeQuery(const std::string_view& query);
+		bool executeQuery(const std::string_view &query);
 
-		DBResult_ptr storeQuery(const std::string_view& query);
+		DBResult_ptr storeQuery(const std::string_view &query);
 
 		std::string escapeString(const std::string &s) const;
 
@@ -59,11 +59,7 @@ class Database {
 		bool commit();
 
 		bool isRecoverableError(unsigned int error) {
-			return error == CR_SERVER_LOST ||
-				error == CR_SERVER_GONE_ERROR ||
-				error == CR_CONN_HOST_ERROR ||
-				error == 1053/*ER_SERVER_SHUTDOWN*/ ||
-				error == CR_CONNECTION_ERROR;
+			return error == CR_SERVER_LOST || error == CR_SERVER_GONE_ERROR || error == CR_CONN_HOST_ERROR || error == 1053 /*ER_SERVER_SHUTDOWN*/ || error == CR_CONNECTION_ERROR;
 		}
 
 	private:
@@ -158,7 +154,7 @@ class DBResult {
 		bool next();
 
 	private:
-		MYSQL_RES *handle;
+		MYSQL_RES* handle;
 		MYSQL_ROW row;
 
 		phmap::flat_hash_map<std::string_view, size_t> listNames;
@@ -173,7 +169,7 @@ class DBInsert {
 	public:
 		explicit DBInsert(std::string query);
 		bool addRow(const std::string_view row);
-		bool addRow(std::ostringstream& row);
+		bool addRow(std::ostringstream &row);
 		bool execute();
 
 	private:
@@ -254,26 +250,32 @@ class DBTransaction {
 			return false;
 		}
 
-		bool isStarted() const { return state == STATE_START; }
-		bool isCommitted() const { return state == STATE_COMMIT; }
-		bool isRolledBack() const { return state == STATE_NO_START; }
+		bool isStarted() const {
+			return state == STATE_START;
+		}
+		bool isCommitted() const {
+			return state == STATE_COMMIT;
+		}
+		bool isRolledBack() const {
+			return state == STATE_NO_START;
+		}
 
 	private:
 		TransactionStates_t state = STATE_NO_START;
 };
 
-class DBTransactionGuard
-{
+class DBTransactionGuard {
 	public:
-		explicit DBTransactionGuard(DBTransaction& transaction) : transaction_(transaction) {}
+		explicit DBTransactionGuard(DBTransaction &transaction) :
+			transaction_(transaction) { }
 
 		// non-copyable
-        DBTransactionGuard(const DBTransactionGuard&) = delete;
-        DBTransactionGuard& operator=(const DBTransactionGuard&) = delete;
+		DBTransactionGuard(const DBTransactionGuard &) = delete;
+		DBTransactionGuard &operator=(const DBTransactionGuard &) = delete;
 
-        // non-movable
-        DBTransactionGuard(DBTransactionGuard&&) = delete;
-        DBTransactionGuard& operator=(DBTransactionGuard&&) = delete;
+		// non-movable
+		DBTransactionGuard(DBTransactionGuard &&) = delete;
+		DBTransactionGuard &operator=(DBTransactionGuard &&) = delete;
 
 		~DBTransactionGuard() {
 			// Commit the transaction if it was started successfully
@@ -293,7 +295,7 @@ class DBTransactionGuard
 		}
 
 	private:
-		DBTransaction& transaction_;
+		DBTransaction &transaction_;
 };
 
-#endif  // SRC_DATABASE_DATABASE_H_
+#endif // SRC_DATABASE_DATABASE_H_

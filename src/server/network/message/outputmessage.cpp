@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -13,19 +13,17 @@
 #include "server/network/protocol/protocol.h"
 #include "game/scheduling/scheduler.h"
 
-const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY {10};
+const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
 
-void OutputMessagePool::scheduleSendAll()
-{
+void OutputMessagePool::scheduleSendAll() {
 	auto function = std::bind_front(&OutputMessagePool::sendAll, this);
 	g_scheduler().addEvent(createSchedulerTask(OUTPUTMESSAGE_AUTOSEND_DELAY.count(), function));
 }
 
-void OutputMessagePool::sendAll()
-{
-	//dispatcher thread
-	for (auto& protocol : bufferedProtocols) {
-		auto& msg = protocol->getCurrentBuffer();
+void OutputMessagePool::sendAll() {
+	// dispatcher thread
+	for (auto &protocol : bufferedProtocols) {
+		auto &msg = protocol->getCurrentBuffer();
 		if (msg) {
 			protocol->send(std::move(msg));
 		}
@@ -36,18 +34,16 @@ void OutputMessagePool::sendAll()
 	}
 }
 
-void OutputMessagePool::addProtocolToAutosend(Protocol_ptr protocol)
-{
-	//dispatcher thread
+void OutputMessagePool::addProtocolToAutosend(Protocol_ptr protocol) {
+	// dispatcher thread
 	if (bufferedProtocols.empty()) {
 		scheduleSendAll();
 	}
 	bufferedProtocols.emplace_back(protocol);
 }
 
-void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr& protocol)
-{
-	//dispatcher thread
+void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr &protocol) {
+	// dispatcher thread
 	auto it = std::ranges::find(bufferedProtocols.begin(), bufferedProtocols.end(), protocol);
 	if (it != bufferedProtocols.end()) {
 		*it = bufferedProtocols.back();
@@ -55,7 +51,6 @@ void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr& protocol)
 	}
 }
 
-OutputMessage_ptr OutputMessagePool::getOutputMessage()
-{
+OutputMessage_ptr OutputMessagePool::getOutputMessage() {
 	return std::make_shared<OutputMessage>();
 }

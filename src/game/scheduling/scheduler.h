@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_GAME_SCHEDULING_SCHEDULER_H_
 #define SRC_GAME_SCHEDULING_SCHEDULER_H_
@@ -15,8 +15,7 @@
 
 static constexpr int32_t SCHEDULER_MINTICKS = 50;
 
-class SchedulerTask : public Task
-{
+class SchedulerTask : public Task {
 	public:
 		void setEventId(uint32_t id) {
 			eventId = id;
@@ -30,30 +29,30 @@ class SchedulerTask : public Task
 		}
 
 	private:
-		SchedulerTask(uint32_t delay, std::function<void (void)>&& f) : Task(delay, std::move(f)) {}
+		SchedulerTask(uint32_t delay, std::function<void(void)> &&f) :
+			Task(delay, std::move(f)) { }
 
 		uint32_t eventId = 0;
 
-		friend SchedulerTask* createSchedulerTask(uint32_t, std::function<void (void)>);
+		friend SchedulerTask* createSchedulerTask(uint32_t, std::function<void(void)>);
 };
 
-SchedulerTask* createSchedulerTask(uint32_t delay, std::function<void (void)> f);
+SchedulerTask* createSchedulerTask(uint32_t delay, std::function<void(void)> f);
 
 struct TaskComparator {
-	bool operator()(const SchedulerTask* lhs, const SchedulerTask* rhs) const {
-		return lhs->getCycle() > rhs->getCycle();
-	}
+		bool operator()(const SchedulerTask* lhs, const SchedulerTask* rhs) const {
+			return lhs->getCycle() > rhs->getCycle();
+		}
 };
 
-class Scheduler : public ThreadHolder<Scheduler>
-{
+class Scheduler : public ThreadHolder<Scheduler> {
 	public:
 		Scheduler() = default;
-		
-		Scheduler(Scheduler const&) = delete;
-		void operator=(Scheduler const&) = delete;
 
-		static Scheduler& getInstance() {
+		Scheduler(const Scheduler &) = delete;
+		void operator=(const Scheduler &) = delete;
+
+		static Scheduler &getInstance() {
 			// Guaranteed to be destroyed
 			static Scheduler instance;
 			// Instantiated on first use
@@ -72,11 +71,11 @@ class Scheduler : public ThreadHolder<Scheduler>
 		std::mutex eventLock;
 		std::condition_variable eventSignal;
 
-		uint32_t lastEventId {0};
+		uint32_t lastEventId { 0 };
 		std::priority_queue<SchedulerTask*, std::deque<SchedulerTask*>, TaskComparator> eventList;
 		phmap::flat_hash_set<uint32_t> eventIds;
 };
 
 constexpr auto g_scheduler = &Scheduler::getInstance;
 
-#endif  // SRC_GAME_SCHEDULING_SCHEDULER_H_
+#endif // SRC_GAME_SCHEDULING_SCHEDULER_H_

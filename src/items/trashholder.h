@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_ITEMS_TRASHHOLDER_H_
 #define SRC_ITEMS_TRASHHOLDER_H_
@@ -13,10 +13,10 @@
 #include "items/item.h"
 #include "items/cylinder.h"
 
-class TrashHolder final : public Item, public Cylinder
-{
+class TrashHolder final : public Item, public Cylinder {
 	public:
-		explicit TrashHolder(uint16_t itemId) : Item(itemId) {}
+		explicit TrashHolder(uint16_t itemId) :
+			Item(itemId) { }
 
 		TrashHolder* getTrashHolder() override {
 			return this;
@@ -25,11 +25,11 @@ class TrashHolder final : public Item, public Cylinder
 			return this;
 		}
 
-		//cylinder implementations
-		ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
-		ReturnValue queryMaxCount(int32_t index, const Thing& thing, uint32_t count, uint32_t& maxQueryCount, uint32_t flags) const override;
-		ReturnValue queryRemove(const Thing& thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
-		Cylinder* queryDestination(int32_t& index, const Thing& thing, Item** destItem, uint32_t& flags) override;
+		// cylinder implementations
+		ReturnValue queryAdd(int32_t index, const Thing &thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
+		ReturnValue queryMaxCount(int32_t index, const Thing &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) const override;
+		ReturnValue queryRemove(const Thing &thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
+		Cylinder* queryDestination(int32_t &index, const Thing &thing, Item** destItem, uint32_t &flags) override;
 
 		void addThing(Thing* thing) override;
 		void addThing(int32_t index, Thing* thing) override;
@@ -43,4 +43,4 @@ class TrashHolder final : public Item, public Cylinder
 		void postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 };
 
-#endif  // SRC_ITEMS_TRASHHOLDER_H_
+#endif // SRC_ITEMS_TRASHHOLDER_H_

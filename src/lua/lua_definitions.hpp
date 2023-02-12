@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_LUA_DEFINITIONS_HPP_
 #define SRC_LUA_LUA_DEFINITIONS_HPP_
@@ -188,20 +188,20 @@ enum BugReportType_t : uint8_t {
 
 // Struct
 struct LuaVariant {
-	LuaVariantType_t type = VARIANT_NONE;
-	std::string text;
-	Position pos;
-	uint32_t number = 0;
+		LuaVariantType_t type = VARIANT_NONE;
+		std::string text;
+		Position pos;
+		uint32_t number = 0;
 };
 
 struct LuaTimerEventDesc {
-	int32_t scriptId = -1;
-	int32_t function = -1;
-	std::list<int32_t> parameters;
-	uint32_t eventId = 0;
+		int32_t scriptId = -1;
+		int32_t function = -1;
+		std::list<int32_t> parameters;
+		uint32_t eventId = 0;
 
-	LuaTimerEventDesc() = default;
-	LuaTimerEventDesc(LuaTimerEventDesc&& other) = default;
+		LuaTimerEventDesc() = default;
+		LuaTimerEventDesc(LuaTimerEventDesc &&other) = default;
 };
 
-#endif  // SRC_LUA_LUA_DEFINITIONS_HPP_
+#endif // SRC_LUA_LUA_DEFINITIONS_HPP_

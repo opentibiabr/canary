@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -36,7 +36,7 @@ int VariantFunctions::luaVariantCreate(lua_State* L) {
 
 int VariantFunctions::luaVariantGetNumber(lua_State* L) {
 	// Variant:getNumber()
-	const LuaVariant& variant = getVariant(L, 1);
+	const LuaVariant &variant = getVariant(L, 1);
 	if (variant.type == VARIANT_NUMBER) {
 		lua_pushnumber(L, variant.number);
 	} else {
@@ -47,7 +47,7 @@ int VariantFunctions::luaVariantGetNumber(lua_State* L) {
 
 int VariantFunctions::luaVariantGetString(lua_State* L) {
 	// Variant:getString()
-	const LuaVariant& variant = getVariant(L, 1);
+	const LuaVariant &variant = getVariant(L, 1);
 	if (variant.type == VARIANT_STRING) {
 		pushString(L, variant.text);
 	} else {
@@ -58,7 +58,7 @@ int VariantFunctions::luaVariantGetString(lua_State* L) {
 
 int VariantFunctions::luaVariantGetPosition(lua_State* L) {
 	// Variant:getPosition()
-	const LuaVariant& variant = getVariant(L, 1);
+	const LuaVariant &variant = getVariant(L, 1);
 	if (variant.type == VARIANT_POSITION || variant.type == VARIANT_TARGETPOSITION) {
 		pushPosition(L, variant.pos);
 	} else {

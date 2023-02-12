@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_CREATURE_TALKACTION_H_
 #define SRC_LUA_CREATURE_TALKACTION_H_
@@ -23,10 +23,10 @@ class TalkAction : public Script {
 	public:
 		using Script::Script;
 
-		const std::string& getWords() const {
+		const std::string &getWords() const {
 			return words;
 		}
-		const std::vector<std::string>& getWordsMap() const {
+		const std::vector<std::string> &getWordsMap() const {
 			return wordsMap;
 		}
 		void setWords(std::string word) {
@@ -40,8 +40,8 @@ class TalkAction : public Script {
 			separator = sep;
 		}
 
-		//scripting
-		bool executeSay(Player* player, const std::string& words, const std::string& param, SpeakClasses type) const;
+		// scripting
+		bool executeSay(Player* player, const std::string &words, const std::string &param, SpeakClasses type) const;
 		//
 
 	private:
@@ -60,17 +60,17 @@ class TalkActions final : public Scripts {
 		~TalkActions();
 
 		// non-copyable
-		TalkActions(const TalkActions&) = delete;
-		TalkActions& operator=(const TalkActions&) = delete;
+		TalkActions(const TalkActions &) = delete;
+		TalkActions &operator=(const TalkActions &) = delete;
 
-		static TalkActions& getInstance() {
+		static TalkActions &getInstance() {
 			// Guaranteed to be destroyed
 			static TalkActions instance;
 			// Instantiated on first use
 			return instance;
 		}
 
-		TalkActionResult_t playerSaySpell(Player* player, SpeakClasses type, const std::string& words) const;
+		TalkActionResult_t playerSaySpell(Player* player, SpeakClasses type, const std::string &words) const;
 
 		bool registerLuaEvent(TalkAction* event);
 		void clear();
@@ -81,4 +81,4 @@ class TalkActions final : public Scripts {
 
 constexpr auto g_talkActions = &TalkActions::getInstance;
 
-#endif  // SRC_LUA_CREATURE_TALKACTION_H_
+#endif // SRC_LUA_CREATURE_TALKACTION_H_

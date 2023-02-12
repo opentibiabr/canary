@@ -303,7 +303,12 @@ uint32_t MoveEvents::onCreatureMove(Creature &creature, Tile &tile, MoveEvent_t 
 
 		moveEvent = getEvent(*tileItem, eventType);
 		if (moveEvent) {
-			ret &= moveEvent->fireStepEvent(creature, tileItem, pos);
+			auto step = moveEvent->fireStepEvent(creature, tileItem, pos);
+			// If there is any problem in the function, we will kill the loop
+			if (step == 0) {
+				break;
+			}
+			ret &= step;
 		}
 	}
 	return ret;
@@ -361,7 +366,11 @@ uint32_t MoveEvents::onItemMove(Item &item, Tile &tile, bool isAdd) {
 
 		moveEvent = getEvent(*tileItem, eventType2);
 		if (moveEvent) {
-			ret &= moveEvent->fireAddRemItem(item, *tileItem, tile.getPosition());
+			auto moveItem = moveEvent->fireAddRemItem(item, *tileItem, tile.getPosition());
+			// If there is any problem in the function, we will kill the loop
+			if (moveItem == 0) {
+				break;
+			}
 		}
 	}
 
@@ -668,6 +677,23 @@ uint32_t MoveEvent::fireStepEvent(Creature &creature, Item* item, const Position
 bool MoveEvent::executeStep(Creature &creature, Item* item, const Position &pos) const {
 	// onStepIn(creature, item, pos, fromPosition)
 	// onStepOut(creature, item, pos, fromPosition)
+
+	// Check if the new position is the same as the old one
+	// If it is, log a warning and either teleport the player to their temple position if item type is an teleport
+	auto fromPosition = creature.getLastPosition();
+	if (auto player = creature.getPlayer(); item && fromPosition == pos && getEventType() == MOVE_EVENT_STEP_IN)
+	{
+		if (const ItemType& itemType = Item::items[item->getID()]; player && itemType.isTeleport())
+		{
+			SPDLOG_WARN("[{}] cannot teleport player: {}, to the same position: {} of fromPosition: {}", __FUNCTION__, player->getName(), pos.toString(), fromPosition.toString());
+			g_game().internalTeleport(player, player->getTemplePosition());
+			player->sendMagicEffect(player->getTemplePosition(), CONST_ME_TELEPORT);
+			player->sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));
+		}
+
+		return false;
+	}
+
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		if (item != nullptr) {
 			SPDLOG_ERROR("[MoveEvent::executeStep - Creature {} item {}, position {}] "
@@ -691,7 +717,7 @@ bool MoveEvent::executeStep(Creature &creature, Item* item, const Position &pos)
 	LuaScriptInterface::setCreatureMetatable(L, -1, &creature);
 	LuaScriptInterface::pushThing(L, item);
 	LuaScriptInterface::pushPosition(L, pos);
-	LuaScriptInterface::pushPosition(L, creature.getLastPosition());
+	LuaScriptInterface::pushPosition(L, fromPosition);
 
 	return getScriptInterface()->callFunction(4);
 }

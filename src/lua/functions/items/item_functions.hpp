@@ -149,8 +149,7 @@ class ItemFunctions final : LuaScriptInterface {
 		static int luaItemSetTier(lua_State* L);
 		static int luaItemGetClassification(lua_State* L);
 
-		static void updateTileFlags(Item *item);
-
+		static void updateTileFlags(Item* item);
 };
 
 #endif // SRC_LUA_FUNCTIONS_ITEMS_ITEM_FUNCTIONS_HPP_

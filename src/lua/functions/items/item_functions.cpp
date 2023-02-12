@@ -434,7 +434,7 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 	return 1;
 }
 
-void ItemFunctions::updateTileFlags(Item *item) {
+void ItemFunctions::updateTileFlags(Item* item) {
 	if (auto tile = item->getTile()) {
 		tile->updateTileFlags(item);
 	}

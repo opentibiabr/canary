@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "items/functions/item_parse.hpp"
+#include "items/functions/item/item_parse.hpp"
 #include "utils/pugicast.h"
 
-void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute keyAttribute, pugi::xml_attribute valueAttribute, ItemType& itemType) {
+void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	// Parse all item attributes
 	ItemParse::parseType(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseDescription(tmpStrValue, valueAttribute, itemType);
@@ -329,7 +329,7 @@ void ItemParse::parseLootType(const std::string& tmpStrValue, pugi::xml_attribut
 void ItemParse::parseRange(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "range") {
-		itemType.shootRange = pugi::cast<uint16_t>(valueAttribute.value());
+		itemType.shootRange = pugi::cast<uint8_t>(valueAttribute.value());
 	}
 }
 
@@ -387,7 +387,7 @@ void ItemParse::parseShowAttributes(const std::string& tmpStrValue, pugi::xml_at
 void ItemParse::parseHitChance(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "hitchance") {
-		itemType.hitChance = std::min<int8_t>(100, std::max<int8_t>(-100, pugi::cast<int16_t>(valueAttribute.value())));
+		itemType.hitChance = std::min<int8_t>(100, std::max<int8_t>(-100, pugi::cast<int8_t>(valueAttribute.value())));
 	} else if (stringValue == "maxhitchance") {
 		itemType.maxHitChance = std::min<uint32_t>(100, pugi::cast<uint32_t>(valueAttribute.value()));
 	}
@@ -578,29 +578,30 @@ void ItemParse::parseSupressDrunk(const std::string& tmpStrValue, pugi::xml_attr
 	}
 }
 
-std::tuple<ConditionId_t, ConditionType_t, std::string, pugi::xml_attribute> ItemParse::parseFieldConditions(ConditionId_t conditionId, ConditionType_t conditionType, std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
+std::tuple<ConditionId_t, ConditionType_t> ItemParse::parseFieldConditions(std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
 	lowerStringValue = asLowerCaseString(valueAttribute.as_string());
-	conditionId = CONDITIONID_COMBAT;
+	ConditionId_t conditionId = CONDITIONID_COMBAT;
+	ConditionType_t conditionType = CONDITION_NONE;
 	if (lowerStringValue == "fire") {
 		conditionType = CONDITION_FIRE;
-		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
+		return std::make_tuple(conditionId, conditionType);
 	} else if (lowerStringValue == "energy") {
 		conditionType = CONDITION_ENERGY;
-		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
+		return std::make_tuple(conditionId, conditionType);
 	} else if (lowerStringValue == "poison") {
 		conditionType = CONDITION_POISON;
-		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
+		return std::make_tuple(conditionId, conditionType);
 	} else if (lowerStringValue == "drown") {
 		conditionType = CONDITION_DROWN;
-		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
+		return std::make_tuple(conditionId, conditionType);
 	} else if (lowerStringValue == "physical") {
 		conditionType = CONDITION_BLEEDING;
-		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
+		return std::make_tuple(conditionId, conditionType);
 	} else {
 		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
                 valueAttribute.as_string());
 	}
-	return std::make_tuple(CONDITIONID_DEFAULT, CONDITION_NONE, lowerStringValue, valueAttribute);
+	return std::make_tuple(CONDITIONID_DEFAULT, CONDITION_NONE);
 }
 
 CombatType_t ItemParse::parseFieldCombatType(std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
@@ -664,32 +665,25 @@ void ItemParse::parseFieldCombatDamage(ConditionDamage *conditionDamage, std::st
 }
 
 void ItemParse::parseField(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string stringValue = tmpStrValue;
-	if (stringValue == "field") {
+	if (tmpStrValue == "field") {
 		CombatType_t combatType = COMBAT_NONE;
 		ConditionDamage* conditionDamage = nullptr;
 
 		// Parse fields conditions (fire/energy/poison/drown/physical)
-		combatType = parseFieldCombatType(stringValue, valueAttribute);
-		ConditionId_t condID = CONDITIONID_DEFAULT;
-		ConditionType_t condType = CONDITION_NONE;
-		auto result = parseFieldConditions(condID, condType, stringValue, valueAttribute);
-		condID = std::get<0>(result);
-		condType = std::get<1>(result);
-		stringValue = std::get<2>(result);
-		valueAttribute = std::get<3>(result);
+		combatType = parseFieldCombatType(tmpStrValue, valueAttribute);
+		auto [conditionId, conditionType] = parseFieldConditions(tmpStrValue, valueAttribute);
 
 		if (combatType != COMBAT_NONE) {
 			if (conditionDamage) {
 				delete conditionDamage;
 			}
 
-			conditionDamage = new ConditionDamage(condID, condType);
+			conditionDamage = new ConditionDamage(conditionId, conditionType);
 
 			itemType.combatType = combatType;
 			itemType.conditionDamage.reset(conditionDamage);
 
-			parseFieldCombatDamage(conditionDamage, stringValue, attributeNode);
+			parseFieldCombatDamage(conditionDamage, tmpStrValue, attributeNode);
 
 			conditionDamage->setParam(CONDITION_PARAM_FIELD, 1);
 
@@ -793,11 +787,10 @@ void ItemParse::parseAllowDistanceRead(const std::string& tmpStrValue, pugi::xml
 }
 
 void ItemParse::parseImbuement(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string stringValue = tmpStrValue;
-	if (stringValue != "imbuementslot") {
+	if (tmpStrValue != "imbuementslot") {
 		return;
 	}
-	itemType.imbuementSlot = pugi::cast<int32_t>(valueAttribute.value());
+	itemType.imbuementSlot = pugi::cast<uint8_t>(valueAttribute.value());
 
 	for (auto subAttributeNode: attributeNode.children()) {
 		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");

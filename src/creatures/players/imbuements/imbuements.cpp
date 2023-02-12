@@ -51,7 +51,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				pugi::cast<uint32_t>(baseNode.attribute("price").value()),
 				pugi::cast<uint32_t>(baseNode.attribute("protectionPrice").value()),
 				pugi::cast<uint32_t>(baseNode.attribute("removecost").value()),
-				pugi::cast<int32_t>(baseNode.attribute("duration").value()),
+				pugi::cast<uint32_t>(baseNode.attribute("duration").value()),
 				pugi::cast<uint16_t>(baseNode.attribute("percent").value())
 
 			);
@@ -354,10 +354,9 @@ std::vector<Imbuement*> Imbuements::getImbuements(const Player* player, Item* it
 		}
 
 		// Parse the storages for each imbuement in imbuements.xml and config.lua (enable/disable storage)
-		int32_t storageValue;
 		if (g_configManager().getBoolean(TOGGLE_IMBUEMENT_SHRINE_STORAGE)
 		&& imbuement->getStorage() != 0
-		&& !player->getStorageValue(imbuement->getStorage(), storageValue)
+		&& player->getStorageValue(imbuement->getStorage() == -1)
 		&& imbuement->getBaseID() >= 1 && imbuement->getBaseID() <= 3) {
 			continue;
 		}

@@ -1578,12 +1578,7 @@ int PlayerFunctions::luaPlayerGetStorageValue(lua_State* L) {
 	}
 
 	uint32_t key = getNumber<uint32_t>(L, 2);
-	int32_t value;
-	if (player->getStorageValue(key, value)) {
-		lua_pushnumber(L, value);
-	} else {
-		lua_pushnumber(L, -1);
-	}
+	lua_pushnumber(L, player->getStorageValue(key));
 	return 1;
 }
 
@@ -1839,11 +1834,13 @@ int PlayerFunctions::luaPlayerAddMoney(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerRemoveMoney(lua_State* L) {
-	// player:removeMoney(money)
+	// player:removeMoney(money[, flags = 0[, useBank = true]])
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
 		uint64_t money = getNumber<uint64_t>(L, 2);
-		pushBoolean(L, g_game().removeMoney(player, money));
+		int32_t flags = getNumber<int32_t>(L, 3, 0);
+		bool useBank = getBoolean(L, 4, true);
+		pushBoolean(L, g_game().removeMoney(player, money, flags, useBank));
 	} else {
 		lua_pushnil(L);
 	}
@@ -1896,7 +1893,7 @@ int PlayerFunctions::luaPlayerShowTextDialog(lua_State* L) {
 	}
 
 	if (!text.empty()) {
-		item->setText(text);
+		item->setAttribute(ItemAttribute_t::TEXT, text);
 		length = std::max<int32_t>(text.size(), length);
 	}
 
@@ -3187,5 +3184,32 @@ int PlayerFunctions::luaPlayerGetForgeCores(lua_State *L) {
 
 	auto [sliver, core] = player->getForgeSliversAndCores();
 	lua_pushnumber(L, static_cast<lua_Number>(core));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetFaction(lua_State* L) {
+	// player:setFaction(factionId)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+	Faction_t factionId = getNumber<Faction_t>(L, 2);
+	player->setFaction(factionId);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetFaction(lua_State* L) {
+	// player:getFaction()
+	const Player* player = getUserdata<Player>(L, 1);
+	if (player == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+	
+	lua_pushnumber(L, player->getFaction());
 	return 1;
 }

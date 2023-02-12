@@ -4,12 +4,14 @@ name: Build - Docker
 on:
   workflow_dispatch:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches:
       - main
 
 jobs:
-  docker:
+  build_docker_x86:
+    if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,7 +29,7 @@ jobs:
         uses: gittools/actions/gitversion/execute@v0.9.15
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2.1.0
+        uses: docker/setup-buildx-action@v2
         with:
           install: true
 
@@ -35,12 +37,12 @@ jobs:
         uses: actions/cache@main
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-x86-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-x86-
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2.1.0
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -50,7 +52,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         uses: docker/build-push-action@v3.2.0
         with:
-          file: docker/server/Dockerfile
+          file: docker/Dockerfile.x86
           tags: ghcr.io/${{ github.repository }}:${{ steps.gitversion.outputs.semVer }}
           cache-from: type=gha, scope=${{ github.workflow }}
           cache-to: type=gha, scope=${{ github.workflow }}
@@ -60,7 +62,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         uses: docker/build-push-action@v3.2.0
         with:
-          file: docker/server/Dockerfile
+          file: docker/Dockerfile.x86
           push: true
           tags: ghcr.io/${{ github.repository }}:${{ steps.gitversion.outputs.semVer }}
           cache-from: type=gha, scope=${{ github.workflow }}
@@ -70,10 +72,41 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: echo ${{ steps.docker_build.outputs.digest }}
 
-      # # Temp fix
-      # # https://github.com/docker/build-push-action/issues/252
-      # # https://github.com/moby/buildkit/issues/1896
-      # - name: Move cache
-      #   run: |
-      #     rm -rf /tmp/.buildx-cache
-      #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+  build_docker_arm:
+    if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.15
+        with:
+          versionSpec: '5.x'
+
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.15
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          install: true
+
+      - name: Cache Docker layers
+        uses: actions/cache@main
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-arm-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-arm-
+
+      - name: Build
+        uses: docker/build-push-action@v3.2.0
+        with:
+          file: docker/Dockerfile.arm
+          tags: ghcr.io/${{ github.repository }}:${{ steps.gitversion.outputs.semVer }}
+          cache-from: type=gha, scope=${{ github.workflow }}
+          cache-to: type=gha, scope=${{ github.workflow }}

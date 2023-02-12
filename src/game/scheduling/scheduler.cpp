@@ -19,7 +19,9 @@ void Scheduler::threadMain()
 
 		eventLockUnique.lock();
 		if (eventList.empty()) {
-			eventSignal.wait(eventLockUnique);
+			eventSignal.wait(eventLockUnique, [this] {
+				return !eventList.empty() || getState() == THREAD_STATE_TERMINATED;
+			});
 		} else {
 			ret = eventSignal.wait_until(eventLockUnique, eventList.top()->getCycle());
 		}

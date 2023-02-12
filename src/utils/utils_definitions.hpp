@@ -512,7 +512,7 @@ enum NameEval_t : uint8_t {
 	INVALID_CHARACTER
 };
 
-enum item_t : uint16_t {
+enum ItemID_t : uint16_t {
 	ITEM_BROWSEFIELD = 470, // for internal use
 	ITEM_SUPPLY_STASH_INDEX = 1, //for internal use
 	ITEM_DEPOT_NULL = 22796, // for internal use - Actual Item ID: 168
@@ -655,13 +655,17 @@ enum item_t : uint16_t {
 	ITEM_PRISMATIC_RING = 16114,
 	ITEM_PRISMATIC_RING_ACTIVATED = 16264,
 
+	HIRELING_LAMP = 29432,
+
 	ITEM_FORGE_SLIVER = 37109,
 	ITEM_FORGE_CORE = 37110,
-	ITEM_EXALTATION_CHEST = 37561
+	ITEM_EXALTATION_CHEST = 37561,
+
+	ITEM_NONE = 0
 };
 
 // A map which contains items that, when on creating, should be transformed to the default type.
-const phmap::flat_hash_map<item_t, item_t> ItemTransformationMap = {
+const phmap::flat_hash_map<ItemID_t, ItemID_t> ItemTransformationMap = {
 	{ITEM_SWORD_RING_ACTIVATED, ITEM_SWORD_RING},
 	{ITEM_CLUB_RING_ACTIVATED, ITEM_CLUB_RING},
 	{ITEM_DWARVEN_RING_ACTIVATED, ITEM_DWARVEN_RING},

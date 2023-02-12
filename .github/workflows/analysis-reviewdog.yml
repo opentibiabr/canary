@@ -11,10 +11,10 @@ jobs:
     steps:
 
       - name: Check out code.
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: Setup reviewdog
-        uses: reviewdog/action-setup@v1
+        uses: reviewdog/action-setup@v1.0.3
 
       - name: Setup cppcheck
         run: sudo apt-get update && sudo apt-get install -y cppcheck
@@ -23,7 +23,7 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd $GITHUB_WORKSPACE
+          cd "$GITHUB_WORKSPACE"
           cppcheck --version
           reviewdog -reporter=github-pr-check -runners=cppcheck
 
@@ -33,10 +33,10 @@ jobs:
     steps:
 
       - name: Check out code.
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: Setup reviewdog
-        uses: reviewdog/action-setup@v1
+        uses: reviewdog/action-setup@v1.0.3
 
       - name: Setup Lua/Luacheck
         run: sudo apt-get update && sudo apt-get install -y libluajit-5.1-dev lua-check
@@ -45,7 +45,7 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd $GITHUB_WORKSPACE
+          cd "$GITHUB_WORKSPACE"
           luac -v
           reviewdog -reporter=github-pr-check -runners=luac
 
@@ -55,10 +55,10 @@ jobs:
     steps:
 
       - name: Check out code.
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: Setup reviewdog
-        uses: reviewdog/action-setup@v1
+        uses: reviewdog/action-setup@v1.0.3
 
       - name: Setup Lua/Luacheck
         run: sudo apt-get update && sudo apt-get install -y libluajit-5.1-dev lua-check
@@ -68,7 +68,7 @@ jobs:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           luacheck --version
-          cd $GITHUB_WORKSPACE
+          cd "$GITHUB_WORKSPACE"
           reviewdog -reporter=github-pr-check -runners=luacheck
 
 
@@ -77,10 +77,10 @@ jobs:
     steps:
 
       - name: Check out code.
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: shellcheck
-        uses: reviewdog/action-shellcheck@v1
+        uses: reviewdog/action-shellcheck@v1.15.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-check
@@ -93,10 +93,10 @@ jobs:
     steps:
 
       - name: Check out code.
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: Setup reviewdog
-        uses: reviewdog/action-setup@v1
+        uses: reviewdog/action-setup@v1.0.3
 
       - name: Setup xmllint
         run: sudo apt-get update && sudo apt-get install -y libxml2-utils
@@ -105,7 +105,7 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd $GITHUB_WORKSPACE
+          cd "$GITHUB_WORKSPACE"
           xmllint --version
           reviewdog -reporter=github-pr-check -runners=xmllint
 
@@ -115,10 +115,10 @@ jobs:
     steps:
 
       - name: Check out code.
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: Run yamllint
-        uses: reviewdog/action-yamllint@v1
+        uses: reviewdog/action-yamllint@v1.6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-check
@@ -129,9 +129,21 @@ jobs:
     steps:
 
       - name: Check out code
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: hadolint
-        uses: reviewdog/action-hadolint@v1
+        uses: reviewdog/action-hadolint@v1.33.0
+        with:
+          reporter: github-pr-check
+
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out code
+        uses: actions/checkout@main
+
+      - name: actionlint
+        uses: reviewdog/action-actionlint@v1
         with:
           reporter: github-pr-check

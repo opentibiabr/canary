@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_ITEMS_ITEM_H_
 #define SRC_ITEMS_ITEM_H_
@@ -33,201 +33,198 @@ class Imbuement;
 
 // This class ItemProperties that serves as an interface to access and modify attributes of an item. The item's attributes are stored in an instance of ItemAttribute. The class ItemProperties has methods to get and set integer and string attributes, check if an attribute exists, remove an attribute, get the underlying attribute bits, and get a vector of attributes. It also has methods to get and set custom attributes, which are stored in a std::map<std::string, CustomAttribute, std::less<>>. The class has a data member attributePtr of type std::unique_ptr<ItemAttribute> that stores a pointer to the item's attributes methods.
 class ItemProperties {
-public:
-	template<typename T>
-	T getAttribute(ItemAttribute_t type) const {
-		if constexpr (std::is_same_v<T, std::string>) {
-			return getString(type);
-		} else if constexpr (std::is_integral_v<T>) {
-			return std::clamp(
-				static_cast<T>(getInteger(type)),
-				std::numeric_limits<T>::min(),
-				std::numeric_limits<T>::max()
-			);
-		}
-		return T();
-	}
-
-	bool hasAttribute(ItemAttribute_t type) const {
-		if (!attributePtr) {
-			return false;
+	public:
+		template <typename T>
+		T getAttribute(ItemAttribute_t type) const {
+			if constexpr (std::is_same_v<T, std::string>) {
+				return getString(type);
+			} else if constexpr (std::is_integral_v<T>) {
+				return std::clamp(
+					static_cast<T>(getInteger(type)),
+					std::numeric_limits<T>::min(),
+					std::numeric_limits<T>::max()
+				);
+			}
+			return T();
 		}
 
-		return attributePtr->hasAttribute(type);
-	}
-	void removeAttribute(ItemAttribute_t type) {
-		if (attributePtr) {
-			attributePtr->removeAttribute(type);
+		bool hasAttribute(ItemAttribute_t type) const {
+			if (!attributePtr) {
+				return false;
+			}
+
+			return attributePtr->hasAttribute(type);
 		}
-	}
-
-	template<typename GenericAttribute>
-	void setAttribute(ItemAttribute_t type, GenericAttribute genericAttribute) {
-		initAttributePtr()->setAttribute(type, genericAttribute);
-	}
-
-	bool isAttributeInteger(ItemAttribute_t type) const {
-		return initAttributePtr()->isAttributeInteger(type);
-	}
-
-	bool isAttributeString(ItemAttribute_t type) const {
-		return initAttributePtr()->isAttributeString(type);
-	}
-
-	// Custom Attributes
-	const std::map<std::string, CustomAttribute, std::less<>>& getCustomAttributeMap() const {
-		static std::map<std::string, CustomAttribute, std::less<>> map = {};
-		if (!attributePtr) {
-			return map;
-		}
-		return attributePtr->getCustomAttributeMap();
-	}
-	const CustomAttribute* getCustomAttribute(const std::string& attributeName) const
-	{
-		if (!attributePtr) {
-			return nullptr;
+		void removeAttribute(ItemAttribute_t type) {
+			if (attributePtr) {
+				attributePtr->removeAttribute(type);
+			}
 		}
 
-		return attributePtr->getCustomAttribute(attributeName);
-	}
-
-	template<typename GenericType>
-	void setCustomAttribute(const std::string &key, GenericType value) {
-		initAttributePtr()->setCustomAttribute(key, value);
-	}
-
-	void addCustomAttribute(const std::string &key, const CustomAttribute &customAttribute)
-	{
-		initAttributePtr()->addCustomAttribute(key, customAttribute);
-	}
-
-	bool hasCustomAttribute() const {
-		return !getCustomAttributeMap().empty();
-	}
-
-	bool removeCustomAttribute(const std::string& attributeName) {
-		if (!attributePtr) {
-			return false;
+		template <typename GenericAttribute>
+		void setAttribute(ItemAttribute_t type, GenericAttribute genericAttribute) {
+			initAttributePtr()->setAttribute(type, genericAttribute);
 		}
 
-		return attributePtr->removeCustomAttribute(attributeName);
-	}
-
-	uint16_t getCharges() const {
-		return getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
-	}
-
-	int32_t getDuration() const {
-		ItemDecayState_t decayState = getDecaying();
-		if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
-			return std::max<int32_t>(0, getAttribute<int32_t>(ItemAttribute_t::DURATION_TIMESTAMP) - static_cast<int32_t>(OTSYS_TIME()));
-		} else {
-			return getAttribute<int32_t>(ItemAttribute_t::DURATION);
-		}
-	}
-
-	void setDecaying(ItemDecayState_t decayState) {
-		setAttribute(ItemAttribute_t::DECAYSTATE, static_cast<int64_t>(decayState));
-		if (decayState == DECAYING_FALSE) {
-			removeAttribute(ItemAttribute_t::DURATION_TIMESTAMP);
-		}
-	}
-	ItemDecayState_t getDecaying() const {
-		return getAttribute<ItemDecayState_t>(ItemAttribute_t::DECAYSTATE);
-	}
-
-	uint32_t getCorpseOwner() const {
-		return getAttribute<uint32_t>(ItemAttribute_t::CORPSEOWNER);
-	}
-
-	void setRewardCorpse() {
-		setAttribute(ItemAttribute_t::CORPSEOWNER, static_cast<uint32_t>(std::numeric_limits<int32_t>::max()));
-	}
-
-	bool isRewardCorpse() const {
-		return getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max());
-	}
-
-protected:
-	std::unique_ptr<ItemAttribute>& initAttributePtr() {
-		if (!attributePtr) {
-			attributePtr.reset(new ItemAttribute());
-		}
-	
-		return attributePtr;
-	}
-	const std::unique_ptr<ItemAttribute>& initAttributePtr() const {
-		if (!attributePtr) {
-			std::bit_cast<ItemProperties*>(this)->attributePtr.reset(new ItemAttribute());
-		}
-	
-		return attributePtr;
-	}
-
-	const std::underlying_type_t<ItemAttribute_t>& getAttributeBits() const {
-		static std::underlying_type_t<ItemAttribute_t> emptyType = {};
-		if (!attributePtr) {
-			return emptyType;
+		bool isAttributeInteger(ItemAttribute_t type) const {
+			return initAttributePtr()->isAttributeInteger(type);
 		}
 
-		return attributePtr->getAttributeBits();
-	}
-	const std::vector<Attributes>& getAttributeVector() const {
-		static std::vector<Attributes> emptyVector = {};
-		if (!attributePtr) {
-			return emptyVector;
+		bool isAttributeString(ItemAttribute_t type) const {
+			return initAttributePtr()->isAttributeString(type);
 		}
 
-		return attributePtr->getAttributeVector();
-	}
+		// Custom Attributes
+		const std::map<std::string, CustomAttribute, std::less<>> &getCustomAttributeMap() const {
+			static std::map<std::string, CustomAttribute, std::less<>> map = {};
+			if (!attributePtr) {
+				return map;
+			}
+			return attributePtr->getCustomAttributeMap();
+		}
+		const CustomAttribute* getCustomAttribute(const std::string &attributeName) const {
+			if (!attributePtr) {
+				return nullptr;
+			}
 
-	const int64_t& getInteger(ItemAttribute_t type) const {
-		static int64_t emptyInt;
-		if (!attributePtr) {
-			return emptyInt;
+			return attributePtr->getCustomAttribute(attributeName);
 		}
 
-		return attributePtr->getAttributeValue(type);
-	}
-	const std::string& getString(ItemAttribute_t type) const {
-		static std::string emptyString;
-		if (!attributePtr) {
-			return emptyString;
+		template <typename GenericType>
+		void setCustomAttribute(const std::string &key, GenericType value) {
+			initAttributePtr()->setCustomAttribute(key, value);
 		}
 
-		return attributePtr->getAttributeString(type);
-	}
-
-	bool isInitializedAttributePtr() const {
-		if (!attributePtr) {
-			return false;
+		void addCustomAttribute(const std::string &key, const CustomAttribute &customAttribute) {
+			initAttributePtr()->addCustomAttribute(key, customAttribute);
 		}
 
-		return true;
-	}
+		bool hasCustomAttribute() const {
+			return !getCustomAttributeMap().empty();
+		}
 
-private:
-	std::unique_ptr<ItemAttribute> attributePtr;
+		bool removeCustomAttribute(const std::string &attributeName) {
+			if (!attributePtr) {
+				return false;
+			}
+
+			return attributePtr->removeCustomAttribute(attributeName);
+		}
+
+		uint16_t getCharges() const {
+			return getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
+		}
+
+		int32_t getDuration() const {
+			ItemDecayState_t decayState = getDecaying();
+			if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
+				return std::max<int32_t>(0, getAttribute<int32_t>(ItemAttribute_t::DURATION_TIMESTAMP) - static_cast<int32_t>(OTSYS_TIME()));
+			} else {
+				return getAttribute<int32_t>(ItemAttribute_t::DURATION);
+			}
+		}
+
+		void setDecaying(ItemDecayState_t decayState) {
+			setAttribute(ItemAttribute_t::DECAYSTATE, static_cast<int64_t>(decayState));
+			if (decayState == DECAYING_FALSE) {
+				removeAttribute(ItemAttribute_t::DURATION_TIMESTAMP);
+			}
+		}
+		ItemDecayState_t getDecaying() const {
+			return getAttribute<ItemDecayState_t>(ItemAttribute_t::DECAYSTATE);
+		}
+
+		uint32_t getCorpseOwner() const {
+			return getAttribute<uint32_t>(ItemAttribute_t::CORPSEOWNER);
+		}
+
+		void setRewardCorpse() {
+			setAttribute(ItemAttribute_t::CORPSEOWNER, static_cast<uint32_t>(std::numeric_limits<int32_t>::max()));
+		}
+
+		bool isRewardCorpse() const {
+			return getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max());
+		}
+
+	protected:
+		std::unique_ptr<ItemAttribute> &initAttributePtr() {
+			if (!attributePtr) {
+				attributePtr.reset(new ItemAttribute());
+			}
+
+			return attributePtr;
+		}
+		const std::unique_ptr<ItemAttribute> &initAttributePtr() const {
+			if (!attributePtr) {
+				std::bit_cast<ItemProperties*>(this)->attributePtr.reset(new ItemAttribute());
+			}
+
+			return attributePtr;
+		}
+
+		const std::underlying_type_t<ItemAttribute_t> &getAttributeBits() const {
+			static std::underlying_type_t<ItemAttribute_t> emptyType = {};
+			if (!attributePtr) {
+				return emptyType;
+			}
+
+			return attributePtr->getAttributeBits();
+		}
+		const std::vector<Attributes> &getAttributeVector() const {
+			static std::vector<Attributes> emptyVector = {};
+			if (!attributePtr) {
+				return emptyVector;
+			}
+
+			return attributePtr->getAttributeVector();
+		}
+
+		const int64_t &getInteger(ItemAttribute_t type) const {
+			static int64_t emptyInt;
+			if (!attributePtr) {
+				return emptyInt;
+			}
+
+			return attributePtr->getAttributeValue(type);
+		}
+		const std::string &getString(ItemAttribute_t type) const {
+			static std::string emptyString;
+			if (!attributePtr) {
+				return emptyString;
+			}
+
+			return attributePtr->getAttributeString(type);
+		}
+
+		bool isInitializedAttributePtr() const {
+			if (!attributePtr) {
+				return false;
+			}
+
+			return true;
+		}
+
+	private:
+		std::unique_ptr<ItemAttribute> attributePtr;
 };
 
-class Item : virtual public Thing, public ItemProperties
-{
+class Item : virtual public Thing, public ItemProperties {
 	public:
-		//Factory member to create item of right type based on type
+		// Factory member to create item of right type based on type
 		static Item* CreateItem(const uint16_t type, uint16_t count = 0);
 		static Container* CreateItemAsContainer(const uint16_t type, uint16_t size);
-		static Item* CreateItem(PropStream& propStream);
+		static Item* CreateItem(PropStream &propStream);
 		static Items items;
 
 		// Constructor for items
 		Item(const uint16_t type, uint16_t count = 0);
-		Item(const Item& i);
+		Item(const Item &i);
 		virtual Item* clone() const;
 
 		virtual ~Item() = default;
 
 		// non-assignable
-		Item& operator=(const Item&) = delete;
+		Item &operator=(const Item &) = delete;
 
 		bool equals(const Item* compareItem) const;
 
@@ -283,25 +280,24 @@ class Item : virtual public Thing, public ItemProperties
 		}
 
 		static std::string parseImbuementDescription(const Item* item);
-		static std::string parseShowAttributesDescription(const Item *item, const uint16_t itemId);
+		static std::string parseShowAttributesDescription(const Item* item, const uint16_t itemId);
 		static std::string parseClassificationDescription(const Item* item);
 
-		static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType& it,
-                                    const Item* item = nullptr);
-		static std::string getDescription(const ItemType& it, int32_t lookDistance, const Item* item = nullptr, int32_t subType = -1, bool addArticle = true);
-		static std::string getNameDescription(const ItemType& it, const Item* item = nullptr, int32_t subType = -1, bool addArticle = true);
-		static std::string getWeightDescription(const ItemType& it, uint32_t weight, uint32_t count = 1);
+		static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType &it, const Item* item = nullptr);
+		static std::string getDescription(const ItemType &it, int32_t lookDistance, const Item* item = nullptr, int32_t subType = -1, bool addArticle = true);
+		static std::string getNameDescription(const ItemType &it, const Item* item = nullptr, int32_t subType = -1, bool addArticle = true);
+		static std::string getWeightDescription(const ItemType &it, uint32_t weight, uint32_t count = 1);
 
 		std::string getDescription(int32_t lookDistance) const override final;
 		std::string getNameDescription() const;
 		std::string getWeightDescription() const;
 
-		//serialization
-		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
-		bool unserializeAttr(PropStream& propStream);
-		virtual bool unserializeItemNode(OTB::Loader&, const OTB::Node&, PropStream& propStream);
+		// serialization
+		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream);
+		bool unserializeAttr(PropStream &propStream);
+		virtual bool unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &propStream);
 
-		virtual void serializeAttr(PropWriteStream& propWriteStream) const;
+		virtual void serializeAttr(PropWriteStream &propWriteStream) const;
 
 		bool isPushable() const override final {
 			return isMoveable();
@@ -436,7 +432,7 @@ class Item : virtual public Thing, public ItemProperties
 			return items[id].isQuiver();
 		}
 
-		const std::string& getName() const {
+		const std::string &getName() const {
 			if (hasAttribute(ItemAttribute_t::NAME)) {
 				return getString(ItemAttribute_t::NAME);
 			}
@@ -448,7 +444,7 @@ class Item : virtual public Thing, public ItemProperties
 			}
 			return items[id].getPluralName();
 		}
-		const std::string& getArticle() const {
+		const std::string &getArticle() const {
 			if (hasAttribute(ItemAttribute_t::ARTICLE)) {
 				return getString(ItemAttribute_t::ARTICLE);
 			}
@@ -489,7 +485,7 @@ class Item : virtual public Thing, public ItemProperties
 		uint32_t getDefaultDuration() const {
 			return items[id].decayTime * 1000;
 		}
-		
+
 		bool canDecay() const;
 
 		virtual bool canRemove() const {
@@ -499,7 +495,7 @@ class Item : virtual public Thing, public ItemProperties
 			return true;
 		}
 		virtual void onRemoved();
-		virtual void onTradeEvent(TradeEvents_t, Player*) {}
+		virtual void onTradeEvent(TradeEvents_t, Player*) { }
 
 		virtual void startDecaying();
 		virtual void stopDecaying();
@@ -550,11 +546,11 @@ class Item : virtual public Thing, public ItemProperties
 		 * @return true = duration is > 0 (info >> 8)
 		 * @return false
 		 */
-		bool getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo) const;
+		bool getImbuementInfo(uint8_t slot, ImbuementInfo* imbuementInfo) const;
 		void addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration);
 		/**
 		 * @brief Decay imbuement time duration, only use this for decay the imbuement time
-		 * 
+		 *
 		 * @param slot Slot id to decay
 		 * @param imbuementId Imbuement id to decay
 		 * @param duration New duration
@@ -638,14 +634,15 @@ class Item : virtual public Thing, public ItemProperties
 
 		uint32_t referenceCounter = 0;
 
-		uint16_t id;  // the same id as in ItemType
+		uint16_t id; // the same id as in ItemType
 		uint8_t count = 1; // number of stacked items
 
 		bool loadedFromMap = false;
 		bool isLootTrackeable = false;
+
 	private:
 		void setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration);
-		//Don't add variables here, use the ItemAttribute class.
+		// Don't add variables here, use the ItemAttribute class.
 		std::string getWeightDescription(uint32_t weight) const;
 
 		friend class Decay;
@@ -655,4 +652,4 @@ using ItemList = std::list<Item*>;
 using ItemDeque = std::deque<Item*>;
 using StashContainerList = std::vector<std::pair<Item*, uint32_t>>;
 
-#endif  // SRC_ITEMS_ITEM_H_
+#endif // SRC_ITEMS_ITEM_H_

@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_DECLARATIONS_HPP_
 #define SRC_DECLARATIONS_HPP_
@@ -22,4 +22,4 @@
 #include "server/server_definitions.hpp"
 #include "utils/utils_definitions.hpp"
 
-#endif  // SRC_DECLARATIONS_HPP_
+#endif // SRC_DECLARATIONS_HPP_

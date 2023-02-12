@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -31,7 +31,7 @@ void GlobalEvents::clear() {
 }
 
 bool GlobalEvents::registerLuaEvent(GlobalEvent* event) {
-	GlobalEvent_ptr globalEvent{ event };
+	GlobalEvent_ptr globalEvent { event };
 	if (globalEvent->getEventType() == GLOBALEVENT_TIMER) {
 		auto result = timerMap.emplace(globalEvent->getName(), std::move(*globalEvent));
 		if (result.second) {
@@ -70,7 +70,7 @@ void GlobalEvents::timer() {
 
 	auto it = timerMap.begin();
 	while (it != timerMap.end()) {
-		GlobalEvent& globalEvent = it->second;
+		GlobalEvent &globalEvent = it->second;
 
 		int64_t nextExecutionTime = globalEvent.getNextExecution() - now;
 		if (nextExecutionTime > 0) {
@@ -98,8 +98,7 @@ void GlobalEvents::timer() {
 	}
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
-		timerEventId = g_scheduler().addEvent(createSchedulerTask(std::max<int64_t>(1000, nextScheduledTime * 1000),
-											std::bind(&GlobalEvents::timer, this)));
+		timerEventId = g_scheduler().addEvent(createSchedulerTask(std::max<int64_t>(1000, nextScheduledTime * 1000), std::bind(&GlobalEvents::timer, this)));
 	}
 }
 
@@ -107,8 +106,8 @@ void GlobalEvents::think() {
 	int64_t now = OTSYS_TIME();
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
-	for (auto& it : thinkMap) {
-		GlobalEvent& globalEvent = it.second;
+	for (auto &it : thinkMap) {
+		GlobalEvent &globalEvent = it.second;
 
 		int64_t nextExecutionTime = globalEvent.getNextExecution() - now;
 		if (nextExecutionTime > 0) {
@@ -120,7 +119,8 @@ void GlobalEvents::think() {
 
 		if (!globalEvent.executeEvent()) {
 			SPDLOG_ERROR("[GlobalEvents::think] - "
-                         "Failed to execute event: {}", globalEvent.getName());
+						 "Failed to execute event: {}",
+						 globalEvent.getName());
 		}
 
 		nextExecutionTime = globalEvent.getInterval();
@@ -138,8 +138,8 @@ void GlobalEvents::think() {
 }
 
 void GlobalEvents::execute(GlobalEvent_t type) const {
-	for (const auto& it : serverMap) {
-		const GlobalEvent& globalEvent = it.second;
+	for (const auto &it : serverMap) {
+		const GlobalEvent &globalEvent = it.second;
 		if (globalEvent.getEventType() == type) {
 			globalEvent.executeEvent();
 		}
@@ -149,34 +149,44 @@ void GlobalEvents::execute(GlobalEvent_t type) const {
 GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type) {
 	// TODO: This should be better implemented. Maybe have a map for every type.
 	switch (type) {
-		case GLOBALEVENT_NONE: return thinkMap;
-		case GLOBALEVENT_TIMER: return timerMap;
+		case GLOBALEVENT_NONE:
+			return thinkMap;
+		case GLOBALEVENT_TIMER:
+			return timerMap;
 		case GLOBALEVENT_PERIODCHANGE:
 		case GLOBALEVENT_STARTUP:
 		case GLOBALEVENT_SHUTDOWN:
 		case GLOBALEVENT_RECORD: {
 			GlobalEventMap retMap;
-			for (const auto& it : serverMap) {
+			for (const auto &it : serverMap) {
 				if (it.second.getEventType() == type) {
 					retMap.emplace(it.first, it.second);
 				}
 			}
 			return retMap;
 		}
-		default: return GlobalEventMap();
+		default:
+			return GlobalEventMap();
 	}
 }
 
-GlobalEvent::GlobalEvent(LuaScriptInterface* interface) : Script(interface) {}
+GlobalEvent::GlobalEvent(LuaScriptInterface* interface) :
+	Script(interface) { }
 
 std::string GlobalEvent::getScriptTypeName() const {
 	switch (eventType) {
-		case GLOBALEVENT_STARTUP: return "onStartup";
-		case GLOBALEVENT_SHUTDOWN: return "onShutdown";
-		case GLOBALEVENT_RECORD: return "onRecord";
-		case GLOBALEVENT_TIMER: return "onTime";
-		case GLOBALEVENT_PERIODCHANGE: return "onPeriodChange";
-		case GLOBALEVENT_ON_THINK: return "onThink";
+		case GLOBALEVENT_STARTUP:
+			return "onStartup";
+		case GLOBALEVENT_SHUTDOWN:
+			return "onShutdown";
+		case GLOBALEVENT_RECORD:
+			return "onRecord";
+		case GLOBALEVENT_TIMER:
+			return "onTime";
+		case GLOBALEVENT_PERIODCHANGE:
+			return "onPeriodChange";
+		case GLOBALEVENT_ON_THINK:
+			return "onThink";
 		default:
 			SPDLOG_ERROR("[GlobalEvent::getScriptTypeName] - Invalid event type");
 			return std::string();
@@ -184,11 +194,11 @@ std::string GlobalEvent::getScriptTypeName() const {
 }
 
 bool GlobalEvent::executePeriodChange(LightState_t lightState, LightInfo lightInfo) const {
-	//onPeriodChange(lightState, lightTime)
+	// onPeriodChange(lightState, lightTime)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[GlobalEvent::executePeriodChange - {}] "
-                    "Call stack overflow. Too many lua script calls being nested.",
-                    getName());
+					 "Call stack overflow. Too many lua script calls being nested.",
+					 getName());
 		return false;
 	}
 
@@ -204,11 +214,11 @@ bool GlobalEvent::executePeriodChange(LightState_t lightState, LightInfo lightIn
 }
 
 bool GlobalEvent::executeRecord(uint32_t current, uint32_t old) {
-	//onRecord(current, old)
+	// onRecord(current, old)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[GlobalEvent::executeRecord - {}] "
-                    "Call stack overflow. Too many lua script calls being nested.",
-                    getName());
+					 "Call stack overflow. Too many lua script calls being nested.",
+					 getName());
 		return false;
 	}
 
@@ -226,8 +236,8 @@ bool GlobalEvent::executeRecord(uint32_t current, uint32_t old) {
 bool GlobalEvent::executeEvent() const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[GlobalEvent::executeEvent - {}] "
-                    "Call stack overflow. Too many lua script calls being nested.",
-                    getName());
+					 "Call stack overflow. Too many lua script calls being nested.",
+					 getName());
 		return false;
 	}
 

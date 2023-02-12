@@ -5,13 +5,13 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
 #include "io/functions/iologindata_load_player.hpp"
 
-void IOLoginDataLoad::loadPlayerForgeHistory(Player *player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerForgeHistory(Player* player, DBResult_ptr result) {
 	std::ostringstream query;
 	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();
 	if (result = Database::getInstance().storeQuery(query.str())) {

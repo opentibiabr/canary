@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -16,7 +16,7 @@
 * ItemAttribute class (Attributes methods)
 =============================
 */
-const std::string& ItemAttribute::getAttributeString(ItemAttribute_t type) const {
+const std::string &ItemAttribute::getAttributeString(ItemAttribute_t type) const {
 	static std::string emptyString;
 	if (!isAttributeString(type)) {
 		return emptyString;
@@ -30,8 +30,7 @@ const std::string& ItemAttribute::getAttributeString(ItemAttribute_t type) const
 	return *attribute->getString().get();
 }
 
-const int64_t& ItemAttribute::getAttributeValue(ItemAttribute_t type) const
-{
+const int64_t &ItemAttribute::getAttributeValue(ItemAttribute_t type) const {
 	static int64_t emptyInt;
 	if (!isAttributeInteger(type)) {
 		return emptyInt;
@@ -45,10 +44,9 @@ const int64_t& ItemAttribute::getAttributeValue(ItemAttribute_t type) const
 	return attribute->getInteger();
 }
 
-const Attributes* ItemAttribute::getAttribute(ItemAttribute_t type) const
-{
+const Attributes* ItemAttribute::getAttribute(ItemAttribute_t type) const {
 	if (hasAttribute(type)) {
-		for (const Attributes& attribute : attributeVector) {
+		for (const Attributes &attribute : attributeVector) {
 			if (attribute.getAttributeType() == type) {
 				return &attribute;
 			}
@@ -57,10 +55,9 @@ const Attributes* ItemAttribute::getAttribute(ItemAttribute_t type) const
 	return nullptr;
 }
 
-Attributes& ItemAttribute::getAttributesByType(ItemAttribute_t type)
-{
+Attributes &ItemAttribute::getAttributesByType(ItemAttribute_t type) {
 	if (hasAttribute(type)) {
-		for (Attributes& attribute : attributeVector) {
+		for (Attributes &attribute : attributeVector) {
 			if (attribute.getAttributeType() == type) {
 				return attribute;
 			}
@@ -92,8 +89,7 @@ void ItemAttribute::setAttribute(ItemAttribute_t type, const std::string &value)
 	getAttributesByType(type).setValue(value);
 }
 
-bool ItemAttribute::removeAttribute(ItemAttribute_t type)
-{
+bool ItemAttribute::removeAttribute(ItemAttribute_t type) {
 	if (!hasAttribute(type)) {
 		return false;
 	}
@@ -117,8 +113,7 @@ bool ItemAttribute::removeAttribute(ItemAttribute_t type)
 * CustomAttribute map methods
 =============================
 */
-const std::map<std::string, CustomAttribute, std::less<>>& ItemAttribute::getCustomAttributeMap() const
-{
+const std::map<std::string, CustomAttribute, std::less<>> &ItemAttribute::getCustomAttributeMap() const {
 	return customAttributeMap;
 }
 
@@ -127,10 +122,8 @@ const std::map<std::string, CustomAttribute, std::less<>>& ItemAttribute::getCus
 * CustomAttribute object methods
 =============================
 */
-const CustomAttribute* ItemAttribute::getCustomAttribute(const std::string& attributeName) const
-{
-	if (customAttributeMap.contains(asLowerCaseString(attributeName)))
-	{
+const CustomAttribute* ItemAttribute::getCustomAttribute(const std::string &attributeName) const {
+	if (customAttributeMap.contains(asLowerCaseString(attributeName))) {
 		return &customAttributeMap.at(asLowerCaseString(attributeName));
 	}
 	return nullptr;
@@ -156,13 +149,11 @@ void ItemAttribute::setCustomAttribute(const std::string &key, const bool value)
 	customAttributeMap[asLowerCaseString(key)] = attribute;
 }
 
-void ItemAttribute::addCustomAttribute(const std::string &key, const CustomAttribute &customAttribute)
-{
+void ItemAttribute::addCustomAttribute(const std::string &key, const CustomAttribute &customAttribute) {
 	customAttributeMap[asLowerCaseString(key)] = customAttribute;
 }
 
-bool ItemAttribute::removeCustomAttribute(const std::string& attributeName)
-{
+bool ItemAttribute::removeCustomAttribute(const std::string &attributeName) {
 	auto it = customAttributeMap.find(asLowerCaseString(attributeName));
 	if (it == customAttributeMap.end()) {
 		return false;

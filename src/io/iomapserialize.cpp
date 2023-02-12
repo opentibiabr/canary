@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -13,8 +13,7 @@
 #include "game/game.h"
 #include "items/bed.h"
 
-void IOMapSerialize::loadHouseItems(Map* map)
-{
+void IOMapSerialize::loadHouseItems(Map* map) {
 	int64_t start = OTSYS_TIME();
 
 	DBResult_ptr result = Database::getInstance().storeQuery("SELECT `data` FROM `tile_store`");
@@ -52,19 +51,18 @@ void IOMapSerialize::loadHouseItems(Map* map)
 	SPDLOG_INFO("Loaded house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
 }
 
-bool IOMapSerialize::saveHouseItems()
-{
+bool IOMapSerialize::saveHouseItems() {
 	int64_t start = OTSYS_TIME();
-	Database& db = Database::getInstance();
+	Database &db = Database::getInstance();
 	std::ostringstream query;
 
-	//Start the transaction
+	// Start the transaction
 	DBTransaction transaction;
 	if (!transaction.begin()) {
 		return false;
 	}
 
-	//clear old tile data
+	// clear old tile data
 	if (!db.executeQuery("DELETE FROM `tile_store`")) {
 		return false;
 	}
@@ -72,8 +70,8 @@ bool IOMapSerialize::saveHouseItems()
 	DBInsert stmt("INSERT INTO `tile_store` (`house_id`, `data`) VALUES ");
 
 	PropWriteStream stream;
-	for (const auto& [key, house] : g_game().map.houses.getHouses()) {
-		//save house items
+	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
+		// save house items
 		for (HouseTile* tile : house->getTiles()) {
 			saveTile(stream, tile);
 
@@ -93,14 +91,13 @@ bool IOMapSerialize::saveHouseItems()
 		return false;
 	}
 
-	//End the transaction
+	// End the transaction
 	bool success = transaction.commit();
 	SPDLOG_INFO("Saved house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
 	return success;
 }
 
-bool IOMapSerialize::loadContainer(PropStream& propStream, Container* container)
-{
+bool IOMapSerialize::loadContainer(PropStream &propStream, Container* container) {
 	while (container->serializationCount > 0) {
 		if (!loadItem(propStream, container)) {
 			SPDLOG_WARN("Deserialization error for container item: {}", container->getID());
@@ -117,8 +114,7 @@ bool IOMapSerialize::loadContainer(PropStream& propStream, Container* container)
 	return true;
 }
 
-bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
-{
+bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent) {
 	uint16_t id;
 	if (!propStream.read<uint16_t>(id)) {
 		return false;
@@ -129,9 +125,9 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 		tile = parent->getTile();
 	}
 
-	const ItemType& iType = Item::items[id];
+	const ItemType &iType = Item::items[id];
 	if (iType.moveable || !tile || iType.isCarpet()) {
-		//create a new item
+		// create a new item
 		Item* item = Item::CreateItem(id);
 		if (item) {
 			if (item->unserializeAttr(propStream)) {
@@ -179,7 +175,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 				SPDLOG_WARN("Deserialization error in {}", id);
 			}
 		} else {
-			//The map changed since the last save, just read the attributes
+			// The map changed since the last save, just read the attributes
 			std::unique_ptr<Item> dummy(Item::CreateItem(id));
 			if (dummy) {
 				dummy->unserializeAttr(propStream);
@@ -200,8 +196,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 	return true;
 }
 
-void IOMapSerialize::saveItem(PropWriteStream& stream, const Item* item)
-{
+void IOMapSerialize::saveItem(PropWriteStream &stream, const Item* item) {
 	const Container* container = item->getContainer();
 
 	// Write ID & props
@@ -220,8 +215,7 @@ void IOMapSerialize::saveItem(PropWriteStream& stream, const Item* item)
 	stream.write<uint8_t>(0x00); // attr end
 }
 
-void IOMapSerialize::saveTile(PropWriteStream& stream, const Tile* tile)
-{
+void IOMapSerialize::saveTile(PropWriteStream &stream, const Tile* tile) {
 	const TileItemVector* tileItems = tile->getItemList();
 	if (!tileItems) {
 		return;
@@ -230,11 +224,10 @@ void IOMapSerialize::saveTile(PropWriteStream& stream, const Tile* tile)
 	std::forward_list<Item*> items;
 	uint16_t count = 0;
 	for (Item* item : *tileItems) {
-		const ItemType& it = Item::items[item->getID()];
+		const ItemType &it = Item::items[item->getID()];
 
 		// Note that these are NEGATED, ie. these are the items that will be saved.
-		if (!(it.moveable || it.isCarpet() || item->getDoor() || (item->getContainer() &&
-											!item->getContainer()->empty()) || it.canWriteText || item->getBed())) {
+		if (!(it.moveable || it.isCarpet() || item->getDoor() || (item->getContainer() && !item->getContainer()->empty()) || it.canWriteText || item->getBed())) {
 			continue;
 		}
 
@@ -243,7 +236,7 @@ void IOMapSerialize::saveTile(PropWriteStream& stream, const Tile* tile)
 	}
 
 	if (!items.empty()) {
-		const Position& tilePosition = tile->getPosition();
+		const Position &tilePosition = tile->getPosition();
 		stream.write<uint16_t>(tilePosition.x);
 		stream.write<uint16_t>(tilePosition.y);
 		stream.write<uint8_t>(tilePosition.z);
@@ -255,9 +248,8 @@ void IOMapSerialize::saveTile(PropWriteStream& stream, const Tile* tile)
 	}
 }
 
-bool IOMapSerialize::loadHouseInfo()
-{
-	Database& db = Database::getInstance();
+bool IOMapSerialize::loadHouseInfo() {
+	Database &db = Database::getInstance();
 
 	DBResult_ptr result = db.storeQuery("SELECT `id`, `owner`, `paid`, `warnings` FROM `houses`");
 	if (!result) {
@@ -285,9 +277,8 @@ bool IOMapSerialize::loadHouseInfo()
 	return true;
 }
 
-bool IOMapSerialize::saveHouseInfo()
-{
-	Database& db = Database::getInstance();
+bool IOMapSerialize::saveHouseInfo() {
+	Database &db = Database::getInstance();
 
 	DBTransaction transaction;
 	if (!transaction.begin()) {
@@ -299,7 +290,7 @@ bool IOMapSerialize::saveHouseInfo()
 	}
 
 	std::ostringstream query;
-	for (const auto& [key, house] : g_game().map.houses.getHouses()) {
+	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
 		query << "SELECT `id` FROM `houses` WHERE `id` = " << house->getId();
 		DBResult_ptr result = db.storeQuery(query.str());
 		if (result) {
@@ -316,7 +307,7 @@ bool IOMapSerialize::saveHouseInfo()
 
 	DBInsert stmt("INSERT INTO `house_lists` (`house_id` , `listid` , `list`) VALUES ");
 
-	for (const auto& [key, house] : g_game().map.houses.getHouses()) {
+	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
 		std::string listText;
 		if (house->getAccessList(GUEST_LIST, listText) && !listText.empty()) {
 			query << house->getId() << ',' << GUEST_LIST << ',' << db.escapeString(listText);

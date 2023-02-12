@@ -38,7 +38,6 @@ class CustomAttribute {
 					std::numeric_limits<T>::min(),
 					std::numeric_limits<T>::max()
 				);
-				SPDLOG_ERROR("[{}] not found value", __FUNCTION__);
 			}
 			return {};
 		}

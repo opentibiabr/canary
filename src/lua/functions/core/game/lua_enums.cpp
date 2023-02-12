@@ -1106,7 +1106,6 @@ void LuaEnums::initWebhookEnums(lua_State* L) {
 	registerEnum(L, WEBHOOK_COLOR_RAID);
 }
 
-// Webhook default colors
 void LuaEnums::initBosstiaryEnums(lua_State* L) {
 	for (auto value : magic_enum::enum_values<BosstiaryRarity_t>()) {
 		registerEnumClass(L, value);

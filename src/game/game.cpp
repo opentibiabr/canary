@@ -3382,7 +3382,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		return;
 	}
 
-	Thing* thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_TOPDOWN_ITEM);
+	Thing* thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_FIND_THING);
 	if (!thing) {
 		return;
 	}
@@ -3444,19 +3444,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 	}
 
 	if (item->isWrapable() && item->getID() != ITEM_DECORATION_KIT) {
-		uint16_t hiddenCharges = 0;
-		if (isCaskItem(item->getID())) {
-			hiddenCharges = item->getSubType();
-		}
-		uint16_t oldItemID = item->getID();
-		addMagicEffect(item->getPosition(), CONST_ME_POFF);
-		Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
-		newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
-		item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + itemName + ">.");
-		if (hiddenCharges > 0) {
-			item->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
-		}
-		newItem->startDecaying();
+		wrapItem(item);
 	}
 	else if (item->getID() == ITEM_DECORATION_KIT && unWrapId != 0) {
 		auto hiddenCharges = item->getAttribute<uint16_t>(ItemAttribute_t::DATE);
@@ -3465,12 +3453,27 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 			if (hiddenCharges > 0 && isCaskItem(unWrapId)) {
 				newItem->setSubType(hiddenCharges);
 			}
-			addMagicEffect(pos, CONST_ME_POFF);
 			newItem->removeCustomAttribute("unWrapId");
 			newItem->removeAttribute(ItemAttribute_t::DESCRIPTION);
 			newItem->startDecaying();
 		}
 	}
+	addMagicEffect(pos, CONST_ME_POFF);
+}
+
+Item* Game::wrapItem(Item *item) {
+	uint16_t oldItemID = item->getID();
+	Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
+	newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
+	item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + item->getName() + ">.");
+	if (isCaskItem(item->getID())) {
+		auto hiddenCharges = item->getSubType();
+		if (hiddenCharges > 0) {
+			item->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
+		}
+	}
+	newItem->startDecaying();
+	return newItem;
 }
 
 void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::string& text)

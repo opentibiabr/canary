@@ -95,6 +95,8 @@ void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock) {
 	} else {
 		npcType->info.shopItemVector.push_back(shopBlock);
 	}
+
+	info.speechBubble = SPEECHBUBBLE_TRADE;
 }
 
 bool Npcs::load(bool loadLibs /* = true*/, bool loadNpcs /* = true*/, bool reloading /* = false*/) const {

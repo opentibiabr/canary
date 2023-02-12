@@ -3208,7 +3208,7 @@ int PlayerFunctions::luaPlayerGetFaction(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerIsUIExhausted(lua_State *L) {
+int PlayerFunctions::luaPlayerIsUIExhausted(lua_State* L) {
 	// player:isUIExhausted()
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
@@ -3222,7 +3222,7 @@ int PlayerFunctions::luaPlayerIsUIExhausted(lua_State *L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerUpdateUIExhausted(lua_State *L) {
+int PlayerFunctions::luaPlayerUpdateUIExhausted(lua_State* L) {
 	// player:updateUIExhausted(exhaustionTime = 250)
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {

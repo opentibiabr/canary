@@ -169,25 +169,18 @@ bool Items::loadFromXml() {
 	}
 
 	for (auto itemNode : doc.child("items").children()) {
-		pugi::xml_attribute idAttribute = itemNode.attribute("id");
-		if (idAttribute) {
+		if (auto idAttribute = itemNode.attribute("id"); idAttribute) {
 			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
 			continue;
 		}
 
-		pugi::xml_attribute fromIdAttribute = itemNode.attribute("fromid");
+		auto fromIdAttribute = itemNode.attribute("fromid");
 		if (!fromIdAttribute) {
-			if (idAttribute) {
-				SPDLOG_WARN("[Items::loadFromXml] - "
-							"No item id: {} found",
-							idAttribute.value());
-			} else {
-				SPDLOG_WARN("[Items::loadFromXml] - No item id found");
-			}
+			SPDLOG_WARN("[Items::loadFromXml] - No item id found, use id or fromid");
 			continue;
 		}
 
-		pugi::xml_attribute toIdAttribute = itemNode.attribute("toid");
+		auto toIdAttribute = itemNode.attribute("toid");
 		if (!toIdAttribute) {
 			SPDLOG_WARN("[Items::loadFromXml] - "
 						"tag fromid: {} without toid",

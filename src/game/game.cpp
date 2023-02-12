@@ -6,7 +6,7 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
  */
-forcebuild
+
 #include "pch.hpp"
 
 #include "lua/creature/actions.h"

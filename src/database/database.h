@@ -246,8 +246,8 @@ class DBTransaction {
 				// An error occurred while starting the transaction
 				state = STATE_NO_START;
 				SPDLOG_ERROR("An error occurred while starting the transaction", __FUNCTION__, exception.what());
+				return false;
 			}
-			return false;
 		}
 
 		bool isStarted() const {

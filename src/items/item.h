@@ -38,14 +38,14 @@ class ItemProperties {
 		T getAttribute(ItemAttribute_t type) const {
 			if constexpr (std::is_same_v<T, std::string>) {
 				return getString(type);
-			} else if constexpr (std::is_integral_v<T>) {
+			} else {
 				return std::clamp(
 					static_cast<T>(getInteger(type)),
 					std::numeric_limits<T>::min(),
 					std::numeric_limits<T>::max()
 				);
 			}
-			return T();
+			return {};
 		}
 
 		bool hasAttribute(ItemAttribute_t type) const {

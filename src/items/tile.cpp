@@ -474,7 +474,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 
 		if (creature->getNpc()) {
 			ReturnValue returnValue = checkNpcCanWalkIntoTile();
-			if(returnValue != RETURNVALUE_NOERROR){
+			if (returnValue != RETURNVALUE_NOERROR) {
 				return returnValue;
 			}
 		}
@@ -565,7 +565,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 				}
 			}
 
-			if(hasBitSet(FLAG_PATHFINDING, tileFlags) && hasHarmfulField()){
+			if (hasBitSet(FLAG_PATHFINDING, tileFlags) && hasHarmfulField()) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
 
@@ -705,7 +705,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 }
 
 ReturnValue Tile::checkNpcCanWalkIntoTile() const {
-	if(hasHarmfulField()) {
+	if (hasHarmfulField()) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	} else {
 		return RETURNVALUE_NOERROR;

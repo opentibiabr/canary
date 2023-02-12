@@ -343,7 +343,7 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target) {
 					}
 				}
 			}
-		} else if (target && target->getNpc()){
+		} else if (target && target->getNpc()) {
 			return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 		}
 

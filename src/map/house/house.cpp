@@ -240,47 +240,16 @@ bool House::transferToDepot(Player* player) const
 	if (townId == 0 || owner == 0) {
 		return false;
 	}
-
 	ItemList moveItemList;
 	for (HouseTile* tile : houseTiles) {
 		if (const TileItemVector* items = tile->getItemList()) {
-			for (auto it = items->rbegin(), end = items->rend(); it != end; ++it) {
-				Item* item = (*it);
+			for (Item* item : *items) {
 				if (item->isWrapable()) {
-					Container* container = item->getContainer();
-					if (container) {
-						for (Item* containerItem : container->getItemList()) {
-							moveItemList.push_back(containerItem);
-						}
-					}
-
-					uint16_t hiddenCharges = 0;
-					if (isCaskItem(item->getID())) {
-						hiddenCharges = item->getSubType();
-					}
-					
-					std::string itemName = item->getName();
-					uint16_t itemID = item->getID();
-					Item* newItem = g_game().transformItem(item, ITEM_DECORATION_KIT);
-					newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(itemID));
-					std::ostringstream ss;
-					ss << "Unwrap it in your own house to create a <" << itemName << ">.";
-					newItem->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
-					
-					if (hiddenCharges > 0) {
-						item->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
-					}
-					
-					moveItemList.push_back(newItem);
+					handleWrapableItem(moveItemList, item);
 				} else if (item->isPickupable()) {
 					moveItemList.push_back(item);
 				} else {
-					Container* container = item->getContainer();
-					if (container) {
-						for (Item* containerItem : container->getItemList()) {
-							moveItemList.push_back(containerItem);
-						}
-					}
+					handleContainer(moveItemList, item);
 				}
 			}
 		}
@@ -290,6 +259,22 @@ bool House::transferToDepot(Player* player) const
 		g_game().internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT);
 	}
 	return true;
+}
+
+void House::handleWrapableItem(ItemList &moveItemList, Item *item) const {
+	if (item->isWrapContainer()) {
+		handleContainer(moveItemList, item);
+	}
+	Item *newItem = g_game().wrapItem(item);
+	moveItemList.push_back(newItem);
+}
+
+void House::handleContainer(ItemList &moveItemList, Item *item) const {
+	if (const auto container = item->getContainer()) {
+		for (Item* containerItem : container->getItemList()) {
+			moveItemList.push_back(containerItem);
+		}
+	}
 }
 
 bool House::getAccessList(uint32_t listId, std::string& list) const

@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -19,8 +19,7 @@
 std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME();
 
-void ProtocolStatus::onRecvFirstMessage(NetworkMessage& msg)
-{
+void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 	uint32_t ip = getIP();
 	if (ip != 0x0100007F) {
 		std::string ipStr = convertIPToString(ip);
@@ -36,27 +35,27 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage& msg)
 	ipConnectMap[ip] = OTSYS_TIME();
 
 	switch (msg.getByte()) {
-		//XML info protocol
+		// XML info protocol
 		case 0xFF: {
 			if (msg.getString(4) == "info") {
 				g_dispatcher().addTask(createTask(std::bind(
-                                     &ProtocolStatus::sendStatusString,
-                                     std::static_pointer_cast<
-                                     ProtocolStatus>(shared_from_this()))));
+					&ProtocolStatus::sendStatusString,
+					std::static_pointer_cast<
+						ProtocolStatus>(shared_from_this())
+				)));
 				return;
 			}
 			break;
 		}
 
-		//Another ServerInfo protocol
+		// Another ServerInfo protocol
 		case 0x01: {
 			uint16_t requestedInfo = msg.get<uint16_t>(); // only a Byte is necessary, though we could add new info here
 			std::string characterName;
 			if (requestedInfo & REQUEST_PLAYER_STATUS_INFO) {
 				characterName = msg.getString();
 			}
-			g_dispatcher().addTask(createTask(std::bind(&ProtocolStatus::sendInfo, std::static_pointer_cast<ProtocolStatus>(shared_from_this()),
-                                  requestedInfo, characterName)));
+			g_dispatcher().addTask(createTask(std::bind(&ProtocolStatus::sendInfo, std::static_pointer_cast<ProtocolStatus>(shared_from_this()), requestedInfo, characterName)));
 			return;
 		}
 
@@ -66,8 +65,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage& msg)
 	disconnect();
 }
 
-void ProtocolStatus::sendStatusString()
-{
+void ProtocolStatus::sendStatusString() {
 	auto output = OutputMessagePool::getOutputMessage();
 
 	setRawMessages(true);
@@ -99,7 +97,7 @@ void ProtocolStatus::sendStatusString()
 	pugi::xml_node players = tsqp.append_child("players");
 	uint32_t real = 0;
 	std::map<uint32_t, uint32_t> listIP;
-	for (const auto& [key, player] : g_game().getPlayers()) {
+	for (const auto &[key, player] : g_game().getPlayers()) {
 		if (player->getIP() != 0) {
 			auto ip = listIP.find(player->getIP());
 			if (ip != listIP.end()) {
@@ -151,8 +149,7 @@ void ProtocolStatus::sendStatusString()
 	disconnect();
 }
 
-void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string& characterName)
-{
+void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &characterName) {
 	auto output = OutputMessagePool::getOutputMessage();
 
 	if (requestedInfo & REQUEST_BASIC_SERVER_INFO) {
@@ -196,9 +193,9 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string& charact
 	if (requestedInfo & REQUEST_EXT_PLAYERS_INFO) {
 		output->addByte(0x21); // players info - online players list
 
-		const auto& players = g_game().getPlayers();
+		const auto &players = g_game().getPlayers();
 		output->add<uint32_t>(players.size());
-		for (const auto& it : players) {
+		for (const auto &it : players) {
 			output->addString(it.second->getName());
 			output->add<uint32_t>(it.second->getLevel());
 		}

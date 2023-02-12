@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_DATABASE_DATABASETASKS_H_
 #define SRC_DATABASE_DATABASETASKS_H_
@@ -14,31 +14,30 @@
 #include "utils/thread_holder_base.h"
 
 struct DatabaseTask {
-	DatabaseTask(std::string&& initQuery, std::function<void(DBResult_ptr, bool)>&& initCallback, bool initStore) :
-		query(std::move(initQuery)), callback(std::move(initCallback)), store(initStore) {}
+		DatabaseTask(std::string &&initQuery, std::function<void(DBResult_ptr, bool)> &&initCallback, bool initStore) :
+			query(std::move(initQuery)), callback(std::move(initCallback)), store(initStore) { }
 
-	std::string query;
-	std::function<void(DBResult_ptr, bool)> callback;
-	bool store;
+		std::string query;
+		std::function<void(DBResult_ptr, bool)> callback;
+		bool store;
 };
 
-class DatabaseTasks : public ThreadHolder<DatabaseTasks>
-{
+class DatabaseTasks : public ThreadHolder<DatabaseTasks> {
 	public:
 		DatabaseTasks();
 
 		// non-copyable
-		DatabaseTasks(DatabaseTasks const&) = delete;
-		void operator=(DatabaseTasks const&) = delete;
+		DatabaseTasks(const DatabaseTasks &) = delete;
+		void operator=(const DatabaseTasks &) = delete;
 
-		static DatabaseTasks& getInstance() {
+		static DatabaseTasks &getInstance() {
 			// Guaranteed to be destroyed
 			static DatabaseTasks instance;
 			// Instantiated on first use
 			return instance;
 		}
 
-		bool SetDatabaseInterface(Database *database);
+		bool SetDatabaseInterface(Database* database);
 		void start();
 		void startThread();
 		void flush();
@@ -47,10 +46,11 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks>
 		void addTask(std::string query, std::function<void(DBResult_ptr, bool)> callback = nullptr, bool store = false);
 
 		void threadMain();
-	private:
-		void runTask(const DatabaseTask& task);
 
-		Database *db_;
+	private:
+		void runTask(const DatabaseTask &task);
+
+		Database* db_;
 		std::thread thread;
 		std::list<DatabaseTask> tasks;
 		std::mutex taskLock;
@@ -61,4 +61,4 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks>
 
 constexpr auto g_databaseTasks = &DatabaseTasks::getInstance;
 
-#endif  // SRC_DATABASE_DATABASETASKS_H_
+#endif // SRC_DATABASE_DATABASETASKS_H_

@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_GAME_SCHEDUNLING_EVENTS_SCHEDULER_FUNCTIONS_HPP_
 #define SRC_GAME_SCHEDUNLING_EVENTS_SCHEDULER_FUNCTIONS_HPP_

@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_
 #define SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_
@@ -28,25 +28,23 @@ class TaskHuntingSlot;
 class TaskHuntingOption;
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
+struct TextMessage {
+		TextMessage() = default;
+		TextMessage(MessageClasses initType, std::string initText) :
+			type(initType), text(std::move(initText)) { }
 
-struct TextMessage
-{
-	TextMessage() = default;
-	TextMessage(MessageClasses initType, std::string initText) : type(initType), text(std::move(initText)) {}
-
-	MessageClasses type = MESSAGE_STATUS;
-	std::string text;
-	Position position;
-	uint16_t channelId;
-	struct
-	{
-		int32_t value = 0;
-		TextColor_t color;
-	} primary, secondary;
+		MessageClasses type = MESSAGE_STATUS;
+		std::string text;
+		Position position;
+		uint16_t channelId;
+		struct
+		{
+				int32_t value = 0;
+				TextColor_t color;
+		} primary, secondary;
 };
 
-class ProtocolGame final : public Protocol
-{
+class ProtocolGame final : public Protocol {
 public:
 	// Static protocol information.
 	enum {SERVER_SENDS_FIRST = true};
@@ -426,20 +424,17 @@ private:
 	// Hotkey equip/dequip item
 	void parseHotkeyEquip(NetworkMessage &msg);
 
-	//Help functions
-
+	// Help functions
 	// translate a tile to clientreadable format
-	void GetTileDescription(const Tile *tile, NetworkMessage &msg);
+	void GetTileDescription(const Tile* tile, NetworkMessage &msg);
 
 	// translate a floor to clientreadable format
-	void GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y, int32_t z,
-                              int32_t width, int32_t height, int32_t offset, int32_t &skip);
+	void GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, int32_t offset, int32_t &skip);
 
 	// translate a map area to clientreadable format
-	void GetMapDescription(int32_t x, int32_t y, int32_t z,
-                           int32_t width, int32_t height, NetworkMessage &msg);
+	void GetMapDescription(int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, NetworkMessage &msg);
 
-	void AddCreature(NetworkMessage &msg, const Creature *creature, bool known, uint32_t remove);
+	void AddCreature(NetworkMessage &msg, const Creature* creature, bool known, uint32_t remove);
 	void AddPlayerStats(NetworkMessage &msg);
 	void AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool addMount = true);
 	void AddPlayerSkills(NetworkMessage &msg);
@@ -447,32 +442,32 @@ private:
 	void sendPremiumTrigger();
 	void sendMessageDialog(const std::string &message);
 	void AddWorldLight(NetworkMessage &msg, LightInfo lightInfo);
-	void AddCreatureLight(NetworkMessage &msg, const Creature *creature);
+	void AddCreatureLight(NetworkMessage &msg, const Creature* creature);
 
-	//tiles
+	// tiles
 	static void RemoveTileThing(NetworkMessage &msg, const Position &pos, uint32_t stackpos);
 
 	void sendTaskHuntingData(const TaskHuntingSlot* slot);
 
-	void MoveUpCreature(NetworkMessage &msg, const Creature *creature, const Position &newPos, const Position &oldPos);
-	void MoveDownCreature(NetworkMessage &msg, const Creature *creature, const Position &newPos, const Position &oldPos);
+	void MoveUpCreature(NetworkMessage &msg, const Creature* creature, const Position &newPos, const Position &oldPos);
+	void MoveDownCreature(NetworkMessage &msg, const Creature* creature, const Position &newPos, const Position &oldPos);
 
-	//shop
+	// shop
 	void AddHiddenShopItem(NetworkMessage &msg);
 	void AddShopItem(NetworkMessage &msg, const ShopBlock &shopBlock);
 
-	//otclient
+	// otclient
 	void parseExtendedOpcode(NetworkMessage &msg);
 
-	//reloadCreature
-	void reloadCreature(const Creature *creature);
+	// reloadCreature
+	void reloadCreature(const Creature* creature);
 
-	void getForgeInfoMap(const Item *item, std::map<uint16_t, std::map<uint8_t, uint16_t>>& itemsMap) const;
+	void getForgeInfoMap(const Item* item, std::map<uint16_t, std::map<uint8_t, uint16_t>> &itemsMap) const;
 
 	friend class Player;
 
 	phmap::flat_hash_set<uint32_t> knownCreatureSet;
-	Player *player = nullptr;
+	Player* player = nullptr;
 
 	uint32_t eventConnect = 0;
 	uint32_t challengeTimestamp = 0;
@@ -494,7 +489,6 @@ private:
 	void sendSpecialContainersAvailable();
 	void addBless();
 	void parsePacketDead(uint8_t recvbyte);
-
 };
 
-#endif  // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_
+#endif // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

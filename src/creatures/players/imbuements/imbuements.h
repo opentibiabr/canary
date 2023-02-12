@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_CREATURES_PLAYERS_IMBUEMENTS_IMBUEMENTS_H_
 #define SRC_CREATURES_PLAYERS_IMBUEMENTS_IMBUEMENTS_H_
@@ -20,25 +20,25 @@ class Item;
 class Imbuement;
 
 struct BaseImbuement {
-	BaseImbuement(uint16_t initId, std::string initName, uint32_t initProtectionPrice, uint32_t initPrice, uint32_t initRemoveCost, uint32_t initDuration, uint8_t initPercent) :
-		id(initId), name(std::move(initName)), protectionPrice(initProtectionPrice), price(initPrice), removeCost(initRemoveCost), duration(initDuration), percent(initPercent) {}
+		BaseImbuement(uint16_t initId, std::string initName, uint32_t initProtectionPrice, uint32_t initPrice, uint32_t initRemoveCost, uint32_t initDuration, uint8_t initPercent) :
+			id(initId), name(std::move(initName)), protectionPrice(initProtectionPrice), price(initPrice), removeCost(initRemoveCost), duration(initDuration), percent(initPercent) { }
 
-	uint16_t id;
-	std::string name;
-	uint32_t protectionPrice;
-	uint32_t price;
-	uint32_t removeCost;
-	uint32_t duration;
-	uint8_t percent;
+		uint16_t id;
+		std::string name;
+		uint32_t protectionPrice;
+		uint32_t price;
+		uint32_t removeCost;
+		uint32_t duration;
+		uint8_t percent;
 };
 
 struct CategoryImbuement {
-	CategoryImbuement(uint16_t initId, std::string initName, bool initAgressive) :
-		id(initId), name(std::move(initName)), agressive(initAgressive) {}
+		CategoryImbuement(uint16_t initId, std::string initName, bool initAgressive) :
+			id(initId), name(std::move(initName)), agressive(initAgressive) { }
 
-	uint16_t id;
-	std::string name;
-	bool agressive;
+		uint16_t id;
+		std::string name;
+		bool agressive;
 };
 
 class Imbuements {
@@ -49,10 +49,10 @@ class Imbuements {
 		bool reload();
 
 		// non-copyable
-		Imbuements(const Imbuements&) = delete;
-		Imbuements& operator=(const Imbuements&) = delete;
+		Imbuements(const Imbuements &) = delete;
+		Imbuements &operator=(const Imbuements &) = delete;
 
-		static Imbuements& getInstance() {
+		static Imbuements &getInstance() {
 			// Guaranteed to be destroyed
 			static Imbuements instance;
 			// Instantiated on first use
@@ -80,11 +80,10 @@ class Imbuements {
 
 constexpr auto g_imbuements = &Imbuements::getInstance;
 
-class Imbuement
-{
+class Imbuement {
 	public:
 		Imbuement(uint16_t initId, uint16_t initBaseId) :
-				id(initId), baseid(initBaseId) {}
+			id(initId), baseid(initBaseId) { }
 
 		uint16_t getID() const {
 			return id;
@@ -94,8 +93,7 @@ class Imbuement
 			return baseid;
 		}
 
-		uint32_t getStorage() const
-		{
+		uint32_t getStorage() const {
 			return storage;
 		}
 
@@ -117,7 +115,7 @@ class Imbuement
 			return category;
 		}
 
-		const std::vector<std::pair<uint16_t, uint16_t>>& getItems() const {
+		const std::vector<std::pair<uint16_t, uint16_t>> &getItems() const {
 			return items;
 		}
 
@@ -148,4 +146,4 @@ class Imbuement
 		std::vector<std::pair<uint16_t, uint16_t>> items;
 };
 
-#endif  // SRC_CREATURES_PLAYERS_IMBUEMENTS_IMBUEMENTS_H_
+#endif // SRC_CREATURES_PLAYERS_IMBUEMENTS_IMBUEMENTS_H_

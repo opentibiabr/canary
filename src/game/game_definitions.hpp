@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_GAME_GAME_DEFINITIONS_HPP_
 #define SRC_GAME_GAME_DEFINITIONS_HPP_
@@ -14,20 +14,20 @@
 
 // Enums
 enum Offer_t {
-	DISABLED=0,
-	ITEM=1,
-	STACKABLE_ITEM=2,
-	OUTFIT=3,
-	OUTFIT_ADDON=4,
-	MOUNT=5,
-	NAMECHANGE=6,
-	SEXCHANGE=7,
-	PROMOTION=8,
+	DISABLED = 0,
+	ITEM = 1,
+	STACKABLE_ITEM = 2,
+	OUTFIT = 3,
+	OUTFIT_ADDON = 4,
+	MOUNT = 5,
+	NAMECHANGE = 6,
+	SEXCHANGE = 7,
+	PROMOTION = 8,
 	PREMIUM_TIME,
 	TELEPORT,
 	BLESSING,
-	BOOST_XP, //not using yet
-	BOOST_STAMINA, //not using yet
+	BOOST_XP, // not using yet
+	BOOST_STAMINA, // not using yet
 	WRAP_ITEM
 };
 
@@ -124,19 +124,19 @@ enum Webhook_Colors_t : uint32_t {
 };
 
 struct ModalWindow {
-	std::list<std::pair<std::string, uint8_t>> buttons, choices;
-	std::string title, message;
-	uint32_t id;
-	uint8_t defaultEnterButton, defaultEscapeButton;
-	bool priority;
+		std::list<std::pair<std::string, uint8_t>> buttons, choices;
+		std::string title, message;
+		uint32_t id;
+		uint8_t defaultEnterButton, defaultEscapeButton;
+		bool priority;
 
-	ModalWindow(uint32_t newId, std::string newTitle, std::string newMessage) :
-                    title(std::move(newTitle)),
-                    message(std::move(newMessage)),
-                    id(newId),
-                    defaultEnterButton(0xFF),
-                    defaultEscapeButton(0xFF),
-					priority(false) {}
+		ModalWindow(uint32_t newId, std::string newTitle, std::string newMessage) :
+			title(std::move(newTitle)),
+			message(std::move(newMessage)),
+			id(newId),
+			defaultEnterButton(0xFF),
+			defaultEscapeButton(0xFF),
+			priority(false) { }
 };
 
-#endif  // SRC_GAME_GAME_DEFINITIONS_HPP_
+#endif // SRC_GAME_GAME_DEFINITIONS_HPP_

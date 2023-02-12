@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -396,8 +396,7 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 		switch (attribute) {
 			case ItemAttribute_t::DECAYSTATE: {
 				if (ItemDecayState_t decayState = getNumber<ItemDecayState_t>(L, 3);
-					decayState == DECAYING_FALSE || decayState == DECAYING_STOPPING)
-				{
+					decayState == DECAYING_FALSE || decayState == DECAYING_STOPPING) {
 					g_decay().stopDecay(item);
 				} else {
 					g_decay().startDecay(item);
@@ -417,7 +416,8 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 				pushBoolean(L, false);
 				return 1;
 			}
-			default: break;
+			default:
+				break;
 		}
 
 		item->setAttribute(attribute, getNumber<int64_t>(L, 3));
@@ -638,7 +638,7 @@ int ItemFunctions::luaItemTransform(lua_State* L) {
 		return 1;
 	}
 
-	Item*& item = *itemPtr;
+	Item*&item = *itemPtr;
 	if (!item) {
 		lua_pushnil(L);
 		return 1;
@@ -661,7 +661,7 @@ int ItemFunctions::luaItemTransform(lua_State* L) {
 		return 1;
 	}
 
-	const ItemType& it = Item::items[itemId];
+	const ItemType &it = Item::items[itemId];
 	if (it.stackable) {
 		subType = std::min<int32_t>(subType, 100);
 	}
@@ -688,7 +688,7 @@ int ItemFunctions::luaItemDecay(lua_State* L) {
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
 		if (isNumber(L, 2)) {
-			ItemType& it = Item::items.getItemType(item->getID());
+			ItemType &it = Item::items.getItemType(item->getID());
 			it.decayTo = getNumber<int32_t>(L, 2);
 		}
 
@@ -750,8 +750,7 @@ int ItemFunctions::luaItemHasProperty(lua_State* L) {
 	return 1;
 }
 
-int ItemFunctions::luaItemGetImbuement(lua_State* L)
-{
+int ItemFunctions::luaItemGetImbuement(lua_State* L) {
 	// item:getImbuement()
 	const Item* item = getUserdata<Item>(L, 1);
 	if (!item) {
@@ -766,7 +765,7 @@ int ItemFunctions::luaItemGetImbuement(lua_State* L)
 			continue;
 		}
 
-		Imbuement *imbuement = imbuementInfo.imbuement;
+		Imbuement* imbuement = imbuementInfo.imbuement;
 		if (!imbuement) {
 			continue;
 		}
@@ -820,7 +819,7 @@ int ItemFunctions::luaItemSetDuration(lua_State* L) {
 		showDuration = getBoolean(L, 5);
 	}
 
-	ItemType& it = Item::items.getItemType(item->getID());
+	ItemType &it = Item::items.getItemType(item->getID());
 	if (maxDuration == 0) {
 		it.decayTime = minDuration;
 	} else {

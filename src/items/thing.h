@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_ITEMS_THING_H_
 #define SRC_ITEMS_THING_H_
@@ -18,15 +18,14 @@ class Item;
 class Creature;
 class Container;
 
-class Thing
-{
+class Thing {
 	public:
 		constexpr Thing() = default;
 		virtual ~Thing() = default;
 
 		// non-copyable
-		Thing(const Thing&) = delete;
-		Thing& operator=(const Thing&) = delete;
+		Thing(const Thing &) = delete;
+		Thing &operator=(const Thing &) = delete;
 
 		virtual std::string getDescription(int32_t lookDistance) const = 0;
 
@@ -44,7 +43,7 @@ class Thing
 		virtual Tile* getTile();
 		virtual const Tile* getTile() const;
 
-		virtual const Position& getPosition() const;
+		virtual const Position &getPosition() const;
 		virtual int32_t getThrowRange() const = 0;
 		virtual bool isPushable() const = 0;
 
@@ -72,4 +71,4 @@ class Thing
 		}
 };
 
-#endif  // SRC_ITEMS_THING_H_
+#endif // SRC_ITEMS_THING_H_

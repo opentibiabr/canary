@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_GAME_SCHEDULING_TASKS_H_
 #define SRC_GAME_SCHEDULING_TASKS_H_
@@ -15,13 +15,13 @@
 const int DISPATCHER_TASK_EXPIRATION = 2000;
 const auto SYSTEM_TIME_ZERO = std::chrono::system_clock::time_point(std::chrono::milliseconds(0));
 
-class Task
-{
+class Task {
 	public:
 		// DO NOT allocate this class on the stack
-		explicit Task(std::function<void (void)>&& f) : func(std::move(f)) {}
-		Task(uint32_t ms, std::function<void (void)>&& f) :
-			expiration(std::chrono::system_clock::now() + std::chrono::milliseconds(ms)), func(std::move(f)) {}
+		explicit Task(std::function<void(void)> &&f) :
+			func(std::move(f)) { }
+		Task(uint32_t ms, std::function<void(void)> &&f) :
+			expiration(std::chrono::system_clock::now() + std::chrono::milliseconds(ms)), func(std::move(f)) { }
 
 		virtual ~Task() = default;
 		void operator()() {
@@ -46,20 +46,20 @@ class Task
 		// Expiration has another meaning for scheduler tasks,
 		// then it is the time the task should be added to the
 		// dispatcher
-		std::function<void (void)> func;
+		std::function<void(void)> func;
 };
 
-Task* createTask(std::function<void (void)> f);
-Task* createTask(uint32_t expiration, std::function<void (void)> f);
+Task* createTask(std::function<void(void)> f);
+Task* createTask(uint32_t expiration, std::function<void(void)> f);
 
 class Dispatcher : public ThreadHolder<Dispatcher> {
 	public:
 		Dispatcher() = default;
 
-		Dispatcher(Dispatcher const&) = delete;
-		void operator=(Dispatcher const&) = delete;
+		Dispatcher(const Dispatcher &) = delete;
+		void operator=(const Dispatcher &) = delete;
 
-		static Dispatcher& getInstance() {
+		static Dispatcher &getInstance() {
 			// Guaranteed to be destroyed
 			static Dispatcher instance;
 			// Instantiated on first use
@@ -86,4 +86,4 @@ class Dispatcher : public ThreadHolder<Dispatcher> {
 
 constexpr auto g_dispatcher = &Dispatcher::getInstance;
 
-#endif  // SRC_GAME_SCHEDULING_TASKS_H_
+#endif // SRC_GAME_SCHEDULING_TASKS_H_

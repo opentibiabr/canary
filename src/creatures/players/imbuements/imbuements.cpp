@@ -5,15 +5,14 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 #include "creatures/players/imbuements/imbuements.h"
 #include "lua/creature/events.h"
 #include "utils/pugicast.h"
 
-Imbuement* Imbuements::getImbuement(uint16_t id)
-{
+Imbuement* Imbuements::getImbuement(uint16_t id) {
 	if (id == 0) {
 		return nullptr;
 	}
@@ -32,7 +31,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
-		return  false;
+		return false;
 	}
 
 	loaded = true;
@@ -56,7 +55,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 
 			);
 
-		// Category/Group
+			// Category/Group
 		} else if (strcasecmp(baseNode.name(), "category") == 0) {
 			pugi::xml_attribute id = baseNode.attribute("id");
 			if (!id) {
@@ -69,7 +68,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				baseNode.attribute("agressive").as_bool(true)
 			);
 
-		// Imbuements
+			// Imbuements
 		} else if (strcasecmp(baseNode.name(), "imbuement") == 0) {
 			++runningid;
 			pugi::xml_attribute base = baseNode.attribute("base");
@@ -85,16 +84,14 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				continue;
 			}
 
-			auto imbuements = imbuementMap.emplace(std::piecewise_construct,
-				std::forward_as_tuple(runningid),
-				std::forward_as_tuple(runningid, baseid));
+			auto imbuements = imbuementMap.emplace(std::piecewise_construct, std::forward_as_tuple(runningid), std::forward_as_tuple(runningid, baseid));
 
 			if (!imbuements.second) {
 				SPDLOG_WARN("Duplicate imbuement of Base ID: '{}' ignored", baseid);
 				continue;
 			}
 
-			Imbuement& imbuement = imbuements.first->second;
+			Imbuement &imbuement = imbuements.first->second;
 
 			pugi::xml_attribute iconBase = baseNode.attribute("iconid");
 			if (!iconBase) {
@@ -158,26 +155,25 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						count = pugi::cast<uint16_t>(childNode.attribute("count").value());
 					}
 
-					auto it2 = std::find_if(imbuement.items.begin(), imbuement.items.end(), [sourceId](const std::pair<uint16_t, uint16_t>& source) -> bool {
+					auto it2 = std::find_if(imbuement.items.begin(), imbuement.items.end(), [sourceId](const std::pair<uint16_t, uint16_t> &source) -> bool {
 						return source.first == sourceId;
 					});
 
 					if (it2 != imbuement.items.end()) {
-						SPDLOG_WARN("Duplicate item: {}, imbument name: {} ignored",
-													childNode.attribute("value").value(), imbuement.name);
+						SPDLOG_WARN("Duplicate item: {}, imbument name: {} ignored", childNode.attribute("value").value(), imbuement.name);
 						continue;
 					}
 
 					imbuement.items.emplace_back(sourceId, count);
 
-				} else if  (strcasecmp(type.c_str(), "description") == 0) {
+				} else if (strcasecmp(type.c_str(), "description") == 0) {
 					std::string description = imbuement.name;
 					if ((attr = childNode.attribute("value"))) {
 						description = attr.as_string();
 					}
 
 					imbuement.description = description;
-				} else if  (strcasecmp(type.c_str(), "effect") == 0) {
+				} else if (strcasecmp(type.c_str(), "effect") == 0) {
 					// Effects
 					if (!(attr = childNode.attribute("type"))) {
 						SPDLOG_WARN("Missing effect type for imbuement name: {}", imbuement.name);
@@ -223,14 +219,12 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							usenormalskill = 3;
 							skillId = SKILL_MANA_LEECH_AMOUNT;
 						} else {
-							SPDLOG_WARN("Unknow skill name {} in imbuement name {}",
-								tmpStrValue, imbuement.name);
+							SPDLOG_WARN("Unknow skill name {} in imbuement name {}", tmpStrValue, imbuement.name);
 							continue;
 						}
 
 						if (!(attr = childNode.attribute("bonus"))) {
-							SPDLOG_WARN("Missing skill bonus for imbuement name {}",
-								imbuement.name);
+							SPDLOG_WARN("Missing skill bonus for imbuement name {}", imbuement.name);
 							continue;
 						}
 						int32_t bonus = pugi::cast<int32_t>(attr.value());
@@ -260,8 +254,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						}
 
 						if (!(attr = childNode.attribute("value"))) {
-							SPDLOG_WARN("Missing damage reduction percentage for imbuement name {}",
-								imbuement.name);
+							SPDLOG_WARN("Missing damage reduction percentage for imbuement name {}", imbuement.name);
 							continue;
 						}
 
@@ -282,8 +275,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						}
 
 						if (!(attr = childNode.attribute("value"))) {
-							SPDLOG_WARN("Missing damage reduction percentage for imbuement name {}",
-								imbuement.name);
+							SPDLOG_WARN("Missing damage reduction percentage for imbuement name {}", imbuement.name);
 							continue;
 						}
 
@@ -324,30 +316,26 @@ bool Imbuements::reload() {
 	return loadFromXml(true);
 }
 
-BaseImbuement* Imbuements::getBaseByID(uint16_t id)
-{
-	auto baseImbuements = std::find_if(basesImbuement.begin(), basesImbuement.end(), [id](const BaseImbuement& groupImbuement) {
-				return groupImbuement.id == id;
-			});
+BaseImbuement* Imbuements::getBaseByID(uint16_t id) {
+	auto baseImbuements = std::find_if(basesImbuement.begin(), basesImbuement.end(), [id](const BaseImbuement &groupImbuement) {
+		return groupImbuement.id == id;
+	});
 
 	return baseImbuements != basesImbuement.end() ? &*baseImbuements : nullptr;
 }
 
-CategoryImbuement* Imbuements::getCategoryByID(uint16_t id)
-{
-	auto categoryImbuements = std::find_if(categoriesImbuement.begin(), categoriesImbuement.end(), [id](const CategoryImbuement& categoryImbuement) {
-				return categoryImbuement.id == id;
-			});
+CategoryImbuement* Imbuements::getCategoryByID(uint16_t id) {
+	auto categoryImbuements = std::find_if(categoriesImbuement.begin(), categoriesImbuement.end(), [id](const CategoryImbuement &categoryImbuement) {
+		return categoryImbuement.id == id;
+	});
 
 	return categoryImbuements != categoriesImbuement.end() ? &*categoryImbuements : nullptr;
 }
 
-std::vector<Imbuement*> Imbuements::getImbuements(const Player* player, Item* item)
-{
+std::vector<Imbuement*> Imbuements::getImbuements(const Player* player, Item* item) {
 	std::vector<Imbuement*> imbuements;
 
-	for (auto& [key, value] : imbuementMap)
-	{
+	for (auto &[key, value] : imbuementMap) {
 		Imbuement* imbuement = &value;
 		if (!imbuement) {
 			continue;
@@ -355,9 +343,9 @@ std::vector<Imbuement*> Imbuements::getImbuements(const Player* player, Item* it
 
 		// Parse the storages for each imbuement in imbuements.xml and config.lua (enable/disable storage)
 		if (g_configManager().getBoolean(TOGGLE_IMBUEMENT_SHRINE_STORAGE)
-		&& imbuement->getStorage() != 0
-		&& player->getStorageValue(imbuement->getStorage() == -1)
-		&& imbuement->getBaseID() >= 1 && imbuement->getBaseID() <= 3) {
+			&& imbuement->getStorage() != 0
+			&& player->getStorageValue(imbuement->getStorage() == -1)
+			&& imbuement->getBaseID() >= 1 && imbuement->getBaseID() <= 3) {
 			continue;
 		}
 

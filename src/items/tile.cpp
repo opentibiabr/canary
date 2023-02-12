@@ -465,7 +465,6 @@ void Tile::onUpdateTile(const SpectatorHashSet &spectators) {
 }
 
 ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileFlags, Creature*) const {
-
 	if (hasBitSet(FLAG_NOLIMIT, tileFlags)) {
 		return RETURNVALUE_NOERROR;
 	}

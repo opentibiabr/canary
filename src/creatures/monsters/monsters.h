@@ -233,12 +233,6 @@ class Monsters
 			return instance;
 		}
 
-		bool loadFromXml(bool reloading = false);
-		bool isLoaded() const {
-			return loaded;
-		}
-		bool reload();
-
 		MonsterType* getMonsterType(const std::string& name);
 		MonsterType* getMonsterTypeByRaceId(uint16_t thisrace);
 		void addMonsterType(const std::string& name, MonsterType* mType);
@@ -250,16 +244,8 @@ class Monsters
 	private:
 		ConditionDamage* getDamageCondition(ConditionType_t conditionType,
 											int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);
-		bool deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, const std::string& description = "");
 
 		MonsterType* loadMonster(const std::string& file, const std::string& monsterName, bool reloading = false);
-
-		void loadLootContainer(const pugi::xml_node& node, LootBlock&);
-		bool loadLootItem(const pugi::xml_node& node, LootBlock&);
-
-		std::map<std::string, std::string> unloadedMonsters;
-
-		bool loaded = false;
 };
 
 constexpr auto g_monsters = &Monsters::getInstance;

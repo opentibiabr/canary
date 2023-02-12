@@ -201,14 +201,16 @@ void LuaFunctionsLoader::setWeakMetatable(lua_State* L, int32_t index, const std
 		luaL_newmetatable(L, weakName.c_str());
 		int metatable = lua_gettop(L);
 
-		static const std::vector<std::string> methodKeys = {"__index", "__metatable", "__eq"};
-		for (const std::string& metaKey : methodKeys) {
+		for (static const std::vector<std::string> methodKeys = {"__index", "__metatable", "__eq"};
+		const std::string& metaKey : methodKeys)
+		{
 			lua_getfield(L, childMetatable, metaKey.c_str());
 			lua_setfield(L, metatable, metaKey.c_str());
 		}
 
-		static const std::vector<int> methodIndexes = {'h', 'p', 't'};
-		for (int metaIndex : methodIndexes) {
+		for (static const std::vector<int> methodIndexes = {'h', 'p', 't'};
+		int metaIndex : methodIndexes)
+		{
 			lua_rawgeti(L, childMetatable, metaIndex);
 			lua_rawseti(L, metatable, metaIndex);
 		}

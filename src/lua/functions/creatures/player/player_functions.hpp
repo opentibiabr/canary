@@ -283,6 +283,9 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "getForgeSlivers", PlayerFunctions::luaPlayerGetForgeSlivers);
 			registerMethod(L, "Player", "getForgeCores", PlayerFunctions::luaPlayerGetForgeCores);
 
+			registerMethod(L, "Player", "setFaction", PlayerFunctions::luaPlayerSetFaction);
+			registerMethod(L, "Player", "getFaction", PlayerFunctions::luaPlayerGetFaction);
+
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
 			MountFunctions::init(L);
@@ -557,6 +560,9 @@ class PlayerFunctions final : LuaScriptInterface {
 
 		static int luaPlayerGetForgeSlivers(lua_State* L);
 		static int luaPlayerGetForgeCores(lua_State* L);
+
+		static int luaPlayerSetFaction(lua_State* L);
+		static int luaPlayerGetFaction(lua_State* L);
 
 		friend class CreatureFunctions;
 };

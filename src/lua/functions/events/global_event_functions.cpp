@@ -10,23 +10,16 @@
 #include "pch.hpp"
 
 #include "lua/functions/events/global_event_functions.hpp"
+#include "game/game.h"
 #include "lua/global/globalevent.h"
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
 
 int GlobalEventFunctions::luaCreateGlobalEvent(lua_State* L) {
-	// GlobalEvent(eventName)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
-		reportErrorFunc("GlobalEvents can only be registered in the Scripts interface.");
-		lua_pushnil(L);
-		return 1;
-	}
-
 	GlobalEvent* global = new GlobalEvent(getScriptEnv()->getScriptInterface());
 	if (global) {
 		global->setName(getString(L, 2));
 		global->setEventType(GLOBALEVENT_NONE);
-		global->fromLua = true;
 		pushUserdata<GlobalEvent>(L, global);
 		setMetatable(L, -1, "GlobalEvent");
 	} else {
@@ -49,9 +42,11 @@ int GlobalEventFunctions::luaGlobalEventType(lua_State* L) {
 			global->setEventType(GLOBALEVENT_RECORD);
 		} else if (tmpStr == "periodchange") {
 			global->setEventType(GLOBALEVENT_PERIODCHANGE);
+		} else if (tmpStr == "onthink") {
+			global->setEventType(GLOBALEVENT_ON_THINK);
 		} else {
 			SPDLOG_ERROR("[GlobalEventFunctions::luaGlobalEventType] - "
-                         "Invalid type for global event: {}", typeName);
+                         "Invalid type for global event: {}");
 			pushBoolean(L, false);
 		}
 		pushBoolean(L, true);
@@ -65,7 +60,7 @@ int GlobalEventFunctions::luaGlobalEventRegister(lua_State* L) {
 	// globalevent:register()
 	GlobalEvent* globalevent = getUserdata<GlobalEvent>(L, 1);
 	if (globalevent) {
-		if (!globalevent->isScripted()) {
+		if (!globalevent->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -140,6 +135,7 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 		timeinfo->tm_sec = sec;
 
 		time_t difference = static_cast<time_t>(difftime(mktime(timeinfo), current_time));
+		// If the difference is negative, add 86400 seconds (1 day) to it
 		if (difference < 0) {
 			difference += 86400;
 		}

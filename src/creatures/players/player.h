@@ -71,7 +71,7 @@ struct ForgeHistory {
 	bool tierLoss = false;
 	bool successCore = false;
 	bool tierCore = false;
-	
+
 	std::string description;
 	std::string firstItemName;
 	std::string secondItemName;
@@ -106,9 +106,9 @@ class Player final : public Creature, public Cylinder
 
 		void setID() override {
 			if (id == 0) {
-				// keep id the same as guid because client save data using this id
-				id = 0x10010000 + guid;
-				playerAutoID = std::max<uint32_t>(playerAutoID, id);
+				if (guid != 0) {
+					id = 0x10000000 + guid;
+				}
 			}
 		}
 
@@ -141,7 +141,16 @@ class Player final : public Creature, public Cylinder
 		bool tameMount(uint8_t mountId);
 		bool untameMount(uint8_t mountId);
 		bool hasMount(const Mount* mount) const;
+		bool hasAnyMount() const;
+		uint8_t getRandomMountId() const;
 		void dismount();
+
+		uint8_t isRandomMounted() const {
+			return randomMount;
+		}
+		void setRandomMount(uint8_t isMountRandomized) {
+			randomMount = isMountRandomized;
+		}
 
 		void sendFYIBox(const std::string& message) {
 			if (client) {
@@ -162,10 +171,9 @@ class Player final : public Creature, public Cylinder
 		}
 		uint32_t getBestiaryKillCount(uint16_t raceid) const
 		{
-			int32_t cp = 0;
 			uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
-			getStorageValue(key, cp);
-			return cp > 0 ? static_cast<uint32_t>(cp) : 0;
+			auto value = getStorageValue(key);
+			return value > 0 ? static_cast<uint32_t>(value) : 0;
 		}
 
 		void setGUID(uint32_t newGuid) {
@@ -383,7 +391,7 @@ class Player final : public Creature, public Cylinder
 		uint8_t getBlessingCount(uint8_t index) const {
 			return blessings[index - 1];
 		}
-		std::string getBlessingsName() const; 
+		std::string getBlessingsName() const;
 
 		bool isOffline() const {
 			return (getID() == 0);
@@ -406,7 +414,7 @@ class Player final : public Creature, public Cylinder
 		bool canOpenCorpse(uint32_t ownerId) const;
 
 		void addStorageValue(const uint32_t key, const int32_t value, const bool isLogin = false);
-		bool getStorageValue(const uint32_t key, int32_t& value) const;
+		int32_t getStorageValue(const uint32_t key) const;
 		void genReservedStorageRange();
 
 		void setGroup(Group* newGroup) {
@@ -729,9 +737,12 @@ class Player final : public Creature, public Cylinder
 		}
 
 		Faction_t getFaction() const override {
-			return FACTION_PLAYER;
+			return faction;
 		}
 
+		void setFaction(Faction_t factionId) {
+			faction = factionId;
+		}
 		//combat functions
 		bool setAttackedCreature(Creature* creature) override;
 		bool isImmune(CombatType_t type) const override;
@@ -759,14 +770,14 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint16_t getSkillLevel(uint8_t skill) const {
-			uint16_t skillLevel = std::max<uint16_t>(0, skills[skill].level + varSkills[skill]);
+			auto skillLevel = std::max<int32_t>(0, skills[skill].level + varSkills[skill]);
 
-			auto it = maxValuePerSkill.find(skill);
-			if (it != maxValuePerSkill.end()) {
-				skillLevel = std::min<uint16_t>(it->second, skillLevel);
+			if (auto it = maxValuePerSkill.find(skill);
+				it != maxValuePerSkill.end()) {
+				skillLevel = std::min<int32_t>(it->second, skillLevel);
 			}
 
-			return skillLevel;
+			return static_cast<uint16_t>(skillLevel);
 		}
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
@@ -2083,7 +2094,7 @@ class Player final : public Creature, public Cylinder
 		void forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId);
 		void forgeResourceConversion(uint8_t action);
 		void forgeHistory(uint8_t page) const;
-		
+
 		void sendOpenForge() const
 		{
 			if (client)
@@ -2179,6 +2190,8 @@ class Player final : public Creature, public Cylinder
 
 		void registerForgeHistoryDescription(ForgeHistory history);
 
+		std::map<uint16_t, Item*> getEquippedItemsWithEnabledAbilitiesBySlot() const;
+
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
 
@@ -2196,7 +2209,7 @@ class Player final : public Creature, public Cylinder
 		 * @brief Starts checking the imbuements in the item so that the time decay is performed
 		 * Registers the player in an unordered_map in game.h so that the function can be initialized by the task
 		 */
-		void updateInventoryImbuement(bool init = false);
+		void updateInventoryImbuement();
 
 		void setNextWalkActionTask(SchedulerTask* task);
 		void setNextWalkTask(SchedulerTask* task);
@@ -2381,6 +2394,7 @@ class Player final : public Creature, public Cylinder
 		int32_t idleTime = 0;
 		uint32_t coinBalance = 0;
 		uint16_t expBoostStamina = 0;
+		uint8_t randomMount = 0;
 
 		uint16_t lastStatsTrainingTime = 0;
 		uint16_t staminaMinutes = 2520;
@@ -2434,6 +2448,7 @@ class Player final : public Creature, public Cylinder
 		BlockType_t lastAttackBlockType = BLOCK_NONE;
 		TradeState_t tradeState = TRADE_NONE;
 		FightMode_t fightMode = FIGHTMODE_ATTACK;
+		Faction_t faction = FACTION_PLAYER;
 		account::AccountType accountType = account::AccountType::ACCOUNT_TYPE_NORMAL;
 		QuickLootFilter_t quickLootFilter;
 		VipStatus_t statusVipList = VIPSTATUS_ONLINE;
@@ -2518,7 +2533,21 @@ class Player final : public Creature, public Cylinder
 		friend class MoveEvent;
 		friend class BedItem;
 
-  account::Account *account_;
+		account::Account *account_;
+
+		bool hasQuiverEquipped() const;
+
+		bool hasWeaponDistanceEquipped() const;
+
+		Item* getQuiverAmmoOfType(const ItemType &it) const;
+
+		std::array<double_t, COMBAT_COUNT> getFinalDamageReduction() const;
+		void calculateDamageReductionFromEquipedItems(std::array<double_t, COMBAT_COUNT> &combatReductionMap) const;
+		void calculateDamageReductionFromItem(std::array<double_t, COMBAT_COUNT> &combatReductionMap, Item *item) const;
+		void updateDamageReductionFromItemImbuement(std::array<double_t, COMBAT_COUNT> &combatReductionMap, Item *item, uint16_t combatTypeIndex) const;
+		void updateDamageReductionFromItemAbility(std::array<double_t, COMBAT_COUNT> &combatReductionMap, const Item *item, uint16_t combatTypeIndex) const;
+		double_t calculateDamageReduction(double_t currentTotal, int16_t resistance) const;
 };
+
 
 #endif  // SRC_CREATURES_PLAYERS_PLAYER_H_

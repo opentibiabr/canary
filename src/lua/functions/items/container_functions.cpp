@@ -266,8 +266,8 @@ int ContainerFunctions::luaContainerRegisterReward(lua_State* L) {
 
 	auto timestamp = time(nullptr);
 	Item * rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
-	rewardContainer->setIntAttr(ITEM_ATTRIBUTE_DATE, timestamp);
-	container->setIntAttr(ITEM_ATTRIBUTE_DATE, timestamp);
+	rewardContainer->setAttribute(ItemAttribute_t::DATE, timestamp);
+	container->setAttribute(ItemAttribute_t::DATE, timestamp);
 	container->internalAddThing(rewardContainer);
 	container->setRewardCorpse();
 

@@ -18,7 +18,7 @@
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
 
-uint32_t Monster::monsterAutoID = 0x150000000;
+uint32_t Monster::monsterAutoID = 0x50000001;
 
 Monster* Monster::createMonster(const std::string& name)
 {

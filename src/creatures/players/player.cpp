@@ -102,7 +102,7 @@ bool Player::isPushable() const
 }
 
 uint32_t Player::playerFirstID = 0x10000000;
-uint32_t Player::playerLastID = 0x99999999;
+uint32_t Player::playerLastID = 0x50000000;
 uint32_t Player::getFirstID() {
 	return playerFirstID;
 }
@@ -113,9 +113,7 @@ uint32_t Player::getLastID() {
 void Player::setID() {
 	// guid = player id from database
 	if (id == 0 && guid != 0) {
-		SPDLOG_INFO("id 1: {}", getFirstID());
 		id = getFirstID() + guid;
-		SPDLOG_INFO("id 2: {}", id);
 		if (id == std::numeric_limits<uint32_t>::max()) {
 			SPDLOG_ERROR("[{}] Player {} has max 'id' value of uint32_t", __FUNCTION__, getName());
 		}

@@ -421,15 +421,23 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 		}
 
 		item->setAttribute(attribute, getNumber<int64_t>(L, 3));
+		updateTileFlags(item);
 		pushBoolean(L, true);
 	} else if (item->isAttributeString(attribute)) {
 		auto newAttributeString = getString(L, 3);
 		item->setAttribute(attribute, newAttributeString);
+		updateTileFlags(item);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
 	}
 	return 1;
+}
+
+void ItemFunctions::updateTileFlags(Item *item) {
+	if (auto tile = item->getTile()) {
+		tile->updateTileFlags(item);
+	}
 }
 
 int ItemFunctions::luaItemRemoveAttribute(lua_State* L) {

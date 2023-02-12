@@ -246,7 +246,8 @@ class Tile : public Cylinder {
 
 		void setTileFlags(const Item* item);
 		void resetTileFlags(const Item* item);
-		bool fieldIsUnharmable() const;
+		bool hasHarmfulField() const;
+		ReturnValue checkNpcCanWalkIntoTile() const;
 
 	protected:
 		Item* ground = nullptr;

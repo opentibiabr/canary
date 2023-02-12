@@ -177,13 +177,7 @@ bool Items::loadFromXml() {
 
 		pugi::xml_attribute fromIdAttribute = itemNode.attribute("fromid");
 		if (!fromIdAttribute) {
-			if (idAttribute) {
-				SPDLOG_WARN("[Items::loadFromXml] - "
-							"No item id: {} found",
-							idAttribute.value());
-			} else {
-				SPDLOG_WARN("[Items::loadFromXml] - No item id found");
-			}
+			SPDLOG_WARN("[Items::loadFromXml] - No item id found, use id or fromid");
 			continue;
 		}
 

@@ -34,7 +34,7 @@ void Dispatcher::threadMain()
 		if (taskList.empty()) {
 			//if the list is empty wait for signal
 			taskSignal.wait(taskLockUnique, [this] {
-				return taskList.empty();
+				return !taskList.empty() || getState() == THREAD_STATE_TERMINATED;
 			});
 		}
 

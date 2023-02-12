@@ -166,7 +166,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	end
 
 	local containerTo = self:getContainerById(toPosition.y-64)
-	if (containerTo) then
+	if containerTo then
 		if containerTo:getId() == ITEM_GOLD_POUCH or containerTo:getItem(toPosition.z) and containerTo:getItem(toPosition.z):getId() == ITEM_GOLD_POUCH then
 			if item:getId() == ITEM_CRYSTAL_COIN or item:getId() == ITEM_PLATINUM_COIN or item:getId() == ITEM_GOLD_COIN then
 				return true

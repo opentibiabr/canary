@@ -262,7 +262,7 @@ bool House::transferToDepot(Player* player) const
 }
 
 void House::handleWrapableItem(ItemList &moveItemList, Item *item) const {
-	if(item->isWrapContainer()) {
+	if (item->isWrapContainer()) {
 		handleContainer(moveItemList, item);
 	}
 	Item *newItem = g_game().wrapItem(item);

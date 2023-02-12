@@ -34,14 +34,14 @@ void IOLoginDataLoad::loadRewardItems(Player *player) {
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_rewards` WHERE `player_id` = "
 		  << player->getGUID() << " ORDER BY `pid`, `sid` ASC";
 	if (auto result = Database::getInstance().storeQuery(query.str())) {
-		loadItems(itemMap, result, *player);
+		IOLoginData::loadItems(itemMap, result, *player);
 		bindRewardBag(player, itemMap);
 		insertItemsIntoRewardBag(itemMap);
 	}
 }
 
 void IOLoginDataLoad::bindRewardBag(Player *player, IOLoginData::ItemMap &itemMap) {
-	for ([[maybe_unused]] auto &[id, itemPair]: itemMap) {
+	for (auto &[id, itemPair]: itemMap) {
 		const auto [item, pid] = itemPair;
 		if (pid == 0) {
 			auto reward = player->getReward(item->getAttribute<uint64_t>(ItemAttribute_t::DATE), true);

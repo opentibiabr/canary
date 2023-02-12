@@ -24,7 +24,7 @@ class CustomAttribute {
 
 		const std::string &getStringKey() const;
 
-		template<typename T>
+		template <typename T>
 		T getAttribute() const {
 			if constexpr (std::is_same_v<T, std::string>) {
 				return getString();

@@ -109,7 +109,6 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end
-	
 	if toPosition.x ~= CONTAINER_POSITION then
 		-- if item is already in the ground, it should be able to be moved (for instance, unwrapped items)
 		if fromPosition.x == CONTAINER_POSITION then

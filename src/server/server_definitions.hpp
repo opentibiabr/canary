@@ -5,19 +5,19 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_SERVER_SERVER_DEFINITIONS_HPP_
 #define SRC_SERVER_SERVER_DEFINITIONS_HPP_
 
 // Enums
 // Connection and networkmessage.
-enum {FORCE_CLOSE = true};
-enum {HEADER_LENGTH = 2};
-enum {CHECKSUM_LENGTH = 4};
-enum {XTEA_MULTIPLE = 8};
-enum {MAX_BODY_LENGTH = NETWORKMESSAGE_MAXSIZE - HEADER_LENGTH - CHECKSUM_LENGTH - XTEA_MULTIPLE};
-enum {MAX_PROTOCOL_BODY_LENGTH = MAX_BODY_LENGTH - 10};
+enum { FORCE_CLOSE = true };
+enum { HEADER_LENGTH = 2 };
+enum { CHECKSUM_LENGTH = 4 };
+enum { XTEA_MULTIPLE = 8 };
+enum { MAX_BODY_LENGTH = NETWORKMESSAGE_MAXSIZE - HEADER_LENGTH - CHECKSUM_LENGTH - XTEA_MULTIPLE };
+enum { MAX_PROTOCOL_BODY_LENGTH = MAX_BODY_LENGTH - 10 };
 
 enum ConnectionState_t : uint8_t {
 	CONNECTION_STATE_OPEN,
@@ -54,7 +54,7 @@ enum SessionEndInformations : uint8_t {
 	SESSION_END_UNK3,
 };
 
-enum Resource_t : uint8_t{
+enum Resource_t : uint8_t {
 	RESOURCE_BANK = 0x00,
 	RESOURCE_INVENTORY = 0x01,
 	RESOURCE_PREY_CARDS = 0x0A,
@@ -78,7 +78,7 @@ enum CyclopediaCharacterInfo_OutfitType_t : uint8_t {
 };
 
 enum MagicEffectsType_t : uint8_t {
-	//ends magic effect loop
+	// ends magic effect loop
 	MAGIC_EFFECTS_END_LOOP = 0,
 	// needs uint8_t delta after type to adjust position
 	MAGIC_EFFECTS_DELTA = 1,
@@ -107,31 +107,29 @@ enum Supply_Stash_Actions_t : uint8_t {
 
 // Structs
 struct HighscoreCategory {
-	HighscoreCategory(const char* name, uint8_t id) :
-        name(name),
-        id(id) {}
+		HighscoreCategory(const char* name, uint8_t id) :
+			name(name),
+			id(id) { }
 
-	const char* name;
-	uint8_t id;
+		const char* name;
+		uint8_t id;
 };
 
 struct HighscoreCharacter {
-	HighscoreCharacter(std::string name, uint64_t points,
-                       uint32_t id, uint32_t rank,
-                       uint16_t level, uint8_t vocation) :
-        name(std::move(name)),
-        points(points),
-        id(id),
-        rank(rank),
-        level(level),
-        vocation(vocation) {}
+		HighscoreCharacter(std::string name, uint64_t points, uint32_t id, uint32_t rank, uint16_t level, uint8_t vocation) :
+			name(std::move(name)),
+			points(points),
+			id(id),
+			rank(rank),
+			level(level),
+			vocation(vocation) { }
 
-	std::string name;
-	uint64_t points;
-	uint32_t id;
-	uint32_t rank;
-	uint16_t level;
-	uint8_t vocation;
+		std::string name;
+		uint64_t points;
+		uint32_t id;
+		uint32_t rank;
+		uint16_t level;
+		uint8_t vocation;
 };
 
-#endif  // SRC_SERVER_SERVER_DEFINITIONS_HPP_
+#endif // SRC_SERVER_SERVER_DEFINITIONS_HPP_

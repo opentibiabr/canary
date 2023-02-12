@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_CORE_LIBS_DB_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CORE_LIBS_DB_FUNCTIONS_HPP_
@@ -37,4 +37,4 @@ class DBFunctions final : LuaScriptInterface {
 		static int luaDatabaseTableExists(lua_State* L);
 };
 
-#endif  // SRC_LUA_FUNCTIONS_CORE_LIBS_DB_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_CORE_LIBS_DB_FUNCTIONS_HPP_

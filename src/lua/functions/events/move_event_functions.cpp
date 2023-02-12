@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -51,7 +51,8 @@ int MoveEventFunctions::luaMoveEventType(lua_State* L) {
 			moveevent->moveFunction = moveevent->RemoveItemField;
 		} else {
 			SPDLOG_ERROR("[MoveEventFunctions::luaMoveEventType] - "
-                         "No valid event name: {}", typeName);
+						 "No valid event name: {}",
+						 typeName);
 			pushBoolean(L, false);
 		}
 		pushBoolean(L, true);
@@ -129,7 +130,8 @@ int MoveEventFunctions::luaMoveEventSlot(lua_State* L) {
 			moveevent->setSlot(SLOTP_AMMO);
 		} else {
 			SPDLOG_WARN("[MoveEventFunctions::luaMoveEventSlot] - "
-						"Unknown slot type: {}", slotName);
+						"Unknown slot type: {}",
+						slotName);
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -267,7 +269,7 @@ int MoveEventFunctions::luaMoveEventUniqueId(lua_State* L) {
 		} else {
 			moveevent->setUniqueId(getNumber<uint32_t>(L, 2));
 		}
-	pushBoolean(L, true);
+		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
 	}

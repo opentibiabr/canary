@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -21,41 +21,54 @@
 GameReload::GameReload() = default;
 GameReload::~GameReload() = default;
 
-bool GameReload::init(Reload_t reloadTypes) const
-{
+bool GameReload::init(Reload_t reloadTypes) const {
 	switch (reloadTypes) {
-		case Reload_t::RELOAD_TYPE_ALL : return reloadAll();
-		case Reload_t::RELOAD_TYPE_CHAT : return reloadChat();
-		case Reload_t::RELOAD_TYPE_CONFIG : return reloadConfig();
-		case Reload_t::RELOAD_TYPE_EVENTS : return reloadEvents();
-		case Reload_t::RELOAD_TYPE_CORE : return reloadCore();
-		case Reload_t::RELOAD_TYPE_IMBUEMENTS : return reloadImbuements();
-		case Reload_t::RELOAD_TYPE_ITEMS : return reloadItems();
-		case Reload_t::RELOAD_TYPE_MODULES : return reloadModules();
-		case Reload_t::RELOAD_TYPE_MONSTERS : return reloadMonsters();
-		case Reload_t::RELOAD_TYPE_MOUNTS : return reloadMounts();
-		case Reload_t::RELOAD_TYPE_NPCS : return reloadNpcs();
-		case Reload_t::RELOAD_TYPE_RAIDS : return reloadRaids();
-		case Reload_t::RELOAD_TYPE_SCRIPTS : return reloadScripts();
-		case Reload_t::RELOAD_TYPE_TALKACTION : return reloadTalkaction();
-		case Reload_t::RELOAD_TYPE_GROUPS : return reloadGroups();
-		default : return false;
+		case Reload_t::RELOAD_TYPE_ALL:
+			return reloadAll();
+		case Reload_t::RELOAD_TYPE_CHAT:
+			return reloadChat();
+		case Reload_t::RELOAD_TYPE_CONFIG:
+			return reloadConfig();
+		case Reload_t::RELOAD_TYPE_EVENTS:
+			return reloadEvents();
+		case Reload_t::RELOAD_TYPE_CORE:
+			return reloadCore();
+		case Reload_t::RELOAD_TYPE_IMBUEMENTS:
+			return reloadImbuements();
+		case Reload_t::RELOAD_TYPE_ITEMS:
+			return reloadItems();
+		case Reload_t::RELOAD_TYPE_MODULES:
+			return reloadModules();
+		case Reload_t::RELOAD_TYPE_MONSTERS:
+			return reloadMonsters();
+		case Reload_t::RELOAD_TYPE_MOUNTS:
+			return reloadMounts();
+		case Reload_t::RELOAD_TYPE_NPCS:
+			return reloadNpcs();
+		case Reload_t::RELOAD_TYPE_RAIDS:
+			return reloadRaids();
+		case Reload_t::RELOAD_TYPE_SCRIPTS:
+			return reloadScripts();
+		case Reload_t::RELOAD_TYPE_TALKACTION:
+			return reloadTalkaction();
+		case Reload_t::RELOAD_TYPE_GROUPS:
+			return reloadGroups();
+		default:
+			return false;
 	}
 }
 
-uint8_t GameReload::getReloadNumber(Reload_t reloadTypes) const
-{
+uint8_t GameReload::getReloadNumber(Reload_t reloadTypes) const {
 	return magic_enum::enum_integer(reloadTypes);
 }
 
 /*
-* From here down have the private members functions
-* These should only be used within the class itself
-* If it is necessary to call elsewhere, seriously think about creating a function that calls this
-* Changing this to public may cause some unexpected behavior or bug
-*/
-bool GameReload::reloadAll() const
-{
+ * From here down have the private members functions
+ * These should only be used within the class itself
+ * If it is necessary to call elsewhere, seriously think about creating a function that calls this
+ * Changing this to public may cause some unexpected behavior or bug
+ */
+bool GameReload::reloadAll() const {
 	std::vector<bool> reloadResults;
 	reloadResults.reserve(magic_enum::enum_count<Reload_t>());
 
@@ -70,26 +83,21 @@ bool GameReload::reloadAll() const
 	return std::ranges::any_of(reloadResults, [](bool result) { return result; });
 }
 
-bool GameReload::reloadChat() const
-{
+bool GameReload::reloadChat() const {
 	return g_chat().load();
 }
 
-bool GameReload::reloadConfig() const
-{
+bool GameReload::reloadConfig() const {
 	return g_configManager().reload();
 }
 
-bool GameReload::reloadEvents() const
-{
+bool GameReload::reloadEvents() const {
 	return g_events().loadFromXml();
 }
 
-bool GameReload::reloadCore() const
-{
+bool GameReload::reloadCore() const {
 	if (auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-		g_luaEnvironment.loadFile(coreFolder + "/core.lua", "core.lua") == 0)
-	{
+		g_luaEnvironment.loadFile(coreFolder + "/core.lua", "core.lua") == 0) {
 		// Reload scripts lib
 		if (!g_scripts().loadScripts("scripts/lib", true, false)) {
 			return false;
@@ -100,23 +108,19 @@ bool GameReload::reloadCore() const
 	return false;
 }
 
-bool GameReload::reloadImbuements() const
-{
+bool GameReload::reloadImbuements() const {
 	return g_imbuements().reload();
 }
 
-bool GameReload::reloadItems() const
-{
+bool GameReload::reloadItems() const {
 	return Item::items.reload();
 }
 
-bool GameReload::reloadModules() const
-{
+bool GameReload::reloadModules() const {
 	return g_modules().reload();
 }
 
-bool GameReload::reloadMonsters() const
-{
+bool GameReload::reloadMonsters() const {
 	// Resets monster spells to prevent the spell from being incorrectly cleared from memory
 	if (!g_scripts().loadScripts("scripts/lib", true, false)) {
 		return false;
@@ -128,23 +132,19 @@ bool GameReload::reloadMonsters() const
 	return false;
 }
 
-bool GameReload::reloadMounts() const
-{
+bool GameReload::reloadMounts() const {
 	return g_game().mounts.reload();
 }
 
-bool GameReload::reloadNpcs() const
-{
+bool GameReload::reloadNpcs() const {
 	return g_npcs().reload();
 }
 
-bool GameReload::reloadRaids() const
-{
+bool GameReload::reloadRaids() const {
 	return g_game().raids.reload() && g_game().raids.startup();
 }
 
-bool GameReload::reloadScripts() const
-{
+bool GameReload::reloadScripts() const {
 	// Resets monster spells to prevent the spell from being incorrectly cleared from memory
 	if (!g_scripts().loadScripts("scripts/lib", true, false)) {
 		return false;
@@ -157,17 +157,14 @@ bool GameReload::reloadScripts() const
 	return false;
 }
 
-bool GameReload::reloadTalkaction() const
-{
+bool GameReload::reloadTalkaction() const {
 	if (auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-		g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua", "talkactions.lua") == 0)
-	{
+		g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua", "talkactions.lua") == 0) {
 		return true;
 	}
 	return false;
 }
 
-bool GameReload::reloadGroups() const
-{
+bool GameReload::reloadGroups() const {
 	return g_game().groups.reload();
 }

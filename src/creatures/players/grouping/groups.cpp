@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -16,43 +16,40 @@
 #include "utils/tools.h"
 
 namespace ParsePlayerFlagMap {
-// Initialize the map with all the values from the PlayerFlags_t enumeration
-phmap::flat_hash_map<std::string, PlayerFlags_t> initParsePlayerFlagMap() {
-	phmap::flat_hash_map<std::string, PlayerFlags_t> map;
-	// Iterate through all values of the PlayerFlags_t enumeration
-	for (auto value : magic_enum::enum_values<PlayerFlags_t>()) {
-		// Get the string representation of the current enumeration value
-		std::string name(magic_enum::enum_name(value).data());
-		// Convert the string to lowercase
-		std::ranges::transform(name.begin(), name.end(), name.begin(), ::tolower);
-		// Add the current value to the map with its lowercase string representation as the key
-		map[name] = value;
+	// Initialize the map with all the values from the PlayerFlags_t enumeration
+	phmap::flat_hash_map<std::string, PlayerFlags_t> initParsePlayerFlagMap() {
+		phmap::flat_hash_map<std::string, PlayerFlags_t> map;
+		// Iterate through all values of the PlayerFlags_t enumeration
+		for (auto value : magic_enum::enum_values<PlayerFlags_t>()) {
+			// Get the string representation of the current enumeration value
+			std::string name(magic_enum::enum_name(value).data());
+			// Convert the string to lowercase
+			std::ranges::transform(name.begin(), name.end(), name.begin(), ::tolower);
+			// Add the current value to the map with its lowercase string representation as the key
+			map[name] = value;
+		}
+
+		return map;
 	}
 
-	return map;
+	const phmap::flat_hash_map<std::string, PlayerFlags_t> parsePlayerFlagMap = initParsePlayerFlagMap();
 }
 
-const phmap::flat_hash_map<std::string, PlayerFlags_t> parsePlayerFlagMap = initParsePlayerFlagMap();
-}
-
-uint8_t Groups::getFlagNumber(PlayerFlags_t playerFlags)
-{
+uint8_t Groups::getFlagNumber(PlayerFlags_t playerFlags) {
 	return magic_enum::enum_integer(playerFlags);
 }
 
-PlayerFlags_t Groups::getFlagFromNumber(uint8_t value)
-{
+PlayerFlags_t Groups::getFlagFromNumber(uint8_t value) {
 	return magic_enum::enum_value<PlayerFlags_t>(value);
 }
 
-bool Groups::reload() const
-{
+bool Groups::reload() const {
 	// Clear groups
 	g_game().groups.getGroups().clear();
 	return g_game().groups.load();
 }
 
-void parseGroupFlags(Group& group, const pugi::xml_node& groupNode) {
+void parseGroupFlags(Group &group, const pugi::xml_node &groupNode) {
 	if (pugi::xml_node node = groupNode.child("flags")) {
 		for (auto flagNode : node.children()) {
 			pugi::xml_attribute attr = flagNode.first_attribute();
@@ -70,8 +67,7 @@ void parseGroupFlags(Group& group, const pugi::xml_node& groupNode) {
 	}
 }
 
-bool Groups::load()
-{
+bool Groups::load() {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/groups.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
@@ -103,9 +99,8 @@ bool Groups::load()
 	return true;
 }
 
-Group* Groups::getGroup(uint16_t id)
-{
-	for (Group& group : groups_vector) {
+Group* Groups::getGroup(uint16_t id) {
+	for (Group &group : groups_vector) {
 		if (group.id == id) {
 			return &group;
 		}

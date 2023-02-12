@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -19,8 +19,9 @@ void ConfigFunctions::init(lua_State* L) {
 	registerMethod(L, "configManager", "getBoolean", ConfigFunctions::luaConfigManagerGetBoolean);
 	registerMethod(L, "configManager", "getFloat", ConfigFunctions::luaConfigManagerGetFloat);
 
-	#define registerEnumIn(L, tableName, value) { \
-		std::string enumName = #value; \
+#define registerEnumIn(L, tableName, value)                                                     \
+	{                                                                                           \
+		std::string enumName = #value;                                                          \
 		registerVariable(L, tableName, enumName.substr(enumName.find_last_of(':') + 1), value); \
 	}
 	registerTable(L, "configKeys");
@@ -176,7 +177,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", FORGE_TIER_LOSS_REDUCTION);
 	registerEnumIn(L, "configKeys", FORGE_INFLUENCED_CREATURES_LIMIT);
 
-	#undef registerEnumIn
+#undef registerEnumIn
 }
 
 int ConfigFunctions::luaConfigManagerGetString(lua_State* L) {

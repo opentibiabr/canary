@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_ITEMS_WEAPONS_WEAPONS_H_
 #define SRC_ITEMS_WEAPONS_WEAPONS_H_
@@ -24,17 +24,16 @@ class WeaponWand;
 
 using Weapon_ptr = std::unique_ptr<Weapon>;
 
-class Weapons final : public Scripts
-{
+class Weapons final : public Scripts {
 	public:
 		Weapons();
 		~Weapons();
 
 		// non-copyable
-		Weapons(const Weapons&) = delete;
-		Weapons& operator=(const Weapons&) = delete;
+		Weapons(const Weapons &) = delete;
+		Weapons &operator=(const Weapons &) = delete;
 
-		static Weapons& getInstance() {
+		static Weapons &getInstance() {
 			// Guaranteed to be destroyed
 			static Weapons instance;
 			// Instantiated on first use
@@ -55,12 +54,11 @@ class Weapons final : public Scripts
 
 constexpr auto g_weapons = &Weapons::getInstance;
 
-class Weapon : public Script
-{
+class Weapon : public Script {
 	public:
 		using Script::Script;
 
-		virtual void configureWeapon(const ItemType& it);
+		virtual void configureWeapon(const ItemType &it);
 		virtual bool interruptSwing() const {
 			return false;
 		}
@@ -172,10 +170,10 @@ class Weapon : public Script
 			}
 		}
 
-		const std::string& getVocationString() const {
+		const std::string &getVocationString() const {
 			return vocationString;
 		}
-		void setVocationString(const std::string& str) {
+		void setVocationString(const std::string &str) {
 			vocationString = str;
 		}
 
@@ -183,15 +181,14 @@ class Weapon : public Script
 		void internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier) const;
 		void internalUseWeapon(Player* player, Item* item, Tile* tile) const;
 
-
 	private:
-		virtual bool getSkillType(const Player*, const Item*, skills_t&, uint32_t&) const {
+		virtual bool getSkillType(const Player*, const Item*, skills_t &, uint32_t &) const {
 			return false;
 		}
 
 		uint32_t getManaCost(const Player* player) const;
 		int32_t getHealthCost(const Player* player) const;
-		bool executeUseWeapon(Player* player, const LuaVariant& var) const;
+		bool executeUseWeapon(Player* player, const LuaVariant &var) const;
 
 		uint16_t id = 0;
 
@@ -225,8 +222,7 @@ class Weapon : public Script
 		friend class WeaponFunctions;
 };
 
-class WeaponMelee final : public Weapon
-{
+class WeaponMelee final : public Weapon {
 	public:
 		explicit WeaponMelee(LuaScriptInterface* interface);
 
@@ -234,24 +230,24 @@ class WeaponMelee final : public Weapon
 			return "onUseWeapon";
 		}
 
-		void configureWeapon(const ItemType& it) override;
+		void configureWeapon(const ItemType &it) override;
 
 		bool useWeapon(Player* player, Item* item, Creature* target) const override;
 
 		int32_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const override;
 		int32_t getElementDamage(const Player* player, const Creature* target, const Item* item) const override;
-		CombatType_t getElementType() const override { return elementType; }
+		CombatType_t getElementType() const override {
+			return elementType;
+		}
 		virtual int16_t getElementDamageValue() const override;
 
-
 	private:
-		bool getSkillType(const Player* player, const Item* item, skills_t& skill, uint32_t& skillpoint) const override;
+		bool getSkillType(const Player* player, const Item* item, skills_t &skill, uint32_t &skillpoint) const override;
 		uint16_t elementDamage = 0;
 		CombatType_t elementType = COMBAT_NONE;
 };
 
-class WeaponDistance final : public Weapon
-{
+class WeaponDistance final : public Weapon {
 	public:
 		explicit WeaponDistance(LuaScriptInterface* interface);
 
@@ -259,7 +255,7 @@ class WeaponDistance final : public Weapon
 			return "onUseWeapon";
 		}
 
-		void configureWeapon(const ItemType& it) override;
+		void configureWeapon(const ItemType &it) override;
 		bool interruptSwing() const override {
 			return true;
 		}
@@ -268,17 +264,19 @@ class WeaponDistance final : public Weapon
 
 		int32_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const override;
 		int32_t getElementDamage(const Player* player, const Creature* target, const Item* item) const override;
-		CombatType_t getElementType() const override { return elementType; }
+		CombatType_t getElementType() const override {
+			return elementType;
+		}
 		virtual int16_t getElementDamageValue() const override;
+
 	private:
-		bool getSkillType(const Player* player, const Item* item, skills_t& skill, uint32_t& skillpoint) const override;
+		bool getSkillType(const Player* player, const Item* item, skills_t &skill, uint32_t &skillpoint) const override;
 
 		CombatType_t elementType = COMBAT_NONE;
 		uint16_t elementDamage = 0;
 };
 
-class WeaponWand final : public Weapon
-{
+class WeaponWand final : public Weapon {
 	public:
 		using Weapon::Weapon;
 
@@ -286,11 +284,15 @@ class WeaponWand final : public Weapon
 			return "onUseWeapon";
 		}
 
-		void configureWeapon(const ItemType& it) override;
+		void configureWeapon(const ItemType &it) override;
 
 		int32_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const override;
-		int32_t getElementDamage(const Player*, const Creature*, const Item*) const override { return 0; }
-		CombatType_t getElementType() const override { return COMBAT_NONE; }
+		int32_t getElementDamage(const Player*, const Creature*, const Item*) const override {
+			return 0;
+		}
+		CombatType_t getElementType() const override {
+			return COMBAT_NONE;
+		}
 		virtual int16_t getElementDamageValue() const override;
 		void setMinChange(int32_t change) {
 			minChange = change;
@@ -301,7 +303,7 @@ class WeaponWand final : public Weapon
 		}
 
 	private:
-		bool getSkillType(const Player*, const Item*, skills_t&, uint32_t&) const override {
+		bool getSkillType(const Player*, const Item*, skills_t &, uint32_t &) const override {
 			return false;
 		}
 
@@ -309,4 +311,4 @@ class WeaponWand final : public Weapon
 		int32_t maxChange = 0;
 };
 
-#endif  // SRC_ITEMS_WEAPONS_WEAPONS_H_
+#endif // SRC_ITEMS_WEAPONS_WEAPONS_H_

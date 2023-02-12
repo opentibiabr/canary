@@ -42,14 +42,22 @@ function Player:executeRewardEvents(item, toPosition)
 			end
 		end
 	end
+
 	-- Do not let the player move the boss corpse.
 	if item:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2^31 - 1 then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end
+
 	-- Players cannot throw items on reward chest
 	local tileChest = Tile(toPosition)
 	if tileChest and tileChest:getItemById(ITEM_REWARD_CHEST) then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		self:getPosition():sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
+
+	if tile and tile:getItemById(370) then -- Trapdoor
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		self:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false

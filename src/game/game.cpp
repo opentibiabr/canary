@@ -3147,11 +3147,9 @@ void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position &pos, 
 			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 			SchedulerTask* task;
 			if (itemId != ITEM_PODIUM_OF_VIGOUR) {
-				task = createSchedulerTask(400, std::bind_front(&Player::sendPodiumWindow,
-														  player, item, pos, itemId, stackPos));
+				task = createSchedulerTask(400, std::bind_front(&Player::sendPodiumWindow, player, item, pos, itemId, stackPos));
 			} else {
-				task = createSchedulerTask(400, std::bind_front(&Player::sendBossPodiumWindow,
-														  player, item, pos, itemId, stackPos));
+				task = createSchedulerTask(400, std::bind_front(&Player::sendBossPodiumWindow, player, item, pos, itemId, stackPos));
 			}
 			player->setNextWalkActionTask(task);
 		} else {
@@ -3228,8 +3226,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		item->setCustomAttribute("LookFeet", static_cast<int64_t>(outfit.lookFeet));
 		item->setCustomAttribute("LookAddons", static_cast<int64_t>(outfit.lookAddons));
 	} else if (auto pastLookType = item->getCustomAttribute("PastLookType");
-		pastLookType && pastLookType->getInteger() > 0)
-		{
+			   pastLookType && pastLookType->getInteger() > 0) {
 		item->removeCustomAttribute("LookType");
 		item->removeCustomAttribute("PastLookType");
 	}
@@ -3241,8 +3238,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		item->setCustomAttribute("LookMountLegs", static_cast<int64_t>(outfit.lookMountLegs));
 		item->setCustomAttribute("LookMountFeet", static_cast<int64_t>(outfit.lookMountFeet));
 	} else if (auto pastLookMount = item->getCustomAttribute("PastLookMount");
-		pastLookMount && pastLookMount->getInteger() > 0)
-		{
+			   pastLookMount && pastLookMount->getInteger() > 0) {
 		item->removeCustomAttribute("LookMount");
 		item->removeCustomAttribute("PastLookMount");
 	}
@@ -3264,7 +3260,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 			name << outfitInfo->name << " outfit";
 			outfited = true;
 		}
-		
+
 		if (outfit.lookMount != 0) {
 			if (outfited) {
 				name << " on the ";
@@ -8009,8 +8005,7 @@ void Game::playerBrowseForgeHistory(uint32_t playerId, uint8_t page) {
 	player->forgeHistory(page);
 }
 
-void Game::playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selectedBossId)
-{
+void Game::playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selectedBossId) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -8036,8 +8031,7 @@ void Game::playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selec
 	player->setSlotBossId(slotId, selectedBossId);
 }
 
-void Game::playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Position& pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, uint8_t podiumVisible, uint8_t bossVisible)
-{
+void Game::playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, uint8_t podiumVisible, uint8_t bossVisible) {
 	Player* player = getPlayerByID(playerId);
 	if (!player || pos.x == 0xFFFF) {
 		return;
@@ -8063,7 +8057,7 @@ void Game::playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Pos
 		}
 	}
 
-	const MonsterType *mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossRaceId);
+	const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossRaceId);
 	if (!mType) {
 		return;
 	}
@@ -8078,9 +8072,7 @@ void Game::playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Pos
 		if (std::forward_list<Direction> listDir;
 			player->getPathTo(pos, listDir, 0, 1, true, false)) {
 			g_dispatcher().addTask(createTask(std::bind_front(&Game::playerAutoWalk, this, player->getID(), listDir)));
-			SchedulerTask* task = createSchedulerTask(400,
-                                  std::bind_front(&Game::playerBrowseField,
-                                  this, playerId, pos));
+			SchedulerTask* task = createSchedulerTask(400, std::bind_front(&Game::playerBrowseField, this, playerId, pos));
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -8124,8 +8116,7 @@ void Game::playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Pos
 	}
 }
 
-void Game::playerRotatePodium(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t itemId)
-{
+void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -8145,11 +8136,9 @@ void Game::playerRotatePodium(uint32_t playerId, const Position& pos, uint8_t st
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		if (std::forward_list<Direction> listDir;
 			player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addTask(createTask(std::bind_front(&Game::playerAutoWalk,
-											this, player->getID(), listDir)));
+			g_dispatcher().addTask(createTask(std::bind_front(&Game::playerAutoWalk, this, player->getID(), listDir)));
 
-			SchedulerTask* task = createSchedulerTask(400, std::bind_front(&Game::playerRotatePodium, this,
-													playerId, pos, stackPos, itemId));
+			SchedulerTask* task = createSchedulerTask(400, std::bind_front(&Game::playerRotatePodium, this, playerId, pos, stackPos, itemId));
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -8678,13 +8667,12 @@ bool Game::addInfluencedMonster(Monster* monster) {
 	return false;
 }
 
-bool Game::addItemStoreInbox(const Player* player, uint32_t itemId)
-{
+bool Game::addItemStoreInbox(const Player* player, uint32_t itemId) {
 	Item* decoKit = Item::CreateItem(ITEM_DECORATION_KIT, 1);
 	if (!decoKit) {
 		return false;
 	}
-	const ItemType& itemType = Item::items[itemId];
+	const ItemType &itemType = Item::items[itemId];
 	std::string description = fmt::format("Unwrap it in your own house to create a <{}>.", itemType.name);
 	decoKit->setAttribute(ItemAttribute_t::DESCRIPTION, description);
 	decoKit->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));

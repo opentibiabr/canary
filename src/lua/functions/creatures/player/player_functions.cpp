@@ -3212,20 +3212,20 @@ int PlayerFunctions::luaPlayerAddBosstiaryKill(lua_State* L) {
 	// player:addBosstiaryKill(name[, amount = 1])
 	if (Player* player = getUserdata<Player>(L, 1);
 		player) {
-			const MonsterType* mtype = g_monsters().getMonsterType(getString(L, 2));
-			if (mtype) {
-				g_ioBosstiary().addBosstiaryKill(player, mtype, getNumber<uint32_t>(L, 3, 1));
-				pushBoolean(L, true);
-			} else {
-				lua_pushnil(L);
-			}
+		const MonsterType* mtype = g_monsters().getMonsterType(getString(L, 2));
+		if (mtype) {
+			g_ioBosstiary().addBosstiaryKill(player, mtype, getNumber<uint32_t>(L, 3, 1));
+			pushBoolean(L, true);
+		} else {
+			lua_pushnil(L);
+		}
 	} else {
 		lua_pushnil(L);
 	}
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerIsUIExhausted(lua_State *L) {
+int PlayerFunctions::luaPlayerIsUIExhausted(lua_State* L) {
 	// player:isUIExhausted()
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
@@ -3239,7 +3239,7 @@ int PlayerFunctions::luaPlayerIsUIExhausted(lua_State *L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerUpdateUIExhausted(lua_State *L) {
+int PlayerFunctions::luaPlayerUpdateUIExhausted(lua_State* L) {
 	// player:updateUIExhausted(exhaustionTime = 250)
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {

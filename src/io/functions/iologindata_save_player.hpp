@@ -13,9 +13,9 @@
 #include "io/iologindata.h"
 
 class IOLoginDataSave : public IOLoginData {
-public:
-	static bool savePlayerForgeHistory(Player* player);
-	static bool savePlayerBosstiary(const Player* player);
+	public:
+		static bool savePlayerForgeHistory(Player* player);
+		static bool savePlayerBosstiary(const Player* player);
 };
 
 #endif // SRC_IO__FUNCTIONS_IOLOGINDATASAVE_HPP_

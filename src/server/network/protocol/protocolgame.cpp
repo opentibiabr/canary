@@ -648,115 +648,328 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 	}
 
 	switch (recvbyte) {
-		case 0x14: g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::logout, getThis(), true, false))); break;
-		case 0x1D: addGameTask(&Game::playerReceivePingBack, player->getID()); break;
-		case 0x1E: addGameTask(&Game::playerReceivePing, player->getID()); break;
-		case 0x2a: addBestiaryTrackerList(msg); break;
-		case 0x2B: parsePartyAnalyzerAction(msg); break;
-		case 0x2c: parseLeaderFinderWindow(msg); break;
-		case 0x2d: parseMemberFinderWindow(msg); break;
-		case 0x28: parseStashWithdraw(msg); break;
-		case 0x29: parseRetrieveDepotSearch(msg); break;
-		case 0x32: parseExtendedOpcode(msg); break; //otclient extended opcode
-		case 0x64: parseAutoWalk(msg); break;
-		case 0x65: addGameTask(&Game::playerMove, player->getID(), DIRECTION_NORTH); break;
-		case 0x66: addGameTask(&Game::playerMove, player->getID(), DIRECTION_EAST); break;
-		case 0x67: addGameTask(&Game::playerMove, player->getID(), DIRECTION_SOUTH); break;
-		case 0x68: addGameTask(&Game::playerMove, player->getID(), DIRECTION_WEST); break;
-		case 0x69: addGameTask(&Game::playerStopAutoWalk, player->getID()); break;
-		case 0x6A: addGameTask(&Game::playerMove, player->getID(), DIRECTION_NORTHEAST); break;
-		case 0x6B: addGameTask(&Game::playerMove, player->getID(), DIRECTION_SOUTHEAST); break;
-		case 0x6C: addGameTask(&Game::playerMove, player->getID(), DIRECTION_SOUTHWEST); break;
-		case 0x6D: addGameTask(&Game::playerMove, player->getID(), DIRECTION_NORTHWEST); break;
-		case 0x6F: addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerTurn, player->getID(), DIRECTION_NORTH); break;
-		case 0x70: addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerTurn, player->getID(), DIRECTION_EAST); break;
-		case 0x71: addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerTurn, player->getID(), DIRECTION_SOUTH); break;
-		case 0x72: addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerTurn, player->getID(), DIRECTION_WEST); break;
-		case 0x73: parseTeleport(msg); break;
-		case 0x77: parseHotkeyEquip(msg); break;
-		case 0x78: parseThrow(msg); break;
-		case 0x79: parseLookInShop(msg); break;
-		case 0x7A: parsePlayerBuyOnShop(msg); break;
-		case 0x7B: parsePlayerSellOnShop(msg); break;
-		case 0x7C: addGameTask(&Game::playerCloseShop, player->getID()); break;
-		case 0x7D: parseRequestTrade(msg); break;
-		case 0x7E: parseLookInTrade(msg); break;
-		case 0x7F: addGameTask(&Game::playerAcceptTrade, player->getID()); break;
-		case 0x80: addGameTask(&Game::playerCloseTrade, player->getID()); break;
-		case 0x82: parseUseItem(msg); break;
-		case 0x83: parseUseItemEx(msg); break;
-		case 0x84: parseUseWithCreature(msg); break;
-		case 0x85: parseRotateItem(msg); break;
-		case 0x86: parseConfigureShowOffSocket(msg); break;
-		case 0x87: parseCloseContainer(msg); break;
-		case 0x88: parseUpArrowContainer(msg); break;
-		case 0x89: parseTextWindow(msg); break;
-		case 0x8A: parseHouseWindow(msg); break;
-		case 0x8B: parseWrapableItem(msg); break;
-		case 0x8C: parseLookAt(msg); break;
-		case 0x8D: parseLookInBattleList(msg); break;
-		case 0x8E: /* join aggression */ break;
-		case 0x8F: parseQuickLoot(msg); break;
-		case 0x90: parseLootContainer(msg); break;
-		case 0x91: parseQuickLootBlackWhitelist(msg); break;
-		case 0x92: parseOpenDepotSearch(); break;
-		case 0x93: parseCloseDepotSearch(); break;
-		case 0x94: parseDepotSearchItemRequest(msg); break;
-		case 0x95: parseOpenParentContainer(msg); break;
-		case 0x96: parseSay(msg); break;
-		case 0x97: addGameTask(&Game::playerRequestChannels, player->getID()); break;
-		case 0x98: parseOpenChannel(msg); break;
-		case 0x99: parseCloseChannel(msg); break;
-		case 0x9A: parseOpenPrivateChannel(msg); break;
-		case 0x9E: addGameTask(&Game::playerCloseNpcChannel, player->getID()); break;
-		case 0x9F: parseSetBossPodium(msg); break;
-		case 0xA0: parseFightModes(msg); break;
-		case 0xA1: parseAttack(msg); break;
-		case 0xA2: parseFollow(msg); break;
-		case 0xA3: parseInviteToParty(msg); break;
-		case 0xA4: parseJoinParty(msg); break;
-		case 0xA5: parseRevokePartyInvite(msg); break;
-		case 0xA6: parsePassPartyLeadership(msg); break;
-		case 0xA7: addGameTask(&Game::playerLeaveParty, player->getID()); break;
-		case 0xA8: parseEnableSharedPartyExperience(msg); break;
-		case 0xAA: addGameTask(&Game::playerCreatePrivateChannel, player->getID()); break;
-		case 0xAB: parseChannelInvite(msg); break;
-		case 0xAC: parseChannelExclude(msg); break;
-		case 0xAE: parseSendBosstiary(); break;
-		case 0xAF: parseSendBosstiarySlots(); break;
-		case 0xB0: parseBosstiarySlot(msg); break;
-		case 0xB1: parseHighscores(msg); break;
-		case 0xBA: parseTaskHuntingAction(msg); break;
-		case 0xBE: addGameTask(&Game::playerCancelAttackAndFollow, player->getID()); break;
-		case 0xBF: parseForgeEnter(msg); break;
-		case 0xC0: parseForgeBrowseHistory(msg); break;
-		case 0xC7: parseTournamentLeaderboard(msg); break;
-		case 0xC9: /* update tile */ break;
-		case 0xCA: parseUpdateContainer(msg); break;
-		case 0xCB: parseBrowseField(msg); break;
-		case 0xCC: parseSeekInContainer(msg); break;
-		case 0xCD: parseInspectionObject(msg); break;
-		case 0xD2: addGameTask(&Game::playerRequestOutfit, player->getID()); break;
-		//g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte)));
-		case 0xD3: g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parseSetOutfit, getThis(), msg))); break;
-		case 0xD4: parseToggleMount(msg); break;
-		case 0xD5: parseApplyImbuement(msg); break;
-		case 0xD6: parseClearImbuement(msg); break;
-		case 0xD7: parseCloseImbuementWindow(msg); break;
-		case 0xDC: parseAddVip(msg); break;
-		case 0xDD: parseRemoveVip(msg); break;
-		case 0xDE: parseEditVip(msg); break;
-		case 0xE1: parseBestiarysendRaces(); break;
-		case 0xE2: parseBestiarysendCreatures(msg); break;
-		case 0xE3: parseBestiarysendMonsterData(msg); break;
-		case 0xE4: parseSendBuyCharmRune(msg); break;
-		case 0xE5: parseCyclopediaCharacterInfo(msg); break;
-		case 0xE6: parseBugReport(msg); break;
-		case 0xE7: /* thank you */ break;
-		case 0xE8: parseDebugAssert(msg); break;
-		case 0xEB: parsePreyAction(msg); break;
-		case 0xED: parseSendResourceBalance(); break;
-		case 0xEE: parseGreet(msg); break;
+		case 0x14:
+			g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::logout, getThis(), true, false)));
+			break;
+		case 0x1D:
+			addGameTask(&Game::playerReceivePingBack, player->getID());
+			break;
+		case 0x1E:
+			addGameTask(&Game::playerReceivePing, player->getID());
+			break;
+		case 0x2a:
+			addBestiaryTrackerList(msg);
+			break;
+		case 0x2B:
+			parsePartyAnalyzerAction(msg);
+			break;
+		case 0x2c:
+			parseLeaderFinderWindow(msg);
+			break;
+		case 0x2d:
+			parseMemberFinderWindow(msg);
+			break;
+		case 0x28:
+			parseStashWithdraw(msg);
+			break;
+		case 0x29:
+			parseRetrieveDepotSearch(msg);
+			break;
+		case 0x32:
+			parseExtendedOpcode(msg);
+			break; // otclient extended opcode
+		case 0x64:
+			parseAutoWalk(msg);
+			break;
+		case 0x65:
+			addGameTask(&Game::playerMove, player->getID(), DIRECTION_NORTH);
+			break;
+		case 0x66:
+			addGameTask(&Game::playerMove, player->getID(), DIRECTION_EAST);
+			break;
+		case 0x67:
+			addGameTask(&Game::playerMove, player->getID(), DIRECTION_SOUTH);
+			break;
+		case 0x68:
+			addGameTask(&Game::playerMove, player->getID(), DIRECTION_WEST);
+			break;
+		case 0x69:
+			addGameTask(&Game::playerStopAutoWalk, player->getID());
+			break;
+		case 0x6A:
+			addGameTask(&Game::playerMove, player->getID(), DIRECTION_NORTHEAST);
+			break;
+		case 0x6B:
+			addGameTask(&Game::playerMove, player->getID(), DIRECTION_SOUTHEAST);
+			break;
+		case 0x6C:
+			addGameTask(&Game::playerMove, player->getID(), DIRECTION_SOUTHWEST);
+			break;
+		case 0x6D:
+			addGameTask(&Game::playerMove, player->getID(), DIRECTION_NORTHWEST);
+			break;
+		case 0x6F:
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerTurn, player->getID(), DIRECTION_NORTH);
+			break;
+		case 0x70:
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerTurn, player->getID(), DIRECTION_EAST);
+			break;
+		case 0x71:
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerTurn, player->getID(), DIRECTION_SOUTH);
+			break;
+		case 0x72:
+			addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerTurn, player->getID(), DIRECTION_WEST);
+			break;
+		case 0x73:
+			parseTeleport(msg);
+			break;
+		case 0x77:
+			parseHotkeyEquip(msg);
+			break;
+		case 0x78:
+			parseThrow(msg);
+			break;
+		case 0x79:
+			parseLookInShop(msg);
+			break;
+		case 0x7A:
+			parsePlayerBuyOnShop(msg);
+			break;
+		case 0x7B:
+			parsePlayerSellOnShop(msg);
+			break;
+		case 0x7C:
+			addGameTask(&Game::playerCloseShop, player->getID());
+			break;
+		case 0x7D:
+			parseRequestTrade(msg);
+			break;
+		case 0x7E:
+			parseLookInTrade(msg);
+			break;
+		case 0x7F:
+			addGameTask(&Game::playerAcceptTrade, player->getID());
+			break;
+		case 0x80:
+			addGameTask(&Game::playerCloseTrade, player->getID());
+			break;
+		case 0x82:
+			parseUseItem(msg);
+			break;
+		case 0x83:
+			parseUseItemEx(msg);
+			break;
+		case 0x84:
+			parseUseWithCreature(msg);
+			break;
+		case 0x85:
+			parseRotateItem(msg);
+			break;
+		case 0x86:
+			parseConfigureShowOffSocket(msg);
+			break;
+		case 0x87:
+			parseCloseContainer(msg);
+			break;
+		case 0x88:
+			parseUpArrowContainer(msg);
+			break;
+		case 0x89:
+			parseTextWindow(msg);
+			break;
+		case 0x8A:
+			parseHouseWindow(msg);
+			break;
+		case 0x8B:
+			parseWrapableItem(msg);
+			break;
+		case 0x8C:
+			parseLookAt(msg);
+			break;
+		case 0x8D:
+			parseLookInBattleList(msg);
+			break;
+		case 0x8E: /* join aggression */
+			break;
+		case 0x8F:
+			parseQuickLoot(msg);
+			break;
+		case 0x90:
+			parseLootContainer(msg);
+			break;
+		case 0x91:
+			parseQuickLootBlackWhitelist(msg);
+			break;
+		case 0x92:
+			parseOpenDepotSearch();
+			break;
+		case 0x93:
+			parseCloseDepotSearch();
+			break;
+		case 0x94:
+			parseDepotSearchItemRequest(msg);
+			break;
+		case 0x95:
+			parseOpenParentContainer(msg);
+			break;
+		case 0x96:
+			parseSay(msg);
+			break;
+		case 0x97:
+			addGameTask(&Game::playerRequestChannels, player->getID());
+			break;
+		case 0x98:
+			parseOpenChannel(msg);
+			break;
+		case 0x99:
+			parseCloseChannel(msg);
+			break;
+		case 0x9A:
+			parseOpenPrivateChannel(msg);
+			break;
+		case 0x9E:
+			addGameTask(&Game::playerCloseNpcChannel, player->getID());
+			break;
+		case 0x9F:
+			parseSetBossPodium(msg);
+			break;
+		case 0xA0:
+			parseFightModes(msg);
+			break;
+		case 0xA1:
+			parseAttack(msg);
+			break;
+		case 0xA2:
+			parseFollow(msg);
+			break;
+		case 0xA3:
+			parseInviteToParty(msg);
+			break;
+		case 0xA4:
+			parseJoinParty(msg);
+			break;
+		case 0xA5:
+			parseRevokePartyInvite(msg);
+			break;
+		case 0xA6:
+			parsePassPartyLeadership(msg);
+			break;
+		case 0xA7:
+			addGameTask(&Game::playerLeaveParty, player->getID());
+			break;
+		case 0xA8:
+			parseEnableSharedPartyExperience(msg);
+			break;
+		case 0xAA:
+			addGameTask(&Game::playerCreatePrivateChannel, player->getID());
+			break;
+		case 0xAB:
+			parseChannelInvite(msg);
+			break;
+		case 0xAC:
+			parseChannelExclude(msg);
+			break;
+		case 0xAE:
+			parseSendBosstiary();
+			break;
+		case 0xAF:
+			parseSendBosstiarySlots();
+			break;
+		case 0xB0:
+			parseBosstiarySlot(msg);
+			break;
+		case 0xB1:
+			parseHighscores(msg);
+			break;
+		case 0xBA:
+			parseTaskHuntingAction(msg);
+			break;
+		case 0xBE:
+			addGameTask(&Game::playerCancelAttackAndFollow, player->getID());
+			break;
+		case 0xBF:
+			parseForgeEnter(msg);
+			break;
+		case 0xC0:
+			parseForgeBrowseHistory(msg);
+			break;
+		case 0xC7:
+			parseTournamentLeaderboard(msg);
+			break;
+		case 0xC9: /* update tile */
+			break;
+		case 0xCA:
+			parseUpdateContainer(msg);
+			break;
+		case 0xCB:
+			parseBrowseField(msg);
+			break;
+		case 0xCC:
+			parseSeekInContainer(msg);
+			break;
+		case 0xCD:
+			parseInspectionObject(msg);
+			break;
+		case 0xD2:
+			addGameTask(&Game::playerRequestOutfit, player->getID());
+			break;
+		// g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte)));
+		case 0xD3:
+			g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parseSetOutfit, getThis(), msg)));
+			break;
+		case 0xD4:
+			parseToggleMount(msg);
+			break;
+		case 0xD5:
+			parseApplyImbuement(msg);
+			break;
+		case 0xD6:
+			parseClearImbuement(msg);
+			break;
+		case 0xD7:
+			parseCloseImbuementWindow(msg);
+			break;
+		case 0xDC:
+			parseAddVip(msg);
+			break;
+		case 0xDD:
+			parseRemoveVip(msg);
+			break;
+		case 0xDE:
+			parseEditVip(msg);
+			break;
+		case 0xE1:
+			parseBestiarysendRaces();
+			break;
+		case 0xE2:
+			parseBestiarysendCreatures(msg);
+			break;
+		case 0xE3:
+			parseBestiarysendMonsterData(msg);
+			break;
+		case 0xE4:
+			parseSendBuyCharmRune(msg);
+			break;
+		case 0xE5:
+			parseCyclopediaCharacterInfo(msg);
+			break;
+		case 0xE6:
+			parseBugReport(msg);
+			break;
+		case 0xE7: /* thank you */
+			break;
+		case 0xE8:
+			parseDebugAssert(msg);
+			break;
+		case 0xEB:
+			parsePreyAction(msg);
+			break;
+		case 0xED:
+			parseSendResourceBalance();
+			break;
+		case 0xEE:
+			parseGreet(msg);
+			break;
 		// Premium coins transfer
 		// case 0xEF: parseCoinTransfer(msg); break;
 		case 0xF0:
@@ -6524,8 +6737,7 @@ void ProtocolGame::sendForgeSkillStats(NetworkMessage &msg) const {
 	}
 }
 
-void ProtocolGame::sendBosstiaryData()
-{
+void ProtocolGame::sendBosstiaryData() {
 	NetworkMessage msg;
 	msg.addByte(0x61);
 
@@ -6556,8 +6768,7 @@ void ProtocolGame::sendBosstiaryData()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::parseSendBosstiary()
-{
+void ProtocolGame::parseSendBosstiary() {
 	sendBosstiaryData();
 
 	NetworkMessage msg;
@@ -6569,7 +6780,7 @@ void ProtocolGame::parseSendBosstiary()
 	msg.skipBytes(2);
 
 	for (const auto &[bossid, name] : mtype_list) {
-		const MonsterType *mType = g_monsters().getMonsterType(name);
+		const MonsterType* mType = g_monsters().getMonsterType(name);
 		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
 		auto killCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossid));
 		msg.add<uint32_t>(bossid);
@@ -6585,8 +6796,7 @@ void ProtocolGame::parseSendBosstiary()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::parseSendBosstiarySlots()
-{
+void ProtocolGame::parseSendBosstiarySlots() {
 	sendBosstiaryData();
 
 	NetworkMessage msg;
@@ -6617,7 +6827,7 @@ void ProtocolGame::parseSendBosstiarySlots()
 	msg.add<uint32_t>(isSlotOneUnlocked ? bossIdSlotOne : 0);
 	if (isSlotOneUnlocked && bossIdSlotOne != 0) {
 		// Variables Boss Slot One
-		const MonsterType *mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotOne);
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotOne);
 		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
 		auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
 		auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotOne);
@@ -6640,7 +6850,7 @@ void ProtocolGame::parseSendBosstiarySlots()
 	msg.add<uint32_t>(isSlotTwoUnlocked ? bossIdSlotTwo : slotTwoPoints);
 	if (isSlotTwoUnlocked && bossIdSlotTwo != 0) {
 		// Variables Boss Slot Two
-		const MonsterType *mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotTwo);
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotTwo);
 		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
 		auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotTwo));
 		auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotTwo);
@@ -6662,7 +6872,7 @@ void ProtocolGame::parseSendBosstiarySlots()
 	msg.add<uint32_t>(boostedBossId);
 	if (isTodaySlotUnlocked && boostedBossId != 0) {
 		std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
-		const MonsterType *mType = g_monsters().getMonsterType(boostedBossName);
+		const MonsterType* mType = g_monsters().getMonsterType(boostedBossName);
 		auto boostedBossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
 		auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
 		auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
@@ -6679,11 +6889,11 @@ void ProtocolGame::parseSendBosstiarySlots()
 	msg.addByte(bossesUnlockedSize != 0 ? 1 : 0);
 	if (bossesUnlockedSize != 0) {
 		msg.add<uint16_t>(bossesUnlockedSize);
-		for (auto const &bossId : bossesUnlockedList) {
+		for (const auto &bossId : bossesUnlockedList) {
 			if (bossId == bossIdSlotOne || bossId == bossIdSlotTwo)
 				continue;
 
-			const MonsterType *mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossId);
+			const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossId);
 			if (!mType) {
 				continue;
 			}
@@ -6698,16 +6908,14 @@ void ProtocolGame::parseSendBosstiarySlots()
 	parseSendResourceBalance();
 }
 
-void ProtocolGame::parseBosstiarySlot(NetworkMessage &msg)
-{
+void ProtocolGame::parseBosstiarySlot(NetworkMessage &msg) {
 	uint8_t slotBossId = msg.getByte();
 	uint32_t selectedBossId = msg.get<uint32_t>();
 
 	addGameTask(&Game::playerBosstiarySlot, player->getID(), slotBossId, selectedBossId);
 }
 
-void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position& position, uint16_t itemId, uint8_t stackPos)
-{
+void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos) {
 	if (!podium) {
 		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
 		return;
@@ -6751,11 +6959,11 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position& posi
 	msg.add<uint16_t>(unlockedBossesSize);
 
 	for (const auto &boss : unlockedBosses) {
-		const MonsterType *mType = g_ioBosstiary().getMonsterTypeByBossRaceId(boss);
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(boss);
 		if (!mType) {
 			continue;
 		}
-		const auto& bossName = mType->name;
+		const auto &bossName = mType->name;
 		auto bossOutfit = mType->info.outfit;
 
 		msg.addString(bossName); // Nome from boss unlocked
@@ -6782,8 +6990,7 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position& posi
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::parseSetBossPodium(NetworkMessage &msg) const
-{
+void ProtocolGame::parseSetBossPodium(NetworkMessage &msg) const {
 	uint32_t bossRaceId = msg.get<uint32_t>();
 	Position pos = msg.getPosition();
 	uint16_t itemId = msg.get<uint16_t>();
@@ -6795,8 +7002,7 @@ void ProtocolGame::parseSetBossPodium(NetworkMessage &msg) const
 	g_game().playerSetBossPodium(player->getID(), bossRaceId, pos, stackpos, itemId, direction, podiumVisible, bossVisible);
 }
 
-void ProtocolGame::sendBosstiaryCooldownTimer()
-{
+void ProtocolGame::sendBosstiaryCooldownTimer() {
 	NetworkMessage msg;
 	msg.addByte(0xBD);
 
@@ -6804,7 +7010,7 @@ void ProtocolGame::sendBosstiaryCooldownTimer()
 	auto bossesOnTrackerSize = static_cast<uint16_t>(bossesOnTracker.size());
 	msg.add<uint16_t>(bossesOnTrackerSize); // Number of bosses on timer
 	for (const auto &bossRaceId : bossesOnTracker) {
-		const MonsterType *mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossRaceId);
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossRaceId);
 		if (!mType) {
 			continue;
 		}
@@ -6818,8 +7024,7 @@ void ProtocolGame::sendBosstiaryCooldownTimer()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendBosstiaryEntryChanged(uint32_t bossid)
-{
+void ProtocolGame::sendBosstiaryEntryChanged(uint32_t bossid) {
 	NetworkMessage msg;
 	msg.addByte(0xE6);
 	msg.add<uint32_t>(bossid);

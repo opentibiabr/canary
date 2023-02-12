@@ -2214,26 +2214,20 @@ class Player final : public Creature, public Cylinder {
 
 		std::map<uint16_t, Item*> getEquippedItemsWithEnabledAbilitiesBySlot() const;
 
-		void setBossPoints(uint32_t amount)
-		{
+		void setBossPoints(uint32_t amount) {
 			bossPoints = amount;
 		}
-		void addBossPoints(uint32_t amount)
-		{
+		void addBossPoints(uint32_t amount) {
 			bossPoints += amount;
-
 		}
-		void removeBossPoints(uint32_t amount)
-		{
+		void removeBossPoints(uint32_t amount) {
 			bossPoints = std::max<uint32_t>(0, bossPoints - amount);
 		}
-		uint32_t getBossPoints() const
-		{
+		uint32_t getBossPoints() const {
 			return bossPoints;
 		}
 
-		void setSlotBossId(uint8_t slotId, uint32_t bossId)
-		{
+		void setSlotBossId(uint8_t slotId, uint32_t bossId) {
 			if (slotId == 1)
 				bossIdSlotOne = bossId;
 			else
@@ -2242,28 +2236,24 @@ class Player final : public Creature, public Cylinder {
 				client->parseSendBosstiarySlots();
 			}
 		}
-		uint32_t getSlotBossId(uint8_t slotId) const
-		{
+		uint32_t getSlotBossId(uint8_t slotId) const {
 			if (slotId == 1)
 				return bossIdSlotOne;
 			else
 				return bossIdSlotTwo;
 		}
 
-		void addRemoveTime()
-		{
+		void addRemoveTime() {
 			bossRemoveTimes = bossRemoveTimes + 1;
 		}
 		void setRemoveBossTime(uint8_t newRemoveTimes) {
 			bossRemoveTimes = newRemoveTimes;
 		}
-		uint8_t getRemoveTimes() const
-		{
+		uint8_t getRemoveTimes() const {
 			return bossRemoveTimes;
 		}
 
-		void sendBossPodiumWindow(const Item* podium, const Position& position,
-                              uint16_t itemId, uint8_t stackpos) const {
+		void sendBossPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackpos) const {
 			if (client) {
 				client->sendBossPodiumWindow(podium, position, itemId, stackpos);
 			}

@@ -9,7 +9,6 @@
 
 #include "pch.hpp"
 
-
 #include "lua/functions/core/game/lua_enums.hpp"
 
 #include "creatures/players/account/account.hpp"

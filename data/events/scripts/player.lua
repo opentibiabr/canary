@@ -177,7 +177,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		end
 		if item:getActionId() == NOT_TRADEABLE_ACTION then
 			-- allow moving store items to store and to depot
-			if containerTo:isDepot() 
+			if containerTo:isDepot()
 				or containerTo:getId() == ITEM_STORE_INBOX
 				or containerTo:isInsideOfId(ITEM_STORE_INBOX)
 				or containerTo:isInsideOfId(ITEM_DEPOT_I)

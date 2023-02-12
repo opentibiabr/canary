@@ -250,8 +250,7 @@ bool Container::isHoldingItem(const Item* item) const {
 	return false;
 }
 
-bool Container::isHoldingItemWithId(const uint16_t id) const
-{
+bool Container::isHoldingItemWithId(const uint16_t id) const {
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 		const Item* item = *it;
 		if (item->getID() == id) {

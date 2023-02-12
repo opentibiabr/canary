@@ -671,7 +671,7 @@ int PlayerFunctions::luaPlayerGetRewardList(lua_State* L) {
 	lua_createtable(L, rewardVec.size(), 0);
 
 	int index = 0;
-	for (const auto& rewardId : rewardVec) {
+	for (const auto &rewardId : rewardVec) {
 		lua_pushnumber(L, static_cast<lua_Number>(rewardId));
 		lua_rawseti(L, -2, ++index);
 	}

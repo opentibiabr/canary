@@ -53,7 +53,7 @@ Player::~Player() {
 		it.second->decrementReferenceCounter();
 	}
 
-	for (const auto& it : quickLootContainers) {
+	for (const auto &it : quickLootContainers) {
 		it.second->decrementReferenceCounter();
 	}
 
@@ -657,7 +657,7 @@ void Player::closeContainer(uint8_t cid) {
 	Container* container = openContainer.container;
 	openContainers.erase(it);
 
-	if (!container){
+	if (!container) {
 		return;
 	}
 
@@ -668,13 +668,12 @@ void Player::closeContainer(uint8_t cid) {
 	if (container->getID() == ITEM_BROWSEFIELD) {
 		container->decrementReferenceCounter();
 	}
-
 }
 
 void Player::removeEmptyRewards() {
-	std::erase_if(rewardMap, [this](auto const &rewardBag) {
+	std::erase_if(rewardMap, [this](const auto &rewardBag) {
 		auto [id, reward] = rewardBag;
-		if (reward->empty()){
+		if (reward->empty()) {
 			this->getRewardChest()->removeThing(reward.get(), 1);
 			return true;
 		}
@@ -683,7 +682,7 @@ void Player::removeEmptyRewards() {
 }
 
 bool Player::hasAnykindOfRewardContainerOpen() const {
-	return std::ranges::any_of(openContainers.begin(), openContainers.end(),[](const auto& containerPair) {
+	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [](const auto &containerPair) {
 		return containerPair.second.container->isAnykindOfRewardContainer();
 	});
 }
@@ -1078,7 +1077,7 @@ void Player::removeReward(uint64_t rewardId) {
 	rewardMap.erase(rewardId);
 }
 
-void Player::getRewardList(std::vector<uint64_t>& rewards) const {
+void Player::getRewardList(std::vector<uint64_t> &rewards) const {
 	rewards.reserve(rewardMap.size());
 	for (auto &it : rewardMap) {
 		rewards.push_back(it.first);

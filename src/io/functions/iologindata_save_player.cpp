@@ -43,7 +43,7 @@ bool IOLoginDataSave::savePlayerForgeHistory(Player* player) {
 	return true;
 }
 
-bool IOLoginDataSave::saveRewardItems(Player *player) {
+bool IOLoginDataSave::saveRewardItems(Player* player) {
 	std::ostringstream query;
 	query.str(std::string());
 	query << "DELETE FROM `player_rewards` WHERE `player_id` = " << player->getGUID();
@@ -57,7 +57,7 @@ bool IOLoginDataSave::saveRewardItems(Player *player) {
 
 	ItemBlockList itemList;
 	if (!rewardList.empty()) {
-		for (const auto& rewardId : rewardList) {
+		for (const auto &rewardId : rewardList) {
 			auto reward = player->getReward(rewardId, false);
 			if (!reward->empty() && (getTimeNow() - rewardId / 1000 <= 60 * 60 * 24 * 7)) {
 				itemList.emplace_back(0, reward.get());

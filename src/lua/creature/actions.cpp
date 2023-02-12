@@ -304,7 +304,7 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 			}
 
 			myRewardChest->setParent(container->getParent()->getTile());
-			for (const auto& [mapRewardId, rewardPtr] : player->rewardMap) {
+			for (const auto &[mapRewardId, rewardPtr] : player->rewardMap) {
 				rewardPtr->setParent(myRewardChest);
 			}
 

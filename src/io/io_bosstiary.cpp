@@ -164,6 +164,7 @@ void IOBosstiary::addBosstiaryKill(Player* player, const MonsterType* mtype, uin
 	if (oldBossLevel == newBossLevel) {
 		return;
 	}
+	player->sendBosstiaryEntryChanged(bossId);
 
 	auto bossRace = mtype->info.bosstiaryRace;
 	const std::vector<LevelInfo>& infoForCurrentRace = levelInfos.at(bossRace);

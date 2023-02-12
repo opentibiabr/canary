@@ -7701,3 +7701,11 @@ void ProtocolGame::sendBosstiaryCooldownTimer()
 
 	writeToOutputBuffer(msg);
 }
+
+void ProtocolGame::sendBosstiaryEntryChanged(uint32_t bossid)
+{
+	NetworkMessage msg;
+	msg.addByte(0xE6);
+	msg.add<uint32_t>(bossid);
+	writeToOutputBuffer(msg);
+}

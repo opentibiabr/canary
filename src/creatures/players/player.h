@@ -2247,6 +2247,12 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
+		void sendBosstiaryEntryChanged(uint32_t bossid) {
+			if (client) {
+				client->sendBosstiaryEntryChanged(bossid);
+			}
+		}
+
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
 

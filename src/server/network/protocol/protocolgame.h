@@ -278,6 +278,7 @@ private:
 	void sendBossPodiumWindow(const Item* podium, const Position& position, uint16_t itemId, uint8_t stackPos);
 	void parseSetBossPodium(NetworkMessage &msg) const;
 	void sendBosstiaryCooldownTimer();
+	void sendBosstiaryEntryChanged(uint32_t bossid);
 
 	void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 	void sendMagicEffect(const Position &pos, uint8_t type);

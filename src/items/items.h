@@ -165,12 +165,10 @@ class ItemType {
 		bool isHelmet() const {
 			return slotPosition & SLOTP_HEAD;
 		}
-		bool isRanged() const
-		{
+		bool isRanged() const {
 			return weaponType == WEAPON_DISTANCE && weaponType != WEAPON_NONE;
 		}
-		bool isMissile() const
-		{
+		bool isMissile() const {
 			return weaponType == WEAPON_MISSILE && weaponType != WEAPON_NONE;
 		}
 

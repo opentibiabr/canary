@@ -4294,13 +4294,15 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		if (it.attack != 0) {
 			ss << "attack +" << it.attack;
 			separator = true;
-		} if (it.hitChance != 0) {
+		}
+		if (it.hitChance != 0) {
 			if (separator) {
 				ss << ", ";
 			}
 			ss << "chance to hit +" << static_cast<int16_t>(it.hitChance) << "%";
 			separator = true;
-		} if (it.shootRange != 0) {
+		}
+		if (it.shootRange != 0) {
 			if (separator) {
 				ss << ", ";
 			}

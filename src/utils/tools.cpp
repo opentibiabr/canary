@@ -936,19 +936,19 @@ bool booleanString(const std::string &str) {
 std::string getWeaponName(WeaponType_t weaponType) {
 	switch (weaponType) {
 		case WEAPON_SWORD:
-      return "stabbing weapon";
+			return "stabbing weapon";
 		case WEAPON_CLUB:
-      return "blunt instrument";
+			return "blunt instrument";
 		case WEAPON_AXE:
-      return "cutting weapon";
+			return "cutting weapon";
 		case WEAPON_DISTANCE:
-      return "firearm";
+			return "firearm";
 		case WEAPON_WAND:
-      return "wand/rod";
+			return "wand/rod";
 		case WEAPON_MISSILE:
-      return "missile";
+			return "missile";
 		default:
-      return std::string();
+			return std::string();
 	}
 }
 

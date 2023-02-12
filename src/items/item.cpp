@@ -1011,17 +1011,14 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 		}
 
 		int32_t attack = item->getAttack();
-		if (it.isRanged())
-		{
+		if (it.isRanged()) {
 			bool separator = false;
-			if (attack != 0)
-			{
+			if (attack != 0) {
 				ss << "attack +" << attack;
 				separator = true;
 			}
 			if (int32_t hitChance = item->getHitChance();
-				hitChance != 0)
-			{
+				hitChance != 0) {
 				if (separator) {
 					ss << ", ";
 				}
@@ -1029,8 +1026,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				separator = true;
 			}
 			if (int32_t shootRange = item->getShootRange();
-				shootRange != 0)
-			{
+				shootRange != 0) {
 				if (separator) {
 					ss << ", ";
 				}
@@ -1188,29 +1184,25 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				slotName = fmt::format("Imbuement Slot {}", i + 1);
 				ss.str("");
 				auto castItem = const_cast<Item*>(item);
-				if (!castItem)
-				{
+				if (!castItem) {
 					continue;
 				}
 
 				ImbuementInfo imbuementInfo;
-				if (!castItem->getImbuementInfo(i, &imbuementInfo))
-				{
+				if (!castItem->getImbuementInfo(i, &imbuementInfo)) {
 					ss << "empty";
 					descriptions.emplace_back(slotName, ss.str());
 					continue;
 				}
 
 				const BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID());
-				if (!baseImbuement)
-				{
+				if (!baseImbuement) {
 					continue;
 				}
 
 				auto minutes = imbuementInfo.duration / 60;
 				auto hours = minutes / 60;
-				ss << fmt::format("{} {} ({}), lasts {:02}:{:02}h while fighting.",
-					baseImbuement->name, imbuementInfo.imbuement->getName(), imbuementInfo.imbuement->getDescription(), hours, minutes % 60);
+				ss << fmt::format("{} {} ({}), lasts {:02}:{:02}h while fighting.", baseImbuement->name, imbuementInfo.imbuement->getName(), imbuementInfo.imbuement->getDescription(), hours, minutes % 60);
 				isTradeable = false;
 				descriptions.emplace_back(slotName, ss.str());
 			}
@@ -1342,17 +1334,14 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 		}
 
 		int32_t attack = it.attack;
-		if (it.isRanged())
-		{
+		if (it.isRanged()) {
 			bool separator = false;
-			if (attack != 0)
-			{
+			if (attack != 0) {
 				ss << "attack +" << attack;
 				separator = true;
 			}
 			if (int32_t hitChance = it.hitChance;
-				hitChance != 0)
-			{
+				hitChance != 0) {
 				if (separator) {
 					ss << ", ";
 				}
@@ -1360,8 +1349,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				separator = true;
 			}
 			if (int32_t shootRange = it.shootRange;
-				shootRange != 0)
-			{
+				shootRange != 0) {
 				if (separator) {
 					ss << ", ";
 				}
@@ -1408,7 +1396,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				}
 
 				ss << getCombatName(indexToCombatType(i)) << ' '
-					<< std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
+				   << std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
 				protection = true;
 			}
 			if (protection) {
@@ -1804,7 +1792,8 @@ std::string Item::parseShowAttributesDescription(const Item* item, const uint16_
 						itemDescription << ", ";
 					}
 
-					itemDescription << fmt::format("{} field {:+}%", getCombatName(indexToCombatType(i)), itemType.abilities->fieldAbsorbPercent[i]);				}
+					itemDescription << fmt::format("{} field {:+}%", getCombatName(indexToCombatType(i)), itemType.abilities->fieldAbsorbPercent[i]);
+				}
 			} else {
 				if (begin) {
 					begin = false;

@@ -748,7 +748,7 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 		return 1;
 	}
 
-	const Player *player = creature->getPlayer();
+	const Player* player = creature->getPlayer();
 	if (!player) {
 		return 1;
 	}
@@ -763,8 +763,7 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 	}
 
 	if (auto ret = g_game().internalTeleport(creature, position, pushMovement);
-		ret != RETURNVALUE_NOERROR)
-	{
+		ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 		SPDLOG_ERROR("[{}] Failed to teleport player, error code: {}", __FUNCTION__, getReturnMessage(ret));
 		pushBoolean(L, false);

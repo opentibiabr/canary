@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_GLOBAL_GLOBALEVENT_H_
 #define SRC_LUA_GLOBAL_GLOBALEVENT_H_
@@ -23,10 +23,10 @@ class GlobalEvents final : public Scripts {
 		~GlobalEvents();
 
 		// non-copyable
-		GlobalEvents(const GlobalEvents&) = delete;
-		GlobalEvents& operator=(const GlobalEvents&) = delete;
+		GlobalEvents(const GlobalEvents &) = delete;
+		GlobalEvents &operator=(const GlobalEvents &) = delete;
 
-		static GlobalEvents& getInstance() {
+		static GlobalEvents &getInstance() {
 			// Guaranteed to be destroyed
 			static GlobalEvents instance;
 			// Instantiated on first use
@@ -55,7 +55,7 @@ class GlobalEvent final : public Script {
 	public:
 		explicit GlobalEvent(LuaScriptInterface* interface);
 
-		bool executePeriodChange(LightState_t lightState, LightInfo lightInfo) const ;
+		bool executePeriodChange(LightState_t lightState, LightInfo lightInfo) const;
 		bool executeRecord(uint32_t current, uint32_t old);
 		bool executeEvent() const;
 
@@ -66,7 +66,7 @@ class GlobalEvent final : public Script {
 			eventType = type;
 		}
 
-		const std::string& getName() const {
+		const std::string &getName() const {
 			return name;
 		}
 		void setName(std::string eventName) {
@@ -96,4 +96,4 @@ class GlobalEvent final : public Script {
 		uint32_t interval = 0;
 };
 
-#endif  // SRC_LUA_GLOBAL_GLOBALEVENT_H_
+#endif // SRC_LUA_GLOBAL_GLOBALEVENT_H_

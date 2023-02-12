@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -52,7 +52,8 @@ bool Familiars::loadFromXml() {
 			pugi::cast<uint16_t>(lookTypeAttribute.value()),
 			familiarsNode.attribute("premium").as_bool(),
 			familiarsNode.attribute("unlocked").as_bool(true),
-			familiarsNode.attribute("type").as_string());
+			familiarsNode.attribute("type").as_string()
+		);
 	}
 	for (uint16_t vocation = VOCATION_NONE; vocation <= VOCATION_LAST; ++vocation) {
 		familiars[vocation].shrink_to_fit();
@@ -61,7 +62,7 @@ bool Familiars::loadFromXml() {
 }
 
 const Familiar* Familiars::getFamiliarByLookType(uint16_t vocation, uint16_t lookType) const {
-	for (const Familiar& familiar : familiars[vocation]) {
+	for (const Familiar &familiar : familiars[vocation]) {
 		if (familiar.lookType == lookType) {
 			return &familiar;
 		}

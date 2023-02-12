@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_UTILS_THREAD_HOLDER_H_
 #define SRC_UTILS_THREAD_HOLDER_H_
@@ -13,10 +13,9 @@
 #include "declarations.hpp"
 
 template <typename Derived>
-class ThreadHolder
-{
+class ThreadHolder {
 	public:
-		ThreadHolder() {}
+		ThreadHolder() { }
 		void start() {
 			setState(THREAD_STATE_RUNNING);
 			thread = std::thread(&Derived::threadMain, static_cast<Derived*>(this));
@@ -31,6 +30,7 @@ class ThreadHolder
 				thread.join();
 			}
 		}
+
 	protected:
 		void setState(ThreadState newState) {
 			threadState.store(newState, std::memory_order_relaxed);
@@ -39,9 +39,10 @@ class ThreadHolder
 		ThreadState getState() const {
 			return threadState.load(std::memory_order_relaxed);
 		}
+
 	private:
-		std::atomic<ThreadState> threadState{THREAD_STATE_TERMINATED};
+		std::atomic<ThreadState> threadState { THREAD_STATE_TERMINATED };
 		std::thread thread;
 };
 
-#endif  // SRC_UTILS_THREAD_HOLDER_H_
+#endif // SRC_UTILS_THREAD_HOLDER_H_

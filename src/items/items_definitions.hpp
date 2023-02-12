@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
 #define SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
@@ -189,8 +189,8 @@ enum TradeEvents_t {
 
 enum AttrTypes_t {
 	// ATTR_NONE = 0 (last enum)
-	//ATTR_DESCRIPTION = 1,
-	//ATTR_EXT_FILE = 2,
+	// ATTR_DESCRIPTION = 1,
+	// ATTR_EXT_FILE = 2,
 	ATTR_TILE_FLAGS = 3,
 	ATTR_ACTION_ID = 4,
 	ATTR_UNIQUE_ID = 5,
@@ -199,9 +199,9 @@ enum AttrTypes_t {
 	ATTR_TELE_DEST = 8,
 	ATTR_ITEM = 9,
 	ATTR_DEPOT_ID = 10,
-	//ATTR_EXT_SPAWN_FILE = 11,
+	// ATTR_EXT_SPAWN_FILE = 11,
 	ATTR_RUNE_CHARGES = 12,
-	//ATTR_EXT_HOUSE_FILE = 13,
+	// ATTR_EXT_HOUSE_FILE = 13,
 	ATTR_HOUSEDOORID = 14,
 	ATTR_COUNT = 15,
 	ATTR_DURATION = 16,
@@ -302,13 +302,7 @@ enum TileFlags_t : uint32_t {
 	TILESTATE_NOFIELDBLOCKPATH = 1 << 22,
 	TILESTATE_SUPPORTS_HANGABLE = 1 << 23,
 
-	TILESTATE_FLOORCHANGE = TILESTATE_FLOORCHANGE_DOWN |
-                            TILESTATE_FLOORCHANGE_NORTH |
-                            TILESTATE_FLOORCHANGE_SOUTH |
-                            TILESTATE_FLOORCHANGE_EAST |
-                            TILESTATE_FLOORCHANGE_WEST |
-                            TILESTATE_FLOORCHANGE_SOUTH_ALT |
-                            TILESTATE_FLOORCHANGE_EAST_ALT,
+	TILESTATE_FLOORCHANGE = TILESTATE_FLOORCHANGE_DOWN | TILESTATE_FLOORCHANGE_NORTH | TILESTATE_FLOORCHANGE_SOUTH | TILESTATE_FLOORCHANGE_EAST | TILESTATE_FLOORCHANGE_WEST | TILESTATE_FLOORCHANGE_SOUTH_ALT | TILESTATE_FLOORCHANGE_EAST_ALT,
 };
 
 enum ZoneType_t {
@@ -320,14 +314,14 @@ enum ZoneType_t {
 };
 
 enum CylinderFlags_t {
-	FLAG_NOLIMIT = 1 << 0, //Bypass limits like capacity/container limits, blocking items/creatures etc.
-	FLAG_IGNOREBLOCKITEM = 1 << 1, //Bypass movable blocking item checks
-	FLAG_IGNOREBLOCKCREATURE = 1 << 2, //Bypass creature checks
-	FLAG_CHILDISOWNER = 1 << 3, //Used by containers to query capacity of the carrier (player)
-	FLAG_PATHFINDING = 1 << 4, //An additional check is done for floor changing/teleport items
-	FLAG_IGNOREFIELDDAMAGE = 1 << 5, //Bypass field damage checks
-	FLAG_IGNORENOTMOVEABLE = 1 << 6, //Bypass check for mobility
-	FLAG_IGNOREAUTOSTACK = 1 << 7, //queryDestination will not try to stack items together
+	FLAG_NOLIMIT = 1 << 0, // Bypass limits like capacity/container limits, blocking items/creatures etc.
+	FLAG_IGNOREBLOCKITEM = 1 << 1, // Bypass movable blocking item checks
+	FLAG_IGNOREBLOCKCREATURE = 1 << 2, // Bypass creature checks
+	FLAG_CHILDISOWNER = 1 << 3, // Used by containers to query capacity of the carrier (player)
+	FLAG_PATHFINDING = 1 << 4, // An additional check is done for floor changing/teleport items
+	FLAG_IGNOREFIELDDAMAGE = 1 << 5, // Bypass field damage checks
+	FLAG_IGNORENOTMOVEABLE = 1 << 6, // Bypass check for mobility
+	FLAG_IGNOREAUTOSTACK = 1 << 7, // queryDestination will not try to stack items together
 };
 
 enum CylinderLink_t {
@@ -451,8 +445,8 @@ enum ItemParseAttributes_t {
 };
 
 struct ImbuementInfo {
-	Imbuement *imbuement;
-	uint32_t duration = 0;
+		Imbuement* imbuement;
+		uint32_t duration = 0;
 };
 
-#endif  // SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
+#endif // SRC_ITEMS_ITEMS_DEFINITIONS_HPP_

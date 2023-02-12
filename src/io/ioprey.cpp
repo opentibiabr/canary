@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -18,15 +18,14 @@
 
 // Prey class
 PreySlot::PreySlot(PreySlot_t id) :
-									id(id) {
-		eraseBonus();
-		reloadBonusValue();
-		reloadBonusType();
-		freeRerollTimeStamp = OTSYS_TIME() + g_configManager().getNumber(PREY_FREE_REROLL_TIME) * 1000;
+	id(id) {
+	eraseBonus();
+	reloadBonusValue();
+	reloadBonusType();
+	freeRerollTimeStamp = OTSYS_TIME() + g_configManager().getNumber(PREY_FREE_REROLL_TIME) * 1000;
 }
 
-void PreySlot::reloadBonusType()
-{
+void PreySlot::reloadBonusType() {
 	if (bonusRarity == 10) {
 		PreyBonus_t bonus_tmp = bonus;
 		while (bonus_tmp == bonus) {
@@ -38,8 +37,7 @@ void PreySlot::reloadBonusType()
 	bonus = static_cast<PreyBonus_t>(uniform_random(PreyBonus_First, PreyBonus_Last));
 }
 
-void PreySlot::reloadBonusValue()
-{
+void PreySlot::reloadBonusValue() {
 	if (bonusRarity >= 9) {
 		bonusRarity = 10;
 	} else {
@@ -55,8 +53,7 @@ void PreySlot::reloadBonusValue()
 	}
 }
 
-void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level)
-{
+void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level) {
 	raceIdList.clear();
 
 	if (!g_configManager().getBoolean(PREY_ENABLED)) {
@@ -133,12 +130,11 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 
 // Task hunting class
 TaskHuntingSlot::TaskHuntingSlot(PreySlot_t id) :
-									id(id) {
+	id(id) {
 	freeRerollTimeStamp = OTSYS_TIME() + g_configManager().getNumber(TASK_HUNTING_FREE_REROLL_TIME) * 1000;
 }
 
-void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level)
-{
+void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level) {
 	raceIdList.clear();
 
 	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
@@ -213,8 +209,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 	}
 }
 
-void TaskHuntingSlot::reloadReward()
-{
+void TaskHuntingSlot::reloadReward() {
 	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		return;
 	}
@@ -251,8 +246,7 @@ void TaskHuntingSlot::reloadReward()
 }
 
 // Prey/Task hunting global class
-void IOPrey::CheckPlayerPreys(Player* player, uint8_t amount) const
-{
+void IOPrey::CheckPlayerPreys(Player* player, uint8_t amount) const {
 	if (!player) {
 		return;
 	}
@@ -295,13 +289,7 @@ void IOPrey::CheckPlayerPreys(Player* player, uint8_t amount) const
 	}
 }
 
-void IOPrey::ParsePreyAction(Player* player, 
-							PreySlot_t slotId, 
-							PreyAction_t action, 
-							PreyOption_t option, 
-							int8_t index, 
-							uint16_t raceId) const
-{
+void IOPrey::ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const {
 	PreySlot* slot = player->getPreySlotById(slotId);
 	if (!slot || slot->state == PreyDataState_Locked) {
 		player->sendMessageDialog("To unlock this prey slot first you must buy it on store.");
@@ -401,12 +389,7 @@ void IOPrey::ParsePreyAction(Player* player,
 	player->reloadPreySlot(slotId);
 }
 
-void IOPrey::ParseTaskHuntingAction(Player* player, 
-									PreySlot_t slotId, 
-									PreyTaskAction_t action, 
-									bool upgrade, 
-									uint16_t raceId) const
-{
+void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const {
 	TaskHuntingSlot* slot = player->getTaskHuntingSlotById(slotId);
 	if (!slot || slot->state == PreyTaskDataState_Locked) {
 		player->sendMessageDialog("To unlock this task hunting slot first you must buy it on store.");
@@ -539,8 +522,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player,
 	player->reloadTaskSlot(slotId);
 }
 
-void IOPrey::InitializeTaskHuntOptions()
-{
+void IOPrey::InitializeTaskHuntOptions() {
 	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		return;
 	}
@@ -554,7 +536,7 @@ void IOPrey::InitializeTaskHuntOptions()
 	uint8_t limitOfStars = 5;
 	uint16_t kills = killStage;
 	NetworkMessage msg;
-	for (uint8_t difficulty = PreyTaskDifficult_First; difficulty <= PreyTaskDifficult_Last; ++difficulty) {	// Difficulties of creatures on bestiary.
+	for (uint8_t difficulty = PreyTaskDifficult_First; difficulty <= PreyTaskDifficult_Last; ++difficulty) { // Difficulties of creatures on bestiary.
 		auto reward = static_cast<uint16_t>(std::round((10 * kills) / killStage));
 		// Amount of task stars on task hunting
 		for (uint8_t star = 1; star <= limitOfStars; ++star) {
@@ -579,8 +561,7 @@ void IOPrey::InitializeTaskHuntOptions()
 	msg.addByte(0xBA);
 	std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 	msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
-	std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto& mType)
-	{
+	std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto &mType) {
 		const MonsterType* mtype = g_monsters().getMonsterType(mType.second);
 		if (!mtype) {
 			return;
@@ -597,8 +578,7 @@ void IOPrey::InitializeTaskHuntOptions()
 	});
 
 	msg.addByte(static_cast<uint8_t>(taskOption.size()));
-	std::for_each(taskOption.begin(), taskOption.end(), [&msg](const TaskHuntingOption* option)
-	{
+	std::for_each(taskOption.begin(), taskOption.end(), [&msg](const TaskHuntingOption* option) {
 		msg.addByte(static_cast<uint8_t>(option->difficult));
 		msg.addByte(option->rarity);
 		msg.add<uint16_t>(option->firstKills);
@@ -609,8 +589,7 @@ void IOPrey::InitializeTaskHuntOptions()
 	baseDataMessage = msg;
 }
 
-TaskHuntingOption* IOPrey::GetTaskRewardOption(const TaskHuntingSlot* slot) const
-{
+TaskHuntingOption* IOPrey::GetTaskRewardOption(const TaskHuntingSlot* slot) const {
 	if (!slot) {
 		return nullptr;
 	}
@@ -631,7 +610,8 @@ TaskHuntingOption* IOPrey::GetTaskRewardOption(const TaskHuntingSlot* slot) cons
 
 	if (auto it = std::find_if(taskOption.begin(), taskOption.end(), [difficult, slot](const TaskHuntingOption* optionIt) {
 			return optionIt->difficult == difficult && optionIt->rarity == slot->rarity;
-		}); it != taskOption.end()) {
+		});
+		it != taskOption.end()) {
 		return *it;
 	}
 

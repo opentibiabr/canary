@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_PLAYER_PLAYER_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CREATURES_PLAYER_PLAYER_FUNCTIONS_HPP_
@@ -485,7 +485,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerAddBlessing(lua_State* L);
 		static int luaPlayerRemoveBlessing(lua_State* L);
 
-		static int luaPlayerGetBlessingCount(lua_State * L);
+		static int luaPlayerGetBlessingCount(lua_State* L);
 
 		static int luaPlayerCanLearnSpell(lua_State* L);
 		static int luaPlayerLearnSpell(lua_State* L);
@@ -527,16 +527,16 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerHasSecureMode(lua_State* L);
 		static int luaPlayerGetFightMode(lua_State* L);
 
-		static int luaPlayerGetBaseXpGain(lua_State *L);
-		static int luaPlayerSetBaseXpGain(lua_State *L);
-		static int luaPlayerGetVoucherXpBoost(lua_State *L);
-		static int luaPlayerSetVoucherXpBoost(lua_State *L);
-		static int luaPlayerGetGrindingXpBoost(lua_State *L);
-		static int luaPlayerSetGrindingXpBoost(lua_State *L);
-		static int luaPlayerGetStoreXpBoost(lua_State *L);
-		static int luaPlayerSetStoreXpBoost(lua_State *L);
-		static int luaPlayerGetStaminaXpBoost(lua_State *L);
-		static int luaPlayerSetStaminaXpBoost(lua_State *L);
+		static int luaPlayerGetBaseXpGain(lua_State* L);
+		static int luaPlayerSetBaseXpGain(lua_State* L);
+		static int luaPlayerGetVoucherXpBoost(lua_State* L);
+		static int luaPlayerSetVoucherXpBoost(lua_State* L);
+		static int luaPlayerGetGrindingXpBoost(lua_State* L);
+		static int luaPlayerSetGrindingXpBoost(lua_State* L);
+		static int luaPlayerGetStoreXpBoost(lua_State* L);
+		static int luaPlayerSetStoreXpBoost(lua_State* L);
+		static int luaPlayerGetStaminaXpBoost(lua_State* L);
+		static int luaPlayerSetStaminaXpBoost(lua_State* L);
 		static int luaPlayerGetExpBoostStamina(lua_State* L);
 		static int luaPlayerSetExpBoostStamina(lua_State* L);
 
@@ -552,11 +552,11 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerAddForgeDusts(lua_State* L);
 		static int luaPlayerRemoveForgeDusts(lua_State* L);
 		static int luaPlayerGetForgeDusts(lua_State* L);
-		static int luaPlayerSetForgeDusts(lua_State *L);
+		static int luaPlayerSetForgeDusts(lua_State* L);
 
-		static int luaPlayerAddForgeDustLevel(lua_State *L);
-		static int luaPlayerRemoveForgeDustLevel(lua_State *L);
-		static int luaPlayerGetForgeDustLevel(lua_State *L);
+		static int luaPlayerAddForgeDustLevel(lua_State* L);
+		static int luaPlayerRemoveForgeDustLevel(lua_State* L);
+		static int luaPlayerGetForgeDustLevel(lua_State* L);
 
 		static int luaPlayerGetForgeSlivers(lua_State* L);
 		static int luaPlayerGetForgeCores(lua_State* L);
@@ -567,4 +567,4 @@ class PlayerFunctions final : LuaScriptInterface {
 		friend class CreatureFunctions;
 };
 
-#endif  // SRC_LUA_FUNCTIONS_CREATURES_PLAYER_PLAYER_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_CREATURES_PLAYER_PLAYER_FUNCTIONS_HPP_

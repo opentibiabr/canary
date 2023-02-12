@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -57,7 +57,7 @@ int GuildFunctions::luaGuildGetMembersOnline(lua_State* L) {
 		return 1;
 	}
 
-	const auto& members = guild->getMembersOnline();
+	const auto &members = guild->getMembersOnline();
 	lua_createtable(L, members.size(), 0);
 
 	int index = 0;
@@ -98,7 +98,7 @@ int GuildFunctions::luaGuildAddRank(lua_State* L) {
 	Guild* guild = getUserdata<Guild>(L, 1);
 	if (guild) {
 		uint32_t id = getNumber<uint32_t>(L, 2);
-		const std::string& name = getString(L, 3);
+		const std::string &name = getString(L, 3);
 		uint8_t level = getNumber<uint8_t>(L, 4);
 		guild->addRank(id, name, level);
 		pushBoolean(L, true);
@@ -163,7 +163,7 @@ int GuildFunctions::luaGuildGetMotd(lua_State* L) {
 
 int GuildFunctions::luaGuildSetMotd(lua_State* L) {
 	// guild:setMotd(motd)
-	const std::string& motd = getString(L, 2);
+	const std::string &motd = getString(L, 2);
 	Guild* guild = getUserdata<Guild>(L, 1);
 	if (guild) {
 		guild->setMotd(motd);

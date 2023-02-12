@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_ITEMS_IMBUEMENT_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_ITEMS_IMBUEMENT_FUNCTIONS_HPP_
@@ -26,7 +26,6 @@ class ImbuementFunctions final : LuaScriptInterface {
 			registerMethod(L, "Imbuement", "isPremium", ImbuementFunctions::luaImbuementIsPremium);
 			registerMethod(L, "Imbuement", "getElementDamage", ImbuementFunctions::luaImbuementGetElementDamage);
 			registerMethod(L, "Imbuement", "getCombatType", ImbuementFunctions::luaImbuementGetCombatType);
-
 		}
 
 	private:
@@ -41,4 +40,4 @@ class ImbuementFunctions final : LuaScriptInterface {
 		static int luaImbuementGetCombatType(lua_State* L);
 };
 
-#endif  // SRC_LUA_FUNCTIONS_ITEMS_IMBUEMENT_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_ITEMS_IMBUEMENT_FUNCTIONS_HPP_

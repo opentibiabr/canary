@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_MAP_MAP_DEFINITIONS_HPP_
 #define SRC_MAP_MAP_DEFINITIONS_HPP_
@@ -31,4 +31,4 @@ enum RentPeriod_t {
 	RENTPERIOD_NEVER,
 };
 
-#endif  // SRC_MAP_MAP_DEFINITIONS_HPP_
+#endif // SRC_MAP_MAP_DEFINITIONS_HPP_

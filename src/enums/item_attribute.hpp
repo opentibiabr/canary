@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_ENUMS_HPP
 #define SRC_ENUMS_HPP
@@ -53,4 +53,4 @@ enum ItemDecayState_t : uint8_t {
 	DECAYING_STOPPING,
 };
 
-#endif  // SRC_ENUMS_HPP
+#endif // SRC_ENUMS_HPP

@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_IO_IOPREY_H_
 #define SRC_IO_IOPREY_H_
@@ -42,7 +42,7 @@ enum PreyBonus_t : uint8_t {
 	PreyBonus_Last = PreyBonus_Loot
 };
 
-enum PreyOption_t : uint8_t {	
+enum PreyOption_t : uint8_t {
 	PreyOption_None = 0,
 	PreyOption_AutomaticReroll = 1,
 	PreyOption_Locked = 2
@@ -87,163 +87,159 @@ enum PreyTaskDifficult_t : uint8_t {
 
 class NetworkMessage;
 
-class PreySlot
-{
- public:
-	PreySlot() = default;
-	explicit PreySlot(PreySlot_t id);
-	virtual ~PreySlot() = default;
+class PreySlot {
+	public:
+		PreySlot() = default;
+		explicit PreySlot(PreySlot_t id);
+		virtual ~PreySlot() = default;
 
-	bool isOccupied() const {
-		return selectedRaceId != 0 && bonusTimeLeft > 0;
-	}
-
-	bool canSelect() const {
-		return (state == PreyDataState_Selection || state == PreyDataState_SelectionChangeMonster || state == PreyDataState_ListSelection || state == PreyDataState_Inactive);
-	}
-
-	void eraseBonus(bool maintainBonus = false) {
-		if (!maintainBonus) {
-			bonus = PreyBonus_None;
-			bonusPercentage = 5;
-			bonusRarity = 1;
+		bool isOccupied() const {
+			return selectedRaceId != 0 && bonusTimeLeft > 0;
 		}
-		state = PreyDataState_Selection;
-		option = PreyOption_None;
-		selectedRaceId = 0;
-		bonusTimeLeft = 0;
-	}
 
-	void removeMonsterType(uint16_t raceId) {
-		raceIdList.erase(std::remove(raceIdList.begin(), raceIdList.end(), raceId), raceIdList.end());
-	}
+		bool canSelect() const {
+			return (state == PreyDataState_Selection || state == PreyDataState_SelectionChangeMonster || state == PreyDataState_ListSelection || state == PreyDataState_Inactive);
+		}
 
-	void reloadBonusType();
-	void reloadBonusValue();
-	void reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level);
+		void eraseBonus(bool maintainBonus = false) {
+			if (!maintainBonus) {
+				bonus = PreyBonus_None;
+				bonusPercentage = 5;
+				bonusRarity = 1;
+			}
+			state = PreyDataState_Selection;
+			option = PreyOption_None;
+			selectedRaceId = 0;
+			bonusTimeLeft = 0;
+		}
 
-	PreySlot_t id = PreySlot_First;
-	PreyBonus_t bonus = PreyBonus_None;
-	PreyDataState_t state = PreyDataState_Locked;
-	PreyOption_t option = PreyOption_None;
+		void removeMonsterType(uint16_t raceId) {
+			raceIdList.erase(std::remove(raceIdList.begin(), raceIdList.end(), raceId), raceIdList.end());
+		}
 
-	std::vector<uint16_t> raceIdList;
+		void reloadBonusType();
+		void reloadBonusValue();
+		void reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level);
 
-	uint8_t bonusRarity = 1;
+		PreySlot_t id = PreySlot_First;
+		PreyBonus_t bonus = PreyBonus_None;
+		PreyDataState_t state = PreyDataState_Locked;
+		PreyOption_t option = PreyOption_None;
 
-	uint16_t selectedRaceId = 0;
-	uint16_t bonusPercentage = 0;
-	uint16_t bonusTimeLeft = 0;
+		std::vector<uint16_t> raceIdList;
 
-	int64_t freeRerollTimeStamp = 0;
+		uint8_t bonusRarity = 1;
+
+		uint16_t selectedRaceId = 0;
+		uint16_t bonusPercentage = 0;
+		uint16_t bonusTimeLeft = 0;
+
+		int64_t freeRerollTimeStamp = 0;
 };
 
-class TaskHuntingSlot
-{
- public:
-	TaskHuntingSlot() = default;
-	explicit TaskHuntingSlot(PreySlot_t id);
-	virtual ~TaskHuntingSlot() = default;
+class TaskHuntingSlot {
+	public:
+		TaskHuntingSlot() = default;
+		explicit TaskHuntingSlot(PreySlot_t id);
+		virtual ~TaskHuntingSlot() = default;
 
-	bool isOccupied() const {
-		return selectedRaceId != 0;
-	}
+		bool isOccupied() const {
+			return selectedRaceId != 0;
+		}
 
-	bool canSelect() const {
-		return (state == PreyTaskDataState_Selection || state == PreyTaskDataState_ListSelection);
-	}
+		bool canSelect() const {
+			return (state == PreyTaskDataState_Selection || state == PreyTaskDataState_ListSelection);
+		}
 
-	void eraseTask() {
-		upgrade = false;
-		state = PreyTaskDataState_Selection;
-		selectedRaceId = 0;
-		currentKills = 0;
-		rarity = 1;
-	}
+		void eraseTask() {
+			upgrade = false;
+			state = PreyTaskDataState_Selection;
+			selectedRaceId = 0;
+			currentKills = 0;
+			rarity = 1;
+		}
 
-	void removeMonsterType(uint16_t raceId) {
-		raceIdList.erase(std::remove(raceIdList.begin(), raceIdList.end(), raceId), raceIdList.end());
-	}
+		void removeMonsterType(uint16_t raceId) {
+			raceIdList.erase(std::remove(raceIdList.begin(), raceIdList.end(), raceId), raceIdList.end());
+		}
 
-	bool isCreatureOnList(uint16_t raceId) const {
-		auto it = std::find_if(raceIdList.begin(), raceIdList.end(), [raceId](uint16_t it) {
-			return it == raceId;
-		});
+		bool isCreatureOnList(uint16_t raceId) const {
+			auto it = std::find_if(raceIdList.begin(), raceIdList.end(), [raceId](uint16_t it) {
+				return it == raceId;
+			});
 
-		return it != raceIdList.end();
-	}
+			return it != raceIdList.end();
+		}
 
-	void reloadReward();
-	void reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level);
+		void reloadReward();
+		void reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level);
 
-	PreySlot_t id = PreySlot_First;
-	PreyTaskDataState_t state = PreyTaskDataState_Inactive;
+		PreySlot_t id = PreySlot_First;
+		PreyTaskDataState_t state = PreyTaskDataState_Inactive;
 
-	bool upgrade = false;
+		bool upgrade = false;
 
-	uint8_t rarity = 1;
+		uint8_t rarity = 1;
 
-	uint16_t selectedRaceId = 0;
-	uint16_t currentKills = 0;
+		uint16_t selectedRaceId = 0;
+		uint16_t currentKills = 0;
 
-	int64_t disabledUntilTimeStamp = 0;
-	int64_t freeRerollTimeStamp = 0;
+		int64_t disabledUntilTimeStamp = 0;
+		int64_t freeRerollTimeStamp = 0;
 
-	std::vector<uint16_t> raceIdList;
+		std::vector<uint16_t> raceIdList;
 };
 
-class TaskHuntingOption
-{
- public:
-	TaskHuntingOption() = default;
-	virtual ~TaskHuntingOption() = default;
+class TaskHuntingOption {
+	public:
+		TaskHuntingOption() = default;
+		virtual ~TaskHuntingOption() = default;
 
-	PreyTaskDifficult_t difficult = PreyTaskDifficult_None;
-	uint8_t rarity = 1;
+		PreyTaskDifficult_t difficult = PreyTaskDifficult_None;
+		uint8_t rarity = 1;
 
-	uint16_t firstKills = 0;
-	uint16_t secondKills = 0;
+		uint16_t firstKills = 0;
+		uint16_t secondKills = 0;
 
-	uint16_t firstReward = 0;
-	uint16_t secondReward = 0;
+		uint16_t firstReward = 0;
+		uint16_t secondReward = 0;
 };
 
-class IOPrey
-{
-public:
-	IOPrey() = default;
+class IOPrey {
+	public:
+		IOPrey() = default;
 
-	// non-copyable
-	IOPrey(IOPrey const&) = delete;
-	void operator=(IOPrey const&) = delete;
+		// non-copyable
+		IOPrey(const IOPrey &) = delete;
+		void operator=(const IOPrey &) = delete;
 
-	static IOPrey& getInstance() {
-		// Guaranteed to be destroyed
-		static IOPrey instance;
-		// Instantiated on first use
-		return instance;
-	}
+		static IOPrey &getInstance() {
+			// Guaranteed to be destroyed
+			static IOPrey instance;
+			// Instantiated on first use
+			return instance;
+		}
 
-	void CheckPlayerPreys(Player* player, uint8_t amount) const;
-	void ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const;
+		void CheckPlayerPreys(Player* player, uint8_t amount) const;
+		void ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const;
 
-	void ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const;
+		void ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const;
 
-	void InitializeTaskHuntOptions();
-	TaskHuntingOption* GetTaskRewardOption(const TaskHuntingSlot* slot) const;
+		void InitializeTaskHuntOptions();
+		TaskHuntingOption* GetTaskRewardOption(const TaskHuntingSlot* slot) const;
 
-	std::vector<TaskHuntingOption*> GetTaskOptions() const {
-		return taskOption;
-	}
+		std::vector<TaskHuntingOption*> GetTaskOptions() const {
+			return taskOption;
+		}
 
-	NetworkMessage GetTaskHuntingBaseDate() const {
-		return baseDataMessage;
-	}
+		NetworkMessage GetTaskHuntingBaseDate() const {
+			return baseDataMessage;
+		}
 
-	NetworkMessage baseDataMessage;
-	std::vector<TaskHuntingOption*> taskOption;
+		NetworkMessage baseDataMessage;
+		std::vector<TaskHuntingOption*> taskOption;
 };
 
 constexpr auto g_ioprey = &IOPrey::getInstance;
 
-#endif  // SRC_IO_IOPREY_H_
+#endif // SRC_IO_IOPREY_H_

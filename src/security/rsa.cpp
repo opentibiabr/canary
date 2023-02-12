@@ -5,22 +5,20 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
 #include "security/rsa.h"
 
-RSA::RSA()
-{
+RSA::RSA() {
 	mpz_init(n);
 	mpz_init2(d, 1024);
 }
 
 RSA::~RSA() = default;
 
-void RSA::setKey(const char* pString, const char* qString, int base/* = 10*/)
-{
+void RSA::setKey(const char* pString, const char* qString, int base /* = 10*/) {
 	mpz_t p;
 	mpz_t q;
 	mpz_t e;
@@ -63,8 +61,7 @@ void RSA::setKey(const char* pString, const char* qString, int base/* = 10*/)
 	mpz_clear(e);
 }
 
-void RSA::decrypt(char* msg) const 
-{
+void RSA::decrypt(char* msg) const {
 	mpz_t c;
 	mpz_t m;
 	mpz_init2(c, 1024);
@@ -83,8 +80,7 @@ void RSA::decrypt(char* msg) const
 	mpz_clear(m);
 }
 
-std::string RSA::base64Decrypt(const std::string& input) const
-{
+std::string RSA::base64Decrypt(const std::string &input) const {
 	auto posOfCharacter = [](const uint8_t chr) -> uint16_t {
 		if (chr >= 'A' && chr <= 'Z') {
 			return chr - 'A';
@@ -132,16 +128,14 @@ static const std::string footer_old = "-----END RSA PRIVATE KEY-----";
 static const std::string header_new = "-----BEGIN PRIVATE KEY-----";
 static const std::string footer_new = "-----END PRIVATE KEY-----";
 
-enum
-{
+enum {
 	CRYPT_RSA_ASN1_SEQUENCE = 48,
 	CRYPT_RSA_ASN1_INTEGER = 2,
 	CRYPT_RSA_ASN1_OBJECT = 6,
 	CRYPT_RSA_ASN1_BITSTRING = 3
 };
 
-uint16_t RSA::decodeLength(char*& pos) const
-{
+uint16_t RSA::decodeLength(char*&pos) const {
 	std::string buffer;
 	auto length = static_cast<uint16_t>(static_cast<uint8_t>(*pos++));
 	if (length & 0x80) {
@@ -152,36 +146,33 @@ uint16_t RSA::decodeLength(char*& pos) const
 		}
 		buffer[0] = buffer[1] = buffer[2] = buffer[3] = 0;
 		switch (length) {
-		case 4:
-			buffer[3] = static_cast<uint8_t>(*pos++);
-		case 3:
-			buffer[2] = static_cast<uint8_t>(*pos++);
-		case 2:
-			buffer[1] = static_cast<uint8_t>(*pos++);
-		case 1:
-			buffer[0] = static_cast<uint8_t>(*pos++);
-		default:
-			break;
+			case 4:
+				buffer[3] = static_cast<uint8_t>(*pos++);
+			case 3:
+				buffer[2] = static_cast<uint8_t>(*pos++);
+			case 2:
+				buffer[1] = static_cast<uint8_t>(*pos++);
+			case 1:
+				buffer[0] = static_cast<uint8_t>(*pos++);
+			default:
+				break;
 		}
 		std::memcpy(&length, buffer.data(), sizeof(length));
 	}
 	return length;
 }
 
-void RSA::readHexString(char*& pos, uint16_t length, std::string& output) const
-{
+void RSA::readHexString(char*&pos, uint16_t length, std::string &output) const {
 	output.reserve(static_cast<size_t>(length) * 2);
-	for (uint16_t i = 0; i < length; ++i)
-	{
+	for (uint16_t i = 0; i < length; ++i) {
 		auto hex = static_cast<uint8_t>(*pos++);
 		output.push_back("0123456789ABCDEF"[(hex >> 4) & 15]);
 		output.push_back("0123456789ABCDEF"[hex & 15]);
 	}
 }
 
-bool RSA::loadPEM(const std::string& filename)
-{
-	std::ifstream file{ filename };
+bool RSA::loadPEM(const std::string &filename) {
+	std::ifstream file { filename };
 	if (!file.is_open()) {
 		return false;
 	}
@@ -189,7 +180,8 @@ bool RSA::loadPEM(const std::string& filename)
 	std::string key;
 	std::string pString;
 	std::string qString;
-	for (std::string line; std::getline(file, line); key.append(line));
+	for (std::string line; std::getline(file, line); key.append(line))
+		;
 
 	if (key.compare(0, header_old.size(), header_old) == 0) {
 		if (key.compare(key.size() - footer_old.size(), footer_old.size(), footer_old) != 0) {
@@ -257,7 +249,7 @@ bool RSA::loadPEM(const std::string& filename)
 	length = decodeLength(pos);
 	pos += length;
 	if (length != 1 || static_cast<uint8_t>(*pos) > 2) {
-		//public key - we don't have any interest in it
+		// public key - we don't have any interest in it
 		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}

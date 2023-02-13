@@ -1500,7 +1500,7 @@ void Tile::internalAddThing(uint32_t, Thing* thing) {
 	}
 }
 
-void Tile::updateTileFlags(Item* item) {
+void Tile::updateTileFlags(const Item* item) {
 	resetTileFlags(item);
 	setTileFlags(item);
 }

@@ -160,8 +160,8 @@ retry:
 }
 
 std::string Database::escapeString(const std::string &s) const {
-	std::string::size_type length = s.length();
-	// uint32_t length = static_cast<uint32_t>(len);
+	std::string::size_type len = s.length();
+	uint32_t length = static_cast<uint32_t>(len);
 	std::string escaped = escapeBlob(s.c_str(), length);
 	if (escaped.empty()) {
 		SPDLOG_ERROR("Error escaping string");
@@ -170,7 +170,6 @@ std::string Database::escapeString(const std::string &s) const {
 }
 
 std::string Database::escapeBlob(const char* s, uint32_t length) const {
-	// the worst case is 2n + 1
 	size_t maxLength = (length * 2) + 1;
 
 	std::string escaped;

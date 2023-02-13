@@ -81,7 +81,7 @@ void CustomAttribute::pushToLua(lua_State* L) const {
 	if (hasValue<std::string>()) {
 		LuaScriptInterface::pushString(L, getString());
 	} else if (hasValue<int64_t>()) {
-		lua_pushnumber(L, getAttribute<lua_Number>());
+		lua_pushnumber(L, static_cast<lua_Number>(getAttribute<int64_t>()));
 	} else if (hasValue<double>()) {
 		lua_pushnumber(L, getDouble());
 	} else if (hasValue<bool>()) {

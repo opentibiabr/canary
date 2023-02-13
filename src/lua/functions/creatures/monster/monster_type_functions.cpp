@@ -9,9 +9,10 @@
 
 #include "pch.hpp"
 
+#include "game/game.h"
+#include "io/io_bosstiary.hpp"
 #include "creatures/combat/spells.h"
 #include "creatures/monsters/monsters.h"
-#include "game/game.h"
 #include "lua/functions/creatures/monster/monster_type_functions.hpp"
 #include "lua/scripts/scripts.h"
 
@@ -1476,5 +1477,71 @@ int MonsterTypeFunctions::luaMonsterTypeRespawnTypeIsUnderground(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeBossRace(lua_State* L) {
+	// set: monsterType:bosstiaryRace(raceId, class)
+	// get: monsterType:bosstiaryRace() = this return only class name
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (!monsterType) {
+		pushBoolean(L, false);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));
+		return 0;
+	}
+
+	if (lua_gettop(L) == 1) {
+		pushString(L, monsterType->info.bosstiaryClass);
+	} else {
+		auto bossRace = getNumber<uint8_t>(L, 2, 0);
+		auto bossClass = getString(L, 3);
+		monsterType->info.bosstiaryRace = magic_enum::enum_value<BosstiaryRarity_t>(bossRace);
+		monsterType->info.bosstiaryClass = bossClass;
+		pushBoolean(L, true);
+	}
+
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeBossRaceId(lua_State* L) {
+	// set: monsterType:bossRaceId(raceId)
+	// get: monsterType:bossRaceId()
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (!monsterType) {
+		pushBoolean(L, false);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));
+		return 0;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.bossRaceId));
+	} else {
+		auto raceId = getNumber<uint16_t>(L, 2, 0);
+		monsterType->info.bossRaceId = raceId;
+		g_ioBosstiary().addBosstiaryMonster(raceId, monsterType->name);
+		pushBoolean(L, true);
+	}
+
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeBossStorageCooldown(lua_State* L) {
+	// set: monsterType:bossStorageCooldown(storage)
+	// get: monsterType:bossStorageCooldown()
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (!monsterType) {
+		pushBoolean(L, false);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));
+		return 0;
+	}
+
+	auto bossStorageCooldown = getNumber<uint32_t>(L, 2, 0);
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.bossStorageCooldown));
+	} else {
+		monsterType->info.bossStorageCooldown = bossStorageCooldown;
+		pushBoolean(L, true);
+	}
+
 	return 1;
 }

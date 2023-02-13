@@ -103,13 +103,10 @@ class Player final : public Creature, public Cylinder {
 			return this;
 		}
 
-		void setID() override {
-			if (id == 0) {
-				if (guid != 0) {
-					id = 0x10000000 + guid;
-				}
-			}
-		}
+		void setID() override;
+
+		static uint32_t getFirstID();
+		static uint32_t getLastID();
 
 		static MuteCountMap muteCountMap;
 
@@ -654,9 +651,9 @@ class Player final : public Creature, public Cylinder {
 		void addConditionSuppressions(uint32_t conditions);
 		void removeConditionSuppressions(uint32_t conditions);
 
-		Reward* getReward(uint32_t rewardId, bool autoCreate);
-		void removeReward(uint32_t rewardId);
-		void getRewardList(std::vector<uint32_t> &rewards);
+		std::shared_ptr<Reward> getReward(const uint64_t rewardId, const bool autoCreate);
+		void removeReward(uint64_t rewardId);
+		void getRewardList(std::vector<uint64_t> &rewards) const;
 		RewardChest* getRewardChest();
 
 		DepotChest* getDepotChest(uint32_t depotId, bool autoCreate);
@@ -2214,7 +2211,61 @@ class Player final : public Creature, public Cylinder {
 
 		std::map<uint16_t, Item*> getEquippedItemsWithEnabledAbilitiesBySlot() const;
 
+		void setBossPoints(uint32_t amount) {
+			bossPoints = amount;
+		}
+		void addBossPoints(uint32_t amount) {
+			bossPoints += amount;
+		}
+		void removeBossPoints(uint32_t amount) {
+			bossPoints = std::max<uint32_t>(0, bossPoints - amount);
+		}
+		uint32_t getBossPoints() const {
+			return bossPoints;
+		}
+
+		void setSlotBossId(uint8_t slotId, uint32_t bossId) {
+			if (slotId == 1)
+				bossIdSlotOne = bossId;
+			else
+				bossIdSlotTwo = bossId;
+			if (client) {
+				client->parseSendBosstiarySlots();
+			}
+		}
+		uint32_t getSlotBossId(uint8_t slotId) const {
+			if (slotId == 1)
+				return bossIdSlotOne;
+			else
+				return bossIdSlotTwo;
+		}
+
+		void addRemoveTime() {
+			bossRemoveTimes = bossRemoveTimes + 1;
+		}
+		void setRemoveBossTime(uint8_t newRemoveTimes) {
+			bossRemoveTimes = newRemoveTimes;
+		}
+		uint8_t getRemoveTimes() const {
+			return bossRemoveTimes;
+		}
+
+		void sendBossPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackpos) const {
+			if (client) {
+				client->sendBossPodiumWindow(podium, position, itemId, stackpos);
+			}
+		}
+
+		void sendBosstiaryEntryChanged(uint32_t bossid) {
+			if (client) {
+				client->sendBosstiaryEntryChanged(bossid);
+			}
+		}
+
 	private:
+		static uint32_t playerFirstID;
+		static uint32_t playerLastID;
+
 		std::forward_list<Condition*> getMuteConditions() const;
 
 		void checkTradeState(const Item* item);
@@ -2299,7 +2350,7 @@ class Player final : public Creature, public Cylinder {
 			{ SKILL_CRITICAL_HIT_CHANCE, g_configManager().getNumber(CRITICALCHANCE) }
 		};
 
-		std::map<uint32_t, Reward*> rewardMap;
+		std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 
 		std::map<ObjectCategory_t, Container*> quickLootContainers;
 		std::vector<ForgeHistory> forgeHistoryVector;
@@ -2340,6 +2391,10 @@ class Player final : public Creature, public Cylinder {
 		uint64_t lastQuestlogUpdate = 0;
 		uint64_t preyCards = 0;
 		uint64_t taskHuntingPoints = 0;
+		uint32_t bossPoints = 0;
+		uint32_t bossIdSlotOne = 0;
+		uint32_t bossIdSlotTwo = 0;
+		uint8_t bossRemoveTimes = 1;
 		uint64_t forgeDusts = 0;
 		uint64_t forgeDustLevel = 0;
 		int64_t lastFailedFollow = 0;
@@ -2487,8 +2542,6 @@ class Player final : public Creature, public Cylinder {
 		bool moved = false;
 		bool dead = false;
 
-		static uint32_t playerAutoID;
-
 		void updateItemsLight(bool internal = false);
 		uint16_t getStepSpeed() const override {
 			return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));
@@ -2562,6 +2615,9 @@ class Player final : public Creature, public Cylinder {
 		void updateDamageReductionFromItemImbuement(std::array<double_t, COMBAT_COUNT> &combatReductionMap, Item* item, uint16_t combatTypeIndex) const;
 		void updateDamageReductionFromItemAbility(std::array<double_t, COMBAT_COUNT> &combatReductionMap, const Item* item, uint16_t combatTypeIndex) const;
 		double_t calculateDamageReduction(double_t currentTotal, int16_t resistance) const;
+
+		void removeEmptyRewards();
+		bool hasAnykindOfRewardContainerOpen() const;
 };
 
 #endif // SRC_CREATURES_PLAYERS_PLAYER_H_

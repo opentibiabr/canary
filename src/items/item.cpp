@@ -446,8 +446,8 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 		}
 
 		case ATTR_WRITTENDATE: {
-			uint32_t writtenDate;
-			if (!propStream.read<uint32_t>(writtenDate)) {
+			uint64_t writtenDate;
+			if (!propStream.read<uint64_t>(writtenDate)) {
 				return ATTR_READ_ERROR;
 			}
 
@@ -826,9 +826,9 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.writeString(text);
 	}
 
-	if (const uint32_t writtenDate = getAttribute<uint32_t>(ItemAttribute_t::DATE)) {
+	if (const uint64_t writtenDate = getAttribute<uint64_t>(ItemAttribute_t::DATE)) {
 		propWriteStream.write<uint8_t>(ATTR_WRITTENDATE);
-		propWriteStream.write<uint32_t>(writtenDate);
+		propWriteStream.write<uint64_t>(writtenDate);
 	}
 
 	const std::string &writer = getString(ItemAttribute_t::WRITER);

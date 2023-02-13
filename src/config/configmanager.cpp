@@ -297,6 +297,10 @@ bool ConfigManager::load() {
 	integer[TASK_HUNTING_BONUS_REROLL_PRICE] = getGlobalNumber(L, "taskHuntingBonusRerollPrice", 1);
 	integer[TASK_HUNTING_FREE_REROLL_TIME] = getGlobalNumber(L, "taskHuntingFreeRerollTime", 72000);
 
+	boolean[BOOSTED_BOSS_SLOT] = getGlobalBoolean(L, "boostedBossSlot", true);
+	integer[BOOSTED_BOSS_LOOT_BONUS] = getGlobalNumber(L, "boostedBossLootBonus", 250);
+	integer[BOOSTED_BOSS_KILL_BONUS] = getGlobalNumber(L, "boostedBossKillBonus", 3);
+
 	loaded = true;
 	lua_close(L);
 	return true;

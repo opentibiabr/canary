@@ -1183,7 +1183,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 			for (uint8_t i = 0; i < item->getImbuementSlot(); ++i) {
 				slotName = fmt::format("Imbuement Slot {}", i + 1);
 				ss.str("");
-				const auto& castItem = item;
+				const auto &castItem = item;
 				if (!castItem) {
 					continue;
 				}

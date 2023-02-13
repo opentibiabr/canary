@@ -764,19 +764,6 @@ function unserializeTable(str, out)
 	return table.copy(tmp, out)
 end
 
-local function setTableIndexes(t, i, v, ...)
-	if i and v then
-		t[i] = v
-		return setTableIndexes(t, ...)
-	end
-end
-
-local function getTableIndexes(t, i, ...)
-	if i then
-		return t[i], getTableIndexes(t, ...)
-	end
-end
-
 function unpack2(tab, i)
 	local i, v = next(tab, i)
 	if next(tab, i) then
@@ -792,37 +779,6 @@ function pack(t, ...)
 		t[i] = tmp
 	end
 	return t
-end
-
-function Item:setSpecialAttribute(...)
-	local tmp
-	if self:hasAttribute(ITEM_ATTRIBUTE_SPECIAL) then
-		tmp = self:getAttribute(ITEM_ATTRIBUTE_SPECIAL)
-	else
-		tmp = "{}"
-	end
-
-	local tab = unserializeTable(tmp)
-	if tab then
-		setTableIndexes(tab, ...)
-		tmp = serializeTable(tab)
-		self:setAttribute(ITEM_ATTRIBUTE_SPECIAL, tmp)
-		return true
-	end
-end
-
-function Item:getSpecialAttribute(...)
-	local tmp
-	if self:hasAttribute(ITEM_ATTRIBUTE_SPECIAL) then
-		tmp = self:getAttribute(ITEM_ATTRIBUTE_SPECIAL)
-	else
-		tmp = "{}"
-	end
-
-	local tab = unserializeTable(tmp)
-	if tab then
-		return getTableIndexes(tab, ...)
-	end
 end
 
 if not PLAYER_STORAGE then

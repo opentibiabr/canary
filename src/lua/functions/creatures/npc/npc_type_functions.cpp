@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -14,11 +14,11 @@
 #include "lua/scripts/scripts.h"
 #include "game/game.h"
 
-void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock>& shopVector) {
+void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock> &shopVector) {
 	lua_createtable(L, shopVector.size(), 0);
 
 	int index = 0;
-	for (const auto& shopBlock : shopVector) {
+	for (const auto &shopBlock : shopVector) {
 		lua_createtable(L, 0, 5);
 
 		setField(L, "itemId", shopBlock.itemId);
@@ -78,11 +78,10 @@ int NpcTypeFunctions::luaNpcTypeFloorChange(lua_State* L) {
 int NpcTypeFunctions::luaNpcTypeCanSpawn(lua_State* L) {
 	// monsterType:canSpawn(pos)
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
-	const Position& position = getPosition(L, 2);
+	const Position &position = getPosition(L, 2);
 	if (npcType) {
 		pushBoolean(L, npcType->canSpawn(position));
-	}
-	else {
+	} else {
 		lua_pushnil(L);
 	}
 	return 1;
@@ -229,7 +228,7 @@ int NpcTypeFunctions::luaNpcTypeGetVoices(lua_State* L) {
 
 	int index = 0;
 	lua_createtable(L, npcType->info.voiceVector.size(), 0);
-	for (const auto& voiceBlock : npcType->info.voiceVector) {
+	for (const auto &voiceBlock : npcType->info.voiceVector) {
 		lua_createtable(L, 0, 2);
 		setField(L, "text", voiceBlock.text);
 		setField(L, "yellText", voiceBlock.yellText);
@@ -248,7 +247,7 @@ int NpcTypeFunctions::luaNpcTypeGetCreatureEvents(lua_State* L) {
 
 	int index = 0;
 	lua_createtable(L, npcType->info.scripts.size(), 0);
-	for (const std::string& creatureEvent : npcType->info.scripts) {
+	for (const std::string &creatureEvent : npcType->info.scripts) {
 		pushString(L, creatureEvent);
 		lua_rawseti(L, -2, ++index);
 	}
@@ -281,7 +280,7 @@ int NpcTypeFunctions::luaNpcTypeEventOnCallback(lua_State* L) {
 		if (npcType->loadCallback(&g_scripts().getScriptInterface())) {
 			pushBoolean(L, true);
 			return 1;
-		 }
+		}
 		pushBoolean(L, false);
 	} else {
 		lua_pushnil(L);
@@ -397,11 +396,11 @@ int NpcTypeFunctions::luaNpcTypeYellChance(lua_State* L) {
 	if (npcType) {
 		if (lua_gettop(L) == 1) {
 			if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, npcType->info.yellChance);
-		} else {
-			npcType->info.yellChance = getNumber<uint32_t>(L, 2);
-			pushBoolean(L, true);
-		}
+				lua_pushnumber(L, npcType->info.yellChance);
+			} else {
+				npcType->info.yellChance = getNumber<uint32_t>(L, 2);
+				pushBoolean(L, true);
+			}
 		} else {
 			npcType->info.yellChance = getNumber<uint32_t>(L, 2);
 			pushBoolean(L, true);

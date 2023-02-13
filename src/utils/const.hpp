@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_UTILS_CONST_H_
 #define SRC_UTILS_CONST_H_
@@ -16,9 +16,7 @@ const uint32_t MAX_STATICWALK = 100;
 static constexpr size_t NETWORKMESSAGE_PLAYERNAME_MAXLENGTH = 30;
 static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 65500;
 
-// QT clients probably have bigger input buffer because of exiva options
-// But for now we don't support exiva options
-static constexpr int32_t INPUTMESSAGE_MAXSIZE = 2048;
+static constexpr int32_t INPUTMESSAGE_MAXSIZE = 4096;
 
 static constexpr int32_t CHANNEL_GUILD = 0x00;
 static constexpr int32_t CHANNEL_PARTY = 0x01;
@@ -30,6 +28,7 @@ static constexpr uint8_t IMBUEMENT_MAX_TIER = 3;
 
 static constexpr int32_t STORAGEVALUE_PROMOTION = 30018;
 static constexpr int32_t STORAGEVALUE_EMOTE = 30019;
+static constexpr int32_t STORAGEVALUE_PODIUM = 30020;
 static constexpr int32_t STORAGEVALUE_DAILYREWARD = 14898;
 static constexpr int32_t STORAGEVALUE_BESTIARYKILLCOUNT = 61305000; // Can get up to 2000 storages!
 // Reserved player storage key ranges;
@@ -48,7 +47,6 @@ static constexpr int32_t PSTRG_FAMILIARS_RANGE_START = (PSTRG_RESERVED_RANGE_STA
 static constexpr int32_t PSTRG_FAMILIARS_RANGE_SIZE = 500;
 
 #define IS_IN_KEYRANGE(key, range) \
-    (key >= PSTRG_##range##_START && \
-    ((key - PSTRG_##range##_START) <= PSTRG_##range##_SIZE))
+	(key >= PSTRG_##range##_START && ((key - PSTRG_##range##_START) <= PSTRG_##range##_SIZE))
 
-#endif  // SRC_UTILS_CONST_H_
+#endif // SRC_UTILS_CONST_H_

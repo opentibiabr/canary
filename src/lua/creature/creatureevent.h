@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_CREATURE_CREATUREEVENT_H_
 #define SRC_LUA_CREATURE_CREATUREEVENT_H_
@@ -27,10 +27,10 @@ class CreatureEvent final : public Script {
 		void setEventType(CreatureEventType_t eventType) {
 			type = eventType;
 		}
-		const std::string& getName() const {
+		const std::string &getName() const {
 			return eventName;
 		}
-		void setName(const std::string& name) {
+		void setName(const std::string &name) {
 			eventName = name;
 		}
 		bool isLoaded() const {
@@ -43,7 +43,7 @@ class CreatureEvent final : public Script {
 		void clearEvent();
 		void copyEvent(const CreatureEvent* creatureEvent);
 
-		//scripting
+		// scripting
 		bool executeOnLogin(Player* player) const;
 		bool executeOnLogout(Player* player) const;
 		bool executeOnThink(Creature* creature, uint32_t interval) const;
@@ -52,10 +52,10 @@ class CreatureEvent final : public Script {
 		void executeOnKill(Creature* creature, Creature* target, bool lastHit) const;
 		bool executeAdvance(Player* player, skills_t, uint32_t, uint32_t) const;
 		void executeModalWindow(Player* player, uint32_t modalWindowId, uint8_t buttonId, uint8_t choiceId) const;
-		bool executeTextEdit(Player* player, Item* item, const std::string& text) const;
-		void executeHealthChange(Creature* creature, Creature* attacker, CombatDamage& damage) const;
-		void executeManaChange(Creature* creature, Creature* attacker, CombatDamage& damage) const;
-		void executeExtendedOpcode(Player* player, uint8_t opcode, const std::string& buffer) const;
+		bool executeTextEdit(Player* player, Item* item, const std::string &text) const;
+		void executeHealthChange(Creature* creature, Creature* attacker, CombatDamage &damage) const;
+		void executeManaChange(Creature* creature, Creature* attacker, CombatDamage &damage) const;
+		void executeExtendedOpcode(Player* player, uint8_t opcode, const std::string &buffer) const;
 		//
 
 	private:
@@ -71,10 +71,10 @@ class CreatureEvents final : public Scripts {
 		CreatureEvents() = default;
 
 		// non-copyable
-		CreatureEvents(const CreatureEvents&) = delete;
-		CreatureEvents& operator=(const CreatureEvents&) = delete;
+		CreatureEvents(const CreatureEvents &) = delete;
+		CreatureEvents &operator=(const CreatureEvents &) = delete;
 
-		static CreatureEvents& getInstance() {
+		static CreatureEvents &getInstance() {
 			// Guaranteed to be destroyed
 			static CreatureEvents instance;
 			// Instantiated on first use
@@ -86,18 +86,18 @@ class CreatureEvents final : public Scripts {
 		bool playerLogout(Player* player) const;
 		bool playerAdvance(Player* player, skills_t, uint32_t, uint32_t) const;
 
-		CreatureEvent* getEventByName(const std::string& name, bool forceLoaded = true);
+		CreatureEvent* getEventByName(const std::string &name, bool forceLoaded = true);
 
 		bool registerLuaEvent(CreatureEvent* event);
 		void removeInvalidEvents();
 		void clear();
 
 	private:
-		//creature events
+		// creature events
 		using CreatureEventMap = std::map<std::string, CreatureEvent>;
 		CreatureEventMap creatureEvents;
 };
 
 constexpr auto g_creatureEvents = &CreatureEvents::getInstance;
 
-#endif  // SRC_LUA_CREATURE_CREATUREEVENT_H_
+#endif // SRC_LUA_CREATURE_CREATUREEVENT_H_

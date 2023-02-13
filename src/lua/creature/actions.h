@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_CREATURE_ACTIONS_H_
 #define SRC_LUA_CREATURE_ACTIONS_H_
@@ -24,9 +24,7 @@ class Action : public Script {
 		explicit Action(LuaScriptInterface* interface);
 
 		// Scripting
-		virtual bool executeUse(Player* player, Item* item,
-                                const Position& fromPosition, Thing* target,
-                                const Position& toPosition, bool isHotkey);
+		virtual bool executeUse(Player* player, Item* item, const Position &fromPosition, Thing* target, const Position &toPosition, bool isHotkey);
 
 		bool getAllowFarUse() const {
 			return allowFarUse;
@@ -86,11 +84,12 @@ class Action : public Script {
 
 		bool hasPosition(Position position) {
 			return std::ranges::find_if(positions.begin(), positions.end(), [position](Position storedPosition) {
-				if (storedPosition == position) {
-					return true;
-				}
-				return false;
-			}) != positions.end();
+					   if (storedPosition == position) {
+						   return true;
+					   }
+					   return false;
+				   })
+				!= positions.end();
 		}
 
 		std::vector<Position> getPositions() const {
@@ -100,15 +99,13 @@ class Action : public Script {
 			positions.emplace_back(pos);
 		}
 
-		virtual ReturnValue canExecuteAction(const Player* player,
-                                             const Position& toPos);
+		virtual ReturnValue canExecuteAction(const Player* player, const Position &toPos);
 
 		virtual bool hasOwnErrorHandler() {
 			return false;
 		}
 
-		virtual Thing* getTarget(Player* player, Creature* targetCreature,
-						const Position& toPosition, uint8_t toStackPos) const;
+		virtual Thing* getTarget(Player* player, Creature* targetCreature, const Position &toPosition, uint8_t toStackPos) const;
 
 	private:
 		std::string getScriptTypeName() const override {
@@ -117,9 +114,10 @@ class Action : public Script {
 
 		std::function<bool(
 			Player* player, Item* item,
-			const Position& fromPosition, Thing* target,
-			const Position& toPosition, bool isHotkey
-		)> useFunction = nullptr;
+			const Position &fromPosition, Thing* target,
+			const Position &toPosition, bool isHotkey
+		)>
+			useFunction = nullptr;
 
 		// Atributes
 		bool allowFarUse = false;
@@ -141,22 +139,22 @@ class Actions final : public Scripts {
 		~Actions();
 
 		// non-copyable
-		Actions(const Actions&) = delete;
-		Actions& operator=(const Actions&) = delete;
+		Actions(const Actions &) = delete;
+		Actions &operator=(const Actions &) = delete;
 
-		static Actions& getInstance() {
+		static Actions &getInstance() {
 			// Guaranteed to be destroyed
 			static Actions instance;
 			// Instantiated on first use
 			return instance;
 		}
 
-		bool useItem(Player* player, const Position& pos, uint8_t index, Item* item, bool isHotkey);
-		bool useItemEx(Player* player, const Position& fromPos, const Position& toPos, uint8_t toStackPos, Item* item, bool isHotkey, Creature* creature = nullptr);
+		bool useItem(Player* player, const Position &pos, uint8_t index, Item* item, bool isHotkey);
+		bool useItemEx(Player* player, const Position &fromPos, const Position &toPos, uint8_t toStackPos, Item* item, bool isHotkey, Creature* creature = nullptr);
 
-		ReturnValue canUse(const Player* player, const Position& pos);
-		ReturnValue canUse(const Player* player, const Position& pos, const Item* item);
-		ReturnValue canUseFar(const Creature* creature, const Position& toPos, bool checkLineOfSight, bool checkFloor);
+		ReturnValue canUse(const Player* player, const Position &pos);
+		ReturnValue canUse(const Player* player, const Position &pos, const Item* item);
+		ReturnValue canUseFar(const Creature* creature, const Position &toPos, bool checkLineOfSight, bool checkFloor);
 
 		bool registerLuaItemEvent(Action* action);
 		bool registerLuaUniqueEvent(Action* action);
@@ -169,8 +167,7 @@ class Actions final : public Scripts {
 	private:
 		bool hasPosition(Position position) const {
 			if (auto it = actionPositionMap.find(position);
-			it != actionPositionMap.end())
-			{
+				it != actionPositionMap.end()) {
 				return true;
 			}
 			return false;
@@ -184,11 +181,9 @@ class Actions final : public Scripts {
 			actionPositionMap.try_emplace(position, action);
 		}
 
-
 		bool hasItemId(uint16_t itemId) const {
 			if (auto it = useItemMap.find(itemId);
-			it != useItemMap.end())
-			{
+				it != useItemMap.end()) {
 				return true;
 			}
 			return false;
@@ -200,8 +195,7 @@ class Actions final : public Scripts {
 
 		bool hasUniqueId(uint16_t uniqueId) const {
 			if (auto it = uniqueItemMap.find(uniqueId);
-			it != uniqueItemMap.end())
-			{
+				it != uniqueItemMap.end()) {
 				return true;
 			}
 			return false;
@@ -213,8 +207,7 @@ class Actions final : public Scripts {
 
 		bool hasActionId(uint16_t actionId) const {
 			if (auto it = actionItemMap.find(actionId);
-			it != actionItemMap.end())
-			{
+				it != actionItemMap.end()) {
 				return true;
 			}
 			return false;
@@ -224,7 +217,7 @@ class Actions final : public Scripts {
 			actionItemMap.try_emplace(actionId, action);
 		}
 
-		ReturnValue internalUseItem(Player* player, const Position& pos, uint8_t index, Item* item, bool isHotkey);
+		ReturnValue internalUseItem(Player* player, const Position &pos, uint8_t index, Item* item, bool isHotkey);
 		static void showUseHotkeyMessage(Player* player, const Item* item, uint32_t count);
 
 		using ActionUseMap = std::map<uint16_t, Action>;
@@ -238,4 +231,4 @@ class Actions final : public Scripts {
 
 constexpr auto g_actions = &Actions::getInstance;
 
-#endif  // SRC_LUA_CREATURE_ACTIONS_H_
+#endif // SRC_LUA_CREATURE_ACTIONS_H_

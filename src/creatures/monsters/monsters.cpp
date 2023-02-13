@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -16,15 +16,13 @@
 #include "game/game.h"
 #include "items/weapons/weapons.h"
 
-spellBlock_t::~spellBlock_t()
-{
+spellBlock_t::~spellBlock_t() {
 	if (combatSpell) {
 		delete spell;
 	}
 }
 
-void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock)
-{
+void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock) {
 	if (lootBlock.childLoot.empty()) {
 		bool isContainer = Item::items[lootBlock.id].isContainer();
 		if (isContainer) {
@@ -38,13 +36,11 @@ void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock)
 	}
 }
 
-bool MonsterType::canSpawn(const Position& pos)
-{
+bool MonsterType::canSpawn(const Position &pos) {
 	bool canSpawn = true;
 	bool isDay = g_game().gameIsDay();
 
-	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) ||
-		(!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
+	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) || (!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
 		// It will ignore day and night if underground
 		canSpawn = (pos.z > MAP_INIT_SURFACE_LAYER && info.respawnType.underground);
 	}
@@ -52,9 +48,7 @@ bool MonsterType::canSpawn(const Position& pos)
 	return canSpawn;
 }
 
-ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType,
-		int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval)
-{
+ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval) {
 	ConditionDamage* condition = static_cast<ConditionDamage*>(Condition::createCondition(CONDITIONID_COMBAT, conditionType, 0, 0));
 	condition->setParam(CONDITION_PARAM_TICKINTERVAL, tickInterval);
 	condition->setParam(CONDITION_PARAM_MINVALUE, minDamage);
@@ -64,8 +58,7 @@ ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType,
 	return condition;
 }
 
-bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std::string& description)
-{
+bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std::string& description) {
 	if (!spell->scriptName.empty()) {
 		spell->isScripted = true;
 	} else if (!spell->name.empty()) {
@@ -109,8 +102,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 	}
 
 	if (std::string spellName = asLowerCaseString(spell->name);
-		spellName == "melee")
-	{
+		spellName == "melee") {
 		sb.isMelee = true;
 
 		if (spell->attack > 0 && spell->skill > 0) {
@@ -142,7 +134,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 		if (spell->speedChange != 0) {
 			speedChange = spell->speedChange;
 			if (speedChange < -1000) {
-				//cant be slower than 100%
+				// Cant be slower than 100%
 				speedChange = -1000;
 			}
 		}
@@ -175,8 +167,8 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 			condition->setOutfit(outfit);
 		} else {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-                         "Missing outfit monster or item in outfit spell for: {}",
-                        description);
+						 "Missing outfit monster or item in outfit spell for: {}",
+						 description);
 			return false;
 		}
 
@@ -210,8 +202,8 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 	} else if (spellName == "condition") {
 		if (spell->conditionType == CONDITION_NONE) {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-                         "{} condition is not set for: {}"
-                         , description, spell->name);
+						 "{} condition is not set for: {}",
+						 description, spell->name);
 		}
 	} else if (spellName == "strength") {
 		//
@@ -219,8 +211,8 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 		//
 	} else {
 		SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-                     "{} unknown or missing parameter on spell with name: {}"
-                     , description, spell->name);
+					 "{} unknown or missing parameter on spell with name: {}",
+					 description, spell->name);
 	}
 
 	if (spell->shoot != CONST_ANI_NONE) {
@@ -267,8 +259,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 	return true;
 }
 
-bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface)
-{
+bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	int32_t id = scriptInterface->getEvent();
 	if (id == -1) {
 		SPDLOG_WARN("[MonsterType::loadCallback] - Event not found");
@@ -290,14 +281,12 @@ bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface)
 	return true;
 }
 
-MonsterType* Monsters::getMonsterType(const std::string& name)
-{
+MonsterType* Monsters::getMonsterType(const std::string &name) {
 	std::string lowerCaseName = asLowerCaseString(name);
 	if (auto it = monsters.find(lowerCaseName);
-	it != monsters.end()
-	// We will only return the MonsterType if it match the exact name of the monster
-	&& it->first.find(lowerCaseName) != it->first.npos)
-	{
+		it != monsters.end()
+		// We will only return the MonsterType if it match the exact name of the monster
+		&& it->first.find(lowerCaseName) != it->first.npos) {
 		return it->second;
 	}
 	SPDLOG_ERROR("[Monsters::getMonsterType] - Monster with name {} not exist", lowerCaseName);
@@ -314,8 +303,7 @@ MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t thisrace) {
 	return (mtype ? mtype : nullptr);
 }
 
-void Monsters::addMonsterType(const std::string& name, MonsterType* mType)
-{
+void Monsters::addMonsterType(const std::string &name, MonsterType* mType) {
 	std::string lowerName = asLowerCaseString(name);
 	monsters[lowerName] = mType;
 }

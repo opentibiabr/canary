@@ -5,13 +5,13 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_UTILS_PUGICAST_H_
 #define SRC_UTILS_PUGICAST_H_
 
 namespace pugi {
-template<typename T>
+	template <typename T>
 	// NOTE: std::clamp returns the minimum value if the value is less than the specified minimum value, the maximum value if the value is greater than the specified maximum value, or the value itself if it falls within the range
 	T cast(const pugi::char_t* str) {
 		// Initialize value to return
@@ -24,7 +24,7 @@ template<typename T>
 		// Convert the string to the specified type
 		const auto [pointer, errorCode] = std::from_chars(str, last, value);
 		// If the conversion was successful and all characters were parsed
-		if (errorCode == std::errc{} && pointer == last) {
+		if (errorCode == std::errc {} && pointer == last) {
 			// Ensure that the converted value is within the valid range for the type
 			value = std::clamp(
 				value,
@@ -48,8 +48,8 @@ template<typename T>
 		}
 
 		// Return a default value if no exception is thrown
-		return T{};
+		return T {};
 	}
 }
 
-#endif  // SRC_UTILS_PUGICAST_H_
+#endif // SRC_UTILS_PUGICAST_H_

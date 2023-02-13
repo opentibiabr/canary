@@ -1,3 +1,24 @@
+local function calculateBonus(bonus)
+	local bonusCount = math.floor(bonus/100)
+	local remainder = bonus % 100
+	if remainder > 0 then
+		local probability = math.random(0, 100)
+		bonusCount = bonusCount + (probability < remainder and 1 or 0)
+	end
+
+	return bonusCount
+end
+
+local function checkItemType(itemId)
+	local itemType = ItemType(itemId):getType()
+	-- Based on enum ItemTypes_t
+	if (itemType > 0 and itemType < 4) or itemType == 7 or itemType == 8 or
+		itemType == 11 or itemType == 13 or (itemType > 15 and itemType < 22) then
+		return true
+	end
+	return false
+end
+
 local bossDeath = CreatureEvent("BossDeath")
 
 function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
@@ -11,7 +32,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 	-- Make sure it is a boss
 	if monsterType and monsterType:isRewardBoss() then
 		local bossId = creature:getId()
-		local timestamp = os.time()
+		local timestamp = systemTime()
 
 		ResetAndSetTargetList(creature)
 
@@ -79,8 +100,37 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 				end
 			end
 
+			-- Bosstiary Loot Bonus
+			local bonus, boostedMessage
+			local isBoostedBoss = creature:getName():lower() == (Game.getBoostedBoss()):lower()
+			local bossRaceIds = {con.player:getSlotBossId(1), con.player:getSlotBossId(2)}
+			local isBoss = table.contains(bossRaceIds, monsterType:bossRaceId()) or isBoostedBoss
+			if isBoss then
+				if monsterType:bossRaceId() == con.player:getSlotBossId(1) then
+					bonus = con.player:getBossBonus(1)
+				elseif monsterType:bossRaceId() == con.player:getSlotBossId(2) then
+					bonus = con.player:getBossBonus(2)
+				else
+					bonus = configManager.getNumber(configKeys.BOOSTED_BOSS_LOOT_BONUS)
+				end
+
+				for _, p in ipairs(playerLoot) do
+					local isValidItem = checkItemType(p[1])
+					if isValidItem then
+						local realBonus = calculateBonus(bonus)
+						for _ = 1, realBonus do
+							reward:addItem(p[1], p[2])
+							boostedMessage = true
+						end
+					end
+				end
+			end
+
 			if con.player and con.score ~= 0 then
 				local lootMessage = ("The following items dropped by %s are available in your reward chest: %s"):format(creature:getName(), reward:getContentDescription())
+				if boostedMessage then
+					lootMessage = lootMessage .. " (Boss bonus)"
+				end
 
 				if stamina > 840 then
 					reward:getContentDescription(lootMessage)

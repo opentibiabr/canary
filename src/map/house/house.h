@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_MAP_HOUSE_HOUSE_H_
 #define SRC_MAP_HOUSE_HOUSE_H_
@@ -19,17 +19,16 @@ class House;
 class BedItem;
 class Player;
 
-class AccessList
-{
+class AccessList {
 	public:
-		void parseList(const std::string& list);
-		void addPlayer(const std::string& name);
-		void addGuild(const std::string& name);
-		void addGuildRank(const std::string& name, const std::string& rankName);
+		void parseList(const std::string &list);
+		void addPlayer(const std::string &name);
+		void addGuild(const std::string &name);
+		void addGuildRank(const std::string &name, const std::string &rankName);
 
 		bool isInList(const Player* player);
 
-		void getList(std::string& list) const;
+		void getList(std::string &list) const;
 
 	private:
 		std::string list;
@@ -38,14 +37,13 @@ class AccessList
 		bool allowEveryone = false;
 };
 
-class Door final : public Item
-{
+class Door final : public Item {
 	public:
 		explicit Door(uint16_t type);
 
 		// non-copyable
-		Door(const Door&) = delete;
-		Door& operator=(const Door&) = delete;
+		Door(const Door &) = delete;
+		Door &operator=(const Door &) = delete;
 
 		Door* getDoor() override {
 			return this;
@@ -58,21 +56,21 @@ class Door final : public Item
 			return house;
 		}
 
-		//serialization
-		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
-		void serializeAttr(PropWriteStream&) const override {}
+		// serialization
+		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
+		void serializeAttr(PropWriteStream &) const override { }
 
 		void setDoorId(uint32_t doorId) {
-			setIntAttr(ITEM_ATTRIBUTE_DOORID, doorId);
+			setAttribute(ItemAttribute_t::DOORID, doorId);
 		}
 		uint32_t getDoorId() const {
-			return getIntAttr(ITEM_ATTRIBUTE_DOORID);
+			return getAttribute<uint32_t>(ItemAttribute_t::DOORID);
 		}
 
 		bool canUse(const Player* player);
 
-		void setAccessList(const std::string& textlist);
-		bool getAccessList(std::string& list) const;
+		void setAccessList(const std::string &textlist);
+		bool getAccessList(std::string &list) const;
 
 		void onRemoved() override;
 
@@ -87,12 +85,12 @@ class Door final : public Item
 using HouseTileList = std::list<HouseTile*>;
 using HouseBedItemList = std::list<BedItem*>;
 
-class HouseTransferItem final : public Item
-{
+class HouseTransferItem final : public Item {
 	public:
 		static HouseTransferItem* createHouseTransferItem(House* house);
 
-		explicit HouseTransferItem(House* newHouse) : Item(0), house(newHouse) {}
+		explicit HouseTransferItem(House* newHouse) :
+			Item(0), house(newHouse) { }
 
 		void onTradeEvent(TradeEvents_t event, Player* owner) override;
 		bool canTransform() const override {
@@ -103,8 +101,7 @@ class HouseTransferItem final : public Item
 		House* house;
 };
 
-class House
-{
+class House {
 	public:
 		explicit House(uint32_t houseId);
 
@@ -115,8 +112,8 @@ class House
 		// listId special = values:
 		// GUEST_LIST = guest list
 		// SUBOWNER_LIST = subowner list
-		void setAccessList(uint32_t listId, const std::string& textlist);
-		bool getAccessList(uint32_t listId, std::string& list) const;
+		void setAccessList(uint32_t listId, const std::string &textlist);
+		bool getAccessList(uint32_t listId, std::string &list) const;
 
 		bool isInvited(const Player* player);
 
@@ -126,14 +123,14 @@ class House
 		void setEntryPos(Position pos) {
 			posEntry = pos;
 		}
-		const Position& getEntryPosition() const {
+		const Position &getEntryPosition() const {
 			return posEntry;
 		}
 
 		void setName(std::string newHouseName) {
 			this->houseName = newHouseName;
 		}
-		const std::string& getName() const {
+		const std::string &getName() const {
 			return houseName;
 		}
 
@@ -177,26 +174,26 @@ class House
 		void addDoor(Door* door);
 		void removeDoor(Door* door);
 		Door* getDoorByNumber(uint32_t doorId) const;
-		Door* getDoorByPosition(const Position& pos);
+		Door* getDoorByPosition(const Position &pos);
 
 		HouseTransferItem* getTransferItem();
 		void resetTransferItem();
 		bool executeTransfer(HouseTransferItem* item, Player* player);
 
-		const HouseTileList& getTiles() const {
+		const HouseTileList &getTiles() const {
 			return houseTiles;
 		}
 
-		const std::list<Door*>& getDoors() const {
+		const std::list<Door*> &getDoors() const {
 			return doorList;
 		}
 
 		void addBed(BedItem* bed);
-		const HouseBedItemList& getBeds() const {
+		const HouseBedItemList &getBeds() const {
 			return bedsList;
 		}
 		uint32_t getBedCount() {
-			return static_cast<uint32_t>(std::ceil(bedsList.size() / 2.)); //each bed takes 2 sqms of space, ceil is just for bad maps
+			return static_cast<uint32_t>(std::ceil(bedsList.size() / 2.)); // each bed takes 2 sqms of space, ceil is just for bad maps
 		}
 
 	private:
@@ -206,7 +203,7 @@ class House
 		AccessList guestList;
 		AccessList subOwnerList;
 
-		Container transfer_container{ITEM_LOCKER};
+		Container transfer_container { ITEM_LOCKER };
 
 		HouseTileList houseTiles;
 		std::list<Door*> doorList;
@@ -229,23 +226,25 @@ class House
 		Position posEntry = {};
 
 		bool isLoaded = false;
+
+		void handleContainer(ItemList &moveItemList, Item* item) const;
+		void handleWrapableItem(ItemList &moveItemList, Item* item) const;
 };
 
 using HouseMap = std::map<uint32_t, House*>;
 
-class Houses
-{
+class Houses {
 	public:
 		Houses() = default;
 		~Houses() {
-			for (const auto& it : houseMap) {
+			for (const auto &it : houseMap) {
 				delete it.second;
 			}
 		}
 
 		// non-copyable
-		Houses(const Houses&) = delete;
-		Houses& operator=(const Houses&) = delete;
+		Houses(const Houses &) = delete;
+		Houses &operator=(const Houses &) = delete;
 
 		House* addHouse(uint32_t id) {
 			auto it = houseMap.find(id);
@@ -268,11 +267,11 @@ class Houses
 
 		House* getHouseByPlayerId(uint32_t playerId);
 
-		bool loadHousesXML(const std::string& filename);
+		bool loadHousesXML(const std::string &filename);
 
 		void payHouses(RentPeriod_t rentPeriod) const;
 
-		const HouseMap& getHouses() const {
+		const HouseMap &getHouses() const {
 			return houseMap;
 		}
 
@@ -280,4 +279,4 @@ class Houses
 		HouseMap houseMap;
 };
 
-#endif  // SRC_MAP_HOUSE_HOUSE_H_
+#endif // SRC_MAP_HOUSE_HOUSE_H_

@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
 #define SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
@@ -187,16 +187,10 @@ enum TradeEvents_t {
 	ON_TRADE_CANCEL,
 };
 
-enum ItemDecayState_t : uint8_t {
-	DECAYING_FALSE = 0,
-	DECAYING_TRUE,
-	DECAYING_PENDING,
-	DECAYING_STOPPING,
-};
-
 enum AttrTypes_t {
-	//ATTR_DESCRIPTION = 1,
-	//ATTR_EXT_FILE = 2,
+	// ATTR_NONE = 0 (last enum)
+	// ATTR_DESCRIPTION = 1,
+	// ATTR_EXT_FILE = 2,
 	ATTR_TILE_FLAGS = 3,
 	ATTR_ACTION_ID = 4,
 	ATTR_UNIQUE_ID = 5,
@@ -205,9 +199,9 @@ enum AttrTypes_t {
 	ATTR_TELE_DEST = 8,
 	ATTR_ITEM = 9,
 	ATTR_DEPOT_ID = 10,
-	//ATTR_EXT_SPAWN_FILE = 11,
+	// ATTR_EXT_SPAWN_FILE = 11,
 	ATTR_RUNE_CHARGES = 12,
-	//ATTR_EXT_HOUSE_FILE = 13,
+	// ATTR_EXT_HOUSE_FILE = 13,
 	ATTR_HOUSEDOORID = 14,
 	ATTR_COUNT = 15,
 	ATTR_DURATION = 16,
@@ -231,10 +225,14 @@ enum AttrTypes_t {
 	ATTR_SPECIAL = 34,
 	ATTR_IMBUEMENT_SLOT = 35,
 	ATTR_OPENCONTAINER = 36,
-	ATTR_CUSTOM_ATTRIBUTES = 37,
+	ATTR_CUSTOM_ATTRIBUTES = 37, // Deprecated (override by ATTR_CUSTOM)
 	ATTR_QUICKLOOTCONTAINER = 38,
 	ATTR_IMBUEMENT_TYPE = 39,
-	ATTR_TIER = 40
+	ATTR_TIER = 40,
+	ATTR_CUSTOM = 41,
+
+	// Always the last
+	ATTR_NONE = 0
 };
 
 enum ImbuementTypes_t : int64_t {
@@ -276,43 +274,6 @@ enum SlotPositionBits : uint32_t {
 	SLOTP_HAND = (SLOTP_LEFT | SLOTP_RIGHT)
 };
 
-enum ItemAttrTypes : uint32_t {
-	ITEM_ATTRIBUTE_NONE,
-
-	ITEM_ATTRIBUTE_ACTIONID = 1 << 0,
-	ITEM_ATTRIBUTE_UNIQUEID = 1 << 1,
-	ITEM_ATTRIBUTE_DESCRIPTION = 1 << 2,
-	ITEM_ATTRIBUTE_TEXT = 1 << 3,
-	ITEM_ATTRIBUTE_DATE = 1 << 4,
-	ITEM_ATTRIBUTE_WRITER = 1 << 5,
-	ITEM_ATTRIBUTE_NAME = 1 << 6,
-	ITEM_ATTRIBUTE_ARTICLE = 1 << 7,
-	ITEM_ATTRIBUTE_PLURALNAME = 1 << 8,
-	ITEM_ATTRIBUTE_WEIGHT = 1 << 9,
-	ITEM_ATTRIBUTE_ATTACK = 1 << 10,
-	ITEM_ATTRIBUTE_DEFENSE = 1 << 11,
-	ITEM_ATTRIBUTE_EXTRADEFENSE = 1 << 12,
-	ITEM_ATTRIBUTE_ARMOR = 1 << 13,
-	ITEM_ATTRIBUTE_HITCHANCE = 1 << 14,
-	ITEM_ATTRIBUTE_SHOOTRANGE = 1 << 15,
-	ITEM_ATTRIBUTE_OWNER = 1 << 16,
-	ITEM_ATTRIBUTE_DURATION = 1 << 17,
-	ITEM_ATTRIBUTE_DECAYSTATE = 1 << 18,
-	ITEM_ATTRIBUTE_CORPSEOWNER = 1 << 19,
-	ITEM_ATTRIBUTE_CHARGES = 1 << 20,
-	ITEM_ATTRIBUTE_FLUIDTYPE = 1 << 21,
-	ITEM_ATTRIBUTE_DOORID = 1 << 22,
-	ITEM_ATTRIBUTE_SPECIAL = 1 << 23,
-	ITEM_ATTRIBUTE_IMBUEMENT_SLOT = 1 << 24,
-	ITEM_ATTRIBUTE_OPENCONTAINER = 1 << 25,
-	ITEM_ATTRIBUTE_QUICKLOOTCONTAINER = 1 << 26,
-	ITEM_ATTRIBUTE_DURATION_TIMESTAMP = 1 << 27,
-	ITEM_ATTRIBUTE_IMBUEMENT_TYPE = 1 << 28,
-	ITEM_ATTRIBUTE_TIER = 1 << 29,
-
-	ITEM_ATTRIBUTE_CUSTOM = 1U << 31
-};
-
 enum TileFlags_t : uint32_t {
 	TILESTATE_NONE = 0,
 
@@ -341,13 +302,7 @@ enum TileFlags_t : uint32_t {
 	TILESTATE_NOFIELDBLOCKPATH = 1 << 22,
 	TILESTATE_SUPPORTS_HANGABLE = 1 << 23,
 
-	TILESTATE_FLOORCHANGE = TILESTATE_FLOORCHANGE_DOWN |
-                            TILESTATE_FLOORCHANGE_NORTH |
-                            TILESTATE_FLOORCHANGE_SOUTH |
-                            TILESTATE_FLOORCHANGE_EAST |
-                            TILESTATE_FLOORCHANGE_WEST |
-                            TILESTATE_FLOORCHANGE_SOUTH_ALT |
-                            TILESTATE_FLOORCHANGE_EAST_ALT,
+	TILESTATE_FLOORCHANGE = TILESTATE_FLOORCHANGE_DOWN | TILESTATE_FLOORCHANGE_NORTH | TILESTATE_FLOORCHANGE_SOUTH | TILESTATE_FLOORCHANGE_EAST | TILESTATE_FLOORCHANGE_WEST | TILESTATE_FLOORCHANGE_SOUTH_ALT | TILESTATE_FLOORCHANGE_EAST_ALT,
 };
 
 enum ZoneType_t {
@@ -359,14 +314,14 @@ enum ZoneType_t {
 };
 
 enum CylinderFlags_t {
-	FLAG_NOLIMIT = 1 << 0, //Bypass limits like capacity/container limits, blocking items/creatures etc.
-	FLAG_IGNOREBLOCKITEM = 1 << 1, //Bypass movable blocking item checks
-	FLAG_IGNOREBLOCKCREATURE = 1 << 2, //Bypass creature checks
-	FLAG_CHILDISOWNER = 1 << 3, //Used by containers to query capacity of the carrier (player)
-	FLAG_PATHFINDING = 1 << 4, //An additional check is done for floor changing/teleport items
-	FLAG_IGNOREFIELDDAMAGE = 1 << 5, //Bypass field damage checks
-	FLAG_IGNORENOTMOVEABLE = 1 << 6, //Bypass check for mobility
-	FLAG_IGNOREAUTOSTACK = 1 << 7, //queryDestination will not try to stack items together
+	FLAG_NOLIMIT = 1 << 0, // Bypass limits like capacity/container limits, blocking items/creatures etc.
+	FLAG_IGNOREBLOCKITEM = 1 << 1, // Bypass movable blocking item checks
+	FLAG_IGNOREBLOCKCREATURE = 1 << 2, // Bypass creature checks
+	FLAG_CHILDISOWNER = 1 << 3, // Used by containers to query capacity of the carrier (player)
+	FLAG_PATHFINDING = 1 << 4, // An additional check is done for floor changing/teleport items
+	FLAG_IGNOREFIELDDAMAGE = 1 << 5, // Bypass field damage checks
+	FLAG_IGNORENOTMOVEABLE = 1 << 6, // Bypass check for mobility
+	FLAG_IGNOREAUTOSTACK = 1 << 7, // queryDestination will not try to stack items together
 };
 
 enum CylinderLink_t {
@@ -490,8 +445,8 @@ enum ItemParseAttributes_t {
 };
 
 struct ImbuementInfo {
-	Imbuement *imbuement;
-	uint32_t duration = 0;
+		Imbuement* imbuement;
+		uint32_t duration = 0;
 };
 
-#endif  // SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
+#endif // SRC_ITEMS_ITEMS_DEFINITIONS_HPP_

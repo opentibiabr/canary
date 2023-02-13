@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -39,7 +39,7 @@ int PartyFunctions::luaPartyDisband(lua_State* L) {
 	// party:disband()
 	Party** partyPtr = getRawUserdata<Party>(L, 1);
 	if (partyPtr && *partyPtr) {
-		Party*& party = *partyPtr;
+		Party*&party = *partyPtr;
 		party->disband();
 		party = nullptr;
 		pushBoolean(L, true);

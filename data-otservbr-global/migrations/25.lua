@@ -1,3 +1,5 @@
 function onUpdateDatabase()
-	return false -- true = There are others migrations file | false = this is the last migration file
+	Spdlog.info("Updating database to version 26 (reward bag fix)")
+	db.query("UPDATE player_rewards SET pid = 0 WHERE itemtype = 19202;")
+	return true
 end

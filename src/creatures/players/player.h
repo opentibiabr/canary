@@ -654,9 +654,9 @@ class Player final : public Creature, public Cylinder {
 		void addConditionSuppressions(uint32_t conditions);
 		void removeConditionSuppressions(uint32_t conditions);
 
-		Reward* getReward(uint32_t rewardId, bool autoCreate);
-		void removeReward(uint32_t rewardId);
-		void getRewardList(std::vector<uint32_t> &rewards);
+		std::shared_ptr<Reward> getReward(const uint64_t rewardId, const bool autoCreate);
+		void removeReward(uint64_t rewardId);
+		void getRewardList(std::vector<uint64_t> &rewards) const;
 		RewardChest* getRewardChest();
 
 		DepotChest* getDepotChest(uint32_t depotId, bool autoCreate);
@@ -2299,7 +2299,7 @@ class Player final : public Creature, public Cylinder {
 			{ SKILL_CRITICAL_HIT_CHANCE, g_configManager().getNumber(CRITICALCHANCE) }
 		};
 
-		std::map<uint32_t, Reward*> rewardMap;
+		std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 
 		std::map<ObjectCategory_t, Container*> quickLootContainers;
 		std::vector<ForgeHistory> forgeHistoryVector;
@@ -2562,6 +2562,9 @@ class Player final : public Creature, public Cylinder {
 		void updateDamageReductionFromItemImbuement(std::array<double_t, COMBAT_COUNT> &combatReductionMap, Item* item, uint16_t combatTypeIndex) const;
 		void updateDamageReductionFromItemAbility(std::array<double_t, COMBAT_COUNT> &combatReductionMap, const Item* item, uint16_t combatTypeIndex) const;
 		double_t calculateDamageReduction(double_t currentTotal, int16_t resistance) const;
+
+		void removeEmptyRewards();
+		bool hasAnykindOfRewardContainerOpen() const;
 };
 
 #endif // SRC_CREATURES_PLAYERS_PLAYER_H_

@@ -53,10 +53,6 @@ Player::~Player() {
 		it.second->decrementReferenceCounter();
 	}
 
-	for (const auto &it : rewardMap) {
-		it.second->decrementReferenceCounter();
-	}
-
 	for (const auto &it : quickLootContainers) {
 		it.second->decrementReferenceCounter();
 	}
@@ -469,6 +465,7 @@ void Player::updateInventoryImbuement() {
 	bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
 	// Check if the player is in fight mode
 	bool isInFightMode = hasCondition(CONDITION_INFIGHT);
+
 	// Iterate through all items in the player's inventory
 	for (auto item : getAllInventoryItems()) {
 		// Iterate through all imbuement slots on the item
@@ -660,9 +657,34 @@ void Player::closeContainer(uint8_t cid) {
 	Container* container = openContainer.container;
 	openContainers.erase(it);
 
-	if (container && container->getID() == ITEM_BROWSEFIELD) {
+	if (!container) {
+		return;
+	}
+
+	if (container->isAnykindOfRewardContainer() && !hasAnykindOfRewardContainerOpen()) {
+		removeEmptyRewards();
+	}
+
+	if (container->getID() == ITEM_BROWSEFIELD) {
 		container->decrementReferenceCounter();
 	}
+}
+
+void Player::removeEmptyRewards() {
+	std::erase_if(rewardMap, [this](const auto &rewardBag) {
+		auto [id, reward] = rewardBag;
+		if (reward->empty()) {
+			this->getRewardChest()->removeThing(reward.get(), 1);
+			return true;
+		}
+		return false;
+	});
+}
+
+bool Player::hasAnykindOfRewardContainerOpen() const {
+	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [](const auto &containerPair) {
+		return containerPair.second.container->isAnykindOfRewardContainer();
+	});
 }
 
 void Player::setContainerIndex(uint8_t cid, uint16_t index) {
@@ -1034,31 +1056,28 @@ RewardChest* Player::getRewardChest() {
 	return rewardChest;
 }
 
-Reward* Player::getReward(uint32_t rewardId, bool autoCreate) {
+std::shared_ptr<Reward> Player::getReward(const uint64_t rewardId, const bool autoCreate) {
 	auto it = rewardMap.find(rewardId);
 	if (it != rewardMap.end()) {
 		return it->second;
 	}
-
 	if (!autoCreate) {
 		return nullptr;
 	}
 
-	Reward* reward = new Reward();
-	reward->incrementReferenceCounter();
+	const auto reward = std::make_shared<Reward>();
 	reward->setAttribute(ItemAttribute_t::DATE, rewardId);
 	rewardMap[rewardId] = reward;
-
-	g_game().internalAddItem(getRewardChest(), reward, INDEX_WHEREEVER, FLAG_NOLIMIT);
+	g_game().internalAddItem(getRewardChest(), reward.get(), INDEX_WHEREEVER, FLAG_NOLIMIT);
 
 	return reward;
 }
 
-void Player::removeReward(uint32_t rewardId) {
+void Player::removeReward(uint64_t rewardId) {
 	rewardMap.erase(rewardId);
 }
 
-void Player::getRewardList(std::vector<uint32_t> &rewards) {
+void Player::getRewardList(std::vector<uint64_t> &rewards) const {
 	rewards.reserve(rewardMap.size());
 	for (auto &it : rewardMap) {
 		rewards.push_back(it.first);

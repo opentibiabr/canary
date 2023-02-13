@@ -636,8 +636,8 @@ int PlayerFunctions::luaPlayerGetReward(lua_State* L) {
 	uint64_t rewardId = getNumber<uint64_t>(L, 2);
 	bool autoCreate = getBoolean(L, 3, false);
 	if (auto reward = player->getReward(rewardId, autoCreate)) {
-		pushUserdata<Item>(L, reward.get());
-		setItemMetatable(L, -1, reward.get());
+		pushUserdata<Item>(L, reward);
+		setItemMetatable(L, -1, reward);
 	} else {
 		pushBoolean(L, false);
 	}

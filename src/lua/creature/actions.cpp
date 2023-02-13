@@ -316,7 +316,7 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 		if (container->getID() == ITEM_REWARD_CONTAINER && !container->getReward()) {
 			if (auto reward = player->getReward(container->getAttribute<uint64_t>(ItemAttribute_t::DATE), false)) {
 				reward->setParent(container->getRealParent());
-				openContainer = reward.get();
+				openContainer = reward;
 			} else {
 				return RETURNVALUE_THISISIMPOSSIBLE;
 			}

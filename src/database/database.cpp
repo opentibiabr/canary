@@ -170,25 +170,22 @@ std::string Database::escapeString(const std::string &s) const {
 }
 
 std::string Database::escapeBlob(const char* s, uint32_t length) const {
-	// the worst case is 2n + 1
-	size_t maxLength = (length * 2) + 1;
+        // the worst case is 2n + 1
+        size_t maxLength = (length * 2) + 1;
 
-	std::string escaped;
-	escaped.reserve(maxLength + 2);
-	escaped.push_back('\'');
+        std::string escaped;
+        escaped.reserve(maxLength + 2);
+        escaped.push_back('\'');
 
-	if (length != 0) {
-		auto output = std::make_unique<char[]>(maxLength);
-		size_t escapedLength = mysql_real_escape_string(handle, output.get(), s, length);
-		if (escapedLength == maxLength) {
-			SPDLOG_ERROR("Error escaping blob");
-			return "";
-		}
-		escaped.append(output.get(), escapedLength);
-	}
+        if (length != 0) {
+            std::string output(maxLength, '\0');
+            size_t escapedLength = mysql_real_escape_string(handle, &output[0], s, length);
+            output.resize(escapedLength);
+            escaped.append(output);
+        }
 
-	escaped.push_back('\'');
-	return escaped;
+    escaped.push_back('\'');
+    return escaped;
 }
 
 DBResult::DBResult(MYSQL_RES* res) {

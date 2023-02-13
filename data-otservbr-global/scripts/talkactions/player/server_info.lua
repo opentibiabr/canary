@@ -27,7 +27,7 @@ function serverInfo.onSay(player, words, param)
 	text = text .. "\n"
 	text = text .. "\n\nMore Server Info: \n"
 	.. "\nLevel to buy house: " .. configManager.getNumber(configKeys.HOUSE_BUY_LEVEL) 
-  	.. "\nProtection level: " .. configManager.getNumber(configKeys.PROTECTION_LEVEL)
+  .. "\nProtection level: " .. configManager.getNumber(configKeys.PROTECTION_LEVEL)
 	.. "\nWorldType: " .. configManager.getString(configKeys.WORLD_TYPE)
 	.. "\nKills/day to red skull: " .. configManager.getNumber(configKeys.DAY_KILLS_TO_RED)
 	.. "\nKills/week to red skull: " .. configManager.getNumber(configKeys.WEEK_KILLS_TO_RED)

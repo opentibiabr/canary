@@ -479,14 +479,13 @@ class Player final : public Creature, public Cylinder {
 			idleTime = 0;
 		}
 
-		void sendSingleSoundEffect(const Position& pos, SoundEffect_t id, SourceEffect_t source) {
+		void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) {
 			if (client) {
 				client->sendSingleSoundEffect(pos, id, source);
 			}
 		}
 
-		void sendDoubleSoundEffect(const Position& pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource,
-													SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) {
+		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) {
 			if (client) {
 				client->sendDoubleSoundEffect(pos, mainSoundId, mainSource, secondarySoundId, secondarySource);
 			}
@@ -777,8 +776,7 @@ class Player final : public Creature, public Cylinder {
 		bool isPzLocked() const {
 			return pzLocked;
 		}
-		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int64_t& damage,
-			bool checkDefense = false, bool checkArmor = false, bool field = false) override;
+		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int64_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 		void doAttacking(uint32_t interval) override;
 		bool hasExtraSwing() override {
 			return lastAttack > 0 && ((OTSYS_TIME() - lastAttack) >= getAttackSpeed());
@@ -1686,22 +1684,19 @@ class Player final : public Creature, public Cylinder {
 		void updateSupplyTracker(const Item* item) const;
 		void updateImpactTracker(int64_t type, int64_t amount) const;
 
-		void updateInputAnalyzer(int64_t type, int64_t amount, std::string const &target) const;
+		void updateInputAnalyzer(int64_t type, int64_t amount, const std::string &target) const;
 
-		void createLeaderTeamFinder(NetworkMessage &msg)
-		{
+		void createLeaderTeamFinder(NetworkMessage &msg) {
 			if (client) {
 				client->createLeaderTeamFinder(msg);
 			}
 		}
-		void sendLeaderTeamFinder(bool reset)
-		{
+		void sendLeaderTeamFinder(bool reset) {
 			if (client) {
 				client->sendLeaderTeamFinder(reset);
 			}
 		}
-		void sendTeamFinderList()
-		{
+		void sendTeamFinderList() {
 			if (client) {
 				client->sendTeamFinderList();
 			}

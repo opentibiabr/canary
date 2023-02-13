@@ -501,8 +501,7 @@ void Player::updateInventoryImbuement() {
 			// Parent of the imbued item
 			auto parent = item->getParent();
 			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
-			if (categoryImbuement && categoryImbuement->agressive && (isInProtectionZone || !isInFightMode))
-			{
+			if (categoryImbuement && categoryImbuement->agressive && (isInProtectionZone || !isInFightMode)) {
 				continue;
 			}
 			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
@@ -1126,8 +1125,7 @@ void Player::updateImpactTracker(int64_t type, int64_t amount) const {
 	}
 }
 
-void Player::updateInputAnalyzer(int64_t type, int64_t amount, std::string const &target) const
-{
+void Player::updateInputAnalyzer(int64_t type, int64_t amount, const std::string &target) const {
 	if (client) {
 		client->sendUpdateInputAnalyzer(static_cast<CombatType_t>(type), convertToSafeInteger<uint32_t>(amount), target);
 	}
@@ -2305,8 +2303,7 @@ bool Player::hasShield() const {
 	return false;
 }
 
-BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_t& damage,
-		bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool field /* = false*/) {
+BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool field /* = false*/) {
 	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor, field);
 
 	if (attacker) {
@@ -2693,7 +2690,7 @@ void Player::despawn() {
 		}
 		if (Player* player = spectator->getPlayer()) {
 			player->sendRemoveTileThing(tile->getPosition(), oldStackPosVector[i++]);
-		} 
+		}
 
 		spectator->onRemoveCreature(this, false);
 	}
@@ -3973,9 +3970,8 @@ void Player::getPathSearchParams(const Creature* creature, FindPathParams &fpp) 
 uint16_t Player::getSkillLevel(uint8_t skill) const {
 	auto skillLevel = convertToSafeInteger<uint16_t>(skills[skill].level + varSkills[skill]);
 
-	if (auto it = maxValuePerSkill.find(skill); 
-		it != maxValuePerSkill.end())
-	{
+	if (auto it = maxValuePerSkill.find(skill);
+		it != maxValuePerSkill.end()) {
 		skillLevel = std::min<uint16_t>(it->second, skillLevel);
 	}
 
@@ -4435,7 +4431,7 @@ bool Player::lastHitIsPlayer(Creature* lastHitCreature) {
 	return lastHitMaster && lastHitMaster->getPlayer();
 }
 
-void Player::changeHealth(int64_t healthChange, bool sendHealthChange/* = true*/) {
+void Player::changeHealth(int64_t healthChange, bool sendHealthChange /* = true*/) {
 	if (PLAYER_SOUND_HEALTH_CHANGE >= static_cast<uint32_t>(uniform_random(1, 100))) {
 		g_game().sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_BARK : SoundEffect_t::HUMAN_MALE_BARK, this);
 	}
@@ -6124,58 +6120,56 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position &pos) {
 	return nullptr;
 }
 
-SoundEffect_t Player::getHitSoundEffect() const
-{
+SoundEffect_t Player::getHitSoundEffect() const {
 	// Distance sound effects
 	const Item* tool = getWeapon();
 	if (tool == nullptr) {
 		return SoundEffect_t::SILENCE;
 	}
 
-	switch (auto const &it = Item::items[tool->getID()]; it.weaponType) {
-	case WEAPON_AMMO: {
-		if (it.ammoType == AMMO_BOLT) {
-			return SoundEffect_t::DIST_ATK_CROSSBOW_SHOT;
-		} else if (it.ammoType == AMMO_ARROW) {
-			if (it.shootType == CONST_ANI_BURSTARROW) {
-				return SoundEffect_t::BURST_ARROW_EFFECT;
-			} else if (it.shootType == CONST_ANI_DIAMONDARROW) {
-				return SoundEffect_t::DIAMOND_ARROW_EFFECT;
+	switch (const auto &it = Item::items[tool->getID()]; it.weaponType) {
+		case WEAPON_AMMO: {
+			if (it.ammoType == AMMO_BOLT) {
+				return SoundEffect_t::DIST_ATK_CROSSBOW_SHOT;
+			} else if (it.ammoType == AMMO_ARROW) {
+				if (it.shootType == CONST_ANI_BURSTARROW) {
+					return SoundEffect_t::BURST_ARROW_EFFECT;
+				} else if (it.shootType == CONST_ANI_DIAMONDARROW) {
+					return SoundEffect_t::DIAMOND_ARROW_EFFECT;
+				}
+			} else {
+				return SoundEffect_t::DIST_ATK_THROW_SHOT;
 			}
-		} else {
-			return SoundEffect_t::DIST_ATK_THROW_SHOT;
 		}
-	}
-	case WEAPON_DISTANCE: {
-		if (tool->getAmmoType() == AMMO_BOLT) {
-			return SoundEffect_t::DIST_ATK_CROSSBOW_SHOT;
-		} else if (tool->getAmmoType() == AMMO_ARROW) {
-			return SoundEffect_t::DIST_ATK_BOW_SHOT;
-		} else {
-			return SoundEffect_t::DIST_ATK_THROW_SHOT;
+		case WEAPON_DISTANCE: {
+			if (tool->getAmmoType() == AMMO_BOLT) {
+				return SoundEffect_t::DIST_ATK_CROSSBOW_SHOT;
+			} else if (tool->getAmmoType() == AMMO_ARROW) {
+				return SoundEffect_t::DIST_ATK_BOW_SHOT;
+			} else {
+				return SoundEffect_t::DIST_ATK_THROW_SHOT;
+			}
 		}
-	}
-	case WEAPON_WAND: {
-		// Separate between wand and rod here
-		//return SoundEffect_t::DIST_ATK_ROD_SHOT;
-		return SoundEffect_t::DIST_ATK_WAND_SHOT;
-	}
-	default: {
-		return SoundEffect_t::SILENCE;
-	}
+		case WEAPON_WAND: {
+			// Separate between wand and rod here
+			// return SoundEffect_t::DIST_ATK_ROD_SHOT;
+			return SoundEffect_t::DIST_ATK_WAND_SHOT;
+		}
+		default: {
+			return SoundEffect_t::SILENCE;
+		}
 	} // switch
 
 	return SoundEffect_t::SILENCE;
 }
 
-SoundEffect_t Player::getAttackSoundEffect() const
-{
+SoundEffect_t Player::getAttackSoundEffect() const {
 	const Item* tool = getWeapon();
 	if (tool == nullptr) {
 		return SoundEffect_t::HUMAN_CLOSE_ATK_FIST;
 	}
 
-	const ItemType& it = Item::items[tool->getID()];
+	const ItemType &it = Item::items[tool->getID()];
 	if (it.weaponType == WEAPON_NONE || it.weaponType == WEAPON_SHIELD) {
 		return SoundEffect_t::HUMAN_CLOSE_ATK_FIST;
 	}
@@ -6199,7 +6193,7 @@ SoundEffect_t Player::getAttackSoundEffect() const
 			} else {
 				return SoundEffect_t::DIST_ATK_THROW;
 			}
-			
+
 			break;
 		}
 		case WEAPON_WAND: {
@@ -6214,11 +6208,10 @@ SoundEffect_t Player::getAttackSoundEffect() const
 }
 
 std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> Player::requestLockerItems(
-	DepotLocker *depotLocker,
-	bool sendToClient/* = false*/,
-	uint8_t tier/* = 0*/
-) const
-{
+	DepotLocker* depotLocker,
+	bool sendToClient /* = false*/,
+	uint8_t tier /* = 0*/
+) const {
 	if (depotLocker == nullptr) {
 		SPDLOG_ERROR("{} - Depot locker is nullptr", __FUNCTION__);
 		return {};

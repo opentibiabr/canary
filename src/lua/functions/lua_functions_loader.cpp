@@ -429,7 +429,7 @@ void LuaFunctionsLoader::pushBoolean(lua_State* L, bool value) {
 	lua_pushboolean(L, value ? 1 : 0);
 }
 
-void LuaFunctionsLoader::pushCombatDamage(lua_State* L, const CombatDamage& damage) {
+void LuaFunctionsLoader::pushCombatDamage(lua_State* L, const CombatDamage &damage) {
 	lua_pushnumber(L, static_cast<lua_Number>(damage.primary.value));
 	lua_pushnumber(L, static_cast<lua_Number>(damage.primary.type));
 	lua_pushnumber(L, static_cast<lua_Number>(damage.secondary.value));

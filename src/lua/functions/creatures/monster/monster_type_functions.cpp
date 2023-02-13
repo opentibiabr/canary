@@ -890,7 +890,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetElementList(lua_State* L) {
 	}
 
 	lua_createtable(L, monsterType->info.elementMap.size(), 0);
-	for (const auto& elementEntry : monsterType->info.elementMap) {
+	for (const auto &elementEntry : monsterType->info.elementMap) {
 		lua_pushnumber(L, static_cast<lua_Number>(elementEntry.second));
 		lua_rawseti(L, -2, static_cast<int>(elementEntry.first));
 	}
@@ -1606,7 +1606,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetSounds(lua_State* L) {
 
 	int index = 0;
 	lua_createtable(L, static_cast<int>(monsterType->info.soundVector.size()), 0);
-	for (const auto& sound : monsterType->info.soundVector) {
+	for (const auto &sound : monsterType->info.soundVector) {
 		++index;
 		lua_createtable(L, 0, 1);
 		lua_pushnumber(L, static_cast<lua_Number>(getEnumClassNumber(sound)));

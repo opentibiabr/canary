@@ -39,7 +39,7 @@ constexpr bool hasBitSet(uint32_t flag, uint32_t flags) {
 	return (flags & flag) != 0;
 }
 
-std::mt19937& getRandomGenerator();
+std::mt19937 &getRandomGenerator();
 int64_t uniform_random(int64_t minNumber, int64_t maxNumber);
 int64_t normal_random(int64_t minNumber, int64_t maxNumber);
 bool boolean_random(double probability = 0.5);
@@ -137,10 +137,9 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
  * @param ConvertValue type of value to be converted and passed as an argument to the function
  * @param convertValue Value to convert and ensure security
  * @return ReturnValue Value converted and guaranteed to be safe
-*/
-template<typename ReturnValue, typename ConvertValue>
-ReturnValue convertToSafeInteger(ConvertValue convertValue)
-{
+ */
+template <typename ReturnValue, typename ConvertValue>
+ReturnValue convertToSafeInteger(ConvertValue convertValue) {
 	auto convertSafeValue = std::clamp(static_cast<ReturnValue>(convertValue), (ReturnValue)0, std::numeric_limits<ReturnValue>::max());
 	return convertSafeValue;
 }
@@ -150,11 +149,10 @@ ReturnValue convertToSafeInteger(ConvertValue convertValue)
  * @param EnumClass The enumeration type to be converted.
  * @param convertValue The enumeration value to be converted.
  * @return The underlying integral value of the enumeration value.
-*/
-template<typename EnumClass>
-auto getEnumClassNumber(EnumClass& convertValue)
-{
+ */
+template <typename EnumClass>
+auto getEnumClassNumber(EnumClass &convertValue) {
 	return magic_enum::enum_integer(convertValue);
 }
 
-#endif  // SRC_UTILS_TOOLS_H_
+#endif // SRC_UTILS_TOOLS_H_

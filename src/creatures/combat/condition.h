@@ -52,7 +52,7 @@ class Condition {
 		void setTicks(int64_t newTicks);
 
 		static Condition* createCondition(ConditionId_t id, ConditionType_t type, int64_t ticks, int32_t param = 0, bool buff = false, uint32_t subId = 0);
-		static Condition* createCondition(PropStream& propStream);
+		static Condition* createCondition(PropStream &propStream);
 
 		virtual bool setParam(ConditionParam_t param, int64_t value);
 
@@ -79,8 +79,8 @@ class Condition {
 
 class ConditionGeneric : public Condition {
 	public:
-		ConditionGeneric(ConditionId_t initId, ConditionType_t initType, int64_t initTicks, bool initBuff = false, uint32_t initSubId = 0):
-		Condition(initId, initType, initTicks, initBuff, initSubId) {}
+		ConditionGeneric(ConditionId_t initId, ConditionType_t initType, int64_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
+			Condition(initId, initType, initTicks, initBuff, initSubId) { }
 
 		bool startCondition(Creature* creature) override;
 		void endCondition(Creature* creature) override;
@@ -95,7 +95,7 @@ class ConditionGeneric : public Condition {
 class ConditionAttributes final : public ConditionGeneric {
 	public:
 		ConditionAttributes(ConditionId_t initId, ConditionType_t initType, int64_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
-			ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) {}
+			ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
 
 		bool startCondition(Creature* creature) final;
 		void endCondition(Creature* creature) final;
@@ -134,8 +134,8 @@ class ConditionAttributes final : public ConditionGeneric {
 
 class ConditionRegeneration final : public ConditionGeneric {
 	public:
-		ConditionRegeneration(ConditionId_t initId, ConditionType_t initType, int64_t iniTicks, bool initBuff = false, uint32_t initSubId = 0):
-		ConditionGeneric(initId, initType, iniTicks, initBuff, initSubId) {}
+		ConditionRegeneration(ConditionId_t initId, ConditionType_t initType, int64_t iniTicks, bool initBuff = false, uint32_t initSubId = 0) :
+			ConditionGeneric(initId, initType, iniTicks, initBuff, initSubId) { }
 
 		bool startCondition(Creature* creature) override;
 		void endCondition(Creature* creature) override;
@@ -168,7 +168,7 @@ class ConditionRegeneration final : public ConditionGeneric {
 class ConditionManaShield final : public Condition {
 	public:
 		ConditionManaShield(ConditionId_t initId, ConditionType_t initType, int64_t iniTicks, bool initBuff = false, uint32_t initSubId = 0) :
-			Condition(initId, initType, iniTicks, initBuff, initSubId) {}
+			Condition(initId, initType, iniTicks, initBuff, initSubId) { }
 
 		bool startCondition(Creature* creature) override;
 		void endCondition(Creature* creature) override;
@@ -186,13 +186,13 @@ class ConditionManaShield final : public Condition {
 		bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) override;
 
 	private:
-	uint32_t manaShield = 0;
+		uint32_t manaShield = 0;
 };
 
 class ConditionSoul final : public ConditionGeneric {
 	public:
 		ConditionSoul(ConditionId_t initId, ConditionType_t initType, int64_t iniTicks, bool initBuff = false, uint32_t initSubId = 0) :
-			ConditionGeneric(initId, initType, iniTicks, initBuff, initSubId) {}
+			ConditionGeneric(initId, initType, iniTicks, initBuff, initSubId) { }
 
 		void addCondition(Creature* creature, const Condition* addCondition) override;
 		bool executeCondition(Creature* creature, int64_t interval) override;
@@ -216,7 +216,7 @@ class ConditionSoul final : public ConditionGeneric {
 class ConditionInvisible final : public ConditionGeneric {
 	public:
 		ConditionInvisible(ConditionId_t initId, ConditionType_t initType, int64_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
-			ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) {}
+			ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
 
 		bool startCondition(Creature* creature) override;
 		void endCondition(Creature* creature) override;
@@ -232,7 +232,7 @@ class ConditionDamage final : public Condition {
 		ConditionDamage(ConditionId_t intiId, ConditionType_t initType, bool initBuff = false, uint32_t initSubId = 0) :
 			Condition(intiId, initType, 0, initBuff, initSubId) { }
 
-		static void generateDamageList(int64_t amount, int64_t start, std::list<int64_t>& list);
+		static void generateDamageList(int64_t amount, int64_t start, std::list<int64_t> &list);
 
 		bool startCondition(Creature* creature) override;
 		bool executeCondition(Creature* creature, int64_t interval) override;
@@ -273,7 +273,7 @@ class ConditionDamage final : public Condition {
 
 		std::list<IntervalInfo> damageList;
 
-		bool getNextDamage(int64_t& damage);
+		bool getNextDamage(int64_t &damage);
 		bool doDamage(Creature* creature, int64_t healthChange) const;
 
 		bool updateCondition(const Condition* addCondition) override;
@@ -282,7 +282,7 @@ class ConditionDamage final : public Condition {
 class ConditionSpeed final : public Condition {
 	public:
 		ConditionSpeed(ConditionId_t initId, ConditionType_t initType, int64_t initTicks, bool initBuff, uint32_t initSubId, int32_t initChangeSpeed) :
-			Condition(initId, initType, initTicks, initBuff, initSubId), speedDelta(initChangeSpeed) {}
+			Condition(initId, initType, initTicks, initBuff, initSubId), speedDelta(initChangeSpeed) { }
 
 		bool startCondition(Creature* creature) override;
 		void endCondition(Creature* creature) override;
@@ -302,7 +302,7 @@ class ConditionSpeed final : public Condition {
 		bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) override;
 
 	private:
-		void getFormulaValues(int32_t var, int64_t& min, int64_t& max) const;
+		void getFormulaValues(int32_t var, int64_t &min, int64_t &max) const;
 
 		int32_t speedDelta;
 
@@ -315,8 +315,8 @@ class ConditionSpeed final : public Condition {
 
 class ConditionOutfit final : public Condition {
 	public:
-			ConditionOutfit(ConditionId_t initId, ConditionType_t initType, int64_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
-			Condition(initId, initType, initTicks, initBuff, initSubId) {}
+		ConditionOutfit(ConditionId_t initId, ConditionType_t initType, int64_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
+			Condition(initId, initType, initTicks, initBuff, initSubId) { }
 
 		bool startCondition(Creature* creature) override;
 		void endCondition(Creature* creature) override;
@@ -341,7 +341,7 @@ class ConditionOutfit final : public Condition {
 class ConditionLight final : public Condition {
 	public:
 		ConditionLight(ConditionId_t initId, ConditionType_t initType, int64_t initTicks, bool initBuff, uint32_t initSubId, uint8_t initLightlevel, uint8_t initLightcolor) :
-			Condition(initId, initType, initTicks, initBuff, initSubId), lightInfo(initLightlevel, initLightcolor) {}
+			Condition(initId, initType, initTicks, initBuff, initSubId), lightInfo(initLightlevel, initLightcolor) { }
 
 		bool startCondition(Creature* creature) override;
 		bool executeCondition(Creature* creature, int64_t interval) override;
@@ -367,7 +367,7 @@ class ConditionLight final : public Condition {
 class ConditionSpellCooldown final : public ConditionGeneric {
 	public:
 		ConditionSpellCooldown(ConditionId_t initId, ConditionType_t initType, int64_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
-			ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) {}
+			ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
 
 		bool startCondition(Creature* creature) override;
 		void addCondition(Creature* creature, const Condition* condition) override;
@@ -380,7 +380,7 @@ class ConditionSpellCooldown final : public ConditionGeneric {
 class ConditionSpellGroupCooldown final : public ConditionGeneric {
 	public:
 		ConditionSpellGroupCooldown(ConditionId_t initId, ConditionType_t initType, int64_t initTicks, bool initBuff = false, uint32_t initSubId = 0) :
-			ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) {}
+			ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) { }
 
 		bool startCondition(Creature* creature) override;
 		void addCondition(Creature* creature, const Condition* condition) override;

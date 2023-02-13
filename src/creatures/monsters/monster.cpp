@@ -644,8 +644,7 @@ void Monster::onFollowCreatureComplete(const Creature* creature) {
 	}
 }
 
-BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int64_t& damage,
-		bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool /* field = false */) {
+BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int64_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool /* field = false */) {
 	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor);
 
 	if (damage != 0) {
@@ -1085,7 +1084,7 @@ void Monster::onThinkYell(uint32_t interval) {
 
 		if (!mType->info.voiceVector.empty() && (mType->info.yellChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
 			int64_t index = uniform_random(0, static_cast<int64_t>(mType->info.voiceVector.size() - 1));
-			const voiceBlock_t& vb = mType->info.voiceVector[index];
+			const voiceBlock_t &vb = mType->info.voiceVector[index];
 
 			if (vb.yellText) {
 				g_game().internalCreatureSay(this, TALKTYPE_MONSTER_YELL, vb.text, false);
@@ -1112,9 +1111,9 @@ void Monster::onThinkSound(uint32_t interval) {
 	}
 }
 
-bool Monster::pushItem(Item *item, const Direction& nextDirection) {
-	const Position& centerPos = item->getPosition();
-	for (const auto& [x, y] : getPushItemLocationOptions(nextDirection)) {
+bool Monster::pushItem(Item* item, const Direction &nextDirection) {
+	const Position &centerPos = item->getPosition();
+	for (const auto &[x, y] : getPushItemLocationOptions(nextDirection)) {
 		Position tryPos(centerPos.x + x, centerPos.y + y, centerPos.z);
 		Tile* tile = g_game().map.getTile(tryPos);
 		if (tile && g_game().canThrowObjectTo(centerPos, tryPos) && g_game().internalMoveItem(item->getParent(), tile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
@@ -1134,8 +1133,7 @@ void Monster::pushItems(Tile* tile, const Direction &nextDirection) {
 	auto it = items->begin();
 	while (it != items->end()) {
 		Item* item = *it;
-		if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH)
-				|| item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != 100 /* non-moveable action*/) {
+		if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != 100 /* non-moveable action*/) {
 			if (moveCount < 20 && pushItem(item, nextDirection)) {
 				++moveCount;
 			} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
@@ -1932,7 +1930,7 @@ bool Monster::isInSpawnRange(const Position &pos) const {
 	return true;
 }
 
-bool Monster::getCombatValues(int64_t& min, int64_t& max) {
+bool Monster::getCombatValues(int64_t &min, int64_t &max) {
 	if (minCombatValue == 0 && maxCombatValue == 0) {
 		return false;
 	}
@@ -2043,14 +2041,14 @@ void Monster::drainHealth(Creature* attacker, int64_t damage) {
 	}
 }
 
-void Monster::changeHealth(int64_t healthChange, bool sendHealthChange/* = true*/) {
+void Monster::changeHealth(int64_t healthChange, bool sendHealthChange /* = true*/) {
 	if (mType && !mType->info.soundVector.empty() && mType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100))) {
 		auto index = uniform_random(0, mType->info.soundVector.size() - 1);
 		auto convertedSafe = convertToSafeInteger<uint16_t>(index);
 		g_game().sendSingleSoundEffect(this->getPosition(), mType->info.soundVector[convertedSafe], this);
 	}
 
-	//In case a player with ignore flag set attacks the monster
+	// In case a player with ignore flag set attacks the monster
 	setIdle(false);
 	Creature::changeHealth(healthChange, sendHealthChange);
 }

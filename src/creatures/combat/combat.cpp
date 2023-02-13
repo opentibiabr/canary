@@ -435,7 +435,6 @@ bool Combat::setParam(CombatParam_t param, uint32_t value) {
 			params.soundCastEffect = static_cast<SoundEffect_t>(value);
 			return true;
 		}
-
 	}
 	return false;
 }
@@ -572,7 +571,7 @@ CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage dama
 		damage.secondary.type = imbuementInfo.imbuement->combatType;
 		damage.primary.value = damage.primary.value * (1 - damagePercent);
 		damage.secondary.value = damage.primary.value * (damagePercent);
- 
+
 		if (imbuementInfo.imbuement->soundEffect != SoundEffect_t::SILENCE) {
 			g_game().sendSingleSoundEffect(item->getPosition(), imbuementInfo.imbuement->soundEffect, item->getHoldingPlayer());
 		}
@@ -1118,7 +1117,6 @@ void Combat::doCombatDispel(Creature* caster, Creature* target, const CombatPara
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
 		}
 
-
 		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
 			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
 		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
@@ -1256,7 +1254,7 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage &damage, bool u
 		);
 
 		if (shouldCalculateSecondaryDamage) {
-			double factor = (double)elementAttack / (double)attackValue; //attack value here is phys dmg + element dmg
+			double factor = (double)elementAttack / (double)attackValue; // attack value here is phys dmg + element dmg
 			auto elementDamage = static_cast<int64_t>(std::round(static_cast<double>(defaultDmg) * factor));
 			auto physDmg = static_cast<int64_t>(std::round(static_cast<double>(defaultDmg) * (1.0 - factor)));
 			damage.primary.value = physDmg;

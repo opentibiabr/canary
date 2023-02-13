@@ -39,47 +39,47 @@
 #include "protobuf/appearances.pb.h"
 
 namespace InternalGame {
-void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position& targetPos, Creature* source) {
-	if (blockType == BLOCK_DEFENSE) {
-		g_game().addMagicEffect(targetPos, CONST_ME_POFF);
-	} else if (blockType == BLOCK_ARMOR) {
-		g_game().addMagicEffect(targetPos, CONST_ME_BLOCKHIT);
-	} else if (blockType == BLOCK_DODGE) {
-		g_game().addMagicEffect(targetPos, CONST_ME_DODGE);
-	} else if (blockType == BLOCK_IMMUNITY) {
-		uint8_t hitEffect = 0;
-		switch (combatType) {
-			case COMBAT_UNDEFINEDDAMAGE: {
-				return;
+	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, Creature* source) {
+		if (blockType == BLOCK_DEFENSE) {
+			g_game().addMagicEffect(targetPos, CONST_ME_POFF);
+		} else if (blockType == BLOCK_ARMOR) {
+			g_game().addMagicEffect(targetPos, CONST_ME_BLOCKHIT);
+		} else if (blockType == BLOCK_DODGE) {
+			g_game().addMagicEffect(targetPos, CONST_ME_DODGE);
+		} else if (blockType == BLOCK_IMMUNITY) {
+			uint8_t hitEffect = 0;
+			switch (combatType) {
+				case COMBAT_UNDEFINEDDAMAGE: {
+					return;
+				}
+				case COMBAT_ENERGYDAMAGE:
+				case COMBAT_FIREDAMAGE:
+				case COMBAT_PHYSICALDAMAGE:
+				case COMBAT_ICEDAMAGE:
+				case COMBAT_DEATHDAMAGE: {
+					hitEffect = CONST_ME_BLOCKHIT;
+					break;
+				}
+				case COMBAT_EARTHDAMAGE: {
+					hitEffect = CONST_ME_GREEN_RINGS;
+					break;
+				}
+				case COMBAT_HOLYDAMAGE: {
+					hitEffect = CONST_ME_HOLYDAMAGE;
+					break;
+				}
+				default: {
+					hitEffect = CONST_ME_POFF;
+					break;
+				}
 			}
-			case COMBAT_ENERGYDAMAGE:
-			case COMBAT_FIREDAMAGE:
-			case COMBAT_PHYSICALDAMAGE:
-			case COMBAT_ICEDAMAGE:
-			case COMBAT_DEATHDAMAGE: {
-				hitEffect = CONST_ME_BLOCKHIT;
-				break;
-			}
-			case COMBAT_EARTHDAMAGE: {
-				hitEffect = CONST_ME_GREEN_RINGS;
-				break;
-			}
-			case COMBAT_HOLYDAMAGE: {
-				hitEffect = CONST_ME_HOLYDAMAGE;
-				break;
-			}
-			default: {
-				hitEffect = CONST_ME_POFF;
-				break;
-			}
+			g_game().addMagicEffect(targetPos, hitEffect);
 		}
-		g_game().addMagicEffect(targetPos, hitEffect);
-	}
 
-	if (blockType != BLOCK_NONE) {
-		g_game().sendSingleSoundEffect(targetPos, SoundEffect_t::NO_DAMAGE, source);
+		if (blockType != BLOCK_NONE) {
+			g_game().sendSingleSoundEffect(targetPos, SoundEffect_t::NO_DAMAGE, source);
+		}
 	}
-}
 
 } // Namespace InternalGame
 
@@ -1554,10 +1554,9 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 	}
 
 	if (SoundEffect_t soundEffect = item->getMovementSound(toCylinder);
-		toCylinder && soundEffect != SoundEffect_t::SILENCE)
-	{
+		toCylinder && soundEffect != SoundEffect_t::SILENCE) {
 		if (toCylinder->getContainer() && actor && actor->getPlayer() && (toCylinder->getContainer()->isInsideDepot(true) || toCylinder->getContainer()->getHoldingPlayer())) {
-            actor->getPlayer()->sendSingleSoundEffect(toCylinder->getPosition(), soundEffect, SourceEffect_t::OWN);
+			actor->getPlayer()->sendSingleSoundEffect(toCylinder->getPosition(), soundEffect, SourceEffect_t::OWN);
 		} else {
 			sendSingleSoundEffect(toCylinder->getPosition(), soundEffect, actor);
 		}
@@ -5328,8 +5327,7 @@ void Game::reloadCreature(const Creature* creature) {
 	}
 }
 
-void Game::sendSingleSoundEffect(const Position& pos, SoundEffect_t soundId, Creature* actor/* = nullptr*/)
-{
+void Game::sendSingleSoundEffect(const Position &pos, SoundEffect_t soundId, Creature* actor /* = nullptr*/) {
 	if (soundId == SoundEffect_t::SILENCE) {
 		return;
 	}
@@ -5352,8 +5350,7 @@ void Game::sendSingleSoundEffect(const Position& pos, SoundEffect_t soundId, Cre
 	}
 }
 
-void Game::sendDoubleSoundEffect(const Position& pos, SoundEffect_t mainSoundEffect, SoundEffect_t secondarySoundEffect, Creature* actor/* = nullptr*/)
-{
+void Game::sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundEffect, SoundEffect_t secondarySoundEffect, Creature* actor /* = nullptr*/) {
 	if (secondarySoundEffect == SoundEffect_t::SILENCE) {
 		sendSingleSoundEffect(pos, mainSoundEffect, actor);
 		return;
@@ -5479,7 +5476,8 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 		// Damage healing secondary
 		if (attacker && target->getMonster()) {
 			uint32_t secondaryHealing = target->getMonster()->getHealingCombatValue(damage.secondary.type);
-			if (secondaryHealing > 0) {;
+			if (secondaryHealing > 0) {
+				;
 				// Safe conversion
 				auto doubleSecondaryValue = static_cast<double>(damage.secondary.value);
 				auto doubleSecondaryHealing = static_cast<double>(secondaryHealing);
@@ -5940,13 +5938,13 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		// Using real damage
 		if (attackerPlayer) {
-			//life leech
+			// life leech
 			uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE);
 			uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT);
 			if (normal_random(0, 100) < lifeChance) {
 				// Vampiric charm rune
 				if (targetMonster) {
-					if (uint16_t playerCharmRaceidVamp = attackerPlayer->parseRacebyCharm(CHARM_VAMP, false, 0); 
+					if (uint16_t playerCharmRaceidVamp = attackerPlayer->parseRacebyCharm(CHARM_VAMP, false, 0);
 						playerCharmRaceidVamp != 0 && playerCharmRaceidVamp == targetMonster->getRaceId()) {
 						if (const Charm* lifec = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
 							lifeSkill += lifec->percent;
@@ -5973,7 +5971,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				Combat::doCombatHealth(nullptr, attackerPlayer, tmpDamage, tmpParams);
 			}
 
-			//mana leech
+			// mana leech
 			uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE);
 			uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT);
 			if (normal_random(0, 100) < manaChance) {
@@ -6306,8 +6304,8 @@ int32_t Game::calculateLeechAmount(const int32_t &realDamage, const uint16_t &sk
 	return std::clamp<int32_t>(static_cast<int32_t>(std::lround(intermediateResult)), 0, realDamage);
 }
 
-bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage& damage) {
-	const Position& targetPos = target->getPosition();
+bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage &damage) {
+	const Position &targetPos = target->getPosition();
 	int64_t manaChange = damage.primary.value + damage.secondary.value;
 	if (manaChange > 0) {
 		Player* attackerPlayer;
@@ -6517,14 +6515,14 @@ void Game::addCreatureHealth(const Creature* target) {
 	addCreatureHealth(spectators, target);
 }
 
-void Game::addCreatureHealth(const SpectatorHashSet& spectators, const Creature* target) {
+void Game::addCreatureHealth(const SpectatorHashSet &spectators, const Creature* target) {
 	// Safe conversion
 	auto safeValue = convertToSafeInteger<uint8_t>(
 		std::ceil(
 			(
-				static_cast<double>(target->getHealth()) /
-				static_cast<double>(std::max<int64_t>(target->getMaxHealth(), 1))
-			) * 100.
+				static_cast<double>(target->getHealth()) / static_cast<double>(std::max<int64_t>(target->getMaxHealth(), 1))
+			)
+			* 100.
 		)
 	);
 	uint8_t healthPercent = safeValue;
@@ -6551,9 +6549,9 @@ void Game::addPlayerMana(const Player* target) {
 	auto safeValue = convertToSafeInteger<uint8_t>(
 		std::ceil(
 			(
-				static_cast<double>(target->getMana()) /
-				static_cast<double>(std::max<int64_t>(target->getMaxMana(), 1))
-			) * 100.
+				static_cast<double>(target->getMana()) / static_cast<double>(std::max<int64_t>(target->getMaxMana(), 1))
+			)
+			* 100.
 		)
 	);
 	uint8_t manaPercent = safeValue;

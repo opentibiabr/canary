@@ -3319,8 +3319,7 @@ int PlayerFunctions::luaPlayerGetBossBonus(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L)
-{
+int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L) {
 	// player:sendSingleSoundEffect(soundId[, actor = true])
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
@@ -3337,8 +3336,7 @@ int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L)
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerSendDoubleSoundEffect(lua_State* L)
-{
+int PlayerFunctions::luaPlayerSendDoubleSoundEffect(lua_State* L) {
 	// player:sendDoubleSoundEffect(mainSoundId, secondarySoundId[, actor = true])
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {

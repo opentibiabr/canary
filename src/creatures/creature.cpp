@@ -768,7 +768,7 @@ Item* Creature::getCorpse(Creature*, Creature*) {
 	return Item::CreateItem(getLookCorpse());
 }
 
-void Creature::changeHealth(int64_t healthChange, bool sendHealthChange/* = true*/) {
+void Creature::changeHealth(int64_t healthChange, bool sendHealthChange /* = true*/) {
 	int64_t oldHealth = health;
 
 	if (healthChange > 0) {
@@ -817,8 +817,7 @@ void Creature::drainMana(Creature* attacker, int64_t manaLoss) {
 	}
 }
 
-BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int64_t& damage,
-	bool checkDefense /* = false */, bool checkArmor /* = false */, bool /* field  = false */) {
+BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int64_t &damage, bool checkDefense /* = false */, bool checkArmor /* = false */, bool /* field  = false */) {
 	BlockType_t blockType = BLOCK_NONE;
 
 	if (isImmune(combatType)) {

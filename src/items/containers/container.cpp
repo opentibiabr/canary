@@ -250,6 +250,24 @@ bool Container::isHoldingItem(const Item* item) const {
 	return false;
 }
 
+bool Container::isHoldingItemWithId(const uint16_t id) const {
+	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
+		const Item* item = *it;
+		if (item->getID() == id) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Container::isAnykindOfRewardContainer() const {
+	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER || isBrowseFieldAndHoldsRewardContainer();
+}
+
+bool Container::isBrowseFieldAndHoldsRewardContainer() const {
+	return getID() == ITEM_BROWSEFIELD && isHoldingItemWithId(ITEM_REWARD_CHEST);
+}
+
 void Container::onAddContainerItem(Item* item) {
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);

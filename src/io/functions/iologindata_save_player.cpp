@@ -42,3 +42,33 @@ bool IOLoginDataSave::savePlayerForgeHistory(Player* player) {
 
 	return true;
 }
+
+bool IOLoginDataSave::saveRewardItems(Player* player) {
+	std::ostringstream query;
+	query.str(std::string());
+	query << "DELETE FROM `player_rewards` WHERE `player_id` = " << player->getGUID();
+
+	if (!Database::getInstance().executeQuery(query.str())) {
+		return false;
+	}
+
+	std::vector<uint64_t> rewardList;
+	player->getRewardList(rewardList);
+
+	ItemBlockList itemList;
+	if (!rewardList.empty()) {
+		for (const auto &rewardId : rewardList) {
+			auto reward = player->getReward(rewardId, false);
+			if (!reward->empty() && (getTimeNow() - rewardId / 1000 <= 60 * 60 * 24 * 7)) {
+				itemList.emplace_back(0, reward.get());
+			}
+		}
+
+		DBInsert rewardQuery("INSERT INTO `player_rewards` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
+		PropWriteStream propWriteStream;
+		if (!saveItems(player, itemList, rewardQuery, propWriteStream)) {
+			return false;
+		}
+	}
+	return true;
+}

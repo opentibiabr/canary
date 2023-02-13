@@ -116,6 +116,7 @@ class Container : public Item, public Cylinder {
 		StashContainerList getStowableItems() const;
 		Item* getItemByIndex(size_t index) const;
 		bool isHoldingItem(const Item* item) const;
+		bool isHoldingItemWithId(const uint16_t id) const;
 
 		uint32_t getItemHoldingCount() const;
 		uint32_t getContainerHoldingCount() const;
@@ -160,6 +161,9 @@ class Container : public Item, public Cylinder {
 		void internalAddThing(uint32_t index, Thing* thing) override final;
 		void startDecaying() override;
 		void stopDecaying() override;
+
+		bool isAnykindOfRewardContainer() const;
+		bool isBrowseFieldAndHoldsRewardContainer() const;
 
 	protected:
 		std::ostringstream &getContentDescription(std::ostringstream &os) const;

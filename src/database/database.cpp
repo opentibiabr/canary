@@ -95,7 +95,7 @@ bool Database::commit() {
 	return true;
 }
 
-bool Database::executeQuery(const std::string_view& query) {
+bool Database::executeQuery(const std::string_view &query) {
 	if (!handle) {
 		SPDLOG_ERROR("Database not initialized!");
 		return false;
@@ -135,7 +135,7 @@ DBResult_ptr Database::storeQuery(const std::string_view &query) {
 
 	databaseLock.lock();
 
-	retry:
+retry:
 	if (mysql_query(handle, query.data()) != 0) {
 		SPDLOG_ERROR("Query: {}", query);
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
@@ -161,7 +161,7 @@ DBResult_ptr Database::storeQuery(const std::string_view &query) {
 
 std::string Database::escapeString(const std::string &s) const {
 	std::string::size_type length = s.length();
-	//uint32_t length = static_cast<uint32_t>(len);
+	// uint32_t length = static_cast<uint32_t>(len);
 	std::string escaped = escapeBlob(s.c_str(), length);
 	if (escaped.empty()) {
 		SPDLOG_ERROR("Error escaping string");

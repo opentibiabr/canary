@@ -1180,10 +1180,10 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 
 		std::string slotName;
 		if (item->getImbuementSlot() > 0) {
-			for (size_t i = 0; i < item->getImbuementSlot(); ++i) {
+			for (uint8_t i = 0; i < item->getImbuementSlot(); ++i) {
 				slotName = fmt::format("Imbuement Slot {}", i + 1);
 				ss.str("");
-				auto castItem = const_cast<Item*>(item);
+				const auto& castItem = item;
 				if (!castItem) {
 					continue;
 				}
@@ -1395,8 +1395,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 					ss << ", ";
 				}
 
-				ss << getCombatName(indexToCombatType(i)) << ' '
-				   << std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
+				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
 				protection = true;
 			}
 			if (protection) {

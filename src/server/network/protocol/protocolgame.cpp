@@ -4295,6 +4295,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			ss << "attack +" << it.attack;
 			separator = true;
 		}
+
 		if (it.hitChance != 0) {
 			if (separator) {
 				ss << ", ";
@@ -4302,6 +4303,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			ss << "chance to hit +" << static_cast<int16_t>(it.hitChance) << "%";
 			separator = true;
 		}
+
 		if (it.shootRange != 0) {
 			if (separator) {
 				ss << ", ";

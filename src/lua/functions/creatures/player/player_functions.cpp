@@ -633,11 +633,11 @@ int PlayerFunctions::luaPlayerGetReward(lua_State* L) {
 		return 1;
 	}
 
-	uint32_t rewardId = getNumber<uint32_t>(L, 2);
+	uint64_t rewardId = getNumber<uint64_t>(L, 2);
 	bool autoCreate = getBoolean(L, 3, false);
-	if (Reward* reward = player->getReward(rewardId, autoCreate)) {
-		pushUserdata<Item>(L, reward);
-		setItemMetatable(L, -1, reward);
+	if (auto reward = player->getReward(rewardId, autoCreate)) {
+		pushUserdata<Item>(L, reward.get());
+		setItemMetatable(L, -1, reward.get());
 	} else {
 		pushBoolean(L, false);
 	}
@@ -660,19 +660,19 @@ int PlayerFunctions::luaPlayerRemoveReward(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetRewardList(lua_State* L) {
 	// player:getRewardList()
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	std::vector<uint32_t> rewardVec;
+	std::vector<uint64_t> rewardVec;
 	player->getRewardList(rewardVec);
 	lua_createtable(L, rewardVec.size(), 0);
 
 	int index = 0;
 	for (const auto &rewardId : rewardVec) {
-		lua_pushnumber(L, rewardId);
+		lua_pushnumber(L, static_cast<lua_Number>(rewardId));
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;

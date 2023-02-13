@@ -121,7 +121,7 @@ bool Database::executeQuery(const std::string_view &query) {
 		success = false;
 	}
 
-	auto m_res = std::unique_ptr<MYSQL_RES, decltype(&mysql_free_result)>(mysql_store_result(handle), mysql_free_result);
+	auto m_res = std::unique_ptr<MYSQL_RES, decltype(&mysql_free_result)>(mysql_store_result(handle), &mysql_free_result);
 	databaseLock.unlock();
 
 	return success;
@@ -161,7 +161,7 @@ retry:
 
 std::string Database::escapeString(const std::string &s) const {
 	std::string::size_type len = s.length();
-	uint32_t length = static_cast<uint32_t>(len);
+	auto length = static_cast<uint32_t>(len);
 	std::string escaped = escapeBlob(s.c_str(), length);
 	if (escaped.empty()) {
 		SPDLOG_ERROR("Error escaping string");

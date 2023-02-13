@@ -15,6 +15,7 @@
 #include "game/game.h"
 #include "items/item.h"
 #include "io/iobestiary.h"
+#include "io/io_bosstiary.hpp"
 #include "io/iologindata.h"
 #include "lua/functions/core/game/game_functions.hpp"
 #include "game/scheduling/tasks.h"
@@ -657,5 +658,11 @@ int GameFunctions::luaGameGetFiendishMonsters(lua_State* L) {
 		lua_rawseti(L, -2, index);
 	}
 
+	return 1;
+}
+
+int GameFunctions::luaGameGetBoostedBoss(lua_State* L) {
+	// Game.getBoostedBoss()
+	pushString(L, g_ioBosstiary().getBoostedBossName());
 	return 1;
 }

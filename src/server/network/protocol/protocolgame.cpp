@@ -15,6 +15,7 @@
 #include "game/game.h"
 #include "creatures/players/imbuements/imbuements.h"
 #include "io/iobestiary.h"
+#include "io/io_bosstiary.hpp"
 #include "io/iologindata.h"
 #include "io/iomarket.h"
 #include "lua/modules/modules.h"
@@ -357,6 +358,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		}
 	}
 	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
+	sendBosstiaryCooldownTimer();
 }
 
 void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem) {
@@ -828,6 +830,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x9E:
 			addGameTask(&Game::playerCloseNpcChannel, player->getID());
 			break;
+		case 0x9F:
+			parseSetBossPodium(msg);
+			break;
 		case 0xA0:
 			parseFightModes(msg);
 			break;
@@ -863,6 +868,15 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			break;
 		case 0xAC:
 			parseChannelExclude(msg);
+			break;
+		case 0xAE:
+			parseSendBosstiary();
+			break;
+		case 0xAF:
+			parseSendBosstiarySlots();
+			break;
+		case 0xB0:
+			parseBosstiarySlot(msg);
 			break;
 		case 0xB1:
 			parseHighscores(msg);
@@ -1593,7 +1607,11 @@ void ProtocolGame::parseRotateItem(NetworkMessage &msg) {
 	Position pos = msg.getPosition();
 	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
-	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerRotateItem, player->getID(), pos, stackpos, itemId);
+	if (itemId == ITEM_PODIUM_OF_VIGOUR) {
+		addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerRotatePodium, player->getID(), pos, stackpos, itemId);
+	} else {
+		addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerRotateItem, player->getID(), pos, stackpos, itemId);
+	}
 }
 
 void ProtocolGame::parseWrapableItem(NetworkMessage &msg) {
@@ -5500,6 +5518,11 @@ void ProtocolGame::sendOutfitWindow() {
 }
 
 void ProtocolGame::sendPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackpos) {
+	if (!podium) {
+		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xC8);
 
@@ -5507,7 +5530,6 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position &position
 	const auto lookType = podium->getCustomAttribute("LookType");
 	const auto lookMount = podium->getCustomAttribute("LookMount");
 	const auto lookDirection = podium->getCustomAttribute("LookDirection");
-
 	if (lookType) {
 		addOutfitAndMountBytes(msg, podium, lookType, "LookHead", "LookBody", "LookLegs", "LookFeet", true);
 	} else {
@@ -6713,4 +6735,298 @@ void ProtocolGame::sendForgeSkillStats(NetworkMessage &msg) const {
 		msg.add<uint16_t>(skillCast);
 		msg.add<uint16_t>(skillCast);
 	}
+}
+
+void ProtocolGame::sendBosstiaryData() {
+	NetworkMessage msg;
+	msg.addByte(0x61);
+
+	msg.add<uint16_t>(25); // Number of kills to achieve 'Bane Prowess'
+	msg.add<uint16_t>(100); // Number of kills to achieve 'Bane expertise'
+	msg.add<uint16_t>(300); // Number of kills to achieve 'Base Mastery'
+
+	msg.add<uint16_t>(5); // Number of kills to achieve 'Archfoe Prowess'
+	msg.add<uint16_t>(20); // Number of kills to achieve 'Archfoe Expertise'
+	msg.add<uint16_t>(60); // Number of kills to achieve 'Archfoe Mastery'
+
+	msg.add<uint16_t>(1); // Number of kills to achieve 'Nemesis Prowess'
+	msg.add<uint16_t>(3); // Number of kills to achieve 'Nemesis Expertise'
+	msg.add<uint16_t>(5); // Number of kills to achieve 'Nemesis Mastery'
+
+	msg.add<uint16_t>(5); // Points will receive when reach 'Bane Prowess'
+	msg.add<uint16_t>(15); // Points will receive when reach 'Bane Expertise'
+	msg.add<uint16_t>(30); // Points will receive when reach 'Base Mastery'
+
+	msg.add<uint16_t>(10); // Points will receive when reach 'Archfoe Prowess'
+	msg.add<uint16_t>(30); // Points will receive when reach 'Archfoe Expertise'
+	msg.add<uint16_t>(60); // Points will receive when reach 'Archfoe Mastery'
+
+	msg.add<uint16_t>(10); // Points will receive when reach 'Nemesis Prowess'
+	msg.add<uint16_t>(30); // Points will receive when reach 'Nemesis Expertise'
+	msg.add<uint16_t>(60); // Points will receive when reach 'Nemesis Mastery'
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::parseSendBosstiary() {
+	sendBosstiaryData();
+
+	NetworkMessage msg;
+	msg.addByte(0x73);
+
+	std::map<uint32_t, std::string> mtype_list = g_ioBosstiary().getBosstiaryMap();
+	auto bossesBuffer = msg.getBufferPosition();
+	uint16_t bossesCount = 0;
+	msg.skipBytes(2);
+
+	for (const auto &[bossid, name] : mtype_list) {
+		const MonsterType* mType = g_monsters().getMonsterType(name);
+		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+		auto killCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossid));
+		msg.add<uint32_t>(bossid);
+		msg.addByte(bossRace);
+		msg.add<uint32_t>(killCount);
+		msg.addByte(0);
+		++bossesCount;
+	}
+
+	msg.setBufferPosition(bossesBuffer);
+	msg.add<uint16_t>(bossesCount);
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::parseSendBosstiarySlots() {
+	sendBosstiaryData();
+
+	NetworkMessage msg;
+	msg.addByte(0x62);
+
+	uint32_t playerBossPoints = player->getBossPoints();
+	uint16_t currentBonus = g_ioBosstiary().calculateLootBonus(playerBossPoints);
+	uint32_t pointsNextBonus = g_ioBosstiary().calculateBossPoints(currentBonus + 1);
+	msg.add<uint32_t>(playerBossPoints); // Player Points
+	msg.add<uint32_t>(pointsNextBonus); // Total Points next bonus
+	msg.add<uint16_t>(currentBonus); // Current Bonus
+	msg.add<uint16_t>(currentBonus + 1); // Next Bonus
+
+	uint32_t bossIdSlotOne = player->getSlotBossId(1);
+	uint32_t bossIdSlotTwo = player->getSlotBossId(2);
+	uint32_t boostedBossId = g_ioBosstiary().getBoostedBossId();
+	uint32_t removePrice = g_ioBosstiary().calculteRemoveBoss(player->getRemoveTimes());
+
+	auto bossesUnlockedList = g_ioBosstiary().getBosstiaryFinished(player);
+	if (auto it = std::ranges::find(bossesUnlockedList.begin(), bossesUnlockedList.end(), boostedBossId);
+		it != bossesUnlockedList.end()) {
+		bossesUnlockedList.erase(it);
+	}
+	auto bossesUnlockedSize = static_cast<uint16_t>(bossesUnlockedList.size());
+
+	bool isSlotOneUnlocked = (bossesUnlockedSize > 0 ? true : false);
+	msg.addByte(isSlotOneUnlocked ? 1 : 0);
+	msg.add<uint32_t>(isSlotOneUnlocked ? bossIdSlotOne : 0);
+	if (isSlotOneUnlocked && bossIdSlotOne != 0) {
+		// Variables Boss Slot One
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotOne);
+		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+		auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
+		auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotOne);
+		uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
+		uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
+		// Bytes Slot One
+		msg.addByte(bossRace); // Boss Race
+		msg.add<uint32_t>(bossKillCount); // Kill Count
+		msg.add<uint16_t>(bonusBossSlotOne); // Loot Bonus
+		msg.addByte(0); // Kill Bonus
+		msg.addByte(bossRace); // Boss Race
+		msg.add<uint32_t>(isSlotOneInactive == 1 ? 0 : removePrice); // Remove Price
+		msg.addByte(isSlotOneInactive); // Inactive? (Only true if equal to Boosted Boss)
+		bossesUnlockedSize--;
+	}
+
+	uint32_t slotTwoPoints = 1500;
+	bool isSlotTwoUnlocked = (playerBossPoints >= slotTwoPoints ? true : false);
+	msg.addByte(isSlotTwoUnlocked ? 1 : 0);
+	msg.add<uint32_t>(isSlotTwoUnlocked ? bossIdSlotTwo : slotTwoPoints);
+	if (isSlotTwoUnlocked && bossIdSlotTwo != 0) {
+		// Variables Boss Slot Two
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotTwo);
+		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+		auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotTwo));
+		auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotTwo);
+		uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
+		uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
+		// Bytes Slot Two
+		msg.addByte(bossRace); // Boss Race
+		msg.add<uint32_t>(bossKillCount); // Kill Count
+		msg.add<uint16_t>(bonusBossSlotTwo); // Loot Bonus
+		msg.addByte(0); // Kill Bonus
+		msg.addByte(bossRace); // Boss Race
+		msg.add<uint32_t>(isSlotTwoInactive == 1 ? 0 : removePrice); // Remove Price
+		msg.addByte(isSlotTwoInactive); // Inactive? (Only true if equal to Boosted Boss)
+		bossesUnlockedSize--;
+	}
+
+	bool isTodaySlotUnlocked = g_configManager().getBoolean(BOOSTED_BOSS_SLOT);
+	msg.addByte(isTodaySlotUnlocked ? 1 : 0);
+	msg.add<uint32_t>(boostedBossId);
+	if (isTodaySlotUnlocked && boostedBossId != 0) {
+		std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
+		const MonsterType* mType = g_monsters().getMonsterType(boostedBossName);
+		auto boostedBossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+		auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
+		auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
+		auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
+		msg.addByte(boostedBossRace); // Boss Race
+		msg.add<uint32_t>(boostedBossKillCount); // Kill Count
+		msg.add<uint16_t>(boostedLootBonus); // Loot Bonus
+		msg.addByte(boostedKillBonus); // Kill Bonus
+		msg.addByte(boostedBossRace); // Boss Race
+		msg.add<uint32_t>(0); // Remove Price
+		msg.addByte(0); // Inactive? (Only true if equal to Boosted Boss)
+	}
+
+	msg.addByte(bossesUnlockedSize != 0 ? 1 : 0);
+	if (bossesUnlockedSize != 0) {
+		msg.add<uint16_t>(bossesUnlockedSize);
+		for (const auto &bossId : bossesUnlockedList) {
+			if (bossId == bossIdSlotOne || bossId == bossIdSlotTwo)
+				continue;
+
+			const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossId);
+			if (!mType) {
+				continue;
+			}
+
+			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+			msg.add<uint32_t>(bossId);
+			msg.addByte(bossRace);
+		}
+	}
+
+	writeToOutputBuffer(msg);
+	parseSendResourceBalance();
+}
+
+void ProtocolGame::parseBosstiarySlot(NetworkMessage &msg) {
+	uint8_t slotBossId = msg.getByte();
+	uint32_t selectedBossId = msg.get<uint32_t>();
+
+	addGameTask(&Game::playerBosstiarySlot, player->getID(), slotBossId, selectedBossId);
+}
+
+void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos) {
+	if (!podium) {
+		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0xC2);
+
+	auto podiumVisible = podium->getCustomAttribute("PodiumVisible");
+	auto lookType = podium->getCustomAttribute("LookType");
+	auto lookDirection = podium->getCustomAttribute("LookDirection");
+
+	bool isBossSelected = false;
+	uint16_t lookValue = 0;
+	if (lookType) {
+		lookValue = static_cast<uint16_t>(lookType->getInteger());
+		isBossSelected = true;
+	}
+
+	msg.add<uint16_t>(isBossSelected ? lookValue : 0); // Boss LookType
+	if (isBossSelected) {
+		auto lookHead = podium->getCustomAttribute("LookHead");
+		auto lookBody = podium->getCustomAttribute("LookBody");
+		auto lookLegs = podium->getCustomAttribute("LookLegs");
+		auto lookFeet = podium->getCustomAttribute("LookFeet");
+
+		msg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInteger()) : 0);
+		msg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInteger()) : 0);
+		msg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInteger()) : 0);
+		msg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInteger()) : 0);
+
+		auto lookAddons = podium->getCustomAttribute("LookAddons");
+		msg.addByte(lookAddons ? static_cast<uint8_t>(lookAddons->getInteger()) : 0);
+	} else {
+		msg.add<uint16_t>(0); // Boss LookType
+	}
+	msg.add<uint16_t>(0); // Size of an unknown list. (No ingame visual effect)
+
+	auto unlockedBosses = g_ioBosstiary().getBosstiaryFinished(player, 2);
+	auto unlockedBossesSize = static_cast<uint16_t>(unlockedBosses.size());
+	msg.add<uint16_t>(unlockedBossesSize);
+
+	for (const auto &boss : unlockedBosses) {
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(boss);
+		if (!mType) {
+			continue;
+		}
+		const auto &bossName = mType->name;
+		auto bossOutfit = mType->info.outfit;
+
+		msg.addString(bossName); // Nome from boss unlocked
+		msg.add<uint32_t>(boss); // ID from boss unlocked
+		msg.add<uint16_t>(bossOutfit.lookType); // LookType from boss unlocked
+		if (bossOutfit.lookType != 0) {
+			msg.addByte(bossOutfit.lookHead); // LookHead from boss unlocked
+			msg.addByte(bossOutfit.lookBody); // LookBody from boss unlocked
+			msg.addByte(bossOutfit.lookLegs); // LookLegs from boss unlocked
+			msg.addByte(bossOutfit.lookFeet); // LookFeet from boss unlocked
+			msg.addByte(bossOutfit.lookAddons); // LookAddon from boss unlocked
+		} else {
+			msg.add<uint16_t>(bossOutfit.lookTypeEx); // LookTypeEx from boss unlocked
+		}
+	}
+
+	msg.addPosition(position); // Position of the podium on the map
+	msg.add<uint16_t>(itemId); // ClientID of the podium
+	msg.addByte(stackPos); // StackPos of the podium on the map
+
+	msg.addByte(podiumVisible ? static_cast<uint8_t>(podiumVisible->getInteger()) : 0x01); // A boolean saying if it's visible or not
+	msg.addByte(lookType ? 0x01 : 0x00); // A boolean saying if there's a boss selected
+	msg.addByte(lookDirection ? static_cast<uint8_t>(lookDirection->getInteger()) : 2); // Direction where the boss is looking
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::parseSetBossPodium(NetworkMessage &msg) const {
+	uint32_t bossRaceId = msg.get<uint32_t>();
+	Position pos = msg.getPosition();
+	uint16_t itemId = msg.get<uint16_t>();
+	uint8_t stackpos = msg.getByte();
+	uint8_t direction = msg.getByte();
+	uint8_t podiumVisible = msg.getByte();
+	uint8_t bossVisible = msg.getByte();
+
+	g_game().playerSetBossPodium(player->getID(), bossRaceId, pos, stackpos, itemId, direction, podiumVisible, bossVisible);
+}
+
+void ProtocolGame::sendBosstiaryCooldownTimer() {
+	NetworkMessage msg;
+	msg.addByte(0xBD);
+
+	auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldown(player);
+	auto bossesOnTrackerSize = static_cast<uint16_t>(bossesOnTracker.size());
+	msg.add<uint16_t>(bossesOnTrackerSize); // Number of bosses on timer
+	for (const auto &bossRaceId : bossesOnTracker) {
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossRaceId);
+		if (!mType) {
+			continue;
+		}
+
+		int32_t timer = player->getStorageValue(mType->info.bossStorageCooldown);
+		uint64_t sendTimer = timer > 0 ? static_cast<uint64_t>(timer) : 0;
+		msg.add<uint32_t>(bossRaceId); // bossRaceId
+		msg.add<uint64_t>(sendTimer); // Boss cooldown in seconds
+	}
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendBosstiaryEntryChanged(uint32_t bossid) {
+	NetworkMessage msg;
+	msg.addByte(0xE6);
+	msg.add<uint32_t>(bossid);
+	writeToOutputBuffer(msg);
 }

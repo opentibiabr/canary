@@ -176,7 +176,9 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", FORGE_BONUS_SUCCESS_RATE);
 	registerEnumIn(L, "configKeys", FORGE_TIER_LOSS_REDUCTION);
 	registerEnumIn(L, "configKeys", FORGE_INFLUENCED_CREATURES_LIMIT);
-
+	registerEnumIn(L, "configKeys", BOOSTED_BOSS_SLOT);
+	registerEnumIn(L, "configKeys", BOOSTED_BOSS_LOOT_BONUS);
+	registerEnumIn(L, "configKeys", BOOSTED_BOSS_KILL_BONUS);
 #undef registerEnumIn
 }
 

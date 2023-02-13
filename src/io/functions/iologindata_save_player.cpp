@@ -45,7 +45,6 @@ bool IOLoginDataSave::savePlayerForgeHistory(Player* player) {
 
 bool IOLoginDataSave::saveRewardItems(Player* player) {
 	std::ostringstream query;
-	query.str(std::string());
 	query << "DELETE FROM `player_rewards` WHERE `player_id` = " << player->getGUID();
 
 	if (!Database::getInstance().executeQuery(query.str())) {
@@ -70,5 +69,32 @@ bool IOLoginDataSave::saveRewardItems(Player* player) {
 			return false;
 		}
 	}
+	return true;
+}
+
+bool IOLoginDataSave::savePlayerBosstiary(const Player* player) {
+	std::ostringstream query;
+	query << "DELETE FROM `player_bosstiary` WHERE `player_id` = " << player->getGUID();
+	if (!Database::getInstance().executeQuery(query.str())) {
+		return false;
+	}
+
+	query.str(std::string());
+
+	DBInsert insertQuery("INSERT INTO `player_bosstiary` (`player_id`, `bossIdSlotOne`, `bossIdSlotTwo`, `removeTimes`) VALUES");
+	// Append query informations
+	query << player->getGUID() << ','
+		  << player->getSlotBossId(1) << ','
+		  << player->getSlotBossId(2) << ','
+		  << std::to_string(player->getRemoveTimes());
+
+	if (!insertQuery.addRow(query)) {
+		return false;
+	}
+
+	if (!insertQuery.execute()) {
+		return false;
+	}
+
 	return true;
 }

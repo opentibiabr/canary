@@ -103,13 +103,10 @@ class Player final : public Creature, public Cylinder {
 			return this;
 		}
 
-		void setID() override {
-			if (id == 0) {
-				if (guid != 0) {
-					id = 0x10000000 + guid;
-				}
-			}
-		}
+		void setID() override;
+
+		static uint32_t getFirstID();
+		static uint32_t getLastID();
 
 		static MuteCountMap muteCountMap;
 
@@ -2266,6 +2263,9 @@ class Player final : public Creature, public Cylinder {
 		}
 
 	private:
+		static uint32_t playerFirstID;
+		static uint32_t playerLastID;
+
 		std::forward_list<Condition*> getMuteConditions() const;
 
 		void checkTradeState(const Item* item);
@@ -2541,8 +2541,6 @@ class Player final : public Creature, public Cylinder {
 		bool exerciseTraining = false;
 		bool moved = false;
 		bool dead = false;
-
-		static uint32_t playerAutoID;
 
 		void updateItemsLight(bool internal = false);
 		uint16_t getStepSpeed() const override {

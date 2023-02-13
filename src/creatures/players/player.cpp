@@ -27,8 +27,6 @@
 
 MuteCountMap Player::muteCountMap;
 
-uint32_t Player::playerAutoID = 0x10010000;
-
 Player::Player(ProtocolGame_ptr p) :
 	Creature(),
 	lastPing(OTSYS_TIME()),
@@ -96,9 +94,27 @@ bool Player::isPushable() const {
 	return Creature::isPushable();
 }
 
+uint32_t Player::playerFirstID = 0x10000000;
+uint32_t Player::playerLastID = 0x50000000;
+uint32_t Player::getFirstID() {
+	return playerFirstID;
+}
+uint32_t Player::getLastID() {
+	return playerLastID;
+}
+
+void Player::setID() {
+	// guid = player id from database
+	if (id == 0 && guid != 0) {
+		id = getFirstID() + guid;
+		if (id == std::numeric_limits<uint32_t>::max()) {
+			SPDLOG_ERROR("[{}] Player {} has max 'id' value of uint32_t", __FUNCTION__, getName());
+		}
+	}
+}
+
 std::string Player::getDescription(int32_t lookDistance) const {
 	std::ostringstream s;
-
 	if (lookDistance == -1) {
 		s << "yourself.";
 

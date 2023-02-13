@@ -16,6 +16,7 @@ class IOLoginDataLoad : public IOLoginData {
 	public:
 		static void loadPlayerForgeHistory(Player* player, DBResult_ptr result);
 		static void loadRewardItems(Player* player);
+		static void loadPlayerBosstiary(Player* player, DBResult_ptr result);
 
 	private:
 		static void bindRewardBag(Player* player, ItemMap &itemMap);

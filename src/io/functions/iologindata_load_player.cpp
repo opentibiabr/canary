@@ -74,3 +74,15 @@ void IOLoginDataLoad::insertItemsIntoRewardBag(const IOLoginData::ItemMap &itemM
 		}
 	}
 }
+
+void IOLoginDataLoad::loadPlayerBosstiary(Player* player, DBResult_ptr result) {
+	std::ostringstream query;
+	query << "SELECT * FROM `player_bosstiary` WHERE `player_id` = " << player->getGUID();
+	if (result = Database::getInstance().storeQuery(query.str())) {
+		do {
+			player->setSlotBossId(1, result->getNumber<uint16_t>("bossIdSlotOne"));
+			player->setSlotBossId(2, result->getNumber<uint16_t>("bossIdSlotTwo"));
+			player->setRemoveBossTime(result->getU8FromString(result->getString("removeTimes"), __FUNCTION__));
+		} while (result->next());
+	}
+}

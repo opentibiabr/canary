@@ -185,7 +185,8 @@ int ItemFunctions::luaItemGetActionId(lua_State* L) {
 	// item:getActionId()
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		lua_pushnumber(L, item->getAttribute<lua_Number>(ItemAttribute_t::ACTIONID));
+		auto actionId = item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID);
+		lua_pushnumber(L, actionId);
 	} else {
 		lua_pushnil(L);
 	}
@@ -231,7 +232,7 @@ int ItemFunctions::luaItemGetFluidType(lua_State* L) {
 	// item:getFluidType()
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		lua_pushnumber(L, item->getAttribute<lua_Number>(ItemAttribute_t::FLUIDTYPE));
+		lua_pushnumber(L, static_cast<lua_Number>(item->getAttribute<uint16_t>(ItemAttribute_t::FLUIDTYPE)));
 	} else {
 		lua_pushnil(L);
 	}
@@ -366,7 +367,7 @@ int ItemFunctions::luaItemGetAttribute(lua_State* L) {
 			return 1;
 		}
 
-		lua_pushnumber(L, item->getAttribute<lua_Number>(attribute));
+		lua_pushnumber(L, static_cast<lua_Number>(item->getAttribute<int64_t>(attribute)));
 	} else if (item->isAttributeString(attribute)) {
 		pushString(L, item->getAttribute<std::string>(attribute));
 	} else {

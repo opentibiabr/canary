@@ -25,6 +25,12 @@ monster.changeTarget = {
 	chance = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 1289,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.ForgottenKnowledge.DragonkingTimer
+}
+
 monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,

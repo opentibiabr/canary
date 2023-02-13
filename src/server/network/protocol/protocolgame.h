@@ -261,6 +261,15 @@ class ProtocolGame final : public Protocol {
 		void sendForgeHistory(uint8_t page);
 		void sendForgeSkillStats(NetworkMessage &msg) const;
 
+		void sendBosstiaryData();
+		void parseSendBosstiary();
+		void parseSendBosstiarySlots();
+		void parseBosstiarySlot(NetworkMessage &msg);
+		void sendBossPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos);
+		void parseSetBossPodium(NetworkMessage &msg) const;
+		void sendBosstiaryCooldownTimer();
+		void sendBosstiaryEntryChanged(uint32_t bossid);
+
 		void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 		void sendMagicEffect(const Position &pos, uint8_t type);
 		void sendRestingStatus(uint8_t protection);
@@ -407,7 +416,6 @@ class ProtocolGame final : public Protocol {
 		void parseHotkeyEquip(NetworkMessage &msg);
 
 		// Help functions
-
 		// translate a tile to clientreadable format
 		void GetTileDescription(const Tile* tile, NetworkMessage &msg);
 

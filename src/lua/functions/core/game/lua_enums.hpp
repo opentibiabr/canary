@@ -63,6 +63,7 @@ class LuaEnums final : LuaScriptInterface {
 		static void initCreaturesEventEnums(lua_State* L);
 		static void initForgeEnums(lua_State* L);
 		static void initWebhookEnums(lua_State* L);
+		static void initBosstiaryEnums(lua_State* L);
 };
 
 #endif // SRC_LUA_FUNCTIONS_CORE_GAME_LUA_ENUMS_HPP_

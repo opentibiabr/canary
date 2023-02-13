@@ -304,8 +304,8 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 			}
 
 			myRewardChest->setParent(container->getParent()->getTile());
-			for (const auto &[mapRewardId, rewardPtr] : player->rewardMap) {
-				rewardPtr->setParent(myRewardChest);
+			for (const auto &[mapRewardId, reward] : player->rewardMap) {
+				reward->setParent(myRewardChest);
 			}
 
 			openContainer = myRewardChest;
@@ -314,7 +314,7 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 		auto rewardId = container->getAttribute<uint32_t>(ItemAttribute_t::DATE);
 		// Reward container proxy created when the boss dies
 		if (container->getID() == ITEM_REWARD_CONTAINER && !container->getReward()) {
-			if (auto reward = player->getReward(container->getAttribute<uint64_t>(ItemAttribute_t::DATE), false)) {
+			if (auto reward = player->getReward(rewardId, false)) {
 				reward->setParent(container->getRealParent());
 				openContainer = reward;
 			} else {

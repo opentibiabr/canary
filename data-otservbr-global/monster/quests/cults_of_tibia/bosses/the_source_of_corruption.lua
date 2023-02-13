@@ -25,6 +25,12 @@ monster.changeTarget = {
 	chance = 20
 }
 
+monster.bosstiary = {
+	bossRaceId = 1500,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.CultsOfTibia.FinalBoss.BossTimer
+}
+
 monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,

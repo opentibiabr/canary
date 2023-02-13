@@ -3145,16 +3145,24 @@ void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position &pos, 
 		std::forward_list<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
 			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
-			SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerBrowseField, this, playerId, pos));
+			SchedulerTask* task;
+			if (itemId != ITEM_PODIUM_OF_VIGOUR) {
+				task = createSchedulerTask(400, std::bind_front(&Player::sendPodiumWindow, player, item, pos, itemId, stackPos));
+			} else {
+				task = createSchedulerTask(400, std::bind_front(&Player::sendBossPodiumWindow, player, item, pos, itemId, stackPos));
+			}
 			player->setNextWalkActionTask(task);
-
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
 		}
 		return;
 	}
 
-	player->sendPodiumWindow(item, pos, itemId, stackPos);
+	if (itemId != ITEM_PODIUM_OF_VIGOUR) {
+		player->sendPodiumWindow(item, pos, itemId, stackPos);
+	} else {
+		player->sendBossPodiumWindow(item, pos, itemId, stackPos);
+	}
 }
 
 void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t podiumVisible, uint8_t direction) {
@@ -3178,6 +3186,14 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	if (!tile) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
+	}
+
+	if (outfit.lookType != 0) {
+		item->setCustomAttribute("PastLookType", static_cast<int64_t>(outfit.lookType));
+	}
+
+	if (outfit.lookMount != 0) {
+		item->setCustomAttribute("PastLookMount", static_cast<int64_t>(outfit.lookMount));
 	}
 
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
@@ -3209,8 +3225,10 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		item->setCustomAttribute("LookLegs", static_cast<int64_t>(outfit.lookLegs));
 		item->setCustomAttribute("LookFeet", static_cast<int64_t>(outfit.lookFeet));
 		item->setCustomAttribute("LookAddons", static_cast<int64_t>(outfit.lookAddons));
-	} else {
+	} else if (auto pastLookType = item->getCustomAttribute("PastLookType");
+			   pastLookType && pastLookType->getInteger() > 0) {
 		item->removeCustomAttribute("LookType");
+		item->removeCustomAttribute("PastLookType");
 	}
 
 	if (outfit.lookMount != 0) {
@@ -3219,17 +3237,46 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		item->setCustomAttribute("LookMountBody", static_cast<int64_t>(outfit.lookMountBody));
 		item->setCustomAttribute("LookMountLegs", static_cast<int64_t>(outfit.lookMountLegs));
 		item->setCustomAttribute("LookMountFeet", static_cast<int64_t>(outfit.lookMountFeet));
-	} else {
+	} else if (auto pastLookMount = item->getCustomAttribute("PastLookMount");
+			   pastLookMount && pastLookMount->getInteger() > 0) {
 		item->removeCustomAttribute("LookMount");
+		item->removeCustomAttribute("PastLookMount");
 	}
 
 	item->setCustomAttribute("PodiumVisible", static_cast<int64_t>(podiumVisible));
 	item->setCustomAttribute("LookDirection", static_cast<int64_t>(direction));
 
+	// Change Podium name
+	if (outfit.lookType != 0 || outfit.lookMount != 0) {
+		std::ostringstream name;
+		name << "podium of renown displaying the ";
+		bool outfited = false;
+		if (outfit.lookType != 0) {
+			const Outfit* outfitInfo = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
+			if (!outfitInfo) {
+				return;
+			}
+
+			name << outfitInfo->name << " outfit";
+			outfited = true;
+		}
+
+		if (outfit.lookMount != 0) {
+			if (outfited) {
+				name << " on the ";
+			}
+			name << mount->name << " mount";
+		}
+		item->setAttribute(ItemAttribute_t::NAME, name.str());
+
+	} else {
+		item->removeAttribute(ItemAttribute_t::NAME);
+	}
+
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, pos, true);
 
-	// send to client
+	// Send to client
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendUpdateTileItem(tile, pos, item);
@@ -7958,6 +8005,170 @@ void Game::playerBrowseForgeHistory(uint32_t playerId, uint8_t page) {
 	player->forgeHistory(page);
 }
 
+void Game::playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selectedBossId) {
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	player->updateUIExhausted();
+
+	uint32_t bossIdSlot = player->getSlotBossId(slotId);
+
+	if (uint32_t boostedBossId = g_ioBosstiary().getBoostedBossId();
+		selectedBossId == 0 && bossIdSlot != boostedBossId) {
+		uint8_t removeTimes = player->getRemoveTimes();
+		uint32_t removePrice = g_ioBosstiary().calculteRemoveBoss(removeTimes);
+		g_game().removeMoney(player, removePrice, 0, true);
+		player->addRemoveTime();
+	}
+
+	player->setSlotBossId(slotId, selectedBossId);
+}
+
+void Game::playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, uint8_t podiumVisible, uint8_t bossVisible) {
+	Player* player = getPlayerByID(playerId);
+	if (!player || pos.x == 0xFFFF) {
+		return;
+	}
+
+	Thing* thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_TOPDOWN_ITEM);
+	if (!thing) {
+		return;
+	}
+
+	Item* item = thing->getItem();
+	if (!item || item->getID() != itemId || !item->isPodium() || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	if (bossRaceId != 0) {
+		item->setCustomAttribute("PodiumBossId", static_cast<int64_t>(bossRaceId));
+	} else {
+		auto podiumBoss = item->getCustomAttribute("PodiumBossId");
+		if (podiumBoss) {
+			bossRaceId = static_cast<uint32_t>(podiumBoss->getInteger());
+		}
+	}
+
+	const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossRaceId);
+	if (!mType) {
+		return;
+	}
+
+	const auto tile = dynamic_cast<Tile*>(item->getParent());
+	if (!tile) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
+		if (std::forward_list<Direction> listDir;
+			player->getPathTo(pos, listDir, 0, 1, true, false)) {
+			g_dispatcher().addTask(createTask(std::bind_front(&Game::playerAutoWalk, this, player->getID(), listDir)));
+			SchedulerTask* task = createSchedulerTask(400, std::bind_front(&Game::playerBrowseField, this, playerId, pos));
+			player->setNextWalkActionTask(task);
+		} else {
+			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
+		}
+		return;
+	}
+
+	if (auto bossOutfit = mType->info.outfit;
+		bossOutfit.lookType != 0 && bossVisible) {
+		item->setCustomAttribute("LookType", static_cast<int64_t>(bossOutfit.lookType));
+		item->setCustomAttribute("LookHead", static_cast<int64_t>(bossOutfit.lookHead));
+		item->setCustomAttribute("LookBody", static_cast<int64_t>(bossOutfit.lookBody));
+		item->setCustomAttribute("LookLegs", static_cast<int64_t>(bossOutfit.lookLegs));
+		item->setCustomAttribute("LookFeet", static_cast<int64_t>(bossOutfit.lookFeet));
+		item->setCustomAttribute("LookAddons", static_cast<int64_t>(bossOutfit.lookAddons));
+	} else {
+		item->removeCustomAttribute("LookType");
+	}
+
+	item->setCustomAttribute("PodiumVisible", static_cast<int64_t>(podiumVisible));
+	item->setCustomAttribute("LookDirection", static_cast<int64_t>(direction));
+	item->setCustomAttribute("BossVisible", static_cast<int64_t>(bossVisible));
+
+	// Change Podium name
+	if (bossVisible) {
+		std::ostringstream name;
+		name << "podium of vigour displaying " << mType->name;
+		item->setAttribute(ItemAttribute_t::NAME, name.str());
+	} else {
+		item->removeAttribute(ItemAttribute_t::NAME);
+	}
+
+	SpectatorHashSet spectators;
+	g_game().map.getSpectators(spectators, pos, true);
+
+	// Send to client
+	for (Creature* spectator : spectators) {
+		if (Player* tmpPlayer = spectator->getPlayer()) {
+			tmpPlayer->sendUpdateTileItem(tile, pos, item);
+		}
+	}
+}
+
+void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId) {
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	Thing* thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_TOPDOWN_ITEM);
+	if (!thing) {
+		return;
+	}
+
+	Item* item = thing->getItem();
+	if (!item || item->getID() != itemId || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
+		if (std::forward_list<Direction> listDir;
+			player->getPathTo(pos, listDir, 0, 1, true, true)) {
+			g_dispatcher().addTask(createTask(std::bind_front(&Game::playerAutoWalk, this, player->getID(), listDir)));
+
+			SchedulerTask* task = createSchedulerTask(400, std::bind_front(&Game::playerRotatePodium, this, playerId, pos, stackPos, itemId));
+			player->setNextWalkActionTask(task);
+		} else {
+			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
+		}
+		return;
+	}
+
+	auto podiumBoss = item->getCustomAttribute("PodiumBossId");
+	auto lookDirection = item->getCustomAttribute("LookDirection");
+	auto podiumVisible = item->getCustomAttribute("PodiumVisible");
+	auto bossVisible = item->getCustomAttribute("BossVisible");
+
+	auto podiumBossId = static_cast<uint8_t>(podiumBoss ? podiumBoss->getInteger() : 0);
+	uint8_t directionValue;
+	if (lookDirection) {
+		directionValue = static_cast<uint8_t>(lookDirection->getInteger() >= 3 ? 0 : lookDirection->getInteger() + 1);
+	} else {
+		directionValue = 2;
+	}
+	auto isPodiumVisible = static_cast<uint8_t>(podiumVisible ? podiumVisible->getInteger() : 1);
+	bool isBossVisible = bossVisible ? bossVisible->getInteger() : false;
+
+	if (!isBossVisible || podiumBossId == 0) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	playerSetBossPodium(playerId, podiumBossId, pos, stackPos, itemId, directionValue, isPodiumVisible, isBossVisible);
+}
+
 void Game::updatePlayerSaleItems(uint32_t playerId) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
@@ -8454,4 +8665,36 @@ bool Game::addInfluencedMonster(Monster* monster) {
 		return true;
 	}
 	return false;
+}
+
+bool Game::addItemStoreInbox(const Player* player, uint32_t itemId) {
+	Item* decoKit = Item::CreateItem(ITEM_DECORATION_KIT, 1);
+	if (!decoKit) {
+		return false;
+	}
+	const ItemType &itemType = Item::items[itemId];
+	std::string description = fmt::format("Unwrap it in your own house to create a <{}>.", itemType.name);
+	decoKit->setAttribute(ItemAttribute_t::DESCRIPTION, description);
+	decoKit->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
+
+	Thing* thing = player->getThing(CONST_SLOT_STORE_INBOX);
+	if (!thing) {
+		return false;
+	}
+
+	Item* inboxItem = thing->getItem();
+	if (!inboxItem) {
+		return false;
+	}
+
+	Container* inboxContainer = inboxItem->getContainer();
+	if (!inboxContainer) {
+		return false;
+	}
+
+	if (internalAddItem(inboxContainer, decoKit) != RETURNVALUE_NOERROR) {
+		inboxContainer->internalAddThing(decoKit);
+	}
+
+	return true;
 }

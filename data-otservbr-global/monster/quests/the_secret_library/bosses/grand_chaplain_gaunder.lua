@@ -29,6 +29,11 @@ monster.changeTarget = {
 	chance = 10
 }
 
+monster.bosstiary = {
+	bossRaceId = 1579,
+	bossRace = RARITY_BANE
+}
+
 monster.strategiesTarget = {
 	nearest = 100,
 }

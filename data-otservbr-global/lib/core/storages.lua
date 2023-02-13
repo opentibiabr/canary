@@ -2702,8 +2702,10 @@ Storage = {
 					Darashia = 46860,
 					Thais = 46861,
 					Orclands = 46862,
-					IceIslands = 46863},
-				Cobra = 46864},
+					IceIslands = 46863
+				},
+				Cobra = 46864
+			},
 			HandOfTheInquisitionOutfits = {},
 			-- Kilmaresh = {}, done earlier in the file
 		},
@@ -2730,6 +2732,14 @@ Storage = {
 		U12_80 = { -- update 12.80 - Reserved Storages 47801 - 47850
 			RoyalCostumeOutfits = {}
 		},
+	},
+	-- Reserved Storages 64000 - 65000
+	BosstiaryCooldown = {
+		EarlOsam = 64000,
+		CountVlarkorth = 64001,
+		LordAzaram = 64002,
+		SirBaelocNictros = 64003,
+		DukeKrule = 64004
 	}
 }
 

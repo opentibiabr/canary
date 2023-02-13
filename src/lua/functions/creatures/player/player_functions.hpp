@@ -288,6 +288,13 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "setFaction", PlayerFunctions::luaPlayerSetFaction);
 			registerMethod(L, "Player", "getFaction", PlayerFunctions::luaPlayerGetFaction);
 
+			// Bosstiary Functions
+			registerMethod(L, "Player", "addBosstiaryKill", PlayerFunctions::luaPlayerAddBosstiaryKill);
+			registerMethod(L, "Player", "setBossPoints", PlayerFunctions::luaPlayerSetBossPoints);
+			registerMethod(L, "Player", "setRemoveBossTime", PlayerFunctions::luaPlayerSetRemoveBossTime);
+			registerMethod(L, "Player", "getSlotBossId", PlayerFunctions::luaPlayerGetSlotBossId);
+			registerMethod(L, "Player", "getBossBonus", PlayerFunctions::luaPlayerGetBossBonus);
+
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
 			MountFunctions::init(L);
@@ -567,6 +574,12 @@ class PlayerFunctions final : LuaScriptInterface {
 
 		static int luaPlayerSetFaction(lua_State* L);
 		static int luaPlayerGetFaction(lua_State* L);
+
+		static int luaPlayerAddBosstiaryKill(lua_State* L);
+		static int luaPlayerSetBossPoints(lua_State* L);
+		static int luaPlayerSetRemoveBossTime(lua_State* L);
+		static int luaPlayerGetSlotBossId(lua_State* L);
+		static int luaPlayerGetBossBonus(lua_State* L);
 
 		friend class CreatureFunctions;
 };

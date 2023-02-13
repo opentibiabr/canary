@@ -128,6 +128,10 @@ class MonsterTypeFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "MonsterType", "respawnTypePeriod", MonsterTypeFunctions::luaMonsterTypeRespawnTypePeriod);
 			registerMethod(L, "MonsterType", "respawnTypeIsUnderground", MonsterTypeFunctions::luaMonsterTypeRespawnTypeIsUnderground);
+
+			registerMethod(L, "MonsterType", "bossRace", MonsterTypeFunctions::luaMonsterTypeBossRace);
+			registerMethod(L, "MonsterType", "bossRaceId", MonsterTypeFunctions::luaMonsterTypeBossRaceId);
+			registerMethod(L, "MonsterType", "bossStorageCooldown", MonsterTypeFunctions::luaMonsterTypeBossStorageCooldown);
 		}
 
 	private:
@@ -240,6 +244,10 @@ class MonsterTypeFunctions final : LuaScriptInterface {
 
 		static int luaMonsterTypeRespawnTypePeriod(lua_State* L);
 		static int luaMonsterTypeRespawnTypeIsUnderground(lua_State* L);
+
+		static int luaMonsterTypeBossRace(lua_State* L);
+		static int luaMonsterTypeBossRaceId(lua_State* L);
+		static int luaMonsterTypeBossStorageCooldown(lua_State* L);
 };
 
 #endif // SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_TYPE_FUNCTIONS_HPP_

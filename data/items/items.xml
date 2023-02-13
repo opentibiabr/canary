@@ -53864,7 +53864,9 @@
 	<item id="38706" article="a" name="observer tapestry">
 		<attribute key="weight" value="800"/>
 	</item>
-	<item id="38707" article="a" name="podium of vigour"/>
+	<item id="38707" article="a" name="podium of vigour">
+		<attribute key="wrapableto" value="23398"/>
+	</item>
 	<item fromid="38712" toid="38723" article="a" name="flooded stone floor"/>
 	<item fromid="38724" toid="38735" name="flooded grass"/>
 	<item id="38736" article="a" name="trapped water"/>

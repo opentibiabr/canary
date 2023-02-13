@@ -3235,3 +3235,85 @@ int PlayerFunctions::luaPlayerUpdateUIExhausted(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerAddBosstiaryKill(lua_State* L) {
+	// player:addBosstiaryKill(name[, amount = 1])
+	if (Player* player = getUserdata<Player>(L, 1);
+		player) {
+		const MonsterType* mtype = g_monsters().getMonsterType(getString(L, 2));
+		if (mtype) {
+			g_ioBosstiary().addBosstiaryKill(player, mtype, getNumber<uint32_t>(L, 3, 1));
+			pushBoolean(L, true);
+		} else {
+			lua_pushnil(L);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetBossPoints(lua_State* L) {
+	// player:setBossPoints()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->setBossPoints(getNumber<uint32_t>(L, 2, 0));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetRemoveBossTime(lua_State* L) {
+	// player:setRemoveBossTime()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->setRemoveBossTime(getNumber<uint8_t>(L, 2, 0));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetSlotBossId(lua_State* L) {
+	// player:getSlotBossId(slotId)
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	uint8_t slotId = getNumber<uint8_t>(L, 2);
+	auto bossId = player->getSlotBossId(slotId);
+	lua_pushnumber(L, static_cast<lua_Number>(bossId));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetBossBonus(lua_State* L) {
+	// player:getBossBonus(slotId)
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	uint8_t slotId = getNumber<uint8_t>(L, 2);
+	auto bossId = player->getSlotBossId(slotId);
+
+	uint32_t playerBossPoints = player->getBossPoints();
+	uint16_t currentBonus = g_ioBosstiary().calculateLootBonus(playerBossPoints);
+
+	auto bossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossId);
+	uint16_t bonusBoss = currentBonus + (bossLevel == 3 ? 25 : 0);
+
+	lua_pushnumber(L, static_cast<lua_Number>(bonusBoss));
+	return 1;
+}

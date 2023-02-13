@@ -675,37 +675,31 @@ void Player::closeContainer(uint8_t cid) {
 
 	OpenContainer openContainer = it->second;
 	Container* container = openContainer.container;
-	openContainers.erase(it);
 
-	if (!container) {
-		return;
-	}
-
-	if (container->isAnykindOfRewardContainer() && !hasAnykindOfRewardContainerOpen()) {
+	if(container && container->isAnykindOfRewardContainer() && !hasOtherRewardContainerOpen(container)) {
 		removeEmptyRewards();
 	}
-
-	if (container->getID() == ITEM_BROWSEFIELD) {
+	openContainers.erase(it);
+	if (container && container->getID() == ITEM_BROWSEFIELD) {
 		container->decrementReferenceCounter();
 	}
 }
 
 void Player::removeEmptyRewards() {
-	for (auto container = rewardMap.begin(); container != rewardMap.end();) {
-		if (container->second->size() == 0) {
-			auto &toRemove = container->second;
-			container = rewardMap.erase(container);
-			getRewardChest()->removeThing(toRemove, 1);
-			delete toRemove;
-		} else {
-			container++;
+	std::erase_if(rewardMap, [this](const auto &rewardBag) {
+		auto [id, reward] = rewardBag;
+		if (reward->empty()) {
+			this->getRewardChest()->removeThing(reward, 1);
+			reward->decrementReferenceCounter();
+			return true;
 		}
-	}
+		return false;
+	});
 }
 
-bool Player::hasAnykindOfRewardContainerOpen() const {
-	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [](const auto &containerPair) {
-		return containerPair.second.container->isAnykindOfRewardContainer();
+bool Player::hasOtherRewardContainerOpen(const Container* container) const {
+	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [container](const auto &containerPair) {
+		return containerPair.second.container != container && containerPair.second.container->isAnykindOfRewardContainer();
 	});
 }
 

@@ -77,10 +77,10 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 		for _, con in ipairs(scores) do
 			-- Ignoring stamina for now because I heard you get receive rewards even when it's depleted
 			local reward, stamina
-			if con.player then
+			if con.player and con.score ~= 0 then
 				reward = con.player:getReward(timestamp, true)
 				stamina = con.player:getStamina()
-			else
+			elseif con.score ~= 0 then
 				stamina = con.stamina or 0
 			end
 

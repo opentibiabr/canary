@@ -21,22 +21,19 @@ function PushSeparated(buffer, sep, ...)
 	end
 end
 
-function InsertItems(buffer, info, parent, items, bagSid)
+function InsertItems(buffer, info, parent, items)
 	local start = info.running
 	for _, item in ipairs(items) do
 		if item ~= nil then
-			if _ ~= 1 or parent > 100 then
-				table.insert(buffer, ",")
-			end
-		if item:getId() == ITEM_REWARD_CONTAINER then
+			if item:getId() == ITEM_REWARD_CONTAINER then
 				table.insert(buffer, "(")
-				PushSeparated(buffer, ",", info.playerGuid, 0, bagSid, item:getId(), item:getSubType(), db.escapeString(item:serializeAttributes()))
-				table.insert(buffer, ")")
+				PushSeparated(buffer, ",", info.playerGuid, 0, parent, item:getId(), item:getSubType(), db.escapeString(item:serializeAttributes()))
+				table.insert(buffer, "),")
 			else
 				info.running = info.running + 1
 				table.insert(buffer, "(")
 				PushSeparated(buffer, ",", info.playerGuid, parent, info.running, item:getId(), item:getSubType(), db.escapeString(item:serializeAttributes()))
-				table.insert(buffer, ")")
+				table.insert(buffer, "),")
 			end
 
 			if item:isContainer() then
@@ -47,7 +44,7 @@ function InsertItems(buffer, info, parent, items, bagSid)
 						table.insert(subItems, item:getItem(i - 1))
 					end
 
-					InsertItems(buffer, info, bagSid, subItems, bagSid)
+					InsertItems(buffer, info, info.running, subItems)
 				end
 			end
 		end
@@ -58,9 +55,8 @@ end
 function InsertRewardItems(playerGuid, timestamp, itemList)
 	db.asyncStoreQuery('select max(`sid`) as max_sid from `player_rewards` where player_id = '..playerGuid..';',
 		function(query)
-			local lastSid = Result.getDataInt(query, 'max_sid') or 0;
-			local bagSid = lastSid + 1;
-			local nextSid = bagId + 1;
+			local bagSid = (Result.getDataInt(query, 'max_sid') or 0) + 1;
+			local nextSid = bagSid + 1;
 			local buffer = {'INSERT INTO `player_rewards` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES'}
 			local info = {
 				playerGuid = playerGuid,
@@ -73,11 +69,11 @@ function InsertRewardItems(playerGuid, timestamp, itemList)
 					bag:addItem(p[1], p[2])
 				end
 			end
-			local total = InsertItems(buffer, info, lastPid + 1, {bag}, bagSid)
-			table.insert(buffer, ";")
+			local total = InsertItems(buffer, info, bagSid, {bag})
 
 			if total ~= 0 then
-				db.query(table.concat(buffer))
+				local query = table.concat(buffer):sub(1, -2)..";";
+				db.query(query)
 			end
 		end
 	)

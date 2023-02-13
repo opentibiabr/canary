@@ -2617,7 +2617,7 @@ class Player final : public Creature, public Cylinder {
 		double_t calculateDamageReduction(double_t currentTotal, int16_t resistance) const;
 
 		void removeEmptyRewards();
-		bool hasAnykindOfRewardContainerOpen() const;
+		bool hasOtherRewardContainerOpen(const Container* container) const;
 };
 
 #endif // SRC_CREATURES_PLAYERS_PLAYER_H_

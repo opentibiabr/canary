@@ -32,16 +32,14 @@ class CustomAttribute {
 				return getDouble();
 			} else if constexpr (std::is_same_v<T, bool>) {
 				return getBool();
-			} else if constexpr (std::is_integral_v<T>) {
+			} else {
 				return std::clamp(
 					static_cast<T>(getInteger()),
 					std::numeric_limits<T>::min(),
 					std::numeric_limits<T>::max()
 				);
-			} else {
-				SPDLOG_ERROR("[{}] not found value", __FUNCTION__);
 			}
-			return T();
+			return {};
 		}
 
 		const int64_t &getInteger() const;

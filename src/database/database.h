@@ -182,13 +182,13 @@ class DBTransaction {
 	public:
 		constexpr DBTransaction() = default;
 
-		~DBTransaction() {
+		~DBTransaction() noexcept {
 			if (state == STATE_START) {
 				try {
 					rollback();
 				} catch (const std::exception &exception) {
 					// Error occurred while rollback transaction
-					SPDLOG_ERROR("Error occurred while rollback transaction", __FUNCTION__, exception.what());
+					SPDLOG_ERROR("Error occurred while rolling back transaction", __FUNCTION__, exception.what());
 				}
 			}
 		}
@@ -226,27 +226,26 @@ class DBTransaction {
 				state = STATE_NO_START;
 				Database::getInstance().rollback();
 			} catch (const std::exception &exception) {
-				// An error occurred while rollback the transaction
-				SPDLOG_ERROR("An error occurred while rollback the transaction", __FUNCTION__, exception.what());
+				// An error occurred while rolling back the transaction
+				SPDLOG_ERROR("An error occurred while rolling back the transaction", __FUNCTION__, exception.what());
 			}
 		}
 
-		bool commit() {
+		void commit() {
 			// Ensure that the transaction has been started
 			if (state != STATE_START) {
 				SPDLOG_ERROR("Transaction not started");
-				return false;
+				return;
 			}
 
 			try {
 				// Commit the transaction
 				state = STATE_COMMIT;
-				return Database::getInstance().commit();
+				Database::getInstance().commit();
 			} catch (const std::exception &exception) {
-				// An error occurred while starting the transaction
+				// An error occurred while committing the transaction
 				state = STATE_NO_START;
-				SPDLOG_ERROR("An error occurred while starting the transaction", __FUNCTION__, exception.what());
-				return false;
+				SPDLOG_ERROR("An error occurred while committing the transaction", __FUNCTION__, exception.what());
 			}
 		}
 
@@ -277,21 +276,14 @@ class DBTransactionGuard {
 		DBTransactionGuard(DBTransactionGuard &&) = delete;
 		DBTransactionGuard &operator=(DBTransactionGuard &&) = delete;
 
-		~DBTransactionGuard() {
-			// Commit the transaction if it was started successfully
-			if (transaction_.isStarted()) {
-				try {
-					transaction_.commit();
-				} catch (const std::exception &exception) {
-					// Error occurred while committing transaction
-					SPDLOG_ERROR("Error occurred while committing transaction", __FUNCTION__, exception.what());
-					transaction_.rollback();
-				}
+		~DBTransactionGuard() noexcept {
+			try {
+				transaction_.commit();
+			} catch (const std::exception &exception) {
+				// Error occurred while committing transaction
+				transaction_.rollback();
+				SPDLOG_ERROR("Error occurred while committing transaction", __FUNCTION__, exception.what());
 			}
-		}
-
-		void rollback() {
-			transaction_.rollback();
 		}
 
 	private:

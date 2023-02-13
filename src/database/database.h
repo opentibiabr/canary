@@ -58,7 +58,7 @@ class Database {
 		bool rollback();
 		bool commit();
 
-		bool isRecoverableError(unsigned int error) {
+		bool isRecoverableError(unsigned int error) const {
 			return error == CR_SERVER_LOST || error == CR_SERVER_GONE_ERROR || error == CR_CONN_HOST_ERROR || error == 1053 /*ER_SERVER_SHUTDOWN*/ || error == CR_CONNECTION_ERROR;
 		}
 
@@ -281,8 +281,13 @@ class DBTransactionGuard {
 				transaction_.commit();
 			} catch (const std::exception &exception) {
 				// Error occurred while committing transaction
-				transaction_.rollback();
 				SPDLOG_ERROR("Error occurred while committing transaction", __FUNCTION__, exception.what());
+				try {
+					transaction_.rollback();
+				} catch (const std::exception &exception) {
+					// Error occurred while rolling back transaction
+					SPDLOG_ERROR("Error occurred while rolling back transaction", __FUNCTION__, exception.what());
+				}
 			}
 		}
 

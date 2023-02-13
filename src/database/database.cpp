@@ -59,6 +59,7 @@ bool Database::beginTransaction() {
 	if (!executeQuery("BEGIN")) {
 		return false;
 	}
+	databaseLock.lock();
 	return true;
 }
 
@@ -70,15 +71,18 @@ bool Database::rollback() {
 
 	if (mysql_rollback(handle) != 0) {
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
+		databaseLock.unlock();
 		return false;
 	}
 
+	databaseLock.unlock();
 	return true;
 }
 
 bool Database::commit() {
 	if (!handle) {
 		SPDLOG_ERROR("Database not initialized!");
+		databaseLock.unlock();
 		return false;
 	}
 
@@ -86,38 +90,39 @@ bool Database::commit() {
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
 		return false;
 	}
+
+	databaseLock.unlock();
 	return true;
 }
 
-bool Database::executeQuery(const std::string_view &query) {
+bool Database::executeQuery(const std::string_view& query) {
 	if (!handle) {
 		SPDLOG_ERROR("Database not initialized!");
 		return false;
 	}
 
-	bool success = true;
-	int retry = 0;
 	databaseLock.lock();
-	while (mysql_query(handle, query.data()) != 0) {
+
+	bool success = true;
+	int retry = 10;
+	while (retry > 0 && mysql_query(handle, query.data()) != 0) {
 		SPDLOG_ERROR("Query: {}", query.substr(0, 256));
-		SPDLOG_ERROR("Message: {}", mysql_error(handle));
+		SPDLOG_ERROR("MySQL error [{}]: {}", mysql_errno(handle), mysql_error(handle));
 		if (!isRecoverableError(mysql_errno(handle))) {
 			success = false;
 			break;
 		}
 		std::this_thread::sleep_for(std::chrono::seconds(1));
-		retry++;
-		if (retry >= 5) {
-			SPDLOG_ERROR("Query {} failed after {} retries.", query, retry);
-			break;
-		}
+		retry--;
 	}
 
-	MYSQL_RES* m_res = mysql_store_result(handle);
-	databaseLock.unlock();
-	if (m_res) {
-		mysql_free_result(m_res);
+	if (retry == 0) {
+		SPDLOG_ERROR("Query {} failed after {} retries.", query, 10);
+		success = false;
 	}
+
+	auto m_res = std::unique_ptr<MYSQL_RES, decltype(&mysql_free_result)>(mysql_store_result(handle), mysql_free_result);
+	databaseLock.unlock();
 
 	return success;
 }
@@ -128,7 +133,9 @@ DBResult_ptr Database::storeQuery(const std::string_view &query) {
 		return nullptr;
 	}
 
-retry:
+	databaseLock.lock();
+
+	retry:
 	if (mysql_query(handle, query.data()) != 0) {
 		SPDLOG_ERROR("Query: {}", query);
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
@@ -141,6 +148,7 @@ retry:
 
 	// Retrieving results of query
 	MYSQL_RES* res = mysql_store_result(handle);
+	databaseLock.unlock();
 	if (res != nullptr) {
 		DBResult_ptr result = std::make_shared<DBResult>(res);
 		if (!result->hasNext()) {
@@ -152,7 +160,9 @@ retry:
 }
 
 std::string Database::escapeString(const std::string &s) const {
-	std::string escaped = escapeBlob(s.c_str(), s.length());
+	std::string::size_type length = s.length();
+	//uint32_t length = static_cast<uint32_t>(len);
+	std::string escaped = escapeBlob(s.c_str(), length);
 	if (escaped.empty()) {
 		SPDLOG_ERROR("Error escaping string");
 	}
@@ -160,6 +170,7 @@ std::string Database::escapeString(const std::string &s) const {
 }
 
 std::string Database::escapeBlob(const char* s, uint32_t length) const {
+	// the worst case is 2n + 1
 	size_t maxLength = (length * 2) + 1;
 
 	std::string escaped;
@@ -167,12 +178,13 @@ std::string Database::escapeBlob(const char* s, uint32_t length) const {
 	escaped.push_back('\'');
 
 	if (length != 0) {
-		std::unique_ptr<char[]> output(new char[maxLength]);
+		auto output = std::make_unique<char[]>(maxLength);
 		size_t escapedLength = mysql_real_escape_string(handle, output.get(), s, length);
 		if (escapedLength == maxLength) {
 			SPDLOG_ERROR("Error escaping blob");
+			return "";
 		}
-		escaped.append(output.get());
+		escaped.append(output.get(), escapedLength);
 	}
 
 	escaped.push_back('\'');
@@ -182,13 +194,12 @@ std::string Database::escapeBlob(const char* s, uint32_t length) const {
 DBResult::DBResult(MYSQL_RES* res) {
 	handle = res;
 
-	size_t i = 0;
 	int num_fields = mysql_num_fields(handle);
 
 	listNames.reserve(num_fields); // pre-allocate memory for listNames
 
 	MYSQL_FIELD* fields = mysql_fetch_fields(handle);
-	for (i = 0; i < num_fields; i++) {
+	for (size_t i = 0; i < num_fields; i++) {
 		listNames[fields[i].name] = i;
 	}
 	row = mysql_fetch_row(handle);

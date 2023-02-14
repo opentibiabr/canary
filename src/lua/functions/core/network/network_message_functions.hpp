@@ -30,9 +30,11 @@ class NetworkMessageFunctions final : LuaScriptInterface {
 			registerMethod(L, "NetworkMessage", "addByte", NetworkMessageFunctions::luaNetworkMessageAddByte);
 			registerMethod(L, "NetworkMessage", "addU16", NetworkMessageFunctions::luaNetworkMessageAddU16);
 			registerMethod(L, "NetworkMessage", "addU32", NetworkMessageFunctions::luaNetworkMessageAddU32);
-			registerMethod(L, "NetworkMessage", "addInt32", NetworkMessageFunctions::luaNetworkMessageAddInt32);
 			registerMethod(L, "NetworkMessage", "addU64", NetworkMessageFunctions::luaNetworkMessageAddU64);
-			registerMethod(L, "NetworkMessage", "addString", NetworkMessageFunctions::luaNetworkMessageAddString);
+			registerMethod(L, "NetworkMessage", "add8", NetworkMessageFunctions::luaNetworkMessageAdd8);
+			registerMethod(L, "NetworkMessage", "add16", NetworkMessageFunctions::luaNetworkMessageAdd16);
+			registerMethod(L, "NetworkMessage", "add32", NetworkMessageFunctions::luaNetworkMessageAdd32);
+			registerMethod(L, "NetworkMessage", "add64", NetworkMessageFunctions::luaNetworkMessageAdd64);
 			registerMethod(L, "NetworkMessage", "addPosition", NetworkMessageFunctions::luaNetworkMessageAddPosition);
 			registerMethod(L, "NetworkMessage", "addDouble", NetworkMessageFunctions::luaNetworkMessageAddDouble);
 			registerMethod(L, "NetworkMessage", "addItem", NetworkMessageFunctions::luaNetworkMessageAddItem);
@@ -56,8 +58,11 @@ class NetworkMessageFunctions final : LuaScriptInterface {
 		static int luaNetworkMessageAddByte(lua_State* L);
 		static int luaNetworkMessageAddU16(lua_State* L);
 		static int luaNetworkMessageAddU32(lua_State* L);
-		static int luaNetworkMessageAddInt32(lua_State* L);
 		static int luaNetworkMessageAddU64(lua_State* L);
+		static int luaNetworkMessageAdd8(lua_State* L);
+		static int luaNetworkMessageAdd16(lua_State* L);
+		static int luaNetworkMessageAdd32(lua_State* L);
+		static int luaNetworkMessageAdd64(lua_State* L);
 		static int luaNetworkMessageAddString(lua_State* L);
 		static int luaNetworkMessageAddPosition(lua_State* L);
 		static int luaNetworkMessageAddDouble(lua_State* L);

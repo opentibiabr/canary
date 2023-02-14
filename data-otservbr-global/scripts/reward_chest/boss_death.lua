@@ -104,9 +104,9 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 				local bossRaceIds = {player:getSlotBossId(1), player:getSlotBossId(2)}
 				local isBoss = table.contains(bossRaceIds, monsterType:bossRaceId()) or isBoostedBoss
 				if isBoss then
-					if monsterType:bossRaceId() == con.player:getSlotBossId(1) then
+					if monsterType:bossRaceId() == player:getSlotBossId(1) then
 						bonus = player:getBossBonus(1)
-					elseif monsterType:bossRaceId() == con.player:getSlotBossId(2) then
+					elseif monsterType:bossRaceId() == player:getSlotBossId(2) then
 						bonus = player:getBossBonus(2)
 					else
 						bonus = configManager.getNumber(configKeys.BOOSTED_BOSS_LOOT_BONUS)

@@ -8,7 +8,6 @@ function serverInfo.onSay(player, words, param)
 	.. "\nMagic rate: " .. configManager.getNumber(configKeys.RATE_MAGIC) .. "x"
 	.. "\nLoot rate: " .. configManager.getNumber(configKeys.RATE_LOOT) .. "x"
 	.. "\nSpawns rate: " .. configManager.getNumber(configKeys.RATE_SPAWN) .. "x"
-	text = text .. "\n"
 	text = text .. "\n\nServer Info Stages Rates: \n"
 	.. "\nExp rate stages: " .. getRateFromTable(experienceStages, player:getLevel(), expstagesrate) .. "x"
 	.. "\nSword Skill Stages rate: " .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_SWORD), configRateSkill) .. "x"
@@ -20,7 +19,6 @@ function serverInfo.onSay(player, words, param)
 	.. "\nMagic rate: " .. getRateFromTable(magicLevelStages, player:getBaseMagicLevel(), configManager.getNumber(configKeys.RATE_MAGIC)) .. "x"
 	.. "\nLoot rate: " .. configManager.getNumber(configKeys.RATE_LOOT) .. "x"
 	.. "\nSpawns rate: " .. configManager.getNumber(configKeys.RATE_SPAWN) .. "x"
-	text = text .. "\n"
 	text = text .. "\n\nMore Server Info: \n"
 	.. "\nLevel to buy house " .. configManager.getNumber(configKeys.HOUSE_BUY_LEVEL)
 	.. "\nProtection level: " .. configManager.getNumber(configKeys.PROTECTION_LEVEL)

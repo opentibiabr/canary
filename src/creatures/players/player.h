@@ -515,7 +515,7 @@ class Player final : public Creature, public Cylinder {
 			return levelPercent;
 		}
 		uint32_t getMagicLevel() const {
-			auto safeConverted = convertToSafeInteger<uint32_t>(magLevel + varStats[STAT_MAGICPOINTS]);
+			auto safeConverted = static_cast<uint32_t>(magLevel + varStats[STAT_MAGICPOINTS]);
 			return safeConverted;
 		}
 		uint32_t getBaseMagicLevel() const {
@@ -644,14 +644,8 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
-		int64_t getMaxHealth() const override {
-			auto safeConverted = convertToSafeInteger<uint32_t>(healthMax + varStats[STAT_MAXHITPOINTS]);
-			return safeConverted;
-		}
-		uint32_t getMaxMana() const override {
-			auto safeConverted = convertToSafeInteger<uint32_t>(manaMax + varStats[STAT_MAXMANAPOINTS]);
-			return safeConverted;
-		}
+		int64_t getMaxHealth() const override;
+		uint32_t getMaxMana() const override;
 
 		Item* getInventoryItem(Slots_t slot) const;
 

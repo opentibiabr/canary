@@ -200,6 +200,14 @@ std::string Player::getDescription(int32_t lookDistance) const {
 	return s.str();
 }
 
+int64_t Player::getMaxHealth() const {
+	return std::max<int32_t>(1, healthMax + varStats[STAT_MAXHITPOINTS]);
+}
+
+uint32_t Player::getMaxMana() const {
+	return std::max<int32_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS]);
+}
+
 Item* Player::getInventoryItem(Slots_t slot) const {
 	if (slot < CONST_SLOT_FIRST || slot > CONST_SLOT_LAST) {
 		return nullptr;

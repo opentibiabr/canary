@@ -36,6 +36,8 @@ void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock) {
 	}
 }
 
+
+
 bool MonsterType::canSpawn(const Position &pos) {
 	bool canSpawn = true;
 	bool isDay = g_game().gameIsDay();
@@ -48,6 +50,8 @@ bool MonsterType::canSpawn(const Position &pos) {
 	return canSpawn;
 }
 
+
+
 ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval) {
 	ConditionDamage* condition = static_cast<ConditionDamage*>(Condition::createCondition(CONDITIONID_COMBAT, conditionType, 0, 0));
 	condition->setParam(CONDITION_PARAM_TICKINTERVAL, tickInterval);
@@ -57,6 +61,8 @@ ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType, int
 	condition->setParam(CONDITION_PARAM_DELAYED, 1);
 	return condition;
 }
+
+
 
 bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std::string &description) {
 	if (!spell->scriptName.empty()) {
@@ -159,18 +165,18 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 
 		ConditionOutfit* condition = static_cast<ConditionOutfit*>(Condition::createCondition(CONDITIONID_COMBAT, CONDITION_OUTFIT, duration, 0));
 
-		if (spell->outfitMonster != "") {
-			condition->setLazyMonsterOutfit(spell->outfitMonster);
-		} else if (spell->outfitItem > 0) {
-			Outfit_t outfit;
-			outfit.lookTypeEx = spell->outfitItem;
-			condition->setOutfit(outfit);
-		} else {
-			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-						 "Missing outfit monster or item in outfit spell for: {}",
-						 description);
-			return false;
-		}
+			if (spell->outfitMonster != "") {
+				condition->setLazyMonsterOutfit(spell->outfitMonster);
+			} else if (spell->outfitItem > 0) {
+				Outfit_t outfit;
+				outfit.lookTypeEx = spell->outfitItem;
+				condition->setOutfit(outfit);
+			} else {
+				SPDLOG_ERROR("[Monsters::deserializeSpell] - "
+							 "Missing outfit monster or item in outfit spell for: {}",
+							 description);
+				return false;
+			}
 
 		combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		combatPtr->addCondition(condition);
@@ -200,19 +206,19 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 	} else if (spellName == "energyfield") {
 		combatPtr->setParam(COMBAT_PARAM_CREATEITEM, ITEM_ENERGYFIELD_PVP);
 	} else if (spellName == "condition") {
-		if (spell->conditionType == CONDITION_NONE) {
-			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-						 "{} condition is not set for: {}",
-						 description, spell->name);
+			if (spell->conditionType == CONDITION_NONE) {
+				SPDLOG_ERROR("[Monsters::deserializeSpell] - "
+							 "{} condition is not set for: {}",
+							 description, spell->name);
 		}
 	} else if (spellName == "strength") {
 		//
 	} else if (spellName == "effect") {
-		//
-	} else {
-		SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-					 "{} unknown or missing parameter on spell with name: {}",
-					 description, spell->name);
+			//
+		} else {
+			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
+						 "{} unknown or missing parameter on spell with name: {}",
+						 description, spell->name);
 	}
 
 	if (spell->shoot != CONST_ANI_NONE) {
@@ -257,6 +263,8 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 	return true;
 }
 
+
+
 bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	int32_t id = scriptInterface->getEvent();
 	if (id == -1) {
@@ -278,6 +286,8 @@ bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	}
 	return true;
 }
+
+
 
 MonsterType* Monsters::getMonsterType(const std::string &name) {
 	std::string lowerCaseName = asLowerCaseString(name);

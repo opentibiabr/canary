@@ -35,6 +35,7 @@ class NetworkMessageFunctions final : LuaScriptInterface {
 			registerMethod(L, "NetworkMessage", "add16", NetworkMessageFunctions::luaNetworkMessageAdd16);
 			registerMethod(L, "NetworkMessage", "add32", NetworkMessageFunctions::luaNetworkMessageAdd32);
 			registerMethod(L, "NetworkMessage", "add64", NetworkMessageFunctions::luaNetworkMessageAdd64);
+			registerMethod(L, "NetworkMessage", "addString", NetworkMessageFunctions::luaNetworkMessageAddString);
 			registerMethod(L, "NetworkMessage", "addPosition", NetworkMessageFunctions::luaNetworkMessageAddPosition);
 			registerMethod(L, "NetworkMessage", "addDouble", NetworkMessageFunctions::luaNetworkMessageAddDouble);
 			registerMethod(L, "NetworkMessage", "addItem", NetworkMessageFunctions::luaNetworkMessageAddItem);

@@ -2562,7 +2562,7 @@ int PlayerFunctions::luaPlayerSave(lua_State* L) {
 	// player:save()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		if(!player->isOffline()){
+		if (!player->isOffline()) {
 			player->loginPosition = player->getPosition();
 		}
 		pushBoolean(L, IOLoginData::savePlayer(player));

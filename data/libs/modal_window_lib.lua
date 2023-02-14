@@ -146,17 +146,17 @@ function ModalWindow:callChoice(text, player, button, choice)
 		text = tostring(text)
 	end
 
-	local choice = self.choices[text]
-	if not choice then
+	local newChoice= self.choices[text]
+	if not newChoice then
 		io.write("ModalWindow: Choice with text '" .. text .. "' does not exist.")
 		return false
 	end
 
-	if not choice.callback then
+	if not newChoice.callback then
 		io.write("ModalWindow: Choice with text '" .. text .. "' has no callback.")
 		return false
 	end
-	return choice.callback(player, button, choice)
+	return newChoice.callback(player, button, choice)
 end
 
 function ModalWindow:clearChoices()

@@ -24,7 +24,7 @@ function serverInfo.onSay(player, words, param)
 		.. "\nLoot rate: " .. configManager.getNumber(configKeys.RATE_LOOT) .. "x"
 		.. "\nSpawns rate: " .. configManager.getNumber(configKeys.RATE_SPAWN) .. "x"
 	end
-		text = text .. "More Server Info: \n"
+		text = text .. "\n\nMore Server Info: \n"
 		.. "\nLevel to buy house " .. configManager.getNumber(configKeys.HOUSE_BUY_LEVEL)
 		.. "\nProtection level: " .. configManager.getNumber(configKeys.PROTECTION_LEVEL)
 		.. "\nWorldType: " .. configManager.getString(configKeys.WORLD_TYPE)

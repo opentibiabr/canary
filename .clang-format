@@ -140,3 +140,4 @@ NamespaceIndentation: All
 QualifierAlignment: Left
 ReferenceAlignment: Right
 MaxEmptyLinesToKeep: 1
+

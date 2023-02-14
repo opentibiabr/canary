@@ -72,8 +72,8 @@ function InsertRewardItems(playerGuid, timestamp, itemList)
 			local total = InsertItems(buffer, info, bagSid, {bag})
 
 			if total ~= 0 then
-				local query = table.concat(buffer):sub(1, -2)..";";
-				db.query(query)
+				local insertItemsQuery = table.concat(buffer):sub(1, -2)..";";
+				db.query(insertItemsQuery)
 			end
 		end
 	)

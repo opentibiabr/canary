@@ -128,7 +128,11 @@ function serverstartup.onStartup()
 	db.query("TRUNCATE TABLE `towns`")
 	for i, town in ipairs(Game.getTowns()) do
 		local position = town:getTemplePosition()
-		db.query("INSERT INTO `towns` (`id`, `name`, `posx`, `posy`, `posz`) VALUES (" .. town:getId() .. ", " .. db.escapeString(town:getName()) .. ", " .. position.x .. ", " .. position.y .. ", " .. position.z .. ")")
+		local showSite = 1
+		if table.contains(TOWNS_LIST_NOT_IN_SITE, town:getId()) then
+			showSite = 0
+		end
+		db.query("INSERT INTO `towns` (`id`, `name`, `posx`, `posy`, `posz`, `show_site`) VALUES (" .. town:getId() .. ", " .. db.escapeString(town:getName()) .. ", " .. position.x .. ", " .. position.y .. ", " .. position.z .. ", " .. showSite .. ")")
 	end
 
 	do -- Event Schedule rates

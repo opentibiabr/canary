@@ -595,7 +595,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 		}
 		// Cleanse charm rune (target as player)
 		if (player) {
-			//Cleanse charm rune (target as player)
+			// Cleanse charm rune (target as player)
 			if (player->isImmuneCleanse(condition->getType())) {
 				player->sendCancelMessage("You are still immune against this spell.");
 				return;
@@ -620,7 +620,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 			/**
 			 * Specifics checks for Feared condtion
 			 */
-			if(condition->getType() == CONDITION_FEARED){
+			if (condition->getType() == CONDITION_FEARED) {
 				/**
 				 * After being feared the player has a cooldown until it can be feared again
 				 */
@@ -641,23 +641,23 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 				}
 
 				/**
-				 * 	
+				 *
 				 *	When a player is part of 5 player party only 1 member can be feared,
 				 *	with 6, 2 members can be feared until 10, on 11, 3 members...
 				 *
 				 */
 				Party* party = player->getParty();
-				if(party) {
-					int8_t affectedCount = std::floor((party->getMemberCount()+5)/5);
+				if (party) {
+					int8_t affectedCount = std::floor((party->getMemberCount() + 5) / 5);
 					SPDLOG_DEBUG("[Combat::CombatConditionFunc] Player is member of a party, {} members can be feared", affectedCount);
-					
-					for (Player* member : party->getMembers()){
-						if(member->hasCondition(CONDITION_FEARED)){
+
+					for (Player* member : party->getMembers()) {
+						if (member->hasCondition(CONDITION_FEARED)) {
 							affectedCount -= 1;
 						}
 					}
 
-					if(affectedCount <= 0){
+					if (affectedCount <= 0) {
 						return;
 					}
 				}

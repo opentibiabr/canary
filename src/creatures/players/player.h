@@ -1740,7 +1740,7 @@ class Player final : public Creature, public Cylinder {
 		bool isImmuneFear() {
 			uint64_t timenow = OTSYS_TIME();
 			if ((fearCondition.first == CONDITION_FEARED)
-                    && (timenow <= fearCondition.second)) {
+				&& (timenow <= fearCondition.second)) {
 				return true;
 			}
 			return false;
@@ -2519,9 +2519,9 @@ class Player final : public Creature, public Cylinder {
 		uint32_t charmPoints = 0;
 		int32_t UsedRunesBit = 0;
 		int32_t UnlockedRunesBit = 0;
-		std::pair<ConditionType_t, uint64_t> cleanseCondition = {CONDITION_NONE, 0};
-		
-		std::pair<ConditionType_t, uint64_t> fearCondition = {CONDITION_NONE, 0};
+		std::pair<ConditionType_t, uint64_t> cleanseCondition = { CONDITION_NONE, 0 };
+
+		std::pair<ConditionType_t, uint64_t> fearCondition = { CONDITION_NONE, 0 };
 
 		uint8_t soul = 0;
 		uint8_t levelPercent = 0;

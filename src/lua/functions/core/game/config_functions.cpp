@@ -23,7 +23,8 @@ void ConfigFunctions::init(lua_State* L) {
 	{                                                                                           \
 		std::string enumName = #value;                                                          \
 		registerVariable(L, tableName, enumName.substr(enumName.find_last_of(':') + 1), value); \
-	} (void) 0
+	}                                                                                           \
+	(void)0
 
 	registerTable(L, "configKeys");
 	registerEnumIn(L, "configKeys", ALLOW_CHANGEOUTFIT);

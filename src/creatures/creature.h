@@ -236,8 +236,8 @@ class Creature : virtual public Thing {
 			return getTile()->getZone();
 		}
 
-		//walk functions
-		void startAutoWalk(const std::forward_list<Direction>& listDir, bool ignoreConditions = false);
+		// walk functions
+		void startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions = false);
 		void addEventWalk(bool firstStep = false);
 		void stopEventWalk();
 		virtual void goToFollowCreature();

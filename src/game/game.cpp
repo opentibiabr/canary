@@ -1057,7 +1057,7 @@ ReturnValue Game::internalMoveCreature(Creature &creature, Tile &toTile, uint32_
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	if(creature.hasCondition(CONDITION_FEARED)) {
+	if (creature.hasCondition(CONDITION_FEARED)) {
 		const MagicField* field = toTile.getFieldItem();
 		if (field && !field->isBlocking() && field->getDamage() != 0) {
 			return RETURNVALUE_NOTPOSSIBLE;
@@ -2473,8 +2473,8 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 
 	if (player->hasCondition(CONDITION_FEARED)) {
 		/*
-		*	When player is feared the player can´t equip any items.
-		*/
+		 *	When player is feared the player can´t equip any items.
+		 */
 		player->sendTextMessage(MESSAGE_FAILURE, "You are feared.");
 		return;
 	}
@@ -2532,7 +2532,7 @@ void Game::forcePlayerMove(uint32_t playerId, Direction direction) {
 	player->setNextWalkActionTask(nullptr);
 	player->cancelPush();
 
-	player->startAutoWalk(std::forward_list<Direction> { direction }, true); 
+	player->startAutoWalk(std::forward_list<Direction> { direction }, true);
 }
 
 bool Game::playerBroadcastMessage(Player* player, const std::string &text) const {
@@ -2712,20 +2712,20 @@ void Game::playerAutoWalk(uint32_t playerId, const std::forward_list<Direction> 
 	player->startAutoWalk(listDir, false);
 }
 
-void Game::forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direction>& listDir) {
+void Game::forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
 	player->stopEventWalk();
-	
+
 	player->sendCancelTarget();
 	player->setFollowCreature(nullptr);
 
 	player->resetIdleTime();
 	player->setNextWalkTask(nullptr);
-	
+
 	player->startAutoWalk(listDir, true);
 }
 

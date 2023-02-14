@@ -1661,11 +1661,11 @@ bool Player::closeShopWindow(bool sendCloseShopWindow /*= true*/) {
 	return true;
 }
 
-void Player::onWalk(Direction& dir) {
+void Player::onWalk(Direction &dir) {
 
-	if(hasCondition(CONDITION_FEARED)) {
+	if (hasCondition(CONDITION_FEARED)) {
 		Position pos = getNextPosition(dir, getPosition());
-		
+
 		const Tile* tile = g_game().map.getTile(pos);
 		if (tile) {
 			const MagicField* field = tile->getFieldItem();
@@ -4047,7 +4047,7 @@ void Player::onWalkAborted() {
 void Player::onWalkComplete() {
 	if (hasCondition(CONDITION_FEARED)) {
 		/**
-		 * The walk is only processed during the fear condition execution, 
+		 * The walk is only processed during the fear condition execution,
 		 * but adding this check and executing the condition here as soon it ends
 		 * makes the fleeing more smooth and with litle to no hickups.
 		 */
@@ -4128,7 +4128,7 @@ void Player::onAddCombatCondition(ConditionType_t type) {
 		case CONDITION_ROOTED:
 			sendTextMessage(MESSAGE_FAILURE, "You are rooted.");
 			break;
-		
+
 		case CONDITION_FEARED:
 			sendTextMessage(MESSAGE_FAILURE, "You are feared.");
 			break;

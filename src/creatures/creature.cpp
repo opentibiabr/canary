@@ -222,8 +222,8 @@ bool Creature::getNextStep(Direction &dir, uint32_t &) {
 	return true;
 }
 
-void Creature::startAutoWalk(const std::forward_list<Direction>& listDir, bool ignoreConditions/* = false*/) {
-	if(!ignoreConditions){
+void Creature::startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions /* = false*/) {
+	if (!ignoreConditions) {
 		if (hasCondition(CONDITION_ROOTED) || hasCondition(CONDITION_FEARED)) {
 			return;
 		}
@@ -973,7 +973,7 @@ bool Creature::setFollowCreature(Creature* creature) {
 			return false;
 		}
 
-		const Position& creaturePos = creature->getPosition();
+		const Position &creaturePos = creature->getPosition();
 		if (creaturePos.z != getPosition().z || !canSee(creaturePos)) {
 			followCreature = nullptr;
 			return false;

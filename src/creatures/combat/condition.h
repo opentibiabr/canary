@@ -54,7 +54,7 @@ class Condition {
 		static Condition* createCondition(PropStream &propStream);
 
 		virtual bool setParam(ConditionParam_t param, int32_t value);
-		virtual bool setParam(ConditionParam_t param, const Position& pos);
+		virtual bool setParam(ConditionParam_t param, const Position &pos);
 
 		// serialization
 		bool unserialize(PropStream &propStream);
@@ -279,43 +279,43 @@ class ConditionDamage final : public Condition {
 };
 
 class ConditionFeared final : public Condition {
-public:
-	ConditionFeared() = default;
-	ConditionFeared(ConditionId_t intiId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId)
-		: Condition(intiId, initType, initTicks, initBuff, initSubId) { }
-	
-	bool startCondition(Creature* creature) override;
-	bool executeCondition(Creature* creature, int32_t interval) override;
-	void endCondition(Creature* creature) override;
-	void addCondition(Creature* creature, const Condition* condition) override;
-	uint32_t getIcons() const override;
+	public:
+		ConditionFeared() = default;
+		ConditionFeared(ConditionId_t intiId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) :
+			Condition(intiId, initType, initTicks, initBuff, initSubId) { }
 
-	ConditionFeared* clone() const override {
-		return new ConditionFeared(*this);
-	}
+		bool startCondition(Creature* creature) override;
+		bool executeCondition(Creature* creature, int32_t interval) override;
+		void endCondition(Creature* creature) override;
+		void addCondition(Creature* creature, const Condition* condition) override;
+		uint32_t getIcons() const override;
 
-	bool setParam(ConditionParam_t param, const Position& pos) override;
+		ConditionFeared* clone() const override {
+			return new ConditionFeared(*this);
+		}
 
-private:
-	bool canWalkTo(Creature* creature, Position pos, Direction moveDirection) const;
-	bool getFleeDirection(Creature* creature);
-	bool getFleePath(Creature* creature, Position& pos, std::forward_list<Direction>& dirList);
-	bool getRandomDirection(Creature* creature, Position pos);
-	bool isStuck(Creature* creature, Position pos);
+		bool setParam(ConditionParam_t param, const Position &pos) override;
 
-	std::vector<Direction> dirList {
-		DIRECTION_NORTH,
-		DIRECTION_NORTHEAST,
-		DIRECTION_EAST,
-		DIRECTION_SOUTHEAST,
-		DIRECTION_SOUTH,
-		DIRECTION_SOUTHWEST,
-		DIRECTION_WEST,
-		DIRECTION_NORTHWEST
-	};
+	private:
+		bool canWalkTo(Creature* creature, Position pos, Direction moveDirection) const;
+		bool getFleeDirection(Creature* creature);
+		bool getFleePath(Creature* creature, Position &pos, std::forward_list<Direction> &dirList);
+		bool getRandomDirection(Creature* creature, Position pos);
+		bool isStuck(Creature* creature, Position pos);
 
-	Position fleeingFromPos; //Caster Position
-	uint8_t fleeIndx = 99;
+		std::vector<Direction> dirList {
+			DIRECTION_NORTH,
+			DIRECTION_NORTHEAST,
+			DIRECTION_EAST,
+			DIRECTION_SOUTHEAST,
+			DIRECTION_SOUTH,
+			DIRECTION_SOUTHWEST,
+			DIRECTION_WEST,
+			DIRECTION_NORTHWEST
+		};
+
+		Position fleeingFromPos; // Caster Position
+		uint8_t fleeIndx = 99;
 };
 
 class ConditionSpeed final : public Condition {

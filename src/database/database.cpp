@@ -59,7 +59,7 @@ bool Database::beginTransaction() {
 	if (!executeQuery("BEGIN")) {
 		return false;
 	}
-	databaseLock.lock();
+	std::scoped_lock lock{databaseLock};
 	return true;
 }
 
@@ -69,29 +69,27 @@ bool Database::rollback() {
 		return false;
 	}
 
+	std::scoped_lock lock{databaseLock};
+
 	if (mysql_rollback(handle) != 0) {
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
-		databaseLock.unlock();
 		return false;
 	}
 
-	databaseLock.unlock();
 	return true;
 }
 
 bool Database::commit() {
 	if (!handle) {
 		SPDLOG_ERROR("Database not initialized!");
-		databaseLock.unlock();
 		return false;
 	}
-
+	std::scoped_lock lock{databaseLock};
 	if (mysql_commit(handle) != 0) {
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
 		return false;
 	}
 
-	databaseLock.unlock();
 	return true;
 }
 
@@ -101,7 +99,7 @@ bool Database::executeQuery(const std::string_view &query) {
 		return false;
 	}
 
-	databaseLock.lock();
+	std::scoped_lock lock{databaseLock};
 
 	bool success = true;
 	int retry = 10;
@@ -122,7 +120,6 @@ bool Database::executeQuery(const std::string_view &query) {
 	}
 
 	auto m_res = std::unique_ptr<MYSQL_RES, decltype(&mysql_free_result)>(mysql_store_result(handle), &mysql_free_result);
-	databaseLock.unlock();
 
 	return success;
 }
@@ -133,7 +130,7 @@ DBResult_ptr Database::storeQuery(const std::string_view &query) {
 		return nullptr;
 	}
 
-	databaseLock.lock();
+	std::scoped_lock lock{databaseLock};
 
 retry:
 	if (mysql_query(handle, query.data()) != 0) {
@@ -148,7 +145,6 @@ retry:
 
 	// Retrieving results of query
 	MYSQL_RES* res = mysql_store_result(handle);
-	databaseLock.unlock();
 	if (res != nullptr) {
 		DBResult_ptr result = std::make_shared<DBResult>(res);
 		if (!result->hasNext()) {
@@ -191,8 +187,6 @@ DBResult::DBResult(MYSQL_RES* res) {
 	handle = res;
 
 	int num_fields = mysql_num_fields(handle);
-
-	listNames.reserve(num_fields); // pre-allocate memory for listNames
 
 	MYSQL_FIELD* fields = mysql_fetch_fields(handle);
 	for (size_t i = 0; i < num_fields; i++) {

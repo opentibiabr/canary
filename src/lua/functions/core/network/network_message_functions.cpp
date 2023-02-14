@@ -134,9 +134,48 @@ int NetworkMessageFunctions::luaNetworkMessageAddU32(lua_State* L) {
 	return 1;
 }
 
-int NetworkMessageFunctions::luaNetworkMessageAddInt32(lua_State* L) {
-	// networkMessage:addInt32(number)
-	int32_t number = getNumber<int32_t>(L, 2);
+int NetworkMessageFunctions::luaNetworkMessageAddU64(lua_State* L) {
+	// networkMessage:addU64(number)
+	uint64_t number = getNumber<uint64_t>(L, 2);
+	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
+	if (message) {
+		message->add<uint64_t>(number);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int NetworkMessageFunctions::luaNetworkMessageAdd8(lua_State* L) {
+	// networkMessage:add8(number)
+	auto number = getNumber<int8_t>(L, 2);
+	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
+	if (message) {
+		message->add<int8_t>(number);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int NetworkMessageFunctions::luaNetworkMessageAdd16(lua_State* L) {
+	// networkMessage:add16(number)
+	auto number = getNumber<int16_t>(L, 2);
+	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
+	if (message) {
+		message->add<int16_t>(number);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int NetworkMessageFunctions::luaNetworkMessageAdd32(lua_State* L) {
+	// networkMessage:add32(number)
+	auto number = getNumber<int32_t>(L, 2);
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
 		message->add<int32_t>(number);
@@ -147,12 +186,12 @@ int NetworkMessageFunctions::luaNetworkMessageAddInt32(lua_State* L) {
 	return 1;
 }
 
-int NetworkMessageFunctions::luaNetworkMessageAddU64(lua_State* L) {
-	// networkMessage:addU64(number)
-	uint64_t number = getNumber<uint64_t>(L, 2);
+int NetworkMessageFunctions::luaNetworkMessageAdd64(lua_State* L) {
+	// networkMessage:add64(number)
+	auto number = getNumber<int64_t>(L, 2);
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
-		message->add<uint64_t>(number);
+		message->add<int64_t>(number);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

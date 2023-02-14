@@ -1,20 +1,10 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
  */
 
 #include "pch.hpp"
@@ -24,16 +14,13 @@
 #include "declarations.hpp"
 #include "game/game.h"
 #include "lua/callbacks/creaturecallback.h"
-#include "lua/scripts/lua_environment.hpp"
-#include "lua/scripts/scripts.h"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
 
 uint32_t Npc::npcAutoID = 0x80000000;
 
-Npc* Npc::createNpc(const std::string& name)
-{
+Npc* Npc::createNpc(const std::string &name) {
 	NpcType* npcType = g_npcs().getNpcType(name);
 	if (!npcType) {
 		return nullptr;
@@ -44,19 +31,18 @@ Npc* Npc::createNpc(const std::string& name)
 Npc::Npc(NpcType* npcType) :
 	Creature(),
 	strDescription(npcType->nameDescription),
-	npcType(npcType)
-{
+	npcType(npcType) {
 	defaultOutfit = npcType->info.outfit;
 	currentOutfit = npcType->info.outfit;
 	float multiplier = g_configManager().getFloat(RATE_NPC_HEALTH);
-	health = npcType->info.health*multiplier;
-	healthMax = npcType->info.healthMax*multiplier;
+	health = npcType->info.health * multiplier;
+	healthMax = npcType->info.healthMax * multiplier;
 	baseSpeed = npcType->info.baseSpeed;
 	internalLight = npcType->info.light;
 	floorChange = npcType->info.floorChange;
 
 	// register creature events
-	for (const std::string& scriptName : npcType->info.scripts) {
+	for (const std::string &scriptName : npcType->info.scripts) {
 		if (!registerCreatureEvent(scriptName)) {
 			SPDLOG_WARN("Unknown event name: {}", scriptName);
 		}
@@ -66,47 +52,29 @@ Npc::Npc(NpcType* npcType) :
 Npc::~Npc() {
 }
 
-bool Npc::load(bool loadLibs/* = true*/, bool loadNpcs/* = true*/) const {
-	if (loadLibs) {
-		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-		return g_luaEnvironment.loadFile(coreFolder + "/npclib/load.lua") == 0;
-	}
-	if (loadNpcs) {
-		return g_scripts().loadScripts("npc", false, true);
-	}
-	return false;
-}
-
-bool Npc::reset() const
-{
-	if (load()) {
-		g_npcs().reset();
-		g_game().resetNpcs();
-		return true;
-	}
-	return false;
-}
-
-void Npc::addList()
-{
+void Npc::addList() {
 	g_game().addNpc(this);
 }
 
-void Npc::removeList()
-{
+void Npc::removeList() {
 	g_game().removeNpc(this);
 }
 
-bool Npc::canSee(const Position& pos) const
-{
+bool Npc::canSee(const Position &pos) const {
 	if (pos.z != getPosition().z) {
 		return false;
 	}
 	return Creature::canSee(getPosition(), pos, 4, 4);
 }
 
-void Npc::onCreatureAppear(Creature* creature, bool isLogin)
-{
+bool Npc::canSeeRange(const Position &pos, int32_t viewRangeX /* = 4*/, int32_t viewRangeY /* = 4*/) const {
+	if (pos.z != getPosition().z) {
+		return false;
+	}
+	return Creature::canSee(getPosition(), pos, viewRangeX, viewRangeY);
+}
+
+void Npc::onCreatureAppear(Creature* creature, bool isLogin) {
 	Creature::onCreatureAppear(creature, isLogin);
 
 	// onCreatureAppear(self, creature)
@@ -121,8 +89,7 @@ void Npc::onCreatureAppear(Creature* creature, bool isLogin)
 	}
 }
 
-void Npc::onRemoveCreature(Creature* creature, bool isLogout)
-{
+void Npc::onRemoveCreature(Creature* creature, bool isLogout) {
 	Creature::onRemoveCreature(creature, isLogout);
 
 	// onCreatureDisappear(self, creature)
@@ -148,9 +115,7 @@ void Npc::onRemoveCreature(Creature* creature, bool isLogout)
 	shopPlayerSet.clear();
 }
 
-void Npc::onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
-                              const Tile* oldTile, const Position& oldPos, bool teleport)
-{
+void Npc::onCreatureMove(Creature* creature, const Tile* newTile, const Position &newPos, const Tile* oldTile, const Position &oldPos, bool teleport) {
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 
 	// onCreatureMove(self, creature, oldPosition, newPosition)
@@ -172,15 +137,14 @@ void Npc::onCreatureMove(Creature* creature, const Tile* newTile, const Position
 		return;
 	}
 
-	Player *player = creature->getPlayer();
+	Player* player = creature->getPlayer();
 	if (player && !canSee(newPos) && canSee(oldPos)) {
 		updatePlayerInteractions(player);
 		player->closeShopWindow(true);
 	}
 }
 
-void Npc::onCreatureSay(Creature* creature, SpeakClasses type, const std::string& text)
-{
+void Npc::onCreatureSay(Creature* creature, SpeakClasses type, const std::string &text) {
 	Creature::onCreatureSay(creature, type, text);
 
 	if (!creature->getPlayer()) {
@@ -201,8 +165,7 @@ void Npc::onCreatureSay(Creature* creature, SpeakClasses type, const std::string
 	}
 }
 
-void Npc::onThink(uint32_t interval)
-{
+void Npc::onThink(uint32_t interval) {
 	Creature::onThink(interval);
 
 	// onThink(self, interval)
@@ -226,13 +189,22 @@ void Npc::onThink(uint32_t interval)
 		closeAllShopWindows();
 	}
 
-	onThinkYell(interval);
-	onThinkWalk(interval);
+	SpectatorHashSet spectators;
+	// Get a set of spectators that are within the visible range of the NPC
+	g_game().map.getSpectators(spectators, position, false, false);
+	// Check if there is at least one player in the set of spectators that does not have the "IgnoredByNpcs" flag
+	if (std::ranges::any_of(spectators, [](Creature* spectator) {
+			auto player = spectator->getPlayer();
+			// If there are no players or all players have the "IgnoredByNpcs" flag, then the NPC will not walk or yell.
+			return player && !player->hasFlag(PlayerFlags_t::IgnoredByNpcs);
+		})) {
+		// There is at least one normal player on the screen, so the NPC should continue walking and yelling
+		onThinkYell(interval);
+		onThinkWalk(interval);
+	}
 }
 
-void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
-                          uint8_t subType, uint16_t amount, bool ignore, bool inBackpacks)
-{
+void Npc::onPlayerBuyItem(Player* player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, bool inBackpacks) {
 	if (player == nullptr) {
 		SPDLOG_ERROR("[Npc::onPlayerBuyItem] - Player is nullptr");
 		return;
@@ -246,7 +218,7 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 
 	uint32_t shoppingBagPrice = 20;
 	uint32_t shoppingBagSlots = 20;
-	const ItemType& itemType = Item::items[itemId];
+	const ItemType &itemType = Item::items[itemId];
 	if (const Tile* tile = ignore ? player->getTile() : nullptr; tile) {
 		double slotsNedeed = 0;
 		if (itemType.stackable) {
@@ -305,20 +277,16 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 	}
 }
 
-void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
-                          uint8_t subType, uint16_t amount, bool ignore)
-{
+void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore) {
 	if (!player) {
 		return;
 	}
 
 	uint32_t sellPrice = 0;
-	const ItemType& itemType = Item::items[itemId];
+	const ItemType &itemType = Item::items[itemId];
 	const std::vector<ShopBlock> &shopVector = getShopItemVector();
-	for (ShopBlock shopBlock : shopVector)
-	{
-		if (itemType.id == shopBlock.itemId && shopBlock.itemSellPrice != 0)
-		{
+	for (ShopBlock shopBlock : shopVector) {
+		if (itemType.id == shopBlock.itemId && shopBlock.itemSellPrice != 0) {
 			sellPrice = shopBlock.itemSellPrice;
 		}
 	}
@@ -338,8 +306,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 			removeAmount -= removeCount;
 
 			if (auto ret = g_game().internalRemoveItem(item, removeCount);
-			ret != RETURNVALUE_NOERROR)
-			{
+				ret != RETURNVALUE_NOERROR) {
 				SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
 				continue;
 			}
@@ -380,14 +347,12 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 	}
 }
 
-void Npc::onPlayerCheckItem(Player* player, uint16_t itemId,
-                          uint8_t subType)
-{
+void Npc::onPlayerCheckItem(Player* player, uint16_t itemId, uint8_t subType) {
 	if (!player) {
 		return;
 	}
 
-	const ItemType& itemType = Item::items[itemId];
+	const ItemType &itemType = Item::items[itemId];
 	// onPlayerCheckItem(self, player, itemId, subType)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);
 	if (callback.startScriptInterface(npcType->info.playerLookEvent)) {
@@ -402,8 +367,7 @@ void Npc::onPlayerCheckItem(Player* player, uint16_t itemId,
 	}
 }
 
-void Npc::onPlayerCloseChannel(Creature* creature)
-{
+void Npc::onPlayerCloseChannel(Creature* creature) {
 	Player* player = creature->getPlayer();
 	if (!player) {
 		return;
@@ -424,8 +388,7 @@ void Npc::onPlayerCloseChannel(Creature* creature)
 	this->removePlayerInteraction(player->getID());
 }
 
-void Npc::onThinkYell(uint32_t interval)
-{
+void Npc::onThinkYell(uint32_t interval) {
 	if (npcType->info.yellSpeedTicks == 0) {
 		return;
 	}
@@ -436,7 +399,7 @@ void Npc::onThinkYell(uint32_t interval)
 
 		if (!npcType->info.voiceVector.empty() && (npcType->info.yellChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
 			uint32_t index = uniform_random(0, npcType->info.voiceVector.size() - 1);
-			const voiceBlock_t& vb = npcType->info.voiceVector[index];
+			const voiceBlock_t &vb = npcType->info.voiceVector[index];
 
 			if (vb.yellText) {
 				g_game().internalCreatureSay(this, TALKTYPE_YELL, vb.text, false);
@@ -447,8 +410,7 @@ void Npc::onThinkYell(uint32_t interval)
 	}
 }
 
-void Npc::onThinkWalk(uint32_t interval)
-{
+void Npc::onThinkWalk(uint32_t interval) {
 	if (npcType->info.walkInterval == 0 || baseSpeed == 0) {
 		return;
 	}
@@ -465,22 +427,20 @@ void Npc::onThinkWalk(uint32_t interval)
 		return;
 	}
 
-	Direction dir = Position::getRandomDirection();
-	if (canWalkTo(getPosition(), dir)) {
-		listWalkDir.push_front(dir);
+	if (Direction newDirection;
+		getRandomStep(newDirection)) {
+		listWalkDir.push_front(newDirection);
 		addEventWalk();
 	}
 
 	walkTicks = 0;
 }
 
-void Npc::onPlacedCreature()
-{
+void Npc::onPlacedCreature() {
 	addEventWalk();
 }
 
-bool Npc::isInSpawnRange(const Position& pos) const
-{
+bool Npc::isInSpawnRange(const Position &pos) const {
 	if (!spawnNpc) {
 		return true;
 	}
@@ -531,8 +491,7 @@ void Npc::resetPlayerInteractions() {
 	playerInteractions.clear();
 }
 
-bool Npc::canWalkTo(const Position& fromPos, Direction dir) const
-{
+bool Npc::canWalkTo(const Position &fromPos, Direction dir) const {
 	if (npcType->info.walkRadius == 0) {
 		return false;
 	}
@@ -558,24 +517,40 @@ bool Npc::canWalkTo(const Position& fromPos, Direction dir) const
 	return true;
 }
 
-bool Npc::getNextStep(Direction& nextDirection, uint32_t& flags) {
+bool Npc::getNextStep(Direction &nextDirection, uint32_t &flags) {
 	return Creature::getNextStep(nextDirection, flags);
 }
 
-void Npc::addShopPlayer(Player* player)
-{
+bool Npc::getRandomStep(Direction &moveDirection) const {
+	static std::vector<Direction> directionvector {
+		Direction::DIRECTION_NORTH,
+		Direction::DIRECTION_WEST,
+		Direction::DIRECTION_EAST,
+		Direction::DIRECTION_SOUTH
+	};
+	std::ranges::shuffle(directionvector, getRandomGenerator());
+
+	for (const Position &creaturePos = getPosition();
+		 Direction direction : directionvector) {
+		if (canWalkTo(creaturePos, direction)) {
+			moveDirection = direction;
+			return true;
+		}
+	}
+	return false;
+}
+
+void Npc::addShopPlayer(Player* player) {
 	shopPlayerSet.insert(player);
 }
 
-void Npc::removeShopPlayer(Player* player)
-{
+void Npc::removeShopPlayer(Player* player) {
 	if (player) {
 		shopPlayerSet.erase(player);
 	}
 }
 
-void Npc::closeAllShopWindows()
-{
+void Npc::closeAllShopWindows() {
 	for (auto shopPlayer : shopPlayerSet) {
 		if (shopPlayer) {
 			shopPlayer->closeShopWindow();

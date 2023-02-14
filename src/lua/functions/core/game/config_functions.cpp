@@ -1,20 +1,10 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
  */
 
 #include "pch.hpp"
@@ -29,13 +19,13 @@ void ConfigFunctions::init(lua_State* L) {
 	registerMethod(L, "configManager", "getBoolean", ConfigFunctions::luaConfigManagerGetBoolean);
 	registerMethod(L, "configManager", "getFloat", ConfigFunctions::luaConfigManagerGetFloat);
 
-	#define registerEnumIn(L, tableName, value) { \
-		std::string enumName = #value; \
+#define registerEnumIn(L, tableName, value)                                                     \
+	{                                                                                           \
+		std::string enumName = #value;                                                          \
 		registerVariable(L, tableName, enumName.substr(enumName.find_last_of(':') + 1), value); \
 	} (void) 0
 
 	registerTable(L, "configKeys");
-
 	registerEnumIn(L, "configKeys", ALLOW_CHANGEOUTFIT);
 	registerEnumIn(L, "configKeys", ONE_PLAYER_ON_ACCOUNT);
 	registerEnumIn(L, "configKeys", AIMBOT_HOTKEY_ENABLED);
@@ -51,13 +41,13 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", STAMINA_SYSTEM);
 	registerEnumIn(L, "configKeys", WARN_UNSAFE_SCRIPTS);
 	registerEnumIn(L, "configKeys", CONVERT_UNSAFE_SCRIPTS);
-	registerEnumIn(L, "configKeys", CLASSIC_EQUIPMENT_SLOTS);
 	registerEnumIn(L, "configKeys", ALLOW_BLOCK_SPAWN);
 	registerEnumIn(L, "configKeys", CLASSIC_ATTACK_SPEED);
 	registerEnumIn(L, "configKeys", REMOVE_WEAPON_AMMO);
 	registerEnumIn(L, "configKeys", REMOVE_WEAPON_CHARGES);
 	registerEnumIn(L, "configKeys", REMOVE_POTION_CHARGES);
 	registerEnumIn(L, "configKeys", WEATHER_RAIN);
+	registerEnumIn(L, "configKeys", ALLOW_RELOAD);
 	registerEnumIn(L, "configKeys", WEATHER_THUNDER);
 	registerEnumIn(L, "configKeys", TOGGLE_FREE_QUEST);
 	registerEnumIn(L, "configKeys", FREE_QUEST_STAGE);
@@ -177,7 +167,20 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", DATA_DIRECTORY);
 	registerEnumIn(L, "configKeys", CORE_DIRECTORY);
 
-	#undef registerEnumIn
+	registerEnumIn(L, "configKeys", FORGE_COST_ONE_SLIVER);
+	registerEnumIn(L, "configKeys", FORGE_SLIVER_AMOUNT);
+	registerEnumIn(L, "configKeys", FORGE_CORE_COST);
+	registerEnumIn(L, "configKeys", FORGE_MAX_DUST);
+	registerEnumIn(L, "configKeys", FORGE_FUSION_DUST_COST);
+	registerEnumIn(L, "configKeys", FORGE_TRANSFER_DUST_COST);
+	registerEnumIn(L, "configKeys", FORGE_BASE_SUCCESS_RATE);
+	registerEnumIn(L, "configKeys", FORGE_BONUS_SUCCESS_RATE);
+	registerEnumIn(L, "configKeys", FORGE_TIER_LOSS_REDUCTION);
+	registerEnumIn(L, "configKeys", FORGE_INFLUENCED_CREATURES_LIMIT);
+	registerEnumIn(L, "configKeys", BOOSTED_BOSS_SLOT);
+	registerEnumIn(L, "configKeys", BOOSTED_BOSS_LOOT_BONUS);
+	registerEnumIn(L, "configKeys", BOOSTED_BOSS_KILL_BONUS);
+#undef registerEnumIn
 }
 
 int ConfigFunctions::luaConfigManagerGetString(lua_State* L) {

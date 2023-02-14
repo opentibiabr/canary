@@ -89,6 +89,26 @@ taskHuntingFreeRerollTime = 20 * 60 * 60
 
 -- Forge system
 forgeMaxItemTier = 10
+forgeCostOneSliver = 20
+forgeSliverAmount = 3
+forgeCoreCost = 50
+forgeMaxDust = 225
+forgeFusionCost = 100
+forgeTransferCost = 100
+forgeBaseSuccessRate = 50
+forgeBonusSuccessRate = 15
+forgeTierLossReduction = 50
+forgeMinSlivers = 3
+forgeMaxSlivers = 7
+forgeInfluencedLimit = 300
+forgeFiendishLimit = 3
+forgeFiendishIntervalType = "hour"
+forgeFiendishIntervalTime = "1"
+
+-- Bosstiary system
+boostedBossSlot = true
+boostedBossLootBonus = 250
+boostedBossKillBonus = 3
 
 -- NOTE: Access only for Premium Account
 onlyPremiumAccount = false
@@ -109,6 +129,7 @@ autoBank = false
 -- Teleport summon
 -- Set to true will never remove the summon
 teleportSummons = false
+
 -- NOTE: true will allow the /reload command to be used
 -- NOTE: Using this script might cause unwanted changes
 -- This script forces a reload in the entire server, this means that everything that is stored in memory might stop to work properly and/or completely, this script should be used in test environments only
@@ -155,10 +176,12 @@ deathLosePercent = -1
 
 -- Houses
 -- NOTE: set housePriceEachSQM to -1 to disable the ingame buy house functionality
+-- NOTE: set houseBuyLevel to 0 to disable the min level purchase functionality.
 -- Periods: daily/weekly/monthly/yearly/never
 housePriceEachSQM = 1000
 houseRentPeriod = "never"
 houseOwnedByAccount = false
+houseBuyLevel = 100
 
 -- Item Usage
 timeBetweenActions = 200
@@ -213,7 +236,6 @@ freePremium = false
 kickIdlePlayerAfterMinutes = 15
 maxMessageBuffer = 4
 emoteSpells = false
-classicEquipmentSlots = false
 allowWalkthrough = true
 coinPacketSize = 25
 coinImagesURL = "http://127.0.0.1/images/store/"

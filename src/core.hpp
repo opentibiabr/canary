@@ -5,13 +5,13 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_CORE_HPP_
 #define SRC_CORE_HPP_
 
 static constexpr auto STATUS_SERVER_NAME = "Canary";
-static constexpr auto STATUS_SERVER_VERSION = "1.5.0";
+static constexpr auto STATUS_SERVER_VERSION = "2.6.1";
 static constexpr auto STATUS_SERVER_DEVELOPERS = "OpenTibiaBR Organization";
 
 static constexpr auto AUTHENTICATOR_DIGITS = 6U;
@@ -22,4 +22,4 @@ static constexpr auto CLIENT_VERSION = 1291;
 #define CLIENT_VERSION_UPPER (CLIENT_VERSION / 100)
 #define CLIENT_VERSION_LOWER (CLIENT_VERSION % 100)
 
-#endif  // SRC_CORE_HPP_
+#endif // SRC_CORE_HPP_

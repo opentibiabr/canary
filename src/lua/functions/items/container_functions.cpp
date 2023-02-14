@@ -1,20 +1,10 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
  */
 
 #include "pch.hpp"
@@ -142,7 +132,7 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 	}
 
 	uint32_t count = getNumber<uint32_t>(L, 3, 1);
-	const ItemType& it = Item::items[itemId];
+	const ItemType &it = Item::items[itemId];
 	if (it.stackable) {
 		count = std::min<uint16_t>(count, 100);
 	}
@@ -275,9 +265,9 @@ int ContainerFunctions::luaContainerRegisterReward(lua_State* L) {
 	}
 
 	auto timestamp = time(nullptr);
-	Item * rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
-	rewardContainer->setIntAttr(ITEM_ATTRIBUTE_DATE, timestamp);
-	container->setIntAttr(ITEM_ATTRIBUTE_DATE, timestamp);
+	Item* rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
+	rewardContainer->setAttribute(ItemAttribute_t::DATE, timestamp);
+	container->setAttribute(ItemAttribute_t::DATE, timestamp);
 	container->internalAddThing(rewardContainer);
 	container->setRewardCorpse();
 

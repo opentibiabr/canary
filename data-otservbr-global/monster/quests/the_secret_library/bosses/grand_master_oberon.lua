@@ -27,6 +27,12 @@ monster.changeTarget = {
 	chance = 10
 }
 
+monster.bosstiary = {
+	bossRaceId = 1576,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.TheSecretLibrary.TheOrderOfTheFalcon.OberonTimer
+}
+
 monster.strategiesTarget = {
 	nearest = 100,
 }

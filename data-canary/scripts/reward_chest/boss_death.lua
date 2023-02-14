@@ -1,13 +1,8 @@
 local bossDeath = CreatureEvent("BossDeath")
 
 function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
-	-- player
-	if not creature then
-		return true
-	end
-
 	-- Deny summons and players
-	if creature:isPlayer() or creature:getMaster() then
+	if not creature or creature:isPlayer() or creature:getMaster() then
 		return true
 	end
 
@@ -16,7 +11,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 	-- Make sure it is a boss
 	if monsterType and monsterType:isRewardBoss() then
 		local bossId = creature:getId()
-		local timestamp = os.time()
+		local timestamp = systemTime()
 
 		ResetAndSetTargetList(creature)
 

@@ -14,7 +14,7 @@ function onUpdateDatabase()
 			`gained` bigint UNSIGNED NOT NULL DEFAULT '0',
 			CONSTRAINT `forge_history_pk` PRIMARY KEY (`id`),
 			FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
-		) ENGINE='InnoDB' DEFAULT CHARSET=utf8;
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	]])
 	return true
 end

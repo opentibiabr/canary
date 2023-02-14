@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -61,14 +61,16 @@ int LootFunctions::luaLootSetIdFromName(lua_State* L) {
 
 		if (ids.first == Item::items.nameToItems.cend()) {
 			SPDLOG_WARN("[LootFunctions::luaLootSetIdFromName] - "
-						"Unknown loot item {}", name);
+						"Unknown loot item {}",
+						name);
 			lua_pushnil(L);
 			return 1;
 		}
 
 		if (std::next(ids.first) != ids.second) {
 			SPDLOG_WARN("[LootFunctions::luaLootSetIdFromName] - "
-						"Non-unique loot item {}", name);
+						"Non-unique loot item {}",
+						name);
 			lua_pushnil(L);
 			return 1;
 		}

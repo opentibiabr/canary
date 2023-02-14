@@ -59,7 +59,7 @@ bool Database::beginTransaction() {
 	if (!executeQuery("BEGIN")) {
 		return false;
 	}
-	std::scoped_lock lock{databaseLock};
+	std::scoped_lock lock { databaseLock };
 	return true;
 }
 
@@ -69,7 +69,7 @@ bool Database::rollback() {
 		return false;
 	}
 
-	std::scoped_lock lock{databaseLock};
+	std::scoped_lock lock { databaseLock };
 
 	if (mysql_rollback(handle) != 0) {
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
@@ -84,7 +84,7 @@ bool Database::commit() {
 		SPDLOG_ERROR("Database not initialized!");
 		return false;
 	}
-	std::scoped_lock lock{databaseLock};
+	std::scoped_lock lock { databaseLock };
 	if (mysql_commit(handle) != 0) {
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
 		return false;
@@ -99,7 +99,7 @@ bool Database::executeQuery(const std::string_view &query) {
 		return false;
 	}
 
-	std::scoped_lock lock{databaseLock};
+	std::scoped_lock lock { databaseLock };
 
 	bool success = true;
 	int retry = 10;
@@ -130,7 +130,7 @@ DBResult_ptr Database::storeQuery(const std::string_view &query) {
 		return nullptr;
 	}
 
-	std::scoped_lock lock{databaseLock};
+	std::scoped_lock lock { databaseLock };
 
 retry:
 	if (mysql_query(handle, query.data()) != 0) {

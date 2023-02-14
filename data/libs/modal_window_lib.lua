@@ -77,17 +77,17 @@ function ModalWindow:callButton(name, player, button, choice)
 		name = tostring(name)
 	end
 
-	local button = self.buttons[name]
-	if not button then
+	local newButton = self.buttons[name]
+	if not newButton then
 		io.write("ModalWindow: Button with name '" .. name .. "' does not exist.")
 		return false
 	end
 
-	if not button.callback then
+	if not newButton.callback then
 		io.write("ModalWindow: Button with name '" .. name .. "' has no callback.")
 		return false
 	end
-	return button.callback(player, button, choice)
+	return newButton.callback(player, button, choice)
 end
 
 function ModalWindow:clearButtons()

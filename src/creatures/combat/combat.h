@@ -59,11 +59,11 @@ struct CombatParams {
 		CombatType_t combatType = COMBAT_NONE;
 		CombatOrigin origin = ORIGIN_SPELL;
 
-	uint8_t impactEffect = CONST_ME_NONE;
-	SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
+		uint8_t impactEffect = CONST_ME_NONE;
+		SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
 
-	uint8_t distanceEffect = CONST_ANI_NONE;
-	SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
+		uint8_t distanceEffect = CONST_ANI_NONE;
+		SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
 
 		bool blockedByArmor = false;
 		bool blockedByShield = false;
@@ -330,7 +330,7 @@ class MagicField final : public Item {
 			return it.combatType;
 		}
 		int64_t getDamage() const {
-			const ItemType& it = items[getID()];
+			const ItemType &it = items[getID()];
 			if (it.conditionDamage) {
 				return it.conditionDamage->getTotalDamage();
 			}

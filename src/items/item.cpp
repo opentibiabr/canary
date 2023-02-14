@@ -117,10 +117,9 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 	for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 		ImbuementInfo imbuementInfo;
 		if (getImbuementInfo(slotid, &imbuementInfo)) {
-			
+
 			if (const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
-				categoryImbuement->id == categoryId)
-			{
+				categoryImbuement->id == categoryId) {
 				return true;
 			}
 		}
@@ -1504,29 +1503,47 @@ std::string Item::parseImbuementDescription(const Item* item) {
 	return s.str();
 }
 
-SoundEffect_t Item::getMovementSound(Cylinder* toCylinder) const
-{
+SoundEffect_t Item::getMovementSound(Cylinder* toCylinder) const {
 	if (!toCylinder) {
 		return SoundEffect_t::ITEM_MOVE_DEFAULT;
 	}
 
 	if (const Container* toContainer = toCylinder->getContainer();
-		toContainer && toContainer->getHoldingPlayer())
-	{
+		toContainer && toContainer->getHoldingPlayer()) {
 		return SoundEffect_t::ITEM_MOVE_BACKPACK;
 	}
 
 	switch (items[id].type) {
-		case ITEM_TYPE_ARMOR: { return SoundEffect_t::ITEM_MOVE_ARMORS; }
-		case ITEM_TYPE_AMULET: { return SoundEffect_t::ITEM_MOVE_NECKLACES; }
-		case ITEM_TYPE_BOOTS: { return SoundEffect_t::ITEM_MOVE_BOOTS; }
-		case ITEM_TYPE_CONTAINER: { return SoundEffect_t::ITEM_MOVE_BACKPACK; }
-		case ITEM_TYPE_HELMET: { return SoundEffect_t::ITEM_MOVE_HELMETS; }
-		case ITEM_TYPE_LEGS: { return SoundEffect_t::ITEM_MOVE_LEGS; }
-		case ITEM_TYPE_RING: { return SoundEffect_t::ITEM_MOVE_RINGS; }
-		case ITEM_TYPE_DISTANCE: { return SoundEffect_t::ITEM_MOVE_DISTANCE; }
-		case ITEM_TYPE_QUIVER: { return SoundEffect_t::ITEM_MOVE_QUIVERS; }
-		case ITEM_TYPE_VALUABLE: { return SoundEffect_t::ITEM_MOVE_STACKABLE; }
+		case ITEM_TYPE_ARMOR: {
+			return SoundEffect_t::ITEM_MOVE_ARMORS;
+		}
+		case ITEM_TYPE_AMULET: {
+			return SoundEffect_t::ITEM_MOVE_NECKLACES;
+		}
+		case ITEM_TYPE_BOOTS: {
+			return SoundEffect_t::ITEM_MOVE_BOOTS;
+		}
+		case ITEM_TYPE_CONTAINER: {
+			return SoundEffect_t::ITEM_MOVE_BACKPACK;
+		}
+		case ITEM_TYPE_HELMET: {
+			return SoundEffect_t::ITEM_MOVE_HELMETS;
+		}
+		case ITEM_TYPE_LEGS: {
+			return SoundEffect_t::ITEM_MOVE_LEGS;
+		}
+		case ITEM_TYPE_RING: {
+			return SoundEffect_t::ITEM_MOVE_RINGS;
+		}
+		case ITEM_TYPE_DISTANCE: {
+			return SoundEffect_t::ITEM_MOVE_DISTANCE;
+		}
+		case ITEM_TYPE_QUIVER: {
+			return SoundEffect_t::ITEM_MOVE_QUIVERS;
+		}
+		case ITEM_TYPE_VALUABLE: {
+			return SoundEffect_t::ITEM_MOVE_STACKABLE;
+		}
 
 		case ITEM_TYPE_WAND:
 		case ITEM_TYPE_SHIELD:

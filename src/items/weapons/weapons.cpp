@@ -125,11 +125,11 @@ CombatDamage Weapon::getCombatDamage(CombatDamage combat, Player* player, Item* 
 	int32_t playerSkill = player->getWeaponSkill(item);
 	float attackFactor = player->getAttackFactor(); // full atk, balanced or full defense
 
-	//Getting values factores
+	// Getting values factores
 	auto totalAttack = convertToSafeInteger<int32_t>(elementalAttack + weaponAttack);
 	auto weaponAttackProportion = convertToSafeInteger<int64_t>(weaponAttack / totalAttack);
 
-	//Calculating damage
+	// Calculating damage
 	int64_t maxDamage = static_cast<int64_t>(Weapons::getMaxWeaponDamage(level, playerSkill, totalAttack, attackFactor, true) * player->getVocation()->meleeDamageMultiplier * damageModifier / 100);
 	int64_t minDamage = level / 5;
 	auto realDamage = normal_random(minDamage, maxDamage);

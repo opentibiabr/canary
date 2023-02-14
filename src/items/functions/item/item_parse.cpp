@@ -613,7 +613,7 @@ CombatType_t ItemParse::parseFieldCombatType(std::string lowerStringValue, pugi:
 	return COMBAT_NONE;
 }
 
-void ItemParse::parseFieldCombatDamage(ConditionDamage *conditionDamage, std::string stringValue, pugi::xml_node attributeNode) {
+void ItemParse::parseFieldCombatDamage(ConditionDamage* conditionDamage, std::string stringValue, pugi::xml_node attributeNode) {
 	int32_t combatTicks = 0;
 	int64_t combatDamage = 0;
 	int64_t combatStart = 0;
@@ -643,9 +643,9 @@ void ItemParse::parseFieldCombatDamage(ConditionDamage *conditionDamage, std::st
 				conditionDamage->addDamage(combatCount, combatTicks, combatDamage);
 			}
 
-			std::list<int64_t>damageList;
+			std::list<int64_t> damageList;
 			ConditionDamage::generateDamageList(combatDamage, combatStart, damageList);
-			for (int64_t damageValue: damageList) {
+			for (int64_t damageValue : damageList) {
 				conditionDamage->addDamage(1, combatTicks, -damageValue);
 			}
 

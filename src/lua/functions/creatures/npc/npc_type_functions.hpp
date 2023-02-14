@@ -70,7 +70,6 @@ class NpcTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "NpcType", "soundSpeedTicks", NpcTypeFunctions::luaNpcTypeSoundSpeedTicks);
 			registerMethod(L, "NpcType", "addSound", NpcTypeFunctions::luaNpcTypeAddSound);
 			registerMethod(L, "NpcType", "getSounds", NpcTypeFunctions::luaNpcTypeGetSounds);
-
 		}
 
 	private:

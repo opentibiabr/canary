@@ -3436,36 +3436,33 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 	NetworkMessage msg;
 	msg.addByte(0xB4);
 	msg.addByte(message.type);
-	switch (message.type)
-	{
-	case MESSAGE_DAMAGE_DEALT:
-	case MESSAGE_DAMAGE_RECEIVED:
-	case MESSAGE_DAMAGE_OTHERS:
-	{
-		msg.addPosition(message.position);
-		msg.add<uint32_t>(static_cast<uint32_t>(message.primary.value));
-		msg.addByte(message.primary.color);
-		msg.add<uint32_t>(static_cast<uint32_t>(message.secondary.value));
-		msg.addByte(message.secondary.color);
-		break;
-	}
-	case MESSAGE_HEALED:
-	case MESSAGE_HEALED_OTHERS:
-	case MESSAGE_EXPERIENCE:
-	case MESSAGE_EXPERIENCE_OTHERS:
-	{
-		msg.addPosition(message.position);
-		msg.add<uint32_t>(static_cast<uint32_t>(message.primary.value));
-		msg.addByte(message.primary.color);
-		break;
-	}
-	case MESSAGE_GUILD:
-	case MESSAGE_PARTY_MANAGEMENT:
-	case MESSAGE_PARTY:
-		msg.add<uint16_t>(message.channelId);
-		break;
-	default:
-		break;
+	switch (message.type) {
+		case MESSAGE_DAMAGE_DEALT:
+		case MESSAGE_DAMAGE_RECEIVED:
+		case MESSAGE_DAMAGE_OTHERS: {
+			msg.addPosition(message.position);
+			msg.add<uint32_t>(convertToSafeInteger<uint32_t>(message.primary.value));
+			msg.addByte(message.primary.color);
+			msg.add<uint32_t>(convertToSafeInteger<uint32_t>(message.secondary.value));
+			msg.addByte(message.secondary.color);
+			break;
+		}
+		case MESSAGE_HEALED:
+		case MESSAGE_HEALED_OTHERS:
+		case MESSAGE_EXPERIENCE:
+		case MESSAGE_EXPERIENCE_OTHERS: {
+			msg.addPosition(message.position);
+			msg.add<uint32_t>(convertToSafeInteger<uint32_t>(message.primary.value));
+			msg.addByte(message.primary.color);
+			break;
+		}
+		case MESSAGE_GUILD:
+		case MESSAGE_PARTY_MANAGEMENT:
+		case MESSAGE_PARTY:
+			msg.add<uint16_t>(message.channelId);
+			break;
+		default:
+			break;
 	}
 	msg.addString(message.text);
 	writeToOutputBuffer(msg);
@@ -5864,9 +5861,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 
 	if (creature->isHealthHidden()) {
 		msg.addByte(0x00);
-	}
-	else
-	{
+	} else {
 		auto creatureHealth = creature->getHealth();
 		auto creatureMaxHealth = std::max<int64_t>(creature->getMaxHealth(), 1);
 		double healthPercentage = (static_cast<double>(creatureHealth / creatureMaxHealth)) * 100.;
@@ -6020,8 +6015,8 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.add<uint16_t>(player->getExpBoostStamina()); // xp boost time (seconds)
 	msg.addByte(1); // enables exp boost in the store
 
-	msg.add<uint32_t>(player->getManaShield());  // remaining mana shield
-	msg.add<uint32_t>(player->getMaxManaShield());  // total mana shield
+	msg.add<uint32_t>(player->getManaShield()); // remaining mana shield
+	msg.add<uint32_t>(player->getMaxManaShield()); // total mana shield
 }
 
 void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
@@ -6308,7 +6303,7 @@ void ProtocolGame::sendUpdateImpactTracker(CombatType_t type, uint32_t amount) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendUpdateInputAnalyzer(CombatType_t type, uint32_t amount, std::string const &target) {
+void ProtocolGame::sendUpdateInputAnalyzer(CombatType_t type, uint32_t amount, const std::string &target) {
 	NetworkMessage msg;
 	msg.addByte(0xCC);
 	msg.addByte(ANALYZER_DAMAGE_RECEIVED);
@@ -7059,8 +7054,7 @@ void ProtocolGame::sendBosstiaryEntryChanged(uint32_t bossid) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendSingleSoundEffect(const Position& pos, SoundEffect_t id, SourceEffect_t source)
-{
+void ProtocolGame::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) {
 	NetworkMessage msg;
 	msg.addByte(0x83);
 	msg.addPosition(pos);
@@ -7072,13 +7066,12 @@ void ProtocolGame::sendSingleSoundEffect(const Position& pos, SoundEffect_t id, 
 }
 
 void ProtocolGame::sendDoubleSoundEffect(
-	const Position& pos,
+	const Position &pos,
 	SoundEffect_t mainSoundId,
 	SourceEffect_t mainSource,
 	SoundEffect_t secondarySoundId,
 	SourceEffect_t secondarySource
-)
-{
+) {
 	NetworkMessage msg;
 	msg.addByte(0x83);
 	msg.addPosition(pos);

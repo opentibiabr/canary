@@ -260,8 +260,7 @@ class Creature : virtual public Thing {
 			return attackedCreature;
 		}
 		virtual bool setAttackedCreature(Creature* creature);
-		virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int64_t& damage,
-				bool checkDefense = false, bool checkArmor = false, bool field = false);
+		virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int64_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false);
 
 		bool setMaster(Creature* newMaster, bool reloadCreature = false);
 
@@ -361,7 +360,7 @@ class Creature : virtual public Thing {
 		virtual void onAttackedCreature(Creature*) { }
 		virtual void onAttacked();
 		virtual void onAttackedCreatureDrainHealth(Creature* target, int64_t points);
-		virtual void onTargetCreatureGainHealth(Creature*, int64_t) {}
+		virtual void onTargetCreatureGainHealth(Creature*, int64_t) { }
 		void onAttackedCreatureKilled(Creature* target);
 		virtual bool onKilledCreature(Creature* target, bool lastHit = true);
 		virtual void onGainExperience(uint64_t gainExp, Creature* target);
@@ -407,7 +406,7 @@ class Creature : virtual public Thing {
 
 		virtual void onPlacedCreature() { }
 
-		virtual bool getCombatValues(int64_t&, int64_t&) {
+		virtual bool getCombatValues(int64_t &, int64_t &) {
 			return false;
 		}
 
@@ -486,8 +485,8 @@ class Creature : virtual public Thing {
 			}
 		}
 		struct CountBlock_t {
-			int64_t total;
-			int64_t ticks;
+				int64_t total;
+				int64_t ticks;
 		};
 		using CountMap = std::map<uint32_t, CountBlock_t>;
 		CountMap getDamageMap() const {

@@ -43,26 +43,26 @@ struct spellBlock_t {
 			other.spell = nullptr;
 		}
 
-	BaseSpell* spell = nullptr;
-	uint32_t chance = 100;
-	uint32_t speed = 2000;
-	uint32_t range = 0;
-	int32_t minCombatValue = 0;
-	int32_t maxCombatValue = 0;
-	bool combatSpell = false;
-	bool isMelee = false;
+		BaseSpell* spell = nullptr;
+		uint32_t chance = 100;
+		uint32_t speed = 2000;
+		uint32_t range = 0;
+		int32_t minCombatValue = 0;
+		int32_t maxCombatValue = 0;
+		bool combatSpell = false;
+		bool isMelee = false;
 
-	SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
-	SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
+		SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
+		SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
 };
 
 class MonsterType {
 		struct MonsterInfo {
 				LuaScriptInterface* scriptInterface;
 
-		std::map<CombatType_t, int64_t> elementMap;
-		std::map<CombatType_t, int64_t> reflectMap;
-		std::map<CombatType_t, int64_t> healingMap;
+				std::map<CombatType_t, int64_t> elementMap;
+				std::map<CombatType_t, int64_t> reflectMap;
+				std::map<CombatType_t, int64_t> healingMap;
 
 				std::vector<voiceBlock_t> voiceVector;
 

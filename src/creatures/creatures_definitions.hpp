@@ -989,7 +989,7 @@ enum class SoundEffect_t : uint16_t {
 	ENV_SLOW_FOOTSTEPS = 2705,
 	ENV_THICK_BLOB_LIQUID_2 = 2706,
 	ENV_MOVING_LEAF = 2707,
-	ENV_WOOD_CRACKLE_1= 2708,
+	ENV_WOOD_CRACKLE_1 = 2708,
 	ACTION_OBJECT_FALLING_DEPTH = 2709,
 	ACTION_BUTTON_TRIGGER = 2710,
 	ENV_HEAVEN_DARK_REVERB = 2711,
@@ -1163,9 +1163,9 @@ struct Kill {
 };
 
 struct IntervalInfo {
-	time_t timeLeft;
-	int64_t value;
-	int64_t interval;
+		time_t timeLeft;
+		int64_t value;
+		int64_t interval;
 };
 
 struct FindPathParams {
@@ -1287,10 +1287,10 @@ struct LightInfo {
 };
 
 struct CombatDamage {
-	struct {
-		CombatType_t type;
-		int64_t value;
-	} primary, secondary;
+		struct {
+				CombatType_t type;
+				int64_t value;
+		} primary, secondary;
 
 		CombatOrigin origin;
 		bool critical;

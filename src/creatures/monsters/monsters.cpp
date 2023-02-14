@@ -58,7 +58,7 @@ ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType, int
 	return condition;
 }
 
-bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std::string& description) {
+bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std::string &description) {
 	if (!spell->scriptName.empty()) {
 		spell->isScripted = true;
 	} else if (!spell->name.empty()) {
@@ -68,8 +68,8 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 	}
 
 	sb.speed = spell->interval;
-	sb.chance = std::min((int) spell->chance, 100);
-	sb.range = std::min((int) spell->range, Map::maxViewportX * 2);
+	sb.chance = std::min((int)spell->chance, 100);
+	sb.range = std::min((int)spell->range, Map::maxViewportX * 2);
 	sb.minCombatValue = std::min(spell->minCombatValue, spell->maxCombatValue);
 	sb.maxCombatValue = std::max(spell->minCombatValue, spell->maxCombatValue);
 	sb.soundCastEffect = spell->soundCastEffect;

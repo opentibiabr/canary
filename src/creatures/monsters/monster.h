@@ -145,7 +145,7 @@ class Monster final : public Creature {
 
 		void drainHealth(Creature* attacker, int64_t damage) override;
 		void changeHealth(int64_t healthChange, bool sendHealthChange = true) override;
-		bool getNextStep(Direction& direction, uint32_t& flags) override;
+		bool getNextStep(Direction &direction, uint32_t &flags) override;
 		void onFollowCreatureComplete(const Creature* creature) override;
 
 		void onThink(uint32_t interval) override;
@@ -215,7 +215,7 @@ class Monster final : public Creature {
 		void setMonsterIcon(uint16_t iconcount, uint16_t iconnumber);
 
 		void setNormalCreatureLight() override;
-		bool getCombatValues(int64_t& min, int64_t& max) override;
+		bool getCombatValues(int64_t &min, int64_t &max) override;
 
 		void doAttacking(uint32_t interval) override;
 		bool hasExtraSwing() override {
@@ -261,8 +261,7 @@ class Monster final : public Creature {
 		void clearTargetList();
 		void clearFriendList();
 
-		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int64_t& damage,
-				bool checkDefense = false, bool checkArmor = false, bool field = false) override;
+		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int64_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 
 		static uint32_t monsterAutoID;
 

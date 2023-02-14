@@ -188,7 +188,7 @@ class Weapon : public Script {
 
 		uint32_t getManaCost(const Player* player) const;
 		int64_t getHealthCost(const Player* player) const;
-		bool executeUseWeapon(Player* player, const LuaVariant& var) const;
+		bool executeUseWeapon(Player* player, const LuaVariant &var) const;
 
 		uint16_t id = 0;
 
@@ -287,7 +287,9 @@ class WeaponWand final : public Weapon {
 		void configureWeapon(const ItemType &it) override;
 
 		int64_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const override;
-		int64_t getElementDamage(const Player*, const Creature*, const Item*) const override { return 0; }
+		int64_t getElementDamage(const Player*, const Creature*, const Item*) const override {
+			return 0;
+		}
 		CombatType_t getElementType() const override {
 			return COMBAT_NONE;
 		}

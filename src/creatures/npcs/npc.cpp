@@ -165,8 +165,7 @@ void Npc::onCreatureSay(Creature* creature, SpeakClasses type, const std::string
 	}
 }
 
-void Npc::onThinkSound(uint32_t interval)
-{
+void Npc::onThinkSound(uint32_t interval) {
 	if (npcType->info.soundSpeedTicks == 0) {
 		return;
 	}
@@ -419,7 +418,7 @@ void Npc::onThinkYell(uint32_t interval) {
 		if (!npcType->info.voiceVector.empty() && (npcType->info.yellChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
 			auto index = uniform_random(0, static_cast<int64_t>(npcType->info.voiceVector.size() - 1));
 			auto convertedSafe = convertToSafeInteger<uint16_t>(index);
-			const voiceBlock_t& vb = npcType->info.voiceVector[convertedSafe];
+			const voiceBlock_t &vb = npcType->info.voiceVector[convertedSafe];
 
 			if (vb.yellText) {
 				g_game().internalCreatureSay(this, TALKTYPE_YELL, vb.text, false);

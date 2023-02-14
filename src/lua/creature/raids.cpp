@@ -536,7 +536,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 }
 
 bool AreaSpawnEvent::executeEvent() {
-	for (const MonsterSpawn& spawn : spawnMonsterList) {
+	for (const MonsterSpawn &spawn : spawnMonsterList) {
 		auto amount = static_cast<uint32_t>(uniform_random(static_cast<int64_t>(spawn.minAmount), static_cast<int64_t>(spawn.maxAmount)));
 		for (uint32_t i = 0; i < amount; ++i) {
 			Monster* monster = Monster::createMonster(spawn.name);

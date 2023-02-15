@@ -651,7 +651,7 @@ class Player final : public Creature, public Cylinder {
 		void addConditionSuppressions(uint32_t conditions);
 		void removeConditionSuppressions(uint32_t conditions);
 
-		std::shared_ptr<Reward> getReward(const uint64_t rewardId, const bool autoCreate);
+		Reward* getReward(const uint64_t rewardId, const bool autoCreate);
 		void removeReward(uint64_t rewardId);
 		void getRewardList(std::vector<uint64_t> &rewards) const;
 		RewardChest* getRewardChest();
@@ -2350,7 +2350,7 @@ class Player final : public Creature, public Cylinder {
 			{ SKILL_CRITICAL_HIT_CHANCE, g_configManager().getNumber(CRITICALCHANCE) }
 		};
 
-		std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
+		std::map<uint64_t, Reward*> rewardMap;
 
 		std::map<ObjectCategory_t, Container*> quickLootContainers;
 		std::vector<ForgeHistory> forgeHistoryVector;
@@ -2617,7 +2617,7 @@ class Player final : public Creature, public Cylinder {
 		double_t calculateDamageReduction(double_t currentTotal, int16_t resistance) const;
 
 		void removeEmptyRewards();
-		bool hasAnykindOfRewardContainerOpen() const;
+		bool hasOtherRewardContainerOpen(const Container* container) const;
 };
 
 #endif // SRC_CREATURES_PLAYERS_PLAYER_H_

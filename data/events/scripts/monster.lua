@@ -73,7 +73,7 @@ function Monster:onDropLoot(corpse)
 			local isBoostedBoss = self:getName():lower() == (Game.getBoostedBoss()):lower()
 			local bossRaceIds = {player:getSlotBossId(1), player:getSlotBossId(2)}
 			local isBoss = table.contains(bossRaceIds, mType:bossRaceId()) or isBoostedBoss
-			if isBoss then
+			if isBoss and mType:bossRaceId() ~= 0 then
 				local bonus
 				if mType:bossRaceId() == player:getSlotBossId(1) then
 					bonus = player:getBossBonus(1)
@@ -137,8 +137,8 @@ function Monster:onSpawn(position)
 
 	-- We won't run anything from here on down if we're opening the global pack
 	if IsRunningGlobalDatapack() then
-		if self:getName():lower() == "cobra scout" or 
-			self:getName():lower() == "cobra vizier" or 
+		if self:getName():lower() == "cobra scout" or
+			self:getName():lower() == "cobra vizier" or
 			self:getName():lower() == "cobra assassin" then
 			if getGlobalStorageValue(GlobalStorage.CobraBastionFlask) >= os.time() then
 				self:setHealth(self:getMaxHealth() * 0.75)

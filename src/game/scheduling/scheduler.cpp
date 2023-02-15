@@ -5,21 +5,22 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
 #include "game/scheduling/scheduler.h"
 
-void Scheduler::threadMain()
-{
+void Scheduler::threadMain() {
 	std::unique_lock<std::mutex> eventLockUnique(eventLock, std::defer_lock);
 	while (getState() != THREAD_STATE_TERMINATED) {
 		std::cv_status ret = std::cv_status::no_timeout;
 
 		eventLockUnique.lock();
 		if (eventList.empty()) {
-			eventSignal.wait(eventLockUnique);
+			eventSignal.wait(eventLockUnique, [this] {
+				return !eventList.empty() || getState() == THREAD_STATE_TERMINATED;
+			});
 		} else {
 			ret = eventSignal.wait_until(eventLockUnique, eventList.top()->getCycle());
 		}
@@ -48,8 +49,7 @@ void Scheduler::threadMain()
 	}
 }
 
-uint32_t Scheduler::addEvent(SchedulerTask* task)
-{
+uint32_t Scheduler::addEvent(SchedulerTask* task) {
 	bool do_signal;
 	eventLock.lock();
 
@@ -88,8 +88,7 @@ uint32_t Scheduler::addEvent(SchedulerTask* task)
 	return task->getEventId();
 }
 
-bool Scheduler::stopEvent(uint32_t eventid)
-{
+bool Scheduler::stopEvent(uint32_t eventid) {
 	if (eventid == 0) {
 		return false;
 	}
@@ -106,12 +105,11 @@ bool Scheduler::stopEvent(uint32_t eventid)
 	return true;
 }
 
-void Scheduler::shutdown()
-{
+void Scheduler::shutdown() {
 	setState(THREAD_STATE_TERMINATED);
 	eventLock.lock();
 
-	//this list should already be empty
+	// this list should already be empty
 	while (!eventList.empty()) {
 		delete eventList.top();
 		eventList.pop();
@@ -122,7 +120,6 @@ void Scheduler::shutdown()
 	eventSignal.notify_one();
 }
 
-SchedulerTask* createSchedulerTask(uint32_t delay, std::function<void (void)> f)
-{
+SchedulerTask* createSchedulerTask(uint32_t delay, std::function<void(void)> f) {
 	return new SchedulerTask(delay, std::move(f));
 }

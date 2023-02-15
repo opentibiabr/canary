@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -14,8 +14,7 @@
 #include "lua/scripts/scripts.h"
 #include "utils/pugicast.h"
 
-bool EventsScheduler::loadScheduleEventFromXml() const
-{
+bool EventsScheduler::loadScheduleEventFromXml() const {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/events.xml";
 	if (
@@ -23,8 +22,7 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 		pugi::xml_parse_result result = doc.load_file(folder.c_str());
 		// Condition
 		!result
-	)
-	{
+	) {
 		printXMLError(__FUNCTION__, folder, result);
 		consoleHandlerExit();
 		return false;
@@ -72,9 +70,8 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 		}
 
 		if ((attr = schedNode.attribute("script")) && (!(g_scripts().loadEventSchedulerScripts(attr.as_string())))) {
-				SPDLOG_WARN("{} - Can not load the file '{}' on '/events/scripts/scheduler/'",
-				__FUNCTION__, attr.as_string());
-				return false;
+			SPDLOG_WARN("{} - Can not load the file '{}' on '/events/scripts/scheduler/'", __FUNCTION__, attr.as_string());
+			return false;
 		}
 
 		for (auto schedENode : schedNode.children()) {
@@ -93,7 +90,7 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 			if ((schedENode.attribute("spawnrate"))) {
 				uint32_t spawnrate = pugi::cast<uint32_t>(schedENode.attribute("spawnrate").value());
 				g_eventsScheduler().setSpawnMonsterSchedule(spawnrate);
-				ss << ", spawn: "  << spawnrate << "%";
+				ss << ", spawn: " << spawnrate << "%";
 			}
 
 			if ((schedENode.attribute("skillrate"))) {

@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -18,7 +18,7 @@ int CharmFunctions::luaCharmCreate(lua_State* L) {
 	if (isNumber(L, 2)) {
 		charmRune_t charmid = getNumber<charmRune_t>(L, 2);
 		std::vector<Charm*> charmList = g_game().getCharmList();
-		for (auto& it : charmList) {
+		for (auto &it : charmList) {
 			Charm* charm = it;
 			if (charm->id == charmid) {
 				pushUserdata<Charm>(L, charm);

@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_IO_FILELOADER_H_
 #define SRC_IO_FILELOADER_H_
@@ -13,51 +13,50 @@
 class PropStream;
 
 namespace OTB {
-	using Identifier = std::array < char, 4 > ;
+	using Identifier = std::array<char, 4>;
 
 	struct Node {
-		Node() = default;
-		Node(Node&&) = default;
-		Node& operator=(Node&&) = default;
-		Node(const Node&) = delete;
-		Node& operator=(const Node&) = delete;
+			Node() = default;
+			Node(Node &&) = default;
+			Node &operator=(Node &&) = default;
+			Node(const Node &) = delete;
+			Node &operator=(const Node &) = delete;
 
-		std::list<Node> children;
-		mio::mmap_source::const_iterator propsBegin;
-		mio::mmap_source::const_iterator propsEnd;
-		uint8_t type;
-		enum NodeChar: uint8_t {
-			ESCAPE = 0xFD,
-			START = 0xFE,
-			END = 0xFF,
-		};
+			std::list<Node> children;
+			mio::mmap_source::const_iterator propsBegin;
+			mio::mmap_source::const_iterator propsEnd;
+			uint8_t type;
+			enum NodeChar : uint8_t {
+				ESCAPE = 0xFD,
+				START = 0xFE,
+				END = 0xFF,
+			};
 	};
 
-	struct LoadError: std::exception {
-		const char * what() const noexcept override = 0;
+	struct LoadError : std::exception {
+			const char* what() const noexcept override = 0;
 	};
 
-	struct InvalidOTBFormat final: LoadError {
-		const char * what() const noexcept override {
-			return "Invalid OTBM file format";
-		}
+	struct InvalidOTBFormat final : LoadError {
+			const char* what() const noexcept override {
+				return "Invalid OTBM file format";
+			}
 	};
 
 	class Loader {
-		mio::mmap_source fileContents;
-		Node root;
-		std::vector < char > propBuffer;
+			mio::mmap_source fileContents;
+			Node root;
+			std::vector<char> propBuffer;
+
 		public:
-			Loader(const std::string & fileName,
-				const Identifier & acceptedIdentifier);
-		bool getProps(const Node & node, PropStream & props);
-		const Node & parseTree();
+			Loader(const std::string &fileName, const Identifier &acceptedIdentifier);
+			bool getProps(const Node &node, PropStream &props);
+			const Node &parseTree();
 	};
 
-} //namespace OTB
+} // namespace OTB
 
-class PropStream
-{
+class PropStream {
 	public:
 		void init(const char* a, size_t size) {
 			p = a;
@@ -69,7 +68,7 @@ class PropStream
 		}
 
 		template <typename T>
-		bool read(T& ret) {
+		bool read(T &ret) {
 			if (size() < sizeof(T)) {
 				return false;
 			}
@@ -79,7 +78,7 @@ class PropStream
 			return true;
 		}
 
-		bool readString(std::string& ret) {
+		bool readString(std::string &ret) {
 			uint16_t strLen;
 			if (!read<uint16_t>(strLen)) {
 				return false;
@@ -112,16 +111,15 @@ class PropStream
 		const char* end = nullptr;
 };
 
-class PropWriteStream
-{
+class PropWriteStream {
 	public:
 		PropWriteStream() = default;
 
 		// non-copyable
-		PropWriteStream(const PropWriteStream&) = delete;
-		PropWriteStream& operator=(const PropWriteStream&) = delete;
+		PropWriteStream(const PropWriteStream &) = delete;
+		PropWriteStream &operator=(const PropWriteStream &) = delete;
 
-		const char* getStream(size_t& size) const {
+		const char* getStream(size_t &size) const {
 			size = buffer.size();
 			return buffer.data();
 		}
@@ -136,7 +134,7 @@ class PropWriteStream
 			std::copy(addr, addr + sizeof(T), std::back_inserter(buffer));
 		}
 
-		void writeString(const std::string& str) {
+		void writeString(const std::string &str) {
 			size_t strLength = str.size();
 			if (strLength > std::numeric_limits<uint16_t>::max()) {
 				write<uint16_t>(0);
@@ -151,4 +149,4 @@ class PropWriteStream
 		std::vector<char> buffer;
 };
 
-#endif  // SRC_IO_FILELOADER_H_
+#endif // SRC_IO_FILELOADER_H_

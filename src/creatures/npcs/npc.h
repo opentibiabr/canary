@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_CREATURES_NPCS_NPC_H_
 #define SRC_CREATURES_NPCS_NPC_H_
@@ -18,10 +18,9 @@ class Creature;
 class Game;
 class SpawnNpc;
 
-class Npc final : public Creature
-{
+class Npc final : public Creature {
 	public:
-		static Npc* createNpc(const std::string& name);
+		static Npc* createNpc(const std::string &name);
 		static int32_t despawnRange;
 		static int32_t despawnRadius;
 
@@ -30,10 +29,10 @@ class Npc final : public Creature
 		~Npc();
 
 		// Singleton - ensures we don't accidentally copy it
-		Npc(Npc const&) = delete;
-		void operator=(Npc const&) = delete;
+		Npc(const Npc &) = delete;
+		void operator=(const Npc &) = delete;
 
-		static Npc& getInstance() {
+		static Npc &getInstance() {
 			// Guaranteed to be destroyed
 			static Npc instance;
 			// Instantiated on first use
@@ -56,14 +55,14 @@ class Npc final : public Creature
 		void removeList() override;
 		void addList() override;
 
-		const std::string& getName() const override {
+		const std::string &getName() const override {
 			return npcType->name;
 		}
 		// Real npc name, set on npc creation "createNpcType(typeName)"
-		const std::string& getTypeName() const override {
+		const std::string &getTypeName() const override {
 			return npcType->typeName;
 		}
-		const std::string& getNameDescription() const override {
+		const std::string &getNameDescription() const override {
 			return npcType->nameDescription;
 		}
 		std::string getDescription(int32_t) const override {
@@ -78,7 +77,7 @@ class Npc final : public Creature
 			return CREATURETYPE_NPC;
 		}
 
-		const Position& getMasterPos() const {
+		const Position &getMasterPos() const {
 			return masterPos;
 		}
 		void setMasterPos(Position pos) {
@@ -111,8 +110,8 @@ class Npc final : public Creature
 			return false;
 		}
 
-		bool canSee(const Position& pos) const override;
-		bool canSeeRange(const Position& pos, int32_t viewRangeX = 4, int32_t viewRangeY = 4) const;
+		bool canSee(const Position &pos) const override;
+		bool canSeeRange(const Position &pos, int32_t viewRangeX = 4, int32_t viewRangeY = 4) const;
 		bool canSeeInvisibility() const override {
 			return true;
 		}
@@ -129,9 +128,9 @@ class Npc final : public Creature
 		void resetPlayerInteractions();
 
 		bool isInteractingWithPlayer(uint32_t playerId) {
-		if (playerInteractions.find(playerId) == playerInteractions.end()) {
-			return false;
-		}
+			if (playerInteractions.find(playerId) == playerInteractions.end()) {
+				return false;
+			}
 			return true;
 		}
 
@@ -145,21 +144,18 @@ class Npc final : public Creature
 
 		void onCreatureAppear(Creature* creature, bool isLogin) override;
 		void onRemoveCreature(Creature* creature, bool isLogout) override;
-		void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos, const Tile* oldTile, const Position& oldPos, bool teleport) override;
-		void onCreatureSay(Creature* creature, SpeakClasses type, const std::string& text) override;
+		void onCreatureMove(Creature* creature, const Tile* newTile, const Position &newPos, const Tile* oldTile, const Position &oldPos, bool teleport) override;
+		void onCreatureSay(Creature* creature, SpeakClasses type, const std::string &text) override;
 		void onThink(uint32_t interval) override;
-		void onPlayerBuyItem(Player* player, uint16_t itemid, uint8_t count,
-                            uint16_t amount, bool ignore, bool inBackpacks);
-		void onPlayerSellItem(Player* player, uint16_t itemid, uint8_t count,
-                            uint16_t amount, bool ignore);
-		void onPlayerCheckItem(Player* player, uint16_t itemid,
-                          uint8_t count);
+		void onPlayerBuyItem(Player* player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, bool inBackpacks);
+		void onPlayerSellItem(Player* player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore);
+		void onPlayerCheckItem(Player* player, uint16_t itemid, uint8_t count);
 		void onPlayerCloseChannel(Creature* creature);
 		void onPlacedCreature() override;
 
-		bool canWalkTo(const Position& fromPos, Direction dir) const;
-		bool getNextStep(Direction& nextDirection, uint32_t& flags) override;
-		bool getRandomStep(Direction& moveDirection) const;
+		bool canWalkTo(const Position &fromPos, Direction dir) const;
+		bool getNextStep(Direction &nextDirection, uint32_t &flags) override;
+		bool getRandomStep(Direction &moveDirection) const;
 
 		void setNormalCreatureLight() override {
 			internalLight = npcType->info.light;
@@ -175,7 +171,7 @@ class Npc final : public Creature
 		void onThinkYell(uint32_t interval);
 		void onThinkWalk(uint32_t interval);
 
-		bool isInSpawnRange(const Position& pos) const;
+		bool isInSpawnRange(const Position &pos) const;
 
 		std::string strDescription;
 
@@ -201,4 +197,4 @@ class Npc final : public Creature
 
 constexpr auto g_npc = &Npc::getInstance;
 
-#endif  // SRC_CREATURES_NPCS_NPC_H_
+#endif // SRC_CREATURES_NPCS_NPC_H_

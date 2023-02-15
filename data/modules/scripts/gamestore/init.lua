@@ -256,6 +256,11 @@ function parseTransferCoins(playerId, msg)
 		return false
 	end
 
+	if player:isUIExhausted(2000) then
+		return addPlayerEvent(sendStoreError, 250, playerId, GameStore.StoreErrors.STORE_ERROR_TRANSFER, "You are exhausted.")
+	end
+
+	player:updateUIExhausted()
 	local reciver = msg:getString()
 	local amount = msg:getU32()
 
@@ -859,7 +864,7 @@ function sendStoreTransactionHistory(playerId, page, entriesPerPage)
 		msg:addU32(0)
 		msg:addU32(entry.time)
 		msg:addByte(entry.mode) -- 0 = normal, 1 = gift, 2 = refund
-		msg:addU32(entry.amount)
+		msg:add32(entry.amount)
 		msg:addByte(entry.type) -- 0 = transferable tibia coin, 1 = normal tibia coin, 2 = tournament coin
 		msg:addString(entry.description)
 		msg:addByte(0) -- details

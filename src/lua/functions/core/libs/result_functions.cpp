@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -18,7 +18,7 @@ int ResultFunctions::luaResultGetNumber(lua_State* L) {
 		return 1;
 	}
 
-	const std::string& s = getString(L, 2);
+	const std::string &s = getString(L, 2);
 	lua_pushnumber(L, res->getNumber<int64_t>(s));
 	return 1;
 }
@@ -30,7 +30,7 @@ int ResultFunctions::luaResultGetString(lua_State* L) {
 		return 1;
 	}
 
-	const std::string& s = getString(L, 2);
+	const std::string &s = getString(L, 2);
 	pushString(L, res->getString(s));
 	return 1;
 }

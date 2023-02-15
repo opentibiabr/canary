@@ -223,15 +223,11 @@ if Modules == nil then
 		else
 			npcHandler:removeInteraction(npc, player)
 			npcHandler:say(parameters.text or "Set the sails!", npc, player)
-			playerPosition:sendMagicEffect(CONST_ME_TELEPORT)
 
 			local destination = parameters.destination
 			if type(destination) == 'function' then
 				destination = destination(player)
 			end
-
-			player:teleportTo(destination)
-			playerPosition:sendMagicEffect(CONST_ME_TELEPORT)
 
 			player:setStorageValue(NpcExhaust, 3 + os.time())
 			player:teleportTo(destination)

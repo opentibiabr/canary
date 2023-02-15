@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -13,34 +13,31 @@
 #include "game/scheduling/tasks.h"
 
 DatabaseTasks::DatabaseTasks() {
-  db_ = &Database::getInstance();
+	db_ = &Database::getInstance();
 }
 
-bool DatabaseTasks::SetDatabaseInterface(Database *database) {
-  if (database == nullptr) {
-    return false;
-  }
+bool DatabaseTasks::SetDatabaseInterface(Database* database) {
+	if (database == nullptr) {
+		return false;
+	}
 
-  db_ = database;
-  return true;
+	db_ = database;
+	return true;
 }
 
-void DatabaseTasks::start()
-{
-  if (db_ == nullptr) {
-    return;
-  }
+void DatabaseTasks::start() {
+	if (db_ == nullptr) {
+		return;
+	}
 	db_->connect();
 	ThreadHolder::start();
 }
 
-void DatabaseTasks::startThread()
-{
+void DatabaseTasks::startThread() {
 	ThreadHolder::start();
 }
 
-void DatabaseTasks::threadMain()
-{
+void DatabaseTasks::threadMain() {
 	std::unique_lock<std::mutex> taskLockUnique(taskLock, std::defer_lock);
 	while (getState() != THREAD_STATE_TERMINATED) {
 		taskLockUnique.lock();
@@ -49,7 +46,7 @@ void DatabaseTasks::threadMain()
 				flushSignal.notify_one();
 			}
 			taskSignal.wait(taskLockUnique, [this] {
-				return !tasks.empty();
+				return !tasks.empty() || getState() == THREAD_STATE_TERMINATED;
 			});
 		}
 
@@ -64,8 +61,7 @@ void DatabaseTasks::threadMain()
 	}
 }
 
-void DatabaseTasks::addTask(std::string query, std::function<void(DBResult_ptr, bool)> callback/* = nullptr*/, bool store/* = false*/)
-{
+void DatabaseTasks::addTask(std::string query, std::function<void(DBResult_ptr, bool)> callback /* = nullptr*/, bool store /* = false*/) {
 	bool signal = false;
 	taskLock.lock();
 	if (getState() == THREAD_STATE_RUNNING) {
@@ -79,12 +75,11 @@ void DatabaseTasks::addTask(std::string query, std::function<void(DBResult_ptr, 
 	}
 }
 
-void DatabaseTasks::runTask(const DatabaseTask& task)
-{
-  if (db_ == nullptr) {
-    return;
-  }
-  bool success;
+void DatabaseTasks::runTask(const DatabaseTask &task) {
+	if (db_ == nullptr) {
+		return;
+	}
+	bool success;
 	DBResult_ptr result;
 	if (task.store) {
 		result = db_->storeQuery(task.query);
@@ -99,9 +94,8 @@ void DatabaseTasks::runTask(const DatabaseTask& task)
 	}
 }
 
-void DatabaseTasks::flush()
-{
-	std::unique_lock<std::mutex> guard{ taskLock };
+void DatabaseTasks::flush() {
+	std::unique_lock<std::mutex> guard { taskLock };
 	if (!tasks.empty()) {
 		flushTasks = true;
 		flushSignal.wait(guard, [this] {
@@ -111,8 +105,7 @@ void DatabaseTasks::flush()
 	}
 }
 
-void DatabaseTasks::shutdown()
-{
+void DatabaseTasks::shutdown() {
 	taskLock.lock();
 	setState(THREAD_STATE_TERMINATED);
 	taskLock.unlock();

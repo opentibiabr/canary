@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -32,6 +32,7 @@
 #include "server/network/webhook/webhook.h"
 #include "server/server.h"
 #include "io/ioprey.h"
+#include "io/io_bosstiary.hpp"
 
 #if __has_include("gitmetadata.h")
 	#include "gitmetadata.h"
@@ -50,26 +51,26 @@ bool g_loaderDone = false;
  * To activate/desactivate window;
  * \param MF_GRAYED Disable the "x" (force close) button
  * \param MF_ENABLED Enable the "x" (force close) button
-*/
+ */
 void toggleForceCloseButton() {
-	#ifdef OS_WINDOWS
+#ifdef OS_WINDOWS
 	HWND hwnd = GetConsoleWindow();
 	HMENU hmenu = GetSystemMenu(hwnd, FALSE);
 	EnableMenuItem(hmenu, SC_CLOSE, MF_GRAYED);
-	#endif
+#endif
 }
 
 std::string getCompiler() {
 	std::string compiler;
-	#if defined(__clang__)
-		return compiler = fmt::format("Clang++ {}.{}.{}", __clang_major__, __clang_minor__, __clang_patchlevel__);
-	#elif defined(_MSC_VER)
-		return compiler = fmt::format("Microsoft Visual Studio {}", _MSC_VER);
-	#elif defined(__GNUC__)
-		return compiler = fmt::format("G++ {}.{}.{}", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
-	#else
-		return compiler = "unknown";
-	#endif
+#if defined(__clang__)
+	return compiler = fmt::format("Clang++ {}.{}.{}", __clang_major__, __clang_minor__, __clang_patchlevel__);
+#elif defined(_MSC_VER)
+	return compiler = fmt::format("Microsoft Visual Studio {}", _MSC_VER);
+#elif defined(__GNUC__)
+	return compiler = fmt::format("G++ {}.{}.{}", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+#else
+	return compiler = "unknown";
+#endif
 }
 
 void startupErrorMessage() {
@@ -84,7 +85,7 @@ void mainLoader(int argc, char* argv[], ServiceManager* servicer);
 void badAllocationHandler() {
 	// Use functions that only use stack allocation
 	SPDLOG_ERROR("Allocation failed, server out of memory, "
-                 "decrease the size of your map or compile in 64 bits mode");
+				 "decrease the size of your map or compile in 64 bits mode");
 	getchar();
 	exit(-1);
 }
@@ -109,8 +110,7 @@ void loadModules() {
 		startupErrorMessage();
 	}
 
-	SPDLOG_INFO("Server protocol: {}.{}",
-		CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER);
+	SPDLOG_INFO("Server protocol: {}.{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER);
 
 	const char* p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
 	const char* q("7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");
@@ -120,7 +120,7 @@ void loadModules() {
 			SPDLOG_ERROR("File key.pem not found or have problem on loading... Setting standard rsa key\n");
 			g_RSA().setKey(p, q);
 		}
-	} catch (std::system_error const& e) {
+	} catch (const std::system_error &e) {
 		SPDLOG_ERROR("Loading RSA Key from key.pem failed with error: {}\n", e.what());
 		SPDLOG_ERROR("Switching to a default key...");
 		g_RSA().setKey(p, q);
@@ -138,7 +138,8 @@ void loadModules() {
 	SPDLOG_INFO("Running database manager...");
 	if (!DatabaseManager::isDatabaseSetup()) {
 		SPDLOG_ERROR("The database you have specified in {} is empty, "
-			"please import the schema.sql to your database.", g_configManager().getConfigFileLua());
+					 "please import the schema.sql to your database.",
+					 g_configManager().getConfigFileLua());
 		startupErrorMessage();
 	}
 
@@ -146,65 +147,50 @@ void loadModules() {
 	DatabaseManager::updateDatabase();
 
 	if (g_configManager().getBoolean(OPTIMIZE_DATABASE)
-			&& !DatabaseManager::optimizeTables()) {
+		&& !DatabaseManager::optimizeTables()) {
 		SPDLOG_INFO("No tables were optimized");
 	}
 
 	// Core start
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE),
-		"appearances.dat");
-	modulesLoadHelper(Item::items.loadFromXml(),
-		"items.xml");
+	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
+	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
 
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	SPDLOG_INFO("Loading core scripts on folder: {}/", coreFolder);
-	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/core.lua", "core.lua") == 0),
-		"core.lua");
-	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua", "talkactions.lua") == 0),
-		"scripts/talkactions.lua");
-	modulesLoadHelper(g_vocations().loadFromXml(),
-		"XML/vocations.xml");
-	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(),
-		"XML/events.xml");
-	modulesLoadHelper(Outfits::getInstance().loadFromXml(),
-		"XML/outfits.xml");
-	modulesLoadHelper(Familiars::getInstance().loadFromXml(),
-		"XML/familiars.xml");
-	modulesLoadHelper(g_imbuements().loadFromXml(),
-		"XML/imbuements.xml");
-	modulesLoadHelper(g_modules().loadFromXml(),
-		"modules/modules.xml");
-	modulesLoadHelper(g_events().loadFromXml(),
-		"events/events.xml");
-	modulesLoadHelper((g_npcs().load(true, false)),
-		"npclib");
+	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/core.lua", "core.lua") == 0), "core.lua");
+	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua", "talkactions.lua") == 0), "scripts/talkactions.lua");
+	modulesLoadHelper(g_vocations().loadFromXml(), "XML/vocations.xml");
+	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(), "XML/events.xml");
+	modulesLoadHelper(Outfits::getInstance().loadFromXml(), "XML/outfits.xml");
+	modulesLoadHelper(Familiars::getInstance().loadFromXml(), "XML/familiars.xml");
+	modulesLoadHelper(g_imbuements().loadFromXml(), "XML/imbuements.xml");
+	modulesLoadHelper(g_modules().loadFromXml(), "modules/modules.xml");
+	modulesLoadHelper(g_events().loadFromXml(), "events/events.xml");
+	modulesLoadHelper((g_npcs().load(true, false)), "npclib");
 
 	SPDLOG_INFO("Loading datapack scripts on folder: {}/", datapackName);
 	// Load libs first
-	modulesLoadHelper(g_scripts().loadScripts("scripts/lib", true, false),
-		"scripts/libs");
+	modulesLoadHelper(g_scripts().loadScripts("scripts/lib", true, false), "scripts/libs");
 	// Load scripts
-	modulesLoadHelper(g_scripts().loadScripts("scripts", false, false),
-		"scripts");
+	modulesLoadHelper(g_scripts().loadScripts("scripts", false, false), "scripts");
 	// Load monsters
-	modulesLoadHelper(g_scripts().loadScripts("monster", false, false),
-		"monster");
-	modulesLoadHelper((g_npcs().load(false, true)),
-		"npc");
+	modulesLoadHelper(g_scripts().loadScripts("monster", false, false), "monster");
+	modulesLoadHelper((g_npcs().load(false, true)), "npc");
 
 	g_game().loadBoostedCreature();
+	g_ioBosstiary().loadBoostedBoss();
 	g_ioprey().InitializeTaskHuntOptions();
 }
 
 #ifndef UNIT_TESTING
 int main(int argc, char* argv[]) {
-#ifdef DEBUG_LOG
+	#ifdef DEBUG_LOG
 	SPDLOG_DEBUG("[CANARY] SPDLOG LOG DEBUG ENABLED");
 	spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [file %@] [func %!] [thread %t] [%^%l%$] %v ");
-#else
+	#else
 	spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [%^%l%$] %v ");
-#endif
+	#endif
 	// Toggle force close button enabled/disabled
 	toggleForceCloseButton();
 
@@ -216,16 +202,14 @@ int main(int argc, char* argv[]) {
 	g_dispatcher().start();
 	g_scheduler().start();
 
-	g_dispatcher().addTask(createTask(std::bind(mainLoader, argc, argv,
-												&serviceManager)));
+	g_dispatcher().addTask(createTask(std::bind(mainLoader, argc, argv, &serviceManager)));
 
 	g_loaderSignal.wait(g_loaderUniqueLock, [] {
 		return g_loaderDone;
 	});
 
 	if (serviceManager.is_running()) {
-		SPDLOG_INFO("{} {}", g_configManager().getString(SERVER_NAME),
-                    "server online!");
+		SPDLOG_INFO("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
 		serviceManager.run();
 	} else {
 		SPDLOG_ERROR("No services running. The server is NOT online!");
@@ -250,8 +234,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	SetConsoleTitle(STATUS_SERVER_NAME);
 #endif
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
-	SPDLOG_INFO("{} - Version [{}] dated [{}]",
-                STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);
+	SPDLOG_INFO("{} - Version [{}] dated [{}]", STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);
 	#if GIT_IS_DIRTY
 	SPDLOG_WARN("DIRTY - NOT OFFICIAL RELEASE");
 	#endif
@@ -260,15 +243,15 @@ void mainLoader(int, char*[], ServiceManager* services) {
 #endif
 
 	std::string platform;
-	#if defined(__amd64__) || defined(_M_X64)
-		platform = "x64";
-	#elif defined(__i386__) || defined(_M_IX86) || defined(_X86_)
-		platform = "x86";
-	#elif defined(__arm__)
-		platform = "ARM";
-	#else
-		platform = "unknown";
-	#endif
+#if defined(__amd64__) || defined(_M_X64)
+	platform = "x64";
+#elif defined(__i386__) || defined(_M_IX86) || defined(_X86_)
+	platform = "x86";
+#elif defined(__arm__)
+	platform = "ARM";
+#else
+	platform = "unknown";
+#endif
 
 	SPDLOG_INFO("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, platform);
 
@@ -278,7 +261,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 
 	SPDLOG_INFO("A server developed by: {}", STATUS_SERVER_DEVELOPERS);
 	SPDLOG_INFO("Visit our website for updates, support, and resources: "
-		"https://docs.opentibiabr.org/");
+				"https://docs.opentibiabr.org/");
 
 	std::string configName = "config.lua";
 	// Check if config or config.dist exist
@@ -302,7 +285,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	loadModules();
 
 #ifdef _WIN32
-	const std::string& defaultPriority = g_configManager().getString(DEFAULT_PRIORITY);
+	const std::string &defaultPriority = g_configManager().getString(DEFAULT_PRIORITY);
 	if (strcasecmp(defaultPriority.c_str(), "high") == 0) {
 		SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 	} else if (strcasecmp(defaultPriority.c_str(), "above-normal") == 0) {
@@ -319,7 +302,8 @@ void mainLoader(int, char*[], ServiceManager* services) {
 		g_game().setWorldType(WORLD_TYPE_PVP_ENFORCED);
 	} else {
 		SPDLOG_ERROR("Unknown world type: {}, valid world types are: pvp, no-pvp "
-			"and pvp-enforced", g_configManager().getString(WORLD_TYPE));
+					 "and pvp-enforced",
+					 g_configManager().getString(WORLD_TYPE));
 		startupErrorMessage();
 	}
 
@@ -374,8 +358,8 @@ void mainLoader(int, char*[], ServiceManager* services) {
 #ifndef _WIN32
 	if (getuid() == 0 || geteuid() == 0) {
 		SPDLOG_WARN("{} has been executed as root user, "
-                    "please consider running it as a normal user",
-                    STATUS_SERVER_NAME);
+					"please consider running it as a normal user",
+					STATUS_SERVER_NAME);
 	}
 #endif
 

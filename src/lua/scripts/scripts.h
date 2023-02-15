@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_SCRIPTS_SCRIPTS_H_
 #define SRC_LUA_SCRIPTS_SCRIPTS_H_
@@ -18,10 +18,10 @@ class Scripts {
 		~Scripts();
 
 		// non-copyable
-		Scripts(const Scripts&) = delete;
-		Scripts& operator=(const Scripts&) = delete;
+		Scripts(const Scripts &) = delete;
+		Scripts &operator=(const Scripts &) = delete;
 
-		static Scripts& getInstance() {
+		static Scripts &getInstance() {
 			// Guaranteed to be destroyed
 			static Scripts instance;
 			// Instantiated on first use
@@ -30,16 +30,16 @@ class Scripts {
 
 		void clearAllScripts() const;
 
-		bool loadEventSchedulerScripts(const std::string& fileName);
+		bool loadEventSchedulerScripts(const std::string &fileName);
 		bool loadScripts(std::string folderName, bool isLib, bool reload);
-		LuaScriptInterface& getScriptInterface() {
+		LuaScriptInterface &getScriptInterface() {
 			return scriptInterface;
 		}
 		/**
 		 * @brief Get the Script Id object
 		 *
 		 * @return int32_t
-		*/
+		 */
 		int32_t getScriptId() const {
 			return scriptId;
 		}
@@ -59,8 +59,9 @@ class Script {
 		 * copy-initialization.
 		 *
 		 * @param interface Lua Script Interface
-		*/
-		explicit Script(LuaScriptInterface* interface) : scriptInterface(interface) {}
+		 */
+		explicit Script(LuaScriptInterface* interface) :
+			scriptInterface(interface) { }
 		virtual ~Script() = default;
 
 		/**
@@ -68,7 +69,7 @@ class Script {
 		 *
 		 * @return true
 		 * @return false
-		*/
+		 */
 		bool isLoadedCallback() const {
 			return loadedCallback;
 		}
@@ -94,34 +95,33 @@ class Script {
 			return true;
 		}
 
+		// NOTE: Pure virtual method ( = 0) that must be implemented in derived classes
+		// Script type (Action, CreatureEvent, GlobalEvent, MoveEvent, Spell, Weapon)
+		virtual std::string getScriptTypeName() const = 0;
 
-	// NOTE: Pure virtual method ( = 0) that must be implemented in derived classes
-	// Script type (Action, CreatureEvent, GlobalEvent, MoveEvent, Spell, Weapon)
-	virtual std::string getScriptTypeName() const = 0;
+		// Method to access the scriptInterface in derived classes
+		virtual LuaScriptInterface* getScriptInterface() const {
+			return scriptInterface;
+		}
 
-	// Method to access the scriptInterface in derived classes
-	virtual LuaScriptInterface* getScriptInterface() const {
-		return scriptInterface;
-	}
-	
-	virtual void setScriptInterface(LuaScriptInterface* newInterface) {
-		scriptInterface = newInterface;
-	}
+		virtual void setScriptInterface(LuaScriptInterface* newInterface) {
+			scriptInterface = newInterface;
+		}
 
-	// Method to access the scriptId in derived classes
-	virtual int32_t getScriptId() const {
-		return scriptId;
-	}
-	virtual void setScriptId(int32_t newScriptId) {
-		scriptId = newScriptId;
-	}
+		// Method to access the scriptId in derived classes
+		virtual int32_t getScriptId() const {
+			return scriptId;
+		}
+		virtual void setScriptId(int32_t newScriptId) {
+			scriptId = newScriptId;
+		}
 
 	private:
-	// If script is loaded callback
-	bool loadedCallback = false;
+		// If script is loaded callback
+		bool loadedCallback = false;
 
-	int32_t scriptId = 0;
-	LuaScriptInterface* scriptInterface = nullptr;
+		int32_t scriptId = 0;
+		LuaScriptInterface* scriptInterface = nullptr;
 };
 
-#endif  // SRC_LUA_SCRIPTS_SCRIPTS_H_
+#endif // SRC_LUA_SCRIPTS_SCRIPTS_H_

@@ -4524,6 +4524,42 @@ local items = {
 		slot = "shield"
 	},
 	{
+		-- sun catcher
+		itemid = 25977,
+		type = "equip",
+		slot = "ammo"
+	},
+	{
+		-- sun catcher
+		itemid = 25977,
+		type = "deequip",
+		slot = "ammo"
+	},
+	{
+		-- starlight vial
+		itemid = 25976,
+		type = "equip",
+		slot = "ammo"
+	},
+	{
+		-- starlight vial
+		itemid = 25976,
+		type = "deequip",
+		slot = "ammo"
+	},
+	{
+		-- moon mirror
+		itemid = 25975,
+		type = "equip",
+		slot = "ammo"
+	},
+	{
+		-- moon mirror
+		itemid = 25975,
+		type = "deequip",
+		slot = "ammo"
+	},
+	{
 		-- energy war hammer replica
 		itemid = 25974,
 		type = "equip",

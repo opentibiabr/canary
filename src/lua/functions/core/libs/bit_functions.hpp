@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_CORE_LIBS_BIT_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CORE_LIBS_BIT_FUNCTIONS_HPP_
@@ -15,7 +15,7 @@
 class BitFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-		#ifndef LUAJIT_VERSION
+#ifndef LUAJIT_VERSION
 			registerTable(L, "bit");
 			registerMethod(L, "bit", "bnot", BitFunctions::luaBitNot);
 			registerMethod(L, "bit", "band", BitFunctions::luaBitAnd);
@@ -23,18 +23,18 @@ class BitFunctions final : LuaScriptInterface {
 			registerMethod(L, "bit", "bxor", BitFunctions::luaBitXor);
 			registerMethod(L, "bit", "lshift", BitFunctions::luaBitLeftShift);
 			registerMethod(L, "bit", "rshift", BitFunctions::luaBitRightShift);
-		#endif
+#endif
 		}
 
 	private:
-	#ifndef LUAJIT_VERSION
+#ifndef LUAJIT_VERSION
 		static int luaBitAnd(lua_State* L);
 		static int luaBitLeftShift(lua_State* L);
 		static int luaBitNot(lua_State* L);
 		static int luaBitOr(lua_State* L);
 		static int luaBitRightShift(lua_State* L);
 		static int luaBitXor(lua_State* L);
-	#endif
+#endif
 };
 
-#endif  // SRC_LUA_FUNCTIONS_CORE_LIBS_BIT_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_CORE_LIBS_BIT_FUNCTIONS_HPP_

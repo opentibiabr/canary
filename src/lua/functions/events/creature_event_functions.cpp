@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -58,7 +58,8 @@ int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 			creature->setEventType(CREATURE_EVENT_EXTENDED_OPCODE);
 		} else {
 			SPDLOG_ERROR("[CreatureEventFunctions::luaCreatureEventType] - "
-                         "Invalid type for creature event: {}", typeName);
+						 "Invalid type for creature event: {}",
+						 typeName);
 			pushBoolean(L, false);
 		}
 		creature->setLoaded(true);

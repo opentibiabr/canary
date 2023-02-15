@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_MODULES_MODULES_H_
 #define SRC_LUA_MODULES_MODULES_H_
@@ -22,7 +22,7 @@ class Module final : public Event {
 	public:
 		explicit Module(LuaScriptInterface* interface);
 
-		bool configureEvent(const pugi::xml_node& node) final;
+		bool configureEvent(const pugi::xml_node &node) final;
 
 		ModuleType_t getEventType() const {
 			return type;
@@ -34,8 +34,8 @@ class Module final : public Event {
 		void clearEvent();
 		void copyEvent(Module* creatureEvent);
 
-		//scripting
-		void executeOnRecvbyte(Player* player, NetworkMessage& msg);
+		// scripting
+		void executeOnRecvbyte(Player* player, NetworkMessage &msg);
 		//
 
 		uint8_t getRecvbyte() {
@@ -45,6 +45,7 @@ class Module final : public Event {
 		int16_t getDelay() {
 			return delay;
 		}
+
 	protected:
 		std::string getScriptEventName() const final;
 
@@ -59,24 +60,24 @@ class Modules final : public BaseEvents {
 		Modules();
 
 		// non-copyable
-		Modules(const Modules&) = delete;
-		Modules& operator=(const Modules&) = delete;
+		Modules(const Modules &) = delete;
+		Modules &operator=(const Modules &) = delete;
 
-		static Modules& getInstance() {
+		static Modules &getInstance() {
 			// Guaranteed to be destroyed
 			static Modules instance;
 			// Instantiated on first use
 			return instance;
 		}
 
-		void executeOnRecvbyte(uint32_t playerId, NetworkMessage& msg, uint8_t byte) const;
+		void executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t byte) const;
 		Module* getEventByRecvbyte(uint8_t recvbyte, bool force);
 
 	protected:
-		LuaScriptInterface& getScriptInterface() override;
+		LuaScriptInterface &getScriptInterface() override;
 		std::string getScriptBaseName() const override;
-		Event_ptr getEvent(const std::string& nodeName) override;
-		bool registerEvent(Event_ptr  event, const pugi::xml_node& node) override;
+		Event_ptr getEvent(const std::string &nodeName) override;
+		bool registerEvent(Event_ptr event, const pugi::xml_node &node) override;
 		void clear(bool) override final;
 
 		typedef std::map<uint8_t, Module> ModulesList;
@@ -87,4 +88,4 @@ class Modules final : public BaseEvents {
 
 constexpr auto g_modules = &Modules::getInstance;
 
-#endif  // SRC_LUA_MODULES_MODULES_H_
+#endif // SRC_LUA_MODULES_MODULES_H_

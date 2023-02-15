@@ -124,6 +124,13 @@ function serverstartup.onStartup()
 		Result.free(resultId)
 	end
 
+	-- store towns in database
+	db.query("TRUNCATE TABLE `towns`")
+	for i, town in ipairs(Game.getTowns()) do
+		local position = town:getTemplePosition()
+		db.query("INSERT INTO `towns` (`id`, `name`, `posx`, `posy`, `posz`) VALUES (" .. town:getId() .. ", " .. db.escapeString(town:getName()) .. ", " .. position.x .. ", " .. position.y .. ", " .. position.z .. ")")
+	end
+
 	do -- Event Schedule rates
 		local lootRate = EventsScheduler.getEventSLoot()
 		if lootRate ~= 100 then

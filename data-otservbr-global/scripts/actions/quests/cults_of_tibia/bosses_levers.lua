@@ -193,7 +193,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 		kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33121, 31951, 15), "You were kicked for exceeding the time limit within the boss room.", '', 60, true, ittable, blockmonsters)
 		end
 	end
-	if item:getActionId() == 5502 and item:getId() == 8912 then -- Leiden
+	if item:getActionId() == 5502 and item:getId() == 8912 then -- The False God
 		if player:getPosition() == Position(33162, 31893, 15) then
 			local teleport = 0
 			for i = 31893, 31897, 1 do

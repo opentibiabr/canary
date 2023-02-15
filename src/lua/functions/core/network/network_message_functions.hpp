@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_CORE_NETWORK_NETWORK_MESSAGE_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CORE_NETWORK_NETWORK_MESSAGE_FUNCTIONS_HPP_
@@ -31,6 +31,10 @@ class NetworkMessageFunctions final : LuaScriptInterface {
 			registerMethod(L, "NetworkMessage", "addU16", NetworkMessageFunctions::luaNetworkMessageAddU16);
 			registerMethod(L, "NetworkMessage", "addU32", NetworkMessageFunctions::luaNetworkMessageAddU32);
 			registerMethod(L, "NetworkMessage", "addU64", NetworkMessageFunctions::luaNetworkMessageAddU64);
+			registerMethod(L, "NetworkMessage", "add8", NetworkMessageFunctions::luaNetworkMessageAdd8);
+			registerMethod(L, "NetworkMessage", "add16", NetworkMessageFunctions::luaNetworkMessageAdd16);
+			registerMethod(L, "NetworkMessage", "add32", NetworkMessageFunctions::luaNetworkMessageAdd32);
+			registerMethod(L, "NetworkMessage", "add64", NetworkMessageFunctions::luaNetworkMessageAdd64);
 			registerMethod(L, "NetworkMessage", "addString", NetworkMessageFunctions::luaNetworkMessageAddString);
 			registerMethod(L, "NetworkMessage", "addPosition", NetworkMessageFunctions::luaNetworkMessageAddPosition);
 			registerMethod(L, "NetworkMessage", "addDouble", NetworkMessageFunctions::luaNetworkMessageAddDouble);
@@ -56,6 +60,10 @@ class NetworkMessageFunctions final : LuaScriptInterface {
 		static int luaNetworkMessageAddU16(lua_State* L);
 		static int luaNetworkMessageAddU32(lua_State* L);
 		static int luaNetworkMessageAddU64(lua_State* L);
+		static int luaNetworkMessageAdd8(lua_State* L);
+		static int luaNetworkMessageAdd16(lua_State* L);
+		static int luaNetworkMessageAdd32(lua_State* L);
+		static int luaNetworkMessageAdd64(lua_State* L);
 		static int luaNetworkMessageAddString(lua_State* L);
 		static int luaNetworkMessageAddPosition(lua_State* L);
 		static int luaNetworkMessageAddDouble(lua_State* L);
@@ -66,4 +74,4 @@ class NetworkMessageFunctions final : LuaScriptInterface {
 		static int luaNetworkMessageSendToPlayer(lua_State* L);
 };
 
-#endif  // SRC_LUA_FUNCTIONS_CORE_NETWORK_NETWORK_MESSAGE_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_CORE_NETWORK_NETWORK_MESSAGE_FUNCTIONS_HPP_

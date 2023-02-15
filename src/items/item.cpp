@@ -954,7 +954,7 @@ bool Item::hasProperty(ItemProperty prop) const {
 		case CONST_PROP_BLOCKSOLID:
 			return it.blockSolid;
 		case CONST_PROP_MOVEABLE:
-			return checkItemIsMoveable();
+			return canBeMoved();
 		case CONST_PROP_HASHEIGHT:
 			return it.hasHeight;
 		case CONST_PROP_BLOCKPROJECTILE:
@@ -966,11 +966,11 @@ bool Item::hasProperty(ItemProperty prop) const {
 		case CONST_PROP_ISHORIZONTAL:
 			return it.isHorizontal;
 		case CONST_PROP_IMMOVABLEBLOCKSOLID:
-			return it.blockSolid && !checkItemIsMoveable();
+			return it.blockSolid && !canBeMoved();
 		case CONST_PROP_IMMOVABLEBLOCKPATH:
-			return it.blockPathFind && !checkItemIsMoveable();
+			return it.blockPathFind && !canBeMoved();
 		case CONST_PROP_IMMOVABLENOFIELDBLOCKPATH:
-			return !it.isMagicField() && it.blockPathFind && !checkItemIsMoveable();
+			return !it.isMagicField() && it.blockPathFind && !canBeMoved();
 		case CONST_PROP_NOFIELDBLOCKPATH:
 			return !it.isMagicField() && it.blockPathFind;
 		case CONST_PROP_SUPPORTHANGABLE:
@@ -980,7 +980,7 @@ bool Item::hasProperty(ItemProperty prop) const {
 	}
 }
 
-bool Item::checkItemIsMoveable() const {
+bool Item::canBeMoved() const {
 	return isMoveable() && !hasAttribute(UNIQUEID) && (!hasAttribute(ACTIONID) || getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != IMMOVABLE_ACTION_ID);
 }
 

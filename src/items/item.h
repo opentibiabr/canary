@@ -19,8 +19,6 @@
 #include "utils/tools.h"
 #include "io/fileloader.h"
 
-static const int IMMOVABLE_ACTION_ID = 100;
-
 class Creature;
 class Player;
 class Container;
@@ -651,7 +649,7 @@ class Item : virtual public Thing, public ItemProperties {
 
 		friend class Decay;
 
-		bool checkItemIsMoveable() const;
+		bool canBeMoved() const;
 };
 
 using ItemList = std::list<Item*>;

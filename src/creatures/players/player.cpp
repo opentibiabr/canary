@@ -487,6 +487,8 @@ void Player::updateInventoryWeight() {
 }
 
 void Player::updateInventoryImbuement() {
+	// Used to prevent unnecessary imbuement tracker update every second on every inventory items imbue slots
+	bool trackerUpdated = false;
 	// Get the tile the player is currently on
 	const Tile* playerTile = getTile();
 	// Check if the player is in a protection zone
@@ -497,12 +499,15 @@ void Player::updateInventoryImbuement() {
 	// Iterate through all items in the player's inventory
 	for (auto item : getAllInventoryItems()) {
 		// Iterate through all imbuement slots on the item
-
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 			ImbuementInfo imbuementInfo;
 			// Get the imbuement information for the current slot
 			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
 				// If no imbuement is found, continue to the next slot
+				if (imbuementTrackerControl[item->getSlotPosition()]) {
+					imbuementTrackerControl[item->getSlotPosition()] = false;
+					trackerUpdated = true;
+				}
 				break;
 			}
 
@@ -514,16 +519,28 @@ void Player::updateInventoryImbuement() {
 			auto parent = item->getParent();
 			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
 			if (categoryImbuement && categoryImbuement->agressive && (isInProtectionZone || !isInFightMode)) {
+				if (parent && parent == this && imbuementTrackerControl[item->getSlotPosition()]) {
+					imbuementTrackerControl[item->getSlotPosition()] = false;
+					trackerUpdated = true;
+				}
 				continue;
 			}
 			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
 			if (categoryImbuement && !categoryImbuement->agressive && parent && parent != this) {
+				if (parent && parent == this && imbuementTrackerControl[item->getSlotPosition()]) {
+					imbuementTrackerControl[item->getSlotPosition()] = false;
+					trackerUpdated = true;
+				}
 				continue;
 			}
 
 			// If the imbuement's duration is 0, remove its stats and continue to the next slot
 			if (imbuementInfo.duration == 0) {
 				removeItemImbuementStats(imbuement);
+				if (parent && parent == this && imbuementTrackerControl[item->getSlotPosition()]) {
+					imbuementTrackerControl[item->getSlotPosition()] = false;
+					trackerUpdated = true;
+				}
 				continue;
 			}
 
@@ -532,7 +549,16 @@ void Player::updateInventoryImbuement() {
 			uint64_t duration = std::max<uint64_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
 			// Update the imbuement's duration in the item
 			item->decayImbuementTime(slotid, imbuement->getID(), duration);
+			if (parent && parent == this && !imbuementTrackerControl[item->getSlotPosition()]) {
+				imbuementTrackerControl[item->getSlotPosition()] = true;
+				trackerUpdated = true;
+			}
 		}
+	}
+
+	// If there's been an alteration on the item imbue related to the client tracker, lets send the informations to the client
+	if (trackerUpdated) {
+		updateImbuementTrackerStats();
 	}
 }
 

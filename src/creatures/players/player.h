@@ -2352,6 +2352,7 @@ class Player final : public Creature, public Cylinder {
 		std::map<uint8_t, int64_t> moduleDelayMap;
 		std::map<uint32_t, int32_t> storageMap;
 		std::map<uint16_t, uint64_t> itemPriceMap;
+		std::map<int32_t, bool> imbuementTrackerControl;
 
 		std::map<uint8_t, uint16_t> maxValuePerSkill = {
 			{ SKILL_LIFE_LEECH_CHANCE, 100 },

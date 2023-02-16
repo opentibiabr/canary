@@ -2033,7 +2033,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 
 		newmsg.addByte(attackmode);
 		newmsg.addByte(0x2);
-		newmsg.add<uint32_t>(static_cast<uint32_t>(mtype->info.healthMax));
+		newmsg.add<uint32_t>(convertToSafeInteger<uint32_t>(mtype->info.healthMax));
 		newmsg.add<uint32_t>(mtype->info.experience);
 		newmsg.add<uint16_t>(mtype->getBaseSpeed());
 		newmsg.add<uint16_t>(mtype->info.armor);
@@ -2984,19 +2984,10 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	// canBuyXpBoost
 	msg.addByte(0x00);
 
-	auto maxUint32 = std::numeric_limits<uint32_t>::max();
-	// Safe conversion for health
-	auto playerHealth = player->getHealth();
-	msg.add<uint32_t>(std::clamp((uint32_t)playerHealth, 0u, maxUint32));
-	// Safe conversion for max health
-	auto playerMaxHealth = player->getMaxHealth();
-	msg.add<uint32_t>(std::clamp((uint32_t)playerMaxHealth, 0u, maxUint32));
-	// Safe conversion for mana
-	auto playerMana = player->getMana();
-	msg.add<uint32_t>(std::clamp(playerMana, 0u, maxUint32));
-	// Safe conversion for max mana
-	auto playerMaxMana = player->getMaxMana();
-	msg.add<uint32_t>(std::clamp(playerMaxMana, 0u, maxUint32));
+	msg.add<uint32_t>(convertToSafeInteger<uint32_t>(player->getHealth()));
+	msg.add<uint32_t>(convertToSafeInteger<uint32_t>(player->getMaxHealth()));
+	msg.add<uint32_t>(convertToSafeInteger<uint32_t>(player->getMana()));
+	msg.add<uint32_t>(convertToSafeInteger<uint32_t>(player->getMaxMana()));
 
 	msg.addByte(player->getSoul());
 	msg.add<uint16_t>(player->getStaminaMinutes());
@@ -4919,7 +4910,15 @@ void ProtocolGame::sendCreatureHealth(const Creature* creature) {
 	if (creature->isHealthHidden()) {
 		msg.addByte(0x00);
 	} else {
-		msg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
+		auto safeValue = convertToSafeInteger<uint8_t>(
+			std::ceil(
+				(
+					static_cast<double>(player->getHealth()) / static_cast<double>(std::max<int64_t>(player->getMaxHealth(), 1))
+				)
+				* 100.
+			)
+		);
+		msg.addByte(safeValue);
 	}
 	writeToOutputBuffer(msg);
 }
@@ -5934,7 +5933,12 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 	} else {
 		auto creatureHealth = creature->getHealth();
 		auto creatureMaxHealth = std::max<int64_t>(creature->getMaxHealth(), 1);
-		double healthPercentage = (static_cast<double>(creatureHealth / creatureMaxHealth)) * 100.;
+
+		// Safe conversion
+		auto convertedCreatureHealth = convertToSafeInteger<uint32_t>(creatureHealth);
+		auto convertedCreatureMaxHealth = convertToSafeInteger<uint32_t>(creatureMaxHealth);
+
+		double healthPercentage = (static_cast<double>(convertedCreatureHealth) / convertedCreatureMaxHealth) * 100.0;
 		msg.addByte(static_cast<uint8_t>(std::ceil(healthPercentage)));
 	}
 
@@ -6052,9 +6056,8 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.addByte(0xA0);
 
-	auto maxUint = std::numeric_limits<uint32_t>::max();
-	msg.add<uint32_t>(std::clamp((uint32_t)player->getHealth(), 0u, maxUint));
-	msg.add<uint32_t>(std::clamp((uint32_t)player->getMaxHealth(), 0u, maxUint));
+	msg.add<uint32_t>(convertToSafeInteger<uint32_t>(player->getHealth()));
+	msg.add<uint32_t>(convertToSafeInteger<uint32_t>(player->getMaxHealth()));
 
 	msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 
@@ -6068,8 +6071,8 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.add<uint16_t>(player->getStoreXpBoost()); // xp boost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
 
-	msg.add<uint32_t>(std::clamp(player->getMana(), 0u, maxUint));
-	msg.add<uint32_t>(std::clamp(player->getMaxMana(), 0u, maxUint));
+	msg.add<uint32_t>(convertToSafeInteger<uint32_t>(player->getMana()));
+	msg.add<uint32_t>(convertToSafeInteger<uint32_t>(player->getMaxMana()));
 
 	msg.addByte(player->getSoul());
 

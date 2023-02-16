@@ -27,17 +27,17 @@ namespace ParsePlayerFlagMap {
 			std::ranges::transform(name.begin(), name.end(), name.begin(), ::tolower);
 			// Add the current value to the map with its lowercase string representation as the key
 			map[name] = value;
-		 }
+		}
 
 		return map;
-	 }
+	}
 
 	const phmap::flat_hash_map<std::string, PlayerFlags_t> parsePlayerFlagMap = initParsePlayerFlagMap();
- }
+}
 
 uint8_t Groups::getFlagNumber(PlayerFlags_t playerFlags) {
 	return magic_enum::enum_integer(playerFlags);
- }
+}
 
 PlayerFlags_t Groups::getFlagFromNumber(uint8_t value) {
 	return magic_enum::enum_value<PlayerFlags_t>(value);

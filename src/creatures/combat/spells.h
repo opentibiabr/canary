@@ -102,7 +102,7 @@ class CombatSpell final : public Script, public BaseSpell {
 		bool castSpell(Creature* creature, Creature* target) override;
 
 		// Scripting spell
-		bool executeCastSpell(Creature* creature, const LuaVariant &var)const;
+		bool executeCastSpell(Creature* creature, const LuaVariant &var) const;
 
 		bool loadScriptCombat();
 		Combat* getCombat() {
@@ -123,7 +123,6 @@ class CombatSpell final : public Script, public BaseSpell {
 class Spell : public BaseSpell {
 	public:
 		Spell() = default;
-
 
 		const std::string &getName() const {
 			return name;
@@ -333,8 +332,7 @@ class Spell : public BaseSpell {
 
 class InstantSpell final : public TalkAction, public Spell {
 	public:
-		using
-			TalkAction::TalkAction;
+		using TalkAction::TalkAction;
 
 		virtual bool playerCastInstant(Player* player, std::string &param);
 
@@ -342,7 +340,7 @@ class InstantSpell final : public TalkAction, public Spell {
 		bool castSpell(Creature* creature, Creature* target) override;
 
 		// Scripting spell
-		bool executeCastSpell(Creature* creature, const LuaVariant &var)const;
+		bool executeCastSpell(Creature* creature, const LuaVariant &var) const;
 
 		bool isInstant() const override {
 			return true;
@@ -394,8 +392,7 @@ class InstantSpell final : public TalkAction, public Spell {
 
 class RuneSpell final : public Action, public Spell {
 	public:
-		using
-			Action::Action;
+		using Action::Action;
 
 		ReturnValue canExecuteAction(const Player* player, const Position &toPos) override;
 		bool hasOwnErrorHandler() override {
@@ -411,7 +408,7 @@ class RuneSpell final : public Action, public Spell {
 		bool castSpell(Creature* creature, Creature* target) override;
 
 		// Scripting spell
-		bool executeCastSpell(Creature* creature, const LuaVariant &var, bool isHotkey)const;
+		bool executeCastSpell(Creature* creature, const LuaVariant &var, bool isHotkey) const;
 
 		bool isInstant() const override {
 			return false;

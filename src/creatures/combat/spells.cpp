@@ -76,8 +76,6 @@ void Spells::clear() {
 	runes.clear();
 }
 
-
-
 bool Spells::hasInstantSpell(const std::string &word) const {
 	if (auto iterate = instants.find(word);
 		iterate != instants.end()) {
@@ -85,8 +83,6 @@ bool Spells::hasInstantSpell(const std::string &word) const {
 	}
 	return false;
 }
-
-
 
 bool Spells::registerInstantLuaEvent(InstantSpell* event) {
 	InstantSpell_ptr instant { event };
@@ -604,8 +600,6 @@ uint32_t Spell::getManaCost(const Player* player) const {
 	return 0;
 }
 
-
-
 bool InstantSpell::playerCastInstant(Player* player, std::string &param) {
 	if (!playerSpellCheck(player)) {
 		return false;
@@ -818,8 +812,6 @@ bool InstantSpell::canCast(const Player* player) const {
 
 	return false;
 }
-
-
 
 ReturnValue RuneSpell::canExecuteAction(const Player* player, const Position &toPos) {
 	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {

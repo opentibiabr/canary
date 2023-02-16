@@ -105,7 +105,8 @@ class MonsterType {
 				uint32_t bossRaceId = 0;
 				uint32_t bossStorageCooldown = 0;
 				BosstiaryRarity_t bosstiaryRace;
-				std::string bosstiaryClass;int32_t creatureAppearEvent = -1;
+				std::string bosstiaryClass;
+				int32_t creatureAppearEvent = -1;
 				int32_t creatureDisappearEvent = -1;
 				int32_t creatureMoveEvent = -1;
 				int32_t creatureSayEvent = -1;
@@ -247,10 +248,7 @@ class Monsters {
 	private:
 		ConditionDamage* getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);
 
-
 		MonsterType* loadMonster(const std::string &file, const std::string &monsterName, bool reloading = false);
-
-
 };
 
 constexpr auto g_monsters = &Monsters::getInstance;

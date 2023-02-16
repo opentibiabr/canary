@@ -1116,7 +1116,7 @@ void Monster::pushItems(Tile* tile, const Direction &nextDirection) {
 	auto it = items->begin();
 	while (it != items->end()) {
 		Item* item = *it;
-			if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != 100 /* non-moveable action*/) {
+		if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != 100 /* non-moveable action*/) {
 			if (moveCount < 20 && pushItem(item, nextDirection)) {
 				++moveCount;
 			} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
@@ -1218,26 +1218,24 @@ void Monster::doRandomStep(Direction &nextDirection, bool &result) {
 }
 
 void Monster::doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &result) {
-		randomStepping = false;
-		result = Creature::getNextStep(nextDirection, flags);
-		if (result) {
-			flags |= FLAG_PATHFINDING;
-		} else {
-			if (ignoreFieldDamage) {
-				updateMapCache();
-			}
-			// target dancing
-			if (attackedCreature && attackedCreature == followCreature) {
-				if (isFleeing()) {
-					result = getDanceStep(getPosition(), nextDirection, false, false);
-				} else if (mType->info.staticAttackChance < static_cast<uint32_t>(uniform_random(1, 100))) {
-					result = getDanceStep(getPosition(), nextDirection);
-				}
+	randomStepping = false;
+	result = Creature::getNextStep(nextDirection, flags);
+	if (result) {
+		flags |= FLAG_PATHFINDING;
+	} else {
+		if (ignoreFieldDamage) {
+			updateMapCache();
+		}
+		// target dancing
+		if (attackedCreature && attackedCreature == followCreature) {
+			if (isFleeing()) {
+				result = getDanceStep(getPosition(), nextDirection, false, false);
+			} else if (mType->info.staticAttackChance < static_cast<uint32_t>(uniform_random(1, 100))) {
+				result = getDanceStep(getPosition(), nextDirection);
 			}
 		}
 	}
-
-
+}
 
 bool Monster::getRandomStep(const Position &creaturePos, Direction &moveDirection) const {
 	static std::vector<Direction> dirList {

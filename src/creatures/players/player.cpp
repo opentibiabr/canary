@@ -51,6 +51,10 @@ Player::~Player() {
 		it.second->decrementReferenceCounter();
 	}
 
+	for (const auto &it : rewardMap) {
+		it.second->decrementReferenceCounter();
+	}
+
 	for (const auto &it : quickLootContainers) {
 		it.second->decrementReferenceCounter();
 	}
@@ -677,17 +681,12 @@ void Player::closeContainer(uint8_t cid) {
 
 	OpenContainer openContainer = it->second;
 	Container* container = openContainer.container;
-	openContainers.erase(it);
 
-	if (!container) {
-		return;
-	}
-
-	if (container->isAnykindOfRewardContainer() && !hasAnykindOfRewardContainerOpen()) {
+	if (container && container->isAnykindOfRewardContainer() && !hasOtherRewardContainerOpen(container)) {
 		removeEmptyRewards();
 	}
-
-	if (container->getID() == ITEM_BROWSEFIELD) {
+	openContainers.erase(it);
+	if (container && container->getID() == ITEM_BROWSEFIELD) {
 		container->decrementReferenceCounter();
 	}
 }
@@ -696,16 +695,17 @@ void Player::removeEmptyRewards() {
 	std::erase_if(rewardMap, [this](const auto &rewardBag) {
 		auto [id, reward] = rewardBag;
 		if (reward->empty()) {
-			this->getRewardChest()->removeThing(reward.get(), 1);
+			this->getRewardChest()->removeThing(reward, 1);
+			reward->decrementReferenceCounter();
 			return true;
 		}
 		return false;
 	});
 }
 
-bool Player::hasAnykindOfRewardContainerOpen() const {
-	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [](const auto &containerPair) {
-		return containerPair.second.container->isAnykindOfRewardContainer();
+bool Player::hasOtherRewardContainerOpen(const Container* container) const {
+	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [container](const auto &containerPair) {
+		return containerPair.second.container != container && containerPair.second.container->isAnykindOfRewardContainer();
 	});
 }
 
@@ -1078,7 +1078,7 @@ RewardChest* Player::getRewardChest() {
 	return rewardChest;
 }
 
-std::shared_ptr<Reward> Player::getReward(const uint64_t rewardId, const bool autoCreate) {
+Reward* Player::getReward(const uint64_t rewardId, const bool autoCreate) {
 	auto it = rewardMap.find(rewardId);
 	if (it != rewardMap.end()) {
 		return it->second;
@@ -1087,10 +1087,11 @@ std::shared_ptr<Reward> Player::getReward(const uint64_t rewardId, const bool au
 		return nullptr;
 	}
 
-	const auto reward = std::make_shared<Reward>();
+	auto reward = new Reward();
+	reward->incrementReferenceCounter();
 	reward->setAttribute(ItemAttribute_t::DATE, rewardId);
 	rewardMap[rewardId] = reward;
-	g_game().internalAddItem(getRewardChest(), reward.get(), INDEX_WHEREEVER, FLAG_NOLIMIT);
+	g_game().internalAddItem(getRewardChest(), reward, INDEX_WHEREEVER, FLAG_NOLIMIT);
 
 	return reward;
 }

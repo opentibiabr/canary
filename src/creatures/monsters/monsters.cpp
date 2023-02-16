@@ -122,7 +122,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 		} else if (spell->combatType == COMBAT_HEALING) {
 			combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		}
-		combatPtr->setParam(COMBAT_PARAM_TYPE, static_cast<uint32_t>(spell->combatType));
+		combatPtr->setParam(COMBAT_PARAM_TYPE, convertToSafeInteger<uint32_t>(spell->combatType));
 	} else if (spellName == "speed") {
 		int32_t speedChange = 0;
 		int32_t duration = 10000;

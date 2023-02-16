@@ -126,8 +126,8 @@ CombatDamage Weapon::getCombatDamage(CombatDamage combat, Player* player, Item* 
 	float attackFactor = player->getAttackFactor(); // full atk, balanced or full defense
 
 	// Getting values factores
-	auto totalAttack = static_cast<int32_t>(elementalAttack + weaponAttack);
-	auto weaponAttackProportion = static_cast<int64_t>(weaponAttack / totalAttack);
+	auto totalAttack = convertToSafeInteger<int32_t>(elementalAttack + weaponAttack);
+	auto weaponAttackProportion = convertToSafeInteger<int64_t>(weaponAttack / totalAttack);
 
 	// Calculating damage
 	int64_t maxDamage = static_cast<int64_t>(Weapons::getMaxWeaponDamage(level, playerSkill, totalAttack, attackFactor, true) * player->getVocation()->meleeDamageMultiplier * damageModifier / 100);
@@ -396,11 +396,11 @@ int64_t WeaponMelee::getElementDamage(const Player* player, const Creature*, con
 	int32_t attackValue = elementDamage;
 	float attackFactor = player->getAttackFactor();
 	uint32_t level = player->getLevel();
-	auto minValue = static_cast<int64_t>(level / 5);
+	auto minValue = convertToSafeInteger<int64_t>(level / 5);
 
 	int64_t maxValue = Weapons::getMaxWeaponDamage(level, attackSkill, attackValue, attackFactor, true);
 	auto doubleDamage = static_cast<double>(maxValue) * player->getVocation()->meleeDamageMultiplier;
-	auto totalDamage = -normal_random(minValue, static_cast<int64_t>(doubleDamage));
+	auto totalDamage = -normal_random(minValue, convertToSafeInteger<int64_t>(doubleDamage));
 	return totalDamage;
 }
 
@@ -417,7 +417,7 @@ int64_t WeaponMelee::getWeaponDamage(const Player* player, const Creature*, cons
 	auto weaponDamage = Weapons::getMaxWeaponDamage(level, attackSkill, attackValue, attackFactor, true);
 	auto meleeDamageMultiplier = player->getVocation()->meleeDamageMultiplier;
 	auto doubleMaxValue = static_cast<double>(weaponDamage) * meleeDamageMultiplier;
-	auto maxValue = static_cast<int64_t>(doubleMaxValue);
+	auto maxValue = convertToSafeInteger<int64_t>(doubleMaxValue);
 
 	int64_t minValue = level / 5;
 
@@ -425,7 +425,7 @@ int64_t WeaponMelee::getWeaponDamage(const Player* player, const Creature*, cons
 		return -maxValue;
 	}
 
-	auto randomMaxValue = maxValue * static_cast<int64_t>(meleeDamageMultiplier);
+	auto randomMaxValue = maxValue * convertToSafeInteger<int64_t>(meleeDamageMultiplier);
 	return -normal_random(minValue, randomMaxValue);
 }
 
@@ -621,12 +621,12 @@ int64_t WeaponDistance::getElementDamage(const Player* player, const Creature* t
 		}
 	}
 
-	auto attackSkill = static_cast<float>(player->getSkillLevel(SKILL_DISTANCE));
+	auto attackSkill = convertToSafeInteger<float>(player->getSkillLevel(SKILL_DISTANCE));
 	auto attackFactor = player->getAttackFactor();
 
 	auto minValue = std::round(static_cast<double>(player->getLevel()) / 5.);
 	auto doubleMaxValue = std::round((0.09f * attackFactor) * attackSkill * (double)attackValue + minValue) / 2;
-	auto maxValue = static_cast<int64_t>(doubleMaxValue * player->getVocation()->distDamageMultiplier);
+	auto maxValue = convertToSafeInteger<int64_t>(doubleMaxValue * player->getVocation()->distDamageMultiplier);
 
 	if (target) {
 		if (target->getPlayer()) {
@@ -663,9 +663,9 @@ int64_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* ta
 	int32_t attackSkill = player->getSkillLevel(SKILL_DISTANCE);
 	float attackFactor = player->getAttackFactor();
 
-	auto minValue = static_cast<int64_t>(player->getLevel() / 5);
+	auto minValue = convertToSafeInteger<int64_t>(player->getLevel() / 5);
 	auto floatMaxValue = std::round((0.09f * attackFactor) * (float)attackSkill * (float)attackValue + (float)minValue);
-	auto maxValue = static_cast<int64_t>(floatMaxValue);
+	auto maxValue = convertToSafeInteger<int64_t>(floatMaxValue);
 	if (maxDamage) {
 		return -maxValue;
 	}
@@ -683,7 +683,7 @@ int64_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* ta
 		}
 	}
 
-	auto finalMaxValue = static_cast<int64_t>((float)maxValue * player->getVocation()->distDamageMultiplier);
+	auto finalMaxValue = convertToSafeInteger<int64_t>((float)maxValue * player->getVocation()->distDamageMultiplier);
 	return -normal_random(minValue, finalMaxValue);
 }
 

@@ -789,7 +789,7 @@ void Creature::changeMana(int64_t manaChange) {
 	if (manaChange > 0) {
 		mana += std::min<int64_t>(manaChange, getMaxMana() - mana);
 	} else {
-		mana = static_cast<uint32_t>(mana + manaChange);
+		mana = convertToSafeInteger<uint32_t>(mana + manaChange);
 	}
 }
 

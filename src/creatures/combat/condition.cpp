@@ -13,7 +13,11 @@
 #include "game/game.h"
 
 uint32_t Condition::getTicksSpellCooldown() const {
-	return static_cast<uint32_t>(ticks);
+	if (ticks > std::numeric_limits<uint32_t>::max()) {
+		SPDLOG_WARN("[{}] excedeed the maximum permited value, returning a default value of the type size");
+		return std::numeric_limits<uint32_t>::max();
+	}
+	return static_cast<uint32_t>(std::max<int64_t>(ticks, 0));
 }
 
 bool Condition::setParam(ConditionParam_t param, int64_t value) {
@@ -871,7 +875,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int64_t interva
 bool ConditionRegeneration::setParam(ConditionParam_t param, int64_t value) {
 	bool ret = ConditionGeneric::setParam(param, value);
 
-	auto convertSafeValue = static_cast<uint32_t>(value);
+	auto convertSafeValue = convertToSafeInteger<uint32_t>(value);
 	switch (param) {
 		case CONDITION_PARAM_HEALTHGAIN:
 			healthGain = convertSafeValue;
@@ -1032,7 +1036,7 @@ bool ConditionSoul::executeCondition(Creature* creature, int64_t interval) {
 
 bool ConditionSoul::setParam(ConditionParam_t param, int64_t value) {
 	bool ret = ConditionGeneric::setParam(param, value);
-	auto convertSafeValue = static_cast<uint32_t>(value);
+	auto convertSafeValue = convertToSafeInteger<uint32_t>(value);
 	switch (param) {
 		case CONDITION_PARAM_SOULGAIN:
 			soulGain = convertSafeValue;
@@ -1050,7 +1054,7 @@ bool ConditionSoul::setParam(ConditionParam_t param, int64_t value) {
 bool ConditionDamage::setParam(ConditionParam_t param, int64_t value) {
 	bool ret = Condition::setParam(param, value);
 
-	auto convertSafeValue = static_cast<uint32_t>(value);
+	auto convertSafeValue = convertToSafeInteger<uint32_t>(value);
 	switch (param) {
 		case CONDITION_PARAM_OWNER:
 			owner = convertSafeValue;
@@ -1456,7 +1460,7 @@ bool ConditionSpeed::setParam(ConditionParam_t param, int64_t value) {
 		return false;
 	}
 
-	speedDelta = static_cast<int32_t>(value);
+	speedDelta = convertToSafeInteger<int32_t>(value);
 
 	if (value > 0) {
 		conditionType = CONDITION_HASTE;
@@ -1511,7 +1515,7 @@ bool ConditionSpeed::startCondition(Creature* creature) {
 		getFormulaValues(creature->getBaseSpeed(), min, max);
 		// convert to save int32_t
 		auto randomValue = uniform_random(min, max);
-		speedDelta = static_cast<int32_t>(randomValue);
+		speedDelta = convertToSafeInteger<int32_t>(randomValue);
 	}
 
 	g_game().changeSpeed(creature, speedDelta);
@@ -1547,7 +1551,7 @@ void ConditionSpeed::addCondition(Creature* creature, const Condition* addCondit
 		getFormulaValues(creature->getBaseSpeed(), min, max);
 		// convert to save int32_t
 		auto randomValue = uniform_random(min, max);
-		speedDelta = static_cast<int32_t>(randomValue);
+		speedDelta = convertToSafeInteger<int32_t>(randomValue);
 	}
 
 	int32_t newSpeedChange = (speedDelta - oldSpeedDelta);
@@ -1678,7 +1682,7 @@ bool ConditionLight::startCondition(Creature* creature) {
 	}
 
 	internalLightTicks = 0;
-	lightChangeInterval = static_cast<uint32_t>(ticks) / lightInfo.level;
+	lightChangeInterval = convertToSafeInteger<uint32_t>(ticks) / lightInfo.level;
 	creature->setCreatureLight(lightInfo);
 	g_game().changeLight(creature);
 	return true;
@@ -1713,7 +1717,7 @@ void ConditionLight::addCondition(Creature* creature, const Condition* condition
 		const ConditionLight &conditionLight = static_cast<const ConditionLight &>(*condition);
 		lightInfo.level = conditionLight.lightInfo.level;
 		lightInfo.color = conditionLight.lightInfo.color;
-		lightChangeInterval = static_cast<uint32_t>(ticks) / lightInfo.level;
+		lightChangeInterval = convertToSafeInteger<uint32_t>(ticks) / lightInfo.level;
 		internalLightTicks = 0;
 		creature->setCreatureLight(lightInfo);
 		g_game().changeLight(creature);

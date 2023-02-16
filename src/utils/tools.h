@@ -139,10 +139,23 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
  * @param convertValue Value to convert and ensure security
  * @return ReturnValue Value converted and guaranteed to be safe
  */
-template <typename ReturnValue, typename ConvertValue>
-ReturnValue convertToSafeInteger(ConvertValue convertValue) {
-	auto convertSafeValue = std::clamp(static_cast<ReturnValue>(convertValue), (ReturnValue)0, std::numeric_limits<ReturnValue>::max());
-	return convertSafeValue;
+template <typename Converted, typename ToConvert>
+Converted convertToSafeInteger(ToConvert value) {
+	if constexpr (std::is_signed<ToConvert>::value && !std::is_signed<Converted>::value) {
+		if (value < 0) {
+			SPDLOG_WARN("[{}] was less than the minimum permitted value, returning the minimum value of the type", value);
+			return std::numeric_limits<Converted>::min();
+		}
+	}
+	if (value > static_cast<ToConvert>(std::numeric_limits<Converted>::max())) {
+		SPDLOG_WARN("[{}] exceeded the maximum permitted value, returning the maximum value of the type", value);
+		return std::numeric_limits<Converted>::max();
+	}
+	if (value < static_cast<ToConvert>(std::numeric_limits<Converted>::min())) {
+		SPDLOG_WARN("[{}] was less than the minimum permitted value, returning the minimum value of the type", value);
+		return std::numeric_limits<Converted>::min();
+	}
+	return static_cast<Converted>(value);
 }
 
 /**

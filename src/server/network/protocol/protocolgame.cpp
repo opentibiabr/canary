@@ -3511,9 +3511,9 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 		case MESSAGE_DAMAGE_RECEIVED:
 		case MESSAGE_DAMAGE_OTHERS: {
 			msg.addPosition(message.position);
-			msg.add<uint32_t>(static_cast<uint32_t>(message.primary.value));
+			msg.add<uint32_t>(convertToSafeInteger<uint32_t>(message.primary.value));
 			msg.addByte(message.primary.color);
-			msg.add<uint32_t>(static_cast<uint32_t>(message.secondary.value));
+			msg.add<uint32_t>(convertToSafeInteger<uint32_t>(message.secondary.value));
 			msg.addByte(message.secondary.color);
 			break;
 		}
@@ -3522,7 +3522,7 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 		case MESSAGE_EXPERIENCE:
 		case MESSAGE_EXPERIENCE_OTHERS: {
 			msg.addPosition(message.position);
-			msg.add<uint32_t>(static_cast<uint32_t>(message.primary.value));
+			msg.add<uint32_t>(convertToSafeInteger<uint32_t>(message.primary.value));
 			msg.addByte(message.primary.color);
 			break;
 		}

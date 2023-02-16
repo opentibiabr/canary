@@ -1244,19 +1244,17 @@ void ProtocolGame::parseOpenPrivateChannel(NetworkMessage &msg) {
 	addGameTask(&Game::playerOpenPrivateChannel, player->getID(), receiver);
 }
 
-void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg)
-{
+void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg) {
 	bool isTrackerOpen = msg.getByte(); // Window is opened or closed
 	addGameTask(&Game::playerRequestInventoryImbuements, player->getID(), isTrackerOpen);
 }
 
-void ProtocolGame::sendInventoryImbuements(std::map<Slots_t, Item*> items)
-{
+void ProtocolGame::sendInventoryImbuements(std::map<Slots_t, Item*> items) {
 	NetworkMessage msg;
 	msg.addByte(0x5D);
-	
+
 	msg.addByte(static_cast<uint8_t>(items.size()));
-	for (const auto& [slot, item] : items) {
+	for (const auto &[slot, item] : items) {
 		msg.addByte(slot);
 		AddItem(msg, item);
 
@@ -1279,8 +1277,8 @@ void ProtocolGame::sendInventoryImbuements(std::map<Slots_t, Item*> items)
 				msg.addByte(0x00);
 				continue;
 			}
-			
-			BaseImbuement *baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
+
+			BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
 			msg.addByte(0x01);
 			msg.addString(baseImbuement->name + " " + imbuement->getName());
 			msg.add<uint16_t>(imbuement->getIconID());
@@ -1309,7 +1307,7 @@ void ProtocolGame::sendInventoryImbuements(std::map<Slots_t, Item*> items)
 			msg.addByte(1);
 		}
 	}
-	
+
 	writeToOutputBuffer(msg);
 }
 

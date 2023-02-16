@@ -1566,7 +1566,7 @@ void Player::onChangeZone(ZoneType_t zone) {
 			wasMounted = false;
 		}
 	}
-		
+
 	updateImbuementTrackerStats();
 	g_game().updateCreatureWalkthrough(this);
 	sendIcons();

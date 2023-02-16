@@ -4602,8 +4602,7 @@ void Game::playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Po
 	player->updateUIExhausted();
 }
 
-void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen)
-{
+void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen) {
 	Player* player = getPlayerByID(playerId);
 	if (!player || player->isRemoved()) {
 		return;

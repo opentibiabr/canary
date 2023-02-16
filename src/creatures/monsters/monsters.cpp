@@ -248,6 +248,11 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 
 	combatPtr->setPlayerCombatValues(COMBAT_FORMULA_DAMAGE, sb.minCombatValue, 0, sb.maxCombatValue, 0);
 	combatSpell = new CombatSpell(combatPtr.release(), spell->needTarget, spell->needDirection);
+	// Sanity check
+	if (!combatSpell) {
+		return false;
+	}
+
 	combatSpell->soundCastEffect = sb.soundCastEffect;
 	combatSpell->soundImpactEffect = sb.soundImpactEffect;
 

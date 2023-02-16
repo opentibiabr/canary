@@ -86,7 +86,7 @@ bool Monster::canWalkOnFieldType(CombatType_t combatType) const {
 uint32_t Monster::getReflectValue(CombatType_t reflectType) const {
 	auto it = mType->info.reflectMap.find(reflectType);
 	if (it != mType->info.reflectMap.end()) {
-		auto convertedSafe = convertToSafeInteger<uint32_t>(it->second);
+		auto convertedSafe = static_cast<uint32_t>(it->second);
 		return convertedSafe;
 	}
 	return 0;
@@ -95,7 +95,7 @@ uint32_t Monster::getReflectValue(CombatType_t reflectType) const {
 uint32_t Monster::getHealingCombatValue(CombatType_t healingType) const {
 	auto it = mType->info.healingMap.find(healingType);
 	if (it != mType->info.healingMap.end()) {
-		auto convertedSafe = convertToSafeInteger<uint32_t>(it->second);
+		auto convertedSafe = static_cast<uint32_t>(it->second);
 		return convertedSafe;
 	}
 	return 0;
@@ -655,7 +655,7 @@ BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int64
 		}
 
 		if (elementMod != 0) {
-			damage = convertToSafeInteger<int64_t>(damage * ((100 - elementMod) / 100));
+			damage = static_cast<int64_t>(damage * ((100 - elementMod) / 100));
 			if (damage <= 0) {
 				damage = 0;
 				blockType = BLOCK_ARMOR;
@@ -2044,7 +2044,7 @@ void Monster::drainHealth(Creature* attacker, int64_t damage) {
 void Monster::changeHealth(int64_t healthChange, bool sendHealthChange /* = true*/) {
 	if (mType && !mType->info.soundVector.empty() && mType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100))) {
 		auto index = uniform_random(0, mType->info.soundVector.size() - 1);
-		auto convertedSafe = convertToSafeInteger<uint16_t>(index);
+		auto convertedSafe = static_cast<uint16_t>(index);
 		g_game().sendSingleSoundEffect(this->getPosition(), mType->info.soundVector[convertedSafe], this);
 	}
 

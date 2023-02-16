@@ -678,6 +678,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x32:
 			parseExtendedOpcode(msg);
 			break; // otclient extended opcode
+		case 0x60:
+			parseInventoryImbuements(msg);
+			break;
 		case 0x64:
 			parseAutoWalk(msg);
 			break;
@@ -1239,6 +1242,75 @@ void ProtocolGame::parseCloseChannel(NetworkMessage &msg) {
 void ProtocolGame::parseOpenPrivateChannel(NetworkMessage &msg) {
 	const std::string receiver = msg.getString();
 	addGameTask(&Game::playerOpenPrivateChannel, player->getID(), receiver);
+}
+
+void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg)
+{
+	bool isTrackerOpen = msg.getByte(); // Window is opened or closed
+	addGameTask(&Game::playerRequestInventoryImbuements, player->getID(), isTrackerOpen);
+}
+
+void ProtocolGame::sendInventoryImbuements(std::map<Slots_t, Item*> items)
+{
+	NetworkMessage msg;
+	msg.addByte(0x5D);
+	
+	msg.addByte(static_cast<uint8_t>(items.size()));
+	for (const auto& [slot, item] : items) {
+		msg.addByte(slot);
+		AddItem(msg, item);
+
+		const ItemType &it = Item::items[item->getID()];
+		uint8_t slots = item->getImbuementSlot();
+		msg.addByte(slots);
+		if (slots == 0) {
+			continue;
+		}
+
+		for (uint8_t imbueSlot = 0; imbueSlot < slots; imbueSlot++) {
+			ImbuementInfo imbuementInfo;
+			if (!item->getImbuementInfo(imbueSlot, &imbuementInfo)) {
+				msg.addByte(0x00);
+				continue;
+			}
+
+			auto imbuement = imbuementInfo.imbuement;
+			if (!imbuement) {
+				msg.addByte(0x00);
+				continue;
+			}
+			
+			BaseImbuement *baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
+			msg.addByte(0x01);
+			msg.addString(baseImbuement->name + " " + imbuement->getName());
+			msg.add<uint16_t>(imbuement->getIconID());
+			msg.add<uint32_t>(imbuementInfo.duration);
+
+			const Tile* playerTile = player->getTile();
+			// Check if the player is in a protection zone
+			bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
+			// Check if the player is in fight mode
+			bool isInFightMode = player->hasCondition(CONDITION_INFIGHT);
+			// Get the category of the imbuement
+			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
+			// Parent of the imbued item
+			auto parent = item->getParent();
+			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
+			if (categoryImbuement && categoryImbuement->agressive && (isInProtectionZone || !isInFightMode)) {
+				msg.addByte(0);
+				continue;
+			}
+			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
+			if (categoryImbuement && !categoryImbuement->agressive && parent && parent != player) {
+				msg.addByte(0);
+				continue;
+			}
+
+			msg.addByte(1);
+		}
+	}
+	
+	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
@@ -3441,9 +3513,9 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 		case MESSAGE_DAMAGE_RECEIVED:
 		case MESSAGE_DAMAGE_OTHERS: {
 			msg.addPosition(message.position);
-			msg.add<uint32_t>(convertToSafeInteger<uint32_t>(message.primary.value));
+			msg.add<uint32_t>(static_cast<uint32_t>(message.primary.value));
 			msg.addByte(message.primary.color);
-			msg.add<uint32_t>(convertToSafeInteger<uint32_t>(message.secondary.value));
+			msg.add<uint32_t>(static_cast<uint32_t>(message.secondary.value));
 			msg.addByte(message.secondary.color);
 			break;
 		}
@@ -3452,7 +3524,7 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 		case MESSAGE_EXPERIENCE:
 		case MESSAGE_EXPERIENCE_OTHERS: {
 			msg.addPosition(message.position);
-			msg.add<uint32_t>(convertToSafeInteger<uint32_t>(message.primary.value));
+			msg.add<uint32_t>(static_cast<uint32_t>(message.primary.value));
 			msg.addByte(message.primary.color);
 			break;
 		}

@@ -1129,13 +1129,13 @@ void Player::updateSupplyTracker(const Item* item) const {
 
 void Player::updateImpactTracker(int64_t type, int64_t amount) const {
 	if (client) {
-		client->sendUpdateImpactTracker(static_cast<CombatType_t>(type), convertToSafeInteger<uint32_t>(amount));
+		client->sendUpdateImpactTracker(static_cast<CombatType_t>(type), static_cast<uint32_t>(amount));
 	}
 }
 
 void Player::updateInputAnalyzer(int64_t type, int64_t amount, const std::string &target) const {
 	if (client) {
-		client->sendUpdateInputAnalyzer(static_cast<CombatType_t>(type), convertToSafeInteger<uint32_t>(amount), target);
+		client->sendUpdateInputAnalyzer(static_cast<CombatType_t>(type), static_cast<uint32_t>(amount), target);
 	}
 }
 
@@ -1566,7 +1566,8 @@ void Player::onChangeZone(ZoneType_t zone) {
 			wasMounted = false;
 		}
 	}
-
+		
+	updateImbuementTrackerStats();
 	g_game().updateCreatureWalkthrough(this);
 	sendIcons();
 	g_events().eventPlayerOnChangeZone(this, zone);
@@ -1963,7 +1964,7 @@ uint32_t Player::isMuted() const {
 			muteTicks = condition->getTicks();
 		}
 	}
-	return convertToSafeInteger<uint32_t>(muteTicks) / 1000;
+	return static_cast<uint32_t>(muteTicks) / 1000;
 }
 
 void Player::addMessageBuffer() {
@@ -2205,13 +2206,13 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 		// Player stats loss for vocations level <= 8
 		if (vocation->getId() != VOCATION_NONE && level <= 8) {
 			const Vocation* noneVocation = g_vocations().getVocation(VOCATION_NONE);
-			healthMax = convertToSafeInteger<int64_t>(healthMax - noneVocation->getHPGain());
-			manaMax = convertToSafeInteger<uint32_t>(manaMax - noneVocation->getManaGain());
-			capacity = convertToSafeInteger<uint32_t>(capacity - noneVocation->getCapGain());
+			healthMax = static_cast<int64_t>(healthMax - noneVocation->getHPGain());
+			manaMax = static_cast<uint32_t>(manaMax - noneVocation->getManaGain());
+			capacity = static_cast<uint32_t>(capacity - noneVocation->getCapGain());
 		} else {
-			healthMax = convertToSafeInteger<int64_t>(healthMax - vocation->getHPGain());
-			manaMax = convertToSafeInteger<uint32_t>(manaMax - vocation->getManaGain());
-			capacity = convertToSafeInteger<uint32_t>(capacity - vocation->getCapGain());
+			healthMax = static_cast<int64_t>(healthMax - vocation->getHPGain());
+			manaMax = static_cast<uint32_t>(manaMax - vocation->getManaGain());
+			capacity = static_cast<uint32_t>(capacity - vocation->getCapGain());
 		}
 		currLevelExp = Player::getExpForLevel(level);
 	}
@@ -2341,7 +2342,7 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_
 					// Safe conversion
 					auto doubleDamage = static_cast<double>(damage);
 					auto absorbDouble = static_cast<double>(absorbPercent);
-					auto safeConverted = convertToSafeInteger<int64_t>(std::round(doubleDamage * (absorbDouble / 100.)));
+					auto safeConverted = static_cast<int64_t>(std::round(doubleDamage * (absorbDouble / 100.)));
 					damage -= safeConverted;
 
 					uint16_t charges = item->getCharges();
@@ -2353,7 +2354,7 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_
 				if (field) {
 					const int16_t &fieldAbsorbPercent = it.abilities->fieldAbsorbPercent[combatTypeToIndex(combatType)];
 					if (fieldAbsorbPercent != 0) {
-						auto safeConverted = convertToSafeInteger<int64_t>(std::round(damage * fieldAbsorbPercent));
+						auto safeConverted = static_cast<int64_t>(std::round(damage * fieldAbsorbPercent));
 						damage -= safeConverted / 100;
 
 						uint16_t charges = item->getCharges();
@@ -2372,7 +2373,7 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_
 						CombatDamage reflectDamage;
 						reflectDamage.origin = ORIGIN_SPELL;
 						reflectDamage.primary.type = combatType;
-						auto safeConverted = convertToSafeInteger<int64_t>(
+						auto safeConverted = static_cast<int64_t>(
 							std::round(-damage * (reflectPercent / 100))
 						);
 						reflectDamage.primary.value = safeConverted;
@@ -2391,7 +2392,7 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_
 				const int16_t &imbuementAbsorbPercent = imbuementInfo.imbuement->absorbPercent[combatTypeToIndex(combatType)];
 
 				if (imbuementAbsorbPercent != 0) {
-					auto safeConverted = convertToSafeInteger<int64_t>(
+					auto safeConverted = static_cast<int64_t>(
 						std::ceil(damage * (imbuementAbsorbPercent / 100))
 					);
 					damage -= safeConverted;
@@ -2533,9 +2534,9 @@ void Player::death(Creature* lastHitCreature) {
 
 			while (level > 1 && experience < Player::getExpForLevel(level)) {
 				--level;
-				healthMax = convertToSafeInteger<int64_t>(healthMax - vocation->getHPGain());
-				manaMax = convertToSafeInteger<uint32_t>(manaMax - vocation->getManaGain());
-				capacity = convertToSafeInteger<uint32_t>(capacity - vocation->getCapGain());
+				healthMax = static_cast<int64_t>(healthMax - vocation->getHPGain());
+				manaMax = static_cast<uint32_t>(manaMax - vocation->getManaGain());
+				capacity = static_cast<uint32_t>(capacity - vocation->getCapGain());
 			}
 
 			if (oldLevel != level) {
@@ -3976,7 +3977,7 @@ void Player::getPathSearchParams(const Creature* creature, FindPathParams &fpp) 
 }
 
 uint16_t Player::getSkillLevel(uint8_t skill) const {
-	auto skillLevel = convertToSafeInteger<uint16_t>(skills[skill].level + varSkills[skill]);
+	auto skillLevel = static_cast<uint16_t>(skills[skill].level + varSkills[skill]);
 
 	if (auto it = maxValuePerSkill.find(skill);
 		it != maxValuePerSkill.end()) {
@@ -5681,6 +5682,12 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 	}
 }
 
+void Player::updateImbuementTrackerStats() {
+	if (imbuementTrackerWindowOpen) {
+		g_game().playerRequestInventoryImbuements(getID(), true);
+	}
+}
+
 bool Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 	uint32_t stackCount = 100u;
 
@@ -5910,7 +5917,7 @@ void Player::triggerMomentum() {
 			triggered = true;
 			if (type == CONDITION_SPELLCOOLDOWN || (type == CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
 				condItem->setTicks(newTicks);
-				auto safeConverted = convertToSafeInteger<uint32_t>(newTicks);
+				auto safeConverted = static_cast<uint32_t>(newTicks);
 				type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), safeConverted) : sendSpellCooldown(static_cast<uint16_t>(spellId), safeConverted);
 			}
 			++it;

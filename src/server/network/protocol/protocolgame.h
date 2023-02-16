@@ -99,6 +99,8 @@ class ProtocolGame final : public Protocol {
 		void onConnect() override;
 
 		// Parse methods
+		void parseInventoryImbuements(NetworkMessage &msg);
+		void sendInventoryImbuements(std::map<Slots_t, Item*> items);
 		void parseAutoWalk(NetworkMessage &msg);
 		void parseSetOutfit(NetworkMessage &msg);
 		void parseSay(NetworkMessage &msg);

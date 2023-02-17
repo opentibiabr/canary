@@ -2346,6 +2346,7 @@ ObjectCategory_t Game::getObjectCategory(const Item* item) {
 			case WEAPON_SHIELD:
 				category = OBJECTCATEGORY_SHIELDS;
 				break;
+			case WEAPON_MISSILE:
 			case WEAPON_DISTANCE:
 				category = OBJECTCATEGORY_DISTANCEWEAPONS;
 				break;

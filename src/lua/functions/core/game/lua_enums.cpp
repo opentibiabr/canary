@@ -173,6 +173,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, WEAPON_DISTANCE);
 	registerEnum(L, WEAPON_WAND);
 	registerEnum(L, WEAPON_AMMO);
+	registerEnum(L, WEAPON_MISSILE);
 }
 
 void LuaEnums::initAccountEnums(lua_State* L) {

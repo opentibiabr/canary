@@ -264,10 +264,10 @@ int ContainerFunctions::luaContainerRegisterReward(lua_State* L) {
 		return 1;
 	}
 
-	auto timestamp = time(nullptr);
+	int64_t rewardId = getTimeMsNow();
 	Item* rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
-	rewardContainer->setAttribute(ItemAttribute_t::DATE, timestamp);
-	container->setAttribute(ItemAttribute_t::DATE, timestamp);
+	rewardContainer->setAttribute(ItemAttribute_t::DATE, rewardId);
+	container->setAttribute(ItemAttribute_t::DATE, rewardId);
 	container->internalAddThing(rewardContainer);
 	container->setRewardCorpse();
 

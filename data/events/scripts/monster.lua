@@ -1,3 +1,24 @@
+local function calculateBonus(bonus)
+	local bonusCount = math.floor(bonus/100)
+	local remainder = bonus % 100
+	if remainder > 0 then
+		local probability = math.random(0, 100)
+		bonusCount = bonusCount + (probability < remainder and 1 or 0)
+	end
+
+	return bonusCount
+end
+
+local function checkItemType(itemId)
+	local itemType = ItemType(itemId):getType()
+	-- Based on enum ItemTypes_t
+	if (itemType > 0 and itemType < 4) or itemType == 7 or itemType == 8 or
+		itemType == 11 or itemType == 13 or (itemType > 15 and itemType < 22) then
+		return true
+	end
+	return false
+end
+
 function Monster:onDropLoot(corpse)
 	if configManager.getNumber(configKeys.RATE_LOOT) == 0 then
 		return
@@ -48,9 +69,39 @@ function Monster:onDropLoot(corpse)
 				end
 			end
 
+			local boostedMessage
+			local isBoostedBoss = self:getName():lower() == (Game.getBoostedBoss()):lower()
+			local bossRaceIds = {player:getSlotBossId(1), player:getSlotBossId(2)}
+			local isBoss = table.contains(bossRaceIds, mType:bossRaceId()) or isBoostedBoss
+			if isBoss and mType:bossRaceId() ~= 0 then
+				local bonus
+				if mType:bossRaceId() == player:getSlotBossId(1) then
+					bonus = player:getBossBonus(1)
+				elseif mType:bossRaceId() == player:getSlotBossId(2) then
+					bonus = player:getBossBonus(2)
+				else
+					bonus = configManager.getNumber(configKeys.BOOSTED_BOSS_LOOT_BONUS)
+				end
+
+				local items = corpse:getItems(true)
+				for i = 1, #items do
+					local itemId = items[i]:getId()
+					local isValidItem = checkItemType(itemId)
+					if isValidItem then
+						local realBonus = calculateBonus(bonus)
+						for _ = 1, realBonus do
+							corpse:addItem(itemId)
+							boostedMessage = true
+						end
+					end
+				end
+			end
+
 			local text = {}
 			if self:getName():lower() == (Game.getBoostedCreature()):lower() then
 				text = ("Loot of %s: %s (boosted loot)"):format(mType:getNameDescription(), corpse:getContentDescription())
+			elseif boostedMessage then
+				text = ("Loot of %s: %s (Boss bonus)"):format(mType:getNameDescription(), corpse:getContentDescription())
 			else
 				text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())
 			end
@@ -86,8 +137,8 @@ function Monster:onSpawn(position)
 
 	-- We won't run anything from here on down if we're opening the global pack
 	if IsRunningGlobalDatapack() then
-		if self:getName():lower() == "cobra scout" or 
-			self:getName():lower() == "cobra vizier" or 
+		if self:getName():lower() == "cobra scout" or
+			self:getName():lower() == "cobra vizier" or
 			self:getName():lower() == "cobra assassin" then
 			if getGlobalStorageValue(GlobalStorage.CobraBastionFlask) >= os.time() then
 				self:setHealth(self:getMaxHealth() * 0.75)

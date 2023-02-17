@@ -5,11 +5,11 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
-#include "items/functions/item_parse.hpp"
+#include "items/functions/item/item_parse.hpp"
 #include "items/items.h"
 #include "items/weapons/weapons.h"
 #include "game/game.h"
@@ -17,8 +17,7 @@
 
 Items::Items() = default;
 
-void Items::clear()
-{
+void Items::clear() {
 	items.clear();
 	nameToItems.clear();
 }
@@ -26,35 +25,34 @@ void Items::clear()
 using LootTypeNames = phmap::flat_hash_map<std::string, ItemTypes_t>;
 
 LootTypeNames lootTypeNames = {
-	{"armor", ITEM_TYPE_ARMOR},
-	{"amulet", ITEM_TYPE_AMULET},
-	{"boots", ITEM_TYPE_BOOTS},
-	{"container", ITEM_TYPE_CONTAINER},
-	{"decoration", ITEM_TYPE_DECORATION},
-	{"food", ITEM_TYPE_FOOD},
-	{"helmet", ITEM_TYPE_HELMET},
-	{"legs", ITEM_TYPE_LEGS},
-	{"other", ITEM_TYPE_OTHER},
-	{"potion", ITEM_TYPE_POTION},
-	{"ring", ITEM_TYPE_RING},
-	{"rune", ITEM_TYPE_RUNE},
-	{"shield", ITEM_TYPE_SHIELD},
-	{"tools", ITEM_TYPE_TOOLS},
-	{"valuable", ITEM_TYPE_VALUABLE},
-	{"ammo", ITEM_TYPE_AMMO},
-	{"axe", ITEM_TYPE_AXE},
-	{"club", ITEM_TYPE_CLUB},
-	{"distance", ITEM_TYPE_DISTANCE},
-	{"sword", ITEM_TYPE_SWORD},
-	{"wand", ITEM_TYPE_WAND},
-	{"creatureproduct", ITEM_TYPE_CREATUREPRODUCT},
-	{"retrieve", ITEM_TYPE_RETRIEVE},
-	{"gold", ITEM_TYPE_GOLD},
-	{"unassigned", ITEM_TYPE_UNASSIGNED},
+	{ "armor", ITEM_TYPE_ARMOR },
+	{ "amulet", ITEM_TYPE_AMULET },
+	{ "boots", ITEM_TYPE_BOOTS },
+	{ "container", ITEM_TYPE_CONTAINER },
+	{ "decoration", ITEM_TYPE_DECORATION },
+	{ "food", ITEM_TYPE_FOOD },
+	{ "helmet", ITEM_TYPE_HELMET },
+	{ "legs", ITEM_TYPE_LEGS },
+	{ "other", ITEM_TYPE_OTHER },
+	{ "potion", ITEM_TYPE_POTION },
+	{ "ring", ITEM_TYPE_RING },
+	{ "rune", ITEM_TYPE_RUNE },
+	{ "shield", ITEM_TYPE_SHIELD },
+	{ "tools", ITEM_TYPE_TOOLS },
+	{ "valuable", ITEM_TYPE_VALUABLE },
+	{ "ammo", ITEM_TYPE_AMMO },
+	{ "axe", ITEM_TYPE_AXE },
+	{ "club", ITEM_TYPE_CLUB },
+	{ "distance", ITEM_TYPE_DISTANCE },
+	{ "sword", ITEM_TYPE_SWORD },
+	{ "wand", ITEM_TYPE_WAND },
+	{ "creatureproduct", ITEM_TYPE_CREATUREPRODUCT },
+	{ "retrieve", ITEM_TYPE_RETRIEVE },
+	{ "gold", ITEM_TYPE_GOLD },
+	{ "unassigned", ITEM_TYPE_UNASSIGNED },
 };
 
-ItemTypes_t Items::getLootType(const std::string& strValue)
-{
+ItemTypes_t Items::getLootType(const std::string &strValue) {
 	auto lootType = lootTypeNames.find(strValue);
 	if (lootType != lootTypeNames.end()) {
 		return lootType->second;
@@ -62,8 +60,7 @@ ItemTypes_t Items::getLootType(const std::string& strValue)
 	return ITEM_TYPE_NONE;
 }
 
-bool Items::reload()
-{
+bool Items::reload() {
 	clear();
 	loadFromProtobuf();
 
@@ -74,8 +71,7 @@ bool Items::reload()
 	return true;
 }
 
-void Items::loadFromProtobuf()
-{
+void Items::loadFromProtobuf() {
 	using namespace Canary::protobuf::appearances;
 
 	for (uint32_t it = 0; it < g_game().appearances.object_size(); ++it) {
@@ -91,7 +87,7 @@ void Items::loadFromProtobuf()
 			items.resize(object.id() + 1);
 		}
 
-		ItemType& iType = items[object.id()];
+		ItemType &iType = items[object.id()];
 		if (object.flags().container()) {
 			iType.type = ITEM_TYPE_CONTAINER;
 			iType.group = ITEM_GROUP_CONTAINER;
@@ -155,18 +151,15 @@ void Items::loadFromProtobuf()
 		iType.expireStop = object.flags().expirestop();
 
 		if (!iType.name.empty()) {
-			nameToItems.insert({
-				asLowerCaseString(iType.name),
-				iType.id
-			});
+			nameToItems.insert({ asLowerCaseString(iType.name),
+								 iType.id });
 		}
 	}
 
 	items.shrink_to_fit();
 }
 
-bool Items::loadFromXml()
-{
+bool Items::loadFromXml() {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/items/items.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
@@ -176,29 +169,22 @@ bool Items::loadFromXml()
 	}
 
 	for (auto itemNode : doc.child("items").children()) {
-		pugi::xml_attribute idAttribute = itemNode.attribute("id");
-		if (idAttribute) {
+		if (auto idAttribute = itemNode.attribute("id"); idAttribute) {
 			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
 			continue;
 		}
 
-		pugi::xml_attribute fromIdAttribute = itemNode.attribute("fromid");
+		auto fromIdAttribute = itemNode.attribute("fromid");
 		if (!fromIdAttribute) {
-			if (idAttribute) {
-				SPDLOG_WARN("[Items::loadFromXml] - "
-                            "No item id: {} found",
-                            idAttribute.value());
-			} else {
-				SPDLOG_WARN("[Items::loadFromXml] - No item id found");
-			}
+			SPDLOG_WARN("[Items::loadFromXml] - No item id found, use id or fromid");
 			continue;
 		}
 
-		pugi::xml_attribute toIdAttribute = itemNode.attribute("toid");
+		auto toIdAttribute = itemNode.attribute("toid");
 		if (!toIdAttribute) {
 			SPDLOG_WARN("[Items::loadFromXml] - "
-                        "tag fromid: {} without toid",
-                        fromIdAttribute.value());
+						"tag fromid: {} without toid",
+						fromIdAttribute.value());
 			continue;
 		}
 
@@ -211,21 +197,10 @@ bool Items::loadFromXml()
 	return true;
 }
 
-void Items::buildInventoryList()
-{
+void Items::buildInventoryList() {
 	inventory.reserve(items.size());
-	for (const auto& type: items) {
-		if (type.weaponType != WEAPON_NONE || type.ammoType != AMMO_NONE ||
-			type.attack != 0 || type.defense != 0 ||
-			type.extraDefense != 0 || type.armor != 0 ||
-			type.slotPosition & SLOTP_NECKLACE ||
-			type.slotPosition & SLOTP_RING ||
-			type.slotPosition & SLOTP_AMMO ||
-			type.slotPosition & SLOTP_FEET ||
-			type.slotPosition & SLOTP_HEAD ||
-			type.slotPosition & SLOTP_ARMOR ||
-			type.slotPosition & SLOTP_LEGS)
-		{
+	for (const auto &type : items) {
+		if (type.weaponType != WEAPON_NONE || type.ammoType != AMMO_NONE || type.attack != 0 || type.defense != 0 || type.extraDefense != 0 || type.armor != 0 || type.slotPosition & SLOTP_NECKLACE || type.slotPosition & SLOTP_RING || type.slotPosition & SLOTP_AMMO || type.slotPosition & SLOTP_FEET || type.slotPosition & SLOTP_HEAD || type.slotPosition & SLOTP_ARMOR || type.slotPosition & SLOTP_LEGS) {
 			inventory.push_back(type.id);
 		}
 	}
@@ -233,14 +208,14 @@ void Items::buildInventoryList()
 	std::sort(inventory.begin(), inventory.end());
 }
 
-void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
+void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 	if (id >= items.size()) {
 		items.resize(id + 1);
 	}
-	ItemType & iType = items[id];
+	ItemType &iType = items[id];
 	iType.id = id;
 
-	ItemType & itemType = getItemType(id);
+	ItemType &itemType = getItemType(id);
 	if (itemType.id == 0) {
 		return;
 	}
@@ -251,20 +226,19 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 	}
 
 	if (std::string xmlName = itemNode.attribute("name").as_string();
-			!xmlName.empty() && itemType.name != xmlName) {
+		!xmlName.empty() && itemType.name != xmlName) {
 		if (!itemType.name.empty()) {
 			if (auto it = std::find_if(nameToItems.begin(), nameToItems.end(), [id](const auto nameMapIt) {
 					return nameMapIt.second == id;
-				}); it != nameToItems.end()) {
+				});
+				it != nameToItems.end()) {
 				nameToItems.erase(it);
 			}
 		}
 
 		itemType.name = xmlName;
-		nameToItems.insert({
-			asLowerCaseString(itemType.name),
-			id
-		});
+		nameToItems.insert({ asLowerCaseString(itemType.name),
+							 id });
 	}
 
 	itemType.loaded = true;
@@ -292,10 +266,9 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 		std::string tmpStrValue = asLowerCaseString(keyAttribute.as_string());
 		auto parseAttribute = ItemParseAttributesMap.find(tmpStrValue);
 		if (parseAttribute != ItemParseAttributesMap.end()) {
-			ItemParse::initParse(tmpStrValue, attributeNode, keyAttribute, valueAttribute, itemType);
+			ItemParse::initParse(tmpStrValue, attributeNode, valueAttribute, itemType);
 		} else {
-			SPDLOG_WARN("[Items::parseItemNode] - Unknown key value: {}",
-                        keyAttribute.as_string());
+			SPDLOG_WARN("[Items::parseItemNode] - Unknown key value: {}", keyAttribute.as_string());
 		}
 	}
 
@@ -305,24 +278,21 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 	}
 }
 
-ItemType& Items::getItemType(size_t id)
-{
+ItemType &Items::getItemType(size_t id) {
 	if (id < items.size()) {
 		return items[id];
 	}
 	return items.front();
 }
 
-const ItemType& Items::getItemType(size_t id) const
-{
+const ItemType &Items::getItemType(size_t id) const {
 	if (id < items.size()) {
 		return items[id];
 	}
 	return items.front();
 }
 
-uint16_t Items::getItemIdByName(const std::string& name)
-{
+uint16_t Items::getItemIdByName(const std::string &name) {
 	auto result = nameToItems.find(asLowerCaseString(name));
 
 	if (result == nameToItems.end())
@@ -331,8 +301,7 @@ uint16_t Items::getItemIdByName(const std::string& name)
 	return result->second;
 }
 
-bool Items::hasItemType(size_t hasId) const
-{
+bool Items::hasItemType(size_t hasId) const {
 	if (hasId < items.size()) {
 		return true;
 	}

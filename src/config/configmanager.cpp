@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -15,41 +15,14 @@
 #include "lua/scripts/luajit_sync.hpp"
 
 #if LUA_VERSION_NUM >= 502
-#undef lua_strlen
-#define lua_strlen lua_rawlen
+	#undef lua_strlen
+	#define lua_strlen lua_rawlen
 #endif
 
 namespace {
 
-std::string getGlobalString(lua_State* L, const char* identifier, const char* defaultValue)
-{
-	lua_getglobal(L, identifier);
-	if (!lua_isstring(L, -1)) {
-		return defaultValue;
-	}
-
-	size_t len = lua_strlen(L, -1);
-	std::string ret(lua_tostring(L, -1), len);
-	lua_pop(L, 1);
-	return ret;
-}
-
-int32_t getGlobalNumber(lua_State* L, const char* identifier, const int32_t defaultValue = 0)
-{
-	lua_getglobal(L, identifier);
-	if (!lua_isnumber(L, -1)) {
-		return defaultValue;
-	}
-
-	int32_t val = lua_tonumber(L, -1);
-	lua_pop(L, 1);
-	return val;
-}
-
-bool getGlobalBoolean(lua_State* L, const char* identifier, const bool defaultValue)
-{
-	lua_getglobal(L, identifier);
-	if (!lua_isboolean(L, -1)) {
+	std::string getGlobalString(lua_State* L, const char* identifier, const char* defaultValue) {
+		lua_getglobal(L, identifier);
 		if (!lua_isstring(L, -1)) {
 			return defaultValue;
 		}
@@ -57,30 +30,52 @@ bool getGlobalBoolean(lua_State* L, const char* identifier, const bool defaultVa
 		size_t len = lua_strlen(L, -1);
 		std::string ret(lua_tostring(L, -1), len);
 		lua_pop(L, 1);
-		return booleanString(ret);
+		return ret;
 	}
 
-	int val = lua_toboolean(L, -1);
-	lua_pop(L, 1);
-	return val != 0;
-}
+	int32_t getGlobalNumber(lua_State* L, const char* identifier, const int32_t defaultValue = 0) {
+		lua_getglobal(L, identifier);
+		if (!lua_isnumber(L, -1)) {
+			return defaultValue;
+		}
 
-float getGlobalFloat(lua_State* L, const char* identifier, const float defaultValue = 0.0)
-{
-	lua_getglobal(L, identifier);
-	if (!lua_isnumber(L, -1)) {
-		return defaultValue;
+		int32_t val = lua_tonumber(L, -1);
+		lua_pop(L, 1);
+		return val;
 	}
 
-	float val = lua_tonumber(L, -1);
-	lua_pop(L, 1);
-	return val;
-}
+	bool getGlobalBoolean(lua_State* L, const char* identifier, const bool defaultValue) {
+		lua_getglobal(L, identifier);
+		if (!lua_isboolean(L, -1)) {
+			if (!lua_isstring(L, -1)) {
+				return defaultValue;
+			}
+
+			size_t len = lua_strlen(L, -1);
+			std::string ret(lua_tostring(L, -1), len);
+			lua_pop(L, 1);
+			return booleanString(ret);
+		}
+
+		int val = lua_toboolean(L, -1);
+		lua_pop(L, 1);
+		return val != 0;
+	}
+
+	float getGlobalFloat(lua_State* L, const char* identifier, const float defaultValue = 0.0) {
+		lua_getglobal(L, identifier);
+		if (!lua_isnumber(L, -1)) {
+			return defaultValue;
+		}
+
+		float val = lua_tonumber(L, -1);
+		lua_pop(L, 1);
+		return val;
+	}
 
 }
 
-bool ConfigManager::load()
-{
+bool ConfigManager::load() {
 	lua_State* L = luaL_newstate();
 	if (!L) {
 		throw std::runtime_error("Failed to allocate memory");
@@ -208,6 +203,7 @@ bool ConfigManager::load()
 	integer[RATE_MAGIC] = getGlobalNumber(L, "rateMagic", 1);
 	integer[RATE_SPAWN] = getGlobalNumber(L, "rateSpawn", 1);
 	integer[HOUSE_PRICE] = getGlobalNumber(L, "housePriceEachSQM", 1000);
+	integer[HOUSE_BUY_LEVEL] = getGlobalNumber(L, "houseBuyLevel", 0);
 	integer[ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenActions", 200);
 	integer[EX_ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenExActions", 1000);
 	integer[MAX_MESSAGEBUFFER] = getGlobalNumber(L, "maxMessageBuffer", 4);
@@ -301,13 +297,16 @@ bool ConfigManager::load()
 	integer[TASK_HUNTING_BONUS_REROLL_PRICE] = getGlobalNumber(L, "taskHuntingBonusRerollPrice", 1);
 	integer[TASK_HUNTING_FREE_REROLL_TIME] = getGlobalNumber(L, "taskHuntingFreeRerollTime", 72000);
 
+	boolean[BOOSTED_BOSS_SLOT] = getGlobalBoolean(L, "boostedBossSlot", true);
+	integer[BOOSTED_BOSS_LOOT_BONUS] = getGlobalNumber(L, "boostedBossLootBonus", 250);
+	integer[BOOSTED_BOSS_KILL_BONUS] = getGlobalNumber(L, "boostedBossKillBonus", 3);
+
 	loaded = true;
 	lua_close(L);
 	return true;
 }
 
-bool ConfigManager::reload()
-{
+bool ConfigManager::reload() {
 	bool result = load();
 	if (transformToSHA1(getString(MOTD)) != g_game().getMotdHash()) {
 		g_game().incrementMotdNum();
@@ -317,8 +316,7 @@ bool ConfigManager::reload()
 
 static std::string dummyStr;
 
-const std::string& ConfigManager::getString(stringConfig_t what) const
-{
+const std::string &ConfigManager::getString(stringConfig_t what) const {
 	if (what >= LAST_STRING_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getString] - Accessing invalid index: {}", what);
 		return dummyStr;
@@ -326,8 +324,7 @@ const std::string& ConfigManager::getString(stringConfig_t what) const
 	return string[what];
 }
 
-int32_t ConfigManager::getNumber(integerConfig_t what) const
-{
+int32_t ConfigManager::getNumber(integerConfig_t what) const {
 	if (what >= LAST_INTEGER_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getNumber] - Accessing invalid index: {}", what);
 		return 0;
@@ -335,8 +332,7 @@ int32_t ConfigManager::getNumber(integerConfig_t what) const
 	return integer[what];
 }
 
-int16_t ConfigManager::getShortNumber(integerConfig_t what) const
-{
+int16_t ConfigManager::getShortNumber(integerConfig_t what) const {
 	if (what >= LAST_INTEGER_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getShortNumber] - Accessing invalid index: {}", what);
 		return 0;
@@ -344,8 +340,7 @@ int16_t ConfigManager::getShortNumber(integerConfig_t what) const
 	return integer[what];
 }
 
-bool ConfigManager::getBoolean(booleanConfig_t what) const
-{
+bool ConfigManager::getBoolean(booleanConfig_t what) const {
 	if (what >= LAST_BOOLEAN_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getBoolean] - Accessing invalid index: {}", what);
 		return false;
@@ -353,8 +348,7 @@ bool ConfigManager::getBoolean(booleanConfig_t what) const
 	return boolean[what];
 }
 
-float ConfigManager::getFloat(floatingConfig_t what) const
-{
+float ConfigManager::getFloat(floatingConfig_t what) const {
 	if (what >= LAST_FLOATING_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getFLoat] - Accessing invalid index: {}", what);
 		return 0;

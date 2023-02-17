@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_CREATURES_PLAYERS_GROUPING_PARTY_H_
 #define SRC_CREATURES_PLAYERS_GROUPING_PARTY_H_
@@ -26,18 +26,17 @@ class Party;
 
 using PlayerVector = std::vector<Player*>;
 
-class Party
-{
+class Party {
 	public:
 		explicit Party(Player* leader);
 
 		Player* getLeader() const {
 			return leader;
 		}
-		PlayerVector& getMembers() {
+		PlayerVector &getMembers() {
 			return memberList;
 		}
-		const PlayerVector& getInvitees() const {
+		const PlayerVector &getInvitees() const {
 			return inviteList;
 		}
 		size_t getMemberCount() const {
@@ -48,17 +47,17 @@ class Party
 		}
 
 		void disband();
-		bool invitePlayer(Player& player);
-		bool joinParty(Player& player);
-		void revokeInvitation(Player& player);
+		bool invitePlayer(Player &player);
+		bool joinParty(Player &player);
+		void revokeInvitation(Player &player);
 		bool passPartyLeadership(Player* player);
 		bool leaveParty(Player* player);
 
-		bool removeInvite(Player& player, bool removeFromPlayer = true);
+		bool removeInvite(Player &player, bool removeFromPlayer = true);
 
 		bool isPlayerInvited(const Player* player) const;
 		void updateAllPartyIcons();
-		void broadcastPartyMessage(MessageClasses msgClass, const std::string& msg, bool sendToInvitations = false);
+		void broadcastPartyMessage(MessageClasses msgClass, const std::string &msg, bool sendToInvitations = false);
 		bool empty() const {
 			return memberList.empty() && inviteList.empty();
 		}
@@ -73,7 +72,7 @@ class Party
 			return sharedExpEnabled;
 		}
 		bool canUseSharedExperience(const Player* player) const;
-		SharedExpStatus_t getMemberSharedExperienceStatus(const Player* player) const;		
+		SharedExpStatus_t getMemberSharedExperienceStatus(const Player* player) const;
 		void updateSharedExperience();
 
 		void updatePlayerTicks(Player* player, uint32_t points);
@@ -81,7 +80,7 @@ class Party
 
 		void showPlayerStatus(Player* player, Player* member, bool showStatus);
 		void updatePlayerStatus(Player* player);
-		void updatePlayerStatus(Player* player, const Position& oldPos, const Position& newPos);
+		void updatePlayerStatus(Player* player, const Position &oldPos, const Position &newPos);
 		void updatePlayerHealth(const Player* player, const Creature* target, uint8_t healthPercent);
 		void updatePlayerMana(const Player* player, uint8_t manaPercent);
 		void updatePlayerVocation(const Player* player);
@@ -95,19 +94,18 @@ class Party
 		void resetAnalyzer();
 		void reloadPrices();
 
-		PartyAnalyzer* getPlayerPartyAnalyzerStruct(uint32_t playerId) const
-		{
+		PartyAnalyzer* getPlayerPartyAnalyzerStruct(uint32_t playerId) const {
 			if (auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const PartyAnalyzer* preyIt) {
 					return preyIt->id == playerId;
-				}); it != membersData.end()) {
+				});
+				it != membersData.end()) {
 				return *it;
 			}
 
 			return nullptr;
 		}
 
-		uint32_t getAnalyzerTimeNow() const
-		{
+		uint32_t getAnalyzerTimeNow() const {
 			return static_cast<uint32_t>(time(nullptr) - trackerTime);
 		}
 
@@ -132,4 +130,4 @@ class Party
 		bool sharedExpEnabled = false;
 };
 
-#endif  // SRC_CREATURES_PLAYERS_GROUPING_PARTY_H_
+#endif // SRC_CREATURES_PLAYERS_GROUPING_PARTY_H_

@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_MAP_TILE_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_MAP_TILE_FUNCTIONS_HPP_
@@ -101,4 +101,4 @@ class TileFunctions final : LuaScriptInterface {
 		static int luaTileGetHouse(lua_State* L);
 };
 
-#endif  // SRC_LUA_FUNCTIONS_MAP_TILE_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_MAP_TILE_FUNCTIONS_HPP_

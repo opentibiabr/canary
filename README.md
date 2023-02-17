@@ -8,8 +8,6 @@
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/opentibiabr/canary)
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/b4539fb9fc96444f8db450f62a537b20)](https://www.codacy.com/gh/opentibiabr/canary/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=opentibiabr/canary&amp;utm_campaign=Badge_Grade)
-[![Analysis - CodeQL](https://github.com/opentibiabr/canary/actions/workflows/analysis-codeql.yml/badge.svg)](https://github.com/opentibiabr/canary/actions/workflows/analysis-codeql.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=opentibiabr_canary&metric=alert_status)](https://sonarcloud.io/dashboard?id=opentibiabr_canary)
 
 ## Builds
@@ -71,10 +69,8 @@ Before [creating a pull request](https://github.com/opentibiabr/canary/pulls) pl
 
 ### **Sponsors**
 
-If you want to sponsor here, join on discord and send a message for one of our administrators.
+See our [donate page](https://docs.opentibiabr.org/donate)
 
 ### Partners
 
 [![Supported by OTServ Brasil](https://raw.githubusercontent.com/otbr/otserv-brasil/main/otbr.png)](https://forums.otserv.com.br)
-
-[![Protected by ServerCore](https://mktsc.servercore.com.br/protectedbyservercore.png)](https://bit.ly/1q2q4de)

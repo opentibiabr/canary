@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -13,16 +13,13 @@
 #include "utils/tools.h"
 
 DepotChest::DepotChest(uint16_t type) :
-	Container(type)
-{
+	Container(type) {
 	maxDepotItems = 2000;
 	maxSize = 32;
 	pagination = true;
 }
 
-ReturnValue DepotChest::queryAdd(int32_t index, const Thing& thing, uint32_t count,
-		uint32_t flags, Creature* actor/* = nullptr*/) const
-{
+ReturnValue DepotChest::queryAdd(int32_t index, const Thing &thing, uint32_t count, uint32_t flags, Creature* actor /* = nullptr*/) const {
 	const Item* item = thing.getItem();
 	if (item == nullptr) {
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -48,8 +45,7 @@ ReturnValue DepotChest::queryAdd(int32_t index, const Thing& thing, uint32_t cou
 			if (localParent->getContainer()->getItemHoldingCount() + addCount > maxDepotItems) {
 				return RETURNVALUE_DEPOTISFULL;
 			}
-		}
-		else if (getItemHoldingCount() + addCount > maxDepotItems) {
+		} else if (getItemHoldingCount() + addCount > maxDepotItems) {
 			return RETURNVALUE_DEPOTISFULL;
 		}
 	}
@@ -57,24 +53,21 @@ ReturnValue DepotChest::queryAdd(int32_t index, const Thing& thing, uint32_t cou
 	return Container::queryAdd(index, thing, count, flags, actor);
 }
 
-void DepotChest::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t)
-{
+void DepotChest::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t) {
 	Cylinder* localParent = getParent();
 	if (localParent != nullptr) {
 		localParent->postAddNotification(thing, oldParent, index, LINK_PARENT);
 	}
 }
 
-void DepotChest::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t)
-{
+void DepotChest::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t) {
 	Cylinder* localParent = getParent();
 	if (localParent != nullptr) {
 		localParent->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 	}
 }
 
-Cylinder* DepotChest::getParent() const
-{
+Cylinder* DepotChest::getParent() const {
 	if (parent && parent->getParent()) {
 		return parent->getParent()->getParent();
 	}

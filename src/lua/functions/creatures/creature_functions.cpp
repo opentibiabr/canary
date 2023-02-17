@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -49,7 +49,7 @@ int CreatureFunctions::luaCreatureGetEvents(lua_State* L) {
 	}
 
 	CreatureEventType_t eventType = getNumber<CreatureEventType_t>(L, 2);
-	const auto& eventList = creature->getCreatureEvents(eventType);
+	const auto &eventList = creature->getCreatureEvents(eventType);
 	lua_createtable(L, eventList.size(), 0);
 
 	int index = 0;
@@ -64,7 +64,7 @@ int CreatureFunctions::luaCreatureRegisterEvent(lua_State* L) {
 	// creature:registerEvent(name)
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (creature) {
-		const std::string& name = getString(L, 2);
+		const std::string &name = getString(L, 2);
 		pushBoolean(L, creature->registerCreatureEvent(name));
 	} else {
 		lua_pushnil(L);
@@ -74,7 +74,7 @@ int CreatureFunctions::luaCreatureRegisterEvent(lua_State* L) {
 
 int CreatureFunctions::luaCreatureUnregisterEvent(lua_State* L) {
 	// creature:unregisterEvent(name)
-	const std::string& name = getString(L, 2);
+	const std::string &name = getString(L, 2);
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (creature) {
 		pushBoolean(L, creature->unregisterCreatureEvent(name));
@@ -127,7 +127,7 @@ int CreatureFunctions::luaCreatureCanSee(lua_State* L) {
 	// creature:canSee(position)
 	const Creature* creature = getUserdata<const Creature>(L, 1);
 	if (creature) {
-		const Position& position = getPosition(L, 2);
+		const Position &position = getPosition(L, 2);
 		pushBoolean(L, creature->canSee(position));
 	} else {
 		lua_pushnil(L);
@@ -277,8 +277,7 @@ int CreatureFunctions::luaCreatureGetMaster(lua_State* L) {
 	return 1;
 }
 
-int CreatureFunctions::luaCreatureReload(lua_State* L)
-{
+int CreatureFunctions::luaCreatureReload(lua_State* L) {
 	// creature:reload()
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (!creature) {
@@ -741,7 +740,7 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 	// creature:teleportTo(position[, pushMovement = false])
 	bool pushMovement = getBoolean(L, 3, false);
 
-	const Position& position = getPosition(L, 2);
+	const Position &position = getPosition(L, 2);
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (creature == nullptr) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
@@ -749,9 +748,24 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 		return 1;
 	}
 
+	const Player* player = creature->getPlayer();
+	if (!player) {
+		return 1;
+	}
+
 	const Position oldPosition = creature->getPosition();
-	if (g_game().internalTeleport(creature, position, pushMovement) != RETURNVALUE_NOERROR) {
-		SPDLOG_WARN("[{}] - Cannot teleport creature with name: {}, fromPosition {}, toPosition {}", __FUNCTION__, creature->getName(), oldPosition.toString(), position.toString());
+	if (oldPosition == position) {
+		SPDLOG_WARN("[{}] - Cannot teleport creature: {}, fromPosition: {}, as same of toPosition: {}", __FUNCTION__, player->getName(), oldPosition.toString(), position.toString());
+		player->sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));
+		pushBoolean(L, false);
+		reportErrorFunc("The new position is the same as the old one.");
+		return 1;
+	}
+
+	if (auto ret = g_game().internalTeleport(creature, position, pushMovement);
+		ret != RETURNVALUE_NOERROR) {
+		player->sendCancelMessage(ret);
+		SPDLOG_ERROR("[{}] Failed to teleport player, error code: {}", __FUNCTION__, getReturnMessage(ret));
 		pushBoolean(L, false);
 		return 1;
 	}
@@ -795,7 +809,7 @@ int CreatureFunctions::luaCreatureSay(lua_State* L) {
 	bool ghost = getBoolean(L, 4, false);
 
 	SpeakClasses type = getNumber<SpeakClasses>(L, 3, TALKTYPE_MONSTER_SAY);
-	const std::string& text = getString(L, 2);
+	const std::string &text = getString(L, 2);
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (!creature) {
 		lua_pushnil(L);
@@ -884,7 +898,7 @@ int CreatureFunctions::luaCreatureGetPathTo(lua_State* L) {
 		return 1;
 	}
 
-	const Position& position = getPosition(L, 2);
+	const Position &position = getPosition(L, 2);
 
 	FindPathParams fpp;
 	fpp.minTargetDist = getNumber<int32_t>(L, 3, 0);

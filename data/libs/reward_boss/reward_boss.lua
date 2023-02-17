@@ -21,22 +21,19 @@ function PushSeparated(buffer, sep, ...)
 	end
 end
 
-function InsertItems(buffer, info, parent, items, bagSid)
+function InsertItems(buffer, info, parent, items)
 	local start = info.running
 	for _, item in ipairs(items) do
 		if item ~= nil then
-			if _ ~= 1 or parent > 100 then
-				table.insert(buffer, ",")
-			end
 			if item:getId() == ITEM_REWARD_CONTAINER then
 				table.insert(buffer, "(")
-				PushSeparated(buffer, ",", info.playerGuid, parent, bagSid, item:getId(), item:getSubType(), db.escapeString(item:serializeAttributes()))
-				table.insert(buffer, ")")
+				PushSeparated(buffer, ",", info.playerGuid, 0, parent, item:getId(), item:getSubType(), db.escapeString(item:serializeAttributes()))
+				table.insert(buffer, "),")
 			else
 				info.running = info.running + 1
 				table.insert(buffer, "(")
 				PushSeparated(buffer, ",", info.playerGuid, parent, info.running, item:getId(), item:getSubType(), db.escapeString(item:serializeAttributes()))
-				table.insert(buffer, ")")
+				table.insert(buffer, "),")
 			end
 
 			if item:isContainer() then
@@ -47,7 +44,7 @@ function InsertItems(buffer, info, parent, items, bagSid)
 						table.insert(subItems, item:getItem(i - 1))
 					end
 
-					InsertItems(buffer, info, bagSid, subItems, bagSid)
+					InsertItems(buffer, info, info.running, subItems)
 				end
 			end
 		end
@@ -56,35 +53,27 @@ function InsertItems(buffer, info, parent, items, bagSid)
 end
 
 function InsertRewardItems(playerGuid, timestamp, itemList)
-	db.asyncStoreQuery('select `pid`, `sid`, (SELECT max(`sid`) as sid from `player_rewards` where player_id = '..playerGuid..') as max_sid from `player_rewards` where `pid` = (select max(`pid`) from `player_rewards` where player_id = ' .. playerGuid .. ' and `pid` < 100);',
-		function(query)
-			local lastPid = Result.getDataInt(query, 'pid') or 0
-			local bagSid = Result.getDataInt(query, 'sid') or 100
-			local lastSid = Result.getDataInt(query, 'max_sid') or 101
-			if lastPid ~= 0 then 
-				db.query('UPDATE `player_rewards` SET `sid` = `sid`+1 WHERE `sid`> '..bagSid..' ORDER BY `sid` DESC')
-				lastSid = lastSid+1
-			end
-			local buffer = {'INSERT INTO `player_rewards` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES'}
-			local info = {
-				playerGuid = playerGuid,
-				running = lastSid
-			}
-			local bag = Game.createItem(ITEM_REWARD_CONTAINER)
-			bag:setAttribute(ITEM_ATTRIBUTE_DATE, timestamp)
-			if itemList then
-				for _, p in ipairs(itemList) do
-					bag:addItem(p[1], p[2])
-				end
-			end
-			local total = InsertItems(buffer, info, lastPid + 1, {bag}, bagSid+1)
-			table.insert(buffer, ";")
-
-			if total ~= 0 then
-				db.query(table.concat(buffer))
-			end
+	local maxSidQueryResult = db.query('select max(`sid`) as max_sid from `player_rewards` where player_id = '..playerGuid..';')
+	local bagSid = (Result.getDataInt(maxSidQueryResult, 'max_sid') or 0) + 1;
+	local nextSid = bagSid + 1;
+	local buffer = {'INSERT INTO `player_rewards` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES'}
+	local info = {
+		playerGuid = playerGuid,
+		running = nextSid
+	}
+	local bag = Game.createItem(ITEM_REWARD_CONTAINER)
+	bag:setAttribute(ITEM_ATTRIBUTE_DATE, timestamp)
+	if itemList then
+		for _, p in ipairs(itemList) do
+			bag:addItem(p[1], p[2])
 		end
-	)
+	end
+	local total = InsertItems(buffer, info, bagSid, {bag})
+
+	if total ~= 0 then
+		local insertItemsQuery = table.concat(buffer):sub(1, -2)..";";
+		db.query(insertItemsQuery)
+	end
 end
 
 function GetPlayerStats(bossId, playerGuid, autocreate)

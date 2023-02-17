@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_NPC_NPC_TYPE_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CREATURES_NPC_NPC_TYPE_FUNCTIONS_HPP_
@@ -68,7 +68,7 @@ class NpcTypeFunctions final : LuaScriptInterface {
 		}
 
 	private:
-		static void createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock>& shopVector);
+		static void createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock> &shopVector);
 		static int luaNpcTypeCreate(lua_State* L);
 		static int luaNpcTypeIsPushable(lua_State* L);
 		static int luaNpcTypeFloorChange(lua_State* L);
@@ -115,4 +115,4 @@ class NpcTypeFunctions final : LuaScriptInterface {
 		friend class GameFunctions;
 };
 
-#endif  // SRC_LUA_FUNCTIONS_CREATURES_NPC_NPC_TYPE_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_CREATURES_NPC_NPC_TYPE_FUNCTIONS_HPP_

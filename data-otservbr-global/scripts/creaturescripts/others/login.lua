@@ -47,6 +47,12 @@ function playerLogin.onLogin(player)
 		player:sendTextMessage(MESSAGE_LOGIN, string.format("Your last visit in ".. SERVER_NAME ..": %s.", os.date("%d. %b %Y %X", player:getLastLoginSaved())))
 	end
 
+	-- Reset bosstiary time
+	local lastSaveServerTime = GetDailyRewardLastServerSave()
+	if lastSaveServerTime >= player:getLastLoginSaved() then
+		player:setRemoveBossTime(1)
+	end
+
 	if isPremium(player) then
 		player:setStorageValue(Storage.PremiumAccount, 1)
 	end
@@ -133,6 +139,10 @@ function playerLogin.onLogin(player)
 	-- Boosted creature
 	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted creature: " .. Game.getBoostedCreature() .. " \
 	Boosted creatures yield more experience points, carry more loot than usual and respawn at a faster rate.")
+
+	-- Boosted boss
+	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted boss: " .. Game.getBoostedBoss() .. " \
+	Boosted bosses contain more loot and count more kills for your Bosstiary.")
 
 	if SCHEDULE_EXP_RATE ~= 100 then
 		if SCHEDULE_EXP_RATE > 100 then

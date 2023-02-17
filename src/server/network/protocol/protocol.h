@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_SERVER_NETWORK_PROTOCOL_PROTOCOL_H_
 #define SRC_SERVER_NETWORK_PROTOCOL_PROTOCOL_H_
@@ -13,23 +13,23 @@
 #include "server/network/connection/connection.h"
 #include "config/configmanager.h"
 
-class Protocol : public std::enable_shared_from_this<Protocol>
-{
+class Protocol : public std::enable_shared_from_this<Protocol> {
 	public:
-		explicit Protocol(Connection_ptr initConnection) : connectionPtr(initConnection) {}
+		explicit Protocol(Connection_ptr initConnection) :
+			connectionPtr(initConnection) { }
 		virtual ~Protocol();
 
 		// non-copyable
-		Protocol(const Protocol&) = delete;
-		Protocol& operator=(const Protocol&) = delete;
+		Protocol(const Protocol &) = delete;
+		Protocol &operator=(const Protocol &) = delete;
 
-		virtual void parsePacket(NetworkMessage&) {}
+		virtual void parsePacket(NetworkMessage &) { }
 
-		virtual void onSendMessage(const OutputMessage_ptr& msg);
-		bool onRecvMessage(NetworkMessage& msg);
-		bool sendRecvMessageCallback(NetworkMessage& msg);
-		virtual void onRecvFirstMessage(NetworkMessage& msg) = 0;
-		virtual void onConnect() {}
+		virtual void onSendMessage(const OutputMessage_ptr &msg);
+		bool onRecvMessage(NetworkMessage &msg);
+		bool sendRecvMessageCallback(NetworkMessage &msg);
+		virtual void onRecvFirstMessage(NetworkMessage &msg) = 0;
+		virtual void onConnect() { }
 
 		bool isConnectionExpired() const {
 			return connectionPtr.expired();
@@ -41,16 +41,16 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 
 		uint32_t getIP() const;
 
-		//Use this function for autosend messages only
+		// Use this function for autosend messages only
 		OutputMessage_ptr getOutputBuffer(int32_t size);
 
-		OutputMessage_ptr& getCurrentBuffer() {
+		OutputMessage_ptr &getCurrentBuffer() {
 			return outputBuffer;
 		}
 
 		void send(OutputMessage_ptr msg) const {
 			if (auto connection = getConnection();
-			connection != nullptr) {
+				connection != nullptr) {
 				connection->send(msg);
 			}
 		}
@@ -58,7 +58,7 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 	protected:
 		void disconnect() const {
 			if (auto connection = getConnection();
-			connection != nullptr) {
+				connection != nullptr) {
 				connection->close();
 			}
 		}
@@ -73,19 +73,18 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		}
 		void enableCompression();
 
-		static bool RSA_decrypt(NetworkMessage& msg);
+		static bool RSA_decrypt(NetworkMessage &msg);
 
 		void setRawMessages(bool value) {
 			rawMessages = value;
 		}
 
-		virtual void release() {}
+		virtual void release() { }
 
 	private:
-		void XTEA_encrypt(OutputMessage& msg) const;
-		bool XTEA_decrypt(NetworkMessage& msg) const;
-		bool compression(OutputMessage& msg) const;
-
+		void XTEA_encrypt(OutputMessage &msg) const;
+		bool XTEA_decrypt(NetworkMessage &msg) const;
+		bool compression(OutputMessage &msg) const;
 
 		OutputMessage_ptr outputBuffer;
 		std::unique_ptr<z_stream> defStream;
@@ -102,4 +101,4 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		friend class Connection;
 };
 
-#endif  // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOL_H_
+#endif // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOL_H_

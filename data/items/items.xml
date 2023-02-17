@@ -2,7 +2,7 @@
 <items>
 	<!--  Liquids -->
 	<!--  Fluid type 0 is same as water (id="1") -->
-	<item id="1" name="water" /> 
+	<item id="1" name="water" />
 	<item id="2" name="wine" />
 	<item id="3" name="beer" />
 	<item id="4" name="mud" />
@@ -2675,7 +2675,7 @@
 	<item fromid="2002" toid="2003" article="a" name="campfire"/>
 	<item fromid="2004" toid="2011" article="a" name="large cauldron"/>
 	<item fromid="2012" toid="2017" article="a" name="sign">
-		<attribute key="allowDistRead" value="1" />
+		<attribute key="allowDistRead" value="1"/>
 	</item>
 	<item id="2018" article="a" name="dragon flag"/>
 	<item id="2019" article="a" name="castle flag"/>
@@ -3524,18 +3524,24 @@
 		<attribute key="weight" value="65"/>
 	</item>
 	<item id="2596" article="a" name="painting"/>
-	<item id="2597" article="a" name="blackboard"/>
+	<item id="2597" article="a" name="blackboard">
+		<attribute key="allowDistRead" value="1"/>
+	</item>
 	<item id="2598" article="a" name="blackboard">
+		<attribute key="allowDistRead" value="1"/>
 		<attribute key="writeable" value="1"/>
 		<attribute key="maxtextlen" value="1023"/>
 	</item>
 	<item fromid="2599" toid="2600" article="a" name="tapestry"/>
 	<item id="2601" article="a" name="painting"/>
-	<item id="2602" article="a" name="blackboard"/>
+	<item id="2602" article="a" name="blackboard">
+		<attribute key="allowDistRead" value="1"/>
+	</item>
 	<item fromid="2603" toid="2604" article="a" name="wall mirror">
 		<attribute key="description" value="You look fine today."/>
 	</item>
 	<item id="2605" article="a" name="blackboard">
+		<attribute key="allowDistRead" value="1"/>
 		<attribute key="writeable" value="1"/>
 		<attribute key="maxtextlen" value="1023"/>
 	</item>
@@ -10644,7 +10650,10 @@
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="5301" name="wooden planks"/>
-	<item fromid="5302" toid="5303" article="a" name="white stone wall window"/>
+	<item fromid="5302" toid="5303" article="a" name="white stone wall window">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
 	<item fromid="5304" toid="5306" article="a" name="white stone railing"/>
 	<item id="5307" article="a" name="white stone pillar"/>
 	<item fromid="5308" toid="5313" article="a" name="white stone railing"/>
@@ -12483,7 +12492,9 @@
 		<attribute key="description" value="It apparently belonged to someone called Dragha, the apprentice of a voodoomaster"/>
 		<attribute key="weight" value="5800"/>
 	</item>
-	<item fromid="6121" toid="6122" article="a" name="note pinned on the wall"/>
+	<item fromid="6121" toid="6122" article="a" name="note pinned on the wall">
+		<attribute key="allowDistRead" value="1"/>
+	</item>
 	<item id="6123" article="a" name="piano"/>
 	<item id="6124" article="a" name="damaged logbook">
 		<attribute key="description" value="It must be the one which the explorer society requested"/>
@@ -13118,42 +13129,69 @@
 	<item id="6434" article="a" name="demon trophy">
 		<attribute key="weight" value="500"/>
 	</item>
-	<item fromid="6435" toid="6438" article="a" name="framework window">
+	<item fromid="6435" toid="6436" article="a" name="framework window">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
 	</item>
-	<item fromid="6439" toid="6442" article="a" name="brick window">
+	<item fromid="6437" toid="6438" article="a" name="framework window">
+		<attribute key="type" value="door"/>
+	</item>
+	<item fromid="6439" toid="6440" article="a" name="brick window">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
 	</item>
-	<item fromid="6443" toid="6446" article="a" name="stone window">
+		<item fromid="6441" toid="6442" article="a" name="brick window">
+		<attribute key="type" value="door"/>
+	</item>
+	<item fromid="6443" toid="6444" article="a" name="stone window">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item fromid="6445" toid="6446" article="a" name="stone window">
+		<attribute key="type" value="door"/>
 	</item>
 	<item fromid="6447" toid="6448" article="a" name="marble window"/>
-	<item fromid="6449" toid="6452" article="a" name="tree window">
+	<item fromid="6449" toid="6450" article="a" name="tree window">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
 	</item>
-	<item fromid="6453" toid="6456" article="a" name="sandstone window">
+	<item fromid="6451" toid="6452" article="a" name="tree window">
+		<attribute key="type" value="door"/>
+	</item>
+	<item fromid="6453" toid="6454" article="a" name="sandstone window">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
 	</item>
-	<item fromid="6457" toid="6460" article="a" name="bamboo window">
+	<item fromid="6455" toid="6456" article="a" name="sandstone window">
+		<attribute key="type" value="door"/>
+	</item>
+	<item fromid="6457" toid="6458" article="a" name="bamboo window">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
 	</item>
-	<item fromid="6461" toid="6464" article="a" name="sandstone window">
+	<item fromid="6459" toid="6460" article="a" name="bamboo window">
+		<attribute key="type" value="door"/>
+	</item>
+	<item fromid="6461" toid="6462" article="a" name="sandstone window">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
 	</item>
-	<item fromid="6465" toid="6468" article="a" name="stone window">
+	<item fromid="6463" toid="6464" article="a" name="sandstone window">
+		<attribute key="type" value="door"/>
+	</item>
+	<item fromid="6465" toid="6466" article="a" name="stone window">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
 	</item>
-	<item fromid="6469" toid="6472" article="a" name="wooden window">
+	<item fromid="6467" toid="6468" article="a" name="stone window">
+		<attribute key="type" value="door"/>
+	</item>
+	<item fromid="6469" toid="6470" article="a" name="wooden window">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item fromid="6471" toid="6472" article="a" name="wooden window">
+		<attribute key="type" value="door"/>
 	</item>
 	<item fromid="6473" toid="6474" name="wooden planks"/>
 	<item fromid="6475" toid="6487" name="debris"/>
@@ -13553,7 +13591,11 @@
 	<item fromid="6773" toid="6774" article="a" name="fur wall"/>
 	<item id="6775" article="a" name="fur pillar"/>
 	<item fromid="6776" toid="6787" article="a" name="fur wall"/>
-	<item fromid="6788" toid="6791" article="a" name="fur wall window">
+	<item fromid="6788" toid="6789" article="a" name="fur wall window">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+		<item fromid="6790" toid="6791" article="a" name="fur wall window">
 		<attribute key="type" value="door"/>
 	</item>
 	<item id="6792" article="an" name="entrance"/>
@@ -13712,8 +13754,12 @@
 	<item fromid="7020" toid="7022" article="a" name="snowy dead tree"/>
 	<item id="7023" article="a" name="snowy pine tree"/>
 	<item id="7024" article="a" name="pine"/>
-	<item fromid="7025" toid="7028" article="a" name="nordic wall window">
+	<item fromid="7025" toid="7026" article="a" name="nordic wall window">
 		<attribute key="type" value="door"/>
+	</item>
+		<item fromid="7027" toid="7028" article="a" name="nordic wall window">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
 	</item>
 	<item fromid="7029" toid="7030" article="an" name="ice wall window">
 		<attribute key="type" value="door"/>
@@ -18434,6 +18480,7 @@
 		<attribute key="weight" value="700"/>
 	</item>
 	<item id="9303" article="a" name="leviathan's amulet">
+		<attribute key="showattributes" value="1" />
 		<attribute key="description" value="It holds the last breath of Leviathan"/>
 		<attribute key="showCharges" value="1"/>
 		<attribute key="absorbpercentphysical" value="60"/>
@@ -18442,6 +18489,7 @@
 		<attribute key="weight" value="700"/>
 	</item>
 	<item id="9304" article="a" name="shockwave amulet">
+		<attribute key="showattributes" value="1" />
 		<attribute key="description" value="It tickles your neck in a rather pleasant way and absorbs loads of damage"/>
 		<attribute key="showCharges" value="1"/>
 		<attribute key="absorbpercentphysical" value="60"/>
@@ -18460,9 +18508,12 @@
 	</item>
 	<item fromid="9309" toid="9331" article="a" name="framework wall"/>
 	<item fromid="9332" toid="9344" article="a" name="stone wall"/>
-	<item fromid="9347" toid="9350" article="a" name="framework window">
+	<item fromid="9347" toid="9348" article="a" name="framework window">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item fromid="9349" toid="9350" article="a" name="framework window">
+		<attribute key="type" value="door"/>
 	</item>
 	<item id="9351" article="a" name="closed door" editorsuffix="(it is locked)">
 		<attribute key="type" value="door"/>
@@ -18918,9 +18969,12 @@
 		<attribute key="type" value="door"/>
 	</item>
 	<item fromid="9569" toid="9570" article="a" name="limestone window"/>
-	<item fromid="9571" toid="9574" article="a" name="limestone window">
+	<item fromid="9571" toid="9572" article="a" name="limestone window">
 		<attribute key="type" value="door"/>
 		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item fromid="9573" toid="9574" article="a" name="limestone window">
+		<attribute key="type" value="door"/>
 	</item>
 	<item fromid="9575" toid="9581" name="pavement"/>
 	<item id="9582" name="remains of a water elemental">
@@ -20744,7 +20798,7 @@
 	</item>
 	<item id="11258" article="a" name="unknown item">
 		<attribute key="duration" value="10"/>
-		<attribute key="decayTo" value="11257"/>		
+		<attribute key="decayTo" value="11257"/>
 	</item>
 	<item fromid="11259" toid="11262" article="a" name="banner"/>
 	<item fromid="11263" toid="11264" article="a" name="tapestry"/>
@@ -35279,7 +35333,7 @@
 		<attribute key="healthgain" value="3"/>
 		<attribute key="speed" value="30"/>
 		<attribute key="duration" value="3600"/>
-		<attribute key="transformdeequipto" value="23477"/> 
+		<attribute key="transformdeequipto" value="23477"/>
 		<attribute key="decayTo" value="0"/>
 		<attribute key="armor" value="2"/>
 		<attribute key="weight" value="1500"/>
@@ -47732,8 +47786,12 @@
 	<item fromid="33590" toid="33607" article="a" name="wall"/>
 	<item fromid="33611" toid="33622" article="a" name="wall"/>
 	<item fromid="33623" toid="33627" article="a" name="buttress"/>
-	<item fromid="33628" toid="33631" article="a" name="wall window">
+	<item fromid="33628" toid="33629" article="a" name="wall window">
 		<attribute key="type" value="door"/>
+	</item>
+	<item fromid="33630" toid="33631" article="a" name="wall window">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
 	</item>
 	<item id="33632" article="a" name="closed door">
 		<attribute key="type" value="door"/>
@@ -47756,8 +47814,19 @@
 	<item fromid="33636" toid="33637" article="an" name="open door">
 		<attribute key="type" value="door"/>
 	</item>
-	<item fromid="33638" toid="33645" article="a" name="wall window">
+	<item fromid="33638" toid="33639" article="a" name="wall window">
 		<attribute key="type" value="door"/>
+	</item>
+	<item fromid="33640" toid="33641" article="a" name="wall window">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item fromid="33642" toid="33643" article="a" name="wall window">
+		<attribute key="type" value="door"/>
+	</item>
+	<item fromid="33644" toid="33645" article="a" name="wall window">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
 	</item>
 	<item fromid="33646" toid="33651" article="a" name="wall"/>
 	<item fromid="33652" toid="33653" article="an" name="open door">
@@ -48838,7 +48907,7 @@
 	</item>
 	<item id="34090" article="a" name="soultainter">
 		<attribute key="weaponType" value="wand"/>
-		<attribute key="shootType" value="death"/>
+		<attribute key="shootType" value="suddendeath"/>
 		<attribute key="absorbpercentdeath" value="12"/>
 		<attribute key="magicpoints" value="5"/>
 		<attribute key="criticalhitdamage" value="10"/>
@@ -50200,6 +50269,7 @@
 		</attribute>
 	</item>
 	<item id="35523" article="an" name="exotic amulet">
+		<attribute key="showattributes" value="1" />
 		<attribute key="absorbpercentphysical" value="4"/>
 		<attribute key="absorbpercentpoison" value="5"/>
 		<attribute key="weight" value="730"/>
@@ -52598,7 +52668,7 @@
 		<attribute key="description" value="Juding by the pinching of his beak, this one seems to be born to joust"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
-	<!--  Unmoveable decorative items --> 
+	<!--  Unmoveable decorative items -->
 	<item id="37213" article="a" name="blue balloon"/>
 	<item id="37214" article="a" name="green balloon"/>
 	<item id="37215" article="an" name="orange balloon"/>
@@ -52656,7 +52726,7 @@
 	<item id="37297" article="a" name="blue Tibia carpet"/>
 	<item id="37298" article="a" name="purple Tibia carpet"/>
 	<item id="37299" article="a" name="pink Tibia carpet"/>
-	<!-- End of Unmoveable Decorative items--> 
+	<!-- End of Unmoveable Decorative items-->
 	<item id="37303" article="a" name="half empty picture album">
 		<attribute key="description" value="Eight pictures are missing. Under the first missing one you read: &quot;Banner of the Falcon Order&quot;" />
 		<attribute key="weight" value="500"/>
@@ -53794,7 +53864,9 @@
 	<item id="38706" article="a" name="observer tapestry">
 		<attribute key="weight" value="800"/>
 	</item>
-	<item id="38707" article="a" name="podium of vigour"/>
+	<item id="38707" article="a" name="podium of vigour">
+		<attribute key="wrapableto" value="23398"/>
+	</item>
 	<item fromid="38712" toid="38723" article="a" name="flooded stone floor"/>
 	<item fromid="38724" toid="38735" name="flooded grass"/>
 	<item id="38736" article="a" name="trapped water"/>

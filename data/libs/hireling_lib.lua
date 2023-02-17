@@ -72,9 +72,6 @@ HIRELING_STORAGE = {
 	OUTFIT = 28900
 }
 
-HIRELING_LAMP_ID = 29432
-HIRELING_ATTRIBUTE = "HIRELING_ID"
-
 HIRELING_FOODS_BOOST = {
 	MAGIC = 29410,
 	MELEE = 29411,
@@ -113,9 +110,9 @@ local function checkHouseAccess(hireling)
 	Spdlog.info("Returning Hireling:" .. hireling:getName() .. " to owner Inbox")
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 	-- Using FLAG_NOLIMIT to avoid losing the hireling after being kicked out of the house and having no slots available in the store inbox
-	local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
+	local lamp = inbox:addItem(HIRELING_LAMP, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
 	lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
-	lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hireling:getId()) --save hirelingId on item
+	lamp:setCustomAttribute("Hireling", hireling:getId()) --save hirelingId on item
 	player:save()
 	hireling.active = 0
 	hireling.cid = -1
@@ -381,7 +378,7 @@ function Hireling:returnToLamp(player_id)
 			return
 		end
 
-		local lampType = ItemType(HIRELING_LAMP_ID)
+		local lampType = ItemType(HIRELING_LAMP)
 		if owner:getFreeCapacity() < lampType:getWeight(1) then
 			owner:getPosition():sendMagicEffect(CONST_ME_POFF)
 			return owner:sendTextMessage(MESSAGE_FAILURE, "You do not have enough capacity.")
@@ -399,11 +396,11 @@ function Hireling:returnToLamp(player_id)
 		end
 
 		npc:say("As you wish!",	TALKTYPE_PRIVATE_NP, false, owner, npc:getPosition())
-		local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
+		local lamp = inbox:addItem(HIRELING_LAMP, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
 		npc:getPosition():sendMagicEffect(CONST_ME_PURPLESMOKE)
 		npc:remove() --remove hireling
 		lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. self:getName() .. ".")
-		lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hirelingId) --save hirelingId on item
+		lamp:setCustomAttribute("Hireling", hirelingId) --save hirelingId on item
 		hireling:setPosition({x=0,y=0,z=0})
 	end, 1000, self.cid, player:getGuid(), self.id)
 end
@@ -420,7 +417,7 @@ function getHirelingById(id)
 	local hireling
 	for i = 1, #HIRELINGS do
 		hireling = HIRELINGS[i]
-		if hireling:getId() == id then
+		if hireling:getId() == tonumber(id) then
 			return hireling
 		end
 	end
@@ -525,7 +522,7 @@ function Player:addNewHireling(name, sex)
 		hireling.sex = HIRELING_SEX.MALE
 	end
 
-	local lampType = ItemType(HIRELING_LAMP_ID)
+	local lampType = ItemType(HIRELING_LAMP)
 	if self:getFreeCapacity() < lampType:getWeight(1) then
 		self:getPosition():sendMagicEffect(CONST_ME_POFF)
 		self:sendTextMessage(MESSAGE_FAILURE, "You do not have enough capacity.")
@@ -549,9 +546,9 @@ function Player:addNewHireling(name, sex)
 		end
 		table.insert(PLAYER_HIRELINGS[self:getGuid()], hireling)
 		table.insert(HIRELINGS, hireling)
-		local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
+		local lamp = inbox:addItem(HIRELING_LAMP, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
 		lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
-		lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hireling:getId()) --save hirelingId on item
+		lamp:setCustomAttribute("Hireling", hireling:getId()) --save hirelingId on item
 		hireling.active = 0
 		return hireling
 	end
@@ -631,7 +628,7 @@ function Player:findHirelingLamp(hirelingId)
 	local lastIndex = inbox:getSize() - 1
 	for i=0,lastIndex do
 		local item = inbox:getItem(i)
-		if item and item:getId() == HIRELING_LAMP_ID and item:getSpecialAttribute(HIRELING_ATTRIBUTE) == hirelingId then
+		if item and item:getId() == HIRELING_LAMP and item:getCustomAttribute("Hireling") == hirelingId then
 			return item
 		end
 	end

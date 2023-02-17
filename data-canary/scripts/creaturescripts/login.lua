@@ -46,6 +46,10 @@ function login.onLogin(player)
 	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted creature: " .. Game.getBoostedCreature() .. " \
 	Boosted creatures yield more experience points, carry more loot than usual and respawn at a faster rate.")
 
+	-- Boosted boss
+	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted boss: " .. Game.getBoostedBoss() .. " \
+	Boosted bosses contain more loot and count more kills for your Bosstiary.")
+
 	if SCHEDULE_EXP_RATE ~= 100 then
 		if SCHEDULE_EXP_RATE > 100 then
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Exp Rate Event! Monsters yield more experience points than usual \

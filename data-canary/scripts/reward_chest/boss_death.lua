@@ -11,7 +11,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 	-- Make sure it is a boss
 	if monsterType and monsterType:isRewardBoss() then
 		local bossId = creature:getId()
-		local timestamp = os.time()
+		local rewardId = corpse:getAttribute(ITEM_ATTRIBUTE_DATE)
 
 		ResetAndSetTargetList(creature)
 
@@ -57,7 +57,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 			-- Ignoring stamina for now because I heard you get receive rewards even when it's depleted
 			local reward, stamina
 			if con.player then
-				reward = con.player:getReward(timestamp, true)
+				reward = con.player:getReward(rewardId, true)
 				stamina = con.player:getStamina()
 			else
 				stamina = con.stamina or 0
@@ -87,7 +87,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 				end
 				con.player:sendTextMessage(MESSAGE_LOOT, lootMessage)
 			elseif con.score ~= 0 then
-				InsertRewardItems(con.guid, timestamp, playerLoot)
+				InsertRewardItems(con.guid, rewardId, playerLoot)
 			end
 		end
 

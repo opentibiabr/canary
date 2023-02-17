@@ -64,23 +64,7 @@
       "description": "Release Mode with ASAN",
       "cacheVariables": {
         "ASAN_ENABLED": "ON",
-        "BUILD_STATIC_LIBRARY": "OFF",
-        "VCPKG_TARGET_TRIPLET": "x64-windows"
-      },
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
-      }
-    },
-    {
-      "name": "windows-debug",
-      "inherits": "windows-release",
-      "displayName": "Windows - Debug",
-      "description": "Build Debug Mode",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
         "DEBUG_LOG": "ON",
-        "ASAN_ENABLED": "ON",
         "BUILD_STATIC_LIBRARY": "OFF",
         "VCPKG_TARGET_TRIPLET": "x64-windows"
       },
@@ -117,10 +101,6 @@
     {
       "name": "windows-release-asan",
       "configurePreset": "windows-release-asan"
-    },
-    {
-      "name": "windows-debug",
-      "configurePreset": "windows-debug"
     }
   ]
 }

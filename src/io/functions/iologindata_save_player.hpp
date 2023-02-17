@@ -5,17 +5,18 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_IO__FUNCTIONS_IOLOGINDATASAVE_HPP_
 #define SRC_IO__FUNCTIONS_IOLOGINDATASAVE_HPP_
 
 #include "io/iologindata.h"
 
-class IOLoginDataSave : public IOLoginData
-{
-public:
-	static bool savePlayerForgeHistory(Player *player);
+class IOLoginDataSave : public IOLoginData {
+	public:
+		static bool savePlayerForgeHistory(Player* player);
+		static bool saveRewardItems(Player* player);
+		static bool savePlayerBosstiary(const Player* player);
 };
 
-#endif  // SRC_IO__FUNCTIONS_IOLOGINDATASAVE_HPP_
+#endif // SRC_IO__FUNCTIONS_IOLOGINDATASAVE_HPP_

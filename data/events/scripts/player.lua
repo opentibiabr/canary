@@ -291,8 +291,7 @@ local function antiPush(self, item, count, fromPosition, toPosition, fromCylinde
 end
 
 function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
-	-- No move items with actionID = 100
-	if item:getActionId() == NOT_MOVEABLE_ACTION then
+	if item:getActionId() == IMMOVABLE_ACTION_ID then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end
@@ -582,8 +581,7 @@ function Player:onTurn(direction)
 end
 
 function Player:onTradeRequest(target, item)
-	-- No trade items with actionID = 100
-	if item:getActionId() == NOT_MOVEABLE_ACTION then
+	if item:getActionId() == IMMOVABLE_ACTION_ID then
 		return false
 	end
 
@@ -725,14 +723,8 @@ function Player:onGainExperience(target, exp, rawExp)
 	end
 
 	local baseRate = self:getFinalBaseRateExperience()
-	local finalExperience
-	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
-		finalExperience = (exp * baseRate + (exp * (storeXpBoostAmount/100))) * staminaBoost
-	else
-		finalExperience = (exp + (exp * (storeXpBoostAmount/100))) * staminaBoost
-	end
 
-	return math.max(finalExperience)
+	return (exp * baseRate + (exp * (storeXpBoostAmount/100))) * staminaBoost
 end
 
 function Player:onLoseExperience(exp)

@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_ITEMS_CONTAINER_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_ITEMS_CONTAINER_FUNCTIONS_HPP_
@@ -14,26 +14,25 @@
 
 class ContainerFunctions final : LuaScriptInterface {
 	public:
-
 	private:
-			static void init(lua_State* L) {
-				registerClass(L, "Container", "Item", ContainerFunctions::luaContainerCreate);
-				registerMetaMethod(L, "Container", "__eq", ContainerFunctions::luaUserdataCompare);
+		static void init(lua_State* L) {
+			registerClass(L, "Container", "Item", ContainerFunctions::luaContainerCreate);
+			registerMetaMethod(L, "Container", "__eq", ContainerFunctions::luaUserdataCompare);
 
-				registerMethod(L, "Container", "getSize", ContainerFunctions::luaContainerGetSize);
-				registerMethod(L, "Container", "getCapacity", ContainerFunctions::luaContainerGetCapacity);
-				registerMethod(L, "Container", "getEmptySlots", ContainerFunctions::luaContainerGetEmptySlots);
-				registerMethod(L, "Container", "getContentDescription", ContainerFunctions::luaContainerGetContentDescription);
-				registerMethod(L, "Container", "getItems", ContainerFunctions::luaContainerGetItems);
-				registerMethod(L, "Container", "getItemHoldingCount", ContainerFunctions::luaContainerGetItemHoldingCount);
-				registerMethod(L, "Container", "getItemCountById", ContainerFunctions::luaContainerGetItemCountById);
+			registerMethod(L, "Container", "getSize", ContainerFunctions::luaContainerGetSize);
+			registerMethod(L, "Container", "getCapacity", ContainerFunctions::luaContainerGetCapacity);
+			registerMethod(L, "Container", "getEmptySlots", ContainerFunctions::luaContainerGetEmptySlots);
+			registerMethod(L, "Container", "getContentDescription", ContainerFunctions::luaContainerGetContentDescription);
+			registerMethod(L, "Container", "getItems", ContainerFunctions::luaContainerGetItems);
+			registerMethod(L, "Container", "getItemHoldingCount", ContainerFunctions::luaContainerGetItemHoldingCount);
+			registerMethod(L, "Container", "getItemCountById", ContainerFunctions::luaContainerGetItemCountById);
 
-				registerMethod(L, "Container", "getItem", ContainerFunctions::luaContainerGetItem);
-				registerMethod(L, "Container", "hasItem", ContainerFunctions::luaContainerHasItem);
-				registerMethod(L, "Container", "addItem", ContainerFunctions::luaContainerAddItem);
-				registerMethod(L, "Container", "addItemEx", ContainerFunctions::luaContainerAddItemEx);
-				registerMethod(L, "Container", "getCorpseOwner", ContainerFunctions::luaContainerGetCorpseOwner);
-				registerMethod(L, "Container", "registerReward", ContainerFunctions::luaContainerRegisterReward);
+			registerMethod(L, "Container", "getItem", ContainerFunctions::luaContainerGetItem);
+			registerMethod(L, "Container", "hasItem", ContainerFunctions::luaContainerHasItem);
+			registerMethod(L, "Container", "addItem", ContainerFunctions::luaContainerAddItem);
+			registerMethod(L, "Container", "addItemEx", ContainerFunctions::luaContainerAddItemEx);
+			registerMethod(L, "Container", "getCorpseOwner", ContainerFunctions::luaContainerGetCorpseOwner);
+			registerMethod(L, "Container", "registerReward", ContainerFunctions::luaContainerRegisterReward);
 		}
 
 		static int luaContainerCreate(lua_State* L);
@@ -58,4 +57,4 @@ class ContainerFunctions final : LuaScriptInterface {
 		friend class ItemFunctions;
 };
 
-#endif  // SRC_LUA_FUNCTIONS_ITEMS_CONTAINER_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_ITEMS_CONTAINER_FUNCTIONS_HPP_

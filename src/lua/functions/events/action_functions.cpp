@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -18,7 +18,6 @@ int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()
 	Action* action = new Action(getScriptEnv()->getScriptInterface());
 	if (action) {
-		action->fromLua = true;
 		pushUserdata<Action>(L, action);
 		setMetatable(L, -1, "Action");
 	} else {
@@ -36,7 +35,7 @@ int ActionFunctions::luaActionOnUse(lua_State* L) {
 			pushBoolean(L, false);
 			return 1;
 		}
-		action->scripted = true;
+		action->setLoadedCallback(true);
 		pushBoolean(L, true);
 	} else {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
@@ -49,7 +48,7 @@ int ActionFunctions::luaActionRegister(lua_State* L) {
 	// action:register()
 	Action* action = getUserdata<Action>(L, 1);
 	if (action) {
-		if (!action->isScripted()) {
+		if (!action->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -126,8 +125,8 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 	/** @brief Create action position
 	 * @param positions = position or table of positions to set a action script
 	 * @param itemId or @param itemName = if item id or string name is set, the item is created on position (if not exists), this variable is nil by default
-	* action:position(positions, itemId or name)
-	*/
+	 * action:position(positions, itemId or name)
+	 */
 	Action* action = getUserdata<Action>(L, 1);
 	if (!action) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
@@ -139,8 +138,7 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 	// The parameter "- 1" because self is a parameter aswell, which we want to skip L 1 (UserData)
 	// isNumber(L, 2) is for skip the itemId
 	if (int parameters = lua_gettop(L) - 1;
-	parameters > 1 && isNumber(L, 2))
-	{
+		parameters > 1 && isNumber(L, 2)) {
 		for (int i = 0; i < parameters; ++i) {
 			action->setPositionsVector(getPosition(L, 2 + i));
 		}

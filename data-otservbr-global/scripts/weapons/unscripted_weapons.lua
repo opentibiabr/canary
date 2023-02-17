@@ -1528,7 +1528,7 @@ local weapons = {
 	{
 		-- royal star
 		itemid = 25759,
-		type = WEAPON_DISTANCE,
+		type = WEAPON_MISSILE,
 		level = 120,
 		unproperly = true,
 		breakchance = 30
@@ -1544,7 +1544,7 @@ local weapons = {
 	{
 		-- leaf star
 		itemid = 25735,
-		type = WEAPON_DISTANCE,
+		type = WEAPON_MISSILE,
 		level = 60,
 		unproperly = true,
 		breakchance = 40
@@ -2134,7 +2134,7 @@ local weapons = {
 	{
 		-- glooth spear
 		itemid = 21158,
-		type = WEAPON_DISTANCE,
+		type = WEAPON_MISSILE,
 		level = 60,
 		unproperly = true,
 		breakchance = 2
@@ -2472,7 +2472,7 @@ local weapons = {
 	{
 		-- mean paladin spear
 		itemid = 17110,
-		type = WEAPON_DISTANCE,
+		type = WEAPON_MISSILE,
 		breakchance = 3,
 		vocation = {
 			{"None", true}
@@ -4270,7 +4270,7 @@ local weapons = {
 	{
 		-- royal spear
 		itemid = 7378,
-		type = WEAPON_DISTANCE,
+		type = WEAPON_MISSILE,
 		level = 25,
 		unproperly = true,
 		breakchance = 3
@@ -4278,7 +4278,7 @@ local weapons = {
 	{
 		-- assassin star
 		itemid = 7368,
-		type = WEAPON_DISTANCE,
+		type = WEAPON_MISSILE,
 		level = 80,
 		unproperly = true,
 		breakchance = 33
@@ -4286,7 +4286,7 @@ local weapons = {
 	{
 		-- enchanted spear
 		itemid = 7367,
-		type = WEAPON_DISTANCE,
+		type = WEAPON_MISSILE,
 		level = 42,
 		unproperly = true,
 		breakchance = 1
@@ -4369,7 +4369,7 @@ local weapons = {
 	{
 		-- hunting spear
 		itemid = 3347,
-		type = WEAPON_DISTANCE,
+		type = WEAPON_MISSILE,
 		level = 20,
 		unproperly = true,
 		breakchance = 6
@@ -4740,7 +4740,7 @@ local weapons = {
 	{
 		-- throwing knife
 		itemid = 3298,
-		type = WEAPON_DISTANCE,
+		type = WEAPON_MISSILE,
 		breakchance = 7
 	},
 	{
@@ -4806,7 +4806,7 @@ local weapons = {
 	{
 		-- throwing star
 		itemid = 3287,
-		type = WEAPON_DISTANCE,
+		type = WEAPON_MISSILE,
 		breakchance = 10
 	},
 	{
@@ -4882,7 +4882,7 @@ local weapons = {
 	{
 		-- spear
 		itemid = 3277,
-		type = WEAPON_DISTANCE,
+		type = WEAPON_MISSILE,
 		breakchance = 3
 	},
 	{
@@ -5107,13 +5107,13 @@ local weapons = {
 	{
 		-- snowball
 		itemid = 2992,
-		type = WEAPON_DISTANCE,
+		type = WEAPON_MISSILE,
 		action = "removecount"
 	},
 	{
 		-- small stone
 		itemid = 1781,
-		type = WEAPON_DISTANCE,
+		type = WEAPON_MISSILE,
 		breakchance = 3
 	}
 }

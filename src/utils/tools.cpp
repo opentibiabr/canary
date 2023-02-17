@@ -358,6 +358,11 @@ std::time_t getTimeNow() {
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
 
+std::time_t getTimeMsNow() {
+	auto duration = std::chrono::system_clock::now().time_since_epoch();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+}
+
 Direction getDirection(const std::string &string) {
 	Direction direction = DIRECTION_NORTH;
 

@@ -57,7 +57,7 @@ class Events {
 				int32_t playerOnStorageUpdate = -1;
 				int32_t playerOnRemoveCount = -1;
 				int32_t playerOnCombat = -1;
-        int32_t playerOnInventoryUpdate = -1;
+				int32_t playerOnInventoryUpdate = -1;
 
 				// Monster
 				int32_t monsterOnDropLoot = -1;

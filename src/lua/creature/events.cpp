@@ -1253,8 +1253,7 @@ void Events::eventPlayerOnRequestQuestLine(Player* player, uint16_t questId) {
 	scriptInterface.callVoidFunction(2);
 }
 
-void Events::eventPlayerOnInventoryUpdate(Player* player, Item* item, Slots_t slot, bool equip)
-{
+void Events::eventPlayerOnInventoryUpdate(Player* player, Item* item, Slots_t slot, bool equip) {
 	// Player:onInventoryUpdate(item, slot, equip)
 	if (info.playerOnInventoryUpdate == -1) {
 		return;

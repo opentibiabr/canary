@@ -954,7 +954,7 @@ bool Item::hasProperty(ItemProperty prop) const {
 		case CONST_PROP_BLOCKSOLID:
 			return it.blockSolid;
 		case CONST_PROP_MOVEABLE:
-			return it.moveable && !hasAttribute(ItemAttribute_t::UNIQUEID);
+			return canBeMoved();
 		case CONST_PROP_HASHEIGHT:
 			return it.hasHeight;
 		case CONST_PROP_BLOCKPROJECTILE:
@@ -966,11 +966,11 @@ bool Item::hasProperty(ItemProperty prop) const {
 		case CONST_PROP_ISHORIZONTAL:
 			return it.isHorizontal;
 		case CONST_PROP_IMMOVABLEBLOCKSOLID:
-			return it.blockSolid && (!it.moveable || hasAttribute(ItemAttribute_t::UNIQUEID));
+			return it.blockSolid && !canBeMoved();
 		case CONST_PROP_IMMOVABLEBLOCKPATH:
-			return it.blockPathFind && (!it.moveable || hasAttribute(ItemAttribute_t::UNIQUEID));
+			return it.blockPathFind && !canBeMoved();
 		case CONST_PROP_IMMOVABLENOFIELDBLOCKPATH:
-			return !it.isMagicField() && it.blockPathFind && (!it.moveable || hasAttribute(ItemAttribute_t::UNIQUEID));
+			return !it.isMagicField() && it.blockPathFind && !canBeMoved();
 		case CONST_PROP_NOFIELDBLOCKPATH:
 			return !it.isMagicField() && it.blockPathFind;
 		case CONST_PROP_SUPPORTHANGABLE:
@@ -978,6 +978,10 @@ bool Item::hasProperty(ItemProperty prop) const {
 		default:
 			return false;
 	}
+}
+
+bool Item::canBeMoved() const {
+	return isMoveable() && !hasAttribute(UNIQUEID) && (!hasAttribute(ACTIONID) || getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != IMMOVABLE_ACTION_ID);
 }
 
 uint32_t Item::getWeight() const {
@@ -2553,4 +2557,10 @@ bool Item::isInsideDepot(bool includeInbox /* = false*/) const {
 	}
 
 	return false;
+}
+
+void Item::updateTileFlags() {
+	if (auto tile = getTile()) {
+		tile->updateTileFlags(this);
+	}
 }

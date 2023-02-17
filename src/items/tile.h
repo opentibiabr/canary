@@ -201,6 +201,7 @@ class Tile : public Cylinder {
 		void addThing(Thing* thing) override final;
 		void addThing(int32_t index, Thing* thing) override;
 
+		void updateTileFlags(const Item* item);
 		void updateThing(Thing* thing, uint16_t itemId, uint32_t count) override final;
 		void replaceThing(uint32_t index, Thing* thing) override final;
 

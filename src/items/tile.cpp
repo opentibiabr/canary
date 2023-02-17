@@ -1500,6 +1500,11 @@ void Tile::internalAddThing(uint32_t, Thing* thing) {
 	}
 }
 
+void Tile::updateTileFlags(const Item* item) {
+	resetTileFlags(item);
+	setTileFlags(item);
+}
+
 void Tile::setTileFlags(const Item* item) {
 	if (!hasFlag(TILESTATE_FLOORCHANGE)) {
 		const ItemType &it = Item::items[item->getID()];

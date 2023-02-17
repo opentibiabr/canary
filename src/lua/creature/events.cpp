@@ -1260,7 +1260,7 @@ void Events::eventPlayerOnInventoryUpdate(Player* player, Item* item, Slots_t sl
 	}
 
 	if (!scriptInterface.reserveScriptEnv()) {
-		SDPLOG_ERROR("[{}] Call stack overflow", __FUNCTION__);
+		SPDLOG_ERROR("[{}] Call stack overflow", __FUNCTION__);
 		return;
 	}
 

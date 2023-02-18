@@ -239,7 +239,7 @@ bool Item::equals(const Item* compareItem) const {
 		return false;
 	}
 
-	for (const auto &attribute : initAttributePtr()->getAttributeVector()) {
+	for (const auto &attribute : getAttributeVector()) {
 		for (const auto &compareAttribute : compareItem->getAttributeVector()) {
 			if (attribute.getAttributeType() != compareAttribute.getAttributeType()) {
 				continue;
@@ -730,16 +730,6 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 			break;
 		}
 
-		case ATTR_IMBUEMENT_TYPE: {
-			std::string imbuementType;
-			if (!propStream.readString(imbuementType)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setAttribute(ItemAttribute_t::IMBUEMENT_TYPE, imbuementType);
-			break;
-		}
-
 		case ATTR_TIER: {
 			uint8_t tier;
 			if (!propStream.read<uint8_t>(tier)) {
@@ -848,7 +838,7 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<int32_t>(getDuration());
 	}
 
-	if (auto decayState = getAttribute<ItemDecayState_t>(ItemAttribute_t::DECAYSTATE);
+	if (auto decayState = static_cast<ItemDecayState_t>(getAttribute<uint8_t>(ItemAttribute_t::DECAYSTATE));
 		decayState == DECAYING_TRUE || decayState == DECAYING_PENDING) {
 		propWriteStream.write<uint8_t>(ATTR_DECAYING_STATE);
 		propWriteStream.write<uint8_t>(decayState);
@@ -922,11 +912,6 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 	if (hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
 		propWriteStream.write<uint8_t>(ATTR_QUICKLOOTCONTAINER);
 		propWriteStream.write<uint32_t>(getAttribute<uint32_t>(ItemAttribute_t::QUICKLOOTCONTAINER));
-	}
-
-	if (hasAttribute(ItemAttribute_t::IMBUEMENT_TYPE)) {
-		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_TYPE);
-		propWriteStream.writeString(getString(ItemAttribute_t::IMBUEMENT_TYPE));
 	}
 
 	if (hasAttribute(ItemAttribute_t::TIER)) {
@@ -2655,13 +2640,13 @@ bool Item::hasMarketAttributes() const {
 			return false;
 		}
 
-		if (attribute.getAttributeType() == ItemAttribute_t::IMBUEMENT_TYPE && !hasImbuements()) {
-			return false;
-		}
-
 		if (attribute.getAttributeType() == ItemAttribute_t::TIER && static_cast<uint8_t>(attribute.getInteger()) != getTier()) {
 			return false;
 		}
+	}
+
+	if (hasImbuements()) {
+		return false;
 	}
 
 	return true;

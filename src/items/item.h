@@ -45,6 +45,7 @@ class ItemProperties {
 					std::numeric_limits<T>::max()
 				);
 			}
+			SPDLOG_ERROR("Failed to convert attribute for type {}", type);
 			return {};
 		}
 
@@ -124,6 +125,10 @@ class ItemProperties {
 			}
 		}
 
+		void setDuration(int32_t time) {
+			setAttribute(ItemAttribute_t::DURATION, std::max<int32_t>(0, time));
+		}
+
 		void setDecaying(ItemDecayState_t decayState) {
 			setAttribute(ItemAttribute_t::DECAYSTATE, static_cast<int64_t>(decayState));
 			if (decayState == DECAYING_FALSE) {
@@ -131,7 +136,8 @@ class ItemProperties {
 			}
 		}
 		ItemDecayState_t getDecaying() const {
-			return getAttribute<ItemDecayState_t>(ItemAttribute_t::DECAYSTATE);
+			auto decayState = getAttribute<uint8_t>(ItemAttribute_t::DECAYSTATE);
+			return static_cast<ItemDecayState_t>(decayState);
 		}
 
 		uint32_t getCorpseOwner() const {
@@ -478,9 +484,6 @@ class Item : virtual public Thing, public ItemProperties {
 			if (duration != 0) {
 				setDuration(duration);
 			}
-		}
-		void setDuration(time_t time) {
-			setAttribute(ItemAttribute_t::DURATION, std::max<time_t>(0, time));
 		}
 		uint32_t getDefaultDuration() const {
 			return items[id].decayTime * 1000;

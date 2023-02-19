@@ -29,7 +29,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 
 	// Keep track of loaded scripts to check for duplicates
 	int count = 0;
-	std::set<std::string> loadedScripts;
+	std::set<std::string_view, std::less<>> loadedScripts;
 	for (const auto &eventNode : doc.child("events").children()) {
 		std::string eventScript = eventNode.attribute("script").as_string();
 		std::string eventName = eventNode.attribute("name").as_string();
@@ -54,7 +54,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 			SPDLOG_WARN("{} - More than one event scheduled for the same day.", __FUNCTION__);
 		}
 
-		if (!eventScript.empty() && loadedScripts.count(eventScript) > 0) {
+		if (!eventScript.empty() && loadedScripts.contains(eventScript)) {
 			SPDLOG_WARN("{} - Script declaration '{}' in duplicate 'data/XML/events.xml'.", __FUNCTION__, eventScript);
 			continue;
 		}

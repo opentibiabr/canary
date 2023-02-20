@@ -2629,7 +2629,7 @@ void Item::stopDecaying() {
 Item* Item::transform(uint16_t itemId, uint16_t itemCount /*= -1*/) {
 	Cylinder* cylinder = getParent();
 	if (cylinder == nullptr) {
-		SPDLOG_INFO("[{}] failed to transform item {}, cylinder is nullptr", __FUNCTION__,getID());
+		SPDLOG_INFO("[{}] failed to transform item {}, cylinder is nullptr", __FUNCTION__, getID());
 		return nullptr;
 	}
 

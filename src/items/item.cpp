@@ -1692,7 +1692,7 @@ std::string Item::parseShowDuration(const Item* item) {
 			description << duration << " second" << (duration != 1 ? "s" : "");
 		}
 	} else {
-	description << " that is brand-new";
+		description << " that is brand-new";
 	}
 
 	return description.str();

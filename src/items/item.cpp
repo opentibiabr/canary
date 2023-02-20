@@ -1642,7 +1642,7 @@ std::string Item::parseClassificationDescription(const Item* item) {
 	return string.str();
 }
 
-std::string Item::parseShowDurationSpeed(int32_t speed, bool& begin) {
+std::string Item::parseShowDurationSpeed(int32_t speed, bool &begin) {
 	std::ostringstream description;
 	if (begin) {
 		begin = false;

@@ -27,5 +27,18 @@ function trainerExit.onStepIn(creature, item, position, fromPosition)
 end
 
 trainerExit:aid(40015)
+trainerExit:register()
+
+trainerExit = MoveEvent()
+function trainerExit.onStepIn(creature, item, position, fromPosition)
+	if not creature:isPlayer() then
+		return true
+	end
+
+	creature:teleportTo(creature:getTown():getTemplePosition())
+	creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+	return true
+end
+
 trainerExit:position({x = 1057, y = 1023, z = 7})
 trainerExit:register()

@@ -13,14 +13,15 @@ function teleport.onStepIn(player, item, position, fromPosition)
 		if player:getPosition() == Position(positions[1]) then
 			player:teleportTo(Position(33261, 31077, 8))
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+			return true
 		else
 			player:teleportTo(Position(33356, 31126, 7))
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+			return true
 		end
-	else
-		player:teleportTo(position)
-		position:sendMagicEffect(CONST_ME_TELEPORT)
 	end
+	player:teleportTo(fromPosition)
+	player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	return true
 end
 

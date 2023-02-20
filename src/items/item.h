@@ -30,6 +30,7 @@ class Door;
 class MagicField;
 class BedItem;
 class Imbuement;
+class Item;
 
 // This class ItemProperties that serves as an interface to access and modify attributes of an item. The item's attributes are stored in an instance of ItemAttribute. The class ItemProperties has methods to get and set integer and string attributes, check if an attribute exists, remove an attribute, get the underlying attribute bits, and get a vector of attributes. It also has methods to get and set custom attributes, which are stored in a std::map<std::string, CustomAttribute, std::less<>>. The class has a data member attributePtr of type std::unique_ptr<ItemAttribute> that stores a pointer to the item's attributes methods.
 class ItemProperties {
@@ -136,7 +137,7 @@ class ItemProperties {
 			}
 		}
 		ItemDecayState_t getDecaying() const {
-			auto decayState = getAttribute<uint8_t>(ItemAttribute_t::DECAYSTATE);
+			auto decayState = getAttribute<int64_t>(ItemAttribute_t::DECAYSTATE);
 			return static_cast<ItemDecayState_t>(decayState);
 		}
 
@@ -212,6 +213,8 @@ class ItemProperties {
 
 	private:
 		std::unique_ptr<ItemAttribute> attributePtr;
+
+		friend class Item;
 };
 
 class Item : virtual public Thing, public ItemProperties {
@@ -502,6 +505,8 @@ class Item : virtual public Thing, public ItemProperties {
 
 		virtual void startDecaying();
 		virtual void stopDecaying();
+
+		Item* transform(uint16_t itemId, uint16_t itemCount = -1);
 
 		bool getLoadedFromMap() const {
 			return loadedFromMap;

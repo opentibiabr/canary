@@ -211,8 +211,8 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 
 Item::Item(const Item &i) :
 	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap) {
-	if (i.initAttributePtr()) {
-		initAttributePtr().reset(new ItemAttribute());
+	if (i.attributePtr) {
+		attributePtr.reset(new ItemAttribute());
 	}
 }
 
@@ -223,8 +223,8 @@ Item* Item::clone() const {
 		return nullptr;
 	}
 
-	if (initAttributePtr()) {
-		item->initAttributePtr().reset(new ItemAttribute());
+	if (attributePtr) {
+		item->attributePtr.reset(new ItemAttribute());
 	}
 
 	return item;
@@ -838,7 +838,7 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<int32_t>(getDuration());
 	}
 
-	if (auto decayState = static_cast<ItemDecayState_t>(getAttribute<uint8_t>(ItemAttribute_t::DECAYSTATE));
+	if (auto decayState = getDecaying();
 		decayState == DECAYING_TRUE || decayState == DECAYING_PENDING) {
 		propWriteStream.write<uint8_t>(ATTR_DECAYING_STATE);
 		propWriteStream.write<uint8_t>(decayState);
@@ -2624,6 +2624,45 @@ void Item::startDecaying() {
 
 void Item::stopDecaying() {
 	g_decay().stopDecay(this);
+}
+
+Item* Item::transform(uint16_t itemId, uint16_t itemCount /*= -1*/) {
+	Cylinder* cylinder = getParent();
+	if (cylinder == nullptr) {
+		SPDLOG_INFO("[{}] failed to transform item {}, cylinder is nullptr", __FUNCTION__,getID());
+		return nullptr;
+	}
+
+	Tile* fromTile = cylinder->getTile();
+	if (fromTile) {
+		auto it = g_game().browseFields.find(fromTile);
+		if (it != g_game().browseFields.end() && it->second == cylinder) {
+			cylinder = fromTile;
+		}
+	}
+
+	Item* newItem;
+	if (itemCount == -1) {
+		newItem = Item::CreateItem(itemId, 1);
+	} else {
+		newItem = Item::CreateItem(itemId, itemCount);
+	}
+
+	int32_t itemIndex = cylinder->getThingIndex(this);
+	auto duration = getDuration();
+	if (duration > 0) {
+		newItem->setDuration(duration);
+	}
+
+	cylinder->replaceThing(itemIndex, newItem);
+	cylinder->postAddNotification(newItem, cylinder, itemIndex);
+
+	setParent(nullptr);
+	cylinder->postRemoveNotification(this, cylinder, itemIndex);
+	stopDecaying();
+	g_game().ReleaseItem(this);
+	newItem->startDecaying();
+	return newItem;
 }
 
 bool Item::hasMarketAttributes() const {

@@ -177,7 +177,7 @@ ActionsLib.useShovel = function(player, item, fromPosition, target, toPosition, 
 			ground:transform(489)
 			ground:decay()
 		elseif randomValue == 1 then
-			Game.createItem(2159, 1, toPosition)
+			Game.createItem(3042, 1, toPosition)
 		elseif randomValue > 95 then
 			Game.createMonster("Scarab", toPosition)
 		end

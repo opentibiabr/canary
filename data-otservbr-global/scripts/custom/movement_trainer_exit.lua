@@ -27,4 +27,5 @@ function trainerExit.onStepIn(creature, item, position, fromPosition)
 end
 
 trainerExit:aid(40015)
+trainerExit:position({x = 1057, y = 1023, z = 7})
 trainerExit:register()

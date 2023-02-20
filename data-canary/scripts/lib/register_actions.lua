@@ -1,8 +1,8 @@
-local wildGrowth = {1499, 11099} -- wild growth destroyable by machete
+local wildGrowth = {2130, 10182} -- wild growth destroyable by machete
 local jungleGrass = { -- grass destroyable by machete
-	[2782] = 2781,
-	[3985] = 3984,
-	[19433] = 19431
+	[3696] = 3695,
+	[3702] = 3701,
+	[17153] = 17151
 }
 local holeId = { -- usable rope holes, for rope spots see global.lua
 	294, 369, 370, 383, 392, 408, 409, 410, 427, 428, 429, 430, 462, 469, 470, 482,
@@ -12,7 +12,7 @@ local holeId = { -- usable rope holes, for rope spots see global.lua
 	26020
 }
 local groundIds = {354, 355} -- pick usable grounds
-local holes = {468, 481, 483, 7932, 23712} -- holes opened by shovel
+local holes = {593, 606, 608, 867, 21341} -- holes opened by shovel
 local sandIds = {231, 9059} -- desert sand
 local fruits = {2673, 2674, 2675, 2676, 2677, 2678, 2679, 2680, 2681, 2682, 2684, 2685, 5097, 8839, 8840, 8841} -- fruits to make decorated cake with knife
 
@@ -168,13 +168,7 @@ ActionsLib.useShovel = function(player, item, fromPosition, target, toPosition, 
 	if table.contains(holes, groundId) then
 		ground:transform(groundId + 1)
 		ground:decay()
-		toPosition:moveDownstairs()
-		toPosition.y = toPosition.y - 1
-		if Tile(toPosition):hasFlag(TILESTATE_PROTECTIONZONE) and player:isPzLocked() then
-			player:sendCancelMessage(RETURNVALUE_PLAYERISPZLOCKED)
-			return true
-		end
-		player:teleportTo(toPosition, false)
+
 		toPosition.z = toPosition.z + 1
 		tile:relocateTo(toPosition)
 	elseif table.contains(sandIds, groundId) then

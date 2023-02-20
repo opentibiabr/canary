@@ -1,3 +1,5 @@
+dofile(DATA_DIRECTORY .. "/lib/core/quests.lua")
+
 if not LastQuestlogUpdate then
 	LastQuestlogUpdate = {}
 end

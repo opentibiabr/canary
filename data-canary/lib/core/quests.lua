@@ -1,5 +1,3 @@
-dofile(CORE_DIRECTORY .. "/libs/functions/quests.lua")
-
 if not Quests then
 	Quests = {
 		[1] = {

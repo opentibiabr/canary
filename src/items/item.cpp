@@ -1642,7 +1642,7 @@ std::string Item::parseClassificationDescription(const Item* item) {
 	return string.str();
 }
 
-std::string Item::parseShowDurationSpeed(int32_t speed, bool begin) {
+std::string Item::parseShowDurationSpeed(int32_t speed, bool& begin) {
 	std::ostringstream description;
 	if (begin) {
 		begin = false;
@@ -2303,7 +2303,8 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 
 		if (it.abilities && it.slotPosition & SLOTP_RING) {
 			if (it.abilities->speed > 0) {
-				s << parseShowDurationSpeed(it.abilities->speed, true) << ")" << parseShowDuration(item);
+				bool begin = true;
+				s << parseShowDurationSpeed(it.abilities->speed, begin) << ")" << parseShowDuration(item);
 			} else if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
 				s << " (hard drinking)";
 			} else if (it.abilities->invisible) {

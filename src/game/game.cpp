@@ -2018,7 +2018,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 	}
 
 	// Replacing the the old item with the new while maintaining the old position
-	auto newItem = item->transform(newId);
+	auto newItem = item->transform(newId, newCount);
 	if (newItem == nullptr) {
 		SPDLOG_ERROR("[{}] new item with id {} is nullptr (ERROR CODE: 02)", __FUNCTION__, newId);
 		return nullptr;

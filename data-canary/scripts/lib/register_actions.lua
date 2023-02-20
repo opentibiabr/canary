@@ -189,7 +189,7 @@ ActionsLib.useShovel = function(player, item, fromPosition, target, toPosition, 
 end
 
 ActionsLib.useScythe = function(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({10511, 10515}, item.itemid) then -- weird ids
+	if table.contains({10511, 10515}, item.itemid) then -- weird ids, any idea?
 		return false
 	end
 
@@ -223,10 +223,10 @@ ActionsLib.useSickle = function(player, item, fromPosition, target, toPosition, 
 		return false
 	end
 
-	if target.itemid == 5465 then -- burning sugar cane
-		target:transform(5464)
+	if target.itemid == 5463 then -- burning sugar cane
+		target:transform(5462)
 		target:decay()
-		Game.createItem(5467, 1, toPosition) -- bunch of sugar cane
+		Game.createItem(5466, 1, toPosition) -- bunch of sugar cane
 		return true
 	end
 	return false

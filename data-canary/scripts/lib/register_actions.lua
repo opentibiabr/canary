@@ -189,14 +189,14 @@ ActionsLib.useShovel = function(player, item, fromPosition, target, toPosition, 
 end
 
 ActionsLib.useScythe = function(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({10511, 10515}, item.itemid) then
+	if table.contains({10511, 10515}, item.itemid) then -- weird ids
 		return false
 	end
 
-	if target.itemid == 2739 then -- wheat
-		target:transform(2737)
+	if target.itemid == 3653 then -- wheat
+		target:transform(3651)
 		target:decay()
-		Game.createItem(2694, 1, toPosition) -- bunch of wheat
+		Game.createItem(3605, 1, toPosition) -- bunch of wheat
 		return true
 	end
 	return false

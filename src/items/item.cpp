@@ -1642,6 +1642,62 @@ std::string Item::parseClassificationDescription(const Item* item) {
 	return string.str();
 }
 
+std::string Item::parseShowDurationSpeed(int32_t speed, bool begin) {
+	std::ostringstream description;
+	if (begin) {
+		begin = false;
+		description << " (";
+	} else {
+		description << ", ";
+	}
+
+	description << fmt::format("speed {:+}", speed);
+	return description.str();
+}
+
+std::string Item::parseShowDuration(const Item* item) {
+	if (!item) {
+		return {};
+	}
+
+	std::ostringstream description;
+	uint32_t duration = item->getDuration() / 1000;
+	if (item && item->hasAttribute(ItemAttribute_t::DURATION) && duration > 0) {
+		description << " that will expire in ";
+		if (duration >= 86400) {
+			uint16_t days = duration / 86400;
+			uint16_t hours = (duration % 86400) / 3600;
+			description << days << " day" << (days != 1 ? "s" : "");
+
+			if (hours > 0) {
+				description << " and " << hours << " hour" << (hours != 1 ? "s" : "");
+			}
+		} else if (duration >= 3600) {
+			uint16_t hours = duration / 3600;
+			uint16_t minutes = (duration % 3600) / 60;
+			description << hours << " hour" << (hours != 1 ? "s" : "");
+
+			if (minutes > 0) {
+				description << " and " << minutes << " minute" << (minutes != 1 ? "s" : "");
+			}
+		} else if (duration >= 60) {
+			uint16_t minutes = duration / 60;
+			description << minutes << " minute" << (minutes != 1 ? "s" : "");
+			uint16_t seconds = duration % 60;
+
+			if (seconds > 0) {
+				description << " and " << seconds << " second" << (seconds != 1 ? "s" : "");
+			}
+		} else {
+			description << duration << " second" << (duration != 1 ? "s" : "");
+		}
+	} else {
+	description << " that is brand-new";
+	}
+
+	return description.str();
+}
+
 std::string Item::parseShowAttributesDescription(const Item* item, const uint16_t itemId) {
 	std::ostringstream itemDescription;
 	const ItemType &itemType = Item::items[itemId];
@@ -1794,14 +1850,7 @@ std::string Item::parseShowAttributesDescription(const Item* item, const uint16_
 			}
 
 			if (itemType.abilities->speed) {
-				if (begin) {
-					begin = false;
-					itemDescription << " (";
-				} else {
-					itemDescription << ", ";
-				}
-
-				itemDescription << fmt::format("speed {:+}", itemType.abilities->speed);
+				itemDescription << parseShowDurationSpeed(itemType.abilities->speed, begin);
 			}
 		}
 
@@ -2042,14 +2091,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 				}
 
 				if (it.abilities->speed) {
-					if (begin) {
-						begin = false;
-						s << " (";
-					} else {
-						s << ", ";
-					}
-
-					s << fmt::format("speed {:+}", it.abilities->speed);
+					s << parseShowDurationSpeed(it.abilities->speed, begin);
 				}
 			}
 
@@ -2235,14 +2277,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 				}
 
 				if (it.abilities->speed) {
-					if (begin) {
-						begin = false;
-						s << " (";
-					} else {
-						s << ", ";
-					}
-
-					s << fmt::format("speed {:+}", it.abilities->speed);
+					s << parseShowDurationSpeed(it.abilities->speed, begin);
 				}
 			}
 
@@ -2268,7 +2303,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 
 		if (it.abilities && it.slotPosition & SLOTP_RING) {
 			if (it.abilities->speed > 0) {
-				s << fmt::format(" (speed {:+})", it.abilities->speed);
+				s << parseShowDurationSpeed(it.abilities->speed, true) << ")" << parseShowDuration(item);
 			} else if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
 				s << " (hard drinking)";
 			} else if (it.abilities->invisible) {
@@ -2355,40 +2390,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 	}
 
 	if (it.showDuration) {
-		if (item && item->hasAttribute(ItemAttribute_t::DURATION)) {
-			uint32_t duration = item->getDuration() / 1000;
-			s << " that will expire in ";
-
-			if (duration >= 86400) {
-				uint16_t days = duration / 86400;
-				uint16_t hours = (duration % 86400) / 3600;
-				s << days << " day" << (days != 1 ? "s" : "");
-
-				if (hours > 0) {
-					s << " and " << hours << " hour" << (hours != 1 ? "s" : "");
-				}
-			} else if (duration >= 3600) {
-				uint16_t hours = duration / 3600;
-				uint16_t minutes = (duration % 3600) / 60;
-				s << hours << " hour" << (hours != 1 ? "s" : "");
-
-				if (minutes > 0) {
-					s << " and " << minutes << " minute" << (minutes != 1 ? "s" : "");
-				}
-			} else if (duration >= 60) {
-				uint16_t minutes = duration / 60;
-				s << minutes << " minute" << (minutes != 1 ? "s" : "");
-				uint16_t seconds = duration % 60;
-
-				if (seconds > 0) {
-					s << " and " << seconds << " second" << (seconds != 1 ? "s" : "");
-				}
-			} else {
-				s << duration << " second" << (duration != 1 ? "s" : "");
-			}
-		} else {
-			s << " that is brand-new";
-		}
+		s << parseShowDuration(item);
 	}
 
 	if (!it.allowDistRead || (it.id >= 7369 && it.id <= 7371)) {

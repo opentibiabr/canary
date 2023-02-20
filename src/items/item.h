@@ -289,6 +289,8 @@ class Item : virtual public Thing, public ItemProperties {
 		}
 
 		static std::string parseImbuementDescription(const Item* item);
+		static std::string parseShowDurationSpeed(int32_t speed, bool begin);
+		static std::string parseShowDuration(const Item* item);
 		static std::string parseShowAttributesDescription(const Item* item, const uint16_t itemId);
 		static std::string parseClassificationDescription(const Item* item);
 

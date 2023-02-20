@@ -26,7 +26,6 @@ end
 
 local positions = {
 	{x = 991, y = 1031, z = 7},
-	{x = 989, y = 1028, z = 6},
 	{x = 1057, y = 1023, z = 7}
 }
 for index, position in pairs(positions) do

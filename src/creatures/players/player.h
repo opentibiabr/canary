@@ -2843,6 +2843,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		friend class BedItem;
 		friend class PlayerWheel;
 		friend class IOLoginDataLoad;
+		friend class IOLoginDataSave;
 
 		std::unique_ptr<PlayerWheel> m_wheelPlayer;
 

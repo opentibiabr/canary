@@ -6,7 +6,7 @@
 		<colors colordark="#235c00" colorlight="#2d7400" />
 		<details displaypriority="6" isseasonal="0" specialevent="0" />
 	</event>
-	<event name="Otservbr example 2" startdate="2/2/2022" enddate="12/30/2023" script="" >
+	<event name="Otservbr example 2" startdate="2/2/2022" enddate="12/31/2023" script="" >
 		<ingame exprate="100" lootrate="100" spawnrate="100" skillrate="100" />
 		<description description="Otserver br example 2 description 50% less exp, triple loot !chance!, 50% faster spawn and regular skill" />
 		<colors colordark="#735D10" colorlight="#8B6D05" />

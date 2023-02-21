@@ -45,9 +45,8 @@ class IOLoginData {
 		static void removePremiumDays(uint32_t accountId, int32_t removeDays);
 
 	protected:
-		using ItemMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;
-		static void loadItems(ItemMap &itemMap, DBResult_ptr result, Player &player);
-		static bool saveItems(const Player* player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &stream);
+		// using ItemMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;
+		// static void loadItems(ItemMap &itemMap, DBResult_ptr result, Player &player);
 };
 
 #endif // SRC_IO_IOLOGINDATA_H_

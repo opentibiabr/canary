@@ -41,13 +41,13 @@ class IOLoginDataLoad : public IOLoginData {
 		static void loadPlayerUpdateSystem(Player* player, DBResult_ptr result);
 
 	private:
-		static void bindRewardBag(Player* player, ItemMap &itemMap);
-		static void insertItemsIntoRewardBag(const ItemMap &itemMap);
-
 		using InventoryItemsMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;
 		using RewardItemsMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;
 		using DepotItemsMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;
 		using InboxItemsMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;
+
+		static void bindRewardBag(Player* player, RewardItemsMap &rewardItemsMap);
+		static void insertItemsIntoRewardBag(RewardItemsMap &rewardItemsMap);
 
 		template <typename T>
 		static void loadItemsBeats(T &container, DBResult_ptr result, Player &player) {
@@ -64,7 +64,7 @@ class IOLoginDataLoad : public IOLoginData {
 				if (item) {
 					if (!item->unserializeAttr(propStream)) {
 						SPDLOG_WARN("[IOLoginData::loadItems] - Failed to unserialize attributes of item {}, of player {}, from account id {}", item->getID(), player.getName(), player.getAccount());
-        				savePlayer(&player);
+						savePlayer(&player);
 					}
 					std::pair<Item*, uint32_t> pair(item, pid);
 					container[sid] = pair;

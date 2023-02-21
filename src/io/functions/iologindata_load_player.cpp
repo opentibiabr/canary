@@ -444,10 +444,11 @@ void IOLoginDataLoad::loadRewardItems(Player* player) {
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_rewards` WHERE `player_id` = "
 		  << player->getGUID() << " ORDER BY `pid`, `sid` ASC";
 	if (auto result = Database::getInstance().storeQuery(query.str())) {
-		IOLoginData::loadItems(rewardItems, result, *player);
+		loadItemsBeats(rewardItems, result, *player);
 		bindRewardBag(player, rewardItems);
 		insertItemsIntoRewardBag(rewardItems);
 	}
+	rewardItems.clear();
 }
 
 void IOLoginDataLoad::loadPlayerDepotItems(Player* player, DBResult_ptr result) {
@@ -502,7 +503,7 @@ void IOLoginDataLoad::loadPlayerInboxItems(Player* player, DBResult_ptr result) 
 				player->getInbox()->internalAddThing(item);
 				item->startDecaying();
 			} else {
-				ItemMap::const_iterator it2 = inboxItems.find(pid);
+				InboxItemsMap::const_iterator it2 = inboxItems.find(pid);
 
 				if (it2 == inboxItems.end()) {
 					continue;
@@ -515,6 +516,7 @@ void IOLoginDataLoad::loadPlayerInboxItems(Player* player, DBResult_ptr result) 
 				}
 			}
 		}
+		inboxItems.clear();
 	}
 }
 
@@ -666,8 +668,8 @@ void IOLoginDataLoad::loadPlayerUpdateSystem(Player* player, DBResult_ptr result
 	player->updateItemsLight(true);
 }
 
-void IOLoginDataLoad::bindRewardBag(Player* player, IOLoginData::ItemMap &itemMap) {
-	for (auto &[id, itemPair] : itemMap) {
+void IOLoginDataLoad::bindRewardBag(Player* player, RewardItemsMap &rewardItemsMap) {
+	for (auto &[id, itemPair] : rewardItemsMap) {
 		const auto [item, pid] = itemPair;
 		if (pid == 0) {
 			auto reward = player->getReward(item->getAttribute<uint64_t>(ItemAttribute_t::DATE), true);
@@ -680,8 +682,8 @@ void IOLoginDataLoad::bindRewardBag(Player* player, IOLoginData::ItemMap &itemMa
 	}
 }
 
-void IOLoginDataLoad::insertItemsIntoRewardBag(const IOLoginData::ItemMap &itemMap) {
-	for (const auto &it : std::views::reverse(itemMap)) {
+void IOLoginDataLoad::insertItemsIntoRewardBag(RewardItemsMap &rewardItemsMap) {
+	for (const auto &it : std::views::reverse(rewardItemsMap)) {
 		const std::pair<Item*, int32_t> &pair = it.second;
 		Item* item = pair.first;
 		int32_t pid = pair.second;
@@ -689,8 +691,8 @@ void IOLoginDataLoad::insertItemsIntoRewardBag(const IOLoginData::ItemMap &itemM
 			break;
 		}
 
-		ItemMap::const_iterator it2 = itemMap.find(pid);
-		if (it2 == itemMap.end()) {
+		RewardItemsMap::const_iterator it2 = rewardItemsMap.find(pid);
+		if (it2 == rewardItemsMap.end()) {
 			continue;
 		}
 

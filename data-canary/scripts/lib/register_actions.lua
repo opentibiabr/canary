@@ -168,6 +168,13 @@ ActionsLib.useShovel = function(player, item, fromPosition, target, toPosition, 
 	if table.contains(holes, groundId) then
 		ground:transform(groundId + 1)
 		ground:decay()
+		toPosition:moveDownstairs()
+		toPosition.y = toPosition.y - 1
+		if Tile(toPosition):hasFlag(TILESTATE_PROTECTIONZONE) and player:isPzLocked() then
+			player:sendCancelMessage(RETURNVALUE_PLAYERISPZLOCKED)
+			return true
+		end
+		player:teleportTo(toPosition, false)
 		toPosition.z = toPosition.z + 1
 		tile:relocateTo(toPosition)
 	elseif table.contains(sandIds, groundId) then
@@ -176,7 +183,7 @@ ActionsLib.useShovel = function(player, item, fromPosition, target, toPosition, 
 			ground:transform(489)
 			ground:decay()
 		elseif randomValue == 1 then
-			Game.createItem(3042, 1, toPosition)
+			Game.createItem(3042, 1, toPosition) -- Scarab Coin
 		elseif randomValue > 95 then
 			Game.createMonster("Scarab", toPosition)
 		end

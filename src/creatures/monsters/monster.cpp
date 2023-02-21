@@ -632,7 +632,7 @@ BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int64
 		}
 
 		if (elementMod != 0) {
-			damage = convertToSafeInteger<int64_t>(damage * ((100 - elementMod) / 100));
+			damage = convertToSafeInteger<int64_t>(damage * ((100 - elementMod) / 100.));
 			if (damage <= 0) {
 				damage = 0;
 				blockType = BLOCK_ARMOR;

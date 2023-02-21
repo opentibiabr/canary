@@ -422,10 +422,12 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 		}
 
 		item->setAttribute(attribute, getNumber<int64_t>(L, 3));
+		item->updateTileFlags();
 		pushBoolean(L, true);
 	} else if (item->isAttributeString(attribute)) {
 		auto newAttributeString = getString(L, 3);
 		item->setAttribute(attribute, newAttributeString);
+		item->updateTileFlags();
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

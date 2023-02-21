@@ -33,6 +33,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 			}
 			break;
 		}
+		case WEAPON_MISSILE:
 		case WEAPON_DISTANCE:
 		case WEAPON_AMMO: {
 			if (auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponDistance>(getScriptEnv()->getScriptInterface())) {
@@ -92,7 +93,7 @@ int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 	Weapon** weaponPtr = getRawUserdata<Weapon>(L, 1);
 	if (weaponPtr && *weaponPtr) {
 		Weapon* weapon = *weaponPtr;
-		if (weapon->weaponType == WEAPON_DISTANCE || weapon->weaponType == WEAPON_AMMO) {
+		if (weapon->weaponType == WEAPON_DISTANCE || weapon->weaponType == WEAPON_AMMO || weapon->weaponType == WEAPON_MISSILE) {
 			weapon = getUserdata<WeaponDistance>(L, 1);
 		} else if (weapon->weaponType == WEAPON_WAND) {
 			weapon = getUserdata<WeaponWand>(L, 1);

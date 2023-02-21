@@ -137,11 +137,6 @@ void Monster::onCreatureAppear(Creature* creature, bool isLogin) {
 	}
 
 	if (creature == this) {
-		// We just spawned lets look around to see who is there.
-		if (isSummon()) {
-			isMasterInRange = canSee(getMaster()->getPosition());
-		}
-
 		updateTargetList();
 		updateIdleStatus();
 	} else {
@@ -224,10 +219,6 @@ void Monster::onCreatureMove(Creature* creature, const Tile* newTile, const Posi
 	}
 
 	if (creature == this) {
-		if (isSummon()) {
-			isMasterInRange = canSee(getMaster()->getPosition());
-		}
-
 		updateTargetList();
 		updateIdleStatus();
 	} else {
@@ -238,10 +229,6 @@ void Monster::onCreatureMove(Creature* creature, const Tile* newTile, const Posi
 			onCreatureEnter(creature);
 		} else if (!canSeeNewPos && canSeeOldPos) {
 			onCreatureLeave(creature);
-		}
-
-		if (canSeeNewPos && isSummon() && getMaster() == creature) {
-			isMasterInRange = true; // Follow master again
 		}
 
 		updateIdleStatus();
@@ -411,11 +398,6 @@ void Monster::onCreatureFound(Creature* creature, bool pushFront /* = false*/) {
 }
 
 void Monster::onCreatureEnter(Creature* creature) {
-	if (getMaster() == creature) {
-		// Follow master again
-		isMasterInRange = true;
-	}
-
 	onCreatureFound(creature, true);
 }
 
@@ -464,11 +446,6 @@ bool Monster::isOpponent(const Creature* creature) const {
 }
 
 void Monster::onCreatureLeave(Creature* creature) {
-	if (getMaster() == creature) {
-		// Take random steps and only use defense abilities (e.g. heal) until its master comes back
-		isMasterInRange = false;
-	}
-
 	// update friendList
 	if (isFriend(creature)) {
 		removeFriend(creature);
@@ -732,21 +709,18 @@ void Monster::updateIdleStatus() {
 }
 
 void Monster::onAddCondition(ConditionType_t type) {
+	onConditionStatusChange(type);
+}
+
+void Monster::onConditionStatusChange(const ConditionType_t &type) {
 	if (type == CONDITION_FIRE || type == CONDITION_ENERGY || type == CONDITION_POISON) {
-		ignoreFieldDamage = true;
 		updateMapCache();
 	}
-
 	updateIdleStatus();
 }
 
 void Monster::onEndCondition(ConditionType_t type) {
-	if (type == CONDITION_FIRE || type == CONDITION_ENERGY || type == CONDITION_POISON) {
-		ignoreFieldDamage = false;
-		updateMapCache();
-	}
-
-	updateIdleStatus();
+	onConditionStatusChange(type);
 }
 
 void Monster::onThink(uint32_t interval) {
@@ -1133,7 +1107,7 @@ void Monster::pushItems(Tile* tile, const Direction &nextDirection) {
 	auto it = items->begin();
 	while (it != items->end()) {
 		Item* item = *it;
-		if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != 100 /* non-moveable action*/) {
+		if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != IMMOVABLE_ACTION_ID) {
 			if (moveCount < 20 && pushItem(item, nextDirection)) {
 				++moveCount;
 			} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
@@ -1242,6 +1216,7 @@ void Monster::doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &
 		flags |= FLAG_PATHFINDING;
 	} else {
 		if (ignoreFieldDamage) {
+			ignoreFieldDamage = false;
 			updateMapCache();
 		}
 		// target dancing

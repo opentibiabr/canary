@@ -217,7 +217,7 @@ if Modules == nil then
 			npcHandler:say("First get rid of those blood stains! You are not going to ruin my vehicle!", npc, player)
 		elseif not player:removeMoneyBank(cost) then
 			npcHandler:say("You don't have enough money.", npc, player)
-		elseif os.time() < player:getStorageValue(Storage.NpcExhaust) then
+		elseif os.time() < player:getStorageValue(Global.Storage.NpcExhaust) then
 			npcHandler:say('Sorry, but you need to wait three seconds before travel again.', player)
 			playerPosition:sendMagicEffect(CONST_ME_POFF)
 		else

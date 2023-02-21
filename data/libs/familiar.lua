@@ -6,8 +6,8 @@ FAMILIAR_ID = {
 }
 
 FAMILIAR_TIMER = {
-	[1] = {storage=Storage.FamiliarSummonEvent10, countdown=10, message = "10 seconds"},
-	[2] = {storage=Storage.FamiliarSummonEvent60, countdown=60, message = "one minute"}
+	[1] = {storage = Global.Storage.FamiliarSummonEvent10, countdown=10, message = "10 seconds"},
+	[2] = {storage = Global.Storage.FamiliarSummonEvent60, countdown=60, message = "one minute"}
 }
 
 function SendMessageFunction(playerId, message)

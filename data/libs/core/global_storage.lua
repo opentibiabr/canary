@@ -21,27 +21,16 @@ Reserved player action storage key ranges (const.hpp)
 	Questline = Storage through the Quest
 ]]
 
-Storage = {
-	Quest = {
-		Key = {
-			ID1000 = 103
-		},
-		ExampleQuest = {
-			Example = 9000,
-			Door = 9001
-		}
-	},
-
-	DelayLargeSeaShell = 30002,
-	Promotion = 30003,
-	Imbuement = 30004
-}
-
-GlobalStorage = {
-	XpDisplayMode = 65006,
-	ExampleQuest = {
-		Example = 60000
-	}
+Global = {
+    Storage = {
+		NpcExhaust = 30001,
+		combatProtectionStorage = 30023,
+		blockMovementStorage = 30025,
+		FamiliarSummon = 30026,
+		StoreExaust = 30051,
+		FamiliarSummonEvent10 = 30054,
+		FamiliarSummonEvent60 = 30055
+    }
 }
 
 -- Values extraction function
@@ -65,7 +54,7 @@ table.sort(extraction) -- Sort the table
 if #extraction > 1 then
 	for i = 1, #extraction - 1 do
 		if extraction[i] == extraction[i+1] then
-			Spdlog.warn(string.format("Duplicate storage value found: %d",
+			Spdlog.warn(string.format("Duplicate global storage value found: %d",
 				extraction[i]))
 		end
 	end

@@ -345,7 +345,6 @@ class Monster final : public Creature {
 
 		bool isIdle = true;
 		bool extraMeleeAttack = false;
-		bool isMasterInRange = false;
 		bool randomStepping = false;
 		bool ignoreFieldDamage = false;
 
@@ -417,6 +416,8 @@ class Monster final : public Creature {
 
 		void doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &result);
 		void doRandomStep(Direction &nextDirection, bool &result);
+
+		void onConditionStatusChange(const ConditionType_t &type);
 };
 
 #endif // SRC_CREATURES_MONSTERS_MONSTER_H_

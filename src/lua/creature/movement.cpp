@@ -319,6 +319,7 @@ uint32_t MoveEvents::onPlayerEquip(Player &player, Item &item, Slots_t slot, boo
 	if (!moveEvent) {
 		return 1;
 	}
+	g_events().eventPlayerOnInventoryUpdate(&player, &item, slot, true);
 	return moveEvent->fireEquip(player, item, slot, isCheck);
 }
 
@@ -327,6 +328,7 @@ uint32_t MoveEvents::onPlayerDeEquip(Player &player, Item &item, Slots_t slot) {
 	if (!moveEvent) {
 		return 1;
 	}
+	g_events().eventPlayerOnInventoryUpdate(&player, &item, slot, false);
 	return moveEvent->fireEquip(player, item, slot, false);
 }
 

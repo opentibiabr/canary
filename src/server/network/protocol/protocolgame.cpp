@@ -4933,10 +4933,7 @@ void ProtocolGame::sendCreatureHealth(const Creature* creature) {
 	} else {
 		auto safeValue = convertToSafeInteger<uint8_t>(
 			std::ceil(
-				(
-					static_cast<double>(player->getHealth()) / static_cast<double>(std::max<int64_t>(player->getMaxHealth(), 1))
-				)
-				* 100.
+				(static_cast<double>(creature->getHealth()) / std::max<int64_t>(creature->getMaxHealth(), 1)) * 100
 			)
 		);
 		msg.addByte(safeValue);

@@ -120,65 +120,6 @@ void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
 	Database::getInstance().executeQuery(query.str());
 }
 
-bool IOLoginData::preloadPlayer(Player* player, const std::string &name) {
-	Database &db = Database::getInstance();
-
-	std::ostringstream query;
-	query << "SELECT `id`, `account_id`, `group_id`, `deletion`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
-	query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
-	query << ", (SELECT `premdays_purchased` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days_purchased`";
-	query << ", (SELECT `creation` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `creation_timestamp`";
-	query << " FROM `players` WHERE `name` = " << db.escapeString(name);
-	DBResult_ptr result = db.storeQuery(query.str());
-	if (!result) {
-		return false;
-	}
-
-	if (result->getNumber<uint64_t>("deletion") != 0) {
-		return false;
-	}
-
-	player->setGUID(result->getNumber<uint32_t>("id"));
-	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
-	if (!group) {
-		g_logger().error("Player {} has group id {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
-		return false;
-	}
-	player->setGroup(group);
-	player->accountNumber = result->getNumber<uint32_t>("account_id");
-	player->accountType = static_cast<account::AccountType>(result->getNumber<uint16_t>("account_type"));
-	player->premiumDays = result->getNumber<uint16_t>("premium_days");
-
-	/*
-	  Loyalty system:
-	  - If creation timestamp is 0, that means it's the first time the player is trying to login on this account.
-	  - Since it's the first login, we must update the database manually.
-	  - This should be handled by the account manager, but not all of then do it so we handle it by ourself.
-	*/
-	time_t creation = result->getNumber<time_t>("creation_timestamp");
-	int32_t premiumDays = result->getNumber<int32_t>("premium_days");
-	int32_t premiumDaysPurchased = result->getNumber<int32_t>("premium_days_purchased");
-	if (creation == 0) {
-		query.str(std::string());
-		query << "UPDATE `accounts` SET `creation` = " << static_cast<uint32_t>(time(nullptr)) << " WHERE `id` = " << player->accountNumber;
-		db.executeQuery(query.str());
-	}
-
-	// If the player has more premium days than he purchased, it means data existed before the loyalty system was implemented.
-	// Update premdays_purchased to the minimum acceptable value.
-	if (premiumDays > premiumDaysPurchased) {
-		query.str(std::string());
-		query << "UPDATE `accounts` SET `premdays_purchased` = " << premiumDays << " WHERE `id` = " << player->accountNumber;
-		db.executeQuery(query.str());
-	}
-
-	player->loyaltyPoints = static_cast<uint32_t>(std::ceil((static_cast<double>(time(nullptr) - creation)) / 86400)) * g_configManager().getNumber(LOYALTY_POINTS_PER_CREATION_DAY)
-		+ (premiumDaysPurchased - premiumDays) * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT)
-		+ premiumDaysPurchased * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED);
-
-	return true;
-}
-
 // The boolean "disable" will desactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
 bool IOLoginData::loadPlayerById(Player* player, uint32_t id, bool disable /* = true*/) {
 	Database &db = Database::getInstance();
@@ -199,452 +140,55 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 		return false;
 	}
 
-	Database &db = Database::getInstance();
+	IOLoginDataLoad::loadPlayerFirst(player, result);
 
-	uint32_t accountId = result->getNumber<uint32_t>("account_id");
-	account::Account acc;
-	acc.SetDatabaseInterface(&db);
-	acc.LoadAccountDB(accountId);
+	// Experience load
+	IOLoginDataLoad::loadPlayerExperience(player, result);
 
-	bool oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL) && player->getProtocolVersion() < 1200;
-	player->setGUID(result->getNumber<uint32_t>("id"));
-	player->name = result->getString("name");
-	acc.GetID(&(player->accountNumber));
-	acc.GetAccountType(&(player->accountType));
+	// Blessings load
+	IOLoginDataLoad::loadPlayerBlessings(player, result);
 
-	acc.GetPremiumRemaningDays(&(player->premiumDays));
+	// load conditions
+	IOLoginDataLoad::loadPlayerConditions(player, result);
 
-	acc.GetCoins(&(player->coinBalance));
-	acc.GetTransferableCoins(&(player->coinTransferableBalance));
+	// load default outfit
+	IOLoginDataLoad::loadPlayerDefaultOutfit(player, result);
 
-	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
-	if (!group) {
-		g_logger().error("Player {} has group id {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
-		return false;
-	}
-	player->setGroup(group);
+	// skull system load
+	IOLoginDataLoad::loadPlayerSkullSystem(player, result);
 
-	player->setBankBalance(result->getNumber<uint64_t>("balance"));
+	// skill load
+	IOLoginDataLoad::loadPlayerSkill(player, result);
 
-	player->quickLootFallbackToMainContainer = result->getNumber<bool>("quickloot_fallback");
+	// kills load
+	IOLoginDataLoad::loadPlayerKills(player, result);
 
-	player->setSex(static_cast<PlayerSex_t>(result->getNumber<uint16_t>("sex")));
-	player->level = std::max<uint32_t>(1, result->getNumber<uint32_t>("level"));
+	// guild load
+	IOLoginDataLoad::loadPlayerGuild(player, result);
 
-	uint64_t experience = result->getNumber<uint64_t>("experience");
+	// stash load items
+	IOLoginDataLoad::loadPlayerStashItems(player, result);
 
-	uint64_t currExpCount = Player::getExpForLevel(player->level);
-	uint64_t nextExpCount = Player::getExpForLevel(player->level + 1);
-	if (experience < currExpCount || experience > nextExpCount) {
-		experience = currExpCount;
-	}
-
-	player->experience = experience;
-
-	if (currExpCount < nextExpCount) {
-		player->levelPercent = Player::getPercentLevel(player->experience - currExpCount, nextExpCount - currExpCount);
-	} else {
-		player->levelPercent = 0;
-	}
-
-	player->soul = result->getNumber<uint16_t>("soul");
-	player->capacity = result->getNumber<uint32_t>("cap") * 100;
-	for (int i = 1; i <= 8; i++) {
-		std::ostringstream ss;
-		ss << "blessings" << i;
-		player->addBlessing(i, result->getNumber<uint16_t>(ss.str()));
-	}
-
-	unsigned long attrSize;
-	const char* attr = result->getStream("conditions", attrSize);
-	PropStream propStream;
-	propStream.init(attr, attrSize);
-
-	Condition* condition = Condition::createCondition(propStream);
-	while (condition) {
-		if (condition->unserialize(propStream)) {
-			player->storedConditionList.push_front(condition);
-		} else {
-			delete condition;
-		}
-		condition = Condition::createCondition(propStream);
-	}
-
-	if (!player->setVocation(result->getNumber<uint16_t>("vocation"))) {
-		g_logger().error("Player {} has vocation id {} which doesn't exist", player->name, result->getNumber<uint16_t>("vocation"));
-		return false;
-	}
-
-	player->mana = result->getNumber<uint32_t>("mana");
-	player->manaMax = result->getNumber<uint32_t>("manamax");
-	player->magLevel = result->getNumber<uint32_t>("maglevel");
-
-	uint64_t nextManaCount = player->vocation->getReqMana(player->magLevel + 1);
-	uint64_t manaSpent = result->getNumber<uint64_t>("manaspent");
-	if (manaSpent > nextManaCount) {
-		manaSpent = 0;
-	}
-
-	player->manaSpent = manaSpent;
-	player->magLevelPercent = Player::getPercentLevel(player->manaSpent, nextManaCount);
-
-	player->health = result->getNumber<int32_t>("health");
-	player->healthMax = result->getNumber<int32_t>("healthmax");
-
-	player->defaultOutfit.lookType = result->getNumber<uint16_t>("looktype");
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookType)) {
-		g_logger().warn("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookType);
-		return false;
-	}
-	player->defaultOutfit.lookHead = result->getNumber<uint16_t>("lookhead");
-	player->defaultOutfit.lookBody = result->getNumber<uint16_t>("lookbody");
-	player->defaultOutfit.lookLegs = result->getNumber<uint16_t>("looklegs");
-	player->defaultOutfit.lookFeet = result->getNumber<uint16_t>("lookfeet");
-	player->defaultOutfit.lookAddons = result->getNumber<uint16_t>("lookaddons");
-	player->defaultOutfit.lookMountHead = result->getNumber<uint16_t>("lookmounthead");
-	player->defaultOutfit.lookMountBody = result->getNumber<uint16_t>("lookmountbody");
-	player->defaultOutfit.lookMountLegs = result->getNumber<uint16_t>("lookmountlegs");
-	player->defaultOutfit.lookMountFeet = result->getNumber<uint16_t>("lookmountfeet");
-	player->defaultOutfit.lookFamiliarsType = result->getNumber<uint16_t>("lookfamiliarstype");
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
-		g_logger().warn("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookFamiliarsType);
-		return false;
-	}
-	player->isDailyReward = result->getNumber<uint16_t>("isreward");
-	player->currentOutfit = player->defaultOutfit;
-
-	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
-		const time_t skullSeconds = result->getNumber<time_t>("skulltime") - time(nullptr);
-		if (skullSeconds > 0) {
-			// ensure that we round up the number of ticks
-			player->skullTicks = (skullSeconds + 2);
-
-			uint16_t skull = result->getNumber<uint16_t>("skull");
-			if (skull == SKULL_RED) {
-				player->skull = SKULL_RED;
-			} else if (skull == SKULL_BLACK) {
-				player->skull = SKULL_BLACK;
-			}
-		}
-	}
-
-	player->loginPosition.x = result->getNumber<uint16_t>("posx");
-	player->loginPosition.y = result->getNumber<uint16_t>("posy");
-	player->loginPosition.z = result->getNumber<uint16_t>("posz");
-
-	player->addPreyCards(result->getNumber<uint64_t>("prey_wildcard"));
-	player->addTaskHuntingPoints(result->getNumber<uint64_t>("task_points"));
-	player->addForgeDusts(result->getNumber<uint64_t>("forge_dusts"));
-	player->addForgeDustLevel(result->getNumber<uint64_t>("forge_dust_level"));
-	player->setRandomMount(result->getNumber<uint16_t>("randomize_mount"));
-	player->addBossPoints(result->getNumber<uint32_t>("boss_points"));
-
-	player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
-	player->lastLogout = result->getNumber<time_t>("lastlogout");
-
-	player->offlineTrainingTime = result->getNumber<int32_t>("offlinetraining_time") * 1000;
-	auto skill = result->getInt8FromString(result->getString("offlinetraining_skill"), __FUNCTION__);
-	player->setOfflineTrainingSkill(skill);
-
-	Town* town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
-	if (!town) {
-		g_logger().error("Player {} has town id {} which doesn't exist", player->name, result->getNumber<uint16_t>("town_id"));
-		return false;
-	}
-
-	player->town = town;
-
-	const Position &loginPos = player->loginPosition;
-	if (loginPos.x == 0 && loginPos.y == 0 && loginPos.z == 0) {
-		player->loginPosition = player->getTemplePosition();
-	}
-
-	player->staminaMinutes = result->getNumber<uint16_t>("stamina");
-	player->setStoreXpBoost(result->getNumber<uint16_t>("xpboost_value"));
-	player->setExpBoostStamina(result->getNumber<uint16_t>("xpboost_stamina"));
-
-	static const std::string skillNames[] = { "skill_fist", "skill_club", "skill_sword", "skill_axe", "skill_dist", "skill_shielding", "skill_fishing", "skill_critical_hit_chance", "skill_critical_hit_damage", "skill_life_leech_chance", "skill_life_leech_amount", "skill_mana_leech_chance", "skill_mana_leech_amount" };
-	static const std::string skillNameTries[] = { "skill_fist_tries", "skill_club_tries", "skill_sword_tries", "skill_axe_tries", "skill_dist_tries", "skill_shielding_tries", "skill_fishing_tries", "skill_critical_hit_chance_tries", "skill_critical_hit_damage_tries", "skill_life_leech_chance_tries", "skill_life_leech_amount_tries", "skill_mana_leech_chance_tries", "skill_mana_leech_amount_tries" };
-	static constexpr size_t size = sizeof(skillNames) / sizeof(std::string);
-	for (uint8_t i = 0; i < size; ++i) {
-		uint16_t skillLevel = result->getNumber<uint16_t>(skillNames[i]);
-		uint64_t skillTries = result->getNumber<uint64_t>(skillNameTries[i]);
-		uint64_t nextSkillTries = player->vocation->getReqSkillTries(i, skillLevel + 1);
-		if (skillTries > nextSkillTries) {
-			skillTries = 0;
-		}
-
-		player->skills[i].level = skillLevel;
-		player->skills[i].tries = skillTries;
-		player->skills[i].percent = Player::getPercentLevel(skillTries, nextSkillTries);
-	}
-
-	player->setManaShield(result->getNumber<uint16_t>("manashield"));
-	player->setMaxManaShield(result->getNumber<uint16_t>("max_manashield"));
-
-	std::ostringstream query;
-	query << "SELECT `guild_id`, `rank_id`, `nick` FROM `guild_membership` WHERE `player_id` = " << player->getGUID();
-	if ((result = db.storeQuery(query.str()))) {
-		uint32_t guildId = result->getNumber<uint32_t>("guild_id");
-		uint32_t playerRankId = result->getNumber<uint32_t>("rank_id");
-		player->guildNick = result->getString("nick");
-
-		auto guild = g_game().getGuild(guildId);
-		if (!guild) {
-			guild = IOGuild::loadGuild(guildId);
-			g_game().addGuild(guild);
-		}
-
-		if (guild) {
-			player->guild = guild;
-			GuildRank_ptr rank = guild->getRankById(playerRankId);
-			if (!rank) {
-				query.str(std::string());
-				query << "SELECT `id`, `name`, `level` FROM `guild_ranks` WHERE `id` = " << playerRankId;
-
-				if ((result = db.storeQuery(query.str()))) {
-					guild->addRank(result->getNumber<uint32_t>("id"), result->getString("name"), result->getNumber<uint16_t>("level"));
-				}
-
-				rank = guild->getRankById(playerRankId);
-				if (!rank) {
-					player->guild = nullptr;
-				}
-			}
-
-			player->guildRank = rank;
-
-			IOGuild::getWarList(guildId, player->guildWarVector);
-
-			query.str(std::string());
-			query << "SELECT COUNT(*) AS `members` FROM `guild_membership` WHERE `guild_id` = " << guildId;
-			if ((result = db.storeQuery(query.str()))) {
-				guild->setMemberCount(result->getNumber<uint32_t>("members"));
-			}
-		}
-	}
-
-	// Stash load items
-	query.str(std::string());
-	query << "SELECT `item_count`, `item_id`  FROM `player_stash` WHERE `player_id` = " << player->getGUID();
-	if ((result = db.storeQuery(query.str()))) {
-		do {
-			player->addItemOnStash(result->getNumber<uint16_t>("item_id"), result->getNumber<uint32_t>("item_count"));
-		} while (result->next());
-	}
-
-	// Bestiary charms
-	query.str(std::string());
-	query << "SELECT * FROM `player_charms` WHERE `player_guid` = " << player->getGUID();
-	if ((result = db.storeQuery(query.str()))) {
-		player->charmPoints = result->getNumber<uint32_t>("charm_points");
-		player->charmExpansion = result->getNumber<bool>("charm_expansion");
-		player->charmRuneWound = result->getNumber<uint16_t>("rune_wound");
-		player->charmRuneEnflame = result->getNumber<uint16_t>("rune_enflame");
-		player->charmRunePoison = result->getNumber<uint16_t>("rune_poison");
-		player->charmRuneFreeze = result->getNumber<uint16_t>("rune_freeze");
-		player->charmRuneZap = result->getNumber<uint16_t>("rune_zap");
-		player->charmRuneCurse = result->getNumber<uint16_t>("rune_curse");
-		player->charmRuneCripple = result->getNumber<uint16_t>("rune_cripple");
-		player->charmRuneParry = result->getNumber<uint16_t>("rune_parry");
-		player->charmRuneDodge = result->getNumber<uint16_t>("rune_dodge");
-		player->charmRuneAdrenaline = result->getNumber<uint16_t>("rune_adrenaline");
-		player->charmRuneNumb = result->getNumber<uint16_t>("rune_numb");
-		player->charmRuneCleanse = result->getNumber<uint16_t>("rune_cleanse");
-		player->charmRuneBless = result->getNumber<uint16_t>("rune_bless");
-		player->charmRuneScavenge = result->getNumber<uint16_t>("rune_scavenge");
-		player->charmRuneGut = result->getNumber<uint16_t>("rune_gut");
-		player->charmRuneLowBlow = result->getNumber<uint16_t>("rune_low_blow");
-		player->charmRuneDivine = result->getNumber<uint16_t>("rune_divine");
-		player->charmRuneVamp = result->getNumber<uint16_t>("rune_vamp");
-		player->charmRuneVoid = result->getNumber<uint16_t>("rune_void");
-		player->UsedRunesBit = result->getNumber<int32_t>("UsedRunesBit");
-		player->UnlockedRunesBit = result->getNumber<int32_t>("UnlockedRunesBit");
-
-		unsigned long attrBestSize;
-		const char* Bestattr = result->getStream("tracker list", attrBestSize);
-		PropStream propBestStream;
-		propBestStream.init(Bestattr, attrBestSize);
-
-		uint16_t raceid_t;
-		while (propBestStream.read<uint16_t>(raceid_t)) {
-			const auto &tmp_tt = g_monsters().getMonsterTypeByRaceId(raceid_t);
-			if (tmp_tt) {
-				player->addBestiaryTrackerList(tmp_tt);
-			}
-		}
-
-	} else {
-		query.str(std::string());
-		query << "INSERT INTO `player_charms` (`player_guid`) VALUES (" << player->getGUID() << ')';
-		Database::getInstance().executeQuery(query.str());
-	}
-
-	query.str(std::string());
-	query << "SELECT `player_id`, `name` FROM `player_spells` WHERE `player_id` = " << player->getGUID();
-	if ((result = db.storeQuery(query.str()))) {
-		do {
-			player->learnedInstantSpellList.emplace_front(result->getString("name"));
-		} while (result->next());
-	}
+	// bestiary charms
+	IOLoginDataLoad::loadPlayerBestiaryCharms(player, result);
 
 	// load inventory items
-	ItemMap itemMap;
+	IOLoginDataLoad::loadPlayerInventoryItems(player, result);
 
-	query.str(std::string());
-	query << "SELECT `player_id`, `time`, `target`, `unavenged` FROM `player_kills` WHERE `player_id` = " << player->getGUID();
-	if ((result = db.storeQuery(query.str()))) {
-		do {
-			time_t killTime = result->getNumber<time_t>("time");
-			if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME)) {
-				player->unjustifiedKills.emplace_back(result->getNumber<uint32_t>("target"), killTime, result->getNumber<bool>("unavenged"));
-			}
-		} while (result->next());
-	}
-
-	query.str(std::string());
-	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_items` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
-
-	std::vector<std::pair<uint8_t, Container*>> openContainersList;
-
-	if ((result = db.storeQuery(query.str()))) {
-		loadItems(itemMap, result, *player);
-
-		for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-			const std::pair<Item*, int32_t> &pair = it->second;
-			Item* item = pair.first;
-			if (!item) {
-				continue;
-			}
-
-			int32_t pid = pair.second;
-
-			if (pid >= CONST_SLOT_FIRST && pid <= CONST_SLOT_LAST) {
-				player->internalAddThing(pid, item);
-				item->startDecaying();
-			} else {
-				ItemMap::const_iterator it2 = itemMap.find(pid);
-				if (it2 == itemMap.end()) {
-					continue;
-				}
-
-				Container* container = it2->second.first->getContainer();
-				if (container) {
-					container->internalAddThing(item);
-					item->startDecaying();
-				}
-			}
-
-			Container* itemContainer = item->getContainer();
-			if (itemContainer) {
-				if (!oldProtocol) {
-					auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
-					if (cid > 0) {
-						openContainersList.emplace_back(std::make_pair(cid, itemContainer));
-					}
-				}
-				if (item->hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
-					auto flags = item->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
-					for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
-						if (hasBitSet(1 << category, flags)) {
-							player->setLootContainer((ObjectCategory_t)category, itemContainer, true);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	if (!oldProtocol) {
-		std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
-			return left.first < right.first;
-		});
-
-		for (auto &it : openContainersList) {
-			player->addContainer(it.first - 1, it.second);
-			player->onSendContainer(it.second);
-		}
-	}
-
-	// Store Inbox
-	if (!player->inventory[CONST_SLOT_STORE_INBOX]) {
-		player->internalAddThing(CONST_SLOT_STORE_INBOX, Item::CreateItem(ITEM_STORE_INBOX));
-	}
-
-	IOLoginDataLoad::loadRewardItems(player);
+	// store Inbox
+	IOLoginDataLoad::loadPlayerStoreInbox(player, result);
 
 	// load depot items
-	itemMap.clear();
-	query.str(std::string());
-	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_depotitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
-	if ((result = db.storeQuery(query.str()))) {
-		loadItems(itemMap, result, *player);
+	IOLoginDataLoad::loadPlayerDepotItems(player, result);
 
-		for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-			const std::pair<Item*, int32_t> &pair = it->second;
-			Item* item = pair.first;
-
-			int32_t pid = pair.second;
-			if (pid >= 0 && pid < 100) {
-				DepotChest* depotChest = player->getDepotChest(pid, true);
-				if (depotChest) {
-					depotChest->internalAddThing(item);
-					item->startDecaying();
-				}
-			} else {
-				ItemMap::const_iterator it2 = itemMap.find(pid);
-				if (it2 == itemMap.end()) {
-					continue;
-				}
-
-				Container* container = it2->second.first->getContainer();
-				if (container) {
-					container->internalAddThing(item);
-					item->startDecaying();
-				}
-			}
-		}
-	}
+	// load reward items
+	IOLoginDataLoad::loadRewardItems(player);
 
 	// load inbox items
-	itemMap.clear();
-	query.str(std::string());
-	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_inboxitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
-	if ((result = db.storeQuery(query.str()))) {
-		loadItems(itemMap, result, *player);
-
-		for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-			const std::pair<Item*, int32_t> &pair = it->second;
-			Item* item = pair.first;
-			int32_t pid = pair.second;
-
-			if (pid >= 0 && pid < 100) {
-				player->getInbox()->internalAddThing(item);
-				item->startDecaying();
-			} else {
-				ItemMap::const_iterator it2 = itemMap.find(pid);
-
-				if (it2 == itemMap.end()) {
-					continue;
-				}
-
-				Container* container = it2->second.first->getContainer();
-				if (container) {
-					container->internalAddThing(item);
-					item->startDecaying();
-				}
-			}
-		}
-	}
+	IOLoginDataLoad::loadPlayerInboxItems(player, result);
 
 	// load storage map
-	query.str(std::string());
-	query << "SELECT `key`, `value` FROM `player_storage` WHERE `player_id` = " << player->getGUID();
-	if ((result = db.storeQuery(query.str()))) {
-		do {
-			player->addStorageValue(result->getNumber<uint32_t>("key"), result->getNumber<int32_t>("value"), true);
-		} while (result->next());
-	}
+	IOLoginDataLoad::loadPlayerStorageMap(player, result);
 
 	// We will not load the information from here on down, as they are functions that are not needed for the player preload
 	if (disable) {
@@ -652,109 +196,22 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 	}
 
 	// load vip
-	query.str(std::string());
-	query << "SELECT `player_id` FROM `account_viplist` WHERE `account_id` = " << player->getAccount();
-	if ((result = db.storeQuery(query.str()))) {
-		do {
-			player->addVIPInternal(result->getNumber<uint32_t>("player_id"));
-		} while (result->next());
-	}
+	IOLoginDataLoad::loadPlayerVip(player, result);
 
-	// Load prey class
-	if (g_configManager().getBoolean(PREY_ENABLED)) {
-		query.str(std::string());
-		query << "SELECT * FROM `player_prey` WHERE `player_id` = " << player->getGUID();
-		if (result = db.storeQuery(query.str())) {
-			do {
-				auto slot = new PreySlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
-				PreyDataState_t state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
-				if (slot->id == PreySlot_Two && state == PreyDataState_Locked) {
-					if (!player->isPremium()) {
-						slot->state = PreyDataState_Locked;
-					} else {
-						slot->state = PreyDataState_Selection;
-					}
-				} else {
-					slot->state = state;
-				}
-				slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
-				slot->option = static_cast<PreyOption_t>(result->getNumber<uint16_t>("option"));
-				slot->bonus = static_cast<PreyBonus_t>(result->getNumber<uint16_t>("bonus_type"));
-				slot->bonusRarity = static_cast<uint8_t>(result->getNumber<uint16_t>("bonus_rarity"));
-				slot->bonusPercentage = result->getNumber<uint16_t>("bonus_percentage");
-				slot->bonusTimeLeft = result->getNumber<uint16_t>("bonus_time");
-				slot->freeRerollTimeStamp = result->getNumber<int64_t>("free_reroll");
-
-				unsigned long preySize;
-				const char* preyStream = result->getStream("monster_list", preySize);
-				PropStream propPreyStream;
-				propPreyStream.init(preyStream, preySize);
-
-				uint16_t raceId;
-				while (propPreyStream.read<uint16_t>(raceId)) {
-					slot->raceIdList.push_back(raceId);
-				}
-
-				player->setPreySlotClass(slot);
-			} while (result->next());
-		}
-	}
-
-	IOLoginDataLoad::loadPlayerForgeHistory(player, result);
-	IOLoginDataLoad::loadPlayerBosstiary(player, result);
+	// load prey class
+	IOLoginDataLoad::loadPlayerPreyClass(player, result);
 
 	// Load task hunting class
-	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
-		query.str(std::string());
-		query << "SELECT * FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
-		if (result = db.storeQuery(query.str())) {
-			do {
-				auto slot = new TaskHuntingSlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
-				PreyTaskDataState_t state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));
-				if (slot->id == PreySlot_Two && state == PreyTaskDataState_Locked) {
-					if (!player->isPremium()) {
-						slot->state = PreyTaskDataState_Locked;
-					} else {
-						slot->state = PreyTaskDataState_Selection;
-					}
-				} else {
-					slot->state = state;
-				}
-				slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
-				slot->upgrade = result->getNumber<bool>("upgrade");
-				slot->rarity = static_cast<uint8_t>(result->getNumber<uint16_t>("rarity"));
-				slot->currentKills = result->getNumber<uint16_t>("kills");
-				slot->disabledUntilTimeStamp = result->getNumber<int64_t>("disabled_time");
-				slot->freeRerollTimeStamp = result->getNumber<int64_t>("free_reroll");
+	IOLoginDataLoad::loadPlayerTaskHuntingClass(player, result);
 
-				unsigned long taskHuntSize;
-				const char* taskHuntStream = result->getStream("monster_list", taskHuntSize);
-				PropStream propTaskHuntStream;
-				propTaskHuntStream.init(taskHuntStream, taskHuntSize);
+	// load forge history
+	IOLoginDataLoad::loadPlayerForgeHistory(player, result);
 
-				uint16_t raceId;
-				while (propTaskHuntStream.read<uint16_t>(raceId)) {
-					slot->raceIdList.push_back(raceId);
-				}
+	// load bosstiary
+	IOLoginDataLoad::loadPlayerBosstiary(player, result);
 
-				if (slot->state == PreyTaskDataState_Inactive && slot->disabledUntilTimeStamp < OTSYS_TIME()) {
-					slot->state = PreyTaskDataState_Selection;
-				}
-
-				player->setTaskHuntingSlotClass(slot);
-			} while (result->next());
-		}
-	}
-
-	// Wheel loading
-	player->wheel()->loadDBPlayerSlotPointsOnLogin();
-	player->wheel()->initializePlayerData();
-
-	player->initializePrey();
-	player->initializeTaskHunting();
-	player->updateBaseSpeed();
-	player->updateInventoryWeight();
-	player->updateItemsLight(true);
+	IOLoginDataLoad::loadPlayerInitializeSystem(player, result);
+	IOLoginDataLoad::loadPlayerUpdateSystem(player, result);
 	return true;
 }
 

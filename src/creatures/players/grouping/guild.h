@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_CREATURES_PLAYERS_GROUPING_GUILD_H_
 #define SRC_CREATURES_PLAYERS_GROUPING_GUILD_H_
@@ -13,19 +13,19 @@
 class Player;
 
 struct GuildRank {
-	uint32_t id;
-	std::string name;
-	uint8_t level;
+		uint32_t id;
+		std::string name;
+		uint8_t level;
 
-	GuildRank(uint32_t initId, std::string initName, uint8_t initLevel) :
-		id(initId), name(std::move(initName)), level(initLevel) {}
+		GuildRank(uint32_t initId, std::string initName, uint8_t initLevel) :
+			id(initId), name(std::move(initName)), level(initLevel) { }
 };
 
 using GuildRank_ptr = std::shared_ptr<GuildRank>;
-class Guild
-{
+class Guild {
 	public:
-		Guild(uint32_t initId, std::string initName) : name(std::move(initName)), id(initId) {}
+		Guild(uint32_t initId, std::string initName) :
+			name(std::move(initName)), id(initId) { }
 
 		void addMember(Player* player);
 		void removeMember(Player* player);
@@ -33,10 +33,10 @@ class Guild
 		uint32_t getId() const {
 			return id;
 		}
-		const std::string& getName() const {
+		const std::string &getName() const {
 			return name;
 		}
-		const std::list<Player*>& getMembersOnline() const {
+		const std::list<Player*> &getMembersOnline() const {
 			return membersOnline;
 		}
 		uint32_t getMemberCount() const {
@@ -45,26 +45,26 @@ class Guild
 		void setMemberCount(uint32_t count) {
 			memberCount = count;
 		}
-    uint64_t getBankBalance() const {
-      return bankBalance;
-    }
-    void setBankBalance(uint64_t balance) {
-      bankBalance = balance;
-    }
+		uint64_t getBankBalance() const {
+			return bankBalance;
+		}
+		void setBankBalance(uint64_t balance) {
+			bankBalance = balance;
+		}
 
-		const std::vector<GuildRank_ptr>& getRanks() const {
+		const std::vector<GuildRank_ptr> &getRanks() const {
 			return ranks;
 		}
 
 		GuildRank_ptr getRankById(uint32_t id);
-		GuildRank_ptr getRankByName(const std::string& name) const;
+		GuildRank_ptr getRankByName(const std::string &name) const;
 		GuildRank_ptr getRankByLevel(uint8_t level) const;
-		void addRank(uint32_t id, const std::string& name, uint8_t level);
+		void addRank(uint32_t id, const std::string &name, uint8_t level);
 
-		const std::string& getMotd() const {
+		const std::string &getMotd() const {
 			return motd;
 		}
-		void setMotd(const std::string& newMotd) {
+		void setMotd(const std::string &newMotd) {
 			this->motd = newMotd;
 		}
 
@@ -78,4 +78,4 @@ class Guild
 		uint32_t memberCount = 0;
 };
 
-#endif  // SRC_CREATURES_PLAYERS_GROUPING_GUILD_H_
+#endif // SRC_CREATURES_PLAYERS_GROUPING_GUILD_H_

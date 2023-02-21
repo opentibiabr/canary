@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
 #define SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
@@ -58,7 +58,7 @@ enum ConditionAttr_t {
 	CONDITIONATTR_SUBID,
 	CONDITIONATTR_MANASHIELD,
 
-	//reserved for serialization
+	// reserved for serialization
 	CONDITIONATTR_END = 254,
 };
 
@@ -99,7 +99,7 @@ enum ConditionType_t {
 enum ConditionParam_t {
 	CONDITION_PARAM_OWNER = 1,
 	CONDITION_PARAM_TICKS = 2,
-	//CONDITION_PARAM_OUTFIT = 3,
+	// CONDITION_PARAM_OUTFIT = 3,
 	CONDITION_PARAM_HEALTHGAIN = 4,
 	CONDITION_PARAM_HEALTHTICKS = 5,
 	CONDITION_PARAM_MANAGAIN = 6,
@@ -223,6 +223,7 @@ enum SpeechBubble_t {
 	SPEECHBUBBLE_TRADE = 2,
 	SPEECHBUBBLE_QUEST = 3,
 	SPEECHBUBBLE_QUESTTRADER = 4,
+	SPEECHBUBBLE_HIRELING = 7,
 };
 
 enum MarketAction_t {
@@ -353,10 +354,10 @@ enum PlayerSex_t : uint8_t {
 enum skills_t : int8_t {
 	SKILL_NONE = -1,
 	SKILL_FIST = 0,
-	SKILL_CLUB = 1,
+	SKILL_DISTANCE = 1,
 	SKILL_SWORD = 2,
 	SKILL_AXE = 3,
-	SKILL_DISTANCE = 4,
+	SKILL_CLUB = 4,
 	SKILL_SHIELD = 5,
 	SKILL_FISHING = 6,
 	SKILL_CRITICAL_HIT_CHANCE = 7,
@@ -560,9 +561,9 @@ enum CombatType_t : uint16_t {
 	COMBAT_NONE = 0,
 
 	COMBAT_PHYSICALDAMAGE = 1 << 0,
-	COMBAT_ENERGYDAMAGE = 1 << 1,
+	COMBAT_FIREDAMAGE = 1 << 1,
 	COMBAT_EARTHDAMAGE = 1 << 2,
-	COMBAT_FIREDAMAGE = 1 << 3,
+	COMBAT_ENERGYDAMAGE = 1 << 3,
 	COMBAT_UNDEFINEDDAMAGE = 1 << 4,
 	COMBAT_LIFEDRAIN = 1 << 5,
 	COMBAT_MANADRAIN = 1 << 6,
@@ -590,128 +591,128 @@ enum PartyAnalyzer_t : uint8_t {
 struct Position;
 
 struct VIPEntry {
-	VIPEntry(uint32_t initGuid, std::string initName, std::string initDescription,
-             uint32_t initIcon, bool initNotify) :
-                guid(initGuid),
-                name(std::move(initName)),
-                description(std::move(initDescription)),
-                icon(initIcon),
-                notify(initNotify) {}
+		VIPEntry(uint32_t initGuid, std::string initName, std::string initDescription, uint32_t initIcon, bool initNotify) :
+			guid(initGuid),
+			name(std::move(initName)),
+			description(std::move(initDescription)),
+			icon(initIcon),
+			notify(initNotify) { }
 
-	uint32_t guid;
-	std::string name;
-	std::string description;
-	uint32_t icon;
-	bool notify;
+		uint32_t guid;
+		std::string name;
+		std::string description;
+		uint32_t icon;
+		bool notify;
 };
 
 struct OutfitEntry {
-	constexpr OutfitEntry(uint16_t initLookType, uint8_t initAddons) :
-                         lookType(initLookType), addons(initAddons) {}
+		constexpr OutfitEntry(uint16_t initLookType, uint8_t initAddons) :
+			lookType(initLookType), addons(initAddons) { }
 
-	uint16_t lookType;
-	uint8_t addons;
+		uint16_t lookType;
+		uint8_t addons;
 };
 
 struct FamiliarEntry {
-	constexpr explicit FamiliarEntry(uint16_t initLookType) : lookType(initLookType) {}
-	uint16_t lookType;
+		constexpr explicit FamiliarEntry(uint16_t initLookType) :
+			lookType(initLookType) { }
+		uint16_t lookType;
 };
 
 struct Skill {
-	uint64_t tries = 0;
-	uint16_t level = 10;
-	double_t percent = 0;
+		uint64_t tries = 0;
+		uint16_t level = 10;
+		double_t percent = 0;
 };
 
 struct Kill {
-	uint32_t target;
-	time_t time;
-	bool unavenged;
+		uint32_t target;
+		time_t time;
+		bool unavenged;
 
-	Kill(uint32_t _target, time_t _time, bool _unavenged) :
-        target(_target), time(_time), unavenged(_unavenged) {}
+		Kill(uint32_t _target, time_t _time, bool _unavenged) :
+			target(_target), time(_time), unavenged(_unavenged) { }
 };
 
 struct IntervalInfo {
-	int32_t timeLeft;
-	int32_t value;
-	int32_t interval;
+		int32_t timeLeft;
+		int32_t value;
+		int32_t interval;
 };
 
 struct FindPathParams {
-	bool fullPathSearch = true;
-	bool clearSight = true;
-	bool allowDiagonal = true;
-	bool keepDistance = false;
-	int32_t maxSearchDist = 0;
-	int32_t minTargetDist = -1;
-	int32_t maxTargetDist = -1;
+		bool fullPathSearch = true;
+		bool clearSight = true;
+		bool allowDiagonal = true;
+		bool keepDistance = false;
+		int32_t maxSearchDist = 0;
+		int32_t minTargetDist = -1;
+		int32_t maxTargetDist = -1;
 };
 
 struct RecentDeathEntry {
-	RecentDeathEntry(std::string cause, uint32_t timestamp) :
-        cause(std::move(cause)),
-        timestamp(timestamp) {}
+		RecentDeathEntry(std::string cause, uint32_t timestamp) :
+			cause(std::move(cause)),
+			timestamp(timestamp) { }
 
-	std::string cause;
-	uint32_t timestamp;
+		std::string cause;
+		uint32_t timestamp;
 };
 
 struct RecentPvPKillEntry {
-	RecentPvPKillEntry(std::string description, uint32_t timestamp, uint8_t status) :
-        description(std::move(description)),
-        timestamp(timestamp),
-        status(status) {}
+		RecentPvPKillEntry(std::string description, uint32_t timestamp, uint8_t status) :
+			description(std::move(description)),
+			timestamp(timestamp),
+			status(status) { }
 
-	std::string description;
-	uint32_t timestamp;
-	uint8_t status;
+		std::string description;
+		uint32_t timestamp;
+		uint8_t status;
 };
 
 struct MarketOffer {
-	uint64_t price;
-	uint32_t timestamp;
-	uint16_t amount;
-	uint16_t counter;
-	uint16_t itemId;
-	uint8_t tier;
-	std::string playerName;
+		uint64_t price;
+		uint32_t timestamp;
+		uint16_t amount;
+		uint16_t counter;
+		uint16_t itemId;
+		uint8_t tier;
+		std::string playerName;
 };
 
 struct MarketOfferEx {
-	MarketOfferEx() = default;
-	MarketOfferEx(MarketOfferEx&& other) :
-        id(other.id),
-        playerId(other.playerId),
-        timestamp(other.timestamp),
-        price(other.price),
-        amount(other.amount),
-        counter(other.counter),
-        itemId(other.itemId),
-        type(other.type),
-        tier(other.tier),
-        playerName(std::move(other.playerName)) {}
+		MarketOfferEx() = default;
+		MarketOfferEx(MarketOfferEx &&other) :
+			id(other.id),
+			playerId(other.playerId),
+			timestamp(other.timestamp),
+			price(other.price),
+			amount(other.amount),
+			counter(other.counter),
+			itemId(other.itemId),
+			type(other.type),
+			tier(other.tier),
+			playerName(std::move(other.playerName)) { }
 
-	uint32_t id;
-	uint32_t playerId;
-	uint32_t timestamp;
-	uint64_t price;
-	uint16_t amount;
-	uint16_t counter;
-	uint16_t itemId;
-	MarketAction_t type;
-	uint8_t tier;
-	std::string playerName;
+		uint32_t id;
+		uint32_t playerId;
+		uint32_t timestamp;
+		uint64_t price;
+		uint16_t amount;
+		uint16_t counter;
+		uint16_t itemId;
+		MarketAction_t type;
+		uint8_t tier;
+		std::string playerName;
 };
 
 struct HistoryMarketOffer {
-	uint32_t timestamp;
-	uint64_t price;
-	uint16_t itemId;
-	uint16_t amount;
-	uint8_t tier;
-	MarketOfferState_t state;
+		uint32_t timestamp;
+		uint64_t price;
+		uint16_t itemId;
+		uint16_t amount;
+		uint8_t tier;
+		MarketOfferState_t state;
 };
 
 using MarketOfferList = std::list<MarketOffer>;
@@ -729,174 +730,174 @@ using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
 */
 
 struct Familiar {
-	Familiar(std::string initName, uint16_t initLookType,
-             bool initPremium, bool initUnlocked, std::string initType) :
-                name(initName), lookType(initLookType),
-                premium(initPremium), unlocked(initUnlocked),
-                type(initType) {}
+		Familiar(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initType) :
+			name(initName), lookType(initLookType),
+			premium(initPremium), unlocked(initUnlocked),
+			type(initType) { }
 
-	std::string name;
-	uint16_t lookType;
-	bool premium;
-	bool unlocked;
-	std::string type;
+		std::string name;
+		uint16_t lookType;
+		bool premium;
+		bool unlocked;
+		std::string type;
 };
 
 struct ProtocolFamiliars {
-	ProtocolFamiliars(const std::string& initName, uint16_t initLookType) :
-		name(initName), lookType(initLookType) {}
+		ProtocolFamiliars(const std::string &initName, uint16_t initLookType) :
+			name(initName), lookType(initLookType) { }
 
-	const std::string& name;
-	uint16_t lookType;
+		const std::string &name;
+		uint16_t lookType;
 };
 
 struct LightInfo {
-	uint8_t level = 0;
-	uint8_t color = 0;
-	constexpr LightInfo() = default;
-	constexpr LightInfo(uint8_t newLevel, uint8_t newColor) : level(newLevel), color(newColor) {}
+		uint8_t level = 0;
+		uint8_t color = 0;
+		constexpr LightInfo() = default;
+		constexpr LightInfo(uint8_t newLevel, uint8_t newColor) :
+			level(newLevel), color(newColor) { }
 };
 
 struct CombatDamage {
-	struct {
-		CombatType_t type;
-		int32_t value;
-	} primary, secondary;
+		struct {
+				CombatType_t type;
+				int32_t value;
+		} primary, secondary;
 
-	CombatOrigin origin;
-	bool critical;
-	int affected;
-	bool extension;
-	std::string exString;
-	bool fatal;
+		CombatOrigin origin;
+		bool critical;
+		int affected;
+		bool extension;
+		std::string exString;
+		bool fatal;
 
-	CombatDamage() {
-		origin = ORIGIN_NONE;
-		primary.type = secondary.type = COMBAT_NONE;
-		primary.value = secondary.value = 0;
-		critical = false;
-		affected = 1;
-		extension = false;
-		exString = "";
-		fatal = false;
-	}
+		CombatDamage() {
+			origin = ORIGIN_NONE;
+			primary.type = secondary.type = COMBAT_NONE;
+			primary.value = secondary.value = 0;
+			critical = false;
+			affected = 1;
+			extension = false;
+			exString = "";
+			fatal = false;
+		}
 };
 
 struct RespawnType {
-	RespawnPeriod_t period;
-	bool underground;
+		RespawnPeriod_t period;
+		bool underground;
 };
 
 struct LootBlock;
 
 struct LootBlock {
-	uint16_t id;
-	uint32_t countmax;
-	uint32_t countmin;
-	uint32_t chance;
+		uint16_t id;
+		uint32_t countmax;
+		uint32_t countmin;
+		uint32_t chance;
 
-	//optional
-	int32_t subType;
-	int32_t actionId;
-	std::string text;
-	std::string name;
-	std::string article;
-	int32_t attack;
-	int32_t defense;
-	int32_t extraDefense;
-	int32_t armor;
-	int32_t shootRange;
-	int32_t hitChance;
-	bool unique;
+		// optional
+		int32_t subType;
+		int32_t actionId;
+		std::string text;
+		std::string name;
+		std::string article;
+		int32_t attack;
+		int32_t defense;
+		int32_t extraDefense;
+		int32_t armor;
+		int32_t shootRange;
+		int32_t hitChance;
+		bool unique;
 
-	std::vector<LootBlock> childLoot;
-	LootBlock() {
-		id = 0;
-		countmax = 1;
-		countmin = 1;
-		chance = 0;
+		std::vector<LootBlock> childLoot;
+		LootBlock() {
+			id = 0;
+			countmax = 1;
+			countmin = 1;
+			chance = 0;
 
-		subType = -1;
-		actionId = -1;
-		attack = -1;
-		defense = -1;
-		extraDefense = -1;
-		armor = -1;
-		shootRange = -1;
-		hitChance = -1;
-		unique = false;
-	}
+			subType = -1;
+			actionId = -1;
+			attack = -1;
+			defense = -1;
+			extraDefense = -1;
+			armor = -1;
+			shootRange = -1;
+			hitChance = -1;
+			unique = false;
+		}
 };
 
 struct ShopBlock {
-	uint16_t itemId;
-	std::string itemName;
-	int32_t itemSubType;
-	uint32_t itemBuyPrice;
-	uint32_t itemSellPrice;
-	int32_t itemStorageKey;
-	int32_t itemStorageValue;
+		uint16_t itemId;
+		std::string itemName;
+		int32_t itemSubType;
+		uint32_t itemBuyPrice;
+		uint32_t itemSellPrice;
+		int32_t itemStorageKey;
+		int32_t itemStorageValue;
 
-	std::vector<ShopBlock> childShop;
-	ShopBlock() {
-		itemId = 0;
-		itemName = "";
-		itemSubType = 0;
-		itemBuyPrice = 0;
-		itemSellPrice = 0;
-		itemStorageKey = 0;
-		itemStorageValue = 0;
-	}
+		std::vector<ShopBlock> childShop;
+		ShopBlock() {
+			itemId = 0;
+			itemName = "";
+			itemSubType = 0;
+			itemBuyPrice = 0;
+			itemSellPrice = 0;
+			itemStorageKey = 0;
+			itemStorageValue = 0;
+		}
 
-	explicit ShopBlock(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "")
-		: itemId(newItemId), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue), itemName(std::move(newName)) {}
+		explicit ShopBlock(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "") :
+			itemId(newItemId), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue), itemName(std::move(newName)) { }
 };
 
 struct summonBlock_t {
-	std::string name;
-	uint32_t chance;
-	uint32_t speed;
-	uint32_t count;
-	bool force = false;
+		std::string name;
+		uint32_t chance;
+		uint32_t speed;
+		uint32_t count;
+		bool force = false;
 };
 
 struct Outfit_t {
-	uint16_t lookType = 0;
-	uint16_t lookTypeEx = 0;
-	uint16_t lookMount = 0;
-	uint8_t lookHead = 0;
-	uint8_t lookBody = 0;
-	uint8_t lookLegs = 0;
-	uint8_t lookFeet = 0;
-	uint8_t lookAddons = 0;
-	uint8_t lookMountHead = 0;
-	uint8_t lookMountBody = 0;
-	uint8_t lookMountLegs = 0;
-	uint8_t lookMountFeet = 0;
-	uint16_t lookFamiliarsType = 0;
+		uint16_t lookType = 0;
+		uint16_t lookTypeEx = 0;
+		uint16_t lookMount = 0;
+		uint8_t lookHead = 0;
+		uint8_t lookBody = 0;
+		uint8_t lookLegs = 0;
+		uint8_t lookFeet = 0;
+		uint8_t lookAddons = 0;
+		uint8_t lookMountHead = 0;
+		uint8_t lookMountBody = 0;
+		uint8_t lookMountLegs = 0;
+		uint8_t lookMountFeet = 0;
+		uint16_t lookFamiliarsType = 0;
 };
 
 struct voiceBlock_t {
-	std::string text;
-	bool yellText;
+		std::string text;
+		bool yellText;
 };
 
 struct PartyAnalyzer {
-	PartyAnalyzer(uint32_t playerId, std::string playerName) :
-                id(playerId),
-                name(std::move(playerName)) {}
+		PartyAnalyzer(uint32_t playerId, std::string playerName) :
+			id(playerId),
+			name(std::move(playerName)) { }
 
-	uint32_t id;
+		uint32_t id;
 
-	std::string name;
+		std::string name;
 
-	uint64_t damage = 0;
-	uint64_t healing = 0;
-	uint64_t lootPrice = 0;
-	uint64_t supplyPrice = 0;
+		uint64_t damage = 0;
+		uint64_t healing = 0;
+		uint64_t lootPrice = 0;
+		uint64_t supplyPrice = 0;
 
-	std::map<uint16_t, uint64_t> lootMap; // [itemID] = amount
-	std::map<uint16_t, uint64_t> supplyMap; // [itemID] = amount
+		std::map<uint16_t, uint64_t> lootMap; // [itemID] = amount
+		std::map<uint16_t, uint64_t> supplyMap; // [itemID] = amount
 };
 
-#endif  // SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
+#endif // SRC_CREATURES_CREATURES_DEFINITIONS_HPP_

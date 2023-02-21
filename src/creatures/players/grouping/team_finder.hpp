@@ -5,56 +5,52 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_CREATURES_PLAYERS_GROUPING_TEAM_FINDER_HPP_
 #define SRC_CREATURES_PLAYERS_GROUPING_TEAM_FINDER_HPP_
 
 /**
-  * Team assemble finder.
-  * This class is responsible control and manage the team finder feature.
-**/
+ * Team assemble finder.
+ * This class is responsible control and manage the team finder feature.
+ **/
 
 class TeamFinder {
- public:
-	TeamFinder() = default;
-	TeamFinder(uint16_t initMinLevel, uint16_t initMaxLevel, uint8_t initVocationIDs,
-               uint16_t initTeamSlots, uint16_t initFreeSlots, bool initPartyBool,
-               uint32_t initTimestamp, uint8_t initTeamType, uint16_t initBossID,
-               uint16_t initHunt_type, uint16_t initHunt_area, uint16_t initQuestID,
-               uint32_t initLeaderGuid, std::map<uint32_t, uint8_t> initMembersMap) :
-            minLevel(initMinLevel),
-            maxLevel(initMaxLevel),
-            vocationIDs(initVocationIDs),
-            teamSlots(initTeamSlots),
-            freeSlots(initFreeSlots),
-            partyBool(initPartyBool),
-            timestamp(initTimestamp),
-            teamType(initTeamType),
-            bossID(initBossID),
-            hunt_type(initHunt_type),
-            hunt_area(initHunt_area),
-            questID(initQuestID),
-            leaderGuid(initLeaderGuid),
-            membersMap(initMembersMap) {}
-	virtual ~TeamFinder() = default;
+	public:
+		TeamFinder() = default;
+		TeamFinder(uint16_t initMinLevel, uint16_t initMaxLevel, uint8_t initVocationIDs, uint16_t initTeamSlots, uint16_t initFreeSlots, bool initPartyBool, uint32_t initTimestamp, uint8_t initTeamType, uint16_t initBossID, uint16_t initHunt_type, uint16_t initHunt_area, uint16_t initQuestID, uint32_t initLeaderGuid, std::map<uint32_t, uint8_t> initMembersMap) :
+			minLevel(initMinLevel),
+			maxLevel(initMaxLevel),
+			vocationIDs(initVocationIDs),
+			teamSlots(initTeamSlots),
+			freeSlots(initFreeSlots),
+			partyBool(initPartyBool),
+			timestamp(initTimestamp),
+			teamType(initTeamType),
+			bossID(initBossID),
+			hunt_type(initHunt_type),
+			hunt_area(initHunt_area),
+			questID(initQuestID),
+			leaderGuid(initLeaderGuid),
+			membersMap(initMembersMap) { }
+		virtual ~TeamFinder() = default;
 
-	uint16_t minLevel = 0;
-	uint16_t maxLevel = 0;
-	uint8_t vocationIDs = 0;
-	uint16_t teamSlots = 0;
-	uint16_t freeSlots = 0;
-	bool partyBool = false;
-	uint32_t timestamp = 0;
-	uint8_t teamType = 0;
-	uint16_t bossID = 0;
-	uint16_t hunt_type = 0;
-	uint16_t hunt_area = 0;
-	uint16_t questID = 0;
-	uint32_t leaderGuid = 0;
+		uint16_t minLevel = 0;
+		uint16_t maxLevel = 0;
+		uint8_t vocationIDs = 0;
+		uint16_t teamSlots = 0;
+		uint16_t freeSlots = 0;
+		bool partyBool = false;
+		uint32_t timestamp = 0;
+		uint8_t teamType = 0;
+		uint16_t bossID = 0;
+		uint16_t hunt_type = 0;
+		uint16_t hunt_area = 0;
+		uint16_t questID = 0;
+		uint32_t leaderGuid = 0;
 
-	// list: player:getGuid(), player status
-	std::map<uint32_t, uint8_t> membersMap = {};
+		// list: player:getGuid(), player status
+		std::map<uint32_t, uint8_t> membersMap = {};
 };
 
-#endif  // SRC_CREATURES_PLAYERS_GROUPING_TEAM_FINDER_HPP_
+#endif // SRC_CREATURES_PLAYERS_GROUPING_TEAM_FINDER_HPP_

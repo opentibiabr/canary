@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_ITEMS_BED_H_
 #define SRC_ITEMS_BED_H_
@@ -15,8 +15,7 @@
 class House;
 class Player;
 
-class BedItem final : public Item
-{
+class BedItem final : public Item {
 	public:
 		explicit BedItem(uint16_t id);
 
@@ -27,8 +26,8 @@ class BedItem final : public Item
 			return this;
 		}
 
-		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
-		void serializeAttr(PropWriteStream& propWriteStream) const override;
+		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
+		void serializeAttr(PropWriteStream &propWriteStream) const override;
 
 		bool canRemove() const override {
 			return house == nullptr;
@@ -61,4 +60,4 @@ class BedItem final : public Item
 		uint32_t sleeperGUID;
 };
 
-#endif  // SRC_ITEMS_BED_H_
+#endif // SRC_ITEMS_BED_H_

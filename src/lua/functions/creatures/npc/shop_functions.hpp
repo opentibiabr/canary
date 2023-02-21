@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_NPC_SHOP_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CREATURES_NPC_SHOP_FUNCTIONS_HPP_
@@ -14,20 +14,20 @@
 
 class ShopFunctions final : LuaScriptInterface {
 	public:
-			static void init(lua_State* L) {
-				registerClass(L, "Shop", "", ShopFunctions::luaCreateShop);
-				registerMetaMethod(L, "Shop", "__gc", ShopFunctions::luaDeleteShop);
-				registerMethod(L, "Shop", "delete", ShopFunctions::luaDeleteShop);
+		static void init(lua_State* L) {
+			registerClass(L, "Shop", "", ShopFunctions::luaCreateShop);
+			registerMetaMethod(L, "Shop", "__gc", ShopFunctions::luaDeleteShop);
+			registerMethod(L, "Shop", "delete", ShopFunctions::luaDeleteShop);
 
-				registerMethod(L, "Shop", "setId", ShopFunctions::luaShopSetId);
-				registerMethod(L, "Shop", "setIdFromName", ShopFunctions::luaShopSetIdFromName);
-				registerMethod(L, "Shop", "setNameItem", ShopFunctions::luaShopSetNameItem);
-				registerMethod(L, "Shop", "setCount", ShopFunctions::luaShopSetCount);
-				registerMethod(L, "Shop", "setBuyPrice", ShopFunctions::luaShopSetBuyPrice);
-				registerMethod(L, "Shop", "setSellPrice", ShopFunctions::luaShopSetSellPrice);
-				registerMethod(L, "Shop", "setStorageKey", ShopFunctions::luaShopSetStorageKey);
-				registerMethod(L, "Shop", "setStorageValue", ShopFunctions::luaShopSetStorageValue);
-				registerMethod(L, "Shop", "addChildShop", ShopFunctions::luaShopAddChildShop);
+			registerMethod(L, "Shop", "setId", ShopFunctions::luaShopSetId);
+			registerMethod(L, "Shop", "setIdFromName", ShopFunctions::luaShopSetIdFromName);
+			registerMethod(L, "Shop", "setNameItem", ShopFunctions::luaShopSetNameItem);
+			registerMethod(L, "Shop", "setCount", ShopFunctions::luaShopSetCount);
+			registerMethod(L, "Shop", "setBuyPrice", ShopFunctions::luaShopSetBuyPrice);
+			registerMethod(L, "Shop", "setSellPrice", ShopFunctions::luaShopSetSellPrice);
+			registerMethod(L, "Shop", "setStorageKey", ShopFunctions::luaShopSetStorageKey);
+			registerMethod(L, "Shop", "setStorageValue", ShopFunctions::luaShopSetStorageValue);
+			registerMethod(L, "Shop", "addChildShop", ShopFunctions::luaShopAddChildShop);
 		}
 
 	private:
@@ -44,4 +44,4 @@ class ShopFunctions final : LuaScriptInterface {
 		static int luaShopAddChildShop(lua_State* L);
 };
 
-#endif  // SRC_LUA_FUNCTIONS_CREATURES_NPC_SHOP_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_CREATURES_NPC_SHOP_FUNCTIONS_HPP_

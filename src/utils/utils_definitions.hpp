@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_UTILS_UTILS_DEFINITIONS_HPP_
 #define SRC_UTILS_UTILS_DEFINITIONS_HPP_
@@ -14,7 +14,7 @@
 enum Icons_t {
 	ICON_POISON = 1 << 0,
 	ICON_BURN = 1 << 1,
-	ICON_ENERGY =  1 << 2,
+	ICON_ENERGY = 1 << 2,
 	ICON_DRUNK = 1 << 3,
 	ICON_MANASHIELD = 1 << 4,
 	ICON_PARALYZE = 1 << 5,
@@ -80,8 +80,7 @@ enum ThreadState {
 	THREAD_STATE_TERMINATED,
 };
 
-enum SpawnType_t
-{
+enum SpawnType_t {
 	RESPAWN_IN_ALL = 0,
 	RESPAWN_IN_DAY = 1,
 	RESPAWN_IN_NIGHT = 2,
@@ -341,19 +340,20 @@ enum SpeakClasses : uint8_t {
 	TALKTYPE_NPC_UNKOWN = 11, /* no effect (?)*/
 	TALKTYPE_PRIVATE_PN = 12,
 	TALKTYPE_BROADCAST = 13,
-	TALKTYPE_CHANNEL_R1 = 14, //red - #c text
+	TALKTYPE_CHANNEL_R1 = 14, // red - #c text
 	TALKTYPE_PRIVATE_RED_FROM = 15, //@name@text
 	TALKTYPE_PRIVATE_RED_TO = 16, //@name@text
 	TALKTYPE_MONSTER_SAY = 36,
 	TALKTYPE_MONSTER_YELL = 37,
 
-	TALKTYPE_CHANNEL_R2 = 0xFF, //#d
+	TALKTYPE_CHANNEL_R2 = 0xFF, // #d
 };
 
 enum MessageClasses : uint8_t {
 	MESSAGE_NONE = 0, /* None */
 
-	MESSAGE_GAMEMASTER_CONSOLE = 13, /* Red message in the console*/ /* TALKTYPE_BROADCAST */
+	MESSAGE_GAMEMASTER_CONSOLE = 13,
+	/* Red message in the console*/ /* TALKTYPE_BROADCAST */
 
 	MESSAGE_LOGIN = 17, /* White message at the bottom of the game window and in the console*/
 	MESSAGE_ADMINISTRADOR = 18, /* Red message in game window and in the console*/
@@ -443,6 +443,7 @@ enum WeaponType_t : uint8_t {
 	WEAPON_DISTANCE,
 	WEAPON_WAND,
 	WEAPON_AMMO,
+	WEAPON_MISSILE,
 };
 
 enum Ammo_t : uint8_t {
@@ -512,9 +513,9 @@ enum NameEval_t : uint8_t {
 	INVALID_CHARACTER
 };
 
-enum item_t : uint16_t {
+enum ItemID_t : uint16_t {
 	ITEM_BROWSEFIELD = 470, // for internal use
-	ITEM_SUPPLY_STASH_INDEX = 1, //for internal use
+	ITEM_SUPPLY_STASH_INDEX = 1, // for internal use
 	ITEM_DEPOT_NULL = 22796, // for internal use - Actual Item ID: 168
 	ITEM_DECORATION_KIT = 23398, // For internal use (wrap item)
 	ITEM_DOCUMENT_RO = 2834, // Read-only
@@ -614,7 +615,7 @@ enum item_t : uint16_t {
 	ITEM_SPIRIT_CASK_START = 25899,
 	ITEM_SPIRIT_CASK_END = 25902,
 
-	ITEM_KEG_START = 25903, //kegs ids are contiguous in item.otb
+	ITEM_KEG_START = 25903, // kegs ids are contiguous in item.otb
 	ITEM_KEG_END = 25914,
 
 	// Walkable sea
@@ -655,23 +656,28 @@ enum item_t : uint16_t {
 	ITEM_PRISMATIC_RING = 16114,
 	ITEM_PRISMATIC_RING_ACTIVATED = 16264,
 
+	HIRELING_LAMP = 29432,
+
 	ITEM_FORGE_SLIVER = 37109,
 	ITEM_FORGE_CORE = 37110,
-	ITEM_EXALTATION_CHEST = 37561
+	ITEM_EXALTATION_CHEST = 37561,
+	ITEM_PODIUM_OF_VIGOUR = 38707,
+
+	ITEM_NONE = 0
 };
 
 // A map which contains items that, when on creating, should be transformed to the default type.
-const phmap::flat_hash_map<item_t, item_t> ItemTransformationMap = {
-	{ITEM_SWORD_RING_ACTIVATED, ITEM_SWORD_RING},
-	{ITEM_CLUB_RING_ACTIVATED, ITEM_CLUB_RING},
-	{ITEM_DWARVEN_RING_ACTIVATED, ITEM_DWARVEN_RING},
-	{ITEM_RING_HEALING_ACTIVATED, ITEM_RING_HEALING},
-	{ITEM_STEALTH_RING_ACTIVATED, ITEM_STEALTH_RING},
-	{ITEM_TIME_RING_ACTIVATED, ITEM_TIME_RING},
-	{ITEM_PAIR_SOFT_BOOTS_ACTIVATED, ITEM_PAIR_SOFT_BOOTS},
-	{ITEM_DEATH_RING_ACTIVATED, ITEM_DEATH_RING},
-	{ITEM_PRISMATIC_RING_ACTIVATED, ITEM_PRISMATIC_RING},
-	{ITEM_OLD_DIAMOND_ARROW, ITEM_DIAMOND_ARROW},
+const phmap::flat_hash_map<ItemID_t, ItemID_t> ItemTransformationMap = {
+	{ ITEM_SWORD_RING_ACTIVATED, ITEM_SWORD_RING },
+	{ ITEM_CLUB_RING_ACTIVATED, ITEM_CLUB_RING },
+	{ ITEM_DWARVEN_RING_ACTIVATED, ITEM_DWARVEN_RING },
+	{ ITEM_RING_HEALING_ACTIVATED, ITEM_RING_HEALING },
+	{ ITEM_STEALTH_RING_ACTIVATED, ITEM_STEALTH_RING },
+	{ ITEM_TIME_RING_ACTIVATED, ITEM_TIME_RING },
+	{ ITEM_PAIR_SOFT_BOOTS_ACTIVATED, ITEM_PAIR_SOFT_BOOTS },
+	{ ITEM_DEATH_RING_ACTIVATED, ITEM_DEATH_RING },
+	{ ITEM_PRISMATIC_RING_ACTIVATED, ITEM_PRISMATIC_RING },
+	{ ITEM_OLD_DIAMOND_ARROW, ITEM_DIAMOND_ARROW },
 };
 
 enum class PlayerFlags_t : uint8_t {
@@ -732,14 +738,14 @@ enum Blessings_t : uint8_t {
 };
 
 const phmap::flat_hash_map<Blessings_t, std::string> BlessingNames = {
-	{TWIST_OF_FATE, "Twist of Fate"},
-	{WISDOM_OF_SOLITUDE, "The Wisdom of Solitude"},
-	{SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix"},
-	{FIRE_OF_THE_SUNS, "The Fire of the Suns"},
-	{SPIRITUAL_SHIELDING, "The Spiritual Shielding"},
-	{EMBRACE_OF_TIBIA, "The Embrace of Tibia"},
-	{BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain"},
-	{HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain"},
+	{ TWIST_OF_FATE, "Twist of Fate" },
+	{ WISDOM_OF_SOLITUDE, "The Wisdom of Solitude" },
+	{ SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix" },
+	{ FIRE_OF_THE_SUNS, "The Fire of the Suns" },
+	{ SPIRITUAL_SHIELDING, "The Spiritual Shielding" },
+	{ EMBRACE_OF_TIBIA, "The Embrace of Tibia" },
+	{ BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain" },
+	{ HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain" },
 };
 
-#endif  // SRC_UTILS_UTILS_DEFINITIONS_HPP_
+#endif // SRC_UTILS_UTILS_DEFINITIONS_HPP_

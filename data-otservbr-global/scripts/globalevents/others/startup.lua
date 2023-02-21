@@ -66,8 +66,8 @@ function serverstartup.onStartup()
 	db.query('UPDATE `player_storage` SET `value` = 0 WHERE `player_storage`.`key` = 51052')
 
 	-- reset familiars message storage
-	db.query('DELETE FROM `player_storage` WHERE `key` = '..Storage.FamiliarSummonEvent10)
-	db.query('DELETE FROM `player_storage` WHERE `key` = '..Storage.FamiliarSummonEvent60)
+	db.query('DELETE FROM `player_storage` WHERE `key` = '..Global.Storage.FamiliarSummonEvent10)
+	db.query('DELETE FROM `player_storage` WHERE `key` = '..Global.Storage.FamiliarSummonEvent60)
 
 	-- delete canceled and rejected guilds
 	db.asyncQuery('DELETE FROM `guild_wars` WHERE `status` = 2')
@@ -122,6 +122,13 @@ function serverstartup.onStartup()
 			end
 		until not Result.next(resultId)
 		Result.free(resultId)
+	end
+
+	-- store towns in database
+	db.query("TRUNCATE TABLE `towns`")
+	for i, town in ipairs(Game.getTowns()) do
+		local position = town:getTemplePosition()
+		db.query("INSERT INTO `towns` (`id`, `name`, `posx`, `posy`, `posz`) VALUES (" .. town:getId() .. ", " .. db.escapeString(town:getName()) .. ", " .. position.x .. ", " .. position.y .. ", " .. position.z .. ")")
 	end
 
 	do -- Event Schedule rates

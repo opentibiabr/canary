@@ -5,16 +5,14 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
 #include "core.hpp"
 #include "utils/tools.h"
 
-
-void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
-{
+void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
 	SPDLOG_ERROR("[{}] Failed to load {}: {}", where, fileName, result.description());
 
 	FILE* file = fopen(fileName.c_str(), "rb");
@@ -62,13 +60,11 @@ void printXMLError(const std::string& where, const std::string& fileName, const 
 	SPDLOG_ERROR("^");
 }
 
-static uint32_t circularShift(int bits, uint32_t value)
-{
+static uint32_t circularShift(int bits, uint32_t value) {
 	return (value << bits) | (value >> (32 - bits));
 }
 
-static void processSHA1MessageBlock(const uint8_t* messageBlock, uint32_t* H)
-{
+static void processSHA1MessageBlock(const uint8_t* messageBlock, uint32_t* H) {
 	uint32_t W[80];
 	for (int i = 0; i < 16; ++i) {
 		const size_t offset = i << 2;
@@ -83,22 +79,38 @@ static void processSHA1MessageBlock(const uint8_t* messageBlock, uint32_t* H)
 
 	for (int i = 0; i < 20; ++i) {
 		const uint32_t tmp = circularShift(5, A) + ((B & C) | ((~B) & D)) + E + W[i] + 0x5A827999;
-		E = D; D = C; C = circularShift(30, B); B = A; A = tmp;
+		E = D;
+		D = C;
+		C = circularShift(30, B);
+		B = A;
+		A = tmp;
 	}
 
 	for (int i = 20; i < 40; ++i) {
 		const uint32_t tmp = circularShift(5, A) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1;
-		E = D; D = C; C = circularShift(30, B); B = A; A = tmp;
+		E = D;
+		D = C;
+		C = circularShift(30, B);
+		B = A;
+		A = tmp;
 	}
 
 	for (int i = 40; i < 60; ++i) {
 		const uint32_t tmp = circularShift(5, A) + ((B & C) | (B & D) | (C & D)) + E + W[i] + 0x8F1BBCDC;
-		E = D; D = C; C = circularShift(30, B); B = A; A = tmp;
+		E = D;
+		D = C;
+		C = circularShift(30, B);
+		B = A;
+		A = tmp;
 	}
 
 	for (int i = 60; i < 80; ++i) {
 		const uint32_t tmp = circularShift(5, A) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6;
-		E = D; D = C; C = circularShift(30, B); B = A; A = tmp;
+		E = D;
+		D = C;
+		C = circularShift(30, B);
+		B = A;
+		A = tmp;
 	}
 
 	H[0] += A;
@@ -108,8 +120,7 @@ static void processSHA1MessageBlock(const uint8_t* messageBlock, uint32_t* H)
 	H[4] += E;
 }
 
-std::string transformToSHA1(const std::string& input)
-{
+std::string transformToSHA1(const std::string &input) {
 	uint32_t H[] = {
 		0x67452301,
 		0xEFCDAB89,
@@ -165,7 +176,7 @@ std::string transformToSHA1(const std::string& input)
 	processSHA1MessageBlock(messageBlock, H);
 
 	char hexstring[41];
-	static const char hexDigits[] = {"0123456789abcdef"};
+	static const char hexDigits[] = { "0123456789abcdef" };
 	for (int hashByte = 20; --hashByte >= 0;) {
 		const uint8_t byte = H[hashByte >> 2] >> (((3 - hashByte) & 3) << 3);
 		index = hashByte << 1;
@@ -175,8 +186,7 @@ std::string transformToSHA1(const std::string& input)
 	return std::string(hexstring, 40);
 }
 
-uint16_t getStashSize(StashItemList itemList)
-{
+uint16_t getStashSize(StashItemList itemList) {
 	uint16_t size = 0;
 	for (auto item : itemList) {
 		size += ceil(item.second / 100.0);
@@ -184,8 +194,7 @@ uint16_t getStashSize(StashItemList itemList)
 	return size;
 }
 
-std::string generateToken(const std::string& key, uint32_t ticks)
-{
+std::string generateToken(const std::string &key, uint32_t ticks) {
 	// generate message from ticks
 	std::string message(8, 0);
 	for (uint8_t i = 8; --i; ticks >>= 8) {
@@ -229,8 +238,7 @@ std::string generateToken(const std::string& key, uint32_t ticks)
 	return message;
 }
 
-void replaceString(std::string& str, const std::string& sought, const std::string& replacement)
-{
+void replaceString(std::string &str, const std::string &sought, const std::string &replacement) {
 	size_t pos = 0;
 	size_t start = 0;
 	size_t soughtLen = sought.length();
@@ -242,35 +250,29 @@ void replaceString(std::string& str, const std::string& sought, const std::strin
 	}
 }
 
-void trim_right(std::string& source, char t)
-{
+void trim_right(std::string &source, char t) {
 	source.erase(source.find_last_not_of(t) + 1);
 }
 
-void trim_left(std::string& source, char t)
-{
+void trim_left(std::string &source, char t) {
 	source.erase(0, source.find_first_not_of(t));
 }
 
-void toLowerCaseString(std::string& source)
-{
+void toLowerCaseString(std::string &source) {
 	std::transform(source.begin(), source.end(), source.begin(), tolower);
 }
 
-std::string asLowerCaseString(std::string source)
-{
+std::string asLowerCaseString(std::string source) {
 	toLowerCaseString(source);
 	return source;
 }
 
-std::string asUpperCaseString(std::string source)
-{
+std::string asUpperCaseString(std::string source) {
 	std::transform(source.begin(), source.end(), source.begin(), toupper);
 	return source;
 }
 
-StringVector explodeString(const std::string& inString, const std::string& separator, int32_t limit/* = -1*/)
-{
+StringVector explodeString(const std::string &inString, const std::string &separator, int32_t limit /* = -1*/) {
 	StringVector returnVector;
 	std::string::size_type start = 0, end = 0;
 
@@ -283,24 +285,21 @@ StringVector explodeString(const std::string& inString, const std::string& separ
 	return returnVector;
 }
 
-IntegerVector vectorAtoi(const StringVector& stringVector)
-{
+IntegerVector vectorAtoi(const StringVector &stringVector) {
 	IntegerVector returnVector;
-	for (const auto& string : stringVector) {
+	for (const auto &string : stringVector) {
 		returnVector.push_back(std::stoi(string));
 	}
 	return returnVector;
 }
 
-std::mt19937& getRandomGenerator()
-{
+std::mt19937 &getRandomGenerator() {
 	static std::random_device rd;
 	static std::mt19937 generator(rd());
 	return generator;
 }
 
-int32_t uniform_random(int32_t minNumber, int32_t maxNumber)
-{
+int32_t uniform_random(int32_t minNumber, int32_t maxNumber) {
 	static std::uniform_int_distribution<int32_t> uniformRand;
 	if (minNumber == maxNumber) {
 		return minNumber;
@@ -310,8 +309,7 @@ int32_t uniform_random(int32_t minNumber, int32_t maxNumber)
 	return uniformRand(getRandomGenerator(), std::uniform_int_distribution<int32_t>::param_type(minNumber, maxNumber));
 }
 
-int32_t normal_random(int32_t minNumber, int32_t maxNumber)
-{
+int32_t normal_random(int32_t minNumber, int32_t maxNumber) {
 	static std::normal_distribution<float> normalRand(0.5f, 0.25f);
 	if (minNumber == maxNumber) {
 		return minNumber;
@@ -332,32 +330,27 @@ int32_t normal_random(int32_t minNumber, int32_t maxNumber)
 	return minNumber + increment;
 }
 
-bool boolean_random(double probability/* = 0.5*/)
-{
+bool boolean_random(double probability /* = 0.5*/) {
 	static std::bernoulli_distribution booleanRand;
 	return booleanRand(getRandomGenerator(), std::bernoulli_distribution::param_type(probability));
 }
 
-void trimString(std::string& str)
-{
+void trimString(std::string &str) {
 	str.erase(str.find_last_not_of(' ') + 1);
 	str.erase(0, str.find_first_not_of(' '));
 }
 
-std::string convertIPToString(uint32_t ip)
-{
-    char buffer[17];
-    fmt::format_to_n(buffer, sizeof(buffer), "{}.{}.{}.{}", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24));
-    return buffer;
+std::string convertIPToString(uint32_t ip) {
+	char buffer[17];
+	fmt::format_to_n(buffer, sizeof(buffer), "{}.{}.{}.{}", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24));
+	return buffer;
 }
 
-std::string formatDate(time_t time)
-{
+std::string formatDate(time_t time) {
 	return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
 }
 
-std::string formatDateShort(time_t time)
-{
+std::string formatDateShort(time_t time) {
 	return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
 }
 
@@ -365,8 +358,12 @@ std::time_t getTimeNow() {
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
 
-Direction getDirection(const std::string& string)
-{
+std::time_t getTimeMsNow() {
+	auto duration = std::chrono::system_clock::now().time_since_epoch();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+}
+
+Direction getDirection(const std::string &string) {
 	Direction direction = DIRECTION_NORTH;
 
 	if (string == "north" || string == "n" || string == "0") {
@@ -390,8 +387,7 @@ Direction getDirection(const std::string& string)
 	return direction;
 }
 
-Position getNextPosition(Direction direction, Position pos)
-{
+Position getNextPosition(Direction direction, Position pos) {
 	switch (direction) {
 		case DIRECTION_NORTH:
 			pos.y--;
@@ -436,8 +432,7 @@ Position getNextPosition(Direction direction, Position pos)
 	return pos;
 }
 
-Direction getDirectionTo(const Position& from, const Position& to)
-{
+Direction getDirectionTo(const Position &from, const Position &to) {
 	Direction dir;
 
 	int32_t x_offset = Position::getOffsetX(from, to);
@@ -489,258 +484,258 @@ using ImbuementTypeNames = phmap::flat_hash_map<std::string, ImbuementTypes_t>;
 using SpawnTypeNames = phmap::flat_hash_map<std::string, SpawnType_t>;
 
 MagicEffectNames magicEffectNames = {
-	{"assassin",			CONST_ME_ASSASSIN},
-	{"bluefireworks",		CONST_ME_BLUE_FIREWORKS },
-	{"bluebubble",			CONST_ME_LOSEENERGY},
-	{"blackspark",			CONST_ME_HITAREA},
-	{"blueshimmer",			CONST_ME_MAGIC_BLUE},
-	{"bluenote",			CONST_ME_SOUND_BLUE},
-	{"bubbles",				CONST_ME_BUBBLES},
-	{"bluefirework",		CONST_ME_FIREWORK_BLUE},
-	{"bigclouds",			CONST_ME_BIGCLOUDS},
-	{"bigplants",			CONST_ME_BIGPLANTS},
-	{"bloodysteps",			CONST_ME_BLOODYSTEPS},
-	{"bats",				CONST_ME_BATS},
-	{"blueenergyspark",		CONST_ME_BLUE_ENERGY_SPARK },
-	{"blueghost",			CONST_ME_BLUE_GHOST },
-	{"blacksmoke",			CONST_ME_BLACKSMOKE},
-	{"carniphila",			CONST_ME_CARNIPHILA},
-	{"cake",				CONST_ME_CAKE},
-	{"confettihorizontal",	CONST_ME_CONFETTI_HORIZONTAL},
-	{"confettivertical",	CONST_ME_CONFETTI_VERTICAL},
-	{"criticaldagame",		CONST_ME_CRITICAL_DAMAGE},
-	{"dice",				CONST_ME_CRAPS},
-	{"dragonhead",			CONST_ME_DRAGONHEAD},
-	{"explosionarea",		CONST_ME_EXPLOSIONAREA},
-	{"explosion",			CONST_ME_EXPLOSIONHIT},
-	{"energy",				CONST_ME_ENERGYHIT},
-	{"energyarea",			CONST_ME_ENERGYAREA},
-	{"earlythunder",		CONST_ME_EARLY_THUNDER },
-	{"fire",				CONST_ME_HITBYFIRE},
-	{"firearea",			CONST_ME_FIREAREA},
-	{"fireattack",			CONST_ME_FIREATTACK},
-	{"ferumbras",			CONST_ME_FERUMBRAS},
-	{"greenspark",			CONST_ME_HITBYPOISON},
-	{"greenbubble",			CONST_ME_GREEN_RINGS},
-	{"greennote",			CONST_ME_SOUND_GREEN},
-	{"greenshimmer",		CONST_ME_MAGIC_GREEN},
-	{"giftwraps",			CONST_ME_GIFT_WRAPS},
-	{"groundshaker",		CONST_ME_GROUNDSHAKER},
-	{"giantice",			CONST_ME_GIANTICE},
-	{"greensmoke",			CONST_ME_GREENSMOKE},
-	{"greenenergyspark",	CONST_ME_GREEN_ENERGY_SPARK },
-	{"greenfireworks",		CONST_ME_GREEN_FIREWORKS },
-	{"hearts",				CONST_ME_HEARTS},
-	{"holydamage",			CONST_ME_HOLYDAMAGE},
-	{"holyarea",			CONST_ME_HOLYAREA},
-	{"icearea",				CONST_ME_ICEAREA},
-	{"icetornado",			CONST_ME_ICETORNADO},
-	{"iceattack",			CONST_ME_ICEATTACK},
-	{"insects",				CONST_ME_INSECTS},
-	{"mortarea",			CONST_ME_MORTAREA},
-	{"mirrorhorizontal",	CONST_ME_MIRRORHORIZONTAL},
-	{"mirrorvertical",		CONST_ME_MIRRORVERTICAL},
-	{"magicpowder",			CONST_ME_MAGIC_POWDER },
-	{"orcshaman",			CONST_ME_ORCSHAMAN},
-	{"orcshamanfire",		CONST_ME_ORCSHAMAN_FIRE},
-	{"orangeenergyspark",	CONST_ME_ORANGE_ENERGY_SPARK },
-	{"orangefireworks",		CONST_ME_ORANGE_FIREWORKS },
-	{"poff",				CONST_ME_POFF},
-	{"poison",				CONST_ME_POISONAREA},
-	{"purplenote",			CONST_ME_SOUND_PURPLE},
-	{"purpleenergy",		CONST_ME_PURPLEENERGY},
-	{"plantattack",			CONST_ME_PLANTATTACK},
-	{"plugingfish",			CONST_ME_PLUNGING_FISH},
-	{"purplesmoke",			CONST_ME_PURPLESMOKE},
-	{"pixieexplosion",		CONST_ME_PIXIE_EXPLOSION },
-	{"pixiecoming",			CONST_ME_PIXIE_COMING },
-	{"pixiegoing",			CONST_ME_PIXIE_GOING },
-	{"pinkbeam",			CONST_ME_PINK_BEAM },
-	{"pinkvortex",			CONST_ME_PINK_VORTEX },
-	{"pinkenergyspark",		CONST_ME_PINK_ENERGY_SPARK },
-	{"pinkfireworks",		CONST_ME_PINK_FIREWORKS },
-	{"redspark",			CONST_ME_DRAWBLOOD},
-	{"redshimmer",			CONST_ME_MAGIC_RED},
-	{"rednote",				CONST_ME_SOUND_RED},
-	{"redfirework",			CONST_ME_FIREWORK_RED},
-	{"redsmoke",			CONST_ME_REDSMOKE},
-	{"ragiazbonecapsule",	CONST_ME_RAGIAZ_BONECAPSULE},
-	{"stun",				CONST_ME_STUN},
-	{"sleep",				CONST_ME_SLEEP},
-	{"smallclouds",			CONST_ME_SMALLCLOUDS},
-	{"stones",				CONST_ME_STONES},
-	{"smallplants",			CONST_ME_SMALLPLANTS},
-	{"skullhorizontal",		CONST_ME_SKULLHORIZONTAL},
-	{"skullvertical",		CONST_ME_SKULLVERTICAL},
-	{"stepshorizontal",		CONST_ME_STEPSHORIZONTAL},
-	{"stepsvertical",		CONST_ME_STEPSVERTICAL},
-	{"smoke",				CONST_ME_SMOKE},
-	{"storm",				CONST_ME_STORM },
-	{"stonestorm",			CONST_ME_STONE_STORM },
-	{"teleport",			CONST_ME_TELEPORT},
-	{"tutorialarrow",		CONST_ME_TUTORIALARROW},
-	{"tutorialsquare",		CONST_ME_TUTORIALSQUARE},
-	{"thunder",				CONST_ME_THUNDER},
-	{"treasuremap",			CONST_ME_TREASURE_MAP },
-	{"yellowspark",			CONST_ME_BLOCKHIT},
-	{"yellowbubble",		CONST_ME_YELLOW_RINGS},
-	{"yellownote",			CONST_ME_SOUND_YELLOW},
-	{"yellowfirework",		CONST_ME_FIREWORK_YELLOW},
-	{"yellowenergy",		CONST_ME_YELLOWENERGY},
-	{"yalaharighost",		CONST_ME_YALAHARIGHOST},
-	{"yellowsmoke",			CONST_ME_YELLOWSMOKE},
-	{"yellowenergyspark",	CONST_ME_YELLOW_ENERGY_SPARK },
-	{"whitenote",			CONST_ME_SOUND_WHITE},
-	{"watercreature",		CONST_ME_WATERCREATURE},
-	{"watersplash",			CONST_ME_WATERSPLASH},
-	{"whiteenergyspark",	CONST_ME_WHITE_ENERGY_SPARK },
-	{"fatal", 				CONST_ME_FATAL},
-	{"dodge", 				CONST_ME_DODGE},
-	{"hourglass",			CONST_ME_HOURGLASS},
-	{"ferumbras1",			CONST_ME_FERUMBRAS_1},
-	{"gazharagoth",			CONST_ME_GAZHARAGOTH},
-	{"madmage",				CONST_ME_MAD_MAGE},
-	{"horestis",			CONST_ME_HORESTIS},
-	{"devovorga",			CONST_ME_DEVOVORGA},
-	{"ferumbras2",			CONST_ME_FERUMBRAS_2},
+	{ "assassin", CONST_ME_ASSASSIN },
+	{ "bluefireworks", CONST_ME_BLUE_FIREWORKS },
+	{ "bluebubble", CONST_ME_LOSEENERGY },
+	{ "blackspark", CONST_ME_HITAREA },
+	{ "blueshimmer", CONST_ME_MAGIC_BLUE },
+	{ "bluenote", CONST_ME_SOUND_BLUE },
+	{ "bubbles", CONST_ME_BUBBLES },
+	{ "bluefirework", CONST_ME_FIREWORK_BLUE },
+	{ "bigclouds", CONST_ME_BIGCLOUDS },
+	{ "bigplants", CONST_ME_BIGPLANTS },
+	{ "bloodysteps", CONST_ME_BLOODYSTEPS },
+	{ "bats", CONST_ME_BATS },
+	{ "blueenergyspark", CONST_ME_BLUE_ENERGY_SPARK },
+	{ "blueghost", CONST_ME_BLUE_GHOST },
+	{ "blacksmoke", CONST_ME_BLACKSMOKE },
+	{ "carniphila", CONST_ME_CARNIPHILA },
+	{ "cake", CONST_ME_CAKE },
+	{ "confettihorizontal", CONST_ME_CONFETTI_HORIZONTAL },
+	{ "confettivertical", CONST_ME_CONFETTI_VERTICAL },
+	{ "criticaldagame", CONST_ME_CRITICAL_DAMAGE },
+	{ "dice", CONST_ME_CRAPS },
+	{ "dragonhead", CONST_ME_DRAGONHEAD },
+	{ "explosionarea", CONST_ME_EXPLOSIONAREA },
+	{ "explosion", CONST_ME_EXPLOSIONHIT },
+	{ "energy", CONST_ME_ENERGYHIT },
+	{ "energyarea", CONST_ME_ENERGYAREA },
+	{ "earlythunder", CONST_ME_EARLY_THUNDER },
+	{ "fire", CONST_ME_HITBYFIRE },
+	{ "firearea", CONST_ME_FIREAREA },
+	{ "fireattack", CONST_ME_FIREATTACK },
+	{ "ferumbras", CONST_ME_FERUMBRAS },
+	{ "greenspark", CONST_ME_HITBYPOISON },
+	{ "greenbubble", CONST_ME_GREEN_RINGS },
+	{ "greennote", CONST_ME_SOUND_GREEN },
+	{ "greenshimmer", CONST_ME_MAGIC_GREEN },
+	{ "giftwraps", CONST_ME_GIFT_WRAPS },
+	{ "groundshaker", CONST_ME_GROUNDSHAKER },
+	{ "giantice", CONST_ME_GIANTICE },
+	{ "greensmoke", CONST_ME_GREENSMOKE },
+	{ "greenenergyspark", CONST_ME_GREEN_ENERGY_SPARK },
+	{ "greenfireworks", CONST_ME_GREEN_FIREWORKS },
+	{ "hearts", CONST_ME_HEARTS },
+	{ "holydamage", CONST_ME_HOLYDAMAGE },
+	{ "holyarea", CONST_ME_HOLYAREA },
+	{ "icearea", CONST_ME_ICEAREA },
+	{ "icetornado", CONST_ME_ICETORNADO },
+	{ "iceattack", CONST_ME_ICEATTACK },
+	{ "insects", CONST_ME_INSECTS },
+	{ "mortarea", CONST_ME_MORTAREA },
+	{ "mirrorhorizontal", CONST_ME_MIRRORHORIZONTAL },
+	{ "mirrorvertical", CONST_ME_MIRRORVERTICAL },
+	{ "magicpowder", CONST_ME_MAGIC_POWDER },
+	{ "orcshaman", CONST_ME_ORCSHAMAN },
+	{ "orcshamanfire", CONST_ME_ORCSHAMAN_FIRE },
+	{ "orangeenergyspark", CONST_ME_ORANGE_ENERGY_SPARK },
+	{ "orangefireworks", CONST_ME_ORANGE_FIREWORKS },
+	{ "poff", CONST_ME_POFF },
+	{ "poison", CONST_ME_POISONAREA },
+	{ "purplenote", CONST_ME_SOUND_PURPLE },
+	{ "purpleenergy", CONST_ME_PURPLEENERGY },
+	{ "plantattack", CONST_ME_PLANTATTACK },
+	{ "plugingfish", CONST_ME_PLUNGING_FISH },
+	{ "purplesmoke", CONST_ME_PURPLESMOKE },
+	{ "pixieexplosion", CONST_ME_PIXIE_EXPLOSION },
+	{ "pixiecoming", CONST_ME_PIXIE_COMING },
+	{ "pixiegoing", CONST_ME_PIXIE_GOING },
+	{ "pinkbeam", CONST_ME_PINK_BEAM },
+	{ "pinkvortex", CONST_ME_PINK_VORTEX },
+	{ "pinkenergyspark", CONST_ME_PINK_ENERGY_SPARK },
+	{ "pinkfireworks", CONST_ME_PINK_FIREWORKS },
+	{ "redspark", CONST_ME_DRAWBLOOD },
+	{ "redshimmer", CONST_ME_MAGIC_RED },
+	{ "rednote", CONST_ME_SOUND_RED },
+	{ "redfirework", CONST_ME_FIREWORK_RED },
+	{ "redsmoke", CONST_ME_REDSMOKE },
+	{ "ragiazbonecapsule", CONST_ME_RAGIAZ_BONECAPSULE },
+	{ "stun", CONST_ME_STUN },
+	{ "sleep", CONST_ME_SLEEP },
+	{ "smallclouds", CONST_ME_SMALLCLOUDS },
+	{ "stones", CONST_ME_STONES },
+	{ "smallplants", CONST_ME_SMALLPLANTS },
+	{ "skullhorizontal", CONST_ME_SKULLHORIZONTAL },
+	{ "skullvertical", CONST_ME_SKULLVERTICAL },
+	{ "stepshorizontal", CONST_ME_STEPSHORIZONTAL },
+	{ "stepsvertical", CONST_ME_STEPSVERTICAL },
+	{ "smoke", CONST_ME_SMOKE },
+	{ "storm", CONST_ME_STORM },
+	{ "stonestorm", CONST_ME_STONE_STORM },
+	{ "teleport", CONST_ME_TELEPORT },
+	{ "tutorialarrow", CONST_ME_TUTORIALARROW },
+	{ "tutorialsquare", CONST_ME_TUTORIALSQUARE },
+	{ "thunder", CONST_ME_THUNDER },
+	{ "treasuremap", CONST_ME_TREASURE_MAP },
+	{ "yellowspark", CONST_ME_BLOCKHIT },
+	{ "yellowbubble", CONST_ME_YELLOW_RINGS },
+	{ "yellownote", CONST_ME_SOUND_YELLOW },
+	{ "yellowfirework", CONST_ME_FIREWORK_YELLOW },
+	{ "yellowenergy", CONST_ME_YELLOWENERGY },
+	{ "yalaharighost", CONST_ME_YALAHARIGHOST },
+	{ "yellowsmoke", CONST_ME_YELLOWSMOKE },
+	{ "yellowenergyspark", CONST_ME_YELLOW_ENERGY_SPARK },
+	{ "whitenote", CONST_ME_SOUND_WHITE },
+	{ "watercreature", CONST_ME_WATERCREATURE },
+	{ "watersplash", CONST_ME_WATERSPLASH },
+	{ "whiteenergyspark", CONST_ME_WHITE_ENERGY_SPARK },
+	{ "fatal", CONST_ME_FATAL },
+	{ "dodge", CONST_ME_DODGE },
+	{ "hourglass", CONST_ME_HOURGLASS },
+	{ "ferumbras1", CONST_ME_FERUMBRAS_1 },
+	{ "gazharagoth", CONST_ME_GAZHARAGOTH },
+	{ "madmage", CONST_ME_MAD_MAGE },
+	{ "horestis", CONST_ME_HORESTIS },
+	{ "devovorga", CONST_ME_DEVOVORGA },
+	{ "ferumbras2", CONST_ME_FERUMBRAS_2 },
 };
 
 ShootTypeNames shootTypeNames = {
-	{"arrow",				CONST_ANI_ARROW},
-	{"bolt",				CONST_ANI_BOLT},
-	{"burstarrow",			CONST_ANI_BURSTARROW},
-	{"cake",				CONST_ANI_CAKE},
-	{"crystallinearrow",	CONST_ANI_CRYSTALLINEARROW},
-	{"drillbolt",			CONST_ANI_DRILLBOLT},
-	{"death",				CONST_ANI_DEATH},
-	{"energy",				CONST_ANI_ENERGY},
-	{"enchantedspear",		CONST_ANI_ENCHANTEDSPEAR},
-	{"etherealspear",		CONST_ANI_ETHEREALSPEAR},
-	{"eartharrow",			CONST_ANI_EARTHARROW},
-	{"explosion",			CONST_ANI_EXPLOSION},
-	{"earth",				CONST_ANI_EARTH},
-	{"energyball",			CONST_ANI_ENERGYBALL},
-	{"envenomedarrow",		CONST_ANI_ENVENOMEDARROW},
-	{"fire",				CONST_ANI_FIRE},
-	{"flasharrow",			CONST_ANI_FLASHARROW},
-	{"flammingarrow",		CONST_ANI_FLAMMINGARROW},
-	{"greenstar",			CONST_ANI_GREENSTAR},
-	{"gloothspear",			CONST_ANI_GLOOTHSPEAR},
-	{"huntingspear",		CONST_ANI_HUNTINGSPEAR},
-	{"holy",				CONST_ANI_HOLY},
-	{"infernalbolt",		CONST_ANI_INFERNALBOLT},
-	{"ice",					CONST_ANI_ICE},
-	{"largerock",			CONST_ANI_LARGEROCK},
-	{"leafstar",			CONST_ANI_LEAFSTAR},
-	{"onyxarrow",			CONST_ANI_ONYXARROW},
-	{"redstar",				CONST_ANI_REDSTAR},
-	{"royalspear",			CONST_ANI_ROYALSPEAR},
-	{"spear",				CONST_ANI_SPEAR},
-	{"sniperarrow",			CONST_ANI_SNIPERARROW},
-	{"smallstone",			CONST_ANI_SMALLSTONE},
-	{"smallice",			CONST_ANI_SMALLICE},
-	{"smallholy",			CONST_ANI_SMALLHOLY},
-	{"smallearth",			CONST_ANI_SMALLEARTH},
-	{"snowball",			CONST_ANI_SNOWBALL},
-	{"suddendeath",			CONST_ANI_SUDDENDEATH},
-	{"shiverarrow",			CONST_ANI_SHIVERARROW},
-	{"simplearrow",			CONST_ANI_SIMPLEARROW},
-	{"poisonarrow",			CONST_ANI_POISONARROW},
-	{"powerbolt",			CONST_ANI_POWERBOLT},
-	{"poison",				CONST_ANI_POISON},
-	{"prismaticbolt",		CONST_ANI_PRISMATICBOLT},
-	{"piercingbolt",		CONST_ANI_PIERCINGBOLT},
-	{"throwingstar",		CONST_ANI_THROWINGSTAR},
-	{"vortexbolt",			CONST_ANI_VORTEXBOLT},
-	{"throwingknife",		CONST_ANI_THROWINGKNIFE},
-	{"tarsalarrow",			CONST_ANI_TARSALARROW},
-	{"whirlwindsword",		CONST_ANI_WHIRLWINDSWORD},
-	{"whirlwindaxe",		CONST_ANI_WHIRLWINDAXE},
-	{"whirlwindclub",		CONST_ANI_WHIRLWINDCLUB},
-	{"diamondarrow",		CONST_ANI_DIAMONDARROW},
-	{"spectralbolt",		CONST_ANI_SPECTRALBOLT},
-	{"royalstar",			CONST_ANI_ROYALSTAR},
+	{ "arrow", CONST_ANI_ARROW },
+	{ "bolt", CONST_ANI_BOLT },
+	{ "burstarrow", CONST_ANI_BURSTARROW },
+	{ "cake", CONST_ANI_CAKE },
+	{ "crystallinearrow", CONST_ANI_CRYSTALLINEARROW },
+	{ "drillbolt", CONST_ANI_DRILLBOLT },
+	{ "death", CONST_ANI_DEATH },
+	{ "energy", CONST_ANI_ENERGY },
+	{ "enchantedspear", CONST_ANI_ENCHANTEDSPEAR },
+	{ "etherealspear", CONST_ANI_ETHEREALSPEAR },
+	{ "eartharrow", CONST_ANI_EARTHARROW },
+	{ "explosion", CONST_ANI_EXPLOSION },
+	{ "earth", CONST_ANI_EARTH },
+	{ "energyball", CONST_ANI_ENERGYBALL },
+	{ "envenomedarrow", CONST_ANI_ENVENOMEDARROW },
+	{ "fire", CONST_ANI_FIRE },
+	{ "flasharrow", CONST_ANI_FLASHARROW },
+	{ "flammingarrow", CONST_ANI_FLAMMINGARROW },
+	{ "greenstar", CONST_ANI_GREENSTAR },
+	{ "gloothspear", CONST_ANI_GLOOTHSPEAR },
+	{ "huntingspear", CONST_ANI_HUNTINGSPEAR },
+	{ "holy", CONST_ANI_HOLY },
+	{ "infernalbolt", CONST_ANI_INFERNALBOLT },
+	{ "ice", CONST_ANI_ICE },
+	{ "largerock", CONST_ANI_LARGEROCK },
+	{ "leafstar", CONST_ANI_LEAFSTAR },
+	{ "onyxarrow", CONST_ANI_ONYXARROW },
+	{ "redstar", CONST_ANI_REDSTAR },
+	{ "royalspear", CONST_ANI_ROYALSPEAR },
+	{ "spear", CONST_ANI_SPEAR },
+	{ "sniperarrow", CONST_ANI_SNIPERARROW },
+	{ "smallstone", CONST_ANI_SMALLSTONE },
+	{ "smallice", CONST_ANI_SMALLICE },
+	{ "smallholy", CONST_ANI_SMALLHOLY },
+	{ "smallearth", CONST_ANI_SMALLEARTH },
+	{ "snowball", CONST_ANI_SNOWBALL },
+	{ "suddendeath", CONST_ANI_SUDDENDEATH },
+	{ "shiverarrow", CONST_ANI_SHIVERARROW },
+	{ "simplearrow", CONST_ANI_SIMPLEARROW },
+	{ "poisonarrow", CONST_ANI_POISONARROW },
+	{ "powerbolt", CONST_ANI_POWERBOLT },
+	{ "poison", CONST_ANI_POISON },
+	{ "prismaticbolt", CONST_ANI_PRISMATICBOLT },
+	{ "piercingbolt", CONST_ANI_PIERCINGBOLT },
+	{ "throwingstar", CONST_ANI_THROWINGSTAR },
+	{ "vortexbolt", CONST_ANI_VORTEXBOLT },
+	{ "throwingknife", CONST_ANI_THROWINGKNIFE },
+	{ "tarsalarrow", CONST_ANI_TARSALARROW },
+	{ "whirlwindsword", CONST_ANI_WHIRLWINDSWORD },
+	{ "whirlwindaxe", CONST_ANI_WHIRLWINDAXE },
+	{ "whirlwindclub", CONST_ANI_WHIRLWINDCLUB },
+	{ "diamondarrow", CONST_ANI_DIAMONDARROW },
+	{ "spectralbolt", CONST_ANI_SPECTRALBOLT },
+	{ "royalstar", CONST_ANI_ROYALSTAR },
 };
 
 CombatTypeNames combatTypeNames = {
-	{COMBAT_DROWNDAMAGE,			"drown"			},
-	{COMBAT_DEATHDAMAGE,			"death"			},
-	{COMBAT_ENERGYDAMAGE,			"energy"		},
-	{COMBAT_EARTHDAMAGE,			"earth"			},
-	{COMBAT_FIREDAMAGE,				"fire"			},
-	{COMBAT_HEALING,					"healing"		},
-	{COMBAT_HOLYDAMAGE,				"holy"			},
-	{COMBAT_ICEDAMAGE,				"ice"				},
-	{COMBAT_UNDEFINEDDAMAGE,	"undefined"	},
-	{COMBAT_LIFEDRAIN,				"lifedrain"	},
-	{COMBAT_MANADRAIN,				"manadrain"	},
-	{COMBAT_PHYSICALDAMAGE, 	"physical"	},
+	{ COMBAT_DROWNDAMAGE, "drown" },
+	{ COMBAT_DEATHDAMAGE, "death" },
+	{ COMBAT_ENERGYDAMAGE, "energy" },
+	{ COMBAT_EARTHDAMAGE, "earth" },
+	{ COMBAT_FIREDAMAGE, "fire" },
+	{ COMBAT_HEALING, "healing" },
+	{ COMBAT_HOLYDAMAGE, "holy" },
+	{ COMBAT_ICEDAMAGE, "ice" },
+	{ COMBAT_UNDEFINEDDAMAGE, "undefined" },
+	{ COMBAT_LIFEDRAIN, "lifedrain" },
+	{ COMBAT_MANADRAIN, "manadrain" },
+	{ COMBAT_PHYSICALDAMAGE, "physical" },
 };
 
 AmmoTypeNames ammoTypeNames = {
-	{"arrow",				AMMO_ARROW},
-	{"bolt",				AMMO_BOLT},
-	{"poisonarrow",			AMMO_ARROW},
-	{"burstarrow",			AMMO_ARROW},
-	{"enchantedspear",		AMMO_SPEAR},
-	{"etherealspear",		AMMO_SPEAR},
-	{"eartharrow",			AMMO_ARROW},
-	{"flasharrow",			AMMO_ARROW},
-	{"flammingarrow",		AMMO_ARROW},
-	{"huntingspear",		AMMO_SPEAR},
-	{"infernalbolt",		AMMO_BOLT},
-	{"largerock",			AMMO_STONE},
-	{"onyxarrow",			AMMO_ARROW},
-	{"powerbolt",			AMMO_BOLT},
-	{"piercingbolt",		AMMO_BOLT},
-	{"royalspear",			AMMO_SPEAR},
-	{"snowball",			AMMO_SNOWBALL},
-	{"smallstone",			AMMO_STONE},
-	{"spear",				AMMO_SPEAR},
-	{"sniperarrow",			AMMO_ARROW},
-	{"shiverarrow",			AMMO_ARROW},
-	{"throwingstar",		AMMO_THROWINGSTAR},
-	{"throwingknife",		AMMO_THROWINGKNIFE},
-	{"diamondarrow",		AMMO_ARROW},
-	{"spectralbolt",		AMMO_BOLT},
+	{ "arrow", AMMO_ARROW },
+	{ "bolt", AMMO_BOLT },
+	{ "poisonarrow", AMMO_ARROW },
+	{ "burstarrow", AMMO_ARROW },
+	{ "enchantedspear", AMMO_SPEAR },
+	{ "etherealspear", AMMO_SPEAR },
+	{ "eartharrow", AMMO_ARROW },
+	{ "flasharrow", AMMO_ARROW },
+	{ "flammingarrow", AMMO_ARROW },
+	{ "huntingspear", AMMO_SPEAR },
+	{ "infernalbolt", AMMO_BOLT },
+	{ "largerock", AMMO_STONE },
+	{ "onyxarrow", AMMO_ARROW },
+	{ "powerbolt", AMMO_BOLT },
+	{ "piercingbolt", AMMO_BOLT },
+	{ "royalspear", AMMO_SPEAR },
+	{ "snowball", AMMO_SNOWBALL },
+	{ "smallstone", AMMO_STONE },
+	{ "spear", AMMO_SPEAR },
+	{ "sniperarrow", AMMO_ARROW },
+	{ "shiverarrow", AMMO_ARROW },
+	{ "throwingstar", AMMO_THROWINGSTAR },
+	{ "throwingknife", AMMO_THROWINGKNIFE },
+	{ "diamondarrow", AMMO_ARROW },
+	{ "spectralbolt", AMMO_BOLT },
 
 };
 
 WeaponActionNames weaponActionNames = {
-	{"move",				WEAPONACTION_MOVE},
-	{"removecharge",		WEAPONACTION_REMOVECHARGE},
-	{"removecount",			WEAPONACTION_REMOVECOUNT},
+	{ "move", WEAPONACTION_MOVE },
+	{ "removecharge", WEAPONACTION_REMOVECHARGE },
+	{ "removecount", WEAPONACTION_REMOVECOUNT },
 };
 
 SkullNames skullNames = {
-	{"black",				SKULL_BLACK},
-	{"green",				SKULL_GREEN},
-	{"none",				SKULL_NONE},
-	{"orange",				SKULL_ORANGE},
-	{"red",					SKULL_RED},
-	{"yellow",				SKULL_YELLOW},
-	{"white",				SKULL_WHITE},
+	{ "black", SKULL_BLACK },
+	{ "green", SKULL_GREEN },
+	{ "none", SKULL_NONE },
+	{ "orange", SKULL_ORANGE },
+	{ "red", SKULL_RED },
+	{ "yellow", SKULL_YELLOW },
+	{ "white", SKULL_WHITE },
 };
 
 const ImbuementTypeNames imbuementTypeNames = {
-	{"elemental damage", IMBUEMENT_ELEMENTAL_DAMAGE},
-	{"life leech", IMBUEMENT_LIFE_LEECH},
-	{"mana leech", IMBUEMENT_MANA_LEECH},
-	{"critical hit", IMBUEMENT_CRITICAL_HIT},
-	{"elemental protection death", IMBUEMENT_ELEMENTAL_PROTECTION_DEATH},
-	{"elemental protection earth", IMBUEMENT_ELEMENTAL_PROTECTION_EARTH},
-	{"elemental protection fire", IMBUEMENT_ELEMENTAL_PROTECTION_FIRE},
-	{"elemental protection ice", IMBUEMENT_ELEMENTAL_PROTECTION_ICE},
-	{"elemental protection energy", IMBUEMENT_ELEMENTAL_PROTECTION_ENERGY},
-	{"elemental protection holy", IMBUEMENT_ELEMENTAL_PROTECTION_HOLY},
-	{"increase speed", IMBUEMENT_INCREASE_SPEED},
-	{"skillboost axe", IMBUEMENT_SKILLBOOST_AXE},
-	{"skillboost sword", IMBUEMENT_SKILLBOOST_SWORD},
-	{"skillboost club", IMBUEMENT_SKILLBOOST_CLUB},
-	{"skillboost shielding", IMBUEMENT_SKILLBOOST_SHIELDING},
-	{"skillboost distance", IMBUEMENT_SKILLBOOST_DISTANCE},
-	{"skillboost magic level", IMBUEMENT_SKILLBOOST_MAGIC_LEVEL},
-	{"increase capacity", IMBUEMENT_INCREASE_CAPACITY}
+	{ "elemental damage", IMBUEMENT_ELEMENTAL_DAMAGE },
+	{ "life leech", IMBUEMENT_LIFE_LEECH },
+	{ "mana leech", IMBUEMENT_MANA_LEECH },
+	{ "critical hit", IMBUEMENT_CRITICAL_HIT },
+	{ "elemental protection death", IMBUEMENT_ELEMENTAL_PROTECTION_DEATH },
+	{ "elemental protection earth", IMBUEMENT_ELEMENTAL_PROTECTION_EARTH },
+	{ "elemental protection fire", IMBUEMENT_ELEMENTAL_PROTECTION_FIRE },
+	{ "elemental protection ice", IMBUEMENT_ELEMENTAL_PROTECTION_ICE },
+	{ "elemental protection energy", IMBUEMENT_ELEMENTAL_PROTECTION_ENERGY },
+	{ "elemental protection holy", IMBUEMENT_ELEMENTAL_PROTECTION_HOLY },
+	{ "increase speed", IMBUEMENT_INCREASE_SPEED },
+	{ "skillboost axe", IMBUEMENT_SKILLBOOST_AXE },
+	{ "skillboost sword", IMBUEMENT_SKILLBOOST_SWORD },
+	{ "skillboost club", IMBUEMENT_SKILLBOOST_CLUB },
+	{ "skillboost shielding", IMBUEMENT_SKILLBOOST_SHIELDING },
+	{ "skillboost distance", IMBUEMENT_SKILLBOOST_DISTANCE },
+	{ "skillboost magic level", IMBUEMENT_SKILLBOOST_MAGIC_LEVEL },
+	{ "increase capacity", IMBUEMENT_INCREASE_CAPACITY }
 };
 
 /**
@@ -748,15 +743,14 @@ const ImbuementTypeNames imbuementTypeNames = {
  * It will be dropped with monsters. Use RespawnPeriod_t instead.
  */
 SpawnTypeNames spawnTypeNames = {
-	{"all",					RESPAWN_IN_ALL },
-	{"day",					RESPAWN_IN_DAY },
-	{"dayandcave",			RESPAWN_IN_DAY_CAVE },
-	{"night",				RESPAWN_IN_NIGHT },
-	{"nightandcave",		RESPAWN_IN_NIGHT_CAVE },
+	{ "all", RESPAWN_IN_ALL },
+	{ "day", RESPAWN_IN_DAY },
+	{ "dayandcave", RESPAWN_IN_DAY_CAVE },
+	{ "night", RESPAWN_IN_NIGHT },
+	{ "nightandcave", RESPAWN_IN_NIGHT_CAVE },
 };
 
-MagicEffectClasses getMagicEffect(const std::string& strValue)
-{
+MagicEffectClasses getMagicEffect(const std::string &strValue) {
 	auto magicEffect = magicEffectNames.find(strValue);
 	if (magicEffect != magicEffectNames.end()) {
 		return magicEffect->second;
@@ -764,8 +758,7 @@ MagicEffectClasses getMagicEffect(const std::string& strValue)
 	return CONST_ME_NONE;
 }
 
-ShootType_t getShootType(const std::string& strValue)
-{
+ShootType_t getShootType(const std::string &strValue) {
 	auto shootType = shootTypeNames.find(strValue);
 	if (shootType != shootTypeNames.end()) {
 		return shootType->second;
@@ -773,8 +766,7 @@ ShootType_t getShootType(const std::string& strValue)
 	return CONST_ANI_NONE;
 }
 
-std::string getCombatName(CombatType_t combatType)
-{
+std::string getCombatName(CombatType_t combatType) {
 	auto combatName = combatTypeNames.find(combatType);
 	if (combatName != combatTypeNames.end()) {
 		return combatName->second;
@@ -782,17 +774,15 @@ std::string getCombatName(CombatType_t combatType)
 	return "unknown";
 }
 
-CombatType_t getCombatType(const std::string& combatname)
-{
-	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](std::pair<CombatType_t, std::string> const& pair) {
+CombatType_t getCombatType(const std::string &combatname) {
+	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](const std::pair<CombatType_t, std::string> &pair) {
 		return pair.second == combatname;
 	});
 
 	return it != combatTypeNames.end() ? it->first : COMBAT_NONE;
 }
 
-Ammo_t getAmmoType(const std::string& strValue)
-{
+Ammo_t getAmmoType(const std::string &strValue) {
 	auto ammoType = ammoTypeNames.find(strValue);
 	if (ammoType != ammoTypeNames.end()) {
 		return ammoType->second;
@@ -800,8 +790,7 @@ Ammo_t getAmmoType(const std::string& strValue)
 	return AMMO_NONE;
 }
 
-WeaponAction_t getWeaponAction(const std::string& strValue)
-{
+WeaponAction_t getWeaponAction(const std::string &strValue) {
 	auto weaponAction = weaponActionNames.find(strValue);
 	if (weaponAction != weaponActionNames.end()) {
 		return weaponAction->second;
@@ -809,8 +798,7 @@ WeaponAction_t getWeaponAction(const std::string& strValue)
 	return WEAPONACTION_NONE;
 }
 
-Skulls_t getSkullType(const std::string& strValue)
-{
+Skulls_t getSkullType(const std::string &strValue) {
 	auto skullType = skullNames.find(strValue);
 	if (skullType != skullNames.end()) {
 		return skullType->second;
@@ -818,8 +806,7 @@ Skulls_t getSkullType(const std::string& strValue)
 	return SKULL_NONE;
 }
 
-ImbuementTypes_t getImbuementType(const std::string& strValue)
-{
+ImbuementTypes_t getImbuementType(const std::string &strValue) {
 	auto imbuementType = imbuementTypeNames.find(strValue);
 	if (imbuementType != imbuementTypeNames.end()) {
 		return imbuementType->second;
@@ -831,8 +818,7 @@ ImbuementTypes_t getImbuementType(const std::string& strValue)
  * @Deprecated
  * It will be dropped with monsters. Use RespawnPeriod_t instead.
  */
-SpawnType_t getSpawnType(const std::string& strValue)
-{
+SpawnType_t getSpawnType(const std::string &strValue) {
 	auto spawnType = spawnTypeNames.find(strValue);
 	if (spawnType != spawnTypeNames.end()) {
 		return spawnType->second;
@@ -840,8 +826,7 @@ SpawnType_t getSpawnType(const std::string& strValue)
 	return RESPAWN_IN_ALL;
 }
 
-std::string getSkillName(uint8_t skillid)
-{
+std::string getSkillName(uint8_t skillid) {
 	switch (skillid) {
 		case SKILL_FIST:
 			return "fist fighting";
@@ -893,8 +878,7 @@ std::string getSkillName(uint8_t skillid)
 	}
 }
 
-uint32_t adlerChecksum(const uint8_t* data, size_t length)
-{
+uint32_t adlerChecksum(const uint8_t* data, size_t length) {
 	if (length > NETWORKMESSAGE_MAXSIZE) {
 		return 0;
 	}
@@ -919,9 +903,8 @@ uint32_t adlerChecksum(const uint8_t* data, size_t length)
 	return (b << 16) | a;
 }
 
-std::string ucfirst(std::string str)
-{
-	for (char& i : str) {
+std::string ucfirst(std::string str) {
+	for (char &i : str) {
 		if (i != ' ') {
 			i = toupper(i);
 			break;
@@ -930,8 +913,7 @@ std::string ucfirst(std::string str)
 	return str;
 }
 
-std::string ucwords(std::string str)
-{
+std::string ucwords(std::string str) {
 	size_t strLength = str.length();
 	if (strLength == 0) {
 		return str;
@@ -947,8 +929,7 @@ std::string ucwords(std::string str)
 	return str;
 }
 
-bool booleanString(const std::string& str)
-{
+bool booleanString(const std::string &str) {
 	if (str.empty()) {
 		return false;
 	}
@@ -957,21 +938,26 @@ bool booleanString(const std::string& str)
 	return ch != 'f' && ch != 'n' && ch != '0';
 }
 
-std::string getWeaponName(WeaponType_t weaponType)
-{
+std::string getWeaponName(WeaponType_t weaponType) {
 	switch (weaponType) {
-		case WEAPON_SWORD: return "sword";
-		case WEAPON_CLUB: return "club";
-		case WEAPON_AXE: return "axe";
-		case WEAPON_DISTANCE: return "distance";
-		case WEAPON_WAND: return "wand";
-		case WEAPON_AMMO: return "ammunition";
-		default: return std::string();
+		case WEAPON_SWORD:
+			return "stabbing weapon";
+		case WEAPON_CLUB:
+			return "blunt instrument";
+		case WEAPON_AXE:
+			return "cutting weapon";
+		case WEAPON_DISTANCE:
+			return "firearm";
+		case WEAPON_WAND:
+			return "wand/rod";
+		case WEAPON_MISSILE:
+			return "missile";
+		default:
+			return std::string();
 	}
 }
 
-size_t combatTypeToIndex(CombatType_t combatType)
-{
+size_t combatTypeToIndex(CombatType_t combatType) {
 	switch (combatType) {
 		case COMBAT_PHYSICALDAMAGE:
 			return 0;
@@ -1002,67 +988,64 @@ size_t combatTypeToIndex(CombatType_t combatType)
 	}
 }
 
-CombatType_t indexToCombatType(size_t v)
-{
+CombatType_t indexToCombatType(size_t v) {
 	return static_cast<CombatType_t>(1 << v);
 }
 
-ItemAttrTypes stringToItemAttribute(const std::string& str)
-{
+ItemAttribute_t stringToItemAttribute(const std::string &str) {
 	if (str == "aid") {
-		return ITEM_ATTRIBUTE_ACTIONID;
+		return ItemAttribute_t::ACTIONID;
 	} else if (str == "uid") {
-		return ITEM_ATTRIBUTE_UNIQUEID;
+		return ItemAttribute_t::UNIQUEID;
 	} else if (str == "description") {
-		return ITEM_ATTRIBUTE_DESCRIPTION;
+		return ItemAttribute_t::DESCRIPTION;
 	} else if (str == "text") {
-		return ITEM_ATTRIBUTE_TEXT;
+		return ItemAttribute_t::TEXT;
 	} else if (str == "date") {
-		return ITEM_ATTRIBUTE_DATE;
+		return ItemAttribute_t::DATE;
 	} else if (str == "writer") {
-		return ITEM_ATTRIBUTE_WRITER;
+		return ItemAttribute_t::WRITER;
 	} else if (str == "name") {
-		return ITEM_ATTRIBUTE_NAME;
+		return ItemAttribute_t::NAME;
 	} else if (str == "article") {
-		return ITEM_ATTRIBUTE_ARTICLE;
+		return ItemAttribute_t::ARTICLE;
 	} else if (str == "pluralname") {
-		return ITEM_ATTRIBUTE_PLURALNAME;
+		return ItemAttribute_t::PLURALNAME;
 	} else if (str == "weight") {
-		return ITEM_ATTRIBUTE_WEIGHT;
+		return ItemAttribute_t::WEIGHT;
 	} else if (str == "attack") {
-		return ITEM_ATTRIBUTE_ATTACK;
+		return ItemAttribute_t::ATTACK;
 	} else if (str == "defense") {
-		return ITEM_ATTRIBUTE_DEFENSE;
+		return ItemAttribute_t::DEFENSE;
 	} else if (str == "extradefense") {
-		return ITEM_ATTRIBUTE_EXTRADEFENSE;
+		return ItemAttribute_t::EXTRADEFENSE;
 	} else if (str == "armor") {
-		return ITEM_ATTRIBUTE_ARMOR;
+		return ItemAttribute_t::ARMOR;
 	} else if (str == "hitchance") {
-		return ITEM_ATTRIBUTE_HITCHANCE;
+		return ItemAttribute_t::HITCHANCE;
 	} else if (str == "shootrange") {
-		return ITEM_ATTRIBUTE_SHOOTRANGE;
+		return ItemAttribute_t::SHOOTRANGE;
 	} else if (str == "owner") {
-		return ITEM_ATTRIBUTE_OWNER;
+		return ItemAttribute_t::OWNER;
 	} else if (str == "duration") {
-		return ITEM_ATTRIBUTE_DURATION;
+		return ItemAttribute_t::DURATION;
 	} else if (str == "decaystate") {
-		return ITEM_ATTRIBUTE_DECAYSTATE;
+		return ItemAttribute_t::DECAYSTATE;
 	} else if (str == "corpseowner") {
-		return ITEM_ATTRIBUTE_CORPSEOWNER;
+		return ItemAttribute_t::CORPSEOWNER;
 	} else if (str == "charges") {
-		return ITEM_ATTRIBUTE_CHARGES;
+		return ItemAttribute_t::CHARGES;
 	} else if (str == "fluidtype") {
-		return ITEM_ATTRIBUTE_FLUIDTYPE;
+		return ItemAttribute_t::FLUIDTYPE;
 	} else if (str == "doorid") {
-		return ITEM_ATTRIBUTE_DOORID;
+		return ItemAttribute_t::DOORID;
 	} else if (str == "timestamp") {
-		return ITEM_ATTRIBUTE_DURATION_TIMESTAMP;
+		return ItemAttribute_t::DURATION_TIMESTAMP;
 	}
-	return ITEM_ATTRIBUTE_NONE;
+	return ItemAttribute_t::NONE;
 }
 
-std::string getFirstLine(const std::string& str)
-{
+std::string getFirstLine(const std::string &str) {
 	std::string firstLine;
 	firstLine.reserve(str.length());
 	for (const char c : str) {
@@ -1074,8 +1057,7 @@ std::string getFirstLine(const std::string& str)
 	return firstLine;
 }
 
-const char* getReturnMessage(ReturnValue value)
-{
+const char* getReturnMessage(ReturnValue value) {
 	switch (value) {
 		case RETURNVALUE_NOERROR:
 			return "No error.";
@@ -1325,13 +1307,11 @@ const char* getReturnMessage(ReturnValue value)
 	}
 }
 
-int64_t OTSYS_TIME()
-{
+int64_t OTSYS_TIME() {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-SpellGroup_t stringToSpellGroup(const std::string &value)
-{
+SpellGroup_t stringToSpellGroup(const std::string &value) {
 	std::string tmpStr = asLowerCaseString(value);
 	if (tmpStr == "attack" || tmpStr == "1") {
 		return SPELLGROUP_ATTACK;
@@ -1358,14 +1338,13 @@ SpellGroup_t stringToSpellGroup(const std::string &value)
  * capitalize the first letter of every word in source
  * @param source
  */
-void capitalizeWords(std::string& source)
-{
+void capitalizeWords(std::string &source) {
 	toLowerCaseString(source);
-	uint8_t size = (uint8_t) source.size();
-	for(uint8_t i=0; i< size; i++) {
-		if(i==0) {
+	uint8_t size = (uint8_t)source.size();
+	for (uint8_t i = 0; i < size; i++) {
+		if (i == 0) {
 			source[i] = (char)toupper(source[i]);
-		} else if(source[i-1] == ' ' || source[i-1] == '\'') {
+		} else if (source[i - 1] == ' ' || source[i - 1] == '\'') {
 			source[i] = (char)toupper(source[i]);
 		}
 	}
@@ -1375,17 +1354,15 @@ void capitalizeWords(std::string& source)
  * @details
  * Prevents the console from closing so there is time to read the error information
  * Then can press any key to close
-*/
-void consoleHandlerExit()
-{
+ */
+void consoleHandlerExit() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
 	getchar();
 	return;
 }
 
-NameEval_t validateName(const std::string &name)
-{
-	StringVector prohibitedWords = {"owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "cm", "gm", "tutor", "counsellor", "god"};
+NameEval_t validateName(const std::string &name) {
+	StringVector prohibitedWords = { "owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "cm", "gm", "tutor", "counsellor", "god" };
 	StringVector toks;
 	std::regex regexValidChars("^[a-zA-Z' ]+$");
 
@@ -1394,18 +1371,18 @@ NameEval_t validateName(const std::string &name)
 	std::istream_iterator<std::string> end;
 	std::copy(begin, end, std::back_inserter(toks));
 
-	if(name.length()<3 || name.length()>14) {
+	if (name.length() < 3 || name.length() > 14) {
 		return INVALID_LENGTH;
 	}
 
-	if(!std::regex_match(name, regexValidChars)) { //invalid chars in name
+	if (!std::regex_match(name, regexValidChars)) { // invalid chars in name
 		return INVALID_CHARACTER;
 	}
 
-	for(std::string str : toks) {
-		if(str.length()<2)
+	for (std::string str : toks) {
+		if (str.length() < 2)
 			return INVALID_TOKEN_LENGTH;
-		else if(std::find(prohibitedWords.begin(), prohibitedWords.end(),str) != prohibitedWords.end()) { //searching for prohibited words
+		else if (std::find(prohibitedWords.begin(), prohibitedWords.end(), str) != prohibitedWords.end()) { // searching for prohibited words
 			return INVALID_FORBIDDEN;
 		}
 	}
@@ -1413,49 +1390,72 @@ NameEval_t validateName(const std::string &name)
 	return VALID;
 }
 
-bool isCaskItem(uint16_t itemId)
-{
-	return (itemId >= ITEM_HEALTH_CASK_START && itemId <= ITEM_HEALTH_CASK_END) ||
-		(itemId >= ITEM_MANA_CASK_START && itemId <= ITEM_MANA_CASK_END) ||
-		(itemId >= ITEM_SPIRIT_CASK_START && itemId <= ITEM_SPIRIT_CASK_END);
+bool isCaskItem(uint16_t itemId) {
+	return (itemId >= ITEM_HEALTH_CASK_START && itemId <= ITEM_HEALTH_CASK_END) || (itemId >= ITEM_MANA_CASK_START && itemId <= ITEM_MANA_CASK_END) || (itemId >= ITEM_SPIRIT_CASK_START && itemId <= ITEM_SPIRIT_CASK_END);
 }
 
-std::string getObjectCategoryName(ObjectCategory_t category)
-{
+std::string getObjectCategoryName(ObjectCategory_t category) {
 	switch (category) {
-		case OBJECTCATEGORY_ARMORS: return "Armors";
-		case OBJECTCATEGORY_NECKLACES: return "Amulets";
-		case OBJECTCATEGORY_BOOTS: return "Boots";
-		case OBJECTCATEGORY_CONTAINERS: return "Containers";
-		case OBJECTCATEGORY_DECORATION: return "Decoration";
-		case OBJECTCATEGORY_FOOD: return "Food";
-		case OBJECTCATEGORY_HELMETS: return "Helmets";
-		case OBJECTCATEGORY_LEGS: return "Legs";
-		case OBJECTCATEGORY_OTHERS: return "Others";
-		case OBJECTCATEGORY_POTIONS: return "Potions";
-		case OBJECTCATEGORY_RINGS: return "Rings";
-		case OBJECTCATEGORY_RUNES: return "Runes";
-		case OBJECTCATEGORY_SHIELDS: return "Shields";
-		case OBJECTCATEGORY_TOOLS: return "Tools";
-		case OBJECTCATEGORY_VALUABLES: return "Valuables";
-		case OBJECTCATEGORY_AMMO: return "Weapons: Ammunition";
-		case OBJECTCATEGORY_AXES: return "Weapons: Axes";
-		case OBJECTCATEGORY_CLUBS: return "Weapons: Clubs";
-		case OBJECTCATEGORY_DISTANCEWEAPONS: return "Weapons: Distance";
-		case OBJECTCATEGORY_SWORDS: return "Weapons: Swords";
-		case OBJECTCATEGORY_WANDS: return "Weapons: Wands";
-		case OBJECTCATEGORY_PREMIUMSCROLLS: return "Premium Scrolls";
-		case OBJECTCATEGORY_TIBIACOINS: return "Tibia Coins";
-		case OBJECTCATEGORY_CREATUREPRODUCTS: return "Creature Products";
-		case OBJECTCATEGORY_STASHRETRIEVE: return "Stash Retrieve";
-		case OBJECTCATEGORY_GOLD: return "Gold";
-		case OBJECTCATEGORY_DEFAULT: return "Unassigned Loot";
-		default: return std::string();
+		case OBJECTCATEGORY_ARMORS:
+			return "Armors";
+		case OBJECTCATEGORY_NECKLACES:
+			return "Amulets";
+		case OBJECTCATEGORY_BOOTS:
+			return "Boots";
+		case OBJECTCATEGORY_CONTAINERS:
+			return "Containers";
+		case OBJECTCATEGORY_DECORATION:
+			return "Decoration";
+		case OBJECTCATEGORY_FOOD:
+			return "Food";
+		case OBJECTCATEGORY_HELMETS:
+			return "Helmets";
+		case OBJECTCATEGORY_LEGS:
+			return "Legs";
+		case OBJECTCATEGORY_OTHERS:
+			return "Others";
+		case OBJECTCATEGORY_POTIONS:
+			return "Potions";
+		case OBJECTCATEGORY_RINGS:
+			return "Rings";
+		case OBJECTCATEGORY_RUNES:
+			return "Runes";
+		case OBJECTCATEGORY_SHIELDS:
+			return "Shields";
+		case OBJECTCATEGORY_TOOLS:
+			return "Tools";
+		case OBJECTCATEGORY_VALUABLES:
+			return "Valuables";
+		case OBJECTCATEGORY_AMMO:
+			return "Weapons: Ammunition";
+		case OBJECTCATEGORY_AXES:
+			return "Weapons: Axes";
+		case OBJECTCATEGORY_CLUBS:
+			return "Weapons: Clubs";
+		case OBJECTCATEGORY_DISTANCEWEAPONS:
+			return "Weapons: Distance";
+		case OBJECTCATEGORY_SWORDS:
+			return "Weapons: Swords";
+		case OBJECTCATEGORY_WANDS:
+			return "Weapons: Wands";
+		case OBJECTCATEGORY_PREMIUMSCROLLS:
+			return "Premium Scrolls";
+		case OBJECTCATEGORY_TIBIACOINS:
+			return "Tibia Coins";
+		case OBJECTCATEGORY_CREATUREPRODUCTS:
+			return "Creature Products";
+		case OBJECTCATEGORY_STASHRETRIEVE:
+			return "Stash Retrieve";
+		case OBJECTCATEGORY_GOLD:
+			return "Gold";
+		case OBJECTCATEGORY_DEFAULT:
+			return "Unassigned Loot";
+		default:
+			return std::string();
 	}
 }
 
-uint8_t forgeBonus(int32_t number)
-{
+uint8_t forgeBonus(int32_t number) {
 	// None
 	if (number < 7400)
 		return 0;
@@ -1484,8 +1484,7 @@ uint8_t forgeBonus(int32_t number)
 	return 0;
 }
 
-std::string formatPrice(std::string price, bool space/* = false*/)
-{
+std::string formatPrice(std::string price, bool space /* = false*/) {
 	std::ranges::reverse(price.begin(), price.end());
 	price = std::regex_replace(price, std::regex("000"), "k");
 	std::ranges::reverse(price.begin(), price.end());

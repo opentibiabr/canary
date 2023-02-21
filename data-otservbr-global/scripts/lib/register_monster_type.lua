@@ -64,6 +64,30 @@ registerMonsterType.Bestiary = function(mtype, mask)
 		end
 	end
 end
+registerMonsterType.bosstiary = function(mtype, mask)
+	local bossClass = nil
+	if mask.bosstiary then
+		if mask.bosstiary.bossRaceId then
+			mtype:bossRaceId(mask.bosstiary.bossRaceId)
+		end
+		if mask.bosstiary.bossRace then
+			if mask.bosstiary.bossRace == RARITY_BANE then
+				bossClass = "Bane"
+			elseif mask.bosstiary.bossRace == RARITY_ARCHFOE then
+				bossClass = "Archfoe"
+			elseif mask.bosstiary.bossRace == RARITY_NEMESIS then
+				bossClass = "Nemesis"
+			end
+			if bossClass ~= nil then
+				mtype:bossRace(mask.bosstiary.bossRace, bossClass)
+			end
+			local storage = mask.bosstiary.storageCooldown
+			if storage ~= nil then
+				mtype:bossStorageCooldown(storage)
+			end
+		end
+	end
+end
 registerMonsterType.skull = function(mtype, mask)
 	if mask.skull then
 		mtype:skull(mask.skull)

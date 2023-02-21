@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -16,8 +16,7 @@ int ItemClassificationFunctions::luaItemClassificationCreate(lua_State* L) {
 	// ItemClassification(id)
 	if (isNumber(L, 2)) {
 		const ItemClassification* itemClassification = g_game().getItemsClassification(getNumber<uint8_t>(L, 2), false);
-		if (itemClassification)
-		{
+		if (itemClassification) {
 			pushUserdata<const ItemClassification>(L, itemClassification);
 			setMetatable(L, -1, "ItemClassification");
 			pushBoolean(L, true);

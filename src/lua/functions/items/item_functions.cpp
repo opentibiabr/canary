@@ -5,13 +5,14 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
+#include "lua/functions/items/item_functions.hpp"
+
 #include "game/game.h"
 #include "items/item.h"
-#include "lua/functions/items/item_functions.hpp"
 #include "items/decay/decay.h"
 
 class Imbuement;
@@ -169,11 +170,11 @@ int ItemFunctions::luaItemGetUniqueId(lua_State* L) {
 	// item:getUniqueId()
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		uint32_t uniqueId = item->getUniqueId();
+		uint32_t uniqueId = item->getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID);
 		if (uniqueId == 0) {
 			uniqueId = getScriptEnv()->addThing(item);
 		}
-		lua_pushnumber(L, uniqueId);
+		lua_pushnumber(L, static_cast<lua_Number>(uniqueId));
 	} else {
 		lua_pushnil(L);
 	}
@@ -184,7 +185,8 @@ int ItemFunctions::luaItemGetActionId(lua_State* L) {
 	// item:getActionId()
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		lua_pushnumber(L, item->getActionId());
+		auto actionId = item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID);
+		lua_pushnumber(L, actionId);
 	} else {
 		lua_pushnil(L);
 	}
@@ -196,7 +198,7 @@ int ItemFunctions::luaItemSetActionId(lua_State* L) {
 	uint16_t actionId = getNumber<uint16_t>(L, 2);
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		item->setActionId(actionId);
+		item->setAttribute(ItemAttribute_t::ACTIONID, actionId);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -230,7 +232,7 @@ int ItemFunctions::luaItemGetFluidType(lua_State* L) {
 	// item:getFluidType()
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		lua_pushnumber(L, item->getFluidType());
+		lua_pushnumber(L, static_cast<lua_Number>(item->getAttribute<uint16_t>(ItemAttribute_t::FLUIDTYPE)));
 	} else {
 		lua_pushnil(L);
 	}
@@ -329,13 +331,13 @@ int ItemFunctions::luaItemHasAttribute(lua_State* L) {
 		return 1;
 	}
 
-	ItemAttrTypes attribute;
+	ItemAttribute_t attribute;
 	if (isNumber(L, 2)) {
-		attribute = getNumber<ItemAttrTypes>(L, 2);
+		attribute = getNumber<ItemAttribute_t>(L, 2);
 	} else if (isString(L, 2)) {
 		attribute = stringToItemAttribute(getString(L, 2));
 	} else {
-		attribute = ITEM_ATTRIBUTE_NONE;
+		attribute = ItemAttribute_t::NONE;
 	}
 
 	pushBoolean(L, item->hasAttribute(attribute));
@@ -350,24 +352,24 @@ int ItemFunctions::luaItemGetAttribute(lua_State* L) {
 		return 1;
 	}
 
-	ItemAttrTypes attribute;
+	ItemAttribute_t attribute;
 	if (isNumber(L, 2)) {
-		attribute = getNumber<ItemAttrTypes>(L, 2);
+		attribute = getNumber<ItemAttribute_t>(L, 2);
 	} else if (isString(L, 2)) {
 		attribute = stringToItemAttribute(getString(L, 2));
 	} else {
-		attribute = ITEM_ATTRIBUTE_NONE;
+		attribute = ItemAttribute_t::NONE;
 	}
 
-	if (ItemAttributes::isIntAttrType(attribute)) {
-		if (attribute == ITEM_ATTRIBUTE_DURATION) {
-			lua_pushnumber(L, item->getDuration());
+	if (item->isAttributeInteger(attribute)) {
+		if (attribute == ItemAttribute_t::DURATION) {
+			lua_pushnumber(L, static_cast<lua_Number>(item->getDuration()));
 			return 1;
 		}
 
-		lua_pushnumber(L, item->getIntAttr(attribute));
-	} else if (ItemAttributes::isStrAttrType(attribute)) {
-		pushString(L, item->getStrAttr(attribute));
+		lua_pushnumber(L, static_cast<lua_Number>(item->getAttribute<int64_t>(attribute)));
+	} else if (item->isAttributeString(attribute)) {
+		pushString(L, item->getAttribute<std::string>(attribute));
 	} else {
 		lua_pushnil(L);
 	}
@@ -382,20 +384,20 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 		return 1;
 	}
 
-	ItemAttrTypes attribute;
+	ItemAttribute_t attribute;
 	if (isNumber(L, 2)) {
-		attribute = getNumber<ItemAttrTypes>(L, 2);
+		attribute = getNumber<ItemAttribute_t>(L, 2);
 	} else if (isString(L, 2)) {
 		attribute = stringToItemAttribute(getString(L, 2));
 	} else {
-		attribute = ITEM_ATTRIBUTE_NONE;
+		attribute = ItemAttribute_t::NONE;
 	}
 
-	if (ItemAttributes::isIntAttrType(attribute)) {
+	if (item->isAttributeInteger(attribute)) {
 		switch (attribute) {
-			case ITEM_ATTRIBUTE_DECAYSTATE: {
-				ItemDecayState_t decayState = getNumber<ItemDecayState_t>(L, 3);
-				if (decayState == DECAYING_FALSE || decayState == DECAYING_STOPPING) {
+			case ItemAttribute_t::DECAYSTATE: {
+				if (ItemDecayState_t decayState = getNumber<ItemDecayState_t>(L, 3);
+					decayState == DECAYING_FALSE || decayState == DECAYING_STOPPING) {
 					g_decay().stopDecay(item);
 				} else {
 					g_decay().startDecay(item);
@@ -403,25 +405,29 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 				pushBoolean(L, true);
 				return 1;
 			}
-			case ITEM_ATTRIBUTE_DURATION: {
+			case ItemAttribute_t::DURATION: {
 				item->setDecaying(DECAYING_PENDING);
 				item->setDuration(getNumber<int32_t>(L, 3));
 				g_decay().startDecay(item);
 				pushBoolean(L, true);
 				return 1;
 			}
-			case ITEM_ATTRIBUTE_DURATION_TIMESTAMP: {
+			case ItemAttribute_t::DURATION_TIMESTAMP: {
 				reportErrorFunc("Attempt to set protected key \"duration timestamp\"");
 				pushBoolean(L, false);
 				return 1;
 			}
-			default: break;
+			default:
+				break;
 		}
 
-		item->setIntAttr(attribute, getNumber<int64_t>(L, 3));
+		item->setAttribute(attribute, getNumber<int64_t>(L, 3));
+		item->updateTileFlags();
 		pushBoolean(L, true);
-	} else if (ItemAttributes::isStrAttrType(attribute)) {
-		item->setStrAttr(attribute, getString(L, 3));
+	} else if (item->isAttributeString(attribute)) {
+		auto newAttributeString = getString(L, 3);
+		item->setAttribute(attribute, newAttributeString);
+		item->updateTileFlags();
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -431,26 +437,30 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 
 int ItemFunctions::luaItemRemoveAttribute(lua_State* L) {
 	// item:removeAttribute(key)
-	Item* item = getUserdata<Item>(L, 1);
+	const Item* item = getUserdata<Item>(L, 1);
 	if (!item) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	ItemAttrTypes attribute;
+	ItemAttribute_t attribute;
 	if (isNumber(L, 2)) {
-		attribute = getNumber<ItemAttrTypes>(L, 2);
+		attribute = getNumber<ItemAttribute_t>(L, 2);
 	} else if (isString(L, 2)) {
 		attribute = stringToItemAttribute(getString(L, 2));
 	} else {
-		attribute = ITEM_ATTRIBUTE_NONE;
+		attribute = ItemAttribute_t::NONE;
 	}
 
-	bool ret = (attribute != ITEM_ATTRIBUTE_UNIQUEID);
+	bool ret = (attribute != ItemAttribute_t::UNIQUEID);
 	if (ret) {
-		ret = (attribute != ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
+		ret = (attribute != ItemAttribute_t::DURATION_TIMESTAMP);
 		if (ret) {
-			item->removeAttribute(attribute);
+			// We will convert the item to non-const in order to use it to set values
+			auto noConstItem = std::bit_cast<Item*>(item);
+			if (noConstItem) {
+				noConstItem->removeAttribute(attribute);
+			}
 		} else {
 			reportErrorFunc("Attempt to erase protected key \"duration timestamp\"");
 		}
@@ -463,24 +473,24 @@ int ItemFunctions::luaItemRemoveAttribute(lua_State* L) {
 
 int ItemFunctions::luaItemGetCustomAttribute(lua_State* L) {
 	// item:getCustomAttribute(key)
-	Item* item = getUserdata<Item>(L, 1);
+	const Item* item = getUserdata<Item>(L, 1);
 	if (!item) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	const ItemAttributes::CustomAttribute* attr;
+	const CustomAttribute* customAttribute;
 	if (isNumber(L, 2)) {
-		attr = item->getCustomAttribute(getNumber<int64_t>(L, 2));
+		customAttribute = item->getCustomAttribute(std::to_string(getNumber<int64_t>(L, 2)));
 	} else if (isString(L, 2)) {
-		attr = item->getCustomAttribute(getString(L, 2));
+		customAttribute = item->getCustomAttribute(getString(L, 2));
 	} else {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (attr) {
-		attr->pushToLua(L);
+	if (customAttribute) {
+		customAttribute->pushToLua(L);
 	} else {
 		lua_pushnil(L);
 	}
@@ -505,24 +515,25 @@ int ItemFunctions::luaItemSetCustomAttribute(lua_State* L) {
 		return 1;
 	}
 
-	ItemAttributes::CustomAttribute attribute;
 	if (isNumber(L, 3)) {
-		double doubleValue = getNumber<double>(L, 3);
+		const double doubleValue = getNumber<double>(L, 3);
 		if (std::floor(doubleValue) < doubleValue) {
-			attribute.setDouble(doubleValue);
+			item->setCustomAttribute(key, doubleValue);
 		} else {
-			attribute.setInt64(getNumber<int64_t>(L, 3));
+			int64_t int64 = getNumber<int64_t>(L, 3);
+			item->setCustomAttribute(key, int64);
 		}
 	} else if (isString(L, 3)) {
-		attribute.setString(getString(L, 3));
+		const std::string stringValue = getString(L, 3);
+		item->setCustomAttribute(key, stringValue);
 	} else if (isBoolean(L, 3)) {
-		attribute.setBool(getBoolean(L, 3));
+		const bool boolValue = getBoolean(L, 3);
+		item->setCustomAttribute(key, boolValue);
 	} else {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	item->setCustomAttribute(key, attribute);
 	pushBoolean(L, true);
 	return 1;
 }
@@ -536,7 +547,7 @@ int ItemFunctions::luaItemRemoveCustomAttribute(lua_State* L) {
 	}
 
 	if (isNumber(L, 2)) {
-		pushBoolean(L, item->removeCustomAttribute(getNumber<int64_t>(L, 2)));
+		pushBoolean(L, item->removeCustomAttribute(std::to_string(getNumber<int64_t>(L, 2))));
 	} else if (isString(L, 2)) {
 		pushBoolean(L, item->removeCustomAttribute(getString(L, 2)));
 	} else {
@@ -630,7 +641,7 @@ int ItemFunctions::luaItemTransform(lua_State* L) {
 		return 1;
 	}
 
-	Item*& item = *itemPtr;
+	Item*&item = *itemPtr;
 	if (!item) {
 		lua_pushnil(L);
 		return 1;
@@ -653,7 +664,7 @@ int ItemFunctions::luaItemTransform(lua_State* L) {
 		return 1;
 	}
 
-	const ItemType& it = Item::items[itemId];
+	const ItemType &it = Item::items[itemId];
 	if (it.stackable) {
 		subType = std::min<int32_t>(subType, 100);
 	}
@@ -680,7 +691,7 @@ int ItemFunctions::luaItemDecay(lua_State* L) {
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
 		if (isNumber(L, 2)) {
-			ItemType& it = Item::items.getItemType(item->getID());
+			ItemType &it = Item::items.getItemType(item->getID());
 			it.decayTo = getNumber<int32_t>(L, 2);
 		}
 
@@ -742,10 +753,9 @@ int ItemFunctions::luaItemHasProperty(lua_State* L) {
 	return 1;
 }
 
-int ItemFunctions::luaItemGetImbuement(lua_State* L)
-{
+int ItemFunctions::luaItemGetImbuement(lua_State* L) {
 	// item:getImbuement()
-	Item* item = getUserdata<Item>(L, 1);
+	const Item* item = getUserdata<Item>(L, 1);
 	if (!item) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
 		pushBoolean(L, false);
@@ -758,7 +768,7 @@ int ItemFunctions::luaItemGetImbuement(lua_State* L)
 			continue;
 		}
 
-		Imbuement *imbuement = imbuementInfo.imbuement;
+		Imbuement* imbuement = imbuementInfo.imbuement;
 		if (!imbuement) {
 			continue;
 		}
@@ -812,7 +822,7 @@ int ItemFunctions::luaItemSetDuration(lua_State* L) {
 		showDuration = getBoolean(L, 5);
 	}
 
-	ItemType& it = Item::items.getItemType(item->getID());
+	ItemType &it = Item::items.getItemType(item->getID());
 	if (maxDuration == 0) {
 		it.decayTime = minDuration;
 	} else {

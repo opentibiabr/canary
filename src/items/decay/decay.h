@@ -5,20 +5,19 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_ITEMS_DECAY_DECAY_H_
 #define SRC_ITEMS_DECAY_DECAY_H_
 
 #include "items/item.h"
 
-class Decay
-{
+class Decay {
 	public:
-		Decay(Decay const&) = delete;
-		void operator=(Decay const&) = delete;
+		Decay(const Decay &) = delete;
+		void operator=(const Decay &) = delete;
 
-		static Decay& getInstance() {
+		static Decay &getInstance() {
 			// Guaranteed to be destroyed
 			static Decay instance;
 			// Instantiated on first use
@@ -34,7 +33,7 @@ class Decay
 		void checkDecay();
 		void internalDecayItem(Item* item);
 
-		uint32_t eventId {0};
+		uint32_t eventId { 0 };
 		std::map<int64_t, std::vector<Item*>> decayMap;
 };
 

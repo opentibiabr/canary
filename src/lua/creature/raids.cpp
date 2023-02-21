@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -65,8 +65,9 @@ bool Raids::loadFromXml() {
 		interval = pugi::cast<uint32_t>(raidNode.attribute("interval2").value()) * 60;
 		if (interval == 0) {
 			SPDLOG_ERROR("{} - "
-                         "'interval2' tag missing or zero "
-                         "(would divide by 0) for raid: {}", __FUNCTION__, name);
+						 "'interval2' tag missing or zero "
+						 "(would divide by 0) for raid: {}",
+						 __FUNCTION__, name);
 			continue;
 		}
 
@@ -74,7 +75,8 @@ bool Raids::loadFromXml() {
 			margin = pugi::cast<uint32_t>(attr.value()) * 60 * 1000;
 		} else {
 			SPDLOG_WARN("{} - "
-						"'margin' tag missing for raid: {}", __FUNCTION__, name);
+						"'margin' tag missing for raid: {}",
+						__FUNCTION__, name);
 			margin = 0;
 		}
 
@@ -159,7 +161,7 @@ bool Raids::reload() {
 	return loadFromXml();
 }
 
-Raid* Raids::getRaidByName(const std::string& name) {
+Raid* Raids::getRaidByName(const std::string &name) {
 	for (Raid* raid : raidList) {
 		if (strcasecmp(raid->getName().c_str(), name.c_str()) == 0) {
 			return raid;
@@ -174,7 +176,7 @@ Raid::~Raid() {
 	}
 }
 
-bool Raid::loadFromXml(const std::string& filename) {
+bool Raid::loadFromXml(const std::string &filename) {
 	if (isLoaded()) {
 		return true;
 	}
@@ -204,12 +206,13 @@ bool Raid::loadFromXml(const std::string& filename) {
 			raidEvents.push_back(event);
 		} else {
 			SPDLOG_ERROR("{} - "
-                         "In file: {}, eventNode: {}", __FUNCTION__, filename, eventNode.name());
+						 "In file: {}, eventNode: {}",
+						 __FUNCTION__, filename, eventNode.name());
 			delete event;
 		}
 	}
 
-	//sort by delay time
+	// sort by delay time
 	std::sort(raidEvents.begin(), raidEvents.end(), [](const RaidEvent* lhs, const RaidEvent* rhs) {
 		return lhs->getDelay() < rhs->getDelay();
 	});
@@ -264,7 +267,7 @@ RaidEvent* Raid::getNextRaidEvent() {
 	}
 }
 
-bool RaidEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
+bool RaidEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 	pugi::xml_attribute delayAttribute = eventNode.attribute("delay");
 	if (!delayAttribute) {
 		SPDLOG_ERROR("{} - 'delay' tag missing", __FUNCTION__);
@@ -275,7 +278,7 @@ bool RaidEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 	return true;
 }
 
-bool AnnounceEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
+bool AnnounceEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 	if (!RaidEvent::configureRaidEvent(eventNode)) {
 		return false;
 	}
@@ -283,7 +286,8 @@ bool AnnounceEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 	pugi::xml_attribute messageAttribute = eventNode.attribute("message");
 	if (!messageAttribute) {
 		SPDLOG_ERROR("{} - "
-                    "'message' tag missing for announce event", __FUNCTION__);
+					 "'message' tag missing for announce event",
+					 __FUNCTION__);
 		return false;
 	}
 	message = messageAttribute.as_string();
@@ -306,15 +310,15 @@ bool AnnounceEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		} else {
 			SPDLOG_WARN("{} - "
 						"Unknown type tag missing for announce event, "
-						"using default: {}", __FUNCTION__,
-						static_cast<uint32_t>(messageType));
+						"using default: {}",
+						__FUNCTION__, static_cast<uint32_t>(messageType));
 		}
 	} else {
 		messageType = MESSAGE_EVENT_ADVANCE;
 		SPDLOG_WARN("{} - "
 					"Type tag missing for announce event, "
-					"using default: {}", __FUNCTION__,
-					static_cast<uint32_t>(messageType));
+					"using default: {}",
+					__FUNCTION__, static_cast<uint32_t>(messageType));
 	}
 	return true;
 }
@@ -326,7 +330,7 @@ bool AnnounceEvent::executeEvent() {
 	return true;
 }
 
-bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
+bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 	if (!RaidEvent::configureRaidEvent(eventNode)) {
 		return false;
 	}
@@ -336,7 +340,8 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		monsterName = attr.as_string();
 	} else {
 		SPDLOG_ERROR("{} - "
-                    "'Name' tag missing for singlespawn event", __FUNCTION__);
+					 "'Name' tag missing for singlespawn event",
+					 __FUNCTION__);
 		return false;
 	}
 
@@ -344,7 +349,8 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		position.x = pugi::cast<uint16_t>(attr.value());
 	} else {
 		SPDLOG_ERROR("{} - "
-                    "'X' tag missing for singlespawn event", __FUNCTION__);
+					 "'X' tag missing for singlespawn event",
+					 __FUNCTION__);
 		return false;
 	}
 
@@ -352,7 +358,8 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		position.y = pugi::cast<uint16_t>(attr.value());
 	} else {
 		SPDLOG_ERROR("{} - "
-                    "'Y' tag missing for singlespawn event", __FUNCTION__);
+					 "'Y' tag missing for singlespawn event",
+					 __FUNCTION__);
 		return false;
 	}
 
@@ -360,7 +367,8 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		position.z = pugi::cast<uint16_t>(attr.value());
 	} else {
 		SPDLOG_ERROR("{} - "
-                    "'Z' tag missing for singlespawn event", __FUNCTION__);
+					 "'Z' tag missing for singlespawn event",
+					 __FUNCTION__);
 		return false;
 	}
 	return true;
@@ -369,15 +377,13 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 bool SingleSpawnEvent::executeEvent() {
 	Monster* monster = Monster::createMonster(monsterName);
 	if (!monster) {
-		SPDLOG_ERROR("{} - Cant create monster {}", __FUNCTION__,
-                    monsterName);
+		SPDLOG_ERROR("{} - Cant create monster {}", __FUNCTION__, monsterName);
 		return false;
 	}
 
 	if (!g_game().placeCreature(monster, position, false, true)) {
 		delete monster;
-		SPDLOG_ERROR("{} - Cant create monster {}", __FUNCTION__,
-                    monsterName);
+		SPDLOG_ERROR("{} - Cant create monster {}", __FUNCTION__, monsterName);
 		return false;
 	}
 
@@ -385,7 +391,7 @@ bool SingleSpawnEvent::executeEvent() {
 	return true;
 }
 
-bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
+bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 	if (!RaidEvent::configureRaidEvent(eventNode)) {
 		return false;
 	}
@@ -399,8 +405,9 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 			centerPos.x = pugi::cast<uint16_t>(attr.value());
 		} else {
 			SPDLOG_ERROR("{} - "
-                         ""
-                         "'centerx' tag missing for areaspawn event", __FUNCTION__);
+						 ""
+						 "'centerx' tag missing for areaspawn event",
+						 __FUNCTION__);
 			return false;
 		}
 
@@ -408,7 +415,8 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 			centerPos.y = pugi::cast<uint16_t>(attr.value());
 		} else {
 			SPDLOG_ERROR("{} - "
-                         "'centery' tag missing for areaspawn event", __FUNCTION__);
+						 "'centery' tag missing for areaspawn event",
+						 __FUNCTION__);
 			return false;
 		}
 
@@ -416,7 +424,8 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 			centerPos.z = pugi::cast<uint16_t>(attr.value());
 		} else {
 			SPDLOG_ERROR("{} - "
-                         "centerz' tag missing for areaspawn event", __FUNCTION__);
+						 "centerz' tag missing for areaspawn event",
+						 __FUNCTION__);
 			return false;
 		}
 
@@ -432,7 +441,8 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 			fromPos.x = pugi::cast<uint16_t>(attr.value());
 		} else {
 			SPDLOG_ERROR("{} - "
-                         "'fromx' tag missing for areaspawn event", __FUNCTION__);
+						 "'fromx' tag missing for areaspawn event",
+						 __FUNCTION__);
 			return false;
 		}
 
@@ -440,7 +450,8 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 			fromPos.y = pugi::cast<uint16_t>(attr.value());
 		} else {
 			SPDLOG_ERROR("{} - "
-                         "'fromy' tag missing for areaspawn event", __FUNCTION__);
+						 "'fromy' tag missing for areaspawn event",
+						 __FUNCTION__);
 			return false;
 		}
 
@@ -448,7 +459,8 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 			fromPos.z = pugi::cast<uint16_t>(attr.value());
 		} else {
 			SPDLOG_ERROR("{} - "
-                         "'fromz' tag missing for areaspawn event", __FUNCTION__);
+						 "'fromz' tag missing for areaspawn event",
+						 __FUNCTION__);
 			return false;
 		}
 
@@ -456,7 +468,8 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 			toPos.x = pugi::cast<uint16_t>(attr.value());
 		} else {
 			SPDLOG_ERROR("{} - "
-                         "'tox' tag missing for areaspawn event", __FUNCTION__);
+						 "'tox' tag missing for areaspawn event",
+						 __FUNCTION__);
 			return false;
 		}
 
@@ -464,7 +477,8 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 			toPos.y = pugi::cast<uint16_t>(attr.value());
 		} else {
 			SPDLOG_ERROR("{} - "
-                         "'toy' tag missing for areaspawn event", __FUNCTION__);
+						 "'toy' tag missing for areaspawn event",
+						 __FUNCTION__);
 			return false;
 		}
 
@@ -472,7 +486,8 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 			toPos.z = pugi::cast<uint16_t>(attr.value());
 		} else {
 			SPDLOG_ERROR("{} - "
-                         "'toz' tag missing for areaspawn event", __FUNCTION__);
+						 "'toz' tag missing for areaspawn event",
+						 __FUNCTION__);
 			return false;
 		}
 	}
@@ -484,7 +499,8 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 			name = attr.value();
 		} else {
 			SPDLOG_ERROR("{} - "
-                         "'name' tag missing for monster node", __FUNCTION__);
+						 "'name' tag missing for monster node",
+						 __FUNCTION__);
 			return false;
 		}
 
@@ -508,7 +524,8 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 				maxAmount = minAmount;
 			} else {
 				SPDLOG_ERROR("{} - "
-                         "'amount' tag missing for monster node", __FUNCTION__);
+							 "'amount' tag missing for monster node",
+							 __FUNCTION__);
 				return false;
 			}
 		}
@@ -519,13 +536,12 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 }
 
 bool AreaSpawnEvent::executeEvent() {
-	for (const MonsterSpawn& spawn : spawnMonsterList) {
+	for (const MonsterSpawn &spawn : spawnMonsterList) {
 		uint32_t amount = uniform_random(spawn.minAmount, spawn.maxAmount);
 		for (uint32_t i = 0; i < amount; ++i) {
 			Monster* monster = Monster::createMonster(spawn.name);
 			if (!monster) {
-				SPDLOG_ERROR("{} - Can't create monster {}", __FUNCTION__,
-                              spawn.name);
+				SPDLOG_ERROR("{} - Can't create monster {}", __FUNCTION__, spawn.name);
 				return false;
 			}
 
@@ -547,7 +563,7 @@ bool AreaSpawnEvent::executeEvent() {
 	return true;
 }
 
-bool ScriptEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
+bool ScriptEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 	if (!RaidEvent::configureRaidEvent(eventNode)) {
 		return false;
 	}
@@ -555,7 +571,8 @@ bool ScriptEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 	pugi::xml_attribute scriptAttribute = eventNode.attribute("script");
 	if (!scriptAttribute) {
 		SPDLOG_ERROR("{} - "
-                    "No script file found for raid", __FUNCTION__);
+					 "No script file found for raid",
+					 __FUNCTION__);
 		return false;
 	}
 
@@ -576,12 +593,11 @@ std::string ScriptEvent::getScriptEventName() const {
 }
 
 bool ScriptEvent::executeEvent() {
-	//onRaid()
+	// onRaid()
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("{} - Script with name {} "
-                    "Call stack overflow. Too many lua script calls being nested.",
-                    __FUNCTION__,
-                    getScriptName());
+					 "Call stack overflow. Too many lua script calls being nested.",
+					 __FUNCTION__, getScriptName());
 		return false;
 	}
 

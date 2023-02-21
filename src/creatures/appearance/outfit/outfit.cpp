@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -14,8 +14,7 @@
 #include "utils/tools.h"
 #include "game/game.h"
 
-bool Outfits::loadFromXml()
-{
+bool Outfits::loadFromXml() {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/outfits.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
@@ -48,10 +47,8 @@ bool Outfits::loadFromXml()
 		}
 
 		if (uint16_t lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
-				g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
-				&& !g_game().isLookTypeRegistered(lookType)
-			)
-		{
+			g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
+			&& !g_game().isLookTypeRegistered(lookType)) {
 			SPDLOG_WARN("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
 			return false;
 		}
@@ -70,9 +67,8 @@ bool Outfits::loadFromXml()
 	return true;
 }
 
-const Outfit* Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const
-{
-	for (const Outfit& outfit : outfits[sex]) {
+const Outfit* Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const {
+	for (const Outfit &outfit : outfits[sex]) {
 		if (outfit.lookType == lookType) {
 			return &outfit;
 		}
@@ -87,15 +83,14 @@ const Outfit* Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) c
  * @return <b>const</b> pointer to the outfit or <b>nullptr</b> if it could not be found.
  */
 
-const Outfit *Outfits::getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType)
-{
-	PlayerSex_t	searchSex = (sex == PLAYERSEX_MALE)?PLAYERSEX_FEMALE:PLAYERSEX_MALE;
+const Outfit* Outfits::getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType) {
+	PlayerSex_t searchSex = (sex == PLAYERSEX_MALE) ? PLAYERSEX_FEMALE : PLAYERSEX_MALE;
 
-	for(uint16_t i=0; i< outfits[sex].size(); i++) {
+	for (uint16_t i = 0; i < outfits[sex].size(); i++) {
 		if (outfits[sex].at(i).lookType == lookType) {
-			if (outfits[searchSex].size()>i) {
+			if (outfits[searchSex].size() > i) {
 				return &outfits[searchSex].at(i);
-			} else { //looktype found but the oposite sex array doesn't have this index.
+			} else { // looktype found but the oposite sex array doesn't have this index.
 				return nullptr;
 			}
 		}

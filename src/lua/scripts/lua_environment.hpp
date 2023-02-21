@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_
 #define SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_
@@ -21,27 +21,27 @@ class Cylinder;
 class Game;
 class GlobalFunctions;
 
-class LuaEnvironment: public LuaScriptInterface {
+class LuaEnvironment : public LuaScriptInterface {
 	public:
 		LuaEnvironment();
 		~LuaEnvironment();
 
 		// non-copyable
 		LuaEnvironment(const LuaEnvironment &) = delete;
-		LuaEnvironment & operator = (const LuaEnvironment &) = delete;
+		LuaEnvironment &operator=(const LuaEnvironment &) = delete;
 
 		bool initState() override;
 		bool reInitState();
 		bool closeState() override;
 
-		LuaScriptInterface * getTestInterface();
+		LuaScriptInterface* getTestInterface();
 
 		std::shared_ptr<Combat> getCombatObject(uint32_t id) const;
-		std::shared_ptr<Combat> createCombatObject(LuaScriptInterface *interface);
-		void clearCombatObjects(LuaScriptInterface *interface);
+		std::shared_ptr<Combat> createCombatObject(LuaScriptInterface* interface);
+		void clearCombatObjects(LuaScriptInterface* interface);
 
-		template<typename T>
-		std::shared_ptr<T> createWeaponObject(LuaScriptInterface *interface) {
+		template <typename T>
+		std::shared_ptr<T> createWeaponObject(LuaScriptInterface* interface) {
 			auto weapon = std::make_shared<T>(interface);
 			int weaponId = ++lastWeaponId;
 			weaponMap[weaponId] = weapon;
@@ -49,7 +49,7 @@ class LuaEnvironment: public LuaScriptInterface {
 			return weapon;
 		}
 
-		template<typename T>
+		template <typename T>
 		std::shared_ptr<T> getWeaponObject(uint32_t id) const {
 			auto it = weaponMap.find(id);
 			if (it == weaponMap.end()) {
@@ -58,7 +58,7 @@ class LuaEnvironment: public LuaScriptInterface {
 			return it->second;
 		}
 
-		void clearWeaponObjects(LuaScriptInterface *interface) {
+		void clearWeaponObjects(LuaScriptInterface* interface) {
 			auto it = weaponIdMap.find(interface);
 			if (it == weaponIdMap.end()) {
 				return;
@@ -68,9 +68,9 @@ class LuaEnvironment: public LuaScriptInterface {
 			weaponMap.clear();
 		}
 
-		AreaCombat * getAreaObject(uint32_t id) const;
-		uint32_t createAreaObject(LuaScriptInterface * interface);
-		void clearAreaObjects(LuaScriptInterface * interface);
+		AreaCombat* getAreaObject(uint32_t id) const;
+		uint32_t createAreaObject(LuaScriptInterface* interface);
+		void clearAreaObjects(LuaScriptInterface* interface);
 
 	private:
 		void executeTimerEvent(uint32_t eventIndex);
@@ -90,7 +90,7 @@ class LuaEnvironment: public LuaScriptInterface {
 		phmap::flat_hash_map<LuaScriptInterface*, std::vector<uint32_t>> weaponIdMap;
 		uint32_t lastWeaponId = 0;
 
-		LuaScriptInterface *testInterface = nullptr;
+		LuaScriptInterface* testInterface = nullptr;
 
 		friend class LuaScriptInterface;
 		friend class GlobalFunctions;
@@ -99,4 +99,4 @@ class LuaEnvironment: public LuaScriptInterface {
 
 inline LuaEnvironment g_luaEnvironment;
 
-#endif  // SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_
+#endif // SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_

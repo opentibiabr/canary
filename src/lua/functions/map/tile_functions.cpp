@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -247,7 +247,7 @@ int TileFunctions::luaTileGetItemByType(lua_State* L) {
 	}
 
 	if (Item* item = tile->getGround()) {
-		const ItemType& it = Item::items[item->getID()];
+		const ItemType &it = Item::items[item->getID()];
 		if (it.type == itemType) {
 			pushUserdata<Item>(L, item);
 			setItemMetatable(L, -1, item);
@@ -257,7 +257,7 @@ int TileFunctions::luaTileGetItemByType(lua_State* L) {
 
 	if (const TileItemVector* items = tile->getItemList()) {
 		for (Item* item : *items) {
-			const ItemType& it = Item::items[item->getID()];
+			const ItemType &it = Item::items[item->getID()];
 			if (it.type == itemType) {
 				pushUserdata<Item>(L, item);
 				setItemMetatable(L, -1, item);

@@ -755,9 +755,8 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 
 	const Position oldPosition = creature->getPosition();
 	if (oldPosition == position) {
-		SPDLOG_DEBUG("[{}] - Cannot teleport creature: {}, fromPosition: {}, as same of toPosition: {}", __FUNCTION__, player->getName(), oldPosition.toString(), position.toString());
-		pushBoolean(L, false);
-		return 1;
+		SPDLOG_WARN("[{}] - Cannot teleport creature: {}, fromPosition: {}, as same of toPosition: {}", __FUNCTION__, player->getName(), oldPosition.toString(), position.toString());
+		reportErrorFunc("The new position is the same as the old one.");
 	}
 
 	if (auto ret = g_game().internalTeleport(creature, position, pushMovement);

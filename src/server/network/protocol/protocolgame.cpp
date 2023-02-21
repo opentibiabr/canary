@@ -14,6 +14,7 @@
 #include "declarations.hpp"
 #include "game/game.h"
 #include "creatures/players/imbuements/imbuements.h"
+#include "io/functions/iologindata_load_player.hpp"
 #include "io/iobestiary.h"
 #include "io/io_bosstiary.hpp"
 #include "io/iologindata.h"
@@ -252,7 +253,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		player->incrementReferenceCounter();
 		player->setID();
 
-		if (!IOLoginData::preloadPlayer(player, name)) {
+		if (!IOLoginDataLoad::preLoadPlayer(player, name)) {
 			disconnectClient("Your character could not be loaded.");
 			return;
 		}

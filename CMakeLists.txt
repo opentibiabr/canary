@@ -1,9 +1,19 @@
 cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
+# Set the C++ standard to C++17
+# set(CMAKE_CXX_STANDARD 17)
+
 # CMAKE
 # apt install build-essential git
 # git clone https://github.com/Kitware/CMake/; cd CMake
 # ./bootstrap && make && sudo make install
+
+# Set Output dir
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# set(CMAKE_FIND_LIBRARY_SUFFIXES .lib ${CMAKE_FIND_LIBRARY_SUFFIXES})
 
 # VCPKG
 # cmake -DCMAKE_TOOLCHAIN_FILE=/opt/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake ..
@@ -100,3 +110,13 @@ endif()
 # *****************************************************************************
 add_subdirectory(src/protobuf)
 add_subdirectory(src)
+
+# *****************************************************************************
+# Copy config files
+# *****************************************************************************
+# configure_file(config.lua ${CMAKE_BINARY_DIR}/bin COPYONLY)
+file(COPY config.lua DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY key.pem DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY data DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY data-canary DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY data-otservbr-global DESTINATION ${CMAKE_BINARY_DIR}/bin)

@@ -7,49 +7,89 @@
   },
   "configurePresets": [
     {
-      "name": "windows-release",
-      "displayName": "Windows - Release",
-      "description": "Sets Ninja generator, compilers, build and install directory and set build type as release",
+      "name": "windows-base",
+      "hidden": true,
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
+      "installDir": "${sourceDir}/install/${presetName}",
       "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl.exe",
+        "CMAKE_CXX_COMPILER": "cl.exe",
         "CMAKE_TOOLCHAIN_FILE": {
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
-        "BUILD_STATIC_LIBRARY": "ON",
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static",
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-        "OPTIONS_ENABLE_SCCACHE": "ON"
+        "VCPKG_TARGET_TRIPLET": "x64-windows",
+        "VCPKG_FEATURE_FLAGS": "manifests,versions"
       },
       "architecture": {
         "value": "x64",
         "strategy": "external"
       },
-      "vendor": {
-        "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "hostOS": [ "Windows" ]
-        }
-      },
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "hostOS": [
+            "Windows"
+          ]
+        }
       }
     },
     {
-      "name": "linux-release",
-      "displayName": "Linux - Release",
+      "name": "windows-debug",
+      "displayName": "Windows - Debug",
+      "inherits": "windows-base",
+      "cacheVariables": {
+        "BUILD_STATIC_LIBRARY": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x64-windows",
+        "VCPKG_FEATURE_FLAGS": "manifests,versions,binarycaching,registries",
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "environment": {
+        "_NO_DEBUG_HEAP": "1"
+      }
+    },
+    {
+      "name": "windows-release",
+      "displayName": "Windows - Release",
       "description": "Sets Ninja generator, compilers, build and install directory and set build type as release",
+      "inherits": "windows-base",
+      "cacheVariables": {
+        "BUILD_STATIC_LIBRARY": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static",
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "OPTIONS_ENABLE_SCCACHE": "ON"
+      }
+    },
+    {
+      "name": "windows-release-asan",
+      "displayName": "Windows - Release ASAN",
+      "inherits": "windows-base",
+      "description": "Release x64 Mode with ASAN",
+      "cacheVariables": {
+        "ASAN_ENABLED": "ON",
+        "DEBUG_LOG": "ON",
+        "BUILD_STATIC_LIBRARY": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x64-windows"
+      }
+    },
+    {
+      "name": "linux-base",
+      "hidden": true,
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
+      "installDir": "${sourceDir}/install/${presetName}",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": {
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-        "OPTIONS_ENABLE_CCACHE": "ON"
+        "VCPKG_TARGET_TRIPLET": "x64-linux",
+        "VCPKG_FEATURE_FLAGS": "manifests,versions"
       },
       "condition": {
         "type": "equals",
@@ -58,28 +98,24 @@
       }
     },
     {
-      "name": "windows-release-asan",
-      "inherits": "windows-release",
-      "displayName": "Windows - Release + ASAN",
-      "description": "Release Mode with ASAN",
+      "name": "linux-release",
+      "displayName": "Linux - Release",
+      "description": "Sets Ninja generator, compilers, build and install directory and set build type as release",
+      "inherits": "linux-base",
       "cacheVariables": {
-        "ASAN_ENABLED": "ON",
-        "DEBUG_LOG": "ON",
-        "BUILD_STATIC_LIBRARY": "OFF",
-        "VCPKG_TARGET_TRIPLET": "x64-windows"
-      },
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "OPTIONS_ENABLE_CCACHE": "ON"
       }
     },
     {
       "name": "linux-debug",
-      "inherits": "linux-release",
+      "inherits": "linux-base",
       "displayName": "Linux - Debug Build",
       "description": "Build Debug Mode",
       "cacheVariables": {
+        "BUILD_STATIC_LIBRARY": "OFF",
         "CMAKE_BUILD_TYPE": "Debug",
+        "VCPKG_FEATURE_FLAGS": "manifests,versions,binarycaching,registries",
         "DEBUG_LOG": "ON",
         "ASAN_ENABLED": "ON"
       }
@@ -93,6 +129,10 @@
     {
       "name": "linux-debug",
       "configurePreset": "linux-debug"
+    },
+    {
+      "name": "windows-debug",
+      "configurePreset": "windows-debug"
     },
     {
       "name": "windows-release",

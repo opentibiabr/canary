@@ -141,21 +141,18 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
  */
 template <typename Converted, typename ToConvert>
 Converted convertToSafeInteger(ToConvert value) {
-	if constexpr (std::is_signed<ToConvert>::value && !std::is_signed<Converted>::value) {
-		if (value < 0) {
+	auto converted = static_cast<Converted>(value);
+
+	if (converted < value) {
+		if (std::is_signed<ToConvert>::value && !std::is_signed<Converted>::value) {
 			SPDLOG_WARN("[{}] was less than the minimum permitted value, returning the minimum value of the type", value);
 			return std::numeric_limits<Converted>::min();
 		}
-	}
-	if (value > static_cast<ToConvert>(std::numeric_limits<Converted>::max())) {
 		SPDLOG_WARN("[{}] exceeded the maximum permitted value, returning the maximum value of the type", value);
-		return std::numeric_limits<Converted>::max();
+		return value > std::numeric_limits<Converted>::max() ? std::numeric_limits<Converted>::max() : converted;
 	}
-	if (value < static_cast<ToConvert>(std::numeric_limits<Converted>::min())) {
-		SPDLOG_WARN("[{}] was less than the minimum permitted value, returning the minimum value of the type", value);
-		return std::numeric_limits<Converted>::min();
-	}
-	return static_cast<Converted>(value);
+
+	return converted;
 }
 
 /**

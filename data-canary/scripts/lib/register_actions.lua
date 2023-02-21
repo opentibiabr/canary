@@ -168,7 +168,6 @@ ActionsLib.useShovel = function(player, item, fromPosition, target, toPosition, 
 	if table.contains(holes, groundId) then
 		ground:transform(groundId + 1)
 		ground:decay()
-
 		toPosition.z = toPosition.z + 1
 		tile:relocateTo(toPosition)
 	elseif table.contains(sandIds, groundId) then

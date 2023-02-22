@@ -1628,6 +1628,14 @@ bool Creature::isLostSummon() const {
 	return std::max<int32_t>(Position::getDistanceX(getPosition(), masterPosition), Position::getDistanceY(getPosition(), masterPosition)) > 30;
 }
 
+bool Creature::checkCreaturesNearby() const {
+	SpectatorHashSet spectators;
+
+	g_game().map.getSpectators(spectators, this->getPosition(), true, true, 0, 16, 0, 16);
+
+	return !spectators.empty();
+}
+
 void Creature::handleLostSummon(bool teleportSummons) {
 	if (teleportSummons) {
 		g_game().internalTeleport(this, getMaster()->getPosition(), true);

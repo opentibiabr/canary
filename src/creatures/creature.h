@@ -230,6 +230,7 @@ class Creature : virtual public Thing {
 			return defaultOutfit;
 		}
 		bool isInvisible() const;
+		bool checkCreaturesNearby() const;
 		ZoneType_t getZone() const {
 			return getTile()->getZone();
 		}

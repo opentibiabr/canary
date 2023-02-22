@@ -32,7 +32,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 	-- Make sure it is a boss
 	if monsterType and monsterType:isRewardBoss() then
 		local bossId = creature:getId()
-		local timestamp = systemTime()
+		local rewardId = corpse:getAttribute(ITEM_ATTRIBUTE_DATE)
 
 		ResetAndSetTargetList(creature)
 
@@ -76,16 +76,17 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 
 		for _, con in ipairs(scores) do
 			-- Ignoring stamina for now because I heard you get receive rewards even when it's depleted
-			local reward, stamina
-			if con.player then
-				reward = con.player:getReward(timestamp, true)
-				stamina = con.player:getStamina()
-			else
-				stamina = con.stamina or 0
-			end
-
-			local playerLoot
 			if con.score ~= 0 then
+				local reward, stamina, player
+				if con.player then
+					player = con.player;
+				else
+					player = Game.getOfflinePlayer(con.guid)
+				end
+				reward = player:getReward(rewardId, true)
+				stamina = player:getStamina()
+
+				local playerLoot
 				local lootFactor = 1
 				-- Tone down the loot a notch if there are many participants
 				lootFactor = lootFactor / participants ^ (1 / 3)
@@ -93,54 +94,49 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 				lootFactor = lootFactor * (1 + lootFactor) ^ (con.score / expectedScore)
 				playerLoot = monsterType:getBossReward(lootFactor, _ == 1)
 
-				if con.player then
-					for _, p in ipairs(playerLoot) do
-						reward:addItem(p[1], p[2])
-					end
-				end
-			end
-
-			-- Bosstiary Loot Bonus
-			local bonus, boostedMessage
-			local isBoostedBoss = creature:getName():lower() == (Game.getBoostedBoss()):lower()
-			local bossRaceIds = {con.player:getSlotBossId(1), con.player:getSlotBossId(2)}
-			local isBoss = table.contains(bossRaceIds, monsterType:bossRaceId()) or isBoostedBoss
-			if isBoss then
-				if monsterType:bossRaceId() == con.player:getSlotBossId(1) then
-					bonus = con.player:getBossBonus(1)
-				elseif monsterType:bossRaceId() == con.player:getSlotBossId(2) then
-					bonus = con.player:getBossBonus(2)
-				else
-					bonus = configManager.getNumber(configKeys.BOOSTED_BOSS_LOOT_BONUS)
-				end
-
 				for _, p in ipairs(playerLoot) do
-					local isValidItem = checkItemType(p[1])
-					if isValidItem then
-						local realBonus = calculateBonus(bonus)
-						for _ = 1, realBonus do
-							reward:addItem(p[1], p[2])
-							boostedMessage = true
+					reward:addItem(p[1], p[2])
+				end
+
+				-- Bosstiary Loot Bonus
+				local bonus, boostedMessage
+				local isBoostedBoss = creature:getName():lower() == (Game.getBoostedBoss()):lower()
+				local bossRaceIds = {player:getSlotBossId(1), player:getSlotBossId(2)}
+				local isBoss = table.contains(bossRaceIds, monsterType:bossRaceId()) or isBoostedBoss
+				if isBoss and monsterType:bossRaceId() ~= 0 then
+					if monsterType:bossRaceId() == player:getSlotBossId(1) then
+						bonus = player:getBossBonus(1)
+					elseif monsterType:bossRaceId() == player:getSlotBossId(2) then
+						bonus = player:getBossBonus(2)
+					else
+						bonus = configManager.getNumber(configKeys.BOOSTED_BOSS_LOOT_BONUS)
+					end
+
+					for _, p in ipairs(playerLoot) do
+						local isValidItem = checkItemType(p[1])
+						if isValidItem then
+							local realBonus = calculateBonus(bonus)
+							for _ = 1, realBonus do
+								reward:addItem(p[1], p[2])
+								boostedMessage = true
+							end
 						end
 					end
 				end
-			end
-
-			if con.player and con.score ~= 0 then
-				local lootMessage = ("The following items dropped by %s are available in your reward chest: %s"):format(creature:getName(), reward:getContentDescription())
-				if boostedMessage then
-					lootMessage = lootMessage .. " (Boss bonus)"
+				if con.player then
+					local lootMessage = ("The following items dropped by %s are available in your reward chest: %s"):format(creature:getName(), reward:getContentDescription())
+					if boostedMessage then
+						lootMessage = lootMessage .. " (Boss bonus)"
+					end
+					if stamina > 840 then
+						reward:getContentDescription(lootMessage)
+					end
+					player:sendTextMessage(MESSAGE_LOOT, lootMessage)
+				else
+					player:save()
 				end
-
-				if stamina > 840 then
-					reward:getContentDescription(lootMessage)
-				end
-				con.player:sendTextMessage(MESSAGE_LOOT, lootMessage)
-			elseif con.score ~= 0 then
-				InsertRewardItems(con.guid, timestamp, playerLoot)
 			end
 		end
-
 		GlobalBosses[bossId] = nil
 	end
 	return true

@@ -358,6 +358,11 @@ std::time_t getTimeNow() {
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
 
+std::time_t getTimeMsNow() {
+	auto duration = std::chrono::system_clock::now().time_since_epoch();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+}
+
 Direction getDirection(const std::string &string) {
 	Direction direction = DIRECTION_NORTH;
 
@@ -936,17 +941,17 @@ bool booleanString(const std::string &str) {
 std::string getWeaponName(WeaponType_t weaponType) {
 	switch (weaponType) {
 		case WEAPON_SWORD:
-			return "sword";
+			return "stabbing weapon";
 		case WEAPON_CLUB:
-			return "club";
+			return "blunt instrument";
 		case WEAPON_AXE:
-			return "axe";
+			return "cutting weapon";
 		case WEAPON_DISTANCE:
-			return "distance";
+			return "firearm";
 		case WEAPON_WAND:
-			return "wand";
-		case WEAPON_AMMO:
-			return "ammunition";
+			return "wand/rod";
+		case WEAPON_MISSILE:
+			return "missile";
 		default:
 			return std::string();
 	}

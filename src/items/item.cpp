@@ -211,8 +211,8 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 
 Item::Item(const Item &i) :
 	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap) {
-	if (i.initAttributePtr()) {
-		initAttributePtr().reset(new ItemAttribute());
+	if (i.attributePtr) {
+		attributePtr.reset(new ItemAttribute());
 	}
 }
 
@@ -223,8 +223,8 @@ Item* Item::clone() const {
 		return nullptr;
 	}
 
-	if (initAttributePtr()) {
-		item->initAttributePtr().reset(new ItemAttribute());
+	if (attributePtr) {
+		item->attributePtr.reset(new ItemAttribute());
 	}
 
 	return item;
@@ -239,7 +239,7 @@ bool Item::equals(const Item* compareItem) const {
 		return false;
 	}
 
-	for (const auto &attribute : initAttributePtr()->getAttributeVector()) {
+	for (const auto &attribute : getAttributeVector()) {
 		for (const auto &compareAttribute : compareItem->getAttributeVector()) {
 			if (attribute.getAttributeType() != compareAttribute.getAttributeType()) {
 				continue;
@@ -730,16 +730,6 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 			break;
 		}
 
-		case ATTR_IMBUEMENT_TYPE: {
-			std::string imbuementType;
-			if (!propStream.readString(imbuementType)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setAttribute(ItemAttribute_t::IMBUEMENT_TYPE, imbuementType);
-			break;
-		}
-
 		case ATTR_TIER: {
 			uint8_t tier;
 			if (!propStream.read<uint8_t>(tier)) {
@@ -848,7 +838,7 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<int32_t>(getDuration());
 	}
 
-	if (auto decayState = getAttribute<ItemDecayState_t>(ItemAttribute_t::DECAYSTATE);
+	if (auto decayState = getDecaying();
 		decayState == DECAYING_TRUE || decayState == DECAYING_PENDING) {
 		propWriteStream.write<uint8_t>(ATTR_DECAYING_STATE);
 		propWriteStream.write<uint8_t>(decayState);
@@ -924,11 +914,6 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<uint32_t>(getAttribute<uint32_t>(ItemAttribute_t::QUICKLOOTCONTAINER));
 	}
 
-	if (hasAttribute(ItemAttribute_t::IMBUEMENT_TYPE)) {
-		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_TYPE);
-		propWriteStream.writeString(getString(ItemAttribute_t::IMBUEMENT_TYPE));
-	}
-
 	if (hasAttribute(ItemAttribute_t::TIER)) {
 		propWriteStream.write<uint8_t>(ATTR_TIER);
 		propWriteStream.write<uint8_t>(getTier());
@@ -954,7 +939,7 @@ bool Item::hasProperty(ItemProperty prop) const {
 		case CONST_PROP_BLOCKSOLID:
 			return it.blockSolid;
 		case CONST_PROP_MOVEABLE:
-			return it.moveable && !hasAttribute(ItemAttribute_t::UNIQUEID);
+			return canBeMoved();
 		case CONST_PROP_HASHEIGHT:
 			return it.hasHeight;
 		case CONST_PROP_BLOCKPROJECTILE:
@@ -966,11 +951,11 @@ bool Item::hasProperty(ItemProperty prop) const {
 		case CONST_PROP_ISHORIZONTAL:
 			return it.isHorizontal;
 		case CONST_PROP_IMMOVABLEBLOCKSOLID:
-			return it.blockSolid && (!it.moveable || hasAttribute(ItemAttribute_t::UNIQUEID));
+			return it.blockSolid && !canBeMoved();
 		case CONST_PROP_IMMOVABLEBLOCKPATH:
-			return it.blockPathFind && (!it.moveable || hasAttribute(ItemAttribute_t::UNIQUEID));
+			return it.blockPathFind && !canBeMoved();
 		case CONST_PROP_IMMOVABLENOFIELDBLOCKPATH:
-			return !it.isMagicField() && it.blockPathFind && (!it.moveable || hasAttribute(ItemAttribute_t::UNIQUEID));
+			return !it.isMagicField() && it.blockPathFind && !canBeMoved();
 		case CONST_PROP_NOFIELDBLOCKPATH:
 			return !it.isMagicField() && it.blockPathFind;
 		case CONST_PROP_SUPPORTHANGABLE:
@@ -978,6 +963,10 @@ bool Item::hasProperty(ItemProperty prop) const {
 		default:
 			return false;
 	}
+}
+
+bool Item::canBeMoved() const {
+	return isMoveable() && !hasAttribute(UNIQUEID) && (!hasAttribute(ACTIONID) || getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != IMMOVABLE_ACTION_ID);
 }
 
 uint32_t Item::getWeight() const {
@@ -992,7 +981,9 @@ std::vector<std::pair<std::string, std::string>>
 Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 	std::ostringstream ss;
 	std::vector<std::pair<std::string, std::string>> descriptions;
+	bool isTradeable = true;
 	descriptions.reserve(30);
+
 	if (item) {
 		const std::string &specialDescription = item->getAttribute<std::string>(ItemAttribute_t::DESCRIPTION);
 		if (!specialDescription.empty()) {
@@ -1009,7 +1000,29 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 		}
 
 		int32_t attack = item->getAttack();
-		if (attack != 0) {
+		if (it.isRanged()) {
+			bool separator = false;
+			if (attack != 0) {
+				ss << "attack +" << attack;
+				separator = true;
+			}
+			if (int32_t hitChance = item->getHitChance();
+				hitChance != 0) {
+				if (separator) {
+					ss << ", ";
+				}
+				ss << "chance to hit +" << static_cast<int16_t>(hitChance) << "%";
+				separator = true;
+			}
+			if (int32_t shootRange = item->getShootRange();
+				shootRange != 0) {
+				if (separator) {
+					ss << ", ";
+				}
+				ss << static_cast<uint16_t>(shootRange) << " fields";
+			}
+			descriptions.emplace_back("Attack", ss.str());
+		} else if (!it.isRanged() && attack != 0) {
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 				ss.str("");
 				ss << attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
@@ -1025,13 +1038,13 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 		}
 
 		int32_t defense = item->getDefense(), extraDefense = item->getExtraDefense();
-		if (defense != 0 || extraDefense != 0) {
+		if (defense != 0 || extraDefense != 0 || item->getWeaponType() == WEAPON_MISSILE) {
 			if (extraDefense != 0) {
 				ss.str("");
 				ss << defense << ' ' << std::showpos << extraDefense << std::noshowpos;
-				descriptions.emplace_back("Defense", ss.str());
+				descriptions.emplace_back("Defence", ss.str());
 			} else {
-				descriptions.emplace_back("Defense", std::to_string(defense));
+				descriptions.emplace_back("Defence", std::to_string(defense));
 			}
 		}
 
@@ -1041,14 +1054,53 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 		}
 
 		if (it.abilities) {
-			for (uint8_t i = SKILL_FIRST; i <= SKILL_LAST; i++) {
+			// Protection
+			ss.str("");
+			bool protection = false;
+			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+				if (it.abilities->absorbPercent[i] == 0) {
+					continue;
+				}
+
+				if (protection) {
+					ss << ", ";
+				}
+
+				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->fieldAbsorbPercent[i]);
+				protection = true;
+			}
+			if (protection) {
+				descriptions.emplace_back("Protection", ss.str());
+			}
+
+			// Skill Boost
+			ss.str("");
+			bool skillBoost = false;
+			if (it.abilities->speed) {
+				ss << std::showpos << "speed " << (it.abilities->speed >> 1) << std::noshowpos;
+				skillBoost = true;
+			}
+
+			for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
 				if (!it.abilities->skills[i]) {
 					continue;
 				}
 
-				ss.str("");
-				ss << std::showpos << it.abilities->skills[i] << std::noshowpos;
-				descriptions.emplace_back(getSkillName(i), ss.str());
+				if (skillBoost) {
+					ss << ", ";
+				}
+
+				ss << std::showpos << getSkillName(i) << ' ' << it.abilities->skills[i] << std::noshowpos;
+				skillBoost = true;
+			}
+
+			if (it.abilities->stats[STAT_MAGICPOINTS]) {
+				if (skillBoost) {
+					ss << ", ";
+				}
+
+				ss << std::showpos << "magic level " << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+				skillBoost = true;
 			}
 
 			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
@@ -1056,62 +1108,22 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 					continue;
 				}
 
-				ss.str("");
+				if (skillBoost) {
+					ss << ", ";
+				}
+
 				if (i != SKILL_CRITICAL_HIT_CHANCE) {
 					ss << std::showpos;
 				}
-				ss << it.abilities->skills[i] << '%';
-				if (i != SKILL_CRITICAL_HIT_CHANCE) {
-					ss << std::noshowpos;
-				}
-				descriptions.emplace_back(getSkillName(i), ss.str());
+
+				ss << getSkillName(i) << ' ' << it.abilities->skills[i] << '%' << std::noshowpos;
+				skillBoost = true;
 			}
 
-			if (it.abilities->stats[STAT_MAGICPOINTS]) {
-				ss.str("");
-				ss << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
-				descriptions.emplace_back("Magic Level", ss.str());
+			if (skillBoost) {
+				descriptions.emplace_back("Skill Boost", ss.str());
 			}
 
-			if (it.abilities->speed) {
-				ss.str("");
-				ss << std::showpos << (it.abilities->speed) << std::noshowpos;
-				descriptions.emplace_back("Speed", ss.str());
-			}
-
-			if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
-				ss.str("");
-				ss << "Hard Drinking";
-				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			if (it.abilities->invisible) {
-				ss.str("");
-				ss << "Invisibility";
-				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			if (it.abilities->regeneration) {
-				ss.str("");
-				ss << "Faster Regeneration";
-				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			if (it.abilities->manaShield) {
-				ss.str("");
-				ss << "Mana Shield";
-				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-				if (it.abilities->absorbPercent[i] == 0) {
-					continue;
-				}
-
-				ss.str("");
-				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
-				descriptions.emplace_back("Protection", ss.str());
-			}
 			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
 				if (it.abilities->fieldAbsorbPercent[i] == 0) {
 					continue;
@@ -1120,6 +1132,68 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				ss.str("");
 				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->fieldAbsorbPercent[i]);
 				descriptions.emplace_back("Field Protection", ss.str());
+			}
+
+			if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
+				ss.str("");
+				ss << "Hard Drinking";
+				descriptions.emplace_back("Skill Boost", ss.str());
+			}
+
+			if (it.abilities->invisible) {
+				ss.str("");
+				ss << "Invisibility";
+				descriptions.emplace_back("Skill Boost", ss.str());
+			}
+
+			if (it.abilities->regeneration) {
+				ss.str("");
+				ss << "Faster Regeneration";
+				descriptions.emplace_back("Skill Boost", ss.str());
+			}
+
+			if (it.abilities->manaShield) {
+				ss.str("");
+				ss << "Mana Shield";
+				descriptions.emplace_back("Skill Boost", ss.str());
+			}
+		}
+
+		if (it.upgradeClassification > 0) {
+			descriptions.emplace_back("Tier", std::to_string(item->getTier()));
+		}
+
+		if (item->getContainer()) {
+			descriptions.emplace_back("Capacity", std::to_string(item->getContainer()->capacity()));
+		}
+
+		std::string slotName;
+		if (item->getImbuementSlot() > 0) {
+			for (uint8_t i = 0; i < item->getImbuementSlot(); ++i) {
+				slotName = fmt::format("Imbuement Slot {}", i + 1);
+				ss.str("");
+				const auto &castItem = item;
+				if (!castItem) {
+					continue;
+				}
+
+				ImbuementInfo imbuementInfo;
+				if (!castItem->getImbuementInfo(i, &imbuementInfo)) {
+					ss << "empty";
+					descriptions.emplace_back(slotName, ss.str());
+					continue;
+				}
+
+				const BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID());
+				if (!baseImbuement) {
+					continue;
+				}
+
+				auto minutes = imbuementInfo.duration / 60;
+				auto hours = minutes / 60;
+				ss << fmt::format("{} {} ({}), lasts {:02}:{:02}h while fighting.", baseImbuement->name, imbuementInfo.imbuement->getName(), imbuementInfo.imbuement->getDescription(), hours, minutes % 60);
+				isTradeable = false;
+				descriptions.emplace_back(slotName, ss.str());
 			}
 		}
 
@@ -1142,12 +1216,24 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 			descriptions.emplace_back("Contain", "Nothing");
 		}
 
-		if (item->getContainer()) {
-			descriptions.emplace_back("Capacity", std::to_string(item->getContainer()->capacity()));
-		}
-
 		if (it.isRune()) {
 			descriptions.emplace_back("Rune Spell Name", it.runeSpellName);
+		}
+
+		if (it.showCharges) {
+			int32_t charges = item->getCharges();
+			if (charges != 0) {
+				ss.str("");
+				// Missing Actual Charges
+				ss << charges << "/" << charges;
+				descriptions.emplace_back("Charges", ss.str());
+			}
+		}
+
+		if (it.showDuration) {
+			ss.str("");
+			ss << "brand-new";
+			descriptions.emplace_back("Expires", ss.str());
 		}
 
 		uint32_t weight = item->getWeight();
@@ -1162,43 +1248,13 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				weightString.insert(weightString.end() - 2, '.');
 				ss << weightString;
 			}
-			ss << " oz";
-			descriptions.emplace_back("Weight", ss.str());
-		}
 
-		if (it.showDuration) {
-			ss.str("");
-			if (item->hasAttribute(ItemAttribute_t::DURATION)) {
-				uint32_t duration = item->getDuration() / 1000;
-				ss << "Will expire in ";
-				if (duration >= 86400) {
-					uint16_t days = duration / 86400;
-					uint16_t hours = (duration % 86400) / 3600;
-					ss << days << " day" << (days != 1 ? "s" : "");
-					if (hours > 0) {
-						ss << " and " << hours << " hour" << (hours != 1 ? "s" : "");
-					}
-				} else if (duration >= 3600) {
-					uint16_t hours = duration / 3600;
-					uint16_t minutes = (duration % 3600) / 60;
-					ss << hours << " hour" << (hours != 1 ? "s" : "");
-					if (minutes > 0) {
-						ss << " and " << minutes << " minute" << (minutes != 1 ? "s" : "");
-					}
-				} else if (duration >= 60) {
-					uint16_t minutes = duration / 60;
-					ss << minutes << " minute" << (minutes != 1 ? "s" : "");
-					uint16_t seconds = duration % 60;
-					if (seconds > 0) {
-						ss << " and " << seconds << " second" << (seconds != 1 ? "s" : "");
-					}
-				} else {
-					ss << duration << " second" << (duration != 1 ? "s" : "");
-				}
+			ss << " oz";
+			if (item->getContainer()) {
+				descriptions.emplace_back("Total Weight", ss.str());
 			} else {
-				ss << "Is brand-new";
+				descriptions.emplace_back("Weight", ss.str());
 			}
-			descriptions.emplace_back("Expiration", ss.str());
 		}
 
 		if (it.wieldInfo & WIELDINFO_PREMIUM) {
@@ -1217,6 +1273,11 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 			descriptions.emplace_back("Professions", it.vocationString);
 		}
 
+		// Missing Tradeable Conditions
+		if (isTradeable) {
+			descriptions.emplace_back("Tradeable", "yes");
+		}
+
 		std::string weaponName = getWeaponName(it.weaponType);
 		if (it.slotPosition & SLOTP_TWO_HAND) {
 			if (!weaponName.empty()) {
@@ -1230,38 +1291,61 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 		}
 
 		if (it.slotPosition & SLOTP_BACKPACK) {
-			descriptions.emplace_back("Body Position", "Container");
+			descriptions.emplace_back("Body Position", "container");
 		} else if (it.slotPosition & SLOTP_HEAD) {
-			descriptions.emplace_back("Body Position", "Head");
+			descriptions.emplace_back("Body Position", "head");
 		} else if (it.slotPosition & SLOTP_ARMOR) {
-			descriptions.emplace_back("Body Position", "Body");
+			descriptions.emplace_back("Body Position", "body");
 		} else if (it.slotPosition & SLOTP_LEGS) {
-			descriptions.emplace_back("Body Position", "Legs");
+			descriptions.emplace_back("Body Position", "legs");
 		} else if (it.slotPosition & SLOTP_FEET) {
-			descriptions.emplace_back("Body Position", "Feet");
+			descriptions.emplace_back("Body Position", "feet");
 		} else if (it.slotPosition & SLOTP_NECKLACE) {
-			descriptions.emplace_back("Body Position", "Neck");
+			descriptions.emplace_back("Body Position", "neck");
 		} else if (it.slotPosition & SLOTP_RING) {
-			descriptions.emplace_back("Body Position", "Finger");
+			descriptions.emplace_back("Body Position", "finger");
 		} else if (it.slotPosition & SLOTP_AMMO) {
-			descriptions.emplace_back("Body Position", "Extra Slot");
-		} else if (it.slotPosition & SLOTP_TWO_HAND || it.slotPosition & SLOTP_LEFT || it.slotPosition & SLOTP_RIGHT) {
-			descriptions.emplace_back("Body Position", "Hand");
+			descriptions.emplace_back("Body Position", "extra slot");
+		} else if (it.slotPosition & SLOTP_TWO_HAND) {
+			descriptions.emplace_back("Body Position", "both hands");
+		} else if ((it.slotPosition & SLOTP_LEFT) && it.weaponType != WEAPON_SHIELD) {
+			descriptions.emplace_back("Body Position", "weapon hand");
+		} else if (it.slotPosition & SLOTP_RIGHT) {
+			descriptions.emplace_back("Body Position", "shield hand");
+		}
+
+		if (it.upgradeClassification > 0) {
+			descriptions.emplace_back("Classification", std::to_string(it.upgradeClassification));
 		}
 	} else {
 		if (!it.description.empty()) {
 			descriptions.emplace_back("Description", it.description);
 		}
 
-		if (it.showCharges) {
-			int32_t charges = it.charges;
-			if (charges != 0) {
-				descriptions.emplace_back("Charges", std::to_string(charges));
-			}
-		}
-
 		int32_t attack = it.attack;
-		if (attack != 0) {
+		if (it.isRanged()) {
+			bool separator = false;
+			if (attack != 0) {
+				ss << "attack +" << attack;
+				separator = true;
+			}
+			if (int32_t hitChance = it.hitChance;
+				hitChance != 0) {
+				if (separator) {
+					ss << ", ";
+				}
+				ss << "chance to hit +" << static_cast<int16_t>(hitChance) << "%";
+				separator = true;
+			}
+			if (int32_t shootRange = it.shootRange;
+				shootRange != 0) {
+				if (separator) {
+					ss << ", ";
+				}
+				ss << static_cast<uint16_t>(shootRange) << " fields";
+			}
+			descriptions.emplace_back("Attack", ss.str());
+		} else if (!it.isRanged() && attack != 0) {
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 				ss.str("");
 				ss << attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
@@ -1271,19 +1355,14 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 			}
 		}
 
-		int32_t hitChance = it.hitChance;
-		if (hitChance != 0) {
-			descriptions.emplace_back("HitChance", std::to_string(hitChance));
-		}
-
 		int32_t defense = it.defense, extraDefense = it.extraDefense;
-		if (defense != 0 || extraDefense != 0) {
+		if (defense != 0 || extraDefense != 0 || it.isMissile()) {
 			if (extraDefense != 0) {
 				ss.str("");
 				ss << defense << ' ' << std::showpos << extraDefense << std::noshowpos;
-				descriptions.emplace_back("Defense", ss.str());
+				descriptions.emplace_back("Defence", ss.str());
 			} else {
-				descriptions.emplace_back("Defense", std::to_string(defense));
+				descriptions.emplace_back("Defence", std::to_string(defense));
 			}
 		}
 
@@ -1293,14 +1372,53 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 		}
 
 		if (it.abilities) {
-			for (uint8_t i = SKILL_FIRST; i <= SKILL_LAST; i++) {
+			// Protection
+			ss.str("");
+			bool protection = false;
+			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+				if (it.abilities->absorbPercent[i] == 0) {
+					continue;
+				}
+
+				if (protection) {
+					ss << ", ";
+				}
+
+				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
+				protection = true;
+			}
+			if (protection) {
+				descriptions.emplace_back("Protection", ss.str());
+			}
+
+			// Skill Boost
+			ss.str("");
+			bool skillBoost = false;
+			if (it.abilities->speed) {
+				ss << std::showpos << "speed " << (it.abilities->speed >> 1) << std::noshowpos;
+				skillBoost = true;
+			}
+
+			for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
 				if (!it.abilities->skills[i]) {
 					continue;
 				}
 
-				ss.str("");
-				ss << std::showpos << it.abilities->skills[i] << std::noshowpos;
-				descriptions.emplace_back(getSkillName(i), ss.str());
+				if (skillBoost) {
+					ss << ", ";
+				}
+
+				ss << std::showpos << getSkillName(i) << ' ' << it.abilities->skills[i] << std::noshowpos;
+				skillBoost = true;
+			}
+
+			if (it.abilities->stats[STAT_MAGICPOINTS]) {
+				if (skillBoost) {
+					ss << ", ";
+				}
+
+				ss << std::showpos << "magic level " << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+				skillBoost = true;
 			}
 
 			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
@@ -1308,61 +1426,19 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 					continue;
 				}
 
-				ss.str("");
+				if (skillBoost) {
+					ss << ", ";
+				}
+
 				if (i != SKILL_CRITICAL_HIT_CHANCE) {
 					ss << std::showpos;
 				}
-				ss << it.abilities->skills[i] << '%';
-				if (i != SKILL_CRITICAL_HIT_CHANCE) {
-					ss << std::noshowpos;
-				}
-				descriptions.emplace_back(getSkillName(i), ss.str());
+
+				ss << getSkillName(i) << ' ' << it.abilities->skills[i] << '%' << std::noshowpos;
+				skillBoost = true;
 			}
-
-			if (it.abilities->stats[STAT_MAGICPOINTS]) {
-				ss.str("");
-				ss << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
-				descriptions.emplace_back("Magic Level", ss.str());
-			}
-
-			if (it.abilities->speed) {
-				ss.str("");
-				ss << std::showpos << (it.abilities->speed) << std::noshowpos;
-				descriptions.emplace_back("Speed", ss.str());
-			}
-
-			if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
-				ss.str("");
-				ss << "Hard Drinking";
-				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			if (it.abilities->invisible) {
-				ss.str("");
-				ss << "Invisibility";
-				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			if (it.abilities->regeneration) {
-				ss.str("");
-				ss << "Faster Regeneration";
-				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			if (it.abilities->manaShield) {
-				ss.str("");
-				ss << "Mana Shield";
-				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-				if (it.abilities->absorbPercent[i] == 0) {
-					continue;
-				}
-
-				ss.str("");
-				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
-				descriptions.emplace_back("Protection", ss.str());
+			if (skillBoost) {
+				descriptions.emplace_back("Skill Boost", ss.str());
 			}
 
 			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
@@ -1374,6 +1450,38 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->fieldAbsorbPercent[i]);
 				descriptions.emplace_back("Field Protection", ss.str());
 			}
+
+			if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
+				ss.str("");
+				ss << "Hard Drinking";
+				descriptions.emplace_back("Skill Boost", ss.str());
+			}
+
+			if (it.abilities->invisible) {
+				ss.str("");
+				ss << "Invisibility";
+				descriptions.emplace_back("Skill Boost", ss.str());
+			}
+
+			if (it.abilities->regeneration) {
+				ss.str("");
+				ss << "Faster Regeneration";
+				descriptions.emplace_back("Skill Boost", ss.str());
+			}
+
+			if (it.abilities->manaShield) {
+				ss.str("");
+				ss << "Mana Shield";
+				descriptions.emplace_back("Skill Boost", ss.str());
+			}
+		}
+
+		if (it.isContainer()) {
+			descriptions.emplace_back("Capacity", std::to_string(it.maxItems));
+		}
+
+		if (it.imbuementSlot > 0) {
+			descriptions.emplace_back("Imbuement Slots", std::to_string(it.imbuementSlot));
 		}
 
 		if (it.isKey()) {
@@ -1386,12 +1494,23 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 			descriptions.emplace_back("Contain", "Nothing");
 		}
 
-		if (it.isContainer()) {
-			descriptions.emplace_back("Capacity", std::to_string(it.maxItems));
-		}
-
 		if (it.isRune()) {
 			descriptions.emplace_back("Rune Spell Name", it.runeSpellName);
+		}
+
+		if (it.showCharges) {
+			int32_t charges = it.charges;
+			if (charges != 0) {
+				ss.str("");
+				// Missing Actual Charges
+				ss << charges << "/" << charges;
+				descriptions.emplace_back("Charges", ss.str());
+			}
+		}
+
+		if (it.showDuration) {
+			// Missing Total Expire Time
+			descriptions.emplace_back("Total Expire Time", "brand-new");
 		}
 
 		auto weight = it.weight;
@@ -1410,10 +1529,6 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 			descriptions.emplace_back("Weight", ss.str());
 		}
 
-		if (it.showDuration) {
-			descriptions.emplace_back("Expiration", "Is brand-new");
-		}
-
 		if (it.wieldInfo & WIELDINFO_PREMIUM) {
 			descriptions.emplace_back("Required", "Premium");
 		}
@@ -1430,6 +1545,9 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 			descriptions.emplace_back("Professions", it.vocationString);
 		}
 
+		// Missing Tradeable Conditions
+		descriptions.emplace_back("Tradeable In Market", "yes");
+
 		std::string weaponName = getWeaponName(it.weaponType);
 		if (it.slotPosition & SLOTP_TWO_HAND) {
 			if (!weaponName.empty()) {
@@ -1443,23 +1561,27 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 		}
 
 		if (it.slotPosition & SLOTP_BACKPACK) {
-			descriptions.emplace_back("Body Position", "Container");
+			descriptions.emplace_back("Body Position", "container");
 		} else if (it.slotPosition & SLOTP_HEAD) {
-			descriptions.emplace_back("Body Position", "Head");
+			descriptions.emplace_back("Body Position", "head");
 		} else if (it.slotPosition & SLOTP_ARMOR) {
-			descriptions.emplace_back("Body Position", "Body");
+			descriptions.emplace_back("Body Position", "body");
 		} else if (it.slotPosition & SLOTP_LEGS) {
-			descriptions.emplace_back("Body Position", "Legs");
+			descriptions.emplace_back("Body Position", "legs");
 		} else if (it.slotPosition & SLOTP_FEET) {
-			descriptions.emplace_back("Body Position", "Feet");
+			descriptions.emplace_back("Body Position", "feet");
 		} else if (it.slotPosition & SLOTP_NECKLACE) {
-			descriptions.emplace_back("Body Position", "Neck");
+			descriptions.emplace_back("Body Position", "neck");
 		} else if (it.slotPosition & SLOTP_RING) {
-			descriptions.emplace_back("Body Position", "Finger");
+			descriptions.emplace_back("Body Position", "finger");
 		} else if (it.slotPosition & SLOTP_AMMO) {
-			descriptions.emplace_back("Body Position", "Extra Slot");
-		} else if (it.slotPosition & SLOTP_TWO_HAND || it.slotPosition & SLOTP_LEFT || it.slotPosition & SLOTP_RIGHT) {
-			descriptions.emplace_back("Body Position", "Hand");
+			descriptions.emplace_back("Body Position", "extra slot");
+		} else if (it.slotPosition & SLOTP_TWO_HAND) {
+			descriptions.emplace_back("Body Position", "both hands");
+		} else if ((it.slotPosition & SLOTP_LEFT) && it.weaponType != WEAPON_SHIELD) {
+			descriptions.emplace_back("Body Position", "weapon hand");
+		} else if (it.slotPosition & SLOTP_RIGHT) {
+			descriptions.emplace_back("Body Position", "shield hand");
 		}
 
 		if (it.upgradeClassification > 0) {
@@ -1492,8 +1614,8 @@ std::string Item::parseImbuementDescription(const Item* item) {
 				continue;
 			}
 
-			auto minutes = imbuementInfo.duration / 60;
-			auto hours = minutes / 60;
+			int minutes = imbuementInfo.duration / 60;
+			int hours = minutes / 60;
 			s << fmt::format("{} {} {:02}:{:02}h", baseImbuement->name, imbuementInfo.imbuement->getName(), hours, minutes % 60);
 		}
 		s << ").";
@@ -1518,6 +1640,62 @@ std::string Item::parseClassificationDescription(const Item* item) {
 		}
 	}
 	return string.str();
+}
+
+std::string Item::parseShowDurationSpeed(int32_t speed, bool &begin) {
+	std::ostringstream description;
+	if (begin) {
+		begin = false;
+		description << " (";
+	} else {
+		description << ", ";
+	}
+
+	description << fmt::format("speed {:+}", speed);
+	return description.str();
+}
+
+std::string Item::parseShowDuration(const Item* item) {
+	if (!item) {
+		return {};
+	}
+
+	std::ostringstream description;
+	uint32_t duration = item->getDuration() / 1000;
+	if (item && item->hasAttribute(ItemAttribute_t::DURATION) && duration > 0) {
+		description << " that will expire in ";
+		if (duration >= 86400) {
+			uint16_t days = duration / 86400;
+			uint16_t hours = (duration % 86400) / 3600;
+			description << days << " day" << (days != 1 ? "s" : "");
+
+			if (hours > 0) {
+				description << " and " << hours << " hour" << (hours != 1 ? "s" : "");
+			}
+		} else if (duration >= 3600) {
+			uint16_t hours = duration / 3600;
+			uint16_t minutes = (duration % 3600) / 60;
+			description << hours << " hour" << (hours != 1 ? "s" : "");
+
+			if (minutes > 0) {
+				description << " and " << minutes << " minute" << (minutes != 1 ? "s" : "");
+			}
+		} else if (duration >= 60) {
+			uint16_t minutes = duration / 60;
+			description << minutes << " minute" << (minutes != 1 ? "s" : "");
+			uint16_t seconds = duration % 60;
+
+			if (seconds > 0) {
+				description << " and " << seconds << " second" << (seconds != 1 ? "s" : "");
+			}
+		} else {
+			description << duration << " second" << (duration != 1 ? "s" : "");
+		}
+	} else {
+		description << " that is brand-new";
+	}
+
+	return description.str();
 }
 
 std::string Item::parseShowAttributesDescription(const Item* item, const uint16_t itemId) {
@@ -1672,14 +1850,7 @@ std::string Item::parseShowAttributesDescription(const Item* item, const uint16_
 			}
 
 			if (itemType.abilities->speed) {
-				if (begin) {
-					begin = false;
-					itemDescription << " (";
-				} else {
-					itemDescription << ", ";
-				}
-
-				itemDescription << fmt::format("speed {:+}", itemType.abilities->speed);
+				itemDescription << parseShowDurationSpeed(itemType.abilities->speed, begin);
 			}
 		}
 
@@ -1813,6 +1984,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 					if (i != SKILL_CRITICAL_HIT_CHANCE) {
 						s << std::noshowpos;
 					}
+					s << '%';
 				}
 
 				if (it.abilities->stats[STAT_MAGICPOINTS]) {
@@ -1919,14 +2091,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 				}
 
 				if (it.abilities->speed) {
-					if (begin) {
-						begin = false;
-						s << " (";
-					} else {
-						s << ", ";
-					}
-
-					s << fmt::format("speed {:+}", it.abilities->speed);
+					s << parseShowDurationSpeed(it.abilities->speed, begin);
 				}
 			}
 
@@ -1956,7 +2121,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 				}
 			}
 
-			if (defense != 0 || extraDefense != 0) {
+			if (defense != 0 || extraDefense != 0 || it.isMissile()) {
 				if (begin) {
 					begin = false;
 					s << " (";
@@ -2112,14 +2277,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 				}
 
 				if (it.abilities->speed) {
-					if (begin) {
-						begin = false;
-						s << " (";
-					} else {
-						s << ", ";
-					}
-
-					s << fmt::format("speed {:+}", it.abilities->speed);
+					s << parseShowDurationSpeed(it.abilities->speed, begin);
 				}
 			}
 
@@ -2145,7 +2303,8 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 
 		if (it.abilities && it.slotPosition & SLOTP_RING) {
 			if (it.abilities->speed > 0) {
-				s << fmt::format(" (speed {:+})", it.abilities->speed);
+				bool begin = true;
+				s << parseShowDurationSpeed(it.abilities->speed, begin) << ")" << parseShowDuration(item);
 			} else if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
 				s << " (hard drinking)";
 			} else if (it.abilities->invisible) {
@@ -2232,40 +2391,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 	}
 
 	if (it.showDuration) {
-		if (item && item->hasAttribute(ItemAttribute_t::DURATION)) {
-			uint32_t duration = item->getDuration() / 1000;
-			s << " that will expire in ";
-
-			if (duration >= 86400) {
-				uint16_t days = duration / 86400;
-				uint16_t hours = (duration % 86400) / 3600;
-				s << days << " day" << (days != 1 ? "s" : "");
-
-				if (hours > 0) {
-					s << " and " << hours << " hour" << (hours != 1 ? "s" : "");
-				}
-			} else if (duration >= 3600) {
-				uint16_t hours = duration / 3600;
-				uint16_t minutes = (duration % 3600) / 60;
-				s << hours << " hour" << (hours != 1 ? "s" : "");
-
-				if (minutes > 0) {
-					s << " and " << minutes << " minute" << (minutes != 1 ? "s" : "");
-				}
-			} else if (duration >= 60) {
-				uint16_t minutes = duration / 60;
-				s << minutes << " minute" << (minutes != 1 ? "s" : "");
-				uint16_t seconds = duration % 60;
-
-				if (seconds > 0) {
-					s << " and " << seconds << " second" << (seconds != 1 ? "s" : "");
-				}
-			} else {
-				s << duration << " second" << (duration != 1 ? "s" : "");
-			}
-		} else {
-			s << " that is brand-new";
-		}
+		s << parseShowDuration(item);
 	}
 
 	if (!it.allowDistRead || (it.id >= 7369 && it.id <= 7371)) {
@@ -2503,6 +2629,45 @@ void Item::stopDecaying() {
 	g_decay().stopDecay(this);
 }
 
+Item* Item::transform(uint16_t itemId, uint16_t itemCount /*= -1*/) {
+	Cylinder* cylinder = getParent();
+	if (cylinder == nullptr) {
+		SPDLOG_INFO("[{}] failed to transform item {}, cylinder is nullptr", __FUNCTION__, getID());
+		return nullptr;
+	}
+
+	Tile* fromTile = cylinder->getTile();
+	if (fromTile) {
+		auto it = g_game().browseFields.find(fromTile);
+		if (it != g_game().browseFields.end() && it->second == cylinder) {
+			cylinder = fromTile;
+		}
+	}
+
+	Item* newItem;
+	if (itemCount == -1) {
+		newItem = Item::CreateItem(itemId, 1);
+	} else {
+		newItem = Item::CreateItem(itemId, itemCount);
+	}
+
+	int32_t itemIndex = cylinder->getThingIndex(this);
+	auto duration = getDuration();
+	if (duration > 0) {
+		newItem->setDuration(duration);
+	}
+
+	cylinder->replaceThing(itemIndex, newItem);
+	cylinder->postAddNotification(newItem, cylinder, itemIndex);
+
+	setParent(nullptr);
+	cylinder->postRemoveNotification(this, cylinder, itemIndex);
+	stopDecaying();
+	g_game().ReleaseItem(this);
+	newItem->startDecaying();
+	return newItem;
+}
+
 bool Item::hasMarketAttributes() const {
 	if (!isInitializedAttributePtr()) {
 		return true;
@@ -2517,13 +2682,13 @@ bool Item::hasMarketAttributes() const {
 			return false;
 		}
 
-		if (attribute.getAttributeType() == ItemAttribute_t::IMBUEMENT_TYPE && !hasImbuements()) {
-			return false;
-		}
-
 		if (attribute.getAttributeType() == ItemAttribute_t::TIER && static_cast<uint8_t>(attribute.getInteger()) != getTier()) {
 			return false;
 		}
+	}
+
+	if (hasImbuements()) {
+		return false;
 	}
 
 	return true;
@@ -2553,4 +2718,10 @@ bool Item::isInsideDepot(bool includeInbox /* = false*/) const {
 	}
 
 	return false;
+}
+
+void Item::updateTileFlags() {
+	if (auto tile = getTile()) {
+		tile->updateTileFlags(this);
+	}
 }

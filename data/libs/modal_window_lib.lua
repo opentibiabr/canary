@@ -1,116 +1,216 @@
-if not modalWindows then
-	modalWindows = {
-		modalWindowConstructor = ModalWindow,
-		nextFreeId = 500,
+local ModalWindowAutoID = 10000
 
-		windows = {}
-	}
+if not __ModalWindow then
+	__ModalWindow = ModalWindow
+	ModalWindows = {}
 end
 
-local MT = {}
-MT.__index = MT
+ModalWindow = {}
+ModalWindow.__index = ModalWindow
 
-function ModalWindow(...)
-	local args = {...}
-	if type(args[1]) == 'table' then
-		local self = setmetatable(args[1], MT)
-		local id = modalWindows.nextFreeId
-		self.id = id
-		self.buttons = {}
-		self.choices = {}
-		self.players = {}
-		self.created = false
-
-		modalWindows.nextFreeId = id + 1
-		table.insert(modalWindows.windows, self)
-		return self
+function ModalWindow.new(self, ...)
+	if type(self) ~= "table" then
+		return __ModalWindow(self, ...)
 	end
 
-	return modalWindows.modalWindowConstructor(...)
+	self.modalWindowId = 0
+	self.buttons = {}
+	self.choices = {}
+	self.using = 0
+	return setmetatable(self, ModalWindow)
 end
 
-function MT:setDefaultCallback(callback)
-	self.defaultCallback = callback
-end
-
-function MT:addButton(text, callback)
-	local button = {text = tostring(text), callback = callback}
-	table.insert(self.buttons, button)
-	return button
-end
-
-function MT:addButtons(...)
-	for _, text in ipairs({...}) do
-		table.insert(self.buttons, {text = tostring(text)})
+setmetatable(ModalWindow, {
+	__call = function (self, ...)
+		return ModalWindow.new(...)
 	end
-end
+})
 
-function MT:addChoice(text)
-	local choice = {text = tostring(text)}
-	table.insert(self.choices, choice)
-	return choice
-end
-
-function MT:addChoices(...)
-	for _, text in ipairs({...}) do
-		table.insert(self.choices, {text = tostring(text)})
-	end
-end
-
-function MT:setDefaultEnterButton(text)
-	self.defaultEnterButton = text
-end
-
-function MT:setDefaultEscapeButton(text)
-	self.defaultEscapeButton = text
-end
-
-function MT:setTitle(title)
+function ModalWindow:setTitle(title)
 	self.title = tostring(title)
+	return true
 end
 
-function MT:setMessage(message)
+function ModalWindow:setMessage(message)
 	self.message = tostring(message)
+	return true
 end
 
-local buttonOrder = {
-	[4] = {3, 4, 2, 1},
-	[3] = {2, 3, 1},
-	[2] = {1, 2},
-	[1] = {1}
-}
-function MT:create()
-	local modalWindow = modalWindows.modalWindowConstructor(self.id, self.title, self.message)
-	local order = buttonOrder[math.min(#self.buttons, 4)]
+function ModalWindow:addButton(name, callback)
+	if type(name) ~= "string" then
+		io.write("ModalWindow:addButton: name must be a string.")
+		name = tostring(name)
+	end
 
-	if order then
-		for _, i in ipairs(order) do
-			local button = self.buttons[i]
-			modalWindow:addButton(i, button.text)
-			button.id = i
+	if self.buttons[name] then
+		io.write("ModalWindow: Button with name '" .. name .. "' already exists.")
+		return false
+	end
 
-			if button.text == self.defaultEnterButton then
-				modalWindow:setDefaultEnterButton(i)
-			elseif button.text == self.defaultEscapeButton then
-				modalWindow:setDefaultEscapeButton(i)
-			end
+	local id = #self.buttons + 1
+	local button = { id = id, name = name, callback = callback }
+	self.buttons[id] = button
+	self.buttons[name] = button
+	return true
+end
+
+function ModalWindow:removeButton(name)
+	if type(name) ~= "string" then
+		io.write("ModalWindow:removeButton: name must be a string.")
+		name = tostring(name)
+	end
+
+	local button = self.buttons[name]
+	if not button then
+		io.write("ModalWindow: Button with name '" .. name .. "' does not exist.")
+		return false
+	end
+
+	self.buttons[button.id] = nil
+	self.buttons[name] = nil
+	return true
+end
+
+function ModalWindow:callButton(name, player, button, choice)
+	if type(name) ~= "string" then
+		io.write("ModalWindow:callButton: name must be a string.")
+		name = tostring(name)
+	end
+
+	local newButton = self.buttons[name]
+	if not newButton then
+		io.write("ModalWindow: Button with name '" .. name .. "' does not exist.")
+		return false
+	end
+
+	if not newButton.callback then
+		io.write("ModalWindow: Button with name '" .. name .. "' has no callback.")
+		return false
+	end
+	return newButton.callback(player, button, choice)
+end
+
+function ModalWindow:clearButtons()
+	self.buttons = {}
+	return true
+end
+
+function ModalWindow:setDefaultEnterButton(buttonId)
+	self.defaultEnterButton = buttonId
+	return true
+end
+
+function ModalWindow:setDefaultEscapeButton(buttonId)
+	self.defaultEscapeButton = buttonId
+	return true
+end
+
+function ModalWindow:setDefaultCallback(callback)
+	self.defaultCallback = callback
+	return true
+end
+
+function ModalWindow:addChoice(text, callback)
+	if type(text) ~= "string" then
+		io.write("ModalWindow:addChoice: text must be a string.")
+		text = tostring(text)
+	end
+
+	local id = #self.choices + 1
+	local choice = { id = id, text = text, callback = callback }
+	self.choices[id] = choice
+	self.choices[text] = choice
+	return true
+end
+
+function ModalWindow:removeChoice(text)
+	if type(text) ~= "string" then
+		io.write("ModalWindow:removeChoice: text must be a string.")
+		text = tostring(text)
+	end
+
+	local choice = self.choices[text]
+	if not choice then
+		io.write("ModalWindow: Choice with text '" .. text .. "' does not exist.")
+		return false
+	end
+
+	self.choices[choice.id] = nil
+	self.choices[text] = nil
+	return true
+end
+
+function ModalWindow:callChoice(text, player, button, choice)
+	if type(text) ~= "string" then
+		io.write("ModalWindow:callChoice: text must be a string.")
+		text = tostring(text)
+	end
+
+	local newChoice= self.choices[text]
+	if not newChoice then
+		io.write("ModalWindow: Choice with text '" .. text .. "' does not exist.")
+		return false
+	end
+
+	if not newChoice.callback then
+		io.write("ModalWindow: Choice with text '" .. text .. "' has no callback.")
+		return false
+	end
+	return newChoice.callback(player, button, choice)
+end
+
+function ModalWindow:clearChoices()
+	self.choices = {}
+	return true
+end
+
+function ModalWindow:clear()
+	self.choices = {}
+	self.buttons = {}
+	return true
+end
+
+function ModalWindow:setPriority(priority)
+	self.priority = priority
+	return true
+end
+
+function ModalWindow:setId()
+	if self.modalWindowId ~= 0 then
+		return self.modalWindowId
+	end
+
+	self.modalWindowId = ModalWindowAutoID
+	ModalWindowAutoID = ModalWindowAutoID + 1
+	return self.modalWindowId
+end
+
+function ModalWindow:create()
+	local modalWindow = __ModalWindow(self:setId(), self.title, self.message)
+	modalWindow:setPriority(self.priority and true or false)
+
+	for id = 1, #self.buttons do
+		local name = self.buttons[id].name
+		modalWindow:addButton(id, name)
+		if id == self.defaultEnterButton or name == self.defaultEnterButton then
+			modalWindow:setDefaultEnterButton(id)
+		elseif id == self.defaultEscapeButton or name == self.defaultEscapeButton then
+			modalWindow:setDefaultEscapeButton(id)
 		end
 	end
 
-	for _, choice in ipairs(self.choices) do
-		modalWindow:addChoice(_, choice.text)
-		choice.id = _
+	for id = 1, #self.choices do
+		modalWindow:addChoice(id, self.choices[id].text)
 	end
-
-	self.modalWindow = modalWindow
+	return modalWindow
 end
 
-function MT:sendToPlayer(player)
-	if not self.modalWindow then
-		self:create()
-	end
-
-	player:registerEvent('ModalWindowHelper')
-	self.players[player:getId()] = true
-	return self.modalWindow:sendToPlayer(player)
+function ModalWindow:sendToPlayer(player)
+	local modalWindow = self:create()
+	local playerId = player:getId()
+	ModalWindows[playerId] = ModalWindows[playerId] or {}
+	ModalWindows[playerId][self.modalWindowId] = self
+	player:registerEvent("modalWindowHelper")
+	self.using = self.using + 1
+	return modalWindow:sendToPlayer(player)
 end

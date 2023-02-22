@@ -141,7 +141,7 @@ function Player:onLook(thing, position, distance)
 			if master and table.contains({'sorcerer familiar','knight familiar','druid familiar','paladin familiar'},
 																						thing:getName():lower()) then
 				description = description..' (Master: ' .. master:getName() .. '). \z
-				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.FamiliarSummon) - os.time())
+				It will disappear in ' .. getTimeinWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
 			end
 		end
 	end
@@ -209,7 +209,7 @@ function Player:onLookInBattleList(creature, distance)
 		local summons = {'sorcerer familiar','knight familiar','druid familiar','paladin familiar'}
 		if master and table.contains(summons, creature:getName():lower()) then
 			description = description..' (Master: ' .. master:getName() .. '). \z
-				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.FamiliarSummon) - os.time())
+				It will disappear in ' .. getTimeinWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
 		end
 	end
 	if self:getGroup():getAccess() then
@@ -291,8 +291,7 @@ local function antiPush(self, item, count, fromPosition, toPosition, fromCylinde
 end
 
 function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
-	-- No move items with actionID = 100
-	if item:getActionId() == NOT_MOVEABLE_ACTION then
+	if item:getActionId() == IMMOVABLE_ACTION_ID then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end
@@ -582,8 +581,7 @@ function Player:onTurn(direction)
 end
 
 function Player:onTradeRequest(target, item)
-	-- No trade items with actionID = 100
-	if item:getActionId() == NOT_MOVEABLE_ACTION then
+	if item:getActionId() == IMMOVABLE_ACTION_ID then
 		return false
 	end
 
@@ -828,4 +826,8 @@ function Player:onChangeZone(zone)
 		end
 	end
 	return false
+end
+
+
+function Player:onInventoryUpdate(item, slot, equip)
 end

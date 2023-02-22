@@ -1967,19 +1967,11 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 					return nullptr;
 				} else if (newItemId != newId) {
 					// Replacing the the old item with the new while maintaining the old position
-					Item* newItem = Item::CreateItem(newItemId, 1);
+					auto newItem = item->transform(newItemId);
 					if (newItem == nullptr) {
+						SPDLOG_ERROR("[{}] new item with id {} is nullptr, (ERROR CODE: 01)", __FUNCTION__, newItemId);
 						return nullptr;
 					}
-
-					cylinder->replaceThing(itemIndex, newItem);
-					cylinder->postAddNotification(newItem, cylinder, itemIndex);
-
-					item->setParent(nullptr);
-					cylinder->postRemoveNotification(item, cylinder, itemIndex);
-					item->stopDecaying();
-					ReleaseItem(item);
-					newItem->startDecaying();
 
 					return newItem;
 				} else {
@@ -2026,25 +2018,11 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 	}
 
 	// Replacing the the old item with the new while maintaining the old position
-	Item* newItem;
-	if (newCount == -1) {
-		newItem = Item::CreateItem(newId);
-	} else {
-		newItem = Item::CreateItem(newId, newCount);
-	}
-
+	auto newItem = item->transform(newId, newCount);
 	if (newItem == nullptr) {
+		SPDLOG_ERROR("[{}] new item with id {} is nullptr (ERROR CODE: 02)", __FUNCTION__, newId);
 		return nullptr;
 	}
-
-	cylinder->replaceThing(itemIndex, newItem);
-	cylinder->postAddNotification(newItem, cylinder, itemIndex);
-
-	item->setParent(nullptr);
-	cylinder->postRemoveNotification(item, cylinder, itemIndex);
-	item->stopDecaying();
-	ReleaseItem(item);
-	newItem->startDecaying();
 
 	return newItem;
 }
@@ -2346,6 +2324,7 @@ ObjectCategory_t Game::getObjectCategory(const Item* item) {
 			case WEAPON_SHIELD:
 				category = OBJECTCATEGORY_SHIELDS;
 				break;
+			case WEAPON_MISSILE:
 			case WEAPON_DISTANCE:
 				category = OBJECTCATEGORY_DISTANCEWEAPONS;
 				break;

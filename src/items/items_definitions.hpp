@@ -227,7 +227,7 @@ enum AttrTypes_t {
 	ATTR_OPENCONTAINER = 36,
 	ATTR_CUSTOM_ATTRIBUTES = 37, // Deprecated (override by ATTR_CUSTOM)
 	ATTR_QUICKLOOTCONTAINER = 38,
-	ATTR_IMBUEMENT_TYPE = 39,
+	ATTR_IMBUEMENT_TYPE = 39, // Deprecated, can be override
 	ATTR_TIER = 40,
 	ATTR_CUSTOM = 41,
 

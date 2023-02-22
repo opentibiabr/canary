@@ -30,6 +30,7 @@ class Door;
 class MagicField;
 class BedItem;
 class Imbuement;
+class Item;
 
 // This class ItemProperties that serves as an interface to access and modify attributes of an item. The item's attributes are stored in an instance of ItemAttribute. The class ItemProperties has methods to get and set integer and string attributes, check if an attribute exists, remove an attribute, get the underlying attribute bits, and get a vector of attributes. It also has methods to get and set custom attributes, which are stored in a std::map<std::string, CustomAttribute, std::less<>>. The class has a data member attributePtr of type std::unique_ptr<ItemAttribute> that stores a pointer to the item's attributes methods.
 class ItemProperties {
@@ -45,6 +46,7 @@ class ItemProperties {
 					std::numeric_limits<T>::max()
 				);
 			}
+			SPDLOG_ERROR("Failed to convert attribute for type {}", type);
 			return {};
 		}
 
@@ -124,6 +126,10 @@ class ItemProperties {
 			}
 		}
 
+		void setDuration(int32_t time) {
+			setAttribute(ItemAttribute_t::DURATION, std::max<int32_t>(0, time));
+		}
+
 		void setDecaying(ItemDecayState_t decayState) {
 			setAttribute(ItemAttribute_t::DECAYSTATE, static_cast<int64_t>(decayState));
 			if (decayState == DECAYING_FALSE) {
@@ -131,7 +137,8 @@ class ItemProperties {
 			}
 		}
 		ItemDecayState_t getDecaying() const {
-			return getAttribute<ItemDecayState_t>(ItemAttribute_t::DECAYSTATE);
+			auto decayState = getAttribute<int64_t>(ItemAttribute_t::DECAYSTATE);
+			return static_cast<ItemDecayState_t>(decayState);
 		}
 
 		uint32_t getCorpseOwner() const {
@@ -206,6 +213,8 @@ class ItemProperties {
 
 	private:
 		std::unique_ptr<ItemAttribute> attributePtr;
+
+		friend class Item;
 };
 
 class Item : virtual public Thing, public ItemProperties {
@@ -280,6 +289,8 @@ class Item : virtual public Thing, public ItemProperties {
 		}
 
 		static std::string parseImbuementDescription(const Item* item);
+		static std::string parseShowDurationSpeed(int32_t speed, bool &begin);
+		static std::string parseShowDuration(const Item* item);
 		static std::string parseShowAttributesDescription(const Item* item, const uint16_t itemId);
 		static std::string parseClassificationDescription(const Item* item);
 
@@ -479,9 +490,6 @@ class Item : virtual public Thing, public ItemProperties {
 				setDuration(duration);
 			}
 		}
-		void setDuration(time_t time) {
-			setAttribute(ItemAttribute_t::DURATION, std::max<time_t>(0, time));
-		}
 		uint32_t getDefaultDuration() const {
 			return items[id].decayTime * 1000;
 		}
@@ -499,6 +507,8 @@ class Item : virtual public Thing, public ItemProperties {
 
 		virtual void startDecaying();
 		virtual void stopDecaying();
+
+		Item* transform(uint16_t itemId, uint16_t itemCount = -1);
 
 		bool getLoadedFromMap() const {
 			return loadedFromMap;
@@ -629,6 +639,8 @@ class Item : virtual public Thing, public ItemProperties {
 			return items[id].upgradeClassification;
 		}
 
+		void updateTileFlags();
+
 	protected:
 		Cylinder* parent = nullptr;
 
@@ -646,6 +658,8 @@ class Item : virtual public Thing, public ItemProperties {
 		std::string getWeightDescription(uint32_t weight) const;
 
 		friend class Decay;
+
+		bool canBeMoved() const;
 };
 
 using ItemList = std::list<Item*>;

@@ -40,7 +40,7 @@ enum ItemAttribute_t : uint64_t {
 	OPENCONTAINER = 1 << 25,
 	QUICKLOOTCONTAINER = 1 << 26,
 	DURATION_TIMESTAMP = 1 << 27,
-	IMBUEMENT_TYPE = 1 << 28,
+	IMBUEMENT_TYPE = 1 << 28, // Deprecated, can be override
 	TIER = 1 << 29,
 
 	CUSTOM = 1U << 31

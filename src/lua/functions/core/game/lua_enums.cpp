@@ -119,6 +119,8 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, LIGHT_STATE_SUNRISE);
 	registerEnum(L, STORAGEVALUE_EMOTE);
 
+	registerEnum(L, IMMOVABLE_ACTION_ID);
+
 	registerEnum(L, MAX_LOOTCHANCE);
 
 	registerEnum(L, ORIGIN_NONE);
@@ -171,6 +173,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, WEAPON_DISTANCE);
 	registerEnum(L, WEAPON_WAND);
 	registerEnum(L, WEAPON_AMMO);
+	registerEnum(L, WEAPON_MISSILE);
 }
 
 void LuaEnums::initAccountEnums(lua_State* L) {

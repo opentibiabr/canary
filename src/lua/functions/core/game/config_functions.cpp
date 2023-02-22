@@ -19,10 +19,10 @@ void ConfigFunctions::init(lua_State* L) {
 	registerMethod(L, "configManager", "getBoolean", ConfigFunctions::luaConfigManagerGetBoolean);
 	registerMethod(L, "configManager", "getFloat", ConfigFunctions::luaConfigManagerGetFloat);
 
-#define registerEnumIn(L, tableName, value)                                                     \
-	{                                                                                           \
-		std::string enumName = #value;                                                          \
-		registerVariable(L, tableName, enumName.substr(enumName.find_last_of(':') + 1), value); \
+#define registerEnumIn(L, tableName, value)                                                     
+	{                                                                                           
+		std::string enumName = #value;                                                          
+		registerVariable(L, tableName, enumName.substr(enumName.find_last_of(':') + 1), value);
 	}
 	registerTable(L, "configKeys");
 	registerEnumIn(L, "configKeys", ALLOW_CHANGEOUTFIT);
@@ -101,7 +101,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", RATE_MAGIC);
 	registerEnumIn(L, "configKeys", RATE_SPAWN);
 	registerEnumIn(L, "configKeys", HOUSE_PRICE);
-	registerEnumIn(L, "configKeys", HOUSE_BUY_LEVEL)
+	registerEnumIn(L, "configKeys", HOUSE_BUY_LEVEL);
 	registerEnumIn(L, "configKeys", MAX_MESSAGEBUFFER);
 	registerEnumIn(L, "configKeys", ACTIONS_DELAY_INTERVAL);
 	registerEnumIn(L, "configKeys", EX_ACTIONS_DELAY_INTERVAL);

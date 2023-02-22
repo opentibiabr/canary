@@ -60,6 +60,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", TOGGLE_MAP_CUSTOM);
 	registerEnumIn(L, "configKeys", MAP_CUSTOM_NAME);
 	registerEnumIn(L, "configKeys", HOUSE_RENT_PERIOD);
+	registerEnumIn(L, "configKeys", HOUSE_BUY_LEVEL);
 	registerEnumIn(L, "configKeys", SERVER_NAME);
 	registerEnumIn(L, "configKeys", OWNER_NAME);
 	registerEnumIn(L, "configKeys", OWNER_EMAIL);

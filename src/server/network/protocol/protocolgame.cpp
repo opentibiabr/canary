@@ -2995,7 +2995,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 			msg.addByte(getCipbiaElement(it.combatType));
 			msg.addByte(0);
 			msg.addByte(CIPBIA_ELEMENTAL_UNDEFINED);
-		} else if (it.weaponType == WEAPON_DISTANCE || it.weaponType == WEAPON_AMMO) {
+		} else if (it.weaponType == WEAPON_DISTANCE || it.weaponType == WEAPON_AMMO || it.weaponType == WEAPON_MISSILE) {
 			int32_t attackValue = weapon->getAttack();
 			if (it.weaponType == WEAPON_AMMO) {
 				const Item* weaponItem = player->getWeapon(true);
@@ -4305,10 +4305,31 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		msg.add<uint16_t>(0x00);
 	}
 
-	if (it.attack != 0) {
-		// TODO: chance to hit, range
-		// example:
-		// "attack +x, chance to hit +y%, z fields"
+	if (it.isRanged()) {
+		std::ostringstream ss;
+		bool separator = false;
+
+		if (it.attack != 0) {
+			ss << "attack +" << it.attack;
+			separator = true;
+		}
+
+		if (it.hitChance != 0) {
+			if (separator) {
+				ss << ", ";
+			}
+			ss << "chance to hit +" << static_cast<int16_t>(it.hitChance) << "%";
+			separator = true;
+		}
+
+		if (it.shootRange != 0) {
+			if (separator) {
+				ss << ", ";
+			}
+			ss << static_cast<uint16_t>(it.shootRange) << " fields";
+		}
+		msg.addString(ss.str());
+	} else if (!it.isRanged() && it.attack != 0) {
 		if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 			std::ostringstream ss;
 			ss << it.attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
@@ -4326,7 +4347,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		msg.add<uint16_t>(0x00);
 	}
 
-	if (it.defense != 0) {
+	if (it.defense != 0 || it.isMissile()) {
 		if (it.extraDefense != 0) {
 			std::ostringstream ss;
 			ss << it.defense << ' ' << std::showpos << it.extraDefense << std::noshowpos;

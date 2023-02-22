@@ -1628,12 +1628,12 @@ bool Creature::isLostSummon() const {
 	return std::max<int32_t>(Position::getDistanceX(getPosition(), masterPosition), Position::getDistanceY(getPosition(), masterPosition)) > 30;
 }
 
-bool Creature::checkCreaturesNearby() const {
+bool Creature::hasCreaturesNearby() const {
 	SpectatorHashSet spectators;
 
 	g_game().map.getSpectators(spectators, this->getPosition(), true, true, 0, 16, 0, 16);
 
-	return !spectators.empty();
+	return spectators.size() > 0;
 }
 
 void Creature::handleLostSummon(bool teleportSummons) {

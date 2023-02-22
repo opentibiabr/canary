@@ -5136,7 +5136,7 @@ void Game::checkCreatures(size_t index) {
 		Creature* creature = checkCreatureList[it];
 		if (creature && creature->creatureCheck) {
 			if (creature->getHealth() > 0) {
-				if (creature->checkCreaturesNearby()) {
+				if (! creature->getMonster() || (creature->getMonster() && creature->hasCreaturesNearby())) {
 					creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 					creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
 					creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);

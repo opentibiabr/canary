@@ -8,7 +8,6 @@
  */
 
 #include "pch.hpp"
-
 #include "io/iomap.h"
 #include "game/movement/teleport.h"
 #include "game/game.h"

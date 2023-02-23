@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_ITEMS_ITEMS_H_
 #define SRC_ITEMS_ITEMS_H_
@@ -20,11 +20,11 @@ struct Abilities {
 		uint32_t conditionImmunities = 0;
 		uint32_t conditionSuppressions = 0;
 
-		//stats modifiers
+		// stats modifiers
 		int32_t stats[STAT_LAST + 1] = { 0 };
 		int32_t statsPercent[STAT_LAST + 1] = { 0 };
 
-		//extra skill modifiers
+		// extra skill modifiers
 		int32_t skills[SKILL_LAST + 1] = { 0 };
 
 		int32_t speed = 0;
@@ -32,13 +32,13 @@ struct Abilities {
 		// field damage abilities modifiers
 		int16_t fieldAbsorbPercent[COMBAT_COUNT] = { 0 };
 
-		//damage abilities modifiers
+		// damage abilities modifiers
 		int16_t absorbPercent[COMBAT_COUNT] = { 0 };
 
-		//relfect abilities modifires
+		// relfect abilities modifires
 		int16_t reflectPercent[COMBAT_COUNT] = { 0 };
 
-		//elemental damage
+		// elemental damage
 		uint16_t elementDamage = 0;
 		CombatType_t elementType = COMBAT_NONE;
 
@@ -87,17 +87,16 @@ struct Abilities {
 
 class ConditionDamage;
 
-class ItemType
-{
+class ItemType {
 	public:
 		ItemType() = default;
 
-		//non-copyable
-		ItemType(const ItemType& other) = delete;
-		ItemType& operator=(const ItemType& other) = delete;
+		// non-copyable
+		ItemType(const ItemType &other) = delete;
+		ItemType &operator=(const ItemType &other) = delete;
 
-		ItemType(ItemType&& other) = default;
-		ItemType& operator=(ItemType&& other) = default;
+		ItemType(ItemType &&other) = default;
+		ItemType &operator=(ItemType &&other) = default;
 
 		bool isGroundTile() const {
 			return group == ITEM_GROUP_GROUND;
@@ -160,16 +159,20 @@ class ItemType
 		bool isWeapon() const {
 			return weaponType != WEAPON_NONE && weaponType != WEAPON_SHIELD && weaponType != WEAPON_AMMO;
 		}
-		bool isArmor() const
-		{
+		bool isArmor() const {
 			return slotPosition & SLOTP_ARMOR;
 		}
-		bool isHelmet() const
-		{
+		bool isHelmet() const {
 			return slotPosition & SLOTP_HEAD;
 		}
+		bool isRanged() const {
+			return weaponType == WEAPON_DISTANCE && weaponType != WEAPON_NONE;
+		}
+		bool isMissile() const {
+			return weaponType == WEAPON_MISSILE && weaponType != WEAPON_NONE;
+		}
 
-		Abilities& getAbilities() {
+		Abilities &getAbilities() {
 			if (!abilities) {
 				abilities.reset(new Abilities());
 			}
@@ -233,7 +236,7 @@ class ItemType
 
 		CombatType_t combatType = COMBAT_NONE;
 
-		uint16_t transformToOnUse[2] = {0, 0};
+		uint16_t transformToOnUse[2] = { 0, 0 };
 		uint16_t transformToFree = 0;
 		uint16_t destroyTo = 0;
 		uint16_t maxTextLen = 0;
@@ -301,8 +304,7 @@ class ItemType
 		bool loaded = false;
 };
 
-class Items
-{
+class Items {
 	public:
 		using NameMap = std::unordered_multimap<std::string, uint16_t>;
 		using InventoryVector = std::vector<uint16_t>;
@@ -310,38 +312,38 @@ class Items
 		Items();
 
 		// non-copyable
-		Items(const Items&) = delete;
-		Items& operator=(const Items&) = delete;
+		Items(const Items &) = delete;
+		Items &operator=(const Items &) = delete;
 
 		bool reload();
 		void clear();
 
 		void loadFromProtobuf();
 
-		const ItemType& operator[](size_t id) const {
+		const ItemType &operator[](size_t id) const {
 			return getItemType(id);
 		}
-		const ItemType& getItemType(size_t id) const;
-		ItemType& getItemType(size_t id);
+		const ItemType &getItemType(size_t id) const;
+		ItemType &getItemType(size_t id);
 
 		/**
 		 * @brief Check if the itemid "hasId" is stored on "items", if not, return false
-		 * 
+		 *
 		 * @param hasId check item id
-		 * @return true if the item exist 
+		 * @return true if the item exist
 		 * @return false if the item not exist
 		 */
 		bool hasItemType(size_t hasId) const;
 
-		uint16_t getItemIdByName(const std::string& name);
+		uint16_t getItemIdByName(const std::string &name);
 
-		ItemTypes_t getLootType(const std::string& strValue);
+		ItemTypes_t getLootType(const std::string &strValue);
 
 		bool loadFromXml();
-		void parseItemNode(const pugi::xml_node& itemNode, uint16_t id);
+		void parseItemNode(const pugi::xml_node &itemNode, uint16_t id);
 
 		void buildInventoryList();
-		const InventoryVector& getInventory() const {
+		const InventoryVector &getInventory() const {
 			return inventory;
 		}
 
@@ -352,9 +354,8 @@ class Items
 		NameMap nameToItems;
 
 	private:
-
 		std::vector<ItemType> items;
 		InventoryVector inventory;
 };
 
-#endif  // SRC_ITEMS_ITEMS_H_
+#endif // SRC_ITEMS_ITEMS_H_

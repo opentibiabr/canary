@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_CREATURES_PLAYERS_VOCATIONS_VOCATION_H_
 #define SRC_CREATURES_PLAYERS_VOCATIONS_VOCATION_H_
@@ -13,15 +13,15 @@
 #include "declarations.hpp"
 #include "items/item.h"
 
-class Vocation
-{
+class Vocation {
 	public:
-		explicit Vocation(uint16_t initId) : id(initId) {}
+		explicit Vocation(uint16_t initId) :
+			id(initId) { }
 
-		const std::string& getVocName() const {
+		const std::string &getVocName() const {
 			return name;
 		}
-		const std::string& getVocDescription() const {
+		const std::string &getVocDescription() const {
 			return description;
 		}
 		uint64_t getReqSkillTries(uint8_t skill, uint16_t level);
@@ -110,7 +110,7 @@ class Vocation
 		std::string name = "none";
 		std::string description;
 
-		float skillMultipliers[SKILL_LAST + 1] = {1.5f, 2.0f, 2.0f, 2.0f, 2.0f, 1.5f, 1.1f};
+		float skillMultipliers[SKILL_LAST + 1] = { 1.5f, 2.0f, 2.0f, 2.0f, 2.0f, 1.5f, 1.1f };
 		float manaMultiplier = 4.0f;
 
 		uint32_t gainHealthTicks = 6;
@@ -137,15 +137,14 @@ class Vocation
 		static uint32_t skillBase[SKILL_LAST + 1];
 };
 
-class Vocations
-{
+class Vocations {
 	public:
 		Vocations() = default;
 
-		Vocations(Vocations const&) = delete;
-		void operator=(Vocations const&) = delete;
+		Vocations(const Vocations &) = delete;
+		void operator=(const Vocations &) = delete;
 
-		static Vocations& getInstance() {
+		static Vocations &getInstance() {
 			// Guaranteed to be destroyed
 			static Vocations instance;
 			// Instantiated on first use
@@ -155,8 +154,10 @@ class Vocations
 		bool loadFromXml();
 
 		Vocation* getVocation(uint16_t id);
-    	const std::map<uint16_t, Vocation>& getVocations() const {return vocationsMap;}
-		uint16_t getVocationId(const std::string& name) const;
+		const std::map<uint16_t, Vocation> &getVocations() const {
+			return vocationsMap;
+		}
+		uint16_t getVocationId(const std::string &name) const;
 		uint16_t getPromotedVocation(uint16_t vocationId) const;
 
 	private:
@@ -165,4 +166,4 @@ class Vocations
 
 constexpr auto g_vocations = &Vocations::getInstance;
 
-#endif  // SRC_CREATURES_PLAYERS_VOCATIONS_VOCATION_H_
+#endif // SRC_CREATURES_PLAYERS_VOCATIONS_VOCATION_H_

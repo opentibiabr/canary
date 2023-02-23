@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #ifndef SRC_CREATURES_INTERACTIONS_CHAT_H_
 #define SRC_CREATURES_INTERACTIONS_CHAT_H_
@@ -19,30 +19,29 @@ class Player;
 using UsersMap = std::map<uint32_t, Player*>;
 using InvitedMap = std::map<uint32_t, const Player*>;
 
-class ChatChannel
-{
+class ChatChannel {
 	public:
 		ChatChannel() = default;
-		ChatChannel(uint16_t channelId, std::string channelName):
+		ChatChannel(uint16_t channelId, std::string channelName) :
 			name(std::move(channelName)),
-			id(channelId) {}
+			id(channelId) { }
 
 		virtual ~ChatChannel() = default;
 
-		bool addUser(Player& player);
-		bool removeUser(const Player& player);
-		bool hasUser(const Player& player);
+		bool addUser(Player &player);
+		bool removeUser(const Player &player);
+		bool hasUser(const Player &player);
 
-		bool talk(const Player& fromPlayer, SpeakClasses type, const std::string& text);
-		void sendToAll(const std::string& message, SpeakClasses type) const;
+		bool talk(const Player &fromPlayer, SpeakClasses type, const std::string &text);
+		void sendToAll(const std::string &message, SpeakClasses type) const;
 
-		const std::string& getName() const {
+		const std::string &getName() const {
 			return name;
 		}
 		uint16_t getId() const {
 			return id;
 		}
-		const UsersMap& getUsers() const {
+		const UsersMap &getUsers() const {
 			return users;
 		}
 		virtual const InvitedMap* getInvitedUsers() const {
@@ -53,12 +52,14 @@ class ChatChannel
 			return 0;
 		}
 
-		bool isPublicChannel() const { return publicChannel; }
+		bool isPublicChannel() const {
+			return publicChannel;
+		}
 
-		bool executeOnJoinEvent(const Player& player);
-		bool executeCanJoinEvent(const Player& player);
-		bool executeOnLeaveEvent(const Player& player);
-		bool executeOnSpeakEvent(const Player& player, SpeakClasses& type, const std::string& message);
+		bool executeOnJoinEvent(const Player &player);
+		bool executeCanJoinEvent(const Player &player);
+		bool executeOnLeaveEvent(const Player &player);
+		bool executeOnSpeakEvent(const Player &player, SpeakClasses &type, const std::string &message);
 
 	protected:
 		UsersMap users;
@@ -73,13 +74,13 @@ class ChatChannel
 		uint16_t id;
 		bool publicChannel = false;
 
-	friend class Chat;
+		friend class Chat;
 };
 
-class PrivateChatChannel final : public ChatChannel
-{
+class PrivateChatChannel final : public ChatChannel {
 	public:
-		PrivateChatChannel(uint16_t channelId, std::string channelName) : ChatChannel(channelId, channelName) {}
+		PrivateChatChannel(uint16_t channelId, std::string channelName) :
+			ChatChannel(channelId, channelName) { }
 
 		uint32_t getOwner() const override {
 			return owner;
@@ -90,8 +91,8 @@ class PrivateChatChannel final : public ChatChannel
 
 		bool isInvited(uint32_t guid) const;
 
-		void invitePlayer(const Player& player, Player& invitePlayer);
-		void excludePlayer(const Player& player, Player& excludePlayer);
+		void invitePlayer(const Player &player, Player &invitePlayer);
+		void excludePlayer(const Player &player, Player &excludePlayer);
 
 		bool removeInvite(uint32_t guid);
 
@@ -108,16 +109,15 @@ class PrivateChatChannel final : public ChatChannel
 
 using ChannelList = std::list<ChatChannel*>;
 
-class Chat
-{
+class Chat {
 	public:
 		Chat();
 
 		// non-copyable
-		Chat(const Chat&) = delete;
-		Chat& operator=(const Chat&) = delete;
+		Chat(const Chat &) = delete;
+		Chat &operator=(const Chat &) = delete;
 
-		static Chat& getInstance() {
+		static Chat &getInstance() {
 			// Guaranteed to be destroyed
 			static Chat instance;
 			// Instantiated on first use
@@ -126,21 +126,21 @@ class Chat
 
 		bool load();
 
-		ChatChannel* createChannel(const Player& player, uint16_t channelId);
-		bool deleteChannel(const Player& player, uint16_t channelId);
+		ChatChannel* createChannel(const Player &player, uint16_t channelId);
+		bool deleteChannel(const Player &player, uint16_t channelId);
 
-		ChatChannel* addUserToChannel(Player& player, uint16_t channelId);
-		bool removeUserFromChannel(const Player& player, uint16_t channelId);
-		void removeUserFromAllChannels(const Player& player);
+		ChatChannel* addUserToChannel(Player &player, uint16_t channelId);
+		bool removeUserFromChannel(const Player &player, uint16_t channelId);
+		void removeUserFromAllChannels(const Player &player);
 
-		bool talkToChannel(const Player& player, SpeakClasses type, const std::string& text, uint16_t channelId);
+		bool talkToChannel(const Player &player, SpeakClasses type, const std::string &text, uint16_t channelId);
 
-		ChannelList getChannelList(const Player& player);
+		ChannelList getChannelList(const Player &player);
 
-		ChatChannel* getChannel(const Player& player, uint16_t channelId);
+		ChatChannel* getChannel(const Player &player, uint16_t channelId);
 		ChatChannel* getChannelById(uint16_t channelId);
 		ChatChannel* getGuildChannelById(uint32_t guildId);
-		PrivateChatChannel* getPrivateChannel(const Player& player);
+		PrivateChatChannel* getPrivateChannel(const Player &player);
 
 		LuaScriptInterface* getScriptInterface() {
 			return &scriptInterface;
@@ -159,4 +159,4 @@ class Chat
 
 constexpr auto g_chat = &Chat::getInstance;
 
-#endif  // SRC_CREATURES_INTERACTIONS_CHAT_H_
+#endif // SRC_CREATURES_INTERACTIONS_CHAT_H_

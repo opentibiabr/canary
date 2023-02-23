@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -17,24 +17,23 @@ CustomAttribute::CustomAttribute() = default;
 CustomAttribute::~CustomAttribute() = default;
 
 // Constructor for int64_t
-CustomAttribute::CustomAttribute(const std::string& initStringKey,
-	const int64_t initInt64) : stringKey(initStringKey)
-{
+CustomAttribute::CustomAttribute(const std::string &initStringKey, const int64_t initInt64) :
+	stringKey(initStringKey) {
 	setValue(initInt64);
 }
 // Constructor for string
-CustomAttribute::CustomAttribute(const std::string &initStringKey, const std::string &initStringValue) : stringKey(initStringKey)
-{
+CustomAttribute::CustomAttribute(const std::string &initStringKey, const std::string &initStringValue) :
+	stringKey(initStringKey) {
 	setValue(initStringValue);
 }
 // Constructor for double
-CustomAttribute::CustomAttribute(const std::string &initStringKey, const double initDoubleValue) : stringKey(initStringKey)
-{
+CustomAttribute::CustomAttribute(const std::string &initStringKey, const double initDoubleValue) :
+	stringKey(initStringKey) {
 	setValue(initDoubleValue);
 }
 // Constructor for boolean
-CustomAttribute::CustomAttribute(const std::string &initStringKey, const bool initBoolValue) : stringKey(initStringKey)
-{
+CustomAttribute::CustomAttribute(const std::string &initStringKey, const bool initBoolValue) :
+	stringKey(initStringKey) {
 	setValue(initBoolValue);
 }
 
@@ -82,7 +81,7 @@ void CustomAttribute::pushToLua(lua_State* L) const {
 	if (hasValue<std::string>()) {
 		LuaScriptInterface::pushString(L, getString());
 	} else if (hasValue<int64_t>()) {
-		lua_pushnumber(L, getAttribute<lua_Number>());
+		lua_pushnumber(L, static_cast<lua_Number>(getAttribute<int64_t>()));
 	} else if (hasValue<double>()) {
 		lua_pushnumber(L, getDouble());
 	} else if (hasValue<bool>()) {
@@ -92,8 +91,8 @@ void CustomAttribute::pushToLua(lua_State* L) const {
 	}
 }
 
-void CustomAttribute::serialize(PropWriteStream& propWriteStream) const {
-	
+void CustomAttribute::serialize(PropWriteStream &propWriteStream) const {
+
 	if (hasValue<std::string>()) {
 		propWriteStream.write<uint8_t>(1);
 		propWriteStream.writeString(getString());
@@ -109,10 +108,10 @@ void CustomAttribute::serialize(PropWriteStream& propWriteStream) const {
 	}
 }
 
-bool CustomAttribute::unserialize(PropStream& propStream, const std::string& function) {
+bool CustomAttribute::unserialize(PropStream &propStream, const std::string &function) {
 	uint8_t type;
 	if (!propStream.read<uint8_t>(type)) {
-	SPDLOG_ERROR("[{}] Failed to read type", function);
+		SPDLOG_ERROR("[{}] Failed to read type", function);
 		return false;
 	}
 

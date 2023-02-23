@@ -81,7 +81,6 @@ Reserved player action storage key ranges (const.h)
 Storage = {
 	-- General storages
 	isTraining = 30000,
-	NpcExhaust = 30001,
 	Dragonfetish = 30003,
 	EdronRopeQuest = 30004,
 	GhostShipQuest = 30005,
@@ -102,10 +101,8 @@ Storage = {
 	RookgaardDestiny = 30020,
 	EruaranGreeting = 30021,
 	MaryzaCookbook = 30022,
-	combatProtectionStorage = 30023,
 	Factions = 30024,
 	blockMovementStorage = 30025,
-	FamiliarSummon = 30026,
 	TrainerRoom = 30027,
 	NpcSpawn = 30028,
 	ExerciseDummyExhaust = 30029,
@@ -130,11 +127,8 @@ Storage = {
 	Navigator = 30048,
 	DwarvenLegs = 30049,
 	PrinceDrazzakTime = 30050,
-	StoreExaust = 30051,
 	LemonCupcake = 30052,
 	BlueberryCupcake = 30053,
-	FamiliarSummonEvent10 = 30054,
-	FamiliarSummonEvent60 = 30055,
 	ChayenneKeyTime = 30056,
 	FreeQuests = 30057,
 	PremiumAccount = 30058,
@@ -2702,8 +2696,10 @@ Storage = {
 					Darashia = 46860,
 					Thais = 46861,
 					Orclands = 46862,
-					IceIslands = 46863},
-				Cobra = 46864},
+					IceIslands = 46863
+				},
+				Cobra = 46864
+			},
 			HandOfTheInquisitionOutfits = {},
 			-- Kilmaresh = {}, done earlier in the file
 		},
@@ -2730,6 +2726,14 @@ Storage = {
 		U12_80 = { -- update 12.80 - Reserved Storages 47801 - 47850
 			RoyalCostumeOutfits = {}
 		},
+	},
+	-- Reserved Storages 64000 - 65000
+	BosstiaryCooldown = {
+		EarlOsam = 64000,
+		CountVlarkorth = 64001,
+		LordAzaram = 64002,
+		SirBaelocNictros = 64003,
+		DukeKrule = 64004
 	}
 }
 

@@ -5,7 +5,7 @@
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
-*/
+ */
 
 #include "pch.hpp"
 
@@ -33,6 +33,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 			}
 			break;
 		}
+		case WEAPON_MISSILE:
 		case WEAPON_DISTANCE:
 		case WEAPON_AMMO: {
 			if (auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponDistance>(getScriptEnv()->getScriptInterface())) {
@@ -76,7 +77,8 @@ int WeaponFunctions::luaWeaponAction(lua_State* L) {
 			weapon->action = WEAPONACTION_MOVE;
 		} else {
 			SPDLOG_ERROR("[WeaponFunctions::luaWeaponAction] - "
-                         "No valid action {}", typeName);
+						 "No valid action {}",
+						 typeName);
 			pushBoolean(L, false);
 		}
 		pushBoolean(L, true);
@@ -91,7 +93,7 @@ int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 	Weapon** weaponPtr = getRawUserdata<Weapon>(L, 1);
 	if (weaponPtr && *weaponPtr) {
 		Weapon* weapon = *weaponPtr;
-		if (weapon->weaponType == WEAPON_DISTANCE || weapon->weaponType == WEAPON_AMMO) {
+		if (weapon->weaponType == WEAPON_DISTANCE || weapon->weaponType == WEAPON_AMMO || weapon->weaponType == WEAPON_MISSILE) {
 			weapon = getUserdata<WeaponDistance>(L, 1);
 		} else if (weapon->weaponType == WEAPON_WAND) {
 			weapon = getUserdata<WeaponWand>(L, 1);
@@ -100,7 +102,7 @@ int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 		}
 
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		it.weaponType = weapon->weaponType;
 
 		if (weapon->getWieldInfo() != 0) {
@@ -283,7 +285,8 @@ int WeaponFunctions::luaWeaponElement(lua_State* L) {
 				weapon->params.combatType = COMBAT_HOLYDAMAGE;
 			} else {
 				SPDLOG_WARN("[WeaponFunctions:luaWeaponElement] - "
-							"Type {} does not exist", element);
+							"Type {} does not exist",
+							element);
 			}
 		} else {
 			weapon->params.combatType = getNumber<CombatType_t>(L, 2);
@@ -364,7 +367,7 @@ int WeaponFunctions::luaWeaponAttack(lua_State* L) {
 	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		it.attack = getNumber<int32_t>(L, 2);
 		pushBoolean(L, true);
 	} else {
@@ -378,7 +381,7 @@ int WeaponFunctions::luaWeaponDefense(lua_State* L) {
 	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		it.defense = getNumber<int32_t>(L, 2);
 		if (lua_gettop(L) > 2) {
 			it.extraDefense = getNumber<int32_t>(L, 3);
@@ -395,7 +398,7 @@ int WeaponFunctions::luaWeaponRange(lua_State* L) {
 	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		it.shootRange = getNumber<uint8_t>(L, 2);
 		pushBoolean(L, true);
 	} else {
@@ -413,7 +416,7 @@ int WeaponFunctions::luaWeaponCharges(lua_State* L) {
 			showCharges = getBoolean(L, 3);
 		}
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		it.charges = getNumber<uint8_t>(L, 2);
 		it.showCharges = showCharges;
 		pushBoolean(L, true);
@@ -432,7 +435,7 @@ int WeaponFunctions::luaWeaponDuration(lua_State* L) {
 			showDuration = getBoolean(L, 3);
 		}
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		it.decayTime = getNumber<uint8_t>(L, 2);
 		it.showDuration = showDuration;
 		pushBoolean(L, true);
@@ -451,7 +454,7 @@ int WeaponFunctions::luaWeaponDecayTo(lua_State* L) {
 			itemid = getNumber<uint16_t>(L, 2);
 		}
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		it.decayTo = itemid;
 		pushBoolean(L, true);
 	} else {
@@ -465,7 +468,7 @@ int WeaponFunctions::luaWeaponTransformEquipTo(lua_State* L) {
 	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		it.transformEquipTo = getNumber<uint16_t>(L, 2);
 		pushBoolean(L, true);
 	} else {
@@ -479,7 +482,7 @@ int WeaponFunctions::luaWeaponTransformDeEquipTo(lua_State* L) {
 	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		it.transformDeEquipTo = getNumber<uint16_t>(L, 2);
 		pushBoolean(L, true);
 	} else {
@@ -493,7 +496,7 @@ int WeaponFunctions::luaWeaponShootType(lua_State* L) {
 	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		it.shootType = getNumber<ShootType_t>(L, 2);
 		pushBoolean(L, true);
 	} else {
@@ -507,7 +510,7 @@ int WeaponFunctions::luaWeaponSlotType(lua_State* L) {
 	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		std::string slot = getString(L, 2);
 
 		if (slot == "two-handed") {
@@ -527,16 +530,17 @@ int WeaponFunctions::luaWeaponAmmoType(lua_State* L) {
 	WeaponDistance* weapon = getUserdata<WeaponDistance>(L, 1);
 	if (weapon) {
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		std::string type = getString(L, 2);
 
 		if (type == "arrow") {
 			it.ammoType = AMMO_ARROW;
-		} else if (type == "bolt"){
+		} else if (type == "bolt") {
 			it.ammoType = AMMO_BOLT;
 		} else {
 			SPDLOG_WARN("[WeaponFunctions:luaWeaponAmmoType] - "
-						"Type {} does not exist", type);
+						"Type {} does not exist",
+						type);
 			lua_pushnil(L);
 			return 1;
 		}
@@ -552,7 +556,7 @@ int WeaponFunctions::luaWeaponHitChance(lua_State* L) {
 	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		it.hitChance = getNumber<int8_t>(L, 2);
 		pushBoolean(L, true);
 	} else {
@@ -566,7 +570,7 @@ int WeaponFunctions::luaWeaponMaxHitChance(lua_State* L) {
 	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		it.maxHitChance = getNumber<int32_t>(L, 2);
 		pushBoolean(L, true);
 	} else {
@@ -580,7 +584,7 @@ int WeaponFunctions::luaWeaponExtraElement(lua_State* L) {
 	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
 		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
+		ItemType &it = Item::items.getItemType(id);
 		it.abilities.get()->elementDamage = getNumber<uint16_t>(L, 2);
 
 		if (!getNumber<CombatType_t>(L, 3)) {
@@ -600,7 +604,8 @@ int WeaponFunctions::luaWeaponExtraElement(lua_State* L) {
 				it.abilities.get()->elementType = COMBAT_HOLYDAMAGE;
 			} else {
 				SPDLOG_WARN("[WeaponFunctions:luaWeaponExtraElement] - "
-							"Type {} does not exist", element);
+							"Type {} does not exist",
+							element);
 			}
 		} else {
 			it.abilities.get()->elementType = getNumber<CombatType_t>(L, 3);

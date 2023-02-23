@@ -640,6 +640,8 @@ class Item : virtual public Thing, public ItemProperties {
 		}
 
 		void updateTileFlags();
+		bool canBeMoved() const;
+		void checkDecayMapItemOnMove();
 
 	protected:
 		Cylinder* parent = nullptr;
@@ -658,8 +660,6 @@ class Item : virtual public Thing, public ItemProperties {
 		std::string getWeightDescription(uint32_t weight) const;
 
 		friend class Decay;
-
-		bool canBeMoved() const;
 };
 
 using ItemList = std::list<Item*>;

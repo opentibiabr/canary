@@ -235,16 +235,9 @@ void LuaEnums::initCombatEnums(lua_State* L) {
 }
 
 void LuaEnums::initCombatParamEnums(lua_State* L) {
-	registerEnum(L, COMBAT_PARAM_TYPE);
-	registerEnum(L, COMBAT_PARAM_EFFECT);
-	registerEnum(L, COMBAT_PARAM_DISTANCEEFFECT);
-	registerEnum(L, COMBAT_PARAM_BLOCKSHIELD);
-	registerEnum(L, COMBAT_PARAM_BLOCKARMOR);
-	registerEnum(L, COMBAT_PARAM_TARGETCASTERORTOPMOST);
-	registerEnum(L, COMBAT_PARAM_CREATEITEM);
-	registerEnum(L, COMBAT_PARAM_AGGRESSIVE);
-	registerEnum(L, COMBAT_PARAM_DISPEL);
-	registerEnum(L, COMBAT_PARAM_USECHARGES);
+	for (auto value : magic_enum::enum_values<CombatParam_t>()) {
+		registerEnumClass(L, value);
+	}
 }
 
 void LuaEnums::initCombatFormulaEnums(lua_State* L) {
@@ -1119,6 +1112,9 @@ void LuaEnums::initBosstiaryEnums(lua_State* L) {
 
 void LuaEnums::initSoundEnums(lua_State* L) {
 	for (auto value : magic_enum::enum_values<SoundEffect_t>()) {
-		registerEnumClass(L, value);
+		// Creation of the "SOUND_EFFECT_TYPE_" namespace for lua scripts
+		std::string enumName = "SOUND_EFFECT_TYPE_" + std::string(magic_enum::enum_name(value));
+		auto number = magic_enum::enum_integer(value);
+		registerGlobalVariable(L, enumName, static_cast<lua_Number>(number));
 	}
 }

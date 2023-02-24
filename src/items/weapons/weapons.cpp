@@ -171,6 +171,14 @@ bool Weapon::useFist(Player* player, Creature* target) {
 }
 
 void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier) const {
+	if (player) {
+		if (params.soundCastEffect == SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
+		} else {
+			g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
+		}
+	}
+
 	if (isLoadedCallback()) {
 		LuaVariant var;
 		var.type = VARIANT_NUMBER;
@@ -187,14 +195,6 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
 		damage.primary.type = params.combatType;
 		damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
 		damage.secondary.type = getElementType();
-
-		if (player) {
-			if (params.soundCastEffect == SoundEffect_t::SILENCE) {
-				g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
-			} else {
-				g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
-			}
-		}
 
 		damage.secondary.value = getElementDamage(player, target, item);
 		Combat::doCombatHealth(player, target, damage, params);

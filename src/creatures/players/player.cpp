@@ -4005,7 +4005,7 @@ void Player::getPathSearchParams(const Creature* creature, FindPathParams &fpp) 
 	fpp.fullPathSearch = true;
 }
 
-uint16_t Player::getSkillLevel(uint8_t skill, bool sendToClient/* = false*/) const {
+uint16_t Player::getSkillLevel(uint8_t skill, bool sendToClient /* = false*/) const {
 	auto skillLevel = convertToSafeInteger<uint16_t>(skills[skill].level + varSkills[skill]);
 	if (auto it = maxValuePerSkill.find(skill);
 		it != maxValuePerSkill.end()) {

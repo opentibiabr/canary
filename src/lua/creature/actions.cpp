@@ -319,7 +319,7 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 		// Reward container proxy created when the boss dies
 		if (container->getID() == ITEM_REWARD_CONTAINER && !container->getReward()) {
 			auto reward = player->getReward(rewardId, false);
-			if(!reward) {
+			if (!reward) {
 				return RETURNVALUE_THISISIMPOSSIBLE;
 			}
 			if (reward->empty()) {

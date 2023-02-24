@@ -189,7 +189,6 @@ class Container : public Item, public Cylinder {
 
 		friend class ContainerIterator;
 		friend class IOMapSerialize;
-
 };
 
 #endif // SRC_ITEMS_CONTAINERS_CONTAINER_H_

@@ -262,8 +262,8 @@ bool Container::isHoldingItemWithId(const uint16_t id) const {
 
 bool Container::isInsideContainerWithId(const uint16_t id) const {
 	auto nextParent = parent;
-	while(nextParent != nullptr && nextParent->getContainer()) {
-		if(nextParent->getContainer()->getID() == id) {
+	while (nextParent != nullptr && nextParent->getContainer()) {
+		if (nextParent->getContainer()->getID() == id) {
 			return true;
 		}
 		nextParent = nextParent->getRealParent();
@@ -272,16 +272,11 @@ bool Container::isInsideContainerWithId(const uint16_t id) const {
 }
 
 bool Container::isAnyKindOfRewardChest() const {
-	return 	getID() == ITEM_REWARD_CHEST ||
-			getID() == ITEM_REWARD_CONTAINER && parent && parent->getContainer() && parent->getContainer()->getID() == ITEM_REWARD_CHEST ||
-			isBrowseFieldAndHoldsRewardChest();
+	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER && parent && parent->getContainer() && parent->getContainer()->getID() == ITEM_REWARD_CHEST || isBrowseFieldAndHoldsRewardChest();
 }
 
 bool Container::isAnyKindOfRewardContainer() const {
-	return 	getID() == ITEM_REWARD_CHEST ||
-		   	getID() == ITEM_REWARD_CONTAINER ||
-		   	isHoldingItemWithId(ITEM_REWARD_CONTAINER) ||
-		   	isInsideContainerWithId(ITEM_REWARD_CONTAINER);
+	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER || isHoldingItemWithId(ITEM_REWARD_CONTAINER) || isInsideContainerWithId(ITEM_REWARD_CONTAINER);
 }
 
 bool Container::isBrowseFieldAndHoldsRewardChest() const {

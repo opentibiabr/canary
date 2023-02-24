@@ -700,8 +700,7 @@ void Player::removeEmptyRewards() {
 
 bool Player::hasOtherRewardContainerOpen(const Container* container) const {
 	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [container](const auto &containerPair) {
-		return containerPair.second.container != container &&
-				containerPair.second.container->isAnyKindOfRewardContainer();
+		return containerPair.second.container != container && containerPair.second.container->isAnyKindOfRewardContainer();
 	});
 }
 

@@ -1298,6 +1298,9 @@ const char* getReturnMessage(ReturnValue value) {
 		case RETURNVALUE_NOTPOSSIBLE:
 			return "Sorry, not possible.";
 
+		case RETURNVALUE_REWARDCONTAINERISEMPTY:
+			return "You already claimed your reward.";
+
 		case RETURNVALUE_CONTACTADMINISTRATOR:
 			return "An error has occurred, please contact your administrator.";
 

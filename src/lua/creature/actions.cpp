@@ -299,6 +299,10 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 		// reward chest
 		if (container->getRewardChest() != nullptr) {
 			RewardChest* myRewardChest = player->getRewardChest();
+			if(!player->hasOtherRewardContainerOpen(dynamic_cast<const Container *>(container->getParent()))) {
+				player->removeEmptyRewards();
+			}
+
 			if (myRewardChest->size() == 0) {
 				return RETURNVALUE_REWARDCHESTISEMPTY;
 			}
@@ -315,6 +319,9 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 		// Reward container proxy created when the boss dies
 		if (container->getID() == ITEM_REWARD_CONTAINER && !container->getReward()) {
 			if (auto reward = player->getReward(rewardId, false)) {
+				if(reward->empty()) {
+					return RETURNVALUE_REWARDCONTAINERISEMPTY;
+				}
 				reward->setParent(container->getRealParent());
 				openContainer = reward;
 			} else {

@@ -1305,6 +1305,8 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 	}
 	player->cancelPush();
 
+	item->checkDecayMapItemOnMove();
+
 	g_events().eventPlayerOnItemMoved(player, item, count, fromPos, toPos, fromCylinder, toCylinder);
 }
 

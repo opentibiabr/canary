@@ -970,6 +970,13 @@ bool Item::canBeMoved() const {
 	return isMoveable() && !hasAttribute(UNIQUEID) && (!hasAttribute(ACTIONID) || getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != IMMOVABLE_ACTION_ID);
 }
 
+void Item::checkDecayMapItemOnMove() {
+	if (getDuration() > 0 && getLoadedFromMap() && canBeMoved()) {
+		setLoadedFromMap(false);
+		startDecaying();
+	}
+}
+
 uint32_t Item::getWeight() const {
 	uint32_t baseWeight = getBaseWeight();
 	if (isStackable()) {

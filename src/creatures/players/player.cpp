@@ -4004,12 +4004,16 @@ void Player::getPathSearchParams(const Creature* creature, FindPathParams &fpp) 
 	fpp.fullPathSearch = true;
 }
 
-uint16_t Player::getSkillLevel(uint8_t skill) const {
+uint16_t Player::getSkillLevel(uint8_t skill, bool sendToClient/* = false*/) const {
 	auto skillLevel = convertToSafeInteger<uint16_t>(skills[skill].level + varSkills[skill]);
-
 	if (auto it = maxValuePerSkill.find(skill);
 		it != maxValuePerSkill.end()) {
 		skillLevel = std::min<uint16_t>(it->second, skillLevel);
+	}
+
+	// Send to client multiplied skill mana/life leech (13.00+ version changed to decimal)
+	if (sendToClient && (skill == SKILL_MANA_LEECH_AMOUNT || skill == SKILL_LIFE_LEECH_AMOUNT)) {
+		return skillLevel * 100;
 	}
 
 	return skillLevel;

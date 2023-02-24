@@ -776,7 +776,7 @@ class Player final : public Creature, public Cylinder {
 			return lastAttack > 0 && ((OTSYS_TIME() - lastAttack) >= getAttackSpeed());
 		}
 
-		uint16_t getSkillLevel(uint8_t skill) const;
+		uint16_t getSkillLevel(uint8_t skill, bool sendToClient = false) const;
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
 		}

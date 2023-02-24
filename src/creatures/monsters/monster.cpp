@@ -982,12 +982,8 @@ void Monster::onThinkDefense(uint32_t interval) {
 			continue;
 		}
 
-		if (defenseTicks % spellBlock.speed >= interval) {
+		if (spellBlock.spell == nullptr || defenseTicks % spellBlock.speed >= interval) {
 			// already used this spell for this round
-			continue;
-		}
-
-		if (spellBlock.spell == nullptr) {
 			continue;
 		}
 

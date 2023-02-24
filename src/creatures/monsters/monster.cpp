@@ -987,6 +987,10 @@ void Monster::onThinkDefense(uint32_t interval) {
 			continue;
 		}
 
+		if (spellBlock.spell == nullptr) {
+			continue;
+		}
+
 		if ((spellBlock.chance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
 			minCombatValue = spellBlock.minCombatValue;
 			maxCombatValue = spellBlock.maxCombatValue;

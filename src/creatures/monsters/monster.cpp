@@ -829,7 +829,7 @@ void Monster::doAttacking(uint32_t interval) {
 			break;
 		}
 
-		if (spellBlock.isMelee && isFleeing()) {
+		if (spellBlock.spell == nullptr || spellBlock.isMelee && isFleeing()) {
 			continue;
 		}
 

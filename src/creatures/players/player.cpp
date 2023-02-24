@@ -1327,13 +1327,14 @@ void Player::openImbuementWindow(Item* item) {
 		return;
 	}
 
-	if (item->getTopParent() != this) {
-		this->sendTextMessage(MESSAGE_FAILURE, "You have to pick up the item to imbue it.");
+	if (item->getImbuementSlot() <= 0) {
+		this->sendTextMessage(MESSAGE_EVENT_ADVANCE, "This item is not imbuable.");
 		return;
 	}
 
-	if (item->getImbuementSlot() <= 0) {
-		this->sendTextMessage(MESSAGE_FAILURE, "This item is not imbuable.");
+	auto itemParent = item->getTopParent();
+	if (itemParent && itemParent != this) {
+		this->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to pick up the item to imbue it.");
 		return;
 	}
 

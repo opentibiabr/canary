@@ -101,6 +101,7 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 
 bool Map::loadMapCustom(const std::string &identifier, bool loadHouses, bool loadMonsters, bool loadNpcs) {
 	// Load the map
+	this->load(identifier, Position(0, 0, 0), true);
 	this->load(identifier);
 
 	if (loadMonsters) {

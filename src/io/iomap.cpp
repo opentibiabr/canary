@@ -8,7 +8,6 @@
  */
 
 #include "pch.hpp"
-
 #include "io/iomap.h"
 #include "game/movement/teleport.h"
 #include "game/game.h"
@@ -228,22 +227,23 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 
 		if (unload) {
 			Tile* tile = map.getTile(Position(x, y, z));
-
-			if (const TileItemVector* items = tile->getItemList();
-				items) {
-				TileItemVector item_list = *items;
-				if (!item_list.size() == 0) {
-					for (Item* item : item_list) {
-						if (item) {
-							g_game().internalRemoveItem(item);
+			if (tile) {
+				if (const TileItemVector* items = tile->getItemList();
+					items) {
+					TileItemVector item_list = *items;
+					if (!item_list.size() == 0) {
+						for (Item* item : item_list) {
+							if (item) {
+								g_game().internalRemoveItem(item);
+							}
 						}
 					}
 				}
-			}
 
-			if (Item* ground = tile->getGround();
-				ground) {
-				g_game().internalRemoveItem(ground);
+				if (Item* ground = tile->getGround();
+					ground) {
+					g_game().internalRemoveItem(ground);
+				}
 			}
 			continue;
 		}

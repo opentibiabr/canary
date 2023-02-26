@@ -66,10 +66,6 @@ void Monster::removeList() {
 	g_game().removeMonster(this);
 }
 
-bool Monster::canSee(const Position &pos) const {
-	return Creature::canSee(getPosition(), pos, 10, 10); // jlcvp FIX - range 10 Avoids killing monster without reaction
-}
-
 bool Monster::canWalkOnFieldType(CombatType_t combatType) const {
 	switch (combatType) {
 		case COMBAT_ENERGYDAMAGE:
@@ -698,7 +694,7 @@ void Monster::updateIdleStatus() {
 	if (conditions.empty()) {
 		if (!isSummon() && targetList.empty()) {
 			idle = true;
-		} else if ((!master || master->getMonster()) && getFaction() != FACTION_DEFAULT && (totalPlayersOnScreen == 0 && (!master || master->getMonster()->totalPlayersOnScreen == 0))) {
+		} else if ((!isSummon() && totalPlayersOnScreen == 0 || isSummon() && master->getMonster() && master->getMonster()->totalPlayersOnScreen == 0) && getFaction() != FACTION_DEFAULT) {
 			idle = true;
 		}
 	}

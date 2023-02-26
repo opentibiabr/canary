@@ -70,7 +70,7 @@ bool Npc::canInteract(const Position &pos) const {
 void Npc::onCreatureAppear(Creature* creature, bool isLogin) {
 	Creature::onCreatureAppear(creature, isLogin);
 
-	if(auto player = creature->getPlayer()){
+	if (auto player = creature->getPlayer()) {
 		onPlayerAppear(player);
 	}
 
@@ -100,7 +100,7 @@ void Npc::onRemoveCreature(Creature* creature, bool isLogout) {
 		return;
 	}
 
-	if(auto player = creature->getPlayer()){
+	if (auto player = creature->getPlayer()) {
 		onPlayerDisappear(player);
 	}
 
@@ -140,22 +140,22 @@ void Npc::onCreatureMove(Creature* creature, const Tile* newTile, const Position
 void Npc::manageIdle() {
 	if (creatureCheck && playerSpectators.empty()) {
 		g_game().removeCreatureCheck(this);
-	} else if(!creatureCheck){
+	} else if (!creatureCheck) {
 		g_game().addCreatureCheck(this);
 	}
 }
 
-void Npc::onPlayerAppear(Player *player) {
-	if(player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(player)) {
+void Npc::onPlayerAppear(Player* player) {
+	if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(player)) {
 		return;
 	}
 	playerSpectators.insert(player);
 	manageIdle();
 }
 
-void Npc::onPlayerDisappear(Player *player) {
+void Npc::onPlayerDisappear(Player* player) {
 	removePlayerInteraction(player);
-	if(!player->hasFlag(PlayerFlags_t::IgnoredByNpcs) && playerSpectators.contains(player)) {
+	if (!player->hasFlag(PlayerFlags_t::IgnoredByNpcs) && playerSpectators.contains(player)) {
 		playerSpectators.erase(player);
 		manageIdle();
 	}
@@ -445,7 +445,7 @@ void Npc::onThinkWalk(uint32_t interval) {
 
 void Npc::onCreatureWalk() {
 	Creature::onCreatureWalk();
-	phmap::erase_if(playerSpectators, [this](const auto &creature){return !this->canSee(creature->getPosition());});
+	phmap::erase_if(playerSpectators, [this](const auto &creature) { return !this->canSee(creature->getPosition()); });
 }
 
 void Npc::onPlacedCreature() {
@@ -455,8 +455,8 @@ void Npc::onPlacedCreature() {
 void Npc::loadPlayerSpectators() {
 	SpectatorHashSet spec;
 	g_game().map.getSpectators(spec, position, true, true);
-	for (auto creature : spec){
-		if(creature->getPlayer() || creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)){
+	for (auto creature : spec) {
+		if (creature->getPlayer() || creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
 			playerSpectators.insert(creature);
 		}
 	}
@@ -497,7 +497,7 @@ void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
 	playerInteractions[playerId] = topicId;
 }
 
-void Npc::removePlayerInteraction(Player *player) {
+void Npc::removePlayerInteraction(Player* player) {
 	if (playerInteractions.find(player->getID()) != playerInteractions.end()) {
 		playerInteractions.erase(player->getID());
 		player->closeShopWindow(true);
@@ -576,11 +576,11 @@ void Npc::closeAllShopWindows() {
 	shopPlayerSet.clear();
 }
 
-void Npc::handlePlayerMove(Player *player, const Position &newPos) {
+void Npc::handlePlayerMove(Player* player, const Position &newPos) {
 	if (!canInteract(newPos)) {
 		removePlayerInteraction(player);
 	}
-	if(canSee(newPos)) {
+	if (canSee(newPos)) {
 		onPlayerAppear(player);
 	} else {
 		onPlayerDisappear(player);

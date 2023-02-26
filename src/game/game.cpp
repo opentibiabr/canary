@@ -674,7 +674,7 @@ bool Game::placeCreature(Creature* creature, const Position &pos, bool extendedP
 		spectator->onCreatureAppear(creature, true);
 	}
 
-	if(hasPlayerSpectators){
+	if (hasPlayerSpectators) {
 		addCreatureCheck(creature);
 	}
 

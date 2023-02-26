@@ -122,7 +122,7 @@ class Npc final : public Creature {
 		}
 
 		void setPlayerInteraction(uint32_t playerId, uint16_t topicId = 0);
-		void removePlayerInteraction(Player *player);
+		void removePlayerInteraction(Player* player);
 		void resetPlayerInteractions();
 
 		bool isInteractingWithPlayer(uint32_t playerId) {
@@ -195,12 +195,11 @@ class Npc final : public Creature {
 		friend class LuaScriptInterface;
 		friend class Map;
 
-		void onPlayerAppear(Player *player);
-		void onPlayerDisappear(Player *player);
+		void onPlayerAppear(Player* player);
+		void onPlayerDisappear(Player* player);
 		void manageIdle();
-		void handlePlayerMove(Player *player, const Position &newPos);
+		void handlePlayerMove(Player* player, const Position &newPos);
 		void loadPlayerSpectators();
-
 };
 
 constexpr auto g_npc = &Npc::getInstance;

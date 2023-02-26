@@ -21,9 +21,6 @@ int32_t LuaFunctionsLoader::scriptEnvIndex = -1;
 
 LuaScriptInterface::LuaScriptInterface(std::string initInterfaceName) :
 	interfaceName(std::move(initInterfaceName)) {
-	if (!g_luaEnvironment.getLuaState()) {
-		g_luaEnvironment.initState();
-	}
 }
 
 LuaScriptInterface::~LuaScriptInterface() {

@@ -144,4 +144,4 @@ static inline double fast_pow(double base, uint32_t exp) {
 	return result;
 }
 
-#endif  // SRC_UTILS_TOOLS_H_
+#endif // SRC_UTILS_TOOLS_H_

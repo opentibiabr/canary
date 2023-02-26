@@ -182,7 +182,7 @@ class MoveEvent final : public Script {
 		const std::map<uint16_t, bool> &getVocEquipMap() const {
 			return vocEquipMap;
 		}
-		void addVocEquipMap(const std::string& vocName) {
+		void addVocEquipMap(const std::string &vocName) {
 			int32_t vocationId = g_vocations().getVocationId(vocName);
 			if (vocationId != -1) {
 				vocEquipMap[vocationId] = true;

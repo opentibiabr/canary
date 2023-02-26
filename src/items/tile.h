@@ -26,14 +26,13 @@ class BedItem;
 using CreatureVector = std::vector<Creature*>;
 using ItemVector = std::vector<Item*>;
 
-class SpectatorVector : public CreatureVector
-{
+class SpectatorVector : public CreatureVector {
 	public:
 		SpectatorVector() {
 			specs.reserve(32);
 		}
 
-		void mergeSpectators(const SpectatorVector& spectators) {
+		void mergeSpectators(const SpectatorVector &spectators) {
 			size_t it = 0;
 			size_t end = spectators.size();
 			while (it < end) {
@@ -51,7 +50,7 @@ class SpectatorVector : public CreatureVector
 				}
 
 				emplace_back(spectator);
-				Skip_Duplicate:
+			Skip_Duplicate:
 				++it;
 			}
 		}
@@ -289,9 +288,9 @@ class Tile : public Cylinder {
 
 	private:
 		void onAddTileItem(Item* item);
-		void onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newItem, const ItemType& newType);
-		void onRemoveTileItem(const SpectatorVector& spectators, const std::vector<int32_t>& oldStackPosVector, Item* item);
-		void onUpdateTile(const SpectatorVector& spectators) const;
+		void onUpdateTileItem(Item* oldItem, const ItemType &oldType, Item* newItem, const ItemType &newType);
+		void onRemoveTileItem(const SpectatorVector &spectators, const std::vector<int32_t> &oldStackPosVector, Item* item);
+		void onUpdateTile(const SpectatorVector &spectators) const;
 
 		void setTileFlags(const Item* item);
 		void resetTileFlags(const Item* item);

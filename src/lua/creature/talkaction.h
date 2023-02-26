@@ -72,7 +72,7 @@ class TalkActions final : public Scripts {
 
 		TalkActionResult_t playerSaySpell(Player* player, SpeakClasses type, const std::string &words) const;
 
-		bool registerLuaEvent(const TalkAction_ptr&event);
+		bool registerLuaEvent(const TalkAction_ptr &event);
 		void clear();
 
 	private:

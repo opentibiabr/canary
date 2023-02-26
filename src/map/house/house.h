@@ -185,7 +185,7 @@ class House {
 			return houseTiles;
 		}
 
-		const HouseDoors& getDoors() const {
+		const HouseDoors &getDoors() const {
 			return doorList;
 		}
 
@@ -265,7 +265,7 @@ class Houses {
 
 		void payHouses(RentPeriod_t rentPeriod) const;
 
-		HouseMap& getHouses() {
+		HouseMap &getHouses() {
 			return houseMap;
 		}
 

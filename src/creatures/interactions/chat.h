@@ -79,7 +79,8 @@ class ChatChannel {
 
 class PrivateChatChannel final : public ChatChannel {
 	public:
-		PrivateChatChannel(uint16_t channelId, std::string channelName) : ChatChannel(channelId, std::move(channelName)) {}
+		PrivateChatChannel(uint16_t channelId, std::string channelName) :
+			ChatChannel(channelId, std::move(channelName)) { }
 		uint32_t getOwner() const override {
 			return owner;
 		}

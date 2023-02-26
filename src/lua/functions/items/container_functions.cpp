@@ -31,7 +31,7 @@ int ContainerFunctions::luaContainerCreate(lua_State* L) {
 	} else {
 		container = nullptr;
 	}
-	
+
 	if (container) {
 		pushUserdata(L, container);
 		setMetatable(L, -1, "Container");

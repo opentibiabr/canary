@@ -579,11 +579,11 @@ int SpellFunctions::luaSpellVocation(lua_State* L) {
 		if (lua_gettop(L) == 1) {
 			lua_createtable(L, 0, 0);
 			size_t it = 0;
-			for (const auto& voc : spell->getVocMap()) {
+			for (const auto &voc : spell->getVocMap()) {
 				++it;
 				std::string s = std::to_string(it);
 				const char* pchar = s.c_str();
-				const std::string& name = g_vocations().getVocation(voc.first)->getVocName();
+				const std::string &name = g_vocations().getVocation(voc.first)->getVocName();
 				setField(L, pchar, name);
 			}
 			setMetatable(L, -1, "Spell");

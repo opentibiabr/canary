@@ -163,7 +163,7 @@ class Weapon : public Script {
 			wieldInfo |= info;
 		}
 
-		void addVocWeaponMap(const std::string& vocName) {
+		void addVocWeaponMap(const std::string &vocName) {
 			int32_t vocationId = g_vocations().getVocationId(vocName);
 			if (vocationId != -1) {
 				vocWeaponMap[vocationId] = true;

@@ -45,12 +45,12 @@
 with the prefix "luaNamespace" added. For example, if the Lua namespace is "SOUND_EFFECT_TYPE_" and the enumeration value
 is "SILENCE", the registered full name will be "SOUND_EFFECT_TYPE_SILENCE".
 */
-#define registerEnumNamespace(L, luaNamespace, enumValue) \
-	{ \
-		std::string enumName = #enumValue; \
+#define registerEnumNamespace(L, luaNamespace, enumValue)                                                                             \
+	{                                                                                                                                 \
+		std::string enumName = #enumValue;                                                                                            \
 		std::string enumNameWithNamespace = std::string(luaNamespace) + std::string(enumName.substr(enumName.find_last_of(':') + 1)); \
-		registerGlobalVariable(L, enumNameWithNamespace, enumValue); \
-	}\
+		registerGlobalVariable(L, enumNameWithNamespace, enumValue);                                                                  \
+	}                                                                                                                                 \
 	void(0)
 
 void LuaEnums::init(lua_State* L) {

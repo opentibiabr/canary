@@ -593,7 +593,7 @@ enum PartyAnalyzer_t : uint8_t {
 	LEADER_PRICE = 1
 };
 
-enum class SoundEffect_t : uint16_t {
+enum SoundEffect_t : uint16_t {
 	SILENCE = 0,
 	HUMAN_CLOSE_ATK_FIST = 1,
 	MONSTER_CLOSE_ATK_FIST = 2,

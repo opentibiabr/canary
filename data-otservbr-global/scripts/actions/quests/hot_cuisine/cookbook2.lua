@@ -15,5 +15,5 @@ function hotCuisineCook2.onUse(player, item, fromPosition, target, toPosition, i
 	return true
 end
 
-hotCuisineCook2:id(12497)
+hotCuisineCook2:id(11541)
 hotCuisineCook2:register()

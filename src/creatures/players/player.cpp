@@ -5686,7 +5686,7 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 	if (allItems) {
 		// Stow player backpack
 		if (auto inventoryItem = getInventoryItem(CONST_SLOT_BACKPACK);
-			!item->isInsideDepot(true)) {
+			inventoryItem && !item->isInsideDepot(true)) {
 			sendStowItems(*item, *inventoryItem, itemDict);
 		}
 

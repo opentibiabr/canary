@@ -9,7 +9,7 @@ function lever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		item:transform(2773)
 	elseif item.itemid == 2773 and not tile:getItemById(389) then
 		Game.createItem(389, 1, position)
-                item:transform(2772)
+		item:transform(2772)
 	end
 	return true
 end

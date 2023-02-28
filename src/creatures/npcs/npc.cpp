@@ -139,7 +139,7 @@ void Npc::onCreatureMove(Creature* creature, const Tile* newTile, const Position
 
 void Npc::manageIdle() {
 	if (creatureCheck && playerSpectators.empty()) {
-		g_game().removeCreatureCheck(this);
+		Game::removeCreatureCheck(this);
 	} else if (!creatureCheck) {
 		g_game().addCreatureCheck(this);
 	}
@@ -498,7 +498,7 @@ void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
 }
 
 void Npc::removePlayerInteraction(Player* player) {
-	if (playerInteractions.find(player->getID()) != playerInteractions.end()) {
+	if (playerInteractions.contains(player->getID())) {
 		playerInteractions.erase(player->getID());
 		player->closeShopWindow(true);
 	}

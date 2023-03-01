@@ -223,6 +223,9 @@ namespace account {
 			error_t SetPremiumLastDay(time_t last_day);
 			error_t GetPremiumLastDay(time_t* last_day);
 
+			error_t SetVIPDays(uint32_t days);
+			error_t GetVIPDays(uint32_t* days);
+
 			error_t SetAccountType(AccountType account_type);
 			error_t GetAccountType(AccountType* account_type);
 
@@ -251,6 +254,7 @@ namespace account {
 			std::string password_;
 			uint32_t premium_remaining_days_;
 			time_t premium_last_day_;
+			uint32_t vip_days_;
 			AccountType account_type_;
 
 			bool oldProtocol_;

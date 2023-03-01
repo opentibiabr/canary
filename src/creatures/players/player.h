@@ -524,6 +524,9 @@ class Player final : public Creature, public Cylinder {
 		bool isPremium() const;
 		void setPremiumDays(int32_t v);
 
+		bool isVIP() const;
+		void setVIPDays(int32_t v);
+
 		void setTibiaCoins(int32_t v);
 		void setTransferableTibiaCoins(int32_t v);
 
@@ -2372,6 +2375,14 @@ class Player final : public Creature, public Cylinder {
 		void decrementeHazardSystemReference();
 		/*******************************************************************************/
 
+		bool checkAutoLoot() const {
+			const bool autoLoot = g_configManager().getBoolean(AUTOLOOT) && getStorageValue(STORAGEVALUE_AUTO_LOOT) == 1;
+			if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && g_configManager().getBoolean(VIP_SYSTEM_AUTO_LOOT_ONLY_VIP)) {
+				return autoLoot && isVIP();
+			}
+			return autoLoot;
+		}
+
 	private:
 		static uint32_t playerFirstID;
 		static uint32_t playerLastID;
@@ -2567,6 +2578,7 @@ class Player final : public Creature, public Cylinder {
 		int32_t shopCallback = -1;
 		int32_t MessageBufferCount = 0;
 		uint32_t premiumDays = 0;
+		uint32_t vipDays = 0;
 		int32_t bloodHitCount = 0;
 		int32_t shieldBlockCount = 0;
 		int8_t offlineTrainingSkill = SKILL_NONE;

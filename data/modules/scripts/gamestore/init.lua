@@ -325,7 +325,8 @@ function parseRequestStoreOffers(playerId, msg)
 		local category = nil
 
 		if subAction == 0 then
-			category = GameStore.getCategoryByName("Premium Time")
+			local categoryName = ((configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and "Vip Shop") or "Premium Time")
+			category = GameStore.getCategoryByName(categoryName)
 		else
 			category = GameStore.getCategoryByName("Boosts")
 		end
@@ -1484,7 +1485,11 @@ function GameStore.processCharmsPurchase(player)
 end
 
 function GameStore.processPremiumPurchase(player, offerId)
-	player:addPremiumDays(offerId - 3000)
+	if not configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+		player:addPremiumDays(offerId - 3000)
+	else
+		player:addVipDays(offerId - 3000)
+	end
 end
 
 function GameStore.processStackablePurchase(player, offerId, offerCount, offerName, moveable)

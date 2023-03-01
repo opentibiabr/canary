@@ -1,5 +1,5 @@
 local function calculateBonus(bonus)
-	local bonusCount = math.floor(bonus/100)
+	local bonusCount = math.floor(bonus / 100)
 	local remainder = bonus % 100
 	if remainder > 0 then
 		local probability = math.random(0, 100)
@@ -42,7 +42,21 @@ function Monster:onDropLoot(corpse)
 			end
 		end
 
+		-- Vip system
+		local vipPercentLoot = 0
+		if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED)
+			and configManager.getBoolean(configKeys.VIP_SYSTEM_LOOT_ENABLED)
+			and player and player:isVip()) then
+			vipPercentLoot = (configManager.getNumber(configKeys.VIP_SYSTEM_LOOT_PERCENT) / 100)
+		end
+
 		for i = 1, #monsterLoot do
+			if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED)
+				and configManager.getBoolean(configKeys.VIP_SYSTEM_LOOT_ENABLED)
+				and vipPercentLoot > 0) then
+				monsterLoot[i].chance = monsterLoot[i].chance + (monsterLoot[i].chance * vipPercentLoot)
+			end
+
 			local item = corpse:createLootItem(monsterLoot[i], charmBonus)
 			if self:getName():lower() == Game.getBoostedCreature():lower() then
 				local itemBoosted = corpse:createLootItem(monsterLoot[i], charmBonus)
@@ -83,7 +97,7 @@ function Monster:onDropLoot(corpse)
 
 			local boostedMessage
 			local isBoostedBoss = self:getName():lower() == (Game.getBoostedBoss()):lower()
-			local bossRaceIds = {player:getSlotBossId(1), player:getSlotBossId(2)}
+			local bossRaceIds = { player:getSlotBossId(1), player:getSlotBossId(2) }
 			local isBoss = table.contains(bossRaceIds, mType:bossRaceId()) or isBoostedBoss
 			if isBoss and mType:bossRaceId() ~= 0 then
 				local bonus
@@ -121,6 +135,11 @@ function Monster:onDropLoot(corpse)
 			end
 			if preyLootPercent > 0 then
 				text = text .. " (active prey bonus)"
+			end
+			if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED)
+				and configManager.getBoolean(configKeys.VIP_SYSTEM_LOOT_ENABLED)
+				and player and player:isVip() and vipPercentLoot > 0) then
+				text = text .. " (vip loot bonus " .. (vipPercentLoot * 100) .. "%)"
 			end
 			if charmBonus then
 				text = text .. " (active charm bonus)"
@@ -178,7 +197,7 @@ function Monster:onSpawn(position)
 			if self:getName():lower() == 'iron servant replica' then
 				local chance = math.random(100)
 				if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismDiamond) >= 1
-				and Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismGolden) >= 1 then
+					and Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismGolden) >= 1 then
 					if chance > 30 then
 						local chance2 = math.random(2)
 						if chance2 == 1 then

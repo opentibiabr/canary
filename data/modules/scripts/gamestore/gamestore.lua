@@ -14,17 +14,19 @@ HomeBanners = {
 	delay = 10
 }
 
+local offersNameComplement = (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and "VIP") or "Premium Time"
+
 GameStore.Categories = {
-	-- Premium Time
+	-- Premium Time/VIP
 	{
 		icons = { "Category_PremiumTime.png" },
-		name = "Premium Time",
+		name = (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and "Vip Shop") or "Premium Time",
 		rookgaard = true,
-		state = GameStore.States.STATE_NONE,
+		state = (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and GameStore.States.STATE_NEW) or GameStore.States.STATE_NONE,
 		offers = {
 			{
 				icons = { "Premium_Time_30.png" },
-				name = "30 Days of Premium Time",
+				name = string.format("30 Days of %s", offersNameComplement),
 				price = 250,
 				id = 3030,
 				validUntil = 30,
@@ -33,7 +35,7 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Premium_Time_90.png" },
-				name = "90 Days of Premium Time",
+				name = string.format("90 Days of %s", offersNameComplement),
 				price = 750,
 				id = 3090,
 				validUntil = 90,
@@ -42,7 +44,7 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Premium_Time_180.png" },
-				name = "180 Days of Premium Time",
+				name = string.format("180 Days of %s", offersNameComplement),
 				price = 1500,
 				id = 3180,
 				validUntil = 180,
@@ -51,7 +53,7 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Premium_Time_360.png" },
-				name = "360 Days of Premium Time",
+				name = string.format("360 Days of %s", offersNameComplement),
 				price = 3000,
 				id = 3360,
 				validUntil = 360,

@@ -274,6 +274,7 @@ namespace account {
 		this->SetPassword(result->getString("password"));
 		this->SetPremiumRemaningDays(result->getNumber<uint16_t>("premdays"));
 		this->SetPremiumLastDay(result->getNumber<time_t>("lastday"));
+		this->SetVIPDays(result->getNumber<uint16_t>("vipdays"));
 
 		return ERROR_NO;
 	}
@@ -438,6 +439,20 @@ namespace account {
 		}
 
 		*last_day = premium_last_day_;
+		return ERROR_NO;
+	}
+
+	error_t Account::SetVIPDays(uint32_t days) {
+		vip_days_ = days;
+		return ERROR_NO;
+	}
+
+	error_t Account::GetVIPDays(uint32_t* days) {
+		if (days == nullptr) {
+			return ERROR_NULLPTR;
+		}
+
+		*days = vip_days_;
 		return ERROR_NO;
 	}
 

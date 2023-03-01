@@ -362,3 +362,20 @@ location = "South America"
 -- Leave empty if you wish to disable.
 discordWebhookURL = ""
 
+-- Vip System
+-- NOTE: set vipSystemEnabled to true to enable the vip system functionality.
+-- NOTE: vipSystemExpEnabled = activates accounts vip to win a bonus of xp.
+-- NOTE: vipSystemExpPercent = the percent bonus to win. ex: 3 = 3%, 30 = 30%
+-- NOTE: vipSystemLootEnabled = activates accounts vip to win a bonus of loot.
+-- NOTE: vipSystemLootPercent = the percent bonus to win. ex: 3 = 3%, 30 = 30%
+-- NOTE: vipSystemGainCoinsEnabled before active, please configure script: data-otservbr-global\scripts\globalevents\online_vip_coins.lua
+-- NOTE: vipSystemGainTokensEnabled before active, please configure script: data-otservbr-global\scripts\globalevents\online_tokens.lua
+-- NOTE: vipSystemAutoLootOnlyVip = activates only vip to get automatic loot, config 'autoLoot' need to be enabled, for this config works
+vipSystemEnabled = false
+vipSystemExpEnabled = false
+vipSystemExpPercent = 3
+vipSystemLootEnabled = false
+vipSystemLootPercent = 3
+vipSystemGainCoinsEnabled = false
+vipSystemGainTokensEnabled = false
+vipSystemAutoLootOnlyVip = false

@@ -136,6 +136,10 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		if (loyaltyTitle.length() != 0) {
 			s << " You are a " << loyaltyTitle << ".";
 		}
+
+		if (isVIP()) {
+			s << " You are VIP.";
+		}
 	} else {
 		s << name;
 		if (!group->access) {
@@ -143,11 +147,13 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		}
 		s << '.';
 
+		std::string pronoun;
 		if (sex == PLAYERSEX_FEMALE) {
-			s << " She";
+			pronoun = " She";
 		} else {
-			s << " He";
+			pronoun = " He";
 		}
+		s << pronoun;
 
 		if (group->access) {
 			s << " is " << group->name << '.';
@@ -163,6 +169,10 @@ std::string Player::getDescription(int32_t lookDistance) const {
 			} else {
 				s << " He is a " << loyaltyTitle << ".";
 			}
+		}
+
+		if (isVIP()) {
+			s << pronoun << " is VIP.";
 		}
 	}
 
@@ -2225,7 +2235,12 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 
 	if (sendText) {
 		std::string expString = fmt::format("{} experience point{}.", exp, (exp != 1 ? "s" : ""));
-
+		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && g_configManager().getBoolean(VIP_SYSTEM_EXP_ENABLED)) {
+			uint8_t expPercent = g_configManager().getNumber(VIP_SYSTEM_EXP_PERCENT);
+			if (isVIP() && expPercent > 0) {
+				expString = expString + fmt::format(" (vip exp bonus {}%)", expPercent);
+			}
+		}
 		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString + (handleHazardExperience ? " (Hazard)" : ""));
 		message.position = position;
 		message.primary.value = exp;
@@ -5200,6 +5215,10 @@ bool Player::isPremium() const {
 void Player::setPremiumDays(int32_t v) {
 	premiumDays = v;
 	sendBasicData();
+}
+
+bool Player::isVIP() const {
+	return (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && vipDays > 0);
 }
 
 void Player::setTibiaCoins(int32_t v) {

@@ -222,6 +222,10 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 		acc.GetPremiumRemaningDays(&(player->premiumDays));
 	}
 
+	if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED)) {
+		acc.GetVIPDays(&(player->vipDays));
+	}
+
 	acc.GetCoins(&(player->coinBalance));
 	acc.GetTransferableCoins(&(player->coinTransferableBalance));
 

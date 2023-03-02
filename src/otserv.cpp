@@ -381,10 +381,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	g_game().start(services);
 	g_game().setGameState(GAME_STATE_NORMAL);
 
-	webhook_init();
-
-	std::string url = g_configManager().getString(DISCORD_WEBHOOK_URL);
-	webhook_send_message("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE, url);
+	WebHook::sendMessage("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE);
 
 	g_loaderDone = true;
 

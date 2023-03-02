@@ -134,7 +134,9 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
 # Packages / Libs
 # *****************************************************************************
 find_package(asio CONFIG REQUIRED)
-find_package(CURL CONFIG REQUIRED)
+if (NOT MSVC)
+	find_package(dpp CONFIG REQUIRED)
+endif()
 find_package(GMP REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
 find_package(LuaJIT REQUIRED)
@@ -341,7 +343,6 @@ if (MSVC)
 			${LUAJIT_LIBRARIES}
 			${MYSQL_CLIENT_LIBS}
 			asio::asio
-			CURL::libcurl
 			fmt::fmt
 			magic_enum::magic_enum
 			mio::mio
@@ -351,6 +352,7 @@ if (MSVC)
 			unofficial::libmariadb
 			unofficial::mariadbclient
 			ZLIB::ZLIB
+			wininet.lib
 	)
 
 else()
@@ -368,7 +370,7 @@ else()
 			${LUAJIT_LIBRARIES}
 			${GMP_LIBRARIES}
 			asio::asio
-			CURL::libcurl
+			dpp::dpp
 			fmt::fmt
 			jsoncpp_static
 			magic_enum::magic_enum

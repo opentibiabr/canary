@@ -324,9 +324,8 @@ bool AnnounceEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 }
 
 bool AnnounceEvent::executeEvent() {
-	std::string url = g_configManager().getString(DISCORD_WEBHOOK_URL);
 	g_game().broadcastMessage(message, messageType);
-	webhook_send_message("Incoming raid!", message, WEBHOOK_COLOR_RAID, url);
+	WebHook::sendMessage("Incoming raid!", message, WEBHOOK_COLOR_RAID);
 	return true;
 }
 

@@ -1517,3 +1517,17 @@ std::string formatPrice(std::string price, bool space /* = false*/) {
 
 	return price;
 }
+
+std::string getOs() {
+#if defined(ANDROID)
+	return "android";
+#elif defined(WIN32)
+	return "windows";
+#elif defined(__APPLE__)
+	return "mac";
+#elif __linux
+	return "linux";
+#else
+	return "unknown";
+#endif
+}

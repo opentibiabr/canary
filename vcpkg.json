@@ -5,7 +5,6 @@
     "asio",
     "pugixml",
     "spdlog",
-    "curl",
     "jsoncpp",
     "protobuf",
     "parallel-hashmap",
@@ -22,6 +21,10 @@
     },
     {
       "name": "gmp",
+      "platform": "linux"
+    },
+    {
+      "name": "dpp",
       "platform": "linux"
     },
     {

@@ -11,61 +11,87 @@
 
 #include "server/network/webhook/webhook.h"
 #include "config/configmanager.h"
+#include "core.hpp"
 
-// Tread no further, adventurer!
-// Go back while you still can.
+#if defined(WIN32)
+void WebHook::closeConnection(HINTERNET hSession /* = nullptr*/, HINTERNET hConnect /* = nullptr*/, HINTERNET hRequest /* = nullptr*/) {
+	InternetCloseHandle(hSession);
+	InternetCloseHandle(hConnect);
+	InternetCloseHandle(hRequest);
+}
+#endif
 
-static bool init = false;
-static curl_slist* headers = NULL;
-
-void webhook_init() {
-	if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
-		SPDLOG_ERROR("Failed to init curl, no webhook messages may be sent");
+void WebHook::sendMessage(std::string title, std::string message, int color) {
+	std::string webhookUrl = g_configManager().getString(DISCORD_WEBHOOK_URL);
+	std::string payload = getPayload(title, message, color);
+	// Break empty informations
+	if (title.empty() || message.empty() || webhookUrl.empty() || payload.empty()) {
 		return;
 	}
 
-	headers = curl_slist_append(headers, "content-type: application/json");
-	headers = curl_slist_append(headers, "accept: application/json");
-	if (headers == NULL) {
-		SPDLOG_ERROR("Failed to init curl, appending request headers failed");
+#if defined(WIN32)
+	HINTERNET hSession = InternetOpenA((LPCSTR)STATUS_SERVER_NAME, INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
+	if (!hSession) {
+		SPDLOG_ERROR("Failed to create WinHTTP session");
 		return;
 	}
 
-	init = true;
+	HINTERNET hConnect = InternetConnectA(hSession, "discordapp.com", INTERNET_DEFAULT_HTTPS_PORT, 0, 0, INTERNET_SERVICE_HTTP, 0, 0);
+	if (!hConnect) {
+		closeConnection(hSession);
+		SPDLOG_ERROR("[WebHook] Failed to connect to Discord");
+		return;
+	}
+
+	HINTERNET hRequest = HttpOpenRequestA(hConnect, "POST", webhookUrl.c_str(), 0, 0, 0, INTERNET_FLAG_SECURE, 0);
+	if (!hRequest) {
+		closeConnection(hSession, hConnect);
+		SPDLOG_ERROR("[WebHook] Failed to create HTTP request");
+		return;
+	}
+
+	std::string contentTypeHeader = "Content-Type: application/json";
+	if (!HttpAddRequestHeadersA(hRequest, contentTypeHeader.c_str(), contentTypeHeader.length(), HTTP_ADDREQ_FLAG_REPLACE)) {
+		closeConnection(hSession, hConnect, hRequest);
+		SPDLOG_ERROR("[WebHook] Failed to set request headers");
+		return;
+	}
+
+	// Try to send message
+	DWORD dataSize = static_cast<DWORD>(payload.length());
+	if (!HttpSendRequestA(hRequest, 0, 0, (LPVOID)payload.c_str(), dataSize)) {
+		closeConnection(hSession, hConnect, hRequest);
+		SPDLOG_ERROR("[WebHook] Failed to send HTTP request");
+		return;
+	}
+
+	DWORD statusCode = 0;
+	DWORD statusCodeSize = sizeof(statusCode);
+	HttpQueryInfoA(hRequest, HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER, &statusCode, &statusCodeSize, 0);
+
+	if (statusCode < 200 || statusCode >= 300) {
+		closeConnection(hSession, hConnect, hRequest);
+		SPDLOG_ERROR("[WebHook] Received unsuccessful HTTP status code {}", statusCode);
+		return;
+	}
+
+	closeConnection(hSession, hConnect, hRequest);
+#elif
+	auto request = std::make_shared<dpp::http_request>();
+	request->set_url(webhookUrl);
+	request->set_method("POST");
+	request->set_post_data(payload);
+	request->add_header("Content-Type", "application/json");
+
+	dpp::get_websocket_client()->execute(request, [request](const dpp::http_response &response) {
+		if (response.status / 100 != 2) {
+			SPDLOG_ERROR("[WebHook] Received unsuccessful HTTP status code {}", response.status);
+		}
+	});
+#endif
 }
 
-static int webhook_send_message_(const char* url, const char* payload, std::string* response_body);
-static std::string get_payload(std::string title, std::string message, int color);
-
-void webhook_send_message(std::string title, std::string message, int color, std::string url) {
-	if (url.empty()) {
-		return;
-	}
-
-	if (!init) {
-		SPDLOG_ERROR("Failed to send webhook message; Did not (successfully) init");
-		return;
-	}
-
-	if (title.empty() || message.empty()) {
-		SPDLOG_ERROR("Failed to send webhook message; "
-					 "title or message to send was empty");
-		return;
-	}
-
-	std::string payload = get_payload(title, message, color);
-	std::string response_body = "";
-	int response_code = webhook_send_message_(url.c_str(), payload.c_str(), &response_body);
-
-	if (response_code != 204 && response_code != -1) {
-		SPDLOG_ERROR("Failed to send webhook message; "
-					 "HTTP request failed with code: {}"
-					 "response body: {} request body: {}",
-					 response_code, response_body, payload);
-	}
-}
-
-static std::string get_payload(std::string title, std::string message, int color) {
+std::string WebHook::getPayload(std::string title, std::string message, int color) {
 	time_t now;
 	time(&now);
 	struct tm tm;
@@ -110,33 +136,4 @@ static std::string get_payload(std::string title, std::string message, int color
 	std::stringstream out;
 	writer->write(payload, &out);
 	return out.str();
-}
-
-static int webhook_send_message_(const char* url, const char* payload, std::string* response_body) {
-	CURL* curl = curl_easy_init();
-	if (!curl) {
-		SPDLOG_ERROR("Failed to send webhook message; curl_easy_init failed");
-		return -1;
-	}
-
-	curl_easy_setopt(curl, CURLOPT_URL, url);
-	curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
-	curl_easy_setopt(curl, CURLOPT_POST, 1L);
-	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, reinterpret_cast<void*>(&response_body));
-	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-	curl_easy_setopt(curl, CURLOPT_USERAGENT, "canary (https://github.com/Hydractify/canary)");
-
-	CURLcode res = curl_easy_perform(curl);
-
-	int response_code = -1;
-	if (res == CURLE_OK) {
-		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-	} else {
-		SPDLOG_ERROR("Failed to send webhook message with the error: {}", curl_easy_strerror(res));
-	}
-
-	curl_easy_cleanup(curl);
-
-	return response_code;
 }

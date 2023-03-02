@@ -15,6 +15,43 @@
 #include "creatures/creature.h"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
+#include "core.hpp"
+
+bool Map::downloadMap(const std::string &identifier) {
+	const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
+	if (mapDownloadUrl.empty()) {
+		SPDLOG_ERROR("Map download URL in config.lua is empty, download disabled");
+		return false;
+	}
+#if defined(WIN32)
+	HINTERNET hInternet = InternetOpenA(STATUS_SERVER_NAME, INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
+	if (!hInternet) {
+		SPDLOG_ERROR("[{}] failed to open connection", __FUNCTION__);
+		return false;
+	}
+
+	HINTERNET hUrl = InternetOpenUrlA(hInternet, mapDownloadUrl.c_str(), NULL, 0, INTERNET_FLAG_RELOAD | INTERNET_FLAG_DONT_CACHE, 0);
+	if (!hUrl) {
+		SPDLOG_ERROR("[{}] failed to read url", __FUNCTION__);
+		return false;
+	}
+
+	char buffer[4096];
+	DWORD bytesRead;
+	FILE* otbm = fopen(identifier.c_str(), "wb");
+	while (InternetReadFile(hUrl, buffer, sizeof(buffer), &bytesRead) && bytesRead != 0) {
+		fwrite(buffer, 1, bytesRead, otbm);
+	}
+	fclose(otbm);
+
+	InternetCloseHandle(hUrl);
+	InternetCloseHandle(hInternet);
+#else
+	SPDLOG_ERROR("Download map only work for windows, download manually from this url: {}", mapDownloadUrl);
+	return false;
+#endif
+	return true;
+}
 
 bool Map::load(const std::string &identifier, const Position &pos, bool unload) {
 	try {
@@ -33,22 +70,13 @@ bool Map::load(const std::string &identifier, const Position &pos, bool unload) 
 bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool loadHouses /*= false*/, bool loadMonsters /*= false*/, bool loadNpcs /*= false*/, const Position &pos /*= Position()*/, bool unload /*= false*/) {
 	// Only download map if is loading the main map and it is not already downloaded
 	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !std::filesystem::exists(identifier)) {
-		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
-		if (mapDownloadUrl.empty()) {
-			SPDLOG_WARN("Map download URL in config.lua is empty, download disabled");
+		SPDLOG_INFO("Downloading map...");
+		uint64_t startDownloadTime = OTSYS_TIME();
+		if (!downloadMap(identifier)) {
+			return false;
 		}
 
-		if (CURL* curl = curl_easy_init(); curl && !mapDownloadUrl.empty()) {
-			SPDLOG_INFO("Downloading " + g_configManager().getString(MAP_NAME) + ".otbm to world folder");
-			FILE* otbm = fopen(identifier.c_str(), "wb");
-			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-			curl_easy_setopt(curl, CURLOPT_URL, mapDownloadUrl.c_str());
-			curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
-			curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
-			curl_easy_perform(curl);
-			curl_easy_cleanup(curl);
-			fclose(otbm);
-		}
+		SPDLOG_INFO("Download completed in {} seconds", (OTSYS_TIME() - startDownloadTime) / (1000.));
 	}
 
 	// Load the map

@@ -168,6 +168,8 @@ class Map {
 
 		uint32_t clean() const;
 
+		bool downloadMap(const std::string &identifier);
+
 		/**
 		 * Load a map.
 		 * \returns true if the map was loaded successfully

@@ -10,8 +10,13 @@
 #ifndef SRC_SERVER_NETWORK_WEBHOOK_WEBHOOK_H_
 #define SRC_SERVER_NETWORK_WEBHOOK_WEBHOOK_H_
 
-void webhook_init();
-
-void webhook_send_message(std::string title, std::string message, int color, std::string url);
+class WebHook {
+	public:
+#if defined(WIN32)
+		static void closeConnection(HINTERNET hSession = nullptr, HINTERNET hConnect = nullptr, HINTERNET hRequest = nullptr);
+#endif
+		static void sendMessage(std::string title, std::string message, int color);
+		static std::string getPayload(std::string title, std::string message, int color);
+};
 
 #endif // SRC_SERVER_NETWORK_WEBHOOK_WEBHOOK_H_

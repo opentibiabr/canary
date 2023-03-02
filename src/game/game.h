@@ -602,7 +602,6 @@ class Game {
 		std::vector<uint16_t> registeredLookTypes;
 
 		size_t lastBucket = 0;
-		size_t lastImbuedBucket = 0;
 
 		WildcardTreeNode wildcardTree { false };
 

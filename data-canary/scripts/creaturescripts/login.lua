@@ -95,7 +95,7 @@ function login.onLogin(player)
 	nextUseXpStamina[playerId] = 1
 
 	-- Set Client XP Gain Rate --
-	if Game.getStorageValue(GlobalStorage.XpDisplayMode) > 0 then
+	if configManager.getBoolean(configKeys.XP_DISPLAY_MODE) == 1 then
 		local baseRate = player:getFinalBaseRateExperience()
 		player:setBaseXpGain(baseRate * 100)
 	end

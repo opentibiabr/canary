@@ -231,6 +231,7 @@ mysqlSock = ""
 passwordType = "sha1"
 
 -- Misc.
+-- experienceDisplayMode: 0 to ignore exp rate or 1 to include exp rate
 allowChangeOutfit = true
 freePremium = false
 kickIdlePlayerAfterMinutes = 15
@@ -245,6 +246,7 @@ showScriptsLogInConsole = false
 criticalChance = 10
 inventoryGlowOnFiveBless = false
 adventurersBlessingLevel = 21
+experienceDisplayMode = 1
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes

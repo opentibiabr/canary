@@ -227,7 +227,7 @@ function playerLogin.onLogin(player)
 	end
 
 	-- Set Client XP Gain Rate --
-	if configManager.getBoolean(configKeys.XP_DISPLAY_MODE) == 1 then
+	if configManager.getBoolean(configKeys.XP_DISPLAY_MODE) then
 		local baseRate = player:getFinalBaseRateExperience()
 		player:setBaseXpGain(baseRate * 100)
 	end

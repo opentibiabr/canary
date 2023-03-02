@@ -246,7 +246,7 @@ showScriptsLogInConsole = false
 criticalChance = 10
 inventoryGlowOnFiveBless = false
 adventurersBlessingLevel = 21
-experienceDisplayMode = 1
+experienceDisplayRates = true
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes

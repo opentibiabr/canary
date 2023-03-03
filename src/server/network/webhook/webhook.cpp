@@ -13,6 +13,10 @@
 #include "config/configmanager.h"
 #include "core.hpp"
 
+#if __linux
+#include <dpp/http/http_client.h>
+#endif
+
 #if defined(WIN32)
 void WebHook::closeConnection(HINTERNET hSession /* = nullptr*/, HINTERNET hConnect /* = nullptr*/, HINTERNET hRequest /* = nullptr*/) {
 	InternetCloseHandle(hSession);
@@ -77,13 +81,13 @@ void WebHook::sendMessage(std::string title, std::string message, int color) {
 
 	closeConnection(hSession, hConnect, hRequest);
 #elif
-	auto request = std::make_shared<dpp::http_request>();
-	request->set_url(webhookUrl);
-	request->set_method("POST");
-	request->set_post_data(payload);
-	request->add_header("Content-Type", "application/json");
+	auto client = std::make_shared<dpp::http_client>();
+	client->set_url(webhookUrl);
+	client->set_method("POST");
+	client->set_post_data(payload);
+	client->add_header("Content-Type", "application/json");
 
-	dpp::get_websocket_client()->execute(request, [request](const dpp::http_response &response) {
+	client->execute([client](const dpp::http_response &response) {
 		if (response.status / 100 != 2) {
 			SPDLOG_ERROR("[WebHook] Received unsuccessful HTTP status code {}", response.status);
 		}

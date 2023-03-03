@@ -78,12 +78,12 @@ void WebHook::sendMessage(std::string title, std::string message, int color) {
 	closeConnection(hSession, hConnect, hRequest);
 #else
 	dpp::cluster bot("");
- 
+
 	bot.on_log(dpp::utility::cout_logger());
- 
-	// Construct a webhook object using the URL you got from Discord 
+
+	// Construct a webhook object using the URL you got from Discord
 	dpp::webhook wh("https://discord.com/" + webhookUrl);
- 
+
 	// Send a message with this webhook
 	bot.execute_webhook_sync(wh, dpp::message(payload));
 #endif

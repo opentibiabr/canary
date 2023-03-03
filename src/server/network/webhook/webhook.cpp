@@ -13,10 +13,6 @@
 #include "config/configmanager.h"
 #include "core.hpp"
 
-#if __linux
-	#include <dpp/http/http_client.h>
-#endif
-
 #if defined(WIN32)
 void WebHook::closeConnection(HINTERNET hSession /* = nullptr*/, HINTERNET hConnect /* = nullptr*/, HINTERNET hRequest /* = nullptr*/) {
 	InternetCloseHandle(hSession);
@@ -80,18 +76,16 @@ void WebHook::sendMessage(std::string title, std::string message, int color) {
 	}
 
 	closeConnection(hSession, hConnect, hRequest);
-#elif
-	auto client = std::make_shared<dpp::http_client>();
-	client->set_url(webhookUrl);
-	client->set_method("POST");
-	client->set_post_data(payload);
-	client->add_header("Content-Type", "application/json");
-
-	client->execute([client](const dpp::http_response &response) {
-		if (response.status / 100 != 2) {
-			SPDLOG_ERROR("[WebHook] Received unsuccessful HTTP status code {}", response.status);
-		}
-	});
+#else
+	dpp::cluster bot("");
+ 
+	bot.on_log(dpp::utility::cout_logger());
+ 
+	// Construct a webhook object using the URL you got from Discord 
+	dpp::webhook wh("https://discord.com/" + webhookUrl);
+ 
+	// Send a message with this webhook
+	bot.execute_webhook_sync(wh, dpp::message(payload));
 #endif
 }
 

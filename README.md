@@ -28,7 +28,7 @@ It is a fork of the [OTServBR-Global](https://github.com/opentibiabr/otservbr-gl
 
 This project was created with the intention of being a base as clean as possible, to work as an MMORPG engine and not necessarily linked to Tibia Global, although it will also work. The OpenTibiaBR - Global was adapted to work with the source of the Canary, so that it will be the first repository to use this engine.
 
-To connect to the server and to take a stable experience, you can use [mehah's otclient](https://github.com/mehah/otclient) or [tibia client](https://github.com/dudantas/tibia-client/releases/latest) and if you want to edit something, check our [customized tools](https://majestyotbr.gitbook.io/opentibiabr/others/downloads#tools).
+To connect to the server and to take a stable experience, you can use [mehah's otclient](https://github.com/mehah/otclient) or [tibia client](https://github.com/dudantas/tibia-client/releases/latest) and if you want to edit something, check our [customized tools](https://docs.opentibiabr.com/others/downloads/tools).
 
 If you want edit the map, use the [own remere's map editor](https://github.com/opentibiabr/remeres-map-editor/).
 
@@ -36,7 +36,7 @@ You are subject to our code of conduct, read at [this link](https://github.com/o
 
 ### Getting **Started**
 
-* [Gitbook](https://majestyotbr.gitbook.io/opentibiabr/projects/canary).
+* [Gitbook](https://docs.opentibiabr.com/projects/canary).
 * [Wiki](https://github.com/opentibiabr/canary/wiki).
 
 ### Issues
@@ -69,7 +69,7 @@ Before [creating a pull request](https://github.com/opentibiabr/canary/pulls) pl
 
 ### **Sponsors**
 
-See our [donate page](https://docs.opentibiabr.org/donate)
+See our [donate page](https://docs.opentibiabr.com/home/donate)
 
 ### Partners
 

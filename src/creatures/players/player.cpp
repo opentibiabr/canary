@@ -6803,14 +6803,13 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 	setForgeHistory(history);
 }
 
-void Player::closeAllExternalContainers()
-{
-    if (openContainers.empty()) {
+void Player::closeAllExternalContainers() {
+	if (openContainers.empty()) {
 		return;
 	}
 
 	std::vector<Container*> containerToClose;
-	for (const auto& it : openContainers) {
+	for (const auto &it : openContainers) {
 		Container* container = it.second.container;
 		if (!container) {
 			continue;

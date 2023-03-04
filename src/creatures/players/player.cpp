@@ -2646,6 +2646,7 @@ void Player::despawn() {
 	listWalkDir.clear();
 	stopEventWalk();
 	onWalkAborted();
+	closeAllExternalContainers();
 	g_game().playerSetAttackedCreature(this->getID(), 0);
 	g_game().playerFollowCreature(this->getID(), 0);
 
@@ -6800,6 +6801,29 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 	history.description = detailsResponse.str();
 
 	setForgeHistory(history);
+}
+
+void Player::closeAllExternalContainers()
+{
+    if (openContainers.empty()) {
+		return;
+	}
+
+	std::vector<Container*> containerToClose;
+	for (const auto& it : openContainers) {
+		Container* container = it.second.container;
+		if (!container) {
+			continue;
+		}
+
+		if (container->getHoldingPlayer() != this) {
+			containerToClose.push_back(container);
+		}
+	}
+
+	for (Container* container : containerToClose) {
+		autoCloseContainers(container);
+	}
 }
 
 /*******************************************************************************

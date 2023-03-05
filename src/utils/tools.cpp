@@ -1531,3 +1531,17 @@ std::string getOs() {
 	return "unknown";
 #endif
 }
+
+std::string getCurrentUTCTimeString() {
+	auto now = std::chrono::system_clock::now();
+	auto time_t_now = std::chrono::system_clock::to_time_t(now);
+	std::tm tm;
+#ifdef _MSC_VER
+	gmtime_s(&tm, &time_t_now);
+#else
+	gmtime_r(&time_t_now, &tm);
+#endif
+	std::stringstream ss;
+	ss << std::put_time(&tm, "%R") << " UTC";
+	return ss.str();
+}

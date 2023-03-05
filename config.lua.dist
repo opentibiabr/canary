@@ -340,11 +340,12 @@ startupDatabaseOptimization = true
 -- Status server information
 ownerName = "OpenTibiaBR"
 ownerEmail = "opentibiabr@outlook.com"
-url = "http://docs.opentibiabr.com/"
+url = "https://docs.opentibiabr.com/"
 location = "South America"
 
 -- Sends Discord webhook notifications on startup, raids and shutdown.
 -- The URL layout is "api/webhooks/:id/:token"
 -- Leave empty if you wish to disable.
+-- The discordWebhookLogoURL is the icon (in png) for the image that will be attached to the webhook message (not work for windows)
 discordWebhookURL = ""
-
+discordWebhookLogoURL = "https://raw.githubusercontent.com/opentibiabr/canary/main/docs/canary-logo-transparent.png"

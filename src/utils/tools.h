@@ -133,5 +133,6 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 }
 
 std::string getOs();
+std::string getCurrentUTCTimeString();
 
 #endif // SRC_UTILS_TOOLS_H_

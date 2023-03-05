@@ -13,7 +13,7 @@
 #include "config/configmanager.h"
 #include "core.hpp"
 
-#if defined(WIN32)
+#ifdef _MSC_VER
 void WebHook::closeConnection(HINTERNET hSession /* = nullptr*/, HINTERNET hConnect /* = nullptr*/, HINTERNET hRequest /* = nullptr*/) {
 	InternetCloseHandle(hSession);
 	InternetCloseHandle(hConnect);
@@ -21,6 +21,21 @@ void WebHook::closeConnection(HINTERNET hSession /* = nullptr*/, HINTERNET hConn
 }
 #endif
 
+std::string getCurrentUTCTimeString() {
+	auto now = std::chrono::system_clock::now();
+	auto time_t_now = std::chrono::system_clock::to_time_t(now);
+	std::tm tm;
+#ifdef _MSC_VER
+	gmtime_s(&tm, &time_t_now);
+#else
+	gmtime_r(&time_t_now, &tm);
+#endif
+	std::stringstream ss;
+	ss << std::put_time(&tm, "%R") << " UTC";
+	return ss.str();
+}
+
+// Função que envia uma mensagem para um webhook
 void WebHook::sendMessage(std::string title, std::string message, int color) {
 	std::string webhookUrl = g_configManager().getString(DISCORD_WEBHOOK_URL);
 	std::string payload = getPayload(title, message, color);
@@ -29,7 +44,7 @@ void WebHook::sendMessage(std::string title, std::string message, int color) {
 		return;
 	}
 
-#if defined(WIN32)
+#ifdef _MSC_VER
 	HINTERNET hSession = InternetOpenA((LPCSTR)STATUS_SERVER_NAME, INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
 	if (!hSession) {
 		SPDLOG_ERROR("Failed to create WinHTTP session");
@@ -84,8 +99,19 @@ void WebHook::sendMessage(std::string title, std::string message, int color) {
 	// Construct a webhook object using the URL you got from Discord
 	dpp::webhook wh("https://discord.com/" + webhookUrl);
 
-	// Send a message with this webhook
-	bot.execute_webhook_sync(wh, dpp::message(payload));
+	dpp::embed dppEmbed;
+	dppEmbed.set_title(title);
+	dppEmbed.set_description(message);
+	if (color >= 0) {
+		dppEmbed.set_color(color);
+	}
+	std::string iconUrl = g_configManager().getString(DISCORD_WEBHOOK_LOGO_URL);
+	dppEmbed.set_footer(dpp::embed_footer().set_text(getCurrentUTCTimeString()).set_icon(iconUrl)).set_timestamp(time(0));
+
+	dpp::message msg;
+	msg.add_embed(dppEmbed);
+
+	bot.execute_webhook_sync(wh, msg);
 #endif
 }
 

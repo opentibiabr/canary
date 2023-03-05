@@ -313,6 +313,19 @@ bool ConfigManager::load() {
 	boolean[TOGGLE_SERVER_IS_RETRO] = getGlobalBoolean(L, "toggleServerIsRetroPVP", false);
 	boolean[TOGGLE_TRAVELS_FREE] = getGlobalBoolean(L, "toggleTravelsFree", false);
 
+	integer[HAZARDSYSTEM_CRITICAL_INTERVAL] = getGlobalNumber(L, "hazardSystem_criticalInterval", 2000);
+	integer[HAZARDSYSTEM_CRITICAL_MULTIPLIER] = getGlobalNumber(L, "hazardSystem_criticalMultiplier", 25);
+	integer[HAZARDSYSTEM_DAMAGE_MULTIPLIER] = getGlobalNumber(L, "hazardSystem_damageMultiplier", 200);
+	integer[HAZARDSYSTEM_DODGE_MULTIPLIER] = getGlobalNumber(L, "hazardSystem_dodgeMultiplier", 85);
+	integer[HAZARDSYSTEM_PODS_DROP_MULTIPLIER] = getGlobalNumber(L, "hazardSystem_podsDropMultiplier", 87);
+	integer[HAZARDSYSTEM_PODS_TIME_TO_DAMAGE] = getGlobalNumber(L, "hazardSystem_podsTimeToDamage", 2000);
+	integer[HAZARDSYSTEM_PODS_TIME_TO_SPAWN] = getGlobalNumber(L, "hazardSystem_podsTimeToSpawn", 4000);
+	integer[HAZARDSYSTEM_EXP_BONUS_MULTIPLIER] = getGlobalNumber(L, "hazardSystem_expBonusMultiplier", 2);
+	integer[HAZARDSYSTEM_LOOT_BONUS_MULTIPLIER] = getGlobalNumber(L, "hazardSystem_lootBonusMultiplier", 2);
+	integer[HAZARDSYSTEM_PODS_DAMAGE] = getGlobalNumber(L, "hazardSystem_podsDamage", 5);
+	integer[HAZARDSYSTEM_SPAWN_PLUNDER_MULTIPLIER] = getGlobalNumber(L, "hazardSystem_spawnPlunderMultiplier", 25);
+	boolean[HAZARDSYSTEM_ENABLED] = getGlobalBoolean(L, "hazardSystem_enable", true);
+
 	loaded = true;
 	lua_close(L);
 	return true;

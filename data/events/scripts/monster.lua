@@ -33,6 +33,7 @@ function Monster:onDropLoot(corpse)
 	local player = Player(corpse:getCorpseOwner())
 	if not player or player:getStamina() > 840 then
 		local monsterLoot = mType:getLoot()
+		local hazardMsg = false
 		local charmBonus = false
 		if player and mType and mType:raceId() > 0 then
 			local charm = player:getCharmMonsterType(CHARM_GUT)
@@ -47,6 +48,17 @@ function Monster:onDropLoot(corpse)
 				local itemBoosted = corpse:createLootItem(monsterLoot[i], charmBonus)
 				if not itemBoosted then
 					Spdlog.warn(string.format("[1][Monster:onDropLoot] - Could not add loot item to boosted monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
+				end
+			end
+			if (self:isMonsterOnHazardSystem() and player ~= nil) then
+				local chanceTo = math.random(1, 100)
+				if (chanceTo <= (2 * player:getHazardSystemPoints() * configManager.getNumber(configKeys.HAZARDSYSTEM_LOOT_BONUS_MULTIPLIER))) then
+					local podItem = corpse:createLootItem(monsterLoot[i], charmBonus, preyChanceBoost)
+					if not podItem then
+						Spdlog.warn(string.format("[Monster:onDropLoot] - Could not add loot item to hazard monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
+					else
+						hazardMsg = true
+					end
 				end
 			end
 			if not item then
@@ -110,6 +122,9 @@ function Monster:onDropLoot(corpse)
 			end
 			if charmBonus then
 				text = text .. " (active charm bonus)"
+			end
+			if hazardMsg then
+				text = text .. " (Hazard system)"
 			end
 			local party = player:getParty()
 			if party then

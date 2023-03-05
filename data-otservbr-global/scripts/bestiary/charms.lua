@@ -198,7 +198,7 @@ local charms = {
 		name = "Vampiric Embrace",
 		description = "Adds 4% Life Leech to attacks if wearing equipment that provides life leech.",
 		type = CHARM_PASSIVE,
-		percent = 4,
+		percent = 400,
 		chance = 100,
 		points = 1500
 	},
@@ -207,7 +207,7 @@ local charms = {
 		name = "Void's Call",
 		description = "Adds 2% Mana Leech to attacks if wearing equipment that provides mana leech.",
 		type = CHARM_PASSIVE,
-		percent = 2,
+		percent = 200,
 		chance = 100,
 		points = 1500
 	}

@@ -64,6 +64,7 @@ class Condition {
 		bool isPersistent() const;
 
 	protected:
+		uint8_t drainBodyStage;
 		int64_t endTime;
 		uint32_t subId;
 		int64_t ticks;

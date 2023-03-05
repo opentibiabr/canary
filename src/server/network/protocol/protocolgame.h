@@ -123,6 +123,8 @@ class ProtocolGame final : public Protocol {
 
 		void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
+		void parseInventoryImbuements(NetworkMessage &msg);
+		void sendInventoryImbuements(std::map<Slots_t, Item*> items);
 
 		void parseFightModes(NetworkMessage &msg);
 		void parseAttack(NetworkMessage &msg);
@@ -277,6 +279,8 @@ class ProtocolGame final : public Protocol {
 		void sendBosstiaryCooldownTimer();
 		void sendBosstiaryEntryChanged(uint32_t bossid);
 
+		void sendWheelOfDestinyGiftOfLifeCooldown();
+
 		void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 		void sendMagicEffect(const Position &pos, uint8_t type);
 		void sendRestingStatus(uint8_t protection);
@@ -419,11 +423,14 @@ class ProtocolGame final : public Protocol {
 		void sendUpdateImpactTracker(CombatType_t type, uint32_t amount);
 		void sendUpdateInputAnalyzer(CombatType_t type, uint32_t amount, const std::string &target);
 
-		// Hotkey equip/dequip item
-		void parseHotkeyEquip(NetworkMessage &msg);
+		// Hazard system
+		void reloadHazardSystemIcon(uint16_t reference);
 
 		// translate a tile to clientreadable format
 		void GetTileDescription(const Tile* tile, NetworkMessage &msg);
+
+		// Hotkey equip/dequip item
+		void parseHotkeyEquip(NetworkMessage &msg);
 
 		// translate a floor to clientreadable format
 		void GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, int32_t offset, int32_t &skip);

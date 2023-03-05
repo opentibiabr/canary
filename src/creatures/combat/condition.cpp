@@ -23,6 +23,11 @@ bool Condition::setParam(ConditionParam_t param, int64_t value) {
 			return true;
 		}
 
+		case CONDITION_PARAM_DRAIN_BODY: {
+			drainBodyStage = value;
+			return true;
+		}
+
 		case CONDITION_PARAM_BUFF_SPELL: {
 			isBuff = (value != 0);
 			return true;
@@ -386,6 +391,9 @@ void ConditionAttributes::addCondition(Creature* creature, const Condition* addC
 			updatePercentStats(player);
 			updateStats(player);
 		}
+	}
+	if (creature && drainBodyStage > 0) {
+		creature->setWheelOfDestinyDrainBodyDebuff(drainBodyStage);
 	}
 }
 

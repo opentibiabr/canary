@@ -83,6 +83,12 @@ class MonsterType {
 
 				uint64_t experience = 0;
 
+				// Hazard system (0-10000), divide by 100 gives us %
+				uint16_t hazardSystemCritChance = 0;
+				bool canDamageBoost = false;
+				bool canSpawnPod = false;
+				bool canDodge = false;
+
 				uint32_t manaCost = 0;
 				uint32_t yellChance = 0;
 				uint32_t yellSpeedTicks = 0;
@@ -114,6 +120,7 @@ class MonsterType {
 				uint32_t soundSpeedTicks = 0;
 				std::vector<SoundEffect_t> soundVector;
 				SoundEffect_t deathSound = SoundEffect_t::SILENCE;
+				float mitigation = 0;
 
 				int32_t creatureAppearEvent = -1;
 				int32_t creatureDisappearEvent = -1;

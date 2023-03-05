@@ -4711,7 +4711,7 @@
 	</item>
 	<item id="3059" article="a" name="spellbook">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="defense" value="14"/>
 		<attribute key="weight" value="1800"/>
 		<attribute key="imbuementslot" value="1">
@@ -16137,7 +16137,7 @@
 	<item fromid="8070" toid="8071" article="a" name="chalk board"/>
 	<item id="8072" article="a" name="spellbook of enlightenment">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="magicpoints" value="1"/>
 		<attribute key="defense" value="18"/>
 		<attribute key="weight" value="1950"/>
@@ -16153,7 +16153,7 @@
 	</item>
 	<item id="8073" article="a" name="spellbook of warding">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="magicpoints" value="1"/>
 		<attribute key="defense" value="22"/>
 		<attribute key="weight" value="2100"/>
@@ -16169,21 +16169,21 @@
 	</item>
 	<item id="8074" article="a" name="spellbook of mind control">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="defense" value="16"/>
 		<attribute key="weight" value="2450"/>
 	</item>
 	<item id="8075" article="a" name="spellbook of lost souls">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="defense" value="20"/>
 		<attribute key="weight" value="2560"/>
 	</item>
 	<item id="8076" article="a" name="spellscroll of prophecies">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="magicpoints" value="3"/>
 		<attribute key="defense" value="12"/>
 		<attribute key="weight" value="2650"/>
@@ -16266,7 +16266,7 @@
 	<item fromid="8085" toid="8089" name="earth"/>
 	<item id="8090" article="a" name="spellbook of dark mysteries">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="magicpoints" value="3"/>
 		<attribute key="defense" value="16"/>
 		<attribute key="weight" value="2850"/>
@@ -24682,7 +24682,7 @@
 	</item>
 	<item id="14769" article="a" name="spellbook of ancient arcana">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentdeath" value="5"/>
 		<attribute key="magicpoints" value="4"/>
@@ -25528,7 +25528,7 @@
 	</item>
 	<item id="16107" article="a" name="spellbook of vigilance">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentpoison" value="3"/>
 		<attribute key="absorbpercentfire" value="-3"/>
@@ -30594,7 +30594,7 @@
 		</attribute>
 	</item>
 	<item id="20088" article="a" name="crude umbral spellbook">
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentice" value="2"/>
 		<attribute key="absorbpercentpoison" value="2"/>
 		<attribute key="absorbpercentfire" value="2"/>
@@ -30604,7 +30604,7 @@
 		<attribute key="weight" value="4000"/>
 	</item>
 	<item id="20089" article="an" name="umbral spellbook">
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentice" value="3"/>
 		<attribute key="absorbpercentpoison" value="3"/>
 		<attribute key="absorbpercentfire" value="3"/>
@@ -30619,7 +30619,7 @@
 		</attribute>
 	</item>
 	<item id="20090" article="an" name="umbral master spellbook">
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentice" value="5"/>
 		<attribute key="absorbpercentpoison" value="5"/>
 		<attribute key="absorbpercentfire" value="5"/>
@@ -32255,7 +32255,7 @@
 	<item fromid="21398" toid="21399" article="a" name="dead goblin"/>
 	<item id="21400" article="a" name="spellbook of the novice">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="defense" value="8"/>
 		<attribute key="weight" value="1400"/>
 	</item>
@@ -37254,7 +37254,7 @@
 		<attribute key="weight" value="120"/>
 	</item>
 	<item id="25699" article="a" name="wooden spellbook">
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentpoison" value="5"/>
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="defense" value="16"/>
@@ -44074,7 +44074,7 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="smallearth"/>
 		<attribute key="magicpoints" value="2"/>
-		<attribute key="lifeleechamount" value="18"/>
+		<attribute key="lifeleechamount" value="1800"/>
 		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="range" value="5"/>
 		<attribute key="weight" value="2500"/>
@@ -48771,7 +48771,7 @@
 	<item id="34082" article="a" name="soulcutter">
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="elementdeath" value="45"/>
-		<attribute key="manaleechamount" value="3"/>
+		<attribute key="manaleechamount" value="300"/>
 		<attribute key="manaleechchance" value="100"/>
 		<attribute key="lifeleechamount" value="5"/>
 		<attribute key="lifeleechchance" value="100"/>
@@ -48807,7 +48807,7 @@
 	<item id="34084" article="a" name="soulbiter">
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="elementdeath" value="45"/>
-		<attribute key="manaleechamount" value="3"/>
+		<attribute key="manaleechamount" value="300"/>
 		<attribute key="manaleechchance" value="100"/>
 		<attribute key="lifeleechamount" value="5"/>
 		<attribute key="lifeleechchance" value="100"/>
@@ -48843,7 +48843,7 @@
 	<item id="34086" article="a" name="soulcrusher">
 		<attribute key="weaponType" value="club"/>
 		<attribute key="elementice" value="46"/>
-		<attribute key="manaleechamount" value="3"/>
+		<attribute key="manaleechamount" value="300"/>
 		<attribute key="manaleechchance" value="100"/>
 		<attribute key="lifeleechamount" value="5"/>
 		<attribute key="lifeleechchance" value="100"/>
@@ -48936,7 +48936,7 @@
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="absorbpercentice" value="12"/>
 		<attribute key="magicpoints" value="5"/>
-		<attribute key="manaleechamount" value="3"/>
+		<attribute key="manaleechamount" value="300"/>
 		<attribute key="manaleechchance" value="100"/>
 		<attribute key="lifeleechamount" value="5"/>
 		<attribute key="lifeleechchance" value="100"/>
@@ -49256,7 +49256,7 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="magicpoints" value="2"/>
-		<attribute key="lifeleechamount" value="18"/>
+		<attribute key="lifeleechamount" value="1800"/>
 		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="2100"/>
@@ -49267,7 +49267,7 @@
 		</attribute>
 	</item>
 	<item id="34153" article="a" name="lion spellbook">
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentphysical" value="3"/>
 		<attribute key="absorbpercentice" value="7"/>
 		<attribute key="magicpoints" value="4"/>
@@ -54346,7 +54346,7 @@
 		<!--attribute key="firemagiclevelpoints" value="1"/-->
 		<!--attribute key="energymagiclevelpoints" value="1"/-->
 		<attribute key="magicpoints" value="2"/>
-		<attribute key="manaleechamount" value="1"/>
+		<attribute key="manaleechamount" value="100"/>
 		<attribute key="manaleechchance" value="100"/>
 		<attribute key="transformDeEquipTo" value="39183"/>>
 		<attribute key="showduration" value="1" />
@@ -54379,7 +54379,7 @@
 		<attribute key="absorbpercentice" value="4"/>
 		<!--attribute key="healingmagiclevelpoints" value="2"/-->
 		<attribute key="magicpoints" value="2"/>
-		<attribute key="manaleechamount" value="1"/>
+		<attribute key="manaleechamount" value="100"/>
 		<attribute key="manaleechchance" value="100"/>
 		<attribute key="transformDeEquipTo" value="39186"/>
 		<attribute key="showattributes" value="1" />

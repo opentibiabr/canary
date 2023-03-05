@@ -289,6 +289,32 @@ class Spell : public BaseSpell {
 			pzLocked = b;
 		}
 
+		// Wheel of destiny - Get:
+		bool getWheelOfDestinyUpgraded() const {
+			return whellOfDestinyUpgraded;
+		}
+		int32_t getWheelOfDestinyBoost(WheelOfDestinySpellBoost_t boost, WheelOfDestinySpellGrade_t grade) const {
+			int32_t value = 0;
+			if (grade >= WHEEL_OF_DESTINY_SPELL_GRADE_REGULAR) {
+				value += wheelOfDestinyRegularBoost[boost];
+			}
+			if (grade >= WHEEL_OF_DESTINY_SPELL_GRADE_UPGRADED) {
+				value += wheelOfDestinyUpgradedBoost[boost];
+			}
+			return value;
+		}
+		// Wheel of destiny - Set:
+		void setWheelOfDestinyUpgraded(bool value) {
+			whellOfDestinyUpgraded = value;
+		}
+		void setWheelOfDestinyBoost(WheelOfDestinySpellBoost_t boost, WheelOfDestinySpellGrade_t grade, int32_t value) {
+			if (grade == WHEEL_OF_DESTINY_SPELL_GRADE_REGULAR) {
+				wheelOfDestinyRegularBoost[boost] = value;
+			} else if (grade == WHEEL_OF_DESTINY_SPELL_GRADE_UPGRADED) {
+				wheelOfDestinyUpgradedBoost[boost] = value;
+			}
+		}
+
 		SpellType_t spellType = SPELL_UNDEFINED;
 
 	protected:
@@ -315,6 +341,10 @@ class Spell : public BaseSpell {
 		bool needTarget = false;
 		bool allowOnSelf = true;
 		bool pzLocked = false;
+
+		bool whellOfDestinyUpgraded = false;
+		int32_t wheelOfDestinyRegularBoost[WHEEL_OF_DESTINY_SPELL_BOOST_COUNT] = { 0 };
+		int32_t wheelOfDestinyUpgradedBoost[WHEEL_OF_DESTINY_SPELL_BOOST_COUNT] = { 0 };
 
 	private:
 		uint32_t mana = 0;

@@ -44,6 +44,7 @@ class MonsterFunctions final : LuaScriptInterface {
 			registerMethod(L, "Monster", "searchTarget", MonsterFunctions::luaMonsterSearchTarget);
 			registerMethod(L, "Monster", "setSpawnPosition", MonsterFunctions::luaMonsterSetSpawnPosition);
 			registerMethod(L, "Monster", "getRespawnType", MonsterFunctions::luaMonsterGetRespawnType);
+			registerMethod(L, "Monster", "isMonsterOnHazardSystem", MonsterFunctions::luaPlayerIsMonsterOnHazardSystem);
 
 			registerMethod(L, "Monster", "getTimeToChangeFiendish", MonsterFunctions::luaMonsterGetTimeToChangeFiendish);
 			registerMethod(L, "Monster", "setTimeToChangeFiendish", MonsterFunctions::luaMonsterSetTimeToChangeFiendish);
@@ -95,6 +96,7 @@ class MonsterFunctions final : LuaScriptInterface {
 
 		static int luaMonsterSetSpawnPosition(lua_State* L);
 		static int luaMonsterGetRespawnType(lua_State* L);
+		static int luaPlayerIsMonsterOnHazardSystem(lua_State* L);
 
 		static int luaMonsterGetTimeToChangeFiendish(lua_State* L);
 		static int luaMonsterSetTimeToChangeFiendish(lua_State* L);

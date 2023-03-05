@@ -2038,7 +2038,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 		newmsg.add<uint16_t>(mtype->getBaseSpeed());
 		newmsg.add<uint16_t>(mtype->info.armor);
 		// Version 13.10 (mitigation)
-		newmsg.addDouble(0);
+		newmsg.addDouble(mtype->info.mitigation);
 	}
 
 	if (currentLevel > 2) {
@@ -2804,13 +2804,21 @@ void ProtocolGame::sendCreatureIcon(const Creature* creature) {
 	// Type 14 for this
 	msg.addByte(14);
 	// 0 = no icon, 1 = we'll send an icon
-	msg.addByte(icon != CREATUREICON_NONE);
+	// msg.addByte(icon != CREATUREICON_NONE);
 	if (icon != CREATUREICON_NONE) {
+		msg.addByte(0x01); // Has icon
 		msg.addByte(icon);
 		// Creature update
 		msg.addByte(1);
 		// Used for the life in the new quest
 		msg.add<uint16_t>(0);
+	} else if (version > 1289 && creature->getPlayer() && creature->getPlayer()->getHazardSystemReference() > 0 && creature->getPlayer()->getHazardSystemPoints() > 0) {
+		msg.addByte(0x01); // Has icon
+		msg.addByte(22); // Hazard icon
+		msg.addByte(0);
+		msg.add<uint16_t>(creature->getPlayer()->getHazardSystemPoints());
+	} else {
+		msg.addByte(0x00); // Has icon
 	}
 	writeToOutputBuffer(msg);
 }
@@ -2983,16 +2991,10 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	msg.add<uint16_t>(0);
 	// canBuyXpBoost
 	msg.addByte(0x00);
-
-	auto healthConverted = std::max<int64_t>(0, player->getHealth());
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, healthConverted));
-	healthConverted = std::max<int64_t>(0, player->getMaxHealth());
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, healthConverted));
-	auto manaConverted = std::max<uint32_t>(0, player->getMana());
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, manaConverted));
-	manaConverted = std::max<uint32_t>(0, player->getMaxMana());
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, manaConverted));
-
+	msg.add<uint32_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
 	msg.addByte(player->getSoul());
 	msg.add<uint16_t>(player->getStaminaMinutes());
 
@@ -3130,8 +3132,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 
 	msg.add<uint16_t>(player->getArmor());
 	msg.add<uint16_t>(player->getDefense());
-	// Version 13.10 (mitigation)
-	msg.addDouble(0);
+	msg.addDouble(player->getMitigation()); // Migitation
 
 	uint8_t combats = 0;
 	auto startCombats = msg.getBufferPosition();
@@ -4142,6 +4143,27 @@ void ProtocolGame::sendForgingData() {
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendWheelOfDestinyGiftOfLifeCooldown() {
+	if (!player || version < 1310) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x5E);
+	msg.addByte(0x01); // Gift of life ID
+	msg.addByte(0x00); // Cooldown ENUM
+	msg.add<uint32_t>(player->getWheelOfDestinyGiftOfCooldown());
+	msg.add<uint32_t>(player->getWheelOfDestinyGiftOfLifeTotalCooldown());
+	// Checking if the cooldown if decreasing or it's stopped
+	if (player->getZone() != ZONE_PROTECTION && player->hasCondition(CONDITION_INFIGHT)) {
+		msg.addByte(0x01);
+	} else {
+		msg.addByte(0x00);
+	}
+
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::sendOpenForge() {
 	// We will use it when sending the bytes to send the item information to the client
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
@@ -4529,7 +4551,11 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			if (i != SKILL_CRITICAL_HIT_CHANCE) {
 				ss << std::showpos;
 			}
-			ss << it.abilities->skills[i] << '%';
+			if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
+				ss << (it.abilities->skills[i] / 100.) << '%';
+			} else {
+				ss << it.abilities->skills[i] << '%';
+			}
 
 			if (i != SKILL_CRITICAL_HIT_CHANCE) {
 				ss << std::noshowpos;
@@ -5285,6 +5311,7 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 
 	sendLootContainers();
 	sendBasicData();
+	sendWheelOfDestinyGiftOfLifeCooldown();
 
 	player->sendClientCheck();
 	player->sendGameNews();
@@ -6011,6 +6038,13 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 					msg.addByte(1);
 					msg.add<uint16_t>(0);
 				}
+			} else if (version > 1289 && otherPlayer != nullptr && otherPlayer->getHazardSystemReference() > 0 && otherPlayer->getHazardSystemPoints() > 0) {
+				msg.addByte(0x01); // Has icon
+				msg.addByte(22); // Hazard icon
+				msg.addByte(0);
+				msg.add<uint16_t>(otherPlayer->getHazardSystemPoints());
+			} else {
+				msg.addByte(0x00); // Has icon
 			}
 		} else {
 			icon = creature->getIcon();
@@ -6074,10 +6108,8 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.addByte(0xA0);
 
-	auto healthConverted = std::max<int64_t>(0, player->getHealth());
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, healthConverted));
-	healthConverted = std::max<int64_t>(0, player->getMaxHealth());
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, healthConverted));
+	msg.add<uint32_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
 
 	msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 
@@ -6091,10 +6123,8 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.add<uint16_t>(player->getStoreXpBoost()); // xp boost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
 
-	auto manaConverted = std::max<uint32_t>(0, player->getMana());
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, manaConverted));
-	manaConverted = std::max<uint32_t>(0, player->getMaxMana());
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, manaConverted));
+	msg.add<uint32_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
 
 	msg.addByte(player->getSoul());
 
@@ -6119,13 +6149,13 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 
 	msg.add<uint16_t>(player->getMagicLevel());
 	msg.add<uint16_t>(player->getBaseMagicLevel());
-	msg.add<uint16_t>(player->getBaseMagicLevel()); // Loyalty Bonus
+	msg.add<uint16_t>(player->getBaseMagicLevel());
 	msg.add<uint16_t>(player->getMagicLevelPercent() * 100);
 
 	for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i) {
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(i));
-		msg.add<uint16_t>(player->getBaseSkill(i)); // Loyalty Bonus
+		msg.add<uint16_t>(player->getBaseSkill(i));
 		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
 	}
 
@@ -6797,6 +6827,88 @@ void ProtocolGame::parseOpenParentContainer(NetworkMessage &msg) {
 	Position pos = msg.getPosition();
 
 	addGameTask(&Game::playerRequestOpenContainerFromDepotSearch, player->getID(), pos);
+}
+
+void ProtocolGame::reloadHazardSystemIcon(uint16_t reference) {
+	if (version < 1200) {
+		return;
+	}
+	NetworkMessage msg;
+	msg.addByte(0x8B);
+	msg.add<uint32_t>(player->getID());
+	msg.addByte(14);
+	msg.addByte(reference != 0 ? 0x01 : 0x00);
+	if (reference != 0) {
+		msg.addByte(22); // Icon ID
+		msg.addByte(0);
+		msg.add<uint16_t>(player->getHazardSystemPoints());
+	}
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg) {
+	/*uint8_t type = */ msg.getByte(); // Ony to know if its login or window open call
+
+	addGameTask(&Game::playerRequestInventoryImbuements, player->getID());
+}
+
+void ProtocolGame::sendInventoryImbuements(std::map<Slots_t, Item*> items) {
+	if (!player || version < 1310 || player->isRemoved() || items.size() == 0) {
+		return;
+	}
+
+	Tile* tile = player->getTile();
+	if (!tile) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x5D);
+
+	msg.addByte(static_cast<uint8_t>(items.size()));
+	for (const auto &[slot, item] : items) {
+		msg.addByte(static_cast<uint8_t>(slot));
+		AddItem(msg, item);
+		uint8_t imbueSlots = static_cast<uint8_t>(item->getImbuementSlot());
+		msg.addByte(imbueSlots);
+		for (uint8_t imbueSlot = 0; imbueSlot < imbueSlots; imbueSlot++) {
+			ImbuementInfo imbuementInfo;
+			if (!item->getImbuementInfo(imbueSlot, &imbuementInfo)) {
+				msg.addByte(0x00); // Does not have any imbue selected on this slot
+				continue;
+			}
+			Imbuement* imbue = imbuementInfo.imbuement;
+			if (!imbue) {
+				msg.addByte(0x00); // Something went wrong, lets send it empty too
+				continue;
+			}
+
+			msg.addByte(0x01); // Does have a imbue selected on this slot
+			msg.addString(imbue->getName());
+			msg.add<uint16_t>(imbue->getIconID());
+			msg.add<uint32_t>(imbuementInfo.duration);
+
+			const CategoryImbuement* category = g_imbuements().getCategoryByID(imbue->getCategory());
+			if (!category) {
+				msg.addByte(0x00); // Time is paused
+				continue;
+			}
+
+			if (category->agressive && tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+				msg.addByte(0x00);
+				continue;
+			}
+
+			if (category->agressive && !player->hasCondition(CONDITION_INFIGHT)) {
+				msg.addByte(0x00); // Time is paused
+				continue;
+			}
+
+			msg.addByte(0x01); // Time is paused
+		}
+	}
+
+	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendUpdateCreature(const Creature* creature) {

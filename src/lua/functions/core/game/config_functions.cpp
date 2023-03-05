@@ -193,6 +193,19 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);
 	registerEnumIn(L, "configKeys", TOGGLE_SERVER_IS_RETRO);
 	registerEnumIn(L, "configKeys", TOGGLE_TRAVELS_FREE);
+
+	registerEnumIn(L, "configKeys", HAZARDSYSTEM_SPAWN_PLUNDER_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARDSYSTEM_CRITICAL_INTERVAL);
+	registerEnumIn(L, "configKeys", HAZARDSYSTEM_CRITICAL_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARDSYSTEM_DAMAGE_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARDSYSTEM_DODGE_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARDSYSTEM_PODS_DROP_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARDSYSTEM_PODS_TIME_TO_DAMAGE);
+	registerEnumIn(L, "configKeys", HAZARDSYSTEM_PODS_TIME_TO_SPAWN);
+	registerEnumIn(L, "configKeys", HAZARDSYSTEM_EXP_BONUS_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARDSYSTEM_LOOT_BONUS_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARDSYSTEM_PODS_DAMAGE);
+	registerEnumIn(L, "configKeys", HAZARDSYSTEM_ENABLED);
 #undef registerEnumIn
 }
 

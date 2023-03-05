@@ -9,11 +9,26 @@ function onGetFormulaValues(player, level, maglevel)
 	return -min, -max
 end
 
+onGetFormulaValuesWOD = loadstring(string.dump(onGetFormulaValues))
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
+
+local combatWOD = Combat()
+combatWOD:setParameter(COMBAT_PARAM_TYPE, COMBAT_ENERGYDAMAGE)
+combatWOD:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ENERGYHIT)
+combatWOD:setArea(createCombatArea(AREA_BEAM7, AREADIAGONAL_BEAM7))
+
+combatWOD:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValuesWOD")
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
+	if (creature and creature:getPlayer()) then
+		if (creature:instantSkillWOD("Beam Mastery")) then
+			var.runeName = "Beam Mastery"
+			return combatWOD:execute(creature, var)
+		end
+	end
+	print("ENERGY BEAM", "combat")
 	return combat:execute(creature, var)
 end
 

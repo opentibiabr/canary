@@ -225,6 +225,13 @@ function playerLogin.onLogin(player)
 		player:setStorageValue(Storage.combatProtectionStorage, 1)
 		onMovementRemoveProtection(playerId, player:getPosition(), 10)
 	end
+	
+	-- Wheel of destiny
+	if (WheelOfDestinySystem ~= nil) then
+		WheelOfDestinySystem.initializePlayerData(player) -- check folder libs have correclty
+	else
+		print("[login.onLogin::WheelOfDestinySystem]", "Lib not installed, ignoring player initialization")
+	end
 
 	-- Set Client XP Gain Rate --
 	if configManager.getBoolean(configKeys.XP_DISPLAY_MODE) then

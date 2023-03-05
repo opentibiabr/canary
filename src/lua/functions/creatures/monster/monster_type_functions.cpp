@@ -1091,6 +1091,22 @@ int MonsterTypeFunctions::luaMonsterTypeArmor(lua_State* L) {
 	return 1;
 }
 
+int MonsterTypeFunctions::luaMonsterTypeMitigation(lua_State* L) {
+	// get: monsterType:mitigation() set: monsterType:mitigation(mitigation)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_pushnumber(L, monsterType->info.mitigation);
+		} else {
+			monsterType->info.mitigation = getNumber<int32_t>(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int MonsterTypeFunctions::luaMonsterTypeDefense(lua_State* L) {
 	// get: monsterType:defense() set: monsterType:defense(defense)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
@@ -1542,6 +1558,69 @@ int MonsterTypeFunctions::luaMonsterTypeBossStorageCooldown(lua_State* L) {
 		monsterType->info.bossStorageCooldown = bossStorageCooldown;
 		pushBoolean(L, true);
 	}
+	return 1;
+}
 
+int MonsterTypeFunctions::luaMonsterTypeHazardSystemCrit(lua_State* L) {
+	// get: monsterType:hazardSystemCrit() set: monsterType:hazardSystemCrit(chance)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_pushnumber(L, monsterType->info.hazardSystemCritChance);
+		} else {
+			monsterType->info.hazardSystemCritChance = std::min<uint16_t>(10000, static_cast<uint16_t>(getNumber<double>(L, 2) * 100));
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeHazardSystemDodge(lua_State* L) {
+	// get: monsterType:hazardSystemDodge() set: monsterType:hazardSystemDodge(bool)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monsterType->info.canDodge);
+		} else {
+			monsterType->info.canDodge = getBoolean(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeHazardSystemSpawnPod(lua_State* L) {
+	// get: monsterType:hazardSystemSpawnPod() set: monsterType:hazardSystemSpawnPod(bool)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monsterType->info.canSpawnPod);
+		} else {
+			monsterType->info.canSpawnPod = getBoolean(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeHazardSystemDamageBoost(lua_State* L) {
+	// get: monsterType:hazardSystemDamageBoost() set: monsterType:hazardSystemDamageBoost(bool)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monsterType->info.canDamageBoost);
+		} else {
+			monsterType->info.canDamageBoost = getBoolean(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
 	return 1;
 }

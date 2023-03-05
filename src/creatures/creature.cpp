@@ -865,6 +865,16 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 		attacker->onAttackedCreatureBlockHit(blockType);
 	}
 
+	// Mitigation system
+	if (combatType != COMBAT_MANADRAIN && combatType != COMBAT_LIFEDRAIN) { // Add agony check if the server does have agony combat type
+		damage -= (damage * getMitigation()) / 100.;
+
+		if (damage <= 0) {
+			damage = 0;
+			blockType = BLOCK_ARMOR;
+		}
+	}
+
 	onAttacked();
 	return blockType;
 }
@@ -1297,6 +1307,16 @@ Condition* Creature::getCondition(ConditionType_t type, ConditionId_t conditionI
 		}
 	}
 	return nullptr;
+}
+
+std::vector<Condition*> Creature::getConditions(ConditionType_t type) {
+	std::vector<Condition*> conditionsVec;
+	for (Condition* condition : conditions) {
+		if (condition->getType() == type) {
+			conditionsVec.push_back(condition);
+		}
+	}
+	return conditionsVec;
 }
 
 void Creature::executeConditions(uint32_t interval) {

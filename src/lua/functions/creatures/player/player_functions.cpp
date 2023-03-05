@@ -845,6 +845,28 @@ int PlayerFunctions::luaPlayerGetLevel(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat(lua_State* L) {
+	// player:getMagicShieldCapacityFlat()
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		lua_pushnumber(L, player->getMagicShieldCapacityFlat());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent(lua_State* L) {
+	// player:getMagicShieldCapacityPercent()
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		lua_pushnumber(L, player->getMagicShieldCapacityPercent());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetMagicLevel(lua_State* L) {
 	// player:getMagicLevel()
 	Player* player = getUserdata<Player>(L, 1);
@@ -3027,6 +3049,357 @@ int PlayerFunctions::luaPlayerOpenMarket(lua_State* L) {
 
 	player->sendMarketEnter(player->getLastDepotId());
 	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddHazardSystemPoints(lua_State* L) {
+	// player:addHazardSystemPoints(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		player->addHazardSystemPoints(getNumber<int32_t>(L, 2, 0));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetHazardSystemPoints(lua_State* L) {
+	// player:getHazardSystemPoints()
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		lua_pushnumber(L, player->getHazardSystemPoints());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+// Wheel of destiny
+int PlayerFunctions::luaPlayerStatsHealthWOD(lua_State* L) {
+	// player:statsHealthWOD([value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, player->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_HEALTH));
+	} else {
+		player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_HEALTH, getNumber<int32_t>(L, 2));
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerStatsManaWOD(lua_State* L) {
+	// player:statsManaWOD([value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, player->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MANA));
+	} else {
+		player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MANA, getNumber<int32_t>(L, 2));
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerStatsCapacityWOD(lua_State* L) {
+	// player:statsCapacityWOD([value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, player->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_CAPACITY));
+	} else {
+		player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_CAPACITY, getNumber<int32_t>(L, 2));
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerStatsMitigationWOD(lua_State* L) {
+	// player:statsMitigationWOD([value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, player->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MITIGATION));
+	} else {
+		player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MITIGATION, getNumber<int32_t>(L, 2));
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerResistanceWOD(lua_State* L) {
+	// player:resistanceWOD([type[, value]])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		player->resetWheelOfDestinyResistance();
+		pushBoolean(L, true);
+		return 1;
+	}
+
+	CombatType_t type = indexToCombatType(getNumber<uint16_t>(L, 2));
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, player->getWheelOfDestinyResistance(type));
+	} else {
+		player->setWheelOfDestinyResistance(type, getNumber<int32_t>(L, 3));
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSkillsMeleeWOD(lua_State* L) {
+	// player:skillsMeleeWOD([value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, player->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MELEE));
+	} else {
+		player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MELEE, getNumber<int32_t>(L, 2));
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSkillsDistanceWOD(lua_State* L) {
+	// player:skillsDistanceWOD([value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, player->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_DISTANCE));
+	} else {
+		player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_DISTANCE, getNumber<int32_t>(L, 2));
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSkillsMagicWOD(lua_State* L) {
+	// player:skillsMagicWOD([value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, player->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MAGIC));
+	} else {
+		player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MAGIC, getNumber<int32_t>(L, 2));
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerLeechWOD(lua_State* L) {
+	// player:leechWOD(type[, value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	CombatType_t type = indexToCombatType(getNumber<uint16_t>(L, 2));
+	if (lua_gettop(L) == 2) {
+		if (type == COMBAT_LIFEDRAIN) {
+			lua_pushnumber(L, player->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_LIFE_LEECH));
+		} else if (type == COMBAT_MANADRAIN) {
+			lua_pushnumber(L, player->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MANA_LEECH));
+		} else {
+			lua_pushnumber(L, 0);
+		}
+	} else {
+		if (type == COMBAT_LIFEDRAIN) {
+			int32_t lifeLeech = getNumber<int32_t>(L, 3);
+			if (lifeLeech > 0) {
+				player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_LIFE_LEECH, lifeLeech);
+				player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_LIFE_LEECH_CHANCE, 100);
+			} else {
+				player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_LIFE_LEECH, 0);
+				player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_LIFE_LEECH_CHANCE, 0);
+			}
+		} else if (type == COMBAT_MANADRAIN) {
+			int32_t manaLeech = getNumber<int32_t>(L, 3);
+			if (manaLeech > 0) {
+				player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MANA_LEECH, manaLeech);
+				player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MANA_LEECH_CHANCE, 100);
+			} else {
+				player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MANA_LEECH, 0);
+				player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MANA_LEECH_CHANCE, 0);
+			}
+		}
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerInstantSkillWOD(lua_State* L) {
+	// player:instantSkillWOD(name[, value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	std::string name = getString(L, 2);
+	if (lua_gettop(L) == 2) {
+		pushBoolean(L, player->getWheelOfDestinyInstant(name));
+	} else {
+		player->setWheelOfDestinyInstant(name, getBoolean(L, 3));
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerUpgradeSpellWOD(lua_State* L) {
+	// player:upgradeSpellsWORD([name[, add]])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		player->resetWheelOfDestinyUpgradedSpells();
+		return 1;
+	}
+
+	std::string name = getString(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, player->getWheelOfDestinySpellUpgrade(name));
+		return 1;
+	}
+
+	bool add = getBoolean(L, 3);
+	if (add) {
+		player->upgradeWheelOfDestinySpell(name);
+	} else {
+		player->downgradeWheelOfDestinySpell(name);
+	}
+
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerReloadData(lua_State* L) {
+	// player:reloadData()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->sendSkills();
+	player->sendStats();
+	player->sendBasicData();
+	player->sendWheelOfDestinyGiftOfLifeCooldown();
+	g_game().reloadCreature(player);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerStatsDamageWOD(lua_State* L) {
+	// player:statsDamageWOD([value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, player->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_DAMAGE));
+	} else {
+		player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_DAMAGE, getNumber<int32_t>(L, 2));
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerStatsHealingWOD(lua_State* L) {
+	// player:statsHealingWOD([value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, player->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_HEALING));
+	} else {
+		player->setWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_HEALING, getNumber<int32_t>(L, 2));
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerReduceAllSpellsCooldownTimer(lua_State* L) {
+	// player:reduceAllSpellsCooldownTimer([value = 0])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->reduceAllSpellsCooldownTimer(getNumber<int32_t>(L, 2, 0));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerOnThinkWheelOfDestiny(lua_State* L) {
+	// player:onThinkWheelOfDestiny([force = false])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->onThinkWheelOfDestiny(getBoolean(L, 2, false));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAvatarTimer(lua_State* L) {
+	// player:avatarTimer([value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, player->getWheelOfDestinyOnThinkTimer(WHEEL_OF_DESTINY_ONTHINK_AVATAR));
+	} else {
+		player->setWheelOfDestinyOnThinkTimer(WHEEL_OF_DESTINY_ONTHINK_AVATAR, getNumber<int64_t>(L, 2));
+		pushBoolean(L, true);
+	}
 	return 1;
 }
 

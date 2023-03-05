@@ -33,6 +33,22 @@ registerMonsterType.raceId = function(mtype, mask)
 		mtype:raceId(mask.raceId)
 	end
 end
+registerMonsterType.hazard = function(mtype, mask)
+	if (mask.hazard ~= nil) then
+		if (mask.hazard.criticalChance ~= nil) then
+			mtype:hazardSystemCrit(mask.hazard.criticalChance)
+		end
+		if (mask.hazard.canDodge ~= nil) then
+			mtype:hazardSystemDodge(mask.hazard.canDodge)
+		end
+		if (mask.hazard.canSpawnPod ~= nil) then
+			mtype:hazardSystemSpawnPod(mask.hazard.canSpawnPod)
+		end
+		if (mask.hazard.canDealMoreDamage ~= nil) then
+			mtype:hazardSystemDamageBoost(mask.hazard.canDealMoreDamage)
+		end
+	end
+end
 registerMonsterType.Bestiary = function(mtype, mask)
 	if mask.Bestiary then
 		if mask.Bestiary.race then

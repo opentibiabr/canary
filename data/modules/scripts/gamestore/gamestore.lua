@@ -6,7 +6,7 @@ OFFER_TYPE_ALLBLESSINGS
 ]]
 
 -- Parser
-dofile(CORE_DIRECTORY.. '/modules/scripts/gamestore/init.lua')
+dofile('data/modules/scripts/gamestore/init.lua')
 -- Config
 
 HomeBanners = {
@@ -78,27 +78,27 @@ GameStore.Categories = {
 				icons = { "All_PvE_Blessings.png" },
 				name = "All Regular Blessings",
 				price = 130,
-				id = GameStore.SubActions.BLESSING_ALL_PVE,
+				id = 11,
 				count = 1,
 				description = "<i>Reduces your character's chance to lose any items as well as the amount of your character's experience and skill loss upon death:</i>\n\n&#8226; 1 blessing = 8.00% less Skill / XP loss, 30% equipment protection\n&#8226; 2 blessing = 16.00% less Skill / XP loss, 55% equipment protection\n&#8226; 3 blessing = 24.00% less Skill / XP loss, 75% equipment protection\n&#8226; 4 blessing = 32.00% less Skill / XP loss, 90% equipment protection\n&#8226; 5 blessing = 40.00% less Skill / XP loss, 100% equipment protection\n&#8226; 6 blessing = 48.00% less Skill / XP loss, 100% equipment protection\n&#8226; 7 blessing = 56.00% less Skill / XP loss, 100% equipment protection\n\n{character} \n{limit|5} \n{info} added directly to the Record of Blessings \n{info} characters with a red or black skull will always lose all equipment upon death",
 				type = GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS,
 			},
 			{
 				icons = { "All_PvE_Blessings.png" },
-				name = "All Regular Blessings",
+				name = "All Regular Blessings", 
 				price = 650,
-				id = GameStore.SubActions.BLESSING_ALL_PVP,
+				id = 12,
 				count = 5,
 				description = "<i>Reduces your character's chance to lose any items as well as the amount of your character's experience and skill loss upon death:</i>\n\n&#8226; 1 blessing = 8.00% less Skill / XP loss, 30% equipment protection\n&#8226; 2 blessing = 16.00% less Skill / XP loss, 55% equipment protection\n&#8226; 3 blessing = 24.00% less Skill / XP loss, 75% equipment protection\n&#8226; 4 blessing = 32.00% less Skill / XP loss, 90% equipment protection\n&#8226; 5 blessing = 40.00% less Skill / XP loss, 100% equipment protection\n&#8226; 6 blessing = 48.00% less Skill / XP loss, 100% equipment protection\n&#8226; 7 blessing = 56.00% less Skill / XP loss, 100% equipment protection\n\n{character} \n{limit|5} \n{info} added directly to the Record of Blessings \n{info} characters with a red or black skull will always lose all equipment upon death",
 				type = GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS,
 			},
 			{
 				icons = { "Twist_of_Fate.png" },
-				name = "Twist of Fate",
+				name = "Twist of Fate", 
 				price = 8,
 				blessid = 1,
 				count = 1,
-				id = GameStore.SubActions.BLESSING_TWIST,
+				id = 3,
 				description = "<i>Protects your character's regular blessings or an Amulet of Loss if you are unfortunate enough to die in a PvP fight.</i>\n\n{character}\n{limit|5}\n{info} added directly to the Record of Blessings\n{info} does not work for characters with a red or black skull",
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
@@ -113,31 +113,31 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Wisdom_of_Solitude.png" },
-				name = "The Wisdom of Solitude",
+				name = "The Wisdom of Solitude", 
 				price = 15,
 				blessid = 2,
 				count = 1,
-				id = GameStore.SubActions.BLESSING_SOLITUDE,
+				id = 4,
 				description = "<i>Reduces your character's chance to lose any items as well as the amount of your character's experience and skill loss upon death:</i>\n\n&#8226; 1 blessing = 8.00% less Skill / XP loss, 30% equipment protection\n&#8226; 2 blessing = 16.00% less Skill / XP loss, 55% equipment protection\n&#8226; 3 blessing = 24.00% less Skill / XP loss, 75% equipment protection\n&#8226; 4 blessing = 32.00% less Skill / XP loss, 90% equipment protection\n&#8226; 5 blessing = 40.00% less Skill / XP loss, 100% equipment protection\n&#8226; 6 blessing = 48.00% less Skill / XP loss, 100% equipment protection\n&#8226; 7 blessing = 56.00% less Skill / XP loss, 100% equipment protection\n\n{character} \n{limit|5} \n{info} added directly to the Record of Blessings \n{info} characters with a red or black skull will always lose all equipment upon death",
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
 			{
 				icons = { "Spark_of_the_Phoenix.png" },
-				name = "The Spark of the Phoenix",
+				name = "The Spark of the Phoenix", 
 				price = 20,
 				blessid = 3,
 				count = 1,
-				id = GameStore.SubActions.BLESSING_PHOENIX,
+				id = 5,
 				description = "<i>Reduces your character's chance to lose any items as well as the amount of your character's experience and skill loss upon death:</i>\n\n&#8226; 1 blessing = 8.00% less Skill / XP loss, 30% equipment protection\n&#8226; 2 blessing = 16.00% less Skill / XP loss, 55% equipment protection\n&#8226; 3 blessing = 24.00% less Skill / XP loss, 75% equipment protection\n&#8226; 4 blessing = 32.00% less Skill / XP loss, 90% equipment protection\n&#8226; 5 blessing = 40.00% less Skill / XP loss, 100% equipment protection\n&#8226; 6 blessing = 48.00% less Skill / XP loss, 100% equipment protection\n&#8226; 7 blessing = 56.00% less Skill / XP loss, 100% equipment protection\n\n{character} \n{limit|5} \n{info} added directly to the Record of Blessings \n{info} characters with a red or black skull will always lose all equipment upon death",
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
 			{
 				icons = { "Fire_of_the_Suns.png" },
-				name = "The Fire of the Suns",
+				name = "The Fire of the Suns", 
 				price = 15,
 				blessid = 4,
 				count = 1,
-				id = GameStore.SubActions.BLESSING_SUNS,
+				id = 6,
 				description = "<i>Reduces your character's chance to lose any items as well as the amount of your character's experience and skill loss upon death:</i>\n\n&#8226; 1 blessing = 8.00% less Skill / XP loss, 30% equipment protection\n&#8226; 2 blessing = 16.00% less Skill / XP loss, 55% equipment protection\n&#8226; 3 blessing = 24.00% less Skill / XP loss, 75% equipment protection\n&#8226; 4 blessing = 32.00% less Skill / XP loss, 90% equipment protection\n&#8226; 5 blessing = 40.00% less Skill / XP loss, 100% equipment protection\n&#8226; 6 blessing = 48.00% less Skill / XP loss, 100% equipment protection\n&#8226; 7 blessing = 56.00% less Skill / XP loss, 100% equipment protection\n\n{character} \n{limit|5} \n{info} added directly to the Record of Blessings \n{info} characters with a red or black skull will always lose all equipment upon death",
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
@@ -147,7 +147,7 @@ GameStore.Categories = {
 				price = 15,
 				blessid = 5,
 				count = 1,
-				id = GameStore.SubActions.BLESSING_SPIRITUAL,
+				id = 7,
 				description = "<i>Reduces your character's chance to lose any items as well as the amount of your character's experience and skill loss upon death:</i>\n\n&#8226; 1 blessing = 8.00% less Skill / XP loss, 30% equipment protection\n&#8226; 2 blessing = 16.00% less Skill / XP loss, 55% equipment protection\n&#8226; 3 blessing = 24.00% less Skill / XP loss, 75% equipment protection\n&#8226; 4 blessing = 32.00% less Skill / XP loss, 90% equipment protection\n&#8226; 5 blessing = 40.00% less Skill / XP loss, 100% equipment protection\n&#8226; 6 blessing = 48.00% less Skill / XP loss, 100% equipment protection\n&#8226; 7 blessing = 56.00% less Skill / XP loss, 100% equipment protection\n\n{character} \n{limit|5} \n{info} added directly to the Record of Blessings \n{info} characters with a red or black skull will always lose all equipment upon death",
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
@@ -157,7 +157,7 @@ GameStore.Categories = {
 				price = 15,
 				blessid = 6,
 				count = 1,
-				id = GameStore.SubActions.BLESSING_EMBRACE,
+				id = 8,
 				description = "<i>Reduces your character's chance to lose any items as well as the amount of your character's experience and skill loss upon death:</i>\n\n&#8226; 1 blessing = 8.00% less Skill / XP loss, 30% equipment protection\n&#8226; 2 blessing = 16.00% less Skill / XP loss, 55% equipment protection\n&#8226; 3 blessing = 24.00% less Skill / XP loss, 75% equipment protection\n&#8226; 4 blessing = 32.00% less Skill / XP loss, 90% equipment protection\n&#8226; 5 blessing = 40.00% less Skill / XP loss, 100% equipment protection\n&#8226; 6 blessing = 48.00% less Skill / XP loss, 100% equipment protection\n&#8226; 7 blessing = 56.00% less Skill / XP loss, 100% equipment protection\n\n{character} \n{limit|5} \n{info} added directly to the Record of Blessings \n{info} characters with a red or black skull will always lose all equipment upon death",
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
@@ -167,7 +167,7 @@ GameStore.Categories = {
 				price = 25,
 				blessid = 7,
 				count = 1,
-				id = GameStore.SubActions.BLESSING_HEART,
+				id = 9,
 				description = "<i>Reduces your character's chance to lose any items as well as the amount of your character's experience and skill loss upon death:</i>\n\n&#8226; 1 blessing = 8.00% less Skill / XP loss, 30% equipment protection\n&#8226; 2 blessing = 16.00% less Skill / XP loss, 55% equipment protection\n&#8226; 3 blessing = 24.00% less Skill / XP loss, 75% equipment protection\n&#8226; 4 blessing = 32.00% less Skill / XP loss, 90% equipment protection\n&#8226; 5 blessing = 40.00% less Skill / XP loss, 100% equipment protection\n&#8226; 6 blessing = 48.00% less Skill / XP loss, 100% equipment protection\n&#8226; 7 blessing = 56.00% less Skill / XP loss, 100% equipment protection\n\n{character} \n{limit|5} \n{info} added directly to the Record of Blessings \n{info} characters with a red or black skull will always lose all equipment upon death",
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
@@ -177,7 +177,7 @@ GameStore.Categories = {
 				price = 25,
 				blessid = 8,
 				count = 1,
-				id = GameStore.SubActions.BLESSING_BLOOD,
+				id = 10,
 				description = "<i>Reduces your character's chance to lose any items as well as the amount of your character's experience and skill loss upon death:</i>\n\n&#8226; 1 blessing = 8.00% less Skill / XP loss, 30% equipment protection\n&#8226; 2 blessing = 16.00% less Skill / XP loss, 55% equipment protection\n&#8226; 3 blessing = 24.00% less Skill / XP loss, 75% equipment protection\n&#8226; 4 blessing = 32.00% less Skill / XP loss, 90% equipment protection\n&#8226; 5 blessing = 40.00% less Skill / XP loss, 100% equipment protection\n&#8226; 6 blessing = 48.00% less Skill / XP loss, 100% equipment protection\n&#8226; 7 blessing = 56.00% less Skill / XP loss, 100% equipment protection\n\n{character} \n{limit|5} \n{info} added directly to the Record of Blessings \n{info} characters with a red or black skull will always lose all equipment upon death",
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
@@ -191,7 +191,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_BLESSINGS,
 			},
 		},
-	},
+	}, 
 	-- Casks
 	{
 		icons = { "Category_Casks.png" },
@@ -206,7 +206,7 @@ GameStore.Categories = {
 				price = 5,
 				itemtype = 25879,
 				count = 1000,
-				description = "<i>Place it in your house and fill up potions to restore your hit points!</i>\n\n{house}\n{box}\n{storeinbox}\n{usablebyallicon} can be used to fill up potions by all characters that have access to the house\n{storeinboxicon} potions created from this cask will be sent to your Store inbox and can only be stored there and in depot box\n{backtoinbox}\n{info} usable 1000 times a piece\n{transferableprice}",
+				description = "<i>Place it in your house and fill up potions to restore your hit points!</i>\n\n{house}\n{box}\n{storeinbox}\n{usablebyallicon} can be used to fill up potions by all characters that have access to the house\n{storeinboxicon} potions created from this cask will be sent to your Store inbox and can only be stored there and in depot box\n{backtoinbox}\n{info} usable 1000 times a piece\n{transferableprice}", 
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
 			{
@@ -411,9 +411,9 @@ GameStore.Categories = {
 			{
 				icons = { "Exercise_Wand.png" },
 				name = "Durable Exercise Wand",
-				price = 90,
-				itemtype = 35284,
-				charges = 1800,
+				price = 90, 
+				itemtype = 35284, 
+				charges = 1800, 
 				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your magic level\n{info} usable 1800 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -486,96 +486,96 @@ GameStore.Categories = {
 				name = "Health Keg",
 				price = 26,
 				itemtype = 25903,
-				count = 500,
+				count = 500, 
 				description = "<i>Fill up potions to restore your hit points no matter where you are!</i>\n\n{character}\n{vocationlevelcheck}\n{storeinboxicon} potions created from this keg will be sent to your Store inbox and can only be stored there and in depot box\n{info} usable 500 times a piece\n{info} saves capacity because it's constant weight equals only 250 potions",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
 				icons = { "Strong_Health_Keg.png" },
-				name = "Strong Health Keg",
-				price = 53,
-				itemtype = 25904,
-				count = 500,
+				name = "Strong Health Keg", 
+				price = 53, 
+				itemtype = 25904, 
+				count = 500, 
 				description = "<i>Fill up potions to restore your hit points no matter where you are!</i>\n\n{character}\n{vocationlevelcheck}\n{storeinboxicon} potions created from this keg will be sent to your Store inbox and can only be stored there and in depot box\n{info} usable 500 times a piece\n{info} saves capacity because it's constant weight equals only 250 potions",
-				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE, 
 			},
 			{
 				icons = { "Great_Health_Keg.png" },
-				name = "Great Health Keg",
-				price = 103,
-				itemtype = 25905,
-				count = 500,
+				name = "Great Health Keg", 
+				price = 103, 
+				itemtype = 25905, 
+				count = 500, 
 				description = "<i>Fill up potions to restore your hit points no matter where you are!</i>\n\n{character}\n{vocationlevelcheck}\n{storeinboxicon} potions created from this keg will be sent to your Store inbox and can only be stored there and in depot box\n{info} usable 500 times a piece\n{info} saves capacity because it's constant weight equals only 250 potions",
-				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE, 
 			},
 			{
 				icons = { "Ultimate_Health_Keg.png" },
 				name = "Ultimate Health Keg",
-				price = 175,
-				itemtype = 25906,
-				count = 500,
+				price = 175, 
+				itemtype = 25906, 
+				count = 500, 
 				description = "<i>Fill up potions to restore your hit points no matter where you are!</i>\n\n{character}\n{vocationlevelcheck}\n{storeinboxicon} potions created from this keg will be sent to your Store inbox and can only be stored there and in depot box\n{info} usable 500 times a piece\n{info} saves capacity because it's constant weight equals only 250 potions",
-				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE, 
 			},
 			{
 				icons = { "Supreme_Health_Keg.png" },
-				name = "Supreme Health Keg",
-				price = 288,
-				itemtype = 25907,
+				name = "Supreme Health Keg", 
+				price = 288, 
+				itemtype = 25907, 
 				count = 500,
 				description = "<i>Fill up potions to restore your hit points no matter where you are!</i>\n\n{character}\n{vocationlevelcheck}\n{storeinboxicon} potions created from this keg will be sent to your Store inbox and can only be stored there and in depot box\n{info} usable 500 times a piece\n{info} saves capacity because it's constant weight equals only 250 potions",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
-			},
+			},						 
 			{
 				icons = { "Mana_Keg.png" },
-				name = "Mana Keg",
-				price = 26,
-				itemtype = 25908,
-				count = 500,
+				name = "Mana Keg", 
+				price = 26, 
+				itemtype = 25908, 
+				count = 500, 
 				description = "<i>Fill up potions to refill your mana no matter where you are!</i>\n\n{character}\n{vocationlevelcheck}\n{storeinboxicon} potions created from this keg will be sent to your Store inbox and can only be stored there and in depot box\n{info} usable 500 times a piece\n{info} saves capacity because it's constant weight equals only 250 potions",
-				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE, 
 			},
 			{
 				icons = { "Strong_Mana_Keg.png" },
-				name = "Strong Mana Keg",
-				price = 43,
-				itemtype = 25909,
-				count = 500,
+				name = "Strong Mana Keg", 
+				price = 43, 
+				itemtype = 25909, 
+				count = 500, 
 				description = "<i>Fill up potions to refill your mana no matter where you are!</i>\n\n{character}\n{vocationlevelcheck}\n{storeinboxicon} potions created from this keg will be sent to your Store inbox and can only be stored there and in depot box\n{info} usable 500 times a piece\n{info} saves capacity because it's constant weight equals only 250 potions",
-				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE, 
 			},
 			{
 				icons = { "Great_Mana_Keg.png" },
-				name = "Great Mana Keg",
-				price = 66,
-				itemtype = 25910,
-				count = 500,
+				name = "Great Mana Keg", 
+				price = 66, 
+				itemtype = 25910, 
+				count = 500, 
 				description = "<i>Fill up potions to refill your mana no matter where you are!</i>\n\n{character}\n{vocationlevelcheck}\n{storeinboxicon} potions created from this keg will be sent to your Store inbox and can only be stored there and in depot box\n{info} usable 500 times a piece\n{info} saves capacity because it's constant weight equals only 250 potions",
-				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE, 
 			},
 			{
 				icons = { "Ultimate_Mana_Keg.png" },
-				name = "Ultimate Mana Keg",
-				price = 202,
-				itemtype = 25911,
-				count = 500,
-				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				name = "Ultimate Mana Keg", 
+				price = 202, 
+				itemtype = 25911, 
+				count = 500, 
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE, 
 			},
 			{
 				icons = { "Great_Spirit_Keg.png" },
-				name = "Great Spirit Keg",
-				price = 105,
-				itemtype = 25913,
-				count = 500,
+				name = "Great Spirit Keg", 
+				price = 105, 
+				itemtype = 25913, 
+				count = 500, 
 				description = "<i>Fill up potions to restore your hit points and mana no matter where you are!</i>\n\n{character}\n{vocationlevelcheck}\n{storeinboxicon} potions created from this keg will be sent to your Store inbox and can only be stored there and in depot box\n{info} usable 500 times a piece\n{info} saves capacity because it's constant weight equals only 250 potions",
-				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE, 
 			},
 			{
 				icons = {"Ultimate_Spirit_Keg.png"},
 				name = "Ultimate Spirit Keg",
-				price = 202,
-				itemtype = 25914,
-				count = 500,
+				price = 202, 
+				itemtype = 25914, 
+				count = 500, 
 				description = "<i>Fill up potions to restore your hit points and mana no matter where you are!</i>\n\n{character}\n{vocationlevelcheck}\n{storeinboxicon} potions created from this keg will be sent to your Store inbox and can only be stored there and in depot box\n{info} usable 500 times a piece\n{info} saves capacity because it's constant weight equals only 250 potions",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
@@ -585,14 +585,14 @@ GameStore.Categories = {
 	{
 		icons = { "Category_Potions.png" },
 		name = "Potions",
-		parent = "Consumables",
-		offers = {
+		parent = "Consumables", 
+		offers = { 
 			{
 				icons = { "Health_Potion.png" },
 				name = "Health Potion",
 				price = 6,
 				itemtype = 266,
-				count = 125,
+				count = 125, 
 				description = "<i>Restores your character's hit points.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
@@ -601,7 +601,7 @@ GameStore.Categories = {
 				name = "Health Potion",
 				price = 11,
 				itemtype = 266,
-				count = 300,
+				count = 300, 
 				description = "<i>Restores your character's hit points.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
@@ -619,7 +619,7 @@ GameStore.Categories = {
 				name = "Strong Health Potion",
 				price = 21,
 				itemtype = 236,
-				count = 250,
+				count = 250, 
 				description = "<i>Restores your character's hit points.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
@@ -718,7 +718,7 @@ GameStore.Categories = {
 				name = "Great Mana Potion",
 				price = 11,
 				itemtype = 238,
-				count = 100,
+				count = 100, 
 				description = "<i>Refills your character's mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
@@ -763,7 +763,7 @@ GameStore.Categories = {
 				name = "Great Spirit Potion",
 				price = 41,
 				itemtype = 7642,
-				count = 250,
+				count = 250, 
 				description = "<i>Restores your character's hit points and mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
@@ -784,36 +784,36 @@ GameStore.Categories = {
 				count = 250,
 				description = "<i>Restores your character's hit points and mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
-			},
+			}, 
 		},
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
-	},
+	}, 
 	-- Runes
 	{
 		icons = { "Category_Runes.png" },
 		name = "Runes",
-		parent = "Consumables",
-		offers = {
+		parent = "Consumables", 
+		offers = { 
 			{
 				icons = { "Animate_Dead_Rune.png" },
-				name = "Animate Dead Rune",
+				name = "Animate Dead Rune",			
 				price = 75,
 				itemtype = 3203,
-				count = 250,
+				count = 250, 
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck} only buyable if fitting vocation and level of purchasing character\n{battlesign}\n{capacity}\n\n<i>After a long time of research, the magicians of Edron succeeded in storing some life energy in a rune. When this energy was unleashed onto a body it was found that an undead creature arose that could be mentally controlled by the user of the rune. This rune is useful to create allies in combat.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
 				icons = { "Avalanche_Rune.png" },
-				name = "Avalanche Rune",
+				name = "Avalanche Rune",			
 				price = 12,
 				itemtype = 3161,
-				count = 250,
+				count = 250, 
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>The ice damage which arises from this rune is a useful weapon in every battle but it comes in particularly handy if you fight against a horde of creatures dominated by the element fire.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Chameleon_Rune.png" },
 				name = "Chameleon Rune",
 				price = 42,
@@ -822,7 +822,7 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>The metamorphosis caused by this rune is only superficial, and while casters who are using the rune can take on the exterior form of nearly any inanimate object, they will always retain their original smell and mental abilities. So there is no real practical use for this rune, making this largely a fun rune.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Convince_Creature_Rune.png" },
 				name = "Convince Creature Rune",
 				price = 16,
@@ -831,7 +831,7 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Using this rune together with some mana, you can convince certain creatures. The needed amount of mana is determined by the power of the creature one wishes to convince, so the amount of mana to convince a rat is lower than that which is needed for an orc.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Cure_Poison_Rune_(Item).png" },
 				name = "Cure Poison Rune",
 				price = 13,
@@ -840,7 +840,7 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>In the old days, many adventurers fell prey to poisonous creatures that were roaming the caves and forests. After many years of research druids finally succeeded in altering the cure poison spell so it could be bound to a rune. By using this rune it is possible to stop the effect of any known poison.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Disintegrate_Rune.png" },
 				name = "Disintegrate Rune",
 				price = 5,
@@ -849,7 +849,7 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Nothing is worse than being cornered when fleeing from an enemy you just cannot beat, especially if the obstacles in your way are items you could easily remove if only you had the time! However, there is one reliable remedy: The Disintegrate rune will instantly destroy up to 500 movable items that are in your way, making room for a quick escape.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Energy_Bomb_Rune.png" },
 				name = "Energy Bomb Rune",
 				price = 40,
@@ -858,7 +858,7 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Using the Energy Bomb rune will create a field of deadly energy that deals damage to all who carelessly step into it. Its area of effect is covering a full 9 square metres! Creatures that are caught in the middle of an Energy Bomb are frequently confused by the unexpected effect, and some may even stay in the field of deadly sparks for a while.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Energy_Field_Rune.png" },
 				name = "Energy Field Rune",
 				price = 8,
@@ -867,7 +867,7 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This spell creates a limited barrier made up of crackling energy that will cause electrical damage to all those passing through. Since there are few creatures that are immune to the harmful effects of energy this spell is not to be underestimated.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Energy_Wall_Rune.png" },
 				name = "Energy Wall Rune",
 				price = 17,
@@ -876,7 +876,7 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Casting this spell generates a solid wall made up of magical energy. Walls made this way surpass any other magically created obstacle in width, so it is always a good idea to have an Energy Wall rune or two in one's pocket when travelling through the wilderness.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Explosion_Rune.png" },
 				name = "Explosion Rune",
 				price = 6,
@@ -885,7 +885,7 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune must be aimed at areas rather than at specific creatures, so it is possible for explosions to be unleashed even if no targets are close at all. These explosions cause a considerable physical damage within a substantial blast radius.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Fireball_Rune.png" },
 				name = "Fireball Rune",
 				price = 6,
@@ -894,25 +894,25 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>When this rune is used a massive fiery ball is released which hits the aimed foe with immense power. It is especially effective against opponents of the element earth.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Fire_Bomb_Rune.png" },
 				name = "Fire Bomb Rune",
 				price = 29,
 				itemtype = 3192,
-				count = 250,
+				count = 250, 
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune is a deadly weapon in the hands of the skilled user. On releasing it an area of 9 square metres is covered by searing flames that will scorch all those that are unfortunate enough to be caught in them. Worse, many monsters are confused by the unexpected blaze, and with a bit of luck a caster will even manage to trap his opponents by using the spell.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Fire_Field_Rune.png" },
 				name = "Fire Field Rune",
 				price = 6,
 				itemtype = 3188,
-				count = 250,
+				count = 250, 
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>When this rune is used a field of one square metre is covered by searing fire that will last for some minutes, gradually diminishing as the blaze wears down. As with all field spells, Fire Field is quite useful to block narrow passageways or to create large, connected barriers.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Fire_Wall_Rune.png" },
 				name = "Fire Wall Rune",
 				price = 12,
@@ -921,16 +921,16 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune offers reliable protection against all creatures that are afraid of fire. The exceptionally long duration of the spell as well as the possibility to form massive barriers or even protective circles out of fire walls make this a versatile, practical spell.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Great_Fireball_Rune.png" },
 				name = "Great Fireball Rune",
 				price = 12,
 				itemtype = 3191,
-				count = 250,
+				count = 250, 
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>A shot of this rune affects a huge area - up to 37 square metres! It stands to reason that the Great Fireball is a favourite of most Tibians, as it is well suited both to hit whole crowds of monsters and individual targets that are difficult to hit because they are fast or hard to spot.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Icicle_Rune.png" },
 				name = "Icicle Rune",
 				price = 6,
@@ -939,7 +939,7 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>Particularly creatures determined by the element fire are vulnerable against this ice-cold rune. Being hit by the magic stored in this rune, an ice arrow seems to pierce the heart of the struck victim. The damage done by this rune is quite impressive which makes this a quite popular rune among Tibian mages.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Intense_Healing_Rune.png" },
 				name = "Intense Healing Rune",
 				price = 19,
@@ -948,7 +948,7 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune is commonly used by young adventurers who are not skilled enough to use the rune's stronger version. Also, since the rune's effectiveness is determined by the user's magic skill, it is still popular among experienced spell casters who use it to get effective healing magic at a cheap price.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Magic_Wall_Rune.png" },
 				name = "Magic Wall Rune",
 				price = 23,
@@ -957,7 +957,7 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This spell causes all particles that are contained in the surrounding air to quickly gather and contract until a solid wall is formed that covers one full square metre. The wall that is formed that way is impenetrable to any missiles or to light and no creature or character can walk through it. However, the wall will only last for a couple of seconds.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Poison_Bomb_Rune.png" },
 				name = "Poison Bomb Rune",
 				price = 17,
@@ -966,7 +966,7 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>This rune causes an area of 9 square metres to be contaminated with toxic gas that will poison anybody who is caught within it. Conceivable applications include the blocking of areas or the combat against fast-moving or invisible targets. Keep in mind, however, that there are a number of creatures that are immune to poison.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Poison_Wall_Rune.png" },
 				name = "Poison Wall Rune",
 				price = 10,
@@ -975,7 +975,7 @@ GameStore.Categories = {
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>When this rune is used a wall of concentrated toxic fumes is created which inflicts a moderate poison on all those who are foolish enough to enter it. The effect is usually impressive enough to discourage monsters from doing so, although few of the stronger ones will hesitate if there is nothing but a poison wall between them and their dinner.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
-			{
+			{			
 				icons = { "Soulfire_Rune.png" },
 				name = "Soulfire Rune",
 				price = 9,
@@ -986,7 +986,7 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Stone_Shower_Rune.png" },
-				name = "Stone Shower Rune",
+				name = "Stone Shower Rune",			
 				price = 7,
 				itemtype = 3175,
 				count = 250,
@@ -995,7 +995,7 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Sudden_Death_Rune.png" },
-				name = "Sudden Death Rune",
+				name = "Sudden Death Rune",			
 				price = 28,
 				itemtype = 3155,
 				count = 250,
@@ -1004,7 +1004,7 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Thunderstorm_Rune.png" },
-				name = "Thunderstorm Rune",
+				name = "Thunderstorm Rune",			
 				price = 9,
 				itemtype = 3202,
 				count = 250,
@@ -1013,7 +1013,7 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Ultimate_Healing_Rune.png" },
-				name = "Ultimate Healing Rune",
+				name = "Ultimate Healing Rune",			
 				price = 35,
 				itemtype = 3160,
 				count = 250,
@@ -1022,17 +1022,17 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Wild_Growth_Rune.png" },
-				name = "Wild Growth Rune",
+				name = "Wild Growth Rune",			
 				price = 32,
 				itemtype = 3156,
 				count = 250,
 				description = "{character}\n{storeinbox}\n{vocationlevelcheck}\n{battlesign}\n{capacity}\n\n<i>By unleashing this spell, all seeds that are lying dormant in the surrounding quickly sprout and grow into full-sized plants, thus forming an impenetrable thicket. Unfortunately, plant life created this way is short-lived and will collapse within minutes, so the magically created obstacle will not last long.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
-			},
+			}, 
 		},
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
-	},
+	}, 
 	-- Cosmetics
 	{
 		icons = { "Category_Cosmetics.png" },
@@ -1041,13 +1041,13 @@ GameStore.Categories = {
 		subclasses = {"Mounts", "Outfits"},
 	},
 	-- Mounts
-	{
+	{ 
 		icons = { "Category_Mounts.png" },
 		name = "Mounts",
-		parent = "Cosmetics",
+		parent = "Cosmetics", 
 		rookgaard = true,
-		offers = {
-			{
+		offers = { 
+			{			
 				icons = { "Arctic_Unicorn.png" },
 				name = "Artic Unicorn",
 				price = 870,
@@ -1055,7 +1055,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Arctic Unicorn lives in a deep rivalry with its cousin the Blazing Unicorn. Even though they were born in completely different areas, they somehow share the same bloodline. The eternal battle between fire and ice continues. Who will win? Tangerine vs.crystal blue! The choice is yours!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Armoured_War_Horse.png" },
 				name = "Armoured War Horse",
 				price = 870,
@@ -1063,7 +1063,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Armoured War Horse is a dangerous black beauty! When you see its threatening, blood-red eyes coming towards you, you'll know trouble is on its way. Protected by its heavy armour plates, the warhorse is the perfect partner for dangerous hunting sessions and excessive enemy slaughtering.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Batcat.png" },
 				name = "Batcat",
 				price = 870,
@@ -1071,7 +1071,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Rumour has it that many years ago elder witches had gathered to hold a magical feast high up in the mountains. They had crossbred Batcat to easily conquer rocky canyons and deep valleys. Nobody knows what happened on their way up but only the mount has been seen ever since.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Battle_Badger.png" },
 				name = "Battle Badger",
 				price = 690,
@@ -1079,7 +1079,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Badgers have been a staple of the Tibian fauna for a long time, and finally some daring souls have braved the challenge to tame some exceptional specimens - and succeeded! While the common badger you can encounter during your travels might seem like a rather unassuming creature, the Battle Badger, the Ether Badger, and the Zaoan Badger are fierce and mighty beasts, which are at your beck and call.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Black_Stag.png" },
 				name = "Black Stag",
 				price = 660,
@@ -1087,7 +1087,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Treat your character to a new travelling companion with a gentle nature and an impressive antler: The noble Black Stag will carry you through the deepest snow.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Blackpelt.png" },
 				name = "Blackpelt",
 				price = 690,
@@ -1095,7 +1095,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Blackpelt is out searching for the best bamboo in Tibia. Its heavy armour allows it to visit even the most dangerous places. Treat it nicely with its favourite food from time to time and it will become a loyal partner.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Blazing_Unicorn.png" },
 				name = "Blazing Unicorn",
 				price = 870,
@@ -1103,7 +1103,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Blazing Unicorn lives in a deep rivalry with its cousin the Arctic Unicorn. Even though they were born in completely different areas, they somehow share the same bloodline. The eternal battle between fire and ice continues. Who will win? Crystal blue vs. tangerine! The choice is yours!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Bloodcurl.png" },
 				name = "Bloodcurl",
 				price = 750,
@@ -1111,7 +1111,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>You are fascinated by insectoid creatures and can picture yourself riding one during combat or just for travelling? The Bloodcurl will carry you through the Tibian wilderness with ease.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Boreal_Owl.png" },
 				name = "Boreal Owl",
 				price = 870,
@@ -1119,7 +1119,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Owls have always been a symbol of mystery, magic and wisdom in Tibian myths and fairy tales. Having one of these enigmatic creatures of the night as a trustworthy companion provides you with a silent guide whose ever-watchful eyes will cut through the shadows, help you navigate the darkness and unravel great secrets.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Bunny_Dray.png" },
 				name = "Bunny Dray",
 				price = 870,
@@ -1127,7 +1127,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Your lower back worsens with every trip you spend on the back of your mount and you are looking for a more comfortable alternative to travel through the lands? Say no more! The Bunny Dray comes with two top-performing hares that never get tired thanks to the brand new and highly innovative propulsion technology. Just keep some back-up carrots in your pocket and you will be fine!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Caped_Snowman.png" },
 				name = "Caped Snowman",
 				price = 870,
@@ -1135,7 +1135,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>When the nights are getting longer and freezing wind brings driving snow into the land, snowmen rise and shine on every corner. Lately, a peaceful, arcane creature has found shelter in one of them and used its magical power to call the Caped Snowman into being. Wrap yourself up well and warmly and jump on the back of your new frosty companion.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Cave_Tarantula.png" },
 				name = "Cave Tarantula",
 				price = 690,
@@ -1143,7 +1143,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>It is said that the Cave Tarantula was born long before Banor walked the earth of Tibia. While its parents died in the war against the cruel hordes sent by Brog and Zathroth, their child survived by hiding in skulls of burned enemies. It never left its hiding spot and as it grew older, the skulls merged into its body. Now, it is fully-grown and thirsts for revenge.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Cinderhoof.png" },
 				name = "Cinderhoof",
 				price = 870,
@@ -1151,7 +1151,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>If you are more of an imp than an angel, you may prefer riding out on a Cinderhoof to scare fellow Tibians on their festive strolls. Its devilish mask, claw-like hands and sharp hooves makes it the perfect companion for any daring adventurer who likes to stand out.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Cony_Cart.png" },
 				name = "Cony Cart",
 				price = 870,
@@ -1159,7 +1159,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Your lower back worsens with every trip you spend on the back of your mount and you are looking for a more comfortable alternative to travel through the lands? Say no more! The Cony Cart comes with two top-performing hares that never get tired thanks to the brand new and highly innovative propulsion technology. Just keep some back-up carrots in your pocket and you will be fine!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Copper_Fly.png" },
 				name = "Copper Fly",
 				price = 870,
@@ -1167,7 +1167,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>If you are more interested in the achievements of science, you may enjoy a ride on the Copper Fly, one of the new insect-like flying machines. Even if you do not move around, the wings of these unusual vehicles are always in motion.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Coralripper.png" },
 				name = "Coralripper",
 				price = 570,
@@ -1175,7 +1175,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>If the Coralripper moves its fins, it generates enough air pressure that it can even float over land. Its numerous eyes allow it to quickly detect dangers even in confusing situations and eliminate them with one powerful bite. If you watch your fingers, you are going to be good friends.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Cranium_Spider.png" },
 				name = "Cranium Spider",
 				price = 690,
@@ -1183,7 +1183,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>It is said that the Cranium Spider was born long before Banor walked the earth of Tibia. While its parents died in the war against the cruel hordes sent by Brog and Zathroth, their child survived by hiding in skulls of burned enemies. It never left its hiding spot and as it grew older, the skulls merged into its body. Now, it is fully-grown and thirsts for revenge.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Crimson_Ray.png" },
 				name = "Crimson Ray",
 				price = 870,
@@ -1191,7 +1191,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Have you ever dreamed of gliding through the air on the back of a winged creature? With its deep red wings, the majestic Crimson Ray is a worthy mount for courageous heroes. Feel like a king on its back as you ride into your next adventure.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Death_Crawler.png" },
 				name = "Death Crawler",
 				price = 600,
@@ -1199,7 +1199,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Death Crawler is a scorpion that has surpassed the natural boundaries of its own kind. Way bigger, stronger and faster than ordinary scorpions, it makes a perfect companion for fearless heroes and explorers. Just be careful of his poisonous sting when you mount it.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Desert_King.png" },
 				name = "Desert King",
 				price = 450,
@@ -1207,7 +1207,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Its roaring is piercing marrow and bone and can be heard over ten miles away. The Desert King is the undisputed ruler of its territory and no one messes with this animal. Show no fear and prove yourself worthy of its trust and you will get yourself a valuable companion for your adventures.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Doombringer.png" },
 				name = "Doombringer",
 				price = 780,
@@ -1215,7 +1215,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Once captured and held captive by a mad hunter, the Doombringer is the result of sick experiments. Fed only with demon dust and concentrated demonic blood it had to endure a dreadful transformation. The demonic blood that is now running through its veins, however, provides it with incredible strength and endurance.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Dreadhare.png" },
 				name = "Dreadhare",
 				price = 870,
@@ -1223,7 +1223,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Do you like fluffy bunnies but think they are too small? Do you admire the majesty of stags and their antlers but are afraid of their untameable wilderness? Do not worry, the mystic creature Dreadhare consolidates the best qualities of both animals. Hop on its backs and enjoy the ride.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Ebony_Tiger.png" },
 				name = "Ebony Tiger",
 				price = 750,
@@ -1231,7 +1231,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>It is said that in ancient times, the sabre-tooth tiger was already used as a mount by elder warriors of Svargrond. As seafaring began to expand, this noble big cat was also transported to other regions in Tibia. Influenced by the new environment and climatic changes, the fur of the Ebony Tiger has developed its extraordinary colouring over several generations.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Ember_Saurian.png" },
 				name = "Ember Saurian",
 				price = 750,
@@ -1239,7 +1239,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Thousands of years ago, its ancestors ruled the world. Only recently, it found its way into Tibia. The Ember Saurian has been spotted in a sea of flames and fire deep down in the depths of Kazordoon.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Emerald_Sphinx.png" },
 				name = "Emerald Sphinx",
 				price = 750,
@@ -1247,7 +1247,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Ride an Emerald Sphinx on your way through ancient chambers and tombs and have a loyal friend by your side while fighting countless mummies and other creatures.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Emerald_Waccoon.png" },
 				name = "Emerald Waccoon",
 				price = 750,
@@ -1255,7 +1255,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Waccoons are cuddly creatures that love nothing more than to be petted and snuggled! Share a hug, ruffle the fur of the Emerald Waccoon and scratch it behind its ears to make it happy.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Emperor_Deer.png" },
 				name = "Emperor Deer",
 				price = 660,
@@ -1263,7 +1263,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Treat your character to a new travelling companion with a gentle nature and an impressive antler: The noble Emperor Deer will carry you through the deepest snow.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Ether_Badger.png" },
 				name = "Ether Badger",
 				price = 690,
@@ -1271,7 +1271,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Badgers have been a staple of the Tibian fauna for a long time, and finally some daring souls have braved the challenge to tame some exceptional specimens - and succeeded! While the common badger you can encounter during your travels might seem like a rather unassuming creature, the Battle Badger, the Ether Badger, and the Zaoan Badger are fierce and mighty beasts, which are at your beck and call.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Feral_Tiger.png" },
 				name = "Feral Tiger",
 				price = 750,
@@ -1279,7 +1279,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>It is said that in ancient times, the sabre-tooth tiger was already used as a mount by elder warriors of Svargrond. As seafaring began to expand, this noble big cat was also transported to other regions in Tibia. Influenced by the new environment and climatic changes, the fur of the Feral Tiger has developed its extraordinary colouring over several generations.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Festive_Snowman.png" },
 				name = "Festive Snowman",
 				price = 900,
@@ -1287,7 +1287,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>When the nights are getting longer and freezing wind brings driving snow into the land, snowmen rise and shine on every corner. Lately, a peaceful, arcane creature has found shelter in one of them and used its magical power to call the Festive Snowman into being. Wrap yourself up well and warmly and jump on the back of your new frosty companion.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Gloom_Widow.png" },
 				name = "Gloom Widow",
 				price = 690,
@@ -1295,7 +1295,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>It is said that the Gloom Widow was born long before Banor walked the earth of Tibia. While its parents died in the war against the cruel hordes sent by Brog and Zathroth, their child survived by hiding in skulls of burned enemies. It never left its hiding spot and as it grew older, the skulls merged into its body. Now, it is fully-grown and thirsts for revenge.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Prismatic_Unicorn.png" },
 				name = "Prismatic Unicorn",
 				price = 870,
@@ -1303,7 +1303,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Legend has it that a mare and a stallion once reached the end of a rainbow and decided to stay there. Influenced by the mystical power of the rainbow, the mare gave birth to an exceptional foal: Not only the big, strong horn on its forehead but the unusual colouring of its hair makes the Prismatic Unicorn a unique mount in every respect.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Rabbit_Rickshaw.png" },
 				name = "Rabbit Rickshaw",
 				price = 870,
@@ -1311,7 +1311,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Your lower back worsens with every trip you spend on the back of your mount and you are looking for a more comfortable alternative to travel through the lands? Say no more! The Rabbit Rickshaw comes with two top-performing hares that never get tired thanks to the brand new and highly innovative propulsion technology. Just keep some back-up carrots in your pocket and you will be fine!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Shadow_Draptor.png" },
 				name = "Shadow Draptor",
 				price = 870,
@@ -1319,7 +1319,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>A wild, ancient creature, which had been hiding in the depths of the shadows for a very long time, has been spotted in Tibia again! The almighty Shadow Draptor has returned and only the bravest Tibians can control such a beast!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Steelbeak.png" },
 				name = "Steelbeak",
 				price = 870,
@@ -1327,7 +1327,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Forged by only the highest skilled blacksmiths in the depths of Kazordoon's furnaces, a wild animal made out of the finest steel arose from glowing embers and blazing heat. Protected by its impenetrable armour, the Steelbeak is ready to accompany its master on every battleground.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Jungle_Saurian.png" },
 				name = "Jungle Saurian",
 				price = 750,
@@ -1335,7 +1335,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Thousands of years ago, its ancestors ruled the world. Only recently, it found its way into Tibia. The Jungle Saurian likes to hide in dense wood and overturned trees.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Jungle_Tiger.png" },
 				name = "Jungle Tiger",
 				price = 750,
@@ -1343,7 +1343,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>It is said that in ancient times, the sabre-tooth tiger was already used as a mount by elder warriors of Svargrond. As seafaring began to expand, this noble big cat was also transported to other regions in Tibia. Influenced by the new environment and climatic changes, the fur of the Jungle Tiger has developed its extraordinary colouring over several generations.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Lagoon_Saurian.png" },
 				name = "Lagoon Saurian",
 				price = 750,
@@ -1351,7 +1351,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Thousands of years ago, its ancestors ruled the world. Only recently, it found its way into Tibia. The Lagoon Saurian feels most comfortable in torrential rivers and behind dangerous waterfalls.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Gold_Sphinx.png" },
 				name = "Gold Sphinx",
 				price = 750,
@@ -1359,7 +1359,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Ride a Gold Sphinx on your way through ancient chambers and tombs and have a loyal friend by your side while fighting countless mummies and other creatures.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Shadow_Sphinx.png" },
 				name = "Shadow Sphinx",
 				price = 750,
@@ -1367,7 +1367,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Ride a Shadow Sphinx on your way through ancient chambers and tombs and have a loyal friend by your side while fighting countless mummies and other creatures.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Jackalope.png" },
 				name = "Jackalope",
 				price = 870,
@@ -1375,7 +1375,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Do you like fluffy bunnies but think they are too small? Do you admire the majesty of stags and their antlers but are afraid of their untameable wilderness? Do not worry, the mystic creature Jackalope consolidates the best qualities of both animals. Hop on its backs and enjoy the ride.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Ivory_Fang.png" },
 				name = "Ivory Fang",
 				price = 750,
@@ -1383,7 +1383,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Incredible strength and smartness, an irrepressible will to survive, passionately hunting in groups. If these attributes apply to your character, we have found the perfect partner for you. Have a proper look at Ivory Fang, which stands loyally by its master's side in every situation. It is time to become the leader of the wolf pack!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Shadow_Claw.png" },
 				name = "Shadow Claw",
 				price = 750,
@@ -1391,7 +1391,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Incredible strength and smartness, an irrepressible will to survive, passionately hunting in groups. If these attributes apply to your character, we have found the perfect partner for you. Have a proper look at Shadow Claw, which stands loyally by its master's side in every situation. It is time to become the leader of the wolf pack!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Snow_Pelt.png" },
 				name = "Snow Pelt",
 				price = 750,
@@ -1399,7 +1399,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Incredible strength and smartness, an irrepressible will to survive, passionately hunting in groups. If these attributes apply to your character, we have found the perfect partner for you. Have a proper look at Snow Pelt, which stands loyally by its master's side in every situation. It is time to become the leader of the wolf pack!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Snowy_Owl.png" },
 				name = "Snowy Owl",
 				price = 870,
@@ -1407,7 +1407,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Owls have always been a symbol of mystery, magic and wisdom in Tibian myths and fairy tales. Having one of these enigmatic creatures of the night as a trustworthy companion provides you with a silent guide whose ever-watchful eyes will cut through the shadows, help you navigate the darkness and unravel great secrets.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Tawny_Owl.png" },
 				name = "Tawny Owl",
 				price = 870,
@@ -1415,7 +1415,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Owls have always been a symbol of mystery, magic and wisdom in Tibian myths and fairy tales. Having one of these enigmatic creatures of the night as a trustworthy companion provides you with a silent guide whose ever-watchful eyes will cut through the shadows, help you navigate the darkness and unravel great secrets.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Swamp_Crocovile.png" },
 				name = "Swamp Crocovile",
 				price = 750,
@@ -1423,7 +1423,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>To the keen observer, the crocovile is clearly a relative of the crocodile, albeit their look suggests an even more aggressive nature. While it is true that the power of its massive and muscular body can not only crush enemies dead but also break through any gate like a battering ram, a crocovile is, above all, a steadfast companion showing unwavering loyalty to its owner.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Swamp_Snapper.png" },
 				name = "Swamp Snapper",
 				price = 690,
@@ -1431,7 +1431,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>You are intrigued by tortoises and would love to throne on a tortoise shell when travelling the Tibian wilderness? The Swamp Snapper might become your new trustworthy companion then, which will transport you safely and even carry you during combat.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Mould_Shell.png" },
 				name = "Mould Shell",
 				price = 690,
@@ -1439,7 +1439,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>You are intrigued by tortoises and would love to throne on a tortoise shell when travelling the Tibian wilderness? The Mould Shell might become your new trustworthy companion then, which will transport you safely and even carry you during combat.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Reed_Lurker.png" },
 				name = "Reed Lurker",
 				price = 690,
@@ -1447,7 +1447,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>You are intrigued by tortoises and would love to throne on a tortoise shell when travelling the Tibian wilderness? The Reed Lurker might become your new trustworthy companion then, which will transport you safely and even carry you during combat.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Leafscuttler.png" },
 				name = "Leafscuttler",
 				price = 750,
@@ -1455,7 +1455,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>You are fascinated by insectoid creatures and can picture yourself riding one during combat or just for travelling? The Leafscuttler will carry you through the Tibian wilderness with ease.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Mouldpincer.png" },
 				name = "Mouldpincer",
 				price = 750,
@@ -1463,7 +1463,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>You are fascinated by insectoid creatures and can picture yourself riding one during combat or just for travelling? The Mouldpincer will carry you through the Tibian wilderness with ease.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Muffled_Snowman.png" },
 				name = "Muffled Snowman",
 				price = 900,
@@ -1471,7 +1471,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>When the nights are getting longer and freezing wind brings driving snow into the land, snowmen rise and shine on every corner. Lately, a peaceful, arcane creature has found shelter in one of them and used its magical power to call the Muffled Snowman into being. Wrap yourself up well and warmly and jump on the back of your new frosty companion.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Nightdweller.png" },
 				name = "Nightdweller",
 				price = 870,
@@ -1479,7 +1479,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>If you are more of an imp than an angel, you may prefer riding out on a Nightdweller to scare fellow Tibians on their festive strolls. Its devilish mask, claw-like hands and sharp hooves makes it the perfect companion for any daring adventurer who likes to stand out.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Nightmarish_Crocovile.png" },
 				name = "Nightmarish Crocovile",
 				price = 750,
@@ -1487,7 +1487,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>To the keen observer, the crocovile is clearly a relative of the crocodile, albeit their look suggests an even more aggressive nature. While it is true that the power of its massive and muscular body can not only crush enemies dead but also break through any gate like a battering ram, a crocovile is, above all, a steadfast companion showing unwavering loyalty to its owner.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Frostflare.png" },
 				name = "Frostflare",
 				price = 870,
@@ -1495,7 +1495,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>If you are more of an imp than an angel, you may prefer riding out on a Frostflare to scare fellow Tibians on their festive strolls. Its devilish mask, claw-like hands and sharp hooves makes it the perfect companion for any daring adventurer who likes to stand out.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Slagsnare.png" },
 				name = "Slagsnare",
 				price = 780,
@@ -1503,7 +1503,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Slagsnare has external characteristics of different breeds. It is assumed that his brain is also composed of many different species, which makes it completely unpredictable. Only few have managed to approach this creature unharmed and only the best could tame it.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Nightstinger.png" },
 				name = "Nightstinger",
 				price = 780,
@@ -1511,7 +1511,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Nightstinger has external characteristics of different breeds. It is assumed that his brain is also composed of many different species, which makes it completely unpredictable. Only few have managed to approach this creature unharmed and only the best could tame it.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Razorcreep.png" },
 				name = "Razorcreep",
 				price = 780,
@@ -1519,7 +1519,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Razorcreep has external characteristics of different breeds. It is assumed that his brain is also composed of many different species, which makes it completely unpredictable. Only few have managed to approach this creature unharmed and only the best could tame it.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Gorongra.png" },
 				name = "Gorongra",
 				price = 720,
@@ -1527,7 +1527,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Get yourself a mighty travelling companion with broad shoulders and a gentle heart. Gorongra is a physically imposing creature that is much more peaceful than its relatives, Tiquanda's wild kongras, and will carry you safely wherever you ask it to go.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Noctungra.png" },
 				name = "Noctungra",
 				price = 720,
@@ -1535,7 +1535,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Get yourself a mighty travelling companion with broad shoulders and a gentle heart. Noctungra is a physically imposing creature that is much more peaceful than its relatives, Tiquanda's wild kongras, and will carry you safely wherever you ask it to go.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Silverneck.png" },
 				name = "Silverneck",
 				price = 720,
@@ -1543,7 +1543,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Get yourself a mighty travelling companion with broad shoulders and a gentle heart. Silverneck is a physically imposing creature that is much more peaceful than its relatives, Tiquanda's wild kongras, and will carry you safely wherever you ask it to go.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Sea_Devil.png" },
 				name = "Sea Devil",
 				price = 570,
@@ -1551,7 +1551,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>If the Sea Devil moves its fins, it generates enough air pressure that it can even float over land. Its numerous eyes allow it to quickly detect dangers even in confusing situations and eliminate them with one powerful bite. If you watch your fingers, you are going to be good friends.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Plumfish.png" },
 				name = "Plumfish",
 				price = 570,
@@ -1559,7 +1559,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>If the Plumfish moves its fins, it generates enough air pressure that it can even float over land. Its numerous eyes allow it to quickly detect dangers even in confusing situations and eliminate them with one powerful bite. If you watch your fingers, you are going to be good friends.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Flitterkatzen.png" },
 				name = "Flitterkatzen",
 				price = 870,
@@ -1567,7 +1567,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Rumour has it that many years ago elder witches had gathered to hold a magical feast high up in the mountains. They had crossbred Flitterkatzen to easily conquer rocky canyons and deep valleys. Nobody knows what happened on their way up but only the mount has been seen ever since.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Ringtail_Waccoon.png" },
 				name = "Ringtail Waccoon",
 				price = 750,
@@ -1575,7 +1575,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Waccoons are cuddly creatures that love nothing more than to be petted and snuggled! Share a hug, ruffle the fur of the Ringtail Waccoon and scratch it behind its ears to make it happy.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "River_Crocovile.png" },
 				name = "River Crocovile",
 				price = 750,
@@ -1583,7 +1583,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>To the keen observer, the crocovile is clearly a relative of the crocodile, albeit their look suggests an even more aggressive nature. While it is true that the power of its massive and muscular body can not only crush enemies dead but also break through any gate like a battering ram, a crocovile is, above all, a steadfast companion showing unwavering loyalty to its owner.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Sanguine_Frog.png" },
 				name = "Sanguine Frog",
 				price = 690,
@@ -1591,7 +1591,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>For centuries, humans and monsters have dumped their garbage in the swamps around Venore. The combination of old, rusty weapons, stale mana and broken runes have turned some of the swamp dwellers into gigantic frogs. Benefit from those mutations and make the Sanguine Frog a faithful mount for your adventures even beyond the bounds of the swamp.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Night_Waccoon.png" },
 				name = "Night Waccoon",
 				price = 750,
@@ -1599,7 +1599,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Waccoons are cuddly creatures that love nothing more than to be petted and snuggled! Share a hug, ruffle the fur of the Night Waccoon and scratch it behind its ears to make it happy.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Flying_Divan.png" },
 				name = "Flying Divan",
 				price = 900,
@@ -1607,7 +1607,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Flying Divan is the perfect mount for those who are too busy to take care of an animal mount or simply like to travel on a beautiful, magic hand-woven carpet.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Magic_Carpet.png" },
 				name = "Magic Carpet",
 				price = 900,
@@ -1615,7 +1615,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Magic Carpet is the perfect mount for those who are too busy to take care of an animal mount or simply like to travel on a beautiful, magic hand-woven carpet.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Marsh_Toad.png" },
 				name = "Marsh Toad",
 				price = 690,
@@ -1623,7 +1623,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Magic Carpet is the perfect mount for those who are too busy to take cFor centuries, humans and monsters have dumped their garbage in the swamps around Venore. The combination of old, rusty weapons, stale mana and broken runes have turned some of the swamp dwellers into gigantic frogs. Benefit from those mutations and make the Marsh Toad a faithful mount for your adventures even beyond the bounds of the swamp.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Floating_Kashmir.png" },
 				name = "Floating Kashmir",
 				price = 900,
@@ -1631,7 +1631,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Floating Kashmir is the perfect mount for those who are too busy to take care of an animal mount or simply like to travel on a beautiful, magic hand-woven carpet.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Shadow_Hart.png" },
 				name = "Shadow Hart",
 				price = 660,
@@ -1639,7 +1639,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Treat your character to a new travelling companion with a gentle nature and an impressive antler: The noble Shadow Hart will carry you through the deepest snow.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Tundra_Rambler.png" },
 				name = "Tundra Rambler",
 				price = 750,
@@ -1647,7 +1647,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>With its thick, shaggy hair, the Tundra Rambler will keep you warm even in the chilly climate of the Ice Islands. Due to its calm and peaceful nature, it is not letting itself getting worked up easily.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Highland_Yak.png" },
 				name = "Highland Yak",
 				price = 750,
@@ -1655,7 +1655,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>With its thick, shaggy hair, the Highland Yak will keep you warm even in the chilly climate of the Ice Islands. Due to its calm and peaceful nature, it is not letting itself getting worked up easily.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Glacier_Vagabond.png" },
 				name = "Glacier Vagabond",
 				price = 750,
@@ -1663,7 +1663,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>With its thick, shaggy hair, the Glacier Vagabond will keep you warm even in the chilly climate of the Ice Islands. Due to its calm and peaceful nature, it is not letting itself getting worked up easily.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Golden_Dragonfly.png" },
 				name = "Golden Dragonfly",
 				price = 600,
@@ -1671,7 +1671,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>If you are more interested in the achievements of science, you may enjoy a ride on the Golden Dragonfly, one of the new insect-like flying machines. Even if you do not move around, the wings of these unusual vehicles are always in motion.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Steel_Bee.png" },
 				name = "Steel Bee",
 				price = 600,
@@ -1679,7 +1679,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>If you are more interested in the achievements of science, you may enjoy a ride on the Steel Bee, one of the new insect-like flying machines. Even if you do not move around, the wings of these unusual vehicles are always in motion.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Hailstorm_Fury.png" },
 				name = "Hailtorm Fury",
 				price = 780,
@@ -1687,7 +1687,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Once captured and held captive by a mad hunter, the Hailstorm Fury is the result of sick experiments. Fed only with demon dust and concentrated demonic blood it had to endure a dreadful transformation. The demonic blood that is now running through its veins, however, provides it with incredible strength and endurance.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Siegebreaker.png" },
 				name = "Siegebreaker",
 				price = 690,
@@ -1695,7 +1695,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Siegebreaker is out searching for the best bamboo in Tibia. Its heavy armour allows it to visit even the most dangerous places. Treat it nicely with its favourite food from time to time and it will become a loyal partner.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Poisonbane.png" },
 				name = "Poisonbane",
 				price = 690,
@@ -1703,7 +1703,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Poisonbane is out searching for the best bamboo in Tibia. Its heavy armour allows it to visit even the most dangerous places. Treat it nicely with its favourite food from time to time and it will become a loyal partner.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Nethersteed.png" },
 				name = "Nethersteed",
 				price = 900,
@@ -1711,7 +1711,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Once a majestic and proud warhorse, the Nethersteed has fallen in a horrible battle many years ago. Driven by agony and pain, its spirit once again took possession of its rotten corpse to avenge its death. Stronger than ever, it seeks a master to join the battlefield, aiming for nothing but death and destruction.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Tempest.png" },
 				name = "Tempest",
 				price = 900,
@@ -1719,7 +1719,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Once a majestic and proud warhorse, the Tempest has fallen in a horrible battle many years ago. Driven by agony and pain, its spirit once again took possession of its rotten corpse to avenge its death. Stronger than ever, it seeks a master to join the battlefield, aiming for nothing but death and destruction.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Flamesteed.png" },
 				name = "Flamesteed",
 				price = 900,
@@ -1727,7 +1727,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Once a majestic and proud warhorse, the Flamesteed has fallen in a horrible battle many years ago. Driven by agony and pain, its spirit once again took possession of its rotten corpse to avenge its death. Stronger than ever, it seeks a master to join the battlefield, aiming for nothing but death and destruction.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Tombstinger.png" },
 				name = "Tombstinger",
 				price = 600,
@@ -1735,7 +1735,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Tombstinger is a scorpion that has surpassed the natural boundaries of its own kind. Way bigger, stronger and faster than ordinary scorpions, it makes a perfect companion for fearless heroes and explorers. Just be careful of his poisonous sting when you mount it.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Toxic_Toad.png" },
 				name = "Toxic Toad",
 				price = 690,
@@ -1743,7 +1743,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>For centuries, humans and monsters have dumped their garbage in the swamps around Venore. The combination of old, rusty weapons, stale mana and broken runes have turned some of the swamp dwellers into gigantic frogs. Benefit from those mutations and make the Toxic Toad a faithful mount for your adventures even beyond the bounds of the swamp.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Jade_Pincer.png" },
 				name = "Jade Pincer",
 				price = 600,
@@ -1751,7 +1751,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Jade Pincer is a scorpion that has surpassed the natural boundaries of its own kind. Way bigger, stronger and faster than ordinary scorpions, it makes a perfect companion for fearless heroes and explorers. Just be careful of his poisonous sting when you mount it.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Jade_Lion.png" },
 				name = "Jade Lion",
 				price = 450,
@@ -1759,7 +1759,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Its roaring is piercing marrow and bone and can be heard over ten miles away. The Jade Lion is the undisputed ruler of its territory and no one messes with this animal. Show no fear and prove yourself worthy of its trust and you will get yourself a valuable companion for your adventures.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Venompaw.png" },
 				name = "Venompaw",
 				price = 870,
@@ -1767,7 +1767,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Rumour has it that many years ago elder witches had gathered to hold a magical feast high up in the mountains. They had crossbred Venompaw to easily conquer rocky canyons and deep valleys. Nobody knows what happened on their way up but only the mount has been seen ever since.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Winter_King.png" },
 				name = "Winter King",
 				price = 450,
@@ -1775,7 +1775,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Its roaring is piercing marrow and bone and can be heard over ten miles away. The Winter King is the undisputed ruler of its territory and no one messes with this animal. Show no fear and prove yourself worthy of its trust and you will get yourself a valuable companion for your adventures.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Wolpertinger.png" },
 				name = "Wolpertinger",
 				price = 870,
@@ -1783,7 +1783,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Once captured and held captive by a mad hunter, the Woodland Prince is the result of sick experiments. Fed only with demon dust and concentrated demonic blood it had to endure a dreadful transformation. The demonic blood that is now running through its veins, however, provides it with incredible strength and endurance.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Woodland_Prince.png" },
 				name = "Woodland Prince",
 				price = 780,
@@ -1791,7 +1791,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Once captured and held captive by a mad hunter, the Woodland Prince is the result of sick experiments. Fed only with demon dust and concentrated demonic blood it had to endure a dreadful transformation. The demonic blood that is now running through its veins, however, provides it with incredible strength and endurance.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Zaoan_Badger.png" },
 				name = "Zaoan Badger",
 				price = 690,
@@ -1799,7 +1799,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>Badgers have been a staple of the Tibian fauna for a long time, and finally some daring souls have braved the challenge to tame some exceptional specimens - and succeeded! While the common badger you can encounter during your travels might seem like a rather unassuming creature, the Battle Badger, the Ether Badger, and the Zaoan Badger are fierce and mighty beasts, which are at your beck and call.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Floating_Augur.png" },
 				name = "Floating Augur",
 				price = 870,
@@ -1807,7 +1807,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>These creatures are Floating Savants whose mind has been warped and bent to focus their extraordinary mental capabilities on one single goal: to do their master's bidding. Instead of being filled with an endless pursuit of knowledge, their live is now one of continuous thralldom and serfhood. The Floating Sage, the Floating Scholar and the Floating Augur are at your disposal.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Floating_Sage.png" },
 				name = "Floating Sage",
 				price = 870,
@@ -1815,7 +1815,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>These creatures are Floating Savants whose mind has been warped and bent to focus their extraordinary mental capabilities on one single goal: to do their master's bidding. Instead of being filled with an endless pursuit of knowledge, their live is now one of continuous thralldom and serfhood. The Floating Sage, the Floating Scholar and the Floating Augur are at your disposal.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Floating_Scholar.png" },
 				name = "Floating Scholar",
 				price = 870,
@@ -1823,7 +1823,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>These creatures are Floating Savants whose mind has been warped and bent to focus their extraordinary mental capabilities on one single goal: to do their master's bidding. Instead of being filled with an endless pursuit of knowledge, their live is now one of continuous thralldom and serfhood. The Floating Sage, the Floating Scholar and the Floating Augur are at your disposal.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Snow_Strider.png" },
 				name = "Snow Strider",
 				price = 870,
@@ -1831,7 +1831,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>A magical fire burns inside these wolves. Bred as the faithful guardians for an eccentric wizard's tower, these creatures make for loyal companions during your travels. While not originally intended for riding, their sturdy frame makes the Dawn Strayer, Dusk Pryer and Snow Strider suitable mounts.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Dusk_Pryer.png" },
 				name = "Dusk Pryer",
 				price = 870,
@@ -1839,7 +1839,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>A magical fire burns inside these wolves. Bred as the faithful guardians for an eccentric wizard's tower, these creatures make for loyal companions during your travels. While not originally intended for riding, their sturdy frame makes the Dawn Strayer, Dusk Pryer and Snow Strider suitable mounts.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Dawn_Strayer.png" },
 				name = "Dawn Strayer",
 				price = 870,
@@ -1847,7 +1847,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>A magical fire burns inside these wolves. Bred as the faithful guardians for an eccentric wizard's tower, these creatures make for loyal companions during your travels. While not originally intended for riding, their sturdy frame makes the Dawn Strayer, Dusk Pryer and Snow Strider suitable mounts.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Savanna_Ostrich.png" },
 				name = "Savanna Ostrich",
 				price = 500,
@@ -1855,7 +1855,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>These birds have a strong maternal instinct since their fledglings are completely dependent on their parents for protection. Do not expect them to abandon their brood only because they are carrying you around. In fact, if you were to separate them from their chick, the Savanna Ostrich, Coral Rhea and Eventide Nandu would turn into vicious beings, so don't even try it!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Coral_Rhea.png" },
 				name = "Coral Rhea",
 				price = 500,
@@ -1863,7 +1863,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>These birds have a strong maternal instinct since their fledglings are completely dependent on their parents for protection. Do not expect them to abandon their brood only because they are carrying you around. In fact, if you were to separate them from their chick, the Savanna Ostrich, Coral Rhea and Eventide Nandu would turn into vicious beings, so don't even try it!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Eventide_Nandu.png" },
 				name = "Eventide Nandu",
 				price = 500,
@@ -1871,7 +1871,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>These birds have a strong maternal instinct since their fledglings are completely dependent on their parents for protection. Do not expect them to abandon their brood only because they are carrying you around. In fact, if you were to separate them from their chick, the Savanna Ostrich, Coral Rhea and Eventide Nandu would turn into vicious beings, so don't even try it!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Voracious_Hyaena.png" },
 				name = "Voracious Hyaena",
 				price = 750,
@@ -1879,7 +1879,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Cunning Hyaena, Scruffy Hyaena and Voracious Hyaena are highly social animals and loyal companions to whomever is able to befriend them. Coming from sun-soaked places, they prefer a warm climate, but are able to cope in other environments as well.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Cunning_Hyaena.png" },
 				name = "Cunning Hyaena",
 				price = 750,
@@ -1887,7 +1887,7 @@ GameStore.Categories = {
 				description = "{character}\n{speedboost}\n\n<i>The Cunning Hyaena, Scruffy Hyaena and Voracious Hyaena are highly social animals and loyal companions to whomever is able to befriend them. Coming from sun-soaked places, they prefer a warm climate, but are able to cope in other environments as well.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
-			{
+			{			
 				icons = { "Scruffy_Hyaena.png" },
 				name = "Scruffy Hyaena",
 				price = 750,
@@ -1925,13 +1925,13 @@ GameStore.Categories = {
 		},
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
-	},
+	}, 
 	-- Base outfit has addon = 0 or no defined addon. By default addon is set to 0.
 	{
 		icons = { "Category_Outfits.png" },
 		name = "Outfits",
-		parent = "Cosmetics",
-		offers = {
+		parent = "Cosmetics", 
+		offers = { 
 			{
 				icons = { "Outfit_Arena_Champion_Male_Addon_3.png", "Outfit_Arena_Champion_Female_Addon_3.png" },
 				name = "Full Arena Champion Outfit",
@@ -2299,18 +2299,18 @@ GameStore.Categories = {
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
 	},
-	--House
+	--House 
 	{
 		icons = { "Category_HouseTools.png" },
 		name = "Houses",
 		rookgaard = true,
 		subclasses = {"Decorations", "Furniture", "Upgrades", "Hirelings", "Hirelings Dresses"},
 	},
-	{
-		icons = { "Category_HouseDecorations.png" },
+	{ 
+		icons = { "Category_HouseDecorations.png" }, 
 		name = "Decorations",
-		parent = "Houses",
-		offers = {
+		parent = "Houses", 
+		offers = { 
 			-- Decorations
 			{
 				icons = { "Alchemistic_Bookstand.png" },
@@ -2355,7 +2355,7 @@ GameStore.Categories = {
 				itemtype = 28675,
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,		 
 			},
 			{
 				icons = { "Arrival_at_Thais_Painting.png" },
@@ -3407,15 +3407,15 @@ GameStore.Categories = {
 		},
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
-	},
+	}, 
 	--Furniture
-	{
+	{ 
 		icons = { "Category_HouseFurniture.png" },
 		name = "Furniture",
-		parent = "Houses",
+		parent = "Houses", 
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
-		offers = {
+		offers = { 
 			{
 				icons = { "Alchemistic_Cabinet.png" },
 				name = "Alchemistic Cabinet",
@@ -3831,16 +3831,16 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
 		},
-	},
-	-- Upgrades
-	{
+	}, 
+	-- Upgrades 
+	{ 
 		icons = { "Category_HouseUpgrades.png" },
 		name = "Upgrades",
-		parent = "Houses",
+		parent = "Houses", 
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
-		offers = {
-			{
+		offers = { 
+			{			
 				icons = { "Reward_Shrine.png" },
 				name = "Daily Reward Shrine",
 				price = 150,
@@ -3922,11 +3922,11 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
 		},
-	},
-	{
-		icons = { "Category_HouseTools_NPCApprenticeships.png" },
+	}, 
+	{ 
+		icons = { "Category_HouseTools_NPCApprenticeships.png" }, 
 		name = "Hirelings",
-		parent = "Houses",
+		parent = "Houses", 
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
 		offers = {
@@ -4001,12 +4001,12 @@ GameStore.Categories = {
 				description = "{info} Give your hirelings the ability of managing your banking business.",
 				type = GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL,
 			},
-		},
-	},
-	{
+		}, 
+	}, 
+	{ 
 		icons = { "Category_HouseTools_NPCDresses.png" },
 		name = "Hireling Dresses",
-		parent = "Houses",
+		parent = "Houses", 
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
 		offers = {
@@ -4099,21 +4099,21 @@ GameStore.Categories = {
 				number = 1,
 				description = "{info} can only be used for hirelings of the purchasing character\n{activated}\n{info} the purchased dress can be used by all hirelings, however, how many hirelings can wear this outfit at the same time depends on the number of dresses you own\n{info} number that can be purchased depends on the amount of hirelings you own",
 				type = GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT,
-			},
+			},		
 		},
-	},
+	}, 
 	-- Boost
-	{
+	{ 
 		icons = { "Category_Boosts.png" },
 		name = "Boosts",
-		offers = {
+		offers = { 
 			{
 				icons = { "XP_Boost.png" },
 				name = "XP Boost",
 				price = 30,
 				id = 65010,
 				description = "<i>Purchase a boost that increases the experience points your character gains from hunting by 50%!</i>\n\n{character}\n{info} lasts for 1 hour hunting time\n{info} paused if stamina falls under 14 hours\n{info} can be purchased up to 5 times between 2 server saves\n{info} price increases with every purchase\n{info} cannot be purchased if an XP boost is already active",
-				type = GameStore.OfferTypes.OFFER_TYPE_EXPBOOST,
+				type = GameStore.OfferTypes.OFFER_TYPE_EXPBOOST,			
 			},
 		},
 		rookgaard = true,
@@ -4125,15 +4125,15 @@ GameStore.Categories = {
 		name = "Extras",
 		rookgaard = true,
 		subclasses = {"Extra Services", "Useful Things"},
-	},
+	}, 
 	-- Extras Services
-	{
+	{ 
 		icons = { "Category_ExtraServices.png" },
 		name = "Extra Services",
 		parent = "Extras",
 		rookgaard = true,
-		state = GameStore.States.STATE_NONE,
-		offers = {
+		state = GameStore.States.STATE_NONE, 
+		offers = { 
 			{
 				icons = { "Name_Change.png" },
 				name = "Character Name Change",
@@ -4152,56 +4152,14 @@ GameStore.Categories = {
 			},
 		},
 	},
-	-- Usefull Things
-	{
+	-- Usefull Things 
+	{ 
 		icons = { "Category_UsefulThings.png" },
 		name = "Useful Things",
 		parent = "Extras",
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
-		offers = {
-			{
-				icons = {"Prey_Bonus_Reroll.png"},
-				name = "Prey Wildcard",
-				price = 50,
-				id = GameStore.SubActions.PREY_WILDCARD,
-				count = 5,
-				description = "<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i>\n\n{character}\n{info} added directly to Prey dialog\n{info} maximum amount that can be owned by character: 50",
-				type = GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
-			},
-			{
-				icons = {"Instant_Reward_Access.png"},
-				name = "Instant Reward Access",
-				price = 100,
-				id = GameStore.SubActions.INSTANT_REWARD,
-				count = 1,
-				description = "<i>No matter where you are in Tibia, claim your daily reward on the spot!</i>\n\n{character}\n{info} added to your reward wall\n{info} maximum amount that can be owned by character: 90",
-				type = GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS
-			},
-			{
-				icons = {"Charm_Expansion_Offer.png"},
-				name = "Charm Expansion",
-				price = 450,
-				id = GameStore.SubActions.CHARM_EXPANSION,
-				description = "<i>Assign as many of your unlocked Charms as you like and get a 25% discount whenever you are removing a Charm from a creature!</i>\n\n{character}\n{once}",
-				type = GameStore.OfferTypes.OFFER_TYPE_CHARMS
-			},
-			{
-				icons = {"Permanent_Prey_Slot.png"},
-				name = "Permanent Prey Slot",
-				price = 900,
-				id = GameStore.SubActions.PREY_THIRDSLOT_REDIRECT,
-				description = "<i>Get an additional prey slot to activate additional prey!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Prey dialog",
-				type = GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
-			},
-			{
-				icons = {"Permanent_Hunting_Task_Slot.png"},
-				name = "Permanent Hunting Task Slot",
-				price = 900,
-				id = GameStore.SubActions.TASKHUNTING_THIRDSLOT,
-				description = "<i>Get an additional hunting tasks slot to activate additional hunting task!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Hunting Task dialog",
-				type = GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
-			},
+		offers = { 
 			{
 				icons = { "Gold_Converter.png" },
 				name = "Gold Converter",
@@ -4221,6 +4179,23 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_POUNCH,
 			},
 			{
+				icons = { "Instant_Reward_Access.png" },
+				name = "Instant Reward Access",
+				price = 100,
+				id = 2,
+				count = 1,
+				description = "<i>No matter where you are in Tibia, claim your daily reward on the spot!</i>\n\n{character}\n{info} added to your reward wall\n{info} maximum amount that can be owned by character: 90",
+				type = GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS,
+			},
+			{ 
+				icons = { "Charm_Expansion_Offer.png" },
+				name = "Charm Expansion",
+				price = 450,
+				id = 65005,
+				description = "<i>Assign as many of your unlocked Charms as you like and get a 25% discount whenever you are removing a Charm from a creature!</i>\n\n{character}\n{once}",
+				type = GameStore.OfferTypes.OFFER_TYPE_CHARMS,
+			}, 
+			{
 				icons = { "Magic_Gold_Converter.png" },
 				name = "Magic Gold Converter",
 				price = 15,
@@ -4230,9 +4205,26 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
 			{
+				icons = { "Permanent_Prey_Slot.png" },
+				name = "Permanent Prey Slot",
+				price = 900,
+				id = 65008,
+				description = "<i>Get an additional prey slot to activate additional prey!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Prey dialog",
+				type = GameStore.OfferTypes.OFFER_TYPE_PREYSLOT,
+			},
+			{
 				icons = { "Prey_Bonus_Reroll.png" },
 				name = "Prey Wildcard",
 				price = 50,
+				id = 1,
+				count = 5,
+				description = "<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i>\n\n{character}\n{info} added directly to Prey dialog\n{info} maximum amount that can be owned by character: 50",
+				type = GameStore.OfferTypes.OFFER_TYPE_PREYBONUS,
+			},
+			{
+				icons = { "Prey_Bonus_Reroll.png" },
+				name = "Prey Wildcard",
+				price = 200,
 				count = 20,
 				description = "<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i>\n\n{character}\n{info} added directly to Prey dialog\n{info} maximum amount that can be owned by character: 50",
 				type = GameStore.OfferTypes.OFFER_TYPE_PREYBONUS,
@@ -4244,7 +4236,7 @@ GameStore.Categories = {
 				description = "<i>Teleports you instantly to your home temple.</i>\n\n{character}\n{useicon} use it to teleport you to your home temple</i>\n{battlesign}\n{info} does not work in no-logout zones or close to a character's home temple",
 				type = GameStore.OfferTypes.OFFER_TYPE_TEMPLE,
 			},
-		},
+		}, 
 	},
 	--Tournament
 	{
@@ -4256,21 +4248,21 @@ GameStore.Categories = {
 	-- Tickets
 	{
 		icons = { "Category_Tickets.png" },
-		parent = "Tournament",
+		parent = "Tournament", 
 		name = "Tickets",
 		rookgaard = true,
-		offers = {
+		offers = {	
 			{
 				icons = { "Tournament_Restricted.png" },
-				name = "Restricted Tournament Ticket",
-				price = 500,
-			},
+				name = "Restricted Tournament Ticket", 
+				price = 500, 
+			}, 
 		},
-		-- Exclusive Offers
-		}, {
+		-- Exclusive Offers 
+		}, { 
 		icons = { "Category_ExclusiveOffers.png" },
 		name = "Exclusive Offers",
-		parent = "Tournament",
+		parent = "Tournament", 
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
 		offers = {
@@ -4474,7 +4466,7 @@ GameStore.Categories = {
 			},
 		},
 	},
-}
+} 
 
 -- Each outfit must be uniquely identified to distinguish between addons.
 -- Here we dynamically assign ids for outfits. These ids must be unique.

@@ -313,6 +313,10 @@ void Monster::addTarget(Creature* creature, bool pushFront /* = false*/) {
 		}
 		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer())
 			totalPlayersOnScreen++;
+		// Hazard system (Icon UI)
+		if (isMonsterOnHazardSystem() && creature->getPlayer()) {
+			creature->getPlayer()->incrementeHazardSystemReference();
+		}
 	}
 }
 
@@ -326,7 +330,10 @@ void Monster::removeTarget(Creature* creature) {
 		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen--;
 		}
-
+		// Hazard system (Icon UI)
+		if (isMonsterOnHazardSystem() && creature->getPlayer()) {
+			creature->getPlayer()->decrementeHazardSystemReference();
+		}
 		creature->decrementReferenceCounter();
 		targetList.erase(it);
 	}
@@ -348,6 +355,10 @@ void Monster::updateTargetList() {
 	while (targetIterator != targetList.end()) {
 		Creature* creature = *targetIterator;
 		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
+			// Hazard system (Icon UI)
+			if (isMonsterOnHazardSystem() && creature->getPlayer()) {
+				creature->getPlayer()->decrementeHazardSystemReference();
+			}
 			creature->decrementReferenceCounter();
 			targetIterator = targetList.erase(targetIterator);
 		} else {
@@ -374,6 +385,10 @@ void Monster::clearTargetList() {
 
 void Monster::clearFriendList() {
 	for (Creature* creature : friendList) {
+		// Hazard system (Icon UI)
+		if (isMonsterOnHazardSystem() && creature->getPlayer()) {
+			creature->getPlayer()->decrementeHazardSystemReference();
+		}
 		creature->decrementReferenceCounter();
 	}
 	friendList.clear();
@@ -623,6 +638,12 @@ BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int32
 		auto it = mType->info.elementMap.find(combatType);
 		if (it != mType->info.elementMap.end()) {
 			elementMod = it->second;
+		}
+
+		// Wheel of destiny
+		Player* player = attacker ? attacker->getPlayer() : nullptr;
+		if (player && player->getWheelOfDestinyInstant("Ballistic Mastery")) {
+			elementMod -= player->checkWheelOfDestinyElementSensitiveReduction(combatType);
 		}
 
 		if (elementMod != 0) {
@@ -2006,11 +2027,19 @@ bool Monster::challengeCreature(Creature* creature) {
 		targetChangeCooldown = 8000;
 		challengeFocusDuration = targetChangeCooldown;
 		targetChangeTicks = 0;
+		// Wheel of destiny
+		Player* player = creature ? creature->getPlayer() : nullptr;
+		if (player && !player->isRemoved() && player->getWheelOfDestinyInstant("Battle Healing")) {
+			CombatDamage damage;
+			damage.primary.value = player->checkWheelOfDestinyBattleHealingAmount();
+			damage.primary.type = COMBAT_HEALING;
+			g_game().combatChangeHealth(creature, creature, damage);
+		}
 	}
 	return result;
 }
 
-bool Monster::changeTargetDistance(int32_t distance) {
+bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 12000*/) {
 	if (isSummon()) {
 		return false;
 	}
@@ -2020,7 +2049,7 @@ bool Monster::changeTargetDistance(int32_t distance) {
 	}
 
 	bool shouldUpdate = mType->info.targetDistance > distance ? true : false;
-	challengeMeleeDuration = 12000;
+	challengeMeleeDuration = duration;
 	targetDistance = distance;
 
 	if (shouldUpdate) {

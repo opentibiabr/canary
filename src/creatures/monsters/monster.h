@@ -78,6 +78,9 @@ class Monster final : public Creature {
 		RaceType_t getRace() const override {
 			return mType->info.race;
 		}
+		float getMitigation() const override {
+			return mType->info.mitigation;
+		}
 		int32_t getArmor() const override {
 			return mType->info.armor;
 		}
@@ -151,7 +154,7 @@ class Monster final : public Creature {
 
 		bool challengeCreature(Creature* creature) override;
 
-		bool changeTargetDistance(int32_t distance);
+		bool changeTargetDistance(int32_t distance, uint32_t duration = 12000);
 
 		CreatureIcon_t getIcon() const override {
 			if (challengeMeleeDuration > 0 && mType->info.targetDistance > targetDistance) {
@@ -254,6 +257,27 @@ class Monster final : public Creature {
 		}
 		uint16_t getRaceId() const {
 			return mType->info.raceid;
+		}
+
+		// Hazard system
+		bool isMonsterOnHazardSystem() const {
+			return mType->info.hazardSystemCritChance != 0 || mType->info.canSpawnPod || mType->info.canDodge || mType->info.canDamageBoost;
+		}
+
+		bool getHazardSystemDodge() const {
+			return mType->info.canDodge;
+		}
+
+		bool getHazardSystemSpawnPod() const {
+			return mType->info.canSpawnPod;
+		}
+
+		bool getHazardSystemDamageBoost() const {
+			return mType->info.canDamageBoost;
+		}
+
+		uint16_t getHazardSystemCritChance() const {
+			return mType->info.hazardSystemCritChance;
 		}
 
 		void updateTargetList();

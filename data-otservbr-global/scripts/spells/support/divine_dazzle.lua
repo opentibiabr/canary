@@ -7,7 +7,7 @@ local function getDiagonalDistance(pos1, pos2)
 		return 14 * dstX + 10 * (dstY - dstX)
 	end
 end
-local function chain(player)
+local function chain(player, targets, duration)
 	local creatures = Game.getSpectators(player:getPosition(), false, false, 6, 6, 6, 6)
 	local totalChain = 0
 	local monsters = {}
@@ -24,7 +24,7 @@ local function chain(player)
 	local lastChainPosition = player:getPosition()
 	local closestMonster, closestMonsterIndex, closestMonsterPosition
 	local path, tempPosition, updateLastChain
-	while (totalChain < 3 and #monsters > 0) do
+	while (totalChain < targets and #monsters > 0) do
 		closestMonster = nil
 		for index, monster in pairs(monsters) do
 			tempPosition = monster:getPosition()
@@ -50,7 +50,7 @@ local function chain(player)
 		end
 		if updateLastChain then
 			closestMonsterPosition:sendMagicEffect(CONST_ME_DIVINE_DAZZLE)
-			closestMonster:changeTargetDistance(1)
+			closestMonster:changeTargetDistance(1, duration)
 			lastChain = closestMonster
 			lastChainPosition = closestMonsterPosition
 			totalChain = totalChain + 1
@@ -62,7 +62,13 @@ end
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, variant)
-	local total = chain(creature)
+	local targets = 3
+	local duration = 12000
+	if (creature and creature:getPlayer()) then
+		targets = targets + WheelOfDestinySystem.getPlayerSpellAdditionalTarget(creature:getPlayer(), "Divine Dazzle")
+		duration = duration + (WheelOfDestinySystem.getPlayerSpellAdditionalDuration(creature:getPlayer(), "Divine Dazzle") * 1000)
+	end
+	local total = chain(creature, targets, duration)
 	if total > 0 then
 		return true
 	elseif total == -1 then

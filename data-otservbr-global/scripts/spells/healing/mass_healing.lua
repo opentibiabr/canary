@@ -11,7 +11,7 @@ function onTargetCreature(creature, target)
 		end
 	end
 
-	doTargetCombatHealth(player, target, COMBAT_HEALING, min, max, CONST_ME_NONE)
+	doTargetCombatHealth(creature, target, COMBAT_HEALING, min, max, CONST_ME_NONE, ORIGIN_SPELL, "Mass Healing")
 	return true
 end
 
@@ -20,11 +20,25 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_BLUE)
 combat:setParameter(COMBAT_PARAM_AGGRESSIVE, 0)
 combat:setParameter(COMBAT_PARAM_DISPEL, CONDITION_PARALYZE)
 combat:setArea(createCombatArea(AREA_CIRCLE3X3))
+onTargetCreatureWOD = loadstring(string.dump(onTargetCreature))
 combat:setCallback(CALLBACK_PARAM_TARGETCREATURE, "onTargetCreature")
+
+local combatWOD = Combat()
+combatWOD:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_BLUE)
+combatWOD:setParameter(COMBAT_PARAM_AGGRESSIVE, 0)
+combatWOD:setParameter(COMBAT_PARAM_DISPEL, CONDITION_PARALYZE)
+combatWOD:setArea(createCombatArea(AREA_CIRCLE5X5))
+
+combatWOD:setCallback(CALLBACK_PARAM_TARGETCREATURE, "onTargetCreatureWOD")
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
+	if (creature and creature:getPlayer()) then
+		if (WheelOfDestinySystem.getPlayerSpellAdditionalArea(creature:getPlayer(), "Mass Healing")) then
+			return combatWOD:execute(creature, var)
+		end
+	end
 	return combat:execute(creature, var)
 end
 

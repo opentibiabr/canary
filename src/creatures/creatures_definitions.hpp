@@ -354,10 +354,10 @@ enum PlayerSex_t : uint8_t {
 enum skills_t : int8_t {
 	SKILL_NONE = -1,
 	SKILL_FIST = 0,
-	SKILL_DISTANCE = 1,
+	SKILL_CLUB = 1,
 	SKILL_SWORD = 2,
 	SKILL_AXE = 3,
-	SKILL_CLUB = 4,
+	SKILL_DISTANCE = 4,
 	SKILL_SHIELD = 5,
 	SKILL_FISHING = 6,
 	SKILL_CRITICAL_HIT_CHANCE = 7,

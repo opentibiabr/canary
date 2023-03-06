@@ -162,8 +162,10 @@ class Container : public Item, public Cylinder {
 		void startDecaying() override;
 		void stopDecaying() override;
 
-		bool isAnykindOfRewardContainer() const;
-		bool isBrowseFieldAndHoldsRewardContainer() const;
+		bool isAnyKindOfRewardChest() const;
+		bool isAnyKindOfRewardContainer() const;
+		bool isBrowseFieldAndHoldsRewardChest() const;
+		bool isInsideContainerWithId(const uint16_t id) const;
 
 	protected:
 		std::ostringstream &getContentDescription(std::ostringstream &os) const;

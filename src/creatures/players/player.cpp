@@ -677,7 +677,7 @@ void Player::closeContainer(uint8_t cid) {
 	OpenContainer openContainer = it->second;
 	Container* container = openContainer.container;
 
-	if (container && container->isAnykindOfRewardContainer() && !hasOtherRewardContainerOpen(container)) {
+	if (container && container->isAnyKindOfRewardChest() && !hasOtherRewardContainerOpen(container)) {
 		removeEmptyRewards();
 	}
 	openContainers.erase(it);
@@ -700,7 +700,7 @@ void Player::removeEmptyRewards() {
 
 bool Player::hasOtherRewardContainerOpen(const Container* container) const {
 	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [container](const auto &containerPair) {
-		return containerPair.second.container != container && containerPair.second.container->isAnykindOfRewardContainer();
+		return containerPair.second.container != container && containerPair.second.container->isAnyKindOfRewardContainer();
 	});
 }
 

@@ -300,9 +300,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 	}
 
 	auto removeAmount = amount;
-	auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore);
-	uint16_t removedItems = 0;
-	for (auto item : inventoryItems) {
+	for (auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore); auto item : inventoryItems) {
 		// Ignore item with tier highter than 0
 		if (!item || item->getTier() > 0) {
 			continue;
@@ -319,9 +317,6 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 				continue;
 			}
 
-			// We will use it to check how many items have been removed to send totalCost
-			removedItems++;
-
 			if (removeAmount == 0) {
 				break;
 			}
@@ -329,12 +324,12 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 	}
 
 	// We will only add the money if any item has been removed from the player, to ensure that there is no possibility of cloning money
-	if (removedItems == 0) {
+	if (removeAmount != 0) {
 		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for remove items from id {} on shop for npc {}", player->getName(), itemId, getName());
-		return;
 	}
 
-	auto totalCost = static_cast<uint64_t>(sellPrice * amount);
+	auto totalRemoved = amount - removeAmount;
+	auto totalCost = static_cast<uint64_t>(sellPrice * totalRemoved);
 	g_game().addMoney(player, totalCost);
 
 	// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)
@@ -344,7 +339,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 		callback.pushCreature(player);
 		callback.pushNumber(itemType.id);
 		callback.pushNumber(subType);
-		callback.pushNumber(amount);
+		callback.pushNumber(totalRemoved);
 		callback.pushBoolean(ignore);
 		callback.pushString(itemType.name);
 		callback.pushNumber(totalCost);

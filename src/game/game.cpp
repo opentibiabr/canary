@@ -5429,9 +5429,7 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 			uint32_t primaryReflect = target->getMonster()->getReflectValue(damage.primary.type);
 			if (primaryReflect > 0) {
 				damageReflected.primary.type = damage.primary.type;
-				auto convertedValue = toSafeNumber<int64_t>(__FUNCTION__, 
-					std::ceil((static_cast<double>(damage.primary.value)) * (primaryReflect / 100.))
-				);
+				auto convertedValue = toSafeNumber<int64_t>(__FUNCTION__, std::ceil((static_cast<double>(damage.primary.value)) * (primaryReflect / 100.)));
 				damageReflected.primary.value = convertedValue;
 				damageReflected.extension = true;
 				damageReflected.exString = "(damage reflection)";
@@ -5975,11 +5973,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				auto doubleRealDamage = static_cast<double>(realDamage);
 				auto doubleLifeSkill = static_cast<double>(lifeSkill);
 				auto doubleAffected = static_cast<double>(affected);
-				auto safeValue = toSafeNumber<int64_t>(__FUNCTION__, 
-					std::round(
-						doubleRealDamage * (doubleLifeSkill / 100.) * (0.2 * doubleAffected + 0.9)
-					)
-				);
+				auto safeValue = toSafeNumber<int64_t>(__FUNCTION__, std::round(doubleRealDamage * (doubleLifeSkill / 100.) * (0.2 * doubleAffected + 0.9)));
 				tmpDamage.primary.value = safeValue / affected;
 
 				Combat::doCombatHealth(nullptr, attackerPlayer, tmpDamage, tmpParams);
@@ -6008,11 +6002,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				auto doubleRealDamage = static_cast<double>(realDamage);
 				auto doubleManaSkill = static_cast<double>(manaSkill);
 				auto doubleAffected = static_cast<double>(affected);
-				auto safeValue = toSafeNumber<int64_t>(__FUNCTION__, 
-					std::round(
-						doubleRealDamage * (doubleManaSkill / 100.) * (0.1 * doubleAffected + 0.9)
-					)
-				);
+				auto safeValue = toSafeNumber<int64_t>(__FUNCTION__, std::round(doubleRealDamage * (doubleManaSkill / 100.) * (0.1 * doubleAffected + 0.9)));
 				tmpDamage.primary.value = safeValue / affected;
 
 				Combat::doCombatMana(nullptr, attackerPlayer, tmpDamage, tmpParams);
@@ -6531,14 +6521,7 @@ void Game::addCreatureHealth(const Creature* target) {
 
 void Game::addCreatureHealth(const SpectatorHashSet &spectators, const Creature* target) {
 	// Safe conversion
-	auto safeValue = toSafeNumber<uint8_t>(__FUNCTION__, 
-		std::ceil(
-			(
-				static_cast<double>(target->getHealth()) / static_cast<double>(std::max<int64_t>(target->getMaxHealth(), 1))
-			)
-			* 100.
-		)
-	);
+	auto safeValue = toSafeNumber<uint8_t>(__FUNCTION__, std::ceil((static_cast<double>(target->getHealth()) / static_cast<double>(std::max<int64_t>(target->getMaxHealth(), 1))) * 100.));
 	uint8_t healthPercent = safeValue;
 	if (const Player* targetPlayer = target->getPlayer()) {
 		if (Party* party = targetPlayer->getParty()) {
@@ -6560,14 +6543,7 @@ void Game::addCreatureHealth(const SpectatorHashSet &spectators, const Creature*
 
 void Game::addPlayerMana(const Player* target) {
 	// Safe conversion
-	auto safeValue = toSafeNumber<uint8_t>(__FUNCTION__, 
-		std::ceil(
-			(
-				static_cast<double>(target->getMana()) / static_cast<double>(std::max<int64_t>(target->getMaxMana(), 1))
-			)
-			* 100.
-		)
-	);
+	auto safeValue = toSafeNumber<uint8_t>(__FUNCTION__, std::ceil((static_cast<double>(target->getMana()) / static_cast<double>(std::max<int64_t>(target->getMaxMana(), 1))) * 100.));
 	uint8_t manaPercent = safeValue;
 	if (Party* party = target->getParty()) {
 		party->updatePlayerMana(target, manaPercent);

@@ -139,7 +139,7 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
  * @param convertValue Value to convert and ensure security
  * @return ReturnValue Value converted and guaranteed to be safe
  */
-template<typename To, typename From>
+template <typename To, typename From>
 To toSafeNumber(const std::string &function, From value) {
 	static_assert(std::is_arithmetic<To>::value, "To must be a numeric type");
 	static_assert(std::is_arithmetic<From>::value, "From must be a numeric type");
@@ -147,7 +147,7 @@ To toSafeNumber(const std::string &function, From value) {
 	To converted;
 	try {
 		converted = gsl::narrow_cast<To>(value);
-	} catch (const std::exception& e) {
+	} catch (const std::exception &e) {
 		SPDLOG_ERROR("[{}] Called by [{}], exception caught while narrowing value from {} (type {}) to (type {}): error code: {}", __FUNCTION__, function, value, typeid(From).name(), typeid(To).name(), e.what());
 		SPDLOG_WARN("Returning the minimum value of the 'To' value");
 		return std::numeric_limits<To>::min();

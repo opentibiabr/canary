@@ -2402,9 +2402,7 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_
 						CombatDamage reflectDamage;
 						reflectDamage.origin = ORIGIN_SPELL;
 						reflectDamage.primary.type = combatType;
-						auto safeConverted = toSafeNumber<int64_t>(__FUNCTION__, 
-							std::round(-damage * (reflectPercent / 100))
-						);
+						auto safeConverted = toSafeNumber<int64_t>(__FUNCTION__, std::round(-damage * (reflectPercent / 100)));
 						reflectDamage.primary.value = safeConverted;
 
 						Combat::doCombatHealth(this, attacker, reflectDamage, params);
@@ -2421,9 +2419,7 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_
 				const int16_t &imbuementAbsorbPercent = imbuementInfo.imbuement->absorbPercent[combatTypeToIndex(combatType)];
 
 				if (imbuementAbsorbPercent != 0) {
-					auto safeConverted = toSafeNumber<int64_t>(__FUNCTION__, 
-						std::ceil(damage * (imbuementAbsorbPercent / 100))
-					);
+					auto safeConverted = toSafeNumber<int64_t>(__FUNCTION__, std::ceil(damage * (imbuementAbsorbPercent / 100)));
 					damage -= safeConverted;
 				}
 			}

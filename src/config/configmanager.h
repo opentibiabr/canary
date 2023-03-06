@@ -28,7 +28,6 @@ class ConfigManager {
 		}
 
 		bool load();
-		bool reload();
 
 		const std::string &getString(stringConfig_t what) const;
 		int32_t getNumber(integerConfig_t what) const;

@@ -88,7 +88,7 @@ bool GameReload::reloadChat() const {
 }
 
 bool GameReload::reloadConfig() const {
-	return g_configManager().reload();
+	return g_configManager().load();
 }
 
 bool GameReload::reloadEvents() const {

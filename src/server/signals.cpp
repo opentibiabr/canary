@@ -103,7 +103,7 @@ void Signals::sighupHandler() {
 	// Dispatcher thread
 	SPDLOG_INFO("SIGHUP received, reloading config files...");
 
-	g_configManager().reload();
+	g_configManager().load();
 	SPDLOG_INFO("Reloaded config");
 
 	g_game().raids.reload();

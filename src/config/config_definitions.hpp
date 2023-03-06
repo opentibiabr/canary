@@ -83,7 +83,6 @@ enum stringConfig_t {
 	URL,
 	LOCATION,
 	IP,
-	MOTD,
 	WORLD_TYPE,
 	MYSQL_HOST,
 	MYSQL_USER,

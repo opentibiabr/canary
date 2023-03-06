@@ -432,18 +432,6 @@ class Game {
 
 		bool loadItemsPrice();
 
-		void loadMotdNum();
-		void saveMotdNum() const;
-		const std::string &getMotdHash() const {
-			return motdHash;
-		}
-		uint32_t getMotdNum() const {
-			return motdNum;
-		}
-		void incrementMotdNum() {
-			motdNum++;
-		}
-
 		void sendOfflineTrainingDialog(Player* player);
 
 		const std::map<uint16_t, std::map<uint8_t, uint64_t>> &getItemsPrice() const {
@@ -642,9 +630,6 @@ class Game {
 
 		void updatePlayersRecord() const;
 		uint32_t playersRecord = 0;
-
-		std::string motdHash;
-		uint32_t motdNum = 0;
 
 		std::map<uint16_t, std::map<uint8_t, uint64_t>> itemsPriceMap;
 		uint16_t itemsSaleCount;

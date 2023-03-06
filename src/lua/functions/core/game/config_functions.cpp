@@ -66,7 +66,6 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", URL);
 	registerEnumIn(L, "configKeys", LOCATION);
 	registerEnumIn(L, "configKeys", IP);
-	registerEnumIn(L, "configKeys", MOTD);
 	registerEnumIn(L, "configKeys", WORLD_TYPE);
 	registerEnumIn(L, "configKeys", MYSQL_HOST);
 	registerEnumIn(L, "configKeys", MYSQL_USER);

@@ -13,7 +13,7 @@
 #include "game/game.h"
 
 uint32_t Condition::getTicksSpellCooldown() const {
-	return convertToSafeInteger<uint32_t>(ticks);
+	return toSafeNumber<uint32_t>(__FUNCTION__, ticks);
 }
 
 bool Condition::setParam(ConditionParam_t param, int64_t value) {
@@ -29,7 +29,7 @@ bool Condition::setParam(ConditionParam_t param, int64_t value) {
 		}
 
 		case CONDITION_PARAM_SUBID: {
-			subId = convertToSafeInteger<uint32_t>(value);
+			subId = toSafeNumber<uint32_t>(__FUNCTION__, value);
 			return true;
 		}
 
@@ -135,7 +135,7 @@ void Condition::serialize(PropWriteStream &propWriteStream) {
 	propWriteStream.write<uint32_t>(id);
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_TICKS);
-	propWriteStream.write<uint32_t>(convertToSafeInteger<uint32_t>(ticks));
+	propWriteStream.write<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, ticks));
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_ISBUFF);
 	propWriteStream.write<uint8_t>(isBuff);
@@ -871,7 +871,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int64_t interva
 bool ConditionRegeneration::setParam(ConditionParam_t param, int64_t value) {
 	bool ret = ConditionGeneric::setParam(param, value);
 
-	auto convertSafeValue = convertToSafeInteger<uint32_t>(value);
+	auto convertSafeValue = toSafeNumber<uint32_t>(__FUNCTION__, value);
 	switch (param) {
 		case CONDITION_PARAM_HEALTHGAIN:
 			healthGain = convertSafeValue;
@@ -1032,7 +1032,7 @@ bool ConditionSoul::executeCondition(Creature* creature, int64_t interval) {
 
 bool ConditionSoul::setParam(ConditionParam_t param, int64_t value) {
 	bool ret = ConditionGeneric::setParam(param, value);
-	auto convertSafeValue = convertToSafeInteger<uint32_t>(value);
+	auto convertSafeValue = toSafeNumber<uint32_t>(__FUNCTION__, value);
 	switch (param) {
 		case CONDITION_PARAM_SOULGAIN:
 			soulGain = convertSafeValue;
@@ -1050,10 +1050,9 @@ bool ConditionSoul::setParam(ConditionParam_t param, int64_t value) {
 bool ConditionDamage::setParam(ConditionParam_t param, int64_t value) {
 	bool ret = Condition::setParam(param, value);
 
-	auto convertSafeValue = convertToSafeInteger<uint32_t>(value);
 	switch (param) {
 		case CONDITION_PARAM_OWNER:
-			owner = convertSafeValue;
+			owner = toSafeNumber<uint32_t>(__FUNCTION__, value);
 			return true;
 
 		case CONDITION_PARAM_FORCEUPDATE:
@@ -1674,7 +1673,7 @@ bool ConditionLight::startCondition(Creature* creature) {
 	}
 
 	internalLightTicks = 0;
-	lightChangeInterval = convertToSafeInteger<uint32_t>(ticks) / lightInfo.level;
+	lightChangeInterval = toSafeNumber<uint32_t>(__FUNCTION__, ticks) / lightInfo.level;
 	creature->setCreatureLight(lightInfo);
 	g_game().changeLight(creature);
 	return true;
@@ -1709,7 +1708,7 @@ void ConditionLight::addCondition(Creature* creature, const Condition* condition
 		const ConditionLight &conditionLight = static_cast<const ConditionLight &>(*condition);
 		lightInfo.level = conditionLight.lightInfo.level;
 		lightInfo.color = conditionLight.lightInfo.color;
-		lightChangeInterval = convertToSafeInteger<uint32_t>(ticks) / lightInfo.level;
+		lightChangeInterval = toSafeNumber<uint32_t>(__FUNCTION__, ticks) / lightInfo.level;
 		internalLightTicks = 0;
 		creature->setCreatureLight(lightInfo);
 		g_game().changeLight(creature);

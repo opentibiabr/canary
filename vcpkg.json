@@ -11,6 +11,7 @@
     "parallel-hashmap",
     "magic-enum",
     "zlib",
+    "gsl-lite",
     {"name": "mio", "version>=": "2019-02-10"},
     {
       "name": "luajit",

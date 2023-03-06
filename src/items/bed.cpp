@@ -202,7 +202,7 @@ void BedItem::regeneratePlayer(Player* player) const {
 	if (condition != nullptr) {
 		uint32_t regen;
 		if (condition->getTicks() != -1) {
-			regen = convertToSafeInteger<uint32_t>(std::min<int64_t>((condition->getTicks() / (int64_t)1000), (int64_t)sleptTime) / 30); // RATE_HEALTH_REGEN_SPEED and RATE_MANA_REGEN_SPEED?
+			regen = toSafeNumber<uint32_t>(__FUNCTION__, std::min<int64_t>((condition->getTicks() / (int64_t)1000), (int64_t)sleptTime) / 30); // RATE_HEALTH_REGEN_SPEED and RATE_MANA_REGEN_SPEED?
 			const int64_t newRegenTicks = condition->getTicks() - (regen * 30000);
 			if (newRegenTicks <= 0) {
 				player->removeCondition(condition);

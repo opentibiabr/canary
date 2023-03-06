@@ -139,17 +139,22 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
  * @param convertValue Value to convert and ensure security
  * @return ReturnValue Value converted and guaranteed to be safe
  */
-template <typename Converted, typename ToConvert>
-Converted convertToSafeInteger(ToConvert value) {
-	auto converted = static_cast<Converted>(value);
+template<typename To, typename From>
+To toSafeNumber(const std::string &function, From value) {
+	static_assert(std::is_arithmetic<To>::value, "To must be a numeric type");
+	static_assert(std::is_arithmetic<From>::value, "From must be a numeric type");
 
-	if (converted < value) {
-		if (std::is_signed<ToConvert>::value && !std::is_signed<Converted>::value) {
-			SPDLOG_WARN("[{}] was less than the minimum permitted value, returning the minimum value of the type", value);
-			return std::numeric_limits<Converted>::min();
-		}
-		SPDLOG_WARN("[{}] exceeded the maximum permitted value, returning the maximum value of the type", value);
-		return value > std::numeric_limits<Converted>::max() ? std::numeric_limits<Converted>::max() : converted;
+	To converted;
+	try {
+		converted = gsl::narrow_cast<To>(value);
+	} catch (const std::exception& e) {
+		SPDLOG_ERROR("[{}] Called by [{}], exception caught while narrowing value from {} (type {}) to (type {}): error code: {}", __FUNCTION__, function, value, typeid(From).name(), typeid(To).name(), e.what());
+		SPDLOG_WARN("Returning the minimum value of the 'To' value");
+		return std::numeric_limits<To>::min();
+	}
+
+	if (value != converted) {
+		SPDLOG_WARN("[{}] Called by [{}], value {} (type {}) converted to {} (type {}) (truncated or rounded)", __FUNCTION__, function, value, typeid(From).name(), converted, typeid(To).name());
 	}
 
 	return converted;

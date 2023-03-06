@@ -136,6 +136,7 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
 find_package(asio CONFIG REQUIRED)
 find_package(CURL CONFIG REQUIRED)
 find_package(GMP REQUIRED)
+find_package(gsl-lite CONFIG REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
 find_package(LuaJIT REQUIRED)
 find_package(MySQL REQUIRED)
@@ -343,6 +344,7 @@ if (MSVC)
 			asio::asio
 			CURL::libcurl
 			fmt::fmt
+			gsl::gsl-lite
 			magic_enum::magic_enum
 			mio::mio
 			protobuf::libprotobuf
@@ -370,6 +372,7 @@ else()
 			asio::asio
 			CURL::libcurl
 			fmt::fmt
+			gsl::gsl-lite
 			jsoncpp_static
 			magic_enum::magic_enum
 			mio::mio

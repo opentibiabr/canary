@@ -118,7 +118,6 @@ class Monster final : public Creature {
 		bool isFamiliar() const {
 			return mType->info.isFamiliar;
 		}
-		bool canSee(const Position &pos) const override;
 		bool canSeeInvisibility() const override {
 			return isImmune(CONDITION_INVISIBLE);
 		}

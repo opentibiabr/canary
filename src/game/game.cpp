@@ -663,21 +663,22 @@ bool Game::placeCreature(Creature* creature, const Position &pos, bool extendedP
 		return false;
 	}
 
+	bool hasPlayerSpectators = false;
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true);
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendCreatureAppear(creature, creature->getPosition(), true);
+			hasPlayerSpectators = true;
 		}
-	}
-
-	for (Creature* spectator : spectators) {
 		spectator->onCreatureAppear(creature, true);
 	}
 
-	creature->getParent()->postAddNotification(creature, nullptr, 0);
+	if (hasPlayerSpectators) {
+		addCreatureCheck(creature);
+	}
 
-	addCreatureCheck(creature);
+	creature->getParent()->postAddNotification(creature, nullptr, 0);
 	creature->onPlacedCreature();
 	return true;
 }
@@ -977,7 +978,7 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 			}
 
 			Npc* movingNpc = movingCreature->getNpc();
-			if (movingNpc && movingNpc->canSee(toPos)) {
+			if (movingNpc && movingNpc->canInteract(toPos)) {
 				player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 				return;
 			}

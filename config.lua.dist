@@ -311,7 +311,7 @@ startupDatabaseOptimization = true
 -- Status server information
 ownerName = "OpenTibiaBR"
 ownerEmail = "opentibiabr@outlook.com"
-url = "http://docs.opentibiabr.org/"
+url = "http://docs.opentibiabr.com/"
 location = "South America"
 
 -- Sends Discord webhook notifications on startup, raids and shutdown.

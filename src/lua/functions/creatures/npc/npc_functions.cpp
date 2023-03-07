@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -273,7 +273,7 @@ int NpcFunctions::luaNpcRemovePlayerInteraction(lua_State* L) {
 		return 1;
 	}
 
-	npc->removePlayerInteraction(creature->getID());
+	npc->removePlayerInteraction(creature->getPlayer());
 	pushBoolean(L, true);
 	return 1;
 }
@@ -332,7 +332,7 @@ int NpcFunctions::luaNpcIsInTalkRange(lua_State* L) {
 		return 1;
 	}
 
-	pushBoolean(L, npc && npc->canSee(position));
+	pushBoolean(L, npc && npc->canInteract(position));
 	return 1;
 }
 

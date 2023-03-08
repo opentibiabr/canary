@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 4,
 	Occurrence = 0,
 	Locations = "Deepling Ancestorial Grounds and Sunken Temple."
-	}
+}
 
 monster.health = 7200
 monster.maxHealth = 7200
@@ -32,6 +32,9 @@ monster.race = "blood"
 monster.corpse = 28629
 monster.speed = 155
 monster.manaCost = 0
+
+monster.faction = FACTION_DEATHLING
+monster.enemyFactions = {FACTION_DEEPLING, FACTION_PLAYER}
 
 monster.changeTarget = {
 	interval = 4000,

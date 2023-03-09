@@ -37,9 +37,9 @@ struct AStarNode {
 
 static constexpr int32_t MAX_NODES = 512;
 
-static constexpr int32_t MAP_NORMALWALKCOST = 10;
-static constexpr int32_t MAP_PREFERDIAGONALWALKCOST = 14;
-static constexpr int32_t MAP_DIAGONALWALKCOST = 25;
+static constexpr int32_t MAP_NORMALWALKCOST = 1;
+static constexpr int32_t MAP_PREFERDIAGONALWALKCOST = 5;
+static constexpr int32_t MAP_DIAGONALWALKCOST = 7;
 
 class AStarNodes {
 	public:

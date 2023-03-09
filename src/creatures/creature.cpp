@@ -1584,7 +1584,7 @@ bool Creature::getPathTo(const Position &targetPos, std::forward_list<Direction>
 bool Creature::getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch /*= true*/, bool clearSight /*= true*/, int32_t maxSearchDist /*= 7*/) const {
 	FindPathParams fpp;
 	fpp.fullPathSearch = fullPathSearch;
-	fpp.maxSearchDist = maxSearchDist;
+	fpp.maxSearchDist = 7;
 	fpp.clearSight = clearSight;
 	fpp.minTargetDist = minTargetDist;
 	fpp.maxTargetDist = maxTargetDist;

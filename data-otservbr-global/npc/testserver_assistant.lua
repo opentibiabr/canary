@@ -2,7 +2,8 @@ local internalNpcName = "Testserver Assistant"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {
 	amountMoney = 100, --1kk
-	amountLevel = 100
+	amountLevel = 100,
+	maxLevel = 800
 }
 
 npcConfig.name = internalNpcName
@@ -66,7 +67,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "exp") or MsgContains(message, "experience") then
-		if player:getLevel() > 1000 then
+		if player:getLevel() > npcConfig.maxLevel then
 			npcHandler:say('You can not take it anymore', npc, creature)
 		else
 			npcHandler:say('Here you are.', npc, creature)

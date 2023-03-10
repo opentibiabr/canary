@@ -112,12 +112,12 @@ class ConditionAttributes final : public ConditionGeneric {
 		bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) final;
 
 	private:
-		std::array<int64_t, SKILL_LAST + 1> skills;
-		std::array<int64_t, SKILL_LAST + 1> skillsPercent;
-		std::array<int64_t, STAT_LAST + 1> stats;
-		std::array<int64_t, STAT_LAST + 1> statsPercent;
-		std::array<int64_t, BUFF_LAST + 1> buffsPercent;
-		std::array<int64_t, BUFF_LAST + 1> buffs;
+		std::array<int64_t, SKILL_LAST + 1> skills = {};
+		std::array<int64_t, SKILL_LAST + 1> skillsPercent = {};
+		std::array<int64_t, STAT_LAST + 1> stats = {};
+		std::array<int64_t, STAT_LAST + 1> statsPercent = {};
+		std::array<int64_t, BUFF_LAST + 1> buffsPercent = {};
+		std::array<int64_t, BUFF_LAST + 1> buffs = {};
 		int64_t currentSkill = 0;
 		int64_t currentStat = 0;
 		int64_t currentBuff = 0;

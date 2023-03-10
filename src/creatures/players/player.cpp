@@ -205,11 +205,13 @@ std::string Player::getDescription(int32_t lookDistance) const {
 }
 
 int64_t Player::getMaxHealth() const {
-	return toSafeNumber<int64_t>(__FUNCTION__, healthMax + varStats[STAT_MAXHITPOINTS]);
+	auto safeConverted = toSafeNumber<int64_t>(__FUNCTION__, std::max<int64_t>(0, healthMax + varStats[STAT_MAXHITPOINTS]));
+	return safeConverted;
 }
 
 uint32_t Player::getMaxMana() const {
-	return toSafeNumber<uint32_t>(__FUNCTION__, manaMax + varStats[STAT_MAXMANAPOINTS]);
+	auto safeConverted = toSafeNumber<uint32_t>(__FUNCTION__, std::max<int64_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS]));
+	return safeConverted;
 }
 
 Item* Player::getInventoryItem(Slots_t slot) const {
@@ -4002,18 +4004,21 @@ void Player::getPathSearchParams(const Creature* creature, FindPathParams &fpp) 
 }
 
 uint16_t Player::getSkillLevel(uint8_t skill, bool sendToClient /* = false*/) const {
-	auto skillLevel = toSafeNumber<uint16_t>(__FUNCTION__, skills[skill].level + varSkills[skill]);
+	auto skillLevel = std::max<int64_t>(0, skills[skill].level + varSkills[skill]);
+
 	if (auto it = maxValuePerSkill.find(skill);
 		it != maxValuePerSkill.end()) {
-		skillLevel = std::min<uint16_t>(it->second, skillLevel);
+		skillLevel = std::min<int64_t>(it->second, skillLevel);
 	}
+
+	auto safeConverted = toSafeNumber<uint16_t>(__FUNCTION__, skillLevel);
 
 	// Send to client multiplied skill mana/life leech (13.00+ version changed to decimal)
 	if (sendToClient && (skill == SKILL_MANA_LEECH_AMOUNT || skill == SKILL_LIFE_LEECH_AMOUNT)) {
-		return skillLevel * 100;
+		return safeConverted * 100;
 	}
 
-	return skillLevel;
+	return safeConverted;
 }
 
 void Player::doAttacking(uint32_t) {

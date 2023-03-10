@@ -5764,12 +5764,12 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			g_events().eventCreatureOnDrainHealth(target, attacker, damage.primary.type, damage.primary.value, damage.secondary.type, damage.secondary.value, message.primary.color, message.secondary.color);
 		}
 		if (damage.origin != ORIGIN_NONE && attacker && damage.primary.type != COMBAT_HEALING) {
-			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100;
-			damage.secondary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100;
+			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
+			damage.secondary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
 		}
 		if (damage.origin != ORIGIN_NONE && target && damage.primary.type != COMBAT_HEALING) {
-			damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100;
-			damage.secondary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100;
+			damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
+			damage.secondary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
 		}
 		int64_t healthChange = damage.primary.value + damage.secondary.value;
 		if (healthChange == 0) {

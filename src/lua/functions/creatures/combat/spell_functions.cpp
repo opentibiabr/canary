@@ -191,7 +191,7 @@ int SpellFunctions::luaSpellId(lua_State* L) {
 		if (lua_gettop(L) == 1) {
 			lua_pushnumber(L, spell->getId());
 		} else {
-			spell->setId(getNumber<uint8_t>(L, 2));
+			spell->setId(getNumber<uint16_t>(L, 2));
 			pushBoolean(L, true);
 		}
 	} else {

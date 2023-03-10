@@ -2984,10 +2984,14 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	// canBuyXpBoost
 	msg.addByte(0x00);
 
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, player->getHealth()));
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, player->getMaxHealth()));
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, player->getMana()));
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, player->getMaxMana()));
+	auto healthConverted = std::max<int64_t>(0, player->getHealth());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, healthConverted));
+	healthConverted = std::max<int64_t>(0, player->getMaxHealth());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, healthConverted));
+	auto manaConverted = std::max<uint32_t>(0, player->getMana());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, manaConverted));
+	manaConverted = std::max<uint32_t>(0, player->getMaxMana());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, manaConverted));
 
 	msg.addByte(player->getSoul());
 	msg.add<uint16_t>(player->getStaminaMinutes());
@@ -6070,8 +6074,10 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.addByte(0xA0);
 
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, player->getHealth()));
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, player->getMaxHealth()));
+	auto healthConverted = std::max<int64_t>(0, player->getHealth());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, healthConverted));
+	healthConverted = std::max<int64_t>(0, player->getMaxHealth());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, healthConverted));
 
 	msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 
@@ -6085,8 +6091,10 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.add<uint16_t>(player->getStoreXpBoost()); // xp boost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
 
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, player->getMana()));
-	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, player->getMaxMana()));
+	auto manaConverted = std::max<uint32_t>(0, player->getMana());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, manaConverted));
+	manaConverted = std::max<uint32_t>(0, player->getMaxMana());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, manaConverted));
 
 	msg.addByte(player->getSoul());
 

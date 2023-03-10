@@ -15,8 +15,7 @@ Reserved player action storage key ranges (const.h)
 	[103] = key 0010
 	[303] = key 0303
 	[1000] = level door. Here 1 must be used followed by the level.
-	Example: 1010 = level 10,
-	1100 = level 100]
+	Example: 1010 = level 10, 1100 = level 100
 
 	[3001-3008] = key 3001/3008
 	[3012] = key 3012

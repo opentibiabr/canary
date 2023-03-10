@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_CREATURES_PLAYERS_PLAYER_H_
@@ -1036,6 +1036,7 @@ class Player final : public Creature, public Cylinder {
 		void sendModalWindow(const ModalWindow &modalWindow);
 
 		// container
+		void closeAllExternalContainers();
 		void sendAddContainerItem(const Container* container, const Item* item);
 		void sendUpdateContainerItem(const Container* container, uint16_t slot, const Item* newItem);
 		void sendRemoveContainerItem(const Container* container, uint16_t slot);

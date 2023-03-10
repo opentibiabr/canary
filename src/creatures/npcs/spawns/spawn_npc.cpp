@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -160,7 +160,7 @@ bool SpawnNpc::spawnNpc(uint32_t spawnId, NpcType* npcType, const Position &pos,
 	std::unique_ptr<Npc> npc_ptr(new Npc(npcType));
 	if (startup) {
 		// No need to send out events to the surrounding since there is no one out there to listen!
-		if (!g_game().internalPlaceCreature(npc_ptr.get(), pos, true, false, true)) {
+		if (!g_game().internalPlaceCreature(npc_ptr.get(), pos, true, false)) {
 			return false;
 		}
 	} else {

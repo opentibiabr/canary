@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -260,11 +260,26 @@ bool Container::isHoldingItemWithId(const uint16_t id) const {
 	return false;
 }
 
-bool Container::isAnykindOfRewardContainer() const {
-	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER || isBrowseFieldAndHoldsRewardContainer();
+bool Container::isInsideContainerWithId(const uint16_t id) const {
+	auto nextParent = parent;
+	while (nextParent != nullptr && nextParent->getContainer()) {
+		if (nextParent->getContainer()->getID() == id) {
+			return true;
+		}
+		nextParent = nextParent->getRealParent();
+	}
+	return false;
 }
 
-bool Container::isBrowseFieldAndHoldsRewardContainer() const {
+bool Container::isAnyKindOfRewardChest() const {
+	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER && parent && parent->getContainer() && parent->getContainer()->getID() == ITEM_REWARD_CHEST || isBrowseFieldAndHoldsRewardChest();
+}
+
+bool Container::isAnyKindOfRewardContainer() const {
+	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER || isHoldingItemWithId(ITEM_REWARD_CONTAINER) || isInsideContainerWithId(ITEM_REWARD_CONTAINER);
+}
+
+bool Container::isBrowseFieldAndHoldsRewardChest() const {
 	return getID() == ITEM_BROWSEFIELD && isHoldingItemWithId(ITEM_REWARD_CHEST);
 }
 

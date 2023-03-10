@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -663,21 +663,22 @@ bool Game::placeCreature(Creature* creature, const Position &pos, bool extendedP
 		return false;
 	}
 
+	bool hasPlayerSpectators = false;
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true);
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendCreatureAppear(creature, creature->getPosition(), true);
+			hasPlayerSpectators = true;
 		}
-	}
-
-	for (Creature* spectator : spectators) {
 		spectator->onCreatureAppear(creature, true);
 	}
 
-	creature->getParent()->postAddNotification(creature, nullptr, 0);
+	if (hasPlayerSpectators) {
+		addCreatureCheck(creature);
+	}
 
-	addCreatureCheck(creature);
+	creature->getParent()->postAddNotification(creature, nullptr, 0);
 	creature->onPlacedCreature();
 	return true;
 }
@@ -977,7 +978,7 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 			}
 
 			Npc* movingNpc = movingCreature->getNpc();
-			if (movingNpc && movingNpc->canSee(toPos)) {
+			if (movingNpc && movingNpc->canInteract(toPos)) {
 				player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 				return;
 			}
@@ -6677,7 +6678,7 @@ void Game::loadMotdNum() {
 	result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_hash'");
 	if (result) {
 		motdHash = result->getString("value");
-		if (motdHash != transformToSHA1(g_configManager().getString(MOTD))) {
+		if (motdHash != transformToSHA1(g_configManager().getString(SERVER_MOTD))) {
 			++motdNum;
 		}
 	} else {
@@ -6693,7 +6694,7 @@ void Game::saveMotdNum() const {
 	db.executeQuery(query.str());
 
 	query.str(std::string());
-	query << "UPDATE `server_config` SET `value` = '" << transformToSHA1(g_configManager().getString(MOTD)) << "' WHERE `config` = 'motd_hash'";
+	query << "UPDATE `server_config` SET `value` = '" << transformToSHA1(g_configManager().getString(SERVER_MOTD)) << "' WHERE `config` = 'motd_hash'";
 	db.executeQuery(query.str());
 }
 

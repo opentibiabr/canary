@@ -3,10 +3,10 @@ local function ServerSave()
 		cleanMap()
 	end
 	if configManager.getBoolean(configKeys.GLOBAL_SERVER_SAVE_CLOSE) then
-		Game.setGameState(GAME_STATE_CLOSED, true)
+		Game.setGameState(GAME_STATE_CLOSED)
 	end
 	if configManager.getBoolean(configKeys.GLOBAL_SERVER_SAVE_SHUTDOWN) then
-		Game.setGameState(GAME_STATE_SHUTDOWN, true)
+		Game.setGameState(GAME_STATE_SHUTDOWN)
 	end
 	-- Updating daily reward next server save
 	UpdateDailyRewardGlobalStorage(DailyReward.storages.lastServerSave, os.time())

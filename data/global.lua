@@ -30,6 +30,7 @@ NORTHEAST = DIRECTION_NORTHEAST
 STORAGEVALUE_PROMOTION = 30018
 
 SERVER_NAME = configManager.getString(configKeys.SERVER_NAME)
+SERVER_MOTD = configManager.getString(configKeys.SERVER_MOTD)
 
 -- Bestiary charm
 GLOBAL_CHARM_GUT = 0

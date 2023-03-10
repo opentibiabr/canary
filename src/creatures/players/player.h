@@ -1036,6 +1036,7 @@ class Player final : public Creature, public Cylinder {
 		void sendModalWindow(const ModalWindow &modalWindow);
 
 		// container
+		void closeAllExternalContainers();
 		void sendAddContainerItem(const Container* container, const Item* item);
 		void sendUpdateContainerItem(const Container* container, uint16_t slot, const Item* newItem);
 		void sendRemoveContainerItem(const Container* container, uint16_t slot);

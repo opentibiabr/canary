@@ -299,36 +299,30 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 		}
 	}
 
-	auto removeAmount = amount;
+	auto toRemove = amount;
 	for (auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore); auto item : inventoryItems) {
-		// Ignore item with tier highter than 0
-		if (!item || item->getTier() > 0) {
+		if (!item || item->getTier() > 0 || item->hasImbuements()) {
 			continue;
 		}
 
-		// Only remove if item has no imbuements
-		if (!item->hasImbuements()) {
-			auto removeCount = std::min<uint16_t>(removeAmount, item->getItemCount());
-			removeAmount -= removeCount;
+		auto removeCount = std::min<uint16_t>(toRemove, item->getItemCount());
 
-			if (auto ret = g_game().internalRemoveItem(item, removeCount);
-				ret != RETURNVALUE_NOERROR) {
-				SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
-				continue;
-			}
+		if (g_game().internalRemoveItem(item, removeCount) != RETURNVALUE_NOERROR) {
+			SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
+			continue;
+		}
 
-			if (removeAmount == 0) {
-				break;
-			}
+		toRemove -= removeCount;
+		if (toRemove == 0) {
+			break;
 		}
 	}
 
-	// We will only add the money if any item has been removed from the player, to ensure that there is no possibility of cloning money
-	if (removeAmount != 0) {
-		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for remove items from id {} on shop for npc {}", player->getName(), itemId, getName());
+	if (toRemove != 0) {
+		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Problem while removing items from player {} amount {} of items with id {} on shop for npc {}, the payment will be made based on amount of removed items.", player->getName(), toRemove, itemId, getName());
 	}
 
-	auto totalRemoved = amount - removeAmount;
+	auto totalRemoved = amount - toRemove;
 	auto totalCost = static_cast<uint64_t>(sellPrice * totalRemoved);
 	g_game().addMoney(player, totalCost);
 

@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -61,12 +61,12 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", MAP_CUSTOM_NAME);
 	registerEnumIn(L, "configKeys", HOUSE_RENT_PERIOD);
 	registerEnumIn(L, "configKeys", SERVER_NAME);
+	registerEnumIn(L, "configKeys", SERVER_MOTD);
 	registerEnumIn(L, "configKeys", OWNER_NAME);
 	registerEnumIn(L, "configKeys", OWNER_EMAIL);
 	registerEnumIn(L, "configKeys", URL);
 	registerEnumIn(L, "configKeys", LOCATION);
 	registerEnumIn(L, "configKeys", IP);
-	registerEnumIn(L, "configKeys", MOTD);
 	registerEnumIn(L, "configKeys", WORLD_TYPE);
 	registerEnumIn(L, "configKeys", MYSQL_HOST);
 	registerEnumIn(L, "configKeys", MYSQL_USER);

@@ -42,7 +42,7 @@ gameProtocolPort = 7172
 statusProtocolPort = 7171
 maxPlayers = 0
 serverName = "OTServBR-Global"
-motd = "Welcome to the OTServBR-Global!"
+serverMotd = "Welcome to the OTServBR-Global!"
 onePlayerOnlinePerAccount = true
 allowClones = false
 statusTimeout = 5 * 1000
@@ -311,7 +311,7 @@ startupDatabaseOptimization = true
 -- Status server information
 ownerName = "OpenTibiaBR"
 ownerEmail = "opentibiabr@outlook.com"
-url = "http://docs.opentibiabr.org/"
+url = "http://docs.opentibiabr.com/"
 location = "South America"
 
 -- Sends Discord webhook notifications on startup, raids and shutdown.

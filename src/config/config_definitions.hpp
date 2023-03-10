@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_CONFIG_CONFIG_DEFINITIONS_HPP_
@@ -78,12 +78,12 @@ enum stringConfig_t {
 	MAP_AUTHOR,
 	HOUSE_RENT_PERIOD,
 	SERVER_NAME,
+	SERVER_MOTD,
 	OWNER_NAME,
 	OWNER_EMAIL,
 	URL,
 	LOCATION,
 	IP,
-	MOTD,
 	WORLD_TYPE,
 	MYSQL_HOST,
 	MYSQL_USER,

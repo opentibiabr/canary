@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_CREATURES_NPCS_NPC_H_
@@ -110,8 +110,7 @@ class Npc final : public Creature {
 			return false;
 		}
 
-		bool canSee(const Position &pos) const override;
-		bool canSeeRange(const Position &pos, int32_t viewRangeX = 4, int32_t viewRangeY = 4) const;
+		bool canInteract(const Position &pos) const;
 		bool canSeeInvisibility() const override {
 			return true;
 		}
@@ -123,8 +122,7 @@ class Npc final : public Creature {
 		}
 
 		void setPlayerInteraction(uint32_t playerId, uint16_t topicId = 0);
-		void updatePlayerInteractions(Player* player);
-		void removePlayerInteraction(uint32_t playerId);
+		void removePlayerInteraction(Player* player);
 		void resetPlayerInteractions();
 
 		bool isInteractingWithPlayer(uint32_t playerId) {
@@ -167,6 +165,8 @@ class Npc final : public Creature {
 
 		static uint32_t npcAutoID;
 
+		void onCreatureWalk() override;
+
 	private:
 		void onThinkYell(uint32_t interval);
 		void onThinkWalk(uint32_t interval);
@@ -189,10 +189,17 @@ class Npc final : public Creature {
 
 		bool ignoreHeight;
 
+		SpectatorHashSet playerSpectators;
 		Position masterPos;
 
 		friend class LuaScriptInterface;
 		friend class Map;
+
+		void onPlayerAppear(Player* player);
+		void onPlayerDisappear(Player* player);
+		void manageIdle();
+		void handlePlayerMove(Player* player, const Position &newPos);
+		void loadPlayerSpectators();
 };
 
 constexpr auto g_npc = &Npc::getInstance;

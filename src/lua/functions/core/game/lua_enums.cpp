@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -269,6 +269,12 @@ void LuaEnums::initFactionEnums(lua_State* L) {
 	registerEnum(L, FACTION_PLAYER);
 	registerEnum(L, FACTION_LION);
 	registerEnum(L, FACTION_LIONUSURPERS);
+	registerEnum(L, FACTION_MARID);
+	registerEnum(L, FACTION_EFREET);
+	registerEnum(L, FACTION_DEEPLING);
+	registerEnum(L, FACTION_DEATHLING);
+	registerEnum(L, FACTION_ANUMA);
+	registerEnum(L, FACTION_FAFNAR);
 	registerEnum(L, FACTION_LAST);
 }
 

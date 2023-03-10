@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_ITEMS_CONTAINERS_CONTAINER_H_
@@ -162,8 +162,10 @@ class Container : public Item, public Cylinder {
 		void startDecaying() override;
 		void stopDecaying() override;
 
-		bool isAnykindOfRewardContainer() const;
-		bool isBrowseFieldAndHoldsRewardContainer() const;
+		bool isAnyKindOfRewardChest() const;
+		bool isAnyKindOfRewardContainer() const;
+		bool isBrowseFieldAndHoldsRewardChest() const;
+		bool isInsideContainerWithId(const uint16_t id) const;
 
 	protected:
 		std::ostringstream &getContentDescription(std::ostringstream &os) const;

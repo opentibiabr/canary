@@ -352,16 +352,16 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 			self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
 			return false
 		end
-		-- Gold Pouch
-		if (containerTo:getId() == ITEM_GOLD_POUCH) then
-			if (not (item:getId() == ITEM_CRYSTAL_COIN or item:getId() == ITEM_PLATINUM_COIN
-			or item:getId() == ITEM_GOLD_COIN)) then
-				self:sendCancelMessage("You can move only money to this container.")
-				return false
+		if not configManager.getBoolean(configKeys.TOGGLE_GOLD_POUCH_ALLOW_ANYTHING) then
+			-- Gold Pouch
+			if (containerTo:getId() == ITEM_GOLD_POUCH) then
+				if (not (item:getId() == ITEM_CRYSTAL_COIN or item:getId() == ITEM_PLATINUM_COIN or item:getId() == ITEM_GOLD_COIN)) then
+					self:sendCancelMessage("You can move only money to this container.")
+					return false
+				end
 			end
 		end
 	end
-
 
 	-- Bath tube
 	local toTile = Tile(toCylinder:getPosition())

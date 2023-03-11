@@ -247,7 +247,8 @@ local function donationHandler(npc, creature, message, keywords, parameters, nod
 end
 
 -- Function to handle town travel and its messages
-local function townTravelHandler(npc, creature, message, keywords, parameters, node)	local player = Player(creature)
+local function townTravelHandler(npc, creature, message, keywords, parameters, node)
+	local player = Player(creature)
 	local playerId = player:getId()
 
 	if (parameters.confirm ~= true) and (parameters.decline ~= true) and parameters.townId then

@@ -46,7 +46,7 @@ if Modules == nil then
 			return false
 		end
 
-		local cost, costMessage = parameters.cost, '%d gold'
+		local cost, costMessage = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost, '%d gold'
 		if cost and cost > 0 then
 			if parameters.discount then
 				cost = cost - StdModule.travelDiscount(npc, player, parameters.discount)
@@ -194,7 +194,7 @@ if Modules == nil then
 			return false
 		end
 
-		local cost = parameters.cost
+		local cost = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost
 		if cost and cost > 0 then
 			if parameters.discount then
 				cost = cost - StdModule.travelDiscount(npc, player, parameters.discount)
@@ -511,7 +511,7 @@ if Modules == nil then
 			return false
 		end
 
-		local cost = parameters.cost
+		local cost = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost
 
 		module.npcHandler:say(string.format("Do you want to travel to '%s' for '%d' gold coins?",
                               keywords[1], cost), npc, player)
@@ -526,7 +526,7 @@ if Modules == nil then
 
 		local npcHandler = module.npcHandler
 
-		local cost = parameters.cost
+		local cost = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost
 		local destination = parameters.destination
 		local premium = parameters.premium
 

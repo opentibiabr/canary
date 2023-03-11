@@ -180,6 +180,10 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", BOOSTED_BOSS_SLOT);
 	registerEnumIn(L, "configKeys", BOOSTED_BOSS_LOOT_BONUS);
 	registerEnumIn(L, "configKeys", BOOSTED_BOSS_KILL_BONUS);
+
+	registerEnumIn(L, "configKeys", TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);
+	registerEnumIn(L, "configKeys", TOGGLE_SERVER_IS_RETRO);
+	registerEnumIn(L, "configKeys", TOGGLE_TRAVELS_FREE);
 #undef registerEnumIn
 }
 

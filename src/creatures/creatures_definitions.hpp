@@ -752,7 +752,7 @@ struct ProtocolFamiliars {
 
 struct LightInfo {
 		uint8_t level = 0;
-		uint8_t color = 0;
+		uint8_t color = 215;
 		constexpr LightInfo() = default;
 		constexpr LightInfo(uint8_t newLevel, uint8_t newColor) :
 			level(newLevel), color(newColor) { }

@@ -101,10 +101,6 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 
 bool IOLoginDataSave::savePlayerFirst(Player* player) {
 	Database &db = Database::getInstance();
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
 
 	if (player->getHealth() <= 0) {
 		player->changeHealth(1);
@@ -259,16 +255,11 @@ bool IOLoginDataSave::savePlayerFirst(Player* player) {
 	if (!db.executeQuery(query.str())) {
 		return false;
 	}
-	return transaction.commit();
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerStash(const Player* player) {
 	Database &db = Database::getInstance();
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
-
 	std::ostringstream query;
 	query << "DELETE FROM `player_stash` WHERE `player_id` = " << player->getGUID();
 	if (!db.executeQuery(query.str())) {
@@ -285,17 +276,11 @@ bool IOLoginDataSave::savePlayerStash(const Player* player) {
 			return false;
 		}
 	}
-	return transaction.commit();
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerSpells(const Player* player) {
 	Database &db = Database::getInstance();
-
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
-
 	std::ostringstream query;
 	query << "DELETE FROM `player_spells` WHERE `player_id` = " << player->getGUID();
 	if (!db.executeQuery(query.str())) {
@@ -315,17 +300,11 @@ bool IOLoginDataSave::savePlayerSpells(const Player* player) {
 	if (!spellsQuery.execute()) {
 		return false;
 	}
-	return transaction.commit();
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerKills(const Player* player) {
 	Database &db = Database::getInstance();
-
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
-
 	std::ostringstream query;
 	query << "DELETE FROM `player_kills` WHERE `player_id` = " << player->getGUID();
 	if (!db.executeQuery(query.str())) {
@@ -345,20 +324,14 @@ bool IOLoginDataSave::savePlayerKills(const Player* player) {
 	if (!killsQuery.execute()) {
 		return false;
 	}
-	return transaction.commit();
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerBestiarySystem(const Player* player) {
 	Database &db = Database::getInstance();
 
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
-
 	std::ostringstream query;
 	query << "UPDATE `player_charms` SET ";
-
 	query << "`charm_points` = " << player->charmPoints << ",";
 	query << "`charm_expansion` = " << ((player->charmExpansion) ? 1 : 0) << ",";
 	query << "`rune_wound` = " << player->charmRuneWound << ",";
@@ -396,19 +369,12 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const Player* player) {
 		SPDLOG_WARN("[IOLoginData::savePlayer] - Error saving bestiary data from player: {}", player->getName());
 		return false;
 	}
-	return transaction.commit();
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerItem(const Player* player) {
 	Database &db = Database::getInstance();
-
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
-
 	PropWriteStream propWriteStream;
-
 	std::ostringstream query;
 	query << "DELETE FROM `player_items` WHERE `player_id` = " << player->getGUID();
 	if (!db.executeQuery(query.str())) {
@@ -432,19 +398,12 @@ bool IOLoginDataSave::savePlayerItem(const Player* player) {
 		SPDLOG_WARN("[IOLoginData::savePlayer] - Failed for save items from player: {}", player->getName());
 		return false;
 	}
-	return transaction.commit();
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerDepotItems(const Player* player) {
 	Database &db = Database::getInstance();
-
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
-
 	PropWriteStream propWriteStream;
-
 	ItemDepotList depotList;
 	if (player->lastDepotId != -1) {
 		std::ostringstream query;
@@ -467,16 +426,11 @@ bool IOLoginDataSave::savePlayerDepotItems(const Player* player) {
 		if (!saveItems(player, depotList, depotQuery, propWriteStream)) {
 			return false;
 		}
-		return transaction.commit();
+		return true;
 	}
 }
 
 bool IOLoginDataSave::saveRewardItems(Player* player) {
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
-
 	std::ostringstream query;
 	query << "DELETE FROM `player_rewards` WHERE `player_id` = " << player->getGUID();
 
@@ -502,20 +456,13 @@ bool IOLoginDataSave::saveRewardItems(Player* player) {
 			return false;
 		}
 	}
-	return transaction.commit();
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerInbox(const Player* player) {
 	Database &db = Database::getInstance();
-
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
-
 	PropWriteStream propWriteStream;
 	ItemInboxList inboxList;
-
 	std::ostringstream query;
 	query << "DELETE FROM `player_inboxitems` WHERE `player_id` = " << player->getGUID();
 	if (!db.executeQuery(query.str())) {
@@ -532,17 +479,11 @@ bool IOLoginDataSave::savePlayerInbox(const Player* player) {
 	if (!saveItems(player, inboxList, inboxQuery, propWriteStream)) {
 		return false;
 	}
-	return transaction.commit();
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerPreyClass(Player* player) {
 	Database &db = Database::getInstance();
-
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
-
 	if (g_configManager().getBoolean(PREY_ENABLED)) {
 		std::ostringstream query;
 		query << "DELETE FROM `player_prey` WHERE `player_id` = " << player->getGUID();
@@ -582,17 +523,11 @@ bool IOLoginDataSave::savePlayerPreyClass(Player* player) {
 			}
 		}
 	}
-	return transaction.commit();
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerTaskHuntingClass(Player* player) {
 	Database &db = Database::getInstance();
-
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
-
 	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		std::ostringstream query;
 		query << "DELETE FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
@@ -631,15 +566,10 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(Player* player) {
 			}
 		}
 	}
-	return transaction.commit();
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerForgeHistory(Player* player) {
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
-
 	std::ostringstream query;
 	query << "DELETE FROM `forge_history` WHERE `player_id` = " << player->getGUID();
 	if (!Database::getInstance().executeQuery(query.str())) {
@@ -665,15 +595,10 @@ bool IOLoginDataSave::savePlayerForgeHistory(Player* player) {
 	if (!insertQuery.execute()) {
 		return false;
 	}
-	return transaction.commit();
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerBosstiary(const Player* player) {
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
-
 	std::ostringstream query;
 	query << "DELETE FROM `player_bosstiary` WHERE `player_id` = " << player->getGUID();
 	if (!Database::getInstance().executeQuery(query.str())) {
@@ -696,16 +621,11 @@ bool IOLoginDataSave::savePlayerBosstiary(const Player* player) {
 		return false;
 	}
 
-	return transaction.commit();
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerStorage(Player* player) {
 	Database &db = Database::getInstance();
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
-
 	std::ostringstream query;
 	query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();
 	if (!db.executeQuery(query.str())) {
@@ -727,5 +647,5 @@ bool IOLoginDataSave::savePlayerStorage(Player* player) {
 	if (!storageQuery.execute()) {
 		return false;
 	}
-	return transaction.commit();
+	return true;
 }

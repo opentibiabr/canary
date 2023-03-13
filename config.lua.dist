@@ -105,7 +105,11 @@ forgeFiendishLimit = 3
 forgeFiendishIntervalType = "hour"
 forgeFiendishIntervalTime = "1"
 
--- Bosstiary system
+-- Bestiary & Bosstiary system
+-- NOTE: bestiaryKillMultiplier, multiplier value of monster killed, default 1
+-- NOTE: bosstiaryKillMultiplier, multiplier value of boss killed, default 1
+bestiaryKillMultiplier = 1
+bosstiaryKillMultiplier = 1
 boostedBossSlot = true
 boostedBossLootBonus = 250
 boostedBossKillBonus = 3

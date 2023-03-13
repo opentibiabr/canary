@@ -4,12 +4,13 @@ function bestiaryOnKill.onKill(player, creature, lastHit)
 		return true
 	end
 
+	local bestiaryMultiplier = (configManager.getNumber(configKeys.BESTIARY_KILL_MULTIPLIER) or 1)
 	for cid, damage in pairs(creature:getDamageMap()) do
 		local participant = Player(cid)
 		if participant and participant:isPlayer() then
-			participant:addBestiaryKill(creature:getName())
+			participant:addBestiaryKill(creature:getName(), bestiaryMultiplier)
 		end
-	  end
+	end
 
 	return true
 end

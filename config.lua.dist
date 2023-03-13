@@ -323,6 +323,6 @@ discordWebhookURL = ""
 -- NOTE: toggleGoldPouchAllowAnything will allow players to move items or gold to gold pouch
 -- NOTE: toggleServerIsRetroPVP will make this server as retro, setting PARTY_PROTECTION and ADVANCED_SECURE_MODE to 0
 -- NOTE: toggleTravelsFree will make all travels from boat free
-toggleGoldPouchAllowAnything = true
-toggleServerIsRetroPVP = true
-toggleTravelsFree = true
+toggleGoldPouchAllowAnything = false
+toggleServerIsRetroPVP = false
+toggleTravelsFree = false

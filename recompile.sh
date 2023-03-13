@@ -2,8 +2,7 @@
 
 cd ~/vcpkg && export VCPKG_FORCE_SYSTEM_BINARIES=1 && cd ~/canary
 
-if [ -d "build" ]
-then
+if [ -d "build" ]; then
 	echo "Directory 'build' already exists, moving to it"
 	cd build
 	export VCPKG_FORCE_SYSTEM_BINARIES=1
@@ -18,14 +17,13 @@ else
 	mkdir "build" && cd build
 	export VCPKG_FORCE_SYSTEM_BINARIES=1
 	# for home directory
-  	cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
-  	# for root directory
-  	#cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
+	cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
+	# for root directory
+	#cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
 fi
 
 cmake --build linux-release || exit 1
-if [ $? -eq 1 ]
-then
+if [ $? -eq 1 ]; then
 	echo "Compilation failed!"
 else
 	echo "Compilation successful!"

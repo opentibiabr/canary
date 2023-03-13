@@ -13,7 +13,7 @@
 #include "io/functions/iologindata_save_player.hpp"
 
 bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
-	Database &db = Database::getInstance();
+	const Database &db = Database::getInstance();
 	std::ostringstream ss;
 
 	// Initialize variables
@@ -22,9 +22,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 	int32_t runningId = 100;
 
 	// Loop through each item in itemList
-	for (const auto &it : itemList) {
-		int32_t pid = it.first;
-		Item* item = it.second;
+	for (const auto &[pid, item] : itemList) {
 		++runningId;
 
 		// Update container attributes if necessary
@@ -33,11 +31,9 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 				container->setAttribute(ItemAttribute_t::OPENCONTAINER, 0);
 			}
 			if (!openContainers.empty()) {
-				for (const auto &its : openContainers) {
-					auto openContainer = its.second;
-					auto opcontainer = openContainer.container;
-					if (opcontainer == container) {
-						container->setAttribute(ItemAttribute_t::OPENCONTAINER, ((int)its.first) + 1);
+				for (const auto &[index, openContainer] : openContainers) {
+					if (openContainer.container == container) {
+						container->setAttribute(ItemAttribute_t::OPENCONTAINER, ((int)index) + 1);
 						break;
 					}
 				}
@@ -54,7 +50,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 		const char* attributes = propWriteStream.getStream(attributesSize);
 
 		// Build query string and add row
-		ss << player->getGUID() << ',' << pid << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, attributesSize);
+		ss << player->getGUID() << ',' << pid << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
 		if (!query_insert.addRow(ss)) {
 			return false;
 		}
@@ -63,9 +59,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 
 	// Loop through containers in queue
 	while (!queue.empty()) {
-		const auto &cb = queue.front();
-		Container* container = cb.first;
-		int32_t parentId = cb.second;
+		const auto &[container, parentId] = queue.front();
 		queue.pop_front();
 
 		// Loop through items in container
@@ -79,11 +73,9 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 					subContainer->setAttribute(ItemAttribute_t::OPENCONTAINER, 0);
 				}
 				if (!openContainers.empty()) {
-					for (const auto &it : openContainers) {
-						auto openContainer = it.second;
-						auto opcontainer = openContainer.container;
-						if (opcontainer == subContainer) {
-							subContainer->setAttribute(ItemAttribute_t::OPENCONTAINER, (it.first) + 1);
+					for (const auto &[index, openContainer] : openContainers) {
+						if (openContainer.container == subContainer) {
+							subContainer->setAttribute(ItemAttribute_t::OPENCONTAINER, index + 1);
 							break;
 						}
 					}
@@ -97,7 +89,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 			const char* attributes = propWriteStream.getStream(attributesSize);
 
 			// Build query string and add row
-			ss << player->getGUID() << ',' << parentId << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, attributesSize);
+			ss << player->getGUID() << ',' << parentId << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
 			if (!query_insert.addRow(ss)) {
 				return false;
 			}
@@ -194,13 +186,14 @@ bool IOLoginDataSave::savePlayerFirst(Player* player) {
 	size_t attributesSize;
 	const char* attributes = propWriteStream.getStream(attributesSize);
 
-	query << "`conditions` = " << db.escapeBlob(attributes, attributesSize) << ",";
+	query << "`conditions` = " << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize)) << ",";
 
 	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
 		int64_t skullTime = 0;
 
 		if (player->skullTicks > 0) {
-			skullTime = time(nullptr) + player->skullTicks;
+			auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+			skullTime = now + player->skullTicks;
 		}
 
 		query << "`skulltime` = " << skullTime << ",";
@@ -252,11 +245,14 @@ bool IOLoginDataSave::savePlayerFirst(Player* player) {
 	query << "`quickloot_fallback` = " << (player->quickLootFallbackToMainContainer ? 1 : 0) << ",";
 
 	if (!player->isOffline()) {
-		query << "`onlinetime` = `onlinetime` + " << (time(nullptr) - player->lastLoginSaved) << ",";
+		auto now = std::chrono::system_clock::now();
+		auto lastLoginSaved = std::chrono::system_clock::from_time_t(player->lastLoginSaved);
+		query << "`onlinetime` = `onlinetime` + " << std::chrono::duration_cast<std::chrono::seconds>(now - lastLoginSaved).count() << ",";
 	}
+
 	for (int i = 1; i <= 8; i++) {
 		query << "`blessings" << i << "`"
-			  << " = " << static_cast<uint32_t>(player->getBlessingCount(i)) << ((i == 8) ? " " : ",");
+			  << " = " << static_cast<uint32_t>(player->getBlessingCount(static_cast<uint8_t>(i))) << ((i == 8) ? " " : ",");
 	}
 	query << " WHERE `id` = " << player->getGUID();
 
@@ -266,7 +262,7 @@ bool IOLoginDataSave::savePlayerFirst(Player* player) {
 	return transaction.commit();
 }
 
-bool IOLoginDataSave::savePlayerStash(Player* player) {
+bool IOLoginDataSave::savePlayerStash(const Player* player) {
 	Database &db = Database::getInstance();
 	DBTransaction transaction;
 	if (!transaction.begin()) {
@@ -279,12 +275,12 @@ bool IOLoginDataSave::savePlayerStash(Player* player) {
 		return false;
 	}
 
-	for (auto it : player->getStashItems()) {
+	for (const auto &[itemId, itemCount] : player->getStashItems()) {
 		query.str("");
 		query << "INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES (";
 		query << player->getGUID() << ", ";
-		query << it.first << ", ";
-		query << it.second << ")";
+		query << itemId << ", ";
+		query << itemCount << ")";
 		if (!db.executeQuery(query.str())) {
 			return false;
 		}
@@ -292,7 +288,7 @@ bool IOLoginDataSave::savePlayerStash(Player* player) {
 	return transaction.commit();
 }
 
-bool IOLoginDataSave::savePlayerSpells(Player* player) {
+bool IOLoginDataSave::savePlayerSpells(const Player* player) {
 	Database &db = Database::getInstance();
 
 	DBTransaction transaction;
@@ -322,7 +318,7 @@ bool IOLoginDataSave::savePlayerSpells(Player* player) {
 	return transaction.commit();
 }
 
-bool IOLoginDataSave::savePlayerKills(Player* player) {
+bool IOLoginDataSave::savePlayerKills(const Player* player) {
 	Database &db = Database::getInstance();
 
 	DBTransaction transaction;
@@ -352,7 +348,7 @@ bool IOLoginDataSave::savePlayerKills(Player* player) {
 	return transaction.commit();
 }
 
-bool IOLoginDataSave::savePlayerBestiarySystem(Player* player) {
+bool IOLoginDataSave::savePlayerBestiarySystem(const Player* player) {
 	Database &db = Database::getInstance();
 
 	DBTransaction transaction;
@@ -388,12 +384,12 @@ bool IOLoginDataSave::savePlayerBestiarySystem(Player* player) {
 	query << "`UnlockedRunesBit` = " << player->UnlockedRunesBit << ",";
 
 	PropWriteStream propBestiaryStream;
-	for (MonsterType* trackedType : player->getBestiaryTrackerList()) {
+	for (const MonsterType* trackedType : player->getBestiaryTrackerList()) {
 		propBestiaryStream.write<uint16_t>(trackedType->info.raceid);
 	}
 	size_t trackerSize;
 	const char* trackerList = propBestiaryStream.getStream(trackerSize);
-	query << " `tracker list` = " << db.escapeBlob(trackerList, trackerSize);
+	query << " `tracker list` = " << db.escapeBlob(trackerList, static_cast<uint32_t>(trackerSize));
 	query << " WHERE `player_guid` = " << player->getGUID();
 
 	if (!db.executeQuery(query.str())) {
@@ -403,7 +399,7 @@ bool IOLoginDataSave::savePlayerBestiarySystem(Player* player) {
 	return transaction.commit();
 }
 
-bool IOLoginDataSave::savePlayerItem(Player* player) {
+bool IOLoginDataSave::savePlayerItem(const Player* player) {
 	Database &db = Database::getInstance();
 
 	DBTransaction transaction;
@@ -439,7 +435,7 @@ bool IOLoginDataSave::savePlayerItem(Player* player) {
 	return transaction.commit();
 }
 
-bool IOLoginDataSave::savePlayerDepotItems(Player* player) {
+bool IOLoginDataSave::savePlayerDepotItems(const Player* player) {
 	Database &db = Database::getInstance();
 
 	DBTransaction transaction;
@@ -462,10 +458,9 @@ bool IOLoginDataSave::savePlayerDepotItems(Player* player) {
 
 		DBInsert depotQuery("INSERT INTO `player_depotitems` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
 
-		for (const auto &it : player->depotChests) {
-			DepotChest* depotChest = it.second;
+		for (const auto &[pid, depotChest] : player->depotChests) {
 			for (Item* item : depotChest->getItemList()) {
-				depotList.emplace_back(it.first, item);
+				depotList.emplace_back(pid, item);
 			}
 		}
 
@@ -510,7 +505,7 @@ bool IOLoginDataSave::saveRewardItems(Player* player) {
 	return transaction.commit();
 }
 
-bool IOLoginDataSave::savePlayerInbox(Player* player) {
+bool IOLoginDataSave::savePlayerInbox(const Player* player) {
 	Database &db = Database::getInstance();
 
 	DBTransaction transaction;
@@ -572,7 +567,7 @@ bool IOLoginDataSave::savePlayerPreyClass(Player* player) {
 				query << slot->freeRerollTimeStamp << ", ";
 
 				PropWriteStream propPreyStream;
-				std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propPreyStream](uint16_t raceId) {
+				std::ranges::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propPreyStream](uint16_t raceId) {
 					propPreyStream.write<uint16_t>(raceId);
 				});
 
@@ -621,7 +616,7 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(Player* player) {
 				query << slot->freeRerollTimeStamp << ", ";
 
 				PropWriteStream propTaskHuntingStream;
-				std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propTaskHuntingStream](uint16_t raceId) {
+				std::ranges::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propTaskHuntingStream](uint16_t raceId) {
 					propTaskHuntingStream.write<uint16_t>(raceId);
 				});
 
@@ -722,8 +717,8 @@ bool IOLoginDataSave::savePlayerStorage(Player* player) {
 	DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
 	player->genReservedStorageRange();
 
-	for (const auto &it : player->storageMap) {
-		query << player->getGUID() << ',' << it.first << ',' << it.second;
+	for (const auto &[key, value] : player->storageMap) {
+		query << player->getGUID() << ',' << key << ',' << value;
 		if (!storageQuery.addRow(query)) {
 			return false;
 		}

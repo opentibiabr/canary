@@ -134,7 +134,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 	IOLoginDataLoad::loadPlayerInventoryItems(player, result);
 
 	// store Inbox
-	IOLoginDataLoad::loadPlayerStoreInbox(player, result);
+	IOLoginDataLoad::loadPlayerStoreInbox(player);
 
 	// load depot items
 	IOLoginDataLoad::loadPlayerDepotItems(player, result);
@@ -163,8 +163,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 	// load bosstiary
 	IOLoginDataLoad::loadPlayerBosstiary(player, result);
 
-	IOLoginDataLoad::loadPlayerInitializeSystem(player, result);
-	IOLoginDataLoad::loadPlayerUpdateSystem(player, result);
+	IOLoginDataLoad::loadPlayerInitializeSystem(player);
+	IOLoginDataLoad::loadPlayerUpdateSystem(player);
 	return true;
 }
 

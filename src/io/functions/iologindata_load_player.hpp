@@ -18,7 +18,7 @@ class IOLoginDataLoad : public IOLoginData {
 		static bool loadPlayerFirst(Player* player, DBResult_ptr result);
 		static void loadPlayerExperience(Player* player, DBResult_ptr result);
 		static void loadPlayerBlessings(Player* player, DBResult_ptr result);
-		static void loadPlayerConditions(Player* player, DBResult_ptr result);
+		static void loadPlayerConditions(const Player* player, DBResult_ptr result);
 		static void loadPlayerDefaultOutfit(Player* player, DBResult_ptr result);
 		static void loadPlayerSkullSystem(Player* player, DBResult_ptr result);
 		static void loadPlayerSkill(Player* player, DBResult_ptr result);
@@ -27,7 +27,7 @@ class IOLoginDataLoad : public IOLoginData {
 		static void loadPlayerStashItems(Player* player, DBResult_ptr result);
 		static void loadPlayerBestiaryCharms(Player* player, DBResult_ptr result);
 		static void loadPlayerInventoryItems(Player* player, DBResult_ptr result);
-		static void loadPlayerStoreInbox(Player* player, DBResult_ptr result);
+		static void loadPlayerStoreInbox(Player* player);
 		static void loadPlayerDepotItems(Player* player, DBResult_ptr result);
 		static void loadRewardItems(Player* player);
 		static void loadPlayerInboxItems(Player* player, DBResult_ptr result);
@@ -37,8 +37,8 @@ class IOLoginDataLoad : public IOLoginData {
 		static void loadPlayerTaskHuntingClass(Player* player, DBResult_ptr result);
 		static void loadPlayerForgeHistory(Player* player, DBResult_ptr result);
 		static void loadPlayerBosstiary(Player* player, DBResult_ptr result);
-		static void loadPlayerInitializeSystem(Player* player, DBResult_ptr result);
-		static void loadPlayerUpdateSystem(Player* player, DBResult_ptr result);
+		static void loadPlayerInitializeSystem(Player* player);
+		static void loadPlayerUpdateSystem(Player* player);
 
 	private:
 		using InventoryItemsMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;
@@ -47,10 +47,10 @@ class IOLoginDataLoad : public IOLoginData {
 		using InboxItemsMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;
 
 		static void bindRewardBag(Player* player, RewardItemsMap &rewardItemsMap);
-		static void insertItemsIntoRewardBag(RewardItemsMap &rewardItemsMap);
+		static void insertItemsIntoRewardBag(const RewardItemsMap &rewardItemsMap);
 
 		template <typename T>
-		static void loadItemsBeats(T &container, DBResult_ptr result, Player &player) {
+		static void loadItems(T &container, DBResult_ptr result, Player &player) {
 			do {
 				uint32_t sid = result->getNumber<uint32_t>("sid");
 				uint32_t pid = result->getNumber<uint32_t>("pid");

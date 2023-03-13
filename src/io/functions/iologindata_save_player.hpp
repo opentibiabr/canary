@@ -15,14 +15,14 @@
 class IOLoginDataSave : public IOLoginData {
 	public:
 		static bool savePlayerFirst(Player* player);
-		static bool savePlayerStash(Player* player);
-		static bool savePlayerSpells(Player* player);
-		static bool savePlayerKills(Player* player);
-		static bool savePlayerBestiarySystem(Player* player);
-		static bool savePlayerItem(Player* player);
-		static bool savePlayerDepotItems(Player* player);
+		static bool savePlayerStash(const Player* player);
+		static bool savePlayerSpells(const Player* player);
+		static bool savePlayerKills(const Player* player);
+		static bool savePlayerBestiarySystem(const Player* player);
+		static bool savePlayerItem(const Player* player);
+		static bool savePlayerDepotItems(const Player* player);
 		static bool saveRewardItems(Player* player);
-		static bool savePlayerInbox(Player* player);
+		static bool savePlayerInbox(const Player* player);
 		static bool savePlayerPreyClass(Player* player);
 		static bool savePlayerTaskHuntingClass(Player* player);
 		static bool savePlayerForgeHistory(Player* player);

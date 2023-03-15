@@ -404,7 +404,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	message = message:gsub("(%l)(%w*)", function(a,b) return string.upper(a)..b end)
 
-	if MsgContains("join", message) or MsgContains("yes", message) and npcHandler:getTopic(playerId) == 0 and player:getStorageValue(Storage.KillingInTheNameOf.QuestLogEntry) ~= 0 then
+	if (MsgContains("join", message) or MsgContains("yes", message)) and npcHandler:getTopic(playerId) == 0 and player:getStorageValue(Storage.KillingInTheNameOf.QuestLogEntry) ~= 0 then
 		player:setStorageValue(JOIN_STOR, 1)
 		player:setStorageValue(Storage.KillingInTheNameOf.BossPoints, 0)
 		player:setStorageValue(Storage.KillingInTheNameOf.QuestLogEntry, 0)

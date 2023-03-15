@@ -158,7 +158,7 @@ To toSafeNumber(const std::string &function, From value) {
 	// Calculate the absolute difference between the original value and the converted value
 	auto diff = std::abs(static_cast<double>(value - converted));
 	if (diff > limit) {
-		SPDLOG_WARN("[{}] Called by [{}], value {} (type {}) converted to {} (type {}) (truncated or rounded)", __FUNCTION__, function, value, typeid(From).name(), converted, typeid(To).name());
+		SPDLOG_WARN("[{}] Called by [{}], value '{}' (type {}) converted to '{}' (type '{}') (truncated or rounded, discrepancy larger than '{}')", __FUNCTION__, function, value, typeid(From).name(), converted, typeid(To).name(), limit);
 	}
 
 	return converted;

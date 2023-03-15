@@ -2670,6 +2670,9 @@ Storage = {
 		U12_00 = { -- update 12.00 - Reserved Storages 46301 - 46600
 			DreamWarriorOutfits = {},
 			TheDreamCourts = {
+				QuestLine = 46401,
+				HauntedHouseAccess = 46402,
+				BuriedCathedralAccess = 46403,
 				AndrewDoor = 14900,
 				FacelessBaneTime = 50283
 			},

@@ -153,7 +153,11 @@ To toSafeNumber(const std::string &function, From value) {
 		return std::numeric_limits<To>::min();
 	}
 
-	if (value != converted) {
+	// Defines a limit for the difference between the original value and the converted value
+	const double limit = 1.0;
+	// Calculate the absolute difference between the original value and the converted value
+	auto diff = std::abs(static_cast<double>(value - converted));
+	if (diff > limit) {
 		SPDLOG_WARN("[{}] Called by [{}], value {} (type {}) converted to {} (type {}) (truncated or rounded)", __FUNCTION__, function, value, typeid(From).name(), converted, typeid(To).name());
 	}
 

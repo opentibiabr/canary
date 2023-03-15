@@ -7690,7 +7690,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				return;
 			}
 		}
-		
+
 		// If there is any error, then we will send the log and block the creation of the offer to avoid clone of items
 		// The player may lose the item as it will have already been removed, but will not clone
 		if (!offerStatus.str().empty()) {

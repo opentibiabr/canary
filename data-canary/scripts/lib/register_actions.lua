@@ -195,7 +195,7 @@ ActionsLib.useShovel = function(player, item, fromPosition, target, toPosition, 
 end
 
 ActionsLib.useScythe = function(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({10511, 10515}, item.itemid) then -- weird ids, any idea?
+	if table.contains({9594, 9598}, item.itemid) then -- weird ids, any idea?
 		return false
 	end
 

@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -748,21 +748,10 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 		return 1;
 	}
 
-	const Player* player = creature->getPlayer();
-	if (!player) {
-		return 1;
-	}
-
 	const Position oldPosition = creature->getPosition();
-	if (oldPosition == position) {
-		SPDLOG_WARN("[{}] - Cannot teleport creature: {}, fromPosition: {}, as same of toPosition: {}", __FUNCTION__, player->getName(), oldPosition.toString(), position.toString());
-		reportErrorFunc("The new position is the same as the old one.");
-	}
-
 	if (auto ret = g_game().internalTeleport(creature, position, pushMovement);
 		ret != RETURNVALUE_NOERROR) {
-		player->sendCancelMessage(ret);
-		SPDLOG_ERROR("[{}] Failed to teleport player, error code: {}", __FUNCTION__, getReturnMessage(ret));
+		SPDLOG_ERROR("[{}] Failed to teleport creature {}, on position {}, error code: {}", __FUNCTION__, creature->getName(), oldPosition.toString(), getReturnMessage(ret));
 		pushBoolean(L, false);
 		return 1;
 	}

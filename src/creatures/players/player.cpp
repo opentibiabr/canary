@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -711,7 +711,7 @@ void Player::closeContainer(uint8_t cid) {
 	OpenContainer openContainer = it->second;
 	Container* container = openContainer.container;
 
-	if (container && container->isAnykindOfRewardContainer() && !hasOtherRewardContainerOpen(container)) {
+	if (container && container->isAnyKindOfRewardChest() && !hasOtherRewardContainerOpen(container)) {
 		removeEmptyRewards();
 	}
 	openContainers.erase(it);
@@ -734,7 +734,7 @@ void Player::removeEmptyRewards() {
 
 bool Player::hasOtherRewardContainerOpen(const Container* container) const {
 	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [container](const auto &containerPair) {
-		return containerPair.second.container != container && containerPair.second.container->isAnykindOfRewardContainer();
+		return containerPair.second.container != container && containerPair.second.container->isAnyKindOfRewardContainer();
 	});
 }
 
@@ -2699,6 +2699,7 @@ void Player::despawn() {
 	listWalkDir.clear();
 	stopEventWalk();
 	onWalkAborted();
+	closeAllExternalContainers();
 	g_game().playerSetAttackedCreature(this->getID(), 0);
 	g_game().playerFollowCreature(this->getID(), 0);
 
@@ -5767,7 +5768,7 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 	if (allItems) {
 		// Stow player backpack
 		if (auto inventoryItem = getInventoryItem(CONST_SLOT_BACKPACK);
-			!item->isInsideDepot(true)) {
+			inventoryItem && !item->isInsideDepot(true)) {
 			sendStowItems(*item, *inventoryItem, itemDict);
 		}
 
@@ -6973,6 +6974,28 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 	history.description = detailsResponse.str();
 
 	setForgeHistory(history);
+}
+
+void Player::closeAllExternalContainers() {
+	if (openContainers.empty()) {
+		return;
+	}
+
+	std::vector<Container*> containerToClose;
+	for (const auto &it : openContainers) {
+		Container* container = it.second.container;
+		if (!container) {
+			continue;
+		}
+
+		if (container->getHoldingPlayer() != this) {
+			containerToClose.push_back(container);
+		}
+	}
+
+	for (Container* container : containerToClose) {
+		autoCloseContainers(container);
+	}
 }
 
 /*******************************************************************************

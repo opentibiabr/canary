@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
@@ -1280,7 +1280,7 @@ struct ProtocolFamiliars {
 
 struct LightInfo {
 		uint8_t level = 0;
-		uint8_t color = 0;
+		uint8_t color = 215;
 		constexpr LightInfo() = default;
 		constexpr LightInfo(uint8_t newLevel, uint8_t newColor) :
 			level(newLevel), color(newColor) { }

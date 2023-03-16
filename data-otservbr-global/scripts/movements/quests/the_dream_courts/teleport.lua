@@ -1,10 +1,13 @@
 local teleports = {
 	{
 		access = Storage.Quest.U12_00.TheDreamCourts.BuriedCathedralAccess,
-		teleportA = { x = 32720, y = 32270, z = 8 },
-		destinationA = { x = 32720, y = 32269, z = 8 },
-		teleportB = { x = 33618, y = 32546, z = 13 },
-		destinationB = { x = 33618, y = 32545, z = 13 }
+		from = { x = 32720, y = 32270, z = 8 }, -- Haunted house cellar
+		to = { x = 33618, y = 32545, z = 13 } -- Buried Cathedral
+	},
+	{
+		access = Storage.Quest.U12_00.TheDreamCourts.BuriedCathedralAccess,
+		from = { x = 33618, y = 32546, z = 13 }, -- Buried Cathedral
+		to = { x = 32720, y = 32269, z = 8 }  -- Haunted house cellar
 	}
 }
 
@@ -15,27 +18,22 @@ function teleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	for index, teleport in pairs(teleports) do
-		if creature:getStorageValue(teleport.access) == 1 then
-			if creature:getPosition() == Position(teleport.teleportA) then
-				creature:teleportTo(Position(teleport.destinationB))
-				creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				return true
-			elseif creature:getPosition() == Position(teleport.teleportB) then
-				creature:teleportTo(Position(teleport.destinationA))
-				creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				return true
+	local teleportTo = fromPosition
+	for index, teleportItem in pairs(teleports) do
+		if creature:getStorageValue(teleportItem.access) == 1 then
+			if creature:getPosition() == Position(teleportItem.from) then
+				teleportTo = teleportItem.to
+				break
 			end
 		end
 	end
 
-	creature:teleportTo(fromPosition)
+	creature:teleportTo(teleportTo)
 	creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	return true
 end
 
-for index, value in pairs(teleports) do
-	teleport:position(value.teleportA)
-	teleport:position(value.teleportB)
+for index, teleportItem in pairs(teleports) do
+	teleport:position(teleportItem.from)
 end
 teleport:register()

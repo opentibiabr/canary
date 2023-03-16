@@ -231,7 +231,7 @@ mysqlSock = ""
 passwordType = "sha1"
 
 -- Misc.
--- experienceDisplayRates: false to ignore exp rate or true to include exp rate
+-- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate
 allowChangeOutfit = true
 freePremium = false
 kickIdlePlayerAfterMinutes = 15

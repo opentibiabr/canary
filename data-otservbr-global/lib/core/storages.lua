@@ -2669,6 +2669,9 @@ Storage = {
 		U12_00 = { -- update 12.00 - Reserved Storages 46301 - 46600
 			DreamWarriorOutfits = {},
 			TheDreamCourts = {
+				QuestLine = 46401,
+				HauntedHouseAccess = 46402,
+				BuriedCathedralAccess = 46403,
 				AndrewDoor = 14900,
 				FacelessBaneTime = 50283
 			},
@@ -2870,7 +2873,6 @@ GlobalStorage = {
 	NaginataStone = 65003,
 	ExpBoost = 65004,
 	SwordOfFury = 65005,
-	XpDisplayMode = 65006,
 	LionsRockFields = 65007,
 	TheMummysCurse = 65008,
 	OberonEventTime = 65009,

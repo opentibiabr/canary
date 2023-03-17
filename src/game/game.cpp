@@ -4787,14 +4787,16 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 			outfit.lookMount = 0;
 		}
 
+		auto deltaSpeedChange = mount->speed;
 		if (player->isMounted()) {
 			Mount* prevMount = mounts.getMountByID(player->getCurrentMount());
 			if (prevMount) {
-				changeSpeed(player, mount->speed - prevMount->speed);
+				deltaSpeedChange -= prevMount->speed;
 			}
 		}
 
 		player->setCurrentMount(mount->id);
+		changeSpeed(player, deltaSpeedChange);
 	} else if (player->isMounted()) {
 		player->dismount();
 	}
@@ -7358,9 +7360,16 @@ namespace {
 					if (ret != RETURNVALUE_NOERROR) {
 						offerStatus << "Failed to remove items from player " << player.getName() << " error: " << getReturnMessage(ret);
 						return false;
+					} else {
+						removeAmount -= 1;
 					}
 				}
 			}
+		}
+		if (removeAmount > 0) {
+			SPDLOG_ERROR("Player {} tried to sell an item {} without this item", itemType.id, player.getName());
+			offerStatus << "The item you tried to market is not correct. Check the item again.";
+			return false;
 		}
 		return true;
 	}
@@ -7489,7 +7498,11 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	// If there is any error, then we will send the log and block the creation of the offer to avoid clone of items
 	// The player may lose the item as it will have already been removed, but will not clone
 	if (!offerStatus.str().empty()) {
-		player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
+		if (offerStatus.str() == "The item you tried to market is not correct. Check the item again.") {
+			player->sendTextMessage(MESSAGE_MARKET, offerStatus.str());
+		} else {
+			player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
+		}
 		SPDLOG_ERROR("{} - Player {} had an error creating an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
 		return;
 	}
@@ -7679,6 +7692,20 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				return;
 			}
 		}
+
+		// If there is any error, then we will send the log and block the creation of the offer to avoid clone of items
+		// The player may lose the item as it will have already been removed, but will not clone
+		if (!offerStatus.str().empty()) {
+			if (offerStatus.str() == "The item you tried to market is not correct. Check the item again.") {
+				player->sendTextMessage(MESSAGE_MARKET, offerStatus.str());
+			} else {
+				player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
+			}
+			SPDLOG_ERROR("{} - Player {} had an error creating an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
+			player->sendMarketEnter(player->getLastDepotId());
+			return;
+		}
+
 		player->setBankBalance(player->getBankBalance() + totalPrice);
 
 		if (it.id == ITEM_STORE_COIN) {

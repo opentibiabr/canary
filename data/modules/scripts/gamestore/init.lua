@@ -902,7 +902,7 @@ function sendStorePurchaseSuccessful(playerId, message)
 
 	local msg = NetworkMessage()
 	msg:addByte(GameStore.SendingPackets.S_CompletePurchase)
-	msg:addByte(0x00)
+	msg:addByte(0x01)
 	msg:addString(message)
 
 	msg:sendToPlayer(player)

@@ -10,7 +10,7 @@ function bosstiaryOnKill.onKill(player, creature, lastHit)
 		local participant = Player(cid)
 		if participant and participant:isPlayer() then
 			if creature:getName():lower() == (Game.getBoostedBoss()):lower() then
-				participant:addBosstiaryKill(creature:getName(), bosstiaryMultiplier + killBonus)
+				participant:addBosstiaryKill(creature:getName(), bosstiaryMultiplier * killBonus)
 			else
 				participant:addBosstiaryKill(creature:getName(), bosstiaryMultiplier)
 			end

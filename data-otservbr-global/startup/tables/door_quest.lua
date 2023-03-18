@@ -829,6 +829,19 @@ QuestDoorAction = {
 			{ x = 32719, y = 32264, z = 8 },
 			{ x = 32728, y = 32280, z = 8 }
 		}
+	},
+	[Storage.Quest.U12_40.TheOrderOfTheLion.AccessEastSide] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32429, y = 32461, z = 7 },
+			{ x = 32430, y = 32461, z = 8 }
+		}
+	},
+	[Storage.Quest.U12_40.TheOrderOfTheLion.AccessSouthernSide] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32422, y = 32499, z = 8 }
+		}
 	}
 }
 

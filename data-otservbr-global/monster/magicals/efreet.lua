@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Mal'ouquah, Deeper Banuta, Goromas Cult Cave (in the classroom), Magician Quarter."
-	}
+}
 
 monster.health = 550
 monster.maxHealth = 550
@@ -32,6 +32,9 @@ monster.race = "blood"
 monster.corpse = 6032
 monster.speed = 117
 monster.manaCost = 0
+
+monster.faction = FACTION_EFREET
+monster.enemyFactions = {FACTION_MARID, FACTION_PLAYER}
 
 monster.changeTarget = {
 	interval = 4000,

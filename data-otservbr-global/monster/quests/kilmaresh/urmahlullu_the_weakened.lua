@@ -25,6 +25,12 @@ monster.changeTarget = {
 	chance = 10
 }
 
+monster.bosstiary = {
+	bossRaceId = 1811,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Kilmaresh.UrmahlulluTimer
+}
+
 monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,

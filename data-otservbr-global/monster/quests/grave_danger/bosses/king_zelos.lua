@@ -19,6 +19,11 @@ monster.race = "venom"
 monster.corpse = 31611
 monster.speed = 212
 
+monster.bosstiary = {
+	bossRaceId = 1784,
+	bossRace = RARITY_ARCHFOE
+}
+
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10

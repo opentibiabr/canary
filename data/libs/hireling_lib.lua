@@ -72,9 +72,6 @@ HIRELING_STORAGE = {
 	OUTFIT = 28900
 }
 
-HIRELING_LAMP_ID = 29432
-HIRELING_ATTRIBUTE = "HIRELING_ID"
-
 HIRELING_FOODS_BOOST = {
 	MAGIC = 29410,
 	MELEE = 29411,
@@ -113,9 +110,9 @@ local function checkHouseAccess(hireling)
 	Spdlog.info("Returning Hireling:" .. hireling:getName() .. " to owner Inbox")
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 	-- Using FLAG_NOLIMIT to avoid losing the hireling after being kicked out of the house and having no slots available in the store inbox
-	local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
+	local lamp = inbox:addItem(HIRELING_LAMP, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
 	lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
-	lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hireling:getId()) --save hirelingId on item
+	lamp:setCustomAttribute("Hireling", hireling:getId()) --save hirelingId on item
 	player:save()
 	hireling.active = 0
 	hireling.cid = -1
@@ -150,13 +147,13 @@ local function initStorageCache()
 	if resultId ~= false then
 		local player_id, key, value
 		repeat
-			player_id = result.getNumber(resultId,"player_id")
-			key = result.getNumber(resultId,"key")
-			value = result.getNumber(resultId,"value")
+			player_id = Result.getNumber(resultId,"player_id")
+			key = Result.getNumber(resultId,"key")
+			value = Result.getNumber(resultId,"value")
 
 			addStorageCacheValue(player_id, key, value)
-		until not result.next(resultId)
-		result.free(resultId)
+		until not Result.next(resultId)
+		Result.free(resultId)
 	end
 end
 
@@ -381,7 +378,7 @@ function Hireling:returnToLamp(player_id)
 			return
 		end
 
-		local lampType = ItemType(HIRELING_LAMP_ID)
+		local lampType = ItemType(HIRELING_LAMP)
 		if owner:getFreeCapacity() < lampType:getWeight(1) then
 			owner:getPosition():sendMagicEffect(CONST_ME_POFF)
 			return owner:sendTextMessage(MESSAGE_FAILURE, "You do not have enough capacity.")
@@ -399,11 +396,11 @@ function Hireling:returnToLamp(player_id)
 		end
 
 		npc:say("As you wish!",	TALKTYPE_PRIVATE_NP, false, owner, npc:getPosition())
-		local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
+		local lamp = inbox:addItem(HIRELING_LAMP, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
 		npc:getPosition():sendMagicEffect(CONST_ME_PURPLESMOKE)
 		npc:remove() --remove hireling
 		lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. self:getName() .. ".")
-		lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hirelingId) --save hirelingId on item
+		lamp:setCustomAttribute("Hireling", hirelingId) --save hirelingId on item
 		hireling:setPosition({x=0,y=0,z=0})
 	end, 1000, self.cid, player:getGuid(), self.id)
 end
@@ -420,7 +417,7 @@ function getHirelingById(id)
 	local hireling
 	for i = 1, #HIRELINGS do
 		hireling = HIRELINGS[i]
-		if hireling:getId() == id then
+		if hireling:getId() == tonumber(id) then
 			return hireling
 		end
 	end
@@ -443,31 +440,31 @@ function HirelingsInit()
 
 	if rows then
 		repeat
-			local player_id = result.getNumber(rows, "player_id")
+			local player_id = Result.getNumber(rows, "player_id")
 
 			if not PLAYER_HIRELINGS[player_id] then
 				PLAYER_HIRELINGS[player_id] = {}
 			end
 
 			local hireling = Hireling:new()
-			hireling.id = result.getNumber(rows, "id")
+			hireling.id = Result.getNumber(rows, "id")
 			hireling.player_id = player_id
-			hireling.name = result.getString(rows, "name")
-			hireling.active = result.getNumber(rows, "active")
-			hireling.sex = result.getNumber(rows, "sex")
-			hireling.posx = result.getNumber(rows, "posx")
-			hireling.posy = result.getNumber(rows, "posy")
-			hireling.posz = result.getNumber(rows, "posz")
-			hireling.lookbody = result.getNumber(rows, "lookbody")
-			hireling.lookfeet = result.getNumber(rows, "lookfeet")
-			hireling.lookhead = result.getNumber(rows, "lookhead")
-			hireling.looklegs = result.getNumber(rows, "looklegs")
-			hireling.looktype = result.getNumber(rows, "looktype")
+			hireling.name = Result.getString(rows, "name")
+			hireling.active = Result.getNumber(rows, "active")
+			hireling.sex = Result.getNumber(rows, "sex")
+			hireling.posx = Result.getNumber(rows, "posx")
+			hireling.posy = Result.getNumber(rows, "posy")
+			hireling.posz = Result.getNumber(rows, "posz")
+			hireling.lookbody = Result.getNumber(rows, "lookbody")
+			hireling.lookfeet = Result.getNumber(rows, "lookfeet")
+			hireling.lookhead = Result.getNumber(rows, "lookhead")
+			hireling.looklegs = Result.getNumber(rows, "looklegs")
+			hireling.looktype = Result.getNumber(rows, "looktype")
 
 			table.insert(PLAYER_HIRELINGS[player_id], hireling)
 			table.insert(HIRELINGS, hireling)
-		until not result.next(rows)
-		result.free(rows)
+		until not Result.next(rows)
+		Result.free(rows)
 
 		spawnNPCs()
 		initStorageCache()
@@ -493,7 +490,7 @@ function PersistHireling(hireling)
 	local resultId = db.storeQuery(query)
 
 	if resultId then
-		local id = result.getNumber(resultId, 'id')
+		local id = Result.getNumber(resultId, 'id')
 		hireling.id = id
 		return true
 	else
@@ -525,7 +522,7 @@ function Player:addNewHireling(name, sex)
 		hireling.sex = HIRELING_SEX.MALE
 	end
 
-	local lampType = ItemType(HIRELING_LAMP_ID)
+	local lampType = ItemType(HIRELING_LAMP)
 	if self:getFreeCapacity() < lampType:getWeight(1) then
 		self:getPosition():sendMagicEffect(CONST_ME_POFF)
 		self:sendTextMessage(MESSAGE_FAILURE, "You do not have enough capacity.")
@@ -549,9 +546,9 @@ function Player:addNewHireling(name, sex)
 		end
 		table.insert(PLAYER_HIRELINGS[self:getGuid()], hireling)
 		table.insert(HIRELINGS, hireling)
-		local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
+		local lamp = inbox:addItem(HIRELING_LAMP, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
 		lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
-		lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hireling:getId()) --save hirelingId on item
+		lamp:setCustomAttribute("Hireling", hireling:getId()) --save hirelingId on item
 		hireling.active = 0
 		return hireling
 	end
@@ -631,7 +628,7 @@ function Player:findHirelingLamp(hirelingId)
 	local lastIndex = inbox:getSize() - 1
 	for i=0,lastIndex do
 		local item = inbox:getItem(i)
-		if item and item:getId() == HIRELING_LAMP_ID and item:getSpecialAttribute(HIRELING_ATTRIBUTE) == hirelingId then
+		if item and item:getId() == HIRELING_LAMP and item:getCustomAttribute("Hireling") == hirelingId then
 			return item
 		end
 	end

@@ -43,8 +43,14 @@ function playerLogin.onLogin(player)
 			player:openChannel(5) -- Advertsing main
 		end
 	else
-		player:sendTextMessage(MESSAGE_STATUS, "Welcome to " .. SERVER_NAME .. "!")
+		player:sendTextMessage(MESSAGE_STATUS, SERVER_MOTD)
 		player:sendTextMessage(MESSAGE_LOGIN, string.format("Your last visit in ".. SERVER_NAME ..": %s.", os.date("%d. %b %Y %X", player:getLastLoginSaved())))
+	end
+
+	-- Reset bosstiary time
+	local lastSaveServerTime = GetDailyRewardLastServerSave()
+	if lastSaveServerTime >= player:getLastLoginSaved() then
+		player:setRemoveBossTime(1)
 	end
 
 	if isPremium(player) then
@@ -78,7 +84,7 @@ function playerLogin.onLogin(player)
 
 	-- Recruiter system
 	local resultId = db.storeQuery('SELECT `recruiter` from `accounts` where `id`='..getAccountNumberByPlayerName(getPlayerName(player)))
-	local recruiterStatus = result.getNumber(resultId, 'recruiter')
+	local recruiterStatus = Result.getNumber(resultId, 'recruiter')
 	local sex = player:getSex()
 	if recruiterStatus >= 1 then
 		if sex == 1 then
@@ -133,6 +139,10 @@ function playerLogin.onLogin(player)
 	-- Boosted creature
 	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted creature: " .. Game.getBoostedCreature() .. " \
 	Boosted creatures yield more experience points, carry more loot than usual and respawn at a faster rate.")
+
+	-- Boosted boss
+	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted boss: " .. Game.getBoostedBoss() .. " \
+	Boosted bosses contain more loot and count more kills for your Bosstiary.")
 
 	if SCHEDULE_EXP_RATE ~= 100 then
 		if SCHEDULE_EXP_RATE > 100 then
@@ -217,7 +227,7 @@ function playerLogin.onLogin(player)
 	end
 
 	-- Set Client XP Gain Rate --
-	if Game.getStorageValue(GlobalStorage.XpDisplayMode) > 0 then
+	if configManager.getBoolean(configKeys.XP_DISPLAY_MODE) then
 		local baseRate = player:getFinalBaseRateExperience()
 		player:setBaseXpGain(baseRate * 100)
 	end

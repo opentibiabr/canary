@@ -1,20 +1,10 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -78,7 +68,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 			monsterType = g_monsters().getMonsterType(getString(L, 2));
 		}
 		// Unregister creature events (current MonsterType)
-		for (const std::string& scriptName : monster->mType->info.scripts) {
+		for (const std::string &scriptName : monster->mType->info.scripts) {
 			if (!monster->unregisterCreatureEvent(scriptName)) {
 				SPDLOG_WARN("[Warning - MonsterFunctions::luaMonsterSetType] Unknown event name: {}", scriptName);
 			}
@@ -97,7 +87,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		monster->hiddenHealth = monsterType->info.hiddenHealth;
 		monster->targetDistance = monsterType->info.targetDistance;
 		// Register creature events (new MonsterType)
-		for (const std::string& scriptName : monsterType->info.scripts) {
+		for (const std::string &scriptName : monsterType->info.scripts) {
 			if (!monster->registerCreatureEvent(scriptName)) {
 				SPDLOG_WARN("[Warning - MonsterFunctions::luaMonsterSetType] Unknown event name: {}", scriptName);
 			}
@@ -233,7 +223,7 @@ int MonsterFunctions::luaMonsterGetFriendList(lua_State* L) {
 		return 1;
 	}
 
-	const auto& friendList = monster->getFriendList();
+	const auto &friendList = monster->getFriendList();
 	lua_createtable(L, friendList.size(), 0);
 
 	int index = 0;
@@ -292,7 +282,7 @@ int MonsterFunctions::luaMonsterGetTargetList(lua_State* L) {
 		return 1;
 	}
 
-	const auto& targetList = monster->getTargetList();
+	const auto &targetList = monster->getTargetList();
 	lua_createtable(L, targetList.size(), 0);
 
 	int index = 0;
@@ -321,8 +311,7 @@ int MonsterFunctions::luaMonsterChangeTargetDistance(lua_State* L) {
 	if (monster) {
 		int32_t distance = getNumber<int32_t>(L, 2, 1);
 		pushBoolean(L, monster->changeTargetDistance(distance));
-	}
-	else {
+	} else {
 		lua_pushnil(L);
 	}
 	return 1;
@@ -360,11 +349,11 @@ int MonsterFunctions::luaMonsterSetSpawnPosition(lua_State* L) {
 		return 1;
 	}
 
-	const Position& pos = monster->getPosition();
+	const Position &pos = monster->getPosition();
 	monster->setMasterPos(pos);
 
 	g_game().map.spawnsMonster.getspawnMonsterList().emplace_front(pos, 5);
-	SpawnMonster& spawnMonster = g_game().map.spawnsMonster.getspawnMonsterList().front();
+	SpawnMonster &spawnMonster = g_game().map.spawnsMonster.getspawnMonsterList().front();
 	spawnMonster.addMonster(monster->mType->name, pos, DIRECTION_NORTH, 60000);
 	spawnMonster.startSpawnMonsterCheck();
 
@@ -372,9 +361,9 @@ int MonsterFunctions::luaMonsterSetSpawnPosition(lua_State* L) {
 	return 1;
 }
 
-int MonsterFunctions::luaMonsterGetRespawnType(lua_State *L) {
+int MonsterFunctions::luaMonsterGetRespawnType(lua_State* L) {
 	// monster:getRespawnType()
-	Monster *monster = getUserdata<Monster>(L, 1);
+	Monster* monster = getUserdata<Monster>(L, 1);
 
 	if (!monster) {
 		lua_pushnil(L);
@@ -388,9 +377,9 @@ int MonsterFunctions::luaMonsterGetRespawnType(lua_State *L) {
 	return 2;
 }
 
-int MonsterFunctions::luaMonsterGetTimeToChangeFiendish(lua_State *L) {
+int MonsterFunctions::luaMonsterGetTimeToChangeFiendish(lua_State* L) {
 	// monster:getTimeToChangeFiendish()
-	const Monster *monster = getUserdata<Monster>(L, 1);
+	const Monster* monster = getUserdata<Monster>(L, 1);
 	if (!monster) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -401,10 +390,10 @@ int MonsterFunctions::luaMonsterGetTimeToChangeFiendish(lua_State *L) {
 	return 1;
 }
 
-int MonsterFunctions::luaMonsterSetTimeToChangeFiendish(lua_State *L) {
+int MonsterFunctions::luaMonsterSetTimeToChangeFiendish(lua_State* L) {
 	// monster:setTimeToChangeFiendish(endTime)
 	time_t endTime = getNumber<uint32_t>(L, 2, 1);
-	Monster *monster = getUserdata<Monster>(L, 1);
+	Monster* monster = getUserdata<Monster>(L, 1);
 	if (!monster) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -415,9 +404,9 @@ int MonsterFunctions::luaMonsterSetTimeToChangeFiendish(lua_State *L) {
 	return 1;
 }
 
-int MonsterFunctions::luaMonsterGetMonsterForgeClassification(lua_State *L) {
+int MonsterFunctions::luaMonsterGetMonsterForgeClassification(lua_State* L) {
 	// monster:getMonsterForgeClassification()
-	const Monster *monster = getUserdata<Monster>(L, 1);
+	const Monster* monster = getUserdata<Monster>(L, 1);
 	if (!monster) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -429,10 +418,10 @@ int MonsterFunctions::luaMonsterGetMonsterForgeClassification(lua_State *L) {
 	return 1;
 }
 
-int MonsterFunctions::luaMonsterSetMonsterForgeClassification(lua_State *L) {
+int MonsterFunctions::luaMonsterSetMonsterForgeClassification(lua_State* L) {
 	// monster:setMonsterForgeClassification(classication)
 	ForgeClassifications_t classification = getNumber<ForgeClassifications_t>(L, 2);
-	Monster *monster = getUserdata<Monster>(L, 1);
+	Monster* monster = getUserdata<Monster>(L, 1);
 	if (!monster) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -443,9 +432,9 @@ int MonsterFunctions::luaMonsterSetMonsterForgeClassification(lua_State *L) {
 	return 1;
 }
 
-int MonsterFunctions::luaMonsterGetForgeStack(lua_State *L) {
+int MonsterFunctions::luaMonsterGetForgeStack(lua_State* L) {
 	// monster:getForgeStack()
-	const Monster *monster = getUserdata<Monster>(L, 1);
+	const Monster* monster = getUserdata<Monster>(L, 1);
 	if (!monster) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -456,10 +445,10 @@ int MonsterFunctions::luaMonsterGetForgeStack(lua_State *L) {
 	return 1;
 }
 
-int MonsterFunctions::luaMonsterSetForgeStack(lua_State *L) {
+int MonsterFunctions::luaMonsterSetForgeStack(lua_State* L) {
 	// monster:setForgeStack(stack)
 	uint16_t stack = getNumber<uint16_t>(L, 2, 0);
-	Monster *monster = getUserdata<Monster>(L, 1);
+	Monster* monster = getUserdata<Monster>(L, 1);
 	if (!monster) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -473,9 +462,9 @@ int MonsterFunctions::luaMonsterSetForgeStack(lua_State *L) {
 	return 1;
 }
 
-int MonsterFunctions::luaMonsterConfigureForgeSystem(lua_State *L) {
+int MonsterFunctions::luaMonsterConfigureForgeSystem(lua_State* L) {
 	// monster:configureForgeSystem()
-	Monster *monster = getUserdata<Monster>(L, 1);
+	Monster* monster = getUserdata<Monster>(L, 1);
 	if (!monster) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -486,9 +475,9 @@ int MonsterFunctions::luaMonsterConfigureForgeSystem(lua_State *L) {
 	return 1;
 }
 
-int MonsterFunctions::luaMonsterClearFiendishStatus(lua_State *L) {
+int MonsterFunctions::luaMonsterClearFiendishStatus(lua_State* L) {
 	// monster:clearFiendishStatus()
-	Monster *monster = getUserdata<Monster>(L, 1);
+	Monster* monster = getUserdata<Monster>(L, 1);
 	if (!monster) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -496,5 +485,18 @@ int MonsterFunctions::luaMonsterClearFiendishStatus(lua_State *L) {
 	}
 
 	monster->clearFiendishStatus();
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterIsForgeable(lua_State* L) {
+	// monster:isForgeable()
+	const Monster* monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	pushBoolean(L, monster->canBeForgeMonster());
 	return 1;
 }

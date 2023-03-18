@@ -42,7 +42,7 @@ gameProtocolPort = 7172
 statusProtocolPort = 7171
 maxPlayers = 0
 serverName = "OTServBR-Global"
-motd = "Welcome to the OTServBR-Global!"
+serverMotd = "Welcome to the OTServBR-Global!"
 onePlayerOnlinePerAccount = true
 allowClones = false
 statusTimeout = 5 * 1000
@@ -104,6 +104,11 @@ forgeInfluencedLimit = 300
 forgeFiendishLimit = 3
 forgeFiendishIntervalType = "hour"
 forgeFiendishIntervalTime = "1"
+
+-- Bosstiary system
+boostedBossSlot = true
+boostedBossLootBonus = 250
+boostedBossKillBonus = 3
 
 -- NOTE: Access only for Premium Account
 onlyPremiumAccount = false
@@ -171,10 +176,12 @@ deathLosePercent = -1
 
 -- Houses
 -- NOTE: set housePriceEachSQM to -1 to disable the ingame buy house functionality
+-- NOTE: set houseBuyLevel to 0 to disable the min level purchase functionality.
 -- Periods: daily/weekly/monthly/yearly/never
 housePriceEachSQM = 1000
 houseRentPeriod = "never"
 houseOwnedByAccount = false
+houseBuyLevel = 100
 
 -- Item Usage
 timeBetweenActions = 200
@@ -224,6 +231,7 @@ mysqlSock = ""
 passwordType = "sha1"
 
 -- Misc.
+-- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate
 allowChangeOutfit = true
 freePremium = false
 kickIdlePlayerAfterMinutes = 15
@@ -238,6 +246,7 @@ showScriptsLogInConsole = false
 criticalChance = 10
 inventoryGlowOnFiveBless = false
 adventurersBlessingLevel = 21
+experienceDisplayRates = true
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes
@@ -304,7 +313,7 @@ startupDatabaseOptimization = true
 -- Status server information
 ownerName = "OpenTibiaBR"
 ownerEmail = "opentibiabr@outlook.com"
-url = "http://docs.opentibiabr.org/"
+url = "http://docs.opentibiabr.com/"
 location = "South America"
 
 -- Sends Discord webhook notifications on startup, raids and shutdown.

@@ -1,20 +1,10 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_MAP_TOWN_H_
@@ -22,15 +12,15 @@
 
 #include "game/movement/position.h"
 
-class Town
-{
+class Town {
 	public:
-		explicit Town(uint32_t initId) : id(initId) {}
+		explicit Town(uint32_t initId) :
+			id(initId) { }
 
-		const Position& getTemplePosition() const {
+		const Position &getTemplePosition() const {
 			return templePosition;
 		}
-		const std::string& getName() const {
+		const std::string &getName() const {
 			return name;
 		}
 
@@ -52,26 +42,25 @@ class Town
 
 using TownMap = std::map<uint32_t, Town*>;
 
-class Towns
-{
+class Towns {
 	public:
 		Towns() = default;
 		~Towns() {
-			for (const auto& it : townMap) {
+			for (const auto &it : townMap) {
 				delete it.second;
 			}
 		}
 
 		// non-copyable
-		Towns(const Towns&) = delete;
-		Towns& operator=(const Towns&) = delete;
+		Towns(const Towns &) = delete;
+		Towns &operator=(const Towns &) = delete;
 
 		bool addTown(uint32_t townId, Town* town) {
 			return townMap.emplace(townId, town).second;
 		}
 
-		Town* getTown(const std::string& townName) const {
-			for (const auto& it : townMap) {
+		Town* getTown(const std::string &townName) const {
+			for (const auto &it : townMap) {
 				if (strcasecmp(townName.c_str(), it.second->getName().c_str()) == 0) {
 					return it.second;
 				}
@@ -87,7 +76,7 @@ class Towns
 			return it->second;
 		}
 
-		const TownMap& getTowns() const {
+		const TownMap &getTowns() const {
 			return townMap;
 		}
 
@@ -95,4 +84,4 @@ class Towns
 		TownMap townMap;
 };
 
-#endif  // SRC_MAP_TOWN_H_
+#endif // SRC_MAP_TOWN_H_

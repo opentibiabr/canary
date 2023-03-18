@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 4,
 	Occurrence = 0,
 	Locations = "Issavi Sewers, Kilmaresh Mountains, Kilmaresh Catacombs."
-	}
+}
 
 monster.health = 8500
 monster.maxHealth = 8500
@@ -32,6 +32,9 @@ monster.race = "blood"
 monster.corpse = 31419
 monster.speed = 160
 monster.manaCost = 0
+
+monster.faction = FACTION_FAFNAR
+monster.enemyFactions = {FACTION_ANUMA, FACTION_PLAYER}
 
 monster.changeTarget = {
 	interval = 4000,

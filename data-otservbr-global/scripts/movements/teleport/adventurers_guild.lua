@@ -17,5 +17,5 @@ function adventurersGuild.onStepIn(creature, item, position, fromPosition)
 end
 
 adventurersGuild:type("stepin")
-adventurersGuild:aid(4255)
+adventurersGuild:aid(4253)
 adventurersGuild:register()

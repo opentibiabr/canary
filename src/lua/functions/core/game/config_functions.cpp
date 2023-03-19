@@ -101,6 +101,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", RATE_LOOT);
 	registerEnumIn(L, "configKeys", RATE_MAGIC);
 	registerEnumIn(L, "configKeys", RATE_SPAWN);
+	registerEnumIn(L, "configKeys", RATE_KILLING_IN_THE_NAME_OF_POINTS);
 	registerEnumIn(L, "configKeys", HOUSE_PRICE);
 	registerEnumIn(L, "configKeys", HOUSE_BUY_LEVEL);
 	registerEnumIn(L, "configKeys", MAX_MESSAGEBUFFER);

@@ -12,7 +12,7 @@ function portalReward.onStepIn(creature, item, position, fromPosition)
 	
 		player:teleportTo(Position(33621, 31411, 10))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-	return true
+	  return true
 end
 
 portalReward:type("stepin")

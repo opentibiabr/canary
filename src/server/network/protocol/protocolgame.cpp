@@ -5451,7 +5451,7 @@ void ProtocolGame::sendTextWindow(uint32_t windowTextId, Item* item, uint16_t ma
 	msg.addByte(0x00); // Show (Traded)
 
 	auto writtenDate = item->getAttribute<time_t>(ItemAttribute_t::DATE);
-	if (writtenDate != 0) {
+	if (writtenDate != 0 && writtenDate < std::numeric_limits<time_t>::max()) {
 		msg.addString(formatDateShort(writtenDate));
 	} else {
 		msg.add<uint16_t>(0x00);

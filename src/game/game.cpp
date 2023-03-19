@@ -6600,8 +6600,6 @@ void Game::addDistanceEffect(const SpectatorHashSet &spectators, const Position 
 void Game::checkImbuements() {
 	g_scheduler().addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
 
-	std::vector<uint32_t> toErase;
-
 	for (const auto &[mapPlayerId, mapPlayer] : getPlayers()) {
 		if (!mapPlayer) {
 			continue;

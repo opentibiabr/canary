@@ -274,6 +274,9 @@ rateLoot = 1
 rateMagic = 1
 rateSpawn = 1
 
+-- Killing in the name of Quest
+rateKillingInTheNameOfPoints = 1
+
 -- Today regeneration condition over an loop every 1 second,
 -- So values which should regenerated less then 1 second or won't will work
 rateHealthRegen = 1.0

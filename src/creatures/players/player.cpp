@@ -504,7 +504,7 @@ void Player::updateInventoryImbuement() {
 			ImbuementInfo imbuementInfo;
 			// Get the imbuement information for the current slot
 			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
-				break;
+				continue;
 			}
 
 			// Imbuement from imbuementInfo, this variable reduces code complexity

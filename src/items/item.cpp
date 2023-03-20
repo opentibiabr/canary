@@ -741,6 +741,17 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 			break;
 		}
 
+		case ATTR_AMOUNT: {
+			uint16_t amount;
+			if (!propStream.read<uint16_t>(amount)) {
+				SPDLOG_ERROR("[{}] failed to read amount", __FUNCTION__);
+				return ATTR_READ_ERROR;
+			}
+
+			setAttribute(AMOUNT, amount);
+			break;
+		}
+
 		case ATTR_CUSTOM: {
 			uint64_t size;
 			if (!propStream.read<uint64_t>(size)) {
@@ -917,6 +928,11 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 	if (hasAttribute(ItemAttribute_t::TIER)) {
 		propWriteStream.write<uint8_t>(ATTR_TIER);
 		propWriteStream.write<uint8_t>(getTier());
+	}
+
+	if (hasAttribute(AMOUNT)) {
+		propWriteStream.write<uint8_t>(ATTR_AMOUNT);
+		propWriteStream.write<uint16_t>(getAttribute<uint16_t>(AMOUNT));
 	}
 
 	// Serialize custom attributes, only serialize if the map not is empty

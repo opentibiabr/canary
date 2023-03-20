@@ -40,6 +40,7 @@ class ItemAttributeHelper {
 			checkTypes |= ItemAttribute_t::QUICKLOOTCONTAINER;
 			checkTypes |= ItemAttribute_t::DURATION_TIMESTAMP;
 			checkTypes |= ItemAttribute_t::TIER;
+			checkTypes |= ItemAttribute_t::AMOUNT;
 			return (type & static_cast<ItemAttribute_t>(checkTypes)) != 0;
 		}
 

@@ -88,6 +88,12 @@ taskHuntingBonusRerollPrice = 1
 taskHuntingFreeRerollTime = 20 * 60 * 60
 
 -- Forge system
+-- NOTE: forgeAmountMultiplier, amount dusts multiplies of influenced monsters, default 3
+-- NOTE: forgeMinSlivers, min slivers from influenced monsters
+-- NOTE: forgeMaxSlivers, max slivers from influenced monsters
+-- NOTE: forgeInfluencedLimit, limit of influenced monsters that will be created in interval type and time
+-- NOTE: forgeFiendishLimit, limit of diabolic monsters that will be created in interval type and time, less than forgeInfluencedLimit
+-- NOTE: forgeFiendishIntervalType: "hour", "minute" or "second"
 forgeMaxItemTier = 10
 forgeCostOneSliver = 20
 forgeSliverAmount = 3
@@ -98,6 +104,7 @@ forgeTransferCost = 100
 forgeBaseSuccessRate = 50
 forgeBonusSuccessRate = 15
 forgeTierLossReduction = 50
+forgeAmountMultiplier = 3
 forgeMinSlivers = 3
 forgeMaxSlivers = 7
 forgeInfluencedLimit = 300

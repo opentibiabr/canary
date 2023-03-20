@@ -259,6 +259,7 @@ bool ConfigManager::load() {
 	integer[FORGE_BASE_SUCCESS_RATE] = getGlobalNumber(L, "forgeBaseSuccessRate", 50);
 	integer[FORGE_BONUS_SUCCESS_RATE] = getGlobalNumber(L, "forgeBonusSuccessRate", 15);
 	integer[FORGE_TIER_LOSS_REDUCTION] = getGlobalNumber(L, "forgeTierLossReduction", 50);
+	integer[FORGE_AMOUNT_MULTIPLIER] = getGlobalNumber(L, "forgeAmountMultiplier", 3);
 	integer[FORGE_MIN_SLIVERS] = getGlobalNumber(L, "forgeMinSlivers", 3);
 	integer[FORGE_MAX_SLIVERS] = getGlobalNumber(L, "forgeMaxSlivers", 7);
 	integer[FORGE_INFLUENCED_CREATURES_LIMIT] = getGlobalNumber(L, "forgeInfluencedLimit", 300);

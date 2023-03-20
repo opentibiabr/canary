@@ -73,13 +73,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 90540, maxCount = 4},
-	{name = "great mana potion", chance = 22220, maxCount = 2},
-	{name = "terra amulet", chance = 14920},
-	{name = "dark mushroom", chance = 13660, maxCount = 6},
-	{name = "green mushroom", chance = 14560, maxCount = 5},
-	{name = "garlic necklace", chance = 1680},
-	{name = "bat wing", chance = 1550, maxCount = 2}
+	{name = "platinum coin", chance = 100000, maxCount = 4},
+	{name = "great mana potion", chance = 30000, maxCount = 2},
+	{name = "terra amulet", chance = 6000},
+	{name = "dark mushroom", chance = 15000, maxCount = 6},
+	{name = "green mushroom", chance = 10300, maxCount = 5},
+	{name = "garlic necklace", chance = 5000},
+	{name = "bat wing", chance = 5000, maxCount = 2}
 }
 
 monster.attacks = {

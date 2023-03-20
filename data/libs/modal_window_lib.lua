@@ -17,6 +17,8 @@ function ModalWindow.new(self, ...)
 	self.buttons = {}
 	self.choices = {}
 	self.using = 0
+	self.defaultEnterButton = 0
+	self.defaultEscapeButton = 1
 	return setmetatable(self, ModalWindow)
 end
 
@@ -192,13 +194,10 @@ function ModalWindow:create()
 	for id = 1, #self.buttons do
 		local name = self.buttons[id].name
 		modalWindow:addButton(id, name)
-		if id == self.defaultEnterButton or name == self.defaultEnterButton then
-			modalWindow:setDefaultEnterButton(id)
-		elseif id == self.defaultEscapeButton or name == self.defaultEscapeButton then
-			modalWindow:setDefaultEscapeButton(id)
-		end
 	end
 
+	modalWindow:setDefaultEnterButton(self.defaultEnterButton)
+	modalWindow:setDefaultEscapeButton(self.defaultEscapeButton)
 	for id = 1, #self.choices do
 		modalWindow:addChoice(id, self.choices[id].text)
 	end

@@ -859,6 +859,12 @@ QuestDoorAction = {
 			{ x = 32728, y = 32280, z = 8 }
 		}
 	},
+	[Storage.Quest.U12_00.TheDreamCourts.DreamScarAccess] = {
+		itemId = false,
+		itemPos = {
+			{ x = 31983, y = 32000, z = 14}
+		}
+	},
 	[Storage.Quest.U12_40.TheOrderOfTheLion.AccessEastSide] = {
 		itemId = false,
 		itemPos = {

@@ -2700,6 +2700,7 @@ Storage = {
 				QuestLine = 46401,
 				HauntedHouseAccess = 46402,
 				BuriedCathedralAccess = 46403,
+				DreamScarAccess = 46404,
 				AndrewDoor = 14900,
 				FacelessBaneTime = 50283,
 				AccessDoors = 46309,

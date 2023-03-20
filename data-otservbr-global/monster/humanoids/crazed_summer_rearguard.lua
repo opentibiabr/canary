@@ -79,22 +79,22 @@ monster.voices = {
 
 monster.loot = {
 	{name = "power bolt", chance = 1000000},
-	{name = "small enchanted sapphire", chance = 1000000, maxCount = 2},
-	{name = "platinum coin", chance = 1000000, maxCount = 5},
-	{id = 5921, chance = 1500}, -- heaven blossom
-	{name = "dream essence egg", chance = 1155},
-	{name = "elvish talisman", chance = 1355},
-	{name = "violet crystal shard", chance = 1475},
-	{name = "small enchanted ruby", chance = 1755},
-	{name = "red crystal fragment", chance = 1565},
-	{name = "leaf star", chance = 11100, maxCount = 8},
-	{id = 23529, chance = 1000}, -- ring of blue plasma
-	{name = "sun fruit", chance = 25800},
-	{id = 23542, chance = 1590},-- collar of blue plasma
-	{name = "wood cape", chance = 30000},
-	{name = "small diamond", chance = 800},
-	{name = "yellow gem", chance = 640},
-	{name = "crystal crossbow", chance = 600}
+	{name = "small enchanted sapphire", chance = 790, maxCount = 2},
+	{name = "platinum coin", chance = 85000, maxCount = 11},
+	{id = 5921, chance = 10500}, -- heaven blossom
+	{name = "dream essence egg", chance = 8500},
+	{name = "elvish talisman", chance = 7200},
+	{name = "violet crystal shard", chance = 4500},
+	{name = "small enchanted ruby", chance = 6000},
+	{name = "red crystal fragment", chance = 4500},
+	{name = "leaf star", chance = 4000, maxCount = 8},
+	{id = 23529, chance = 2500}, -- ring of blue plasma
+	{name = "sun fruit", chance = 890},
+	{id = 23542, chance = 900},-- collar of blue plasma
+	{name = "wood cape", chance = 1300},
+	{name = "small diamond", chance = 600},
+	{name = "yellow gem", chance = 1000},
+	{name = "crystal crossbow", chance = 500}
 }
 
 monster.attacks = {

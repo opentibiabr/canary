@@ -3360,14 +3360,14 @@ Item* Game::wrapItem(Item* item) {
 	if (hiddenCharges > 0) {
 		newItem->setAttribute(DATE, hiddenCharges);
 	}
-	if(amount > 0){
+	if (amount > 0) {
 		newItem->setAttribute(AMOUNT, amount);
 	}
 	newItem->startDecaying();
 	return newItem;
 }
 
-void Game::unwrapItem(Item *item, uint16_t unWrapId) {
+void Game::unwrapItem(Item* item, uint16_t unWrapId) {
 	auto hiddenCharges = item->getAttribute<uint16_t>(DATE);
 	auto amount = item->getAttribute<uint16_t>(AMOUNT);
 	if (!amount) {

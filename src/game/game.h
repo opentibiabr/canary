@@ -691,7 +691,7 @@ class Game {
 			const std::string &damageString, std::string &spectatorMessage
 		) const;
 
-		void unwrapItem(Item *item, uint16_t unWrapId);
+		void unwrapItem(Item* item, uint16_t unWrapId);
 };
 
 constexpr auto g_game = &Game::getInstance;

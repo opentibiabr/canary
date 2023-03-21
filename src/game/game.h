@@ -690,6 +690,8 @@ class Game {
 			const Player* targetPlayer, TextMessage &message, std::stringstream &ss,
 			const std::string &damageString, std::string &spectatorMessage
 		) const;
+
+		void unwrapItem(Item* item, uint16_t unWrapId);
 };
 
 constexpr auto g_game = &Game::getInstance;

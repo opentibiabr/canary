@@ -76,6 +76,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addExperience(experience - player:getExperience())
 		end
 	end
+
+	if MsgContains(message, "bless") or MsgContains(message, "blessing") then
+		npcHandler:say("You have been blessed by all of five gods!, |PLAYERNAME|.", npc, creature)
+		player:addMissingBless(false)
+		player:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
+	end
 end
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

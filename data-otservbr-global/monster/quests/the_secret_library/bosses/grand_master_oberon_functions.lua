@@ -12,14 +12,14 @@ GrandMasterOberonAsking = {
 
 GrandMasterOberonResponses = {
 	[1] = {msg = "How appropriate, you look like something worms already got the better of!"},
-	[2] = {msg = "Are you ever going to fight or do you prefer talking!"},
+	[2] = {msg = "Are you ever going to fight or do you prefer talking?"},
 	[3] = {msg = "Even before they smell your breath?"},
 	[4] = {msg = "Then let me show you the concept of mortality before it!"},
 	[5] = {msg = "Too bad you barely exist at all!"},
 	[6] = {msg = "Excuse me but I still do not get the message!"},
 	[7] = {msg = "Dare strike up a Minnesang and you will receive your last accolade!"},
 	[8] = {msg = "Then why are we fighting alone right now?"},
-	[9] = {msg = "SEHWO ASIMO, TOLIDO ESD!"},
+	[9] = {msg = "SEHWO ASIMO, TOLIDO ESD"},
 }
 
 GrandMasterOberonConfig = {

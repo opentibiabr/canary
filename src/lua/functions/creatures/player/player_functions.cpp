@@ -3319,3 +3319,42 @@ int PlayerFunctions::luaPlayerGetBossBonus(lua_State* L) {
 	lua_pushnumber(L, static_cast<lua_Number>(bonusBoss));
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerHasGroupFlag(lua_State* L) {
+	// player:hasGroupFlag(flag)
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	pushBoolean(L, player->hasFlag(getNumber<PlayerFlags_t>(L, 2)));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetGroupFlag(lua_State* L) {
+	// player:setGroupFlag(flag)
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->setFlag(getNumber<PlayerFlags_t>(L, 2));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveGroupFlag(lua_State* L) {
+	// player:removeGroupFlag(flag)
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->removeFlag(getNumber<PlayerFlags_t>(L, 2));
+	return 1;
+}

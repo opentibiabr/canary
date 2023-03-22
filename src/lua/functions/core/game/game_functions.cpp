@@ -567,13 +567,13 @@ int GameFunctions::luaGameReload(lua_State* L) {
 	if (g_gameReload.getReloadNumber(reloadType) == g_gameReload.getReloadNumber(Reload_t::RELOAD_TYPE_NONE)) {
 		reportErrorFunc("Reload type is none");
 		pushBoolean(L, false);
-		return 0;
+		return 1;
 	}
 
 	if (g_gameReload.getReloadNumber(reloadType) >= g_gameReload.getReloadNumber(Reload_t::RELOAD_TYPE_LAST)) {
 		reportErrorFunc("Reload type not exist");
 		pushBoolean(L, false);
-		return 0;
+		return 1;
 	}
 
 	pushBoolean(L, g_gameReload.init(reloadType));

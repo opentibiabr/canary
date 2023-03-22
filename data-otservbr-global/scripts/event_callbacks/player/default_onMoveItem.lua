@@ -56,8 +56,7 @@ end
 local ec = EventCallback
 
 function ec.onMoveItem(player, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
-	-- No move items with actionID = 100
-	if item:getActionId() == NOT_MOVEABLE_ACTION then
+	if item:getActionId() == IMMOVABLE_ACTION_ID then
 		player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end
@@ -215,6 +214,7 @@ function ec.onMoveItem(player, item, count, fromPosition, toPosition, fromCylind
 	if not antiPush(player, item, count, fromPosition, toPosition, fromCylinder, toCylinder) then
 		return false
 	end
+
 	return true
 end
 

@@ -7,8 +7,8 @@ function ec.onSpawn(monster, position)
 
 	-- We won't run anything from here on down if we're opening the global pack
 	if IsRunningGlobalDatapack() then
-		if monster:getName():lower() == "cobra scout" or 
-			monster:getName():lower() == "cobra vizier" or 
+		if monster:getName():lower() == "cobra scout" or
+			monster:getName():lower() == "cobra vizier" or
 			monster:getName():lower() == "cobra assassin" then
 			if getGlobalStorageValue(GlobalStorage.CobraBastionFlask) >= os.time() then
 				monster:setHealth(monster:getMaxHealth() * 0.75)

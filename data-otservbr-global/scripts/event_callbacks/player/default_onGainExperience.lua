@@ -124,14 +124,8 @@ function ec.onGainExperience(player, source, exp, rawExp)
 	end
 
 	local baseRate = player:getFinalBaseRateExperience()
-	local finalExperience = nil
-	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
-		finalExperience = (exp * baseRate + (exp * (storeXpBoostAmount/100))) * staminaBoost
-	else
-		finalExperience = (exp + (exp * (storeXpBoostAmount/100))) * staminaBoost
-	end
 
-	return math.max(finalExperience)
+	return (exp * baseRate + (exp * (storeXpBoostAmount/100))) * staminaBoost
 end
 
 ec:register(--[[0]])

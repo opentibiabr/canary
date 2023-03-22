@@ -38,12 +38,11 @@ local storeItemID = {
 local ec = EventCallback
 
 function ec.onTradeRequest(player, target, item)
-	-- No trade items with actionID = 100
-	if item:getActionId() == NOT_MOVEABLE_ACTION then
+	if item:getActionId() == IMMOVABLE_ACTION_ID then
 		return false
 	end
 
-	if table.contains(storeItemID, item:getId()) then
+	if table.contains(storeItemID,item.itemid) then
 		return false
 	end
 	return true

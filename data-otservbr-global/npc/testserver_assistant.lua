@@ -70,23 +70,47 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getLevel() > npcConfig.maxLevel then
 			npcHandler:say('You can not take it anymore', npc, creature)
 		else
-			npcHandler:say('Here you are.', npc, creature)
-			local level = npcConfig.amountLevel
+			npcHandler:say('Here you are |PLAYERNAME|.', npc, creature)
+			local level = player:getLevel() + npcConfig.amountLevel - 1
 			local experience = ((50 * level * level * level) - (150 * level * level) + (400 * level)) / 3
-			player:addExperience(experience - player:getExperience())
+			player:addExperience(experience - player:getExperience(), true, true)
 		end
 	end
 
 	if MsgContains(message, "bless") or MsgContains(message, "blessing") then
-		npcHandler:say("You have been blessed by all of five gods!, |PLAYERNAME|.", npc, creature)
-		player:addMissingBless(false)
+		local hasToF = Blessings.Config.HasToF and player:hasBlessing(1) or true
+		donthavefilter = function(p, b) return not p:hasBlessing(b) end
+		local missingBless = player:getBlessings(nil, donthavefilter)
+		local missingBlessAmt = #missingBless + (hasToF and 0 or 1)
+
+		if missingBlessAmt == 0 then
+			player:sendTextMessage(MESSAGE_EVENT_DEFAULT, "You are already blessed.")
+			player:getPosition():sendMagicEffect(CONST_ME_POFF)
+			return false
+		end
+
+		for i, v in ipairs(missingBless) do
+			player:addBlessing(v.id, 1)
+		end
+		npcHandler:say("You have been blessed by all gods, |PLAYERNAME|.", npc, creature)
+		player:sendTextMessage(MESSAGE_EVENT_DEFAULT, "You received the remaining " .. missingBlessAmt .. " blesses.")
 		player:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
+	end
+
+	if MsgContains(message, "reset") then
+		if player:getLevel() > 8 then
+			local level = 7
+			local experience = ((50 * level * level * level) - (150 * level * level) + (400 * level)) / 3
+			player:removeExperience(player:getExperience() - experience)
+		else
+			npcHandler:say('You can not take it anymore', npc, creature)
+		end
 	end
 end
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
-npcHandler:setMessage(MESSAGE_GREET, "Hey |PLAYERNAME|. I'm Testserver Assistant and I can give {money} and {experience} which will be useful for testing on "
-	.. configManager.getString(configKeys.SERVER_NAME) .. " server.")
+npcHandler:setMessage(MESSAGE_GREET, "Hey |PLAYERNAME|. I'm Testserver Assistant and I can give {money}, {experience} and {blessing} which will be useful for testing on "
+	.. configManager.getString(configKeys.SERVER_NAME) .. " server." .. " You can too to back to level 8 with {reset}.")
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

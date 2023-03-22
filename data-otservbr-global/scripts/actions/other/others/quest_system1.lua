@@ -29,7 +29,7 @@ local tutorialIds = {
 	[50086] = 11
 }
 
-local hotaQuest = {50950, 50951, 50952, 50953, 50954, 50955}
+local hotaQuest = { 50950, 50951, 50952, 50953, 50954, 50955 }
 
 local questSystem1 = Action()
 
@@ -46,9 +46,23 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 		player:setStorageValue(Storage.SvargrondArena.PitDoor, -1)
 	end
 
-	if player:getStorageValue(storage) > 0 then
+	if player:getStorageValue(storage) > 0 and player:getAccountType() < ACCOUNT_TYPE_GOD then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The ' .. ItemType(item.itemid):getName() .. ' is empty.')
 		return true
+	end
+
+	local function copyContainer(originalContainer, newContainer)
+		for i = 0, originalContainer:getSize() - 1 do
+			local originalItem = originalContainer:getItem(i)
+			local newItem = Game.createItem(originalItem.itemid, originalItem.type)
+			newItem:setActionId(originalItem:getActionId())
+			newItem:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, originalItem:getAttribute(ITEM_ATTRIBUTE_DESCRIPTION))
+
+			if originalItem:isContainer() then
+				copyContainer(Container(originalItem.uid), Container(newItem.uid))
+			end
+			newContainer:addItemEx(newItem)
+		end
 	end
 
 	local items, reward = {}
@@ -57,12 +71,18 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 		local actionId = item:getActionId()
 		reward = Game.createItem(item.itemid, item.type)
 		reward:setActionId(actionId)
+		reward:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, item:getAttribute(ITEM_ATTRIBUTE_DESCRIPTION))
 	else
 		local container = Container(item.uid)
 		for i = 0, container:getSize() - 1 do
 			local originalItem = container:getItem(i)
 			local newItem = Game.createItem(originalItem.itemid, originalItem.type)
 			newItem:setActionId(originalItem:getActionId())
+			newItem:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, originalItem:getAttribute(ITEM_ATTRIBUTE_DESCRIPTION))
+
+			if originalItem:isContainer() then
+				copyContainer(Container(originalItem.uid), Container(newItem.uid))
+			end
 			items[#items + 1] = newItem
 		end
 
@@ -75,7 +95,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 	if reward then
 		local ret = ItemType(reward.itemid)
 		if ret:isRune() then
-			result = ret:getArticle() .. ' ' ..  ret:getName() .. ' (' .. reward.type .. ' charges)'
+			result = ret:getArticle() .. ' ' .. ret:getName() .. ' (' .. reward.type .. ' charges)'
 		elseif ret:isStackable() and reward:getCount() > 1 then
 			result = reward:getCount() .. ' ' .. ret:getPluralName()
 		elseif ret:getArticle() ~= '' then

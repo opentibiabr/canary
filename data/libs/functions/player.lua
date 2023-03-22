@@ -424,7 +424,7 @@ function Player:CreateFamiliarSpell()
 	playerPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	myFamiliar:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	-- 15 minute count starts after using the spell
-	self:setStorageValue(Storage.FamiliarSummon, os.time() + 15*60)
+	self:setStorageValue(Global.Storage.FamiliarSummon, os.time() + 15*60)
 	addEvent(RemoveFamiliar, 15*60*1000, myFamiliar:getId(), self:getId())
 	for sendMessage = 1, #FAMILIAR_TIMER do
 		self:setStorageValue(

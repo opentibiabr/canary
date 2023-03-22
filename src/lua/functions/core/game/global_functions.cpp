@@ -819,8 +819,7 @@ int GlobalFunctions::luaTablePack(lua_State* L) {
 	return 1;
 }
 
-int GlobalFunctions::luaIsScriptsInterface(lua_State* L)
-{
+int GlobalFunctions::luaIsScriptsInterface(lua_State* L) {
 	// isScriptsInterface()
 	if (getScriptEnv()->getScriptInterface() == &g_scripts()->getScriptInterface()) {
 		pushBoolean(L, true);

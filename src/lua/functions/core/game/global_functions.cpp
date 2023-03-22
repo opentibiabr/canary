@@ -16,6 +16,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/script_environment.hpp"
 #include "server/network/protocol/protocolstatus.h"
+#include "lua/scripts/scripts.h"
 
 class Creature;
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
@@ -816,6 +817,18 @@ int GlobalFunctions::luaTablePack(lua_State* L) {
 
 	lua_pushinteger(L, n);
 	lua_setfield(L, 1, "n");
+	return 1;
+}
+
+int GlobalFunctions::luaIsScriptsInterface(lua_State* L)
+{
+	// isScriptsInterface()
+	if (getScriptEnv()->getScriptInterface() == &g_scripts()->getScriptInterface()) {
+		pushBoolean(L, true);
+	} else {
+		reportErrorFunc(L, "EventCallback: can only be called inside (Revscript Env)");
+		pushBoolean(L, false);
+	}
 	return 1;
 }
 

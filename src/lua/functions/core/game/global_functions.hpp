@@ -51,6 +51,7 @@ class GlobalFunctions final : LuaScriptInterface {
 			registerGlobalMethod(L, "rawgetmetatable", GlobalFunctions::luaRawGetMetatable);
 			registerGlobalMethod(L, "createTable", GlobalFunctions::luaCreateTable);
 			registerMethod(L, "table", "pack", GlobalFunctions::luaTablePack);
+			registerGlobalMethod(L, "isScriptsInterface", GlobalFunctions::isScriptsInterface);
 			registerGlobalMethod(L, "systemTime", GlobalFunctions::luaSystemTime);
 		}
 
@@ -88,6 +89,7 @@ class GlobalFunctions final : LuaScriptInterface {
 		static int luaRawGetMetatable(lua_State* L);
 		static int luaCreateTable(lua_State* L);
 		static int luaTablePack(lua_State* L);
+		static int luaIsScriptsInterface(lua_State* L);
 		static int luaSystemTime(lua_State* L);
 
 		static bool getArea(lua_State* L, std::list<uint32_t>& list, uint32_t& rows);

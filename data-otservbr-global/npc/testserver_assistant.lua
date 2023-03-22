@@ -106,6 +106,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say('You can not take it anymore', npc, creature)
 		end
 	end
+
+	return true
 end
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

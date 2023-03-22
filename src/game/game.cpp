@@ -3342,33 +3342,46 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 	if (item->isWrapable() && item->getID() != ITEM_DECORATION_KIT) {
 		wrapItem(item);
 	} else if (item->getID() == ITEM_DECORATION_KIT && unWrapId != 0) {
-		auto hiddenCharges = item->getAttribute<uint16_t>(ItemAttribute_t::DATE);
-		Item* newItem = transformItem(item, unWrapId);
-		if (newItem) {
-			if (hiddenCharges > 0 && isCaskItem(unWrapId)) {
-				newItem->setSubType(hiddenCharges);
-			}
-			newItem->removeCustomAttribute("unWrapId");
-			newItem->removeAttribute(ItemAttribute_t::DESCRIPTION);
-			newItem->startDecaying();
-		}
+		unwrapItem(item, unWrapId);
 	}
 	addMagicEffect(pos, CONST_ME_POFF);
 }
 
 Item* Game::wrapItem(Item* item) {
+	uint16_t hiddenCharges = 0;
+	uint16_t amount = item->getItemCount();
+	if (isCaskItem(item->getID())) {
+		hiddenCharges = item->getSubType();
+	}
 	uint16_t oldItemID = item->getID();
 	Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
 	newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
 	item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + item->getName() + ">.");
-	if (isCaskItem(item->getID())) {
-		auto hiddenCharges = item->getSubType();
-		if (hiddenCharges > 0) {
-			item->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
-		}
+	if (hiddenCharges > 0) {
+		newItem->setAttribute(DATE, hiddenCharges);
+	}
+	if (amount > 0) {
+		newItem->setAttribute(AMOUNT, amount);
 	}
 	newItem->startDecaying();
 	return newItem;
+}
+
+void Game::unwrapItem(Item* item, uint16_t unWrapId) {
+	auto hiddenCharges = item->getAttribute<uint16_t>(DATE);
+	auto amount = item->getAttribute<uint16_t>(AMOUNT);
+	if (!amount) {
+		amount = 1;
+	}
+	Item* newItem = transformItem(item, unWrapId, amount);
+	if (newItem) {
+		if (hiddenCharges > 0 && isCaskItem(unWrapId)) {
+			newItem->setSubType(hiddenCharges);
+		}
+		newItem->removeCustomAttribute("unWrapId");
+		newItem->removeAttribute(DESCRIPTION);
+		newItem->startDecaying();
+	}
 }
 
 void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::string &text) {

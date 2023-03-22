@@ -54,17 +54,21 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 	local items, reward = {}
 	local size = item:isContainer() and item:getSize() or 0
 	if size == 0 then
-		reward = item:clone()
+		local actionId = item:getActionId()
+		reward = Game.createItem(item.itemid, item.type)
+		reward:setActionId(actionId)
 	else
 		local container = Container(item.uid)
 		for i = 0, container:getSize() - 1 do
-			items[#items + 1] = container:getItem(i):clone()
+			local originalItem = container:getItem(i)
+			local newItem = Game.createItem(originalItem.itemid, originalItem.type)
+			newItem:setActionId(originalItem:getActionId())
+			items[#items + 1] = newItem
 		end
-	end
 
-	size = #items
-	if size == 1 then
-		reward = items[1]:clone()
+		if size == 1 then
+			reward = items[1]
+		end
 	end
 
 	local result = ''

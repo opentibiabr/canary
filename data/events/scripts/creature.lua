@@ -25,7 +25,6 @@ function Creature:onTargetCombat(target)
 	local ec = EventCallback.onTargetCombat
 	if ec then
 		return ec(self, target)
-	end
 	return true
 end
 

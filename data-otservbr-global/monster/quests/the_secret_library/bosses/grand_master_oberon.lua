@@ -27,6 +27,12 @@ monster.changeTarget = {
 	chance = 10
 }
 
+monster.bosstiary = {
+	bossRaceId = 1576,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.TheSecretLibrary.TheOrderOfTheFalcon.OberonTimer
+}
+
 monster.strategiesTarget = {
 	nearest = 100,
 }
@@ -147,7 +153,10 @@ mType.onSay = function(monster, creature, type, message)
 			if message == v.msg:lower() then
 				local asking_storage = monster:getStorageValue(GrandMasterOberonConfig.Storage.Asking)
 				if GrandMasterOberonAsking[i].msg:lower() == GrandMasterOberonAsking[asking_storage].msg:lower() then
+					monster:say("GRRRAAANNGH!", TALKTYPE_MONSTER_SAY)
 					monster:unregisterEvent('OberonImmunity')
+				else
+					monster:say("HAHAHAHA!", TALKTYPE_MONSTER_SAY)
 				end
 			end
 		end

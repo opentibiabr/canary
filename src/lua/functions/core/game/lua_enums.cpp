@@ -4,32 +4,36 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #include "pch.hpp"
-
-#include "config/configmanager.h"
 
 #include "lua/functions/core/game/lua_enums.hpp"
 
 #include "creatures/players/account/account.hpp"
+#include "io/io_bosstiary.hpp"
+#include "config/configmanager.h"
 #include "creatures/creature.h"
 #include "lua/creature/creatureevent.h"
 #include "declarations.hpp"
 #include "game/functions/game_reload.hpp"
 #include "game/game.h"
 
-#define registerEnumClass(luaState, enumClassType) { \
-	auto number = magic_enum::enum_integer(enumClassType); \
-	auto name = magic_enum::enum_name(enumClassType).data(); \
-	registerGlobalVariable(luaState, name, number); \
-} void(0)
+#define registerEnumClass(luaState, enumClassType)               \
+	{                                                            \
+		auto number = magic_enum::enum_integer(enumClassType);   \
+		auto name = magic_enum::enum_name(enumClassType).data(); \
+		registerGlobalVariable(luaState, name, number);          \
+	}                                                            \
+	void(0)
 
-#define registerEnum(L, value) { \
-	std::string enumName = #value; \
-	registerGlobalVariable(L, enumName.substr(enumName.find_last_of(':') + 1), value); \
-} void(0)
+#define registerEnum(L, value)                                                             \
+	{                                                                                      \
+		std::string enumName = #value;                                                     \
+		registerGlobalVariable(L, enumName.substr(enumName.find_last_of(':') + 1), value); \
+	}                                                                                      \
+	void(0)
 
 void LuaEnums::init(lua_State* L) {
 	initOthersEnums(L);
@@ -74,6 +78,7 @@ void LuaEnums::init(lua_State* L) {
 	initCreaturesEventEnums(L);
 	initForgeEnums(L);
 	initWebhookEnums(L);
+	initBosstiaryEnums(L);
 }
 
 void LuaEnums::initOthersEnums(lua_State* L) {
@@ -114,6 +119,8 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, LIGHT_STATE_SUNRISE);
 	registerEnum(L, STORAGEVALUE_EMOTE);
 
+	registerEnum(L, IMMOVABLE_ACTION_ID);
+
 	registerEnum(L, MAX_LOOTCHANCE);
 
 	registerEnum(L, ORIGIN_NONE);
@@ -121,7 +128,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, ORIGIN_SPELL);
 	registerEnum(L, ORIGIN_MELEE);
 	registerEnum(L, ORIGIN_RANGED);
-	
+
 	registerEnum(L, PLAYERSEX_FEMALE);
 	registerEnum(L, PLAYERSEX_MALE);
 
@@ -166,6 +173,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, WEAPON_DISTANCE);
 	registerEnum(L, WEAPON_WAND);
 	registerEnum(L, WEAPON_AMMO);
+	registerEnum(L, WEAPON_MISSILE);
 }
 
 void LuaEnums::initAccountEnums(lua_State* L) {
@@ -261,6 +269,12 @@ void LuaEnums::initFactionEnums(lua_State* L) {
 	registerEnum(L, FACTION_PLAYER);
 	registerEnum(L, FACTION_LION);
 	registerEnum(L, FACTION_LIONUSURPERS);
+	registerEnum(L, FACTION_MARID);
+	registerEnum(L, FACTION_EFREET);
+	registerEnum(L, FACTION_DEEPLING);
+	registerEnum(L, FACTION_DEATHLING);
+	registerEnum(L, FACTION_ANUMA);
+	registerEnum(L, FACTION_FAFNAR);
 	registerEnum(L, FACTION_LAST);
 }
 
@@ -686,34 +700,12 @@ void LuaEnums::initFightModeEnums(lua_State* L) {
 }
 
 void LuaEnums::initItemAttributeEnums(lua_State* L) {
-	registerEnum(L, ITEM_ATTRIBUTE_NONE);
-	registerEnum(L, ITEM_ATTRIBUTE_ACTIONID);
-	registerEnum(L, ITEM_ATTRIBUTE_UNIQUEID);
-	registerEnum(L, ITEM_ATTRIBUTE_DESCRIPTION);
-	registerEnum(L, ITEM_ATTRIBUTE_TEXT);
-	registerEnum(L, ITEM_ATTRIBUTE_DATE);
-	registerEnum(L, ITEM_ATTRIBUTE_WRITER);
-	registerEnum(L, ITEM_ATTRIBUTE_NAME);
-	registerEnum(L, ITEM_ATTRIBUTE_ARTICLE);
-	registerEnum(L, ITEM_ATTRIBUTE_PLURALNAME);
-	registerEnum(L, ITEM_ATTRIBUTE_WEIGHT);
-	registerEnum(L, ITEM_ATTRIBUTE_ATTACK);
-	registerEnum(L, ITEM_ATTRIBUTE_DEFENSE);
-	registerEnum(L, ITEM_ATTRIBUTE_EXTRADEFENSE);
-	registerEnum(L, ITEM_ATTRIBUTE_ARMOR);
-	registerEnum(L, ITEM_ATTRIBUTE_HITCHANCE);
-	registerEnum(L, ITEM_ATTRIBUTE_SHOOTRANGE);
-	registerEnum(L, ITEM_ATTRIBUTE_OWNER);
-	registerEnum(L, ITEM_ATTRIBUTE_DURATION);
-	registerEnum(L, ITEM_ATTRIBUTE_DECAYSTATE);
-	registerEnum(L, ITEM_ATTRIBUTE_CORPSEOWNER);
-	registerEnum(L, ITEM_ATTRIBUTE_CHARGES);
-	registerEnum(L, ITEM_ATTRIBUTE_FLUIDTYPE);
-	registerEnum(L, ITEM_ATTRIBUTE_DOORID);
-	registerEnum(L, ITEM_ATTRIBUTE_SPECIAL);
-	registerEnum(L, ITEM_ATTRIBUTE_OPENCONTAINER);
-	registerEnum(L, ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
-	registerEnum(L, ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
+	for (auto value : magic_enum::enum_values<ItemAttribute_t>()) {
+		auto number = magic_enum::enum_integer(value);
+		// Creation of the "ITEM_ATTRIBUTE_" namespace for lua scripts
+		std::string enumName = "ITEM_ATTRIBUTE_" + std::string(magic_enum::enum_name(value));
+		registerGlobalVariable(L, enumName, static_cast<lua_Number>(number));
+	}
 }
 
 void LuaEnums::initItemTypeEnums(lua_State* L) {
@@ -812,50 +804,13 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 
 	registerEnum(L, ITEM_FORGE_SLIVER);
 	registerEnum(L, ITEM_FORGE_CORE);
+	registerEnum(L, ItemID_t::HIRELING_LAMP);
 }
 
 void LuaEnums::initPlayerFlagEnums(lua_State* L) {
-	registerEnum(L, PlayerFlag_CannotUseCombat);
-	registerEnum(L, PlayerFlag_CannotAttackPlayer);
-	registerEnum(L, PlayerFlag_CannotAttackMonster);
-	registerEnum(L, PlayerFlag_CannotBeAttacked);
-	registerEnum(L, PlayerFlag_CanConvinceAll);
-	registerEnum(L, PlayerFlag_CanSummonAll);
-	registerEnum(L, PlayerFlag_CanIllusionAll);
-	registerEnum(L, PlayerFlag_CanSenseInvisibility);
-	registerEnum(L, PlayerFlag_IgnoredByMonsters);
-	registerEnum(L, PlayerFlag_NotGainInFight);
-	registerEnum(L, PlayerFlag_HasInfiniteMana);
-	registerEnum(L, PlayerFlag_HasInfiniteSoul);
-	registerEnum(L, PlayerFlag_HasNoExhaustion);
-	registerEnum(L, PlayerFlag_CannotUseSpells);
-	registerEnum(L, PlayerFlag_CannotPickupItem);
-	registerEnum(L, PlayerFlag_CanAlwaysLogin);
-	registerEnum(L, PlayerFlag_CanBroadcast);
-	registerEnum(L, PlayerFlag_CanEditHouses);
-	registerEnum(L, PlayerFlag_CannotBeBanned);
-	registerEnum(L, PlayerFlag_CannotBePushed);
-	registerEnum(L, PlayerFlag_HasInfiniteCapacity);
-	registerEnum(L, PlayerFlag_CanPushAllCreatures);
-	registerEnum(L, PlayerFlag_CanTalkRedPrivate);
-	registerEnum(L, PlayerFlag_CanTalkRedChannel);
-	registerEnum(L, PlayerFlag_TalkOrangeHelpChannel);
-	registerEnum(L, PlayerFlag_NotGainExperience);
-	registerEnum(L, PlayerFlag_NotGainMana);
-	registerEnum(L, PlayerFlag_NotGainHealth);
-	registerEnum(L, PlayerFlag_NotGainSkill);
-	registerEnum(L, PlayerFlag_SetMaxSpeed);
-	registerEnum(L, PlayerFlag_SpecialVIP);
-	registerEnum(L, PlayerFlag_NotGenerateLoot);
-	registerEnum(L, PlayerFlag_CanTalkRedChannelAnonymous);
-	registerEnum(L, PlayerFlag_IgnoreProtectionZone);
-	registerEnum(L, PlayerFlag_IgnoreSpellCheck);
-	registerEnum(L, PlayerFlag_IgnoreWeaponCheck);
-	registerEnum(L, PlayerFlag_CannotBeMuted);
-	registerEnum(L, PlayerFlag_IsAlwaysPremium);
-
-	registerEnum(L, PlayerCustomFlag_CanMapClickTeleport);
-	registerEnum(L, PlayerCustomFlag_IgnoredByNpcs);
+	for (auto value : magic_enum::enum_values<PlayerFlags_t>()) {
+		registerEnumClass(L, value);
+	}
 }
 
 void LuaEnums::initReportReasonEnums(lua_State* L) {
@@ -1010,6 +965,7 @@ void LuaEnums::initSpeechBubbleEnums(lua_State* L) {
 	registerEnum(L, SPEECHBUBBLE_TRADE);
 	registerEnum(L, SPEECHBUBBLE_QUEST);
 	registerEnum(L, SPEECHBUBBLE_QUESTTRADER);
+	registerEnum(L, SPEECHBUBBLE_HIRELING);
 }
 
 // Use with player:addMapMark
@@ -1121,20 +1077,9 @@ void LuaEnums::initReturnValueEnums(lua_State* L) {
 
 // Reload
 void LuaEnums::initReloadTypeEnums(lua_State* L) {
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_ALL);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_CHAT);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_CONFIG);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_EVENTS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_CORE);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_IMBUEMENTS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_ITEMS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_MODULES);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_MONSTERS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_MOUNTS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_NPCS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_RAIDS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_SCRIPTS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_TALKACTION);
+	for (auto value : magic_enum::enum_values<Reload_t>()) {
+		registerEnumClass(L, value);
+	}
 }
 
 void LuaEnums::initCreaturesEventEnums(lua_State* L) {
@@ -1158,9 +1103,9 @@ void LuaEnums::initCreaturesEventEnums(lua_State* L) {
 }
 
 void LuaEnums::initForgeEnums(lua_State* L) {
-	registerEnumClass(L, ForgeClassifications_t::FORGE_NORMAL_MONSTER);
-	registerEnumClass(L, ForgeClassifications_t::FORGE_INFLUENCED_MONSTER);
-	registerEnumClass(L, ForgeClassifications_t::FORGE_FIENDISH_MONSTER);
+	for (auto value : magic_enum::enum_values<ForgeClassifications_t>()) {
+		registerEnumClass(L, value);
+	}
 }
 
 // Webhook default colors
@@ -1169,4 +1114,10 @@ void LuaEnums::initWebhookEnums(lua_State* L) {
 	registerEnum(L, WEBHOOK_COLOR_OFFLINE);
 	registerEnum(L, WEBHOOK_COLOR_WARNING);
 	registerEnum(L, WEBHOOK_COLOR_RAID);
+}
+
+void LuaEnums::initBosstiaryEnums(lua_State* L) {
+	for (auto value : magic_enum::enum_values<BosstiaryRarity_t>()) {
+		registerEnumClass(L, value);
+	}
 }

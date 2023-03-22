@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_MAP_TOWN_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_MAP_TOWN_FUNCTIONS_HPP_
@@ -31,4 +31,4 @@ class TownFunctions final : LuaScriptInterface {
 		static int luaTownGetTemplePosition(lua_State* L);
 };
 
-#endif  // SRC_LUA_FUNCTIONS_MAP_TOWN_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_MAP_TOWN_FUNCTIONS_HPP_

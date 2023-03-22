@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #include "pch.hpp"
 
@@ -67,17 +67,27 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 
 	if (spellType == SPELL_INSTANT) {
 		InstantSpell* spell = new InstantSpell(getScriptEnv()->getScriptInterface());
-		spell->fromLua = true;
+		if (!spell) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+			pushBoolean(L, false);
+			return 1;
+		}
+
 		pushUserdata<Spell>(L, spell);
 		setMetatable(L, -1, "Spell");
 		spell->spellType = SPELL_INSTANT;
 		return 1;
 	} else if (spellType == SPELL_RUNE) {
-		RuneSpell* spell = new RuneSpell(getScriptEnv()->getScriptInterface());
-		spell->fromLua = true;
-		pushUserdata<Spell>(L, spell);
+		auto runeSpell = new RuneSpell(getScriptEnv()->getScriptInterface());
+		if (!runeSpell) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+			pushBoolean(L, false);
+			return 1;
+		}
+
+		pushUserdata<Spell>(L, runeSpell);
 		setMetatable(L, -1, "Spell");
-		spell->spellType = SPELL_RUNE;
+		runeSpell->spellType = SPELL_RUNE;
 		return 1;
 	}
 
@@ -95,7 +105,7 @@ int SpellFunctions::luaSpellOnCastSpell(lua_State* L) {
 				pushBoolean(L, false);
 				return 1;
 			}
-			instant->scripted = true;
+			instant->setLoadedCallback(true);
 			pushBoolean(L, true);
 		} else if (spell->spellType == SPELL_RUNE) {
 			RuneSpell* rune = dynamic_cast<RuneSpell*>(getUserdata<Spell>(L, 1));
@@ -103,7 +113,7 @@ int SpellFunctions::luaSpellOnCastSpell(lua_State* L) {
 				pushBoolean(L, false);
 				return 1;
 			}
-			rune->scripted = true;
+			rune->setLoadedCallback(true);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -124,7 +134,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 
 	if (spell->spellType == SPELL_INSTANT) {
 		InstantSpell* instant = dynamic_cast<InstantSpell*>(getUserdata<Spell>(L, 1));
-		if (!instant->isScripted()) {
+		if (!instant->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -133,7 +143,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 		RuneSpell* rune = dynamic_cast<RuneSpell*>(getUserdata<Spell>(L, 1));
 		if (rune->getMagicLevel() != 0 || rune->getLevel() != 0) {
 			// Change information in the ItemType to get accurate description
-			ItemType& iType = Item::items.getItemType(rune->getRuneItemId());
+			ItemType &iType = Item::items.getItemType(rune->getRuneItemId());
 			// If the item is not registered in items.xml then we will register it by rune name
 			if (iType.name.empty()) {
 				iType.name = rune->getName();
@@ -142,7 +152,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 			iType.runeLevel = rune->getLevel();
 			iType.charges = rune->getCharges();
 		}
-		if (!rune->isScripted()) {
+		if (!rune->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -209,14 +219,16 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 					spell->setGroup(group);
 				} else {
 					SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-								"Unknown group: {}", getString(L, 2));
+								"Unknown group: {}",
+								getString(L, 2));
 					pushBoolean(L, false);
 					return 1;
 				}
 				pushBoolean(L, true);
 			} else {
 				SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-							"Unknown group: {}", getString(L, 2));
+							"Unknown group: {}",
+							getString(L, 2));
 				pushBoolean(L, false);
 				return 1;
 			}
@@ -233,7 +245,8 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 					spell->setGroup(primaryGroup);
 				} else {
 					SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-								"Unknown primaryGroup: {}", getString(L, 2));
+								"Unknown primaryGroup: {}",
+								getString(L, 2));
 					pushBoolean(L, false);
 					return 1;
 				}
@@ -242,7 +255,8 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 					spell->setSecondaryGroup(secondaryGroup);
 				} else {
 					SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-								"Unknown secondaryGroup: {}", getString(L, 3));
+								"Unknown secondaryGroup: {}",
+								getString(L, 3));
 					pushBoolean(L, false);
 					return 1;
 				}
@@ -526,8 +540,7 @@ int SpellFunctions::luaSpellAggressive(lua_State* L) {
 	return 1;
 }
 
-int SpellFunctions::luaSpellAllowOnSelf(lua_State* L)
-{
+int SpellFunctions::luaSpellAllowOnSelf(lua_State* L) {
 	// spell:allowOnSelf(bool)
 	Spell* spell = getUserdata<Spell>(L, 1);
 	if (spell) {
@@ -543,8 +556,7 @@ int SpellFunctions::luaSpellAllowOnSelf(lua_State* L)
 	return 1;
 }
 
-int SpellFunctions::luaSpellPzLocked(lua_State* L)
-{
+int SpellFunctions::luaSpellPzLocked(lua_State* L) {
 	// spell:isPzLocked(bool)
 	Spell* spell = getUserdata<Spell>(L, 1);
 	if (spell) {
@@ -570,7 +582,7 @@ int SpellFunctions::luaSpellVocation(lua_State* L) {
 			for (auto voc : spell->getVocMap()) {
 				++it;
 				std::string s = std::to_string(it);
-				char const *pchar = s.c_str();
+				const char* pchar = s.c_str();
 				std::string name = g_vocations().getVocation(voc.first)->getVocName();
 				setField(L, pchar, name);
 			}

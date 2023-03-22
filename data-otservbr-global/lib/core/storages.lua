@@ -81,7 +81,6 @@ Reserved player action storage key ranges (const.h)
 Storage = {
 	-- General storages
 	isTraining = 30000,
-	NpcExhaust = 30001,
 	Dragonfetish = 30003,
 	EdronRopeQuest = 30004,
 	GhostShipQuest = 30005,
@@ -102,10 +101,8 @@ Storage = {
 	RookgaardDestiny = 30020,
 	EruaranGreeting = 30021,
 	MaryzaCookbook = 30022,
-	combatProtectionStorage = 30023,
 	Factions = 30024,
 	blockMovementStorage = 30025,
-	FamiliarSummon = 30026,
 	TrainerRoom = 30027,
 	NpcSpawn = 30028,
 	ExerciseDummyExhaust = 30029,
@@ -130,11 +127,8 @@ Storage = {
 	Navigator = 30048,
 	DwarvenLegs = 30049,
 	PrinceDrazzakTime = 30050,
-	StoreExaust = 30051,
 	LemonCupcake = 30052,
 	BlueberryCupcake = 30053,
-	FamiliarSummonEvent10 = 30054,
-	FamiliarSummonEvent60 = 30055,
 	ChayenneKeyTime = 30056,
 	FreeQuests = 30057,
 	PremiumAccount = 30058,
@@ -215,7 +209,11 @@ Storage = {
 		Fourteen = {
 			Remains = 50041
 		},
-		UrmahlulluTimer = 50042
+		UrmahlulluTimer = 50042,
+		AccessDoor = 50043,
+		NeferiTheSpyTimer = 50044,
+		SisterHetaiTimer = 55045,
+		AmenefTimer = 55046
 	},
 	TheSecretLibrary = {
 		-- Reserved storage from 50050 - 50074
@@ -2551,7 +2549,19 @@ Storage = {
 			Cartography101 = {},
 			ChakoyaIcebergMiniWorldChange = {},
 			GrimvaleMineWorldChange = {},
-			Grimvale = {},
+			Grimvale = {
+				BloodbackTimer = 44951,
+				DarkfangTimer = 44952,
+				SharpclawTimer = 44953,
+				ShadowpeltTimer = 44954,
+				BlackVixenTimer = 44955,
+				AncientFeudDoors = 44956,
+				AncientFeudShortcut = 44957,
+				YirkasTimer = 44958,
+				SrezzTimer = 44959,
+				UtuaTimer = 44960,
+				KatexTimer = 44961,
+			},
 			HiveOutpostMiniWorldChange = {},
 			JungleCampMiniWorldChange = {},
 			NightmareIslesMiniWorldChange = {},
@@ -2671,13 +2681,37 @@ Storage = {
 					LowerBastion = 46285,
 					UndergroundBastion = 46286
 				},
+				GhuloshTimer = 46015,
+				GhuloshKilled = 46016,
+				GorzindelTimer = 46017,
+				GorzindelKilled = 46018,
+				LokathmorTimer = 46019,
+				LokathmorKilled = 46020,
+				MazzinorTimer = 46021,
+				MazzinorKilled = 46022,
+				ScourgeOfOblivionDoor = 46023,
+				ScourgeOfOblivionTimer = 46024,
+				ScourgeOfOblivionKilled = 46025
 			},
 		},
 		U12_00 = { -- update 12.00 - Reserved Storages 46301 - 46600
 			DreamWarriorOutfits = {},
 			TheDreamCourts = {
+				QuestLine = 46401,
+				HauntedHouseAccess = 46402,
+				BuriedCathedralAccess = 46403,
+				DreamScarAccess = 46404,
 				AndrewDoor = 14900,
-				FacelessBaneTime = 50283
+				FacelessBaneTime = 50283,
+				AccessDoors = 46309,
+				ArenaTimer = 46310,
+				PlaguerootKilled = 46311,
+				MalofurKilled = 46312,
+				MaxxeniusKilled = 46313,
+				AlptramunKilled = 46314,
+				IzcandarKilled = 46315,
+				NightmareBeastTimer = 46316,
+				NightmareBeastKilled = 46317
 			},
 		},
 		U12_02 = { -- update 12.02 - Reserved Storages 46601 - 46800
@@ -2702,27 +2736,86 @@ Storage = {
 					Darashia = 46860,
 					Thais = 46861,
 					Orclands = 46862,
-					IceIslands = 46863},
-				Cobra = 46864},
+					IceIslands = 46863
+				},
+				Bosses = {
+					BaelocNictrosTimer = 46865,
+					BaelocNictrosKilled = 46866,
+					CountVlarkorthTimer = 46867,
+					CountVlarkorthKilled = 46868,
+					DukeKruleTimer = 46869,
+					DukeKruleKilled = 46870,
+					EarlOsamTimer = 46871,
+					EarlOsamKilled = 46872,
+					LordAzaramTimer = 46873,
+					LordAzaramKilled = 46874,
+					KingZelosDoor = 46875,
+					KingZelosTimer = 46876,
+					KingZelosKilled = 46877,
+				},
+				Cobra = 46864
+			},
 			HandOfTheInquisitionOutfits = {},
 			-- Kilmaresh = {}, done earlier in the file
 		},
 		U12_30 = { -- update 12.30 - Reserved Storages 47001 - 47200
 			FalconerOutfits = {},
-			FeasterOfSouls = {},
+			FeasterOfSouls = {
+				IrgixTimer = 47005,
+				IrgixKilled = 47006,
+				UnazTimer = 47007,
+				UnazKilled = 47008,
+				VokTimer = 47009,
+				VokKilled = 47010,
+				FearFeasterTimer = 47011,
+				FearFeasterKilled = 47012,
+				DreadMaidenTimer = 47013,
+				DreadMaidenKilled = 47014,
+				UnwelcomeTimer = 47015,
+				UnwelcomeKilled = 47016,
+				PaleWormEntrance = 47017,
+				PaleWormTimer = 47018,
+				PaleWormKilled = 47019,
+			},
 			PoltergeistOutfits = {}
 		},
 		U12_40 = { -- update 12.40 - Reserved Storages 47201 - 47500
 			RevenantOutfits = {},
-			SoulWar = {},
-			TheOrderOfTheLion = {}
+			TheOrderOfTheLion = {
+				QuestLine = 47401,
+				AccessEastSide = 47402,
+				AccessSouthernSide = 47403
+			},
+			SoulWar = {
+				GoshnarMaliceTimer = 47210,
+				GoshnarMaliceKilled = 47211,
+				GoshnarHatredTimer = 47212,
+				GoshnarHatredKilled = 47213,
+				GoshnarSpiteTimer = 47214,
+				GoshnarSpiteKilled = 47215,
+				GoshnarCrueltyTimer = 47216,
+				GoshnarCrueltyKilled = 47217,
+				GoshnarGreedTimer = 47218,
+				GoshnarGreedKilled = 47219,
+				GoshnarMegalomaniaAccess = 47220,
+				GoshnarMegalomaniaTimer = 47221,
+				GoshnarMegalomaniaKilled = 47222,
+				QuestReward = 47223,
+			},
 		},
 		U12_60 = { -- update 12.60 - Reserved Storages 47501 - 47600
-			APiratesTail = {},
+			APiratesTail = {
+				TentuglyDoor = 47514,
+				TentuglyTimer = 47515,
+				RatmiralTimer = 47516,
+			},
 			RascoohanOutfits = {}
 		},
 		U12_70 = { -- update 12.70 - Reserved Storages 47601 - 47800
-			AdventuresOfGalthen = {},
+			AdventuresOfGalthen = {
+				AccessDoor = 47601,
+				MegasylvanYseldaTimer = 47602,
+			},
 			CitizenOfIssaviOutfits = {},
 			RoyalBounaceanAdvisorOutfits= {},
 			TooHotToHandle = {}
@@ -2730,6 +2823,14 @@ Storage = {
 		U12_80 = { -- update 12.80 - Reserved Storages 47801 - 47850
 			RoyalCostumeOutfits = {}
 		},
+	},
+	-- Reserved Storages 64000 - 65000
+	BosstiaryCooldown = {
+		EarlOsam = 64000,
+		CountVlarkorth = 64001,
+		LordAzaram = 64002,
+		SirBaelocNictros = 64003,
+		DukeKrule = 64004
 	}
 }
 
@@ -2867,7 +2968,6 @@ GlobalStorage = {
 	NaginataStone = 65003,
 	ExpBoost = 65004,
 	SwordOfFury = 65005,
-	XpDisplayMode = 65006,
 	LionsRockFields = 65007,
 	TheMummysCurse = 65008,
 	OberonEventTime = 65009,

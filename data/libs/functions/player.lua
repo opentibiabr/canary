@@ -37,10 +37,6 @@ function Player.hasFlag(self, flag)
 	return self:getGroup():hasFlag(flag)
 end
 
-function Player.hasCustomFlag(self, customflag)
-	return self:getGroup():hasCustomFlag(customflag)
-end
-
 function Player.isPremium(self)
 	return self:getPremiumDays() > 0 or configManager.getBoolean(configKeys.FREE_PREMIUM)
 end
@@ -103,6 +99,10 @@ end
 
 -- Functions From OTServBR-Global
 function Player.getCookiesDelivered(self)
+	if not IsRunningGlobalDatapack() then
+		return true
+	end
+
 	local storage, amount = {
 		Storage.WhatAFoolish.CookieDelivery.SimonTheBeggar, Storage.WhatAFoolish.CookieDelivery.Markwin, Storage.WhatAFoolish.CookieDelivery.Ariella,
 		Storage.WhatAFoolish.CookieDelivery.Hairycles, Storage.WhatAFoolish.CookieDelivery.Djinn, Storage.WhatAFoolish.CookieDelivery.AvarTar,
@@ -118,10 +118,14 @@ function Player.getCookiesDelivered(self)
 end
 
 function Player.allowMovement(self, allow)
-	return self:setStorageValue(Storage.blockMovementStorage, allow and -1 or 1)
+	return self:setStorageValue(Global.Storage.blockMovementStorage, allow and -1 or 1)
 end
 
 function Player.checkGnomeRank(self)
+	if not IsRunningGlobalDatapack() then
+		return true
+	end
+
 	local points = self:getStorageValue(Storage.BigfootBurden.Rank)
 	local questProgress = self:getStorageValue(Storage.BigfootBurden.QuestLine)
 	if points >= 30 and points < 120 then
@@ -279,7 +283,7 @@ function Player:removeMoneyBank(amount)
 end
 
 function Player.hasAllowMovement(self)
-	return self:getStorageValue(Storage.blockMovementStorage) ~= 1
+	return self:getStorageValue(Global.Storage.blockMovementStorage) ~= 1
 end
 
 function Player.hasRookgaardShield(self)

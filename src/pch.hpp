@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #ifndef SRC_PCH_HPP_
 #define SRC_PCH_HPP_
@@ -15,6 +15,7 @@
 #include "utils/simd.hpp"
 
 #include <bitset>
+#include <charconv>
 #include <filesystem>
 #include <fstream>
 #include <forward_list>
@@ -26,6 +27,7 @@
 #include <set>
 #include <queue>
 #include <vector>
+#include <variant>
 
 #include <asio.hpp>
 #include <curl/curl.h>
@@ -46,4 +48,4 @@
 #include <pugixml.hpp>
 #include <zlib.h>
 
-#endif  // SRC_PCH_HPP_
+#endif // SRC_PCH_HPP_

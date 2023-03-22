@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #include "pch.hpp"
 
@@ -16,7 +16,7 @@
 
 int CombatFunctions::luaCombatCreate(lua_State* L) {
 	// Combat()
-	pushUserdata<Combat>(L, g_luaEnvironment.createCombatObject(getScriptEnv()->getScriptInterface()));
+	pushUserdata<Combat>(L, g_luaEnvironment.createCombatObject(getScriptEnv()->getScriptInterface()).get());
 	setMetatable(L, -1, "Combat");
 	return 1;
 }
@@ -117,7 +117,7 @@ int CombatFunctions::luaCombatSetCallback(lua_State* L) {
 		return 1;
 	}
 
-	const std::string& function = getString(L, 3);
+	const std::string &function = getString(L, 3);
 	pushBoolean(L, callback->loadCallBack(getScriptEnv()->getScriptInterface(), function));
 	return 1;
 }
@@ -152,7 +152,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 
 	Creature* creature = getCreature(L, 2);
 
-	const LuaVariant& variant = getVariant(L, 3);
+	const LuaVariant &variant = getVariant(L, 3);
 	switch (variant.type) {
 		case VARIANT_NUMBER: {
 			Creature* target = g_game().getCreatureByID(variant.number);

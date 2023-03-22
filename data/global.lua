@@ -15,7 +15,6 @@ function IsRunningGlobalDatapack()
 	end
 end
 
-NOT_MOVEABLE_ACTION = 100
 PARTY_PROTECTION = 1 -- Set to 0 to disable.
 ADVANCED_SECURE_MODE = 1 -- Set to 0 to disable.
 
@@ -31,6 +30,7 @@ NORTHEAST = DIRECTION_NORTHEAST
 STORAGEVALUE_PROMOTION = 30018
 
 SERVER_NAME = configManager.getString(configKeys.SERVER_NAME)
+SERVER_MOTD = configManager.getString(configKeys.SERVER_MOTD)
 
 -- Bestiary charm
 GLOBAL_CHARM_GUT = 0

@@ -1,8 +1,8 @@
-local wildGrowth = {1499, 11099} -- wild growth destroyable by machete
+local wildGrowth = {2130, 10182} -- wild growth destroyable by machete
 local jungleGrass = { -- grass destroyable by machete
-	[2782] = 2781,
-	[3985] = 3984,
-	[19433] = 19431
+	[3696] = 3695,
+	[3702] = 3701,
+	[17153] = 17151
 }
 local holeId = { -- usable rope holes, for rope spots see global.lua
 	294, 369, 370, 383, 392, 408, 409, 410, 427, 428, 429, 430, 462, 469, 470, 482,
@@ -12,7 +12,7 @@ local holeId = { -- usable rope holes, for rope spots see global.lua
 	26020
 }
 local groundIds = {354, 355} -- pick usable grounds
-local holes = {468, 481, 483, 7932, 23712} -- holes opened by shovel
+local holes = {593, 606, 608, 867, 21341} -- holes opened by shovel
 local sandIds = {231, 9059} -- desert sand
 local fruits = {2673, 2674, 2675, 2676, 2677, 2678, 2679, 2680, 2681, 2682, 2684, 2685, 5097, 8839, 8840, 8841} -- fruits to make decorated cake with knife
 
@@ -168,7 +168,13 @@ ActionsLib.useShovel = function(player, item, fromPosition, target, toPosition, 
 	if table.contains(holes, groundId) then
 		ground:transform(groundId + 1)
 		ground:decay()
-
+		toPosition:moveDownstairs()
+		toPosition.y = toPosition.y - 1
+		if Tile(toPosition):hasFlag(TILESTATE_PROTECTIONZONE) and player:isPzLocked() then
+			player:sendCancelMessage(RETURNVALUE_PLAYERISPZLOCKED)
+			return true
+		end
+		player:teleportTo(toPosition, false)
 		toPosition.z = toPosition.z + 1
 		tile:relocateTo(toPosition)
 	elseif table.contains(sandIds, groundId) then
@@ -177,7 +183,7 @@ ActionsLib.useShovel = function(player, item, fromPosition, target, toPosition, 
 			ground:transform(489)
 			ground:decay()
 		elseif randomValue == 1 then
-			Game.createItem(2159, 1, toPosition)
+			Game.createItem(3042, 1, toPosition) -- Scarab Coin
 		elseif randomValue > 95 then
 			Game.createMonster("Scarab", toPosition)
 		end
@@ -189,14 +195,14 @@ ActionsLib.useShovel = function(player, item, fromPosition, target, toPosition, 
 end
 
 ActionsLib.useScythe = function(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({10511, 10515}, item.itemid) then
+	if table.contains({9594, 9598}, item.itemid) then
 		return false
 	end
 
-	if target.itemid == 2739 then -- wheat
-		target:transform(2737)
+	if target.itemid == 3653 then -- wheat
+		target:transform(3651)
 		target:decay()
-		Game.createItem(2694, 1, toPosition) -- bunch of wheat
+		Game.createItem(3605, 1, toPosition) -- bunch of wheat
 		return true
 	end
 	return false
@@ -223,10 +229,10 @@ ActionsLib.useSickle = function(player, item, fromPosition, target, toPosition, 
 		return false
 	end
 
-	if target.itemid == 5465 then -- burning sugar cane
-		target:transform(5464)
+	if target.itemid == 5463 then -- burning sugar cane
+		target:transform(5462)
 		target:decay()
-		Game.createItem(5467, 1, toPosition) -- bunch of sugar cane
+		Game.createItem(5466, 1, toPosition) -- bunch of sugar cane
 		return true
 	end
 	return false

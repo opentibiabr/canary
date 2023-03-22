@@ -24,6 +24,7 @@
 	<event class="Player" method="onGainExperience" enabled="1" />
 	<event class="Player" method="onGainSkillTries" enabled="1" />
 	<event class="Player" method="onItemMoved" enabled="1" />
+	<event class="Player" method="onInventoryUpdate" enabled="1" />
 	<event class="Player" method="onLook" enabled="1" />
 	<event class="Player" method="onLookInBattleList" enabled="1" />
 	<event class="Player" method="onLookInShop" enabled="0" />

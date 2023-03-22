@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Duke Krule")
 local monster = {}
 
 monster.description = "a Duke Krule"
-monster.experience = 46300
+monster.experience = 55000
 monster.outfit = {
 	lookType = 1221,
 	lookHead = 8,
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 50000
-monster.maxHealth = 50000
+monster.health = 290000
+monster.maxHealth = 290000
 monster.race = "venom"
 monster.corpse = 31599
 monster.speed = 125
@@ -23,6 +23,12 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
+}
+
+monster.bosstiary = {
+	bossRaceId = 1758,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.BosstiaryCooldown.DukeKrule
 }
 
 monster.strategiesTarget = {

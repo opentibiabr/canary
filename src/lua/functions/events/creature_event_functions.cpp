@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #include "pch.hpp"
 
@@ -18,7 +18,6 @@ int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 	CreatureEvent* creature = new CreatureEvent(getScriptEnv()->getScriptInterface());
 	if (creature) {
 		creature->setName(getString(L, 2));
-		creature->fromLua = true;
 		pushUserdata<CreatureEvent>(L, creature);
 		setMetatable(L, -1, "CreatureEvent");
 	} else {
@@ -59,7 +58,8 @@ int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 			creature->setEventType(CREATURE_EVENT_EXTENDED_OPCODE);
 		} else {
 			SPDLOG_ERROR("[CreatureEventFunctions::luaCreatureEventType] - "
-                         "Invalid type for creature event: {}", typeName);
+						 "Invalid type for creature event: {}",
+						 typeName);
 			pushBoolean(L, false);
 		}
 		creature->setLoaded(true);
@@ -74,7 +74,7 @@ int CreatureEventFunctions::luaCreatureEventRegister(lua_State* L) {
 	// creatureevent:register()
 	CreatureEvent* creature = getUserdata<CreatureEvent>(L, 1);
 	if (creature) {
-		if (!creature->isScripted()) {
+		if (!creature->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}

@@ -172,3 +172,7 @@ function Player:onChangeZone(zone)
 		ec(self, zone)
 	end
 end
+
+
+function Player:onInventoryUpdate(item, slot, equip)
+end

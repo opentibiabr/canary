@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #ifndef SRC_LUA_CREATURE_TALKACTION_H_
 #define SRC_LUA_CREATURE_TALKACTION_H_
@@ -14,20 +14,19 @@
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.h"
+#include "lua/scripts/scripts.h"
 
 class TalkAction;
 using TalkAction_ptr = std::unique_ptr<TalkAction>;
 
-class TalkAction : public Event {
+class TalkAction : public Script {
 	public:
-		explicit TalkAction(LuaScriptInterface* interface) : Event(interface) {}
+		using Script::Script;
 
-		bool configureEvent(const pugi::xml_node& node) override;
-
-		const std::string& getWords() const {
+		const std::string &getWords() const {
 			return words;
 		}
-		const std::vector<std::string>& getWordsMap() const {
+		const std::vector<std::string> &getWordsMap() const {
 			return wordsMap;
 		}
 		void setWords(std::string word) {
@@ -41,52 +40,45 @@ class TalkAction : public Event {
 			separator = sep;
 		}
 
-		//scripting
-		bool executeSay(Player* player, const std::string& words, const std::string& param, SpeakClasses type) const;
+		// scripting
+		bool executeSay(Player* player, const std::string &words, const std::string &param, SpeakClasses type) const;
 		//
 
 	private:
-		std::string getScriptEventName() const override;
+		std::string getScriptTypeName() const override {
+			return "onSay";
+		}
 
 		std::string words;
 		std::vector<std::string> wordsMap;
 		std::string separator = "\"";
 };
 
-class TalkActions final : public BaseEvents {
+class TalkActions final : public Scripts {
 	public:
 		TalkActions();
 		~TalkActions();
 
 		// non-copyable
-		TalkActions(const TalkActions&) = delete;
-		TalkActions& operator=(const TalkActions&) = delete;
+		TalkActions(const TalkActions &) = delete;
+		TalkActions &operator=(const TalkActions &) = delete;
 
-		static TalkActions& getInstance() {
+		static TalkActions &getInstance() {
 			// Guaranteed to be destroyed
 			static TalkActions instance;
 			// Instantiated on first use
 			return instance;
 		}
 
-		TalkActionResult_t playerSaySpell(Player* player, SpeakClasses type, const std::string& words) const;
+		TalkActionResult_t playerSaySpell(Player* player, SpeakClasses type, const std::string &words) const;
 
 		bool registerLuaEvent(TalkAction* event);
 		void clear();
-		// Old XML interface
-		void clear(bool fromLua) override final;
 
 	private:
-		LuaScriptInterface& getScriptInterface() override;
-		std::string getScriptBaseName() const override;
-		Event_ptr getEvent(const std::string& nodeName) override;
-		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
-
 		std::map<std::string, TalkAction> talkActions;
-
-		LuaScriptInterface scriptInterface;
 };
 
 constexpr auto g_talkActions = &TalkActions::getInstance;
 
-#endif  // SRC_LUA_CREATURE_TALKACTION_H_
+#endif // SRC_LUA_CREATURE_TALKACTION_H_

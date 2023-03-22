@@ -25,6 +25,12 @@ monster.changeTarget = {
 	chance = 8
 }
 
+monster.bosstiary = {
+	bossRaceId = 1180,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.FerumbrasAscension.RagiazTimer
+}
+
 monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,

@@ -2571,7 +2571,8 @@ void Player::death(Creature* lastHitCreature) {
 		auto it = conditions.begin(), end = conditions.end();
 		while (it != end) {
 			Condition* condition = *it;
-			if (condition->isPersistent()) {
+			// isSupress block to delete spells conditions (ensures that the player cannot, for example, reset the cooldown time of the familiar and summon several)
+			if (condition->isPersistent() && isSuppress(condition->getType())) {
 				it = conditions.erase(it);
 
 				condition->endCondition(this);

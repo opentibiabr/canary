@@ -308,6 +308,9 @@ local questTable = {
 	{storage = Storage.Kilmaresh.AccessDoor, storageValue = 1},
 	{storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouseAccess, storageValue = 1},
 	{storage = Storage.Quest.U12_00.TheDreamCourts.BuriedCathedralAccess, storageValue = 1},
+	{storage = Storage.Quest.U12_00.TheDreamCourts.DreamScarAccess, storageValue = 1},
+	{storage = Storage.Quest.U12_40.TheOrderOfTheLion.AccessEastSide, storageValue = 1},
+	{storage = Storage.Quest.U12_40.TheOrderOfTheLion.AccessSouthernSide, storageValue = 1},
 }
 
 local function playerFreeQuestStart(playerId, index)

@@ -24,11 +24,6 @@ monster.changeTarget = {
 	chance = 10
 }
 
-monster.bosstiary = {
-	bossRaceId = 2247,
-	bossRace = RARITY_ARCHFOE -- Missing Race Info
-}
-
 monster.flags = {
 	summonable = false,
 	attackable = true,

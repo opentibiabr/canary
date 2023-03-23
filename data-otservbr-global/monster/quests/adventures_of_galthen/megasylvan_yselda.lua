@@ -21,7 +21,8 @@ monster.changeTarget = {
 
 monster.bosstiary = {
 	bossRaceId = 2114,
-	bossRace = RARITY_ARCHFOE
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Quest.U12_70.AdventuresOfGalthen.MegasylvanYseldaTimer
 }
 
 monster.strategiesTarget = {

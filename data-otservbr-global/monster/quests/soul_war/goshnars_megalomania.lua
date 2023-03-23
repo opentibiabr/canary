@@ -26,7 +26,8 @@ monster.changeTarget = {
 
 monster.bosstiary = {
 	bossRaceId = 1906,
-	bossRace = RARITY_NEMESIS
+	bossRace = RARITY_NEMESIS,
+	storageCooldown = Storage.Quest.U12_40.SoulWar.GoshnarMegalomaniaTimer
 }
 
 monster.strategiesTarget = {

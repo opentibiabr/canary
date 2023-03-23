@@ -27,7 +27,8 @@ monster.changeTarget = {
 
 monster.bosstiary = {
 	bossRaceId = 1881,
-	bossRace = RARITY_ARCHFOE
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Quest.U12_30.FeasterOfSouls.PaleWormTimer
 }
 
 monster.strategiesTarget = {

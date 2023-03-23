@@ -27,7 +27,8 @@ monster.changeTarget = {
 
 monster.bosstiary = {
 	bossRaceId = 1984,
-	bossRace = RARITY_ARCHFOE
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Quest.U10_80.Grimvale.UtuaTimer
 }
 
 monster.strategiesTarget = {

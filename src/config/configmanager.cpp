@@ -303,6 +303,8 @@ bool ConfigManager::load() {
 	integer[BOOSTED_BOSS_LOOT_BONUS] = getGlobalNumber(L, "boostedBossLootBonus", 250);
 	integer[BOOSTED_BOSS_KILL_BONUS] = getGlobalNumber(L, "boostedBossKillBonus", 3);
 
+	integer[FAMILIAR_TIME] = getGlobalNumber(L, "familiarTime", 30);
+
 	loaded = true;
 	lua_close(L);
 	return true;

@@ -29,7 +29,21 @@ local tutorialIds = {
 	[50086] = 11
 }
 
-local hotaQuest = {50950, 50951, 50952, 50953, 50954, 50955}
+local function copyContainerItem(originalContainer, newContainer)
+	for i = 0, originalContainer:getSize() - 1 do
+		local originalItem = originalContainer:getItem(i)
+		local newItem = Game.createItem(originalItem.itemid, originalItem.type)
+		newItem:setActionId(originalItem:getActionId())
+		newItem:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, originalItem:getAttribute(ITEM_ATTRIBUTE_DESCRIPTION))
+
+		if originalItem:isContainer() then
+			copyContainerItem(Container(originalItem.uid), Container(newItem.uid))
+		end
+		newContainer:addItemEx(newItem)
+	end
+end
+
+local hotaQuest = { 50950, 50951, 50952, 50953, 50954, 50955 }
 
 local questSystem1 = Action()
 
@@ -46,7 +60,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 		player:setStorageValue(Storage.SvargrondArena.PitDoor, -1)
 	end
 
-	if player:getStorageValue(storage) > 0 then
+	if player:getStorageValue(storage) > 0 and player:getGroup():getId() < GROUP_TYPE_GAMEMASTER then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The ' .. ItemType(item.itemid):getName() .. ' is empty.')
 		return true
 	end
@@ -54,24 +68,54 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 	local items, reward = {}
 	local size = item:isContainer() and item:getSize() or 0
 	if size == 0 then
-		reward = item:clone()
+		reward = Game.createItem(item.itemid, item.type)
+		if not reward then
+			Spdlog.error("[questSystem1.onUse] failed to create reward item")
+			return false
+		end
+
+		local itemActionId = item:getActionId()
+		if itemActionId then
+			reward:setActionId(itemActionId)
+		end
+		local itemDescription = item:getAttribute(ITEM_ATTRIBUTE_DESCRIPTION)
+		if itemDescription then
+			reward:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, itemDescription)
+		end
 	else
 		local container = Container(item.uid)
 		for i = 0, container:getSize() - 1 do
-			items[#items + 1] = container:getItem(i):clone()
-		end
-	end
+			local originalItem = container:getItem(i)
+			local newItem = Game.createItem(originalItem.itemid, originalItem.type)
+			if not newItem then
+				Spdlog.error("[questSystem1.onUse] failed to create new item")
+				return false
+			end
+			local newActionId = originalItem:getActionId()
+			if newActionId then
+				newItem:setActionId(newActionId)
+			end
+			local newDescription = item:getAttribute(ITEM_ATTRIBUTE_DESCRIPTION)
+			if newDescription then
+				newItem:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, newDescription)
+			end
 
-	size = #items
-	if size == 1 then
-		reward = items[1]:clone()
+			if originalItem:isContainer() then
+				copyContainerItem(Container(originalItem.uid), Container(newItem.uid))
+			end
+			items[#items + 1] = newItem
+		end
+
+		if size == 1 then
+			reward = items[1]
+		end
 	end
 
 	local result = ''
 	if reward then
 		local ret = ItemType(reward.itemid)
 		if ret:isRune() then
-			result = ret:getArticle() .. ' ' ..  ret:getName() .. ' (' .. reward.type .. ' charges)'
+			result = ret:getArticle() .. ' ' .. ret:getName() .. ' (' .. reward.type .. ' charges)'
 		elseif ret:isStackable() and reward:getCount() > 1 then
 			result = reward:getCount() .. ' ' .. ret:getPluralName()
 		elseif ret:getArticle() ~= '' then

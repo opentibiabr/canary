@@ -1041,6 +1041,8 @@ ItemAttribute_t stringToItemAttribute(const std::string &str) {
 		return ItemAttribute_t::DOORID;
 	} else if (str == "timestamp") {
 		return ItemAttribute_t::DURATION_TIMESTAMP;
+	} else if (str == "amount") {
+		return ItemAttribute_t::AMOUNT;
 	}
 	return ItemAttribute_t::NONE;
 }

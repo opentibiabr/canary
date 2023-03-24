@@ -25,6 +25,12 @@ monster.changeTarget = {
 	chance = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 1981,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Quest.U10_80.Grimvale.KatexTimer
+}
+
 monster.strategiesTarget = {
 	nearest = 100,
 }

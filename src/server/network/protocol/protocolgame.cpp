@@ -2738,7 +2738,7 @@ void ProtocolGame::sendCreatureIcon(const Creature* creature) {
 	// 0 = no icon, 1 = we'll send an icon
 	// msg.addByte(icon != CREATUREICON_NONE);
 	if (icon != CREATUREICON_NONE) {
-		msg.addByte(0x01); // Has icon
+		msg.addByte(icon != CREATUREICON_NONE); // Has icon
 		msg.addByte(icon);
 		// Creature update
 		msg.addByte(1);
@@ -5963,12 +5963,9 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 					msg.add<uint16_t>(0);
 				}
 			} else if (version > 1289 && otherPlayer != nullptr && otherPlayer->getHazardSystemReference() > 0 && otherPlayer->getHazardSystemPoints() > 0) {
-				msg.addByte(0x01); // Has icon
 				msg.addByte(22); // Hazard icon
 				msg.addByte(0);
 				msg.add<uint16_t>(otherPlayer->getHazardSystemPoints());
-			} else {
-				msg.addByte(0x00); // Has icon
 			}
 		} else {
 			icon = creature->getIcon();

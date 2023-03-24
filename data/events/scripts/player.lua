@@ -741,7 +741,6 @@ function Player:onGainSkillTries(skill, tries)
 	end
 
 	-- Event scheduler skill rate
-	-- Event scheduler skill rate
 	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
 		STAGES_DEFAULT = skillsStages
 	else

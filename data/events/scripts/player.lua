@@ -754,13 +754,11 @@ function Player:onGainSkillTries(skill, tries)
 	if(skill == SKILL_MAGLEVEL) then -- Magic Level
 		if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
 			STAGES_DEFAULT = magicLevelStages
-			SKILL_DEFAULT = self:getBaseMagicLevel()
-			RATE_DEFAULT = configManager.getNumber(configKeys.RATE_MAGIC)
-		else 
+		else
 			STAGES_DEFAULT = nil
-			SKILL_DEFAULT = self:getBaseMagicLevel()
-			RATE_DEFAULT = configManager.getNumber(configKeys.RATE_MAGIC)
 		end
+		SKILL_DEFAULT = self:getBaseMagicLevel()
+		RATE_DEFAULT = configManager.getNumber(configKeys.RATE_MAGIC)
 	end
 
 	skillOrMagicRate = getRateFromTable(STAGES_DEFAULT, SKILL_DEFAULT, RATE_DEFAULT)

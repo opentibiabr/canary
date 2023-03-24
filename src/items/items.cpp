@@ -173,8 +173,7 @@ bool Items::loadFromXml() {
 	}
 
 	for (auto itemNode : doc.child("items").children()) {
-		auto idAttribute = itemNode.attribute("id");
-		if (idAttribute) {
+		if (auto idAttribute = itemNode.attribute("id")) {
 			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
 			continue;
 		}

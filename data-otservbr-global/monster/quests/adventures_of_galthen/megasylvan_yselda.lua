@@ -19,6 +19,12 @@ monster.changeTarget = {
 	chance = 10
 }
 
+monster.bosstiary = {
+	bossRaceId = 2114,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Quest.U12_70.AdventuresOfGalthen.MegasylvanYseldaTimer
+}
+
 monster.strategiesTarget = {
 	nearest = 100,
 }

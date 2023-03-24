@@ -174,15 +174,8 @@ bool Items::loadFromXml() {
 
 	for (auto itemNode : doc.child("items").children()) {
 		auto idAttribute = itemNode.attribute("id");
-		auto itemId = pugi::cast<uint16_t>(idAttribute.value());
-		// Validating to avoid creating items that don't exist in assets in the item map
-		ItemType &itemType = items[itemId];
-		if (itemType.id == 0) {
-			continue;
-		}
-
 		if (idAttribute) {
-			parseItemNode(itemNode, itemId);
+			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
 			continue;
 		}
 
@@ -225,6 +218,10 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 		items.resize(id + 1);
 	}
 	ItemType &iType = items[id];
+	if (iType.id == 0 && (iType.name.empty() || iType.name == asLowerCaseString("reserved sprite"))) {
+		return;
+	}
+
 	iType.id = id;
 
 	ItemType &itemType = getItemType(id);

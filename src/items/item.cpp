@@ -65,7 +65,7 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/, Position* it
 		}
 
 		newItem->incrementReferenceCounter();
-	} else if (it.id == 0 && type > 0 && itemPosition) {
+	} else if (type > 0 && itemPosition) {
 		auto position = *itemPosition;
 		SPDLOG_WARN("[Item::CreateItem] Item with id '{}', in position '{}' not exists in the appearances.dat and cannot be created.", type, position.toString());
 	} else {

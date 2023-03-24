@@ -87,6 +87,10 @@ void Items::loadFromProtobuf() {
 			items.resize(object.id() + 1);
 		}
 
+		if (!object.has_id()) {
+			continue;
+		}
+
 		ItemType &iType = items[object.id()];
 		if (object.flags().container()) {
 			iType.type = ITEM_TYPE_CONTAINER;
@@ -169,8 +173,16 @@ bool Items::loadFromXml() {
 	}
 
 	for (auto itemNode : doc.child("items").children()) {
-		if (auto idAttribute = itemNode.attribute("id"); idAttribute) {
-			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
+		auto idAttribute = itemNode.attribute("id");
+		auto itemId = pugi::cast<uint16_t>(idAttribute.value());
+		// Validating to avoid creating items that don't exist in assets in the item map
+		ItemType &itemType = items[itemId];
+		if (itemType.id == 0) {
+			continue;
+		}
+
+		if (idAttribute) {
+			parseItemNode(itemNode, itemId);
 			continue;
 		}
 

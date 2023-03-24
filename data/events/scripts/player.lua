@@ -741,15 +741,14 @@ function Player:onGainSkillTries(skill, tries)
 	end
 
 	-- Event scheduler skill rate
+	-- Event scheduler skill rate
 	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
 		STAGES_DEFAULT = skillsStages
-		SKILL_DEFAULT = self:getSkillLevel(skill)
-		RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
-	else 
+	else
 		STAGES_DEFAULT = nil
-		SKILL_DEFAULT = self:getSkillLevel(skill)
-		RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
 	end
+	SKILL_DEFAULT = self:getSkillLevel(skill)
+	RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
 
 	if(skill == SKILL_MAGLEVEL) then -- Magic Level
 		if configManager.getBoolean(configKeys.RATE_USE_STAGES) then

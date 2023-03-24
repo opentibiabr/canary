@@ -24,6 +24,12 @@ monster.changeTarget = {
 	chance = 10
 }
 
+monster.bosstiary = {
+	bossRaceId = 1906,
+	bossRace = RARITY_NEMESIS,
+	storageCooldown = Storage.Quest.U12_40.SoulWar.GoshnarMegalomaniaTimer
+}
+
 monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,

@@ -25,6 +25,12 @@ monster.changeTarget = {
 	chance = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 1868,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Quest.U12_30.FeasterOfSouls.UnwelcomeTimer
+}
+
 monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,

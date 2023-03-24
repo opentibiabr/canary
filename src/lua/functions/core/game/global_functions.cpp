@@ -824,7 +824,7 @@ int GlobalFunctions::luaIsScriptsInterface(lua_State* L) {
 	if (getScriptEnv()->getScriptInterface() == &g_scripts()->getScriptInterface()) {
 		pushBoolean(L, true);
 	} else {
-		reportErrorFunc(L, "EventCallback: can only be called inside (Revscript Env)");
+		reportErrorFunc("EventCallback: can only be called inside (Revscript Env)");
 		pushBoolean(L, false);
 	}
 	return 1;

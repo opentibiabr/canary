@@ -64,34 +64,34 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 10000, maxCount = 3 },
-	{ name = "platinum coin", chance = 10000, maxCount = 10 },
-	{ name = "ultimate health potion", chance = 7300, maxCount = 11 },
-	{ name = "ultimate mana potion", chance = 7300, maxCount = 3 },
-	{ name = "ultimate spirit potion", chance = 7300, maxCount = 3 },
-	{ name = "berserk potion", chance = 7300, maxCount = 5 },
-	{ name = "mastermind potion", chance = 7300, maxCount = 5 },
-	{ name = "bullseye potion", chance = 7300, maxCount = 5 },
-	{ name = "pirate coin", chance = 7300, maxCount = 50 },
-	{ name = "cheesy key", chance = 700 },
-	{ name = "small treasure chest", chance = 700 },
-	{ name = "giant amethyst", chance = 600 },
-	{ name = "tentugly's eye", chance = 600 },
-	{ name = "giant ruby", chance = 400 },
-	{ name = "golden dustbin", chance = 650 },
-	{ name = "tentacle of tentugly", chance = 650, maxCount = 2 },
-	{ name = "tiara", chance = 650 },
-	{ name = "giant topaz", chance = 650 },
-	{ name = "golden cheese wedge", chance = 650 },
-	{ name = "golden skull", chance = 650 },
-	{ name = "plushie of tentugly", chance = 650 },
+	{name = "crystal coin", chance = 10000, maxCount = 3},
+	{name = "platinum coin", chance = 10000, maxCount = 10},
+	{name = "ultimate health potion", chance = 7300, maxCount = 11},
+	{name = "ultimate mana potion", chance = 7300, maxCount = 3},
+	{name = "ultimate spirit potion", chance = 7300, maxCount = 3},
+	{name = "berserk potion", chance = 7300, maxCount = 5},
+	{name = "mastermind potion", chance = 7300, maxCount = 5},
+	{name = "bullseye potion", chance = 7300, maxCount = 5},
+	{name = "pirate coin", chance = 7300, maxCount = 50},
+	{name = "cheesy key", chance = 700},
+	{name = "small treasure chest", chance = 700},
+	{name = "giant amethyst", chance = 600},
+	{name = "tentugly's eye", chance = 600},
+	{name = "giant ruby", chance = 400},
+	{name = "golden dustbin", chance = 650},
+	{name = "tentacle of tentugly", chance = 650, maxCount = 2},
+	{name = "tiara", chance = 650},
+	{name = "giant topaz", chance = 650},
+	{name = "golden cheese wedge", chance = 650},
+	{name = "golden skull", chance = 650},
+	{name = "plushie of tentugly", chance = 650},
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -300, maxDamage = -700 },
-	{ name = "combat", type = COMBAT_ENERGYDAMAGE, interval = 2000, chance = 40, minDamage = -400, maxDamage = -500, range = 5, radius = 4, target = true, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_GHOSTLY_BITE },
-	{ name = "combat", type = COMBAT_ENERGYDAMAGE, interval = 2000, chance = 30, minDamage = -300, maxDamage = -500, length = 7, effect = CONST_ME_LOSEENERGY },
-	{ name = "combat", type = COMBAT_ENERGYDAMAGE, interval = 2000, chance = 70, minDamage = -300, maxDamage = -500, radius = 4, effect = CONST_ME_LOSEENERGY }
+	{name ="melee", interval = 2000, chance = 100, minDamage = -300, maxDamage = -700},
+	{name = "combat", type = COMBAT_ENERGYDAMAGE, interval = 2000, chance = 40, minDamage = -400, maxDamage = -500, range = 5, radius = 4, target = true, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_GHOSTLY_BITE},
+	{name = "combat", type = COMBAT_ENERGYDAMAGE, interval = 2000, chance = 30, minDamage = -300, maxDamage = -500, length = 7, effect = CONST_ME_LOSEENERGY},
+	{name = "combat", type = COMBAT_ENERGYDAMAGE, interval = 2000, chance = 70, minDamage = -300, maxDamage = -500, radius = 4, effect = CONST_ME_LOSEENERGY}
 }
 
 monster.defenses = {

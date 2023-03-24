@@ -220,7 +220,7 @@ class ItemProperties {
 class Item : virtual public Thing, public ItemProperties {
 	public:
 		// Factory member to create item of right type based on type
-		static Item* CreateItem(const uint16_t type, uint16_t count = 0, Position *itemPosition = nullptr);
+		static Item* CreateItem(const uint16_t type, uint16_t count = 0, Position* itemPosition = nullptr);
 		static Container* CreateItemAsContainer(const uint16_t type, uint16_t size);
 		static Item* CreateItem(uint16_t itemId, Position &itemPosition);
 		static Items items;

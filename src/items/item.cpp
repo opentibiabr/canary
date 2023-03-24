@@ -28,7 +28,7 @@
 
 Items Item::items;
 
-Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/, Position *itemPosition /*= nullptr*/) {
+Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/, Position* itemPosition /*= nullptr*/) {
 	Item* newItem = nullptr;
 
 	const ItemType &it = Item::items[type];

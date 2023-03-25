@@ -1,29 +1,14 @@
 /**
- * @file connection.h
- *
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_
 #define SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_
-
-#include <thread>
-#include <unordered_set>
 
 #include "declarations.hpp"
 #include "server/network/message/networkmessage.h"
@@ -44,16 +29,15 @@ class ServicePort;
 using ServicePort_ptr = std::shared_ptr<ServicePort>;
 using ConstServicePort_ptr = std::shared_ptr<const ServicePort>;
 
-class ConnectionManager
-{
+class ConnectionManager {
 	public:
-		static ConnectionManager& getInstance() {
+		static ConnectionManager &getInstance() {
 			static ConnectionManager instance;
 			return instance;
 		}
 
-		Connection_ptr createConnection(boost::asio::io_service& io_service, ConstServicePort_ptr servicePort);
-		void releaseConnection(const Connection_ptr& connection);
+		Connection_ptr createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort);
+		void releaseConnection(const Connection_ptr &connection);
 		void closeAll();
 
 	private:
@@ -63,20 +47,18 @@ class ConnectionManager
 		std::mutex connectionManagerLock;
 };
 
-class Connection : public std::enable_shared_from_this<Connection>
-{
+class Connection : public std::enable_shared_from_this<Connection> {
 	public:
 		// Constructor
-		Connection(boost::asio::io_service& initIoService,
-			ConstServicePort_ptr initservicePort);
+		Connection(asio::io_service &initIoService, ConstServicePort_ptr initservicePort);
 		// Constructor end
 
 		// Destructor
 		~Connection() = default;
 
 		// Singleton - ensures we don't accidentally copy it
-		Connection(const Connection&) = delete;
-		Connection& operator=(const Connection&) = delete;
+		Connection(const Connection &) = delete;
+		Connection &operator=(const Connection &) = delete;
 
 		void close(bool force = false);
 		// Used by protocols that require server to send first
@@ -84,31 +66,31 @@ class Connection : public std::enable_shared_from_this<Connection>
 		void accept(bool toggleParseHeader = true);
 
 		void resumeWork();
-		void send(const OutputMessage_ptr& outputMessage);
+		void send(const OutputMessage_ptr &outputMessage);
 
 		uint32_t getIP();
 
 	private:
-		void parseProxyIdentification(const boost::system::error_code& error);
-		void parseHeader(const boost::system::error_code& error);
-		void parsePacket(const boost::system::error_code& error);
+		void parseProxyIdentification(const std::error_code &error);
+		void parseHeader(const std::error_code &error);
+		void parsePacket(const std::error_code &error);
 
-		void onWriteOperation(const boost::system::error_code& error);
+		void onWriteOperation(const std::error_code &error);
 
-		static void handleTimeout(ConnectionWeak_ptr connectionWeak, const boost::system::error_code& error);
+		static void handleTimeout(ConnectionWeak_ptr connectionWeak, const std::error_code &error);
 
 		void closeSocket();
 		void internalWorker();
-		void internalSend(const OutputMessage_ptr& outputMessage);
+		void internalSend(const OutputMessage_ptr &outputMessage);
 
-		boost::asio::ip::tcp::socket& getSocket() {
+		asio::ip::tcp::socket &getSocket() {
 			return socket;
 		}
 
 		NetworkMessage msg;
 
-		boost::asio::deadline_timer readTimer;
-		boost::asio::deadline_timer writeTimer;
+		asio::high_resolution_timer readTimer;
+		asio::high_resolution_timer writeTimer;
 
 		std::recursive_mutex connectionLock;
 
@@ -117,7 +99,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 		ConstServicePort_ptr service_port;
 		Protocol_ptr protocol;
 
-		boost::asio::ip::tcp::socket socket;
+		asio::ip::tcp::socket socket;
 
 		time_t timeConnected;
 		uint32_t packetsSent = 0;
@@ -129,4 +111,4 @@ class Connection : public std::enable_shared_from_this<Connection>
 		friend class ConnectionManager;
 };
 
-#endif  // SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_
+#endif // SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_

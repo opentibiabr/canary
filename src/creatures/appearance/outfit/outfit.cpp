@@ -1,36 +1,25 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/appearance/outfit/outfit.h"
-
 #include "utils/pugicast.h"
 #include "utils/tools.h"
 #include "game/game.h"
 
-bool Outfits::loadFromXml()
-{
+bool Outfits::loadFromXml() {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/outfits.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/outfits.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		printXMLError("[Outfits::loadFromXml] - ", "data/XML/outfits.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 
@@ -58,10 +47,8 @@ bool Outfits::loadFromXml()
 		}
 
 		if (uint16_t lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
-				g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
-				&& !g_game().isLookTypeRegistered(lookType)
-			)
-		{
+			g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
+			&& !g_game().isLookTypeRegistered(lookType)) {
 			SPDLOG_WARN("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
 			return false;
 		}
@@ -80,9 +67,8 @@ bool Outfits::loadFromXml()
 	return true;
 }
 
-const Outfit* Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const
-{
-	for (const Outfit& outfit : outfits[sex]) {
+const Outfit* Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const {
+	for (const Outfit &outfit : outfits[sex]) {
 		if (outfit.lookType == lookType) {
 			return &outfit;
 		}
@@ -97,15 +83,14 @@ const Outfit* Outfits::getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) c
  * @return <b>const</b> pointer to the outfit or <b>nullptr</b> if it could not be found.
  */
 
-const Outfit *Outfits::getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType)
-{
-	PlayerSex_t	searchSex = (sex == PLAYERSEX_MALE)?PLAYERSEX_FEMALE:PLAYERSEX_MALE;
+const Outfit* Outfits::getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType) {
+	PlayerSex_t searchSex = (sex == PLAYERSEX_MALE) ? PLAYERSEX_FEMALE : PLAYERSEX_MALE;
 
-	for(uint16_t i=0; i< outfits[sex].size(); i++) {
+	for (uint16_t i = 0; i < outfits[sex].size(); i++) {
 		if (outfits[sex].at(i).lookType == lookType) {
-			if (outfits[searchSex].size()>i) {
+			if (outfits[searchSex].size() > i) {
 				return &outfits[searchSex].at(i);
-			} else { //looktype found but the oposite sex array doesn't have this index.
+			} else { // looktype found but the oposite sex array doesn't have this index.
 				return nullptr;
 			}
 		}

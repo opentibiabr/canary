@@ -2,11 +2,21 @@
 "Area: Source":
   - any: ['src/**/*']
 
-"Area: Datapack":
-  - any: ['data/**/*', '!data/world/*']
+"Area: Datapack Core":
+  - any: ['data/**/*']
 
-"Area: Map":
-  - any: ['data/world/*']
+"Area: Datapack Global":
+  - any: ['data-otservbr-global/**/*', '!data-otservbr-global/world/*']
+
+"Area: Datapack Canary":
+  - any: ['data-canary/**/*', '!data-canary/world/*']
+
+"Area: Map Global":
+  - any: ['data-otservbr-global/world/*']
+
+"Area: Map Canary":
+  - any: ['data-canary/world/*']
 
 "Area: Docker":
   - any: ['docker/**/*']
+  

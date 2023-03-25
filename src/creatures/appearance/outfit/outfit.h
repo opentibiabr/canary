@@ -1,53 +1,40 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_CREATURES_APPEARANCE_OUTFIT_OUTFIT_H_
 #define SRC_CREATURES_APPEARANCE_OUTFIT_OUTFIT_H_
 
-#include <utility>
-
 #include "declarations.hpp"
 
 struct Outfit {
-	Outfit(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initFrom) :
-		name(initName), lookType(initLookType), premium(initPremium), unlocked(initUnlocked), from(initFrom) {}
+		Outfit(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initFrom) :
+			name(initName), lookType(initLookType), premium(initPremium), unlocked(initUnlocked), from(initFrom) { }
 
-	std::string name;
-	uint16_t lookType;
-	bool premium;
-	bool unlocked;
-	std::string from;
+		std::string name;
+		uint16_t lookType;
+		bool premium;
+		bool unlocked;
+		std::string from;
 };
 
 struct ProtocolOutfit {
-	ProtocolOutfit(const std::string& initName, uint16_t initLookType, uint8_t initAddons) :
-		name(initName), lookType(initLookType), addons(initAddons) {}
+		ProtocolOutfit(const std::string &initName, uint16_t initLookType, uint8_t initAddons) :
+			name(initName), lookType(initLookType), addons(initAddons) { }
 
-	const std::string& name;
-	uint16_t lookType;
-	uint8_t addons;
+		const std::string &name;
+		uint16_t lookType;
+		uint8_t addons;
 };
 
-class Outfits
-{
+class Outfits {
 	public:
-		static Outfits& getInstance() {
+		static Outfits &getInstance() {
 			static Outfits instance;
 			return instance;
 		}
@@ -57,7 +44,7 @@ class Outfits
 		bool loadFromXml();
 
 		const Outfit* getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;
-		const std::vector<Outfit>& getOutfits(PlayerSex_t sex) const {
+		const std::vector<Outfit> &getOutfits(PlayerSex_t sex) const {
 			return outfits[sex];
 		}
 
@@ -65,4 +52,4 @@ class Outfits
 		std::vector<Outfit> outfits[PLAYERSEX_LAST + 1];
 };
 
-#endif  // SRC_CREATURES_APPEARANCE_OUTFIT_OUTFIT_H_
+#endif // SRC_CREATURES_APPEARANCE_OUTFIT_OUTFIT_H_

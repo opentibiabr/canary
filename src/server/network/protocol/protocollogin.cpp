@@ -1,41 +1,23 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "server/network/protocol/protocollogin.h"
-
 #include "server/network/message/outputmessage.h"
-#include "security/rsa.h"
 #include "game/scheduling/tasks.h"
 #include "creatures/players/account/account.hpp"
 #include "io/iologindata.h"
 #include "creatures/players/management/ban.h"
 #include "game/game.h"
 
-#include <algorithm>
-#include <limits>
-#include <vector>
-
-
-void ProtocolLogin::disconnectClient(const std::string& message)
-{
+void ProtocolLogin::disconnectClient(const std::string &message) {
 	auto output = OutputMessagePool::getOutputMessage();
 
 	output->addByte(0x0B);
@@ -45,10 +27,9 @@ void ProtocolLogin::disconnectClient(const std::string& message)
 	disconnect();
 }
 
-void ProtocolLogin::getCharacterList(const std::string& accountIdentifier, const std::string& password)
-{
+void ProtocolLogin::getCharacterList(const std::string& accountIdentifier, const std::string& password) {
 	account::Account account;
-  	account.setProtocolCompat(oldProtocol);
+	account.setProtocolCompat(oldProtocol);
 	if (!IOLoginData::authenticateAccountPassword(accountIdentifier, password, &account)) {
 		std::ostringstream ss;
 		ss << (oldProtocol ? "Username" : "Email") << " or password is not correct.";
@@ -60,13 +41,14 @@ void ProtocolLogin::getCharacterList(const std::string& accountIdentifier, const
 	Game::updatePremium(account);
 
 	auto output = OutputMessagePool::getOutputMessage();
-	const std::string& motd = g_configManager().getString(MOTD);
+	const std::string &motd = g_configManager().getString(SERVER_MOTD);
 	if (!motd.empty()) {
 		// Add MOTD
 		output->addByte(0x14);
 
 		std::ostringstream ss;
-		ss << g_game().getMotdNum() << "\n" << motd;
+		ss << g_game().getMotdNum() << "\n"
+		   << motd;
 		output->addString(ss.str());
 	}
 
@@ -79,9 +61,9 @@ void ProtocolLogin::getCharacterList(const std::string& accountIdentifier, const
 	account.GetAccountPlayers(&players);
 	output->addByte(0x64);
 
-	output->addByte(1);  // number of worlds
+	output->addByte(1); // number of worlds
 
-	output->addByte(0);  // world id
+	output->addByte(0); // world id
 	output->addString(g_configManager().getString(SERVER_NAME));
 	output->addString(g_configManager().getString(IP));
 
@@ -89,8 +71,7 @@ void ProtocolLogin::getCharacterList(const std::string& accountIdentifier, const
 
 	output->addByte(0);
 
-	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(),
-                                  players.size());
+	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
 	output->addByte(size);
 	for (uint8_t i = 0; i < size; i++) {
 		output->addByte(0);
@@ -107,15 +88,14 @@ void ProtocolLogin::getCharacterList(const std::string& accountIdentifier, const
 		account.GetPremiumRemaningDays(&days);
 		output->addByte(0);
 		output->add<uint32_t>(time(nullptr) + (days * 86400));
-  	}
+	}
 
 	send(output);
 
 	disconnect();
 }
 
-void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
-{
+void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	if (g_game().getGameState() == GAME_STATE_SHUTDOWN) {
 		disconnect();
 		return;
@@ -142,7 +122,7 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 		return;
 	}
 
-	std::array<uint32_t, 4> key = {msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>()};
+	std::array<uint32_t, 4> key = { msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>() };
 	enableXTEAEncryption();
 	setXTEAKey(key.data());
 

@@ -1,3 +1,12 @@
+-- Core settings
+-- Note: If you want to use datapack folder canary (custom), put only "data-canary"
+-- If you want to use the global datapack folder, put "data-otservbr-global"
+-- If "useAnyDatapackFolder" is set to true then you can choose any datapack folder for your server
+useAnyDatapackFolder = false
+dataPackDirectory = "data-otservbr-global"
+-- Don't change this unless you know what you're doing
+coreDirectory = "data"
+
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
 worldType = "pvp"
@@ -34,10 +43,10 @@ loginProtocolPort = 7171
 gameProtocolPort = 7172
 statusProtocolPort = 7171
 maxPlayers = 0
-motd = "Welcome to the Canary!"
+serverName = "OTServBR-Global"
+serverMotd = "Welcome to the OTServBR-Global!"
 onePlayerOnlinePerAccount = true
 allowClones = false
-serverName = "Canary"
 statusTimeout = 5 * 1000
 replaceKickOnLogin = true
 maxPacketsPerSecond = 25
@@ -63,10 +72,8 @@ depotBoxes = 20
 preySystemEnabled = true
 preyFreeThirdSlot = false
 preyRerollPricePerLevel = 200
-preySelectListPrice = 1
-preyBonusRerollPrice = 2
-preyBonusPercentMin = 5
-preyBonusPercentMax = 40
+preySelectListPrice = 5
+preyBonusRerollPrice = 1
 preyBonusTime = 2 * 60 * 60
 preyFreeRerollTime = 20 * 60 * 60
 
@@ -78,9 +85,37 @@ taskHuntingSystemEnabled = true
 taskHuntingFreeThirdSlot = false
 taskHuntingLimitedTasksExhaust = 20 * 60 * 60
 taskHuntingRerollPricePerLevel = 200
-taskHuntingSelectListPrice = 1
-taskHuntingBonusRerollPrice = 2
+taskHuntingSelectListPrice = 5
+taskHuntingBonusRerollPrice = 1
 taskHuntingFreeRerollTime = 20 * 60 * 60
+
+-- Forge system
+forgeMaxItemTier = 10
+forgeCostOneSliver = 20
+forgeSliverAmount = 3
+forgeCoreCost = 50
+forgeMaxDust = 225
+forgeFusionCost = 100
+forgeTransferCost = 100
+forgeBaseSuccessRate = 50
+forgeBonusSuccessRate = 15
+forgeTierLossReduction = 50
+forgeMinSlivers = 3
+forgeMaxSlivers = 7
+forgeInfluencedLimit = 300
+forgeFiendishLimit = 3
+forgeFiendishIntervalType = "hour"
+forgeFiendishIntervalTime = "1"
+
+-- Bosstiary system
+boostedBossSlot = true
+boostedBossLootBonus = 250
+boostedBossKillBonus = 3
+
+-- Familiar system
+-- NOTE: the time will be divided by 2 to get half the value, the familiar lasts 15 minutes by default and the cooldown of the spell is 30 minutes
+-- Only change it here if you know what you are doing or to make testing easier with familiars
+familiarTime = 30
 
 -- NOTE: Access only for Premium Account
 onlyPremiumAccount = false
@@ -94,12 +129,18 @@ allConsoleLog = false
 stashMoving = false
 depotChest = 4
 autoLoot = false
--- autoBank = true, the dropped coins from monsters will be automatically 
+-- autoBank = true, the dropped coins from monsters will be automatically
 -- deposited to your bank account.
 autoBank = false
--- teleporte summon
--- true will never remove the summon
+
+-- Teleport summon
+-- Set to true will never remove the summon
 teleportSummons = false
+
+-- NOTE: true will allow the /reload command to be used
+-- NOTE: Using this script might cause unwanted changes
+-- This script forces a reload in the entire server, this means that everything that is stored in memory might stop to work properly and/or completely, this script should be used in test environments only
+allowReload = false
 
 -- Stamina in Trainers
 staminaTrainer = false
@@ -142,10 +183,12 @@ deathLosePercent = -1
 
 -- Houses
 -- NOTE: set housePriceEachSQM to -1 to disable the ingame buy house functionality
+-- NOTE: set houseBuyLevel to 0 to disable the min level purchase functionality.
 -- Periods: daily/weekly/monthly/yearly/never
 housePriceEachSQM = 1000
 houseRentPeriod = "never"
 houseOwnedByAccount = false
+houseBuyLevel = 100
 
 -- Item Usage
 timeBetweenActions = 200
@@ -163,9 +206,9 @@ pushWhenAttacking = false
 -- NOTE: set mapName WITHOUT .otbm at the end
 -- NOTE: If toggleDownloadMap if false, then the mapDownloadUrl will not be used
 -- NOTE: If a map with the name already exists in the world folder, the map will not be downloaded even if the toggleDownloadMap is true
-toggleDownloadMap = false
-mapName = "canary"
-mapDownloadUrl = ""
+toggleDownloadMap = true
+mapName = "otservbr"
+mapDownloadUrl = "https://github.com/opentibiabr/canary/releases/download/v1.5.0/otservbr.otbm"
 mapAuthor = "OpenTibiaBR"
 
 -- Party List limitations
@@ -174,9 +217,9 @@ mapAuthor = "OpenTibiaBR"
 partyListMaxDistance = 30
 
 -- Custom Map
--- NOTE: mapCustomEnabled: true = activate the map, false = disable the map
-toggleMapCustom = false
-mapCustomName = "canary-custom"
+-- NOTE: mapCustomEnabled = activate the map, false = disable the map
+toggleMapCustom = true
+mapCustomName = "otservbr-custom"
 mapCustomAuthor = "OpenTibiaBR"
 
 -- Market
@@ -188,19 +231,19 @@ maxMarketOffersAtATimePerPlayer = 100
 -- MySQL
 mysqlHost = "127.0.0.1"
 mysqlUser = "root"
-mysqlPass = ""
-mysqlDatabase = "canary"
+mysqlPass = "root"
+mysqlDatabase = "otservbr-global"
 mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"
 
 -- Misc.
+-- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate
 allowChangeOutfit = true
 freePremium = false
 kickIdlePlayerAfterMinutes = 15
 maxMessageBuffer = 4
 emoteSpells = false
-classicEquipmentSlots = false
 allowWalkthrough = true
 coinPacketSize = 25
 coinImagesURL = "http://127.0.0.1/images/store/"
@@ -210,6 +253,7 @@ showScriptsLogInConsole = false
 criticalChance = 10
 inventoryGlowOnFiveBless = false
 adventurersBlessingLevel = 21
+experienceDisplayRates = true
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes
@@ -228,7 +272,7 @@ globalServerSaveTime = "06:00:00"
 sortLootByChance = false
 
 -- Rates
--- NOTE: rateExp, rateSkill and rateMagic are only used when 'rateUseStages = false'
+-- NOTE: rateExp, rateSkill and rateMagic is used when 'rateUseStages = false' - or a fallback only
 -- To configure rates see file data/stages.lua
 rateUseStages = false
 rateExp = 1
@@ -236,6 +280,9 @@ rateSkill = 1
 rateLoot = 1
 rateMagic = 1
 rateSpawn = 1
+
+-- Killing in the name of Quest
+rateKillingInTheNameOfPoints = 1
 
 -- Today regeneration condition over an loop every 1 second,
 -- So values which should regenerated less then 1 second or won't will work
@@ -276,7 +323,7 @@ startupDatabaseOptimization = true
 -- Status server information
 ownerName = "OpenTibiaBR"
 ownerEmail = "opentibiabr@outlook.com"
-url = "http://docs.opentibiabr.org/"
+url = "http://docs.opentibiabr.com/"
 location = "South America"
 
 -- Sends Discord webhook notifications on startup, raids and shutdown.

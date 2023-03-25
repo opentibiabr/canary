@@ -207,6 +207,8 @@ if Modules == nil then
 			cost = 0
 		end
 
+		local playerPosition = player:getPosition()
+
 		if parameters.premium and not player:isPremium() then
 			npcHandler:say("I'm sorry, but you need a premium account in order to travel onboard our ships.", npc, player)
 		elseif parameters.level and player:getLevel() < parameters.level then
@@ -215,25 +217,21 @@ if Modules == nil then
 			npcHandler:say("First get rid of those blood stains! You are not going to ruin my vehicle!", npc, player)
 		elseif not player:removeMoneyBank(cost) then
 			npcHandler:say("You don't have enough money.", npc, player)
-		elseif os.time() < player:getStorageValue(Storage.NpcExhaust) then
+		elseif os.time() < player:getStorageValue(Global.Storage.NpcExhaust) then
 			npcHandler:say('Sorry, but you need to wait three seconds before travel again.', player)
-			player:getPosition():sendMagicEffect(CONST_ME_POFF)
+			playerPosition:sendMagicEffect(CONST_ME_POFF)
 		else
 			npcHandler:removeInteraction(npc, player)
 			npcHandler:say(parameters.text or "Set the sails!", npc, player)
-			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 
 			local destination = parameters.destination
 			if type(destination) == 'function' then
 				destination = destination(player)
 			end
 
+			player:setStorageValue(NpcExhaust, 3 + os.time())
 			player:teleportTo(destination)
-			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-
-			setPlayerStorageValue(player, StorageNpcExhaust, 3 + os.time())
-			player:teleportTo(destination)
-			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+			playerPosition:sendMagicEffect(CONST_ME_TELEPORT)
 
 			-- What a foolish Quest - Mission 3
 			if Storage.WhatAFoolish.PieBoxTimer ~= nil then
@@ -266,9 +264,13 @@ if Modules == nil then
 		return obj
 	end
 
-	-- Inits the module and associates handler to it.
-	function FocusModule:init(handler)
+	-- Inits the module and associates handler to it
+	-- Variables "greetCallback, farewellCallback and tradeCallback" are boolean value, true by default
+	function FocusModule:init(handler, greetCallback, farewellCallback, tradeCallback)
 		self.npcHandler = handler
+		if greetCallback == false then
+			return false
+		end
 		for i, word in pairs(FOCUS_GREETWORDS) do
 			local obj = {}
 			obj[#obj + 1] = word
@@ -276,6 +278,9 @@ if Modules == nil then
 			handler.keywordHandler:addKeyword(obj, FocusModule.onGreet, {module = self})
 		end
 
+		if farewellCallback == false then
+			return false
+		end
 		for i, word in pairs(FOCUS_FAREWELLWORDS) do
 			local obj = {}
 			obj[#obj + 1] = word
@@ -283,6 +288,9 @@ if Modules == nil then
 			handler.keywordHandler:addKeyword(obj, FocusModule.onFarewell, {module = self})
 		end
 
+		if tradeCallback == false then
+			return false
+		end
 		for i, word in pairs(FOCUS_TRADE_MESSAGE) do
 			local obj = {}
 			obj[#obj + 1] = word

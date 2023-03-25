@@ -1,28 +1,19 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
 #include "lua/functions/core/libs/db_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
+
 int DBFunctions::luaDatabaseExecute(lua_State* L) {
 	pushBoolean(L, Database::getInstance().executeQuery(getString(L, -1)));
 	return 1;
@@ -34,23 +25,23 @@ int DBFunctions::luaDatabaseAsyncExecute(lua_State* L) {
 		int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		auto scriptId = getScriptEnv()->getScriptId();
 		callback = [ref, scriptId](DBResult_ptr, bool success) {
-				lua_State* luaState = g_luaEnvironment.getLuaState();
-				if (!luaState) {
-					return;
-				}
+			lua_State* luaState = g_luaEnvironment.getLuaState();
+			if (!luaState) {
+				return;
+			}
 
-				if (!DBFunctions::reserveScriptEnv()) {
-					luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
-					return;
-				}
-
-				lua_rawgeti(luaState, LUA_REGISTRYINDEX, ref);
-				pushBoolean(luaState, success);
-				auto env = getScriptEnv();
-				env->setScriptId(scriptId, &g_luaEnvironment);
-				g_luaEnvironment.callFunction(1);
-
+			if (!DBFunctions::reserveScriptEnv()) {
 				luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
+				return;
+			}
+
+			lua_rawgeti(luaState, LUA_REGISTRYINDEX, ref);
+			pushBoolean(luaState, success);
+			auto env = getScriptEnv();
+			env->setScriptId(scriptId, &g_luaEnvironment);
+			g_luaEnvironment.callFunction(1);
+
+			luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
 		};
 	}
 	g_databaseTasks().addTask(getString(L, -1), callback);
@@ -72,27 +63,27 @@ int DBFunctions::luaDatabaseAsyncStoreQuery(lua_State* L) {
 		int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		auto scriptId = getScriptEnv()->getScriptId();
 		callback = [ref, scriptId](DBResult_ptr result, bool) {
-				lua_State* luaState = g_luaEnvironment.getLuaState();
-				if (!luaState) {
-					return;
-				}
+			lua_State* luaState = g_luaEnvironment.getLuaState();
+			if (!luaState) {
+				return;
+			}
 
-				if (!DBFunctions::reserveScriptEnv()) {
-					luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
-					return;
-				}
-
-				lua_rawgeti(luaState, LUA_REGISTRYINDEX, ref);
-				if (result) {
-					lua_pushnumber(luaState, ScriptEnvironment::addResult(result));
-				} else {
-					pushBoolean(luaState, false);
-				}
-				auto env = getScriptEnv();
-				env->setScriptId(scriptId, &g_luaEnvironment);
-				g_luaEnvironment.callFunction(1);
-
+			if (!DBFunctions::reserveScriptEnv()) {
 				luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
+				return;
+			}
+
+			lua_rawgeti(luaState, LUA_REGISTRYINDEX, ref);
+			if (result) {
+				lua_pushnumber(luaState, ScriptEnvironment::addResult(result));
+			} else {
+				pushBoolean(luaState, false);
+			}
+			auto env = getScriptEnv();
+			env->setScriptId(scriptId, &g_luaEnvironment);
+			g_luaEnvironment.callFunction(1);
+
+			luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
 		};
 	}
 	g_databaseTasks().addTask(getString(L, -1), callback, true);

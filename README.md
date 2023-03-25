@@ -1,6 +1,6 @@
 # OpenTibiaBR - Canary
 
-[![Discord Channel](https://img.shields.io/discord/528117503952551936.svg?style=flat-square&logo=discord)](https://discord.gg/X3mSnMH8jg)
+[![Discord Channel](https://img.shields.io/discord/528117503952551936.svg?style=flat-square&logo=discord)](https://discord.gg/gvTj5sh9Mp)
 [![GitHub issues](https://img.shields.io/github/issues/opentibiabr/canary)](https://github.com/opentibiabr/canary/issues)
 [![GitHub pull request](https://img.shields.io/github/issues-pr/opentibiabr/canary)](https://github.com/opentibiabr/canary/pulls)
 [![Contributors](https://img.shields.io/github/contributors/opentibiabr/canary.svg?style=flat-square)](https://github.com/opentibiabr/canary/graphs/contributors)
@@ -8,8 +8,6 @@
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/opentibiabr/canary)
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/b4539fb9fc96444f8db450f62a537b20)](https://www.codacy.com/gh/opentibiabr/canary/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=opentibiabr/canary&amp;utm_campaign=Badge_Grade)
-[![Analysis - CodeQL](https://github.com/opentibiabr/canary/actions/workflows/analysis-codeql.yml/badge.svg)](https://github.com/opentibiabr/canary/actions/workflows/analysis-codeql.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=opentibiabr_canary&metric=alert_status)](https://sonarcloud.io/dashboard?id=opentibiabr_canary)
 
 ## Builds
@@ -30,7 +28,7 @@ It is a fork of the [OTServBR-Global](https://github.com/opentibiabr/otservbr-gl
 
 This project was created with the intention of being a base as clean as possible, to work as an MMORPG engine and not necessarily linked to Tibia Global, although it will also work. The OpenTibiaBR - Global was adapted to work with the source of the Canary, so that it will be the first repository to use this engine.
 
-To connect to the server and to take a stable experience, you can use [mehah's otclient](https://github.com/mehah/otclient) or [tibia client](https://github.com/dudantas/tibia-client/releases/latest) and if you want to edit something, check our [customized tools](https://majestyotbr.gitbook.io/opentibiabr/others/downloads#tools).
+To connect to the server and to take a stable experience, you can use [mehah's otclient](https://github.com/mehah/otclient) or [tibia client](https://github.com/dudantas/tibia-client/releases/latest) and if you want to edit something, check our [customized tools](https://docs.opentibiabr.com/others/downloads/tools).
 
 If you want edit the map, use the [own remere's map editor](https://github.com/opentibiabr/remeres-map-editor/).
 
@@ -38,7 +36,7 @@ You are subject to our code of conduct, read at [this link](https://github.com/o
 
 ### Getting **Started**
 
-* [Gitbook](https://majestyotbr.gitbook.io/opentibiabr/projects/canary).
+* [Gitbook](https://docs.opentibiabr.com/projects/canary).
 * [Wiki](https://github.com/opentibiabr/canary/wiki).
 
 ### Issues
@@ -49,7 +47,7 @@ We use the [issue tracker on GitHub](https://github.com/opentibiabr/canary/issue
 
 Before [creating a pull request](https://github.com/opentibiabr/canary/pulls) please keep in mind:
 
-  * Do not send Pull Request changing the map, as we can't review the changes it's better to use our [Discord](https://discord.gg/3NxYnyV) to talk about or send the map changes to the responsible for updating it.
+  * Do not send Pull Request changing the map, as we can't review the changes it's better to use our [Discord](https://discord.gg/gvTj5sh9Mp) to talk about or send the map changes to the responsible for updating it.
   * Focus on fixing only one thing, mixing too much things on the same Pull Request make it harder to review, harder to test and if we need to revert the change it will remove other things together.
   * Follow the project indentation, if your editor support you can use the [editorconfig](https://editorconfig.org/) to automatic configure the indentation.
   * There are people that doesn't play the game on the official server, so explain your changes to help understand what are you changing and why.
@@ -71,10 +69,8 @@ Before [creating a pull request](https://github.com/opentibiabr/canary/pulls) pl
 
 ### **Sponsors**
 
-If you want to sponsor here, join on discord and send a message for one of our administrators.
+See our [donate page](https://docs.opentibiabr.com/home/donate)
 
 ### Partners
 
 [![Supported by OTServ Brasil](https://raw.githubusercontent.com/otbr/otserv-brasil/main/otbr.png)](https://forums.otserv.com.br)
-
-[![Protected by ServerCore](https://mktsc.servercore.com.br/protectedbyservercore.png)](https://bit.ly/1q2q4de)

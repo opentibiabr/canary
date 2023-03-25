@@ -1,25 +1,13 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
+#include "pch.hpp"
 
 #include "game/game.h"
 #include "game/movement/position.h"
@@ -35,7 +23,7 @@ int PositionFunctions::luaPositionCreate(lua_State* L) {
 
 	int32_t stackpos;
 	if (isTable(L, 2)) {
-		const Position& position = getPosition(L, 2, stackpos);
+		const Position &position = getPosition(L, 2, stackpos);
 		pushPosition(L, position, stackpos);
 	} else {
 		uint16_t x = getNumber<uint16_t>(L, 2, 0);
@@ -51,7 +39,7 @@ int PositionFunctions::luaPositionCreate(lua_State* L) {
 int PositionFunctions::luaPositionAdd(lua_State* L) {
 	// positionValue = position + positionEx
 	int32_t stackpos;
-	const Position& position = getPosition(L, 1, stackpos);
+	const Position &position = getPosition(L, 1, stackpos);
 
 	Position positionEx;
 	if (stackpos == 0) {
@@ -67,7 +55,7 @@ int PositionFunctions::luaPositionAdd(lua_State* L) {
 int PositionFunctions::luaPositionSub(lua_State* L) {
 	// positionValue = position - positionEx
 	int32_t stackpos;
-	const Position& position = getPosition(L, 1, stackpos);
+	const Position &position = getPosition(L, 1, stackpos);
 
 	Position positionEx;
 	if (stackpos == 0) {
@@ -82,30 +70,24 @@ int PositionFunctions::luaPositionSub(lua_State* L) {
 
 int PositionFunctions::luaPositionCompare(lua_State* L) {
 	// position == positionEx
-	const Position& positionEx = getPosition(L, 2);
-	const Position& position = getPosition(L, 1);
+	const Position &positionEx = getPosition(L, 2);
+	const Position &position = getPosition(L, 1);
 	pushBoolean(L, position == positionEx);
 	return 1;
 }
 
 int PositionFunctions::luaPositionGetDistance(lua_State* L) {
 	// position:getDistance(positionEx)
-	const Position& positionEx = getPosition(L, 2);
-	const Position& position = getPosition(L, 1);
-	lua_pushnumber(L, std::max<int32_t>(
-		std::max<int32_t>(
-			std::abs(Position::getDistanceX(position, positionEx)),
-			std::abs(Position::getDistanceY(position, positionEx))
-		),
-		std::abs(Position::getDistanceZ(position, positionEx))
-	));
+	const Position &positionEx = getPosition(L, 2);
+	const Position &position = getPosition(L, 1);
+	lua_pushnumber(L, std::max<int32_t>(std::max<int32_t>(std::abs(Position::getDistanceX(position, positionEx)), std::abs(Position::getDistanceY(position, positionEx))), std::abs(Position::getDistanceZ(position, positionEx))));
 	return 1;
 }
 
 int PositionFunctions::luaPositionGetPathTo(lua_State* L) {
 	// position:getPathTo(pos[, minTargetDist = 0[, maxTargetDist = 1[, fullPathSearch = true[, clearSight = true[, maxSearchDist = 0]]]]])
-	const Position& pos = getPosition(L, 1);
-	const Position& position = getPosition(L, 2);
+	const Position &pos = getPosition(L, 1);
+	const Position &position = getPosition(L, 2);
 
 	FindPathParams fpp;
 	fpp.minTargetDist = getNumber<int32_t>(L, 3, 0);
@@ -123,8 +105,7 @@ int PositionFunctions::luaPositionGetPathTo(lua_State* L) {
 			lua_pushnumber(L, dir);
 			lua_rawseti(L, -2, ++index);
 		}
-	}
-	else {
+	} else {
 		pushBoolean(L, false);
 	}
 	return 1;
@@ -133,8 +114,8 @@ int PositionFunctions::luaPositionGetPathTo(lua_State* L) {
 int PositionFunctions::luaPositionIsSightClear(lua_State* L) {
 	// position:isSightClear(positionEx[, sameFloor = true])
 	bool sameFloor = getBoolean(L, 3, true);
-	const Position& positionEx = getPosition(L, 2);
-	const Position& position = getPosition(L, 1);
+	const Position &positionEx = getPosition(L, 2);
+	const Position &position = getPosition(L, 1);
 	pushBoolean(L, g_game().isSightClear(position, positionEx, sameFloor));
 	return 1;
 }
@@ -156,7 +137,7 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 		return 1;
 	}
 
-	const Position& position = getPosition(L, 1);
+	const Position &position = getPosition(L, 1);
 	if (!spectators.empty()) {
 		Game::addMagicEffect(spectators, position, magicEffect);
 	} else {
@@ -178,8 +159,8 @@ int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	}
 
 	ShootType_t distanceEffect = getNumber<ShootType_t>(L, 3);
-	const Position& positionEx = getPosition(L, 2);
-	const Position& position = getPosition(L, 1);
+	const Position &positionEx = getPosition(L, 2);
+	const Position &position = getPosition(L, 1);
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !g_game().isDistanceEffectRegistered(distanceEffect)) {
 		SPDLOG_WARN("[PositionFunctions::luaPositionSendDistanceEffect] An unregistered distance effect type with id '{}' was blocked to prevent client crash.", distanceEffect);
 		return 1;

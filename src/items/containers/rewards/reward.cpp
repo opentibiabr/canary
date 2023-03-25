@@ -1,39 +1,24 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include <iostream>
 #include "items/containers/rewards/reward.h"
 
-
 Reward::Reward() :
-	Container(ITEM_REWARD_CONTAINER)
-{
+	Container(ITEM_REWARD_CONTAINER) {
 	maxSize = 32;
 	unlocked = false;
 	pagination = true;
 }
 
-ReturnValue Reward::queryAdd(int32_t, const Thing& thing, uint32_t,
-	uint32_t, Creature* actor/* = nullptr*/) const
-{
+ReturnValue Reward::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t, Creature* actor /* = nullptr*/) const {
 	if (actor) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -42,11 +27,11 @@ ReturnValue Reward::queryAdd(int32_t, const Thing& thing, uint32_t,
 	if (!item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
-	
+
 	if (item == this) {
 		return RETURNVALUE_THISISIMPOSSIBLE;
 	}
-	
+
 	if (!item->isPickupable()) {
 		return RETURNVALUE_CANNOTPICKUP;
 	}
@@ -54,24 +39,21 @@ ReturnValue Reward::queryAdd(int32_t, const Thing& thing, uint32_t,
 	return RETURNVALUE_NOERROR;
 }
 
-void Reward::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t)
-{
+void Reward::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t) {
 	Cylinder* localParent = getParent();
 	if (localParent != nullptr) {
 		localParent->postAddNotification(thing, oldParent, index, LINK_PARENT);
 	}
 }
 
-void Reward::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t)
-{
+void Reward::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t) {
 	Cylinder* localParent = getParent();
 	if (localParent != nullptr) {
 		localParent->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 	}
 }
 
-Cylinder* Reward::getParent() const
-{
+Cylinder* Reward::getParent() const {
 	if (parent) {
 		return parent->getParent();
 	}

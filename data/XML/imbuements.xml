@@ -35,7 +35,7 @@
 		<attribute key="item" value="9636" count="25" />
 		<attribute key="item" value="5920" count="5" />
 	</imbuement>
-	<imbuement name="Scorch" base="3" subgroup=" (Fire)" category="0" iconid="13" premium="1" storage="0">
+	<imbuement name="Scorch" base="3" subgroup=" (Fire)" category="0" iconid="13" premium="1" storage="50494">
 		<attribute key="description" value="Converts 50% of the physical damage to fire damage." />
 		<attribute key="effect" type="damage" combat="fire" value="50" />
 		<attribute key="item" value="9636" count="25" />
@@ -53,7 +53,7 @@
 		<attribute key="item" value="9686" count="25" />
 		<attribute key="item" value="9640" count="20" />
 	</imbuement>
-	<imbuement name="Venom" base="3" subgroup=" (Earth)" category="0" iconid="7" premium="1" storage="0">
+	<imbuement name="Venom" base="3" subgroup=" (Earth)" category="0" iconid="7" premium="1" storage="50492">
 		<attribute key="description" value="Converts 50% of the physical damage to earth damage." />
 		<attribute key="effect" type="damage" combat="earth" value="50" />
 		<attribute key="item" value="9686" count="25" />
@@ -71,7 +71,7 @@
 		<attribute key="item" value="9661" count="25" />
 		<attribute key="item" value="21801" count="10" />
 	</imbuement>
-	<imbuement name="Frost" base="3" subgroup=" (Ice)" category="0" iconid="19" premium="1" storage="0">
+	<imbuement name="Frost" base="3" subgroup=" (Ice)" category="0" iconid="19" premium="1" storage="50496">
 		<attribute key="description" value="Converts 50% of the physical damage to ice damage." />
 		<attribute key="effect" type="damage" combat="ice" value="50" />
 		<attribute key="item" value="9661" count="25" />
@@ -89,7 +89,7 @@
 		<attribute key="item" value="18993" count="25" />
 		<attribute key="item" value="21975" count="5" />
 	</imbuement>
-	<imbuement name="Electrify" base="3" subgroup=" (Energy)" category="0" iconid="10" premium="1" storage="0">
+	<imbuement name="Electrify" base="3" subgroup=" (Energy)" category="0" iconid="10" premium="1" storage="50490">
 		<attribute key="description" value="Converts 50% of the physical damage to energy damage." />
 		<attribute key="effect" type="damage" combat="energy" value="50" />
 		<attribute key="item" value="18993" count="25" />
@@ -107,7 +107,7 @@
 		<attribute key="item" value="11484" count="25" />
 		<attribute key="item" value="9647" count="20" />
 	</imbuement>
-	<imbuement name="Reap" base="3" subgroup=" (Death)" category="0" iconid="4" premium="1" storage="0">
+	<imbuement name="Reap" base="3" subgroup=" (Death)" category="0" iconid="4" premium="1" storage="50488">
 		<attribute key="description" value="Converts 50% of the physical damage to death damage." />
 		<attribute key="effect" type="damage" combat="death" value="50" />
 		<attribute key="item" value="11484" count="25" />
@@ -115,18 +115,18 @@
 		<attribute key="item" value="10420" count="5" />
 	</imbuement>
 	<!-- Life leech Imbuement -->
-	<imbuement name="Vampirism" base="1" category="1" iconid="46" premium="0" storage="30006">
+	<imbuement name="Vampirism" base="1" category="1" iconid="46" premium="0" storage="0">
 		<attribute key="description" value="Converts 5% of damage to HP with a chance of 100%." />
 		<attribute key="effect" type="skill" value="lifeleech" bonus="5" chance="100" />
 		<attribute key="item" value="9685" count="25" />
 	</imbuement>
-	<imbuement name="Vampirism" base="2" category="1" iconid="46" premium="1" storage="30006">
+	<imbuement name="Vampirism" base="2" category="1" iconid="46" premium="1" storage="0">
 		<attribute key="description" value="Converts 10% of damage to HP with a chance of 100%." />
 		<attribute key="effect" type="skill" value="lifeleech" bonus="10" chance="100" />
 		<attribute key="item" value="9685" count="25" />
 		<attribute key="item" value="9633" count="15" />
 	</imbuement>
-	<imbuement name="Vampirism" base="3" category="1" iconid="46" premium="1" storage="30006">
+	<imbuement name="Vampirism" base="3" category="1" iconid="46" premium="1" storage="50488">
 		<attribute key="description" value="Converts 25% of damage to HP with a chance of 100%." />
 		<attribute key="effect" type="skill" value="lifeleech" bonus="25" chance="100" />
 		<attribute key="item" value="9685" count="25" />
@@ -145,7 +145,7 @@
 		<attribute key="item" value="11492" count="25" />
 		<attribute key="item" value="20200" count="25" />
 	</imbuement>
-	<imbuement name="Void" base="3" category="2" iconid="49" premium="1" storage="0">
+	<imbuement name="Void" base="3" category="2" iconid="49" premium="1" storage="50494">
 		<attribute key="description" value="Converts 8% of damage to MP with a chance of 100%." />
 		<attribute key="effect" type="skill" value="manaleech" bonus="8" chance="100" />
 		<attribute key="item" value="11492" count="25" />
@@ -164,7 +164,7 @@
 		<attribute key="item" value="11444" count="20" />
 		<attribute key="item" value="10311" count="25" />
 	</imbuement>
-	<imbuement name="Strike" base="3" category="3" iconid="1" premium="1" storage="0">
+	<imbuement name="Strike" base="3" category="3" iconid="1" premium="1" storage="50501">
 		<attribute key="description" value="Raises crit hit damage by 50% and crit hit chance by 10%." />
 		<attribute key="effect" type="skill" value="critical" bonus="50" chance="10" />
 		<attribute key="item" value="11444" count="20" />
@@ -183,7 +183,7 @@
 		<attribute key="item" value="11466" count="25" />
 		<attribute key="item" value="22007" count="20" />
 	</imbuement>
-	<imbuement name="Lich Shroud" base="3" category="4" iconid="25" premium="1" storage="0">
+	<imbuement name="Lich Shroud" base="3" category="4" iconid="25" premium="1" storage="50488">
 		<attribute key="description" value="Reduces death damage by 10%." />
 		<attribute key="effect" type="reduction" combat="death" value="10" />
 		<attribute key="item" value="11466" count="25" />
@@ -201,7 +201,7 @@
 		<attribute key="item" value="17823" count="25" />
 		<attribute key="item" value="9694" count="20" />
 	</imbuement>
-	<imbuement name="Snake Skin" base="3" category="5" iconid="30" premium="1" storage="0">
+	<imbuement name="Snake Skin" base="3" category="5" iconid="30" premium="1" storage="50492">
 		<attribute key="description" value="Reduces earth damage by 15%." />
 		<attribute key="effect" type="reduction" combat="earth" value="15" />
 		<attribute key="item" value="17823" count="25" />
@@ -219,7 +219,7 @@
 		<attribute key="item" value="5877" count="20" />
 		<attribute key="item" value="16131" count="10" />
 	</imbuement>
-	<imbuement name="Dragon Hide" base="3" category="6" iconid="34" premium="1" storage="0">
+	<imbuement name="Dragon Hide" base="3" category="6" iconid="34" premium="1" storage="50494">
 		<attribute key="description" value="Reduces fire damage by 15%." />
 		<attribute key="effect" type="reduction" combat="fire" value="15" />
 		<attribute key="item" value="5877" count="20" />
@@ -237,7 +237,7 @@
 		<attribute key="item" value="10295" count="25" />
 		<attribute key="item" value="10307" count="15" />
 	</imbuement>
-	<imbuement name="Quara Scale" base="3" category="7" iconid="40" premium="1" storage="0">
+	<imbuement name="Quara Scale" base="3" category="7" iconid="40" premium="1" storage="50496">
 		<attribute key="description" value="Reduces ice damage by 15%." />
 		<attribute key="effect" type="reduction" combat="ice" value="15" />
 		<attribute key="item" value="10295" count="25" />
@@ -255,7 +255,7 @@
 		<attribute key="item" value="9644" count="25" />
 		<attribute key="item" value="14079" count="15" />
 	</imbuement>
-	<imbuement name="Cloud Fabric" base="3" category="8" iconid="31" premium="1" storage="0">
+	<imbuement name="Cloud Fabric" base="3" category="8" iconid="31" premium="1" storage="50490">
 		<attribute key="description" value="Reduces energy damage by 15%." />
 		<attribute key="effect" type="reduction" combat="energy" value="15" />
 		<attribute key="item" value="9644" count="25" />
@@ -273,7 +273,7 @@
 		<attribute key="item" value="9639" count="25" />
 		<attribute key="item" value="9638" count="25" />
 	</imbuement>
-	<imbuement name="Demon Presence" base="3" category="9" iconid="37" premium="1" storage="0">
+	<imbuement name="Demon Presence" base="3" category="9" iconid="37" premium="1" storage="50498">
 		<attribute key="description" value="Reduces holy damage by 15%." />
 		<attribute key="effect" type="reduction" combat="holy" value="15" />
 		<attribute key="item" value="9639" count="25" />
@@ -292,7 +292,7 @@
 		<attribute key="item" value="17458" count="15" />
 		<attribute key="item" value="10302" count="25" />
 	</imbuement>
-	<imbuement name="Swiftness" base="3" category="10" iconid="73" premium="1" storage="0">
+	<imbuement name="Swiftness" base="3" category="10" iconid="73" premium="1" storage="50490">
 		<attribute key="description" value="Raises walking speed by 30." />
 		<attribute key="effect" type="speed" value="30" />
 		<attribute key="item" value="17458" count="15" />
@@ -311,7 +311,7 @@
 		<attribute key="item" value="10196" count="20" />
 		<attribute key="item" value="11447" count="25" />
 	</imbuement>
-	<imbuement name="Chop" base="3" category="11" iconid="52" premium="1" storage="0">
+	<imbuement name="Chop" base="3" category="11" iconid="52" premium="1" storage="50492">
 		<attribute key="description" value="Raises axe fighting skill by 4." />
 		<attribute key="effect" type="skill" value="axe" bonus="4" />
 		<attribute key="item" value="10196" count="20" />
@@ -329,7 +329,7 @@
 		<attribute key="item" value="9691" count="25" />
 		<attribute key="item" value="21202" count="25" />
 	</imbuement>
-	<imbuement name="Slash" base="3" category="12" iconid="70" premium="1" storage="0">
+	<imbuement name="Slash" base="3" category="12" iconid="70" premium="1" storage="50492">
 		<attribute key="description" value="Raises sword fighting skill by 4." />
 		<attribute key="effect" type="skill" value="sword" bonus="4" />
 		<attribute key="item" value="9691" count="25" />
@@ -347,7 +347,7 @@
 		<attribute key="item" value="9657" count="20" />
 		<attribute key="item" value="22189" count="15" />
 	</imbuement>
-	<imbuement name="Bash" base="3" category="13" iconid="52" premium="1" storage="0">
+	<imbuement name="Bash" base="3" category="13" iconid="52" premium="1" storage="50492">
 		<attribute key="description" value="Raises club fighting skill by 4." />
 		<attribute key="effect" type="skill" value="club" bonus="4" />
 		<attribute key="item" value="9657" count="20" />
@@ -365,7 +365,7 @@
 		<attribute key="item" value="11464" count="25" />
 		<attribute key="item" value="18994" count="20" />
 	</imbuement>
-	<imbuement name="Precision" base="3" category="15" iconid="58" premium="1" storage="0">
+	<imbuement name="Precision" base="3" category="15" iconid="58" premium="1" storage="50498">
 		<attribute key="description" value="Raises distance fighting skill by 4." />
 		<attribute key="effect" type="skill" value="distance" bonus="4" />
 		<attribute key="item" value="11464" count="25" />
@@ -383,7 +383,7 @@
 		<attribute key="item" value="9641" count="20" />
 		<attribute key="item" value="11703" count="25" />
 	</imbuement>
-	<imbuement name="Blockade" base="3" category="14" iconid="67" premium="1" storage="0">
+	<imbuement name="Blockade" base="3" category="14" iconid="67" premium="1" storage="50496">
 		<attribute key="description" value="Raises shielding skill by 4." />
 		<attribute key="effect" type="skill" value="shield" bonus="4" />
 		<attribute key="item" value="9641" count="20" />
@@ -401,7 +401,7 @@
 		<attribute key="item" value="9635" count="25" />
 		<attribute key="item" value="11452" count="15" />
 	</imbuement>
-	<imbuement name="Epiphany" base="3" category="16" iconid="64" premium="1" storage="0">
+	<imbuement name="Epiphany" base="3" category="16" iconid="64" premium="1" storage="50501">
 		<attribute key="description" value="Raises magic level by 4." />
 		<attribute key="effect" type="skill" value="magicpoints" bonus="4" />
 		<attribute key="item" value="9635" count="25" />

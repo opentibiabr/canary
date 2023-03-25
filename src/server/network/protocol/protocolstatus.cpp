@@ -1,36 +1,25 @@
 /**
- * @file protocolstatus.cpp
- * 
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
+
+#include "core.hpp"
 
 #include "server/network/protocol/protocolstatus.h"
 #include "game/game.h"
+#include "game/scheduling/tasks.h"
 #include "server/network/message/outputmessage.h"
-
 
 std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME();
 
-void ProtocolStatus::onRecvFirstMessage(NetworkMessage& msg)
-{
+void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 	uint32_t ip = getIP();
 	if (ip != 0x0100007F) {
 		std::string ipStr = convertIPToString(ip);
@@ -46,27 +35,27 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage& msg)
 	ipConnectMap[ip] = OTSYS_TIME();
 
 	switch (msg.getByte()) {
-		//XML info protocol
+		// XML info protocol
 		case 0xFF: {
 			if (msg.getString(4) == "info") {
 				g_dispatcher().addTask(createTask(std::bind(
-                                     &ProtocolStatus::sendStatusString,
-                                     std::static_pointer_cast<
-                                     ProtocolStatus>(shared_from_this()))));
+					&ProtocolStatus::sendStatusString,
+					std::static_pointer_cast<
+						ProtocolStatus>(shared_from_this())
+				)));
 				return;
 			}
 			break;
 		}
 
-		//Another ServerInfo protocol
+		// Another ServerInfo protocol
 		case 0x01: {
 			uint16_t requestedInfo = msg.get<uint16_t>(); // only a Byte is necessary, though we could add new info here
 			std::string characterName;
 			if (requestedInfo & REQUEST_PLAYER_STATUS_INFO) {
 				characterName = msg.getString();
 			}
-			g_dispatcher().addTask(createTask(std::bind(&ProtocolStatus::sendInfo, std::static_pointer_cast<ProtocolStatus>(shared_from_this()),
-                                  requestedInfo, characterName)));
+			g_dispatcher().addTask(createTask(std::bind(&ProtocolStatus::sendInfo, std::static_pointer_cast<ProtocolStatus>(shared_from_this()), requestedInfo, characterName)));
 			return;
 		}
 
@@ -76,8 +65,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage& msg)
 	disconnect();
 }
 
-void ProtocolStatus::sendStatusString()
-{
+void ProtocolStatus::sendStatusString() {
 	auto output = OutputMessagePool::getOutputMessage();
 
 	setRawMessages(true);
@@ -100,7 +88,7 @@ void ProtocolStatus::sendStatusString()
 	serverinfo.append_attribute("url") = g_configManager().getString(URL).c_str();
 	serverinfo.append_attribute("server") = STATUS_SERVER_NAME;
 	serverinfo.append_attribute("version") = STATUS_SERVER_VERSION;
-	serverinfo.append_attribute("client") = (std::to_string(CLIENT_VERSION_UPPER) + "." + std::to_string(CLIENT_VERSION_LOWER)).c_str();
+	serverinfo.append_attribute("client") = fmt::format("{}.{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER).c_str();
 
 	pugi::xml_node owner = tsqp.append_child("owner");
 	owner.append_attribute("name") = g_configManager().getString(OWNER_NAME).c_str();
@@ -109,7 +97,7 @@ void ProtocolStatus::sendStatusString()
 	pugi::xml_node players = tsqp.append_child("players");
 	uint32_t real = 0;
 	std::map<uint32_t, uint32_t> listIP;
-	for (const auto& [key, player] : g_game().getPlayers()) {
+	for (const auto &[key, player] : g_game().getPlayers()) {
 		if (player->getIP() != 0) {
 			auto ip = listIP.find(player->getIP());
 			if (ip != listIP.end()) {
@@ -150,7 +138,7 @@ void ProtocolStatus::sendStatusString()
 	map.append_attribute("height") = std::to_string(mapHeight).c_str();
 
 	pugi::xml_node motd = tsqp.append_child("motd");
-	motd.text() = g_configManager().getString(MOTD).c_str();
+	motd.text() = g_configManager().getString(SERVER_MOTD).c_str();
 
 	std::ostringstream ss;
 	doc.save(ss, "", pugi::format_raw);
@@ -161,8 +149,7 @@ void ProtocolStatus::sendStatusString()
 	disconnect();
 }
 
-void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string& characterName)
-{
+void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &characterName) {
 	auto output = OutputMessagePool::getOutputMessage();
 
 	if (requestedInfo & REQUEST_BASIC_SERVER_INFO) {
@@ -180,7 +167,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string& charact
 
 	if (requestedInfo & REQUEST_MISC_SERVER_INFO) {
 		output->addByte(0x12);
-		output->addString(g_configManager().getString(MOTD));
+		output->addString(g_configManager().getString(SERVER_MOTD));
 		output->addString(g_configManager().getString(LOCATION));
 		output->addString(g_configManager().getString(URL));
 		output->add<uint64_t>((OTSYS_TIME() - ProtocolStatus::start) / 1000);
@@ -206,9 +193,9 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string& charact
 	if (requestedInfo & REQUEST_EXT_PLAYERS_INFO) {
 		output->addByte(0x21); // players info - online players list
 
-		const auto& players = g_game().getPlayers();
+		const auto &players = g_game().getPlayers();
 		output->add<uint32_t>(players.size());
-		for (const auto& it : players) {
+		for (const auto &it : players) {
 			output->addString(it.second->getName());
 			output->add<uint32_t>(it.second->getLevel());
 		}
@@ -227,7 +214,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string& charact
 		output->addByte(0x23); // server software info
 		output->addString(STATUS_SERVER_NAME);
 		output->addString(STATUS_SERVER_VERSION);
-		output->addString(std::to_string(CLIENT_VERSION_UPPER) + "." + std::to_string(CLIENT_VERSION_LOWER));
+		output->addString(fmt::format("{}.{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
 	}
 	send(output);
 	disconnect();

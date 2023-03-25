@@ -1,35 +1,23 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/creature/actions.h"
 #include "lua/functions/events/action_functions.hpp"
 #include "game/game.h"
 #include "items/item.h"
 
-
 int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()
 	Action* action = new Action(getScriptEnv()->getScriptInterface());
 	if (action) {
-		action->fromLua = true;
 		pushUserdata<Action>(L, action);
 		setMetatable(L, -1, "Action");
 	} else {
@@ -47,7 +35,7 @@ int ActionFunctions::luaActionOnUse(lua_State* L) {
 			pushBoolean(L, false);
 			return 1;
 		}
-		action->scripted = true;
+		action->setLoadedCallback(true);
 		pushBoolean(L, true);
 	} else {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
@@ -60,7 +48,7 @@ int ActionFunctions::luaActionRegister(lua_State* L) {
 	// action:register()
 	Action* action = getUserdata<Action>(L, 1);
 	if (action) {
-		if (!action->isScripted()) {
+		if (!action->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -137,8 +125,8 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 	/** @brief Create action position
 	 * @param positions = position or table of positions to set a action script
 	 * @param itemId or @param itemName = if item id or string name is set, the item is created on position (if not exists), this variable is nil by default
-	* action:position(positions, itemId or name)
-	*/
+	 * action:position(positions, itemId or name)
+	 */
 	Action* action = getUserdata<Action>(L, 1);
 	if (!action) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
@@ -150,8 +138,7 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 	// The parameter "- 1" because self is a parameter aswell, which we want to skip L 1 (UserData)
 	// isNumber(L, 2) is for skip the itemId
 	if (int parameters = lua_gettop(L) - 1;
-	parameters > 1 && isNumber(L, 2))
-	{
+		parameters > 1 && isNumber(L, 2)) {
 		for (int i = 0; i < parameters; ++i) {
 			action->setPositionsVector(getPosition(L, 2 + i));
 		}

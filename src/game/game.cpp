@@ -6640,7 +6640,7 @@ void Game::updateCreatureType(Creature* creature) {
 	}
 }
 
-void Game::updatePremium(account::Account& account) {
+void Game::updatePremium(account::Account &account) {
 	bool save = false;
 	time_t timeNow = time(nullptr);
 	uint32_t rem_days = 0;
@@ -6656,10 +6656,9 @@ void Game::updatePremium(account::Account& account) {
 			uint32_t days = (timeNow - last_day) / 86400;
 			if (days > 0) {
 				if (days >= rem_days) {
-					if(!account.SetPremiumRemaningDays(0) || !account.SetPremiumLastDay(0)) {
+					if (!account.SetPremiumRemaningDays(0) || !account.SetPremiumLastDay(0)) {
 						account.GetAccountIdentifier(&accountIdentifier);
-						SPDLOG_ERROR("Failed to set account premium days, account {}: {}", 
-									account.getProtocolCompat() ? "name" : " email" , accountIdentifier);
+						SPDLOG_ERROR("Failed to set account premium days, account {}: {}", account.getProtocolCompat() ? "name" : " email", accountIdentifier);
 					}
 				} else {
 					account.SetPremiumRemaningDays((rem_days - days));

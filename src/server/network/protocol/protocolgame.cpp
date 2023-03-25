@@ -188,7 +188,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item* item) {
 	}
 
 	if (it.isContainer()) {
-		const Container *container = item->getContainer();
+		const Container* container = item->getContainer();
 		if (container && container->getHoldingPlayer() == player) {
 			uint32_t lootFlags = 0;
 			for (auto itt : player->quickLootContainers) {
@@ -1385,9 +1385,7 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 				newOutfit.lookFamiliarsType = msg.get<uint16_t>();
 			}
 			g_game().playerChangeOutfit(player->getID(), newOutfit);
-		}
-		else if (outfitType == 1)
-		{
+		} else if (outfitType == 1) {
 			// This value probably has something to do with try outfit variable inside outfit window dialog
 			// if try outfit is set to 2 it expects uint32_t value after mounted and disable mounts from outfit window dialog
 			newOutfit.lookMount = 0;
@@ -1644,7 +1642,7 @@ void ProtocolGame::parsePlayerBuyOnShop(NetworkMessage &msg) {
 
 void ProtocolGame::parsePlayerSellOnShop(NetworkMessage &msg) {
 	uint16_t id = msg.get<uint16_t>();
-	uint8_t count = std::max(msg.getByte(), (uint8_t) 1);
+	uint8_t count = std::max(msg.getByte(), (uint8_t)1);
 	uint16_t amount = oldProtocol ? static_cast<uint16_t>(msg.getByte()) : msg.get<uint16_t>();
 	bool ignoreEquipped = msg.getByte() != 0;
 
@@ -1717,8 +1715,7 @@ void ProtocolGame::parseInspectionObject(NetworkMessage &msg) {
 	}
 }
 
-void ProtocolGame::sendSessionEndInformation(SessionEndInformations information)
-{
+void ProtocolGame::sendSessionEndInformation(SessionEndInformations information) {
 	if (!oldProtocol) {
 		auto output = OutputMessagePool::getOutputMessage();
 		output->addByte(0x18);
@@ -1728,7 +1725,7 @@ void ProtocolGame::sendSessionEndInformation(SessionEndInformations information)
 	disconnect();
 }
 
-void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, const Item *item, bool cyclopedia) {
+void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, const Item* item, bool cyclopedia) {
 	if (oldProtocol) {
 		return;
 	}
@@ -2752,11 +2749,9 @@ void ProtocolGame::parseMarketLeave() {
 void ProtocolGame::parseMarketBrowse(NetworkMessage &msg) {
 	uint16_t browseId = oldProtocol ? msg.get<uint16_t>() : static_cast<uint16_t>(msg.getByte());
 
-	if ((oldProtocol && browseId == MARKETREQUEST_OWN_OFFERS_OLD) ||
-			(!oldProtocol && browseId == MARKETREQUEST_OWN_OFFERS)) {
+	if ((oldProtocol && browseId == MARKETREQUEST_OWN_OFFERS_OLD) || (!oldProtocol && browseId == MARKETREQUEST_OWN_OFFERS)) {
 		addGameTask(&Game::playerBrowseMarketOwnOffers, player->getID());
-	} else if ((oldProtocol && browseId == MARKETREQUEST_OWN_HISTORY) ||
-			(!oldProtocol && browseId == MARKETREQUEST_OWN_HISTORY_OLD)) {
+	} else if ((oldProtocol && browseId == MARKETREQUEST_OWN_HISTORY) || (!oldProtocol && browseId == MARKETREQUEST_OWN_HISTORY_OLD)) {
 		addGameTask(&Game::playerBrowseMarketOwnHistory, player->getID());
 	} else if (!oldProtocol) {
 		uint16_t itemId = msg.get<uint16_t>();
@@ -2830,7 +2825,6 @@ void ProtocolGame::sendOpenPrivateChannel(const std::string &receiver) {
 	msg.addString(receiver);
 	writeToOutputBuffer(msg);
 }
-
 
 void ProtocolGame::sendExperienceTracker(int64_t rawExp, int64_t finalExp) {
 	if (!player || oldProtocol) {
@@ -3624,7 +3618,7 @@ void ProtocolGame::sendBlessStatus() {
 		msg.add<uint16_t>(blessCount >= 5 ? 0x01 : 0x00);
 	} else {
 		bool glow = g_configManager().getBoolean(INVENTORY_GLOW) || player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL);
-		msg.add<uint16_t>(glow ? 1 : 0); //Show up the glowing effect in items if have all blesses or adventurer's blessing
+		msg.add<uint16_t>(glow ? 1 : 0); // Show up the glowing effect in items if have all blesses or adventurer's blessing
 		msg.addByte((blessCount >= 7) ? 3 : ((blessCount >= 5) ? 2 : 1)); // 1 = Disabled | 2 = normal | 3 = green
 	}
 
@@ -3654,18 +3648,54 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 	MessageClasses internalType = message.type;
 	if (oldProtocol && message.type > MESSAGE_LAST_OLDPROTOCOL) {
 		switch (internalType) {
-			case MESSAGE_REPORT: { internalType = MESSAGE_LOOT; break; }
-			case MESSAGE_HOTKEY_PRESSED: { internalType = MESSAGE_LOOK; break; }
-			case MESSAGE_TUTORIAL_HINT: { internalType = MESSAGE_LOGIN; break; }
-			case MESSAGE_THANK_YOU: { internalType = MESSAGE_LOGIN; break; }
-			case MESSAGE_MARKET: { internalType = MESSAGE_GAME_HIGHLIGHT; break; }
-			case MESSAGE_MANA: { internalType = MESSAGE_THANK_YOU; break; }
-			case MESSAGE_BEYOND_LAST: { internalType = MESSAGE_LOOT; break; }
-			case MESSAGE_ATTENTION: { internalType = MESSAGE_DAMAGE_DEALT; break; }
-			case MESSAGE_BOOSTED_CREATURE: { internalType = MESSAGE_LOOT; break; }
-			case MESSAGE_OFFLINE_TRAINING: { internalType = MESSAGE_LOOT; break; }
-			case MESSAGE_TRANSACTION: { internalType = MESSAGE_LOOT; break; }
-			case MESSAGE_POTION: { internalType = MESSAGE_FAILURE; break; }
+			case MESSAGE_REPORT: {
+				internalType = MESSAGE_LOOT;
+				break;
+			}
+			case MESSAGE_HOTKEY_PRESSED: {
+				internalType = MESSAGE_LOOK;
+				break;
+			}
+			case MESSAGE_TUTORIAL_HINT: {
+				internalType = MESSAGE_LOGIN;
+				break;
+			}
+			case MESSAGE_THANK_YOU: {
+				internalType = MESSAGE_LOGIN;
+				break;
+			}
+			case MESSAGE_MARKET: {
+				internalType = MESSAGE_GAME_HIGHLIGHT;
+				break;
+			}
+			case MESSAGE_MANA: {
+				internalType = MESSAGE_THANK_YOU;
+				break;
+			}
+			case MESSAGE_BEYOND_LAST: {
+				internalType = MESSAGE_LOOT;
+				break;
+			}
+			case MESSAGE_ATTENTION: {
+				internalType = MESSAGE_DAMAGE_DEALT;
+				break;
+			}
+			case MESSAGE_BOOSTED_CREATURE: {
+				internalType = MESSAGE_LOOT;
+				break;
+			}
+			case MESSAGE_OFFLINE_TRAINING: {
+				internalType = MESSAGE_LOOT;
+				break;
+			}
+			case MESSAGE_TRANSACTION: {
+				internalType = MESSAGE_LOOT;
+				break;
+			}
+			case MESSAGE_POTION: {
+				internalType = MESSAGE_FAILURE;
+				break;
+			}
 
 			default: {
 				internalType = MESSAGE_EVENT_ADVANCE;
@@ -3677,36 +3707,33 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 	NetworkMessage msg;
 	msg.addByte(0xB4);
 	msg.addByte(internalType);
-	switch (internalType)
-	{
-	case MESSAGE_DAMAGE_DEALT:
-	case MESSAGE_DAMAGE_RECEIVED:
-	case MESSAGE_DAMAGE_OTHERS:
-	{
-		msg.addPosition(message.position);
-		msg.add<uint32_t>(message.primary.value);
-		msg.addByte(message.primary.color);
-		msg.add<uint32_t>(message.secondary.value);
-		msg.addByte(message.secondary.color);
-		break;
-	}
-	case MESSAGE_HEALED:
-	case MESSAGE_HEALED_OTHERS:
-	case MESSAGE_EXPERIENCE:
-	case MESSAGE_EXPERIENCE_OTHERS:
-	{
-		msg.addPosition(message.position);
-		msg.add<uint32_t>(message.primary.value);
-		msg.addByte(message.primary.color);
-		break;
-	}
-	case MESSAGE_GUILD:
-	case MESSAGE_PARTY_MANAGEMENT:
-	case MESSAGE_PARTY:
-		msg.add<uint16_t>(message.channelId);
-		break;
-	default:
-		break;
+	switch (internalType) {
+		case MESSAGE_DAMAGE_DEALT:
+		case MESSAGE_DAMAGE_RECEIVED:
+		case MESSAGE_DAMAGE_OTHERS: {
+			msg.addPosition(message.position);
+			msg.add<uint32_t>(message.primary.value);
+			msg.addByte(message.primary.color);
+			msg.add<uint32_t>(message.secondary.value);
+			msg.addByte(message.secondary.color);
+			break;
+		}
+		case MESSAGE_HEALED:
+		case MESSAGE_HEALED_OTHERS:
+		case MESSAGE_EXPERIENCE:
+		case MESSAGE_EXPERIENCE_OTHERS: {
+			msg.addPosition(message.position);
+			msg.add<uint32_t>(message.primary.value);
+			msg.addByte(message.primary.color);
+			break;
+		}
+		case MESSAGE_GUILD:
+		case MESSAGE_PARTY_MANAGEMENT:
+		case MESSAGE_PARTY:
+			msg.add<uint16_t>(message.channelId);
+			break;
+		default:
+			break;
 	}
 	msg.addString(message.text);
 	writeToOutputBuffer(msg);
@@ -4043,8 +4070,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 			} else {
 				msg.add<uint16_t>(std::min<uint16_t>(it->second, std::numeric_limits<uint16_t>::max()));
 			}
-			if (++itemsToSend >= 0xFF)
-			{
+			if (++itemsToSend >= 0xFF) {
 				break;
 			}
 		}
@@ -5093,8 +5119,8 @@ void ProtocolGame::sendToChannel(const Creature* creature, SpeakClasses type, co
 			msg.addByte(0x00); // Show (Traded)
 		}
 
-		//Add level only for players
-		if (const Player *speaker = creature->getPlayer()) {
+		// Add level only for players
+		if (const Player* speaker = creature->getPlayer()) {
 			msg.add<uint16_t>(speaker->getLevel());
 		} else {
 			msg.add<uint16_t>(0x00);
@@ -5357,7 +5383,7 @@ void ProtocolGame::sendPartyPlayerMana(const Player* target, uint8_t manaPercent
 	NetworkMessage msg;
 	msg.addByte(0x8B);
 	msg.add<uint32_t>(cid);
-	msg.addByte(11);  // mana percent
+	msg.addByte(11); // mana percent
 	msg.addByte(std::min<uint8_t>(100, manaPercent));
 	writeToOutputBuffer(msg);
 }
@@ -5829,8 +5855,7 @@ void ProtocolGame::sendTextWindow(uint32_t windowTextId, Item* item, uint16_t ma
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text)
-{
+void ProtocolGame::sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text) {
 	NetworkMessage msg;
 	msg.addByte(0x96);
 	msg.add<uint32_t>(windowTextId);
@@ -6356,7 +6381,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 		}
 
 		if (!oldProtocol && creatureType == CREATURETYPE_SUMMON_PLAYER) {
-			if (const Creature *master = creature->getMaster()) {
+			if (const Creature* master = creature->getMaster()) {
 				msg.add<uint32_t>(master->getID());
 			} else {
 				msg.add<uint32_t>(0x00);
@@ -6450,8 +6475,8 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 	}
 
 	if (!oldProtocol && creatureType == CREATURETYPE_MONSTER) {
-		if (const Creature *master = creature->getMaster()) {
-			if (const Player *masterPlayer = master->getPlayer()) {
+		if (const Creature* master = creature->getMaster()) {
+			if (const Player* masterPlayer = master->getPlayer()) {
 				creatureType = CREATURETYPE_SUMMON_PLAYER;
 			}
 		}
@@ -6464,7 +6489,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 	}
 
 	if (!oldProtocol && creatureType == CREATURETYPE_SUMMON_PLAYER) {
-		if (const Creature *master = creature->getMaster()) {
+		if (const Creature* master = creature->getMaster()) {
 			msg.add<uint32_t>(master->getID());
 		} else {
 			msg.add<uint32_t>(0x00);
@@ -6472,7 +6497,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 	}
 
 	if (!oldProtocol && creatureType == CREATURETYPE_PLAYER) {
-		if (const Player *otherCreature = creature->getPlayer()) {
+		if (const Player* otherCreature = creature->getPlayer()) {
 			msg.addByte(otherCreature->getVocation()->getClientId());
 		} else {
 			msg.addByte(0);
@@ -6544,8 +6569,8 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.addByte(1); // enables exp boost in the store
 
 	if (!oldProtocol) {
-		msg.add<uint16_t>(player->getManaShield());  // remaining mana shield
-		msg.add<uint16_t>(player->getMaxManaShield());  // total mana shield
+		msg.add<uint16_t>(player->getManaShield()); // remaining mana shield
+		msg.add<uint16_t>(player->getMaxManaShield()); // total mana shield
 	}
 }
 
@@ -6564,8 +6589,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 		msg.add<uint16_t>(static_cast<uint16_t>(std::min<uint32_t>(player->getBaseMagicLevel(), std::numeric_limits<uint16_t>::max())));
 		msg.add<uint16_t>(std::min<uint16_t>(static_cast<uint16_t>(player->getMagicLevelPercent()), 100));
 
-		for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i)
-		{
+		for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i) {
 			msg.add<uint16_t>(player->getSkillLevel(i));
 			msg.add<uint16_t>(player->getBaseSkill(i));
 			msg.add<uint16_t>(player->getBaseSkill(i));

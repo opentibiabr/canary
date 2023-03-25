@@ -16,7 +16,7 @@
 #include "creatures/monsters/monster.h"
 #include "io/ioprey.h"
 
-bool IOLoginData::authenticateAccountPassword(const std::string& accountIdentifier, const std::string& password, account::Account *account) {
+bool IOLoginData::authenticateAccountPassword(const std::string &accountIdentifier, const std::string &password, account::Account* account) {
 	if (account::ERROR_NO != account->LoadAccountDB(accountIdentifier)) {
 		SPDLOG_ERROR("{} {} doesn't match any account.", account->getProtocolCompat() ? "Username" : "Email", accountIdentifier);
 		return false;
@@ -32,8 +32,7 @@ bool IOLoginData::authenticateAccountPassword(const std::string& accountIdentifi
 	return true;
 }
 
-bool IOLoginData::gameWorldAuthentication(const std::string& accountIdentifier, const std::string& password, std::string& characterName, uint32_t *accountId, bool oldProtocol)
-{
+bool IOLoginData::gameWorldAuthentication(const std::string &accountIdentifier, const std::string &password, std::string &characterName, uint32_t* accountId, bool oldProtocol) {
 	account::Account account;
 	account.setProtocolCompat(oldProtocol);
 	if (!IOLoginData::authenticateAccountPassword(accountIdentifier, password, &account)) {
@@ -499,7 +498,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 			return left.first < right.first;
 		});
 
-		for (auto& it : openContainersList) {
+		for (auto &it : openContainersList) {
 			player->addContainer(it.first - 1, it.second);
 			player->onSendContainer(it.second);
 		}

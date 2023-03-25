@@ -160,7 +160,7 @@ namespace account {
 			/**
 			 * @brief Try to
 			 *
-			* @param accountIdentifier
+			 * @param accountIdentifier
 			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
 			 */
 			error_t LoadAccountDB(std::string accountIdentifier);
@@ -186,8 +186,8 @@ namespace account {
 
 			error_t GetID(uint32_t* id);
 
-			error_t SetAccountIdentifier(std::string  accountIdentifier);
-			error_t GetAccountIdentifier(std::string *accountIdentifier);
+			error_t SetAccountIdentifier(std::string accountIdentifier);
+			error_t GetAccountIdentifier(std::string* accountIdentifier);
 
 			error_t SetPassword(std::string password);
 			error_t GetPassword(std::string* password);

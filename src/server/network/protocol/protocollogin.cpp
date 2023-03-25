@@ -27,7 +27,7 @@ void ProtocolLogin::disconnectClient(const std::string &message) {
 	disconnect();
 }
 
-void ProtocolLogin::getCharacterList(const std::string& accountIdentifier, const std::string& password) {
+void ProtocolLogin::getCharacterList(const std::string &accountIdentifier, const std::string &password) {
 	account::Account account;
 	account.setProtocolCompat(oldProtocol);
 	if (!IOLoginData::authenticateAccountPassword(accountIdentifier, password, &account)) {
@@ -150,7 +150,8 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		}
 
 		std::ostringstream ss;
-		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n" << banInfo.reason;
+		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
+		   << banInfo.reason;
 		disconnectClient(ss.str());
 		return;
 	}

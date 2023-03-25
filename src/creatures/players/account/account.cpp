@@ -266,10 +266,10 @@ namespace account {
 			query << "`email` = " << db_->escapeString(accountIdentifier_) << " , ";
 		}
 
-		query  << "`type` = " << account_type_ << " , "
-		<< "`password` = " << db_->escapeString(password_) << " , "
-		<< "`premdays` = " << premium_remaining_days_ << " , "
-		<< "`lastday` = " << premium_last_day_;
+		query << "`type` = " << account_type_ << " , "
+			  << "`password` = " << db_->escapeString(password_) << " , "
+			  << "`premdays` = " << premium_remaining_days_ << " , "
+			  << "`lastday` = " << premium_last_day_;
 
 		if (id_ != 0) {
 			query << " WHERE `id` = " << id_;
@@ -317,7 +317,7 @@ namespace account {
 		return ERROR_NO;
 	}
 
-	error_t Account::GetAccountIdentifier(std::string *accountIdentifier) {
+	error_t Account::GetAccountIdentifier(std::string* accountIdentifier) {
 		if (accountIdentifier == nullptr) {
 			return ERROR_NULLPTR;
 		}

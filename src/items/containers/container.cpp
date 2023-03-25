@@ -191,7 +191,7 @@ std::string Container::getContentDescription(bool oldProtocol) const {
 	return getContentDescription(os, oldProtocol).str();
 }
 
-std::ostringstream& Container::getContentDescription(std::ostringstream &os, bool oldProtocol) const {
+std::ostringstream &Container::getContentDescription(std::ostringstream &os, bool oldProtocol) const {
 	bool firstitem = true;
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 		Item* item = *it;

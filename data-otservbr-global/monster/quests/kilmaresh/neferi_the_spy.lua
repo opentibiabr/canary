@@ -25,6 +25,12 @@ monster.changeTarget = {
 	chance = 10
 }
 
+monster.bosstiary = {
+	bossRaceId = 2105,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Kilmaresh.NeferiTheSpyTimer
+}
+
 monster.strategiesTarget = {
 	nearest = 100,
 }

@@ -58,7 +58,7 @@ bool IOLoginDataSave::saveRewardItems(Player* player) {
 	if (!rewardList.empty()) {
 		for (const auto &rewardId : rewardList) {
 			auto reward = player->getReward(rewardId, false);
-			if (!reward->empty() && (getTimeMsNow() - rewardId <= 1000 * 60 * 60 * 24 * 7)) {
+			if (!reward->empty() && (Time::getTimeMsNow() - rewardId <= 1000 * 60 * 60 * 24 * 7)) {
 				itemList.emplace_back(0, reward);
 			}
 		}

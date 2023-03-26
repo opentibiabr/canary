@@ -1360,7 +1360,7 @@ void IOLoginData::removeVIPEntry(uint32_t accountId, uint32_t guid) {
 void IOLoginData::addPremiumDays(uint32_t accountId, int32_t addDays) {
 	std::ostringstream query;
 	query << "UPDATE `accounts` SET `premdays` = `premdays` + " << addDays
-		  << ", `lastday` = " << getTimeNow()
+		  << ", `lastday` = " << Time::getCurrentTime()
 		  << " WHERE `id` = " << accountId;
 
 	Database::getInstance().executeQuery(query.str());

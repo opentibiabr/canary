@@ -741,7 +741,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 				// Migrate wrapable items to the new store attribute
 				if (getCustomAttribute("unWrapId") && getAttribute<int64_t>(ItemAttribute_t::STORE) == 0) {
-					setAttribute(ItemAttribute_t::STORE, getTimeNow());
+					setAttribute(ItemAttribute_t::STORE, Time::getCurrentTime());
 				}
 			}
 			break;

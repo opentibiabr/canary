@@ -122,6 +122,7 @@ void Game::resetNpcs() const {
 }
 
 void Game::loadBoostedCreature() {
+	std::ostringstream query;
 	auto &db = Database::getInstance();
 	const auto &result = db.storeQuery("SELECT * FROM `boosted_creature`");
 	if (!result) {
@@ -6969,9 +6970,8 @@ void Game::updateCreatureType(Creature* creature) {
 	}
 }
 
-void Game::updatePremium(account::Account& account)
-{
-bool save = false;
+void Game::updatePremium(account::Account &account) {
+	bool save = false;
 	time_t timeNow = Time::getCurrentTime();
 	uint32_t rem_days = 0;
 	time_t last_day;

@@ -42,6 +42,11 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 	endif()
 endif()
 
+# Set _WIN32_WINNT to Windows 10
+if(WIN32)
+	add_definitions(-D_WIN32_WINNT=0x0A00)
+endif()
+
 # *****************************************************************************
 # Options
 # *****************************************************************************

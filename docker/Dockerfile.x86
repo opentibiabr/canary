@@ -7,6 +7,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends cmake git \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
+# Switch to gcc-13
+RUN echo "deb http://cz.archive.ubuntu.com/ubuntu lunar main universe" | tee -a /etc/apt/sources.list \
+	&& apt-get update \
+	&& apt-get install -y gcc-13 g++-13 \
+	&& update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13 \
+	&& update-alternatives --set gcc /usr/bin/gcc-13
+
 WORKDIR /opt
 COPY vcpkg.json /opt
 RUN vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ') \

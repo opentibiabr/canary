@@ -220,9 +220,9 @@ class ItemProperties {
 class Item : virtual public Thing, public ItemProperties {
 	public:
 		// Factory member to create item of right type based on type
-		static Item* CreateItem(const uint16_t type, uint16_t count = 0);
+		static Item* CreateItem(const uint16_t type, uint16_t count = 0, Position* itemPosition = nullptr);
 		static Container* CreateItemAsContainer(const uint16_t type, uint16_t size);
-		static Item* CreateItem(PropStream &propStream);
+		static Item* CreateItem(uint16_t itemId, Position &itemPosition);
 		static Items items;
 
 		// Constructor for items
@@ -306,7 +306,7 @@ class Item : virtual public Thing, public ItemProperties {
 		// serialization
 		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream);
 		bool unserializeAttr(PropStream &propStream);
-		virtual bool unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &propStream);
+		virtual bool unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &propStream, Position &itemPosition);
 
 		virtual void serializeAttr(PropWriteStream &propWriteStream) const;
 

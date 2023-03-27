@@ -134,6 +134,7 @@ Storage = {
 	PremiumAccount = 30058,
 	BattleAxeQuest = 30059,
 	ShrineEntrance = 30060,
+
 	--[[
 	Old storages
 	Over time, this will be dropped and replaced by the table above
@@ -1274,10 +1275,10 @@ Storage = {
 			Statue = 51528,
 			LastMissionState = 51529
 		},
-		TheCursedCrystal = {
-			Oneeyedjoe = 51530,
-			MedusaOil = 51531,
-			Questline = 51532
+	TheCursedCrystal = {
+		Oneeyedjoe = 51530,
+		MedusaOil = 51531,
+		Questline = 51532
 		}
 	},
 	TheShatteredIsles = {
@@ -1420,7 +1421,7 @@ Storage = {
 		TrophyWarlord = 51720,
 		GreenhornDoor = 51721,
 		ScrapperDoor = 51722,
-		WarlordDoor = 51723
+		WarlordDoor= 51723
 	},
 	QuestChests = {
 		-- Reserved storage from 51730 - 51999
@@ -2123,18 +2124,18 @@ Storage = {
 			TheBeginning = {},
 			TheDemonOak = {},
 			FishForASerpent = {
-				QuestLine = 41651 },
+				QuestLine = 41651},
 			TheHuntForTheSeaSerpent = {
 				QuestLine = 41652,
 				SuccessSwitch = 41653,
 				Bait = 41654,
 				Direction = 41655,
-				Access = 41656 },
+				Access = 41656},
 			TheInquisition = {},
 			TheThievesGuild = {},
 			TrollSabotage = {
 				Questline = 41840,
-				JumpTimer = 41841 },
+				JumpTimer = 41841},
 			VampireHunter = {},
 		},
 		U8_4 = { -- update 8.4 - Reserved Storages 41901 - 42145
@@ -2148,10 +2149,10 @@ Storage = {
 					Lisander = 41906,
 					Ortheus = 41907,
 					Maris = 41908,
-					Armenius = 41909 },
+					Armenius = 41909},
 				Mission03 = 41910,
 				Mission04 = 41911,
-				VengothAccess = 41912 },
+				VengothAccess = 41912},
 			InServiceOfYalahar = {},
 			TheHiddenCityOfBeregar = {},
 			TopOfTheCity = {},
@@ -2258,7 +2259,7 @@ Storage = {
 					FahimCount = 42384,
 				},
 				AltKillCount = {
-					-- Grizzly Adams
+				-- Grizzly Adams
 					-- Apes
 					KongraCount = 42450,
 					MerlkinCount = 42451,
@@ -2292,7 +2293,7 @@ Storage = {
 					DrakenEliteCount = 42473,
 					DrakenSpellweaverCount = 42474,
 					DrakenWarmasterCount = 42475,
-					-- Others
+				-- Others
 					-- Minotaurs
 					MinotaurCount = 42476,
 					MinotaurGuardCount = 42477,
@@ -2342,44 +2343,44 @@ Storage = {
 		U8_54 = { -- update 8.54 - Reserved Storages 42551 - 42950
 			AnUneasyAlliance = {
 				Questline = 42551,
-				QuestDoor = 42552 }, -- 42551 - 42600
+				QuestDoor = 42552}, -- 42551 - 42600
 			ChildrenOfTheRevolution = {}, -- 42601 - 42650
 			SeaOfLight = {}, -- 42651 - 42700
 			TheNewFrontier = { -- 42701 - 42750
 				Questline = 42701,
 				FarmineFirstTravel = 42702,
 				Mission01 = 42703,
-				Mission02 = { 42704,
-											Beaver1 = 42705,
-											Beaver2 = 42706,
-											Beaver3 = 42707,
+				Mission02 = {42704,
+					Beaver1 = 42705,
+					Beaver2 = 42706,
+					Beaver3 = 42707,
 				},
 				Mission03 = 42708,
 				Mission04 = 42709,
-				Mission05 = { 42710,
-											KingTibianus = 42711,
-											Leeland = 42712,
-											Angus = 42713,
-											Wyrdin = 42714,
-											Telas = 42715,
-											Humgolf = 42716,
-											LeelandKeyword = 42841,
-											AngusKeyword = 42842,
-											WyrdinKeyword = 42843,
-											TelasKeyword = 42844,
-											HumgolfKeyword = 42845,
+				Mission05 = {42710,
+					KingTibianus = 42711,
+					Leeland = 42712,
+					Angus = 42713,
+					Wyrdin = 42714,
+					Telas = 42715,
+					Humgolf = 42716,
+					LeelandKeyword = 42841,
+					AngusKeyword = 42842,
+					WyrdinKeyword = 42843,
+					TelasKeyword = 42844,
+					HumgolfKeyword = 42845,
 				},
 				Mission06 = 42717,
-				Mission07 = { 42718,
-											HiddenNote = 42719,
+				Mission07 = {42718,
+					HiddenNote = 42719,
 				},
 				Mission08 = 42720,
-				Mission09 = { 42721,
-											ArenaDoor = 42722,
-											RewardDoor = 42723,
+				Mission09 = {42721,
+					ArenaDoor = 42722,
+					RewardDoor = 42723,
 				},
-				Mission10 = { 42724,
-											MagicCarpetDoor = 42725,
+				Mission10 = {42724,
+					MagicCarpetDoor = 42725,
 				},
 				Reward = {
 					Potions = 42726,
@@ -2587,57 +2588,57 @@ Storage = {
 			CultsOfTibia = {}, -- 45651 - 45750
 			ThreatenedDreams = { -- 45751 - 45850
 				QuestLine = 45751,
-				Mission01 = { 45752, -- Troubled Animals
-											PoacherChest = 45753,
-											PoacherNotes = 45754,
-											FeathersCount = 45755,
-											Feathers1 = 45756,
-											Feathers2 = 45757,
-											Feathers3 = 45758,
-											Feathers4 = 45759,
-											Feathers5 = 45760
-				},
-				Mission02 = { 45761, -- Nightmare Intruders
-											FrazzlemawsCount = 45762,
-											EnfeebledCount = 45763,
-											KroazurAccess = 45764,
-											KroazurTimer = 45765,
-											KroazurKill = 45766,
-											DarkMoonMirror = 45767,
-											FairiesCounter = 45768,
-											Fairy01 = 45769,
-											Fairy02 = 45770,
-											Fairy03 = 45771,
-											Fairy04 = 45772,
-											Fairy05 = 45773,
-											ChargedMoonMirror = 45774,
-											MoonMirrorPos01 = 45775,
-											MoonMirrorPos02 = 45776,
-											MoonMirrorPos03 = 45777,
-											MoonMirrorPos04 = 45778,
-											MoonMirrorPos05 = 45779,
-											ChargedSunCatcher = 45780,
-											SunCatcherPos01 = 45781,
-											SunCatcherPos02 = 45782,
-											SunCatcherPos03 = 45783,
-											SunCatcherPos04 = 45784,
-											SunCatcherPos05 = 45785,
-											ChargedStarlightVial = 45786,
-											StarlightPos01 = 45787,
-											StarlightPos02 = 45788,
-											StarlightPos03 = 45789,
-											StarlightPos04 = 45790,
-											StarlightPos05 = 45791
-				},
-				Mission03 = { 45792, -- An Unlikely Couple
-											UnlikelyCouple = 45793,
-											PanpipesTimer = 45794,
-											RavenHerbTimer = 45795,
-											DarkSunCatcher = 45796,
-											EmptyStarlightVial = 45797
-				},
-				Mission04 = { 45798,
-				},
+				Mission01 = {45752, -- Troubled Animals
+					PoacherChest = 45753,
+					PoacherNotes = 45754,
+					FeathersCount = 45755,
+					Feathers1 = 45756,
+					Feathers2 = 45757,
+					Feathers3 = 45758,
+					Feathers4 = 45759,
+					Feathers5 = 45760
+					},
+				Mission02 = {45761, -- Nightmare Intruders
+					FrazzlemawsCount = 45762,
+					EnfeebledCount = 45763,
+					KroazurAccess = 45764,
+					KroazurTimer = 45765,
+					KroazurKill = 45766,
+					DarkMoonMirror = 45767,
+					FairiesCounter = 45768,
+					Fairy01 = 45769,
+					Fairy02 = 45770,
+					Fairy03 = 45771,
+					Fairy04 = 45772,
+					Fairy05 = 45773,
+					ChargedMoonMirror = 45774,
+					MoonMirrorPos01 = 45775,
+					MoonMirrorPos02 = 45776,
+					MoonMirrorPos03 = 45777,
+					MoonMirrorPos04 = 45778,
+					MoonMirrorPos05 = 45779,
+					ChargedSunCatcher = 45780,
+					SunCatcherPos01 = 45781,
+					SunCatcherPos02 = 45782,
+					SunCatcherPos03 = 45783,
+					SunCatcherPos04 = 45784,
+					SunCatcherPos05 = 45785,
+					ChargedStarlightVial = 45786,
+					StarlightPos01 = 45787,
+					StarlightPos02 = 45788,
+					StarlightPos03 = 45789,
+					StarlightPos04 = 45790,
+					StarlightPos05 = 45791
+					},
+				Mission03 = {45792, -- An Unlikely Couple
+					UnlikelyCouple = 45793,
+					PanpipesTimer = 45794,
+					RavenHerbTimer = 45795,
+					DarkSunCatcher = 45796,
+					EmptyStarlightVial = 45797
+					},
+				Mission04 = {45798,
+					},
 				Mission05 = 45799
 			},
 		},
@@ -2816,7 +2817,7 @@ Storage = {
 				MegasylvanYseldaTimer = 47602,
 			},
 			CitizenOfIssaviOutfits = {},
-			RoyalBounaceanAdvisorOutfits = {},
+			RoyalBounaceanAdvisorOutfits= {},
 			TooHotToHandle = {}
 		},
 		U12_80 = { -- update 12.80 - Reserved Storages 47801 - 47850
@@ -2860,8 +2861,7 @@ Storage = {
 		LordAzaram = 64002,
 		SirBaelocNictros = 64003,
 		DukeKrule = 64004
-	},
-
+	}
 }
 
 GlobalStorage = {
@@ -3064,7 +3064,7 @@ table.sort(extraction) -- Sort the table
 -- Scroll through the extracted table for duplicates
 if #extraction > 1 then
 	for i = 1, #extraction - 1 do
-		if extraction[i] == extraction[i + 1] then
+		if extraction[i] == extraction[i+1] then
 			Spdlog.warn(string.format("Duplicate storage value found: %d",
 				extraction[i]))
 		end

@@ -436,12 +436,12 @@
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\..\canary\src;$(IncludePath)</IncludePath>
+    <IncludePath>..\src;$(IncludePath)</IncludePath>
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>$(ProjectName)_x32</TargetName>
-    <IncludePath>..\..\canary\src;$(IncludePath)</IncludePath>
+    <IncludePath>..\src;$(IncludePath)</IncludePath>
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">

@@ -120,6 +120,7 @@ bosstiaryKillMultiplier = 1
 boostedBossSlot = true
 boostedBossLootBonus = 250
 boostedBossKillBonus = 3
+rateCharmShopPrice = 1.0
 
 -- Familiar system
 -- NOTE: the time will be divided by 2 to get half the value, the familiar lasts 15 minutes by default and the cooldown of the spell is 30 minutes

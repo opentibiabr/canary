@@ -205,6 +205,8 @@ enum integerConfig_t {
 };
 
 enum floatingConfig_t {
+	RATE_CHARM_SHOP_PRICE,
+
 	RATE_HEALTH_REGEN,
 	RATE_HEALTH_REGEN_SPEED,
 	RATE_MANA_REGEN,

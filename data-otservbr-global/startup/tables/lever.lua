@@ -189,5 +189,113 @@ LeverUnique = {
 	[30028] = {
 		itemId = 2772,
 		itemPos = {x = 32478, y = 31904, z = 3}
+	},
+	[Storage.ThaisExhibition.FriendshipAmulet] = {
+		itemId = 2772,
+		itemPos = { x = 32399, y = 32209, z = 9 }
+	},
+	[Storage.ThaisExhibition.HandPuppets] = {
+		itemId = 2772,
+		itemPos ={ x = 32412, y = 32204, z = 9 },
+	},
+	[Storage.ThaisExhibition.EpaminondasDoll] = {
+		itemId = 2772,
+		itemPos = { x = 32414, y = 32201, z = 9 },
+	},
+	[Storage.ThaisExhibition.NorsemanDoll] = {
+		itemId = 2772,
+		itemPos = { x = 32435, y = 32197, z = 9 },
+	},
+	[Storage.ThaisExhibition.BookwormDoll] = {
+		itemId = 2772,
+		itemPos = { x = 32438, y = 32191, z = 9 },
+	},
+	[Storage.ThaisExhibition.GoldenNewspaper] = {
+		itemId = 2772,
+		itemPos = { x = 32430, y = 32191, z = 9 },
+	},
+	[Storage.ThaisExhibition.TibiacityEncyclopedia] = {
+		itemId = 2772,
+		itemPos = { x = 32404, y = 32195, z = 9 },
+	},
+	[Storage.ThaisExhibition.GoldenFalcon] = {
+		itemId = 2772,
+		itemPos = { x = 32399, y = 32200, z = 9 },
+	},
+	[Storage.ThaisExhibition.DragonGoblet] = {
+		itemId = 2772,
+		itemPos = { x = 32440, y = 32201, z = 10 },
+	},
+	[Storage.ThaisExhibition.FerumbrasDoll] = {
+		itemId = 2772,
+		itemPos = { x = 32456, y = 32201, z = 10 },
+	},
+	[Storage.ThaisExhibition.FrozenHeart] = {
+		itemId = 2772,
+		itemPos = { x = 32468, y = 32201, z = 10 },
+	},
+	[Storage.ThaisExhibition.DrakenDoll] = {
+		itemId = 2772,
+		itemPos = { x = 32476, y = 32201, z = 10 },
+	},
+	[Storage.ThaisExhibition.MusicBox] = {
+		itemId = 2772,
+		itemPos = { x = 32484, y = 32201, z = 10 },
+	},
+	[Storage.ThaisExhibition.DurinTheAlmighty] = {
+		itemId = 2772,
+		itemPos = { x = 32496, y = 32201, z = 10 },
+	},
+	[Storage.ThaisExhibition.DragonEye] = {
+		itemId = 2772,
+		itemPos = { x = 32512, y = 32201, z = 10 },
+	},
+	[Storage.ThaisExhibition.MemoryBox] = {
+		itemId = 2772,
+		itemPos = { x = 32517, y = 32197, z = 10 },
+	},
+	[Storage.ThaisExhibition.NobleSword] = {
+		itemId = 2772,
+		itemPos = { x = 32512, y = 32191, z = 10 },
+	},
+	[Storage.ThaisExhibition.MedusaSkull] = {
+		itemId = 2772,
+		itemPos = { x = 32504, y = 32191, z = 10 },
+	},
+	[Storage.ThaisExhibition.MathmasterShield] = {
+		itemId = 2772,
+		itemPos = { x = 32496, y = 32191, z = 10 },
+	},
+	[Storage.ThaisExhibition.Imortus] = {
+		itemId = 2772,
+		itemPos = { x = 32489, y = 32197, z = 10 },
+	},
+	[Storage.ThaisExhibition.OldRadio] = {
+		itemId = 2772,
+		itemPos = { x = 32484, y = 32191, z = 10 },
+	},
+	[Storage.ThaisExhibition.EpicWisdom] = {
+		itemId = 2772,
+		itemPos = { x = 32476, y = 32191, z = 10 },
+	},
+	[Storage.ThaisExhibition.DreadDoll] = {
+		itemId = 2772,
+		itemPos = { x = 32468, y = 32191, z = 10 },
+	},
+	[Storage.ThaisExhibition.PhoenixStatue] = {
+		itemId = 2772,
+		itemPos = { x = 32461, y = 32197, z = 10 },
+	},
+	[Storage.ThaisExhibition.OrcsJawShredder] = {
+		itemId = 2772,
+		itemPos = { x = 32456, y = 32191, z = 10 },
+	},
+	[Storage.ThaisExhibition.BagOfOrientalSpices] = {
+		itemId = 2772,
+		itemPos = { x = 32448, y = 32191, z = 10 },
+	},
+	[Storage.ThaisExhibition.TibiorasBox] = {
+		itemId = 2772,
+		itemPos = { x = 32440, y = 32191, z = 10 },
 	}
 }

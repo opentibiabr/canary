@@ -6897,11 +6897,12 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		auto boostedBossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
 		auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
 		auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
+		auto bosstiaryMultiplier = static_cast<uint8_t>(g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER));
 		auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
 		msg.addByte(boostedBossRace); // Boss Race
 		msg.add<uint32_t>(boostedBossKillCount); // Kill Count
 		msg.add<uint16_t>(boostedLootBonus); // Loot Bonus
-		msg.addByte(boostedKillBonus); // Kill Bonus
+		msg.addByte(bosstiaryMultiplier + boostedKillBonus); // Kill Bonus
 		msg.addByte(boostedBossRace); // Boss Race
 		msg.add<uint32_t>(0); // Remove Price
 		msg.addByte(0); // Inactive? (Only true if equal to Boosted Boss)

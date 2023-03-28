@@ -281,7 +281,7 @@ int PlayerFunctions::luaPlayerSetAccountType(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayeraddBestiaryKill(lua_State* L) {
+int PlayerFunctions::luaPlayerAddBestiaryKill(lua_State* L) {
 	// player:addBestiaryKill(name[, amount = 1])
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {

@@ -239,6 +239,7 @@ class Game {
 		void playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selectedBossId);
 		void playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, uint8_t podiumVisible, uint8_t bossVisible);
 		void playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId);
+		void updateBossesTimer();
 
 		bool addItemStoreInbox(const Player* player, uint32_t itemId);
 

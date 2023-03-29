@@ -154,6 +154,7 @@ void Game::start(ServiceManager* manager) {
 	g_scheduler().addEvent(createSchedulerTask(EVENT_MS, std::bind_front(&Game::updateForgeableMonsters, this)));
 	g_scheduler().addEvent(createSchedulerTask(EVENT_MS + 1000, std::bind_front(&Game::createFiendishMonsters, this)));
 	g_scheduler().addEvent(createSchedulerTask(EVENT_MS + 1000, std::bind_front(&Game::createInfluencedMonsters, this)));
+	g_scheduler().addEvent(createSchedulerTask(EVENT_BOSSES_TIMER_INTERVAL, std::bind_front(&Game::updateBossesTimer, this)));
 }
 
 GameState_t Game::getGameState() const {
@@ -8721,4 +8722,24 @@ bool Game::addItemStoreInbox(const Player* player, uint32_t itemId) {
 	}
 
 	return true;
+}
+
+void Game::updateBossesTimer() {
+	g_scheduler().addEvent(createSchedulerTask(EVENT_BOSSES_TIMER_INTERVAL, std::bind(&Game::updateBossesTimer, this)));
+
+	std::vector<uint32_t> toErase;
+
+	for (const auto &[mapPlayerId, mapPlayer] : getPlayers()) {
+		if (!mapPlayer) {
+			continue;
+		}
+
+		auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldown(mapPlayer);
+		auto bossesOnTrackerSize = static_cast<uint16_t>(bossesOnTracker.size());
+		if (bossesOnTrackerSize > 0) {
+			continue;
+		}
+
+		mapPlayer->updateBosstiaryTimer();
+	}
 }

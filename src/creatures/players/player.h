@@ -2263,6 +2263,12 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
+		void updateBosstiaryTimer() const {
+			if (client) {
+				client->sendBosstiaryCooldownTimer();
+			}
+		}
+
 	private:
 		static uint32_t playerFirstID;
 		static uint32_t playerLastID;

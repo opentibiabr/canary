@@ -3238,6 +3238,21 @@ int PlayerFunctions::luaPlayerUpdateUIExhausted(lua_State* L) {
 	return 1;
 }
 
+// Boostiary Cooldown Timer
+int PlayerFunctions::luaPlayerBoostiaryCooldownTimer(lua_State* L) {
+	// player:sendBoostiaryCooldownTimer()
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->sendBosstiaryCooldownTimer();
+	pushBoolean(L, true);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerAddBosstiaryKill(lua_State* L) {
 	// player:addBosstiaryKill(name[, amount = 1])
 	if (Player* player = getUserdata<Player>(L, 1);

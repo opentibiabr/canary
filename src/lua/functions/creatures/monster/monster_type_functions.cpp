@@ -1540,6 +1540,7 @@ int MonsterTypeFunctions::luaMonsterTypeBossStorageCooldown(lua_State* L) {
 		lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.bossStorageCooldown));
 	} else {
 		monsterType->info.bossStorageCooldown = bossStorageCooldown;
+		g_game().registeredBossesCooldownStorage.push_back(bossStorageCooldown);
 		pushBoolean(L, true);
 	}
 

@@ -2819,6 +2819,9 @@ Storage = {
 		},
 		U12_60 = { -- update 12.60 - Reserved Storages 47501 - 47600
 			APiratesTail = {
+				QuestLine = 47501,
+				RascacoonShortcut = 47512,
+				TentuglyKilled = 47513,
 				TentuglyDoor = 47514,
 				TentuglyTimer = 47515,
 				RatmiralTimer = 47516,

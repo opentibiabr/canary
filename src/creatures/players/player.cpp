@@ -2210,13 +2210,13 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 		// Player stats loss for vocations level <= 8
 		if (vocation->getId() != VOCATION_NONE && level <= 8) {
 			const Vocation* noneVocation = g_vocations().getVocation(VOCATION_NONE);
-			healthMax = toSafeNumber<int64_t>(__FUNCTION__, healthMax - noneVocation->getHPGain());
-			manaMax = toSafeNumber<uint32_t>(__FUNCTION__, manaMax - noneVocation->getManaGain());
-			capacity = toSafeNumber<uint32_t>(__FUNCTION__, capacity - noneVocation->getCapGain());
+			healthMax = toSafeNumber<uint32_t>(__FUNCTION__, std::max<int64_t>(0, healthMax - noneVocation->getHPGain()));
+			manaMax = toSafeNumber<uint32_t>(__FUNCTION__, std::max<int64_t>(0, manaMax - noneVocation->getManaGain()));
+			capacity = toSafeNumber<uint32_t>(__FUNCTION__, std::max<int64_t>(0, capacity - noneVocation->getCapGain()));
 		} else {
-			healthMax = toSafeNumber<int64_t>(__FUNCTION__, healthMax - vocation->getHPGain());
-			manaMax = toSafeNumber<uint32_t>(__FUNCTION__, manaMax - vocation->getManaGain());
-			capacity = toSafeNumber<uint32_t>(__FUNCTION__, capacity - vocation->getCapGain());
+			healthMax = toSafeNumber<uint32_t>(__FUNCTION__, std::max<int64_t>(0, healthMax - vocation->getHPGain()));
+			manaMax = toSafeNumber<uint32_t>(__FUNCTION__, std::max<int64_t>(0, manaMax - vocation->getManaGain()));
+			capacity = toSafeNumber<uint32_t>(__FUNCTION__, std::max<int64_t>(0, capacity - vocation->getCapGain()));
 		}
 		currLevelExp = Player::getExpForLevel(level);
 	}
@@ -2360,8 +2360,6 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_
 					if (fieldAbsorbPercent != 0) {
 						auto safeConverted = toSafeNumber<int64_t>(__FUNCTION__, std::round(damage * fieldAbsorbPercent));
 						damage -= safeConverted / 100;
-
-						uint16_t charges = item->getCharges();
 						if (charges != 0) {
 							g_game().transformItem(item, item->getID(), charges - 1);
 						}

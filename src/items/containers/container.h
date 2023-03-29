@@ -84,7 +84,7 @@ class Container : public Item, public Cylinder {
 		}
 
 		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
-		bool unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream) override;
+		bool unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream, Position &itemPosition) override;
 		std::string getContentDescription() const;
 
 		size_t size() const {

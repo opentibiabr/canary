@@ -75,12 +75,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 62220},
-	{name = "great health potion", chance = 45500},
-	{name = "poison arrow", chance = 33330},
-	{name = "terra boots", chance = 10550},
-	{name = "silver amulet", chance = 5680},
-	{name = "spider silk", chance = 4580},
+	{name = "platinum coin", chance = 100000},
+	{name = "great health potion", chance = 9600},
+	{name = "poison arrow", chance = 14600},
+	{name = "terra boots", chance = 4400},
+	{name = "silver amulet", chance = 4550},
+	{name = "spider silk", chance = 2850},
 	{name = "terra mantle", chance = 850}
 }
 

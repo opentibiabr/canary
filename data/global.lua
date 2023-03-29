@@ -15,8 +15,12 @@ function IsRunningGlobalDatapack()
 	end
 end
 
-PARTY_PROTECTION = 1 -- Set to 0 to disable.
-ADVANCED_SECURE_MODE = 1 -- Set to 0 to disable.
+function IsRetroPVP()
+	return configManager.getBoolean(configKeys.TOGGLE_SERVER_IS_RETRO)
+end
+-- NOTE: 0 is disabled.
+PARTY_PROTECTION = (IsRetroPVP() and 0) or 1
+ADVANCED_SECURE_MODE = (IsRetroPVP() and 0) or 1
 
 NORTH = DIRECTION_NORTH
 EAST = DIRECTION_EAST

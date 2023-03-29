@@ -389,4 +389,4 @@ canary.old
 vcpkg_installed
 
 # CLION
-src/cmake-build-debug
+cmake-build-debug*

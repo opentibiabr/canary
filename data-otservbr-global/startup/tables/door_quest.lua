@@ -809,8 +809,37 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = {
 			{x = 33366, y = 31343, z = 7},
-			{x = 33363, y = 31346, z = 7}
+			{x = 33363, y = 31346, z = 7},
+			{x = 32191, y = 31823, z = 8}
 		}
+	},
+	[Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosDoor] = {
+		itemId = false,
+		itemPos = {{x = 32173, y = 31922, z = 8}}
+	},
+	[Storage.Quest.U11_80.TheSecretLibrary.ScourgeOfOblivionDoor] = {
+		itemId = false,
+		itemPos = {{x = 32480, y = 32591, z = 15}}
+	},
+	[Storage.Quest.U12_70.AdventuresOfGalthen.AccessDoor] = {
+		itemId = false,
+		itemPos = {{x = 32466, y = 32494, z = 8}}
+	},
+	[Storage.Quest.U10_80.Grimvale.AncientFeudDoors] = {
+		itemId = false,
+		itemPos = {
+			{x = 33124, y = 32261, z = 10},
+			{x = 33123, y = 32230, z = 12},
+			{x = 33159, y = 32322, z = 12}
+		}
+	},
+	[Storage.Kilmaresh.AccessDoor] = {
+		itemId = false,
+		itemPos = {{x = 33886, y = 31476, z = 7}}
+	},
+	[Storage.Quest.U12_60.APiratesTail.TentuglyDoor] = {
+		itemId = false,
+		itemPos = {{x = 33793, y = 31388, z = 6}}
 	},
 	[Storage.Quest.U12_00.TheDreamCourts.HauntedHouseAccess] = {
 		itemId = false,
@@ -828,6 +857,25 @@ QuestDoorAction = {
 		itemPos = {
 			{ x = 32719, y = 32264, z = 8 },
 			{ x = 32728, y = 32280, z = 8 }
+		}
+	},
+	[Storage.Quest.U12_00.TheDreamCourts.DreamScarAccess] = {
+		itemId = false,
+		itemPos = {
+			{ x = 31983, y = 32000, z = 14}
+		}
+	},
+	[Storage.Quest.U12_40.TheOrderOfTheLion.AccessEastSide] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32429, y = 32461, z = 7 },
+			{ x = 32430, y = 32461, z = 8 }
+		}
+	},
+	[Storage.Quest.U12_40.TheOrderOfTheLion.AccessSouthernSide] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32422, y = 32499, z = 8 }
 		}
 	}
 }

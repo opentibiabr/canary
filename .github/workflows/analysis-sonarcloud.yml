@@ -51,14 +51,6 @@ jobs:
           restore-keys: |
             ccache-${{ runner.os}}-
 
-      - name: Sonar cache
-        uses: actions/cache@main
-        with:
-          path: $HOME/.cfamily
-          key: sonar-${{ runner.os}}-${{ hashFiles('**/src') }}
-          restore-keys: |
-            sonar-${{ runner.os}}-
-
       - name: Cache SonarCloud packages
         uses: actions/cache@main
         with:
@@ -94,9 +86,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           sonar-scanner \
-            --define sonar.cfamily.threads="${{ env.NUMBER_OF_PROCESSORS  }}" \
-            --define sonar.cfamily.cache.enabled=true \
-            --define sonar.cfamily.cache.path="$HOME/.cfamily" \
             --define sonar.cfamily.compile-commands=build/compile_commands.json \
             --define sonar.pullrequest.key=${{ github.event.pull_request.number }} \
             --define sonar.pullrequest.branch=${{ github.event.pull_request.head.ref }} \
@@ -109,7 +98,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           sonar-scanner \
-            --define sonar.cfamily.threads="${{ env.NUMBER_OF_PROCESSORS  }}" \
-            --define sonar.cfamily.cache.enabled=true \
-            --define sonar.cfamily.cache.path="$HOME/.cfamily" \
             --define sonar.cfamily.compile-commands=build/compile_commands.json

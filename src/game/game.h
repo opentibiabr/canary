@@ -369,9 +369,6 @@ class Game {
 			boostedCreature = name;
 		}
 
-		// bosses storage cooldown registered
-		std::vector<uint8_t> registeredBossesCooldownStorage;
-
 		std::string getBoostedMonsterName() const {
 			return boostedCreature;
 		}

@@ -1594,13 +1594,6 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 
 	if (player) {
 		player->addStorageValue(key, value);
-
-		const std::vector<uint8_t> registeredCooldownStorages = g_game().registeredBossesCooldownStorage;
-		auto resultFind = std::find(registeredCooldownStorages.begin(), registeredCooldownStorages.end(), static_cast<uint8_t>(key));
-
-		if (resultFind != registeredCooldownStorages.end()) {
-			player->sendBosstiaryCooldownTimer();
-		}
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

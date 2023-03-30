@@ -3238,9 +3238,9 @@ int PlayerFunctions::luaPlayerUpdateUIExhausted(lua_State* L) {
 	return 1;
 }
 
-// Boostiary Cooldown Timer
-int PlayerFunctions::luaPlayerBoostiaryCooldownTimer(lua_State* L) {
-	// player:sendBoostiaryCooldownTimer()
+// Bosstiary Cooldown Timer
+int PlayerFunctions::luaPlayerBosstiaryCooldownTimer(lua_State* L) {
+	// player:sendBosstiaryCooldownTimer()
 	const Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));

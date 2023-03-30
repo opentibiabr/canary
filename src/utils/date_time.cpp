@@ -42,11 +42,23 @@ std::time_t Date::getCurrentYear() {
 }
 
 std::string Date::format(std::time_t time) {
-	return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
+	std::tm tm;
+#ifdef _WIN32
+	localtime_s(&tm, &time);
+#else
+	localtime_r(&time, &tm);
+#endif
+	return fmt::format("{:%d/%m/%Y %H:%M:%S}", tm);
 }
 
 std::string Date::formatShort(std::time_t time) {
-	return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+	std::tm tm;
+#ifdef _WIN32
+	localtime_s(&tm, &time);
+#else
+	localtime_r(&time, &tm);
+#endif
+	return fmt::format("{:%Y-%m-%d %X}", tm);
 }
 
 /*
@@ -92,11 +104,15 @@ std::time_t Time::getTimeDifferenceInSeconds(time_t hour, time_t minute, time_t 
 		throw std::invalid_argument("Some time parameter is invalid");
 	}
 
-	auto currentTime = getCurrentTime();
-	std::tm* time = std::gmtime(&currentTime);
-	time->tm_hour = hour;
-	time->tm_min = minute;
-	time->tm_sec = seconds;
+	// Get the current time
+	auto now = std::chrono::system_clock::now();
 
-	return static_cast<time_t>(std::difftime(std::mktime(time), currentTime));
+	// Get the current time as a time_point with day precision
+	auto today = std::chrono::time_point_cast<std::chrono::hours>(now);
+
+	// Create a new time_point with the specified hour, minute, and second
+	auto newTime = today + std::chrono::hours { hour } + std::chrono::minutes { minute } + std::chrono::seconds { seconds };
+
+	// Calculate the time difference in seconds and return it
+	return std::chrono::duration_cast<std::chrono::seconds>(newTime - now).count();
 }

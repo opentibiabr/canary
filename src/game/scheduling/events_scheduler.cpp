@@ -23,8 +23,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 		return false;
 	}
 
-	int daysNow;
-	int daysMath = (Date::getCurrentYear() * 365) + (Date::getCurrentMonth() * 30) + Date::getCurrentDay();
+	auto daysMath = static_cast<int>((Date::getCurrentYear() * 365) + (Date::getCurrentMonth() * 30) + Date::getCurrentDay());
 
 	// Keep track of loaded scripts to check for duplicates
 	int count = 0;

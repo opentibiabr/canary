@@ -182,7 +182,7 @@ void Game::loadBoostedCreature() {
 void Game::start(ServiceManager* manager) {
 	serviceManager = manager;
 
-	lightHour = (Time::getCurrentMinute() * LIGHT_DAY_LENGTH) / 60;
+	lightHour = (static_cast<int32_t>(Time::getCurrentMinute()) * LIGHT_DAY_LENGTH) / 60;
 
 	g_scheduler().addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this)));
 	g_scheduler().addEvent(createSchedulerTask(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this, 0)));

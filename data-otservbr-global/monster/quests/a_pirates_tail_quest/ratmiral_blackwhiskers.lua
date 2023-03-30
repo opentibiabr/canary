@@ -73,36 +73,37 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 10000, maxCount = 2},
-	{name = "platinum coin", chance = 10000, maxCount = 20},
-	{name = "ultimate health potion", chance = 7300, maxCount = 10},
-	{name = "great spirit potion", chance = 7300, maxCount = 10},
-	{name = "ultimate mana potion", chance = 7300, maxCount = 10},
-	{name = "great mana potion", chance = 7300, maxCount = 10},
-	{name = "great health potion", chance = 7300, maxCount = 10},
-	{name = "berserk potion", chance = 7300, maxCount = 5},
-	{name = "bullseye potion", chance = 7300, maxCount = 5},
-	{name = "mastermind potion", chance = 7300, maxCount = 5},
-	{name = "pirate coin", chance = 7300, maxCount = 55},
-	{name = "small treasure chest", chance = 5400},
-	{name = "golden dustbin", chance = 5400},
-	{name = "ratmiral's hat", chance = 5400},
-	{name = "golden cheese wedge", chance = 5400},
-	{name = "cheesy membership card", chance = 5400},
-	{name = "golden skull", chance = 5400},
-	{name = "tiara", chance = 5400},
-	{name = "amber", chance = 5400},
-	{name = "scrubbing brush", chance = 1000},
-	{name = "soap", chance = 750},
-	{name = "exotic amulet", chance = 650},
-	{name = "throwing axe", chance = 650},
-	{name = "bast legs", chance = 650},
-	{name = "jungle bow", chance = 650},
-	{name = "jungle quiver", chance = 650},
-	{name = "jungle flail", chance = 650},
-	{name = "exotic legs", chance = 650},
-	{name = "makeshift boots", chance = 650},
-	{name = "make-do boots", chance = 650}
+	{id = 3043, chance = 100000, minCount = 1, maxCount = 3}, -- crystal coin
+	{id = 3035, chance = 55000, minCount = 1, maxCount = 39}, -- platinum coin
+	{id = 7642, chance = 40000, minCount = 1, maxCount = 19}, -- great spirit potion
+	{id = 7643, chance = 40000, minCount = 1, maxCount = 19}, -- ultimate health potion
+	{id = 239, chance = 30000, minCount = 1, maxCount = 19}, -- great health potion
+	{id = 238, chance = 30000, minCount = 1, maxCount = 19}, -- great mana potion
+	{id = 23373, chance = 25000, minCount = 1, maxCount = 19}, -- ultimate mana potion
+	{id = 7440, chance = 22000, minCount = 1, maxCount = 9}, -- mastermind potion
+	{id = 7443, chance = 20000, minCount = 1, maxCount = 9}, -- bullseye potion
+	{id = 35572, chance = 17000, minCount = 3, maxCount = 102}, -- pirate coin
+	{id = 7439, chance = 16000, minCount = 1, maxCount = 9}, -- berserk potion
+	{id = 35613, chance = 8000}, -- ratmiral's hat
+	{id = 35571, chance = 7140}, -- small treasure chest
+	{id = 35578, chance = 6250}, -- tiara
+	{id = 35579, chance = 3570}, -- golden dustbin
+	{id = 32626, chance = 2680}, -- amber
+	{id = 35581, chance = 2680}, -- golden cheese wedge
+	{id = 35595, chance = 2680}, -- soap
+	{id = 35695, chance = 1790}, -- scrubbing brush
+	{id = 35614, chance = 890}, -- cheesy membership card
+	{id = 35523, chance = 890}, -- exotic amulet
+	{id = 35515, chance = 890}, -- throwing axe
+	{id = 35517, chance = 890}, -- bast legs
+	{id = 35516, chance = 890}, -- exotic legs
+	{id = 35518, chance = 890}, -- jungle bow
+	{id = 35524, chance = 890}, -- jungle quiver
+	{id = 35514, chance = 890}, -- jungle flail
+	{id = 35521, chance = 890}, -- jungle rod
+	{id = 35522, chance = 890}, -- jungle wand
+	{id = 35519, chance = 890}, -- makeshift boots
+	{id = 35520, chance = 890} -- make-do boots
 }
 
 monster.attacks = {

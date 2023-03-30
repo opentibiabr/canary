@@ -28,7 +28,7 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1756,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.BosstiaryCooldown.LordAzaram
+	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.LordAzaramTimer
 }
 
 monster.strategiesTarget = {

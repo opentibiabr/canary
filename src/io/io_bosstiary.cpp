@@ -290,9 +290,12 @@ std::vector<uint32_t> IOBosstiary::getBosstiaryCooldown(const Player* player) co
 		uint32_t bossKills = player->getBestiaryKillCount(static_cast<uint16_t>(bossId));
 
 		const MonsterType* mType = g_monsters().getMonsterType(bossName);
-		auto bossStorage = mType->info.bossStorageCooldown;
+		if (!mType) {
+			continue;
+		}
 
-		if (!mType || bossStorage == 0) {
+		auto bossStorage = mType->info.bossStorageCooldown;
+		if (bossStorage == 0) {
 			continue;
 		}
 

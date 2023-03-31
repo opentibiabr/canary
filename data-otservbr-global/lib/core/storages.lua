@@ -2871,14 +2871,6 @@ Storage = {
 		BagOfOrientalSpices = 63976,
 		TibiorasBox = 63977
 	},
-	-- Reserved Storages 64000 - 65000
-	BosstiaryCooldown = {
-		EarlOsam = 64000,
-		CountVlarkorth = 64001,
-		LordAzaram = 64002,
-		SirBaelocNictros = 64003,
-		DukeKrule = 64004
-	}
 }
 
 GlobalStorage = {

@@ -283,6 +283,7 @@ local questTable = {
 	{storage = Storage.Quest.U10_80.Grimvale.AncientFeudDoors, storageValue = 1},
 	{storage = Storage.Quest.U10_80.Grimvale.AncientFeudShortcut, storageValue = 1},
 	{storage = Storage.Kilmaresh.AccessDoor, storageValue = 1},
+	{storage = Storage.Kilmaresh.CatacombDoors, storageValue = 1},
 	{storage = Storage.Quest.U12_00.TheDreamCourts.AccessDoors, storageValue = 1},
 	{storage = Storage.Quest.U12_00.TheDreamCourts.HauntedHouseAccess, storageValue = 1},
 	{storage = Storage.Quest.U12_00.TheDreamCourts.BuriedCathedralAccess, storageValue = 1},

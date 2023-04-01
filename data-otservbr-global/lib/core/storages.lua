@@ -212,7 +212,8 @@ Storage = {
 		AccessDoor = 50043,
 		NeferiTheSpyTimer = 50044,
 		SisterHetaiTimer = 55045,
-		AmenefTimer = 55046
+		AmenefTimer = 55046,
+		CatacombDoors = 55047
 	},
 	TheSecretLibrary = {
 		-- Reserved storage from 50050 - 50074

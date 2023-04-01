@@ -744,19 +744,6 @@ function sendShowStoreOffers(playerId, category, redirectId)
 		table.insert(offers[name].offers, offer)
 	end
 
-	-- If player doesn't have hireling
-	if category.name == "Hirelings" then
-		if player:getHirelingsCount() < 1 then
-			offers["Hireling Name Change"] = nil
-			offers["Hireling Sex Change"] = nil
-			offers["Hireling Trader"] = nil
-			offers["Hireling Steward"] = nil
-			offers["Hireling Banker"] = nil
-			offers["Hireling Cook"] = nil
-			count = count - 6
-		end
-	end
-
 	msg:addU16(#disableReasons)
 	for _, reason in ipairs(disableReasons) do
 		msg:addString(reason)
@@ -902,7 +889,7 @@ function sendStorePurchaseSuccessful(playerId, message)
 
 	local msg = NetworkMessage()
 	msg:addByte(GameStore.SendingPackets.S_CompletePurchase)
-	msg:addByte(0x01)
+	msg:addByte(0x00)
 	msg:addString(message)
 
 	msg:sendToPlayer(player)

@@ -84,6 +84,13 @@ void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock) {
 		iType.buyPrice = shopBlock.itemBuyPrice;
 	}
 
+	// Check if the item already exists in the shop vector and ignore it
+	for (auto shopIterator = npcType->info.shopItemVector.begin(); shopIterator != npcType->info.shopItemVector.end(); ++shopIterator) {
+		if (*shopIterator == shopBlock) {
+			return;
+		}
+	}
+
 	if (shopBlock.childShop.empty()) {
 		bool isContainer = iType.isContainer();
 		if (isContainer) {

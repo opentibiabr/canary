@@ -844,8 +844,8 @@ QuestDoorAction = {
 			{ x = 33912, y = 31466, z = 9 },
 			{ x = 33855, y = 31496, z = 9 },
 			{ x = 33911, y = 31496, z = 9 },
-			{x = 33884, y = 31510, z = 9},
-			{x = 33884, y = 31536, z = 9}
+			{ x = 33884, y = 31510, z = 9 },
+			{ x = 33884, y = 31536, z = 9 }
 		}
 	},
 	[Storage.Quest.U12_60.APiratesTail.TentuglyDoor] = {

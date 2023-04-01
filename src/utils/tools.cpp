@@ -347,11 +347,21 @@ std::string convertIPToString(uint32_t ip) {
 }
 
 std::string formatDate(time_t time) {
-	return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
+	try {
+		return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
+	} catch (const std::out_of_range &exception) {
+		SPDLOG_ERROR("Failed to format date with error code {}", exception.what());
+	}
+	return {};
 }
 
 std::string formatDateShort(time_t time) {
-	return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+	try {
+		return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+	} catch (const std::out_of_range &exception) {
+		SPDLOG_ERROR("Failed to format date short with error code {}", exception.what());
+	}
+	return {};
 }
 
 std::time_t getTimeNow() {

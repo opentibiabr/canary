@@ -28,7 +28,7 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1755,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.BosstiaryCooldown.SirBaelocNictros
+	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.BaelocNictrosTimer
 }
 
 monster.strategiesTarget = {

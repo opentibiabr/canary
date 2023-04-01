@@ -288,9 +288,6 @@ std::vector<uint32_t> IOBosstiary::getBosstiaryCooldown(const Player* player) co
 	for (std::map<uint32_t, std::string> bossesMap = getBosstiaryMap();
 		 const auto &[bossId, bossName] : bossesMap) {
 		uint32_t bossKills = player->getBestiaryKillCount(static_cast<uint16_t>(bossId));
-		if (bossKills == 0) {
-			continue;
-		}
 
 		const MonsterType* mType = g_monsters().getMonsterType(bossName);
 		if (!mType) {
@@ -302,7 +299,7 @@ std::vector<uint32_t> IOBosstiary::getBosstiaryCooldown(const Player* player) co
 			continue;
 		}
 
-		if (bossKills >= 1) {
+		if (bossKills >= 1 || player->getStorageValue(bossStorage) > 0) {
 			bossesCooldown.push_back(bossId);
 		}
 	}

@@ -28,7 +28,7 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1753,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.BosstiaryCooldown.CountVlarkorth
+	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.CountVlarkorthTimer
 }
 
 monster.strategiesTarget = {

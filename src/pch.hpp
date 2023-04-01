@@ -41,7 +41,11 @@
 #endif
 #include <magic_enum.hpp>
 #include <mio/mmap.hpp>
-#include <mysql.h>
+#if __has_include("<mysql.h>")
+	#include <mysql.h>
+#else
+	#include <mysql/mysql.h>
+#endif
 #include <mysql/errmsg.h>
 #include <spdlog/spdlog.h>
 #include <parallel_hashmap/phmap.h>

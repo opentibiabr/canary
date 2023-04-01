@@ -294,6 +294,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "setRemoveBossTime", PlayerFunctions::luaPlayerSetRemoveBossTime);
 			registerMethod(L, "Player", "getSlotBossId", PlayerFunctions::luaPlayerGetSlotBossId);
 			registerMethod(L, "Player", "getBossBonus", PlayerFunctions::luaPlayerGetBossBonus);
+			registerMethod(L, "Player", "sendBosstiaryCooldownTimer", PlayerFunctions::luaPlayerBosstiaryCooldownTimer);
 
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
@@ -580,6 +581,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerSetRemoveBossTime(lua_State* L);
 		static int luaPlayerGetSlotBossId(lua_State* L);
 		static int luaPlayerGetBossBonus(lua_State* L);
+		static int luaPlayerBosstiaryCooldownTimer(lua_State* L);
 
 		friend class CreatureFunctions;
 };

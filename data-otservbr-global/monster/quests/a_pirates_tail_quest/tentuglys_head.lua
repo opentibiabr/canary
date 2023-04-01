@@ -7,6 +7,10 @@ monster.outfit = {
 	lookTypeEx = 35105,
 }
 
+monster.events = {
+	"TentuglysHeadDeath"
+}
+
 monster.health = 75000
 monster.maxHealth = 75000
 monster.race = "blood"

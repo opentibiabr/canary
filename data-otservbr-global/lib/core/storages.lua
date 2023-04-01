@@ -2819,6 +2819,9 @@ Storage = {
 		},
 		U12_60 = { -- update 12.60 - Reserved Storages 47501 - 47600
 			APiratesTail = {
+				QuestLine = 47501,
+				RascacoonShortcut = 47512,
+				TentuglyKilled = 47513,
 				TentuglyDoor = 47514,
 				TentuglyTimer = 47515,
 				RatmiralTimer = 47516,
@@ -2838,14 +2841,36 @@ Storage = {
 			RoyalCostumeOutfits = {}
 		},
 	},
-	-- Reserved Storages 64000 - 65000
-	BosstiaryCooldown = {
-		EarlOsam = 64000,
-		CountVlarkorth = 64001,
-		LordAzaram = 64002,
-		SirBaelocNictros = 64003,
-		DukeKrule = 64004
-	}
+	-- Reserved storage from 63951 - 63999
+	ThaisExhibition = {
+		FriendshipAmulet = 63951,
+		HandPuppets = 63952,
+		EpaminondasDoll = 63953,
+		NorsemanDoll = 63954,
+		BookwormDoll = 63955,
+		GoldenNewspaper = 63956,
+		TibiacityEncyclopedia = 63957,
+		GoldenFalcon = 63958,
+		DragonGoblet = 63959,
+		FerumbrasDoll = 63960,
+		FrozenHeart = 63961,
+		DrakenDoll = 63962,
+		MusicBox = 63963,
+		DurinTheAlmighty = 63964,
+		DragonEye = 63965,
+		MemoryBox = 63966,
+		NobleSword = 63967,
+		MedusaSkull = 63968,
+		MathmasterShield = 63969,
+		Imortus = 63970,
+		OldRadio = 63971,
+		EpicWisdom = 63972,
+		DreadDoll = 63973,
+		PhoenixStatue = 63974,
+		OrcsJawShredder = 63975,
+		BagOfOrientalSpices = 63976,
+		TibiorasBox = 63977
+	},
 }
 
 GlobalStorage = {

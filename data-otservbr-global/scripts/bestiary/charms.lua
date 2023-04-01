@@ -217,7 +217,7 @@ for charmId, charmsTable in ipairs(charms) do
 	local charm = Game.createBestiaryCharm(charmId - 1)
 	local charmConfig = {}
 
-	local rateCharmShopPrice = (configManager.getFloat(configKeys.RATE_CHARM_SHOP_PRICE) or 1.0)
+	local bestiaryRateCharmShopPrice = (configManager.getFloat(configKeys.BESTIARY_RATE_CHARM_SHOP_PRICE) or 1.0)
 	if charmsTable.name then
 		charmConfig.name = charmsTable.name
 	end
@@ -246,7 +246,7 @@ for charmId, charmsTable in ipairs(charms) do
 		charmConfig.effect = charmsTable.effect
 	end
 	if charmsTable.points then
-		charmConfig.points = math.ceil(charmsTable.points * rateCharmShopPrice)
+		charmConfig.points = math.ceil(charmsTable.points * bestiaryRateCharmShopPrice)
 	end
 
 	-- Create charm and egister charmConfig table

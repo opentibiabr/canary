@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_PCH_HPP_
@@ -41,7 +41,11 @@
 #endif
 #include <magic_enum.hpp>
 #include <mio/mmap.hpp>
-#include <mysql.h>
+#if __has_include("<mysql.h>")
+	#include <mysql.h>
+#else
+	#include <mysql/mysql.h>
+#endif
 #include <mysql/errmsg.h>
 #include <spdlog/spdlog.h>
 #include <parallel_hashmap/phmap.h>

@@ -8,7 +8,7 @@ function familiarOnLogin.onLogin(player)
 	local vocation = FAMILIAR_ID[player:getVocation():getBaseId()]
 
 	local familiarName
-	local familiarTimeLeft = player:getStorageValue(Storage.FamiliarSummon) - player:getLastLogout()
+	local familiarTimeLeft = player:getStorageValue(Global.Storage.FamiliarSummon) - player:getLastLogout()
 
 	if vocation then
 		if (not isPremium(player) and player:hasFamiliar(vocation.id)) or player:getLevel() < 200 then
@@ -38,7 +38,7 @@ function familiarOnLogin.onLogin(player)
 			local deltaSpeed = math.max(player:getSpeed() - familiarMonster:getSpeed(), 0)
 			familiarMonster:changeSpeed(deltaSpeed)
 
-			player:setStorageValue(Storage.FamiliarSummon, os.time() + familiarTimeLeft)
+			player:setStorageValue(Global.Storage.FamiliarSummon, os.time() + familiarTimeLeft)
 			addEvent(RemoveFamiliar, familiarTimeLeft*1000, familiarMonster:getId(), player:getId())
 
 			for sendMessage = 1, #FAMILIAR_TIMER do

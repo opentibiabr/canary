@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -677,7 +677,7 @@ void Player::closeContainer(uint8_t cid) {
 	OpenContainer openContainer = it->second;
 	Container* container = openContainer.container;
 
-	if (container && container->isAnykindOfRewardContainer() && !hasOtherRewardContainerOpen(container)) {
+	if (container && container->isAnyKindOfRewardChest() && !hasOtherRewardContainerOpen(container)) {
 		removeEmptyRewards();
 	}
 	openContainers.erase(it);
@@ -700,7 +700,7 @@ void Player::removeEmptyRewards() {
 
 bool Player::hasOtherRewardContainerOpen(const Container* container) const {
 	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [container](const auto &containerPair) {
-		return containerPair.second.container != container && containerPair.second.container->isAnykindOfRewardContainer();
+		return containerPair.second.container != container && containerPair.second.container->isAnyKindOfRewardContainer();
 	});
 }
 
@@ -2571,7 +2571,8 @@ void Player::death(Creature* lastHitCreature) {
 		auto it = conditions.begin(), end = conditions.end();
 		while (it != end) {
 			Condition* condition = *it;
-			if (condition->isPersistent()) {
+			// isSupress block to delete spells conditions (ensures that the player cannot, for example, reset the cooldown time of the familiar and summon several)
+			if (condition->isPersistent() && isSuppress(condition->getType())) {
 				it = conditions.erase(it);
 
 				condition->endCondition(this);
@@ -2646,6 +2647,7 @@ void Player::despawn() {
 	listWalkDir.clear();
 	stopEventWalk();
 	onWalkAborted();
+	closeAllExternalContainers();
 	g_game().playerSetAttackedCreature(this->getID(), 0);
 	g_game().playerFollowCreature(this->getID(), 0);
 
@@ -6800,6 +6802,28 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 	history.description = detailsResponse.str();
 
 	setForgeHistory(history);
+}
+
+void Player::closeAllExternalContainers() {
+	if (openContainers.empty()) {
+		return;
+	}
+
+	std::vector<Container*> containerToClose;
+	for (const auto &it : openContainers) {
+		Container* container = it.second.container;
+		if (!container) {
+			continue;
+		}
+
+		if (container->getHoldingPlayer() != this) {
+			containerToClose.push_back(container);
+		}
+	}
+
+	for (Container* container : containerToClose) {
+		autoCloseContainers(container);
+	}
 }
 
 /*******************************************************************************

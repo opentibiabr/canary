@@ -424,19 +424,26 @@ function Player.selectDailyReward(self, msg)
 	if (dailyTable.type == DAILY_REWARD_TYPE_ITEM) then
 
 		local items = {}
+		local possibleItems = DailyRewardItems[self:getVocation():getBaseId()];
+		if dailyTable.items then
+			possibleItems = dailyTable.items;
+		end
 
 		-- Creating items table
 		local columnsPicked = msg:getByte() -- Columns picked
+		local orderedCounter = 0
+		local totalCounter = 0
 		for i = 1, columnsPicked do
 			local itemId = msg:getU16()
 			local count = msg:getByte()
-			items[i] = {itemId = itemId, count = count}
-		end
-
-		-- Verifying if items if player is picking the correct amount
-		local counter = 0
-		for k, v in ipairs(items) do
-			counter = counter + v.count
+			orderedCounter = orderedCounter + count;
+			for index, val in ipairs(possibleItems) do
+				if val == itemId then
+					items[i] = {itemId = itemId, count = count}
+					totalCounter = totalCounter + count;
+					break;
+				end
+			end
 		end
 
 		if self:isPremium() then
@@ -445,8 +452,12 @@ function Player.selectDailyReward(self, msg)
 			count = dailyTable.freeAccount
 		end
 
-		if counter > count then
+		if totalCounter > count then
 			self:sendError("Something went wrong here, please restart this dialog.")
+			return false
+		end
+		if totalCounter ~= orderedCounter then
+			Spdlog.error(string.format("Player with name %s is trying to get wrong daily reward", self:getName()))
 			return false
 		end
 

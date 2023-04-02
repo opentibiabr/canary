@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -28,7 +28,7 @@
 
 Items Item::items;
 
-Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/) {
+Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/, Position* itemPosition /*= nullptr*/) {
 	Item* newItem = nullptr;
 
 	const ItemType &it = Item::items[type];
@@ -65,7 +65,10 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/) {
 		}
 
 		newItem->incrementReferenceCounter();
-	} else if (type != 0) {
+	} else if (type > 0 && itemPosition) {
+		auto position = *itemPosition;
+		SPDLOG_WARN("[Item::CreateItem] Item with id '{}', in position '{}' not exists in the appearances.dat and cannot be created.", type, position.toString());
+	} else {
 		SPDLOG_WARN("[Item::CreateItem] Item with id '{}' is not registered and cannot be created.", type);
 	}
 
@@ -144,46 +147,41 @@ Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size) {
 	return newItem;
 }
 
-Item* Item::CreateItem(PropStream &propStream) {
-	uint16_t id;
-	if (!propStream.read<uint16_t>(id)) {
-		return nullptr;
-	}
-
-	switch (id) {
+Item* Item::CreateItem(uint16_t itemId, Position &itemPosition) {
+	switch (itemId) {
 		case ITEM_FIREFIELD_PVP_FULL:
-			id = ITEM_FIREFIELD_PERSISTENT_FULL;
+			itemId = ITEM_FIREFIELD_PERSISTENT_FULL;
 			break;
 
 		case ITEM_FIREFIELD_PVP_MEDIUM:
-			id = ITEM_FIREFIELD_PERSISTENT_MEDIUM;
+			itemId = ITEM_FIREFIELD_PERSISTENT_MEDIUM;
 			break;
 
 		case ITEM_FIREFIELD_PVP_SMALL:
-			id = ITEM_FIREFIELD_PERSISTENT_SMALL;
+			itemId = ITEM_FIREFIELD_PERSISTENT_SMALL;
 			break;
 
 		case ITEM_ENERGYFIELD_PVP:
-			id = ITEM_ENERGYFIELD_PERSISTENT;
+			itemId = ITEM_ENERGYFIELD_PERSISTENT;
 			break;
 
 		case ITEM_POISONFIELD_PVP:
-			id = ITEM_POISONFIELD_PERSISTENT;
+			itemId = ITEM_POISONFIELD_PERSISTENT;
 			break;
 
 		case ITEM_MAGICWALL:
-			id = ITEM_MAGICWALL_PERSISTENT;
+			itemId = ITEM_MAGICWALL_PERSISTENT;
 			break;
 
 		case ITEM_WILDGROWTH:
-			id = ITEM_WILDGROWTH_PERSISTENT;
+			itemId = ITEM_WILDGROWTH_PERSISTENT;
 			break;
 
 		default:
 			break;
 	}
 
-	return Item::CreateItem(id, 0);
+	return Item::CreateItem(itemId, 0, &itemPosition);
 }
 
 Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
@@ -741,6 +739,17 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 			break;
 		}
 
+		case ATTR_AMOUNT: {
+			uint16_t amount;
+			if (!propStream.read<uint16_t>(amount)) {
+				SPDLOG_ERROR("[{}] failed to read amount", __FUNCTION__);
+				return ATTR_READ_ERROR;
+			}
+
+			setAttribute(AMOUNT, amount);
+			break;
+		}
+
 		case ATTR_CUSTOM: {
 			uint64_t size;
 			if (!propStream.read<uint64_t>(size)) {
@@ -787,7 +796,7 @@ bool Item::unserializeAttr(PropStream &propStream) {
 	return true;
 }
 
-bool Item::unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &propStream) {
+bool Item::unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &propStream, Position &itemPosition) {
 	return unserializeAttr(propStream);
 }
 
@@ -917,6 +926,11 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 	if (hasAttribute(ItemAttribute_t::TIER)) {
 		propWriteStream.write<uint8_t>(ATTR_TIER);
 		propWriteStream.write<uint8_t>(getTier());
+	}
+
+	if (hasAttribute(AMOUNT)) {
+		propWriteStream.write<uint8_t>(ATTR_AMOUNT);
+		propWriteStream.write<uint16_t>(getAttribute<uint16_t>(AMOUNT));
 	}
 
 	// Serialize custom attributes, only serialize if the map not is empty

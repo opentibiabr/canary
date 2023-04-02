@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -43,7 +43,7 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 			FILE* otbm = fopen(identifier.c_str(), "wb");
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 			curl_easy_setopt(curl, CURLOPT_URL, mapDownloadUrl.c_str());
-			curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_3);
+			curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
 			curl_easy_perform(curl);
 			curl_easy_cleanup(curl);

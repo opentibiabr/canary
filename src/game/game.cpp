@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -663,21 +663,22 @@ bool Game::placeCreature(Creature* creature, const Position &pos, bool extendedP
 		return false;
 	}
 
+	bool hasPlayerSpectators = false;
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true);
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendCreatureAppear(creature, creature->getPosition(), true);
+			hasPlayerSpectators = true;
 		}
-	}
-
-	for (Creature* spectator : spectators) {
 		spectator->onCreatureAppear(creature, true);
 	}
 
-	creature->getParent()->postAddNotification(creature, nullptr, 0);
+	if (hasPlayerSpectators) {
+		addCreatureCheck(creature);
+	}
 
-	addCreatureCheck(creature);
+	creature->getParent()->postAddNotification(creature, nullptr, 0);
 	creature->onPlacedCreature();
 	return true;
 }
@@ -977,7 +978,7 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 			}
 
 			Npc* movingNpc = movingCreature->getNpc();
-			if (movingNpc && movingNpc->canSee(toPos)) {
+			if (movingNpc && movingNpc->canInteract(toPos)) {
 				player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 				return;
 			}
@@ -3341,33 +3342,46 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 	if (item->isWrapable() && item->getID() != ITEM_DECORATION_KIT) {
 		wrapItem(item);
 	} else if (item->getID() == ITEM_DECORATION_KIT && unWrapId != 0) {
-		auto hiddenCharges = item->getAttribute<uint16_t>(ItemAttribute_t::DATE);
-		Item* newItem = transformItem(item, unWrapId);
-		if (newItem) {
-			if (hiddenCharges > 0 && isCaskItem(unWrapId)) {
-				newItem->setSubType(hiddenCharges);
-			}
-			newItem->removeCustomAttribute("unWrapId");
-			newItem->removeAttribute(ItemAttribute_t::DESCRIPTION);
-			newItem->startDecaying();
-		}
+		unwrapItem(item, unWrapId);
 	}
 	addMagicEffect(pos, CONST_ME_POFF);
 }
 
 Item* Game::wrapItem(Item* item) {
+	uint16_t hiddenCharges = 0;
+	uint16_t amount = item->getItemCount();
+	if (isCaskItem(item->getID())) {
+		hiddenCharges = item->getSubType();
+	}
 	uint16_t oldItemID = item->getID();
 	Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
 	newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
 	item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + item->getName() + ">.");
-	if (isCaskItem(item->getID())) {
-		auto hiddenCharges = item->getSubType();
-		if (hiddenCharges > 0) {
-			item->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
-		}
+	if (hiddenCharges > 0) {
+		newItem->setAttribute(DATE, hiddenCharges);
+	}
+	if (amount > 0) {
+		newItem->setAttribute(AMOUNT, amount);
 	}
 	newItem->startDecaying();
 	return newItem;
+}
+
+void Game::unwrapItem(Item* item, uint16_t unWrapId) {
+	auto hiddenCharges = item->getAttribute<uint16_t>(DATE);
+	auto amount = item->getAttribute<uint16_t>(AMOUNT);
+	if (!amount) {
+		amount = 1;
+	}
+	Item* newItem = transformItem(item, unWrapId, amount);
+	if (newItem) {
+		if (hiddenCharges > 0 && isCaskItem(unWrapId)) {
+			newItem->setSubType(hiddenCharges);
+		}
+		newItem->removeCustomAttribute("unWrapId");
+		newItem->removeAttribute(DESCRIPTION);
+		newItem->startDecaying();
+	}
 }
 
 void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::string &text) {
@@ -4380,7 +4394,7 @@ void Game::playerSetLootContainer(uint32_t playerId, ObjectCategory_t category, 
 	}
 
 	Container* container = thing->getContainer();
-	if (!container || (container->getID() == ITEM_GOLD_POUCH && category != OBJECTCATEGORY_GOLD)) {
+	if (!container || (container->getID() == ITEM_GOLD_POUCH && category != OBJECTCATEGORY_GOLD && !g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING))) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -4786,14 +4800,16 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 			outfit.lookMount = 0;
 		}
 
+		auto deltaSpeedChange = mount->speed;
 		if (player->isMounted()) {
 			Mount* prevMount = mounts.getMountByID(player->getCurrentMount());
 			if (prevMount) {
-				changeSpeed(player, mount->speed - prevMount->speed);
+				deltaSpeedChange -= prevMount->speed;
 			}
 		}
 
 		player->setCurrentMount(mount->id);
+		changeSpeed(player, deltaSpeedChange);
 	} else if (player->isMounted()) {
 		player->dismount();
 	}
@@ -6677,7 +6693,7 @@ void Game::loadMotdNum() {
 	result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_hash'");
 	if (result) {
 		motdHash = result->getString("value");
-		if (motdHash != transformToSHA1(g_configManager().getString(MOTD))) {
+		if (motdHash != transformToSHA1(g_configManager().getString(SERVER_MOTD))) {
 			++motdNum;
 		}
 	} else {
@@ -6693,7 +6709,7 @@ void Game::saveMotdNum() const {
 	db.executeQuery(query.str());
 
 	query.str(std::string());
-	query << "UPDATE `server_config` SET `value` = '" << transformToSHA1(g_configManager().getString(MOTD)) << "' WHERE `config` = 'motd_hash'";
+	query << "UPDATE `server_config` SET `value` = '" << transformToSHA1(g_configManager().getString(SERVER_MOTD)) << "' WHERE `config` = 'motd_hash'";
 	db.executeQuery(query.str());
 }
 
@@ -7357,9 +7373,16 @@ namespace {
 					if (ret != RETURNVALUE_NOERROR) {
 						offerStatus << "Failed to remove items from player " << player.getName() << " error: " << getReturnMessage(ret);
 						return false;
+					} else {
+						removeAmount -= 1;
 					}
 				}
 			}
+		}
+		if (removeAmount > 0) {
+			SPDLOG_ERROR("Player {} tried to sell an item {} without this item", itemType.id, player.getName());
+			offerStatus << "The item you tried to market is not correct. Check the item again.";
+			return false;
 		}
 		return true;
 	}
@@ -7488,7 +7511,11 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	// If there is any error, then we will send the log and block the creation of the offer to avoid clone of items
 	// The player may lose the item as it will have already been removed, but will not clone
 	if (!offerStatus.str().empty()) {
-		player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
+		if (offerStatus.str() == "The item you tried to market is not correct. Check the item again.") {
+			player->sendTextMessage(MESSAGE_MARKET, offerStatus.str());
+		} else {
+			player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
+		}
 		SPDLOG_ERROR("{} - Player {} had an error creating an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
 		return;
 	}
@@ -7678,6 +7705,20 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				return;
 			}
 		}
+
+		// If there is any error, then we will send the log and block the creation of the offer to avoid clone of items
+		// The player may lose the item as it will have already been removed, but will not clone
+		if (!offerStatus.str().empty()) {
+			if (offerStatus.str() == "The item you tried to market is not correct. Check the item again.") {
+				player->sendTextMessage(MESSAGE_MARKET, offerStatus.str());
+			} else {
+				player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
+			}
+			SPDLOG_ERROR("{} - Player {} had an error creating an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
+			player->sendMarketEnter(player->getLastDepotId());
+			return;
+		}
+
 		player->setBankBalance(player->getBankBalance() + totalPrice);
 
 		if (it.id == ITEM_STORE_COIN) {

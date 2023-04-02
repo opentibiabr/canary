@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -85,6 +85,10 @@ void Items::loadFromProtobuf() {
 
 		if (object.id() >= items.size()) {
 			items.resize(object.id() + 1);
+		}
+
+		if (!object.has_id()) {
+			continue;
 		}
 
 		ItemType &iType = items[object.id()];
@@ -169,7 +173,7 @@ bool Items::loadFromXml() {
 	}
 
 	for (auto itemNode : doc.child("items").children()) {
-		if (auto idAttribute = itemNode.attribute("id"); idAttribute) {
+		if (auto idAttribute = itemNode.attribute("id")) {
 			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
 			continue;
 		}
@@ -213,6 +217,10 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 		items.resize(id + 1);
 	}
 	ItemType &iType = items[id];
+	if (iType.id == 0 && (iType.name.empty() || iType.name == asLowerCaseString("reserved sprite"))) {
+		return;
+	}
+
 	iType.id = id;
 
 	ItemType &itemType = getItemType(id);

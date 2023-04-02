@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -38,7 +38,7 @@ void ProtocolLogin::getCharacterList(const std::string &email, const std::string
 	Game::updatePremium(account);
 
 	auto output = OutputMessagePool::getOutputMessage();
-	const std::string &motd = g_configManager().getString(MOTD);
+	const std::string &motd = g_configManager().getString(SERVER_MOTD);
 	if (!motd.empty()) {
 		// Add MOTD
 		output->addByte(0x14);

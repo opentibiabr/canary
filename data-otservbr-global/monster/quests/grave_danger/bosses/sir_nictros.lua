@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Sir Nictros")
 local monster = {}
 
 monster.description = "a Sir Nictros"
-monster.experience = 6300
+monster.experience = 55000
 monster.outfit = {
 	lookType = 1222,
 	lookHead = 101,
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 50000
-monster.maxHealth = 50000
+monster.health = 150000
+monster.maxHealth = 150000
 monster.race = "venom"
 monster.corpse = 31599
 monster.speed = 125
@@ -28,7 +28,7 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1754,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.BosstiaryCooldown.SirBaelocNictros
+	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.BaelocNictrosTimer
 }
 
 monster.strategiesTarget = {
@@ -69,10 +69,18 @@ monster.voices = {
 	chance = 10,
 }
 
+monster.summon = {
+	maxSummons = 3,
+	summons = {
+		{name = "Squire of Nictros", chance = 20, interval = 2000, count = 3}
+	}
+}
+
 monster.loot = {
 }
 
 monster.attacks = {
+	{name ="melee", interval = 2000, chance = 100, minDamage = -200, maxDamage = -500, effect = CONST_ME_DRAWBLOOD},
 	{name ="combat", interval = 1800, chance = 40, type = COMBAT_MANADRAIN, minDamage = -300, maxDamage = -500, radius = 5, effect = CONST_ME_MAGIC_RED, target = false},
 	{name ="combat", interval = 1800, chance = 89, type = COMBAT_PHYSICALDAMAGE, minDamage = -400, maxDamage = -1000, length = 7, spread = 3, target = false}
 }

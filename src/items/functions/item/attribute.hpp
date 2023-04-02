@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_ITEMS_FUNCTIONS_ITEM_ATTRIBUTE_HPP
@@ -40,6 +40,7 @@ class ItemAttributeHelper {
 			checkTypes |= ItemAttribute_t::QUICKLOOTCONTAINER;
 			checkTypes |= ItemAttribute_t::DURATION_TIMESTAMP;
 			checkTypes |= ItemAttribute_t::TIER;
+			checkTypes |= ItemAttribute_t::AMOUNT;
 			return (type & static_cast<ItemAttribute_t>(checkTypes)) != 0;
 		}
 

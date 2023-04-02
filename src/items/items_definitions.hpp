@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
@@ -117,6 +117,7 @@ enum ReturnValue {
 	RETURNVALUE_NOTENOUGHSHIELDLEVEL,
 	RETURNVALUE_NOTENOUGHFISHLEVEL,
 	RETURNVALUE_REWARDCHESTISEMPTY,
+	RETURNVALUE_REWARDCONTAINERISEMPTY,
 	RETURNVALUE_CONTACTADMINISTRATOR
 };
 
@@ -227,7 +228,7 @@ enum AttrTypes_t {
 	ATTR_OPENCONTAINER = 36,
 	ATTR_CUSTOM_ATTRIBUTES = 37, // Deprecated (override by ATTR_CUSTOM)
 	ATTR_QUICKLOOTCONTAINER = 38,
-	ATTR_IMBUEMENT_TYPE = 39, // Deprecated, can be override
+	ATTR_AMOUNT = 39,
 	ATTR_TIER = 40,
 	ATTR_CUSTOM = 41,
 

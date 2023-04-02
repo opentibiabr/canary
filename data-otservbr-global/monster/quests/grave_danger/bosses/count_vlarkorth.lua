@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Count Vlarkorth")
 local monster = {}
 
 monster.description = "Count Vlarkorth"
-monster.experience = 41300
+monster.experience = 55000
 monster.outfit = {
 	lookType = 1221,
 	lookHead = 19,
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 50000
-monster.maxHealth = 50000
+monster.health = 300000
+monster.maxHealth = 300000
 monster.race = "venom"
 monster.corpse = 31599
 monster.speed = 125
@@ -28,7 +28,7 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1753,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.BosstiaryCooldown.CountVlarkorth
+	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.CountVlarkorthTimer
 }
 
 monster.strategiesTarget = {
@@ -106,7 +106,7 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -200, maxDamage = -600},
+	{name ="melee", interval = 2000, chance = 100, minDamage = -200, maxDamage = -600, effect = CONST_ME_DRAWBLOOD},
 	{name ="combat", interval = 2000, chance = 50, type = COMBAT_MANADRAIN, minDamage = -400, maxDamage = -1000, length = 7, spread = 3, effect = CONST_ME_SMALLCLOUDS, target = false},
 	{name ="combat", interval = 2000, chance = 30, type = COMBAT_PHYSICALDAMAGE, minDamage = -400, maxDamage = -1000, length = 7, spread = 3, effect = CONST_ME_YELLOW_ENERGY_SPARK, target = false},
 	{name ="combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -500, length = 7, spread = 3, effect = CONST_ME_HITBYFIRE, target = false}

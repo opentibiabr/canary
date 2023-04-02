@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -60,22 +60,19 @@ void Npc::removeList() {
 	g_game().removeNpc(this);
 }
 
-bool Npc::canSee(const Position &pos) const {
+bool Npc::canInteract(const Position &pos) const {
 	if (pos.z != getPosition().z) {
 		return false;
 	}
 	return Creature::canSee(getPosition(), pos, 4, 4);
 }
 
-bool Npc::canSeeRange(const Position &pos, int32_t viewRangeX /* = 4*/, int32_t viewRangeY /* = 4*/) const {
-	if (pos.z != getPosition().z) {
-		return false;
-	}
-	return Creature::canSee(getPosition(), pos, viewRangeX, viewRangeY);
-}
-
 void Npc::onCreatureAppear(Creature* creature, bool isLogin) {
 	Creature::onCreatureAppear(creature, isLogin);
+
+	if (auto player = creature->getPlayer()) {
+		onPlayerAppear(player);
+	}
 
 	// onCreatureAppear(self, creature)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);
@@ -103,9 +100,8 @@ void Npc::onRemoveCreature(Creature* creature, bool isLogout) {
 		return;
 	}
 
-	if (creature != this) {
-		updatePlayerInteractions(creature->getPlayer());
-		return;
+	if (auto player = creature->getPlayer()) {
+		onPlayerDisappear(player);
 	}
 
 	if (spawnNpc) {
@@ -131,16 +127,37 @@ void Npc::onCreatureMove(Creature* creature, const Tile* newTile, const Position
 		return;
 	}
 
-	if (creature == this && !canSee(oldPos)) {
+	if (creature == this && !canInteract(oldPos)) {
 		resetPlayerInteractions();
 		closeAllShopWindows();
-		return;
 	}
 
-	Player* player = creature->getPlayer();
-	if (player && !canSee(newPos) && canSee(oldPos)) {
-		updatePlayerInteractions(player);
-		player->closeShopWindow(true);
+	if (auto player = creature->getPlayer()) {
+		handlePlayerMove(player, newPos);
+	}
+}
+
+void Npc::manageIdle() {
+	if (creatureCheck && playerSpectators.empty()) {
+		Game::removeCreatureCheck(this);
+	} else if (!creatureCheck) {
+		g_game().addCreatureCheck(this);
+	}
+}
+
+void Npc::onPlayerAppear(Player* player) {
+	if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(player)) {
+		return;
+	}
+	playerSpectators.insert(player);
+	manageIdle();
+}
+
+void Npc::onPlayerDisappear(Player* player) {
+	removePlayerInteraction(player);
+	if (!player->hasFlag(PlayerFlags_t::IgnoredByNpcs) && playerSpectators.contains(player)) {
+		playerSpectators.erase(player);
+		manageIdle();
 	}
 }
 
@@ -189,16 +206,7 @@ void Npc::onThink(uint32_t interval) {
 		closeAllShopWindows();
 	}
 
-	SpectatorHashSet spectators;
-	// Get a set of spectators that are within the visible range of the NPC
-	g_game().map.getSpectators(spectators, position, false, false);
-	// Check if there is at least one player in the set of spectators that does not have the "IgnoredByNpcs" flag
-	if (std::ranges::any_of(spectators, [](Creature* spectator) {
-			auto player = spectator->getPlayer();
-			// If there are no players or all players have the "IgnoredByNpcs" flag, then the NPC will not walk or yell.
-			return player && !player->hasFlag(PlayerFlags_t::IgnoredByNpcs);
-		})) {
-		// There is at least one normal player on the screen, so the NPC should continue walking and yelling
+	if (!playerSpectators.empty()) {
 		onThinkYell(interval);
 		onThinkWalk(interval);
 	}
@@ -291,42 +299,31 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 		}
 	}
 
-	auto removeAmount = amount;
-	auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore);
-	uint16_t removedItems = 0;
-	for (auto item : inventoryItems) {
-		// Ignore item with tier highter than 0
-		if (!item || item->getTier() > 0) {
+	auto toRemove = amount;
+	for (auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore); auto item : inventoryItems) {
+		if (!item || item->getTier() > 0 || item->hasImbuements()) {
 			continue;
 		}
 
-		// Only remove if item has no imbuements
-		if (!item->hasImbuements()) {
-			auto removeCount = std::min<uint16_t>(removeAmount, item->getItemCount());
-			removeAmount -= removeCount;
+		auto removeCount = std::min<uint16_t>(toRemove, item->getItemCount());
 
-			if (auto ret = g_game().internalRemoveItem(item, removeCount);
-				ret != RETURNVALUE_NOERROR) {
-				SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
-				continue;
-			}
+		if (g_game().internalRemoveItem(item, removeCount) != RETURNVALUE_NOERROR) {
+			SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
+			continue;
+		}
 
-			// We will use it to check how many items have been removed to send totalCost
-			removedItems++;
-
-			if (removeAmount == 0) {
-				break;
-			}
+		toRemove -= removeCount;
+		if (toRemove == 0) {
+			break;
 		}
 	}
 
-	// We will only add the money if any item has been removed from the player, to ensure that there is no possibility of cloning money
-	if (removedItems == 0) {
-		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for remove items from id {} on shop for npc {}", player->getName(), itemId, getName());
-		return;
+	if (toRemove != 0) {
+		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Problem while removing items from player {} amount {} of items with id {} on shop for npc {}, the payment will be made based on amount of removed items.", player->getName(), toRemove, itemId, getName());
 	}
 
-	auto totalCost = static_cast<uint64_t>(sellPrice * amount);
+	auto totalRemoved = amount - toRemove;
+	auto totalCost = static_cast<uint64_t>(sellPrice * totalRemoved);
 	g_game().addMoney(player, totalCost);
 
 	// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)
@@ -336,7 +333,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 		callback.pushCreature(player);
 		callback.pushNumber(itemType.id);
 		callback.pushNumber(subType);
-		callback.pushNumber(amount);
+		callback.pushNumber(totalRemoved);
 		callback.pushBoolean(ignore);
 		callback.pushString(itemType.name);
 		callback.pushNumber(totalCost);
@@ -384,8 +381,7 @@ void Npc::onPlayerCloseChannel(Creature* creature) {
 		return;
 	}
 
-	player->closeShopWindow(true);
-	this->removePlayerInteraction(player->getID());
+	removePlayerInteraction(player);
 }
 
 void Npc::onThinkYell(uint32_t interval) {
@@ -436,8 +432,23 @@ void Npc::onThinkWalk(uint32_t interval) {
 	walkTicks = 0;
 }
 
+void Npc::onCreatureWalk() {
+	Creature::onCreatureWalk();
+	phmap::erase_if(playerSpectators, [this](const auto &creature) { return !this->canSee(creature->getPosition()); });
+}
+
 void Npc::onPlacedCreature() {
-	addEventWalk();
+	loadPlayerSpectators();
+}
+
+void Npc::loadPlayerSpectators() {
+	SpectatorHashSet spec;
+	g_game().map.getSpectators(spec, position, true, true);
+	for (auto creature : spec) {
+		if (creature->getPlayer() || creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
+			playerSpectators.insert(creature);
+		}
+	}
 }
 
 bool Npc::isInSpawnRange(const Position &pos) const {
@@ -475,15 +486,10 @@ void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
 	playerInteractions[playerId] = topicId;
 }
 
-void Npc::updatePlayerInteractions(Player* player) {
-	if (player && !canSee(player->getPosition())) {
-		removePlayerInteraction(player->getID());
-	}
-}
-
-void Npc::removePlayerInteraction(uint32_t playerId) {
-	if (playerInteractions.find(playerId) != playerInteractions.end()) {
-		playerInteractions.erase(playerId);
+void Npc::removePlayerInteraction(Player* player) {
+	if (playerInteractions.contains(player->getID())) {
+		playerInteractions.erase(player->getID());
+		player->closeShopWindow(true);
 	}
 }
 
@@ -557,4 +563,15 @@ void Npc::closeAllShopWindows() {
 		}
 	}
 	shopPlayerSet.clear();
+}
+
+void Npc::handlePlayerMove(Player* player, const Position &newPos) {
+	if (!canInteract(newPos)) {
+		removePlayerInteraction(player);
+	}
+	if (canSee(newPos)) {
+		onPlayerAppear(player);
+	} else {
+		onPlayerDisappear(player);
+	}
 }

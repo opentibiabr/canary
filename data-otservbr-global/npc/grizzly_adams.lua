@@ -404,7 +404,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	message = message:gsub("(%l)(%w*)", function(a,b) return string.upper(a)..b end)
 
-	if MsgContains("join", message) or MsgContains("yes", message) and npcHandler:getTopic(playerId) == 0 and player:getStorageValue(Storage.KillingInTheNameOf.QuestLogEntry) ~= 0 then
+	if (MsgContains("join", message) or MsgContains("yes", message)) and npcHandler:getTopic(playerId) == 0 and player:getStorageValue(Storage.KillingInTheNameOf.QuestLogEntry) ~= 0 then
 		player:setStorageValue(JOIN_STOR, 1)
 		player:setStorageValue(Storage.KillingInTheNameOf.BossPoints, 0)
 		player:setStorageValue(Storage.KillingInTheNameOf.QuestLogEntry, 0)
@@ -469,27 +469,33 @@ local function creatureSayCallback(npc, creature, type, message)
 								messageAltId = tasks.GrizzlyAdams[id].bossId
 							end
 						elseif isInArray({REWARD_POINT, "points", "point"}, reward.type:lower()) and not deny then
+							local ratePoints = 1
+							if configKeys.RATE_KILLING_IN_THE_NAME_OF_POINTS then
+								ratePoints = configManager.getNumber(configKeys.RATE_KILLING_IN_THE_NAME_OF_POINTS)
+							end
+
+							local pointsToReceive = reward.value[1] * ratePoints
 							if player:getStorageValue(POINTSSTORAGE) >= 40 and player:getLevel() < 50 or
-							player:getStorageValue(POINTSSTORAGE) >= 70 and player:getLevel() < 80 or
-							player:getStorageValue(POINTSSTORAGE) >= 100 and player:getLevel() < 130 then
+								player:getStorageValue(POINTSSTORAGE) >= 70 and player:getLevel() < 80 or
+								player:getStorageValue(POINTSSTORAGE) >= 100 and player:getLevel() < 130 then
 								messageAltPoints = true
 							elseif player:getLevel() >= 130 and player:getStorageValue(POINTSSTORAGE) <= 20 then
-								player:setStorageValue(POINTSSTORAGE, getPlayerTasksPoints(creature) + reward.value[1] + 3)
+								player:setStorageValue(POINTSSTORAGE, getPlayerTasksPoints(creature) + pointsToReceive + 3)
 								messageAltExtraPoints = true
 								extraValue = 3
 								player:setStorageValue(Storage.KillingInTheNameOf.QuestLogEntry, player:getStorageValue(Storage.KillingInTheNameOf.QuestLogEntry)) -- fake update
 							elseif player:getLevel() >= 130 and player:getStorageValue(POINTSSTORAGE) <= 40 then
-								player:setStorageValue(POINTSSTORAGE, getPlayerTasksPoints(creature) + reward.value[1] + 2)
+								player:setStorageValue(POINTSSTORAGE, getPlayerTasksPoints(creature) + pointsToReceive + 2)
 								messageAltExtraPoints = true
 								extraValue = 2
 								player:setStorageValue(Storage.KillingInTheNameOf.QuestLogEntry, player:getStorageValue(Storage.KillingInTheNameOf.QuestLogEntry)) -- fake update
 							elseif player:getLevel() >= 130 and player:getStorageValue(POINTSSTORAGE) <= 70 then
-								player:setStorageValue(POINTSSTORAGE, getPlayerTasksPoints(creature) + reward.value[1] + 1)
+								player:setStorageValue(POINTSSTORAGE, getPlayerTasksPoints(creature) + pointsToReceive + 1)
 								messageAltExtraPoints = true
 								extraValue = 1
 								player:setStorageValue(Storage.KillingInTheNameOf.QuestLogEntry, player:getStorageValue(Storage.KillingInTheNameOf.QuestLogEntry)) -- fake update
 							else
-								player:setStorageValue(POINTSSTORAGE, getPlayerTasksPoints(creature) + reward.value[1])
+								player:setStorageValue(POINTSSTORAGE, getPlayerTasksPoints(creature) + pointsToReceive)
 								player:setStorageValue(Storage.KillingInTheNameOf.QuestLogEntry, player:getStorageValue(Storage.KillingInTheNameOf.QuestLogEntry)) -- fake update
 							end
 						elseif isInArray({REWARD_ITEM, "item", "items", "object"}, reward.type:lower()) and not deny then

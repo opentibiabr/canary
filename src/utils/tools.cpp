@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -347,11 +347,21 @@ std::string convertIPToString(uint32_t ip) {
 }
 
 std::string formatDate(time_t time) {
-	return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
+	try {
+		return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
+	} catch (const std::out_of_range &exception) {
+		SPDLOG_ERROR("Failed to format date with error code {}", exception.what());
+	}
+	return {};
 }
 
 std::string formatDateShort(time_t time) {
-	return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+	try {
+		return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+	} catch (const std::out_of_range &exception) {
+		SPDLOG_ERROR("Failed to format date short with error code {}", exception.what());
+	}
+	return {};
 }
 
 std::time_t getTimeNow() {
@@ -1041,6 +1051,8 @@ ItemAttribute_t stringToItemAttribute(const std::string &str) {
 		return ItemAttribute_t::DOORID;
 	} else if (str == "timestamp") {
 		return ItemAttribute_t::DURATION_TIMESTAMP;
+	} else if (str == "amount") {
+		return ItemAttribute_t::AMOUNT;
 	}
 	return ItemAttribute_t::NONE;
 }
@@ -1297,6 +1309,9 @@ const char* getReturnMessage(ReturnValue value) {
 
 		case RETURNVALUE_NOTPOSSIBLE:
 			return "Sorry, not possible.";
+
+		case RETURNVALUE_REWARDCONTAINERISEMPTY:
+			return "You already claimed your reward.";
 
 		case RETURNVALUE_CONTACTADMINISTRATOR:
 			return "An error has occurred, please contact your administrator.";

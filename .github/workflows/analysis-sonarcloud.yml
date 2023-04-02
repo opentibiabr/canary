@@ -9,10 +9,10 @@ on:
       - main
 
 env:
-  VCPKG_BUILD_TYPE: release
+  VCPKG_BUILD_TYPE: debug
   CMAKE_BUILD_PARALLEL_LEVEL: 2
   MAKEFLAGS: '-j 2'
-  NUMBER_OF_PROCESSORS: 2
+  VCPKG_BINARY_SOURCES: clear;default,readwrite
 
 jobs:
   sonarcloud:

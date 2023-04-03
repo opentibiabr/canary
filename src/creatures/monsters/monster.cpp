@@ -1926,11 +1926,15 @@ void Monster::updateLookDirection() {
 			if (offsetx < 0 && offsety < 0) {
 				if (dir == DIRECTION_SOUTH) {
 					newDir = DIRECTION_WEST;
+				} else if (dir == DIRECTION_NORTH) {
+					newDir = DIRECTION_WEST;
 				} else if (dir == DIRECTION_EAST) {
-					newDir = DIRECTION_NORTH;
+					newDir = DIRECTION_NORTH; 
 				}
 			} else if (offsetx < 0 && offsety > 0) {
 				if (dir == DIRECTION_NORTH) {
+					newDir = DIRECTION_WEST;
+				} else if (dir == DIRECTION_SOUTH) {
 					newDir = DIRECTION_WEST;
 				} else if (dir == DIRECTION_EAST) {
 					newDir = DIRECTION_SOUTH;
@@ -1938,11 +1942,15 @@ void Monster::updateLookDirection() {
 			} else if (offsetx > 0 && offsety < 0) {
 				if (dir == DIRECTION_SOUTH) {
 					newDir = DIRECTION_EAST;
+				} else if (dir == DIRECTION_NORTH) {
+					newDir = DIRECTION_EAST;
 				} else if (dir == DIRECTION_WEST) {
 					newDir = DIRECTION_NORTH;
 				}
 			} else {
 				if (dir == DIRECTION_NORTH) {
+					newDir = DIRECTION_EAST;
+				} else if (dir == DIRECTION_SOUTH) {
 					newDir = DIRECTION_EAST;
 				} else if (dir == DIRECTION_WEST) {
 					newDir = DIRECTION_SOUTH;
@@ -1955,9 +1963,9 @@ void Monster::updateLookDirection() {
 
 void Monster::dropLoot(Container* corpse, Creature*) {
 	if (corpse && lootDrop) {
-		// Only fiendish drops sliver
+		// Only fiendish creatures ones yield slivers.
+		// You can check the Min/Max condition from slivers yields on config.lua.
 		if (ForgeClassifications_t classification = getMonsterForgeClassification();
-			// Condition
 			classification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
 			auto minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS);
 			auto maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS);

@@ -126,6 +126,14 @@ class ItemProperties {
 			}
 		}
 
+		bool isImmovableStoreInbox() const {
+			return getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) == IMMOVABLE_INBOX_ACTION_ID;
+		}
+
+		void setImmovableStoreInbox() {
+			setAttribute(ItemAttribute_t::ACTIONID, IMMOVABLE_INBOX_ACTION_ID);
+		}
+
 		void setDuration(int32_t time) {
 			setAttribute(ItemAttribute_t::DURATION, std::max<int32_t>(0, time));
 		}

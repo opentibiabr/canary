@@ -1320,96 +1320,6 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 		return;
 	}
 
-	Container* fromContainer = player->getContainerByID(static_cast<uint8_t>(fromPos.y & 0x0F));
-	Container* toContainer = player->getContainerByID(static_cast<uint8_t>(toPos.y & 0x0F));
-
-	if (toContainer != nullptr && toContainer->getID() == ITEM_STORE_INBOX && item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != STORED_INBOX_ACTION_ID) {
-		player->sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM);
-		return;
-	}
-
-	// gold pouch validations
-	if (toContainer != nullptr && toContainer->getID() == ITEM_GOLD_POUCH) {
-		bool isValidMoveItem = false;
-		bool allowAnything = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);
-
-		if (!allowAnything && item->getID() == ITEM_GOLD_COIN || item->getID() == ITEM_PLATINUM_COIN || item->getID() == ITEM_CRYSTAL_COIN) {
-			isValidMoveItem = true;
-		}
-
-		if (allowAnything) {
-			isValidMoveItem = true;
-		}
-
-		if (!isValidMoveItem) {
-			player->sendCancelMessage("You can move only money to this container.");
-			return;
-		}
-	}
-
-	// move item stored inbox validations
-	if (fromContainer != nullptr && item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) == STORED_INBOX_ACTION_ID && item->getID() != ITEM_DECORATION_KIT) {
-		bool isValidMoveItem = false;
-
-		if (fromContainer->getID() == ITEM_STORE_INBOX && toContainer && (toContainer->isDepotChest() || isMoveToChildDepot(toContainer))) {
-			isValidMoveItem = true;
-		}
-
-		if (fromContainer->isDepotChest() && toContainer && (toContainer->getID() == ITEM_STORE_INBOX)) {
-			isValidMoveItem = true;
-		}
-
-		if (toContainer && (fromContainer->getID() == toContainer->getID())) {
-			isValidMoveItem = true;
-		}
-
-		if (!isValidMoveItem) {
-			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-			return;
-		}
-	}
-
-	// decoration kit validations
-	if (item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) == STORED_INBOX_ACTION_ID && item->getID() == ITEM_DECORATION_KIT) {
-		HouseTile* toHouseTile = dynamic_cast<HouseTile*>(map.getTile(toPos));
-		HouseTile* fromHouseTile = dynamic_cast<HouseTile*>(map.getTile(fromPos));
-
-		bool isValidMoveItem = false;
-
-		if (fromHouseTile && toContainer && (toContainer->getID() == ITEM_STORE_INBOX || toContainer->isDepotChest() || isMoveToChildDepot(toContainer))) {
-			isValidMoveItem = true;
-		}
-
-		if (fromHouseTile && toContainer && (toContainer->getID() == ITEM_STORE_INBOX)) {
-			isValidMoveItem = true;
-		}
-
-		if (fromContainer && toContainer && (fromContainer->getID() == toContainer->getID())) {
-			isValidMoveItem = true;
-		}
-
-		if (fromHouseTile && toHouseTile) {
-			isValidMoveItem = true;
-		}
-
-		if (fromContainer && toHouseTile && (fromContainer->getID() == ITEM_STORE_INBOX)) {
-			isValidMoveItem = true;
-		}
-
-		if (fromContainer && toContainer && (fromContainer->getID() == ITEM_STORE_INBOX && toContainer->isDepotChest() || isMoveToChildDepot(toContainer))) {
-			isValidMoveItem = true;
-		}
-
-		if (fromContainer && toContainer && (fromContainer->isDepotChest() && toContainer->getID() == ITEM_STORE_INBOX)) {
-			isValidMoveItem = true;
-		}
-
-		if (!isValidMoveItem) {
-			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-			return;
-		}
-	}
-
 	if (!g_events().eventPlayerOnMoveItem(player, item, count, fromPos, toPos, fromCylinder, toCylinder)) {
 		return;
 	}
@@ -1443,13 +1353,6 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 	item->checkDecayMapItemOnMove();
 
 	g_events().eventPlayerOnItemMoved(player, item, count, fromPos, toPos, fromCylinder, toCylinder);
-}
-
-bool Game::isMoveToChildDepot(Container* container) {
-    return container->getRootParentContainer() != nullptr 
-        && container->getRootParentContainer()->getParent() != nullptr 
-        && container->getRootParentContainer()->getParent()->getContainer() != nullptr 
-        && container->getRootParentContainer()->getParent()->getContainer()->isDepotChest();
 }
 
 bool Game::isTryingToStow(const Position &toPos, Cylinder* toCylinder) const {
@@ -1606,13 +1509,13 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 	}
 
 	// Mark all items added in store inbox
-	if (item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) == STORED_INBOX_ACTION_ID) {
-		if (moveItem != nullptr) {
-			moveItem->setAttribute(ItemAttribute_t::ACTIONID, STORED_INBOX_ACTION_ID);
+	if (item->isImmovableStoreInbox()) {
+		if (moveItem) {
+			moveItem->setImmovableStoreInbox();
 		}
 
-		if (updateItem != nullptr) {
-			updateItem->setAttribute(ItemAttribute_t::ACTIONID, STORED_INBOX_ACTION_ID);
+		if (updateItem) {
+			updateItem->setImmovableStoreInbox();
 		}
 	}
 
@@ -1737,7 +1640,7 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 
 	// Mark all items added in store inbox
 	if (toCylinder->getItem() && toCylinder->getItem()->getID() == ITEM_STORE_INBOX) {
-		item->setAttribute(ItemAttribute_t::ACTIONID, STORED_INBOX_ACTION_ID);
+		item->setImmovableStoreInbox();
 	}
 
 	if (item->isStackable() && item->equals(toItem)) {

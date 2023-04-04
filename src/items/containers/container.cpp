@@ -93,10 +93,6 @@ Container* Container::getTopParentContainer() const {
 	return thing->getContainer();
 }
 
-Container* Container::getRootParentContainer() const {
-  return getTopParentContainer();
-}
-
 bool Container::hasParent() const {
 	return getID() != ITEM_BROWSEFIELD && dynamic_cast<const Player*>(getParent()) == nullptr;
 }
@@ -360,6 +356,26 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing &addThing, uint32_
 
 	if (item == this) {
 		return RETURNVALUE_THISISIMPOSSIBLE;
+	}
+
+	if (getID() == ITEM_GOLD_POUCH) {
+		bool allowAnything = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);
+
+		if (!allowAnything && item->getID() != ITEM_GOLD_COIN && item->getID() != ITEM_PLATINUM_COIN && item->getID() != ITEM_CRYSTAL_COIN) {
+			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+		}
+	}
+	
+	if (!item->isImmovableStoreInbox() && getID() == ITEM_STORE_INBOX) {
+		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+	}
+
+	if (item->isImmovableStoreInbox()) {
+		const Container* topParentContainer = getTopParentContainer();
+
+		if (!isDepotChest() && getID() != ITEM_STORE_INBOX && (topParentContainer->getParent() && !topParentContainer->getParent()->getContainer()->isDepotChest())) {
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
 	}
 
 	const Cylinder* cylinder = getParent();

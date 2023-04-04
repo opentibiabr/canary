@@ -645,6 +645,10 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
+		if (item->isImmovableStoreInbox() && !dynamic_cast<const HouseTile*>(this)) {
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+
 		const CreatureVector* creatures = getCreatures();
 		if (creatures && !creatures->empty() && item->isBlocking() && !hasBitSet(FLAG_IGNOREBLOCKCREATURE, tileFlags)) {
 			for (const Creature* tileCreature : *creatures) {

@@ -1606,7 +1606,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 	}
 
 	// Mark all items added in store inbox
-	if (item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) == STORED_INBOX_ACTION_ID) {
+	if (item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) == STORED_INBOX_ACTION_ID && moveItem !== nullptr) {
 		moveItem->setAttribute(ItemAttribute_t::ACTIONID, STORED_INBOX_ACTION_ID);
 	}
 

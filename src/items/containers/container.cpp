@@ -373,7 +373,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing &addThing, uint32_
 	if (item->isImmovableStoreInbox()) {
 		const Container* topParentContainer = getTopParentContainer();
 
-		if (!isDepotChest() && getID() != ITEM_STORE_INBOX && (topParentContainer->getParent() && !topParentContainer->getParent()->getContainer()->isDepotChest())) {
+		if (!isDepotChest() && getID() != ITEM_STORE_INBOX && (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && !topParentContainer->getParent()->getContainer()->isDepotChest())) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 	}

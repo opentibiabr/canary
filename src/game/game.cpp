@@ -1613,6 +1613,11 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
+	// Mark all items added in store inbox
+	if (toCylinder->getItem() && toCylinder->getItem()->getID() == ITEM_STORE_INBOX) {
+		item->setImmovableStoreInbox();
+	}
+
 	Cylinder* destCylinder = toCylinder;
 	Item* toItem = nullptr;
 	toCylinder = toCylinder->queryDestination(index, *item, &toItem, flags);
@@ -1636,11 +1641,6 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 
 	if (test) {
 		return RETURNVALUE_NOERROR;
-	}
-
-	// Mark all items added in store inbox
-	if (toCylinder->getItem() && toCylinder->getItem()->getID() == ITEM_STORE_INBOX) {
-		item->setImmovableStoreInbox();
 	}
 
 	if (item->isStackable() && item->equals(toItem)) {
@@ -3808,6 +3808,11 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 	Container* tradeContainer = tradeItem->getContainer();
 	if (tradeContainer && tradeContainer->getItemHoldingCount() + 1 > 100) {
 		player->sendTextMessage(MESSAGE_TRADE, "You can not trade more than 100 items.");
+		return;
+	}
+
+	if (tradeItem->isImmovableStoreInbox()) {
+		player->sendTextMessage(MESSAGE_TRADE, "Item cannot be trade.");
 		return;
 	}
 

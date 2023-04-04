@@ -372,8 +372,21 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing &addThing, uint32_
 
 	if (item->isImmovableStoreInbox()) {
 		const Container* topParentContainer = getTopParentContainer();
+		bool isValidMoveItem = false;
 
-		if (!isDepotChest() && getID() != ITEM_STORE_INBOX && (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && !topParentContainer->getParent()->getContainer()->isDepotChest())) {
+		if (getID() == ITEM_STORE_INBOX) {
+			isValidMoveItem = true;
+		}
+
+		if (isDepotChest()) {
+			isValidMoveItem = true;
+		}
+
+		if (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && topParentContainer->getParent()->getContainer()->isDepotChest()) {
+			isValidMoveItem = true;
+		}
+
+		if (!isValidMoveItem) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 	}

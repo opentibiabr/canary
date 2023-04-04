@@ -52,6 +52,7 @@ class Container : public Item, public Cylinder {
 		Container* getContainer() override final {
 			return this;
 		}
+		Container* getRootParentContainer() const;
 		const Container* getContainer() const override final {
 			return this;
 		}

@@ -335,34 +335,6 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		end
 	end
 
-	-- Store Inbox
-	local containerIdFrom = fromPosition.y - 64
-	local containerFrom = self:getContainerById(containerIdFrom)
-	if (containerFrom) then
-		if (containerFrom:getId() == ITEM_STORE_INBOX
-		and toPosition.y >= 1 and toPosition.y <= 11 and toPosition.y ~= 3) then
-			self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
-			return false
-		end
-	end
-
-	local containerTo = self:getContainerById(toPosition.y-64)
-	if (containerTo) then
-		if (containerTo:getId() == ITEM_STORE_INBOX) or (containerTo:getParent():isContainer() and containerTo:getParent():getId() == ITEM_STORE_INBOX and containerTo:getId() ~= ITEM_GOLD_POUCH) then
-			self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
-			return false
-		end
-		if not configManager.getBoolean(configKeys.TOGGLE_GOLD_POUCH_ALLOW_ANYTHING) then
-			-- Gold Pouch
-			if (containerTo:getId() == ITEM_GOLD_POUCH) then
-				if (not (item:getId() == ITEM_CRYSTAL_COIN or item:getId() == ITEM_PLATINUM_COIN or item:getId() == ITEM_GOLD_COIN)) then
-					self:sendCancelMessage("You can move only money to this container.")
-					return false
-				end
-			end
-		end
-	end
-
 	-- Bath tube
 	local toTile = Tile(toCylinder:getPosition())
 	local topDownItem = toTile:getTopDownItem()

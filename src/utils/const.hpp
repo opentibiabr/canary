@@ -47,6 +47,7 @@ static constexpr int32_t PSTRG_FAMILIARS_RANGE_START = (PSTRG_RESERVED_RANGE_STA
 static constexpr int32_t PSTRG_FAMILIARS_RANGE_SIZE = 500;
 
 static constexpr int32_t IMMOVABLE_ACTION_ID = 100;
+static constexpr int32_t STORED_INBOX_ACTION_ID = 200;
 
 #define IS_IN_KEYRANGE(key, range) \
 	(key >= PSTRG_##range##_START && ((key - PSTRG_##range##_START) <= PSTRG_##range##_SIZE))

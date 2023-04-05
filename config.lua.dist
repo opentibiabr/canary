@@ -117,6 +117,7 @@ forgeFiendishIntervalTime = "1"
 -- NOTE: bosstiaryKillMultiplier, multiplier value of boss killed, default 1
 bestiaryKillMultiplier = 1
 bosstiaryKillMultiplier = 1
+bestiaryRateCharmShopPrice  = 1.0
 boostedBossSlot = true
 boostedBossLootBonus = 250
 boostedBossKillBonus = 3

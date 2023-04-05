@@ -3801,7 +3801,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 	}
 
 	if (tradeItem->isStoreItem()) {
-		player->sendTextMessage(MESSAGE_TRADE, "Item cannot be trade.");
+		player->sendTextMessage(MESSAGE_TRADE, "This item cannot be trade.");
 		return;
 	}
 

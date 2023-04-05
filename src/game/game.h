@@ -561,7 +561,6 @@ class Game {
 		uint32_t makeInfluencedMonster();
 
 		bool addInfluencedMonster(Monster* monster);
-		bool isMoveToChildDepot(Container* container);
 		void sendUpdateCreature(const Creature* creature);
 		Item* wrapItem(Item* item);
 

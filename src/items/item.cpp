@@ -2644,202 +2644,474 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 			if (!begin) {
 				s << ')';
 			}
-		} else if (it.isContainer() || (item && item->getContainer())) {
-			uint32_t volume = 0;
-			if (!item || !item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
-				if (it.isContainer()) {
-					volume = it.maxItems;
-				} else {
-					volume = item->getContainer()->capacity();
+		} else if (it.weaponType != WEAPON_AMMO) {
+			bool begin = true;
+
+			int32_t attack, defense, extraDefense;
+			if (item) {
+				attack = item->getAttack();
+				defense = item->getDefense();
+				extraDefense = item->getExtraDefense();
+			} else {
+				attack = it.attack;
+				defense = it.defense;
+				extraDefense = it.extraDefense;
+			}
+
+			if (attack != 0) {
+				begin = false;
+				s << " (Atk:" << attack;
+
+				if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
+					s << " physical + " << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 				}
 			}
 
-			if (volume != 0) {
-				s << " (Vol:" << volume << ')';
-			}
-		} else {
-			bool found = true;
-
-			if (it.abilities && it.slotPosition & SLOTP_RING) {
-				if (it.abilities->speed > 0) {
-					bool begin = true;
-					s << parseShowDurationSpeed(it.abilities->speed, begin) << ")" << parseShowDuration(item);
-				} else if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
-					s << " (hard drinking)";
-				} else if (it.abilities->invisible) {
-					s << " (invisibility)";
-				} else if (it.abilities->regeneration) {
-					s << " (faster regeneration)";
-				} else if (it.abilities->manaShield) {
-					s << " (mana shield)";
+			if (defense != 0 || extraDefense != 0 || it.isMissile()) {
+				if (begin) {
+					begin = false;
+					s << " (";
 				} else {
-					found = false;
+					s << ", ";
 				}
+
+				s << "Def:" << defense;
+				if (extraDefense != 0) {
+					s << ' ' << std::showpos << extraDefense << std::noshowpos;
+				}
+			}
+
+			if (it.abilities) {
+				for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
+					if (!it.abilities->skills[i]) {
+						continue;
+					}
+
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << getSkillName(i) << ' ' << std::showpos << it.abilities->skills[i] << std::noshowpos;
+				}
+
+				for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
+					if (!it.abilities->skills[i]) {
+						continue;
+					}
+
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+					s << getSkillName(i) << ' ';
+					if (i != SKILL_CRITICAL_HIT_CHANCE) {
+						s << std::showpos;
+					}
+					s << it.abilities->skills[i];
+					if (i != SKILL_CRITICAL_HIT_CHANCE) {
+						s << std::noshowpos;
+					}
+					s << '%';
+				}
+
+				if (it.abilities->stats[STAT_MAGICPOINTS]) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+				}
+
+				int16_t show = it.abilities->absorbPercent[0];
+				if (show != 0) {
+					for (size_t i = 1; i < COMBAT_COUNT; ++i) {
+						if (it.abilities->absorbPercent[i] != show) {
+							show = 0;
+							break;
+						}
+					}
+				}
+
+				if (show == 0) {
+					bool tmp = true;
+
+					for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+						if (it.abilities->absorbPercent[i] == 0) {
+							continue;
+						}
+
+						if (tmp) {
+							tmp = false;
+
+							if (begin) {
+								begin = false;
+								s << " (";
+							} else {
+								s << ", ";
+							}
+
+							s << "protection ";
+						} else {
+							s << ", ";
+						}
+
+						s << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
+					}
+				} else {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << fmt::format("protection all {:+}%", show);
+				}
+
+				show = it.abilities->fieldAbsorbPercent[0];
+				if (show != 0) {
+					for (size_t i = 1; i < COMBAT_COUNT; ++i) {
+						if (it.abilities->absorbPercent[i] != show) {
+							show = 0;
+							break;
+						}
+					}
+				}
+
+				if (show == 0) {
+					bool tmp = true;
+
+					for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+						if (it.abilities->fieldAbsorbPercent[i] == 0) {
+							continue;
+						}
+
+						if (tmp) {
+							tmp = false;
+
+							if (begin) {
+								begin = false;
+								s << " (";
+							} else {
+								s << ", ";
+							}
+
+							s << "protection ";
+						} else {
+							s << ", ";
+						}
+
+						s << fmt::format("{} field {:+}%", getCombatName(indexToCombatType(i)), it.abilities->fieldAbsorbPercent[i]);
+					}
+				} else {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << fmt::format("protection all fields {:+}%", show);
+				}
+
+				if (it.abilities->speed) {
+					s << parseShowDurationSpeed(it.abilities->speed, begin);
+				}
+			}
+
+			if (!begin) {
+				s << ')';
+			}
+		}
+	} else if (it.isContainer() || (item && item->getContainer())) {
+		uint32_t volume = 0;
+		if (!item || !item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
+			if (it.isContainer()) {
+				volume = it.maxItems;
+			} else {
+				volume = item->getContainer()->capacity();
+			}
+		}
+
+		if (volume != 0) {
+			s << " (Vol:" << volume << ')';
+		}
+	} else {
+		bool found = true;
+
+		if (it.abilities && it.slotPosition & SLOTP_RING) {
+			if (it.abilities->speed > 0) {
+				bool begin = true;
+				s << parseShowDurationSpeed(it.abilities->speed, begin) << ")" << parseShowDuration(item);
+			} else if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
+				s << " (hard drinking)";
+			} else if (it.abilities->invisible) {
+				s << " (invisibility)";
+			} else if (it.abilities->regeneration) {
+				s << " (faster regeneration)";
+			} else if (it.abilities->manaShield) {
+				s << " (mana shield)";
 			} else {
 				found = false;
 			}
+		} else {
+			found = false;
+		}
 
-			if (!found) {
-				if (it.isKey()) {
-					s << fmt::format(" (Key:{:04})", item ? item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) : 0);
-				} else if (it.isFluidContainer()) {
-					if (subType > 0) {
-						const std::string &itemName = items[subType].name;
-						s << " of " << (!itemName.empty() ? itemName : "unknown");
-					} else {
-						s << ". It is empty";
-					}
-				} else if (it.isSplash()) {
-					s << " of ";
+		if (!found) {
+			if (it.isKey()) {
+				s << fmt::format(" (Key:{:04})", item ? item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) : 0);
+			} else if (it.isFluidContainer()) {
+				if (subType > 0) {
+					const std::string &itemName = items[subType].name;
+					s << " of " << (!itemName.empty() ? itemName : "unknown");
+				} else {
+					s << ". It is empty";
+				}
+			} else if (it.isSplash()) {
+				s << " of ";
 
-					if (subType > 0 && !items[subType].name.empty()) {
-						s << items[subType].name;
-					} else {
-						s << "unknown";
-					}
-				} else if (it.allowDistRead && (it.id < 7369 || it.id > 7371)) {
-					s << '.' << std::endl;
+				if (subType > 0 && !items[subType].name.empty()) {
+					s << items[subType].name;
+				} else {
+					s << "unknown";
+				}
+			} else if (it.allowDistRead && (it.id < 7369 || it.id > 7371)) {
+				s << '.' << std::endl;
 
-					if (lookDistance <= 4) {
-						if (item) {
-							auto string = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
-							text = &string;
-							if (!text->empty()) {
-								const std::string &writer = item->getAttribute<std::string>(ItemAttribute_t::WRITER);
-								if (!writer.empty()) {
-									s << writer << " wrote";
-									auto date = item->getAttribute<time_t>(ItemAttribute_t::DATE);
-									if (date != 0) {
-										s << " on " << formatDateShort(date);
-									}
-									s << ": ";
-								} else {
-									s << "You read: ";
+				if (lookDistance <= 4) {
+					if (item) {
+						auto string = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
+						text = &string;
+						if (!text->empty()) {
+							const std::string &writer = item->getAttribute<std::string>(ItemAttribute_t::WRITER);
+							if (!writer.empty()) {
+								s << writer << " wrote";
+								auto date = item->getAttribute<time_t>(ItemAttribute_t::DATE);
+								if (date != 0) {
+									s << " on " << formatDateShort(date);
 								}
-								s << *text;
+								s << ": ";
 							} else {
-								s << "Nothing is written on it";
+								s << "You read: ";
 							}
+							s << *text;
 						} else {
 							s << "Nothing is written on it";
 						}
 					} else {
-						s << "You are too far away to read it";
+						s << "Nothing is written on it";
 					}
-				} else if (it.levelDoor != 0 && item) {
-					auto actionId = item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID);
-					if (actionId >= it.levelDoor) {
-						s << " for level " << (actionId - it.levelDoor);
-					}
-				}
-			}
-		}
-
-		if (it.transformEquipTo != 0) {
-			s << parseShowAttributesDescription(item, it.transformEquipTo);
-		} else {
-			s << parseShowAttributesDescription(item, it.id);
-		}
-
-		if (it.showCharges) {
-			if (subType == 0) {
-				s << " that has " << it.charges << " charge" << (subType != 1 ? "s" : "") << " left";
-			} else {
-				s << " that has " << subType << " charge" << (subType != 1 ? "s" : "") << " left";
-			}
-		}
-
-		if (it.showDuration) {
-			s << parseShowDuration(item);
-		}
-
-		if (!it.allowDistRead || (it.id >= 7369 && it.id <= 7371)) {
-			s << '.';
-		} else {
-			if (!text && item) {
-				auto string = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
-				text = &string;
-			}
-
-			if (!text || text->empty()) {
-				s << '.';
-			}
-		}
-
-		if (it.wieldInfo != 0) {
-			s << std::endl
-			  << "It can only be wielded properly by ";
-
-			if (it.wieldInfo & WIELDINFO_PREMIUM) {
-				s << "premium ";
-			}
-
-			if (!it.vocationString.empty()) {
-				s << it.vocationString;
-			} else {
-				s << "players";
-			}
-
-			if (it.wieldInfo & WIELDINFO_LEVEL) {
-				s << " of level " << it.minReqLevel << " or higher";
-			}
-
-			if (it.wieldInfo & WIELDINFO_MAGLV) {
-				if (it.wieldInfo & WIELDINFO_LEVEL) {
-					s << " and";
 				} else {
-					s << " of";
+					s << "You are too far away to read it";
 				}
-
-				s << " magic level " << it.minReqMagicLevel << " or higher";
+			} else if (it.levelDoor != 0 && item) {
+				auto actionId = item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID);
+				if (actionId >= it.levelDoor) {
+					s << " for level " << (actionId - it.levelDoor);
+				}
 			}
+		}
+	}
 
+	if (it.transformEquipTo != 0) {
+		s << parseShowAttributesDescription(item, it.transformEquipTo);
+	} else {
+		s << parseShowAttributesDescription(item, it.id);
+	}
+
+	if (it.showCharges) {
+		if (subType == 0) {
+			s << " that has " << it.charges << " charge" << (subType != 1 ? "s" : "") << " left";
+		} else {
+			s << " that has " << subType << " charge" << (subType != 1 ? "s" : "") << " left";
+		}
+	}
+
+	if (it.showDuration) {
+		s << parseShowDuration(item);
+	}
+
+	if (!it.allowDistRead || (it.id >= 7369 && it.id <= 7371)) {
+		s << '.';
+	} else {
+		if (!text && item) {
+			auto string = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
+			text = &string;
+		}
+
+		if (!text || text->empty()) {
 			s << '.';
 		}
+	}
 
-		s << parseImbuementDescription(item);
+	if (it.wieldInfo != 0) {
+		s << std::endl
+		  << "It can only be wielded properly by ";
 
-		s << parseClassificationDescription(item);
-
-		if (lookDistance <= 1) {
-			if (item) {
-				const uint32_t weight = item->getWeight();
-				if (weight != 0 && it.pickupable) {
-					s << std::endl
-					  << getWeightDescription(it, weight, item->getItemCount());
-				}
-			} else if (it.weight != 0 && it.pickupable) {
-				s << std::endl
-				  << getWeightDescription(it, it.weight);
-			}
+		if (it.wieldInfo & WIELDINFO_PREMIUM) {
+			s << "premium ";
 		}
 
-		if (item) {
-			const std::string &specialDescription = item->getAttribute<std::string>(ItemAttribute_t::DESCRIPTION);
-			if (!specialDescription.empty()) {
-				s << std::endl
-				  << specialDescription;
-			} else if (lookDistance <= 1 && !it.description.empty()) {
-				s << std::endl
-				  << it.description;
+		if (!it.vocationString.empty()) {
+			s << it.vocationString;
+		} else {
+			s << "players";
+		}
+
+		if (it.wieldInfo & WIELDINFO_LEVEL) {
+			s << " of level " << it.minReqLevel << " or higher";
+		}
+
+		if (it.wieldInfo & WIELDINFO_MAGLV) {
+			if (it.wieldInfo & WIELDINFO_LEVEL) {
+				s << " and";
+			} else {
+				s << " of";
 			}
+
+			s << " magic level " << it.minReqMagicLevel << " or higher";
+		}
+
+		s << '.';
+	}
+
+	s << parseImbuementDescription(item);
+
+	s << parseClassificationDescription(item);
+
+	if (lookDistance <= 1) {
+		if (item) {
+			const uint32_t weight = item->getWeight();
+			if (weight != 0 && it.pickupable) {
+				s << std::endl
+				  << getWeightDescription(it, weight, item->getItemCount());
+			}
+		} else if (it.weight != 0 && it.pickupable) {
+			s << std::endl
+			  << getWeightDescription(it, it.weight);
+		}
+	}
+
+	if (item) {
+		const std::string &specialDescription = item->getAttribute<std::string>(ItemAttribute_t::DESCRIPTION);
+		if (!specialDescription.empty()) {
+			s << std::endl
+			  << specialDescription;
 		} else if (lookDistance <= 1 && !it.description.empty()) {
 			s << std::endl
 			  << it.description;
 		}
+	} else if (lookDistance <= 1 && !it.description.empty()) {
+		s << std::endl
+		  << it.description;
+	}
 
-		if (it.allowDistRead && it.id >= 7369 && it.id <= 7371) {
-			if (!text && item) {
-				auto string = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
-				text = &string;
-			}
-
-			if (text && !text->empty()) {
-				s << std::endl
-				  << *text;
-			}
+	if (it.allowDistRead && it.id >= 7369 && it.id <= 7371) {
+		if (!text && item) {
+			auto string = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
+			text = &string;
 		}
-		return s.str();
+
+		if (text && !text->empty()) {
+			s << std::endl
+			  << *text;
+		}
+	}
+	return s.str();
+}
+
+std::string Item::getDescription(int32_t lookDistance) const {
+	const ItemType &it = items[id];
+	return getDescription(it, lookDistance, this);
+}
+
+std::string Item::getNameDescription(const ItemType &it, const Item* item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/) {
+	if (item) {
+		subType = item->getSubType();
+	}
+
+	std::ostringstream s;
+
+	const std::string &name = (item ? item->getName() : it.name);
+	if (!name.empty()) {
+		if (it.stackable && subType > 1) {
+			if (it.showCount) {
+				s << subType << ' ';
+			}
+
+			s << (item ? item->getPluralName() : it.getPluralName());
+		} else {
+			if (addArticle) {
+				const std::string &article = (item ? item->getArticle() : it.article);
+				if (!article.empty()) {
+					s << article << ' ';
+				}
+			}
+
+			s << name;
+		}
+	} else {
+		s << "an item of type " << it.id;
+	}
+	return s.str();
+}
+
+std::string Item::getNameDescription() const {
+	const ItemType &it = items[id];
+	return getNameDescription(it, this);
+}
+
+std::string Item::getWeightDescription(const ItemType &it, uint32_t weight, uint32_t count /*= 1*/) {
+	std::ostringstream ss;
+	if (it.stackable && count > 1 && it.showCount != 0) {
+		ss << "They weigh ";
+	} else {
+		ss << "It weighs ";
+	}
+
+	if (weight < 10) {
+		ss << "0.0" << weight;
+	} else if (weight < 100) {
+		ss << "0." << weight;
+	} else {
+		std::string weightString = std::to_string(weight);
+		weightString.insert(weightString.end() - 2, '.');
+		ss << weightString;
+	}
+
+	ss << " oz.";
+	return ss.str();
+}
+
+std::string Item::getWeightDescription(uint32_t weight) const {
+	const ItemType &it = Item::items[id];
+	return getWeightDescription(it, weight, getItemCount());
+}
+
+std::string Item::getWeightDescription() const {
+	uint32_t weight = getWeight();
+	if (weight == 0) {
+		return std::string();
+	}
+	return getWeightDescription(weight);
+}
+
+void Item::addUniqueId(uint16_t uniqueId) {
+	if (hasAttribute(ItemAttribute_t::UNIQUEID)) {
+		return;
+	}
+
+	if (g_game().addUniqueItem(uniqueId, this)) {
+		setAttribute(ItemAttribute_t::UNIQUEID, uniqueId);
 	}
 }
 

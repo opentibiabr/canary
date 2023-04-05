@@ -18,6 +18,7 @@ class ItemAttributeHelper {
 	public:
 		bool isAttributeInteger(ItemAttribute_t type) const {
 			std::underlying_type_t<ItemAttribute_t> checkTypes = 0;
+			checkTypes |= ItemAttribute_t::STORE;
 			checkTypes |= ItemAttribute_t::ACTIONID;
 			checkTypes |= ItemAttribute_t::UNIQUEID;
 			checkTypes |= ItemAttribute_t::DATE;

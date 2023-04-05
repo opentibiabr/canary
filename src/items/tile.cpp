@@ -645,7 +645,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
-		if (item->isImmovableStoreInbox() && !dynamic_cast<const HouseTile*>(this)) {
+		if (item->isStoreItem() && !dynamic_cast<const HouseTile*>(this)) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 

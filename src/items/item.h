@@ -126,12 +126,12 @@ class ItemProperties {
 			}
 		}
 
-		bool isImmovableStoreInbox() const {
-			return getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) == IMMOVABLE_INBOX_ACTION_ID;
+		bool isStoreItem() const {
+			return getAttribute<int64_t>(ItemAttribute_t::STORE) > 0;
 		}
 
-		void setImmovableStoreInbox() {
-			setAttribute(ItemAttribute_t::ACTIONID, IMMOVABLE_INBOX_ACTION_ID);
+		void setStoreItem(time_t time) {
+			setAttribute(ItemAttribute_t::STORE, time);
 		}
 
 		void setDuration(int32_t time) {

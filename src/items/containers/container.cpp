@@ -366,11 +366,11 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing &addThing, uint32_
 		}
 	}
 	
-	if (!item->isImmovableStoreInbox() && getID() == ITEM_STORE_INBOX) {
+	if (!item->isStoreItem() && getID() == ITEM_STORE_INBOX) {
 		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 	}
 
-	if (item->isImmovableStoreInbox()) {
+	if (item->isStoreItem()) {
 		const Container* topParentContainer = getTopParentContainer();
 		bool isValidMoveItem = false;
 

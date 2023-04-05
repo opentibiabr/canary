@@ -1508,17 +1508,6 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		}
 	}
 
-	// Mark all items added in store inbox
-	if (item->isImmovableStoreInbox()) {
-		if (moveItem) {
-			moveItem->setImmovableStoreInbox();
-		}
-
-		if (updateItem) {
-			updateItem->setImmovableStoreInbox();
-		}
-	}
-
 	// add item
 	if (moveItem /*m - n > 0*/) {
 		toCylinder->addThing(index, moveItem);
@@ -1613,9 +1602,10 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	// Mark all items added in store inbox
-	if (toCylinder->getItem() && toCylinder->getItem()->getID() == ITEM_STORE_INBOX) {
-		item->setImmovableStoreInbox();
+	// Mark all items added in store inbox with store attribute
+	auto addedItem = toCylinder->getItem();
+	if (addedItem && addedItem->getID() == ITEM_STORE_INBOX && !item->isStoreItem()) {
+		item->setStoreItem(getTimeNow());
 	}
 
 	Cylinder* destCylinder = toCylinder;
@@ -1635,7 +1625,7 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 	uint32_t maxQueryCount = 0;
 	ret = destCylinder->queryMaxCount(INDEX_WHEREEVER, *item, item->getItemCount(), maxQueryCount, flags);
 
-	if (ret != RETURNVALUE_NOERROR && toCylinder->getItem() && toCylinder->getItem()->getID() != ITEM_REWARD_CONTAINER) {
+	if (ret != RETURNVALUE_NOERROR && addedItem && addedItem->getID() != ITEM_REWARD_CONTAINER) {
 		return ret;
 	}
 
@@ -1685,11 +1675,10 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 		}
 	}
 
-	Item* quiver = toCylinder->getItem();
-	if (quiver && quiver->isQuiver()
-		&& quiver->getHoldingPlayer()
-		&& quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
-		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
+	if (addedItem && addedItem->isQuiver()
+		&& addedItem->getHoldingPlayer()
+		&& addedItem->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == addedItem) {
+		addedItem->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, addedItem);
 	}
 
 	return RETURNVALUE_NOERROR;
@@ -3811,7 +3800,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 		return;
 	}
 
-	if (tradeItem->isImmovableStoreInbox()) {
+	if (tradeItem->isStoreItem()) {
 		player->sendTextMessage(MESSAGE_TRADE, "Item cannot be trade.");
 		return;
 	}

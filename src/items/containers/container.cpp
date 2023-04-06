@@ -366,12 +366,13 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing &addThing, uint32_
 		}
 	}
 
-	if (!item->isStoreItem() && getID() == ITEM_STORE_INBOX) {
+	const Container* topParentContainer = getTopParentContainer();
+
+	if (!item->isStoreItem() && (getID() == ITEM_STORE_INBOX || topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && topParentContainer->getParent() && topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
 		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 	}
 
 	if (item->isStoreItem()) {
-		const Container* topParentContainer = getTopParentContainer();
 		bool isValidMoveItem = false;
 
 		if (getID() == ITEM_STORE_INBOX) {

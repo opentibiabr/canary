@@ -235,10 +235,8 @@ mapAuthor = "OpenTibiaBR"
 partyListMaxDistance = 30
 
 -- Custom Map
--- NOTE: mapCustomEnabled = activate the map, false = disable the map
+-- NOTE: toggleMapCustom set to true will load all maps in custom map folder
 toggleMapCustom = true
-mapCustomName = "otservbr-custom"
-mapCustomAuthor = "OpenTibiaBR"
 
 -- Market
 marketOfferDuration = 30 * 24 * 60 * 60

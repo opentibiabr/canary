@@ -1604,7 +1604,8 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 
 	// Mark all items added in store inbox with store attribute
 	auto addedItem = toCylinder->getItem();
-	if (addedItem && addedItem->getID() == ITEM_STORE_INBOX && !item->isStoreItem()) {
+	auto parentCylinder = toCylinder->getParent();
+	if (addedItem && (addedItem->getID() == ITEM_STORE_INBOX || parentCylinder && parentCylinder->getContainer() && parentCylinder->getContainer()->getID() == ITEM_STORE_INBOX) && !item->isStoreItem()) {
 		item->setStoreItem(getTimeNow());
 	}
 

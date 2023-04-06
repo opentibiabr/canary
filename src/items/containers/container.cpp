@@ -365,7 +365,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing &addThing, uint32_
 			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 		}
 	}
-	
+
 	if (!item->isStoreItem() && getID() == ITEM_STORE_INBOX) {
 		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 	}
@@ -382,7 +382,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing &addThing, uint32_
 			isValidMoveItem = true;
 		}
 
-		if (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && topParentContainer->getParent()->getContainer()->isDepotChest()) {
+		if (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && (topParentContainer->getParent()->getContainer()->isDepotChest() || topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
 			isValidMoveItem = true;
 		}
 

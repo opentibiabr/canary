@@ -645,19 +645,15 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
-		auto itemContainer = item->getContainer();
-		bool hasStoreItemInContainer = false;
-		if (itemContainer) {
-			for(Item* containerItem : itemContainer->getItems(true)) {
+		if (item->getContainer()) {
+			for(Item* containerItem : item->getContainer()->getItems(true)) {
 				if (containerItem->isStoreItem()) {
-					hasStoreItemInContainer = true;
-					break;
+					return RETURNVALUE_NOTPOSSIBLE;
 				}
-				continue;
 			}
 		}
 
-		if ((item->isStoreItem() || hasStoreItemInContainer) && !dynamic_cast<const HouseTile*>(this)) {
+		if (item->isStoreItem() && !dynamic_cast<const HouseTile*>(this)) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 

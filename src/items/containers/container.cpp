@@ -368,7 +368,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing &addThing, uint32_
 
 	const Container* topParentContainer = getTopParentContainer();
 
-	if (!item->isStoreItem() && (getID() == ITEM_STORE_INBOX || topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && topParentContainer->getParent() && topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
+	if (!item->isStoreItem() && (getID() == ITEM_STORE_INBOX || topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
 		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 	}
 

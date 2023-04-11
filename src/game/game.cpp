@@ -38,10 +38,6 @@
 #include "server/network/webhook/webhook.h"
 #include "protobuf/appearances.pb.h"
 
-#include <string>
-#include <iostream>
-#include <filesystem>
-
 Game::Game() {
 	offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
 	offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
@@ -192,8 +188,6 @@ void Game::setGameState(GameState_t newState) {
 			// Load monsters and npcs custom stored by the "loadFromXML" function
 			for (int i = 0; i < 50; i++) {
 					map.spawnsNpcCustomMaps[i].startup();
-			}
-			for (int i = 0; i < 50; i++) {
 					map.spawnsMonsterCustomMaps[i].startup();
 			}
 

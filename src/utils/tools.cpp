@@ -1372,7 +1372,9 @@ void capitalizeWords(std::string &source) {
  */
 void consoleHandlerExit() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
-	getchar();
+	if (isatty(STDIN_FILENO)) {
+		getchar();
+	}
 	return;
 }
 

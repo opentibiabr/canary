@@ -9,10 +9,6 @@
 
 #include "pch.hpp"
 
-#ifdef OS_WINDOWS
-	#include "conio.h"
-#endif
-
 #include "declarations.hpp"
 #include "creatures/combat/spells.h"
 #include "creatures/players/grouping/familiars.h"
@@ -33,10 +29,6 @@
 #include "server/server.h"
 #include "io/ioprey.h"
 #include "io/io_bosstiary.hpp"
-
-#if __has_include("gitmetadata.h")
-	#include "gitmetadata.h"
-#endif
 
 #include "core.hpp"
 
@@ -75,9 +67,19 @@ std::string getCompiler() {
 
 void startupErrorMessage() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
-	getchar();
-	exit(0);
+
+	if (isatty(STDIN_FILENO)) {
+		getchar();
+	}
+
 	g_loaderSignal.notify_all();
+
+#ifdef _WIN32
+	exit(-1);
+#else
+	g_scheduler().shutdown();
+	exit(-1);
+#endif
 }
 
 void mainLoader(int argc, char* argv[], ServiceManager* servicer);
@@ -86,8 +88,16 @@ void badAllocationHandler() {
 	// Use functions that only use stack allocation
 	SPDLOG_ERROR("Allocation failed, server out of memory, "
 				 "decrease the size of your map or compile in 64 bits mode");
-	getchar();
+	if (isatty(STDIN_FILENO)) {
+		getchar();
+	}
+
+#ifdef _WIN32
 	exit(-1);
+#else
+	g_scheduler().shutdown();
+	exit(-1);
+#endif
 }
 
 void modulesLoadHelper(bool loaded, std::string moduleName) {

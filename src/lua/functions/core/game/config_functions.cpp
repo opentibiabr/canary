@@ -188,7 +188,6 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", BOOSTED_BOSS_KILL_BONUS);
 	registerEnumIn(L, "configKeys", BESTIARY_RATE_CHARM_SHOP_PRICE);
 
-
 	registerEnumIn(L, "configKeys", FAMILIAR_TIME);
 
 	registerEnumIn(L, "configKeys", TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);

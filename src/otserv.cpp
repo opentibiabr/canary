@@ -322,7 +322,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 		if (!g_game().loadCustomMaps(customMapPath)) {
 			SPDLOG_ERROR("Failed to load custom maps");
 			startupErrorMessage();
-		}	
+		}
 	}
 
 	SPDLOG_INFO("Initializing gamestate...");

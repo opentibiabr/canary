@@ -356,7 +356,6 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 }
 
 
-
 void Game::loadMap(const std::string &path, const Position &pos, bool unload) {
 	map.loadMap(path, false, false, false, false, pos, unload);
 }

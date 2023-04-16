@@ -72,6 +72,8 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 	sb.range = std::min((int)spell->range, Map::maxViewportX * 2);
 	sb.minCombatValue = std::min(spell->minCombatValue, spell->maxCombatValue);
 	sb.maxCombatValue = std::max(spell->minCombatValue, spell->maxCombatValue);
+	sb.soundCastEffect = spell->soundCastEffect;
+	sb.soundImpactEffect = spell->soundImpactEffect;
 	sb.spell = g_spells().getSpellByName(spell->name);
 
 	if (sb.spell) {
@@ -81,7 +83,6 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 	CombatSpell* combatSpell = nullptr;
 
 	auto combatPtr = std::make_unique<Combat>();
-
 	sb.combatSpell = true;
 
 	if (spell->length > 0) {
@@ -121,8 +122,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 		} else if (spell->combatType == COMBAT_HEALING) {
 			combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		}
-
-		combatPtr->setParam(COMBAT_PARAM_TYPE, spell->combatType);
+		combatPtr->setParam(COMBAT_PARAM_TYPE, toSafeNumber<uint32_t>(__FUNCTION__, static_cast<int64_t>(spell->combatType)));
 	} else if (spellName == "speed") {
 		int32_t speedChange = 0;
 		int32_t duration = 10000;
@@ -134,7 +134,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 		if (spell->speedChange != 0) {
 			speedChange = spell->speedChange;
 			if (speedChange < -1000) {
-				// cant be slower than 100%
+				// Cant be slower than 100%
 				speedChange = -1000;
 			}
 		}
@@ -248,6 +248,13 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 
 	combatPtr->setPlayerCombatValues(COMBAT_FORMULA_DAMAGE, sb.minCombatValue, 0, sb.maxCombatValue, 0);
 	combatSpell = new CombatSpell(combatPtr.release(), spell->needTarget, spell->needDirection);
+	// Sanity check
+	if (!combatSpell) {
+		return false;
+	}
+
+	combatSpell->soundCastEffect = sb.soundCastEffect;
+	combatSpell->soundImpactEffect = sb.soundImpactEffect;
 
 	sb.spell = combatSpell;
 	if (combatSpell) {

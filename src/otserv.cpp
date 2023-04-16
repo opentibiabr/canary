@@ -161,6 +161,11 @@ void loadModules() {
 		SPDLOG_INFO("No tables were optimized");
 	}
 
+	SPDLOG_INFO("Initializing lua environment");
+	if (!g_luaEnvironment.getLuaState()) {
+		g_luaEnvironment.initState();
+	}
+
 	// Core start
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");

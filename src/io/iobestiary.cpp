@@ -15,7 +15,7 @@
 #include "creatures/monsters/monsters.h"
 #include "creatures/players/player.h"
 
-bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage) {
+bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target, int64_t realDamage) {
 	if (!charm || !player || !target) {
 		return false;
 	}
@@ -30,7 +30,7 @@ bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target
 			player->sendCancelMessage(charm->cancelMsg);
 			return false;
 		}
-		int32_t maxHealth = target->getMaxHealth();
+		int64_t maxHealth = target->getMaxHealth();
 		charmDamage.primary.type = charm->dmgtype;
 		charmDamage.primary.value = ((-maxHealth * (charm->percent)) / 100);
 		charmDamage.extension = true;
@@ -39,6 +39,9 @@ bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target
 		charmParams.impactEffect = charm->effect;
 		charmParams.combatType = charmDamage.primary.type;
 		charmParams.aggressive = true;
+
+		charmParams.soundImpactEffect = charm->soundImpactEffect;
+		charmParams.soundCastEffect = charm->soundCastEffect;
 
 		player->sendCancelMessage(charm->cancelMsg);
 	} else if (charm->type == CHARM_DEFENSIVE) {

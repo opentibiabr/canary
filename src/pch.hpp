@@ -49,6 +49,7 @@
 #include <curl/curl.h>
 #include <fmt/chrono.h>
 #include <gmp.h>
+#include <gsl/gsl-lite.hpp>
 #include <json/json.h>
 #if __has_include("luajit/lua.hpp")
 	#include <luajit/lua.hpp>

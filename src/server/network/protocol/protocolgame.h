@@ -13,6 +13,8 @@
 #include "server/network/protocol/protocol.h"
 #include "creatures/interactions/chat.h"
 #include "creatures/creature.h"
+#include "game/scheduling/tasks.h"
+#include "io/ioprey.h"
 
 class NetworkMessage;
 class Player;
@@ -39,7 +41,7 @@ struct TextMessage {
 		uint16_t channelId;
 		struct
 		{
-				int32_t value = 0;
+				int64_t value = 0;
 				TextColor_t color;
 		} primary, secondary;
 };
@@ -97,6 +99,8 @@ class ProtocolGame final : public Protocol {
 		void onConnect() override;
 
 		// Parse methods
+		void parseInventoryImbuements(NetworkMessage &msg);
+		void sendInventoryImbuements(std::map<Slots_t, Item*> items);
 		void parseAutoWalk(NetworkMessage &msg);
 		void parseSetOutfit(NetworkMessage &msg);
 		void parseSay(NetworkMessage &msg);
@@ -116,6 +120,9 @@ class ProtocolGame final : public Protocol {
 		void parseDepotSearchItemRequest(NetworkMessage &msg);
 		void parseOpenParentContainer(NetworkMessage &msg);
 		void parseRetrieveDepotSearch(NetworkMessage &msg);
+
+		void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
+		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
 
 		void parseFightModes(NetworkMessage &msg);
 		void parseAttack(NetworkMessage &msg);
@@ -366,7 +373,7 @@ class ProtocolGame final : public Protocol {
 
 		void sendCreatureSquare(const Creature* creature, SquareColor_t color);
 
-		void sendSpellCooldown(uint8_t spellId, uint32_t time);
+		void sendSpellCooldown(uint16_t spellId, uint32_t time);
 		void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
 		void sendUseItemCooldown(uint32_t time);
 
@@ -409,13 +416,12 @@ class ProtocolGame final : public Protocol {
 		// analyzers
 		void sendKillTrackerUpdate(Container* corpse, const std::string &name, const Outfit_t creatureOutfit);
 		void sendUpdateSupplyTracker(const Item* item);
-		void sendUpdateImpactTracker(CombatType_t type, int32_t amount);
-		void sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, std::string target);
+		void sendUpdateImpactTracker(CombatType_t type, uint32_t amount);
+		void sendUpdateInputAnalyzer(CombatType_t type, uint32_t amount, const std::string &target);
 
 		// Hotkey equip/dequip item
 		void parseHotkeyEquip(NetworkMessage &msg);
 
-		// Help functions
 		// translate a tile to clientreadable format
 		void GetTileDescription(const Tile* tile, NetworkMessage &msg);
 

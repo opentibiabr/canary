@@ -18,5 +18,6 @@ end
 
 spell:name("House Guest List")
 spell:words("aleta sio")
+spell:castSound(SOUND_EFFECT_TYPE_SPELL_INVITE_GUESTS)
 spell:isAggressive(false)
 spell:register()

@@ -419,7 +419,7 @@ SharedExpStatus_t Party::getSharedExperienceStatus() {
 	return SHAREDEXP_OK;
 }
 
-void Party::updatePlayerTicks(Player* player, uint32_t points) {
+void Party::updatePlayerTicks(Player* player, int64_t points) {
 	if (points != 0 && !player->hasFlag(PlayerFlags_t::NotGainInFight)) {
 		ticksMap[player->getID()] = OTSYS_TIME();
 		updateSharedExperience();
@@ -441,22 +441,34 @@ bool Party::canOpenCorpse(uint32_t ownerId) const {
 	return false;
 }
 
+uint8_t Party::getHealthPercent(const Creature* creature) const {
+	auto health = static_cast<double>(creature->getHealth());
+	auto maxHealth = static_cast<double>(std::max<int64_t>(creature->getMaxHealth(), 1));
+	return static_cast<uint8_t>(std::ceil((health / maxHealth) * 100));
+}
+
+uint8_t Party::getManaPercent(const Creature* creature) const {
+	auto mana = static_cast<double>(creature->getMana());
+	auto maxMana = static_cast<double>(std::max<int64_t>(creature->getMaxMana(), 1));
+	return static_cast<uint8_t>(std::ceil((mana / maxMana) * 100));
+}
+
 void Party::showPlayerStatus(Player* player, Player* member, bool showStatus) {
 	player->sendPartyCreatureShowStatus(member, showStatus);
 	member->sendPartyCreatureShowStatus(player, showStatus);
 	if (showStatus) {
 		for (Creature* summon : member->getSummons()) {
 			player->sendPartyCreatureShowStatus(summon, showStatus);
-			player->sendPartyCreatureHealth(summon, std::ceil((static_cast<double>(summon->getHealth()) / std::max<int32_t>(summon->getMaxHealth(), 1)) * 100));
+			player->sendPartyCreatureHealth(summon, getHealthPercent(summon));
 		}
 		for (Creature* summon : player->getSummons()) {
 			member->sendPartyCreatureShowStatus(summon, showStatus);
-			member->sendPartyCreatureHealth(summon, std::ceil((static_cast<double>(summon->getHealth()) / std::max<int32_t>(summon->getMaxHealth(), 1)) * 100));
+			member->sendPartyCreatureHealth(summon, getHealthPercent(summon));
 		}
-		player->sendPartyCreatureHealth(member, std::ceil((static_cast<double>(member->getHealth()) / std::max<int32_t>(member->getMaxHealth(), 1)) * 100));
-		member->sendPartyCreatureHealth(player, std::ceil((static_cast<double>(player->getHealth()) / std::max<int32_t>(player->getMaxHealth(), 1)) * 100));
-		player->sendPartyPlayerMana(member, std::ceil((static_cast<double>(member->getMana()) / std::max<int32_t>(member->getMaxMana(), 1)) * 100));
-		member->sendPartyPlayerMana(player, std::ceil((static_cast<double>(player->getMana()) / std::max<int32_t>(player->getMaxMana(), 1)) * 100));
+		player->sendPartyCreatureHealth(member, getHealthPercent(member));
+		member->sendPartyCreatureHealth(player, getHealthPercent(player));
+		player->sendPartyPlayerMana(member, getManaPercent(member));
+		member->sendPartyPlayerMana(player, getManaPercent(player));
 	} else {
 		for (Creature* summon : player->getSummons()) {
 			member->sendPartyCreatureShowStatus(summon, showStatus);

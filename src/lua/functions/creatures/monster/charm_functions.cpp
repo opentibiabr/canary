@@ -151,3 +151,27 @@ int CharmFunctions::luaCharmEffect(lua_State* L) {
 	}
 	return 1;
 }
+
+int CharmFunctions::luaCharmCastSound(lua_State* L) {
+	// get: charm:castSound() set: charm:castSound(sound)
+	Charm* charm = getUserdata<Charm>(L, 1);
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, static_cast<lua_Number>(getEnumClassNumber(charm->soundCastEffect)));
+	} else {
+		charm->soundCastEffect = getNumber<SoundEffect_t>(L, 2);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int CharmFunctions::luaCharmImpactSound(lua_State* L) {
+	// get: charm:impactSound() set: charm:impactSound(sound)
+	Charm* charm = getUserdata<Charm>(L, 1);
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, static_cast<lua_Number>(getEnumClassNumber(charm->soundImpactEffect)));
+	} else {
+		charm->soundImpactEffect = getNumber<SoundEffect_t>(L, 2);
+		pushBoolean(L, true);
+	}
+	return 1;
+}

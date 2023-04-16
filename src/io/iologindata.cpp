@@ -224,8 +224,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 	player->manaSpent = manaSpent;
 	player->magLevelPercent = Player::getPercentLevel(player->manaSpent, nextManaCount);
 
-	player->health = result->getNumber<int32_t>("health");
-	player->healthMax = result->getNumber<int32_t>("healthmax");
+	player->health = result->getNumber<int64_t>("health");
+	player->healthMax = result->getNumber<int64_t>("healthmax");
 
 	player->defaultOutfit.lookType = result->getNumber<uint16_t>("looktype");
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookType)) {
@@ -315,8 +315,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 		player->skills[i].percent = Player::getPercentLevel(skillTries, nextSkillTries);
 	}
 
-	player->setManaShield(result->getNumber<uint16_t>("manashield"));
-	player->setMaxManaShield(result->getNumber<uint16_t>("max_manashield"));
+	player->setManaShield(result->getNumber<uint32_t>("manashield"));
+	player->setMaxManaShield(result->getNumber<uint32_t>("max_manashield"));
 
 	std::ostringstream query;
 	query << "SELECT `guild_id`, `rank_id`, `nick` FROM `guild_membership` WHERE `player_id` = " << player->getGUID();

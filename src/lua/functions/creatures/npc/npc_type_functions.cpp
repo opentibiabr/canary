@@ -156,9 +156,9 @@ int NpcTypeFunctions::luaNpcTypeHealth(lua_State* L) {
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
 	if (npcType) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, npcType->info.health);
+			lua_pushnumber(L, static_cast<lua_Number>(npcType->info.health));
 		} else {
-			npcType->info.health = getNumber<int32_t>(L, 2);
+			npcType->info.health = getNumber<int64_t>(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -172,9 +172,9 @@ int NpcTypeFunctions::luaNpcTypeMaxHealth(lua_State* L) {
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
 	if (npcType) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, npcType->info.healthMax);
+			lua_pushnumber(L, static_cast<lua_Number>(npcType->info.healthMax));
 		} else {
-			npcType->info.healthMax = getNumber<int32_t>(L, 2);
+			npcType->info.healthMax = getNumber<int64_t>(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -497,6 +497,75 @@ int NpcTypeFunctions::luaNpcTypeCurrency(lua_State* L) {
 	} else {
 		npcType->info.currencyId = getNumber<uint16_t>(L, 2);
 		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeSoundChance(lua_State* L) {
+	// get: npcType:soundChance() set: npcType:soundChance(chance)
+	NpcType* npcType = getUserdata<NpcType>(L, 1);
+	if (!npcType) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_TYPE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, npcType->info.soundChance);
+	} else {
+		npcType->info.soundChance = getNumber<uint32_t>(L, 2);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeSoundSpeedTicks(lua_State* L) {
+	// get: npcType:soundSpeedTicks() set: npcType:soundSpeedTicks(ticks)
+	NpcType* npcType = getUserdata<NpcType>(L, 1);
+	if (!npcType) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_TYPE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, npcType->info.soundSpeedTicks);
+	} else {
+		npcType->info.soundSpeedTicks = getNumber<uint32_t>(L, 2);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeAddSound(lua_State* L) {
+	// npcType:addSound(soundId)
+	NpcType* npcType = getUserdata<NpcType>(L, 1);
+	if (!npcType) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_TYPE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	npcType->info.soundVector.push_back(getNumber<SoundEffect_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeGetSounds(lua_State* L) {
+	// npcType:getSounds()
+	const NpcType* npcType = getUserdata<NpcType>(L, 1);
+	if (!npcType) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	int index = 0;
+	lua_createtable(L, static_cast<int>(npcType->info.soundVector.size()), 0);
+	for (const auto &sound : npcType->info.soundVector) {
+		++index;
+		lua_createtable(L, 0, 1);
+		lua_pushnumber(L, static_cast<lua_Number>(getEnumClassNumber(sound)));
+		lua_rawseti(L, -2, index);
 	}
 	return 1;
 }

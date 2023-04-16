@@ -51,8 +51,8 @@ class NpcType {
 				int32_t playerSellEvent = -1;
 				int32_t playerLookEvent = -1;
 
-				int32_t health = 100;
-				int32_t healthMax = 100;
+				int64_t health = 100;
+				int64_t healthMax = 100;
 
 				int32_t walkRadius = 10;
 
@@ -60,6 +60,10 @@ class NpcType {
 				bool canPushCreatures = false;
 				bool pushable = false;
 				bool floorChange = false;
+
+				uint32_t soundChance = 0;
+				uint32_t soundSpeedTicks = 0;
+				std::vector<SoundEffect_t> soundVector;
 
 				std::vector<voiceBlock_t> voiceVector;
 				std::vector<std::string> scripts;

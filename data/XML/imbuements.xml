@@ -24,7 +24,7 @@
 	<category id="17" name="Increase Capacity" agressive="0" />
 
 	<!-- Damage Imbuement -->
-	<imbuement name="Scorch" base="1" subgroup=" (Fire)" category="0" iconid="13" premium="0" storage="0">
+	<imbuement name="Scorch" base="1" subgroup=" (Fire)" category="0" iconid="13" premium="0" storage="0" sound="2002">
 		<attribute key="description" value="Converts 10% of the physical damage to fire damage." />
 		<attribute key="effect" type="damage" combat="fire" value="10" />
 		<attribute key="item" value="9636" count="25" />

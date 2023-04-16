@@ -259,9 +259,9 @@ void LuaFunctionsLoader::setCreatureMetatable(lua_State* L, int32_t index, const
 
 CombatDamage LuaFunctionsLoader::getCombatDamage(lua_State* L) {
 	CombatDamage damage;
-	damage.primary.value = getNumber<int32_t>(L, -4);
+	damage.primary.value = getNumber<int64_t>(L, -4);
 	damage.primary.type = getNumber<CombatType_t>(L, -3);
-	damage.secondary.value = getNumber<int32_t>(L, -2);
+	damage.secondary.value = getNumber<int64_t>(L, -2);
 	damage.secondary.type = getNumber<CombatType_t>(L, -1);
 
 	lua_pop(L, 4);
@@ -430,11 +430,11 @@ void LuaFunctionsLoader::pushBoolean(lua_State* L, bool value) {
 }
 
 void LuaFunctionsLoader::pushCombatDamage(lua_State* L, const CombatDamage &damage) {
-	lua_pushnumber(L, damage.primary.value);
-	lua_pushnumber(L, damage.primary.type);
-	lua_pushnumber(L, damage.secondary.value);
-	lua_pushnumber(L, damage.secondary.type);
-	lua_pushnumber(L, damage.origin);
+	lua_pushnumber(L, static_cast<lua_Number>(damage.primary.value));
+	lua_pushnumber(L, static_cast<lua_Number>(damage.primary.type));
+	lua_pushnumber(L, static_cast<lua_Number>(damage.secondary.value));
+	lua_pushnumber(L, static_cast<lua_Number>(damage.secondary.type));
+	lua_pushnumber(L, static_cast<lua_Number>(damage.origin));
 }
 
 void LuaFunctionsLoader::pushInstantSpell(lua_State* L, const InstantSpell &spell) {

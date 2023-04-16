@@ -951,9 +951,9 @@ int PlayerFunctions::luaPlayerAddManaSpent(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetBaseMaxHealth(lua_State* L) {
 	// player:getBaseMaxHealth()
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		lua_pushnumber(L, player->healthMax);
+		lua_pushnumber(L, static_cast<lua_Number>(player->healthMax));
 	} else {
 		lua_pushnil(L);
 	}
@@ -3191,6 +3191,7 @@ int PlayerFunctions::luaPlayerSetFaction(lua_State* L) {
 		pushBoolean(L, false);
 		return 0;
 	}
+
 	Faction_t factionId = getNumber<Faction_t>(L, 2);
 	player->setFaction(factionId);
 	pushBoolean(L, true);
@@ -3332,5 +3333,40 @@ int PlayerFunctions::luaPlayerGetBossBonus(lua_State* L) {
 	uint16_t bonusBoss = currentBonus + (bossLevel == 3 ? 25 : 0);
 
 	lua_pushnumber(L, static_cast<lua_Number>(bonusBoss));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L) {
+	// player:sendSingleSoundEffect(soundId[, actor = true])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	SoundEffect_t soundEffect = getNumber<SoundEffect_t>(L, 2);
+	bool actor = getBoolean(L, 3, true);
+
+	player->sendSingleSoundEffect(player->getPosition(), soundEffect, actor ? SourceEffect_t::OWN : SourceEffect_t::GLOBAL);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendDoubleSoundEffect(lua_State* L) {
+	// player:sendDoubleSoundEffect(mainSoundId, secondarySoundId[, actor = true])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	SoundEffect_t mainSoundEffect = getNumber<SoundEffect_t>(L, 2);
+	SoundEffect_t secondarySoundEffect = getNumber<SoundEffect_t>(L, 3);
+	bool actor = getBoolean(L, 4, true);
+
+	player->sendDoubleSoundEffect(player->getPosition(), mainSoundEffect, actor ? SourceEffect_t::OWN : SourceEffect_t::GLOBAL, secondarySoundEffect, actor ? SourceEffect_t::OWN : SourceEffect_t::GLOBAL);
+	pushBoolean(L, true);
 	return 1;
 }

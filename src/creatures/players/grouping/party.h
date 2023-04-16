@@ -75,9 +75,11 @@ class Party {
 		SharedExpStatus_t getMemberSharedExperienceStatus(const Player* player) const;
 		void updateSharedExperience();
 
-		void updatePlayerTicks(Player* player, uint32_t points);
+		void updatePlayerTicks(Player* player, int64_t points);
 		void clearPlayerPoints(Player* player);
 
+		uint8_t getManaPercent(const Creature* creature) const;
+		uint8_t getHealthPercent(const Creature* creature) const;
 		void showPlayerStatus(Player* player, Player* member, bool showStatus);
 		void updatePlayerStatus(Player* player);
 		void updatePlayerStatus(Player* player, const Position &oldPos, const Position &newPos);

@@ -212,6 +212,9 @@ class Game {
 		void loadPlayersRecord();
 		void checkPlayersRecord();
 
+		void sendSingleSoundEffect(const Position &pos, SoundEffect_t soundId, Creature* actor = nullptr);
+		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundEffect, SoundEffect_t secondarySoundEffect, Creature* actor = nullptr);
+
 		void sendGuildMotd(uint32_t playerId);
 		void kickPlayer(uint32_t playerId, bool displayEffect);
 		void playerReportBug(uint32_t playerId, const std::string &message, const Position &position, uint8_t category);
@@ -322,6 +325,9 @@ class Game {
 		void playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint8_t tier);
 		void playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, uint8_t tier, uint8_t type);
 		void playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position &pos);
+
+		void playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen);
+
 		void playerMoveThingFromDepotSearch(Player* player, uint16_t itemId, uint8_t tier, uint8_t count, const Position &fromPos, const Position &toPos, bool allItems = false);
 
 		void playerRequestAddVip(uint32_t playerId, const std::string &name);

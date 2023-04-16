@@ -58,7 +58,7 @@ class Action : public Script {
 			itemIds.emplace_back(id);
 		}
 
-		std::vector<uint16_t> getUniqueIdsVector() const {
+		const std::vector<uint16_t> &getUniqueIdsVector() const {
 			return uniqueIds;
 		}
 
@@ -66,7 +66,7 @@ class Action : public Script {
 			uniqueIds.emplace_back(id);
 		}
 
-		std::vector<uint16_t> getActionIdsVector() const {
+		const std::vector<uint16_t> &getActionIdsVector() const {
 			return actionIds;
 		}
 
@@ -74,7 +74,7 @@ class Action : public Script {
 			actionIds.emplace_back(id);
 		}
 
-		std::vector<Position> getPositionsVector() const {
+		const std::vector<Position> &getPositionsVector() const {
 			return positions;
 		}
 

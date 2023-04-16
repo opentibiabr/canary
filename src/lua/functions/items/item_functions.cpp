@@ -810,7 +810,7 @@ int ItemFunctions::luaItemSetDuration(lua_State* L) {
 	uint32_t minDuration = getNumber<uint32_t>(L, 2);
 	uint32_t maxDuration = 0;
 	if (lua_gettop(L) > 2) {
-		maxDuration = uniform_random(minDuration, getNumber<uint32_t>(L, 3));
+		maxDuration = static_cast<uint32_t>(uniform_random(static_cast<int64_t>(minDuration), getNumber<int64_t>(L, 3)));
 	}
 
 	uint16_t itemid = 0;

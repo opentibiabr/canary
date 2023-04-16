@@ -20,6 +20,8 @@ end
 
 rune:group("attack")
 rune:name("holy missile rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_HOLY_MISSILE_RUNE)
 rune:runeId(3182)
 rune:allowFarUse(true)
 rune:charges(5)

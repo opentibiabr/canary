@@ -11,7 +11,7 @@ function onTargetCreature(creature, target)
 		end
 	end
 
-	doTargetCombatHealth(player, target, COMBAT_HEALING, min, max, CONST_ME_NONE)
+	doTargetCombatHealth(0, target, COMBAT_HEALING, min, max, CONST_ME_NONE)
 	return true
 end
 
@@ -33,6 +33,7 @@ spell:name("Mass Healing")
 spell:words("exura gran mas res")
 spell:group("healing")
 spell:vocation("druid;true", "elder druid;true")
+spell:castSound(SOUND_EFFECT_TYPE_SPELL_MASS_HEALING)
 spell:id(82)
 spell:cooldown(2 * 1000)
 spell:groupCooldown(1 * 1000)

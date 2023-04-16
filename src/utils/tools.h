@@ -40,8 +40,8 @@ constexpr bool hasBitSet(uint32_t flag, uint32_t flags) {
 }
 
 std::mt19937 &getRandomGenerator();
-int32_t uniform_random(int32_t minNumber, int32_t maxNumber);
-int32_t normal_random(int32_t minNumber, int32_t maxNumber);
+int64_t uniform_random(int64_t minNumber, int64_t maxNumber);
+int64_t normal_random(int64_t minNumber, int64_t maxNumber);
 bool boolean_random(double probability = 0.5);
 
 Direction getDirection(const std::string &string);
@@ -130,6 +130,49 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 		default:
 			return CIPBIA_ELEMENTAL_UNDEFINED;
 	}
+}
+
+/**
+ * @brief Function to convert and ensure value safety
+ * @param ReturnValue type of value to be returned by the function
+ * @param ConvertValue type of value to be converted and passed as an argument to the function
+ * @param convertValue Value to convert and ensure security
+ * @return ReturnValue Value converted and guaranteed to be safe
+ */
+template <typename To, typename From>
+To toSafeNumber(const std::string &function, From value) {
+	static_assert(std::is_arithmetic<To>::value, "To must be a numeric type");
+	static_assert(std::is_arithmetic<From>::value, "From must be a numeric type");
+
+	To converted;
+	try {
+		converted = gsl::narrow_cast<To>(value);
+	} catch (const std::exception &e) {
+		SPDLOG_ERROR("[{}] Called by [{}], exception caught while narrowing value from {} (type {}) to (type {}): error code: {}", __FUNCTION__, function, value, typeid(From).name(), typeid(To).name(), e.what());
+		SPDLOG_WARN("Returning the minimum value of the 'To' value");
+		return std::numeric_limits<To>::min();
+	}
+
+	// Defines a limit for the difference between the original value and the converted value
+	const double limit = 1.0;
+	// Calculate the absolute difference between the original value and the converted value
+	auto diff = std::abs(static_cast<double>(value - converted));
+	if (diff > limit) {
+		SPDLOG_WARN("[{}] Called by [{}], value '{}' (type {}) converted to '{}' (type '{}') (truncated or rounded, discrepancy larger than '{}')", __FUNCTION__, function, value, typeid(From).name(), converted, typeid(To).name(), limit);
+	}
+
+	return converted;
+}
+
+/**
+ * @brief Returns the underlying integral value of an enumeration value.
+ * @param EnumClass The enumeration type to be converted.
+ * @param convertValue The enumeration value to be converted.
+ * @return The underlying integral value of the enumeration value.
+ */
+template <typename EnumClass>
+auto getEnumClassNumber(EnumClass &convertValue) {
+	return magic_enum::enum_integer(convertValue);
 }
 
 #endif // SRC_UTILS_TOOLS_H_

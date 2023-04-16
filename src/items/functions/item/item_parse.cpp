@@ -614,10 +614,10 @@ CombatType_t ItemParse::parseFieldCombatType(std::string lowerStringValue, pugi:
 }
 
 void ItemParse::parseFieldCombatDamage(ConditionDamage* conditionDamage, std::string stringValue, pugi::xml_node attributeNode) {
-	uint32_t combatTicks = 0;
-	int32_t combatDamage = 0;
-	int32_t combatStart = 0;
-	int32_t combatCount = 1;
+	int32_t combatTicks = 0;
+	int64_t combatDamage = 0;
+	int64_t combatStart = 0;
+	int64_t combatCount = 1;
 
 	for (auto subAttributeNode : attributeNode.children()) {
 		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
@@ -632,20 +632,20 @@ void ItemParse::parseFieldCombatDamage(ConditionDamage* conditionDamage, std::st
 
 		stringValue = asLowerCaseString(subKeyAttribute.as_string());
 		if (stringValue == "ticks") {
-			combatTicks = pugi::cast<uint32_t>(subValueAttribute.value());
+			combatTicks = std::max<int32_t>(1, pugi::cast<int32_t>(subValueAttribute.value()));
 		} else if (stringValue == "count") {
-			combatCount = std::max<int32_t>(1, pugi::cast<int32_t>(subValueAttribute.value()));
+			combatCount = std::max<int64_t>(1, pugi::cast<int64_t>(subValueAttribute.value()));
 		} else if (stringValue == "start") {
-			combatStart = std::max<int32_t>(0, pugi::cast<int32_t>(subValueAttribute.value()));
+			combatStart = std::max<int64_t>(0, pugi::cast<int64_t>(subValueAttribute.value()));
 		} else if (stringValue == "damage") {
-			combatDamage = -pugi::cast<int32_t>(subValueAttribute.value());
+			combatDamage = -pugi::cast<int64_t>(subValueAttribute.value());
 			if (combatStart == 0) {
 				conditionDamage->addDamage(combatCount, combatTicks, combatDamage);
 			}
 
-			std::list<int32_t> damageList;
+			std::list<int64_t> damageList;
 			ConditionDamage::generateDamageList(combatDamage, combatStart, damageList);
-			for (int32_t damageValue : damageList) {
+			for (int64_t damageValue : damageList) {
 				conditionDamage->addDamage(1, combatTicks, -damageValue);
 			}
 

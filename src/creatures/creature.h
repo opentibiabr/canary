@@ -179,10 +179,10 @@ class Creature : virtual public Thing {
 			return baseSpeed;
 		}
 
-		int32_t getHealth() const {
+		int64_t getHealth() const {
 			return health;
 		}
-		virtual int32_t getMaxHealth() const {
+		virtual int64_t getMaxHealth() const {
 			return healthMax;
 		}
 		uint32_t getMana() const {
@@ -192,27 +192,27 @@ class Creature : virtual public Thing {
 			return mana;
 		}
 
-		uint16_t getManaShield() const {
+		uint32_t getManaShield() const {
 			return manaShield;
 		}
 
-		void setManaShield(uint16_t value) {
+		void setManaShield(uint32_t value) {
 			manaShield = value;
 		}
 
-		uint16_t getMaxManaShield() const {
+		uint32_t getMaxManaShield() const {
 			return maxManaShield;
 		}
 
-		void setMaxManaShield(uint16_t value) {
+		void setMaxManaShield(uint32_t value) {
 			maxManaShield = value;
 		}
 
-		int32_t getBuff(int32_t buff) {
+		int64_t getBuff(int64_t buff) {
 			return varBuffs[buff];
 		}
 
-		void setBuff(buffs_t buff, int32_t modifier) {
+		void setBuff(buffs_t buff, int64_t modifier) {
 			varBuffs[buff] += modifier;
 		}
 
@@ -260,7 +260,7 @@ class Creature : virtual public Thing {
 			return attackedCreature;
 		}
 		virtual bool setAttackedCreature(Creature* creature);
-		virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false);
+		virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int64_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false);
 
 		bool setMaster(Creature* newMaster, bool reloadCreature = false);
 
@@ -335,12 +335,12 @@ class Creature : virtual public Thing {
 			return FACTION_DEFAULT;
 		}
 
-		virtual void changeHealth(int32_t healthChange, bool sendHealthChange = true);
-		virtual void changeMana(int32_t manaChange);
+		virtual void changeHealth(int64_t healthChange, bool sendHealthChange = true);
+		virtual void changeMana(int64_t manaChange);
 
-		void gainHealth(Creature* attacker, int32_t healthGain);
-		virtual void drainHealth(Creature* attacker, int32_t damage);
-		virtual void drainMana(Creature* attacker, int32_t manaLoss);
+		void gainHealth(Creature* attacker, int64_t healthGain);
+		virtual void drainHealth(Creature* attacker, int64_t damage);
+		virtual void drainMana(Creature* attacker, int64_t manaLoss);
 
 		virtual bool challengeCreature(Creature*) {
 			return false;
@@ -348,7 +348,7 @@ class Creature : virtual public Thing {
 
 		void onDeath();
 		virtual uint64_t getGainedExperience(Creature* attacker) const;
-		void addDamagePoints(Creature* attacker, int32_t damagePoints);
+		void addDamagePoints(Creature* attacker, int64_t damagePoints);
 		bool hasBeenAttacked(uint32_t attackerId);
 
 		// combat event functions
@@ -359,8 +359,8 @@ class Creature : virtual public Thing {
 		virtual void onCombatRemoveCondition(Condition* condition);
 		virtual void onAttackedCreature(Creature*) { }
 		virtual void onAttacked();
-		virtual void onAttackedCreatureDrainHealth(Creature* target, int32_t points);
-		virtual void onTargetCreatureGainHealth(Creature*, int32_t) { }
+		virtual void onAttackedCreatureDrainHealth(Creature* target, int64_t points);
+		virtual void onTargetCreatureGainHealth(Creature*, int64_t) { }
 		void onAttackedCreatureKilled(Creature* target);
 		virtual bool onKilledCreature(Creature* target, bool lastHit = true);
 		virtual void onGainExperience(uint64_t gainExp, Creature* target);
@@ -406,7 +406,7 @@ class Creature : virtual public Thing {
 
 		virtual void onPlacedCreature() { }
 
-		virtual bool getCombatValues(int32_t &, int32_t &) {
+		virtual bool getCombatValues(int64_t &, int64_t &) {
 			return false;
 		}
 
@@ -485,7 +485,7 @@ class Creature : virtual public Thing {
 			}
 		}
 		struct CountBlock_t {
-				int32_t total;
+				int64_t total;
 				int64_t ticks;
 		};
 		using CountMap = std::map<uint32_t, CountBlock_t>;
@@ -541,12 +541,12 @@ class Creature : virtual public Thing {
 		uint16_t baseSpeed = 110;
 		uint32_t mana = 0;
 		int32_t varSpeed = 0;
-		int32_t health = 1000;
-		int32_t healthMax = 1000;
+		int64_t health = 1000;
+		int64_t healthMax = 1000;
 
-		uint16_t manaShield = 0;
-		uint16_t maxManaShield = 0;
-		int32_t varBuffs[BUFF_LAST + 1] = { 100, 100 };
+		uint32_t manaShield = 0;
+		uint32_t maxManaShield = 0;
+		int64_t varBuffs[BUFF_LAST + 1] = { 100, 100 };
 
 		Outfit_t currentOutfit;
 		Outfit_t defaultOutfit;

@@ -88,7 +88,7 @@ class Events {
 		ReturnValue eventCreatureOnAreaCombat(Creature* creature, Tile* tile, bool aggressive);
 		ReturnValue eventCreatureOnTargetCombat(Creature* creature, Creature* target);
 		void eventCreatureOnHear(Creature* creature, Creature* speaker, const std::string &words, SpeakClasses type);
-		void eventCreatureOnDrainHealth(Creature* creature, Creature* attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary);
+		void eventCreatureOnDrainHealth(Creature* creature, Creature* attacker, CombatType_t &typePrimary, int64_t &damagePrimary, CombatType_t &typeSecondary, int64_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary);
 
 		// Party
 		bool eventPartyOnJoin(Party* party, Player* player);

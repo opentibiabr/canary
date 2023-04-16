@@ -678,6 +678,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x32:
 			parseExtendedOpcode(msg);
 			break; // otclient extended opcode
+		case 0x60:
+			parseInventoryImbuements(msg);
+			break;
 		case 0x64:
 			parseAutoWalk(msg);
 			break;
@@ -1241,6 +1244,73 @@ void ProtocolGame::parseOpenPrivateChannel(NetworkMessage &msg) {
 	addGameTask(&Game::playerOpenPrivateChannel, player->getID(), receiver);
 }
 
+void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg) {
+	bool isTrackerOpen = msg.getByte(); // Window is opened or closed
+	addGameTask(&Game::playerRequestInventoryImbuements, player->getID(), isTrackerOpen);
+}
+
+void ProtocolGame::sendInventoryImbuements(std::map<Slots_t, Item*> items) {
+	NetworkMessage msg;
+	msg.addByte(0x5D);
+
+	msg.addByte(static_cast<uint8_t>(items.size()));
+	for (const auto &[slot, item] : items) {
+		msg.addByte(slot);
+		AddItem(msg, item);
+
+		const ItemType &it = Item::items[item->getID()];
+		uint8_t slots = item->getImbuementSlot();
+		msg.addByte(slots);
+		if (slots == 0) {
+			continue;
+		}
+
+		for (uint8_t imbueSlot = 0; imbueSlot < slots; imbueSlot++) {
+			ImbuementInfo imbuementInfo;
+			if (!item->getImbuementInfo(imbueSlot, &imbuementInfo)) {
+				msg.addByte(0x00);
+				continue;
+			}
+
+			auto imbuement = imbuementInfo.imbuement;
+			if (!imbuement) {
+				msg.addByte(0x00);
+				continue;
+			}
+
+			BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
+			msg.addByte(0x01);
+			msg.addString(baseImbuement->name + " " + imbuement->getName());
+			msg.add<uint16_t>(imbuement->getIconID());
+			msg.add<uint32_t>(imbuementInfo.duration);
+
+			const Tile* playerTile = player->getTile();
+			// Check if the player is in a protection zone
+			bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
+			// Check if the player is in fight mode
+			bool isInFightMode = player->hasCondition(CONDITION_INFIGHT);
+			// Get the category of the imbuement
+			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
+			// Parent of the imbued item
+			auto parent = item->getParent();
+			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
+			if (categoryImbuement && categoryImbuement->agressive && (isInProtectionZone || !isInFightMode)) {
+				msg.addByte(0);
+				continue;
+			}
+			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
+			if (categoryImbuement && !categoryImbuement->agressive && parent && parent != player) {
+				msg.addByte(0);
+				continue;
+			}
+
+			msg.addByte(1);
+		}
+	}
+
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 	uint8_t numdirs = msg.getByte();
 	if (numdirs == 0 || (msg.getBufferPosition() + numdirs) != (msg.getLength() + 8)) {
@@ -1646,6 +1716,7 @@ void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, const 
 	msg.addByte(0x76);
 	msg.addByte(0x00);
 	msg.addByte(cyclopedia ? 0x01 : 0x00);
+	msg.add<uint32_t>(player->getID());
 	msg.addByte(0x01);
 
 	const ItemType &it = Item::items[itemId];
@@ -1962,10 +2033,12 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 
 		newmsg.addByte(attackmode);
 		newmsg.addByte(0x2);
-		newmsg.add<uint32_t>(mtype->info.healthMax);
+		newmsg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, mtype->info.healthMax));
 		newmsg.add<uint32_t>(mtype->info.experience);
 		newmsg.add<uint16_t>(mtype->getBaseSpeed());
 		newmsg.add<uint16_t>(mtype->info.armor);
+		// Version 13.10 (mitigation)
+		newmsg.addDouble(0);
 	}
 
 	if (currentLevel > 2) {
@@ -2910,10 +2983,16 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	msg.add<uint16_t>(0);
 	// canBuyXpBoost
 	msg.addByte(0x00);
-	msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint16_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint16_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
+
+	auto healthConverted = std::max<int64_t>(0, player->getHealth());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, healthConverted));
+	healthConverted = std::max<int64_t>(0, player->getMaxHealth());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, healthConverted));
+	auto manaConverted = std::max<uint32_t>(0, player->getMana());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, manaConverted));
+	manaConverted = std::max<uint32_t>(0, player->getMaxMana());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, manaConverted));
+
 	msg.addByte(player->getSoul());
 	msg.add<uint16_t>(player->getStaminaMinutes());
 
@@ -2955,7 +3034,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
 	msg.addByte(0x00);
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i, true), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(0);
 	}
 
@@ -3051,6 +3130,8 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 
 	msg.add<uint16_t>(player->getArmor());
 	msg.add<uint16_t>(player->getDefense());
+	// Version 13.10 (mitigation)
+	msg.addDouble(0);
 
 	uint8_t combats = 0;
 	auto startCombats = msg.getBufferPosition();
@@ -3362,7 +3443,7 @@ void ProtocolGame::sendBasicData() {
 	std::list<uint16_t> spellsList = g_spells().getSpellsByVocation(player->getVocationId());
 	msg.add<uint16_t>(spellsList.size());
 	for (uint16_t sid : spellsList) {
-		msg.addByte(sid);
+		msg.add<uint16_t>(sid);
 	}
 	msg.addByte(player->getVocation()->getMagicShield()); // bool - determine whether magic shield is active or not
 	writeToOutputBuffer(msg);
@@ -3425,9 +3506,9 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 		case MESSAGE_DAMAGE_RECEIVED:
 		case MESSAGE_DAMAGE_OTHERS: {
 			msg.addPosition(message.position);
-			msg.add<uint32_t>(message.primary.value);
+			msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, message.primary.value));
 			msg.addByte(message.primary.color);
-			msg.add<uint32_t>(message.secondary.value);
+			msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, message.secondary.value));
 			msg.addByte(message.secondary.color);
 			break;
 		}
@@ -3436,7 +3517,7 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 		case MESSAGE_EXPERIENCE:
 		case MESSAGE_EXPERIENCE_OTHERS: {
 			msg.addPosition(message.position);
-			msg.add<uint32_t>(message.primary.value);
+			msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, message.primary.value));
 			msg.addByte(message.primary.color);
 			break;
 		}
@@ -3445,9 +3526,8 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 		case MESSAGE_PARTY:
 			msg.add<uint16_t>(message.channelId);
 			break;
-		default: {
+		default:
 			break;
-		}
 	}
 	msg.addString(message.text);
 	writeToOutputBuffer(msg);
@@ -4855,7 +4935,8 @@ void ProtocolGame::sendCreatureHealth(const Creature* creature) {
 	if (creature->isHealthHidden()) {
 		msg.addByte(0x00);
 	} else {
-		msg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
+		auto safeValue = toSafeNumber<uint8_t>(__FUNCTION__, std::ceil((static_cast<double>(creature->getHealth()) / std::max<int64_t>(creature->getMaxHealth(), 1)) * 100));
+		msg.addByte(safeValue);
 	}
 	writeToOutputBuffer(msg);
 }
@@ -5370,7 +5451,7 @@ void ProtocolGame::sendTextWindow(uint32_t windowTextId, Item* item, uint16_t ma
 	msg.addByte(0x00); // Show (Traded)
 
 	auto writtenDate = item->getAttribute<time_t>(ItemAttribute_t::DATE);
-	if (writtenDate != 0) {
+	if (writtenDate != 0 && writtenDate < std::numeric_limits<time_t>::max()) {
 		msg.addString(formatDateShort(writtenDate));
 	} else {
 		msg.add<uint16_t>(0x00);
@@ -5654,11 +5735,11 @@ void ProtocolGame::sendVIP(uint32_t guid, const std::string &name, const std::st
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendSpellCooldown(uint8_t spellId, uint32_t time) {
+void ProtocolGame::sendSpellCooldown(uint16_t spellId, uint32_t time) {
 	NetworkMessage msg;
 	msg.addByte(0xA4);
 
-	msg.addByte(spellId);
+	msg.add<uint16_t>(spellId);
 	msg.add<uint32_t>(time);
 	writeToOutputBuffer(msg);
 }
@@ -5868,7 +5949,15 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 	if (creature->isHealthHidden()) {
 		msg.addByte(0x00);
 	} else {
-		msg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
+		auto creatureHealth = creature->getHealth();
+		auto creatureMaxHealth = std::max<int64_t>(creature->getMaxHealth(), 1);
+
+		// Safe conversion
+		auto convertedCreatureHealth = toSafeNumber<uint32_t>(__FUNCTION__, creatureHealth);
+		auto convertedCreatureMaxHealth = toSafeNumber<uint32_t>(__FUNCTION__, creatureMaxHealth);
+
+		double healthPercentage = (static_cast<double>(convertedCreatureHealth) / convertedCreatureMaxHealth) * 100.0;
+		msg.addByte(static_cast<uint8_t>(std::ceil(healthPercentage)));
 	}
 
 	msg.addByte(creature->getDirection());
@@ -5985,8 +6074,10 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.addByte(0xA0);
 
-	msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
+	auto healthConverted = std::max<int64_t>(0, player->getHealth());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, healthConverted));
+	healthConverted = std::max<int64_t>(0, player->getMaxHealth());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, healthConverted));
 
 	msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 
@@ -6000,8 +6091,10 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.add<uint16_t>(player->getStoreXpBoost()); // xp boost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
 
-	msg.add<uint16_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint16_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
+	auto manaConverted = std::max<uint32_t>(0, player->getMana());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, manaConverted));
+	manaConverted = std::max<uint32_t>(0, player->getMaxMana());
+	msg.add<uint32_t>(toSafeNumber<uint32_t>(__FUNCTION__, manaConverted));
 
 	msg.addByte(player->getSoul());
 
@@ -6017,8 +6110,8 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.add<uint16_t>(player->getExpBoostStamina()); // xp boost time (seconds)
 	msg.addByte(1); // enables exp boost in the store
 
-	msg.add<uint16_t>(player->getManaShield()); // remaining mana shield
-	msg.add<uint16_t>(player->getMaxManaShield()); // total mana shield
+	msg.add<uint32_t>(player->getManaShield()); // remaining mana shield
+	msg.add<uint32_t>(player->getMaxManaShield()); // total mana shield
 }
 
 void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
@@ -6037,9 +6130,12 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 	}
 
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i, true), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(i));
 	}
+
+	// Version 13.10 (mitigation)
+	msg.addByte(0);
 
 	// Version 12.81 new skill (Fatal, Dodge and Momentum)
 	sendForgeSkillStats(msg);
@@ -6288,7 +6384,7 @@ void ProtocolGame::sendUpdateSupplyTracker(const Item* item) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendUpdateImpactTracker(CombatType_t type, int32_t amount) {
+void ProtocolGame::sendUpdateImpactTracker(CombatType_t type, uint32_t amount) {
 	NetworkMessage msg;
 	msg.addByte(0xCC);
 	if (type == COMBAT_HEALING) {
@@ -6301,7 +6397,8 @@ void ProtocolGame::sendUpdateImpactTracker(CombatType_t type, int32_t amount) {
 	}
 	writeToOutputBuffer(msg);
 }
-void ProtocolGame::sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, std::string target) {
+
+void ProtocolGame::sendUpdateInputAnalyzer(CombatType_t type, uint32_t amount, const std::string &target) {
 	NetworkMessage msg;
 	msg.addByte(0xCC);
 	msg.addByte(ANALYZER_DAMAGE_RECEIVED);
@@ -7050,5 +7147,42 @@ void ProtocolGame::sendBosstiaryEntryChanged(uint32_t bossid) {
 	NetworkMessage msg;
 	msg.addByte(0xE6);
 	msg.add<uint32_t>(bossid);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) {
+	NetworkMessage msg;
+	msg.addByte(0x83);
+	msg.addPosition(pos);
+	msg.addByte(0x06); // Sound effect type
+	msg.addByte(static_cast<uint8_t>(source)); // Sound source type
+	msg.add<uint16_t>(static_cast<uint16_t>(id)); // Sound id
+	msg.addByte(0x00); // Breaking the effects loop
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendDoubleSoundEffect(
+	const Position &pos,
+	SoundEffect_t mainSoundId,
+	SourceEffect_t mainSource,
+	SoundEffect_t secondarySoundId,
+	SourceEffect_t secondarySource
+) {
+	NetworkMessage msg;
+	msg.addByte(0x83);
+	msg.addPosition(pos);
+
+	// Primary sound
+	msg.addByte(0x06); // Sound effect type
+	msg.addByte(static_cast<uint8_t>(mainSource)); // Sound source type
+	msg.add<uint16_t>(static_cast<uint16_t>(mainSoundId)); // Sound id
+
+	// Secondary sound (Can be an array too, but not necessary here)
+	msg.addByte(0x07); // Multiple effect type
+	msg.addByte(0x01); // Useless ENUM (So far)
+	msg.addByte(static_cast<uint8_t>(secondarySource)); // Sound source type
+	msg.add<uint16_t>(static_cast<uint16_t>(secondarySoundId)); // Sound id
+
+	msg.addByte(0x00); // Breaking the effects loop
 	writeToOutputBuffer(msg);
 }

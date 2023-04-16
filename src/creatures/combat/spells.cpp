@@ -266,6 +266,14 @@ bool CombatSpell::castSpell(Creature* creature) {
 		pos = creature->getPosition();
 	}
 
+	if (soundCastEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_CASTSOUND, getEnumClassNumber(soundCastEffect));
+	}
+
+	if (soundImpactEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_IMPACTSOUND, getEnumClassNumber(soundImpactEffect));
+	}
+
 	combat->doCombat(creature, pos);
 	return true;
 }
@@ -290,6 +298,14 @@ bool CombatSpell::castSpell(Creature* creature, Creature* target) {
 		}
 
 		return executeCastSpell(creature, var);
+	}
+
+	if (soundCastEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_CASTSOUND, getEnumClassNumber(soundCastEffect));
+	}
+
+	if (soundImpactEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_IMPACTSOUND, getEnumClassNumber(soundImpactEffect));
 	}
 
 	if (combat->hasArea()) {
@@ -565,6 +581,10 @@ void Spell::postCastSpell(Player* player, bool finishedCast /*= true*/, bool pay
 		if (aggressive) {
 			player->addInFightTicks();
 		}
+
+		if (player && soundCastEffect != SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(player->getPosition(), soundCastEffect, soundImpactEffect, player);
+		}
 	}
 
 	if (payCost) {
@@ -575,7 +595,7 @@ void Spell::postCastSpell(Player* player, bool finishedCast /*= true*/, bool pay
 void Spell::postCastSpell(Player* player, uint32_t manaCost, uint32_t soulCost) {
 	if (manaCost > 0) {
 		player->addManaSpent(manaCost);
-		player->changeMana(-static_cast<int32_t>(manaCost));
+		player->changeMana(-static_cast<int64_t>(manaCost));
 	}
 
 	if (!player->hasFlag(PlayerFlags_t::HasInfiniteSoul)) {

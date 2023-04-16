@@ -67,8 +67,8 @@ class Weapon : public Script {
 		static bool useFist(Player* player, Creature* target);
 		virtual bool useWeapon(Player* player, Item* item, Creature* target) const;
 
-		virtual int32_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const = 0;
-		virtual int32_t getElementDamage(const Player* player, const Creature* target, const Item* item) const = 0;
+		virtual int64_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const = 0;
+		virtual int64_t getElementDamage(const Player* player, const Creature* target, const Item* item) const = 0;
 		virtual CombatType_t getElementType() const = 0;
 		virtual int16_t getElementDamageValue() const = 0;
 		virtual CombatDamage getCombatDamage(CombatDamage combat, Player* player, Item* item, int32_t damageModifier) const;
@@ -121,10 +121,10 @@ class Weapon : public Script {
 			manaPercent = m;
 		}
 
-		int32_t getHealth() const {
+		uint32_t getHealth() const {
 			return health;
 		}
-		void setHealth(int32_t h) {
+		void setHealth(uint32_t h) {
 			health = h;
 		}
 
@@ -187,7 +187,7 @@ class Weapon : public Script {
 		}
 
 		uint32_t getManaCost(const Player* player) const;
-		int32_t getHealthCost(const Player* player) const;
+		int64_t getHealthCost(const Player* player) const;
 		bool executeUseWeapon(Player* player, const LuaVariant &var) const;
 
 		uint16_t id = 0;
@@ -234,8 +234,8 @@ class WeaponMelee final : public Weapon {
 
 		bool useWeapon(Player* player, Item* item, Creature* target) const override;
 
-		int32_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const override;
-		int32_t getElementDamage(const Player* player, const Creature* target, const Item* item) const override;
+		int64_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const override;
+		int64_t getElementDamage(const Player* player, const Creature* target, const Item* item) const override;
 		CombatType_t getElementType() const override {
 			return elementType;
 		}
@@ -262,8 +262,8 @@ class WeaponDistance final : public Weapon {
 
 		bool useWeapon(Player* player, Item* item, Creature* target) const override;
 
-		int32_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const override;
-		int32_t getElementDamage(const Player* player, const Creature* target, const Item* item) const override;
+		int64_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const override;
+		int64_t getElementDamage(const Player* player, const Creature* target, const Item* item) const override;
 		CombatType_t getElementType() const override {
 			return elementType;
 		}
@@ -286,8 +286,8 @@ class WeaponWand final : public Weapon {
 
 		void configureWeapon(const ItemType &it) override;
 
-		int32_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const override;
-		int32_t getElementDamage(const Player*, const Creature*, const Item*) const override {
+		int64_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const override;
+		int64_t getElementDamage(const Player*, const Creature*, const Item*) const override {
 			return 0;
 		}
 		CombatType_t getElementType() const override {

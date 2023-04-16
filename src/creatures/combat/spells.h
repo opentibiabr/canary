@@ -87,6 +87,9 @@ class BaseSpell {
 
 		virtual bool castSpell(Creature* creature) = 0;
 		virtual bool castSpell(Creature* creature, Creature* target) = 0;
+
+		SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
+		SoundEffect_t soundCastEffect = SoundEffect_t::SPELL_OR_RUNE;
 };
 
 class CombatSpell final : public Script, public BaseSpell {
@@ -130,10 +133,10 @@ class Spell : public BaseSpell {
 		void setName(std::string n) {
 			name = n;
 		}
-		uint8_t getId() const {
+		uint16_t getId() const {
 			return spellId;
 		}
-		void setId(uint8_t id) {
+		void setId(uint16_t id) {
 			spellId = id;
 		}
 
@@ -306,7 +309,7 @@ class Spell : public BaseSpell {
 		uint32_t magLevel = 0;
 		int32_t range = -1;
 
-		uint8_t spellId = 0;
+		uint16_t spellId = 0;
 
 		bool selfTarget = false;
 		bool needTarget = false;

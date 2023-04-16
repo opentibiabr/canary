@@ -17,6 +17,7 @@
 #include "declarations.hpp"
 #include "items/containers/depot/depotchest.h"
 #include "items/containers/depot/depotlocker.h"
+#include "grouping/familiars.h"
 #include "grouping/groups.h"
 #include "grouping/guild.h"
 #include "imbuements/imbuements.h"
@@ -86,6 +87,7 @@ using MuteCountMap = std::map<uint32_t, uint32_t>;
 
 static constexpr int32_t PLAYER_MAX_SPEED = 65535;
 static constexpr int32_t PLAYER_MIN_SPEED = 10;
+static constexpr int32_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
 class Player final : public Creature, public Cylinder {
 	public:
@@ -477,6 +479,21 @@ class Player final : public Creature, public Cylinder {
 			idleTime = 0;
 		}
 
+		void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) {
+			if (client) {
+				client->sendSingleSoundEffect(pos, id, source);
+			}
+		}
+
+		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) {
+			if (client) {
+				client->sendDoubleSoundEffect(pos, mainSoundId, mainSource, secondarySoundId, secondarySource);
+			}
+		}
+
+		SoundEffect_t getAttackSoundEffect() const;
+		SoundEffect_t getHitSoundEffect() const;
+
 		bool isInGhostMode() const override {
 			return ghostMode;
 		}
@@ -497,7 +514,8 @@ class Player final : public Creature, public Cylinder {
 			return levelPercent;
 		}
 		uint32_t getMagicLevel() const {
-			return std::max<int32_t>(0, magLevel + varStats[STAT_MAGICPOINTS]);
+			auto safeConverted = static_cast<uint32_t>(magLevel + varStats[STAT_MAGICPOINTS]);
+			return safeConverted;
 		}
 		uint32_t getBaseMagicLevel() const {
 			return magLevel;
@@ -625,12 +643,8 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
-		int32_t getMaxHealth() const override {
-			return std::max<int32_t>(1, healthMax + varStats[STAT_MAXHITPOINTS]);
-		}
-		uint32_t getMaxMana() const override {
-			return std::max<int32_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS]);
-		}
+		int64_t getMaxHealth() const override;
+		uint32_t getMaxMana() const override;
 
 		Item* getInventoryItem(Slots_t slot) const;
 
@@ -641,12 +655,12 @@ class Player final : public Creature, public Cylinder {
 			inventoryAbilities[slot] = enabled;
 		}
 
-		void setVarSkill(skills_t skill, int32_t modifier) {
-			varSkills[skill] += modifier;
+		void setVarSkill(skills_t skill, int64_t modifier) {
+			varSkills.at(skill) += modifier;
 		}
 
-		void setVarStats(stats_t stat, int32_t modifier);
-		int32_t getDefaultStats(stats_t stat) const;
+		void setVarStats(stats_t stat, int64_t modifier);
+		int64_t getDefaultStats(stats_t stat) const;
 
 		void addConditionSuppressions(uint32_t conditions);
 		void removeConditionSuppressions(uint32_t conditions);
@@ -749,29 +763,20 @@ class Player final : public Creature, public Cylinder {
 		bool addItemFromStash(uint16_t itemId, uint32_t itemCount);
 		void stowItem(Item* item, uint32_t count, bool allItems);
 
-		void changeHealth(int32_t healthChange, bool sendHealthChange = true) override;
-		void changeMana(int32_t manaChange) override;
+		void changeHealth(int64_t healthChange, bool sendHealthChange = true) override;
+		void changeMana(int64_t manaChange) override;
 		void changeSoul(int32_t soulChange);
 
 		bool isPzLocked() const {
 			return pzLocked;
 		}
-		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
+		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int64_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 		void doAttacking(uint32_t interval) override;
 		bool hasExtraSwing() override {
 			return lastAttack > 0 && ((OTSYS_TIME() - lastAttack) >= getAttackSpeed());
 		}
 
-		uint16_t getSkillLevel(uint8_t skill) const {
-			auto skillLevel = std::max<int32_t>(0, skills[skill].level + varSkills[skill]);
-
-			if (auto it = maxValuePerSkill.find(skill);
-				it != maxValuePerSkill.end()) {
-				skillLevel = std::min<int32_t>(it->second, skillLevel);
-			}
-
-			return static_cast<uint16_t>(skillLevel);
-		}
+		uint16_t getSkillLevel(uint8_t skill, bool sendToClient = false) const;
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
 		}
@@ -792,8 +797,8 @@ class Player final : public Creature, public Cylinder {
 		int32_t getWeaponSkill(const Item* item) const;
 		void getShieldAndWeapon(const Item*&shield, const Item*&weapon) const;
 
-		void drainHealth(Creature* attacker, int32_t damage) override;
-		void drainMana(Creature* attacker, int32_t manaLoss) override;
+		void drainHealth(Creature* attacker, int64_t damage) override;
+		void drainMana(Creature* attacker, int64_t manaLoss) override;
 		void addManaSpent(uint64_t amount);
 		void addSkillAdvance(skills_t skill, uint64_t count);
 
@@ -813,8 +818,8 @@ class Player final : public Creature, public Cylinder {
 		void onCombatRemoveCondition(Condition* condition) override;
 		void onAttackedCreature(Creature* target) override;
 		void onAttacked() override;
-		void onAttackedCreatureDrainHealth(Creature* target, int32_t points) override;
-		void onTargetCreatureGainHealth(Creature* target, int32_t points) override;
+		void onAttackedCreatureDrainHealth(Creature* target, int64_t points) override;
+		void onTargetCreatureGainHealth(Creature* target, int64_t points) override;
 		bool onKilledCreature(Creature* target, bool lastHit = true) override;
 		void onGainExperience(uint64_t gainExp, Creature* target) override;
 		void onGainSharedExperience(uint64_t gainExp, Creature* target);
@@ -1013,7 +1018,7 @@ class Player final : public Creature, public Cylinder {
 				client->sendCreatureType(creature, creatureType);
 			}
 		}
-		void sendSpellCooldown(uint8_t spellId, uint32_t time) {
+		void sendSpellCooldown(uint16_t spellId, uint32_t time) {
 			if (client) {
 				client->sendSpellCooldown(spellId, time);
 			}
@@ -1642,6 +1647,7 @@ class Player final : public Creature, public Cylinder {
 
 		void addItemImbuementStats(const Imbuement* imbuement);
 		void removeItemImbuementStats(const Imbuement* imbuement);
+		void updateImbuementTrackerStats();
 
 		bool isUIExhausted(uint32_t exhaustionTime = 250) const;
 		void updateUIExhausted();
@@ -1672,13 +1678,9 @@ class Player final : public Creature, public Cylinder {
 
 		void sendLootStats(Item* item, uint8_t count) const;
 		void updateSupplyTracker(const Item* item) const;
-		void updateImpactTracker(CombatType_t type, int32_t amount) const;
+		void updateImpactTracker(int64_t type, int64_t amount) const;
 
-		void updateInputAnalyzer(CombatType_t type, int32_t amount, std::string target) {
-			if (client) {
-				client->sendUpdateInputAnalyzer(type, amount, target);
-			}
-		}
+		void updateInputAnalyzer(int64_t type, int64_t amount, const std::string &target) const;
 
 		void createLeaderTeamFinder(NetworkMessage &msg) {
 			if (client) {
@@ -1695,6 +1697,7 @@ class Player final : public Creature, public Cylinder {
 				client->sendTeamFinderList();
 			}
 		}
+
 		void setItemCustomPrice(uint16_t itemId, uint64_t price) {
 			itemPriceMap[itemId] = price;
 		}
@@ -2268,6 +2271,12 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
+		void sendInventoryImbuements(std::map<Slots_t, Item*> items) {
+			if (client) {
+				client->sendInventoryImbuements(items);
+			}
+		}
+
 	private:
 		static uint32_t playerFirstID;
 		static uint32_t playerLastID;
@@ -2458,8 +2467,8 @@ class Player final : public Creature, public Cylinder {
 		uint32_t windowTextId = 0;
 		uint32_t editListId = 0;
 		uint32_t manaMax = 0;
-		int32_t varSkills[SKILL_LAST + 1] = {};
-		int32_t varStats[STAT_LAST + 1] = {};
+		std::array<int64_t, SKILL_LAST + 1> varSkills = {};
+		std::array<int64_t, STAT_LAST + 1> varStats = {};
 		int32_t shopCallback = -1;
 		int32_t MessageBufferCount = 0;
 		uint32_t premiumDays = 0;
@@ -2547,6 +2556,7 @@ class Player final : public Creature, public Cylinder {
 		bool exerciseTraining = false;
 		bool moved = false;
 		bool dead = false;
+		bool imbuementTrackerWindowOpen = false;
 
 		void updateItemsLight(bool internal = false);
 		uint16_t getStepSpeed() const override {

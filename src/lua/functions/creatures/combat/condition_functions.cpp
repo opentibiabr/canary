@@ -109,7 +109,7 @@ int ConditionFunctions::luaConditionGetTicks(lua_State* L) {
 	// condition:getTicks()
 	Condition* condition = getUserdata<Condition>(L, 1);
 	if (condition) {
-		lua_pushnumber(L, condition->getTicks());
+		lua_pushnumber(L, static_cast<lua_Number>(condition->getTicks()));
 	} else {
 		lua_pushnil(L);
 	}
@@ -118,7 +118,7 @@ int ConditionFunctions::luaConditionGetTicks(lua_State* L) {
 
 int ConditionFunctions::luaConditionSetTicks(lua_State* L) {
 	// condition:setTicks(ticks)
-	int32_t ticks = getNumber<int32_t>(L, 2);
+	int64_t ticks = getNumber<int64_t>(L, 2);
 	Condition* condition = getUserdata<Condition>(L, 1);
 	if (condition) {
 		condition->setTicks(ticks);
@@ -138,11 +138,11 @@ int ConditionFunctions::luaConditionSetParameter(lua_State* L) {
 	}
 
 	ConditionParam_t key = getNumber<ConditionParam_t>(L, 2);
-	int32_t value;
+	int64_t value;
 	if (isBoolean(L, 3)) {
 		value = getBoolean(L, 3) ? 1 : 0;
 	} else {
-		value = getNumber<int32_t>(L, 3);
+		value = getNumber<int64_t>(L, 3);
 	}
 	condition->setParam(key, value);
 	pushBoolean(L, true);
@@ -200,9 +200,9 @@ int ConditionFunctions::luaConditionSetOutfit(lua_State* L) {
 
 int ConditionFunctions::luaConditionAddDamage(lua_State* L) {
 	// condition:addDamage(rounds, time, value)
-	int32_t value = getNumber<int32_t>(L, 4);
+	int64_t value = getNumber<int64_t>(L, 4);
 	int32_t time = getNumber<int32_t>(L, 3);
-	int32_t rounds = getNumber<int32_t>(L, 2);
+	int64_t rounds = getNumber<int64_t>(L, 2);
 	ConditionDamage* condition = dynamic_cast<ConditionDamage*>(getUserdata<Condition>(L, 1));
 	if (condition) {
 		pushBoolean(L, condition->addDamage(rounds, time, value));

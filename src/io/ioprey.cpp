@@ -29,12 +29,12 @@ void PreySlot::reloadBonusType() {
 	if (bonusRarity == 10) {
 		PreyBonus_t bonus_tmp = bonus;
 		while (bonus_tmp == bonus) {
-			bonus = static_cast<PreyBonus_t>(uniform_random(PreyBonus_First, PreyBonus_Last));
+			bonus = static_cast<PreyBonus_t>(uniform_random(static_cast<int64_t>(PreyBonus_First), static_cast<int64_t>(PreyBonus_Last)));
 		}
 		return;
 	}
 
-	bonus = static_cast<PreyBonus_t>(uniform_random(PreyBonus_First, PreyBonus_Last));
+	bonus = static_cast<PreyBonus_t>(uniform_random(static_cast<int64_t>(PreyBonus_First), static_cast<int64_t>(PreyBonus_Last)));
 }
 
 void PreySlot::reloadBonusValue() {
@@ -42,7 +42,7 @@ void PreySlot::reloadBonusValue() {
 		bonusRarity = 10;
 	} else {
 		// Every time you roll it will increase the rarity (star)
-		bonusRarity = static_cast<uint8_t>(uniform_random(bonusRarity + 1, 10));
+		bonusRarity = static_cast<uint8_t>(uniform_random(static_cast<int64_t>(bonusRarity + 1), 10));
 	}
 	if (bonus == PreyBonus_Damage) {
 		bonusPercentage = 2 * bonusRarity + 5;
@@ -96,7 +96,7 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 	}
 
 	uint8_t tries = 0;
-	auto maxIndex = static_cast<int32_t>(bestiary.size() - 1);
+	auto maxIndex = static_cast<int64_t>(bestiary.size() - 1);
 	while (raceIdList.size() < 9) {
 		uint16_t raceId = (*(std::next(bestiary.begin(), uniform_random(0, maxIndex)))).first;
 		tries++;
@@ -177,7 +177,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 	}
 
 	uint8_t tries = 0;
-	auto maxIndex = static_cast<int32_t>(bestiary.size() - 1);
+	auto maxIndex = static_cast<int64_t>(bestiary.size() - 1);
 	while (raceIdList.size() < 9) {
 		uint16_t raceId = (*(std::next(bestiary.begin(), uniform_random(0, maxIndex)))).first;
 		tries++;
@@ -219,7 +219,7 @@ void TaskHuntingSlot::reloadReward() {
 		return;
 	}
 
-	int32_t chance;
+	int64_t chance;
 	if (rarity == 0) {
 		chance = uniform_random(0, 100);
 	} else if (rarity == 1) {
@@ -478,7 +478,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 
 		if (const TaskHuntingOption* option = GetTaskRewardOption(slot)) {
 			uint64_t reward;
-			int32_t boostChange = uniform_random(0, 100);
+			auto boostChange = static_cast<int32_t>(uniform_random(0, 100));
 			if (slot->rarity >= 4 && boostChange <= 5) {
 				boostChange = 20;
 			} else if (slot->rarity >= 4 && boostChange <= 10) {

@@ -154,7 +154,7 @@ void Decay::internalDecayItem(Item* item) {
 			}
 
 			bool needUpdateStats = false;
-			for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
+			for (int64_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
 				if (it.abilities && it.abilities->stats[s] != 0) {
 					needUpdateStats = true;
 					needUpdateSkills = true;
@@ -162,7 +162,10 @@ void Decay::internalDecayItem(Item* item) {
 				}
 				if (it.abilities && it.abilities->statsPercent[s] != 0) {
 					needUpdateStats = true;
-					player->setVarStats(static_cast<stats_t>(s), -static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
+					auto statsPercent = it.abilities->statsPercent[s];
+					auto defaultStats = player->getDefaultStats(static_cast<stats_t>(s));
+					auto statsModification = toSafeNumber<int64_t>(__FUNCTION__, ((double)statsPercent - 100.) / 100. * static_cast<double>(-defaultStats));
+					player->setVarStats(static_cast<stats_t>(s), statsModification);
 				}
 			}
 

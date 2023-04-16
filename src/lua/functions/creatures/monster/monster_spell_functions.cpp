@@ -11,6 +11,7 @@
 
 #include "lua/functions/creatures/monster/monster_spell_functions.hpp"
 #include "creatures/monsters/monsters.h"
+#include "utils/tools.h"
 
 int MonsterSpellFunctions::luaCreateMonsterSpell(lua_State* L) {
 	// MonsterSpell() will create a new Monster Spell
@@ -286,6 +287,30 @@ int MonsterSpellFunctions::luaMonsterSpellSetOutfitItem(lua_State* L) {
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterSpellFunctions::luaMonsterSpellCastSound(lua_State* L) {
+	// get: monsterSpell:castSound() set: monsterSpell:castSound(sound)
+	MonsterSpell* spell = getUserdata<MonsterSpell>(L, 1);
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, static_cast<lua_Number>(getEnumClassNumber(spell->soundCastEffect)));
+	} else {
+		spell->soundCastEffect = getNumber<SoundEffect_t>(L, 2);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int MonsterSpellFunctions::luaMonsterSpellImpactSound(lua_State* L) {
+	// get: monsterSpell:impactSound() set: monsterSpell:impactSound(sound)
+	MonsterSpell* spell = getUserdata<MonsterSpell>(L, 1);
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, static_cast<lua_Number>(getEnumClassNumber(spell->soundImpactEffect)));
+	} else {
+		spell->soundImpactEffect = getNumber<SoundEffect_t>(L, 2);
+		pushBoolean(L, true);
 	}
 	return 1;
 }

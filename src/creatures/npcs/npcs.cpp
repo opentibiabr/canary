@@ -17,6 +17,10 @@
 #include "creatures/npcs/npcs.h"
 #include "lua/scripts/scripts.h"
 #include "game/game.h"
+#include "creatures/npcs/npc.h"
+#include "creatures/npcs/npcs.h"
+#include "creatures/combat/spells.h"
+#include "items/weapons/weapons.h"
 
 bool NpcType::canSpawn(const Position &pos) {
 	bool canSpawn = true;

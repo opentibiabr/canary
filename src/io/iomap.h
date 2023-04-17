@@ -139,7 +139,6 @@ class IOMap {
 				map->housefile = mapName;
 				map->housefile += "-house.xml";
 			}
-			
 			return map->housesCustomMaps[customMapIndex].loadHousesXML(map->housefile);
 		}
 

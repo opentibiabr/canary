@@ -2442,9 +2442,13 @@ class Player final : public Creature, public Cylinder {
 				}
 			}
 		}
+
 		void resetWheelOfDestinyResistance() {
-			wheelOfDestinyResistance[COMBAT_COUNT] = { 0 };
+			for (int32_t i = 0; i < COMBAT_COUNT; i++) {
+				wheelOfDestinyResistance[i] = 0;
+			}
 		}
+
 		// Wheel of destiny - Header get:
 		bool getWheelOfDestinyInstant(WheelOfDestinyInstant_t type) const {
 			return wheelOfDestinyInstant[type];

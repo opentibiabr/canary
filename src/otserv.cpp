@@ -319,17 +319,18 @@ void mainLoader(int, char*[], ServiceManager* services) {
 
 	SPDLOG_INFO("World type set as {}", asUpperCaseString(worldType));
 
-	SPDLOG_INFO("Loading map...");
+	SPDLOG_INFO("Loading main map...");
 	if (!g_game().loadMainMap(g_configManager().getString(MAP_NAME))) {
-		SPDLOG_ERROR("Failed to load map");
+		SPDLOG_ERROR("Failed to load main map");
 		startupErrorMessage();
 	}
 
 	// If "mapCustomEnabled" is true on config.lua, then load the custom map
 	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
-		SPDLOG_INFO("Loading custom map...");
-		if (!g_game().loadCustomMap(g_configManager().getString(MAP_CUSTOM_NAME))) {
-			SPDLOG_ERROR("Failed to load custom map");
+		SPDLOG_INFO("Loading custom maps...");
+		std::string customMapPath = g_configManager().getString(DATA_DIRECTORY) + "/world/custom/";
+		if (!g_game().loadCustomMaps(customMapPath)) {
+			SPDLOG_ERROR("Failed to load custom maps");
 			startupErrorMessage();
 		}
 	}

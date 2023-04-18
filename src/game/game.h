@@ -76,6 +76,7 @@ class Game {
 		 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
 		 * \returns true if the custom map was loaded successfully
 		 */
+		bool loadCustomMaps(const std::string &customMapPath);
 		bool loadCustomMap(const std::string &filename);
 		void loadMap(const std::string &path, const Position &pos = Position(), bool unload = false);
 

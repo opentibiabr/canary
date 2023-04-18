@@ -68,4 +68,7 @@
 #include <pugixml.hpp>
 #include <zlib.h>
 
+#include <string>
+#include <iostream>
+
 #endif // SRC_PCH_HPP_

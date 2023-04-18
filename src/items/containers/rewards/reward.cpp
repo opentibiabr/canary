@@ -47,6 +47,10 @@ void Reward::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 }
 
 void Reward::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t) {
+	Cylinder* localParent = getParent();
+	if (localParent != nullptr) {
+		localParent->postRemoveNotification(thing, newParent, index, LINK_PARENT);
+	}
 }
 
 Cylinder* Reward::getParent() const {

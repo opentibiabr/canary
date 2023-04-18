@@ -236,6 +236,10 @@ bool Item::equals(const Item* compareItem) const {
 	if (id != compareItem->id) {
 		return false;
 	}
+	
+	if (isStoreItem() != compareItem->isStoreItem()) {
+		return false;
+	}
 
 	for (const auto &attribute : getAttributeVector()) {
 		for (const auto &compareAttribute : compareItem->getAttributeVector()) {

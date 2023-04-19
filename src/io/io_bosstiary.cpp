@@ -27,7 +27,7 @@ void IOBosstiary::loadBoostedBoss() {
 	}
 
 	uint16_t date = result->getNumber<uint16_t>("date");
-	auto timeNow = std::time(nullptr);
+	auto timeNow = getTimeNow();
 	auto time = localtime(&timeNow);
 	auto today = time->tm_mday;
 

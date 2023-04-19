@@ -27,7 +27,7 @@ void IOBosstiary::loadBoostedBoss() {
 	}
 
 	uint16_t date = result->getNumber<uint16_t>("date");
-	auto timeNow = getTimeNow();
+	auto timeNow = std::time(nullptr);
 	auto time = localtime(&timeNow);
 	auto today = time->tm_mday;
 
@@ -38,7 +38,7 @@ void IOBosstiary::loadBoostedBoss() {
 	}
 
 	std::string bossName;
-	uint32_t bossId;
+	uint32_t bossId = 0;
 	if (date == today) {
 		bossName = result->getString("boostname");
 		bossId = result->getNumber<uint32_t>("raceid");
@@ -49,10 +49,9 @@ void IOBosstiary::loadBoostedBoss() {
 	}
 
 	uint32_t oldBossRace = result->getNumber<uint32_t>("raceid");
-	while (true) {
-		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossMap.size()));
-		auto it = std::next(bossMap.begin(), randomIndex);
-		const auto &[randomBossId, randomBossName] = *it;
+	bool foundArchfoe = false;
+	for (auto it = bossMap.begin(); it != bossMap.end(); ++it) {
+		const auto& [randomBossId, randomBossName] = *it;
 
 		auto mapBossRaceId = randomBossId;
 		if (mapBossRaceId == oldBossRace) {
@@ -69,9 +68,15 @@ void IOBosstiary::loadBoostedBoss() {
 			continue;
 		}
 
-		bossName = randomBossName;
+		foundArchfoe = true;
+		bossName = mType->name;
 		bossId = mapBossRaceId;
 		break;
+	}
+
+	if (!foundArchfoe || bossName.empty() || bossId == 0) {
+		SPDLOG_ERROR("Failed to boost boos. There is no boss registered with the Archfoe Rarity.");
+		return;
 	}
 
 	query.str(std::string());

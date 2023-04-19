@@ -51,7 +51,7 @@ void IOBosstiary::loadBoostedBoss() {
 	// Filter only archfoe bosses
 	std::map<uint32_t, std::string> bossInfo;
 	for (auto [infoBossRaceId, infoBossName] : bossMap) {
-		const MonsterType* mType = getMonsterTypeByBossRaceId(bossRaceId);
+		const MonsterType* mType = getMonsterTypeByBossRaceId(infoBossRaceId);
 		if (!mType || mType->info.bosstiaryRace != BosstiaryRarity_t::RARITY_ARCHFOE) {
 			continue;
 		}

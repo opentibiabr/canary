@@ -61,7 +61,7 @@ void IOBosstiary::loadBoostedBoss() {
 
 	// Check if not have archfoe registered boss
 	if (bossInfo.size() == 0) {
-		SPDLOG_ERROR("Failed to boost boos. There is no boss registered with the Archfoe Rarity.");
+		SPDLOG_ERROR("Failed to boost a boss. There is no boss registered with the Archfoe Rarity.");
 		return;
 	}
 

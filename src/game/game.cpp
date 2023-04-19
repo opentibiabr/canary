@@ -187,8 +187,8 @@ void Game::setGameState(GameState_t newState) {
 
 			// Load monsters and npcs custom stored by the "loadFromXML" function
 			for (int i = 0; i < 50; i++) {
-					map.spawnsNpcCustomMaps[i].startup();
-					map.spawnsMonsterCustomMaps[i].startup();
+				map.spawnsNpcCustomMaps[i].startup();
+				map.spawnsMonsterCustomMaps[i].startup();
 			}
 
 			raids.loadFromXml();
@@ -311,7 +311,7 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
 
-	namespace fs =  std::filesystem;
+	namespace fs = std::filesystem;
 
 	int customMapIndex = 0;
 	for (const auto &entry : fs::directory_iterator(customMapPath)) {
@@ -323,7 +323,7 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 
 		std::string filename = realPath.stem().string();
 
-		//Do not load more maps than possible
+		// Do not load more maps than possible
 		if (customMapIndex >= 50) {
 			SPDLOG_WARN("Maximum number of custom maps loaded. Custom map {} [ignored]", filename);
 			continue;
@@ -335,7 +335,7 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 			continue;
 		}
 
-		//Avoid loading main map again.
+		// Avoid loading main map again.
 		if (filename == g_configManager().getString(MAP_NAME)) {
 			SPDLOG_WARN("Custom map {} is main map", filename);
 			continue;
@@ -354,7 +354,6 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 
 	return true;
 }
-
 
 void Game::loadMap(const std::string &path, const Position &pos, bool unload) {
 	map.loadMap(path, false, false, false, false, pos, unload);

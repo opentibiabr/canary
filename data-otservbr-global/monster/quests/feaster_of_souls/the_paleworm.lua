@@ -98,7 +98,7 @@ monster.loot = {
 	{name = "fabulous legs", chance = 150},
 	{name = "phantasmal axe", chance = 150},
 	{name = "ghost backpack", chance = 150},
-	{name = "ring of souls", chance = 400},
+	{id = 32621, chance = 400}, -- Ring of souls
 	{name = "soulful legs", chance = 150}
 }
 

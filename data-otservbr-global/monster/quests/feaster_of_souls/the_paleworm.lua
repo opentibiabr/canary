@@ -94,7 +94,12 @@ monster.loot = {
 	{name = "ghost claw", chance = 1960},
 	{name = "bloody tears", chance = 1500},
 	{name = "ghost chestplate", chance = 150},
-	{name = "spooky hood", chance = 150}
+	{name = "spooky hood", chance = 150},
+	{name = "fabulous legs", chance = 150},
+	{name = "phantasmal axe", chance = 150},
+	{name = "ghost backpack", chance = 150},
+	{id = 32621, chance = 400}, -- Ring of souls
+	{name = "soulful legs", chance = 150}
 }
 
 monster.attacks = {

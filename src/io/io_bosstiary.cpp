@@ -51,7 +51,7 @@ void IOBosstiary::loadBoostedBoss() {
 	uint32_t oldBossRace = result->getNumber<uint32_t>("raceid");
 	bool foundArchfoe = false;
 	for (auto it = bossMap.begin(); it != bossMap.end(); ++it) {
-		const auto& [randomBossId, randomBossName] = *it;
+		const auto &[randomBossId, randomBossName] = *it;
 
 		auto mapBossRaceId = randomBossId;
 		if (mapBossRaceId == oldBossRace) {

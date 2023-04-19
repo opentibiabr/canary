@@ -67,8 +67,8 @@ void IOBosstiary::loadBoostedBoss() {
 
 	uint32_t oldBossRace = result->getNumber<uint32_t>("raceid");
 	while (true) {
-		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossMap.size()));
-		auto it = std::next(bossMap.begin(), randomIndex);
+		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossInfo.size()));
+		auto it = std::next(bossInfo.begin(), randomIndex);
 		const auto &[randomBossId, randomBossName] = *it;
 		if (randomBossId == oldBossRace) {
 			continue;

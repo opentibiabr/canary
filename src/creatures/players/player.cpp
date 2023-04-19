@@ -2393,6 +2393,10 @@ uint32_t Player::getIP() const {
 
 void Player::death(Creature* lastHitCreature) {
 	loginPosition = town->getTemplePosition();
+	
+	if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
+		setSkull(SKULL_NONE);
+	}
 
 	if (skillLoss) {
 		uint8_t unfairFightReduction = 100;

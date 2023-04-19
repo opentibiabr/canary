@@ -99,7 +99,6 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 	return true;
 }
 
-
 bool Map::loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, int customMapIndex) {
 	// Load the map
 	std::string path = g_configManager().getString(DATA_DIRECTORY) + "/world/custom/" + mapName + ".otbm";

@@ -130,10 +130,6 @@ class ItemProperties {
 			return getAttribute<int64_t>(ItemAttribute_t::STORE) > 0;
 		}
 
-		void setStoreItem(time_t time) {
-			setAttribute(ItemAttribute_t::STORE, time);
-		}
-
 		void setDuration(int32_t time) {
 			setAttribute(ItemAttribute_t::DURATION, std::max<int32_t>(0, time));
 		}

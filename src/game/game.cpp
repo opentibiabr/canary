@@ -1403,6 +1403,44 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		count = item->getItemCount();
 	}
 
+	if (toCylinder->getContainer()) {
+		auto containerID = toCylinder->getContainer()->getID();
+
+		if (containerID == ITEM_GOLD_POUCH) {
+			bool allowAnything = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);
+
+			if (!allowAnything && item->getID() != ITEM_GOLD_COIN && item->getID() != ITEM_PLATINUM_COIN && item->getID() != ITEM_CRYSTAL_COIN) {
+				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+			}
+		}
+
+		const Container* topParentContainer = toCylinder->getContainer()->getRootContainer();
+
+		if (!item->isStoreItem() && (containerID == ITEM_STORE_INBOX || topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
+			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+		}
+
+		if (item->isStoreItem()) {
+			bool isValidMoveItem = false;
+
+			if (containerID == ITEM_STORE_INBOX) {
+				isValidMoveItem = true;
+			}
+
+			if (toCylinder->getContainer()->isDepotChest()) {
+				isValidMoveItem = true;
+			}
+
+			if (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && (topParentContainer->getParent()->getContainer()->isDepotChest() || topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
+				isValidMoveItem = true;
+			}
+
+			if (!isValidMoveItem) {
+				return RETURNVALUE_NOTPOSSIBLE;
+			}
+		}
+	}
+
 	// check if we can add this item
 	ReturnValue ret = toCylinder->queryAdd(index, *item, count, flags, actor);
 	if (ret == RETURNVALUE_NEEDEXCHANGE) {
@@ -1602,12 +1640,7 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	// Mark all items added in store inbox with store attribute
 	auto addedItem = toCylinder->getItem();
-	auto parentCylinder = toCylinder->getParent();
-	if (addedItem && (addedItem->getID() == ITEM_STORE_INBOX || parentCylinder && parentCylinder->getContainer() && parentCylinder->getContainer()->getID() == ITEM_STORE_INBOX) && !item->isStoreItem()) {
-		item->setStoreItem(getTimeNow());
-	}
 
 	Cylinder* destCylinder = toCylinder;
 	Item* toItem = nullptr;

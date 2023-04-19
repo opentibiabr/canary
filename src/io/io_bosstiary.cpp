@@ -27,7 +27,7 @@ void IOBosstiary::loadBoostedBoss() {
 	}
 
 	uint16_t date = result->getNumber<uint16_t>("date");
-	auto timeNow = getTimeNow();
+	auto timeNow = std::time(nullptr);
 	auto time = localtime(&timeNow);
 	auto today = time->tm_mday;
 
@@ -48,35 +48,35 @@ void IOBosstiary::loadBoostedBoss() {
 		return;
 	}
 
-	uint32_t oldBossRace = result->getNumber<uint32_t>("raceid");
-	bool foundArchfoe = false;
-	for (auto it = bossMap.begin(); it != bossMap.end(); ++it) {
-		const auto &[randomBossId, randomBossName] = *it;
-
-		auto mapBossRaceId = randomBossId;
-		if (mapBossRaceId == oldBossRace) {
+	// Filter only archfoe bosses
+	std::map<uint32_t, std::string> bossInfo;
+	for (auto [bossRaceId, bossName] : bossMap) {
+		const MonsterType* mType = getMonsterTypeByBossRaceId(bossRaceId);
+		if (!mType || mType->info.bosstiaryRace != BosstiaryRarity_t::RARITY_ARCHFOE) {
 			continue;
 		}
 
-		const MonsterType* mType = getMonsterTypeByBossRaceId(mapBossRaceId);
-		if (!mType) {
-			continue;
-		}
-
-		if (auto bossRarity = mType->info.bosstiaryRace;
-			bossRarity != BosstiaryRarity_t::RARITY_ARCHFOE) {
-			continue;
-		}
-
-		foundArchfoe = true;
-		bossName = mType->name;
-		bossId = mapBossRaceId;
-		break;
+		bossInfo.try_emplace(bossRaceId, bossName);
 	}
 
-	if (!foundArchfoe || bossName.empty() || bossId == 0) {
+	// Check if not have archfoe registered boss
+	if (bossInfo.size() == 0) {
 		SPDLOG_ERROR("Failed to boost boos. There is no boss registered with the Archfoe Rarity.");
 		return;
+	}
+
+	uint32_t oldBossRace = result->getNumber<uint32_t>("raceid");
+	while (true) {
+		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossMap.size()));
+		auto it = std::next(bossMap.begin(), randomIndex);
+		const auto &[randomBossId, randomBossName] = *it;
+		if (randomBossId == oldBossRace) {
+			continue;
+		}
+
+		bossName = randomBossName;
+		bossId = randomBossId;
+		break;
 	}
 
 	query.str(std::string());

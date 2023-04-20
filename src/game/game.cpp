@@ -1221,6 +1221,12 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 		}
 	}
 
+	// check if we can move this item
+	if (ReturnValue ret = checkMoveItemToContainer(toCylinder, item); ret != RETURNVALUE_NOERROR) {
+		player->sendCancelMessage(ret);
+    	return;
+	}
+
 	if (isTryingToStow(toPos, toCylinder)) {
 		player->stowItem(item, count, false);
 		return;
@@ -1445,11 +1451,6 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 	//  Cip's client never sends the count of stackables when using "Move up" menu option
 	if (item->isStackable() && count == 255 && fromCylinder->getParent() == toCylinder) {
 		count = item->getItemCount();
-	}
-
-	// check if we can move this item
-	if (ReturnValue ret = checkMoveItemToContainer(toCylinder, item); ret != RETURNVALUE_NOERROR) {
-    	return ret;
 	}
 
 	// check if we can add this item

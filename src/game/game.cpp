@@ -3628,7 +3628,7 @@ void Game::playerStowItem(uint32_t playerId, const Position &pos, uint16_t itemI
 		return;
 
 	Item* item = thing->getItem();
-	if (!item || item->getID() != itemId || item->getItemCount() < count) {
+	if (!item || item->getID() != itemId || item->getItemCount() < count || item->isStoreItem()) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}

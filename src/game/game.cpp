@@ -1387,7 +1387,7 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 
 		if (item->isStoreItem()) {
 			bool isValidMoveItem = false;
-				
+
 			if (HouseTile* fromHouseTile = dynamic_cast<HouseTile*>(fromCylinder->getTile()); fromHouseTile->getHouse()->getOwner() != player->getGUID()) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
@@ -1408,7 +1408,7 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
 		}
-	} else if (toCylinder->getTile() && fromCylinder->getContainer()) {	
+	} else if (toCylinder->getTile() && fromCylinder->getContainer()) {
 		if (item->isStoreItem()) {
 			if (HouseTile* toHouseTile = dynamic_cast<HouseTile*>(toCylinder->getTile()); toHouseTile->getHouse()->getOwner() != player->getGUID()) {
 				return RETURNVALUE_NOTPOSSIBLE;
@@ -1416,7 +1416,7 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 		}
 
 		if (item->getContainer()) {
-			for(Item* containerItem : item->getContainer()->getItems(true)) {
+			for (Item* containerItem : item->getContainer()->getItems(true)) {
 				if (containerItem->isStoreItem()) {
 					return RETURNVALUE_NOTPOSSIBLE;
 				}
@@ -3870,7 +3870,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 	}
 
 	if (tradeItemContainer) {
-		for(Item* containerItem : tradeItemContainer->getItems(true)) {
+		for (Item* containerItem : tradeItemContainer->getItems(true)) {
 			if (containerItem->isStoreItem()) {
 				player->sendTextMessage(MESSAGE_TRADE, "This item cannot be trade.");
 				return;

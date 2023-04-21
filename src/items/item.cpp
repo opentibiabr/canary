@@ -208,24 +208,24 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 }
 
 Item::Item(const Item &i) :
-    Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap) {
-    if (i.attributePtr) {
-        attributePtr.reset(new ItemAttribute(*i.attributePtr));
-    }
+	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap) {
+	if (i.attributePtr) {
+		attributePtr.reset(new ItemAttribute(*i.attributePtr));
+	}
 }
 
 Item* Item::clone() const {
-    Item* item = Item::CreateItem(id, count);
-    if (item == nullptr) {
-        SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
-        return nullptr;
-    }
+	Item* item = Item::CreateItem(id, count);
+	if (item == nullptr) {
+		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
+		return nullptr;
+	}
 
-    if (attributePtr) {
-        item->attributePtr.reset(new ItemAttribute(*attributePtr));
-    }
+	if (attributePtr) {
+		item->attributePtr.reset(new ItemAttribute(*attributePtr));
+	}
 
-    return item;
+	return item;
 }
 
 bool Item::equals(const Item* compareItem) const {
@@ -236,7 +236,7 @@ bool Item::equals(const Item* compareItem) const {
 	if (id != compareItem->id) {
 		return false;
 	}
-	
+
 	if (isStoreItem() != compareItem->isStoreItem()) {
 		return false;
 	}

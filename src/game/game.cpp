@@ -1224,7 +1224,7 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 	// check if we can move this item
 	if (ReturnValue ret = checkMoveItemToCylinder(player, fromCylinder, toCylinder, item); ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
-    	return;
+		return;
 	}
 
 	if (isTryingToStow(toPos, toCylinder)) {

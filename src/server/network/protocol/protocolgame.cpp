@@ -6847,6 +6847,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.addByte(isSlotOneUnlocked ? 1 : 0);
 	msg.add<uint32_t>(isSlotOneUnlocked ? bossIdSlotOne : 0);
 	if (isSlotOneUnlocked && bossIdSlotOne != 0) {
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotOne);
 		if (mType) {
 			// Variables Boss Slot One
 			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
@@ -6916,8 +6917,8 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		if (mType) {
 			auto boostedBossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
 			auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
-			auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(ConfigManager::BOOSTED_BOSS_LOOT_BONUS));
-			auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(ConfigManager::BOOSTED_BOSS_KILL_BONUS));
+			auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
+			auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
 			msg.addByte(boostedBossRace); // Boss Race
 			msg.add<uint32_t>(boostedBossKillCount); // Kill Count
 			msg.add<uint16_t>(boostedLootBonus); // Loot Bonus

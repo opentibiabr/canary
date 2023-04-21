@@ -83,6 +83,17 @@ namespace {
 		}
 	}
 
+	// Send bytes function for avoid repetitions
+	void sendBosstiarySlotsBytes(NetworkMessage &msg, uint8_t bossRace = 0, uint32_t bossKillCount = 0, uint16_t bonusBossSlotOne = 0, uint32_t killBonus = 0, bool isSlotOneInactive = 0, uint32_t removePrice = 0) {
+		msg.addByte(bossRace); // Boss Race
+		msg.add<uint32_t>(bossKillCount); // Kill Count
+		msg.add<uint16_t>(bonusBossSlotOne); // Loot Bonus
+		msg.addByte(killBonus); // Kill Bonus
+		msg.addByte(bossRace); // Boss Race
+		msg.add<uint32_t>(isSlotOneInactive == 1 ? 0 : removePrice); // Remove Price
+		msg.addByte(isSlotOneInactive); // Inactive? (Only true if equal to Boosted Boss)
+	}
+
 } // namespace
 
 ProtocolGame::ProtocolGame(Connection_ptr initConnection) :
@@ -6856,22 +6867,10 @@ void ProtocolGame::parseSendBosstiarySlots() {
 			uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
 			uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
 			// Bytes Slot One
-			msg.addByte(bossRace); // Boss Race
-			msg.add<uint32_t>(bossKillCount); // Kill Count
-			msg.add<uint16_t>(bonusBossSlotOne); // Loot Bonus
-			msg.addByte(0); // Kill Bonus
-			msg.addByte(bossRace); // Boss Race
-			msg.add<uint32_t>(isSlotOneInactive == 1 ? 0 : removePrice); // Remove Price
-			msg.addByte(isSlotOneInactive); // Inactive? (Only true if equal to Boosted Boss)
+			sendBosstiarySlotsBytes(msg, bossRace, bossKillCount, bonusBossSlotOne, 0, isSlotOneInactive, removePrice);
 			bossesUnlockedSize--;
 		} else {
-			msg.addByte(0); // Boss Race
-			msg.add<uint32_t>(0); // Kill Count
-			msg.add<uint16_t>(0); // Loot Bonus
-			msg.addByte(0); // Kill Bonus
-			msg.addByte(0); // Boss Race
-			msg.add<uint32_t>(0); // Remove Price
-			msg.addByte(0); // Inactive? (Only true if equal to Boosted Boss)
+			sendBosstiarySlotsBytes(msg);
 		}
 	}
 
@@ -6889,22 +6888,10 @@ void ProtocolGame::parseSendBosstiarySlots() {
 			uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
 			uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
 			// Bytes Slot Two
-			msg.addByte(bossRace); // Boss Race
-			msg.add<uint32_t>(bossKillCount); // Kill Count
-			msg.add<uint16_t>(bonusBossSlotTwo); // Loot Bonus
-			msg.addByte(0); // Kill Bonus
-			msg.addByte(bossRace); // Boss Race
-			msg.add<uint32_t>(isSlotTwoInactive == 1 ? 0 : removePrice); // Remove Price
-			msg.addByte(isSlotTwoInactive); // Inactive? (Only true if equal to Boosted Boss)
+			sendBosstiarySlotsBytes(msg, bossRace, bossKillCount, bonusBossSlotTwo, 0, isSlotTwoInactive, removePrice);
 			bossesUnlockedSize--;
 		} else {
-			msg.addByte(0); // Boss Race
-			msg.add<uint32_t>(0); // Kill Count
-			msg.add<uint16_t>(0); // Loot Bonus
-			msg.addByte(0); // Kill Bonus
-			msg.addByte(0); // Boss Race
-			msg.add<uint32_t>(0); // Remove Price
-			msg.addByte(0); // Inactive? (Only true if equal to Boosted Boss)
+			sendBosstiarySlotsBytes(msg);
 		}
 	}
 
@@ -6919,21 +6906,9 @@ void ProtocolGame::parseSendBosstiarySlots() {
 			auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
 			auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
 			auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
-			msg.addByte(boostedBossRace); // Boss Race
-			msg.add<uint32_t>(boostedBossKillCount); // Kill Count
-			msg.add<uint16_t>(boostedLootBonus); // Loot Bonus
-			msg.addByte(boostedKillBonus); // Kill Bonus
-			msg.addByte(boostedBossRace); // Boss Race
-			msg.add<uint32_t>(0); // Remove Price
-			msg.addByte(0); // Inactive? (Only true if equal to Boosted Boss)
+			sendBosstiarySlotsBytes(msg, boostedBossRace, boostedBossKillCount, boostedLootBonus, boostedKillBonus, 0, 0);
 		} else {
-			msg.addByte(0); // Boss Race
-			msg.add<uint32_t>(0); // Kill Count
-			msg.add<uint16_t>(0); // Loot Bonus
-			msg.addByte(0); // Kill Bonus
-			msg.addByte(0); // Boss Race
-			msg.add<uint32_t>(0); // Remove Price
-			msg.addByte(0); // Inactive? (Only true if equal to Boosted Boss)
+			sendBosstiarySlotsBytes(msg);
 		}
 	}
 

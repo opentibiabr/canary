@@ -409,18 +409,18 @@
 		<attribute key="item" value="10309" count="15" />
 	</imbuement>
 	<!-- Capacity Imbuement -->
-	<imbuement name="Featherweight" base="1" category="17" iconid="64" premium="0" storage="0">
+	<imbuement name="Featherweight" base="1" category="17" iconid="76" premium="0" storage="0">
 		<attribute key="description" value="Raises capacity by 3." />
 		<attribute key="effect" type="capacity" value="3" />
 		<attribute key="item" value="25694" count="20" />
 	</imbuement>
-	<imbuement name="Featherweight" base="2" category="17" iconid="64" premium="1" storage="0">
+	<imbuement name="Featherweight" base="2" category="17" iconid="77" premium="1" storage="0">
 		<attribute key="description" value="Raises capacity by 8." />
 		<attribute key="effect" type="capacity" value="8" />
 		<attribute key="item" value="25694" count="20" />
 		<attribute key="item" value="25702" count="10" />
 	</imbuement>
-	<imbuement name="Featherweight" base="3" category="17" iconid="64" premium="1" storage="0">
+	<imbuement name="Featherweight" base="3" category="17" iconid="75" premium="1" storage="0">
 		<attribute key="description" value="Raises capacity by 15." />
 		<attribute key="effect" type="capacity" value="15" />
 		<attribute key="item" value="25694" count="20" />

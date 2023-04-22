@@ -1366,7 +1366,7 @@ bool Game::isTryingToStow(const Position &toPos, Cylinder* toCylinder) const {
 }
 
 ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder, Cylinder* toCylinder, Item* item) {
-	if (! player || !toCylinder || !item) {
+	if (!player || !toCylinder || !item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
@@ -1396,7 +1396,7 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 			}
 
 			if (containerID == ITEM_STORE_INBOX || containerID == ITEM_DEPOT || toCylinder->getContainer()->isDepotChest()) {
-				isValidMoveItem = true; 
+				isValidMoveItem = true;
 			}
 
 			if (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && (topParentContainer->getParent()->getContainer()->isDepotChest() || topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
@@ -1409,13 +1409,13 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 		}
 
 		if (item->getContainer() && !item->isStoreItem()) {
-			for(Item* containerItem : item->getContainer()->getItems(true)) {
+			for (Item* containerItem : item->getContainer()->getItems(true)) {
 				if (containerItem->isStoreItem() && ((containerID != ITEM_GOLD_POUCH && containerID != ITEM_DEPOT && containerID != ITEM_STORE_INBOX) || (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && (!topParentContainer->getParent()->getContainer()->isDepotChest() || topParentContainer->getParent()->getContainer()->getID() != ITEM_STORE_INBOX)))) {
 					return RETURNVALUE_NOTPOSSIBLE;
 				}
 			}
 		}
-	} else if (toCylinder->getTile()) {	
+	} else if (toCylinder->getTile()) {
 		HouseTile* toHouseTile = dynamic_cast<HouseTile*>(toCylinder->getTile());
 		if (fromCylinder->getContainer()) {
 			if (item->isStoreItem()) {
@@ -1424,7 +1424,7 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 				}
 			}
 			if (item->getContainer() && !item->isStoreItem()) {
-				for(Item* containerItem : item->getContainer()->getItems(true)) {
+				for (Item* containerItem : item->getContainer()->getItems(true)) {
 					if (containerItem->isStoreItem()) {
 						return RETURNVALUE_NOTPOSSIBLE;
 					}
@@ -1437,7 +1437,6 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 		if (item->isStoreItem() && !toHouseTile) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
-		
 	}
 
 	return RETURNVALUE_NOERROR;

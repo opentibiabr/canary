@@ -352,16 +352,16 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 			self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
 			return false
 		end
-		-- Gold Pouch
-		if (containerTo:getId() == ITEM_GOLD_POUCH) then
-			if (not (item:getId() == ITEM_CRYSTAL_COIN or item:getId() == ITEM_PLATINUM_COIN
-			or item:getId() == ITEM_GOLD_COIN)) then
-				self:sendCancelMessage("You can move only money to this container.")
-				return false
+		if not configManager.getBoolean(configKeys.TOGGLE_GOLD_POUCH_ALLOW_ANYTHING) then
+			-- Gold Pouch
+			if (containerTo:getId() == ITEM_GOLD_POUCH) then
+				if (not (item:getId() == ITEM_CRYSTAL_COIN or item:getId() == ITEM_PLATINUM_COIN or item:getId() == ITEM_GOLD_COIN)) then
+					self:sendCancelMessage("You can move only money to this container.")
+					return false
+				end
 			end
 		end
 	end
-
 
 	-- Bath tube
 	local toTile = Tile(toCylinder:getPosition())
@@ -614,7 +614,7 @@ local function useStamina(player)
 	end
 
 	local playerId = player:getId()
-	if not playerId then
+	if not playerId or not nextUseStaminaTime[playerId] then
 		return false
 	end
 
@@ -741,12 +741,20 @@ function Player:onGainSkillTries(skill, tries)
 	end
 
 	-- Event scheduler skill rate
-	local STAGES_DEFAULT = skillsStages or nil
-	local SKILL_DEFAULT = self:getSkillLevel(skill)
-	local RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
+	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
+		STAGES_DEFAULT = skillsStages
+	else
+		STAGES_DEFAULT = nil
+	end
+	SKILL_DEFAULT = self:getSkillLevel(skill)
+	RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
 
 	if(skill == SKILL_MAGLEVEL) then -- Magic Level
-		STAGES_DEFAULT = magicLevelStages or nil
+		if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
+			STAGES_DEFAULT = magicLevelStages
+		else
+			STAGES_DEFAULT = nil
+		end
 		SKILL_DEFAULT = self:getBaseMagicLevel()
 		RATE_DEFAULT = configManager.getNumber(configKeys.RATE_MAGIC)
 	end

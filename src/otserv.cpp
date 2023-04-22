@@ -9,10 +9,6 @@
 
 #include "pch.hpp"
 
-#ifdef OS_WINDOWS
-	#include "conio.h"
-#endif
-
 #include "declarations.hpp"
 #include "creatures/combat/spells.h"
 #include "creatures/players/grouping/familiars.h"
@@ -33,10 +29,6 @@
 #include "server/server.h"
 #include "io/ioprey.h"
 #include "io/io_bosstiary.hpp"
-
-#if __has_include("gitmetadata.h")
-	#include "gitmetadata.h"
-#endif
 
 #include "core.hpp"
 
@@ -75,9 +67,19 @@ std::string getCompiler() {
 
 void startupErrorMessage() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
-	getchar();
-	exit(0);
+
+	if (isatty(STDIN_FILENO)) {
+		getchar();
+	}
+
 	g_loaderSignal.notify_all();
+
+#ifdef _WIN32
+	exit(-1);
+#else
+	g_scheduler().shutdown();
+	exit(-1);
+#endif
 }
 
 void mainLoader(int argc, char* argv[], ServiceManager* servicer);
@@ -86,8 +88,16 @@ void badAllocationHandler() {
 	// Use functions that only use stack allocation
 	SPDLOG_ERROR("Allocation failed, server out of memory, "
 				 "decrease the size of your map or compile in 64 bits mode");
-	getchar();
+	if (isatty(STDIN_FILENO)) {
+		getchar();
+	}
+
+#ifdef _WIN32
 	exit(-1);
+#else
+	g_scheduler().shutdown();
+	exit(-1);
+#endif
 }
 
 void modulesLoadHelper(bool loaded, std::string moduleName) {
@@ -308,17 +318,18 @@ void mainLoader(int, char*[], ServiceManager* services) {
 
 	SPDLOG_INFO("World type set as {}", asUpperCaseString(worldType));
 
-	SPDLOG_INFO("Loading map...");
+	SPDLOG_INFO("Loading main map...");
 	if (!g_game().loadMainMap(g_configManager().getString(MAP_NAME))) {
-		SPDLOG_ERROR("Failed to load map");
+		SPDLOG_ERROR("Failed to load main map");
 		startupErrorMessage();
 	}
 
 	// If "mapCustomEnabled" is true on config.lua, then load the custom map
 	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
-		SPDLOG_INFO("Loading custom map...");
-		if (!g_game().loadCustomMap(g_configManager().getString(MAP_CUSTOM_NAME))) {
-			SPDLOG_ERROR("Failed to load custom map");
+		SPDLOG_INFO("Loading custom maps...");
+		std::string customMapPath = g_configManager().getString(DATA_DIRECTORY) + "/world/custom/";
+		if (!g_game().loadCustomMaps(customMapPath)) {
+			SPDLOG_ERROR("Failed to load custom maps");
 			startupErrorMessage();
 		}
 	}

@@ -281,7 +281,7 @@ int PlayerFunctions::luaPlayerSetAccountType(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayeraddBestiaryKill(lua_State* L) {
+int PlayerFunctions::luaPlayerAddBestiaryKill(lua_State* L) {
 	// player:addBestiaryKill(name[, amount = 1])
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
@@ -3234,6 +3234,21 @@ int PlayerFunctions::luaPlayerUpdateUIExhausted(lua_State* L) {
 	}
 
 	player->updateUIExhausted();
+	pushBoolean(L, true);
+	return 1;
+}
+
+// Bosstiary Cooldown Timer
+int PlayerFunctions::luaPlayerBosstiaryCooldownTimer(lua_State* L) {
+	// player:sendBosstiaryCooldownTimer()
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->sendBosstiaryCooldownTimer();
 	pushBoolean(L, true);
 	return 1;
 }

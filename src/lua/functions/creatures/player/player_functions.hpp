@@ -38,7 +38,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "setAccountType", PlayerFunctions::luaPlayerSetAccountType);
 
 			registerMethod(L, "Player", "isMonsterBestiaryUnlocked", PlayerFunctions::luaPlayerIsMonsterBestiaryUnlocked);
-			registerMethod(L, "Player", "addBestiaryKill", PlayerFunctions::luaPlayeraddBestiaryKill);
+			registerMethod(L, "Player", "addBestiaryKill", PlayerFunctions::luaPlayerAddBestiaryKill);
 			registerMethod(L, "Player", "charmExpansion", PlayerFunctions::luaPlayercharmExpansion);
 			registerMethod(L, "Player", "getCharmMonsterType", PlayerFunctions::luaPlayergetCharmMonsterType);
 
@@ -294,6 +294,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "setRemoveBossTime", PlayerFunctions::luaPlayerSetRemoveBossTime);
 			registerMethod(L, "Player", "getSlotBossId", PlayerFunctions::luaPlayerGetSlotBossId);
 			registerMethod(L, "Player", "getBossBonus", PlayerFunctions::luaPlayerGetBossBonus);
+			registerMethod(L, "Player", "sendBosstiaryCooldownTimer", PlayerFunctions::luaPlayerBosstiaryCooldownTimer);
 
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
@@ -318,7 +319,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetAccountType(lua_State* L);
 		static int luaPlayerSetAccountType(lua_State* L);
 
-		static int luaPlayeraddBestiaryKill(lua_State* L);
+		static int luaPlayerAddBestiaryKill(lua_State* L);
 		static int luaPlayerIsMonsterBestiaryUnlocked(lua_State* L);
 		static int luaPlayercharmExpansion(lua_State* L);
 		static int luaPlayergetCharmMonsterType(lua_State* L);
@@ -580,6 +581,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerSetRemoveBossTime(lua_State* L);
 		static int luaPlayerGetSlotBossId(lua_State* L);
 		static int luaPlayerGetBossBonus(lua_State* L);
+		static int luaPlayerBosstiaryCooldownTimer(lua_State* L);
 
 		friend class CreatureFunctions;
 };

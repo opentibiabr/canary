@@ -1,5 +1,11 @@
 function createHirelingType(HirelingName)
 	local npcType = Game.createNpcType(HirelingName)
+
+	-- If it's a Hireling with a name like an npc, example "Hireling Canary", we'll remove the name "Hireling" and keep only the npc name for the look description
+	if string.match(HirelingName, "^Hireling%s%w+") then
+		HirelingName = string.sub(HirelingName, 10)
+	end
+
 	local npcConfig = {}
 
 	npcConfig.name = HirelingName

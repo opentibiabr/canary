@@ -90,6 +90,12 @@ taskHuntingBonusRerollPrice = 1
 taskHuntingFreeRerollTime = 20 * 60 * 60
 
 -- Forge system
+-- NOTE: forgeAmountMultiplier, amount dusts multiplies of influenced monsters, default 3
+-- NOTE: forgeMinSlivers, min slivers from influenced monsters
+-- NOTE: forgeMaxSlivers, max slivers from influenced monsters
+-- NOTE: forgeInfluencedLimit, limit of influenced monsters that will be created in interval type and time
+-- NOTE: forgeFiendishLimit, limit of diabolic monsters that will be created in interval type and time, less than forgeInfluencedLimit
+-- NOTE: forgeFiendishIntervalType: "hour", "minute" or "second"
 forgeMaxItemTier = 10
 forgeCostOneSliver = 20
 forgeSliverAmount = 3
@@ -100,6 +106,7 @@ forgeTransferCost = 100
 forgeBaseSuccessRate = 50
 forgeBonusSuccessRate = 15
 forgeTierLossReduction = 50
+forgeAmountMultiplier = 3
 forgeMinSlivers = 3
 forgeMaxSlivers = 7
 forgeInfluencedLimit = 300
@@ -107,7 +114,12 @@ forgeFiendishLimit = 3
 forgeFiendishIntervalType = "hour"
 forgeFiendishIntervalTime = "1"
 
--- Bosstiary system
+-- Bestiary & Bosstiary system
+-- NOTE: bestiaryKillMultiplier, multiplier value of monster killed, default 1
+-- NOTE: bosstiaryKillMultiplier, multiplier value of boss killed, default 1
+bestiaryKillMultiplier = 1
+bosstiaryKillMultiplier = 1
+bestiaryRateCharmShopPrice  = 1.0
 boostedBossSlot = true
 boostedBossLootBonus = 250
 boostedBossKillBonus = 3
@@ -121,17 +133,25 @@ familiarTime = 30
 onlyPremiumAccount = false
 
 -- Customs
+-- NOTE: weatherRain = true, activates weather raining effects
+-- NOTE: thunderEffect = true, activates thunder effects
+-- NOTE: allConsoleLog = true, show all message logs
+-- NOTE: stashMoving = true, stow an container inside your stash
+-- NOTE: depotChest, the non-stackable items will be moved to the selected depot chest(I - XVIII).
+-- NOTE: autoBank = true, the dropped coins from monsters will be automatically deposited to your bank account.
+-- NOTE: toggleGoldPouchAllowAnything will allow players to move items or gold to gold pouch
+-- NOTE: toggleServerIsRetroPVP will make this server as retro, setting PARTY_PROTECTION and ADVANCED_SECURE_MODE to 0
+-- NOTE: toggleTravelsFree will make all travels from boat free
 weatherRain = false
 thunderEffect = false
 allConsoleLog = false
--- stashMoving = true, stow an container inside your stash
--- the non-stackable items will be moved to the selected depot chest(I - XVIII).
 stashMoving = false
 depotChest = 4
 autoLoot = false
--- autoBank = true, the dropped coins from monsters will be automatically
--- deposited to your bank account.
 autoBank = false
+toggleGoldPouchAllowAnything = false
+toggleServerIsRetroPVP = false
+toggleTravelsFree = false
 
 -- Teleport summon
 -- Set to true will never remove the summon
@@ -217,10 +237,8 @@ mapAuthor = "OpenTibiaBR"
 partyListMaxDistance = 30
 
 -- Custom Map
--- NOTE: mapCustomEnabled = activate the map, false = disable the map
+-- NOTE: toggleMapCustom set to true will load all maps in custom map folder
 toggleMapCustom = true
-mapCustomName = "otservbr-custom"
-mapCustomAuthor = "OpenTibiaBR"
 
 -- Market
 marketOfferDuration = 30 * 24 * 60 * 60
@@ -330,3 +348,4 @@ location = "South America"
 -- The URL layout is https://discord.com/api/webhooks/:id/:token
 -- Leave empty if you wish to disable.
 discordWebhookURL = ""
+

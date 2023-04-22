@@ -59,7 +59,7 @@ npcType.onThink = function(npc, interval)
 	npcHandler:onThink(npc, interval)
 end
 
--- onAppear 
+-- onAppear
 npcType.onAppear = function(npc, creature)
 	npcHandler:onAppear(npc, creature)
 end

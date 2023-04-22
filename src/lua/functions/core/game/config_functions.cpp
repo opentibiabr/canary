@@ -178,12 +178,21 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", FORGE_BASE_SUCCESS_RATE);
 	registerEnumIn(L, "configKeys", FORGE_BONUS_SUCCESS_RATE);
 	registerEnumIn(L, "configKeys", FORGE_TIER_LOSS_REDUCTION);
+	registerEnumIn(L, "configKeys", FORGE_AMOUNT_MULTIPLIER);
 	registerEnumIn(L, "configKeys", FORGE_INFLUENCED_CREATURES_LIMIT);
+
+	registerEnumIn(L, "configKeys", BESTIARY_KILL_MULTIPLIER);
+	registerEnumIn(L, "configKeys", BOSSTIARY_KILL_MULTIPLIER);
 	registerEnumIn(L, "configKeys", BOOSTED_BOSS_SLOT);
 	registerEnumIn(L, "configKeys", BOOSTED_BOSS_LOOT_BONUS);
 	registerEnumIn(L, "configKeys", BOOSTED_BOSS_KILL_BONUS);
+	registerEnumIn(L, "configKeys", BESTIARY_RATE_CHARM_SHOP_PRICE);
 
 	registerEnumIn(L, "configKeys", FAMILIAR_TIME);
+
+	registerEnumIn(L, "configKeys", TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);
+	registerEnumIn(L, "configKeys", TOGGLE_SERVER_IS_RETRO);
+	registerEnumIn(L, "configKeys", TOGGLE_TRAVELS_FREE);
 #undef registerEnumIn
 }
 

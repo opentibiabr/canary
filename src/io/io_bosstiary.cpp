@@ -38,7 +38,7 @@ void IOBosstiary::loadBoostedBoss() {
 	}
 
 	std::string bossName;
-	uint32_t bossId;
+	uint32_t bossId = 0;
 	if (date == today) {
 		bossName = result->getString("boostname");
 		bossId = result->getNumber<uint32_t>("raceid");
@@ -48,29 +48,34 @@ void IOBosstiary::loadBoostedBoss() {
 		return;
 	}
 
+	// Filter only archfoe bosses
+	std::map<uint32_t, std::string> bossInfo;
+	for (auto [infoBossRaceId, infoBossName] : bossMap) {
+		const MonsterType* mType = getMonsterTypeByBossRaceId(infoBossRaceId);
+		if (!mType || mType->info.bosstiaryRace != BosstiaryRarity_t::RARITY_ARCHFOE) {
+			continue;
+		}
+
+		bossInfo.try_emplace(infoBossRaceId, infoBossName);
+	}
+
+	// Check if not have archfoe registered boss
+	if (bossInfo.size() == 0) {
+		SPDLOG_ERROR("Failed to boost a boss. There is no boss registered with the Archfoe Rarity.");
+		return;
+	}
+
 	uint32_t oldBossRace = result->getNumber<uint32_t>("raceid");
 	while (true) {
-		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossMap.size()));
-		auto it = std::next(bossMap.begin(), randomIndex);
+		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossInfo.size()));
+		auto it = std::next(bossInfo.begin(), randomIndex);
 		const auto &[randomBossId, randomBossName] = *it;
-
-		auto mapBossRaceId = randomBossId;
-		if (mapBossRaceId == oldBossRace) {
-			continue;
-		}
-
-		const MonsterType* mType = getMonsterTypeByBossRaceId(mapBossRaceId);
-		if (!mType) {
-			continue;
-		}
-
-		if (auto bossRarity = mType->info.bosstiaryRace;
-			bossRarity != BosstiaryRarity_t::RARITY_ARCHFOE) {
+		if (randomBossId == oldBossRace) {
 			continue;
 		}
 
 		bossName = randomBossName;
-		bossId = mapBossRaceId;
+		bossId = randomBossId;
 		break;
 	}
 
@@ -288,9 +293,6 @@ std::vector<uint32_t> IOBosstiary::getBosstiaryCooldown(const Player* player) co
 	for (std::map<uint32_t, std::string> bossesMap = getBosstiaryMap();
 		 const auto &[bossId, bossName] : bossesMap) {
 		uint32_t bossKills = player->getBestiaryKillCount(static_cast<uint16_t>(bossId));
-		if (bossKills == 0) {
-			continue;
-		}
 
 		const MonsterType* mType = g_monsters().getMonsterType(bossName);
 		if (!mType) {
@@ -302,7 +304,7 @@ std::vector<uint32_t> IOBosstiary::getBosstiaryCooldown(const Player* player) co
 			continue;
 		}
 
-		if (bossKills >= 1) {
+		if (bossKills >= 1 || player->getStorageValue(bossStorage) > 0) {
 			bossesCooldown.push_back(bossId);
 		}
 	}

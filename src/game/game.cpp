@@ -186,8 +186,10 @@ void Game::setGameState(GameState_t newState) {
 			map.spawnsNpc.startup();
 
 			// Load monsters and npcs custom stored by the "loadFromXML" function
-			map.spawnsMonsterCustom.startup();
-			map.spawnsNpcCustom.startup();
+			for (int i = 0; i < 50; i++) {
+				map.spawnsNpcCustomMaps[i].startup();
+				map.spawnsMonsterCustomMaps[i].startup();
+			}
 
 			raids.loadFromXml();
 			raids.startup();
@@ -305,10 +307,52 @@ bool Game::loadMainMap(const std::string &filename) {
 	return map.loadMap(g_configManager().getString(DATA_DIRECTORY) + "/world/" + filename + ".otbm", true, true, true, true);
 }
 
-bool Game::loadCustomMap(const std::string &filename) {
+bool Game::loadCustomMaps(const std::string &customMapPath) {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
-	return map.loadMapCustom(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/" + filename + ".otbm", true, true, true);
+
+	namespace fs = std::filesystem;
+
+	int customMapIndex = 0;
+	for (const auto &entry : fs::directory_iterator(customMapPath)) {
+		const auto &realPath = entry.path();
+
+		if (realPath.extension() != ".otbm") {
+			continue;
+		}
+
+		std::string filename = realPath.stem().string();
+
+		// Do not load more maps than possible
+		if (customMapIndex >= 50) {
+			SPDLOG_WARN("Maximum number of custom maps loaded. Custom map {} [ignored]", filename);
+			continue;
+		}
+
+		// Filenames that start with a # are ignored.
+		if (filename.at(0) == '#') {
+			SPDLOG_INFO("Custom map {} [disabled]", filename);
+			continue;
+		}
+
+		// Avoid loading main map again.
+		if (filename == g_configManager().getString(MAP_NAME)) {
+			SPDLOG_WARN("Custom map {} is main map", filename);
+			continue;
+		}
+
+		SPDLOG_INFO("Loading custom map {}", filename);
+		if (!map.loadMapCustom(filename, true, true, true, customMapIndex)) {
+			SPDLOG_ERROR("Failed to load custom map {}", filename);
+			return false;
+		}
+		customMapIndex += 1;
+	}
+
+	// Must be done after all maps have been loaded
+	map.loadHouseInfo();
+
+	return true;
 }
 
 void Game::loadMap(const std::string &path, const Position &pos, bool unload) {
@@ -4394,7 +4438,7 @@ void Game::playerSetLootContainer(uint32_t playerId, ObjectCategory_t category, 
 	}
 
 	Container* container = thing->getContainer();
-	if (!container || (container->getID() == ITEM_GOLD_POUCH && category != OBJECTCATEGORY_GOLD)) {
+	if (!container || (container->getID() == ITEM_GOLD_POUCH && category != OBJECTCATEGORY_GOLD && !g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING))) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -6523,7 +6567,9 @@ void Game::shutdown() {
 	ConnectionManager::getInstance().closeAll();
 
 	SPDLOG_INFO("Done!");
+#ifdef _WIN32
 	exit(0);
+#endif
 }
 
 void Game::cleanup() {

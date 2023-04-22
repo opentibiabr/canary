@@ -50,5 +50,6 @@ stepMorguthisBlueFlames:type("stepin")
 for index, value in pairs(setting) do
 	stepMorguthisBlueFlames:uid(index)
 end
+stepMorguthisBlueFlames:uid(50146)
 
 stepMorguthisBlueFlames:register()

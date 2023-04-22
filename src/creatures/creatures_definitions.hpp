@@ -563,9 +563,9 @@ enum CombatType_t : uint16_t {
 	COMBAT_NONE = 0,
 
 	COMBAT_PHYSICALDAMAGE = 1 << 0,
-	COMBAT_FIREDAMAGE = 1 << 1,
+	COMBAT_ENERGYDAMAGE = 1 << 1,
 	COMBAT_EARTHDAMAGE = 1 << 2,
-	COMBAT_ENERGYDAMAGE = 1 << 3,
+	COMBAT_FIREDAMAGE = 1 << 3,
 	COMBAT_UNDEFINEDDAMAGE = 1 << 4,
 	COMBAT_LIFEDRAIN = 1 << 5,
 	COMBAT_MANADRAIN = 1 << 6,
@@ -853,6 +853,10 @@ struct ShopBlock {
 
 		explicit ShopBlock(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "") :
 			itemId(newItemId), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue), itemName(std::move(newName)) { }
+
+		bool operator==(const ShopBlock &other) const {
+			return itemId == other.itemId && itemName == other.itemName && itemSubType == other.itemSubType && itemBuyPrice == other.itemBuyPrice && itemSellPrice == other.itemSellPrice && itemStorageKey == other.itemStorageKey && itemStorageValue == other.itemStorageValue && childShop == other.childShop;
+		}
 };
 
 struct summonBlock_t {

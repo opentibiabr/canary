@@ -190,7 +190,9 @@ class Map {
 		 * \param loadNpcs if true, the map custom npcs is loaded
 		 * \returns true if the custom map was loaded successfully
 		 */
-		bool loadMapCustom(const std::string &identifier, bool loadHouses, bool loadMonsters, bool loadNpcs);
+		bool loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, const int customMapIndex);
+
+		void loadHouseInfo();
 
 		/**
 		 * Save a map.
@@ -270,10 +272,10 @@ class Map {
 		Towns towns;
 		Houses houses;
 
-		// Storage made by "loadFromXML" of houses, monsters and npcs for custom map
-		SpawnsMonster spawnsMonsterCustom;
-		SpawnsNpc spawnsNpcCustom;
-		Houses housesCustom;
+		// Storage made by "loadFromXML" of houses, monsters and npcs for custom maps
+		SpawnsMonster spawnsMonsterCustomMaps[50];
+		SpawnsNpc spawnsNpcCustomMaps[50];
+		Houses housesCustomMaps[50];
 
 	private:
 		SpectatorCache spectatorCache;

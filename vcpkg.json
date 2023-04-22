@@ -11,7 +11,7 @@
     "parallel-hashmap",
     "magic-enum",
     "zlib",
-    {"name": "mio", "version>=": "2019-02-10"},
+    "mio",
     {
       "name": "luajit",
       "platform": "!arm"
@@ -29,5 +29,5 @@
       "platform": "windows"
     }
   ],
-  "builtin-baseline":"0e67f312e831b4b897c7f492cf1e2858522c6e18"
+  "builtin-baseline":"69efe9cc2df0015f0bb2d37d55acde4a75c9a25b"
 }

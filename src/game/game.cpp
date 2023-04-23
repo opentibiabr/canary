@@ -3557,6 +3557,7 @@ void Game::playerStowItem(uint32_t playerId, const Position &pos, uint16_t itemI
 	Thing* thing = internalGetThing(player, pos, stackpos, itemId, STACKPOS_TOPDOWN_ITEM);
 	if (!thing)
 		return;
+	}
 
 	Item* item = thing->getItem();
 	if (!item || item->getID() != itemId || item->getItemCount() < count) {

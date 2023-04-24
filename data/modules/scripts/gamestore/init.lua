@@ -65,7 +65,6 @@ GameStore.ActionType = {
 GameStore.CointType = {
 	Coin = 0,
 	Transferable = 1,
-	Tournament = 2,
 }
 
 GameStore.Storages = {
@@ -865,7 +864,7 @@ function sendStoreTransactionHistory(playerId, page, entriesPerPage)
 		msg:addU32(entry.time)
 		msg:addByte(entry.mode) -- 0 = normal, 1 = gift, 2 = refund
 		msg:add32(entry.amount)
-		msg:addByte(entry.type) -- 0 = transferable tibia coin, 1 = normal tibia coin, 2 = tournament coin
+		msg:addByte(entry.type) -- 0 = transferable tibia coin, 1 = normal tibia coin
 		msg:addString(entry.description)
 		msg:addByte(0) -- details
 	end
@@ -933,7 +932,6 @@ function sendUpdatedStoreBalances(playerId)
 	msg:addU32(player:getCoinsBalance()) -- Tibia Coins
 	msg:addU32(player:getCoinsBalance()) -- How many are Transferable
 	msg:addU32(0) -- How many are reserved for a Character Auction
-	msg:addU32(player:getTournamentBalance()) -- Tournament Coins
 
 	msg:sendToPlayer(player)
 end
@@ -1650,41 +1648,6 @@ function Player.addCoinsBalance(self, coins, update)
 	return true
 end
 
---- Tournament Coins
-function Player.getTournamentBalance(self)
-	resultId = db.storeQuery("SELECT `tournament_coins` FROM `accounts` WHERE `id` = " .. self:getAccountId())
-	if not resultId then
-		return 0
-	end
-	return Result.getNumber(resultId, "tournament_coins")
-end
-
-function Player.setTournamentBalance(self, tournament)
-	db.query("UPDATE `accounts` SET `tournament_coins` = " .. tournament .. " WHERE `id` = " .. self:getAccountId())
-	return true
-end
-
-function Player.canRemoveTournament(self, tournament)
-	if self:getTournamentBalance() < tournament then
-		return false
-	end
-	return true
-end
-
-function Player.removeTournamentBalance(self, tournament)
-	if self:canRemoveTournament(tournament) then
-		return self:setTournamentBalance(self:getTournamentBalance() - tournament)
-	end
-
-	return false
-end
-
-function Player.addTournamentBalance(self, tournament, update)
-	self:setTournamentBalance(self:getTournamentBalance() + tournament)
-	if update then sendStoreBalanceUpdating(self, true) end
-	return true
-end
-
 --- Support Functions
 function Player.makeCoinTransaction(self, offer, desc)
 	local op = true
@@ -1696,11 +1659,7 @@ function Player.makeCoinTransaction(self, offer, desc)
 	end
 	
 	-- Remove coins
-	if offer.coinType == GameStore.CointType.Tournament then
-		op = self:removeTournamentBalance(offer.price)
-	else
-		op = self:removeCoinsBalance(offer.price)
-	end
+	op = self:removeCoinsBalance(offer.price)
 
 	-- When the transaction is suscessfull add to the history
 	if op then
@@ -1711,11 +1670,7 @@ function Player.makeCoinTransaction(self, offer, desc)
 end
 
 function Player.canPayForOffer(self, coins, type)
-	if type == GameStore.CointType.Tournament then
-		return self:canRemoveTournament(coins)
-	else
-		return self:canRemoveCoins(coins)
-	end
+	return self:canRemoveCoins(coins)
 end
 
 --- Other players functions

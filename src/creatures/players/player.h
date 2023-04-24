@@ -1481,11 +1481,6 @@ class Player final : public Creature, public Cylinder {
 		void resetAsyncOngoingTask(uint64_t flags) {
 			asyncOngoingTasks &= ~(flags);
 		}
-		void sendTournamentLeaderboard() {
-			if (client) {
-				client->sendTournamentLeaderboard();
-			}
-		}
 		void sendEnterWorld() {
 			if (client) {
 				client->sendEnterWorld();

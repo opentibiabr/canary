@@ -223,11 +223,6 @@ function onRecvbyte(player, msg, byte)
 		return player:sendCancelMessage("Store don't have offers for rookgaard citizen.")
 	end
 
-	if player:isUIExhausted(250) then
-		player:sendCancelMessage("You are exhausted.")
-		return false
-	end
-
 	if byte == GameStore.RecivedPackets.C_StoreEvent then
 	elseif byte == GameStore.RecivedPackets.C_TransferCoins then
 		parseTransferCoins(player:getId(), msg)
@@ -241,6 +236,11 @@ function onRecvbyte(player, msg, byte)
 		parseOpenTransactionHistory(player:getId(), msg)
 	elseif byte == GameStore.RecivedPackets.C_RequestTransactionHistory then
 		parseRequestTransactionHistory(player:getId(), msg)
+	end
+	
+	if player:isUIExhausted(250) then
+		player:sendCancelMessage("You are exhausted.")
+		return false
 	end
 
 	player:updateUIExhausted()

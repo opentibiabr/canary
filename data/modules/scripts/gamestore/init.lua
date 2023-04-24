@@ -237,7 +237,7 @@ function onRecvbyte(player, msg, byte)
 	elseif byte == GameStore.RecivedPackets.C_RequestTransactionHistory then
 		parseRequestTransactionHistory(player:getId(), msg)
 	end
-	
+
 	if player:isUIExhausted(250) then
 		player:sendCancelMessage("You are exhausted.")
 		return false

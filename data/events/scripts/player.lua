@@ -70,6 +70,12 @@ local function getTitle(uid)
 end
 
 function Player:onBrowseField(position)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onBrowseField")) == "onBrowseField" then
+			functionCallback(self, position)
+		end
+	end
+
 	return true
 end
 
@@ -116,6 +122,12 @@ local function getTimeinWords(secs)
 end
 
 function Player:onLook(thing, position, distance)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onLook")) == "onLook" then
+			functionCallback(self, thing, position, distance)
+		end
+	end
+
 	local description = "You see "
 	if thing:isItem() then
 		if thing.actionid == 5640 then
@@ -203,6 +215,12 @@ function Player:onLook(thing, position, distance)
 end
 
 function Player:onLookInBattleList(creature, distance)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onLookInBattleList")) == "onLookInBattleList" then
+			functionCallback(self, creature, distance)
+		end
+	end
+
 	local description = "You see " .. creature:getDescription(distance)
 	if creature:isMonster() then
 		local master = creature:getMaster()
@@ -234,10 +252,22 @@ function Player:onLookInBattleList(creature, distance)
 end
 
 function Player:onLookInTrade(partner, item, distance)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onLookInTrade")) == "onLookInTrade" then
+			functionCallback(self, partner, item, distance)
+		end
+	end
+
 	self:sendTextMessage(MESSAGE_LOOK, "You see " .. item:getDescription(distance))
 end
 
 function Player:onLookInShop(itemType, count)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onLookInShop")) == "onLookInShop" then
+			functionCallback(self, itemType, count)
+		end
+	end
+
 	return true
 end
 
@@ -291,6 +321,12 @@ local function antiPush(self, item, count, fromPosition, toPosition, fromCylinde
 end
 
 function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onMoveItem")) == "onMoveItem" then
+			functionCallback(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+		end
+	end
+
 	if item:getActionId() == IMMOVABLE_ACTION_ID then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
@@ -426,6 +462,12 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 end
 
 function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onItemMoved")) == "onItemMoved" then
+			functionCallback(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+		end
+	end
+
 	if IsRunningGlobalDatapack() then
 		-- Cults of Tibia begin
 		local frompos = Position(33023, 31904, 14) -- Checagem
@@ -462,6 +504,12 @@ function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder,
 end
 
 function Player:onMoveCreature(creature, fromPosition, toPosition)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onMoveCreature")) == "onMoveCreature" then
+			functionCallback(self, creature, fromPosition, toPosition)
+		end
+	end
+
 	local player = creature:getPlayer()
 	if player and onExerciseTraining[player:getId()] and self:getGroup():hasFlag(PlayerFlag_CanPushAllCreatures) == false then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
@@ -481,6 +529,12 @@ local function hasPendingReport(name, targetName, reportType)
 end
 
 function Player:onReportRuleViolation(targetName, reportType, reportReason, comment, translation)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onReportRuleViolation")) == "onReportRuleViolation" then
+			functionCallback(self, targetName, reportType, reportReason, comment, translation)
+		end
+	end
+
 	local name = self:getName()
 	if hasPendingReport(name, targetName, reportType) then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your report is being processed.")
@@ -512,6 +566,12 @@ function Player:onReportRuleViolation(targetName, reportType, reportReason, comm
 end
 
 function Player:onReportBug(message, position, category)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onReportBug")) == "onReportBug" then
+			functionCallback(self, message, position, category)
+		end
+	end
+
 	if self:getAccountType() == ACCOUNT_TYPE_NORMAL then
 		return false
 	end
@@ -542,6 +602,12 @@ function Player:onReportBug(message, position, category)
 end
 
 function Player:onTurn(direction)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onTurn")) == "onTurn" then
+			functionCallback(self, direction)
+		end
+	end
+
 	if self:getGroup():getAccess() and self:getDirection() == direction then
 		local nextPosition = self:getPosition()
 		nextPosition:getNextPosition(direction)
@@ -553,6 +619,12 @@ function Player:onTurn(direction)
 end
 
 function Player:onTradeRequest(target, item)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onTradeRequest")) == "onTradeRequest" then
+			functionCallback(self, target, item )
+		end
+	end
+
 	if item:getActionId() == IMMOVABLE_ACTION_ID then
 		return false
 	end
@@ -564,6 +636,12 @@ function Player:onTradeRequest(target, item)
 end
 
 function Player:onTradeAccept(target, item, targetItem)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onTradeAccept")) == "onTradeAccept" then
+			functionCallback(self, target, item, targetItem)
+		end
+	end
+
 	self:closeForge()
 	target:closeForge()
 	self:closeImbuementWindow()
@@ -648,6 +726,12 @@ local function useStaminaXpBoost(player)
 end
 
 function Player:onGainExperience(target, exp, rawExp)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onGainExperience")) == "onGainExperience" then
+			functionCallback(self, target, exp, rawExp)
+		end
+	end
+
 	if not target or target:isPlayer() then
 		return exp
 	end
@@ -700,10 +784,22 @@ function Player:onGainExperience(target, exp, rawExp)
 end
 
 function Player:onLoseExperience(exp)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onLoseExperience")) == "onLoseExperience" then
+			functionCallback(self, exp)
+		end
+	end
+
 	return exp
 end
 
 function Player:onGainSkillTries(skill, tries)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onGainSkillTries")) == "onGainSkillTries" then
+			functionCallback(self, skill, tries)
+		end
+	end
+
 	-- Dawnport skills limit
 	if  IsRunningGlobalDatapack() and isSkillGrowthLimited(self, skill) then
 		return 0
@@ -741,22 +837,52 @@ function Player:onGainSkillTries(skill, tries)
 end
 
 function Player:onRemoveCount(item)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onRemoveCount")) == "onRemoveCount" then
+			functionCallback(self, item)
+		end
+	end
+
 	self:sendWaste(item:getId())
 end
 
 function Player:onRequestQuestLog()
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onRequestQuestLog")) == "onRequestQuestLog" then
+			functionCallback(self)
+		end
+	end
+
 	self:sendQuestLog()
 end
 
 function Player:onRequestQuestLine(questId)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onRequestQuestLine")) == "onRequestQuestLine" then
+			functionCallback(self, questId)
+		end
+	end
+
 	self:sendQuestLine(questId)
 end
 
 function Player:onStorageUpdate(key, value, oldValue, currentFrameTime)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onStorageUpdate")) == "onStorageUpdate" then
+			functionCallback(self, key, value, oldValue, currentFrameTime)
+		end
+	end
+
 	self:updateStorage(key, value, oldValue, currentFrameTime)
 end
 
 function Player:onCombat(target, item, primaryDamage, primaryType, secondaryDamage, secondaryType)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onCombat")) == "onCombat" then
+			functionCallback(self, target, item, primaryDamage, primaryType, secondaryDamage, secondaryType)
+		end
+	end
+
 	if not item or not target then
 		return primaryDamage, primaryType, secondaryDamage, secondaryType
 	end
@@ -773,6 +899,12 @@ function Player:onCombat(target, item, primaryDamage, primaryType, secondaryDama
 end
 
 function Player:onChangeZone(zone)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onChangeZone")) == "onChangeZone" then
+			functionCallback(self, zone)
+		end
+	end
+
 	if self:isPremium() then
 		local event = staminaBonus.eventsPz[self:getId()]
 
@@ -810,4 +942,9 @@ end
 
 
 function Player:onInventoryUpdate(item, slot, equip)
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onInventoryUpdate")) == "onInventoryUpdate" then
+			functionCallback(self, item, slot, equip)
+		end
+	end
 end

@@ -18,6 +18,7 @@ dofile(CORE_DIRECTORY .. "/libs/reward_boss/monster.lua")
 
 dofile(CORE_DIRECTORY .. "/libs/achievements_lib.lua")
 dofile(CORE_DIRECTORY .. "/libs/bitwise_flags.lua")
+dofile(CORE_DIRECTORY .. "/libs/event_callback.lua")
 dofile(CORE_DIRECTORY .. "/libs/door.lua")
 dofile(CORE_DIRECTORY .. "/libs/exercise_training.lua")
 dofile(CORE_DIRECTORY .. "/libs/familiar.lua")

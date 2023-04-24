@@ -83,6 +83,17 @@ namespace {
 		}
 	}
 
+	// Send bytes function for avoid repetitions
+	void sendBosstiarySlotsBytes(NetworkMessage &msg, uint8_t bossRace = 0, uint32_t bossKillCount = 0, uint16_t bonusBossSlotOne = 0, uint8_t killBonus = 0, uint8_t isSlotOneInactive = 0, uint32_t removePrice = 0) {
+		msg.addByte(bossRace); // Boss Race
+		msg.add<uint32_t>(bossKillCount); // Kill Count
+		msg.add<uint16_t>(bonusBossSlotOne); // Loot Bonus
+		msg.addByte(killBonus); // Kill Bonus
+		msg.addByte(bossRace); // Boss Race
+		msg.add<uint32_t>(isSlotOneInactive == 1 ? 0 : removePrice); // Remove Price
+		msg.addByte(isSlotOneInactive); // Inactive? (Only true if equal to Boosted Boss)
+	}
+
 } // namespace
 
 ProtocolGame::ProtocolGame(Connection_ptr initConnection) :
@@ -6847,22 +6858,20 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.addByte(isSlotOneUnlocked ? 1 : 0);
 	msg.add<uint32_t>(isSlotOneUnlocked ? bossIdSlotOne : 0);
 	if (isSlotOneUnlocked && bossIdSlotOne != 0) {
-		// Variables Boss Slot One
 		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotOne);
-		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-		auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
-		auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotOne);
-		uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
-		uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
-		// Bytes Slot One
-		msg.addByte(bossRace); // Boss Race
-		msg.add<uint32_t>(bossKillCount); // Kill Count
-		msg.add<uint16_t>(bonusBossSlotOne); // Loot Bonus
-		msg.addByte(0); // Kill Bonus
-		msg.addByte(bossRace); // Boss Race
-		msg.add<uint32_t>(isSlotOneInactive == 1 ? 0 : removePrice); // Remove Price
-		msg.addByte(isSlotOneInactive); // Inactive? (Only true if equal to Boosted Boss)
-		bossesUnlockedSize--;
+		if (mType) {
+			// Variables Boss Slot One
+			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
+			auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotOne);
+			uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
+			uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
+			// Bytes Slot One
+			sendBosstiarySlotsBytes(msg, bossRace, bossKillCount, bonusBossSlotOne, 0, isSlotOneInactive, removePrice);
+			bossesUnlockedSize--;
+		} else {
+			sendBosstiarySlotsBytes(msg);
+		}
 	}
 
 	uint32_t slotTwoPoints = 1500;
@@ -6872,20 +6881,18 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	if (isSlotTwoUnlocked && bossIdSlotTwo != 0) {
 		// Variables Boss Slot Two
 		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotTwo);
-		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-		auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotTwo));
-		auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotTwo);
-		uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
-		uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
-		// Bytes Slot Two
-		msg.addByte(bossRace); // Boss Race
-		msg.add<uint32_t>(bossKillCount); // Kill Count
-		msg.add<uint16_t>(bonusBossSlotTwo); // Loot Bonus
-		msg.addByte(0); // Kill Bonus
-		msg.addByte(bossRace); // Boss Race
-		msg.add<uint32_t>(isSlotTwoInactive == 1 ? 0 : removePrice); // Remove Price
-		msg.addByte(isSlotTwoInactive); // Inactive? (Only true if equal to Boosted Boss)
-		bossesUnlockedSize--;
+		if (mType) {
+			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotTwo));
+			auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotTwo);
+			uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
+			uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
+			// Bytes Slot Two
+			sendBosstiarySlotsBytes(msg, bossRace, bossKillCount, bonusBossSlotTwo, 0, isSlotTwoInactive, removePrice);
+			bossesUnlockedSize--;
+		} else {
+			sendBosstiarySlotsBytes(msg);
+		}
 	}
 
 	bool isTodaySlotUnlocked = g_configManager().getBoolean(BOOSTED_BOSS_SLOT);
@@ -6894,18 +6901,16 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	if (isTodaySlotUnlocked && boostedBossId != 0) {
 		std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
 		const MonsterType* mType = g_monsters().getMonsterType(boostedBossName);
-		auto boostedBossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-		auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
-		auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
-		auto bosstiaryMultiplier = static_cast<uint8_t>(g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER));
-		auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
-		msg.addByte(boostedBossRace); // Boss Race
-		msg.add<uint32_t>(boostedBossKillCount); // Kill Count
-		msg.add<uint16_t>(boostedLootBonus); // Loot Bonus
-		msg.addByte(bosstiaryMultiplier + boostedKillBonus); // Kill Bonus
-		msg.addByte(boostedBossRace); // Boss Race
-		msg.add<uint32_t>(0); // Remove Price
-		msg.addByte(0); // Inactive? (Only true if equal to Boosted Boss)
+		if (mType) {
+			auto boostedBossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+			auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
+			auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
+			auto bosstiaryMultiplier = static_cast<uint8_t>(g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER));
+			auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
+			sendBosstiarySlotsBytes(msg, boostedBossRace, boostedBossKillCount, boostedLootBonus, bosstiaryMultiplier + boostedKillBonus, 0, 0);
+		} else {
+			sendBosstiarySlotsBytes(msg);
+		}
 	}
 
 	msg.addByte(bossesUnlockedSize != 0 ? 1 : 0);

@@ -313,6 +313,13 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 
 	namespace fs = std::filesystem;
 
+	if (!fs::exists(customMapPath)) {
+		if (!fs::create_directory(customMapPath)) {
+			SPDLOG_ERROR("Failed to create custom map directory {}", customMapPath);
+			return false;
+		}
+	}
+
 	int customMapIndex = 0;
 	for (const auto &entry : fs::directory_iterator(customMapPath)) {
 		const auto &realPath = entry.path();
@@ -346,7 +353,7 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 			SPDLOG_ERROR("Failed to load custom map {}", filename);
 			return false;
 		}
-		customMapIndex += 1;
+		customMapIndex++;
 	}
 
 	// Must be done after all maps have been loaded

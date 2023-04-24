@@ -26,7 +26,7 @@ function Monster:onDropLoot(corpse)
 
 	for k, dropLoot in pairs(EventCallback) do
 		if type(dropLoot) == "function" and k:sub(1, #("onDropLoot")) == "onDropLoot" then
-			dropLoot(self, corpse)
+			corpse = dropLoot(self, corpse)
 		end
 	end
 
@@ -139,7 +139,7 @@ end
 function Monster:onSpawn(position)
 	for k, spawn in pairs(EventCallback) do
 		if type(spawn) == "function" and k:sub(1, #("onSpawn")) == "onSpawn" then
-			spawn(self, corpse)
+			self = spawn(self, position)
 		end
 	end
 

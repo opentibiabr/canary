@@ -726,14 +726,14 @@ local function useStaminaXpBoost(player)
 end
 
 function Player:onGainExperience(target, exp, rawExp)
-	for k, functionCallback in pairs(EventCallback) do
-		if type(functionCallback) == "function" and k:sub(1, #("onGainExperience")) == "onGainExperience" then
-			functionCallback(self, target, exp, rawExp)
-		end
-	end
-
 	if not target or target:isPlayer() then
 		return exp
+	end
+
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onGainExperience")) == "onGainExperience" then
+			exp = functionCallback(self, target, exp, rawExp)
+		end
 	end
 
 	-- Soul regeneration
@@ -786,7 +786,7 @@ end
 function Player:onLoseExperience(exp)
 	for k, functionCallback in pairs(EventCallback) do
 		if type(functionCallback) == "function" and k:sub(1, #("onLoseExperience")) == "onLoseExperience" then
-			functionCallback(self, exp)
+			exp = functionCallback(self, exp)
 		end
 	end
 
@@ -796,7 +796,7 @@ end
 function Player:onGainSkillTries(skill, tries)
 	for k, functionCallback in pairs(EventCallback) do
 		if type(functionCallback) == "function" and k:sub(1, #("onGainSkillTries")) == "onGainSkillTries" then
-			functionCallback(self, skill, tries)
+			tries = functionCallback(self, skill, tries)
 		end
 	end
 
@@ -877,14 +877,14 @@ function Player:onStorageUpdate(key, value, oldValue, currentFrameTime)
 end
 
 function Player:onCombat(target, item, primaryDamage, primaryType, secondaryDamage, secondaryType)
-	for k, functionCallback in pairs(EventCallback) do
-		if type(functionCallback) == "function" and k:sub(1, #("onCombat")) == "onCombat" then
-			functionCallback(self, target, item, primaryDamage, primaryType, secondaryDamage, secondaryType)
-		end
-	end
-
 	if not item or not target then
 		return primaryDamage, primaryType, secondaryDamage, secondaryType
+	end
+
+	for k, functionCallback in pairs(EventCallback) do
+		if type(functionCallback) == "function" and k:sub(1, #("onCombat")) == "onCombat" then
+			primaryDamage, primaryType, secondaryDamage, secondaryType = functionCallback(self, target, item, primaryDamage, primaryType, secondaryDamage, secondaryType)
+		end
 	end
 
 	if ItemType(item:getId()):getWeaponType() == WEAPON_AMMO then
@@ -939,7 +939,6 @@ function Player:onChangeZone(zone)
 	end
 	return false
 end
-
 
 function Player:onInventoryUpdate(item, slot, equip)
 	for k, functionCallback in pairs(EventCallback) do

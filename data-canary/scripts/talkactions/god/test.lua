@@ -1,13 +1,17 @@
 function EventCallback.onDropLoot(monster, corpse)
-	Spdlog.info("CorpseID: ".. corpse:getId())
+	return corpse
 end
 
 function EventCallback.onDropLoot(monster, corpse)
-	Spdlog.info("MonsterName: ".. monster:getName())
+	return corpse
 end
 
-function EventCallback.onEvent(monster, corpse)
-	-- Invalid event
+function EventCallback.onGainExperience(player, target, exp, rawExp)
+	return exp
+end
+
+function EventCallback.onSpawn(monster, position)
+	return monster
 end
 
 local test = TalkAction("/test")

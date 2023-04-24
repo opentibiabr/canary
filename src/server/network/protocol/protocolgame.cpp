@@ -4001,12 +4001,12 @@ void ProtocolGame::sendForgingData() {
 
 	std::map<uint8_t, uint16_t> tierCorePrices;
 
-	const auto& classifications = g_game().getItemsClassifications();
+	const auto &classifications = g_game().getItemsClassifications();
 	msg.addByte(classifications.size());
-	for (const auto& classification : classifications) {
+	for (const auto &classification : classifications) {
 		msg.addByte(classification->id);
 		msg.addByte(classification->tiers.size());
-		for (const auto& it : classification->tiers) {
+		for (const auto &it : classification->tiers) {
 			msg.addByte(it.first);
 			msg.add<uint64_t>(it.second.priceToUpgrade);
 			tierCorePrices[tier] = it.second.corePriceToFuse;
@@ -4018,7 +4018,7 @@ void ProtocolGame::sendForgingData() {
 
 	// Exalted core table per tier
 	msg.addByte(static_cast<uint8_t>(tierCorePrices.size()));
-	for (const auto& [tier, cores] : tierCorePrices) {
+	for (const auto &[tier, cores] : tierCorePrices) {
 		msg.addByte(tier);
 		msg.addByte(cores);
 	}

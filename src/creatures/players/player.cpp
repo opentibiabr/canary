@@ -6526,7 +6526,6 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 		setForgeDusts(getForgeDusts() - g_configManager().getNumber(FORGE_TRANSFER_DUST_COST));
 	}
 
-
 	uint8_t coresAmount = 0;
 	uint64_t cost = 0;
 	for (const auto &itemClassification : g_game().getItemsClassifications()) {

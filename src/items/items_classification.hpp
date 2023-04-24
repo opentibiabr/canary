@@ -11,8 +11,8 @@
 #define SRC_ITEMS_ITEMS_CLASSIFICATION_HPP_
 
 struct TierClass {
-	uint64_t priceToUpgrade = 0;
-	uint8_t corePriceToFuse = 0;
+		uint64_t priceToUpgrade = 0;
+		uint8_t corePriceToFuse = 0;
 };
 
 // Classification class for forging system and market.
@@ -24,7 +24,7 @@ class ItemClassification {
 		virtual ~ItemClassification() = default;
 
 		void addTier(uint8_t tierId, uint64_t tierPrice, uint8_t corePrice) {
-			auto& table = tiers[tierId];
+			auto &table = tiers[tierId];
 			table.priceToUpgrade = tierPrice;
 			table.corePriceToFuse = corePrice;
 		}

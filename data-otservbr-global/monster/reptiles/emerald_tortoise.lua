@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Emerald Tortoise")
 local monster = {}
 
 monster.description = "a Emerald Tortoise"
-monster.experience = 12192
+monster.experience = 12129
 monster.outfit = {
 	lookType = 1550,
 	lookHead = 85,
@@ -29,9 +29,9 @@ monster.Bestiary = {
 	FirstUnlock = 50,
 	SecondUnlock = 500,
 	CharmsPoints = 100,
-	Stars = 3,
-	Occurrence = 0,
-	Locations = "Sea Serpent Area and Seacrest Grounds."
+	Stars = 5,
+	Occurrence = 1,
+	Locations = "Sparkling Pools"
 }
 
 monster.changeTarget = {
@@ -75,17 +75,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 39546, chance = 0},
-	{name = "crystal coin", chance = 21000, maxCount = 3},
-	{name = "great spirit potion", chance = 19000, maxCount = 3},
-	{name = "orichalcum pearl", chance = 15000, maxCount = 2},
-	{name = "yellow gem", chance = 14300},
-	{name = "green crystal shard", chance = 11980},
-	{name = "blue crystal shard", chance = 15800},
-	{name = "violet gem", chance = 13430},
-	{name = "red crystal fragment", chance = 13500},
-	{name = "green crystal fragment", chance = 12580},
-	{name = "emerald tortoise shell", chance = 14500},
+	{name = "Emerald Tortoise Shell", chance = 28590},
+	{name = "Crystal Coin", chance = 15520, minCount = 1, maxCount = 3},
+	{name = "Great Spirit Potion", chance = 13360, minCount = 1, maxCount = 2},
+	{name = "Blue Crystal Shard", chance = 4030},
+	{name = "Green Crystal Fragment", chance = 3950},
+	{name = "Violet Gem", chance = 3950},
+	{name = "Red Crystal Fragment", chance = 3350},
+	{name = "Yellow Gem", chance = 3320},
+	{name = "White Pearl", chance = 3240},
+	{name = "Green Crystal Shard", chance = 2900},
+	{name = "Green Gem", chance = 2870},
+	{name = "Orichalcum Pearl", chance = 2640, minCount = 1, maxCount = 2},
+	{name = "Giant Shimmering Pearl (Green)", chance = 2420},
+	{name = "Red Gem", chance = 2420},
+	{name = "Black Pearl", chance = 2160, minCount = 1, maxCount = 2},
 }
 
 monster.attacks = {
@@ -96,24 +100,24 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 110,
-	armor = 120,
+	armor = 97,
 }
 
 monster.elements = {
 	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = -5},
+	{type = COMBAT_ENERGYDAMAGE, percent = 10},
+	{type = COMBAT_EARTHDAMAGE, percent = 10},
 	{type = COMBAT_FIREDAMAGE, percent = 10},
 	{type = COMBAT_LIFEDRAIN, percent = 0},
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
 	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = -20},
-	{type = COMBAT_DEATHDAMAGE , percent = 10}
+	{type = COMBAT_HOLYDAMAGE , percent = 10},
+	{type = COMBAT_DEATHDAMAGE , percent = 0}
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
+	{type = "paralyze", condition = true},
 	{type = "outfit", condition = false},
 	{type = "invisible", condition = true},
 	{type = "bleed", condition = false}

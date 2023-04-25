@@ -21,11 +21,9 @@ monster.Bestiary = {
 	FirstUnlock = 50,
 	SecondUnlock = 500,
 	CharmsPoints = 100,
-	Stars = 3,
-	Occurrence = 0,
-	Locations = "Alchemist Quarter, Arena and Zoo Quarter (Inside the arena with other mutated creatures), \z
-		Razzachai, Vampire Castle on Vengoth, Robson's Isle, Mushroom Gardens, Souleater Mountains, \z
-		Northern Zao Plantations, Middle Spike."
+	Stars = 5,
+	Occurrence = 1,
+	Locations = "Monster Graveyard"
 }
 
 monster.health = 19200
@@ -74,20 +72,21 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "The Moon Goddess is ashamed of you!", yell = false},
+	{text = "Shriiiiek! Shriiiiek!", yell = false},
 }
 
 monster.loot = {
-	{id = 39546, chance = 0},
-	{name = "platinum coin", chance = 100000, maxCount = 13},
-	{name = "Crystal Coin", chance = 10000, maxCount = 5},
-	{name = "Nighthunter Wing", chance = 7730, maxCount = 3},
-	{name = "Ultimate Health Potion", chance = 7730, maxCount = 3},
-	{name = "Warrior's Axe", chance = 3090},
-	{name = "Cyan Crystal Fragment", chance = 430},
-	{name = "Red Crystal Fragment", chance = 10500},
-	{name = "Stone Skin Amulet", chance = 12500},
-	{name = "Spellbook of Mind Control", chance = 1430},
+	{name = "Crystal Coin", chance = 34190},
+	{name = "Nighthunter Wing", chance = 24370, minCount = 1, maxCount = 2},
+	{name = "Ultimate Health Potion", chance = 12640, minCount = 1, maxCount = 3},
+	{name = "Red Crystal Fragment", chance = 3980},
+	{name = "Green Crystal Shard", chance = 3670},
+	{name = "Cyan Crystal Fragment", chance = 3080},
+	{name = "Yellow Gem", chance = 2940},
+	{name = "Crystal Sword", chance = 1590},
+	{name = "Warrior's Axe", chance = 1400},
+	{name = "Spellbook of Mind Control", chance = 960},
+	{name = "Stone Skin Amulet", chance = 850},
 }
 
 monster.attacks = {
@@ -115,7 +114,7 @@ monster.elements = {
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
+	{type = "paralyze", condition = true},
 	{type = "outfit", condition = false},
 	{type = "invisible", condition = true},
 	{type = "bleed", condition = false}

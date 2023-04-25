@@ -21,20 +21,16 @@ monster.Bestiary = {
 	FirstUnlock = 50,
 	SecondUnlock = 500,
 	CharmsPoints = 100,
-	Stars = 3,
-	Occurrence = 0,
-	Locations = "Beregar, Black Knight's Villa, Chor, Ghostlands, Chyllfroest, Crystal Gardens, \z
-		Crystal Grounds, Dragon Lair (Edron), Drillworm Cave, Folda, Hero Fortress, Kazordoon, \z
-		Green Djinn Tower, Mushroom Fields,Paradox Tower, Plains of Havoc, Plague Spike, \z
-		Poachers' Camp (Ferngrims Gate), Stonehome, Tiquanda, Truffels Garden, \z
-		Vandura Mountain, Vega, Venore, Wyvern Cave (Ferngrims Gate), Wyvern Hill and Wyvern Ulderek's Rock Cave."
+	Stars = 5,
+	Occurrence = 1,
+	Locations = "Crystal Enigma"
 }
 
-monster.health = 21500
-monster.maxHealth = 21500
+monster.health = 22700
+monster.maxHealth = 22700
 monster.race = "blood"
 monster.corpse = 39323
-monster.speed = 182
+monster.speed = 180
 monster.manaCost = 0
 monster.maxSummons = 0
 
@@ -76,17 +72,19 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "The Moon Goddess is ashamed of you!", yell = false},
+	{text = "Krccchht!", yell = false},
 }
 
 monster.loot = {
-	{id = 39546, chance = 0},
-	{name = "platinum coin", chance = 50000, maxCount = 13},
-	{name = "Crystal Coin", chance = 25000, maxCount = 3},
-	{name = "Ripptor Claw", chance = 12500},
-	{name = "Ripptor Scales", chance = 10430},
-	{name = "Sacred Tree Amulet", chance = 15640},
-	{name = "Ultimate Health Potion", chance = 1980, maxCount = 5},
+	{name = "Crystal Coin", chance = 26770, minCount = 1, maxCount = 2},
+	{name = "Ripptor Scales", chance = 12850},
+	{name = "Ultimate Health Potion", chance = 10570, minCount = 1, maxCount = 2},
+	{name = "Ripptor Claw", chance = 8280, minCount = 1, maxCount = 2},
+	{name = "Serpent Sword", chance = 1440},
+	{name = "Sacred Tree Amulet", chance = 1360},
+	{name = "Muck Rod", chance = 1290},
+	{name = "Terra Legs", chance = 750},
+	{name = "Wooden Spellbook", chance = 450},
 }
 
 monster.attacks = {
@@ -98,24 +96,24 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 110,
-	armor = 120,
+	armor = 82,
 }
 
 monster.elements = {
 	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = -5},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
+	{type = COMBAT_ENERGYDAMAGE, percent = 10},
+	{type = COMBAT_EARTHDAMAGE, percent = 10},
+	{type = COMBAT_FIREDAMAGE, percent = 0},
 	{type = COMBAT_LIFEDRAIN, percent = 0},
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = -20},
-	{type = COMBAT_DEATHDAMAGE , percent = 10}
+	{type = COMBAT_ICEDAMAGE, percent = -10},
+	{type = COMBAT_HOLYDAMAGE , percent = -10},
+	{type = COMBAT_DEATHDAMAGE , percent = -10}
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
+	{type = "paralyze", condition = true},
 	{type = "outfit", condition = false},
 	{type = "invisible", condition = true},
 	{type = "bleed", condition = false}

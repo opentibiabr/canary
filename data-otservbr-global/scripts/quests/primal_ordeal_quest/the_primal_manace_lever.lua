@@ -16,12 +16,11 @@ local config = {
 		to = Position(33570, 32769, 15)
 	},
 	exit = Position(33520, 32871, 15),
-    storage = Storage.Quest.U12_90.PrimalOrdeal.Bosses.ThePrimalMenaceTimer
+	storage = Storage.Quest.U12_90.PrimalOrdeal.Bosses.ThePrimalMenaceTimer
 }
 
 local PrimalMenaceLever = Action()
 function PrimalMenaceLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-    print("teste")
 	if config.playerPositions[1].pos ~= player:getPosition() then
 		return false
 	end

@@ -21,16 +21,16 @@ monster.Bestiary = {
 	FirstUnlock = 50,
 	SecondUnlock = 500,
 	CharmsPoints = 25,
-	Stars = 2,
-	Occurrence = 0,
-	Locations = "Around Port Hope, Arena and Zoo Quarter in Yalahar, few on Zao steppes."
+	Stars = 3,
+	Occurrence = 1,
+	Locations = "Marapur."
 }
 
 monster.health = 1300
 monster.maxHealth = 1300
 monster.race = "blood"
 monster.corpse = 39208
-monster.speed = 190
+monster.speed = 105
 monster.manaCost = 0
 monster.maxSummons = 0
 
@@ -72,18 +72,19 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Kreeee. Kreeeee.!", yell = false},
+	{text = "Kreeee. Kreeeee.", yell = false},
 }
 
 monster.loot = {
-	{id = 39546, chance = 0},
-	{name = "Gold Coin", chance = 100000, maxCount = 250},
-	{name = "meat", chance = 100000, maxCount = 5},
-	{name = "Jungle Moa Claw", chance = 7730},
-	{name = "Cyan Crystal Fragment", chance = 3090},
-	{name = "Jungle Moa Feather", chance = 100000, maxCount = 5},
-	{name = "Jungle Moa Egg", chance = 15640},
-	{name = "Spellbook of Enlightenment", chance = 1980},
+	{name = "Gold Coin", chance = 100000, minCount = 1, maxCount = 227},
+	{name = "Jungle Moa Claw", chance = 21100},
+	{name = "Meat", chance = 20140},
+	{name = "Cyan Crystal Fragment", chance = 11410},
+	{name = "Jungle Moa Feather", chance = 10480, minCount = 1, maxCount = 2},
+	{name = "Strong Mana Potion", chance = 9860, minCount = 1, maxCount = 2},
+	{name = "Jungle Moa Egg", chance = 8350},
+	{name = "Doublet", chance = 4540},
+	{name = "Spellbook of Enlightenment", chance = 1790},
 }
 
 monster.attacks = {
@@ -95,26 +96,26 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 110,
-	armor = 120,
+	armor = 30,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
+	{type = COMBAT_PHYSICALDAMAGE, percent = 10},
+	{type = COMBAT_ENERGYDAMAGE, percent = 10},
 	{type = COMBAT_EARTHDAMAGE, percent = -5},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
+	{type = COMBAT_FIREDAMAGE, percent = 0},
 	{type = COMBAT_LIFEDRAIN, percent = 0},
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
 	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = -20},
-	{type = COMBAT_DEATHDAMAGE , percent = 10}
+	{type = COMBAT_HOLYDAMAGE , percent = 0},
+	{type = COMBAT_DEATHDAMAGE , percent = -10}
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
+	{type = "paralyze", condition = true},
 	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
+	{type = "invisible", condition = false},
 	{type = "bleed", condition = false}
 }
 

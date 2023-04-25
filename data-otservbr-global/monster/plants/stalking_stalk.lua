@@ -21,17 +21,16 @@ monster.Bestiary = {
 	FirstUnlock = 50,
 	SecondUnlock = 500,
 	CharmsPoints = 100,
-	Stars = 3,
-	Occurrence = 0,
-	Locations = "Deep inside the Tiquanda Jungle including Tiquanda Laboratory and a small cave, \z
-		Forbidden Lands, Deeper Banuta, Arena and Zoo quarter in Yalahar."
+	Stars = 5,
+	Occurrence = 1,
+	Locations = "Monster Graveyard"
 }
 
 monster.health = 17100
 monster.maxHealth = 17100
 monster.race = "blood"
 monster.corpse = 39307
-monster.speed = 182
+monster.speed = 190
 monster.manaCost = 0
 monster.maxSummons = 0
 
@@ -73,50 +72,50 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "The Moon Goddess is ashamed of you!", yell = false},
+	{text = "Sizzzle...", yell = false},
 }
 
 monster.loot = {
-	{id = 39546, chance = 0},
-	{name = "platinum coin", chance = 100000, maxCount = 13},
-	{name = "Crystal Coin", chance = 100000, maxCount = 3},	
-	{name = "Dragon Necklace", chance = 12430},
-	{name = "naga archer scales", chance = 15640},
-	{name = "Stalking Seeds", chance = 12980, maxCount = 13},
-	{name = "Magma Coat", chance = 9430},
-	{name = "Warrior's Axe", chance = 9530},
-	{name = "Muck Rod", chance = 12590},
-	{name = "Green Crystal Fragment", chance = 13830},
-	{name = "Opal", chance = 9430},
+	{name = "Stalking Seeds", chance = 21520},
+	{name = "Crystal Coin", chance = 16570, minCount = 1, maxCount = 3},
+	{name = "Small Diamond", chance = 7140, minCount = 1, maxCount = 3},
+	{name = "Green Crystal Fragment", chance = 5030},
+	{name = "Dragon Necklace", chance = 4540},
+	{name = "Opal", chance = 3960, minCount = 1, maxCount = 2},
+	{name = "Magma Coat", chance = 2160},
+	{name = "Bow", chance = 2000},
+	{name = "Green Gem", chance = 1780},
+	{name = "Warrior's Axe", chance = 1700},
+	{name = "Muck Rod", chance = 1310},
 }
 
 monster.attacks = {
 	{name ="melee", interval = 2000, chance = 100, minDamage = 300, maxDamage = -400, effect = CONST_ME_CARNIPHILA},
-	{name ="combat", interval = 2500, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 1020, maxDamage = -1090, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_HITBYFIRE, target = true},
+	{name ="combat", interval = 2500, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 1012, maxDamage = -1049, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_HITBYFIRE, target = true},
 	{name ="combat", interval = 1900, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 1020, maxDamage = -1090, range = 5, radius = 4,  shootEffect = CONST_ANI_FIRE, effect = CONST_ME_PLANTATTACK, target = true},
 	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -800, length = 7, spread = 0, effect = CONST_ME_PINK_ENERGY_SPARK, target = false},
 }
 
 monster.defenses = {
 	defense = 110,
-	armor = 120,
+	armor = 76,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = -5},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
+	{type = COMBAT_PHYSICALDAMAGE, percent = -25},
+	{type = COMBAT_ENERGYDAMAGE, percent = 0},
+	{type = COMBAT_EARTHDAMAGE, percent = 25},
+	{type = COMBAT_FIREDAMAGE, percent = 25},
 	{type = COMBAT_LIFEDRAIN, percent = 0},
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = -20},
+	{type = COMBAT_ICEDAMAGE, percent = -10},
+	{type = COMBAT_HOLYDAMAGE , percent = 0},
 	{type = COMBAT_DEATHDAMAGE , percent = 10}
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
+	{type = "paralyze", condition = true},
 	{type = "outfit", condition = false},
 	{type = "invisible", condition = true},
 	{type = "bleed", condition = false}

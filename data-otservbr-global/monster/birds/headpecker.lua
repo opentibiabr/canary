@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Headpecker")
 local monster = {}
 
 monster.description = "a Headpecker"
-monster.experience = 12050
+monster.experience = 12026
 monster.outfit = {
 	lookType = 1557,
 	lookHead = 85,
@@ -21,13 +21,13 @@ monster.Bestiary = {
 	FirstUnlock = 50,
 	SecondUnlock = 500,
 	CharmsPoints = 100,
-	Stars = 3,
-	Occurrence = 0,
-	Locations = "Sea Serpent Area and Seacrest Grounds."
+	Stars = 5,
+	Occurrence = 1,
+	Locations = "Crystal Enigma"
 }
 
-monster.health = 14700
-monster.maxHealth = 14700
+monster.health = 16300
+monster.maxHealth = 16300
 monster.race = "blood"
 monster.corpse = 39319
 monster.speed = 217
@@ -37,7 +37,7 @@ monster.maxSummons = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 70
 }
 
 monster.strategiesTarget = {
@@ -69,12 +69,6 @@ monster.light = {
 	color = 0
 }
 
-monster.voices = {
-	interval = 5000,
-	chance = 10,
-	{text = "The Moon Goddess is ashamed of you!", yell = false},
-}
-
 monster.loot = {
 	{id = 39546, chance = 0},
 	{name = "Crystal Coin", chance = 10000, maxCount = 3},
@@ -96,21 +90,21 @@ monster.attacks = {
 }
 
 monster.defenses = {
-	defense = 68,
+	defense = 100,
 	armor = 68,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = -5},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
+	{type = COMBAT_PHYSICALDAMAGE, percent = -10},
+	{type = COMBAT_ENERGYDAMAGE, percent = 10},
+	{type = COMBAT_EARTHDAMAGE, percent = 10},
+	{type = COMBAT_FIREDAMAGE, percent = -10},
 	{type = COMBAT_LIFEDRAIN, percent = 0},
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = -20},
-	{type = COMBAT_DEATHDAMAGE , percent = 10}
+	{type = COMBAT_ICEDAMAGE, percent = -10},
+	{type = COMBAT_HOLYDAMAGE , percent = 100},
+	{type = COMBAT_DEATHDAMAGE , percent = -10}
 }
 
 monster.immunities = {

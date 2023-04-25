@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Hulking Prehemoth")
 local monster = {}
 
 monster.description = "a Hulking Prehemoth"
-monster.experience = 12700
+monster.experience = 12690
 monster.outfit = {
 	lookType = 1553,
 	lookHead = 85,
@@ -21,11 +21,9 @@ monster.Bestiary = {
 	FirstUnlock = 50,
 	SecondUnlock = 500,
 	CharmsPoints = 100,
-	Stars = 3,
-	Occurrence = 0,
-	Locations = "Cyclopolis, deepest part of Tarpit Tomb after the flame, Forbidden Lands, Vandura Mountain, \z
-		Deeper Banuta, Serpentine Tower (unreachable), deep into the Formorgar Mines, Arena and Zoo Quarter, \z
-		The Dark Path, Lower Spike, Chyllfroest, Medusa Tower and Underground Glooth Factory (west side)."
+	Stars = 5,
+	Occurrence = 1,
+	Locations = "Sparkling Pools."
 }
 
 monster.health = 20700
@@ -74,20 +72,20 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "The Moon Goddess is ashamed of you!", yell = false},
+	{text = "SMAASH!", yell = false},
 }
 
 monster.loot = {
-	{id = 39546, chance = 0},
-	{name = "Crystal Coin", chance = 10000, maxCount = 3},
-	{name = "Furry Club", chance = 7730},
-	{name = "Ultimate Health Potion", chance = 10000, maxCount = 5},
-	{name = "Prehemoth Horns", chance = 4430},
-	{name = "Prehemoth Claw", chance = 15640, maxCount = 3},
-	{name = "Emerald Bangle", chance = 1980},
-	{name = "War Axe", chance = 430},
-	{name = "Doublet", chance = 430},
-	
+	{name = "Crystal Coin", chance = 28240},
+	{name = "Prehemoth Horns", chance = 19870},
+	{name = "Prehemoth Claw", chance = 16149, minCount = 1, maxCount = 2},
+	{name = "Ultimate Health Potion", chance = 16120},
+	{name = "Furry Club", chance = 7050},
+	{name = "War Hammer", chance = 4660},
+	{name = "War Axe", chance = 3040},
+	{name = "Doublet", chance = 2880},
+	{name = "Silver Brooch", chance = 1160},
+	{name = "Emerald Bangle", chance = 780},
 }
 
 monster.attacks = {
@@ -101,20 +99,20 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = -5},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
+	{type = COMBAT_PHYSICALDAMAGE, percent = 5},
+	{type = COMBAT_ENERGYDAMAGE, percent = 30},
+	{type = COMBAT_EARTHDAMAGE, percent = 0},
+	{type = COMBAT_FIREDAMAGE, percent = 40},
 	{type = COMBAT_LIFEDRAIN, percent = 0},
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = -20},
-	{type = COMBAT_DEATHDAMAGE , percent = 10}
+	{type = COMBAT_ICEDAMAGE, percent = -30},
+	{type = COMBAT_HOLYDAMAGE , percent = -30},
+	{type = COMBAT_DEATHDAMAGE , percent = 0}
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
+	{type = "paralyze", condition = true},
 	{type = "outfit", condition = false},
 	{type = "invisible", condition = true},
 	{type = "bleed", condition = false}

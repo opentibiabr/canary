@@ -21,8 +21,8 @@ monster.Bestiary = {
 	FirstUnlock = 50,
 	SecondUnlock = 500,
 	CharmsPoints = 25,
-	Stars = 1,
-	Occurrence = 0,
+	Stars = 3,
+	Occurrence = 1,
 	Locations = "In almost all grass areas in Tibia, also found in Rookgaard and Dawnport."
 }
 
@@ -30,7 +30,7 @@ monster.health = 1200
 monster.maxHealth = 1200
 monster.race = "blood"
 monster.corpse = 39204
-monster.speed = 150
+monster.speed = 115
 monster.manaCost = 0
 monster.maxSummons = 0
 
@@ -72,16 +72,19 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "The Moon Goddess is ashamed of you!", yell = false},
+	{text = "Grrroaaar!", yell = false},
+	{text = "FCHHH!", yell = false},
 }
 
 monster.loot = {
-	{id = 39546, chance = 0},
-	{name = "Gold Coin", chance = 100000, maxCount = 100},
-	{name = "Parder Tooth", chance = 7730},
-	{name = "Parder Fur", chance = 3090},
-	{name = "Ham", chance = 430},
-
+	{name = "Gold Coin", chance = 100000, minCount = 1, maxCount = 285},
+	{name = "Ham", chance = 24670},
+	{name = "Parder Fur", chance = 19070},
+	{name = "Parder Tooth", chance = 14320, minCount = 1, maxCount = 2},
+	{name = "Red Crystal Fragment", chance = 14030},
+	{name = "Strong Health Potion", chance = 7560, minCount = 1, maxCount = 3},
+	{name = "Barbarian Axe", chance = 4540},
+	{name = "Crimson Sword", chance = 1510},
 }
 
 monster.attacks = {
@@ -91,25 +94,25 @@ monster.attacks = {
 }
 
 monster.defenses = {
-	defense = 110,
-	armor = 120,
+	defense = 90,
+	armor = 33,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = -5},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
+	{type = COMBAT_PHYSICALDAMAGE, percent = 10},
+	{type = COMBAT_ENERGYDAMAGE, percent = 0},
+	{type = COMBAT_EARTHDAMAGE, percent = 15},
+	{type = COMBAT_FIREDAMAGE, percent = -10},
 	{type = COMBAT_LIFEDRAIN, percent = 0},
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = -20},
-	{type = COMBAT_DEATHDAMAGE , percent = 10}
+	{type = COMBAT_ICEDAMAGE, percent = 15},
+	{type = COMBAT_HOLYDAMAGE , percent = 0},
+	{type = COMBAT_DEATHDAMAGE , percent = 0}
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
+	{type = "paralyze", condition = true},
 	{type = "outfit", condition = false},
 	{type = "invisible", condition = true},
 	{type = "bleed", condition = false}

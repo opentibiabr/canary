@@ -23,11 +23,11 @@ monster.Bestiary = {
 	CharmsPoints = 100,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Stampor Cave on the Muggy Plains, Chyllfroest."
+	Locations = "Crystal Enigma"
 }
 
-monster.health = 17450
-monster.maxHealth = 17450
+monster.health = 19400
+monster.maxHealth = 19400
 monster.race = "blood"
 monster.corpse = 39315
 monster.speed = 205
@@ -72,15 +72,21 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "The Moon Goddess is ashamed of you!", yell = false},
+	{text = "Klkkk... Klkkk...", yell = false},
 }
 
 monster.loot = {
-	{id = 39546, chance = 0},
-	{name = "platinum coin", chance = 100000, maxCount = 13},
-	{name = "Crystal Coin", chance = 10000, maxCount = 3},
-	{name = "Cyan Crystal Fragment", chance = 7730},
-	{name = "Mantosaurus Jaw", chance = 12500},
+	{name = "Crystal Coin", chance = 25640, minCount = 1, maxCount = 2},
+	{name = "Mantosaurus Jaw", chance = 19120},
+	{name = "Ultimate Mana Potion", chance = 9660, minCount = 1, maxCount = 3},
+	{name = "Silver Brooch", chance = 3920},
+	{name = "Red Crystal Fragment", chance = 3570},
+	{name = "Cyan Crystal Fragment", chance = 3010},
+	{name = "Green Crystal Shard", chance = 3010},
+	{name = "Coral Brooch", chance = 2420},
+	{name = "Crystal Ring", chance = 1430},
+	{name = "Gold Ring", chance = 1370},
+	{name = "Amulet of Loss", chance = 170},
 }
 
 monster.attacks = {
@@ -92,24 +98,24 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 110,
-	armor = 120,
+	armor = 65,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = -5},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
+	{type = COMBAT_PHYSICALDAMAGE, percent = -10},
+	{type = COMBAT_ENERGYDAMAGE, percent = 10},
+	{type = COMBAT_EARTHDAMAGE, percent = 5},
+	{type = COMBAT_FIREDAMAGE, percent = 0},
 	{type = COMBAT_LIFEDRAIN, percent = 0},
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = -20},
-	{type = COMBAT_DEATHDAMAGE , percent = 10}
+	{type = COMBAT_ICEDAMAGE, percent = -15},
+	{type = COMBAT_HOLYDAMAGE , percent = -15},
+	{type = COMBAT_DEATHDAMAGE , percent = 5}
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
+	{type = "paralyze", condition = true},
 	{type = "outfit", condition = false},
 	{type = "invisible", condition = true},
 	{type = "bleed", condition = false}

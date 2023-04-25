@@ -21,9 +21,9 @@ monster.Bestiary = {
 	FirstUnlock = 50,
 	SecondUnlock = 500,
 	CharmsPoints = 100,
-	Stars = 3,
-	Occurrence = 0,
-	Locations = "In almost all grass areas in Tibia, also found in Rookgaard and Dawnport."
+	Stars = 5,
+	Occurrence = 1,
+	Locations = "Sparkling Pools"
 }
 
 monster.health = 17300
@@ -69,25 +69,17 @@ monster.light = {
 	color = 0
 }
 
-monster.voices = {
-	interval = 5000,
-	chance = 10,
-	{text = "The Moon Goddess is ashamed of you!", yell = false},
-}
-
 monster.loot = {
-	{id = 39546, chance = 0},
-	{name = "platinum coin", chance = 100000, maxCount = 13},
-	{name = "Crystal Coin", chance = 12500, maxCount = 3},
-	{name = "Sabretooth Fur", chance = 13000},
-	{name = "Magma Coat", chance = 12000},
-	{name = "Wand of Inferno", chance = 15640},
-	{name = "Wand of Dragonbreath", chance = 5980},
-	{name = "Elven Amulet", chance = 2430},
-	{name = "Fire Sword", chance = 9430},
-	{name = "serpent sword", chance = 90},
-	{name = "naga earring", chance = 13830},
-	{name = "relic sword", chance = 430},
+	{name = "Sabretooth Fur", chance = 23640},
+	{name = "Crystal Coin", chance = 23350, minCount = 1, maxCount = 2},
+	{name = "Elven Amulet", chance = 5010},
+	{name = "Wand of Inferno", chance = 4720},
+	{name = "Dragon Necklace", chance = 3850},
+	{name = "Magma Coat", chance = 3820},
+	{name = "Sacred Tree Amulet", chance = 2730},
+	{name = "Fire Sword", chance = 2650},
+	{name = "Wand of Dragonbreath", chance = 2330},
+	{name = "Metal Spats", chance = 2260},
 }
 
 monster.attacks = {
@@ -98,24 +90,24 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 110,
-	armor = 120,
+	armor = 63,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = -5},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
+	{type = COMBAT_PHYSICALDAMAGE, percent = -10},
+	{type = COMBAT_ENERGYDAMAGE, percent = 10},
+	{type = COMBAT_EARTHDAMAGE, percent = -10},
+	{type = COMBAT_FIREDAMAGE, percent = -10},
 	{type = COMBAT_LIFEDRAIN, percent = 0},
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = -20},
+	{type = COMBAT_ICEDAMAGE, percent = -10},
+	{type = COMBAT_HOLYDAMAGE , percent = 0},
 	{type = COMBAT_DEATHDAMAGE , percent = 10}
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
+	{type = "paralyze", condition = true},
 	{type = "outfit", condition = false},
 	{type = "invisible", condition = true},
 	{type = "bleed", condition = false}

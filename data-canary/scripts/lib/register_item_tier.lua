@@ -17,7 +17,7 @@ registerItemClassification.Upgrades = function(itemClassification, mask)
 	if mask.Upgrades then
 		for _, value in ipairs(mask.Upgrades) do
 			if value.TierId and value.Price then
-				itemClassification:addTier(value.TierId, value.Price)
+				itemClassification:addTier(value.TierId, value.Price, value.Core)
 			else
 				Spdlog.warn("[registerItemClassification.Upgrades] - Item classification failed on adquire TierID or Price attribute.")
 			end

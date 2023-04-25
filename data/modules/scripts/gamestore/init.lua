@@ -65,7 +65,6 @@ GameStore.ActionType = {
 GameStore.CointType = {
 	Coin = 0,
 	Transferable = 1,
-	Tournament = 2,
 }
 
 GameStore.Storages = {
@@ -691,11 +690,13 @@ function sendShowStoreOffers(playerId, category, redirectId)
 	msg:addU16(0) -- Collection Name
 
 	if not category.offers then
-		msg:addU16(0)
+		msg:addU16(0) -- Disable reasons
+		msg:addU16(0) -- Offers
 		msg:sendToPlayer(player)
 		return
 	end
 
+	local disableReasons = {}
 	local offers = {}
 	local count = 0
 	for k, offer in ipairs(category.offers) do
@@ -717,20 +718,27 @@ function sendShowStoreOffers(playerId, category, redirectId)
 				offers[name].itemtype = offer.itemtype
 			end
 		end
+
+		local canBuy = player:canBuyOffer(offer)
+		if (canBuy.disabled == 1) then
+			for index, disableTable in ipairs(disableReasons) do
+				if (canBuy.disabledReason == disableTable.reason) then
+					offer.disabledReadonIndex = index
+				end
+			end
+
+			if (offer.disabledReadonIndex == nil) then
+				offer.disabledReadonIndex = #disableReasons
+				table.insert(disableReasons, canBuy.disabledReason)
+			end
+		end
+
 		table.insert(offers[name].offers, offer)
 	end
 
-	-- If player doesn't have hireling
-	if category.name == "Hirelings" then
-		if player:getHirelingsCount() < 1 then
-			offers["Hireling Name Change"] = nil
-			offers["Hireling Sex Change"] = nil
-			offers["Hireling Trader"] = nil
-			offers["Hireling Steward"] = nil
-			offers["Hireling Banker"] = nil
-			offers["Hireling Cook"] = nil
-			count = count - 6
-		end
+	msg:addU16(#disableReasons)
+	for _, reason in ipairs(disableReasons) do
+		msg:addString(reason)
 	end
 
 	msg:addU16(count)
@@ -751,11 +759,11 @@ function sendShowStoreOffers(playerId, category, redirectId)
 				msg:addU32(xpBoostPrice or off.price)
 				msg:addByte(off.coinType or 0x00)
 
-				local disabled, disabledReason = player:canBuyOffer(off).disabled, player:canBuyOffer(off).disabledReason
-				msg:addByte(disabled)
-				if disabled == 1 then
+				msg:addByte((off.disabledReadonIndex ~= nil) and 1 or 0)
+				if (off.disabledReadonIndex ~= nil) then
 					msg:addByte(0x01);
-					msg:addString(disabledReason)
+					msg:addU16(off.disabledReadonIndex)
+					off.disabledReadonIndex = nil -- Reseting the table to nil disable reason
 				end
 
 				if (off.state) then
@@ -858,7 +866,7 @@ function sendStoreTransactionHistory(playerId, page, entriesPerPage)
 		msg:addU32(entry.time)
 		msg:addByte(entry.mode) -- 0 = normal, 1 = gift, 2 = refund
 		msg:add32(entry.amount)
-		msg:addByte(entry.type) -- 0 = transferable tibia coin, 1 = normal tibia coin, 2 = tournament coin
+		msg:addByte(entry.type) -- 0 = transferable tibia coin, 1 = normal tibia coin
 		msg:addString(entry.description)
 		msg:addByte(0) -- details
 	end
@@ -926,7 +934,6 @@ function sendUpdatedStoreBalances(playerId)
 	msg:addU32(player:getCoinsBalance()) -- Tibia Coins
 	msg:addU32(player:getCoinsBalance()) -- How many are Transferable
 	msg:addU32(0) -- How many are reserved for a Character Auction
-	msg:addU32(player:getTournamentBalance()) -- Tournament Coins
 
 	msg:sendToPlayer(player)
 end
@@ -1083,7 +1090,7 @@ GameStore.retrieveHistoryEntries = function(accountId, currentPage, entriesPerPa
 		repeat
 			local entry = {
 				mode = Result.getNumber(resultId, "mode"),
-				description = Result.getDataString(resultId, "description"),
+				description = Result.getString(resultId, "description"),
 				amount = Result.getNumber(resultId, "coin_amount"),
 				type = Result.getNumber(resultId, "coin_type"),
 				time = Result.getNumber(resultId, "time"),
@@ -1643,41 +1650,6 @@ function Player.addCoinsBalance(self, coins, update)
 	return true
 end
 
---- Tournament Coins
-function Player.getTournamentBalance(self)
-	resultId = db.storeQuery("SELECT `tournament_coins` FROM `accounts` WHERE `id` = " .. self:getAccountId())
-	if not resultId then
-		return 0
-	end
-	return Result.getNumber(resultId, "tournament_coins")
-end
-
-function Player.setTournamentBalance(self, tournament)
-	db.query("UPDATE `accounts` SET `tournament_coins` = " .. tournament .. " WHERE `id` = " .. self:getAccountId())
-	return true
-end
-
-function Player.canRemoveTournament(self, tournament)
-	if self:getTournamentBalance() < tournament then
-		return false
-	end
-	return true
-end
-
-function Player.removeTournamentBalance(self, tournament)
-	if self:canRemoveTournament(tournament) then
-		return self:setTournamentBalance(self:getTournamentBalance() - tournament)
-	end
-
-	return false
-end
-
-function Player.addTournamentBalance(self, tournament, update)
-	self:setTournamentBalance(self:getTournamentBalance() + tournament)
-	if update then sendStoreBalanceUpdating(self, true) end
-	return true
-end
-
 --- Support Functions
 function Player.makeCoinTransaction(self, offer, desc)
 	local op = true
@@ -1689,11 +1661,7 @@ function Player.makeCoinTransaction(self, offer, desc)
 	end
 	
 	-- Remove coins
-	if offer.coinType == GameStore.CointType.Tournament then
-		op = self:removeTournamentBalance(offer.price)
-	else
-		op = self:removeCoinsBalance(offer.price)
-	end
+	op = self:removeCoinsBalance(offer.price)
 
 	-- When the transaction is suscessfull add to the history
 	if op then
@@ -1704,11 +1672,7 @@ function Player.makeCoinTransaction(self, offer, desc)
 end
 
 function Player.canPayForOffer(self, coins, type)
-	if type == GameStore.CointType.Tournament then
-		return self:canRemoveTournament(coins)
-	else
-		return self:canRemoveCoins(coins)
-	end
+	return self:canRemoveCoins(coins)
 end
 
 --- Other players functions
@@ -1773,7 +1737,29 @@ function sendHomePage(playerId)
 	msg:addByte(0x0) -- Collections Size
 	msg:addU16(0x00) -- Collection Name
 
+	local disableReasons = {}
 	local homeOffers = getHomeOffers(player:getId())
+	for p, offer in pairs(homeOffers)do
+		local canBuy = player:canBuyOffer(offer)
+		if (canBuy.disabled == 1) then
+			for index, disableTable in ipairs(disableReasons) do
+				if (canBuy.disabledReason == disableTable.reason) then
+					offer.disabledReadonIndex = index
+				end
+			end
+
+			if (offer.disabledReadonIndex == nil) then
+				offer.disabledReadonIndex = #disableReasons
+				table.insert(disableReasons, canBuy.disabledReason)
+			end
+		end
+	end
+
+	msg:addU16(#disableReasons)
+	for _, reason in ipairs(disableReasons) do
+		msg:addString(reason)
+	end
+
 	msg:addU16(#homeOffers) -- offers
 
 	for p, offer in pairs(homeOffers)do
@@ -1783,11 +1769,12 @@ function sendHomePage(playerId)
 		msg:addU16(0x1)
 		msg:addU32(offer.price)
 		msg:addByte(offer.coinType or 0x00)
-		local disabled, disabledReason = player:canBuyOffer(offer).disabled, player:canBuyOffer(offer).disabledReason
-		msg:addByte(disabled)
-		if disabled == 1 then
+
+		msg:addByte((offer.disabledReadonIndex ~= nil) and 1 or 0)
+		if (offer.disabledReadonIndex ~= nil) then
 			msg:addByte(0x01);
-			msg:addString(disabledReason)
+			msg:addU16(offer.disabledReadonIndex)
+			offer.disabledReadonIndex = nil -- Reseting the table to nil disable reason
 		end
 
 		msg:addByte(0x00)

@@ -762,12 +762,17 @@ class Player final : public Creature, public Cylinder {
 			return lastAttack > 0 && ((OTSYS_TIME() - lastAttack) >= getAttackSpeed());
 		}
 
-		uint16_t getSkillLevel(uint8_t skill) const {
+		uint16_t getSkillLevel(uint8_t skill, bool sendToClient = false) const {
 			auto skillLevel = std::max<int32_t>(0, skills[skill].level + varSkills[skill]);
 
 			if (auto it = maxValuePerSkill.find(skill);
 				it != maxValuePerSkill.end()) {
 				skillLevel = std::min<int32_t>(it->second, skillLevel);
+			}
+
+			// Send to client multiplied skill mana/life leech (13.00+ version changed to decimal)
+			if (sendToClient && (skill == SKILL_MANA_LEECH_AMOUNT || skill == SKILL_LIFE_LEECH_AMOUNT)) {
+				return skillLevel * 100;
 			}
 
 			return static_cast<uint16_t>(skillLevel);
@@ -1480,11 +1485,6 @@ class Player final : public Creature, public Cylinder {
 		}
 		void resetAsyncOngoingTask(uint64_t flags) {
 			asyncOngoingTasks &= ~(flags);
-		}
-		void sendTournamentLeaderboard() {
-			if (client) {
-				client->sendTournamentLeaderboard();
-			}
 		}
 		void sendEnterWorld() {
 			if (client) {

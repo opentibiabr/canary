@@ -250,8 +250,6 @@ class Game {
 
 		void playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
 
-		void playerTournamentLeaderboard(uint32_t playerId, uint8_t leaderboardType);
-
 		void updatePlayerSaleItems(uint32_t playerId);
 
 		bool internalStartTrade(Player* player, Player* partner, Item* tradeItem);

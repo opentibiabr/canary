@@ -213,39 +213,40 @@ local charms = {
 	}
 }
 
-for charmId, chamsTable in ipairs(charms) do
+for charmId, charmsTable in ipairs(charms) do
 	local charm = Game.createBestiaryCharm(charmId - 1)
 	local charmConfig = {}
 
-	if chamsTable.name then
-		charmConfig.name = chamsTable.name
+	local bestiaryRateCharmShopPrice = (configManager.getFloat(configKeys.BESTIARY_RATE_CHARM_SHOP_PRICE) or 1.0)
+	if charmsTable.name then
+		charmConfig.name = charmsTable.name
 	end
-	if chamsTable.description then
-		charmConfig.description = chamsTable.description
+	if charmsTable.description then
+		charmConfig.description = charmsTable.description
 	end
-	if chamsTable.type then
-		charmConfig.type = chamsTable.type
+	if charmsTable.type then
+		charmConfig.type = charmsTable.type
 	end
-	if chamsTable.damageType then
-		charmConfig.damageType = chamsTable.damageType
+	if charmsTable.damageType then
+		charmConfig.damageType = charmsTable.damageType
 	end
-	if chamsTable.percent then
-		charmConfig.percent = chamsTable.percent
+	if charmsTable.percent then
+		charmConfig.percent = charmsTable.percent
 	end
-	if chamsTable.chance then
-		charmConfig.chance = chamsTable.chance
+	if charmsTable.chance then
+		charmConfig.chance = charmsTable.chance
 	end
-	if chamsTable.messageCancel then
-		charmConfig.messageCancel = chamsTable.messageCancel
+	if charmsTable.messageCancel then
+		charmConfig.messageCancel = charmsTable.messageCancel
 	end
-	if chamsTable.messageServerLog then
-		charmConfig.messageServerLog = chamsTable.messageServerLog
+	if charmsTable.messageServerLog then
+		charmConfig.messageServerLog = charmsTable.messageServerLog
 	end
-	if chamsTable.effect then
-		charmConfig.effect = chamsTable.effect
+	if charmsTable.effect then
+		charmConfig.effect = charmsTable.effect
 	end
-	if chamsTable.points then
-		charmConfig.points = chamsTable.points
+	if charmsTable.points then
+		charmConfig.points = math.ceil(charmsTable.points * bestiaryRateCharmShopPrice)
 	end
 
 	-- Create charm and egister charmConfig table

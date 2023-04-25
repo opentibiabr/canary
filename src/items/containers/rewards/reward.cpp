@@ -54,8 +54,5 @@ void Reward::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 }
 
 Cylinder* Reward::getParent() const {
-	if (parent) {
-		return parent->getParent();
-	}
-	return nullptr;
+	return parent;
 }

@@ -1098,11 +1098,11 @@ GameStore.retrieveHistoryEntries = function(accountId, currentPage, entriesPerPa
 	if resultId ~= false then
 		repeat
 			local entry = {
-				mode = result.getNumber(resultId, "mode"),
-				description = result.getString(resultId, "description"),
-				amount = result.getNumber(resultId, "coin_amount"),
-				type = result.getNumber(resultId, "coin_type"),
-				time = result.getNumber(resultId, "time"),
+				mode = Result.getNumber(resultId, "mode"),
+				description = Result.getString(resultId, "description"),
+				amount = Result.getNumber(resultId, "coin_amount"),
+				type = Result.getNumber(resultId, "coin_type"),
+				time = Result.getNumber(resultId, "time"),
 			}
 			table.insert(entries, entry)
 		until not Result.next(resultId)

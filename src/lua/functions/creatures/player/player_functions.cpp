@@ -3334,3 +3334,24 @@ int PlayerFunctions::luaPlayerGetBossBonus(lua_State* L) {
 	lua_pushnumber(L, static_cast<lua_Number>(bonusBoss));
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerSendCreatureSquare(lua_State* L) {
+	// player:sendCreatureSquare(creature, color)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto creature = getCreature(L, 2);
+	if (!creature) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	player->sendCreatureSquare(creature, getNumber<SquareColor_t>(L, 3));
+	pushBoolean(L, true);
+	return 1;
+}

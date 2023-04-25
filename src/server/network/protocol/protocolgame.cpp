@@ -4161,7 +4161,7 @@ void ProtocolGame::sendOpenForge() {
 		}
 	}
 
-	msg.addByte(static_cast<uint8_t>(player->getForgeDustLevel())); // Player dust limit
+	msg.add<uint16_t>(player->getForgeDustLevel()); // Player dust limit
 	writeToOutputBuffer(msg);
 	// Update forging informations
 	sendForgingData();

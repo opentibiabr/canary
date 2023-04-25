@@ -154,7 +154,7 @@ Spell* Spells::getSpellByName(const std::string &name) {
 	return spell;
 }
 
-RuneSpell* Spells::getRuneSpell(uint32_t id) {
+RuneSpell* Spells::getRuneSpell(uint16_t id) {
 	auto it = runes.find(id);
 	if (it == runes.end()) {
 		for (auto &rune : runes) {
@@ -210,7 +210,7 @@ InstantSpell* Spells::getInstantSpell(const std::string &words) {
 	return nullptr;
 }
 
-InstantSpell* Spells::getInstantSpellById(uint32_t spellId) {
+InstantSpell* Spells::getInstantSpellById(uint16_t spellId) {
 	for (auto &it : instants) {
 		if (it.second.getId() == spellId) {
 			return &it.second;

@@ -10,7 +10,7 @@
 #ifndef SRC_ITEMS_ITEMS_CLASSIFICATION_HPP_
 #define SRC_ITEMS_ITEMS_CLASSIFICATION_HPP_
 
-struct TierClass {
+struct TierInfo {
 		uint64_t priceToUpgrade = 0;
 		uint8_t corePriceToFuse = 0;
 };
@@ -30,7 +30,7 @@ class ItemClassification {
 		}
 
 		uint8_t id;
-		std::map<uint8_t, TierClass> tiers;
+		std::map<uint8_t, TierInfo> tiers;
 };
 
 #endif // SRC_ITEMS_ITEMS_CLASSIFICATION_HPP_

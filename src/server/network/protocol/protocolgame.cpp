@@ -4006,10 +4006,10 @@ void ProtocolGame::sendForgingData() {
 	for (const auto &classification : classifications) {
 		msg.addByte(classification->id);
 		msg.addByte(classification->tiers.size());
-		for (const auto &it : classification->tiers) {
-			msg.addByte(it.first);
-			msg.add<uint64_t>(it.second.priceToUpgrade);
-			tierCorePrices[tier] = it.second.corePriceToFuse;
+		for (const auto &[tier, tierInfo] : classification->tiers) {
+			msg.addByte(tier);
+			msg.add<uint64_t>(tierInfo.priceToUpgrade);
+			tierCorePrices[tier] = tierInfo.corePriceToFuse;
 		}
 	}
 

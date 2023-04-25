@@ -390,7 +390,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing &addThing, uint32_
 	}
 
 	if (const Container* topParentContainer = getTopParentContainer()) {
-		if(!topParentContainer){
+		if (!topParentContainer) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 		uint32_t maxItem = static_cast<uint32_t>(g_configManager().getNumber(MAX_ITEM));

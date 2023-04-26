@@ -23,7 +23,7 @@ local config = {
 
 local ghuloshLever = Action()
 function ghuloshLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 ghuloshLever:position({x = 32746, y = 32773, z = 10})

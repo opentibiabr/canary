@@ -28,7 +28,7 @@ local config = {
 
 local scourgeOfOblivionLever = Action()
 function scourgeOfOblivionLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 scourgeOfOblivionLever:position({x = 32675, y = 32743, z = 11})

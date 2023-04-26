@@ -23,7 +23,7 @@ local config = {
 
 local goshnarsMaliceLever = Action()
 function goshnarsMaliceLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 goshnarsMaliceLever:position({x = 33678, y = 31599, z = 14})

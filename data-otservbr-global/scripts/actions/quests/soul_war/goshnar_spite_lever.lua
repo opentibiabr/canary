@@ -23,7 +23,7 @@ local config = {
 
 local goshnarsSpiteLever = Action()
 function goshnarsSpiteLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 goshnarsSpiteLever:position({x = 33773, y = 31634, z = 14})

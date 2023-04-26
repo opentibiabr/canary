@@ -23,7 +23,7 @@ local config = {
 
 local earlOsamLever = Action()
 function earlOsamLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 earlOsamLever:position({x = 33515, y = 31444, z = 13})

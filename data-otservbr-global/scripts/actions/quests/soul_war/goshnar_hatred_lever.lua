@@ -23,7 +23,7 @@ local config = {
 
 local goshnarsHatredLever = Action()
 function goshnarsHatredLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 goshnarsHatredLever:position({x = 33772, y = 31601, z = 14})

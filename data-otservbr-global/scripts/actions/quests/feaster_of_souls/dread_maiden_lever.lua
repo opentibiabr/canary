@@ -23,7 +23,7 @@ local config = {
 
 local dreadMaidenLever = Action()
 function dreadMaidenLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 dreadMaidenLever:position({x = 33738, y = 31506, z = 14})

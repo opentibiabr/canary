@@ -23,7 +23,7 @@ local config = {
 
 local fearFeasterLever = Action()
 function fearFeasterLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 fearFeasterLever:position({x = 33733, y = 31471, z = 14})

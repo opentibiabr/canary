@@ -23,7 +23,7 @@ local config = {
 
 local countVlarkorthLever = Action()
 function countVlarkorthLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 countVlarkorthLever:position({x = 33454, y = 31413, z = 13})

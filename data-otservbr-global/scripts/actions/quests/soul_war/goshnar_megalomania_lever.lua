@@ -23,7 +23,7 @@ local config = {
 
 local goshnarsMegalomaniaLever = Action()
 function goshnarsMegalomaniaLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 goshnarsMegalomaniaLever:position({x = 33675, y = 31634, z = 14})

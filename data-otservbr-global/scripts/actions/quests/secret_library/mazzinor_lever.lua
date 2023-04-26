@@ -23,7 +23,7 @@ local config = {
 
 local mazzinorLever = Action()
 function mazzinorLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 mazzinorLever:position({x = 32720, y = 32773, z = 10})

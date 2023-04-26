@@ -28,7 +28,7 @@ local config = {
 
 local kingZelosLever = Action()
 function kingZelosLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 kingZelosLever:position({x = 33484, y = 31546, z = 13})

@@ -23,7 +23,7 @@ local config = {
 
 local gorzindelLever = Action()
 function gorzindelLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 gorzindelLever:position({x = 32746, y = 32749, z = 10})

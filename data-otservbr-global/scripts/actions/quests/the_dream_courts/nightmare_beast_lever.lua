@@ -28,7 +28,7 @@ local config = {
 
 local nightmareBeastLever = Action()
 function nightmareBeastLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 nightmareBeastLever:position({x = 32212, y = 32069, z = 15})

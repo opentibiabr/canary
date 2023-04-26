@@ -23,7 +23,7 @@ local config = {
 
 local goshnarsCrueltyLever = Action()
 function goshnarsCrueltyLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 goshnarsCrueltyLever:position({x = 33853, y = 31854, z = 6})

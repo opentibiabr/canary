@@ -28,7 +28,7 @@ local config = {
 
 local paleWormLever = Action()
 function paleWormLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 paleWormLever:position({x = 33771, y = 31504, z = 14})

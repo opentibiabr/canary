@@ -23,7 +23,7 @@ local config = {
 
 local lordAzaramLever = Action()
 function lordAzaramLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 lordAzaramLever:position({x = 33421, y = 31493, z = 13})

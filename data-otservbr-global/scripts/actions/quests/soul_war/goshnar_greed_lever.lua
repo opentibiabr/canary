@@ -23,7 +23,7 @@ local config = {
 
 local goshnarsGreedLever = Action()
 function goshnarsGreedLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 goshnarsGreedLever:position({x = 33775, y = 31665, z = 14})

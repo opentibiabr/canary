@@ -23,7 +23,7 @@ local config = {
 
 local unwelcomeLever = Action()
 function unwelcomeLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 unwelcomeLever:position({x = 33735, y = 31537, z = 14})

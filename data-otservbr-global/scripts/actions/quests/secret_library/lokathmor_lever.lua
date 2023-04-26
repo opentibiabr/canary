@@ -23,7 +23,7 @@ local config = {
 
 local lokathmorLever = Action()
 function lokathmorLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 lokathmorLever:position({x = 32720, y = 32749, z = 10})

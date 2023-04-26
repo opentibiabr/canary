@@ -23,7 +23,7 @@ local config = {
 
 local dukeKruleLever = Action()
 function dukeKruleLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 dukeKruleLever:position({x = 33454, y = 31493, z = 13})

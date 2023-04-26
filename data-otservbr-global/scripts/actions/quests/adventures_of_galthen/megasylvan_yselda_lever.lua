@@ -23,7 +23,7 @@ local config = {
 
 local megasylvanYseldaLever = Action()
 function megasylvanYseldaLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 megasylvanYseldaLever:position({x = 32578, y = 32499, z = 12})

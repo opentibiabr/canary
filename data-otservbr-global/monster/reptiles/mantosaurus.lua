@@ -83,7 +83,7 @@ monster.loot = {
 	{name = "Cyan Crystal Fragment", chance = 3010},
 	{name = "Green Crystal Shard", chance = 3010},
 	{name = "Coral Brooch", chance = 2420},
-	{name = "Crystal Ring", chance = 1430},
+	{id = 3007, chance = 1430}, -- Crystal Ring
 	{name = "Gold Ring", chance = 1370},
 	{name = "Amulet of Loss", chance = 170},
 }

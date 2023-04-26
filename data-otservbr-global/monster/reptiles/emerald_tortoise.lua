@@ -87,8 +87,8 @@ monster.loot = {
 	{name = "Green Crystal Shard", chance = 2900},
 	{name = "Green Gem", chance = 2870},
 	{name = "Orichalcum Pearl", chance = 2640, minCount = 1, maxCount = 2},
-	{name = "Giant Shimmering Pearl (Green)", chance = 2420},
-	{name = "Red Gem", chance = 2420},
+	{id = 282, chance = 2420}, -- Giant Shimmering Pearl (Green)
+	{id = 3039, chance = 2420}, -- Red Gem
 	{name = "Black Pearl", chance = 2160, minCount = 1, maxCount = 2},
 }
 

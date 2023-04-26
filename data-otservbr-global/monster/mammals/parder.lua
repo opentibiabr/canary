@@ -83,7 +83,7 @@ monster.loot = {
 	{name = "Red Crystal Fragment", chance = 14030},
 	{name = "Strong Health Potion", chance = 7560, minCount = 1, maxCount = 3},
 	{name = "Barbarian Axe", chance = 4540},
-	{name = "Crimson Sword", chance = 1510},
+	{id = 7385, chance = 1510}, -- Crimson Sword
 }
 
 monster.attacks = {

@@ -80,12 +80,12 @@ monster.loot = {
 	{name = "Crystal Coin", chance = 22310, minCount = 1, maxCount = 2},
 	{name = "Ultimate Mana Potion", chance = 12890, minCount = 1, maxCount = 2},
 	{name = "Yellow Gem", chance = 2820},
-	{name = "Giant Shimmering Pearl (Green)", chance = 2450},
+	{id = 282, chance = 2450}, -- Giant Shimmering Pearl (Green)
 	{name = "Slightly Rusted Legs", chance = 2420},
 	{name = "Knight Legs", chance = 2360},
-	{name = "Red Gem", chance = 2190},
+	{id = 3039, chance = 2190}, -- Red Gem
 	{name = "Warrior's Shield", chance = 1760},
-	{name = "Ring of Red Plasma", chance = 1110},
+	{id = 23533, chance = 1110}, -- Ring of Red Plasma
 	{name = "Fire Sword", chance = 770},
 	{name = "Crystal Crossbow", chance = 510},
 }

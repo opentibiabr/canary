@@ -618,6 +618,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 
 		if (!player->spawn()) {
 			disconnect();
+			addGameTask(&Game::removePlayer, player);
 			addGameTask(&Game::removeCreature, player, true);
 			return;
 		}

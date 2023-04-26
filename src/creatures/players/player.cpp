@@ -2611,6 +2611,7 @@ void Player::death(Creature* lastHitCreature) {
 		onIdleStatus();
 		sendStats();
 	}
+
 	despawn();
 }
 
@@ -2687,8 +2688,6 @@ void Player::despawn() {
 	tile->removeCreature(this);
 
 	getParent()->postRemoveNotification(this, nullptr, 0);
-
-	g_game().removePlayer(this);
 
 	// show player as pending
 	for (const auto &[key, player] : g_game().getPlayers()) {

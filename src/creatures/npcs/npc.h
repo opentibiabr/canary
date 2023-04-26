@@ -170,6 +170,7 @@ class Npc final : public Creature {
 	private:
 		void onThinkYell(uint32_t interval);
 		void onThinkWalk(uint32_t interval);
+		void onThinkSound(uint32_t interval);
 
 		bool isInSpawnRange(const Position &pos) const;
 
@@ -186,6 +187,7 @@ class Npc final : public Creature {
 
 		uint32_t yellTicks = 0;
 		uint32_t walkTicks = 0;
+		uint32_t soundTicks = 0;
 
 		bool ignoreHeight;
 

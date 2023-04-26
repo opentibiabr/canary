@@ -1310,8 +1310,9 @@ void Player::onApplyImbuement(Imbuement* imbuement, Item* item, uint8_t slot, bo
 		return;
 	}
 
-	std::stringstream withdrawItemMessage;
 	for (auto &[key, value] : items) {
+		std::stringstream withdrawItemMessage;
+
 		uint32_t inventoryItemCount = getItemTypeCount(key);
 		if (inventoryItemCount >= value) {
 			removeItemOfType(key, value, -1, true);
@@ -1327,9 +1328,8 @@ void Player::onApplyImbuement(Imbuement* imbuement, Item* item, uint8_t slot, bo
 
 		withdrawItemMessage << "Using " << mathItemCount << "x " << itemType.name << " from your supply stash. ";
 		withdrawItem(itemType.id, mathItemCount);
+		sendTextMessage(MESSAGE_STATUS, withdrawItemMessage.str());
 	}
-
-	sendTextMessage(MESSAGE_STATUS, withdrawItemMessage.str());
 
 	if (!protectionCharm && uniform_random(1, 100) > baseImbuement->percent) {
 		openImbuementWindow(item);
@@ -6674,7 +6674,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 				for (const auto &[mapTier, mapPrice] : itemClassification->tiers) {
 					if (mapTier == firstForgingItem->getTier()) {
-						cost = mapPrice;
+						cost = mapPrice.priceToUpgrade;
 						break;
 					}
 				}
@@ -6747,7 +6747,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 			for (const auto &[mapTier, mapPrice] : itemClassification->tiers) {
 				if (mapTier == firstForgingItem->getTier()) {
-					cost = mapPrice;
+					cost = mapPrice.priceToUpgrade;
 					break;
 				}
 			}
@@ -6861,11 +6861,7 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 		setForgeDusts(getForgeDusts() - g_configManager().getNumber(FORGE_TRANSFER_DUST_COST));
 	}
 
-	if (!removeItemOfType(ITEM_FORGE_CORE, 1, -1, true, true)) {
-		SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, 1, getName());
-		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
-		return;
-	}
+	uint8_t coresAmount = 0;
 	uint64_t cost = 0;
 	for (const auto &itemClassification : g_game().getItemsClassifications()) {
 		if (itemClassification->id != donorItem->getClassification()) {
@@ -6874,10 +6870,17 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 		for (const auto &[mapTier, mapPrice] : itemClassification->tiers) {
 			if (mapTier == donorItem->getTier() - 1) {
-				cost = mapPrice;
+				cost = mapPrice.priceToUpgrade;
+				coresAmount = mapPrice.corePriceToFuse;
 				break;
 			}
 		}
+	}
+
+	if (!removeItemOfType(ITEM_FORGE_CORE, coresAmount, -1, true, true)) {
+		SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, 1, getName());
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+		return;
 	}
 
 	if (!g_game().removeMoney(this, cost, 0, true)) {

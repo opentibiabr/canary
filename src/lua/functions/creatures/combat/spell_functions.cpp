@@ -26,7 +26,7 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 	SpellType_t spellType = SPELL_UNDEFINED;
 
 	if (isNumber(L, 2)) {
-		int32_t id = getNumber<int32_t>(L, 2);
+		uint16_t id = getNumber<uint16_t>(L, 2);
 		RuneSpell* rune = g_spells().getRuneSpell(id);
 
 		if (rune) {

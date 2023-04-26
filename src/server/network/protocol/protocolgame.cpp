@@ -256,7 +256,7 @@ void ProtocolGame::release() {
 void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
 	// dispatcher thread
 	Player* foundPlayer = g_game().getPlayerByName(name);
-	if (!foundPlayer || g_configManager().getBoolean(ALLOW_CLONES)) {
+	if (!foundPlayer) {
 		player = new Player(getThis());
 		player->setName(name);
 

@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_ITEMS_FUNCTIONS_ITEM_ITEM_PARSE_HPP_
@@ -196,7 +196,8 @@ const phmap::flat_hash_map<std::string, WeaponType_t> WeaponTypesMap = {
 	{ "shield", WEAPON_SHIELD },
 	{ "distance", WEAPON_DISTANCE },
 	{ "wand", WEAPON_WAND },
-	{ "ammunition", WEAPON_AMMO }
+	{ "ammunition", WEAPON_AMMO },
+	{ "missile", WEAPON_MISSILE }
 };
 
 const phmap::flat_hash_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {

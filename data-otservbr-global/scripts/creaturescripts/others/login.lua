@@ -43,7 +43,7 @@ function playerLogin.onLogin(player)
 			player:openChannel(5) -- Advertsing main
 		end
 	else
-		player:sendTextMessage(MESSAGE_STATUS, "Welcome to " .. SERVER_NAME .. "!")
+		player:sendTextMessage(MESSAGE_STATUS, SERVER_MOTD)
 		player:sendTextMessage(MESSAGE_LOGIN, string.format("Your last visit in ".. SERVER_NAME ..": %s.", os.date("%d. %b %Y %X", player:getLastLoginSaved())))
 	end
 
@@ -227,7 +227,7 @@ function playerLogin.onLogin(player)
 	end
 
 	-- Set Client XP Gain Rate --
-	if Game.getStorageValue(GlobalStorage.XpDisplayMode) > 0 then
+	if configManager.getBoolean(configKeys.XP_DISPLAY_MODE) then
 		local baseRate = player:getFinalBaseRateExperience()
 		player:setBaseXpGain(baseRate * 100)
 	end

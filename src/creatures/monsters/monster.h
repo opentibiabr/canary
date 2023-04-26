@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_CREATURES_MONSTERS_MONSTER_H_
@@ -118,7 +118,6 @@ class Monster final : public Creature {
 		bool isFamiliar() const {
 			return mType->info.isFamiliar;
 		}
-		bool canSee(const Position &pos) const override;
 		bool canSeeInvisibility() const override {
 			return isImmune(CONDITION_INVISIBLE);
 		}
@@ -344,7 +343,6 @@ class Monster final : public Creature {
 
 		bool isIdle = true;
 		bool extraMeleeAttack = false;
-		bool isMasterInRange = false;
 		bool randomStepping = false;
 		bool ignoreFieldDamage = false;
 
@@ -415,6 +413,8 @@ class Monster final : public Creature {
 
 		void doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &result);
 		void doRandomStep(Direction &nextDirection, bool &result);
+
+		void onConditionStatusChange(const ConditionType_t &type);
 };
 
 #endif // SRC_CREATURES_MONSTERS_MONSTER_H_

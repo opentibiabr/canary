@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_ITEMS_TILE_H_
@@ -201,6 +201,7 @@ class Tile : public Cylinder {
 		void addThing(Thing* thing) override final;
 		void addThing(int32_t index, Thing* thing) override;
 
+		void updateTileFlags(const Item* item);
 		void updateThing(Thing* thing, uint16_t itemId, uint32_t count) override final;
 		void replaceThing(uint32_t index, Thing* thing) override final;
 

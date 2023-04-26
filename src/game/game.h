@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_GAME_GAME_H_
@@ -76,6 +76,7 @@ class Game {
 		 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
 		 * \returns true if the custom map was loaded successfully
 		 */
+		bool loadCustomMaps(const std::string &customMapPath);
 		bool loadCustomMap(const std::string &filename);
 		void loadMap(const std::string &path, const Position &pos = Position(), bool unload = false);
 
@@ -177,6 +178,7 @@ class Game {
 		ReturnValue internalMoveCreature(Creature* creature, Direction direction, uint32_t flags = 0);
 		ReturnValue internalMoveCreature(Creature &creature, Tile &toTile, uint32_t flags = 0);
 
+		ReturnValue checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder, Cylinder* toCylinder, Item* item);
 		ReturnValue internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index, Item* item, uint32_t count, Item** internalMoveItem, uint32_t flags = 0, Creature* actor = nullptr, Item* tradeItem = nullptr);
 
 		ReturnValue internalAddItem(Cylinder* toCylinder, Item* item, int32_t index = INDEX_WHEREEVER, uint32_t flags = 0, bool test = false);
@@ -247,8 +249,6 @@ class Game {
 		void playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
 
 		void playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
-
-		void playerTournamentLeaderboard(uint32_t playerId, uint8_t leaderboardType);
 
 		void updatePlayerSaleItems(uint32_t playerId);
 
@@ -692,6 +692,8 @@ class Game {
 			const Player* targetPlayer, TextMessage &message, std::stringstream &ss,
 			const std::string &damageString, std::string &spectatorMessage
 		) const;
+
+		void unwrapItem(Item* item, uint16_t unWrapId);
 };
 
 constexpr auto g_game = &Game::getInstance;

@@ -66,8 +66,8 @@ function serverstartup.onStartup()
 	db.query('UPDATE `player_storage` SET `value` = 0 WHERE `player_storage`.`key` = 51052')
 
 	-- reset familiars message storage
-	db.query('DELETE FROM `player_storage` WHERE `key` = '..Storage.FamiliarSummonEvent10)
-	db.query('DELETE FROM `player_storage` WHERE `key` = '..Storage.FamiliarSummonEvent60)
+	db.query('DELETE FROM `player_storage` WHERE `key` = '..Global.Storage.FamiliarSummonEvent10)
+	db.query('DELETE FROM `player_storage` WHERE `key` = '..Global.Storage.FamiliarSummonEvent60)
 
 	-- delete canceled and rejected guilds
 	db.asyncQuery('DELETE FROM `guild_wars` WHERE `status` = 2')
@@ -156,11 +156,6 @@ function serverstartup.onStartup()
 		Spdlog.info("Events: " .. "Exp: " .. expRate .. "%, " .. "loot: " .. lootRate .. "%, " .. "Spawn: " .. spawnRate .. "%, " .. "Skill: ".. skillRate .."%")
 		end
 	end
-
-    -- Client XP Display Mode
-	-- 0 = ignore exp rate /stage
-	-- 1 = include exp rate / stage
-	Game.setStorageValue(GlobalStorage.XpDisplayMode, 1)
 
 	-- Hireling System
 	HirelingsInit()

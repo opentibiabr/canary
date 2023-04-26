@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -119,6 +119,8 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, LIGHT_STATE_SUNRISE);
 	registerEnum(L, STORAGEVALUE_EMOTE);
 
+	registerEnum(L, IMMOVABLE_ACTION_ID);
+
 	registerEnum(L, MAX_LOOTCHANCE);
 
 	registerEnum(L, ORIGIN_NONE);
@@ -171,6 +173,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, WEAPON_DISTANCE);
 	registerEnum(L, WEAPON_WAND);
 	registerEnum(L, WEAPON_AMMO);
+	registerEnum(L, WEAPON_MISSILE);
 }
 
 void LuaEnums::initAccountEnums(lua_State* L) {
@@ -266,6 +269,12 @@ void LuaEnums::initFactionEnums(lua_State* L) {
 	registerEnum(L, FACTION_PLAYER);
 	registerEnum(L, FACTION_LION);
 	registerEnum(L, FACTION_LIONUSURPERS);
+	registerEnum(L, FACTION_MARID);
+	registerEnum(L, FACTION_EFREET);
+	registerEnum(L, FACTION_DEEPLING);
+	registerEnum(L, FACTION_DEATHLING);
+	registerEnum(L, FACTION_ANUMA);
+	registerEnum(L, FACTION_FAFNAR);
 	registerEnum(L, FACTION_LAST);
 }
 

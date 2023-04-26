@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -55,6 +55,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", ALL_CONSOLE_LOG);
 	registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_NOTIFY_MESSAGE);
 	registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_NOTIFY_DURATION);
+	registerEnumIn(L, "configKeys", XP_DISPLAY_MODE);
 	registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_CLEAN_MAP);
 	registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_CLOSE);
 	registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_SHUTDOWN);
@@ -63,12 +64,12 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", MAP_CUSTOM_NAME);
 	registerEnumIn(L, "configKeys", HOUSE_RENT_PERIOD);
 	registerEnumIn(L, "configKeys", SERVER_NAME);
+	registerEnumIn(L, "configKeys", SERVER_MOTD);
 	registerEnumIn(L, "configKeys", OWNER_NAME);
 	registerEnumIn(L, "configKeys", OWNER_EMAIL);
 	registerEnumIn(L, "configKeys", URL);
 	registerEnumIn(L, "configKeys", LOCATION);
 	registerEnumIn(L, "configKeys", IP);
-	registerEnumIn(L, "configKeys", MOTD);
 	registerEnumIn(L, "configKeys", WORLD_TYPE);
 	registerEnumIn(L, "configKeys", MYSQL_HOST);
 	registerEnumIn(L, "configKeys", MYSQL_USER);
@@ -102,7 +103,9 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", RATE_LOOT);
 	registerEnumIn(L, "configKeys", RATE_MAGIC);
 	registerEnumIn(L, "configKeys", RATE_SPAWN);
+	registerEnumIn(L, "configKeys", RATE_KILLING_IN_THE_NAME_OF_POINTS);
 	registerEnumIn(L, "configKeys", HOUSE_PRICE);
+	registerEnumIn(L, "configKeys", HOUSE_BUY_LEVEL);
 	registerEnumIn(L, "configKeys", MAX_MESSAGEBUFFER);
 	registerEnumIn(L, "configKeys", ACTIONS_DELAY_INTERVAL);
 	registerEnumIn(L, "configKeys", EX_ACTIONS_DELAY_INTERVAL);
@@ -177,10 +180,21 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", FORGE_BASE_SUCCESS_RATE);
 	registerEnumIn(L, "configKeys", FORGE_BONUS_SUCCESS_RATE);
 	registerEnumIn(L, "configKeys", FORGE_TIER_LOSS_REDUCTION);
+	registerEnumIn(L, "configKeys", FORGE_AMOUNT_MULTIPLIER);
 	registerEnumIn(L, "configKeys", FORGE_INFLUENCED_CREATURES_LIMIT);
+
+	registerEnumIn(L, "configKeys", BESTIARY_KILL_MULTIPLIER);
+	registerEnumIn(L, "configKeys", BOSSTIARY_KILL_MULTIPLIER);
 	registerEnumIn(L, "configKeys", BOOSTED_BOSS_SLOT);
 	registerEnumIn(L, "configKeys", BOOSTED_BOSS_LOOT_BONUS);
 	registerEnumIn(L, "configKeys", BOOSTED_BOSS_KILL_BONUS);
+	registerEnumIn(L, "configKeys", BESTIARY_RATE_CHARM_SHOP_PRICE);
+
+	registerEnumIn(L, "configKeys", FAMILIAR_TIME);
+
+	registerEnumIn(L, "configKeys", TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);
+	registerEnumIn(L, "configKeys", TOGGLE_SERVER_IS_RETRO);
+	registerEnumIn(L, "configKeys", TOGGLE_TRAVELS_FREE);
 #undef registerEnumIn
 }
 

@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -347,11 +347,21 @@ std::string convertIPToString(uint32_t ip) {
 }
 
 std::string formatDate(time_t time) {
-	return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
+	try {
+		return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
+	} catch (const std::out_of_range &exception) {
+		SPDLOG_ERROR("Failed to format date with error code {}", exception.what());
+	}
+	return {};
 }
 
 std::string formatDateShort(time_t time) {
-	return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+	try {
+		return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+	} catch (const std::out_of_range &exception) {
+		SPDLOG_ERROR("Failed to format date short with error code {}", exception.what());
+	}
+	return {};
 }
 
 std::time_t getTimeNow() {
@@ -941,17 +951,17 @@ bool booleanString(const std::string &str) {
 std::string getWeaponName(WeaponType_t weaponType) {
 	switch (weaponType) {
 		case WEAPON_SWORD:
-			return "sword";
+			return "stabbing weapon";
 		case WEAPON_CLUB:
-			return "club";
+			return "blunt instrument";
 		case WEAPON_AXE:
-			return "axe";
+			return "cutting weapon";
 		case WEAPON_DISTANCE:
-			return "distance";
+			return "firearm";
 		case WEAPON_WAND:
-			return "wand";
-		case WEAPON_AMMO:
-			return "ammunition";
+			return "wand/rod";
+		case WEAPON_MISSILE:
+			return "missile";
 		default:
 			return std::string();
 	}
@@ -993,7 +1003,9 @@ CombatType_t indexToCombatType(size_t v) {
 }
 
 ItemAttribute_t stringToItemAttribute(const std::string &str) {
-	if (str == "aid") {
+	if (str == "store") {
+		return ItemAttribute_t::STORE;
+	} else if (str == "aid") {
 		return ItemAttribute_t::ACTIONID;
 	} else if (str == "uid") {
 		return ItemAttribute_t::UNIQUEID;
@@ -1041,7 +1053,13 @@ ItemAttribute_t stringToItemAttribute(const std::string &str) {
 		return ItemAttribute_t::DOORID;
 	} else if (str == "timestamp") {
 		return ItemAttribute_t::DURATION_TIMESTAMP;
+	} else if (str == "amount") {
+		return ItemAttribute_t::AMOUNT;
+	} else if (str == "tier") {
+		return ItemAttribute_t::TIER;
 	}
+
+	SPDLOG_ERROR("[{}] attribute type {} is not registered", __FUNCTION__, str);
 	return ItemAttribute_t::NONE;
 }
 
@@ -1298,6 +1316,9 @@ const char* getReturnMessage(ReturnValue value) {
 		case RETURNVALUE_NOTPOSSIBLE:
 			return "Sorry, not possible.";
 
+		case RETURNVALUE_REWARDCONTAINERISEMPTY:
+			return "You already claimed your reward.";
+
 		case RETURNVALUE_CONTACTADMINISTRATOR:
 			return "An error has occurred, please contact your administrator.";
 
@@ -1357,7 +1378,9 @@ void capitalizeWords(std::string &source) {
  */
 void consoleHandlerExit() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
-	getchar();
+	if (isatty(STDIN_FILENO)) {
+		getchar();
+	}
 	return;
 }
 

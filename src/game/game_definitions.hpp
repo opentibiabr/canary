@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_GAME_GAME_DEFINITIONS_HPP_
@@ -66,7 +66,13 @@ enum Faction_t {
 	FACTION_PLAYER = 1,
 	FACTION_LION = 2,
 	FACTION_LIONUSURPERS = 3,
-	FACTION_LAST = FACTION_LIONUSURPERS,
+	FACTION_MARID = 4,
+	FACTION_EFREET = 5,
+	FACTION_DEEPLING = 6,
+	FACTION_DEATHLING = 7,
+	FACTION_ANUMA = 8,
+	FACTION_FAFNAR = 9,
+	FACTION_LAST = FACTION_FAFNAR,
 };
 
 enum LightState_t {

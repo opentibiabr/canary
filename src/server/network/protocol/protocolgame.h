@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_
@@ -132,8 +132,6 @@ class ProtocolGame final : public Protocol {
 		void parseTaskHuntingAction(NetworkMessage &msg);
 		void sendHighscoresNoData();
 		void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);
-
-		void parseTournamentLeaderboard(NetworkMessage &msg);
 
 		void parseGreet(NetworkMessage &msg);
 		void parseBugReport(NetworkMessage &msg);
@@ -302,8 +300,6 @@ class ProtocolGame final : public Protocol {
 
 		void sendTutorial(uint8_t tutorialId);
 		void sendAddMarker(const Position &pos, uint8_t markType, const std::string &desc);
-
-		void sendTournamentLeaderboard();
 
 		void sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode);
 		void sendCyclopediaCharacterBaseInformation();

@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_UTILS_CONST_H_
@@ -45,6 +45,8 @@ static constexpr int32_t PSTRG_MOUNTS_CURRENTMOUNT = (PSTRG_MOUNTS_RANGE_START +
 // [3000 - 3500];
 static constexpr int32_t PSTRG_FAMILIARS_RANGE_START = (PSTRG_RESERVED_RANGE_START + 3000);
 static constexpr int32_t PSTRG_FAMILIARS_RANGE_SIZE = 500;
+
+static constexpr int32_t IMMOVABLE_ACTION_ID = 100;
 
 #define IS_IN_KEYRANGE(key, range) \
 	(key >= PSTRG_##range##_START && ((key - PSTRG_##range##_START) <= PSTRG_##range##_SIZE))

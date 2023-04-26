@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -21,9 +21,6 @@ int32_t LuaFunctionsLoader::scriptEnvIndex = -1;
 
 LuaScriptInterface::LuaScriptInterface(std::string initInterfaceName) :
 	interfaceName(std::move(initInterfaceName)) {
-	if (!g_luaEnvironment.getLuaState()) {
-		g_luaEnvironment.initState();
-	}
 }
 
 LuaScriptInterface::~LuaScriptInterface() {

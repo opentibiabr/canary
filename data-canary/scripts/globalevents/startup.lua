@@ -10,8 +10,8 @@ function startup.onStartup()
 	db.asyncQuery("DELETE FROM `market_history` WHERE `inserted` <= " .. (os.time() - configManager.getNumber(configKeys.MARKET_OFFER_DURATION)))
 
 	-- reset familiars message storage
-	db.query('DELETE FROM `player_storage` WHERE `key` = '..Storage.FamiliarSummonEvent10)
-	db.query('DELETE FROM `player_storage` WHERE `key` = '..Storage.FamiliarSummonEvent60)
+	db.query('DELETE FROM `player_storage` WHERE `key` = '..Global.Storage.FamiliarSummonEvent10)
+	db.query('DELETE FROM `player_storage` WHERE `key` = '..Global.Storage.FamiliarSummonEvent60)
 
 	-- Move expired bans to ban history
 	local resultId = db.storeQuery("SELECT * FROM `account_bans` WHERE `expires_at` != 0 AND `expires_at` <= " .. os.time())
@@ -55,17 +55,17 @@ function startup.onStartup()
 		if lootRate ~= 100 then
 			SCHEDULE_LOOT_RATE = lootRate
 		end
-	
+
 		local expRate = EventsScheduler.getEventSExp()
 		if expRate ~= 100 then
 			SCHEDULE_EXP_RATE = expRate
 		end
-	
+
 		local skillRate = EventsScheduler.getEventSSkill()
 		if skillRate ~= 100 then
 			SCHEDULE_SKILL_RATE = skillRate
 		end
-	
+
 		local spawnRate = EventsScheduler.getSpawnMonsterSchedule()
 		if spawnRate ~= 100 then
 			SCHEDULE_SPAWN_RATE = spawnRate
@@ -75,11 +75,6 @@ function startup.onStartup()
 		Spdlog.info("Events: " .. "Exp: " .. expRate .. "%, " .. "loot: " .. lootRate .. "%, " .. "Spawn: " .. spawnRate .. "%, " .. "Skill: ".. skillRate .."%")
 		end
 	end
-
-    -- Client XP Display Mode
-	-- 0 = ignore exp rate /stage
-	-- 1 = include exp rate / stage
-	Game.setStorageValue(GlobalStorage.XpDisplayMode, 1)
 end
 
 startup:register()

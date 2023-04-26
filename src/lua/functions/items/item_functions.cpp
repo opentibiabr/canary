@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -422,10 +422,12 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 		}
 
 		item->setAttribute(attribute, getNumber<int64_t>(L, 3));
+		item->updateTileFlags();
 		pushBoolean(L, true);
 	} else if (item->isAttributeString(attribute)) {
 		auto newAttributeString = getString(L, 3);
 		item->setAttribute(attribute, newAttributeString);
+		item->updateTileFlags();
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

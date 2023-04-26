@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -81,6 +81,17 @@ namespace {
 				msg.add<uint16_t>(0);
 			}
 		}
+	}
+
+	// Send bytes function for avoid repetitions
+	void sendBosstiarySlotsBytes(NetworkMessage &msg, uint8_t bossRace = 0, uint32_t bossKillCount = 0, uint16_t bonusBossSlotOne = 0, uint8_t killBonus = 0, uint8_t isSlotOneInactive = 0, uint32_t removePrice = 0) {
+		msg.addByte(bossRace); // Boss Race
+		msg.add<uint32_t>(bossKillCount); // Kill Count
+		msg.add<uint16_t>(bonusBossSlotOne); // Loot Bonus
+		msg.addByte(killBonus); // Kill Bonus
+		msg.addByte(bossRace); // Boss Race
+		msg.add<uint32_t>(isSlotOneInactive == 1 ? 0 : removePrice); // Remove Price
+		msg.addByte(isSlotOneInactive); // Inactive? (Only true if equal to Boosted Boss)
 	}
 
 } // namespace
@@ -893,9 +904,6 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xC0:
 			parseForgeBrowseHistory(msg);
 			break;
-		case 0xC7:
-			parseTournamentLeaderboard(msg);
-			break;
 		case 0xC9: /* update tile */
 			break;
 		case 0xCA:
@@ -1646,6 +1654,7 @@ void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, const 
 	msg.addByte(0x76);
 	msg.addByte(0x00);
 	msg.addByte(cyclopedia ? 0x01 : 0x00);
+	msg.add<uint32_t>(player->getID()); // 13.00 Creature ID
 	msg.addByte(0x01);
 
 	const ItemType &it = Item::items[itemId];
@@ -1801,25 +1810,6 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::parseTournamentLeaderboard(NetworkMessage &msg) {
-	uint8_t ledaerboardType = msg.getByte();
-	if (ledaerboardType == 0) {
-		const std::string worldName = msg.getString();
-		uint16_t currentPage = msg.get<uint16_t>();
-		(void)worldName;
-		(void)currentPage;
-	} else if (ledaerboardType == 1) {
-		const std::string worldName = msg.getString();
-		const std::string characterName = msg.getString();
-		(void)worldName;
-		(void)characterName;
-	}
-	uint8_t elementsPerPage = msg.getByte();
-	(void)elementsPerPage;
-
-	addGameTask(&Game::playerTournamentLeaderboard, player->getID(), ledaerboardType);
-}
-
 void ProtocolGame::parseConfigureShowOffSocket(NetworkMessage &msg) {
 	Position pos = msg.getPosition();
 	uint16_t itemId = msg.get<uint16_t>();
@@ -1966,6 +1956,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 		newmsg.add<uint32_t>(mtype->info.experience);
 		newmsg.add<uint16_t>(mtype->getBaseSpeed());
 		newmsg.add<uint16_t>(mtype->info.armor);
+		newmsg.addDouble(0); // 13.00 Mitigation
 	}
 
 	if (currentLevel > 2) {
@@ -2883,7 +2874,6 @@ void ProtocolGame::sendCyclopediaCharacterBaseInformation() {
 	AddOutfit(msg, player->getDefaultOutfit(), false);
 
 	msg.addByte(0x00); // hide stamina
-	msg.addByte(0x00); // enable store summary & character titles
 	msg.addString(""); // character title
 	writeToOutputBuffer(msg);
 }
@@ -2898,8 +2888,6 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	msg.addByte(player->getLevelPercent());
 	// BaseXPGainRate
 	msg.add<uint16_t>(100);
-	// TournamentXPFactor
-	msg.add<int32_t>(0);
 	// LowLevelBonus
 	msg.add<uint16_t>(0);
 	// XPBoost
@@ -2910,10 +2898,10 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	msg.add<uint16_t>(0);
 	// canBuyXpBoost
 	msg.addByte(0x00);
-	msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint16_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint16_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
 	msg.addByte(player->getSoul());
 	msg.add<uint16_t>(player->getStaminaMinutes());
 
@@ -2955,7 +2943,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
 	msg.addByte(0x00);
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i, true), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(0);
 	}
 
@@ -2995,7 +2983,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 			msg.addByte(getCipbiaElement(it.combatType));
 			msg.addByte(0);
 			msg.addByte(CIPBIA_ELEMENTAL_UNDEFINED);
-		} else if (it.weaponType == WEAPON_DISTANCE || it.weaponType == WEAPON_AMMO) {
+		} else if (it.weaponType == WEAPON_DISTANCE || it.weaponType == WEAPON_AMMO || it.weaponType == WEAPON_MISSILE) {
 			int32_t attackValue = weapon->getAttack();
 			if (it.weaponType == WEAPON_AMMO) {
 				const Item* weaponItem = player->getWeapon(true);
@@ -3051,6 +3039,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 
 	msg.add<uint16_t>(player->getArmor());
 	msg.add<uint16_t>(player->getDefense());
+	msg.addDouble(0); // Mitigation
 
 	uint8_t combats = 0;
 	auto startCombats = msg.getBufferPosition();
@@ -3317,14 +3306,6 @@ void ProtocolGame::sendCyclopediaCharacterTitles() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendTournamentLeaderboard() {
-	NetworkMessage msg;
-	msg.addByte(0xC5);
-	msg.addByte(0);
-	msg.addByte(0x01);
-	writeToOutputBuffer(msg);
-}
-
 void ProtocolGame::sendReLoginWindow(uint8_t unfairFightReduction) {
 	NetworkMessage msg;
 	msg.addByte(0x28);
@@ -3362,7 +3343,7 @@ void ProtocolGame::sendBasicData() {
 	std::list<uint16_t> spellsList = g_spells().getSpellsByVocation(player->getVocationId());
 	msg.add<uint16_t>(spellsList.size());
 	for (uint16_t sid : spellsList) {
-		msg.addByte(sid);
+		msg.add<uint16_t>(sid);
 	}
 	msg.addByte(player->getVocation()->getMagicShield()); // bool - determine whether magic shield is active or not
 	writeToOutputBuffer(msg);
@@ -3815,7 +3796,6 @@ void ProtocolGame::sendCoinBalance() {
 	msg.add<uint32_t>(player->coinBalance); // Normal Coins
 	msg.add<uint32_t>(player->coinBalance); // Transferable Coins
 	msg.add<uint32_t>(player->coinBalance); // Reserved Auction Coins
-	msg.add<uint32_t>(0); // Tournament Coins
 
 	writeToOutputBuffer(msg);
 }
@@ -4019,19 +3999,29 @@ void ProtocolGame::sendForgingData() {
 	NetworkMessage msg;
 	msg.addByte(0x86);
 
-	std::vector<ItemClassification*> classifications = g_game().getItemsClassifications();
+	std::map<uint8_t, uint16_t> tierCorePrices;
+
+	const auto &classifications = g_game().getItemsClassifications();
 	msg.addByte(classifications.size());
-	for (ItemClassification* classification : classifications) {
+	for (const auto &classification : classifications) {
 		msg.addByte(classification->id);
 		msg.addByte(classification->tiers.size());
-		for (const auto &[tier, price] : classification->tiers) {
+		for (const auto &[tier, tierInfo] : classification->tiers) {
 			msg.addByte(tier);
-			msg.add<uint64_t>(price);
+			msg.add<uint64_t>(tierInfo.priceToUpgrade);
+			tierCorePrices[tier] = tierInfo.corePriceToFuse;
 		}
 	}
 
-	// Version 12.81
+	// Version 13.16
 	// Forge Config Bytes
+
+	// Exalted core table per tier
+	msg.addByte(static_cast<uint8_t>(tierCorePrices.size()));
+	for (const auto &[tier, cores] : tierCorePrices) {
+		msg.addByte(tier);
+		msg.addByte(cores);
+	}
 
 	// (conversion) (left column top) Cost to make 1 bottom item - 20
 	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER)));
@@ -4042,9 +4032,9 @@ void ProtocolGame::sendForgingData() {
 	// (conversion) (right column top) Current stored dust limit minus this number = cost to increase stored dust limit - 75
 	msg.addByte(75);
 	// (conversion) (right column bottom) Starting stored dust limit
-	msg.addByte(static_cast<uint8_t>(player->getForgeDustLevel()));
+	msg.add<uint16_t>(player->getForgeDustLevel());
 	// (conversion) (right column bottom) Max stored dust limit - 225
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_MAX_DUST)));
+	msg.add<uint16_t>(g_configManager().getNumber(FORGE_MAX_DUST));
 	// (fusion) Dust cost - 100
 	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_FUSION_DUST_COST)));
 	// (transfer) Dust cost - 100
@@ -4171,7 +4161,7 @@ void ProtocolGame::sendOpenForge() {
 		}
 	}
 
-	msg.addByte(static_cast<uint8_t>(player->getForgeDustLevel())); // Player dust limit
+	msg.add<uint16_t>(player->getForgeDustLevel()); // Player dust limit
 	writeToOutputBuffer(msg);
 	// Update forging informations
 	sendForgingData();
@@ -4305,10 +4295,31 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		msg.add<uint16_t>(0x00);
 	}
 
-	if (it.attack != 0) {
-		// TODO: chance to hit, range
-		// example:
-		// "attack +x, chance to hit +y%, z fields"
+	if (it.isRanged()) {
+		std::ostringstream ss;
+		bool separator = false;
+
+		if (it.attack != 0) {
+			ss << "attack +" << it.attack;
+			separator = true;
+		}
+
+		if (it.hitChance != 0) {
+			if (separator) {
+				ss << ", ";
+			}
+			ss << "chance to hit +" << static_cast<int16_t>(it.hitChance) << "%";
+			separator = true;
+		}
+
+		if (it.shootRange != 0) {
+			if (separator) {
+				ss << ", ";
+			}
+			ss << static_cast<uint16_t>(it.shootRange) << " fields";
+		}
+		msg.addString(ss.str());
+	} else if (!it.isRanged() && it.attack != 0) {
 		if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 			std::ostringstream ss;
 			ss << it.attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
@@ -4326,7 +4337,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		msg.add<uint16_t>(0x00);
 	}
 
-	if (it.defense != 0) {
+	if (it.defense != 0 || it.isMissile()) {
 		if (it.extraDefense != 0) {
 			std::ostringstream ss;
 			ss << it.defense << ' ' << std::showpos << it.extraDefense << std::noshowpos;
@@ -5103,7 +5114,6 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STORE_COIN_PACKET)));
 
 	msg.addByte(shouldAddExivaRestrictions ? 0x01 : 0x00); // exiva button enabled
-	msg.addByte(0x00); // Tournament button
 
 	writeToOutputBuffer(msg);
 
@@ -5637,7 +5647,7 @@ void ProtocolGame::sendSpellCooldown(uint8_t spellId, uint32_t time) {
 	NetworkMessage msg;
 	msg.addByte(0xA4);
 
-	msg.addByte(spellId);
+	msg.add<uint16_t>(spellId);
 	msg.add<uint32_t>(time);
 	writeToOutputBuffer(msg);
 }
@@ -5964,8 +5974,8 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.addByte(0xA0);
 
-	msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
 
 	msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 
@@ -5979,8 +5989,8 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.add<uint16_t>(player->getStoreXpBoost()); // xp boost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
 
-	msg.add<uint16_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint16_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
 
 	msg.addByte(player->getSoul());
 
@@ -5996,8 +6006,8 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.add<uint16_t>(player->getExpBoostStamina()); // xp boost time (seconds)
 	msg.addByte(1); // enables exp boost in the store
 
-	msg.add<uint16_t>(player->getManaShield()); // remaining mana shield
-	msg.add<uint16_t>(player->getMaxManaShield()); // total mana shield
+	msg.add<uint32_t>(player->getManaShield()); // remaining mana shield
+	msg.add<uint32_t>(player->getMaxManaShield()); // total mana shield
 }
 
 void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
@@ -6016,9 +6026,12 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 	}
 
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i, true), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(i));
 	}
+
+	// 13.10 list (U8 + U16)
+	msg.addByte(0);
 
 	// Version 12.81 new skill (Fatal, Dodge and Momentum)
 	sendForgeSkillStats(msg);
@@ -6826,22 +6839,20 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.addByte(isSlotOneUnlocked ? 1 : 0);
 	msg.add<uint32_t>(isSlotOneUnlocked ? bossIdSlotOne : 0);
 	if (isSlotOneUnlocked && bossIdSlotOne != 0) {
-		// Variables Boss Slot One
 		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotOne);
-		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-		auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
-		auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotOne);
-		uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
-		uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
-		// Bytes Slot One
-		msg.addByte(bossRace); // Boss Race
-		msg.add<uint32_t>(bossKillCount); // Kill Count
-		msg.add<uint16_t>(bonusBossSlotOne); // Loot Bonus
-		msg.addByte(0); // Kill Bonus
-		msg.addByte(bossRace); // Boss Race
-		msg.add<uint32_t>(isSlotOneInactive == 1 ? 0 : removePrice); // Remove Price
-		msg.addByte(isSlotOneInactive); // Inactive? (Only true if equal to Boosted Boss)
-		bossesUnlockedSize--;
+		if (mType) {
+			// Variables Boss Slot One
+			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
+			auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotOne);
+			uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
+			uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
+			// Bytes Slot One
+			sendBosstiarySlotsBytes(msg, bossRace, bossKillCount, bonusBossSlotOne, 0, isSlotOneInactive, removePrice);
+			bossesUnlockedSize--;
+		} else {
+			sendBosstiarySlotsBytes(msg);
+		}
 	}
 
 	uint32_t slotTwoPoints = 1500;
@@ -6851,20 +6862,18 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	if (isSlotTwoUnlocked && bossIdSlotTwo != 0) {
 		// Variables Boss Slot Two
 		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotTwo);
-		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-		auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotTwo));
-		auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotTwo);
-		uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
-		uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
-		// Bytes Slot Two
-		msg.addByte(bossRace); // Boss Race
-		msg.add<uint32_t>(bossKillCount); // Kill Count
-		msg.add<uint16_t>(bonusBossSlotTwo); // Loot Bonus
-		msg.addByte(0); // Kill Bonus
-		msg.addByte(bossRace); // Boss Race
-		msg.add<uint32_t>(isSlotTwoInactive == 1 ? 0 : removePrice); // Remove Price
-		msg.addByte(isSlotTwoInactive); // Inactive? (Only true if equal to Boosted Boss)
-		bossesUnlockedSize--;
+		if (mType) {
+			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotTwo));
+			auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotTwo);
+			uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
+			uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
+			// Bytes Slot Two
+			sendBosstiarySlotsBytes(msg, bossRace, bossKillCount, bonusBossSlotTwo, 0, isSlotTwoInactive, removePrice);
+			bossesUnlockedSize--;
+		} else {
+			sendBosstiarySlotsBytes(msg);
+		}
 	}
 
 	bool isTodaySlotUnlocked = g_configManager().getBoolean(BOOSTED_BOSS_SLOT);
@@ -6873,17 +6882,16 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	if (isTodaySlotUnlocked && boostedBossId != 0) {
 		std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
 		const MonsterType* mType = g_monsters().getMonsterType(boostedBossName);
-		auto boostedBossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-		auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
-		auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
-		auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
-		msg.addByte(boostedBossRace); // Boss Race
-		msg.add<uint32_t>(boostedBossKillCount); // Kill Count
-		msg.add<uint16_t>(boostedLootBonus); // Loot Bonus
-		msg.addByte(boostedKillBonus); // Kill Bonus
-		msg.addByte(boostedBossRace); // Boss Race
-		msg.add<uint32_t>(0); // Remove Price
-		msg.addByte(0); // Inactive? (Only true if equal to Boosted Boss)
+		if (mType) {
+			auto boostedBossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+			auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
+			auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
+			auto bosstiaryMultiplier = static_cast<uint8_t>(g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER));
+			auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
+			sendBosstiarySlotsBytes(msg, boostedBossRace, boostedBossKillCount, boostedLootBonus, bosstiaryMultiplier + boostedKillBonus, 0, 0);
+		} else {
+			sendBosstiarySlotsBytes(msg);
+		}
 	}
 
 	msg.addByte(bossesUnlockedSize != 0 ? 1 : 0);

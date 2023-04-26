@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -178,7 +178,7 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
 	} else {
 		CombatDamage damage;
 		WeaponType_t weaponType = item->getWeaponType();
-		if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE) {
+		if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE || weaponType == WEAPON_MISSILE) {
 			damage.origin = ORIGIN_RANGED;
 		} else {
 			damage.origin = ORIGIN_MELEE;

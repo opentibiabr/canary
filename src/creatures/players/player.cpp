@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -230,7 +230,7 @@ Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const {
 		return nullptr;
 	}
 
-	if (!ignoreAmmo && weaponType == WEAPON_DISTANCE) {
+	if (!ignoreAmmo && (weaponType == WEAPON_DISTANCE || weaponType == WEAPON_MISSILE)) {
 		const ItemType &it = Item::items[item->getID()];
 		if (it.ammoType != AMMO_NONE) {
 			item = getQuiverAmmoOfType(it);
@@ -312,6 +312,7 @@ int32_t Player::getWeaponSkill(const Item* item) const {
 			break;
 		}
 
+		case WEAPON_MISSILE:
 		case WEAPON_DISTANCE: {
 			attackSkill = getSkillLevel(SKILL_DISTANCE);
 			break;
@@ -676,7 +677,7 @@ void Player::closeContainer(uint8_t cid) {
 	OpenContainer openContainer = it->second;
 	Container* container = openContainer.container;
 
-	if (container && container->isAnykindOfRewardContainer() && !hasOtherRewardContainerOpen(container)) {
+	if (container && container->isAnyKindOfRewardChest() && !hasOtherRewardContainerOpen(container)) {
 		removeEmptyRewards();
 	}
 	openContainers.erase(it);
@@ -699,7 +700,7 @@ void Player::removeEmptyRewards() {
 
 bool Player::hasOtherRewardContainerOpen(const Container* container) const {
 	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [container](const auto &containerPair) {
-		return containerPair.second.container != container && containerPair.second.container->isAnykindOfRewardContainer();
+		return containerPair.second.container != container && containerPair.second.container->isAnyKindOfRewardContainer();
 	});
 }
 
@@ -1250,8 +1251,9 @@ void Player::onApplyImbuement(Imbuement* imbuement, Item* item, uint8_t slot, bo
 		return;
 	}
 
-	std::stringstream withdrawItemMessage;
 	for (auto &[key, value] : items) {
+		std::stringstream withdrawItemMessage;
+
 		uint32_t inventoryItemCount = getItemTypeCount(key);
 		if (inventoryItemCount >= value) {
 			removeItemOfType(key, value, -1, true);
@@ -1267,9 +1269,8 @@ void Player::onApplyImbuement(Imbuement* imbuement, Item* item, uint8_t slot, bo
 
 		withdrawItemMessage << "Using " << mathItemCount << "x " << itemType.name << " from your supply stash. ";
 		withdrawItem(itemType.id, mathItemCount);
+		sendTextMessage(MESSAGE_STATUS, withdrawItemMessage.str());
 	}
-
-	sendTextMessage(MESSAGE_STATUS, withdrawItemMessage.str());
 
 	if (!protectionCharm && uniform_random(1, 100) > baseImbuement->percent) {
 		openImbuementWindow(item);
@@ -1326,13 +1327,14 @@ void Player::openImbuementWindow(Item* item) {
 		return;
 	}
 
-	if (item->getTopParent() != this) {
-		this->sendTextMessage(MESSAGE_FAILURE, "You have to pick up the item to imbue it.");
+	if (item->getImbuementSlot() <= 0) {
+		this->sendTextMessage(MESSAGE_EVENT_ADVANCE, "This item is not imbuable.");
 		return;
 	}
 
-	if (item->getImbuementSlot() <= 0) {
-		this->sendTextMessage(MESSAGE_FAILURE, "This item is not imbuable.");
+	auto itemParent = item->getTopParent();
+	if (itemParent && itemParent != this) {
+		this->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to pick up the item to imbue it.");
 		return;
 	}
 
@@ -2407,6 +2409,10 @@ uint32_t Player::getIP() const {
 void Player::death(Creature* lastHitCreature) {
 	loginPosition = town->getTemplePosition();
 
+	if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
+		setSkull(SKULL_NONE);
+	}
+
 	if (skillLoss) {
 		uint8_t unfairFightReduction = 100;
 		int playerDmg = 0;
@@ -2584,7 +2590,8 @@ void Player::death(Creature* lastHitCreature) {
 		auto it = conditions.begin(), end = conditions.end();
 		while (it != end) {
 			Condition* condition = *it;
-			if (condition->isPersistent()) {
+			// isSupress block to delete spells conditions (ensures that the player cannot, for example, reset the cooldown time of the familiar and summon several)
+			if (condition->isPersistent() && isSuppress(condition->getType())) {
 				it = conditions.erase(it);
 
 				condition->endCondition(this);
@@ -2659,6 +2666,7 @@ void Player::despawn() {
 	listWalkDir.clear();
 	stopEventWalk();
 	onWalkAborted();
+	closeAllExternalContainers();
 	g_game().playerSetAttackedCreature(this->getID(), 0);
 	g_game().playerFollowCreature(this->getID(), 0);
 
@@ -5715,7 +5723,7 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 	if (allItems) {
 		// Stow player backpack
 		if (auto inventoryItem = getInventoryItem(CONST_SLOT_BACKPACK);
-			!item->isInsideDepot(true)) {
+			inventoryItem && !item->isInsideDepot(true)) {
 			sendStowItems(*item, *inventoryItem, itemDict);
 		}
 
@@ -6362,7 +6370,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 				for (const auto &[mapTier, mapPrice] : itemClassification->tiers) {
 					if (mapTier == firstForgingItem->getTier()) {
-						cost = mapPrice;
+						cost = mapPrice.priceToUpgrade;
 						break;
 					}
 				}
@@ -6435,7 +6443,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 			for (const auto &[mapTier, mapPrice] : itemClassification->tiers) {
 				if (mapTier == firstForgingItem->getTier()) {
-					cost = mapPrice;
+					cost = mapPrice.priceToUpgrade;
 					break;
 				}
 			}
@@ -6549,11 +6557,7 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 		setForgeDusts(getForgeDusts() - g_configManager().getNumber(FORGE_TRANSFER_DUST_COST));
 	}
 
-	if (!removeItemOfType(ITEM_FORGE_CORE, 1, -1, true, true)) {
-		SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, 1, getName());
-		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
-		return;
-	}
+	uint8_t coresAmount = 0;
 	uint64_t cost = 0;
 	for (const auto &itemClassification : g_game().getItemsClassifications()) {
 		if (itemClassification->id != donorItem->getClassification()) {
@@ -6562,10 +6566,17 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 		for (const auto &[mapTier, mapPrice] : itemClassification->tiers) {
 			if (mapTier == donorItem->getTier() - 1) {
-				cost = mapPrice;
+				cost = mapPrice.priceToUpgrade;
+				coresAmount = mapPrice.corePriceToFuse;
 				break;
 			}
 		}
+	}
+
+	if (!removeItemOfType(ITEM_FORGE_CORE, coresAmount, -1, true, true)) {
+		SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, 1, getName());
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+		return;
 	}
 
 	if (!g_game().removeMoney(this, cost, 0, true)) {
@@ -6829,6 +6840,28 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 	history.description = detailsResponse.str();
 
 	setForgeHistory(history);
+}
+
+void Player::closeAllExternalContainers() {
+	if (openContainers.empty()) {
+		return;
+	}
+
+	std::vector<Container*> containerToClose;
+	for (const auto &it : openContainers) {
+		Container* container = it.second.container;
+		if (!container) {
+			continue;
+		}
+
+		if (container->getHoldingPlayer() != this) {
+			containerToClose.push_back(container);
+		}
+	}
+
+	for (Container* container : containerToClose) {
+		autoCloseContainers(container);
+	}
 }
 
 /*******************************************************************************

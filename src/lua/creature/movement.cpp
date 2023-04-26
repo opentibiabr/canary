@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -319,6 +319,7 @@ uint32_t MoveEvents::onPlayerEquip(Player &player, Item &item, Slots_t slot, boo
 	if (!moveEvent) {
 		return 1;
 	}
+	g_events().eventPlayerOnInventoryUpdate(&player, &item, slot, true);
 	return moveEvent->fireEquip(player, item, slot, isCheck);
 }
 
@@ -327,6 +328,7 @@ uint32_t MoveEvents::onPlayerDeEquip(Player &player, Item &item, Slots_t slot) {
 	if (!moveEvent) {
 		return 1;
 	}
+	g_events().eventPlayerOnInventoryUpdate(&player, &item, slot, false);
 	return moveEvent->fireEquip(player, item, slot, false);
 }
 

@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_CREATURES_PLAYERS_PLAYER_H_
@@ -762,12 +762,17 @@ class Player final : public Creature, public Cylinder {
 			return lastAttack > 0 && ((OTSYS_TIME() - lastAttack) >= getAttackSpeed());
 		}
 
-		uint16_t getSkillLevel(uint8_t skill) const {
+		uint16_t getSkillLevel(uint8_t skill, bool sendToClient = false) const {
 			auto skillLevel = std::max<int32_t>(0, skills[skill].level + varSkills[skill]);
 
 			if (auto it = maxValuePerSkill.find(skill);
 				it != maxValuePerSkill.end()) {
 				skillLevel = std::min<int32_t>(it->second, skillLevel);
+			}
+
+			// Send to client multiplied skill mana/life leech (13.00+ version changed to decimal)
+			if (sendToClient && (skill == SKILL_MANA_LEECH_AMOUNT || skill == SKILL_LIFE_LEECH_AMOUNT)) {
+				return skillLevel * 100;
 			}
 
 			return static_cast<uint16_t>(skillLevel);
@@ -1036,6 +1041,7 @@ class Player final : public Creature, public Cylinder {
 		void sendModalWindow(const ModalWindow &modalWindow);
 
 		// container
+		void closeAllExternalContainers();
 		void sendAddContainerItem(const Container* container, const Item* item);
 		void sendUpdateContainerItem(const Container* container, uint16_t slot, const Item* newItem);
 		void sendRemoveContainerItem(const Container* container, uint16_t slot);
@@ -1479,11 +1485,6 @@ class Player final : public Creature, public Cylinder {
 		}
 		void resetAsyncOngoingTask(uint64_t flags) {
 			asyncOngoingTasks &= ~(flags);
-		}
-		void sendTournamentLeaderboard() {
-			if (client) {
-				client->sendTournamentLeaderboard();
-			}
 		}
 		void sendEnterWorld() {
 			if (client) {
@@ -2234,6 +2235,11 @@ class Player final : public Creature, public Cylinder {
 		}
 		uint32_t getBossPoints() const {
 			return bossPoints;
+		}
+		void sendBosstiaryCooldownTimer() const {
+			if (client) {
+				client->sendBosstiaryCooldownTimer();
+			}
 		}
 
 		void setSlotBossId(uint8_t slotId, uint32_t bossId) {

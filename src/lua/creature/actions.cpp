@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -299,6 +299,10 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 		// reward chest
 		if (container->getRewardChest() != nullptr) {
 			RewardChest* myRewardChest = player->getRewardChest();
+			if (!player->hasOtherRewardContainerOpen(dynamic_cast<const Container*>(container->getParent()))) {
+				player->removeEmptyRewards();
+			}
+
 			if (myRewardChest->size() == 0) {
 				return RETURNVALUE_REWARDCHESTISEMPTY;
 			}
@@ -314,18 +318,21 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 		auto rewardId = container->getAttribute<time_t>(ItemAttribute_t::DATE);
 		// Reward container proxy created when the boss dies
 		if (container->getID() == ITEM_REWARD_CONTAINER && !container->getReward()) {
-			if (auto reward = player->getReward(rewardId, false)) {
-				reward->setParent(container->getRealParent());
-				openContainer = reward;
-			} else {
+			auto reward = player->getReward(rewardId, false);
+			if (!reward) {
 				return RETURNVALUE_THISISIMPOSSIBLE;
 			}
+			if (reward->empty()) {
+				return RETURNVALUE_REWARDCONTAINERISEMPTY;
+			}
+			reward->setParent(container->getRealParent());
+			openContainer = reward;
 		}
 
 		uint32_t corpseOwner = container->getCorpseOwner();
 		if (container->isRewardCorpse()) {
 			// only players who participated in the fight can open the corpse
-			if (player->getGroup()->id >= account::GROUP_TYPE_GAMEMASTER || player->getAccountType() >= account::ACCOUNT_TYPE_SENIORTUTOR) {
+			if (player->getGroup()->id >= account::GROUP_TYPE_GAMEMASTER) {
 				return RETURNVALUE_YOUCANTOPENCORPSEADM;
 			}
 			if (!player->getReward(rewardId, false)) {

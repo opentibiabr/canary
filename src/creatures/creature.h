@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_CREATURES_CREATURE_H_
@@ -476,7 +476,7 @@ class Creature : virtual public Thing {
 		double getDamageRatio(Creature* attacker) const;
 
 		bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, const FindPathParams &fpp) const;
-		bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 0) const;
+		bool getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch = true, bool clearSight = true, int32_t maxSearchDist = 7) const;
 
 		void incrementReferenceCounter() {
 			++referenceCounter;

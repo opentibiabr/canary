@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -14,11 +14,11 @@
 #include "game/scheduling/scheduler.h"
 
 void Decay::startDecay(Item* item) {
-	if (!item) {
+	if (!item || item->getLoadedFromMap()) {
 		return;
 	}
 
-	auto decayState = item->getAttribute<ItemDecayState_t>(ItemAttribute_t::DECAYSTATE);
+	auto decayState = item->getDecaying();
 	if (decayState == DECAYING_STOPPING || (!item->canDecay() && decayState == DECAYING_TRUE)) {
 		stopDecay(item);
 		return;

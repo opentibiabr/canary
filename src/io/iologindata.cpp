@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -503,14 +503,43 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 		player->internalAddThing(CONST_SLOT_STORE_INBOX, Item::CreateItem(ITEM_STORE_INBOX));
 	}
 
+	IOLoginDataLoad::loadRewardItems(player);
+
 	// load depot items
 	itemMap.clear();
+	query.str(std::string());
+	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_depotitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
+	if ((result = db.storeQuery(query.str()))) {
+		loadItems(itemMap, result, *player);
 
-	IOLoginDataLoad::loadRewardItems(player);
+		for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
+			const std::pair<Item*, int32_t> &pair = it->second;
+			Item* item = pair.first;
+
+			int32_t pid = pair.second;
+			if (pid >= 0 && pid < 100) {
+				DepotChest* depotChest = player->getDepotChest(pid, true);
+				if (depotChest) {
+					depotChest->internalAddThing(item);
+					item->startDecaying();
+				}
+			} else {
+				ItemMap::const_iterator it2 = itemMap.find(pid);
+				if (it2 == itemMap.end()) {
+					continue;
+				}
+
+				Container* container = it2->second.first->getContainer();
+				if (container) {
+					container->internalAddThing(item);
+					item->startDecaying();
+				}
+			}
+		}
+	}
 
 	// load inbox items
 	itemMap.clear();
-
 	query.str(std::string());
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_inboxitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
 	if ((result = db.storeQuery(query.str()))) {
@@ -799,6 +828,7 @@ bool IOLoginData::savePlayer(Player* player) {
 
 	query << "`prey_wildcard` = " << player->getPreyCards() << ',';
 	query << "`task_points` = " << player->getTaskHuntingPoints() << ',';
+	query << "`boss_points` = " << player->getBossPoints() << ',';
 	query << "`forge_dusts` = " << player->getForgeDusts() << ',';
 	query << "`forge_dust_level` = " << player->getForgeDustLevel() << ',';
 	query << "`randomize_mount` = " << static_cast<uint16_t>(player->isRandomMounted()) << ',';

@@ -447,7 +447,7 @@ class ProtocolGame final : public Protocol {
 		void parseExtendedOpcode(NetworkMessage &msg);
 
 		void parseInventoryImbuements(NetworkMessage &msg);
-		void sendInventoryImbuements(std::map<Slots_t, Item*> items);
+		void sendInventoryImbuements(const std::map<Slots_t, Item*> items);
 
 		// reloadCreature
 		void reloadCreature(const Creature* creature);

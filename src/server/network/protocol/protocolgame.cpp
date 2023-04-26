@@ -6507,7 +6507,7 @@ void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg) {
 	addGameTask(&Game::playerRequestInventoryImbuements, player->getID(), isTrackerOpen);
 }
 
-void ProtocolGame::sendInventoryImbuements(std::map<Slots_t, Item*> items) {
+void ProtocolGame::sendInventoryImbuements(const std::map<Slots_t, Item*> items) {
 	NetworkMessage msg;
 	msg.addByte(0x5D);
 
@@ -6516,7 +6516,6 @@ void ProtocolGame::sendInventoryImbuements(std::map<Slots_t, Item*> items) {
 		msg.addByte(slot);
 		AddItem(msg, item);
 
-		const ItemType &it = Item::items[item->getID()];
 		uint8_t slots = item->getImbuementSlot();
 		msg.addByte(slots);
 		if (slots == 0) {
@@ -6536,7 +6535,7 @@ void ProtocolGame::sendInventoryImbuements(std::map<Slots_t, Item*> items) {
 				continue;
 			}
 
-			BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
+			const BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
 			msg.addByte(0x01);
 			msg.addString(baseImbuement->name + " " + imbuement->getName());
 			msg.add<uint16_t>(imbuement->getIconID());

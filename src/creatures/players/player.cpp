@@ -5647,7 +5647,7 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 	}
 }
 
-void Player::updateImbuementTrackerStats() {
+void Player::updateImbuementTrackerStats() const {
 	if (imbuementTrackerWindowOpen) {
 		g_game().playerRequestInventoryImbuements(getID(), true);
 	}
@@ -5876,7 +5876,9 @@ void Player::triggerMomentum() {
 		while (it != conditions.end()) {
 			auto condItem = *it;
 			ConditionType_t type = condItem->getType();
-			uint32_t spellId = condItem->getSubId();
+			auto maxu16 = std::numeric_limits<uint16_t>::max();
+			auto checkSpellId = condItem->getSubId();
+			auto spellId = checkSpellId > maxu16 ? 0u : static_cast<uint16_t>(checkSpellId);
 			int32_t ticks = condItem->getTicks();
 			int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
 			triggered = true;

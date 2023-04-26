@@ -1642,7 +1642,7 @@ class Player final : public Creature, public Cylinder {
 
 		void addItemImbuementStats(const Imbuement* imbuement);
 		void removeItemImbuementStats(const Imbuement* imbuement);
-		void updateImbuementTrackerStats();
+		void updateImbuementTrackerStats() const;
 
 		bool isUIExhausted(uint32_t exhaustionTime = 250) const;
 		void updateUIExhausted();
@@ -2269,7 +2269,7 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
-		void sendInventoryImbuements(std::map<Slots_t, Item*> items) {
+		void sendInventoryImbuements(const std::map<Slots_t, Item*> items) const {
 			if (client) {
 				client->sendInventoryImbuements(items);
 			}

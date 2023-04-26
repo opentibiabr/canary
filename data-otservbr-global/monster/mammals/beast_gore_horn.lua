@@ -64,7 +64,6 @@ monster.voices = {
 monster.attacks = {
 	{name ="melee", interval = 2000, chance = 100, minDamage = 300, maxDamage = -400},
 	{name ="combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -400, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, target = true}
-
 }
 
 monster.defenses = {

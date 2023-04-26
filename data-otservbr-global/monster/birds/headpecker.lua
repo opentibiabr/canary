@@ -34,7 +34,6 @@ monster.speed = 217
 monster.manaCost = 0
 monster.maxSummons = 0
 
-
 monster.changeTarget = {
 	interval = 4000,
 	chance = 70
@@ -70,17 +69,18 @@ monster.light = {
 }
 
 monster.loot = {
-	{id = 39546, chance = 0},
-	{name = "Crystal Coin", chance = 10000, maxCount = 3},
-	{name = "Furry Club", chance = 7730},
-	{name = "Headpecker Beak", chance = 3090},
-	{name = "Headpecker Feather", chance = 10000},
-	{name = "Spike Sword", chance = 15640},
-	{name = "Titan Axe", chance = 1980},
-	{name = "Gold Ingot", chance = 2430},
-	{name = "Wand of Starstorm", chance = 430},
-	{name = "serpent sword", chance = 90},
-	{name = "relic sword", chance = 430},
+	{name = "Crystal Coin", chance = 35160},
+	{name = "Headpecker Beak", chance = 11360},
+	{name = "Headpecker Feather", chance = 7620, minCount = 1, maxCount = 5},
+	{name = "Furry Club", chance = 5560},
+	{name = "Carrot", chance = 4950},
+	{name = "Knife", chance = 4260},
+	{name = "Spike Sword", chance = 4040},
+	{name = "War Hammer", chance = 2290},
+	{name = "Titan Axe", chance = 1720},
+	{name = "Blue Gem", chance = 1560},
+	{name = "Wand of Starstorm", chance = 980},
+	{name = "Gold Ingot", chance = 910},
 }
 
 monster.attacks = {

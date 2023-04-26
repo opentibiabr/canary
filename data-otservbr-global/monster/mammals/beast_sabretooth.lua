@@ -13,7 +13,6 @@ monster.outfit = {
 	lookMount = 0
 }
 
-
 monster.health = 17300
 monster.maxHealth = 17300
 monster.race = "blood"
@@ -67,7 +66,6 @@ monster.voices = {
 monster.attacks = {
 	{name ="melee", interval = 2000, chance = 100, minDamage = 300, maxDamage = -450, effect = CONST_ME_ORANGE_ENERGY_SPARK},
 	{name ="combat", interval = 1000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = -260, maxDamage = -300, length = 4, spread = 1, effect = CONST_ME_EXPLOSIONAREA, target = false},
-
 }
 
 monster.defenses = {

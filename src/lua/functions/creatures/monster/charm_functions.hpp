@@ -28,6 +28,8 @@ class CharmFunctions final : LuaScriptInterface {
 			registerMethod(L, "Charm", "messageCancel", CharmFunctions::luaCharmMessageCancel);
 			registerMethod(L, "Charm", "messageServerLog", CharmFunctions::luaCharmMessageServerLog);
 			registerMethod(L, "Charm", "effect", CharmFunctions::luaCharmEffect);
+			registerMethod(L, "Charm", "castSound", CharmFunctions::luaCharmCastSound);
+			registerMethod(L, "Charm", "impactSound", CharmFunctions::luaCharmImpactSound);
 		}
 
 	private:
@@ -42,6 +44,8 @@ class CharmFunctions final : LuaScriptInterface {
 		static int luaCharmMessageCancel(lua_State* L);
 		static int luaCharmMessageServerLog(lua_State* L);
 		static int luaCharmEffect(lua_State* L);
+		static int luaCharmCastSound(lua_State* L);
+		static int luaCharmImpactSound(lua_State* L);
 };
 
 #endif // SRC_LUA_FUNCTIONS_CREATURES_MONSTER_CHARM_FUNCTIONS_HPP_

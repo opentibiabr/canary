@@ -7846,3 +7846,48 @@ void ProtocolGame::sendBosstiaryEntryChanged(uint32_t bossid) {
 	msg.add<uint32_t>(bossid);
 	writeToOutputBuffer(msg);
 }
+
+void ProtocolGame::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) {
+	if (oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x83);
+	msg.addPosition(pos);
+	msg.addByte(0x06); // Sound effect type
+	msg.addByte(static_cast<uint8_t>(source)); // Sound source type
+	msg.add<uint16_t>(static_cast<uint16_t>(id)); // Sound id
+	msg.addByte(0x00); // Breaking the effects loop
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendDoubleSoundEffect(
+	const Position &pos,
+	SoundEffect_t mainSoundId,
+	SourceEffect_t mainSource,
+	SoundEffect_t secondarySoundId,
+	SourceEffect_t secondarySource
+) {
+	if (oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x83);
+	msg.addPosition(pos);
+
+	// Primary sound
+	msg.addByte(0x06); // Sound effect type
+	msg.addByte(static_cast<uint8_t>(mainSource)); // Sound source type
+	msg.add<uint16_t>(static_cast<uint16_t>(mainSoundId)); // Sound id
+
+	// Secondary sound (Can be an array too, but not necessary here)
+	msg.addByte(0x07); // Multiple effect type
+	msg.addByte(0x01); // Useless ENUM (So far)
+	msg.addByte(static_cast<uint8_t>(secondarySource)); // Sound source type
+	msg.add<uint16_t>(static_cast<uint16_t>(secondarySoundId)); // Sound id
+
+	msg.addByte(0x00); // Breaking the effects loop
+	writeToOutputBuffer(msg);
+}

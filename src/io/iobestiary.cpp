@@ -40,6 +40,9 @@ bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target
 		charmParams.combatType = charmDamage.primary.type;
 		charmParams.aggressive = true;
 
+		charmParams.soundImpactEffect = charm->soundImpactEffect;
+		charmParams.soundCastEffect = charm->soundCastEffect;
+
 		player->sendCancelMessage(charm->cancelMsg);
 	} else if (charm->type == CHARM_DEFENSIVE) {
 		switch (charm->id) {

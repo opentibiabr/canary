@@ -31198,8 +31198,9 @@
 		<attribute key="weight" value="400"/>
 	</item>
 	<item id="20343" name="RESERVED SPRITE"/>
-	<item id="20344" article="a" name="hole">
-		<attribute key="floorchange" value="down"/>
+	<item id="20344" article="a" name="worm tunnel">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="15" />
 	</item>
 	<item fromid="20345" toid="20346" name="RESERVED SPRITE"/>
 	<item id="20347" article="a" name="cake backpack">
@@ -47198,11 +47199,13 @@
 	<item id="32765" name="plushie of a hydra">
 		<attribute key="weight" value="500"/>
 	</item>
-	<item id="32767" article="a" name="unknown">
-		<attribute key="weight" value="500"/>
+	<item id="32767" article="a" name="boss sandtimer">
+		<attribute key="decayTo" value="32768" />
+		<attribute key="duration" value="300" />
+		<attribute key="showduration" value="1" />
 	</item>
-	<item id="32768" article="a" name="unknown">
-		<attribute key="weight" value="500"/>
+	<item id="32768" article="a" name="boss sandtimer">
+		<attribute key="description" value="It hasn't started yet." />
 	</item>
 	<item id="32769" article="a" name="white gem">
 		<attribute key="showCount" value="1"/>

@@ -6223,6 +6223,10 @@ void ProtocolGame::sendSpellCooldown(uint16_t spellId, uint32_t time) {
 }
 
 void ProtocolGame::sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time) {
+	if (oldProtocol) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xA5);
 	msg.addByte(groupId);

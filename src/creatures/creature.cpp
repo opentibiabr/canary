@@ -764,8 +764,7 @@ bool Creature::hasBeenAttacked(uint32_t attackerId) {
 	return (OTSYS_TIME() - it->second.ticks) <= g_configManager().getNumber(PZ_LOCKED);
 }
 
-Item* Creature::getCorpse(Creature*, Creature*)
-{
+Item* Creature::getCorpse(Creature*, Creature*) {
 	if (getLookCorpse() != 0) {
 		return Item::CreateItem(getLookCorpse());
 	}

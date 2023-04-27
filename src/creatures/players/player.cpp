@@ -24,6 +24,7 @@
 #include "io/iobestiary.h"
 #include "items/bed.h"
 #include "items/weapons/weapons.h"
+#include "core.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -1490,7 +1491,8 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 			bed->wakeUp(this);
 		}
 
-		SPDLOG_INFO("{} has logged in. (Protocol: {})", name, getProtocolVersion());
+		auto version = client->oldProtocol ? getProtocolVersion() : CLIENT_VERSION;
+		SPDLOG_INFO("{} has logged in. (Protocol: {})", name, version);
 
 		if (guild) {
 			guild->addMember(this);

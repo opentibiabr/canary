@@ -22,7 +22,7 @@ local config = {
 
 local ferumbrasAscendantShulgraxLever = Action()
 function ferumbrasAscendantShulgraxLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 ferumbrasAscendantShulgraxLever:uid(1028)

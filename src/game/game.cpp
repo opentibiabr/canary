@@ -313,6 +313,13 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 
 	namespace fs = std::filesystem;
 
+	if (!fs::exists(customMapPath)) {
+		if (!fs::create_directory(customMapPath)) {
+			SPDLOG_ERROR("Failed to create custom map directory {}", customMapPath);
+			return false;
+		}
+	}
+
 	int customMapIndex = 0;
 	for (const auto &entry : fs::directory_iterator(customMapPath)) {
 		const auto &realPath = entry.path();
@@ -346,7 +353,7 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 			SPDLOG_ERROR("Failed to load custom map {}", filename);
 			return false;
 		}
-		customMapIndex += 1;
+		customMapIndex++;
 	}
 
 	// Must be done after all maps have been loaded
@@ -1221,6 +1228,12 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 		}
 	}
 
+	// check if we can move this item
+	if (ReturnValue ret = checkMoveItemToCylinder(player, fromCylinder, toCylinder, item); ret != RETURNVALUE_NOERROR) {
+		player->sendCancelMessage(ret);
+		return;
+	}
+
 	if (isTryingToStow(toPos, toCylinder)) {
 		player->stowItem(item, count, false);
 		return;
@@ -1357,6 +1370,81 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 
 bool Game::isTryingToStow(const Position &toPos, Cylinder* toCylinder) const {
 	return toCylinder->getContainer() && toCylinder->getItem()->getID() == ITEM_LOCKER && toPos.getZ() == ITEM_SUPPLY_STASH_INDEX;
+}
+
+ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder, Cylinder* toCylinder, Item* item) {
+	if (!player || !toCylinder || !item) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	if (toCylinder->getContainer()) {
+		auto containerID = toCylinder->getContainer()->getID();
+
+		if (containerID == ITEM_GOLD_POUCH) {
+			bool allowAnything = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);
+
+			if (!allowAnything && item->getID() != ITEM_GOLD_COIN && item->getID() != ITEM_PLATINUM_COIN && item->getID() != ITEM_CRYSTAL_COIN) {
+				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+			}
+		}
+
+		const Container* topParentContainer = toCylinder->getContainer()->getRootContainer();
+
+		if (!item->isStoreItem() && (containerID == ITEM_STORE_INBOX || topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
+			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+		}
+
+		if (item->isStoreItem()) {
+			bool isValidMoveItem = false;
+			if (HouseTile* fromHouseTile = dynamic_cast<HouseTile*>(fromCylinder->getTile()); fromHouseTile && fromHouseTile->getHouse()->getOwner() != player->getGUID()) {
+				return RETURNVALUE_NOTPOSSIBLE;
+			}
+
+			if (containerID == ITEM_STORE_INBOX || containerID == ITEM_DEPOT || toCylinder->getContainer()->isDepotChest()) {
+				isValidMoveItem = true;
+			}
+
+			if (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && (topParentContainer->getParent()->getContainer()->isDepotChest() || topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
+				isValidMoveItem = true;
+			}
+
+			if (!isValidMoveItem) {
+				return RETURNVALUE_NOTPOSSIBLE;
+			}
+		}
+
+		if (item->getContainer() && !item->isStoreItem()) {
+			for (Item* containerItem : item->getContainer()->getItems(true)) {
+				if (containerItem->isStoreItem() && ((containerID != ITEM_GOLD_POUCH && containerID != ITEM_DEPOT && containerID != ITEM_STORE_INBOX) || (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && (!topParentContainer->getParent()->getContainer()->isDepotChest() || topParentContainer->getParent()->getContainer()->getID() != ITEM_STORE_INBOX)))) {
+					return RETURNVALUE_NOTPOSSIBLE;
+				}
+			}
+		}
+	} else if (toCylinder->getTile()) {
+		HouseTile* toHouseTile = dynamic_cast<HouseTile*>(toCylinder->getTile());
+		if (fromCylinder->getContainer()) {
+			if (item->isStoreItem()) {
+				if (!toHouseTile || toHouseTile && toHouseTile->getHouse()->getOwner() != player->getGUID()) {
+					return RETURNVALUE_NOTPOSSIBLE;
+				}
+			}
+			if (item->getContainer() && !item->isStoreItem()) {
+				for (Item* containerItem : item->getContainer()->getItems(true)) {
+					if (containerItem->isStoreItem()) {
+						return RETURNVALUE_NOTPOSSIBLE;
+					}
+				}
+			}
+
+			return RETURNVALUE_NOERROR;
+		}
+
+		if (item->isStoreItem() && !toHouseTile) {
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+	}
+
+	return RETURNVALUE_NOERROR;
 }
 
 ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index, Item* item, uint32_t count, Item** internalMoveItem, uint32_t flags /*= 0*/, Creature* actor /*=nullptr*/, Item* tradeItem /* = nullptr*/) {
@@ -1602,6 +1690,8 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
+	auto addedItem = toCylinder->getItem();
+
 	Cylinder* destCylinder = toCylinder;
 	Item* toItem = nullptr;
 	toCylinder = toCylinder->queryDestination(index, *item, &toItem, flags);
@@ -1619,7 +1709,7 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 	uint32_t maxQueryCount = 0;
 	ret = destCylinder->queryMaxCount(INDEX_WHEREEVER, *item, item->getItemCount(), maxQueryCount, flags);
 
-	if (ret != RETURNVALUE_NOERROR && toCylinder->getItem() && toCylinder->getItem()->getID() != ITEM_REWARD_CONTAINER) {
+	if (ret != RETURNVALUE_NOERROR && addedItem && addedItem->getID() != ITEM_REWARD_CONTAINER) {
 		return ret;
 	}
 
@@ -1669,11 +1759,10 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 		}
 	}
 
-	Item* quiver = toCylinder->getItem();
-	if (quiver && quiver->isQuiver()
-		&& quiver->getHoldingPlayer()
-		&& quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
-		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
+	if (addedItem && addedItem->isQuiver()
+		&& addedItem->getHoldingPlayer()
+		&& addedItem->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == addedItem) {
+		addedItem->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, addedItem);
 	}
 
 	return RETURNVALUE_NOERROR;
@@ -3559,7 +3648,7 @@ void Game::playerStowItem(uint32_t playerId, const Position &pos, uint16_t itemI
 		return;
 
 	Item* item = thing->getItem();
-	if (!item || item->getID() != itemId || item->getItemCount() < count) {
+	if (!item || item->getID() != itemId || item->getItemCount() < count || item->isStoreItem()) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -3793,6 +3882,20 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 	if (tradeContainer && tradeContainer->getItemHoldingCount() + 1 > 100) {
 		player->sendTextMessage(MESSAGE_TRADE, "You can not trade more than 100 items.");
 		return;
+	}
+
+	if (tradeItem->isStoreItem()) {
+		player->sendTextMessage(MESSAGE_TRADE, "This item cannot be trade.");
+		return;
+	}
+
+	if (tradeItemContainer) {
+		for (Item* containerItem : tradeItemContainer->getItems(true)) {
+			if (containerItem->isStoreItem()) {
+				player->sendTextMessage(MESSAGE_TRADE, "This item cannot be trade.");
+				return;
+			}
+		}
 	}
 
 	if (!g_events().eventPlayerOnTradeRequest(player, tradePartner, tradeItem)) {
@@ -4586,7 +4689,6 @@ void Game::playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Po
 	player->openContainerFromDepotSearch(pos);
 	player->updateUIExhausted();
 }
-/*******************************************************************************/
 
 void Game::playerCancelAttackAndFollow(uint32_t playerId) {
 	Player* player = getPlayerByID(playerId);
@@ -7232,15 +7334,6 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 	player->addAsyncOngoingTask(PlayerAsyncTask_Highscore);
 }
 
-void Game::playerTournamentLeaderboard(uint32_t playerId, uint8_t leaderboardType) {
-	Player* player = getPlayerByID(playerId);
-	if (!player || leaderboardType > 1) {
-		return;
-	}
-
-	player->sendTournamentLeaderboard();
-}
-
 void Game::playerReportRuleViolationReport(uint32_t playerId, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
@@ -8256,6 +8349,40 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 
 	playerSetBossPodium(playerId, podiumBossId, pos, stackPos, itemId, directionValue, isPodiumVisible, isBossVisible);
 }
+
+void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen) {
+	Player* player = getPlayerByID(playerId);
+	if (!player || player->isRemoved()) {
+		return;
+	}
+
+	player->imbuementTrackerWindowOpen = isTrackerOpen;
+	if (!player->imbuementTrackerWindowOpen) {
+		return;
+	}
+
+	std::map<Slots_t, Item*> itemsWithImbueSlotMap;
+	for (uint8_t inventorySlot = CONST_SLOT_FIRST; inventorySlot <= CONST_SLOT_LAST; ++inventorySlot) {
+		auto item = player->getInventoryItem(static_cast<Slots_t>(inventorySlot));
+		if (!item) {
+			continue;
+		}
+
+		uint8_t imbuementSlot = item->getImbuementSlot();
+		for (uint8_t slot = 0; slot < imbuementSlot; slot++) {
+			ImbuementInfo imbuementInfo;
+			if (!item->getImbuementInfo(slot, &imbuementInfo)) {
+				continue;
+			}
+		}
+
+		itemsWithImbueSlotMap[static_cast<Slots_t>(inventorySlot)] = item;
+	}
+
+	player->sendInventoryImbuements(itemsWithImbueSlotMap);
+}
+/* Player Methods end
+********************/
 
 void Game::updatePlayerSaleItems(uint32_t playerId) {
 	Player* player = getPlayerByID(playerId);

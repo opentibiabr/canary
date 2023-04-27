@@ -135,8 +135,6 @@ class ProtocolGame final : public Protocol {
 		void sendHighscoresNoData();
 		void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);
 
-		void parseTournamentLeaderboard(NetworkMessage &msg);
-
 		void parseGreet(NetworkMessage &msg);
 		void parseBugReport(NetworkMessage &msg);
 		void parseDebugAssert(NetworkMessage &msg);
@@ -305,8 +303,6 @@ class ProtocolGame final : public Protocol {
 		void sendTutorial(uint8_t tutorialId);
 		void sendAddMarker(const Position &pos, uint8_t markType, const std::string &desc);
 
-		void sendTournamentLeaderboard();
-
 		void sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode);
 		void sendCyclopediaCharacterBaseInformation();
 		void sendCyclopediaCharacterGeneralStats();
@@ -369,7 +365,7 @@ class ProtocolGame final : public Protocol {
 
 		void sendCreatureSquare(const Creature* creature, SquareColor_t color);
 
-		void sendSpellCooldown(uint8_t spellId, uint32_t time);
+		void sendSpellCooldown(uint16_t spellId, uint32_t time);
 		void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
 		void sendUseItemCooldown(uint32_t time);
 
@@ -452,6 +448,9 @@ class ProtocolGame final : public Protocol {
 
 		// otclient
 		void parseExtendedOpcode(NetworkMessage &msg);
+
+		void parseInventoryImbuements(NetworkMessage &msg);
+		void sendInventoryImbuements(const std::map<Slots_t, Item*> items);
 
 		// reloadCreature
 		void reloadCreature(const Creature* creature);

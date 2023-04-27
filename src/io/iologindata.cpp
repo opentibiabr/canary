@@ -67,10 +67,6 @@ void IOLoginData::setAccountType(uint32_t accountId, account::AccountType accoun
 }
 
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
-	if (g_configManager().getBoolean(ALLOW_CLONES)) {
-		return;
-	}
-
 	std::ostringstream query;
 	if (login) {
 		query << "INSERT INTO `players_online` VALUES (" << guid << ')';

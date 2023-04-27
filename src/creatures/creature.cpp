@@ -765,7 +765,10 @@ bool Creature::hasBeenAttacked(uint32_t attackerId) {
 }
 
 Item* Creature::getCorpse(Creature*, Creature*) {
-	return Item::CreateItem(getLookCorpse());
+	if (getLookCorpse() != 0) {
+		return Item::CreateItem(getLookCorpse());
+	}
+	return nullptr;
 }
 
 void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = true*/) {

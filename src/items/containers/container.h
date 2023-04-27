@@ -56,6 +56,8 @@ class Container : public Item, public Cylinder {
 			return this;
 		}
 
+		Container* getRootContainer() const;
+
 		virtual DepotLocker* getDepotLocker() {
 			return nullptr;
 		}

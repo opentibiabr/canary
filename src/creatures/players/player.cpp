@@ -496,7 +496,7 @@ void Player::updateInventoryImbuement() {
 			// Get the imbuement information for the current slot
 			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
 				// If no imbuement is found, continue to the next slot
-				break;
+				continue;
 			}
 
 			// Imbuement from imbuementInfo, this variable reduces code complexity
@@ -506,10 +506,8 @@ void Player::updateInventoryImbuement() {
 			// Parent of the imbued item
 			auto parent = item->getParent();
 			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
-			if (categoryImbuement && categoryImbuement->agressive) {
-				if (!isInFightMode || isInProtectionZone || parent && parent->getContainer()) {
-					continue;
-				}
+			if (categoryImbuement && categoryImbuement->agressive && (isInProtectionZone || !isInFightMode)) {
+				continue;
 			}
 			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
 			if (categoryImbuement && !categoryImbuement->agressive && parent && parent != this) {
@@ -519,6 +517,7 @@ void Player::updateInventoryImbuement() {
 			// If the imbuement's duration is 0, remove its stats and continue to the next slot
 			if (imbuementInfo.duration == 0) {
 				removeItemImbuementStats(imbuement);
+				updateImbuementTrackerStats();
 				continue;
 			}
 
@@ -1256,8 +1255,9 @@ void Player::onApplyImbuement(Imbuement* imbuement, Item* item, uint8_t slot, bo
 		return;
 	}
 
-	std::stringstream withdrawItemMessage;
 	for (auto &[key, value] : items) {
+		std::stringstream withdrawItemMessage;
+
 		uint32_t inventoryItemCount = getItemTypeCount(key);
 		if (inventoryItemCount >= value) {
 			removeItemOfType(key, value, -1, true);
@@ -1273,9 +1273,8 @@ void Player::onApplyImbuement(Imbuement* imbuement, Item* item, uint8_t slot, bo
 
 		withdrawItemMessage << "Using " << mathItemCount << "x " << itemType.name << " from your supply stash. ";
 		withdrawItem(itemType.id, mathItemCount);
+		sendTextMessage(MESSAGE_STATUS, withdrawItemMessage.str());
 	}
-
-	sendTextMessage(MESSAGE_STATUS, withdrawItemMessage.str());
 
 	if (!protectionCharm && uniform_random(1, 100) > baseImbuement->percent) {
 		openImbuementWindow(item);
@@ -1563,6 +1562,7 @@ void Player::onChangeZone(ZoneType_t zone) {
 		}
 	}
 
+	updateImbuementTrackerStats();
 	g_game().updateCreatureWalkthrough(this);
 	sendIcons();
 	g_events().eventPlayerOnChangeZone(this, zone);
@@ -2616,6 +2616,7 @@ void Player::death(Creature* lastHitCreature) {
 		onIdleStatus();
 		sendStats();
 	}
+
 	despawn();
 }
 
@@ -2692,8 +2693,6 @@ void Player::despawn() {
 	tile->removeCreature(this);
 
 	getParent()->postRemoveNotification(this, nullptr, 0);
-
-	g_game().removePlayer(this);
 
 	// show player as pending
 	for (const auto &[key, player] : g_game().getPlayers()) {
@@ -5652,6 +5651,12 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 	}
 }
 
+void Player::updateImbuementTrackerStats() const {
+	if (imbuementTrackerWindowOpen) {
+		g_game().playerRequestInventoryImbuements(getID(), true);
+	}
+}
+
 bool Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 	uint32_t stackCount = 100u;
 
@@ -5875,13 +5880,15 @@ void Player::triggerMomentum() {
 		while (it != conditions.end()) {
 			auto condItem = *it;
 			ConditionType_t type = condItem->getType();
-			uint32_t spellId = condItem->getSubId();
+			auto maxu16 = std::numeric_limits<uint16_t>::max();
+			auto checkSpellId = condItem->getSubId();
+			auto spellId = checkSpellId > maxu16 ? 0u : static_cast<uint16_t>(checkSpellId);
 			int32_t ticks = condItem->getTicks();
 			int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
 			triggered = true;
 			if (type == CONDITION_SPELLCOOLDOWN || (type == CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
 				condItem->setTicks(newTicks);
-				type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(static_cast<uint8_t>(spellId), newTicks);
+				type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(spellId, newTicks);
 			}
 			++it;
 		}
@@ -6344,7 +6351,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 				for (const auto &[mapTier, mapPrice] : itemClassification->tiers) {
 					if (mapTier == firstForgingItem->getTier()) {
-						cost = mapPrice;
+						cost = mapPrice.priceToUpgrade;
 						break;
 					}
 				}
@@ -6417,7 +6424,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 			for (const auto &[mapTier, mapPrice] : itemClassification->tiers) {
 				if (mapTier == firstForgingItem->getTier()) {
-					cost = mapPrice;
+					cost = mapPrice.priceToUpgrade;
 					break;
 				}
 			}
@@ -6531,11 +6538,7 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 		setForgeDusts(getForgeDusts() - g_configManager().getNumber(FORGE_TRANSFER_DUST_COST));
 	}
 
-	if (!removeItemOfType(ITEM_FORGE_CORE, 1, -1, true, true)) {
-		SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, 1, getName());
-		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
-		return;
-	}
+	uint8_t coresAmount = 0;
 	uint64_t cost = 0;
 	for (const auto &itemClassification : g_game().getItemsClassifications()) {
 		if (itemClassification->id != donorItem->getClassification()) {
@@ -6544,10 +6547,17 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 		for (const auto &[mapTier, mapPrice] : itemClassification->tiers) {
 			if (mapTier == donorItem->getTier() - 1) {
-				cost = mapPrice;
+				cost = mapPrice.priceToUpgrade;
+				coresAmount = mapPrice.corePriceToFuse;
 				break;
 			}
 		}
+	}
+
+	if (!removeItemOfType(ITEM_FORGE_CORE, coresAmount, -1, true, true)) {
+		SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, 1, getName());
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+		return;
 	}
 
 	if (!g_game().removeMoney(this, cost, 0, true)) {

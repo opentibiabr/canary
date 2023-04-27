@@ -1003,7 +1003,9 @@ CombatType_t indexToCombatType(size_t v) {
 }
 
 ItemAttribute_t stringToItemAttribute(const std::string &str) {
-	if (str == "aid") {
+	if (str == "store") {
+		return ItemAttribute_t::STORE;
+	} else if (str == "aid") {
 		return ItemAttribute_t::ACTIONID;
 	} else if (str == "uid") {
 		return ItemAttribute_t::UNIQUEID;
@@ -1053,7 +1055,11 @@ ItemAttribute_t stringToItemAttribute(const std::string &str) {
 		return ItemAttribute_t::DURATION_TIMESTAMP;
 	} else if (str == "amount") {
 		return ItemAttribute_t::AMOUNT;
+	} else if (str == "tier") {
+		return ItemAttribute_t::TIER;
 	}
+
+	SPDLOG_ERROR("[{}] attribute type {} is not registered", __FUNCTION__, str);
 	return ItemAttribute_t::NONE;
 }
 

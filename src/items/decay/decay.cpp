@@ -150,7 +150,7 @@ void Decay::internalDecayItem(Item* item) {
 			}
 
 			if (needUpdateSkills) {
-				player->addScheduledUpdates(PlayerUpdate_Skills);
+				player->addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 			}
 
 			bool needUpdateStats = false;
@@ -167,11 +167,11 @@ void Decay::internalDecayItem(Item* item) {
 			}
 
 			if (needUpdateStats) {
-				player->addScheduledUpdates(PlayerUpdate_Stats);;
+				player->addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats));
 			}
 
 			if (needUpdateSkills) {
-				player->addScheduledUpdates(PlayerUpdate_Skills);
+				player->addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 			}
 		}
 		g_game().transformItem(item, static_cast<uint16_t>(it.decayTo));

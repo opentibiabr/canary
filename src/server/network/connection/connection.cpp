@@ -264,8 +264,8 @@ void Connection::parsePacket(const std::error_code &error) {
 		// Send the packet to the current protocol
 		skipReadingNextPacket = protocol->onRecvMessage(msg);
 
-		//protocol->onRecvMessage(msg); // Send the packet to the current protocol
-		//return; // Stop fetching next packets until protocol resume our work
+		// protocol->onRecvMessage(msg); // Send the packet to the current protocol
+		// return; // Stop fetching next packets until protocol resume our work
 	}
 
 	try {

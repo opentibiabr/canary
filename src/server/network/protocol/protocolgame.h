@@ -177,8 +177,8 @@ class ProtocolGame final : public Protocol {
 
 		void parseInviteToParty(NetworkMessage &msg);
 		void parseJoinParty(NetworkMessage &msg);
-		void parseRevokePartyInvite(NetworkMessage &msg);
-		void parsePassPartyLeadership(NetworkMessage &msg);
+		void parseRevokePartyInvite(NetworkMessage &msg) const;
+		void parsePassPartyLeadership(NetworkMessage &msg) const;
 		void parseEnableSharedPartyExperience(NetworkMessage &msg);
 
 		void parseToggleMount(NetworkMessage &msg);
@@ -215,11 +215,11 @@ class ProtocolGame final : public Protocol {
 		void parseWrapableItem(NetworkMessage &msg);
 
 		// Channel tabs
-		void parseChannelInvite(NetworkMessage &msg);
-		void parseChannelExclude(NetworkMessage &msg);
+		void parseChannelInvite(NetworkMessage &msg) const;
+		void parseChannelExclude(NetworkMessage &msg) const;
 		void parseOpenChannel(NetworkMessage &msg);
 		void parseOpenPrivateChannel(NetworkMessage &msg);
-		void parseCloseChannel(NetworkMessage &msg);
+		void parseCloseChannel(NetworkMessage &msg) const;
 
 		// Imbuement info
 		void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
@@ -265,7 +265,7 @@ class ProtocolGame final : public Protocol {
 		void sendBosstiaryData();
 		void parseSendBosstiary();
 		void parseSendBosstiarySlots();
-		void parseBosstiarySlot(NetworkMessage &msg);
+		void parseBosstiarySlot(NetworkMessage &msg) const;
 		void sendBossPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos);
 		void parseSetBossPodium(NetworkMessage &msg) const;
 		void sendBosstiaryCooldownTimer();
@@ -463,17 +463,14 @@ class ProtocolGame final : public Protocol {
 		phmap::flat_hash_set<uint32_t> knownCreatureSet;
 		Player* player = nullptr;
 
-		uint32_t eventConnect = 0;
+		uint8_t challengeRandom = 0;
+		uint64_t eventConnect = 0;
 		uint32_t challengeTimestamp = 0;
 		uint16_t version = 0;
 		int32_t clientVersion = 0;
 
-		uint8_t challengeRandom = 0;
-
-	uint64_t eventConnect = 0;
-	uint32_t challengeTimestamp = 0;
-	uint16_t version = 0;
-	int32_t clientVersion = 0;
+		bool debugAssertSent = false;
+		bool acceptPackets = false;
 
 		bool loggedIn = false;
 		bool shouldAddExivaRestrictions = false;

@@ -10,6 +10,7 @@
     "protobuf",
     "parallel-hashmap",
     "magic-enum",
+    "mio",
     "zlib",
     "mio",
     {

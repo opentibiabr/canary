@@ -61,7 +61,7 @@ enum MoveEvent_t {
 	MOVE_EVENT_NONE
 };
 
-enum RaidState_t : uint8_t{
+enum RaidState_t : uint8_t {
 	RAIDSTATE_IDLE,
 	RAIDSTATE_EXECUTING,
 };
@@ -195,10 +195,10 @@ struct LuaVariant {
 };
 
 struct LuaTimerEventDesc {
-	std::list<int32_t> parameters;
-	uint64_t eventId = 0;
-	int32_t scriptId = -1;
-	int32_t function = -1;
+		std::list<int32_t> parameters;
+		uint64_t eventId = 0;
+		int32_t scriptId = -1;
+		int32_t function = -1;
 
 		LuaTimerEventDesc() = default;
 		LuaTimerEventDesc(LuaTimerEventDesc &&other) = default;

@@ -639,9 +639,9 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 	eventDesc.function = luaL_ref(globalState, LUA_REGISTRYINDEX);
 	eventDesc.scriptId = getScriptEnv()->getScriptId();
 
-	auto& lastTimerEventId = g_luaEnvironment.lastEventTimerId;
+	auto &lastTimerEventId = g_luaEnvironment.lastEventTimerId;
 	eventDesc.eventId = g_dispatcher().addEvent(
-					delay, std::bind(&LuaEnvironment::executeTimerEvent, &g_luaEnvironment, lastTimerEventId)
+		delay, std::bind(&LuaEnvironment::executeTimerEvent, &g_luaEnvironment, lastTimerEventId)
 	);
 
 	g_luaEnvironment.timerEvents.emplace(lastTimerEventId, std::move(eventDesc));

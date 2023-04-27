@@ -209,8 +209,7 @@ int main(int argc, char* argv[]) {
 
 	g_dispatcher().start();
 
-	g_dispatcher().addTask(std::bind(mainLoader, argc, argv,
-												&serviceManager));
+	g_dispatcher().addTask(std::bind(mainLoader, argc, argv, &serviceManager));
 
 	g_loaderSignal.wait(g_loaderUniqueLock, [] {
 		return g_loaderDone;

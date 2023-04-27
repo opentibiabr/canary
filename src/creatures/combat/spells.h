@@ -55,7 +55,7 @@ class Spells final : public Scripts {
 
 		std::list<uint16_t> getSpellsByVocation(uint16_t vocationId);
 
-		const phmap::flat_hash_map<std::string, InstantSpell>& getInstantSpells() const {
+		const phmap::flat_hash_map<std::string, InstantSpell> &getInstantSpells() const {
 			return instants;
 		};
 

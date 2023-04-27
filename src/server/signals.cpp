@@ -51,24 +51,23 @@ void Signals::asyncWait() {
 // On Windows this function does not need to be signal-safe,
 // as it is called in a new thread.
 // https://github.com/otland/forgottenserver/pull/2473
-void Signals::dispatchSignalHandler(int signal)
-{
-	switch(signal) {
-		case SIGINT: //Shuts the server down
+void Signals::dispatchSignalHandler(int signal) {
+	switch (signal) {
+		case SIGINT: // Shuts the server down
 			g_dispatcher().addTask(sigintHandler);
 			break;
-		case SIGTERM: //Shuts the server down
+		case SIGTERM: // Shuts the server down
 			g_dispatcher().addTask(sigtermHandler);
 			break;
 #ifndef _WIN32
-		case SIGHUP: //Reload config/data
+		case SIGHUP: // Reload config/data
 			g_dispatcher().addTask(sighupHandler);
 			break;
-		case SIGUSR1: //Saves game state
+		case SIGUSR1: // Saves game state
 			g_dispatcher().addTask(sigusr1Handler);
 			break;
 #else
-		case SIGBREAK: //Shuts the server down
+		case SIGBREAK: // Shuts the server down
 			g_dispatcher().addTask(sigbreakHandler);
 			// hold the thread until other threads end
 			g_databaseTasks().join();

@@ -14,13 +14,11 @@
 #include "security/rsa.h"
 #include "game/scheduling/tasks.h"
 
-Protocol::~Protocol()
-{
+Protocol::~Protocol() {
 	if (compreesionEnabled) {
 		deflateEnd(defStream.get());
 	}
 }
-
 
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
@@ -55,8 +53,8 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 	}
 
 	using ProtocolWeak_ptr = std::weak_ptr<Protocol>;
-	ProtocolWeak_ptr protocolWeak = std::weak_ptr<Protocol>(shared_from_this());
-	std::function<void (void)> callback = [protocolWeak, &msg]() {
+	auto protocolWeak = std::weak_ptr<Protocol>(shared_from_this());
+	std::function<void(void)> callback = [protocolWeak, &msg]() {
 		if (auto protocol = protocolWeak.lock()) {
 			if (auto connection = protocol->getConnection()) {
 				protocol->parsePacket(msg);

@@ -331,19 +331,19 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 		uint32_t playerRankId = result->getNumber<uint32_t>("rank_id");
 		player->guildNick = result->getString("nick");
 
-    Guild* guild = g_game().getGuild(guildId);
-    if (!guild) {
-      guild = IOGuild::loadGuild(guildId);
-    }
+		Guild* guild = g_game().getGuild(guildId);
+		if (!guild) {
+			guild = IOGuild::loadGuild(guildId);
+		}
 
-    if (guild) {
-      g_game().addGuild(guild);
-      
-      player->guild = guild;
-      GuildRank_ptr rank = guild->getRankById(playerRankId);
-      if (!rank) {
-        query.str(std::string());
-        query << "SELECT `id`, `name`, `level` FROM `guild_ranks` WHERE `id` = " << playerRankId;
+		if (guild) {
+			g_game().addGuild(guild);
+
+			player->guild = guild;
+			GuildRank_ptr rank = guild->getRankById(playerRankId);
+			if (!rank) {
+				query.str(std::string());
+				query << "SELECT `id`, `name`, `level` FROM `guild_ranks` WHERE `id` = " << playerRankId;
 
 				if ((result = db.storeQuery(query.str()))) {
 					guild->addRank(result->getNumber<uint32_t>("id"), result->getString("name"), result->getNumber<uint16_t>("level"));
@@ -686,11 +686,11 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 
 	player->initializePrey();
 	player->initializeTaskHunting();
-  player->updateBaseSpeed();
-  player->updateInventoryWeight();
-  player->updateItemsLight(true);
+	player->updateBaseSpeed();
+	player->updateInventoryWeight();
+	player->updateItemsLight(true);
 
-  return true;
+	return true;
 }
 
 bool IOLoginData::saveItems(const Player* player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {

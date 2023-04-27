@@ -1119,7 +1119,7 @@ enum class SourceEffect_t : uint8_t {
 	CREATURES = 3,
 };
 
-enum PlayerUpdateFlags : uint32_t {
+enum class PlayerUpdateFlags : uint32_t {
 	PlayerUpdate_Weight = 1 << 0,
 	PlayerUpdate_Light = 1 << 1,
 	PlayerUpdate_Stats = 1 << 2,
@@ -1182,13 +1182,13 @@ struct IntervalInfo {
 };
 
 struct FindPathParams {
-	bool fullPathSearch = true;
-	bool clearSight = false;
-	bool allowDiagonal = true;
-	bool keepDistance = false;
-	int32_t maxSearchDist = 0;
-	int32_t minTargetDist = -1;
-	int32_t maxTargetDist = -1;
+		bool fullPathSearch = true;
+		bool clearSight = false;
+		bool allowDiagonal = true;
+		bool keepDistance = false;
+		int32_t maxSearchDist = 0;
+		int32_t minTargetDist = -1;
+		int32_t maxTargetDist = -1;
 };
 
 struct RecentDeathEntry {

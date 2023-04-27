@@ -141,7 +141,7 @@ bool SpawnsMonster::isInZone(const Position &centerPos, int32_t radius, const Po
 
 void SpawnMonster::startSpawnMonsterCheck() {
 	if (checkSpawnMonsterEvent == 0) {
-		checkSpawnMonsterEvent = g_dispatcher().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this));
+		checkSpawnMonsterEvent = static_cast<uint32_t>(g_dispatcher().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this)));
 	}
 }
 
@@ -239,7 +239,7 @@ void SpawnMonster::checkSpawnMonster() {
 	}
 
 	if (spawnedMonsterMap.size() < spawnMonsterMap.size()) {
-		checkSpawnMonsterEvent = g_dispatcher().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this));
+		checkSpawnMonsterEvent = static_cast<uint32_t>(g_dispatcher().addEvent(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this)));
 	}
 }
 

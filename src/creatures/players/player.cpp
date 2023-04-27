@@ -592,7 +592,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 	}
 
 	if (sendUpdateSkills) {
-		addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+		addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 	}
 }
 
@@ -1953,67 +1953,57 @@ void Player::checkTradeState(const Item* item) {
 	}
 }
 
-void Player::stopNextWalkActionTask()
-{
+void Player::stopNextWalkActionTask() {
 	if (walkTaskEvent != 0) {
 		g_dispatcher().stopEvent(walkTaskEvent);
 		walkTaskEvent = 0;
 	}
-
-	delete walkTask;
 	walkTask = nullptr;
 }
 
-void Player::stopNextWalkTask()
-{
+void Player::stopNextWalkTask() {
 	if (nextStepEvent != 0) {
 		g_dispatcher().stopEvent(nextStepEvent);
 		nextStepEvent = 0;
 	}
 }
 
-void Player::stopNextActionTask()
-{
+void Player::stopNextActionTask() {
 	if (actionTaskEvent != 0) {
 		g_dispatcher().stopEvent(actionTaskEvent);
 		actionTaskEvent = 0;
 	}
 }
 
-void Player::stopNextActionPushTask()
-{
+void Player::stopNextActionPushTask() {
 	if (actionTaskEventPush != 0) {
 		g_dispatcher().stopEvent(actionTaskEventPush);
 		actionTaskEventPush = 0;
 	}
 }
 
-void Player::stopNextPotionActionTask()
-{
+void Player::stopNextPotionActionTask() {
 	if (actionPotionTaskEvent != 0) {
 		g_dispatcher().stopEvent(actionPotionTaskEvent);
 		actionPotionTaskEvent = 0;
 	}
 }
 
-void Player::setNextWalkActionTask(uint32_t delay, std::function<void (void)> f)
-{
+void Player::setNextWalkActionTask(uint32_t delay, std::function<void(void)> f) {
 	stopNextWalkActionTask();
-	walkTask = new std::pair<uint32_t, std::function<void (void)>>(delay, std::move(f));
+	walkTask = std::make_unique<std::pair<uint32_t, std::function<void(void)>>>(delay, std::move(f));
 }
 
-void Player::setNextWalkTask(uint32_t delay, std::function<void (void)> f)
-{
+void Player::setNextWalkTask(uint32_t delay, std::function<void(void)> f) {
 	stopNextWalkTask();
 	nextStepEvent = g_dispatcher().addEvent(delay, std::move(f));
 	resetIdleTime();
 }
 
-void Player::setNextActionTask(uint32_t delay, std::function<void (void)> f, bool resetIdleTime /*= true */)
-{
+void Player::setNextActionTask(uint32_t delay, std::function<void(void)> f, bool resetIdleTime /*= true */) {
 	stopNextActionTask();
 	actionTaskEvent = g_dispatcher().addEvent(delay, std::move(f));
-	
+
 	if (!inEventMovePush && !g_configManager().getBoolean(PUSH_WHEN_ATTACKING)) {
 		cancelPush();
 	}
@@ -2023,33 +2013,28 @@ void Player::setNextActionTask(uint32_t delay, std::function<void (void)> f, boo
 	}
 }
 
-void Player::setNextActionPushTask(uint32_t delay, std::function<void (void)> f)
-{
+void Player::setNextActionPushTask(uint32_t delay, std::function<void(void)> f) {
 	stopNextActionPushTask();
-	actionTaskEventPush = g_dispatcher().addEvent(delay, std::move(f));
+	actionTaskEventPush = static_cast<uint32_t>(g_dispatcher().addEvent(delay, std::move(f)));
 	resetIdleTime();
 }
 
-void Player::setNextPotionActionTask(uint32_t delay, std::function<void (void)> f)
-{
+void Player::setNextPotionActionTask(uint32_t delay, std::function<void(void)> f) {
 	stopNextPotionActionTask();
-	actionPotionTaskEvent = g_dispatcher().addEvent(delay, std::move(f));
+	actionPotionTaskEvent = static_cast<uint32_t>(g_dispatcher().addEvent(delay, std::move(f)));
 	cancelPush();
 }
 
-uint32_t Player::getNextActionTime() const
-{
-	return std::max<int64_t>(SERVER_BEAT_MILISECONDS, nextAction - OTSYS_TIME());
+uint32_t Player::getNextActionTime() const {
+	return static_cast<uint32_t>(std::max<int64_t>(SERVER_BEAT_MILISECONDS, nextAction - OTSYS_TIME()));
 }
 
-uint32_t Player::getNextPotionActionTime() const
-{
-	return std::max<int64_t>(SERVER_BEAT_MILISECONDS, nextPotionAction - OTSYS_TIME());
+uint32_t Player::getNextPotionActionTime() const {
+	return static_cast<uint32_t>(std::max<int64_t>(SERVER_BEAT_MILISECONDS, nextPotionAction - OTSYS_TIME()));
 }
 
-void Player::cancelPush()
-{
-	if (actionTaskEventPush !=  0) {
+void Player::cancelPush() {
+	if (actionTaskEventPush != 0) {
 		g_dispatcher().stopEvent(actionTaskEventPush);
 		actionTaskEventPush = 0;
 		inEventMovePush = false;
@@ -2204,7 +2189,7 @@ void Player::addManaSpent(uint64_t amount) {
 	}
 
 	if (sendUpdateStats) {
-		addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+		addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 	}
 }
 
@@ -2714,7 +2699,7 @@ void Player::death(Creature* lastHitCreature) {
 			}
 		}
 
-		addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+		addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 		sendReLoginWindow(unfairFightReduction);
 		sendBlessStatus();
 		if (getSkull() == SKULL_BLACK) {
@@ -2806,8 +2791,8 @@ void Player::despawn() {
 	stopEventWalk();
 	onWalkAborted();
 	closeAllExternalContainers();
-	g_game().playerSetAttackedCreature(this->getID(), 0);
-	g_game().playerFollowCreature(this->getID(), 0);
+	g_game().playerSetAttackedCreature(this->getPlayer(), 0);
+	g_game().playerFollowCreature(this->getPlayer(), 0);
 
 	// remove check
 	Game::removeCreatureCheck(this);
@@ -3980,7 +3965,7 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 		}
 
 		if (requireListUpdate) {
-			addScheduledUpdates(PlayerUpdate_Inventory);
+			addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Inventory));
 		}
 	} else if (const Creature* creature = thing->getCreature()) {
 		if (creature == this) {
@@ -4064,20 +4049,9 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 		}
 
 		if (requireListUpdate) {
-			addScheduledUpdates(PlayerUpdate_Inventory);
+			addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Inventory));
 		}
 	}
-}
-
-// i will keep this function so it can be reviewed
-bool Player::updateSaleShopList(const Item* item) {
-	uint16_t itemId = item->getID();
-	if (!itemId || !item)
-		return true;
-
-	g_dispatcher().addTask(createTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getPlayer())));
-	scheduledSaleUpdate = true;
-	return true;
 }
 
 bool Player::hasShopItemForSale(uint16_t itemId, uint8_t subType) const {
@@ -4245,8 +4219,7 @@ void Player::setChaseMode(bool mode) {
 	}
 }
 
-void Player::onWalkAborted()
-{
+void Player::onWalkAborted() {
 	stopNextWalkActionTask();
 	sendCancelWalk();
 }
@@ -5564,7 +5537,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 	}
 
 	if (sendUpdate) {
-		addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+		addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 	}
 
 	std::string message = fmt::format(
@@ -5854,7 +5827,7 @@ void Player::addItemImbuementStats(const Imbuement* imbuement) {
 	}
 
 	if (requestUpdate) {
-		addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+		addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 	}
 }
 
@@ -5888,7 +5861,7 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 	}
 
 	if (requestUpdate) {
-		addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+		addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 	}
 }
 
@@ -7395,7 +7368,7 @@ void Player::decrementeHazardSystemReference() {
 void Player::addScheduledUpdates(uint32_t flags) {
 	scheduledUpdates |= flags;
 	if (!scheduledUpdate) {
-		//To make it work even better it's possible to use slightly delayed scheduler task so it'll cache even more updates at once
+		// To make it work even better it's possible to use slightly delayed scheduler task so it'll cache even more updates at once
 		g_dispatcher().addEvent(SERVER_BEAT_MILISECONDS, std::bind(&Game::updatePlayerEvent, &g_game(), getPlayer()));
 		scheduledUpdate = true;
 	}

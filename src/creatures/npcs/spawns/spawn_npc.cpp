@@ -129,7 +129,7 @@ bool SpawnsNpc::isInZone(const Position &centerPos, int32_t radius, const Positi
 
 void SpawnNpc::startSpawnNpcCheck() {
 	if (checkSpawnNpcEvent == 0) {
-		checkSpawnNpcEvent = g_dispatcher().addEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this));
+		checkSpawnNpcEvent = static_cast<uint32_t>(g_dispatcher().addEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this)));
 	}
 }
 
@@ -217,7 +217,7 @@ void SpawnNpc::checkSpawnNpc() {
 	}
 
 	if (spawnedNpcMap.size() < spawnNpcMap.size()) {
-		checkSpawnNpcEvent = g_dispatcher().addEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this));
+		checkSpawnNpcEvent = static_cast<uint32_t>(g_dispatcher().addEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this)));
 	}
 }
 

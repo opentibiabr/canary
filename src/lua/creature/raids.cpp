@@ -137,7 +137,7 @@ void Raids::clear() {
 	g_dispatcher().stopEvent(checkRaidsEvent);
 	checkRaidsEvent = 0;
 
-	for (Raid& raid : raidList) {
+	for (Raid &raid : raidList) {
 		raid.stopEvents();
 	}
 	raidList.clear();
@@ -155,19 +155,13 @@ bool Raids::reload() {
 	return loadFromXml();
 }
 
-Raid* Raids::getRaidByName(const std::string& name) {
-	for (Raid& raid : raidList) {
+Raid* Raids::getRaidByName(const std::string &name) {
+	for (Raid &raid : raidList) {
 		if (strcasecmp(raid.getName().c_str(), name.c_str()) == 0) {
 			return &raid;
 		}
 	}
 	return nullptr;
-}
-
-Raid::~Raid() {
-	for (RaidEvent* raidEvent : raidEvents) {
-		delete raidEvent;
-	}
 }
 
 bool Raid::loadFromXml(const std::string &filename) {
@@ -206,7 +200,7 @@ bool Raid::loadFromXml(const std::string &filename) {
 		}
 	}
 
-	//sort by delay time
+	// sort by delay time
 	raidEvents.shrink_to_fit();
 	std::sort(raidEvents.begin(), raidEvents.end(), [](const RaidEvent* lhs, const RaidEvent* rhs) {
 		return lhs->getDelay() < rhs->getDelay();

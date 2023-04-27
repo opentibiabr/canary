@@ -258,7 +258,7 @@ void Creature::addEventWalk(bool firstStep) {
 		g_game().checkCreatureWalk(getID());
 	}
 
-	eventWalk = g_dispatcher().addEvent(static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID()));
+	eventWalk = static_cast<uint32_t>(g_dispatcher().addEvent(static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID())));
 }
 
 void Creature::stopEventWalk() {
@@ -590,8 +590,13 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 
 	if (followCreature && (creature == this || creature == followCreature)) {
 		if (hasFollowPath) {
-			isUpdatingPath = true;
-			g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID()));
+			if ((creature == followCreature) && listWalkDir.empty()) {
+				// This should make monsters more responsive without needing to decrease creature think interval
+				isUpdatingPath = false;
+				g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID()));
+			} else {
+				isUpdatingPath = true;
+			}
 		}
 
 		if (newPos.z != oldPos.z || !canSee(followCreature->getPosition())) {
@@ -604,7 +609,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 			onCreatureDisappear(attackedCreature, false);
 		} else {
 			if (hasExtraSwing()) {
-				//our target is moving lets see if we can get in hit
+				// our target is moving lets see if we can get in hit
 				g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
 			}
 

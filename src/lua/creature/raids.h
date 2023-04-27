@@ -19,17 +19,20 @@ struct MonsterSpawn {
 		MonsterSpawn(std::string initName, uint32_t initMinAmount, uint32_t initMaxAmount) :
 			name(std::move(initName)), minAmount(initMinAmount), maxAmount(initMaxAmount) { }
 
-	// non-copyable
-	MonsterSpawn(const MonsterSpawn&) = delete;
-	MonsterSpawn& operator=(const MonsterSpawn&) = delete;
+		// Destructor
+		~MonsterSpawn() = default;
 
-	// moveable
-	MonsterSpawn(MonsterSpawn&& rhs) noexcept : name(std::move(rhs.name)), minAmount(rhs.minAmount), maxAmount(rhs.maxAmount) {}
-	MonsterSpawn& operator=(const MonsterSpawn&&) = delete;
+		// non-copyable
+		MonsterSpawn(const MonsterSpawn &) = delete;
+		MonsterSpawn &operator=(const MonsterSpawn &) = delete;
 
-	std::string name;
-	uint32_t minAmount;
-	uint32_t maxAmount;
+		// moveable
+		MonsterSpawn(MonsterSpawn &&) = default;
+		MonsterSpawn &operator=(MonsterSpawn &&) = default;
+
+		std::string name;
+		uint32_t minAmount;
+		uint32_t maxAmount;
 };
 
 // How many times it will try to find a tile to add the monster to before giving up
@@ -97,18 +100,18 @@ class Raids {
 class Raid {
 	public:
 		Raid(std::string initName, uint32_t initInterval, uint32_t initMarginTime, bool initRepeat) :
-			name(std::move(initName)), interval(initInterval), margin(initMarginTime), repeat(initRepeat) { }
-		~Raid();
+			name(std::move(initName)), margin(initMarginTime), interval(initInterval), repeat(initRepeat) { }
 
 		// non-copyable
 		Raid(const Raid &) = delete;
 		Raid &operator=(const Raid &) = delete;
 
 		// moveable
-		Raid(Raid&& rhs) noexcept : raidEvents(std::move(rhs.raidEvents)), name(std::move(rhs.name)),
+		Raid(Raid &&rhs) noexcept :
+			raidEvents(std::move(rhs.raidEvents)), name(std::move(rhs.name)),
 			margin(rhs.margin), nextEventEvent(rhs.nextEventEvent), interval(rhs.interval), nextEvent(rhs.nextEvent),
-			state(rhs.state), loaded(rhs.loaded), repeat(rhs.repeat) {}
-		Raid& operator=(Raid&& rhs) noexcept {
+			state(rhs.state), loaded(rhs.loaded), repeat(rhs.repeat) { }
+		Raid &operator=(Raid &&rhs) noexcept {
 			if (this != &rhs) {
 				raidEvents = std::move(rhs.raidEvents);
 				name = std::move(rhs.name);
@@ -123,7 +126,7 @@ class Raid {
 			return *this;
 		}
 
-		bool loadFromXml(const std::string& filename);
+		bool loadFromXml(const std::string &filename);
 
 		void startRaid();
 

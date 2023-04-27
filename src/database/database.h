@@ -30,8 +30,8 @@ class Database {
 			return instance;
 		}
 
-		bool init();
-		void end();
+		bool init() const;
+		void end() const;
 		bool connect();
 		void disconnect();
 
@@ -215,4 +215,4 @@ class DBTransaction {
 
 inline Database g_database;
 
-#endif  // SRC_DATABASE_DATABASE_H_
+#endif // SRC_DATABASE_DATABASE_H_

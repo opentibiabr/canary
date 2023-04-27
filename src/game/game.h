@@ -34,6 +34,7 @@ class CombatInfo;
 class Charm;
 class IOPrey;
 class ItemClassification;
+class EventsScheduler;
 
 static constexpr int32_t EVENT_MS = 10000;
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
@@ -118,11 +119,11 @@ class Game {
 
 		Npc* getNpcByName(const std::string &s);
 
-		Player* getPlayerByName(const std::string &s);
+		Player* getPlayerByName(const std::string &s) const;
 
 		Player* getPlayerByGUID(const uint32_t &guid);
 
-		ReturnValue getPlayerByNameWildcard(const std::string &s, Player*&player);
+		ReturnValue getPlayerByNameWildcard(const std::string &s, Player*&player) const;
 
 		Player* getPlayerByAccount(uint32_t acc);
 
@@ -217,170 +218,145 @@ class Game {
 		void sendSingleSoundEffect(const Position &pos, SoundEffect_t soundId, Creature* actor = nullptr);
 		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundEffect, SoundEffect_t secondarySoundEffect, Creature* actor = nullptr);
 
-		void sendGuildMotd(Player* player);
-		void kickPlayer(Player* player, bool displayEffect);
-		void playerReportBug(Player* player, const std::string& message,
-                             const Position& position, uint8_t category);
-		void playerDebugAssert(Player* player, const std::string& assertLine,
-                               const std::string& date, const std::string& description,
-                               const std::string& comment);
-		void playerPreyAction(Player* player, uint8_t slot, uint8_t action, uint8_t option, int8_t index, uint16_t raceId);
-		void playerTaskHuntingAction(Player* player, uint8_t slot, uint8_t action, bool upgrade, uint16_t raceId);
+		void sendGuildMotd(Player* player) const;
+		void kickPlayer(Player* player, bool displayEffect) const;
+		void playerReportBug(Player* player, const std::string &message, const Position &position, uint8_t category) const;
+		void playerDebugAssert(const Player* player, const std::string &assertLine, const std::string &date, const std::string &description, const std::string &comment) const;
+		void playerPreyAction(Player* player, uint8_t slot, uint8_t action, uint8_t option, int8_t index, uint16_t raceId) const;
+		void playerTaskHuntingAction(Player* player, uint8_t slot, uint8_t action, bool upgrade, uint16_t raceId) const;
 		void playerNpcGreet(Player* player, uint32_t npcId);
-		void playerAnswerModalWindow(Player* player, uint32_t modalWindowId,
-                                     uint8_t button, uint8_t choice);
+		void playerAnswerModalWindow(Player* player, uint32_t modalWindowId, uint8_t button, uint8_t choice) const;
 		void playerForgeFuseItems(
 			Player* player,
 			uint16_t itemId,
 			uint8_t tier,
 			bool usedCore,
 			bool reduceTierLoss
-		);
+		) const;
 		void playerForgeTransferItemTier(
 			Player* player,
 			uint16_t donorItemId,
 			uint8_t tier,
 			uint16_t receiveItemId
-		);
-		void playerForgeResourceConversion(Player* player, uint8_t action);
-		void playerBrowseForgeHistory(Player* player, uint8_t page);
+		) const;
+		void playerForgeResourceConversion(Player* player, uint8_t action) const;
+		void playerBrowseForgeHistory(Player* player, uint8_t page) const;
 
 		void playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selectedBossId);
-		void playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, uint8_t podiumVisible, uint8_t bossVisible);
-		void playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId);
+		void playerSetBossPodium(Player* player, uint32_t bossRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, uint8_t podiumVisible, uint8_t bossVisible);
+		void playerRotatePodium(Player* player, const Position &pos, uint8_t stackPos, const uint16_t itemId);
 
 		void playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen);
 
 		bool addItemStoreInbox(const Player* player, uint32_t itemId);
 
-		void playerReportRuleViolationReport(Player* player,
-                                             const std::string& targetName,
-                                             uint8_t reportType, uint8_t reportReason,
-                                             const std::string& comment,
-                                             const std::string& translation);
+		void playerReportRuleViolationReport(Player* player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) const;
 
 		void playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
 
 		void playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
 
-
-		void updatePlayerEvent(Player* player);
+		void updatePlayerEvent(Player* player) const;
 
 		bool internalStartTrade(Player* player, Player* partner, Item* tradeItem);
 		void internalCloseTrade(Player* player);
 		bool playerBroadcastMessage(Player* player, const std::string &text) const;
 		void broadcastMessage(const std::string &text, MessageClasses type) const;
 
-		//Implementation of player invoked events
-		void playerTeleport(Player* player, const Position& pos);
-		void playerMoveThing(Player* player, const Position& fromPos, uint16_t itemId, uint8_t fromStackPos,
-                              const Position& toPos, uint8_t count);
-		void playerMoveCreatureByID(Player* player, uint32_t movingCreatureId, const Position& movingCreatureOrigPos, const Position& toPos);
-		void playerMoveCreature(Player* playerId, Creature* movingCreature, const Position& movingCreatureOrigPos, Tile* toTile);
-		void playerMoveItemByPlayerID(Player* player, const Position& fromPos, uint16_t itemId, uint8_t fromStackPos, const Position& toPos, uint8_t count);
-		void playerMoveItem(Player* player, const Position& fromPos,
-							uint16_t itemId, uint8_t fromStackPos, const Position& toPos, uint8_t count, Item* item, Cylinder* toCylinder);
+		// Implementation of player invoked events
+		void playerTeleport(Player* player, const Position &pos) const;
+		void playerMoveThing(Player* player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count);
+		void playerMoveCreatureByID(Player* player, uint32_t movingCreatureId, const Position &movingCreatureOrigPos, const Position &toPos);
+		void playerMoveCreature(Player* playerId, Creature* movingCreature, const Position &movingCreatureOrigPos, Tile* toTile);
+		void playerMoveItemByPlayerID(Player* player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count);
+		void playerMoveItem(Player* player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, Item* item, Cylinder* toCylinder);
 		void playerEquipItem(Player* player, uint16_t itemId, bool hasTier = false, uint8_t tier = 0);
-		void playerMove(Player* player, Direction direction);
-		void playerCreatePrivateChannel(Player* player);
-		void playerChannelInvite(Player* player, const std::string& name);
-		void playerChannelExclude(Player* player, const std::string& name);
-		void playerRequestChannels(Player* player);
-		void playerOpenChannel(Player* player, uint16_t channelId);
-		void playerCloseChannel(Player* player, uint16_t channelId);
-		void playerOpenPrivateChannel(Player* player, std::string& receiver);
-		void playerStowItem(Player* player, const Position& pos, uint16_t itemId, uint8_t stackpos, uint8_t count, bool allItems);
-		void playerStashWithdraw(Player* player, uint16_t itemId, uint32_t count, uint8_t stackpos);
+		void playerMove(Player* player, Direction direction) const;
+		void playerCreatePrivateChannel(Player* player) const;
+		void playerChannelInvite(const Player* player, const std::string &name) const;
+		void playerChannelExclude(const Player* player, const std::string &name) const;
+		void playerRequestChannels(Player* player) const;
+		void playerOpenChannel(Player* player, uint16_t channelId) const;
+		void playerCloseChannel(const Player* player, uint16_t channelId) const;
+		void playerOpenPrivateChannel(Player* player, std::string &receiver) const;
+		void playerStowItem(Player* player, const Position &pos, uint16_t itemId, uint8_t stackpos, uint8_t count, bool allItems) const;
+		void playerStashWithdraw(Player* player, uint16_t itemId, uint32_t count, uint8_t stackpos) const;
 		void playerCloseNpcChannel(Player* player);
-		void playerReceivePing(Player* player);
-		void playerReceivePingBack(Player* player);
-		void playerAutoWalk(Player* player, const std::forward_list<Direction>& listDir);
-		void playerStopAutoWalk(Player* player);
-		void playerUseItemEx(Player* player, const Position& fromPos, uint8_t fromStackPos,
-                              uint16_t fromItemId, const Position& toPos, uint8_t toStackPos, uint16_t toItemId);
-		void playerUseItem(Player* player, const Position& pos, uint8_t stackPos, uint8_t index, uint16_t itemId);
-		void playerUseWithCreature(Player* player, const Position& fromPos, uint8_t fromStackPos, uint32_t creatureId, uint16_t itemId);
-		void playerCloseContainer(Player* player, uint8_t cid);
+		void playerReceivePing(Player* player) const;
+		void playerReceivePingBack(const Player* player) const;
+		void playerAutoWalk(Player* player, const std::forward_list<Direction> &listDir) const;
+		void playerStopAutoWalk(Player* player) const;
+		void playerUseItemEx(Player* player, const Position &fromPos, uint8_t fromStackPos, uint16_t fromItemId, const Position &toPos, uint8_t toStackPos, uint16_t toItemId);
+		void playerUseItem(Player* player, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId);
+		void playerUseWithCreature(Player* player, const Position &fromPos, uint8_t fromStackPos, uint32_t creatureId, uint16_t itemId);
+		void playerCloseContainer(Player* player, uint8_t cid) const;
 		void playerMoveUpContainer(Player* player, uint8_t cid);
-		void playerUpdateContainer(Player* player, uint8_t cid);
-		void playerRotateItem(Player* player, const Position& pos, uint8_t stackPos, const uint16_t itemId);
-		void playerConfigureShowOffSocket(Player* player, const Position& pos, uint8_t stackPos, const uint16_t itemId);
-		void playerSetShowOffSocket(Player* player, Outfit_t& outfit, const Position& pos, uint8_t stackPos, const uint16_t itemId, uint8_t podiumVisible, uint8_t direction);
-		void playerWrapableItem(Player* player, const Position& pos, uint8_t stackPos, const uint16_t itemId);
-		void playerWriteItem(Player* player, uint32_t windowTextId, const std::string& text);
-		void playerBrowseField(Player* player, const Position& pos);
-		void playerSeekInContainer(Player* player, uint8_t containerId, uint16_t index);
-		void playerUpdateHouseWindow(Player* player, uint8_t listId, uint32_t windowTextId, const std::string& text);
-		void playerRequestTrade(Player* player, const Position& pos, uint8_t stackPos,
-								uint32_t tradePlayerId, uint16_t itemId);
+		void playerUpdateContainer(Player* player, uint8_t cid) const;
+		void playerRotateItem(Player* player, const Position &pos, uint8_t stackPos, const uint16_t itemId);
+		void playerConfigureShowOffSocket(Player* player, const Position &pos, uint8_t stackPos, const uint16_t itemId);
+		void playerSetShowOffSocket(Player* player, Outfit_t &outfit, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t podiumVisible, uint8_t direction);
+		void playerWrapableItem(Player* player, const Position &pos, uint8_t stackPos, const uint16_t itemId);
+		void playerWriteItem(Player* player, uint32_t windowTextId, const std::string &text);
+		void playerBrowseField(Player* player, const Position &pos);
+		void playerSeekInContainer(Player* player, uint8_t containerId, uint16_t index) const;
+		void playerUpdateHouseWindow(Player* player, uint8_t listId, uint32_t windowTextId, const std::string &text) const;
+		void playerRequestTrade(Player* player, const Position &pos, uint8_t stackPos, uint32_t tradePlayerId, uint16_t itemId);
 		void playerAcceptTrade(Player* player);
-		void playerLookInTrade(Player* player, bool lookAtCounterOffer, uint8_t index);
-		void playerBuyItem(Player* player, uint16_t itemId, uint8_t count, uint16_t amount,
-								bool ignoreCap = false, bool inBackpacks = false);
-		void playerSellItem(Player* player, uint16_t itemId, uint8_t count,
-								uint16_t amount, bool ignoreEquipped = false);
-		void playerCloseShop(Player* player);
-		void playerLookInShop(Player* player, uint16_t itemId, uint8_t count);
+		void playerLookInTrade(Player* player, bool lookAtCounterOffer, uint8_t index) const;
+		void playerBuyItem(Player* player, uint16_t itemId, uint8_t count, uint16_t amount, bool ignoreCap = false, bool inBackpacks = false) const;
+		void playerSellItem(Player* player, uint16_t itemId, uint8_t count, uint16_t amount, bool ignoreEquipped = false) const;
+		void playerCloseShop(Player* player) const;
+		void playerLookInShop(Player* player, uint16_t itemId, uint8_t count) const;
 		void playerCloseTrade(Player* player);
 		void playerSetAttackedCreature(Player* player, uint32_t creatureId);
 		void playerFollowCreature(Player* player, uint32_t creatureId);
 		void playerCancelAttackAndFollow(Player* player);
-		void playerSetFightModes(Player* player, FightMode_t fightMode, bool chaseMode, bool secureMode);
-		void playerLookAt(Player* player, uint16_t itemId, const Position& pos, uint8_t stackPos);
+		void playerSetFightModes(Player* player, FightMode_t fightMode, bool chaseMode, bool secureMode) const;
+		void playerLookAt(Player* player, uint16_t itemId, const Position &pos, uint8_t stackPos) const;
 		void playerLookInBattleList(Player* player, uint32_t creatureId);
-		void playerQuickLoot(Player* player, const Position& pos, uint16_t itemId, uint8_t stackPos,
-								Item* defaultItem = nullptr, bool lootAllCorpses = false, bool autoLoot = false);
-		void playerLootAllCorpses(Player* player, const Position& pos, bool lootAllCorpses);
-		void playerSetLootContainer(Player* player, ObjectCategory_t category,
-								const Position& pos, uint16_t itemId, uint8_t stackPos);
-		void playerClearLootContainer(Player* player, ObjectCategory_t category);;
-		void playerOpenLootContainer(Player* player, ObjectCategory_t category);
-		void playerSetQuickLootFallback(Player* player, bool fallback);
-		void playerQuickLootBlackWhitelist(Player* player,
-								QuickLootFilter_t filter, const std::vector<uint16_t> itemIds);
+		void playerQuickLoot(Player* player, const Position &pos, uint16_t itemId, uint8_t stackPos, Item* defaultItem = nullptr, bool lootAllCorpses = false, bool autoLoot = false);
+		void playerLootAllCorpses(Player* player, const Position &pos, bool lootAllCorpses);
+		void playerSetLootContainer(Player* player, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos) const;
+		void playerClearLootContainer(Player* player, ObjectCategory_t category) const;
+		void playerOpenLootContainer(Player* player, ObjectCategory_t category) const;
+		void playerSetQuickLootFallback(Player* player, bool fallback) const;
+		void playerQuickLootBlackWhitelist(Player* player, QuickLootFilter_t filter, std::vector<uint16_t> itemIds) const;
 
-		void playerRequestDepotItems(Player* player);
-		void playerRequestCloseDepotSearch(Player* player);
-		void playerRequestDepotSearchItem(Player* player, uint16_t itemId, uint8_t tier);
-		void playerRequestDepotSearchRetrieve(Player* player, uint16_t itemId, uint8_t tier, uint8_t type);
-		void playerRequestOpenContainerFromDepotSearch(Player* player, const Position& pos);
-		void playerMoveThingFromDepotSearch(Player* player,
-											uint16_t itemId,
-											uint8_t tier,
-											uint8_t count,
-											const Position& fromPos,
-											const Position& toPos,
-											bool allItems = false);
+		void playerRequestDepotItems(Player* player) const;
+		void playerRequestCloseDepotSearch(Player* player) const;
+		void playerRequestDepotSearchItem(Player* player, uint16_t itemId, uint8_t tier) const;
+		void playerRequestDepotSearchRetrieve(Player* player, uint16_t itemId, uint8_t tier, uint8_t type) const;
+		void playerRequestOpenContainerFromDepotSearch(Player* player, const Position &pos) const;
+		void playerMoveThingFromDepotSearch(Player* player, uint16_t itemId, uint8_t tier, uint8_t count, const Position &fromPos, const Position &toPos, bool allItems = false) const;
 
-		void playerRequestAddVip(Player* player, const std::string& name);
-		void playerRequestRemoveVip(Player* player, uint32_t guid);
-		void playerRequestEditVip(Player* player, uint32_t guid, const std::string& description, uint32_t icon, bool notify);
-		void playerApplyImbuement(Player* player, uint16_t imbuementid, uint8_t slot, bool protectionCharm);
-		void playerClearImbuement(Player* player, uint8_t slot);
-		void playerCloseImbuementWindow(Player* player);
+		void playerRequestAddVip(Player* player, const std::string &name) const;
+		void playerRequestRemoveVip(Player* player, uint32_t guid) const;
+		void playerRequestEditVip(Player* player, uint32_t guid, const std::string &description, uint32_t icon, bool notify) const;
+		void playerApplyImbuement(Player* player, uint16_t imbuementid, uint8_t slot, bool protectionCharm) const;
+		void playerClearImbuement(Player* player, uint8_t slot) const;
+		void playerCloseImbuementWindow(Player* player) const;
 		void playerTurn(Player* player, Direction dir);
-		void playerRequestOutfit(Player* player);
-		void playerShowQuestLog(Player* player);
-		void playerShowQuestLine(Player* player, uint16_t questId);
-		void playerSay(Player* player, uint16_t channelId, SpeakClasses type,
-                      const std::string& receiver, const std::string& text);
-		void playerChangeOutfit(Player* player, Outfit_t outfit);
+		void playerRequestOutfit(Player* player) const;
+		void playerShowQuestLog(Player* player) const;
+		void playerShowQuestLine(Player* player, uint16_t questId) const;
+		void playerSay(Player* player, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text);
+		void playerChangeOutfit(Player* player, Outfit_t outfit, uint8_t isMountRandomized = 0);
 		void playerInviteToParty(Player* player, uint32_t invitedId);
 		void playerJoinParty(Player* player, uint32_t leaderId);
-		void playerRevokePartyInvitation(Player* player, uint32_t invitedId);
-		void playerPassPartyLeadership(Player* player, uint32_t newLeaderId);
-		void playerLeaveParty(Player* player);
-		void playerEnableSharedPartyExperience(Player* player, bool sharedExpActive);
-		void playerToggleMount(Player* player, bool mount);
-		void playerLeaveMarket(Player* player);
-		void playerBrowseMarket(Player* player, uint16_t itemId, uint8_t tier);
-		void playerBrowseMarketOwnOffers(Player* player);
-		void playerBrowseMarketOwnHistory(Player* player);
+		void playerRevokePartyInvitation(const Player* player, uint32_t invitedId);
+		void playerPassPartyLeadership(const Player* player, uint32_t newLeaderId);
+		void playerLeaveParty(Player* player) const;
+		void playerEnableSharedPartyExperience(Player* player, bool sharedExpActive) const;
+		void playerToggleMount(Player* player, bool mount) const;
+		void playerLeaveMarket(Player* player) const;
+		void playerBrowseMarket(const Player* player, uint16_t itemId, uint8_t tier) const;
+		void playerBrowseMarketOwnOffers(const Player* player) const;
+		void playerBrowseMarketOwnHistory(const Player* player) const;
 		void playerCreateMarketOffer(Player* player, uint8_t type, uint16_t itemId, uint16_t amount, uint64_t price, uint8_t tier, bool anonymous);
 		void playerCancelMarketOffer(Player* player, uint32_t timestamp, uint16_t counter);
 		void playerAcceptMarketOffer(Player* player, uint32_t timestamp, uint16_t counter, uint16_t amount);
 
-		void parsePlayerExtendedOpcode(Player* player, uint8_t opcode, const std::string& buffer);
+		void parsePlayerExtendedOpcode(Player* player, uint8_t opcode, const std::string &buffer) const;
 
 		static void updatePremium(account::Account &account);
 		void updatePlayerHelpers(Player* player);
@@ -644,7 +620,7 @@ class Game {
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string &text);
 		void playerWhisper(Player* player, const std::string &text);
 		bool playerYell(Player* player, const std::string &text);
-		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
+		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text) const;
 		void playerSpeakToNpc(Player* player, const std::string &text);
 
 		phmap::flat_hash_map<std::string, Player*> m_uniqueLoginPlayerNames;

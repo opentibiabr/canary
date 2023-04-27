@@ -25,8 +25,7 @@ bool DatabaseTasks::SetDatabaseInterface(Database* database) {
 	return true;
 }
 
-void DatabaseTasks::startThread()
-{
+void DatabaseTasks::startThread() {
 	ThreadHolder::start();
 }
 

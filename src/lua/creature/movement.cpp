@@ -580,7 +580,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 		}
 	}
 
-	player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+	player->addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 	return 1;
 }
 
@@ -656,7 +656,7 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 		}
 	}
 
-	player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+	player->addScheduledUpdates(static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Stats) | static_cast<int>(PlayerUpdateFlags::PlayerUpdate_Skills));
 	return 1;
 }
 

@@ -105,8 +105,8 @@ class ServiceManager {
 		phmap::flat_hash_map<uint16_t, ServicePort_ptr> acceptors;
 
 		asio::io_service io_service;
-		Signals signals{ io_service };
-		asio::high_resolution_timer death_timer{ io_service };
+		Signals signals { io_service };
+		asio::high_resolution_timer death_timer { io_service };
 		bool running = false;
 };
 

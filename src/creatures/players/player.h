@@ -2401,11 +2401,11 @@ class Player final : public Creature, public Cylinder {
 		void stopNextActionPushTask();
 		void stopNextPotionActionTask();
 
-		void setNextWalkActionTask(uint32_t delay, std::function<void (void)> f);
-		void setNextWalkTask(uint32_t delay, std::function<void (void)> f);
-		void setNextActionTask(uint32_t delay, std::function<void (void)> f, bool resetIdleTime = true);
-		void setNextActionPushTask(uint32_t delay, std::function<void (void)> f);
-		void setNextPotionActionTask(uint32_t delay, std::function<void (void)> f);
+		void setNextWalkActionTask(uint32_t delay, std::function<void(void)> f);
+		void setNextWalkTask(uint32_t delay, std::function<void(void)> f);
+		void setNextActionTask(uint32_t delay, std::function<void(void)> f, bool resetIdleTime = true);
+		void setNextActionPushTask(uint32_t delay, std::function<void(void)> f);
+		void setNextPotionActionTask(uint32_t delay, std::function<void(void)> f);
 
 		void death(Creature* lastHitCreature) override;
 		bool spawn();
@@ -2546,7 +2546,7 @@ class Player final : public Creature, public Cylinder {
 		Party* party = nullptr;
 		Player* tradePartner = nullptr;
 		ProtocolGame_ptr client;
-		std::pair<uint32_t, std::function<void (void)>>* walkTask = nullptr;
+		std::unique_ptr<std::pair<uint32_t, std::function<void(void)>>> walkTask;
 		Town* town = nullptr;
 		Vocation* vocation = nullptr;
 		RewardChest* rewardChest = nullptr;

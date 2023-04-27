@@ -18,7 +18,8 @@ const auto SYSTEM_TIME_ZERO = std::chrono::system_clock::time_point(std::chrono:
 
 class Dispatcher : public ThreadHolder<Dispatcher> {
 	public:
-		Dispatcher() : work(asio::make_work_guard(io_service)) {}
+		Dispatcher() :
+			work(asio::make_work_guard(io_service)) { }
 
 		Dispatcher(const Dispatcher &) = delete;
 		void operator=(const Dispatcher &) = delete;
@@ -30,8 +31,8 @@ class Dispatcher : public ThreadHolder<Dispatcher> {
 			return instance;
 		}
 
-		void addTask(std::function<void (void)> functor);
-		uint64_t addEvent(uint32_t delay, std::function<void (void)> functor);
+		void addTask(std::function<void(void)> functor);
+		uint64_t addEvent(uint32_t delay, std::function<void(void)> functor);
 		void stopEvent(uint64_t eventId);
 
 		void shutdown();
@@ -43,7 +44,6 @@ class Dispatcher : public ThreadHolder<Dispatcher> {
 		void threadMain();
 
 	private:
-		std::thread thread;
 		uint64_t lastEventId = 0;
 		uint64_t dispatcherCycle = 0;
 		phmap::flat_hash_map<uint64_t, asio::high_resolution_timer> eventIds;

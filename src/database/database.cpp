@@ -12,22 +12,19 @@
 #include "config/configmanager.h"
 #include "database/database.h"
 
-bool Database::init()
-{
-	if (mysql_library_init(0, NULL, NULL) != 0) {
+bool Database::init() const {
+	if (mysql_library_init(0, nullptr, nullptr) != 0) {
 		SPDLOG_ERROR("Failed to initialize MySQL client library.");
 		return false;
 	}
 	return true;
 }
 
-void Database::end()
-{
+void Database::end() const {
 	mysql_library_end();
 }
 
-bool Database::connect()
-{
+bool Database::connect() {
 	// thread-specific variables initialization
 	if (mysql_thread_init() != 0) {
 		SPDLOG_ERROR("Failed to initialize MySQL thread-specific variables.");
@@ -58,9 +55,8 @@ bool Database::connect()
 	return true;
 }
 
-bool Database::connect(const char *host, const char *user, const char *password,
-                      const char *database, uint32_t port, const char *sock) {
-	
+bool Database::connect(const char* host, const char* user, const char* password, const char* database, uint32_t port, const char* sock) {
+
 	// thread-specific variables initialization
 	if (mysql_thread_init() != 0) {
 		SPDLOG_ERROR("Failed to initialize MySQL thread-specific variables.");
@@ -91,8 +87,7 @@ bool Database::connect(const char *host, const char *user, const char *password,
 	return true;
 }
 
-void Database::disconnect()
-{
+void Database::disconnect() {
 	if (handle != nullptr) {
 		mysql_close(handle);
 		handle = nullptr;
@@ -101,8 +96,7 @@ void Database::disconnect()
 	mysql_thread_end();
 }
 
-bool Database::beginTransaction()
-{
+bool Database::beginTransaction() {
 	if (!executeQuery("BEGIN")) {
 		return false;
 	}
@@ -183,7 +177,7 @@ DBResult_ptr Database::storeQuery(const std::string &query) {
 
 	databaseLock.lock();
 
-	retry:
+retry:
 	while (mysql_real_query(handle, query.c_str(), query.length()) != 0) {
 		SPDLOG_ERROR("Query: {}", query);
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
@@ -201,7 +195,7 @@ DBResult_ptr Database::storeQuery(const std::string &query) {
 		SPDLOG_ERROR("Query: {}", query);
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
 		auto error = mysql_errno(handle);
-		if (error != CR_SERVER_LOST && error != CR_SERVER_GONE_ERROR && error != CR_CONN_HOST_ERROR && error != 1053/*ER_SERVER_SHUTDOWN*/ && error != CR_CONNECTION_ERROR) {
+		if (error != CR_SERVER_LOST && error != CR_SERVER_GONE_ERROR && error != CR_CONN_HOST_ERROR && error != 1053 /*ER_SERVER_SHUTDOWN*/ && error != CR_CONNECTION_ERROR) {
 			databaseLock.unlock();
 			return nullptr;
 		}

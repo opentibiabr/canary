@@ -1797,7 +1797,6 @@ Storage = {
 				}
 			},
 		},
-		
 		U6_0 = { -- update 6.0 - Reserved Storages 40021 - 40030
 			StuddedShield = {
 				Rewards = {
@@ -1805,50 +1804,6 @@ Storage = {
 					BananaPremium = 40022
 				}
 			},
-		},
-		FeasterOfSouls = {
-			Bosses = {
-				BrainHead = {
-					Timer = 284700,
-					Killed = 284701,
-				},
-				UnazTheMean = {
-					Timer = 284702,
-					Killed = 284712,
-				},
-				IrgixTheFlimsy = {
-					Timer = 284703,
-					Killed = 284713,
-				},
-				VokTheFreakish = {
-					Timer = 284704,
-					Killed = 284714,
-				},
-				TheUnwelcome = {
-					Timer = 284705,
-					Killed = 284715,
-				},
-				TheDreadMaiden = {
-					Timer = 284706,
-					Souls = 284707,
-					Killed = 284716,
-				},
-				TheFearFeaster = {
-					Timer = 284708,
-					Totem = 284709,
-					Killed = 284717,
-				},
-				ThePaleWorm = {
-					Timer = 284710,
-					WeakSpot = 284711,
-					Killed = 284718,
-				}
-			}
-		},
-		PoltergeistOutfits = {
-			Outfit = 284719,
-			Addon1 = 284720,
-			Addon2 = 284721,
 		},
 		U6_1 = { -- update 6.1 - Reserved Storages 40031 - 40050
 			EmperorsCookies = {
@@ -2824,6 +2779,24 @@ Storage = {
 		},
 		U12_30 = { -- update 12.30 - Reserved Storages 47001 - 47200
 			FalconerOutfits = {},
+			FeasterOfSouls = {
+				IrgixTimer = 47005,
+				IrgixKilled = 47006,
+				UnazTimer = 47007,
+				UnazKilled = 47008,
+				VokTimer = 47009,
+				VokKilled = 47010,
+				FearFeasterTimer = 47011,
+				FearFeasterKilled = 47012,
+				DreadMaidenTimer = 47013,
+				DreadMaidenKilled = 47014,
+				UnwelcomeTimer = 47015,
+				UnwelcomeKilled = 47016,
+				PaleWormEntrance = 47017,
+				PaleWormTimer = 47018,
+				PaleWormKilled = 47019,
+			},
+			PoltergeistOutfits = {}
 		},
 		U12_40 = { -- update 12.40 - Reserved Storages 47201 - 47500
 			RevenantOutfits = {},

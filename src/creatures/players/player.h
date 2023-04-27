@@ -564,11 +564,11 @@ class Player final : public Creature, public Cylinder {
 		bool removeItemOfType(uint16_t itemId, uint32_t itemAmount, int32_t subType, bool ignoreEquipped = false);
 		/**
 		 * @param itemAmount is uint32_t because stash item is uint32_t max
-		*/
+		 */
 		bool hasItemCountById(uint16_t itemId, uint32_t itemCount, bool checkStash) const;
 		/**
 		 * @param itemAmount is uint32_t because stash item is uint32_t max
-		*/
+		 */
 		bool removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool removeFromStash = true);
 
 		void addItemOnStash(uint16_t itemId, uint32_t amount) {

@@ -470,6 +470,10 @@ class Item : virtual public Thing, public ItemProperties {
 		uint16_t getItemCount() const {
 			return count;
 		}
+		// Get item total amount
+		uint32_t getItemAmount() const {
+			return count;
+		}
 		void setItemCount(uint8_t n) {
 			count = n;
 		}

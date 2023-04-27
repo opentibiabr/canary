@@ -3489,7 +3489,7 @@ void Player::stashContainer(StashContainerList itemDict) {
 	}
 }
 
-bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped /* = false*/, bool removeFromStash /* = false*/) {
+bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped /* = false*/) {
 	if (amount == 0) {
 		return true;
 	}
@@ -3497,7 +3497,6 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 	std::vector<Item*> itemList;
 
 	uint32_t count = 0;
-	uint32_t removeFromStashAmount = amount;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
 		Item* item = inventory[i];
 		if (!item) {
@@ -3535,22 +3534,73 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 					if (count >= amount) {
 						g_game().internalRemoveItems(std::move(itemList), amount, stackable);
 						return true;
-						// If not, we will remove the amount the player have and save the rest to remove from the stash
-					} else if (removeFromStash && stackable) {
-						g_game().internalRemoveItems(itemList, amount, stackable);
-						// Save remaining items to remove
-						removeFromStashAmount -= count;
 					}
 				}
 			}
 		}
 	}
 
-	if (removeFromStash && removeFromStashAmount <= amount && withdrawItem(itemId, removeFromStashAmount)) {
-		return true;
+	return false;
+}
+
+bool Player::hasItemCountById(uint16_t itemId, uint16_t itemCount, bool checkStash) const
+{
+	uint16_t newCount = 0;
+	// Check items from inventory
+	for (const auto *item : getAllInventoryItems()) {
+		if (!item || item->getID() != itemId) {
+			continue;
+		}
+
+		newCount += item->getItemCount();
 	}
 
-	return false;
+	// Check items from stash
+	for (StashItemList stashToSend = getStashItems();
+		auto [stashItemId, itemCount] : stashToSend)
+	{
+		if (!checkStash) {
+			break;
+		}
+
+		if (stashItemId == itemId) {
+			newCount += itemCount;
+		}
+	}
+
+	return newCount >= itemCount;
+}
+
+bool Player::removeItemCountById(uint16_t itemId, uint16_t itemCount, bool removeFromStash/* = true*/) {
+	// Here we guarantee that the player has at least the necessary amount of items he needs, if not, we return
+	if (!hasItemCountById(itemId, itemCount, removeFromStash)) {
+		return false;
+	}
+
+	uint16_t amountToRemove = itemCount;
+	// Check items from inventory
+	for (auto *item : getAllInventoryItems()) {
+		if (!item || item->getID() != itemId) {
+			continue;
+		}
+
+		// If the item quantity is already needed, remove the quantity and stop the loop
+		if (item->getItemCount() >= amountToRemove) {
+			g_game().internalRemoveItem(item, amountToRemove);
+			return true;
+		}
+
+		// If not, we continue removing items and checking the next slot.
+		g_game().internalRemoveItem(item);
+		amountToRemove -= item->getItemCount();
+	}
+
+	// If there are not enough items in the inventory, we will remove the remaining from stash
+	if (removeFromStash && amountToRemove > 0) {
+		withdrawItem(itemId, amountToRemove);
+	}
+
+	return true;
 }
 
 ItemsTierCountList Player::getInventoryItemsId() const {
@@ -6330,7 +6380,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			setForgeDusts(getForgeDusts() - dustCost);
 		}
 		if (bonus != 2) {
-			if (!removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true, true)) {
+			if (!removeItemCountById(ITEM_FORGE_CORE, coreCount)) {
 				SPDLOG_ERROR("[{}][Log 1] Failed to remove item 'id :{} count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, coreCount, getName());
 				sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 				return;
@@ -6405,7 +6455,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			setForgeDusts(getForgeDusts() - dustCost);
 		}
 
-		if (!removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true, true)) {
+		if (!removeItemCountById(ITEM_FORGE_CORE, coreCount)) {
 			SPDLOG_ERROR("[{}][Log 2] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, coreCount, getName());
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
@@ -6549,7 +6599,7 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 		}
 	}
 
-	if (!removeItemOfType(ITEM_FORGE_CORE, coresAmount, -1, true, true)) {
+	if (!removeItemCountById(ITEM_FORGE_CORE, coresAmount)) {
 		SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, 1, getName());
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -6615,7 +6665,7 @@ void Player::forgeResourceConversion(uint8_t action) {
 			return;
 		}
 
-		if (!removeItemOfType(ITEM_FORGE_SLIVER, cost, -1, true, true)) {
+		if (!removeItemCountById(ITEM_FORGE_SLIVER, cost)) {
 			SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count {}' from player {}", __FUNCTION__, ITEM_FORGE_SLIVER, cost, getName());
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;

@@ -561,7 +561,9 @@ class Player final : public Creature, public Cylinder {
 		void addMessageBuffer();
 		void removeMessageBuffer();
 
-		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false, bool removeFromStash = false);
+		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false);
+		bool hasItemCountById(uint16_t itemId, uint16_t itemCount, bool checkStash) const;
+		bool removeItemCountById(uint16_t itemId, uint16_t itemCount, bool removeFromStash = true);
 
 		void addItemOnStash(uint16_t itemId, uint32_t amount) {
 			auto it = stashItems.find(itemId);

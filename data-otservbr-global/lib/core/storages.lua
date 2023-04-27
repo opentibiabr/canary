@@ -1072,6 +1072,10 @@ Storage = {
 		DoorToQuara = 51248,
 		DoorToReward = 51249
 	},
+	Marapur = {
+		-- Timira
+		Timira = 100800 
+	},
 	ChildrenoftheRevolution = {
 		-- Reserved storage from 55145 - 51279
 		Questline = 55145,

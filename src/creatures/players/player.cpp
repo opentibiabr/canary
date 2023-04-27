@@ -3543,11 +3543,10 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 	return false;
 }
 
-bool Player::hasItemCountById(uint16_t itemId, uint16_t itemCount, bool checkStash) const
-{
+bool Player::hasItemCountById(uint16_t itemId, uint16_t itemCount, bool checkStash) const {
 	uint16_t newCount = 0;
 	// Check items from inventory
-	for (const auto *item : getAllInventoryItems()) {
+	for (const auto* item : getAllInventoryItems()) {
 		if (!item || item->getID() != itemId) {
 			continue;
 		}
@@ -3557,8 +3556,7 @@ bool Player::hasItemCountById(uint16_t itemId, uint16_t itemCount, bool checkSta
 
 	// Check items from stash
 	for (StashItemList stashToSend = getStashItems();
-		auto [stashItemId, itemCount] : stashToSend)
-	{
+		 auto [stashItemId, itemCount] : stashToSend) {
 		if (!checkStash) {
 			break;
 		}
@@ -3571,7 +3569,7 @@ bool Player::hasItemCountById(uint16_t itemId, uint16_t itemCount, bool checkSta
 	return newCount >= itemCount;
 }
 
-bool Player::removeItemCountById(uint16_t itemId, uint16_t itemCount, bool removeFromStash/* = true*/) {
+bool Player::removeItemCountById(uint16_t itemId, uint16_t itemCount, bool removeFromStash /* = true*/) {
 	// Here we guarantee that the player has at least the necessary amount of items he needs, if not, we return
 	if (!hasItemCountById(itemId, itemCount, removeFromStash)) {
 		return false;
@@ -3579,7 +3577,7 @@ bool Player::removeItemCountById(uint16_t itemId, uint16_t itemCount, bool remov
 
 	uint16_t amountToRemove = itemCount;
 	// Check items from inventory
-	for (auto *item : getAllInventoryItems()) {
+	for (auto* item : getAllInventoryItems()) {
 		if (!item || item->getID() != itemId) {
 			continue;
 		}

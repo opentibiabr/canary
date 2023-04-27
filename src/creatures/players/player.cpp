@@ -3543,8 +3543,8 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 	return false;
 }
 
-bool Player::hasItemCountById(uint16_t itemId, uint16_t itemCount, bool checkStash) const {
-	uint16_t newCount = 0;
+bool Player::hasItemCountById(uint16_t itemId, uint32_t itemAmount, bool checkStash) const {
+	uint32_t newCount = 0;
 	// Check items from inventory
 	for (const auto* item : getAllInventoryItems()) {
 		if (!item || item->getID() != itemId) {
@@ -3566,16 +3566,16 @@ bool Player::hasItemCountById(uint16_t itemId, uint16_t itemCount, bool checkSta
 		}
 	}
 
-	return newCount >= itemCount;
+	return newCount >= itemAmount;
 }
 
-bool Player::removeItemCountById(uint16_t itemId, uint16_t itemCount, bool removeFromStash /* = true*/) {
+bool Player::removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool removeFromStash /* = true*/) {
 	// Here we guarantee that the player has at least the necessary amount of items he needs, if not, we return
-	if (!hasItemCountById(itemId, itemCount, removeFromStash)) {
+	if (!hasItemCountById(itemId, itemAmount, removeFromStash)) {
 		return false;
 	}
 
-	uint16_t amountToRemove = itemCount;
+	uint32_t amountToRemove = itemAmount;
 	// Check items from inventory
 	for (auto* item : getAllInventoryItems()) {
 		if (!item || item->getID() != itemId) {
@@ -3583,22 +3583,22 @@ bool Player::removeItemCountById(uint16_t itemId, uint16_t itemCount, bool remov
 		}
 
 		// If the item quantity is already needed, remove the quantity and stop the loop
-		if (item->getItemCount() >= amountToRemove) {
+		if (item->getItemAmount() >= amountToRemove) {
 			g_game().internalRemoveItem(item, amountToRemove);
 			return true;
 		}
 
 		// If not, we continue removing items and checking the next slot.
 		g_game().internalRemoveItem(item);
-		amountToRemove -= item->getItemCount();
+		amountToRemove -= item->getItemAmount();
 	}
 
 	// If there are not enough items in the inventory, we will remove the remaining from stash
-	if (removeFromStash && amountToRemove > 0) {
-		withdrawItem(itemId, amountToRemove);
+	if (removeFromStash && amountToRemove > 0 && withdrawItem(itemId, amountToRemove)) {
+		return true;
 	}
 
-	return true;
+	return false;
 }
 
 ItemsTierCountList Player::getInventoryItemsId() const {

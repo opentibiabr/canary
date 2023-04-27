@@ -3531,6 +3531,21 @@ void ProtocolGame::sendReLoginWindow(uint8_t unfairFightReduction) {
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendStats() {
+	NetworkMessage msg;
+	AddPlayerStats(msg);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendBasicData() {
+	NetworkMessage msg;
+	msg.addByte(0x9F);
+	if (player->isPremium()) {
+		msg.addByte(1);
+		msg.add<uint32_t>(time(nullptr) + (player->premiumDays * 86400));
+	} else {
+		msg.addByte(0);
+		msg.add<uint32_t>(0);
 	}
 	msg.addByte(player->getVocation()->getClientId());
 
@@ -3544,7 +3559,11 @@ void ProtocolGame::sendReLoginWindow(uint8_t unfairFightReduction) {
 	std::list<uint16_t> spellsList = g_spells().getSpellsByVocation(player->getVocationId());
 	msg.add<uint16_t>(spellsList.size());
 	for (uint16_t sid : spellsList) {
-		msg.add<uint16_t>(sid);
+		if (oldProtocol) {
+			msg.addByte(sid);
+		} else {
+			msg.add<uint16_t>(sid);
+		}
 	}
 
 	if (!oldProtocol) {
@@ -4117,11 +4136,15 @@ void ProtocolGame::sendCoinBalance() {
 void ProtocolGame::updateCoinBalance() {
 	if (!player) {
 		return;
+	}
 
 	g_dispatcher().addTask(
 		createTask(std::bind([](uint32_t playerId) {
 			Player* threadPlayer = g_game().getPlayerByID(playerId);
 			if (threadPlayer) {
+				account::Account account;
+				account.LoadAccountDB(threadPlayer->getAccount());
+				uint32_t coins;
 				account.GetCoins(&coins);
 				threadPlayer->coinBalance = coins;
 				threadPlayer->sendCoinBalance();
@@ -5579,7 +5602,14 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 		sendInventoryItem(static_cast<Slots_t>(i), player->getInventoryItem(static_cast<Slots_t>(i)));
 	}
 
+	sendStats();
+	sendSkills();
+	sendBlessStatus();
+	sendPremiumTrigger();
+	sendItemsPrice();
+	sendPreyPrices();
 	player->sendPreyData();
+	player->sendTaskHuntingData();
 	sendForgingData();
 
 	// gameworld light-settings
@@ -6133,7 +6163,11 @@ void ProtocolGame::sendSpellCooldown(uint16_t spellId, uint32_t time) {
 	if (oldProtocol && spellId >= 170) {
 		msg.addByte(170);
 	} else {
-		msg.add<uint16_t>(spellId);
+		if (oldProtocol) {
+			msg.addByte(spellId);
+		} else {
+			msg.add<uint16_t>(spellId);
+		}
 	}
 	msg.add<uint32_t>(time);
 	writeToOutputBuffer(msg);
@@ -6480,8 +6514,13 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.addByte(0xA0);
 
-	msg.add<uint32_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint32_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
+	if (oldProtocol) {
+		msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
+	} else {
+		msg.add<uint32_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint32_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
+	}
 
 	msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 	if (oldProtocol) {
@@ -6503,10 +6542,13 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.add<uint16_t>(player->getStoreXpBoost()); // xp boost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
 
-	msg.add<uint32_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint32_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
+	if (!oldProtocol) {
+		msg.add<uint32_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint32_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
+	} else {
+		msg.add<uint16_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint16_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
 
-	if (oldProtocol) {
 		msg.addByte(static_cast<uint8_t>(std::min<uint32_t>(player->getMagicLevel(), std::numeric_limits<uint8_t>::max())));
 		msg.addByte(static_cast<uint8_t>(std::min<uint32_t>(player->getBaseMagicLevel(), std::numeric_limits<uint8_t>::max())));
 		msg.addByte(std::min<uint8_t>(static_cast<uint8_t>(player->getMagicLevelPercent()), 100));
@@ -7046,11 +7088,19 @@ void ProtocolGame::parseExtendedOpcode(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg) {
+	if (oldProtocol) {
+		return;
+	}
+
 	bool isTrackerOpen = msg.getByte(); // Window is opened or closed
 	addGameTask(&Game::playerRequestInventoryImbuements, player->getID(), isTrackerOpen);
 }
 
 void ProtocolGame::sendInventoryImbuements(const std::map<Slots_t, Item*> items) {
+	if (oldProtocol) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0x5D);
 

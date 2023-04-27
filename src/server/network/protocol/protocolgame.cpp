@@ -5894,9 +5894,9 @@ void ProtocolGame::sendOutfitWindow() {
 			protocolOutfits.emplace_back(communityManager, 302, 0);
 		}
 
-		const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
+		const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
 		protocolOutfits.reserve(outfits.size());
-		for (const Outfit& outfit : outfits) {
+		for (const Outfit &outfit : outfits) {
 			uint8_t addons;
 			if (!player->getOutfitAddons(outfit, addons)) {
 				continue;
@@ -5910,14 +5910,14 @@ void ProtocolGame::sendOutfitWindow() {
 		}
 
 		msg.addByte(protocolOutfits.size());
-		for (const ProtocolOutfit& outfit : protocolOutfits) {
+		for (const ProtocolOutfit &outfit : protocolOutfits) {
 			msg.add<uint16_t>(outfit.lookType);
 			msg.addString(outfit.name);
 			msg.addByte(outfit.addons);
 		}
 
 		std::vector<const Mount*> mounts;
-		for (const Mount& mount : g_game().mounts.getMounts()) {
+		for (const Mount &mount : g_game().mounts.getMounts()) {
 			if (player->hasMount(&mount)) {
 				mounts.push_back(&mount);
 			}

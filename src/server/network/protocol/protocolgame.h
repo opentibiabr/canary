@@ -362,7 +362,7 @@ class ProtocolGame final : public Protocol {
 
 		void sendCreatureSquare(const Creature* creature, SquareColor_t color);
 
-		void sendSpellCooldown(uint8_t spellId, uint32_t time);
+		void sendSpellCooldown(uint16_t spellId, uint32_t time);
 		void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
 		void sendUseItemCooldown(uint32_t time);
 
@@ -445,6 +445,9 @@ class ProtocolGame final : public Protocol {
 
 		// otclient
 		void parseExtendedOpcode(NetworkMessage &msg);
+
+		void parseInventoryImbuements(NetworkMessage &msg);
+		void sendInventoryImbuements(const std::map<Slots_t, Item*> items);
 
 		// reloadCreature
 		void reloadCreature(const Creature* creature);

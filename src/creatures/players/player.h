@@ -1018,7 +1018,7 @@ class Player final : public Creature, public Cylinder {
 				client->sendCreatureType(creature, creatureType);
 			}
 		}
-		void sendSpellCooldown(uint8_t spellId, uint32_t time) {
+		void sendSpellCooldown(uint16_t spellId, uint32_t time) {
 			if (client) {
 				client->sendSpellCooldown(spellId, time);
 			}
@@ -1642,6 +1642,7 @@ class Player final : public Creature, public Cylinder {
 
 		void addItemImbuementStats(const Imbuement* imbuement);
 		void removeItemImbuementStats(const Imbuement* imbuement);
+		void updateImbuementTrackerStats() const;
 
 		bool isUIExhausted(uint32_t exhaustionTime = 250) const;
 		void updateUIExhausted();
@@ -2268,6 +2269,12 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
+		void sendInventoryImbuements(const std::map<Slots_t, Item*> items) const {
+			if (client) {
+				client->sendInventoryImbuements(items);
+			}
+		}
+
 	private:
 		static uint32_t playerFirstID;
 		static uint32_t playerLastID;
@@ -2547,6 +2554,7 @@ class Player final : public Creature, public Cylinder {
 		bool exerciseTraining = false;
 		bool moved = false;
 		bool dead = false;
+		bool imbuementTrackerWindowOpen = false;
 
 		void updateItemsLight(bool internal = false);
 		uint16_t getStepSpeed() const override {

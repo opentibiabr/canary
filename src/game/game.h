@@ -242,6 +242,8 @@ class Game {
 		void playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, uint8_t podiumVisible, uint8_t bossVisible);
 		void playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId);
 
+		void playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen);
+
 		bool addItemStoreInbox(const Player* player, uint32_t itemId);
 
 		void playerReportRuleViolationReport(uint32_t playerId, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation);

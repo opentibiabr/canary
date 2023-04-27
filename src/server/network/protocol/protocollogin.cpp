@@ -16,6 +16,7 @@
 #include "io/iologindata.h"
 #include "creatures/players/management/ban.h"
 #include "game/game.h"
+#include "core.hpp"
 
 void ProtocolLogin::disconnectClient(const std::string &message) {
 	auto output = OutputMessagePool::getOutputMessage();
@@ -30,6 +31,15 @@ void ProtocolLogin::disconnectClient(const std::string &message) {
 void ProtocolLogin::getCharacterList(const std::string &accountIdentifier, const std::string &password) {
 	account::Account account;
 	account.setProtocolCompat(oldProtocol);
+
+	if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL)) {
+		disconnectClient(fmt::format("Only protocol version {}.{} is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+		return;
+	} else if (!oldProtocol) {
+		disconnectClient(fmt::format("Only protocol version {}.{} or outdated 11.00 is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+		return;
+	}
+
 	if (!IOLoginData::authenticateAccountPassword(accountIdentifier, password, &account)) {
 		std::ostringstream ss;
 		ss << (oldProtocol ? "Username" : "Email") << " or password is not correct.";
@@ -106,7 +116,7 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	uint16_t version = msg.get<uint16_t>();
 
 	// Old protocol support
-	oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL) && version < 1200;
+	oldProtocol = version == 1100;
 
 	msg.skipBytes(17);
 	/*

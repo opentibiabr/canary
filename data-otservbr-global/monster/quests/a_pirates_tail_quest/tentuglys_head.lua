@@ -7,6 +7,10 @@ monster.outfit = {
 	lookTypeEx = 35105,
 }
 
+monster.events = {
+	"TentuglysHeadDeath"
+}
+
 monster.health = 75000
 monster.maxHealth = 75000
 monster.race = "blood"
@@ -17,6 +21,12 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
+}
+
+monster.bosstiary = {
+	bossRaceId = 2238,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Quest.U12_60.APiratesTail.TentuglyTimer
 }
 
 monster.strategiesTarget = {

@@ -249,7 +249,7 @@ function Player.reloadTalkaction(self, words, param)
 		return false
 	end
 
-	logCommand(self, words, param)
+	logCommand(self, "/reload", param)
 
 	local reloadType = reloadTypes[param:lower()]
 	if reloadType then

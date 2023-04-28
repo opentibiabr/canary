@@ -45,6 +45,8 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 		return true
 	end
 
+	local forgeAmountMultiplier = (configManager.getNumber(configKeys.FORGE_AMOUNT_MULTIPLIER) or 3)
+
 	local stack = creature:getForgeStack()
 	if stack > 0 then
 		local party = nil
@@ -57,14 +59,14 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 		end
 
 		if party and party:isSharedExperienceEnabled() then
-			local killers = {}
+			local killers = {party:getLeader()}
 			local partyMembers = party:getMembers()
 
-			for pid, _ in pairs(creature:getDamageMap()) do
-				local creatureKiller = Creature(pid)
-				if creatureKiller and creatureKiller:isPlayer() then
-					if not isInArray(killers, creatureKiller) and isInArray(partyMembers, creatureKiller) then
-						table.insert(killers, creatureKiller)
+			for i = 1, #partyMembers do
+				local member = partyMembers[i]
+				if member and member:isPlayer() then
+					if not isInArray(killers, member) then
+						table.insert(killers, member)
 					end
 				end
 			end
@@ -75,7 +77,7 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 					-- Each stack can multiplied from 1x to 3x
 					-- Example monster with 5 stack and system randomize multiplier 3x, players will receive 15x dusts
 
-					local amount = math.random(stack, 3 * stack)
+					local amount = math.random(stack, forgeAmountMultiplier * stack)
 
 					local totalDusts = playerKiller:getForgeDusts()
 					local limitDusts = playerKiller:getForgeDustLevel()
@@ -89,13 +91,13 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 
 						local actualTotalDusts = playerKiller:getForgeDusts()
 						playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-						"You received " .. amount .. " dust" ..
-						" for the Exaltation Forge. You now have " .. actualTotalDusts .. " out of a maximum of " ..
-						limitDusts .. " dusts.")
+							"You received " .. amount .. " dust" ..
+								" for the Exaltation Forge. You now have " .. actualTotalDusts .. " out of a maximum of " ..
+								limitDusts .. " dusts.")
 					else
 						playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-						"You did not receive " .. amount .. " dust" ..
-						" for the Exaltation Forge because you have already reached the maximum of " .. limitDusts .. " dust.")
+							"You did not receive " .. amount .. " dust" ..
+								" for the Exaltation Forge because you have already reached the maximum of " .. limitDusts .. " dust.")
 					end
 				end
 			end
@@ -114,7 +116,7 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 				-- Each stack can multiplied from 1x to 3x
 				-- Example monster with 5 stack and system randomize multiplier 3x, players will receive 15x dusts
 
-				local amount = math.random(stack, 3 * stack)
+				local amount = math.random(stack, forgeAmountMultiplier * stack)
 
 				local totalDusts = playerKiller:getForgeDusts()
 				local limitDusts = playerKiller:getForgeDustLevel()
@@ -128,13 +130,13 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 
 					local actualTotalDusts = playerKiller:getForgeDusts()
 					playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-					"You received " .. amount .. " dust" ..
-					" for the Exaltation Forge. You now have " .. actualTotalDusts .. " out of a maximum of " ..
-					limitDusts .. " dusts.")
+						"You received " .. amount .. " dust" ..
+							" for the Exaltation Forge. You now have " .. actualTotalDusts .. " out of a maximum of " ..
+							limitDusts .. " dusts.")
 				else
 					playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-					"You did not receive " .. amount .. " dust" ..
-					" for the Exaltation Forge because you have already reached the maximum of " .. limitDusts .. " dust.")
+						"You did not receive " .. amount .. " dust" ..
+							" for the Exaltation Forge because you have already reached the maximum of " .. limitDusts .. " dust.")
 				end
 			end
 		end
@@ -191,7 +193,7 @@ function ForgeMonster:pickClosestFiendish(creature)
 	local playerPosition = player:getPosition()
 	for _, cid in pairs(Game.getFiendishMonsters()) do
 		if (Monster(cid)) then
-			creatures[#creatures + 1] = {cid = cid, distance = Monster(cid):getPosition():getDistance(playerPosition)}
+			creatures[#creatures + 1] = { cid = cid, distance = Monster(cid):getPosition():getDistance(playerPosition) }
 		end
 	end
 

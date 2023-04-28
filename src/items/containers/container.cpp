@@ -93,6 +93,10 @@ Container* Container::getTopParentContainer() const {
 	return thing->getContainer();
 }
 
+Container* Container::getRootContainer() const {
+	return getTopParentContainer();
+}
+
 bool Container::hasParent() const {
 	return getID() != ITEM_BROWSEFIELD && dynamic_cast<const Player*>(getParent()) == nullptr;
 }
@@ -129,8 +133,8 @@ Attr_ReadValue Container::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	return Item::readAttr(attr, propStream);
 }
 
-bool Container::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream) {
-	bool ret = Item::unserializeItemNode(loader, node, propStream);
+bool Container::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream, Position &itemPosition) {
+	bool ret = Item::unserializeItemNode(loader, node, propStream, itemPosition);
 	if (!ret) {
 		return false;
 	}
@@ -147,13 +151,18 @@ bool Container::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, 
 			return false;
 		}
 
-		Item* item = Item::CreateItem(itemPropStream);
-		if (!item) {
+		uint16_t id;
+		if (!itemPropStream.read<uint16_t>(id)) {
 			return false;
 		}
 
-		if (!item->unserializeItemNode(loader, itemNode, itemPropStream)) {
-			return false;
+		Item* item = Item::CreateItem(id, itemPosition);
+		if (!item) {
+			continue;
+		}
+
+		if (!item->unserializeItemNode(loader, itemNode, itemPropStream, itemPosition)) {
+			continue;
 		}
 
 		addItem(item);

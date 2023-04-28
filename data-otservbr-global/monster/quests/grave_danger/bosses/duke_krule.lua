@@ -28,7 +28,7 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1758,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.BosstiaryCooldown.DukeKrule
+	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.DukeKruleTimer
 }
 
 monster.strategiesTarget = {

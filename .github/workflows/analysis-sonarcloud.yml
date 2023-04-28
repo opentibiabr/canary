@@ -9,10 +9,10 @@ on:
       - main
 
 env:
-  VCPKG_BUILD_TYPE: release
+  VCPKG_BUILD_TYPE: debug
   CMAKE_BUILD_PARALLEL_LEVEL: 2
   MAKEFLAGS: '-j 2'
-  NUMBER_OF_PROCESSORS: 2
+  VCPKG_BINARY_SOURCES: clear;default,readwrite
 
 jobs:
   sonarcloud:
@@ -51,14 +51,6 @@ jobs:
           restore-keys: |
             ccache-${{ runner.os}}-
 
-      - name: Sonar cache
-        uses: actions/cache@main
-        with:
-          path: $HOME/.cfamily
-          key: sonar-${{ runner.os}}-${{ hashFiles('**/src') }}
-          restore-keys: |
-            sonar-${{ runner.os}}-
-
       - name: Cache SonarCloud packages
         uses: actions/cache@main
         with:
@@ -72,12 +64,13 @@ jobs:
         run: |
           vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ')
           echo "vcpkg commit ID: $vcpkgCommitId"
-          echo "::set-output name=vcpkgGitCommitId::$vcpkgCommitId"
+          echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" >> $GITHUB_ENV
+
       - name: Get vcpkg commit id from vcpkg.json
         uses: lukka/run-vcpkg@main
         with:
           vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
-          vcpkgGitCommitId: ${{ steps.vcpkg-step.outputs.vcpkgGitCommitId }}
+          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
 
       - name: Install sonar-scanner
         uses: SonarSource/sonarcloud-github-c-cpp@v1
@@ -94,9 +87,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           sonar-scanner \
-            --define sonar.cfamily.threads="${{ env.NUMBER_OF_PROCESSORS  }}" \
-            --define sonar.cfamily.cache.enabled=true \
-            --define sonar.cfamily.cache.path="$HOME/.cfamily" \
             --define sonar.cfamily.compile-commands=build/compile_commands.json \
             --define sonar.pullrequest.key=${{ github.event.pull_request.number }} \
             --define sonar.pullrequest.branch=${{ github.event.pull_request.head.ref }} \
@@ -109,7 +99,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           sonar-scanner \
-            --define sonar.cfamily.threads="${{ env.NUMBER_OF_PROCESSORS  }}" \
-            --define sonar.cfamily.cache.enabled=true \
-            --define sonar.cfamily.cache.path="$HOME/.cfamily" \
             --define sonar.cfamily.compile-commands=build/compile_commands.json

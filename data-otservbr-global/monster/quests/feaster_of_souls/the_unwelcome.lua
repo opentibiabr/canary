@@ -25,6 +25,12 @@ monster.changeTarget = {
 	chance = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 1868,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Quest.U12_30.FeasterOfSouls.UnwelcomeTimer
+}
+
 monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,
@@ -88,7 +94,9 @@ monster.loot = {
 	{name = "ghost claw", chance = 1960},
 	{name = "bloody tears", chance = 1500},
 	{name = "ghost chestplate", chance = 150},
-	{name = "spooky hood", chance = 150}
+	{name = "spooky hood", chance = 150},
+	{name = "fabulous legs", chance = 150},
+	{name = "soulful legs", chance = 150}
 }
 
 monster.attacks = {

@@ -131,7 +131,6 @@ bool ConfigManager::load() {
 	boolean[EXPERIENCE_FROM_PLAYERS] = getGlobalBoolean(L, "experienceByKillingPlayers", false);
 	boolean[FREE_PREMIUM] = getGlobalBoolean(L, "freePremium", false);
 	boolean[REPLACE_KICK_ON_LOGIN] = getGlobalBoolean(L, "replaceKickOnLogin", true);
-	boolean[ALLOW_CLONES] = getGlobalBoolean(L, "allowClones", false);
 	boolean[MARKET_PREMIUM] = getGlobalBoolean(L, "premiumToCreateMarketOffer", true);
 	boolean[EMOTE_SPELLS] = getGlobalBoolean(L, "emoteSpells", false);
 	boolean[STAMINA_SYSTEM] = getGlobalBoolean(L, "staminaSystem", true);
@@ -189,7 +188,7 @@ bool ConfigManager::load() {
 	string[DISCORD_WEBHOOK_URL] = getGlobalString(L, "discordWebhookURL", "");
 	string[SAVE_INTERVAL_TYPE] = getGlobalString(L, "saveIntervalType", "");
 	string[GLOBAL_SERVER_SAVE_TIME] = getGlobalString(L, "globalServerSaveTime", "06:00");
-	string[DATA_DIRECTORY] = getGlobalString(L, "dataPackDirectory", "data-otserbr-global");
+	string[DATA_DIRECTORY] = getGlobalString(L, "dataPackDirectory", "data-otservbr-global");
 	string[CORE_DIRECTORY] = getGlobalString(L, "coreDirectory", "data");
 	string[FORGE_FIENDISH_INTERVAL_TYPE] = getGlobalString(L, "forgeFiendishIntervalType", "hour");
 	string[FORGE_FIENDISH_INTERVAL_TIME] = getGlobalString(L, "forgeFiendishIntervalTime", "1");
@@ -259,11 +258,13 @@ bool ConfigManager::load() {
 	integer[FORGE_BASE_SUCCESS_RATE] = getGlobalNumber(L, "forgeBaseSuccessRate", 50);
 	integer[FORGE_BONUS_SUCCESS_RATE] = getGlobalNumber(L, "forgeBonusSuccessRate", 15);
 	integer[FORGE_TIER_LOSS_REDUCTION] = getGlobalNumber(L, "forgeTierLossReduction", 50);
+	integer[FORGE_AMOUNT_MULTIPLIER] = getGlobalNumber(L, "forgeAmountMultiplier", 3);
 	integer[FORGE_MIN_SLIVERS] = getGlobalNumber(L, "forgeMinSlivers", 3);
 	integer[FORGE_MAX_SLIVERS] = getGlobalNumber(L, "forgeMaxSlivers", 7);
 	integer[FORGE_INFLUENCED_CREATURES_LIMIT] = getGlobalNumber(L, "forgeInfluencedLimit", 300);
 	integer[FORGE_FIENDISH_CREATURES_LIMIT] = getGlobalNumber(L, "forgeFiendishLimit", 3);
 
+	floating[BESTIARY_RATE_CHARM_SHOP_PRICE] = getGlobalFloat(L, "bestiaryRateCharmShopPrice", 1.0);
 	floating[RATE_HEALTH_REGEN] = getGlobalFloat(L, "rateHealthRegen", 1.0);
 	floating[RATE_HEALTH_REGEN_SPEED] = getGlobalFloat(L, "rateHealthRegenSpeed", 1.0);
 	floating[RATE_MANA_REGEN] = getGlobalFloat(L, "rateManaRegen", 1.0);
@@ -299,9 +300,17 @@ bool ConfigManager::load() {
 	integer[TASK_HUNTING_BONUS_REROLL_PRICE] = getGlobalNumber(L, "taskHuntingBonusRerollPrice", 1);
 	integer[TASK_HUNTING_FREE_REROLL_TIME] = getGlobalNumber(L, "taskHuntingFreeRerollTime", 72000);
 
+	integer[BESTIARY_KILL_MULTIPLIER] = getGlobalNumber(L, "bestiaryKillMultiplier", 1);
+	integer[BOSSTIARY_KILL_MULTIPLIER] = getGlobalNumber(L, "bosstiaryKillMultiplier", 1);
 	boolean[BOOSTED_BOSS_SLOT] = getGlobalBoolean(L, "boostedBossSlot", true);
 	integer[BOOSTED_BOSS_LOOT_BONUS] = getGlobalNumber(L, "boostedBossLootBonus", 250);
 	integer[BOOSTED_BOSS_KILL_BONUS] = getGlobalNumber(L, "boostedBossKillBonus", 3);
+
+	integer[FAMILIAR_TIME] = getGlobalNumber(L, "familiarTime", 30);
+
+	boolean[TOGGLE_GOLD_POUCH_ALLOW_ANYTHING] = getGlobalBoolean(L, "toggleGoldPouchAllowAnything", false);
+	boolean[TOGGLE_SERVER_IS_RETRO] = getGlobalBoolean(L, "toggleServerIsRetroPVP", false);
+	boolean[TOGGLE_TRAVELS_FREE] = getGlobalBoolean(L, "toggleTravelsFree", false);
 
 	loaded = true;
 	lua_close(L);

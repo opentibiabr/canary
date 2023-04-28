@@ -66,10 +66,6 @@ void IOLoginData::setAccountType(uint32_t accountId, account::AccountType accoun
 }
 
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
-	if (g_configManager().getBoolean(ALLOW_CLONES)) {
-		return;
-	}
-
 	std::ostringstream query;
 	if (login) {
 		query << "INSERT INTO `players_online` VALUES (" << guid << ')';
@@ -828,6 +824,7 @@ bool IOLoginData::savePlayer(Player* player) {
 
 	query << "`prey_wildcard` = " << player->getPreyCards() << ',';
 	query << "`task_points` = " << player->getTaskHuntingPoints() << ',';
+	query << "`boss_points` = " << player->getBossPoints() << ',';
 	query << "`forge_dusts` = " << player->getForgeDusts() << ',';
 	query << "`forge_dust_level` = " << player->getForgeDustLevel() << ',';
 	query << "`randomize_mount` = " << static_cast<uint16_t>(player->isRandomMounted()) << ',';

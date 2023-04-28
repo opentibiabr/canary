@@ -222,5 +222,5 @@
 	<outfit type="1" looktype="1568" name="Fire-Fighter" premium="yes" unlocked="no" enabled="yes" from="quest" />
 	<outfit type="1" looktype="1575" name="Fencer" premium="yes" unlocked="no" enabled="yes" from="store" />
 	<outfit type="1" looktype="1581" name="Shadowlotus Disciple" premium="yes" unlocked="no" enabled="yes" from="store" />
-    <outfit type="1" looktype="1597" name="Ancient Aucar" premium="yes" unlocked="no" enabled="yes" from="quest" />
+	<outfit type="1" looktype="1597" name="Ancient Aucar" premium="yes" unlocked="no" enabled="yes" from="quest" />
 </outfits>

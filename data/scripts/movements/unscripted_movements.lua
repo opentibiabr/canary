@@ -17525,7 +17525,7 @@ local items = {
 		slot = "head",
 		level = 250
 	},
-        {
+		{
 		-- Mutated Skin Legs
 		itemid = 40590,
 		type = "equip",
@@ -17543,7 +17543,7 @@ local items = {
 		slot = "legs",
 		level = 270
 	},
-        {
+		{
 		-- Stitched Mutant Hide Legs
 		itemid = 40589,
 		type = "equip",
@@ -17561,7 +17561,7 @@ local items = {
 		slot = "legs",
 		level = 270
 	},
-        {
+		{
 		-- mutant bone kilt
 		itemid = 40595,
 		type = "equip",
@@ -17579,7 +17579,7 @@ local items = {
 		slot = "legs",
 		level = 300
 	},
-        {
+		{
 		-- mutated skin armor
 		itemid = 40591,
 		type = "equip",
@@ -17597,12 +17597,12 @@ local items = {
 		slot = "armor",
 		level = 270
 	},
-    {
+	{
 		-- alchemist's notepad
 		itemid = 40594,
 		type = "equip",
 		slot = "shield",
-        level = 250,
+		level = 250,
 		vocation = {
 			{"Sorcerer", true},
 			{"Master Sorcerer"}
@@ -17613,9 +17613,9 @@ local items = {
 		itemid = 40594,
 		type = "deequip",
 		slot = "shield",
-        level = 250
+		level = 250
 	},
-    {
+	{
 		-- mutant bone boots
 		itemid = 40593,
 		type = "equip",

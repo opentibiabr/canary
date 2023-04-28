@@ -356,6 +356,7 @@ class Game {
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string &buffer);
 
 		static void updatePremium(account::Account &account);
+		void updatePlayerHelpers(Player* player);
 
 		void cleanup();
 		void shutdown();

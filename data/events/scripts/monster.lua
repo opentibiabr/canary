@@ -97,13 +97,15 @@ function Monster:onDropLoot(corpse)
 				end
 			end
 
+			local contentDescription = corpse:getContentDescription(player:getClient().version < 1200)
+
 			local text = {}
 			if self:getName():lower() == (Game.getBoostedCreature()):lower() then
-				text = ("Loot of %s: %s (boosted loot)"):format(mType:getNameDescription(), corpse:getContentDescription())
+				text = ("Loot of %s: %s (boosted loot)"):format(mType:getNameDescription(), contentDescription)
 			elseif boostedMessage then
-				text = ("Loot of %s: %s (Boss bonus)"):format(mType:getNameDescription(), corpse:getContentDescription())
+				text = ("Loot of %s: %s (Boss bonus)"):format(mType:getNameDescription(), contentDescription)
 			else
-				text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())
+				text = ("Loot of %s: %s"):format(mType:getNameDescription(), contentDescription)
 			end
 			if preyLootPercent > 0 then
 				text = text .. " (active prey bonus)"

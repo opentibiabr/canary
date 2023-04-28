@@ -6795,7 +6795,7 @@ void Game::updatePremium(account::Account &account) {
 	time_t last_day;
 	account.GetPremiumRemaningDays(&rem_days);
 	account.GetPremiumLastDay(&last_day);
-	std::string email;
+	std::string accountIdentifier;
 	if (rem_days != 0) {
 		if (last_day == 0) {
 			account.SetPremiumLastDay(timeNow);
@@ -6805,8 +6805,8 @@ void Game::updatePremium(account::Account &account) {
 			if (days > 0) {
 				if (days >= rem_days) {
 					if (!account.SetPremiumRemaningDays(0) || !account.SetPremiumLastDay(0)) {
-						account.GetEmail(&email);
-						SPDLOG_ERROR("Failed to set account premium days, account email: {}", email);
+						account.GetAccountIdentifier(&accountIdentifier);
+						SPDLOG_ERROR("Failed to set account premium days, account {}: {}", account.getProtocolCompat() ? "name" : " email", accountIdentifier);
 					}
 				} else {
 					account.SetPremiumRemaningDays((rem_days - days));
@@ -6823,8 +6823,8 @@ void Game::updatePremium(account::Account &account) {
 	}
 
 	if (save && !account.SaveAccountDB()) {
-		account.GetEmail(&email);
-		SPDLOG_ERROR("Failed to save account: {}", email);
+		account.GetAccountIdentifier(&accountIdentifier);
+		SPDLOG_ERROR("Failed to save account: {}", accountIdentifier);
 	}
 }
 
@@ -6924,6 +6924,24 @@ void Game::playerInviteToParty(uint32_t playerId, uint32_t invitedId) {
 	}
 
 	party->invitePlayer(*invitedPlayer);
+}
+
+void Game::updatePlayerHelpers(Player* player) {
+	if (!player) {
+		return;
+	}
+
+	uint16_t helpers = player->getHelpers();
+
+	SpectatorHashSet spectators;
+	map.getSpectators(spectators, player->getPosition(), true, true);
+	for (Creature* spectator : spectators) {
+		if (!spectator || !spectator->getPlayer()) {
+			continue;
+		}
+
+		spectator->getPlayer()->sendCreatureHelpers(player->getID(), helpers);
+	}
 }
 
 void Game::playerJoinParty(uint32_t playerId, uint32_t leaderId) {

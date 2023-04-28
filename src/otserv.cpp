@@ -111,6 +111,7 @@ void modulesLoadHelper(bool loaded, std::string moduleName) {
 void loadModules() {
 	modulesLoadHelper(g_configManager().load(), g_configManager().getConfigFileLua());
 
+	SPDLOG_INFO("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");
 	// If "USE_ANY_DATAPACK_FOLDER" is set to true then you can choose any datapack folder for your server
 	auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER);
 	auto datapackName = g_configManager().getString(DATA_DIRECTORY);
@@ -119,8 +120,6 @@ void loadModules() {
 		SPDLOG_ERROR("Or enable in config.lua to use any datapack folder", datapackName);
 		startupErrorMessage();
 	}
-
-	SPDLOG_INFO("Server protocol: {}.{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER);
 
 	const char* p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
 	const char* q("7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");

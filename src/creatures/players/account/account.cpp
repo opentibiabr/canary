@@ -16,7 +16,7 @@ namespace account {
 
 	Account::Account() {
 		id_ = 0;
-		email_.clear();
+		accountIdentifier_.clear();
 		password_.clear();
 		premium_remaining_days_ = 0;
 		premium_last_day_ = 0;
@@ -27,7 +27,7 @@ namespace account {
 
 	Account::Account(uint32_t id) {
 		id_ = id;
-		email_.clear();
+		accountIdentifier_.clear();
 		password_.clear();
 		premium_remaining_days_ = 0;
 		premium_last_day_ = 0;
@@ -36,8 +36,8 @@ namespace account {
 		db_tasks_ = &g_databaseTasks();
 	}
 
-	Account::Account(const std::string &email) :
-		email_(email) {
+	Account::Account(const std::string &accountIdentifier) :
+		accountIdentifier_(accountIdentifier) {
 		id_ = 0;
 		password_.clear();
 		premium_remaining_days_ = 0;
@@ -166,17 +166,22 @@ namespace account {
 	error_t Account::LoadAccountDB() {
 		if (id_ != 0) {
 			return this->LoadAccountDB(id_);
-		} else if (!email_.empty()) {
-			return this->LoadAccountDB(email_);
+		} else if (!accountIdentifier_.empty()) {
+			return this->LoadAccountDB(accountIdentifier_);
 		}
 
 		return ERROR_NOT_INITIALIZED;
 	}
 
-	error_t Account::LoadAccountDB(std::string email) {
+	error_t Account::LoadAccountDB(std::string accountIdentifier) {
 		std::ostringstream query;
-		query << "SELECT * FROM `accounts` WHERE `email` = "
-			  << db_->escapeString(email);
+		query << "SELECT * FROM `accounts` WHERE ";
+		if (oldProtocol_) {
+			query << "`name` = ";
+		} else {
+			query << "`email` = ";
+		}
+		query << db_->escapeString(accountIdentifier);
 		return this->LoadAccountDB(query);
 	}
 
@@ -197,7 +202,7 @@ namespace account {
 		}
 
 		this->SetID(result->getNumber<uint32_t>("id"));
-		this->SetEmail(result->getString("email"));
+		this->SetAccountIdentifier(oldProtocol_ ? result->getString("name") : result->getString("email"));
 		this->SetAccountType(static_cast<AccountType>(result->getNumber<int32_t>("type")));
 		this->SetPassword(result->getString("password"));
 		this->SetPremiumRemaningDays(result->getNumber<uint16_t>("premdays"));
@@ -253,17 +258,27 @@ namespace account {
 	error_t Account::SaveAccountDB() {
 		std::ostringstream query;
 
-		query << "UPDATE `accounts` SET "
-			  << "`email` = " << db_->escapeString(email_) << " , "
-			  << "`type` = " << account_type_ << " , "
+		query << "UPDATE `accounts` SET ";
+
+		if (oldProtocol_) {
+			query << "`name` = " << db_->escapeString(accountIdentifier_) << " , ";
+		} else {
+			query << "`email` = " << db_->escapeString(accountIdentifier_) << " , ";
+		}
+
+		query << "`type` = " << account_type_ << " , "
 			  << "`password` = " << db_->escapeString(password_) << " , "
 			  << "`premdays` = " << premium_remaining_days_ << " , "
 			  << "`lastday` = " << premium_last_day_;
 
 		if (id_ != 0) {
 			query << " WHERE `id` = " << id_;
-		} else if (!email_.empty()) {
-			query << " WHERE `email` = " << email_;
+		} else if (!accountIdentifier_.empty()) {
+			if (oldProtocol_) {
+				query << " WHERE `name` = " << accountIdentifier_;
+			} else {
+				query << " WHERE `email` = " << accountIdentifier_;
+			}
 		}
 
 		if (!db_->executeQuery(query.str())) {
@@ -294,20 +309,20 @@ namespace account {
 		return ERROR_NO;
 	}
 
-	error_t Account::SetEmail(std::string email) {
-		if (email.empty()) {
-			return ERROR_INVALID_ACCOUNT_EMAIL;
+	error_t Account::SetAccountIdentifier(std::string accountIdentifier) {
+		if (accountIdentifier.empty()) {
+			return ERROR_INVALID_ACCOUNT_IDENTIFIER;
 		}
-		email_ = email;
+		accountIdentifier_ = accountIdentifier;
 		return ERROR_NO;
 	}
 
-	error_t Account::GetEmail(std::string* email) {
-		if (email == nullptr) {
+	error_t Account::GetAccountIdentifier(std::string* accountIdentifier) {
+		if (accountIdentifier == nullptr) {
 			return ERROR_NULLPTR;
 		}
 
-		*email = email_;
+		*accountIdentifier = accountIdentifier_;
 		return ERROR_NO;
 	}
 

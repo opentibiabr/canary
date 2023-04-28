@@ -254,6 +254,18 @@ bool Condition::isPersistent() const {
 	return true;
 }
 
+bool Condition::isRemovableOnDeath() const {
+	if (ticks == -1) {
+		return false;
+	}
+
+	if (conditionType == CONDITION_SPELLCOOLDOWN || conditionType == CONDITION_SPELLGROUPCOOLDOWN || conditionType == CONDITION_MUTED) {
+		return false;
+	}
+
+	return true;
+}
+
 uint32_t Condition::getIcons() const {
 	return isBuff ? ICON_PARTY_BUFF : 0;
 }

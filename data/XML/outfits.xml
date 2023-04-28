@@ -110,7 +110,7 @@
 	<outfit type="0" looktype="1569" name="Fire-Fighter" premium="yes" unlocked="no" enabled="yes" from="quest" />
 	<outfit type="0" looktype="1576" name="Fencer" premium="yes" unlocked="no" enabled="yes" from="store" />
 	<outfit type="0" looktype="1582" name="Shadowlotus Disciple" premium="yes" unlocked="no" enabled="yes" from="store" />
-    <outfit type="0" looktype="1598" name="Ancient Aucar" premium="yes" unlocked="no" enabled="yes" from="quest" />
+	<outfit type="0" looktype="1598" name="Ancient Aucar" premium="yes" unlocked="no" enabled="yes" from="quest" />
 
 	<!-- Male outfits -->
 	<outfit type="1" looktype="128" name="Citizen" premium="no" unlocked="yes" enabled="yes" />

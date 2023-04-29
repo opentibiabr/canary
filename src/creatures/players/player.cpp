@@ -1624,7 +1624,7 @@ void Player::onChangeZone(ZoneType_t zone) {
 	}
 
 	updateImbuementTrackerStats();
-  onThinkWheelOfDestiny(true);
+	onThinkWheelOfDestiny(true);
 	sendWheelOfDestinyGiftOfLifeCooldown();
 	g_game().updateCreatureWalkthrough(this);
 	g_game().playerRequestInventoryImbuements(getID());

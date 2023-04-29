@@ -6505,38 +6505,38 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 	CreatureIcon_t icon;
 	auto sendIcon = false;
 	if (!oldProtocol) {
-    if (otherPlayer) {
-      icon = creature->getIcon();
-      sendIcon = icon != CREATUREICON_NONE;
-      msg.addByte(sendIcon); // Icons
-      if (sendIcon) {
-        msg.addByte(icon);
-        msg.addByte(1);
-        msg.add<uint16_t>(0);
-      }
-    } else {
-      if (auto monster = creature->getMonster();
-        monster) {
-        icon = monster->getIcon();
-        sendIcon = icon != CREATUREICON_NONE;
-        msg.addByte(sendIcon); // Send Icons true/false
-        if (sendIcon) {
-          // Icones with stack (Fiendishs e Influenceds)
-          if (monster->getForgeStack() > 0) {
-            msg.addByte(icon);
-            msg.addByte(1);
-            msg.add<uint16_t>(icon != 5 ? monster->getForgeStack() : 0); // Stack
-          } else {
-            // Icons without number on the side
-            msg.addByte(icon);
-            msg.addByte(1);
-            msg.add<uint16_t>(0);
-          }
-        } else if (otherPlayer != nullptr && otherPlayer->getHazardSystemReference() > 0 && otherPlayer->getHazardSystemPoints() > 0) {
-          msg.addByte(22); // Hazard icon
-          msg.addByte(0);
-          msg.add<uint16_t>(otherPlayer->getHazardSystemPoints());
-        }
+		if (otherPlayer) {
+			icon = creature->getIcon();
+			sendIcon = icon != CREATUREICON_NONE;
+			msg.addByte(sendIcon); // Icons
+			if (sendIcon) {
+				msg.addByte(icon);
+				msg.addByte(1);
+				msg.add<uint16_t>(0);
+			}
+		} else {
+			if (auto monster = creature->getMonster();
+				monster) {
+				icon = monster->getIcon();
+				sendIcon = icon != CREATUREICON_NONE;
+				msg.addByte(sendIcon); // Send Icons true/false
+				if (sendIcon) {
+					// Icones with stack (Fiendishs e Influenceds)
+					if (monster->getForgeStack() > 0) {
+						msg.addByte(icon);
+						msg.addByte(1);
+						msg.add<uint16_t>(icon != 5 ? monster->getForgeStack() : 0); // Stack
+					} else {
+						// Icons without number on the side
+						msg.addByte(icon);
+						msg.addByte(1);
+						msg.add<uint16_t>(0);
+					}
+				} else if (otherPlayer != nullptr && otherPlayer->getHazardSystemReference() > 0 && otherPlayer->getHazardSystemPoints() > 0) {
+					msg.addByte(22); // Hazard icon
+					msg.addByte(0);
+					msg.add<uint16_t>(otherPlayer->getHazardSystemPoints());
+				}
 			} else {
 				icon = creature->getIcon();
 				sendIcon = icon != CREATUREICON_NONE;

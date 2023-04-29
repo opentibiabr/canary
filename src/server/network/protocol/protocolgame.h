@@ -119,9 +119,6 @@ class ProtocolGame final : public Protocol {
 		void parseOpenParentContainer(NetworkMessage &msg);
 		void parseRetrieveDepotSearch(NetworkMessage &msg);
 
-		void parseInventoryImbuements(NetworkMessage &msg);
-		void sendInventoryImbuements(std::map<Slots_t, Item*> items);
-
 		void parseFightModes(NetworkMessage &msg);
 		void parseAttack(NetworkMessage &msg);
 		void parseFollow(NetworkMessage &msg);

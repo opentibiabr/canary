@@ -22,7 +22,7 @@ local config = {
 
 local ferumbrasAscendantMazoranLever = Action()
 function ferumbrasAscendantMazoranLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 ferumbrasAscendantMazoranLever:uid(1025)

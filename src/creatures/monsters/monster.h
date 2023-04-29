@@ -326,6 +326,10 @@ class Monster final : public Creature {
 			return timeToChangeFiendish;
 		}
 
+		MonsterType* getMonsterType() const {
+			return mType;
+		}
+
 		void clearFiendishStatus();
 		bool canDropLoot() const;
 

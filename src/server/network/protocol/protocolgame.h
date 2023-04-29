@@ -107,6 +107,8 @@ class ProtocolGame final : public Protocol {
 		void parseLootContainer(NetworkMessage &msg);
 		void parseQuickLootBlackWhitelist(NetworkMessage &msg);
 
+		void sendCreatureHelpers(uint32_t creatureId, uint16_t helpers);
+
 		// Depot search
 		void sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count);
 		void sendCloseDepotSearch();
@@ -346,6 +348,7 @@ class ProtocolGame final : public Protocol {
 		void sendCloseTrade();
 		void updatePartyTrackerAnalyzer(const Party* party);
 
+		void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 		void sendTextWindow(uint32_t windowTextId, Item* item, uint16_t maxlen, bool canWrite);
 		void sendHouseWindow(uint32_t windowTextId, const std::string &text);
 		void sendOutfitWindow();
@@ -454,6 +457,9 @@ class ProtocolGame final : public Protocol {
 		// otclient
 		void parseExtendedOpcode(NetworkMessage &msg);
 
+		void parseInventoryImbuements(NetworkMessage &msg);
+		void sendInventoryImbuements(const std::map<Slots_t, Item*> items);
+
 		// reloadCreature
 		void reloadCreature(const Creature* creature);
 
@@ -477,8 +483,9 @@ class ProtocolGame final : public Protocol {
 		bool loggedIn = false;
 		bool shouldAddExivaRestrictions = false;
 
-		void sendInventory();
+		bool oldProtocol = false;
 
+		void sendInventory();
 		void sendOpenStash();
 		void parseStashWithdraw(NetworkMessage &msg);
 		void sendSpecialContainersAvailable();

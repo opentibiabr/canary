@@ -59,14 +59,14 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 		end
 
 		if party and party:isSharedExperienceEnabled() then
-			local killers = {}
+			local killers = {party:getLeader()}
 			local partyMembers = party:getMembers()
 
-			for pid, _ in pairs(creature:getDamageMap()) do
-				local creatureKiller = Creature(pid)
-				if creatureKiller and creatureKiller:isPlayer() then
-					if not isInArray(killers, creatureKiller) and isInArray(partyMembers, creatureKiller) then
-						table.insert(killers, creatureKiller)
+			for i = 1, #partyMembers do
+				local member = partyMembers[i]
+				if member and member:isPlayer() then
+					if not isInArray(killers, member) then
+						table.insert(killers, member)
 					end
 				end
 			end

@@ -4690,27 +4690,6 @@ void Game::playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Po
 	player->updateUIExhausted();
 }
 
-void Game::playerRequestInventoryImbuements(uint32_t playerId) {
-	Player* player = getPlayerByID(playerId);
-	if (!player || player->isRemoved()) {
-		return;
-	}
-
-	std::map<Slots_t, Item*> itemsWithImbueSlotMap;
-	for (int i = static_cast<int>(CONST_SLOT_FIRST); i <= static_cast<int>(CONST_SLOT_LAST); ++i) {
-		Item* item = player->getInventoryItem(static_cast<Slots_t>(i));
-		if (!item || item->getImbuementSlot() <= 0) {
-			continue;
-		}
-
-		itemsWithImbueSlotMap[static_cast<Slots_t>(i)] = item;
-	}
-
-	player->sendInventoryImbuements(itemsWithImbueSlotMap);
-}
-
-/*******************************************************************************/
-
 void Game::playerCancelAttackAndFollow(uint32_t playerId) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
@@ -7008,7 +6987,7 @@ void Game::updatePremium(account::Account &account) {
 	time_t last_day;
 	account.GetPremiumRemaningDays(&rem_days);
 	account.GetPremiumLastDay(&last_day);
-	std::string email;
+	std::string accountIdentifier;
 	if (rem_days != 0) {
 		if (last_day == 0) {
 			account.SetPremiumLastDay(timeNow);
@@ -7018,8 +6997,8 @@ void Game::updatePremium(account::Account &account) {
 			if (days > 0) {
 				if (days >= rem_days) {
 					if (!account.SetPremiumRemaningDays(0) || !account.SetPremiumLastDay(0)) {
-						account.GetEmail(&email);
-						SPDLOG_ERROR("Failed to set account premium days, account email: {}", email);
+						account.GetAccountIdentifier(&accountIdentifier);
+						SPDLOG_ERROR("Failed to set account premium days, account {}: {}", account.getProtocolCompat() ? "name" : " email", accountIdentifier);
 					}
 				} else {
 					account.SetPremiumRemaningDays((rem_days - days));
@@ -7036,8 +7015,8 @@ void Game::updatePremium(account::Account &account) {
 	}
 
 	if (save && !account.SaveAccountDB()) {
-		account.GetEmail(&email);
-		SPDLOG_ERROR("Failed to save account: {}", email);
+		account.GetAccountIdentifier(&accountIdentifier);
+		SPDLOG_ERROR("Failed to save account: {}", accountIdentifier);
 	}
 }
 
@@ -7137,6 +7116,24 @@ void Game::playerInviteToParty(uint32_t playerId, uint32_t invitedId) {
 	}
 
 	party->invitePlayer(*invitedPlayer);
+}
+
+void Game::updatePlayerHelpers(Player* player) {
+	if (!player) {
+		return;
+	}
+
+	uint16_t helpers = player->getHelpers();
+
+	SpectatorHashSet spectators;
+	map.getSpectators(spectators, player->getPosition(), true, true);
+	for (Creature* spectator : spectators) {
+		if (!spectator || !spectator->getPlayer()) {
+			continue;
+		}
+
+		spectator->getPlayer()->sendCreatureHelpers(player->getID(), helpers);
+	}
 }
 
 void Game::playerJoinParty(uint32_t playerId, uint32_t leaderId) {
@@ -8544,6 +8541,40 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 
 	playerSetBossPodium(playerId, podiumBossId, pos, stackPos, itemId, directionValue, isPodiumVisible, isBossVisible);
 }
+
+void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen) {
+	Player* player = getPlayerByID(playerId);
+	if (!player || player->isRemoved()) {
+		return;
+	}
+
+	player->imbuementTrackerWindowOpen = isTrackerOpen;
+	if (!player->imbuementTrackerWindowOpen) {
+		return;
+	}
+
+	std::map<Slots_t, Item*> itemsWithImbueSlotMap;
+	for (uint8_t inventorySlot = CONST_SLOT_FIRST; inventorySlot <= CONST_SLOT_LAST; ++inventorySlot) {
+		auto item = player->getInventoryItem(static_cast<Slots_t>(inventorySlot));
+		if (!item) {
+			continue;
+		}
+
+		uint8_t imbuementSlot = item->getImbuementSlot();
+		for (uint8_t slot = 0; slot < imbuementSlot; slot++) {
+			ImbuementInfo imbuementInfo;
+			if (!item->getImbuementInfo(slot, &imbuementInfo)) {
+				continue;
+			}
+		}
+
+		itemsWithImbueSlotMap[static_cast<Slots_t>(inventorySlot)] = item;
+	}
+
+	player->sendInventoryImbuements(itemsWithImbueSlotMap);
+}
+/* Player Methods end
+********************/
 
 void Game::updatePlayerSaleItems(uint32_t playerId) {
 	Player* player = getPlayerByID(playerId);

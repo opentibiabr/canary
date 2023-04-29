@@ -24,6 +24,7 @@
 #include "io/iobestiary.h"
 #include "items/bed.h"
 #include "items/weapons/weapons.h"
+#include "core.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -555,7 +556,7 @@ void Player::updateInventoryImbuement() {
 			// Get the imbuement information for the current slot
 			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
 				// If no imbuement is found, continue to the next slot
-				break;
+				continue;
 			}
 
 			// Imbuement from imbuementInfo, this variable reduces code complexity
@@ -565,10 +566,8 @@ void Player::updateInventoryImbuement() {
 			// Parent of the imbued item
 			auto parent = item->getParent();
 			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
-			if (categoryImbuement && categoryImbuement->agressive) {
-				if (!isInFightMode || isInProtectionZone || parent && parent->getContainer()) {
-					continue;
-				}
+			if (categoryImbuement && categoryImbuement->agressive && (isInProtectionZone || !isInFightMode)) {
+				continue;
 			}
 			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
 			if (categoryImbuement && !categoryImbuement->agressive && parent && parent != this) {
@@ -578,6 +577,7 @@ void Player::updateInventoryImbuement() {
 			// If the imbuement's duration is 0, remove its stats and continue to the next slot
 			if (imbuementInfo.duration == 0) {
 				removeItemImbuementStats(imbuement);
+				updateImbuementTrackerStats();
 				continue;
 			}
 
@@ -1107,11 +1107,16 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId) {
 		return it->second;
 	}
 
-	DepotLocker* depotLocker = new DepotLocker(ITEM_LOCKER);
+	// We need to make room for supply stash on 12+ protocol versions and remove it for 10x.
+	bool createSupplyStash = getProtocolVersion() > 1200;
+
+	DepotLocker* depotLocker = new DepotLocker(ITEM_LOCKER, createSupplyStash ? 4 : 3);
 	depotLocker->setDepotId(depotId);
 	depotLocker->internalAddThing(Item::CreateItem(ITEM_MARKET));
 	depotLocker->internalAddThing(inbox);
-	depotLocker->internalAddThing(Item::CreateItem(ITEM_SUPPLY_STASH));
+	if (createSupplyStash) {
+		depotLocker->internalAddThing(Item::CreateItem(ITEM_SUPPLY_STASH));
+	}
 	Container* depotChest = Item::CreateItemAsContainer(ITEM_DEPOT, static_cast<uint16_t>(g_configManager().getNumber(DEPOT_BOXES)));
 	for (uint32_t i = g_configManager().getNumber(DEPOT_BOXES); i > 0; i--) {
 		DepotChest* depotBox = getDepotChest(i, true);
@@ -1545,7 +1550,8 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 			bed->wakeUp(this);
 		}
 
-		SPDLOG_INFO("{} has logged in", name);
+		auto version = client->oldProtocol ? getProtocolVersion() : CLIENT_VERSION;
+		SPDLOG_INFO("{} has logged in. (Protocol: {})", name, version);
 
 		if (guild) {
 			guild->addMember(this);
@@ -1617,7 +1623,8 @@ void Player::onChangeZone(ZoneType_t zone) {
 		}
 	}
 
-	onThinkWheelOfDestiny(true);
+	updateImbuementTrackerStats();
+  onThinkWheelOfDestiny(true);
 	sendWheelOfDestinyGiftOfLifeCooldown();
 	g_game().updateCreatureWalkthrough(this);
 	g_game().playerRequestInventoryImbuements(getID());
@@ -2503,10 +2510,6 @@ uint32_t Player::getIP() const {
 void Player::death(Creature* lastHitCreature) {
 	loginPosition = town->getTemplePosition();
 
-	if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
-		setSkull(SKULL_NONE);
-	}
-
 	if (skillLoss) {
 		uint8_t unfairFightReduction = 100;
 		int playerDmg = 0;
@@ -2685,7 +2688,7 @@ void Player::death(Creature* lastHitCreature) {
 		while (it != end) {
 			Condition* condition = *it;
 			// isSupress block to delete spells conditions (ensures that the player cannot, for example, reset the cooldown time of the familiar and summon several)
-			if (condition->isPersistent() && isSuppress(condition->getType())) {
+			if (condition->isPersistent() && condition->isRemovableOnDeath()) {
 				it = conditions.erase(it);
 
 				condition->endCondition(this);
@@ -2720,6 +2723,7 @@ void Player::death(Creature* lastHitCreature) {
 		onIdleStatus();
 		sendStats();
 	}
+
 	despawn();
 }
 
@@ -2796,8 +2800,6 @@ void Player::despawn() {
 	tile->removeCreature(this);
 
 	getParent()->postRemoveNotification(this, nullptr, 0);
-
-	g_game().removePlayer(this);
 
 	// show player as pending
 	for (const auto &[key, player] : g_game().getPlayers()) {
@@ -3621,7 +3623,7 @@ void Player::stashContainer(StashContainerList itemDict) {
 	}
 }
 
-bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped /* = false*/, bool removeFromStash /* = false*/) {
+bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped /* = false*/) {
 	if (amount == 0) {
 		return true;
 	}
@@ -3629,7 +3631,6 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 	std::vector<Item*> itemList;
 
 	uint32_t count = 0;
-	uint32_t removeFromStashAmount = amount;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
 		Item* item = inventory[i];
 		if (!item) {
@@ -3667,18 +3668,67 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 					if (count >= amount) {
 						g_game().internalRemoveItems(std::move(itemList), amount, stackable);
 						return true;
-						// If not, we will remove the amount the player have and save the rest to remove from the stash
-					} else if (removeFromStash && stackable) {
-						g_game().internalRemoveItems(itemList, amount, stackable);
-						// Save remaining items to remove
-						removeFromStashAmount -= count;
 					}
 				}
 			}
 		}
 	}
 
-	if (removeFromStash && removeFromStashAmount <= amount && withdrawItem(itemId, removeFromStashAmount)) {
+	return false;
+}
+
+bool Player::hasItemCountById(uint16_t itemId, uint32_t itemAmount, bool checkStash) const {
+	uint32_t newCount = 0;
+	// Check items from inventory
+	for (const auto* item : getAllInventoryItems()) {
+		if (!item || item->getID() != itemId) {
+			continue;
+		}
+
+		newCount += item->getItemCount();
+	}
+
+	// Check items from stash
+	for (StashItemList stashToSend = getStashItems();
+		 auto [stashItemId, itemCount] : stashToSend) {
+		if (!checkStash) {
+			break;
+		}
+
+		if (stashItemId == itemId) {
+			newCount += itemCount;
+		}
+	}
+
+	return newCount >= itemAmount;
+}
+
+bool Player::removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool removeFromStash /* = true*/) {
+	// Here we guarantee that the player has at least the necessary amount of items he needs, if not, we return
+	if (!hasItemCountById(itemId, itemAmount, removeFromStash)) {
+		return false;
+	}
+
+	uint32_t amountToRemove = itemAmount;
+	// Check items from inventory
+	for (auto* item : getAllInventoryItems()) {
+		if (!item || item->getID() != itemId) {
+			continue;
+		}
+
+		// If the item quantity is already needed, remove the quantity and stop the loop
+		if (item->getItemAmount() >= amountToRemove) {
+			g_game().internalRemoveItem(item, amountToRemove);
+			return true;
+		}
+
+		// If not, we continue removing items and checking the next slot.
+		g_game().internalRemoveItem(item);
+		amountToRemove -= item->getItemAmount();
+	}
+
+	// If there are not enough items in the inventory, we will remove the remaining from stash
+	if (removeFromStash && amountToRemove > 0 && withdrawItem(itemId, amountToRemove)) {
 		return true;
 	}
 
@@ -5778,6 +5828,12 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 	}
 }
 
+void Player::updateImbuementTrackerStats() const {
+	if (imbuementTrackerWindowOpen) {
+		g_game().playerRequestInventoryImbuements(getID(), true);
+	}
+}
+
 bool Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 	uint32_t stackCount = 100u;
 
@@ -5942,7 +5998,7 @@ void Player::initializeTaskHunting() {
 		}
 	}
 
-	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && getProtocolVersion() > 1200) {
 		client->writeToOutputBuffer(g_ioprey().GetTaskHuntingBaseDate());
 	}
 }
@@ -6001,13 +6057,15 @@ void Player::triggerMomentum() {
 		while (it != conditions.end()) {
 			auto condItem = *it;
 			ConditionType_t type = condItem->getType();
-			uint32_t spellId = condItem->getSubId();
+			auto maxu16 = std::numeric_limits<uint16_t>::max();
+			auto checkSpellId = condItem->getSubId();
+			auto spellId = checkSpellId > maxu16 ? 0u : static_cast<uint16_t>(checkSpellId);
 			int32_t ticks = condItem->getTicks();
 			int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
 			triggered = true;
 			if (type == CONDITION_SPELLCOOLDOWN || (type == CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
 				condItem->setTicks(newTicks);
-				type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(static_cast<uint16_t>(spellId), newTicks);
+				type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(spellId, newTicks);
 			}
 			++it;
 		}
@@ -6658,7 +6716,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			setForgeDusts(getForgeDusts() - dustCost);
 		}
 		if (bonus != 2) {
-			if (!removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true, true)) {
+			if (coreCount != 0 && !removeItemCountById(ITEM_FORGE_CORE, coreCount)) {
 				SPDLOG_ERROR("[{}][Log 1] Failed to remove item 'id :{} count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, coreCount, getName());
 				sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 				return;
@@ -6733,7 +6791,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			setForgeDusts(getForgeDusts() - dustCost);
 		}
 
-		if (!removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true, true)) {
+		if (coreCount != 0 && !removeItemCountById(ITEM_FORGE_CORE, coreCount)) {
 			SPDLOG_ERROR("[{}][Log 2] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, coreCount, getName());
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
@@ -6877,7 +6935,7 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 		}
 	}
 
-	if (!removeItemOfType(ITEM_FORGE_CORE, coresAmount, -1, true, true)) {
+	if (!removeItemCountById(ITEM_FORGE_CORE, coresAmount)) {
 		SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, 1, getName());
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -6943,7 +7001,7 @@ void Player::forgeResourceConversion(uint8_t action) {
 			return;
 		}
 
-		if (!removeItemOfType(ITEM_FORGE_SLIVER, cost, -1, true, true)) {
+		if (!removeItemCountById(ITEM_FORGE_SLIVER, cost)) {
 			SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count {}' from player {}", __FUNCTION__, ITEM_FORGE_SLIVER, cost, getName());
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;

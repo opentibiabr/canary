@@ -32,7 +32,6 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", EXPERIENCE_FROM_PLAYERS);
 	registerEnumIn(L, "configKeys", FREE_PREMIUM);
 	registerEnumIn(L, "configKeys", REPLACE_KICK_ON_LOGIN);
-	registerEnumIn(L, "configKeys", ALLOW_CLONES);
 	registerEnumIn(L, "configKeys", BIND_ONLY_GLOBAL_ADDRESS);
 	registerEnumIn(L, "configKeys", OPTIMIZE_DATABASE);
 	registerEnumIn(L, "configKeys", MARKET_PREMIUM);

@@ -61,6 +61,7 @@ class Condition {
 		virtual bool unserializeProp(ConditionAttr_t attr, PropStream &propStream);
 
 		bool isPersistent() const;
+		bool isRemovableOnDeath() const;
 
 	protected:
 		uint8_t drainBodyStage;

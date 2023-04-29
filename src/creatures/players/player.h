@@ -17,6 +17,7 @@
 #include "declarations.hpp"
 #include "items/containers/depot/depotchest.h"
 #include "items/containers/depot/depotlocker.h"
+#include "grouping/familiars.h"
 #include "grouping/groups.h"
 #include "grouping/guild.h"
 #include "imbuements/imbuements.h"
@@ -614,7 +615,15 @@ class Player final : public Creature, public Cylinder {
 		void addMessageBuffer();
 		void removeMessageBuffer();
 
-		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false, bool removeFromStash = false);
+		bool removeItemOfType(uint16_t itemId, uint32_t itemAmount, int32_t subType, bool ignoreEquipped = false);
+		/**
+		 * @param itemAmount is uint32_t because stash item is uint32_t max
+		 */
+		bool hasItemCountById(uint16_t itemId, uint32_t itemCount, bool checkStash) const;
+		/**
+		 * @param itemAmount is uint32_t because stash item is uint32_t max
+		 */
+		bool removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool removeFromStash = true);
 
 		void addItemOnStash(uint16_t itemId, uint32_t amount) {
 			auto it = stashItems.find(itemId);
@@ -1735,6 +1744,7 @@ class Player final : public Creature, public Cylinder {
 
 		void addItemImbuementStats(const Imbuement* imbuement);
 		void removeItemImbuementStats(const Imbuement* imbuement);
+		void updateImbuementTrackerStats() const;
 
 		bool isUIExhausted(uint32_t exhaustionTime = 250) const;
 		void updateUIExhausted();
@@ -1816,6 +1826,12 @@ class Player final : public Creature, public Cylinder {
 				client->sendTeamFinderList();
 			}
 		}
+		void sendCreatureHelpers(uint32_t creatureId, uint16_t helpers) {
+			if (client) {
+				client->sendCreatureHelpers(creatureId, helpers);
+			}
+		}
+
 		void setItemCustomPrice(uint16_t itemId, uint64_t price) {
 			itemPriceMap[itemId] = price;
 		}
@@ -2736,6 +2752,12 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
+		void sendInventoryImbuements(const std::map<Slots_t, Item*> items) const {
+			if (client) {
+				client->sendInventoryImbuements(items);
+			}
+		}
+
 	private:
 		static uint32_t playerFirstID;
 		static uint32_t playerLastID;
@@ -3031,6 +3053,7 @@ class Player final : public Creature, public Cylinder {
 		bool exerciseTraining = false;
 		bool moved = false;
 		bool dead = false;
+		bool imbuementTrackerWindowOpen = false;
 
 		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
 		std::map<uint8_t, int32_t> perfectShot;

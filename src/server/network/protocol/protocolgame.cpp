@@ -6549,7 +6549,8 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 		}
 	}
 
-	msg.addByte(creature->getSpeechBubble());
+	auto bubble = creature->getSpeechBubble();
+	msg.addByte(oldProtocol && bubble == SPEECHBUBBLE_HIRELING ? SPEECHBUBBLE_NONE : bubble);
 	msg.addByte(0xFF); // MARK_UNMARKED
 	if (!oldProtocol) {
 		msg.addByte(0x00); // inspection type

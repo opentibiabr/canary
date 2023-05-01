@@ -819,7 +819,7 @@ ContainerIterator Container::iterator() const {
 	return cit;
 }
 
-void Container::removeItem(Thing* thing) {
+void Container::removeItem(Thing* thing, bool sendUpdateToClient/* = false*/) {
 	if (thing == nullptr) {
 		return;
 	}
@@ -831,6 +831,12 @@ void Container::removeItem(Thing* thing) {
 
 	auto it = std::find(itemlist.begin(), itemlist.end(), itemToRemove);
 	if (it != itemlist.end()) {
+		// Send change to client
+		auto thingIndex = getThingIndex(thing);
+		if (sendUpdateToClient && thingIndex != -1 && getParent()) {
+			onRemoveContainerItem(thingIndex, itemToRemove);
+		}
+
 		itemlist.erase(it);
 		itemToRemove->setParent(nullptr);
 	}

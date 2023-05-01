@@ -22,8 +22,16 @@ class HouseFunctions final : LuaScriptInterface {
 			registerMethod(L, "House", "getName", HouseFunctions::luaHouseGetName);
 			registerMethod(L, "House", "getTown", HouseFunctions::luaHouseGetTown);
 			registerMethod(L, "House", "getExitPosition", HouseFunctions::luaHouseGetExitPosition);
-			registerMethod(L, "House", "getRent", HouseFunctions::luaHouseGetRent);
 
+			registerMethod(L, "House", "getRent", HouseFunctions::luaHouseGetRent);
+			registerMethod(L, "House", "setRent", HouseFunctions::luaHouseSetRent);
+
+			registerMethod(L, "House", "getPaidUntil", HouseFunctions::luaHouseGetPaidUntil);
+			registerMethod(L, "House", "setPaidUntil", HouseFunctions::luaHouseSetPaidUntil);
+
+			registerMethod(L, "House", "getPayRentWarnings", HouseFunctions::luaHouseGetPayRentWarnings);
+			registerMethod(L, "House", "setPayRentWarnings", HouseFunctions::luaHouseSetPayRentWarnings);
+	
 			registerMethod(L, "House", "getOwnerGuid", HouseFunctions::luaHouseGetOwnerGuid);
 			registerMethod(L, "House", "setOwnerGuid", HouseFunctions::luaHouseSetOwnerGuid);
 			registerMethod(L, "House", "startTrade", HouseFunctions::luaHouseStartTrade);
@@ -54,7 +62,15 @@ class HouseFunctions final : LuaScriptInterface {
 		static int luaHouseGetName(lua_State* L);
 		static int luaHouseGetTown(lua_State* L);
 		static int luaHouseGetExitPosition(lua_State* L);
+		
 		static int luaHouseGetRent(lua_State* L);
+		static int luaHouseSetRent(lua_State* L);
+
+		static int luaHouseGetPaidUntil(lua_State* L);
+		static int luaHouseSetPaidUntil(lua_State* L);
+
+		static int luaHouseGetPayRentWarnings(lua_State* L);
+		static int luaHouseSetPayRentWarnings(lua_State* L);
 
 		static int luaHouseGetOwnerGuid(lua_State* L);
 		static int luaHouseSetOwnerGuid(lua_State* L);

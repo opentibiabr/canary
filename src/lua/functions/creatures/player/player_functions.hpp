@@ -296,6 +296,8 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "getBossBonus", PlayerFunctions::luaPlayerGetBossBonus);
 			registerMethod(L, "Player", "sendBosstiaryCooldownTimer", PlayerFunctions::luaPlayerBosstiaryCooldownTimer);
 
+			registerMethod(L, "Player", "lootContainer", PlayerFunctions::luaPlayerLootContainer);
+
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
 			MountFunctions::init(L);
@@ -582,6 +584,9 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetSlotBossId(lua_State* L);
 		static int luaPlayerGetBossBonus(lua_State* L);
 		static int luaPlayerBosstiaryCooldownTimer(lua_State* L);
+
+		static int luaPlayerLootContainer(lua_State* L);
+
 
 		friend class CreatureFunctions;
 };

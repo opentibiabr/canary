@@ -3334,3 +3334,23 @@ int PlayerFunctions::luaPlayerGetBossBonus(lua_State* L) {
 	lua_pushnumber(L, static_cast<lua_Number>(bonusBoss));
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerLootContainer(lua_State* L) {
+	// player:lootContainer(container)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	Container* container = getUserdata<Container>(L, 2);
+	if (!container) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->lootContainer(container);
+	pushBoolean(L, true);
+
+	return 1;
+}

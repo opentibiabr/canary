@@ -2290,6 +2290,8 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
+		void lootContainer(Container* container);
+
 	private:
 		static uint32_t playerFirstID;
 		static uint32_t playerLastID;

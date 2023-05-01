@@ -819,6 +819,29 @@ ContainerIterator Container::iterator() const {
 	return cit;
 }
 
+void Container::removeItem(Thing* thing, bool sendUpdateToClient /* = false*/) {
+	if (thing == nullptr) {
+		return;
+	}
+
+	auto itemToRemove = thing->getItem();
+	if (itemToRemove == nullptr) {
+		return;
+	}
+
+	auto it = std::ranges::find(itemlist.begin(), itemlist.end(), itemToRemove);
+	if (it != itemlist.end()) {
+		// Send change to client
+		auto thingIndex = getThingIndex(thing);
+		if (sendUpdateToClient && thingIndex != -1 && getParent()) {
+			onRemoveContainerItem(thingIndex, itemToRemove);
+		}
+
+		itemlist.erase(it);
+		itemToRemove->setParent(nullptr);
+	}
+}
+
 Item* ContainerIterator::operator*() {
 	return *cur;
 }

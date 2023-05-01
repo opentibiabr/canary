@@ -819,6 +819,23 @@ ContainerIterator Container::iterator() const {
 	return cit;
 }
 
+void Container::removeItem(Thing* thing) {
+	if (thing == nullptr) {
+		return;
+	}
+
+	Item* itemToRemove = thing->getItem();
+	if (itemToRemove == nullptr) {
+		return;
+	}
+
+	auto it = std::find(itemlist.begin(), itemlist.end(), itemToRemove);
+	if (it != itemlist.end()) {
+		itemlist.erase(it);
+		itemToRemove->setParent(nullptr);
+	}
+}
+
 Item* ContainerIterator::operator*() {
 	return *cur;
 }

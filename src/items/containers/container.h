@@ -169,6 +169,8 @@ class Container : public Item, public Cylinder {
 		bool isBrowseFieldAndHoldsRewardChest() const;
 		bool isInsideContainerWithId(const uint16_t id) const;
 
+		void removeItem(Thing* thing);
+
 	protected:
 		std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol) const;
 

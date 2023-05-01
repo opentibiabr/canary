@@ -687,22 +687,15 @@ void Player::closeContainer(uint8_t cid) {
 }
 
 void Player::removeEmptyRewards() {
-	auto rewardChest = getRewardChest();
-	if (!rewardChest) {
-		return;
-	}
-
-	auto predicate = [this, rewardChest](const auto &rewardBag) {
+	std::erase_if(rewardMap, [this](const auto &rewardBag) {
 		auto [id, reward] = rewardBag;
 		if (reward->empty()) {
-			rewardChest->removeItem(reward);
+			getRewardChest()->removeItem(reward);
 			reward->decrementReferenceCounter();
 			return true;
 		}
 		return false;
-	};
-
-	std::erase_if(rewardMap, predicate);
+	});
 }
 
 bool Player::hasOtherRewardContainerOpen(const Container* container) const {

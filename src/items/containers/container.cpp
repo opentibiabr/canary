@@ -819,17 +819,17 @@ ContainerIterator Container::iterator() const {
 	return cit;
 }
 
-void Container::removeItem(Thing* thing, bool sendUpdateToClient/* = false*/) {
+void Container::removeItem(Thing* thing, bool sendUpdateToClient /* = false*/) {
 	if (thing == nullptr) {
 		return;
 	}
 
-	Item* itemToRemove = thing->getItem();
+	auto itemToRemove = thing->getItem();
 	if (itemToRemove == nullptr) {
 		return;
 	}
 
-	auto it = std::find(itemlist.begin(), itemlist.end(), itemToRemove);
+	auto it = std::ranges::find(itemlist.begin(), itemlist.end(), itemToRemove);
 	if (it != itemlist.end()) {
 		// Send change to client
 		auto thingIndex = getThingIndex(thing);

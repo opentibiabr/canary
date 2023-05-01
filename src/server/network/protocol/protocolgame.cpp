@@ -4043,7 +4043,6 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 
 		it = inventoryMap.find(shopBlock.itemId);
 		if (it != inventoryMap.end()) {
-			itemsToSend++;
 			msg.add<uint16_t>(shopBlock.itemId);
 			if (oldProtocol) {
 				msg.addByte(static_cast<uint8_t>(std::min<uint16_t>(it->second, std::numeric_limits<uint8_t>::max())));

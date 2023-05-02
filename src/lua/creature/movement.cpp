@@ -767,7 +767,6 @@ bool MoveEvent::executeStep(Creature &creature, Item* item, const Position &pos)
 }
 
 uint32_t MoveEvent::fireEquip(Player &player, Item &item, Slots_t toSlot, bool isCheck) {
-	g_game().playerRequestInventoryImbuements(player.getID());
 	if (isLoadedCallback()) {
 		if (!equipFunction || equipFunction(this, &player, &item, toSlot, isCheck) == 1) {
 			if (executeEquip(player, item, toSlot, isCheck)) {

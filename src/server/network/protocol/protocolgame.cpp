@@ -7519,65 +7519,6 @@ void ProtocolGame::reloadHazardSystemIcon(uint16_t reference) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendInventoryImbuements(std::map<Slots_t, Item*> items) {
-	if (!player || version < 1310 || player->isRemoved() || items.size() == 0) {
-		return;
-	}
-
-	Tile* tile = player->getTile();
-	if (!tile) {
-		return;
-	}
-
-	NetworkMessage msg;
-	msg.addByte(0x5D);
-
-	msg.addByte(static_cast<uint8_t>(items.size()));
-	for (const auto &[slot, item] : items) {
-		msg.addByte(static_cast<uint8_t>(slot));
-		AddItem(msg, item);
-		uint8_t imbueSlots = static_cast<uint8_t>(item->getImbuementSlot());
-		msg.addByte(imbueSlots);
-		for (uint8_t imbueSlot = 0; imbueSlot < imbueSlots; imbueSlot++) {
-			ImbuementInfo imbuementInfo;
-			if (!item->getImbuementInfo(imbueSlot, &imbuementInfo)) {
-				msg.addByte(0x00); // Does not have any imbue selected on this slot
-				continue;
-			}
-			Imbuement* imbue = imbuementInfo.imbuement;
-			if (!imbue) {
-				msg.addByte(0x00); // Something went wrong, lets send it empty too
-				continue;
-			}
-
-			msg.addByte(0x01); // Does have a imbue selected on this slot
-			msg.addString(imbue->getName());
-			msg.add<uint16_t>(imbue->getIconID());
-			msg.add<uint32_t>(imbuementInfo.duration);
-
-			const CategoryImbuement* category = g_imbuements().getCategoryByID(imbue->getCategory());
-			if (!category) {
-				msg.addByte(0x00); // Time is paused
-				continue;
-			}
-
-			if (category->agressive && tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-				msg.addByte(0x00);
-				continue;
-			}
-
-			if (category->agressive && !player->hasCondition(CONDITION_INFIGHT)) {
-				msg.addByte(0x00); // Time is paused
-				continue;
-			}
-
-			msg.addByte(0x01); // Time is paused
-		}
-	}
-
-	writeToOutputBuffer(msg);
-}
-
 void ProtocolGame::sendUpdateCreature(const Creature* creature) {
 	if (oldProtocol || !creature || !player) {
 		return;

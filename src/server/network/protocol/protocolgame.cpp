@@ -7519,12 +7519,6 @@ void ProtocolGame::reloadHazardSystemIcon(uint16_t reference) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg) {
-	/*uint8_t type = */ msg.getByte(); // Ony to know if its login or window open call
-
-	addGameTask(&Game::playerRequestInventoryImbuements, player->getID());
-}
-
 void ProtocolGame::sendInventoryImbuements(std::map<Slots_t, Item*> items) {
 	if (!player || version < 1310 || player->isRemoved() || items.size() == 0) {
 		return;

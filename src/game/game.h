@@ -326,7 +326,6 @@ class Game {
 		void playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position &pos);
 		void playerMoveThingFromDepotSearch(Player* player, uint16_t itemId, uint8_t tier, uint8_t count, const Position &fromPos, const Position &toPos, bool allItems = false);
 
-		void playerRequestInventoryImbuements(uint32_t playerId);
 		void playerRequestAddVip(uint32_t playerId, const std::string &name);
 		void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);
 		void playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string &description, uint32_t icon, bool notify);

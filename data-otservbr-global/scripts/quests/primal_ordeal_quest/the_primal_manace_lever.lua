@@ -89,5 +89,5 @@ function PrimalMenaceLever.onUse(player, item, fromPosition, target, toPosition,
 	end
 end
 
-PrimalMenaceLever:position({33547, 32752, 14})
+PrimalMenaceLever:position({x = 33547, y = 32752, z = 14})
 PrimalMenaceLever:register()

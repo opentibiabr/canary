@@ -7756,6 +7756,7 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &posi
 	auto unlockedBossesSize = static_cast<uint16_t>(unlockedBosses.size());
 	msg.add<uint16_t>(unlockedBossesSize);
 
+	msg.addByte(0x00); // Bestiary podium
 	for (const auto &boss : unlockedBosses) {
 		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(boss);
 		if (!mType) {

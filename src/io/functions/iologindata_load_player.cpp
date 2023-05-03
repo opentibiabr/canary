@@ -11,7 +11,6 @@
 
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.h"
-#include "io/functions/iologindata_load_player.hpp"
 
 
 bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
@@ -82,19 +81,19 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 	player->quickLootFallbackToMainContainer = result->getNumber<bool>("quickloot_fallback");
 	player->setSex(static_cast<PlayerSex_t>(result->getNumber<uint16_t>("sex")));
 	player->level = std::max<uint32_t>(1, result->getNumber<uint32_t>("level"));
-	player->soul = result->getNumber<uint16_t>("soul");
+	player->soul = static_cast<uint8_t>(result->getNumber<unsigned short>("soul"));
 	player->capacity = result->getNumber<uint32_t>("cap") * 100;
 	player->mana = result->getNumber<uint32_t>("mana");
 	player->manaMax = result->getNumber<uint32_t>("manamax");
 	player->magLevel = result->getNumber<uint32_t>("maglevel");
 	player->loginPosition.x = result->getNumber<uint16_t>("posx");
 	player->loginPosition.y = result->getNumber<uint16_t>("posy");
-	player->loginPosition.z = result->getNumber<uint16_t>("posz");
+	player->loginPosition.z = static_cast<uint8_t>(result->getNumber<uint16_t>("posz"));
 	player->addPreyCards(result->getNumber<uint64_t>("prey_wildcard"));
 	player->addTaskHuntingPoints(result->getNumber<uint64_t>("task_points"));
 	player->addForgeDusts(result->getNumber<uint64_t>("forge_dusts"));
 	player->addForgeDustLevel(result->getNumber<uint64_t>("forge_dust_level"));
-	player->setRandomMount(result->getNumber<uint16_t>("randomize_mount"));
+	player->setRandomMount(static_cast<uint8_t>(result->getNumber<uint16_t>("randomize_mount")));
 	player->addBossPoints(result->getNumber<uint32_t>("boss_points"));
 	player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
 	player->lastLogout = result->getNumber<time_t>("lastlogout");
@@ -103,7 +102,7 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 	player->setExpBoostStamina(result->getNumber<uint16_t>("xpboost_stamina"));
 	player->setManaShield(result->getNumber<uint16_t>("manashield"));
 	player->setMaxManaShield(result->getNumber<uint16_t>("max_manashield"));
-	player->isDailyReward = result->getNumber<uint16_t>("isreward");
+	player->isDailyReward = static_cast<uint8_t>(result->getNumber<uint16_t>("isreward"));
 	player->health = result->getNumber<int32_t>("health");
 	player->healthMax = result->getNumber<int32_t>("healthmax");
 
@@ -147,7 +146,7 @@ void IOLoginDataLoad::loadPlayerExperience(Player* player, DBResult_ptr result) 
 	player->experience = experience;
 
 	if (currExpCount < nextExpCount) {
-		player->levelPercent = Player::getPercentLevel(player->experience - currExpCount, nextExpCount - currExpCount);
+		player->levelPercent = static_cast<uint8_t>(std::round(Player::getPercentLevel(player->experience - currExpCount, nextExpCount - currExpCount)));
 	} else {
 		player->levelPercent = 0;
 	}
@@ -157,22 +156,24 @@ void IOLoginDataLoad::loadPlayerBlessings(Player* player, DBResult_ptr result) {
 	for (int i = 1; i <= 8; i++) {
 		std::ostringstream ss;
 		ss << "blessings" << i;
-		player->addBlessing(i, result->getNumber<uint16_t>(ss.str()));
+		player->addBlessing(static_cast<uint8_t>(i), static_cast<uint8_t>(result->getNumber<uint16_t>(ss.str())));
 	}
 }
 
-void IOLoginDataLoad::loadPlayerConditions(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerConditions(const Player* player, DBResult_ptr result) {
 	unsigned long attrSize;
 	const char* attr = result->getStream("conditions", attrSize);
 	PropStream propStream;
 	propStream.init(attr, attrSize);
 
+	std::list<std::unique_ptr<Condition>> conditionList;
 	Condition* condition = Condition::createCondition(propStream);
 	while (condition) {
-		if (condition->unserialize(propStream)) {
-			player->storedConditionList.push_front(condition);
+		std::unique_ptr<Condition> uniqueCondition(condition);
+		if (uniqueCondition->unserialize(propStream)) {
+			conditionList.push_front(std::move(uniqueCondition));
 		} else {
-			delete condition;
+			uniqueCondition.release(); // Release memory ownership
 		}
 		condition = Condition::createCondition(propStream);
 	}
@@ -185,15 +186,15 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(Player* player, DBResult_ptr resul
 		return;
 	}
 
-	player->defaultOutfit.lookHead = result->getNumber<uint16_t>("lookhead");
-	player->defaultOutfit.lookBody = result->getNumber<uint16_t>("lookbody");
-	player->defaultOutfit.lookLegs = result->getNumber<uint16_t>("looklegs");
-	player->defaultOutfit.lookFeet = result->getNumber<uint16_t>("lookfeet");
-	player->defaultOutfit.lookAddons = result->getNumber<uint16_t>("lookaddons");
-	player->defaultOutfit.lookMountHead = result->getNumber<uint16_t>("lookmounthead");
-	player->defaultOutfit.lookMountBody = result->getNumber<uint16_t>("lookmountbody");
-	player->defaultOutfit.lookMountLegs = result->getNumber<uint16_t>("lookmountlegs");
-	player->defaultOutfit.lookMountFeet = result->getNumber<uint16_t>("lookmountfeet");
+	player->defaultOutfit.lookHead = static_cast<uint8_t>(result->getNumber<uint16_t>("lookhead"));
+	player->defaultOutfit.lookBody = static_cast<uint8_t>(result->getNumber<uint16_t>("lookbody"));
+	player->defaultOutfit.lookLegs = static_cast<uint8_t>(result->getNumber<uint16_t>("looklegs"));
+	player->defaultOutfit.lookFeet = static_cast<uint8_t>(result->getNumber<uint16_t>("lookfeet"));
+	player->defaultOutfit.lookAddons = static_cast<uint8_t>(result->getNumber<uint16_t>("lookaddons"));
+	player->defaultOutfit.lookMountHead = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmounthead"));
+	player->defaultOutfit.lookMountBody = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountbody"));
+	player->defaultOutfit.lookMountLegs = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountlegs"));
+	player->defaultOutfit.lookMountFeet = static_cast<uint8_t>(result->getNumber<uint16_t>("lookmountfeet"));
 	player->defaultOutfit.lookFamiliarsType = result->getNumber<uint16_t>("lookfamiliarstype");
 
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
@@ -222,13 +223,12 @@ void IOLoginDataLoad::loadPlayerSkullSystem(Player* player, DBResult_ptr result)
 }
 
 void IOLoginDataLoad::loadPlayerSkill(Player* player, DBResult_ptr result) {
-	static const std::string skillNames[] = { "skill_fist", "skill_club", "skill_sword", "skill_axe", "skill_dist", "skill_shielding", "skill_fishing", "skill_critical_hit_chance", "skill_critical_hit_damage", "skill_life_leech_chance", "skill_life_leech_amount", "skill_mana_leech_chance", "skill_mana_leech_amount" };
-	static const std::string skillNameTries[] = { "skill_fist_tries", "skill_club_tries", "skill_sword_tries", "skill_axe_tries", "skill_dist_tries", "skill_shielding_tries", "skill_fishing_tries", "skill_critical_hit_chance_tries", "skill_critical_hit_damage_tries", "skill_life_leech_chance_tries", "skill_life_leech_amount_tries", "skill_mana_leech_chance_tries", "skill_mana_leech_amount_tries" };
-	static constexpr size_t size = sizeof(skillNames) / sizeof(std::string);
-	for (uint8_t i = 0; i < size; ++i) {
+	static const std::array<std::string, 13> skillNames = { "skill_fist", "skill_club", "skill_sword", "skill_axe", "skill_dist", "skill_shielding", "skill_fishing", "skill_critical_hit_chance", "skill_critical_hit_damage", "skill_life_leech_chance", "skill_life_leech_amount", "skill_mana_leech_chance", "skill_mana_leech_amount" };
+	static const std::array<std::string, 13> skillNameTries = { "skill_fist_tries", "skill_club_tries", "skill_sword_tries", "skill_axe_tries", "skill_dist_tries", "skill_shielding_tries", "skill_fishing_tries", "skill_critical_hit_chance_tries", "skill_critical_hit_damage_tries", "skill_life_leech_chance_tries", "skill_life_leech_amount_tries", "skill_mana_leech_chance_tries", "skill_mana_leech_amount_tries" };
+	for (size_t i = 0; i < skillNames.size(); ++i) {
 		uint16_t skillLevel = result->getNumber<uint16_t>(skillNames[i]);
 		uint64_t skillTries = result->getNumber<uint64_t>(skillNameTries[i]);
-		uint64_t nextSkillTries = player->vocation->getReqSkillTries(i, skillLevel + 1);
+		uint64_t nextSkillTries = player->vocation->getReqSkillTries(static_cast<uint8_t>(i), skillLevel + 1);
 		if (skillTries > nextSkillTries) {
 			skillTries = 0;
 		}
@@ -280,7 +280,7 @@ void IOLoginDataLoad::loadPlayerGuild(Player* player, DBResult_ptr result) {
 				query << "SELECT `id`, `name`, `level` FROM `guild_ranks` WHERE `id` = " << playerRankId;
 
 				if ((result = db.storeQuery(query.str()))) {
-					guild->addRank(result->getNumber<uint32_t>("id"), result->getString("name"), result->getNumber<uint16_t>("level"));
+					guild->addRank(result->getNumber<uint32_t>("id"), result->getString("name"), static_cast<uint8_t>(result->getNumber<uint16_t>("level")));
 				}
 
 				rank = guild->getRankById(playerRankId);
@@ -370,6 +370,7 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(Player* player, DBResult_ptr resu
 }
 
 void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr result) {
+	bool oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL) && player->getProtocolVersion() < 1200;
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_items` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
@@ -378,7 +379,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr resu
 	std::vector<std::pair<uint8_t, Container*>> openContainersList;
 
 	if ((result = db.storeQuery(query.str()))) {
-		loadItemsBeats(inventoryItems, result, *player);
+		loadItems(inventoryItems, result, *player);
 
 		for (InventoryItemsMap::const_reverse_iterator it = inventoryItems.rbegin(), end = inventoryItems.rend(); it != end; ++it) {
 			const std::pair<Item*, int32_t> &pair = it->second;
@@ -407,15 +408,17 @@ void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr resu
 
 			Container* itemContainer = item->getContainer();
 			if (itemContainer) {
-				auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
-				if (cid > 0) {
-					openContainersList.emplace_back(std::make_pair(cid, itemContainer));
+				if (!oldProtocol) {
+					auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
+					if (cid > 0) {
+						openContainersList.emplace_back(std::make_pair(cid, itemContainer));
+					}
 				}
 				if (item->hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
 					auto flags = item->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
 					for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
-						if (hasBitSet(1 << category, flags)) {
-							player->setLootContainer((ObjectCategory_t)category, itemContainer, true);
+						if (hasBitSet(1 << category, static_cast<uint32_t>(flags))) {
+							player->setLootContainer(static_cast<ObjectCategory_t>(category), itemContainer, true);
 						}
 					}
 				}
@@ -423,17 +426,19 @@ void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr resu
 		}
 	}
 
-	std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
-		return left.first < right.first;
-	});
+	if (!oldProtocol) {
+		std::ranges::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
+			return left.first < right.first;
+		});
 
-	for (auto &it : openContainersList) {
-		player->addContainer(it.first - 1, it.second);
-		player->onSendContainer(it.second);
+		for (auto &it : openContainersList) {
+			player->addContainer(it.first - 1, it.second);
+			player->onSendContainer(it.second);
+		}
 	}
 }
 
-void IOLoginDataLoad::loadPlayerStoreInbox(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerStoreInbox(Player* player) {
 	if (!player->inventory[CONST_SLOT_STORE_INBOX]) {
 		player->internalAddThing(CONST_SLOT_STORE_INBOX, Item::CreateItem(ITEM_STORE_INBOX));
 	}
@@ -446,11 +451,10 @@ void IOLoginDataLoad::loadRewardItems(Player* player) {
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_rewards` WHERE `player_id` = "
 		  << player->getGUID() << " ORDER BY `pid`, `sid` ASC";
 	if (auto result = Database::getInstance().storeQuery(query.str())) {
-		loadItemsBeats(rewardItems, result, *player);
+		loadItems(rewardItems, result, *player);
 		bindRewardBag(player, rewardItems);
 		insertItemsIntoRewardBag(rewardItems);
 	}
-	rewardItems.clear();
 }
 
 void IOLoginDataLoad::loadPlayerDepotItems(Player* player, DBResult_ptr result) {
@@ -460,7 +464,7 @@ void IOLoginDataLoad::loadPlayerDepotItems(Player* player, DBResult_ptr result) 
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_depotitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
 	if ((result = db.storeQuery(query.str()))) {
 
-		loadItemsBeats(depotItems, result, *player);
+		loadItems(depotItems, result, *player);
 		for (DepotItemsMap::const_reverse_iterator it = depotItems.rbegin(), end = depotItems.rend(); it != end; ++it) {
 			const std::pair<Item*, int32_t> &pair = it->second;
 			Item* item = pair.first;
@@ -495,7 +499,7 @@ void IOLoginDataLoad::loadPlayerInboxItems(Player* player, DBResult_ptr result) 
 	if ((result = db.storeQuery(query.str()))) {
 
 		InboxItemsMap inboxItems;
-		loadItemsBeats(inboxItems, result, *player);
+		loadItems(inboxItems, result, *player);
 
 		for (InboxItemsMap::const_reverse_iterator it = inboxItems.rbegin(), end = inboxItems.rend(); it != end; ++it) {
 			const std::pair<Item*, int32_t> &pair = it->second;
@@ -506,7 +510,6 @@ void IOLoginDataLoad::loadPlayerInboxItems(Player* player, DBResult_ptr result) 
 				item->startDecaying();
 			} else {
 				InboxItemsMap::const_iterator it2 = inboxItems.find(pid);
-
 				if (it2 == inboxItems.end()) {
 					continue;
 				}
@@ -518,7 +521,6 @@ void IOLoginDataLoad::loadPlayerInboxItems(Player* player, DBResult_ptr result) 
 				}
 			}
 		}
-		inboxItems.clear();
 	}
 }
 
@@ -551,8 +553,8 @@ void IOLoginDataLoad::loadPlayerPreyClass(Player* player, DBResult_ptr result) {
 		query << "SELECT * FROM `player_prey` WHERE `player_id` = " << player->getGUID();
 		if (result = db.storeQuery(query.str())) {
 			do {
-				auto slot = new PreySlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
-				PreyDataState_t state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
+				auto slot = std::make_unique<PreySlot>(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
+				auto state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
 				if (slot->id == PreySlot_Two && state == PreyDataState_Locked) {
 					if (!player->isPremium()) {
 						slot->state = PreyDataState_Locked;
@@ -580,7 +582,7 @@ void IOLoginDataLoad::loadPlayerPreyClass(Player* player, DBResult_ptr result) {
 					slot->raceIdList.push_back(raceId);
 				}
 
-				player->setPreySlotClass(slot);
+				player->setPreySlotClass(std::move(slot));
 			} while (result->next());
 		}
 	}
@@ -593,8 +595,8 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(Player* player, DBResult_ptr re
 		query << "SELECT * FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
 		if (result = db.storeQuery(query.str())) {
 			do {
-				auto slot = new TaskHuntingSlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
-				PreyTaskDataState_t state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));
+				auto slot = std::make_unique<TaskHuntingSlot>(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
+				auto state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));
 				if (slot->id == PreySlot_Two && state == PreyTaskDataState_Locked) {
 					if (!player->isPremium()) {
 						slot->state = PreyTaskDataState_Locked;
@@ -625,7 +627,7 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(Player* player, DBResult_ptr re
 					slot->state = PreyTaskDataState_Selection;
 				}
 
-				player->setTaskHuntingSlotClass(slot);
+				player->setTaskHuntingSlotClass(std::move(slot));
 			} while (result->next());
 		}
 	}
@@ -668,9 +670,7 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(Player* player, DBResult_ptr re
 	player->initializeTaskHunting();
 }
 
-void IOLoginDataLoad::loadPlayerUpdateSystem(Player* player, DBResult_ptr result) {
-	player->initializePrey();
-	player->initializeTaskHunting();
+void IOLoginDataLoad::loadPlayerUpdateSystem(Player* player) {
 	player->updateBaseSpeed();
 	player->updateInventoryWeight();
 	player->updateItemsLight(true);
@@ -690,7 +690,7 @@ void IOLoginDataLoad::bindRewardBag(Player* player, RewardItemsMap &rewardItemsM
 	}
 }
 
-void IOLoginDataLoad::insertItemsIntoRewardBag(RewardItemsMap &rewardItemsMap) {
+void IOLoginDataLoad::insertItemsIntoRewardBag(const RewardItemsMap &rewardItemsMap) {
 	for (const auto &it : std::views::reverse(rewardItemsMap)) {
 		const std::pair<Item*, int32_t> &pair = it.second;
 		Item* item = pair.first;

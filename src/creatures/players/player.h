@@ -2051,12 +2051,12 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			return nullptr;
 		}
 
-		bool setPreySlotClass(PreySlot* slot) {
+		bool setPreySlotClass(std::unique_ptr<PreySlot> slot) {
 			if (getPreySlotById(slot->id)) {
 				return false;
 			}
 
-			preys.push_back(slot);
+			preys.emplace_back(slot.release());
 			return true;
 		}
 
@@ -2122,12 +2122,12 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		void initializeTaskHunting();
 		bool isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> &mtype) const;
 
-		bool setTaskHuntingSlotClass(TaskHuntingSlot* slot) {
+		bool setTaskHuntingSlotClass(std::unique_ptr<TaskHuntingSlot> slot) {
 			if (getTaskHuntingSlotById(slot->id)) {
 				return false;
 			}
 
-			taskHunting.push_back(slot);
+			taskHunting.emplace_back(slot.release());
 			return true;
 		}
 

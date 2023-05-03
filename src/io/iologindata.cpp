@@ -137,136 +137,156 @@ bool IOLoginData::loadPlayerByName(Player* player, const std::string &name, bool
 
 bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /* = false*/) {
 	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Resultnullptr: {}", __FUNCTION__);
 		return false;
 	}
 
-	IOLoginDataLoad::loadPlayerFirst(player, result);
+	try {
+		// First
+		IOLoginDataLoad::loadPlayerFirst(player, result);
 
-	// Experience load
-	IOLoginDataLoad::loadPlayerExperience(player, result);
+		// Experience load
+		IOLoginDataLoad::loadPlayerExperience(player, result);
 
-	// Blessings load
-	IOLoginDataLoad::loadPlayerBlessings(player, result);
+		// Blessings load
+		IOLoginDataLoad::loadPlayerBlessings(player, result);
 
-	// load conditions
-	IOLoginDataLoad::loadPlayerConditions(player, result);
+		// load conditions
+		IOLoginDataLoad::loadPlayerConditions(player, result);
 
-	// load default outfit
-	IOLoginDataLoad::loadPlayerDefaultOutfit(player, result);
+		// load default outfit
+		IOLoginDataLoad::loadPlayerDefaultOutfit(player, result);
 
-	// skull system load
-	IOLoginDataLoad::loadPlayerSkullSystem(player, result);
+		// skull system load
+		IOLoginDataLoad::loadPlayerSkullSystem(player, result);
 
-	// skill load
-	IOLoginDataLoad::loadPlayerSkill(player, result);
+		// skill load
+		IOLoginDataLoad::loadPlayerSkill(player, result);
 
-	// kills load
-	IOLoginDataLoad::loadPlayerKills(player, result);
+		// kills load
+		IOLoginDataLoad::loadPlayerKills(player, result);
 
-	// guild load
-	IOLoginDataLoad::loadPlayerGuild(player, result);
+		// guild load
+		IOLoginDataLoad::loadPlayerGuild(player, result);
 
-	// stash load items
-	IOLoginDataLoad::loadPlayerStashItems(player, result);
+		// stash load items
+		IOLoginDataLoad::loadPlayerStashItems(player, result);
 
-	// bestiary charms
-	IOLoginDataLoad::loadPlayerBestiaryCharms(player, result);
+		// bestiary charms
+		IOLoginDataLoad::loadPlayerBestiaryCharms(player, result);
 
-	// load inventory items
-	IOLoginDataLoad::loadPlayerInventoryItems(player, result);
+		// load inventory items
+		IOLoginDataLoad::loadPlayerInventoryItems(player, result);
 
-	// store Inbox
-	IOLoginDataLoad::loadPlayerStoreInbox(player);
+		// store Inbox
+		IOLoginDataLoad::loadPlayerStoreInbox(player);
 
-	// load depot items
-	IOLoginDataLoad::loadPlayerDepotItems(player, result);
+		// load depot items
+		IOLoginDataLoad::loadPlayerDepotItems(player, result);
 
-	// load reward items
-	IOLoginDataLoad::loadRewardItems(player);
+		// load reward items
+		IOLoginDataLoad::loadRewardItems(player);
 
-	// load inbox items
-	IOLoginDataLoad::loadPlayerInboxItems(player, result);
+		// load inbox items
+		IOLoginDataLoad::loadPlayerInboxItems(player, result);
 
-	// load storage map
-	IOLoginDataLoad::loadPlayerStorageMap(player, result);
+		// load storage map
+		IOLoginDataLoad::loadPlayerStorageMap(player, result);
 
-	// We will not load the information from here on down, as they are functions that are not needed for the player preload
-	if (disable) {
+		// load vip
+		IOLoginDataLoad::loadPlayerVip(player, result);
+
+		// load prey class
+		IOLoginDataLoad::loadPlayerPreyClass(player, result);
+
+		// Load task hunting class
+		IOLoginDataLoad::loadPlayerTaskHuntingClass(player, result);
+
+		// load forge history
+		IOLoginDataLoad::loadPlayerForgeHistory(player, result);
+
+		// load bosstiary
+		IOLoginDataLoad::loadPlayerBosstiary(player, result);
+
+		IOLoginDataLoad::loadPlayerInitializeSystem(player);
+		IOLoginDataLoad::loadPlayerUpdateSystem(player);
+
 		return true;
+	} catch (const std::system_error &error) {
+		SPDLOG_WARN("[{}] Error while load player: {}", __FUNCTION__, error.what());
+		return false;
+	} catch (const std::exception &e) {
+		SPDLOG_WARN("[{}] Error while load player: {}", __FUNCTION__, e.what());
+		return false;
 	}
-
-	// load vip
-	IOLoginDataLoad::loadPlayerVip(player, result);
-
-	// load prey class
-	IOLoginDataLoad::loadPlayerPreyClass(player, result);
-
-	// Load task hunting class
-	IOLoginDataLoad::loadPlayerTaskHuntingClass(player, result);
-
-	// load forge history
-	IOLoginDataLoad::loadPlayerForgeHistory(player, result);
-
-	// load bosstiary
-	IOLoginDataLoad::loadPlayerBosstiary(player, result);
-
-	IOLoginDataLoad::loadPlayerInitializeSystem(player);
-	IOLoginDataLoad::loadPlayerUpdateSystem(player);
-	return true;
 }
 
 bool IOLoginData::savePlayer(Player* player) {
-	uint64_t savingTime = OTSYS_TIME();
-
-	// First, an UPDATE query to write the player itself
-	IOLoginDataSave::savePlayerFirst(player);
-
-	// stash saving
-	IOLoginDataSave::savePlayerStash(player);
-
-	// learned spells
-	IOLoginDataSave::savePlayerSpells(player);
-
-	// player kills
-	IOLoginDataSave::savePlayerKills(player);
-
-	// player bestiary charms and Bestiary tracker
-	IOLoginDataSave::savePlayerBestiarySystem(player);
-
-	// item saving
-	IOLoginDataSave::savePlayerItem(player);
-
-	// save depot items
-	IOLoginDataSave::savePlayerDepotItems(player);
-
-	// save reward items
-	IOLoginDataSave::saveRewardItems(player);
-
-	// save inbox items
-	IOLoginDataSave::savePlayerInbox(player);
-
-	// save prey class
-	IOLoginDataSave::savePlayerPreyClass(player);
-
-	// save task hunting class
-	IOLoginDataSave::savePlayerTaskHuntingClass(player);
-
-	// save forge history
-	IOLoginDataSave::savePlayerForgeHistory(player);
-
-	// save forge history
-	IOLoginDataSave::savePlayerBosstiary(player);
-
-	if (!player->wheel()->saveDBPlayerSlotPointsOnLogout()) {
-		g_logger().warn("Failed to save player wheel info to player: {}", player->getName());
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
-	// save storage
-	IOLoginDataSave::savePlayerStorage(player);
+	try {
+		DBTransaction transaction;
+		if (!transaction.begin()) {
+			return false;
+		}
+		// First, an UPDATE query to write the player itself
+		IOLoginDataSave::savePlayerFirst(player);
 
-	SPDLOG_INFO("{}: (Saved in {}ms)", player->getName(), OTSYS_TIME() - savingTime);
-	return true;
+		// stash saving
+		IOLoginDataSave::savePlayerStash(player);
+
+		// learned spells
+		IOLoginDataSave::savePlayerSpells(player);
+
+		// player kills
+		IOLoginDataSave::savePlayerKills(player);
+
+		// player bestiary charms and Bestiary tracker
+		IOLoginDataSave::savePlayerBestiarySystem(player);
+
+		// item saving
+		IOLoginDataSave::savePlayerItem(player);
+
+		// save depot items
+		IOLoginDataSave::savePlayerDepotItems(player);
+
+		// save reward items
+		IOLoginDataSave::saveRewardItems(player);
+
+		// save inbox items
+		IOLoginDataSave::savePlayerInbox(player);
+
+		// save prey class
+		IOLoginDataSave::savePlayerPreyClass(player);
+
+		// save task hunting class
+		IOLoginDataSave::savePlayerTaskHuntingClass(player);
+
+		// save forge history
+		IOLoginDataSave::savePlayerForgeHistory(player);
+
+		// save forge history
+		IOLoginDataSave::savePlayerBosstiary(player);
+
+		if (!player->wheel()->saveDBPlayerSlotPointsOnLogout()) {
+			spdlog::warn("Failed to save player wheel info to player: {}", player->getName());
+			return false;
+		}
+
+		// save storage
+		IOLoginDataSave::savePlayerStorage(player);
+
+		return transaction.commit();
+	} catch (const std::system_error &error) {
+		SPDLOG_WARN("[{}] Error while saving player: {}", __FUNCTION__, error.what());
+		return false;
+	} catch (const std::exception &e) {
+		SPDLOG_WARN("[{}] Error while saving player: {}", __FUNCTION__, e.what());
+		return false;
+	}
 }
 
 std::string IOLoginData::getNameByGuid(uint32_t guid) {

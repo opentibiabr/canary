@@ -24,12 +24,9 @@ class IOLoginData {
 		static account::AccountType getAccountType(uint32_t accountId);
 		static void setAccountType(uint32_t accountId, account::AccountType accountType);
 		static void updateOnlineStatus(uint32_t guid, bool login);
-		static bool preloadPlayer(Player* player, const std::string &name);
-
-		// The boolean "disable" will desactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
-		static bool loadPlayerById(Player* player, uint32_t id, bool disable = true);
-		static bool loadPlayerByName(Player* player, const std::string &name, bool disable = true);
-		static bool loadPlayer(Player* player, DBResult_ptr result, bool disable = false);
+		static bool loadPlayerById(Player* player, uint32_t id);
+		static bool loadPlayerByName(Player* player, const std::string &name);
+		static bool loadPlayer(Player* player, DBResult_ptr result);
 		static bool savePlayer(Player* player);
 		static bool savePlayerGuard(Player* player);
 		static uint32_t getGuidByName(const std::string &name);

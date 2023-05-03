@@ -49,9 +49,11 @@ bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
 }
 
 bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
-	if (!result) {
-		return false;
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
 	}
+
 	Database &db = Database::getInstance();
 
 	uint32_t accountId = result->getNumber<uint32_t>("account_id");
@@ -135,6 +137,11 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 }
 
 void IOLoginDataLoad::loadPlayerExperience(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	uint64_t experience = result->getNumber<uint64_t>("experience");
 	uint64_t currExpCount = Player::getExpForLevel(player->level);
 	uint64_t nextExpCount = Player::getExpForLevel(player->level + 1);
@@ -153,6 +160,11 @@ void IOLoginDataLoad::loadPlayerExperience(Player* player, DBResult_ptr result) 
 }
 
 void IOLoginDataLoad::loadPlayerBlessings(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	for (int i = 1; i <= 8; i++) {
 		std::ostringstream ss;
 		ss << "blessings" << i;
@@ -161,6 +173,11 @@ void IOLoginDataLoad::loadPlayerBlessings(Player* player, DBResult_ptr result) {
 }
 
 void IOLoginDataLoad::loadPlayerConditions(const Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	unsigned long attrSize;
 	const char* attr = result->getStream("conditions", attrSize);
 	PropStream propStream;
@@ -180,6 +197,11 @@ void IOLoginDataLoad::loadPlayerConditions(const Player* player, DBResult_ptr re
 }
 
 void IOLoginDataLoad::loadPlayerDefaultOutfit(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	player->defaultOutfit.lookType = result->getNumber<uint16_t>("looktype");
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookType)) {
 		SPDLOG_WARN("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookType);
@@ -206,6 +228,11 @@ void IOLoginDataLoad::loadPlayerDefaultOutfit(Player* player, DBResult_ptr resul
 }
 
 void IOLoginDataLoad::loadPlayerSkullSystem(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
 		const time_t skullSeconds = result->getNumber<time_t>("skulltime") - time(nullptr);
 		if (skullSeconds > 0) {
@@ -223,6 +250,11 @@ void IOLoginDataLoad::loadPlayerSkullSystem(Player* player, DBResult_ptr result)
 }
 
 void IOLoginDataLoad::loadPlayerSkill(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	static const std::array<std::string, 13> skillNames = { "skill_fist", "skill_club", "skill_sword", "skill_axe", "skill_dist", "skill_shielding", "skill_fishing", "skill_critical_hit_chance", "skill_critical_hit_damage", "skill_life_leech_chance", "skill_life_leech_amount", "skill_mana_leech_chance", "skill_mana_leech_amount" };
 	static const std::array<std::string, 13> skillNameTries = { "skill_fist_tries", "skill_club_tries", "skill_sword_tries", "skill_axe_tries", "skill_dist_tries", "skill_shielding_tries", "skill_fishing_tries", "skill_critical_hit_chance_tries", "skill_critical_hit_damage_tries", "skill_life_leech_chance_tries", "skill_life_leech_amount_tries", "skill_mana_leech_chance_tries", "skill_mana_leech_amount_tries" };
 	for (size_t i = 0; i < skillNames.size(); ++i) {
@@ -244,6 +276,11 @@ void IOLoginDataLoad::loadPlayerSkill(Player* player, DBResult_ptr result) {
 }
 
 void IOLoginDataLoad::loadPlayerKills(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT `player_id`, `time`, `target`, `unavenged` FROM `player_kills` WHERE `player_id` = " << player->getGUID();
@@ -258,6 +295,11 @@ void IOLoginDataLoad::loadPlayerKills(Player* player, DBResult_ptr result) {
 }
 
 void IOLoginDataLoad::loadPlayerGuild(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT `guild_id`, `rank_id`, `nick` FROM `guild_membership` WHERE `player_id` = " << player->getGUID();
@@ -303,6 +345,11 @@ void IOLoginDataLoad::loadPlayerGuild(Player* player, DBResult_ptr result) {
 }
 
 void IOLoginDataLoad::loadPlayerStashItems(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT `item_count`, `item_id`  FROM `player_stash` WHERE `player_id` = " << player->getGUID();
@@ -314,6 +361,11 @@ void IOLoginDataLoad::loadPlayerStashItems(Player* player, DBResult_ptr result) 
 }
 
 void IOLoginDataLoad::loadPlayerBestiaryCharms(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT * FROM `player_charms` WHERE `player_guid` = " << player->getGUID();
@@ -370,6 +422,11 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(Player* player, DBResult_ptr resu
 }
 
 void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	bool oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL) && player->getProtocolVersion() < 1200;
 	Database &db = Database::getInstance();
 	std::ostringstream query;
@@ -439,12 +496,22 @@ void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr resu
 }
 
 void IOLoginDataLoad::loadPlayerStoreInbox(Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	if (!player->inventory[CONST_SLOT_STORE_INBOX]) {
 		player->internalAddThing(CONST_SLOT_STORE_INBOX, Item::CreateItem(ITEM_STORE_INBOX));
 	}
 }
 
 void IOLoginDataLoad::loadRewardItems(Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	RewardItemsMap rewardItems;
 	std::ostringstream query;
 	query.str(std::string());
@@ -458,6 +525,11 @@ void IOLoginDataLoad::loadRewardItems(Player* player) {
 }
 
 void IOLoginDataLoad::loadPlayerDepotItems(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	Database &db = Database::getInstance();
 	DepotItemsMap depotItems;
 	std::ostringstream query;
@@ -493,6 +565,11 @@ void IOLoginDataLoad::loadPlayerDepotItems(Player* player, DBResult_ptr result) 
 }
 
 void IOLoginDataLoad::loadPlayerInboxItems(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_inboxitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
@@ -525,6 +602,11 @@ void IOLoginDataLoad::loadPlayerInboxItems(Player* player, DBResult_ptr result) 
 }
 
 void IOLoginDataLoad::loadPlayerStorageMap(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT `key`, `value` FROM `player_storage` WHERE `player_id` = " << player->getGUID();
@@ -536,6 +618,11 @@ void IOLoginDataLoad::loadPlayerStorageMap(Player* player, DBResult_ptr result) 
 }
 
 void IOLoginDataLoad::loadPlayerVip(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT `player_id` FROM `account_viplist` WHERE `account_id` = " << player->getAccount();
@@ -547,6 +634,11 @@ void IOLoginDataLoad::loadPlayerVip(Player* player, DBResult_ptr result) {
 }
 
 void IOLoginDataLoad::loadPlayerPreyClass(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	if (g_configManager().getBoolean(PREY_ENABLED)) {
 		Database &db = Database::getInstance();
 		std::ostringstream query;
@@ -589,6 +681,11 @@ void IOLoginDataLoad::loadPlayerPreyClass(Player* player, DBResult_ptr result) {
 }
 
 void IOLoginDataLoad::loadPlayerTaskHuntingClass(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		Database &db = Database::getInstance();
 		std::ostringstream query;
@@ -634,6 +731,11 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(Player* player, DBResult_ptr re
 }
 
 void IOLoginDataLoad::loadPlayerForgeHistory(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	std::ostringstream query;
 	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();
 	if (result = Database::getInstance().storeQuery(query.str())) {
@@ -650,6 +752,11 @@ void IOLoginDataLoad::loadPlayerForgeHistory(Player* player, DBResult_ptr result
 }
 
 void IOLoginDataLoad::loadPlayerBosstiary(Player* player, DBResult_ptr result) {
+	if (!result || !player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	std::ostringstream query;
 	query << "SELECT * FROM `player_bosstiary` WHERE `player_id` = " << player->getGUID();
 	if (result = Database::getInstance().storeQuery(query.str())) {
@@ -662,6 +769,11 @@ void IOLoginDataLoad::loadPlayerBosstiary(Player* player, DBResult_ptr result) {
 }
 
 void IOLoginDataLoad::loadPlayerInitializeSystem(Player* player, DBResult_ptr result) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		return;
+	}
+	
 	// Wheel loading
 	player->wheel()->loadDBPlayerSlotPointsOnLogin();
 	player->wheel()->initializePlayerData();
@@ -671,12 +783,22 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(Player* player, DBResult_ptr re
 }
 
 void IOLoginDataLoad::loadPlayerUpdateSystem(Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	player->updateBaseSpeed();
 	player->updateInventoryWeight();
 	player->updateItemsLight(true);
 }
 
 void IOLoginDataLoad::bindRewardBag(Player* player, RewardItemsMap &rewardItemsMap) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		return;
+	}
+
 	for (auto &[id, itemPair] : rewardItemsMap) {
 		const auto [item, pid] = itemPair;
 		if (pid == 0) {

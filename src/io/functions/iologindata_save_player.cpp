@@ -13,6 +13,11 @@
 #include "io/functions/iologindata_save_player.hpp"
 
 bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	const Database &db = Database::getInstance();
 	std::ostringstream ss;
 
@@ -100,6 +105,11 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 }
 
 bool IOLoginDataSave::savePlayerFirst(Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	Database &db = Database::getInstance();
 
 	if (player->getHealth() <= 0) {
@@ -260,6 +270,11 @@ bool IOLoginDataSave::savePlayerFirst(Player* player) {
 }
 
 bool IOLoginDataSave::savePlayerStash(const Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "DELETE FROM `player_stash` WHERE `player_id` = " << player->getGUID();
@@ -281,6 +296,11 @@ bool IOLoginDataSave::savePlayerStash(const Player* player) {
 }
 
 bool IOLoginDataSave::savePlayerSpells(const Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "DELETE FROM `player_spells` WHERE `player_id` = " << player->getGUID();
@@ -305,6 +325,11 @@ bool IOLoginDataSave::savePlayerSpells(const Player* player) {
 }
 
 bool IOLoginDataSave::savePlayerKills(const Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "DELETE FROM `player_kills` WHERE `player_id` = " << player->getGUID();
@@ -329,6 +354,11 @@ bool IOLoginDataSave::savePlayerKills(const Player* player) {
 }
 
 bool IOLoginDataSave::savePlayerBestiarySystem(const Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	Database &db = Database::getInstance();
 
 	std::ostringstream query;
@@ -374,6 +404,11 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const Player* player) {
 }
 
 bool IOLoginDataSave::savePlayerItem(const Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	Database &db = Database::getInstance();
 	PropWriteStream propWriteStream;
 	std::ostringstream query;
@@ -403,6 +438,11 @@ bool IOLoginDataSave::savePlayerItem(const Player* player) {
 }
 
 bool IOLoginDataSave::savePlayerDepotItems(const Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	Database &db = Database::getInstance();
 	PropWriteStream propWriteStream;
 	ItemDepotList depotList;
@@ -432,6 +472,11 @@ bool IOLoginDataSave::savePlayerDepotItems(const Player* player) {
 }
 
 bool IOLoginDataSave::saveRewardItems(Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	std::ostringstream query;
 	query << "DELETE FROM `player_rewards` WHERE `player_id` = " << player->getGUID();
 
@@ -461,6 +506,11 @@ bool IOLoginDataSave::saveRewardItems(Player* player) {
 }
 
 bool IOLoginDataSave::savePlayerInbox(const Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	Database &db = Database::getInstance();
 	PropWriteStream propWriteStream;
 	ItemInboxList inboxList;
@@ -484,6 +534,11 @@ bool IOLoginDataSave::savePlayerInbox(const Player* player) {
 }
 
 bool IOLoginDataSave::savePlayerPreyClass(Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	Database &db = Database::getInstance();
 	if (g_configManager().getBoolean(PREY_ENABLED)) {
 		std::ostringstream query;
@@ -528,6 +583,11 @@ bool IOLoginDataSave::savePlayerPreyClass(Player* player) {
 }
 
 bool IOLoginDataSave::savePlayerTaskHuntingClass(Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	Database &db = Database::getInstance();
 	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		std::ostringstream query;
@@ -571,6 +631,11 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(Player* player) {
 }
 
 bool IOLoginDataSave::savePlayerForgeHistory(Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	std::ostringstream query;
 	query << "DELETE FROM `forge_history` WHERE `player_id` = " << player->getGUID();
 	if (!Database::getInstance().executeQuery(query.str())) {
@@ -600,6 +665,11 @@ bool IOLoginDataSave::savePlayerForgeHistory(Player* player) {
 }
 
 bool IOLoginDataSave::savePlayerBosstiary(const Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	std::ostringstream query;
 	query << "DELETE FROM `player_bosstiary` WHERE `player_id` = " << player->getGUID();
 	if (!Database::getInstance().executeQuery(query.str())) {
@@ -626,6 +696,11 @@ bool IOLoginDataSave::savePlayerBosstiary(const Player* player) {
 }
 
 bool IOLoginDataSave::savePlayerStorage(Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();

@@ -6891,7 +6891,7 @@ void Player::closeAllExternalContainers() {
 	}
 }
 
-void Player::lootContainer(Container *container) {
+void Player::lootContainer(Container* container) {
 	g_game().internalQuickLootCorpse(this, container);
 }
 

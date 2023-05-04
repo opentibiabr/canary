@@ -587,7 +587,6 @@ class PlayerFunctions final : LuaScriptInterface {
 
 		static int luaPlayerLootContainer(lua_State* L);
 
-
 		friend class CreatureFunctions;
 };
 

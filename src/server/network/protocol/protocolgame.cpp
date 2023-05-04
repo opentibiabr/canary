@@ -7754,28 +7754,33 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &posi
 
 	auto unlockedBosses = g_ioBosstiary().getBosstiaryFinished(player, 2);
 	auto unlockedBossesSize = static_cast<uint16_t>(unlockedBosses.size());
-	msg.add<uint16_t>(unlockedBossesSize);
+	bool isBossPodium = podium->getID() == ITEM_PODIUM_OF_VIGOUR;
+	msg.addByte(isBossPodium ? 0x01 : 0x00); // Bosstiary or bestiary
+	if (!isBossPodium) {
+		msg.add<uint16_t>(0x00);
+	} else {
+		msg.add<uint16_t>(unlockedBossesSize);
 
-	msg.addByte(0x00); // Bestiary podium
-	for (const auto &boss : unlockedBosses) {
-		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(boss);
-		if (!mType) {
-			continue;
-		}
-		const auto &bossName = mType->name;
-		auto bossOutfit = mType->info.outfit;
+		for (const auto &boss : unlockedBosses) {
+			const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(boss);
+			if (!mType) {
+				continue;
+			}
+			const auto &bossName = mType->name;
+			auto bossOutfit = mType->info.outfit;
 
-		msg.add<uint16_t>(boss); // ID from boss unlocked
-		msg.addString(bossName); // Nome from boss unlocked
-		msg.add<uint16_t>(bossOutfit.lookType); // LookType from boss unlocked
-		if (bossOutfit.lookType != 0) {
-			msg.addByte(bossOutfit.lookHead); // LookHead from boss unlocked
-			msg.addByte(bossOutfit.lookBody); // LookBody from boss unlocked
-			msg.addByte(bossOutfit.lookLegs); // LookLegs from boss unlocked
-			msg.addByte(bossOutfit.lookFeet); // LookFeet from boss unlocked
-			msg.addByte(bossOutfit.lookAddons); // LookAddon from boss unlocked
-		} else {
-			msg.add<uint16_t>(bossOutfit.lookTypeEx); // LookTypeEx from boss unlocked
+			msg.add<uint16_t>(boss); // ID from boss unlocked
+			msg.addString(bossName); // Nome from boss unlocked
+			msg.add<uint16_t>(bossOutfit.lookType); // LookType from boss unlocked
+			if (bossOutfit.lookType != 0) {
+				msg.addByte(bossOutfit.lookHead); // LookHead from boss unlocked
+				msg.addByte(bossOutfit.lookBody); // LookBody from boss unlocked
+				msg.addByte(bossOutfit.lookLegs); // LookLegs from boss unlocked
+				msg.addByte(bossOutfit.lookFeet); // LookFeet from boss unlocked
+				msg.addByte(bossOutfit.lookAddons); // LookAddon from boss unlocked
+			} else {
+				msg.add<uint16_t>(bossOutfit.lookTypeEx); // LookTypeEx from boss unlocked
+			}
 		}
 	}
 

@@ -7765,8 +7765,8 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &posi
 		const auto &bossName = mType->name;
 		auto bossOutfit = mType->info.outfit;
 
+		msg.add<uint16_t>(boss); // ID from boss unlocked
 		msg.addString(bossName); // Nome from boss unlocked
-		msg.add<uint32_t>(boss); // ID from boss unlocked
 		msg.add<uint16_t>(bossOutfit.lookType); // LookType from boss unlocked
 		if (bossOutfit.lookType != 0) {
 			msg.addByte(bossOutfit.lookHead); // LookHead from boss unlocked

@@ -7756,9 +7756,7 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &posi
 	auto unlockedBossesSize = static_cast<uint16_t>(unlockedBosses.size());
 	bool isBossPodium = podium->getID() == ITEM_PODIUM_OF_VIGOUR;
 	msg.addByte(isBossPodium ? 0x01 : 0x00); // Bosstiary or bestiary
-	if (!isBossPodium) {
-		msg.add<uint16_t>(0x00);
-	} else {
+	if (isBossPodium) {
 		msg.add<uint16_t>(unlockedBossesSize);
 
 		for (const auto &boss : unlockedBosses) {
@@ -7782,6 +7780,8 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &posi
 				msg.add<uint16_t>(bossOutfit.lookTypeEx); // LookTypeEx from boss unlocked
 			}
 		}
+	} else {
+		msg.add<uint16_t>(0x00);
 	}
 
 	msg.addPosition(position); // Position of the podium on the map

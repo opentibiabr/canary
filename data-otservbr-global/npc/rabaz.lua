@@ -162,7 +162,7 @@ npcConfig.shop = {
 	{ itemName = "vial", clientId = 2874, sell = 5 },
 	{ itemName = "wand of cosmic energy", clientId = 3073, buy = 10000 },
 	{ itemName = "wand of decay", clientId = 3072, buy = 5000 },
-	{ itemName = "wand of draconia", clientId = 8093, buy = 5000 },
+	{ itemName = "wand of draconia", clientId = 8093, buy = 7500 },
 	{ itemName = "wand of dragonbreath", clientId = 3075, buy = 1000 },
 	{ itemName = "wand of inferno", clientId = 3071, buy = 15000 },
 	{ itemName = "wand of starstorm", clientId = 8092, buy = 18000 },

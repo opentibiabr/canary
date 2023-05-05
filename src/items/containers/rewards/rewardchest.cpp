@@ -39,7 +39,7 @@ void RewardChest::postRemoveNotification(Thing* thing, const Cylinder* newParent
 }
 
 // Second argument is disabled by default because not need to send to client in the RewardChest
-void RewardChest::removeItem(Thing* thing, bool/* sendToClient = false*/) {
+void RewardChest::removeItem(Thing* thing, bool /* sendToClient = false*/) {
 	if (thing == nullptr) {
 		return;
 	}

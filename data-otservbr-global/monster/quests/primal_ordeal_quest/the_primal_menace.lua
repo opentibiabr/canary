@@ -30,7 +30,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = true,
+	rewardBoss = false,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -100,11 +100,5 @@ monster.immunities = {
 	{type = "drunk", condition = true},
 	{type = "bleed", condition = false}
 }
-
-mType.onAppear = function(monster, creature)
-	if monster:getType():isRewardBoss() then
-		monster:setReward(true)
-	end
-end
 
 mType:register(monster)

@@ -57,6 +57,21 @@ local function sendValidKeys(player)
 	player:showTextDialog(2019, text)
 end
 
+local function hasValidParams(player, param, usage)
+	if not param or param == "" then
+		player:sendCancelMessage("Command param required. Usage: ".. usage)
+		return false
+	end
+
+	local split = param:split(",")
+	if not split[2] then
+		player:sendCancelMessage("Insufficient parameters. Usage: ".. usage)
+		return false
+	end
+
+	return true
+end
+
 function GetFlagNumberOrName(flagType)
 	for flagName, flagEnum in pairs(PlayerFlags_t) do
 		if tonumber(flagEnum) == tonumber(flagType) then
@@ -83,8 +98,7 @@ function Player.talkactionHasFlag(self, param, flagType)
 		return true
 	end
 
-	if not param or param == "" then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,"Usage: /hasflag <playerName>, <flagnumber or name>")
+	if not hasValidParams(player, param, "Usage: /hasflag <playerName>, <flagnumber or name>") then
 		return false
 	end
 
@@ -117,8 +131,7 @@ function Player.talkactionSetFlag(self, param, flagType)
 		return true
 	end
 
-	if not param or param == "" then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,"Usage: /setflag <playerName>, <flagnumber or name")
+	if not hasValidParams(player, param, "Usage: /setflag <playerName>, <flagnumber or name>") then
 		return false
 	end
 
@@ -153,8 +166,7 @@ function Player.talkactionRemoveFlag(self, param, flagType)
 		return true
 	end
 
-	if not param or param == "" then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,"Usage: /removeflag <playerName>, <flagnumber or name>")
+	if not hasValidParams(player, param, "Usage: /removeflag <playerName>, <flagnumber or name>") then
 		return false
 	end
 

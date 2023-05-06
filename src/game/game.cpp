@@ -4462,15 +4462,8 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 		player->lastQuickLootNotification = OTSYS_TIME();
 	} else {
 		if (corpse->isRewardCorpse()) {
-			auto rewardId = corpse->getAttribute<time_t>(ItemAttribute_t::DATE);
-			auto reward = player->getReward(rewardId, false);
-			if (reward && !reward->empty()) {
-				auto returnValue = player->rewardChestCollect(corpse);
-				if (returnValue != RETURNVALUE_NOERROR) {
-					player->sendCancelMessage(returnValue);
-				}
-			} else {
-				player->sendCancelMessage(RETURNVALUE_REWARDCONTAINERISEMPTY);
+			if (auto returnValue = player->rewardChestCollect(corpse); returnValue != RETURNVALUE_NOERROR) {
+				player->sendCancelMessage(returnValue);
 			}
 		} else {
 			if (!lootAllCorpses) {

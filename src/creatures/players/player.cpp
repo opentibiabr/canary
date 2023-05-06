@@ -1108,7 +1108,7 @@ void Player::getRewardList(std::vector<uint64_t> &rewards) const {
 	}
 }
 
-std::vector<Item*> Player::getRewardsFromContainer(Container* container) {
+std::vector<Item*> Player::getRewardsFromContainer(const Container* container) const {
 	std::vector<Item*> rewardItemsVector;
 	if (container) {
 		for (auto item : container->getItems(true)) {
@@ -1124,8 +1124,8 @@ std::vector<Item*> Player::getRewardsFromContainer(Container* container) {
 }
 
 ReturnValue Player::recurseMoveItemToContainer(Item* item, Container* container) {
-	auto ret = g_game().internalMoveItem(item->getRealParent(), container, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
-	if (ret == RETURNVALUE_NOERROR) {
+	auto returnValue = g_game().internalMoveItem(item->getRealParent(), container, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
+	if (returnValue == RETURNVALUE_NOERROR) {
 		return RETURNVALUE_NOERROR;
 	}
 
@@ -1135,8 +1135,8 @@ ReturnValue Player::recurseMoveItemToContainer(Item* item, Container* container)
 			continue;
 		}
 
-		auto retSubContainer = recurseMoveItemToContainer(item, subContainer);
-		if (retSubContainer == RETURNVALUE_NOERROR) {
+		returnValue = recurseMoveItemToContainer(item, subContainer);
+		if (returnValue == RETURNVALUE_NOERROR) {
 			return RETURNVALUE_NOERROR;
 		}
 	}
@@ -1144,7 +1144,7 @@ ReturnValue Player::recurseMoveItemToContainer(Item* item, Container* container)
 	return RETURNVALUE_NOTENOUGHROOM;
 }
 
-ReturnValue Player::rewardChestCollect(Container* fromCorpse /* = nullptr*/) {
+ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*/) {
 	std::vector<Item*> rewardItemsVector;
 	if (fromCorpse) {
 		auto rewardId = fromCorpse->getAttribute<time_t>(ItemAttribute_t::DATE);
@@ -1154,7 +1154,11 @@ ReturnValue Player::rewardChestCollect(Container* fromCorpse /* = nullptr*/) {
 		rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());
 	}
 
-	uint32_t movedItems = 0;
+	if (rewardItemsVector.size() == 0) {
+		return fromCorpse ? RETURNVALUE_REWARDCONTAINERISEMPTY : RETURNVALUE_REWARDCHESTISEMPTY;
+	}
+
+	uint32_t movedRewardItems = 0;
 	auto rewardCount = rewardItemsVector.size();
 	bool fallbackConsumed = false;
 	Item* fallbackItem = getInventoryItem(CONST_SLOT_BACKPACK);
@@ -1164,6 +1168,13 @@ ReturnValue Player::rewardChestCollect(Container* fromCorpse /* = nullptr*/) {
 			continue;
 		}
 
+		ObjectCategory_t category = g_game().getObjectCategory(item);
+		Container* lootContainer = getLootContainer(category);
+		if (!lootContainer && !quickLootFallbackToMainContainer) {
+			sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your main backpack is not configured.");
+			break;
+		}
+
 		if (uint32_t worth = item->getWorth(); worth > 0) {
 			movedMoney += worth;
 			g_game().internalRemoveItem(item);
@@ -1171,24 +1182,14 @@ ReturnValue Player::rewardChestCollect(Container* fromCorpse /* = nullptr*/) {
 			continue;
 		}
 
-		ObjectCategory_t category = g_game().getObjectCategory(item);
-		Container* lootContainer = getLootContainer(category);
-		if (!lootContainer) {
-			if (!quickLootFallbackToMainContainer) {
-				sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your main backpack is not configured.");
-				return RETURNVALUE_NOTPOSSIBLE;
+		if (fallbackItem) {
+			if (Container* mainBackpack = fallbackItem->getContainer(); mainBackpack && !fallbackConsumed) {
+				setLootContainer(OBJECTCATEGORY_DEFAULT, mainBackpack);
+				sendInventoryItem(CONST_SLOT_BACKPACK, fallbackItem);
 			}
 
-			if (fallbackItem) {
-				Container* mainBackpack = fallbackItem->getContainer();
-				if (mainBackpack && !fallbackConsumed) {
-					setLootContainer(OBJECTCATEGORY_DEFAULT, mainBackpack);
-					sendInventoryItem(CONST_SLOT_BACKPACK, fallbackItem);
-				}
-
-				lootContainer = fallbackItem->getContainer();
-				fallbackConsumed = true;
-			}
+			lootContainer = fallbackItem->getContainer();
+			fallbackConsumed = true;
 		}
 
 		if (!lootContainer) {
@@ -1196,22 +1197,21 @@ ReturnValue Player::rewardChestCollect(Container* fromCorpse /* = nullptr*/) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
-		auto ret = recurseMoveItemToContainer(item, lootContainer);
-		if (ret != RETURNVALUE_NOERROR) {
+		if (auto returnValue = recurseMoveItemToContainer(item, lootContainer); returnValue != RETURNVALUE_NOERROR) {
 			continue;
 		}
 
-		movedItems++;
+		movedRewardItems++;
 	}
 
 	if (movedMoney > 0) {
 		setBankBalance(getBankBalance() + movedMoney);
 	}
 
-	auto lootedMessage = fmt::format("{} of {} objects were picked up and {} gold moved to your bank.", movedItems, rewardCount, movedMoney);
+	auto lootedMessage = fmt::format("{} of {} objects were picked up and {} gold moved to your bank.", movedRewardItems, rewardCount, movedMoney);
 	sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedMessage);
 
-	auto finalReturn = movedItems == 0 ? RETURNVALUE_NOTENOUGHROOM : RETURNVALUE_NOERROR;
+	auto finalReturn = movedRewardItems == 0 ? RETURNVALUE_NOTENOUGHROOM : RETURNVALUE_NOERROR;
 	return finalReturn;
 }
 

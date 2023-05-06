@@ -666,8 +666,8 @@ class Player final : public Creature, public Cylinder {
 		RewardChest* getRewardChest();
 
 		ReturnValue recurseMoveItemToContainer(Item* item, Container* container);
-		std::vector<Item*> getRewardsFromContainer(Container* container);
-		ReturnValue rewardChestCollect(Container* fromCorpse = nullptr);
+		std::vector<Item*> getRewardsFromContainer(const Container* container) const;
+		ReturnValue rewardChestCollect(const Container* fromCorpse = nullptr);
 
 		DepotChest* getDepotChest(uint32_t depotId, bool autoCreate);
 		DepotLocker* getDepotLocker(uint32_t depotId);

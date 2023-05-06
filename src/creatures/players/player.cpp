@@ -1123,7 +1123,7 @@ std::vector<Item*> Player::getRewardsFromContainer(Container* container) {
 	return rewardItemsVector;
 }
 
-ReturnValue moveItemToSubContainers(Player* player, Item* item, Container* container) {
+ReturnValue Player::recurseMoveItemToContainer(Item* item, Container* container) {
 	auto ret = g_game().internalMoveItem(item->getRealParent(), container, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
 	if (ret == RETURNVALUE_NOERROR) {
 		return RETURNVALUE_NOERROR;
@@ -1135,7 +1135,7 @@ ReturnValue moveItemToSubContainers(Player* player, Item* item, Container* conta
 			continue;
 		}
 
-		auto retSubContainer = moveItemToSubContainers(player, item, subContainer);
+		auto retSubContainer = recurseMoveItemToContainer(item, subContainer);
 		if (retSubContainer == RETURNVALUE_NOERROR) {
 			return RETURNVALUE_NOERROR;
 		}
@@ -1175,6 +1175,7 @@ ReturnValue Player::rewardChestCollect(Container* fromCorpse /* = nullptr*/) {
 		Container* lootContainer = getLootContainer(category);
 		if (!lootContainer) {
 			if (!quickLootFallbackToMainContainer) {
+				sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your main backpack is not configured.");
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
 
@@ -1195,7 +1196,7 @@ ReturnValue Player::rewardChestCollect(Container* fromCorpse /* = nullptr*/) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
-		auto ret = moveItemToSubContainers(this, item, lootContainer);
+		auto ret = recurseMoveItemToContainer(item, lootContainer);
 		if (ret != RETURNVALUE_NOERROR) {
 			continue;
 		}

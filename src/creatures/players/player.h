@@ -665,6 +665,7 @@ class Player final : public Creature, public Cylinder {
 		void getRewardList(std::vector<uint64_t> &rewards) const;
 		RewardChest* getRewardChest();
 
+		ReturnValue recurseMoveItemToContainer(Item* item, Container* container);
 		std::vector<Item*> getRewardsFromContainer(Container* container);
 		ReturnValue rewardChestCollect(Container* fromCorpse = nullptr);
 

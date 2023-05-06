@@ -6999,14 +6999,14 @@ void Player::closeAllExternalContainers() {
 	}
 }
 
-bool Player::canAutoWalk(const Position &toPosition, std::function<void()> function, uint64_t delay /* = 500*/) {
+bool Player::canAutoWalk(const Position &toPosition, const std::function<void()> function, uint64_t delay /* = 500*/) {
 	if (!Position::areInRange<1, 1>(getPosition(), toPosition)) {
 		// Check if can walk to the toPosition and send event to use function
 		std::forward_list<Direction> listDir;
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
 			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir)));
 
-			SchedulerTask* task = createSchedulerTask(400, function);
+			SchedulerTask* task = createSchedulerTask(delay, function);
 			setNextWalkActionTask(task);
 			return true;
 		} else {

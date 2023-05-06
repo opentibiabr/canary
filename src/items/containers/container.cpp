@@ -832,8 +832,7 @@ void Container::removeItem(Thing* thing, bool sendUpdateToClient /* = false*/) {
 	auto it = std::ranges::find(itemlist.begin(), itemlist.end(), itemToRemove);
 	if (it != itemlist.end()) {
 		// Send change to client
-		auto thingIndex = getThingIndex(thing);
-		if (sendUpdateToClient && thingIndex != -1 && getParent()) {
+		if (auto thingIndex = getThingIndex(thing); sendUpdateToClient && thingIndex != -1 && getParent()) {
 			onRemoveContainerItem(thingIndex, itemToRemove);
 		}
 

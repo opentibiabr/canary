@@ -8929,17 +8929,8 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 		return;
 	}
 
-	if (!Position::areInRange<1, 1>(player->getPosition(), item->getPosition())) {
-		// need to walk to the item first before using it
-		std::forward_list<Direction> listDir;
-		if (player->getPathTo(item->getPosition(), listDir, 0, 1, true, true)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
-
-			SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerRewardChestCollect, this, player->getID(), pos, itemId, stackPos));
-			player->setNextWalkActionTask(task);
-		} else {
-			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
-		}
+	if (auto function = std::bind(&Game::playerRewardChestCollect, this, player->getID(), pos, itemId, stackPos);
+	player->canAutoWalk(item->getPosition(), function)) {
 		return;
 	}
 

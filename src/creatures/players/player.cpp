@@ -1154,7 +1154,7 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 		rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());
 	}
 
-	if (rewardItemsVector.size() == 0) {
+	if (rewardItemsVector.empty()) {
 		return fromCorpse ? RETURNVALUE_REWARDCONTAINERISEMPTY : RETURNVALUE_REWARDCHESTISEMPTY;
 	}
 
@@ -6997,6 +6997,23 @@ void Player::closeAllExternalContainers() {
 	for (Container* container : containerToClose) {
 		autoCloseContainers(container);
 	}
+}
+
+bool Player::canAutoWalk(const Position &toPosition, std::function<void()> function, uint64_t delay /* = 500*/) {
+	if (!Position::areInRange<1, 1>(getPosition(), toPosition)) {
+		// Check if can walk to the toPosition and send event to use function
+		std::forward_list<Direction> listDir;
+		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
+			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir)));
+
+			SchedulerTask* task = createSchedulerTask(400, function);
+			setNextWalkActionTask(task);
+			return true;
+		} else {
+			sendCancelMessage(RETURNVALUE_THEREISNOWAY);
+		}
+	}
+	return false;
 }
 
 /*******************************************************************************

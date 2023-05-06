@@ -1900,6 +1900,8 @@ class Player final : public Creature, public Cylinder {
 		uint64_t getItemCustomPrice(uint16_t itemId, bool buyPrice = false) const;
 		uint16_t getFreeBackpackSlots() const;
 
+		bool canAutoWalk(const Position &toPosition, std::function<void()> function, uint64_t delay = 500);
+
 		// Interfaces
 		error_t SetAccountInterface(account::Account* account);
 		error_t GetAccountInterface(account::Account* account);

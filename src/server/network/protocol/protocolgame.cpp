@@ -2811,7 +2811,7 @@ void ProtocolGame::parseRewardContainerCollect(NetworkMessage &msg) {
 			auto future = std::async(std::launch::async, &Game::playerRewardChestCollect, game, playerId, position, itemId, stackPosition);
 			// Waits for the asynchronous operation to complete
 			future.wait();
-		} catch (std::exception& e) {
+		} catch (std::exception &e) {
 			SPDLOG_ERROR("Failed to run asynchronous reward collect: {}", e.what());
 			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "An error occurred while collecting rewards. Please try again later or report it to the administrador.");
 		}

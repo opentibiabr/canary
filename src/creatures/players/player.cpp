@@ -1124,28 +1124,27 @@ std::vector<Item*> Player::getRewardsFromContainer(Container* container) {
 }
 
 ReturnValue moveItemToSubContainers(Player* player, Item* item, Container* container) {
-    auto ret = g_game().internalMoveItem(item->getRealParent(), container, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
-    if (ret == RETURNVALUE_NOERROR) {
-        return RETURNVALUE_NOERROR;
-    }
+	auto ret = g_game().internalMoveItem(item->getRealParent(), container, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
+	if (ret == RETURNVALUE_NOERROR) {
+		return RETURNVALUE_NOERROR;
+	}
 
-    for (auto containerItem : container->getItems(true)) {
-        auto subContainer = containerItem->getContainer();
-        if (!subContainer) {
-            continue;
-        }
+	for (auto containerItem : container->getItems(true)) {
+		auto subContainer = containerItem->getContainer();
+		if (!subContainer) {
+			continue;
+		}
 
-        auto retSubContainer = moveItemToSubContainers(player, item, subContainer);
-        if (retSubContainer == RETURNVALUE_NOERROR) {
-            return RETURNVALUE_NOERROR;
-        }
-    }
+		auto retSubContainer = moveItemToSubContainers(player, item, subContainer);
+		if (retSubContainer == RETURNVALUE_NOERROR) {
+			return RETURNVALUE_NOERROR;
+		}
+	}
 
-    return RETURNVALUE_NOTENOUGHROOM;
+	return RETURNVALUE_NOTENOUGHROOM;
 }
 
-ReturnValue Player::rewardChestCollect(Container* fromCorpse/* = nullptr*/)
-{
+ReturnValue Player::rewardChestCollect(Container* fromCorpse /* = nullptr*/) {
 	std::vector<Item*> rewardItemsVector;
 	if (fromCorpse) {
 		auto rewardId = fromCorpse->getAttribute<time_t>(ItemAttribute_t::DATE);

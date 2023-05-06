@@ -2340,8 +2340,6 @@ ReturnValue Game::internalQuickLootItem(Player* player, Item* item, ObjectCatego
 	}
 
 	bool fallbackConsumed = false;
-	uint16_t baseId = 0;
-
 	Container* lootContainer = player->getLootContainer(category);
 	if (!lootContainer) {
 		if (player->quickLootFallbackToMainContainer) {
@@ -2360,8 +2358,6 @@ ReturnValue Game::internalQuickLootItem(Player* player, Item* item, ObjectCatego
 		} else {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
-	} else {
-		baseId = lootContainer->getID();
 	}
 
 	if (!lootContainer) {
@@ -4429,7 +4425,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 		}
 	}
 
-	if (pos.x == 0xffff && !browseField) {
+	if (pos.x == 0xffff && !browseField && !corpse->isRewardCorpse()) {
 		uint32_t worth = item->getWorth();
 		ObjectCategory_t category = getObjectCategory(item);
 		ReturnValue ret = internalQuickLootItem(player, item, category);
@@ -4466,7 +4462,16 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 		player->lastQuickLootNotification = OTSYS_TIME();
 	} else {
 		if (corpse->isRewardCorpse()) {
-			g_actions().useItem(player, pos, 0, corpse, false);
+			auto rewardId = corpse->getAttribute<time_t>(ItemAttribute_t::DATE);
+			auto reward = player->getReward(rewardId, false);
+			if (reward && !reward->empty()) {
+				auto returnValue = player->rewardChestCollect(corpse);
+				if (returnValue != RETURNVALUE_NOERROR) {
+					player->sendCancelMessage(returnValue);
+				}
+			} else {
+				player->sendCancelMessage(RETURNVALUE_REWARDCONTAINERISEMPTY);
+			}
 		} else {
 			if (!lootAllCorpses) {
 				internalQuickLootCorpse(player, corpse);
@@ -4475,8 +4480,6 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 			}
 		}
 	}
-
-	return;
 }
 
 void Game::playerLootAllCorpses(Player* player, const Position &pos, bool lootAllCorpses) {
@@ -8912,4 +8915,47 @@ bool Game::addItemStoreInbox(const Player* player, uint32_t itemId) {
 	}
 
 	return true;
+}
+
+void Game::playerRewardChestCollect(uint32_t playerId, const Position& pos, uint16_t itemId, uint8_t stackPos) {
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	Item* item = nullptr;
+	Thing* thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_FIND_THING);
+	if (!thing) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	item = thing->getItem();
+	if (!item || item->getID() != ITEM_REWARD_CHEST || !item->getContainer()) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	if (!Position::areInRange<1, 1>(player->getPosition(), item->getPosition())) {
+		//need to walk to the item first before using it
+		std::forward_list<Direction> listDir;
+		if (player->getPathTo(item->getPosition(), listDir, 0, 1, true, true)) {
+			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk,
+											this, player->getID(), listDir)));
+
+			SchedulerTask* task = createSchedulerTask(400,
+                                  std::bind(&Game::playerRewardChestCollect, this,
+                                  player->getID(), pos, itemId,
+                                  stackPos));
+			player->setNextWalkActionTask(task);
+		} else {
+			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
+		}
+		return;
+	}
+
+	ReturnValue returnValue = player->rewardChestCollect();
+	if (returnValue != RETURNVALUE_NOERROR) {
+		player->sendCancelMessage(returnValue);
+	}
 }

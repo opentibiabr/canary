@@ -665,6 +665,9 @@ class Player final : public Creature, public Cylinder {
 		void getRewardList(std::vector<uint64_t> &rewards) const;
 		RewardChest* getRewardChest();
 
+		std::vector<Item*> getRewardsFromContainer(Container* container);
+		ReturnValue rewardChestCollect(Container* fromCorpse = nullptr);
+
 		DepotChest* getDepotChest(uint32_t depotId, bool autoCreate);
 		DepotLocker* getDepotLocker(uint32_t depotId);
 		void onReceiveMail() const;

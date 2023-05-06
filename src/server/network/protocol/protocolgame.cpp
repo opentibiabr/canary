@@ -1071,6 +1071,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xF9:
 			parseModalWindowAnswer(msg);
 			break;
+		case 0xFF:
+			parseRewardContainerCollect(msg);
+			break;
 			// case 0xFA: parseStoreOpen(msg); break;
 			// case 0xFB: parseStoreRequestOffers(msg); break;
 			// case 0xFC: parseStoreBuyOffer(msg) break;
@@ -2795,6 +2798,25 @@ void ProtocolGame::parseModalWindowAnswer(NetworkMessage &msg) {
 	uint8_t button = msg.getByte();
 	uint8_t choice = msg.getByte();
 	addGameTask(&Game::playerAnswerModalWindow, player->getID(), id, button, choice);
+}
+
+void ProtocolGame::parseRewardContainerCollect(NetworkMessage &msg) {
+	const auto position = msg.getPosition();
+	auto itemId = msg.get<uint16_t>();
+	auto stackPosition = msg.getByte();
+
+	addGameTask([position, itemId, stackPosition, this](Game* game, uint32_t playerId) {
+		try {
+			// Run the reward collect asynchronous
+			auto future = std::async(std::launch::async, &Game::playerRewardChestCollect, game, playerId, position, itemId, stackPosition);
+			// Waits for the asynchronous operation to complete
+			future.wait();
+		} catch (std::exception& e) {
+			SPDLOG_ERROR("Failed to run asynchronous reward collect: {}", e.what());
+			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "An error occurred while collecting rewards. Please try again later or report it to the administrador.");
+		}
+	},
+				player->getID());
 }
 
 void ProtocolGame::parseBrowseField(NetworkMessage &msg) {

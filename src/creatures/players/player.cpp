@@ -1108,6 +1108,113 @@ void Player::getRewardList(std::vector<uint64_t> &rewards) const {
 	}
 }
 
+std::vector<Item*> Player::getRewardsFromContainer(Container* container) {
+	std::vector<Item*> rewardItemsVector;
+	if (container) {
+		for (auto item : container->getItems(true)) {
+			if (item->getID() == ITEM_REWARD_CONTAINER) {
+				continue;
+			}
+
+			rewardItemsVector.push_back(item);
+		}
+	}
+
+	return rewardItemsVector;
+}
+
+ReturnValue moveItemToSubContainers(Player* player, Item* item, Container* container) {
+    auto ret = g_game().internalMoveItem(item->getRealParent(), container, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
+    if (ret == RETURNVALUE_NOERROR) {
+        return RETURNVALUE_NOERROR;
+    }
+
+    for (auto containerItem : container->getItems(true)) {
+        auto subContainer = containerItem->getContainer();
+        if (!subContainer) {
+            continue;
+        }
+
+        auto retSubContainer = moveItemToSubContainers(player, item, subContainer);
+        if (retSubContainer == RETURNVALUE_NOERROR) {
+            return RETURNVALUE_NOERROR;
+        }
+    }
+
+    return RETURNVALUE_NOTENOUGHROOM;
+}
+
+ReturnValue Player::rewardChestCollect(Container* fromCorpse/* = nullptr*/)
+{
+	std::vector<Item*> rewardItemsVector;
+	if (fromCorpse) {
+		auto rewardId = fromCorpse->getAttribute<time_t>(ItemAttribute_t::DATE);
+		auto reward = getReward(rewardId, false);
+		rewardItemsVector = getRewardsFromContainer(reward->getContainer());
+	} else {
+		rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());
+	}
+
+	uint32_t movedItems = 0;
+	auto rewardCount = rewardItemsVector.size();
+	bool fallbackConsumed = false;
+	Item* fallbackItem = getInventoryItem(CONST_SLOT_BACKPACK);
+	int32_t movedMoney = 0;
+	for (auto item : rewardItemsVector) {
+		if (!item) {
+			continue;
+		}
+
+		if (uint32_t worth = item->getWorth(); worth > 0) {
+			movedMoney += worth;
+			g_game().internalRemoveItem(item);
+			rewardCount--;
+			continue;
+		}
+
+		ObjectCategory_t category = g_game().getObjectCategory(item);
+		Container* lootContainer = getLootContainer(category);
+		if (!lootContainer) {
+			if (!quickLootFallbackToMainContainer) {
+				return RETURNVALUE_NOTPOSSIBLE;
+			}
+
+			if (fallbackItem) {
+				Container* mainBackpack = fallbackItem->getContainer();
+				if (mainBackpack && !fallbackConsumed) {
+					setLootContainer(OBJECTCATEGORY_DEFAULT, mainBackpack);
+					sendInventoryItem(CONST_SLOT_BACKPACK, fallbackItem);
+				}
+
+				lootContainer = fallbackItem->getContainer();
+				fallbackConsumed = true;
+			}
+		}
+
+		if (!lootContainer) {
+			sendTextMessage(MESSAGE_EVENT_ADVANCE, "You don't have any backpack configured in quickloot to retrieve items.");
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+
+		auto ret = moveItemToSubContainers(this, item, lootContainer);
+		if (ret != RETURNVALUE_NOERROR) {
+			continue;
+		}
+
+		movedItems++;
+	}
+
+	if (movedMoney > 0) {
+		setBankBalance(getBankBalance() + movedMoney);
+	}
+
+	auto lootedMessage = fmt::format("{} of {} objects were picked up and {} gold moved to your bank.", movedItems, rewardCount, movedMoney);
+	sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedMessage);
+
+	auto finalReturn = movedItems == 0 ? RETURNVALUE_NOTENOUGHROOM : RETURNVALUE_NOERROR;
+	return finalReturn;
+}
+
 void Player::sendCancelMessage(ReturnValue message) const {
 	sendCancelMessage(getReturnMessage(message));
 }

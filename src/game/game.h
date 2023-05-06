@@ -246,6 +246,8 @@ class Game {
 
 		bool addItemStoreInbox(const Player* player, uint32_t itemId);
 
+		void playerRewardChestCollect(uint32_t playerId, const Position& pos, uint16_t itemId, uint8_t stackPos);
+
 		void playerReportRuleViolationReport(uint32_t playerId, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation);
 
 		void playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);

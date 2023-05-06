@@ -98,7 +98,7 @@ function Player.talkactionHasFlag(self, param, flagType)
 		return true
 	end
 
-	if not hasValidParams(player, param, "Usage: /hasflag <playerName>, <flagnumber or name>") then
+	if not hasValidParams(self, param, "Usage: /hasflag <playerName>, <flagnumber or name>") then
 		return false
 	end
 
@@ -131,7 +131,7 @@ function Player.talkactionSetFlag(self, param, flagType)
 		return true
 	end
 
-	if not hasValidParams(player, param, "Usage: /setflag <playerName>, <flagnumber or name>") then
+	if not hasValidParams(self, param, "Usage: /setflag <playerName>, <flagnumber or name>") then
 		return false
 	end
 
@@ -166,7 +166,7 @@ function Player.talkactionRemoveFlag(self, param, flagType)
 		return true
 	end
 
-	if not hasValidParams(player, param, "Usage: /removeflag <playerName>, <flagnumber or name>") then
+	if not hasValidParams(self, param, "Usage: /removeflag <playerName>, <flagnumber or name>") then
 		return false
 	end
 

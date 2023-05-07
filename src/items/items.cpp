@@ -74,7 +74,6 @@ bool Items::reload() {
 void Items::loadFromProtobuf() {
 	using namespace Canary::protobuf::appearances;
 
-	bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL);
 	for (uint32_t it = 0; it < g_game().appearances.object_size(); ++it) {
 		Appearance object = g_game().appearances.object(it);
 
@@ -102,26 +101,6 @@ void Items::loadFromProtobuf() {
 			iType.group = ITEM_GROUP_FLUID;
 		} else if (object.flags().liquidpool()) {
 			iType.group = ITEM_GROUP_SPLASH;
-		}
-
-		// This attribute is only used on 10x protocol, so we should not waste our time iterating it when it's disabled.
-		if (supportAnimation) {
-			for (uint32_t frame_it = 0; frame_it < object.frame_group_size(); ++frame_it) {
-				FrameGroup objectFrame = object.frame_group(frame_it);
-				if (!objectFrame.has_sprite_info()) {
-					continue;
-				}
-
-				if (!objectFrame.sprite_info().has_animation()) {
-					continue;
-				}
-
-				if (objectFrame.sprite_info().animation().random_start_phase()) {
-					iType.animationType = ANIMATION_RANDOM;
-				} else {
-					iType.animationType = ANIMATION_DESYNC;
-				}
-			}
 		}
 
 		if (object.flags().clip()) {

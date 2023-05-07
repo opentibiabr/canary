@@ -31,11 +31,9 @@ class ProtocolLogin : public Protocol {
 		void onRecvFirstMessage(NetworkMessage &msg);
 
 	private:
-		void disconnectClient(const std::string &message);
+		void disconnectClient(const std::string &message, uint16_t version);
 
-		void getCharacterList(const std::string &accountIdentifier, const std::string &password);
-
-		bool oldProtocol = false;
+		void getCharacterList(const std::string &accountName, const std::string &password, uint16_t version);
 };
 
 #endif // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLLOGIN_H_

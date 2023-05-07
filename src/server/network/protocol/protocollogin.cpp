@@ -16,34 +16,21 @@
 #include "io/iologindata.h"
 #include "creatures/players/management/ban.h"
 #include "game/game.h"
-#include "core.hpp"
 
-void ProtocolLogin::disconnectClient(const std::string &message) {
+void ProtocolLogin::disconnectClient(const std::string &message, uint16_t version) {
 	auto output = OutputMessagePool::getOutputMessage();
 
-	output->addByte(0x0B);
+	output->addByte(version >= 1076 ? 0x0B : 0x0A);
 	output->addString(message);
 	send(output);
 
 	disconnect();
 }
 
-void ProtocolLogin::getCharacterList(const std::string &accountIdentifier, const std::string &password) {
+void ProtocolLogin::getCharacterList(const std::string &email, const std::string &password, uint16_t version) {
 	account::Account account;
-	account.setProtocolCompat(oldProtocol);
-
-	if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL)) {
-		disconnectClient(fmt::format("Only protocol version {}.{} is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
-		return;
-	} else if (!oldProtocol) {
-		disconnectClient(fmt::format("Only protocol version {}.{} or outdated 11.00 is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
-		return;
-	}
-
-	if (!IOLoginData::authenticateAccountPassword(accountIdentifier, password, &account)) {
-		std::ostringstream ss;
-		ss << (oldProtocol ? "Username" : "Email") << " or password is not correct.";
-		disconnectClient(ss.str());
+	if (!IOLoginData::authenticateAccountPassword(email, password, &account)) {
+		disconnectClient("Email or password is not correct", version);
 		return;
 	}
 
@@ -64,7 +51,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountIdentifier, const
 
 	// Add session key
 	output->addByte(0x28);
-	output->addString(accountIdentifier + "\n" + password);
+	output->addString(email + "\n" + password);
 
 	// Add char list
 	std::vector<account::Player> players;
@@ -115,9 +102,6 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 
 	uint16_t version = msg.get<uint16_t>();
 
-	// Old protocol support
-	oldProtocol = version == 1100;
-
 	msg.skipBytes(17);
 	/*
 	 - Skipped bytes:
@@ -139,12 +123,12 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	setChecksumMethod(CHECKSUM_METHOD_ADLER32);
 
 	if (g_game().getGameState() == GAME_STATE_STARTUP) {
-		disconnectClient("Gameworld is starting up. Please wait.");
+		disconnectClient("Gameworld is starting up. Please wait.", version);
 		return;
 	}
 
 	if (g_game().getGameState() == GAME_STATE_MAINTAIN) {
-		disconnectClient("Gameworld is under maintenance.\nPlease re-connect in a while.");
+		disconnectClient("Gameworld is under maintenance.\nPlease re-connect in a while.", version);
 		return;
 	}
 
@@ -162,24 +146,22 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		std::ostringstream ss;
 		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
 		   << banInfo.reason;
-		disconnectClient(ss.str());
+		disconnectClient(ss.str(), version);
 		return;
 	}
 
-	std::string accountIdentifier = msg.getString();
-	if (accountIdentifier.empty()) {
-		std::ostringstream ss;
-		ss << "Invalid " << (oldProtocol ? "username" : "email") << ".";
-		disconnectClient(ss.str());
+	std::string email = msg.getString();
+	if (email.empty()) {
+		disconnectClient("Invalid email.", version);
 		return;
 	}
 
 	std::string password = msg.getString();
 	if (password.empty()) {
-		disconnectClient("Invalid password.");
+		disconnectClient("Invalid password.", version);
 		return;
 	}
 
 	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-	g_dispatcher().addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, accountIdentifier, password)));
+	g_dispatcher().addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, email, password, version)));
 }

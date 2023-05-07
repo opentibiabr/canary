@@ -223,10 +223,10 @@ int ContainerFunctions::luaContainerGetItemCountById(lua_State* L) {
 }
 
 int ContainerFunctions::luaContainerGetContentDescription(lua_State* L) {
-	// container:getContentDescription([oldProtocol])
+	// container:getContentDescription()
 	Container* container = getUserdata<Container>(L, 1);
 	if (container) {
-		pushString(L, container->getContentDescription(getBoolean(L, 2, false)));
+		pushString(L, container->getContentDescription());
 	} else {
 		lua_pushnil(L);
 	}

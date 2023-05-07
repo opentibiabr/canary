@@ -20,6 +20,8 @@ end
 
 rune:group("support")
 rune:name("destroy field rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_DESTROY_FIELD_RUNE)
 rune:runeId(3148)
 rune:allowFarUse(true)
 rune:charges(3)

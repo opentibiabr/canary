@@ -19,6 +19,8 @@ end
 
 rune:group("attack")
 rune:name("great fireball rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_GREAT_FIREBALL_RUNE)
 rune:runeId(3191)
 rune:allowFarUse(true)
 rune:charges(4)

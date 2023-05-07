@@ -195,12 +195,12 @@ uint32_t Container::getWeight() const {
 	return Item::getWeight() + totalWeight;
 }
 
-std::string Container::getContentDescription(bool oldProtocol) const {
+std::string Container::getContentDescription() const {
 	std::ostringstream os;
-	return getContentDescription(os, oldProtocol).str();
+	return getContentDescription(os).str();
 }
 
-std::ostringstream &Container::getContentDescription(std::ostringstream &os, bool oldProtocol) const {
+std::ostringstream &Container::getContentDescription(std::ostringstream &os) const {
 	bool firstitem = true;
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 		Item* item = *it;
@@ -216,11 +216,7 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os, boo
 			os << ", ";
 		}
 
-		if (oldProtocol) {
-			os << item->getNameDescription();
-		} else {
-			os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
-		}
+		os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
 	}
 
 	if (firstitem) {
@@ -817,28 +813,6 @@ ContainerIterator Container::iterator() const {
 		cit.cur = itemlist.begin();
 	}
 	return cit;
-}
-
-void Container::removeItem(Thing* thing, bool sendUpdateToClient /* = false*/) {
-	if (thing == nullptr) {
-		return;
-	}
-
-	auto itemToRemove = thing->getItem();
-	if (itemToRemove == nullptr) {
-		return;
-	}
-
-	auto it = std::ranges::find(itemlist.begin(), itemlist.end(), itemToRemove);
-	if (it != itemlist.end()) {
-		// Send change to client
-		if (auto thingIndex = getThingIndex(thing); sendUpdateToClient && thingIndex != -1 && getParent()) {
-			onRemoveContainerItem(thingIndex, itemToRemove);
-		}
-
-		itemlist.erase(it);
-		itemToRemove->setParent(nullptr);
-	}
 }
 
 Item* ContainerIterator::operator*() {

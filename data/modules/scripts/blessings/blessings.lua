@@ -84,10 +84,6 @@ function onRecvbyte(player, msg, byte)
 end
 
 Blessings.sendBlessStatus = function(player, curBless)
-	if player:getClient().version < 1200 then
-		return true
-	end
-
 	-- why not using ProtocolGame::sendBlessStatus ?
 	local msg = NetworkMessage()
 	msg:addByte(Blessings.S_Packet.BlessStatus)
@@ -138,9 +134,7 @@ Blessings.sendBlessDialog = function(player)
 		if v.type ~= Blessings.Types.PvP or Blessings.Config.HasToF then
 			msg:addU16(Blessings.BitWiseTable[v.id])
 			msg:addByte(player:getBlessingCount(v.id))
-			if player:getClient().version > 1200 then
-				msg:addByte(0) -- Store Blessings Count
-			end
+			msg:addByte(0) -- Store Blessings Count
 		end
 	end
 

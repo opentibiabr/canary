@@ -15,7 +15,7 @@
 
 class DepotLocker final : public Container {
 	public:
-		explicit DepotLocker(uint16_t type, uint16_t size);
+		explicit DepotLocker(uint16_t type);
 
 		DepotLocker* getDepotLocker() override {
 			return this;

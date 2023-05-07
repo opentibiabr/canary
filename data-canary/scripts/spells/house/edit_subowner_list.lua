@@ -18,5 +18,6 @@ end
 
 spell:name("House Subowner List")
 spell:words("aleta som")
+spell:castSound(SOUND_EFFECT_TYPE_SPELL_INVITE_SUBOWNERS)
 spell:isAggressive(false)
 spell:register()

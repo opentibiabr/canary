@@ -87,7 +87,7 @@ class Container : public Item, public Cylinder {
 
 		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
 		bool unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream, Position &itemPosition) override;
-		std::string getContentDescription(bool oldProtocol) const;
+		std::string getContentDescription() const;
 
 		size_t size() const {
 			return itemlist.size();
@@ -169,10 +169,8 @@ class Container : public Item, public Cylinder {
 		bool isBrowseFieldAndHoldsRewardChest() const;
 		bool isInsideContainerWithId(const uint16_t id) const;
 
-		virtual void removeItem(Thing* thing, bool sendUpdateToClient = false);
-
 	protected:
-		std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol) const;
+		std::ostringstream &getContentDescription(std::ostringstream &os) const;
 
 		uint32_t maxSize;
 		uint32_t totalWeight = 0;

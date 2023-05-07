@@ -12,6 +12,8 @@ end
 
 rune:group("attack")
 rune:name("energy field rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_ENERGY_FIELD_RUNE)
 rune:runeId(3164)
 rune:allowFarUse(true)
 rune:setPzLocked(true)

@@ -425,6 +425,16 @@ bool Combat::setParam(CombatParam_t param, uint32_t value) {
 			params.useCharges = (value != 0);
 			return true;
 		}
+
+		case COMBAT_PARAM_IMPACTSOUND: {
+			params.soundImpactEffect = static_cast<SoundEffect_t>(value);
+			return true;
+		}
+
+		case COMBAT_PARAM_CASTSOUND: {
+			params.soundCastEffect = static_cast<SoundEffect_t>(value);
+			return true;
+		}
 	}
 	return false;
 }
@@ -562,6 +572,10 @@ CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage dama
 		damage.primary.value = damage.primary.value * (1 - damagePercent);
 		damage.secondary.value = damage.primary.value * (damagePercent);
 
+		if (imbuementInfo.imbuement->soundEffect != SoundEffect_t::SILENCE) {
+			g_game().sendSingleSoundEffect(item->getPosition(), imbuementInfo.imbuement->soundEffect, item->getHoldingPlayer());
+		}
+
 		/* If damage imbuement is set, we can return without checking other slots */
 		break;
 	}
@@ -595,6 +609,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 		}
 		// Cleanse charm rune (target as player)
 		if (player) {
+			// Cleanse charm rune (target as player)
 			if (player->isImmuneCleanse(condition->getType())) {
 				player->sendCancelMessage("You are still immune against this spell.");
 				return;
@@ -615,12 +630,59 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 					}
 				}
 			}
+
+			/**
+			 * Specifics checks for Feared condtion
+			 */
+			if (condition->getType() == CONDITION_FEARED) {
+				/**
+				 * After being feared the player has a cooldown until it can be feared again
+				 */
+				if (player->isImmuneFear()) {
+					return;
+				}
+
+				/**
+				 * Block fear condition to be applied when player is already in fear
+				 * This is done to ensure player won't be feared for a maximun of 6 seconds (by default)
+				 * and have a cooldown until it can be feared again
+				 *
+				 * Without this check a player can be feared eternally as long it
+				 * keeps receiving the spell before it ends
+				 */
+				if (player->hasCondition(CONDITION_FEARED)) {
+					return;
+				}
+
+				/**
+				 *
+				 *	When a player is part of 5 player party only 1 member can be feared,
+				 *	with 6, 2 members can be feared until 10, on 11, 3 members...
+				 *
+				 */
+				Party* party = player->getParty();
+				if (party) {
+					int8_t affectedCount = std::floor((party->getMemberCount() + 5) / 5);
+					SPDLOG_DEBUG("[Combat::CombatConditionFunc] Player is member of a party, {} members can be feared", affectedCount);
+
+					for (Player* member : party->getMembers()) {
+						if (member->hasCondition(CONDITION_FEARED)) {
+							affectedCount -= 1;
+						}
+					}
+
+					if (affectedCount <= 0) {
+						return;
+					}
+				}
+			}
 		}
 
 		if (caster == target || target && !target->isImmune(condition->getType())) {
 			Condition* conditionCopy = condition->clone();
 			if (caster) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
+				conditionCopy->setParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
 			}
 
 			// TODO: infight condition until all aggressive conditions has ended
@@ -725,11 +787,23 @@ void Combat::combatTileEffects(const SpectatorHashSet &spectators, Creature* cas
 	if (params.impactEffect != CONST_ME_NONE) {
 		Game::addMagicEffect(spectators, tile->getPosition(), params.impactEffect);
 	}
+
+	if (params.soundImpactEffect != SoundEffect_t::SILENCE) {
+		g_game().sendDoubleSoundEffect(tile->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+	} else if (params.soundCastEffect != SoundEffect_t::SILENCE) {
+		g_game().sendSingleSoundEffect(tile->getPosition(), params.soundCastEffect, caster);
+	}
 }
 
 void Combat::postCombatEffects(Creature* caster, const Position &pos, const CombatParams &params) {
 	if (caster && params.distanceEffect != CONST_ANI_NONE) {
 		addDistanceEffect(caster, caster->getPosition(), pos, params.distanceEffect);
+	}
+
+	if (params.soundImpactEffect != SoundEffect_t::SILENCE) {
+		g_game().sendDoubleSoundEffect(pos, params.soundCastEffect, params.soundImpactEffect, caster);
+	} else if (params.soundCastEffect != SoundEffect_t::SILENCE) {
+		g_game().sendSingleSoundEffect(pos, params.soundCastEffect, caster);
 	}
 }
 
@@ -850,7 +924,7 @@ void Combat::CombatFunc(Creature* caster, const Position &pos, const AreaCombat*
 			}
 		}
 	}
-	//
+
 	CombatDamage tmpDamage;
 	if (data) {
 		tmpDamage.origin = data->origin;
@@ -925,6 +999,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage &da
 					Charm* charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 					if (charm) {
 						chance += charm->percent;
+						g_game().sendDoubleSoundEffect(target->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, caster);
 					}
 				}
 			}
@@ -947,6 +1022,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage &da
 			}
 		}
 	}
+
 	if (canCombat) {
 		if (target && caster && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
@@ -955,6 +1031,12 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage &da
 		CombatHealthFunc(caster, target, params, &damage);
 		if (params.targetCallback) {
 			params.targetCallback->onTargetCombat(caster, target);
+		}
+
+		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
 }
@@ -1011,6 +1093,12 @@ void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage &dama
 		if (params.targetCallback) {
 			params.targetCallback->onTargetCombat(caster, target);
 		}
+
+		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
+		}
 	}
 }
 
@@ -1046,6 +1134,12 @@ void Combat::doCombatCondition(Creature* caster, Creature* target, const CombatP
 		if (params.targetCallback) {
 			params.targetCallback->onTargetCombat(caster, target);
 		}
+
+		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
+		}
 	}
 }
 
@@ -1070,6 +1164,12 @@ void Combat::doCombatDispel(Creature* caster, Creature* target, const CombatPara
 		if (target && caster && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
 		}
+
+		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
+		}
 	}
 }
 
@@ -1093,6 +1193,12 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatPar
 
 		if (caster && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
+		}
+
+		if (params.soundImpactEffect != SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+		} else if (params.soundCastEffect != SoundEffect_t::SILENCE) {
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
 }

@@ -16,7 +16,7 @@ namespace account {
 
 	Account::Account() {
 		id_ = 0;
-		accountIdentifier_.clear();
+		email_.clear();
 		password_.clear();
 		premium_remaining_days_ = 0;
 		premium_last_day_ = 0;
@@ -27,7 +27,7 @@ namespace account {
 
 	Account::Account(uint32_t id) {
 		id_ = id;
-		accountIdentifier_.clear();
+		email_.clear();
 		password_.clear();
 		premium_remaining_days_ = 0;
 		premium_last_day_ = 0;
@@ -36,8 +36,8 @@ namespace account {
 		db_tasks_ = &g_databaseTasks();
 	}
 
-	Account::Account(const std::string &accountIdentifier) :
-		accountIdentifier_(accountIdentifier) {
+	Account::Account(const std::string &email) :
+		email_(email) {
 		id_ = 0;
 		password_.clear();
 		premium_remaining_days_ = 0;
@@ -166,22 +166,17 @@ namespace account {
 	error_t Account::LoadAccountDB() {
 		if (id_ != 0) {
 			return this->LoadAccountDB(id_);
-		} else if (!accountIdentifier_.empty()) {
-			return this->LoadAccountDB(accountIdentifier_);
+		} else if (!email_.empty()) {
+			return this->LoadAccountDB(email_);
 		}
 
 		return ERROR_NOT_INITIALIZED;
 	}
 
-	error_t Account::LoadAccountDB(std::string accountIdentifier) {
+	error_t Account::LoadAccountDB(std::string email) {
 		std::ostringstream query;
-		query << "SELECT * FROM `accounts` WHERE ";
-		if (oldProtocol_) {
-			query << "`name` = ";
-		} else {
-			query << "`email` = ";
-		}
-		query << db_->escapeString(accountIdentifier);
+		query << "SELECT * FROM `accounts` WHERE `email` = "
+			  << db_->escapeString(email);
 		return this->LoadAccountDB(query);
 	}
 
@@ -202,11 +197,12 @@ namespace account {
 		}
 
 		this->SetID(result->getNumber<uint32_t>("id"));
-		this->SetAccountIdentifier(oldProtocol_ ? result->getString("name") : result->getString("email"));
+		this->SetEmail(result->getString("email"));
 		this->SetAccountType(static_cast<AccountType>(result->getNumber<int32_t>("type")));
 		this->SetPassword(result->getString("password"));
 		this->SetPremiumRemaningDays(result->getNumber<uint16_t>("premdays"));
 		this->SetPremiumLastDay(result->getNumber<time_t>("lastday"));
+		this->SetVIPDays(result->getNumber<uint16_t>("vipdays"));
 
 		return ERROR_NO;
 	}
@@ -258,27 +254,17 @@ namespace account {
 	error_t Account::SaveAccountDB() {
 		std::ostringstream query;
 
-		query << "UPDATE `accounts` SET ";
-
-		if (oldProtocol_) {
-			query << "`name` = " << db_->escapeString(accountIdentifier_) << " , ";
-		} else {
-			query << "`email` = " << db_->escapeString(accountIdentifier_) << " , ";
-		}
-
-		query << "`type` = " << account_type_ << " , "
+		query << "UPDATE `accounts` SET "
+			  << "`email` = " << db_->escapeString(email_) << " , "
+			  << "`type` = " << account_type_ << " , "
 			  << "`password` = " << db_->escapeString(password_) << " , "
 			  << "`premdays` = " << premium_remaining_days_ << " , "
 			  << "`lastday` = " << premium_last_day_;
 
 		if (id_ != 0) {
 			query << " WHERE `id` = " << id_;
-		} else if (!accountIdentifier_.empty()) {
-			if (oldProtocol_) {
-				query << " WHERE `name` = " << accountIdentifier_;
-			} else {
-				query << " WHERE `email` = " << accountIdentifier_;
-			}
+		} else if (!email_.empty()) {
+			query << " WHERE `email` = " << email_;
 		}
 
 		if (!db_->executeQuery(query.str())) {
@@ -309,20 +295,20 @@ namespace account {
 		return ERROR_NO;
 	}
 
-	error_t Account::SetAccountIdentifier(std::string accountIdentifier) {
-		if (accountIdentifier.empty()) {
-			return ERROR_INVALID_ACCOUNT_IDENTIFIER;
+	error_t Account::SetEmail(std::string email) {
+		if (email.empty()) {
+			return ERROR_INVALID_ACCOUNT_EMAIL;
 		}
-		accountIdentifier_ = accountIdentifier;
+		email_ = email;
 		return ERROR_NO;
 	}
 
-	error_t Account::GetAccountIdentifier(std::string* accountIdentifier) {
-		if (accountIdentifier == nullptr) {
+	error_t Account::GetEmail(std::string* email) {
+		if (email == nullptr) {
 			return ERROR_NULLPTR;
 		}
 
-		*accountIdentifier = accountIdentifier_;
+		*email = email_;
 		return ERROR_NO;
 	}
 
@@ -371,6 +357,20 @@ namespace account {
 		}
 
 		*last_day = premium_last_day_;
+		return ERROR_NO;
+	}
+
+	error_t Account::SetVIPDays(uint32_t days) {
+		vip_days_ = days;
+		return ERROR_NO;
+	}
+
+	error_t Account::GetVIPDays(uint32_t* days) {
+		if (days == nullptr) {
+			return ERROR_NULLPTR;
+		}
+
+		*days = vip_days_;
 		return ERROR_NO;
 	}
 

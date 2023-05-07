@@ -6,25 +6,27 @@ OFFER_TYPE_ALLBLESSINGS
 ]]
 
 -- Parser
-dofile(CORE_DIRECTORY.. '/modules/scripts/gamestore/init.lua')
+dofile(CORE_DIRECTORY .. '/modules/scripts/gamestore/init.lua')
 -- Config
 
 HomeBanners = {
-	images = { "home/banner_riftwatcher.png" , "home/banner_runemaster.png" , "home/banner_podiumofrenown.png" },
+	images = { "home/banner_riftwatcher.png", "home/banner_runemaster.png", "home/banner_podiumofrenown.png" },
 	delay = 10
 }
 
+local offersNameComplement = (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and "VIP") or "Premium Time"
+
 GameStore.Categories = {
+	-- Premium Time/VIP
 	{
-		--Premium Time
 		icons = { "Category_PremiumTime.png" },
-		name = "Premium Time",
+		name = (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and "Vip Shop") or "Premium Time",
 		rookgaard = true,
-		state = GameStore.States.STATE_NONE,
+		state = (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and GameStore.States.STATE_NEW) or GameStore.States.STATE_NONE,
 		offers = {
 			{
 				icons = { "Premium_Time_30.png" },
-				name = "30 Days of Premium Time",
+				name = string.format("30 Days of %s", offersNameComplement),
 				price = 250,
 				id = 3030,
 				validUntil = 30,
@@ -33,7 +35,7 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Premium_Time_90.png" },
-				name = "90 Days of Premium Time",
+				name = string.format("90 Days of %s", offersNameComplement),
 				price = 750,
 				id = 3090,
 				validUntil = 90,
@@ -42,7 +44,7 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Premium_Time_180.png" },
-				name = "180 Days of Premium Time",
+				name = string.format("180 Days of %s", offersNameComplement),
 				price = 1500,
 				id = 3180,
 				validUntil = 180,
@@ -51,7 +53,7 @@ GameStore.Categories = {
 			},
 			{
 				icons = { "Premium_Time_360.png" },
-				name = "360 Days of Premium Time",
+				name = string.format("360 Days of %s", offersNameComplement),
 				price = 3000,
 				id = 3360,
 				validUntil = 360,
@@ -60,13 +62,14 @@ GameStore.Categories = {
 			},
 		},
 	},
+	-- Consumables
 	{
 		icons = { "Category_Consumables.png" },
 		name = "Consumables",
 		rookgaard = true,
-		subclasses = {"Blessings", "Casks", "Exercise Weapons", "Kegs", "Potions", "Runes"},
+		subclasses = { "Blessings", "Casks", "Exercise Weapons", "Kegs", "Potions", "Runes" },
 	},
-	-- Blessings
+	-- Consumables ~ Blessings
 	{
 		icons = { "Category_Blessings.png" },
 		name = "Blessings",
@@ -192,7 +195,7 @@ GameStore.Categories = {
 			},
 		},
 	},
-	-- Casks
+	-- Consumables ~ Casks
 	{
 		icons = { "Category_Casks.png" },
 		name = "Casks",
@@ -301,7 +304,7 @@ GameStore.Categories = {
 			},
 		},
 	},
-	-- Exercise Weapons
+	-- Consumables ~ Exercise Weapons
 	{
 		icons = { "Category_ExerciseWeapons.png" },
 		name = "Exercise Weapons",
@@ -473,7 +476,7 @@ GameStore.Categories = {
 			},
 		},
 	},
-	-- Kegs
+	-- Consumables ~ Kegs
 	{
 		icons = { "Category_Kegs.png" },
 		name = "Kegs",
@@ -571,7 +574,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 			{
-				icons = {"Ultimate_Spirit_Keg.png"},
+				icons = { "Ultimate_Spirit_Keg.png" },
 				name = "Ultimate Spirit Keg",
 				price = 202,
 				itemtype = 25914,
@@ -581,11 +584,13 @@ GameStore.Categories = {
 			},
 		},
 	},
-	-- Potions
+	-- Consumables ~ Potions
 	{
 		icons = { "Category_Potions.png" },
 		name = "Potions",
 		parent = "Consumables",
+		rookgaard = true,
+		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
 				icons = { "Health_Potion.png" },
@@ -786,14 +791,14 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 		},
-		rookgaard = true,
-		state = GameStore.States.STATE_NONE,
 	},
-	-- Runes
+	-- Consumables ~ Runes
 	{
 		icons = { "Category_Runes.png" },
 		name = "Runes",
 		parent = "Consumables",
+		rookgaard = true,
+		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
 				icons = { "Animate_Dead_Rune.png" },
@@ -1030,22 +1035,21 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 			},
 		},
-		rookgaard = true,
-		state = GameStore.States.STATE_NONE,
 	},
 	-- Cosmetics
 	{
 		icons = { "Category_Cosmetics.png" },
 		name = "Cosmetics",
 		rookgaard = true,
-		subclasses = {"Mounts", "Outfits"},
+		subclasses = { "Mounts", "Outfits" },
 	},
-	-- Mounts
+	-- Cosmetics ~ Mounts
 	{
 		icons = { "Category_Mounts.png" },
 		name = "Mounts",
 		parent = "Cosmetics",
 		rookgaard = true,
+		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
 				icons = { "Arctic_Unicorn.png" },
@@ -1923,20 +1927,20 @@ GameStore.Categories = {
 				home = true,
 			},
 		},
-		rookgaard = true,
-		state = GameStore.States.STATE_NONE,
 	},
-	-- Base outfit has addon = 0 or no defined addon. By default addon is set to 0.
+	-- Cosmetics ~ Outfits (base outfit has addon = 0 or no defined addon. By default addon is set to 0)
 	{
 		icons = { "Category_Outfits.png" },
 		name = "Outfits",
 		parent = "Cosmetics",
+		rookgaard = true,
+		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
 				icons = { "Outfit_Arena_Champion_Male_Addon_3.png", "Outfit_Arena_Champion_Female_Addon_3.png" },
 				name = "Full Arena Champion Outfit",
 				price = 870,
-				sexId = {female = 885, male = 884},
+				sexId = { female = 885, male = 884 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Fight your bloody battles in the arena and become a darling of the crowd. Once you have made it to the top and everyone is cheering your name, the fashionable outfit of an Arena Champion will show the world what you are made of.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -1945,7 +1949,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Beastmaster_Male_Addon_3.png", "Outfit_Beastmaster_Female_Addon_3.png" },
 				name = "Full Beastmaster Outfit",
 				price = 870,
-				sexId = {female = 636, male = 637},
+				sexId = { female = 636, male = 637 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Do you have enough authority to make wild animals subservient to you? Become a Beastmaster and surround yourself with fearsome companions. When your beasts bare their teeth, your enemies will turn tails and run.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -1954,7 +1958,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Breezy_Garb_Male_Addon_3.png", "Outfit_Breezy_Garb_Female_Addon_3.png" },
 				name = "Full Breezy Garb Outfit",
 				price = 600,
-				sexId = {female = 1246, male = 1245},
+				sexId = { female = 1246, male = 1245 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Even the most eager adventurers and toughest warriors need some time to rest and recharge. Enjoy tranquility and peace as you picnic in good company at one of your favourite places in Tibia. Put on your Breezy Garb outfit, grab your walking stick, a basket filled with tasty snacks and then head out into nature!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -1963,7 +1967,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Ceremonial_Garb_Male_Addon_3.png", "Outfit_Ceremonial_Garb_Female_Addon_3.png" },
 				name = "Full Ceremonial Garb Outfit",
 				price = 750,
-				sexId = {female = 694, male = 695},
+				sexId = { female = 694, male = 695 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>If you want to make a great entrance at a Tibian costume party, the Ceremonial Garb is certainly a good choice. With a drum over your shoulder and adorned with feathers you are perfectly dressed to lead a carnival parade through the streets of Thais.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -1972,7 +1976,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Champion_Male_Addon_3.png", "Outfit_Champion_Female_Addon_3.png" },
 				name = "Full Champion Outfit",
 				price = 570,
-				sexId = {female = 632, male = 633},
+				sexId = { female = 632, male = 633 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Protect your body with heavy armour plates and spiky bones to teach your enemies the meaning of fear! The Champion outfit perfectly suits battle-hardened warriors who rely on their trusty sword and shield.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -1981,7 +1985,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Chaos_Acolyte_Male_Addon_3.png", "Outfit_Chaos_Acolyte_Female_Addon_3.png" },
 				name = "Full Chaos Acolyte Outfit",
 				price = 900,
-				sexId = {female = 664, male = 665},
+				sexId = { female = 664, male = 665 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>You have always felt like the cat among the pigeons and have a fable for dark magic? The Chaos Acolyte outfit is a perfect way to express your inner nature. Show your commitment for the higher cause and wreak havoc on your enemies in this unique outfit.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -1990,7 +1994,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Conjurer_Male_Addon_3.png", "Outfit_Conjurer_Female_Addon_3.png" },
 				name = "Full Conjurer Outfit",
 				price = 750,
-				sexId = {female = 635, male = 634},
+				sexId = { female = 635, male = 634 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>You recently graduated from the Magic Academy and want to bring your knowledge to good use? Congratulations, you are now an honourable disciple of magic! Open up a bottle of well-aged mana and treat yourself with the fashionable Conjurer outfit.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -1999,7 +2003,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Death_Herald_Male_Addon_3.png", "Outfit_Death_Herald_Female_Addon_3.png" },
 				name = "Full Death Herald Outfit",
 				price = 600,
-				sexId = {female = 666, male = 667},
+				sexId = { female = 666, male = 667 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Death and decay are your ever-present companions? Your enemies are dropping like flies and your path is covered with their bodies? However, as decency demands, you want to at least give them a proper funeral? Then the Death Herald is just the right outfit for you.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2008,7 +2012,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Entrepreneur_Male_Addon_3.png", "Outfit_Entrepreneur_Female_Addon_3.png" },
 				name = "Full Entrepreneur Outfit",
 				price = 750,
-				sexId = {female = 471, male = 472},
+				sexId = { female = 471, male = 472 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Slaughter through hordes of monsters during your early morning hunt and kiss the hand of Queen Eloise later on at the evening reception in her historical residence. With the Entrepreneur outfit you will cut a fine figure on every occasion.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2017,7 +2021,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Evoker_Male_Addon_3.png", "Outfit_Evoker_Female_Addon_3.png" },
 				name = "Full Evoker Outfit",
 				price = 840,
-				sexId = {female = 724, male = 725},
+				sexId = { female = 724, male = 725 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Dance around flickering fires in the Evoker outfit while singing unholy chants to praise witchcraft and wizardry. Your faithful bat will always be by your side.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2026,7 +2030,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Grove_Keeper_Male_Addon_3.png", "Outfit_Grove_Keeper_Female_Addon_3.png" },
 				name = "Full Groove Keeper Outfit",
 				price = 870,
-				sexId = {female = 909, male = 908},
+				sexId = { female = 909, male = 908 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Feeling the springy grass under your feet and inhaling the spicy air of the forest is pure satisfaction for your soul? Every animal is your friend and you caringly look after trees and plants all the time? Then it is time to become one with nature: Become a Grove Keeper!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2035,7 +2039,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Guidon_Bearer_Male_Addon_3.png", "Outfit_Guidon_Bearer_Female_Addon_3.png" },
 				name = "Full Guidon Bearer Outfit",
 				price = 870,
-				sexId = {female = 1187, male = 1186},
+				sexId = { female = 1187, male = 1186 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Carrying the guidon of a unit, always marching in front, is not only an honour but also comes with great responsibility. Guidon bearers wield great power, they lead where others follow and keep the spirits of the troops up as they wave their flag against the golden suns of Tibia.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2044,7 +2048,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Herbalist_Male_Addon_3.png", "Outfit_Herbalist_Female_Addon_3.png" },
 				name = "Full Herbalist Outfit",
 				price = 750,
-				sexId = {female = 1020, male = 1021},
+				sexId = { female = 1020, male = 1021 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>The Herbalist outfit is the perfect outfit for all herbs collectors. Those of you who are aware that you do not necessarily have to reach into the mouth of a hydra to get a hydra tongue and those who know exactly where to get blood- and shadow-herbs will find a matching outfit for their daily hobby. Show the world your affinity for herbs and impress your friends with your knowledge of medicine and potions.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2053,7 +2057,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Herder_Male_Addon_3.png", "Outfit_Herder_Female_Addon_3.png" },
 				name = "Full Herder Outfit",
 				price = 750,
-				sexId = {female = 1280, male = 1279},
+				sexId = { female = 1280, male = 1279 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>The Herder is one with nature, being outside all day, watching carefully over his flock. If you like to spend time on picturesque meadows and are always looking for greener pastures, then this outfit is for you.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2062,7 +2066,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Lupine_Warden_Male_Addon_3.png", "Outfit_Lupine_Warden_Female_Addon_3.png" },
 				name = "Full Lupine Warden Outfit",
 				price = 840,
-				sexId = {female = 900,male = 899},
+				sexId = { female = 900, male = 899 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Do you feel the adrenaline rushing through your veins when the sun goes down and a full moon lightens the night? Do you have the urge to hunt down your target no matter what? Unleash the beast inside of you and lead your friends to battle with the Lupine Warden outfit!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2071,7 +2075,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Mercenary_Male_Addon_3.png", "Outfit_Mercenary_Female_Addon_3.png" },
 				name = "Full Mercenary Outfit",
 				price = 870,
-				sexId = {female = 1057,	male = 1056},
+				sexId = { female = 1057, male = 1056 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>The Mercenary carries a powerful, razor-sharp axe on his shoulders that effortlessly cuts through any armour and bone. You should better tell your friends to keep a safe distance, since heads will roll over the blood-soaked battleground after a powerful swing of yours.\nConsidering the sheer size of this axe, it might even be possible to chop onions without shedding a tear.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2080,7 +2084,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Owl_Keeper_Male_Addon_3.png", "Outfit_Owl_Keeper_Female_Addon_3.png" },
 				name = "Full Owl Keeper Outfit",
 				price = 600,
-				sexId = {female = 1174,male = 1173},
+				sexId = { female = 1174, male = 1173 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Owl Keepers are often referred to as spirits walking through the forest at night, mere shadows during the day. They are also said to be shamans, protecting the flora and fauna of the Tibian lands. You often see them wearing a stag's antlers on their head and in the company of an owl, for they are as wise and mysterious as these intriguing creatures.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2089,7 +2093,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Pharaoh_Male_Addon_3.png", "Outfit_Pharaoh_Female_Addon_3.png" },
 				name = "Full Pharaoh Outfit",
 				price = 750,
-				sexId = {female = 956,male = 955},
+				sexId = { female = 956, male = 955 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>You know how to read hieroglyphs? You admire the exceptional architectural abilities and the unsolved mysteries of an ancient high culture? Next time you pay a visit to your friends, tell them to prepare a bathtub full of milk and honey for you because a Pharaoh is now walking through the streets of Ankrahmun!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2098,7 +2102,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Philosopher_Male_Addon_3.png", "Outfit_Philosopher_Female_Addon_3.png" },
 				name = "Full Philosopher Outfit",
 				price = 750,
-				sexId = {female = 874,male = 873},
+				sexId = { female = 874, male = 873 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Do you feel the urge to tell people what is really going on in the world? Do you know all answers to the important questions of life? Are you a true philosopher? Then dress like one to showcase the latest fashion for all wise theorists.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2107,7 +2111,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Pumpkin_Mummy_Male_Addon_3.png", "Outfit_Pumpkin_Mummy_Female_Addon_3.png" },
 				name = "Full Pumpkin Mummy Outfit",
 				price = 870,
-				sexId = {female = 1128,male = 1127},
+				sexId = { female = 1128, male = 1127 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>If you cannot decide whether to wrap yourself up as a mummy or flaunt an enormous pumpkin head for your next hunting party, why not combine both? The Pumpkin Mummy outfit is the perfect costume for scary nights and spooky days.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2116,7 +2120,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Puppeteer_Male_Addon_3.png", "Outfit_Puppeteer_Female_Addon_3.png" },
 				name = "Full Puppeteer Outfit",
 				price = 870,
-				sexId = {female = 696, male = 697},
+				sexId = { female = 696, male = 697 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Are you a fan of puppetry? You like to travel the world together with one or two little acting fellows? Or are you simply the one who likes to pull the strings? Then the Puppeteer outfit is the right choice for you.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2125,7 +2129,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Ranger_Male_Addon_3.png", "Outfit_Ranger_Female_Addon_3.png" },
 				name = "Full Ranger Outfit",
 				price = 750,
-				sexId = {female = 683,male = 684},
+				sexId = { female = 683, male = 684 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Most of the day, the Ranger is looking over his forest. He is taking care of all animals and plants and tries to keep everything in balance. Intruders are greeted by a warning shot from his deadly longbow. It is the perfect outfit for Paladins who live in close touch with nature.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2134,7 +2138,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Royal_Pumpkin_Male_Addon_3.png", "Outfit_Royal_Pumpkin_Female_Addon_3.png" },
 				name = "Full Royal Pumpkin Outfit",
 				price = 840,
-				sexId = {male= 760, female= 759},
+				sexId = { male = 760, female = 759 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>The mutated pumpkin is too weak for your mighty weapons? Time to show that evil vegetable how to scare the living daylight out of people! Put on a scary looking pumpkin on your head and spread terror and fear amongst the Tibian population.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2143,7 +2147,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Sea_Dog_Male_Addon_3.png", "Outfit_Sea_Dog_Female_Addon_3.png" },
 				name = "Full Sea Dog Outfit",
 				price = 600,
-				sexId = {female = 749,male = 750},
+				sexId = { female = 749, male = 750 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Ahoy mateys! Flaunt the swashbuckling Sea Dog outfit and strike a pose with your hook to impress both landlubbers and fellow pirates. Board your next ship in style!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2152,7 +2156,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Seaweaver_Male_Addon_3.png", "Outfit_Seaweaver_Female_Addon_3.png" },
 				name = "Full Seaweaver Outfit",
 				price = 570,
-				sexId = {female = 732,male = 733},
+				sexId = { female = 732, male = 733 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>The Seaweaver outfit is the perfect choice if you want to show the world that you are indeed a son or a daughter of the submarine kingdom. You can almost feel the salty taste and the rough wind of the sea when wearing it.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2161,7 +2165,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Siege_Master_Male_Addon_3.png", "Outfit_Siege_Master_Female_Addon_3.png" },
 				name = "Full Siege Master Outfit",
 				price = 600,
-				sexId = {female = 1050,male = 1051},
+				sexId = { female = 1050, male = 1051 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Neither thick stone walls nor heavily armoured gates can stop the Siege Master, who brings down hostile fortifications in the blink of an eye. Whenever he tenses his muscular arms to lift the powerful battering ram, his enemies' knees begin to buckle. It is the perfect outfit for those who also stand for brute strength and immense destruction.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2170,7 +2174,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Sinister_Archer_Male_Addon_3.png", "Outfit_Sinister_Archer_Female_Addon_3.png" },
 				name = "Full Sinister Archer Outfit",
 				price = 600,
-				sexId = {female = 1103,male = 1102},
+				sexId = { female = 1103, male = 1102 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>From an early age, the Sinister Archer has been fascinated by people's dark machinations and perversions. Sinister Archers claim that they advocate the good and that they only use their arrows to pierce the hearts of those who have committed many crimes and misdeeds. However, they are still viewed by the public with much suspicion due to their dubious appearance. To keep their identity secret, they often hide themselves behind a skull-like face guard that can easily withstand even axe and club blows.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2179,7 +2183,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Spirit_Caller_Male_Addon_3.png", "Outfit_Spirit_Caller_Female_Addon_3.png" },
 				name = "Full Spirit Caller Outfit",
 				price = 600,
-				sexId = {female = 698, male = 699},
+				sexId = { female = 698, male = 699 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>You are in love with the deep soul of Mother Earth and prefer to walk in the shadows of her wooden children? Choose the Spirit Caller outfit to live in harmony with nature.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2188,7 +2192,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Sun_Priest_Male_Addon_3.png", "Outfit_Sun_Priest_Female_Addon_3.png" },
 				name = "Full Sun Priest Outfit",
 				price = 750,
-				sexId = {female = 1024, male = 1023},
+				sexId = { female = 1024, male = 1023 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Do you worship warm temperatures and are opposed to the thought of long and dark winter nights? Do you refuse to spend countless evenings in front of your chimney while ice-cold wind whistles through the cracks and niches of your house? It is time to stop freezing and to become an honourable Sun Priest! With this stylish outfit, you can finally show the world your unconditional dedication and commitment to the sun!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2197,7 +2201,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Trophy_Hunter_Male_Addon_3.png", "Outfit_Trophy_Hunter_Female_Addon_3.png" },
 				name = "Full Trophy Hunter Outfit",
 				price = 870,
-				sexId = {female = 900, male = 899},
+				sexId = { female = 900, male = 899 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>You spend hours in the woods in search of wild and rare animals? Countless stuffed skulls of deer, wolves and other creatures are decorating your walls? Now you have the chance to present your trophies in public. Become a Trophy Hunter and cover your shoulders with the finest bear skulls!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2206,7 +2210,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Winter_Warden_Male_Addon_3.png", "Outfit_Winter_Warden_Female_Addon_3.png" },
 				name = "Full Winter Warden Outfit",
 				price = 870,
-				sexId = {female = 852,male = 853},
+				sexId = { female = 852, male = 853 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>The warm and cosy cloak of the Winter Warden outfit will keep you warm in every situation. Best thing, it is not only comfortable but fashionable as well. You will be the envy of any snow queen or king, guaranteed!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2215,7 +2219,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Retro_Citizen_Male.png", "Outfit_Retro_Citizen_Female.png" },
 				name = "Retro Citizen",
 				price = 870,
-				sexId = {female = 975,male = 974},
+				sexId = { female = 975, male = 974 },
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n\n<i>Do you still remember your first stroll through the streets of Thais? For old times' sake, walk the paths of Nostalgia as a Retro Citizen!</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
@@ -2223,7 +2227,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Retro_Hunter_Male.png", "Outfit_Retro_Hunter_Female.png" },
 				name = "Retro Hunter",
 				price = 870,
-				sexId = {female = 973,male = 972},
+				sexId = { female = 973, male = 972 },
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n\n<i>Whenever you pick up your bow and spears, you walk down memory lane and think of your early days? Treat yourself with the fashionable Retro Hunter outfit and hunt some good old monsters from your childhood.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
@@ -2231,7 +2235,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Retro_Knight_Male.png", "Outfit_Retro_Knight_Female.png" },
 				name = "Retro Knight",
 				price = 870,
-				sexId = {female = 971,male = 970},
+				sexId = { female = 971, male = 970 },
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n\n<i>Who needs a fancy looking sword with bling-bling and ornaments? Back in the days, we survived without such unnecessary accessories! Time to show those younkers what a Retro Knight is made of.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
@@ -2239,7 +2243,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Retro_Mage_Male.png", "Outfit_Retro_Mage_Female.png" },
 				name = "Retro Wizzard",
 				price = 870,
-				sexId = {female = 969, male = 968},
+				sexId = { female = 969, male = 968 },
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n\n<i>Dress up as a Retro Mage and you will always cut a fine figure on the battleground while eliminating your enemies with your magical powers the old-fashioned way.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
@@ -2247,7 +2251,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Retro_Nobleman_Male.png", "Outfit_Retro_Nobleman_Female.png" },
 				name = "Retro Noblewoman",
 				price = 870,
-				sexId = { female = 967, male = 966},
+				sexId = { female = 967, male = 966 },
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n\n<i>King Tibianus has invited you to a summer ball and you have nothing to wear for this special event? Do not worry, the Retro Noble(wo)man outfit makes you a real eye catcher on every festive occasion.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
@@ -2255,7 +2259,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Retro_Summoner_Male.png", "Outfit_Retro_Summoner_Female.png" },
 				name = "Retro Summoner",
 				price = 870,
-				sexId = {female = 965, male = 964},
+				sexId = { female = 965, male = 964 },
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n\n<i>While the Retro Mage usually throws runes and mighty spells directly at the enemies, the Retro Summoner outfit might be the better choice for Tibians that prefer to send mighty summons to the battlefield to keep their enemies at distance.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
@@ -2263,7 +2267,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Retro_Warrior_Male.png", "Outfit_Retro_Warrior_Female.png" },
 				name = "Retro Warrior",
 				price = 870,
-				sexId = {female = 963, male = 962},
+				sexId = { female = 963, male = 962 },
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n\n<i>You are fearless and strong as a behemoth but have problems finding the right outfit for your adventures? The Retro Warrior outfit is a must-have for all fashion-conscious old-school Tibians out there.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
@@ -2271,7 +2275,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Trailblazer_Male_Addon_3.png", "Outfit_Trailblazer_Female_Addon_3.png" },
 				name = "Full Trailblazer Outfit",
 				price = 600,
-				sexId = {female = 1293, male = 1292},
+				sexId = { female = 1293, male = 1292 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n\n<i>The Trailblazer is on a mission of enlightenment and carries the flame of wisdom near and far. The everlasting shine brightens the hearts and minds of all creatures its rays touch, bringing light even to the darkest corners of the world as a beacon of insight and knowledge.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2280,7 +2284,7 @@ GameStore.Categories = {
 				icons = { "Outfit_Jouster_Male_Addon_3.png", "Outfit_Jouster_Female_Addon_3.png" },
 				name = "Full Jouster Outfit",
 				price = 870,
-				sexId = {female = 1332, male = 1331},
+				sexId = { female = 1332, male = 1331 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n\n<i>The Jouster is all geared up for a tournament, ready to partake in festive activities involving friendly competition to prove their chivalry. However, being well-armoured, they are also a force to be reckoned with on the battlefield, especially with a trusty steed at their service.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
@@ -2289,29 +2293,29 @@ GameStore.Categories = {
 				icons = { "Outfit_Rune_Master_Male_Addon_3.png", "Outfit_Rune_Master_Female_Addon_3.png" },
 				name = "Full Rune Master Outfit",
 				price = 870,
-				sexId = {female = 1385, male = 1384},
+				sexId = { female = 1385, male = 1384 },
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>A Rune Master has dedicated their whole life to the study and mastery of runes. They are intrigued by the ancient symbols, shrouded in mystery, and how their magic works. Rune Masters have a deep understanding of the awesome power they are wielding and can make use of the full potential of runes.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 				home = true,
 			},
 		},
-		rookgaard = true,
-		state = GameStore.States.STATE_NONE,
 	},
-	--House
+	-- House
 	{
 		icons = { "Category_HouseTools.png" },
 		name = "Houses",
 		rookgaard = true,
-		subclasses = {"Decorations", "Furniture", "Upgrades", "Hirelings", "Hirelings Dresses"},
+		subclasses = { "Decorations", "Furniture", "Upgrades", "Hirelings", "Hirelings Dresses" },
 	},
+	-- House ~ Decorations
 	{
 		icons = { "Category_HouseDecorations.png" },
 		name = "Decorations",
 		parent = "Houses",
+		rookgaard = true,
+		state = GameStore.States.STATE_NONE,
 		offers = {
-			-- Decorations
 			{
 				icons = { "Alchemistic_Bookstand.png" },
 				name = "Alchemistic Bookstand",
@@ -3405,10 +3409,8 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
 		},
-		rookgaard = true,
-		state = GameStore.States.STATE_NONE,
 	},
-	--Furniture
+	-- House ~ Furniture
 	{
 		icons = { "Category_HouseFurniture.png" },
 		name = "Furniture",
@@ -3832,7 +3834,7 @@ GameStore.Categories = {
 			},
 		},
 	},
-	-- Upgrades
+	-- House ~ Upgrades
 	{
 		icons = { "Category_HouseUpgrades.png" },
 		name = "Upgrades",
@@ -3900,7 +3902,7 @@ GameStore.Categories = {
 				price = 900,
 				itemtype = 28563,
 				count = 1,
-				description = "<i>Train your skills more effectively at home than in public on this expert exercise dummy!</i>\n\n{house}\n{box}\n{storeinbox}\n{usablebyall}\n{info} can only be used by one character at a time\n- use one of the exercise weapons on this dummy\n{backtoinbox}",
+				description = "<i>Train your skills more effectively at home than in public on this expert exercise dummy!</i>\n\n{house}\n{box}\n{storeinbox}\n{usablebyall}\n{info} can only be used by one character at a time\n{useicon} use one of the exercise weapons on this dummy\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
 			{
@@ -3923,6 +3925,7 @@ GameStore.Categories = {
 			},
 		},
 	},
+	-- House ~ Hirelings
 	{
 		icons = { "Category_HouseTools_NPCApprenticeships.png" },
 		name = "Hirelings",
@@ -3937,7 +3940,7 @@ GameStore.Categories = {
 				id = 25440,
 				count = 1,
 				number = 1,
-				sexId = {female = 1107, male = 1108},
+				sexId = { female = 1107, male = 1108 },
 				description = "Get your very own hireling to serve you and your guests in your own four walls!\n\n{house} can only be unwrapped in a house owned by the purchasing character\n{boxicon} comes in a magic lamp which can only be used by purchasing character\n{storeinbox}\n{usablebyallicon} can be used by all characters that have access to the house\n{useicon} use the magic lamp to summon your hireling\n{backtoinbox}\n{info} maximum amount that can be owned by character: 10",
 				type = GameStore.OfferTypes.OFFER_TYPE_HIRELING,
 			},
@@ -4003,6 +4006,7 @@ GameStore.Categories = {
 			},
 		},
 	},
+	-- House ~ Hireling Dresses
 	{
 		icons = { "Category_HouseTools_NPCDresses.png" },
 		name = "Hireling Dresses",
@@ -4124,9 +4128,9 @@ GameStore.Categories = {
 		icons = { "Category_Extras.png" },
 		name = "Extras",
 		rookgaard = true,
-		subclasses = {"Extra Services", "Useful Things"},
+		subclasses = { "Extra Services", "Useful Things" },
 	},
-	-- Extras Services
+	-- Extras ~ Extras Services
 	{
 		icons = { "Category_ExtraServices.png" },
 		name = "Extra Services",
@@ -4152,7 +4156,7 @@ GameStore.Categories = {
 			},
 		},
 	},
-	-- Usefull Things
+	-- Extras ~ Usefull Things
 	{
 		icons = { "Category_UsefulThings.png" },
 		name = "Useful Things",
@@ -4161,7 +4165,7 @@ GameStore.Categories = {
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
-				icons = {"Prey_Bonus_Reroll.png"},
+				icons = { "Prey_Bonus_Reroll.png" },
 				name = "Prey Wildcard",
 				price = 50,
 				id = GameStore.SubActions.PREY_WILDCARD,
@@ -4170,7 +4174,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
 			},
 			{
-				icons = {"Instant_Reward_Access.png"},
+				icons = { "Instant_Reward_Access.png" },
 				name = "Instant Reward Access",
 				price = 100,
 				id = GameStore.SubActions.INSTANT_REWARD,
@@ -4179,7 +4183,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS
 			},
 			{
-				icons = {"Charm_Expansion_Offer.png"},
+				icons = { "Charm_Expansion_Offer.png" },
 				name = "Charm Expansion",
 				price = 450,
 				id = GameStore.SubActions.CHARM_EXPANSION,
@@ -4187,7 +4191,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARMS
 			},
 			{
-				icons = {"Permanent_Prey_Slot.png"},
+				icons = { "Permanent_Prey_Slot.png" },
 				name = "Permanent Prey Slot",
 				price = 900,
 				id = GameStore.SubActions.PREY_THIRDSLOT_REDIRECT,
@@ -4195,7 +4199,7 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
 			},
 			{
-				icons = {"Permanent_Hunting_Task_Slot.png"},
+				icons = { "Permanent_Hunting_Task_Slot.png" },
 				name = "Permanent Hunting Task Slot",
 				price = 900,
 				id = GameStore.SubActions.TASKHUNTING_THIRDSLOT,

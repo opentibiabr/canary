@@ -54,6 +54,7 @@ class Condition {
 		static Condition* createCondition(PropStream &propStream);
 
 		virtual bool setParam(ConditionParam_t param, int32_t value);
+		virtual bool setParam(ConditionParam_t param, const Position &pos);
 
 		// serialization
 		bool unserialize(PropStream &propStream);
@@ -61,7 +62,6 @@ class Condition {
 		virtual bool unserializeProp(ConditionAttr_t attr, PropStream &propStream);
 
 		bool isPersistent() const;
-		bool isRemovableOnDeath() const;
 
 	protected:
 		int64_t endTime;
@@ -72,6 +72,13 @@ class Condition {
 		bool isBuff;
 
 		virtual bool updateCondition(const Condition* addCondition);
+
+	private:
+		SoundEffect_t tickSound = SoundEffect_t::SILENCE;
+		SoundEffect_t addSound = SoundEffect_t::SILENCE;
+
+		friend class ConditionDamage;
+		friend class ConditionGeneric;
 };
 
 class ConditionGeneric : public Condition {
@@ -276,6 +283,46 @@ class ConditionDamage final : public Condition {
 		bool doDamage(Creature* creature, int32_t healthChange);
 
 		bool updateCondition(const Condition* addCondition) override;
+};
+
+class ConditionFeared final : public Condition {
+	public:
+		ConditionFeared() = default;
+		ConditionFeared(ConditionId_t intiId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) :
+			Condition(intiId, initType, initTicks, initBuff, initSubId) { }
+
+		bool startCondition(Creature* creature) override;
+		bool executeCondition(Creature* creature, int32_t interval) override;
+		void endCondition(Creature* creature) override;
+		void addCondition(Creature* creature, const Condition* condition) override;
+		uint32_t getIcons() const override;
+
+		ConditionFeared* clone() const override {
+			return new ConditionFeared(*this);
+		}
+
+		bool setParam(ConditionParam_t param, const Position &pos) override;
+
+	private:
+		bool canWalkTo(Creature* creature, Position pos, Direction moveDirection) const;
+		bool getFleeDirection(Creature* creature);
+		bool getFleePath(Creature* creature, Position &pos, std::forward_list<Direction> &dirList);
+		bool getRandomDirection(Creature* creature, Position pos);
+		bool isStuck(Creature* creature, Position pos);
+
+		std::vector<Direction> dirList {
+			DIRECTION_NORTH,
+			DIRECTION_NORTHEAST,
+			DIRECTION_EAST,
+			DIRECTION_SOUTHEAST,
+			DIRECTION_SOUTH,
+			DIRECTION_SOUTHWEST,
+			DIRECTION_WEST,
+			DIRECTION_NORTHWEST
+		};
+
+		Position fleeingFromPos; // Caster Position
+		uint8_t fleeIndx = 99;
 };
 
 class ConditionSpeed final : public Condition {

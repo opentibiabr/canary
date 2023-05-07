@@ -13,6 +13,8 @@ end
 
 rune:group("attack")
 rune:name("poison wall rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_POISON_WALL_RUNE)
 rune:runeId(3176)
 rune:allowFarUse(true)
 rune:setPzLocked(true)

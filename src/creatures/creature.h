@@ -157,6 +157,8 @@ class Creature : virtual public Thing {
 			return false;
 		}
 
+		int32_t getWalkSize();
+
 		int32_t getWalkDelay(Direction dir) const;
 		int32_t getWalkDelay() const;
 		int64_t getTimeSinceLastMove() const;
@@ -235,7 +237,7 @@ class Creature : virtual public Thing {
 		}
 
 		// walk functions
-		void startAutoWalk(const std::forward_list<Direction> &listDir);
+		void startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions = false);
 		void addEventWalk(bool firstStep = false);
 		void stopEventWalk();
 		virtual void goToFollowCreature();

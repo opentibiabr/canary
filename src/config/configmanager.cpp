@@ -122,8 +122,6 @@ bool ConfigManager::load() {
 		integer[PREMIUM_DEPOT_LIMIT] = getGlobalNumber(L, "premiumDepotLimit", 8000);
 		integer[DEPOT_BOXES] = getGlobalNumber(L, "depotBoxes", 20);
 		integer[STASH_ITEMS] = getGlobalNumber(L, "stashItemCount", 5000);
-
-		boolean[OLD_PROTOCOL] = getGlobalBoolean(L, "allowOldProtocol", true);
 	}
 
 	boolean[ALLOW_CHANGEOUTFIT] = getGlobalBoolean(L, "allowChangeOutfit", true);
@@ -313,6 +311,14 @@ bool ConfigManager::load() {
 	boolean[TOGGLE_GOLD_POUCH_ALLOW_ANYTHING] = getGlobalBoolean(L, "toggleGoldPouchAllowAnything", false);
 	boolean[TOGGLE_SERVER_IS_RETRO] = getGlobalBoolean(L, "toggleServerIsRetroPVP", false);
 	boolean[TOGGLE_TRAVELS_FREE] = getGlobalBoolean(L, "toggleTravelsFree", false);
+
+	// Vip System
+	boolean[VIP_SYSTEM_ENABLED] = getGlobalBoolean(L, "vipSystemEnabled", false);
+	boolean[VIP_SYSTEM_EXP_ENABLED] = getGlobalBoolean(L, "vipSystemExpEnabled", false);
+	integer[VIP_SYSTEM_EXP_PERCENT] = getGlobalNumber(L, "vipSystemExpPercent", 0);
+	boolean[VIP_SYSTEM_LOOT_ENABLED] = getGlobalBoolean(L, "vipSystemLootEnabled", false);
+	integer[VIP_SYSTEM_LOOT_PERCENT] = getGlobalNumber(L, "vipSystemLootPercent", 0);
+	boolean[VIP_SYSTEM_GAIN_COINS_ENABLED] = getGlobalBoolean(L, "vipSystemGainCoinsEnabled", false);
 
 	loaded = true;
 	lua_close(L);

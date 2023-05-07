@@ -33,11 +33,9 @@ onlyInvitedCanMoveHouseItems = true
 cleanProtectionZones = false
 
 -- Connection Config
--- NOTE: allowOldProtocol can allow login on 10x protocol. (11.00)
 -- NOTE: maxPlayers set to 0 means no limit
 -- NOTE: MaxPacketsPerSeconds if you change you will be subject to bugs by WPE, keep the default value of 25
 ip = "127.0.0.1"
-allowOldProtocol = false
 bindOnlyGlobalAddress = false
 loginProtocolPort = 7171
 gameProtocolPort = 7172
@@ -348,3 +346,16 @@ location = "South America"
 -- Leave empty if you wish to disable.
 discordWebhookURL = ""
 
+-- Vip System
+-- NOTE: set vipSystemEnabled to true to enable the vip system functionality.
+-- NOTE: vipSystemExpEnabled = activates accounts vip to win a bonus of xp.
+-- NOTE: vipSystemExpPercent = the percent bonus to win. ex: 3 = 3%, 30 = 30%
+-- NOTE: vipSystemLootEnabled = activates accounts vip to win a bonus of loot.
+-- NOTE: vipSystemLootPercent = the percent bonus to win. ex: 3 = 3%, 30 = 30%
+-- NOTE: vipSystemGainCoinsEnabled before active, please configure script: data-otservbr-global\scripts\globalevents\online_vip_coins.lua
+vipSystemEnabled = true
+vipSystemExpEnabled = true
+vipSystemExpPercent = 3
+vipSystemLootEnabled = true
+vipSystemLootPercent = 3
+vipSystemGainCoinsEnabled = true

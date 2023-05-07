@@ -26,7 +26,7 @@ monster.changeTarget = {
 }
 
 monster.bosstiary = {
-	bossRaceId = 1204,
+	bossRaceId = 1206,
 	bossRace = RARITY_NEMESIS,
 	storageCooldown = Storage.FerumbrasAscension.FerumbrasTimer
 }

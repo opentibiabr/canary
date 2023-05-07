@@ -691,7 +691,7 @@ void Player::removeEmptyRewards() {
 	std::erase_if(rewardMap, [this](const auto &rewardBag) {
 		auto [id, reward] = rewardBag;
 		if (reward->empty()) {
-			this->getRewardChest()->removeThing(reward, 1);
+			getRewardChest()->removeItem(reward);
 			reward->decrementReferenceCounter();
 			return true;
 		}

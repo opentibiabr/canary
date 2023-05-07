@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -35,5 +35,23 @@ void RewardChest::postAddNotification(Thing* thing, const Cylinder* oldParent, i
 void RewardChest::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t) {
 	if (parent != nullptr) {
 		parent->postRemoveNotification(thing, newParent, index, LINK_PARENT);
+	}
+}
+
+// Second argument is disabled by default because not need to send to client in the RewardChest
+void RewardChest::removeItem(Thing* thing, bool /* sendToClient = false*/) {
+	if (thing == nullptr) {
+		return;
+	}
+
+	auto itemToRemove = thing->getItem();
+	if (itemToRemove == nullptr) {
+		return;
+	}
+
+	auto it = std::ranges::find(itemlist.begin(), itemlist.end(), itemToRemove);
+	if (it != itemlist.end()) {
+		itemlist.erase(it);
+		itemToRemove->setParent(nullptr);
 	}
 }

@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_CREATURES_COMBAT_CONDITION_H_
@@ -61,6 +61,7 @@ class Condition {
 		virtual bool unserializeProp(ConditionAttr_t attr, PropStream &propStream);
 
 		bool isPersistent() const;
+		bool isRemovableOnDeath() const;
 
 	protected:
 		int64_t endTime;

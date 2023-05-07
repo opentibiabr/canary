@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -74,6 +74,7 @@ bool Items::reload() {
 void Items::loadFromProtobuf() {
 	using namespace Canary::protobuf::appearances;
 
+	bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL);
 	for (uint32_t it = 0; it < g_game().appearances.object_size(); ++it) {
 		Appearance object = g_game().appearances.object(it);
 
@@ -87,6 +88,10 @@ void Items::loadFromProtobuf() {
 			items.resize(object.id() + 1);
 		}
 
+		if (!object.has_id()) {
+			continue;
+		}
+
 		ItemType &iType = items[object.id()];
 		if (object.flags().container()) {
 			iType.type = ITEM_TYPE_CONTAINER;
@@ -97,6 +102,26 @@ void Items::loadFromProtobuf() {
 			iType.group = ITEM_GROUP_FLUID;
 		} else if (object.flags().liquidpool()) {
 			iType.group = ITEM_GROUP_SPLASH;
+		}
+
+		// This attribute is only used on 10x protocol, so we should not waste our time iterating it when it's disabled.
+		if (supportAnimation) {
+			for (uint32_t frame_it = 0; frame_it < object.frame_group_size(); ++frame_it) {
+				FrameGroup objectFrame = object.frame_group(frame_it);
+				if (!objectFrame.has_sprite_info()) {
+					continue;
+				}
+
+				if (!objectFrame.sprite_info().has_animation()) {
+					continue;
+				}
+
+				if (objectFrame.sprite_info().animation().random_start_phase()) {
+					iType.animationType = ANIMATION_RANDOM;
+				} else {
+					iType.animationType = ANIMATION_DESYNC;
+				}
+			}
 		}
 
 		if (object.flags().clip()) {
@@ -169,7 +194,7 @@ bool Items::loadFromXml() {
 	}
 
 	for (auto itemNode : doc.child("items").children()) {
-		if (auto idAttribute = itemNode.attribute("id"); idAttribute) {
+		if (auto idAttribute = itemNode.attribute("id")) {
 			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
 			continue;
 		}
@@ -213,6 +238,10 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 		items.resize(id + 1);
 	}
 	ItemType &iType = items[id];
+	if (iType.id == 0 && (iType.name.empty() || iType.name == asLowerCaseString("reserved sprite"))) {
+		return;
+	}
+
 	iType.id = id;
 
 	ItemType &itemType = getItemType(id);

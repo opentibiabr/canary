@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_ENUMS_HPP
@@ -40,8 +40,9 @@ enum ItemAttribute_t : uint64_t {
 	OPENCONTAINER = 1 << 25,
 	QUICKLOOTCONTAINER = 1 << 26,
 	DURATION_TIMESTAMP = 1 << 27,
-	IMBUEMENT_TYPE = 1 << 28, // Deprecated, can be override
+	AMOUNT = 1 << 28,
 	TIER = 1 << 29,
+	STORE = 1 << 30,
 
 	CUSTOM = 1U << 31
 };
@@ -51,6 +52,12 @@ enum ItemDecayState_t : uint8_t {
 	DECAYING_TRUE,
 	DECAYING_PENDING,
 	DECAYING_STOPPING,
+};
+
+enum ItemAnimation_t : uint8_t {
+	ANIMATION_NONE = 0,
+	ANIMATION_RANDOM = 1,
+	ANIMATION_DESYNC = 2,
 };
 
 #endif // SRC_ENUMS_HPP

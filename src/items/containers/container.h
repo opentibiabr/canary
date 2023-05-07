@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_ITEMS_CONTAINERS_CONTAINER_H_
@@ -56,6 +56,8 @@ class Container : public Item, public Cylinder {
 			return this;
 		}
 
+		Container* getRootContainer() const;
+
 		virtual DepotLocker* getDepotLocker() {
 			return nullptr;
 		}
@@ -84,8 +86,8 @@ class Container : public Item, public Cylinder {
 		}
 
 		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
-		bool unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream) override;
-		std::string getContentDescription() const;
+		bool unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream, Position &itemPosition) override;
+		std::string getContentDescription(bool oldProtocol) const;
 
 		size_t size() const {
 			return itemlist.size();
@@ -162,11 +164,15 @@ class Container : public Item, public Cylinder {
 		void startDecaying() override;
 		void stopDecaying() override;
 
-		bool isAnykindOfRewardContainer() const;
-		bool isBrowseFieldAndHoldsRewardContainer() const;
+		bool isAnyKindOfRewardChest() const;
+		bool isAnyKindOfRewardContainer() const;
+		bool isBrowseFieldAndHoldsRewardChest() const;
+		bool isInsideContainerWithId(const uint16_t id) const;
+
+		virtual void removeItem(Thing* thing, bool sendUpdateToClient = false);
 
 	protected:
-		std::ostringstream &getContentDescription(std::ostringstream &os) const;
+		std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol) const;
 
 		uint32_t maxSize;
 		uint32_t totalWeight = 0;

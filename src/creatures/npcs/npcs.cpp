@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -82,6 +82,13 @@ void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock) {
 	}
 	if (shopBlock.itemBuyPrice > iType.buyPrice) {
 		iType.buyPrice = shopBlock.itemBuyPrice;
+	}
+
+	// Check if the item already exists in the shop vector and ignore it
+	for (auto shopIterator = npcType->info.shopItemVector.begin(); shopIterator != npcType->info.shopItemVector.end(); ++shopIterator) {
+		if (*shopIterator == shopBlock) {
+			return;
+		}
 	}
 
 	if (shopBlock.childShop.empty()) {

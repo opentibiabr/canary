@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -248,6 +248,18 @@ bool Condition::isPersistent() const {
 	}
 
 	if (!(id == CONDITIONID_DEFAULT || id == CONDITIONID_COMBAT)) {
+		return false;
+	}
+
+	return true;
+}
+
+bool Condition::isRemovableOnDeath() const {
+	if (ticks == -1) {
+		return false;
+	}
+
+	if (conditionType == CONDITION_SPELLCOOLDOWN || conditionType == CONDITION_SPELLGROUPCOOLDOWN || conditionType == CONDITION_MUTED) {
 		return false;
 	}
 

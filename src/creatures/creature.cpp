@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -765,7 +765,10 @@ bool Creature::hasBeenAttacked(uint32_t attackerId) {
 }
 
 Item* Creature::getCorpse(Creature*, Creature*) {
-	return Item::CreateItem(getLookCorpse());
+	if (getLookCorpse() != 0) {
+		return Item::CreateItem(getLookCorpse());
+	}
+	return nullptr;
 }
 
 void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = true*/) {
@@ -1581,7 +1584,7 @@ bool Creature::getPathTo(const Position &targetPos, std::forward_list<Direction>
 	return g_game().map.getPathMatching(*this, dirList, FrozenPathingConditionCall(targetPos), fpp);
 }
 
-bool Creature::getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch /*= true*/, bool clearSight /*= true*/, int32_t maxSearchDist /*= 0*/) const {
+bool Creature::getPathTo(const Position &targetPos, std::forward_list<Direction> &dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch /*= true*/, bool clearSight /*= true*/, int32_t maxSearchDist /*= 7*/) const {
 	FindPathParams fpp;
 	fpp.fullPathSearch = fullPathSearch;
 	fpp.maxSearchDist = maxSearchDist;

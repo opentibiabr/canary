@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -93,6 +93,10 @@ Container* Container::getTopParentContainer() const {
 	return thing->getContainer();
 }
 
+Container* Container::getRootContainer() const {
+	return getTopParentContainer();
+}
+
 bool Container::hasParent() const {
 	return getID() != ITEM_BROWSEFIELD && dynamic_cast<const Player*>(getParent()) == nullptr;
 }
@@ -129,8 +133,8 @@ Attr_ReadValue Container::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	return Item::readAttr(attr, propStream);
 }
 
-bool Container::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream) {
-	bool ret = Item::unserializeItemNode(loader, node, propStream);
+bool Container::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream, Position &itemPosition) {
+	bool ret = Item::unserializeItemNode(loader, node, propStream, itemPosition);
 	if (!ret) {
 		return false;
 	}
@@ -147,13 +151,18 @@ bool Container::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, 
 			return false;
 		}
 
-		Item* item = Item::CreateItem(itemPropStream);
-		if (!item) {
+		uint16_t id;
+		if (!itemPropStream.read<uint16_t>(id)) {
 			return false;
 		}
 
-		if (!item->unserializeItemNode(loader, itemNode, itemPropStream)) {
-			return false;
+		Item* item = Item::CreateItem(id, itemPosition);
+		if (!item) {
+			continue;
+		}
+
+		if (!item->unserializeItemNode(loader, itemNode, itemPropStream, itemPosition)) {
+			continue;
 		}
 
 		addItem(item);
@@ -186,12 +195,12 @@ uint32_t Container::getWeight() const {
 	return Item::getWeight() + totalWeight;
 }
 
-std::string Container::getContentDescription() const {
+std::string Container::getContentDescription(bool oldProtocol) const {
 	std::ostringstream os;
-	return getContentDescription(os).str();
+	return getContentDescription(os, oldProtocol).str();
 }
 
-std::ostringstream &Container::getContentDescription(std::ostringstream &os) const {
+std::ostringstream &Container::getContentDescription(std::ostringstream &os, bool oldProtocol) const {
 	bool firstitem = true;
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 		Item* item = *it;
@@ -207,7 +216,11 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os) con
 			os << ", ";
 		}
 
-		os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
+		if (oldProtocol) {
+			os << item->getNameDescription();
+		} else {
+			os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
+		}
 	}
 
 	if (firstitem) {
@@ -260,11 +273,26 @@ bool Container::isHoldingItemWithId(const uint16_t id) const {
 	return false;
 }
 
-bool Container::isAnykindOfRewardContainer() const {
-	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER || isBrowseFieldAndHoldsRewardContainer();
+bool Container::isInsideContainerWithId(const uint16_t id) const {
+	auto nextParent = parent;
+	while (nextParent != nullptr && nextParent->getContainer()) {
+		if (nextParent->getContainer()->getID() == id) {
+			return true;
+		}
+		nextParent = nextParent->getRealParent();
+	}
+	return false;
 }
 
-bool Container::isBrowseFieldAndHoldsRewardContainer() const {
+bool Container::isAnyKindOfRewardChest() const {
+	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER && parent && parent->getContainer() && parent->getContainer()->getID() == ITEM_REWARD_CHEST || isBrowseFieldAndHoldsRewardChest();
+}
+
+bool Container::isAnyKindOfRewardContainer() const {
+	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER || isHoldingItemWithId(ITEM_REWARD_CONTAINER) || isInsideContainerWithId(ITEM_REWARD_CONTAINER);
+}
+
+bool Container::isBrowseFieldAndHoldsRewardChest() const {
 	return getID() == ITEM_BROWSEFIELD && isHoldingItemWithId(ITEM_REWARD_CHEST);
 }
 
@@ -789,6 +817,28 @@ ContainerIterator Container::iterator() const {
 		cit.cur = itemlist.begin();
 	}
 	return cit;
+}
+
+void Container::removeItem(Thing* thing, bool sendUpdateToClient /* = false*/) {
+	if (thing == nullptr) {
+		return;
+	}
+
+	auto itemToRemove = thing->getItem();
+	if (itemToRemove == nullptr) {
+		return;
+	}
+
+	auto it = std::ranges::find(itemlist.begin(), itemlist.end(), itemToRemove);
+	if (it != itemlist.end()) {
+		// Send change to client
+		if (auto thingIndex = getThingIndex(thing); sendUpdateToClient && thingIndex != -1 && getParent()) {
+			onRemoveContainerItem(thingIndex, itemToRemove);
+		}
+
+		itemlist.erase(it);
+		itemToRemove->setParent(nullptr);
+	}
 }
 
 Item* ContainerIterator::operator*() {

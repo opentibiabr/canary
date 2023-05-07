@@ -24,7 +24,7 @@ local config = {
 local threatenedLever = Action()
 
 function threatenedLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
+	return CreateDefaultLeverBoss(player, config)
 end
 
 threatenedLever:uid(1039)

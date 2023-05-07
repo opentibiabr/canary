@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_ITEMS_CONTAINERS_REWARDS_REWARDCHEST_H_
@@ -32,6 +32,8 @@ class RewardChest final : public Container {
 		bool canRemove() const final {
 			return false;
 		}
+
+		void removeItem(Thing* thing, bool sendToClient = false) override;
 };
 
 #endif // SRC_ITEMS_CONTAINERS_REWARDS_REWARDCHEST_H_

@@ -35,7 +35,9 @@ function ferumbrasAscendantZamulosh.onUse(player, item, fromPosition, target, to
 		for _, pos in pairs(zamuloshSummons) do
 			Game.createMonster('Zamulosh3', pos, true, true)
 		end
+		return true
 	end
+	return false
 end
 
 ferumbrasAscendantZamulosh:uid(1026)

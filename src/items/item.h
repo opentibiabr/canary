@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_ITEMS_ITEM_H_
@@ -126,6 +126,10 @@ class ItemProperties {
 			}
 		}
 
+		bool isStoreItem() const {
+			return getAttribute<int64_t>(ItemAttribute_t::STORE) > 0;
+		}
+
 		void setDuration(int32_t time) {
 			setAttribute(ItemAttribute_t::DURATION, std::max<int32_t>(0, time));
 		}
@@ -220,9 +224,9 @@ class ItemProperties {
 class Item : virtual public Thing, public ItemProperties {
 	public:
 		// Factory member to create item of right type based on type
-		static Item* CreateItem(const uint16_t type, uint16_t count = 0);
+		static Item* CreateItem(const uint16_t type, uint16_t count = 0, Position* itemPosition = nullptr);
 		static Container* CreateItemAsContainer(const uint16_t type, uint16_t size);
-		static Item* CreateItem(PropStream &propStream);
+		static Item* CreateItem(uint16_t itemId, Position &itemPosition);
 		static Items items;
 
 		// Constructor for items
@@ -306,7 +310,7 @@ class Item : virtual public Thing, public ItemProperties {
 		// serialization
 		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream);
 		bool unserializeAttr(PropStream &propStream);
-		virtual bool unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &propStream);
+		virtual bool unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &propStream, Position &itemPosition);
 
 		virtual void serializeAttr(PropWriteStream &propWriteStream) const;
 
@@ -464,6 +468,10 @@ class Item : virtual public Thing, public ItemProperties {
 
 		// get the number of items
 		uint16_t getItemCount() const {
+			return count;
+		}
+		// Get item total amount
+		uint32_t getItemAmount() const {
 			return count;
 		}
 		void setItemCount(uint8_t n) {
@@ -640,6 +648,8 @@ class Item : virtual public Thing, public ItemProperties {
 		}
 
 		void updateTileFlags();
+		bool canBeMoved() const;
+		void checkDecayMapItemOnMove();
 
 	protected:
 		Cylinder* parent = nullptr;
@@ -658,8 +668,6 @@ class Item : virtual public Thing, public ItemProperties {
 		std::string getWeightDescription(uint32_t weight) const;
 
 		friend class Decay;
-
-		bool canBeMoved() const;
 };
 
 using ItemList = std::list<Item*>;

@@ -106,7 +106,17 @@ function loginEvents.onLogin(player)
 		-- The Rookie Guard
 		"VascalirRatKills",
 		-- An Uneasy Alliance
-		"RenegadeOrcKill"
+		"RenegadeOrcKill",
+		-- Grave Danger
+		"GraveDangerKill",
+		-- Feaster of Souls
+		"FeasterOfSoulsKill",
+		-- Soul War
+		"SoulWarKill",
+		-- Secret Library
+		"SecretLibraryKill",
+		-- The Dream Courts
+		"DreamCourtsKill"
 	}
 
 	for i = 1, #events do

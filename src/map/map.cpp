@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -43,7 +43,7 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 			FILE* otbm = fopen(identifier.c_str(), "wb");
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 			curl_easy_setopt(curl, CURLOPT_URL, mapDownloadUrl.c_str());
-			curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_3);
+			curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
 			curl_easy_perform(curl);
 			curl_easy_cleanup(curl);
@@ -99,31 +99,40 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 	return true;
 }
 
-bool Map::loadMapCustom(const std::string &identifier, bool loadHouses, bool loadMonsters, bool loadNpcs) {
+bool Map::loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, int customMapIndex) {
 	// Load the map
-	this->load(identifier);
+	std::string path = g_configManager().getString(DATA_DIRECTORY) + "/world/custom/" + mapName + ".otbm";
+	this->load(path, Position(0, 0, 0), true);
+	this->load(path);
 
 	if (loadMonsters) {
-		if (!IOMap::loadMonstersCustom(this)) {
+		if (!IOMap::loadMonstersCustom(this, mapName, customMapIndex)) {
 			SPDLOG_WARN("Failed to load monster custom data");
 		}
 	}
 
 	if (loadHouses) {
-		if (!IOMap::loadHousesCustom(this)) {
+		if (!IOMap::loadHousesCustom(this, mapName, customMapIndex)) {
 			SPDLOG_WARN("Failed to load house custom data");
 		}
-
-		IOMapSerialize::loadHouseInfo();
-		IOMapSerialize::loadHouseItems(this);
 	}
 
 	if (loadNpcs) {
-		if (!IOMap::loadNpcsCustom(this)) {
+		if (!IOMap::loadNpcsCustom(this, mapName, customMapIndex)) {
 			SPDLOG_WARN("Failed to load npc custom spawn data");
 		}
 	}
+
+	// Files need to be cleaned up or will try to load previous map files again
+	this->monsterfile.clear();
+	this->housefile.clear();
+	this->npcfile.clear();
 	return true;
+}
+
+void Map::loadHouseInfo() {
+	IOMapSerialize::loadHouseInfo();
+	IOMapSerialize::loadHouseItems(this);
 }
 
 bool Map::save() {

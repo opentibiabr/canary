@@ -1,3 +1,8 @@
+local oberonOthersMessages = {
+	[1] = "Are you ever going to fight or do you prefer talking! Then let me show you the concept of mortality before it! Dare strike up a Minnesang and you will receive your last accolade!",
+	[2] = "Even before they smell your breath? Too bad you barely exist at all! SEHWO ASIMO, TOLIDO ESD Excuse me but I still do not get the message! Then why are we fighting alone right now? How appropriate, you look like something worms already got the better of!",
+};
+
 GrandMasterOberonAsking = {
 	[1] = {msg = "You appear like a worm among men!"},
 	[2] = {msg = "The world will suffer for its iddle laziness!"},
@@ -11,15 +16,15 @@ GrandMasterOberonAsking = {
 }
 
 GrandMasterOberonResponses = {
-	[1] = {msg = "How appropriate, you look like something worms already got the better of!"},
-	[2] = {msg = "Are you ever going to fight or do you prefer talking!"},
-	[3] = {msg = "Even before they smell your breath?"},
-	[4] = {msg = "Then let me show you the concept of mortality before it!"},
-	[5] = {msg = "Too bad you barely exist at all!"},
-	[6] = {msg = "Excuse me but I still do not get the message!"},
-	[7] = {msg = "Dare strike up a Minnesang and you will receive your last accolade!"},
-	[8] = {msg = "Then why are we fighting alone right now?"},
-	[9] = {msg = "SEHWO ASIMO, TOLIDO ESD!"},
+	[1] = {msg = "How appropriate, you look like something worms already got the better of!", msg2 = oberonOthersMessages[2]},
+	[2] = {msg = "Are you ever going to fight or do you prefer talking!", msg2 = oberonOthersMessages[1]},
+	[3] = {msg = "Even before they smell your breath?", msg2 = oberonOthersMessages[2]},
+	[4] = {msg = "Then let me show you the concept of mortality before it!", msg2 = oberonOthersMessages[1]},
+	[5] = {msg = "Too bad you barely exist at all!", msg2 = oberonOthersMessages[2]},
+	[6] = {msg = "Excuse me but I still do not get the message!", msg2 = oberonOthersMessages[2]},
+	[7] = {msg = "Dare strike up a Minnesang and you will receive your last accolade!", msg2 = oberonOthersMessages[1]},
+	[8] = {msg = "Then why are we fighting alone right now?", msg2 = oberonOthersMessages[2]},
+	[9] = {msg = "SEHWO ASIMO, TOLIDO ESD!", msg2 = oberonOthersMessages[2]},
 }
 
 GrandMasterOberonConfig = {

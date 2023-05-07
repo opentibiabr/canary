@@ -178,6 +178,7 @@ function Lever.setStorageAllPlayers(self, key, value) -- Will set storage on all
         local player = v.creature
         if player then
             player:setStorageValue(key, value)
+            player:sendBosstiaryCooldownTimer()
         end
     end
 end

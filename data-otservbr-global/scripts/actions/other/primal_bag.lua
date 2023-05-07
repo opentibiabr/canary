@@ -10,7 +10,7 @@ local rewards = {
     { id = 39177, name = "spiritthorn ring" },
     { id = 39180, name = "alicorn ring" },
     { id = 39183, name = "arcanomancer sigil" },
-    { id = 38186, name = "arboreal ring" }
+    { id = 39186, name = "arboreal ring" }
 }
 
 local primalBag = Action()

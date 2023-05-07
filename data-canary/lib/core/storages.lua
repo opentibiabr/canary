@@ -38,7 +38,6 @@ Storage = {
 }
 
 GlobalStorage = {
-	XpDisplayMode = 65006,
 	ExampleQuest = {
 		Example = 60000
 	}

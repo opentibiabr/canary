@@ -4,11 +4,10 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
-
 #include "io/iomap.h"
 #include "game/movement/teleport.h"
 #include "game/game.h"
@@ -226,24 +225,27 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 		uint16_t y = base_y + tile_coord.y + pos.y;
 		uint8_t z = static_cast<uint8_t>(base_z + pos.z);
 
+		auto tilePosition = Position(x, y, z);
+
 		if (unload) {
 			Tile* tile = map.getTile(Position(x, y, z));
-
-			if (const TileItemVector* items = tile->getItemList();
-				items) {
-				TileItemVector item_list = *items;
-				if (!item_list.size() == 0) {
-					for (Item* item : item_list) {
-						if (item) {
-							g_game().internalRemoveItem(item);
+			if (tile) {
+				if (const TileItemVector* items = tile->getItemList();
+					items) {
+					TileItemVector item_list = *items;
+					if (!item_list.size() == 0) {
+						for (Item* item : item_list) {
+							if (item) {
+								g_game().internalRemoveItem(item);
+							}
 						}
 					}
 				}
-			}
 
-			if (Item* ground = tile->getGround();
-				ground) {
-				g_game().internalRemoveItem(ground);
+				if (Item* ground = tile->getGround();
+					ground) {
+					g_game().internalRemoveItem(ground);
+				}
 			}
 			continue;
 		}
@@ -308,14 +310,17 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 				}
 
 				case OTBM_ATTR_ITEM: {
-					Item* item = Item::CreateItem(propStream);
-					if (!item) {
+					uint16_t id;
+					if (!propStream.read<uint16_t>(id)) {
 						std::ostringstream ss;
 						ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
 						setLastErrorString(ss.str());
-						SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
 						break;
-						;
+					}
+
+					Item* item = Item::CreateItem(id, tilePosition);
+					if (!item) {
+						continue;
 					}
 
 					if (Teleport* teleport = item->getTeleport()) {
@@ -393,22 +398,26 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 				return false;
 			}
 
-			Item* item = Item::CreateItem(stream);
-			if (!item) {
+			uint16_t id;
+			if (!stream.read<uint16_t>(id)) {
 				std::ostringstream ss;
 				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
 				setLastErrorString(ss.str());
 				SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
-				continue;
-				;
+				break;
 			}
 
-			if (!item->unserializeItemNode(loader, itemNode, stream)) {
+			Item* item = Item::CreateItem(id, tilePosition);
+			if (!item) {
+				continue;
+			}
+
+			if (!item->unserializeItemNode(loader, itemNode, stream, tilePosition)) {
 				std::ostringstream ss;
 				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to load item " << item->getID() << '.';
 				setLastErrorString(ss.str());
 				delete item;
-				return false;
+				continue;
 			}
 
 			if (isHouseTile && item->isMoveable()) {

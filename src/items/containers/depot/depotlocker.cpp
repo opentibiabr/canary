@@ -4,15 +4,15 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
 
 #include "items/containers/depot/depotlocker.h"
 
-DepotLocker::DepotLocker(uint16_t type) :
-	Container(type, 4), depotId(0) { }
+DepotLocker::DepotLocker(uint16_t type, uint16_t size) :
+	Container(type, size), depotId(0) { }
 
 Attr_ReadValue DepotLocker::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	if (attr == ATTR_DEPOT_ID) {

@@ -55,7 +55,7 @@ local function greetCallback(npc, creature)
 		for i = 1, #creatures do
 			Game.createMonster(creatures[i], npc:getPosition())
 		end
-		npcHandler:say('Arrrrgh! A dirty paleskin! To me my children! Kill them my guards!', TALKTYPE_SAY)
+		npcHandler:say('Arrrrgh! A dirty paleskin! To me my children! Kill them my guards!', npc, creature, 1000, TALKTYPE_SAY)
 		return false
 	else
 		npcHandler:setMessage(MESSAGE_GREET, 'Harrrrk! You think you are strong now? You shall never escape my wrath! I am immortal!')

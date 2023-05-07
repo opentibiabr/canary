@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_CREATURES_MONSTERS_MONSTER_H_
@@ -118,7 +118,6 @@ class Monster final : public Creature {
 		bool isFamiliar() const {
 			return mType->info.isFamiliar;
 		}
-		bool canSee(const Position &pos) const override;
 		bool canSeeInvisibility() const override {
 			return isImmune(CONDITION_INVISIBLE);
 		}
@@ -301,6 +300,10 @@ class Monster final : public Creature {
 
 		time_t getTimeToChangeFiendish() const {
 			return timeToChangeFiendish;
+		}
+
+		MonsterType* getMonsterType() const {
+			return mType;
 		}
 
 		void clearFiendishStatus();

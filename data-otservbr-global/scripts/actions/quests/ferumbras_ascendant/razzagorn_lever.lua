@@ -22,8 +22,7 @@ local config = {
 
 local ferumbrasAscendantRazzagornLever = Action()
 function ferumbrasAscendantRazzagornLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
-	return true
+	return CreateDefaultLeverBoss(player, config)
 end
 
 ferumbrasAscendantRazzagornLever:uid(1024)

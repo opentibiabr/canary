@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_ITEMS_CONTAINERS_DEPOT_DEPOTLOCKER_H_
@@ -15,7 +15,7 @@
 
 class DepotLocker final : public Container {
 	public:
-		explicit DepotLocker(uint16_t type);
+		explicit DepotLocker(uint16_t type, uint16_t size);
 
 		DepotLocker* getDepotLocker() override {
 			return this;

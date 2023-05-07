@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -14,10 +14,18 @@
 
 void Guild::addMember(Player* player) {
 	membersOnline.push_back(player);
+	for (Player* member : membersOnline) {
+		g_game().updatePlayerHelpers(member);
+	}
 }
 
 void Guild::removeMember(Player* player) {
 	membersOnline.remove(player);
+	for (Player* member : membersOnline) {
+		g_game().updatePlayerHelpers(member);
+	}
+
+	g_game().updatePlayerHelpers(player);
 	if (membersOnline.empty()) {
 		g_game().removeGuild(id);
 		delete this;

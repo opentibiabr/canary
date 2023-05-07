@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -54,8 +54,5 @@ void Reward::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 }
 
 Cylinder* Reward::getParent() const {
-	if (parent) {
-		return parent->getParent();
-	}
-	return nullptr;
+	return parent;
 }

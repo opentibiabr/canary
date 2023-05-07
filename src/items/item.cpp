@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -28,7 +28,7 @@
 
 Items Item::items;
 
-Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/) {
+Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/, Position* itemPosition /*= nullptr*/) {
 	Item* newItem = nullptr;
 
 	const ItemType &it = Item::items[type];
@@ -38,7 +38,7 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/) {
 
 	if (it.id != 0) {
 		if (it.isDepot()) {
-			newItem = new DepotLocker(type);
+			newItem = new DepotLocker(type, 4);
 		} else if (it.isRewardChest()) {
 			newItem = new RewardChest(type);
 		} else if (it.isContainer()) {
@@ -65,7 +65,10 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/) {
 		}
 
 		newItem->incrementReferenceCounter();
-	} else if (type != 0) {
+	} else if (type > 0 && itemPosition) {
+		auto position = *itemPosition;
+		SPDLOG_WARN("[Item::CreateItem] Item with id '{}', in position '{}' not exists in the appearances.dat and cannot be created.", type, position.toString());
+	} else {
 		SPDLOG_WARN("[Item::CreateItem] Item with id '{}' is not registered and cannot be created.", type);
 	}
 
@@ -144,46 +147,41 @@ Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size) {
 	return newItem;
 }
 
-Item* Item::CreateItem(PropStream &propStream) {
-	uint16_t id;
-	if (!propStream.read<uint16_t>(id)) {
-		return nullptr;
-	}
-
-	switch (id) {
+Item* Item::CreateItem(uint16_t itemId, Position &itemPosition) {
+	switch (itemId) {
 		case ITEM_FIREFIELD_PVP_FULL:
-			id = ITEM_FIREFIELD_PERSISTENT_FULL;
+			itemId = ITEM_FIREFIELD_PERSISTENT_FULL;
 			break;
 
 		case ITEM_FIREFIELD_PVP_MEDIUM:
-			id = ITEM_FIREFIELD_PERSISTENT_MEDIUM;
+			itemId = ITEM_FIREFIELD_PERSISTENT_MEDIUM;
 			break;
 
 		case ITEM_FIREFIELD_PVP_SMALL:
-			id = ITEM_FIREFIELD_PERSISTENT_SMALL;
+			itemId = ITEM_FIREFIELD_PERSISTENT_SMALL;
 			break;
 
 		case ITEM_ENERGYFIELD_PVP:
-			id = ITEM_ENERGYFIELD_PERSISTENT;
+			itemId = ITEM_ENERGYFIELD_PERSISTENT;
 			break;
 
 		case ITEM_POISONFIELD_PVP:
-			id = ITEM_POISONFIELD_PERSISTENT;
+			itemId = ITEM_POISONFIELD_PERSISTENT;
 			break;
 
 		case ITEM_MAGICWALL:
-			id = ITEM_MAGICWALL_PERSISTENT;
+			itemId = ITEM_MAGICWALL_PERSISTENT;
 			break;
 
 		case ITEM_WILDGROWTH:
-			id = ITEM_WILDGROWTH_PERSISTENT;
+			itemId = ITEM_WILDGROWTH_PERSISTENT;
 			break;
 
 		default:
 			break;
 	}
 
-	return Item::CreateItem(id, 0);
+	return Item::CreateItem(itemId, 0, &itemPosition);
 }
 
 Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
@@ -212,7 +210,7 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 Item::Item(const Item &i) :
 	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap) {
 	if (i.attributePtr) {
-		attributePtr.reset(new ItemAttribute());
+		attributePtr.reset(new ItemAttribute(*i.attributePtr));
 	}
 }
 
@@ -224,7 +222,7 @@ Item* Item::clone() const {
 	}
 
 	if (attributePtr) {
-		item->attributePtr.reset(new ItemAttribute());
+		item->attributePtr.reset(new ItemAttribute(*attributePtr));
 	}
 
 	return item;
@@ -236,6 +234,10 @@ bool Item::equals(const Item* compareItem) const {
 	}
 
 	if (id != compareItem->id) {
+		return false;
+	}
+
+	if (isStoreItem() != compareItem->isStoreItem()) {
 		return false;
 	}
 
@@ -404,6 +406,15 @@ void Item::setSubType(uint16_t n) {
 
 Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	switch (attr) {
+		case ATTR_STORE: {
+			int64_t timeStamp;
+			if (!propStream.read<int64_t>(timeStamp)) {
+				return ATTR_READ_ERROR;
+			}
+
+			setAttribute(ItemAttribute_t::STORE, timeStamp);
+			break;
+		}
 		case ATTR_COUNT:
 		case ATTR_RUNE_CHARGES: {
 			uint8_t charges;
@@ -726,6 +737,11 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 				addCustomAttribute(key, customAttribute);
 				// Remove old custom attribute
 				removeAttribute(ItemAttribute_t::CUSTOM);
+
+				// Migrate wrapable items to the new store attribute
+				if (getCustomAttribute("unWrapId") && getAttribute<int64_t>(ItemAttribute_t::STORE) == 0) {
+					setAttribute(ItemAttribute_t::STORE, getTimeNow());
+				}
 			}
 			break;
 		}
@@ -738,6 +754,17 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 			}
 
 			setAttribute(ItemAttribute_t::TIER, tier);
+			break;
+		}
+
+		case ATTR_AMOUNT: {
+			uint16_t amount;
+			if (!propStream.read<uint16_t>(amount)) {
+				SPDLOG_ERROR("[{}] failed to read amount", __FUNCTION__);
+				return ATTR_READ_ERROR;
+			}
+
+			setAttribute(AMOUNT, amount);
 			break;
 		}
 
@@ -787,12 +814,16 @@ bool Item::unserializeAttr(PropStream &propStream) {
 	return true;
 }
 
-bool Item::unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &propStream) {
+bool Item::unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &propStream, Position &itemPosition) {
 	return unserializeAttr(propStream);
 }
 
 void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 	const ItemType &it = items[id];
+	if (auto timeStamp = getAttribute<int64_t>(ItemAttribute_t::STORE)) {
+		propWriteStream.write<uint8_t>(ATTR_STORE);
+		propWriteStream.write<int64_t>(timeStamp);
+	}
 	if (it.stackable || it.isFluidContainer() || it.isSplash()) {
 		propWriteStream.write<uint8_t>(ATTR_COUNT);
 		propWriteStream.write<uint8_t>(getSubType());
@@ -919,6 +950,11 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<uint8_t>(getTier());
 	}
 
+	if (hasAttribute(AMOUNT)) {
+		propWriteStream.write<uint8_t>(ATTR_AMOUNT);
+		propWriteStream.write<uint16_t>(getAttribute<uint16_t>(AMOUNT));
+	}
+
 	// Serialize custom attributes, only serialize if the map not is empty
 	if (hasCustomAttribute()) {
 		auto customAttributeMap = getCustomAttributeMap();
@@ -967,6 +1003,13 @@ bool Item::hasProperty(ItemProperty prop) const {
 
 bool Item::canBeMoved() const {
 	return isMoveable() && !hasAttribute(UNIQUEID) && (!hasAttribute(ACTIONID) || getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != IMMOVABLE_ACTION_ID);
+}
+
+void Item::checkDecayMapItemOnMove() {
+	if (getDuration() > 0 && getLoadedFromMap() && canBeMoved()) {
+		setLoadedFromMap(false);
+		startDecaying();
+	}
 }
 
 uint32_t Item::getWeight() const {

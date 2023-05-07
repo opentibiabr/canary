@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Earl Osam")
 local monster = {}
 
 monster.description = "Earl Osam"
-monster.experience = 44200
+monster.experience = 55000
 monster.outfit = {
 	lookType = 1223,
 	lookHead = 113,
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 50000
-monster.maxHealth = 50000
+monster.health = 300000
+monster.maxHealth = 300000
 monster.race = "venom"
 monster.corpse = 31599
 monster.speed = 125
@@ -28,7 +28,7 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1757,
 	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.BosstiaryCooldown.EarlOsam
+	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.EarlOsamTimer
 }
 
 monster.strategiesTarget = {
@@ -63,7 +63,7 @@ monster.light = {
 monster.summon = {
 	maxSummons = 5,
 	summons = {
-		{name = "Frozen Soul", chance = 20, interval = 2000, count = 5}
+		{name = "Frozen Soul", chance = 50, interval = 2000, count = 5}
 	}
 }
 
@@ -100,6 +100,7 @@ monster.loot = {
 }
 
 monster.attacks = {
+	{name ="melee", interval = 2000, chance = 100, minDamage = -200, maxDamage = -1000, effect = CONST_ME_DRAWBLOOD},
 	{name ="combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -400, maxDamage = -1000, length = 7, spread = 3, effect = CONST_ME_ICEATTACK, target = false},
 	{name ="combat", interval = 1800, chance = 25, type = COMBAT_EARTHDAMAGE, minDamage = -400, maxDamage = -1000, length = 7, spread = 2, effect = CONST_ME_POISONAREA, target = false},
 	{name ="combat", interval = 2000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -260, maxDamage = -420, range = 3, effect = CONST_ME_BLUE_ENERGY_SPARK, target = true}

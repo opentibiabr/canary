@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_ITEMS_FUNCTIONS_ITEM_ATTRIBUTE_HPP
@@ -18,6 +18,7 @@ class ItemAttributeHelper {
 	public:
 		bool isAttributeInteger(ItemAttribute_t type) const {
 			std::underlying_type_t<ItemAttribute_t> checkTypes = 0;
+			checkTypes |= ItemAttribute_t::STORE;
 			checkTypes |= ItemAttribute_t::ACTIONID;
 			checkTypes |= ItemAttribute_t::UNIQUEID;
 			checkTypes |= ItemAttribute_t::DATE;
@@ -40,6 +41,7 @@ class ItemAttributeHelper {
 			checkTypes |= ItemAttribute_t::QUICKLOOTCONTAINER;
 			checkTypes |= ItemAttribute_t::DURATION_TIMESTAMP;
 			checkTypes |= ItemAttribute_t::TIER;
+			checkTypes |= ItemAttribute_t::AMOUNT;
 			return (type & static_cast<ItemAttribute_t>(checkTypes)) != 0;
 		}
 
@@ -158,10 +160,6 @@ class ItemAttribute : public ItemAttributeHelper {
 		Attributes &getAttributesByType(ItemAttribute_t type);
 
 	private:
-		// Singleton - ensures we don't accidentally copy it.
-		ItemAttribute(const ItemAttribute &) = delete;
-		ItemAttribute &operator=(const ItemAttribute &) = delete;
-
 		std::map<std::string, CustomAttribute, std::less<>> customAttributeMap;
 		std::underlying_type_t<ItemAttribute_t> attributeBits = 0;
 		std::vector<Attributes> attributeVector;

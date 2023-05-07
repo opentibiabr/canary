@@ -19,13 +19,13 @@ end
 local save = GlobalEvent("save")
 
 function save.onTime(interval)
-	local remaningTime = 60 * 1000
+	local remainingTime = 60 * 1000
 	if configManager.getBoolean(configKeys.TOGGLE_SAVE_INTERVAL) then
-		local message = "The server will save all accounts within " .. (remaningTime/1000) .." seconds. \z
+		local message = "The server will save all accounts within " .. (remainingTime / 1000) .. " seconds. \z
 		You might lag or freeze for 5 seconds, please find a safe place."
 		Game.broadcastMessage(message, MESSAGE_GAME_HIGHLIGHT)
 		Spdlog.info(string.format(message, SAVE_INTERVAL_CONFIG_TIME, SAVE_INTERVAL_TYPE))
-		addEvent(serverSave, remaningTime, interval)
+		addEvent(serverSave, remainingTime, interval)
 		return true
 	end
 	return not configManager.getBoolean(configKeys.TOGGLE_SAVE_INTERVAL)

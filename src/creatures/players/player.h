@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_CREATURES_PLAYERS_PLAYER_H_
@@ -17,6 +17,7 @@
 #include "declarations.hpp"
 #include "items/containers/depot/depotchest.h"
 #include "items/containers/depot/depotlocker.h"
+#include "grouping/familiars.h"
 #include "grouping/groups.h"
 #include "grouping/guild.h"
 #include "imbuements/imbuements.h"
@@ -561,7 +562,15 @@ class Player final : public Creature, public Cylinder {
 		void addMessageBuffer();
 		void removeMessageBuffer();
 
-		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false, bool removeFromStash = false);
+		bool removeItemOfType(uint16_t itemId, uint32_t itemAmount, int32_t subType, bool ignoreEquipped = false);
+		/**
+		 * @param itemAmount is uint32_t because stash item is uint32_t max
+		 */
+		bool hasItemCountById(uint16_t itemId, uint32_t itemCount, bool checkStash) const;
+		/**
+		 * @param itemAmount is uint32_t because stash item is uint32_t max
+		 */
+		bool removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool removeFromStash = true);
 
 		void addItemOnStash(uint16_t itemId, uint32_t amount) {
 			auto it = stashItems.find(itemId);
@@ -762,12 +771,17 @@ class Player final : public Creature, public Cylinder {
 			return lastAttack > 0 && ((OTSYS_TIME() - lastAttack) >= getAttackSpeed());
 		}
 
-		uint16_t getSkillLevel(uint8_t skill) const {
+		uint16_t getSkillLevel(uint8_t skill, bool sendToClient = false) const {
 			auto skillLevel = std::max<int32_t>(0, skills[skill].level + varSkills[skill]);
 
 			if (auto it = maxValuePerSkill.find(skill);
 				it != maxValuePerSkill.end()) {
 				skillLevel = std::min<int32_t>(it->second, skillLevel);
+			}
+
+			// Send to client multiplied skill mana/life leech (13.00+ version changed to decimal)
+			if (sendToClient && (skill == SKILL_MANA_LEECH_AMOUNT || skill == SKILL_LIFE_LEECH_AMOUNT)) {
+				return skillLevel * 100;
 			}
 
 			return static_cast<uint16_t>(skillLevel);
@@ -1013,7 +1027,7 @@ class Player final : public Creature, public Cylinder {
 				client->sendCreatureType(creature, creatureType);
 			}
 		}
-		void sendSpellCooldown(uint8_t spellId, uint32_t time) {
+		void sendSpellCooldown(uint16_t spellId, uint32_t time) {
 			if (client) {
 				client->sendSpellCooldown(spellId, time);
 			}
@@ -1036,6 +1050,7 @@ class Player final : public Creature, public Cylinder {
 		void sendModalWindow(const ModalWindow &modalWindow);
 
 		// container
+		void closeAllExternalContainers();
 		void sendAddContainerItem(const Container* container, const Item* item);
 		void sendUpdateContainerItem(const Container* container, uint16_t slot, const Item* newItem);
 		void sendRemoveContainerItem(const Container* container, uint16_t slot);
@@ -1480,11 +1495,6 @@ class Player final : public Creature, public Cylinder {
 		void resetAsyncOngoingTask(uint64_t flags) {
 			asyncOngoingTasks &= ~(flags);
 		}
-		void sendTournamentLeaderboard() {
-			if (client) {
-				client->sendTournamentLeaderboard();
-			}
-		}
 		void sendEnterWorld() {
 			if (client) {
 				client->sendEnterWorld();
@@ -1641,6 +1651,7 @@ class Player final : public Creature, public Cylinder {
 
 		void addItemImbuementStats(const Imbuement* imbuement);
 		void removeItemImbuementStats(const Imbuement* imbuement);
+		void updateImbuementTrackerStats() const;
 
 		bool isUIExhausted(uint32_t exhaustionTime = 250) const;
 		void updateUIExhausted();
@@ -1694,6 +1705,12 @@ class Player final : public Creature, public Cylinder {
 				client->sendTeamFinderList();
 			}
 		}
+		void sendCreatureHelpers(uint32_t creatureId, uint16_t helpers) {
+			if (client) {
+				client->sendCreatureHelpers(creatureId, helpers);
+			}
+		}
+
 		void setItemCustomPrice(uint16_t itemId, uint64_t price) {
 			itemPriceMap[itemId] = price;
 		}
@@ -2223,6 +2240,11 @@ class Player final : public Creature, public Cylinder {
 		uint32_t getBossPoints() const {
 			return bossPoints;
 		}
+		void sendBosstiaryCooldownTimer() const {
+			if (client) {
+				client->sendBosstiaryCooldownTimer();
+			}
+		}
 
 		void setSlotBossId(uint8_t slotId, uint32_t bossId) {
 			if (slotId == 1)
@@ -2259,6 +2281,12 @@ class Player final : public Creature, public Cylinder {
 		void sendBosstiaryEntryChanged(uint32_t bossid) {
 			if (client) {
 				client->sendBosstiaryEntryChanged(bossid);
+			}
+		}
+
+		void sendInventoryImbuements(const std::map<Slots_t, Item*> items) const {
+			if (client) {
+				client->sendInventoryImbuements(items);
 			}
 		}
 
@@ -2541,6 +2569,7 @@ class Player final : public Creature, public Cylinder {
 		bool exerciseTraining = false;
 		bool moved = false;
 		bool dead = false;
+		bool imbuementTrackerWindowOpen = false;
 
 		void updateItemsLight(bool internal = false);
 		uint16_t getStepSpeed() const override {

@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -154,7 +154,7 @@ Spell* Spells::getSpellByName(const std::string &name) {
 	return spell;
 }
 
-RuneSpell* Spells::getRuneSpell(uint32_t id) {
+RuneSpell* Spells::getRuneSpell(uint16_t id) {
 	auto it = runes.find(id);
 	if (it == runes.end()) {
 		for (auto &rune : runes) {
@@ -210,7 +210,7 @@ InstantSpell* Spells::getInstantSpell(const std::string &words) {
 	return nullptr;
 }
 
-InstantSpell* Spells::getInstantSpellById(uint32_t spellId) {
+InstantSpell* Spells::getInstantSpellById(uint16_t spellId) {
 	for (auto &it : instants) {
 		if (it.second.getId() == spellId) {
 			return &it.second;
@@ -622,7 +622,7 @@ bool InstantSpell::playerCastInstant(Player* player, std::string &param) {
 			}
 
 			target = playerTarget;
-			if (!target || target->getHealth() <= 0) {
+			if (!target || target->isRemoved() || target->getHealth() <= 0) {
 				if (!casterTargetOrDirection) {
 					applyCooldownConditions(player);
 
@@ -639,7 +639,7 @@ bool InstantSpell::playerCastInstant(Player* player, std::string &param) {
 			}
 		} else {
 			target = player->getAttackedCreature();
-			if (!target || target->getHealth() <= 0) {
+			if (!target || target->isRemoved() || target->getHealth() <= 0) {
 				if (!casterTargetOrDirection) {
 					player->sendCancelMessage(RETURNVALUE_YOUCANONLYUSEITONCREATURES);
 					g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);

@@ -4,7 +4,7 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -223,10 +223,10 @@ int ContainerFunctions::luaContainerGetItemCountById(lua_State* L) {
 }
 
 int ContainerFunctions::luaContainerGetContentDescription(lua_State* L) {
-	// container:getContentDescription()
+	// container:getContentDescription([oldProtocol])
 	Container* container = getUserdata<Container>(L, 1);
 	if (container) {
-		pushString(L, container->getContentDescription());
+		pushString(L, container->getContentDescription(getBoolean(L, 2, false)));
 	} else {
 		lua_pushnil(L);
 	}

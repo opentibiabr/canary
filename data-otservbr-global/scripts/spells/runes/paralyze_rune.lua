@@ -28,7 +28,7 @@ rune:setPzLocked(true)
 rune:level(54)
 rune:magicLevel(18)
 rune:cooldown(6 * 1000)
-rune:groupCooldown(6 * 1000)
+rune:groupCooldown(2 * 1000)
 rune:mana(1400)
 rune:needTarget(true)
 rune:isBlocking(true) -- True = Solid / False = Creature

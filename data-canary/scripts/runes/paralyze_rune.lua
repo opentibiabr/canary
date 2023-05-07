@@ -18,6 +18,7 @@ function rune.onCastSpell(creature, var)
 	return true
 end
 
+rune:id(54)
 rune:group("support")
 rune:name("paralyze rune")
 rune:runeId(3165)

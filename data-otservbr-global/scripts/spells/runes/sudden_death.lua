@@ -16,6 +16,7 @@ function rune.onCastSpell(creature, var, isHotkey)
 	return combat:execute(creature, var)
 end
 
+rune:id(21)
 rune:group("attack")
 rune:name("sudden death rune")
 rune:runeId(3155)

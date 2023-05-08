@@ -18,6 +18,7 @@ function spell.onCastSpell(creature, variant, isHotkey)
 	return combat:execute(creature, variant)
 end
 
+spell:id(86)
 spell:name("Magic Wall Rune")
 spell:group("attack")
 spell:cooldown(2 * 1000)

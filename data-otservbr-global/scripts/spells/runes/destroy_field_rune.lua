@@ -18,6 +18,7 @@ function rune.onCastSpell(creature, variant, isHotkey)
 	return false
 end
 
+rune:id(30)
 rune:group("support")
 rune:name("destroy field rune")
 rune:runeId(3148)

@@ -17,6 +17,7 @@ function rune.onCastSpell(creature, var, isHotkey)
 	return combat:execute(creature, var)
 end
 
+rune:id(77)
 rune:group("attack")
 rune:name("stalagmite rune")
 rune:runeId(3179)

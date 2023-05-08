@@ -26,6 +26,7 @@ function rune.onCastSpell(creature, variant, isHotkey)
 	return true
 end
 
+rune:id(78)
 rune:group("support")
 rune:name("desintegrate rune")
 rune:runeId(3197)

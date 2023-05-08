@@ -83,6 +83,16 @@ monster.summon = {
 	}
 }
 
+monster.sounds = {
+	ticks = 5000,
+	chance = 10,
+	death = SOUND_EFFECT_TYPE_DEMON_DEATH,
+	ids = {
+		SOUND_EFFECT_TYPE_DEMON_BARK,
+		SOUND_EFFECT_TYPE_UNKNOWN_CREATURE_DEATH_1
+	}
+}
+
 monster.voices = {
 	interval = 5000,
 	chance = 10,

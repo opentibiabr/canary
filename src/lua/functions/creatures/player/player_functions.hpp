@@ -296,7 +296,11 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "getBossBonus", PlayerFunctions::luaPlayerGetBossBonus);
 			registerMethod(L, "Player", "sendBosstiaryCooldownTimer", PlayerFunctions::luaPlayerBosstiaryCooldownTimer);
 
-			registerMethod(L, "Player", "getName", PlayerFunctions::luaPlayerGetName);
+			registerMethod(L, "Player", "sendSingleSoundEffect", PlayerFunctions::luaPlayerSendSingleSoundEffect);
+			registerMethod(L, "Player", "sendDoubleSoundEffect", PlayerFunctions::luaPlayerSendDoubleSoundEffect);
+
+      registerMethod(L, "Player", "getName", PlayerFunctions::luaPlayerGetName);
+  
 
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
@@ -585,7 +589,11 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetBossBonus(lua_State* L);
 		static int luaPlayerBosstiaryCooldownTimer(lua_State* L);
 
-		static int luaPlayerGetName(lua_State* L);
+		static int luaPlayerSendSingleSoundEffect(lua_State* L);
+		static int luaPlayerSendDoubleSoundEffect(lua_State* L);
+
+    static int luaPlayerGetName(lua_State* L);
+  
 
 		friend class CreatureFunctions;
 };

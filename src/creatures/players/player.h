@@ -87,6 +87,7 @@ using MuteCountMap = std::map<uint32_t, uint32_t>;
 
 static constexpr int32_t PLAYER_MAX_SPEED = 65535;
 static constexpr int32_t PLAYER_MIN_SPEED = 10;
+static constexpr int32_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
 class Player final : public Creature, public Cylinder {
 	public:
@@ -1100,6 +1101,21 @@ class Player final : public Creature, public Cylinder {
 				client->sendLootContainers();
 			}
 		}
+
+		void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) {
+			if (client) {
+				client->sendSingleSoundEffect(pos, id, source);
+			}
+		}
+
+		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) {
+			if (client) {
+				client->sendDoubleSoundEffect(pos, mainSoundId, mainSource, secondarySoundId, secondarySource);
+			}
+		}
+
+		SoundEffect_t getAttackSoundEffect() const;
+		SoundEffect_t getHitSoundEffect() const;
 
 		// event methods
 		void onUpdateTileItem(const Tile* tile, const Position &pos, const Item* oldItem, const ItemType &oldType, const Item* newItem, const ItemType &newType) override;

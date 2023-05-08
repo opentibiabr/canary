@@ -29,6 +29,8 @@ end
 rune:id(78)
 rune:group("support")
 rune:name("desintegrate rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_DISINTEGRATE_RUNE)
 rune:runeId(3197)
 rune:allowFarUse(false)
 rune:charges(3)

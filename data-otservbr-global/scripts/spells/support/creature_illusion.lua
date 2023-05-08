@@ -8,7 +8,7 @@ function spell.onCastSpell(creature, variant)
 	local monsterType = MonsterType(variant:getString())
 	if not monsterType then
 		returnValue = RETURNVALUE_CREATUREDOESNOTEXIST
-	elseif not getPlayerFlagValue(creature, PlayerFlag_CanIllusionAll) and not monsterType:isIllusionable() then
+	elseif not creature:hasFlag(PlayerFlag_CanIllusionAll) and not monsterType:isIllusionable() then
 		returnValue = RETURNVALUE_NOTPOSSIBLE
 	end
 
@@ -28,6 +28,7 @@ spell:name("Creature Illusion")
 spell:words("utevo res ina")
 spell:group("support")
 spell:vocation("druid;true", "elder druid;true", "sorcerer;true", "master sorcerer;true")
+spell:castSound(SOUND_EFFECT_TYPE_SPELL_CREATURE_ILLUSION)
 spell:id(38)
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)

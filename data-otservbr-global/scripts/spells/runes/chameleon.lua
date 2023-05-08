@@ -31,6 +31,8 @@ end
 rune:id(14)
 rune:group("support")
 rune:name("chameleon rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_CHAMELEON_RUNE)
 rune:runeId(3178)
 rune:allowFarUse(true)
 rune:charges(1)

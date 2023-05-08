@@ -238,7 +238,7 @@ bool House::transferToDepot(Player* player) const {
 		if (const TileItemVector* items = tile->getItemList()) {
 			for (Item* item : *items) {
 				if (item->isWrapable()) {
-					handleWrapableItem(moveItemList, item);
+					handleWrapableItem(moveItemList, item, player, tile);
 				} else if (item->isPickupable()) {
 					moveItemList.push_back(item);
 				} else {

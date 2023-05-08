@@ -299,8 +299,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "sendSingleSoundEffect", PlayerFunctions::luaPlayerSendSingleSoundEffect);
 			registerMethod(L, "Player", "sendDoubleSoundEffect", PlayerFunctions::luaPlayerSendDoubleSoundEffect);
 
-      registerMethod(L, "Player", "getName", PlayerFunctions::luaPlayerGetName);
-  
+			registerMethod(L, "Player", "getName", PlayerFunctions::luaPlayerGetName);
 
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);

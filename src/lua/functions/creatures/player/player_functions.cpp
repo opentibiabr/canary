@@ -3380,7 +3380,6 @@ int PlayerFunctions::luaPlayerGetName(lua_State* L) {
 		return 0;
 	}
 
-  pushString(L, player->getName());
-
-  return 1;
+	pushString(L, player->getName());
+	return 1;
 }

@@ -504,10 +504,12 @@ int MonsterFunctions::luaMonsterIsForgeable(lua_State* L) {
 int MonsterFunctions::luaMonsterGetName(lua_State* L) {
 	// monster:getName()
 	const auto monster = getUserdata<const Monster>(L, 1);
-	if (monster) {
-		pushString(L, monster->getName());
-	} else {
-		lua_pushnil(L);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
+
+	pushString(L, monster->getName());
 	return 1;
 }

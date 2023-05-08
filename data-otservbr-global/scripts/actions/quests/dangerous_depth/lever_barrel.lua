@@ -93,30 +93,21 @@ local function explode(item)
 	local position = item:getPosition()
 	local fromPosition = Position(position.x - 6, position.y - 6, position.z)
 	local toPosition = Position(position.x + 6, position.y + 6, position.z)
-	local c = Game.getPlayers()[1]
 
 	addEvent(function()
-	for x = fromPosition.x, toPosition.x do
-		for y = fromPosition.y, toPosition.y do
-			for z = fromPosition.z, toPosition.z do
-				if Tile(Position(x, y, z)) then
-					if Tile(Position(x, y, z)) then
-						local posEffect = Tile(Position(x, y, z)):getPosition()
-						local creature = Tile(Position(x, y, z)):getTopCreature()
-						posEffect:sendMagicEffect(CONST_ME_FIREAREA)
-					end
+		for x = fromPosition.x, toPosition.x do
+			for y = fromPosition.y, toPosition.y do
+				for z = fromPosition.z, toPosition.z do
+					Position(x, y, z):sendMagicEffect(CONST_ME_FIREAREA)
 				end
 			end
 		end
-	end
-	checarPos(item)
-	c:say("KABOOM!!", TALKTYPE_MONSTER_SAY, false, false, position)
+		checarPos(item)
 		if item then
 			item:remove()
 		end
 	end, 2 * 1000)
 	item:transform(32401)
-	c:say("Tsssss...!", TALKTYPE_MONSTER_SAY, false, false, position)
 end
 
 local dangerousDepthLever = Action()
@@ -136,12 +127,21 @@ function dangerousDepthLever.onUse(player, item)
 				return false
 			end
 			barrel:setCustomAttribute(Storage.DangerousDepths.Scouts.Barrel, player:getId())
-			addEvent(function()
-				if barrel then
-					explode(barrel)
+
+			addEvent(function(pos, pid)
+				local tile = Tile(pos)
+				if tile then
+					local barrel = tile:getItemById(27492)
+					if barrel then
+						explode(barrel)
+					end
 				end
-			player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelTimer, 0)
-			end, 2 * 60 * 1000)
+				local player = Player(pid)
+				if player then
+					player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelTimer, 0)
+				end
+			end, 2 * 60 * 1000, posBarrel, player:getId())
+
 			--Time is set to 0 when barrel explodes
 			player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelTimer, os.time() + 2 * 60)
 		end

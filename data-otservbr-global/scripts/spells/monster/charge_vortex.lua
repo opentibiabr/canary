@@ -30,7 +30,7 @@ local function createVortex()
 		if ground then
 			ground:transform(22894)
 		    addEvent(function()
-			ground:transform(23049)
+				ground:transform(23049)
 			end, 10*1000) -- 10*1000 = 10 SECONDS
 			mathCount = mathCount + 1
 			table.remove(positions, r1)

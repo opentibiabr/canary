@@ -21,7 +21,9 @@ local function removeFeroxa(feroxa)
 	end
 
 	feroxa = Game.createMonster('Feroxa', Position(33380, 31537, 11), true, true)
-	addEvent(removeFeroxa, 5 * 60 * 1000, feroxa:getId())
+	if feroxa then
+		addEvent(removeFeroxa, 5 * 60 * 1000, feroxa:getId())
+	end
 end
 
 local function final()

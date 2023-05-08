@@ -591,8 +591,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerSendSingleSoundEffect(lua_State* L);
 		static int luaPlayerSendDoubleSoundEffect(lua_State* L);
 
-    static int luaPlayerGetName(lua_State* L);
-  
+		static int luaPlayerGetName(lua_State* L);
 
 		friend class CreatureFunctions;
 };

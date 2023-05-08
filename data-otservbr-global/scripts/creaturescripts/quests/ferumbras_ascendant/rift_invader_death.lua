@@ -55,7 +55,7 @@ function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 			if tile then
 				local vortexItem = tile:getItemById(22455)
 				if vortexItem then
-					vortex:remove(1)
+					vortexItem:remove(1)
 				end
 			end
 		end, 10 * 1000, creature:getPosition())

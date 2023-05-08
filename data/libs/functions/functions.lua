@@ -268,7 +268,7 @@ function resetFerumbrasAscendantHabitats()
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Roshamuul, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Venom, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats, 0)
-	
+
 	for _, spec in pairs(Game.getSpectators(Position(33629, 32693, 12), false, false, 25, 25, 85, 85)) do
 		if spec:isPlayer() then
 			spec:teleportTo(Position(33630, 32648, 12))
@@ -278,7 +278,7 @@ function resetFerumbrasAscendantHabitats()
 			spec:remove()
 		end
 	end
-	
+
 	for x = 33611, 33625 do
 		for y = 32658, 32727 do
 			local position = Position(x, y, 12)

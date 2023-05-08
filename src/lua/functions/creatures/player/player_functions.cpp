@@ -3334,3 +3334,14 @@ int PlayerFunctions::luaPlayerGetBossBonus(lua_State* L) {
 	lua_pushnumber(L, static_cast<lua_Number>(bonusBoss));
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerGetName(lua_State* L) {
+	// player:getName()
+	const auto player = getUserdata<const Player>(L, 1);
+	if (player) {
+		pushString(L, player->getName());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}

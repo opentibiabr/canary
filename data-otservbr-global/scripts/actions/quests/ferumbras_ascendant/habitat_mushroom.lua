@@ -409,7 +409,14 @@ function ferumbrasAscendantHabitatMushroom.onUse(player, item, fromPosition, tar
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats, Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) + 1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The room transforms into a completely different landscape.')
 		if Game.getStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats) >= 8 then
-			addEvent(functionRevert, 1 * 60 * 60 * 1000)
+			addEvent(function()
+				resetFerumbrasAscendantHabitats()
+				local basin = Tile(Position(33628, 32685, 12)):getItemById(22196)
+				if basin then
+					basin:getPosition():sendMagicEffect(CONST_ME_ENERGYAREA)
+					basin:transform(11114)
+				end
+			end, 1 * 60 * 60 * 1000)
 		end
 	elseif item.itemid == 9126 then
 		item:transform(9125)

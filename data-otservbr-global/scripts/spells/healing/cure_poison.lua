@@ -14,6 +14,7 @@ spell:words("exana pox")
 spell:group("healing")
 spell:vocation("druid;true", "elder druid;true", "knight;true", "elite knight;true", "paladin;true",
                "royal paladin;true", "sorcerer;true", "master sorcerer;true")
+spell:castSound(SOUND_EFFECT_TYPE_SPELL_CURE_POISON)
 spell:id(29)
 spell:cooldown(6000)
 spell:groupCooldown(1000)

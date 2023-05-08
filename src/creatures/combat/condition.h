@@ -72,6 +72,13 @@ class Condition {
 		bool isBuff;
 
 		virtual bool updateCondition(const Condition* addCondition);
+
+	private:
+		SoundEffect_t tickSound = SoundEffect_t::SILENCE;
+		SoundEffect_t addSound = SoundEffect_t::SILENCE;
+
+		friend class ConditionDamage;
+		friend class ConditionGeneric;
 };
 
 class ConditionGeneric : public Condition {

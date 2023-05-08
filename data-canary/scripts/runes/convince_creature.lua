@@ -40,6 +40,8 @@ end
 rune:id(12)
 rune:group("support")
 rune:name("convince creature rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_CONVINCE_CREATURE_RUNE)
 rune:runeId(3177)
 rune:allowFarUse(true)
 rune:charges(1)

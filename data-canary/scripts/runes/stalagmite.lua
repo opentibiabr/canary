@@ -20,6 +20,8 @@ end
 rune:id(77)
 rune:group("attack")
 rune:name("stalagmite rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_STALAGMITE_RUNE)
 rune:runeId(3179)
 rune:allowFarUse(true)
 rune:charges(10)

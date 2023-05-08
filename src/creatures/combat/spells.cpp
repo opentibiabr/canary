@@ -266,6 +266,14 @@ bool CombatSpell::castSpell(Creature* creature) {
 		pos = creature->getPosition();
 	}
 
+	if (soundCastEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_CASTSOUND, static_cast<uint32_t>(soundCastEffect));
+	}
+
+	if (soundImpactEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_IMPACTSOUND, static_cast<uint32_t>(soundImpactEffect));
+	}
+
 	combat->doCombat(creature, pos);
 	return true;
 }
@@ -290,6 +298,14 @@ bool CombatSpell::castSpell(Creature* creature, Creature* target) {
 		}
 
 		return executeCastSpell(creature, var);
+	}
+
+	if (soundCastEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_CASTSOUND, static_cast<uint32_t>(soundCastEffect));
+	}
+
+	if (soundImpactEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_IMPACTSOUND, static_cast<uint32_t>(soundImpactEffect));
 	}
 
 	if (combat->hasArea()) {
@@ -564,6 +580,10 @@ void Spell::postCastSpell(Player* player, bool finishedCast /*= true*/, bool pay
 
 		if (aggressive) {
 			player->addInFightTicks();
+		}
+
+		if (player && soundCastEffect != SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(player->getPosition(), soundCastEffect, soundImpactEffect, player);
 		}
 	}
 

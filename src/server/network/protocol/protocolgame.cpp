@@ -6659,16 +6659,16 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 			msg.addByte(std::min<uint8_t>(100, static_cast<uint8_t>(player->getSkillPercent(i))));
 		}
 	} else {
-		msg.add<uint16_t>(static_cast<uint16_t>(std::min<uint32_t>(player->getMagicLevel(), std::numeric_limits<uint16_t>::max())));
-		msg.add<uint16_t>(static_cast<uint16_t>(std::min<uint32_t>(player->getBaseMagicLevel(), std::numeric_limits<uint16_t>::max())));
-		msg.add<uint16_t>(static_cast<uint16_t>(std::min<uint32_t>(player->getBaseMagicLevel(), std::numeric_limits<uint16_t>::max())));
-		msg.add<uint16_t>(std::min<uint16_t>(static_cast<uint16_t>(player->getMagicLevelPercent()), 100));
+		msg.add<uint16_t>(player->getMagicLevel());
+		msg.add<uint16_t>(player->getBaseMagicLevel());
+		msg.add<uint16_t>(player->getBaseMagicLevel()); // Loyalty Bonus
+		msg.add<uint16_t>(player->getMagicLevelPercent() * 100);
 
 		for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i) {
-			msg.add<uint16_t>(player->getSkillLevel(i));
+			msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
 			msg.add<uint16_t>(player->getBaseSkill(i));
-			msg.add<uint16_t>(player->getBaseSkill(i));
-			msg.add<uint16_t>(static_cast<uint8_t>(player->getSkillPercent(i)) * 100);
+			msg.add<uint16_t>(player->getBaseSkill(i)); // Loyalty Bonus
+			msg.add<uint16_t>(player->getSkillPercent(i) * 100);
 		}
 	}
 

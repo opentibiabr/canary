@@ -14,10 +14,6 @@ local function removeTp()
     end
 end
 
-local function magicEffectWz(pos, cons)
-    pos:sendMagicEffect(cons)
-end
-
 local function createTp()
     local cristal = Tile(posdotp):getItemById(15467)
     if cristal then
@@ -35,13 +31,17 @@ function bigfootWarzoneCrystal.onUse(player, item, fromPosition, itemEx, toPosit
     local config = warzoneConfig.findByName("Deathstrike")
     if Game.getStorageValue(96974) < 1 then
         Game.setStorageValue(96974, 1)
-        for i = 1, 10 do
-          for k = 1, 6 do
-            pos = Position(math.random(33094, 33101), math.random(31900, 31916), 10)
-                addEvent(Game.createMonster, i * 20 * 1000, creatures[math.random(1,2)], pos)
-                addEvent(magicEffectWz, i * 20 * 1000, pos, CONST_ME_TELEPORT)
-            end
-        end
+
+		for i = 1, 10 do
+			for k = 1, 6 do
+				local rand_creature = creatures[math.random(1,2)]
+				local pos = Position(math.random(33094, 33101), math.random(31900, 31916), 10)
+				addEvent(function(c, pos)
+					Game.createMonster(c, pos)
+					pos:sendMagicEffect(CONST_ME_TELEPORT)
+				end, i * 20 * 1000, rand_creature, pos)
+			end
+		end
 
         player:say("The crystals are charging!", TALKTYPE_MONSTER_SAY, false, player, toPosition)
         addEvent(createTp, 200000) -- 3.33 min

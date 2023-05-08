@@ -49,9 +49,17 @@ function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 	end
 
 	local vortex = Game.createItem(22455, 1, creature:getPosition())
-	addEvent(function()
-		vortex:remove(1)
-	end, 10 * 1000)
+	if vortex then
+		addEvent(function(pos)
+			local tile = Tile(pos)
+			if tile then
+				local vortexItem = tile:getItemById(22455)
+				if vortexItem then
+					vortexItem:remove(1)
+				end
+			end
+		end, 10 * 1000, creature:getPosition())
+	end
 	return true
 end
 

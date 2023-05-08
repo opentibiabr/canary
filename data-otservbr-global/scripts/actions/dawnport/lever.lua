@@ -66,7 +66,7 @@ function lever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		player:say("<crrk>", TALKTYPE_MONSTER_SAY, false, player, {x = 32107, y = 31904, z = 7})
 		player:setStorageValue(Storage.Dawnport.Lever, 1)
 		item:transform(21290)
-		addEvent(function()
+		addEvent(function(pos)
 			local tile = Tile(pos)
 			if tile then
 				local item = tile:getItemById(21290)

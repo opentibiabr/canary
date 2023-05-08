@@ -14,6 +14,8 @@ end
 rune:id(28)
 rune:group("attack")
 rune:name("fire wall rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_FIRE_WALL_RUNE)
 rune:runeId(3190)
 rune:allowFarUse(true)
 rune:setPzLocked(true)

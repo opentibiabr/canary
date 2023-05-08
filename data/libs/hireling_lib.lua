@@ -37,7 +37,7 @@ HIRELING_SKILLS = {
 }
 
 HIRELING_SEX = {
-	FEMALE = 0,
+	FEMALE = 2,
 	MALE = 1
 }
 

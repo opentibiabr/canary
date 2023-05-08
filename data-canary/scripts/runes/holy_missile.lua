@@ -18,6 +18,7 @@ function rune.onCastSpell(creature, var, isHotkey)
 	return combat:execute(creature, var)
 end
 
+rune:id(130)
 rune:group("attack")
 rune:name("holy missile rune")
 rune:runeId(3182)

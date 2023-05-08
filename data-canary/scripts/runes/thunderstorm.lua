@@ -18,6 +18,7 @@ function rune.onCastSpell(creature, var, isHotkey)
 	return combat:execute(creature, var)
 end
 
+rune:id(117)
 rune:group("attack")
 rune:name("thunderstorm rune")
 rune:runeId(3202)

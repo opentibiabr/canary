@@ -10,6 +10,7 @@ function rune.onCastSpell(creature, var, isHotkey)
 	return combat:execute(creature, var)
 end
 
+rune:id(27)
 rune:group("attack")
 rune:name("energy field rune")
 rune:runeId(3164)

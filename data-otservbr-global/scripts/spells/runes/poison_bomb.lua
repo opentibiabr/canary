@@ -11,6 +11,7 @@ function rune.onCastSpell(creature, var, isHotkey)
 	return combat:execute(creature, var)
 end
 
+rune:id(91)
 rune:group("attack")
 rune:name("poison bomb rune")
 rune:runeId(3173)

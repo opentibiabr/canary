@@ -266,7 +266,6 @@ void House::handleWrapableItem(ItemList &moveItemList, Item* item, Player* playe
 	}
 
 	moveItemList.push_back(newItem);
-	return true;
 }
 
 void House::handleContainer(ItemList &moveItemList, Item* item) const {

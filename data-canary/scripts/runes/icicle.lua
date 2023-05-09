@@ -17,8 +17,11 @@ function rune.onCastSpell(creature, var, isHotkey)
 	return combat:execute(creature, var)
 end
 
+rune:id(114)
 rune:group("attack")
 rune:name("icicle rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_ICICLE_RUNE)
 rune:runeId(3158)
 rune:allowFarUse(true)
 rune:charges(5)

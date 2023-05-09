@@ -296,6 +296,11 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "getBossBonus", PlayerFunctions::luaPlayerGetBossBonus);
 			registerMethod(L, "Player", "sendBosstiaryCooldownTimer", PlayerFunctions::luaPlayerBosstiaryCooldownTimer);
 
+			registerMethod(L, "Player", "sendSingleSoundEffect", PlayerFunctions::luaPlayerSendSingleSoundEffect);
+			registerMethod(L, "Player", "sendDoubleSoundEffect", PlayerFunctions::luaPlayerSendDoubleSoundEffect);
+
+			registerMethod(L, "Player", "getName", PlayerFunctions::luaPlayerGetName);
+
 			registerMethod(L, "Player", "hasGroupFlag", PlayerFunctions::luaPlayerHasGroupFlag);
 			registerMethod(L, "Player", "setGroupFlag", PlayerFunctions::luaPlayerSetGroupFlag);
 			registerMethod(L, "Player", "removeGroupFlag", PlayerFunctions::luaPlayerRemoveGroupFlag);
@@ -586,6 +591,11 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetSlotBossId(lua_State* L);
 		static int luaPlayerGetBossBonus(lua_State* L);
 		static int luaPlayerBosstiaryCooldownTimer(lua_State* L);
+
+		static int luaPlayerSendSingleSoundEffect(lua_State* L);
+		static int luaPlayerSendDoubleSoundEffect(lua_State* L);
+
+		static int luaPlayerGetName(lua_State* L);
 
 		static int luaPlayerHasGroupFlag(lua_State* L);
 		static int luaPlayerSetGroupFlag(lua_State* L);

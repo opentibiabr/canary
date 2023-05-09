@@ -122,6 +122,8 @@ bool ConfigManager::load() {
 		integer[PREMIUM_DEPOT_LIMIT] = getGlobalNumber(L, "premiumDepotLimit", 8000);
 		integer[DEPOT_BOXES] = getGlobalNumber(L, "depotBoxes", 20);
 		integer[STASH_ITEMS] = getGlobalNumber(L, "stashItemCount", 5000);
+
+		boolean[OLD_PROTOCOL] = getGlobalBoolean(L, "allowOldProtocol", true);
 	}
 
 	boolean[ALLOW_CHANGEOUTFIT] = getGlobalBoolean(L, "allowChangeOutfit", true);

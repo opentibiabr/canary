@@ -24,6 +24,7 @@
 #include "io/iobestiary.h"
 #include "items/bed.h"
 #include "items/weapons/weapons.h"
+#include "core.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -505,8 +506,9 @@ void Player::updateInventoryImbuement() {
 			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
 			// Parent of the imbued item
 			auto parent = item->getParent();
+			bool isInBackpack = parent && parent->getContainer();
 			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
-			if (categoryImbuement && categoryImbuement->agressive && (isInProtectionZone || !isInFightMode)) {
+			if (categoryImbuement && categoryImbuement->agressive && (isInProtectionZone || !isInFightMode || isInBackpack)) {
 				continue;
 			}
 			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
@@ -689,7 +691,7 @@ void Player::removeEmptyRewards() {
 	std::erase_if(rewardMap, [this](const auto &rewardBag) {
 		auto [id, reward] = rewardBag;
 		if (reward->empty()) {
-			this->getRewardChest()->removeThing(reward, 1);
+			getRewardChest()->removeItem(reward);
 			reward->decrementReferenceCounter();
 			return true;
 		}
@@ -1047,11 +1049,16 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId) {
 		return it->second;
 	}
 
-	DepotLocker* depotLocker = new DepotLocker(ITEM_LOCKER);
+	// We need to make room for supply stash on 12+ protocol versions and remove it for 10x.
+	bool createSupplyStash = getProtocolVersion() > 1200;
+
+	DepotLocker* depotLocker = new DepotLocker(ITEM_LOCKER, createSupplyStash ? 4 : 3);
 	depotLocker->setDepotId(depotId);
 	depotLocker->internalAddThing(Item::CreateItem(ITEM_MARKET));
 	depotLocker->internalAddThing(inbox);
-	depotLocker->internalAddThing(Item::CreateItem(ITEM_SUPPLY_STASH));
+	if (createSupplyStash) {
+		depotLocker->internalAddThing(Item::CreateItem(ITEM_SUPPLY_STASH));
+	}
 	Container* depotChest = Item::CreateItemAsContainer(ITEM_DEPOT, static_cast<uint16_t>(g_configManager().getNumber(DEPOT_BOXES)));
 	for (uint32_t i = g_configManager().getNumber(DEPOT_BOXES); i > 0; i--) {
 		DepotChest* depotBox = getDepotChest(i, true);
@@ -1485,7 +1492,8 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 			bed->wakeUp(this);
 		}
 
-		SPDLOG_INFO("{} has logged in", name);
+		auto version = client->oldProtocol ? getProtocolVersion() : CLIENT_VERSION;
+		SPDLOG_INFO("{} has logged in. (Protocol: {})", name, version);
 
 		if (guild) {
 			guild->addMember(this);
@@ -1990,6 +1998,10 @@ void Player::removeMessageBuffer() {
 }
 
 void Player::drainHealth(Creature* attacker, int32_t damage) {
+	if (PLAYER_SOUND_HEALTH_CHANGE >= static_cast<uint32_t>(uniform_random(1, 100))) {
+		g_game().sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_BARK : SoundEffect_t::HUMAN_MALE_BARK, this);
+	}
+
 	Creature::drainHealth(attacker, damage);
 	sendStats();
 }
@@ -2394,10 +2406,7 @@ uint32_t Player::getIP() const {
 void Player::death(Creature* lastHitCreature) {
 	loginPosition = town->getTemplePosition();
 
-	if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
-		setSkull(SKULL_NONE);
-	}
-
+	g_game().sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_DEATH : SoundEffect_t::HUMAN_MALE_DEATH, this);
 	if (skillLoss) {
 		uint8_t unfairFightReduction = 100;
 		int playerDmg = 0;
@@ -2576,7 +2585,7 @@ void Player::death(Creature* lastHitCreature) {
 		while (it != end) {
 			Condition* condition = *it;
 			// isSupress block to delete spells conditions (ensures that the player cannot, for example, reset the cooldown time of the familiar and summon several)
-			if (condition->isPersistent() && isSuppress(condition->getType())) {
+			if (condition->isPersistent() && condition->isRemovableOnDeath()) {
 				it = conditions.erase(it);
 
 				condition->endCondition(this);
@@ -5864,7 +5873,7 @@ void Player::initializeTaskHunting() {
 		}
 	}
 
-	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && getProtocolVersion() > 1200) {
 		client->writeToOutputBuffer(g_ioprey().GetTaskHuntingBaseDate());
 	}
 }
@@ -6378,7 +6387,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			setForgeDusts(getForgeDusts() - dustCost);
 		}
 		if (bonus != 2) {
-			if (!removeItemCountById(ITEM_FORGE_CORE, coreCount)) {
+			if (coreCount != 0 && !removeItemCountById(ITEM_FORGE_CORE, coreCount)) {
 				SPDLOG_ERROR("[{}][Log 1] Failed to remove item 'id :{} count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, coreCount, getName());
 				sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 				return;
@@ -6453,7 +6462,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			setForgeDusts(getForgeDusts() - dustCost);
 		}
 
-		if (!removeItemCountById(ITEM_FORGE_CORE, coreCount)) {
+		if (coreCount != 0 && !removeItemCountById(ITEM_FORGE_CORE, coreCount)) {
 			SPDLOG_ERROR("[{}][Log 2] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, coreCount, getName());
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
@@ -6886,6 +6895,93 @@ void Player::closeAllExternalContainers() {
 	for (Container* container : containerToClose) {
 		autoCloseContainers(container);
 	}
+}
+
+SoundEffect_t Player::getHitSoundEffect() const {
+	// Distance sound effects
+	const Item* tool = getWeapon();
+	if (tool == nullptr) {
+		return SoundEffect_t::SILENCE;
+	}
+
+	switch (const auto &it = Item::items[tool->getID()]; it.weaponType) {
+		case WEAPON_AMMO: {
+			if (it.ammoType == AMMO_BOLT) {
+				return SoundEffect_t::DIST_ATK_CROSSBOW_SHOT;
+			} else if (it.ammoType == AMMO_ARROW) {
+				if (it.shootType == CONST_ANI_BURSTARROW) {
+					return SoundEffect_t::BURST_ARROW_EFFECT;
+				} else if (it.shootType == CONST_ANI_DIAMONDARROW) {
+					return SoundEffect_t::DIAMOND_ARROW_EFFECT;
+				}
+			} else {
+				return SoundEffect_t::DIST_ATK_THROW_SHOT;
+			}
+		}
+		case WEAPON_DISTANCE: {
+			if (tool->getAmmoType() == AMMO_BOLT) {
+				return SoundEffect_t::DIST_ATK_CROSSBOW_SHOT;
+			} else if (tool->getAmmoType() == AMMO_ARROW) {
+				return SoundEffect_t::DIST_ATK_BOW_SHOT;
+			} else {
+				return SoundEffect_t::DIST_ATK_THROW_SHOT;
+			}
+		}
+		case WEAPON_WAND: {
+			// Separate between wand and rod here
+			// return SoundEffect_t::DIST_ATK_ROD_SHOT;
+			return SoundEffect_t::DIST_ATK_WAND_SHOT;
+		}
+		default: {
+			return SoundEffect_t::SILENCE;
+		}
+	} // switch
+
+	return SoundEffect_t::SILENCE;
+}
+
+SoundEffect_t Player::getAttackSoundEffect() const {
+	const Item* tool = getWeapon();
+	if (tool == nullptr) {
+		return SoundEffect_t::HUMAN_CLOSE_ATK_FIST;
+	}
+
+	const ItemType &it = Item::items[tool->getID()];
+	if (it.weaponType == WEAPON_NONE || it.weaponType == WEAPON_SHIELD) {
+		return SoundEffect_t::HUMAN_CLOSE_ATK_FIST;
+	}
+
+	switch (it.weaponType) {
+		case WEAPON_AXE: {
+			return SoundEffect_t::MELEE_ATK_AXE;
+		}
+		case WEAPON_SWORD: {
+			return SoundEffect_t::MELEE_ATK_SWORD;
+		}
+		case WEAPON_CLUB: {
+			return SoundEffect_t::MELEE_ATK_CLUB;
+		}
+		case WEAPON_AMMO:
+		case WEAPON_DISTANCE: {
+			if (tool->getAmmoType() == AMMO_BOLT) {
+				return SoundEffect_t::DIST_ATK_CROSSBOW;
+			} else if (tool->getAmmoType() == AMMO_ARROW) {
+				return SoundEffect_t::DIST_ATK_BOW;
+			} else {
+				return SoundEffect_t::DIST_ATK_THROW;
+			}
+
+			break;
+		}
+		case WEAPON_WAND: {
+			return SoundEffect_t::MAGICAL_RANGE_ATK;
+		}
+		default: {
+			return SoundEffect_t::SILENCE;
+		}
+	}
+
+	return SoundEffect_t::SILENCE;
 }
 
 /*******************************************************************************

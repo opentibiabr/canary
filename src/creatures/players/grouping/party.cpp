@@ -29,6 +29,7 @@ void Party::disband() {
 	currentLeader->setParty(nullptr);
 	currentLeader->sendClosePrivate(CHANNEL_PARTY);
 	g_game().updatePlayerShield(currentLeader);
+	g_game().updatePlayerHelpers(currentLeader);
 	currentLeader->sendCreatureSkull(currentLeader);
 	currentLeader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Your party has been disbanded.");
 
@@ -53,6 +54,7 @@ void Party::disband() {
 
 		member->sendCreatureSkull(currentLeader);
 		currentLeader->sendCreatureSkull(member);
+		g_game().updatePlayerHelpers(member);
 	}
 	memberList.clear();
 
@@ -98,11 +100,13 @@ bool Party::leaveParty(Player* player) {
 	player->setParty(nullptr);
 	player->sendClosePrivate(CHANNEL_PARTY);
 	g_game().updatePlayerShield(player);
+	g_game().updatePlayerHelpers(player);
 
 	for (Player* member : memberList) {
 		member->sendCreatureSkull(player);
 		player->sendPlayerPartyIcons(member);
 		member->sendPartyCreatureUpdate(player);
+		g_game().updatePlayerHelpers(member);
 	}
 
 	leader->sendCreatureSkull(player);
@@ -198,6 +202,8 @@ bool Party::joinParty(Player &player) {
 
 	memberList.push_back(&player);
 
+	g_game().updatePlayerHelpers(&player);
+
 	updatePlayerStatus(&player);
 
 	player.removePartyInvitation(this);
@@ -228,6 +234,12 @@ bool Party::removeInvite(Player &player, bool removeFromPlayer /* = true*/) {
 
 	if (empty()) {
 		disband();
+	} else {
+		for (Player* member : memberList) {
+			g_game().updatePlayerHelpers(member);
+		}
+
+		g_game().updatePlayerHelpers(leader);
 	}
 
 	return true;
@@ -263,6 +275,11 @@ bool Party::invitePlayer(Player &player) {
 
 	inviteList.push_back(&player);
 
+	for (Player* member : memberList) {
+		g_game().updatePlayerHelpers(member);
+	}
+
+	g_game().updatePlayerHelpers(leader);
 	leader->sendCreatureShield(&player);
 	player.sendCreatureShield(leader);
 

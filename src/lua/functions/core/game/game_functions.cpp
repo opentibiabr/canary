@@ -400,6 +400,23 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 	bool extended = getBoolean(L, 3, false);
 	bool force = getBoolean(L, 4, false);
 	if (g_game().placeCreature(monster, position, extended, force)) {
+		auto mtype = monster->getMonsterType();
+		if (mtype && mtype->info.bossRaceId > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {
+			SpectatorHashSet spectators;
+			g_game().map.getSpectators(spectators, monster->getPosition(), true);
+			for (Creature* spectator : spectators) {
+				if (Player* tmpPlayer = spectator->getPlayer()) {
+					auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldown(tmpPlayer);
+					// If not have boss to update, then kill loop for economize resources
+					if (bossesOnTracker.size() == 0) {
+						break;
+					}
+
+					tmpPlayer->sendBosstiaryCooldownTimer();
+				}
+			}
+		}
+
 		pushUserdata<Monster>(L, monster);
 		setMetatable(L, -1, "Monster");
 	} else {

@@ -17,7 +17,23 @@
 #include "creatures/monsters/monster.h"
 #include "creatures/monsters/monsters.h"
 #include "items/weapons/weapons.h"
-#include "creatures/combat/spells.h"
+
+int32_t Combat::getLevelFormula(Player* player, Spell* wheelSpell, CombatDamage& damage) const {
+	uint32_t magicLevelSkill = player->getMagicLevel();
+	// Wheel of destiny - Runic Mastery
+	if (player->getWheelOfDestinyInstant("Runic Mastery") && wheelSpell && damage.instantSpellName.empty()) {
+		if (normal_random(0, 100) <= 25) {
+			// Yeah, im using rune name on instant. This happens because rune conjuring spell have the same name as the rune item spell.
+			InstantSpell* conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
+			if (conjuringSpell && conjuringSpell != wheelSpell) {
+				magicLevelSkill += std::ceil((static_cast<double>(magicLevelSkill) * (conjuringSpell->canCast(player) ? 20 : 10)) / 100.);
+			}
+		}
+	}
+
+	int32_t levelFormula = player->getLevel() * 2 + (magicLevelSkill + player->getSpecializedMagicLevel(damage.primary.type)) * 3;
+	return levelFormula;
+}
 
 CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const {
 	CombatDamage damage;
@@ -26,10 +42,10 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 	damage.instantSpellName = sourceInstantSpellName;
 	damage.runeSpellName = sourceRuneSpellName;
 	// Wheel of destiny
-	Spell* spell = nullptr;
+	Spell* wheelSpell = nullptr;
 	Player* attackerPlayer = creature ? creature->getPlayer() : nullptr;
 	if (attackerPlayer) {
-		spell = attackerPlayer->getWheelOfDestinyCombatDataSpell(damage, target);
+		wheelSpell = attackerPlayer->getWheelOfDestinyCombatDataSpell(damage, target);
 	}
 	if (formulaType == COMBAT_FORMULA_DAMAGE) {
 		damage.primary.value = normal_random(
@@ -44,19 +60,7 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 			if (params.valueCallback) {
 				params.valueCallback->getMinMaxValues(player, damage, params.useCharges);
 			} else if (formulaType == COMBAT_FORMULA_LEVELMAGIC) {
-				uint32_t magicLevelSkill = player->getMagicLevel();
-				// Wheel of destiny - Runic Mastery
-				if (player->getWheelOfDestinyInstant("Runic Mastery") && spell && damage.instantSpellName.empty()) {
-					if (normal_random(0, 100) <= 25) {
-						// Yeah, im using rune name on instant. This happens because rune conjuring spell have the same name as the rune item spell.
-						InstantSpell* conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
-						if (conjuringSpell && conjuringSpell != spell) {
-							magicLevelSkill += std::ceil((static_cast<double>(magicLevelSkill) * (conjuringSpell->canCast(player) ? 20 : 10)) / 100.);
-						}
-					}
-				}
-				// int32_t levelFormula = player->getLevel() * 2 + magicLevelSkill * 3;
-				int32_t levelFormula = player->getLevel() * 2 + (magicLevelSkill + player->getSpecializedMagicLevel(damage.primary.type)) * 3;
+				int32_t levelFormula = getLevelFormula(player, wheelSpell, damage);
 				damage.primary.value = normal_random(
 					static_cast<int32_t>(levelFormula * mina + minb),
 					static_cast<int32_t>(levelFormula * maxa + maxb)
@@ -1148,6 +1152,24 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatPar
 }
 
 //**********************************************************//
+uint32_t ValueCallback::getMagicLevelSkill(Player* player, CombatDamage& damage) const {
+	uint32_t magicLevelSkill = (player->getMagicLevel() + player->getSpecializedMagicLevel(damage.primary.type));
+	// Wheel of destiny
+	if (player && player->getWheelOfDestinyInstant("Runic Mastery") && damage.instantSpellName.empty()) {
+		if (normal_random(0, 100) <= 25) {
+			Spell* spell = g_spells().getRuneSpellByName(damage.runeSpellName);
+			if (spell) {
+				// Rune conjuring spell have the same name as the rune item spell.
+				InstantSpell* conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
+				if (conjuringSpell && conjuringSpell != spell) {
+					magicLevelSkill += std::ceil((static_cast<double>(magicLevelSkill) * (conjuringSpell->canCast(player) ? 20 : 10)) / 100.);
+				}
+			}
+		}
+	}
+
+	return magicLevelSkill;
+}
 
 void ValueCallback::getMinMaxValues(Player* player, CombatDamage &damage, bool useCharges) const {
 	// onGetPlayerMinMaxValues(...)
@@ -1179,22 +1201,8 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage &damage, bool u
 	switch (type) {
 		case COMBAT_FORMULA_LEVELMAGIC: {
 			// onGetPlayerMinMaxValues(player, level, maglevel)
-			uint32_t magicLevelSkill = (player->getMagicLevel() + player->getSpecializedMagicLevel(damage.primary.type));
-			// Wheel of destiny
-			if (player && player->getWheelOfDestinyInstant("Runic Mastery") && damage.instantSpellName.empty()) {
-				if (normal_random(0, 100) <= 25) {
-					Spell* spell = g_spells().getRuneSpellByName(damage.runeSpellName);
-					if (spell) {
-						// Yeah, im using rune name on instant. This happens because rune conjuring spell have the same name as the rune item spell.
-						InstantSpell* conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
-						if (conjuringSpell && conjuringSpell != spell) {
-							magicLevelSkill += std::ceil((static_cast<double>(magicLevelSkill) * (conjuringSpell->canCast(player) ? 20 : 10)) / 100.);
-						}
-					}
-				}
-			}
 			lua_pushnumber(L, player->getLevel());
-			lua_pushnumber(L, magicLevelSkill);
+			lua_pushnumber(L, getMagicLevelSkill(player, damage));
 			parameters += 2;
 			break;
 		}

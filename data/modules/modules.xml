@@ -10,7 +10,7 @@
 	<module type="recvbyte" byte="253" script="gamestore/gamestore.lua"/>
 	<module type="recvbyte" byte="254" script="gamestore/gamestore.lua"/>
 	
-	<!-- GameStore -->
+	<!-- Wheel -->
 	<module type="recvbyte" byte="97" script="wheelofdestiny/init.lua"/>
 	<module type="recvbyte" byte="98" script="wheelofdestiny/init.lua"/>
 

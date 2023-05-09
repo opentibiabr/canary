@@ -352,7 +352,15 @@ class Player final : public Creature, public Cylinder {
 		}
 
 		bool hasFlag(PlayerFlags_t flag) const {
-			return group->flags[Groups::getFlagNumber(flag)];
+			return group->flags[static_cast<std::size_t>(flag)];
+		}
+
+		void setFlag(PlayerFlags_t flag) const {
+			group->flags[static_cast<std::size_t>(flag)] = true;
+		}
+
+		void removeFlag(PlayerFlags_t flag) const {
+			group->flags[static_cast<std::size_t>(flag)] = false;
 		}
 
 		BedItem* getBedItem() {

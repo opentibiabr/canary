@@ -301,8 +301,10 @@ int GlobalFunctions::luaDoAreaCombatHealth(lua_State* L) {
 
 		damage.instantSpellName = getString(L, 9);
 		damage.runeSpellName = getString(L, 10);
-		if (auto player = creature->getPlayer()) {
-			player->getWheelOfDestinyCombatDataSpell(damage, nullptr);
+		if (creature) {
+			if (auto player = creature->getPlayer()) {
+				player->getWheelOfDestinyCombatDataSpell(damage, nullptr);
+			}
 		}
 
 		Combat::doCombatHealth(creature, getPosition(L, 3), area, damage, params);
@@ -343,8 +345,10 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 
 	damage.instantSpellName = getString(L, 9);
 	damage.runeSpellName = getString(L, 10);
-	if (auto player = creature->getPlayer()) {
-		player->getWheelOfDestinyCombatDataSpell(damage, target);
+	if (creature) {
+		if (auto player = creature->getPlayer()) {
+			player->getWheelOfDestinyCombatDataSpell(damage, target);
+		}
 	}
 
 	// Check if it's a healing then we sould add the non-aggresive tag
@@ -379,8 +383,10 @@ int GlobalFunctions::luaDoAreaCombatMana(lua_State* L) {
 
 		damage.instantSpellName = getString(L, 8);
 		damage.runeSpellName = getString(L, 9);
-		if (auto player = creature->getPlayer()) {
-			player->getPlayer()->getWheelOfDestinyCombatDataSpell(damage, nullptr);
+		if (creature) {
+			if (auto player = creature->getPlayer()) {
+				player->getWheelOfDestinyCombatDataSpell(damage, nullptr);
+			}
 		}
 
 		Position pos = getPosition(L, 2);
@@ -419,8 +425,10 @@ int GlobalFunctions::luaDoTargetCombatMana(lua_State* L) {
 
 	damage.instantSpellName = getString(L, 7);
 	damage.runeSpellName = getString(L, 8);
-	if (auto player = creature->getPlayer()) {
-		player->getWheelOfDestinyCombatDataSpell(damage, target);
+	if (creature) {
+		if (auto player = creature->getPlayer()) {
+			player->getWheelOfDestinyCombatDataSpell(damage, target);
+		}
 	}
 
 	Combat::doCombatMana(creature, target, damage, params);

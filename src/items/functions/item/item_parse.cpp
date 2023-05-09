@@ -241,6 +241,9 @@ void ItemParse::parseWeaponType(const std::string &tmpStrValue, pugi::xml_attrib
 		stringValue = asLowerCaseString(valueAttribute.as_string());
 		auto itemMap = WeaponTypesMap.find(stringValue);
 		if (itemMap != WeaponTypesMap.end()) {
+			if (tmpStrValue == "spellbook") {
+				it.spellbook = true;
+			}
 			itemType.weaponType = itemMap->second;
 		} else {
 			SPDLOG_WARN("[Items::parseItemNode] - Unknown weaponType {}", valueAttribute.as_string());

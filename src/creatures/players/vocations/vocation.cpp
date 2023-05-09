@@ -1,50 +1,39 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/players/vocations/vocation.h"
 
 #include "utils/pugicast.h"
 #include "utils/tools.h"
 
-bool Vocations::loadFromXml()
-{
+bool Vocations::loadFromXml() {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/vocations.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/vocations.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		printXMLError("[Vocations::loadFromXml]", "data/XML/vocations.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 
 	for (auto vocationNode : doc.child("vocations").children()) {
 		pugi::xml_attribute attr;
 		if (!(attr = vocationNode.attribute("id"))) {
-			SPDLOG_WARN("[Vocations::loadFromXml] - Missing vocation id");
+			SPDLOG_WARN("[{}] - Missing vocation id", __FUNCTION__);
 			continue;
 		}
 
 		uint16_t id = pugi::cast<uint16_t>(attr.value());
 
-		auto res = vocationsMap.emplace(std::piecewise_construct,
-				std::forward_as_tuple(id), std::forward_as_tuple(id));
-		Vocation& voc = res.first->second;
+		auto res = vocationsMap.emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(id));
+		Vocation &voc = res.first->second;
 
 		if ((attr = vocationNode.attribute("name"))) {
 			voc.name = attr.as_string();
@@ -57,7 +46,7 @@ bool Vocations::loadFromXml()
 		if ((attr = vocationNode.attribute("baseid"))) {
 			voc.baseId = pugi::cast<uint16_t>(attr.value());
 		}
-		
+
 		if ((attr = vocationNode.attribute("description"))) {
 			voc.description = attr.as_string();
 		}
@@ -131,12 +120,13 @@ bool Vocations::loadFromXml()
 						voc.skillMultipliers[skill_id] = pugi::cast<float>(childNode.attribute("multiplier").value());
 					} else {
 						SPDLOG_WARN("[Vocations::loadFromXml] - "
-                                    "No valid skill id: {} for vocation: {}",
-                                    skill_id, voc.id);
+									"No valid skill id: {} for vocation: {}",
+									skill_id, voc.id);
 					}
 				} else {
 					SPDLOG_WARN("[Vocations::loadFromXml] - "
-                                "Missing skill id for vocation: {}", voc.id);
+								"Missing skill id for vocation: {}",
+								voc.id);
 				}
 			} else if (strcasecmp(childNode.name(), "formula") == 0) {
 				pugi::xml_attribute meleeDamageAttribute = childNode.attribute("meleeDamage");
@@ -164,20 +154,19 @@ bool Vocations::loadFromXml()
 	return true;
 }
 
-Vocation* Vocations::getVocation(uint16_t id)
-{
+Vocation* Vocations::getVocation(uint16_t id) {
 	auto it = vocationsMap.find(id);
 	if (it == vocationsMap.end()) {
 		SPDLOG_WARN("[Vocations::getVocation] - "
-                    "Vocation {} not found", id);
+					"Vocation {} not found",
+					id);
 		return nullptr;
 	}
 	return &it->second;
 }
 
-uint16_t Vocations::getVocationId(const std::string& name) const
-{
-	for (const auto& it : vocationsMap) {
+uint16_t Vocations::getVocationId(const std::string &name) const {
+	for (const auto &it : vocationsMap) {
 		if (strcasecmp(it.second.name.c_str(), name.c_str()) == 0) {
 			return it.first;
 		}
@@ -185,9 +174,8 @@ uint16_t Vocations::getVocationId(const std::string& name) const
 	return -1;
 }
 
-uint16_t Vocations::getPromotedVocation(uint16_t vocationId) const
-{
-	for (const auto& it : vocationsMap) {
+uint16_t Vocations::getPromotedVocation(uint16_t vocationId) const {
+	for (const auto &it : vocationsMap) {
 		if (it.second.fromVocation == vocationId && it.first != vocationId) {
 			return it.first;
 		}
@@ -195,10 +183,9 @@ uint16_t Vocations::getPromotedVocation(uint16_t vocationId) const
 	return VOCATION_NONE;
 }
 
-uint32_t Vocation::skillBase[SKILL_LAST + 1] = {50, 50, 50, 50, 30, 100, 20};
+uint32_t Vocation::skillBase[SKILL_LAST + 1] = { 50, 50, 50, 50, 30, 100, 20 };
 
-uint64_t Vocation::getReqSkillTries(uint8_t skill, uint16_t level)
-{
+uint64_t Vocation::getReqSkillTries(uint8_t skill, uint16_t level) {
 	if (skill > SKILL_LAST || level <= 10) {
 		return 0;
 	}
@@ -213,8 +200,7 @@ uint64_t Vocation::getReqSkillTries(uint8_t skill, uint16_t level)
 	return tries;
 }
 
-uint64_t Vocation::getReqMana(uint32_t magLevel)
-{
+uint64_t Vocation::getReqMana(uint32_t magLevel) {
 	if (magLevel == 0) {
 		return 0;
 	}

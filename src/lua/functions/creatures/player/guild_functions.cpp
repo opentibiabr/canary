@@ -1,23 +1,13 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "game/game.h"
 #include "creatures/players/grouping/guild.h"
@@ -67,7 +57,7 @@ int GuildFunctions::luaGuildGetMembersOnline(lua_State* L) {
 		return 1;
 	}
 
-	const auto& members = guild->getMembersOnline();
+	const auto &members = guild->getMembersOnline();
 	lua_createtable(L, members.size(), 0);
 
 	int index = 0;
@@ -108,7 +98,7 @@ int GuildFunctions::luaGuildAddRank(lua_State* L) {
 	Guild* guild = getUserdata<Guild>(L, 1);
 	if (guild) {
 		uint32_t id = getNumber<uint32_t>(L, 2);
-		const std::string& name = getString(L, 3);
+		const std::string &name = getString(L, 3);
 		uint8_t level = getNumber<uint8_t>(L, 4);
 		guild->addRank(id, name, level);
 		pushBoolean(L, true);
@@ -173,7 +163,7 @@ int GuildFunctions::luaGuildGetMotd(lua_State* L) {
 
 int GuildFunctions::luaGuildSetMotd(lua_State* L) {
 	// guild:setMotd(motd)
-	const std::string& motd = getString(L, 2);
+	const std::string &motd = getString(L, 2);
 	Guild* guild = getUserdata<Guild>(L, 1);
 	if (guild) {
 		guild->setMotd(motd);

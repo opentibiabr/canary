@@ -1,25 +1,13 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
+#include "pch.hpp"
 
 #include "lua/functions/core/network/network_message_functions.hpp"
 #include "creatures/players/player.h"
@@ -159,9 +147,61 @@ int NetworkMessageFunctions::luaNetworkMessageAddU64(lua_State* L) {
 	return 1;
 }
 
+int NetworkMessageFunctions::luaNetworkMessageAdd8(lua_State* L) {
+	// networkMessage:add8(number)
+	auto number = getNumber<int8_t>(L, 2);
+	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
+	if (message) {
+		message->add<int8_t>(number);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int NetworkMessageFunctions::luaNetworkMessageAdd16(lua_State* L) {
+	// networkMessage:add16(number)
+	auto number = getNumber<int16_t>(L, 2);
+	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
+	if (message) {
+		message->add<int16_t>(number);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int NetworkMessageFunctions::luaNetworkMessageAdd32(lua_State* L) {
+	// networkMessage:add32(number)
+	auto number = getNumber<int32_t>(L, 2);
+	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
+	if (message) {
+		message->add<int32_t>(number);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int NetworkMessageFunctions::luaNetworkMessageAdd64(lua_State* L) {
+	// networkMessage:add64(number)
+	auto number = getNumber<int64_t>(L, 2);
+	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
+	if (message) {
+		message->add<int64_t>(number);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int NetworkMessageFunctions::luaNetworkMessageAddString(lua_State* L) {
 	// networkMessage:addString(string)
-	const std::string& string = getString(L, 2);
+	const std::string &string = getString(L, 2);
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
 		message->addString(string);
@@ -174,7 +214,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddString(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAddPosition(lua_State* L) {
 	// networkMessage:addPosition(position)
-	const Position& position = getPosition(L, 2);
+	const Position &position = getPosition(L, 2);
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
 		message->addPosition(position);

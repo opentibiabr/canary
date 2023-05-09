@@ -1,42 +1,32 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_LUA_GLOBAL_GLOBALEVENT_H_
 #define SRC_LUA_GLOBAL_GLOBALEVENT_H_
-#include "lua/global/baseevents.h"
 
 #include "utils/utils_definitions.hpp"
+#include "lua/scripts/scripts.h"
 
 class GlobalEvent;
 using GlobalEvent_ptr = std::unique_ptr<GlobalEvent>;
 using GlobalEventMap = std::map<std::string, GlobalEvent>;
 
-class GlobalEvents final : public BaseEvents {
+class GlobalEvents final : public Scripts {
 	public:
 		GlobalEvents();
 		~GlobalEvents();
 
 		// non-copyable
-		GlobalEvents(const GlobalEvents&) = delete;
-		GlobalEvents& operator=(const GlobalEvents&) = delete;
+		GlobalEvents(const GlobalEvents &) = delete;
+		GlobalEvents &operator=(const GlobalEvents &) = delete;
 
-		static GlobalEvents& getInstance() {
+		static GlobalEvents &getInstance() {
 			// Guaranteed to be destroyed
 			static GlobalEvents instance;
 			// Instantiated on first use
@@ -50,37 +40,22 @@ class GlobalEvents final : public BaseEvents {
 		void execute(GlobalEvent_t type) const;
 
 		GlobalEventMap getEventMap(GlobalEvent_t type);
-		static void clearMap(GlobalEventMap& map, bool fromLua);
 
 		bool registerLuaEvent(GlobalEvent* event);
-		void clear(bool fromLua) override final;
+		void clear();
 
 	private:
-		std::string getScriptBaseName() const override {
-			return "globalevents";
-		}
-
-		Event_ptr getEvent(const std::string& nodeName) override;
-		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
-
-		LuaScriptInterface& getScriptInterface() override {
-			return scriptInterface;
-		}
-		LuaScriptInterface scriptInterface;
-
 		GlobalEventMap thinkMap, serverMap, timerMap;
 		int32_t thinkEventId = 0, timerEventId = 0;
 };
 
 constexpr auto g_globalEvents = &GlobalEvents::getInstance;
 
-class GlobalEvent final : public Event {
+class GlobalEvent final : public Script {
 	public:
 		explicit GlobalEvent(LuaScriptInterface* interface);
 
-		bool configureEvent(const pugi::xml_node& node) override;
-
-		bool executePeriodChange(LightState_t lightState, LightInfo lightInfo);
+		bool executePeriodChange(LightState_t lightState, LightInfo lightInfo) const;
 		bool executeRecord(uint32_t current, uint32_t old);
 		bool executeEvent() const;
 
@@ -91,13 +66,12 @@ class GlobalEvent final : public Event {
 			eventType = type;
 		}
 
-		const std::string& getName() const {
+		const std::string &getName() const {
 			return name;
 		}
 		void setName(std::string eventName) {
 			name = eventName;
 		}
-
 		uint32_t getInterval() const {
 			return interval;
 		}
@@ -115,11 +89,11 @@ class GlobalEvent final : public Event {
 	private:
 		GlobalEvent_t eventType = GLOBALEVENT_NONE;
 
-		std::string getScriptEventName() const override;
+		std::string getScriptTypeName() const override;
 
 		std::string name;
 		int64_t nextExecution = 0;
 		uint32_t interval = 0;
 };
 
-#endif  // SRC_LUA_GLOBAL_GLOBALEVENT_H_
+#endif // SRC_LUA_GLOBAL_GLOBALEVENT_H_

@@ -1,40 +1,25 @@
 /**
- * @file depotchest.cpp
- * 
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "items/containers/depot/depotchest.h"
 #include "utils/tools.h"
 
 DepotChest::DepotChest(uint16_t type) :
-	Container(type)
-{
+	Container(type) {
 	maxDepotItems = 2000;
 	maxSize = 32;
 	pagination = true;
 }
 
-ReturnValue DepotChest::queryAdd(int32_t index, const Thing& thing, uint32_t count,
-		uint32_t flags, Creature* actor/* = nullptr*/) const
-{
+ReturnValue DepotChest::queryAdd(int32_t index, const Thing &thing, uint32_t count, uint32_t flags, Creature* actor /* = nullptr*/) const {
 	const Item* item = thing.getItem();
 	if (item == nullptr) {
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -60,8 +45,7 @@ ReturnValue DepotChest::queryAdd(int32_t index, const Thing& thing, uint32_t cou
 			if (localParent->getContainer()->getItemHoldingCount() + addCount > maxDepotItems) {
 				return RETURNVALUE_DEPOTISFULL;
 			}
-		}
-		else if (getItemHoldingCount() + addCount > maxDepotItems) {
+		} else if (getItemHoldingCount() + addCount > maxDepotItems) {
 			return RETURNVALUE_DEPOTISFULL;
 		}
 	}
@@ -69,24 +53,21 @@ ReturnValue DepotChest::queryAdd(int32_t index, const Thing& thing, uint32_t cou
 	return Container::queryAdd(index, thing, count, flags, actor);
 }
 
-void DepotChest::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t)
-{
+void DepotChest::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t) {
 	Cylinder* localParent = getParent();
 	if (localParent != nullptr) {
 		localParent->postAddNotification(thing, oldParent, index, LINK_PARENT);
 	}
 }
 
-void DepotChest::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t)
-{
+void DepotChest::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t) {
 	Cylinder* localParent = getParent();
 	if (localParent != nullptr) {
 		localParent->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 	}
 }
 
-Cylinder* DepotChest::getParent() const
-{
+Cylinder* DepotChest::getParent() const {
 	if (parent && parent->getParent()) {
 		return parent->getParent()->getParent();
 	}

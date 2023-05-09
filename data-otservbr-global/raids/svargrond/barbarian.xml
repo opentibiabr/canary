@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="Scouts report a barbarian army gathering near Svargrond" />
+	<announce delay="4000" type="event" message="Some invaders might try to access Svargrond via the ice to the North." />
+	<announce delay="8000" type="event" message="Raiders are attacking Svargrond!" />
+	<areaspawn delay="10000" fromx="32199" fromy="31063" fromz="5" tox="32251" toy="31084" toz="5">
+		<monster name="Barbarian Bloodwalker" amount="35" />
+		<monster name="Barbarian Brutetamer" amount="22" />
+		<monster name="Barbarian Headsplitter" amount="22" />
+		<monster name="Barbarian Skullhunter" amount="28" />
+		<monster name="Ice Witch" amount="15" />
+	</areaspawn>
+</raid>

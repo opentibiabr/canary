@@ -1,40 +1,26 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include "game/scheduling/tasks.h"
 #include "game/game.h"
+#include "game/scheduling/tasks.h"
 
-
-Task* createTask(std::function<void (void)> f)
-{
+Task* createTask(std::function<void(void)> f) {
 	return new Task(std::move(f));
 }
 
-Task* createTask(uint32_t expiration, std::function<void (void)> f)
-{
+Task* createTask(uint32_t expiration, std::function<void(void)> f) {
 	return new Task(expiration, std::move(f));
 }
 
-void Dispatcher::threadMain()
-{
+void Dispatcher::threadMain() {
 	// NOTE: second argument defer_lock is to prevent from immediate locking
 	std::unique_lock<std::mutex> taskLockUnique(taskLock, std::defer_lock);
 
@@ -43,8 +29,10 @@ void Dispatcher::threadMain()
 		taskLockUnique.lock();
 
 		if (taskList.empty()) {
-			//if the list is empty wait for signal
-			taskSignal.wait(taskLockUnique);
+			// if the list is empty wait for signal
+			taskSignal.wait(taskLockUnique, [this] {
+				return !taskList.empty() || getState() == THREAD_STATE_TERMINATED;
+			});
 		}
 
 		if (!taskList.empty()) {
@@ -65,8 +53,7 @@ void Dispatcher::threadMain()
 	}
 }
 
-void Dispatcher::addTask(Task* task, bool push_front /*= false*/)
-{
+void Dispatcher::addTask(Task* task, bool push_front /*= false*/) {
 	bool do_signal = false;
 
 	taskLock.lock();
@@ -91,8 +78,7 @@ void Dispatcher::addTask(Task* task, bool push_front /*= false*/)
 	}
 }
 
-void Dispatcher::shutdown()
-{
+void Dispatcher::shutdown() {
 	Task* task = createTask([this]() {
 		setState(THREAD_STATE_TERMINATED);
 		taskSignal.notify_one();

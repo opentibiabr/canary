@@ -1,35 +1,21 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_UTILS_THREAD_HOLDER_H_
 #define SRC_UTILS_THREAD_HOLDER_H_
 
-#include <atomic>
-#include <thread>
-
 #include "declarations.hpp"
 
 template <typename Derived>
-class ThreadHolder
-{
+class ThreadHolder {
 	public:
-		ThreadHolder() {}
+		ThreadHolder() { }
 		void start() {
 			setState(THREAD_STATE_RUNNING);
 			thread = std::thread(&Derived::threadMain, static_cast<Derived*>(this));
@@ -44,6 +30,7 @@ class ThreadHolder
 				thread.join();
 			}
 		}
+
 	protected:
 		void setState(ThreadState newState) {
 			threadState.store(newState, std::memory_order_relaxed);
@@ -52,9 +39,10 @@ class ThreadHolder
 		ThreadState getState() const {
 			return threadState.load(std::memory_order_relaxed);
 		}
+
 	private:
-		std::atomic<ThreadState> threadState{THREAD_STATE_TERMINATED};
+		std::atomic<ThreadState> threadState { THREAD_STATE_TERMINATED };
 		std::thread thread;
 };
 
-#endif  // SRC_UTILS_THREAD_HOLDER_H_
+#endif // SRC_UTILS_THREAD_HOLDER_H_

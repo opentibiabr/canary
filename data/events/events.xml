@@ -5,7 +5,7 @@
 	<event class="Creature" method="onChangeOutfit" enabled="1" />
 	<event class="Creature" method="onDrainHealth" enabled="1" />
 	<event class="Creature" method="onHear" enabled="0" />
-	<!-- onTargetCombat = remove combat protection on secure modes protection -->
+	<!-- removeCombatProtection on secure modes protection -->
 	<event class="Creature" method="onTargetCombat" enabled="1" />
 
 	<!-- Monster Methods -->
@@ -23,14 +23,15 @@
 	<event class="Player" method="onChangeZone" enabled="1" />
 	<event class="Player" method="onGainExperience" enabled="1" />
 	<event class="Player" method="onGainSkillTries" enabled="1" />
-	<event class="Player" method="onItemMoved" enabled="0" />
+	<event class="Player" method="onItemMoved" enabled="1" />
+	<event class="Player" method="onInventoryUpdate" enabled="1" />
 	<event class="Player" method="onLook" enabled="1" />
 	<event class="Player" method="onLookInBattleList" enabled="1" />
 	<event class="Player" method="onLookInShop" enabled="0" />
 	<event class="Player" method="onLookInTrade" enabled="1" />
 	<event class="Player" method="onLoseExperience" enabled="0" />
 	<event class="Player" method="onMoveCreature" enabled="1" />
-	<!-- onMoveItem = Protections on somes systems/items not moveable -->
+	<!-- Protections on rewardsystem and global depots -->
 	<event class="Player" method="onMoveItem" enabled="1" />
 	<event class="Player" method="onReportBug" enabled="1" />
 	<event class="Player" method="onReportRuleViolation" enabled="1" />
@@ -38,8 +39,9 @@
 	<event class="Player" method="onRequestQuestLog" enabled="1" />
 	<event class="Player" method="onStorageUpdate" enabled="1" />
 	<event class="Player" method="onTradeAccept" enabled="1" />
-	<event class="Player" method="onTradeRequest" enabled="1" />-->
+	<event class="Player" method="onTradeRequest" enabled="1" />
 	<event class="Player" method="onTurn" enabled="1" />
 	<event class="Player" method="onCombat" enabled="1" />
 	<event class="Player" method="onRemoveCount" enabled="1" />
+
 </events>

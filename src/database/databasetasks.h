@@ -1,56 +1,43 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_DATABASE_DATABASETASKS_H_
 #define SRC_DATABASE_DATABASETASKS_H_
 
-#include <condition_variable>
-#include "utils/thread_holder_base.h"
 #include "database/database.h"
-#include "declarations.hpp"
+#include "utils/thread_holder_base.h"
 
 struct DatabaseTask {
-	DatabaseTask(std::string&& initQuery, std::function<void(DBResult_ptr, bool)>&& initCallback, bool initStore) :
-		query(std::move(initQuery)), callback(std::move(initCallback)), store(initStore) {}
+		DatabaseTask(std::string &&initQuery, std::function<void(DBResult_ptr, bool)> &&initCallback, bool initStore) :
+			query(std::move(initQuery)), callback(std::move(initCallback)), store(initStore) { }
 
-	std::string query;
-	std::function<void(DBResult_ptr, bool)> callback;
-	bool store;
+		std::string query;
+		std::function<void(DBResult_ptr, bool)> callback;
+		bool store;
 };
 
-class DatabaseTasks : public ThreadHolder<DatabaseTasks>
-{
+class DatabaseTasks : public ThreadHolder<DatabaseTasks> {
 	public:
 		DatabaseTasks();
 
 		// non-copyable
-		DatabaseTasks(DatabaseTasks const&) = delete;
-		void operator=(DatabaseTasks const&) = delete;
+		DatabaseTasks(const DatabaseTasks &) = delete;
+		void operator=(const DatabaseTasks &) = delete;
 
-		static DatabaseTasks& getInstance() {
+		static DatabaseTasks &getInstance() {
 			// Guaranteed to be destroyed
 			static DatabaseTasks instance;
 			// Instantiated on first use
 			return instance;
 		}
 
-		bool SetDatabaseInterface(Database *database);
+		bool SetDatabaseInterface(Database* database);
 		void start();
 		void startThread();
 		void flush();
@@ -59,10 +46,11 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks>
 		void addTask(std::string query, std::function<void(DBResult_ptr, bool)> callback = nullptr, bool store = false);
 
 		void threadMain();
-	private:
-		void runTask(const DatabaseTask& task);
 
-		Database *db_;
+	private:
+		void runTask(const DatabaseTask &task);
+
+		Database* db_;
 		std::thread thread;
 		std::list<DatabaseTask> tasks;
 		std::mutex taskLock;
@@ -73,4 +61,4 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks>
 
 constexpr auto g_databaseTasks = &DatabaseTasks::getInstance;
 
-#endif  // SRC_DATABASE_DATABASETASKS_H_
+#endif // SRC_DATABASE_DATABASETASKS_H_

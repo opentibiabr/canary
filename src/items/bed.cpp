@@ -1,37 +1,25 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "items/bed.h"
 #include "game/game.h"
 #include "io/iologindata.h"
 #include "game/scheduling/scheduler.h"
 
-
-BedItem::BedItem(uint16_t id) : Item(id)
-{
+BedItem::BedItem(uint16_t id) :
+	Item(id) {
 	internalRemoveSleeper();
 }
 
-Attr_ReadValue BedItem::readAttr(AttrTypes_t attr, PropStream& propStream)
-{
+Attr_ReadValue BedItem::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	switch (attr) {
 		case ATTR_SLEEPERGUID: {
 			uint32_t guid;
@@ -42,7 +30,7 @@ Attr_ReadValue BedItem::readAttr(AttrTypes_t attr, PropStream& propStream)
 			if (guid != 0) {
 				std::string name = IOLoginData::getNameByGuid(guid);
 				if (!name.empty()) {
-					setSpecialDescription(name + " is sleeping there.");
+					setAttribute(ItemAttribute_t::DESCRIPTION, name + " is sleeping there.");
 					g_game().setBedSleeper(this, guid);
 					sleeperGUID = guid;
 				}
@@ -66,8 +54,7 @@ Attr_ReadValue BedItem::readAttr(AttrTypes_t attr, PropStream& propStream)
 	return Item::readAttr(attr, propStream);
 }
 
-void BedItem::serializeAttr(PropWriteStream& propWriteStream) const
-{
+void BedItem::serializeAttr(PropWriteStream &propWriteStream) const {
 	if (sleeperGUID != 0) {
 		propWriteStream.write<uint8_t>(ATTR_SLEEPERGUID);
 		propWriteStream.write<uint32_t>(sleeperGUID);
@@ -80,8 +67,7 @@ void BedItem::serializeAttr(PropWriteStream& propWriteStream) const
 	}
 }
 
-BedItem* BedItem::getNextBedItem() const
-{
+BedItem* BedItem::getNextBedItem() const {
 	Direction dir = Item::items[id].bedPartnerDir;
 	Position targetPos = getNextPosition(dir, getPosition());
 
@@ -92,8 +78,7 @@ BedItem* BedItem::getNextBedItem() const
 	return tile->getBedItem();
 }
 
-bool BedItem::canUse(Player* player)
-{
+bool BedItem::canUse(Player* player) {
 	if ((player == nullptr) || (house == nullptr) || !player->isPremium()) {
 		return false;
 	}
@@ -117,8 +102,7 @@ bool BedItem::canUse(Player* player)
 	return true;
 }
 
-bool BedItem::trySleep(Player* player)
-{
+bool BedItem::trySleep(Player* player) {
 	if (!house || player->isRemoved()) {
 		return false;
 	}
@@ -134,8 +118,7 @@ bool BedItem::trySleep(Player* player)
 	return true;
 }
 
-bool BedItem::sleep(Player* player)
-{
+bool BedItem::sleep(Player* player) {
 	if (house == nullptr) {
 		return false;
 	}
@@ -174,8 +157,7 @@ bool BedItem::sleep(Player* player)
 	return true;
 }
 
-void BedItem::wakeUp(Player* player)
-{
+void BedItem::wakeUp(Player* player) {
 	if (house == nullptr) {
 		return;
 	}
@@ -213,8 +195,7 @@ void BedItem::wakeUp(Player* player)
 	}
 }
 
-void BedItem::regeneratePlayer(Player* player) const
-{
+void BedItem::regeneratePlayer(Player* player) const {
 	const uint32_t sleptTime = time(nullptr) - sleepStart;
 
 	Condition* condition = player->getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
@@ -240,17 +221,16 @@ void BedItem::regeneratePlayer(Player* player) const
 	player->changeSoul(soulRegen);
 }
 
-void BedItem::updateAppearance(const Player* player)
-{
-	const ItemType& it = Item::items[id];
+void BedItem::updateAppearance(const Player* player) {
+	const ItemType &it = Item::items[id];
 	if (it.type == ITEM_TYPE_BED) {
 		if ((player != nullptr) && it.transformToOnUse[player->getSex()] != 0) {
-			const ItemType& newType = Item::items[it.transformToOnUse[player->getSex()]];
+			const ItemType &newType = Item::items[it.transformToOnUse[player->getSex()]];
 			if (newType.type == ITEM_TYPE_BED) {
 				g_game().transformItem(this, it.transformToOnUse[player->getSex()]);
 			}
 		} else if (it.transformToFree != 0) {
-			const ItemType& newType = Item::items[it.transformToFree];
+			const ItemType &newType = Item::items[it.transformToFree];
 			if (newType.type == ITEM_TYPE_BED) {
 				g_game().transformItem(this, it.transformToFree);
 			}
@@ -258,18 +238,16 @@ void BedItem::updateAppearance(const Player* player)
 	}
 }
 
-void BedItem::internalSetSleeper(const Player* player)
-{
+void BedItem::internalSetSleeper(const Player* player) {
 	std::string desc_str = player->getName() + " is sleeping there.";
 
 	sleeperGUID = player->getGUID();
 	sleepStart = time(nullptr);
-	setSpecialDescription(desc_str);
+	setAttribute(ItemAttribute_t::DESCRIPTION, desc_str);
 }
 
-void BedItem::internalRemoveSleeper()
-{
+void BedItem::internalRemoveSleeper() {
 	sleeperGUID = 0;
 	sleepStart = 0;
-	setSpecialDescription("Nobody is sleeping there.");
+	setAttribute(ItemAttribute_t::DESCRIPTION, "Nobody is sleeping there.");
 }

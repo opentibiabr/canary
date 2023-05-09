@@ -1,35 +1,23 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/creature/creatureevent.h"
 #include "lua/functions/events/creature_event_functions.hpp"
 #include "utils/tools.h"
-
 
 int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 	// CreatureEvent(eventName)
 	CreatureEvent* creature = new CreatureEvent(getScriptEnv()->getScriptInterface());
 	if (creature) {
 		creature->setName(getString(L, 2));
-		creature->fromLua = true;
 		pushUserdata<CreatureEvent>(L, creature);
 		setMetatable(L, -1, "CreatureEvent");
 	} else {
@@ -70,7 +58,8 @@ int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 			creature->setEventType(CREATURE_EVENT_EXTENDED_OPCODE);
 		} else {
 			SPDLOG_ERROR("[CreatureEventFunctions::luaCreatureEventType] - "
-                         "Invalid type for creature event: {}", typeName);
+						 "Invalid type for creature event: {}",
+						 typeName);
 			pushBoolean(L, false);
 		}
 		creature->setLoaded(true);
@@ -85,7 +74,7 @@ int CreatureEventFunctions::luaCreatureEventRegister(lua_State* L) {
 	// creatureevent:register()
 	CreatureEvent* creature = getUserdata<CreatureEvent>(L, 1);
 	if (creature) {
-		if (!creature->isScripted()) {
+		if (!creature->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}

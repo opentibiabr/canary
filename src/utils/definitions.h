@@ -1,90 +1,67 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_UTILS_DEFINITIONS_H_
 #define SRC_UTILS_DEFINITIONS_H_
 
-static constexpr auto STATUS_SERVER_NAME = "Canary";
-static constexpr auto STATUS_SERVER_VERSION = "1.5.0";
-static constexpr auto STATUS_SERVER_DEVELOPERS = "OpenTibiaBR Organization, SaiyansKing and Mark Samman";
-
-static constexpr auto AUTHENTICATOR_DIGITS = 6U;
-static constexpr auto AUTHENTICATOR_PERIOD = 30U;
-
-static constexpr auto CLIENT_VERSION = 1291;
-#define CLIENT_VERSION_UPPER (CLIENT_VERSION / 100)
-#define CLIENT_VERSION_LOWER (CLIENT_VERSION % 100)
-
 #ifndef __FUNCTION__
-#define __FUNCTION__ __func__
+	#define __FUNCTION__ __func__
 #endif
 
 #ifndef _CRT_SECURE_NO_WARNINGS
-#define _CRT_SECURE_NO_WARNINGS
+	#define _CRT_SECURE_NO_WARNINGS
 #endif
 
 #ifndef _USE_MATH_DEFINES
-#define _USE_MATH_DEFINES
+	#define _USE_MATH_DEFINES
 #endif
-
-#include <cmath>
 
 #ifdef _WIN32
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
+	#ifndef NOMINMAX
+		#define NOMINMAX
+	#endif
 
-#if defined(_WIN32) || defined(WIN32) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__BORLANDC__)
-#define OS_WINDOWS
-#endif
+	#if defined(_WIN32) || defined(WIN32) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__BORLANDC__)
+		#define OS_WINDOWS
+	#endif
 
-#define WIN32_LEAN_AND_MEAN
+	#define WIN32_LEAN_AND_MEAN
 
-#ifdef _MSC_VER
-#ifdef NDEBUG
-#define _SECURE_SCL 0
-#define HAS_ITERATOR_DEBUGGING 0
-#endif
+	#ifdef _MSC_VER
+		#ifdef NDEBUG
+			#define _SECURE_SCL 0
+			#define HAS_ITERATOR_DEBUGGING 0
+		#endif
 
-#pragma warning(disable:4127) // conditional expression is constant
-#pragma warning(disable:4244) // 'argument' : conversion from 'type1' to 'type2', possible loss of data
-#pragma warning(disable:4250) // 'class1' : inherits 'class2::member' via dominance
-#pragma warning(disable:4267) // 'var' : conversion from 'size_t' to 'type', possible loss of data
-#pragma warning(disable:4319) // '~': zero extending 'unsigned int' to 'lua_Number' of greater size
-#pragma warning(disable:4458) // declaration hides class member
-#pragma warning(disable:4101) // local variable not referenced
-#pragma warning(disable:4996) // declaration std::fpos<_Mbstatet>::seekpos
-#endif
+		#pragma warning(disable : 4127) // conditional expression is constant
+		#pragma warning(disable : 4244) // 'argument' : conversion from 'type1' to 'type2', possible loss of data
+		#pragma warning(disable : 4250) // 'class1' : inherits 'class2::member' via dominance
+		#pragma warning(disable : 4267) // 'var' : conversion from 'size_t' to 'type', possible loss of data
+		#pragma warning(disable : 4319) // '~': zero extending 'unsigned int' to 'lua_Number' of greater size
+		#pragma warning(disable : 4458) // declaration hides class member
+		#pragma warning(disable : 4101) // local variable not referenced
+		#pragma warning(disable : 4996) // declaration std::fpos<_Mbstatet>::seekpos
+	#endif
 
-#define strcasecmp _stricmp
-#define strncasecmp _strnicmp
+	#define strcasecmp _stricmp
+	#define strncasecmp _strnicmp
 
-#ifndef _WIN32_WINNT
-// 0x0602: Windows 7
-#define _WIN32_WINNT 0x0602
-#endif
+	#ifndef _WIN32_WINNT
+		// 0x0602: Windows 7
+		#define _WIN32_WINNT 0x0602
+	#endif
 #endif
 
 #ifndef M_PI
-#define M_PI 3.14159265358979323846
+	#define M_PI 3.14159265358979323846
 #endif
 
 typedef int error_t;
 
-#endif  // SRC_UTILS_DEFINITIONS_H_
+#endif // SRC_UTILS_DEFINITIONS_H_

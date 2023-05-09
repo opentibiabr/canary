@@ -1,20 +1,10 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_NPC_NPC_TYPE_FUNCTIONS_HPP_
@@ -75,10 +65,15 @@ class NpcTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "NpcType", "currency", NpcTypeFunctions::luaNpcTypeCurrency);
 
 			registerMethod(L, "NpcType", "addShopItem", NpcTypeFunctions::luaNpcTypeAddShopItem);
+
+			registerMethod(L, "NpcType", "soundChance", NpcTypeFunctions::luaNpcTypeSoundChance);
+			registerMethod(L, "NpcType", "soundSpeedTicks", NpcTypeFunctions::luaNpcTypeSoundSpeedTicks);
+			registerMethod(L, "NpcType", "addSound", NpcTypeFunctions::luaNpcTypeAddSound);
+			registerMethod(L, "NpcType", "getSounds", NpcTypeFunctions::luaNpcTypeGetSounds);
 		}
 
 	private:
-		static void createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock>& shopVector);
+		static void createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock> &shopVector);
 		static int luaNpcTypeCreate(lua_State* L);
 		static int luaNpcTypeIsPushable(lua_State* L);
 		static int luaNpcTypeFloorChange(lua_State* L);
@@ -122,7 +117,12 @@ class NpcTypeFunctions final : LuaScriptInterface {
 
 		static int luaNpcTypeAddShopItem(lua_State* L);
 
+		static int luaNpcTypeSoundChance(lua_State* L);
+		static int luaNpcTypeSoundSpeedTicks(lua_State* L);
+		static int luaNpcTypeAddSound(lua_State* L);
+		static int luaNpcTypeGetSounds(lua_State* L);
+
 		friend class GameFunctions;
 };
 
-#endif  // SRC_LUA_FUNCTIONS_CREATURES_NPC_NPC_TYPE_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_CREATURES_NPC_NPC_TYPE_FUNCTIONS_HPP_

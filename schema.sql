@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '2'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '25'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
     `lastday` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `type` tinyint(1) UNSIGNED NOT NULL DEFAULT '1',
     `coins` int(12) UNSIGNED NOT NULL DEFAULT '0',
+    `tournament_coins` int(12) UNSIGNED NOT NULL DEFAULT '0',
     `creation` int(11) UNSIGNED NOT NULL DEFAULT '0',
     `recruiter` INT(6) DEFAULT 0,
     CONSTRAINT `accounts_pk` PRIMARY KEY (`id`),
@@ -88,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `deletion` bigint(15) NOT NULL DEFAULT '0',
     `balance` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `offlinetraining_time` smallint(5) UNSIGNED NOT NULL DEFAULT '43200',
-    `offlinetraining_skill` int(11) NOT NULL DEFAULT '-1',
+    `offlinetraining_skill` tinyint(2) NOT NULL DEFAULT '-1',
     `stamina` smallint(5) UNSIGNED NOT NULL DEFAULT '2520',
     `skill_fist` int(10) UNSIGNED NOT NULL DEFAULT '10',
     `skill_fist_tries` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
@@ -139,6 +140,10 @@ CREATE TABLE IF NOT EXISTS `players` (
     `lookfamiliarstype` int(11) unsigned NOT NULL DEFAULT '0',
     `isreward` tinyint(1) NOT NULL DEFAULT '1',
     `istutorial` tinyint(1) NOT NULL DEFAULT '0',
+    `forge_dusts` bigint(21) NOT NULL DEFAULT '0',
+    `forge_dust_level` bigint(21) NOT NULL DEFAULT '100',
+    `randomize_mount` tinyint(1) NOT NULL DEFAULT '0',
+    `boss_points` int NOT NULL DEFAULT '0',
     INDEX `account_id` (`account_id`),
     INDEX `vocation` (`vocation`),
     CONSTRAINT `players_pk` PRIMARY KEY (`id`),
@@ -206,6 +211,21 @@ CREATE TABLE IF NOT EXISTS `account_viplist` (
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Table structure `boosted_boss`
+CREATE TABLE IF NOT EXISTS `boosted_boss` (
+    `boostname` TEXT,
+    `date` varchar(250) NOT NULL DEFAULT '',
+    `raceid` varchar(250) NOT NULL DEFAULT '',
+    `looktype` int(11) NOT NULL DEFAULT "136",
+    `lookfeet` int(11) NOT NULL DEFAULT "0",
+    `looklegs` int(11) NOT NULL DEFAULT "0",
+    `lookhead` int(11) NOT NULL DEFAULT "0",
+    `lookbody` int(11) NOT NULL DEFAULT "0",
+    `lookaddons` int(11) NOT NULL DEFAULT "0",
+    `lookmount` int(11) DEFAULT "0",
+    PRIMARY KEY (`date`)
+) AS SELECT 0 AS date, "default" AS boostname, 0 AS raceid;
+
 -- Table structure `boosted_creature`
 CREATE TABLE IF NOT EXISTS `boosted_creature` (
     `boostname` TEXT,
@@ -238,6 +258,21 @@ CREATE TABLE IF NOT EXISTS `daily_reward_history` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Tabble Structure `forge_history`
+CREATE TABLE IF NOT EXISTS `forge_history` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `player_id` int NOT NULL,
+    `action_type` int NOT NULL DEFAULT '0',
+    `description` text NOT NULL,
+    `is_success` tinyint NOT NULL DEFAULT '0',
+    `bonus` tinyint NOT NULL DEFAULT '0',
+    `done_at` bigint NOT NULL,
+    `done_at_date` datetime DEFAULT NOW(),
+    `cost` bigint UNSIGNED NOT NULL DEFAULT '0',
+    `gained` bigint UNSIGNED NOT NULL DEFAULT '0',
+    CONSTRAINT `forge_history_pk` PRIMARY KEY (`id`),
+    FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `global_storage`
 CREATE TABLE IF NOT EXISTS `global_storage` (
@@ -249,12 +284,14 @@ CREATE TABLE IF NOT EXISTS `global_storage` (
 -- Table structure `guilds`
 CREATE TABLE IF NOT EXISTS `guilds` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
+    `level` int(11) NOT NULL DEFAULT '1',
     `name` varchar(255) NOT NULL,
     `ownerid` int(11) NOT NULL,
     `creationdata` int(11) NOT NULL,
     `motd` varchar(255) NOT NULL DEFAULT '',
     `residence` int(11) NOT NULL DEFAULT '0',
     `balance` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
+    `points` int(11) NOT NULL DEFAULT '0',
     CONSTRAINT `guilds_pk` PRIMARY KEY (`id`),
     CONSTRAINT `guilds_name_unique` UNIQUE (`name`),
     CONSTRAINT `guilds_owner_unique` UNIQUE (`ownerid`),
@@ -427,6 +464,7 @@ CREATE TABLE IF NOT EXISTS `market_history` (
     `expires_at` bigint(20) UNSIGNED NOT NULL,
     `inserted` bigint(20) UNSIGNED NOT NULL,
     `state` tinyint(1) UNSIGNED NOT NULL,
+    `tier` tinyint UNSIGNED NOT NULL DEFAULT '0',
     INDEX `player_id` (`player_id`,`sale`),
     CONSTRAINT `market_history_pk` PRIMARY KEY (`id`),
     CONSTRAINT `market_history_players_fk`
@@ -444,6 +482,7 @@ CREATE TABLE IF NOT EXISTS `market_offers` (
     `created` bigint(20) UNSIGNED NOT NULL,
     `anonymous` tinyint(1) NOT NULL DEFAULT '0',
     `price` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
+    `tier` tinyint UNSIGNED NOT NULL DEFAULT '0',
     INDEX `sale` (`sale`,`itemtype`),
     INDEX `created` (`created`),
     INDEX `player_id` (`player_id`),
@@ -631,6 +670,14 @@ CREATE TABLE IF NOT EXISTS `player_taskhunt` (
     `monster_list` BLOB NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Table structure `player_bosstiary`
+CREATE TABLE IF NOT EXISTS `player_bosstiary` (
+    `player_id` int NOT NULL,
+    `bossIdSlotOne` int NOT NULL DEFAULT 0,
+    `bossIdSlotTwo` int NOT NULL DEFAULT 0,
+    `removeTimes` int NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- Table structure `player_rewards`
 CREATE TABLE IF NOT EXISTS `player_rewards` (
     `player_id` int(11) NOT NULL,
@@ -673,14 +720,13 @@ CREATE TABLE IF NOT EXISTS `player_storage` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
 -- Table structure `store_history`
 CREATE TABLE IF NOT EXISTS `store_history` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `account_id` int(11) UNSIGNED NOT NULL,
     `mode` smallint(2) NOT NULL DEFAULT '0',
     `description` varchar(3500) NOT NULL,
+    `coin_type` tinyint(1) NOT NULL DEFAULT '0',
     `coin_amount` int(12) NOT NULL,
     `time` bigint(20) UNSIGNED NOT NULL,
     `timestamp` int(11) NOT NULL DEFAULT '0',

@@ -410,9 +410,9 @@ class Game {
 		void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint8_t &effect);
 
 		// Wheel of destiny combat helpers
-		void applyWheelOfDestinyHealing(CombatDamage& damage, Player* attackerPlayer, Creature* target);
-		void applyWheelOfDestinyEffectsToDamage(CombatDamage& damage, Player* attackerPlayer, Creature* target);
-		int32_t applyHealthChange(CombatDamage& damage, Creature* target);
+		void applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, Creature* target);
+		void applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, Player* attackerPlayer, Creature* target);
+		int32_t applyHealthChange(CombatDamage &damage, Creature* target);
 
 		bool combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent = false);
 		void applyCharmRune(const Monster* targetMonster, Player* attackerPlayer, Creature* target, const int32_t &realDamage) const;

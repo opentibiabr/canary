@@ -11,8 +11,11 @@ function rune.onCastSpell(creature, var, isHotkey)
 	return combat:execute(creature, var)
 end
 
+rune:id(91)
 rune:group("attack")
 rune:name("poison bomb rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_POISON_BOMB_RUNE)
 rune:runeId(3173)
 rune:allowFarUse(true)
 rune:setPzLocked(true)

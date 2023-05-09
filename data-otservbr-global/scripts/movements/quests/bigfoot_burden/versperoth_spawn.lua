@@ -39,7 +39,7 @@ local function executeVersperothBattle(mid)
 			minionMonster = Game.createMonster('Minion of Versperoth', position)
 			position:sendMagicEffect(CONST_ME_TELEPORT)
 			if minionMonster then
-				addEvent(removeMinion, 20 * 1000, minionMonster.uid)
+				addEvent(removeMinion, 20 * 1000, minionMonster:getId())
 			end
 		end
 		addEvent(executeVersperothBattle, 10 * 1000)
@@ -54,7 +54,7 @@ local function executeVersperothBattle(mid)
 		end
 		versperothPosition:sendMagicEffect(CONST_ME_GROUNDSHAKER)
 		monster:setHealth(Game.getStorageValue(GlobalStorage.BigfootBurden.Versperoth.Health))
-		addEvent(executeVersperothBattle, 20 * 1000, monster.uid)
+		addEvent(executeVersperothBattle, 20 * 1000, monster:getId())
 	end
 end
 

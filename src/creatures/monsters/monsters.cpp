@@ -72,6 +72,8 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 	sb.range = std::min((int)spell->range, Map::maxViewportX * 2);
 	sb.minCombatValue = std::min(spell->minCombatValue, spell->maxCombatValue);
 	sb.maxCombatValue = std::max(spell->minCombatValue, spell->maxCombatValue);
+	sb.soundCastEffect = spell->soundCastEffect;
+	sb.soundImpactEffect = spell->soundImpactEffect;
 	sb.spell = g_spells().getSpellByName(spell->name);
 
 	if (sb.spell) {
@@ -134,7 +136,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 		if (spell->speedChange != 0) {
 			speedChange = spell->speedChange;
 			if (speedChange < -1000) {
-				// cant be slower than 100%
+				// Cant be slower than 100%
 				speedChange = -1000;
 			}
 		}
@@ -248,6 +250,13 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 
 	combatPtr->setPlayerCombatValues(COMBAT_FORMULA_DAMAGE, sb.minCombatValue, 0, sb.maxCombatValue, 0);
 	combatSpell = new CombatSpell(combatPtr.release(), spell->needTarget, spell->needDirection);
+	// Sanity check
+	if (!combatSpell) {
+		return false;
+	}
+
+	combatSpell->soundCastEffect = sb.soundCastEffect;
+	combatSpell->soundImpactEffect = sb.soundImpactEffect;
 
 	sb.spell = combatSpell;
 	if (combatSpell) {

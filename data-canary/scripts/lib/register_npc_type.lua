@@ -106,6 +106,18 @@ registerNpcType.respawnType = function(npcType, mask)
 	end
 end
 
+registerNpcType.sounds = function(npcType, mask)
+	if type(mask.sounds) == "table" then
+		if mask.sounds.ticks and mask.sounds.chance and mask.sounds.ids and type(mask.sounds.ids) == "table" and #(mask.sounds.ids) > 0 then
+			npcType:soundSpeedTicks(mask.sounds.ticks)
+			npcType:soundChance(mask.sounds.chance)
+			for _, v in pairs(mask.sounds.ids) do
+				npcType:addSound(v)
+			end
+		end
+	end
+end
+
 registerNpcType.voices = function(npcType, mask)
 	if type(mask.voices) == "table" then
 		local interval, chance

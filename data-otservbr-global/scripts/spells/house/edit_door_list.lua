@@ -19,6 +19,7 @@ end
 
 spell:name("House Door List")
 spell:words("aleta grav")
+spell:castSound(SOUND_EFFECT_TYPE_SPELL_EDIT_DOOR)
 spell:needCasterTargetOrDirection(true)
 spell:isAggressive(false)
 spell:register()

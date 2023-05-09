@@ -85,7 +85,8 @@ Storage = {
 	GhostShipQuest = 30005,
 	OrcKingGreeting = 30006,
 	MarkwinGreeting = 30007,
-	-- empty = 30008
+	-- EmoteSpells Storage cannot be changed, it is set in source code
+	EmoteSpells = 30008,
 	WagonTicket = 30009,
 	BloodHerbQuest = 30010,
 	firstMageWeapon = 30011,

@@ -973,7 +973,7 @@ int PlayerFunctions::luaPlayerAddManaSpent(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetBaseMaxHealth(lua_State* L) {
 	// player:getBaseMaxHealth()
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (player) {
 		lua_pushnumber(L, player->healthMax);
 	} else {
@@ -3727,5 +3727,92 @@ int PlayerFunctions::luaPlayerAvatarTimer(lua_State* L) {
 		player->setWheelOfDestinyOnThinkTimer(WHEEL_OF_DESTINY_ONTHINK_AVATAR, getNumber<int64_t>(L, 2));
 		pushBoolean(L, true);
 	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetName(lua_State* L) {
+	// player:getName()
+	const auto player = getUserdata<const Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	pushString(L, player->getName());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerHasGroupFlag(lua_State* L) {
+	// player:hasGroupFlag(flag)
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	pushBoolean(L, player->hasFlag(getNumber<PlayerFlags_t>(L, 2)));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetGroupFlag(lua_State* L) {
+	// player:setGroupFlag(flag)
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->setFlag(getNumber<PlayerFlags_t>(L, 2));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveGroupFlag(lua_State* L) {
+	// player:removeGroupFlag(flag)
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->removeFlag(getNumber<PlayerFlags_t>(L, 2));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L) {
+	// player:sendSingleSoundEffect(soundId[, actor = true])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	SoundEffect_t soundEffect = getNumber<SoundEffect_t>(L, 2);
+	bool actor = getBoolean(L, 3, true);
+
+	player->sendSingleSoundEffect(player->getPosition(), soundEffect, actor ? SourceEffect_t::OWN : SourceEffect_t::GLOBAL);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendDoubleSoundEffect(lua_State* L) {
+	// player:sendDoubleSoundEffect(mainSoundId, secondarySoundId[, actor = true])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	SoundEffect_t mainSoundEffect = getNumber<SoundEffect_t>(L, 2);
+	SoundEffect_t secondarySoundEffect = getNumber<SoundEffect_t>(L, 3);
+	bool actor = getBoolean(L, 4, true);
+
+	player->sendDoubleSoundEffect(player->getPosition(), mainSoundEffect, actor ? SourceEffect_t::OWN : SourceEffect_t::GLOBAL, secondarySoundEffect, actor ? SourceEffect_t::OWN : SourceEffect_t::GLOBAL);
+	pushBoolean(L, true);
 	return 1;
 }

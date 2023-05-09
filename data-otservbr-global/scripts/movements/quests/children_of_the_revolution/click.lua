@@ -49,12 +49,12 @@ end
 
 local function summonWave(i)
 	local wave = config.waves[i]
-	local summonPosition
-	for i = 1, wave.size do
-		summonPosition = Position(math.random(config.summonArea.from.x,
-		config.summonArea.to.x), math.random(config.summonArea.from.y, config.summonArea.to.y), 7)
-		Game.createMonster(wave.monster, summonPosition)
-		summonPosition:sendMagicEffect(CONST_ME_TELEPORT)
+	if wave then
+		for i = 1, wave.size do
+			local summonPosition = Position(math.random(config.summonArea.from.x, config.summonArea.to.x), math.random(config.summonArea.from.y, config.summonArea.to.y), 7)
+			Game.createMonster(wave.monster, summonPosition)
+			summonPosition:sendMagicEffect(CONST_ME_TELEPORT)
+		end
 	end
 end
 

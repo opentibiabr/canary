@@ -284,6 +284,8 @@ class Item : virtual public Thing, public ItemProperties {
 			return nullptr;
 		}
 
+		SoundEffect_t getMovementSound(Cylinder* toCylinder) const;
+
 		void setIsLootTrackeable(bool value) {
 			isLootTrackeable = value;
 		}

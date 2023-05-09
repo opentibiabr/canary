@@ -301,8 +301,8 @@ int GlobalFunctions::luaDoAreaCombatHealth(lua_State* L) {
 
 		damage.instantSpellName = getString(L, 9);
 		damage.runeSpellName = getString(L, 10);
-		if (creature && creature->getPlayer()) {
-			creature->getPlayer()->getWheelOfDestinyCombatDataSpell(damage, nullptr);
+		if (auto player = creature->getPlayer()) {
+			player->getWheelOfDestinyCombatDataSpell(damage, nullptr);
 		}
 
 		Combat::doCombatHealth(creature, getPosition(L, 3), area, damage, params);
@@ -341,10 +341,10 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 	damage.primary.type = combatType;
 	damage.primary.value = normal_random(getNumber<int32_t>(L, 4), getNumber<int32_t>(L, 5));
 
-	damage.instantSpellName = getString(L, 8);
-	damage.runeSpellName = getString(L, 9);
-	if (creature && creature->getPlayer()) {
-		creature->getPlayer()->getWheelOfDestinyCombatDataSpell(damage, target);
+	damage.instantSpellName = getString(L, 9);
+	damage.runeSpellName = getString(L, 10);
+	if (auto player = creature->getPlayer()) {
+		player->getWheelOfDestinyCombatDataSpell(damage, target);
 	}
 
 	// Check if it's a healing then we sould add the non-aggresive tag
@@ -379,8 +379,8 @@ int GlobalFunctions::luaDoAreaCombatMana(lua_State* L) {
 
 		damage.instantSpellName = getString(L, 8);
 		damage.runeSpellName = getString(L, 9);
-		if (creature && creature->getPlayer()) {
-			creature->getPlayer()->getWheelOfDestinyCombatDataSpell(damage, nullptr);
+		if (auto player = creature->getPlayer()) {
+			player->getPlayer()->getWheelOfDestinyCombatDataSpell(damage, nullptr);
 		}
 
 		Position pos = getPosition(L, 2);
@@ -419,8 +419,8 @@ int GlobalFunctions::luaDoTargetCombatMana(lua_State* L) {
 
 	damage.instantSpellName = getString(L, 7);
 	damage.runeSpellName = getString(L, 8);
-	if (creature && creature->getPlayer()) {
-		creature->getPlayer()->getWheelOfDestinyCombatDataSpell(damage, target);
+	if (auto player = creature->getPlayer()) {
+		player->getWheelOfDestinyCombatDataSpell(damage, target);
 	}
 
 	Combat::doCombatMana(creature, target, damage, params);

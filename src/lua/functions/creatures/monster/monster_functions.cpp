@@ -306,7 +306,7 @@ int MonsterFunctions::luaMonsterGetTargetCount(lua_State* L) {
 }
 
 int MonsterFunctions::luaMonsterChangeTargetDistance(lua_State* L) {
-	// monster:changeTargetDistance(distance[, duration])
+	// monster:changeTargetDistance(distance[, duration = 12000])
 	Monster* monster = getUserdata<Monster>(L, 1);
 	if (monster) {
 		int32_t distance = getNumber<int32_t>(L, 2, 1);

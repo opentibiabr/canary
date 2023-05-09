@@ -1058,11 +1058,6 @@ class Player final : public Creature, public Cylinder {
 				client->sendCreatureOutfit(creature, outfit);
 			}
 		}
-		void sendInventoryImbuements(std::map<Slots_t, Item*> items) {
-			if (client) {
-				client->sendInventoryImbuements(items);
-			}
-		}
 		void sendCreatureChangeVisible(const Creature* creature, bool visible) {
 			if (!client) {
 				return;
@@ -2262,7 +2257,7 @@ class Player final : public Creature, public Cylinder {
 			const Position* pos = nullptr
 		);
 
-		// Wheel of destiny - Checks:
+		// Wheel of destiny
 		void onThinkWheelOfDestiny(bool force = false);
 		void checkWheelOfDestinyGiftOfLife();
 		bool checkWheelOfDestinyBattleInstinct();

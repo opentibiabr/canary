@@ -7414,7 +7414,7 @@ bool Player::checkWheelOfDestinyDivineEmpowerment() {
 	bool updateClient = false;
 	setWheelOfDestinyOnThinkTimer(WHEEL_OF_DESTINY_ONTHINK_DIVINE_EMPOWERMENT, OTSYS_TIME() + 2000);
 	Tile* tile = getTile();
-	if (tile && tile->getItemTypeCount(ITEM_DIVINE_EMPOWERMENT_WOD) > 0) {
+	if (tile && tile->getItemTypeCount(ITEM_DIVINE_EMPOWERMENT) > 0) {
 		int32_t damageBonus = 0;
 		uint8_t stage = getWheelOfDestinyStage(WHEEL_OF_DESTINY_STAGE_DIVINE_EMPOWERMENT);
 		if (stage >= 3) {

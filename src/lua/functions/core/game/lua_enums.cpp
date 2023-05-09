@@ -756,7 +756,6 @@ void LuaEnums::initItemTypeEnums(lua_State* L) {
 	registerEnum(L, ITEM_TYPE_RETRIEVE);
 	registerEnum(L, ITEM_TYPE_GOLD);
 	registerEnum(L, ITEM_TYPE_UNASSIGNED);
-	registerEnum(L, ITEM_PRIMAL_POD);
 }
 
 void LuaEnums::initItemIdEnums(lua_State* L) {
@@ -813,7 +812,8 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 	registerEnum(L, ITEM_GOLD_POUCH);
 	registerEnum(L, ITEM_STORE_INBOX);
 
-	registerEnum(L, ITEM_DIVINE_EMPOWERMENT_WOD);
+	registerEnum(L, ITEM_DIVINE_EMPOWERMENT);
+	registerEnum(L, ITEM_PRIMAL_POD);
 
 	registerEnum(L, ITEM_FORGE_SLIVER);
 	registerEnum(L, ITEM_FORGE_CORE);

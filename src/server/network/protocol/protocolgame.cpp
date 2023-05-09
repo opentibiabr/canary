@@ -2877,7 +2877,7 @@ void ProtocolGame::sendCreatureIcon(const Creature* creature) {
 	// Type 14 for this
 	msg.addByte(14);
 	// 0 = no icon, 1 = we'll send an icon
-	// msg.addByte(icon != CREATUREICON_NONE);
+	auto creaturePlayer = creature->getPlayer();
 	if (icon != CREATUREICON_NONE) {
 		msg.addByte(icon != CREATUREICON_NONE); // Has icon
 		msg.addByte(icon);
@@ -2885,11 +2885,11 @@ void ProtocolGame::sendCreatureIcon(const Creature* creature) {
 		msg.addByte(1);
 		// Used for the life in the new quest
 		msg.add<uint16_t>(0);
-	} else if (version > 1289 && creature->getPlayer() && creature->getPlayer()->getHazardSystemReference() > 0 && creature->getPlayer()->getHazardSystemPoints() > 0) {
+	} else if (!oldProtocol && creaturePlayer && creaturePlayer->getHazardSystemReference() > 0 && creaturePlayer->getHazardSystemPoints() > 0) {
 		msg.addByte(0x01); // Has icon
 		msg.addByte(22); // Hazard icon
 		msg.addByte(0);
-		msg.add<uint16_t>(creature->getPlayer()->getHazardSystemPoints());
+		msg.add<uint16_t>(creaturePlayer->getHazardSystemPoints());
 	} else {
 		msg.addByte(0x00); // Has icon
 	}
@@ -4451,7 +4451,7 @@ void ProtocolGame::sendForgingData() {
 }
 
 void ProtocolGame::sendWheelOfDestinyGiftOfLifeCooldown() {
-	if (!player || version < 1310) {
+	if (!player || oldProtocol) {
 		return;
 	}
 

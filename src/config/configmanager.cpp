@@ -122,6 +122,8 @@ bool ConfigManager::load() {
 		integer[PREMIUM_DEPOT_LIMIT] = getGlobalNumber(L, "premiumDepotLimit", 8000);
 		integer[DEPOT_BOXES] = getGlobalNumber(L, "depotBoxes", 20);
 		integer[STASH_ITEMS] = getGlobalNumber(L, "stashItemCount", 5000);
+
+		boolean[OLD_PROTOCOL] = getGlobalBoolean(L, "allowOldProtocol", true);
 	}
 
 	boolean[ALLOW_CHANGEOUTFIT] = getGlobalBoolean(L, "allowChangeOutfit", true);
@@ -131,7 +133,6 @@ bool ConfigManager::load() {
 	boolean[EXPERIENCE_FROM_PLAYERS] = getGlobalBoolean(L, "experienceByKillingPlayers", false);
 	boolean[FREE_PREMIUM] = getGlobalBoolean(L, "freePremium", false);
 	boolean[REPLACE_KICK_ON_LOGIN] = getGlobalBoolean(L, "replaceKickOnLogin", true);
-	boolean[ALLOW_CLONES] = getGlobalBoolean(L, "allowClones", false);
 	boolean[MARKET_PREMIUM] = getGlobalBoolean(L, "premiumToCreateMarketOffer", true);
 	boolean[EMOTE_SPELLS] = getGlobalBoolean(L, "emoteSpells", false);
 	boolean[STAMINA_SYSTEM] = getGlobalBoolean(L, "staminaSystem", true);

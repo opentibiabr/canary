@@ -37,3 +37,21 @@ void RewardChest::postRemoveNotification(Thing* thing, const Cylinder* newParent
 		parent->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 	}
 }
+
+// Second argument is disabled by default because not need to send to client in the RewardChest
+void RewardChest::removeItem(Thing* thing, bool /* sendToClient = false*/) {
+	if (thing == nullptr) {
+		return;
+	}
+
+	auto itemToRemove = thing->getItem();
+	if (itemToRemove == nullptr) {
+		return;
+	}
+
+	auto it = std::ranges::find(itemlist.begin(), itemlist.end(), itemToRemove);
+	if (it != itemlist.end()) {
+		itemlist.erase(it);
+		itemToRemove->setParent(nullptr);
+	}
+}

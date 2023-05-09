@@ -62,6 +62,7 @@ class Condition {
 		virtual bool unserializeProp(ConditionAttr_t attr, PropStream &propStream);
 
 		bool isPersistent() const;
+		bool isRemovableOnDeath() const;
 
 	protected:
 		int64_t endTime;
@@ -72,6 +73,13 @@ class Condition {
 		bool isBuff;
 
 		virtual bool updateCondition(const Condition* addCondition);
+
+	private:
+		SoundEffect_t tickSound = SoundEffect_t::SILENCE;
+		SoundEffect_t addSound = SoundEffect_t::SILENCE;
+
+		friend class ConditionDamage;
+		friend class ConditionGeneric;
 };
 
 class ConditionGeneric : public Condition {

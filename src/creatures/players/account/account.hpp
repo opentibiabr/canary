@@ -19,7 +19,7 @@ namespace account {
 	enum Errors : uint8_t {
 		ERROR_NO = 0,
 		ERROR_DB,
-		ERROR_INVALID_ACCOUNT_EMAIL,
+		ERROR_INVALID_ACCOUNT_IDENTIFIER,
 		ERROR_INVALID_ACC_PASSWORD,
 		ERROR_INVALID_ACC_TYPE,
 		ERROR_INVALID_ID,
@@ -81,7 +81,7 @@ namespace account {
 			/**
 			 * @brief Construct a new Account object
 			 *
-			 * @param name Set Account Name to be used by LoadAccountDB
+			 * @param name Set Account Name or Email to be used by LoadAccountDB
 			 */
 			explicit Account(const std::string &name);
 
@@ -160,10 +160,10 @@ namespace account {
 			/**
 			 * @brief Try to
 			 *
-			 * @param name
+			 * @param accountIdentifier
 			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
 			 */
-			error_t LoadAccountDB(std::string name);
+			error_t LoadAccountDB(std::string accountIdentifier);
 
 			/**
 			 * @brief
@@ -186,8 +186,8 @@ namespace account {
 
 			error_t GetID(uint32_t* id);
 
-			error_t SetEmail(std::string name);
-			error_t GetEmail(std::string* name);
+			error_t SetAccountIdentifier(std::string accountIdentifier);
+			error_t GetAccountIdentifier(std::string* accountIdentifier);
 
 			error_t SetPassword(std::string password);
 			error_t GetPassword(std::string* password);
@@ -204,6 +204,14 @@ namespace account {
 			error_t GetAccountPlayer(Player* player, std::string &characterName);
 			error_t GetAccountPlayers(std::vector<Player>* players);
 
+			// Old protocol compat
+			void setProtocolCompat(bool toggle) {
+				oldProtocol_ = toggle;
+			}
+			bool getProtocolCompat() const {
+				return oldProtocol_;
+			}
+
 		private:
 			error_t SetID(uint32_t id);
 			error_t LoadAccountDB(std::ostringstream &query);
@@ -214,11 +222,13 @@ namespace account {
 			DatabaseTasks* db_tasks_;
 
 			uint32_t id_;
-			std::string email_;
+			std::string accountIdentifier_;
 			std::string password_;
 			uint32_t premium_remaining_days_;
 			time_t premium_last_day_;
 			AccountType account_type_;
+
+			bool oldProtocol_;
 	};
 
 } // namespace account

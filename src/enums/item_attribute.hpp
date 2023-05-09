@@ -54,4 +54,10 @@ enum ItemDecayState_t : uint8_t {
 	DECAYING_STOPPING,
 };
 
+enum ItemAnimation_t : uint8_t {
+	ANIMATION_NONE = 0,
+	ANIMATION_RANDOM = 1,
+	ANIMATION_DESYNC = 2,
+};
+
 #endif // SRC_ENUMS_HPP

@@ -431,12 +431,18 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) cons
 			// Check if any of our summons is out of range (+/- 2 floors or 30 tiles away)
 			bool checkRemoveDist = Position::getDistanceZ(newPos, pos) > 2 || (std::max<int32_t>(Position::getDistanceX(newPos, pos), Position::getDistanceY(newPos, pos)) > 30);
 
-			if (monster->isFamiliar() && checkSummonDist || teleportSummon && !protectionZoneCheck && checkSummonDist) {
-				g_game().internalTeleport(creature, creature->getMaster()->getPosition(), true);
-				continue;
+			if (monster && monster->isFamiliar() && checkSummonDist || teleportSummon && !protectionZoneCheck && checkSummonDist) {
+				if (Tile* masterTile = creature->getMaster()->getTile()) {
+					if (masterTile->hasFlag(TILESTATE_TELEPORT)) {
+						SPDLOG_WARN("[{}] cannot teleport summon, position has teleport. {}", __FUNCTION__, creature->getMaster()->getPosition().toString());
+					} else {
+						g_game().internalTeleport(creature, creature->getMaster()->getPosition(), true);
+						continue;
+					}
+				}
 			}
 
-			if (monster->isSummon() && !monster->isFamiliar() && !teleportSummon && checkRemoveDist) {
+			if (monster && monster->isSummon() && !monster->isFamiliar() && !teleportSummon && checkRemoveDist) {
 				despawnMonsterList.push_back(creature);
 			}
 		}
@@ -771,7 +777,10 @@ bool Creature::hasBeenAttacked(uint32_t attackerId) {
 }
 
 Item* Creature::getCorpse(Creature*, Creature*) {
-	return Item::CreateItem(getLookCorpse());
+	if (getLookCorpse() != 0) {
+		return Item::CreateItem(getLookCorpse());
+	}
+	return nullptr;
 }
 
 void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = true*/) {

@@ -60,7 +60,10 @@ struct CombatParams {
 		CombatOrigin origin = ORIGIN_SPELL;
 
 		uint8_t impactEffect = CONST_ME_NONE;
+		SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
+
 		uint8_t distanceEffect = CONST_ANI_NONE;
+		SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
 
 		bool blockedByArmor = false;
 		bool blockedByShield = false;

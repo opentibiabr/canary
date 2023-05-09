@@ -284,6 +284,8 @@ class Item : virtual public Thing, public ItemProperties {
 			return nullptr;
 		}
 
+		SoundEffect_t getMovementSound(Cylinder* toCylinder) const;
+
 		void setIsLootTrackeable(bool value) {
 			isLootTrackeable = value;
 		}
@@ -468,6 +470,10 @@ class Item : virtual public Thing, public ItemProperties {
 
 		// get the number of items
 		uint16_t getItemCount() const {
+			return count;
+		}
+		// Get item total amount
+		uint32_t getItemAmount() const {
 			return count;
 		}
 		void setItemCount(uint8_t n) {

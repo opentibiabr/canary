@@ -18,7 +18,7 @@
 #include "creatures/monsters/monsters.h"
 #include "items/weapons/weapons.h"
 
-int32_t Combat::getLevelFormula(Player* player, Spell* wheelSpell, CombatDamage& damage) const {
+int32_t Combat::getLevelFormula(Player* player, Spell* wheelSpell, CombatDamage &damage) const {
 	uint32_t magicLevelSkill = player->getMagicLevel();
 	// Wheel of destiny - Runic Mastery
 	if (player->getWheelOfDestinyInstant("Runic Mastery") && wheelSpell && damage.instantSpellName.empty()) {
@@ -1210,7 +1210,7 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatPar
 }
 
 //**********************************************************//
-uint32_t ValueCallback::getMagicLevelSkill(Player* player, CombatDamage& damage) const {
+uint32_t ValueCallback::getMagicLevelSkill(Player* player, CombatDamage &damage) const {
 	uint32_t magicLevelSkill = (player->getMagicLevel() + player->getSpecializedMagicLevel(damage.primary.type));
 	// Wheel of destiny
 	if (player && player->getWheelOfDestinyInstant("Runic Mastery") && damage.instantSpellName.empty()) {

@@ -3370,3 +3370,16 @@ int PlayerFunctions::luaPlayerSendDoubleSoundEffect(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerGetName(lua_State* L) {
+	// player:getName()
+	const auto player = getUserdata<const Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	pushString(L, player->getName());
+	return 1;
+}

@@ -258,7 +258,7 @@ function playerExists(name)
 	return false
 end
 
-function functionRevert()
+function resetFerumbrasAscendantHabitats()
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Corrupted, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Desert, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Dimension, 0)
@@ -268,13 +268,8 @@ function functionRevert()
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Roshamuul, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Venom, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats, 0)
-	for a = 1, #basins do
-		local item = Tile(basins[a].pos):getItemById(22196)
-		item:transform(11114)
-	end
-	local specs, spec = Game.getSpectators(Position(33629, 32693, 12), false, false, 25, 25, 85, 85)
-	for i = 1, #specs do
-		spec = specs[i]
+
+	for _, spec in pairs(Game.getSpectators(Position(33629, 32693, 12), false, false, 25, 25, 85, 85)) do
 		if spec:isPlayer() then
 			spec:teleportTo(Position(33630, 32648, 12))
 			spec:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -283,6 +278,7 @@ function functionRevert()
 			spec:remove()
 		end
 	end
+
 	for x = 33611, 33625 do
 		for y = 32658, 32727 do
 			local position = Position(x, y, 12)

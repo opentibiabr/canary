@@ -228,7 +228,7 @@ class House {
 		bool isLoaded = false;
 
 		void handleContainer(ItemList &moveItemList, Item* item) const;
-		void handleWrapableItem(ItemList &moveItemList, Item* item) const;
+		void handleWrapableItem(ItemList &moveItemList, Item* item, Player* player, HouseTile* houseTile) const;
 };
 
 using HouseMap = std::map<uint32_t, House*>;

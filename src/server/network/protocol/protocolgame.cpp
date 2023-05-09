@@ -2801,22 +2801,25 @@ void ProtocolGame::parseModalWindowAnswer(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseRewardContainerCollect(NetworkMessage &msg) {
-	const auto position = msg.getPosition();
-	auto itemId = msg.get<uint16_t>();
-	auto stackPosition = msg.getByte();
+    const auto position = msg.getPosition();
+    auto itemId = msg.get<uint16_t>();
+    auto stackPosition = msg.getByte();
 
-	addGameTask([position, itemId, stackPosition, this](Game* game, uint32_t playerId) {
-		try {
-			// Run the reward collect asynchronous
-			auto future = std::async(std::launch::async, &Game::playerRewardChestCollect, game, playerId, position, itemId, stackPosition);
-			// Waits for the asynchronous operation to complete
-			future.wait();
-		} catch (std::future_error &e) {
-			SPDLOG_ERROR("Failed to run asynchronous reward collect: {}", e.what());
-			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "An error occurred while collecting rewards. Please try again later or report it to the administrador.");
-		}
-	},
-				player->getID());
+    addGameTask([position, itemId, stackPosition, this](Game* game, uint32_t playerId) {
+        try {
+            // Try to run the reward collect asynchronously
+            auto future = std::async(std::launch::async, &Game::playerRewardChestCollect, game, playerId, position, itemId, stackPosition);
+            // Waits for the asynchronous operation to complete
+            future.wait();
+        } catch (std::system_error &e) {
+            SPDLOG_WARN("Failed to create a new thread for asynchronous reward collect, running synchronously: {}", e.what());
+						player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "An error occurred while collecting rewards. Please try again later or report it to the administrador.");
+        } catch (std::future_error &e) {
+            SPDLOG_ERROR("Failed to run asynchronous reward collect: {}", e.what());
+            player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "An error occurred while collecting rewards. Please try again later or report it to the administrador.");
+        }
+    },
+                player->getID());
 }
 
 void ProtocolGame::parseBrowseField(NetworkMessage &msg) {

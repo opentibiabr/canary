@@ -26,7 +26,7 @@ class ValueCallback final : public CallBack {
 		explicit ValueCallback(formulaType_t initType) :
 			type(initType) { }
 
-		uint32_t getMagicLevelSkill(Player* player, CombatDamage& damage) const;
+		uint32_t getMagicLevelSkill(Player* player, CombatDamage &damage) const;
 		void getMinMaxValues(Player* player, CombatDamage &damage, bool useCharges) const;
 
 	private:
@@ -303,7 +303,7 @@ class Combat {
 
 		static void combatTileEffects(const SpectatorHashSet &spectators, Creature* caster, Tile* tile, const CombatParams &params);
 
-		int32_t getLevelFormula(Player* player, Spell* wheelSpell, CombatDamage& damage) const;
+		int32_t getLevelFormula(Player* player, Spell* wheelSpell, CombatDamage &damage) const;
 		CombatDamage getCombatDamage(Creature* creature, Creature* target) const;
 
 		// configureable

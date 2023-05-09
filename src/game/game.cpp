@@ -6361,7 +6361,7 @@ void Game::applyLifeLeech(
 	Player* attackerPlayer, const Monster* targetMonster, Creature* target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
 	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE) + attackerPlayer->checkWheelOfDestinyDrainBodyLeech(target, SKILL_LIFE_LEECH_CHANCE) + damage.lifeLeechChance;
-			uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + attackerPlayer->checkWheelOfDestinyDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT) + damage.lifeLeech;
+	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + attackerPlayer->checkWheelOfDestinyDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT) + damage.lifeLeech;
 	if (normal_random(0, 100) >= lifeChance) {
 		return;
 	}

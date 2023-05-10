@@ -4,17 +4,17 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #ifndef SRC_SERVER_SIGNALS_H_
 #define SRC_SERVER_SIGNALS_H_
 
-class Signals
-{
-	asio::signal_set set;
+class Signals {
+		asio::signal_set set;
+
 	public:
-		explicit Signals(asio::io_service& service);
+		explicit Signals(asio::io_service &service);
 
 	private:
 		void asyncWait();
@@ -27,4 +27,4 @@ class Signals
 		static void sigusr1Handler();
 };
 
-#endif  // SRC_SERVER_SIGNALS_H_
+#endif // SRC_SERVER_SIGNALS_H_

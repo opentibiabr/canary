@@ -19,7 +19,7 @@ function Creature.getClosestFreePosition(self, position, maxRadius, mustBeReacha
 			end
 
 			local tile = Tile(checkPosition)
-			if tile:getCreatureCount() == 0 and not tile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) and
+			if tile and tile:getCreatureCount() == 0 and not tile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) and
 				(not mustBeReachable or self:getPathTo(checkPosition)) then
 				return checkPosition
 			end
@@ -105,6 +105,7 @@ function Creature:setSummon(monster)
 	end
 
 	summon:setMaster(self, true)
+	summon:setTarget(self.attackedCreature)
 	return true
 end
 

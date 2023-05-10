@@ -25,6 +25,12 @@ monster.changeTarget = {
 	chance = 5
 }
 
+monster.bosstiary = {
+	bossRaceId = 1375,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.FirstDragon.ZorvoraxTimer
+}
+
 monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,

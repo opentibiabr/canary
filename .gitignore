@@ -377,6 +377,9 @@ client_assertions.txt
 *.manifest
 *.otbm
 *.rar
+*-house.xml
+*-monster.xml
+*-npc.xml
 
 # SFTP for Sublime
 sftp-config.json
@@ -389,4 +392,4 @@ canary.old
 vcpkg_installed
 
 # CLION
-src/cmake-build-debug
+cmake-build-debug*

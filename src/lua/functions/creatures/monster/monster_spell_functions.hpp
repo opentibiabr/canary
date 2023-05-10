@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_SPELL_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_SPELL_FUNCTIONS_HPP_
@@ -39,6 +39,8 @@ class MonsterSpellFunctions final : LuaScriptInterface {
 			registerMethod(L, "MonsterSpell", "setCombatEffect", MonsterSpellFunctions::luaMonsterSpellSetCombatEffect);
 			registerMethod(L, "MonsterSpell", "setOutfitMonster", MonsterSpellFunctions::luaMonsterSpellSetOutfitMonster);
 			registerMethod(L, "MonsterSpell", "setOutfitItem", MonsterSpellFunctions::luaMonsterSpellSetOutfitItem);
+			registerMethod(L, "MonsterSpell", "castSound", MonsterSpellFunctions::luaMonsterSpellCastSound);
+			registerMethod(L, "MonsterSpell", "impactSound", MonsterSpellFunctions::luaMonsterSpellImpactSound);
 		}
 
 	private:
@@ -65,6 +67,8 @@ class MonsterSpellFunctions final : LuaScriptInterface {
 		static int luaMonsterSpellSetCombatEffect(lua_State* L);
 		static int luaMonsterSpellSetOutfitMonster(lua_State* L);
 		static int luaMonsterSpellSetOutfitItem(lua_State* L);
+		static int luaMonsterSpellCastSound(lua_State* L);
+		static int luaMonsterSpellImpactSound(lua_State* L);
 };
 
-#endif  // SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_SPELL_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_SPELL_FUNCTIONS_HPP_

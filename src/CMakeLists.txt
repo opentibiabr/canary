@@ -146,6 +146,7 @@ find_package(spdlog REQUIRED)
 find_package(unofficial-libmariadb CONFIG REQUIRED)
 find_package(mio REQUIRED)
 find_package(Threads REQUIRED)
+find_package(ZLIB REQUIRED)
 
 include(GNUInstallDirs)
 
@@ -190,6 +191,7 @@ PRIVATE
 	game/scheduling/tasks.cpp
 	io/fileloader.cpp
 	io/iobestiary.cpp
+	io/io_bosstiary.cpp
 	io/ioguild.cpp
 	io/iologindata.cpp
 	io/functions/iologindata_load_player.cpp
@@ -213,7 +215,9 @@ PRIVATE
 	items/decay/decay.cpp
 	items/item.cpp
 	items/items.cpp
-	items/functions/item_parse.cpp
+	items/functions/item/attribute.cpp
+	items/functions/item/custom_attribute.cpp
+	items/functions/item/item_parse.cpp
 	items/thing.cpp
 	items/tile.cpp
 	items/trashholder.cpp
@@ -315,7 +319,6 @@ if (MSVC)
 	if(BUILD_STATIC_LIBRARY)
 		log_option_enabled("STATIC_LIBRARY")
 		set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
-		find_package(unofficial-libmariadb CONFIG REQUIRED)
 		set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 		target_link_libraries(${PROJECT_NAME}	PRIVATE jsoncpp_static)
 	else()
@@ -349,6 +352,7 @@ if (MSVC)
 			spdlog::spdlog
 			unofficial::libmariadb
 			unofficial::mariadbclient
+			ZLIB::ZLIB
 	)
 
 else()
@@ -376,6 +380,7 @@ else()
 			spdlog::spdlog
 			unofficial::libmariadb
 			unofficial::mariadbclient
+			ZLIB::ZLIB
 
 			Threads::Threads
 	)

@@ -15,9 +15,12 @@ function IsRunningGlobalDatapack()
 	end
 end
 
-NOT_MOVEABLE_ACTION = 100
-PARTY_PROTECTION = 1 -- Set to 0 to disable.
-ADVANCED_SECURE_MODE = 1 -- Set to 0 to disable.
+function IsRetroPVP()
+	return configManager.getBoolean(configKeys.TOGGLE_SERVER_IS_RETRO)
+end
+-- NOTE: 0 is disabled.
+PARTY_PROTECTION = (IsRetroPVP() and 0) or 1
+ADVANCED_SECURE_MODE = (IsRetroPVP() and 0) or 1
 
 NORTH = DIRECTION_NORTH
 EAST = DIRECTION_EAST
@@ -31,6 +34,7 @@ NORTHEAST = DIRECTION_NORTHEAST
 STORAGEVALUE_PROMOTION = 30018
 
 SERVER_NAME = configManager.getString(configKeys.SERVER_NAME)
+SERVER_MOTD = configManager.getString(configKeys.SERVER_MOTD)
 
 -- Bestiary charm
 GLOBAL_CHARM_GUT = 0
@@ -113,26 +117,6 @@ table.contains = function(array, value)
 		end
 	end
 	return false
-end
-
-string.split = function(str, sep)
-	local res = {}
-	for v in str:gmatch("([^" .. sep .. "]+)") do
-		res[#res + 1] = v
-	end
-	return res
-end
-
-string.splitTrimmed = function(str, sep)
-	local res = {}
-	for v in str:gmatch("([^" .. sep .. "]+)") do
-		res[#res + 1] = v:trim()
-	end
-	return res
-end
-
-string.trim = function(str)
-	return str:match'^()%s*$' and '' or str:match'^%s*(.*%S)'
 end
 
 -- for use of: data\scripts\globalevents\customs\save_interval.lua

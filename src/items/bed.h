@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #ifndef SRC_ITEMS_BED_H_
 #define SRC_ITEMS_BED_H_
@@ -16,8 +16,7 @@
 class House;
 class Player;
 
-class BedItem final : public Item
-{
+class BedItem final : public Item {
 	public:
 		explicit BedItem(uint16_t id);
 
@@ -63,4 +62,4 @@ class BedItem final : public Item
 		uint32_t sleeperGUID;
 };
 
-#endif  // SRC_ITEMS_BED_H_
+#endif // SRC_ITEMS_BED_H_

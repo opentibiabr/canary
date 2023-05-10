@@ -4,17 +4,15 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #include "pch.hpp"
 
 #include "game/game.h"
 #include "game/movement/teleport.h"
 
-
-Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream& propStream)
-{
+Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	if (attr == ATTR_TELE_DEST) {
 		if (!propStream.read<uint16_t>(destPos.x) || !propStream.read<uint16_t>(destPos.y) || !propStream.read<uint8_t>(destPos.z)) {
 			return ATTR_READ_ERROR;
@@ -53,23 +51,19 @@ void Teleport::serializeAttr(PropWriteStream& propWriteStream) const
 	propWriteStream.write<uint8_t>(destPos.z);
 }
 
-ReturnValue Teleport::queryAdd(int32_t, const Thing&, uint32_t, uint32_t, Creature*) const
-{
+ReturnValue Teleport::queryAdd(int32_t, const Thing &, uint32_t, uint32_t, Creature*) const {
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
-ReturnValue Teleport::queryMaxCount(int32_t, const Thing&, uint32_t, uint32_t&, uint32_t) const
-{
+ReturnValue Teleport::queryMaxCount(int32_t, const Thing &, uint32_t, uint32_t &, uint32_t) const {
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
-ReturnValue Teleport::queryRemove(const Thing&, uint32_t, uint32_t, Creature* /*= nullptr */) const
-{
+ReturnValue Teleport::queryRemove(const Thing &, uint32_t, uint32_t, Creature* /*= nullptr */) const {
 	return RETURNVALUE_NOERROR;
 }
 
-Cylinder* Teleport::queryDestination(int32_t&, const Thing&, Item**, uint32_t&)
-{
+Cylinder* Teleport::queryDestination(int32_t &, const Thing &, Item**, uint32_t &) {
 	return this;
 }
 
@@ -79,7 +73,7 @@ bool Teleport::checkInfinityLoop(Tile* destTile) {
 	}
 
 	if (Teleport* teleport = destTile->getTeleportItem()) {
-		const Position& nextDestPos = teleport->getDestPos();
+		const Position &nextDestPos = teleport->getDestPos();
 		if (getPosition() == nextDestPos) {
 			return true;
 		}
@@ -88,13 +82,11 @@ bool Teleport::checkInfinityLoop(Tile* destTile) {
 	return false;
 }
 
-void Teleport::addThing(Thing* thing)
-{
+void Teleport::addThing(Thing* thing) {
 	return addThing(0, thing);
 }
 
-void Teleport::addThing(int32_t, Thing* thing)
-{
+void Teleport::addThing(int32_t, Thing* thing) {
 	Tile* destTile = g_game().map.getTile(destPos);
 	if (!destTile) {
 		return;
@@ -102,9 +94,10 @@ void Teleport::addThing(int32_t, Thing* thing)
 
 	// Prevent infinity loop
 	if (checkInfinityLoop(destTile)) {
-		const Position& pos = getPosition();
+		const Position &pos = getPosition();
 		SPDLOG_WARN("[Teleport:addThing] - "
-                    "Infinity loop teleport at position: {}", pos.toString());
+					"Infinity loop teleport at position: {}",
+					pos.toString());
 		return;
 	}
 
@@ -127,27 +120,22 @@ void Teleport::addThing(int32_t, Thing* thing)
 	}
 }
 
-void Teleport::updateThing(Thing*, uint16_t, uint32_t)
-{
+void Teleport::updateThing(Thing*, uint16_t, uint32_t) {
 	//
 }
 
-void Teleport::replaceThing(uint32_t, Thing*)
-{
+void Teleport::replaceThing(uint32_t, Thing*) {
 	//
 }
 
-void Teleport::removeThing(Thing*, uint32_t)
-{
+void Teleport::removeThing(Thing*, uint32_t) {
 	//
 }
 
-void Teleport::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t)
-{
+void Teleport::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t) {
 	getParent()->postAddNotification(thing, oldParent, index, LINK_PARENT);
 }
 
-void Teleport::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t)
-{
+void Teleport::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t) {
 	getParent()->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 }

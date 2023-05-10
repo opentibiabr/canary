@@ -46,7 +46,7 @@ if Modules == nil then
 			return false
 		end
 
-		local cost, costMessage = parameters.cost, '%d gold'
+		local cost, costMessage = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost, '%d gold'
 		if cost and cost > 0 then
 			if parameters.discount then
 				cost = cost - StdModule.travelDiscount(npc, player, parameters.discount)
@@ -194,7 +194,7 @@ if Modules == nil then
 			return false
 		end
 
-		local cost = parameters.cost
+		local cost = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost
 		if cost and cost > 0 then
 			if parameters.discount then
 				cost = cost - StdModule.travelDiscount(npc, player, parameters.discount)
@@ -217,21 +217,17 @@ if Modules == nil then
 			npcHandler:say("First get rid of those blood stains! You are not going to ruin my vehicle!", npc, player)
 		elseif not player:removeMoneyBank(cost) then
 			npcHandler:say("You don't have enough money.", npc, player)
-		elseif os.time() < player:getStorageValue(Storage.NpcExhaust) then
+		elseif os.time() < player:getStorageValue(Global.Storage.NpcExhaust) then
 			npcHandler:say('Sorry, but you need to wait three seconds before travel again.', player)
 			playerPosition:sendMagicEffect(CONST_ME_POFF)
 		else
 			npcHandler:removeInteraction(npc, player)
 			npcHandler:say(parameters.text or "Set the sails!", npc, player)
-			playerPosition:sendMagicEffect(CONST_ME_TELEPORT)
 
 			local destination = parameters.destination
 			if type(destination) == 'function' then
 				destination = destination(player)
 			end
-
-			player:teleportTo(destination)
-			playerPosition:sendMagicEffect(CONST_ME_TELEPORT)
 
 			player:setStorageValue(NpcExhaust, 3 + os.time())
 			player:teleportTo(destination)
@@ -515,7 +511,7 @@ if Modules == nil then
 			return false
 		end
 
-		local cost = parameters.cost
+		local cost = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost
 
 		module.npcHandler:say(string.format("Do you want to travel to '%s' for '%d' gold coins?",
                               keywords[1], cost), npc, player)
@@ -530,7 +526,7 @@ if Modules == nil then
 
 		local npcHandler = module.npcHandler
 
-		local cost = parameters.cost
+		local cost = (configManager.getBoolean(configKeys.TOGGLE_TRAVELS_FREE) and 0) or parameters.cost
 		local destination = parameters.destination
 		local premium = parameters.premium
 

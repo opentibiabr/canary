@@ -25,6 +25,11 @@ monster.changeTarget = {
 	chance = 10
 }
 
+monster.bosstiary = {
+	bossRaceId = 1697,
+	bossRace = RARITY_NEMESIS
+}
+
 monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,
@@ -84,7 +89,7 @@ monster.loot = {
 	{id = 281, chance = 28540}, -- giant shimmering pearl (green)
 	{name = "pomegranate", chance = 24140},
 	{name = "chaos mace", chance = 6900},
-	{id = 23528, chance = 17240}, -- collar of red plasma
+	{id = 23544, chance = 17240}, -- collar of red plasma
 	{id = 23543, chance = 13790}, -- collar of green plasma
 	{name = "green gem", chance = 31030},
 	{name = "yellow gem", chance = 31030},

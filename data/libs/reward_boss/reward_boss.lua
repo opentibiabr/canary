@@ -21,22 +21,19 @@ function PushSeparated(buffer, sep, ...)
 	end
 end
 
-function InsertItems(buffer, info, parent, items, bagSid)
+function InsertItems(buffer, info, parent, items)
 	local start = info.running
 	for _, item in ipairs(items) do
 		if item ~= nil then
-			if _ ~= 1 or parent > 100 then
-				table.insert(buffer, ",")
-			end
 			if item:getId() == ITEM_REWARD_CONTAINER then
 				table.insert(buffer, "(")
-				PushSeparated(buffer, ",", info.playerGuid, parent, bagSid, item:getId(), item:getSubType(), db.escapeString(item:serializeAttributes()))
-				table.insert(buffer, ")")
+				PushSeparated(buffer, ",", info.playerGuid, 0, parent, item:getId(), item:getSubType(), db.escapeString(item:serializeAttributes()))
+				table.insert(buffer, "),")
 			else
 				info.running = info.running + 1
 				table.insert(buffer, "(")
 				PushSeparated(buffer, ",", info.playerGuid, parent, info.running, item:getId(), item:getSubType(), db.escapeString(item:serializeAttributes()))
-				table.insert(buffer, ")")
+				table.insert(buffer, "),")
 			end
 
 			if item:isContainer() then
@@ -47,7 +44,7 @@ function InsertItems(buffer, info, parent, items, bagSid)
 						table.insert(subItems, item:getItem(i - 1))
 					end
 
-					InsertItems(buffer, info, bagSid, subItems, bagSid)
+					InsertItems(buffer, info, info.running, subItems)
 				end
 			end
 		end

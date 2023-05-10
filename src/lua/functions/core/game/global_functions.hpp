@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_CORE_GAME_GLOBAL_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CORE_GAME_GLOBAL_FUNCTIONS_HPP_
@@ -88,7 +88,7 @@ class GlobalFunctions final : LuaScriptInterface {
 		static int luaCreateTable(lua_State* L);
 		static int luaSystemTime(lua_State* L);
 
-		static bool getArea(lua_State* L, std::list<uint32_t>& list, uint32_t& rows);
+		static bool getArea(lua_State* L, std::list<uint32_t> &list, uint32_t &rows);
 };
 
-#endif  // SRC_LUA_FUNCTIONS_CORE_GAME_GLOBAL_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_CORE_GAME_GLOBAL_FUNCTIONS_HPP_

@@ -11,7 +11,7 @@ function spell.onCastSpell(player, variant)
 		return false
 	end
 
-	if not getPlayerFlagValue(player, PlayerFlag_CanSummonAll) then
+	if not player:hasFlag(PlayerFlag_CanSummonAll) then
 		if not monsterType:isSummonable() then
 			player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 			position:sendMagicEffect(CONST_ME_POFF)
@@ -26,7 +26,7 @@ function spell.onCastSpell(player, variant)
 	end
 
 	local manaCost = monsterType:getManaCost()
-	if player:getMana() < manaCost and not getPlayerFlagValue(player, PlayerFlag_HasInfiniteMana) then
+	if player:getMana() < manaCost and not player:hasFlag(PlayerFlag_HasInfiniteMana) then
 		player:sendCancelMessage(RETURNVALUE_NOTENOUGHMANA)
 		position:sendMagicEffect(CONST_ME_POFF)
 		return false
@@ -50,6 +50,7 @@ spell:group("support")
 spell:id(9)
 spell:name("Summon Creature")
 spell:words("utevo res")
+spell:castSound(SOUND_EFFECT_TYPE_SPELL_SUMMON_CREATURE)
 spell:level(25)
 spell:hasParams(true)
 spell:cooldown(2 * 1000)

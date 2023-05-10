@@ -15,8 +15,9 @@ function minionDeath.onDeath(creature, corpse, killer, mostDamageKiller, unjusti
 
     local deathPosition = creature:getPosition()
     local item = Game.createItem(20121, 1, deathPosition)
-
-    item:setActionId(33542)
+	if item then
+		item:setActionId(33542)
+	end
 
     addEvent(removeTeleport, 1 * 60 * 1000, deathPosition)
 

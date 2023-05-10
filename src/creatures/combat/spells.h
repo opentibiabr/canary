@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #ifndef SRC_CREATURES_COMBAT_SPELLS_H_
 #define SRC_CREATURES_COMBAT_SPELLS_H_
@@ -24,45 +24,44 @@ using VocSpellMap = std::map<uint16_t, bool>;
 using InstantSpell_ptr = std::unique_ptr<InstantSpell>;
 using RuneSpell_ptr = std::unique_ptr<RuneSpell>;
 
-class Spells final : public Scripts
-{
+class Spells final : public Scripts {
 	public:
 		Spells();
 		~Spells();
 
 		// non-copyable
-		Spells(const Spells&) = delete;
-		Spells& operator=(const Spells&) = delete;
+		Spells(const Spells &) = delete;
+		Spells &operator=(const Spells &) = delete;
 
-		static Spells& getInstance() {
+		static Spells &getInstance() {
 			// Guaranteed to be destroyed
 			static Spells instance;
 			// Instantiated on first use
 			return instance;
 		}
 
-		Spell* getSpellByName(const std::string& name);
-		RuneSpell* getRuneSpell(uint32_t id);
-		RuneSpell* getRuneSpellByName(const std::string& name);
+		Spell* getSpellByName(const std::string &name);
+		RuneSpell* getRuneSpell(uint16_t id);
+		RuneSpell* getRuneSpellByName(const std::string &name);
 
-		InstantSpell* getInstantSpell(const std::string& words);
-		InstantSpell* getInstantSpellByName(const std::string& name);
+		InstantSpell* getInstantSpell(const std::string &words);
+		InstantSpell* getInstantSpellByName(const std::string &name);
 
-		InstantSpell* getInstantSpellById(uint32_t spellId);
+		InstantSpell* getInstantSpellById(uint16_t spellId);
 
-		TalkActionResult_t playerSaySpell(Player* player, std::string& words);
+		TalkActionResult_t playerSaySpell(Player* player, std::string &words);
 
 		static Position getCasterPosition(Creature* creature, Direction dir);
 
 		std::list<uint16_t> getSpellsByVocation(uint16_t vocationId);
 
-		const std::map<std::string, InstantSpell>& getInstantSpells() const {
+		const std::map<std::string, InstantSpell> &getInstantSpells() const {
 			return instants;
 		};
 
-		bool hasInstantSpell(const std::string& word) const;
+		bool hasInstantSpell(const std::string &word) const;
 
-		void setInstantSpell(const std::string &word, InstantSpell& instant) {
+		void setInstantSpell(const std::string &word, InstantSpell &instant) {
 			instants.try_emplace(word, instant);
 		}
 
@@ -79,35 +78,34 @@ class Spells final : public Scripts
 
 constexpr auto g_spells = &Spells::getInstance;
 
-using RuneSpellFunction = std::function<bool(const RuneSpell* spell, Player* player, const Position& posTo)>;
+using RuneSpellFunction = std::function<bool(const RuneSpell* spell, Player* player, const Position &posTo)>;
 
-class BaseSpell
-{
+class BaseSpell {
 	public:
 		constexpr BaseSpell() = default;
 		virtual ~BaseSpell() = default;
 
 		virtual bool castSpell(Creature* creature) = 0;
 		virtual bool castSpell(Creature* creature, Creature* target) = 0;
+
+		SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
+		SoundEffect_t soundCastEffect = SoundEffect_t::SPELL_OR_RUNE;
 };
 
-class CombatSpell final : public Script, public BaseSpell
-{
+class CombatSpell final : public Script, public BaseSpell {
 	public:
 		// Constructor
-		CombatSpell(Combat* newCombat, bool newNeedTarget, bool needDirection);
-		// Destructor
-		~CombatSpell() override;
+		CombatSpell(Combat* newCombat, bool newNeedTarget, bool newNeedDirection);
 
 		// The copy constructor and the assignment operator have been deleted to prevent accidental copying.
-		CombatSpell(const CombatSpell&) = delete;
-		CombatSpell& operator=(const CombatSpell&) = delete;
+		CombatSpell(const CombatSpell &) = delete;
+		CombatSpell &operator=(const CombatSpell &) = delete;
 
 		bool castSpell(Creature* creature) override;
 		bool castSpell(Creature* creature, Creature* target) override;
 
 		// Scripting spell
-		bool executeCastSpell(Creature* creature, const LuaVariant& var) const;
+		bool executeCastSpell(Creature* creature, const LuaVariant &var) const;
 
 		bool loadScriptCombat();
 		Combat* getCombat() {
@@ -125,21 +123,20 @@ class CombatSpell final : public Script, public BaseSpell
 		bool needTarget;
 };
 
-class Spell : public BaseSpell
-{
+class Spell : public BaseSpell {
 	public:
 		Spell() = default;
 
-		const std::string& getName() const {
+		const std::string &getName() const {
 			return name;
 		}
 		void setName(std::string n) {
 			name = n;
 		}
-		uint8_t getId() const {
+		uint16_t getId() const {
 			return spellId;
 		}
-		void setId(uint8_t id) {
+		void setId(uint16_t id) {
 			spellId = id;
 		}
 
@@ -191,7 +188,7 @@ class Spell : public BaseSpell
 			enabled = e;
 		}
 
-		const VocSpellMap& getVocMap() const {
+		const VocSpellMap &getVocMap() const {
 			return vocSpellMap;
 		}
 		void addVocMap(uint16_t n, bool b) {
@@ -282,13 +279,13 @@ class Spell : public BaseSpell
 		bool getAllowOnSelf() const {
 			return allowOnSelf;
 		}
-		void setAllowOnSelf(bool s) { 
+		void setAllowOnSelf(bool s) {
 			allowOnSelf = s;
 		}
 		bool getLockedPZ() const {
 			return pzLocked;
 		}
-		void setLockedPZ(bool b){
+		void setLockedPZ(bool b) {
 			pzLocked = b;
 		}
 
@@ -297,8 +294,8 @@ class Spell : public BaseSpell
 	protected:
 		void applyCooldownConditions(Player* player) const;
 		bool playerSpellCheck(Player* player) const;
-		bool playerInstantSpellCheck(Player* player, const Position& toPos);
-		bool playerRuneSpellCheck(Player* player, const Position& toPos);
+		bool playerInstantSpellCheck(Player* player, const Position &toPos);
+		bool playerRuneSpellCheck(Player* player, const Position &toPos);
 
 		VocSpellMap vocSpellMap;
 
@@ -312,7 +309,7 @@ class Spell : public BaseSpell
 		uint32_t magLevel = 0;
 		int32_t range = -1;
 
-		uint8_t spellId = 0;
+		uint16_t spellId = 0;
 
 		bool selfTarget = false;
 		bool needTarget = false;
@@ -320,7 +317,6 @@ class Spell : public BaseSpell
 		bool pzLocked = false;
 
 	private:
-
 		uint32_t mana = 0;
 		uint32_t manaPercent = 0;
 		uint32_t soul = 0;
@@ -333,23 +329,21 @@ class Spell : public BaseSpell
 		bool enabled = true;
 		bool premium = false;
 
-
 	private:
 		std::string name;
 };
 
-class InstantSpell final : public TalkAction, public Spell
-{
+class InstantSpell final : public TalkAction, public Spell {
 	public:
 		using TalkAction::TalkAction;
 
-		virtual bool playerCastInstant(Player* player, std::string& param);
+		virtual bool playerCastInstant(Player* player, std::string &param);
 
 		bool castSpell(Creature* creature) override;
 		bool castSpell(Creature* creature, Creature* target) override;
 
 		// Scripting spell
-		bool executeCastSpell(Creature* creature, const LuaVariant& var) const;
+		bool executeCastSpell(Creature* creature, const LuaVariant &var) const;
 
 		bool isInstant() const override {
 			return true;
@@ -399,26 +393,25 @@ class InstantSpell final : public TalkAction, public Spell
 		bool casterTargetOrDirection = false;
 };
 
-class RuneSpell final : public Action, public Spell
-{
+class RuneSpell final : public Action, public Spell {
 	public:
 		using Action::Action;
 
-		ReturnValue canExecuteAction(const Player* player, const Position& toPos) override;
+		ReturnValue canExecuteAction(const Player* player, const Position &toPos) override;
 		bool hasOwnErrorHandler() override {
 			return true;
 		}
-		Thing* getTarget(Player*, Creature* targetCreature, const Position&, uint8_t) const override {
+		Thing* getTarget(Player*, Creature* targetCreature, const Position &, uint8_t) const override {
 			return targetCreature;
 		}
 
-		bool executeUse(Player* player, Item* item, const Position& fromPosition, Thing* target, const Position& toPosition, bool isHotkey) override;
+		bool executeUse(Player* player, Item* item, const Position &fromPosition, Thing* target, const Position &toPosition, bool isHotkey) override;
 
 		bool castSpell(Creature* creature) override;
 		bool castSpell(Creature* creature, Creature* target) override;
 
 		// Scripting spell
-		bool executeCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey) const;
+		bool executeCastSpell(Creature* creature, const LuaVariant &var, bool isHotkey) const;
 
 		bool isInstant() const override {
 			return false;
@@ -444,11 +437,11 @@ class RuneSpell final : public Action, public Spell
 			return "onCastSpell";
 		}
 
-		bool internalCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey);
+		bool internalCastSpell(Creature* creature, const LuaVariant &var, bool isHotkey);
 
 		uint16_t runeId = 0;
 		uint32_t charges = 0;
 		bool hasCharges = false;
 };
 
-#endif  // SRC_CREATURES_COMBAT_SPELLS_H_
+#endif // SRC_CREATURES_COMBAT_SPELLS_H_

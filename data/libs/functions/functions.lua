@@ -41,6 +41,10 @@ end, "l")
 
 -- OTServBr-Global functions
 function getJackLastMissionState(player)
+	if not IsRunningGlobalDatapack() then
+		return true
+	end
+
 	if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.LastMissionState) == 1 then
 		return "You told Jack the truth about his personality. You also explained that you and Spectulus \z
 		made a mistake by assuming him as the real Jack."
@@ -254,7 +258,7 @@ function playerExists(name)
 	return false
 end
 
-function functionRevert()
+function resetFerumbrasAscendantHabitats()
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Corrupted, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Desert, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Dimension, 0)
@@ -264,13 +268,8 @@ function functionRevert()
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Roshamuul, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Venom, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats, 0)
-	for a = 1, #basins do
-		local item = Tile(basins[a].pos):getItemById(22196)
-		item:transform(11114)
-	end
-	local specs, spec = Game.getSpectators(Position(33629, 32693, 12), false, false, 25, 25, 85, 85)
-	for i = 1, #specs do
-		spec = specs[i]
+
+	for _, spec in pairs(Game.getSpectators(Position(33629, 32693, 12), false, false, 25, 25, 85, 85)) do
 		if spec:isPlayer() then
 			spec:teleportTo(Position(33630, 32648, 12))
 			spec:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -279,6 +278,7 @@ function functionRevert()
 			spec:remove()
 		end
 	end
+
 	for x = 33611, 33625 do
 		for y = 32658, 32727 do
 			local position = Position(x, y, 12)
@@ -674,7 +674,7 @@ end
 local logFormat = "[%s] %s %s"
 
 function logCommand(player, words, param)
-	local file = io.open(DATA_DIRECTORY .. "/logs/" .. player:getName() .. " commands.log", "a")
+	local file = io.open(CORE_DIRECTORY .. "/logs/" .. player:getName() .. " commands.log", "a")
 	if not file then
 		return
 	end
@@ -764,19 +764,6 @@ function unserializeTable(str, out)
 	return table.copy(tmp, out)
 end
 
-local function setTableIndexes(t, i, v, ...)
-	if i and v then
-		t[i] = v
-		return setTableIndexes(t, ...)
-	end
-end
-
-local function getTableIndexes(t, i, ...)
-	if i then
-		return t[i], getTableIndexes(t, ...)
-	end
-end
-
 function unpack2(tab, i)
 	local i, v = next(tab, i)
 	if next(tab, i) then
@@ -792,37 +779,6 @@ function pack(t, ...)
 		t[i] = tmp
 	end
 	return t
-end
-
-function Item:setSpecialAttribute(...)
-	local tmp
-	if self:hasAttribute(ITEM_ATTRIBUTE_SPECIAL) then
-		tmp = self:getAttribute(ITEM_ATTRIBUTE_SPECIAL)
-	else
-		tmp = "{}"
-	end
-
-	local tab = unserializeTable(tmp)
-	if tab then
-		setTableIndexes(tab, ...)
-		tmp = serializeTable(tab)
-		self:setAttribute(ITEM_ATTRIBUTE_SPECIAL, tmp)
-		return true
-	end
-end
-
-function Item:getSpecialAttribute(...)
-	local tmp
-	if self:hasAttribute(ITEM_ATTRIBUTE_SPECIAL) then
-		tmp = self:getAttribute(ITEM_ATTRIBUTE_SPECIAL)
-	else
-		tmp = "{}"
-	end
-
-	local tab = unserializeTable(tmp)
-	if tab then
-		return getTableIndexes(tab, ...)
-	end
 end
 
 if not PLAYER_STORAGE then

@@ -141,7 +141,7 @@ function Player:onLook(thing, position, distance)
 			if master and table.contains({'sorcerer familiar','knight familiar','druid familiar','paladin familiar'},
 																						thing:getName():lower()) then
 				description = description..' (Master: ' .. master:getName() .. '). \z
-				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.FamiliarSummon) - os.time())
+				It will disappear in ' .. getTimeinWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
 			end
 		end
 	end
@@ -209,7 +209,7 @@ function Player:onLookInBattleList(creature, distance)
 		local summons = {'sorcerer familiar','knight familiar','druid familiar','paladin familiar'}
 		if master and table.contains(summons, creature:getName():lower()) then
 			description = description..' (Master: ' .. master:getName() .. '). \z
-				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.FamiliarSummon) - os.time())
+				It will disappear in ' .. getTimeinWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
 		end
 	end
 	if self:getGroup():getAccess() then
@@ -291,8 +291,7 @@ local function antiPush(self, item, count, fromPosition, toPosition, fromCylinde
 end
 
 function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
-	-- No move items with actionID = 100
-	if item:getActionId() == NOT_MOVEABLE_ACTION then
+	if item:getActionId() == IMMOVABLE_ACTION_ID then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end
@@ -335,34 +334,6 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 			return true
 		end
 	end
-
-	-- Store Inbox
-	local containerIdFrom = fromPosition.y - 64
-	local containerFrom = self:getContainerById(containerIdFrom)
-	if (containerFrom) then
-		if (containerFrom:getId() == ITEM_STORE_INBOX
-		and toPosition.y >= 1 and toPosition.y <= 11 and toPosition.y ~= 3) then
-			self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
-			return false
-		end
-	end
-
-	local containerTo = self:getContainerById(toPosition.y-64)
-	if (containerTo) then
-		if (containerTo:getId() == ITEM_STORE_INBOX) or (containerTo:getParent():isContainer() and containerTo:getParent():getId() == ITEM_STORE_INBOX and containerTo:getId() ~= ITEM_GOLD_POUCH) then
-			self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
-			return false
-		end
-		-- Gold Pouch
-		if (containerTo:getId() == ITEM_GOLD_POUCH) then
-			if (not (item:getId() == ITEM_CRYSTAL_COIN or item:getId() == ITEM_PLATINUM_COIN
-			or item:getId() == ITEM_GOLD_COIN)) then
-				self:sendCancelMessage("You can move only money to this container.")
-				return false
-			end
-		end
-	end
-
 
 	-- Bath tube
 	local toTile = Tile(toCylinder:getPosition())
@@ -582,8 +553,7 @@ function Player:onTurn(direction)
 end
 
 function Player:onTradeRequest(target, item)
-	-- No trade items with actionID = 100
-	if item:getActionId() == NOT_MOVEABLE_ACTION then
+	if item:getActionId() == IMMOVABLE_ACTION_ID then
 		return false
 	end
 
@@ -616,7 +586,7 @@ local function useStamina(player)
 	end
 
 	local playerId = player:getId()
-	if not playerId then
+	if not playerId or not nextUseStaminaTime[playerId] then
 		return false
 	end
 
@@ -725,14 +695,8 @@ function Player:onGainExperience(target, exp, rawExp)
 	end
 
 	local baseRate = self:getFinalBaseRateExperience()
-	local finalExperience
-	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
-		finalExperience = (exp * baseRate + (exp * (storeXpBoostAmount/100))) * staminaBoost
-	else
-		finalExperience = (exp + (exp * (storeXpBoostAmount/100))) * staminaBoost
-	end
 
-	return math.max(finalExperience)
+	return (exp + (exp * (storeXpBoostAmount/100))) * staminaBoost * baseRate
 end
 
 function Player:onLoseExperience(exp)
@@ -749,12 +713,20 @@ function Player:onGainSkillTries(skill, tries)
 	end
 
 	-- Event scheduler skill rate
-	local STAGES_DEFAULT = skillsStages or nil
-	local SKILL_DEFAULT = self:getSkillLevel(skill)
-	local RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
+	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
+		STAGES_DEFAULT = skillsStages
+	else
+		STAGES_DEFAULT = nil
+	end
+	SKILL_DEFAULT = self:getSkillLevel(skill)
+	RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
 
 	if(skill == SKILL_MAGLEVEL) then -- Magic Level
-		STAGES_DEFAULT = magicLevelStages or nil
+		if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
+			STAGES_DEFAULT = magicLevelStages
+		else
+			STAGES_DEFAULT = nil
+		end
 		SKILL_DEFAULT = self:getBaseMagicLevel()
 		RATE_DEFAULT = configManager.getNumber(configKeys.RATE_MAGIC)
 	end
@@ -834,4 +806,8 @@ function Player:onChangeZone(zone)
 		end
 	end
 	return false
+end
+
+
+function Player:onInventoryUpdate(item, slot, equip)
 end

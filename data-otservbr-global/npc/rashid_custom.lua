@@ -303,7 +303,7 @@ npcConfig.shop = {
 	{ itemName = "crystal crossbow", clientId = 16163, sell = 35000 },
 	{ itemName = "crystal mace", clientId = 3333, sell = 12000 },
 	{ itemName = "crystal necklace", clientId = 3008, sell = 400 },
-	{ itemName = "crystal ring", clientId = 6093, sell = 250 },
+	{ itemName = "crystal ring", clientId = 3007, sell = 250 },
 	{ itemName = "crystal sword", clientId = 7449, sell = 600 },
 	{ itemName = "crystalline armor", clientId = 8050, sell = 16000 },
 	{ itemName = "daramian mace", clientId = 3327, sell = 110 },

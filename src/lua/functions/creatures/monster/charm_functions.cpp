@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #include "pch.hpp"
 
@@ -18,7 +18,7 @@ int CharmFunctions::luaCharmCreate(lua_State* L) {
 	if (isNumber(L, 2)) {
 		charmRune_t charmid = getNumber<charmRune_t>(L, 2);
 		std::vector<Charm*> charmList = g_game().getCharmList();
-		for (auto& it : charmList) {
+		for (auto &it : charmList) {
 			Charm* charm = it;
 			if (charm->id == charmid) {
 				pushUserdata<Charm>(L, charm);
@@ -147,6 +147,30 @@ int CharmFunctions::luaCharmEffect(lua_State* L) {
 		lua_pushnumber(L, charm->effect);
 	} else {
 		charm->effect = getNumber<uint8_t>(L, 2);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int CharmFunctions::luaCharmCastSound(lua_State* L) {
+	// get: charm:castSound() set: charm:castSound(sound)
+	Charm* charm = getUserdata<Charm>(L, 1);
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, static_cast<lua_Number>(charm->soundCastEffect));
+	} else {
+		charm->soundCastEffect = getNumber<SoundEffect_t>(L, 2);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int CharmFunctions::luaCharmImpactSound(lua_State* L) {
+	// get: charm:impactSound() set: charm:impactSound(sound)
+	Charm* charm = getUserdata<Charm>(L, 1);
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, static_cast<lua_Number>(charm->soundImpactEffect));
+	} else {
+		charm->soundImpactEffect = getNumber<SoundEffect_t>(L, 2);
 		pushBoolean(L, true);
 	}
 	return 1;

@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #include "pch.hpp"
 
@@ -132,7 +132,7 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 	}
 
 	uint32_t count = getNumber<uint32_t>(L, 3, 1);
-	const ItemType& it = Item::items[itemId];
+	const ItemType &it = Item::items[itemId];
 	if (it.stackable) {
 		count = std::min<uint16_t>(count, 100);
 	}
@@ -223,10 +223,10 @@ int ContainerFunctions::luaContainerGetItemCountById(lua_State* L) {
 }
 
 int ContainerFunctions::luaContainerGetContentDescription(lua_State* L) {
-	// container:getContentDescription()
+	// container:getContentDescription([oldProtocol])
 	Container* container = getUserdata<Container>(L, 1);
 	if (container) {
-		pushString(L, container->getContentDescription());
+		pushString(L, container->getContentDescription(getBoolean(L, 2, false)));
 	} else {
 		lua_pushnil(L);
 	}
@@ -264,10 +264,10 @@ int ContainerFunctions::luaContainerRegisterReward(lua_State* L) {
 		return 1;
 	}
 
-	auto timestamp = time(nullptr);
-	Item * rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
-	rewardContainer->setIntAttr(ITEM_ATTRIBUTE_DATE, timestamp);
-	container->setIntAttr(ITEM_ATTRIBUTE_DATE, timestamp);
+	int64_t rewardId = getTimeMsNow();
+	Item* rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
+	rewardContainer->setAttribute(ItemAttribute_t::DATE, rewardId);
+	container->setAttribute(ItemAttribute_t::DATE, rewardId);
 	container->internalAddThing(rewardContainer);
 	container->setRewardCorpse();
 

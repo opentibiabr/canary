@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_COMBAT_SPELL_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CREATURES_COMBAT_SPELL_FUNCTIONS_HPP_
@@ -42,6 +42,9 @@ class SpellFunctions final : LuaScriptInterface {
 			registerMethod(L, "Spell", "isBlocking", SpellFunctions::luaSpellBlocking);
 			registerMethod(L, "Spell", "isAggressive", SpellFunctions::luaSpellAggressive);
 			registerMethod(L, "Spell", "vocation", SpellFunctions::luaSpellVocation);
+
+			registerMethod(L, "Spell", "castSound", SpellFunctions::luaSpellCastSound);
+			registerMethod(L, "Spell", "impactSound", SpellFunctions::luaSpellImpactSound);
 
 			// Only for InstantSpell.
 			registerMethod(L, "Spell", "words", SpellFunctions::luaSpellWords);
@@ -87,6 +90,9 @@ class SpellFunctions final : LuaScriptInterface {
 		static int luaSpellAggressive(lua_State* L);
 		static int luaSpellVocation(lua_State* L);
 
+		static int luaSpellCastSound(lua_State* L);
+		static int luaSpellImpactSound(lua_State* L);
+
 		// Only for InstantSpells.
 		static int luaSpellWords(lua_State* L);
 		static int luaSpellNeedDirection(lua_State* L);
@@ -103,4 +109,4 @@ class SpellFunctions final : LuaScriptInterface {
 		static int luaSpellCheckFloor(lua_State* L);
 };
 
-#endif  // SRC_LUA_FUNCTIONS_CREATURES_COMBAT_SPELL_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_CREATURES_COMBAT_SPELL_FUNCTIONS_HPP_

@@ -4524,6 +4524,42 @@ local items = {
 		slot = "shield"
 	},
 	{
+		-- sun catcher
+		itemid = 25977,
+		type = "equip",
+		slot = "ammo"
+	},
+	{
+		-- sun catcher
+		itemid = 25977,
+		type = "deequip",
+		slot = "ammo"
+	},
+	{
+		-- starlight vial
+		itemid = 25976,
+		type = "equip",
+		slot = "ammo"
+	},
+	{
+		-- starlight vial
+		itemid = 25976,
+		type = "deequip",
+		slot = "ammo"
+	},
+	{
+		-- moon mirror
+		itemid = 25975,
+		type = "equip",
+		slot = "ammo"
+	},
+	{
+		-- moon mirror
+		itemid = 25975,
+		type = "deequip",
+		slot = "ammo"
+	},
+	{
 		-- energy war hammer replica
 		itemid = 25974,
 		type = "equip",
@@ -14694,14 +14730,14 @@ local items = {
 		itemid = 6529,
 		type = "equip",
 		slot = "feet",
-		level = 180
+		level = 10
 	},
 	{
 		-- pair of soft boots
 		itemid = 6529,
 		type = "deequip",
 		slot = "feet",
-		level = 180
+		level = 10
 	},
 	{
 		-- tortoise shield
@@ -15479,14 +15515,14 @@ local items = {
 		itemid = 3549,
 		type = "equip",
 		slot = "feet",
-		level = 180
+		level = 10
 	},
 	{
 		-- pair of soft boots
 		itemid = 3549,
 		type = "deequip",
 		slot = "feet",
-		level = 180
+		level = 10
 	},
 	{
 		-- scythe

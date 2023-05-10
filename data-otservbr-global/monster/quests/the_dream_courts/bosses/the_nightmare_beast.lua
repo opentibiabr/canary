@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 22
-monster.maxHealth = 22
+monster.health = 550000
+monster.maxHealth = 550000
 monster.race = "blood"
 monster.corpse = 30159
 monster.speed = 125
@@ -23,6 +23,11 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
+}
+
+monster.bosstiary = {
+	bossRaceId = 1718,
+	bossRace = RARITY_ARCHFOE
 }
 
 monster.strategiesTarget = {

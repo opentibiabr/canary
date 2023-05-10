@@ -4,8 +4,8 @@
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #ifndef SRC_GAME_MOVEMENT_TELEPORT_H_
 #define SRC_GAME_MOVEMENT_TELEPORT_H_
@@ -13,10 +13,10 @@
 #include "items/tile.h"
 #include "protobuf/itemsserialization.pb.h"
 
-class Teleport final : public Item, public Cylinder
-{
+class Teleport final : public Item, public Cylinder {
 	public:
-		explicit Teleport(uint16_t type) : Item(type) {};
+		explicit Teleport(uint16_t type) :
+			Item(type) {};
 
 		Teleport* getTeleport() override {
 			return this;
@@ -30,7 +30,7 @@ class Teleport final : public Item, public Cylinder
 		void serializeAttr(PropWriteStream& propWriteStream) const override;
 		bool serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const override;
 
-		const Position& getDestPos() const {
+		const Position &getDestPos() const {
 			return destPos;
 		}
 		void setDestPos(Position pos) {
@@ -39,14 +39,11 @@ class Teleport final : public Item, public Cylinder
 
 		bool checkInfinityLoop(Tile* destTile);
 
-		//cylinder implementations
-		ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count,
-				uint32_t flags, Creature* actor = nullptr) const override;
-		ReturnValue queryMaxCount(int32_t index, const Thing& thing, uint32_t count,
-				uint32_t& maxQueryCount, uint32_t flags) const override;
-		ReturnValue queryRemove(const Thing& thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
-		Cylinder* queryDestination(int32_t& index, const Thing& thing, Item** destItem,
-				uint32_t& flags) override;
+		// cylinder implementations
+		ReturnValue queryAdd(int32_t index, const Thing &thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
+		ReturnValue queryMaxCount(int32_t index, const Thing &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) const override;
+		ReturnValue queryRemove(const Thing &thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
+		Cylinder* queryDestination(int32_t &index, const Thing &thing, Item** destItem, uint32_t &flags) override;
 
 		void addThing(Thing* thing) override;
 		void addThing(int32_t index, Thing* thing) override;
@@ -63,4 +60,4 @@ class Teleport final : public Item, public Cylinder
 		Position destPos;
 };
 
-#endif  // SRC_GAME_MOVEMENT_TELEPORT_H_
+#endif // SRC_GAME_MOVEMENT_TELEPORT_H_

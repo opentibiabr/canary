@@ -4,6 +4,7 @@ name: Build - Ubuntu
 on:
   workflow_dispatch:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches:
       - main
@@ -14,6 +15,7 @@ env:
 
 jobs:
   job:
+    if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
     name: ${{ matrix.os }}-${{ matrix.buildtype }}
     runs-on: ${{ matrix.os }}
 
@@ -51,10 +53,17 @@ jobs:
             ccache-${{ matrix.os }}
 
       - name: Restore artifacts and install vcpkg
+        id: vcpkg-step
+        run: |
+          vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ')
+          echo "vcpkg commit ID: $vcpkgCommitId"
+          echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" >> $GITHUB_ENV
+
+      - name: Get vcpkg commit id from vcpkg.json
         uses: lukka/run-vcpkg@main
         with:
-          vcpkgGitURL: "https://github.com/opentibiabr/vcpkg.git"
-          vcpkgGitCommitId: 8974d642d47efd578e0da3223b4101c5d59aebcf
+          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
+          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
 
       - name: Get latest CMake and ninja
         uses: lukka/get-cmake@main

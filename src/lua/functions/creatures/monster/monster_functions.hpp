@@ -59,7 +59,6 @@ class MonsterFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Monster", "isOnHazardSystem", MonsterFunctions::luaMonsterIsOnHazardSystem);
 
-
 			CharmFunctions::init(L);
 			LootFunctions::init(L);
 			MonsterSpellFunctions::init(L);

@@ -188,7 +188,7 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
 		var.number = target->getID();
 		executeUseWeapon(player, var);
 	} else {
-		if (!player || !target || !item){
+		if (!player || !target || !item) {
 			return;
 		}
 
@@ -670,7 +670,7 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 	return true;
 }
 
-int32_t WeaponDistance::getElementDamage(const Player* player, const Creature* target, const Item* item, uint16_t/*not used*/) const {
+int32_t WeaponDistance::getElementDamage(const Player* player, const Creature* target, const Item* item, uint16_t /*not used*/) const {
 	if (elementType == COMBAT_NONE) {
 		return 0;
 	}
@@ -705,7 +705,7 @@ int16_t WeaponDistance::getElementDamageValue() const {
 	return elementDamage;
 }
 
-int32_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage /*= false*/, uint16_t/*not used*/) const {
+int32_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage /*= false*/, uint16_t /*not used*/) const {
 	int32_t attackValue = item->getAttack();
 	bool hasElement = false;
 

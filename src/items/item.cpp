@@ -1168,6 +1168,41 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				descriptions.emplace_back("Skill Boost", ss.str());
 			}
 
+			for (uint8_t i = 1; i <= 11; i++) {
+				if (it.abilities->specializedMagicLevel[i]) {
+					ss.str("");
+
+					ss << std::showpos << it.abilities->specializedMagicLevel[i] << std::noshowpos;
+					std::string combatName = getCombatName(indexToCombatType(i));
+					combatName[0] = toupper(combatName[0]);
+					descriptions.emplace_back(combatName + " Magic Level", ss.str());
+				}
+			}
+
+			if (it.abilities->cleavePercent) {
+				ss.str("");
+				ss << std::showpos << (it.abilities->cleavePercent) << std::noshowpos << "%";
+				descriptions.emplace_back("cleave", ss.str());
+			}
+
+			if (it.abilities->magicShieldCapacityFlat || it.abilities->magicShieldCapacityPercent) {
+				ss.str("");
+				ss << std::showpos << it.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << it.abilities->magicShieldCapacityPercent << "%";
+				descriptions.emplace_back("magic shield capacity", ss.str());
+			}
+
+			if (it.abilities->perfectShotRange) {
+				ss.str("");
+				ss << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(it.abilities->perfectShotRange);
+				descriptions.emplace_back("perfect shot", ss.str());
+			}
+
+			if (it.abilities->damageReflection) {
+				ss.str("");
+				ss << std::showpos << (it.abilities->damageReflection >> 1) << std::noshowpos;
+				descriptions.emplace_back("damage reflection", ss.str());
+			}
+
 			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
 				if (it.abilities->fieldAbsorbPercent[i] == 0) {
 					continue;
@@ -1448,21 +1483,77 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 					continue;
 				}
 
+				ss.str("");
+				if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
+					ss << std::showpos << (it.abilities->skills[i] / 100.) << std::noshowpos;
+				} else {
+					ss << std::showpos << it.abilities->skills[i] << std::noshowpos;
+				}
+				descriptions.emplace_back(getSkillName(i), ss.str());
+			}
+
+			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
+				if (!it.abilities->skills[i]) {
+					continue;
+				}
+
 				if (skillBoost) {
 					ss << ", ";
 				}
 
-				ss << std::showpos << getSkillName(i) << ' ' << it.abilities->skills[i] << std::noshowpos;
-				skillBoost = true;
+				if (i != SKILL_CRITICAL_HIT_CHANCE) {
+					ss << std::showpos;
+				}
+				if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
+					ss << (it.abilities->skills[i] / 100.) << '%';
+				} else {
+					ss << it.abilities->skills[i] << '%';
+				}
+				if (i != SKILL_CRITICAL_HIT_CHANCE) {
+					ss << std::noshowpos;
+				}
+				descriptions.emplace_back(getSkillName(i), ss.str());
 			}
 
 			if (it.abilities->stats[STAT_MAGICPOINTS]) {
-				if (skillBoost) {
-					ss << ", ";
-				}
+				ss.str("");
+				ss << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+				descriptions.emplace_back("Magic Level", ss.str());
+			}
 
-				ss << std::showpos << "magic level " << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
-				skillBoost = true;
+			for (uint8_t i = 1; i <= 11; i++) {
+				if (it.abilities->specializedMagicLevel[i]) {
+					ss.str("");
+
+					ss << std::showpos << it.abilities->specializedMagicLevel[i] << std::noshowpos;
+					std::string combatName = getCombatName(indexToCombatType(i));
+					combatName[0] = toupper(combatName[0]);
+					descriptions.emplace_back(combatName + " Magic Level", ss.str());
+				}
+			}
+
+			if (it.abilities->cleavePercent) {
+				ss.str("");
+				ss << std::showpos << (it.abilities->cleavePercent) << std::noshowpos << "%";
+				descriptions.emplace_back("cleave", ss.str());
+			}
+
+			if (it.abilities->magicShieldCapacityFlat || it.abilities->magicShieldCapacityPercent) {
+				ss.str("");
+				ss << std::showpos << it.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << it.abilities->magicShieldCapacityPercent << "%";
+				descriptions.emplace_back("magic shield capacity", ss.str());
+			}
+
+			if (it.abilities->perfectShotRange) {
+				ss.str("");
+				ss << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at range " << it.abilities->perfectShotRange;
+				descriptions.emplace_back("perfect shot", ss.str());
+			}
+
+			if (it.abilities->damageReflection) {
+				ss.str("");
+				ss << std::showpos << (it.abilities->damageReflection >> 1) << std::noshowpos;
+				descriptions.emplace_back("damage reflection", ss.str());
 			}
 
 			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
@@ -2093,6 +2184,17 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 					s << '%';
 				}
 
+				if (it.abilities->damageReflection) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "damage reflection " << std::showpos << it.abilities->damageReflection << std::noshowpos;
+				}
+
 				if (it.abilities->stats[STAT_MAGICPOINTS]) {
 					if (begin) {
 						begin = false;
@@ -2102,6 +2204,52 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 					}
 
 					s << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+				}
+
+				for (uint8_t i = 1; i <= 11; i++) {
+					if (it.abilities->specializedMagicLevel[i]) {
+						if (begin) {
+							begin = false;
+							s << " (";
+						} else {
+							s << ", ";
+						}
+
+						s << getCombatName(indexToCombatType(i)) << " magic level " << std::showpos << it.abilities->specializedMagicLevel[i] << std::noshowpos;
+					}
+				}
+
+				if (it.abilities->cleavePercent) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "cleave " << std::showpos << (it.abilities->cleavePercent) << std::noshowpos << "%";
+				}
+
+				if (it.abilities->magicShieldCapacityFlat || it.abilities->magicShieldCapacityPercent) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "magic shield capacity " << std::showpos << it.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << it.abilities->magicShieldCapacityPercent << "%";
+				}
+
+				if (it.abilities->perfectShotRange) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "perfect shot " << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at range " << it.abilities->perfectShotRange;
 				}
 
 				int16_t show = it.abilities->absorbPercent[0];
@@ -2288,6 +2436,63 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 					}
 
 					s << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+				}
+
+				for (uint8_t i = 1; i <= 11; i++) {
+					if (it.abilities->specializedMagicLevel[i]) {
+						if (begin) {
+							begin = false;
+							s << " (";
+						} else {
+							s << ", ";
+						}
+
+						s << getCombatName(indexToCombatType(i)) << " magic level " << std::showpos << it.abilities->specializedMagicLevel[i] << std::noshowpos;
+					}
+				}
+
+				if (it.abilities->cleavePercent) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "cleave " << std::showpos << (it.abilities->cleavePercent) << std::noshowpos << "%";
+				}
+
+				if (it.abilities->magicShieldCapacityFlat || it.abilities->magicShieldCapacityPercent) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "magic shield capacity " << std::showpos << it.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << it.abilities->magicShieldCapacityPercent << "%";
+				}
+
+				if (it.abilities->perfectShotRange) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "perfect shot " << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(it.abilities->perfectShotRange);
+				}
+
+				if (it.abilities->damageReflection) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "damage reflection " << std::showpos << it.abilities->damageReflection << std::noshowpos;
 				}
 
 				int16_t show = it.abilities->absorbPercent[0];

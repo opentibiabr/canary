@@ -29,6 +29,13 @@ monster.Bestiary = {
 		Alchemist Quarter, Magician Quarter, Chyllfroest, Oramond Dungeon, Abandoned Sewers."
 	}
 
+monster.hazard = {
+	criticalChance = 10.5, -- 10,5%
+	canDodge = true, -- Activate/deactivate crit possibility on the animal
+	canSpawnPod = true, -- Enable/disable possibility to drop spawn pod when killing the bug
+	canDealMoreDamage = true -- Enable/Disable Increased Damage
+}
+
 monster.health = 8200
 monster.maxHealth = 8200
 monster.race = "fire"

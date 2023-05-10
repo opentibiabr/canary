@@ -2314,6 +2314,82 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
+		/*******************************************************************************
+		 * Hazard system
+		******************************************************************************/
+		uint16_t getCleavePercent() const {
+			return cleavePercent;
+		}
+
+		void setCleavePercent(uint16_t value) {
+			cleavePercent += value;
+		}
+
+		int32_t getSpecializedMagicLevel(CombatType_t combat) const {
+			return specializedMagicLevel[combatTypeToIndex(combat)];
+		}
+
+		void setSpecializedMagicLevel(CombatType_t combat, int32_t value) {
+			specializedMagicLevel[combatTypeToIndex(combat)] = std::max(0, specializedMagicLevel[combatTypeToIndex(combat)] + value);
+		}
+
+		int32_t getPerfectShotDamage(uint8_t range) const {
+			auto it = perfectShot.find(range);
+			if (it != perfectShot.end())
+				return it->second;
+			return 0;
+		}
+
+		void setPerfectShotDamage(uint8_t range, int32_t damage) {
+			int32_t actualDamage = getPerfectShotDamage(range);
+			bool aboveZero = (actualDamage != 0);
+			actualDamage += damage;
+			if (actualDamage == 0 && aboveZero)
+				perfectShot.erase(range);
+			else
+				perfectShot[range] = actualDamage;
+		}
+
+		int32_t getMagicShieldCapacityFlat() const {
+			return magicShieldCapacityFlat;
+		}
+
+		int16_t getMagicShieldCapacityPercent() const {
+			return magicShieldCapacityPercent;
+		}
+
+		void setMagicShieldCapacityFlat(int32_t value) {
+			magicShieldCapacityFlat += value;
+		}
+
+		void setMagicShieldCapacityPercent(int16_t value) {
+			magicShieldCapacityPercent += value;
+		}
+
+		// Parser
+		void parseAttackRecvHazardSystem(CombatDamage &damage, const Monster* monster);
+		void parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* monster);
+		// Points increase:
+		void addHazardSystemPoints(int32_t amount);
+		// Points get:
+		uint16_t getHazardSystemPoints() const {
+			int32_t points = 0;
+			points = getStorageValue(STORAGEVALUE_HAZARDCOUNT);
+			if (points <= 0) {
+				return 0;
+			}
+			return static_cast<uint16_t>(std::max<int32_t>(0, std::min<int32_t>(0xFFFF, points)));
+		}
+
+		// Reference counter used on client UI.
+		void reloadHazardSystemIcon();
+		uint16_t getHazardSystemReference() const {
+			return hazardSystemReferenceCounter;
+		}
+		void incrementeHazardSystemReference();
+		void decrementeHazardSystemReference();
+		/*******************************************************************************/
+
 	private:
 		static uint32_t playerFirstID;
 		static uint32_t playerLastID;
@@ -2594,6 +2670,18 @@ class Player final : public Creature, public Cylinder {
 		bool moved = false;
 		bool dead = false;
 		bool imbuementTrackerWindowOpen = false;
+
+		// Hazard system
+		int64_t lastHazardSystemCriticalHit = 0;
+		bool reloadHazardSystemPointsCounter = true;
+		uint16_t hazardSystemReferenceCounter = 0;
+
+		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
+		std::map<uint8_t, int32_t> perfectShot;
+		int32_t magicShieldCapacityFlat = 0;
+		int16_t magicShieldCapacityPercent = 0;
+		uint16_t cleavePercent = 0;
+		// Hazard end
 
 		void updateItemsLight(bool internal = false);
 		uint16_t getStepSpeed() const override {

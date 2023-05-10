@@ -1,4 +1,3 @@
-
 AREA_BEAM6 = {
 	{1},
 	{1},
@@ -38,41 +37,41 @@ local spell = Spell("instant")
 
 local exhaust = {}
 function spell.onCastSpell(creature, var)
-    if not(creature) or not(creature:isPlayer()) then
-        return false
-    end
+	if not creature or not creature:isPlayer() then
+		return false
+	end
 
-    local grade = creature:upgradeSpellsWORD("Great Death Beam")
-    if (grade == 0) then
-        creature:sendCancelMessage("You cannot cast this spell")
-        creature:getPosition():sendMagicEffect(CONST_ME_POFF)
-        return false
-    end
+	local grade = creature:upgradeSpellsWORD("Great Death Beam")
+	if grade == 0 then
+		creature:sendCancelMessage("You cannot cast this spell")
+		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
 
-    local cooldown = 0
-    if (grade >= 3) then
-        cooldown = 6
-    elseif (grade >= 2) then
-        cooldown = 8
-    elseif (grade >= 1) then
-        cooldown = 10
-    end
+	local cooldown = 0
+	if grade >= 3 then
+		cooldown = 6
+	elseif grade >= 2 then
+		cooldown = 8
+	elseif grade >= 1 then
+		cooldown = 10
+	end
 
-    var.runeName = "Beam Mastery"
-    local executed = false
-    if (grade == 1) then
-        executed = combat1:execute(creature, var)
-    elseif (grade == 2) then
-        executed = combat2:execute(creature, var)
-    elseif (grade == 3) then
-        executed = combat3:execute(creature, var)
-    end
-    if (executed) then
-        local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 260)
-        condition:setTicks((cooldown * 1000))
-        creature:addCondition(condition)
-        return true
-    end
+	var.runeName = "Beam Mastery"
+	local executed = false
+	if grade == 1 then
+		executed = combat1:execute(creature, var)
+	elseif grade == 2 then
+		executed = combat2:execute(creature, var)
+	elseif grade == 3 then
+		executed = combat3:execute(creature, var)
+	end
+	if executed then
+		local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 260)
+		condition:setTicks((cooldown * 1000))
+		creature:addCondition(condition)
+		return true
+	end
 	return false
 end
 

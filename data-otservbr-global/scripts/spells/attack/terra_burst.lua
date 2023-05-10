@@ -14,39 +14,39 @@ combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-    if not(creature) or not(creature:isPlayer()) then
-        return false
-    end
+	if not creature or not creature:isPlayer() then
+		return false
+	end
 
-    local grade = creature:upgradeSpellsWORD("Twin Burst")
-    if (grade == 0) then
-        creature:sendCancelMessage("You cannot cast this spell")
-        creature:getPosition():sendMagicEffect(CONST_ME_POFF)
-        return false
-    end
+	local grade = creature:upgradeSpellsWORD("Twin Burst")
+	if grade == 0 then
+		creature:sendCancelMessage("You cannot cast this spell")
+		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
 
-    local cooldown = 0
-    if (grade >= 3) then
-        cooldown = 24
-    elseif (grade >= 2) then
-        cooldown = 28
-    elseif (grade >= 1) then
-        cooldown = 32
-    end
+	local cooldown = 0
+	if grade >= 3 then
+		cooldown = 24
+	elseif grade >= 2 then
+		cooldown = 28
+	elseif grade >= 1 then
+		cooldown = 32
+	end
 
-    var.instantName = "Twin Burst"
-    if (combat:execute(creature, var)) then
-        -- Ice cooldown
-        local condition1 = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 262)
-        condition1:setTicks((cooldown * 1000)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
-        creature:addCondition(condition1)
-        -- Earth cooldown
-        local condition2 = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 263)
-        condition2:setTicks((cooldown * 1000)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
-        creature:addCondition(condition2)    
-        return true
-    end
-	return false 
+	var.instantName = "Twin Burst"
+	if combat:execute(creature, var) then
+		-- Ice cooldown
+		local condition1 = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 262)
+		condition1:setTicks((cooldown * 1000)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+		creature:addCondition(condition1)
+		-- Earth cooldown
+		local condition2 = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 263)
+		condition2:setTicks((cooldown * 1000)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+		creature:addCondition(condition2)	
+		return true
+	end
+	return false
 end
 
 spell:group("attack")

@@ -1,23 +1,23 @@
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	if not(creature) or not(creature:isPlayer()) then
+	if not creature or not creature:isPlayer() then
 		return false
 	end
 
 	local grade = creature:upgradeSpellsWORD("Divine Empowerment")
-	if (grade == 0) then
+	if grade == 0 then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
 
 	local cooldown = 0
-	if (grade >= 3) then
+	if grade >= 3 then
 		cooldown = 24
-	elseif (grade >= 2) then
+	elseif grade >= 2 then
 		cooldown = 28
-	elseif (grade >= 1) then
+	elseif grade >= 1 then
 		cooldown = 32
 	end
 	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 268)
@@ -28,7 +28,7 @@ function spell.onCastSpell(creature, var)
 	for x = -1, 1 do
 		for y = -1, 1 do
 			local item = Game.createItem(ITEM_DIVINE_EMPOWERMENT, 1, Position(position.x + x, position.y + y, position.z))
-			if (item) then
+			if item then
 				item:setDuration(5, 5, 0, false)
 			end
 		end

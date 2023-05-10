@@ -226,7 +226,7 @@ function playerLogin.onLogin(player)
 		onMovementRemoveProtection(playerId, player:getPosition(), 10)
 	end
 	
-	-- Wheel of destiny
+	-- Wheel of destiny init
 	if (WheelOfDestinySystem ~= nil) then
 		WheelOfDestinySystem.initializePlayerData(player) -- check folder libs have correclty
 	else

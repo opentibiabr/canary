@@ -39,14 +39,16 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 	CombatDamage damage;
 	damage.origin = params.origin;
 	damage.primary.type = params.combatType;
+
+	// Wheel of destiny
 	damage.instantSpellName = sourceInstantSpellName;
 	damage.runeSpellName = sourceRuneSpellName;
-	// Wheel of destiny
 	Spell* wheelSpell = nullptr;
 	Player* attackerPlayer = creature ? creature->getPlayer() : nullptr;
 	if (attackerPlayer) {
 		wheelSpell = attackerPlayer->getWheelOfDestinyCombatDataSpell(damage, target);
 	}
+	// End
 	if (formulaType == COMBAT_FORMULA_DAMAGE) {
 		damage.primary.value = normal_random(
 			static_cast<int32_t>(mina),

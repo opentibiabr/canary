@@ -6,7 +6,7 @@ function onTargetCreature(creature, target)
 	local bosses = {"leiden", "ravennous hunger", "dorokoll the mystic", "eshtaba the conjurer", "eliz the unyielding", "mezlon the defiler", "malkhar deathbringer", "containment crystal"}
 	local master = target:getMaster()
 	if target:isMonster() and not master or master and master:isMonster() then
-		if (not table.contains(bosses, target:getName():lower())) then
+		if not table.contains(bosses, target:getName():lower()) then
 			return true
 		end
 	end
@@ -34,8 +34,8 @@ combatWOD:setCallback(CALLBACK_PARAM_TARGETCREATURE, "onTargetCreatureWOD")
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	if (creature and creature:getPlayer()) then
-		if (WheelOfDestinySystem.getPlayerSpellAdditionalArea(creature:getPlayer(), "Mass Healing")) then
+	if creature and creature:getPlayer() then
+		if WheelOfDestinySystem.getPlayerSpellAdditionalArea(creature:getPlayer(), "Mass Healing") then
 			return combatWOD:execute(creature, var)
 		end
 	end

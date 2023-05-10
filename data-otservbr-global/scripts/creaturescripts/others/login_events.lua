@@ -117,7 +117,7 @@ function loginEvents.onLogin(player)
 		"SecretLibraryKill",
 		-- The Dream Courts
 		"DreamCourtsKill",
-		-- Wheel of destiny
+		-- Hazard
 		"HazardSystemCombat"
 	}
 

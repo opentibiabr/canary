@@ -157,7 +157,7 @@ function serverstartup.onStartup()
 		end
 	end
 
-	-- Wheel of destiny
+	-- Wheel of destiny init global data
 	WheelOfDestinySystem.initializeGlobalData(false)
 
 	-- Hireling System

@@ -22,13 +22,12 @@ combatWOD:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValuesWOD")
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	if (creature and creature:getPlayer()) then
-		if (creature:instantSkillWOD("Beam Mastery")) then
+	if creature and creature:getPlayer() then
+		if creature:instantSkillWOD("Beam Mastery") then
 			var.runeName = "Beam Mastery"
 			return combatWOD:execute(creature, var)
 		end
 	end
-	print("ENERGY BEAM", "combat")
 	return combat:execute(creature, var)
 end
 

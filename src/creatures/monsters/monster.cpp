@@ -313,10 +313,6 @@ void Monster::addTarget(Creature* creature, bool pushFront /* = false*/) {
 		}
 		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer())
 			totalPlayersOnScreen++;
-		// Hazard system (Icon UI)
-		if (isMonsterOnHazardSystem() && creature->getPlayer()) {
-			creature->getPlayer()->incrementeHazardSystemReference();
-		}
 	}
 }
 
@@ -329,10 +325,6 @@ void Monster::removeTarget(Creature* creature) {
 	if (it != targetList.end()) {
 		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen--;
-		}
-		// Hazard system (Icon UI)
-		if (isMonsterOnHazardSystem() && creature->getPlayer()) {
-			creature->getPlayer()->decrementeHazardSystemReference();
 		}
 		creature->decrementReferenceCounter();
 		targetList.erase(it);
@@ -355,10 +347,6 @@ void Monster::updateTargetList() {
 	while (targetIterator != targetList.end()) {
 		Creature* creature = *targetIterator;
 		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
-			// Hazard system (Icon UI)
-			if (isMonsterOnHazardSystem() && creature->getPlayer()) {
-				creature->getPlayer()->decrementeHazardSystemReference();
-			}
 			creature->decrementReferenceCounter();
 			targetIterator = targetList.erase(targetIterator);
 		} else {
@@ -385,10 +373,6 @@ void Monster::clearTargetList() {
 
 void Monster::clearFriendList() {
 	for (Creature* creature : friendList) {
-		// Hazard system (Icon UI)
-		if (isMonsterOnHazardSystem() && creature->getPlayer()) {
-			creature->getPlayer()->decrementeHazardSystemReference();
-		}
 		creature->decrementReferenceCounter();
 	}
 	friendList.clear();

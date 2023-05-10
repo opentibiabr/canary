@@ -378,17 +378,6 @@ int MonsterFunctions::luaMonsterGetRespawnType(lua_State* L) {
 	return 2;
 }
 
-int MonsterFunctions::luaPlayerIsMonsterOnHazardSystem(lua_State* L) {
-	// monster:isMonsterOnHazardSystem()
-	const Monster* monster = getUserdata<const Monster>(L, 1);
-	if (monster) {
-		pushBoolean(L, monster->isMonsterOnHazardSystem());
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
 int MonsterFunctions::luaMonsterGetTimeToChangeFiendish(lua_State* L) {
 	// monster:getTimeToChangeFiendish()
 	const Monster* monster = getUserdata<Monster>(L, 1);

@@ -9,9 +9,9 @@ function onTargetCreature(creature, target)
 	end
 
 	local buff = 90
-	if (creature and creature:getPlayer()) then
+	if creature and creature:getPlayer() then
 		local grade = creature:upgradeSpellsWORD("Sap Strength")
-		if (grade == 2) then
+		if grade == 2 then
 			buff = 80
 		end
 	end
@@ -21,7 +21,7 @@ function onTargetCreature(creature, target)
 	condition:setParameter(CONDITION_PARAM_BUFF_DAMAGEDEALT, buff)
 
 	local gradeBuff = 0
-	if (creature and creature:getPlayer()) then
+	if creature and creature:getPlayer() then
 		gradeBuff = creature:upgradeSpellsWORD("Drain_Body_Spells")
 	end
 	condition:setParameter(CONDITION_PARAM_DRAIN_BODY, gradeBuff)

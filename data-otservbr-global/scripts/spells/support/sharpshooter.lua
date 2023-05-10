@@ -17,18 +17,18 @@ combat:addCondition(exhaustHealGroup)
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, variant)
-	if (combat:execute(creature, variant)) then
+	if combat:execute(creature, variant) then
 		local skill = Condition(CONDITION_ATTRIBUTES)
 		skill:setParameter(CONDITION_PARAM_SUBID, 6)
 		skill:setParameter(CONDITION_PARAM_TICKS, spellDuration)
 		local grade = creature:upgradeSpellsWORD("Sharpshooter")
-		if (grade == 0) then
+		if grade == 0 then
 			local exhaustSupportGroup = Condition(CONDITION_SPELLGROUPCOOLDOWN)
 			exhaustSupportGroup:setParameter(CONDITION_PARAM_SUBID, 3)
 			exhaustSupportGroup:setParameter(CONDITION_PARAM_TICKS, spellDuration)
 			creature:addCondition(exhaustSupportGroup)
 		end
-		if (grade == 2) then
+		if grade == 2 then
 			skill:setParameter(CONDITION_PARAM_SKILL_DISTANCEPERCENT, 145)
 		else
 			skill:setParameter(CONDITION_PARAM_SKILL_DISTANCEPERCENT, 140)

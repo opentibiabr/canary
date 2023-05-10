@@ -337,54 +337,6 @@ class Player final : public Creature, public Cylinder {
 		Party* getParty() const {
 			return party;
 		}
-		uint16_t getCleavePercent() const {
-			return cleavePercent;
-		}
-
-		void setCleavePercent(uint16_t value) {
-			cleavePercent += value;
-		}
-
-		int32_t getSpecializedMagicLevel(CombatType_t combat) const {
-			return specializedMagicLevel[combatTypeToIndex(combat)];
-		}
-
-		void setSpecializedMagicLevel(CombatType_t combat, int32_t value) {
-			specializedMagicLevel[combatTypeToIndex(combat)] = std::max(0, specializedMagicLevel[combatTypeToIndex(combat)] + value);
-		}
-
-		int32_t getPerfectShotDamage(uint8_t range) const {
-			auto it = perfectShot.find(range);
-			if (it != perfectShot.end())
-				return it->second;
-			return 0;
-		}
-
-		void setPerfectShotDamage(uint8_t range, int32_t damage) {
-			int32_t actualDamage = getPerfectShotDamage(range);
-			bool aboveZero = (actualDamage != 0);
-			actualDamage += damage;
-			if (actualDamage == 0 && aboveZero)
-				perfectShot.erase(range);
-			else
-				perfectShot[range] = actualDamage;
-		}
-
-		int32_t getMagicShieldCapacityFlat() const {
-			return magicShieldCapacityFlat;
-		}
-
-		int16_t getMagicShieldCapacityPercent() const {
-			return magicShieldCapacityPercent;
-		}
-
-		void setMagicShieldCapacityFlat(int32_t value) {
-			magicShieldCapacityFlat += value;
-		}
-
-		void setMagicShieldCapacityPercent(int16_t value) {
-			magicShieldCapacityPercent += value;
-		}
 		PartyShields_t getPartyShield(const Player* player) const;
 		bool isInviting(const Player* player) const;
 		bool isPartner(const Player* player) const;
@@ -1792,34 +1744,6 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
-		/*******************************************************************************
-		 * Hazard system
-		 ******************************************************************************/
-
-		// Parser
-		void parseAttackRecvHazardSystem(CombatDamage &damage, const Monster* monster);
-		void parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* monster);
-		// Points increase:
-		void addHazardSystemPoints(int32_t amount);
-		// Points get:
-		uint16_t getHazardSystemPoints() const {
-			int32_t points = 0;
-			points = getStorageValue(STORAGEVALUE_HAZARDCOUNT);
-			if (points <= 0) {
-				return 0;
-			}
-			return static_cast<uint16_t>(std::max<int32_t>(0, std::min<int32_t>(0xFFFF, points)));
-		}
-
-		// Reference counter used on client UI.
-		void reloadHazardSystemIcon();
-		uint16_t getHazardSystemReference() const {
-			return hazardSystemReferenceCounter;
-		}
-		void incrementeHazardSystemReference();
-		void decrementeHazardSystemReference();
-		/*******************************************************************************/
-
 		void sendLootStats(Item* item, uint8_t count) const;
 		void updateSupplyTracker(const Item* item) const;
 		void updateImpactTracker(CombatType_t type, int32_t amount) const;
@@ -2791,11 +2715,6 @@ class Player final : public Creature, public Cylinder {
 		void gainExperience(uint64_t exp, Creature* target);
 		void addExperience(Creature* target, uint64_t exp, bool sendText = false);
 		void removeExperience(uint64_t exp, bool sendText = false);
-
-		// Hazard system
-		int64_t lastHazardSystemCriticalHit = 0;
-		bool reloadHazardSystemPointsCounter = true;
-		uint16_t hazardSystemReferenceCounter = 0;
 
 		void updateInventoryWeight();
 		/**

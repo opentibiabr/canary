@@ -1,15 +1,7 @@
 local condition = Condition(CONDITION_OUTFIT)
-condition:setOutfit({lookType = 1593}) -- Avatar of Steel lookType	
+condition:setOutfit({lookType = 1593}) -- Avatar of Steel lookType
+
 local spell = Spell("instant")
-
-local reloadDataEvent = function(cid)
-	local player = Player(cid)
-	if not player then
-		return
-	end
-
-	player:reloadData()
-end
 
 function spell.onCastSpell(creature, variant)
 	if not creature or not creature:isPlayer() then
@@ -40,7 +32,7 @@ function spell.onCastSpell(creature, variant)
 	creature:addCondition(condition)
 	creature:avatarTimer((os.time() * 1000) + duration)
 	creature:reloadData()
-	addEvent(reloadDataEvent, duration, creature:getId())
+	addEvent(ReloadDataEvent, duration, creature:getId())
 	return true
 end
 

@@ -148,8 +148,6 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, ORIGIN_MELEE);
 	registerEnum(L, ORIGIN_RANGED);
 
-	registerEnum(L, ORIGIN_REFLECT);
-
 	registerEnum(L, PLAYERSEX_FEMALE);
 	registerEnum(L, PLAYERSEX_MALE);
 
@@ -825,7 +823,6 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 	registerEnum(L, ITEM_STORE_INBOX);
 
 	registerEnum(L, ITEM_DIVINE_EMPOWERMENT);
-	registerEnum(L, ITEM_PRIMAL_POD);
 
 	registerEnum(L, ITEM_FORGE_SLIVER);
 	registerEnum(L, ITEM_FORGE_CORE);

@@ -551,6 +551,7 @@ void Player::updateInventoryImbuement() {
 	// Iterate through all items in the player's inventory
 	for (auto item : getAllInventoryItems()) {
 		// Iterate through all imbuement slots on the item
+
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 			ImbuementInfo imbuementInfo;
 			// Get the imbuement information for the current slot
@@ -2148,17 +2149,12 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 		return;
 	}
 
-	bool hazard = target && target->getMonster() && target->getMonster()->isMonsterOnHazardSystem() && getHazardSystemPoints() > 0;
-	if (hazard) {
-		exp += (exp * (1.75 * getHazardSystemPoints() * g_configManager().getNumber(HAZARDSYSTEM_EXP_BONUS_MULTIPLIER))) / 100.;
-	}
-
 	experience += exp;
 
 	if (sendText) {
 		std::string expString = fmt::format("{} experience point{}.", exp, (exp != 1 ? "s" : ""));
 
-		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString + (hazard ? " (Hazard)" : ""));
+		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString);
 		message.position = position;
 		message.primary.value = exp;
 		message.primary.color = TEXTCOLOR_WHITE_EXP;
@@ -2386,9 +2382,6 @@ bool Player::hasShield() const {
 BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool field /* = false*/) {
 	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor, field);
 
-	bool isReflected = false;
-	CombatDamage reflectDamage;
-
 	if (attacker) {
 		sendCreatureSquare(attacker, SQ_COLOR_BLACK);
 	}
@@ -2442,23 +2435,6 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 
 						Combat::doCombatHealth(this, attacker, reflectDamage, params);
 					}
-					if (combatType == COMBAT_PHYSICALDAMAGE) {
-						if (it.abilities->damageReflection != 0) {
-							const int16_t calculatedDamage = std::round(attacker->getMaxHealth() * 0.01);
-
-							if (calculatedDamage >= it.abilities->damageReflection) {
-								reflectDamage.primary.value += it.abilities->damageReflection;
-							} else {
-								reflectDamage.primary.value += calculatedDamage;
-							}
-
-							if (reflectDamage.primary.value > std::round(attacker->getMaxHealth() * 0.01) || reflectDamage.primary.value >= it.abilities->damageReflection) {
-								reflectDamage.primary.value = it.abilities->damageReflection;
-							}
-
-							isReflected = true;
-						}
-					}
 				}
 			}
 
@@ -2483,17 +2459,6 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 		}
 
 		damage -= std::ceil((damage * checkWheelOfDestinyAvatarSkill(WHEEL_OF_DESTINY_AVATAR_SKILL_DAMAGE_REDUCTION)) / 100.);
-
-		if (isReflected) {
-			CombatParams params;
-			params.combatType = COMBAT_PHYSICALDAMAGE;
-			params.impactEffect = CONST_ME_HITAREA;
-
-			reflectDamage.origin = ORIGIN_REFLECT;
-			reflectDamage.primary.type = COMBAT_PHYSICALDAMAGE;
-
-			Combat::doCombatHealth(this, attacker, reflectDamage, params);
-		}
 
 		if (damage <= 0) {
 			damage = 0;
@@ -6429,210 +6394,6 @@ bool Player::saySpell(
 	return true;
 }
 
-/*******************************************************************************
- * Hazard system
- ******************************************************************************/
-
-void Player::addHazardSystemPoints(int32_t amount) {
-	addStorageValue(STORAGEVALUE_HAZARDCOUNT, std::max<int32_t>(0, std::min<int32_t>(0xFFFF, static_cast<int32_t>(getHazardSystemPoints()) + amount)), true);
-	reloadHazardSystemPointsCounter = true;
-	if (hazardSystemReferenceCounter > 0) {
-		Tile* tile = getTile();
-		if (!tile) {
-			return;
-		}
-
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, tile->getPosition(), true);
-		for (Creature* spectator : spectators) {
-			if (!spectator || spectator == this) {
-				continue;
-			}
-
-			Player* player = spectator->getPlayer();
-			if (player && player->getProtocolVersion() >= 1289) {
-				player->sendCreatureIcon(getPlayer());
-			}
-		}
-
-		if (client && getProtocolVersion() >= 1289) {
-			client->reloadHazardSystemIcon(hazardSystemReferenceCounter);
-		}
-	}
-}
-
-void Player::parseAttackRecvHazardSystem(CombatDamage &damage, const Monster* monster) {
-	if (!monster || !monster->isMonsterOnHazardSystem()) {
-		return;
-	}
-
-	if (!g_configManager().getBoolean(HAZARDSYSTEM_ENABLED)) {
-		return;
-	}
-
-	if (damage.primary.type == COMBAT_HEALING) {
-		return;
-	}
-
-	double points = static_cast<double>(getHazardSystemPoints());
-	if (party) {
-		for (Player* partyMember : party->getMembers()) {
-			if (partyMember && partyMember->getHazardSystemPoints() < points) {
-				points = static_cast<double>(partyMember->getHazardSystemPoints());
-			}
-		}
-
-		if (party->getLeader() && party->getLeader()->getHazardSystemPoints() < points) {
-			points = static_cast<double>(party->getLeader()->getHazardSystemPoints());
-		}
-	}
-
-	if (points == 0) {
-		return;
-	}
-
-	double stage = 0;
-	uint16_t chance = static_cast<uint16_t>(normal_random(1, 10000));
-
-	// Critical chance
-	if ((lastHazardSystemCriticalHit + g_configManager().getNumber(HAZARDSYSTEM_CRITICAL_INTERVAL)) <= OTSYS_TIME() && chance <= monster->getHazardSystemCritChance() && !damage.critical) {
-		damage.critical = true;
-		damage.extension = true;
-		damage.exString = "(Hazard)";
-
-		stage = (points - 1) * static_cast<double>(g_configManager().getNumber(HAZARDSYSTEM_CRITICAL_MULTIPLIER));
-		damage.primary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.primary.value) * (5000 + stage)) / 10000));
-		damage.secondary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.secondary.value) * (5000 + stage)) / 10000));
-		lastHazardSystemCriticalHit = OTSYS_TIME();
-	}
-
-	// To prevent from punish the player twice with critical + damage boost, just remove the /* */ from the if
-	if (monster->getHazardSystemDamageBoost() /* && !damage.critical*/) {
-		stage = points * static_cast<double>(g_configManager().getNumber(HAZARDSYSTEM_DAMAGE_MULTIPLIER));
-		if (stage != 0) {
-			damage.extension = true;
-			damage.exString = "(Hazard)";
-			damage.primary.value += static_cast<int32_t>(std::ceil(((static_cast<double>(damage.primary.value) * stage) / 10000)));
-			if (damage.secondary.value != 0) {
-				damage.secondary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.secondary.value) * stage) / 10000));
-			}
-		}
-	}
-}
-
-void Player::parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* monster) {
-	if (!g_configManager().getBoolean(HAZARDSYSTEM_ENABLED)) {
-		return;
-	}
-
-	if (!monster || !monster->isMonsterOnHazardSystem()) {
-		return;
-	}
-
-	if (damage.primary.type == COMBAT_HEALING) {
-		return;
-	}
-
-	double points = static_cast<double>(getHazardSystemPoints());
-	if (party) {
-		for (Player* partyMember : party->getMembers()) {
-			if (partyMember && partyMember->getHazardSystemPoints() < points) {
-				points = static_cast<double>(partyMember->getHazardSystemPoints());
-			}
-		}
-
-		if (party->getLeader() && party->getLeader()->getHazardSystemPoints() < points) {
-			points = static_cast<double>(party->getLeader()->getHazardSystemPoints());
-		}
-	}
-
-	if (points == 0) {
-		return;
-	}
-
-	uint16_t stage = 0;
-	uint16_t chance = static_cast<uint16_t>(normal_random(1, 10000));
-
-	// Dodge chance
-	if (monster->getHazardSystemDodge()) {
-		stage = points * g_configManager().getNumber(HAZARDSYSTEM_DODGE_MULTIPLIER);
-		if (chance <= stage) {
-			damage.primary.value = 0;
-			damage.secondary.value = 0;
-			return;
-		}
-	}
-}
-
-void Player::reloadHazardSystemIcon() {
-	if (reloadHazardSystemPointsCounter) {
-		reloadHazardSystemPointsCounter = false;
-		if (getHazardSystemPoints() > 0) {
-			Tile* tile = getTile();
-			if (!tile) {
-				return;
-			}
-
-			SpectatorHashSet spectators;
-			g_game().map.getSpectators(spectators, tile->getPosition(), true);
-			for (Creature* spectator : spectators) {
-				if (!spectator || spectator == this) {
-					continue;
-				}
-
-				Player* player = spectator->getPlayer();
-				if (player && player->getProtocolVersion() >= 1289) {
-					player->sendCreatureIcon(getPlayer());
-				}
-			}
-		}
-		if (client && getProtocolVersion() >= 1289) {
-			client->reloadHazardSystemIcon(hazardSystemReferenceCounter);
-		}
-	}
-}
-
-void Player::incrementeHazardSystemReference() {
-	hazardSystemReferenceCounter++;
-	if (hazardSystemReferenceCounter != 0) {
-		reloadHazardSystemIcon();
-	}
-}
-
-void Player::decrementeHazardSystemReference() {
-	if (hazardSystemReferenceCounter == 0) {
-		return;
-	}
-
-	hazardSystemReferenceCounter--;
-	if (hazardSystemReferenceCounter == 0) {
-		if (getHazardSystemPoints() > 0) {
-			Tile* tile = getTile();
-			if (!tile) {
-				return;
-			}
-
-			SpectatorHashSet spectators;
-			g_game().map.getSpectators(spectators, tile->getPosition(), true);
-			for (Creature* spectator : spectators) {
-				if (!spectator || spectator == this) {
-					continue;
-				}
-
-				Player* player = spectator->getPlayer();
-				if (player) {
-					player->sendCreatureIcon(getPlayer());
-				}
-			}
-		}
-
-		if (client) {
-			client->reloadHazardSystemIcon(hazardSystemReferenceCounter);
-		}
-		reloadHazardSystemPointsCounter = true;
-	}
-}
-
 // Forge system
 void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount) {
 	ForgeHistory history;
@@ -7786,7 +7547,7 @@ void Player::onThinkWheelOfDestiny(bool force /* = false*/) {
 }
 
 void Player::reduceAllSpellsCooldownTimer(int32_t value) {
-	for (Condition* condition : this->getConditions(CONDITION_SPELLCOOLDOWN)) {
+	for (Condition* condition : this->getConditionsByType(CONDITION_SPELLCOOLDOWN)) {
 		if (condition->getTicks() <= value) {
 			sendSpellCooldown(condition->getSubId(), 0);
 			condition->endCondition(this);

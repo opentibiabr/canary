@@ -116,9 +116,7 @@ function loginEvents.onLogin(player)
 		-- Secret Library
 		"SecretLibraryKill",
 		-- The Dream Courts
-		"DreamCourtsKill",
-		-- Hazard
-		"HazardSystemCombat"
+		"DreamCourtsKill"
 	}
 
 	for i = 1, #events do

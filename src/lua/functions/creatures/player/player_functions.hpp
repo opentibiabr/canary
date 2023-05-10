@@ -88,9 +88,6 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "removeExperience", PlayerFunctions::luaPlayerRemoveExperience);
 			registerMethod(L, "Player", "getLevel", PlayerFunctions::luaPlayerGetLevel);
 
-			registerMethod(L, "Player", "getMagicShieldCapacityFlat", PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat);
-			registerMethod(L, "Player", "getMagicShieldCapacityPercent", PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent);
-
 			registerMethod(L, "Player", "getMagicLevel", PlayerFunctions::luaPlayerGetMagicLevel);
 			registerMethod(L, "Player", "getBaseMagicLevel", PlayerFunctions::luaPlayerGetBaseMagicLevel);
 			registerMethod(L, "Player", "getMana", PlayerFunctions::luaPlayerGetMana);
@@ -270,9 +267,6 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "openMarket", PlayerFunctions::luaPlayerOpenMarket);
 
-			registerMethod(L, "Player", "addHazardSystemPoints", PlayerFunctions::luaPlayerAddHazardSystemPoints);
-			registerMethod(L, "Player", "getHazardSystemPoints", PlayerFunctions::luaPlayerGetHazardSystemPoints);
-
 			registerMethod(L, "Player", "statsHealthWOD", PlayerFunctions::luaPlayerStatsHealthWOD);
 			registerMethod(L, "Player", "statsManaWOD", PlayerFunctions::luaPlayerStatsManaWOD);
 			registerMethod(L, "Player", "statsCapacityWOD", PlayerFunctions::luaPlayerStatsCapacityWOD);
@@ -402,9 +396,6 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerAddExperience(lua_State* L);
 		static int luaPlayerRemoveExperience(lua_State* L);
 		static int luaPlayerGetLevel(lua_State* L);
-
-		static int luaPlayerGetMagicShieldCapacityFlat(lua_State* L);
-		static int luaPlayerGetMagicShieldCapacityPercent(lua_State* L);
 
 		static int luaPlayerGetMagicLevel(lua_State* L);
 		static int luaPlayerGetBaseMagicLevel(lua_State* L);
@@ -590,9 +581,6 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetFreeBackpackSlots(lua_State* L);
 
 		static int luaPlayerOpenMarket(lua_State* L);
-
-		static int luaPlayerAddHazardSystemPoints(lua_State* L);
-		static int luaPlayerGetHazardSystemPoints(lua_State* L);
 
 		static int luaPlayerStatsHealthWOD(lua_State* L);
 		static int luaPlayerStatsManaWOD(lua_State* L);

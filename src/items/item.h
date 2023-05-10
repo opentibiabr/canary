@@ -351,15 +351,6 @@ class Item : virtual public Thing, public ItemProperties {
 			}
 			return items[id].weight;
 		}
-		int16_t getPerfectShotDamage() const {
-			return items[id].abilities->perfectShotDamage;
-		}
-		int8_t getPerfectShotRange() const {
-			return items[id].abilities->perfectShotRange;
-		}
-		int16_t getCleavePercent() const {
-			return items[id].abilities->cleavePercent;
-		}
 		int32_t getAttack() const {
 			if (hasAttribute(ItemAttribute_t::ATTACK)) {
 				return getAttribute<int32_t>(ItemAttribute_t::ATTACK);
@@ -587,7 +578,7 @@ class Item : virtual public Thing, public ItemProperties {
 		 * @param imbuementId Imbuement id to decay
 		 * @param duration New duration
 		 */
-		void decayImbuementTime(uint8_t slot, uint16_t imbuementId, int32_t duration) {
+		void decayImbuementTime(uint8_t slot, uint16_t imbuementId, uint64_t duration) {
 			return setImbuement(slot, imbuementId, duration);
 		}
 		void clearImbuement(uint8_t slot, uint16_t imbuementId) {

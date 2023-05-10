@@ -31,7 +31,7 @@ int32_t Combat::getLevelFormula(Player* player, Spell* wheelSpell, CombatDamage 
 		}
 	}
 
-	int32_t levelFormula = player->getLevel() * 2 + (magicLevelSkill + player->getSpecializedMagicLevel(damage.primary.type)) * 3;
+	int32_t levelFormula = player->getLevel() * 2 + magicLevelSkill * 3;
 	return levelFormula;
 }
 
@@ -999,7 +999,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage &da
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + damage.criticalChance;
 		// Charm low blow rune)
-		if (!damage.cleave && target && target->getMonster() && damage.primary.type != COMBAT_HEALING) {
+		if (target && target->getMonster() && damage.primary.type != COMBAT_HEALING) {
 			uint16_t playerCharmRaceid = caster->getPlayer()->parseRacebyCharm(CHARM_LOW, false, 0);
 			if (playerCharmRaceid != 0) {
 				const MonsterType* mType = g_monsters().getMonsterType(target->getName());
@@ -1213,7 +1213,7 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatPar
 
 //**********************************************************//
 uint32_t ValueCallback::getMagicLevelSkill(Player* player, CombatDamage &damage) const {
-	uint32_t magicLevelSkill = (player->getMagicLevel() + player->getSpecializedMagicLevel(damage.primary.type));
+	uint32_t magicLevelSkill = player->getMagicLevel();
 	// Wheel of destiny
 	if (player && player->getWheelOfDestinyInstant("Runic Mastery") && damage.instantSpellName.empty()) {
 		if (normal_random(0, 100) <= 25) {

@@ -28,9 +28,9 @@ function spell.onCastSpell(creature, var)
 		end
 	end
 
-	if (combat:execute(creature, var)) then
+	if combat:execute(creature, var) then
 		local grade = creature:upgradeSpellsWORD("Swift Foot")
-		if (grade == 0) then
+		if grade == 0 then
 			local exhaust = Condition(CONDITION_EXHAUST_COMBAT)
 			exhaust:setParameter(CONDITION_PARAM_TICKS, spellDuration)
 			creature:addCondition(exhaust)
@@ -41,7 +41,7 @@ function spell.onCastSpell(creature, var)
 			exhaustAttackGroup:setParameter(CONDITION_PARAM_SUBID, 1)
 			exhaustAttackGroup:setParameter(CONDITION_PARAM_TICKS, spellDuration)
 			creature:addCondition(exhaustAttackGroup)			
-		elseif (grade == 1) then
+		elseif grade == 1 then
 			local damageDebuff = Condition(CONDITION_ATTRIBUTES)
 			damageDebuff:setParameter(CONDITION_PARAM_TICKS, spellDuration)
 			damageDebuff:setParameter(CONDITION_PARAM_BUFF_DAMAGEDEALT, 50)

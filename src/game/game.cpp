@@ -5574,10 +5574,7 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 			}
 		}
 
-		primaryBlockType = BLOCK_NONE;
-		if (damage.origin != ORIGIN_REFLECT) {
-			primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
-		}
+		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
 
 		damage.primary.value = -damage.primary.value;
 		InternalGame::sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition(), attacker);
@@ -5613,10 +5610,7 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 			}
 		}
 
-		secondaryBlockType = BLOCK_NONE;
-		if (damage.origin != ORIGIN_REFLECT) {
-			secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
-		}
+		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
 
 		damage.secondary.value = -damage.secondary.value;
 		InternalGame::sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition(), attacker);
@@ -5964,25 +5958,6 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		damage.primary.value = std::abs(damage.primary.value);
 		damage.secondary.value = std::abs(damage.secondary.value);
 
-		if (attackerPlayer && damage.extension == false && damage.origin == ORIGIN_RANGED && target == attackerPlayer->getAttackedCreature()) {
-			const Position &targetPos = target->getPosition();
-			const Position &attackerPos = attacker->getPosition();
-			if (targetPos.z == attackerPos.z) {
-				int32_t distanceX = Position::getDistanceX(targetPos, attackerPos);
-				int32_t distanceY = Position::getDistanceY(targetPos, attackerPos);
-				int32_t damageX = attackerPlayer->getPerfectShotDamage(distanceX);
-				int32_t damageY = attackerPlayer->getPerfectShotDamage(distanceY);
-				if (damageX != 0 || damageY != 0) {
-					int32_t totalDamage = damageX;
-					if (distanceX != distanceY)
-						totalDamage += damageY;
-					if (damage.critical)
-						totalDamage += (totalDamage * attackerPlayer->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE));
-					damage.primary.value += totalDamage;
-				}
-			}
-		}
-
 		Monster* targetMonster;
 		if (target && target->getMonster()) {
 			targetMonster = target->getMonster();
@@ -6018,43 +5993,6 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		SpectatorHashSet spectators;
 		map.getSpectators(spectators, targetPos, true, true);
-
-		// Hazard system
-		if (targetPlayer && attackerMonster && damage.primary.value != 0 && attackerMonster->isMonsterOnHazardSystem()) {
-			targetPlayer->parseAttackRecvHazardSystem(damage, attackerMonster);
-		} else if (attackerPlayer && targetMonster && damage.primary.value != 0 && targetMonster->isMonsterOnHazardSystem()) {
-			attackerPlayer->parseAttackDealtHazardSystem(damage, targetMonster);
-			if (damage.primary.value == 0 && damage.secondary.value == 0) {
-				for (Creature* spectator : spectators) {
-					if (!spectator) {
-						continue;
-					}
-
-					Player* tmpPlayer = spectator->getPlayer();
-					if (!tmpPlayer) {
-						continue;
-					}
-
-					if (tmpPlayer->getPosition().z != targetPos.z) {
-						continue;
-					}
-
-					std::stringstream ss;
-					ss << ucfirst(targetMonster->getNameDescription()) << " has dodged";
-					if (tmpPlayer == attackerPlayer) {
-						ss << " your attack.";
-						attackerPlayer->sendCancelMessage(ss.str());
-						ss << " (Hazard)";
-						attackerPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
-					} else {
-						ss << " an attack by " << attackerPlayer->getName() << ". (Hazard)";
-						tmpPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
-					}
-				}
-				addMagicEffect(spectators, targetPos, CONST_ME_DODGE);
-				return true;
-			}
-		}
 
 		if (damage.fatal) {
 			addMagicEffect(spectators, targetPos, CONST_ME_FATAL);

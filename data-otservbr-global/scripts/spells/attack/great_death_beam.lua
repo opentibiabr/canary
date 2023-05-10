@@ -1,37 +1,22 @@
-AREA_BEAM6 = {
-	{1},
-	{1},
-	{1},
-	{1},
-	{3}
-}
-
-local combat1 = Combat()
-combat1:setParameter(COMBAT_PARAM_TYPE, COMBAT_DEATHDAMAGE)
-combat1:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MORTAREA)
-combat1:setArea(createCombatArea(AREA_BEAM6))
-
-local combat2 = Combat()
-combat2:setParameter(COMBAT_PARAM_TYPE, COMBAT_DEATHDAMAGE)
-combat2:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MORTAREA)
-combat2:setArea(createCombatArea(AREA_BEAM7))
-
-local combat3 = Combat()
-combat3:setParameter(COMBAT_PARAM_TYPE, COMBAT_DEATHDAMAGE)
-combat3:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MORTAREA)
-combat3:setArea(createCombatArea(AREA_BEAM8))
-
-function onGetFormulaValuesWOD3(player, level, maglevel)
+function onGetFormulaValues(player, level, maglevel)
 	local min = (level / 5) + (maglevel * 5.5)
 	local max = (level / 5) + (maglevel * 9)
 	return -min, -max
 end
 
-onGetFormulaValuesWOD1 = loadstring(string.dump(onGetFormulaValuesWOD3))
-combat1:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValuesWOD1")
-onGetFormulaValuesWOD2 = loadstring(string.dump(onGetFormulaValuesWOD3))
-combat2:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValuesWOD2")
-combat3:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValuesWOD3")
+local initCombat = Combat()
+initCombat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
+
+local function createCombat(combat, area)
+	combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_DEATHDAMAGE)
+	combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MORTAREA)
+	combat:setArea(createCombatArea(area))
+	return combat
+end
+
+local combat1 = createCombat(initCombat, AREA_BEAM6)
+local combat2 = createCombat(initCombat, AREA_BEAM7)
+local combat3 = createCombat(initCombat, AREA_BEAM8)
 
 local spell = Spell("instant")
 
@@ -48,27 +33,20 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	local cooldown = 0
-	if grade >= 3 then
-		cooldown = 6
-	elseif grade >= 2 then
-		cooldown = 8
-	elseif grade >= 1 then
-		cooldown = 10
-	end
-
+	local cooldown = {10, 8, 6}
 	var.runeName = "Beam Mastery"
 	local executed = false
-	if grade == 1 then
-		executed = combat1:execute(creature, var)
-	elseif grade == 2 then
-		executed = combat2:execute(creature, var)
-	elseif grade == 3 then
-		executed = combat3:execute(creature, var)
-	end
+
+	local combat = {combat1, combat2, combat3}
+
+	executed = combat:execute(creature, var)
+
 	if executed then
 		local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 260)
-		condition:setTicks((cooldown * 1000))
+		local executedCooldown = cooldown[grade];
+		if executedCooldown ~= nil then
+			condition:setTicks((executedCooldown * 1000))
+		end
 		creature:addCondition(condition)
 		return true
 	end

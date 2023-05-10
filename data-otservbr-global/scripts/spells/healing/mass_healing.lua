@@ -1,4 +1,4 @@
-function onTargetCreature(creature, target)
+local function onTargetCreature(creature, target)
 	local player = creature:getPlayer()
 	local min = ((player:getLevel() / 5) + (player:getMagicLevel() * 5.7) + 26)
 	local max = ((player:getLevel() / 5) + (player:getMagicLevel() * 10.43) + 62)
@@ -15,21 +15,19 @@ function onTargetCreature(creature, target)
 	return true
 end
 
-local combat = Combat()
-combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_BLUE)
-combat:setParameter(COMBAT_PARAM_AGGRESSIVE, 0)
-combat:setParameter(COMBAT_PARAM_DISPEL, CONDITION_PARALYZE)
-combat:setArea(createCombatArea(AREA_CIRCLE3X3))
-onTargetCreatureWOD = loadstring(string.dump(onTargetCreature))
-combat:setCallback(CALLBACK_PARAM_TARGETCREATURE, "onTargetCreature")
+local initCombat = Combat()
+initCombat:setCallback(CALLBACK_PARAM_TARGETCREATURE, "onTargetCreature")
 
-local combatWOD = Combat()
-combatWOD:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_BLUE)
-combatWOD:setParameter(COMBAT_PARAM_AGGRESSIVE, 0)
-combatWOD:setParameter(COMBAT_PARAM_DISPEL, CONDITION_PARALYZE)
-combatWOD:setArea(createCombatArea(AREA_CIRCLE5X5))
+local function createCombat(combat, area)
+	combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_BLUE)
+	combat:setParameter(COMBAT_PARAM_AGGRESSIVE, 0)
+	combat:setParameter(COMBAT_PARAM_DISPEL, CONDITION_PARALYZE)
+	combat:setArea(createCombatArea(area))
+	return combat
+end
 
-combatWOD:setCallback(CALLBACK_PARAM_TARGETCREATURE, "onTargetCreatureWOD")
+local combat = createCombat(initCombat, AREA_CIRCLE3X3)
+local combatWOD = createCombat(initCombat, AREA_CIRCLE5X5)
 
 local spell = Spell("instant")
 

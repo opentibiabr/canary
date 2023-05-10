@@ -252,6 +252,20 @@ local transformItems = {
 	[39803] = 39804, [39804] = 39803, -- tendrils
 	[39805] = 39806, [39807] = 39808, -- water nymph
 	[39810] = 39809, -- water nymph
+	[42271] = 42272, [42272] = 42271, -- seafarer table
+	[42291] = 42292, [42292] = 42291, -- seashell lamp
+	[42293] = 42294, [42294] = 42293, -- seashell lamp
+	[42295] = 42296, [42296] = 42295, -- tentacle lamp
+	[42297] = 42298, [42298] = 42297, -- tentacle lamp
+	[42299] = 42300, [42300] = 42299, -- sea-devil wall lamp
+	[42301] = 42302, [42302] = 42301, -- seafood bucket
+	[42324] = 42326, [42326] = 42324, -- opulent table
+	[42325] = 42327, [42327] = 42325, -- opulent table
+	[42346] = 42347, [42347] = 42346, -- opulent floor lamp
+	[42348] = 42349, [42349] = 42348, -- opulent floor lamp
+	[42363] = 42364, -- djinn lamp
+	[42365] = 42366, -- djinn lamp
+	[42367] = 42368, [42368] = 42367, -- podium of tenacity
 }
 
 local transformTo = Action()

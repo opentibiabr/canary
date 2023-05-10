@@ -802,9 +802,8 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	return ATTR_READ_CONTINUE;
 }
 
-bool Item::unserializeAttrFromProtobuf(Canary::protobuf::itemsserialization::Item itemProtobuf)
-{
-	for (const auto& attributeProtobuf : itemProtobuf.attribute()) {
+bool Item::unserializeAttrFromProtobuf(Canary::protobuf::itemsserialization::Item itemProtobuf) {
+	for (const auto &attributeProtobuf : itemProtobuf.attribute()) {
 		switch (attributeProtobuf.id()) {
 			case ATTR_COUNT:
 			case ATTR_RUNE_CHARGES: {
@@ -949,8 +948,7 @@ bool Item::unserializeAttrFromProtobuf(Canary::protobuf::itemsserialization::Ite
 	return true;
 }
 
-bool Item::unserializeAttr(PropStream& propStream)
-{
+bool Item::unserializeAttr(PropStream &propStream) {
 	uint8_t attr_type;
 	while (propStream.read<uint8_t>(attr_type) && attr_type != 0) {
 		Attr_ReadValue ret = readAttr(static_cast<AttrTypes_t>(attr_type), propStream);
@@ -967,10 +965,9 @@ bool Item::unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &pro
 	return unserializeAttr(propStream);
 }
 
-bool Item::serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const
-{
+bool Item::serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const {
 	Canary::protobuf::itemsserialization::Attribute* attribute;
-	const ItemType& it = items[id];
+	const ItemType &it = items[id];
 	if (it.stackable || it.isFluidContainer() || it.isSplash()) {
 		attribute = itemProtobuf->add_attribute();
 		attribute->set_id(ATTR_COUNT);
@@ -1155,9 +1152,8 @@ bool Item::serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* i
 	return true;
 }
 
-void Item::serializeAttr(PropWriteStream& propWriteStream) const
-{
-	const ItemType& it = items[id];
+void Item::serializeAttr(PropWriteStream &propWriteStream) const {
+	const ItemType &it = items[id];
 	if (it.stackable || it.isFluidContainer() || it.isSplash()) {
 		propWriteStream.write<uint8_t>(ATTR_COUNT);
 		propWriteStream.write<uint8_t>(getSubType());

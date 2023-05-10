@@ -25,9 +25,9 @@ class Teleport final : public Item, public Cylinder {
 			return this;
 		}
 
-		//serialization
-		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
-		void serializeAttr(PropWriteStream& propWriteStream) const override;
+		// serialization
+		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
+		void serializeAttr(PropWriteStream &propWriteStream) const override;
 		bool serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const override;
 
 		const Position &getDestPos() const {

@@ -318,9 +318,8 @@ void Game::saveGameState() {
 }
 
 // Migration
-void Game::initializeItemsDatabaseMigration()
-{
-	Database& db = Database::getInstance();
+void Game::initializeItemsDatabaseMigration() {
+	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT `binary_items` FROM `server_config`";
 	DBResult_ptr result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'binary_items'");
@@ -354,12 +353,12 @@ void Game::initializeItemsDatabaseMigration()
 		query.str(std::string());
 		query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_items` WHERE `player_id` = " << guid << " ORDER BY `sid` DESC";
 
-		std::vector<std::pair<uint8_t, Container*> > openContainersList;
+		std::vector<std::pair<uint8_t, Container*>> openContainersList;
 
 		if ((result = db.storeQuery(query.str()))) {
 			loadMigrationItems(itemsMap, result);
 			for (ItemMap::const_reverse_iterator it = itemsMap.rbegin(), end = itemsMap.rend(); it != end; ++it) {
-				const std::pair<Item*, int32_t>& pair = it->second;
+				const std::pair<Item*, int32_t> &pair = it->second;
 				Item* item = pair.first;
 				if (!item) {
 					continue;
@@ -368,8 +367,7 @@ void Game::initializeItemsDatabaseMigration()
 				if (pid >= CONST_SLOT_FIRST && pid <= CONST_SLOT_LAST) {
 					player->internalAddThing(pid, item);
 					item->startDecaying();
-				}
-				else {
+				} else {
 					ItemMap::const_iterator it2 = itemsMap.find(pid);
 					if (it2 == itemsMap.end()) {
 						continue;
@@ -397,10 +395,10 @@ void Game::initializeItemsDatabaseMigration()
 				}
 			}
 		}
-		std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*>& left, const std::pair<uint8_t, Container*>& right) {
+		std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
 			return left.first < right.first;
 		});
-		for (auto& it : openContainersList) {
+		for (auto &it : openContainersList) {
 			player->addContainer(it.first - 1, it.second);
 			player->onSendContainer(it.second);
 		}
@@ -414,7 +412,7 @@ void Game::initializeItemsDatabaseMigration()
 			loadMigrationItems(itemsMap, result);
 
 			for (ItemMap::const_reverse_iterator it = itemsMap.rbegin(), end = itemsMap.rend(); it != end; ++it) {
-				const std::pair<Item*, int32_t>& pair = it->second;
+				const std::pair<Item*, int32_t> &pair = it->second;
 				Item* item = pair.first;
 				int32_t pid = pair.second;
 				if (pid >= 0 && pid < 100) {
@@ -423,8 +421,7 @@ void Game::initializeItemsDatabaseMigration()
 						depotChest->internalAddThing(item);
 						item->startDecaying();
 					}
-				}
-				else {
+				} else {
 					ItemMap::const_iterator it2 = itemsMap.find(pid);
 					if (it2 == itemsMap.end()) {
 						continue;
@@ -438,7 +435,7 @@ void Game::initializeItemsDatabaseMigration()
 			}
 		}
 
-		//load reward chest items
+		// load reward chest items
 		itemsMap.clear();
 
 		query.str(std::string());
@@ -447,23 +444,22 @@ void Game::initializeItemsDatabaseMigration()
 			loadMigrationItems(itemsMap, result);
 
 			// first loop handles the reward containers to retrieve its date attribute
-			for (auto& it : itemsMap) {
-				const std::pair<Item*, int32_t>& pair = it.second;
+			for (auto &it : itemsMap) {
+				const std::pair<Item*, int32_t> &pair = it.second;
 				Item* item = pair.first;
 				int32_t pid = pair.second;
 				if (pid >= 0 && pid < 100) {
 					Reward* reward = player->getReward(item->getAttribute<uint64_t>(ItemAttribute_t::DATE), true);
 					if (reward) {
-						it.second = std::pair<Item*, int32_t>(reward->getItem(), pid); //update the map with the special reward container
+						it.second = std::pair<Item*, int32_t>(reward->getItem(), pid); // update the map with the special reward container
 					}
-				}
-				else {
+				} else {
 					break;
 				}
 			}
 			// second loop (this time a reverse one) to insert the items in the correct order
-			for (const auto& it : std::views::reverse(itemsMap)) {
-				const std::pair<Item*, int32_t>& pair = it.second;
+			for (const auto &it : std::views::reverse(itemsMap)) {
+				const std::pair<Item*, int32_t> &pair = it.second;
 				Item* item = pair.first;
 				int32_t pid = pair.second;
 				if (pid >= 0 && pid < 100) {
@@ -489,14 +485,13 @@ void Game::initializeItemsDatabaseMigration()
 			loadMigrationItems(itemsMap, result);
 
 			for (ItemMap::const_reverse_iterator it = itemsMap.rbegin(), end = itemsMap.rend(); it != end; ++it) {
-				const std::pair<Item*, int32_t>& pair = it->second;
+				const std::pair<Item*, int32_t> &pair = it->second;
 				Item* item = pair.first;
 				int32_t pid = pair.second;
 				if (pid >= 0 && pid < 100) {
 					player->getInbox()->internalAddThing(item);
 					item->startDecaying();
-				}
-				else {
+				} else {
 					ItemMap::const_iterator it2 = itemsMap.find(pid);
 					if (it2 == itemsMap.end()) {
 						continue;
@@ -638,12 +633,10 @@ void Game::initializeItemsDatabaseMigration()
 			query << ")";
 			if (db.executeQuery(query.str())) {
 				playersUpdated++;
-			}
-			else {
+			} else {
 				playersFailed++;
 			}
-		}
-		else {
+		} else {
 			playersFailed++;
 		}
 		// END SAVE
@@ -689,8 +682,7 @@ void Game::initializeItemsDatabaseMigration()
 	SPDLOG_WARN("[Database migration (BIN ITEMS)] - Deletion finished");
 }
 
-void Game::loadMigrationItems(std::map<uint32_t, std::pair<Item*, uint32_t>> &itemsMap, DBResult_ptr result)
-{
+void Game::loadMigrationItems(std::map<uint32_t, std::pair<Item*, uint32_t>> &itemsMap, DBResult_ptr result) {
 	do {
 		uint32_t sid = result->getNumber<uint32_t>("sid");
 		uint32_t pid = result->getNumber<uint32_t>("pid");
@@ -716,8 +708,7 @@ void Game::loadMigrationItems(std::map<uint32_t, std::pair<Item*, uint32_t>> &it
 }
 // End migration
 
-bool Game::loadItemsPrice()
-{
+bool Game::loadItemsPrice() {
 	itemsSaleCount = 0;
 	std::ostringstream query, marketQuery;
 	query << "SELECT DISTINCT `itemtype` FROM `market_offers`;";

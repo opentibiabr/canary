@@ -309,7 +309,7 @@ class Item : virtual public Thing, public ItemProperties {
 		std::string getNameDescription() const;
 		std::string getWeightDescription() const;
 
-		//serialization
+		// serialization
 		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream);
 		bool unserializeAttr(PropStream &propStream);
 		bool unserializeAttrFromProtobuf(Canary::protobuf::itemsserialization::Item itemProtobuf);

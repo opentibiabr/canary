@@ -27,8 +27,8 @@ class BedItem final : public Item {
 			return this;
 		}
 
-		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
-		void serializeAttr(PropWriteStream& propWriteStream) const override;
+		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
+		void serializeAttr(PropWriteStream &propWriteStream) const override;
 		bool serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const override;
 
 		bool canRemove() const override {

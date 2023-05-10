@@ -49,8 +49,7 @@ class IOLoginData {
 		static void removePremiumDays(uint32_t accountId, int32_t removeDays);
 
 		static void loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr result);
-		static void savePlayerDataToProtobufArray(Player* player, std::ostringstream& query);
-
+		static void savePlayerDataToProtobufArray(Player* player, std::ostringstream &query);
 };
 
 #endif // SRC_IO_IOLOGINDATA_H_

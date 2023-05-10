@@ -380,7 +380,6 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 		} while (result->next());
 	}
 
-
 	query.str(std::string());
 	query << "SELECT `player_id`, `time`, `target`, `unavenged` FROM `player_kills` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
@@ -837,8 +836,7 @@ void IOLoginData::removePremiumDays(uint32_t accountId, int32_t removeDays) {
 	Database::getInstance().executeQuery(query.str());
 }
 
-void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr result)
-{
+void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr result) {
 	ItemMap itemMap;
 	unsigned long protobufSize;
 	const char* protobufArray;
@@ -849,7 +847,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	protobufArray = result->getStream("stash", protobufSize);
 	auto stashProtobufList = Canary::protobuf::itemsserialization::ItemsSerialization();
 	stashProtobufList.ParseFromArray(protobufArray, protobufSize);
-	for (const auto& stashItem : stashProtobufList.item()) {
+	for (const auto &stashItem : stashProtobufList.item()) {
 		player->addItemOnStash(static_cast<uint16_t>(stashItem.id()), stashItem.subtype());
 	}
 	// End stash
@@ -859,7 +857,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	protobufArray = result->getStream("inventory", protobufSize);
 	auto inventoryProtobufList = Canary::protobuf::itemsserialization::ItemsSerialization();
 	inventoryProtobufList.ParseFromArray(protobufArray, protobufSize);
-	for (const auto& inventoryItem : inventoryProtobufList.item()) {
+	for (const auto &inventoryItem : inventoryProtobufList.item()) {
 		Item* item = Item::CreateItem(static_cast<uint16_t>(inventoryItem.id()), static_cast<uint16_t>(inventoryItem.subtype()));
 		if (!item) {
 			SPDLOG_WARN("[IOLoginData::loadPlayerDataFromProtobufArray::Inventory] - Item with id '{}' could not be created and was ignored.", inventoryItem.id());
@@ -877,7 +875,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	}
 
 	for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-		const std::pair<Item*, int32_t>& pair = it->second;
+		const std::pair<Item*, int32_t> &pair = it->second;
 		Item* item = pair.first;
 		if (!item) {
 			continue;
@@ -921,7 +919,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 		return left.first < right.first;
 	});
 
-	for (auto& it : openContainersList) {
+	for (auto &it : openContainersList) {
 		player->addContainer(it.first - 1, it.second);
 		player->onSendContainer(it.second);
 	}
@@ -933,7 +931,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	protobufArray = result->getStream("depot", protobufSize);
 	auto depotProtobufList = Canary::protobuf::itemsserialization::ItemsSerialization();
 	depotProtobufList.ParseFromArray(protobufArray, protobufSize);
-	for (const auto& depotItem : depotProtobufList.item()) {
+	for (const auto &depotItem : depotProtobufList.item()) {
 		Item* item = Item::CreateItem(static_cast<uint16_t>(depotItem.id()), static_cast<uint16_t>(depotItem.subtype()));
 		if (!item) {
 			SPDLOG_WARN("[IOLoginData::loadPlayerDataFromProtobufArray::Depot] - Item with id '{}' could not be created and was ignored.", depotItem.id());
@@ -951,7 +949,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	}
 
 	for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-		const std::pair<Item*, int32_t>& pair = it->second;
+		const std::pair<Item*, int32_t> &pair = it->second;
 		Item* item = pair.first;
 
 		int32_t pid = pair.second;
@@ -980,7 +978,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	protobufArray = result->getStream("reward", protobufSize);
 	auto rewardProtobufList = Canary::protobuf::itemsserialization::ItemsSerialization();
 	rewardProtobufList.ParseFromArray(protobufArray, protobufSize);
-	for (const auto& rewardItem : rewardProtobufList.item()) {
+	for (const auto &rewardItem : rewardProtobufList.item()) {
 		Item* item = Item::CreateItem(static_cast<uint16_t>(rewardItem.id()), static_cast<uint16_t>(rewardItem.subtype()));
 		if (!item) {
 			SPDLOG_WARN("[IOLoginData::loadPlayerDataFromProtobufArray::Reward] - Item with id '{}' could not be created and was ignored.", rewardItem.id());
@@ -998,8 +996,8 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	}
 
 	// First loop handles the reward containers to retrieve it's date attribute
-	for (auto& it : itemMap) {
-		const std::pair<Item*, int32_t>& pair = it.second;
+	for (auto &it : itemMap) {
+		const std::pair<Item*, int32_t> &pair = it.second;
 		Item* item = pair.first;
 
 		int32_t pid = pair.second;
@@ -1009,13 +1007,13 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 
 		// Update the map with the special reward container
 		if (Reward* reward = player->getReward(item->getAttribute<int64_t>(ItemAttribute_t::DATE), true)) {
-			it.second = std::pair<Item*, int32_t>(reward->getItem(), pid); 
+			it.second = std::pair<Item*, int32_t>(reward->getItem(), pid);
 		}
 	}
 
 	// Second loop (this time a reverse one) to insert the items in the correct order
-	for (const auto& it : std::views::reverse(itemMap)) {
-		const std::pair<Item*, int32_t>& pair = it.second;
+	for (const auto &it : std::views::reverse(itemMap)) {
+		const std::pair<Item*, int32_t> &pair = it.second;
 		Item* item = pair.first;
 
 		int32_t pid = pair.second;
@@ -1040,7 +1038,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	protobufArray = result->getStream("inbox", protobufSize);
 	auto inboxProtobufList = Canary::protobuf::itemsserialization::ItemsSerialization();
 	inboxProtobufList.ParseFromArray(protobufArray, protobufSize);
-	for (const auto& inboxtem : inboxProtobufList.item()) {
+	for (const auto &inboxtem : inboxProtobufList.item()) {
 		Item* item = Item::CreateItem(static_cast<uint16_t>(inboxtem.id()), static_cast<uint16_t>(inboxtem.subtype()));
 		if (!item) {
 			SPDLOG_WARN("[IOLoginData::loadPlayerDataFromProtobufArray::Inbox] - Item with id '{}' could not be created and was ignored.", inboxtem.id());
@@ -1058,7 +1056,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	}
 
 	for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-		const std::pair<Item*, int32_t>& pair = it->second;
+		const std::pair<Item*, int32_t> &pair = it->second;
 		Item* item = pair.first;
 		int32_t pid = pair.second;
 
@@ -1087,7 +1085,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	systemsProtobufList.ParseFromArray(protobufArray, protobufSize);
 
 	// Task hunting
-	for (const auto& taskHuntingIt : systemsProtobufList.task_hunting()) {
+	for (const auto &taskHuntingIt : systemsProtobufList.task_hunting()) {
 		auto slot = new TaskHuntingSlot(static_cast<PreySlot_t>(taskHuntingIt.slot()));
 		slot->state = static_cast<PreyTaskDataState_t>(taskHuntingIt.state());
 		slot->selectedRaceId = static_cast<uint16_t>(taskHuntingIt.raceid());
@@ -1096,8 +1094,8 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 		slot->currentKills = static_cast<uint16_t>(taskHuntingIt.kills());
 		slot->disabledUntilTimeStamp = taskHuntingIt.disable_time();
 		slot->freeRerollTimeStamp = taskHuntingIt.free_reroll();
-	
-		for (const auto& raceId : taskHuntingIt.grid()) {
+
+		for (const auto &raceId : taskHuntingIt.grid()) {
 			slot->raceIdList.push_back(static_cast<uint16_t>(raceId));
 		}
 
@@ -1110,7 +1108,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	// End task hunting
 
 	// Prey
-	for (const auto& preyIt : systemsProtobufList.prey()) {
+	for (const auto &preyIt : systemsProtobufList.prey()) {
 		auto slot = new PreySlot(static_cast<PreySlot_t>(preyIt.slot()));
 
 		slot->state = static_cast<PreyDataState_t>(preyIt.state());
@@ -1122,7 +1120,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 		slot->bonusTimeLeft = static_cast<uint16_t>(preyIt.bonus_time());
 		slot->freeRerollTimeStamp = preyIt.free_reroll();
 
-		for (const auto& raceId : preyIt.grid()) {
+		for (const auto &raceId : preyIt.grid()) {
 			slot->raceIdList.push_back(static_cast<uint16_t>(raceId));
 		}
 
@@ -1131,7 +1129,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	// End prey
 
 	// Charm
-	for (const auto& charmIt : systemsProtobufList.charms()) {
+	for (const auto &charmIt : systemsProtobufList.charms()) {
 		switch (charmIt.type()) {
 			case (Canary::protobuf::playersystems::CHARM_TYPE::CHARM_TYPE_USED): {
 				player->UsedRunesBit = charmIt.raceid();
@@ -1225,7 +1223,7 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	// End charm
 
 	// Bestiary tracker
-	for (const auto& trackerRaceId : systemsProtobufList.bestiary_tracker()) {
+	for (const auto &trackerRaceId : systemsProtobufList.bestiary_tracker()) {
 		if (MonsterType* mType = g_monsters().getMonsterTypeByRaceId(static_cast<uint16_t>(trackerRaceId))) {
 			player->addBestiaryTrackerList(mType);
 		}
@@ -1234,14 +1232,13 @@ void IOLoginData::loadPlayerDataFromProtobufArray(Player* player, DBResult_ptr r
 	// End player systems
 }
 
-void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstream& query)
-{
-	Database& db = Database::getInstance();
+void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstream &query) {
+	Database &db = Database::getInstance();
 	using ContainerBlock = std::pair<Container*, int32_t>;
 	std::list<ContainerBlock> queue;
 	ItemBlockList itemList;
 	int32_t runningId = 100;
-	const auto& openContainers = player->getOpenContainers();
+	const auto &openContainers = player->getOpenContainers();
 	size_t protobufSize;
 
 	// Inventory
@@ -1252,7 +1249,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 		}
 	}
 
-	for (const auto& it : itemList) {
+	for (const auto &it : itemList) {
 		int32_t pid = it.first;
 		Item* item = it.second;
 		++runningId;
@@ -1263,7 +1260,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 			}
 
 			if (!openContainers.empty()) {
-				for (const auto& its : openContainers) {
+				for (const auto &its : openContainers) {
 					auto openContainer = its.second;
 					auto opcontainer = openContainer.container;
 
@@ -1286,7 +1283,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 	}
 
 	while (!queue.empty()) {
-		const ContainerBlock& cb = queue.front();
+		const ContainerBlock &cb = queue.front();
 		Container* container = cb.first;
 		int32_t parentId = cb.second;
 		queue.pop_front();
@@ -1301,7 +1298,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 				}
 
 				if (!openContainers.empty()) {
-					for (const auto& it : openContainers) {
+					for (const auto &it : openContainers) {
 						auto openContainer = it.second;
 						auto opcontainer = openContainer.container;
 
@@ -1334,14 +1331,14 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 	itemList.clear();
 	runningId = 100;
 	auto depotItemsProtobuf = Canary::protobuf::itemsserialization::ItemsSerialization();
-	for (const auto& it : player->depotChests) {
+	for (const auto &it : player->depotChests) {
 		DepotChest* depotChest = it.second;
 		for (Item* item : depotChest->getItemList()) {
 			itemList.emplace_back(it.first, item);
 		}
 	}
 
-	for (const auto& it : itemList) {
+	for (const auto &it : itemList) {
 		int32_t pid = it.first;
 		Item* item = it.second;
 		++runningId;
@@ -1352,7 +1349,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 			}
 
 			if (!openContainers.empty()) {
-				for (const auto& its : openContainers) {
+				for (const auto &its : openContainers) {
 					auto openContainer = its.second;
 					auto opcontainer = openContainer.container;
 
@@ -1375,7 +1372,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 	}
 
 	while (!queue.empty()) {
-		const ContainerBlock& cb = queue.front();
+		const ContainerBlock &cb = queue.front();
 		Container* container = cb.first;
 		int32_t parentId = cb.second;
 		queue.pop_front();
@@ -1390,7 +1387,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 				}
 
 				if (!openContainers.empty()) {
-					for (const auto& it : openContainers) {
+					for (const auto &it : openContainers) {
 						auto openContainer = it.second;
 						auto opcontainer = openContainer.container;
 
@@ -1427,7 +1424,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 		itemList.emplace_back(0, item);
 	}
 
-	for (const auto& it : itemList) {
+	for (const auto &it : itemList) {
 		int32_t pid = it.first;
 		Item* item = it.second;
 		++runningId;
@@ -1438,7 +1435,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 			}
 
 			if (!openContainers.empty()) {
-				for (const auto& its : openContainers) {
+				for (const auto &its : openContainers) {
 					auto openContainer = its.second;
 					auto opcontainer = openContainer.container;
 
@@ -1461,7 +1458,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 	}
 
 	while (!queue.empty()) {
-		const ContainerBlock& cb = queue.front();
+		const ContainerBlock &cb = queue.front();
 		Container* container = cb.first;
 		int32_t parentId = cb.second;
 		queue.pop_front();
@@ -1476,7 +1473,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 				}
 
 				if (!openContainers.empty()) {
-					for (const auto& it : openContainers) {
+					for (const auto &it : openContainers) {
 						auto openContainer = it.second;
 						auto opcontainer = openContainer.container;
 
@@ -1506,7 +1503,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 
 	// Stash
 	auto stashItemsProtobuf = Canary::protobuf::itemsserialization::ItemsSerialization();
-	for (auto const [itemId, count] : player->getStashItems()) {
+	for (const auto [itemId, count] : player->getStashItems()) {
 		auto stashItem = stashItemsProtobuf.add_item();
 		stashItem->set_id(itemId);
 		stashItem->set_subtype(count);
@@ -1527,15 +1524,15 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 	runningId = 100;
 	int running = 0;
 	auto rewardItemsProtobuf = Canary::protobuf::itemsserialization::ItemsSerialization();
-	for (const auto& rewardId : rewardList) {
+	for (const auto &rewardId : rewardList) {
 		// rewards that are empty or older than 7 days aren't stored
 		if (Reward* reward = player->getReward(rewardId, false);
-				!reward->empty() && (time(nullptr) - rewardId <= 60 * 60 * 24 * 7)) {
+			!reward->empty() && (time(nullptr) - rewardId <= 60 * 60 * 24 * 7)) {
 			itemList.emplace_back(++running, reward);
 		}
 	}
 
-	for (const auto& it : itemList) {
+	for (const auto &it : itemList) {
 		int32_t pid = it.first;
 		Item* item = it.second;
 		++runningId;
@@ -1546,7 +1543,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 			}
 
 			if (!openContainers.empty()) {
-				for (const auto& its : openContainers) {
+				for (const auto &its : openContainers) {
 					auto openContainer = its.second;
 					auto opcontainer = openContainer.container;
 
@@ -1569,7 +1566,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 	}
 
 	while (!queue.empty()) {
-		const ContainerBlock& cb = queue.front();
+		const ContainerBlock &cb = queue.front();
 		Container* container = cb.first;
 		int32_t parentId = cb.second;
 		queue.pop_front();
@@ -1584,7 +1581,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 				}
 
 				if (!openContainers.empty()) {
-					for (const auto& it : openContainers) {
+					for (const auto &it : openContainers) {
 						auto openContainer = it.second;
 						auto opcontainer = openContainer.container;
 
@@ -1614,7 +1611,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 
 	// Player systems
 	auto playerSystemsList = Canary::protobuf::playersystems::PlayerSystems();
-	
+
 	// Prey
 	for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
 		PreySlot* slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
@@ -1629,8 +1626,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 			preyProtobuf->set_bonus_percentage(static_cast<uint32_t>(slot->bonusPercentage));
 			preyProtobuf->set_bonus_time(static_cast<uint32_t>(slot->bonusTimeLeft));
 			preyProtobuf->set_free_reroll(static_cast<uint64_t>(slot->freeRerollTimeStamp));
-			std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [preyProtobuf](uint16_t raceId)
-			{
+			std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [preyProtobuf](uint16_t raceId) {
 				preyProtobuf->add_grid(static_cast<uint32_t>(raceId));
 			});
 		}
@@ -1650,8 +1646,7 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
 			taskHuntingProtobuf->set_kills(static_cast<uint32_t>(slot->currentKills));
 			taskHuntingProtobuf->set_disable_time(static_cast<uint32_t>(slot->disabledUntilTimeStamp));
 			taskHuntingProtobuf->set_free_reroll(static_cast<uint64_t>(slot->freeRerollTimeStamp));
-			std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [taskHuntingProtobuf](uint16_t raceId)
-			{
+			std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [taskHuntingProtobuf](uint16_t raceId) {
 				taskHuntingProtobuf->add_grid(static_cast<uint32_t>(raceId));
 			});
 		}

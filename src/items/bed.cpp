@@ -54,8 +54,7 @@ Attr_ReadValue BedItem::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	return Item::readAttr(attr, propStream);
 }
 
-bool BedItem::serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const
-{
+bool BedItem::serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const {
 	Canary::protobuf::itemsserialization::Attribute* attribute;
 	if (sleeperGUID != 0) {
 		attribute = itemProtobuf->add_attribute();
@@ -74,8 +73,7 @@ bool BedItem::serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item
 	return true;
 }
 
-void BedItem::serializeAttr(PropWriteStream& propWriteStream) const
-{
+void BedItem::serializeAttr(PropWriteStream &propWriteStream) const {
 	if (sleeperGUID != 0) {
 		propWriteStream.write<uint8_t>(ATTR_SLEEPERGUID);
 		propWriteStream.write<uint32_t>(sleeperGUID);

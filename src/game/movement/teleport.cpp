@@ -22,16 +22,14 @@ Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	return Item::readAttr(attr, propStream);
 }
 
-bool Teleport::serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const
-{
-	if (!Item::serializeAttrToProtobuf(itemProtobuf))
-	{
+bool Teleport::serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const {
+	if (!Item::serializeAttrToProtobuf(itemProtobuf)) {
 		return false;
 	}
 
 	Canary::protobuf::itemsserialization::Attribute* attribute = itemProtobuf->add_attribute();
-    attribute->set_id(ATTR_TELE_DEST);
-    attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_POSITION);
+	attribute->set_id(ATTR_TELE_DEST);
+	attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_POSITION);
 
 	Canary::protobuf::itemsserialization::Position* protobufPosition = new Canary::protobuf::itemsserialization::Position();
 	protobufPosition->set_x(static_cast<uint32_t>(destPos.x));
@@ -41,8 +39,7 @@ bool Teleport::serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Ite
 	return true;
 }
 
-void Teleport::serializeAttr(PropWriteStream& propWriteStream) const
-{
+void Teleport::serializeAttr(PropWriteStream &propWriteStream) const {
 	Item::serializeAttr(propWriteStream);
 
 	propWriteStream.write<uint8_t>(ATTR_TELE_DEST);

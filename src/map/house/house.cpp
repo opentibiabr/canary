@@ -238,7 +238,7 @@ bool House::transferToDepot(Player* player) const {
 		if (const TileItemVector* items = tile->getItemList()) {
 			for (Item* item : *items) {
 				if (item->isWrapable()) {
-					handleWrapableItem(moveItemList, item);
+					handleWrapableItem(moveItemList, item, player, tile);
 				} else if (item->isPickupable()) {
 					moveItemList.push_back(item);
 				} else {
@@ -254,11 +254,17 @@ bool House::transferToDepot(Player* player) const {
 	return true;
 }
 
-void House::handleWrapableItem(ItemList &moveItemList, Item* item) const {
+void House::handleWrapableItem(ItemList &moveItemList, Item* item, Player* player, HouseTile* houseTile) const {
 	if (item->isWrapContainer()) {
 		handleContainer(moveItemList, item);
 	}
+
 	Item* newItem = g_game().wrapItem(item);
+	if (newItem->isRemoved() && !newItem->getParent()) {
+		SPDLOG_WARN("[{}] item removed during wrapping - check ground type - player name: {} item id: {} position: {}", __FUNCTION__, player->getName(), item->getID(), houseTile->getPosition().toString());
+		return;
+	}
+
 	moveItemList.push_back(newItem);
 }
 

@@ -796,6 +796,7 @@ void Monster::onThink(uint32_t interval) {
 			onThinkTarget(interval);
 			onThinkYell(interval);
 			onThinkDefense(interval);
+			onThinkSound(interval);
 		}
 	}
 }
@@ -1027,6 +1028,7 @@ void Monster::onThinkDefense(uint32_t interval) {
 					summon->setMaster(this, true);
 					g_game().addMagicEffect(getPosition(), CONST_ME_MAGIC_BLUE);
 					g_game().addMagicEffect(summon->getPosition(), CONST_ME_TELEPORT);
+					g_game().sendSingleSoundEffect(summon->getPosition(), SoundEffect_t::MONSTER_SPELL_SUMMON, this);
 				} else {
 					delete summon;
 				}
@@ -1057,6 +1059,22 @@ void Monster::onThinkYell(uint32_t interval) {
 			} else {
 				g_game().internalCreatureSay(this, TALKTYPE_MONSTER_SAY, vb.text, false);
 			}
+		}
+	}
+}
+
+void Monster::onThinkSound(uint32_t interval) {
+	if (mType->info.soundSpeedTicks == 0) {
+		return;
+	}
+
+	soundTicks += interval;
+	if (soundTicks >= mType->info.soundSpeedTicks) {
+		soundTicks = 0;
+
+		if (!mType->info.soundVector.empty() && (mType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
+			int64_t index = uniform_random(0, static_cast<int64_t>(mType->info.soundVector.size() - 1));
+			g_game().sendSingleSoundEffect(this->getPosition(), mType->info.soundVector[index], this);
 		}
 	}
 }
@@ -1836,6 +1854,10 @@ void Monster::death(Creature*) {
 	clearTargetList();
 	clearFriendList();
 	onIdleStatus();
+
+	if (mType) {
+		g_game().sendSingleSoundEffect(this->getPosition(), mType->info.deathSound, this);
+	}
 }
 
 Item* Monster::getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature) {
@@ -1991,6 +2013,11 @@ void Monster::drainHealth(Creature* attacker, int32_t damage) {
 }
 
 void Monster::changeHealth(int32_t healthChange, bool sendHealthChange /* = true*/) {
+	if (mType && !mType->info.soundVector.empty() && mType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100))) {
+		auto index = uniform_random(0, mType->info.soundVector.size() - 1);
+		g_game().sendSingleSoundEffect(this->getPosition(), mType->info.soundVector[index], this);
+	}
+
 	// In case a player with ignore flag set attacks the monster
 	setIdle(false);
 	Creature::changeHealth(healthChange, sendHealthChange);

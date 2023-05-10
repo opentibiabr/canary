@@ -28,6 +28,8 @@ end
 rune:id(4)
 rune:group("healing")
 rune:name("intense healing rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_INTENSE_HEALING_RUNE)
 rune:runeId(3152)
 rune:allowFarUse(true)
 rune:charges(1)

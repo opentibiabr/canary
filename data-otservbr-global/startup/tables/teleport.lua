@@ -158,7 +158,7 @@ TeleportUnique = {
 		destination = {x = 32281, y = 32389, z = 10},
 		effect = CONST_ME_TELEPORT
 	},
--- Exit
+	-- Exit
 	[38002] = {
 		itemId = 1949,
 		itemPos = {x = 32234, y = 32502, z = 10},

@@ -74,15 +74,16 @@ local function chain(player, targets, duration)
 	end
 	return totalChain
 end
- 
+
 local spell = Spell("instant")
- 
+
 function spell.onCastSpell(creature, variant)
 	local targets = 5
 	local duration = 12000
-	if (creature and creature:getPlayer()) then
-		targets = targets + WheelOfDestinySystem.getPlayerSpellAdditionalTarget(creature:getPlayer(), "Chivalrous Challenge")
-		duration = duration + (WheelOfDestinySystem.getPlayerSpellAdditionalDuration(creature:getPlayer(), "Chivalrous Challenge") * 1000)
+	local player = creature:getPlayer()
+	if creature and player then
+		targets = targets + Wheel.getPlayerSpellAdditionalTarget(player, "Chivalrous Challenge")
+		duration = duration + (Wheel.getPlayerSpellAdditionalDuration(player, "Chivalrous Challenge") * 1000)
 	end
 	local total = chain(creature, targets, duration)
 	if total > 0 then
@@ -97,7 +98,7 @@ function spell.onCastSpell(creature, variant)
 		return false
 	end
 end
- 
+
 spell:group("support")
 spell:id(237)
 spell:name("Chivalrous Challenge")

@@ -1,4 +1,4 @@
-local function onTargetCreature(creature, target)
+function onTargetCreature(creature, target)
 	local player = creature:getPlayer()
 	local min = ((player:getLevel() / 5) + (player:getMagicLevel() * 5.7) + 26)
 	local max = ((player:getLevel() / 5) + (player:getMagicLevel() * 10.43) + 62)
@@ -33,7 +33,7 @@ local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
 	if creature and creature:getPlayer() then
-		if WheelOfDestinySystem.getPlayerSpellAdditionalArea(creature:getPlayer(), "Mass Healing") then
+		if Wheel.getPlayerSpellAdditionalArea(creature:getPlayer(), "Mass Healing") then
 			return combatWOD:execute(creature, var)
 		end
 	end

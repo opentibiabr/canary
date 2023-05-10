@@ -22,7 +22,7 @@ local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
 	if creature and creature:getPlayer() then
-		if WheelOfDestinySystem.getPlayerSpellAdditionalArea(creature:getPlayer(), "Energy Wave") then
+		if Wheel.getPlayerSpellAdditionalArea(creature:getPlayer(), "Energy Wave") then
 			return combatWOD:execute(creature, var)
 		end
 	end

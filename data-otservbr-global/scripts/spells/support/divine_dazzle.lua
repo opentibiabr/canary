@@ -64,9 +64,10 @@ local spell = Spell("instant")
 function spell.onCastSpell(creature, variant)
 	local targets = 3
 	local duration = 12000
-	if (creature and creature:getPlayer()) then
-		targets = targets + WheelOfDestinySystem.getPlayerSpellAdditionalTarget(creature:getPlayer(), "Divine Dazzle")
-		duration = duration + (WheelOfDestinySystem.getPlayerSpellAdditionalDuration(creature:getPlayer(), "Divine Dazzle") * 1000)
+	local player = creature:getPlayer()
+	if creature and player then
+		targets = targets + Wheel.getPlayerSpellAdditionalTarget(player, "Divine Dazzle")
+		duration = duration + (Wheel.getPlayerSpellAdditionalDuration(player, "Divine Dazzle") * 1000)
 	end
 	local total = chain(creature, targets, duration)
 	if total > 0 then

@@ -22,15 +22,17 @@ Reserved player action storage key ranges (const.hpp)
 ]]
 
 Global = {
-    Storage = {
+	Storage = {
 		NpcExhaust = 30001,
 		combatProtectionStorage = 30023,
 		blockMovementStorage = 30025,
 		FamiliarSummon = 30026,
 		StoreExaust = 30051,
 		FamiliarSummonEvent10 = 30054,
-		FamiliarSummonEvent60 = 30055
-    }
+		FamiliarSummonEvent60 = 30055,
+		-- Can get up to +37 from this value (From ...01 to ...37) 40001/40037
+		WheelOfDestinySlotsPointsSelected = 40001
+	}
 }
 
 -- Values extraction function

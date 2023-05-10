@@ -1,4 +1,4 @@
-local function onTargetCreature(creature, target)
+function onTargetCreature(creature, target)
 	local player = creature:getPlayer()
 
 	if target:isPlayer() then
@@ -49,8 +49,9 @@ function spell.onCastSpell(creature, var, isHotkey)
 	if target then
 		var = Variant(target)
 	end
-	if (creature and creature:getPlayer()) then
-		if (WheelOfDestinySystem.getPlayerSpellAdditionalArea(creature:getPlayer(), "Sap Strength")) then
+	local player = creature:getPlayer()
+	if creature and player then
+		if Wheel.getPlayerSpellAdditionalArea(player, "Sap Strength") then
 			return combatWOD:execute(creature, var)
 		end
 	end

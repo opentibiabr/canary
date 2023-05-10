@@ -7,14 +7,14 @@ end
 local initCombat = Combat()
 initCombat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 
-local function createCombat(combat, area)
+local function createCombat(combat, area, areaDiagonal)
 	combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_ENERGYDAMAGE)
 	combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ENERGYHIT)
-	combat:setArea(createCombatArea(area))
+	combat:setArea(createCombatArea(area, areaDiagonal))
 	return combat
 end
-local combat = createCombat(initCombat, {AREA_BEAM5, AREADIAGONAL_BEAM5})
-local combatWOD = createCombat(initCombat, {AREA_BEAM7, AREADIAGONAL_BEAM7})
+local combat = createCombat(initCombat, AREA_BEAM5, AREADIAGONAL_BEAM5)
+local combatWOD = createCombat(initCombat, AREA_BEAM7, AREADIAGONAL_BEAM7)
 
 local spell = Spell("instant")
 

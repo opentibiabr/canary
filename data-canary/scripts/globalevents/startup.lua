@@ -75,6 +75,8 @@ function startup.onStartup()
 		Spdlog.info("Events: " .. "Exp: " .. expRate .. "%, " .. "loot: " .. lootRate .. "%, " .. "Spawn: " .. spawnRate .. "%, " .. "Skill: ".. skillRate .."%")
 		end
 	end
+
+	Wheel.initializeGlobalData(false)
 end
 
 startup:register()

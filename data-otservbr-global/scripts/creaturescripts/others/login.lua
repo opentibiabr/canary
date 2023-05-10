@@ -226,11 +226,9 @@ function playerLogin.onLogin(player)
 		onMovementRemoveProtection(playerId, player:getPosition(), 10)
 	end
 	
-	-- Wheel of destiny init
-	if (WheelOfDestinySystem ~= nil) then
-		WheelOfDestinySystem.initializePlayerData(player) -- check folder libs have correclty
-	else
-		print("[login.onLogin::WheelOfDestinySystem]", "Lib not installed, ignoring player initialization")
+	-- Wheel of destiny
+	if Wheel == nil or not Wheel.initializePlayerData(player) then
+		Spdlog.warn("[login.onLogin] Wheel lib not installed, ignoring player initialization")
 	end
 
 	-- Set Client XP Gain Rate --

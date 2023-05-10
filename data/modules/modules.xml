@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <modules>
+	<!-- Wheel -->
+	<module type="recvbyte" byte="97" script="wheel_of_destiny/init.lua"/>
+	<module type="recvbyte" byte="98" script="wheel_of_destiny/init.lua"/>
+
 	<!-- GameStore -->
 	<module type="recvbyte" byte="232" script="gamestore/gamestore.lua"/>
 	<module type="recvbyte" byte="233" script="gamestore/gamestore.lua"/>
@@ -9,10 +13,6 @@
 	<module type="recvbyte" byte="252" script="gamestore/gamestore.lua"/>
 	<module type="recvbyte" byte="253" script="gamestore/gamestore.lua"/>
 	<module type="recvbyte" byte="254" script="gamestore/gamestore.lua"/>
-	
-	<!-- Wheel -->
-	<module type="recvbyte" byte="97" script="wheelofdestiny/init.lua"/>
-	<module type="recvbyte" byte="98" script="wheelofdestiny/init.lua"/>
 
 	<!-- Blessings -->
 	<module type="recvbyte" byte="207" script="blessings/blessings.lua" />

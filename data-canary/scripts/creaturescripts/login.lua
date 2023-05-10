@@ -30,6 +30,11 @@ function login.onLogin(player)
 		player:setVocation(vocation:getDemotion())
 	end
 
+	-- Wheel of destiny
+	if Wheel == nil or not Wheel.initializePlayerData(player) then
+		Spdlog.warn("[login.onLogin] Wheel lib not installed, ignoring player initialization")
+	end
+
 	-- Events
 	player:registerEvent("PlayerDeath")
 	player:registerEvent("DropLoot")

@@ -134,6 +134,7 @@ Storage = {
 	PremiumAccount = 30058,
 	BattleAxeQuest = 30059,
 	ShrineEntrance = 30060,
+	-- 40001/40037 reserved to Global.Storage.WheelOfDestinySlotsPointsSelected
 
 	--[[
 	Old storages

@@ -3290,6 +3290,7 @@ Cylinder* Player::queryDestination(int32_t &index, const Thing &thing, Item** de
 		*destItem = destThing->getItem();
 	}
 
+	// force quiver/shield any slot right to player cylinder
 	if (index == CONST_SLOT_RIGHT) {
 		return this;
 	}

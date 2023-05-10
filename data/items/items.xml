@@ -54038,6 +54038,7 @@
 		</attribute>
 	</item>
 	<item id="39150" article="an" name="alicorn quiver">
+		<attribute key="slotType" value="right-hand"/>
 		<attribute key="containersize" value="12"/>
 		<attribute key="showattributes" value="1" />
 		<attribute key="weight" value="2000"/>
@@ -54180,6 +54181,7 @@
 		</attribute>
 	</item>
 	<item id="39160" article="a" name="naga quiver">
+		<attribute key="slotType" value="right-hand"/>
 		<attribute key="showattributes" value="1" />
 		<attribute key="absorbpercentice" value="2"/>
 		<attribute key="containersize" value="8"/>

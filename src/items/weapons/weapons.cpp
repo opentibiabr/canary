@@ -192,6 +192,10 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
 		var.number = target->getID();
 		executeUseWeapon(player, var);
 	} else {
+		if (!player || !target || !item){
+			return;
+		}
+
 		CombatDamage damage;
 		WeaponType_t weaponType = item->getWeaponType();
 		if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE || weaponType == WEAPON_WAND) {

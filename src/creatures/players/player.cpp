@@ -3290,7 +3290,6 @@ Cylinder* Player::queryDestination(int32_t &index, const Thing &thing, Item** de
 		*destItem = destThing->getItem();
 	}
 
-	const Item* item = thing.getItem();
 	if (index == CONST_SLOT_RIGHT) {
 		return this;
 	}

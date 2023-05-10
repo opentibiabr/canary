@@ -242,7 +242,7 @@ void ItemParse::parseWeaponType(const std::string &tmpStrValue, pugi::xml_attrib
 		auto itemMap = WeaponTypesMap.find(stringValue);
 		if (itemMap != WeaponTypesMap.end()) {
 			if (tmpStrValue == "spellbook") {
-				it.spellbook = true;
+				itemType.spellbook = true;
 			}
 			itemType.weaponType = itemMap->second;
 		} else {

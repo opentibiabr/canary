@@ -12,6 +12,9 @@
 
 #include "io/fileloader.h"
 
+#include "protobuf/itemsserialization.pb.h"
+#include "protobuf/playersystems.pb.h"
+
 class CustomAttribute {
 	public:
 		CustomAttribute();
@@ -77,6 +80,9 @@ class CustomAttribute {
 
 		void serialize(PropWriteStream &propWriteStream) const;
 		bool unserialize(PropStream &propStream, const std::string &function);
+
+		void serializeToProtobuf(Canary::protobuf::itemsserialization::Attribute* attribute) const;
+		void unserializeFromProtobuf(Canary::protobuf::itemsserialization::Attribute attribute);
 
 	private:
 		std::string stringKey;

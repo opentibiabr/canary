@@ -92,7 +92,6 @@ void CustomAttribute::pushToLua(lua_State* L) const {
 }
 
 void CustomAttribute::serialize(PropWriteStream &propWriteStream) const {
-
 	if (hasValue<std::string>()) {
 		propWriteStream.write<uint8_t>(1);
 		propWriteStream.writeString(getString());
@@ -156,4 +155,48 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 			return false;
 	}
 	return true;
+}
+
+void CustomAttribute::serializeToProtobuf(Canary::protobuf::itemsserialization::Attribute* attribute) const {
+	if (hasValue<std::string>()) {
+		attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_STRING);
+		attribute->set_data(getString());
+	} else if (hasValue<int64_t>()) {
+		attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(getInteger()));
+	} else if (hasValue<double>()) {
+		attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_FLOAT);
+		attribute->set_data(std::to_string(getDouble()));
+	} else if (hasValue<bool>()) {
+		attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_BOOLEAN);
+		attribute->set_data(getBool() ? "1" : "0");
+	}
+}
+
+void CustomAttribute::unserializeFromProtobuf(Canary::protobuf::itemsserialization::Attribute attribute) {
+	switch (attribute.type()) {
+		case Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_STRING: {
+			setValue(attribute.data());
+			break;
+		}
+
+		case Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC: { // int64_t
+			setValue(static_cast<int64_t>(std::stoi(attribute.data())));
+			break;
+		}
+
+		case Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_FLOAT: { // double
+			setValue(std::stod(attribute.data()));
+			break;
+		}
+
+		case Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_BOOLEAN: { // bool
+			setValue(attribute.data() == "1");
+			break;
+		}
+
+		default: {
+			break;
+		}
+	}
 }

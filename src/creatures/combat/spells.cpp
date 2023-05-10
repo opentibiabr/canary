@@ -413,7 +413,7 @@ bool Spell::playerSpellCheck(Player* player) const {
 			g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 			return false;
 		}
-	} else if (!vocSpellMap.empty() && !vocSpellMap.contains(player->getVocationId())) {
+	} else if (!vocSpellMap.empty() && !vocSpellMap.contains(player->getVocationId()) && player->getGroup()->id >= account::GROUP_TYPE_GAMEMASTER) {
 		player->sendCancelMessage(RETURNVALUE_YOURVOCATIONCANNOTUSETHISSPELL);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;

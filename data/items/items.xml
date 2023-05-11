@@ -55729,4 +55729,129 @@
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="description" value="She is enjoying her bath between the lily pads"/>
 	</item>
+	<item id="40530" name="broken macuahuitl">
+		<attribute key="description" value="This macuahuitl was a once legendary obsidian sword wielded by the ancient Iks"/>
+		<attribute key="attack" value="1"/>
+		<attribute key="armor" value="1"/>
+		<attribute key="weight" value="2400"/>
+	</item>
+	 <item id="40531" article="the" name="broken Iks faulds">
+		<attribute key="description" value="These faulds were once worn by a proud warrior of the ancient Iks"/>
+		<attribute key="weight" value="1500"/>
+		<attribute key="armor" value="1"/>
+	</item>
+	<item id="40532" article="the" name="broken Iks headpiece">
+		<attribute key="description" value="This headpiece once protected a fierce warrior of the ancient Iks"/>
+		<attribute key="weight" value="900"/>
+		<attribute key="armor" value="1"/>
+	</item>
+	<item id="40533" article="the" name="broken Iks cuirass">
+		<attribute key="description" value="This cuirass once kept a brave warrior of the ancient Iks from harm"/>
+		<attribute key="weight" value="1900"/>
+ 		<attribute key="armor" value="1"/>
+	</item>
+	<item id="40534" article="the" name="broken Iks sandals">
+		<attribute key="description" value="These sandals once belonged to a warrior of the ancient Iks"/>
+		<attribute key="weight" value="380"/>
+		<attribute key="armor" value="1"/>
+	</item>
+	<item id="40535" article="the" name="broken Iks spear">
+		<attribute key="description" value="This spear was once wielded by the ancient Iks"/>
+		<attribute key="weight" value="1300"/>
+		<attribute key="attack" value="1"/>
+		<attribute key="weaponType" value="distance"/>
+		<attribute key="shootType" value="spear"/>
+		<attribute key="range" value="3"/>
+	</item>
+	<item id="40588" article="a" name="antler-horn helmet">
+		<attribute key="absorbpercentphysical" value="3"/>
+		<attribute key="absorbpercentice" value="7"/>
+		<attribute key="skillclub" value="1"/>
+		<attribute key="skillaxe" value="1"/>
+		<attribute key="skillsword" value="1"/>
+		<attribute key="armor" value="9"/>
+		<attribute key="weight" value="2200"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost axe" value="3"/>
+			<attribute key="skillboost sword" value="3"/>
+			<attribute key="skillboost club" value="3"/>
+			<attribute key="skillboost shielding" value="3"/>
+			<attribute key="skillboost distance" value="3"/>
+			<attribute key="skillboost magic level" value="2"/>
+		</attribute>
+	</item>
+	<item id="40589" name="stitched mutant hide legs">
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="absorbpercentpoison" value="5"/>
+		<attribute key="skillclub" value="2"/>
+		<attribute key="skillaxe" value="2"/>
+		<attribute key="skillsword" value="2"/>
+		<attribute key="armor" value="9"/>
+		<attribute key="weight" value="3400"/>
+	</item>
+	 <item id="40590" name="mutated skin legs">
+		<attribute key="absorbpercentphysical" value="4"/>
+		<attribute key="absorbpercentpoison" value="4"/>
+		<attribute key="skilldist" value="2"/>
+		<attribute key="armor" value="9"/>
+		<attribute key="weight" value="5200"/>
+	</item>
+	<item id="40591" article="a" name="mutated skin armor">
+		<attribute key="absorbpercentphysical" value="3"/>
+		<attribute key="absorbpercentpoison" value="8"/>
+		<attribute key="skilldist" value="3"/>
+		<attribute key="armor" value="17"/>
+		<attribute key="weight" value="6300"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="life leech" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+		</attribute>
+	</item>
+	<item id="40592" article="a" name="alchemist's boots">
+		<attribute key="absorbpercentphysical" value="2"/>
+		<attribute key="magicpoints" value="1"/>
+		<attribute key="armor" value="2"/>
+		<attribute key="weight" value="1600"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3"/>
+		</attribute>
+	</item>
+	<item id="40593" article="a" name="mutant bone boots">
+		<attribute key="absorbpercentdeath" value="3"/>
+		<attribute key="magicpoints" value="1"/>
+		<attribute key="armor" value="2"/>
+		<attribute key="weight" value="1100"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3"/>
+		</attribute>
+	</item>
+	<item id="40594" article="an" name="alchemist's notepad">
+		<attribute key="weaponType" value="shield"/>
+		<attribute key="absorbpercentice" value="7"/>
+		<attribute key="absorbpercentphysical" value="3"/>
+		<attribute key="magicpoints" value="2"/>
+		<!--attribute key="firemagiclevelpoints" value="2"/-->
+		<!--attribute key="energymagiclevelpoints" value="2"/-->
+		<attribute key="defense" value="20"/>
+		<attribute key="weight" value="1300"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+			<attribute key="skillboost shielding" value="3"/>
+		</attribute>
+	</item>
+	<item id="40595" name="mutant bone kilt">
+		<attribute key="absorbpercentphysical" value="3"/>
+		<attribute key="magicpoints" value="2"/>
+		<attribute key="armor" value="8"/>
+		<attribute key="weight" value="3500"/>
+	</item>
 </items>

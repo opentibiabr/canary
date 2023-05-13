@@ -921,7 +921,7 @@ bool Creature::setAttackedCreature(Creature* creature) {
 
 void Creature::getPathSearchParams(const Creature*, FindPathParams &fpp) const {
 	fpp.fullPathSearch = !hasFollowPath;
-	fpp.clearSight = false;
+	fpp.clearSight = true;
 	fpp.maxSearchDist = 12;
 	fpp.minTargetDist = 1;
 	fpp.maxTargetDist = 1;

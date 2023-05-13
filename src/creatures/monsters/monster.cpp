@@ -2075,14 +2075,14 @@ void Monster::getPathSearchParams(const Creature* creature, FindPathParams &fpp)
 
 	fpp.minTargetDist = 1;
 	fpp.maxTargetDist = targetDistance;
-	if (fpp.maxTargetDist > 1) {
-		fpp.clearSight = true;
-	}
+	// if (fpp.maxTargetDist > 1) {
+	// 	fpp.clearSight = true;
+	// }
 
 	if (isSummon()) {
 		if (getMaster() == creature) {
 			fpp.maxTargetDist = 2;
-			fpp.clearSight = true;
+			// fpp.clearSight = true;
 			fpp.fullPathSearch = true;
 		} else if (targetDistance <= 1) {
 			fpp.fullPathSearch = true;

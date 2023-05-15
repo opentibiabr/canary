@@ -39,7 +39,7 @@ function spell.onCastSpell(creature, var)
 
 	local combat = {combat1, combat2, combat3}
 
-	executed = combat:execute(creature, var)
+	executed = combat[grade]:execute(creature, var)
 
 	if executed then
 		local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 260)

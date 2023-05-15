@@ -2516,6 +2516,7 @@ class Player final : public Creature, public Cylinder {
 		int32_t offlineTrainingTime = 0;
 		int32_t idleTime = 0;
 		uint32_t coinBalance = 0;
+		uint32_t coinTransferBalance = 0;
 		uint16_t expBoostStamina = 0;
 		uint8_t randomMount = 0;
 

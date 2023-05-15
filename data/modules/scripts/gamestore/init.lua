@@ -273,8 +273,8 @@ function parseTransferCoins(playerId, msg)
 		return addPlayerEvent(sendStoreError, 350, playerId, GameStore.StoreErrors.STORE_ERROR_TRANSFER, "You cannot transfer coin to a character in the same account.")
 	end
 
-	db.query("UPDATE `accounts` SET `coins` = `coins` + " .. amount .. " WHERE `id` = " .. accountId)
-	player:removeCoinsBalance(amount)
+	db.query("UPDATE `accounts` SET `transfercoins` = `transfercoins` + " .. amount .. " WHERE `id` = " .. accountId)
+	player:removeTransferCoinsBalance(amount)
 	addPlayerEvent(sendStorePurchaseSuccessful, 550, playerId, "You have transfered " .. amount .. " coins to " .. reciver .. " successfully")
 
 	-- Adding history for both reciver/sender
@@ -1084,7 +1084,7 @@ function sendUpdatedStoreBalances(playerId)
 	msg:addByte(0x01)
 
 	msg:addU32(player:getCoinsBalance()) -- Tibia Coins
-	msg:addU32(player:getCoinsBalance()) -- How many are Transferable
+	msg:addU32(player:getTransferCoinsBalance()) -- How many are Transferable
 	if not oldProtocol then
 		msg:addU32(player:getCoinsBalance()) -- How many are reserved for a Character Auction
 	end
@@ -1823,6 +1823,41 @@ function Player.addCoinsBalance(self, coins, update)
 	if update then sendStoreBalanceUpdating(self, true) end
 	return true
 end
+
+
+--- Transfer Tibia Coins
+function Player.getTransferCoinsBalance(self)
+	resultId = db.storeQuery("SELECT `transfercoins` FROM `accounts` WHERE `id` = " .. self:getAccountId())
+	if not resultId then return 0 end
+	return Result.getNumber(resultId, "transfercoins")
+end
+
+function Player.setTransferCoinsBalance(self, coins)
+	db.query("UPDATE `accounts` SET `transfercoins` = " .. coins .. " WHERE `id` = " .. self:getAccountId())
+	return true
+end
+
+function Player.canRemoveTransferCoins(self, coins)
+	if self:getTransferCoinsBalance() < coins then
+		return false
+	end
+	return true
+end
+
+function Player.removeTransferCoinsBalance(self, coins)
+	if self:canRemoveTransferCoins(coins) then
+		return self:setTransferCoinsBalance(self:getTransferCoinsBalance() - coins)
+	end
+
+	return false
+end
+
+function Player.addTransferCoinsBalance(self, coins, update)
+	self:setTransferCoinsBalance(self:getTransferCoinsBalance() + coins)
+	if update then sendStoreBalanceUpdating(self, true) end
+	return true
+end
+
 
 --- Support Functions
 function Player.makeCoinTransaction(self, offer, desc)

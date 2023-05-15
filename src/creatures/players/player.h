@@ -525,6 +525,7 @@ class Player final : public Creature, public Cylinder {
 		void setPremiumDays(int32_t v);
 
 		void setTibiaCoins(int32_t v);
+		void setTransferTibiaCoins(int32_t v);
 
 		uint16_t getHelpers() const;
 

@@ -231,7 +231,11 @@ class Creature : virtual public Thing {
 		}
 		bool isInvisible() const;
 		ZoneType_t getZone() const {
-			return getTile()->getZone();
+			if (auto tile = getTile()) {
+				return tile->getZone();
+			}
+
+			return ZONE_NORMAL;
 		}
 
 		// walk functions

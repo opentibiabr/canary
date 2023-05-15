@@ -937,8 +937,17 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 		void sendCreatureAppear(const Creature* creature, const Position &pos, bool isLogin) {
+			if (!creature) {
+				return;
+			}
+
+			auto tile = creature->getTile();
+			if (!tile) {
+				return;
+			}
+
 			if (client) {
-				client->sendAddCreature(creature, pos, creature->getTile()->getStackposOfCreature(this, creature), isLogin);
+				client->sendAddCreature(creature, pos, tile->getStackposOfCreature(this, creature), isLogin);
 			}
 		}
 		void sendCreatureMove(const Creature* creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport) {
@@ -947,8 +956,17 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 		void sendCreatureTurn(const Creature* creature) {
+			if (!creature) {
+				return;
+			}
+
+			auto tile = creature->getTile();
+			if (!tile) {
+				return;
+			}
+
 			if (client && canSeeCreature(creature)) {
-				int32_t stackpos = creature->getTile()->getStackposOfCreature(this, creature);
+				int32_t stackpos = tile->getStackposOfCreature(this, creature);
 				if (stackpos != -1) {
 					client->sendCreatureTurn(creature, stackpos);
 				}
@@ -980,7 +998,7 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 		void sendCreatureChangeVisible(const Creature* creature, bool visible) {
-			if (!client) {
+			if (!client || !creature) {
 				return;
 			}
 
@@ -994,7 +1012,11 @@ class Player final : public Creature, public Cylinder {
 			} else if (canSeeInvisibility()) {
 				client->sendCreatureOutfit(creature, creature->getCurrentOutfit());
 			} else {
-				int32_t stackpos = creature->getTile()->getStackposOfCreature(this, creature);
+				auto tile = creature->getTile();
+				if (!tile) {
+					return;
+				}
+				int32_t stackpos = tile->getStackposOfCreature(this, creature);
 				if (stackpos == -1) {
 					return;
 				}

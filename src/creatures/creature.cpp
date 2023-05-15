@@ -419,8 +419,7 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) cons
 
 			const Position &pos = creature->getPosition();
 			const Monster* monster = creature->getMonster();
-			auto creatureTile = getTile();
-			bool protectionZoneCheck = creatureTile ? creatureTile->hasFlag(TILESTATE_PROTECTIONZONE) : false;
+			bool protectionZoneCheck = tile ? tile->hasFlag(TILESTATE_PROTECTIONZONE) : false;
 			// Check if any of our summons is out of range (+/- 0 floors or 15 tiles away)
 			bool checkSummonDist = Position::getDistanceZ(newPos, pos) > 0 || (std::max<int32_t>(Position::getDistanceX(newPos, pos), Position::getDistanceY(newPos, pos)) > 15);
 			// Check if any of our summons is out of range (+/- 2 floors or 30 tiles away)
@@ -887,7 +886,6 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 bool Creature::setAttackedCreature(Creature* creature) {
 	if (creature) {
 		auto monster = getMonster();
-		auto tile = getTile();
 		if (monster && monster->isFamiliar() && tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			return false;
 		}
@@ -1065,7 +1063,6 @@ void Creature::onEndCondition(ConditionType_t) {
 }
 
 void Creature::onTickCondition(ConditionType_t type, bool &bRemove) {
-	auto tile = getTile();
 	const MagicField* field = tile ? tile->getFieldItem() : nullptr;
 	if (!field) {
 		return;

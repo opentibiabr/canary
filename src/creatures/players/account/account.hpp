@@ -111,7 +111,7 @@ namespace account {
 			 **************************************************************************/
 
 			/**
-						 * @brief Get the amount of transfer coins that the account has from database.
+			 * @brief Get the amount of transfer coins that the account has from database.
 			 *
 			 * @param accountId Account ID to get the transfer coins.
 			 * @param coins Pointer to return the number of transfer coins

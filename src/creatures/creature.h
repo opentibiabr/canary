@@ -60,6 +60,9 @@ class Creature : virtual public Thing {
 
 		virtual ~Creature();
 
+		Position* getPositionPtr() {
+			return &position;
+		}
 		// non-copyable
 		Creature(const Creature &) = delete;
 		Creature &operator=(const Creature &) = delete;

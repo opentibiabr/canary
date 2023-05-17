@@ -7,6 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include <cstdint>
+#include <ostream>
+
 #ifndef SRC_GAME_MOVEMENT_POSITION_H_
 #define SRC_GAME_MOVEMENT_POSITION_H_
 
@@ -30,6 +33,10 @@ struct Position {
 		constexpr Position() = default;
 		constexpr Position(uint16_t initX, uint16_t initY, uint8_t initZ) :
 			x(initX), y(initY), z(initZ) { }
+
+		bool isValid() const {
+			return (x >= 0 && x <= 65535) && (y >= 0 && y <= 65535) && (z >= 0 && z <= 15);
+		}
 
 		template <int_fast32_t deltax, int_fast32_t deltay>
 		static bool areInRange(const Position &p1, const Position &p2) {

@@ -11,6 +11,7 @@
 
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
+#include "creatures/creature.h"
 #include "declarations.hpp"
 #include "game/game.h"
 #include "lua/callbacks/creaturecallback.h"
@@ -149,7 +150,7 @@ void Npc::onPlayerAppear(Player* player) {
 	if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(player)) {
 		return;
 	}
-	playerSpectators.insert(player);
+	playerSpectators.push_back(player);
 	manageIdle();
 }
 
@@ -451,7 +452,13 @@ void Npc::onThinkWalk(uint32_t interval) {
 
 void Npc::onCreatureWalk() {
 	Creature::onCreatureWalk();
-	phmap::erase_if(playerSpectators, [this](const auto &creature) { return !this->canSee(creature->getPosition()); });
+	SpectatorVec validSpectators;
+	for (auto creature : playerSpectators) {
+		if (canSee(creature->getPosition())) {
+			validSpectators.emplace_back(creature);
+		}
+	}
+	playerSpectators = std::move(validSpectators);
 }
 
 void Npc::onPlacedCreature() {
@@ -459,14 +466,16 @@ void Npc::onPlacedCreature() {
 }
 
 void Npc::loadPlayerSpectators() {
-	SpectatorHashSet spec;
-	g_game().map.getSpectators(spec, position, true, true);
-	for (auto creature : spec) {
-		if (creature->getPlayer() || creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
-			playerSpectators.insert(creature);
+	SpectatorVec specs;
+	g_game().map.getSpectators(specs, position, true, true);
+	for (Creature* creature : specs) {
+		Player* player = creature->getPlayer();
+		if (player && player->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
+			playerSpectators.emplace_back(creature);
 		}
 	}
 }
+
 
 bool Npc::isInSpawnRange(const Position &pos) const {
 	if (!spawnNpc) {

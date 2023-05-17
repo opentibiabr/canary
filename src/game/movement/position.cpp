@@ -24,6 +24,9 @@ Direction Position::getRandomDirection() {
 	return dirList.front();
 }
 
+std::ostream &operator<<(std::ostream &, const Position &);
+std::ostream &operator<<(std::ostream &, const Direction &);
+
 std::ostream &operator<<(std::ostream &os, const Position &pos) {
 	os << pos.toString();
 	return os;

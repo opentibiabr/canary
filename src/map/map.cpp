@@ -325,9 +325,10 @@ void Map::moveCreature(Creature &creature, Tile &newTile, bool forceTeleport /* 
 
 	bool teleport = forceTeleport || !newTile.getGround() || !Position::areInRange<1, 1, 0>(oldPos, newPos);
 
-	SpectatorHashSet spectators;
+	SpectatorVec spectators, newPosSpectators;
 	getSpectators(spectators, oldPos, true);
-	getSpectators(spectators, newPos, true);
+	getSpectators(newPosSpectators, newPos, true);
+	spectators.addSpectators(newPosSpectators);
 
 	std::vector<int32_t> oldStackPosVector;
 	for (Creature* spectator : spectators) {
@@ -376,7 +377,7 @@ void Map::moveCreature(Creature &creature, Tile &newTile, bool forceTeleport /* 
 			// Use the correct stackpos
 			int32_t stackpos = oldStackPosVector[i++];
 			if (stackpos != -1) {
-				tmpPlayer->sendCreatureMove(&creature, newPos, newTile.getStackposOfCreature(tmpPlayer, &creature), oldPos, stackpos, teleport);
+				tmpPlayer->sendCreatureMove(&creature, newPos, newTile.getClientIndexOfCreature(tmpPlayer, &creature), oldPos, stackpos, teleport);
 			}
 		}
 	}
@@ -390,11 +391,11 @@ void Map::moveCreature(Creature &creature, Tile &newTile, bool forceTeleport /* 
 	newTile.postAddNotification(&creature, &oldTile, 0);
 }
 
-void Map::getSpectatorsInternal(SpectatorHashSet &spectators, const Position &centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const {
-	int_fast32_t min_y = centerPos.y + minRangeY;
-	int_fast32_t min_x = centerPos.x + minRangeX;
-	int_fast32_t max_y = centerPos.y + maxRangeY;
-	int_fast32_t max_x = centerPos.x + maxRangeX;
+void Map::getSpectatorsInternal(SpectatorVec &spectators, const Position &centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const {
+	int_fast16_t min_y = centerPos.y + minRangeY;
+	int_fast16_t min_x = centerPos.x + minRangeX;
+	int_fast16_t max_y = centerPos.y + maxRangeY;
+	int_fast16_t max_x = centerPos.x + maxRangeX;
 
 	int32_t minoffset = centerPos.getZ() - maxRangeZ;
 	uint16_t x1 = std::min<uint32_t>(0xFFFF, std::max<int32_t>(0, (min_x + minoffset)));
@@ -429,7 +430,7 @@ void Map::getSpectatorsInternal(SpectatorHashSet &spectators, const Position &ce
 						continue;
 					}
 
-					spectators.insert(creature);
+					spectators.emplace_back(creature);
 				}
 				leafE = leafE->leafE;
 			} else {
@@ -445,7 +446,7 @@ void Map::getSpectatorsInternal(SpectatorHashSet &spectators, const Position &ce
 	}
 }
 
-void Map::getSpectators(SpectatorHashSet &spectators, const Position &centerPos, bool multifloor /*= false*/, bool onlyPlayers /*= false*/, int32_t minRangeX /*= 0*/, int32_t maxRangeX /*= 0*/, int32_t minRangeY /*= 0*/, int32_t maxRangeY /*= 0*/) {
+void Map::getSpectators(SpectatorVec &spectators, const Position &centerPos, bool multifloor /*= false*/, bool onlyPlayers /*= false*/, int32_t minRangeX /*= 0*/, int32_t maxRangeX /*= 0*/, int32_t minRangeY /*= 0*/, int32_t maxRangeY /*= 0*/) {
 	if (centerPos.z >= MAP_MAX_LAYERS) {
 		return;
 	}
@@ -463,8 +464,7 @@ void Map::getSpectators(SpectatorHashSet &spectators, const Position &centerPos,
 			auto it = playersSpectatorCache.find(centerPos);
 			if (it != playersSpectatorCache.end()) {
 				if (!spectators.empty()) {
-					const SpectatorHashSet &cachedSpectators = it->second;
-					spectators.insert(cachedSpectators.begin(), cachedSpectators.end());
+					spectators.addSpectators(it->second);
 				} else {
 					spectators = it->second;
 				}
@@ -478,16 +478,16 @@ void Map::getSpectators(SpectatorHashSet &spectators, const Position &centerPos,
 			if (it != spectatorCache.end()) {
 				if (!onlyPlayers) {
 					if (!spectators.empty()) {
-						const SpectatorHashSet &cachedSpectators = it->second;
-						spectators.insert(cachedSpectators.begin(), cachedSpectators.end());
+						const SpectatorVec &cachedSpectators = it->second;
+						spectators.addSpectators(cachedSpectators);
 					} else {
 						spectators = it->second;
 					}
 				} else {
-					const SpectatorHashSet &cachedSpectators = it->second;
+					const SpectatorVec &cachedSpectators = it->second;
 					for (Creature* spectator : cachedSpectators) {
 						if (spectator->getPlayer()) {
-							spectators.insert(spectator);
+							spectators.emplace_back(spectator);
 						}
 					}
 				}
@@ -504,21 +504,19 @@ void Map::getSpectators(SpectatorHashSet &spectators, const Position &centerPos,
 		int32_t maxRangeZ;
 
 		if (multifloor) {
-			if (centerPos.z > MAP_INIT_SURFACE_LAYER) {
-				// underground
-
-				// 8->15
-				minRangeZ = std::max<int32_t>(centerPos.getZ() - MAP_LAYER_VIEW_LIMIT, 0);
-				maxRangeZ = std::min<int32_t>(centerPos.getZ() + MAP_LAYER_VIEW_LIMIT, MAP_MAX_LAYERS - 1);
-			} else if (centerPos.z == MAP_INIT_SURFACE_LAYER - 1) {
+			if (centerPos.z > 7) {
+				// underground (8->15)
+				minRangeZ = std::max<int32_t>(centerPos.getZ() - 2, 0);
+				maxRangeZ = std::min<int32_t>(centerPos.getZ() + 2, MAP_MAX_LAYERS - 1);
+			} else if (centerPos.z == 6) {
 				minRangeZ = 0;
-				maxRangeZ = (MAP_INIT_SURFACE_LAYER - 1) + MAP_LAYER_VIEW_LIMIT;
-			} else if (centerPos.z == MAP_INIT_SURFACE_LAYER) {
+				maxRangeZ = 8;
+			} else if (centerPos.z == 7) {
 				minRangeZ = 0;
-				maxRangeZ = MAP_INIT_SURFACE_LAYER + MAP_LAYER_VIEW_LIMIT;
+				maxRangeZ = 9;
 			} else {
 				minRangeZ = 0;
-				maxRangeZ = MAP_INIT_SURFACE_LAYER;
+				maxRangeZ = 7;
 			}
 		} else {
 			minRangeZ = centerPos.z;

@@ -14,6 +14,7 @@
 #include "declarations.hpp"
 #include "items/item.h"
 #include "utils/tools.h"
+#include "utils/spectators.h"
 
 class Creature;
 class Teleport;
@@ -25,7 +26,6 @@ class BedItem;
 
 using CreatureVector = std::vector<Creature*>;
 using ItemVector = std::vector<Item*>;
-using SpectatorHashSet = phmap::flat_hash_set<Creature*>;
 
 class TileItemVector : private ItemVector {
 	public:
@@ -242,8 +242,8 @@ class Tile : public Cylinder {
 	private:
 		void onAddTileItem(Item* item);
 		void onUpdateTileItem(Item* oldItem, const ItemType &oldType, Item* newItem, const ItemType &newType);
-		void onRemoveTileItem(const SpectatorHashSet &spectators, const std::vector<int32_t> &oldStackPosVector, Item* item);
-		void onUpdateTile(const SpectatorHashSet &spectators);
+		void onRemoveTileItem(const  SpectatorVec& spectators, const std::vector<int32_t> &oldStackPosVector, Item* item);
+		void onUpdateTile(const SpectatorVec &spectators);
 
 		void setTileFlags(const Item* item);
 		void resetTileFlags(const Item* item);

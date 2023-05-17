@@ -201,7 +201,7 @@ class Game {
 
 		bool internalCreatureTurn(Creature* creature, Direction dir);
 
-		bool internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, SpectatorHashSet* spectatorsPtr = nullptr, const Position* pos = nullptr);
+		bool internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, SpectatorVec* spectatorsPtr = nullptr, const Position* pos = nullptr);
 
 		void internalQuickLootCorpse(Player* player, Container* corpse);
 
@@ -424,13 +424,13 @@ class Game {
 
 		// Animation help functions
 		void addCreatureHealth(const Creature* target);
-		static void addCreatureHealth(const SpectatorHashSet &spectators, const Creature* target);
+		static void addCreatureHealth(const  SpectatorVec& spectators, const Creature* target);
 		void addPlayerMana(const Player* target);
 		void addPlayerVocation(const Player* target);
 		void addMagicEffect(const Position &pos, uint8_t effect);
-		static void addMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect);
+		static void addMagicEffect(const  SpectatorVec& spectators, const Position &pos, uint8_t effect);
 		void addDistanceEffect(const Position &fromPos, const Position &toPos, uint8_t effect);
-		static void addDistanceEffect(const SpectatorHashSet &spectators, const Position &fromPos, const Position &toPos, uint8_t effect);
+		static void addDistanceEffect(const  SpectatorVec& spectators, const Position &fromPos, const Position &toPos, uint8_t effect);
 
 		int32_t getLightHour() const {
 			return lightHour;
@@ -662,20 +662,20 @@ class Game {
 		void sendDamageMessageAndEffects(
 			const Creature* attacker, Creature* target, const CombatDamage &damage, const Position &targetPos,
 			Player* attackerPlayer, Player* targetPlayer, TextMessage &message,
-			const SpectatorHashSet &spectators, int32_t realDamage
+			SpectatorVec& spectators, int32_t realDamage
 		);
 
 		void updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, const Player* player) const;
 
 		void sendEffects(
 			Creature* target, const CombatDamage &damage, const Position &targetPos,
-			TextMessage &message, const SpectatorHashSet &spectators
+			TextMessage &message, SpectatorVec &spectators
 		);
 
 		void sendMessages(
 			const Creature* attacker, const Creature* target, const CombatDamage &damage,
 			const Position &targetPos, Player* attackerPlayer, Player* targetPlayer,
-			TextMessage &message, const SpectatorHashSet &spectators, int32_t realDamage
+			TextMessage &message, SpectatorVec& spectators, int32_t realDamage
 		) const;
 
 		bool shouldSendMessage(const TextMessage &message) const;

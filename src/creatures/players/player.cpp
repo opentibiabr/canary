@@ -2095,7 +2095,7 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 		message.primary.color = TEXTCOLOR_WHITE_EXP;
 		sendTextMessage(message);
 
-		SpectatorHashSet spectators;
+		SpectatorVec spectators;
 		g_game().map.getSpectators(spectators, position, false, true);
 		spectators.erase(this);
 		if (!spectators.empty()) {
@@ -2188,7 +2188,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 		message.primary.color = TEXTCOLOR_RED;
 		sendTextMessage(message);
 
-		SpectatorHashSet spectators;
+		SpectatorVec spectators;
 		g_game().map.getSpectators(spectators, position, false, true);
 		spectators.erase(this);
 		if (!spectators.empty()) {
@@ -2406,7 +2406,6 @@ uint32_t Player::getIP() const {
 void Player::death(Creature* lastHitCreature) {
 	loginPosition = town->getTemplePosition();
 
-	g_game().sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_DEATH : SoundEffect_t::HUMAN_MALE_DEATH, this);
 	if (skillLoss) {
 		uint8_t unfairFightReduction = 100;
 		int playerDmg = 0;
@@ -2584,8 +2583,7 @@ void Player::death(Creature* lastHitCreature) {
 		auto it = conditions.begin(), end = conditions.end();
 		while (it != end) {
 			Condition* condition = *it;
-			// isSupress block to delete spells conditions (ensures that the player cannot, for example, reset the cooldown time of the familiar and summon several)
-			if (condition->isPersistent() && condition->isRemovableOnDeath()) {
+			if (condition->isPersistent()) {
 				it = conditions.erase(it);
 
 				condition->endCondition(this);
@@ -2620,7 +2618,6 @@ void Player::death(Creature* lastHitCreature) {
 		onIdleStatus();
 		sendStats();
 	}
-
 	despawn();
 }
 
@@ -2633,7 +2630,7 @@ bool Player::spawn() {
 		return false;
 	}
 
-	SpectatorHashSet spectators;
+	SpectatorVec spectators;
 	g_game().map.getSpectators(spectators, position, true);
 	for (Creature* spectator : spectators) {
 		if (!spectator) {
@@ -2661,7 +2658,6 @@ void Player::despawn() {
 	listWalkDir.clear();
 	stopEventWalk();
 	onWalkAborted();
-	closeAllExternalContainers();
 	g_game().playerSetAttackedCreature(this->getID(), 0);
 	g_game().playerFollowCreature(this->getID(), 0);
 
@@ -2676,7 +2672,7 @@ void Player::despawn() {
 
 	std::vector<int32_t> oldStackPosVector;
 
-	SpectatorHashSet spectators;
+	SpectatorVec spectators;
 	g_game().map.getSpectators(spectators, tile->getPosition(), true);
 	size_t i = 0;
 	for (Creature* spectator : spectators) {
@@ -2692,11 +2688,16 @@ void Player::despawn() {
 		}
 
 		spectator->onRemoveCreature(this, false);
+		// Remove player from spectator target list
+		spectator->setAttackedCreature(nullptr);
+		spectator->setFollowCreature(nullptr);
 	}
 
 	tile->removeCreature(this);
 
 	getParent()->postRemoveNotification(this, nullptr, 0);
+
+	g_game().removePlayer(this);
 
 	// show player as pending
 	for (const auto &[key, player] : g_game().getPlayers()) {
@@ -6241,7 +6242,7 @@ bool Player::saySpell(
 	SpeakClasses type,
 	const std::string &text,
 	bool ghostMode,
-	SpectatorHashSet* spectatorsPtr /* = nullptr*/,
+	SpectatorVec* listPtr /* = nullptr*/,
 	const Position* pos /* = nullptr*/
 ) {
 	if (text.empty()) {
@@ -6253,9 +6254,9 @@ bool Player::saySpell(
 		pos = &getPosition();
 	}
 
-	SpectatorHashSet spectators;
+	SpectatorVec spectators;
 
-	if (!spectatorsPtr || spectatorsPtr->empty()) {
+	if (!listPtr || listPtr->empty()) {
 		// This somewhat complex construct ensures that the cached SpectatorHashSet
 		// is used if available and if it can be used, else a local vector is
 		// used (hopefully the compiler will optimize away the construction of
@@ -6266,7 +6267,7 @@ bool Player::saySpell(
 			g_game().map.getSpectators(spectators, *pos, true, false, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2);
 		}
 	} else {
-		spectators = (*spectatorsPtr);
+		spectators = (*listPtr);
 	}
 
 	int32_t valueEmote = 0;

@@ -295,7 +295,7 @@ void ProtocolGame::release() {
 	Protocol::release();
 }
 
-void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
+/*void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
 	// dispatcher thread
 	Player* foundPlayer = g_game().getPlayerByName(name);
 	if (!foundPlayer) {
@@ -412,6 +412,127 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	}
 	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
 	sendBosstiaryCooldownTimer();
+}*/
+
+void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
+	// dispatcher thread
+	Player* foundPlayer = g_game().getPlayerByName(name);
+	if (!foundPlayer) {
+		player = new Player(getThis());
+		player->setName(name);
+
+		player->incrementReferenceCounter();
+		player->setID();
+
+		if (!IOLoginData::preloadPlayer(player, name)) {
+			disconnectClient("Your character could not be loaded.");
+			return;
+		}
+
+		if (IOBan::isPlayerNamelocked(player->getGUID())) {
+			disconnectClient("Your character has been namelocked.");
+			return;
+		}
+
+		if (g_game().getGameState() == GAME_STATE_CLOSING && !player->hasFlag(PlayerFlags_t::CanAlwaysLogin)) {
+			disconnectClient("The game is just going down.\nPlease try again later.");
+			return;
+		}
+
+		if (g_game().getGameState() == GAME_STATE_CLOSED && !player->hasFlag(PlayerFlags_t::CanAlwaysLogin)) {
+			disconnectClient("Server is currently closed.\nPlease try again later.");
+			return;
+		}
+
+		if (g_configManager().getBoolean(ONLY_PREMIUM_ACCOUNT) && !player->isPremium() && (player->getGroup()->id < account::GROUP_TYPE_GAMEMASTER || player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER)) {
+			disconnectClient("Your premium time for this account is out.\n\nTo play please buy additional premium time from our website");
+			return;
+		}
+
+		if (g_configManager().getBoolean(ONE_PLAYER_ON_ACCOUNT) && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && g_game().getPlayerByAccount(player->getAccount())) {
+			disconnectClient("You may only login with one character\nof your account at the same time.");
+			return;
+		}
+
+		if (!player->hasFlag(PlayerFlags_t::CannotBeBanned)) {
+			BanInfo banInfo;
+			if (IOBan::isAccountBanned(accountId, banInfo)) {
+				if (banInfo.reason.empty()) {
+					banInfo.reason = "(none)";
+				}
+
+				std::ostringstream ss;
+				if (banInfo.expiresAt > 0) {
+					ss << "Your account has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
+					   << banInfo.reason;
+				} else {
+					ss << "Your account has been permanently banned by " << banInfo.bannedBy << ".\n\nReason specified:\n"
+					   << banInfo.reason;
+				}
+				disconnectClient(ss.str());
+				return;
+			}
+		}
+
+		WaitingList &waitingList = WaitingList::getInstance();
+		if (!waitingList.clientLogin(player)) {
+			uint32_t currentSlot = waitingList.getClientSlot(player);
+			uint32_t retryTime = WaitingList::getTime(currentSlot);
+			std::ostringstream ss;
+
+			ss << "Too many players online.\nYou are at place "
+			   << currentSlot << " on the waiting list.";
+
+			auto output = OutputMessagePool::getOutputMessage();
+			output->addByte(0x16);
+			output->addString(ss.str());
+			output->addByte(retryTime);
+			send(output);
+			disconnect();
+			return;
+		}
+
+		if (!IOLoginData::loadPlayerById(player, player->getGUID())) {
+			disconnectClient("Your character could not be loaded.");
+			SPDLOG_WARN("Player {} could not be loaded", player->getName());
+			return;
+		}
+
+		player->setOperatingSystem(operatingSystem);
+
+		if (!g_game().placeCreature(player, player->getLoginPosition())) {
+			if (!g_game().placeCreature(player, player->getTemplePosition(), false, true)) {
+				disconnectClient("Temple position is wrong. Please, contact the administrator.");
+				SPDLOG_WARN("Player {} temple position is wrong", player->getName());
+				return;
+			}
+		}
+
+		if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
+			player->registerCreatureEvent("ExtendedOpcode");
+		}
+
+		player->lastIP = player->getIP();
+		player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
+		acceptPackets = true;
+	} else {
+		if (eventConnect != 0 || !g_configManager().getBoolean(REPLACE_KICK_ON_LOGIN)) {
+			// Already trying to connect
+			disconnectClient("You are already logged in.");
+			return;
+		}
+
+		if (foundPlayer->client) {
+			foundPlayer->disconnect();
+			foundPlayer->isConnecting = true;
+
+			eventConnect = g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem)));
+		} else {
+			connect(foundPlayer->getID(), operatingSystem);
+		}
+	}
+	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
+	sendBosstiaryCooldownTimer();
 }
 
 void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem) {
@@ -439,7 +560,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 
 	player->client = getThis();
 	player->openPlayerContainers();
-	sendAddCreature(player, player->getPosition(), 0, true);
+	sendAddCreature(player, player->getPosition(), 0, false);
 	player->lastIP = player->getIP();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
 	player->resetIdleTime();
@@ -694,6 +815,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 		return;
 	}
 }
+
 
 void ProtocolGame::addBless() {
 	std::string bless = player->getBlessingsName();
@@ -2115,6 +2237,9 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 }
 
 void ProtocolGame::addBestiaryTrackerList(NetworkMessage &msg) {
+	if (!player || oldProtocol) {
+		return;
+	}
 	uint16_t thisrace = msg.get<uint16_t>();
 	std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 	auto it = mtype_list.find(thisrace);
@@ -3525,9 +3650,8 @@ void ProtocolGame::sendReLoginWindow(uint8_t unfairFightReduction) {
 	msg.addByte(0x28);
 	msg.addByte(0x00);
 	msg.addByte(unfairFightReduction);
-	if (!oldProtocol) {
+	if (version >= 1200)
 		msg.addByte(0x00); // use death redemption (boolean)
-	}
 	writeToOutputBuffer(msg);
 }
 
@@ -3566,7 +3690,7 @@ void ProtocolGame::sendBasicData() {
 		}
 	}
 
-	if (!oldProtocol) {
+	if (version >= 1200) {
 		msg.addByte(player->getVocation()->getMagicShield()); // bool - determine whether magic shield is active or not
 	}
 
@@ -3574,32 +3698,28 @@ void ProtocolGame::sendBasicData() {
 }
 
 void ProtocolGame::sendBlessStatus() {
-	if (!player)
-		return;
-
 	NetworkMessage msg;
-	// uint8_t maxClientBlessings = (player->operatingSystem == CLIENTOS_NEW_WINDOWS) ? 8 : 6; (compartability for the client 10)
-	// Ignore ToF (bless 1)
 	uint8_t blessCount = 0;
-	uint16_t flag = 0;
-	uint16_t pow2 = 2;
-	for (int i = 1; i <= 8; i++) {
+	uint8_t maxBlessings = (player->operatingSystem == CLIENTOS_NEW_WINDOWS) ? 8 : 6;
+	int flags = 0;
+	for (int i = 1; i <= maxBlessings; i++) {
 		if (player->hasBlessing(i)) {
 			if (i > 1) {
 				blessCount++;
 			}
-
-			flag |= pow2;
+			flags += (1 << (i));
 		}
 	}
 
 	msg.addByte(0x9C);
-	if (oldProtocol) {
-		msg.add<uint16_t>(blessCount >= 5 ? 0x01 : 0x00);
+	if (player->getProtocolVersion() >= 1120) {
+		msg.add<uint16_t>(flags);
+		msg.addByte((blessCount >= 7) ? 3 : (blessCount >= 5) ? 2
+															  : 1);
+	} else if (blessCount >= 5) {
+		msg.add<uint16_t>(0x01);
 	} else {
-		bool glow = g_configManager().getBoolean(INVENTORY_GLOW) || player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL);
-		msg.add<uint16_t>(glow ? 1 : 0); // Show up the glowing effect in items if have all blesses or adventurer's blessing
-		msg.addByte((blessCount >= 7) ? 3 : ((blessCount >= 5) ? 2 : 1)); // 1 = Disabled | 2 = normal | 3 = green
+		msg.add<uint16_t>(0x00);
 	}
 
 	writeToOutputBuffer(msg);
@@ -3791,14 +3911,17 @@ void ProtocolGame::sendChannelMessage(const std::string &author, const std::stri
 }
 
 void ProtocolGame::sendIcons(uint32_t icons) {
+	if (oldProtocol) {
+		NetworkMessage msg;
+		msg.addByte(0xA2);
+		msg.add<uint16_t>(static_cast<uint16_t>(icons));
+		writeToOutputBuffer(msg);
+	} else {
 	NetworkMessage msg;
 	msg.addByte(0xA2);
-	if (oldProtocol) {
-		msg.add<uint16_t>(static_cast<uint16_t>(icons));
-	} else {
-		msg.add<uint32_t>(icons);
-	}
+	msg.add<uint32_t>(icons);
 	writeToOutputBuffer(msg);
+	}
 }
 
 void ProtocolGame::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration) {
@@ -5581,13 +5704,19 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	msg.addString(g_configManager().getString(STORE_IMAGES_URL));
 	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STORE_COIN_PACKET)));
 
-	if (!oldProtocol) {
+	if (version >= 1200) {
 		msg.addByte(shouldAddExivaRestrictions ? 0x01 : 0x00); // exiva button enabled
+	}
+
+	if (version >= 1200) {
+		msg.addByte(0x00); // tournament button enabled
 	}
 
 	writeToOutputBuffer(msg);
 
-	sendTibiaTime(g_game().getLightHour());
+	if (version >= 1200) {
+		sendTibiaTime(g_game().getLightHour());
+	}
 	sendPendingStateEntered();
 	sendEnterWorld();
 	sendMapDescription(pos);
@@ -5605,11 +5734,13 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	sendSkills();
 	sendBlessStatus();
 	sendPremiumTrigger();
+	if (version >= 1200) {
 	sendItemsPrice();
 	sendPreyPrices();
 	player->sendPreyData();
 	player->sendTaskHuntingData();
 	sendForgingData();
+	}
 
 	// gameworld light-settings
 	sendWorldLight(g_game().getWorldLightInfo());
@@ -5661,8 +5792,10 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	sendLootContainers();
 	sendBasicData();
 
+	if (version >= 1200) {
 	player->sendClientCheck();
 	player->sendGameNews();
+	}
 	player->sendIcons();
 
 	// We need to manually send the open containers on player login, on IOLoginData it won't work.

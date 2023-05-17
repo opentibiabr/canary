@@ -656,7 +656,7 @@ void Combat::CombatNullFunc(Creature* caster, Creature* target, const CombatPara
 	CombatDispelFunc(caster, target, params, nullptr);
 }
 
-void Combat::combatTileEffects(const SpectatorHashSet &spectators, Creature* caster, Tile* tile, const CombatParams &params) {
+void Combat::combatTileEffects(const SpectatorVec &spectators, Creature* caster, Tile* tile, const CombatParams &params) {
 	if (params.itemId != 0) {
 		uint16_t itemId = params.itemId;
 		switch (itemId) {
@@ -828,7 +828,7 @@ void Combat::CombatFunc(Creature* caster, const Position &pos, const AreaCombat*
 		getCombatArea(pos, pos, area, tileList);
 	}
 
-	SpectatorHashSet spectators;
+	SpectatorVec spectators;
 	uint32_t maxX = 0;
 	uint32_t maxY = 0;
 
@@ -1127,7 +1127,7 @@ void Combat::doCombatDispel(Creature* caster, Creature* target, const CombatPara
 
 void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatParams &params) {
 	if (!params.aggressive || (caster != target && Combat::canDoCombat(caster, target) == RETURNVALUE_NOERROR)) {
-		SpectatorHashSet spectators;
+		SpectatorVec spectators;
 		g_game().map.getSpectators(spectators, target->getPosition(), true, true);
 
 		CombatNullFunc(caster, target, params, nullptr);

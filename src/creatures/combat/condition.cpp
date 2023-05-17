@@ -854,7 +854,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 					message.primary.color = TEXTCOLOR_PASTELRED;
 					player->sendTextMessage(message);
 
-					SpectatorHashSet spectators;
+					SpectatorVec spectators;
 					g_game().map.getSpectators(spectators, player->getPosition(), false, true);
 					spectators.erase(player);
 					if (!spectators.empty()) {

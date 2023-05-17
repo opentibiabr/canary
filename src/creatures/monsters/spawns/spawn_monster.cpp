@@ -154,7 +154,7 @@ SpawnMonster::~SpawnMonster() {
 }
 
 bool SpawnMonster::findPlayer(const Position &pos) {
-	SpectatorHashSet spectators;
+	SpectatorVec spectators;
 	g_game().map.getSpectators(spectators, pos, false, true);
 	for (Creature* spectator : spectators) {
 		if (!spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {

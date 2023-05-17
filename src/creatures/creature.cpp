@@ -1136,7 +1136,7 @@ void Creature::onGainExperience(uint64_t gainExp, Creature* target) {
 	master->onGainExperience(gainExp, target);
 
 	if (!m->isFamiliar()) {
-		SpectatorHashSet spectators;
+		SpectatorVec spectators;
 		g_game().map.getSpectators(spectators, position, false, true);
 		if (spectators.empty()) {
 			return;

@@ -595,7 +595,7 @@ Creature* Game::getCreatureByID(uint32_t id) {
 	} else if (id <= Npc::npcAutoID) {
 		return getNpcByID(id);
 	} else {
-	SPDLOG_WARN("Creature with id {} not exists");
+		SPDLOG_WARN("Creature with id {} not exists");
 	}
 	return nullptr;
 }
@@ -6106,7 +6106,7 @@ void Game::updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, const Playe
 void Game::sendDamageMessageAndEffects(
 	const Creature* attacker, Creature* target, const CombatDamage &damage,
 	const Position &targetPos, Player* attackerPlayer, Player* targetPlayer,
-	TextMessage &message, SpectatorVec& spectators, int32_t realDamage
+	TextMessage &message, SpectatorVec &spectators, int32_t realDamage
 ) {
 	message.primary.value = damage.primary.value;
 	message.secondary.value = damage.secondary.value;
@@ -6125,7 +6125,7 @@ bool Game::shouldSendMessage(const TextMessage &message) const {
 void Game::sendMessages(
 	const Creature* attacker, const Creature* target, const CombatDamage &damage,
 	const Position &targetPos, Player* attackerPlayer, Player* targetPlayer,
-	TextMessage &message, SpectatorVec& spectators, int32_t realDamage
+	TextMessage &message, SpectatorVec &spectators, int32_t realDamage
 ) const {
 	if (attackerPlayer) {
 		attackerPlayer->updateImpactTracker(damage.primary.type, damage.primary.value);
@@ -6544,7 +6544,7 @@ void Game::addCreatureHealth(const Creature* target) {
 	addCreatureHealth(spectators, target);
 }
 
-void Game::addCreatureHealth(const  SpectatorVec& spectators, const Creature* target) {
+void Game::addCreatureHealth(const SpectatorVec &spectators, const Creature* target) {
 	uint8_t healthPercent = std::ceil((static_cast<double>(target->getHealth()) / std::max<int32_t>(target->getMaxHealth(), 1)) * 100);
 	if (const Player* targetPlayer = target->getPlayer()) {
 		if (Party* party = targetPlayer->getParty()) {
@@ -6592,7 +6592,7 @@ void Game::addMagicEffect(const Position &pos, uint8_t effect) {
 	addMagicEffect(spectators, pos, effect);
 }
 
-void Game::addMagicEffect(const  SpectatorVec& spectators, const Position &pos, uint8_t effect) {
+void Game::addMagicEffect(const SpectatorVec &spectators, const Position &pos, uint8_t effect) {
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendMagicEffect(pos, effect);
@@ -6607,7 +6607,7 @@ void Game::addDistanceEffect(const Position &fromPos, const Position &toPos, uin
 	addDistanceEffect(spectators, fromPos, toPos, effect);
 }
 
-void Game::addDistanceEffect(const  SpectatorVec& spectators, const Position &fromPos, const Position &toPos, uint8_t effect) {
+void Game::addDistanceEffect(const SpectatorVec &spectators, const Position &fromPos, const Position &toPos, uint8_t effect) {
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect);

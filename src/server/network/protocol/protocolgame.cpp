@@ -816,7 +816,6 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 	}
 }
 
-
 void ProtocolGame::addBless() {
 	std::string bless = player->getBlessingsName();
 	std::ostringstream lostBlesses;
@@ -3917,10 +3916,10 @@ void ProtocolGame::sendIcons(uint32_t icons) {
 		msg.add<uint16_t>(static_cast<uint16_t>(icons));
 		writeToOutputBuffer(msg);
 	} else {
-	NetworkMessage msg;
-	msg.addByte(0xA2);
-	msg.add<uint32_t>(icons);
-	writeToOutputBuffer(msg);
+		NetworkMessage msg;
+		msg.addByte(0xA2);
+		msg.add<uint32_t>(icons);
+		writeToOutputBuffer(msg);
 	}
 }
 
@@ -5735,11 +5734,11 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	sendBlessStatus();
 	sendPremiumTrigger();
 	if (version >= 1200) {
-	sendItemsPrice();
-	sendPreyPrices();
-	player->sendPreyData();
-	player->sendTaskHuntingData();
-	sendForgingData();
+		sendItemsPrice();
+		sendPreyPrices();
+		player->sendPreyData();
+		player->sendTaskHuntingData();
+		sendForgingData();
 	}
 
 	// gameworld light-settings
@@ -5793,8 +5792,8 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	sendBasicData();
 
 	if (version >= 1200) {
-	player->sendClientCheck();
-	player->sendGameNews();
+		player->sendClientCheck();
+		player->sendGameNews();
 	}
 	player->sendIcons();
 

@@ -242,7 +242,7 @@ class Tile : public Cylinder {
 	private:
 		void onAddTileItem(Item* item);
 		void onUpdateTileItem(Item* oldItem, const ItemType &oldType, Item* newItem, const ItemType &newType);
-		void onRemoveTileItem(const  SpectatorVec& spectators, const std::vector<int32_t> &oldStackPosVector, Item* item);
+		void onRemoveTileItem(const SpectatorVec &spectators, const std::vector<int32_t> &oldStackPosVector, Item* item);
 		void onUpdateTile(const SpectatorVec &spectators);
 
 		void setTileFlags(const Item* item);

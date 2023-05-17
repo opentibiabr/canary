@@ -290,7 +290,7 @@ class Map {
 		uint32_t width = 0;
 		uint32_t height = 0;
 
-// Actually scans the map for spectators
+		// Actually scans the map for spectators
 		void getSpectatorsInternal(SpectatorVec &spectators, const Position &centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers = true) const;
 
 		friend class Game;

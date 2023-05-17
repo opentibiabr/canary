@@ -5734,13 +5734,11 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	sendSkills();
 	sendBlessStatus();
 	sendPremiumTrigger();
-	if (version >= 1200) {
-	sendItemsPrice();
 	sendPreyPrices();
 	player->sendPreyData();
 	player->sendTaskHuntingData();
+	sendItemsPrice();
 	sendForgingData();
-	}
 
 	// gameworld light-settings
 	sendWorldLight(g_game().getWorldLightInfo());

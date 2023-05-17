@@ -476,7 +476,6 @@ void Npc::loadPlayerSpectators() {
 	}
 }
 
-
 bool Npc::isInSpawnRange(const Position &pos) const {
 	if (!spawnNpc) {
 		return true;

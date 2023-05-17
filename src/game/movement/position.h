@@ -11,7 +11,7 @@
 #include <ostream>
 
 #ifndef SRC_GAME_MOVEMENT_POSITION_H_
-#define SRC_GAME_MOVEMENT_POSITION_H_
+	#define SRC_GAME_MOVEMENT_POSITION_H_
 
 enum Direction : uint8_t {
 	DIRECTION_NORTH = 0,

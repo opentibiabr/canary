@@ -392,10 +392,10 @@ void Map::moveCreature(Creature &creature, Tile &newTile, bool forceTeleport /* 
 }
 
 void Map::getSpectatorsInternal(SpectatorVec &spectators, const Position &centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const {
-	int_fast16_t min_y = centerPos.y + minRangeY;
-	int_fast16_t min_x = centerPos.x + minRangeX;
-	int_fast16_t max_y = centerPos.y + maxRangeY;
-	int_fast16_t max_x = centerPos.x + maxRangeX;
+	int_fast32_t min_y = centerPos.y + minRangeY;
+	int_fast32_t min_x = centerPos.x + minRangeX;
+	int_fast32_t max_y = centerPos.y + maxRangeY;
+	int_fast32_t max_x = centerPos.x + maxRangeX;
 
 	int32_t minoffset = centerPos.getZ() - maxRangeZ;
 	uint16_t x1 = std::min<uint32_t>(0xFFFF, std::max<int32_t>(0, (min_x + minoffset)));
@@ -504,19 +504,21 @@ void Map::getSpectators(SpectatorVec &spectators, const Position &centerPos, boo
 		int32_t maxRangeZ;
 
 		if (multifloor) {
-			if (centerPos.z > 7) {
-				// underground (8->15)
-				minRangeZ = std::max<int32_t>(centerPos.getZ() - 2, 0);
-				maxRangeZ = std::min<int32_t>(centerPos.getZ() + 2, MAP_MAX_LAYERS - 1);
-			} else if (centerPos.z == 6) {
+			if (centerPos.z > MAP_INIT_SURFACE_LAYER) {
+				// underground
+
+				// 8->15
+				minRangeZ = std::max<int32_t>(centerPos.getZ() - MAP_LAYER_VIEW_LIMIT, 0);
+				maxRangeZ = std::min<int32_t>(centerPos.getZ() + MAP_LAYER_VIEW_LIMIT, MAP_MAX_LAYERS - 1);
+			} else if (centerPos.z == MAP_INIT_SURFACE_LAYER - 1) {
 				minRangeZ = 0;
-				maxRangeZ = 8;
-			} else if (centerPos.z == 7) {
+				maxRangeZ = (MAP_INIT_SURFACE_LAYER - 1) + MAP_LAYER_VIEW_LIMIT;
+			} else if (centerPos.z == MAP_INIT_SURFACE_LAYER) {
 				minRangeZ = 0;
-				maxRangeZ = 9;
+				maxRangeZ = MAP_INIT_SURFACE_LAYER + MAP_LAYER_VIEW_LIMIT;
 			} else {
 				minRangeZ = 0;
-				maxRangeZ = 7;
+				maxRangeZ = MAP_INIT_SURFACE_LAYER;
 			}
 		} else {
 			minRangeZ = centerPos.z;

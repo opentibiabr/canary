@@ -296,7 +296,7 @@ void ProtocolGame::release() {
 }
 
 void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
-		// OTCv8 features and extended opcodes
+	// OTCv8 features and extended opcodes
 	if (otclientV8 || operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
 		if (otclientV8)
 			sendFeatures();
@@ -3605,7 +3605,7 @@ void ProtocolGame::sendBlessStatus() {
 	for (int i = 1; i <= 8; i++) {
 		if (player->hasBlessing(i)) {
 			if (i > 1) {
-					blessCount++;
+				blessCount++;
 			}
 
 			flag |= pow2;

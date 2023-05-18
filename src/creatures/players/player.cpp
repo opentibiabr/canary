@@ -1493,7 +1493,15 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 		}
 
 		auto version = client->oldProtocol ? getProtocolVersion() : CLIENT_VERSION;
-		SPDLOG_INFO("{} has logged in. (Protocol: {})", name, version);
+		OperatingSystem_t os = getOperatingSystem();
+		// Show player client
+		if (os >= CLIENTOS_NEW_LINUX && os < CLIENTOS_OTCLIENTV8_LINUX) {
+			SPDLOG_INFO("{} has logged in. (Protocol: {}, Client: OTClient)", name, version);
+		} else if (os >= CLIENTOS_OTCLIENTV8_LINUX) {
+			SPDLOG_INFO("{} has logged in. (Protocol: {}, Client: OTClientV8)", name, version, os);
+		} else {
+			SPDLOG_INFO("{} has logged in. (Protocol: {}, Client: {})", name, version, os);
+		}
 
 		if (guild) {
 			guild->addMember(this);

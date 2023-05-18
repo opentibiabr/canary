@@ -295,126 +295,17 @@ void ProtocolGame::release() {
 	Protocol::release();
 }
 
-/*void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
-	// dispatcher thread
-	Player* foundPlayer = g_game().getPlayerByName(name);
-	if (!foundPlayer) {
-		player = new Player(getThis());
-		player->setName(name);
-
-		player->incrementReferenceCounter();
-		player->setID();
-
-		if (!IOLoginData::preloadPlayer(player, name)) {
-			disconnectClient("Your character could not be loaded.");
-			return;
-		}
-
-		if (IOBan::isPlayerNamelocked(player->getGUID())) {
-			disconnectClient("Your character has been namelocked.");
-			return;
-		}
-
-		if (g_game().getGameState() == GAME_STATE_CLOSING && !player->hasFlag(PlayerFlags_t::CanAlwaysLogin)) {
-			disconnectClient("The game is just going down.\nPlease try again later.");
-			return;
-		}
-
-		if (g_game().getGameState() == GAME_STATE_CLOSED && !player->hasFlag(PlayerFlags_t::CanAlwaysLogin)) {
-			disconnectClient("Server is currently closed.\nPlease try again later.");
-			return;
-		}
-
-		if (g_configManager().getBoolean(ONLY_PREMIUM_ACCOUNT) && !player->isPremium() && (player->getGroup()->id < account::GROUP_TYPE_GAMEMASTER || player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER)) {
-			disconnectClient("Your premium time for this account is out.\n\nTo play please buy additional premium time from our website");
-			return;
-		}
-
-		if (g_configManager().getBoolean(ONE_PLAYER_ON_ACCOUNT) && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && g_game().getPlayerByAccount(player->getAccount())) {
-			disconnectClient("You may only login with one character\nof your account at the same time.");
-			return;
-		}
-
-		if (!player->hasFlag(PlayerFlags_t::CannotBeBanned)) {
-			BanInfo banInfo;
-			if (IOBan::isAccountBanned(accountId, banInfo)) {
-				if (banInfo.reason.empty()) {
-					banInfo.reason = "(none)";
-				}
-
-				std::ostringstream ss;
-				if (banInfo.expiresAt > 0) {
-					ss << "Your account has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
-					   << banInfo.reason;
-				} else {
-					ss << "Your account has been permanently banned by " << banInfo.bannedBy << ".\n\nReason specified:\n"
-					   << banInfo.reason;
-				}
-				disconnectClient(ss.str());
-				return;
-			}
-		}
-
-		WaitingList &waitingList = WaitingList::getInstance();
-		if (!waitingList.clientLogin(player)) {
-			uint32_t currentSlot = waitingList.getClientSlot(player);
-			uint32_t retryTime = WaitingList::getTime(currentSlot);
-			std::ostringstream ss;
-
-			ss << "Too many players online.\nYou are at place "
-			   << currentSlot << " on the waiting list.";
-
-			auto output = OutputMessagePool::getOutputMessage();
-			output->addByte(0x16);
-			output->addString(ss.str());
-			output->addByte(retryTime);
-			send(output);
-			disconnect();
-			return;
-		}
-
-		if (!IOLoginData::loadPlayerById(player, player->getGUID())) {
-			disconnectClient("Your character could not be loaded.");
-			SPDLOG_WARN("Player {} could not be loaded", player->getName());
-			return;
-		}
-
-		player->setOperatingSystem(operatingSystem);
-
-		if (!g_game().placeCreature(player, player->getLoginPosition()) && !g_game().placeCreature(player, player->getTemplePosition(), false, true)) {
-			disconnectClient("Temple position is wrong. Please, contact the administrator.");
-			SPDLOG_WARN("Player {} temple position is wrong", player->getName());
-			return;
-		}
-
-		if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
-			player->registerCreatureEvent("ExtendedOpcode");
-		}
-
-		player->lastIP = player->getIP();
-		player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
-		acceptPackets = true;
-	} else {
-		if (eventConnect != 0 || !g_configManager().getBoolean(REPLACE_KICK_ON_LOGIN)) {
-			// Already trying to connect
-			disconnectClient("You are already logged in.");
-			return;
-		}
-
-		if (foundPlayer->client) {
-			foundPlayer->disconnect();
-			foundPlayer->isConnecting = true;
-
-			eventConnect = g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem)));
-		} else {
-			connect(foundPlayer->getID(), operatingSystem);
-		}
-	}
-	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
-	sendBosstiaryCooldownTimer();
-}*/
-
 void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
+		// OTCv8 features and extended opcodes
+	if (otclientV8 || operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
+		if (otclientV8)
+			sendFeatures();
+		NetworkMessage opcodeMessage;
+		opcodeMessage.addByte(0x32);
+		opcodeMessage.addByte(0x00);
+		opcodeMessage.add<uint16_t>(0x00);
+		writeToOutputBuffer(opcodeMessage);
+	}
 	// dispatcher thread
 	Player* foundPlayer = g_game().getPlayerByName(name);
 	if (!foundPlayer) {
@@ -508,9 +399,9 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			}
 		}
 
-		if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
+		/* if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
 			player->registerCreatureEvent("ExtendedOpcode");
-		}
+		}*/
 
 		player->lastIP = player->getIP();
 		player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
@@ -611,7 +502,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	// Old protocol support
 	oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL) && version <= 1100;
 
-	if (oldProtocol) {
+	if (oldProtocol || otclientV8) {
 		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
 	} else if (operatingSystem <= CLIENTOS_NEW_MAC) {
 		setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
@@ -669,6 +560,12 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	if (challengeTimestamp != timeStamp || challengeRandom != randNumber) {
 		disconnect();
 		return;
+	}
+
+	// OTCv8 version detection
+	uint16_t otcV8StringLength = msg.get<uint16_t>();
+	if (otcV8StringLength == 5 && msg.getString(5) == "OTCv8") {
+		otclientV8 = msg.get<uint16_t>(); // 253, 260, 261, ...
 	}
 
 	if (!oldProtocol && clientVersion != CLIENT_VERSION) {
@@ -3910,17 +3807,14 @@ void ProtocolGame::sendChannelMessage(const std::string &author, const std::stri
 }
 
 void ProtocolGame::sendIcons(uint32_t icons) {
+	NetworkMessage msg;
+	msg.addByte(0xA2);
 	if (oldProtocol) {
-		NetworkMessage msg;
-		msg.addByte(0xA2);
 		msg.add<uint16_t>(static_cast<uint16_t>(icons));
-		writeToOutputBuffer(msg);
 	} else {
-		NetworkMessage msg;
-		msg.addByte(0xA2);
 		msg.add<uint32_t>(icons);
-		writeToOutputBuffer(msg);
 	}
+	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration) {
@@ -5713,9 +5607,7 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 
 	writeToOutputBuffer(msg);
 
-	if (version >= 1200) {
-		sendTibiaTime(g_game().getLightHour());
-	}
+	sendTibiaTime(g_game().getLightHour());
 	sendPendingStateEntered();
 	sendEnterWorld();
 	sendMapDescription(pos);
@@ -5789,10 +5681,8 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	sendLootContainers();
 	sendBasicData();
 
-	if (version >= 1200) {
-		player->sendClientCheck();
-		player->sendGameNews();
-	}
+	player->sendClientCheck();
+	player->sendGameNews();
 	player->sendIcons();
 
 	// We need to manually send the open containers on player login, on IOLoginData it won't work.
@@ -7268,6 +7158,28 @@ void ProtocolGame::parseExtendedOpcode(NetworkMessage &msg) {
 
 	// process additional opcodes via lua script event
 	addGameTask(&Game::parsePlayerExtendedOpcode, player->getID(), opcode, buffer);
+}
+
+// OTCv8
+void ProtocolGame::sendFeatures() {
+	if (!otclientV8)
+		return;
+
+	std::map<GameFeature, bool> features;
+	// place for non-standard OTCv8 features
+	features[GameExtendedOpcode] = true;
+
+	if (features.empty())
+		return;
+
+	NetworkMessage msg;
+	msg.addByte(0x43);
+	msg.add<uint16_t>(features.size());
+	for (auto &feature : features) {
+		msg.addByte((uint8_t)feature.first);
+		msg.addByte(feature.second ? 1 : 0);
+	}
+	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg) {

@@ -5279,7 +5279,7 @@ bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std:
 		if (type != TALKTYPE_YELL && type != TALKTYPE_MONSTER_YELL) {
 			map.getSpectators(list, *pos, false, false, Map::maxClientViewportX, Map::maxClientViewportX, Map::maxClientViewportY, Map::maxClientViewportY);
 		} else {
-			map.getSpectators(list, *pos, true, false, 18, 18, 14, 14);
+			map.getSpectators(list, *pos, true, false, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2);
 		}
 	} else {
 		list = (*listPtr);
@@ -6106,7 +6106,7 @@ void Game::updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, const Playe
 void Game::sendDamageMessageAndEffects(
 	const Creature* attacker, Creature* target, const CombatDamage &damage,
 	const Position &targetPos, Player* attackerPlayer, Player* targetPlayer,
-	TextMessage &message, SpectatorVec &spectators, int32_t realDamage
+	TextMessage &message, const SpectatorVec &spectators, int32_t realDamage
 ) {
 	message.primary.value = damage.primary.value;
 	message.secondary.value = damage.secondary.value;
@@ -6125,7 +6125,7 @@ bool Game::shouldSendMessage(const TextMessage &message) const {
 void Game::sendMessages(
 	const Creature* attacker, const Creature* target, const CombatDamage &damage,
 	const Position &targetPos, Player* attackerPlayer, Player* targetPlayer,
-	TextMessage &message, SpectatorVec &spectators, int32_t realDamage
+	TextMessage &message, const SpectatorVec &spectators, int32_t realDamage
 ) const {
 	if (attackerPlayer) {
 		attackerPlayer->updateImpactTracker(damage.primary.type, damage.primary.value);
@@ -6240,7 +6240,7 @@ void Game::buildMessageAsAttacker(
 
 void Game::sendEffects(
 	Creature* target, const CombatDamage &damage, const Position &targetPos, TextMessage &message,
-	SpectatorVec &spectators
+	const SpectatorVec &spectators
 ) {
 	uint8_t hitEffect;
 	if (message.primary.value) {

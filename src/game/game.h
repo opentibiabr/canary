@@ -662,20 +662,20 @@ class Game {
 		void sendDamageMessageAndEffects(
 			const Creature* attacker, Creature* target, const CombatDamage &damage, const Position &targetPos,
 			Player* attackerPlayer, Player* targetPlayer, TextMessage &message,
-			SpectatorVec &spectators, int32_t realDamage
+			const SpectatorVec &spectators, int32_t realDamage
 		);
 
 		void updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, const Player* player) const;
 
 		void sendEffects(
 			Creature* target, const CombatDamage &damage, const Position &targetPos,
-			TextMessage &message, SpectatorVec &spectators
+			TextMessage &message, const SpectatorVec &spectators
 		);
 
 		void sendMessages(
 			const Creature* attacker, const Creature* target, const CombatDamage &damage,
 			const Position &targetPos, Player* attackerPlayer, Player* targetPlayer,
-			TextMessage &message, SpectatorVec &spectators, int32_t realDamage
+			TextMessage &message, const SpectatorVec &spectators, int32_t realDamage
 		) const;
 
 		bool shouldSendMessage(const TextMessage &message) const;

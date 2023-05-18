@@ -296,7 +296,7 @@ void ProtocolGame::release() {
 }
 
 void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
-	// OTCv8 features and extended opcodes
+		// OTCv8 features and extended opcodes
 	if (otclientV8 || operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
 		if (otclientV8)
 			sendFeatures();
@@ -391,12 +391,10 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 		player->setOperatingSystem(operatingSystem);
 
-		if (!g_game().placeCreature(player, player->getLoginPosition())) {
-			if (!g_game().placeCreature(player, player->getTemplePosition(), false, true)) {
-				disconnectClient("Temple position is wrong. Please, contact the administrator.");
-				SPDLOG_WARN("Player {} temple position is wrong", player->getName());
-				return;
-			}
+		if (!g_game().placeCreature(player, player->getLoginPosition()) && !g_game().placeCreature(player, player->getTemplePosition(), false, true)) {
+			disconnectClient("Temple position is wrong. Please, contact the administrator.");
+			SPDLOG_WARN("Player {} temple position is wrong", player->getName());
+			return;
 		}
 
 		/* if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
@@ -451,7 +449,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 
 	player->client = getThis();
 	player->openPlayerContainers();
-	sendAddCreature(player, player->getPosition(), 0, false);
+	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
 	player->resetIdleTime();
@@ -2133,7 +2131,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 }
 
 void ProtocolGame::addBestiaryTrackerList(NetworkMessage &msg) {
-	if (!player || oldProtocol) {
+	if (oldProtocol) {
 		return;
 	}
 	uint16_t thisrace = msg.get<uint16_t>();
@@ -3546,8 +3544,9 @@ void ProtocolGame::sendReLoginWindow(uint8_t unfairFightReduction) {
 	msg.addByte(0x28);
 	msg.addByte(0x00);
 	msg.addByte(unfairFightReduction);
-	if (version >= 1200)
+	if (!oldProtocol) {
 		msg.addByte(0x00); // use death redemption (boolean)
+	}
 	writeToOutputBuffer(msg);
 }
 
@@ -3586,7 +3585,7 @@ void ProtocolGame::sendBasicData() {
 		}
 	}
 
-	if (version >= 1200) {
+	if (!oldProtocol) {
 		msg.addByte(player->getVocation()->getMagicShield()); // bool - determine whether magic shield is active or not
 	}
 
@@ -3594,28 +3593,32 @@ void ProtocolGame::sendBasicData() {
 }
 
 void ProtocolGame::sendBlessStatus() {
+	if (!player)
+		return;
+
 	NetworkMessage msg;
+	// uint8_t maxClientBlessings = (player->operatingSystem == CLIENTOS_NEW_WINDOWS) ? 8 : 6; (compartability for the client 10)
+	// Ignore ToF (bless 1)
 	uint8_t blessCount = 0;
-	uint8_t maxBlessings = (player->operatingSystem == CLIENTOS_NEW_WINDOWS) ? 8 : 6;
-	int flags = 0;
-	for (int i = 1; i <= maxBlessings; i++) {
+	uint16_t flag = 0;
+	uint16_t pow2 = 2;
+	for (int i = 1; i <= 8; i++) {
 		if (player->hasBlessing(i)) {
 			if (i > 1) {
-				blessCount++;
+					blessCount++;
 			}
-			flags += (1 << (i));
+
+			flag |= pow2;
 		}
 	}
 
 	msg.addByte(0x9C);
-	if (player->getProtocolVersion() >= 1120) {
-		msg.add<uint16_t>(flags);
-		msg.addByte((blessCount >= 7) ? 3 : (blessCount >= 5) ? 2
-															  : 1);
-	} else if (blessCount >= 5) {
-		msg.add<uint16_t>(0x01);
+	if (oldProtocol) {
+		msg.add<uint16_t>(blessCount >= 5 ? 0x01 : 0x00);
 	} else {
-		msg.add<uint16_t>(0x00);
+		bool glow = g_configManager().getBoolean(INVENTORY_GLOW) || player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL);
+		msg.add<uint16_t>(glow ? 1 : 0); // Show up the glowing effect in items if have all blesses or adventurer's blessing
+		msg.addByte((blessCount >= 7) ? 3 : ((blessCount >= 5) ? 2 : 1)); // 1 = Disabled | 2 = normal | 3 = green
 	}
 
 	writeToOutputBuffer(msg);
@@ -5597,12 +5600,8 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	msg.addString(g_configManager().getString(STORE_IMAGES_URL));
 	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STORE_COIN_PACKET)));
 
-	if (version >= 1200) {
+	if (!oldProtocol) {
 		msg.addByte(shouldAddExivaRestrictions ? 0x01 : 0x00); // exiva button enabled
-	}
-
-	if (version >= 1200) {
-		msg.addByte(0x00); // tournament button enabled
 	}
 
 	writeToOutputBuffer(msg);

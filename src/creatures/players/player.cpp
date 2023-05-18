@@ -1495,7 +1495,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 		auto version = client->oldProtocol ? getProtocolVersion() : CLIENT_VERSION;
 		OperatingSystem_t os = getOperatingSystem();
 		// Show player client
-		if (os >= CLIENTOS_NEW_LINUX && os < CLIENTOS_OTCLIENTV8_LINUX) {
+		if (os > CLIENTOS_NEW_MAC && os < CLIENTOS_OTCLIENTV8_LINUX) {
 			SPDLOG_INFO("{} has logged in. (Protocol: {}, Client: OTClient)", name, version);
 		} else if (os >= CLIENTOS_OTCLIENTV8_LINUX) {
 			SPDLOG_INFO("{} has logged in. (Protocol: {}, Client: OTClientV8)", name, version, os);
@@ -2414,6 +2414,7 @@ uint32_t Player::getIP() const {
 void Player::death(Creature* lastHitCreature) {
 	loginPosition = town->getTemplePosition();
 
+	g_game().sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_DEATH : SoundEffect_t::HUMAN_MALE_DEATH, this);
 	if (skillLoss) {
 		uint8_t unfairFightReduction = 100;
 		int playerDmg = 0;
@@ -2591,7 +2592,8 @@ void Player::death(Creature* lastHitCreature) {
 		auto it = conditions.begin(), end = conditions.end();
 		while (it != end) {
 			Condition* condition = *it;
-			if (condition->isPersistent()) {
+			// isSupress block to delete spells conditions (ensures that the player cannot, for example, reset the cooldown time of the familiar and summon several)
+			if (condition->isPersistent() && condition->isRemovableOnDeath()) {
 				it = conditions.erase(it);
 
 				condition->endCondition(this);
@@ -2666,6 +2668,7 @@ void Player::despawn() {
 	listWalkDir.clear();
 	stopEventWalk();
 	onWalkAborted();
+	closeAllExternalContainers();
 	g_game().playerSetAttackedCreature(this->getID(), 0);
 	g_game().playerFollowCreature(this->getID(), 0);
 

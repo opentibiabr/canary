@@ -26,6 +26,7 @@ class BedItem;
 
 using CreatureVector = std::vector<Creature*>;
 using ItemVector = std::vector<Item*>;
+using SpectatorHashSet = phmap::flat_hash_set<Creature*>;
 
 class TileItemVector : private ItemVector {
 	public:

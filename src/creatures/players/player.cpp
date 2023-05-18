@@ -2708,7 +2708,7 @@ void Player::despawn() {
 
 	getParent()->postRemoveNotification(this, nullptr, 0);
 
-	g_game().removePlayer(this);
+	//g_game().removePlayer(this);  // Remove method due possible item clonation  --  Remover método devido a possível clonagem de itens
 
 	// show player as pending
 	for (const auto &[key, player] : g_game().getPlayers()) {

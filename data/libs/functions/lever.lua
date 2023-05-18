@@ -237,8 +237,11 @@ function CreateDefaultLeverBoss(player, config) -- This function is to suppress 
 		lever:setCondition(config.condition())
 	else
 		lever:setCondition(function(creature)
-			if not creature or not creature:isPlayer() then
+			if not creature then
 				return true
+			elseif not creature:isPlayer() then
+				creature:getPosition():sendMagicEffect(CONST_ME_POFF)
+				return false
 			end
 			if config.requiredLevel and creature:getLevel() < config.requiredLevel then
 				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "All the players need to be level " .. config.requiredLevel .. " or higher.")
@@ -281,12 +284,10 @@ function CreateDefaultLeverBoss(player, config) -- This function is to suppress 
 			local player_remove = {}
 			for i, v in pairs(spec:getCreatureDetect()) do
 				for _, v_old in pairs(old_players) do
-					if v_old.creature == nil or v_old.creature:isMonster() then
-						break
-					end
-					if v:getName() == v_old.creature:getName() then
-						table.insert(player_remove, v_old.creature)
-						break
+					if v_old.creature and not v_old.creature:isMonster() then
+						if v:getName() == v_old.creature:getName() then
+							table.insert(player_remove, v_old.creature)
+						end
 					end
 				end
 			end

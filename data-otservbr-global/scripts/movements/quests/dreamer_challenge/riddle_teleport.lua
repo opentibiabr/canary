@@ -44,7 +44,6 @@ end
 local riddleTeleport = MoveEvent()
 
 function riddleTeleport.onStepIn(creature, item, position, fromPosition)
-	Spdlog.info("riddleTeleport.onStepIn")
 	local player = creature:getPlayer()
 	if not player then
 		return false
@@ -58,7 +57,6 @@ function riddleTeleport.onStepIn(creature, item, position, fromPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		doResetPillows()
 	else
-		Spdlog.info("riddleTeleport.onStepIn: wrong pillows")
 		player:teleportTo(fromPosition, true)
 		fromPosition:sendMagicEffect(CONST_ME_TELEPORT)
 	end

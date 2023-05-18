@@ -11,16 +11,17 @@ function deathRing.onAddItem(moveitem, tileitem, position)
 		return true
 	end
 
+	local found = false
 	for i = 1, #trees do
 		local treeItem = Tile(trees[i]):getItemById(3636)
 		if treeItem then
 			treeItem:remove()
 			trees[i]:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			moveitem:remove()
-			return true
+			found = true
 		end
 	end
-	return false
+	return found
 end
 
 deathRing:type("additem")

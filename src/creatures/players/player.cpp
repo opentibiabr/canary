@@ -3301,6 +3301,9 @@ Cylinder* Player::queryDestination(int32_t &index, const Thing &thing, Item** de
 }
 
 void Player::addThing(int32_t index, Thing* thing) {
+	if (!thing)
+		return /*RETURNVALUE_NOTPOSSIBLE*/; 
+
 	if (index < CONST_SLOT_FIRST || index > CONST_SLOT_LAST) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
@@ -3943,6 +3946,9 @@ void Player::internalAddThing(Thing* thing) {
 }
 
 void Player::internalAddThing(uint32_t index, Thing* thing) {
+	if (!thing)
+		return;
+
 	Item* item = thing->getItem();
 	if (!item) {
 		return;

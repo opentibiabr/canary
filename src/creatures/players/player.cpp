@@ -2719,6 +2719,8 @@ void Player::despawn() {
 
 	getParent()->postRemoveNotification(this, nullptr, 0);
 
+	g_game().removePlayer(this);
+
 	// show player as pending
 	for (const auto &[key, player] : g_game().getPlayers()) {
 		player->notifyStatusChange(this, VIPSTATUS_PENDING, false);

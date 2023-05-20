@@ -424,18 +424,23 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) cons
 
 			const Position &pos = creature->getPosition();
 			const Monster* monster = creature->getMonster();
-			bool protectionZoneCheck = this->getTile()->hasFlag(TILESTATE_PROTECTIONZONE);
+			bool protectionZoneCheck = tile ? tile->hasFlag(TILESTATE_PROTECTIONZONE) : false;
 			// Check if any of our summons is out of range (+/- 0 floors or 15 tiles away)
 			bool checkSummonDist = Position::getDistanceZ(newPos, pos) > 0 || (std::max<int32_t>(Position::getDistanceX(newPos, pos), Position::getDistanceY(newPos, pos)) > 15);
 			// Check if any of our summons is out of range (+/- 2 floors or 30 tiles away)
 			bool checkRemoveDist = Position::getDistanceZ(newPos, pos) > 2 || (std::max<int32_t>(Position::getDistanceX(newPos, pos), Position::getDistanceY(newPos, pos)) > 30);
 
 			if (monster && monster->isFamiliar() && checkSummonDist || teleportSummon && !protectionZoneCheck && checkSummonDist) {
-				if (Tile* masterTile = creature->getMaster()->getTile()) {
+				auto creatureMaster = creature->getMaster();
+				if (!creatureMaster) {
+					continue;
+				}
+
+				if (Tile* masterTile = creatureMaster->getTile()) {
 					if (masterTile->hasFlag(TILESTATE_TELEPORT)) {
-						SPDLOG_WARN("[{}] cannot teleport summon, position has teleport. {}", __FUNCTION__, creature->getMaster()->getPosition().toString());
+						SPDLOG_WARN("[{}] cannot teleport summon, position has teleport. {}", __FUNCTION__, creatureMaster->getPosition().toString());
 					} else {
-						g_game().internalTeleport(creature, creature->getMaster()->getPosition(), true);
+						g_game().internalTeleport(creature, creatureMaster->getPosition(), true);
 						continue;
 					}
 				}
@@ -885,7 +890,8 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 
 bool Creature::setAttackedCreature(Creature* creature) {
 	if (creature) {
-		if (this->getMonster() && this->getMonster()->isFamiliar() && this->getTile() && this->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		auto monster = getMonster();
+		if (monster && monster->isFamiliar() && tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			return false;
 		}
 
@@ -967,7 +973,8 @@ void Creature::goToFollowCreature() {
 }
 
 bool Creature::canFollowMaster() const {
-	return !master->getTile()->hasFlag(TILESTATE_PROTECTIONZONE) && (canSeeInvisibility() || !master->isInvisible());
+	auto tile = master->getTile();
+	return tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && (canSeeInvisibility() || !master->isInvisible());
 }
 
 bool Creature::setFollowCreature(Creature* creature) {
@@ -1066,7 +1073,7 @@ void Creature::onEndCondition(ConditionType_t) {
 }
 
 void Creature::onTickCondition(ConditionType_t type, bool &bRemove) {
-	const MagicField* field = getTile()->getFieldItem();
+	const MagicField* field = tile ? tile->getFieldItem() : nullptr;
 	if (!field) {
 		return;
 	}

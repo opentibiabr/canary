@@ -276,6 +276,8 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 			}
 
+			const Tile* targetPlayerTile = targetPlayer->getTile();
+
 			if (const Player* attackerPlayer = attacker->getPlayer()) {
 				if (attackerPlayer->hasFlag(PlayerFlags_t::CannotAttackPlayer)) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
@@ -286,10 +288,10 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target) {
 				}
 
 				// nopvp-zone
-				if (const Tile* targetPlayerTile = targetPlayer->getTile();
-					targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
+				auto attackerTile = attackerPlayer->getTile();
+				if (targetPlayerTile && targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
-				} else if (attackerPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE) && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)) {
+				} else if (attackerTile && attackerTile->hasFlag(TILESTATE_NOPVPZONE) && targetPlayerTile && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)) {
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 				}
 
@@ -304,7 +306,7 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 					}
 
-					if (targetPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE)) {
+					if (targetPlayerTile && targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
 						return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 					}
 
@@ -1684,8 +1686,8 @@ void MagicField::onStepInField(Creature &creature) {
 		auto ownerId = getAttribute<uint32_t>(ItemAttribute_t::OWNER);
 		if (ownerId) {
 			bool harmfulField = true;
-
-			if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || getTile()->hasFlag(TILESTATE_NOPVPZONE)) {
+			auto itemTile = getTile();
+			if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || itemTile && itemTile->hasFlag(TILESTATE_NOPVPZONE)) {
 				Creature* owner = g_game().getCreatureByID(ownerId);
 				if (owner) {
 					if (owner->getPlayer() || (owner->isSummon() && owner->getMaster()->getPlayer())) {

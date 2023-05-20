@@ -271,6 +271,7 @@ class Game {
 		void playerMoveItem(Player* player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, Item* item, Cylinder* toCylinder);
 		void playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier = false, uint8_t tier = 0);
 		void playerMove(uint32_t playerId, Direction direction);
+		void forcePlayerMove(uint32_t playerId, Direction direction);
 		void playerCreatePrivateChannel(uint32_t playerId);
 		void playerChannelInvite(uint32_t playerId, const std::string &name);
 		void playerChannelExclude(uint32_t playerId, const std::string &name);
@@ -284,6 +285,7 @@ class Game {
 		void playerReceivePing(uint32_t playerId);
 		void playerReceivePingBack(uint32_t playerId);
 		void playerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
+		void forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
 		void playerStopAutoWalk(uint32_t playerId);
 		void playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint16_t fromItemId, const Position &toPos, uint8_t toStackPos, uint16_t toItemId);
 		void playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId);
@@ -373,6 +375,7 @@ class Game {
 
 		void setBoostedName(std::string name) {
 			boostedCreature = name;
+			SPDLOG_INFO("Boosted creature: {}", name);
 		}
 
 		std::string getBoostedMonsterName() const {
@@ -409,6 +412,8 @@ class Game {
 
 		void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint8_t &effect);
 
+		void handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker);
+		void notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster);
 		bool combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent = false);
 		void applyCharmRune(const Monster* targetMonster, Player* attackerPlayer, Creature* target, const int32_t &realDamage) const;
 		void applyManaLeech(
@@ -569,6 +574,44 @@ class Game {
 		void sendUpdateCreature(const Creature* creature);
 		Item* wrapItem(Item* item);
 
+		/**
+		 * @brief Adds a player to the unique login map.
+		 * @details The function registers a player in the unique login map to ensure no duplicate logins.
+		 * If the player pointer is null, it logs an error and returns.
+		 *
+		 * @param player A pointer to the Player object to add.
+		 */
+		void addPlayerUniqueLogin(Player* player);
+
+		/**
+		 * @brief Gets a player from the unique login map using their name.
+		 * @details The function attempts to find a player in the unique login map using their name.
+		 * If the player's name is not found, the function returns a null pointer.
+		 * If an empty string is provided, it logs an error and returns a null pointer.
+		 *
+		 * @param playerName The name of the player to search for.
+		 * @return A pointer to the Player object if found, null otherwise.
+		 */
+		Player* getPlayerUniqueLogin(const std::string &playerName) const;
+
+		/**
+		 * @brief Removes a player from the unique login map using their name.
+		 * @details The function removes a player from the unique login map using their name.
+		 * If an empty string is provided, it logs an error and returns.
+		 *
+		 * @param playerName The name of the player to remove.
+		 */
+		void removePlayerUniqueLogin(const std::string &playerName);
+
+		/**
+		 * @brief Removes a player from the unique login map.
+		 * @details The function removes a player from the unique login map.
+		 * If the player pointer is null, it logs an error and returns.
+		 *
+		 * @param player A pointer to the Player object to remove.
+		 */
+		void removePlayerUniqueLogin(Player* player);
+
 	private:
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;
 		std::set<uint32_t> fiendishMonsters;
@@ -580,6 +623,7 @@ class Game {
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
 		void playerSpeakToNpc(Player* player, const std::string &text);
 
+		phmap::flat_hash_map<std::string, Player*> m_uniqueLoginPlayerNames;
 		phmap::flat_hash_map<uint32_t, Player*> players;
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
 		phmap::flat_hash_map<uint32_t, Guild*> guilds;

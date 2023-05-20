@@ -513,3 +513,14 @@ int MonsterFunctions::luaMonsterGetName(lua_State* L) {
 	pushString(L, monster->getName());
 	return 1;
 }
+
+int MonsterFunctions::luaMonsterIsOnHazardSystem(lua_State* L) {
+	// monster:isOnHazardSystem()
+	const Monster* monster = getUserdata<const Monster>(L, 1);
+	if (monster) {
+		pushBoolean(L, monster->isOnHazardSystem());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}

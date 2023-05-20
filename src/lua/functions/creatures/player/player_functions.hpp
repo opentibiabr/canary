@@ -207,6 +207,10 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "addTibiaCoins", PlayerFunctions::luaPlayerAddTibiaCoins);
 			registerMethod(L, "Player", "removeTibiaCoins", PlayerFunctions::luaPlayerRemoveTibiaCoins);
 
+			registerMethod(L, "Player", "getTransferableCoins", PlayerFunctions::luaPlayerGetTransferableCoins);
+			registerMethod(L, "Player", "addTransferableCoins", PlayerFunctions::luaPlayerAddTransferableCoins);
+			registerMethod(L, "Player", "removeTransferableCoins", PlayerFunctions::luaPlayerRemoveTransferableCoins);
+
 			registerMethod(L, "Player", "hasBlessing", PlayerFunctions::luaPlayerHasBlessing);
 			registerMethod(L, "Player", "addBlessing", PlayerFunctions::luaPlayerAddBlessing);
 			registerMethod(L, "Player", "removeBlessing", PlayerFunctions::luaPlayerRemoveBlessing);
@@ -304,6 +308,9 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "hasGroupFlag", PlayerFunctions::luaPlayerHasGroupFlag);
 			registerMethod(L, "Player", "setGroupFlag", PlayerFunctions::luaPlayerSetGroupFlag);
 			registerMethod(L, "Player", "removeGroupFlag", PlayerFunctions::luaPlayerRemoveGroupFlag);
+
+			registerMethod(L, "Player", "addHazardSystemPoints", PlayerFunctions::luaPlayerAddHazardSystemPoints);
+			registerMethod(L, "Player", "getHazardSystemPoints", PlayerFunctions::luaPlayerGetHazardSystemPoints);
 
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
@@ -500,6 +507,10 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerAddTibiaCoins(lua_State* L);
 		static int luaPlayerRemoveTibiaCoins(lua_State* L);
 
+		static int luaPlayerGetTransferableCoins(lua_State* L);
+		static int luaPlayerAddTransferableCoins(lua_State* L);
+		static int luaPlayerRemoveTransferableCoins(lua_State* L);
+
 		static int luaPlayerHasBlessing(lua_State* L);
 		static int luaPlayerAddBlessing(lua_State* L);
 		static int luaPlayerRemoveBlessing(lua_State* L);
@@ -600,6 +611,10 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerHasGroupFlag(lua_State* L);
 		static int luaPlayerSetGroupFlag(lua_State* L);
 		static int luaPlayerRemoveGroupFlag(lua_State* L);
+
+		// Hazard system
+		static int luaPlayerAddHazardSystemPoints(lua_State* L);
+		static int luaPlayerGetHazardSystemPoints(lua_State* L);
 
 		friend class CreatureFunctions;
 };

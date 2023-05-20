@@ -1174,7 +1174,8 @@ void PlayerWheel::registerPlayerBonusData() {
 	}
 
 	if (m_player.getMana() > m_player.getMaxMana()) {
-		m_player.changeMana(-(m_player.getMana() - m_player.getMaxMana()));
+		int32_t difference = m_player.getMana() - m_player.getMaxMana();
+		m_player.changeMana(-difference);
 	}
 
 	onThink(false); // Not forcing the reload

@@ -2099,7 +2099,7 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 	}
 
 	// Hazard system experience
-	const Monster* monster = target->getMonster() ? target->getMonster() : nullptr;
+	const Monster* monster = target && target->getMonster() ? target->getMonster() : nullptr;
 	bool handleHazardExperience = monster && monster->isOnHazardSystem() && getHazardSystemPoints() > 0;
 	if (handleHazardExperience) {
 		exp += (exp * (1.75 * getHazardSystemPoints() * g_configManager().getNumber(HAZARD_EXP_BONUS_MULTIPLIER))) / 100.;

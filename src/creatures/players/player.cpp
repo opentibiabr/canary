@@ -2579,7 +2579,7 @@ void Player::death(Creature* lastHitCreature) {
 
 		sendStats();
 		sendSkills();
-		sendReLoginWindow(unfairFightReduction);
+		//sendReLoginWindow(unfairFightReduction);  //duplicate login?
 		sendBlessStatus();
 		if (getSkull() == SKULL_BLACK) {
 			health = 40;
@@ -2708,13 +2708,18 @@ void Player::despawn() {
 
 	getParent()->postRemoveNotification(this, nullptr, 0);
 
-	// g_game().removePlayer(this);  // Remove method due possible item clonation  --  Remover método devido a possível clonagem de itens
+	// g_game().removePlayer(this);
+
+//get temple position
+	getTown()->getTemplePosition();
 
 	// show player as pending
 	for (const auto &[key, player] : g_game().getPlayers()) {
 		player->notifyStatusChange(this, VIPSTATUS_PENDING, false);
 	}
 
+	setTemplePosition();  //set temple position
+	removeList();
 	setDead(true);
 }
 

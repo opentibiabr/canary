@@ -12,6 +12,7 @@
 
 #include "lua/scripts/luascript.h"
 #include "creatures/players/player.h"
+#include "creatures/players/wheel/wheel_definitions.hpp"
 #include "lua/creature/actions.h"
 #include "lua/creature/talkaction.h"
 #include "lua/scripts/scripts.h"
@@ -289,6 +290,13 @@ class Spell : public BaseSpell {
 			pzLocked = b;
 		}
 
+		// Wheel of destiny - Get:
+		bool getWheelOfDestinyUpgraded() const;
+		int32_t getWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t grade) const;
+		// Wheel of destiny - Set:
+		void setWheelOfDestinyUpgraded(bool value);
+		void setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t grade, int32_t value);
+
 		SpellType_t spellType = SPELL_UNDEFINED;
 
 	protected:
@@ -315,6 +323,10 @@ class Spell : public BaseSpell {
 		bool needTarget = false;
 		bool allowOnSelf = true;
 		bool pzLocked = false;
+
+		bool whellOfDestinyUpgraded = false;
+		int32_t wheelOfDestinyRegularBoost[static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)] = { 0 };
+		int32_t wheelOfDestinyUpgradedBoost[static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)] = { 0 };
 
 	private:
 		uint32_t mana = 0;

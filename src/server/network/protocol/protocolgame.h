@@ -457,7 +457,13 @@ class ProtocolGame final : public Protocol {
 
 		void getForgeInfoMap(const Item* item, std::map<uint16_t, std::map<uint8_t, uint16_t>> &itemsMap) const;
 
+		// Wheel
+		void parseOpenWheel(NetworkMessage &msg);
+		void sendOpenWheelWindow(uint32_t ownerId);
+		void parseSaveWheel(NetworkMessage &msg);
+
 		friend class Player;
+		friend class PlayerWheel;
 
 		phmap::flat_hash_set<uint32_t> knownCreatureSet;
 		Player* player = nullptr;

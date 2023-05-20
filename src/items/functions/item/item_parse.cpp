@@ -56,6 +56,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseMagicPoints(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseFieldAbsorbPercent(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseAbsorbPercent(tmpStrValue, valueAttribute, itemType);
+
 	ItemParse::parseSupressDrunk(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseField(tmpStrValue, attributeNode, valueAttribute, itemType);
 	ItemParse::parseReplaceable(tmpStrValue, valueAttribute, itemType);
@@ -235,6 +236,9 @@ void ItemParse::parseWeaponType(const std::string &tmpStrValue, pugi::xml_attrib
 		stringValue = asLowerCaseString(valueAttribute.as_string());
 		auto itemMap = WeaponTypesMap.find(stringValue);
 		if (itemMap != WeaponTypesMap.end()) {
+			if (tmpStrValue == "spellbook") {
+				itemType.spellbook = true;
+			}
 			itemType.weaponType = itemMap->second;
 		} else {
 			SPDLOG_WARN("[Items::parseItemNode] - Unknown weaponType {}", valueAttribute.as_string());

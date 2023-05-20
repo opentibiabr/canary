@@ -14,6 +14,7 @@
 #include "io/functions/iologindata_save_player.hpp"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
+#include "creatures/players/wheel/player_wheel.hpp"
 #include "io/ioprey.h"
 
 bool IOLoginData::authenticateAccountPassword(const std::string &accountIdentifier, const std::string &password, account::Account* account) {
@@ -675,6 +676,10 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 		}
 	}
 
+	// Wheel loading
+	player->wheel()->loadDBPlayerSlotPointsOnLogin();
+	player->wheel()->initializePlayerData();
+
 	player->initializePrey();
 	player->initializeTaskHunting();
 	player->updateBaseSpeed();
@@ -1182,6 +1187,11 @@ bool IOLoginData::savePlayer(Player* player) {
 
 	IOLoginDataSave::savePlayerForgeHistory(player);
 	IOLoginDataSave::savePlayerBosstiary(player);
+
+	if (!player->wheel()->saveDBPlayerSlotPointsOnLogout()) {
+		spdlog::warn("Failed to save player wheel info to player: {}", player->getName());
+		return false;
+	}
 
 	query.str(std::string());
 	query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();

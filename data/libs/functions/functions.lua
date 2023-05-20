@@ -909,3 +909,12 @@ function SetInfluenced(monsterType, monster, player, influencedLevel)
 	Game.addInfluencedMonster(monster)
 	monster:setForgeStack(influencedLevel)
 end
+
+function ReloadDataEvent(cid)
+	local player = Player(cid)
+	if not player then
+		return
+	end
+
+	player:reloadData()
+end

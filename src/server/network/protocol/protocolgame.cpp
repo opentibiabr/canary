@@ -23,6 +23,7 @@
 #include "creatures/monsters/monsters.h"
 #include "server/network/message/outputmessage.h"
 #include "creatures/players/player.h"
+#include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/grouping/familiars.h"
 #include "server/network/protocol/protocolgame.h"
 #include "game/scheduling/scheduler.h"
@@ -752,6 +753,12 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			break; // otclient extended opcode
 		case 0x60:
 			parseInventoryImbuements(msg);
+			break;
+		case 0x61:
+			parseOpenWheel(msg);
+			break;
+		case 0x62:
+			parseSaveWheel(msg);
 			break;
 		case 0x64:
 			parseAutoWalk(msg);
@@ -2083,7 +2090,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 		newmsg.add<uint32_t>(mtype->info.experience);
 		newmsg.add<uint16_t>(mtype->getBaseSpeed());
 		newmsg.add<uint16_t>(mtype->info.armor);
-		newmsg.addDouble(0); // 13.00 Mitigation
+		newmsg.addDouble(mtype->info.mitigation);
 	}
 
 	if (currentLevel > 2) {
@@ -3121,7 +3128,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
 	msg.addByte(0x00);
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i, true), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(0);
 	}
 
@@ -3217,16 +3224,20 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 
 	msg.add<uint16_t>(player->getArmor());
 	msg.add<uint16_t>(player->getDefense());
-	msg.addDouble(0); // Mitigation
+	// Wheel of destiny mitigation
+	msg.addDouble(player->getMitigation());
 
 	uint8_t combats = 0;
 	auto startCombats = msg.getBufferPosition();
 	msg.skipBytes(1);
 
-	const std::array<double_t, COMBAT_COUNT> &damageReduction = player->getFinalDamageReduction();
+	std::array<double_t, COMBAT_COUNT> damageReduction = player->getFinalDamageReduction();
 	static const Cipbia_Elementals_t cipbiaCombats[] = { CIPBIA_ELEMENTAL_PHYSICAL, CIPBIA_ELEMENTAL_ENERGY, CIPBIA_ELEMENTAL_EARTH, CIPBIA_ELEMENTAL_FIRE, CIPBIA_ELEMENTAL_UNDEFINED,
 														 CIPBIA_ELEMENTAL_LIFEDRAIN, CIPBIA_ELEMENTAL_UNDEFINED, CIPBIA_ELEMENTAL_HEALING, CIPBIA_ELEMENTAL_DROWN, CIPBIA_ELEMENTAL_ICE, CIPBIA_ELEMENTAL_HOLY, CIPBIA_ELEMENTAL_DEATH };
 	for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+		// Wheel of destiny resistance
+		damageReduction[i] += static_cast<int16_t> (player->wheel()->getResistance(indexToCombatType(i))) / 100.f;
+
 		auto finalDamage = std::clamp<uint8_t>(static_cast<uint8_t>(damageReduction[i]), 0, 255);
 		if (finalDamage != 0) {
 			msg.addByte(cipbiaCombats[i]);
@@ -3550,7 +3561,7 @@ void ProtocolGame::sendBasicData() {
 	msg.addByte(player->getVocation()->getClientId());
 
 	// Prey window
-	if (player->getVocation()->getId() == 0) {
+	if (player->getVocation()->getId() == 0 && player->getGroup()->id < account::GROUP_TYPE_GAMEMASTER) {
 		msg.addByte(0);
 	} else {
 		msg.addByte(1); // has reached Main (allow player to open Prey window)
@@ -4837,7 +4848,11 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			if (i != SKILL_CRITICAL_HIT_CHANCE) {
 				ss << std::showpos;
 			}
-			ss << it.abilities->skills[i] << '%';
+			if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
+				ss << (it.abilities->skills[i] / 100.) << '%';
+			} else {
+				ss << it.abilities->skills[i] << '%';
+			}
 
 			if (i != SKILL_CRITICAL_HIT_CHANCE) {
 				ss << std::noshowpos;
@@ -5660,6 +5675,8 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 
 	sendLootContainers();
 	sendBasicData();
+	// Wheel of destiny cooldown
+	player->wheel()->sendGiftOfLifeCooldown();
 
 	player->sendClientCheck();
 	player->sendGameNews();
@@ -6651,7 +6668,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 	}
 
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i, true), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(i));
 	}
 
@@ -7890,4 +7907,23 @@ void ProtocolGame::sendDoubleSoundEffect(
 
 	msg.addByte(0x00); // Breaking the effects loop
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::parseOpenWheel(NetworkMessage &msg) {
+	auto ownerId = msg.get<uint32_t>();
+	addGameTask(&Game::playerOpenWheel, player->getID(), ownerId);
+}
+
+void ProtocolGame::sendOpenWheelWindow(uint32_t ownerId) {
+	if (!player) {
+		return;
+	}
+
+	NetworkMessage msg;
+	player->wheel()->sendOpenWheelWindow(msg, ownerId);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
+	addGameTask(&Game::playerSaveWheel, player->getID(), msg);
 }

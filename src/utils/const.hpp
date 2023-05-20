@@ -31,6 +31,10 @@ static constexpr int32_t STORAGEVALUE_PROMOTION = 30018;
 static constexpr int32_t STORAGEVALUE_PODIUM = 30020;
 static constexpr int32_t STORAGEVALUE_DAILYREWARD = 14898;
 static constexpr int32_t STORAGEVALUE_BESTIARYKILLCOUNT = 61305000; // Can get up to 2000 storages!
+
+// Wheel of destiny
+static constexpr int32_t STORAGEVALUE_GIFT_OF_LIFE_COOLDOWN_WOD = 43200;
+
 // Reserved player storage key ranges;
 // [10000000 - 20000000];
 static constexpr int32_t PSTRG_RESERVED_RANGE_START = 10000000;

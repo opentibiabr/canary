@@ -158,6 +158,7 @@ enum ConditionParam_t {
 	CONDITION_PARAM_BUFF_DAMAGERECEIVED = 57,
 	CONDITION_PARAM_SOUND_TICK = 58,
 	CONDITION_PARAM_SOUND_ADD = 59,
+	CONDITION_PARAM_DRAIN_BODY = 60,
 };
 
 enum stats_t {
@@ -541,7 +542,13 @@ enum Vocation_t : uint16_t {
 	VOCATION_ELDER_DRUID = 6,
 	VOCATION_ROYAL_PALADIN = 7,
 	VOCATION_ELITE_KNIGHT = 8,
-	VOCATION_LAST = VOCATION_ELITE_KNIGHT
+	VOCATION_LAST = VOCATION_ELITE_KNIGHT,
+
+	// Cip tibia client ids
+	VOCATION_KNIGHT_CIP = 1,
+	VOCATION_PALADIN_CIP = 2,
+	VOCATION_SORCERER_CIP = 3,
+	VOCATION_DRUID_CIP = 4
 };
 
 enum FightMode_t : uint8_t {
@@ -1107,14 +1114,14 @@ enum SoundEffect_t : uint16_t {
 	ACTION_AIR_STRIKE = 2825,
 	ENV_WATER = 2828,
 	ENV_SNAKE_2 = 2829,
-	GOD_SPELL_KILL_ALL_MONSTERS = 10001, // No sound ingame
+	GOD_SPELL_KILL_ALL_MONSTERS = 10001 // No sound ingame
 };
 
 enum class SourceEffect_t : uint8_t {
 	GLOBAL = 0,
 	OWN = 1,
 	OTHERS = 2,
-	CREATURES = 3,
+	CREATURES = 3
 };
 
 // Structs
@@ -1301,6 +1308,20 @@ struct CombatDamage {
 		std::string exString;
 		bool fatal;
 
+		int32_t criticalDamage;
+		int32_t criticalChance;
+		int32_t damageMultiplier;
+		int32_t damageReductionMultiplier;
+		int32_t healingMultiplier;
+		int32_t manaLeech;
+		int32_t manaLeechChance;
+		int32_t lifeLeech;
+		int32_t lifeLeechChance;
+		int32_t healingLink;
+
+		std::string instantSpellName;
+		std::string runeSpellName;
+
 		CombatDamage() {
 			origin = ORIGIN_NONE;
 			primary.type = secondary.type = COMBAT_NONE;
@@ -1310,6 +1331,18 @@ struct CombatDamage {
 			extension = false;
 			exString = "";
 			fatal = false;
+			criticalDamage = 0;
+			criticalChance = 0;
+			damageMultiplier = 0;
+			damageReductionMultiplier = 0;
+			healingMultiplier = 0;
+			manaLeech = 0;
+			manaLeechChance = 0;
+			lifeLeech = 0;
+			lifeLeechChance = 0;
+			healingLink = 0;
+			instantSpellName = "";
+			runeSpellName = "";
 		}
 };
 

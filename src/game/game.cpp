@@ -19,6 +19,7 @@
 #include "game/functions/game_reload.hpp"
 #include "lua/global/globalevent.h"
 #include "io/iologindata.h"
+#include "io/io_wheel.hpp"
 #include "io/iomarket.h"
 #include "items/items.h"
 #include "lua/scripts/lua_environment.hpp"
@@ -33,6 +34,7 @@
 #include "lua/modules/modules.h"
 #include "creatures/players/imbuements/imbuements.h"
 #include "creatures/players/account/account.hpp"
+#include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
 #include "server/network/webhook/webhook.h"
@@ -94,6 +96,9 @@ Game::Game() {
 	offlineTrainingWindow.defaultEscapeButton = 1;
 	offlineTrainingWindow.defaultEnterButton = 0;
 	offlineTrainingWindow.priority = true;
+
+	// Create instance of IOWheel to Game class
+	m_IOWheel = std::make_unique<IOWheel>();
 }
 
 Game::~Game() {
@@ -245,6 +250,9 @@ void Game::setGameState(GameState_t newState) {
 			loadPlayersRecord();
 
 			g_globalEvents().startup();
+
+			// Initialize wheel data
+			m_IOWheel->initializeGlobalData();
 			break;
 		}
 
@@ -5459,6 +5467,11 @@ void Game::updateCreatureIcon(const Creature* creature) {
 }
 
 void Game::reloadCreature(const Creature* creature) {
+	if (!creature) {
+		spdlog::error("[{}] Creature is nullptr", __FUNCTION__);
+		return;
+	}
+
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), false, true);
 	for (Creature* spectator : spectators) {
@@ -5573,6 +5586,7 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				canHeal = true;
 			}
 		}
+
 		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
 
 		damage.primary.value = -damage.primary.value;
@@ -5608,6 +5622,7 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				canHeal = true;
 			}
 		}
+
 		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
 
 		damage.secondary.value = -damage.secondary.value;
@@ -5724,6 +5739,82 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 	}
 }
 
+// Wheel of destiny combat helpers
+void Game::applyWheelOfDestinyHealing(CombatDamage& damage, Player* attackerPlayer, Creature* target) {
+	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100.;
+
+	if (attackerPlayer) {
+		damage.primary.value += attackerPlayer->wheel()->getStat(WheelStat_t::HEALING);
+
+		if (damage.secondary.value != 0) {
+			damage.secondary.value += attackerPlayer->wheel()->getStat(WheelStat_t::HEALING);
+		}
+
+		if (damage.healingLink > 0) {
+			CombatDamage tmpDamage;
+			tmpDamage.primary.value = (damage.primary.value * damage.healingLink) / 100;
+			tmpDamage.primary.type = COMBAT_HEALING;
+			combatChangeHealth(attackerPlayer, attackerPlayer, tmpDamage);
+		}
+
+		if (attackerPlayer->wheel()->getInstant("Blessing of the Grove")) {
+			damage.primary.value += (damage.primary.value * attackerPlayer->wheel()->checkBlessingGroveHealingByTarget(target)) / 100.;
+		}
+	}
+}
+
+void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage& damage, Player* attackerPlayer, Creature* target) {
+	if (damage.damageMultiplier > 0) {
+		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100.;
+		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100.;
+	}
+	if (attackerPlayer) {
+		damage.primary.value -= attackerPlayer->wheel()->getStat(WheelStat_t::DAMAGE);
+		if (damage.secondary.value != 0) {
+			damage.secondary.value -= attackerPlayer->wheel()->getStat(WheelStat_t::DAMAGE);
+		}
+		if (damage.instantSpellName == "Twin Burst") {
+			int32_t damageBonus = attackerPlayer->wheel()->checkTwinBurstByTarget(target);
+			if (damageBonus != 0) {
+				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+			}
+		}
+		if (damage.instantSpellName == "Executioner's Throw") {
+			int32_t damageBonus = attackerPlayer->wheel()->checkExecutionersThrow(target);
+			if (damageBonus != 0) {
+				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+			}
+		}
+	}
+}
+
+int32_t Game::applyHealthChange(CombatDamage& damage, Creature* target) {
+	int32_t targetHealth = target->getHealth();
+
+	// Wheel of destiny (Gift of Life)
+	if (Player* targetPlayer = target->getPlayer()) {
+		if (targetPlayer->wheel()->getInstant("Gift of Life") && targetPlayer->wheel()->getGiftOfCooldown() == 0 && (damage.primary.value + damage.secondary.value) >= targetHealth) {
+			int32_t overkillMultiplier = (damage.primary.value + damage.secondary.value) - targetHealth;
+			overkillMultiplier = (overkillMultiplier * 100) / targetPlayer->getMaxHealth();
+			if (overkillMultiplier <= targetPlayer->wheel()->getGiftOfLifeOverkill()) {
+				targetPlayer->wheel()->checkGiftOfLife();
+				targetHealth = target->getHealth();
+			}
+		}
+	}
+
+	if (damage.primary.value >= targetHealth) {
+		damage.primary.value = targetHealth;
+		damage.secondary.value = 0;
+	} else if (damage.secondary.value) {
+		damage.secondary.value = std::min<int32_t>(damage.secondary.value, targetHealth - damage.primary.value);
+	}
+
+	return targetHealth;
+}
+
 bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent /*= false*/) {
 	using namespace std;
 	const Position &targetPos = target->getPosition();
@@ -5754,6 +5845,8 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				return combatChangeHealth(attacker, target, damage);
 			}
 		}
+
+		applyWheelOfDestinyHealing(damage, attackerPlayer, target);
 
 		auto realHealthChange = target->getHealth();
 		target->gainHealth(attacker, damage.primary.value);
@@ -5848,6 +5941,8 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		if (attackerPlayer && targetPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
 			return false;
 		}
+
+		applyWheelOfDestinyEffectsToDamage(damage, attackerPlayer, target);
 
 		damage.primary.value = std::abs(damage.primary.value);
 		damage.secondary.value = std::abs(damage.secondary.value);
@@ -6026,7 +6121,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 		}
 
-		auto targetHealth = target->getHealth();
+		auto targetHealth = applyHealthChange(damage, target);
 		if (damage.primary.value >= targetHealth) {
 			damage.primary.value = targetHealth;
 			damage.secondary.value = 0;
@@ -6078,8 +6173,8 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		if (attackerPlayer) {
 			if (!damage.extension && damage.origin != ORIGIN_CONDITION) {
 				applyCharmRune(targetMonster, attackerPlayer, target, realDamage);
-				applyLifeLeech(attackerPlayer, targetMonster, damage, realDamage);
-				applyManaLeech(attackerPlayer, targetMonster, damage, realDamage);
+				applyLifeLeech(attackerPlayer, targetMonster, target, damage, realDamage);
+				applyManaLeech(attackerPlayer, targetMonster, target, damage, realDamage);
 			}
 			updatePlayerPartyHuntAnalyzer(damage, attackerPlayer);
 		}
@@ -6273,11 +6368,16 @@ void Game::applyCharmRune(
 	}
 }
 
+// Mana leech
 void Game::applyManaLeech(
-	Player* attackerPlayer, const Monster* targetMonster, const CombatDamage &damage, const int32_t &realDamage
+	Player* attackerPlayer, const Monster* targetMonster, Creature* target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
-	uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE);
-	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT);
+	// Wheel of destiny bonus - mana leech chance and amount
+	auto wheelLeechChance = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_MANA_LEECH_CHANCE);
+	auto wheelLeechAmount = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_MANA_LEECH_AMOUNT);
+
+	uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE) + wheelLeechChance + damage.manaLeechChance;
+	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) + wheelLeechAmount + damage.manaLeech;
 	if (normal_random(0, 100) >= manaChance) {
 		return;
 	}
@@ -6301,11 +6401,15 @@ void Game::applyManaLeech(
 	Combat::doCombatMana(nullptr, attackerPlayer, tmpDamage, tmpParams);
 }
 
+// Life leech
 void Game::applyLifeLeech(
-	Player* attackerPlayer, const Monster* targetMonster, const CombatDamage &damage, const int32_t &realDamage
+	Player* attackerPlayer, const Monster* targetMonster, Creature* target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
-	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE);
-	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT);
+	// Wheel of destiny bonus - life leech chance and amount
+	auto wheelLeechChance = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_LIFE_LEECH_CHANCE);
+	auto wheelLeechAmount = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT);
+	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE) + wheelLeechChance + damage.lifeLeechChance;
+	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + wheelLeechAmount + damage.lifeLeech;
 	if (normal_random(0, 100) >= lifeChance) {
 		return;
 	}
@@ -6329,7 +6433,7 @@ void Game::applyLifeLeech(
 }
 
 int32_t Game::calculateLeechAmount(const int32_t &realDamage, const uint16_t &skillAmount, int targetsAffected) const {
-	auto intermediateResult = realDamage * (skillAmount / 100.0) * (0.1 * targetsAffected + 0.9) / targetsAffected;
+	auto intermediateResult = realDamage * (skillAmount / 10000.0) * (0.1 * targetsAffected + 0.9) / targetsAffected;
 	return std::clamp<int32_t>(static_cast<int32_t>(std::lround(intermediateResult)), 0, realDamage);
 }
 
@@ -8443,6 +8547,44 @@ void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpe
 
 	player->sendInventoryImbuements(itemsWithImbueSlotMap);
 }
+
+void Game::playerOpenWheel(uint32_t playerId, uint32_t ownerId)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	if (playerId != ownerId) {
+		spdlog::error("[{}] player {} is trying to open wheel of another player", __FUNCTION__, player->getName());
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	player->wheel()->sendOpenWheelWindow(ownerId);
+	player->updateUIExhausted();
+}
+
+void Game::playerSaveWheel(uint32_t playerId, NetworkMessage& msg)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	player->wheel()->saveSlotPointsOnPressSaveButton(msg);
+	player->updateUIExhausted();
+}
+
 /* Player Methods end
 ********************/
 
@@ -8974,4 +9116,12 @@ bool Game::addItemStoreInbox(const Player* player, uint32_t itemId) {
 	}
 
 	return true;
+}
+
+std::unique_ptr<IOWheel>& Game::getIOWheel() {
+	return m_IOWheel;
+}
+
+const std::unique_ptr<IOWheel>& Game::getIOWheel() const {
+	return m_IOWheel;
 }

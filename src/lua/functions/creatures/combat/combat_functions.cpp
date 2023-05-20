@@ -153,6 +153,8 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 	Creature* creature = getCreature(L, 2);
 
 	const LuaVariant &variant = getVariant(L, 3);
+	combat->setSourceInstantSpellName(variant.instantName);
+	combat->setSourceRuneSpellName(variant.runeName);
 	switch (variant.type) {
 		case VARIANT_NUMBER: {
 			Creature* target = g_game().getCreatureByID(variant.number);

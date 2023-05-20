@@ -191,7 +191,7 @@ class Npc final : public Creature {
 
 		bool ignoreHeight;
 
-		SpectatorVec playerSpectators;
+		SpectatorHashSet playerSpectators;
 		Position masterPos;
 
 		friend class LuaScriptInterface;

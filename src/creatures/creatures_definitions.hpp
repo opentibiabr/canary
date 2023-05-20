@@ -96,6 +96,7 @@ enum ConditionType_t {
 	CONDITION_SPELLCOOLDOWN = 1 << 26,
 	CONDITION_SPELLGROUPCOOLDOWN = 1 << 27,
 	CONDITION_ROOTED = 1 << 28,
+	CONDITION_FEARED = 1 << 29
 };
 
 enum ConditionParam_t {
@@ -158,7 +159,7 @@ enum ConditionParam_t {
 	CONDITION_PARAM_BUFF_DAMAGERECEIVED = 57,
 	CONDITION_PARAM_SOUND_TICK = 58,
 	CONDITION_PARAM_SOUND_ADD = 59,
-	CONDITION_PARAM_DRAIN_BODY = 60,
+	CONDITION_PARAM_CASTER_POSITION = 60
 };
 
 enum stats_t {
@@ -491,124 +492,6 @@ enum class ForgeClassifications_t : uint8_t {
 	FORGE_FIENDISH_MONSTER = 2,
 };
 
-enum GameFeature : uint8_t {
-	GameProtocolChecksum = 1,
-	GameAccountNames = 2,
-	GameChallengeOnLogin = 3,
-	GamePenalityOnDeath = 4,
-	GameNameOnNpcTrade = 5,
-	GameDoubleFreeCapacity = 6,
-	GameDoubleExperience = 7,
-	GameTotalCapacity = 8,
-	GameSkillsBase = 9,
-	GamePlayerRegenerationTime = 10,
-	GameChannelPlayerList = 11,
-	GamePlayerMounts = 12,
-	GameEnvironmentEffect = 13,
-	GameCreatureEmblems = 14,
-	GameItemAnimationPhase = 15,
-	GameMagicEffectU16 = 16,
-	GamePlayerMarket = 17,
-	GameSpritesU32 = 18,
-	GameTileAddThingWithStackpos = 19,
-	GameOfflineTrainingTime = 20,
-	GamePurseSlot = 21,
-	GameFormatCreatureName = 22,
-	GameSpellList = 23,
-	GameClientPing = 24,
-	GameExtendedClientPing = 25,
-	GameDoubleHealth = 28,
-	GameDoubleSkills = 29,
-	GameChangeMapAwareRange = 30,
-	GameMapMovePosition = 31,
-	GameAttackSeq = 32,
-	GameBlueNpcNameColor = 33,
-	GameDiagonalAnimatedText = 34,
-	GameLoginPending = 35,
-	GameNewSpeedLaw = 36,
-	GameForceFirstAutoWalkStep = 37,
-	GameMinimapRemove = 38,
-	GameDoubleShopSellAmount = 39,
-	GameContainerPagination = 40,
-	GameThingMarks = 41,
-	GameLooktypeU16 = 42,
-	GamePlayerStamina = 43,
-	GamePlayerAddons = 44,
-	GameMessageStatements = 45,
-	GameMessageLevel = 46,
-	GameNewFluids = 47,
-	GamePlayerStateU16 = 48,
-	GameNewOutfitProtocol = 49,
-	GamePVPMode = 50,
-	GameWritableDate = 51,
-	GameAdditionalVipInfo = 52,
-	GameBaseSkillU16 = 53,
-	GameCreatureIcons = 54,
-	GameHideNpcNames = 55,
-	GameSpritesAlphaChannel = 56,
-	GamePremiumExpiration = 57,
-	GameBrowseField = 58,
-	GameEnhancedAnimations = 59,
-	GameOGLInformation = 60,
-	GameMessageSizeCheck = 61,
-	GamePreviewState = 62,
-	GameLoginPacketEncryption = 63,
-	GameClientVersion = 64,
-	GameContentRevision = 65,
-	GameExperienceBonus = 66,
-	GameAuthenticator = 67,
-	GameUnjustifiedPoints = 68,
-	GameSessionKey = 69,
-	GameDeathType = 70,
-	GameIdleAnimations = 71,
-	GameKeepUnawareTiles = 72,
-	GameIngameStore = 73,
-	GameIngameStoreHighlights = 74,
-	GameIngameStoreServiceType = 75,
-	GameAdditionalSkills = 76,
-	GameDistanceEffectU16 = 77,
-	GamePrey = 78,
-	GameDoubleMagicLevel = 79,
-
-	GameExtendedOpcode = 80,
-	GameMinimapLimitedToSingleFloor = 81,
-	GameSendWorldName = 82,
-
-	GameDoubleLevel = 83,
-	GameDoubleSoul = 84,
-	GameDoublePlayerGoodsMoney = 85,
-	GameCreatureWalkthrough = 86,
-	GameDoubleTradeMoney = 87,
-	GameSequencedPackets = 88,
-	GameTibia12Protocol = 89,
-
-	// 90-99 otclientv8 features
-	GameNewWalking = 90,
-	GameSlowerManualWalking = 91,
-
-	GameItemTooltip = 93,
-
-	GameBot = 95,
-	GameBiggerMapCache = 96,
-	GameForceLight = 97,
-	GameNoDebug = 98,
-	GameBotProtection = 99,
-
-	// Custom features for customer
-	GameFasterAnimations = 101,
-	GameCenteredOutfits = 102,
-	GameSendIdentifiers = 103,
-	GameWingsAndAura = 104,
-	GamePlayerStateU32 = 105,
-	GameOutfitShaders = 106,
-
-	// advanced features
-	GamePacketSizeU32 = 110,
-	GamePacketCompression = 111,
-
-	LastGameFeature = 120
-};
-
 enum OperatingSystem_t : uint8_t {
 	CLIENTOS_NONE = 0,
 
@@ -622,16 +505,6 @@ enum OperatingSystem_t : uint8_t {
 	CLIENTOS_OTCLIENT_LINUX = 10,
 	CLIENTOS_OTCLIENT_WINDOWS = 11,
 	CLIENTOS_OTCLIENT_MAC = 12,
-
-	// by default OTCv8 uses CLIENTOS_WINDOWS for backward compatibility
-	// for correct value enable g_game.enableFeature(GameExtendedOpcode)
-	// in modules/game_features/features.lua
-	CLIENTOS_OTCLIENTV8_LINUX = 20,
-	CLIENTOS_OTCLIENTV8_WINDOWS = 21,
-	CLIENTOS_OTCLIENTV8_MAC = 22,
-	CLIENTOS_OTCLIENTV8_ANDROID = 23,
-	CLIENTOS_OTCLIENTV8_IOS = 24,
-	CLIENTOS_OTCLIENTV8_WEB = 25,
 };
 
 enum SpellGroup_t : uint8_t {
@@ -1236,122 +1109,14 @@ enum SoundEffect_t : uint16_t {
 	ACTION_AIR_STRIKE = 2825,
 	ENV_WATER = 2828,
 	ENV_SNAKE_2 = 2829,
-	GOD_SPELL_KILL_ALL_MONSTERS = 10001 // No sound ingame
+	GOD_SPELL_KILL_ALL_MONSTERS = 10001, // No sound ingame
 };
 
 enum class SourceEffect_t : uint8_t {
 	GLOBAL = 0,
 	OWN = 1,
 	OTHERS = 2,
-	CREATURES = 3
-};
-
-enum WheelOfDestinyStage_t : uint8_t {
-	WHEEL_OF_DESTINY_STAGE_GIFT_OF_LIFE = 0,
-	WHEEL_OF_DESTINY_STAGE_COMBAT_MASTERY = 1,
-	WHEEL_OF_DESTINY_STAGE_BLESSING_OF_THE_GROVE = 2,
-	WHEEL_OF_DESTINY_STAGE_DRAIN_BODY = 3,
-	WHEEL_OF_DESTINY_STAGE_BEAM_MASTERY = 4,
-	WHEEL_OF_DESTINY_STAGE_DIVINE_EMPOWERMENT = 5,
-	WHEEL_OF_DESTINY_STAGE_TWIN_BURST = 6,
-	WHEEL_OF_DESTINY_STAGE_EXECUTIONERS_THROW = 7,
-	WHEEL_OF_DESTINY_STAGE_AVATAR_OF_LIGHT = 8,
-	WHEEL_OF_DESTINY_STAGE_AVATAR_OF_NATURE = 9,
-	WHEEL_OF_DESTINY_STAGE_AVATAR_OF_STEEL = 10,
-	WHEEL_OF_DESTINY_STAGE_AVATAR_OF_STORM = 11,
-
-	WHEEL_OF_DESTINY_STAGE_COUNT = 12
-};
-
-enum WheelOfDestinyOnThink_t : uint8_t {
-	WHEEL_OF_DESTINY_ONTHINK_BATTLE_INSTINCT = 0,
-	WHEEL_OF_DESTINY_ONTHINK_POSITIONAL_TATICS = 1,
-	WHEEL_OF_DESTINY_ONTHINK_BALLISTIC_MASTERY = 2,
-	WHEEL_OF_DESTINY_ONTHINK_COMBAT_MASTERY = 3,
-	WHEEL_OF_DESTINY_ONTHINK_FOCUS_MASTERY = 4,
-	WHEEL_OF_DESTINY_ONTHINK_GIFT_OF_LIFE = 5,
-	WHEEL_OF_DESTINY_ONTHINK_DIVINE_EMPOWERMENT = 6,
-	WHEEL_OF_DESTINY_ONTHINK_AVATAR = 7,
-
-	WHEEL_OF_DESTINY_ONTHINK_COUNT = 8
-};
-
-enum WheelOfDestinyStat_t : uint8_t {
-	WHEEL_OF_DESTINY_STAT_HEALTH = 0,
-	WHEEL_OF_DESTINY_STAT_MANA = 1,
-	WHEEL_OF_DESTINY_STAT_CAPACITY = 2,
-	WHEEL_OF_DESTINY_STAT_MITIGATION = 3,
-	WHEEL_OF_DESTINY_STAT_MELEE = 4,
-	WHEEL_OF_DESTINY_STAT_DISTANCE = 5,
-	WHEEL_OF_DESTINY_STAT_MAGIC = 6,
-	WHEEL_OF_DESTINY_STAT_LIFE_LEECH = 7,
-	WHEEL_OF_DESTINY_STAT_MANA_LEECH = 8,
-	WHEEL_OF_DESTINY_STAT_HEALING = 9,
-	WHEEL_OF_DESTINY_STAT_DAMAGE = 10,
-	WHEEL_OF_DESTINY_STAT_LIFE_LEECH_CHANCE = 11,
-	WHEEL_OF_DESTINY_STAT_MANA_LEECH_CHANCE = 12,
-
-	WHEEL_OF_DESTINY_STAT_COUNT = 13
-};
-
-enum WheelOfDestinyMajor_t : uint8_t {
-	WHEEL_OF_DESTINY_MAJOR_MELEE = 0,
-	WHEEL_OF_DESTINY_MAJOR_DISTANCE = 1,
-	WHEEL_OF_DESTINY_MAJOR_SHIELD = 2,
-	WHEEL_OF_DESTINY_MAJOR_MAGIC = 3,
-	WHEEL_OF_DESTINY_MAJOR_HOLY_RESISTANCE = 4,
-	WHEEL_OF_DESTINY_MAJOR_CRITICAL_DMG = 5,
-	WHEEL_OF_DESTINY_MAJOR_PHYSICAL_DMG = 6,
-	WHEEL_OF_DESTINY_MAJOR_HOLY_DMG = 7,
-	WHEEL_OF_DESTINY_MAJOR_CRITICAL_DMG_2 = 8,
-	WHEEL_OF_DESTINY_MAJOR_DEFENSE = 9,
-	WHEEL_OF_DESTINY_MAJOR_DAMAGE = 10,
-
-	WHEEL_OF_DESTINY_MAJOR_COUNT = 11
-};
-
-enum WheelOfDestinyInstant_t : uint8_t {
-	WHEEL_OF_DESTINY_INSTANT_BATTLE_INSTINCT = 0,
-	WHEEL_OF_DESTINY_INSTANT_BATTLE_HEALING = 1,
-	WHEEL_OF_DESTINY_INSTANT_POSITIONAL_TATICS = 2,
-	WHEEL_OF_DESTINY_INSTANT_BALLISTIC_MASTERY = 3,
-	WHEEL_OF_DESTINY_INSTANT_HEALING_LINK = 4,
-	WHEEL_OF_DESTINY_INSTANT_RUNIC_MASTERY = 5,
-	WHEEL_OF_DESTINY_INSTANT_FOCUS_MASTERY = 6,
-
-	WHEEL_OF_DESTINY_INSTANT_COUNT = 7
-};
-
-enum WheelOfDestinyAvatarSkill_t : uint8_t {
-	WHEEL_OF_DESTINY_AVATAR_SKILL_NONE = 0,
-	WHEEL_OF_DESTINY_AVATAR_SKILL_DAMAGE_REDUCTION = 1,
-	WHEEL_OF_DESTINY_AVATAR_SKILL_CRITICAL_CHANCE = 2,
-	WHEEL_OF_DESTINY_AVATAR_SKILL_CRITICAL_DAMAGE = 3
-};
-
-enum WheelOfDestinySpellGrade_t : uint8_t {
-	WHEEL_OF_DESTINY_SPELL_GRADE_NONE = 0,
-	WHEEL_OF_DESTINY_SPELL_GRADE_REGULAR = 1,
-	WHEEL_OF_DESTINY_SPELL_GRADE_UPGRADED = 2,
-	WHEEL_OF_DESTINY_SPELL_GRADE_MAX = 3 // This one is used only on LUA
-};
-
-enum WheelOfDestinySpellBoost_t : uint8_t {
-	WHEEL_OF_DESTINY_SPELL_BOOST_MANA = 0,
-	WHEEL_OF_DESTINY_SPELL_BOOST_COOLDOWN = 1,
-	WHEEL_OF_DESTINY_SPELL_BOOST_GROUP_COOLDOWN = 2,
-	WHEEL_OF_DESTINY_SPELL_BOOST_SECONDARY_GROUP_COOLDOWN = 3,
-	WHEEL_OF_DESTINY_SPELL_BOOST_MANA_LEECH = 4,
-	WHEEL_OF_DESTINY_SPELL_BOOST_MANA_LEECH_CHANCE = 5,
-	WHEEL_OF_DESTINY_SPELL_BOOST_LIFE_LEECH = 6,
-	WHEEL_OF_DESTINY_SPELL_BOOST_LIFE_LEECH_CHANCE = 7,
-	WHEEL_OF_DESTINY_SPELL_BOOST_DAMAGE = 8,
-	WHEEL_OF_DESTINY_SPELL_BOOST_DAMAGE_REDUCTION = 9,
-	WHEEL_OF_DESTINY_SPELL_BOOST_HEAL = 10,
-	WHEEL_OF_DESTINY_SPELL_BOOST_CRITICAL_DAMAGE = 11,
-	WHEEL_OF_DESTINY_SPELL_BOOST_CRITICAL_CHANCE = 12,
-
-	WHEEL_OF_DESTINY_SPELL_BOOST_COUNT = 13
+	CREATURES = 3,
 };
 
 // Structs
@@ -1538,20 +1303,6 @@ struct CombatDamage {
 		std::string exString;
 		bool fatal;
 
-		int32_t criticalDamage;
-		int32_t criticalChance;
-		int32_t damageMultiplier;
-		int32_t damageReductionMultiplier;
-		int32_t healingMultiplier;
-		int32_t manaLeech;
-		int32_t manaLeechChance;
-		int32_t lifeLeech;
-		int32_t lifeLeechChance;
-		int32_t healingLink;
-
-		std::string instantSpellName;
-		std::string runeSpellName;
-
 		CombatDamage() {
 			origin = ORIGIN_NONE;
 			primary.type = secondary.type = COMBAT_NONE;
@@ -1561,18 +1312,6 @@ struct CombatDamage {
 			extension = false;
 			exString = "";
 			fatal = false;
-			criticalDamage = 0;
-			criticalChance = 0;
-			damageMultiplier = 0;
-			damageReductionMultiplier = 0;
-			healingMultiplier = 0;
-			manaLeech = 0;
-			manaLeechChance = 0;
-			lifeLeech = 0;
-			lifeLeechChance = 0;
-			healingLink = 0;
-			instantSpellName = "";
-			runeSpellName = "";
 		}
 };
 

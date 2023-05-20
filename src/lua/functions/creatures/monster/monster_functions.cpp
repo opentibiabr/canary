@@ -93,7 +93,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 			}
 		}
 		// Reload creature on spectators
-		SpectatorVec spectators;
+		SpectatorHashSet spectators;
 		g_game().map.getSpectators(spectators, monster->getPosition(), true);
 		for (Creature* spectator : spectators) {
 			if (Player* tmpPlayer = spectator->getPlayer()) {
@@ -306,12 +306,11 @@ int MonsterFunctions::luaMonsterGetTargetCount(lua_State* L) {
 }
 
 int MonsterFunctions::luaMonsterChangeTargetDistance(lua_State* L) {
-	// monster:changeTargetDistance(distance[, duration = 12000])
+	// monster:changeTargetDistance(distance)
 	Monster* monster = getUserdata<Monster>(L, 1);
 	if (monster) {
 		int32_t distance = getNumber<int32_t>(L, 2, 1);
-		uint32_t duration = getNumber<uint32_t>(L, 3, 12000);
-		pushBoolean(L, monster->changeTargetDistance(distance, duration));
+		pushBoolean(L, monster->changeTargetDistance(distance));
 	} else {
 		lua_pushnil(L);
 	}

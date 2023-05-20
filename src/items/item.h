@@ -448,9 +448,6 @@ class Item : virtual public Thing, public ItemProperties {
 		bool isQuiver() const {
 			return items[id].isQuiver();
 		}
-		bool isSpellBook() const {
-			return items[id].isSpellBook();
-		}
 
 		const std::string &getName() const {
 			if (hasAttribute(ItemAttribute_t::NAME)) {
@@ -578,7 +575,7 @@ class Item : virtual public Thing, public ItemProperties {
 		 * @param imbuementId Imbuement id to decay
 		 * @param duration New duration
 		 */
-		void decayImbuementTime(uint8_t slot, uint16_t imbuementId, uint64_t duration) {
+		void decayImbuementTime(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 			return setImbuement(slot, imbuementId, duration);
 		}
 		void clearImbuement(uint8_t slot, uint16_t imbuementId) {

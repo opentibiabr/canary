@@ -153,7 +153,7 @@ void Module::clearEvent() {
 }
 
 void Module::executeOnRecvbyte(Player* player, NetworkMessage &msg) {
-	// onRecvbyte(player, msg, recvbyte)
+	// onAdvance(player, skill, oldLevel, newLevel)
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("Call stack overflow. Too many lua script calls being nested {}", player->getName());
 		return;

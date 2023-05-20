@@ -297,16 +297,6 @@ void ProtocolGame::release() {
 }
 
 void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
-	// OTCv8 features and extended opcodes
-	if (otclientV8 || operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
-		if (otclientV8)
-			sendFeatures();
-		NetworkMessage opcodeMessage;
-		opcodeMessage.addByte(0x32);
-		opcodeMessage.addByte(0x00);
-		opcodeMessage.add<uint16_t>(0x00);
-		writeToOutputBuffer(opcodeMessage);
-	}
 	// dispatcher thread
 	Player* foundPlayer = g_game().getPlayerUniqueLogin(name);
 	if (!foundPlayer) {
@@ -399,9 +389,9 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		/* if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
+		if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
 			player->registerCreatureEvent("ExtendedOpcode");
-		}*/
+		}
 
 		player->lastIP = player->getIP();
 		player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
@@ -504,7 +494,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	// Old protocol support
 	oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL) && version <= 1100;
 
-	if (oldProtocol || otclientV8) {
+	if (oldProtocol) {
 		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
 	} else if (operatingSystem <= CLIENTOS_OTCLIENT_MAC) {
 		setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
@@ -562,12 +552,6 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	if (challengeTimestamp != timeStamp || challengeRandom != randNumber) {
 		disconnect();
 		return;
-	}
-
-	// OTCv8 version detection
-	uint16_t otcV8StringLength = msg.get<uint16_t>();
-	if (otcV8StringLength == 5 && msg.getString(5) == "OTCv8") {
-		otclientV8 = msg.get<uint16_t>(); // 253, 260, 261, ...
 	}
 
 	if (!oldProtocol && clientVersion != CLIENT_VERSION) {
@@ -2103,7 +2087,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 		newmsg.add<uint32_t>(mtype->info.experience);
 		newmsg.add<uint16_t>(mtype->getBaseSpeed());
 		newmsg.add<uint16_t>(mtype->info.armor);
-		newmsg.addDouble(mtype->info.mitigation);
+		newmsg.addDouble(0); // 13.00 Mitigation
 	}
 
 	if (currentLevel > 2) {
@@ -2135,9 +2119,6 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 }
 
 void ProtocolGame::addBestiaryTrackerList(NetworkMessage &msg) {
-	if (oldProtocol) {
-		return;
-	}
 	uint16_t thisrace = msg.get<uint16_t>();
 	std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 	auto it = mtype_list.find(thisrace);
@@ -3254,7 +3235,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 
 	msg.add<uint16_t>(player->getArmor());
 	msg.add<uint16_t>(player->getDefense());
-	msg.addDouble(player->getMitigation()); // Migitation
+	msg.addDouble(0); // Mitigation
 
 	uint8_t combats = 0;
 	auto startCombats = msg.getBufferPosition();
@@ -4482,27 +4463,6 @@ void ProtocolGame::sendForgingData() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendWheelOfDestinyGiftOfLifeCooldown() {
-	if (!player || oldProtocol) {
-		return;
-	}
-
-	NetworkMessage msg;
-	msg.addByte(0x5E);
-	msg.addByte(0x01); // Gift of life ID
-	msg.addByte(0x00); // Cooldown ENUM
-	msg.add<uint32_t>(player->getWheelOfDestinyGiftOfCooldown());
-	msg.add<uint32_t>(player->getWheelOfDestinyGiftOfLifeTotalCooldown());
-	// Checking if the cooldown if decreasing or it's stopped
-	if (player->getZone() != ZONE_PROTECTION && player->hasCondition(CONDITION_INFIGHT)) {
-		msg.addByte(0x01);
-	} else {
-		msg.addByte(0x00);
-	}
-
-	writeToOutputBuffer(msg);
-}
-
 void ProtocolGame::sendOpenForge() {
 	// We will use it when sending the bytes to send the item information to the client
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
@@ -4898,11 +4858,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			if (i != SKILL_CRITICAL_HIT_CHANCE) {
 				ss << std::showpos;
 			}
-			if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
-				ss << (it.abilities->skills[i] / 100.) << '%';
-			} else {
-				ss << it.abilities->skills[i] << '%';
-			}
+			ss << it.abilities->skills[i] << '%';
 
 			if (i != SKILL_CRITICAL_HIT_CHANCE) {
 				ss << std::noshowpos;
@@ -5670,10 +5626,10 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	sendSkills();
 	sendBlessStatus();
 	sendPremiumTrigger();
+	sendItemsPrice();
 	sendPreyPrices();
 	player->sendPreyData();
 	player->sendTaskHuntingData();
-	sendItemsPrice();
 	sendForgingData();
 
 	// gameworld light-settings
@@ -5725,7 +5681,6 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 
 	sendLootContainers();
 	sendBasicData();
-	sendWheelOfDestinyGiftOfLifeCooldown();
 
 	player->sendClientCheck();
 	player->sendGameNews();
@@ -6945,9 +6900,6 @@ void ProtocolGame::RemoveTileThing(NetworkMessage &msg, const Position &pos, uin
 }
 
 void ProtocolGame::sendKillTrackerUpdate(Container* corpse, const std::string &name, const Outfit_t creatureOutfit) {
-	if (!player || oldProtocol) {
-		return;
-	}
 	bool isCorpseEmpty = corpse->empty();
 
 	NetworkMessage msg;
@@ -7212,28 +7164,6 @@ void ProtocolGame::parseExtendedOpcode(NetworkMessage &msg) {
 
 	// process additional opcodes via lua script event
 	addGameTask(&Game::parsePlayerExtendedOpcode, player->getID(), opcode, buffer);
-}
-
-// OTCv8
-void ProtocolGame::sendFeatures() {
-	if (!otclientV8)
-		return;
-
-	std::map<GameFeature, bool> features;
-	// place for non-standard OTCv8 features
-	features[GameExtendedOpcode] = true;
-
-	if (features.empty())
-		return;
-
-	NetworkMessage msg;
-	msg.addByte(0x43);
-	msg.add<uint16_t>(features.size());
-	for (auto &feature : features) {
-		msg.addByte((uint8_t)feature.first);
-		msg.addByte(feature.second ? 1 : 0);
-	}
-	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg) {
@@ -7820,10 +7750,7 @@ void ProtocolGame::parseBosstiarySlot(NetworkMessage &msg) {
 }
 
 void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos) {
-	if (oldProtocol) {
-		return;
-	}
-	if (!podium) {
+	if (!podium || oldProtocol) {
 		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
 		return;
 	}

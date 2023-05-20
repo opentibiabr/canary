@@ -171,6 +171,13 @@ bool Weapon::useFist(Player* player, Creature* target) {
 }
 
 void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier) const {
+	if (player) {
+		if (params.soundCastEffect == SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
+		} else {
+			g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
+		}
+	}
 
 	if (isLoadedCallback()) {
 		LuaVariant var;

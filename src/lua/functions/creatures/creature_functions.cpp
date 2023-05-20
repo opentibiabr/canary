@@ -802,9 +802,9 @@ int CreatureFunctions::luaCreatureSay(lua_State* L) {
 		return 1;
 	}
 
-	SpectatorVec spectators;
+	SpectatorHashSet spectators;
 	if (target) {
-		spectators.emplace_back(target);
+		spectators.insert(target);
 	}
 
 	if (position.x != 0) {

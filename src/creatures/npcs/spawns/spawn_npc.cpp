@@ -142,7 +142,7 @@ SpawnNpc::~SpawnNpc() {
 }
 
 bool SpawnNpc::findPlayer(const Position &pos) {
-	SpectatorVec spectators;
+	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, pos, false, true);
 	for (Creature* spectator : spectators) {
 		if (!spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {

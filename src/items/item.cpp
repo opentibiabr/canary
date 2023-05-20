@@ -1130,13 +1130,21 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 					continue;
 				}
 
-				ss.str("");
-				if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
-					ss << std::showpos << (it.abilities->skills[i] / 100.) << std::noshowpos;
-				} else {
-					ss << std::showpos << it.abilities->skills[i] << std::noshowpos;
+				if (skillBoost) {
+					ss << ", ";
 				}
-				descriptions.emplace_back(getSkillName(i), ss.str());
+
+				ss << std::showpos << getSkillName(i) << ' ' << it.abilities->skills[i] << std::noshowpos;
+				skillBoost = true;
+			}
+
+			if (it.abilities->stats[STAT_MAGICPOINTS]) {
+				if (skillBoost) {
+					ss << ", ";
+				}
+
+				ss << std::showpos << "magic level " << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+				skillBoost = true;
 			}
 
 			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
@@ -1151,15 +1159,9 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				if (i != SKILL_CRITICAL_HIT_CHANCE) {
 					ss << std::showpos;
 				}
-				if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
-					ss << (it.abilities->skills[i] / 100.) << '%';
-				} else {
-					ss << it.abilities->skills[i] << '%';
-				}
-				if (i != SKILL_CRITICAL_HIT_CHANCE) {
-					ss << std::noshowpos;
-				}
-				descriptions.emplace_back(getSkillName(i), ss.str());
+
+				ss << getSkillName(i) << ' ' << it.abilities->skills[i] << '%' << std::noshowpos;
+				skillBoost = true;
 			}
 
 			if (skillBoost) {
@@ -1446,13 +1448,21 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 					continue;
 				}
 
-				ss.str("");
-				if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
-					ss << std::showpos << (it.abilities->skills[i] / 100.) << std::noshowpos;
-				} else {
-					ss << std::showpos << it.abilities->skills[i] << std::noshowpos;
+				if (skillBoost) {
+					ss << ", ";
 				}
-				descriptions.emplace_back(getSkillName(i), ss.str());
+
+				ss << std::showpos << getSkillName(i) << ' ' << it.abilities->skills[i] << std::noshowpos;
+				skillBoost = true;
+			}
+
+			if (it.abilities->stats[STAT_MAGICPOINTS]) {
+				if (skillBoost) {
+					ss << ", ";
+				}
+
+				ss << std::showpos << "magic level " << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+				skillBoost = true;
 			}
 
 			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
@@ -1467,21 +1477,12 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				if (i != SKILL_CRITICAL_HIT_CHANCE) {
 					ss << std::showpos;
 				}
-				if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
-					ss << (it.abilities->skills[i] / 100.) << '%';
-				} else {
-					ss << it.abilities->skills[i] << '%';
-				}
-				if (i != SKILL_CRITICAL_HIT_CHANCE) {
-					ss << std::noshowpos;
-				}
-				descriptions.emplace_back(getSkillName(i), ss.str());
-			}
 
-			if (it.abilities->stats[STAT_MAGICPOINTS]) {
-				ss.str("");
-				ss << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
-				descriptions.emplace_back("Magic Level", ss.str());
+				ss << getSkillName(i) << ' ' << it.abilities->skills[i] << '%' << std::noshowpos;
+				skillBoost = true;
+			}
+			if (skillBoost) {
+				descriptions.emplace_back("Skill Boost", ss.str());
 			}
 
 			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
@@ -2085,14 +2086,11 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 					if (i != SKILL_CRITICAL_HIT_CHANCE) {
 						s << std::showpos;
 					}
-					if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
-						s << (it.abilities->skills[i] / 100.);
-					} else {
-						s << it.abilities->skills[i];
-					}
+					s << it.abilities->skills[i];
 					if (i != SKILL_CRITICAL_HIT_CHANCE) {
 						s << std::noshowpos;
 					}
+					s << '%';
 				}
 
 				if (it.abilities->stats[STAT_MAGICPOINTS]) {
@@ -2274,11 +2272,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 					if (i != SKILL_CRITICAL_HIT_CHANCE) {
 						s << std::showpos;
 					}
-					if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
-						s << (it.abilities->skills[i] / 100.);
-					} else {
-						s << it.abilities->skills[i];
-					}
+					s << it.abilities->skills[i];
 					if (i != SKILL_CRITICAL_HIT_CHANCE) {
 						s << std::noshowpos;
 					}

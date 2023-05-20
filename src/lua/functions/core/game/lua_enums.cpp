@@ -393,7 +393,6 @@ void LuaEnums::initConditionParamEnums(lua_State* L) {
 	registerEnum(L, CONDITION_PARAM_MANASHIELD);
 	registerEnum(L, CONDITION_PARAM_BUFF_DAMAGEDEALT);
 	registerEnum(L, CONDITION_PARAM_BUFF_DAMAGERECEIVED);
-	registerEnum(L, CONDITION_PARAM_DRAIN_BODY);
 }
 
 void LuaEnums::initConstMeEnums(lua_State* L) {
@@ -534,13 +533,6 @@ void LuaEnums::initConstMeEnums(lua_State* L) {
 	registerEnum(L, CONST_ME_HORESTIS);
 	registerEnum(L, CONST_ME_DEVOVORGA);
 	registerEnum(L, CONST_ME_FERUMBRAS_2);
-	registerEnum(L, CONST_ME_WHITE_SMOKE);
-	registerEnum(L, CONST_ME_WHITE_SMOKES);
-	registerEnum(L, CONST_ME_WATER_DROP);
-	registerEnum(L, CONST_ME_AVATAR_APPEAR);
-	registerEnum(L, CONST_ME_DIVINE_GRENADE);
-	registerEnum(L, CONST_ME_DIVINE_EMPOWERMENT);
-	registerEnum(L, CONST_ME_WATER_FLOATING_THRASH);
 }
 
 void LuaEnums::initConstAniEnums(lua_State* L) {
@@ -822,8 +814,6 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 
 	registerEnum(L, ITEM_GOLD_POUCH);
 	registerEnum(L, ITEM_STORE_INBOX);
-
-	registerEnum(L, ITEM_DIVINE_EMPOWERMENT);
 
 	registerEnum(L, ITEM_FORGE_SLIVER);
 	registerEnum(L, ITEM_FORGE_CORE);

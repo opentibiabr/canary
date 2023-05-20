@@ -270,8 +270,6 @@ class ProtocolGame final : public Protocol {
 		void sendBosstiaryCooldownTimer();
 		void sendBosstiaryEntryChanged(uint32_t bossid);
 
-		void sendWheelOfDestinyGiftOfLifeCooldown();
-
 		void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 		void sendMagicEffect(const Position &pos, uint8_t type);
 		void sendRestingStatus(uint8_t protection);
@@ -451,9 +449,6 @@ class ProtocolGame final : public Protocol {
 		// otclient
 		void parseExtendedOpcode(NetworkMessage &msg);
 
-		// OTCv8
-		void sendFeatures();
-
 		void parseInventoryImbuements(NetworkMessage &msg);
 		void sendInventoryImbuements(const std::map<Slots_t, Item*> items);
 
@@ -481,8 +476,6 @@ class ProtocolGame final : public Protocol {
 		bool shouldAddExivaRestrictions = false;
 
 		bool oldProtocol = false;
-
-		uint16_t otclientV8 = 0;
 
 		void sendInventory();
 		void sendOpenStash();

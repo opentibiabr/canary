@@ -201,7 +201,7 @@ class Game {
 
 		bool internalCreatureTurn(Creature* creature, Direction dir);
 
-		bool internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, SpectatorVec* spectatorsPtr = nullptr, const Position* pos = nullptr);
+		bool internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, SpectatorHashSet* spectatorsPtr = nullptr, const Position* pos = nullptr);
 
 		void internalQuickLootCorpse(Player* player, Container* corpse);
 
@@ -271,6 +271,7 @@ class Game {
 		void playerMoveItem(Player* player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, Item* item, Cylinder* toCylinder);
 		void playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier = false, uint8_t tier = 0);
 		void playerMove(uint32_t playerId, Direction direction);
+		void forcePlayerMove(uint32_t playerId, Direction direction);
 		void playerCreatePrivateChannel(uint32_t playerId);
 		void playerChannelInvite(uint32_t playerId, const std::string &name);
 		void playerChannelExclude(uint32_t playerId, const std::string &name);
@@ -284,6 +285,7 @@ class Game {
 		void playerReceivePing(uint32_t playerId);
 		void playerReceivePingBack(uint32_t playerId);
 		void playerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
+		void forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
 		void playerStopAutoWalk(uint32_t playerId);
 		void playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint16_t fromItemId, const Position &toPos, uint8_t toStackPos, uint16_t toItemId);
 		void playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId);
@@ -410,33 +412,30 @@ class Game {
 
 		void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint8_t &effect);
 
-		// Wheel of destiny combat helpers
-		void applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, Creature* target);
-		void applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, Player* attackerPlayer, Creature* target);
-		int32_t applyHealthChange(CombatDamage &damage, Creature* target);
-
+		void handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker);
+		void notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster);
 		bool combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent = false);
 		void applyCharmRune(const Monster* targetMonster, Player* attackerPlayer, Creature* target, const int32_t &realDamage) const;
 		void applyManaLeech(
 			Player* attackerPlayer, const Monster* targetMonster,
-			Creature* target, const CombatDamage &damage, const int32_t &realDamage
+			const CombatDamage &damage, const int32_t &realDamage
 		) const;
 		void applyLifeLeech(
 			Player* attackerPlayer, const Monster* targetMonster,
-			Creature* target, const CombatDamage &damage, const int32_t &realDamage
+			const CombatDamage &damage, const int32_t &realDamage
 		) const;
 		int32_t calculateLeechAmount(const int32_t &realDamage, const uint16_t &skillAmount, int targetsAffected) const;
 		bool combatChangeMana(Creature* attacker, Creature* target, CombatDamage &damage);
 
 		// Animation help functions
 		void addCreatureHealth(const Creature* target);
-		static void addCreatureHealth(const SpectatorVec &spectators, const Creature* target);
+		static void addCreatureHealth(const SpectatorHashSet &spectators, const Creature* target);
 		void addPlayerMana(const Player* target);
 		void addPlayerVocation(const Player* target);
 		void addMagicEffect(const Position &pos, uint8_t effect);
-		static void addMagicEffect(const SpectatorVec &spectators, const Position &pos, uint8_t effect);
+		static void addMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect);
 		void addDistanceEffect(const Position &fromPos, const Position &toPos, uint8_t effect);
-		static void addDistanceEffect(const SpectatorVec &spectators, const Position &fromPos, const Position &toPos, uint8_t effect);
+		static void addDistanceEffect(const SpectatorHashSet &spectators, const Position &fromPos, const Position &toPos, uint8_t effect);
 
 		int32_t getLightHour() const {
 			return lightHour;
@@ -575,6 +574,44 @@ class Game {
 		void sendUpdateCreature(const Creature* creature);
 		Item* wrapItem(Item* item);
 
+		/**
+		 * @brief Adds a player to the unique login map.
+		 * @details The function registers a player in the unique login map to ensure no duplicate logins.
+		 * If the player pointer is null, it logs an error and returns.
+		 *
+		 * @param player A pointer to the Player object to add.
+		 */
+		void addPlayerUniqueLogin(Player* player);
+
+		/**
+		 * @brief Gets a player from the unique login map using their name.
+		 * @details The function attempts to find a player in the unique login map using their name.
+		 * If the player's name is not found, the function returns a null pointer.
+		 * If an empty string is provided, it logs an error and returns a null pointer.
+		 *
+		 * @param playerName The name of the player to search for.
+		 * @return A pointer to the Player object if found, null otherwise.
+		 */
+		Player* getPlayerUniqueLogin(const std::string &playerName) const;
+
+		/**
+		 * @brief Removes a player from the unique login map using their name.
+		 * @details The function removes a player from the unique login map using their name.
+		 * If an empty string is provided, it logs an error and returns.
+		 *
+		 * @param playerName The name of the player to remove.
+		 */
+		void removePlayerUniqueLogin(const std::string &playerName);
+
+		/**
+		 * @brief Removes a player from the unique login map.
+		 * @details The function removes a player from the unique login map.
+		 * If the player pointer is null, it logs an error and returns.
+		 *
+		 * @param player A pointer to the Player object to remove.
+		 */
+		void removePlayerUniqueLogin(Player* player);
+
 	private:
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;
 		std::set<uint32_t> fiendishMonsters;
@@ -586,6 +623,7 @@ class Game {
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
 		void playerSpeakToNpc(Player* player, const std::string &text);
 
+		phmap::flat_hash_map<std::string, Player*> m_uniqueLoginPlayerNames;
 		phmap::flat_hash_map<uint32_t, Player*> players;
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
 		phmap::flat_hash_map<uint32_t, Guild*> guilds;
@@ -668,20 +706,20 @@ class Game {
 		void sendDamageMessageAndEffects(
 			const Creature* attacker, Creature* target, const CombatDamage &damage, const Position &targetPos,
 			Player* attackerPlayer, Player* targetPlayer, TextMessage &message,
-			const SpectatorVec &spectators, int32_t realDamage
+			const SpectatorHashSet &spectators, int32_t realDamage
 		);
 
 		void updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, const Player* player) const;
 
 		void sendEffects(
 			Creature* target, const CombatDamage &damage, const Position &targetPos,
-			TextMessage &message, const SpectatorVec &spectators
+			TextMessage &message, const SpectatorHashSet &spectators
 		);
 
 		void sendMessages(
 			const Creature* attacker, const Creature* target, const CombatDamage &damage,
 			const Position &targetPos, Player* attackerPlayer, Player* targetPlayer,
-			TextMessage &message, const SpectatorVec &spectators, int32_t realDamage
+			TextMessage &message, const SpectatorHashSet &spectators, int32_t realDamage
 		) const;
 
 		bool shouldSendMessage(const TextMessage &message) const;

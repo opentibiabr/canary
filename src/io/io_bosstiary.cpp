@@ -152,10 +152,6 @@ MonsterType* IOBosstiary::getMonsterTypeByBossRaceId(uint32_t raceId) const {
 }
 
 void IOBosstiary::addBosstiaryKill(Player* player, const MonsterType* mtype, uint32_t amount /*= 1*/) const {
-	bool oldProtocol = player->getProtocolVersion() < 1200;
-	if (oldProtocol) {
-		return;
-	}
 	if (!player || !mtype) {
 		return;
 	}

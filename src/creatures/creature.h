@@ -60,9 +60,6 @@ class Creature : virtual public Thing {
 
 		virtual ~Creature();
 
-		Position* getPositionPtr() {
-			return &position;
-		}
 		// non-copyable
 		Creature(const Creature &) = delete;
 		Creature &operator=(const Creature &) = delete;
@@ -298,9 +295,6 @@ class Creature : virtual public Thing {
 			return summons;
 		}
 
-		virtual float getMitigation() const {
-			return 0;
-		}
 		virtual int32_t getArmor() const {
 			return 0;
 		}
@@ -326,7 +320,6 @@ class Creature : virtual public Thing {
 		void removeCombatCondition(ConditionType_t type);
 		Condition* getCondition(ConditionType_t type) const;
 		Condition* getCondition(ConditionType_t type, ConditionId_t conditionId, uint32_t subId = 0) const;
-		std::vector<Condition*> getConditionsByType(ConditionType_t type);
 		void executeConditions(uint32_t interval);
 		bool hasCondition(ConditionType_t type, uint32_t subId = 0) const;
 		virtual bool isImmune(ConditionType_t type) const;
@@ -505,12 +498,6 @@ class Creature : virtual public Thing {
 		CountMap getDamageMap() const {
 			return damageMap;
 		}
-		void setWheelOfDestinyDrainBodyDebuff(uint8_t value) {
-			wheelOfDestinyDrainBodyDebuff = value;
-		}
-		uint8_t getWheelOfDestinyDrainBodyDebuff() const {
-			return wheelOfDestinyDrainBodyDebuff;
-		}
 
 	protected:
 		virtual bool useCacheMap() const {
@@ -591,8 +578,6 @@ class Creature : virtual public Thing {
 		bool floorChange = false;
 		bool canUseDefense = true;
 		bool moveLocked = false;
-
-		uint8_t wheelOfDestinyDrainBodyDebuff = 0;
 
 		// creature script events
 		bool hasEventRegistered(CreatureEventType_t event) const {

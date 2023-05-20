@@ -884,17 +884,6 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 		attacker->onAttackedCreatureBlockHit(blockType);
 	}
 
-	// Wheel of Destiny - Mitigation system
-	// Add agony check if the server does have agony combat type
-	if (combatType != COMBAT_MANADRAIN && combatType != COMBAT_LIFEDRAIN) {
-		damage -= (damage * getMitigation()) / 100.;
-
-		if (damage <= 0) {
-			damage = 0;
-			blockType = BLOCK_ARMOR;
-		}
-	}
-
 	onAttacked();
 	return blockType;
 }
@@ -1164,7 +1153,7 @@ void Creature::onGainExperience(uint64_t gainExp, Creature* target) {
 	master->onGainExperience(gainExp, target);
 
 	if (!m->isFamiliar()) {
-		SpectatorVec spectators;
+		SpectatorHashSet spectators;
 		g_game().map.getSpectators(spectators, position, false, true);
 		if (spectators.empty()) {
 			return;
@@ -1334,16 +1323,6 @@ Condition* Creature::getCondition(ConditionType_t type, ConditionId_t conditionI
 		}
 	}
 	return nullptr;
-}
-
-std::vector<Condition*> Creature::getConditionsByType(ConditionType_t type) {
-	std::vector<Condition*> conditionsVec;
-	for (Condition* condition : conditions) {
-		if (condition->getType() == type) {
-			conditionsVec.push_back(condition);
-		}
-	}
-	return conditionsVec;
 }
 
 void Creature::executeConditions(uint32_t interval) {

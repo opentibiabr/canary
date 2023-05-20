@@ -14,12 +14,11 @@
 #include "lua/functions/creatures/combat/condition_functions.hpp"
 
 int ConditionFunctions::luaConditionCreate(lua_State* L) {
-	// Condition(conditionType[, conditionId = CONDITIONID_COMBAT[, subid = 0]])
+	// Condition(conditionType[, conditionId = CONDITIONID_COMBAT])
 	ConditionType_t conditionType = getNumber<ConditionType_t>(L, 2);
 	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, CONDITIONID_COMBAT);
-	uint32_t subId = getNumber<uint32_t>(L, 4, 0);
 
-	Condition* condition = Condition::createCondition(conditionId, conditionType, 0, 0, false, subId);
+	Condition* condition = Condition::createCondition(conditionId, conditionType, 0, 0);
 	if (condition) {
 		pushUserdata<Condition>(L, condition);
 		setMetatable(L, -1, "Condition");

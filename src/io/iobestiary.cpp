@@ -209,10 +209,6 @@ void IOBestiary::addCharmPoints(Player* player, uint16_t amount, bool negative /
 }
 
 void IOBestiary::addBestiaryKill(Player* player, MonsterType* mtype, uint32_t amount /*= 1*/) {
-	bool oldProtocol = player->getProtocolVersion() < 1200;
-	if (oldProtocol) {
-		return;
-	}
 	uint16_t raceid = mtype->info.raceid;
 	if (raceid == 0 || !player || !mtype) {
 		return;

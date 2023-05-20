@@ -9086,7 +9086,7 @@ bool Game::addItemStoreInbox(const Player* player, uint32_t itemId) {
 	return true;
 }
 
-void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos) {
+void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems /* = 0*/) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;

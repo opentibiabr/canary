@@ -1144,7 +1144,7 @@ ReturnValue Player::recurseMoveItemToContainer(Item* item, Container* container)
 	return RETURNVALUE_NOTENOUGHROOM;
 }
 
-ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*/) {
+ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*/, uint32_t maxMoveItems /* = 0*/) {
 	std::vector<Item*> rewardItemsVector;
 	if (fromCorpse) {
 		auto rewardId = fromCorpse->getAttribute<time_t>(ItemAttribute_t::DATE);
@@ -1180,6 +1180,12 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 			g_game().internalRemoveItem(item);
 			rewardCount--;
 			continue;
+		}
+
+		// Limit the collect count if the "maxMoveItems" is not "0"
+		if (maxMoveItems != 0 && movedItems == maxMoveItems) {
+			sendCancelMessage(fmt::format("You can only collect {} items at a time.", maxMoveItems));
+			break;
 		}
 
 		if (fallbackItem) {

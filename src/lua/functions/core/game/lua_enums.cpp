@@ -321,6 +321,7 @@ void LuaEnums::initConditionEnums(lua_State* L) {
 	registerEnum(L, CONDITION_SPELLCOOLDOWN);
 	registerEnum(L, CONDITION_SPELLGROUPCOOLDOWN);
 	registerEnum(L, CONDITION_ROOTED);
+	registerEnum(L, CONDITION_FEARED);
 }
 
 void LuaEnums::initConditionIdEnums(lua_State* L) {

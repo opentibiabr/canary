@@ -54,6 +54,7 @@ class Condition {
 		static Condition* createCondition(PropStream &propStream);
 
 		virtual bool setParam(ConditionParam_t param, int32_t value);
+		virtual bool setPositionParam(ConditionParam_t param, const Position &pos);
 
 		// serialization
 		bool unserialize(PropStream &propStream);
@@ -283,6 +284,46 @@ class ConditionDamage final : public Condition {
 		bool doDamage(Creature* creature, int32_t healthChange);
 
 		bool updateCondition(const Condition* addCondition) override;
+};
+
+class ConditionFeared final : public Condition {
+	public:
+		ConditionFeared() = default;
+		ConditionFeared(ConditionId_t intiId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) :
+			Condition(intiId, initType, initTicks, initBuff, initSubId) { }
+
+		bool startCondition(Creature* creature) override;
+		bool executeCondition(Creature* creature, int32_t interval) override;
+		void endCondition(Creature* creature) override;
+		void addCondition(Creature* creature, const Condition* condition) override;
+		uint32_t getIcons() const override;
+
+		ConditionFeared* clone() const override {
+			return new ConditionFeared(*this);
+		}
+
+		bool setPositionParam(ConditionParam_t param, const Position &pos) override;
+
+	private:
+		bool canWalkTo(const Creature* creature, Position pos, Direction moveDirection) const;
+		bool getFleeDirection(Creature* creature);
+		bool getFleePath(Creature* creature, const Position &pos, std::forward_list<Direction> &dirList);
+		bool getRandomDirection(Creature* creature, Position pos);
+		bool isStuck(Creature* creature, Position pos) const;
+
+		std::vector<Direction> m_directionsVector {
+			DIRECTION_NORTH,
+			DIRECTION_NORTHEAST,
+			DIRECTION_EAST,
+			DIRECTION_SOUTHEAST,
+			DIRECTION_SOUTH,
+			DIRECTION_SOUTHWEST,
+			DIRECTION_WEST,
+			DIRECTION_NORTHWEST
+		};
+
+		Position fleeingFromPos; // Caster Position
+		uint8_t fleeIndx = 99;
 };
 
 class ConditionSpeed final : public Condition {

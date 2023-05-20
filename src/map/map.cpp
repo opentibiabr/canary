@@ -1099,6 +1099,13 @@ int_fast32_t AStarNodes::getTileWalkCost(const Creature &creature, const Tile* t
 		if (!creature.isImmune(combatType) && !creature.hasCondition(Combat::DamageToConditionType(combatType)) && (monster && !monster->canWalkOnFieldType(combatType))) {
 			cost += MAP_NORMALWALKCOST * 18;
 		}
+		/**
+		 * Make player try to avoid magic fields, when calculating pathing
+		 */
+		const Player* player = creature.getPlayer();
+		if (player && !field->isBlocking() && field->getDamage() != 0) {
+			cost += MAP_NORMALWALKCOST * 18;
+		}
 	}
 	return cost;
 }

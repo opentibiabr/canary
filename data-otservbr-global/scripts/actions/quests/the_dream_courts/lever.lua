@@ -5,7 +5,7 @@ local config = {
 	},
 	requiredLevel = 250,
 	timeToFightAgain = 20 * 60 * 60,
-	timeToDefeatBoss = 1 * 60,
+	timeToDefeatBoss = 15 * 60,
 	playerPositions = {
 		{ pos = Position(33638, 32562, 13), teleport = Position(33617, 32567, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33639, 32562, 13), teleport = Position(33617, 32567, 13), effect = CONST_ME_TELEPORT },

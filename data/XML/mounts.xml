@@ -205,4 +205,11 @@
 	<mount id="203" clientid="1578" name="Parade Horse" speed="10" premium="no" type="store" />
 	<mount id="204" clientid="1579" name="Jousting Horse" speed="10" premium="no" type="store" />
 	<mount id="205" clientid="1580" name="Tourney Horse" speed="10" premium="no" type="store" />
+	<mount id="206" clientid="1599" name="Mutated Abomination" speed="10" premium="no" type="quest" />
+	<mount id="207" clientid="1608" name="Tangerine Flecked Koi" speed="10" premium="no" type="store" />
+	<mount id="208" clientid="1609" name="Brass Speckled Koi" speed="10" premium="no" type="store" />
+	<mount id="209" clientid="1610" name="Ink Spotted Koi" speed="10" premium="no" type="store" />
+	<mount id="210" clientid="1615" name="Frostbringer" speed="10" premium="no" type="store" />
+	<mount id="211" clientid="1616" name="Winterstride" speed="10" premium="no" type="store" />
+	<mount id="212" clientid="1617" name="Icebreacher" speed="10" premium="no" type="store" />
 </mounts>

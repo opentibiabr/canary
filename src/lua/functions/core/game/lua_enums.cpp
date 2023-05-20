@@ -321,6 +321,7 @@ void LuaEnums::initConditionEnums(lua_State* L) {
 	registerEnum(L, CONDITION_SPELLCOOLDOWN);
 	registerEnum(L, CONDITION_SPELLGROUPCOOLDOWN);
 	registerEnum(L, CONDITION_ROOTED);
+	registerEnum(L, CONDITION_FEARED);
 }
 
 void LuaEnums::initConditionIdEnums(lua_State* L) {
@@ -816,6 +817,8 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 
 	registerEnum(L, ITEM_FORGE_SLIVER);
 	registerEnum(L, ITEM_FORGE_CORE);
+	registerEnum(L, ITEM_PRIMAL_POD);
+
 	registerEnum(L, ItemID_t::HIRELING_LAMP);
 }
 

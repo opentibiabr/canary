@@ -276,6 +276,8 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 			}
 
+			const Tile* targetPlayerTile = targetPlayer->getTile();
+
 			if (const Player* attackerPlayer = attacker->getPlayer()) {
 				if (attackerPlayer->hasFlag(PlayerFlags_t::CannotAttackPlayer)) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
@@ -286,10 +288,10 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target) {
 				}
 
 				// nopvp-zone
-				if (const Tile* targetPlayerTile = targetPlayer->getTile();
-					targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
+				auto attackerTile = attackerPlayer->getTile();
+				if (targetPlayerTile && targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
-				} else if (attackerPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE) && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)) {
+				} else if (attackerTile && attackerTile->hasFlag(TILESTATE_NOPVPZONE) && targetPlayerTile && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)) {
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 				}
 
@@ -304,7 +306,7 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 					}
 
-					if (targetPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE)) {
+					if (targetPlayerTile && targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
 						return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 					}
 
@@ -597,6 +599,34 @@ void Combat::CombatManaFunc(Creature* caster, Creature* target, const CombatPara
 	}
 }
 
+bool Combat::checkFearConditionAffected(Player* player) {
+	if (player->isImmuneFear()) {
+		return false;
+	}
+
+	if (player->hasCondition(CONDITION_FEARED)) {
+		return false;
+	}
+
+	Party* party = player->getParty();
+	if (party) {
+		auto affectedCount = (party->getMemberCount() + 5) / 5;
+		SPDLOG_DEBUG("[{}] Player is member of a party, {} members can be feared", __FUNCTION__, affectedCount);
+
+		for (const auto member : party->getMembers()) {
+			if (member->hasCondition(CONDITION_FEARED)) {
+				affectedCount -= 1;
+			}
+		}
+
+		if (affectedCount <= 0) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void Combat::CombatConditionFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data) {
 	if (params.origin == ORIGIN_MELEE && data && data->primary.value == 0 && data->secondary.value == 0) {
 		return;
@@ -607,8 +637,8 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 		if (target) {
 			player = target->getPlayer();
 		}
-		// Cleanse charm rune (target as player)
 		if (player) {
+			// Cleanse charm rune (target as player)
 			if (player->isImmuneCleanse(condition->getType())) {
 				player->sendCancelMessage("You are still immune against this spell.");
 				return;
@@ -629,12 +659,17 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 					}
 				}
 			}
+
+			if (condition->getType() == CONDITION_FEARED && !checkFearConditionAffected(player)) {
+				return;
+			}
 		}
 
 		if (caster == target || target && !target->isImmune(condition->getType())) {
 			Condition* conditionCopy = condition->clone();
 			if (caster) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
+				conditionCopy->setPositionParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
 			}
 
 			// TODO: infight condition until all aggressive conditions has ended
@@ -1651,8 +1686,8 @@ void MagicField::onStepInField(Creature &creature) {
 		auto ownerId = getAttribute<uint32_t>(ItemAttribute_t::OWNER);
 		if (ownerId) {
 			bool harmfulField = true;
-
-			if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || getTile()->hasFlag(TILESTATE_NOPVPZONE)) {
+			auto itemTile = getTile();
+			if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || itemTile && itemTile->hasFlag(TILESTATE_NOPVPZONE)) {
 				Creature* owner = g_game().getCreatureByID(ownerId);
 				if (owner) {
 					if (owner->getPlayer() || (owner->isSummon() && owner->getMaster()->getPlayer())) {

@@ -273,6 +273,7 @@ class Game {
 		void playerMoveItem(Player* player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, Item* item, Cylinder* toCylinder);
 		void playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier = false, uint8_t tier = 0);
 		void playerMove(uint32_t playerId, Direction direction);
+		void forcePlayerMove(uint32_t playerId, Direction direction);
 		void playerCreatePrivateChannel(uint32_t playerId);
 		void playerChannelInvite(uint32_t playerId, const std::string &name);
 		void playerChannelExclude(uint32_t playerId, const std::string &name);
@@ -286,6 +287,7 @@ class Game {
 		void playerReceivePing(uint32_t playerId);
 		void playerReceivePingBack(uint32_t playerId);
 		void playerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
+		void forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
 		void playerStopAutoWalk(uint32_t playerId);
 		void playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint16_t fromItemId, const Position &toPos, uint8_t toStackPos, uint16_t toItemId);
 		void playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId);
@@ -375,6 +377,7 @@ class Game {
 
 		void setBoostedName(std::string name) {
 			boostedCreature = name;
+			SPDLOG_INFO("Boosted creature: {}", name);
 		}
 
 		std::string getBoostedMonsterName() const {
@@ -411,6 +414,8 @@ class Game {
 
 		void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint8_t &effect);
 
+		void handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker);
+		void notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster);
 		bool combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent = false);
 		void applyCharmRune(const Monster* targetMonster, Player* attackerPlayer, Creature* target, const int32_t &realDamage) const;
 		void applyManaLeech(

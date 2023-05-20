@@ -571,8 +571,7 @@ class Game {
 
 		/**
 		 * @brief Adds a player to the unique login map.
-		 *
-		 * The function registers a player in the unique login map to ensure no duplicate logins.
+		 * @details The function registers a player in the unique login map to ensure no duplicate logins.
 		 * If the player pointer is null, it logs an error and returns.
 		 *
 		 * @param player A pointer to the Player object to add.
@@ -581,8 +580,7 @@ class Game {
 
 		/**
 		 * @brief Gets a player from the unique login map using their name.
-		 *
-		 * The function attempts to find a player in the unique login map using their name.
+		 * @details The function attempts to find a player in the unique login map using their name.
 		 * If the player's name is not found, the function returns a null pointer.
 		 * If an empty string is provided, it logs an error and returns a null pointer.
 		 *
@@ -593,8 +591,7 @@ class Game {
 
 		/**
 		 * @brief Removes a player from the unique login map using their name.
-		 *
-		 * The function removes a player from the unique login map using their name.
+		 * @details The function removes a player from the unique login map using their name.
 		 * If an empty string is provided, it logs an error and returns.
 		 *
 		 * @param playerName The name of the player to remove.
@@ -603,8 +600,7 @@ class Game {
 
 		/**
 		 * @brief Removes a player from the unique login map.
-		 *
-		 * The function removes a player from the unique login map.
+		 * @details The function removes a player from the unique login map.
 		 * If the player pointer is null, it logs an error and returns.
 		 *
 		 * @param player A pointer to the Player object to remove.

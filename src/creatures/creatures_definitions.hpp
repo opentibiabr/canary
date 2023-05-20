@@ -208,7 +208,6 @@ enum CombatOrigin {
 	ORIGIN_SPELL,
 	ORIGIN_MELEE,
 	ORIGIN_RANGED,
-	ORIGIN_REFLECT,
 };
 
 enum CallBackParam_t {
@@ -1536,10 +1535,9 @@ struct CombatDamage {
 		bool critical;
 		int affected;
 		bool extension;
-		bool cleave;
 		std::string exString;
 		bool fatal;
-
+		
 		int32_t criticalDamage;
 		int32_t criticalChance;
 		int32_t damageMultiplier;
@@ -1561,7 +1559,6 @@ struct CombatDamage {
 			critical = false;
 			affected = 1;
 			extension = false;
-			cleave = false;
 			exString = "";
 			fatal = false;
 			criticalDamage = 0;

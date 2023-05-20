@@ -21,7 +21,7 @@ HouseTile::HouseTile(int32_t initX, int32_t initY, int32_t initZ, House* initHou
 void HouseTile::addThing(int32_t index, Thing* thing) {
 	Tile::addThing(index, thing);
 
-	if (!thing || !thing->getParent()) {
+	if (!thing->getParent()) {
 		return;
 	}
 

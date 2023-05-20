@@ -313,10 +313,6 @@ void Monster::addTarget(Creature* creature, bool pushFront /* = false*/) {
 		}
 		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer())
 			totalPlayersOnScreen++;
-		// Hazard system (Icon UI)
-		if (isOnHazardSystem() && creature->getPlayer()) {
-			creature->getPlayer()->incrementeHazardSystemReference();
-		}
 	}
 }
 
@@ -330,12 +326,6 @@ void Monster::removeTarget(Creature* creature) {
 		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen--;
 		}
-
-		// Hazard system (Icon UI)
-		if (isOnHazardSystem() && creature->getPlayer()) {
-			creature->getPlayer()->decrementeHazardSystemReference();
-		}
-
 		creature->decrementReferenceCounter();
 		targetList.erase(it);
 	}
@@ -346,10 +336,6 @@ void Monster::updateTargetList() {
 	while (friendIterator != friendList.end()) {
 		Creature* creature = *friendIterator;
 		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
-			// Hazard system (Icon UI)
-			if (isOnHazardSystem() && creature->getPlayer()) {
-				creature->getPlayer()->decrementeHazardSystemReference();
-			}
 			creature->decrementReferenceCounter();
 			friendIterator = friendList.erase(friendIterator);
 		} else {
@@ -387,10 +373,6 @@ void Monster::clearTargetList() {
 
 void Monster::clearFriendList() {
 	for (Creature* creature : friendList) {
-		// Hazard system (Icon UI)
-		if (isOnHazardSystem() && creature->getPlayer()) {
-			creature->getPlayer()->decrementeHazardSystemReference();
-		}
 		creature->decrementReferenceCounter();
 	}
 	friendList.clear();
@@ -641,7 +623,7 @@ BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int32
 		if (it != mType->info.elementMap.end()) {
 			elementMod = it->second;
 		}
-
+		
 		// Wheel of destiny
 		Player* player = attacker ? attacker->getPlayer() : nullptr;
 		if (player && player->getWheelOfDestinyInstant("Ballistic Mastery")) {

@@ -391,16 +391,6 @@ class Item : virtual public Thing, public ItemProperties {
 			return items[id].hitChance;
 		}
 
-		int16_t getPerfectShotDamage() const {
-			return items[id].abilities->perfectShotDamage;
-		}
-		int8_t getPerfectShotRange() const {
-			return items[id].abilities->perfectShotRange;
-		}
-		int16_t getCleavePercent() const {
-			return items[id].abilities->cleavePercent;
-		}
-
 		uint32_t getWorth() const;
 		uint32_t getForgeSlivers() const;
 		uint32_t getForgeCores() const;

@@ -2896,21 +2896,13 @@ void ProtocolGame::sendCreatureIcon(const Creature* creature) {
 	// Type 14 for this
 	msg.addByte(14);
 	// 0 = no icon, 1 = we'll send an icon
-	auto creaturePlayer = creature->getPlayer();
+	msg.addByte(icon != CREATUREICON_NONE);
 	if (icon != CREATUREICON_NONE) {
-		msg.addByte(icon != CREATUREICON_NONE); // Has icon
 		msg.addByte(icon);
 		// Creature update
 		msg.addByte(1);
 		// Used for the life in the new quest
 		msg.add<uint16_t>(0);
-	} else if (!oldProtocol && creaturePlayer && creaturePlayer->getHazardSystemReference() > 0 && creaturePlayer->getHazardSystemPoints() > 0) {
-		msg.addByte(0x01); // Has icon
-		msg.addByte(22); // Hazard icon
-		msg.addByte(0);
-		msg.add<uint16_t>(creaturePlayer->getHazardSystemPoints());
-	} else {
-		msg.addByte(0x00); // Has icon
 	}
 	writeToOutputBuffer(msg);
 }
@@ -3551,10 +3543,10 @@ void ProtocolGame::sendReLoginWindow(uint8_t unfairFightReduction) {
 	NetworkMessage msg;
 	msg.addByte(0x28);
 	msg.addByte(0x00);
-	//msg.addByte(unfairFightReduction);
-	/* if (!oldProtocol) {
+	msg.addByte(unfairFightReduction);
+	if (!oldProtocol) {
 		msg.addByte(0x00); // use death redemption (boolean)
-	}*/
+	}
 	writeToOutputBuffer(msg);
 }
 
@@ -4890,6 +4882,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			} else {
 				ss << it.abilities->skills[i] << '%';
 			}
+
 
 			if (i != SKILL_CRITICAL_HIT_CHANCE) {
 				ss << std::noshowpos;
@@ -6452,14 +6445,8 @@ void ProtocolGame::sendModalWindow(const ModalWindow &modalWindow) {
 		msg.addByte(it.second);
 	}
 
-	OperatingSystem_t regularOS = player->getOperatingSystem();
-	if (regularOS >= CLIENTOS_NEW_LINUX && regularOS < CLIENTOS_OTCLIENT_LINUX) {
-		msg.addByte(modalWindow.defaultEscapeButton);
-		msg.addByte(modalWindow.defaultEnterButton);
-	} else {
-		msg.addByte(modalWindow.defaultEscapeButton);
-		msg.addByte(modalWindow.defaultEnterButton);
-	}
+	msg.addByte(modalWindow.defaultEscapeButton);
+	msg.addByte(modalWindow.defaultEnterButton);
 	msg.addByte(modalWindow.priority ? 0x01 : 0x00);
 
 	writeToOutputBuffer(msg);
@@ -6556,10 +6543,6 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 						msg.addByte(1);
 						msg.add<uint16_t>(0);
 					}
-				} else if (otherPlayer != nullptr && otherPlayer->getHazardSystemReference() > 0 && otherPlayer->getHazardSystemPoints() > 0) {
-					msg.addByte(22); // Hazard icon
-					msg.addByte(0);
-					msg.add<uint16_t>(otherPlayer->getHazardSystemPoints());
 				}
 			} else {
 				icon = creature->getIcon();
@@ -7980,22 +7963,5 @@ void ProtocolGame::sendDoubleSoundEffect(
 	msg.add<uint16_t>(static_cast<uint16_t>(secondarySoundId)); // Sound id
 
 	msg.addByte(0x00); // Breaking the effects loop
-	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::reloadHazardSystemIcon(uint16_t reference) {
-	if (oldProtocol) {
-		return;
-	}
-	NetworkMessage msg;
-	msg.addByte(0x8B);
-	msg.add<uint32_t>(player->getID());
-	msg.addByte(14);
-	msg.addByte(reference != 0 ? 0x01 : 0x00);
-	if (reference != 0) {
-		msg.addByte(22); // Icon ID
-		msg.addByte(0);
-		msg.add<uint16_t>(player->getHazardSystemPoints());
-	}
 	writeToOutputBuffer(msg);
 }

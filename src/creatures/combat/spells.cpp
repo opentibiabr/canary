@@ -904,7 +904,7 @@ bool RuneSpell::executeUse(Player* player, Item* item, const Position &, Thing* 
 
 	LuaVariant var;
 	var.runeName = getName();
-
+	
 	if (needTarget) {
 		var.type = VARIANT_NUMBER;
 

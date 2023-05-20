@@ -8,7 +8,6 @@
  */
 
 #include "pch.hpp"
-
 #include <fmt/chrono.h>
 #include "core.hpp"
 #include "utils/tools.h"

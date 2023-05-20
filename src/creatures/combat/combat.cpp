@@ -39,7 +39,7 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 	CombatDamage damage;
 	damage.origin = params.origin;
 	damage.primary.type = params.combatType;
-
+	
 	// Wheel of destiny
 	damage.instantSpellName = sourceInstantSpellName;
 	damage.runeSpellName = sourceRuneSpellName;
@@ -49,7 +49,6 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 		wheelSpell = attackerPlayer->getWheelOfDestinyCombatDataSpell(damage, target);
 	}
 	// End
-
 	if (formulaType == COMBAT_FORMULA_DAMAGE) {
 		damage.primary.value = normal_random(
 			static_cast<int32_t>(mina),
@@ -974,7 +973,6 @@ void Combat::CombatFunc(Creature* caster, const Position &pos, const AreaCombat*
 		}
 		combatTileEffects(spectators, caster, tile, params);
 	}
-
 	if (casterPlayer && !casterPlayer->isRemoved() && beamAffectedCurrent > 0) {
 		casterPlayer->reduceAllSpellsCooldownTimer(beamAffectedCurrent * 1000);
 	}
@@ -1000,7 +998,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage &da
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + damage.criticalChance;
 		// Charm low blow rune)
-		if (!damage.cleave && target && target->getMonster() && damage.primary.type != COMBAT_HEALING) {
+		if (target && target->getMonster() && damage.primary.type != COMBAT_HEALING) {
 			uint16_t playerCharmRaceid = caster->getPlayer()->parseRacebyCharm(CHARM_LOW, false, 0);
 			if (playerCharmRaceid != 0) {
 				const MonsterType* mType = g_monsters().getMonsterType(target->getName());
@@ -1212,8 +1210,8 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatPar
 	}
 }
 
-//**********************************************************//
 
+//**********************************************************//
 uint32_t ValueCallback::getMagicLevelSkill(Player* player, CombatDamage &damage) const {
 	uint32_t magicLevelSkill = player->getMagicLevel();
 	// Wheel of destiny

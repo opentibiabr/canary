@@ -873,7 +873,7 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 		attacker->onAttackedCreature(this);
 		attacker->onAttackedCreatureBlockHit(blockType);
 	}
-
+	
 	// Wheel of Destiny - Mitigation system
 	// Add agony check if the server does have agony combat type
 	if (combatType != COMBAT_MANADRAIN && combatType != COMBAT_LIFEDRAIN) {

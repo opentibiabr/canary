@@ -170,28 +170,14 @@ bool Weapon::useFist(Player* player, Creature* target) {
 	return true;
 }
 
-void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier, bool cleave /* = false*/) const {
-	if (player) {
-		if (params.soundCastEffect == SoundEffect_t::SILENCE) {
-			g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
-		} else {
-			g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
-		}
-	}
-
+void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier) const {
+	
 	if (isLoadedCallback()) {
-		if (cleave) {
-			return;
-		}
 		LuaVariant var;
 		var.type = VARIANT_NUMBER;
 		var.number = target->getID();
 		executeUseWeapon(player, var);
 	} else {
-		if (!player || !target || !item) {
-			return;
-		}
-
 		CombatDamage damage;
 		WeaponType_t weaponType = item->getWeaponType();
 		if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE || weaponType == WEAPON_MISSILE) {
@@ -199,24 +185,10 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
 		} else {
 			damage.origin = ORIGIN_MELEE;
 		}
-
-		// Hazard system cleave
-		damage.cleave = cleave;
-		uint16_t cleavePercent = 0;
-		if (cleave) {
-			damage.extension = true;
-			cleavePercent = player->getCleavePercent();
-			damage.exString = " (cleave damage)";
-		}
-
-		if (damage.secondary.type == COMBAT_NONE) {
-			damage.primary.value = (getWeaponDamage(player, target, item, false, cleavePercent) * damageModifier) / 100;
-			damage.secondary.value = 0;
-		} else {
-			damage.primary.value = (getWeaponDamage(player, target, item, false, cleavePercent) * damageModifier) / 100;
-			damage.secondary.value = (getElementDamage(player, target, item, cleavePercent) * damageModifier) / 100;
-		}
-
+		damage.primary.type = params.combatType;
+		damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
+		damage.secondary.type = getElementType();
+		damage.secondary.value = getElementDamage(player, target, item);
 		Combat::doCombatHealth(player, target, damage, params);
 	}
 
@@ -373,50 +345,6 @@ bool WeaponMelee::useWeapon(Player* player, Item* item, Creature* target) const 
 		return false;
 	}
 
-	if (player->getCleavePercent() > 0) {
-		const Position &targetPos = target->getPosition();
-		const Position &playerPos = player->getPosition();
-		if (playerPos != targetPos) {
-			Position firstCleaveTargetPos = targetPos;
-			Position secondCleaveTargetPos = targetPos;
-			if (targetPos.x == playerPos.x) {
-				firstCleaveTargetPos.x++;
-				secondCleaveTargetPos.x--;
-			} else if (targetPos.y == playerPos.y) {
-				firstCleaveTargetPos.y++;
-				secondCleaveTargetPos.y--;
-			} else {
-				if (targetPos.x > playerPos.x)
-					firstCleaveTargetPos.x--;
-				else
-					firstCleaveTargetPos.x++;
-
-				if (targetPos.y > playerPos.y)
-					secondCleaveTargetPos.y--;
-				else
-					secondCleaveTargetPos.y++;
-			}
-			Position pos(firstCleaveTargetPos.x, firstCleaveTargetPos.y, firstCleaveTargetPos.z);
-			Position pos2(secondCleaveTargetPos.x, secondCleaveTargetPos.y, secondCleaveTargetPos.z);
-			Tile* firstTile = g_game().map.getTile(pos);
-			Tile* secondTile = g_game().map.getTile(pos2);
-
-			if (firstTile && !firstTile->isMoveableBlocking()) {
-
-				for (Creature* creature : *firstTile->getCreatures()) {
-					if (creature->getMonster() || (creature->getPlayer() && !player->hasSecureMode()))
-						internalUseWeapon(player, item, creature, damageModifier, true);
-				}
-			}
-			if (secondTile && !secondTile->isMoveableBlocking()) {
-				for (Creature* creature : *secondTile->getCreatures()) {
-					if (creature->getMonster() || (creature->getPlayer() && !player->hasSecureMode()))
-						internalUseWeapon(player, item, creature, damageModifier, true);
-				}
-			}
-		}
-	}
-
 	internalUseWeapon(player, item, target, damageModifier);
 	return true;
 }
@@ -451,15 +379,13 @@ bool WeaponMelee::getSkillType(const Player* player, const Item* item, skills_t 
 	return false;
 }
 
-int32_t WeaponMelee::getElementDamage(const Player* player, const Creature*, const Item* item, uint16_t cleavePercent /* = 0*/) const {
+int32_t WeaponMelee::getElementDamage(const Player* player, const Creature*, const Item* item) const {
 	if (elementType == COMBAT_NONE) {
 		return 0;
 	}
 
 	int32_t attackSkill = player->getWeaponSkill(item);
 	int32_t attackValue = elementDamage;
-	if (cleavePercent != 0)
-		attackValue = std::round(attackValue * cleavePercent / 100.);
 	float attackFactor = player->getAttackFactor();
 	uint32_t level = player->getLevel();
 	int32_t minValue = level / 5;
@@ -472,13 +398,11 @@ int16_t WeaponMelee::getElementDamageValue() const {
 	return elementDamage;
 }
 
-int32_t WeaponMelee::getWeaponDamage(const Player* player, const Creature*, const Item* item, bool maxDamage /*= false*/, uint16_t cleavePercent /*= 0*/) const {
+int32_t WeaponMelee::getWeaponDamage(const Player* player, const Creature*, const Item* item, bool maxDamage /*= false*/) const {
 	using namespace std;
 	int32_t attackSkill = player->getWeaponSkill(item);
 	int32_t attackValue = std::max<int32_t>(0, item->getAttack());
 	float attackFactor = player->getAttackFactor();
-	if (cleavePercent != 0)
-		attackValue = std::round(attackValue * cleavePercent / 100.);
 	uint32_t level = player->getLevel();
 
 	int32_t maxValue = static_cast<int32_t>(Weapons::getMaxWeaponDamage(level, attackSkill, attackValue, attackFactor, true) * player->getVocation()->meleeDamageMultiplier);
@@ -670,7 +594,7 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 	return true;
 }
 
-int32_t WeaponDistance::getElementDamage(const Player* player, const Creature* target, const Item* item, uint16_t /*not used*/) const {
+int32_t WeaponDistance::getElementDamage(const Player* player, const Creature* target, const Item* item) const {
 	if (elementType == COMBAT_NONE) {
 		return 0;
 	}
@@ -705,7 +629,7 @@ int16_t WeaponDistance::getElementDamageValue() const {
 	return elementDamage;
 }
 
-int32_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage /*= false*/, uint16_t /*not used*/) const {
+int32_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage /*= false*/) const {
 	int32_t attackValue = item->getAttack();
 	bool hasElement = false;
 
@@ -780,7 +704,7 @@ void WeaponWand::configureWeapon(const ItemType &it) {
 	Weapon::configureWeapon(it);
 }
 
-int32_t WeaponWand::getWeaponDamage(const Player*, const Creature*, const Item*, bool maxDamage /*= false*/, uint16_t /*not used*/) const {
+int32_t WeaponWand::getWeaponDamage(const Player*, const Creature*, const Item*, bool maxDamage /*= false*/) const {
 	if (maxDamage) {
 		return -maxChange;
 	}

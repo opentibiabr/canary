@@ -84,15 +84,13 @@ namespace InternalGame {
 } // Namespace InternalGame
 
 Game::Game() {
-	offlineTrainingWindow.defaultEnterButton = 1;
-	offlineTrainingWindow.defaultEscapeButton = 0;
 	offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
 	offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
 	offlineTrainingWindow.choices.emplace_back("Club Fighting and Shielding", SKILL_CLUB);
 	offlineTrainingWindow.choices.emplace_back("Distance Fighting and Shielding", SKILL_DISTANCE);
 	offlineTrainingWindow.choices.emplace_back("Magic Level and Shielding", SKILL_MAGLEVEL);
-	offlineTrainingWindow.buttons.emplace_back("Okay", offlineTrainingWindow.defaultEnterButton);
-	offlineTrainingWindow.buttons.emplace_back("Cancel", offlineTrainingWindow.defaultEscapeButton);
+	offlineTrainingWindow.buttons.emplace_back("Okay", 1);
+	offlineTrainingWindow.buttons.emplace_back("Cancel", 0);
 	offlineTrainingWindow.defaultEscapeButton = 1;
 	offlineTrainingWindow.defaultEnterButton = 0;
 	offlineTrainingWindow.priority = true;
@@ -846,9 +844,6 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/) {
 			teamFinderMap.erase(it);
 		}
 	}
-
-
-	g_game().removeCreature(creature);
 
 	return true;
 }
@@ -5586,10 +5581,8 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				canHeal = true;
 			}
 		}
-		primaryBlockType = BLOCK_NONE;
-		if (damage.origin != ORIGIN_REFLECT) {
-			primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
-		}
+		
+		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
 
 		damage.primary.value = -damage.primary.value;
 		InternalGame::sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition(), attacker);
@@ -5624,10 +5617,8 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				canHeal = true;
 			}
 		}
-		secondaryBlockType = BLOCK_NONE;
-		if (damage.origin != ORIGIN_REFLECT) {
-			secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
-		}
+		
+		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
 
 		damage.secondary.value = -damage.secondary.value;
 		InternalGame::sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition(), attacker);
@@ -5849,9 +5840,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				return combatChangeHealth(attacker, target, damage);
 			}
 		}
-
+		
 		applyWheelOfDestinyHealing(damage, attackerPlayer, target);
-
+		
 		auto realHealthChange = target->getHealth();
 		target->gainHealth(attacker, damage.primary.value);
 		realHealthChange = target->getHealth() - realHealthChange;
@@ -5945,7 +5936,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		if (attackerPlayer && targetPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
 			return false;
 		}
-
+		
 		// Wheel of destiny
 		if (damage.damageMultiplier > 0) {
 			damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100.;
@@ -5974,26 +5965,6 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		damage.primary.value = std::abs(damage.primary.value);
 		damage.secondary.value = std::abs(damage.secondary.value);
-
-		// Hazard system perfect shot damage
-		if (attackerPlayer && damage.extension == false && damage.origin == ORIGIN_RANGED && target == attackerPlayer->getAttackedCreature()) {
-			const Position &targetPos = target->getPosition();
-			const Position &attackerPos = attacker->getPosition();
-			if (targetPos.z == attackerPos.z) {
-				int32_t distanceX = Position::getDistanceX(targetPos, attackerPos);
-				int32_t distanceY = Position::getDistanceY(targetPos, attackerPos);
-				int32_t damageX = attackerPlayer->getPerfectShotDamage(distanceX);
-				int32_t damageY = attackerPlayer->getPerfectShotDamage(distanceY);
-				if (damageX != 0 || damageY != 0) {
-					int32_t totalDamage = damageX;
-					if (distanceX != distanceY)
-						totalDamage += damageY;
-					if (damage.critical)
-						totalDamage += (totalDamage * attackerPlayer->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE));
-					damage.primary.value += totalDamage;
-				}
-			}
-		}
 
 		Monster* targetMonster;
 		if (target && target->getMonster()) {
@@ -6030,43 +6001,6 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		SpectatorVec spectators;
 		map.getSpectators(spectators, targetPos, true, true);
-
-		// Hazard system
-		if (targetPlayer && attackerMonster && damage.primary.value != 0 && attackerMonster->isOnHazardSystem()) {
-			targetPlayer->parseAttackRecvHazardSystem(damage, attackerMonster);
-		} else if (attackerPlayer && targetMonster && damage.primary.value != 0 && targetMonster->isOnHazardSystem()) {
-			attackerPlayer->parseAttackDealtHazardSystem(damage, targetMonster);
-			if (damage.primary.value == 0 && damage.secondary.value == 0) {
-				for (Creature* spectator : spectators) {
-					if (!spectator) {
-						continue;
-					}
-
-					Player* tmpPlayer = spectator->getPlayer();
-					if (!tmpPlayer) {
-						continue;
-					}
-
-					if (tmpPlayer->getPosition().z != targetPos.z) {
-						continue;
-					}
-
-					std::stringstream ss;
-					ss << ucfirst(targetMonster->getNameDescription()) << " has dodged";
-					if (tmpPlayer == attackerPlayer) {
-						ss << " your attack.";
-						attackerPlayer->sendCancelMessage(ss.str());
-						ss << " (Hazard)";
-						attackerPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
-					} else {
-						ss << " an attack by " << attackerPlayer->getName() << ". (Hazard)";
-						tmpPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
-					}
-				}
-				addMagicEffect(spectators, targetPos, CONST_ME_DODGE);
-				return true;
-			}
-		}
 
 		if (damage.fatal) {
 			addMagicEffect(spectators, targetPos, CONST_ME_FATAL);
@@ -8344,7 +8278,7 @@ void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, ui
 
 	// offline training, hardcoded
 	if (modalWindowId == std::numeric_limits<uint32_t>::max()) {
-		if (button == offlineTrainingWindow.defaultEnterButton) {
+		if (button == 1) {
 			if (choice == SKILL_SWORD || choice == SKILL_AXE || choice == SKILL_CLUB || choice == SKILL_DISTANCE || choice == SKILL_MAGLEVEL) {
 				BedItem* bedItem = player->getBedItem();
 				if (bedItem && bedItem->sleep(player)) {

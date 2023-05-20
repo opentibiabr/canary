@@ -788,18 +788,12 @@ class Player final : public Creature, public Cylinder {
 		uint16_t getSkillLevel(uint8_t skill, bool sendToClient = false) const {
 			auto skillLevel = std::max<int32_t>(0, skills[skill].level + varSkills[skill]);
 
-			/* if (auto it = maxValuePerSkill.find(skill);
-				it != maxValuePerSkill.end()) {
-				skillLevel = std::min<int32_t>(it->second, skillLevel);
-			}*/
-
 			// Send to client multiplied skill mana/life leech (13.00+ version changed to decimal)
 			if (sendToClient && (skill == SKILL_MANA_LEECH_AMOUNT || skill == SKILL_LIFE_LEECH_AMOUNT)) {
 				return skillLevel * 100;
 			}
 
-			//return static_cast<uint16_t>(skillLevel);
-			//  Wheel of destiny
+			// Wheel of destiny
 			if (skill >= SKILL_CLUB && skill <= SKILL_AXE) {
 				skillLevel += getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_MELEE);
 				skillLevel += getWheelOfDestinyMajorStatConditional("Battle Instinct", WHEEL_OF_DESTINY_MAJOR_MELEE);
@@ -861,7 +855,7 @@ class Player final : public Creature, public Cylinder {
 		void drainMana(Creature* attacker, int32_t manaLoss) override;
 		void addManaSpent(uint64_t amount);
 		void addSkillAdvance(skills_t skill, uint64_t count);
-
+		
 		float getMitigation() const override;
 		int32_t getArmor() const override;
 		int32_t getDefense() const override;
@@ -2210,7 +2204,7 @@ class Player final : public Creature, public Cylinder {
 			SpectatorVec* spectatorsPtr = nullptr,
 			const Position* pos = nullptr
 		);
-
+		
 		// Wheel of destiny
 		void onThinkWheelOfDestiny(bool force = false);
 		void checkWheelOfDestinyGiftOfLife();
@@ -2557,7 +2551,7 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 		Spell* getWheelOfDestinyCombatDataSpell(CombatDamage &damage, Creature* target);
-
+		
 		// Forge system
 		void forgeFuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
 		void forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId);
@@ -2707,42 +2701,6 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
-			/*******************************************************************************
-		 * Hazard system
-		 ******************************************************************************/
-		uint16_t getCleavePercent() const {
-			return cleavePercent;
-		}
-
-		void setCleavePercent(uint16_t value) {
-			cleavePercent += value;
-		}
-
-		int32_t getSpecializedMagicLevel(CombatType_t combat) const {
-			return specializedMagicLevel[combatTypeToIndex(combat)];
-		}
-
-		void setSpecializedMagicLevel(CombatType_t combat, int32_t value) {
-			specializedMagicLevel[combatTypeToIndex(combat)] = std::max(0, specializedMagicLevel[combatTypeToIndex(combat)] + value);
-		}
-
-		int32_t getPerfectShotDamage(uint8_t range) const {
-			auto it = perfectShot.find(range);
-			if (it != perfectShot.end())
-				return it->second;
-			return 0;
-		}
-
-		void setPerfectShotDamage(uint8_t range, int32_t damage) {
-			int32_t actualDamage = getPerfectShotDamage(range);
-			bool aboveZero = (actualDamage != 0);
-			actualDamage += damage;
-			if (actualDamage == 0 && aboveZero)
-				perfectShot.erase(range);
-			else
-				perfectShot[range] = actualDamage;
-		}
-
 		int32_t getMagicShieldCapacityFlat() const {
 			return magicShieldCapacityFlat;
 		}
@@ -2758,30 +2716,6 @@ class Player final : public Creature, public Cylinder {
 		void setMagicShieldCapacityPercent(int16_t value) {
 			magicShieldCapacityPercent += value;
 		}
-
-		// Parser
-		void parseAttackRecvHazardSystem(CombatDamage &damage, const Monster* monster);
-		void parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* monster);
-		// Points increase:
-		void addHazardSystemPoints(int32_t amount);
-		// Points get:
-		uint16_t getHazardSystemPoints() const {
-			int32_t points = 0;
-			points = getStorageValue(STORAGEVALUE_HAZARDCOUNT);
-			if (points <= 0) {
-				return 0;
-			}
-			return static_cast<uint16_t>(std::max<int32_t>(0, std::min<int32_t>(0xFFFF, points)));
-		}
-
-		// Reference counter used on client UI.
-		void reloadHazardSystemIcon();
-		uint16_t getHazardSystemReference() const {
-			return hazardSystemReferenceCounter;
-		}
-		void incrementeHazardSystemReference();
-		void decrementeHazardSystemReference();
-		/*******************************************************************************/
 
 	private:
 		static uint32_t playerFirstID;
@@ -2930,7 +2864,7 @@ class Player final : public Creature, public Cylinder {
 		int64_t lastQuickLootNotification = 0;
 		int64_t lastWalking = 0;
 		uint64_t asyncOngoingTasks = 0;
-
+		
 		// Wheel of destiny
 		uint8_t wheelOfDestinyStages[WHEEL_OF_DESTINY_STAGE_COUNT] = { 0 };
 		int64_t wheelOfDestinyOnThink[WHEEL_OF_DESTINY_ONTHINK_COUNT] = { 0 };
@@ -2941,7 +2875,7 @@ class Player final : public Creature, public Cylinder {
 		int32_t wheelOfDestinyCreaturesNearby = 0;
 		std::map<std::string, WheelOfDestinySpellGrade_t> wheelOfDestinySpellsSelected;
 		std::vector<std::string> wheelOfDestinyLearnedSpellsSelected;
-
+		
 		std::vector<Kill> unjustifiedKills;
 
 		BedItem* bedItem = nullptr;
@@ -3074,19 +3008,13 @@ class Player final : public Creature, public Cylinder {
 		bool moved = false;
 		bool dead = false;
 		bool imbuementTrackerWindowOpen = false;
-
-		// Hazard system
-		int64_t lastHazardSystemCriticalHit = 0;
-		bool reloadHazardSystemPointsCounter = true;
-		uint16_t hazardSystemReferenceCounter = 0;
-
+		
 		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
 		std::map<uint8_t, int32_t> perfectShot;
 		int32_t magicShieldCapacityFlat = 0;
 		int16_t magicShieldCapacityPercent = 0;
 		uint16_t cleavePercent = 0;
-		// Hazard end
-
+		
 		void updateItemsLight(bool internal = false);
 		uint16_t getStepSpeed() const override {
 			return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));
@@ -3132,6 +3060,7 @@ class Player final : public Creature, public Cylinder {
 		bool isDead() const {
 			return dead;
 		}
+
 		void setTemplePosition() {
 			this->town = town;
 		}

@@ -127,8 +127,8 @@ bool Vocations::loadFromXml() {
 					SPDLOG_WARN("[Vocations::loadFromXml] - "
 								"Missing skill id for vocation: {}",
 								voc.id);
-				}
-			} else if (strcasecmp(childNode.name(), "mitigation") == 0) {
+						}
+				} else if (strcasecmp(childNode.name(), "mitigation") == 0) {
 				pugi::xml_attribute factorAttribute = childNode.attribute("multiplier");
 				if (factorAttribute) {
 					voc.mitigationFactor = pugi::cast<float>(factorAttribute.value());

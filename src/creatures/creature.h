@@ -291,11 +291,11 @@ class Creature : virtual public Thing {
 		const std::list<Creature*> &getSummons() const {
 			return summons;
 		}
-
-		virtual int32_t getArmor() const {
+		
+		virtual float getMitigation() const {
 			return 0;
 		}
-		virtual float getMitigation() const {
+		virtual int32_t getArmor() const {
 			return 0;
 		}
 		virtual int32_t getDefense() const {
@@ -585,9 +585,9 @@ class Creature : virtual public Thing {
 		bool floorChange = false;
 		bool canUseDefense = true;
 		bool moveLocked = false;
-
+		
 		uint8_t wheelOfDestinyDrainBodyDebuff = 0;
-
+		
 		// creature script events
 		bool hasEventRegistered(CreatureEventType_t event) const {
 			return (0 != (scriptEventsBitField & (static_cast<uint32_t>(1) << event)));

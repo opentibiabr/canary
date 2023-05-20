@@ -9105,12 +9105,12 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 		return;
 	}
 
-	if (auto function = std::bind(&Game::playerRewardChestCollect, this, player->getID(), pos, itemId, stackPos);
+	if (auto function = std::bind(&Game::playerRewardChestCollect, this, player->getID(), pos, itemId, stackPos, 0);
 		player->canAutoWalk(item->getPosition(), function)) {
 		return;
 	}
 
-	ReturnValue returnValue = player->rewardChestCollect();
+	ReturnValue returnValue = player->rewardChestCollect(nullptr, maxMoveItems);
 	if (returnValue != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(returnValue);
 	}

@@ -502,7 +502,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 
 	if (oldProtocol || otclientV8) {
 		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
-	} else if (operatingSystem <= CLIENTOS_NEW_MAC) {
+	} else if (operatingSystem <= CLIENTOS_OTCLIENT_MAC) {
 		setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
 		enableCompression();
 	}

@@ -256,6 +256,28 @@ class Monster final : public Creature {
 			return mType->info.raceid;
 		}
 
+		// Hazard system
+		bool isOnHazardSystem() const {
+			return mType->info.hazardSystemCritChance != 0 || mType->info.canSpawnPod || mType->info.canDodge || mType->info.canDamageBoost;
+		}
+
+		bool getHazardSystemDodge() const {
+			return mType->info.canDodge;
+		}
+
+		bool getHazardSystemSpawnPod() const {
+			return mType->info.canSpawnPod;
+		}
+
+		bool getHazardSystemDamageBoost() const {
+			return mType->info.canDamageBoost;
+		}
+
+		uint16_t getHazardSystemCritChance() const {
+			return mType->info.hazardSystemCritChance;
+		}
+		// Hazard end
+
 		void updateTargetList();
 		void clearTargetList();
 		void clearFriendList();
@@ -360,6 +382,7 @@ class Monster final : public Creature {
 
 		void addFriend(Creature* creature);
 		void removeFriend(Creature* creature);
+		void handleHazardSystem(Creature &creature) const;
 		void addTarget(Creature* creature, bool pushFront = false);
 		void removeTarget(Creature* creature);
 

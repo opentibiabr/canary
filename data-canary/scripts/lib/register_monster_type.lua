@@ -506,6 +506,23 @@ registerMonsterType.defenses = function(mtype, mask)
 	end
 end
 
+registerMonsterType.hazard = function(mtype, mask)
+	if mask.hazard ~= nil then
+		if mask.hazard.criticalChance ~= nil then
+			mtype:hazardSystemCrit(mask.hazard.criticalChance)
+		end
+		if mask.hazard.canDodge ~= nil then
+			mtype:hazardSystemDodge(mask.hazard.canDodge)
+		end
+		if mask.hazard.canSpawnPod ~= nil then
+			mtype:hazardSystemSpawnPod(mask.hazard.canSpawnPod)
+		end
+		if mask.hazard.canDealMoreDamage ~= nil then
+			mtype:hazardSystemDamageBoost(mask.hazard.canDealMoreDamage)
+		end
+	end
+end
+
 local function loadcastSound(effect, incomingLua, mtype)
 	-- Throw shoottype
 	if effect == CONST_ANI_SPEAR or

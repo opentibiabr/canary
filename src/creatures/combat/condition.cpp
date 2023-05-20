@@ -11,6 +11,11 @@
 
 #include "creatures/combat/condition.h"
 #include "game/game.h"
+#include "game/scheduling/tasks.h"
+
+/**
+ *  Condition
+ */
 
 bool Condition::setParam(ConditionParam_t param, int32_t value) {
 	switch (param) {
@@ -43,6 +48,10 @@ bool Condition::setParam(ConditionParam_t param, int32_t value) {
 			return false;
 		}
 	}
+}
+
+bool Condition::setPositionParam(ConditionParam_t param, const Position &pos) {
+	return false;
 }
 
 bool Condition::unserialize(PropStream &propStream) {
@@ -212,6 +221,9 @@ Condition* Condition::createCondition(ConditionId_t id, ConditionType_t type, in
 		case CONDITION_MANASHIELD:
 			return new ConditionManaShield(id, type, ticks, buff, subId);
 
+		case CONDITION_FEARED:
+			return new ConditionFeared(id, type, ticks, buff, subId);
+
 		case CONDITION_ROOTED:
 		case CONDITION_INFIGHT:
 		case CONDITION_DRUNK:
@@ -330,6 +342,10 @@ bool Condition::updateCondition(const Condition* addCondition) {
 	return true;
 }
 
+/**
+ *  ConditionGeneric
+ */
+
 bool ConditionGeneric::startCondition(Creature* creature) {
 	return Condition::startCondition(creature);
 }
@@ -374,6 +390,10 @@ uint32_t ConditionGeneric::getIcons() const {
 
 	return icons;
 }
+
+/**
+ *  ConditionAttributes
+ */
 
 void ConditionAttributes::addCondition(Creature* creature, const Condition* addCondition) {
 	if (updateCondition(addCondition)) {
@@ -760,6 +780,10 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value) {
 	}
 }
 
+/**
+ *  ConditionRegeneration
+ */
+
 bool ConditionRegeneration::startCondition(Creature* creature) {
 	if (!Condition::startCondition(creature)) {
 		return false;
@@ -928,15 +952,22 @@ uint32_t ConditionRegeneration::getManaTicks(Creature* creature) const {
 	return manaTicks;
 }
 
+/**
+ *  ConditionManaShield
+ */
+
 bool ConditionManaShield::startCondition(Creature* creature) {
 	if (!Condition::startCondition(creature)) {
 		return false;
 	}
+
 	creature->setManaShield(manaShield);
 	creature->setMaxManaShield(manaShield);
+
 	if (Player* player = creature->getPlayer()) {
 		player->sendStats();
 	}
+
 	return true;
 }
 
@@ -998,6 +1029,10 @@ uint32_t ConditionManaShield::getIcons() const {
 	return icons;
 }
 
+/**
+ *  ConditionSoul
+ */
+
 void ConditionSoul::addCondition(Creature*, const Condition* addCondition) {
 	if (updateCondition(addCondition)) {
 		setTicks(addCondition->getTicks());
@@ -1058,6 +1093,10 @@ bool ConditionSoul::setParam(ConditionParam_t param, int32_t value) {
 			return ret;
 	}
 }
+
+/**
+ *  ConditionDamage
+ */
 
 bool ConditionDamage::setParam(ConditionParam_t param, int32_t value) {
 	bool ret = Condition::setParam(param, value);
@@ -1446,6 +1485,286 @@ void ConditionDamage::generateDamageList(int32_t amount, int32_t start, std::lis
 	}
 }
 
+/**
+ *  ConditionFeared
+ */
+bool ConditionFeared::isStuck(Creature* creature, Position pos) const {
+	for (Direction dir : m_directionsVector) {
+		if (canWalkTo(creature, pos, dir)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool ConditionFeared::getRandomDirection(Creature* creature, Position pos) {
+
+	static std::vector<Direction> directions {
+		DIRECTION_NORTH,
+		DIRECTION_NORTHEAST,
+		DIRECTION_EAST,
+		DIRECTION_SOUTHEAST,
+		DIRECTION_SOUTH,
+		DIRECTION_SOUTHWEST,
+		DIRECTION_WEST,
+		DIRECTION_NORTHWEST
+	};
+
+	std::ranges::shuffle(directions.begin(), directions.end(), getRandomGenerator());
+	for (Direction dir : directions) {
+		if (canWalkTo(creature, pos, dir)) {
+			this->fleeIndx = static_cast<uint8_t>(dir);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool ConditionFeared::canWalkTo(const Creature* creature, Position pos, Direction moveDirection) const {
+	pos = getNextPosition(moveDirection, pos);
+	if (!creature) {
+		spdlog::error("[{}] creature is nullptr", __FUNCTION__);
+		return false;
+	}
+
+	const Tile* tile = g_game().map.getTile(pos);
+	if (tile && tile->getTopVisibleCreature(creature) == nullptr && tile->queryAdd(0, *creature, 1, FLAG_PATHFINDING) == RETURNVALUE_NOERROR) {
+		const MagicField* field = tile->getFieldItem();
+		if (field && !field->isBlocking() && field->getDamage() != 0) {
+			return false;
+		}
+		return true;
+	}
+
+	return false;
+}
+
+bool ConditionFeared::getFleeDirection(Creature* creature) {
+	Position creaturePos = creature->getPosition();
+
+	int_fast32_t offx = Position::getOffsetX(creaturePos, fleeingFromPos);
+	int_fast32_t offy = Position::getOffsetY(creaturePos, fleeingFromPos);
+
+	// Discover where the monster is
+	if (offx == 0 && offy == 0) {
+		/*
+		 *	Monster is on the same SQM of the player
+		 *	Flee to Anywhere
+		 */
+		SPDLOG_DEBUG("[ConditionsFeared::getFleeDirection] Monster is on top of player, flee randomly. {} {}", offx, offy);
+		return getRandomDirection(creature, creaturePos);
+	} else if (offx >= 1 && offy <= 0) {
+		/*
+		 *	Monster is on SW Region
+		 *	Flee to N(0), NE(1) and E(2)
+		 */
+		SPDLOG_DEBUG("[ConditionsFeared::getFleeDirection] Monster is on the SW region, flee to N, NE or E. {} {}", offx, offy);
+
+		if (offy == 0) {
+			this->fleeIndx = 2; // Starts at East
+		} else {
+			this->fleeIndx = 0; // Starts at North
+		}
+
+		return true;
+	} else if (offx >= 0 && offy >= 1) {
+		/*
+		 *	Monster is on NW Region
+		 *	Flee to E(2), SE(3) and S(4)
+		 */
+		SPDLOG_DEBUG("[ConditionsFeared::getFleeDirection] Monster is on the NW region, flee to E, SE or S. {} {}", offx, offy);
+
+		if (offx == 0) {
+			this->fleeIndx = 4; // Starts at South
+		} else {
+			this->fleeIndx = 2; // Starts at East
+		}
+
+		return true;
+	} else if (offx <= -1 && offy >= 0) {
+		/*
+		 *	Monster is on NE Region
+		 *	Flee to S(4), SW(5) and W(6)
+		 */
+		SPDLOG_DEBUG("[ConditionsFeared::getFleeDirection] Monster is on the NE region, flee to S, SW or W. {} {}", offx, offy);
+
+		if (offy == 0) {
+			this->fleeIndx = 6; // Starts at West
+		} else {
+			this->fleeIndx = 4; // Starts at South
+		}
+
+		return true;
+	} else if (offx <= 0 && offy <= -1) {
+		/*
+		 *	Monster is on SE
+		 *	Flee to W(6), NW(7) and N(0)
+		 */
+		SPDLOG_DEBUG("[ConditionsFeared::getFleeDirection] Monster is on the SE region, flee to W, NW or N. {} {}", offx, offy);
+
+		if (offx == 0) {
+			this->fleeIndx = 0; // Starts at North
+		} else {
+			this->fleeIndx = 6; // Starts at West
+		}
+
+		return true;
+	}
+
+	SPDLOG_DEBUG("[ConditionsFeared::getFleeDirection] Something went wrong. {} {}", offx, offy);
+	return false;
+}
+
+bool ConditionFeared::getFleePath(Creature* creature, const Position &pos, std::forward_list<Direction> &dirList) {
+	const std::vector<uint8_t> walkSize { 15, 9, 3, 1 };
+	bool found = false;
+	std::ptrdiff_t found_size = 0;
+	Position futurePos = pos;
+
+	do {
+		for (uint8_t wsize : walkSize) {
+			SPDLOG_DEBUG("[{}] Checking on index {} with walkSize of {}", __FUNCTION__, fleeIndx, wsize);
+
+			if (fleeIndx == 8) { // Reset index if at the end of the loop
+				fleeIndx = 0;
+			}
+
+			if (isStuck(creature, pos)) { // Check if it is possible to walk to any direction
+				SPDLOG_DEBUG("[{}] Can't walk to anywhere", __FUNCTION__);
+				return false;
+			}
+
+			futurePos = pos; // Reset position to be the same as creature
+
+			switch (m_directionsVector[fleeIndx]) {
+				case DIRECTION_NORTH:
+					futurePos.y += wsize;
+					SPDLOG_DEBUG("[{}] Trying to flee to NORTH to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
+					break;
+
+				case DIRECTION_NORTHEAST:
+					futurePos.x += wsize;
+					futurePos.y -= wsize;
+					SPDLOG_DEBUG("[{}] Trying to flee to NORTHEAST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
+					break;
+
+				case DIRECTION_EAST:
+					futurePos.x -= wsize;
+					SPDLOG_DEBUG("[{}] Trying to flee to EAST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
+					break;
+
+				case DIRECTION_SOUTHEAST:
+					futurePos.x -= wsize;
+					futurePos.y += wsize;
+					SPDLOG_DEBUG("[{}] Trying to flee to SOUTHEAST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
+					break;
+
+				case DIRECTION_SOUTH:
+					futurePos.y += wsize;
+					SPDLOG_DEBUG("[{}] Trying to flee to SOUTH to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
+					break;
+
+				case DIRECTION_SOUTHWEST:
+					futurePos.x += wsize;
+					futurePos.y += wsize;
+					SPDLOG_DEBUG("[{}] Trying to flee to SOUTHWEST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
+					break;
+
+				case DIRECTION_WEST:
+					futurePos.x += wsize;
+					SPDLOG_DEBUG("[{}] Trying to flee to WEST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
+					break;
+
+				case DIRECTION_NORTHWEST:
+					futurePos.x += wsize;
+					futurePos.y -= wsize;
+					SPDLOG_DEBUG("[{}] Trying to flee to NORTHWEST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
+					break;
+			}
+
+			found = creature->getPathTo(futurePos, dirList, 0, 30);
+			found_size = std::distance(dirList.begin(), dirList.end());
+
+			if (found && found_size > 0) {
+				break;
+			}
+		}
+
+		if (!found || found_size == 0) {
+			this->fleeIndx += 1;
+		}
+	} while (!found && found_size == 0);
+
+	SPDLOG_DEBUG("[{}] Found Available path to {} with {} steps", __FUNCTION__, futurePos.toString(), found_size);
+	return true;
+}
+
+bool ConditionFeared::setPositionParam(ConditionParam_t param, const Position &pos) {
+	if (param == CONDITION_PARAM_CASTER_POSITION) {
+		this->fleeingFromPos = pos;
+		return true;
+	}
+	return false;
+}
+
+bool ConditionFeared::startCondition(Creature* creature) {
+	SPDLOG_DEBUG("[ConditionFeared::executeCondition] Condition started for {}", creature->getName());
+	getFleeDirection(creature);
+	SPDLOG_DEBUG("[ConditionFeared::executeCondition] Flee from {}", fleeingFromPos.toString());
+	return Condition::startCondition(creature);
+}
+
+bool ConditionFeared::executeCondition(Creature* creature, int32_t interval) {
+	Position currentPos = creature->getPosition();
+	std::forward_list<Direction> listDir;
+
+	SPDLOG_DEBUG("[ConditionFeared::executeCondition] Executing condition, current position is {}", currentPos.toString());
+
+	if (creature->getWalkSize() < 2) {
+		if (fleeIndx == 99) {
+			getFleeDirection(creature);
+		}
+
+		if (getFleePath(creature, currentPos, listDir)) {
+			g_dispatcher().addTask(createTask(std::bind(&Game::forcePlayerAutoWalk, &g_game(), creature->getID(), listDir)), true);
+			SPDLOG_DEBUG("[ConditionFeared::executeCondition] Walking Scheduled");
+		}
+	}
+
+	return Condition::executeCondition(creature, interval);
+}
+
+void ConditionFeared::endCondition(Creature* creature) {
+	creature->stopEventWalk();
+	/*
+	 * After a player is feared there's a 10 seconds before he can feared again.
+	 */
+	Player* player = creature->getPlayer();
+	if (player) {
+		player->setImmuneFear();
+	}
+}
+
+void ConditionFeared::addCondition(Creature*, const Condition* addCondition) {
+	if (updateCondition(addCondition)) {
+		setTicks(addCondition->getTicks());
+	}
+}
+
+uint32_t ConditionFeared::getIcons() const {
+	uint32_t icons = Condition::getIcons();
+
+	icons |= ICON_FEARED;
+
+	return icons;
+}
+
+/**
+ *  ConditionSpeed
+ */
+
 void ConditionSpeed::setFormulaVars(float NewMina, float NewMinb, float NewMaxa, float NewMaxb) {
 	this->mina = NewMina;
 	this->minb = NewMinb;
@@ -1579,6 +1898,10 @@ uint32_t ConditionSpeed::getIcons() const {
 	}
 	return icons;
 }
+
+/**
+ *  ConditionInvisible
+ */
 
 bool ConditionInvisible::startCondition(Creature* creature) {
 	if (!Condition::startCondition(creature)) {
@@ -1795,6 +2118,10 @@ void ConditionLight::serialize(PropWriteStream &propWriteStream) {
 	propWriteStream.write<uint32_t>(lightChangeInterval);
 }
 
+/**
+ *  ConditionSpellCooldown
+ */
+
 void ConditionSpellCooldown::addCondition(Creature* creature, const Condition* addCondition) {
 	if (updateCondition(addCondition)) {
 		setTicks(addCondition->getTicks());
@@ -1821,6 +2148,10 @@ bool ConditionSpellCooldown::startCondition(Creature* creature) {
 	}
 	return true;
 }
+
+/**
+ *  ConditionSpellGroupCooldown
+ */
 
 void ConditionSpellGroupCooldown::addCondition(Creature* creature, const Condition* addCondition) {
 	if (updateCondition(addCondition)) {

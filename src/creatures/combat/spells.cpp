@@ -21,6 +21,11 @@ Spells::~Spells() = default;
 TalkActionResult_t Spells::playerSaySpell(Player* player, std::string &words) {
 	std::string str_words = words;
 
+	if (player->hasCondition(CONDITION_FEARED)) {
+		player->sendTextMessage(MESSAGE_FAILURE, "You are feared.");
+		return TALKACTION_FAILED;
+	}
+
 	// strip trailing spaces
 	trimString(str_words);
 
@@ -351,6 +356,11 @@ bool Spell::playerSpellCheck(Player* player) const {
 
 	if (player->hasFlag(PlayerFlags_t::IgnoreSpellCheck)) {
 		return true;
+	}
+
+	if (player->hasCondition(CONDITION_FEARED)) {
+		player->sendTextMessage(MESSAGE_FAILURE, "You are feared.");
+		return false;
 	}
 
 	if (!enabled) {

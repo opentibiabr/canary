@@ -99,6 +99,11 @@ int32_t Creature::getWalkDelay() const {
 	return stepDuration - (ct - lastStep);
 }
 
+int32_t Creature::getWalkSize() {
+	auto ret = std::distance(listWalkDir.begin(), listWalkDir.end());
+	return static_cast<int32_t>(ret);
+}
+
 void Creature::onThink(uint32_t interval) {
 	if (!isMapLoaded && useCacheMap()) {
 		isMapLoaded = true;
@@ -218,8 +223,8 @@ bool Creature::getNextStep(Direction &dir, uint32_t &) {
 	return true;
 }
 
-void Creature::startAutoWalk(const std::forward_list<Direction> &listDir) {
-	if (hasCondition(CONDITION_ROOTED)) {
+void Creature::startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions /* = false*/) {
+	if (!ignoreConditions && (hasCondition(CONDITION_ROOTED) || hasCondition(CONDITION_FEARED))) {
 		return;
 	}
 
@@ -969,6 +974,11 @@ bool Creature::setFollowCreature(Creature* creature) {
 	if (creature) {
 		if (followCreature == creature) {
 			return true;
+		}
+
+		if (hasCondition(CONDITION_FEARED)) {
+			followCreature = nullptr;
+			return false;
 		}
 
 		const Position &creaturePos = creature->getPosition();

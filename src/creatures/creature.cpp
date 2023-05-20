@@ -100,7 +100,8 @@ int32_t Creature::getWalkDelay() const {
 }
 
 int32_t Creature::getWalkSize() {
-	return distance(listWalkDir.begin(), listWalkDir.end());
+	auto ret = std::distance(listWalkDir.begin(), listWalkDir.end());
+	return static_cast<int32_t>(ret);
 }
 
 void Creature::onThink(uint32_t interval) {
@@ -223,10 +224,8 @@ bool Creature::getNextStep(Direction &dir, uint32_t &) {
 }
 
 void Creature::startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions /* = false*/) {
-	if (!ignoreConditions) {
-		if (hasCondition(CONDITION_ROOTED) || hasCondition(CONDITION_FEARED)) {
-			return;
-		}
+	if (!ignoreConditions && (hasCondition(CONDITION_ROOTED) || hasCondition(CONDITION_FEARED))) {
+		return;
 	}
 
 	listWalkDir = listDir;

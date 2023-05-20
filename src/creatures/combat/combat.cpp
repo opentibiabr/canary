@@ -662,10 +662,10 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 				 */
 				Party* party = player->getParty();
 				if (party) {
-					int8_t affectedCount = std::floor((party->getMemberCount() + 5) / 5);
+					auto affectedCount = (party->getMemberCount() + 5) / 5;
 					SPDLOG_DEBUG("[Combat::CombatConditionFunc] Player is member of a party, {} members can be feared", affectedCount);
 
-					for (Player* member : party->getMembers()) {
+					for (const auto member : party->getMembers()) {
 						if (member->hasCondition(CONDITION_FEARED)) {
 							affectedCount -= 1;
 						}
@@ -682,7 +682,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 			Condition* conditionCopy = condition->clone();
 			if (caster) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
-				conditionCopy->setParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
+				conditionCopy->setPositionParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
 			}
 
 			// TODO: infight condition until all aggressive conditions has ended

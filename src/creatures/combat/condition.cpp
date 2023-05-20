@@ -50,7 +50,7 @@ bool Condition::setParam(ConditionParam_t param, int32_t value) {
 	}
 }
 
-bool Condition::setParam(ConditionParam_t param, const Position &pos) {
+bool Condition::setPositionParam(ConditionParam_t param, const Position &pos) {
 	return false;
 }
 
@@ -1488,8 +1488,8 @@ void ConditionDamage::generateDamageList(int32_t amount, int32_t start, std::lis
 /**
  *  ConditionFeared
  */
-bool ConditionFeared::isStuck(Creature* creature, Position pos) {
-	for (Direction dir : dirList) {
+bool ConditionFeared::isStuck(Creature* creature, Position pos) const {
+	for (Direction dir : m_directionsVector) {
 		if (canWalkTo(creature, pos, dir)) {
 			return false;
 		}
@@ -1511,7 +1511,7 @@ bool ConditionFeared::getRandomDirection(Creature* creature, Position pos) {
 		DIRECTION_NORTHWEST
 	};
 
-	std::shuffle(directions.begin(), directions.end(), getRandomGenerator());
+	std::ranges::shuffle(directions.begin(), directions.end(), getRandomGenerator());
 	for (Direction dir : directions) {
 		if (canWalkTo(creature, pos, dir)) {
 			this->fleeIndx = static_cast<uint8_t>(dir);
@@ -1522,8 +1522,12 @@ bool ConditionFeared::getRandomDirection(Creature* creature, Position pos) {
 	return false;
 }
 
-bool ConditionFeared::canWalkTo(Creature* creature, Position pos, Direction moveDirection) const {
+bool ConditionFeared::canWalkTo(const Creature* creature, Position pos, Direction moveDirection) const {
 	pos = getNextPosition(moveDirection, pos);
+	if (!creature) {
+		spdlog::error("[{}] creature is nullptr", __FUNCTION__);
+		return false;
+	}
 
 	const Tile* tile = g_game().map.getTile(pos);
 	if (tile && tile->getTopVisibleCreature(creature) == nullptr && tile->queryAdd(0, *creature, 1, FLAG_PATHFINDING) == RETURNVALUE_NOERROR) {
@@ -1613,75 +1617,75 @@ bool ConditionFeared::getFleeDirection(Creature* creature) {
 	return false;
 }
 
-bool ConditionFeared::getFleePath(Creature* creature, Position &pos, std::forward_list<Direction> &dirList) {
+bool ConditionFeared::getFleePath(Creature* creature, const Position &pos, std::forward_list<Direction> &dirList) {
 	const std::vector<uint8_t> walkSize { 15, 9, 3, 1 };
 	bool found = false;
-	uint8_t found_size = 0;
-	Position futurePos = pos; // getNextPosition(fleeDir, currentPos);
+	std::ptrdiff_t found_size = 0;
+	Position futurePos = pos;
 
 	do {
 		for (uint8_t wsize : walkSize) {
-			SPDLOG_DEBUG("[ConditionsFeared::getFleePath] Checking on index {} with walkSize of {}", fleeIndx, wsize);
+			SPDLOG_DEBUG("[{}] Checking on index {} with walkSize of {}", __FUNCTION__, fleeIndx, wsize);
 
 			if (fleeIndx == 8) { // Reset index if at the end of the loop
 				fleeIndx = 0;
 			}
 
 			if (isStuck(creature, pos)) { // Check if it is possible to walk to any direction
-				SPDLOG_DEBUG("[ConditionsFeared::getFleePath] Can't walk to anywhere");
+				SPDLOG_DEBUG("[{}] Can't walk to anywhere", __FUNCTION__);
 				return false;
 			}
 
 			futurePos = pos; // Reset position to be the same as creature
 
-			switch (this->dirList[fleeIndx]) {
+			switch (m_directionsVector[fleeIndx]) {
 				case DIRECTION_NORTH:
 					futurePos.y += wsize;
-					SPDLOG_DEBUG("[ConditionsFeared::getFleePath] Trying to flee to NORTH to {} [{}]", futurePos.toString(), wsize);
+					SPDLOG_DEBUG("[{}] Trying to flee to NORTH to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
 				case DIRECTION_NORTHEAST:
 					futurePos.x += wsize;
 					futurePos.y -= wsize;
-					SPDLOG_DEBUG("[ConditionsFeared::getFleePath] Trying to flee to NORTHEAST to {} [{}]", futurePos.toString(), wsize);
+					SPDLOG_DEBUG("[{}] Trying to flee to NORTHEAST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
 				case DIRECTION_EAST:
 					futurePos.x -= wsize;
-					SPDLOG_DEBUG("[ConditionsFeared::getFleePath] Trying to flee to EAST to {} [{}]", futurePos.toString(), wsize);
+					SPDLOG_DEBUG("[{}] Trying to flee to EAST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
 				case DIRECTION_SOUTHEAST:
 					futurePos.x -= wsize;
 					futurePos.y += wsize;
-					SPDLOG_DEBUG("[ConditionsFeared::getFleePath] Trying to flee to SOUTHEAST to {} [{}]", futurePos.toString(), wsize);
+					SPDLOG_DEBUG("[{}] Trying to flee to SOUTHEAST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
 				case DIRECTION_SOUTH:
 					futurePos.y += wsize;
-					SPDLOG_DEBUG("[ConditionsFeared::getFleePath] Trying to flee to SOUTH to {} [{}]", futurePos.toString(), wsize);
+					SPDLOG_DEBUG("[{}] Trying to flee to SOUTH to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
 				case DIRECTION_SOUTHWEST:
 					futurePos.x += wsize;
 					futurePos.y += wsize;
-					SPDLOG_DEBUG("[ConditionsFeared::getFleePath] Trying to flee to SOUTHWEST to {} [{}]", futurePos.toString(), wsize);
+					SPDLOG_DEBUG("[{}] Trying to flee to SOUTHWEST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
 				case DIRECTION_WEST:
 					futurePos.x += wsize;
-					SPDLOG_DEBUG("[ConditionsFeared::getFleePath] Trying to flee to WEST to {} [{}]", futurePos.toString(), wsize);
+					SPDLOG_DEBUG("[{}] Trying to flee to WEST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 
 				case DIRECTION_NORTHWEST:
 					futurePos.x += wsize;
 					futurePos.y -= wsize;
-					SPDLOG_DEBUG("[ConditionsFeared::getFleePath] Trying to flee to NORTHWEST to {} [{}]", futurePos.toString(), wsize);
+					SPDLOG_DEBUG("[{}] Trying to flee to NORTHWEST to {} [{}]", __FUNCTION__, futurePos.toString(), wsize);
 					break;
 			}
 
-			found = creature->getPathTo(futurePos, dirList, 0, 30); //(futurePos, dirList, 0, 20, true, false, 20); // futurePos, dirList, 0, 8, true, false, 8
-			found_size = distance(dirList.begin(), dirList.end());
+			found = creature->getPathTo(futurePos, dirList, 0, 30);
+			found_size = std::distance(dirList.begin(), dirList.end());
 
 			if (found && found_size > 0) {
 				break;
@@ -1693,11 +1697,11 @@ bool ConditionFeared::getFleePath(Creature* creature, Position &pos, std::forwar
 		}
 	} while (!found && found_size == 0);
 
-	SPDLOG_DEBUG("[ConditionsFeared::getFleePath] Found Available path to {} with {} steps", futurePos.toString(), found_size);
+	SPDLOG_DEBUG("[{}] Found Available path to {} with {} steps", __FUNCTION__, futurePos.toString(), found_size);
 	return true;
 }
 
-bool ConditionFeared::setParam(ConditionParam_t param, const Position &pos) {
+bool ConditionFeared::setPositionParam(ConditionParam_t param, const Position &pos) {
 	if (param == CONDITION_PARAM_CASTER_POSITION) {
 		this->fleeingFromPos = pos;
 		return true;

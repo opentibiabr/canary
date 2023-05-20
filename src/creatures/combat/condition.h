@@ -54,7 +54,7 @@ class Condition {
 		static Condition* createCondition(PropStream &propStream);
 
 		virtual bool setParam(ConditionParam_t param, int32_t value);
-		virtual bool setParam(ConditionParam_t param, const Position &pos);
+		virtual bool setPositionParam(ConditionParam_t param, const Position &pos);
 
 		// serialization
 		bool unserialize(PropStream &propStream);
@@ -302,16 +302,16 @@ class ConditionFeared final : public Condition {
 			return new ConditionFeared(*this);
 		}
 
-		bool setParam(ConditionParam_t param, const Position &pos) override;
+		bool setPositionParam(ConditionParam_t param, const Position &pos) override;
 
 	private:
-		bool canWalkTo(Creature* creature, Position pos, Direction moveDirection) const;
+		bool canWalkTo(const Creature* creature, Position pos, Direction moveDirection) const;
 		bool getFleeDirection(Creature* creature);
-		bool getFleePath(Creature* creature, Position &pos, std::forward_list<Direction> &dirList);
+		bool getFleePath(Creature* creature, const Position &pos, std::forward_list<Direction> &dirList);
 		bool getRandomDirection(Creature* creature, Position pos);
-		bool isStuck(Creature* creature, Position pos);
+		bool isStuck(Creature* creature, Position pos) const;
 
-		std::vector<Direction> dirList {
+		std::vector<Direction> m_directionsVector {
 			DIRECTION_NORTH,
 			DIRECTION_NORTHEAST,
 			DIRECTION_EAST,

@@ -202,7 +202,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 			duration = spell->duration;
 		}
 
-		Condition* condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_FEARED, duration, 0);
+		const auto condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_FEARED, duration, 0);
 		combatPtr->addCondition(condition);
 	} else if (spellName == "firefield") {
 		combatPtr->setParam(COMBAT_PARAM_CREATEITEM, ITEM_FIREFIELD_PVP_FULL);

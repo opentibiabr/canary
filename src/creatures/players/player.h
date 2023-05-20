@@ -1774,18 +1774,8 @@ class Player final : public Creature, public Cylinder {
 			}
 			return false;
 		}
-		void setImmuneFear() {
-			fearCondition.first = CONDITION_FEARED;
-			fearCondition.second = OTSYS_TIME() + 10000;
-		}
-		bool isImmuneFear() {
-			uint64_t timenow = OTSYS_TIME();
-			if ((fearCondition.first == CONDITION_FEARED)
-				&& (timenow <= fearCondition.second)) {
-				return true;
-			}
-			return false;
-		}
+		void setImmuneFear();
+		bool isImmuneFear() const;
 		uint16_t parseRacebyCharm(charmRune_t charmId, bool set, uint16_t newRaceid) {
 			uint16_t raceid = 0;
 			switch (charmId) {
@@ -2573,7 +2563,7 @@ class Player final : public Creature, public Cylinder {
 		int32_t UnlockedRunesBit = 0;
 		std::pair<ConditionType_t, uint64_t> cleanseCondition = { CONDITION_NONE, 0 };
 
-		std::pair<ConditionType_t, uint64_t> fearCondition = { CONDITION_NONE, 0 };
+		std::pair<ConditionType_t, uint64_t> m_fearCondition = { CONDITION_NONE, 0 };
 
 		uint8_t soul = 0;
 		uint8_t levelPercent = 0;

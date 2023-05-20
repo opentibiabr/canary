@@ -569,6 +569,11 @@ class Game {
 		void sendUpdateCreature(const Creature* creature);
 		Item* wrapItem(Item* item);
 
+		void addUniquePlayerNames(Player* player);
+		Player* getUniquePlayerNames(const std::string &s);
+		void removeUniquePlayerNames(const std::string &s);
+		void removeUniquePlayerNames(Player* player);
+
 	private:
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;
 		std::set<uint32_t> fiendishMonsters;
@@ -580,6 +585,7 @@ class Game {
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
 		void playerSpeakToNpc(Player* player, const std::string &text);
 
+		phmap::flat_hash_map<std::string, Player*> UniquePlayerNames;
 		phmap::flat_hash_map<uint32_t, Player*> players;
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
 		phmap::flat_hash_map<uint32_t, Guild*> guilds;

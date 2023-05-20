@@ -8975,3 +8975,41 @@ bool Game::addItemStoreInbox(const Player* player, uint32_t itemId) {
 
 	return true;
 }
+
+void Game::addUniquePlayerNames(Player* player) {
+	if (!player) {
+		SPDLOG_WARN("Attempted to add null player to unique player names list.");
+		return;
+	}
+	const std::string &lowercase_name = asLowerCaseString(player->getName());
+	UniquePlayerNames[lowercase_name] = player;
+}
+
+Player* Game::getUniquePlayerNames(const std::string &s) {
+	if (s.empty()) {
+		SPDLOG_WARN("Attempted to get player with empty name string.");
+		return nullptr;
+	}
+
+	auto it = UniquePlayerNames.find(asLowerCaseString(s));
+	return (it != UniquePlayerNames.end()) ? it->second : nullptr;
+}
+
+void Game::removeUniquePlayerNames(const std::string &s) {
+	if (s.empty()) {
+		SPDLOG_WARN("Attempted to remove player with empty name string from unique player names list.");
+		return;
+	}
+
+	const std::string &lowercase_name = asLowerCaseString(s);
+	UniquePlayerNames.erase(lowercase_name);
+}
+
+void Game::removeUniquePlayerNames(Player* player) {
+	if (!player) {
+		SPDLOG_WARN("Attempted to remove null player from unique player names list.");
+		return;
+	}
+	const std::string &lowercase_name = asLowerCaseString(player->getName());
+	UniquePlayerNames.erase(lowercase_name);
+}

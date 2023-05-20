@@ -67,11 +67,18 @@ void IOLoginData::setAccountType(uint32_t accountId, account::AccountType accoun
 }
 
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
+	static phmap::flat_hash_map<uint32_t, bool> updateOnline;
+	if (login && updateOnline.find(guid) != updateOnline.end() || guid <= 0) {
+		return;
+	}
+
 	std::ostringstream query;
 	if (login) {
 		query << "INSERT INTO `players_online` VALUES (" << guid << ')';
+		updateOnline[guid] = true;
 	} else {
 		query << "DELETE FROM `players_online` WHERE `player_id` = " << guid;
+		updateOnline.erase(guid);
 	}
 	Database::getInstance().executeQuery(query.str());
 }

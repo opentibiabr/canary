@@ -597,6 +597,34 @@ void Combat::CombatManaFunc(Creature* caster, Creature* target, const CombatPara
 	}
 }
 
+bool Combat::checkFearConditionAffected(Player* player) {
+	if (player->isImmuneFear()) {
+		return false;
+	}
+
+	if (player->hasCondition(CONDITION_FEARED)) {
+		return false;
+	}
+
+	Party* party = player->getParty();
+	if (party) {
+		auto affectedCount = (party->getMemberCount() + 5) / 5;
+		SPDLOG_DEBUG("[{}] Player is member of a party, {} members can be feared", __FUNCTION__, affectedCount);
+
+		for (const auto member : party->getMembers()) {
+			if (member->hasCondition(CONDITION_FEARED)) {
+				affectedCount -= 1;
+			}
+		}
+
+		if (affectedCount <= 0) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void Combat::CombatConditionFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data) {
 	if (params.origin == ORIGIN_MELEE && data && data->primary.value == 0 && data->secondary.value == 0) {
 		return;
@@ -607,7 +635,6 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 		if (target) {
 			player = target->getPlayer();
 		}
-		// Cleanse charm rune (target as player)
 		if (player) {
 			// Cleanse charm rune (target as player)
 			if (player->isImmuneCleanse(condition->getType())) {
@@ -631,50 +658,8 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 				}
 			}
 
-			/**
-			 * Specifics checks for Feared condtion
-			 */
-			if (condition->getType() == CONDITION_FEARED) {
-				/**
-				 * After being feared the player has a cooldown until it can be feared again
-				 */
-				if (player->isImmuneFear()) {
-					return;
-				}
-
-				/**
-				 * Block fear condition to be applied when player is already in fear
-				 * This is done to ensure player won't be feared for a maximun of 6 seconds (by default)
-				 * and have a cooldown until it can be feared again
-				 *
-				 * Without this check a player can be feared eternally as long it
-				 * keeps receiving the spell before it ends
-				 */
-				if (player->hasCondition(CONDITION_FEARED)) {
-					return;
-				}
-
-				/**
-				 *
-				 *	When a player is part of 5 player party only 1 member can be feared,
-				 *	with 6, 2 members can be feared until 10, on 11, 3 members...
-				 *
-				 */
-				Party* party = player->getParty();
-				if (party) {
-					auto affectedCount = (party->getMemberCount() + 5) / 5;
-					SPDLOG_DEBUG("[Combat::CombatConditionFunc] Player is member of a party, {} members can be feared", affectedCount);
-
-					for (const auto member : party->getMembers()) {
-						if (member->hasCondition(CONDITION_FEARED)) {
-							affectedCount -= 1;
-						}
-					}
-
-					if (affectedCount <= 0) {
-						return;
-					}
-				}
+			if (condition->getType() == CONDITION_FEARED && !checkFearConditionAffected(player)) {
+				return;
 			}
 		}
 

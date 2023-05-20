@@ -75,7 +75,6 @@ class ItemTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "ItemType", "getSpeed", ItemTypeFunctions::luaItemTypeGetSpeed);
 			registerMethod(L, "ItemType", "getBaseSpeed", ItemTypeFunctions::luaItemTypeGetBaseSpeed);
 			registerMethod(L, "ItemType", "getVocationString", ItemTypeFunctions::luaItemTypeGetVocationString);
-			
 
 			registerMethod(L, "ItemType", "hasSubType", ItemTypeFunctions::luaItemTypeHasSubType);
 

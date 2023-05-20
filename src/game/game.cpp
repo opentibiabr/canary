@@ -25,6 +25,7 @@
 #include "creatures/monsters/monster.h"
 #include "lua/creature/movement.h"
 #include "game/scheduling/scheduler.h"
+#include "game/scheduling/player_tasks.h"
 #include "server/server.h"
 #include "creatures/combat/spells.h"
 #include "lua/creature/talkaction.h"
@@ -268,6 +269,7 @@ void Game::setGameState(GameState_t newState) {
 			g_scheduler().stop();
 			g_databaseTasks().stop();
 			g_dispatcher().stop();
+			g_playerDispatcher().stop();
 			break;
 		}
 
@@ -6718,6 +6720,7 @@ void Game::shutdown() {
 	g_scheduler().shutdown();
 	g_databaseTasks().shutdown();
 	g_dispatcher().shutdown();
+	g_playerDispatcher().shutdown();
 	map.spawnsMonster.clear();
 	map.spawnsNpc.clear();
 	raids.clear();

@@ -2314,9 +2314,16 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
+		uint8_t getThreadID() {
+			return threadExecutionID;
+		}
+
 	private:
 		static uint32_t playerFirstID;
 		static uint32_t playerLastID;
+
+		uint8_t threadExecutionID = 0;
+		void setThread();
 
 		std::forward_list<Condition*> getMuteConditions() const;
 

@@ -14,6 +14,7 @@
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 #include "game/scheduling/tasks.h"
+#include "game/scheduling/player_tasks.h"
 #include "lua/creature/events.h"
 #include "lua/creature/raids.h"
 #include "lua/scripts/lua_environment.hpp"
@@ -74,6 +75,7 @@ void Signals::dispatchSignalHandler(int signal) {
 			g_scheduler().join();
 			g_databaseTasks().join();
 			g_dispatcher().join();
+			g_playerDispatcher().join();
 			break;
 #endif
 		default:

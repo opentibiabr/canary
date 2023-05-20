@@ -29,6 +29,7 @@
 #include "creatures/combat/spells.h"
 #include "creatures/players/management/waitlist.h"
 #include "items/weapons/weapons.h"
+#include "game/scheduling/player_tasks.h"
 
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.h" file
@@ -304,6 +305,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 		player->incrementReferenceCounter();
 		player->setID();
+		player->setThread();
 
 		if (!IOLoginData::preloadPlayer(player, name)) {
 			disconnectClient("Your character could not be loaded.");

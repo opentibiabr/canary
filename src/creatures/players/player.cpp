@@ -80,6 +80,10 @@ Player::~Player() {
 	logged = false;
 }
 
+void Player::setThread() {
+	threadExecutionID = static_cast<uint8_t>(std::rand() % 6); // threads setadas manualmente para testes (mesmo numero de threads do start em otserv.cpp)
+}
+
 bool Player::setVocation(uint16_t vocId) {
 	Vocation* voc = g_vocations().getVocation(vocId);
 	if (!voc) {

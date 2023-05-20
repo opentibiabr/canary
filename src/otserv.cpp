@@ -16,6 +16,7 @@
 #include "database/databasetasks.h"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
+#include "game/scheduling/player_tasks.h"
 #include "game/scheduling/events_scheduler.hpp"
 #include "io/iomarket.h"
 #include "lua/creature/events.h"
@@ -214,6 +215,7 @@ int main(int argc, char* argv[]) {
 	ServiceManager serviceManager;
 
 	g_dispatcher().start();
+	g_playerDispatcher().start(6); // numero de threads para ser utilizado TESTES pode ser via construtor tambem
 	g_scheduler().start();
 
 	g_dispatcher().addTask(createTask(std::bind(mainLoader, argc, argv, &serviceManager)));
@@ -229,12 +231,14 @@ int main(int argc, char* argv[]) {
 		SPDLOG_ERROR("No services running. The server is NOT online!");
 		g_databaseTasks().shutdown();
 		g_dispatcher().shutdown();
+		g_playerDispatcher().shutdown();
 		exit(-1);
 	}
 
 	g_scheduler().join();
 	g_databaseTasks().join();
 	g_dispatcher().join();
+	g_playerDispatcher().join();
 	return 0;
 }
 #endif

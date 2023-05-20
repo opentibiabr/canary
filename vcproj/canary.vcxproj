@@ -61,6 +61,7 @@
     <ClInclude Include="..\src\game\scheduling\events_scheduler.hpp" />
     <ClInclude Include="..\src\game\scheduling\scheduler.h" />
     <ClInclude Include="..\src\game\scheduling\tasks.h" />
+    <ClInclude Include="..\src\game\scheduling\player_tasks.h" />
     <ClInclude Include="..\src\io\fileloader.h" />
     <ClInclude Include="..\src\io\functions\iologindata_load_player.hpp" />
     <ClInclude Include="..\src\io\functions\iologindata_save_player.hpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="..\src\utils\pugicast.h" />
     <ClInclude Include="..\src\utils\simd.hpp" />
     <ClInclude Include="..\src\utils\thread_holder_base.h" />
+    <ClInclude Include="..\src\utils\player_thread_base.h" />
     <ClInclude Include="..\src\utils\tools.h" />
     <ClInclude Include="..\src\utils\utils_definitions.hpp" />
     <ClInclude Include="..\src\utils\wildcardtree.h" />

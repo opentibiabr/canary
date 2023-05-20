@@ -449,6 +449,9 @@ class ProtocolGame final : public Protocol {
 		// otclient
 		void parseExtendedOpcode(NetworkMessage &msg);
 
+		// OTCv8
+		void sendFeatures();
+
 		void parseInventoryImbuements(NetworkMessage &msg);
 		void sendInventoryImbuements(const std::map<Slots_t, Item*> items);
 
@@ -476,6 +479,8 @@ class ProtocolGame final : public Protocol {
 		bool shouldAddExivaRestrictions = false;
 
 		bool oldProtocol = false;
+
+		uint16_t otclientV8 = 0;
 
 		void sendInventory();
 		void sendOpenStash();

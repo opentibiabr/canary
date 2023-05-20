@@ -2641,6 +2641,10 @@ class Player final : public Creature, public Cylinder {
 			return dead;
 		}
 
+		void setTemplePosition() {
+			this->town = town;
+		}
+
 		void triggerMomentum();
 
 		friend class Game;

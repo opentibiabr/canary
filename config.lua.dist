@@ -6,6 +6,9 @@ useAnyDatapackFolder = false
 dataPackDirectory = "data-otservbr-global"
 -- Don't change this unless you know what you're doing
 coreDirectory = "data"
+-- Enable/disable development mode
+-- NOTE: In development mode, additional logs will be enabled, for deputation and testing purposes.
+developmentMode = true
 
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"

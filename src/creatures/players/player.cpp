@@ -7071,11 +7071,11 @@ SoundEffect_t Player::getAttackSoundEffect() const {
  ******************************************************************************/
 
 // Wheel interface
-std::unique_ptr<PlayerWheel>& Player::wheel() {
+std::unique_ptr<PlayerWheel> &Player::wheel() {
 	return m_wheelPlayer;
 }
 
-const std::unique_ptr<PlayerWheel>& Player::wheel() const {
+const std::unique_ptr<PlayerWheel> &Player::wheel() const {
 	return m_wheelPlayer;
 }
 

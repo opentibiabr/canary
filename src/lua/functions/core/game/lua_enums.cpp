@@ -28,14 +28,13 @@
 	}                                                            \
 	void(0)
 
-#define registerEnumClassNamespace(luaState, luaNamespace, enumClassType)               \
-	{                                                            \
-		auto number = magic_enum::enum_integer(enumClassType);   \
+#define registerEnumClassNamespace(luaState, luaNamespace, enumClassType)                    \
+	{                                                                                        \
+		auto number = magic_enum::enum_integer(enumClassType);                               \
 		auto name = std::string(luaNamespace) + magic_enum::enum_name(enumClassType).data(); \
-		registerGlobalVariable(luaState, name, number);          \
-	}                                                            \
+		registerGlobalVariable(luaState, name, number);                                      \
+	}                                                                                        \
 	void(0)
-
 
 #define registerEnum(L, value)                                                             \
 	{                                                                                      \

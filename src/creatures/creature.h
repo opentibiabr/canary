@@ -273,7 +273,7 @@ class Creature : virtual public Thing {
 		 * @param blockType Reference to the block type, which may be modified to BLOCK_ARMOR if the damage is reduced to 0.
 		 * @param damage Reference to the amount of damage inflicted, which will be reduced by the creature's mitigation factor.
 		 */
-		void mitigateDamage(CombatType_t& combatType, BlockType_t& blockType, int32_t& damage);
+		void mitigateDamage(CombatType_t &combatType, BlockType_t &blockType, int32_t &damage);
 		virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false);
 
 		bool setMaster(Creature* newMaster, bool reloadCreature = false);

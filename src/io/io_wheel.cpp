@@ -25,104 +25,103 @@
  * @details It enhances code organization and readability, and provides a clear context for the elements defined within it.
  */
 namespace {
-// Spells vector
-std::vector<std::string> m_focusSpells {
-	"Eternal Winter",
-	"Hell's Core",
-	"Rage of the Skies",
-	"Wrath of Nature"
-};
+	// Spells vector
+	std::vector<std::string> m_focusSpells {
+		"Eternal Winter",
+		"Hell's Core",
+		"Rage of the Skies",
+		"Wrath of Nature"
+	};
 
-/**
- * @brief Registers spell data in the Wheel of Destiny for a given spell name and grade type.
- *
- * This function registers the specified spell's data in the Wheel of Destiny, applying various boosts and upgrades
- * based on the provided spell data and grade type. It supports instant spells and a special "Any_Focus_Mage_Spell"
- * case which registers multiple focus spells.
- *
- * @tparam T The type of spell data.
- * @param spellData The spell data to register.
- * @param name The name of the spell to register.
- * @param gradeType The grade type of the spell.
- */
-template <typename T>
-void registerWheelSpellTable(const T& spellData, const std::string& name, WheelSpellGrade_t gradeType) {
-	if (name == "Any_Focus_Mage_Spell") {
-		for (const std::string& focusSpellName : m_focusSpells) {
-			if (isDevMode()) {
-				spdlog::info("[{}] registered any spell: {}", __FUNCTION__, focusSpellName);
+	/**
+	 * @brief Registers spell data in the Wheel of Destiny for a given spell name and grade type.
+	 *
+	 * This function registers the specified spell's data in the Wheel of Destiny, applying various boosts and upgrades
+	 * based on the provided spell data and grade type. It supports instant spells and a special "Any_Focus_Mage_Spell"
+	 * case which registers multiple focus spells.
+	 *
+	 * @tparam T The type of spell data.
+	 * @param spellData The spell data to register.
+	 * @param name The name of the spell to register.
+	 * @param gradeType The grade type of the spell.
+	 */
+	template <typename T>
+	void registerWheelSpellTable(const T &spellData, const std::string &name, WheelSpellGrade_t gradeType) {
+		if (name == "Any_Focus_Mage_Spell") {
+			for (const std::string &focusSpellName : m_focusSpells) {
+				if (isDevMode()) {
+					spdlog::info("[{}] registered any spell: {}", __FUNCTION__, focusSpellName);
+				}
+				registerWheelSpellTable(spellData, focusSpellName, gradeType);
 			}
-			registerWheelSpellTable(spellData, focusSpellName, gradeType);
+			return;
 		}
-		return;
+
+		auto spell = g_spells().getInstantSpellByName(name);
+		if (spell) {
+			if (isDevMode()) {
+				spdlog::info("[{}] registering instant spell with name {}", __FUNCTION__, spell->getName());
+			}
+			// Increase data
+			const auto &increaseData = spellData.increase;
+			if (increaseData.damage > 0) {
+				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE, gradeType, increaseData.damage);
+			}
+			if (increaseData.heal > 0) {
+				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::HEAL, gradeType, increaseData.heal);
+			}
+			if (increaseData.criticalDamage > 0) {
+				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_DAMAGE, gradeType, increaseData.criticalDamage);
+			}
+			if (increaseData.criticalChance > 0) {
+				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_CHANCE, gradeType, increaseData.criticalChance);
+			}
+
+			// Decrease data
+			const auto &decreaseData = spellData.decrease;
+			if (decreaseData.cooldown > 0) {
+				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, gradeType, decreaseData.cooldown * 1000);
+			}
+			if (decreaseData.manaCost > 0) {
+				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::MANA, gradeType, decreaseData.manaCost);
+			}
+			if (decreaseData.secondaryGroupCooldown > 0) {
+				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, gradeType, decreaseData.secondaryGroupCooldown * 1000);
+			}
+			// Leech data
+			const auto &leechData = spellData.leech;
+			if (leechData.mana > 0) {
+				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::MANA_LEECH, gradeType, leechData.mana * 100);
+			}
+			if (leechData.life > 0) {
+				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH, gradeType, leechData.life * 100);
+			}
+			spell->setWheelOfDestinyUpgraded(true);
+		} else {
+			spdlog::warn("[{}] Spell with name {} could not be found and was ignored", __FUNCTION__, name);
+		}
 	}
 
-	auto spell = g_spells().getInstantSpellByName(name);
-	if (spell) {
-		if (isDevMode()) {
-			spdlog::info("[{}] registering instant spell with name {}", __FUNCTION__, spell->getName());
-		}
-		// Increase data
-		const auto& increaseData = spellData.increase;
-		if (increaseData.damage > 0) {
-			spell->setWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE, gradeType, increaseData.damage);
-		}
-		if (increaseData.heal > 0) {
-			spell->setWheelOfDestinyBoost(WheelSpellBoost_t::HEAL, gradeType, increaseData.heal);
-		}
-		if (increaseData.criticalDamage > 0) {
-			spell->setWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_DAMAGE, gradeType, increaseData.criticalDamage);
-		}
-		if (increaseData.criticalChance > 0) {
-			spell->setWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_CHANCE, gradeType, increaseData.criticalChance);
-		}
-
-		// Decrease data
-		const auto& decreaseData = spellData.decrease;
-		if (decreaseData.cooldown > 0) {
-			spell->setWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, gradeType, decreaseData.cooldown * 1000);
-		}
-		if (decreaseData.manaCost > 0) {
-			spell->setWheelOfDestinyBoost(WheelSpellBoost_t::MANA, gradeType, decreaseData.manaCost);
-		}
-		if (decreaseData.secondaryGroupCooldown > 0) {
-			spell->setWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, gradeType, decreaseData.secondaryGroupCooldown * 1000);
-		}
-		// Leech data
-		const auto& leechData = spellData.leech;
-		if (leechData.mana > 0) {
-			spell->setWheelOfDestinyBoost(WheelSpellBoost_t::MANA_LEECH, gradeType, leechData.mana * 100);
-		}
-		if (leechData.life > 0) {
-			spell->setWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH, gradeType, leechData.life * 100);
-		}
-		spell->setWheelOfDestinyUpgraded(true);
-	} else {
-		spdlog::warn("[{}] Spell with name {} could not be found and was ignored", __FUNCTION__, name);
+	/**
+	 * @brief Helper function to bind member functions with placeholders.
+	 *
+	 * This function takes an object and a member function and returns a callable object
+	 * that binds the member function to the object, allowing placeholders for additional arguments.
+	 *
+	 * @tparam Object Type of the object to bind.
+	 * @tparam Function Type of the member function to bind.
+	 * @param object The object to bind the member function to.
+	 * @param function The member function to bind.
+	 * @return A callable object that represents the bound member function.
+	 */
+	template <typename Object, typename Function>
+	auto bindMapFunction(Object object, Function function) {
+		return std::bind(function, object, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
 	}
-}
-
-
-/**
- * @brief Helper function to bind member functions with placeholders.
- *
- * This function takes an object and a member function and returns a callable object
- * that binds the member function to the object, allowing placeholders for additional arguments.
- *
- * @tparam Object Type of the object to bind.
- * @tparam Function Type of the member function to bind.
- * @param object The object to bind the member function to.
- * @param function The member function to bind.
- * @return A callable object that represents the bound member function.
- */
-template<typename Object, typename Function>
-auto bindMapFunction(Object object, Function function) {
-	return std::bind(function, object, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
-}
 
 } // End namespace
 
-const IOWheelBonusData::DataArray& IOWheel::getWheelBonusData() const {
+const IOWheelBonusData::DataArray &IOWheel::getWheelBonusData() const {
 	return m_wheelBonusData;
 }
 
@@ -133,54 +132,23 @@ std::pair<int, int> IOWheel::getRevelationStatByStage(WheelStageEnum_t stageType
 }
 
 int8_t IOWheel::getSlotPrioritaryOrder(WheelSlots_t slot) {
-	if (slot == WheelSlots_t::SLOT_BLUE_50 ||
-		slot == WheelSlots_t::SLOT_RED_50 ||
-		slot == WheelSlots_t::SLOT_PURPLE_50 ||
-		slot == WheelSlots_t::SLOT_GREEN_50) {
+	if (slot == WheelSlots_t::SLOT_BLUE_50 || slot == WheelSlots_t::SLOT_RED_50 || slot == WheelSlots_t::SLOT_PURPLE_50 || slot == WheelSlots_t::SLOT_GREEN_50) {
 		return 0;
 	}
 
-	if (slot == WheelSlots_t::SLOT_GREEN_TOP_75 ||
-		slot == WheelSlots_t::SLOT_GREEN_BOTTOM_75 ||
-		slot == WheelSlots_t::SLOT_RED_TOP_75 ||
-		slot == WheelSlots_t::SLOT_RED_BOTTOM_75 ||
-		slot == WheelSlots_t::SLOT_PURPLE_TOP_75 ||
-		slot == WheelSlots_t::SLOT_PURPLE_BOTTOM_75 ||
-		slot == WheelSlots_t::SLOT_BLUE_TOP_75 ||
-		slot == WheelSlots_t::SLOT_BLUE_BOTTOM_75) {
+	if (slot == WheelSlots_t::SLOT_GREEN_TOP_75 || slot == WheelSlots_t::SLOT_GREEN_BOTTOM_75 || slot == WheelSlots_t::SLOT_RED_TOP_75 || slot == WheelSlots_t::SLOT_RED_BOTTOM_75 || slot == WheelSlots_t::SLOT_PURPLE_TOP_75 || slot == WheelSlots_t::SLOT_PURPLE_BOTTOM_75 || slot == WheelSlots_t::SLOT_BLUE_TOP_75 || slot == WheelSlots_t::SLOT_BLUE_BOTTOM_75) {
 		return 1;
 	}
 
-	if (slot == WheelSlots_t::SLOT_GREEN_BOTTOM_100 ||
-		slot == WheelSlots_t::SLOT_GREEN_MIDDLE_100 ||
-		slot == WheelSlots_t::SLOT_GREEN_TOP_100 ||
-		slot == WheelSlots_t::SLOT_RED_BOTTOM_100 ||
-		slot == WheelSlots_t::SLOT_RED_MIDDLE_100 ||
-		slot == WheelSlots_t::SLOT_RED_TOP_100 ||
-		slot == WheelSlots_t::SLOT_PURPLE_BOTTOM_100 ||
-		slot == WheelSlots_t::SLOT_PURPLE_MIDDLE_100 ||
-		slot == WheelSlots_t::SLOT_PURPLE_TOP_100 ||
-		slot == WheelSlots_t::SLOT_BLUE_BOTTOM_100 ||
-		slot == WheelSlots_t::SLOT_BLUE_MIDDLE_100 ||
-		slot == WheelSlots_t::SLOT_BLUE_TOP_100) {
+	if (slot == WheelSlots_t::SLOT_GREEN_BOTTOM_100 || slot == WheelSlots_t::SLOT_GREEN_MIDDLE_100 || slot == WheelSlots_t::SLOT_GREEN_TOP_100 || slot == WheelSlots_t::SLOT_RED_BOTTOM_100 || slot == WheelSlots_t::SLOT_RED_MIDDLE_100 || slot == WheelSlots_t::SLOT_RED_TOP_100 || slot == WheelSlots_t::SLOT_PURPLE_BOTTOM_100 || slot == WheelSlots_t::SLOT_PURPLE_MIDDLE_100 || slot == WheelSlots_t::SLOT_PURPLE_TOP_100 || slot == WheelSlots_t::SLOT_BLUE_BOTTOM_100 || slot == WheelSlots_t::SLOT_BLUE_MIDDLE_100 || slot == WheelSlots_t::SLOT_BLUE_TOP_100) {
 		return 2;
 	}
 
-	if (slot == WheelSlots_t::SLOT_GREEN_TOP_150 ||
-		slot == WheelSlots_t::SLOT_GREEN_BOTTOM_150 ||
-		slot == WheelSlots_t::SLOT_RED_TOP_150 ||
-		slot == WheelSlots_t::SLOT_RED_BOTTOM_150 ||
-		slot == WheelSlots_t::SLOT_PURPLE_TOP_150 ||
-		slot == WheelSlots_t::SLOT_PURPLE_BOTTOM_150 ||
-		slot == WheelSlots_t::SLOT_BLUE_TOP_150 ||
-		slot == WheelSlots_t::SLOT_BLUE_BOTTOM_150) {
+	if (slot == WheelSlots_t::SLOT_GREEN_TOP_150 || slot == WheelSlots_t::SLOT_GREEN_BOTTOM_150 || slot == WheelSlots_t::SLOT_RED_TOP_150 || slot == WheelSlots_t::SLOT_RED_BOTTOM_150 || slot == WheelSlots_t::SLOT_PURPLE_TOP_150 || slot == WheelSlots_t::SLOT_PURPLE_BOTTOM_150 || slot == WheelSlots_t::SLOT_BLUE_TOP_150 || slot == WheelSlots_t::SLOT_BLUE_BOTTOM_150) {
 		return 3;
 	}
 
-	if (slot == WheelSlots_t::SLOT_GREEN_200 ||
-		slot == WheelSlots_t::SLOT_RED_200 ||
-		slot == WheelSlots_t::SLOT_PURPLE_200 ||
-		slot == WheelSlots_t::SLOT_BLUE_200) {
+	if (slot == WheelSlots_t::SLOT_GREEN_200 || slot == WheelSlots_t::SLOT_RED_200 || slot == WheelSlots_t::SLOT_PURPLE_200 || slot == WheelSlots_t::SLOT_BLUE_200) {
 		return 4;
 	}
 
@@ -193,33 +161,33 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 	initializeMapData();
 
 	// Register spells for druid
-	for (const auto & data: getWheelBonusData().spells.druid) {
+	for (const auto &data : getWheelBonusData().spells.druid) {
 		for (size_t i = 1; i < 3; ++i) {
-			const auto & grade = data.grade[i];
+			const auto &grade = data.grade[i];
 			registerWheelSpellTable(grade, data.name, static_cast<WheelSpellGrade_t>(i));
 		}
 	}
 
 	// Register spells for knight
-	for (const auto & data: getWheelBonusData().spells.knight) {
+	for (const auto &data : getWheelBonusData().spells.knight) {
 		for (size_t i = 1; i < 3; ++i) {
-			const auto & grade = data.grade[i];
+			const auto &grade = data.grade[i];
 			registerWheelSpellTable(grade, data.name, static_cast<WheelSpellGrade_t>(i));
 		}
 	}
 
 	// Register spells for paladin
-	for (const auto & data: getWheelBonusData().spells.paladin) {
+	for (const auto &data : getWheelBonusData().spells.paladin) {
 		for (size_t i = 1; i < 3; ++i) {
-			const auto & grade = data.grade[i];
+			const auto &grade = data.grade[i];
 			registerWheelSpellTable(grade, data.name, static_cast<WheelSpellGrade_t>(i));
 		}
 	}
 
 	// Register spells for sorcerer
-	for (const auto & data: getWheelBonusData().spells.sorcerer) {
+	for (const auto &data : getWheelBonusData().spells.sorcerer) {
 		for (size_t i = 1; i < 3; ++i) {
-			const auto & grade = data.grade[i];
+			const auto &grade = data.grade[i];
 			registerWheelSpellTable(grade, data.name, static_cast<WheelSpellGrade_t>(i));
 		}
 	}
@@ -233,7 +201,7 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 	return true;
 }
 
-const std::vector<std::string>& IOWheel::getFocusSpells() const {
+const std::vector<std::string> &IOWheel::getFocusSpells() const {
 	return m_focusSpells;
 }
 
@@ -340,7 +308,7 @@ void IOWheel::initializeSorcererSpells() {
 	m_wheelBonusData.spells.sorcerer[4].grade[2].decrease.secondaryGroupCooldown = 4;
 }
 
-bool IOWheel::isPointsOnSlot(Player& player, uint16_t points, WheelSlots_t slotType) const {
+bool IOWheel::isPointsOnSlot(Player &player, uint16_t points, WheelSlots_t slotType) const {
 	return points == player.wheel()->getPointsBySlotType(slotType);
 }
 
@@ -360,72 +328,71 @@ bool IOWheel::isDruid(uint8_t vocationId) const {
 	return vocationId == Vocation_t::VOCATION_DRUID_CIP;
 }
 
-void IOWheel::addSpell(Player& player, PlayerWheelMethodsBonusData & bonusData, WheelSlots_t slotType, uint16_t points,
-	const std::string & spellName) {
+void IOWheel::addSpell(Player &player, PlayerWheelMethodsBonusData &bonusData, WheelSlots_t slotType, uint16_t points, const std::string &spellName) {
 	if (points == player.wheel()->getPointsBySlotType(slotType)) {
 		bonusData.spells.push_back(spellName);
 	}
 }
 
-void IOWheel::increaseResistance(Player& player, PlayerWheelMethodsBonusData & bonusData, WheelSlots_t slotType, uint16_t points, CombatType_t combat, int16_t value) {
+void IOWheel::increaseResistance(Player &player, PlayerWheelMethodsBonusData &bonusData, WheelSlots_t slotType, uint16_t points, CombatType_t combat, int16_t value) {
 	if (points == player.wheel()->getPointsBySlotType(slotType)) {
 		bonusData.resistance[combatTypeToIndex(combat)] += value;
 	}
 }
 
-using VocationBonusFunction = std::function<void(Player&, uint16_t, uint8_t, PlayerWheelMethodsBonusData&)>;
+using VocationBonusFunction = std::function<void(Player &, uint16_t, uint8_t, PlayerWheelMethodsBonusData &)>;
 using VocationBonusMap = std::map<WheelSlots_t, VocationBonusFunction>;
 void IOWheel::initializeWheelMapFunctions() {
 	VocationBonusMap vocationBonusMap;
 	vocationBonusMap = {
 		{}, // Index 0 is empty, the wheel enum init at index 1 (WheelSlots_t::SLOT_GREEN_200)
-		{WheelSlots_t::SLOT_GREEN_200, bindMapFunction(this, &IOWheel::slotGreen200)},
-		{WheelSlots_t::SLOT_GREEN_TOP_150, bindMapFunction(this, &IOWheel::slotGreenTop150)},
-		{WheelSlots_t::SLOT_GREEN_TOP_100, bindMapFunction(this, &IOWheel::slotGreenTop100)},
-		{WheelSlots_t::SLOT_RED_TOP_100, bindMapFunction(this, &IOWheel::slotRedTop100)},
-		{WheelSlots_t::SLOT_RED_TOP_150, bindMapFunction(this, &IOWheel::slotRedTop150)},
-		{WheelSlots_t::SLOT_RED_200, bindMapFunction(this, &IOWheel::slotRed200)},
-		{WheelSlots_t::SLOT_GREEN_BOTTOM_150, bindMapFunction(this, &IOWheel::slotGreenBottom150)},
-		{WheelSlots_t::SLOT_GREEN_MIDDLE_100, bindMapFunction(this, &IOWheel::slotGreenMiddle100)},
-		{WheelSlots_t::SLOT_GREEN_TOP_75, bindMapFunction(this, &IOWheel::slotGreenTop75)},
-		{WheelSlots_t::SLOT_RED_TOP_75, bindMapFunction(this, &IOWheel::slotRedTop75)},
-		{WheelSlots_t::SLOT_RED_MIDDLE_100, bindMapFunction(this, &IOWheel::slotRedMiddle100)},
-		{WheelSlots_t::SLOT_RED_BOTTOM_150, bindMapFunction(this, &IOWheel::slotRedBottom150)},
-		{WheelSlots_t::SLOT_GREEN_BOTTOM_100, bindMapFunction(this, &IOWheel::slotGreenBottom100)},
-		{WheelSlots_t::SLOT_GREEN_BOTTOM_75, bindMapFunction(this, &IOWheel::slotGreenBottom75)},
-		{WheelSlots_t::SLOT_GREEN_50, bindMapFunction(this, &IOWheel::slotGreen50)},
-		{WheelSlots_t::SLOT_RED_50, bindMapFunction(this, &IOWheel::slotRed50)},
-		{WheelSlots_t::SLOT_RED_BOTTOM_75, bindMapFunction(this, &IOWheel::slotRedBottom75)},
-		{WheelSlots_t::SLOT_RED_BOTTOM_100, bindMapFunction(this, &IOWheel::slotRedBottom100)},
-		{WheelSlots_t::SLOT_BLUE_TOP_100, bindMapFunction(this, &IOWheel::slotBlueTop100)},
-		{WheelSlots_t::SLOT_BLUE_TOP_75, bindMapFunction(this, &IOWheel::slotBlueTop75)},
-		{WheelSlots_t::SLOT_BLUE_50, bindMapFunction(this, &IOWheel::slotBlue50)},
-		{WheelSlots_t::SLOT_PURPLE_50, bindMapFunction(this, &IOWheel::slotPurple50)},
-		{WheelSlots_t::SLOT_PURPLE_TOP_75, bindMapFunction(this, &IOWheel::slotPurpleTop75)},
-		{WheelSlots_t::SLOT_PURPLE_TOP_100, bindMapFunction(this, &IOWheel::slotPurpleTop100)},
-		{WheelSlots_t::SLOT_BLUE_TOP_150, bindMapFunction(this, &IOWheel::slotBlueTop150)},
-		{WheelSlots_t::SLOT_BLUE_MIDDLE_100, bindMapFunction(this, &IOWheel::slotBlueMiddle100)},
-		{WheelSlots_t::SLOT_BLUE_BOTTOM_75, bindMapFunction(this, &IOWheel::slotBlueBottom75)},
-		{WheelSlots_t::SLOT_PURPLE_BOTTOM_75, bindMapFunction(this, &IOWheel::slotPurpleBottom75)},
-		{WheelSlots_t::SLOT_PURPLE_MIDDLE_100, bindMapFunction(this, &IOWheel::slotPurpleMiddle100)},
-		{WheelSlots_t::SLOT_PURPLE_TOP_150, bindMapFunction(this, &IOWheel::slotPurpleTop150)},
-		{WheelSlots_t::SLOT_BLUE_200, bindMapFunction(this, &IOWheel::slotBlue200)},
-		{WheelSlots_t::SLOT_BLUE_BOTTOM_150, bindMapFunction(this, &IOWheel::slotBlueBottom150)},
-		{WheelSlots_t::SLOT_BLUE_BOTTOM_100, bindMapFunction(this, &IOWheel::slotBlueBottom100)},
-		{WheelSlots_t::SLOT_PURPLE_BOTTOM_100, bindMapFunction(this, &IOWheel::slotPurpleBottom100)},
-		{WheelSlots_t::SLOT_PURPLE_BOTTOM_150, bindMapFunction(this, &IOWheel::slotPurpleBottom150)},
-		{WheelSlots_t::SLOT_PURPLE_200, bindMapFunction(this, &IOWheel::slotPurple200)}
+		{ WheelSlots_t::SLOT_GREEN_200, bindMapFunction(this, &IOWheel::slotGreen200) },
+		{ WheelSlots_t::SLOT_GREEN_TOP_150, bindMapFunction(this, &IOWheel::slotGreenTop150) },
+		{ WheelSlots_t::SLOT_GREEN_TOP_100, bindMapFunction(this, &IOWheel::slotGreenTop100) },
+		{ WheelSlots_t::SLOT_RED_TOP_100, bindMapFunction(this, &IOWheel::slotRedTop100) },
+		{ WheelSlots_t::SLOT_RED_TOP_150, bindMapFunction(this, &IOWheel::slotRedTop150) },
+		{ WheelSlots_t::SLOT_RED_200, bindMapFunction(this, &IOWheel::slotRed200) },
+		{ WheelSlots_t::SLOT_GREEN_BOTTOM_150, bindMapFunction(this, &IOWheel::slotGreenBottom150) },
+		{ WheelSlots_t::SLOT_GREEN_MIDDLE_100, bindMapFunction(this, &IOWheel::slotGreenMiddle100) },
+		{ WheelSlots_t::SLOT_GREEN_TOP_75, bindMapFunction(this, &IOWheel::slotGreenTop75) },
+		{ WheelSlots_t::SLOT_RED_TOP_75, bindMapFunction(this, &IOWheel::slotRedTop75) },
+		{ WheelSlots_t::SLOT_RED_MIDDLE_100, bindMapFunction(this, &IOWheel::slotRedMiddle100) },
+		{ WheelSlots_t::SLOT_RED_BOTTOM_150, bindMapFunction(this, &IOWheel::slotRedBottom150) },
+		{ WheelSlots_t::SLOT_GREEN_BOTTOM_100, bindMapFunction(this, &IOWheel::slotGreenBottom100) },
+		{ WheelSlots_t::SLOT_GREEN_BOTTOM_75, bindMapFunction(this, &IOWheel::slotGreenBottom75) },
+		{ WheelSlots_t::SLOT_GREEN_50, bindMapFunction(this, &IOWheel::slotGreen50) },
+		{ WheelSlots_t::SLOT_RED_50, bindMapFunction(this, &IOWheel::slotRed50) },
+		{ WheelSlots_t::SLOT_RED_BOTTOM_75, bindMapFunction(this, &IOWheel::slotRedBottom75) },
+		{ WheelSlots_t::SLOT_RED_BOTTOM_100, bindMapFunction(this, &IOWheel::slotRedBottom100) },
+		{ WheelSlots_t::SLOT_BLUE_TOP_100, bindMapFunction(this, &IOWheel::slotBlueTop100) },
+		{ WheelSlots_t::SLOT_BLUE_TOP_75, bindMapFunction(this, &IOWheel::slotBlueTop75) },
+		{ WheelSlots_t::SLOT_BLUE_50, bindMapFunction(this, &IOWheel::slotBlue50) },
+		{ WheelSlots_t::SLOT_PURPLE_50, bindMapFunction(this, &IOWheel::slotPurple50) },
+		{ WheelSlots_t::SLOT_PURPLE_TOP_75, bindMapFunction(this, &IOWheel::slotPurpleTop75) },
+		{ WheelSlots_t::SLOT_PURPLE_TOP_100, bindMapFunction(this, &IOWheel::slotPurpleTop100) },
+		{ WheelSlots_t::SLOT_BLUE_TOP_150, bindMapFunction(this, &IOWheel::slotBlueTop150) },
+		{ WheelSlots_t::SLOT_BLUE_MIDDLE_100, bindMapFunction(this, &IOWheel::slotBlueMiddle100) },
+		{ WheelSlots_t::SLOT_BLUE_BOTTOM_75, bindMapFunction(this, &IOWheel::slotBlueBottom75) },
+		{ WheelSlots_t::SLOT_PURPLE_BOTTOM_75, bindMapFunction(this, &IOWheel::slotPurpleBottom75) },
+		{ WheelSlots_t::SLOT_PURPLE_MIDDLE_100, bindMapFunction(this, &IOWheel::slotPurpleMiddle100) },
+		{ WheelSlots_t::SLOT_PURPLE_TOP_150, bindMapFunction(this, &IOWheel::slotPurpleTop150) },
+		{ WheelSlots_t::SLOT_BLUE_200, bindMapFunction(this, &IOWheel::slotBlue200) },
+		{ WheelSlots_t::SLOT_BLUE_BOTTOM_150, bindMapFunction(this, &IOWheel::slotBlueBottom150) },
+		{ WheelSlots_t::SLOT_BLUE_BOTTOM_100, bindMapFunction(this, &IOWheel::slotBlueBottom100) },
+		{ WheelSlots_t::SLOT_PURPLE_BOTTOM_100, bindMapFunction(this, &IOWheel::slotPurpleBottom100) },
+		{ WheelSlots_t::SLOT_PURPLE_BOTTOM_150, bindMapFunction(this, &IOWheel::slotPurpleBottom150) },
+		{ WheelSlots_t::SLOT_PURPLE_200, bindMapFunction(this, &IOWheel::slotPurple200) }
 	};
 
 	m_vocationBonusMap = vocationBonusMap;
 }
 
-const VocationBonusMap& IOWheel::getWheelMapFunctions() const {
+const VocationBonusMap &IOWheel::getWheelMapFunctions() const {
 	return m_vocationBonusMap;
 }
 
 // SLOT_GREEN_200 = 1
-void IOWheel::slotGreen200(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotGreen200(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	auto pointsInSlot = isPointsOnSlot(player, points, WheelSlots_t::SLOT_GREEN_200);
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.health += 3 * points;
@@ -451,13 +418,13 @@ void IOWheel::slotGreen200(Player& player, uint16_t points, uint8_t vocationCipI
 }
 
 // SLOT_GREEN_TOP_150 = 2
-void IOWheel::slotGreenTop150(Player& player, uint16_t points, uint8_t, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotGreenTop150(Player &player, uint16_t points, uint8_t, PlayerWheelMethodsBonusData &bonusData) {
 	bonusData.mitigation += 0.03 * points;
 	increaseResistance(player, bonusData, WheelSlots_t::SLOT_GREEN_TOP_150, points, COMBAT_ICEDAMAGE, 200);
 }
 
 // SLOT_GREEN_TOP_100 = 3
-void IOWheel::slotGreenTop100(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotGreenTop100(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.health += 3 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -471,7 +438,7 @@ void IOWheel::slotGreenTop100(Player& player, uint16_t points, uint8_t vocationC
 }
 
 // SLOT_RED_TOP_100 = 4
-void IOWheel::slotRedTop100(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotRedTop100(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	auto pointsInSlot = isPointsOnSlot(player, points, WheelSlots_t::SLOT_RED_TOP_100);
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.mana += 1 * points;
@@ -492,7 +459,7 @@ void IOWheel::slotRedTop100(Player& player, uint16_t points, uint8_t vocationCip
 }
 
 // SLOT_RED_TOP_150 = 5
-void IOWheel::slotRedTop150(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotRedTop150(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.health += 3 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -507,7 +474,7 @@ void IOWheel::slotRedTop150(Player& player, uint16_t points, uint8_t vocationCip
 }
 
 // SLOT_RED_200 = 6
-void IOWheel::slotRed200(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotRed200(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		addSpell(player, bonusData, WheelSlots_t::SLOT_RED_200, points, "Front Sweep");
 		bonusData.stats.health += 3 * points;
@@ -518,7 +485,7 @@ void IOWheel::slotRed200(Player& player, uint16_t points, uint8_t vocationCipId,
 		bonusData.stats.mana += 3 * points;
 	} else {
 		if (isSorcerer(vocationCipId)) {
-			for (const std::string& focusSpellName : getFocusSpells()) {
+			for (const std::string &focusSpellName : getFocusSpells()) {
 				addSpell(player, bonusData, WheelSlots_t::SLOT_RED_200, points, focusSpellName);
 			}
 		} else {
@@ -530,7 +497,7 @@ void IOWheel::slotRed200(Player& player, uint16_t points, uint8_t vocationCipId,
 }
 
 // SLOT_GREEN_BOTTOM_150 = 7
-void IOWheel::slotGreenBottom150(Player& player, uint16_t points, uint8_t, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotGreenBottom150(Player &player, uint16_t points, uint8_t, PlayerWheelMethodsBonusData &bonusData) {
 	bonusData.mitigation += 0.03 * points; // 0,03%
 	if (isPointsOnSlot(player, points, WheelSlots_t::SLOT_GREEN_BOTTOM_150)) {
 		bonusData.leech.manaLeech += 0.25; // 0,25%
@@ -538,7 +505,7 @@ void IOWheel::slotGreenBottom150(Player& player, uint16_t points, uint8_t, Playe
 }
 
 // SLOT_GREEN_MIDDLE_100 = 8
-void IOWheel::slotGreenMiddle100(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotGreenMiddle100(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		addSpell(player, bonusData, WheelSlots_t::SLOT_GREEN_MIDDLE_100, points, "Groundshaker");
 		bonusData.stats.health += 3 * points;
@@ -556,7 +523,7 @@ void IOWheel::slotGreenMiddle100(Player& player, uint16_t points, uint8_t vocati
 }
 
 // SLOT_GREEN_TOP_75 = 9
-void IOWheel::slotGreenTop75(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotGreenTop75(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.mana += 1 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -570,7 +537,7 @@ void IOWheel::slotGreenTop75(Player& player, uint16_t points, uint8_t vocationCi
 }
 
 // SLOT_RED_TOP_75 = 10
-void IOWheel::slotRedTop75(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotRedTop75(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.capacity += 5 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -583,7 +550,7 @@ void IOWheel::slotRedTop75(Player& player, uint16_t points, uint8_t vocationCipI
 }
 
 // SLOT_RED_MIDDLE_100 = 11
-void IOWheel::slotRedMiddle100(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotRedMiddle100(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		addSpell(player, bonusData, WheelSlots_t::SLOT_RED_MIDDLE_100, points, "Chivalrous Challenge");
 		bonusData.stats.mana += 1 * points;
@@ -601,7 +568,7 @@ void IOWheel::slotRedMiddle100(Player& player, uint16_t points, uint8_t vocation
 }
 
 // SLOT_RED_BOTTOM_150 = 12
-void IOWheel::slotRedBottom150(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotRedBottom150(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.health += 3 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -615,7 +582,7 @@ void IOWheel::slotRedBottom150(Player& player, uint16_t points, uint8_t vocation
 }
 
 // SLOT_GREEN_BOTTOM_100 = 13
-void IOWheel::slotGreenBottom100(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotGreenBottom100(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		addSpell(player, bonusData, WheelSlots_t::SLOT_GREEN_BOTTOM_100, points, "Intense Wound Cleansing");
 		bonusData.stats.health += 3 * points;
@@ -633,7 +600,7 @@ void IOWheel::slotGreenBottom100(Player& player, uint16_t points, uint8_t vocati
 }
 
 // SLOT_GREEN_BOTTOM_75 = 14
-void IOWheel::slotGreenBottom75(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotGreenBottom75(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	auto pointsInSlot = isPointsOnSlot(player, points, WheelSlots_t::SLOT_GREEN_BOTTOM_75);
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.mana += 1 * points;
@@ -654,7 +621,7 @@ void IOWheel::slotGreenBottom75(Player& player, uint16_t points, uint8_t vocatio
 }
 
 // SLOT_GREEN_50 = 15
-void IOWheel::slotGreen50(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotGreen50(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.capacity += 5 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -667,7 +634,7 @@ void IOWheel::slotGreen50(Player& player, uint16_t points, uint8_t vocationCipId
 }
 
 // SLOT_RED_50 = 16
-void IOWheel::slotRed50(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotRed50(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	bonusData.mitigation += 0.03 * points; // 0,03%
 	if (isKnight(vocationCipId)) {
 		addSpell(player, bonusData, WheelSlots_t::SLOT_RED_50, points, "Fierce Berserk");
@@ -681,7 +648,7 @@ void IOWheel::slotRed50(Player& player, uint16_t points, uint8_t vocationCipId, 
 }
 
 // SLOT_RED_BOTTOM_75 = 17
-void IOWheel::slotRedBottom75(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotRedBottom75(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.capacity += 5 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -695,7 +662,7 @@ void IOWheel::slotRedBottom75(Player& player, uint16_t points, uint8_t vocationC
 }
 
 // SLOT_RED_BOTTOM_100 = 18
-void IOWheel::slotRedBottom100(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotRedBottom100(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.mana += 1 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -708,13 +675,13 @@ void IOWheel::slotRedBottom100(Player& player, uint16_t points, uint8_t vocation
 }
 
 // SLOT_BLUE_TOP_100 = 19
-void IOWheel::slotBlueTop100(Player& player, uint16_t points, uint8_t, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotBlueTop100(Player &player, uint16_t points, uint8_t, PlayerWheelMethodsBonusData &bonusData) {
 	bonusData.mitigation += 0.03 * points; // 0,03%
 	increaseResistance(player, bonusData, WheelSlots_t::SLOT_BLUE_TOP_100, points, COMBAT_ENERGYDAMAGE, 200);
 }
 
 // SLOT_BLUE_TOP_75 = 20
-void IOWheel::slotBlueTop75(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotBlueTop75(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.health += 3 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -728,7 +695,7 @@ void IOWheel::slotBlueTop75(Player& player, uint16_t points, uint8_t vocationCip
 }
 
 // SLOT_BLUE_50 = 21
-void IOWheel::slotBlue50(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotBlue50(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_50, points, "Front Sweep");
 		bonusData.stats.mana += 1 * points;
@@ -737,7 +704,7 @@ void IOWheel::slotBlue50(Player& player, uint16_t points, uint8_t vocationCipId,
 		bonusData.stats.mana += 3 * points;
 	} else {
 		if (isSorcerer(vocationCipId)) {
-			for (const std::string& focusSpellName : getFocusSpells()) {
+			for (const std::string &focusSpellName : getFocusSpells()) {
 				addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_50, points, focusSpellName);
 			}
 		} else {
@@ -747,9 +714,8 @@ void IOWheel::slotBlue50(Player& player, uint16_t points, uint8_t vocationCipId,
 	}
 }
 
-
 // SLOT_PURPLE_50 = 22
-void IOWheel::slotPurple50(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotPurple50(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.health += 3 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -762,7 +728,7 @@ void IOWheel::slotPurple50(Player& player, uint16_t points, uint8_t vocationCipI
 }
 
 // SLOT_PURPLE_TOP_75 = 23
-void IOWheel::slotPurpleTop75(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotPurpleTop75(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	bonusData.mitigation += 0.03 * points; // 0,03%
 	auto pointsInSlot = isPointsOnSlot(player, points, WheelSlots_t::SLOT_PURPLE_TOP_75);
 	if (isKnight(vocationCipId)) {
@@ -781,7 +747,7 @@ void IOWheel::slotPurpleTop75(Player& player, uint16_t points, uint8_t vocationC
 }
 
 // SLOT_PURPLE_TOP_100 = 24
-void IOWheel::slotPurpleTop100(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotPurpleTop100(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		addSpell(player, bonusData, WheelSlots_t::SLOT_PURPLE_TOP_100, points, "Groundshaker");
 		bonusData.stats.capacity += 5 * points;
@@ -799,7 +765,7 @@ void IOWheel::slotPurpleTop100(Player& player, uint16_t points, uint8_t vocation
 }
 
 // SLOT_BLUE_TOP_150 = 25
-void IOWheel::slotBlueTop150(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotBlueTop150(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.capacity += 5 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -814,7 +780,7 @@ void IOWheel::slotBlueTop150(Player& player, uint16_t points, uint8_t vocationCi
 }
 
 // SLOT_BLUE_MIDDLE_100 = 26
-void IOWheel::slotBlueMiddle100(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotBlueMiddle100(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	bonusData.mitigation += 0.03 * points; // 0,03%
 	if (isKnight(vocationCipId)) {
 		addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Chivalrous Challenge");
@@ -830,7 +796,7 @@ void IOWheel::slotBlueMiddle100(Player& player, uint16_t points, uint8_t vocatio
 }
 
 // SLOT_BLUE_BOTTOM_75 = 27
-void IOWheel::slotBlueBottom75(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotBlueBottom75(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.health += 3 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -843,14 +809,14 @@ void IOWheel::slotBlueBottom75(Player& player, uint16_t points, uint8_t vocation
 }
 
 // SLOT_PURPLE_BOTTOM_75 = 28
-void IOWheel::slotPurpleBottom75(Player& player, uint16_t points, uint8_t, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotPurpleBottom75(Player &player, uint16_t points, uint8_t, PlayerWheelMethodsBonusData &bonusData) {
 	bonusData.mitigation += 0.03 * points; // 0,03%
 	increaseResistance(player, bonusData, WheelSlots_t::SLOT_PURPLE_BOTTOM_75, points, COMBAT_HOLYDAMAGE, 100);
 	increaseResistance(player, bonusData, WheelSlots_t::SLOT_PURPLE_BOTTOM_75, points, COMBAT_DEATHDAMAGE, 100);
 }
 
 // SLOT_PURPLE_MIDDLE_100 = 29
-void IOWheel::slotPurpleMiddle100(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotPurpleMiddle100(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		addSpell(player, bonusData, WheelSlots_t::SLOT_PURPLE_MIDDLE_100, points, "Intense Wound Cleansing");
 		bonusData.stats.capacity += 5 * points;
@@ -868,7 +834,7 @@ void IOWheel::slotPurpleMiddle100(Player& player, uint16_t points, uint8_t vocat
 }
 
 // SLOT_PURPLE_TOP_150 = 30
-void IOWheel::slotPurpleTop150(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotPurpleTop150(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.mana += 1 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -882,7 +848,7 @@ void IOWheel::slotPurpleTop150(Player& player, uint16_t points, uint8_t vocation
 }
 
 // SLOT_BLUE_200 = 31
-void IOWheel::slotBlue200(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotBlue200(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_200, points, "Fierce Berserk");
 		bonusData.stats.health += 3 * points;
@@ -903,7 +869,7 @@ void IOWheel::slotBlue200(Player& player, uint16_t points, uint8_t vocationCipId
 }
 
 // SLOT_BLUE_BOTTOM_150 = 32
-void IOWheel::slotBlueBottom150(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotBlueBottom150(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.capacity += 5 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -917,7 +883,7 @@ void IOWheel::slotBlueBottom150(Player& player, uint16_t points, uint8_t vocatio
 }
 
 // SLOT_BLUE_BOTTOM_100 = 33
-void IOWheel::slotBlueBottom100(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotBlueBottom100(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	bonusData.mitigation += 0.03 * points; // 0,03%
 	bool onSlot = isPointsOnSlot(player, points, WheelSlots_t::SLOT_BLUE_BOTTOM_100);
 	if (isKnight(vocationCipId) && onSlot) {
@@ -930,7 +896,7 @@ void IOWheel::slotBlueBottom100(Player& player, uint16_t points, uint8_t vocatio
 }
 
 // SLOT_PURPLE_BOTTOM_100 = 34
-void IOWheel::slotPurpleBottom100(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotPurpleBottom100(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.capacity += 5 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -944,7 +910,7 @@ void IOWheel::slotPurpleBottom100(Player& player, uint16_t points, uint8_t vocat
 }
 
 // SLOT_PURPLE_BOTTOM_150 = 35
-void IOWheel::slotPurpleBottom150(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotPurpleBottom150(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.mana += 1 * points;
 	} else if (isPaladin(vocationCipId)) {
@@ -957,7 +923,7 @@ void IOWheel::slotPurpleBottom150(Player& player, uint16_t points, uint8_t vocat
 }
 
 // SLOT_PURPLE_200 = 36
-void IOWheel::slotPurple200(Player& player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData& bonusData) {
+void IOWheel::slotPurple200(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) {
 	bool isPointsAtSlot = isPointsOnSlot(player, points, WheelSlots_t::SLOT_PURPLE_200);
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.health += 3 * points;

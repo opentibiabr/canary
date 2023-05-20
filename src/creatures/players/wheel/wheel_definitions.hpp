@@ -187,61 +187,61 @@ enum class WheelSpellBoost_t : uint8_t {
 };
 
 struct PlayerWheelMethodsBonusData {
-	// Raw value. Example: 1 == 1
-	struct Stats {
-		int health = 0;
-		int mana = 0;
-		int capacity = 0;
-		int damage = 0;
-		int healing = 0;
-	} stats;
+		// Raw value. Example: 1 == 1
+		struct Stats {
+				int health = 0;
+				int mana = 0;
+				int capacity = 0;
+				int damage = 0;
+				int healing = 0;
+		} stats;
 
-	// value * 100. Example: 1% == 100, NOTE: the "12" is the "COMBAT_COUNT"
-	std::array<uint16_t, 12> resistance = {};
+		// value * 100. Example: 1% == 100, NOTE: the "12" is the "COMBAT_COUNT"
+		std::array<uint16_t, 12> resistance = {};
 
-	// Raw value. Example: 1 == 1
-	struct Skills {
-		int melee = 0;
-		int distance = 0;
-		int magic = 0;
-	} skills;
+		// Raw value. Example: 1 == 1
+		struct Skills {
+				int melee = 0;
+				int distance = 0;
+				int magic = 0;
+		} skills;
 
-	// value * 100. Example: 1% == 100
-	struct Leech {
-		double manaLeech = 0;
-		double lifeLeech = 0;
-	} leech;
+		// value * 100. Example: 1% == 100
+		struct Leech {
+				double manaLeech = 0;
+				double lifeLeech = 0;
+		} leech;
 
-	struct Instant {
-		bool battleInstinct = false; // Knight
-		bool battleHealing = false; // Knight
-		bool positionalTatics = false; // Paladin
-		bool ballisticMastery = false; // Paladin
-		bool healingLink = false; // Druid
-		bool runicMastery = false; // Druid/sorcerer
-		bool focusMastery = false; // Sorcerer
-	} instant;
+		struct Instant {
+				bool battleInstinct = false; // Knight
+				bool battleHealing = false; // Knight
+				bool positionalTatics = false; // Paladin
+				bool ballisticMastery = false; // Paladin
+				bool healingLink = false; // Druid
+				bool runicMastery = false; // Druid/sorcerer
+				bool focusMastery = false; // Sorcerer
+		} instant;
 
-	struct Stages {
-		int combatMastery = 0; // Knight
-		int giftOfLife = 0; // Knight/Paladin/Druid/Sorcerer
-		int divineEmpowerment = 0; // Paladin
-		int blessingOfTheGrove = 0; // Druid
-		int drainBody = 0; // Sorcerer
-		int beamMastery = 0; // Sorcerer
-		int twinBurst = 0; // Druid
-		int executionersThrow = 0; // Knight
-	} stages;
+		struct Stages {
+				int combatMastery = 0; // Knight
+				int giftOfLife = 0; // Knight/Paladin/Druid/Sorcerer
+				int divineEmpowerment = 0; // Paladin
+				int blessingOfTheGrove = 0; // Druid
+				int drainBody = 0; // Sorcerer
+				int beamMastery = 0; // Sorcerer
+				int twinBurst = 0; // Druid
+				int executionersThrow = 0; // Knight
+		} stages;
 
-	struct Avatar {
-		int light = 0; // Paladin
-		int nature = 0; // Druid
-		int steel = 0; // Knight
-		int storm = 0; // Sorcerer
-	} avatar;
+		struct Avatar {
+				int light = 0; // Paladin
+				int nature = 0; // Druid
+				int steel = 0; // Knight
+				int storm = 0; // Sorcerer
+		} avatar;
 
-	double mitigation = 0;
-	std::vector<std::string> spells;
+		double mitigation = 0;
+		std::vector<std::string> spells;
 };
 
 #endif // SRC_CREATURES_PLAYERS_WHEEL_PLAYER_WHEEL_DEFINITIONS_HPP_

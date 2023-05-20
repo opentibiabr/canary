@@ -5740,7 +5740,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 }
 
 // Wheel of destiny combat helpers
-void Game::applyWheelOfDestinyHealing(CombatDamage& damage, Player* attackerPlayer, Creature* target) {
+void Game::applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, Creature* target) {
 	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100.;
 
 	if (attackerPlayer) {
@@ -5763,7 +5763,7 @@ void Game::applyWheelOfDestinyHealing(CombatDamage& damage, Player* attackerPlay
 	}
 }
 
-void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage& damage, Player* attackerPlayer, Creature* target) {
+void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, Player* attackerPlayer, Creature* target) {
 	if (damage.damageMultiplier > 0) {
 		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100.;
 		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100.;
@@ -5790,7 +5790,7 @@ void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage& damage, Player* atta
 	}
 }
 
-int32_t Game::applyHealthChange(CombatDamage& damage, Creature* target) {
+int32_t Game::applyHealthChange(CombatDamage &damage, Creature* target) {
 	int32_t targetHealth = target->getHealth();
 
 	// Wheel of destiny (Gift of Life)
@@ -8548,8 +8548,7 @@ void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpe
 	player->sendInventoryImbuements(itemsWithImbueSlotMap);
 }
 
-void Game::playerOpenWheel(uint32_t playerId, uint32_t ownerId)
-{
+void Game::playerOpenWheel(uint32_t playerId, uint32_t ownerId) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -8569,8 +8568,7 @@ void Game::playerOpenWheel(uint32_t playerId, uint32_t ownerId)
 	player->updateUIExhausted();
 }
 
-void Game::playerSaveWheel(uint32_t playerId, NetworkMessage& msg)
-{
+void Game::playerSaveWheel(uint32_t playerId, NetworkMessage &msg) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -9118,10 +9116,10 @@ bool Game::addItemStoreInbox(const Player* player, uint32_t itemId) {
 	return true;
 }
 
-std::unique_ptr<IOWheel>& Game::getIOWheel() {
+std::unique_ptr<IOWheel> &Game::getIOWheel() {
 	return m_IOWheel;
 }
 
-const std::unique_ptr<IOWheel>& Game::getIOWheel() const {
+const std::unique_ptr<IOWheel> &Game::getIOWheel() const {
 	return m_IOWheel;
 }

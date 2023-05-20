@@ -827,7 +827,7 @@ void Creature::drainMana(Creature* attacker, int32_t manaLoss) {
 }
 
 // Wheel of destiny - mitigation system for creature
-void Creature::mitigateDamage(CombatType_t& combatType, BlockType_t& blockType, int32_t& damage) {
+void Creature::mitigateDamage(CombatType_t &combatType, BlockType_t &blockType, int32_t &damage) {
 	if (combatType != COMBAT_MANADRAIN && combatType != COMBAT_LIFEDRAIN) { // Add agony check if the server does have agony combat type
 		// Increase mitigate damage
 		auto originalDamage = damage;

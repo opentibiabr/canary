@@ -3236,7 +3236,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 														 CIPBIA_ELEMENTAL_LIFEDRAIN, CIPBIA_ELEMENTAL_UNDEFINED, CIPBIA_ELEMENTAL_HEALING, CIPBIA_ELEMENTAL_DROWN, CIPBIA_ELEMENTAL_ICE, CIPBIA_ELEMENTAL_HOLY, CIPBIA_ELEMENTAL_DEATH };
 	for (size_t i = 0; i < COMBAT_COUNT; ++i) {
 		// Wheel of destiny resistance
-		damageReduction[i] += static_cast<int16_t> (player->wheel()->getResistance(indexToCombatType(i))) / 100.f;
+		damageReduction[i] += static_cast<int16_t>(player->wheel()->getResistance(indexToCombatType(i))) / 100.f;
 
 		auto finalDamage = std::clamp<uint8_t>(static_cast<uint8_t>(damageReduction[i]), 0, 255);
 		if (finalDamage != 0) {

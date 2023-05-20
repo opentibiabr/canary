@@ -362,7 +362,7 @@ class Game {
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string &buffer);
 
 		void playerOpenWheel(uint32_t playerId, uint32_t ownerId);
-		void playerSaveWheel(uint32_t playerId, NetworkMessage& msg);
+		void playerSaveWheel(uint32_t playerId, NetworkMessage &msg);
 
 		static void updatePremium(account::Account &account);
 		void updatePlayerHelpers(Player* player);
@@ -580,8 +580,8 @@ class Game {
 		void sendUpdateCreature(const Creature* creature);
 		Item* wrapItem(Item* item);
 
-		std::unique_ptr<IOWheel>& getIOWheel();
-		const std::unique_ptr<IOWheel>& getIOWheel() const;
+		std::unique_ptr<IOWheel> &getIOWheel();
+		const std::unique_ptr<IOWheel> &getIOWheel() const;
 
 	private:
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;

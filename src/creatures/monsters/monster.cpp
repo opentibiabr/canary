@@ -302,7 +302,7 @@ void Monster::removeFriend(Creature* creature) {
 	}
 }
 
-void Monster::handleHazardSystem(Creature& creature) const {
+void Monster::handleHazardSystem(Creature &creature) const {
 	// Hazard system (Icon UI)
 	auto player = creature.getPlayer();
 	if (player && isOnHazardSystem()) {

@@ -382,7 +382,7 @@ class Monster final : public Creature {
 
 		void addFriend(Creature* creature);
 		void removeFriend(Creature* creature);
-		void handleHazardSystem(Creature& creature) const;
+		void handleHazardSystem(Creature &creature) const;
 		void addTarget(Creature* creature, bool pushFront = false);
 		void removeTarget(Creature* creature);
 

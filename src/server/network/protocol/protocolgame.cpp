@@ -4138,7 +4138,7 @@ void ProtocolGame::sendCoinBalance() {
 	msg.addByte(0x01);
 
 	msg.add<uint32_t>(player->coinBalance); // Normal Coins
-	msg.add<uint32_t>(player->coinBalance); // Transferable Coins
+	msg.add<uint32_t>(player->coinTransferableBalance); // Transferable Coins
 
 	if (!oldProtocol) {
 		msg.add<uint32_t>(player->coinBalance); // Reserved Auction Coins
@@ -4160,7 +4160,10 @@ void ProtocolGame::updateCoinBalance() {
 				account.LoadAccountDB(threadPlayer->getAccount());
 				uint32_t coins;
 				account.GetCoins(&coins);
+				uint32_t transfercoins;
+				account.GetTransferableCoins(&transfercoins);
 				threadPlayer->coinBalance = coins;
+				threadPlayer->coinTransferableBalance = transfercoins;
 				threadPlayer->sendCoinBalance();
 			}
 		},

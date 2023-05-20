@@ -5726,6 +5726,44 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 	}
 }
 
+void Game::handleHazardSystemAttack(CombatDamage& damage, Player* player, const Monster* monster, bool isPlayerAttacker) {
+	if (damage.primary.value != 0 && monster->isOnHazardSystem()) {
+		if (isPlayerAttacker) {
+			player->parseAttackDealtHazardSystem(damage, monster);
+		} else {
+			player->parseAttackRecvHazardSystem(damage, monster);
+		}
+	}
+}
+
+void Game::notifySpectators(const SpectatorHashSet& spectators, const Position& targetPos, Player* attackerPlayer, Monster* targetMonster) {
+	if (!spectators.empty()) {
+		for (Creature* spectator : spectators) {
+			if (!spectator) {
+				continue;
+			}
+
+			Player* tmpPlayer = spectator->getPlayer();
+			if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
+				continue;
+			}
+
+			std::stringstream ss;
+			ss << ucfirst(targetMonster->getNameDescription()) << " has dodged";
+			if (tmpPlayer == attackerPlayer) {
+				ss << " your attack.";
+				attackerPlayer->sendCancelMessage(ss.str());
+				ss << " (Hazard)";
+				attackerPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
+			} else {
+				ss << " an attack by " << attackerPlayer->getName() << ". (Hazard)";
+				tmpPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
+			}
+		}
+		addMagicEffect(targetPos, CONST_ME_DODGE);
+	}
+}
+
 bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent /*= false*/) {
 	using namespace std;
 	const Position &targetPos = target->getPosition();
@@ -5890,39 +5928,13 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		SpectatorHashSet spectators;
 		map.getSpectators(spectators, targetPos, true, true);
 
-		// Hazard system
-		if (targetPlayer && attackerMonster && damage.primary.value != 0 && attackerMonster->isOnHazardSystem()) {
-			targetPlayer->parseAttackRecvHazardSystem(damage, attackerMonster);
-		} else if (attackerPlayer && targetMonster && damage.primary.value != 0 && targetMonster->isOnHazardSystem()) {
-			attackerPlayer->parseAttackDealtHazardSystem(damage, targetMonster);
+		if (targetPlayer && attackerMonster) {
+			handleHazardSystemAttack(damage, targetPlayer, attackerMonster, false);
+		} else if (attackerPlayer && targetMonster) {
+			handleHazardSystemAttack(damage, attackerPlayer, targetMonster, true);
+
 			if (damage.primary.value == 0 && damage.secondary.value == 0) {
-				for (Creature* spectator : spectators) {
-					if (!spectator) {
-						continue;
-					}
-
-					Player* tmpPlayer = spectator->getPlayer();
-					if (!tmpPlayer) {
-						continue;
-					}
-
-					if (tmpPlayer->getPosition().z != targetPos.z) {
-						continue;
-					}
-
-					std::stringstream ss;
-					ss << ucfirst(targetMonster->getNameDescription()) << " has dodged";
-					if (tmpPlayer == attackerPlayer) {
-						ss << " your attack.";
-						attackerPlayer->sendCancelMessage(ss.str());
-						ss << " (Hazard)";
-						attackerPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
-					} else {
-						ss << " an attack by " << attackerPlayer->getName() << ". (Hazard)";
-						tmpPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
-					}
-				}
-				addMagicEffect(spectators, targetPos, CONST_ME_DODGE);
+				notifySpectators(spectators, targetPos, attackerPlayer, targetMonster);
 				return true;
 			}
 		}

@@ -1050,7 +1050,7 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId) {
 	}
 
 	// We need to make room for supply stash on 12+ protocol versions and remove it for 10x.
-	bool createSupplyStash = getProtocolVersion() > 1200;
+	bool createSupplyStash = !client->oldProtocol;
 
 	DepotLocker* depotLocker = new DepotLocker(ITEM_LOCKER, createSupplyStash ? 4 : 3);
 	depotLocker->setDepotId(depotId);
@@ -5880,7 +5880,7 @@ void Player::initializeTaskHunting() {
 		}
 	}
 
-	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && getProtocolVersion() > 1200) {
+	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && !client->oldProtocol) {
 		client->writeToOutputBuffer(g_ioprey().GetTaskHuntingBaseDate());
 	}
 }
@@ -7012,12 +7012,12 @@ void Player::addHazardSystemPoints(int32_t amount) {
 			}
 
 			Player* player = spectator->getPlayer();
-			if (player && player->getProtocolVersion() >= 1289) {
+			if (player && !client->oldProtocol) {
 				player->sendCreatureIcon(getPlayer());
 			}
 		}
 
-		if (client && getProtocolVersion() >= 1289) {
+		if (client && !client->oldProtocol) {
 			client->reloadHazardSystemIcon(hazardSystemReferenceCounter);
 		}
 	}
@@ -7142,12 +7142,12 @@ void Player::reloadHazardSystemIcon() {
 				}
 
 				Player* player = spectator->getPlayer();
-				if (player && player->getProtocolVersion() >= 1289) {
+				if (player && !client->oldProtocol) {
 					player->sendCreatureIcon(getPlayer());
 				}
 			}
 		}
-		if (client && getProtocolVersion() >= 1289) {
+		if (client && !client->oldProtocol) {
 			client->reloadHazardSystemIcon(hazardSystemReferenceCounter);
 		}
 	}

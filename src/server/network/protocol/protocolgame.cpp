@@ -2878,6 +2878,7 @@ void ProtocolGame::sendCreatureIcon(const Creature* creature) {
 	msg.addByte(14);
 	// 0 = no icon, 1 = we'll send an icon
 	auto creaturePlayer = creature->getPlayer();
+	auto useHazard = g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM);
 	if (icon != CREATUREICON_NONE) {
 		msg.addByte(icon != CREATUREICON_NONE); // Has icon
 		msg.addByte(icon);
@@ -2885,7 +2886,7 @@ void ProtocolGame::sendCreatureIcon(const Creature* creature) {
 		msg.addByte(1);
 		// Used for the life in the new quest
 		msg.add<uint16_t>(0);
-	} else if (!oldProtocol && creaturePlayer && creaturePlayer->getHazardSystemReference() > 0 && creaturePlayer->getHazardSystemPoints() > 0) {
+	} else if (useHazard && !oldProtocol && creaturePlayer && creaturePlayer->getHazardSystemReference() > 0 && creaturePlayer->getHazardSystemPoints() > 0) {
 		msg.addByte(0x01); // Has icon
 		msg.addByte(22); // Hazard icon
 		msg.addByte(0);
@@ -6477,6 +6478,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 
 	CreatureIcon_t icon;
 	auto sendIcon = false;
+	auto useHazard = g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM);
 	if (!oldProtocol) {
 		if (otherPlayer) {
 			icon = creature->getIcon();
@@ -6486,7 +6488,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 				msg.addByte(icon);
 				msg.addByte(1);
 				msg.add<uint16_t>(0);
-			} else if (otherPlayer->getHazardSystemReference() > 0 && otherPlayer->getHazardSystemPoints() > 0) {
+			} else if (useHazard && otherPlayer->getHazardSystemReference() > 0 && otherPlayer->getHazardSystemPoints() > 0) {
 				msg.addByte(22); // Hazard icon
 				msg.addByte(0);
 				msg.add<uint16_t>(otherPlayer->getHazardSystemPoints());
@@ -7905,9 +7907,10 @@ void ProtocolGame::sendDoubleSoundEffect(
 }
 
 void ProtocolGame::reloadHazardSystemIcon(uint16_t reference) {
-	if (oldProtocol) {
+	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM)) {
 		return;
 	}
+
 	NetworkMessage msg;
 	msg.addByte(0x8B);
 	msg.add<uint32_t>(player->getID());

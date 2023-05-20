@@ -37,9 +37,9 @@ hazardSystemStepPod:register()
 
 local SpawnHazardSystemFungosaurus = function(position)
 	local tile = Tile(position)
-	if tile ~= nil then
+	if tile then
 		local podItem = tile:getItemById(ITEM_PRIMAL_POD)
-		if podItem ~= nil then
+		if podItem then
 			local monster = Game.createMonster("Fungosaurus", position, false, true)
 			if monster then
 				monster:say("The primal pod explode and wild emerges from it.")
@@ -62,7 +62,7 @@ function hazardSystemSpawnPod.onKill(player, creature, lastHit)
 	end
 
 	local points = player:getHazardSystemPoints()
-	if points ~= 0 then
+	if points > 0 then
 		local party = player:getParty()
 		if party then
 			for _, member in ipairs(party:getMembers()) do
@@ -86,7 +86,7 @@ function hazardSystemSpawnPod.onKill(player, creature, lastHit)
 	if chanceTo <= (points * configManager.getNumber(configKeys.HAZARD_PODS_DROP_MULTIPLIER)) then
 		local closesestPosition = player:getClosestFreePosition(monster:getPosition(), 4, true)
 		local primalPod = Game.createItem(ITEM_PRIMAL_POD, 1, closesestPosition.x == 0 and monster:getPosition() or closesestPosition)
-		if primalPod ~= nil then
+		if primalPod then
 			primalPod:setCustomAttribute("HazardSystem_PodTimer", os.time() * 1000)
 			local podPos = primalPod:getPosition()
 			addEvent(SpawnHazardSystemFungosaurus, configManager.getNumber(configKeys.HAZARD_PODS_TIME_TO_SPAWN), podPos)

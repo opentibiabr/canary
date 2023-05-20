@@ -5636,6 +5636,7 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				canHeal = true;
 			}
 		}
+
 		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
 
 		damage.primary.value = -damage.primary.value;
@@ -5671,6 +5672,7 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				canHeal = true;
 			}
 		}
+
 		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
 
 		damage.secondary.value = -damage.secondary.value;
@@ -5784,6 +5786,44 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 			effect = CONST_ME_NONE;
 			break;
 		}
+	}
+}
+
+void Game::handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker) {
+	if (damage.primary.value != 0 && monster->isOnHazardSystem()) {
+		if (isPlayerAttacker) {
+			player->parseAttackDealtHazardSystem(damage, monster);
+		} else {
+			player->parseAttackRecvHazardSystem(damage, monster);
+		}
+	}
+}
+
+void Game::notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster) {
+	if (!spectators.empty()) {
+		for (Creature* spectator : spectators) {
+			if (!spectator) {
+				continue;
+			}
+
+			const auto tmpPlayer = spectator->getPlayer();
+			if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
+				continue;
+			}
+
+			std::stringstream ss;
+			ss << ucfirst(targetMonster->getNameDescription()) << " has dodged";
+			if (tmpPlayer == attackerPlayer) {
+				ss << " your attack.";
+				attackerPlayer->sendCancelMessage(ss.str());
+				ss << " (Hazard)";
+				attackerPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
+			} else {
+				ss << " an attack by " << attackerPlayer->getName() << ". (Hazard)";
+				tmpPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
+			}
+		}
+		addMagicEffect(targetPos, CONST_ME_DODGE);
 	}
 }
 
@@ -5950,6 +5990,17 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		SpectatorHashSet spectators;
 		map.getSpectators(spectators, targetPos, true, true);
+
+		if (targetPlayer && attackerMonster) {
+			handleHazardSystemAttack(damage, targetPlayer, attackerMonster, false);
+		} else if (attackerPlayer && targetMonster) {
+			handleHazardSystemAttack(damage, attackerPlayer, targetMonster, true);
+
+			if (damage.primary.value == 0 && damage.secondary.value == 0) {
+				notifySpectators(spectators, targetPos, attackerPlayer, targetMonster);
+				return true;
+			}
+		}
 
 		if (damage.fatal) {
 			addMagicEffect(spectators, targetPos, CONST_ME_FATAL);

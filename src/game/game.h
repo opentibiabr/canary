@@ -412,6 +412,8 @@ class Game {
 
 		void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint8_t &effect);
 
+		void handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker);
+		void notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster);
 		bool combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent = false);
 		void applyCharmRune(const Monster* targetMonster, Player* attackerPlayer, Creature* target, const int32_t &realDamage) const;
 		void applyManaLeech(

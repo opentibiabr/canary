@@ -135,7 +135,7 @@ const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttribut
 	{ "walkstack", ITEM_PARSE_WALKSTACK },
 	{ "blocking", ITEM_PARSE_BLOCK_SOLID },
 	{ "allowdistread", ITEM_PARSE_ALLOWDISTREAD },
-	{ "imbuementslot", ITEM_PARSE_IMBUEMENT },
+	{ "imbuementslot", ITEM_PARSE_IMBUEMENT }
 };
 
 const phmap::flat_hash_map<std::string, ItemTypes_t> ItemTypesMap = {

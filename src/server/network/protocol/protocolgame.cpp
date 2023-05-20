@@ -2878,13 +2878,22 @@ void ProtocolGame::sendCreatureIcon(const Creature* creature) {
 	// Type 14 for this
 	msg.addByte(14);
 	// 0 = no icon, 1 = we'll send an icon
-	msg.addByte(icon != CREATUREICON_NONE);
+	auto creaturePlayer = creature->getPlayer();
+	auto useHazard = g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM);
 	if (icon != CREATUREICON_NONE) {
+		msg.addByte(icon != CREATUREICON_NONE); // Has icon
 		msg.addByte(icon);
 		// Creature update
 		msg.addByte(1);
 		// Used for the life in the new quest
 		msg.add<uint16_t>(0);
+	} else if (useHazard && !oldProtocol && creaturePlayer && creaturePlayer->getHazardSystemReference() > 0 && creaturePlayer->getHazardSystemPoints() > 0) {
+		msg.addByte(0x01); // Has icon
+		msg.addByte(22); // Hazard icon
+		msg.addByte(0);
+		msg.add<uint16_t>(creaturePlayer->getHazardSystemPoints());
+	} else {
+		msg.addByte(0x00); // Has icon
 	}
 	writeToOutputBuffer(msg);
 }
@@ -6475,6 +6484,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 
 	CreatureIcon_t icon;
 	auto sendIcon = false;
+	auto useHazard = g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM);
 	if (!oldProtocol) {
 		if (otherPlayer) {
 			icon = creature->getIcon();
@@ -6484,6 +6494,10 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 				msg.addByte(icon);
 				msg.addByte(1);
 				msg.add<uint16_t>(0);
+			} else if (useHazard && otherPlayer->getHazardSystemReference() > 0 && otherPlayer->getHazardSystemPoints() > 0) {
+				msg.addByte(22); // Hazard icon
+				msg.addByte(0);
+				msg.add<uint16_t>(otherPlayer->getHazardSystemPoints());
 			}
 		} else {
 			if (auto monster = creature->getMonster();
@@ -7905,5 +7919,23 @@ void ProtocolGame::sendDoubleSoundEffect(
 	msg.add<uint16_t>(static_cast<uint16_t>(secondarySoundId)); // Sound id
 
 	msg.addByte(0x00); // Breaking the effects loop
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::reloadHazardSystemIcon(uint16_t reference) {
+	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM)) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x8B);
+	msg.add<uint32_t>(player->getID());
+	msg.addByte(14);
+	msg.addByte(reference != 0 ? 0x01 : 0x00);
+	if (reference != 0) {
+		msg.addByte(22); // Icon ID
+		msg.addByte(0);
+		msg.add<uint16_t>(player->getHazardSystemPoints());
+	}
 	writeToOutputBuffer(msg);
 }

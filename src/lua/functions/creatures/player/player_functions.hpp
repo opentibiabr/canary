@@ -267,6 +267,24 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "openMarket", PlayerFunctions::luaPlayerOpenMarket);
 
+			registerMethod(L, "Player", "statsHealthWOD", PlayerFunctions::luaPlayerStatsHealthWOD);
+			registerMethod(L, "Player", "statsManaWOD", PlayerFunctions::luaPlayerStatsManaWOD);
+			registerMethod(L, "Player", "statsCapacityWOD", PlayerFunctions::luaPlayerStatsCapacityWOD);
+			registerMethod(L, "Player", "statsMitigationWOD", PlayerFunctions::luaPlayerStatsMitigationWOD);
+			registerMethod(L, "Player", "resistanceWOD", PlayerFunctions::luaPlayerResistanceWOD);
+			registerMethod(L, "Player", "skillsMeleeWOD", PlayerFunctions::luaPlayerSkillsMeleeWOD);
+			registerMethod(L, "Player", "skillsDistanceWOD", PlayerFunctions::luaPlayerSkillsDistanceWOD);
+			registerMethod(L, "Player", "skillsMagicWOD", PlayerFunctions::luaPlayerSkillsMagicWOD);
+			registerMethod(L, "Player", "leechWOD", PlayerFunctions::luaPlayerLeechWOD);
+			registerMethod(L, "Player", "instantSkillWOD", PlayerFunctions::luaPlayerInstantSkillWOD);
+			registerMethod(L, "Player", "upgradeSpellsWORD", PlayerFunctions::luaPlayerUpgradeSpellWOD);
+			registerMethod(L, "Player", "reloadData", PlayerFunctions::luaPlayerReloadData);
+			registerMethod(L, "Player", "statsDamageWOD", PlayerFunctions::luaPlayerStatsDamageWOD);
+			registerMethod(L, "Player", "statsHealingWOD", PlayerFunctions::luaPlayerStatsHealingWOD);
+			registerMethod(L, "Player", "reduceAllSpellsCooldownTimer", PlayerFunctions::luaPlayerReduceAllSpellsCooldownTimer);
+			registerMethod(L, "Player", "onThinkWheelOfDestiny", PlayerFunctions::luaPlayerOnThinkWheelOfDestiny);
+			registerMethod(L, "Player", "avatarTimer", PlayerFunctions::luaPlayerAvatarTimer);
+
 			// Forge Functions
 			registerMethod(L, "Player", "openForge", PlayerFunctions::luaPlayerOpenForge);
 			registerMethod(L, "Player", "closeForge", PlayerFunctions::luaPlayerCloseForge);
@@ -304,6 +322,11 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "hasGroupFlag", PlayerFunctions::luaPlayerHasGroupFlag);
 			registerMethod(L, "Player", "setGroupFlag", PlayerFunctions::luaPlayerSetGroupFlag);
 			registerMethod(L, "Player", "removeGroupFlag", PlayerFunctions::luaPlayerRemoveGroupFlag);
+
+			registerMethod(L, "Player", "getMagicShieldCapacityFlat", PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat);
+			registerMethod(L, "Player", "getMagicShieldCapacityPercent", PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent);
+			registerMethod(L, "Player", "addHazardSystemPoints", PlayerFunctions::luaPlayerAddHazardSystemPoints);
+			registerMethod(L, "Player", "getHazardSystemPoints", PlayerFunctions::luaPlayerGetHazardSystemPoints);
 
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
@@ -564,6 +587,24 @@ class PlayerFunctions final : LuaScriptInterface {
 
 		static int luaPlayerOpenMarket(lua_State* L);
 
+		static int luaPlayerStatsHealthWOD(lua_State* L);
+		static int luaPlayerStatsManaWOD(lua_State* L);
+		static int luaPlayerStatsCapacityWOD(lua_State* L);
+		static int luaPlayerStatsMitigationWOD(lua_State* L);
+		static int luaPlayerResistanceWOD(lua_State* L);
+		static int luaPlayerSkillsMeleeWOD(lua_State* L);
+		static int luaPlayerSkillsDistanceWOD(lua_State* L);
+		static int luaPlayerSkillsMagicWOD(lua_State* L);
+		static int luaPlayerLeechWOD(lua_State* L);
+		static int luaPlayerInstantSkillWOD(lua_State* L);
+		static int luaPlayerUpgradeSpellWOD(lua_State* L);
+		static int luaPlayerReloadData(lua_State* L);
+		static int luaPlayerStatsDamageWOD(lua_State* L);
+		static int luaPlayerStatsHealingWOD(lua_State* L);
+		static int luaPlayerReduceAllSpellsCooldownTimer(lua_State* L);
+		static int luaPlayerOnThinkWheelOfDestiny(lua_State* L);
+		static int luaPlayerAvatarTimer(lua_State* L);
+
 		static int luaPlayerOpenForge(lua_State* L);
 		static int luaPlayerCloseForge(lua_State* L);
 		static int luaPlayerSendForgeError(lua_State* L);
@@ -600,6 +641,12 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerHasGroupFlag(lua_State* L);
 		static int luaPlayerSetGroupFlag(lua_State* L);
 		static int luaPlayerRemoveGroupFlag(lua_State* L);
+
+		// Hazard system
+		static int luaPlayerGetMagicShieldCapacityFlat(lua_State* L);
+		static int luaPlayerGetMagicShieldCapacityPercent(lua_State* L);
+		static int luaPlayerAddHazardSystemPoints(lua_State* L);
+		static int luaPlayerGetHazardSystemPoints(lua_State* L);
 
 		friend class CreatureFunctions;
 };

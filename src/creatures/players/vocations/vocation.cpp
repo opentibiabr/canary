@@ -128,6 +128,21 @@ bool Vocations::loadFromXml() {
 								"Missing skill id for vocation: {}",
 								voc.id);
 				}
+			} else if (strcasecmp(childNode.name(), "mitigation") == 0) {
+				pugi::xml_attribute factorAttribute = childNode.attribute("multiplier");
+				if (factorAttribute) {
+					voc.mitigationFactor = pugi::cast<float>(factorAttribute.value());
+				}
+
+				pugi::xml_attribute primaryShieldAttribute = childNode.attribute("primaryShield");
+				if (primaryShieldAttribute) {
+					voc.mitigationPrimaryShield = pugi::cast<float>(primaryShieldAttribute.value());
+				}
+
+				pugi::xml_attribute secondaryShieldAttribute = childNode.attribute("secondaryShield");
+				if (secondaryShieldAttribute) {
+					voc.mitigationSecondaryShield = pugi::cast<float>(secondaryShieldAttribute.value());
+				}
 			} else if (strcasecmp(childNode.name(), "formula") == 0) {
 				pugi::xml_attribute meleeDamageAttribute = childNode.attribute("meleeDamage");
 				if (meleeDamageAttribute) {

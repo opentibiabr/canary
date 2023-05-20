@@ -391,6 +391,16 @@ class Item : virtual public Thing, public ItemProperties {
 			return items[id].hitChance;
 		}
 
+		int16_t getPerfectShotDamage() const {
+			return items[id].abilities->perfectShotDamage;
+		}
+		int8_t getPerfectShotRange() const {
+			return items[id].abilities->perfectShotRange;
+		}
+		int16_t getCleavePercent() const {
+			return items[id].abilities->cleavePercent;
+		}
+
 		uint32_t getWorth() const;
 		uint32_t getForgeSlivers() const;
 		uint32_t getForgeCores() const;
@@ -447,6 +457,9 @@ class Item : virtual public Thing, public ItemProperties {
 		}
 		bool isQuiver() const {
 			return items[id].isQuiver();
+		}
+		bool isSpellBook() const {
+			return items[id].isSpellBook();
 		}
 
 		const std::string &getName() const {
@@ -575,7 +588,7 @@ class Item : virtual public Thing, public ItemProperties {
 		 * @param imbuementId Imbuement id to decay
 		 * @param duration New duration
 		 */
-		void decayImbuementTime(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
+		void decayImbuementTime(uint8_t slot, uint16_t imbuementId, uint64_t duration) {
 			return setImbuement(slot, imbuementId, duration);
 		}
 		void clearImbuement(uint8_t slot, uint16_t imbuementId) {

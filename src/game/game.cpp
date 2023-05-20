@@ -84,13 +84,15 @@ namespace InternalGame {
 } // Namespace InternalGame
 
 Game::Game() {
+	offlineTrainingWindow.defaultEnterButton = 1;
+	offlineTrainingWindow.defaultEscapeButton = 0;
 	offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
 	offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
 	offlineTrainingWindow.choices.emplace_back("Club Fighting and Shielding", SKILL_CLUB);
 	offlineTrainingWindow.choices.emplace_back("Distance Fighting and Shielding", SKILL_DISTANCE);
 	offlineTrainingWindow.choices.emplace_back("Magic Level and Shielding", SKILL_MAGLEVEL);
-	offlineTrainingWindow.buttons.emplace_back("Okay", 1);
-	offlineTrainingWindow.buttons.emplace_back("Cancel", 0);
+	offlineTrainingWindow.buttons.emplace_back("Okay", offlineTrainingWindow.defaultEnterButton);
+	offlineTrainingWindow.buttons.emplace_back("Cancel", offlineTrainingWindow.defaultEscapeButton);
 	offlineTrainingWindow.defaultEscapeButton = 1;
 	offlineTrainingWindow.defaultEnterButton = 0;
 	offlineTrainingWindow.priority = true;
@@ -122,67 +124,75 @@ void Game::resetNpcs() const {
 }
 
 void Game::loadBoostedCreature() {
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "SELECT * FROM `boosted_creature`";
-	DBResult_ptr result = db.storeQuery(query.str());
-
+	auto &db = Database::getInstance();
+	const auto &result = db.storeQuery("SELECT * FROM `boosted_creature`");
 	if (!result) {
 		SPDLOG_WARN("[Game::loadBoostedCreature] - "
 					"Failed to detect boosted creature database. (CODE 01)");
 		return;
 	}
 
-	uint16_t date = result->getNumber<uint16_t>("date");
-	std::string name = "";
-	time_t now = time(0);
+	const uint16_t date = result->getNumber<uint16_t>("date");
+	const time_t now = time(0);
 	tm* ltm = localtime(&now);
-	uint8_t today = ltm->tm_mday;
-	if (date == today) {
-		name = result->getString("boostname");
-	} else {
-		uint16_t oldrace = result->getNumber<uint16_t>("raceid");
-		std::map<uint16_t, std::string> monsterlist = getBestiaryList();
-		uint16_t newrace = 0;
-		uint8_t k = 1;
-		while (newrace == 0 || newrace == oldrace) {
-			uint16_t random = normal_random(0, monsterlist.size());
-			for (auto it : monsterlist) {
-				if (k == random) {
-					newrace = it.first;
-					name = it.second;
-				}
-				k++;
-			}
-		}
 
-		const MonsterType* monsterType = g_monsters().getMonsterTypeByRaceId(newrace);
-
-		query.str(std::string());
-		query << "UPDATE `boosted_creature` SET ";
-		query << "`date` = '" << ltm->tm_mday << "',";
-		query << "`boostname` = " << db.escapeString(name) << ",";
-
-		if (monsterType) {
-			query << "`looktype` = " << static_cast<int>(monsterType->info.outfit.lookType) << ",";
-			query << "`lookfeet` = " << static_cast<int>(monsterType->info.outfit.lookFeet) << ",";
-			query << "`looklegs` = " << static_cast<int>(monsterType->info.outfit.lookLegs) << ",";
-			query << "`lookhead` = " << static_cast<int>(monsterType->info.outfit.lookHead) << ",";
-			query << "`lookbody` = " << static_cast<int>(monsterType->info.outfit.lookBody) << ",";
-			query << "`lookaddons` = " << static_cast<int>(monsterType->info.outfit.lookAddons) << ",";
-			query << "`lookmount` = " << static_cast<int>(monsterType->info.outfit.lookMount) << ",";
-		}
-
-		query << "`raceid` = '" << newrace << "'";
-
-		if (!db.executeQuery(query.str())) {
-			SPDLOG_WARN("[Game::loadBoostedCreature] - "
-						"Failed to detect boosted creature database. (CODE 02)");
-			return;
-		}
+	if (date == ltm->tm_mday) {
+		setBoostedName(result->getString("boostname"));
+		return;
 	}
-	setBoostedName(name);
-	SPDLOG_INFO("Boosted creature: {}", name);
+
+	const uint16_t oldRace = result->getNumber<uint16_t>("raceid");
+	const auto &monsterlist = getBestiaryList();
+
+	struct MonsterRace {
+			uint16_t raceId { 0 };
+			std::string name;
+	};
+
+	MonsterRace selectedMonster;
+	if (!monsterlist.empty()) {
+		std::vector<MonsterRace> monsters;
+		for (const auto &[raceId, _name] : BestiaryList) {
+			if (raceId != oldRace)
+				monsters.emplace_back(raceId, _name);
+		}
+
+		if (!monsters.empty())
+			selectedMonster = monsters[normal_random(0, monsters.size() - 1)];
+	}
+
+	if (selectedMonster.raceId == 0) {
+		SPDLOG_WARN("[Game::loadBoostedCreature] - "
+					"It was not possible to generate a new boosted creature.");
+		return;
+	}
+
+	const auto monsterType = g_monsters().getMonsterType(selectedMonster.name);
+	if (!monsterType) {
+		SPDLOG_WARN("[Game::loadBoostedCreature] - "
+					"It was not possible to generate a new boosted creature. Monster '"
+					+ selectedMonster.name + "' not found.");
+		return;
+	}
+
+	setBoostedName(selectedMonster.name);
+
+	auto query = std::string("UPDATE `boosted_creature` SET ")
+		+ "`date` = '" + std::to_string(ltm->tm_mday) + "',"
+		+ "`boostname` = " + db.escapeString(selectedMonster.name) + ","
+		+ "`looktype` = " + std::to_string(monsterType->info.outfit.lookType) + ","
+		+ "`lookfeet` = " + std::to_string(monsterType->info.outfit.lookFeet) + ","
+		+ "`looklegs` = " + std::to_string(monsterType->info.outfit.lookLegs) + ","
+		+ "`lookhead` = " + std::to_string(monsterType->info.outfit.lookHead) + ","
+		+ "`lookbody` = " + std::to_string(monsterType->info.outfit.lookBody) + ","
+		+ "`lookaddons` = " + std::to_string(monsterType->info.outfit.lookAddons) + ","
+		+ "`lookmount` = " + std::to_string(monsterType->info.outfit.lookMount) + ","
+		+ "`raceid` = '" + std::to_string(selectedMonster.raceId) + "'";
+
+	if (!db.executeQuery(query)) {
+		SPDLOG_WARN("[Game::loadBoostedCreature] - "
+					"Failed to detect boosted creature database. (CODE 02)");
+	}
 }
 
 void Game::start(ServiceManager* manager) {
@@ -836,6 +846,9 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/) {
 			teamFinderMap.erase(it);
 		}
 	}
+
+
+	g_game().removeCreature(creature);
 
 	return true;
 }
@@ -5573,7 +5586,10 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				canHeal = true;
 			}
 		}
-		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
+		primaryBlockType = BLOCK_NONE;
+		if (damage.origin != ORIGIN_REFLECT) {
+			primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
+		}
 
 		damage.primary.value = -damage.primary.value;
 		InternalGame::sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition(), attacker);
@@ -5608,7 +5624,10 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				canHeal = true;
 			}
 		}
-		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
+		secondaryBlockType = BLOCK_NONE;
+		if (damage.origin != ORIGIN_REFLECT) {
+			secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
+		}
 
 		damage.secondary.value = -damage.secondary.value;
 		InternalGame::sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition(), attacker);
@@ -5724,6 +5743,82 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 	}
 }
 
+// Wheel of destiny combat helpers
+void Game::applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, Creature* target) {
+	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100.;
+
+	if (attackerPlayer) {
+		damage.primary.value += attackerPlayer->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_HEALING);
+
+		if (damage.secondary.value != 0) {
+			damage.secondary.value += attackerPlayer->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_HEALING);
+		}
+
+		if (damage.healingLink > 0) {
+			CombatDamage tmpDamage;
+			tmpDamage.primary.value = (damage.primary.value * damage.healingLink) / 100;
+			tmpDamage.primary.type = COMBAT_HEALING;
+			combatChangeHealth(attackerPlayer, attackerPlayer, tmpDamage);
+		}
+
+		if (attackerPlayer->getWheelOfDestinyInstant("Blessing of the Grove")) {
+			damage.primary.value += (damage.primary.value * attackerPlayer->checkWheelOfDestinyBlessingGroveHealingByTarget(target)) / 100.;
+		}
+	}
+}
+
+void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, Player* attackerPlayer, Creature* target) {
+	if (damage.damageMultiplier > 0) {
+		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100.;
+		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100.;
+	}
+	if (attackerPlayer) {
+		damage.primary.value -= attackerPlayer->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_DAMAGE);
+		if (damage.secondary.value != 0) {
+			damage.secondary.value -= attackerPlayer->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_DAMAGE);
+		}
+		if (damage.instantSpellName == "Twin Burst") {
+			int32_t damageBonus = attackerPlayer->checkWheelOfDestinyTwinBurstByTarget(target);
+			if (damageBonus != 0) {
+				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+			}
+		}
+		if (damage.instantSpellName == "Executioner's Throw") {
+			int32_t damageBonus = attackerPlayer->checkWheelOfDestinyExecutionersThrow(target);
+			if (damageBonus != 0) {
+				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+			}
+		}
+	}
+}
+
+int32_t Game::applyHealthChange(CombatDamage &damage, Creature* target) {
+	int32_t targetHealth = target->getHealth();
+
+	// Wheel of destiny (Gift of Life)
+	if (Player* targetPlayer = target->getPlayer()) {
+		if (targetPlayer->getWheelOfDestinyInstant("Gift of Life") && targetPlayer->getWheelOfDestinyGiftOfCooldown() == 0 && (damage.primary.value + damage.secondary.value) >= targetHealth) {
+			int32_t overkillMultiplier = (damage.primary.value + damage.secondary.value) - targetHealth;
+			overkillMultiplier = (overkillMultiplier * 100) / targetPlayer->getMaxHealth();
+			if (overkillMultiplier <= targetPlayer->getWheelOfDestinyGiftOfLifeOverkill()) {
+				targetPlayer->checkWheelOfDestinyGiftOfLife();
+				targetHealth = target->getHealth();
+			}
+		}
+	}
+
+	if (damage.primary.value >= targetHealth) {
+		damage.primary.value = targetHealth;
+		damage.secondary.value = 0;
+	} else if (damage.secondary.value) {
+		damage.secondary.value = std::min<int32_t>(damage.secondary.value, targetHealth - damage.primary.value);
+	}
+
+	return targetHealth;
+}
+
 bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent /*= false*/) {
 	using namespace std;
 	const Position &targetPos = target->getPosition();
@@ -5754,6 +5849,8 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				return combatChangeHealth(attacker, target, damage);
 			}
 		}
+
+		applyWheelOfDestinyHealing(damage, attackerPlayer, target);
 
 		auto realHealthChange = target->getHealth();
 		target->gainHealth(attacker, damage.primary.value);
@@ -5849,8 +5946,54 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			return false;
 		}
 
+		// Wheel of destiny
+		if (damage.damageMultiplier > 0) {
+			damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100.;
+			damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100.;
+		}
+		if (attackerPlayer) {
+			damage.primary.value -= attackerPlayer->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_DAMAGE);
+			if (damage.secondary.value != 0) {
+				damage.secondary.value -= attackerPlayer->getWheelOfDestinyStat(WHEEL_OF_DESTINY_STAT_DAMAGE);
+			}
+			if (damage.instantSpellName == "Twin Burst") {
+				int32_t damageBonus = attackerPlayer->checkWheelOfDestinyTwinBurstByTarget(target);
+				if (damageBonus != 0) {
+					damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+					damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+				}
+			}
+			if (damage.instantSpellName == "Executioner's Throw") {
+				int32_t damageBonus = attackerPlayer->checkWheelOfDestinyExecutionersThrow(target);
+				if (damageBonus != 0) {
+					damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+					damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+				}
+			}
+		}
+
 		damage.primary.value = std::abs(damage.primary.value);
 		damage.secondary.value = std::abs(damage.secondary.value);
+
+		// Hazard system perfect shot damage
+		if (attackerPlayer && damage.extension == false && damage.origin == ORIGIN_RANGED && target == attackerPlayer->getAttackedCreature()) {
+			const Position &targetPos = target->getPosition();
+			const Position &attackerPos = attacker->getPosition();
+			if (targetPos.z == attackerPos.z) {
+				int32_t distanceX = Position::getDistanceX(targetPos, attackerPos);
+				int32_t distanceY = Position::getDistanceY(targetPos, attackerPos);
+				int32_t damageX = attackerPlayer->getPerfectShotDamage(distanceX);
+				int32_t damageY = attackerPlayer->getPerfectShotDamage(distanceY);
+				if (damageX != 0 || damageY != 0) {
+					int32_t totalDamage = damageX;
+					if (distanceX != distanceY)
+						totalDamage += damageY;
+					if (damage.critical)
+						totalDamage += (totalDamage * attackerPlayer->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE));
+					damage.primary.value += totalDamage;
+				}
+			}
+		}
 
 		Monster* targetMonster;
 		if (target && target->getMonster()) {
@@ -5887,6 +6030,43 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		SpectatorVec spectators;
 		map.getSpectators(spectators, targetPos, true, true);
+
+		// Hazard system
+		if (targetPlayer && attackerMonster && damage.primary.value != 0 && attackerMonster->isOnHazardSystem()) {
+			targetPlayer->parseAttackRecvHazardSystem(damage, attackerMonster);
+		} else if (attackerPlayer && targetMonster && damage.primary.value != 0 && targetMonster->isOnHazardSystem()) {
+			attackerPlayer->parseAttackDealtHazardSystem(damage, targetMonster);
+			if (damage.primary.value == 0 && damage.secondary.value == 0) {
+				for (Creature* spectator : spectators) {
+					if (!spectator) {
+						continue;
+					}
+
+					Player* tmpPlayer = spectator->getPlayer();
+					if (!tmpPlayer) {
+						continue;
+					}
+
+					if (tmpPlayer->getPosition().z != targetPos.z) {
+						continue;
+					}
+
+					std::stringstream ss;
+					ss << ucfirst(targetMonster->getNameDescription()) << " has dodged";
+					if (tmpPlayer == attackerPlayer) {
+						ss << " your attack.";
+						attackerPlayer->sendCancelMessage(ss.str());
+						ss << " (Hazard)";
+						attackerPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
+					} else {
+						ss << " an attack by " << attackerPlayer->getName() << ". (Hazard)";
+						tmpPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
+					}
+				}
+				addMagicEffect(spectators, targetPos, CONST_ME_DODGE);
+				return true;
+			}
+		}
 
 		if (damage.fatal) {
 			addMagicEffect(spectators, targetPos, CONST_ME_FATAL);
@@ -6026,7 +6206,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 		}
 
-		auto targetHealth = target->getHealth();
+		auto targetHealth = applyHealthChange(damage, target);
 		if (damage.primary.value >= targetHealth) {
 			damage.primary.value = targetHealth;
 			damage.secondary.value = 0;
@@ -6078,8 +6258,8 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		if (attackerPlayer) {
 			if (!damage.extension && damage.origin != ORIGIN_CONDITION) {
 				applyCharmRune(targetMonster, attackerPlayer, target, realDamage);
-				applyLifeLeech(attackerPlayer, targetMonster, damage, realDamage);
-				applyManaLeech(attackerPlayer, targetMonster, damage, realDamage);
+				applyLifeLeech(attackerPlayer, targetMonster, target, damage, realDamage);
+				applyManaLeech(attackerPlayer, targetMonster, target, damage, realDamage);
 			}
 			updatePlayerPartyHuntAnalyzer(damage, attackerPlayer);
 		}
@@ -6274,10 +6454,10 @@ void Game::applyCharmRune(
 }
 
 void Game::applyManaLeech(
-	Player* attackerPlayer, const Monster* targetMonster, const CombatDamage &damage, const int32_t &realDamage
+	Player* attackerPlayer, const Monster* targetMonster, Creature* target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
-	uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE);
-	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT);
+	uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE) + attackerPlayer->checkWheelOfDestinyDrainBodyLeech(target, SKILL_MANA_LEECH_CHANCE) + damage.manaLeechChance;
+	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) + attackerPlayer->checkWheelOfDestinyDrainBodyLeech(target, SKILL_MANA_LEECH_AMOUNT) + damage.manaLeech;
 	if (normal_random(0, 100) >= manaChance) {
 		return;
 	}
@@ -6302,10 +6482,10 @@ void Game::applyManaLeech(
 }
 
 void Game::applyLifeLeech(
-	Player* attackerPlayer, const Monster* targetMonster, const CombatDamage &damage, const int32_t &realDamage
+	Player* attackerPlayer, const Monster* targetMonster, Creature* target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
-	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE);
-	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT);
+	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE) + attackerPlayer->checkWheelOfDestinyDrainBodyLeech(target, SKILL_LIFE_LEECH_CHANCE) + damage.lifeLeechChance;
+	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + attackerPlayer->checkWheelOfDestinyDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT) + damage.lifeLeech;
 	if (normal_random(0, 100) >= lifeChance) {
 		return;
 	}
@@ -8164,7 +8344,7 @@ void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, ui
 
 	// offline training, hardcoded
 	if (modalWindowId == std::numeric_limits<uint32_t>::max()) {
-		if (button == 1) {
+		if (button == offlineTrainingWindow.defaultEnterButton) {
 			if (choice == SKILL_SWORD || choice == SKILL_AXE || choice == SKILL_CLUB || choice == SKILL_DISTANCE || choice == SKILL_MAGLEVEL) {
 				BedItem* bedItem = player->getBedItem();
 				if (bedItem && bedItem->sleep(player)) {

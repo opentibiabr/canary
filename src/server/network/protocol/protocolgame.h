@@ -270,6 +270,8 @@ class ProtocolGame final : public Protocol {
 		void sendBosstiaryCooldownTimer();
 		void sendBosstiaryEntryChanged(uint32_t bossid);
 
+		void sendWheelOfDestinyGiftOfLifeCooldown();
+
 		void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 		void sendMagicEffect(const Position &pos, uint8_t type);
 		void sendRestingStatus(uint8_t protection);
@@ -491,6 +493,8 @@ class ProtocolGame final : public Protocol {
 
 		void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
+		// Hazard system
+		void reloadHazardSystemIcon(uint16_t reference);
 };
 
 #endif // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

@@ -306,11 +306,12 @@ int MonsterFunctions::luaMonsterGetTargetCount(lua_State* L) {
 }
 
 int MonsterFunctions::luaMonsterChangeTargetDistance(lua_State* L) {
-	// monster:changeTargetDistance(distance)
+	// monster:changeTargetDistance(distance[, duration = 12000])
 	Monster* monster = getUserdata<Monster>(L, 1);
 	if (monster) {
 		int32_t distance = getNumber<int32_t>(L, 2, 1);
-		pushBoolean(L, monster->changeTargetDistance(distance));
+		uint32_t duration = getNumber<uint32_t>(L, 3, 12000);
+		pushBoolean(L, monster->changeTargetDistance(distance, duration));
 	} else {
 		lua_pushnil(L);
 	}
@@ -511,5 +512,16 @@ int MonsterFunctions::luaMonsterGetName(lua_State* L) {
 	}
 
 	pushString(L, monster->getName());
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterIsOnHazardSystem(lua_State* L) {
+	// monster:isOnHazardSystem()
+	const Monster* monster = getUserdata<const Monster>(L, 1);
+	if (monster) {
+		pushBoolean(L, monster->isOnHazardSystem());
+	} else {
+		lua_pushnil(L);
+	}
 	return 1;
 }

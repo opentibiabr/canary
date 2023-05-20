@@ -579,6 +579,8 @@ void Container::addThing(Thing* thing) {
 }
 
 void Container::addThing(int32_t index, Thing* thing) {
+	if (!thing)
+		return;
 	if (index >= static_cast<int32_t>(capacity())) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}

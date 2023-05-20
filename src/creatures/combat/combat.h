@@ -14,6 +14,7 @@
 #include "creatures/combat/condition.h"
 #include "declarations.hpp"
 #include "map/map.h"
+#include "creatures/combat/spells.h"
 
 class Condition;
 class Creature;
@@ -24,6 +25,7 @@ class ValueCallback final : public CallBack {
 	public:
 		explicit ValueCallback(formulaType_t initType) :
 			type(initType) { }
+		uint32_t getMagicLevelSkill(Player* player, CombatDamage &damage) const;
 		void getMinMaxValues(Player* player, CombatDamage &damage, bool useCharges) const;
 
 	private:
@@ -281,6 +283,12 @@ class Combat {
 		void setOrigin(CombatOrigin origin) {
 			params.origin = origin;
 		}
+		void setSourceInstantSpellName(std::string value) {
+			sourceInstantSpellName = value;
+		}
+		void setSourceRuneSpellName(std::string value) {
+			sourceRuneSpellName = value;
+		}
 
 	private:
 		static void doCombatDefault(Creature* caster, Creature* target, const CombatParams &params);
@@ -295,6 +303,7 @@ class Combat {
 		static void CombatNullFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data);
 
 		static void combatTileEffects(const SpectatorVec &spectators, Creature* caster, Tile* tile, const CombatParams &params);
+		int32_t getLevelFormula(Player* player, Spell* wheelSpell, CombatDamage &damage) const;
 		CombatDamage getCombatDamage(Creature* creature, Creature* target) const;
 
 		// configureable
@@ -308,6 +317,9 @@ class Combat {
 		double maxb = 0.0;
 
 		std::unique_ptr<AreaCombat> area;
+
+		std::string sourceRuneSpellName;
+		std::string sourceInstantSpellName;
 };
 
 class MagicField final : public Item {

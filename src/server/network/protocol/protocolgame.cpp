@@ -296,7 +296,7 @@ void ProtocolGame::release() {
 }
 
 void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
-	// OTCv8 features and extended opcodes
+		// OTCv8 features and extended opcodes
 	if (otclientV8 || operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
 		if (otclientV8)
 			sendFeatures();
@@ -2099,7 +2099,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 		newmsg.add<uint32_t>(mtype->info.experience);
 		newmsg.add<uint16_t>(mtype->getBaseSpeed());
 		newmsg.add<uint16_t>(mtype->info.armor);
-		newmsg.addDouble(0); // 13.00 Mitigation
+		newmsg.addDouble(mtype->info.mitigation);
 	}
 
 	if (currentLevel > 2) {
@@ -2896,13 +2896,21 @@ void ProtocolGame::sendCreatureIcon(const Creature* creature) {
 	// Type 14 for this
 	msg.addByte(14);
 	// 0 = no icon, 1 = we'll send an icon
-	msg.addByte(icon != CREATUREICON_NONE);
+	auto creaturePlayer = creature->getPlayer();
 	if (icon != CREATUREICON_NONE) {
+		msg.addByte(icon != CREATUREICON_NONE); // Has icon
 		msg.addByte(icon);
 		// Creature update
 		msg.addByte(1);
 		// Used for the life in the new quest
 		msg.add<uint16_t>(0);
+	} else if (!oldProtocol && creaturePlayer && creaturePlayer->getHazardSystemReference() > 0 && creaturePlayer->getHazardSystemPoints() > 0) {
+		msg.addByte(0x01); // Has icon
+		msg.addByte(22); // Hazard icon
+		msg.addByte(0);
+		msg.add<uint16_t>(creaturePlayer->getHazardSystemPoints());
+	} else {
+		msg.addByte(0x00); // Has icon
 	}
 	writeToOutputBuffer(msg);
 }
@@ -3236,7 +3244,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 
 	msg.add<uint16_t>(player->getArmor());
 	msg.add<uint16_t>(player->getDefense());
-	msg.addDouble(0); // Mitigation
+	msg.addDouble(player->getMitigation()); // Migitation
 
 	uint8_t combats = 0;
 	auto startCombats = msg.getBufferPosition();
@@ -3543,10 +3551,10 @@ void ProtocolGame::sendReLoginWindow(uint8_t unfairFightReduction) {
 	NetworkMessage msg;
 	msg.addByte(0x28);
 	msg.addByte(0x00);
-	msg.addByte(unfairFightReduction);
-	if (!oldProtocol) {
+	//msg.addByte(unfairFightReduction);
+	/* if (!oldProtocol) {
 		msg.addByte(0x00); // use death redemption (boolean)
-	}
+	}*/
 	writeToOutputBuffer(msg);
 }
 
@@ -3605,7 +3613,7 @@ void ProtocolGame::sendBlessStatus() {
 	for (int i = 1; i <= 8; i++) {
 		if (player->hasBlessing(i)) {
 			if (i > 1) {
-				blessCount++;
+					blessCount++;
 			}
 
 			flag |= pow2;
@@ -4461,6 +4469,27 @@ void ProtocolGame::sendForgingData() {
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendWheelOfDestinyGiftOfLifeCooldown() {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x5E);
+	msg.addByte(0x01); // Gift of life ID
+	msg.addByte(0x00); // Cooldown ENUM
+	msg.add<uint32_t>(player->getWheelOfDestinyGiftOfCooldown());
+	msg.add<uint32_t>(player->getWheelOfDestinyGiftOfLifeTotalCooldown());
+	// Checking if the cooldown if decreasing or it's stopped
+	if (player->getZone() != ZONE_PROTECTION && player->hasCondition(CONDITION_INFIGHT)) {
+		msg.addByte(0x01);
+	} else {
+		msg.addByte(0x00);
+	}
+
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::sendOpenForge() {
 	// We will use it when sending the bytes to send the item information to the client
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
@@ -4856,7 +4885,11 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			if (i != SKILL_CRITICAL_HIT_CHANCE) {
 				ss << std::showpos;
 			}
-			ss << it.abilities->skills[i] << '%';
+			if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
+				ss << (it.abilities->skills[i] / 100.) << '%';
+			} else {
+				ss << it.abilities->skills[i] << '%';
+			}
 
 			if (i != SKILL_CRITICAL_HIT_CHANCE) {
 				ss << std::noshowpos;
@@ -5679,6 +5712,7 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 
 	sendLootContainers();
 	sendBasicData();
+	sendWheelOfDestinyGiftOfLifeCooldown();
 
 	player->sendClientCheck();
 	player->sendGameNews();
@@ -6418,8 +6452,14 @@ void ProtocolGame::sendModalWindow(const ModalWindow &modalWindow) {
 		msg.addByte(it.second);
 	}
 
-	msg.addByte(modalWindow.defaultEscapeButton);
-	msg.addByte(modalWindow.defaultEnterButton);
+	OperatingSystem_t regularOS = player->getOperatingSystem();
+	if (regularOS >= CLIENTOS_NEW_LINUX && regularOS < CLIENTOS_OTCLIENT_LINUX) {
+		msg.addByte(modalWindow.defaultEscapeButton);
+		msg.addByte(modalWindow.defaultEnterButton);
+	} else {
+		msg.addByte(modalWindow.defaultEscapeButton);
+		msg.addByte(modalWindow.defaultEnterButton);
+	}
 	msg.addByte(modalWindow.priority ? 0x01 : 0x00);
 
 	writeToOutputBuffer(msg);
@@ -6516,6 +6556,10 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 						msg.addByte(1);
 						msg.add<uint16_t>(0);
 					}
+				} else if (otherPlayer != nullptr && otherPlayer->getHazardSystemReference() > 0 && otherPlayer->getHazardSystemPoints() > 0) {
+					msg.addByte(22); // Hazard icon
+					msg.addByte(0);
+					msg.add<uint16_t>(otherPlayer->getHazardSystemPoints());
 				}
 			} else {
 				icon = creature->getIcon();
@@ -6894,7 +6938,7 @@ void ProtocolGame::RemoveTileThing(NetworkMessage &msg, const Position &pos, uin
 
 void ProtocolGame::sendKillTrackerUpdate(Container* corpse, const std::string &name, const Outfit_t creatureOutfit) {
 	if (!player || oldProtocol) {
-		return;
+	return;
 	}
 	bool isCorpseEmpty = corpse->empty();
 
@@ -7758,7 +7802,10 @@ void ProtocolGame::parseBosstiarySlot(NetworkMessage &msg) {
 }
 
 void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos) {
-	if (!podium || oldProtocol) {
+	if (oldProtocol) {
+		return;
+	}
+	if (!podium) {
 		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
 		return;
 	}
@@ -7933,5 +7980,22 @@ void ProtocolGame::sendDoubleSoundEffect(
 	msg.add<uint16_t>(static_cast<uint16_t>(secondarySoundId)); // Sound id
 
 	msg.addByte(0x00); // Breaking the effects loop
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::reloadHazardSystemIcon(uint16_t reference) {
+	if (oldProtocol) {
+		return;
+	}
+	NetworkMessage msg;
+	msg.addByte(0x8B);
+	msg.add<uint32_t>(player->getID());
+	msg.addByte(14);
+	msg.addByte(reference != 0 ? 0x01 : 0x00);
+	if (reference != 0) {
+		msg.addByte(22); // Icon ID
+		msg.addByte(0);
+		msg.add<uint16_t>(player->getHazardSystemPoints());
+	}
 	writeToOutputBuffer(msg);
 }

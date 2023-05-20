@@ -305,8 +305,6 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "setGroupFlag", PlayerFunctions::luaPlayerSetGroupFlag);
 			registerMethod(L, "Player", "removeGroupFlag", PlayerFunctions::luaPlayerRemoveGroupFlag);
 
-			registerMethod(L, "Player", "getMagicShieldCapacityFlat", PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat);
-			registerMethod(L, "Player", "getMagicShieldCapacityPercent", PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent);
 			registerMethod(L, "Player", "addHazardSystemPoints", PlayerFunctions::luaPlayerAddHazardSystemPoints);
 			registerMethod(L, "Player", "getHazardSystemPoints", PlayerFunctions::luaPlayerGetHazardSystemPoints);
 
@@ -607,8 +605,6 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerRemoveGroupFlag(lua_State* L);
 
 		// Hazard system
-		static int luaPlayerGetMagicShieldCapacityFlat(lua_State* L);
-		static int luaPlayerGetMagicShieldCapacityPercent(lua_State* L);
 		static int luaPlayerAddHazardSystemPoints(lua_State* L);
 		static int luaPlayerGetHazardSystemPoints(lua_State* L);
 

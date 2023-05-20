@@ -6486,6 +6486,10 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 				msg.addByte(icon);
 				msg.addByte(1);
 				msg.add<uint16_t>(0);
+			} else if (otherPlayer->getHazardSystemReference() > 0 && otherPlayer->getHazardSystemPoints() > 0) {
+				msg.addByte(22); // Hazard icon
+				msg.addByte(0);
+				msg.add<uint16_t>(otherPlayer->getHazardSystemPoints());
 			}
 		} else {
 			if (auto monster = creature->getMonster();
@@ -6505,10 +6509,6 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 						msg.addByte(1);
 						msg.add<uint16_t>(0);
 					}
-				} else if (otherPlayer != nullptr && otherPlayer->getHazardSystemReference() > 0 && otherPlayer->getHazardSystemPoints() > 0) {
-					msg.addByte(22); // Hazard icon
-					msg.addByte(0);
-					msg.add<uint16_t>(otherPlayer->getHazardSystemPoints());
 				}
 			} else {
 				icon = creature->getIcon();

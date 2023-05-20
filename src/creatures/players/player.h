@@ -2317,55 +2317,6 @@ class Player final : public Creature, public Cylinder {
 		/*******************************************************************************
 		 * Hazard system
 		 ******************************************************************************/
-		uint16_t getCleavePercent() const {
-			return cleavePercent;
-		}
-
-		void setCleavePercent(uint16_t value) {
-			cleavePercent += value;
-		}
-
-		int32_t getSpecializedMagicLevel(CombatType_t combat) const {
-			return specializedMagicLevel[combatTypeToIndex(combat)];
-		}
-
-		void setSpecializedMagicLevel(CombatType_t combat, int32_t value) {
-			specializedMagicLevel[combatTypeToIndex(combat)] = std::max(0, specializedMagicLevel[combatTypeToIndex(combat)] + value);
-		}
-
-		int32_t getPerfectShotDamage(uint8_t range) const {
-			auto it = perfectShot.find(range);
-			if (it != perfectShot.end())
-				return it->second;
-			return 0;
-		}
-
-		void setPerfectShotDamage(uint8_t range, int32_t damage) {
-			int32_t actualDamage = getPerfectShotDamage(range);
-			bool aboveZero = (actualDamage != 0);
-			actualDamage += damage;
-			if (actualDamage == 0 && aboveZero)
-				perfectShot.erase(range);
-			else
-				perfectShot[range] = actualDamage;
-		}
-
-		int32_t getMagicShieldCapacityFlat() const {
-			return magicShieldCapacityFlat;
-		}
-
-		int16_t getMagicShieldCapacityPercent() const {
-			return magicShieldCapacityPercent;
-		}
-
-		void setMagicShieldCapacityFlat(int32_t value) {
-			magicShieldCapacityFlat += value;
-		}
-
-		void setMagicShieldCapacityPercent(int16_t value) {
-			magicShieldCapacityPercent += value;
-		}
-
 		// Parser
 		void parseAttackRecvHazardSystem(CombatDamage &damage, const Monster* monster);
 		void parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* monster);
@@ -2675,12 +2626,6 @@ class Player final : public Creature, public Cylinder {
 		int64_t lastHazardSystemCriticalHit = 0;
 		bool reloadHazardSystemPointsCounter = true;
 		uint16_t hazardSystemReferenceCounter = 0;
-
-		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
-		std::map<uint8_t, int32_t> perfectShot;
-		int32_t magicShieldCapacityFlat = 0;
-		int16_t magicShieldCapacityPercent = 0;
-		uint16_t cleavePercent = 0;
 		// Hazard end
 
 		void updateItemsLight(bool internal = false);

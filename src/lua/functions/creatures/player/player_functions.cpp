@@ -3424,28 +3424,6 @@ int PlayerFunctions::luaPlayerRemoveGroupFlag(lua_State* L) {
 }
 
 // Hazard system
-int PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat(lua_State* L) {
-	// player:getMagicShieldCapacityFlat()
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		lua_pushnumber(L, player->getMagicShieldCapacityFlat());
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent(lua_State* L) {
-	// player:getMagicShieldCapacityPercent()
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		lua_pushnumber(L, player->getMagicShieldCapacityPercent());
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
 int PlayerFunctions::luaPlayerAddHazardSystemPoints(lua_State* L) {
 	// player:addHazardSystemPoints(amount)
 	Player* player = getUserdata<Player>(L, 1);

@@ -7039,7 +7039,7 @@ void Player::addHazardSystemPoints(int32_t amount) {
 	addStorageValue(STORAGEVALUE_HAZARDCOUNT, std::max<int32_t>(0, std::min<int32_t>(0xFFFF, static_cast<int32_t>(getHazardSystemPoints()) + amount)), true);
 	reloadHazardSystemPointsCounter = true;
 	if (hazardSystemReferenceCounter > 0) {
-		Tile* tile = getTile();
+		const auto tile = getTile();
 		if (!tile) {
 			return;
 		}
@@ -7076,16 +7076,16 @@ void Player::parseAttackRecvHazardSystem(CombatDamage &damage, const Monster* mo
 		return;
 	}
 
-	double points = static_cast<double>(getHazardSystemPoints());
+	auto points = getHazardSystemPoints();
 	if (party) {
-		for (Player* partyMember : party->getMembers()) {
+		for (const auto partyMember : party->getMembers()) {
 			if (partyMember && partyMember->getHazardSystemPoints() < points) {
-				points = static_cast<double>(partyMember->getHazardSystemPoints());
+				points = partyMember->getHazardSystemPoints();
 			}
 		}
 
 		if (party->getLeader() && party->getLeader()->getHazardSystemPoints() < points) {
-			points = static_cast<double>(party->getLeader()->getHazardSystemPoints());
+			points = party->getLeader()->getHazardSystemPoints();
 		}
 	}
 
@@ -7093,28 +7093,27 @@ void Player::parseAttackRecvHazardSystem(CombatDamage &damage, const Monster* mo
 		return;
 	}
 
-	double stage = 0;
-	uint16_t chance = static_cast<uint16_t>(normal_random(1, 10000));
-
+	uint16_t stage = 0;
+	auto chance = static_cast<uint16_t>(normal_random(1, 10000));
 	// Critical chance
 	if ((lastHazardSystemCriticalHit + g_configManager().getNumber(HAZARD_CRITICAL_INTERVAL)) <= OTSYS_TIME() && chance <= monster->getHazardSystemCritChance() && !damage.critical) {
 		damage.critical = true;
 		damage.extension = true;
 		damage.exString = "(Hazard)";
 
-		stage = (points - 1) * static_cast<double>(g_configManager().getNumber(HAZARD_CRITICAL_MULTIPLIER));
+		stage = (points - 1) * static_cast<uint16_t>(g_configManager().getNumber(HAZARD_CRITICAL_MULTIPLIER));
 		damage.primary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.primary.value) * (5000 + stage)) / 10000));
 		damage.secondary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.secondary.value) * (5000 + stage)) / 10000));
 		lastHazardSystemCriticalHit = OTSYS_TIME();
 	}
 
-	// To prevent from punish the player twice with critical + damage boost, just remove the /* */ from the if
+	// To prevent from punish the player twice with critical + damage boost, just uncomment code from the if
 	if (monster->getHazardSystemDamageBoost() /* && !damage.critical*/) {
-		stage = points * static_cast<double>(g_configManager().getNumber(HAZARD_DAMAGE_MULTIPLIER));
+		stage = points * static_cast<uint16_t>(g_configManager().getNumber(HAZARD_DAMAGE_MULTIPLIER));
 		if (stage != 0) {
 			damage.extension = true;
 			damage.exString = "(Hazard)";
-			damage.primary.value += static_cast<int32_t>(std::ceil(((static_cast<double>(damage.primary.value) * stage) / 10000)));
+			damage.primary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.primary.value) * stage) / 10000));
 			if (damage.secondary.value != 0) {
 				damage.secondary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.secondary.value) * stage) / 10000));
 			}
@@ -7135,16 +7134,16 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* m
 		return;
 	}
 
-	double points = static_cast<double>(getHazardSystemPoints());
+	auto points = getHazardSystemPoints();
 	if (party) {
-		for (Player* partyMember : party->getMembers()) {
+		for (const auto partyMember : party->getMembers()) {
 			if (partyMember && partyMember->getHazardSystemPoints() < points) {
-				points = static_cast<double>(partyMember->getHazardSystemPoints());
+				points = partyMember->getHazardSystemPoints();
 			}
 		}
 
 		if (party->getLeader() && party->getLeader()->getHazardSystemPoints() < points) {
-			points = static_cast<double>(party->getLeader()->getHazardSystemPoints());
+			points = party->getLeader()->getHazardSystemPoints();
 		}
 	}
 
@@ -7156,7 +7155,7 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* m
 	uint16_t stage;
 	if (monster->getHazardSystemDodge()) {
 		stage = points * g_configManager().getNumber(HAZARD_DODGE_MULTIPLIER);
-		uint16_t chance = static_cast<uint16_t>(normal_random(1, 10000));
+		auto chance = static_cast<uint16_t>(normal_random(1, 10000));
 		if (chance <= stage) {
 			damage.primary.value = 0;
 			damage.secondary.value = 0;
@@ -7169,7 +7168,7 @@ void Player::reloadHazardSystemIcon() {
 	if (reloadHazardSystemPointsCounter) {
 		reloadHazardSystemPointsCounter = false;
 		if (getHazardSystemPoints() > 0) {
-			Tile* tile = getTile();
+			const auto tile = getTile();
 			if (!tile) {
 				return;
 			}

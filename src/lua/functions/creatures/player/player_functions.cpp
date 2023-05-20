@@ -3440,7 +3440,7 @@ int PlayerFunctions::luaPlayerAddHazardSystemPoints(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetHazardSystemPoints(lua_State* L) {
 	// player:getHazardSystemPoints()
-	Player* player = getUserdata<Player>(L, 1);
+	const auto player = getUserdata<Player>(L, 1);
 	if (!player) {
 		pushBoolean(L, false);
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));

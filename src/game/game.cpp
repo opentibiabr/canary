@@ -5783,7 +5783,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 	}
 }
 
-void Game::handleHazardSystemAttack(CombatDamage& damage, Player* player, const Monster* monster, bool isPlayerAttacker) {
+void Game::handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker) {
 	if (damage.primary.value != 0 && monster->isOnHazardSystem()) {
 		if (isPlayerAttacker) {
 			player->parseAttackDealtHazardSystem(damage, monster);
@@ -5793,14 +5793,14 @@ void Game::handleHazardSystemAttack(CombatDamage& damage, Player* player, const 
 	}
 }
 
-void Game::notifySpectators(const SpectatorHashSet& spectators, const Position& targetPos, Player* attackerPlayer, Monster* targetMonster) {
+void Game::notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster) {
 	if (!spectators.empty()) {
 		for (Creature* spectator : spectators) {
 			if (!spectator) {
 				continue;
 			}
 
-			Player* tmpPlayer = spectator->getPlayer();
+			const auto tmpPlayer = spectator->getPlayer();
 			if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
 				continue;
 			}

@@ -2458,7 +2458,7 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 				}
 			}
 		}
-		
+
 		// Wheel of destiny
 		int32_t wheelOfDestinyElementAbsorb = getWheelOfDestinyResistance(combatType);
 		if (wheelOfDestinyElementAbsorb > 0) {
@@ -2651,7 +2651,7 @@ void Player::death(Creature* lastHitCreature) {
 
 		sendStats();
 		sendSkills();
-		//sendReLoginWindow(unfairFightReduction);
+		// sendReLoginWindow(unfairFightReduction);
 		sendBlessStatus();
 		if (getSkull() == SKULL_BLACK) {
 			health = 40;

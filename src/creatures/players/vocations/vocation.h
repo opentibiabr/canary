@@ -104,7 +104,7 @@ class Vocation {
 		float mitigationFactor = 1.0f;
 		float mitigationPrimaryShield = 1.0f;
 		float mitigationSecondaryShield = 1.0f;
-		
+
 	private:
 		friend class Vocations;
 

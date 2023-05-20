@@ -855,7 +855,7 @@ class Player final : public Creature, public Cylinder {
 		void drainMana(Creature* attacker, int32_t manaLoss) override;
 		void addManaSpent(uint64_t amount);
 		void addSkillAdvance(skills_t skill, uint64_t count);
-		
+
 		float getMitigation() const override;
 		int32_t getArmor() const override;
 		int32_t getDefense() const override;
@@ -2204,7 +2204,7 @@ class Player final : public Creature, public Cylinder {
 			SpectatorVec* spectatorsPtr = nullptr,
 			const Position* pos = nullptr
 		);
-		
+
 		// Wheel of destiny
 		void onThinkWheelOfDestiny(bool force = false);
 		void checkWheelOfDestinyGiftOfLife();
@@ -2551,7 +2551,7 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 		Spell* getWheelOfDestinyCombatDataSpell(CombatDamage &damage, Creature* target);
-		
+
 		// Forge system
 		void forgeFuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
 		void forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId);
@@ -2864,7 +2864,7 @@ class Player final : public Creature, public Cylinder {
 		int64_t lastQuickLootNotification = 0;
 		int64_t lastWalking = 0;
 		uint64_t asyncOngoingTasks = 0;
-		
+
 		// Wheel of destiny
 		uint8_t wheelOfDestinyStages[WHEEL_OF_DESTINY_STAGE_COUNT] = { 0 };
 		int64_t wheelOfDestinyOnThink[WHEEL_OF_DESTINY_ONTHINK_COUNT] = { 0 };
@@ -2875,7 +2875,7 @@ class Player final : public Creature, public Cylinder {
 		int32_t wheelOfDestinyCreaturesNearby = 0;
 		std::map<std::string, WheelOfDestinySpellGrade_t> wheelOfDestinySpellsSelected;
 		std::vector<std::string> wheelOfDestinyLearnedSpellsSelected;
-		
+
 		std::vector<Kill> unjustifiedKills;
 
 		BedItem* bedItem = nullptr;
@@ -3008,13 +3008,13 @@ class Player final : public Creature, public Cylinder {
 		bool moved = false;
 		bool dead = false;
 		bool imbuementTrackerWindowOpen = false;
-		
+
 		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
 		std::map<uint8_t, int32_t> perfectShot;
 		int32_t magicShieldCapacityFlat = 0;
 		int16_t magicShieldCapacityPercent = 0;
 		uint16_t cleavePercent = 0;
-		
+
 		void updateItemsLight(bool internal = false);
 		uint16_t getStepSpeed() const override {
 			return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));

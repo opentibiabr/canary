@@ -39,7 +39,7 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 	CombatDamage damage;
 	damage.origin = params.origin;
 	damage.primary.type = params.combatType;
-	
+
 	// Wheel of destiny
 	damage.instantSpellName = sourceInstantSpellName;
 	damage.runeSpellName = sourceRuneSpellName;
@@ -1209,7 +1209,6 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatPar
 		}
 	}
 }
-
 
 //**********************************************************//
 uint32_t ValueCallback::getMagicLevelSkill(Player* player, CombatDamage &damage) const {

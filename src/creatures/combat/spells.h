@@ -288,7 +288,7 @@ class Spell : public BaseSpell {
 		void setLockedPZ(bool b) {
 			pzLocked = b;
 		}
-		
+
 		// Wheel of destiny - Get:
 		bool getWheelOfDestinyUpgraded() const {
 			return whellOfDestinyUpgraded;
@@ -341,11 +341,11 @@ class Spell : public BaseSpell {
 		bool needTarget = false;
 		bool allowOnSelf = true;
 		bool pzLocked = false;
-		
+
 		bool whellOfDestinyUpgraded = false;
 		int32_t wheelOfDestinyRegularBoost[WHEEL_OF_DESTINY_SPELL_BOOST_COUNT] = { 0 };
 		int32_t wheelOfDestinyUpgradedBoost[WHEEL_OF_DESTINY_SPELL_BOOST_COUNT] = { 0 };
-		
+
 	private:
 		uint32_t mana = 0;
 		uint32_t manaPercent = 0;

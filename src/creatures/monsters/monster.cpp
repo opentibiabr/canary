@@ -623,7 +623,7 @@ BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int32
 		if (it != mType->info.elementMap.end()) {
 			elementMod = it->second;
 		}
-		
+
 		// Wheel of destiny
 		Player* player = attacker ? attacker->getPlayer() : nullptr;
 		if (player && player->getWheelOfDestinyInstant("Ballistic Mastery")) {

@@ -409,7 +409,7 @@ class Game {
 		bool combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* target, bool checkDefense, bool checkArmor, bool field);
 
 		void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint8_t &effect);
-		
+
 		// Wheel of destiny combat helpers
 		void applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, Creature* target);
 		void applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, Player* attackerPlayer, Creature* target);

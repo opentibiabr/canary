@@ -821,9 +821,9 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 
 	registerEnum(L, ITEM_GOLD_POUCH);
 	registerEnum(L, ITEM_STORE_INBOX);
-	
+
 	registerEnum(L, ITEM_DIVINE_EMPOWERMENT);
-	
+
 	registerEnum(L, ITEM_FORGE_SLIVER);
 	registerEnum(L, ITEM_FORGE_CORE);
 	registerEnum(L, ItemID_t::HIRELING_LAMP);

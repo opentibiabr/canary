@@ -269,9 +269,9 @@ class ProtocolGame final : public Protocol {
 		void parseSetBossPodium(NetworkMessage &msg) const;
 		void sendBosstiaryCooldownTimer();
 		void sendBosstiaryEntryChanged(uint32_t bossid);
-		
+
 		void sendWheelOfDestinyGiftOfLifeCooldown();
-		
+
 		void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 		void sendMagicEffect(const Position &pos, uint8_t type);
 		void sendRestingStatus(uint8_t protection);

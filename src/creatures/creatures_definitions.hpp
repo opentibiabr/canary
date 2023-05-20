@@ -1537,7 +1537,7 @@ struct CombatDamage {
 		bool extension;
 		std::string exString;
 		bool fatal;
-		
+
 		int32_t criticalDamage;
 		int32_t criticalChance;
 		int32_t damageMultiplier;

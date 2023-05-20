@@ -23,7 +23,7 @@ bool Condition::setParam(ConditionParam_t param, int32_t value) {
 			drainBodyStage = value;
 			return true;
 		}
-		
+
 		case CONDITION_PARAM_BUFF_SPELL: {
 			isBuff = (value != 0);
 			return true;

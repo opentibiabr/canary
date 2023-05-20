@@ -1159,7 +1159,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				if (i != SKILL_CRITICAL_HIT_CHANCE) {
 					ss << std::noshowpos;
 				}
-				descriptions.emplace_back(getSkillName(i), ss.str());		
+				descriptions.emplace_back(getSkillName(i), ss.str());
 			}
 
 			if (skillBoost) {
@@ -1477,7 +1477,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				}
 				descriptions.emplace_back(getSkillName(i), ss.str());
 			}
-			
+
 			if (it.abilities->stats[STAT_MAGICPOINTS]) {
 				ss.str("");
 				ss << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;

@@ -60,7 +60,7 @@ class SpellFunctions final : LuaScriptInterface {
 			registerMethod(L, "Spell", "allowFarUse", SpellFunctions::luaSpellAllowFarUse);
 			registerMethod(L, "Spell", "blockWalls", SpellFunctions::luaSpellBlockWalls);
 			registerMethod(L, "Spell", "checkFloor", SpellFunctions::luaSpellCheckFloor);
-			
+
 			// Wheel of destiny
 			registerMethod(L, "Spell", "manaWOD", SpellFunctions::luaSpellManaWOD);
 			registerMethod(L, "Spell", "cooldownWOD", SpellFunctions::luaSpellCooldownWOD);
@@ -120,7 +120,7 @@ class SpellFunctions final : LuaScriptInterface {
 		static int luaSpellAllowFarUse(lua_State* L);
 		static int luaSpellBlockWalls(lua_State* L);
 		static int luaSpellCheckFloor(lua_State* L);
-		
+
 		static int luaSpellManaWOD(lua_State* L);
 		static int luaSpellCooldownWOD(lua_State* L);
 		static int luaSpellGroupCooldownWOD(lua_State* L);

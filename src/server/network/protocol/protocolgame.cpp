@@ -296,7 +296,7 @@ void ProtocolGame::release() {
 }
 
 void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
-		// OTCv8 features and extended opcodes
+	// OTCv8 features and extended opcodes
 	if (otclientV8 || operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
 		if (otclientV8)
 			sendFeatures();
@@ -3605,7 +3605,7 @@ void ProtocolGame::sendBlessStatus() {
 	for (int i = 1; i <= 8; i++) {
 		if (player->hasBlessing(i)) {
 			if (i > 1) {
-					blessCount++;
+				blessCount++;
 			}
 
 			flag |= pow2;
@@ -4882,7 +4882,6 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			} else {
 				ss << it.abilities->skills[i] << '%';
 			}
-
 
 			if (i != SKILL_CRITICAL_HIT_CHANCE) {
 				ss << std::noshowpos;
@@ -6921,7 +6920,7 @@ void ProtocolGame::RemoveTileThing(NetworkMessage &msg, const Position &pos, uin
 
 void ProtocolGame::sendKillTrackerUpdate(Container* corpse, const std::string &name, const Outfit_t creatureOutfit) {
 	if (!player || oldProtocol) {
-	return;
+		return;
 	}
 	bool isCorpseEmpty = corpse->empty();
 

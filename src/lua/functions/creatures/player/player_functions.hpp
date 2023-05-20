@@ -266,7 +266,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "isOffline", PlayerFunctions::luaPlayerIsOffline);
 
 			registerMethod(L, "Player", "openMarket", PlayerFunctions::luaPlayerOpenMarket);
-			
+
 			registerMethod(L, "Player", "statsHealthWOD", PlayerFunctions::luaPlayerStatsHealthWOD);
 			registerMethod(L, "Player", "statsManaWOD", PlayerFunctions::luaPlayerStatsManaWOD);
 			registerMethod(L, "Player", "statsCapacityWOD", PlayerFunctions::luaPlayerStatsCapacityWOD);
@@ -284,7 +284,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "reduceAllSpellsCooldownTimer", PlayerFunctions::luaPlayerReduceAllSpellsCooldownTimer);
 			registerMethod(L, "Player", "onThinkWheelOfDestiny", PlayerFunctions::luaPlayerOnThinkWheelOfDestiny);
 			registerMethod(L, "Player", "avatarTimer", PlayerFunctions::luaPlayerAvatarTimer);
-			
+
 			// Forge Functions
 			registerMethod(L, "Player", "openForge", PlayerFunctions::luaPlayerOpenForge);
 			registerMethod(L, "Player", "closeForge", PlayerFunctions::luaPlayerCloseForge);
@@ -584,7 +584,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetFreeBackpackSlots(lua_State* L);
 
 		static int luaPlayerOpenMarket(lua_State* L);
-		
+
 		static int luaPlayerStatsHealthWOD(lua_State* L);
 		static int luaPlayerStatsManaWOD(lua_State* L);
 		static int luaPlayerStatsCapacityWOD(lua_State* L);

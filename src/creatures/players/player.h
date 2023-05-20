@@ -1751,6 +1751,8 @@ class Player final : public Creature, public Cylinder {
 			}
 			return false;
 		}
+		void setImmuneFear();
+		bool isImmuneFear() const;
 		uint16_t parseRacebyCharm(charmRune_t charmId, bool set, uint16_t newRaceid) {
 			uint16_t raceid = 0;
 			switch (charmId) {
@@ -2542,6 +2544,8 @@ class Player final : public Creature, public Cylinder {
 		int32_t UsedRunesBit = 0;
 		int32_t UnlockedRunesBit = 0;
 		std::pair<ConditionType_t, uint64_t> cleanseCondition = { CONDITION_NONE, 0 };
+
+		std::pair<ConditionType_t, uint64_t> m_fearCondition = { CONDITION_NONE, 0 };
 
 		uint8_t soul = 0;
 		uint8_t levelPercent = 0;

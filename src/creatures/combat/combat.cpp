@@ -625,6 +625,34 @@ void Combat::CombatManaFunc(Creature* caster, Creature* target, const CombatPara
 	}
 }
 
+bool Combat::checkFearConditionAffected(Player* player) {
+	if (player->isImmuneFear()) {
+		return false;
+	}
+
+	if (player->hasCondition(CONDITION_FEARED)) {
+		return false;
+	}
+
+	Party* party = player->getParty();
+	if (party) {
+		auto affectedCount = (party->getMemberCount() + 5) / 5;
+		SPDLOG_DEBUG("[{}] Player is member of a party, {} members can be feared", __FUNCTION__, affectedCount);
+
+		for (const auto member : party->getMembers()) {
+			if (member->hasCondition(CONDITION_FEARED)) {
+				affectedCount -= 1;
+			}
+		}
+
+		if (affectedCount <= 0) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void Combat::CombatConditionFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data) {
 	if (params.origin == ORIGIN_MELEE && data && data->primary.value == 0 && data->secondary.value == 0) {
 		return;
@@ -635,8 +663,8 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 		if (target) {
 			player = target->getPlayer();
 		}
-		// Cleanse charm rune (target as player)
 		if (player) {
+			// Cleanse charm rune (target as player)
 			if (player->isImmuneCleanse(condition->getType())) {
 				player->sendCancelMessage("You are still immune against this spell.");
 				return;
@@ -657,12 +685,17 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 					}
 				}
 			}
+
+			if (condition->getType() == CONDITION_FEARED && !checkFearConditionAffected(player)) {
+				return;
+			}
 		}
 
 		if (caster == target || target && !target->isImmune(condition->getType())) {
 			Condition* conditionCopy = condition->clone();
 			if (caster) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
+				conditionCopy->setPositionParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
 			}
 
 			// TODO: infight condition until all aggressive conditions has ended

@@ -111,6 +111,31 @@ namespace account {
 			 **************************************************************************/
 
 			/**
+			 * @brief Get the amount of transfer coins that the account has from database.
+			 *
+			 * @param accountId Account ID to get the transfer coins.
+			 * @param coins Pointer to return the number of transfer coins
+			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+			 */
+			error_t GetTransferableCoins(uint32_t* coins);
+
+			/**
+			 * @brief Add transfer coins to the account and update database.
+			 *
+			 * @param amount Amount of transfer coins to be added
+			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+			 */
+			error_t AddTransferableCoins(uint32_t amount);
+
+			/**
+			 * @brief Removes transfer coins from the account and update database.
+			 *
+			 * @param amount Amount of transfer coins to be removed
+			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+			 */
+			error_t RemoveTransferableCoins(uint32_t amount);
+
+			/**
 			 * @brief Get the amount of coins that the account has from database.
 			 *
 			 * @param accountId Account ID to get the coins.

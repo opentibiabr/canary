@@ -20,10 +20,10 @@ void ConfigFunctions::init(lua_State* L) {
 	registerMethod(L, "configManager", "getFloat", ConfigFunctions::luaConfigManagerGetFloat);
 
 #define registerEnumIn(L, tableName, value)                                                     \
-	{                                                                                           \
+	do {                                                                                        \
 		std::string enumName = #value;                                                          \
 		registerVariable(L, tableName, enumName.substr(enumName.find_last_of(':') + 1), value); \
-	}
+	} while (0)
 	registerTable(L, "configKeys");
 	registerEnumIn(L, "configKeys", ALLOW_CHANGEOUTFIT);
 	registerEnumIn(L, "configKeys", ONE_PLAYER_ON_ACCOUNT);
@@ -192,6 +192,19 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);
 	registerEnumIn(L, "configKeys", TOGGLE_SERVER_IS_RETRO);
 	registerEnumIn(L, "configKeys", TOGGLE_TRAVELS_FREE);
+
+	registerEnumIn(L, "configKeys", HAZARD_SPAWN_PLUNDER_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARD_CRITICAL_INTERVAL);
+	registerEnumIn(L, "configKeys", HAZARD_CRITICAL_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARD_DAMAGE_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARD_DODGE_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARD_PODS_DROP_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARD_PODS_TIME_TO_DAMAGE);
+	registerEnumIn(L, "configKeys", HAZARD_PODS_TIME_TO_SPAWN);
+	registerEnumIn(L, "configKeys", HAZARD_EXP_BONUS_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARD_LOOT_BONUS_MULTIPLIER);
+	registerEnumIn(L, "configKeys", HAZARD_PODS_DAMAGE);
+	registerEnumIn(L, "configKeys", TOGGLE_HAZARDSYSTEM);
 #undef registerEnumIn
 }
 

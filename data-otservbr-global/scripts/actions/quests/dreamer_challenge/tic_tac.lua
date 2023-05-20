@@ -7,15 +7,8 @@ function dreamerTicTac.onUse(player, item, fromPosition, target, toPosition, isH
 	end
 
 	local position = Position(32838, 32264, 14)
-	if player:getStorageValue(Storage.DreamersChallenge.TicTac) < 1 then
-		player:setStorageValue(Storage.DreamersChallenge.TicTac, 1)
-		Game.createItem(3547, 8, position)
-		Game.createItem(3548, 12, {x = 32839, y = 32263, z = 14})
-		position:sendMagicEffect(CONST_ME_MAGIC_BLUE)
-		return true
-	else
-		player:say("You have used and can not use more.", TALKTYPE_ORANGE_1)
-	end
+	Game.createItem(3547, 8, position)
+	Game.createItem(3548, 12, {x = 32839, y = 32263, z = 14})
 	return true
 end
 

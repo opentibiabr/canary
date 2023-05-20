@@ -57,6 +57,8 @@ class MonsterFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Monster", "getName", MonsterFunctions::luaMonsterGetName);
 
+			registerMethod(L, "Monster", "isOnHazardSystem", MonsterFunctions::luaMonsterIsOnHazardSystem);
+
 			CharmFunctions::init(L);
 			LootFunctions::init(L);
 			MonsterSpellFunctions::init(L);
@@ -109,6 +111,8 @@ class MonsterFunctions final : LuaScriptInterface {
 		static int luaMonsterIsForgeable(lua_State* L);
 
 		static int luaMonsterGetName(lua_State* L);
+
+		static int luaMonsterIsOnHazardSystem(lua_State* L);
 
 		friend class CreatureFunctions;
 };

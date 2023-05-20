@@ -580,35 +580,35 @@ class Game {
 		void addPlayerUniqueLogin(Player* player);
 
 		/**
-		* @brief Gets a player from the unique login map using their name.
-		*
-		* The function attempts to find a player in the unique login map using their name.
-		* If the player's name is not found, the function returns a null pointer.
-		* If an empty string is provided, it logs an error and returns a null pointer.
-		*
-		* @param playerName The name of the player to search for.
-		* @return A pointer to the Player object if found, null otherwise.
-		*/
+		 * @brief Gets a player from the unique login map using their name.
+		 *
+		 * The function attempts to find a player in the unique login map using their name.
+		 * If the player's name is not found, the function returns a null pointer.
+		 * If an empty string is provided, it logs an error and returns a null pointer.
+		 *
+		 * @param playerName The name of the player to search for.
+		 * @return A pointer to the Player object if found, null otherwise.
+		 */
 		Player* getPlayerUniqueLogin(const std::string &playerName) const;
 
 		/**
-		* @brief Removes a player from the unique login map using their name.
-		*
-		* The function removes a player from the unique login map using their name.
-		* If an empty string is provided, it logs an error and returns.
-		*
-		* @param playerName The name of the player to remove.
-		*/
+		 * @brief Removes a player from the unique login map using their name.
+		 *
+		 * The function removes a player from the unique login map using their name.
+		 * If an empty string is provided, it logs an error and returns.
+		 *
+		 * @param playerName The name of the player to remove.
+		 */
 		void removePlayerUniqueLogin(const std::string &playerName);
 
 		/**
-		* @brief Removes a player from the unique login map.
-		*
-		* The function removes a player from the unique login map.
-		* If the player pointer is null, it logs an error and returns.
-		*
-		* @param player A pointer to the Player object to remove.
-		*/
+		 * @brief Removes a player from the unique login map.
+		 *
+		 * The function removes a player from the unique login map.
+		 * If the player pointer is null, it logs an error and returns.
+		 *
+		 * @param player A pointer to the Player object to remove.
+		 */
 		void removePlayerUniqueLogin(Player* player);
 
 	private:

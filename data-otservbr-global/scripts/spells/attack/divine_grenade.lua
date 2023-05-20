@@ -74,7 +74,7 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 	local grade = creature:upgradeSpellsWORD("Divine Grenade")
-	if grade == 0 then
+	if grade == WHEEL_GRADE_NONE then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false

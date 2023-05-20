@@ -9,7 +9,7 @@ function spell.onCastSpell(creature, variant)
 	end
 
 	local grade = creature:upgradeSpellsWORD("Avatar of Light")
-	if grade == 0 then
+	if grade == WHEEL_GRADE_NONE then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false

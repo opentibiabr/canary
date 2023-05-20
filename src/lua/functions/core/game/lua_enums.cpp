@@ -106,6 +106,7 @@ void LuaEnums::init(lua_State* L) {
 	initWebhookEnums(L);
 	initBosstiaryEnums(L);
 	initSoundEnums(L);
+	initWheelEnums(L);
 }
 
 void LuaEnums::initOthersEnums(lua_State* L) {

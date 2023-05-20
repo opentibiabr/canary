@@ -286,6 +286,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item* item) {
 void ProtocolGame::release() {
 	// dispatcher thread
 	if (player && player->client == shared_from_this()) {
+		g_game().removePlayerUniqueLogin(player);
 		player->client.reset();
 		player->decrementReferenceCounter();
 		player = nullptr;
@@ -297,10 +298,11 @@ void ProtocolGame::release() {
 
 void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
 	// dispatcher thread
-	Player* foundPlayer = g_game().getPlayerByName(name);
+	Player* foundPlayer = g_game().getPlayerUniqueLogin(name);
 	if (!foundPlayer) {
 		player = new Player(getThis());
 		player->setName(name);
+		g_game().addPlayerUniqueLogin(player);
 
 		player->incrementReferenceCounter();
 		player->setID();
@@ -431,6 +433,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 
 	player = foundPlayer;
 	player->incrementReferenceCounter();
+	g_game().addPlayerUniqueLogin(player);
 
 	g_chat().removeUserFromAllChannels(*player);
 	player->clearModalWindows();
@@ -4165,7 +4168,7 @@ void ProtocolGame::sendCoinBalance() {
 	msg.addByte(0x01);
 
 	msg.add<uint32_t>(player->coinBalance); // Normal Coins
-	msg.add<uint32_t>(player->coinBalance); // Transferable Coins
+	msg.add<uint32_t>(player->coinTransferableBalance); // Transferable Coins
 
 	if (!oldProtocol) {
 		msg.add<uint32_t>(player->coinBalance); // Reserved Auction Coins
@@ -4187,7 +4190,10 @@ void ProtocolGame::updateCoinBalance() {
 				account.LoadAccountDB(threadPlayer->getAccount());
 				uint32_t coins;
 				account.GetCoins(&coins);
+				uint32_t transfercoins;
+				account.GetTransferableCoins(&transfercoins);
 				threadPlayer->coinBalance = coins;
+				threadPlayer->coinTransferableBalance = transfercoins;
 				threadPlayer->sendCoinBalance();
 			}
 		},

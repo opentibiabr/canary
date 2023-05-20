@@ -2359,6 +2359,65 @@ int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetTransferableCoins(lua_State* L) {
+	// player:getTransferableCoins()
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		account::Account account(player->getAccount());
+		account.LoadAccountDB();
+		uint32_t coins;
+		account.GetTransferableCoins(&coins);
+		lua_pushnumber(L, coins);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddTransferableCoins(lua_State* L) {
+	// player:addTransferableCoins(coins)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint32_t coins = getNumber<uint32_t>(L, 2);
+
+	account::Account account(player->getAccount());
+	account.LoadAccountDB();
+	if (account.AddTransferableCoins(coins)) {
+		account.GetTransferableCoins(&(player->coinTransferableBalance));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveTransferableCoins(lua_State* L) {
+	// player:removeTransferableCoins(coins)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint32_t coins = getNumber<uint32_t>(L, 2);
+
+	account::Account account(player->getAccount());
+	account.LoadAccountDB();
+	if (account.RemoveTransferableCoins(coins)) {
+		account.GetTransferableCoins(&(player->coinTransferableBalance));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerHasBlessing(lua_State* L) {
 	// player:hasBlessing(blessing)
 	uint8_t blessing = getNumber<uint8_t>(L, 2);

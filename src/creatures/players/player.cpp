@@ -2832,6 +2832,8 @@ void Player::despawn() {
 
 	getParent()->postRemoveNotification(this, nullptr, 0);
 
+	g_game().removePlayer(this);
+
 	// show player as pending
 	for (const auto &[key, player] : g_game().getPlayers()) {
 		player->notifyStatusChange(this, VIPSTATUS_PENDING, false);
@@ -5074,6 +5076,10 @@ void Player::setPremiumDays(int32_t v) {
 
 void Player::setTibiaCoins(int32_t v) {
 	coinBalance = v;
+}
+
+void Player::setTransferableTibiaCoins(int32_t v) {
+	coinTransferableBalance = v;
 }
 
 PartyShields_t Player::getPartyShield(const Player* player) const {

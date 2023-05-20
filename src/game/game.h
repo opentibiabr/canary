@@ -576,6 +576,44 @@ class Game {
 		void sendUpdateCreature(const Creature* creature);
 		Item* wrapItem(Item* item);
 
+		/**
+		 * @brief Adds a player to the unique login map.
+		 * @details The function registers a player in the unique login map to ensure no duplicate logins.
+		 * If the player pointer is null, it logs an error and returns.
+		 *
+		 * @param player A pointer to the Player object to add.
+		 */
+		void addPlayerUniqueLogin(Player* player);
+
+		/**
+		 * @brief Gets a player from the unique login map using their name.
+		 * @details The function attempts to find a player in the unique login map using their name.
+		 * If the player's name is not found, the function returns a null pointer.
+		 * If an empty string is provided, it logs an error and returns a null pointer.
+		 *
+		 * @param playerName The name of the player to search for.
+		 * @return A pointer to the Player object if found, null otherwise.
+		 */
+		Player* getPlayerUniqueLogin(const std::string &playerName) const;
+
+		/**
+		 * @brief Removes a player from the unique login map using their name.
+		 * @details The function removes a player from the unique login map using their name.
+		 * If an empty string is provided, it logs an error and returns.
+		 *
+		 * @param playerName The name of the player to remove.
+		 */
+		void removePlayerUniqueLogin(const std::string &playerName);
+
+		/**
+		 * @brief Removes a player from the unique login map.
+		 * @details The function removes a player from the unique login map.
+		 * If the player pointer is null, it logs an error and returns.
+		 *
+		 * @param player A pointer to the Player object to remove.
+		 */
+		void removePlayerUniqueLogin(Player* player);
+
 	private:
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;
 		std::set<uint32_t> fiendishMonsters;
@@ -587,6 +625,7 @@ class Game {
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
 		void playerSpeakToNpc(Player* player, const std::string &text);
 
+		phmap::flat_hash_map<std::string, Player*> m_uniqueLoginPlayerNames;
 		phmap::flat_hash_map<uint32_t, Player*> players;
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
 		phmap::flat_hash_map<uint32_t, Guild*> guilds;

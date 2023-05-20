@@ -224,7 +224,7 @@ function onRecvbyte(player, msg, byte)
 
 	if byte == GameStore.RecivedPackets.C_StoreEvent then
 	elseif byte == GameStore.RecivedPackets.C_TransferCoins then
-		parseTransferCoins(player:getId(), msg)
+		parseTransferableCoins(player:getId(), msg)
 	elseif byte == GameStore.RecivedPackets.C_OpenStore then
 		parseOpenStore(player:getId(), msg)
 	elseif byte == GameStore.RecivedPackets.C_RequestStoreOffers then
@@ -246,7 +246,7 @@ function onRecvbyte(player, msg, byte)
 	return true
 end
 
-function parseTransferCoins(playerId, msg)
+function parseTransferableCoins(playerId, msg)
 	local player = Player(playerId)
 	if not player then
 		return false
@@ -273,8 +273,8 @@ function parseTransferCoins(playerId, msg)
 		return addPlayerEvent(sendStoreError, 350, playerId, GameStore.StoreErrors.STORE_ERROR_TRANSFER, "You cannot transfer coin to a character in the same account.")
 	end
 
-	db.query("UPDATE `accounts` SET `transfercoins` = `transfercoins` + " .. amount .. " WHERE `id` = " .. accountId)
-	player:removeTransferCoinsBalance(amount)
+	db.query("UPDATE `accounts` SET `coins_transferable` = `coins_transferable` + " .. amount .. " WHERE `id` = " .. accountId)
+	player:removeTransferableCoinsBalance(amount)
 	addPlayerEvent(sendStorePurchaseSuccessful, 550, playerId, "You have transfered " .. amount .. " coins to " .. reciver .. " successfully")
 
 	-- Adding history for both reciver/sender
@@ -1084,7 +1084,7 @@ function sendUpdatedStoreBalances(playerId)
 	msg:addByte(0x01)
 
 	msg:addU32(player:getCoinsBalance()) -- Tibia Coins
-	msg:addU32(player:getTransferCoinsBalance()) -- How many are Transferable
+	msg:addU32(player:getTransferableCoinsBalance()) -- How many are Transferable
 	if not oldProtocol then
 		msg:addU32(player:getCoinsBalance()) -- How many are reserved for a Character Auction
 	end
@@ -1826,34 +1826,34 @@ end
 
 
 --- Transfer Tibia Coins
-function Player.getTransferCoinsBalance(self)
-	resultId = db.storeQuery("SELECT `transfercoins` FROM `accounts` WHERE `id` = " .. self:getAccountId())
+function Player.getTransferableCoinsBalance(self)
+	resultId = db.storeQuery("SELECT `coins_transferable` FROM `accounts` WHERE `id` = " .. self:getAccountId())
 	if not resultId then return 0 end
-	return Result.getNumber(resultId, "transfercoins")
+	return Result.getNumber(resultId, "coins_transferable")
 end
 
-function Player.setTransferCoinsBalance(self, coins)
-	db.query("UPDATE `accounts` SET `transfercoins` = " .. coins .. " WHERE `id` = " .. self:getAccountId())
+function Player.setTransferableCoinsBalance(self, coins)
+	db.query("UPDATE `accounts` SET `coins_transferable` = " .. coins .. " WHERE `id` = " .. self:getAccountId())
 	return true
 end
 
-function Player.canRemoveTransferCoins(self, coins)
-	if self:getTransferCoinsBalance() < coins then
+function Player.canRemoveTransferableCoins(self, coins)
+	if self:getTransferableCoinsBalance() < coins then
 		return false
 	end
 	return true
 end
 
-function Player.removeTransferCoinsBalance(self, coins)
-	if self:canRemoveTransferCoins(coins) then
-		return self:setTransferCoinsBalance(self:getTransferCoinsBalance() - coins)
+function Player.removeTransferableCoinsBalance(self, coins)
+	if self:canRemoveTransferableCoins(coins) then
+		return self:setTransferableCoinsBalance(self:getTransferableCoinsBalance() - coins)
 	end
 
 	return false
 end
 
-function Player.addTransferCoinsBalance(self, coins, update)
-	self:setTransferCoinsBalance(self:getTransferCoinsBalance() + coins)
+function Player.addTransferableCoinsBalance(self, coins, update)
+	self:setTransferableCoinsBalance(self:getTransferableCoinsBalance() + coins)
 	if update then sendStoreBalanceUpdating(self, true) end
 	return true
 end
@@ -1868,7 +1868,7 @@ function Player.makeCoinTransaction(self, offer, desc)
 	else
 		desc = offer.name
 	end
-	
+
 	-- Remove coins
 	op = self:removeCoinsBalance(offer.price)
 

@@ -2359,14 +2359,14 @@ int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerGetTransferTibiaCoins(lua_State* L) {
-	// player:getTransferTibiaCoins()
+int PlayerFunctions::luaPlayerGetTransferableCoins(lua_State* L) {
+	// player:getTransferableCoins()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
 		account::Account account(player->getAccount());
 		account.LoadAccountDB();
 		uint32_t coins;
-		account.GetTransferCoins(&coins);
+		account.GetTransferableCoins(&coins);
 		lua_pushnumber(L, coins);
 	} else {
 		lua_pushnil(L);
@@ -2374,8 +2374,8 @@ int PlayerFunctions::luaPlayerGetTransferTibiaCoins(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerAddTransferTibiaCoins(lua_State* L) {
-	// player:addTransferTibiaCoins(coins)
+int PlayerFunctions::luaPlayerAddTransferableCoins(lua_State* L) {
+	// player:addTransferableCoins(coins)
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
@@ -2386,8 +2386,8 @@ int PlayerFunctions::luaPlayerAddTransferTibiaCoins(lua_State* L) {
 
 	account::Account account(player->getAccount());
 	account.LoadAccountDB();
-	if (account.AddTransferCoins(coins)) {
-		account.GetTransferCoins(&(player->coinTransferBalance));
+	if (account.AddTransferableCoins(coins)) {
+		account.GetTransferableCoins(&(player->coinTransferableBalance));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -2396,8 +2396,8 @@ int PlayerFunctions::luaPlayerAddTransferTibiaCoins(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerRemoveTransferTibiaCoins(lua_State* L) {
-	// player:removeTransferTibiaCoins(coins)
+int PlayerFunctions::luaPlayerRemoveTransferableCoins(lua_State* L) {
+	// player:removeTransferableCoins(coins)
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
@@ -2408,8 +2408,8 @@ int PlayerFunctions::luaPlayerRemoveTransferTibiaCoins(lua_State* L) {
 
 	account::Account account(player->getAccount());
 	account.LoadAccountDB();
-	if (account.RemoveTransferCoins(coins)) {
-		account.GetTransferCoins(&(player->coinTransferBalance));
+	if (account.RemoveTransferableCoins(coins)) {
+		account.GetTransferableCoins(&(player->coinTransferableBalance));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

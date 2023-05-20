@@ -117,7 +117,7 @@ namespace account {
 			 * @param coins Pointer to return the number of transfer coins
 			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
 			 */
-			error_t GetTransferCoins(uint32_t* coins);
+			error_t GetTransferableCoins(uint32_t* coins);
 
 			/**
 			 * @brief Add transfer coins to the account and update database.
@@ -125,7 +125,7 @@ namespace account {
 			 * @param amount Amount of transfer coins to be added
 			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
 			 */
-			error_t AddTransferCoins(uint32_t amount);
+			error_t AddTransferableCoins(uint32_t amount);
 
 			/**
 			 * @brief Removes transfer coins from the account and update database.
@@ -133,7 +133,7 @@ namespace account {
 			 * @param amount Amount of transfer coins to be removed
 			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
 			 */
-			error_t RemoveTransferCoins(uint32_t amount);
+			error_t RemoveTransferableCoins(uint32_t amount);
 
 			/**
 			 * @brief Get the amount of coins that the account has from database.

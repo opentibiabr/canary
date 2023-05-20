@@ -2579,7 +2579,7 @@ void Player::death(Creature* lastHitCreature) {
 
 		sendStats();
 		sendSkills();
-		//sendReLoginWindow(unfairFightReduction);  //duplicate login?
+		// sendReLoginWindow(unfairFightReduction);  //duplicate login?
 		sendBlessStatus();
 		if (getSkull() == SKULL_BLACK) {
 			health = 40;
@@ -2710,7 +2710,7 @@ void Player::despawn() {
 
 	// g_game().removePlayer(this);
 
-//get temple position
+	// get temple position
 	getTown()->getTemplePosition();
 
 	// show player as pending
@@ -2718,7 +2718,7 @@ void Player::despawn() {
 		player->notifyStatusChange(this, VIPSTATUS_PENDING, false);
 	}
 
-	setTemplePosition();  //set temple position
+	setTemplePosition(); // set temple position
 	removeList();
 	setDead(true);
 }

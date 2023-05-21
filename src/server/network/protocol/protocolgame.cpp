@@ -376,7 +376,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (!IOLoginData::loadPlayerById(player, player->getGUID())) {
+		if (!IOLoginData::loadPlayerById(player, player->getGUID(), false)) {
 			disconnectClient("Your character could not be loaded.");
 			SPDLOG_WARN("Player {} could not be loaded", player->getName());
 			return;

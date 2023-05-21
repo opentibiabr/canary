@@ -24,14 +24,17 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Fiehonja."
-	}
+}
 
 monster.health = 850
 monster.maxHealth = 850
 monster.race = "blood"
 monster.corpse = 13771
-monster.speed = 190
+monster.speed = 95
 monster.manaCost = 0
+
+monster.faction = FACTION_DEEPLING
+monster.enemyFactions = {FACTION_DEATHLING, FACTION_PLAYER}
 
 monster.changeTarget = {
 	interval = 4000,

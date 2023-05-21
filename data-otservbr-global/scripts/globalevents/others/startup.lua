@@ -66,8 +66,8 @@ function serverstartup.onStartup()
 	db.query('UPDATE `player_storage` SET `value` = 0 WHERE `player_storage`.`key` = 51052')
 
 	-- reset familiars message storage
-	db.query('DELETE FROM `player_storage` WHERE `key` = '..Storage.FamiliarSummonEvent10)
-	db.query('DELETE FROM `player_storage` WHERE `key` = '..Storage.FamiliarSummonEvent60)
+	db.query('DELETE FROM `player_storage` WHERE `key` = '..Global.Storage.FamiliarSummonEvent10)
+	db.query('DELETE FROM `player_storage` WHERE `key` = '..Global.Storage.FamiliarSummonEvent60)
 
 	-- delete canceled and rejected guilds
 	db.asyncQuery('DELETE FROM `guild_wars` WHERE `status` = 2')
@@ -85,15 +85,15 @@ function serverstartup.onStartup()
 	local banResultId = db.storeQuery('SELECT * FROM `account_bans` WHERE `expires_at` != 0 AND `expires_at` <= ' .. time)
 	if banResultId ~= false then
 		repeat
-			local accountId = result.getNumber(banResultId, 'account_id')
+			local accountId = Result.getNumber(banResultId, 'account_id')
 			db.asyncQuery('INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, \z
 			`expired_at`, `banned_by`) VALUES (' .. accountId .. ', \z
-			' .. db.escapeString(result.getString(banResultId, 'reason')) .. ', \z
-			' .. result.getNumber(banResultId, 'banned_at') .. ', ' .. result.getNumber(banResultId, 'expires_at') .. ', \z
-			' .. result.getNumber(banResultId, 'banned_by') .. ')')
+			' .. db.escapeString(Result.getString(banResultId, 'reason')) .. ', \z
+			' .. Result.getNumber(banResultId, 'banned_at') .. ', ' .. Result.getNumber(banResultId, 'expires_at') .. ', \z
+			' .. Result.getNumber(banResultId, 'banned_by') .. ')')
 			db.asyncQuery('DELETE FROM `account_bans` WHERE `account_id` = ' .. accountId)
-		until not result.next(banResultId)
-		result.free(banResultId)
+		until not Result.next(banResultId)
+		Result.free(banResultId)
 	end
 
 	-- Ferumbras Ascendant quest
@@ -108,11 +108,11 @@ function serverstartup.onStartup()
 	`bid_end` != 0 AND `bid_end` < ' .. time)
 	if resultId ~= false then
 		repeat
-			local house = House(result.getNumber(resultId, 'id'))
+			local house = House(Result.getNumber(resultId, 'id'))
 			if house then
-				local highestBidder = result.getNumber(resultId, 'highest_bidder')
-				local balance = result.getNumber(resultId, 'balance')
-				local lastBid = result.getNumber(resultId, 'last_bid')
+				local highestBidder = Result.getNumber(resultId, 'highest_bidder')
+				local balance = Result.getNumber(resultId, 'balance')
+				local lastBid = Result.getNumber(resultId, 'last_bid')
 				if balance >= lastBid then
 					db.query('UPDATE `players` SET `balance` = ' .. (balance - lastBid) .. ' WHERE `id` = ' .. highestBidder)
 					house:setOwnerGuid(highestBidder)
@@ -120,8 +120,15 @@ function serverstartup.onStartup()
 				db.asyncQuery('UPDATE `houses` SET `last_bid` = 0, `bid_end` = 0, `highest_bidder` = 0, \z
 				`bid` = 0 WHERE `id` = ' .. house:getId())
 			end
-		until not result.next(resultId)
-		result.free(resultId)
+		until not Result.next(resultId)
+		Result.free(resultId)
+	end
+
+	-- store towns in database
+	db.query("TRUNCATE TABLE `towns`")
+	for i, town in ipairs(Game.getTowns()) do
+		local position = town:getTemplePosition()
+		db.query("INSERT INTO `towns` (`id`, `name`, `posx`, `posy`, `posz`) VALUES (" .. town:getId() .. ", " .. db.escapeString(town:getName()) .. ", " .. position.x .. ", " .. position.y .. ", " .. position.z .. ")")
 	end
 
 	do -- Event Schedule rates
@@ -149,11 +156,6 @@ function serverstartup.onStartup()
 		Spdlog.info("Events: " .. "Exp: " .. expRate .. "%, " .. "loot: " .. lootRate .. "%, " .. "Spawn: " .. spawnRate .. "%, " .. "Skill: ".. skillRate .."%")
 		end
 	end
-
-    -- Client XP Display Mode
-	-- 0 = ignore exp rate /stage
-	-- 1 = include exp rate / stage
-	Game.setStorageValue(GlobalStorage.XpDisplayMode, 1)
 
 	-- Hireling System
 	HirelingsInit()

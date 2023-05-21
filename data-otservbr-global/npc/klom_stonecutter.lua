@@ -95,9 +95,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	npc = Npc(creature)
-
-	local tempo = 20*60*60
+	local time = 20*60*60
 
 	-- missão subterraneans
 	if MsgContains(message, "subterraneans") and npcHandler:getTopic(playerId) == 1 then
@@ -120,7 +118,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif (player:getStorageValue(Storage.DangerousDepths.Dwarves.Subterranean) == 1) and (player:getStorageValue(Storage.DangerousDepths.Dwarves.Organisms) >= 50) then
 			npcHandler:say({"I'l say I'm blown away but a Klom Stonecutter is not that easily impressed. Still, your got your hands dirt for us and I appreciate that."}, npc, creature)
 			-- Entregando surprise jar + 1 ponto de missão!
-			player:setStorageValue(Storage.DangerousDepths.Dwarves.TimeTaskSubterranean, os.time() + tempo)
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.TimeTaskSubterranean, os.time() + time)
 			player:addItem(27654, 1)
 			player:setStorageValue(Storage.DangerousDepths.Dwarves.Status, player:getStorageValue(Storage.DangerousDepths.Dwarves.Status) + 1)
 			player:setStorageValue(Storage.DangerousDepths.Dwarves.Subterranean, 2)
@@ -162,7 +160,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif (player:getStorageValue(Storage.DangerousDepths.Dwarves.Home) == 1) and (player:getStorageValue(Storage.DangerousDepths.Dwarves.LostExiles) >= 20 and player:getStorageValue(Storage.DangerousDepths.Dwarves.Prisoners) < 3) then
 			npcHandler:say({"So you did it. Well, that won't be the last of 'em but this sure helps our situation down here. Return to me later if you want to help me again!"}, npc, creature) -- Caso não tenha feito o task bônus
 			-- Entregando surprise jar + 1 ponto de missão!
-			player:setStorageValue(Storage.DangerousDepths.Dwarves.TimeTaskHome, os.time() + tempo)
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.TimeTaskHome, os.time() + time)
 			player:setStorageValue(Storage.DangerousDepths.Dwarves.Home, 2)
 			player:addItem(27654, 1)
 			player:setStorageValue(Storage.DangerousDepths.Dwarves.Status, player:getStorageValue(Storage.DangerousDepths.Dwarves.Status) + 1)
@@ -171,7 +169,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif (player:getStorageValue(Storage.DangerousDepths.Dwarves.Home) == 1) and (player:getStorageValue(Storage.DangerousDepths.Dwarves.LostExiles) >= 20 and player:getStorageValue(Storage.DangerousDepths.Dwarves.Prisoners) >= 3) then
 			npcHandler:say({"So you did it. And you even made prisoners, the bonus is yours! Well, that won't be the last of 'em but this sure helps our situation down here. Return to me later if you want to help me again!"}, npc, creature) -- Se tiver feito ambas
 			-- Entregando 2 surprise jars + 2 pontos de missão!
-			player:setStorageValue(Storage.DangerousDepths.Dwarves.TimeTaskHome, os.time() + tempo)
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.TimeTaskHome, os.time() + time)
 			player:setStorageValue(Storage.DangerousDepths.Dwarves.Home, 2)
 			player:addItem(27654, 2) -- +1 item pela task bônus!
 			player:setStorageValue(Storage.DangerousDepths.Dwarves.Status, player:getStorageValue(Storage.DangerousDepths.Dwarves.Status) + 2) -- +1 ponto pela task bônus!

@@ -17,12 +17,17 @@ monster.health = 600
 monster.maxHealth = 600
 monster.race = "blood"
 monster.corpse = 6043
-monster.speed = 230
+monster.speed = 115
 monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
 	chance = 14
+}
+
+monster.bosstiary = {
+	bossRaceId = 425,
+	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {

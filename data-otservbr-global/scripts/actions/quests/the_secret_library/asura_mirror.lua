@@ -14,6 +14,7 @@ function asuraMirror.onUse(creature, item, position, fromPosition, pos, target, 
     else
         player:sendCancelMessage('You do not have enough level.')
     end
+    return true
 end
 
 asuraMirror:aid(64019)

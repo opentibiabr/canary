@@ -17,12 +17,18 @@ monster.health = 500000
 monster.maxHealth = 500000
 monster.race = "venom"
 monster.corpse = 6078
-monster.speed = 390
+monster.speed = 195
 monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8
+}
+
+monster.bosstiary = {
+	bossRaceId = 1204,
+	bossRace = RARITY_NEMESIS,
+	storageCooldown = Storage.FerumbrasAscension.FerumbrasTimer
 }
 
 monster.strategiesTarget = {

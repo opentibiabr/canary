@@ -32,7 +32,7 @@ local setting = {
 	[3601] = {3, "Crunch."}, -- roll
 	[3602] = {8, "Crunch."}, -- brown bread
 	[3606] = {6, "Gulp."}, -- egg
-	[3608] = {9, "Smack."}, -- cheese
+	[3607] = {9, "Smack."}, -- cheese
 	[3723] = {9, "Munch."}, -- white mushroom
 	[3724] = {4, "Munch."}, -- red mushroom
 	[3725] = {22, "Munch."}, -- brown mushroom
@@ -121,6 +121,7 @@ function food.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	player:say(itemFood[2], TALKTYPE_MONSTER_SAY)
 	item:remove(1)
 	player:updateSupplyTracker(item)
+	player:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_EAT, player:isInGhostMode() and nil or player)
 	return true
 end
 

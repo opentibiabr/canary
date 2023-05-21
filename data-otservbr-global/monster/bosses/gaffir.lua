@@ -17,7 +17,7 @@ monster.health = 54500
 monster.maxHealth = 54500
 monster.race = "blood"
 monster.corpse = 31307
-monster.speed = 190
+monster.speed = 95
 monster.manaCost = 0
 
 monster.events = {
@@ -27,6 +27,11 @@ monster.events = {
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
+}
+
+monster.bosstiary = {
+	bossRaceId = 1778,
+	bossRace = RARITY_BANE
 }
 
 monster.strategiesTarget = {
@@ -94,7 +99,10 @@ monster.loot = {
 	{name = "terra hood", chance = 1600},
 	{name = "amulet of loss", chance = 3400},
 	{name = "wand of everblazing", chance = 2900},
-	{name = "cobra wand", chance = 400}
+	{name = "cobra wand", chance = 400},
+	{name = "cobra axe", chance = 400},
+	{name = "cobra rod", chance = 400},
+	{name = "cobra crest", chance = 400}
 }
 
 monster.attacks = {

@@ -17,12 +17,18 @@ monster.health = 100000
 monster.maxHealth = 512000
 monster.race = "blood"
 monster.corpse = 31413
-monster.speed = 190
+monster.speed = 95
 monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
+}
+
+monster.bosstiary = {
+	bossRaceId = 1811,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Kilmaresh.UrmahlulluTimer
 }
 
 monster.strategiesTarget = {

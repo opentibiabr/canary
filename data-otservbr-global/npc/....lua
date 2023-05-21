@@ -7,7 +7,6 @@ npcConfig.health = 100
 npcConfig.maxHealth = npcConfig.health
 npcConfig.walkInterval = 1500
 npcConfig.walkRadius = 2
-npcConfig.speed = 100
 
 npcConfig.outfit = {
 	lookType = 294,

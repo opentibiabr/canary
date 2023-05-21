@@ -6,12 +6,15 @@ local charms = {
                        of its initial hit points as physical damage once.",
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_PHYSICALDAMAGE,
-		percent = 10,
-		chance = 20,
+		percent = 5,
+		chance = 10,
 		messageCancel = "You wounded the monster.",
 		messageServerLog = "[Wound charm]",
 		effect = CONST_ME_HITAREA,
-		points = 600
+		points = 600,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
+		}
 	},
 	-- Enflame charm
 	[2] = {
@@ -20,12 +23,15 @@ local charms = {
                        of its initial hit points as fire damage once.",
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_FIREDAMAGE,
-		percent = 10,
-		chance = 20,
+		percent = 5,
+		chance = 10,
 		messageCancel = "You enflamed the monster.",
 		messageServerLog = "[Enflame charm]",
 		effect = CONST_ME_HITBYFIRE,
-		points = 1000
+		points = 1000,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_FLAME_STRIKE
+		}
 	},
 	-- Poison charm
 	[3] = {
@@ -34,12 +40,15 @@ local charms = {
                        of its initial hit points as earth damage once.",
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_EARTHDAMAGE,
-		percent = 10,
-		chance = 20,
+		percent = 5,
+		chance = 10,
 		messageCancel = "You poisoned the monster.",
 		messageServerLog = "[Poison charm]",
 		effect = CONST_ME_GREEN_RINGS,
-		points = 600
+		points = 600,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_TERRA_STRIKE
+		}
 	},
 	-- Freeze charm
 	[4] = {
@@ -48,12 +57,15 @@ local charms = {
                        of its initial hit points as ice damage once.",
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_ICEDAMAGE,
-		percent = 10,
-		chance = 20,
+		percent = 5,
+		chance = 10,
 		messageCancel = "You frozen the monster.",
 		messageServerLog = "[Freeze charm]",
 		effect = CONST_ME_ICEATTACK,
-		points = 800
+		points = 800,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_ICE_STRIKE
+		}
 	},
 	--Zap charm
 	[5] = {
@@ -62,12 +74,15 @@ local charms = {
                        of its initial hit points as energy damage once.",
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_ENERGYDAMAGE,
-		percent = 10,
-		chance = 20,
+		percent = 5,
+		chance = 10,
 		messageCancel = "You eletrocuted the monster.",
 		messageServerLog = "[Zap charm]",
 		effect = CONST_ME_ENERGYHIT,
-		points = 800
+		points = 800,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_ENERGY_STRIKE
+		}
 	},
 	--Curse charm
 	[6] = {
@@ -76,19 +91,22 @@ local charms = {
                        of its initial hit points as death damage once.",
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_DEATHDAMAGE,
-		percent = 10,
-		chance = 20,
+		percent = 5,
+		chance = 10,
 		messageCancel = "You curse the monster.",
 		messageServerLog = "[Curse charm]",
 		effect = CONST_ME_SMALLCLOUDS,
-		points = 900
+		points = 900,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_DEATH_STRIKE
+		}
 	},
 	-- Cripple charm
 	[7] = {
 		name = "Cripple",
 		description = "Cripples the creature with a certain chance and paralyzes it for 10 seconds.",
 		type = CHARM_OFFENSIVE,
-		chance = 20,
+		chance = 10,
 		messageCancel = "You cripple the monster.",
 		points = 500
 	},
@@ -109,7 +127,7 @@ local charms = {
 		name = "Dodge",
 		description = "Dodges an attack with a certain chance without taking any damage at all.",
 		type = CHARM_DEFENSIVE,
-		chance = 20,
+		chance = 10,
 		messageCancel = "You dodge the attack.",
 		effect = CONST_ME_POFF,
 		points = 600
@@ -120,7 +138,7 @@ local charms = {
 		description = "Bursts of adrenaline enhance your reflexes with a certain chance \z
                        after you get hit and let you move faster for 10 seconds.",
 		type = CHARM_DEFENSIVE,
-		chance = 20,
+		chance = 10,
 		messageCancel = "Your movements where bursted.",
 		points = 500
 	},
@@ -129,7 +147,7 @@ local charms = {
 		name = "Numb",
 		description = "Numbs the creature with a certain chance after its attack and paralyzes the creature for 10 seconds.",
 		type = CHARM_DEFENSIVE,
-		chance = 20,
+		chance = 10,
 		messageCancel = "You numb the monster.",
 		points = 500
 	},
@@ -139,7 +157,7 @@ local charms = {
 		description = "Cleanses you from within with a certain chance after you get hit and \z
                        removes one random active negative status effect and temporarily makes you immune against it.",
 		type = CHARM_DEFENSIVE,
-		chance = 20,
+		chance = 10,
 		messageCancel = "You purified the attack.",
 		points = 700
 	},
@@ -150,15 +168,21 @@ local charms = {
 		type = CHARM_PASSIVE,
 		percent = 10,
 		chance = 100,
-		points = 800
+		points = 800,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
+		}
 	},
 	-- Scavenge charm
 	[14] = {
 		name = "Scavenge",
 		description = "Enhances your chances to successfully skin/dust a skinnable/dustable creature.",
 		type = CHARM_PASSIVE,
-		percent = 10,
-		points = 800
+		percent = 25,
+		points = 800,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
+		}
 	},
 	-- Gut charm
 	[15] = {
@@ -166,6 +190,7 @@ local charms = {
 		description = "Gutting the creature yields 20% more creature products.",
 		type = CHARM_PASSIVE,
 		percent = 20,
+		chance = 100,
 		points = 800,
 	},
 	-- Low blow charm
@@ -174,8 +199,11 @@ local charms = {
 		description = "Adds 8% critical hit chance to attacks with critical hit weapons.",
 		type = CHARM_PASSIVE,
 		percent = 8,
-		chance = 0,
-		points = 2000
+		chance = 100,
+		points = 2000,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
+		}
 	},
 	-- Divine wrath charm
 	[17] = {
@@ -184,12 +212,15 @@ local charms = {
                        of its initial hit points as holy damage once.",
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_HOLYDAMAGE,
-		percent = 10,
-		chance = 20,
+		percent = 5,
+		chance = 10,
 		messageCancel = "You divine the monster.",
 		messageServerLog = "[Divine charm]",
 		effect = CONST_ME_HOLYDAMAGE,
-		points = 1500
+		points = 1500,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_HOLY_FLASH
+		}
 	},
 	-- Vampiric embrace charm
 	[18] = {
@@ -197,7 +228,7 @@ local charms = {
 		description = "Adds 4% Life Leech to attacks if wearing equipment that provides life leech.",
 		type = CHARM_PASSIVE,
 		percent = 4,
-		chance = 0,
+		chance = 100,
 		points = 1500
 	},
 	-- Void's call charm
@@ -206,7 +237,7 @@ local charms = {
 		description = "Adds 2% Mana Leech to attacks if wearing equipment that provides mana leech.",
 		type = CHARM_PASSIVE,
 		percent = 2,
-		chance = 0,
+		chance = 100,
 		points = 1500
 	}
 }
@@ -220,6 +251,9 @@ for charmId, chamsTable in ipairs(charms) do
 	end
 	if chamsTable.description then
 		charmConfig.description = chamsTable.description
+	end
+	if chamsTable.sounds then
+		charmConfig.sounds = chamsTable.sounds
 	end
 	if chamsTable.type then
 		charmConfig.type = chamsTable.type

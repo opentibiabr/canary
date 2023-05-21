@@ -24,14 +24,17 @@ monster.Bestiary = {
 	Stars = 4,
 	Occurrence = 0,
 	Locations = "Kilmaresh Central Steppe, Kilmaresh Southern Steppe, Green Belt, Kilmaresh Mountains (underground)."
-	}
+}
 
 monster.health = 5500
 monster.maxHealth = 5500
 monster.race = "blood"
 monster.corpse = 31527
-monster.speed = 430
+monster.speed = 215
 monster.manaCost = 0
+
+monster.faction = FACTION_ANUMA
+monster.enemyFactions = {FACTION_FAFNAR, FACTION_PLAYER}
 
 monster.changeTarget = {
 	interval = 4000,

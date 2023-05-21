@@ -34,7 +34,7 @@ monster.health = 8200
 monster.maxHealth = 8200
 monster.race = "fire"
 monster.corpse = 5995
-monster.speed = 256
+monster.speed = 128
 monster.manaCost = 0
 monster.maxSummons = 1
 
@@ -76,8 +76,21 @@ monster.light = {
 	color = 0
 }
 
-monster.summons = {
-	{name = "fire elemental", chance = 10, interval = 2000}
+monster.summon = {
+	maxSummons = 1,
+	summons = {
+		{name = "fire elemental", chance = 10, interval = 2000}
+	}
+}
+
+monster.sounds = {
+	ticks = 5000,
+	chance = 10,
+	death = SOUND_EFFECT_TYPE_DEMON_DEATH,
+	ids = {
+		SOUND_EFFECT_TYPE_DEMON_BARK,
+		SOUND_EFFECT_TYPE_UNKNOWN_CREATURE_DEATH_1
+	}
 }
 
 monster.voices = {

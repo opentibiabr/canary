@@ -2,7 +2,7 @@ function Container.isContainer(self)
 	return true
 end
 
-function Container.createLootItem(self, item, charm, prey)
+function Container.createLootItem(self, item, charm)
 	if self:getEmptySlots() == 0 then
 		return true
 	end
@@ -21,15 +21,10 @@ function Container.createLootItem(self, item, charm, prey)
 		chanceTo = math.ceil((chanceTo * GLOBAL_CHARM_GUT) / 100)
 	end
 
-	-- Active prey loot bonus
-	if prey ~= 100 then
-		chanceTo = math.ceil((chanceTo * prey) / 100)
-	end
-
 	if randvalue < chanceTo then
 		if lootBlockType:isStackable() then
 			local maxc, minc = item.maxCount or 1, item.minCount or 1
-			itemCount = math.max(0, randvalue % (maxc - minc + 1)) + minc			
+			itemCount = math.max(0, randvalue % (maxc - minc + 1)) + minc
 		else
 			itemCount = 1
 		end
@@ -46,7 +41,7 @@ function Container.createLootItem(self, item, charm, prey)
 
 		if tmpItem:isContainer() then
 			for i = 1, #item.childLoot do
-				if not tmpItem:createLootItem(item.childLoot[i], charm, prey) then
+				if not tmpItem:createLootItem(item.childLoot[i], charm) then
 					tmpItem:remove()
 					return false
 				end

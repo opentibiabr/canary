@@ -12,9 +12,7 @@ Do this and that doesn't happens
 
 Do this and that happens
 
-## Fixes
-
-\# (issue)
+### Fixes #issuenumber
 
 ## Type of change
 

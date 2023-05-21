@@ -17,12 +17,18 @@ monster.health = 10000
 monster.maxHealth = 10000
 monster.race = "blood"
 monster.corpse = 25065
-monster.speed = 350
+monster.speed = 175
 monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
 	chance = 0
+}
+
+monster.bosstiary = {
+	bossRaceId = 1390,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.FirstDragon.TazhadurTimer
 }
 
 monster.strategiesTarget = {

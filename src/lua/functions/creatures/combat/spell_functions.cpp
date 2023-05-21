@@ -1,20 +1,10 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #include "pch.hpp"
@@ -36,7 +26,7 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 	SpellType_t spellType = SPELL_UNDEFINED;
 
 	if (isNumber(L, 2)) {
-		int32_t id = getNumber<int32_t>(L, 2);
+		uint16_t id = getNumber<uint16_t>(L, 2);
 		RuneSpell* rune = g_spells().getRuneSpell(id);
 
 		if (rune) {
@@ -77,17 +67,27 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 
 	if (spellType == SPELL_INSTANT) {
 		InstantSpell* spell = new InstantSpell(getScriptEnv()->getScriptInterface());
-		spell->fromLua = true;
+		if (!spell) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+			pushBoolean(L, false);
+			return 1;
+		}
+
 		pushUserdata<Spell>(L, spell);
 		setMetatable(L, -1, "Spell");
 		spell->spellType = SPELL_INSTANT;
 		return 1;
 	} else if (spellType == SPELL_RUNE) {
-		RuneSpell* spell = new RuneSpell(getScriptEnv()->getScriptInterface());
-		spell->fromLua = true;
-		pushUserdata<Spell>(L, spell);
+		auto runeSpell = new RuneSpell(getScriptEnv()->getScriptInterface());
+		if (!runeSpell) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+			pushBoolean(L, false);
+			return 1;
+		}
+
+		pushUserdata<Spell>(L, runeSpell);
 		setMetatable(L, -1, "Spell");
-		spell->spellType = SPELL_RUNE;
+		runeSpell->spellType = SPELL_RUNE;
 		return 1;
 	}
 
@@ -105,7 +105,7 @@ int SpellFunctions::luaSpellOnCastSpell(lua_State* L) {
 				pushBoolean(L, false);
 				return 1;
 			}
-			instant->scripted = true;
+			instant->setLoadedCallback(true);
 			pushBoolean(L, true);
 		} else if (spell->spellType == SPELL_RUNE) {
 			RuneSpell* rune = dynamic_cast<RuneSpell*>(getUserdata<Spell>(L, 1));
@@ -113,7 +113,7 @@ int SpellFunctions::luaSpellOnCastSpell(lua_State* L) {
 				pushBoolean(L, false);
 				return 1;
 			}
-			rune->scripted = true;
+			rune->setLoadedCallback(true);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -134,7 +134,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 
 	if (spell->spellType == SPELL_INSTANT) {
 		InstantSpell* instant = dynamic_cast<InstantSpell*>(getUserdata<Spell>(L, 1));
-		if (!instant->isScripted()) {
+		if (!instant->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -143,7 +143,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 		RuneSpell* rune = dynamic_cast<RuneSpell*>(getUserdata<Spell>(L, 1));
 		if (rune->getMagicLevel() != 0 || rune->getLevel() != 0) {
 			// Change information in the ItemType to get accurate description
-			ItemType& iType = Item::items.getItemType(rune->getRuneItemId());
+			ItemType &iType = Item::items.getItemType(rune->getRuneItemId());
 			// If the item is not registered in items.xml then we will register it by rune name
 			if (iType.name.empty()) {
 				iType.name = rune->getName();
@@ -152,7 +152,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 			iType.runeLevel = rune->getLevel();
 			iType.charges = rune->getCharges();
 		}
-		if (!rune->isScripted()) {
+		if (!rune->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -182,16 +182,15 @@ int SpellFunctions::luaSpellId(lua_State* L) {
 	// spell:id(id)
 	Spell* spell = getUserdata<Spell>(L, 1);
 	if (spell) {
-		if (spell->spellType != SPELL_INSTANT) {
-			reportErrorFunc("The method: 'spell:id(id)' is only for use of instant spells");
+		if (spell->spellType != SPELL_INSTANT && spell->spellType != SPELL_RUNE) {
+			reportErrorFunc("The method: 'spell:id(id)' is only for use of instant spells and rune spells");
 			pushBoolean(L, false);
 			return 1;
 		}
-
 		if (lua_gettop(L) == 1) {
 			lua_pushnumber(L, spell->getId());
 		} else {
-			spell->setId(getNumber<uint8_t>(L, 2));
+			spell->setId(getNumber<uint16_t>(L, 2));
 			pushBoolean(L, true);
 		}
 	} else {
@@ -219,14 +218,16 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 					spell->setGroup(group);
 				} else {
 					SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-								"Unknown group: {}", getString(L, 2));
+								"Unknown group: {}",
+								getString(L, 2));
 					pushBoolean(L, false);
 					return 1;
 				}
 				pushBoolean(L, true);
 			} else {
 				SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-							"Unknown group: {}", getString(L, 2));
+							"Unknown group: {}",
+							getString(L, 2));
 				pushBoolean(L, false);
 				return 1;
 			}
@@ -243,7 +244,8 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 					spell->setGroup(primaryGroup);
 				} else {
 					SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-								"Unknown primaryGroup: {}", getString(L, 2));
+								"Unknown primaryGroup: {}",
+								getString(L, 2));
 					pushBoolean(L, false);
 					return 1;
 				}
@@ -252,7 +254,8 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 					spell->setSecondaryGroup(secondaryGroup);
 				} else {
 					SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-								"Unknown secondaryGroup: {}", getString(L, 3));
+								"Unknown secondaryGroup: {}",
+								getString(L, 3));
 					pushBoolean(L, false);
 					return 1;
 				}
@@ -264,6 +267,38 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 				pushBoolean(L, false);
 				return 1;
 			}
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellCastSound(lua_State* L) {
+	// get: spell:castSound() set: spell:castSound(effect)
+	Spell* spell = getUserdata<Spell>(L, 1);
+	if (spell) {
+		if (lua_gettop(L) == 1) {
+			lua_pushnumber(L, static_cast<uint16_t>(spell->soundCastEffect));
+		} else {
+			spell->soundCastEffect = static_cast<SoundEffect_t>(getNumber<uint16_t>(L, 2));
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellImpactSound(lua_State* L) {
+	// get: spell:impactSound() set: spell:impactSound(effect)
+	Spell* spell = getUserdata<Spell>(L, 1);
+	if (spell) {
+		if (lua_gettop(L) == 1) {
+			lua_pushnumber(L, static_cast<uint16_t>(spell->soundImpactEffect));
+		} else {
+			spell->soundImpactEffect = static_cast<SoundEffect_t>(getNumber<uint16_t>(L, 2));
+			pushBoolean(L, true);
 		}
 	} else {
 		lua_pushnil(L);
@@ -487,8 +522,7 @@ int SpellFunctions::luaSpellNeedLearn(lua_State* L) {
 
 int SpellFunctions::luaSpellSelfTarget(lua_State* L) {
 	// spell:isSelfTarget(bool)
-	Spell* spell = getUserdata<Spell>(L, 1);
-	if (spell) {
+	if (Spell* spell = getUserdata<Spell>(L, 1)) {
 		if (lua_gettop(L) == 1) {
 			pushBoolean(L, spell->getSelfTarget());
 		} else {
@@ -503,8 +537,7 @@ int SpellFunctions::luaSpellSelfTarget(lua_State* L) {
 
 int SpellFunctions::luaSpellBlocking(lua_State* L) {
 	// spell:isBlocking(blockingSolid, blockingCreature)
-	Spell* spell = getUserdata<Spell>(L, 1);
-	if (spell) {
+	if (Spell* spell = getUserdata<Spell>(L, 1)) {
 		if (lua_gettop(L) == 1) {
 			pushBoolean(L, spell->getBlockingSolid());
 			pushBoolean(L, spell->getBlockingCreature());
@@ -536,8 +569,7 @@ int SpellFunctions::luaSpellAggressive(lua_State* L) {
 	return 1;
 }
 
-int SpellFunctions::luaSpellAllowOnSelf(lua_State* L)
-{
+int SpellFunctions::luaSpellAllowOnSelf(lua_State* L) {
 	// spell:allowOnSelf(bool)
 	Spell* spell = getUserdata<Spell>(L, 1);
 	if (spell) {
@@ -553,8 +585,7 @@ int SpellFunctions::luaSpellAllowOnSelf(lua_State* L)
 	return 1;
 }
 
-int SpellFunctions::luaSpellPzLocked(lua_State* L)
-{
+int SpellFunctions::luaSpellPzLocked(lua_State* L) {
 	// spell:isPzLocked(bool)
 	Spell* spell = getUserdata<Spell>(L, 1);
 	if (spell) {
@@ -580,7 +611,7 @@ int SpellFunctions::luaSpellVocation(lua_State* L) {
 			for (auto voc : spell->getVocMap()) {
 				++it;
 				std::string s = std::to_string(it);
-				char const *pchar = s.c_str();
+				const char* pchar = s.c_str();
 				std::string name = g_vocations().getVocation(voc.first)->getVocName();
 				setField(L, pchar, name);
 			}

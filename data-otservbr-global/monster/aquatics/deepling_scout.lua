@@ -24,14 +24,17 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Fiehonja, Sunken Mines near Dwarf Mines."
-	}
+}
 
 monster.health = 240
 monster.maxHealth = 240
 monster.race = "blood"
 monster.corpse = 12684
-monster.speed = 130
+monster.speed = 65
 monster.manaCost = 0
+
+monster.faction = FACTION_DEEPLING
+monster.enemyFactions = {FACTION_DEATHLING, FACTION_PLAYER}
 
 monster.changeTarget = {
 	interval = 4000,

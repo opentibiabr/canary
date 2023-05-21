@@ -24,14 +24,17 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Kha'zeel, Magician Quarter, Forgotten Tomb."
-	}
+}
 
 monster.health = 330
 monster.maxHealth = 330
 monster.race = "blood"
 monster.corpse = 6020
-monster.speed = 220
+monster.speed = 110
 monster.manaCost = 0
+
+monster.faction = FACTION_MARID
+monster.enemyFactions = {FACTION_EFREET, FACTION_PLAYER}
 
 monster.changeTarget = {
 	interval = 4000,

@@ -37,10 +37,6 @@ function Player.hasFlag(self, flag)
 	return self:getGroup():hasFlag(flag)
 end
 
-function Player.hasCustomFlag(self, customflag)
-	return self:getGroup():hasCustomFlag(customflag)
-end
-
 function Player.isPremium(self)
 	return self:getPremiumDays() > 0 or configManager.getBoolean(configKeys.FREE_PREMIUM)
 end
@@ -103,6 +99,10 @@ end
 
 -- Functions From OTServBR-Global
 function Player.getCookiesDelivered(self)
+	if not IsRunningGlobalDatapack() then
+		return true
+	end
+
 	local storage, amount = {
 		Storage.WhatAFoolish.CookieDelivery.SimonTheBeggar, Storage.WhatAFoolish.CookieDelivery.Markwin, Storage.WhatAFoolish.CookieDelivery.Ariella,
 		Storage.WhatAFoolish.CookieDelivery.Hairycles, Storage.WhatAFoolish.CookieDelivery.Djinn, Storage.WhatAFoolish.CookieDelivery.AvarTar,
@@ -118,10 +118,14 @@ function Player.getCookiesDelivered(self)
 end
 
 function Player.allowMovement(self, allow)
-	return self:setStorageValue(Storage.blockMovementStorage, allow and -1 or 1)
+	return self:setStorageValue(Global.Storage.blockMovementStorage, allow and -1 or 1)
 end
 
 function Player.checkGnomeRank(self)
+	if not IsRunningGlobalDatapack() then
+		return true
+	end
+
 	local points = self:getStorageValue(Storage.BigfootBurden.Rank)
 	local questProgress = self:getStorageValue(Storage.BigfootBurden.QuestLine)
 	if points >= 30 and points < 120 then
@@ -210,14 +214,14 @@ function Player.transferMoneyTo(self, target, amount)
 
 		local query_town = db.storeQuery('SELECT `town_id` FROM `players` WHERE `name` = ' .. db.escapeString(target) ..' LIMIT 1;')
 		if query_town ~= false then
-			local town = result.getDataInt(query_town, "town_id")
+			local town = Result.getDataInt(query_town, "town_id")
 			if town then
 				local town_id = Town(town) and Town(town):getId()
 				if town_id and town_id  == TOWNS_LIST.DAWNPORT or town_id == TOWNS_LIST.DAWNPORT_TUTORIAL then -- Blocking transfer to Dawnport
 					return false
 				end
 			end
-			result.free(consulta)
+			Result.free(consulta)
 			db.query("UPDATE `players` SET `balance` = `balance` + '" .. amount .. "' WHERE `name` = " .. db.escapeString(target))
 		end
 	end
@@ -279,7 +283,7 @@ function Player:removeMoneyBank(amount)
 end
 
 function Player.hasAllowMovement(self)
-	return self:getStorageValue(Storage.blockMovementStorage) ~= 1
+	return self:getStorageValue(Global.Storage.blockMovementStorage) ~= 1
 end
 
 function Player.hasRookgaardShield(self)
@@ -322,9 +326,9 @@ function Player.getAccountStorage(self, accountId, key, forceUpdate)
 
 	local query = db.storeQuery("SELECT `key`, MAX(`value`) as value FROM `player_storage` WHERE `player_id` IN (SELECT `id` FROM `players` WHERE `account_id` = ".. accountId ..") AND `key` = ".. key .." GROUP BY `key` LIMIT 1;")
 	if query ~= false then
-		local value = result.getDataInt(query, "value")
+		local value = Result.getDataInt(query, "value")
 		ACCOUNT_STORAGES[accountId] = value
-		result.free(query)
+		Result.free(query)
 		return value
 	end
 	return false
@@ -419,9 +423,10 @@ function Player:CreateFamiliarSpell()
 	myFamiliar:changeSpeed(math.max(self:getSpeed() - myFamiliar:getBaseSpeed(), 0))
 	playerPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	myFamiliar:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-	-- 15 minute count starts after using the spell
-	self:setStorageValue(Storage.FamiliarSummon, os.time() + 15*60)
-	addEvent(RemoveFamiliar, 15*60*1000, myFamiliar:getId(), self:getId())
+	-- Divide by 2 to get half the time (the default total time is 30 / 2 = 15)
+	local summonDuration = configManager.getNumber(configKeys.FAMILIAR_TIME) / 2
+	self:setStorageValue(Global.Storage.FamiliarSummon, os.time() + summonDuration * 60)
+	addEvent(RemoveFamiliar, summonDuration * 60 * 1000, myFamiliar:getId(), self:getId())
 	for sendMessage = 1, #FAMILIAR_TIMER do
 		self:setStorageValue(
 			FAMILIAR_TIMER[sendMessage].storage,
@@ -429,7 +434,7 @@ function Player:CreateFamiliarSpell()
 				-- Calling function
 				SendMessageFunction,
 				-- Time for execute event
-				(15 * 60 - FAMILIAR_TIMER[sendMessage].countdown) * 1000,
+				(summonDuration * 60 - FAMILIAR_TIMER[sendMessage].countdown) * 1000,
 				-- Param "playerId"
 				self:getId(),
 				-- Param "message"
@@ -438,4 +443,20 @@ function Player:CreateFamiliarSpell()
 		)
 	end
 	return true
+end
+
+function Player.getFinalBaseRateExperience(self)
+	-- Experience Stage Multiplier
+	local baseRate
+	local rateExperience = configManager.getNumber(configKeys.RATE_EXPERIENCE)
+	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
+		baseRate = getRateFromTable(experienceStages, self:getLevel(), rateExperience)
+	else 
+		baseRate = rateExperience
+	end
+	-- Event scheduler
+	if SCHEDULE_EXP_RATE ~= 100 then
+		baseRate = math.max(0, (baseRate * SCHEDULE_EXP_RATE) / 100)
+	end
+	return baseRate
 end

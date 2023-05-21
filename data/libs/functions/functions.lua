@@ -41,6 +41,10 @@ end, "l")
 
 -- OTServBr-Global functions
 function getJackLastMissionState(player)
+	if not IsRunningGlobalDatapack() then
+		return true
+	end
+
 	if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.LastMissionState) == 1 then
 		return "You told Jack the truth about his personality. You also explained that you and Spectulus \z
 		made a mistake by assuming him as the real Jack."
@@ -69,8 +73,8 @@ function getAccountNumberByPlayerName(name)
 
 	local resultId = db.storeQuery("SELECT `account_id` FROM `players` WHERE `name` = " .. db.escapeString(name))
 	if resultId ~= false then
-		local accountId = result.getNumber(resultId, "account_id")
-		result.free(resultId)
+		local accountId = Result.getNumber(resultId, "account_id")
+		Result.free(resultId)
 		return accountId
 	end
 	return 0
@@ -136,8 +140,8 @@ end
 function getPlayerSpouse(id)
 	local resultQuery = db.storeQuery("SELECT `marriage_spouse` FROM `players` WHERE `id` = " .. db.escapeString(id))
 	if resultQuery ~= false then
-		local ret = result.getDataInt(resultQuery, "marriage_spouse")
-		result.free(resultQuery)
+		local ret = Result.getDataInt(resultQuery, "marriage_spouse")
+		Result.free(resultQuery)
 		return ret
 	end
 	return -1
@@ -146,8 +150,8 @@ end
 function getPlayerMarriageStatus(id)
 	local resultQuery = db.storeQuery("SELECT `marriage_status` FROM `players` WHERE `id` = " .. db.escapeString(id))
 	if resultQuery ~= false then
-		local ret = result.getDataInt(resultQuery, "marriage_status")
-		result.free(resultQuery)
+		local ret = Result.getDataInt(resultQuery, "marriage_status")
+		Result.free(resultQuery)
 		return ret
 	end
 	return -1
@@ -155,9 +159,9 @@ end
 
 function getPlayerNameById(id)
 	local resultName = db.storeQuery("SELECT `name` FROM `players` WHERE `id` = " .. db.escapeString(id))
-	local name = result.getDataString(resultName, "name")
+	local name = Result.getDataString(resultName, "name")
 	if resultName ~= false then
-		result.free(resultName)
+		Result.free(resultName)
 		return name
 	end
 	return false
@@ -248,13 +252,13 @@ end
 function playerExists(name)
 	local resultId = db.storeQuery("SELECT `name` FROM `players` WHERE `name` = " .. db.escapeString(name))
 	if resultId then
-		result.free(resultId)
+		Result.free(resultId)
 		return true
 	end
 	return false
 end
 
-function functionRevert()
+function resetFerumbrasAscendantHabitats()
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Corrupted, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Desert, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Dimension, 0)
@@ -264,13 +268,8 @@ function functionRevert()
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Roshamuul, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Venom, 0)
 	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats, 0)
-	for a = 1, #basins do
-		local item = Tile(basins[a].pos):getItemById(22196)
-		item:transform(11114)
-	end
-	local specs, spec = Game.getSpectators(Position(33629, 32693, 12), false, false, 25, 25, 85, 85)
-	for i = 1, #specs do
-		spec = specs[i]
+
+	for _, spec in pairs(Game.getSpectators(Position(33629, 32693, 12), false, false, 25, 25, 85, 85)) do
 		if spec:isPlayer() then
 			spec:teleportTo(Position(33630, 32648, 12))
 			spec:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -279,6 +278,7 @@ function functionRevert()
 			spec:remove()
 		end
 	end
+
 	for x = 33611, 33625 do
 		for y = 32658, 32727 do
 			local position = Position(x, y, 12)
@@ -674,7 +674,7 @@ end
 local logFormat = "[%s] %s %s"
 
 function logCommand(player, words, param)
-	local file = io.open(DATA_DIRECTORY .. "/logs/" .. player:getName() .. " commands.log", "a")
+	local file = io.open(CORE_DIRECTORY .. "/logs/" .. player:getName() .. " commands.log", "a")
 	if not file then
 		return
 	end
@@ -764,19 +764,6 @@ function unserializeTable(str, out)
 	return table.copy(tmp, out)
 end
 
-local function setTableIndexes(t, i, v, ...)
-	if i and v then
-		t[i] = v
-		return setTableIndexes(t, ...)
-	end
-end
-
-local function getTableIndexes(t, i, ...)
-	if i then
-		return t[i], getTableIndexes(t, ...)
-	end
-end
-
 function unpack2(tab, i)
 	local i, v = next(tab, i)
 	if next(tab, i) then
@@ -792,37 +779,6 @@ function pack(t, ...)
 		t[i] = tmp
 	end
 	return t
-end
-
-function Item:setSpecialAttribute(...)
-	local tmp
-	if self:hasAttribute(ITEM_ATTRIBUTE_SPECIAL) then
-		tmp = self:getAttribute(ITEM_ATTRIBUTE_SPECIAL)
-	else
-		tmp = "{}"
-	end
-
-	local tab = unserializeTable(tmp)
-	if tab then
-		setTableIndexes(tab, ...)
-		tmp = serializeTable(tab)
-		self:setAttribute(ITEM_ATTRIBUTE_SPECIAL, tmp)
-		return true
-	end
-end
-
-function Item:getSpecialAttribute(...)
-	local tmp
-	if self:hasAttribute(ITEM_ATTRIBUTE_SPECIAL) then
-		tmp = self:getAttribute(ITEM_ATTRIBUTE_SPECIAL)
-	else
-		tmp = "{}"
-	end
-
-	local tab = unserializeTable(tmp)
-	if tab then
-		return getTableIndexes(tab, ...)
-	end
 end
 
 if not PLAYER_STORAGE then
@@ -853,7 +809,7 @@ function Player:loadSpecialStorage()
 	PLAYER_STORAGE[self:getGuid()] = {}
 	local resultId = db.storeQuery("SELECT * FROM `player_misc` WHERE `player_id` = " .. self:getGuid())
 	if resultId then
-		local info = result.getStream(resultId , "info") or "{}"
+		local info = Result.getStream(resultId , "info") or "{}"
 		unserializeTable(info, PLAYER_STORAGE[self:getGuid()])
 	end
 end
@@ -908,4 +864,48 @@ function Player:doCheckBossRoom(bossName, fromPos, toPos)
 		end
 	end
 	return true
+end
+
+function CheckDustLevel(monsterForge, player)
+	local canSetFiendish = false
+	local canSetInfluenced
+	if type(monsterForge) == "string" and monsterForge == "fiendish" then
+		canSetFiendish = true
+	end
+	local influencedLevel
+	if not canSetFiendish then
+		influencedLevel = tonumber(monsterForge)
+	end
+	if influencedLevel and influencedLevel > 0 then
+		if influencedLevel > 5 then
+			player:sendCancelMessage("Invalid influenced level.")
+			return false
+		end
+		canSetInfluenced = true
+	end
+	return canSetFiendish, canSetInfluenced, influencedLevel
+end
+
+function SetFiendish(monsterType, position, player, monster)
+	if monsterType and not monsterType:isForgeCreature() then
+		player:sendCancelMessage("Only allowed monsters can be fiendish.")
+		return false
+	end
+	monster:setFiendish(position, player)
+end
+
+function SetInfluenced(monsterType, monster, player, influencedLevel)
+	if monsterType and not monsterType:isForgeCreature() then
+		player:sendCancelMessage("Only allowed monsters can be influenced.")
+		return false
+	end
+	local influencedMonster = Monster(ForgeMonster:pickInfluenced())
+	-- If it's reached the limit, we'll remove one to add the new one.
+	if ForgeMonster:exceededMaxInfluencedMonsters() then
+		if influencedMonster then
+			Game.removeInfluencedMonster(influencedMonster:getId())
+		end
+	end
+	Game.addInfluencedMonster(monster)
+	monster:setForgeStack(influencedLevel)
 end

@@ -17,12 +17,18 @@ monster.health = 250000
 monster.maxHealth = 250000
 monster.race = "blood"
 monster.corpse = 16149
-monster.speed = 470
+monster.speed = 235
 monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8
+}
+
+monster.bosstiary = {
+	bossRaceId = 893,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.BigfootBurden.BossWarzone2
 }
 
 monster.strategiesTarget = {

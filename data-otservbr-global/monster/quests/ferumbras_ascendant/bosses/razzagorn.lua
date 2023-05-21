@@ -17,12 +17,18 @@ monster.health = 290000
 monster.maxHealth = 290000
 monster.race = "fire"
 monster.corpse = 22495
-monster.speed = 340
+monster.speed = 170
 monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8
+}
+
+monster.bosstiary = {
+	bossRaceId = 1177,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.FerumbrasAscension.RazzagornTimer
 }
 
 monster.strategiesTarget = {

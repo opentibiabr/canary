@@ -1,20 +1,10 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_MONSTER_LOOT_FUNCTIONS_HPP_
@@ -24,29 +14,29 @@
 
 class LootFunctions final : LuaScriptInterface {
 	public:
-			static void init(lua_State* L) {
-				registerClass(L, "Loot", "", LootFunctions::luaCreateLoot);
-				registerMetaMethod(L, "Loot", "__gc", LootFunctions::luaDeleteLoot);
-				registerMethod(L, "Loot", "delete", LootFunctions::luaDeleteLoot);
+		static void init(lua_State* L) {
+			registerClass(L, "Loot", "", LootFunctions::luaCreateLoot);
+			registerMetaMethod(L, "Loot", "__gc", LootFunctions::luaDeleteLoot);
+			registerMethod(L, "Loot", "delete", LootFunctions::luaDeleteLoot);
 
-				registerMethod(L, "Loot", "setId", LootFunctions::luaLootSetId);
-				registerMethod(L, "Loot", "setIdFromName", LootFunctions::luaLootSetIdFromName);
-				registerMethod(L, "Loot", "setMinCount", LootFunctions::luaLootSetMinCount);
-				registerMethod(L, "Loot", "setMaxCount", LootFunctions::luaLootSetMaxCount);
-				registerMethod(L, "Loot", "setSubType", LootFunctions::luaLootSetSubType);
-				registerMethod(L, "Loot", "setChance", LootFunctions::luaLootSetChance);
-				registerMethod(L, "Loot", "setActionId", LootFunctions::luaLootSetActionId);
-				registerMethod(L, "Loot", "setText", LootFunctions::luaLootSetText);
-				registerMethod(L, "Loot", "setNameItem", LootFunctions::luaLootSetNameItem);
-				registerMethod(L, "Loot", "setArticle", LootFunctions::luaLootSetArticle);
-				registerMethod(L, "Loot", "setAttack", LootFunctions::luaLootSetAttack);
-				registerMethod(L, "Loot", "setDefense", LootFunctions::luaLootSetDefense);
-				registerMethod(L, "Loot", "setExtraDefense", LootFunctions::luaLootSetExtraDefense);
-				registerMethod(L, "Loot", "setArmor", LootFunctions::luaLootSetArmor);
-				registerMethod(L, "Loot", "setShootRange", LootFunctions::luaLootSetShootRange);
-				registerMethod(L, "Loot", "setHitChance", LootFunctions::luaLootSetHitChance);
-				registerMethod(L, "Loot", "setUnique", LootFunctions::luaLootSetUnique);
-				registerMethod(L, "Loot", "addChildLoot", LootFunctions::luaLootAddChildLoot);
+			registerMethod(L, "Loot", "setId", LootFunctions::luaLootSetId);
+			registerMethod(L, "Loot", "setIdFromName", LootFunctions::luaLootSetIdFromName);
+			registerMethod(L, "Loot", "setMinCount", LootFunctions::luaLootSetMinCount);
+			registerMethod(L, "Loot", "setMaxCount", LootFunctions::luaLootSetMaxCount);
+			registerMethod(L, "Loot", "setSubType", LootFunctions::luaLootSetSubType);
+			registerMethod(L, "Loot", "setChance", LootFunctions::luaLootSetChance);
+			registerMethod(L, "Loot", "setActionId", LootFunctions::luaLootSetActionId);
+			registerMethod(L, "Loot", "setText", LootFunctions::luaLootSetText);
+			registerMethod(L, "Loot", "setNameItem", LootFunctions::luaLootSetNameItem);
+			registerMethod(L, "Loot", "setArticle", LootFunctions::luaLootSetArticle);
+			registerMethod(L, "Loot", "setAttack", LootFunctions::luaLootSetAttack);
+			registerMethod(L, "Loot", "setDefense", LootFunctions::luaLootSetDefense);
+			registerMethod(L, "Loot", "setExtraDefense", LootFunctions::luaLootSetExtraDefense);
+			registerMethod(L, "Loot", "setArmor", LootFunctions::luaLootSetArmor);
+			registerMethod(L, "Loot", "setShootRange", LootFunctions::luaLootSetShootRange);
+			registerMethod(L, "Loot", "setHitChance", LootFunctions::luaLootSetHitChance);
+			registerMethod(L, "Loot", "setUnique", LootFunctions::luaLootSetUnique);
+			registerMethod(L, "Loot", "addChildLoot", LootFunctions::luaLootAddChildLoot);
 		}
 
 	private:
@@ -72,4 +62,4 @@ class LootFunctions final : LuaScriptInterface {
 		static int luaLootAddChildLoot(lua_State* L);
 };
 
-#endif  // SRC_LUA_FUNCTIONS_CREATURES_MONSTER_LOOT_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_CREATURES_MONSTER_LOOT_FUNCTIONS_HPP_

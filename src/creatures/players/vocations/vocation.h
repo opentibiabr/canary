@@ -1,20 +1,10 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_CREATURES_PLAYERS_VOCATIONS_VOCATION_H_
@@ -23,15 +13,15 @@
 #include "declarations.hpp"
 #include "items/item.h"
 
-class Vocation
-{
+class Vocation {
 	public:
-		explicit Vocation(uint16_t initId) : id(initId) {}
+		explicit Vocation(uint16_t initId) :
+			id(initId) { }
 
-		const std::string& getVocName() const {
+		const std::string &getVocName() const {
 			return name;
 		}
-		const std::string& getVocDescription() const {
+		const std::string &getVocDescription() const {
 			return description;
 		}
 		uint64_t getReqSkillTries(uint8_t skill, uint16_t level);
@@ -120,7 +110,7 @@ class Vocation
 		std::string name = "none";
 		std::string description;
 
-		float skillMultipliers[SKILL_LAST + 1] = {1.5f, 2.0f, 2.0f, 2.0f, 2.0f, 1.5f, 1.1f};
+		float skillMultipliers[SKILL_LAST + 1] = { 1.5f, 2.0f, 2.0f, 2.0f, 2.0f, 1.5f, 1.1f };
 		float manaMultiplier = 4.0f;
 
 		uint32_t gainHealthTicks = 6;
@@ -132,7 +122,7 @@ class Vocation
 		uint32_t gainHP = 5;
 		uint32_t fromVocation = VOCATION_NONE;
 		uint32_t attackSpeed = 1500;
-		uint32_t baseSpeed = 220;
+		uint32_t baseSpeed = 110;
 		uint16_t id;
 
 		bool magicShield = false;
@@ -147,15 +137,14 @@ class Vocation
 		static uint32_t skillBase[SKILL_LAST + 1];
 };
 
-class Vocations
-{
+class Vocations {
 	public:
 		Vocations() = default;
 
-		Vocations(Vocations const&) = delete;
-		void operator=(Vocations const&) = delete;
+		Vocations(const Vocations &) = delete;
+		void operator=(const Vocations &) = delete;
 
-		static Vocations& getInstance() {
+		static Vocations &getInstance() {
 			// Guaranteed to be destroyed
 			static Vocations instance;
 			// Instantiated on first use
@@ -165,8 +154,10 @@ class Vocations
 		bool loadFromXml();
 
 		Vocation* getVocation(uint16_t id);
-    	const std::map<uint16_t, Vocation>& getVocations() const {return vocationsMap;}
-		uint16_t getVocationId(const std::string& name) const;
+		const std::map<uint16_t, Vocation> &getVocations() const {
+			return vocationsMap;
+		}
+		uint16_t getVocationId(const std::string &name) const;
 		uint16_t getPromotedVocation(uint16_t vocationId) const;
 
 	private:
@@ -175,4 +166,4 @@ class Vocations
 
 constexpr auto g_vocations = &Vocations::getInstance;
 
-#endif  // SRC_CREATURES_PLAYERS_VOCATIONS_VOCATION_H_
+#endif // SRC_CREATURES_PLAYERS_VOCATIONS_VOCATION_H_

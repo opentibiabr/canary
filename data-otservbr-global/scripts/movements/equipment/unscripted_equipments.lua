@@ -1,5 +1,149 @@
 local items = {
 	{
+		-- mutant bone kilt
+		itemid = 40595,
+		type = "equip",
+		slot = "legs",
+		level = 300,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- mutant bone kilt
+		itemid = 40595,
+		type = "deequip",
+		slot = "legs",
+		level = 300
+	},
+	{
+		-- alchemist's notepad
+		itemid = 40594,
+		type = "equip",
+		slot = "shield",
+		level = 250,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- alchemist's notepad
+		itemid = 40594,
+		type = "deequip",
+		slot = "shield",
+		level = 250
+	},
+	{
+		-- mutant bone boots
+		itemid = 40593,
+		type = "equip",
+		slot = "feet",
+		level = 250,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- mutant bone boots
+		itemid = 40593,
+		type = "deequip",
+		slot = "feet",
+		level = 250
+	},
+	{
+		-- alchemist's boots
+		itemid = 40592,
+		type = "equip",
+		slot = "feet",
+		level = 250,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- alchemist's boots
+		itemid = 40592,
+		type = "deequip",
+		slot = "feet",
+		level = 250
+	},
+	{
+		-- mutated skin armor
+		itemid = 40591,
+		type = "equip",
+		slot = "armor",
+		level = 270,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- mutated skin armor
+		itemid = 40591,
+		type = "deequip",
+		slot = "armor",
+		level = 270
+	},
+	{
+		-- Mutated Skin Legs
+		itemid = 40590,
+		type = "equip",
+		slot = "legs",
+		level = 270,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- Mutated Skin Legs
+		itemid = 40590,
+		type = "deequip",
+		slot = "legs",
+		level = 270
+	},	
+	{
+		-- Stitched Mutant Hide Legs
+		itemid = 40589,
+		type = "equip",
+		slot = "legs",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- Stitched Mutant Hide Legs
+		itemid = 40589,
+		type = "deequip",
+		slot = "legs",
+		level = 270
+	},
+	{
+		-- Antler-Horn Helmet
+		itemid = 40588,
+		type = "equip",
+		slot = "head",
+		level = 250,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- Antler-Horn Helmet
+		itemid = 40588,
+		type = "deequip",
+		slot = "head",
+		level = 250
+	},
+	{
 		-- 25 years backpack
 		itemid = 39693,
 		type = "equip",
@@ -4522,6 +4666,42 @@ local items = {
 		itemid = 25982,
 		type = "deequip",
 		slot = "shield"
+	},
+	{
+		-- sun catcher
+		itemid = 25977,
+		type = "equip",
+		slot = "ammo"
+	},
+	{
+		-- sun catcher
+		itemid = 25977,
+		type = "deequip",
+		slot = "ammo"
+	},
+	{
+		-- starlight vial
+		itemid = 25976,
+		type = "equip",
+		slot = "ammo"
+	},
+	{
+		-- starlight vial
+		itemid = 25976,
+		type = "deequip",
+		slot = "ammo"
+	},
+	{
+		-- moon mirror
+		itemid = 25975,
+		type = "equip",
+		slot = "ammo"
+	},
+	{
+		-- moon mirror
+		itemid = 25975,
+		type = "deequip",
+		slot = "ammo"
 	},
 	{
 		-- energy war hammer replica
@@ -14694,14 +14874,14 @@ local items = {
 		itemid = 6529,
 		type = "equip",
 		slot = "feet",
-		level = 180
+		level = 10
 	},
 	{
 		-- pair of soft boots
 		itemid = 6529,
 		type = "deequip",
 		slot = "feet",
-		level = 180
+		level = 10
 	},
 	{
 		-- tortoise shield
@@ -15479,14 +15659,14 @@ local items = {
 		itemid = 3549,
 		type = "equip",
 		slot = "feet",
-		level = 180
+		level = 10
 	},
 	{
 		-- pair of soft boots
 		itemid = 3549,
 		type = "deequip",
 		slot = "feet",
-		level = 180
+		level = 10
 	},
 	{
 		-- scythe

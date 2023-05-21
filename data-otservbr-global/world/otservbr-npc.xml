@@ -780,8 +780,11 @@
 	<npc centerx="32034" centery="32273" centerz="6" radius="1">
 		<npc name="Santiago" x="0" y="0" z="6" spawntime="60" />
 	</npc>
-	<npc centerx="32201" centery="32292" centerz="6" radius="1">
+	<npc centerx="32204" centery="32292" centerz="6" radius="1">
 		<npc name="Jorge" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="32197" centery="32292" centerz="6" radius="1">
+		<npc name="Emael" x="0" y="0" z="6" spawntime="60" />
 	</npc>
 	<npc centerx="32210" centery="32296" centerz="6" radius="1">
 		<npc name="Charos" x="0" y="0" z="6" spawntime="60" />
@@ -2934,5 +2937,11 @@
 	</npc>
 	<npc centerx="32174" centery="32598" centerz="15" radius="1">
 		<npc name="A Wyrm" x="0" y="0" z="15" spawntime="60" />
+	</npc>
+	<npc centerx="32940" centery="32030" centerz="7" radius="1">
+		<npc name="Eustacio" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="33791" centery="31383" centerz="6" radius="1">
+		<npc name="Captain Jack Rat" x="0" y="0" z="6" spawntime="60" />
 	</npc>
 </npcs>

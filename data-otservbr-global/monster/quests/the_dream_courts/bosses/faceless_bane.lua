@@ -17,12 +17,18 @@ monster.health = 35000
 monster.maxHealth = 35000
 monster.race = "blood"
 monster.corpse = 30013
-monster.speed = 250
+monster.speed = 125
 monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
+}
+
+monster.bosstiary = {
+	bossRaceId = 1727,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Quest.U12_00.TheDreamCourts.FacelessBaneTime
 }
 
 monster.strategiesTarget = {

@@ -116,7 +116,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 5 then
-			if player:removeItem(6499, 21465) then
+			if player:removeItem(6499, 1500) then
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:setStorageValue(Storage.OutfitQuest.BrotherhoodOutfit, 4)
 				player:setStorageValue(Storage.OutfitQuest.BrotherhoodDoor, 1)

@@ -17,12 +17,18 @@ monster.health = 10000
 monster.maxHealth = 10000
 monster.race = "blood"
 monster.corpse = 5984
-monster.speed = 350
+monster.speed = 175
 monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
 	chance = 5
+}
+
+monster.bosstiary = {
+	bossRaceId = 1389,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.FirstDragon.KalyassaTimer
 }
 
 monster.strategiesTarget = {

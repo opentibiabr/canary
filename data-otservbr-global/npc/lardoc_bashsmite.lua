@@ -80,8 +80,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	npc = Npc(creature)
-
 	local tempo = 20*60*60
 
 	-- missão diremaws

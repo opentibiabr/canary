@@ -31,7 +31,7 @@ monster.health = 90
 monster.maxHealth = 90
 monster.race = "blood"
 monster.corpse = 6007
-monster.speed = 170
+monster.speed = 85
 monster.manaCost = 320
 
 monster.changeTarget = {
@@ -82,7 +82,7 @@ monster.loot = {
 	{name = "studded armor", chance = 8000},
 	{name = "copper shield", chance = 10000},
 	{id = 3456, chance = 10000}, -- pick
-	{name = "letter", chance = 8000},
+	{id = 3505, chance = 8000}, -- letter
 	{name = "leather legs", chance = 10000},
 	{name = "white mushroom", chance = 50000},
 	{name = "iron ore", chance = 700}

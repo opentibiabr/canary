@@ -17,12 +17,18 @@ monster.health = 50000
 monster.maxHealth = 50000
 monster.race = "blood"
 monster.corpse = 0
-monster.speed = 250
+monster.speed = 125
 monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
 	chance = 50
+}
+
+monster.bosstiary = {
+	bossRaceId = 1406,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.CultsOfTibia.Orcs.BossTimer
 }
 
 monster.strategiesTarget = {

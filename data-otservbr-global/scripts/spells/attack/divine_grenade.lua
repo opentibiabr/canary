@@ -22,18 +22,12 @@ end
 
 combatGrenade:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 
-local explodeGrenade = function(position, id, playerId)
+local explodeGrenade = function(position, playerId)
 	local tile = Tile(position)
 	if not tile then
 		return
 	end
 
-	local item = tile:getItemById(id)
-	if not item then
-		return
-	end
-
-	item:remove()
 	local player = Player(playerId)
 	if not player then
 		return
@@ -51,17 +45,12 @@ local combatCast = Combat()
 combatCast:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_HOLY)
 
 function onTargetCreature(creature, target)
-	if not (creature and target and creature:isPlayer()) then
+	if not creature and target and creature:isPlayer() then
 		return false
 	end
 
-	local grenadeId = 2160
 	local position = target:getPosition()
-	local item = Game.createItem(grenadeId, 1, position)
-	if item then
-		addEvent(explodeGrenade, 3000, position, grenadeId, creature:getId())
-	end
-
+	addEvent(explodeGrenade, 3000, position, creature:getId())
 	return true
 end
 
@@ -91,6 +80,7 @@ function spell.onCastSpell(creature, var)
 
 	var.instantName = "Divine Grenade Cast"
 	if combatCast:execute(creature, var) then
+		--creature:getPosition():sendMagicEffect(245)
 		local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 258)
 		condition:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 		creature:addCondition(condition)
@@ -103,7 +93,7 @@ spell:group("attack")
 spell:id(258)
 spell:name("Divine Grenade")
 spell:words("exevo tempo mas san")
-spell:level(1)
+spell:level(300)
 spell:mana(160)
 spell:isPremium(true)
 spell:range(7)

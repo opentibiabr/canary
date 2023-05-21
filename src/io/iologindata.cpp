@@ -592,7 +592,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 
 	// We will not load the information from here on down, as they are functions that are not needed for the player preload
 	if (disable) {
-		return;
+		return true;
 	}
 
 	// load vip

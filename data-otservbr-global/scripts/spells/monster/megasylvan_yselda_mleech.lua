@@ -6,8 +6,8 @@ combat:setArea(AREA_CIRCLE1X1)
 
 local spell = Spell("instant")
 
-function spell.onCastSpell(cid, var)
-	return doCombat(cid, combat, var)
+function spell.onCastSpell(creature, variant)
+	return combat:execute(creature, variant)
 end
 
 spell:name("mana leechMY")

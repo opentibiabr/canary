@@ -54579,7 +54579,7 @@
 		<attribute key="skillsword" value="4"/>
 		<attribute key="skillaxe" value="4"/>
 		<attribute key="skillclub" value="4"/>
-		<!--attribute key="damagereflection" value="19"/-->
+		<attribute key="damagereflection" value="19"/>
 		<attribute key="armor" value="20"/>
 		<attribute key="weight" value="16000"/>
 		<attribute key="imbuementslot" value="2">
@@ -54598,7 +54598,7 @@
 		<attribute key="skillsword" value="3"/>
 		<attribute key="skillaxe" value="3"/>
 		<attribute key="skillclub" value="3"/>
-		<!--attribute key="damagereflection" value="13"/-->
+		<attribute key="damagereflection" value="13"/>
 		<attribute key="armor" value="12"/>
 		<attribute key="weight" value="4400"/>
 		<attribute key="imbuementslot" value="2">
@@ -54923,7 +54923,7 @@
 		<attribute key="absorbpercentearth" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
-		<!--attribute key="holymagiclevelpoints" value="1"/-->
+		<attribute key="holymagiclevelpoints" value="1"/>
 		<attribute key="showattributes" value="1" />
 		<attribute key="weight" value="85"/>
 	</item>
@@ -54956,8 +54956,8 @@
 		<attribute key="absorbpercentearth" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
-		<!--attribute key="firemagiclevelpoints" value="1"/-->
-		<!--attribute key="energymagiclevelpoints" value="1"/-->
+		<attribute key="firemagiclevelpoints" value="1"/>
+		<attribute key="energymagiclevelpoints" value="1"/>
 		<attribute key="showattributes" value="1" />
 		<attribute key="weight" value="90"/>
 	</item>
@@ -54988,7 +54988,7 @@
 		<attribute key="absorbpercentearth" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
-		<!--attribute key="healingmagiclevelpoints" value="2"/-->
+		<attribute key="healingmagiclevelpoints" value="2"/>
 		<attribute key="showattributes" value="1" />
 		<attribute key="weight" value="70"/>
 	</item>
@@ -56593,8 +56593,8 @@
 		<attribute key="absorbpercentice" value="7"/>
 		<attribute key="absorbpercentphysical" value="3"/>
 		<attribute key="magicpoints" value="2"/>
-		<!--attribute key="firemagiclevelpoints" value="2"/-->
-		<!--attribute key="energymagiclevelpoints" value="2"/-->
+		<attribute key="firemagiclevelpoints" value="2"/>
+		<attribute key="energymagiclevelpoints" value="2"/>
 		<attribute key="defense" value="20"/>
 		<attribute key="weight" value="1300"/>
 		<attribute key="imbuementslot" value="1">

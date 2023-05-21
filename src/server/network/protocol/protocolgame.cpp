@@ -3243,7 +3243,11 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.add<uint16_t>(player->getArmor());
 	msg.add<uint16_t>(player->getDefense());
 	// Wheel of destiny mitigation
-	msg.addDouble(player->getMitigation());
+	if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
+		msg.addDouble(player->getMitigation());
+	} else {
+		msg.addDouble(0);
+	}
 
 	uint8_t combats = 0;
 	auto startCombats = msg.getBufferPosition();
@@ -3255,6 +3259,9 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	for (size_t i = 0; i < COMBAT_COUNT; ++i) {
 		// Wheel of destiny resistance
 		damageReduction[i] += static_cast<int16_t>(player->wheel()->getResistance(indexToCombatType(i))) / 100.f;
+		if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
+			damageReduction[i] += static_cast<int16_t>(player->wheel()->getResistance(indexToCombatType(i))) / 100.f;
+		}
 
 		auto finalDamage = std::clamp<uint8_t>(static_cast<uint8_t>(damageReduction[i]), 0, 255);
 		if (finalDamage != 0) {
@@ -5697,7 +5704,9 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	sendLootContainers();
 	sendBasicData();
 	// Wheel of destiny cooldown
-	player->wheel()->sendGiftOfLifeCooldown();
+	if (!oldProtocol && g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
+		player->wheel()->sendGiftOfLifeCooldown();
+	}
 
 	player->sendClientCheck();
 	player->sendGameNews();
@@ -7964,7 +7973,7 @@ void ProtocolGame::reloadHazardSystemIcon(uint16_t reference) {
 }
 
 void ProtocolGame::parseOpenWheel(NetworkMessage &msg) {
-	if (oldProtocol) {
+	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
 		return;
 	}
 
@@ -7973,7 +7982,7 @@ void ProtocolGame::parseOpenWheel(NetworkMessage &msg) {
 }
 
 void ProtocolGame::sendOpenWheelWindow(uint32_t ownerId) {
-	if (!player || oldProtocol) {
+	if (!player || oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
 		return;
 	}
 
@@ -7983,7 +7992,7 @@ void ProtocolGame::sendOpenWheelWindow(uint32_t ownerId) {
 }
 
 void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
-	if (oldProtocol) {
+	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
 		return;
 	}
 

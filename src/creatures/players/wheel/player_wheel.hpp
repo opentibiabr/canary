@@ -115,7 +115,7 @@ class PlayerWheel {
 
 		// Members variables
 		const uint16_t m_minLevelToStartCountPoints = 50;
-		const uint16_t m_pointsPerLevel = 1;
+		uint16_t m_pointsPerLevel = 1;
 
 	public:
 		// Wheel of destiny

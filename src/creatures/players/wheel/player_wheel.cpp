@@ -66,6 +66,8 @@ int checkSpellAdditionalDuration(const std::array<SpellType, 5> &spellsTable, co
 
 PlayerWheel::PlayerWheel(Player &initPlayer) :
 	m_player(initPlayer) {
+	auto pointsPerLevel = g_configManager().getNumber(WHEEL_POINTS_PER_LEVEL);
+	m_pointsPerLevel = pointsPerLevel > 0 ? pointsPerLevel : 1;
 }
 
 bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) const {
@@ -1002,18 +1004,14 @@ void PlayerWheel::setPlayerCombatStats(CombatType_t type, int32_t leechAmount) {
 	if (type == COMBAT_LIFEDRAIN) {
 		if (leechAmount > 0) {
 			setStat(WheelStat_t::LIFE_LEECH, leechAmount);
-			// setStat(WheelStat_t::LIFE_LEECH_CHANCE, 100);
 		} else {
 			setStat(WheelStat_t::LIFE_LEECH, 0);
-			// setStat(WheelStat_t::LIFE_LEECH_CHANCE, 0);
 		}
 	} else if (type == COMBAT_MANADRAIN) {
 		if (leechAmount > 0) {
 			setStat(WheelStat_t::MANA_LEECH, leechAmount);
-			// setStat(WheelStat_t::MANA_LEECH_CHANCE, 100);
 		} else {
 			setStat(WheelStat_t::MANA_LEECH, 0);
-			// setStat(WheelStat_t::MANA_LEECH_CHANCE, 0);
 		}
 	}
 }

@@ -43,6 +43,9 @@ class SpellFunctions final : LuaScriptInterface {
 			registerMethod(L, "Spell", "isAggressive", SpellFunctions::luaSpellAggressive);
 			registerMethod(L, "Spell", "vocation", SpellFunctions::luaSpellVocation);
 
+			registerMethod(L, "Spell", "castSound", SpellFunctions::luaSpellCastSound);
+			registerMethod(L, "Spell", "impactSound", SpellFunctions::luaSpellImpactSound);
+
 			// Only for InstantSpell.
 			registerMethod(L, "Spell", "words", SpellFunctions::luaSpellWords);
 			registerMethod(L, "Spell", "needDirection", SpellFunctions::luaSpellNeedDirection);
@@ -86,6 +89,9 @@ class SpellFunctions final : LuaScriptInterface {
 		static int luaSpellBlocking(lua_State* L);
 		static int luaSpellAggressive(lua_State* L);
 		static int luaSpellVocation(lua_State* L);
+
+		static int luaSpellCastSound(lua_State* L);
+		static int luaSpellImpactSound(lua_State* L);
 
 		// Only for InstantSpells.
 		static int luaSpellWords(lua_State* L);

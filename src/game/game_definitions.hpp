@@ -13,24 +13,6 @@
 #include "movement/position.h"
 
 // Enums
-enum Offer_t {
-	DISABLED = 0,
-	ITEM = 1,
-	STACKABLE_ITEM = 2,
-	OUTFIT = 3,
-	OUTFIT_ADDON = 4,
-	MOUNT = 5,
-	NAMECHANGE = 6,
-	SEXCHANGE = 7,
-	PROMOTION = 8,
-	PREMIUM_TIME,
-	TELEPORT,
-	BLESSING,
-	BOOST_XP, // not using yet
-	BOOST_STAMINA, // not using yet
-	WRAP_ITEM
-};
-
 enum StackPosType_t {
 	STACKPOS_MOVE,
 	STACKPOS_LOOK,
@@ -129,6 +111,7 @@ enum Webhook_Colors_t : uint32_t {
 	WEBHOOK_COLOR_RAID = 0x0000FF
 };
 
+// Structs
 struct ModalWindow {
 		std::list<std::pair<std::string, uint8_t>> buttons, choices;
 		std::string title, message;

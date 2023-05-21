@@ -38,6 +38,51 @@
 #include "server/network/webhook/webhook.h"
 #include "protobuf/appearances.pb.h"
 
+namespace InternalGame {
+	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, Creature* source) {
+		if (blockType == BLOCK_DEFENSE) {
+			g_game().addMagicEffect(targetPos, CONST_ME_POFF);
+		} else if (blockType == BLOCK_ARMOR) {
+			g_game().addMagicEffect(targetPos, CONST_ME_BLOCKHIT);
+		} else if (blockType == BLOCK_DODGE) {
+			g_game().addMagicEffect(targetPos, CONST_ME_DODGE);
+		} else if (blockType == BLOCK_IMMUNITY) {
+			uint8_t hitEffect = 0;
+			switch (combatType) {
+				case COMBAT_UNDEFINEDDAMAGE: {
+					return;
+				}
+				case COMBAT_ENERGYDAMAGE:
+				case COMBAT_FIREDAMAGE:
+				case COMBAT_PHYSICALDAMAGE:
+				case COMBAT_ICEDAMAGE:
+				case COMBAT_DEATHDAMAGE: {
+					hitEffect = CONST_ME_BLOCKHIT;
+					break;
+				}
+				case COMBAT_EARTHDAMAGE: {
+					hitEffect = CONST_ME_GREEN_RINGS;
+					break;
+				}
+				case COMBAT_HOLYDAMAGE: {
+					hitEffect = CONST_ME_HOLYDAMAGE;
+					break;
+				}
+				default: {
+					hitEffect = CONST_ME_POFF;
+					break;
+				}
+			}
+			g_game().addMagicEffect(targetPos, hitEffect);
+		}
+
+		if (blockType != BLOCK_NONE) {
+			g_game().sendSingleSoundEffect(targetPos, SoundEffect_t::NO_DAMAGE, source);
+		}
+	}
+
+} // Namespace InternalGame
+
 Game::Game() {
 	offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
 	offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
@@ -77,67 +122,75 @@ void Game::resetNpcs() const {
 }
 
 void Game::loadBoostedCreature() {
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "SELECT * FROM `boosted_creature`";
-	DBResult_ptr result = db.storeQuery(query.str());
-
+	auto &db = Database::getInstance();
+	const auto &result = db.storeQuery("SELECT * FROM `boosted_creature`");
 	if (!result) {
 		SPDLOG_WARN("[Game::loadBoostedCreature] - "
 					"Failed to detect boosted creature database. (CODE 01)");
 		return;
 	}
 
-	uint16_t date = result->getNumber<uint16_t>("date");
-	std::string name = "";
-	time_t now = time(0);
+	const uint16_t date = result->getNumber<uint16_t>("date");
+	const time_t now = time(0);
 	tm* ltm = localtime(&now);
-	uint8_t today = ltm->tm_mday;
-	if (date == today) {
-		name = result->getString("boostname");
-	} else {
-		uint16_t oldrace = result->getNumber<uint16_t>("raceid");
-		std::map<uint16_t, std::string> monsterlist = getBestiaryList();
-		uint16_t newrace = 0;
-		uint8_t k = 1;
-		while (newrace == 0 || newrace == oldrace) {
-			uint16_t random = normal_random(0, monsterlist.size());
-			for (auto it : monsterlist) {
-				if (k == random) {
-					newrace = it.first;
-					name = it.second;
-				}
-				k++;
-			}
-		}
 
-		const MonsterType* monsterType = g_monsters().getMonsterTypeByRaceId(newrace);
-
-		query.str(std::string());
-		query << "UPDATE `boosted_creature` SET ";
-		query << "`date` = '" << ltm->tm_mday << "',";
-		query << "`boostname` = " << db.escapeString(name) << ",";
-
-		if (monsterType) {
-			query << "`looktype` = " << static_cast<int>(monsterType->info.outfit.lookType) << ",";
-			query << "`lookfeet` = " << static_cast<int>(monsterType->info.outfit.lookFeet) << ",";
-			query << "`looklegs` = " << static_cast<int>(monsterType->info.outfit.lookLegs) << ",";
-			query << "`lookhead` = " << static_cast<int>(monsterType->info.outfit.lookHead) << ",";
-			query << "`lookbody` = " << static_cast<int>(monsterType->info.outfit.lookBody) << ",";
-			query << "`lookaddons` = " << static_cast<int>(monsterType->info.outfit.lookAddons) << ",";
-			query << "`lookmount` = " << static_cast<int>(monsterType->info.outfit.lookMount) << ",";
-		}
-
-		query << "`raceid` = '" << newrace << "'";
-
-		if (!db.executeQuery(query.str())) {
-			SPDLOG_WARN("[Game::loadBoostedCreature] - "
-						"Failed to detect boosted creature database. (CODE 02)");
-			return;
-		}
+	if (date == ltm->tm_mday) {
+		setBoostedName(result->getString("boostname"));
+		return;
 	}
-	setBoostedName(name);
-	SPDLOG_INFO("Boosted creature: {}", name);
+
+	const uint16_t oldRace = result->getNumber<uint16_t>("raceid");
+	const auto &monsterlist = getBestiaryList();
+
+	struct MonsterRace {
+			uint16_t raceId { 0 };
+			std::string name;
+	};
+
+	MonsterRace selectedMonster;
+	if (!monsterlist.empty()) {
+		std::vector<MonsterRace> monsters;
+		for (const auto &[raceId, _name] : BestiaryList) {
+			if (raceId != oldRace)
+				monsters.emplace_back(raceId, _name);
+		}
+
+		if (!monsters.empty())
+			selectedMonster = monsters[normal_random(0, monsters.size() - 1)];
+	}
+
+	if (selectedMonster.raceId == 0) {
+		SPDLOG_WARN("[Game::loadBoostedCreature] - "
+					"It was not possible to generate a new boosted creature.");
+		return;
+	}
+
+	const auto monsterType = g_monsters().getMonsterType(selectedMonster.name);
+	if (!monsterType) {
+		SPDLOG_WARN("[Game::loadBoostedCreature] - "
+					"It was not possible to generate a new boosted creature. Monster '"
+					+ selectedMonster.name + "' not found.");
+		return;
+	}
+
+	setBoostedName(selectedMonster.name);
+
+	auto query = std::string("UPDATE `boosted_creature` SET ")
+		+ "`date` = '" + std::to_string(ltm->tm_mday) + "',"
+		+ "`boostname` = " + db.escapeString(selectedMonster.name) + ","
+		+ "`looktype` = " + std::to_string(monsterType->info.outfit.lookType) + ","
+		+ "`lookfeet` = " + std::to_string(monsterType->info.outfit.lookFeet) + ","
+		+ "`looklegs` = " + std::to_string(monsterType->info.outfit.lookLegs) + ","
+		+ "`lookhead` = " + std::to_string(monsterType->info.outfit.lookHead) + ","
+		+ "`lookbody` = " + std::to_string(monsterType->info.outfit.lookBody) + ","
+		+ "`lookaddons` = " + std::to_string(monsterType->info.outfit.lookAddons) + ","
+		+ "`lookmount` = " + std::to_string(monsterType->info.outfit.lookMount) + ","
+		+ "`raceid` = '" + std::to_string(selectedMonster.raceId) + "'";
+
+	if (!db.executeQuery(query)) {
+		SPDLOG_WARN("[Game::loadBoostedCreature] - "
+					"Failed to detect boosted creature database. (CODE 02)");
+	}
 }
 
 void Game::start(ServiceManager* manager) {
@@ -1050,6 +1103,10 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 }
 
 ReturnValue Game::internalMoveCreature(Creature* creature, Direction direction, uint32_t flags /*= 0*/) {
+	if (!creature) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
 	creature->setLastPosition(creature->getPosition());
 	const Position &currentPos = creature->getPosition();
 	Position destPos = getNextPosition(direction, currentPos);
@@ -1058,7 +1115,8 @@ ReturnValue Game::internalMoveCreature(Creature* creature, Direction direction, 
 	bool diagonalMovement = (direction & DIRECTION_DIAGONAL_MASK) != 0;
 	if (player && !diagonalMovement) {
 		// try go up
-		if (currentPos.z != 8 && creature->getTile()->hasHeight(3)) {
+		auto tile = creature->getTile();
+		if (currentPos.z != 8 && tile && tile->hasHeight(3)) {
 			Tile* tmpTile = map.getTile(currentPos.x, currentPos.y, currentPos.getZ() - 1);
 			if (tmpTile == nullptr || (tmpTile->getGround() == nullptr && !tmpTile->hasFlag(TILESTATE_BLOCKSOLID))) {
 				tmpTile = map.getTile(destPos.x, destPos.y, destPos.getZ() - 1);
@@ -1103,6 +1161,17 @@ ReturnValue Game::internalMoveCreature(Creature &creature, Tile &toTile, uint32_
 	ReturnValue ret = toTile.queryAdd(0, creature, 1, flags);
 	if (ret != RETURNVALUE_NOERROR) {
 		return ret;
+	}
+
+	if (creature.hasCondition(CONDITION_ROOTED)) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	if (creature.hasCondition(CONDITION_FEARED)) {
+		const MagicField* field = toTile.getFieldItem();
+		if (field && !field->isBlocking() && field->getDamage() != 0) {
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
 	}
 
 	map.moveCreature(creature, toTile);
@@ -1245,7 +1314,8 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 	}
 
 	const Position &playerPos = player->getPosition();
-	const Position &mapFromPos = fromCylinder->getTile()->getPosition();
+	auto cylinderTile = fromCylinder->getTile();
+	const Position &mapFromPos = cylinderTile ? cylinderTile->getPosition() : item->getPosition();
 	if (playerPos.z != mapFromPos.z) {
 		player->sendCancelMessage(playerPos.z > mapFromPos.z ? RETURNVALUE_FIRSTGOUPSTAIRS : RETURNVALUE_FIRSTGODOWNSTAIRS);
 		return;
@@ -1640,6 +1710,15 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 			&& quiver->getHoldingPlayer()
 			&& quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 			quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
+		}
+	}
+
+	if (SoundEffect_t soundEffect = item->getMovementSound(toCylinder);
+		toCylinder && soundEffect != SoundEffect_t::SILENCE) {
+		if (toCylinder->getContainer() && actor && actor->getPlayer() && (toCylinder->getContainer()->isInsideDepot(true) || toCylinder->getContainer()->getHoldingPlayer())) {
+			actor->getPlayer()->sendSingleSoundEffect(toCylinder->getPosition(), soundEffect, SourceEffect_t::OWN);
+		} else {
+			sendSingleSoundEffect(toCylinder->getPosition(), soundEffect, actor);
 		}
 	}
 
@@ -2340,8 +2419,6 @@ ReturnValue Game::internalQuickLootItem(Player* player, Item* item, ObjectCatego
 	}
 
 	bool fallbackConsumed = false;
-	uint16_t baseId = 0;
-
 	Container* lootContainer = player->getLootContainer(category);
 	if (!lootContainer) {
 		if (player->quickLootFallbackToMainContainer) {
@@ -2360,8 +2437,6 @@ ReturnValue Game::internalQuickLootItem(Player* player, Item* item, ObjectCatego
 		} else {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
-	} else {
-		baseId = lootContainer->getID();
 	}
 
 	if (!lootContainer) {
@@ -2575,6 +2650,14 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 		return;
 	}
 
+	if (player->hasCondition(CONDITION_FEARED)) {
+		/*
+		 *	When player is feared the player can´t equip any items.
+		 */
+		player->sendTextMessage(MESSAGE_FAILURE, "You are feared.");
+		return;
+	}
+
 	Item* item = player->getInventoryItem(CONST_SLOT_BACKPACK);
 	if (!item) {
 		return;
@@ -2615,7 +2698,20 @@ void Game::playerMove(uint32_t playerId, Direction direction) {
 	player->setNextWalkActionTask(nullptr);
 	player->cancelPush();
 
-	player->startAutoWalk(std::forward_list<Direction> { direction });
+	player->startAutoWalk(std::forward_list<Direction> { direction }, false);
+}
+
+void Game::forcePlayerMove(uint32_t playerId, Direction direction) {
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	player->resetIdleTime();
+	player->setNextWalkActionTask(nullptr);
+	player->cancelPush();
+
+	player->startAutoWalk(std::forward_list<Direction> { direction }, true);
 }
 
 bool Game::playerBroadcastMessage(Player* player, const std::string &text) const {
@@ -2792,7 +2888,24 @@ void Game::playerAutoWalk(uint32_t playerId, const std::forward_list<Direction> 
 
 	player->resetIdleTime();
 	player->setNextWalkTask(nullptr);
-	player->startAutoWalk(listDir);
+	player->startAutoWalk(listDir, false);
+}
+
+void Game::forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir) {
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	player->stopEventWalk();
+
+	player->sendCancelTarget();
+	player->setFollowCreature(nullptr);
+
+	player->resetIdleTime();
+	player->setNextWalkTask(nullptr);
+
+	player->startAutoWalk(listDir, true);
 }
 
 void Game::playerStopAutoWalk(uint32_t playerId) {
@@ -4429,7 +4542,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 		}
 	}
 
-	if (pos.x == 0xffff && !browseField) {
+	if (pos.x == 0xffff && !browseField && !corpse->isRewardCorpse()) {
 		uint32_t worth = item->getWorth();
 		ObjectCategory_t category = getObjectCategory(item);
 		ReturnValue ret = internalQuickLootItem(player, item, category);
@@ -4466,7 +4579,9 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 		player->lastQuickLootNotification = OTSYS_TIME();
 	} else {
 		if (corpse->isRewardCorpse()) {
-			g_actions().useItem(player, pos, 0, corpse, false);
+			if (auto returnValue = player->rewardChestCollect(corpse); returnValue != RETURNVALUE_NOERROR) {
+				player->sendCancelMessage(returnValue);
+			}
 		} else {
 			if (!lootAllCorpses) {
 				internalQuickLootCorpse(player, corpse);
@@ -4475,8 +4590,6 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 			}
 		}
 	}
-
-	return;
 }
 
 void Game::playerLootAllCorpses(Player* player, const Position &pos, bool lootAllCorpses) {
@@ -5071,7 +5184,7 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string &
 			player->cancelPush();
 		}
 
-		if (g_configManager().getBoolean(EMOTE_SPELLS)) {
+		if (g_configManager().getBoolean(EMOTE_SPELLS) && player->getStorageValue(STORAGEVALUE_EMOTE) == 1) {
 			return internalCreatureSay(player, TALKTYPE_MONSTER_SAY, words, false);
 		} else {
 			return player->saySpell(type, words, false);
@@ -5416,6 +5529,53 @@ void Game::reloadCreature(const Creature* creature) {
 	}
 }
 
+void Game::sendSingleSoundEffect(const Position &pos, SoundEffect_t soundId, Creature* actor /* = nullptr*/) {
+	if (soundId == SoundEffect_t::SILENCE) {
+		return;
+	}
+
+	SpectatorHashSet spectators;
+	map.getSpectators(spectators, pos, false, true);
+	for (Creature* spectator : spectators) {
+		if (Player* tmpPlayer = spectator->getPlayer()) {
+			SourceEffect_t source = SourceEffect_t::CREATURES;
+			if (!actor || actor->getNpc()) {
+				source = SourceEffect_t::GLOBAL;
+			} else if (actor == spectator) {
+				source = SourceEffect_t::OWN;
+			} else if (actor->getPlayer()) {
+				source = SourceEffect_t::OTHERS;
+			}
+
+			tmpPlayer->sendSingleSoundEffect(pos, soundId, source);
+		}
+	}
+}
+
+void Game::sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundEffect, SoundEffect_t secondarySoundEffect, Creature* actor /* = nullptr*/) {
+	if (secondarySoundEffect == SoundEffect_t::SILENCE) {
+		sendSingleSoundEffect(pos, mainSoundEffect, actor);
+		return;
+	}
+
+	SpectatorHashSet spectators;
+	map.getSpectators(spectators, pos, false, true);
+	for (Creature* spectator : spectators) {
+		if (Player* tmpPlayer = spectator->getPlayer()) {
+			SourceEffect_t source = SourceEffect_t::CREATURES;
+			if (!actor || actor->getNpc()) {
+				source = SourceEffect_t::GLOBAL;
+			} else if (actor == spectator) {
+				source = SourceEffect_t::OWN;
+			} else if (actor->getPlayer()) {
+				source = SourceEffect_t::OTHERS;
+			}
+
+			tmpPlayer->sendDoubleSoundEffect(pos, mainSoundEffect, source, secondarySoundEffect, source);
+		}
+	}
+}
+
 bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* target, bool checkDefense, bool checkArmor, bool field) {
 	if (damage.primary.type == COMBAT_NONE && damage.secondary.type == COMBAT_NONE) {
 		return true;
@@ -5429,44 +5589,6 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 		return false;
 	}
 
-	static const auto sendBlockEffect = [this](BlockType_t blockType, CombatType_t combatType, const Position &targetPos) {
-		if (blockType == BLOCK_DEFENSE) {
-			addMagicEffect(targetPos, CONST_ME_POFF);
-		} else if (blockType == BLOCK_ARMOR) {
-			addMagicEffect(targetPos, CONST_ME_BLOCKHIT);
-		} else if (blockType == BLOCK_DODGE) {
-			addMagicEffect(targetPos, CONST_ME_DODGE);
-		} else if (blockType == BLOCK_IMMUNITY) {
-			uint8_t hitEffect = 0;
-			switch (combatType) {
-				case COMBAT_UNDEFINEDDAMAGE: {
-					return;
-				}
-				case COMBAT_ENERGYDAMAGE:
-				case COMBAT_FIREDAMAGE:
-				case COMBAT_PHYSICALDAMAGE:
-				case COMBAT_ICEDAMAGE:
-				case COMBAT_DEATHDAMAGE: {
-					hitEffect = CONST_ME_BLOCKHIT;
-					break;
-				}
-				case COMBAT_EARTHDAMAGE: {
-					hitEffect = CONST_ME_GREEN_RINGS;
-					break;
-				}
-				case COMBAT_HOLYDAMAGE: {
-					hitEffect = CONST_ME_HOLYDAMAGE;
-					break;
-				}
-				default: {
-					hitEffect = CONST_ME_POFF;
-					break;
-				}
-			}
-			addMagicEffect(targetPos, hitEffect);
-		}
-	};
-
 	// Skill dodge (ruse)
 	if (const Player* targetPlayer = target->getPlayer()) {
 		if (auto playerArmor = targetPlayer->getInventoryItem(CONST_SLOT_ARMOR);
@@ -5474,7 +5596,7 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 			double_t chance = playerArmor->getDodgeChance();
 			double_t randomChance = uniform_random(0, 10000) / 100;
 			if (chance > 0 && randomChance < chance) {
-				sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition());
+				InternalGame::sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition(), attacker);
 				targetPlayer->sendTextMessage(MESSAGE_ATTENTION, "You dodged an attack. (Ruse)");
 				return true;
 			}
@@ -5510,10 +5632,11 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				canHeal = true;
 			}
 		}
+
 		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
 
 		damage.primary.value = -damage.primary.value;
-		sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition());
+		InternalGame::sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition(), attacker);
 	} else {
 		primaryBlockType = BLOCK_NONE;
 	}
@@ -5545,10 +5668,11 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				canHeal = true;
 			}
 		}
+
 		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
 
 		damage.secondary.value = -damage.secondary.value;
-		sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition());
+		InternalGame::sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition(), attacker);
 	} else {
 		secondaryBlockType = BLOCK_NONE;
 	}
@@ -5661,6 +5785,44 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 	}
 }
 
+void Game::handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker) {
+	if (damage.primary.value != 0 && monster->isOnHazardSystem()) {
+		if (isPlayerAttacker) {
+			player->parseAttackDealtHazardSystem(damage, monster);
+		} else {
+			player->parseAttackRecvHazardSystem(damage, monster);
+		}
+	}
+}
+
+void Game::notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster) {
+	if (!spectators.empty()) {
+		for (Creature* spectator : spectators) {
+			if (!spectator) {
+				continue;
+			}
+
+			const auto tmpPlayer = spectator->getPlayer();
+			if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
+				continue;
+			}
+
+			std::stringstream ss;
+			ss << ucfirst(targetMonster->getNameDescription()) << " has dodged";
+			if (tmpPlayer == attackerPlayer) {
+				ss << " your attack.";
+				attackerPlayer->sendCancelMessage(ss.str());
+				ss << " (Hazard)";
+				attackerPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
+			} else {
+				ss << " an attack by " << attackerPlayer->getName() << ". (Hazard)";
+				tmpPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
+			}
+		}
+		addMagicEffect(targetPos, CONST_ME_DODGE);
+	}
+}
+
 bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent /*= false*/) {
 	using namespace std;
 	const Position &targetPos = target->getPosition();
@@ -5692,7 +5854,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 		}
 
-		int32_t realHealthChange = target->getHealth();
+		auto realHealthChange = target->getHealth();
 		target->gainHealth(attacker, damage.primary.value);
 		realHealthChange = target->getHealth() - realHealthChange;
 
@@ -5817,13 +5979,24 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
 			damage.secondary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
 		}
-		int32_t healthChange = damage.primary.value + damage.secondary.value;
+		auto healthChange = damage.primary.value + damage.secondary.value;
 		if (healthChange == 0) {
 			return true;
 		}
 
 		SpectatorHashSet spectators;
 		map.getSpectators(spectators, targetPos, true, true);
+
+		if (targetPlayer && attackerMonster) {
+			handleHazardSystemAttack(damage, targetPlayer, attackerMonster, false);
+		} else if (attackerPlayer && targetMonster) {
+			handleHazardSystemAttack(damage, attackerPlayer, targetMonster, true);
+
+			if (damage.primary.value == 0 && damage.secondary.value == 0) {
+				notifySpectators(spectators, targetPos, attackerPlayer, targetMonster);
+				return true;
+			}
+		}
 
 		if (damage.fatal) {
 			addMagicEffect(spectators, targetPos, CONST_ME_FATAL);
@@ -5947,7 +6120,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 		}
 
-		int32_t realDamage = damage.primary.value + damage.secondary.value;
+		auto realDamage = damage.primary.value + damage.secondary.value;
 		if (realDamage == 0) {
 			return true;
 		}
@@ -5963,7 +6136,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 		}
 
-		int32_t targetHealth = target->getHealth();
+		auto targetHealth = target->getHealth();
 		if (damage.primary.value >= targetHealth) {
 			damage.primary.value = targetHealth;
 			damage.secondary.value = 0;
@@ -6272,7 +6445,7 @@ int32_t Game::calculateLeechAmount(const int32_t &realDamage, const uint16_t &sk
 
 bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage &damage) {
 	const Position &targetPos = target->getPosition();
-	int32_t manaChange = damage.primary.value + damage.secondary.value;
+	auto manaChange = damage.primary.value + damage.secondary.value;
 	if (manaChange > 0) {
 		Player* attackerPlayer;
 		if (attacker) {
@@ -6297,7 +6470,7 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage &
 			}
 		}
 
-		int32_t realManaChange = target->getMana();
+		auto realManaChange = target->getMana();
 		target->changeMana(manaChange);
 		realManaChange = target->getMana() - realManaChange;
 
@@ -6372,7 +6545,7 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage &
 			return false;
 		}
 
-		int32_t manaLoss = std::min<int32_t>(target->getMana(), -manaChange);
+		auto manaLoss = std::min<int32_t>(target->getMana(), -manaChange);
 		BlockType_t blockType = target->blockHit(attacker, COMBAT_MANADRAIN, manaLoss);
 		if (blockType != BLOCK_NONE) {
 			addMagicEffect(targetPos, CONST_ME_POFF);
@@ -6403,6 +6576,7 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage &
 					Charm* charm = g_iobestiary().getBestiaryCharm(activeCharm);
 					if (charm && charm->type == CHARM_DEFENSIVE && (charm->chance > normal_random(0, 100))) {
 						if (g_iobestiary().parseCharmCombat(charm, targetPlayer, attacker, manaChange)) {
+							sendDoubleSoundEffect(targetPlayer->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, targetPlayer);
 							return false; // Dodge charm
 						}
 					}
@@ -6553,8 +6727,6 @@ void Game::addDistanceEffect(const SpectatorHashSet &spectators, const Position 
 
 void Game::checkImbuements() {
 	g_scheduler().addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
-
-	std::vector<uint32_t> toErase;
 
 	for (const auto &[mapPlayerId, mapPlayer] : getPlayers()) {
 		if (!mapPlayer) {
@@ -8140,7 +8312,7 @@ void Game::playerForgeFuseItems(uint32_t playerId, uint16_t itemId, uint8_t tier
 	auto roll = static_cast<uint8_t>(uniform_random(1, 100)) <= (usedCore ? bonusSuccess : baseSuccess);
 	bool success = roll ? true : false;
 
-	uint32_t chance = uniform_random(0, 10000);
+	auto chance = uniform_random(0, 10000);
 	uint8_t bonus = forgeBonus(chance);
 
 	player->forgeFuseItems(itemId, tier, success, reduceTierLoss, bonus, coreCount);
@@ -8911,4 +9083,74 @@ bool Game::addItemStoreInbox(const Player* player, uint32_t itemId) {
 	}
 
 	return true;
+}
+
+void Game::addPlayerUniqueLogin(Player* player) {
+	if (!player) {
+		SPDLOG_ERROR("Attempted to add null player to unique player names list");
+		return;
+	}
+
+	const std::string &lowercase_name = asLowerCaseString(player->getName());
+	m_uniqueLoginPlayerNames[lowercase_name] = player;
+}
+
+Player* Game::getPlayerUniqueLogin(const std::string &playerName) const {
+	if (playerName.empty()) {
+		SPDLOG_ERROR("Attempted to get player with empty name string");
+		return nullptr;
+	}
+
+	auto it = m_uniqueLoginPlayerNames.find(asLowerCaseString(playerName));
+	return (it != m_uniqueLoginPlayerNames.end()) ? it->second : nullptr;
+}
+
+void Game::removePlayerUniqueLogin(const std::string &playerName) {
+	if (playerName.empty()) {
+		SPDLOG_ERROR("Attempted to remove player with empty name string from unique player names list");
+		return;
+	}
+
+	const std::string &lowercase_name = asLowerCaseString(playerName);
+	m_uniqueLoginPlayerNames.erase(lowercase_name);
+}
+
+void Game::removePlayerUniqueLogin(Player* player) {
+	if (!player) {
+		SPDLOG_ERROR("Attempted to remove null player from unique player names list.");
+		return;
+	}
+
+	const std::string &lowercase_name = asLowerCaseString(player->getName());
+	m_uniqueLoginPlayerNames.erase(lowercase_name);
+}
+
+void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems /* = 0*/) {
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	Item* item = nullptr;
+	Thing* thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_FIND_THING);
+	if (!thing) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	item = thing->getItem();
+	if (!item || item->getID() != ITEM_REWARD_CHEST || !item->getContainer()) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	if (auto function = std::bind(&Game::playerRewardChestCollect, this, player->getID(), pos, itemId, stackPos, 0);
+		player->canAutoWalk(item->getPosition(), function)) {
+		return;
+	}
+
+	ReturnValue returnValue = player->rewardChestCollect(nullptr, maxMoveItems);
+	if (returnValue != RETURNVALUE_NOERROR) {
+		player->sendCancelMessage(returnValue);
+	}
 }

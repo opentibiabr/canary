@@ -64,34 +64,36 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 10000, maxCount = 3},
-	{name = "platinum coin", chance = 10000, maxCount = 10},
-	{name = "ultimate health potion", chance = 7300, maxCount = 11},
-	{name = "ultimate mana potion", chance = 7300, maxCount = 3},
-	{name = "ultimate spirit potion", chance = 7300, maxCount = 3},
-	{name = "berserk potion", chance = 7300, maxCount = 5},
-	{name = "mastermind potion", chance = 7300, maxCount = 5},
-	{name = "bullseye potion", chance = 7300, maxCount = 5},
-	{name = "pirate coin", chance = 7300, maxCount = 50},
-	{name = "cheesy key", chance = 700},
-	{name = "small treasure chest", chance = 700},
-	{name = "giant amethyst", chance = 600},
-	{name = "tentugly's eye", chance = 600},
-	{name = "giant ruby", chance = 400},
-	{name = "golden dustbin", chance = 650},
-	{name = "tentacle of tentugly", chance = 650, maxCount = 2},
-	{name = "tiara", chance = 650},
-	{name = "giant topaz", chance = 650},
-	{name = "golden cheese wedge", chance = 650},
-	{name = "golden skull", chance = 650},
-	{name = "plushie of tentugly", chance = 650},
+	{id = 3043, chance = 59860, minCount = 1, maxCount = 3}, -- crystal coin
+	{id = 23373, chance = 59860, minCount = 1, maxCount = 34}, -- ultimate mana potion
+	{id = 7643, chance = 47890, minCount = 1, maxCount = 33}, -- ultimate health potion
+	{id = 23374, chance = 28870, minCount = 2, maxCount = 19}, -- ultimate spirit potion
+	{id = 7439, chance = 23940, minCount = 1, maxCount = 9}, -- berserk potion
+	{id = 3035, chance = 23240, minCount = 2, maxCount = 19}, -- platinum coin
+	{id = 7443, chance = 20420, minCount = 1, maxCount = 9}, -- bullseye potion
+	{id = 7440, chance = 16900, minCount = 2, maxCount = 9}, -- mastermind potion
+	{id = 35572, chance = 13380, minCount = 3, maxCount = 86}, -- pirate coin
+	{id = 35508, chance = 7750}, -- cheesy key
+	{id = 32623, chance = 4930}, -- giant topaz
+	{id = 35571, chance = 4230}, -- small treasure chest
+	{id = 35581, chance = 3520}, -- golden cheese wedge
+	{id = 35580, chance = 3520}, -- golden skull
+	{id = 32622, chance = 2820}, -- giant amethyst
+	{id = 31911, chance = 2820}, -- sea horse figurine
+	{id = 30059, chance = 2110}, -- giant ruby
+	{id = 35579, chance = 2110}, -- golden dustbin
+	{id = 35576, chance = 2110}, -- plushie of tentugly
+	{id = 35611, chance = 2110}, -- tentacle of tentugly
+	{id = 35578, chance = 1410}, -- tiara
+	{id = 35610, chance = 700}, -- tentugly's eye
+	{id = 35612, chance = 700} -- tentugly's jaws
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -300, maxDamage = -700},
-	{name = "combat", type = COMBAT_ENERGYDAMAGE, interval = 2000, chance = 40, minDamage = -400, maxDamage = -500, range = 5, radius = 4, target = true, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_GHOSTLY_BITE},
-	{name = "combat", type = COMBAT_ENERGYDAMAGE, interval = 2000, chance = 30, minDamage = -300, maxDamage = -500, length = 7, effect = CONST_ME_LOSEENERGY},
-	{name = "combat", type = COMBAT_ENERGYDAMAGE, interval = 2000, chance = 70, minDamage = -300, maxDamage = -500, radius = 4, effect = CONST_ME_LOSEENERGY}
+	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -700},
+	{name = "combat", type = COMBAT_ENERGYDAMAGE, interval = 2000, chance = 40, minDamage = 0, maxDamage = -400, range = 5, radius = 4, target = true, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_GHOSTLY_BITE},
+	{name = "energy waveT", interval = 2000, chance = 30, minDamage = 0, maxDamage = -250},
+	{name = "combat", type = COMBAT_ENERGYDAMAGE, interval = 2000, chance = 50, minDamage = 0, maxDamage = -500, radius = 5, effect = CONST_ME_LOSEENERGY}
 }
 
 monster.defenses = {

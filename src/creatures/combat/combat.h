@@ -60,7 +60,10 @@ struct CombatParams {
 		CombatOrigin origin = ORIGIN_SPELL;
 
 		uint8_t impactEffect = CONST_ME_NONE;
+		SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
+
 		uint8_t distanceEffect = CONST_ANI_NONE;
+		SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
 
 		bool blockedByArmor = false;
 		bool blockedByShield = false;
@@ -287,6 +290,21 @@ class Combat {
 		static void CombatHealthFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data);
 		static CombatDamage applyImbuementElementalDamage(Item* item, CombatDamage damage);
 		static void CombatManaFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* damage);
+		/**
+		 * @brief Checks if a fear condition can be applied to a player.
+		 *
+		 * This function performs several checks to determine if a fear condition
+		 * can be applied to a player. It considers the following scenarios:
+		 *
+		 * - The player is currently immune to fear.
+		 * - The player already has a fear condition.
+		 * - The player is part of a party, and there are already enough party members
+		 *   with a fear condition according to the party size.
+		 *
+		 * @param player Pointer to the Player object to be checked.
+		 * @return true if the fear condition can be applied, false otherwise.
+		 */
+		static bool checkFearConditionAffected(Player* player);
 		static void CombatConditionFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data);
 		static void CombatDispelFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data);
 		static void CombatNullFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data);

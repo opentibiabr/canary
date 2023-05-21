@@ -23,9 +23,15 @@ function lever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		player:say("<squeaak>", TALKTYPE_MONSTER_SAY, false, player, {x = 32107, y = 31904, z = 7})
 		player:setStorageValue(Storage.Dawnport.Lever, 2)
 		item:transform(21290)
-		addEvent(function()
-			item:transform(9125)
-		end, 8 * 1000)
+		addEvent(function(pos)
+			local tile = Tile(pos)
+			if tile then
+				local item = tile:getItemById(21290)
+				if item then
+					item:transform(9125)
+				end
+			end
+		end, 8 * 1000, item:getPosition())
 	elseif item.itemid == 9125 and player:getStorageValue(Storage.Dawnport.Lever) == 2 then
 		for i = 1, #positions do
 			local tile = Tile(positions[i])
@@ -60,9 +66,15 @@ function lever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		player:say("<crrk>", TALKTYPE_MONSTER_SAY, false, player, {x = 32107, y = 31904, z = 7})
 		player:setStorageValue(Storage.Dawnport.Lever, 1)
 		item:transform(21290)
-		addEvent(function()
-			item:transform(9125)
-		end, 8 * 1000)
+		addEvent(function(pos)
+			local tile = Tile(pos)
+			if tile then
+				local item = tile:getItemById(21290)
+				if item then
+					item:transform(9125)
+				end
+			end
+		end, 8 * 1000, item:getPosition())
 	end
 	return true
 end

@@ -189,6 +189,7 @@ class ProtocolGame final : public Protocol {
 		void parseCloseImbuementWindow(NetworkMessage &msg);
 
 		void parseModalWindowAnswer(NetworkMessage &msg);
+		void parseRewardContainerCollect(NetworkMessage &msg);
 
 		void parseBrowseField(NetworkMessage &msg);
 		void parseSeekInContainer(NetworkMessage &msg);
@@ -483,6 +484,12 @@ class ProtocolGame final : public Protocol {
 		void sendSpecialContainersAvailable();
 		void addBless();
 		void parsePacketDead(uint8_t recvbyte);
+
+		void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
+		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
+
+		// Hazard system
+		void reloadHazardSystemIcon(uint16_t reference);
 };
 
 #endif // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

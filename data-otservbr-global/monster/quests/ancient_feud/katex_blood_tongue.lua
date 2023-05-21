@@ -73,39 +73,40 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 32300, maxCount = 17},
-	{name = "ultimate health potion", chance = 32300, maxCount = 5},
-	{name = "gold ingot", chance = 2870},
-	{name = "werehyaena nose", chance = 14800},
-	{name = "werehyaena trophy", chance = 12000},
-	{name = "katex' blood", chance = 12000},
-	{name = "violet gem", chance = 510},
-	{name = "werehyaena talisman", chance = 12000},
-	{name = "demon shield", chance = 800},
-	{name = "skull helmet", chance = 930},
-	{name = "blue gem", chance = 560},
-	{name = "gold ring", chance = 670},
-	{name = "magic plate armor", chance = 140},
-	{name = "demonrage sword", chance = 90},
-	{name = "moonlight crystals", chance = 920},
-	{name = "jade hammer", chance = 6200},
-	{id = 23531, chance = 156}, -- ring of green plasma
-	{name = "golden armor", chance = 18200},
-	{name = "alloy legs", chance = 180},
-	{name = "assassin dagger", chance = 2070},
-	{name = "mastermind potion", chance = 750},
-	{name = "ornate crossbow", chance = 2000},
-	{name = "war axe", chance = 90},
-	{name = "red silk flower", chance = 14800},
-	{name = "raw watermelon tourmaline", chance = 960},
-	{id = 282, chance = 14000, maxCount = 2} -- giant shimmering pearl (brown)
+	{id = 3035, chance = 100000, minCount = 1, maxCount = 17}, -- platinum coin
+	{id = 7643, chance = 100000, minCount = 1, maxCount = 5}, -- ultimate health potion
+	{id = 9058, chance = 25000}, -- gold ingot
+	{id = 33943, chance = 21110}, -- werehyaena nose
+	{id = 3036, chance = 5000}, -- violet gem
+	{id = 34100, chance = 4440}, -- katex' blood
+	{id = 33944, chance = 4440}, -- werehyaena talisman
+	{id = 34219, chance = 3890}, -- werehyaena trophy
+	{id = 5741, chance = 3330}, -- skull helmet
+	{id = 3041, chance = 3330}, -- blue gem
+	{id = 3420, chance = 1670}, -- demon shield
+	{id = 3281, chance = 1670}, -- giant sword
+	{id = 14247, chance = 1670}, -- ornate crossbow
+	{id = 3063, chance = 1670}, -- gold ring
+	{id = 3366, chance = 1110}, -- magic plate armor
+	{id = 7404, chance = 1110}, -- assassin dagger
+	{id = 7440, chance = 1110}, -- mastermind potion
+	{id = 22083, chance = 1110}, -- moonlight crystals
+	{id = 23531, chance = 1110}, -- ring of green plasma
+	{id = 7422, chance = 1110}, -- jade hammer
+	{id = 3342, chance = 1000}, -- war axe
+	{id = 21168, chance = 1000}, -- alloy legs
+	{id = 34258, chance = 560}, -- red silk flower
+	{id = 7382, chance = 560}, -- demonrage sword
+	{id = 3360, chance = 560}, -- golden armor
+	{id = 33778, chance = 360}, -- raw watermelon tourmaline
+	{id = 282, chance = 140} -- giant shimmering pearl (brown)
 }
 
 monster.attacks = {
-	{name = "melee", type = COMBAT_PHYSICALDAMAGE, interval = 2000, minDamage = -150, maxDamage = -300},
-    {name = "combat", type = COMBAT_EARTHDAMAGE, interval = 2000, chance = 17, minDamage = -350, maxDamage = -500, range = 5, radius = 4, target = true, shootEffect = CONST_ANI_EARTH, effect = CONST_ME_GREEN_RINGS},
-    {name = "combat", type = COMBAT_DEATHDAMAGE, interval = 2000, chance = 15, minDamage = -300, maxDamage = -430, radius = 4, target = false, effect = CONST_ME_MORTAREA},
-    {name = "combat", type = COMBAT_DEATHDAMAGE, interval = 2000, chance = 13, minDamage = -250, maxDamage = -350, length = 3, spread = 0, effect = CONST_ME_MORTAREA}
+	{name = "melee", type = COMBAT_PHYSICALDAMAGE, interval = 2000, maxDamage = -300},
+    {name = "combat", type = COMBAT_EARTHDAMAGE, interval = 2000, chance = 30, minDamage = -350, maxDamage = -500, range = 5, radius = 3, length = 3, spread = 3, target = true, shootEffect = CONST_ANI_LARGEROCK, effect = CONST_ME_POFF},
+    {name = "combat", type = COMBAT_DEATHDAMAGE, interval = 2000, chance = 40, minDamage = -300, maxDamage = -400, radius = 5, target = false, effect = CONST_ME_MORTAREA},
+    {name = "katex deathT", interval = 2000, chance = 30, minDamage = -250, maxDamage = -350, target = false}
 }
 
 monster.defenses = {

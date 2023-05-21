@@ -1,6 +1,5 @@
 local combatGrenade = Combat()
 combatGrenade:setParameter(COMBAT_PARAM_TYPE, COMBAT_HOLYDAMAGE)
-combatGrenade:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HOLYDAMAGE)
 combatGrenade:setArea(createCombatArea(AREA_CIRCLE2X2))
 
 function onGetFormulaValues(player, level, maglevel)
@@ -39,6 +38,7 @@ local explodeGrenade = function(position, playerId)
 	var.type = 2 -- VARIANT_POSITION
 	var.pos = position
 	combatGrenade:execute(player, var)
+	player:getPosition():removeMagicEffect(CONST_ME_DIVINE_GRENADE)
 end
 
 local combatCast = Combat()
@@ -80,7 +80,7 @@ function spell.onCastSpell(creature, var)
 
 	var.instantName = "Divine Grenade Cast"
 	if combatCast:execute(creature, var) then
-		--creature:getPosition():sendMagicEffect(245)
+		creature:getTile():getPosition():sendMagicEffect(CONST_ME_DIVINE_GRENADE)
 		local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 258)
 		condition:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 		creature:addCondition(condition)

@@ -448,6 +448,8 @@ class Game {
 		void addPlayerVocation(const Player* target);
 		void addMagicEffect(const Position &pos, uint8_t effect);
 		static void addMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect);
+		void removeMagicEffect(const Position &pos, uint8_t effect);
+		static void removeMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect);
 		void addDistanceEffect(const Position &fromPos, const Position &toPos, uint8_t effect);
 		static void addDistanceEffect(const SpectatorHashSet &spectators, const Position &fromPos, const Position &toPos, uint8_t effect);
 

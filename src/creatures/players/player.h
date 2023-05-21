@@ -1251,6 +1251,11 @@ class Player final : public Creature, public Cylinder {
 				client->sendMagicEffect(pos, type);
 			}
 		}
+		void removeMagicEffect(const Position &pos, uint8_t type) const {
+			if (client) {
+				client->removeMagicEffect(pos, type);
+			}
+		}
 		void sendPing();
 		void sendPingBack() const {
 			if (client) {

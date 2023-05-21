@@ -376,7 +376,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (!IOLoginData::loadPlayerById(player, player->getGUID())) {
+		if (!IOLoginData::loadPlayerById(player, player->getGUID(), false)) {
 			disconnectClient("Your character could not be loaded.");
 			SPDLOG_WARN("Player {} could not be loaded", player->getName());
 			return;
@@ -5344,6 +5344,14 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint8_t type) {
 		msg.addByte(type);
 		msg.addByte(MAGIC_EFFECTS_END_LOOP);
 	}
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::removeMagicEffect(const Position &pos, uint8_t type) {
+	NetworkMessage msg;
+	msg.addByte(0x84);
+	msg.addPosition(pos);
+	msg.addByte(type);
 	writeToOutputBuffer(msg);
 }
 

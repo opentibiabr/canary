@@ -6813,6 +6813,20 @@ void Game::addMagicEffect(const SpectatorHashSet &spectators, const Position &po
 	}
 }
 
+void Game::removeMagicEffect(const Position &pos, uint8_t effect) {
+	SpectatorHashSet spectators;
+	map.getSpectators(spectators, pos, true, true);
+	removeMagicEffect(spectators, pos, effect);
+}
+
+void Game::removeMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect) {
+	for (Creature* spectator : spectators) {
+		if (Player* tmpPlayer = spectator->getPlayer()) {
+			tmpPlayer->removeMagicEffect(pos, effect);
+		}
+	}
+}
+
 void Game::addDistanceEffect(const Position &fromPos, const Position &toPos, uint8_t effect) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, fromPos, false, true);

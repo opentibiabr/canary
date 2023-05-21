@@ -134,7 +134,7 @@ bool IOLoginData::loadPlayerByName(Player* player, const std::string &name, bool
 	return loadPlayer(player, db.storeQuery(query.str()), disable);
 }
 
-bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /* = true*/) {
+bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /* = false*/) {
 	if (!result || !player) {
 		return false;
 	}

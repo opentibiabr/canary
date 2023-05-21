@@ -273,6 +273,7 @@ class ProtocolGame final : public Protocol {
 
 		void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 		void sendMagicEffect(const Position &pos, uint8_t type);
+		void removeMagicEffect(const Position &pos, uint8_t type);
 		void sendRestingStatus(uint8_t protection);
 		void sendCreatureHealth(const Creature* creature);
 		void sendPartyCreatureUpdate(const Creature* target);

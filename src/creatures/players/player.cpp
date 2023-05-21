@@ -2230,6 +2230,7 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 
 	if (sendText) {
 		std::string expString = fmt::format("{} experience point{}.", exp, (exp != 1 ? "s" : ""));
+
 		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && g_configManager().getBoolean(VIP_SYSTEM_EXP_ENABLED)) {
 			uint8_t expPercent = g_configManager().getNumber(VIP_SYSTEM_EXP_PERCENT);
 			if (isVIP() && expPercent > 0) {

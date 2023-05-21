@@ -1164,17 +1164,6 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 	Item* fallbackItem = getInventoryItem(CONST_SLOT_BACKPACK);
 	int32_t movedMoney = 0;
 	for (auto item : rewardItemsVector) {
-		if (!item) {
-			continue;
-		}
-
-		ObjectCategory_t category = g_game().getObjectCategory(item);
-		Container* lootContainer = getLootContainer(category);
-		if (!lootContainer && !quickLootFallbackToMainContainer) {
-			sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your main backpack is not configured.");
-			break;
-		}
-
 		if (uint32_t worth = item->getWorth(); worth > 0) {
 			movedMoney += worth;
 			g_game().internalRemoveItem(item);
@@ -1182,9 +1171,16 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 			continue;
 		}
 
+		ObjectCategory_t category = g_game().getObjectCategory(item);
+		Container* lootContainer = getLootContainer(category);
 		// Limit the collect count if the "maxMoveItems" is not "0"
-		if (maxMoveItems != 0 && movedItems == maxMoveItems) {
-			sendCancelMessage(fmt::format("You can only collect {} items at a time.", maxMoveItems));
+		auto limitMove = maxMoveItems != 0 && movedItems == maxMoveItems;
+		if (!lootContainer && !quickLootFallbackToMainContainer || limitMove) {
+			if (limitMove) {
+				sendCancelMessage(fmt::format("You can only collect {} items at a time.", maxMoveItems));
+			} else {
+				sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your main backpack is not configured.");
+			}
 			break;
 		}
 
@@ -1203,7 +1199,8 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
-		if (auto returnValue = recurseMoveItemToContainer(item, lootContainer); returnValue != RETURNVALUE_NOERROR) {
+		auto recurseReturn = recurseMoveItemToContainer(item, lootContainer);
+		if (recurseReturn != RETURNVALUE_NOERROR) {
 			continue;
 		}
 
@@ -7161,7 +7158,7 @@ SoundEffect_t Player::getAttackSoundEffect() const {
 	return SoundEffect_t::SILENCE;
 }
 
-bool Player::canAutoWalk(const Position &toPosition, const std::function<void()> function, uint64_t delay /* = 500*/) {
+bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>& function, uint32_t delay /* = 500*/) {
 	if (!Position::areInRange<1, 1>(getPosition(), toPosition)) {
 		// Check if can walk to the toPosition and send event to use function
 		std::forward_list<Direction> listDir;

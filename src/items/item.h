@@ -126,6 +126,10 @@ class ItemProperties {
 			}
 		}
 
+		bool isStoreItem() const {
+			return getAttribute<int64_t>(ItemAttribute_t::STORE) > 0;
+		}
+
 		void setDuration(int32_t time) {
 			setAttribute(ItemAttribute_t::DURATION, std::max<int32_t>(0, time));
 		}
@@ -279,6 +283,8 @@ class Item : virtual public Thing, public ItemProperties {
 		virtual const BedItem* getBed() const {
 			return nullptr;
 		}
+
+		SoundEffect_t getMovementSound(Cylinder* toCylinder) const;
 
 		void setIsLootTrackeable(bool value) {
 			isLootTrackeable = value;
@@ -464,6 +470,10 @@ class Item : virtual public Thing, public ItemProperties {
 
 		// get the number of items
 		uint16_t getItemCount() const {
+			return count;
+		}
+		// Get item total amount
+		uint32_t getItemAmount() const {
 			return count;
 		}
 		void setItemCount(uint8_t n) {

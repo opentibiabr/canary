@@ -17,8 +17,11 @@ function rune.onCastSpell(creature, var, isHotkey)
 	return combat:execute(creature, var)
 end
 
+rune:id(7)
 rune:group("attack")
 rune:name("lightest missile rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_LIGHTEST_MISSILE_RUNE)
 rune:runeId(21352)
 rune:allowFarUse(true)
 rune:charges(10)

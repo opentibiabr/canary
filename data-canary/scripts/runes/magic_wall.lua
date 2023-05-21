@@ -18,8 +18,11 @@ function spell.onCastSpell(creature, variant, isHotkey)
 	return combat:execute(creature, variant)
 end
 
+spell:id(86)
 spell:name("Magic Wall Rune")
 spell:group("attack")
+spell:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+spell:impactSound(SOUND_EFFECT_TYPE_SPELL_MAGIC_WALL_RUNE)
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:level(32)

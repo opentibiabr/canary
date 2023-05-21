@@ -107,6 +107,8 @@ class ProtocolGame final : public Protocol {
 		void parseLootContainer(NetworkMessage &msg);
 		void parseQuickLootBlackWhitelist(NetworkMessage &msg);
 
+		void sendCreatureHelpers(uint32_t creatureId, uint16_t helpers);
+
 		// Depot search
 		void sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count);
 		void sendCloseDepotSearch();
@@ -132,8 +134,6 @@ class ProtocolGame final : public Protocol {
 		void parseTaskHuntingAction(NetworkMessage &msg);
 		void sendHighscoresNoData();
 		void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);
-
-		void parseTournamentLeaderboard(NetworkMessage &msg);
 
 		void parseGreet(NetworkMessage &msg);
 		void parseBugReport(NetworkMessage &msg);
@@ -189,6 +189,7 @@ class ProtocolGame final : public Protocol {
 		void parseCloseImbuementWindow(NetworkMessage &msg);
 
 		void parseModalWindowAnswer(NetworkMessage &msg);
+		void parseRewardContainerCollect(NetworkMessage &msg);
 
 		void parseBrowseField(NetworkMessage &msg);
 		void parseSeekInContainer(NetworkMessage &msg);
@@ -303,8 +304,6 @@ class ProtocolGame final : public Protocol {
 		void sendTutorial(uint8_t tutorialId);
 		void sendAddMarker(const Position &pos, uint8_t markType, const std::string &desc);
 
-		void sendTournamentLeaderboard();
-
 		void sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode);
 		void sendCyclopediaCharacterBaseInformation();
 		void sendCyclopediaCharacterGeneralStats();
@@ -345,6 +344,7 @@ class ProtocolGame final : public Protocol {
 		void sendCloseTrade();
 		void updatePartyTrackerAnalyzer(const Party* party);
 
+		void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 		void sendTextWindow(uint32_t windowTextId, Item* item, uint16_t maxlen, bool canWrite);
 		void sendHouseWindow(uint32_t windowTextId, const std::string &text);
 		void sendOutfitWindow();
@@ -366,7 +366,7 @@ class ProtocolGame final : public Protocol {
 
 		void sendCreatureSquare(const Creature* creature, SquareColor_t color);
 
-		void sendSpellCooldown(uint8_t spellId, uint32_t time);
+		void sendSpellCooldown(uint16_t spellId, uint32_t time);
 		void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
 		void sendUseItemCooldown(uint32_t time);
 
@@ -450,6 +450,9 @@ class ProtocolGame final : public Protocol {
 		// otclient
 		void parseExtendedOpcode(NetworkMessage &msg);
 
+		void parseInventoryImbuements(NetworkMessage &msg);
+		void sendInventoryImbuements(const std::map<Slots_t, Item*> items);
+
 		// reloadCreature
 		void reloadCreature(const Creature* creature);
 
@@ -473,13 +476,20 @@ class ProtocolGame final : public Protocol {
 		bool loggedIn = false;
 		bool shouldAddExivaRestrictions = false;
 
-		void sendInventory();
+		bool oldProtocol = false;
 
+		void sendInventory();
 		void sendOpenStash();
 		void parseStashWithdraw(NetworkMessage &msg);
 		void sendSpecialContainersAvailable();
 		void addBless();
 		void parsePacketDead(uint8_t recvbyte);
+
+		void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
+		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
+
+		// Hazard system
+		void reloadHazardSystemIcon(uint16_t reference);
 };
 
 #endif // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

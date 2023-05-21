@@ -76,6 +76,7 @@ class Game {
 		 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
 		 * \returns true if the custom map was loaded successfully
 		 */
+		bool loadCustomMaps(const std::string &customMapPath);
 		bool loadCustomMap(const std::string &filename);
 		void loadMap(const std::string &path, const Position &pos = Position(), bool unload = false);
 
@@ -177,6 +178,7 @@ class Game {
 		ReturnValue internalMoveCreature(Creature* creature, Direction direction, uint32_t flags = 0);
 		ReturnValue internalMoveCreature(Creature &creature, Tile &toTile, uint32_t flags = 0);
 
+		ReturnValue checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder, Cylinder* toCylinder, Item* item);
 		ReturnValue internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index, Item* item, uint32_t count, Item** internalMoveItem, uint32_t flags = 0, Creature* actor = nullptr, Item* tradeItem = nullptr);
 
 		ReturnValue internalAddItem(Cylinder* toCylinder, Item* item, int32_t index = INDEX_WHEREEVER, uint32_t flags = 0, bool test = false);
@@ -212,6 +214,9 @@ class Game {
 		void loadPlayersRecord();
 		void checkPlayersRecord();
 
+		void sendSingleSoundEffect(const Position &pos, SoundEffect_t soundId, Creature* actor = nullptr);
+		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundEffect, SoundEffect_t secondarySoundEffect, Creature* actor = nullptr);
+
 		void sendGuildMotd(uint32_t playerId);
 		void kickPlayer(uint32_t playerId, bool displayEffect);
 		void playerReportBug(uint32_t playerId, const std::string &message, const Position &position, uint8_t category);
@@ -240,15 +245,17 @@ class Game {
 		void playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, uint8_t podiumVisible, uint8_t bossVisible);
 		void playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId);
 
+		void playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen);
+
 		bool addItemStoreInbox(const Player* player, uint32_t itemId);
+
+		void playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems = 0);
 
 		void playerReportRuleViolationReport(uint32_t playerId, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation);
 
 		void playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
 
 		void playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
-
-		void playerTournamentLeaderboard(uint32_t playerId, uint8_t leaderboardType);
 
 		void updatePlayerSaleItems(uint32_t playerId);
 
@@ -266,6 +273,7 @@ class Game {
 		void playerMoveItem(Player* player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, Item* item, Cylinder* toCylinder);
 		void playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier = false, uint8_t tier = 0);
 		void playerMove(uint32_t playerId, Direction direction);
+		void forcePlayerMove(uint32_t playerId, Direction direction);
 		void playerCreatePrivateChannel(uint32_t playerId);
 		void playerChannelInvite(uint32_t playerId, const std::string &name);
 		void playerChannelExclude(uint32_t playerId, const std::string &name);
@@ -279,6 +287,7 @@ class Game {
 		void playerReceivePing(uint32_t playerId);
 		void playerReceivePingBack(uint32_t playerId);
 		void playerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
+		void forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir);
 		void playerStopAutoWalk(uint32_t playerId);
 		void playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint16_t fromItemId, const Position &toPos, uint8_t toStackPos, uint16_t toItemId);
 		void playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId);
@@ -354,6 +363,7 @@ class Game {
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string &buffer);
 
 		static void updatePremium(account::Account &account);
+		void updatePlayerHelpers(Player* player);
 
 		void cleanup();
 		void shutdown();
@@ -367,6 +377,7 @@ class Game {
 
 		void setBoostedName(std::string name) {
 			boostedCreature = name;
+			SPDLOG_INFO("Boosted creature: {}", name);
 		}
 
 		std::string getBoostedMonsterName() const {
@@ -403,6 +414,8 @@ class Game {
 
 		void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint8_t &effect);
 
+		void handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker);
+		void notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster);
 		bool combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent = false);
 		void applyCharmRune(const Monster* targetMonster, Player* attackerPlayer, Creature* target, const int32_t &realDamage) const;
 		void applyManaLeech(
@@ -563,6 +576,44 @@ class Game {
 		void sendUpdateCreature(const Creature* creature);
 		Item* wrapItem(Item* item);
 
+		/**
+		 * @brief Adds a player to the unique login map.
+		 * @details The function registers a player in the unique login map to ensure no duplicate logins.
+		 * If the player pointer is null, it logs an error and returns.
+		 *
+		 * @param player A pointer to the Player object to add.
+		 */
+		void addPlayerUniqueLogin(Player* player);
+
+		/**
+		 * @brief Gets a player from the unique login map using their name.
+		 * @details The function attempts to find a player in the unique login map using their name.
+		 * If the player's name is not found, the function returns a null pointer.
+		 * If an empty string is provided, it logs an error and returns a null pointer.
+		 *
+		 * @param playerName The name of the player to search for.
+		 * @return A pointer to the Player object if found, null otherwise.
+		 */
+		Player* getPlayerUniqueLogin(const std::string &playerName) const;
+
+		/**
+		 * @brief Removes a player from the unique login map using their name.
+		 * @details The function removes a player from the unique login map using their name.
+		 * If an empty string is provided, it logs an error and returns.
+		 *
+		 * @param playerName The name of the player to remove.
+		 */
+		void removePlayerUniqueLogin(const std::string &playerName);
+
+		/**
+		 * @brief Removes a player from the unique login map.
+		 * @details The function removes a player from the unique login map.
+		 * If the player pointer is null, it logs an error and returns.
+		 *
+		 * @param player A pointer to the Player object to remove.
+		 */
+		void removePlayerUniqueLogin(Player* player);
+
 	private:
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;
 		std::set<uint32_t> fiendishMonsters;
@@ -574,6 +625,7 @@ class Game {
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
 		void playerSpeakToNpc(Player* player, const std::string &text);
 
+		phmap::flat_hash_map<std::string, Player*> m_uniqueLoginPlayerNames;
 		phmap::flat_hash_map<uint32_t, Player*> players;
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
 		phmap::flat_hash_map<uint32_t, Guild*> guilds;

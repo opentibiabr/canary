@@ -33,7 +33,9 @@ function ferumbrasAscendantRagiaz.onUse(player, item, fromPosition, target, toPo
 		for _, pos in pairs(deathDragons) do
 			Game.createMonster('Death Dragon', pos, true, true)
 		end
+		return true
 	end
+	return false
 end
 
 ferumbrasAscendantRagiaz:uid(1023)

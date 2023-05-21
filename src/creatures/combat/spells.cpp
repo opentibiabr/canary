@@ -21,6 +21,11 @@ Spells::~Spells() = default;
 TalkActionResult_t Spells::playerSaySpell(Player* player, std::string &words) {
 	std::string str_words = words;
 
+	if (player->hasCondition(CONDITION_FEARED)) {
+		player->sendTextMessage(MESSAGE_FAILURE, "You are feared.");
+		return TALKACTION_FAILED;
+	}
+
 	// strip trailing spaces
 	trimString(str_words);
 
@@ -154,7 +159,7 @@ Spell* Spells::getSpellByName(const std::string &name) {
 	return spell;
 }
 
-RuneSpell* Spells::getRuneSpell(uint32_t id) {
+RuneSpell* Spells::getRuneSpell(uint16_t id) {
 	auto it = runes.find(id);
 	if (it == runes.end()) {
 		for (auto &rune : runes) {
@@ -210,7 +215,7 @@ InstantSpell* Spells::getInstantSpell(const std::string &words) {
 	return nullptr;
 }
 
-InstantSpell* Spells::getInstantSpellById(uint32_t spellId) {
+InstantSpell* Spells::getInstantSpellById(uint16_t spellId) {
 	for (auto &it : instants) {
 		if (it.second.getId() == spellId) {
 			return &it.second;
@@ -266,6 +271,14 @@ bool CombatSpell::castSpell(Creature* creature) {
 		pos = creature->getPosition();
 	}
 
+	if (soundCastEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_CASTSOUND, static_cast<uint32_t>(soundCastEffect));
+	}
+
+	if (soundImpactEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_IMPACTSOUND, static_cast<uint32_t>(soundImpactEffect));
+	}
+
 	combat->doCombat(creature, pos);
 	return true;
 }
@@ -290,6 +303,14 @@ bool CombatSpell::castSpell(Creature* creature, Creature* target) {
 		}
 
 		return executeCastSpell(creature, var);
+	}
+
+	if (soundCastEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_CASTSOUND, static_cast<uint32_t>(soundCastEffect));
+	}
+
+	if (soundImpactEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_IMPACTSOUND, static_cast<uint32_t>(soundImpactEffect));
 	}
 
 	if (combat->hasArea()) {
@@ -335,6 +356,11 @@ bool Spell::playerSpellCheck(Player* player) const {
 
 	if (player->hasFlag(PlayerFlags_t::IgnoreSpellCheck)) {
 		return true;
+	}
+
+	if (player->hasCondition(CONDITION_FEARED)) {
+		player->sendTextMessage(MESSAGE_FAILURE, "You are feared.");
+		return false;
 	}
 
 	if (!enabled) {
@@ -564,6 +590,10 @@ void Spell::postCastSpell(Player* player, bool finishedCast /*= true*/, bool pay
 
 		if (aggressive) {
 			player->addInFightTicks();
+		}
+
+		if (player && soundCastEffect != SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(player->getPosition(), soundCastEffect, soundImpactEffect, player);
 		}
 	}
 

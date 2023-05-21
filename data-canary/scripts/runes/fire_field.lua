@@ -10,8 +10,11 @@ function rune.onCastSpell(creature, var, isHotkey)
 	return combat:execute(creature, var)
 end
 
+rune:id(25)
 rune:group("attack")
 rune:name("fire field rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_FIRE_FIELD_RUNE)
 rune:runeId(3188)
 rune:allowFarUse(true)
 rune:setPzLocked(true)

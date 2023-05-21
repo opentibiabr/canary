@@ -190,6 +190,8 @@ function potions.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		target:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	end
 
+	player:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ITEM_USE_POTION, player:isInGhostMode() and nil or player)
+
 	if not configManager.getBoolean(configKeys.REMOVE_POTION_CHARGES) then
 		return true
 	end

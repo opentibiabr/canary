@@ -256,6 +256,28 @@ class Monster final : public Creature {
 			return mType->info.raceid;
 		}
 
+		// Hazard system
+		bool isOnHazardSystem() const {
+			return mType->info.hazardSystemCritChance != 0 || mType->info.canSpawnPod || mType->info.canDodge || mType->info.canDamageBoost;
+		}
+
+		bool getHazardSystemDodge() const {
+			return mType->info.canDodge;
+		}
+
+		bool getHazardSystemSpawnPod() const {
+			return mType->info.canSpawnPod;
+		}
+
+		bool getHazardSystemDamageBoost() const {
+			return mType->info.canDamageBoost;
+		}
+
+		uint16_t getHazardSystemCritChance() const {
+			return mType->info.hazardSystemCritChance;
+		}
+		// Hazard end
+
 		void updateTargetList();
 		void clearTargetList();
 		void clearFriendList();
@@ -302,6 +324,10 @@ class Monster final : public Creature {
 			return timeToChangeFiendish;
 		}
 
+		MonsterType* getMonsterType() const {
+			return mType;
+		}
+
 		void clearFiendishStatus();
 		bool canDropLoot() const;
 
@@ -330,6 +356,8 @@ class Monster final : public Creature {
 		uint32_t targetChangeTicks = 0;
 		uint32_t defenseTicks = 0;
 		uint32_t yellTicks = 0;
+		uint32_t soundTicks = 0;
+
 		int32_t minCombatValue = 0;
 		int32_t maxCombatValue = 0;
 		int32_t targetChangeCooldown = 0;
@@ -354,6 +382,7 @@ class Monster final : public Creature {
 
 		void addFriend(Creature* creature);
 		void removeFriend(Creature* creature);
+		void handleHazardSystem(Creature &creature) const;
 		void addTarget(Creature* creature, bool pushFront = false);
 		void removeTarget(Creature* creature);
 
@@ -384,6 +413,7 @@ class Monster final : public Creature {
 		void onThinkTarget(uint32_t interval);
 		void onThinkYell(uint32_t interval);
 		void onThinkDefense(uint32_t interval);
+		void onThinkSound(uint32_t interval);
 
 		bool isFriend(const Creature* creature) const;
 		bool isOpponent(const Creature* creature) const;

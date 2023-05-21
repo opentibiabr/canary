@@ -61,7 +61,8 @@ enum Resource_t : uint8_t {
 	RESOURCE_TASK_HUNTING = 0x32,
 	RESOURCE_FORGE_DUST = 0x46,
 	RESOURCE_FORGE_SLIVER = 0x47,
-	RESOURCE_FORGE_CORES = 0x48
+	RESOURCE_FORGE_CORES = 0x48,
+	RESOURCE_WHEEL_OF_DESTINY = 0x56
 };
 
 enum InspectObjectTypes : uint8_t {
@@ -90,6 +91,10 @@ enum MagicEffectsType_t : uint8_t {
 	MAGIC_EFFECTS_CREATE_DISTANCEEFFECT = 4,
 	// needs uint8_t and deltaX(int8_t), deltaY(int8_t) after type
 	MAGIC_EFFECTS_CREATE_DISTANCEEFFECT_REVERSED = 5,
+	// needs uint16_t after type
+	MAGIC_EFFECTS_CREATE_SOUND_MAIN_EFFECT = 6,
+	// needs uint8_t and uint16_t after type
+	MAGIC_EFFECTS_CREATE_SOUND_SECONDARY_EFFECT = 7,
 };
 
 enum ImpactAnalyzerAndTracker_t : uint8_t {

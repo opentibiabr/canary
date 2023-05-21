@@ -37,7 +37,7 @@ HIRELING_SKILLS = {
 }
 
 HIRELING_SEX = {
-	FEMALE = 0,
+	FEMALE = 2,
 	MALE = 1
 }
 
@@ -342,10 +342,9 @@ end
 function Hireling:spawn()
 	self.active = 1
 	-- Creating new hireling with player choose name
-	createHirelingType(self:getName())
+	createHirelingType("Hireling " .. self:getName())
 
-	local npc = Npc(Game.generateNpc(self:getName()))
-	npc:setName(self:getName())
+	local npc = Npc(Game.generateNpc("Hireling " .. self:getName()))
 	local creature = Creature(npc)
 	creature:setOutfit(self:getOutfit())
 	npc:setSpeechBubble(7)

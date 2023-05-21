@@ -347,11 +347,21 @@ std::string convertIPToString(uint32_t ip) {
 }
 
 std::string formatDate(time_t time) {
-	return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
+	try {
+		return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
+	} catch (const std::out_of_range &exception) {
+		SPDLOG_ERROR("Failed to format date with error code {}", exception.what());
+	}
+	return {};
 }
 
 std::string formatDateShort(time_t time) {
-	return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+	try {
+		return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+	} catch (const std::out_of_range &exception) {
+		SPDLOG_ERROR("Failed to format date short with error code {}", exception.what());
+	}
+	return {};
 }
 
 std::time_t getTimeNow() {
@@ -993,7 +1003,9 @@ CombatType_t indexToCombatType(size_t v) {
 }
 
 ItemAttribute_t stringToItemAttribute(const std::string &str) {
-	if (str == "aid") {
+	if (str == "store") {
+		return ItemAttribute_t::STORE;
+	} else if (str == "aid") {
 		return ItemAttribute_t::ACTIONID;
 	} else if (str == "uid") {
 		return ItemAttribute_t::UNIQUEID;
@@ -1043,7 +1055,11 @@ ItemAttribute_t stringToItemAttribute(const std::string &str) {
 		return ItemAttribute_t::DURATION_TIMESTAMP;
 	} else if (str == "amount") {
 		return ItemAttribute_t::AMOUNT;
+	} else if (str == "tier") {
+		return ItemAttribute_t::TIER;
 	}
+
+	SPDLOG_ERROR("[{}] attribute type {} is not registered", __FUNCTION__, str);
 	return ItemAttribute_t::NONE;
 }
 
@@ -1362,7 +1378,9 @@ void capitalizeWords(std::string &source) {
  */
 void consoleHandlerExit() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
-	getchar();
+	if (isatty(STDIN_FILENO)) {
+		getchar();
+	}
 	return;
 }
 

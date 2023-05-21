@@ -8,10 +8,7 @@
 local reload = TalkAction("/reload")
 
 function reload.onSay(player, words, param)
-	if player:reloadTalkaction(param) then
-		return true
-	end
-	return false
+	return player:reloadTalkaction(words, param)
 end
 
 reload:separator(" ")

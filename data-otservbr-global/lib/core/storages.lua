@@ -85,7 +85,8 @@ Storage = {
 	GhostShipQuest = 30005,
 	OrcKingGreeting = 30006,
 	MarkwinGreeting = 30007,
-	-- empty = 30008
+	-- EmoteSpells Storage cannot be changed, it is set in source code
+	EmoteSpells = 30008,
 	WagonTicket = 30009,
 	BloodHerbQuest = 30010,
 	firstMageWeapon = 30011,
@@ -212,7 +213,8 @@ Storage = {
 		AccessDoor = 50043,
 		NeferiTheSpyTimer = 50044,
 		SisterHetaiTimer = 55045,
-		AmenefTimer = 55046
+		AmenefTimer = 55046,
+		CatacombDoors = 55047
 	},
 	TheSecretLibrary = {
 		-- Reserved storage from 50050 - 50074
@@ -2871,14 +2873,6 @@ Storage = {
 		BagOfOrientalSpices = 63976,
 		TibiorasBox = 63977
 	},
-	-- Reserved Storages 64000 - 65000
-	BosstiaryCooldown = {
-		EarlOsam = 64000,
-		CountVlarkorth = 64001,
-		LordAzaram = 64002,
-		SirBaelocNictros = 64003,
-		DukeKrule = 64004
-	}
 }
 
 GlobalStorage = {

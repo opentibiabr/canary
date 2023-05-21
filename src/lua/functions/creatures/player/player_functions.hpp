@@ -207,6 +207,10 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "addTibiaCoins", PlayerFunctions::luaPlayerAddTibiaCoins);
 			registerMethod(L, "Player", "removeTibiaCoins", PlayerFunctions::luaPlayerRemoveTibiaCoins);
 
+			registerMethod(L, "Player", "getTransferableCoins", PlayerFunctions::luaPlayerGetTransferableCoins);
+			registerMethod(L, "Player", "addTransferableCoins", PlayerFunctions::luaPlayerAddTransferableCoins);
+			registerMethod(L, "Player", "removeTransferableCoins", PlayerFunctions::luaPlayerRemoveTransferableCoins);
+
 			registerMethod(L, "Player", "hasBlessing", PlayerFunctions::luaPlayerHasBlessing);
 			registerMethod(L, "Player", "addBlessing", PlayerFunctions::luaPlayerAddBlessing);
 			registerMethod(L, "Player", "removeBlessing", PlayerFunctions::luaPlayerRemoveBlessing);
@@ -294,6 +298,19 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "setRemoveBossTime", PlayerFunctions::luaPlayerSetRemoveBossTime);
 			registerMethod(L, "Player", "getSlotBossId", PlayerFunctions::luaPlayerGetSlotBossId);
 			registerMethod(L, "Player", "getBossBonus", PlayerFunctions::luaPlayerGetBossBonus);
+			registerMethod(L, "Player", "sendBosstiaryCooldownTimer", PlayerFunctions::luaPlayerBosstiaryCooldownTimer);
+
+			registerMethod(L, "Player", "sendSingleSoundEffect", PlayerFunctions::luaPlayerSendSingleSoundEffect);
+			registerMethod(L, "Player", "sendDoubleSoundEffect", PlayerFunctions::luaPlayerSendDoubleSoundEffect);
+
+			registerMethod(L, "Player", "getName", PlayerFunctions::luaPlayerGetName);
+
+			registerMethod(L, "Player", "hasGroupFlag", PlayerFunctions::luaPlayerHasGroupFlag);
+			registerMethod(L, "Player", "setGroupFlag", PlayerFunctions::luaPlayerSetGroupFlag);
+			registerMethod(L, "Player", "removeGroupFlag", PlayerFunctions::luaPlayerRemoveGroupFlag);
+
+			registerMethod(L, "Player", "addHazardSystemPoints", PlayerFunctions::luaPlayerAddHazardSystemPoints);
+			registerMethod(L, "Player", "getHazardSystemPoints", PlayerFunctions::luaPlayerGetHazardSystemPoints);
 
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
@@ -490,6 +507,10 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerAddTibiaCoins(lua_State* L);
 		static int luaPlayerRemoveTibiaCoins(lua_State* L);
 
+		static int luaPlayerGetTransferableCoins(lua_State* L);
+		static int luaPlayerAddTransferableCoins(lua_State* L);
+		static int luaPlayerRemoveTransferableCoins(lua_State* L);
+
 		static int luaPlayerHasBlessing(lua_State* L);
 		static int luaPlayerAddBlessing(lua_State* L);
 		static int luaPlayerRemoveBlessing(lua_State* L);
@@ -580,6 +601,20 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerSetRemoveBossTime(lua_State* L);
 		static int luaPlayerGetSlotBossId(lua_State* L);
 		static int luaPlayerGetBossBonus(lua_State* L);
+		static int luaPlayerBosstiaryCooldownTimer(lua_State* L);
+
+		static int luaPlayerSendSingleSoundEffect(lua_State* L);
+		static int luaPlayerSendDoubleSoundEffect(lua_State* L);
+
+		static int luaPlayerGetName(lua_State* L);
+
+		static int luaPlayerHasGroupFlag(lua_State* L);
+		static int luaPlayerSetGroupFlag(lua_State* L);
+		static int luaPlayerRemoveGroupFlag(lua_State* L);
+
+		// Hazard system
+		static int luaPlayerAddHazardSystemPoints(lua_State* L);
+		static int luaPlayerGetHazardSystemPoints(lua_State* L);
 
 		friend class CreatureFunctions;
 };

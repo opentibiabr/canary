@@ -18,8 +18,11 @@ function rune.onCastSpell(creature, var)
 	return true
 end
 
+rune:id(54)
 rune:group("support")
 rune:name("paralyze rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_PARALYSE_RUNE)
 rune:runeId(3165)
 rune:allowFarUse(true)
 rune:charges(1)
@@ -27,7 +30,7 @@ rune:setPzLocked(true)
 rune:level(54)
 rune:magicLevel(18)
 rune:cooldown(6 * 1000)
-rune:groupCooldown(6 * 1000)
+rune:groupCooldown(2 * 1000)
 rune:mana(1400)
 rune:needTarget(true)
 rune:isBlocking(true) -- True = Solid / False = Creature

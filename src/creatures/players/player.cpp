@@ -2209,7 +2209,7 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 	}
 
 	// Hazard system experience
-	const Monster* monster = target->getMonster() ? target->getMonster() : nullptr;
+	const Monster* monster = target && target->getMonster() ? target->getMonster() : nullptr;
 	bool handleHazardExperience = monster && monster->isOnHazardSystem() && getHazardSystemPoints() > 0;
 	if (handleHazardExperience) {
 		exp += (exp * (1.75 * getHazardSystemPoints() * g_configManager().getNumber(HAZARD_EXP_BONUS_MULTIPLIER))) / 100.;
@@ -3421,6 +3421,11 @@ Cylinder* Player::queryDestination(int32_t &index, const Thing &thing, Item** de
 	Thing* destThing = getThing(index);
 	if (destThing) {
 		*destItem = destThing->getItem();
+	}
+
+	// force quiver/shield any slot right to player cylinder
+	if (index == CONST_SLOT_RIGHT) {
+		return this;
 	}
 
 	Cylinder* subCylinder = dynamic_cast<Cylinder*>(destThing);

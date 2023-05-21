@@ -589,7 +589,7 @@ int ItemTypeFunctions::luaItemTypeHasSubType(lua_State* L) {
 }
 
 int ItemTypeFunctions::luaItemTypeGetVocationString(lua_State* L) {
-	// itemType:getWrapableTo()
+	// itemType:getVocationString()
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		pushString(L, itemType->vocationString);

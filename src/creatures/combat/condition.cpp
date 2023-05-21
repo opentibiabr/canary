@@ -468,9 +468,7 @@ void ConditionAttributes::serialize(PropWriteStream &propWriteStream) {
 	for (size_t i = 0; i < COMBAT_COUNT; ++i) {
 		propWriteStream.write<uint8_t>(CONDITIONATTR_ABSORBS);
 		propWriteStream.write<int32_t>(absorbs[i]);
-	}
 
-	for (size_t i = 0; i < COMBAT_COUNT; ++i) {
 		propWriteStream.write<uint8_t>(CONDITIONATTR_INCREASES);
 		propWriteStream.write<int32_t>(increases[i]);
 	}

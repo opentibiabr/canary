@@ -36,8 +36,8 @@ local potionFunctions = {
 			end
 		end
 	end,
-	[36725] = function(p) 
-		p:setStamina(p:getStamina() + 60) 
+	[36725] = function(p)
+		p:setStamina(p:getStamina() + 60)
 	end,
 }
 
@@ -61,24 +61,21 @@ for id, data in pairs(potionConditionsConfig) do
 		table.insert(potionConditions[id], condition)
 	end
 end
-		
-		
-			
 
 local tibiaDromePotions = Action()
 
 function tibiaDromePotions.onUse(cid, item, fromPosition, itemEx, toPosition)
-    local player = Player(cid)
-    if (not player) then
-        return false
-    end
+	local player = Player(cid)
+	if (not player) then
+		return false
+	end
 	local itemID = item:getId()
 	if player:getStorageValue(itemID) >= os.time() then
 		player:sendCancelMessage("You can only use this potion once every 24 hours.")
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return true
 	end
-	
+
 	if player:getCondition(CONDITION_TIBIADROMEPOTIONS, CONDITIONID_DEFAULT, itemID) then
 		player:sendCancelMessage("You still have the effects from this potion.")
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
@@ -97,7 +94,7 @@ function tibiaDromePotions.onUse(cid, item, fromPosition, itemEx, toPosition)
 	if potionFunction then
 		potionFunction(player)
 	end
-    return true
+	return true
 end
 
 for itemid = 36723, 36742 do

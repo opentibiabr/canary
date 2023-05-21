@@ -119,21 +119,22 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string &name) {
 	return true;
 }
 
-bool IOLoginData::loadPlayerById(Player* player, uint32_t id) {
+// The boolean "disable" will desactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
+bool IOLoginData::loadPlayerById(Player* player, uint32_t id, bool disable /* = true*/) {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT * FROM `players` WHERE `id` = " << id;
-	return loadPlayer(player, db.storeQuery(query.str()));
+	return loadPlayer(player, db.storeQuery(query.str()), disable);
 }
 
-bool IOLoginData::loadPlayerByName(Player* player, const std::string &name) {
+bool IOLoginData::loadPlayerByName(Player* player, const std::string &name, bool disable /* = true*/) {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT * FROM `players` WHERE `name` = " << db.escapeString(name);
-	return loadPlayer(player, db.storeQuery(query.str()));
+	return loadPlayer(player, db.storeQuery(query.str()), disable);
 }
 
-bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
+bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /* = true*/) {
 	if (!result || !player) {
 		return false;
 	}
@@ -587,6 +588,11 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 		do {
 			player->addStorageValue(result->getNumber<uint32_t>("key"), result->getNumber<int32_t>("value"), true);
 		} while (result->next());
+	}
+
+	// We will not load the information from here on down, as they are functions that are not needed for the player preload
+	if (disable) {
+		return;
 	}
 
 	// load vip

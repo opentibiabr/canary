@@ -80,7 +80,7 @@ function spell.onCastSpell(creature, var)
 
 	var.instantName = "Divine Grenade Cast"
 	if combatCast:execute(creature, var) then
-		creature:getTile():getPosition():sendMagicEffect(CONST_ME_DIVINE_GRENADE)
+		creature:getPosition():sendMagicEffect(CONST_ME_DIVINE_GRENADE)
 		local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 258)
 		condition:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 		creature:addCondition(condition)

@@ -1240,9 +1240,9 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 
 				ss.str("");
 				ss << getCombatName(indexToCombatType(i)) << ' '
-                                            << std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
+				   << std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
 				descriptions.emplace_back("Protection", ss.str());
-        }
+			}
 			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
 				if (it.abilities->fieldAbsorbPercent[i] == 0) {
 					continue;
@@ -1635,7 +1635,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 
 				ss.str("");
 				ss << getCombatName(indexToCombatType(i)) << ' '
-											<< std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
+				   << std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
 				descriptions.emplace_back("Protection", ss.str());
 			}
 
@@ -2402,7 +2402,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 			}
 
 			if (!begin) {
-			s << ')';
+				s << ')';
 			}
 		} else if (it.weaponType != WEAPON_AMMO) {
 			bool begin = true;
@@ -2465,8 +2465,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 					if (begin) {
 						begin = false;
 						s << " (";
-					}
-					else {
+					} else {
 						s << ", ";
 					}
 					s << getSkillName(i) << ' ';
@@ -2867,8 +2866,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 				if (begin) {
 					begin = false;
 					s << " (";
-				}
-				else {
+				} else {
 					s << ", ";
 				}
 

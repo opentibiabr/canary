@@ -404,7 +404,7 @@ void ConditionAttributes::addCondition(Creature* creature, const Condition* addC
 		// Remove the old condition
 		endCondition(creature);
 
-		//Apply the new one
+		// Apply the new one
 		memcpy(skills, conditionAttrs.skills, sizeof(skills));
 		memcpy(skillsPercent, conditionAttrs.skillsPercent, sizeof(skillsPercent));
 		memcpy(stats, conditionAttrs.stats, sizeof(stats));
@@ -441,8 +441,7 @@ bool ConditionAttributes::unserializeProp(ConditionAttr_t attr, PropStream &prop
 		return propStream.read<int32_t>(buffs[currentBuff++]);
 	} else if (attr == CONDITIONATTR_ABSORBS) {
 		return propStream.read<int32_t>(absorbs[currentAbsorb++]);
-	}
-	else if (attr == CONDITIONATTR_INCREASES) {
+	} else if (attr == CONDITIONATTR_INCREASES) {
 		return propStream.read<int32_t>(increases[currentIncrease++]);
 	}
 	return Condition::unserializeProp(attr, propStream);
@@ -568,18 +567,16 @@ void ConditionAttributes::updateSkills(Player* player) {
 	}
 }
 
-void ConditionAttributes::updatePercentAbsorbs(Creature* creature)
-{
+void ConditionAttributes::updatePercentAbsorbs(Creature* creature) {
 	for (uint8_t i = 0; i < COMBAT_COUNT; i++) {
 		if (absorbsPercent[i] == 0) {
 			continue;
 		}
-	absorbs[i] = std::round((100 - creature->getAbsorbPercent(indexToCombatType(i))) * absorbsPercent[i] / 100.);
+		absorbs[i] = std::round((100 - creature->getAbsorbPercent(indexToCombatType(i))) * absorbsPercent[i] / 100.);
 	}
 }
 
-void ConditionAttributes::updateAbsorbs(Creature* creature)
-{
+void ConditionAttributes::updateAbsorbs(Creature* creature) {
 	for (uint8_t i = 0; i < COMBAT_COUNT; i++) {
 		if (absorbs[i] == 0) {
 			continue;
@@ -588,18 +585,16 @@ void ConditionAttributes::updateAbsorbs(Creature* creature)
 	}
 }
 
-void ConditionAttributes::updatePercentIncreases(Creature* creature)
-{
+void ConditionAttributes::updatePercentIncreases(Creature* creature) {
 	for (uint8_t i = 0; i < COMBAT_COUNT; i++) {
 		if (increasesPercent[i] == 0) {
 			continue;
 		}
-	increases[i] = std::round((100 - creature->getIncreasePercent(indexToCombatType(i))) * increasesPercent[i] / 100.);
+		increases[i] = std::round((100 - creature->getIncreasePercent(indexToCombatType(i))) * increasesPercent[i] / 100.);
 	}
 }
 
-void ConditionAttributes::updateIncreases(Creature* creature)
-{
+void ConditionAttributes::updateIncreases(Creature* creature) {
 	for (uint8_t i = 0; i < COMBAT_COUNT; i++) {
 		if (increases[i] == 0) {
 			continue;

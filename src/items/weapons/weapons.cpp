@@ -377,8 +377,8 @@ bool WeaponMelee::useWeapon(Player* player, Item* item, Creature* target) const 
 
 	int32_t cleavePercent = player->getCleavePercent(true);
 	if (cleavePercent > 0) {
-		const Position& targetPos = target->getPosition();
-		const Position& playerPos = player->getPosition();
+		const Position &targetPos = target->getPosition();
+		const Position &playerPos = player->getPosition();
 		if (playerPos != targetPos) {
 			Position firstCleaveTargetPos = targetPos;
 			Position secondCleaveTargetPos = targetPos;
@@ -419,7 +419,6 @@ bool WeaponMelee::useWeapon(Player* player, Item* item, Creature* target) const 
 				}
 			}
 		}
-
 	}
 
 	internalUseWeapon(player, item, target, damageModifier);
@@ -535,8 +534,8 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 	}
 
 	bool perfectShot = false;
-	const Position& playerPos = player->getPosition();
-	const Position& targetPos = target->getPosition();
+	const Position &playerPos = player->getPosition();
+	const Position &targetPos = target->getPosition();
 	int32_t distanceX = Position::getDistanceX(targetPos, playerPos);
 	int32_t distanceY = Position::getDistanceY(targetPos, playerPos);
 	int32_t damageX = player->getPerfectShotDamage(distanceX);
@@ -557,7 +556,7 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 		chance = 100;
 		perfectShot = true;
 	} else if (it.hitChance == 0) {
-		//hit chance is based on distance to target and distance skill
+		// hit chance is based on distance to target and distance skill
 		uint32_t skill = player->getSkillLevel(SKILL_DISTANCE);
 		uint32_t distance = std::max<uint32_t>(distanceX, distanceY);
 

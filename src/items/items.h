@@ -47,11 +47,11 @@ struct Abilities {
 		int32_t reflectFlat[COMBAT_COUNT] = { 0 };
 		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
 
-		//magic shield capacity
+		// magic shield capacity
 		int32_t magicShieldCapacityPercent = 0;
 		int32_t magicShieldCapacityFlat = 0;
 
-		//cleave
+		// cleave
 		int32_t cleavePercent = 0;
 
 		// perfect shot

@@ -4987,9 +4987,9 @@ int32_t Player::getCleavePercent(bool useCharges) const {
 			continue;
 		}
 
-		const ItemType& it = Item::items[item->getID()];
+		const ItemType &it = Item::items[item->getID()];
 		if (it.abilities) {
-			const int32_t& itemValue = it.abilities->cleavePercent;
+			const int32_t &itemValue = it.abilities->cleavePercent;
 			if (itemValue != 0) {
 				result += itemValue;
 				if (useCharges) {
@@ -5019,7 +5019,7 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 			continue;
 		}
 
-		const ItemType& it = Item::items[item->getID()];
+		const ItemType &it = Item::items[item->getID()];
 		if (it.abilities) {
 			if (it.abilities->perfectShotRange == range) {
 				result += it.abilities->perfectShotDamage;
@@ -5047,7 +5047,7 @@ int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) c
 			continue;
 		}
 
-		const ItemType& it = Item::items[item->getID()];
+		const ItemType &it = Item::items[item->getID()];
 		if (it.abilities) {
 			int32_t itemValue = it.abilities->specializedMagicLevel[combatTypeToIndex(combat)];
 			if (itemValue != 0) {
@@ -5076,7 +5076,7 @@ int32_t Player::getMagicShieldCapacityFlat(bool useCharges) const {
 			continue;
 		}
 
-		const ItemType& it = Item::items[item->getID()];
+		const ItemType &it = Item::items[item->getID()];
 		if (it.abilities) {
 			int32_t itemValue = it.abilities->magicShieldCapacityFlat;
 			if (itemValue != 0) {
@@ -5105,7 +5105,7 @@ int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 			continue;
 		}
 
-		const ItemType& it = Item::items[item->getID()];
+		const ItemType &it = Item::items[item->getID()];
 		if (it.abilities) {
 			int32_t itemValue = it.abilities->magicShieldCapacityPercent;
 			if (itemValue != 0) {
@@ -5134,7 +5134,7 @@ int32_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
 			continue;
 		}
 
-		const ItemType& it = Item::items[item->getID()];
+		const ItemType &it = Item::items[item->getID()];
 		if (it.abilities) {
 			int32_t itemValue = it.abilities->reflectPercent[combatTypeToIndex(combat)];
 			if (itemValue != 0) {
@@ -5163,7 +5163,7 @@ int32_t Player::getReflectFlat(CombatType_t combat, bool useCharges) const {
 			continue;
 		}
 
-		const ItemType& it = Item::items[item->getID()];
+		const ItemType &it = Item::items[item->getID()];
 		if (it.abilities) {
 			int32_t itemValue = it.abilities->reflectFlat[combatTypeToIndex(combat)];
 			if (itemValue != 0) {

@@ -382,7 +382,7 @@ class Item : virtual public Thing, public ItemProperties {
 		int32_t getSpecializedMagicLevel(CombatType_t combat) const {
 			return items[id].abilities->specializedMagicLevel[combatTypeToIndex(combat)];
 		}
-		
+
 		int32_t getAttack() const {
 			if (hasAttribute(ItemAttribute_t::ATTACK)) {
 				return getAttribute<int32_t>(ItemAttribute_t::ATTACK);

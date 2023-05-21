@@ -32,7 +32,8 @@ GameStore.OfferTypes = {
 	OFFER_TYPE_HIRELING_SEXCHANGE = 22,
 	OFFER_TYPE_HIRELING_SKILL = 23,
 	OFFER_TYPE_HIRELING_OUTFIT = 24,
-	OFFER_TYPE_HUNTINGSLOT = 25
+	OFFER_TYPE_HUNTINGSLOT = 25,
+	OFFER_TYPE_ITEM_BED = 26
 }
 
 GameStore.SubActions = {
@@ -94,6 +95,7 @@ function convertType(type)
 		[GameStore.OfferTypes.OFFER_TYPE_HOUSE] = GameStore.ConverType.SHOW_ITEM,
 		[GameStore.OfferTypes.OFFER_TYPE_CHARGES] = GameStore.ConverType.SHOW_ITEM,
 		[GameStore.OfferTypes.OFFER_TYPE_HIRELING] = GameStore.ConverType.SHOW_HIRELING,
+		[GameStore.OfferTypes.OFFER_TYPE_ITEM_BED] = GameStore.ConverType.SHOW_NONE,
 	}
 
 	if not types[type] then
@@ -224,7 +226,7 @@ function onRecvbyte(player, msg, byte)
 
 	if byte == GameStore.RecivedPackets.C_StoreEvent then
 	elseif byte == GameStore.RecivedPackets.C_TransferCoins then
-		parseTransferCoins(player:getId(), msg)
+		parseTransferableCoins(player:getId(), msg)
 	elseif byte == GameStore.RecivedPackets.C_OpenStore then
 		parseOpenStore(player:getId(), msg)
 	elseif byte == GameStore.RecivedPackets.C_RequestStoreOffers then
@@ -246,7 +248,7 @@ function onRecvbyte(player, msg, byte)
 	return true
 end
 
-function parseTransferCoins(playerId, msg)
+function parseTransferableCoins(playerId, msg)
 	local player = Player(playerId)
 	if not player then
 		return false
@@ -273,8 +275,8 @@ function parseTransferCoins(playerId, msg)
 		return addPlayerEvent(sendStoreError, 350, playerId, GameStore.StoreErrors.STORE_ERROR_TRANSFER, "You cannot transfer coin to a character in the same account.")
 	end
 
-	db.query("UPDATE `accounts` SET `coins` = `coins` + " .. amount .. " WHERE `id` = " .. accountId)
-	player:removeCoinsBalance(amount)
+	db.query("UPDATE `accounts` SET `coins_transferable` = `coins_transferable` + " .. amount .. " WHERE `id` = " .. accountId)
+	player:removeTransferableCoinsBalance(amount)
 	addPlayerEvent(sendStorePurchaseSuccessful, 550, playerId, "You have transfered " .. amount .. " coins to " .. reciver .. " successfully")
 
 	-- Adding history for both reciver/sender
@@ -422,6 +424,7 @@ function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_SEXCHANGE   then GameStore.processHirelingChangeSexPurchase(player, offer)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL       then GameStore.processHirelingSkillPurchase(player, offer)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT      then GameStore.processHirelingOutfitPurchase(player, offer)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_BED             then GameStore.processHouseRelatedPurchase(player, offer.itemtype, offer.count)
 		else
 			-- This should never happen by our convention, but just in case the guarding condition is messed up...
 			error({code = 0, message = "This offer is unavailable [2]"})
@@ -1007,7 +1010,7 @@ function sendStoreTransactionHistory(playerId, page, entriesPerPage)
 		end
 		msg:addU32(entry.time)
 		msg:addByte(entry.mode) -- 0 = normal, 1 = gift, 2 = refund
-		msg:addU32(entry.amount)
+		msg:add32(entry.amount)
 		if not oldProtocol then
 			msg:addByte(0x0) -- 0 = transferable tibia coin, 1 = normal tibia coin
 		end
@@ -1084,7 +1087,7 @@ function sendUpdatedStoreBalances(playerId)
 	msg:addByte(0x01)
 
 	msg:addU32(player:getCoinsBalance()) -- Tibia Coins
-	msg:addU32(player:getCoinsBalance()) -- How many are Transferable
+	msg:addU32(player:getTransferableCoinsBalance()) -- How many are Transferable
 	if not oldProtocol then
 		msg:addU32(player:getCoinsBalance()) -- How many are reserved for a Character Auction
 	end
@@ -1243,10 +1246,11 @@ GameStore.retrieveHistoryEntries = function(accountId, currentPage, entriesPerPa
 	if resultId ~= false then
 		repeat
 			local entry = {
-				mode = result.getNumber(resultId, "mode"),
-				description = result.getString(resultId, "description"),
-				amount = result.getNumber(resultId, "coin_amount"),
-				time = result.getNumber(resultId, "time"),
+				mode = Result.getNumber(resultId, "mode"),
+				description = Result.getString(resultId, "description"),
+				amount = Result.getNumber(resultId, "coin_amount"),
+				type = Result.getNumber(resultId, "coin_type"),
+				time = Result.getNumber(resultId, "time"),
 			}
 			table.insert(entries, entry)
 		until not Result.next(resultId)
@@ -1824,6 +1828,41 @@ function Player.addCoinsBalance(self, coins, update)
 	return true
 end
 
+
+--- Transfer Tibia Coins
+function Player.getTransferableCoinsBalance(self)
+	resultId = db.storeQuery("SELECT `coins_transferable` FROM `accounts` WHERE `id` = " .. self:getAccountId())
+	if not resultId then return 0 end
+	return Result.getNumber(resultId, "coins_transferable")
+end
+
+function Player.setTransferableCoinsBalance(self, coins)
+	db.query("UPDATE `accounts` SET `coins_transferable` = " .. coins .. " WHERE `id` = " .. self:getAccountId())
+	return true
+end
+
+function Player.canRemoveTransferableCoins(self, coins)
+	if self:getTransferableCoinsBalance() < coins then
+		return false
+	end
+	return true
+end
+
+function Player.removeTransferableCoinsBalance(self, coins)
+	if self:canRemoveTransferableCoins(coins) then
+		return self:setTransferableCoinsBalance(self:getTransferableCoinsBalance() - coins)
+	end
+
+	return false
+end
+
+function Player.addTransferableCoinsBalance(self, coins, update)
+	self:setTransferableCoinsBalance(self:getTransferableCoinsBalance() + coins)
+	if update then sendStoreBalanceUpdating(self, true) end
+	return true
+end
+
+
 --- Support Functions
 function Player.makeCoinTransaction(self, offer, desc)
 	local op = true
@@ -1833,7 +1872,7 @@ function Player.makeCoinTransaction(self, offer, desc)
 	else
 		desc = offer.name
 	end
-	
+
 	-- Remove coins
 	op = self:removeCoinsBalance(offer.price)
 

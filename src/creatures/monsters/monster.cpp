@@ -303,6 +303,14 @@ void Monster::removeFriend(Creature* creature) {
 	}
 }
 
+void Monster::handleHazardSystem(Creature &creature) const {
+	// Hazard system (Icon UI)
+	auto player = creature.getPlayer();
+	if (player && isOnHazardSystem()) {
+		player->incrementeHazardSystemReference();
+	}
+}
+
 void Monster::addTarget(Creature* creature, bool pushFront /* = false*/) {
 	assert(creature != this);
 	if (std::find(targetList.begin(), targetList.end(), creature) == targetList.end()) {
@@ -314,6 +322,8 @@ void Monster::addTarget(Creature* creature, bool pushFront /* = false*/) {
 		}
 		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer())
 			totalPlayersOnScreen++;
+
+		handleHazardSystem(*creature);
 	}
 }
 
@@ -327,6 +337,9 @@ void Monster::removeTarget(Creature* creature) {
 		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen--;
 		}
+
+		handleHazardSystem(*creature);
+
 		creature->decrementReferenceCounter();
 		targetList.erase(it);
 	}
@@ -348,6 +361,7 @@ void Monster::updateTargetList() {
 	while (targetIterator != targetList.end()) {
 		Creature* creature = *targetIterator;
 		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
+			handleHazardSystem(*creature);
 			creature->decrementReferenceCounter();
 			targetIterator = targetList.erase(targetIterator);
 		} else {
@@ -374,6 +388,7 @@ void Monster::clearTargetList() {
 
 void Monster::clearFriendList() {
 	for (Creature* creature : friendList) {
+		handleHazardSystem(*creature);
 		creature->decrementReferenceCounter();
 	}
 	friendList.clear();

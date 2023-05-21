@@ -1060,7 +1060,7 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId) {
 	}
 
 	// We need to make room for supply stash on 12+ protocol versions and remove it for 10x.
-	bool createSupplyStash = getProtocolVersion() > 1200;
+	bool createSupplyStash = !client->oldProtocol;
 
 	DepotLocker* depotLocker = new DepotLocker(ITEM_LOCKER, createSupplyStash ? 4 : 3);
 	depotLocker->setDepotId(depotId);
@@ -1954,8 +1954,8 @@ void Player::onThink(uint32_t interval) {
 
 	// Momentum (cooldown resets)
 	triggerMomentum();
-
-	if (!getTile()->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining()) {
+	auto playerTile = getTile();
+	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining()) {
 		idleTime += interval;
 		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
 		if (idleTime > (kickAfterMinutes * 60000) + 60000) {
@@ -2113,12 +2113,19 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 		return;
 	}
 
+	// Hazard system experience
+	const Monster* monster = target && target->getMonster() ? target->getMonster() : nullptr;
+	bool handleHazardExperience = monster && monster->isOnHazardSystem() && getHazardSystemPoints() > 0;
+	if (handleHazardExperience) {
+		exp += (exp * (1.75 * getHazardSystemPoints() * g_configManager().getNumber(HAZARD_EXP_BONUS_MULTIPLIER))) / 100.;
+	}
+
 	experience += exp;
 
 	if (sendText) {
 		std::string expString = fmt::format("{} experience point{}.", exp, (exp != 1 ? "s" : ""));
 
-		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString);
+		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString + (handleHazardExperience ? " (Hazard)" : ""));
 		message.position = position;
 		message.primary.value = exp;
 		message.primary.color = TEXTCOLOR_WHITE_EXP;
@@ -2734,6 +2741,8 @@ void Player::despawn() {
 
 	getParent()->postRemoveNotification(this, nullptr, 0);
 
+	g_game().removePlayer(this);
+
 	// show player as pending
 	for (const auto &[key, player] : g_game().getPlayers()) {
 		player->notifyStatusChange(this, VIPSTATUS_PENDING, false);
@@ -3328,6 +3337,11 @@ Cylinder* Player::queryDestination(int32_t &index, const Thing &thing, Item** de
 		*destItem = destThing->getItem();
 	}
 
+	// force quiver/shield any slot right to player cylinder
+	if (index == CONST_SLOT_RIGHT) {
+		return this;
+	}
+
 	Cylinder* subCylinder = dynamic_cast<Cylinder*>(destThing);
 	if (subCylinder) {
 		index = INDEX_WHEREEVER;
@@ -3339,6 +3353,9 @@ Cylinder* Player::queryDestination(int32_t &index, const Thing &thing, Item** de
 }
 
 void Player::addThing(int32_t index, Thing* thing) {
+	if (!thing)
+		return /*RETURNVALUE_NOTPOSSIBLE*/;
+
 	if (index < CONST_SLOT_FIRST || index > CONST_SLOT_LAST) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
@@ -3981,6 +3998,9 @@ void Player::internalAddThing(Thing* thing) {
 }
 
 void Player::internalAddThing(uint32_t index, Thing* thing) {
+	if (!thing)
+		return;
+
 	Item* item = thing->getItem();
 	if (!item) {
 		return;
@@ -4579,11 +4599,16 @@ bool Player::canLogout() {
 		return false;
 	}
 
-	if (getTile()->hasFlag(TILESTATE_NOLOGOUT)) {
+	auto tile = getTile();
+	if (!tile) {
 		return false;
 	}
 
-	if (getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+	if (tile->hasFlag(TILESTATE_NOLOGOUT)) {
+		return false;
+	}
+
+	if (tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 		return true;
 	}
 
@@ -5025,6 +5050,10 @@ void Player::setPremiumDays(int32_t v) {
 
 void Player::setTibiaCoins(int32_t v) {
 	coinBalance = v;
+}
+
+void Player::setTransferableTibiaCoins(int32_t v) {
+	coinTransferableBalance = v;
 }
 
 PartyShields_t Player::getPartyShield(const Player* player) const {
@@ -5995,7 +6024,7 @@ void Player::initializeTaskHunting() {
 		}
 	}
 
-	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && getProtocolVersion() > 1200) {
+	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && !client->oldProtocol) {
 		client->writeToOutputBuffer(g_ioprey().GetTaskHuntingBaseDate());
 	}
 }
@@ -7104,6 +7133,208 @@ SoundEffect_t Player::getAttackSoundEffect() const {
 	}
 
 	return SoundEffect_t::SILENCE;
+}
+
+/*******************************************************************************
+ * Hazard system
+ ******************************************************************************/
+
+void Player::addHazardSystemPoints(int32_t amount) {
+	addStorageValue(STORAGEVALUE_HAZARDCOUNT, std::max<int32_t>(0, std::min<int32_t>(0xFFFF, static_cast<int32_t>(getHazardSystemPoints()) + amount)), true);
+	reloadHazardSystemPointsCounter = true;
+	if (hazardSystemReferenceCounter > 0) {
+		const auto tile = getTile();
+		if (!tile) {
+			return;
+		}
+
+		SpectatorHashSet spectators;
+		g_game().map.getSpectators(spectators, tile->getPosition(), true);
+		for (Creature* spectator : spectators) {
+			if (!spectator || spectator == this) {
+				continue;
+			}
+
+			Player* player = spectator->getPlayer();
+			if (player && !client->oldProtocol) {
+				player->sendCreatureIcon(getPlayer());
+			}
+		}
+
+		if (client && !client->oldProtocol) {
+			client->reloadHazardSystemIcon(hazardSystemReferenceCounter);
+		}
+	}
+}
+
+void Player::parseAttackRecvHazardSystem(CombatDamage &damage, const Monster* monster) {
+	if (!monster || !monster->isOnHazardSystem()) {
+		return;
+	}
+
+	if (!g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM)) {
+		return;
+	}
+
+	if (damage.primary.type == COMBAT_HEALING) {
+		return;
+	}
+
+	auto points = getHazardSystemPoints();
+	if (party) {
+		for (const auto partyMember : party->getMembers()) {
+			if (partyMember && partyMember->getHazardSystemPoints() < points) {
+				points = partyMember->getHazardSystemPoints();
+			}
+		}
+
+		if (party->getLeader() && party->getLeader()->getHazardSystemPoints() < points) {
+			points = party->getLeader()->getHazardSystemPoints();
+		}
+	}
+
+	if (points == 0) {
+		return;
+	}
+
+	uint16_t stage = 0;
+	auto chance = static_cast<uint16_t>(normal_random(1, 10000));
+	// Critical chance
+	if ((lastHazardSystemCriticalHit + g_configManager().getNumber(HAZARD_CRITICAL_INTERVAL)) <= OTSYS_TIME() && chance <= monster->getHazardSystemCritChance() && !damage.critical) {
+		damage.critical = true;
+		damage.extension = true;
+		damage.exString = "(Hazard)";
+
+		stage = (points - 1) * static_cast<uint16_t>(g_configManager().getNumber(HAZARD_CRITICAL_MULTIPLIER));
+		damage.primary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.primary.value) * (5000 + stage)) / 10000));
+		damage.secondary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.secondary.value) * (5000 + stage)) / 10000));
+		lastHazardSystemCriticalHit = OTSYS_TIME();
+	}
+
+	// To prevent from punish the player twice with critical + damage boost, just uncomment code from the if
+	if (monster->getHazardSystemDamageBoost() /* && !damage.critical*/) {
+		stage = points * static_cast<uint16_t>(g_configManager().getNumber(HAZARD_DAMAGE_MULTIPLIER));
+		if (stage != 0) {
+			damage.extension = true;
+			damage.exString = "(Hazard)";
+			damage.primary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.primary.value) * stage) / 10000));
+			if (damage.secondary.value != 0) {
+				damage.secondary.value += static_cast<int32_t>(std::ceil((static_cast<double>(damage.secondary.value) * stage) / 10000));
+			}
+		}
+	}
+}
+
+void Player::parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* monster) {
+	if (!g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM)) {
+		return;
+	}
+
+	if (!monster || !monster->isOnHazardSystem()) {
+		return;
+	}
+
+	if (damage.primary.type == COMBAT_HEALING) {
+		return;
+	}
+
+	auto points = getHazardSystemPoints();
+	if (party) {
+		for (const auto partyMember : party->getMembers()) {
+			if (partyMember && partyMember->getHazardSystemPoints() < points) {
+				points = partyMember->getHazardSystemPoints();
+			}
+		}
+
+		if (party->getLeader() && party->getLeader()->getHazardSystemPoints() < points) {
+			points = party->getLeader()->getHazardSystemPoints();
+		}
+	}
+
+	if (points == 0) {
+		return;
+	}
+
+	// Dodge chance
+	uint16_t stage;
+	if (monster->getHazardSystemDodge()) {
+		stage = points * g_configManager().getNumber(HAZARD_DODGE_MULTIPLIER);
+		auto chance = static_cast<uint16_t>(normal_random(1, 10000));
+		if (chance <= stage) {
+			damage.primary.value = 0;
+			damage.secondary.value = 0;
+			return;
+		}
+	}
+}
+
+void Player::reloadHazardSystemIcon() {
+	if (reloadHazardSystemPointsCounter) {
+		reloadHazardSystemPointsCounter = false;
+		if (getHazardSystemPoints() > 0) {
+			const auto tile = getTile();
+			if (!tile) {
+				return;
+			}
+
+			SpectatorHashSet spectators;
+			g_game().map.getSpectators(spectators, tile->getPosition(), true);
+			for (Creature* spectator : spectators) {
+				if (!spectator || spectator == this) {
+					continue;
+				}
+
+				Player* player = spectator->getPlayer();
+				if (player && !client->oldProtocol) {
+					player->sendCreatureIcon(getPlayer());
+				}
+			}
+		}
+		if (client && !client->oldProtocol) {
+			client->reloadHazardSystemIcon(hazardSystemReferenceCounter);
+		}
+	}
+}
+
+void Player::incrementeHazardSystemReference() {
+	hazardSystemReferenceCounter++;
+	if (hazardSystemReferenceCounter != 0) {
+		reloadHazardSystemIcon();
+	}
+}
+
+void Player::decrementeHazardSystemReference() {
+	if (hazardSystemReferenceCounter == 0) {
+		return;
+	}
+
+	hazardSystemReferenceCounter--;
+	if (hazardSystemReferenceCounter == 0) {
+		if (getHazardSystemPoints() > 0) {
+			Tile* tile = getTile();
+			if (!tile) {
+				return;
+			}
+
+			SpectatorHashSet spectators;
+			g_game().map.getSpectators(spectators, tile->getPosition(), true);
+			for (Creature* spectator : spectators) {
+				if (!spectator || spectator == this) {
+					continue;
+				}
+
+				Player* player = spectator->getPlayer();
+				if (player) {
+					player->sendCreatureIcon(getPlayer());
+				}
+			}
+		}
+
+		if (client) {
+			client->reloadHazardSystemIcon(hazardSystemReferenceCounter);
+		}
+		reloadHazardSystemPointsCounter = true;
+	}
 }
 
 /*******************************************************************************

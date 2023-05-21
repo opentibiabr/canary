@@ -525,6 +525,7 @@ class Player final : public Creature, public Cylinder {
 		void setPremiumDays(int32_t v);
 
 		void setTibiaCoins(int32_t v);
+		void setTransferableTibiaCoins(int32_t v);
 
 		uint16_t getHelpers() const;
 
@@ -914,8 +915,17 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 		void sendCreatureAppear(const Creature* creature, const Position &pos, bool isLogin) {
+			if (!creature) {
+				return;
+			}
+
+			auto tile = creature->getTile();
+			if (!tile) {
+				return;
+			}
+
 			if (client) {
-				client->sendAddCreature(creature, pos, creature->getTile()->getStackposOfCreature(this, creature), isLogin);
+				client->sendAddCreature(creature, pos, tile->getStackposOfCreature(this, creature), isLogin);
 			}
 		}
 		void sendCreatureMove(const Creature* creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport) {
@@ -924,8 +934,17 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 		void sendCreatureTurn(const Creature* creature) {
+			if (!creature) {
+				return;
+			}
+
+			auto tile = creature->getTile();
+			if (!tile) {
+				return;
+			}
+
 			if (client && canSeeCreature(creature)) {
-				int32_t stackpos = creature->getTile()->getStackposOfCreature(this, creature);
+				int32_t stackpos = tile->getStackposOfCreature(this, creature);
 				if (stackpos != -1) {
 					client->sendCreatureTurn(creature, stackpos);
 				}
@@ -957,7 +976,7 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 		void sendCreatureChangeVisible(const Creature* creature, bool visible) {
-			if (!client) {
+			if (!client || !creature) {
 				return;
 			}
 
@@ -971,7 +990,11 @@ class Player final : public Creature, public Cylinder {
 			} else if (canSeeInvisibility()) {
 				client->sendCreatureOutfit(creature, creature->getCurrentOutfit());
 			} else {
-				int32_t stackpos = creature->getTile()->getStackposOfCreature(this, creature);
+				auto tile = creature->getTile();
+				if (!tile) {
+					return;
+				}
+				int32_t stackpos = tile->getStackposOfCreature(this, creature);
 				if (stackpos == -1) {
 					return;
 				}
@@ -2294,6 +2317,33 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
+		/*******************************************************************************
+		 * Hazard system
+		 ******************************************************************************/
+		// Parser
+		void parseAttackRecvHazardSystem(CombatDamage &damage, const Monster* monster);
+		void parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* monster);
+		// Points increase:
+		void addHazardSystemPoints(int32_t amount);
+		// Points get:
+		uint16_t getHazardSystemPoints() const {
+			int32_t points = 0;
+			points = getStorageValue(STORAGEVALUE_HAZARDCOUNT);
+			if (points <= 0) {
+				return 0;
+			}
+			return static_cast<uint16_t>(std::max<int32_t>(0, std::min<int32_t>(0xFFFF, points)));
+		}
+
+		// Reference counter used on client UI.
+		void reloadHazardSystemIcon();
+		uint16_t getHazardSystemReference() const {
+			return hazardSystemReferenceCounter;
+		}
+		void incrementeHazardSystemReference();
+		void decrementeHazardSystemReference();
+		/*******************************************************************************/
+
 		// Player wheel methods interface
 		std::unique_ptr<PlayerWheel> &wheel();
 		const std::unique_ptr<PlayerWheel> &wheel() const;
@@ -2499,6 +2549,7 @@ class Player final : public Creature, public Cylinder {
 		int32_t offlineTrainingTime = 0;
 		int32_t idleTime = 0;
 		uint32_t coinBalance = 0;
+		uint32_t coinTransferableBalance = 0;
 		uint16_t expBoostStamina = 0;
 		uint8_t randomMount = 0;
 
@@ -2580,6 +2631,12 @@ class Player final : public Creature, public Cylinder {
 		bool moved = false;
 		bool dead = false;
 		bool imbuementTrackerWindowOpen = false;
+
+		// Hazard system
+		int64_t lastHazardSystemCriticalHit = 0;
+		bool reloadHazardSystemPointsCounter = true;
+		uint16_t hazardSystemReferenceCounter = 0;
+		// Hazard end
 
 		void updateItemsLight(bool internal = false);
 		uint16_t getStepSpeed() const override {

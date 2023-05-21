@@ -21,7 +21,8 @@ local config = {
 		[2] = {pos = Position(32761, 32288, 14), id = 1271},
 		[3] = {pos = Position(32762, 32288, 14), id = 1271},
 		[4] = {pos = Position(32763, 32288, 14), id = 1271},
-		[5] = {pos = Position(32764, 32288, 14), id = 1273}
+		[5] = {pos = Position(32764, 32288, 14), id = 1273},
+		[6] = {pos = Position(32760, 32288, 14), id = 1272}
 	}
 }
 

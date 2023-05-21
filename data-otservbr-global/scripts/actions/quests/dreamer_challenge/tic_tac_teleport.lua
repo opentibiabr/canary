@@ -42,7 +42,7 @@ function dreamerTicTacTeleport.onUse(player, item, fromPosition, target, toPosit
 
 	local position = Position(32836, 32288, 14)
 	if item.itemid == 2772 then
-		local crack = Tile(position):getItemById(6297)
+		local crack = Tile(position):getItemById(6298)
 		if crack then
 			crack:remove()
 

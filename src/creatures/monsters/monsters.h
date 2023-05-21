@@ -83,6 +83,12 @@ class MonsterType {
 
 				uint64_t experience = 0;
 
+				// Hazard system (0-10000), divide by 100 gives us %
+				uint16_t hazardSystemCritChance = 0;
+				bool canDamageBoost = false;
+				bool canSpawnPod = false;
+				bool canDodge = false;
+
 				uint32_t manaCost = 0;
 				uint32_t yellChance = 0;
 				uint32_t yellSpeedTicks = 0;

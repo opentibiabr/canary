@@ -5021,6 +5021,10 @@ uint16_t Player::getSkillLevel(uint8_t skill) const {
 	} else if (skill == SKILL_MAGLEVEL) {
 		skillLevel += m_wheelPlayer->getMajorStatConditional("Positional Tatics", WheelMajor_t::MAGIC);
 		skillLevel += m_wheelPlayer->getStat(WheelStat_t::MAGIC);
+	} else if (skill == SKILL_LIFE_LEECH_AMOUNT) {
+		skillLevel += m_wheelPlayer->getStat(WheelStat_t::LIFE_LEECH);
+	} else if (skill == SKILL_MANA_LEECH_AMOUNT) {
+		skillLevel += m_wheelPlayer->getStat(WheelStat_t::MANA_LEECH);
 	} else if (skill == SKILL_CRITICAL_HIT_DAMAGE) {
 		skillLevel += m_wheelPlayer->getMajorStatConditional("Combat Mastery", WheelMajor_t::CRITICAL_DMG_2);
 		skillLevel += m_wheelPlayer->getMajorStatConditional("Ballistic Mastery", WheelMajor_t::CRITICAL_DMG);

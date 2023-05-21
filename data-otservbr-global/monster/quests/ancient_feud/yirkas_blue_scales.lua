@@ -50,9 +50,9 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true
 }
 
 monster.light = {
@@ -66,40 +66,41 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 100000, maxCount = 16},
-	{name = "ultimate health potion", chance = 68000, maxCount = 5},
-	{name = "blue goanna scale", chance = 10900},
-	{name = "gold ingot", chance = 9800},
-	{name = "yirkas' egg", chance = 9000},
-	{name = "gemmed figurine", chance = 7900},
-	{name = "lizard heart", chance = 4300},
-	{name = "blue gem", chance = 4000},
-	{name = "green gem", chance = 3800, maxCount = 3},
-	{name = "jade hammer", chance = 3800},
-	{name = "magma legs", chance = 2700},
-	{id = 23531, chance = 156}, -- ring of green plasma
-	{name = "skull helmet", chance = 1100},
-	{name = "giant sword", chance = 800},
-	{name = "assassin dagger", chance = 800},
-	{name = "demon shield", chance = 550},
-	{name = "mastermind potion", chance = 270},
-	{name = "spellweaver's robe", chance = 250},
-	{name = "war axe", chance = 1100},
-	{name = "alloy legs", chance = 800},
-	{name = "demonrage sword", chance = 800},
-	{name = "gold ring", chance = 550},
-	{name = "spellbook of mind control", chance = 270},
-	{name = "magic plate armor", chance = 800},
-	{name = "ornate crossbow", chance = 800},
-	{name = "red silk flower", chance = 550},
-	{name = "raw watermelon tourmaline", chance = 270}
+	{id = 31559, chance = 100000, minCount = 1, maxCount = 6}, -- blue goanna scale
+	{id = 3035, chance = 100000, minCount = 1, maxCount = 17}, -- platinum coin
+	{id = 7643, chance = 100000, minCount = 1, maxCount = 5}, -- ultimate health potion
+	{id = 9058, chance = 11540}, -- gold ingot
+	{id = 24392, chance = 8790}, -- gemmed figurine
+	{id = 34102, chance = 8240}, -- yirkas' egg
+	{id = 31340, chance = 6590}, -- lizard heart
+	{id = 3038, chance = 3850}, -- green gem
+	{id = 3041, chance = 3300}, -- blue gem
+	{id = 821, chance = 3300}, -- magma legs
+ 	{id = 5741, chance = 3300}, -- skull helmet
+	{id = 3281, chance = 2750}, -- giant sword
+	{id = 7422, chance = 2750}, -- jade hammer
+	{id = 3342, chance = 2750}, -- war axe
+	{id = 7404, chance = 2200}, -- assassin dagger
+	{id = 3063, chance = 2200}, -- gold ring
+	{id = 23531, chance = 2200}, -- ring of green plasma
+	{id = 3366, chance = 1650}, -- magic plate armor
+	{id = 3420, chance = 1100}, -- demon shield
+	{id = 7440, chance = 1100}, -- mastermind potion
+	{id = 14247, chance = 1100}, -- ornate crossbow
+	{id = 10438, chance = 1100}, -- spellweaver's robe
+	{id = 7382, chance = 550}, -- demonrage sword
+	{id = 8074, chance = 550}, -- spellbook of mind control
+	{id = 21168, chance = 550}, -- alloy legs
+	{id = 33778, chance = 360}, -- raw watermelon tourmaline
+	{id = 34258, chance = 360} -- red silk flower
 }
 
 monster.attacks = {
 	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100, condition = {type = CONDITION_POISON, totalDamage = 15, interval = 4000}},
+	{name ="combat", interval = 2000, chance = 30, type = COMBAT_EARTHDAMAGE, minDamage = -400, maxDamage = -500, length = 3, spread = 1, effect = CONST_ME_POISONAREA, target = false},
 	{name ="combat", interval = 2000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -350, range = 3, radius = 3, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = true},
-	{name ="combat", interval = 2000, chance = 40, type = COMBAT_EARTHDAMAGE, minDamage = -400, maxDamage = -500, length = 3, spread = 1, effect = CONST_ME_GREEN_RINGS, target = false},
-	{name ="combat", interval = 2000, chance = 40, type = COMBAT_ENERGYDAMAGE, minDamage = -200, maxDamage = -300, range = 3, radius = 3, effect = CONST_ME_ENERGYAREA, target = false}
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -500, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYAREA, target = true},
+	{name ="combat", interval = 2000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -200, maxDamage = -300, radius = 4, effect = CONST_ME_ENERGYAREA, target = false}
 }
 
 monster.defenses = {

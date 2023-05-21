@@ -1,20 +1,10 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_COMBAT_SPELL_FUNCTIONS_HPP_
@@ -52,6 +42,9 @@ class SpellFunctions final : LuaScriptInterface {
 			registerMethod(L, "Spell", "isBlocking", SpellFunctions::luaSpellBlocking);
 			registerMethod(L, "Spell", "isAggressive", SpellFunctions::luaSpellAggressive);
 			registerMethod(L, "Spell", "vocation", SpellFunctions::luaSpellVocation);
+
+			registerMethod(L, "Spell", "castSound", SpellFunctions::luaSpellCastSound);
+			registerMethod(L, "Spell", "impactSound", SpellFunctions::luaSpellImpactSound);
 
 			// Only for InstantSpell.
 			registerMethod(L, "Spell", "words", SpellFunctions::luaSpellWords);
@@ -97,6 +90,9 @@ class SpellFunctions final : LuaScriptInterface {
 		static int luaSpellAggressive(lua_State* L);
 		static int luaSpellVocation(lua_State* L);
 
+		static int luaSpellCastSound(lua_State* L);
+		static int luaSpellImpactSound(lua_State* L);
+
 		// Only for InstantSpells.
 		static int luaSpellWords(lua_State* L);
 		static int luaSpellNeedDirection(lua_State* L);
@@ -113,4 +109,4 @@ class SpellFunctions final : LuaScriptInterface {
 		static int luaSpellCheckFloor(lua_State* L);
 };
 
-#endif  // SRC_LUA_FUNCTIONS_CREATURES_COMBAT_SPELL_FUNCTIONS_HPP_
+#endif // SRC_LUA_FUNCTIONS_CREATURES_COMBAT_SPELL_FUNCTIONS_HPP_

@@ -1,30 +1,17 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
-
-#include <stack>
+#include "pch.hpp"
 
 #include "utils/wildcardtree.h"
 
-WildcardTreeNode* WildcardTreeNode::getChild(char ch)
-{
+WildcardTreeNode* WildcardTreeNode::getChild(char ch) {
 	auto it = children.find(ch);
 	if (it == children.end()) {
 		return nullptr;
@@ -32,8 +19,7 @@ WildcardTreeNode* WildcardTreeNode::getChild(char ch)
 	return &it->second;
 }
 
-const WildcardTreeNode* WildcardTreeNode::getChild(char ch) const
-{
+const WildcardTreeNode* WildcardTreeNode::getChild(char ch) const {
 	auto it = children.find(ch);
 	if (it == children.end()) {
 		return nullptr;
@@ -41,23 +27,20 @@ const WildcardTreeNode* WildcardTreeNode::getChild(char ch) const
 	return &it->second;
 }
 
-WildcardTreeNode* WildcardTreeNode::addChild(char ch, bool breakp)
-{
+WildcardTreeNode* WildcardTreeNode::addChild(char ch, bool breakp) {
 	WildcardTreeNode* child = getChild(ch);
 	if (child) {
 		if (breakp && !child->breakpoint) {
 			child->breakpoint = true;
 		}
 	} else {
-		auto pair = children.emplace(std::piecewise_construct,
-				std::forward_as_tuple(ch), std::forward_as_tuple(breakp));
+		auto pair = children.emplace(std::piecewise_construct, std::forward_as_tuple(ch), std::forward_as_tuple(breakp));
 		child = &pair.first->second;
 	}
 	return child;
 }
 
-void WildcardTreeNode::insert(const std::string& str)
-{
+void WildcardTreeNode::insert(const std::string &str) {
 	WildcardTreeNode* cur = this;
 
 	size_t length = str.length() - 1;
@@ -68,8 +51,7 @@ void WildcardTreeNode::insert(const std::string& str)
 	cur->addChild(str[length], true);
 }
 
-void WildcardTreeNode::remove(const std::string& str)
-{
+void WildcardTreeNode::remove(const std::string &str) {
 	WildcardTreeNode* cur = this;
 
 	std::stack<WildcardTreeNode*> path;
@@ -102,8 +84,7 @@ void WildcardTreeNode::remove(const std::string& str)
 	} while (true);
 }
 
-ReturnValue WildcardTreeNode::findOne(const std::string& query, std::string& result) const
-{
+ReturnValue WildcardTreeNode::findOne(const std::string &query, std::string &result) const {
 	const WildcardTreeNode* cur = this;
 	for (char pos : query) {
 		cur = cur->getChild(pos);

@@ -1,23 +1,13 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "items/bed.h"
 #include "game/game.h"
@@ -179,7 +169,7 @@ int HouseFunctions::luaHouseGetBeds(lua_State* L) {
 		return 1;
 	}
 
-	const auto& beds = house->getBeds();
+	const auto &beds = house->getBeds();
 	lua_createtable(L, beds.size(), 0);
 
 	int index = 0;
@@ -210,7 +200,7 @@ int HouseFunctions::luaHouseGetDoors(lua_State* L) {
 		return 1;
 	}
 
-	const auto& doors = house->getDoors();
+	const auto &doors = house->getDoors();
 	lua_createtable(L, doors.size(), 0);
 
 	int index = 0;
@@ -258,8 +248,8 @@ int HouseFunctions::luaHouseGetTiles(lua_State* L) {
 		return 1;
 	}
 
-	const auto& tiles = house->getTiles();
-	lua_createtable(L, tiles.size(), 0);
+	const auto &tiles = house->getTiles();
+	lua_newtable(L);
 
 	int index = 0;
 	for (Tile* tile : tiles) {
@@ -278,7 +268,7 @@ int HouseFunctions::luaHouseGetItems(lua_State* L) {
 		return 1;
 	}
 
-	const auto& tiles = house->getTiles();
+	const auto &tiles = house->getTiles();
 	lua_newtable(L);
 
 	int index = 0;
@@ -289,7 +279,6 @@ int HouseFunctions::luaHouseGetItems(lua_State* L) {
 				pushUserdata<Item>(L, item);
 				setItemMetatable(L, -1, item);
 				lua_rawseti(L, -2, ++index);
-
 			}
 		}
 	}
@@ -349,7 +338,7 @@ int HouseFunctions::luaHouseSetAccessList(lua_State* L) {
 	}
 
 	uint32_t listId = getNumber<uint32_t>(L, 2);
-	const std::string& list = getString(L, 3);
+	const std::string &list = getString(L, 3);
 	house->setAccessList(listId, list);
 	pushBoolean(L, true);
 	return 1;

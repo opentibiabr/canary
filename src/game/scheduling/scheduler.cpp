@@ -1,35 +1,26 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "game/scheduling/scheduler.h"
 
-void Scheduler::threadMain()
-{
+void Scheduler::threadMain() {
 	std::unique_lock<std::mutex> eventLockUnique(eventLock, std::defer_lock);
 	while (getState() != THREAD_STATE_TERMINATED) {
 		std::cv_status ret = std::cv_status::no_timeout;
 
 		eventLockUnique.lock();
 		if (eventList.empty()) {
-			eventSignal.wait(eventLockUnique);
+			eventSignal.wait(eventLockUnique, [this] {
+				return !eventList.empty() || getState() == THREAD_STATE_TERMINATED;
+			});
 		} else {
 			ret = eventSignal.wait_until(eventLockUnique, eventList.top()->getCycle());
 		}
@@ -58,8 +49,7 @@ void Scheduler::threadMain()
 	}
 }
 
-uint32_t Scheduler::addEvent(SchedulerTask* task)
-{
+uint32_t Scheduler::addEvent(SchedulerTask* task) {
 	bool do_signal;
 	eventLock.lock();
 
@@ -98,8 +88,7 @@ uint32_t Scheduler::addEvent(SchedulerTask* task)
 	return task->getEventId();
 }
 
-bool Scheduler::stopEvent(uint32_t eventid)
-{
+bool Scheduler::stopEvent(uint32_t eventid) {
 	if (eventid == 0) {
 		return false;
 	}
@@ -116,12 +105,11 @@ bool Scheduler::stopEvent(uint32_t eventid)
 	return true;
 }
 
-void Scheduler::shutdown()
-{
+void Scheduler::shutdown() {
 	setState(THREAD_STATE_TERMINATED);
 	eventLock.lock();
 
-	//this list should already be empty
+	// this list should already be empty
 	while (!eventList.empty()) {
 		delete eventList.top();
 		eventList.pop();
@@ -132,7 +120,6 @@ void Scheduler::shutdown()
 	eventSignal.notify_one();
 }
 
-SchedulerTask* createSchedulerTask(uint32_t delay, std::function<void (void)> f)
-{
+SchedulerTask* createSchedulerTask(uint32_t delay, std::function<void(void)> f) {
 	return new SchedulerTask(delay, std::move(f));
 }

@@ -1,20 +1,10 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
 #ifndef SRC_MAP_HOUSE_HOUSETILE_H_
@@ -24,19 +14,16 @@
 
 class House;
 
-class HouseTile final : public DynamicTile
-{
+class HouseTile final : public DynamicTile {
 	public:
 		HouseTile(int32_t x, int32_t y, int32_t z, House* house);
 
-		//cylinder implementations
-		ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count,
-				uint32_t flags, Creature* actor = nullptr) const override;
+		// cylinder implementations
+		ReturnValue queryAdd(int32_t index, const Thing &thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
 
-		Tile* queryDestination(int32_t& index, const Thing& thing, Item** destItem,
-				uint32_t& flags) override;
+		Tile* queryDestination(int32_t &index, const Thing &thing, Item** destItem, uint32_t &flags) override;
 
-    ReturnValue queryRemove(const Thing& thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
+		ReturnValue queryRemove(const Thing &thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
 
 		void addThing(int32_t index, Thing* thing) override;
 		void virtual internalAddThing(uint32_t index, Thing* thing) override;
@@ -51,4 +38,4 @@ class HouseTile final : public DynamicTile
 		House* house;
 };
 
-#endif  // SRC_MAP_HOUSE_HOUSETILE_H_
+#endif // SRC_MAP_HOUSE_HOUSETILE_H_

@@ -1,25 +1,13 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
  */
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
+#include "pch.hpp"
 
 #include "creatures/interactions/chat.h"
 #include "game/game.h"
@@ -45,7 +33,7 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 	bool canDropOnMap = getBoolean(L, 4, true);
 	uint16_t subType = getNumber<uint16_t>(L, 5, 1);
 
-	const ItemType& it = Item::items[itemId];
+	const ItemType &it = Item::items[itemId];
 	int32_t itemCount;
 
 	auto parameters = lua_gettop(L);
@@ -156,7 +144,7 @@ int GlobalFunctions::luaDoAddContainerItem(lua_State* L) {
 	}
 
 	uint16_t itemId = getNumber<uint16_t>(L, 2);
-	const ItemType& it = Item::items[itemId];
+	const ItemType &it = Item::items[itemId];
 
 	int32_t itemCount = 1;
 	int32_t subType = 1;
@@ -348,8 +336,7 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 	damage.primary.value = normal_random(getNumber<int32_t>(L, 4), getNumber<int32_t>(L, 5));
 
 	// Check if it's a healing then we sould add the non-aggresive tag
-	if (combatType == COMBAT_HEALING ||
-		(combatType == COMBAT_MANADRAIN && damage.primary.value > 0)) {
+	if (combatType == COMBAT_HEALING || (combatType == COMBAT_MANADRAIN && damage.primary.value > 0)) {
 		params.aggressive = false;
 	}
 
@@ -577,7 +564,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 
 			LuaDataType type = getNumber<LuaDataType>(L, -1);
 			if (type != LuaData_Unknown && type != LuaData_Tile) {
-				indexes.push_back({i, type});
+				indexes.push_back({ i, type });
 			}
 			lua_pop(globalState, 2);
 		}
@@ -591,7 +578,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 					warningString += 's';
 				}
 
-				for (const auto& entry : indexes) {
+				for (const auto &entry : indexes) {
 					if (entry == indexes.front()) {
 						warningString += ' ';
 					} else if (entry == indexes.back()) {
@@ -613,7 +600,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 			}
 
 			if (g_configManager().getBoolean(CONVERT_UNSAFE_SCRIPTS)) {
-				for (const auto& entry : indexes) {
+				for (const auto &entry : indexes) {
 					switch (entry.second) {
 						case LuaData_Item:
 						case LuaData_Container:
@@ -652,9 +639,9 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 	eventDesc.function = luaL_ref(globalState, LUA_REGISTRYINDEX);
 	eventDesc.scriptId = getScriptEnv()->getScriptId();
 
-	auto& lastTimerEventId = g_luaEnvironment.lastEventTimerId;
+	auto &lastTimerEventId = g_luaEnvironment.lastEventTimerId;
 	eventDesc.eventId = g_scheduler().addEvent(createSchedulerTask(
-					delay, std::bind(&LuaEnvironment::executeTimerEvent, &g_luaEnvironment, lastTimerEventId)
+		delay, std::bind(&LuaEnvironment::executeTimerEvent, &g_luaEnvironment, lastTimerEventId)
 	));
 
 	g_luaEnvironment.timerEvents.emplace(lastTimerEventId, std::move(eventDesc));
@@ -673,7 +660,7 @@ int GlobalFunctions::luaStopEvent(lua_State* L) {
 
 	uint32_t eventId = getNumber<uint32_t>(L, 1);
 
-	auto& timerEvents = g_luaEnvironment.timerEvents;
+	auto &timerEvents = g_luaEnvironment.timerEvents;
 	auto it = timerEvents.find(eventId);
 	if (it == timerEvents.end()) {
 		pushBoolean(L, false);
@@ -733,7 +720,7 @@ int GlobalFunctions::luaIsInWar(lua_State* L) {
 
 int GlobalFunctions::luaGetWaypointPositionByName(lua_State* L) {
 	// getWaypointPositionByName(name)
-	auto& waypoints = g_game().map.waypoints;
+	auto &waypoints = g_game().map.waypoints;
 
 	auto it = waypoints.find(getString(L, -1));
 	if (it != waypoints.end()) {
@@ -819,7 +806,7 @@ int GlobalFunctions::luaSystemTime(lua_State* L) {
 	return 1;
 }
 
-bool GlobalFunctions::getArea(lua_State* L, std::list<uint32_t>& list, uint32_t& rows) {
+bool GlobalFunctions::getArea(lua_State* L, std::list<uint32_t> &list, uint32_t &rows) {
 	lua_pushnil(L);
 	for (rows = 0; lua_next(L, -2) != 0; ++rows) {
 		if (!isTable(L, -1)) {

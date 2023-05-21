@@ -71,12 +71,12 @@ local DailyRewardItems = {
 
 DailyReward = {
 	testMode = false,
-	serverTimeThreshold = (24 * 60 * 60), -- Counting down 24hours from last server save
+	serverTimeThreshold = (25 * 60 * 60), -- Counting down 24hours from last server save
 
 	storages = {
 		-- Player
 		currentDayStreak = 14897,
-		currentStreakLevel = 14898, -- Cpp uses the same storage value on const.hpp (STORAGEVALUE_DAILYREWARD)
+		currentStreakLevel = 14898, -- Cpp uses the same storage value on const.h (STORAGEVALUE_DAILYREWARD)
 		nextRewardTime = 14899,
 		collectionTokens = 14901,
 		staminaBonus = 14902,
@@ -221,13 +221,13 @@ DailyReward.retrieveHistoryEntries = function(playerId)
 	if resultId ~= false then
 		repeat
 			local entry = {
-				description = result.getString(resultId, "description"),
-				timestamp = result.getNumber(resultId, "timestamp"),
-				daystreak = result.getNumber(resultId, "daystreak"),
+				description = Result.getDataString(resultId, "description"),
+				timestamp = Result.getDataInt(resultId, "timestamp"),
+				daystreak = Result.getDataInt(resultId, "daystreak"),
 			}
 			table.insert(entries, entry)
-		until not result.next(resultId)
-		result.free(resultId)
+		until not Result.next(resultId)
+		Result.free(resultId)
 	end
 	return entries
 end
@@ -360,6 +360,10 @@ DailyReward.processReward = function(playerId, target)
 end
 
 function Player.sendOpenRewardWall(self, shrine)
+	if self:getClient().version < 1200 then
+		return true
+	end
+
 	local msg = NetworkMessage()
 	msg:addByte(ServerPackets.OpenRewardWall) -- initial packet
 	msg:addByte(shrine) -- isPlayer taking bonus from reward shrine (1) - taking it from a instant bonus reward (0)
@@ -389,6 +393,10 @@ function Player.sendOpenRewardWall(self, shrine)
 end
 
 function Player.sendCollectionResource(self, byte, value)
+	if self:getClient().version < 1200 then
+		return true
+	end
+
 	-- TODO: Migrate to protocolgame.cpp
 	local msg = NetworkMessage()
 	msg:addByte(0xEE) -- resource byte
@@ -424,19 +432,26 @@ function Player.selectDailyReward(self, msg)
 	if (dailyTable.type == DAILY_REWARD_TYPE_ITEM) then
 
 		local items = {}
+		local possibleItems = DailyRewardItems[self:getVocation():getBaseId()];
+		if dailyTable.items then
+			possibleItems = dailyTable.items;
+		end
 
 		-- Creating items table
 		local columnsPicked = msg:getByte() -- Columns picked
+		local orderedCounter = 0
+		local totalCounter = 0
 		for i = 1, columnsPicked do
-			local spriteId = msg:getU16()
+			local itemId = msg:getU16()
 			local count = msg:getByte()
-			items[i] = {spriteId = spriteId, count = count}
-		end
-
-		-- Verifying if items if player is picking the correct amount
-		local counter = 0
-		for k, v in ipairs(items) do
-			counter = counter + v.count
+			orderedCounter = orderedCounter + count;
+			for index, val in ipairs(possibleItems) do
+				if val == itemId then
+					items[i] = {itemId = itemId, count = count}
+					totalCounter = totalCounter + count;
+					break;
+				end
+			end
 		end
 
 		if self:isPremium() then
@@ -445,8 +460,12 @@ function Player.selectDailyReward(self, msg)
 			count = dailyTable.freeAccount
 		end
 
-		if counter > count then
+		if totalCounter > count then
 			self:sendError("Something went wrong here, please restart this dialog.")
+			return false
+		end
+		if totalCounter ~= orderedCounter then
+			Spdlog.error(string.format("Player with name %s is trying to get wrong daily reward", self:getName()))
 			return false
 		end
 
@@ -461,10 +480,10 @@ function Player.selectDailyReward(self, msg)
 		for k, v in ipairs(items) do
 			if dailyTable.itemCharges then
 				for i = 1, v.count do
-					inbox:addItem(v.ItemId, dailyTable.itemCharges) -- adding charges for each item
+					inbox:addItem(v.itemId, dailyTable.itemCharges) -- adding charges for each item
 				end
 			else
-				inbox:addItem(v.ItemId, v.count) -- adding single item w/o charges
+				inbox:addItem(v.itemId, v.count) -- adding single item w/o charges
 			end
 			if k ~= columnsPicked then
 				description = description .. "" .. v.count .. "x " .. ItemType(v.itemId):getName() .. ", "
@@ -530,6 +549,10 @@ function Player.sendError(self, error)
 end
 
 function Player.sendDailyRewardCollectionState(self, state)
+	if self:getClient().version < 1200 then
+		return true
+	end
+
 	local msg = NetworkMessage()
 	msg:addByte(ServerPackets.DailyRewardCollectionState)
 	msg:addByte(state)
@@ -537,6 +560,10 @@ function Player.sendDailyRewardCollectionState(self, state)
 end
 
 function Player.sendRewardHistory(self)
+	if self:getClient().version < 1200 then
+		return true
+	end
+
 	local msg = NetworkMessage()
 	msg:addByte(ServerPackets.DailyRewardHistory)
 
@@ -626,6 +653,10 @@ function Player.readDailyReward(self, msg, currentDay, state)
 end
 
 function Player.sendDailyReward(self)
+	if self:getClient().version < 1200 then
+		return true
+	end
+
 	local msg = NetworkMessage()
 	msg:addByte(ServerPackets.DailyRewardBasic)
 	msg:addByte(DAILY_REWARD_COUNT)

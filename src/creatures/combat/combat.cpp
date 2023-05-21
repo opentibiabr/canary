@@ -582,7 +582,7 @@ CombatDamage Combat::applyImbuementElementalDamage(Player* attackerPlayer, Item*
 			g_game().sendSingleSoundEffect(item->getPosition(), imbuementInfo.imbuement->soundEffect, item->getHoldingPlayer());
 		}
 
-		/* If damage imbuement is set, we can return without checking other slots */
+		// If damage imbuement is set, we can return without checking other slots
 		break;
 	}
 

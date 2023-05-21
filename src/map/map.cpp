@@ -47,8 +47,17 @@ bool Map::downloadMap(const std::string &identifier) {
 	InternetCloseHandle(hUrl);
 	InternetCloseHandle(hInternet);
 #else
-	SPDLOG_ERROR("Download map only work for windows, download manually from this url: {}", mapDownloadUrl);
-	return false;
+	if (CURL* curl = curl_easy_init()) {
+		SPDLOG_INFO("Downloading " + g_configManager().getString(MAP_NAME) + ".otbm to world folder");
+		FILE* otbm = fopen(identifier.c_str(), "wb");
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+		curl_easy_setopt(curl, CURLOPT_URL, mapDownloadUrl.c_str());
+		curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
+		curl_easy_perform(curl);
+		curl_easy_cleanup(curl);
+		fclose(otbm);
+	}
 #endif
 	return true;
 }
@@ -70,7 +79,7 @@ bool Map::load(const std::string &identifier, const Position &pos, bool unload) 
 bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool loadHouses /*= false*/, bool loadMonsters /*= false*/, bool loadNpcs /*= false*/, const Position &pos /*= Position()*/, bool unload /*= false*/) {
 	// Only download map if is loading the main map and it is not already downloaded
 	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !std::filesystem::exists(identifier)) {
-		SPDLOG_INFO("Downloading map...");
+		SPDLOG_INFO("Downloading " + g_configManager().getString(MAP_NAME) + ".otbm to world folder");
 		uint64_t startDownloadTime = OTSYS_TIME();
 		if (!downloadMap(identifier)) {
 			return false;

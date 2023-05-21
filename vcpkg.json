@@ -24,6 +24,10 @@
       "platform": "linux"
     },
     {
+      "name": "curl",
+      "platform": "linux"
+    },
+    {
       "name": "dpp",
       "platform": "!windows"
     },

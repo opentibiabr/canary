@@ -136,6 +136,7 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
 find_package(asio CONFIG REQUIRED)
 if (NOT MSVC)
 	find_package(dpp CONFIG REQUIRED)
+	find_package(CURL CONFIG REQUIRED)
 endif()
 find_package(GMP REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
@@ -370,6 +371,7 @@ else()
 			${LUAJIT_LIBRARIES}
 			${GMP_LIBRARIES}
 			asio::asio
+			CURL::libcurl
 			dpp::dpp
 			fmt::fmt
 			jsoncpp_static

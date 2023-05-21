@@ -21,21 +21,6 @@ void WebHook::closeConnection(HINTERNET hSession /* = nullptr*/, HINTERNET hConn
 }
 #endif
 
-std::string getCurrentUTCTimeString() {
-	auto now = std::chrono::system_clock::now();
-	auto time_t_now = std::chrono::system_clock::to_time_t(now);
-	std::tm tm;
-#ifdef _MSC_VER
-	gmtime_s(&tm, &time_t_now);
-#else
-	gmtime_r(&time_t_now, &tm);
-#endif
-	std::stringstream ss;
-	ss << std::put_time(&tm, "%R") << " UTC";
-	return ss.str();
-}
-
-// Função que envia uma mensagem para um webhook
 void WebHook::sendMessage(std::string title, std::string message, int color) {
 	std::string webhookUrl = g_configManager().getString(DISCORD_WEBHOOK_URL);
 	std::string payload = getPayload(title, message, color);

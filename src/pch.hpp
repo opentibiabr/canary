@@ -69,6 +69,7 @@
 // HTTP connection library
 #if __linux
 	#include <dpp/dpp.h>
+	#include <curl/curl.h>
 #elif defined(WIN32)
 	#include <wininet.h>
 #endif

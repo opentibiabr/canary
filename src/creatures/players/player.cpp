@@ -7163,7 +7163,7 @@ SoundEffect_t Player::getAttackSoundEffect() const {
 	return SoundEffect_t::SILENCE;
 }
 
-bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>& function, uint32_t delay /* = 500*/) {
+bool Player::canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay /* = 500*/) {
 	if (!Position::areInRange<1, 1>(getPosition(), toPosition)) {
 		// Check if can walk to the toPosition and send event to use function
 		std::forward_list<Direction> listDir;

@@ -509,7 +509,7 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 	}
 
 	if (caster && attackerPlayer) {
-		Item *item = attackerPlayer->getWeapon();
+		Item* item = attackerPlayer->getWeapon();
 		damage = applyImbuementElementalDamage(attackerPlayer, item, damage);
 		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
 
@@ -556,7 +556,7 @@ CombatDamage Combat::applyImbuementElementalDamage(Player* attackerPlayer, Item*
 		return damage;
 	}
 
-	if(item->getWeaponType() == WEAPON_AMMO && attackerPlayer && attackerPlayer->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
+	if (item->getWeaponType() == WEAPON_AMMO && attackerPlayer && attackerPlayer->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
 		item = attackerPlayer->getInventoryItem(CONST_SLOT_LEFT);
 	}
 

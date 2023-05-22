@@ -11,7 +11,6 @@
 
 #include "items/functions/item/item_parse.hpp"
 #include "utils/pugicast.h"
-#include "item_parse.hpp"
 
 void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	// Parse all item attributes

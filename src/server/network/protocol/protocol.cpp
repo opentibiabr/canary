@@ -198,7 +198,9 @@ bool Protocol::RSA_decrypt(NetworkMessage &msg) {
 
 uint32_t Protocol::getIP() const {
 	if (auto protocolConnection = getConnection()) {
-		return protocolConnection->getIP();
+		if (protocolConnection != nullptr) {
+			return protocolConnection->getIP();
+		}
 	}
 
 	return 0;

@@ -490,6 +490,12 @@ class ProtocolGame final : public Protocol {
 
 		// Hazard system
 		void reloadHazardSystemIcon(uint16_t reference);
+
+		uint8_t playerDeathTime = 0;
+
+		void resetPlayerDeathTime() {
+			playerDeathTime = 0;
+		}
 };
 
 #endif // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

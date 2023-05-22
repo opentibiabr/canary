@@ -2372,6 +2372,8 @@ class Player final : public Creature, public Cylinder {
 		void decrementeHazardSystemReference();
 		/*******************************************************************************/
 
+		void checkPlayerActivity(int interval);
+
 	private:
 		static uint32_t playerFirstID;
 		static uint32_t playerLastID;
@@ -2572,6 +2574,7 @@ class Player final : public Creature, public Cylinder {
 		int8_t offlineTrainingSkill = SKILL_NONE;
 		int32_t offlineTrainingTime = 0;
 		int32_t idleTime = 0;
+		int32_t playerDeathTime = 0;
 		uint32_t coinBalance = 0;
 		uint32_t coinTransferableBalance = 0;
 		uint16_t expBoostStamina = 0;

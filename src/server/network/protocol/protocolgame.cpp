@@ -286,7 +286,6 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item* item) {
 void ProtocolGame::release() {
 	// dispatcher thread
 	if (player && player->client == shared_from_this()) {
-		g_game().removePlayerUniqueLogin(player);
 		player->client.reset();
 		player->decrementReferenceCounter();
 		player = nullptr;
@@ -420,7 +419,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 	eventConnect = 0;
 
 	Player* foundPlayer = g_game().getPlayerByID(playerId);
-	if (!foundPlayer || foundPlayer->client) {
+	if (!foundPlayer) {
 		disconnectClient("You are already logged in.");
 		return;
 	}
@@ -655,6 +654,10 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 	}
 
 	if (player->isDead() || player->getHealth() <= 0) {
+		if (playerDeathTime == 0) {
+			player->checkPlayerActivity(1000);
+			playerDeathTime++;
+		}
 		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte)));
 		return;
 	}
@@ -689,6 +692,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 
 		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::sendAddCreature, getThis(), player, player->getPosition(), 0, false)));
 		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::addBless, getThis())));
+		resetPlayerDeathTime();
 		return;
 	}
 

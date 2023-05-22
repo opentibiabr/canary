@@ -190,7 +190,7 @@ std::string transformToSHA1(const std::string &input) {
 uint16_t getStashSize(StashItemList itemList) {
 	uint16_t size = 0;
 	for (auto item : itemList) {
-		size += ceil(item.second / (float_t) Item::items[item.first].stackSize);
+		size += ceil(item.second / (float_t)Item::items[item.first].stackSize);
 	}
 	return size;
 }

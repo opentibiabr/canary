@@ -1631,7 +1631,7 @@ int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 		itemCount = std::max<int32_t>(1, count);
 	} else if (it.hasSubType()) {
 		if (it.stackable) {
-			itemCount = std::ceil(count / (float_t) it.stackSize);
+			itemCount = std::ceil(count / (float_t)it.stackSize);
 		}
 
 		subType = count;

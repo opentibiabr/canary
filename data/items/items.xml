@@ -5182,9 +5182,15 @@
 		<attribute key="charges" value="4"/>
 		<attribute key="weight" value="52"/>
 	</item>
-	<item fromid="3162" toid="3163" article="a" name="spell rune">
+	<item id="3162" article="a" name="spell rune">
 		<attribute key="type" value="rune"/>
 		<attribute key="weight" value="120"/>
+	</item>
+	<item id="3163" article="a" name="frozen tomb rune">
+		<attribute key="type" value="rune"/>
+		<attribute key="runespellname" value="adori gran frigo"/>
+		<attribute key="charges" value="1"/>
+		<attribute key="weight" value="60"/>
 	</item>
 	<item id="3164" article="an" name="energy field rune">
 		<attribute key="type" value="rune"/>
@@ -5272,9 +5278,15 @@
 		<attribute key="charges" value="5"/>
 		<attribute key="weight" value="42"/>
 	</item>
-	<item fromid="3183" toid="3187" article="a" name="spell rune">
+	<item fromid="3183" toid="3186" article="a" name="spell rune">
 		<attribute key="type" value="rune"/>
 		<attribute key="weight" value="120"/>
+	</item>
+	<item id="3187" article="a" name="divine judgement rune">
+		<attribute key="type" value="rune"/>
+		<attribute key="runespellname" value="adori gran san"/>
+		<attribute key="charges" value="1"/>
+		<attribute key="weight" value="60"/>
 	</item>
 	<item id="3188" article="a" name="fire field rune">
 		<attribute key="type" value="rune"/>

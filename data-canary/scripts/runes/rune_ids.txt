@@ -1,0 +1,1 @@
+Custom runes start at id 250 (Divine Judgement Rune).

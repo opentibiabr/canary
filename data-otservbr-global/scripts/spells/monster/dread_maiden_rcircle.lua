@@ -12,7 +12,7 @@ local combatArea = {
 	{0, 0, 1, 1, 1, 0, 0}
 }
 
-combat:setArea(combatArea)
+combat:setArea(createCombatArea(combatArea))
 
 local spell = Spell("instant")
 

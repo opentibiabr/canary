@@ -655,7 +655,7 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 
 	if (player->isDead() || player->getHealth() <= 0) {
 		if (playerDeathTime == 0) {
-			player->checkPlayerActivity(1000);
+			addGameTask(&Game::playerCheckActivity, player->getName(), 1000);
 			playerDeathTime++;
 		}
 		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte)));
@@ -704,6 +704,10 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 }
 
 void ProtocolGame::addBless() {
+	if (!player) {
+		return;
+	}
+
 	std::string bless = player->getBlessingsName();
 	std::ostringstream lostBlesses;
 	(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses << "You are still blessed with " << bless;

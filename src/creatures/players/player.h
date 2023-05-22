@@ -2372,8 +2372,6 @@ class Player final : public Creature, public Cylinder {
 		void decrementeHazardSystemReference();
 		/*******************************************************************************/
 
-		void checkPlayerActivity(int interval);
-
 	private:
 		static uint32_t playerFirstID;
 		static uint32_t playerLastID;

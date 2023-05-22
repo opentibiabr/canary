@@ -38,7 +38,6 @@ Player::Player(ProtocolGame_ptr p) :
 }
 
 Player::~Player() {
-	g_game().removePlayerUniqueLogin(this);
 	for (Item* item : inventory) {
 		if (item) {
 			item->setParent(nullptr);
@@ -1716,6 +1715,7 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout) {
 				guild->removeMember(this);
 			}
 
+			g_game().removePlayerUniqueLogin(this);
 			loginPosition = getPosition();
 			lastLogout = time(nullptr);
 			SPDLOG_INFO("{} has logged out", getName());
@@ -7381,25 +7381,6 @@ void Player::decrementeHazardSystemReference() {
 		}
 		reloadHazardSystemPointsCounter = true;
 	}
-}
-
-void Player::checkPlayerActivity(int interval) {
-	if (this && !this->isDead() || client == nullptr || (client && !client->getIP())) {
-		return;
-	}
-
-	if (!isAccessPlayer()) {
-		playerDeathTime += interval;
-		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
-		if (playerDeathTime > (kickAfterMinutes * 60000) + 60000) {
-			if (client) {
-				client->disconnect();
-			}
-			return;
-		}
-	}
-
-	g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&Player::checkPlayerActivity, this, interval)));
 }
 
 /*******************************************************************************

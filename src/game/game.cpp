@@ -9140,6 +9140,10 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 		return;
 	}
 
+	if (!player->isDead() || player->client == nullptr) {
+		return;
+	}
+
 	if (!player->isAccessPlayer()) {
 		player->playerDeathTime += interval;
 		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);

@@ -78,7 +78,7 @@ class ProtocolGame final : public Protocol {
 		ProtocolGame_ptr getThis() {
 			return std::static_pointer_cast<ProtocolGame>(shared_from_this());
 		}
-		void connect(uint32_t playerId, OperatingSystem_t operatingSystem);
+		void connect(const std::string &playerName, OperatingSystem_t operatingSystem);
 		void disconnectClient(const std::string &message) const;
 		void writeToOutputBuffer(const NetworkMessage &msg);
 

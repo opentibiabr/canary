@@ -1010,7 +1010,7 @@ function sendStoreTransactionHistory(playerId, page, entriesPerPage)
 		end
 		msg:addU32(entry.time)
 		msg:addByte(entry.mode) -- 0 = normal, 1 = gift, 2 = refund
-		msg:addU32(entry.amount)
+		msg:add32(entry.amount)
 		if not oldProtocol then
 			msg:addByte(0x0) -- 0 = transferable tibia coin, 1 = normal tibia coin
 		end
@@ -1246,10 +1246,11 @@ GameStore.retrieveHistoryEntries = function(accountId, currentPage, entriesPerPa
 	if resultId ~= false then
 		repeat
 			local entry = {
-				mode = result.getNumber(resultId, "mode"),
-				description = result.getString(resultId, "description"),
-				amount = result.getNumber(resultId, "coin_amount"),
-				time = result.getNumber(resultId, "time"),
+				mode = Result.getNumber(resultId, "mode"),
+				description = Result.getString(resultId, "description"),
+				amount = Result.getNumber(resultId, "coin_amount"),
+				type = Result.getNumber(resultId, "coin_type"),
+				time = Result.getNumber(resultId, "time"),
 			}
 			table.insert(entries, entry)
 		until not Result.next(resultId)

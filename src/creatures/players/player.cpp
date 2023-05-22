@@ -1108,6 +1108,116 @@ void Player::getRewardList(std::vector<uint64_t> &rewards) const {
 	}
 }
 
+std::vector<Item*> Player::getRewardsFromContainer(const Container* container) const {
+	std::vector<Item*> rewardItemsVector;
+	if (container) {
+		for (auto item : container->getItems(true)) {
+			if (item->getID() == ITEM_REWARD_CONTAINER) {
+				continue;
+			}
+
+			rewardItemsVector.push_back(item);
+		}
+	}
+
+	return rewardItemsVector;
+}
+
+ReturnValue Player::recurseMoveItemToContainer(Item* item, Container* container) {
+	auto returnValue = g_game().internalMoveItem(item->getRealParent(), container, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
+	if (returnValue == RETURNVALUE_NOERROR) {
+		return RETURNVALUE_NOERROR;
+	}
+
+	for (auto containerItem : container->getItems(true)) {
+		auto subContainer = containerItem->getContainer();
+		if (!subContainer) {
+			continue;
+		}
+
+		returnValue = recurseMoveItemToContainer(item, subContainer);
+		if (returnValue == RETURNVALUE_NOERROR) {
+			return RETURNVALUE_NOERROR;
+		}
+	}
+
+	return RETURNVALUE_NOTENOUGHROOM;
+}
+
+ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*/, uint32_t maxMoveItems /* = 0*/) {
+	std::vector<Item*> rewardItemsVector;
+	if (fromCorpse) {
+		auto rewardId = fromCorpse->getAttribute<time_t>(ItemAttribute_t::DATE);
+		auto reward = getReward(rewardId, false);
+		rewardItemsVector = getRewardsFromContainer(reward->getContainer());
+	} else {
+		rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());
+	}
+
+	if (rewardItemsVector.empty()) {
+		return fromCorpse ? RETURNVALUE_REWARDCONTAINERISEMPTY : RETURNVALUE_REWARDCHESTISEMPTY;
+	}
+
+	uint32_t movedRewardItems = 0;
+	auto rewardCount = rewardItemsVector.size();
+	bool fallbackConsumed = false;
+	Item* fallbackItem = getInventoryItem(CONST_SLOT_BACKPACK);
+	int32_t movedMoney = 0;
+	for (auto item : rewardItemsVector) {
+		if (uint32_t worth = item->getWorth(); worth > 0) {
+			movedMoney += worth;
+			g_game().internalRemoveItem(item);
+			rewardCount--;
+			continue;
+		}
+
+		ObjectCategory_t category = g_game().getObjectCategory(item);
+		Container* lootContainer = getLootContainer(category);
+		// Limit the collect count if the "maxMoveItems" is not "0"
+		auto limitMove = maxMoveItems != 0 && movedItems == maxMoveItems;
+		if (!lootContainer && !quickLootFallbackToMainContainer || limitMove) {
+			if (limitMove) {
+				sendCancelMessage(fmt::format("You can only collect {} items at a time.", maxMoveItems));
+			} else {
+				sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your main backpack is not configured.");
+			}
+			break;
+		}
+
+		if (fallbackItem) {
+			if (Container* mainBackpack = fallbackItem->getContainer(); mainBackpack && !fallbackConsumed) {
+				setLootContainer(OBJECTCATEGORY_DEFAULT, mainBackpack);
+				sendInventoryItem(CONST_SLOT_BACKPACK, fallbackItem);
+			}
+
+			lootContainer = fallbackItem->getContainer();
+			fallbackConsumed = true;
+		}
+
+		if (!lootContainer) {
+			sendTextMessage(MESSAGE_EVENT_ADVANCE, "You don't have any backpack configured in quickloot to retrieve items.");
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+
+		auto recurseReturn = recurseMoveItemToContainer(item, lootContainer);
+		if (recurseReturn != RETURNVALUE_NOERROR) {
+			continue;
+		}
+
+		movedRewardItems++;
+	}
+
+	if (movedMoney > 0) {
+		setBankBalance(getBankBalance() + movedMoney);
+	}
+
+	auto lootedMessage = fmt::format("{} of {} objects were picked up and {} gold moved to your bank.", movedRewardItems, rewardCount, movedMoney);
+	sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedMessage);
+
+	auto finalReturn = movedRewardItems == 0 ? RETURNVALUE_NOTENOUGHROOM : RETURNVALUE_NOERROR;
+	return finalReturn;
+}
+
 void Player::sendCancelMessage(ReturnValue message) const {
 	sendCancelMessage(getReturnMessage(message));
 }
@@ -2099,7 +2209,7 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 	}
 
 	// Hazard system experience
-	const Monster* monster = target->getMonster() ? target->getMonster() : nullptr;
+	const Monster* monster = target && target->getMonster() ? target->getMonster() : nullptr;
 	bool handleHazardExperience = monster && monster->isOnHazardSystem() && getHazardSystemPoints() > 0;
 	if (handleHazardExperience) {
 		exp += (exp * (1.75 * getHazardSystemPoints() * g_configManager().getNumber(HAZARD_EXP_BONUS_MULTIPLIER))) / 100.;
@@ -7261,6 +7371,23 @@ SoundEffect_t Player::getAttackSoundEffect() const {
 	}
 
 	return SoundEffect_t::SILENCE;
+}
+
+bool Player::canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay /* = 500*/) {
+	if (!Position::areInRange<1, 1>(getPosition(), toPosition)) {
+		// Check if can walk to the toPosition and send event to use function
+		std::forward_list<Direction> listDir;
+		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
+			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir)));
+
+			SchedulerTask* task = createSchedulerTask(delay, function);
+			setNextWalkActionTask(task);
+			return true;
+		} else {
+			sendCancelMessage(RETURNVALUE_THEREISNOWAY);
+		}
+	}
+	return false;
 }
 
 /*******************************************************************************

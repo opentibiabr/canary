@@ -716,6 +716,10 @@ class Player final : public Creature, public Cylinder {
 		void getRewardList(std::vector<uint64_t> &rewards) const;
 		RewardChest* getRewardChest();
 
+		ReturnValue recurseMoveItemToContainer(Item* item, Container* container);
+		std::vector<Item*> getRewardsFromContainer(const Container* container) const;
+		ReturnValue rewardChestCollect(const Container* fromCorpse = nullptr, uint32_t maxMoveItems = 0);
+
 		DepotChest* getDepotChest(uint32_t depotId, bool autoCreate);
 		DepotLocker* getDepotLocker(uint32_t depotId);
 		void onReceiveMail() const;
@@ -1985,6 +1989,8 @@ class Player final : public Creature, public Cylinder {
 
 		uint64_t getItemCustomPrice(uint16_t itemId, bool buyPrice = false) const;
 		uint16_t getFreeBackpackSlots() const;
+
+		bool canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay = 500);
 
 		// Interfaces
 		error_t SetAccountInterface(account::Account* account);

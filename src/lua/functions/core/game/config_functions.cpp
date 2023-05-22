@@ -216,6 +216,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", VIP_SYSTEM_GAIN_COINS_ENABLED);
 	registerEnumIn(L, "configKeys", VIP_SYSTEM_GAIN_TOKENS_ENABLED);
 	registerEnumIn(L, "configKeys", VIP_SYSTEM_AUTO_LOOT_ONLY_VIP);
+	registerEnumIn(L, "configKeys", VIP_SYSTEM_FAMILIAR_TIME_DEBIT);
 #undef registerEnumIn
 }
 

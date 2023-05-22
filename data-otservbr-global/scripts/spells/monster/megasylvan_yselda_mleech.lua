@@ -2,7 +2,7 @@ local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_MANADRAIN)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HITBYPOISON)
 
-combat:setArea(AREA_CIRCLE1X1)
+combat:setArea(createCombatArea(AREA_CIRCLE1X1))
 
 local spell = Spell("instant")
 

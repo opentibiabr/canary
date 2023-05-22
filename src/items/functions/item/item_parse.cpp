@@ -11,6 +11,7 @@
 
 #include "items/functions/item/item_parse.hpp"
 #include "utils/pugicast.h"
+#include "item_parse.hpp"
 
 void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	// Parse all item attributes
@@ -65,6 +66,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseWalk(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseAllowDistanceRead(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseImbuement(tmpStrValue, attributeNode, valueAttribute, itemType);
+	ItemParse::parseStackSize(tmpStrValue, valueAttribute, itemType);
 }
 
 void ItemParse::parseType(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
@@ -803,5 +805,12 @@ void ItemParse::parseImbuement(const std::string &tmpStrValue, pugi::xml_node at
 		} else {
 			SPDLOG_WARN("[ParseImbuement::initParseImbuement] - Unknown type: {}", valueAttribute.as_string());
 		}
+	}
+}
+
+void ItemParse::parseStackSize(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "stacksize") {
+		itemType.stackSize = pugi::cast<uint16_t>(valueAttribute.value());
 	}
 }

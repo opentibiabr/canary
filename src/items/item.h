@@ -468,6 +468,13 @@ class Item : virtual public Thing, public ItemProperties {
 			return items[id].article;
 		}
 
+		uint16_t getStackSize() const {
+			if (isStackable()) {
+				return items[id].stackSize;
+			}
+			return 1;
+		}
+
 		// get the number of items
 		uint16_t getItemCount() const {
 			return count;
@@ -476,7 +483,7 @@ class Item : virtual public Thing, public ItemProperties {
 		uint32_t getItemAmount() const {
 			return count;
 		}
-		void setItemCount(uint8_t n) {
+		void setItemCount(uint16_t n) {
 			count = n;
 		}
 
@@ -659,7 +666,7 @@ class Item : virtual public Thing, public ItemProperties {
 		uint32_t referenceCounter = 0;
 
 		uint16_t id; // the same id as in ItemType
-		uint8_t count = 1; // number of stacked items
+		uint16_t count = 1; // number of stacked items
 
 		bool loadedFromMap = false;
 		bool isLootTrackeable = false;

@@ -42,7 +42,7 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 		itemCount = std::max<int32_t>(1, count);
 	} else if (it.hasSubType()) {
 		if (it.stackable) {
-			itemCount = static_cast<int32_t>(std::ceil(static_cast<float>(count) / 100));
+			itemCount = static_cast<int32_t>(std::ceil(static_cast<float>(count) / it.stackSize));
 		} else {
 			itemCount = 1;
 		}
@@ -53,8 +53,8 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 
 	while (itemCount > 0) {
 		uint16_t stackCount = subType;
-		if (it.stackable && stackCount > 100) {
-			stackCount = 100;
+		if (it.stackable && stackCount > it.stackSize) {
+			stackCount = it.stackSize;
 		}
 
 		Item* newItem = Item::CreateItem(itemId, stackCount);
@@ -152,7 +152,7 @@ int GlobalFunctions::luaDoAddContainerItem(lua_State* L) {
 
 	if (it.hasSubType()) {
 		if (it.stackable) {
-			itemCount = static_cast<int32_t>(std::ceil(static_cast<float>(count) / 100));
+			itemCount = static_cast<int32_t>(std::ceil(static_cast<float>(count) / it.stackSize));
 		}
 
 		subType = count;
@@ -161,7 +161,7 @@ int GlobalFunctions::luaDoAddContainerItem(lua_State* L) {
 	}
 
 	while (itemCount > 0) {
-		int32_t stackCount = std::min<int32_t>(100, subType);
+		int32_t stackCount = std::min<int32_t>(it.stackSize, subType);
 		Item* newItem = Item::CreateItem(itemId, stackCount);
 		if (!newItem) {
 			reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));

@@ -501,7 +501,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 	if (const Tile* tile = ignoreCap ? player->getTile() : nullptr; tile) {
 		double slotsNedeed = 0;
 		if (it.stackable) {
-			slotsNedeed = inBackpacks ? std::ceil(std::ceil(amount / 100) / shoppingBagSlots) : std::ceil(amount / 100);
+			slotsNedeed = inBackpacks ? std::ceil(std::ceil(amount / it.stackSize) / shoppingBagSlots) : std::ceil(amount / it.stackSize);
 		} else {
 			slotsNedeed = inBackpacks ? std::ceil(amount / shoppingBagSlots) : amount;
 		}
@@ -524,7 +524,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 
 	uint32_t itemsPurchased = 0;
 	uint8_t backpacksPurchased = 0;
-	uint8_t internalCount = it.stackable ? 100 : 1;
+	uint8_t internalCount = it.stackable ? it.stackSize : 1;
 	auto remainingAmount = static_cast<uint32_t>(amount);
 	if (inBackpacks) {
 		while (remainingAmount > 0) {

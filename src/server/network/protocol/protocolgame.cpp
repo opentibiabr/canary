@@ -700,6 +700,10 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 }
 
 void ProtocolGame::addBless() {
+	if (!player) {
+		return;
+	}
+
 	std::string bless = player->getBlessingsName();
 	std::ostringstream lostBlesses;
 	(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses << "You are still blessed with " << bless;

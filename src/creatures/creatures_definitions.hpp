@@ -66,8 +66,8 @@ enum ConditionAttr_t {
 	CONDITIONATTR_END = 254,
 };
 
-enum ConditionType_t : uint64_t {
-	CONDITION_NONE,
+enum ConditionType_t : int8_t {
+	CONDITION_NONE = -1,
 
 	CONDITION_POISON = 0,
 	CONDITION_FIRE = 1,

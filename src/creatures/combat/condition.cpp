@@ -134,7 +134,7 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
 
 void Condition::serialize(PropWriteStream &propWriteStream) {
 	propWriteStream.write<uint8_t>(CONDITIONATTR_TYPE);
-	propWriteStream.write<uint32_t>(conditionType);
+	propWriteStream.write<int8_t>(conditionType);
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_ID);
 	propWriteStream.write<uint32_t>(id);
@@ -248,8 +248,8 @@ Condition* Condition::createCondition(PropStream &propStream) {
 		return nullptr;
 	}
 
-	uint32_t type;
-	if (!propStream.read<uint32_t>(type)) {
+	int8_t type;
+	if (!propStream.read<int8_t>(type)) {
 		return nullptr;
 	}
 

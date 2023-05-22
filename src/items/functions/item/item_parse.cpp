@@ -483,7 +483,7 @@ void ItemParse::parseMaxHitAndManaPoints(const std::string &tmpStrValue, pugi::x
 
 void ItemParse::parseMagicLevelPoint(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	std::string stringValue = tmpStrValue;
-	if (stringValue == "magiclevelpoints") {
+	if (stringValue == "magiclevelpoints" || stringValue == "magicpoints") {
 		itemType.getAbilities().stats[STAT_MAGICPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
 	} else if (stringValue == "magiclevelpointspercent") {
 		itemType.getAbilities().statsPercent[STAT_MAGICPOINTS] = pugi::cast<int32_t>(valueAttribute.value());

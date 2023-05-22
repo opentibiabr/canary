@@ -54579,7 +54579,7 @@
 		<attribute key="skillsword" value="4"/>
 		<attribute key="skillaxe" value="4"/>
 		<attribute key="skillclub" value="4"/>
-		<attribute key="damagereflection" value="19"/>
+		<attribute key="reflectdamage" value="19"/>
 		<attribute key="armor" value="20"/>
 		<attribute key="weight" value="16000"/>
 		<attribute key="imbuementslot" value="2">
@@ -54598,7 +54598,7 @@
 		<attribute key="skillsword" value="3"/>
 		<attribute key="skillaxe" value="3"/>
 		<attribute key="skillclub" value="3"/>
-		<attribute key="damagereflection" value="13"/>
+		<attribute key="reflectdamage" value="13"/>
 		<attribute key="armor" value="12"/>
 		<attribute key="weight" value="4400"/>
 		<attribute key="imbuementslot" value="2">
@@ -56572,7 +56572,7 @@
 	</item>
 	<item id="40592" article="a" name="alchemist's boots">
 		<attribute key="absorbpercentphysical" value="2"/>
-		<attribute key="magicpoints" value="1"/>
+		<attribute key="magiclevelpoints" value="1"/>
 		<attribute key="armor" value="2"/>
 		<attribute key="weight" value="1600"/>
 		<attribute key="imbuementslot" value="1">
@@ -56581,7 +56581,7 @@
 	</item>
 	<item id="40593" article="a" name="mutant bone boots">
 		<attribute key="absorbpercentdeath" value="3"/>
-		<attribute key="magicpoints" value="1"/>
+		<attribute key="magiclevelpoints" value="1"/>
 		<attribute key="armor" value="2"/>
 		<attribute key="weight" value="1100"/>
 		<attribute key="imbuementslot" value="1">
@@ -56592,7 +56592,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="absorbpercentice" value="7"/>
 		<attribute key="absorbpercentphysical" value="3"/>
-		<attribute key="magicpoints" value="2"/>
+		<attribute key="magiclevelpoints" value="2"/>
 		<attribute key="firemagiclevelpoints" value="2"/>
 		<attribute key="energymagiclevelpoints" value="2"/>
 		<attribute key="defense" value="20"/>
@@ -56608,7 +56608,7 @@
 	</item>
 	<item id="40595" name="mutant bone kilt">
 		<attribute key="absorbpercentphysical" value="3"/>
-		<attribute key="magicpoints" value="2"/>
+		<attribute key="magiclevelpoints" value="2"/>
 		<attribute key="armor" value="8"/>
 		<attribute key="weight" value="3500"/>
 	</item>

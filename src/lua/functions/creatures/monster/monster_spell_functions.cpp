@@ -184,7 +184,15 @@ int MonsterSpellFunctions::luaMonsterSpellSetConditionType(lua_State* L) {
 	// monsterSpell:setConditionType(type)
 	MonsterSpell* spell = getUserdata<MonsterSpell>(L, 1);
 	if (spell) {
-		spell->conditionType = getNumber<ConditionType_t>(L, 2);
+		auto conditionType = getNumber<uint8_t>(L, 2);
+		if (conditionType == -1) {
+			spdlog::error("[{}] trying to register condition type none for monster: {}", __FUNCTION__, spell->name);
+			reportErrorFunc(fmt::format("trying to register condition type none for monster: {}", spell->name));
+			pushBoolean(L, false);
+			return 1;
+		}
+
+		spell->conditionType = static_cast<ConditionType_t>(conditionType);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

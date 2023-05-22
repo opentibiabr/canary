@@ -6648,6 +6648,13 @@ void ProtocolGame::sendSpellCooldown(uint16_t spellId, uint32_t time) {
 			msg.add<uint16_t>(spellId);
 		}
 	}
+	if (spellId >= 194 && spellId <= 197 && g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && player && player->isVIP()) {
+		int32_t timeDebit = g_configManager().getNumber(VIP_SYSTEM_FAMILIAR_TIME_DEBIT);
+		if (timeDebit > 0) {
+			uint32_t cooldown = time / 120000; // Convert time to minutes and divide by 2
+			time -= static_cast<uint32_t>(((timeDebit <= cooldown) ? timeDebit : cooldown) * 60000);
+		}
+	}
 	msg.add<uint32_t>(time);
 	writeToOutputBuffer(msg);
 }

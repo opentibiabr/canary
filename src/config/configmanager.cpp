@@ -367,6 +367,7 @@ bool ConfigManager::load() {
 	boolean[VIP_SYSTEM_GAIN_COINS_ENABLED] = getGlobalBoolean(L, "vipSystemGainCoinsEnabled", false);
 	boolean[VIP_SYSTEM_GAIN_TOKENS_ENABLED] = getGlobalBoolean(L, "vipSystemGainTokensEnabled", false);
 	boolean[VIP_SYSTEM_AUTO_LOOT_ONLY_VIP] = getGlobalBoolean(L, "vipSystemAutoLootOnlyVip", false);
+	integer[VIP_SYSTEM_FAMILIAR_TIME_DEBIT] = getGlobalNumber(L, "vipSystemFamiliarTimeDebit", 0);
 
 	loaded = true;
 	lua_close(L);

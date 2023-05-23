@@ -3,7 +3,7 @@
 -- If you want to use the global datapack folder, put "data-otservbr-global"
 -- If "useAnyDatapackFolder" is set to true then you can choose any datapack folder for your server
 useAnyDatapackFolder = false
-dataPackDirectory = "data-otservbr-global"
+dataPackDirectory = "data-arclite"
 -- Don't change this unless you know what you're doing
 coreDirectory = "data"
 
@@ -43,8 +43,8 @@ loginProtocolPort = 7171
 gameProtocolPort = 7172
 statusProtocolPort = 7171
 maxPlayers = 0
-serverName = "OTServBR-Global"
-serverMotd = "Welcome to the OTServBR-Global!"
+serverName = "Arclite"
+serverMotd = "Welcome to Arclite!"
 onePlayerOnlinePerAccount = true
 statusTimeout = 5 * 1000
 replaceKickOnLogin = true
@@ -195,7 +195,7 @@ maxAllowedOnADummy = 1
 toggleSaveInterval = true
 saveIntervalType = "hour"
 toggleSaveIntervalCleanMap = true
-saveIntervalTime = 1
+saveIntervalTime = 6
 
 -- Imbuement
 toggleImbuementShrineStorage = false
@@ -218,7 +218,7 @@ deathLosePercent = -1
 -- NOTE: set housePriceEachSQM to -1 to disable the ingame buy house functionality
 -- NOTE: set houseBuyLevel to 0 to disable the min level purchase functionality.
 -- Periods: daily/weekly/monthly/yearly/never
-housePriceEachSQM = 1000
+housePriceEachSQM = -1
 houseRentPeriod = "never"
 houseOwnedByAccount = false
 houseBuyLevel = 100
@@ -242,7 +242,7 @@ pushWhenAttacking = false
 toggleDownloadMap = true
 mapName = "otservbr"
 mapDownloadUrl = "https://github.com/opentibiabr/canary/releases/download/v1.5.0/otservbr.otbm"
-mapAuthor = "OpenTibiaBR"
+mapAuthor = "Arclite"
 
 -- Party List limitations
 -- max distance in which players in party list are visible
@@ -263,7 +263,7 @@ maxMarketOffersAtATimePerPlayer = 100
 mysqlHost = "127.0.0.1"
 mysqlUser = "root"
 mysqlPass = "root"
-mysqlDatabase = "otservbr-global"
+mysqlDatabase = "arclite_db"
 mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"
@@ -305,7 +305,7 @@ sortLootByChance = false
 -- Rates
 -- NOTE: rateExp, rateSkill and rateMagic is used when 'rateUseStages = false' - or a fallback only
 -- To configure rates see file data/stages.lua
-rateUseStages = false
+rateUseStages = true
 rateExp = 1
 rateSkill = 1
 rateLoot = 1
@@ -352,10 +352,10 @@ defaultPriority = "high"
 startupDatabaseOptimization = true
 
 -- Status server information
-ownerName = "OpenTibiaBR"
-ownerEmail = "opentibiabr@outlook.com"
-url = "http://docs.opentibiabr.com/"
-location = "South America"
+ownerName = "Arclite"
+ownerEmail = "admin@arclite.co.uk"
+url = "https://arclite.co.uk"
+location = "United Kingdom"
 
 -- Sends Discord webhook notifications on startup, raids and shutdown.
 -- The URL layout is https://discord.com/api/webhooks/:id/:token

@@ -4,8 +4,8 @@ function ultimateBoozer.onUse(player, item, fromPosition, target, toPosition, is
 		return false
 	end
 
-	if player:getStorageValue(Storage.TibiaTales.ultimateBoozeQuest) == 1 then
-		player:setStorageValue(Storage.TibiaTales.ultimateBoozeQuest, 2)
+	if player:getStorageValue(Storage.TibiaTales.UltimateBoozeQuest) == 1 then
+		player:setStorageValue(Storage.TibiaTales.UltimateBoozeQuest, 2)
 	end
 	player:removeItem(138, 1)
 	player:addItem(136, 1)

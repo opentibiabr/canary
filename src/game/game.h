@@ -613,6 +613,7 @@ class Game {
 		 * @param player A pointer to the Player object to remove.
 		 */
 		void removePlayerUniqueLogin(Player* player);
+		void playerCheckActivity(const std::string &playerName, int interval);
 
 	private:
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;

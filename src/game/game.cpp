@@ -9126,6 +9126,39 @@ void Game::removePlayerUniqueLogin(Player* player) {
 	m_uniqueLoginPlayerNames.erase(lowercase_name);
 }
 
+void Game::playerCheckActivity(const std::string &playerName, int interval) {
+	Player* player = getPlayerUniqueLogin(playerName);
+	if (!player) {
+		return;
+	}
+
+	if (player->getIP() == 0) {
+		g_game().removePlayerUniqueLogin(playerName);
+		IOLoginData::updateOnlineStatus(player->guid, false);
+		SPDLOG_INFO("Player with name '{}' has logged out due to exited in death screen", player->getName());
+		player->disconnect();
+		return;
+	}
+
+	if (!player->isDead() || player->client == nullptr) {
+		return;
+	}
+
+	if (!player->isAccessPlayer()) {
+		player->m_deathTime += interval;
+		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
+		if (player->m_deathTime > (kickAfterMinutes * 60000) + 60000) {
+			SPDLOG_INFO("Player with name '{}' has logged out due to inactivity after death", player->getName());
+			g_game().removePlayerUniqueLogin(playerName);
+			IOLoginData::updateOnlineStatus(player->guid, false);
+			player->disconnect();
+			return;
+		}
+	}
+
+	g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&Game::playerCheckActivity, this, playerName, interval)));
+}
+
 void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems /* = 0*/) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {

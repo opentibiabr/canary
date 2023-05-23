@@ -491,10 +491,10 @@ class ProtocolGame final : public Protocol {
 		// Hazard system
 		void reloadHazardSystemIcon(uint16_t reference);
 
-		uint8_t playerDeathTime = 0;
+		uint8_t m_playerDeathTime = 0;
 
 		void resetPlayerDeathTime() {
-			playerDeathTime = 0;
+			m_playerDeathTime = 0;
 		}
 };
 

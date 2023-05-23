@@ -9145,9 +9145,9 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 	}
 
 	if (!player->isAccessPlayer()) {
-		player->playerDeathTime += interval;
+		player->m_deathTime += interval;
 		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
-		if (player->playerDeathTime > (kickAfterMinutes * 60000) + 60000) {
+		if (player->m_deathTime > (kickAfterMinutes * 60000) + 60000) {
 			SPDLOG_INFO("Player with name '{}' has logged out due to inactivity after death", player->getName());
 			g_game().removePlayerUniqueLogin(playerName);
 			IOLoginData::updateOnlineStatus(player->guid, false);

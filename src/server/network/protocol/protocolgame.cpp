@@ -655,9 +655,9 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 
 	if (player->isDead() || player->getHealth() <= 0) {
 		// Check player activity on death screen
-		if (playerDeathTime == 0) {
+		if (m_playerDeathTime == 0) {
 			addGameTask(&Game::playerCheckActivity, player->getName(), 1000);
-			playerDeathTime++;
+			m_playerDeathTime++;
 		}
 
 		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte)));

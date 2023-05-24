@@ -1029,6 +1029,8 @@ CREATE TABLE IF NOT EXISTS `players` (
   `skill_shielding_tries` bigint UNSIGNED NOT NULL DEFAULT '0',
   `skill_fishing` int UNSIGNED NOT NULL DEFAULT '10',
   `skill_fishing_tries` bigint UNSIGNED NOT NULL DEFAULT '0',
+  `skill_divinity` int UNSIGNED NOT NULL DEFAULT '0',
+  `skill_divinity_tries` bigint UNSIGNED NOT NULL DEFAULT '0',
   `skill_critical_hit_chance` int UNSIGNED NOT NULL DEFAULT '0',
   `skill_critical_hit_chance_tries` bigint UNSIGNED NOT NULL DEFAULT '0',
   `skill_critical_hit_damage` int UNSIGNED NOT NULL DEFAULT '0',

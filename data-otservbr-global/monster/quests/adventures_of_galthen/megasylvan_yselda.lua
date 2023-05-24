@@ -2,13 +2,13 @@ local mType = Game.createMonsterType("Megasylvan Yselda")
 local monster = {}
 
 monster.description = "Megasylvan Yselda"
-monster.experience = 20500
+monster.experience = 19900
 monster.outfit = {
 	lookTypeEx = 36928,
 }
 
-monster.health = 190000
-monster.maxHealth = 190000
+monster.health = 32000
+monster.maxHealth = 32000
 monster.race = "blood"
 monster.corpse = 36929
 monster.speed = 0
@@ -67,39 +67,40 @@ monster.summon = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 10000, maxCount = 3},
-	{name = "platinum coin", chance = 10000, maxCount = 24},
-	{name = "supreme health potion", chance = 7300, maxCount = 11},
-	{name = "ultimate mana potion", chance = 7300, maxCount = 3},
-	{name = "ultimate spirit potion", chance = 7300, maxCount = 3},
-	{name = "berserk potion", chance = 7300, maxCount = 16},
-	{name = "mastermind potion", chance = 7300, maxCount = 5},
-	{name = "bullseye potion", chance = 7300, maxCount = 16},
-	{name = "violet gem", chance = 1200, maxCount = 1},
-	{name = "yellow gem", chance = 1200, maxCount = 1},
-	{id= 3039, chance = 1200, maxCount = 1},
-	{name = "blue gem", chance = 1200, maxCount = 1},
-	{name = "green gem", chance = 1200, maxCount = 1},
-	{name = "giant emerald", chance = 1200, maxCount = 1},
-	{name = "giant topaz", chance = 1200, maxCount = 1},
-	{name = "terra mantle", chance = 700},
-	{name = "terra legs", chance = 600},
-	{name = "terra amulet", chance = 600},
-	{name = "terra rod", chance = 400},
-	{name = "terra hood", chance = 650},
-	{name = "potato", chance = 650, maxCount = 2},
-	{name = "bar of gold", chance = 650},
-	{name = "curl of hair", chance = 650},
-	{name = "old royal diary", chance = 650},
-	{name = "megasylvan sapling", chance = 650}
+	{id = 3035, chance = 100000, minCount = 1, maxCount = 9}, -- platinum coin
+	{id = 8010, chance = 100000, minCount = 1, maxCount = 5}, -- potato
+	{id = 23375, chance = 57140, minCount = 1, maxCount = 33}, -- supreme health potion
+	{id = 23373, chance = 57140, minCount = 1, maxCount = 31}, -- ultimate mana potion
+	{id = 23374, chance = 30000, minCount = 1, maxCount = 11}, -- ultimate spirit potion
+	{id = 7443, chance = 22860, minCount = 4, maxCount = 19}, -- bullseye potion
+	{id = 7439, chance = 21430, minCount = 1, maxCount = 16}, -- berserk potion
+	{id = 3041, chance = 18570, count = 1}, -- blue gem
+	{id = 7440, chance = 17140, minCount = 4, maxCount = 19}, -- mastermind potion
+	{id = 3038, chance = 17140, minCount = 1, maxCount = 2}, -- green gem
+	{id = 3036, chance = 15710, minCount = 1, maxCount = 2}, -- violet gem
+	{id = 3039, chance = 14290, minCount = 1, maxCount = 2}, -- red gem
+	{id = 30060, chance = 11430, count = 1}, -- giant emerald
+	{id = 3037, chance = 10000, count = 1}, -- yellow gem
+	{id = 3043, chance = 8570, count = 1}, -- crystal coin
+	{id = 36809, chance = 4290}, -- curl of hair
+	{id = 14112, chance = 4290}, -- bar of gold
+	{id = 814, chance = 2860}, -- terra amulet
+	{id = 3065, chance = 2860}, -- terra rod
+	{id = 830, chance = 2860}, -- terra hood
+	{id = 36811, chance = 1430}, -- megasylvan sapling
+	{id = 36808, chance = 1430}, -- old royal diary
+	{id = 812, chance = 1430}, -- terra legs
+	{id = 811, chance = 1430}, -- terra mantle
+	{id = 32623, chance = 1200, count = 1} -- giant topaz
 }
 
 monster.attacks = {
 	{name ="melee", interval = 2000, chance = 100, minDamage = -270, maxDamage = -500},
-	{name ="combat", interval = 2000, chance = 70, type = COMBAT_EARTHDAMAGE, minDamage = -1000, maxDamage = -1200, length = 7, spread = 0, effect = CONST_ME_SMALLPLANTS, target = false},
-	{name ="combat", interval = 2000, chance = 17, type = COMBAT_PHYSICALDAMAGE, minDamage = -500, maxDamage = -800, radius = 5, effect = CONST_ME_GROUNDSHAKER, target = false},
-	{name ="combat", interval = 2000, chance = 17, type = COMBAT_EARTHDAMAGE, minDamage = -500, maxDamage = -800, radius = 2, effect = CONST_ME_HITBYPOISON, target = false},
-}
+	{name ="earth beamMY", interval = 2000, chance = 50, minDamage = -400, maxDamage = -900, target = false},
+	{name ="combat", interval = 2000, chance = 50, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -800, range = 5, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false},
+	{name ="combat", interval = 2000, chance = 50, type = COMBAT_PHYSICALDAMAGE, minDamage = -400, maxDamage = -800, radius = 5, effect = CONST_ME_GROUNDSHAKER, target = false},
+	{name ="mana leechMY", interval = 2000, chance = 50, minDamage = -100, maxDamage = -400, target = false}
+	}
 
 monster.defenses = {
 	defense = 60,

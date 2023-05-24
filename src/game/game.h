@@ -249,6 +249,8 @@ class Game {
 
 		bool addItemStoreInbox(const Player* player, uint32_t itemId);
 
+		void playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems = 0);
+
 		void playerReportRuleViolationReport(uint32_t playerId, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation);
 
 		void playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
@@ -611,6 +613,7 @@ class Game {
 		 * @param player A pointer to the Player object to remove.
 		 */
 		void removePlayerUniqueLogin(Player* player);
+		void playerCheckActivity(const std::string &playerName, int interval);
 
 	private:
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;

@@ -1,6 +1,9 @@
 local exerciseTraining = Action()
 
 function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	if not target then
+		return
+	end
 	local playerId = player:getId()
 	local targetId = target:getId()
 

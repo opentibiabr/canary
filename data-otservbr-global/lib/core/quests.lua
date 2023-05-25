@@ -4658,7 +4658,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "The Ultimate Booze",
-					storageId = Storage.TibiaTales.ultimateBoozeQuest,
+					storageId = Storage.TibiaTales.UltimateBoozeQuest,
 					missionId = 10326,
 					startValue = 1,
 					endValue = 3,
@@ -4743,7 +4743,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "To Outfox a Fox",
-					storageId = Storage.toOutfoxAFoxQuest,
+					storageId = Storage.ToOutfoxAFoxQuest,
 					missionId = 10432,
 					startValue = 1,
 					endValue = 2,

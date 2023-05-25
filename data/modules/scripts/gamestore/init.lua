@@ -63,7 +63,7 @@ GameStore.ActionType = {
 	OPEN_OFFER = 4,
 }
 
-GameStore.CointType = {
+GameStore.CoinType = {
 	Coin = 0,
 	Transferable = 1,
 }
@@ -257,7 +257,7 @@ function parseTransferableCoins(playerId, msg)
 	local reciver = msg:getString()
 	local amount = msg:getU32()
 
-	if (player:getCoinsBalance() < amount) then
+	if (player:getTransferableCoins() < amount) then
 		return addPlayerEvent(sendStoreError, 350, playerId, GameStore.StoreErrors.STORE_ERROR_TRANSFER, "You don't have this amount of coins.")
 	end
 
@@ -280,8 +280,8 @@ function parseTransferableCoins(playerId, msg)
 	addPlayerEvent(sendStorePurchaseSuccessful, 550, playerId, "You have transfered " .. amount .. " coins to " .. reciver .. " successfully")
 
 	-- Adding history for both reciver/sender
-	GameStore.insertHistory(accountId, GameStore.HistoryTypes.HISTORY_TYPE_NONE, player:getName() .. " transfered you this amount.", amount, GameStore.CointType.Coin)
-	GameStore.insertHistory(player:getAccountId(), GameStore.HistoryTypes.HISTORY_TYPE_NONE, "You transfered this amount to " .. reciver, -1 * amount, GameStore.CointType.Coin)
+	GameStore.insertHistory(accountId, GameStore.HistoryTypes.HISTORY_TYPE_NONE, player:getName() .. " transfered you this amount.", amount, GameStore.CoinType.Coin)
+	GameStore.insertHistory(player:getAccountId(), GameStore.HistoryTypes.HISTORY_TYPE_NONE, "You transfered this amount to " .. reciver, -1 * amount, GameStore.CoinType.Coin)
 	openStore(playerId)
 end
 
@@ -905,7 +905,7 @@ function sendShowStoreOffersOnOldProtocol(playerId, category)
 	for _, offer in ipairs(category.offers) do
 		if limit > 0 then
 			-- Blocking offers that are not on coin currency. On old protocol we cannot change or validate any currency instead the default (Coin)
-			if (not(offer.coinType) or offer.coinType == GameStore.CointType.Coin) then
+			if (not(offer.coinType) or offer.coinType == GameStore.CoinType.Coin) then
 				count = count + 1
 			end
 			limit = limit - 1
@@ -914,7 +914,7 @@ function sendShowStoreOffersOnOldProtocol(playerId, category)
 
 	msg:addU16(count)
 	for _, offer in ipairs(category.offers) do
-		if (count > 0 and offer.coinType == GameStore.CointType.Coin) then
+		if (count > 0 and offer.coinType == GameStore.CoinType.Coin) then
 			count = count - 1
 			local name = ""
 			if offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM and offer.count then
@@ -1034,8 +1034,11 @@ function sendStorePurchaseSuccessful(playerId, message)
 	msg:addByte(0x00)
 	msg:addString(message)
 	if oldProtocol then
-		msg:addU32(player:getCoinsBalance())
-		msg:addU32(player:getCoinsBalance())
+		-- Send all coins can be used for buy store offers
+		local totalCoins = player:getTibiaCoins() + player:getTransferableCoins()
+		msg:addU32(totalCoins)
+		-- Send transferable coins can be used on transfer
+		msg:addU32(player:getTransferableCoins())
 	end
 
 	msg:sendToPlayer(player)
@@ -1086,10 +1089,17 @@ function sendUpdatedStoreBalances(playerId)
 	msg:addByte(GameStore.SendingPackets.S_CoinBalance)
 	msg:addByte(0x01)
 
-	msg:addU32(player:getCoinsBalance()) -- Tibia Coins
-	msg:addU32(player:getTransferableCoinsBalance()) -- How many are Transferable
+	-- Old protocol receive both types in the same byte
+	if oldProtocol then
+		local totalCoins = player:getTibiaCoins() + player:getTransferableCoins()
+		msg:addU32(totalCoins)
+	else
+		msg:addU32(player:getTibiaCoins())
+	end
+	msg:addU32(player:getTransferableCoins()) -- How many are Transferable
 	if not oldProtocol then
-		msg:addU32(player:getCoinsBalance()) -- How many are reserved for a Character Auction
+		-- How many are reserved for a Character Auction
+		msg:addU32(player:getTibiaCoins())
 	end
 
 	msg:sendToPlayer(player)
@@ -1794,21 +1804,9 @@ function GameStore.processHirelingOutfitPurchase(player, offer)
 end
 
 --==Player==--
-
---- Tibia Coins
-function Player.getCoinsBalance(self)
-	resultId = db.storeQuery("SELECT `coins` FROM `accounts` WHERE `id` = " .. self:getAccountId())
-	if not resultId then return 0 end
-	return Result.getNumber(resultId, "coins")
-end
-
-function Player.setCoinsBalance(self, coins)
-	db.query("UPDATE `accounts` SET `coins` = " .. coins .. " WHERE `id` = " .. self:getAccountId())
-	return true
-end
-
+-- Character auction coins
 function Player.canRemoveCoins(self, coins)
-	if self:getCoinsBalance() < coins then
+	if self:getTibiaCoins() < coins then
 		return false
 	end
 	return true
@@ -1816,33 +1814,24 @@ end
 
 function Player.removeCoinsBalance(self, coins)
 	if self:canRemoveCoins(coins) then
-		return self:setCoinsBalance(self:getCoinsBalance() - coins)
+		sendStoreBalanceUpdating(self, true)
+		return self:removeTibiaCoins(coins)
 	end
 
 	return false
 end
 
 function Player.addCoinsBalance(self, coins, update)
-	self:setCoinsBalance(self:getCoinsBalance() + coins)
-	if update then sendStoreBalanceUpdating(self, true) end
+	self:addTibiaCoins(coins)
+	if update then
+		sendStoreBalanceUpdating(self, true)
+	end
 	return true
 end
 
-
---- Transfer Tibia Coins
-function Player.getTransferableCoinsBalance(self)
-	resultId = db.storeQuery("SELECT `coins_transferable` FROM `accounts` WHERE `id` = " .. self:getAccountId())
-	if not resultId then return 0 end
-	return Result.getNumber(resultId, "coins_transferable")
-end
-
-function Player.setTransferableCoinsBalance(self, coins)
-	db.query("UPDATE `accounts` SET `coins_transferable` = " .. coins .. " WHERE `id` = " .. self:getAccountId())
-	return true
-end
-
+-- Transferable coins
 function Player.canRemoveTransferableCoins(self, coins)
-	if self:getTransferableCoinsBalance() < coins then
+	if self:getTransferableCoins() < coins then
 		return false
 	end
 	return true
@@ -1850,18 +1839,20 @@ end
 
 function Player.removeTransferableCoinsBalance(self, coins)
 	if self:canRemoveTransferableCoins(coins) then
-		return self:setTransferableCoinsBalance(self:getTransferableCoinsBalance() - coins)
+		sendStoreBalanceUpdating(self, true)
+		return self:removeTransferableCoins(coins)
 	end
 
 	return false
 end
 
 function Player.addTransferableCoinsBalance(self, coins, update)
-	self:setTransferableCoinsBalance(self:getTransferableCoinsBalance() + coins)
-	if update then sendStoreBalanceUpdating(self, true) end
+	self:addTransferableCoins(coins)
+	if update then
+		sendStoreBalanceUpdating(self, true)
+	end
 	return true
 end
-
 
 --- Support Functions
 function Player.makeCoinTransaction(self, offer, desc)
@@ -1873,8 +1864,14 @@ function Player.makeCoinTransaction(self, offer, desc)
 		desc = offer.name
 	end
 
-	-- Remove coins
-	op = self:removeCoinsBalance(offer.price)
+	-- First try remove normal coins, later the transferable coins
+	if self:canRemoveCoins(offer.price) then
+		-- Remove auction character coins
+		op = self:removeCoinsBalance(offer.price)
+	else
+		-- Remove transferable coins
+		op = self:removeTransferableCoinsBalance(offer.price)
+	end
 
 	-- When the transaction is suscessfull add to the history
 	if op then

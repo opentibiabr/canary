@@ -1,4 +1,3 @@
-
 local spell = Spell("instant")
 
 function spell.onCastSpell(player, variant)

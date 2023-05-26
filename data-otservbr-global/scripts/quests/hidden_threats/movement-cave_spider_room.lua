@@ -12,7 +12,7 @@ local config = {
 	rangeX = 20, -- Range in X
 	rangeY = 10, -- Range in Y
 	time = 5, -- time in minutes to remove the player
-	access = Storage.Quest.U11_50.HiddenThreats.corymRescueMission -- Quest level to access the room
+	access = Storage.Quest.U11_50.HiddenThreats.CorymRescueMission -- Quest level to access the room
 }
 
 local caveSpiderRoom = MoveEvent()

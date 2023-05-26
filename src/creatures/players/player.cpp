@@ -1715,6 +1715,7 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout) {
 				guild->removeMember(this);
 			}
 
+			g_game().removePlayerUniqueLogin(this);
 			loginPosition = getPosition();
 			lastLogout = time(nullptr);
 			SPDLOG_INFO("{} has logged out", getName());

@@ -39,7 +39,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = true,
+	rewardBoss = false,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = false,
@@ -62,33 +62,6 @@ monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{text = "I AM ZAMULOSH!", yell = false}
-}
-
-monster.loot = {
-	{id = 22516, chance = 1000000}, -- silver token
-	{id = 3031, chance = 98000, maxCount = 200}, -- gold coin
-	{id = 281, chance = 14000, maxCount = 5}, -- giant shimmering pearl (green)
-	{id = 282, chance = 14000, maxCount = 5}, -- giant shimmering pearl (brown)
-	{id = 3029, chance = 12000, maxCount = 9}, -- small sapphire
-	{id = 3026, chance = 12000, maxCount = 8}, -- white pearl
-	{id = 3033, chance = 10000, maxCount = 5}, -- small amethyst
-	{id = 9057, chance = 10000, maxCount = 8}, -- small topaz
-	{id = 3035, chance = 8000, maxCount = 58}, -- platinum coin
-	{id = 6499, chance = 11000}, -- demonic essence
-	{id = 16122, chance = 10000, maxCount = 6}, -- green crystal splinter
-	{id = 16123, chance = 10000, maxCount = 6}, -- brown crystal splinter
-	{id = 16124, chance = 10000, maxCount = 6}, -- blue crystal splinter
-	{id = 3039, chance = 1000}, -- red gem
-	{id = 3037, chance = 1000}, -- yellow gem
-	{id = 3038, chance = 1000}, -- green gem
-	{id = 3041, chance = 1000}, -- blue gem
-	{id = 3053, chance = 6000}, -- time ring
-	{id = 3098, chance = 6000}, -- ring of healing
-	{id = 22867, chance = 770}, -- rift crossbow
-	{id = 8050, chance = 770}, -- crystalline armor
-	{id = 22726, chance = 670}, -- rift shield
-	{id = 22762, chance = 500, unique = true}, -- maimer
-	{id = 22555, chance = 500, unique = true} -- stone wall
 }
 
 monster.attacks = {
@@ -124,23 +97,5 @@ monster.immunities = {
 	{type = "invisible", condition = true},
 	{type = "bleed", condition = false}
 }
-
-mType.onThink = function(monster, interval)
-end
-
-mType.onAppear = function(monster, creature)
-	if monster:getType():isRewardBoss() then
-		monster:setReward(true)
-	end
-end
-
-mType.onDisappear = function(monster, creature)
-end
-
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
-
-mType.onSay = function(monster, creature, type, message)
-end
 
 mType:register(monster)

@@ -1089,17 +1089,14 @@ function sendUpdatedStoreBalances(playerId)
 	msg:addByte(GameStore.SendingPackets.S_CoinBalance)
 	msg:addByte(0x01)
 
-	-- Old protocol receive both types in the same byte
-	if oldProtocol then
-		local totalCoins = player:getTibiaCoins() + player:getTransferableCoins()
-		msg:addU32(totalCoins)
-	else
-		msg:addU32(player:getTibiaCoins())
-	end
+	-- Send total of coins (transferable and normal coin)
+	local totalCoins = player:getTibiaCoins() + player:getTransferableCoins()
+	msg:addU32(totalCoins)
 	msg:addU32(player:getTransferableCoins()) -- How many are Transferable
 	if not oldProtocol then
 		-- How many are reserved for a Character Auction
-		msg:addU32(player:getTibiaCoins())
+		-- We currently do not have this system implemented, so we will send 0
+		msg:addU32(0)
 	end
 
 	msg:sendToPlayer(player)
@@ -1881,8 +1878,18 @@ function Player.makeCoinTransaction(self, offer, desc)
 	return op
 end
 
+-- Verifies if the player has enough resources to afford a given offer.
+-- @param coins (number) - The amount of coins required for the offer.
+-- @param type (string) - The type of the offer.
+-- @return (boolean) - Returns true if the player can pay for the offer, false otherwise.
 function Player.canPayForOffer(self, coins, type)
-	return self:canRemoveCoins(coins)
+	local can_remove_coins = self:canRemoveCoins(coins)
+	local can_remove_transferable_coins = self:canRemoveTransferableCoins(coins)
+
+	-- First, we check if the player has the required amount of regular coins.
+	-- Then, we check if the player has the required amount of transferable coins.
+	-- Finally, we check if the player has both amounts combined.
+	return can_remove_coins or can_remove_transferable_coins or (can_remove_coins and can_remove_transferable_coins)
 end
 
 --- Other players functions

@@ -22,15 +22,15 @@ Reserved player action storage key ranges (const.hpp)
 ]]
 
 Global = {
-    Storage = {
+	Storage = {
 		NpcExhaust = 30001,
-		combatProtectionStorage = 30023,
-		blockMovementStorage = 30025,
+		CombatProtectionStorage = 30023,
+		BlockMovementStorage = 30025,
 		FamiliarSummon = 30026,
 		StoreExaust = 30051,
 		FamiliarSummonEvent10 = 30054,
 		FamiliarSummonEvent60 = 30055
-    }
+	}
 }
 
 -- Values extraction function
@@ -53,7 +53,7 @@ table.sort(extraction) -- Sort the table
 -- Scroll through the extracted table for duplicates
 if #extraction > 1 then
 	for i = 1, #extraction - 1 do
-		if extraction[i] == extraction[i+1] then
+		if extraction[i] == extraction[i + 1] then
 			Spdlog.warn(string.format("Duplicate global storage value found: %d",
 				extraction[i]))
 		end

@@ -2236,6 +2236,24 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 					} else {
 						s << ", ";
 					}
+					s << getSkillName(i) << ' ';
+					if (i != SKILL_CRITICAL_HIT_CHANCE) {
+						s << std::showpos;
+					}
+					s << it.abilities->skills[i];
+					if (i != SKILL_CRITICAL_HIT_CHANCE) {
+						s << std::noshowpos;
+					}
+					s << '%';
+				}
+
+				if (it.abilities->stats[STAT_MAGICPOINTS]) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
 
 					s << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
 				}
@@ -2319,7 +2337,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 							s << ", ";
 						}
 
-						s << getCombatName(indexToCombatType(i)) << ' ' << std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
+						s << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
 					}
 				} else {
 					if (begin) {
@@ -2329,7 +2347,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 						s << ", ";
 					}
 
-					s << "protection all " << std::showpos << show << std::noshowpos << '%';
+					s << fmt::format("protection all {:+}%", show);
 				}
 
 				show = it.abilities->fieldAbsorbPercent[0];
@@ -2365,7 +2383,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 							s << ", ";
 						}
 
-						s << getCombatName(indexToCombatType(i)) << " field " << std::showpos << it.abilities->fieldAbsorbPercent[i] << std::noshowpos << '%';
+						s << fmt::format("{} field {:+}%", getCombatName(indexToCombatType(i)), it.abilities->fieldAbsorbPercent[i]);
 					}
 				} else {
 					if (begin) {
@@ -2375,7 +2393,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 						s << ", ";
 					}
 
-					s << "protection all fields " << std::showpos << show << std::noshowpos << '%';
+					s << fmt::format("protection all fields {:+}%", show);
 				}
 
 				if (it.abilities->speed) {
@@ -2427,7 +2445,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 				}
 			}
 
-			if (defense != 0 || extraDefense != 0) {
+			if (defense != 0 || extraDefense != 0 || it.isMissile()) {
 				if (begin) {
 					begin = false;
 					s << " (";
@@ -2477,17 +2495,6 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 						s << std::noshowpos;
 					}
 					s << '%';
-				}
-
-				if (it.abilities->stats[STAT_MAGICPOINTS]) {
-					if (begin) {
-						begin = false;
-						s << " (";
-					} else {
-						s << ", ";
-					}
-
-					s << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
 				}
 
 				for (uint8_t i = 1; i <= 11; i++) {

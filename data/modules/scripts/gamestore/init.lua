@@ -1823,7 +1823,7 @@ end
 function Player.addCoinsBalance(self, coins, update)
 	self:addTibiaCoins(coins)
 	if update then
-		sendStoreBalanceUpdating(self, true)
+		sendStoreBalanceUpdating(self:getId(), true)
 	end
 	return true
 end

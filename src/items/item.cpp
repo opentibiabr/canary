@@ -2397,14 +2397,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 				}
 
 				if (it.abilities->speed) {
-					if (begin) {
-						begin = false;
-						s << " (";
-					} else {
-						s << ", ";
-					}
-
-					s << "speed " << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+					s << parseShowDurationSpeed(it.abilities->speed, begin);
 				}
 
 				if (it.abilities->cleavePercent) {

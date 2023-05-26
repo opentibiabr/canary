@@ -1845,7 +1845,6 @@ function Player.removeAllCoins(self, coins)
 	-- Check if it is possible to remove all the coins.
 	if self:canRemoveAllCoins(coins) then
 		local tibiaCoins = self:getTibiaCoins()
-		local transferableCoins = self:getTransferableCoins()
 		-- Check if there are enough Tibia coins to remove.
 		if tibiaCoins >= coins then
 			self:removeTibiaCoins(coins)

@@ -329,9 +329,7 @@ bool ConfigManager::load() {
 
 	// Vip System
 	boolean[VIP_SYSTEM_ENABLED] = getGlobalBoolean(L, "vipSystemEnabled", false);
-	boolean[VIP_SYSTEM_EXP_ENABLED] = getGlobalBoolean(L, "vipSystemExpEnabled", false);
 	integer[VIP_SYSTEM_EXP_PERCENT] = getGlobalNumber(L, "vipSystemExpPercent", 0);
-	boolean[VIP_SYSTEM_LOOT_ENABLED] = getGlobalBoolean(L, "vipSystemLootEnabled", false);
 	integer[VIP_SYSTEM_LOOT_PERCENT] = getGlobalNumber(L, "vipSystemLootPercent", 0);
 	boolean[VIP_SYSTEM_GAIN_COINS_ENABLED] = getGlobalBoolean(L, "vipSystemGainCoinsEnabled", false);
 	boolean[VIP_SYSTEM_GAIN_TOKENS_ENABLED] = getGlobalBoolean(L, "vipSystemGainTokensEnabled", false);

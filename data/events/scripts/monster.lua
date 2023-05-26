@@ -43,18 +43,18 @@ function Monster:onDropLoot(corpse)
 		end
 
 		-- Vip system
-		local vipPercentLoot = 0
-		if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED)
-			and configManager.getBoolean(configKeys.VIP_SYSTEM_LOOT_ENABLED)
-			and player and player:isVip()) then
-			vipPercentLoot = (configManager.getNumber(configKeys.VIP_SYSTEM_LOOT_PERCENT) / 100)
+		local vipLootPercent = 0
+		if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+			local percent = configManager.getNumber(configKeys.VIP_SYSTEM_EXP_PERCENT)
+			if (percent > 0 and player and player:isVip()) then
+				percent = (percent > 100 and 100) or percent
+				vipLootPercent = math.floor(percent / 100)
+			end
 		end
 
 		for i = 1, #monsterLoot do
-			if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED)
-				and configManager.getBoolean(configKeys.VIP_SYSTEM_LOOT_ENABLED)
-				and vipPercentLoot > 0) then
-				monsterLoot[i].chance = monsterLoot[i].chance + (monsterLoot[i].chance * vipPercentLoot)
+			if vipLootPercent > 0 then
+				monsterLoot[i].chance = monsterLoot[i].chance + (monsterLoot[i].chance * vipLootPercent)
 			end
 
 			local item = corpse:createLootItem(monsterLoot[i], charmBonus)
@@ -136,10 +136,8 @@ function Monster:onDropLoot(corpse)
 			if preyLootPercent > 0 then
 				text = text .. " (active prey bonus)"
 			end
-			if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED)
-				and configManager.getBoolean(configKeys.VIP_SYSTEM_LOOT_ENABLED)
-				and player and player:isVip() and vipPercentLoot > 0) then
-				text = text .. " (vip loot bonus " .. (vipPercentLoot * 100) .. "%)"
+			if (vipLootPercent > 0) then
+				text = text .. " (vip loot bonus " .. (vipLootPercent * 100) .. "%)"
 			end
 			if charmBonus then
 				text = text .. " (active charm bonus)"

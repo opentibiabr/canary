@@ -695,9 +695,12 @@ function Player:onGainExperience(target, exp, rawExp)
 	end
 
 	-- Vip system
-	if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED)
-		and configManager.getBoolean(configKeys.VIP_SYSTEM_EXP_ENABLED) and self:isVip()) then
-		exp = exp * (1 + configManager.getNumber(configKeys.VIP_SYSTEM_EXP_PERCENT) / 100)
+	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+		local vipExpPercent = configManager.getNumber(configKeys.VIP_SYSTEM_EXP_PERCENT)
+		if (vipExpPercent > 0 and self:isVip()) then
+			vipExpPercent = (vipExpPercent > 100 and 100) or vipExpPercent
+			exp = exp * (1 + math.floor(vipExpPercent / 100))
+		end
 	end
 
 	local baseRate = self:getFinalBaseRateExperience()

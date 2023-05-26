@@ -209,9 +209,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", AUTOLOOT);
 
 	registerEnumIn(L, "configKeys", VIP_SYSTEM_ENABLED);
-	registerEnumIn(L, "configKeys", VIP_SYSTEM_EXP_ENABLED);
 	registerEnumIn(L, "configKeys", VIP_SYSTEM_EXP_PERCENT);
-	registerEnumIn(L, "configKeys", VIP_SYSTEM_LOOT_ENABLED);
 	registerEnumIn(L, "configKeys", VIP_SYSTEM_LOOT_PERCENT);
 	registerEnumIn(L, "configKeys", VIP_SYSTEM_GAIN_COINS_ENABLED);
 	registerEnumIn(L, "configKeys", VIP_SYSTEM_GAIN_TOKENS_ENABLED);

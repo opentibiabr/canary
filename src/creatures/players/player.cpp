@@ -2236,10 +2236,10 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 	if (sendText) {
 		std::string expString = fmt::format("{} experience point{}.", exp, (exp != 1 ? "s" : ""));
 
-		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && g_configManager().getBoolean(VIP_SYSTEM_EXP_ENABLED)) {
+		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && isVIP()) {
 			uint8_t expPercent = g_configManager().getNumber(VIP_SYSTEM_EXP_PERCENT);
-			if (isVIP() && expPercent > 0) {
-				expString = expString + fmt::format(" (vip exp bonus {}%)", expPercent);
+			if (expPercent > 0) {
+				expString = expString + fmt::format(" (vip exp bonus {}%)", expPercent > 100 ? 100 : expPercent);
 			}
 		}
 		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString + (handleHazardExperience ? " (Hazard)" : ""));
@@ -5206,6 +5206,10 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 }
 
 bool Player::isPremium() const {
+	if (isVIP()) {
+		return true;
+	}
+
 	if (g_configManager().getBoolean(FREE_PREMIUM) || hasFlag(PlayerFlags_t::IsAlwaysPremium)) {
 		return true;
 	}

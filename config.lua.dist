@@ -416,11 +416,9 @@ location = "South America"
 discordWebhookURL = ""
 
 -- Vip System (Get more info in: https://github.com/opentibiabr/canary/pull/1063)
--- NOTE: set vipSystemEnabled to true to enable the vip system functionality.
--- NOTE: vipSystemExpEnabled = activates accounts vip to win a bonus of xp.
--- NOTE: vipSystemExpPercent = the percent bonus to win. ex: 3 = 3%, 30 = 30%
--- NOTE: vipSystemLootEnabled = activates accounts vip to win a bonus of loot.
--- NOTE: vipSystemLootPercent = the percent bonus to win. ex: 3 = 3%, 30 = 30%
+-- NOTE: set vipSystemEnabled to true to enable the vip system functionalities (this enabled, premium checks was overwritten)
+-- NOTE: vipSystemExpPercent = 0 is deactivated, active changing value between 1 and 100 (percent xp bonus to win. ex: 3 = 3%, 30 = 30%)
+-- NOTE: vipSystemLootPercent = 0 is deactivated, active changing value between 1 and 100 (percent loot bonus to win. ex: 3 = 3%, 30 = 30%)
 -- NOTE: vipSystemGainCoinsEnabled before active, please configure script: data-otservbr-global\scripts\globalevents\online_vip_coins.lua
 -- NOTE: vipSystemGainTokensEnabled before active, please configure script: data-otservbr-global\scripts\globalevents\online_tokens.lua
 -- NOTE: vipSystemAutoLootOnlyVip = activates only vip to get automatic loot, config 'autoLoot' need to be enabled, for this config works
@@ -429,10 +427,8 @@ discordWebhookURL = ""
 -- 		If you use 'vipSystemFamiliarTimeDebit = 10' the vip players will have only, in this case, 5 minutes of cooldown.
 -- 		If you use 'vipSystemFamiliarTimeDebit' greater than half of 'familiarTime', it will get the highest possible value, in this case 15
 vipSystemEnabled = false
-vipSystemExpEnabled = false
-vipSystemExpPercent = 3
-vipSystemLootEnabled = false
-vipSystemLootPercent = 3
+vipSystemExpPercent = 0
+vipSystemLootPercent = 0
 vipSystemGainCoinsEnabled = false
 vipSystemGainTokensEnabled = false
 vipSystemAutoLootOnlyVip = false

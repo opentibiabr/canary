@@ -14,7 +14,14 @@ HomeBanners = {
 	delay = 10
 }
 
-local offersNameComplement = (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and "VIP") or "Premium Time"
+local offerName, description
+if not configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+	offerName = "Premium Time"
+	description = "<i>Enhance your gaming experience by gaining additional abilities and advantages:</i>\n\n&#8226; access to Premium areas\n&#8226; use Tibia's transport system (ships, carpet)\n&#8226; more spells\n&#8226; rent houses\n&#8226; found guilds\n&#8226; offline training\n&#8226; larger depots\n&#8226; and many more\n\n{usablebyallicon} valid for all characters on this account\n{activated}"
+else
+	offerName = "VIP"
+	description = "<i>Enhance your gaming experience being VIP, check the benefits below or in our website!</i>\n\n{activated}\n{usablebyallicon} valid for all characters on this account"
+end
 
 GameStore.Categories = {
 	-- Premium Time/VIP
@@ -26,38 +33,48 @@ GameStore.Categories = {
 		offers = {
 			{
 				icons = { "Premium_Time_30.png" },
-				name = string.format("30 Days of %s", offersNameComplement),
+				name = string.format("7 Days of %s", offerName),
+				price = 100,
+				id = 3007,
+				validUntil = 7,
+				description = description,
+				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
+				state = GameStore.States.STATE_NEW,
+			},
+			{
+				icons = { "Premium_Time_30.png" },
+				name = string.format("30 Days of %s", offerName),
 				price = 250,
 				id = 3030,
 				validUntil = 30,
-				description = "<i>Enhance your gaming experience by gaining additional abilities and advantages:</i>\n\n&#8226; access to Premium areas\n&#8226; use Tibia's transport system (ships, carpet)\n&#8226; more spells\n&#8226; rent houses\n&#8226; found guilds\n&#8226; offline training\n&#8226; larger depots\n&#8226; and many more\n\n{usablebyallicon} valid for all characters on this account\n{activated}",
+				description = description,
 				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
 			},
 			{
 				icons = { "Premium_Time_90.png" },
-				name = string.format("90 Days of %s", offersNameComplement),
+				name = string.format("90 Days of %s", offerName),
 				price = 750,
 				id = 3090,
 				validUntil = 90,
-				description = "<i>Enhance your gaming experience by gaining additional abilities and advantages:</i>\n\n&#8226; access to Premium areas\n&#8226; use Tibia's transport system (ships, carpet)\n&#8226; more spells\n&#8226; rent houses\n&#8226; found guilds\n&#8226; offline training\n&#8226; larger depots\n&#8226; and many more\n\n{usablebyallicon} valid for all characters on this account\n{activated}",
+				description = description,
 				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
 			},
 			{
 				icons = { "Premium_Time_180.png" },
-				name = string.format("180 Days of %s", offersNameComplement),
+				name = string.format("180 Days of %s", offerName),
 				price = 1500,
 				id = 3180,
 				validUntil = 180,
-				description = "<i>Enhance your gaming experience by gaining additional abilities and advantages:</i>\n\n&#8226; access to Premium areas\n&#8226; use Tibia's transport system (ships, carpet)\n&#8226; more spells\n&#8226; rent houses\n&#8226; found guilds\n&#8226; offline training\n&#8226; larger depots\n&#8226; and many more\n\n{usablebyallicon} valid for all characters on this account\n{activated}",
+				description = description,
 				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
 			},
 			{
 				icons = { "Premium_Time_360.png" },
-				name = string.format("360 Days of %s", offersNameComplement),
+				name = string.format("360 Days of %s", offerName),
 				price = 3000,
 				id = 3360,
 				validUntil = 360,
-				description = "<i>Enhance your gaming experience by gaining additional abilities and advantages:</i>\n\n&#8226; access to Premium areas\n&#8226; use Tibia's transport system (ships, carpet)\n&#8226; more spells\n&#8226; rent houses\n&#8226; found guilds\n&#8226; offline training\n&#8226; larger depots\n&#8226; and many more\n\n{usablebyallicon} valid for all characters on this account\n{activated}",
+				description = description,
 				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
 			},
 		},
@@ -6434,14 +6451,14 @@ GameStore.Categories = {
 			},
 		},
 	},
-	--Tournament
+	-- Tournament
 	{
 		icons = { "Category_Tournament.png" },
 		name = "Tournament",
 		rookgaard = true,
 		subclasses = { "Tickets", "Exclusive Offers" },
 	},
-	-- Tickets
+	-- Tournament ~ Tickets
 	{
 		icons = { "Category_Tickets.png" },
 		parent = "Tournament",
@@ -6455,7 +6472,7 @@ GameStore.Categories = {
 			},
 		},
 	},
-	-- Exclusive Offers
+	-- Tournament ~ Exclusive Offers
 	{
 		icons = { "Category_ExclusiveOffers.png" },
 		name = "Exclusive Offers",

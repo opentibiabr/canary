@@ -3034,6 +3034,8 @@ void ProtocolGame::sendCreatureType(const Creature* creature, uint8_t creatureTy
 			msg.add<uint32_t>(0);
 		}
 	}
+
+	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendCreatureSquare(const Creature* creature, SquareColor_t color) {
@@ -3380,11 +3382,6 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	auto actual = msg.getBufferPosition();
 
 	// Concoctions potions (12.70)
-	msg.addByte(0x00);
-
-	msg.setBufferPosition(startCombats);
-	msg.addByte(combats);
-
 	msg.setBufferPosition(actual);
 
 	msg.skipBytes(1);
@@ -3400,6 +3397,9 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	}
 	msg.setBufferPosition(actual);
 	msg.addByte(total);
+
+	msg.setBufferPosition(startCombats);
+	msg.addByte(combats);
 
 	writeToOutputBuffer(msg);
 }

@@ -5114,61 +5114,39 @@ void Player::setTibiaCoins(int32_t v) {
 
 int32_t Player::getCleavePercent(bool useCharges) const {
 	int32_t result = cleavePercent;
-	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
-			continue;
-		}
-
-		Item* item = inventory[slot];
-		if (!item) {
-			continue;
-		}
-
+	for (const auto item : getEquippedItems()) {
 		const ItemType &it = Item::items[item->getID()];
-		if (it.abilities) {
-			const int32_t &itemValue = it.abilities->cleavePercent;
-			if (itemValue != 0) {
-				result += itemValue;
-				if (useCharges) {
-					uint16_t charges = item->getCharges();
-					if (charges != 0) {
-						g_game().transformItem(item, item->getID(), charges - 1);
-					}
-				}
+		const int32_t &cleave_percent = it.abilities->cleavePercent;
+		if (it.abilities && cleave_percent != 0) {
+			result += cleave_percent;
+			uint16_t charges = item->getCharges();
+			if (useCharges && charges != 0) {
+				g_game().transformItem(item, item->getID(), charges - 1);
 			}
 		}
 	}
+
 	return result;
 }
 
 int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 	int32_t result = 0;
 	auto it = perfectShot.find(range);
-	if (it != perfectShot.end())
+	if (it != perfectShot.end()) {
 		result = it->second;
-	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
-			continue;
-		}
+	}
 
-		Item* item = inventory[slot];
-		if (!item) {
-			continue;
-		}
-
+	for (const auto item : getEquippedItems()) {
 		const ItemType &it = Item::items[item->getID()];
-		if (it.abilities) {
-			if (it.abilities->perfectShotRange == range) {
-				result += it.abilities->perfectShotDamage;
-				if (useCharges) {
-					uint16_t charges = item->getCharges();
-					if (charges != 0) {
-						g_game().transformItem(item, item->getID(), charges - 1);
-					}
-				}
+		if (it.abilities && it.abilities->perfectShotRange == range) {
+			result += it.abilities->perfectShotDamage;
+			uint16_t charges = item->getCharges();
+			if (useCharges && charges != 0) {
+				g_game().transformItem(item, item->getID(), charges - 1);
 			}
 		}
 	}
+
 	return result;
 }
 
@@ -5179,11 +5157,9 @@ int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) c
 		int32_t specialized_magic_level = itemType.abilities->specializedMagicLevel[combatTypeToIndex(combat)];
 		if (itemType.abilities && specialized_magic_level > 0) {
 			result += specialized_magic_level;
-			if (useCharges) {
-				uint16_t charges = item->getCharges();
-				if (charges != 0) {
-					g_game().transformItem(item, item->getID(), charges - 1);
-				}
+			uint16_t charges = item->getCharges();
+			if (useCharges && charges != 0) {
+				g_game().transformItem(item, item->getID(), charges - 1);
 			}
 		}
 	}
@@ -5193,117 +5169,69 @@ int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) c
 
 int32_t Player::getMagicShieldCapacityFlat(bool useCharges) const {
 	int32_t result = magicShieldCapacityFlat;
-	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
-			continue;
-		}
-
-		Item* item = inventory[slot];
-		if (!item) {
-			continue;
-		}
-
+	for (const auto item : getEquippedItems()) {
 		const ItemType &it = Item::items[item->getID()];
-		if (it.abilities) {
-			int32_t itemValue = it.abilities->magicShieldCapacityFlat;
-			if (itemValue != 0) {
-				result += itemValue;
-				if (useCharges) {
-					uint16_t charges = item->getCharges();
-					if (charges != 0) {
-						g_game().transformItem(item, item->getID(), charges - 1);
-					}
-				}
+		int32_t magicCapacity = it.abilities->magicShieldCapacityFlat;
+		if (it.abilities && magicCapacity != 0) {
+			result += magicCapacity;
+			uint16_t charges = item->getCharges();
+			if (useCharges && charges != 0) {
+				g_game().transformItem(item, item->getID(), charges - 1);
 			}
 		}
 	}
+
 	return result;
 }
 
 int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 	int32_t result = magicShieldCapacityPercent;
-	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
-			continue;
-		}
-
-		Item* item = inventory[slot];
-		if (!item) {
-			continue;
-		}
-
+	for (const auto item : getEquippedItems()) {
 		const ItemType &it = Item::items[item->getID()];
-		if (it.abilities) {
-			int32_t itemValue = it.abilities->magicShieldCapacityPercent;
-			if (itemValue != 0) {
-				result += itemValue;
-				if (useCharges) {
-					uint16_t charges = item->getCharges();
-					if (charges != 0) {
-						g_game().transformItem(item, item->getID(), charges - 1);
-					}
-				}
+		int32_t magicPercent = it.abilities->magicShieldCapacityPercent;
+		if (it.abilities && magicPercent != 0) {
+			result += magicPercent;
+			uint16_t charges = item->getCharges();
+			if (useCharges && charges != 0) {
+				g_game().transformItem(item, item->getID(), charges - 1);
 			}
 		}
 	}
+
 	return result;
 }
 
 int32_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
 	int32_t result = reflectPercent[combatTypeToIndex(combat)];
-	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
-			continue;
-		}
-
-		Item* item = inventory[slot];
-		if (!item) {
-			continue;
-		}
-
+	for (const auto item : getEquippedItems()) {
 		const ItemType &it = Item::items[item->getID()];
-		if (it.abilities) {
-			int32_t itemValue = it.abilities->reflectPercent[combatTypeToIndex(combat)];
-			if (itemValue != 0) {
-				result += itemValue;
-				if (useCharges) {
-					uint16_t charges = item->getCharges();
-					if (charges != 0) {
-						g_game().transformItem(item, item->getID(), charges - 1);
-					}
-				}
+		int32_t reflectPercent = it.abilities->reflectPercent[combatTypeToIndex(combat)];
+		if (it.abilities && reflectPercent != 0) {
+			result += reflectPercent;
+			uint16_t charges = item->getCharges();
+			if (useCharges && charges != 0) {
+				g_game().transformItem(item, item->getID(), charges - 1);
 			}
 		}
 	}
+
 	return result;
 }
 
 int32_t Player::getReflectFlat(CombatType_t combat, bool useCharges) const {
 	int32_t result = reflectFlat[combatTypeToIndex(combat)];
-	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
-			continue;
-		}
-
-		Item* item = inventory[slot];
-		if (!item) {
-			continue;
-		}
-
+	for (const auto item : getEquippedItems()) {
 		const ItemType &it = Item::items[item->getID()];
-		if (it.abilities) {
-			int32_t itemValue = it.abilities->reflectFlat[combatTypeToIndex(combat)];
-			if (itemValue != 0) {
-				result += itemValue;
-				if (useCharges) {
-					uint16_t charges = item->getCharges();
-					if (charges != 0) {
-						g_game().transformItem(item, item->getID(), charges - 1);
-					}
-				}
+		int32_t reflectFlat = it.abilities->reflectFlat[combatTypeToIndex(combat)];
+		if (it.abilities && reflectFlat != 0) {
+			result += reflectFlat;
+			uint16_t charges = item->getCharges();
+			if (useCharges && charges != 0) {
+				g_game().transformItem(item, item->getID(), charges - 1);
 			}
 		}
 	}
+
 	return result;
 }
 
@@ -6075,6 +6003,10 @@ void Player::addItemImbuementStats(const Imbuement* imbuement) {
 }
 
 void Player::removeItemImbuementStats(const Imbuement* imbuement) {
+	if (!imbuement) {
+		return;
+	}
+
 	bool requestUpdate = false;
 
 	for (int32_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {

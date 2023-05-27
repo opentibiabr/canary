@@ -3240,6 +3240,10 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_GENERALSTATS);
+	// Send no error
+	// 1: No data available at the moment.
+	// 2: You are not allowed to see this character's data.
+	// 3: You are not allowed to inspect this character.
 	msg.addByte(0x00);
 	msg.add<uint64_t>(player->getExperience());
 	msg.add<uint16_t>(player->getLevel());
@@ -3316,6 +3320,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.addByte(0x00);
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i, true), std::numeric_limits<uint16_t>::max()));
+		// Loyality bonus
 		msg.add<uint16_t>(0);
 	}
 
@@ -3333,7 +3338,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 		msg.add<uint16_t>(static_cast<uint16_t>(player->getPerfectShotDamage(range)));
 	}
 
-	// Damage reflection
+	// Damage reflection (12.70)
 	msg.add<uint16_t>(static_cast<uint16_t>(player->getReflectFlat(COMBAT_PHYSICALDAMAGE)));
 
 	uint8_t haveBlesses = 0;

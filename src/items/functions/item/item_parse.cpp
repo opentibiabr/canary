@@ -553,25 +553,29 @@ void ItemParse::parseAbsorbPercent(const std::string &tmpStrValue, pugi::xml_att
 void ItemParse::parseSupressDrunk(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	std::string stringValue = tmpStrValue;
 	if (valueAttribute.as_bool()) {
+		ConditionType_t conditionType;
 		if (stringValue == "suppressdrunk") {
-			itemType.getAbilities().conditionSuppressions |= CONDITION_DRUNK;
+			conditionType = CONDITION_DRUNK;
 		} else if (stringValue == "suppressenergy") {
-			itemType.getAbilities().conditionSuppressions |= CONDITION_ENERGY;
+			conditionType = CONDITION_ENERGY;
 		} else if (stringValue == "suppressfire") {
-			itemType.getAbilities().conditionSuppressions |= CONDITION_FIRE;
+			conditionType = CONDITION_FIRE;
 		} else if (stringValue == "suppresspoison") {
-			itemType.getAbilities().conditionSuppressions |= CONDITION_POISON;
+			conditionType = CONDITION_POISON;
 		} else if (stringValue == "suppressdrown") {
-			itemType.getAbilities().conditionSuppressions |= CONDITION_DROWN;
+			conditionType = CONDITION_DROWN;
 		} else if (stringValue == "suppressphysical") {
-			itemType.getAbilities().conditionSuppressions |= CONDITION_BLEEDING;
+			conditionType = CONDITION_BLEEDING;
 		} else if (stringValue == "suppressfreeze") {
-			itemType.getAbilities().conditionSuppressions |= CONDITION_FREEZING;
+			conditionType = CONDITION_FREEZING;
 		} else if (stringValue == "suppressdazzle") {
-			itemType.getAbilities().conditionSuppressions |= CONDITION_DAZZLED;
+			conditionType = CONDITION_DAZZLED;
 		} else if (stringValue == "suppresscurse") {
-			itemType.getAbilities().conditionSuppressions |= CONDITION_CURSED;
+			conditionType = CONDITION_CURSED;
 		}
+
+		// Initialize condititon with value 0
+		itemType.getAbilities().conditionSuppressions[conditionType] = CONDITION_NONE;
 	}
 }
 

@@ -1382,11 +1382,23 @@ bool Creature::isImmune(CombatType_t type) const {
 }
 
 bool Creature::isImmune(ConditionType_t type) const {
-	return hasBitSet(static_cast<uint32_t>(type), getConditionImmunities());
+	try {
+		return type == getConditionImmunities().at(type);
+	} catch (const std::out_of_range &exception) {
+		SPDLOG_ERROR("[{}] invalid index {}", __FUNCTION__, static_cast<uint8_t>(type));
+	}
+
+	return false;
 }
 
 bool Creature::isSuppress(ConditionType_t type) const {
-	return hasBitSet(static_cast<uint32_t>(type), getConditionSuppressions());
+	try {
+		return type == getConditionSuppressions().at(type);
+	} catch (const std::out_of_range &exception) {
+		SPDLOG_ERROR("[{}] invalid index {}", __FUNCTION__, static_cast<uint8_t>(type));
+	}
+
+	return false;
 }
 
 int64_t Creature::getStepDuration(Direction dir) const {

@@ -1209,7 +1209,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				descriptions.emplace_back("Cleave", ss.str());
 			}
 
-			if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
+			if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
 				ss.str("");
 				ss << "Hard Drinking";
 				descriptions.emplace_back("Effect", ss.str());
@@ -1253,7 +1253,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				descriptions.emplace_back("Field Protection", ss.str());
 			}
 
-			if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
+			if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
 				ss.str("");
 				ss << "Hard Drinking";
 				descriptions.emplace_back("Skill Boost", ss.str());
@@ -1604,7 +1604,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				descriptions.emplace_back("Cleave", ss.str());
 			}
 
-			if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
+			if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
 				ss.str("");
 				ss << "Hard Drinking";
 				descriptions.emplace_back("Effect", ss.str());
@@ -1649,7 +1649,7 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				descriptions.emplace_back("Field Protection", ss.str());
 			}
 
-			if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
+			if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
 				ss.str("");
 				ss << "Hard Drinking";
 				descriptions.emplace_back("Skill Boost", ss.str());
@@ -2657,7 +2657,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 			if (it.abilities->speed > 0) {
 				bool begin = true;
 				s << parseShowDurationSpeed(it.abilities->speed, begin) << ")" << parseShowDuration(item);
-			} else if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
+			} else if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
 				s << " (hard drinking)";
 			} else if (it.abilities->invisible) {
 				s << " (invisibility)";

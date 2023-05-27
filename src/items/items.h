@@ -17,8 +17,8 @@
 
 struct Abilities {
 	public:
-		uint32_t conditionImmunities = 0;
-		uint32_t conditionSuppressions = 0;
+		std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionImmunities = {};
+		std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionSuppressions = {};
 
 		// stats modifiers
 		int32_t stats[STAT_LAST + 1] = { 0 };

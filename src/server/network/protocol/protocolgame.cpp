@@ -94,6 +94,42 @@ namespace {
 		msg.addByte(isSlotOneInactive); // Inactive? (Only true if equal to Boosted Boss)
 	}
 
+	/**
+	 * @brief Handles the imbuement damage for a player and adds it to the network message.
+	 * @details This function checks if the player's weapon has any imbuements that provide combat-type damage.
+	 * @details If such imbuements are found, the corresponding damage values and combat types are added to the network message.
+	 * @details If no imbuement damage is found, default values are added to the message.
+	 *
+	 * @param msg The network message to which the imbuement damage should be added.
+	 * @param player Pointer to the player for whom the imbuement damage should be handled.
+	 */
+	void handleImbuementDamage(NetworkMessage &msg, Player* player) {
+		bool imbueDmg = false;
+		Item* weapon = player->getWeapon();
+		if (weapon) {
+			uint8_t slots = Item::items[weapon->getID()].imbuementSlot;
+			if (slots > 0) {
+				for (uint8_t i = 0; i < slots; i++) {
+					ImbuementInfo imbuementInfo;
+					uint32_t info = weapon->getImbuementInfo(i, &imbuementInfo);
+					if (info >> 8) {
+						Imbuement* ib = g_imbuements().getImbuement(info & 0xFF);
+						if (ib->combatType != COMBAT_NONE) {
+							msg.addByte(static_cast<uint32_t>(ib->elementDamage));
+							msg.addByte(getCipbiaElement(ib->combatType));
+							imbueDmg = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		if (!imbueDmg) {
+			msg.addByte(0);
+			msg.addByte(CIPBIA_ELEMENTAL_UNDEFINED);
+		}
+	}
+
 } // namespace
 
 ProtocolGame::ProtocolGame(Connection_ptr initConnection) :
@@ -3246,30 +3282,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 				msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
 				msg.addByte(getCipbiaElement(it.abilities->elementType));
 			} else {
-				bool imbueDmg = false;
-				Item* weaponNC = player->getWeapon(true);
-				if (weaponNC) {
-					uint8_t slots = Item::items[weaponNC->getID()].imbuementSlot;
-					if (slots > 0) {
-						for (uint8_t i = 0; i < slots; i++) {
-							ImbuementInfo imbuementInfo;
-							uint32_t info = weaponNC->getImbuementInfo(i, &imbuementInfo);
-							if (info >> 8) {
-								Imbuement* ib = g_imbuements().getImbuement(info & 0xFF);
-								if (ib->combatType != COMBAT_NONE) {
-									msg.addByte(static_cast<uint32_t>(ib->elementDamage));
-									msg.addByte(getCipbiaElement(ib->combatType));
-									imbueDmg = true;
-									break;
-								}
-							}
-						}
-					}
-				}
-				if (!imbueDmg) {
-					msg.addByte(0);
-					msg.addByte(CIPBIA_ELEMENTAL_UNDEFINED);
-				}
+				handleImbuementDamage(msg, player);
 			}
 		} else {
 			int32_t attackValue = std::max<int32_t>(0, weapon->getAttack());
@@ -3285,30 +3298,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 				msg.addByte(static_cast<uint32_t>(it.abilities->elementDamage) * 100 / attackValue);
 				msg.addByte(getCipbiaElement(it.abilities->elementType));
 			} else {
-				bool imbueDmg = false;
-				Item* weaponNC = player->getWeapon();
-				if (weaponNC) {
-					uint8_t slots = Item::items[weaponNC->getID()].imbuementSlot;
-					if (slots > 0) {
-						for (uint8_t i = 0; i < slots; i++) {
-							ImbuementInfo imbuementInfo;
-							uint32_t info = weaponNC->getImbuementInfo(i, &imbuementInfo);
-							if (info >> 8) {
-								Imbuement* ib = g_imbuements().getImbuement(info & 0xFF);
-								if (ib->combatType != COMBAT_NONE) {
-									msg.addByte(static_cast<uint32_t>(ib->elementDamage));
-									msg.addByte(getCipbiaElement(ib->combatType));
-									imbueDmg = true;
-									break;
-								}
-							}
-						}
-					}
-				}
-				if (!imbueDmg) {
-					msg.addByte(0);
-					msg.addByte(CIPBIA_ELEMENTAL_UNDEFINED);
-				}
+				handleImbuementDamage(msg, player);
 			}
 		}
 	} else {

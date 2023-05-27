@@ -212,12 +212,12 @@ Item* Player::getInventoryItem(Slots_t slot) const {
 	return inventory[slot];
 }
 
-void Player::addConditionSuppressions(uint32_t addConditions) {
-	conditionSuppressions |= addConditions;
+void Player::addConditionSuppressions(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addConditions) {
+	conditionSuppressions = addConditions;
 }
 
-void Player::removeConditionSuppressions(uint32_t removeConditions) {
-	conditionSuppressions &= ~removeConditions;
+void Player::removeConditionSuppressions() {
+	conditionSuppressions = {};
 }
 
 Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const {

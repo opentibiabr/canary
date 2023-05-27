@@ -708,8 +708,8 @@ class Player final : public Creature, public Cylinder {
 		void setVarStats(stats_t stat, int32_t modifier);
 		int32_t getDefaultStats(stats_t stat) const;
 
-		void addConditionSuppressions(uint32_t conditions);
-		void removeConditionSuppressions(uint32_t conditions);
+		void addConditionSuppressions(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addCondition);
+		void removeConditionSuppressions();
 
 		Reward* getReward(const uint64_t rewardId, const bool autoCreate);
 		void removeReward(uint64_t rewardId);
@@ -2586,8 +2586,8 @@ class Player final : public Creature, public Cylinder {
 		uint32_t capacity = 40000;
 		uint32_t bonusCapacity = 0;
 		uint32_t damageImmunities = 0;
-		uint32_t conditionImmunities = 0;
-		uint32_t conditionSuppressions = 0;
+		std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionImmunities = {};
+		std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionSuppressions = {};
 		uint32_t level = 1;
 		uint32_t magLevel = 0;
 		uint32_t actionTaskEvent = 0;
@@ -2742,10 +2742,10 @@ class Player final : public Creature, public Cylinder {
 		uint32_t getDamageImmunities() const override {
 			return damageImmunities;
 		}
-		uint32_t getConditionImmunities() const override {
+		const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionImmunities() const override {
 			return conditionImmunities;
 		}
-		uint32_t getConditionSuppressions() const override {
+		const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionSuppressions() const override {
 			return conditionSuppressions;
 		}
 		uint16_t getLookCorpse() const override;

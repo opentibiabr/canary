@@ -23965,7 +23965,6 @@
 	</item>
 	<item id="13998" article="a" name="depth scutum">
 		<attribute key="weaponType" value="shield"/>
-		<attribute key="showAttributes" value="1"/>
 		<attribute key="magiclevelpoints" value="2"/>
 		<attribute key="defense" value="25"/>
 		<attribute key="weight" value="3000"/>
@@ -54669,7 +54668,6 @@
 	<item id="39150" article="an" name="alicorn quiver">
 		<attribute key="slotType" value="right-hand"/>
 		<attribute key="containersize" value="12"/>
-		<attribute key="showattributes" value="1" />
 		<attribute key="weight" value="2000"/>
 		<attribute key="magiclevelpoints" value="1"/>
 		<attribute key="perfectshotdamage" value="20"/>

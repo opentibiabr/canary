@@ -3883,6 +3883,32 @@ std::vector<Item*> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/) 
 	return itemVector;
 }
 
+std::vector<Item*> Player::getEquippedItems() const {
+	std::vector<Slots_t> valid_slots {
+		CONST_SLOT_HEAD,
+		CONST_SLOT_NECKLACE,
+		CONST_SLOT_BACKPACK,
+		CONST_SLOT_ARMOR,
+		CONST_SLOT_RIGHT,
+		CONST_SLOT_LEFT,
+		CONST_SLOT_LEGS,
+		CONST_SLOT_FEET,
+		CONST_SLOT_RING,
+	};
+
+	std::vector<Item*> valid_items;
+	for (const auto &slot : valid_slots) {
+		Item* item = inventory[slot];
+		if (!item) {
+			continue;
+		}
+
+		valid_items.push_back(item);
+	}
+
+	return valid_items;
+}
+
 std::map<uint32_t, uint32_t> &Player::getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const {
 	for (const auto item : getAllInventoryItems()) {
 		countMap[static_cast<uint32_t>(item->getID())] += Item::countByType(item, -1);
@@ -5148,30 +5174,20 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 
 int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) const {
 	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)];
-	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
-			continue;
-		}
-
-		Item* item = inventory[slot];
-		if (!item) {
-			continue;
-		}
-
-		const ItemType &it = Item::items[item->getID()];
-		if (it.abilities) {
-			int32_t itemValue = it.abilities->specializedMagicLevel[combatTypeToIndex(combat)];
-			if (itemValue != 0) {
-				result += itemValue;
-				if (useCharges) {
-					uint16_t charges = item->getCharges();
-					if (charges != 0) {
-						g_game().transformItem(item, item->getID(), charges - 1);
-					}
+	for (const auto item : getEquippedItems()) {
+		const ItemType &itemType = Item::items[item->getID()];
+		int32_t specialized_magic_level = itemType.abilities->specializedMagicLevel[combatTypeToIndex(combat)];
+		if (itemType.abilities && specialized_magic_level > 0) {
+			result += specialized_magic_level;
+			if (useCharges) {
+				uint16_t charges = item->getCharges();
+				if (charges != 0) {
+					g_game().transformItem(item, item->getID(), charges - 1);
 				}
 			}
 		}
 	}
+
 	return result;
 }
 

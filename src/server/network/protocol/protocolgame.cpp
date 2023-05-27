@@ -111,12 +111,15 @@ namespace {
 			if (slots > 0) {
 				for (uint8_t i = 0; i < slots; i++) {
 					ImbuementInfo imbuementInfo;
-					uint32_t info = weapon->getImbuementInfo(i, &imbuementInfo);
-					if (info >> 8) {
-						Imbuement* ib = g_imbuements().getImbuement(info & 0xFF);
-						if (ib->combatType != COMBAT_NONE) {
-							msg.addByte(static_cast<uint32_t>(ib->elementDamage));
-							msg.addByte(getCipbiaElement(ib->combatType));
+					if (!weapon->getImbuementInfo(i, &imbuementInfo)) {
+						continue;
+					}
+
+					if (imbuementInfo.duration > 0) {
+						auto imbuement = *imbuementInfo.imbuement;
+						if (imbuement.combatType != COMBAT_NONE) {
+							msg.addByte(static_cast<uint32_t>(imbuement.elementDamage));
+							msg.addByte(getCipbiaElement(imbuement.combatType));
 							imbueDmg = true;
 							break;
 						}
@@ -127,6 +130,96 @@ namespace {
 		if (!imbueDmg) {
 			msg.addByte(0);
 			msg.addByte(CIPBIA_ELEMENTAL_UNDEFINED);
+		}
+	}
+
+	/**
+	 * @brief Adds the concoction potions to the NetworkMessage object.
+	 *
+	 * This function iterates through the available concoction potions for the player and adds them to the provided Message object.
+	 * The total item count is also updated in the message.
+	 *
+	 * @param msg The NetworkMessage object where the concoction potions will be added.
+	 * @param player The pointer to the player who has the concoction potions.
+	 *
+	 * @note This function assumes that the message buffer position is already correctly set to add the concoction potions.
+	 */
+	void addConcoctionPotions(NetworkMessage &msg, Player* player) {
+		auto concoctionsBuffer = msg.getBufferPosition();
+		msg.skipBytes(1);
+
+		uint8_t totalItemCount = 0;
+		int64_t timeNow = OTSYS_TIME() / 1000;
+		for (uint16_t itemIdIterator = ITEM_TIBIADROME_POTION_START; itemIdIterator <= ITEM_TIBIADROME_POTION_END; itemIdIterator++) {
+			Condition* condition = player->getCondition(CONDITION_TIBIADROMEPOTIONS, CONDITIONID_DEFAULT, itemIdIterator);
+			if (condition && condition->getEndTime() / 1000 >= timeNow) {
+				msg.add<uint16_t>(itemIdIterator);
+				msg.add<uint16_t>(static_cast<uint16_t>(std::floor(condition->getEndTime() / 1000 - timeNow)));
+				totalItemCount++;
+			}
+		}
+		msg.setBufferPosition(concoctionsBuffer);
+		msg.addByte(totalItemCount);
+	}
+
+	/**
+	 * @brief Calculates the absorb values for different combat types based on player's equipped items.
+	 *
+	 * This function calculates the absorb values for each combat type based on the items equipped by the player.
+	 * The calculated absorb values are stored in the provided array.
+	 *
+	 * @param[in] player The pointer to the player whose equipped items are considered.
+	 */
+	void calculateAbsorbValues(Player* player, NetworkMessage &msg, uint8_t &combats) {
+		alignas(16) uint16_t absorbs[COMBAT_COUNT] = { 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100 };
+
+		for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+			if (!player->isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
+				continue;
+			}
+
+			Item* item = player->getInventoryItem(static_cast<Slots_t>(slot));
+			if (!item) {
+				continue;
+			}
+
+			const ItemType &itemType = Item::items[item->getID()];
+			if (!itemType.abilities) {
+				continue;
+			}
+
+			for (uint16_t i = 0; i < COMBAT_COUNT; ++i) {
+				absorbs[i] *= (std::floor(100 - itemType.abilities->absorbPercent[i]) / 100.);
+			}
+
+			uint8_t imbuementSlots = itemType.imbuementSlot;
+			if (imbuementSlots > 0) {
+				for (uint8_t i = 0; i < imbuementSlots; ++i) {
+					ImbuementInfo imbuementInfo;
+					if (!item->getImbuementInfo(i, &imbuementInfo)) {
+						continue;
+					}
+
+					if (imbuementInfo.duration > 0) {
+						auto imbuement = *imbuementInfo.imbuement;
+						for (uint16_t i = 0; i < COMBAT_COUNT; ++i) {
+							const int16_t &imbuementAbsorbPercent = imbuement.absorbPercent[i];
+
+							if (imbuementAbsorbPercent != 0) {
+								absorbs[i] *= (std::floor(100 - imbuementAbsorbPercent) / 100.);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+			if (absorbs[i] != 100) {
+				msg.addByte(getCipbiaElement(indexToCombatType(i)));
+				msg.addByte(std::max<int16_t>(-100, std::min<int16_t>(100, (100 - absorbs[i]))));
+				++combats;
+			}
 		}
 	}
 
@@ -3200,10 +3293,11 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	msg.skipBytes(1);
 	uint8_t total = 0;
 	for (size_t i = 0; i < COMBAT_COUNT; i++) {
-		if (player->getSpecializedMagicLevel(indexToCombatType(i)) > 0) {
+		auto specializedMagicLevel = player->getSpecializedMagicLevel(indexToCombatType(i));
+		if (specializedMagicLevel > 0) {
 			++total;
 			msg.addByte(getCipbiaElement(indexToCombatType(i)));
-			msg.add<uint16_t>(static_cast<uint16_t>(player->getSpecializedMagicLevel(indexToCombatType(i))));
+			msg.add<uint16_t>(specializedMagicLevel);
 		}
 	}
 	msg.setBufferPosition(bufferPosition);
@@ -3317,77 +3411,17 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.add<uint16_t>(player->getDefense());
 	msg.addDouble(0); // Mitigation
 
+	// Store the "combats" to increase in absorb values function and send to client later
 	uint8_t combats = 0;
 	auto startCombats = msg.getBufferPosition();
 	msg.skipBytes(1);
 
-	alignas(16) int16_t absorbs[COMBAT_COUNT] = { 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100 };
-	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!player->isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
-			continue;
-		}
+	// Calculate and parse the combat absorbs values
+	calculateAbsorbValues(player, msg, combats);
+	// Calculate and parse the concoctions potions (12.70)
+	addConcoctionPotions(msg, player);
 
-		Item* item = player->getInventoryItem(static_cast<Slots_t>(slot));
-		if (!item) {
-			continue;
-		}
-
-		const ItemType &it = Item::items[item->getID()];
-		if (!it.abilities) {
-			continue;
-		}
-
-		for (uint16_t i = 0; i < COMBAT_COUNT; ++i) {
-			absorbs[i] *= (std::floor(100 - it.abilities->absorbPercent[i]) / 100.);
-		}
-		uint8_t slots = Item::items[item->getID()].imbuementSlot;
-		if (slots > 0) {
-			for (uint8_t i = 0; i < slots; i++) {
-				ImbuementInfo imbuementInfo;
-				uint32_t info = item->getImbuementInfo(i, &imbuementInfo);
-				if (info >> 8) {
-					Imbuement* ib = g_imbuements().getImbuement(info & 0xFF);
-					for (uint16_t i = 0; i < COMBAT_COUNT; ++i) {
-						const int16_t &absorbPercent2 = ib->absorbPercent[i];
-
-						if (absorbPercent2 != 0) {
-							absorbs[i] *= (std::floor(100 - absorbPercent2) / 100.);
-						}
-					}
-				}
-			}
-		}
-	}
-	int32_t value;
-	for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-		if (absorbs[i] != 100) {
-			if (value != -1) {
-				msg.addByte(getCipbiaElement(indexToCombatType(i)));
-				msg.addByte(std::max<int16_t>(-100, std::min<int16_t>(100, (100 - absorbs[i]))));
-				++combats;
-			}
-		}
-	}
-
-	auto actual = msg.getBufferPosition();
-
-	// Concoctions potions (12.70)
-	msg.setBufferPosition(actual);
-
-	msg.skipBytes(1);
-	uint8_t total = 0;
-	int64_t timeNow = OTSYS_TIME() / 1000;
-	for (int itemID = ITEM_TIBIADROME_POTION_START; itemID <= ITEM_TIBIADROME_POTION_END; itemID++) {
-		Condition* condition = player->getCondition(CONDITION_TIBIADROMEPOTIONS, CONDITIONID_DEFAULT, itemID);
-		if (condition && condition->getEndTime() / 1000 >= timeNow) {
-			msg.add<uint16_t>(itemID);
-			msg.add<uint16_t>(static_cast<uint16_t>(std::floor(condition->getEndTime() / 1000 - timeNow)));
-			total++;
-		}
-	}
-	msg.setBufferPosition(actual);
-	msg.addByte(total);
-
+	// Now set the buffer position skiped and send the total combats count
 	msg.setBufferPosition(startCombats);
 	msg.addByte(combats);
 
@@ -3710,7 +3744,8 @@ void ProtocolGame::sendCyclopediaCharacterBadges() {
 	msg.addByte(0x01);
 	// if ShowAccountInformation show IsOnline, IsPremium, character title, badges
 	// IsOnline
-	msg.addByte(0x01);
+	const auto loggedPlayer = g_game().getPlayerUniqueLogin(player->getName());
+	msg.addByte(loggedPlayer ? 0x01 : 0x00);
 	// IsPremium (GOD has always 'Premium')
 	msg.addByte(player->isPremium() ? 0x01 : 0x00);
 	// character title
@@ -5069,7 +5104,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 				separator = true;
 			}
 
-			ss << " magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+			ss << fmt::format(" magic level {:+}", it.abilities->stats[STAT_MAGICPOINTS]);
 		}
 
 		// Version 12.72 (Specialized magic level modifier)
@@ -5081,7 +5116,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 					separator = true;
 				}
 				std::string combatName = getCombatName(indexToCombatType(i));
-				ss << std::showpos << combatName << std::noshowpos << " magic level +" << it.abilities->specializedMagicLevel[i];
+				ss << std::showpos << combatName << std::noshowpos << "magic level +" << it.abilities->specializedMagicLevel[i];
 			}
 		}
 
@@ -5139,57 +5174,52 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		msg.add<uint16_t>(0x00);
 	}
 
-	// Version 12.70
-	// Cleave
-	if (it.abilities && !oldProtocol) {
+	if (!oldProtocol) {
+		// Version 12.70 new skills
+		if (it.abilities) {
+			std::ostringstream string;
+			if (it.abilities->magicShieldCapacityFlat > 0) {
+				string.clear();
+				string << std::showpos << it.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << it.abilities->magicShieldCapacityPercent << "%";
+				msg.addString(string.str());
+			} else {
+				msg.add<uint16_t>(0x00);
+			}
 
-		std::ostringstream string;
-		if (it.abilities->magicShieldCapacityFlat > 0) {
-			string.clear();
-			string << std::showpos << it.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << it.abilities->magicShieldCapacityPercent << "%";
-			msg.addString(string.str());
+			if (it.abilities->cleavePercent > 0) {
+				string.clear();
+				string << it.abilities->cleavePercent << "%";
+				msg.addString(string.str());
+			} else {
+				msg.add<uint16_t>(0x00);
+			}
+
+			if (it.abilities->reflectFlat[COMBAT_PHYSICALDAMAGE] > 0) {
+				string.clear();
+				string << it.abilities->reflectFlat[COMBAT_PHYSICALDAMAGE];
+				msg.addString(string.str());
+			} else {
+				msg.add<uint16_t>(0x00);
+			}
+
+			if (it.abilities->perfectShotDamage > 0) {
+				string.clear();
+				string << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at " << it.abilities->perfectShotRange << "%";
+				msg.addString(string.str());
+			} else {
+				msg.add<uint16_t>(0x00);
+			}
 		} else {
+			// Send empty skills
+			// Cleave modifier
+			msg.add<uint16_t>(0x00);
+			// Magic shield capacity
+			msg.add<uint16_t>(0x00);
+			// Damage reflection modifie
+			msg.add<uint16_t>(0x00);
+			// Perfect shot modifier
 			msg.add<uint16_t>(0x00);
 		}
-
-		if (it.abilities->cleavePercent > 0) {
-			string.clear();
-			string << it.abilities->cleavePercent << "%";
-			msg.addString(string.str());
-		} else {
-			msg.add<uint16_t>(0x00);
-		}
-
-		if (it.abilities->reflectFlat[COMBAT_PHYSICALDAMAGE] > 0) {
-			string.clear();
-			string << it.abilities->reflectFlat[COMBAT_PHYSICALDAMAGE];
-			msg.addString(string.str());
-		} else {
-			msg.add<uint16_t>(0x00);
-		}
-
-		if (it.abilities->perfectShotDamage > 0) {
-			string.clear();
-			string << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at " << it.abilities->perfectShotRange << "%";
-			msg.addString(string.str());
-		} else {
-			msg.add<uint16_t>(0x00);
-		}
-	} else if (!oldProtocol) {
-		// cleave
-		msg.add<uint16_t>(0x00);
-		// magic shield capacity
-		msg.add<uint16_t>(0x00);
-		// perfect shot
-		msg.add<uint16_t>(0x00);
-		// damage deflect
-		msg.add<uint16_t>(0x00);
-		// Cleave modifier (12.70)
-		msg.add<uint16_t>(0x00);
-		// Damage reflection modifier (12.70)
-		msg.add<uint16_t>(0x00);
-		// Perfect shot modifier (12.70)
-		msg.add<uint16_t>(0x00);
 
 		// Upgrade and tier detail modifier
 		if (it.upgradeClassification > 0 && tier > 0) {

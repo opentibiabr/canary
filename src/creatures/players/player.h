@@ -2322,8 +2322,6 @@ class Player final : public Creature, public Cylinder {
 
 		void registerForgeHistoryDescription(ForgeHistory history);
 
-		std::map<uint16_t, Item*> getEquippedItemsWithEnabledAbilitiesBySlot() const;
-
 		void setBossPoints(uint32_t amount) {
 			bossPoints = amount;
 		}
@@ -2473,6 +2471,13 @@ class Player final : public Creature, public Cylinder {
 
 		// This get all player inventory items
 		std::vector<Item*> getAllInventoryItems(bool ignoreEquiped = false) const;
+
+		/**
+		 * @brief Get the equipped items of the player.
+		 * @details This function returns a vector containing the items currently equipped by the player
+		 * @return A vector of pointers to the equipped items.
+		 */
+		std::vector<Item*> getEquippedItems() const;
 		// This function is a override function of base class
 		std::map<uint32_t, uint32_t> &getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const override;
 		// Function from player class with correct type sizes (uint16_t)

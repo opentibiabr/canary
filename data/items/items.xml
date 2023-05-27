@@ -36615,26 +36615,32 @@
 	<item id="25046" article="a" name="lush meadow"/>
 	<item fromid="25047" toid="25048" article="a" name="death portal">
 		<attribute key="type" value="teleport"/>
+		<attribute key="effect" value="teleport"/>
 		<attribute key="description" value="You can see the other side through it."/>
 	</item>
 	<item fromid="25049" toid="25050" article="an" name="earth portal">
 		<attribute key="type" value="teleport"/>
+		<attribute key="effect" value="teleport"/>
 		<attribute key="description" value="You can see the other side through it."/>
 	</item>
 	<item fromid="25051" toid="25052" article="an" name="energy portal">
 		<attribute key="type" value="teleport"/>
+		<attribute key="effect" value="teleport"/>
 		<attribute key="description" value="You can see the other side through it."/>
 	</item>
 	<item fromid="25053" toid="25054" article="a" name="fire portal">
 		<attribute key="type" value="teleport"/>
+		<attribute key="effect" value="teleport"/>
 		<attribute key="description" value="You can see the other side through it."/>
 	</item>
 	<item fromid="25055" toid="25056" article="a" name="holy portal">
 		<attribute key="type" value="teleport"/>
+		<attribute key="effect" value="teleport"/>
 		<attribute key="description" value="You can see the other side through it."/>
 	</item>
 	<item fromid="25057" toid="25058" article="a" name="ice portal">
 		<attribute key="type" value="teleport"/>
+		<attribute key="effect" value="teleport"/>
 		<attribute key="description" value="You can see the other side through it."/>
 	</item>
 	<item id="25059" article="an" name="inert astral shaper rune">
@@ -42463,6 +42469,7 @@
 		</attribute>
 	</item>
 	<item id="29419" article="a" name="resizer">
+		<attribute key="slotType" value="two-handed"/>
 		<attribute key="weaponType" value="club"/>
 		<attribute key="elementice" value="46"/>
 		<attribute key="skillclub" value="2"/>
@@ -42679,9 +42686,11 @@
 	<!-- unknown item (unconfirmed name) -->
 	<item id="29979" article="a" name="portal">
 		<attribute key="type" value="teleport"/>
+		<attribute key="effect" value="teleport"/>
 	</item>
 	<item id="29980" article="a" name="portal">
 		<attribute key="type" value="teleport"/>
+		<attribute key="effect" value="teleport"/>
 	</item>
 	<item fromid="29981" toid="29986" article="an" name="old desk"/>
 	<!-- possible quest -->
@@ -51392,6 +51401,7 @@
 	<item id="36656" article="a" name="eldritch shield">
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="absorbpercentphysical" value="4"/>
+		<attribute key="reflectdamage" value="42"/>
 		<attribute key="defense" value="39"/>
 		<attribute key="weight" value="6600"/>
 		<attribute key="imbuementslot" value="1">
@@ -51411,6 +51421,7 @@
 		<attribute key="skillsword" value="3"/>
 		<attribute key="attack" value="6"/>
 		<attribute key="defense" value="33"/>
+		<attribute key="cleavepercent" value="3"/>
 		<attribute key="weight" value="8500"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
@@ -51427,6 +51438,7 @@
 		<attribute key="skillsword" value="3"/>
 		<attribute key="attack" value="6"/>
 		<attribute key="defense" value="33"/>
+		<attribute key="cleavepercent" value="3"/>
 		<attribute key="weight" value="8600"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
@@ -51442,6 +51454,7 @@
 		<attribute key="skillclub" value="3"/>
 		<attribute key="attack" value="6"/>
 		<attribute key="defense" value="33"/>
+		<attribute key="cleavepercent" value="3"/>
 		<attribute key="weight" value="8200"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
@@ -51458,6 +51471,7 @@
 		<attribute key="skillclub" value="3"/>
 		<attribute key="attack" value="6"/>
 		<attribute key="defense" value="33"/>
+		<attribute key="cleavepercent" value="3"/>
 		<attribute key="weight" value="8300"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
@@ -51472,6 +51486,7 @@
 		<attribute key="skillaxe" value="3"/>
 		<attribute key="attack" value="56"/>
 		<attribute key="defense" value="33"/>
+		<attribute key="cleavepercent" value="3"/>
 		<attribute key="weight" value="6500"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="elemental damage" value="3"/>
@@ -51488,6 +51503,7 @@
 		<attribute key="skillaxe" value="3"/>
 		<attribute key="attack" value="56"/>
 		<attribute key="defense" value="33"/>
+		<attribute key="cleavepercent" value="3"/>
 		<attribute key="weight" value="6600"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="elemental damage" value="3"/>
@@ -51515,6 +51531,7 @@
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="ammotype" value="arrow"/>
+		<attribute key="holymagiclevelpoints" value="1"/>
 		<attribute key="skilldist" value="2"/>
 		<attribute key="hitchance" value="6"/>
 		<attribute key="range" value="6"/>
@@ -51533,6 +51550,7 @@
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="ammotype" value="arrow"/>
+		<attribute key="holymagiclevelpoints" value="1"/>
 		<attribute key="skilldist" value="2"/>
 		<attribute key="hitchance" value="6"/>
 		<attribute key="range" value="6"/>
@@ -51550,6 +51568,8 @@
 		<attribute key="slotType" value="right-hand"/>
 		<attribute key="containersize" value="8"/>
 		<attribute key="weight" value="2200"/>
+		<attribute key="perfectshotdamage" value="20"/>
+		<attribute key="perfectshotrange" value="4"/>
 	</item>
 	<item id="36667" article="a" name="eldritch breeches">
 		<attribute key="absorbpercentphysical" value="2"/>
@@ -51563,7 +51583,9 @@
 		<attribute key="shootType" value="fire"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="magiclevelpoints" value="2"/>
-		<attribute key="range" value="4"/>
+		<attribute key="firemagiclevelpoints" value="1"/>
+		<attribute key="perfectShotDamage" value="65"/>
+		<attribute key="perfectshotrange" value="4"/>
 		<attribute key="weight" value="3600"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
@@ -51577,7 +51599,9 @@
 		<attribute key="shootType" value="fire"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="magiclevelpoints" value="2"/>
-		<attribute key="range" value="4"/>
+		<attribute key="firemagiclevelpoints" value="1"/>
+		<attribute key="perfectshotdamage" value="65"/>
+		<attribute key="perfectshotrange" value="4"/>
 		<attribute key="weight" value="3700"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
@@ -51587,6 +51611,7 @@
 	</item>
 	<item id="36670" article="a" name="eldritch cowl">
 		<attribute key="absorbpercentice" value="7"/>
+		<attribute key="magiclevelpoints" value="2"/>
 		<attribute key="armor" value="7"/>
 		<attribute key="weight" value="2600"/>
 		<attribute key="imbuementslot" value="2">
@@ -51600,6 +51625,7 @@
 	</item>
 	<item id="36671" article="a" name="eldritch hood">
 		<attribute key="absorbpercentpoison" value="7"/>
+		<attribute key="magiclevelpoints" value="2"/>
 		<attribute key="armor" value="7"/>
 		<attribute key="weight" value="2700"/>
 		<attribute key="imbuementslot" value="2">
@@ -51615,6 +51641,9 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="absorbpercentpoison" value="6"/>
 		<attribute key="magiclevelpoints" value="4"/>
+		<attribute key="deathmagiclevelpoints" value="1"/>
+		<attribute key="magicshieldCapacityflat" value="80"/>
+		<attribute key="magicshieldCapacitypercent" value="8"/>
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="2800"/>
 		<attribute key="imbuementslot" value="1">
@@ -51630,6 +51659,10 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="absorbpercentfire" value="6"/>
 		<attribute key="magiclevelpoints" value="4"/>
+		<attribute key="magiclevelpoints" value="4"/>
+		<attribute key="earthmagiclevelpoints" value="1"/>
+		<attribute key="magicshieldCapacityflat" value="80"/>
+		<attribute key="magicshieldCapacitypercent" value="8"/>
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="2600"/>
 		<attribute key="imbuementslot" value="1">
@@ -51646,6 +51679,7 @@
 		<attribute key="shootType" value="ice"/>
 		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="magiclevelpoints" value="2"/>
+		<attribute key="healingmagiclevelpoints" value="2"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="3500"/>
 		<attribute key="imbuementslot" value="2">
@@ -51663,6 +51697,7 @@
 		<attribute key="shootType" value="ice"/>
 		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="magiclevelpoints" value="2"/>
+		<attribute key="healingmagiclevelpoints" value="2"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="3600"/>
 		<attribute key="imbuementslot" value="2">
@@ -54880,7 +54915,7 @@
 		<attribute key="skillaxe" value="3"/>
 		<attribute key="skillsword" value="3"/>
 		<attribute key="armor" value="2"/>
-		<attribute key="transformDeEquipTo" value="39177"/>>
+		<attribute key="transformDeEquipTo" value="39177"/>
 		<attribute key="showduration" value="1" />
 		<attribute key="showattributes" value="1" />
 		<attribute key="duration" value="10800"/>
@@ -55149,7 +55184,6 @@
 		<attribute key="transformEquipTo" value="39234" />
 		<attribute key="stopduration" value="1" />
 		<attribute key="showduration" value="1" />
-		<attribute key="showattributes" value="1" />
 	</item>
 	<item id="39234" article="an" name="enchanted turtle amulet">
 		<attribute key="absorbpercentphysical" value="7"/>
@@ -55157,8 +55191,9 @@
 		<attribute key="skillclub" value="3"/>
 		<attribute key="skillaxe" value="3"/>
 		<attribute key="skillsword" value="3"/>
-		<attribute key="transformDeEquipTo" value="39233"/>>
+		<attribute key="transformDeEquipTo" value="39233"/>
 		<attribute key="showduration" value="1" />
+		<attribute key="showattributes" value="1" />
 		<attribute key="duration" value="7200"/>
 		<attribute key="decayTo" value="39235"/>
 		<attribute key="weight" value="480"/>

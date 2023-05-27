@@ -1168,6 +1168,12 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 				descriptions.emplace_back("Skill Boost", ss.str());
 			}
 
+			if (it.abilities->stats[STAT_MAGICPOINTS]) {
+				ss.str("");
+				ss << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+				descriptions.emplace_back("Magic Level", ss.str());
+			}
+
 			for (uint8_t i = 1; i <= 11; i++) {
 				if (it.abilities->specializedMagicLevel[i]) {
 					ss.str("");
@@ -2019,6 +2025,52 @@ std::string Item::parseShowAttributesDescription(const Item* item, const uint16_
 				itemDescription << "magic level " << std::showpos << itemType.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
 			}
 
+			for (uint8_t i = 1; i <= 11; i++) {
+				if (itemType.abilities->specializedMagicLevel[i]) {
+					if (begin) {
+						begin = false;
+						itemDescription << " (";
+					} else {
+						itemDescription << ", ";
+					}
+
+					itemDescription << getCombatName(indexToCombatType(i)) << " magic level " << std::showpos << itemType.abilities->specializedMagicLevel[i] << std::noshowpos;
+				}
+			}
+
+			if (itemType.abilities->magicShieldCapacityFlat || itemType.abilities->magicShieldCapacityPercent) {
+				if (begin) {
+					begin = false;
+					itemDescription << " (";
+				} else {
+					itemDescription << ", ";
+				}
+
+				itemDescription << "Magic Shield Capacity " << std::showpos << itemType.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << itemType.abilities->magicShieldCapacityPercent << "%";
+			}
+
+			if (itemType.abilities->perfectShotRange) {
+				if (begin) {
+					begin = false;
+					itemDescription << " (";
+				} else {
+					itemDescription << ", ";
+				}
+
+				itemDescription << "Perfect Shot " << std::showpos << itemType.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(itemType.abilities->perfectShotRange);
+			}
+
+			if (itemType.abilities->reflectFlat[0] != 0) {
+				if (begin) {
+					begin = false;
+					itemDescription << " (";
+				} else {
+					itemDescription << ", ";
+				}
+
+				itemDescription << "damage reflection " << std::showpos << itemType.abilities->reflectFlat[0] << std::noshowpos;
+			}
+
 			int16_t show = itemType.abilities->absorbPercent[0];
 			if (show != 0) {
 				for (size_t i = 1; i < COMBAT_COUNT; ++i) {
@@ -2111,6 +2163,17 @@ std::string Item::parseShowAttributesDescription(const Item* item, const uint16_
 
 			if (itemType.abilities->speed) {
 				itemDescription << parseShowDurationSpeed(itemType.abilities->speed, begin);
+			}
+
+			if (itemType.abilities->cleavePercent) {
+				if (begin) {
+					begin = false;
+					itemDescription << " (";
+				} else {
+					itemDescription << ", ";
+				}
+
+				itemDescription << "Cleave " << std::showpos << (itemType.abilities->cleavePercent) << std::noshowpos << "%";
 			}
 		}
 
@@ -2490,6 +2553,17 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 					s << '%';
 				}
 
+				if (it.abilities->stats[STAT_MAGICPOINTS]) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+				}
+
 				for (uint8_t i = 1; i <= 11; i++) {
 					if (it.abilities->specializedMagicLevel[i]) {
 						if (begin) {
@@ -2630,6 +2704,17 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 
 				if (it.abilities->speed) {
 					s << parseShowDurationSpeed(it.abilities->speed, begin);
+				}
+
+				if (it.abilities->cleavePercent) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "Cleave " << std::showpos << (it.abilities->cleavePercent) << std::noshowpos << "%";
 				}
 			}
 

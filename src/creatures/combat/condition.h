@@ -118,6 +118,16 @@ class ConditionAttributes final : public ConditionGeneric {
 		void serialize(PropWriteStream &propWriteStream) final;
 		bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) final;
 
+	protected:
+		int32_t getAbsorbByIndex(uint8_t index) const;
+		void setAbsorb(uint8_t index, int32_t value);
+		int32_t getAbsorbPercentByIndex(uint8_t index) const;
+		void setAbsorbPercent(uint8_t index, int32_t value);
+		int32_t getIncraseByIndex(uint8_t index) const;
+		void setIncrease(uint8_t index, int32_t value);
+		int32_t getIncreasePercentById(uint8_t index) const;
+		void setIncreasePercent(uint8_t index, int32_t value);
+
 	private:
 		int32_t skills[SKILL_LAST + 1] = {};
 		int32_t skillsPercent[SKILL_LAST + 1] = {};
@@ -131,10 +141,10 @@ class ConditionAttributes final : public ConditionGeneric {
 		int32_t currentBuff = 0;
 
 		// 12.72 mechanics
-		int32_t absorbs[COMBAT_COUNT] = {};
-		int32_t absorbsPercent[COMBAT_COUNT] = {};
-		int32_t increases[COMBAT_COUNT] = {};
-		int32_t increasesPercent[COMBAT_COUNT] = {};
+		std::array<int32_t, COMBAT_COUNT> absorbs = {};
+		std::array<int32_t, COMBAT_COUNT> absorbsPercent = {};
+		std::array<int32_t, COMBAT_COUNT> increases = {};
+		std::array<int32_t, COMBAT_COUNT> increasesPercent = {};
 		int32_t currentAbsorb = 0;
 		int32_t currentIncrease = 0;
 
@@ -147,10 +157,10 @@ class ConditionAttributes final : public ConditionGeneric {
 		void updateBuffs(Creature* creature);
 
 		// 12.72 mechanics
-		void updatePercentAbsorbs(Creature* creature);
-		void updateAbsorbs(Creature* creature);
-		void updatePercentIncreases(Creature* creature);
-		void updateIncreases(Creature* creature);
+		void updatePercentAbsorbs(const Creature* creature);
+		void updateAbsorbs(Creature* creature) const;
+		void updatePercentIncreases(const Creature* creature);
+		void updateIncreases(Creature* creature) const;
 		void updatePercentBuffs(Creature* creature);
 };
 

@@ -3373,7 +3373,7 @@ Cylinder* Player::queryDestination(int32_t &index, const Thing &thing, Item** de
 						return tmpContainer;
 					}
 
-					--n;
+					n--;
 				}
 
 				for (Item* tmpContainerItem : tmpContainer->getItemList()) {
@@ -3581,7 +3581,7 @@ uint32_t Player::getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/) con
 
 		if (Container* container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				if ((*it) && (*it)->getID() == itemId) {
+				if ((*it)->getID() == itemId) {
 					count += Item::countByType(*it, subType);
 				}
 			}

@@ -3115,18 +3115,12 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	msg.add<uint64_t>(player->getExperience());
 	msg.add<uint16_t>(player->getLevel());
 	msg.addByte(player->getLevelPercent());
-	// BaseXPGainRate
-	msg.add<uint16_t>(100);
-	// LowLevelBonus
-	msg.add<uint16_t>(0);
-	// XPBoost
-	msg.add<uint16_t>(0);
-	// StaminaMultiplier(100=x1.0)
-	msg.add<uint16_t>(100);
-	// xpBoostRemainingTime
-	msg.add<uint16_t>(0);
-	// canBuyXpBoost
-	msg.addByte(0x00);
+	msg.add<uint16_t>(player->getBaseXpGain()); // BaseXPGainRate
+	msg.add<uint16_t>(player->getGrindingXpBoost()); // LowLevelBonus
+	msg.add<uint16_t>(player->getStoreXpBoost()); // XPBoost
+	msg.add<uint16_t>(player->getStaminaXpBoost()); // StaminaMultiplier(100=x1.0)
+	msg.add<uint16_t>(player->getExpBoostStamina()); // xpBoostRemainingTime
+	msg.addByte(0x01); // canBuyXpBoost
 	msg.add<uint32_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint32_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint32_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));

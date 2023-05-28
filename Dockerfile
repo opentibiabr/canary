@@ -17,8 +17,8 @@ WORKDIR /build
 COPY . .
 
 ENV VCPKG_ROOT=/opt/vcpkg
-RUN cmake --preset release
-RUN cmake --build --preset release
+RUN cmake --preset linux-release
+RUN cmake --build --preset linux-release
 
 FROM ubuntu:22.04
 
@@ -28,7 +28,7 @@ ENTRYPOINT ["/srv/canary/canary"]
 
 VOLUME /srv/canary/logs
 
-COPY --from=builder build/release/bin/canary ./canary
+COPY --from=builder /build/build/linux-release/bin/canary ./canary
 COPY data ./data/
 COPY data-canary ./data-canary/
 COPY data-otservbr-global ./data-otservbr-global/

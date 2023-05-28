@@ -48,11 +48,11 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 80,
 	targetDistance = 1,
-	runHealth = 275,
+	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
 	canWalkOnPoison = true
 }
 
@@ -67,37 +67,38 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 32300, maxCount = 17},
-	{name = "ultimate health potion", chance = 32300, maxCount = 5},
-	{name = "gold ingot", chance = 2870},
-	{name = "snake skin", chance = 14800},
-	{name = "mastermind potion", chance = 12000},
-	{id = 282, chance = 14000, maxCount = 2}, -- giant shimmering pearl (brown)
-	{name = "blue crystal shard", chance = 800},
-	{name = "black pearl", chance = 930},
-	{name = "winged tail", chance = 560},
-	{name = "srezz' eye", chance = 670},
-	{name = "violet gem", chance = 510},
-	{name = "gemmed figurine", chance = 140},
-	{name = "green gem", chance = 920},
-	{name = "blue gem", chance = 6200},
-	{name = "glacier robe", chance = 18200},
-	{name = "glacier kilt", chance = 180},
-	{name = "giant sword", chance = 2070},
-	{name = "skull helmet", chance = 750},
-	{name = "war axe", chance = 2000},
-	{name = "demonrage sword", chance = 90},
-	{id = 23531, chance = 156}, -- ring of green plasma
-	{id = 3040, chance = 90}, -- gold nugget
-	{name = "red silk flower", chance = 14800},
-	{name = "raw watermelon tourmaline", chance = 960}
+	{id = 3035, chance = 100000, minCount = 1, maxCount = 17}, -- platinum coin
+	{id = 7643, chance = 100000, minCount = 1, maxCount = 5}, -- ultimate health potion
+	{id = 9694, chance = 25560, minCount = 1, maxCount = 3}, -- snake skin
+	{id = 7440, chance = 17780}, -- mastermind potion
+	{id = 9058, chance = 16110}, -- gold ingot
+	{id = 16119, chance = 10560}, -- blue crystal shard
+	{id = 282, chance = 10560}, -- giant shimmering pearl (brown)
+	{id = 3027, chance = 10000}, -- black pearl
+	{id = 3036, chance = 8330}, -- violet gem
+	{id = 3038, chance = 7220}, -- green gem
+	{id = 3041, chance = 6670}, -- blue gem
+	{id = 24392, chance = 5560}, -- gemmed figurine
+	{id = 10313, chance = 5000}, -- winged tail
+	{id = 823, chance = 4440}, -- glacier kilt
+	{id = 34103, chance = 3890}, -- srezz' eye
+	{id = 5741, chance = 3330}, -- skull helmet
+	{id = 824, chance = 2780}, -- glacier robe
+	{id = 3342, chance = 2220}, -- war axe
+	{id = 23531, chance = 1670}, -- ring of green plasma
+	{id = 3281, chance = 1110}, -- giant sword
+	{id = 7382, chance = 560}, -- demonrage sword
+	{id = 3040, chance = 560}, -- gold nugget
+	{id = 34258, chance = 360}, -- red silk flower
+	{id = 33778, chance = 360} -- raw watermelon tourmaline
 }
 
 monster.attacks = {
 	{name ="melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -200},
-	{name = "combat", type = COMBAT_EARTHDAMAGE, interval = 2000, chance = 40, minDamage = -400, maxDamage = -500, range = 5, radius = 4, target = true, shootEffect = CONST_ANI_EARTH, effect = CONST_ME_GREEN_RINGS},
-	{name = "combat", type = COMBAT_LIFEDRAIN, interval = 2000, chance = 30, minDamage = -200, maxDamage = -300, length = 4, spread = 2, effect = CONST_ME_DRAWBLOOD},
-	{name = "combat", type = COMBAT_LIFEDRAIN, interval = 2000, chance = 70, minDamage = -200, maxDamage = -350, radius = 4, effect = CONST_ME_DRAWBLOOD}
+	{name = "combat", type = COMBAT_EARTHDAMAGE, interval = 2000, chance = 20, minDamage = -400, maxDamage = -500, range = 5, radius = 3, spread = 3, target = true, shootEffect = CONST_ANI_POISON , effect = CONST_ME_YELLOW_RINGS},
+	{name = "lleech waveT", interval = 2000, chance = 30, minDamage = -200, maxDamage = -300},
+	{name = "combat", type = COMBAT_LIFEDRAIN, interval = 2000, chance = 30, minDamage = -200, maxDamage = -300, length = 5, spread = 3, effect = CONST_ME_DRAWBLOOD},
+	{name = "combat", type = COMBAT_LIFEDRAIN, interval = 2000, chance = 70, minDamage = -200, maxDamage = -350, radius = 4, target = false, effect = CONST_ME_DRAWBLOOD}
 }
 
 monster.defenses = {
@@ -115,7 +116,7 @@ monster.elements = {
 	{type = COMBAT_LIFEDRAIN, percent = 0},
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
+	{type = COMBAT_ICEDAMAGE, percent = -10},
 	{type = COMBAT_HOLYDAMAGE , percent = 0},
 	{type = COMBAT_DEATHDAMAGE , percent = 0}
 }

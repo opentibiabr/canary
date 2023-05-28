@@ -228,7 +228,7 @@ function CreateDefaultLeverBoss(player, config) -- This function is to suppress 
 
 	if spec:getPlayers() > 0 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There's someone fighting with " .. config.boss.name .. ".")
-		return true
+		return false
 	end
 
 	local lever = Lever()

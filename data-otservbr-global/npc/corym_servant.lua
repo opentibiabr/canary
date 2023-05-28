@@ -58,7 +58,7 @@ local function greetCallback(npc, creature, message)
 		npcHandler:setMessage(MESSAGE_GREET, {
 			'We work as hard we can, my master! Wait, I haven\'t seen you here before. You were sent by the Corym Ratter, I see. He misses the courage to visit us and find the reason for {decreasing resources}? He\'s the coward I have expected.'
 		})
-	elseif player:getStorageValue(HiddenThreats.corymRescueMission) == 8 and player:getStorageValue(HiddenThreats.QuestLine) == 3 then
+	elseif player:getStorageValue(HiddenThreats.CorymRescueMission) == 8 and player:getStorageValue(HiddenThreats.QuestLine) == 3 then
 		npcHandler:setMessage(MESSAGE_GREET, {
 			'Well done! The riot progesses! No fight without weapons. In the mine the temperature is quite high, higher as expected in this depth. Therefore we need heat-resistent weapons and armors. ...',
 			'This effect can be reached by adding rare earth to the common materials. But this can only be found in the stomaches of stonerefiners. 20 of these should be enough. Well, I see you have already collected enough of them! Would you give it to me?'
@@ -97,7 +97,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getStorageValue(HiddenThreats.QuestLine) == 1 then
 				player:setStorageValue(HiddenThreats.QuestLine, 2)
 				player:setStorageValue(HiddenThreats.ServantDoor, 1)
-				player:setStorageValue(HiddenThreats.corymRescueMission, 0)
+				player:setStorageValue(HiddenThreats.CorymRescueMission, 0)
 			end
 			npcHandler:say({
 				"I see you are interested to change our sitation. The first thing I like you to do is to liberate the jailed coryms. There are three areas with locked doors. You have to find a way to get access. ...",
@@ -113,7 +113,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			player:addItem(3040, 2)
 			player:setStorageValue(HiddenThreats.QuestLine, 5)
-			player:setStorageValue(HiddenThreats.corymRescueMission, 9)
+			player:setStorageValue(HiddenThreats.CorymRescueMission, 9)
 		else
 			npcHandler:say("You don't have enough, return when could you bring 20 of rare earth to me.", npc, creature)
 			npcHandler:removeInteraction(npc, creature)

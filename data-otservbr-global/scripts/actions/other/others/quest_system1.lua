@@ -5,7 +5,7 @@ local specialQuests = {
 	[52003] = Storage.PitsOfInferno.WeaponReward,
 	-- {x = 32311, y = 32211, z = 8}
 	[51400] = Storage.ThievesGuild.Reward,
-	[51324] = Storage.WrathoftheEmperor.mainReward,
+	[51324] = Storage.WrathoftheEmperor.MainReward,
 	-- {x = 32232, y = 31066, z = 7}
 	[51715] = Storage.SvargrondArena.RewardGreenhorn,
 	-- {x = 32232, y = 31059, z = 7}

@@ -57,11 +57,11 @@ class Protocol : public std::enable_shared_from_this<Protocol> {
 
 	protected:
 		void disconnect() const {
-			if (auto connection = getConnection();
-				connection != nullptr) {
+			if (auto connection = getConnection()) {
 				connection->close();
 			}
 		}
+
 		void enableXTEAEncryption() {
 			encryptionEnabled = true;
 		}

@@ -286,7 +286,6 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item* item) {
 void ProtocolGame::release() {
 	// dispatcher thread
 	if (player && player->client == shared_from_this()) {
-		g_game().removePlayerUniqueLogin(player);
 		player->client.reset();
 		player->decrementReferenceCounter();
 		player = nullptr;
@@ -413,20 +412,20 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			foundPlayer->disconnect();
 			foundPlayer->isConnecting = true;
 
-			eventConnect = g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem)));
+			eventConnect = g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getName(), operatingSystem)));
 		} else {
-			connect(foundPlayer->getID(), operatingSystem);
+			connect(foundPlayer->getName(), operatingSystem);
 		}
 	}
 	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
 	sendBosstiaryCooldownTimer();
 }
 
-void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem) {
+void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t operatingSystem) {
 	eventConnect = 0;
 
-	Player* foundPlayer = g_game().getPlayerByID(playerId);
-	if (!foundPlayer || foundPlayer->client) {
+	Player* foundPlayer = g_game().getPlayerUniqueLogin(playerName);
+	if (!foundPlayer) {
 		disconnectClient("You are already logged in.");
 		return;
 	}
@@ -667,6 +666,12 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 	}
 
 	if (player->isDead() || player->getHealth() <= 0) {
+		// Check player activity on death screen
+		if (m_playerDeathTime == 0) {
+			addGameTask(&Game::playerCheckActivity, player->getName(), 1000);
+			m_playerDeathTime++;
+		}
+
 		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte)));
 		return;
 	}
@@ -701,6 +706,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 
 		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::sendAddCreature, getThis(), player, player->getPosition(), 0, false)));
 		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::addBless, getThis())));
+		resetPlayerDeathTime();
 		return;
 	}
 
@@ -712,6 +718,10 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 }
 
 void ProtocolGame::addBless() {
+	if (!player) {
+		return;
+	}
+
 	std::string bless = player->getBlessingsName();
 	std::ostringstream lostBlesses;
 	(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses << "You are still blessed with " << bless;
@@ -1086,6 +1096,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			break;
 		case 0xF9:
 			parseModalWindowAnswer(msg);
+			break;
+		case 0xFF:
+			parseRewardContainerCollect(msg);
 			break;
 			// case 0xFA: parseStoreOpen(msg); break;
 			// case 0xFB: parseStoreRequestOffers(msg); break;
@@ -2811,6 +2824,30 @@ void ProtocolGame::parseModalWindowAnswer(NetworkMessage &msg) {
 	uint8_t button = msg.getByte();
 	uint8_t choice = msg.getByte();
 	addGameTask(&Game::playerAnswerModalWindow, player->getID(), id, button, choice);
+}
+
+void ProtocolGame::parseRewardContainerCollect(NetworkMessage &msg) {
+	const auto position = msg.getPosition();
+	auto itemId = msg.get<uint16_t>();
+	auto stackPosition = msg.getByte();
+
+	addGameTask([position, itemId, stackPosition, this](Game* game, uint32_t playerId) {
+		try {
+			// Try to run the reward collect asynchronously
+			auto future = std::async(std::launch::async, &Game::playerRewardChestCollect, game, playerId, position, itemId, stackPosition, 0);
+			// Waits for the asynchronous operation to complete
+			future.wait();
+		} catch (std::system_error &e) {
+			game->playerRewardChestCollect(playerId, position, itemId, stackPosition, 200);
+			SPDLOG_WARN("Failed to create a new thread for asynchronous reward collect, running synchronously: {}", e.what());
+			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "An error occurred while collecting rewards. Please report it to the administrador.");
+		} catch (std::future_error &e) {
+			game->playerRewardChestCollect(playerId, position, itemId, stackPosition, 200);
+			SPDLOG_ERROR("Failed to run asynchronous reward collect: {}", e.what());
+			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "An error occurred while collecting rewards. Please report it to the administrador.");
+		}
+	},
+				player->getID());
 }
 
 void ProtocolGame::parseBrowseField(NetworkMessage &msg) {

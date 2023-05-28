@@ -541,7 +541,7 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 
 	if (caster && attackerPlayer) {
 		Item* item = attackerPlayer->getWeapon();
-		damage = applyImbuementElementalDamage(item, damage);
+		damage = applyImbuementElementalDamage(attackerPlayer, item, damage);
 		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
 
 		if (targetPlayer && targetPlayer->getSkull() != SKULL_BLACK) {
@@ -582,9 +582,13 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 	}
 }
 
-CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage damage) {
+CombatDamage Combat::applyImbuementElementalDamage(Player* attackerPlayer, Item* item, CombatDamage damage) {
 	if (!item) {
 		return damage;
+	}
+
+	if (item->getWeaponType() == WEAPON_AMMO && attackerPlayer && attackerPlayer->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
+		item = attackerPlayer->getInventoryItem(CONST_SLOT_LEFT);
 	}
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
@@ -609,7 +613,7 @@ CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage dama
 			g_game().sendSingleSoundEffect(item->getPosition(), imbuementInfo.imbuement->soundEffect, item->getHoldingPlayer());
 		}
 
-		/* If damage imbuement is set, we can return without checking other slots */
+		// If damage imbuement is set, we can return without checking other slots
 		break;
 	}
 
@@ -1280,7 +1284,7 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage &damage, bool u
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("[ValueCallback::getMinMaxValues - Player {} formula {}] "
 					 "Call stack overflow. Too many lua script calls being nested.",
-					 player->getName(), type);
+					 player->getName(), fmt::underlying(type));
 		return;
 	}
 
@@ -1401,7 +1405,7 @@ void TileCallback::onTileCombat(Creature* creature, Tile* tile) const {
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("[TileCallback::onTileCombat - Creature {} type {} on tile x: {} y: {} z: {}] "
 					 "Call stack overflow. Too many lua script calls being nested.",
-					 creature->getName(), type, (tile->getPosition()).getX(), (tile->getPosition()).getY(), (tile->getPosition()).getZ());
+					 creature->getName(), fmt::underlying(type), (tile->getPosition()).getX(), (tile->getPosition()).getY(), (tile->getPosition()).getZ());
 		return;
 	}
 

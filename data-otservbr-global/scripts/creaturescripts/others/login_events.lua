@@ -13,7 +13,7 @@ function loginEvents.onLogin(player)
 		"PlayerDeath",
 		"RookgaardAdvance",
 		"FamiliarLogin",
-		"AdvanceFamiliar",
+		"FamiliarAdvance",
 		--Quests
 		--Adventurers Guild Quest
 		"Thegreatdragonhuntkill",

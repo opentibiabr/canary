@@ -287,7 +287,6 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item* item) {
 void ProtocolGame::release() {
 	// dispatcher thread
 	if (player && player->client == shared_from_this()) {
-		g_game().removePlayerUniqueLogin(player);
 		player->client.reset();
 		player->decrementReferenceCounter();
 		player = nullptr;
@@ -408,20 +407,20 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			foundPlayer->disconnect();
 			foundPlayer->isConnecting = true;
 
-			eventConnect = g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem)));
+			eventConnect = g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getName(), operatingSystem)));
 		} else {
-			connect(foundPlayer->getID(), operatingSystem);
+			connect(foundPlayer->getName(), operatingSystem);
 		}
 	}
 	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
 	sendBosstiaryCooldownTimer();
 }
 
-void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem) {
+void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t operatingSystem) {
 	eventConnect = 0;
 
-	Player* foundPlayer = g_game().getPlayerByID(playerId);
-	if (!foundPlayer || foundPlayer->client) {
+	Player* foundPlayer = g_game().getPlayerUniqueLogin(playerName);
+	if (!foundPlayer) {
 		disconnectClient("You are already logged in.");
 		return;
 	}
@@ -656,6 +655,12 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 	}
 
 	if (player->isDead() || player->getHealth() <= 0) {
+		// Check player activity on death screen
+		if (m_playerDeathTime == 0) {
+			addGameTask(&Game::playerCheckActivity, player->getName(), 1000);
+			m_playerDeathTime++;
+		}
+
 		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte)));
 		return;
 	}
@@ -690,6 +695,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 
 		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::sendAddCreature, getThis(), player, player->getPosition(), 0, false)));
 		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::addBless, getThis())));
+		resetPlayerDeathTime();
 		return;
 	}
 
@@ -701,6 +707,10 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 }
 
 void ProtocolGame::addBless() {
+	if (!player) {
+		return;
+	}
+
 	std::string bless = player->getBlessingsName();
 	std::ostringstream lostBlesses;
 	(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses << "You are still blessed with " << bless;
@@ -6447,7 +6457,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot) {
 			msg.add<uint16_t>(mType.first);
 		});
 	} else {
-		SPDLOG_WARN("[ProtocolGame::sendPreyData] - Unknown prey state: {}", slot->state);
+		SPDLOG_WARN("[ProtocolGame::sendPreyData] - Unknown prey state: {}", fmt::underlying(slot->state));
 		return;
 	}
 
@@ -7093,7 +7103,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
 			msg.add<uint16_t>(slot->currentKills);
 			msg.addByte(slot->rarity);
 		} else {
-			SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", slot->id, player->getName());
+			SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", fmt::underlying(slot->id), player->getName());
 			return;
 		}
 	} else if (slot->state == PreyTaskDataState_Completed) {
@@ -7110,11 +7120,11 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
 			}
 			msg.addByte(slot->rarity);
 		} else {
-			SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", slot->id, player->getName());
+			SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", fmt::underlying(slot->id), player->getName());
 			return;
 		}
 	} else {
-		SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown task hunting state: {}", slot->state);
+		SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown task hunting state: {}", fmt::underlying(slot->state));
 		return;
 	}
 
@@ -7443,7 +7453,7 @@ void ProtocolGame::parseStashWithdraw(NetworkMessage &msg) {
 			break;
 		}
 		default:
-			SPDLOG_ERROR("Unknown 'supply stash' action switch: {}", action);
+			SPDLOG_ERROR("Unknown 'supply stash' action switch: {}", fmt::underlying(action));
 			break;
 	}
 

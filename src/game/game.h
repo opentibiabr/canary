@@ -627,6 +627,7 @@ class Game {
 		 * @param player A pointer to the Player object to remove.
 		 */
 		void removePlayerUniqueLogin(Player* player);
+		void playerCheckActivity(const std::string &playerName, int interval);
 
 		std::unique_ptr<IOWheel> &getIOWheel();
 		const std::unique_ptr<IOWheel> &getIOWheel() const;

@@ -78,7 +78,7 @@ class ProtocolGame final : public Protocol {
 		ProtocolGame_ptr getThis() {
 			return std::static_pointer_cast<ProtocolGame>(shared_from_this());
 		}
-		void connect(uint32_t playerId, OperatingSystem_t operatingSystem);
+		void connect(const std::string &playerName, OperatingSystem_t operatingSystem);
 		void disconnectClient(const std::string &message) const;
 		void writeToOutputBuffer(const NetworkMessage &msg);
 
@@ -497,6 +497,12 @@ class ProtocolGame final : public Protocol {
 
 		// Hazard system
 		void reloadHazardSystemIcon(uint16_t reference);
+
+		uint8_t m_playerDeathTime = 0;
+
+		void resetPlayerDeathTime() {
+			m_playerDeathTime = 0;
+		}
 };
 
 #endif // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

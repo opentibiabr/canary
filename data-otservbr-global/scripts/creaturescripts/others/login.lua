@@ -6,7 +6,7 @@ local function onMovementRemoveProtection(cid, oldPos, time)
 
 	local playerPos = player:getPosition()
 	if (playerPos.x ~= oldPos.x or playerPos.y ~= oldPos.y or playerPos.z ~= oldPos.z) or player:getTarget() then
-		player:setStorageValue(Storage.combatProtectionStorage, 0)
+		player:setStorageValue(Global.Storage.CombatProtectionStorage, 0)
 		return true
 	end
 
@@ -221,8 +221,8 @@ function playerLogin.onLogin(player)
 		stats.playerId = player:getId()
 	end
 
-	if player:getStorageValue(Storage.combatProtectionStorage) < 1 then
-		player:setStorageValue(Storage.combatProtectionStorage, 1)
+	if player:getStorageValue(Global.Storage.CombatProtectionStorage) < 1 then
+		player:setStorageValue(Global.Storage.CombatProtectionStorage, 1)
 		onMovementRemoveProtection(playerId, player:getPosition(), 10)
 	end
 

@@ -7229,7 +7229,7 @@ void ProtocolGame::sendFeatures() {
 
 	NetworkMessage msg;
 	msg.addByte(0x43);
-	msg.add<uint16_t>(features.size());
+	msg.add<uint16_t>(static_cast<uint16_t>(features.size()));
 	for (const auto &[gameFeature, featureBool] : features) {
 		msg.addByte(static_cast<uint8_t>(gameFeature));
 		msg.addByte(featureBool ? 1 : 0);

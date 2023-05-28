@@ -77,7 +77,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 	if (slot == WheelSlots_t::SLOT_GREEN_200) {
 		if (playerPoints < 375u) {
 			if (isDevMode()) {
-				spdlog::error("Player {} trying to manipulate byte on green slot 200 {}", m_player.getName(), slot);
+				spdlog::error("Player {} trying to manipulate byte on green slot 200 {}", m_player.getName(), fmt::underlying(slot));
 			}
 			return false;
 		}
@@ -90,7 +90,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 	} else if (slot == WheelSlots_t::SLOT_GREEN_TOP_150) {
 		if (playerPoints < 225u) {
 			if (isDevMode()) {
-				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_TOP_150: {}", m_player.getName(), slot);
+				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_TOP_150: {}", m_player.getName(), fmt::underlying(slot));
 			}
 			return false;
 		}
@@ -106,7 +106,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 	} else if (slot == WheelSlots_t::SLOT_GREEN_BOTTOM_150) {
 		if (playerPoints < 225u) {
 			if (isDevMode()) {
-				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_BOTTOM_150: {}", m_player.getName(), slot);
+				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_BOTTOM_150: {}", m_player.getName(), fmt::underlying(slot));
 			}
 			return false;
 		}
@@ -122,7 +122,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 	} else if (slot == WheelSlots_t::SLOT_GREEN_TOP_100) {
 		if (playerPoints < 125u) {
 			if (isDevMode()) {
-				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_TOP_100: {}", m_player.getName(), slot);
+				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_TOP_100: {}", m_player.getName(), fmt::underlying(slot));
 			}
 			return false;
 		}
@@ -141,7 +141,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 	} else if (slot == WheelSlots_t::SLOT_GREEN_MIDDLE_100) {
 		if (playerPoints < 125u) {
 			if (isDevMode()) {
-				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_MIDDLE_100: {}", m_player.getName(), slot);
+				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_MIDDLE_100: {}", m_player.getName(), fmt::underlying(slot));
 			}
 			return false;
 		}
@@ -160,7 +160,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 	} else if (slot == WheelSlots_t::SLOT_GREEN_BOTTOM_100) {
 		if (playerPoints < 125u) {
 			if (isDevMode()) {
-				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_BOTTOM_100: {}", m_player.getName(), slot);
+				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_BOTTOM_100: {}", m_player.getName(), fmt::underlying(slot));
 			}
 			return false;
 		}
@@ -179,7 +179,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 	} else if (slot == WheelSlots_t::SLOT_GREEN_TOP_75) {
 		if (playerPoints < 50u) {
 			if (isDevMode()) {
-				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_TOP_75: {}", m_player.getName(), slot);
+				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_TOP_75: {}", m_player.getName(), fmt::underlying(slot));
 			}
 			return false;
 		}
@@ -201,7 +201,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 	} else if (slot == WheelSlots_t::SLOT_GREEN_BOTTOM_75) {
 		if (playerPoints < 50u) {
 			if (isDevMode()) {
-				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_BOTTOM_75: {}", m_player.getName(), slot);
+				spdlog::error("Player {} trying to manipulate byte to SLOT_GREEN_BOTTOM_75: {}", m_player.getName(), fmt::underlying(slot));
 			}
 			return false;
 		}
@@ -718,7 +718,7 @@ void PlayerWheel::sendGiftOfLifeCooldown() const {
 
 bool PlayerWheel::checkSavePointsBySlotType(WheelSlots_t slotType, uint16_t points) {
 	if (points > 0 && !canPlayerSelectPointOnSlot(slotType, false)) {
-		spdlog::warn("[{}] Failed to save points: {}, from slot {}", __FUNCTION__, points, slotType);
+		spdlog::warn("[{}] Failed to save points: {}, from slot {}", __FUNCTION__, points, fmt::underlying(slotType));
 		spdlog::error("Possible manipulation of bytes of player {}", m_player.getName());
 		return false;
 	}
@@ -985,7 +985,7 @@ uint8_t PlayerWheel::getMaxPointsPerSlot(WheelSlots_t slot) const {
 		return 200u;
 	}
 
-	spdlog::error("[{}] player: {}, is trying to use unknown slot: {}", __FUNCTION__, m_player.getName(), slot);
+	spdlog::error("[{}] player: {}, is trying to use unknown slot: {}", __FUNCTION__, m_player.getName(), fmt::underlying(slot));
 	return 0u;
 }
 

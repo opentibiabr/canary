@@ -1103,7 +1103,7 @@ int MonsterTypeFunctions::luaMonsterTypeMitigation(lua_State* L) {
 	if (lua_gettop(L) == 1) {
 		lua_pushnumber(L, monsterType->info.mitigation);
 	} else {
-		monsterType->info.mitigation = getNumber<int32_t>(L, 2);
+		monsterType->info.mitigation = getNumber<float>(L, 2);
 		pushBoolean(L, true);
 	}
 	return 1;

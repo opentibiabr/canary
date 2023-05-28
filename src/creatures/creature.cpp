@@ -837,11 +837,11 @@ void Creature::drainMana(Creature* attacker, int32_t manaLoss) {
 }
 
 // Wheel of destiny - mitigation system for creature
-void Creature::mitigateDamage(CombatType_t &combatType, BlockType_t &blockType, int32_t &damage) {
+void Creature::mitigateDamage(const CombatType_t &combatType, BlockType_t &blockType, int32_t &damage) const {
 	if (combatType != COMBAT_MANADRAIN && combatType != COMBAT_LIFEDRAIN) { // Add agony check if the server does have agony combat type
 		// Increase mitigate damage
 		auto originalDamage = damage;
-		damage -= (damage * getMitigation()) / 100.;
+		damage -= (damage * (int32_t)getMitigation()) / 100;
 		if (isDevMode()) {
 			spdlog::info("[mitigation] creature: {}, original damage: {}, mitigation damage: {}", getName(), originalDamage, damage);
 		}
@@ -1344,7 +1344,7 @@ Condition* Creature::getCondition(ConditionType_t type, ConditionId_t conditionI
 	return nullptr;
 }
 
-std::vector<Condition*> Creature::getConditionsByType(ConditionType_t type) {
+std::vector<Condition*> Creature::getConditionsByType(ConditionType_t type) const {
 	std::vector<Condition*> conditionsVec;
 	for (Condition* condition : conditions) {
 		if (condition->getType() == type) {

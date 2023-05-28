@@ -1299,53 +1299,32 @@ struct LightInfo {
 
 struct CombatDamage {
 		struct {
-				CombatType_t type;
-				int32_t value;
+				CombatType_t type = COMBAT_NONE;
+				int32_t value = 0;
 		} primary, secondary;
 
-		CombatOrigin origin;
-		bool critical;
-		int affected;
-		bool extension;
+		CombatOrigin origin = ORIGIN_NONE;
+		bool critical = false;
+		int affected = 1;
+		bool extension = false;
 		std::string exString;
-		bool fatal;
+		bool fatal = false;
 
-		int32_t criticalDamage;
-		int32_t criticalChance;
-		int32_t damageMultiplier;
-		int32_t damageReductionMultiplier;
-		int32_t healingMultiplier;
-		int32_t manaLeech;
-		int32_t manaLeechChance;
-		int32_t lifeLeech;
-		int32_t lifeLeechChance;
-		int32_t healingLink;
+		int32_t criticalDamage = 0;
+		int32_t criticalChance = 0;
+		int32_t damageMultiplier = 0;
+		int32_t damageReductionMultiplier = 0;
+		int32_t healingMultiplier = 0;
+		int32_t manaLeech = 0;
+		int32_t manaLeechChance = 0;
+		int32_t lifeLeech = 0;
+		int32_t lifeLeechChance = 0;
+		int32_t healingLink = 0;
 
 		std::string instantSpellName;
 		std::string runeSpellName;
 
-		CombatDamage() {
-			origin = ORIGIN_NONE;
-			primary.type = secondary.type = COMBAT_NONE;
-			primary.value = secondary.value = 0;
-			critical = false;
-			affected = 1;
-			extension = false;
-			exString = "";
-			fatal = false;
-			criticalDamage = 0;
-			criticalChance = 0;
-			damageMultiplier = 0;
-			damageReductionMultiplier = 0;
-			healingMultiplier = 0;
-			manaLeech = 0;
-			manaLeechChance = 0;
-			lifeLeech = 0;
-			lifeLeechChance = 0;
-			healingLink = 0;
-			instantSpellName = "";
-			runeSpellName = "";
-		}
+		CombatDamage() = default;
 };
 
 struct RespawnType {

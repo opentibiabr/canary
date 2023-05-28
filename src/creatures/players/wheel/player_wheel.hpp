@@ -26,7 +26,7 @@ class PlayerWheel {
 		 * Functions for load and save player database informations
 		 */
 		void loadDBPlayerSlotPointsOnLogin();
-		bool saveDBPlayerSlotPointsOnLogout();
+		bool saveDBPlayerSlotPointsOnLogout() const;
 
 		/*
 		 * Functions for manipulate the client bytes
@@ -34,13 +34,25 @@ class PlayerWheel {
 		bool checkSavePointsBySlotType(WheelSlots_t slotType, uint16_t points);
 
 		/**
+		 * @brief Handles retry errors for saving slot points.
+		 *
+		 * @details This function iterates over the retry table and attempts to save slot points for each entry.
+		 * @details If the points are successfully saved, the error counter is decremented. If the points cannot be saved,
+		 * @details the entry is added to a temporary table for further retry.
+		 *
+		 * @param retryTable The vector containing the slot information to be retried.
+		 * @param errors The error counter that keeps track of the number of errors encountered.
+		 */
+		void saveSlotPointsHandleRetryErrors(std::vector<SlotInfo> &retryTable, int &errors);
+
+		/**
 		 * @brief Saves the slot points when the save (ok) button is pressed.
 		 * @param msg Network message containing slot data.
 		 * @details If maximum number of points allowed for the slot, an error message is sent to the player and the function returns.
 		 */
 		void saveSlotPointsOnPressSaveButton(NetworkMessage &msg);
-		void sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId);
-		void sendGiftOfLifeCooldown();
+		void sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const;
+		void sendGiftOfLifeCooldown() const;
 
 		/*
 		 * Functions for load relevant wheel data
@@ -50,9 +62,9 @@ class PlayerWheel {
 		/*
 		 * Wheel Spells Methods
 		 */
-		int getSpellAdditionalTarget(const std::string &spellName);
-		int getSpellAdditionalDuration(const std::string &spellName);
-		bool getSpellAdditionalArea(const std::string &spellName);
+		int getSpellAdditionalTarget(const std::string &spellName) const;
+		int getSpellAdditionalDuration(const std::string &spellName) const;
+		bool getSpellAdditionalArea(const std::string &spellName) const;
 
 		/*
 		 * Functions for manage slots
@@ -78,11 +90,18 @@ class PlayerWheel {
 		void loadPlayerBonusData();
 
 		void loadDedicationAndConvictionPerks();
+
+		/**
+		 * @brief Adds a spell to the spells vector.
+		 * @details This function adds a spell to the player's spells vector, only if the spell doesn't already exist in the vector.
+		 * @param spellName The name of the spell to be added.
+		 */
+		void addSpellToVector(const std::string &spellName);
 		void loadRevelationPerks();
 
-		WheelStageEnum_t getPlayerSliceStage(const std::string &color);
+		WheelStageEnum_t getPlayerSliceStage(const std::string &color) const;
 
-		void printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonusData &bonusData);
+		void printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonusData &bonusData) const;
 
 	private:
 		/*
@@ -127,20 +146,20 @@ class PlayerWheel {
 		bool checkBallisticMastery();
 		bool checkCombatMastery();
 		bool checkDivineEmpowerment();
-		int32_t checkDrainBodyLeech(Creature* target, skills_t skill);
+		int32_t checkDrainBodyLeech(const Creature* target, skills_t skill);
 		int32_t checkBeamMasteryDamage() const;
 		int32_t checkBattleHealingAmount() const;
-		int32_t checkBlessingGroveHealingByTarget(Creature* target);
-		int32_t checkTwinBurstByTarget(Creature* target);
-		int32_t checkExecutionersThrow(Creature* target);
+		int32_t checkBlessingGroveHealingByTarget(const Creature* target) const;
+		int32_t checkTwinBurstByTarget(const Creature* target) const;
+		int32_t checkExecutionersThrow(const Creature* target);
 		int32_t checkAvatarSkill(WheelAvatarSkill_t skill) const;
 		int32_t checkFocusMasteryDamage();
 		int32_t checkElementSensitiveReduction(CombatType_t type) const;
 		// Wheel of destiny - General functions:
 		void reduceAllSpellsCooldownTimer(int32_t value);
 		void resetUpgradedSpells();
-		void upgradeSpell(std::string name);
-		void downgradeSpell(std::string name);
+		void upgradeSpell(const std::string &name);
+		void downgradeSpell(const std::string &name);
 		// Wheel of destiny - Header set:
 		/**
 		 * @brief Sets the value of a specific stage in the Wheel of Destiny.
@@ -212,31 +231,30 @@ class PlayerWheel {
 		 * @param name The name of the instant to set.
 		 * @param value The toggle value to set for the instant.
 		 */
-		void setSpellInstant(std::string name, bool value);
+		void setSpellInstant(const std::string &name, bool value);
 		void resetResistance();
 
 		// Wheel of destiny - Header get:
 		bool getInstant(WheelInstant_t type) const;
-		bool getHealingLinkUpgrade(std::string spell) const;
+		bool getHealingLinkUpgrade(const std::string &spell) const;
 		uint8_t getStage(WheelStage_t type) const;
-		WheelSpellGrade_t getSpellUpgrade(std::string name) const;
+		WheelSpellGrade_t getSpellUpgrade(const std::string &name) const;
 		int32_t getMajorStat(WheelMajor_t type) const;
 		int32_t getStat(WheelStat_t type) const;
 		int32_t getResistance(CombatType_t type) const;
-		int32_t getMajorStatConditional(std::string instant, WheelMajor_t major) const;
+		int32_t getMajorStatConditional(const std::string &instant, WheelMajor_t major) const;
 		int64_t getOnThinkTimer(WheelOnThink_t type) const;
 		bool getInstant(const std::string name) const;
 		double getMitigationMultiplier() const;
 
 		// Wheel of destiny - Specific functions
 		uint32_t getGiftOfLifeTotalCooldown() const;
-		uint8_t getGiftOfLifeOverkill() const;
-		uint8_t getGiftOfLifeHeal() const;
+		uint8_t getGiftOfLifeValue() const;
 		int32_t getGiftOfCooldown() const;
 		void setGiftOfCooldown(int32_t value, bool isOnThink);
 		void decreaseGiftOfCooldown(int32_t value);
 
-		void sendOpenWheelWindow(uint32_t ownerId);
+		void sendOpenWheelWindow(uint32_t ownerId) const;
 
 		uint16_t getPointsBySlotType(uint8_t slotType) const;
 
@@ -244,7 +262,7 @@ class PlayerWheel {
 
 		void setPointsBySlotType(uint8_t slotType, uint16_t points);
 
-		Spell* getCombatDataSpell(CombatDamage &damage, Creature* target);
+		Spell* getCombatDataSpell(CombatDamage &damage);
 
 		const PlayerWheelMethodsBonusData &getBonusData() const;
 
@@ -293,17 +311,16 @@ class PlayerWheel {
 
 		PlayerWheelMethodsBonusData m_playerBonusData;
 
-		// Wheel of destiny
-		std::array<uint8_t, static_cast<size_t>(WheelStage_t::TOTAL_COUNT)> wheelOfDestinyStages = { 0 };
-		std::array<int64_t, static_cast<size_t>(WheelOnThink_t::TOTAL_COUNT)> wheelOfDestinyOnThink = { 0 };
-		std::array<int32_t, static_cast<size_t>(WheelStat_t::TOTAL_COUNT)> wheelOfDestinyStats = { 0 };
-		std::array<int32_t, static_cast<size_t>(WheelMajor_t::TOTAL_COUNT)> wheelOfDestinyMajorStats = { 0 };
-		std::array<bool, static_cast<size_t>(WheelInstant_t::TOTAL_COUNT)> wheelOfDestinyInstant = { false };
-		std::array<int32_t, COMBAT_COUNT> wheelOfDestinyResistance = { 0 };
+		std::array<uint8_t, static_cast<size_t>(WheelStage_t::TOTAL_COUNT)> m_stages = { 0 };
+		std::array<int64_t, static_cast<size_t>(WheelOnThink_t::TOTAL_COUNT)> m_onThink = { 0 };
+		std::array<int32_t, static_cast<size_t>(WheelStat_t::TOTAL_COUNT)> m_stats = { 0 };
+		std::array<int32_t, static_cast<size_t>(WheelMajor_t::TOTAL_COUNT)> m_majorStats = { 0 };
+		std::array<bool, static_cast<size_t>(WheelInstant_t::TOTAL_COUNT)> m_instant = { false };
+		std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 
-		int32_t wheelOfDestinyCreaturesNearby = 0;
-		std::map<std::string, WheelSpellGrade_t> wheelOfDestinySpellsSelected;
-		std::vector<std::string> wheelOfDestinyLearnedSpellsSelected;
+		int32_t m_creaturesNearby = 0;
+		std::map<std::string, WheelSpellGrade_t> m_spellsSelected;
+		std::vector<std::string> m_learnedSpellsSelected;
 };
 
 #endif // SRC_CREATURES_PLAYERS_WHEEL_PLAYER_WHEEL_HPP_

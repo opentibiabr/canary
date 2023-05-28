@@ -573,11 +573,15 @@ bool Spell::getWheelOfDestinyUpgraded() const {
 
 int32_t Spell::getWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t grade) const {
 	int32_t value = 0;
-	if (grade >= WheelSpellGrade_t::REGULAR) {
-		value += wheelOfDestinyRegularBoost[static_cast<uint8_t>(boost)];
-	}
-	if (grade >= WheelSpellGrade_t::UPGRADED) {
-		value += wheelOfDestinyUpgradedBoost[static_cast<uint8_t>(boost)];
+	try {
+		if (grade >= WheelSpellGrade_t::REGULAR) {
+			value += wheelOfDestinyRegularBoost.at(static_cast<uint8_t>(boost));
+		}
+		if (grade >= WheelSpellGrade_t::UPGRADED) {
+			value += wheelOfDestinyUpgradedBoost.at(static_cast<uint8_t>(boost));
+		}
+	} catch (const std::out_of_range &e) {
+		SPDLOG_ERROR("[{}] invalid grade value, error code: {}", __FUNCTION__, e.what());
 	}
 	return value;
 }
@@ -588,23 +592,28 @@ void Spell::setWheelOfDestinyUpgraded(bool value) {
 }
 
 void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t grade, int32_t value) {
-	if (grade == WheelSpellGrade_t::REGULAR) {
-		wheelOfDestinyRegularBoost[static_cast<uint8_t>(boost)] = value;
-	} else if (grade == WheelSpellGrade_t::UPGRADED) {
-		wheelOfDestinyUpgradedBoost[static_cast<uint8_t>(boost)] = value;
+	try {
+		if (grade == WheelSpellGrade_t::REGULAR) {
+			wheelOfDestinyRegularBoost.at(static_cast<uint8_t>(boost)) = value;
+		} else if (grade == WheelSpellGrade_t::UPGRADED) {
+			wheelOfDestinyUpgradedBoost.at(static_cast<uint8_t>(boost)) = value;
+		}
+	} catch (const std::out_of_range &e) {
+		SPDLOG_ERROR("[{}] invalid grade value, error code: {}", __FUNCTION__, e.what());
 	}
 }
 
 void Spell::applyCooldownConditions(Player* player) const {
 	WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
 	bool isUpgraded = getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0;
+	auto rate_cooldown = (int32_t)g_configManager().getFloat(RATE_SPELL_COOLDOWN);
 	if (cooldown > 0) {
 		int32_t spellCooldown = cooldown;
 		if (isUpgraded) {
 			spellCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, spellGrade);
 		}
 		if (spellCooldown > 0) {
-			Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / g_configManager().getFloat(RATE_SPELL_COOLDOWN), 0, false, spellId);
+			Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rate_cooldown, 0, false, spellId);
 			player->addCondition(condition);
 		}
 	}
@@ -615,7 +624,7 @@ void Spell::applyCooldownConditions(Player* player) const {
 			spellGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::GROUP_COOLDOWN, spellGrade);
 		}
 		if (spellGroupCooldown > 0) {
-			Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellGroupCooldown / g_configManager().getFloat(RATE_SPELL_COOLDOWN), 0, false, group);
+			Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellGroupCooldown / rate_cooldown, 0, false, group);
 			player->addCondition(condition);
 		}
 	}
@@ -626,7 +635,7 @@ void Spell::applyCooldownConditions(Player* player) const {
 			spellSecondaryGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, spellGrade);
 		}
 		if (spellSecondaryGroupCooldown > 0) {
-			Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellSecondaryGroupCooldown / g_configManager().getFloat(RATE_SPELL_COOLDOWN), 0, false, secondaryGroup);
+			Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellSecondaryGroupCooldown / rate_cooldown, 0, false, secondaryGroup);
 			player->addCondition(condition);
 		}
 	}

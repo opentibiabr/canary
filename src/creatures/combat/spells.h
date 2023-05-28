@@ -293,11 +293,36 @@ class Spell : public BaseSpell {
 			pzLocked = b;
 		}
 
-		// Wheel of destiny - Get:
+		/**
+		 * @brief Get whether the wheel of destiny is upgraded.
+		 *
+		 * @return True if the wheel of destiny is upgraded, false otherwise.
+		 */
 		bool getWheelOfDestinyUpgraded() const;
+
+		/**
+		 * @brief Get the boost value for the wheel of destiny.
+		 *
+		 * @param boost The boost type.
+		 * @param grade The grade of the wheel of destiny.
+		 * @return The boost value for the specified boost and grade.
+		 */
 		int32_t getWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t grade) const;
-		// Wheel of destiny - Set:
+
+		/**
+		 * @brief Set whether the wheel of destiny is upgraded.
+		 *
+		 * @param value The value indicating whether the wheel of destiny is upgraded.
+		 */
 		void setWheelOfDestinyUpgraded(bool value);
+
+		/**
+		 * @brief Set the boost value for the wheel of destiny.
+		 *
+		 * @param boost The boost type.
+		 * @param grade The grade of the wheel of destiny.
+		 * @param value The boost value to be set.
+		 */
 		void setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t grade, int32_t value);
 
 		SpellType_t spellType = SPELL_UNDEFINED;
@@ -328,8 +353,8 @@ class Spell : public BaseSpell {
 		bool pzLocked = false;
 
 		bool whellOfDestinyUpgraded = false;
-		int32_t wheelOfDestinyRegularBoost[static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)] = { 0 };
-		int32_t wheelOfDestinyUpgradedBoost[static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)] = { 0 };
+		std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyRegularBoost = { 0 };
+		std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyUpgradedBoost = { 0 };
 
 	private:
 		uint32_t mana = 0;

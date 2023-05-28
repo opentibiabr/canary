@@ -3624,23 +3624,18 @@ void ProtocolGame::sendBasicData() {
 	std::vector<InstantSpell*> validSpells;
 	for (uint16_t sid : spellsList) {
 		auto spell = g_spells().getInstantSpellById(sid);
-		if (spell) {
-			if (spell->getId() == 0) {
-				continue;
-			}
+		if (spell && spell->getId() > 0) {
+			validSpells.push_back(spell);
 		}
-
-		validSpells.push_back(spell);
 	}
 
 	// Send total size of spells
 	msg.add<uint16_t>(validSpells.size());
 	// Send each spell valid ids
-	for (auto spell : validSpells)
-	{
+	for (auto spell : validSpells) {
 		// Only send valid spells to old client
 		if (oldProtocol && spell->getId() <= 255) {
-			msg.addByte(spell->getId());
+			msg.addByte((uint8_t)spell->getId());
 			continue;
 		}
 

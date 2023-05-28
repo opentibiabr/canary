@@ -2462,10 +2462,6 @@ bool Player::hasShield() const {
 
 BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool field /* = false*/) {
 	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor, field);
-
-	bool isReflected = false;
-	CombatDamage reflectDamage;
-
 	if (attacker) {
 		sendCreatureSquare(attacker, SQ_COLOR_BLACK);
 	}
@@ -5146,7 +5142,7 @@ uint16_t Player::getSkillLevel(uint8_t skill) const {
 		skillLevel = avatarCritChance; // 100%
 	}
 
-	return skillLevel;
+	return std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), std::max<uint16_t>(0, static_cast<uint16_t>(skillLevel)));
 }
 
 bool Player::isPremium() const {

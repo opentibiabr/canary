@@ -26,7 +26,14 @@ class ValueCallback final : public CallBack {
 		explicit ValueCallback(formulaType_t initType) :
 			type(initType) { }
 
-		uint32_t getMagicLevelSkill(Player* player, CombatDamage &damage) const;
+		/**
+		 * @brief Get the magic level skill for the player.
+		 *
+		 * @param player The player for which to calculate the magic level skill.
+		 * @param damage The combat damage information.
+		 * @return The magic level skill of the player.
+		 */
+		uint32_t getMagicLevelSkill(const Player* player, const CombatDamage &damage) const;
 		void getMinMaxValues(Player* player, CombatDamage &damage, bool useCharges) const;
 
 	private:
@@ -285,12 +292,19 @@ class Combat {
 			params.origin = origin;
 		}
 
-		void setSourceInstantSpellName(std::string value) {
-			sourceInstantSpellName = value;
-		}
-		void setSourceRuneSpellName(std::string value) {
-			sourceRuneSpellName = value;
-		}
+		/**
+		 * @brief Sets the name of the instant spell.
+		 *
+		 * @param value The name of the instant spell to be set.
+		 */
+		void setInstantSpellName(const std::string &value);
+
+		/**
+		 * @brief Sets the name of the rune spell.
+		 *
+		 * @param value The name of the rune spell to be set.
+		 */
+		void setRuneSpellName(const std::string &value);
 
 	private:
 		static void doCombatDefault(Creature* caster, Creature* target, const CombatParams &params);
@@ -321,7 +335,15 @@ class Combat {
 
 		static void combatTileEffects(const SpectatorHashSet &spectators, Creature* caster, Tile* tile, const CombatParams &params);
 
-		int32_t getLevelFormula(Player* player, Spell* wheelSpell, CombatDamage &damage) const;
+		/**
+		 * @brief Calculate the level formula for combat.
+		 *
+		 * @param player The player involved in combat.
+		 * @param wheelSpell The wheel spell being used.
+		 * @param damage The combat damage.
+		 * @return The calculated level formula.
+		 */
+		int32_t getLevelFormula(const Player* player, const Spell* wheelSpell, const CombatDamage &damage) const;
 		CombatDamage getCombatDamage(Creature* creature, Creature* target) const;
 
 		// configureable
@@ -336,8 +358,8 @@ class Combat {
 
 		std::unique_ptr<AreaCombat> area;
 
-		std::string sourceRuneSpellName;
-		std::string sourceInstantSpellName;
+		std::string runeSpellName;
+		std::string instantSpellName;
 };
 
 class MagicField final : public Item {

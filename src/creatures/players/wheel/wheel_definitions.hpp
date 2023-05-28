@@ -194,8 +194,7 @@ struct PlayerWheelMethodsBonusData {
 				int capacity = 0;
 				int damage = 0;
 				int healing = 0;
-		} stats;
-
+		};
 		// value * 100. Example: 1% == 100, NOTE: the "12" is the "COMBAT_COUNT"
 		std::array<uint16_t, 12> resistance = {};
 
@@ -204,13 +203,13 @@ struct PlayerWheelMethodsBonusData {
 				int melee = 0;
 				int distance = 0;
 				int magic = 0;
-		} skills;
+		};
 
 		// value * 100. Example: 1% == 100
 		struct Leech {
 				double manaLeech = 0;
 				double lifeLeech = 0;
-		} leech;
+		};
 
 		struct Instant {
 				bool battleInstinct = false; // Knight
@@ -220,7 +219,7 @@ struct PlayerWheelMethodsBonusData {
 				bool healingLink = false; // Druid
 				bool runicMastery = false; // Druid/sorcerer
 				bool focusMastery = false; // Sorcerer
-		} instant;
+		};
 
 		struct Stages {
 				int combatMastery = 0; // Knight
@@ -231,17 +230,36 @@ struct PlayerWheelMethodsBonusData {
 				int beamMastery = 0; // Sorcerer
 				int twinBurst = 0; // Druid
 				int executionersThrow = 0; // Knight
-		} stages;
+		};
 
 		struct Avatar {
 				int light = 0; // Paladin
 				int nature = 0; // Druid
 				int steel = 0; // Knight
 				int storm = 0; // Sorcerer
-		} avatar;
+		};
 
-		double mitigation = 0;
+		// Initialize structs
+		Stats stats;
+		Skills skills;
+		Leech leech;
+		Instant instant;
+		Stages stages;
+		Avatar avatar;
+
+		float mitigation = 0;
 		std::vector<std::string> spells;
+};
+
+/**
+ * @brief Slot information struct.
+ *
+ * This struct stores the order, slot, and points information for a slot.
+ */
+struct SlotInfo {
+		int8_t order; ///< The order of the slot.
+		uint8_t slot; ///< The slot index.
+		uint16_t points; ///< The points for the slot.
 };
 
 #endif // SRC_CREATURES_PLAYERS_WHEEL_PLAYER_WHEEL_DEFINITIONS_HPP_

@@ -304,7 +304,7 @@ int GlobalFunctions::luaDoAreaCombatHealth(lua_State* L) {
 		damage.runeSpellName = getString(L, 10);
 		if (creature) {
 			if (auto player = creature->getPlayer()) {
-				player->wheel()->getCombatDataSpell(damage, nullptr);
+				player->wheel()->getCombatDataSpell(damage);
 			}
 		}
 
@@ -348,7 +348,7 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 	damage.runeSpellName = getString(L, 10);
 	if (creature) {
 		if (auto player = creature->getPlayer()) {
-			player->wheel()->getCombatDataSpell(damage, target);
+			player->wheel()->getCombatDataSpell(damage);
 		}
 	}
 
@@ -386,7 +386,7 @@ int GlobalFunctions::luaDoAreaCombatMana(lua_State* L) {
 		damage.runeSpellName = getString(L, 9);
 		if (creature) {
 			if (auto player = creature->getPlayer()) {
-				player->wheel()->getCombatDataSpell(damage, nullptr);
+				player->wheel()->getCombatDataSpell(damage);
 			}
 		}
 
@@ -428,7 +428,7 @@ int GlobalFunctions::luaDoTargetCombatMana(lua_State* L) {
 	damage.runeSpellName = getString(L, 8);
 	if (creature) {
 		if (auto player = creature->getPlayer()) {
-			player->wheel()->getCombatDataSpell(damage, target);
+			player->wheel()->getCombatDataSpell(damage);
 		}
 	}
 

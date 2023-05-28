@@ -5839,7 +5839,7 @@ void Game::notifySpectators(const SpectatorHashSet &spectators, const Position &
 
 // Wheel of destiny combat helpers
 void Game::applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, Creature* target) {
-	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100.;
+	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100;
 
 	if (attackerPlayer) {
 		damage.primary.value += attackerPlayer->wheel()->getStat(WheelStat_t::HEALING);
@@ -5856,15 +5856,15 @@ void Game::applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlay
 		}
 
 		if (attackerPlayer->wheel()->getInstant("Blessing of the Grove")) {
-			damage.primary.value += (damage.primary.value * attackerPlayer->wheel()->checkBlessingGroveHealingByTarget(target)) / 100.;
+			damage.primary.value += (damage.primary.value * attackerPlayer->wheel()->checkBlessingGroveHealingByTarget(target)) / 100;
 		}
 	}
 }
 
-void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, Player* attackerPlayer, Creature* target) {
+void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const Player* attackerPlayer, const Creature* target) const {
 	if (damage.damageMultiplier > 0) {
-		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100.;
-		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100.;
+		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100;
+		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100;
 	}
 	if (attackerPlayer) {
 		damage.primary.value -= attackerPlayer->wheel()->getStat(WheelStat_t::DAMAGE);
@@ -5874,29 +5874,29 @@ void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, Player* atta
 		if (damage.instantSpellName == "Twin Burst") {
 			int32_t damageBonus = attackerPlayer->wheel()->checkTwinBurstByTarget(target);
 			if (damageBonus != 0) {
-				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
-				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+				damage.primary.value += (damage.primary.value * damageBonus) / 100;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100;
 			}
 		}
 		if (damage.instantSpellName == "Executioner's Throw") {
 			int32_t damageBonus = attackerPlayer->wheel()->checkExecutionersThrow(target);
 			if (damageBonus != 0) {
-				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
-				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+				damage.primary.value += (damage.primary.value * damageBonus) / 100;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100;
 			}
 		}
 	}
 }
 
-int32_t Game::applyHealthChange(CombatDamage &damage, Creature* target) {
+int32_t Game::applyHealthChange(CombatDamage &damage, const Creature* target) const {
 	int32_t targetHealth = target->getHealth();
 
 	// Wheel of destiny (Gift of Life)
-	if (Player* targetPlayer = target->getPlayer()) {
+	if (const Player* targetPlayer = target->getPlayer()) {
 		if (targetPlayer->wheel()->getInstant("Gift of Life") && targetPlayer->wheel()->getGiftOfCooldown() == 0 && (damage.primary.value + damage.secondary.value) >= targetHealth) {
 			int32_t overkillMultiplier = (damage.primary.value + damage.secondary.value) - targetHealth;
 			overkillMultiplier = (overkillMultiplier * 100) / targetPlayer->getMaxHealth();
-			if (overkillMultiplier <= targetPlayer->wheel()->getGiftOfLifeOverkill()) {
+			if (overkillMultiplier <= targetPlayer->wheel()->getGiftOfLifeValue()) {
 				targetPlayer->wheel()->checkGiftOfLife();
 				targetHealth = target->getHealth();
 			}
@@ -6821,7 +6821,7 @@ void Game::removeMagicEffect(const Position &pos, uint8_t effect) {
 
 void Game::removeMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect) {
 	for (Creature* spectator : spectators) {
-		if (Player* tmpPlayer = spectator->getPlayer()) {
+		if (const Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->removeMagicEffect(pos, effect);
 		}
 	}

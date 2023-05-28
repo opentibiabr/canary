@@ -1319,7 +1319,7 @@ void PlayerWheel::loadDedicationAndConvictionPerks() {
 }
 
 void PlayerWheel::addSpellToVector(const std::string &spellName) {
-	if (std::find(m_playerBonusData.spells.begin(), m_playerBonusData.spells.end(), spellName) == m_playerBonusData.spells.end()) {
+	if (std::ranges::find(m_playerBonusData.spells.begin(), m_playerBonusData.spells.end(), spellName) == m_playerBonusData.spells.end()) {
 		m_playerBonusData.spells.emplace_back(spellName);
 	}
 }
@@ -1801,7 +1801,7 @@ int32_t PlayerWheel::checkTwinBurstByTarget(const Creature* target) const {
 	return damageBonus;
 }
 
-int32_t PlayerWheel::checkExecutionersThrow(const Creature* target) {
+int32_t PlayerWheel::checkExecutionersThrow(const Creature* target) const {
 	if (!target || target == &m_player) {
 		return 0;
 	}
@@ -1836,7 +1836,7 @@ int32_t PlayerWheel::checkBeamMasteryDamage() const {
 	return damageBoost;
 }
 
-int32_t PlayerWheel::checkDrainBodyLeech(const Creature* target, skills_t skill) {
+int32_t PlayerWheel::checkDrainBodyLeech(const Creature* target, skills_t skill) const {
 	if (!target || !target->getMonster() || target->getWheelOfDestinyDrainBodyDebuff() == 0) {
 		return 0;
 	}
@@ -2466,7 +2466,7 @@ void PlayerWheel::setWheelBonusData(const PlayerWheelMethodsBonusData &newBonusD
 	m_playerBonusData = newBonusData;
 }
 
-// Functions used com combat.cpp
+// Functions used to Manage Combat
 uint8_t PlayerWheel::getBeamAffectedTotal(const CombatDamage &tmpDamage) const {
 	uint8_t beamAffectedTotal = 0; // Removed const
 	if (tmpDamage.runeSpellName == "Beam Mastery" && getInstant("Beam Mastery")) {
@@ -2555,4 +2555,76 @@ float PlayerWheel::calculateMitigation() const {
 	float mitigation = std::ceil(((((skill * m_player.vocation->mitigationFactor) + (shieldFactor * (float)defenseValue)) / 100.0f) * fightFactor * distanceFactor) * 100.0f) / 100.0f;
 	mitigation += (mitigation * (float)getMitigationMultiplier()) / 100.f;
 	return mitigation;
+}
+
+void PlayerWheel::applyCombatHealing(CombatDamage &damage, Creature* target) const {
+	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100;
+	damage.primary.value += getStat(WheelStat_t::HEALING);
+
+	if (damage.secondary.value != 0) {
+		damage.secondary.value += getStat(WheelStat_t::HEALING);
+	}
+
+	if (damage.healingLink > 0) {
+		CombatDamage tmpDamage;
+		tmpDamage.primary.value = (damage.primary.value * damage.healingLink) / 100;
+		tmpDamage.primary.type = COMBAT_HEALING;
+		g_game().combatChangeHealth(&m_player, &m_player, tmpDamage);
+	}
+
+	if (getInstant("Blessing of the Grove")) {
+		damage.primary.value += (damage.primary.value * checkBlessingGroveHealingByTarget(target)) / 100;
+	}
+}
+
+void PlayerWheel::applyCombatEffectsToDamage(CombatDamage &damage, const Creature* target) const {
+	if (damage.damageMultiplier > 0) {
+		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100;
+		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100;
+	}
+
+	damage.primary.value -= getStat(WheelStat_t::DAMAGE);
+	if (damage.secondary.value != 0) {
+		damage.secondary.value -= getStat(WheelStat_t::DAMAGE);
+	}
+
+	int32_t damageTwinBonus = checkTwinBurstByTarget(target);
+	if (damage.instantSpellName == "Twin Burst" && damageTwinBonus != 0) {
+		damage.primary.value += (damage.primary.value * damageTwinBonus) / 100;
+		damage.secondary.value += (damage.secondary.value * damageTwinBonus) / 100;
+	}
+
+	int32_t damageExecutionersBonus = checkExecutionersThrow(target);
+	if (damage.instantSpellName == "Executioner's Throw" && damageExecutionersBonus != 0) {
+		damage.primary.value += (damage.primary.value * damageExecutionersBonus) / 100;
+		damage.secondary.value += (damage.secondary.value * damageExecutionersBonus) / 100;
+	}
+}
+
+int32_t PlayerWheel::applyTargetHealthChange(CombatDamage &damage, const Creature* target) const {
+	if (!target) {
+		return 0;
+	}
+
+	int32_t targetHealth = target->getHealth();
+	// Wheel of destiny (Gift of Life)
+	if (const Player* targetPlayer = target->getPlayer()) {
+		if (targetPlayer->wheel()->getInstant("Gift of Life") && targetPlayer->wheel()->getGiftOfCooldown() == 0 && (damage.primary.value + damage.secondary.value) >= targetHealth) {
+			int32_t overkillMultiplier = (damage.primary.value + damage.secondary.value) - targetHealth;
+			overkillMultiplier = (overkillMultiplier * 100) / targetPlayer->getMaxHealth();
+			if (overkillMultiplier <= targetPlayer->wheel()->getGiftOfLifeValue()) {
+				targetPlayer->wheel()->checkGiftOfLife();
+				targetHealth = target->getHealth();
+			}
+		}
+	}
+
+	if (damage.primary.value >= targetHealth) {
+		damage.primary.value = targetHealth;
+		damage.secondary.value = 0;
+	} else if (damage.secondary.value) {
+		damage.secondary.value = std::min<int32_t>(damage.secondary.value, targetHealth - damage.primary.value);
+	}
+
+	return targetHealth;
 }

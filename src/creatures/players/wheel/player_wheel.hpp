@@ -146,12 +146,12 @@ class PlayerWheel {
 		bool checkBallisticMastery();
 		bool checkCombatMastery();
 		bool checkDivineEmpowerment();
-		int32_t checkDrainBodyLeech(const Creature* target, skills_t skill);
+		int32_t checkDrainBodyLeech(const Creature* target, skills_t skill) const;
 		int32_t checkBeamMasteryDamage() const;
 		int32_t checkBattleHealingAmount() const;
 		int32_t checkBlessingGroveHealingByTarget(const Creature* target) const;
 		int32_t checkTwinBurstByTarget(const Creature* target) const;
-		int32_t checkExecutionersThrow(const Creature* target);
+		int32_t checkExecutionersThrow(const Creature* target) const;
 		int32_t checkAvatarSkill(WheelAvatarSkill_t skill) const;
 		int32_t checkFocusMasteryDamage();
 		int32_t checkElementSensitiveReduction(CombatType_t type) const;
@@ -300,6 +300,35 @@ class PlayerWheel {
 		 * @return The calculated mitigation value.
 		 */
 		float calculateMitigation() const;
+
+		/** @details Combat helpers functions */
+		/**
+		 * @brief Applies healing effects from the Wheel of Destiny to the combat damage.
+		 *
+		 * @param damage The combat damage to be modified.
+		 * @param target Pointer to the target creature.
+		 */
+		void applyCombatHealing(CombatDamage &damage, Creature* target) const;
+
+		/**
+		 * @brief Applies Wheel of Destiny effects to the combat damage.
+		 *
+		 * @param damage The combat damage to be modified.
+		 * @param target Pointer to the target creature.
+		 */
+		void applyCombatEffectsToDamage(CombatDamage &damage, const Creature* target) const;
+
+		/**
+		 * @brief Applies the health change to the target creature based on the combat damage.
+		 *
+		 * @details This function calculates the health change for the target creature based on the provided combat damage.
+		 * @details It takes into account the "Wheel of Destiny (Gift of Life)" effect and adjusts the damage accordingly.
+		 *
+		 * @param damage The combat damage to apply.
+		 * @param target The target creature to apply the damage to.
+		 * @return The updated target creature's health after applying the damage.
+		 */
+		int32_t applyTargetHealthChange(CombatDamage &damage, const Creature* target) const;
 
 	private:
 		friend class Player;

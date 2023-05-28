@@ -5837,82 +5837,6 @@ void Game::notifySpectators(const SpectatorHashSet &spectators, const Position &
 	}
 }
 
-// Wheel of destiny combat helpers
-void Game::applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, Creature* target) {
-	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100;
-
-	if (attackerPlayer) {
-		damage.primary.value += attackerPlayer->wheel()->getStat(WheelStat_t::HEALING);
-
-		if (damage.secondary.value != 0) {
-			damage.secondary.value += attackerPlayer->wheel()->getStat(WheelStat_t::HEALING);
-		}
-
-		if (damage.healingLink > 0) {
-			CombatDamage tmpDamage;
-			tmpDamage.primary.value = (damage.primary.value * damage.healingLink) / 100;
-			tmpDamage.primary.type = COMBAT_HEALING;
-			combatChangeHealth(attackerPlayer, attackerPlayer, tmpDamage);
-		}
-
-		if (attackerPlayer->wheel()->getInstant("Blessing of the Grove")) {
-			damage.primary.value += (damage.primary.value * attackerPlayer->wheel()->checkBlessingGroveHealingByTarget(target)) / 100;
-		}
-	}
-}
-
-void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const Player* attackerPlayer, const Creature* target) const {
-	if (damage.damageMultiplier > 0) {
-		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100;
-		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100;
-	}
-	if (attackerPlayer) {
-		damage.primary.value -= attackerPlayer->wheel()->getStat(WheelStat_t::DAMAGE);
-		if (damage.secondary.value != 0) {
-			damage.secondary.value -= attackerPlayer->wheel()->getStat(WheelStat_t::DAMAGE);
-		}
-		if (damage.instantSpellName == "Twin Burst") {
-			int32_t damageBonus = attackerPlayer->wheel()->checkTwinBurstByTarget(target);
-			if (damageBonus != 0) {
-				damage.primary.value += (damage.primary.value * damageBonus) / 100;
-				damage.secondary.value += (damage.secondary.value * damageBonus) / 100;
-			}
-		}
-		if (damage.instantSpellName == "Executioner's Throw") {
-			int32_t damageBonus = attackerPlayer->wheel()->checkExecutionersThrow(target);
-			if (damageBonus != 0) {
-				damage.primary.value += (damage.primary.value * damageBonus) / 100;
-				damage.secondary.value += (damage.secondary.value * damageBonus) / 100;
-			}
-		}
-	}
-}
-
-int32_t Game::applyHealthChange(CombatDamage &damage, const Creature* target) const {
-	int32_t targetHealth = target->getHealth();
-
-	// Wheel of destiny (Gift of Life)
-	if (const Player* targetPlayer = target->getPlayer()) {
-		if (targetPlayer->wheel()->getInstant("Gift of Life") && targetPlayer->wheel()->getGiftOfCooldown() == 0 && (damage.primary.value + damage.secondary.value) >= targetHealth) {
-			int32_t overkillMultiplier = (damage.primary.value + damage.secondary.value) - targetHealth;
-			overkillMultiplier = (overkillMultiplier * 100) / targetPlayer->getMaxHealth();
-			if (overkillMultiplier <= targetPlayer->wheel()->getGiftOfLifeValue()) {
-				targetPlayer->wheel()->checkGiftOfLife();
-				targetHealth = target->getHealth();
-			}
-		}
-	}
-
-	if (damage.primary.value >= targetHealth) {
-		damage.primary.value = targetHealth;
-		damage.secondary.value = 0;
-	} else if (damage.secondary.value) {
-		damage.secondary.value = std::min<int32_t>(damage.secondary.value, targetHealth - damage.primary.value);
-	}
-
-	return targetHealth;
-}
-
 bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent /*= false*/) {
 	using namespace std;
 	const Position &targetPos = target->getPosition();
@@ -5944,7 +5868,10 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 		}
 
-		applyWheelOfDestinyHealing(damage, attackerPlayer, target);
+		// Wheel of destiny combat healing
+		if (attackerPlayer) {
+			attackerPlayer->wheel()->applyCombatHealing(damage, target);
+		}
 
 		auto realHealthChange = target->getHealth();
 		target->gainHealth(attacker, damage.primary.value);
@@ -6040,7 +5967,10 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			return false;
 		}
 
-		applyWheelOfDestinyEffectsToDamage(damage, attackerPlayer, target);
+		// Wheel of destiny apply combat effects
+		if (attackerPlayer) {
+			attackerPlayer->wheel()->applyCombatEffectsToDamage(damage, target);
+		}
 
 		damage.primary.value = std::abs(damage.primary.value);
 		damage.secondary.value = std::abs(damage.secondary.value);
@@ -6230,7 +6160,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 		}
 
-		auto targetHealth = applyHealthChange(damage, target);
+		auto targetHealth = attackerPlayer ? attackerPlayer->wheel()->applyTargetHealthChange(damage, target) : 0;
 		if (damage.primary.value >= targetHealth) {
 			damage.primary.value = targetHealth;
 			damage.secondary.value = 0;

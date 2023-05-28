@@ -423,10 +423,6 @@ class Game {
 		// Hazard combat helpers
 		void handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker);
 		void notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster);
-		// Wheel of destiny combat helpers
-		void applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, Creature* target);
-		void applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const Player* attackerPlayer, const Creature* target) const;
-		int32_t applyHealthChange(CombatDamage &damage, const Creature* target) const;
 
 		bool combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent = false);
 		void applyCharmRune(const Monster* targetMonster, Player* attackerPlayer, Creature* target, const int32_t &realDamage) const;

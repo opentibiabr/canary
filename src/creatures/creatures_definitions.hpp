@@ -623,7 +623,6 @@ enum class GameFeature_t : uint8_t {
 	MissionId = 125,
 	ItemCustomAttributes = 126,
 	AnimatedTextCustomFont = 127,
-	
 
 	LastGameFeature = 130
 };

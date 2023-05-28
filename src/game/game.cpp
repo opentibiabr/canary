@@ -7817,15 +7817,15 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account(player->getAccount());
 			account.LoadAccountDB();
-			uint32_t coins;
-			account.GetCoins(&coins);
+			uint32_t transferableCoins;
+			account.GetTransferableCoins(&transferableCoins);
 
-			if (amount > coins) {
+			if (amount > transferableCoins) {
 				offerStatus << "Amount is greater than coins for player " << player->getName();
 				return;
 			}
 
-			account.RemoveCoins(static_cast<uint32_t>(amount));
+			account.RemoveTransferableCoins(static_cast<uint32_t>(amount));
 		} else {
 			if (!removeOfferItems(*player, *depotLocker, it, amount, tier, offerStatus)) {
 				SPDLOG_ERROR("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -7915,7 +7915,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
 			account.LoadAccountDB(player->getAccount());
-			account.AddCoins(offer.amount);
+			account.AddTransferableCoins(offer.amount);
 		} else if (it.stackable) {
 			uint16_t tmpAmount = offer.amount;
 			while (tmpAmount > 0) {
@@ -8030,14 +8030,14 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
 			account.LoadAccountDB(player->getAccount());
-			uint32_t coins;
-			account.GetCoins(&coins);
-			if (amount > coins) {
+			uint32_t transferableCoins;
+			account.GetTransferableCoins(&transferableCoins);
+			if (amount > transferableCoins) {
 				offerStatus << "Amount is greater than coins";
 				return;
 			}
 
-			account.RemoveCoins(amount);
+			account.RemoveTransferableCoins(amount);
 			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount, "Sold on Market");
 		} else {
 			if (!removeOfferItems(*player, *depotLocker, it, amount, offer.tier, offerStatus)) {
@@ -8064,7 +8064,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
 			account.LoadAccountDB(buyerPlayer->getAccount());
-			account.AddCoins(amount);
+			account.AddTransferableCoins(amount);
 			account.RegisterCoinsTransaction(account::COIN_ADD, amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
@@ -8142,7 +8142,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
 			account.LoadAccountDB(player->getAccount());
-			account.AddCoins(amount);
+			account.AddTransferableCoins(amount);
 			account.RegisterCoinsTransaction(account::COIN_ADD, amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
@@ -8155,7 +8155,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 					// Condition
 					ret != RETURNVALUE_NOERROR
 				) {
-					SPDLOG_ERROR("{} - Create offer internal add item error code: {}", __FUNCTION__, ret);
+					SPDLOG_ERROR("{} - Create offer internal add item error code: {}", __FUNCTION__, getReturnMessage(ret));
 					offerStatus << "Failed to add inbox stackable item for sell offer for player " << player->getName();
 					delete item;
 					break;

@@ -1201,7 +1201,7 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage &damage, bool u
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("[ValueCallback::getMinMaxValues - Player {} formula {}] "
 					 "Call stack overflow. Too many lua script calls being nested.",
-					 player->getName(), type);
+					 player->getName(), fmt::underlying(type));
 		return;
 	}
 
@@ -1322,7 +1322,7 @@ void TileCallback::onTileCombat(Creature* creature, Tile* tile) const {
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("[TileCallback::onTileCombat - Creature {} type {} on tile x: {} y: {} z: {}] "
 					 "Call stack overflow. Too many lua script calls being nested.",
-					 creature->getName(), type, (tile->getPosition()).getX(), (tile->getPosition()).getY(), (tile->getPosition()).getZ());
+					 creature->getName(), fmt::underlying(type), (tile->getPosition()).getX(), (tile->getPosition()).getY(), (tile->getPosition()).getZ());
 		return;
 	}
 

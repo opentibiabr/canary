@@ -1106,7 +1106,7 @@ void Events::eventPlayerOnGainSkillTries(Player* player, skills_t skill, uint64_
 		SPDLOG_ERROR("[Events::eventPlayerOnGainSkillTries - "
 					 "Player {} skill {}] "
 					 "Call stack overflow. Too many lua script calls being nested.",
-					 player->getName(), skill);
+					 player->getName(), fmt::underlying(skill));
 		return;
 	}
 

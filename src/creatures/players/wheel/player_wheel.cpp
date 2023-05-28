@@ -1319,7 +1319,7 @@ void PlayerWheel::loadDedicationAndConvictionPerks() {
 }
 
 void PlayerWheel::addSpellToVector(const std::string &spellName) {
-	if (std::find(m_playerBonusData.spells.begin(), m_playerBonusData.spells.end(), spellName) == m_playerBonusData.spells.end()) {
+	if (std::ranges::find(m_playerBonusData.spells.begin(), m_playerBonusData.spells.end(), spellName) == m_playerBonusData.spells.end()) {
 		m_playerBonusData.spells.emplace_back(spellName);
 	}
 }
@@ -1801,7 +1801,7 @@ int32_t PlayerWheel::checkTwinBurstByTarget(const Creature* target) const {
 	return damageBonus;
 }
 
-int32_t PlayerWheel::checkExecutionersThrow(const Creature* target) {
+int32_t PlayerWheel::checkExecutionersThrow(const Creature* target) const {
 	if (!target || target == &m_player) {
 		return 0;
 	}
@@ -1836,7 +1836,7 @@ int32_t PlayerWheel::checkBeamMasteryDamage() const {
 	return damageBoost;
 }
 
-int32_t PlayerWheel::checkDrainBodyLeech(const Creature* target, skills_t skill) {
+int32_t PlayerWheel::checkDrainBodyLeech(const Creature* target, skills_t skill) const {
 	if (!target || !target->getMonster() || target->getWheelOfDestinyDrainBodyDebuff() == 0) {
 		return 0;
 	}
@@ -2466,7 +2466,7 @@ void PlayerWheel::setWheelBonusData(const PlayerWheelMethodsBonusData &newBonusD
 	m_playerBonusData = newBonusData;
 }
 
-// Functions used com combat.cpp
+// Functions used to Manage Combat
 uint8_t PlayerWheel::getBeamAffectedTotal(const CombatDamage &tmpDamage) const {
 	uint8_t beamAffectedTotal = 0; // Removed const
 	if (tmpDamage.runeSpellName == "Beam Mastery" && getInstant("Beam Mastery")) {

@@ -5838,7 +5838,7 @@ void Game::notifySpectators(const SpectatorHashSet &spectators, const Position &
 }
 
 // Wheel of destiny combat helpers
-void Game::applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, Creature* target) {
+void Game::applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, const Creature* target) {
 	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100;
 
 	if (attackerPlayer) {
@@ -5866,6 +5866,7 @@ void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const Player
 		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100;
 		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100;
 	}
+
 	if (attackerPlayer) {
 		damage.primary.value -= attackerPlayer->wheel()->getStat(WheelStat_t::DAMAGE);
 		if (damage.secondary.value != 0) {
@@ -5944,6 +5945,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 		}
 
+		// Wheel of destiny combat healing
 		applyWheelOfDestinyHealing(damage, attackerPlayer, target);
 
 		auto realHealthChange = target->getHealth();
@@ -6040,6 +6042,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			return false;
 		}
 
+		// Wheel of destiny apply combat effects
 		applyWheelOfDestinyEffectsToDamage(damage, attackerPlayer, target);
 
 		damage.primary.value = std::abs(damage.primary.value);

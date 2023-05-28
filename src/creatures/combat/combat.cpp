@@ -26,12 +26,11 @@ int32_t Combat::getLevelFormula(const Player* player, const Spell* wheelSpell, c
 
 	uint32_t magicLevelSkill = player->getMagicLevel();
 	// Wheel of destiny - Runic Mastery
-	if (player->wheel()->getInstant("Runic Mastery") && wheelSpell && damage.instantSpellName.empty()) {
-		if (normal_random(0, 100) <= 25) {
-			InstantSpell* conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
-			if (conjuringSpell && conjuringSpell != wheelSpell) {
-				magicLevelSkill += magicLevelSkill * conjuringSpell->canCast(player) ? 20 : 10 / 100;
-			}
+	if (player->wheel()->getInstant("Runic Mastery") && wheelSpell && damage.instantSpellName.empty() && normal_random(0, 100) <= 25) {
+		const auto conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
+		if (conjuringSpell && conjuringSpell != wheelSpell) {
+			uint32_t castResult = conjuringSpell->canCast(player) ? 20 : 10;
+			magicLevelSkill += magicLevelSkill * castResult / 100;
 		}
 	}
 
@@ -47,7 +46,7 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 	damage.instantSpellName = instantSpellName;
 	damage.runeSpellName = runeSpellName;
 	// Wheel of destiny
-	Spell* wheelSpell = nullptr;
+	const Spell* wheelSpell = nullptr;
 	Player* attackerPlayer = creature ? creature->getPlayer() : nullptr;
 	if (attackerPlayer) {
 		wheelSpell = attackerPlayer->wheel()->getCombatDataSpell(damage);
@@ -1268,11 +1267,12 @@ uint32_t ValueCallback::getMagicLevelSkill(const Player* player, const CombatDam
 	uint32_t magicLevelSkill = player->getMagicLevel();
 	// Wheel of destiny
 	if (player && player->wheel()->getInstant("Runic Mastery") && damage.instantSpellName.empty()) {
-		Spell* spell = g_spells().getRuneSpellByName(damage.runeSpellName);
+		const Spell* spell = g_spells().getRuneSpellByName(damage.runeSpellName);
 		// Rune conjuring spell have the same name as the rune item spell.
-		InstantSpell* conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
+		const InstantSpell* conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
 		if (spell && conjuringSpell && conjuringSpell != spell && normal_random(0, 100) <= 25) {
-			magicLevelSkill += magicLevelSkill * conjuringSpell->canCast(player) ? 20 : 10 / 100;
+			uint32_t castResult = conjuringSpell->canCast(player) ? 20 : 10;
+			magicLevelSkill += magicLevelSkill * castResult / 100;
 		}
 	}
 

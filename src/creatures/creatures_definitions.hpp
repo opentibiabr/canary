@@ -606,8 +606,26 @@ enum class GameFeature_t : uint8_t {
 	// advanced features
 	PacketSizeU32 = 110,
 	PacketCompression = 111,
+	OldInformationBar = 112,
+	HealthInfoBackground = 113,
+	WingOffset = 114,
+	AuraFrontAndBack = 115,
 
-	LastGameFeature = 120
+	MapDrawGroundFirst = 116,
+	MapIgnoreCorpseCorrection = 117,
+	DontCacheFiles = 118,
+	BigAurasCenter = 119,
+	NewUpdateWalk = 120,
+	NewCreatureStacking = 121,
+	CreaturesMana = 122,
+	QuickLootFlags = 123,
+	DontMergeAnimatedText = 124,
+	MissionId = 125,
+	ItemCustomAttributes = 126,
+	AnimatedTextCustomFont = 127,
+	
+
+	LastGameFeature = 130
 };
 
 enum OperatingSystem_t : uint8_t {

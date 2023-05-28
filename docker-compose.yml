@@ -1,0 +1,87 @@
+version: '3.1'
+
+services:
+  mysql:
+    image: mysql
+    container_name: canary-mysql
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root # Change Me
+      MYSQL_DATABASE: otservbr-global # Change Me
+      MYSQL_USER: otservbr-global # Change Me
+      MYSQL_PASSWORD: otservbr-global # Change Me
+    ports:
+      - 3306:3306
+    volumes:
+      - canary-db:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - canary
+
+  server:
+    container_name: canary-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 7171:7171
+      - 7172:7172
+    environment:
+      - OT_DB_HOST=canary-mysql # Hostname from *inside* the container. Docker does magic to resolve this into the address of the mysql container
+      - OT_DB_PORT=3306
+      - OT_DB_USER=otservbr-global
+      - OT_DB_PASSWORD=otservbr-global
+      - OT_DB_DATABASE=otservbr-global
+      - OT_SERVER_IP= # If running on localhost, this is 127.0.0.1. If hosted on the web/LAN, it'll be the hostname or IP of the server
+      - OT_SERVER_LOGIN_PORT=7171
+      - OT_SERVER_GAME_PORT=7172
+      - OT_SERVER_STATUS_PORT=7171
+      - OT_SERVER_TEST_ACCOUNTS=true
+      - OT_SERVER_DATA=data-otservbr-global
+      - OT_SERVER_MAP="https://github.com/opentibiabr/canary/releases/download/v2.6.1/otservbr.otbm"
+    volumes: # So we can reflect changes on the container without rebuilding or copying files
+      - ./data:/srv/canary/data
+      - ./data-canary:/srv/canary/data-canary
+      - ./data-otservbr-global:/srv/canary/data-otservbr-global
+      - ./config.lua:/srv/canary/config.lua
+    networks:
+      - canary
+    depends_on:
+      - mysql
+
+  login-server:
+    container_name: canary-login-server
+    build:
+      context: ../login-server # Assumes `login-server` is cloned in the same directory as `canary`
+      dockerfile: ../login-server/docker/Dockerfile
+    restart: unless-stopped
+    ports:
+      - 9088:80 # 80 is a bad port. Change to whatever doesn't closh with other running services
+      - 9099:9090
+    environment:
+      - ENV_LOG_LEVEL=debug
+      - LOGIN_HTTP_PORT=80 # Internal port
+      - LOGIN_GRPC_PORT=9090 # Internal port
+      - MYSQL_HOST=canary-mysql # See above `OT_MYSQL_HOST`
+      - MYSQL_PORT=3306
+      - MYSQL_DBNAME=otservbr-global
+      - MYSQL_USER=otservbr-global
+      - MYSQL_PASS=otservbr-global
+      - SERVER_NAME=OTServBR-Global
+      - SERVER_IP= # See above `OT_SERVER_IP`
+      - SERVER_PORT=7172
+      - SERVER_LOCATION=AU
+      - RATE_LIMITER_RATE=2
+      - RATE_LIMITER_BURST=5
+      - VOCATIONS=None,Sorcerer,Druid,Paladin,Knight,Master Sorcerer,Elder Druid,Royal Paladin,Elite Knight
+    networks:
+      - canary
+
+networks:
+  canary:
+    name: canary
+
+volumes:
+  canary-db:

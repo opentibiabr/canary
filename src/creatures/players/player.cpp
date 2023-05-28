@@ -2066,7 +2066,8 @@ void Player::onThink(uint32_t interval) {
 	// Momentum (cooldown resets)
 	triggerMomentum();
 	auto playerTile = getTile();
-	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining()) {
+	const bool canKickVipPlayers = !g_configManager().getBoolean(VIP_SYSTEM_ENABLED) || (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && g_configManager().getBoolean(VIP_SYSTEM_CAN_KICK_IDLE_PLAYER));
+	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && canKickVipPlayers) {
 		idleTime += interval;
 		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
 		if (idleTime > (kickAfterMinutes * 60000) + 60000) {

@@ -222,7 +222,7 @@ bool ChatChannel::executeOnSpeakEvent(const Player &player, SpeakClasses &type, 
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("[OnSpeakChannelEvent::execute - Player {}, type {}] "
 					 "Call stack overflow. Too many lua script calls being nested.",
-					 player.getName(), type);
+					 player.getName(), fmt::underlying(type));
 		return false;
 	}
 

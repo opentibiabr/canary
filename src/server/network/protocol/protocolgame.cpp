@@ -6410,7 +6410,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot) {
 			msg.add<uint16_t>(mType.first);
 		});
 	} else {
-		SPDLOG_WARN("[ProtocolGame::sendPreyData] - Unknown prey state: {}", slot->state);
+		SPDLOG_WARN("[ProtocolGame::sendPreyData] - Unknown prey state: {}", fmt::underlying(slot->state));
 		return;
 	}
 
@@ -7056,7 +7056,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
 			msg.add<uint16_t>(slot->currentKills);
 			msg.addByte(slot->rarity);
 		} else {
-			SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", slot->id, player->getName());
+			SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", fmt::underlying(slot->id), player->getName());
 			return;
 		}
 	} else if (slot->state == PreyTaskDataState_Completed) {
@@ -7073,11 +7073,11 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
 			}
 			msg.addByte(slot->rarity);
 		} else {
-			SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", slot->id, player->getName());
+			SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", fmt::underlying(slot->id), player->getName());
 			return;
 		}
 	} else {
-		SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown task hunting state: {}", slot->state);
+		SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown task hunting state: {}", fmt::underlying(slot->state));
 		return;
 	}
 
@@ -7428,7 +7428,7 @@ void ProtocolGame::parseStashWithdraw(NetworkMessage &msg) {
 			break;
 		}
 		default:
-			SPDLOG_ERROR("Unknown 'supply stash' action switch: {}", action);
+			SPDLOG_ERROR("Unknown 'supply stash' action switch: {}", fmt::underlying(action));
 			break;
 	}
 

@@ -5447,7 +5447,7 @@ void Game::changeSpeed(Creature* creature, int32_t varSpeedDelta) {
 }
 
 void Game::setCreatureSpeed(Creature* creature, int32_t speed) {
-	creature->setBaseSpeed(speed);
+	creature->setBaseSpeed(static_cast<uint16_t>(speed));
 
 	// send creature speed to client
 	SpectatorHashSet spectators;

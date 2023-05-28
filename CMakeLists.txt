@@ -1,21 +1,21 @@
 cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
-# CMAKE
-# apt install build-essential git
-# git clone https://github.com/Kitware/CMake/; cd CMake
-# ./bootstrap && make && sudo make install
+# Set Output dir
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # VCPKG
 # cmake -DCMAKE_TOOLCHAIN_FILE=/opt/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake ..
 # Needed libs is in file vcpkg.json
 # Windows required libs: .\vcpkg install --triplet x64-windows asio pugixml spdlog curl jsoncpp protobuf parallel-hashmap magic-enum mio luajit libmariadb mpir
 if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-  set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-      CACHE STRING "")
+    set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+            CACHE STRING "")
 endif()
 
 if(DEFINED ENV{VCPKG_DEFAULT_TRIPLET} AND NOT DEFINED VCPKG_TARGET_TRIPLET)
-  set(VCPKG_TARGET_TRIPLET "$ENV{VCPKG_DEFAULT_TRIPLET}" CACHE STRING "")
+    set(VCPKG_TARGET_TRIPLET "$ENV{VCPKG_DEFAULT_TRIPLET}" CACHE STRING "")
 endif()
 
 set(VCPKG_FEATURE_FLAGS "versions")
@@ -59,7 +59,7 @@ if(OPTIONS_ENABLE_CCACHE)
     if(CCACHE)
         log_option_enabled("ccache")
         set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE})
-        else()
+    else()
         log_option_disabled("ccache")
     endif()
 endif()
@@ -67,31 +67,31 @@ endif()
 
 # === SCCACHE ===
 if(OPTIONS_ENABLE_SCCACHE)
-  find_program(SCCACHE_PATH sccache)
-  if(SCCACHE_PATH)
-    log_option_enabled("sccache")
-    set(CMAKE_C_COMPILER_LAUNCHER ${SCCACHE_PATH})
-    set(CMAKE_CXX_COMPILER_LAUNCHER ${SCCACHE_PATH})
-  else()
-    log_option_disabled("sccache")
-  endif()
+    find_program(SCCACHE_PATH sccache)
+    if(SCCACHE_PATH)
+        log_option_enabled("sccache")
+        set(CMAKE_C_COMPILER_LAUNCHER ${SCCACHE_PATH})
+        set(CMAKE_CXX_COMPILER_LAUNCHER ${SCCACHE_PATH})
+    else()
+        log_option_disabled("sccache")
+    endif()
 endif()
 
 
 # === IPO ===
 option(OPTIONS_ENABLE_IPO "Check and Enable interprocedural optimization (IPO/LTO)" ON)
 if(OPTIONS_ENABLE_IPO)
-  log_option_enabled("ipo")
+    log_option_enabled("ipo")
 
-  include(CheckIPOSupported)
-  check_ipo_supported(RESULT result OUTPUT output)
-  if(result)
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-  else()
-    log_war("IPO is not supported: ${output}")
-  endif()
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT result OUTPUT output)
+    if(result)
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+    else()
+        log_war("IPO is not supported: ${output}")
+    endif()
 else()
-  log_option_disabled("ipo")
+    log_option_disabled("ipo")
 endif()
 
 
@@ -100,3 +100,13 @@ endif()
 # *****************************************************************************
 add_subdirectory(src/protobuf)
 add_subdirectory(src)
+
+# *****************************************************************************
+# Copy config files
+# *****************************************************************************
+file(COPY config.lua.dist DESTINATION ${CMAKE_BINARY_DIR}/bin/)
+file(RENAME ${CMAKE_BINARY_DIR}/bin/config.lua.dist ${CMAKE_BINARY_DIR}/bin/config.lua)
+file(COPY key.pem DESTINATION ${CMAKE_BINARY_DIR}/bin/)
+file(COPY data DESTINATION ${CMAKE_BINARY_DIR}/bin/)
+file(COPY data-canary DESTINATION ${CMAKE_BINARY_DIR}/bin/)
+file(COPY data-otservbr-global DESTINATION ${CMAKE_BINARY_DIR}/bin/)

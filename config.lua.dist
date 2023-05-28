@@ -293,6 +293,10 @@ sortLootByChance = false
 -- To configure rates see file data/stages.lua
 rateUseStages = false
 rateExp = 1
+-- Rate bonuses for multiple vocations in a party
+-- ratePartyExp2 = 2.0
+-- ratePartyExp3 = 4.0
+-- ratePartyExp4 = 7.0
 rateSkill = 1
 rateLoot = 1
 rateMagic = 1

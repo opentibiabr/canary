@@ -7217,22 +7217,24 @@ void ProtocolGame::parseExtendedOpcode(NetworkMessage &msg) {
 
 // OTCv8
 void ProtocolGame::sendFeatures() {
-	if (!otclientV8)
+	if (otclientV8 == 0) {
 		return;
+	}
 
-	std::map<GameFeature, bool> features;
-	// place for non-standard OTCv8 features
-	features[GameExtendedOpcode] = true;
+	std::map<GameFeature_t, bool> features;
+	// Place for non-standard OTCv8 features
+	features[GameFeature_t::ExtendedOpcode] = true;
 
-	if (features.empty())
+	if (features.empty()) {
 		return;
+	}
 
 	NetworkMessage msg;
 	msg.addByte(0x43);
 	msg.add<uint16_t>(static_cast<uint16_t>(features.size()));
-	for (const auto &[gameFeature, featureBool] : features) {
+	for (const auto &[gameFeature, haveFeature] : features) {
 		msg.addByte(static_cast<uint8_t>(gameFeature));
-		msg.addByte(featureBool ? 1 : 0);
+		msg.addByte(haveFeature ? 1 : 0);
 	}
 	writeToOutputBuffer(msg);
 }

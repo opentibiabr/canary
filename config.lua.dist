@@ -369,6 +369,7 @@ discordWebhookURL = ""
 -- NOTE: vipSystemGainCoinsEnabled before active, please configure script: data-otservbr-global\scripts\globalevents\online_vip_coins.lua
 -- NOTE: vipSystemGainTokensEnabled before active, please configure script: data-otservbr-global\scripts\globalevents\online_tokens.lua
 -- NOTE: vipSystemAutoLootOnlyVip = activates only vip to get automatic loot, config 'autoLoot' need to be enabled, for this config works
+-- NOTE: vipSystemCanKickIdlePlayer = when this config is activated, players vip will be kicked after 'kickIdlePlayerAfterMinutes' config minutes too
 -- NOTE: vipSystemFamiliarTimeDebit = the minutes that will be debited from the familiar time cooldown for vip accounts, use 0 to deactivate the bonus (the default maximum value is 15, but it is calculated automatically)
 -- 		examples: The default config 'familiarTime' is 30, this value is divided by 2 (15 minutes familiar and 15 minutes to cooldown)
 -- 		If you use 'vipSystemFamiliarTimeDebit = 10' the vip players will have only, in this case, 5 minutes of cooldown.
@@ -379,4 +380,5 @@ vipSystemLootPercent = 0
 vipSystemGainCoinsEnabled = false
 vipSystemGainTokensEnabled = false
 vipSystemAutoLootOnlyVip = false
+vipSystemCanKickIdlePlayer = false
 vipSystemFamiliarTimeDebit = 0

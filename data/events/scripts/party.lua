@@ -25,10 +25,14 @@ function Party:onShareExperience(exp)
 			table.insert(vocationsIds, vocationId)
 		end
 	end
-
+    local shareRates = {configManager.getFloat(configKeys.RATE_SHARE_EXPERIENCE2),
+        configManager.getFloat(configKeys.RATE_SHARE_EXPERIENCE3),
+        configManager.getFloat(configKeys.RATE_SHARE_EXPERIENCE4)}
 	local size = #vocationsIds
 	if size > 1 then
-		sharedExperienceMultiplier = 1.0 + ((size * (5 * (size - 1) + 10)) / 100)
+        -- Get the share rate for the party size, or the last one if the party size exceeds the table size
+        local shareRate = shareRates[size - 1] or shareRates[#shareRates] or 1.0
+		sharedExperienceMultiplier = (1.0 + ((size * (5 * (size - 1) + 10)) / 100)) * shareRate
 	end
 
 	return (exp * sharedExperienceMultiplier) / (#self:getMembers() + 1)

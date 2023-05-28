@@ -267,6 +267,9 @@ bool ConfigManager::load() {
 	integer[FORGE_FIENDISH_CREATURES_LIMIT] = getGlobalNumber(L, "forgeFiendishLimit", 3);
 
 	floating[BESTIARY_RATE_CHARM_SHOP_PRICE] = getGlobalFloat(L, "bestiaryRateCharmShopPrice", 1.0);
+	floating[RATE_SHARE_EXPERIENCE2] = getGlobalFloat(L, "ratePartyExp2", 1.3);
+	floating[RATE_SHARE_EXPERIENCE3] = getGlobalFloat(L, "ratePartyExp3", 1.6);
+	floating[RATE_SHARE_EXPERIENCE4] = getGlobalFloat(L, "ratePartyExp4", 2.0);
 	floating[RATE_HEALTH_REGEN] = getGlobalFloat(L, "rateHealthRegen", 1.0);
 	floating[RATE_HEALTH_REGEN_SPEED] = getGlobalFloat(L, "rateHealthRegenSpeed", 1.0);
 	floating[RATE_MANA_REGEN] = getGlobalFloat(L, "rateManaRegen", 1.0);

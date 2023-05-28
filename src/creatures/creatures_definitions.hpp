@@ -492,7 +492,7 @@ enum class ForgeClassifications_t : uint8_t {
 	FORGE_FIENDISH_MONSTER = 2,
 };
 
-enum GameFeature : uint8_t {
+enum class GameFeature : uint8_t {
 	GameProtocolChecksum = 1,
 	GameAccountNames = 2,
 	GameChallengeOnLogin = 3,

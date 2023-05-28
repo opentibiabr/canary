@@ -382,7 +382,7 @@ void IOPrey::ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t act
 
 		slot->option = option;
 	} else {
-		SPDLOG_WARN("[IOPrey::ParsePreyAction] - Unknown prey action: {}", action);
+		SPDLOG_WARN("[IOPrey::ParsePreyAction] - Unknown prey action: {}", fmt::underlying(action));
 		return;
 	}
 
@@ -516,7 +516,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 			slot->disabledUntilTimeStamp = OTSYS_TIME() + g_configManager().getNumber(TASK_HUNTING_LIMIT_EXHAUST) * 1000;
 		}
 	} else {
-		SPDLOG_WARN("[IOPrey::ParseTaskHuntingAction] - Unknown task action: {}", action);
+		SPDLOG_WARN("[IOPrey::ParseTaskHuntingAction] - Unknown task action: {}", fmt::underlying(action));
 		return;
 	}
 	player->reloadTaskSlot(slotId);

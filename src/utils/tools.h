@@ -82,6 +82,7 @@ bool booleanString(const std::string &str);
 
 std::string getWeaponName(WeaponType_t weaponType);
 
+uint8_t toCombatIndex(CombatType_t combatType);
 size_t combatTypeToIndex(CombatType_t combatType);
 CombatType_t indexToCombatType(size_t v);
 

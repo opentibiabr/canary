@@ -836,7 +836,7 @@ void Creature::drainMana(Creature* attacker, int32_t manaLoss) {
 	}
 }
 
-void Creature::applyAbsorbDamageModifications(Creature* attacker, int32_t &damage, CombatType_t combatType) {
+void Creature::applyAbsorbDamageModifications(const Creature* attacker, int32_t &damage, CombatType_t combatType) const {
 	if (combatType != COMBAT_HEALING && damage != 0) {
 		int32_t value = getAbsorbPercent(combatType);
 		if (value != 0) {

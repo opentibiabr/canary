@@ -266,7 +266,7 @@ class Creature : virtual public Thing {
 			return attackedCreature;
 		}
 		virtual bool setAttackedCreature(Creature* creature);
-		void applyAbsorbDamageModifications(Creature* attacker, int32_t &damage, CombatType_t combatType);
+		void applyAbsorbDamageModifications(const Creature* attacker, int32_t &damage, CombatType_t combatType) const;
 		virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false);
 
 		bool setMaster(Creature* newMaster, bool reloadCreature = false);
@@ -330,12 +330,12 @@ class Creature : virtual public Thing {
 			return 0;
 		}
 		virtual const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionImmunities() const {
-			static std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> array = {};
+			const static std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> array = {};
 			return array;
 		}
 
 		virtual const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionSuppressions() const {
-			static std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> array = {};
+			const static std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> array = {};
 			return array;
 		}
 		virtual bool isAttackable() const {

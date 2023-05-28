@@ -118,7 +118,8 @@ class ConditionAttributes final : public ConditionGeneric {
 		void serialize(PropWriteStream &propWriteStream) final;
 		bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) final;
 
-	protected:
+	private:
+		// Helpers
 		int32_t getAbsorbByIndex(uint8_t index) const;
 		void setAbsorb(uint8_t index, int32_t value);
 		int32_t getAbsorbPercentByIndex(uint8_t index) const;
@@ -128,7 +129,6 @@ class ConditionAttributes final : public ConditionGeneric {
 		int32_t getIncreasePercentById(uint8_t index) const;
 		void setIncreasePercent(uint8_t index, int32_t value);
 
-	private:
 		int32_t skills[SKILL_LAST + 1] = {};
 		int32_t skillsPercent[SKILL_LAST + 1] = {};
 		int32_t stats[STAT_LAST + 1] = {};
@@ -145,8 +145,8 @@ class ConditionAttributes final : public ConditionGeneric {
 		std::array<int32_t, COMBAT_COUNT> absorbsPercent = {};
 		std::array<int32_t, COMBAT_COUNT> increases = {};
 		std::array<int32_t, COMBAT_COUNT> increasesPercent = {};
-		int32_t currentAbsorb = 0;
-		int32_t currentIncrease = 0;
+		uint8_t currentAbsorb = 0;
+		uint8_t currentIncrease = 0;
 
 		bool disableDefense = false;
 

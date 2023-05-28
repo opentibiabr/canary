@@ -124,7 +124,7 @@ class CreatureFunctions final : LuaScriptInterface {
 		static int luaCreatureSetLight(lua_State* L);
 
 		static int luaCreatureGetSpeed(lua_State* L);
-		static int luaCreatureSetSpeed(lua_State* L);
+		static int luaCreatureSetSpeed(lua_State* L); //send speed
 		static int luaCreatureGetBaseSpeed(lua_State* L);
 		static int luaCreatureChangeSpeed(lua_State* L);
 

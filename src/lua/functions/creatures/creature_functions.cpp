@@ -347,7 +347,7 @@ int CreatureFunctions::luaCreatureGetSpeed(lua_State* L) {
 }
 
 int CreatureFunctions::luaCreatureSetSpeed(lua_State* L) {
-	// creature:setSpeed(speed)
+	// new creature:setSpeed(speed)
 	Creature* creature = getCreature(L, 1);
 	if (!creature) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));

@@ -12,6 +12,7 @@
 #include "lua/functions/core/game/lua_enums.hpp"
 
 #include "creatures/players/account/account.hpp"
+#include "creatures/players/wheel/wheel_definitions.hpp"
 #include "io/io_bosstiary.hpp"
 #include "config/configmanager.h"
 #include "creatures/creature.h"

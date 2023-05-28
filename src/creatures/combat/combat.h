@@ -14,11 +14,12 @@
 #include "creatures/combat/condition.h"
 #include "declarations.hpp"
 #include "map/map.h"
-#include "creatures/combat/spells.h"
 
 class Condition;
 class Creature;
 class Item;
+class Spell;
+class Player;
 
 // for luascript callback
 class ValueCallback final : public CallBack {

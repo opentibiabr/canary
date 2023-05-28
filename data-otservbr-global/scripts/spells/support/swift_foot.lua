@@ -41,7 +41,7 @@ function spell.onCastSpell(creature, var)
 			exhaustAttackGroup:setParameter(CONDITION_PARAM_SUBID, 1)
 			exhaustAttackGroup:setParameter(CONDITION_PARAM_TICKS, spellDuration)
 			creature:addCondition(exhaustAttackGroup)
-		elseif grade == 1 then
+		elseif grade == WHEEL_GRADE_REGULAR then
 			local damageDebuff = Condition(CONDITION_ATTRIBUTES)
 			damageDebuff:setParameter(CONDITION_PARAM_TICKS, spellDuration)
 			damageDebuff:setParameter(CONDITION_PARAM_BUFF_DAMAGEDEALT, 50)

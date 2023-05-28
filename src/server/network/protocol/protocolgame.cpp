@@ -3619,13 +3619,43 @@ void ProtocolGame::sendBasicData() {
 		msg.addByte(1); // has reached Main (allow player to open Prey window)
 	}
 
+	// Filter only valid ids
 	std::list<uint16_t> spellsList = g_spells().getSpellsByVocation(player->getVocationId());
-	msg.add<uint16_t>(spellsList.size());
+	std::vector<InstantSpell*> validSpells;
 	for (uint16_t sid : spellsList) {
-		if (oldProtocol) {
-			msg.addByte(sid);
+		auto spell = g_spells().getInstantSpellById(sid);
+		if (spell) {
+			if (spell->getId() == 0) {
+				continue;
+			}
+		}
+
+		validSpells.push_back(spell);
+	}
+
+	// Send total size of spells
+	msg.add<uint16_t>(validSpells.size());
+	// Send each spell valid ids
+	for (auto spell : validSpells)
+	{
+		// Only send valid spells to old client
+		if (oldProtocol && spell->getId() <= 255) {
+			msg.addByte(spell->getId());
+			continue;
+		}
+
+		if (spell->isLearnable() && !player->hasLearnedInstantSpell(spell->getName())) {
+			msg.add<uint16_t>(0);
+		} else if (spell && spell->isLearnable() && player->hasLearnedInstantSpell(spell->getName())) {
+			// Ignore spell if not have wheel grade (or send if have)
+			auto grade = player->wheel()->getSpellUpgrade(spell->getName());
+			if (static_cast<uint8_t>(grade) == 0) {
+				msg.add<uint16_t>(0);
+			} else {
+				msg.add<uint16_t>(spell->getId());
+			}
 		} else {
-			msg.add<uint16_t>(sid);
+			msg.add<uint16_t>(spell->getId());
 		}
 	}
 

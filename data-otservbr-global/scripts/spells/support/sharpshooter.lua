@@ -28,7 +28,7 @@ function spell.onCastSpell(creature, variant)
 			exhaustSupportGroup:setParameter(CONDITION_PARAM_TICKS, spellDuration)
 			creature:addCondition(exhaustSupportGroup)
 		end
-		if grade == 2 then
+		if grade == WHEEL_GRADE_UPGRADED then
 			skill:setParameter(CONDITION_PARAM_SKILL_DISTANCEPERCENT, 145)
 		else
 			skill:setParameter(CONDITION_PARAM_SKILL_DISTANCEPERCENT, 140)

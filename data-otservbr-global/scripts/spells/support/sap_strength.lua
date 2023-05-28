@@ -11,7 +11,7 @@ local function targetFunction(creature, target)
 	local buff = 90
 	if creature and creature:getPlayer() then
 		local grade = creature:upgradeSpellsWORD("Sap Strength")
-		if grade == 2 then
+		if grade == WHEEL_GRADE_UPGRADED then
 			buff = 80
 		end
 	end

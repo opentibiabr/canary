@@ -144,6 +144,9 @@ class Spell : public BaseSpell {
 		void postCastSpell(Player* player, bool finishedCast = true, bool payCost = true) const;
 		static void postCastSpell(Player* player, uint32_t manaCost, uint32_t soulCost);
 		virtual bool isInstant() const = 0;
+		bool isLearnable() const {
+			return learnable;
+		}
 
 		uint32_t getManaCost(const Player* player) const;
 		uint32_t getSoulCost() const {

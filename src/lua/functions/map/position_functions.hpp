@@ -25,6 +25,7 @@ class PositionFunctions final : LuaScriptInterface {
 			registerMethod(L, "Position", "isSightClear", PositionFunctions::luaPositionIsSightClear);
 
 			registerMethod(L, "Position", "sendMagicEffect", PositionFunctions::luaPositionSendMagicEffect);
+			registerMethod(L, "Position", "removeMagicEffect", PositionFunctions::luaPositionRemoveMagicEffect);
 			registerMethod(L, "Position", "sendDistanceEffect", PositionFunctions::luaPositionSendDistanceEffect);
 
 			registerMethod(L, "Position", "sendSingleSoundEffect", PositionFunctions::luaPositionSendSingleSoundEffect);
@@ -42,6 +43,7 @@ class PositionFunctions final : LuaScriptInterface {
 		static int luaPositionIsSightClear(lua_State* L);
 
 		static int luaPositionSendMagicEffect(lua_State* L);
+		static int luaPositionRemoveMagicEffect(lua_State* L);
 		static int luaPositionSendDistanceEffect(lua_State* L);
 
 		static int luaPositionSendSingleSoundEffect(lua_State* L);

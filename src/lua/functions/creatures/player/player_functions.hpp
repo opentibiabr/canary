@@ -271,6 +271,15 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "openMarket", PlayerFunctions::luaPlayerOpenMarket);
 
+			registerMethod(L, "Player", "instantSkillWOD", PlayerFunctions::luaPlayerInstantSkillWOD);
+			registerMethod(L, "Player", "upgradeSpellsWORD", PlayerFunctions::luaPlayerUpgradeSpellWOD);
+			registerMethod(L, "Player", "reloadData", PlayerFunctions::luaPlayerReloadData);
+			registerMethod(L, "Player", "onThinkWheelOfDestiny", PlayerFunctions::luaPlayerOnThinkWheelOfDestiny);
+			registerMethod(L, "Player", "avatarTimer", PlayerFunctions::luaPlayerAvatarTimer);
+			registerMethod(L, "Player", "getWheelSpellAdditionalArea", PlayerFunctions::luaPlayerGetWheelSpellAdditionalArea);
+			registerMethod(L, "Player", "getWheelSpellAdditionalTarget", PlayerFunctions::luaPlayerGetWheelSpellAdditionalTarget);
+			registerMethod(L, "Player", "getWheelSpellAdditionalDuration", PlayerFunctions::luaPlayerGetWheelSpellAdditionalDuration);
+
 			// Forge Functions
 			registerMethod(L, "Player", "openForge", PlayerFunctions::luaPlayerOpenForge);
 			registerMethod(L, "Player", "closeForge", PlayerFunctions::luaPlayerCloseForge);
@@ -574,6 +583,15 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetFreeBackpackSlots(lua_State* L);
 
 		static int luaPlayerOpenMarket(lua_State* L);
+
+		static int luaPlayerInstantSkillWOD(lua_State* L);
+		static int luaPlayerUpgradeSpellWOD(lua_State* L);
+		static int luaPlayerReloadData(lua_State* L);
+		static int luaPlayerOnThinkWheelOfDestiny(lua_State* L);
+		static int luaPlayerAvatarTimer(lua_State* L);
+		static int luaPlayerGetWheelSpellAdditionalArea(lua_State* L);
+		static int luaPlayerGetWheelSpellAdditionalTarget(lua_State* L);
+		static int luaPlayerGetWheelSpellAdditionalDuration(lua_State* L);
 
 		static int luaPlayerOpenForge(lua_State* L);
 		static int luaPlayerCloseForge(lua_State* L);

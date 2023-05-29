@@ -45,6 +45,8 @@ class Guild;
 class Imbuement;
 class PreySlot;
 class TaskHuntingSlot;
+class Spell;
+class PlayerWheel;
 
 enum class ForgeConversion_t : uint8_t {
 	FORGE_ACTION_FUSION = 0,
@@ -798,8 +800,8 @@ class Player final : public Creature, public Cylinder {
 				return skillLevel * 100;
 			}
 
-			return static_cast<uint16_t>(skillLevel);
-		}
+			return static_cast<uint16_t>(skillLevel);	
+		}		
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
 		}
@@ -829,6 +831,8 @@ class Player final : public Creature, public Cylinder {
 		int32_t getDefense() const override;
 		float getAttackFactor() const override;
 		float getDefenseFactor() const override;
+		float getMitigation() const override;
+		double getMitigationMultiplier() const;
 
 		void addInFightTicks(bool pzlock = false);
 
@@ -1272,6 +1276,11 @@ class Player final : public Creature, public Cylinder {
 		void sendMagicEffect(const Position &pos, uint8_t type) const {
 			if (client) {
 				client->sendMagicEffect(pos, type);
+			}
+		}
+		void removeMagicEffect(const Position &pos, uint8_t type) const {
+			if (client) {
+				client->removeMagicEffect(pos, type);
 			}
 		}
 		void sendPing();
@@ -1952,6 +1961,7 @@ class Player final : public Creature, public Cylinder {
 		bool canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay = 500);
 
 		// Interfaces
+		// Account
 		error_t SetAccountInterface(account::Account* account);
 		error_t GetAccountInterface(account::Account* account);
 
@@ -2372,6 +2382,10 @@ class Player final : public Creature, public Cylinder {
 		void decrementeHazardSystemReference();
 		/*******************************************************************************/
 
+		// Player wheel methods interface
+		std::unique_ptr<PlayerWheel> &wheel();
+		const std::unique_ptr<PlayerWheel> &wheel() const;
+
 	private:
 		static uint32_t playerFirstID;
 		static uint32_t playerLastID;
@@ -2721,6 +2735,9 @@ class Player final : public Creature, public Cylinder {
 		friend class ProtocolGame;
 		friend class MoveEvent;
 		friend class BedItem;
+		friend class PlayerWheel;
+
+		std::unique_ptr<PlayerWheel> m_wheelPlayer;
 
 		account::Account* account_;
 

@@ -16,6 +16,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/script_environment.hpp"
 #include "server/network/protocol/protocolstatus.h"
+#include "creatures/players/wheel/player_wheel.hpp"
 
 class Creature;
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
@@ -299,6 +300,14 @@ int GlobalFunctions::luaDoAreaCombatHealth(lua_State* L) {
 		damage.primary.type = combatType;
 		damage.primary.value = normal_random(getNumber<int32_t>(L, 6), getNumber<int32_t>(L, 5));
 
+		damage.instantSpellName = getString(L, 9);
+		damage.runeSpellName = getString(L, 10);
+		if (creature) {
+			if (auto player = creature->getPlayer()) {
+				player->wheel()->getCombatDataSpell(damage);
+			}
+		}
+
 		Combat::doCombatHealth(creature, getPosition(L, 3), area, damage, params);
 		pushBoolean(L, true);
 	} else {
@@ -335,6 +344,14 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 	damage.primary.type = combatType;
 	damage.primary.value = normal_random(getNumber<int32_t>(L, 4), getNumber<int32_t>(L, 5));
 
+	damage.instantSpellName = getString(L, 9);
+	damage.runeSpellName = getString(L, 10);
+	if (creature) {
+		if (auto player = creature->getPlayer()) {
+			player->wheel()->getCombatDataSpell(damage);
+		}
+	}
+
 	// Check if it's a healing then we sould add the non-aggresive tag
 	if (combatType == COMBAT_HEALING || (combatType == COMBAT_MANADRAIN && damage.primary.value > 0)) {
 		params.aggressive = false;
@@ -364,6 +381,14 @@ int GlobalFunctions::luaDoAreaCombatMana(lua_State* L) {
 		damage.origin = getNumber<CombatOrigin>(L, 7, ORIGIN_SPELL);
 		damage.primary.type = COMBAT_MANADRAIN;
 		damage.primary.value = normal_random(getNumber<int32_t>(L, 4), getNumber<int32_t>(L, 5));
+
+		damage.instantSpellName = getString(L, 8);
+		damage.runeSpellName = getString(L, 9);
+		if (creature) {
+			if (auto player = creature->getPlayer()) {
+				player->wheel()->getCombatDataSpell(damage);
+			}
+		}
 
 		Position pos = getPosition(L, 2);
 		Combat::doCombatMana(creature, pos, area, damage, params);
@@ -398,6 +423,14 @@ int GlobalFunctions::luaDoTargetCombatMana(lua_State* L) {
 	damage.origin = getNumber<CombatOrigin>(L, 6, ORIGIN_SPELL);
 	damage.primary.type = COMBAT_MANADRAIN;
 	damage.primary.value = normal_random(getNumber<int32_t>(L, 3), getNumber<int32_t>(L, 4));
+
+	damage.instantSpellName = getString(L, 7);
+	damage.runeSpellName = getString(L, 8);
+	if (creature) {
+		if (auto player = creature->getPlayer()) {
+			player->wheel()->getCombatDataSpell(damage);
+		}
+	}
 
 	Combat::doCombatMana(creature, target, damage, params);
 	pushBoolean(L, true);

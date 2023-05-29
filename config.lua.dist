@@ -6,6 +6,9 @@ useAnyDatapackFolder = false
 dataPackDirectory = "data-otservbr-global"
 -- Don't change this unless you know what you're doing
 coreDirectory = "data"
+-- Enable/disable development mode
+-- NOTE: In development mode, additional logs will be enabled, for deputation and testing purposes.
+developmentMode = false
 
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
@@ -136,6 +139,12 @@ hazardExpBonusMultiplier = 2
 hazardLootBonusMultiplier = 2
 hazardPodsDamage = 5
 hazardSpawnPlunderMultiplier = 25
+
+-- Wheel of destiny system
+-- NOTE: set wheelSystemEnabled = false to disable the wheel of destiny
+-- NOTE: only the wheel points are modified, all other data is on the client executable and cannot be modified
+wheelSystemEnabled = true
+wheelPointsPerLevel = 1
 
 -- Familiar system
 -- NOTE: the time will be divided by 2 to get half the value, the familiar lasts 15 minutes by default and the cooldown of the spell is 30 minutes

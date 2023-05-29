@@ -117,18 +117,18 @@
 	<!-- Life leech Imbuement -->
 	<imbuement name="Vampirism" base="1" category="1" iconid="46" premium="0" storage="0">
 		<attribute key="description" value="Converts 5% of damage to HP with a chance of 100%." />
-		<attribute key="effect" type="skill" value="lifeleech" bonus="5" chance="100" />
+		<attribute key="effect" type="skill" value="lifeleech" bonus="500" chance="100" />
 		<attribute key="item" value="9685" count="25" />
 	</imbuement>
 	<imbuement name="Vampirism" base="2" category="1" iconid="46" premium="1" storage="0">
 		<attribute key="description" value="Converts 10% of damage to HP with a chance of 100%." />
-		<attribute key="effect" type="skill" value="lifeleech" bonus="10" chance="100" />
+		<attribute key="effect" type="skill" value="lifeleech" bonus="1000" chance="100" />
 		<attribute key="item" value="9685" count="25" />
 		<attribute key="item" value="9633" count="15" />
 	</imbuement>
 	<imbuement name="Vampirism" base="3" category="1" iconid="46" premium="1" storage="50488">
 		<attribute key="description" value="Converts 25% of damage to HP with a chance of 100%." />
-		<attribute key="effect" type="skill" value="lifeleech" bonus="25" chance="100" />
+		<attribute key="effect" type="skill" value="lifeleech" bonus="2500" chance="100" />
 		<attribute key="item" value="9685" count="25" />
 		<attribute key="item" value="9633" count="15" />
 		<attribute key="item" value="9663" count="5" />
@@ -136,18 +136,18 @@
 	<!-- Mana Leech Imbuement -->
 	<imbuement name="Void" base="1" category="2" iconid="49" premium="0" storage="0">
 		<attribute key="description" value="Converts 3% of damage to MP with a chance of 100%." />
-		<attribute key="effect" type="skill" value="manaleech" bonus="3" chance="100" />
+		<attribute key="effect" type="skill" value="manaleech" bonus="300" chance="100" />
 		<attribute key="item" value="11492" count="25" />
 	</imbuement>
 	<imbuement name="Void" base="2" category="2" iconid="49" premium="1" storage="0">
 		<attribute key="description" value="Converts 5% of damage to MP with a chance of 100%." />
-		<attribute key="effect" type="skill" value="manaleech" bonus="5" chance="100" />
+		<attribute key="effect" type="skill" value="manaleech" bonus="500" chance="100" />
 		<attribute key="item" value="11492" count="25" />
 		<attribute key="item" value="20200" count="25" />
 	</imbuement>
 	<imbuement name="Void" base="3" category="2" iconid="49" premium="1" storage="50494">
 		<attribute key="description" value="Converts 8% of damage to MP with a chance of 100%." />
-		<attribute key="effect" type="skill" value="manaleech" bonus="8" chance="100" />
+		<attribute key="effect" type="skill" value="manaleech" bonus="800" chance="100" />
 		<attribute key="item" value="11492" count="25" />
 		<attribute key="item" value="20200" count="25" />
 		<attribute key="item" value="22730" count="5" />

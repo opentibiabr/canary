@@ -194,6 +194,7 @@ const phmap::flat_hash_map<std::string, WeaponType_t> WeaponTypesMap = {
 	{ "club", WEAPON_CLUB },
 	{ "axe", WEAPON_AXE },
 	{ "shield", WEAPON_SHIELD },
+	{ "spellbook", WEAPON_SHIELD },
 	{ "distance", WEAPON_DISTANCE },
 	{ "wand", WEAPON_WAND },
 	{ "ammunition", WEAPON_AMMO },

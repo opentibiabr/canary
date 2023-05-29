@@ -699,7 +699,7 @@ function Player:onGainExperience(target, exp, rawExp)
 		local vipExpPercent = configManager.getNumber(configKeys.VIP_SYSTEM_EXP_PERCENT)
 		if (vipExpPercent > 0 and self:isVip()) then
 			vipExpPercent = (vipExpPercent > 100 and 100) or vipExpPercent
-			exp = exp * (1 + math.floor(vipExpPercent / 100))
+			exp = exp * (1 + (vipExpPercent / 100))
 		end
 	end
 

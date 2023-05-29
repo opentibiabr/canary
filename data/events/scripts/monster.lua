@@ -45,10 +45,9 @@ function Monster:onDropLoot(corpse)
 		-- Vip system
 		local vipLootPercent = 0
 		if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
-			local percent = configManager.getNumber(configKeys.VIP_SYSTEM_EXP_PERCENT)
+			local percent = configManager.getNumber(configKeys.VIP_SYSTEM_LOOT_PERCENT)
 			if (percent > 0 and player and player:isVip()) then
-				percent = (percent > 100 and 100) or percent
-				vipLootPercent = math.floor(percent / 100)
+				vipLootPercent = ((percent > 100 and 100) or percent) / 100
 			end
 		end
 

@@ -910,7 +910,7 @@ bool PlayerWheel::canOpenWheel() const {
 		return false;
 	}
 
-	if (m_player.getVocation()->getId() <= 4) {
+	if (m_player.getVocation()->getId() <= 4 && m_player.getStorageValue(STORAGEVALUE_PROMOTION) == -1) {
 		return false;
 	}
 

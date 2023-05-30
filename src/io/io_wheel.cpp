@@ -174,6 +174,8 @@ const std::vector<std::string> &IOWheel::getFocusSpells() const {
 	return InternalPlayerWheel::m_focusSpells;
 }
 
+using VocationBonusFunction = std::function<void(Player &, uint16_t, uint8_t, PlayerWheelMethodsBonusData &)>;
+using VocationBonusMap = std::map<WheelSlots_t, VocationBonusFunction>;
 const VocationBonusMap &IOWheel::getWheelMapFunctions() const {
 	return m_vocationBonusMap;
 }
@@ -340,8 +342,6 @@ void IOWheel::increaseResistance(Player &player, PlayerWheelMethodsBonusData &bo
 	}
 }
 
-using VocationBonusFunction = std::function<void(Player &, uint16_t, uint8_t, PlayerWheelMethodsBonusData &)>;
-using VocationBonusMap = std::map<WheelSlots_t, VocationBonusFunction>;
 void IOWheel::initializeWheelMapFunctions() {
 	VocationBonusMap vocationBonusMap;
 	vocationBonusMap = {

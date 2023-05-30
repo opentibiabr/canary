@@ -46,7 +46,7 @@ QuestDoorAction = {
 		itemPos = {{x = 32455, y = 31967, z = 14}}
 	},
 	-- To Outfox a Fox Quest, mining helmet door
-	[Storage.toOutfoxAFoxQuest] = {
+	[Storage.ToOutfoxAFoxQuest] = {
 		itemId = false,
 		itemPos = {{x = 32467, y = 31969, z = 5}}
 	},

@@ -85,7 +85,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					"I recommend not to go alone becauze it will be very dangerouz - but ALL of you will have to uze zeir zeptre replicaz on ze emperor'z remainz to prozeed! ...",
 					"You will need it. Now go to the north of Sleeping Dragon room, {dont need talk} with he! Good luck."
 				}, npc, creature)
-				player:setStorageValue(Storage.WrathoftheEmperor.TeleportAccess.innerSanctum, 1)
+				player:setStorageValue(Storage.WrathoftheEmperor.TeleportAccess.InnerSanctum, 1)
 				player:setStorageValue(Storage.WrathoftheEmperor.Questline, 30)
 				player:setStorageValue(Storage.WrathoftheEmperor.Mission10, 2) --Questlog, Wrath of the Emperor "Mission 10: A Message of Freedom"
 				player:setStorageValue(Storage.WrathoftheEmperor.BossStatus, 1)
@@ -102,7 +102,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Drink it and when you are cloze to ze dragon zpeak: Z...z.. well, juzt take ze sheet wiz ze word and read it yourzelf. A lot of rebelz have died to retrieve ziz information, uze it wizely. ...",
 				"Now go and try to find a way to reach ze emperor and to free ze land from it'z opprezzor. Onze you have found a way, return to me and I will explain what to do wiz ze cryztalz. May ze Great Znake guide you!"
 			}, npc, creature)
-			player:setStorageValue(Storage.WrathoftheEmperor.TeleportAccess.sleepingDragon, 1)
+			player:setStorageValue(Storage.WrathoftheEmperor.TeleportAccess.SleepingDragon, 1)
 			player:setStorageValue(Storage.WrathoftheEmperor.Mission09, 1) --Questlog, Wrath of the Emperor "Mission 08: Uninvited Guests"
 			player:setStorageValue(Storage.WrathoftheEmperor.Questline, 27)
 			player:addItem(11372, 1)

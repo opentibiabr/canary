@@ -1,4 +1,4 @@
-local familiarOnAdvance = CreatureEvent("AdvanceFamiliar")
+local familiarOnAdvance = CreatureEvent("FamiliarAdvance")
 
 function familiarOnAdvance.onAdvance(player, skill, oldLevel, newLevel)
 	local vocation = FAMILIAR_ID[player:getVocation():getBaseId()]

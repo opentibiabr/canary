@@ -46,7 +46,7 @@ class ItemProperties {
 					std::numeric_limits<T>::max()
 				);
 			}
-			SPDLOG_ERROR("Failed to convert attribute for type {}", type);
+			SPDLOG_ERROR("Failed to convert attribute for type {}", fmt::underlying(type));
 			return {};
 		}
 

@@ -121,41 +121,6 @@ namespace InternalPlayerWheel {
 
 } // End namespace
 
-const IOWheelBonusData::DataArray &IOWheel::getWheelBonusData() const {
-	return m_wheelBonusData;
-}
-
-std::pair<int, int> IOWheel::getRevelationStatByStage(WheelStageEnum_t stageType) const {
-	// Let's remove one, because the std::array starts with 0 and the stages with 1
-	auto array = m_wheelBonusData.revelation.stats[static_cast<uint8_t>(stageType) - 1];
-	return std::make_pair(array.damage, array.healing);
-}
-
-int8_t IOWheel::getSlotPrioritaryOrder(WheelSlots_t slot) const {
-	if (slot == WheelSlots_t::SLOT_BLUE_50 || slot == WheelSlots_t::SLOT_RED_50 || slot == WheelSlots_t::SLOT_PURPLE_50 || slot == WheelSlots_t::SLOT_GREEN_50) {
-		return 0;
-	}
-
-	if (slot == WheelSlots_t::SLOT_GREEN_TOP_75 || slot == WheelSlots_t::SLOT_GREEN_BOTTOM_75 || slot == WheelSlots_t::SLOT_RED_TOP_75 || slot == WheelSlots_t::SLOT_RED_BOTTOM_75 || slot == WheelSlots_t::SLOT_PURPLE_TOP_75 || slot == WheelSlots_t::SLOT_PURPLE_BOTTOM_75 || slot == WheelSlots_t::SLOT_BLUE_TOP_75 || slot == WheelSlots_t::SLOT_BLUE_BOTTOM_75) {
-		return 1;
-	}
-
-	if (slot == WheelSlots_t::SLOT_GREEN_BOTTOM_100 || slot == WheelSlots_t::SLOT_GREEN_MIDDLE_100 || slot == WheelSlots_t::SLOT_GREEN_TOP_100 || slot == WheelSlots_t::SLOT_RED_BOTTOM_100 || slot == WheelSlots_t::SLOT_RED_MIDDLE_100 || slot == WheelSlots_t::SLOT_RED_TOP_100 || slot == WheelSlots_t::SLOT_PURPLE_BOTTOM_100 || slot == WheelSlots_t::SLOT_PURPLE_MIDDLE_100 || slot == WheelSlots_t::SLOT_PURPLE_TOP_100 || slot == WheelSlots_t::SLOT_BLUE_BOTTOM_100 || slot == WheelSlots_t::SLOT_BLUE_MIDDLE_100 || slot == WheelSlots_t::SLOT_BLUE_TOP_100) {
-		return 2;
-	}
-
-	if (slot == WheelSlots_t::SLOT_GREEN_TOP_150 || slot == WheelSlots_t::SLOT_GREEN_BOTTOM_150 || slot == WheelSlots_t::SLOT_RED_TOP_150 || slot == WheelSlots_t::SLOT_RED_BOTTOM_150 || slot == WheelSlots_t::SLOT_PURPLE_TOP_150 || slot == WheelSlots_t::SLOT_PURPLE_BOTTOM_150 || slot == WheelSlots_t::SLOT_BLUE_TOP_150 || slot == WheelSlots_t::SLOT_BLUE_BOTTOM_150) {
-		return 3;
-	}
-
-	if (slot == WheelSlots_t::SLOT_GREEN_200 || slot == WheelSlots_t::SLOT_RED_200 || slot == WheelSlots_t::SLOT_PURPLE_200 || slot == WheelSlots_t::SLOT_BLUE_200) {
-		return 4;
-	}
-
-	spdlog::error("[{}] unknown whell slot type': {}", __FUNCTION__, std::to_string(slot));
-	return -1;
-}
-
 bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 	// Initialize map data from each vocation for wheel
 	initializeMapData();
@@ -201,12 +166,50 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 	return true;
 }
 
+const IOWheelBonusData::DataArray &IOWheel::getWheelBonusData() const {
+	return m_wheelBonusData;
+}
+
 const std::vector<std::string> &IOWheel::getFocusSpells() const {
 	return InternalPlayerWheel::m_focusSpells;
 }
 
+const VocationBonusMap &IOWheel::getWheelMapFunctions() const {
+	return m_vocationBonusMap;
+}
+
+std::pair<int, int> IOWheel::getRevelationStatByStage(WheelStageEnum_t stageType) const {
+	// Let's remove one, because the std::array starts with 0 and the stages with 1
+	auto array = m_wheelBonusData.revelation.stats[static_cast<uint8_t>(stageType) - 1];
+	return std::make_pair(array.damage, array.healing);
+}
+
+int8_t IOWheel::getSlotPrioritaryOrder(WheelSlots_t slot) const {
+	if (slot == WheelSlots_t::SLOT_BLUE_50 || slot == WheelSlots_t::SLOT_RED_50 || slot == WheelSlots_t::SLOT_PURPLE_50 || slot == WheelSlots_t::SLOT_GREEN_50) {
+		return 0;
+	}
+
+	if (slot == WheelSlots_t::SLOT_GREEN_TOP_75 || slot == WheelSlots_t::SLOT_GREEN_BOTTOM_75 || slot == WheelSlots_t::SLOT_RED_TOP_75 || slot == WheelSlots_t::SLOT_RED_BOTTOM_75 || slot == WheelSlots_t::SLOT_PURPLE_TOP_75 || slot == WheelSlots_t::SLOT_PURPLE_BOTTOM_75 || slot == WheelSlots_t::SLOT_BLUE_TOP_75 || slot == WheelSlots_t::SLOT_BLUE_BOTTOM_75) {
+		return 1;
+	}
+
+	if (slot == WheelSlots_t::SLOT_GREEN_BOTTOM_100 || slot == WheelSlots_t::SLOT_GREEN_MIDDLE_100 || slot == WheelSlots_t::SLOT_GREEN_TOP_100 || slot == WheelSlots_t::SLOT_RED_BOTTOM_100 || slot == WheelSlots_t::SLOT_RED_MIDDLE_100 || slot == WheelSlots_t::SLOT_RED_TOP_100 || slot == WheelSlots_t::SLOT_PURPLE_BOTTOM_100 || slot == WheelSlots_t::SLOT_PURPLE_MIDDLE_100 || slot == WheelSlots_t::SLOT_PURPLE_TOP_100 || slot == WheelSlots_t::SLOT_BLUE_BOTTOM_100 || slot == WheelSlots_t::SLOT_BLUE_MIDDLE_100 || slot == WheelSlots_t::SLOT_BLUE_TOP_100) {
+		return 2;
+	}
+
+	if (slot == WheelSlots_t::SLOT_GREEN_TOP_150 || slot == WheelSlots_t::SLOT_GREEN_BOTTOM_150 || slot == WheelSlots_t::SLOT_RED_TOP_150 || slot == WheelSlots_t::SLOT_RED_BOTTOM_150 || slot == WheelSlots_t::SLOT_PURPLE_TOP_150 || slot == WheelSlots_t::SLOT_PURPLE_BOTTOM_150 || slot == WheelSlots_t::SLOT_BLUE_TOP_150 || slot == WheelSlots_t::SLOT_BLUE_BOTTOM_150) {
+		return 3;
+	}
+
+	if (slot == WheelSlots_t::SLOT_GREEN_200 || slot == WheelSlots_t::SLOT_RED_200 || slot == WheelSlots_t::SLOT_PURPLE_200 || slot == WheelSlots_t::SLOT_BLUE_200) {
+		return 4;
+	}
+
+	spdlog::error("[{}] unknown whell slot type': {}", __FUNCTION__, std::to_string(slot));
+	return -1;
+}
+
 void IOWheel::initializeMapData() {
-	// Load informations of the slots for each vocation
 	initializeWheelMapFunctions();
 
 	initializeDruidSpells();
@@ -215,9 +218,6 @@ void IOWheel::initializeMapData() {
 	initializeSorcererSpells();
 }
 
-/*
- * Initialize wheel spells methods
- */
 void IOWheel::initializeDruidSpells() {
 	m_wheelBonusData.spells.druid[0].name = "Strong Ice Wave";
 	m_wheelBonusData.spells.druid[0].grade[1].leech.mana = 3;
@@ -385,10 +385,6 @@ void IOWheel::initializeWheelMapFunctions() {
 	};
 
 	m_vocationBonusMap = vocationBonusMap;
-}
-
-const VocationBonusMap &IOWheel::getWheelMapFunctions() const {
-	return m_vocationBonusMap;
 }
 
 // SLOT_GREEN_200 = 1

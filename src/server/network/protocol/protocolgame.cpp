@@ -307,31 +307,37 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		player->setID();
 
 		if (!IOLoginData::preloadPlayer(player, name)) {
+			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("Your character could not be loaded.");
 			return;
 		}
 
 		if (IOBan::isPlayerNamelocked(player->getGUID())) {
+			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("Your character has been namelocked.");
 			return;
 		}
 
 		if (g_game().getGameState() == GAME_STATE_CLOSING && !player->hasFlag(PlayerFlags_t::CanAlwaysLogin)) {
+			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("The game is just going down.\nPlease try again later.");
 			return;
 		}
 
 		if (g_game().getGameState() == GAME_STATE_CLOSED && !player->hasFlag(PlayerFlags_t::CanAlwaysLogin)) {
+			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("Server is currently closed.\nPlease try again later.");
 			return;
 		}
 
 		if (g_configManager().getBoolean(ONLY_PREMIUM_ACCOUNT) && !player->isPremium() && (player->getGroup()->id < account::GROUP_TYPE_GAMEMASTER || player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER)) {
+			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("Your premium time for this account is out.\n\nTo play please buy additional premium time from our website");
 			return;
 		}
 
 		if (g_configManager().getBoolean(ONE_PLAYER_ON_ACCOUNT) && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && g_game().getPlayerByAccount(player->getAccount())) {
+			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("You may only login with one character\nof your account at the same time.");
 			return;
 		}
@@ -351,6 +357,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 					ss << "Your account has been permanently banned by " << banInfo.bannedBy << ".\n\nReason specified:\n"
 					   << banInfo.reason;
 				}
+				g_game().removePlayerUniqueLogin(player);
 				disconnectClient(ss.str());
 				return;
 			}
@@ -375,6 +382,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		}
 
 		if (!IOLoginData::loadPlayerById(player, player->getGUID())) {
+			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("Your character could not be loaded.");
 			SPDLOG_WARN("Player {} could not be loaded", player->getName());
 			return;
@@ -383,6 +391,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		player->setOperatingSystem(operatingSystem);
 
 		if (!g_game().placeCreature(player, player->getLoginPosition()) && !g_game().placeCreature(player, player->getTemplePosition(), false, true)) {
+			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("Temple position is wrong. Please, contact the administrator.");
 			SPDLOG_WARN("Player {} temple position is wrong", player->getName());
 			return;
@@ -545,6 +554,11 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 
 	std::string password = sessionKey.substr(pos + 1);
 	std::string characterName = msg.getString();
+
+	Player* foundPlayer = g_game().getPlayerUniqueLogin(characterName);
+    if (foundPlayer) {
+        foundPlayer->client->disconnectClient("You connected via another client, use only one!");
+    }
 
 	uint32_t timeStamp = msg.get<uint32_t>();
 	uint8_t randNumber = msg.getByte();

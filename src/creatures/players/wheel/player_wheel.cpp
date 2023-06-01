@@ -814,7 +814,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 	registerPlayerBonusData();
 
 	if (isDevMode()) {
-		spdlog::warn("Player: {} is saved the all slots info in: {} seconds", m_player.getName(), (OTSYS_TIME() - startSaveTime) / 1000);
+		spdlog::warn("Player: {} is saved the all slots info in: {} seconds", m_player.getName(), (OTSYS_TIME() - startSaveTime) / (1000.));
 	}
 }
 
@@ -1758,7 +1758,7 @@ int32_t PlayerWheel::checkBlessingGroveHealingByTarget(const Creature* target) c
 
 	int32_t healingBonus = 0;
 	uint8_t stage = getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
-	int32_t healthPercent = target->getHealth() * 100 / target->getMaxHealth();
+	int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
 	if (healthPercent <= 30) {
 		if (stage >= 3) {
 			healingBonus = 24;

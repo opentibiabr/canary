@@ -841,7 +841,7 @@ void Creature::mitigateDamage(const CombatType_t &combatType, BlockType_t &block
 	if (combatType != COMBAT_MANADRAIN && combatType != COMBAT_LIFEDRAIN) { // Add agony check if the server does have agony combat type
 		// Increase mitigate damage
 		auto originalDamage = damage;
-		damage -= (damage * (int32_t)getMitigation()) / 100;
+		damage -= (damage * getMitigation()) / 100.;
 		if (isDevMode()) {
 			spdlog::info("[mitigation] creature: {}, original damage: {}, mitigation damage: {}", getName(), originalDamage, damage);
 		}

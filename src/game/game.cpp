@@ -5839,7 +5839,7 @@ void Game::notifySpectators(const SpectatorHashSet &spectators, const Position &
 
 // Wheel of destiny combat helpers
 void Game::applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, const Creature* target) {
-	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100;
+	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100.;
 
 	if (attackerPlayer) {
 		damage.primary.value += attackerPlayer->wheel()->getStat(WheelStat_t::HEALING);
@@ -5856,15 +5856,15 @@ void Game::applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlay
 		}
 
 		if (attackerPlayer->wheel()->getInstant("Blessing of the Grove")) {
-			damage.primary.value += (damage.primary.value * attackerPlayer->wheel()->checkBlessingGroveHealingByTarget(target)) / 100;
+			damage.primary.value += (damage.primary.value * attackerPlayer->wheel()->checkBlessingGroveHealingByTarget(target)) / 100.;
 		}
 	}
 }
 
 void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const Player* attackerPlayer, const Creature* target) const {
 	if (damage.damageMultiplier > 0) {
-		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100;
-		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100;
+		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100.;
+		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100.;
 	}
 
 	if (attackerPlayer) {
@@ -5875,15 +5875,15 @@ void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const Player
 		if (damage.instantSpellName == "Twin Burst") {
 			int32_t damageBonus = attackerPlayer->wheel()->checkTwinBurstByTarget(target);
 			if (damageBonus != 0) {
-				damage.primary.value += (damage.primary.value * damageBonus) / 100;
-				damage.secondary.value += (damage.secondary.value * damageBonus) / 100;
+				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
 			}
 		}
 		if (damage.instantSpellName == "Executioner's Throw") {
 			int32_t damageBonus = attackerPlayer->wheel()->checkExecutionersThrow(target);
 			if (damageBonus != 0) {
-				damage.primary.value += (damage.primary.value * damageBonus) / 100;
-				damage.secondary.value += (damage.secondary.value * damageBonus) / 100;
+				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
 			}
 		}
 	}

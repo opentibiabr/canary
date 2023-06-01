@@ -700,6 +700,10 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) con
 }
 
 void PlayerWheel::sendGiftOfLifeCooldown() const {
+	if (m_player.client->oldProtocol) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0x5E);
 	msg.addByte(0x01); // Gift of life ID

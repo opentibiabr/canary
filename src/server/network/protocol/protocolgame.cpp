@@ -556,9 +556,9 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	std::string characterName = msg.getString();
 
 	Player* foundPlayer = g_game().getPlayerUniqueLogin(characterName);
-    if (foundPlayer) {
-        foundPlayer->client->disconnectClient("You connected via another client, use only one!");
-    }
+	if (foundPlayer) {
+		foundPlayer->client->disconnectClient("You connected via another client, use only one!");
+	}
 
 	uint32_t timeStamp = msg.get<uint32_t>();
 	uint8_t randNumber = msg.getByte();

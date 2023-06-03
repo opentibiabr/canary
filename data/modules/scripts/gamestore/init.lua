@@ -1849,7 +1849,7 @@ function Player.removeAllCoins(self, coins, offerCoinType)
 		if tibiaCoins >= coins and (offerCoinType == GameStore.CoinType.Coin or offerCoinType == GameStore.CoinType.Transferable) then
 			self:removeTibiaCoins(coins)
 		elseif offerCoinType == GameStore.CoinType.Transferable then
-			-- Remove as moedas transferíveis.
+			-- Remove transferable coins.
 			self:removeTransferableCoinsBalance(coins)		
 		else
 			-- Remove the available Tibia coins and calculate the remaining amount to remove from transferable coins.

@@ -1841,13 +1841,16 @@ end
 	@param coins (number) - The amount of coins to be removed.
 	@return (boolean) - Returns true if the coins were successfully removed, false otherwise.
 --]]
-function Player.removeAllCoins(self, coins)
+function Player.removeAllCoins(self, coins, offerCoinType)
 	-- Check if it is possible to remove all the coins.
 	if self:canRemoveAllCoins(coins) then
 		local tibiaCoins = self:getTibiaCoins()
 		-- Check if there are enough Tibia coins to remove.
-		if tibiaCoins >= coins then
+		if tibiaCoins >= coins and (offerCoinType == GameStore.CoinType.Coin or offerCoinType == GameStore.CoinType.Transferable) then
 			self:removeTibiaCoins(coins)
+		elseif offerCoinType == GameStore.CoinType.Transferable then
+			-- Remove as moedas transferíveis.
+			self:removeTransferableCoinsBalance(coins)		
 		else
 			-- Remove the available Tibia coins and calculate the remaining amount to remove from transferable coins.
 			self:removeTibiaCoins(tibiaCoins)
@@ -1897,8 +1900,8 @@ function Player.makeCoinTransaction(self, offer, desc)
 	end
 
 	-- First try remove normal coins, later the transferable coins
-	if self:canRemoveAllCoins(offer.price) then
-		op = self:removeAllCoins(offer.price)
+	if self:canRemoveAllCoins(offer.price, offer.coinType) then
+		op = self:removeAllCoins(offer.price, offer.coinType)
 	elseif self:canRemoveCoins(offer.price) then
 		-- Remove normal coins
 		op = self:removeCoinsBalance(offer.price)

@@ -1908,7 +1908,7 @@ function Player.makeCoinTransaction(self, offer, desc)
 		op = self:removeCoinsBalance(offer.price)
 	else
 		-- Remove transferable coins
-		op = self:removeTransferableCoins(offer.price)
+		op = self:RemoveTransferableCoins(offer.price)
 	end
 
 	-- When the transaction is suscessfull add to the history

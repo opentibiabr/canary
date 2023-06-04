@@ -555,7 +555,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	std::string password = sessionKey.substr(pos + 1);
 	std::string characterName = msg.getString();
 
-	Player* foundPlayer = g_game().getPlayerUniqueLogin(characterName);
+	const Player* foundPlayer = g_game().getPlayerUniqueLogin(characterName);
 	if (foundPlayer) {
 		foundPlayer->client->disconnectClient("You are already connected through another client. Please use only one client at a time!");
 	}

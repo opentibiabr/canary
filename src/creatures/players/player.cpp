@@ -1161,7 +1161,6 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 		}
 
 		ObjectCategory_t category = g_game().getObjectCategory(item);
-		Container* lootContainer = getLootContainer(category);
 		if (g_game().internalQuickLootItem(this, item, category) == RETURNVALUE_NOERROR) {
 			movedRewardItems++;
 		}

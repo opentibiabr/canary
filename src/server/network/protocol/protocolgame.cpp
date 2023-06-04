@@ -557,7 +557,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 
 	Player* foundPlayer = g_game().getPlayerUniqueLogin(characterName);
 	if (foundPlayer) {
-		foundPlayer->client->disconnectClient("You connected via another client, use only one!");
+		foundPlayer->client->disconnectClient("You are already connected through another client. Please use only one client at a time!");
 	}
 
 	uint32_t timeStamp = msg.get<uint32_t>();

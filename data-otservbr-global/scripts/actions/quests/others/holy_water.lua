@@ -112,6 +112,7 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 			Game.setStorageValue(GlobalStorage.Inquisition, math.random(4,5))
 		end
 		target:remove();
+	
     local newShadowNexus = Game.createItem(target.itemid + 1, 1, shadowNexusPosition);       
 		newShadowNexus:decay()
 		nexusMessage(player, player:getName() .. ' damaged the shadow nexus! You can\'t damage it while it\'s burning.')

@@ -1137,10 +1137,8 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 		return fromCorpse ? RETURNVALUE_REWARDCONTAINERISEMPTY : RETURNVALUE_REWARDCHESTISEMPTY;
 	}
 
-	uint32_t movedRewardItems = 0;
 	auto rewardCount = rewardItemsVector.size();
-	bool fallbackConsumed = false;
-	Item* fallbackItem = getInventoryItem(CONST_SLOT_BACKPACK);
+	uint32_t movedRewardItems = 0;
 	int32_t movedRewardMoney = 0;
 	for (auto item : rewardItemsVector) {
 		if (uint32_t worth = item->getWorth(); worth > 0) {

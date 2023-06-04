@@ -1845,12 +1845,13 @@ function Player.removeAllCoins(self, coins, offerCoinType)
 	-- Check if it is possible to remove all the coins.
 	if self:canRemoveAllCoins(coins) then
 		local tibiaCoins = self:getTibiaCoins()
+		local transferableCoins = self:getTransferableCoins()
 		-- Check if there are enough Tibia coins to remove.
-		if tibiaCoins >= coins and (offerCoinType == GameStore.CoinType.Coin or offerCoinType == GameStore.CoinType.Transferable) then
+		if tibiaCoins >= coins and offerCoinType == GameStore.CoinType.Coin then
 			self:removeTibiaCoins(coins)
-		elseif offerCoinType == GameStore.CoinType.Transferable then
+		elseif transferableCoins >= coins and offerCoinType == GameStore.CoinType.Transferable then
 			-- Remove transferable coins.
-			self:removeTransferableCoinsBalance(coins)
+			self:removeTransferableCoins(coins)
 		else
 			-- Remove the available Tibia coins and calculate the remaining amount to remove from transferable coins.
 			self:removeTibiaCoins(tibiaCoins)
@@ -1872,7 +1873,7 @@ function Player.canRemoveTransferableCoins(self, coins)
 	return true
 end
 
-function Player.removeTransferableCoinsBalance(self, coins)
+function Player.removeTransferableCoins(self, coins)
 	if self:canRemoveTransferableCoins(coins) then
 		sendStoreBalanceUpdating(self:getId(), true)
 		return self:removeTransferableCoins(coins)
@@ -1907,7 +1908,7 @@ function Player.makeCoinTransaction(self, offer, desc)
 		op = self:removeCoinsBalance(offer.price)
 	else
 		-- Remove transferable coins
-		op = self:removeTransferableCoinsBalance(offer.price)
+		op = self:RemoveTransferableCoin(offer.price)
 	end
 
 	-- When the transaction is suscessfull add to the history

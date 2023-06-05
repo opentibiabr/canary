@@ -16643,6 +16643,18 @@ local items = {
 		slot = "armor"
 	},
 	{
+		-- green demon helmet
+		itemid = 37609,
+		type = "equip",
+		slot = "head"
+	},
+	{
+		-- green demon helmet
+		itemid = 37609,
+		type = "deequip",
+		slot = "head"
+	},
+	{
 		-- golden helmet
 		itemid = 3365,
 		type = "equip",

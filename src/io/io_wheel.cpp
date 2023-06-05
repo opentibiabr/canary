@@ -310,8 +310,8 @@ void IOWheel::initializeSorcererSpells() {
 	m_wheelBonusData.spells.sorcerer[4].grade[2].decrease.secondaryGroupCooldown = 4;
 }
 
-bool IOWheel::isPointsOnSlot(Player &player, uint16_t points, WheelSlots_t slotType) const {
-	return points == player.wheel()->getPointsBySlotType(slotType);
+bool IOWheel::isMaxPointAddedToSlot(Player& player, uint16_t points, WheelSlots_t slotType) const {
+	return points == player.wheel()->getPointsBySlotType(slotType) && points == player.wheel()->getMaxPointsPerSlot(slotType);
 }
 
 bool IOWheel::isKnight(uint8_t vocationId) const {
@@ -331,13 +331,13 @@ bool IOWheel::isDruid(uint8_t vocationId) const {
 }
 
 void IOWheel::addSpell(Player &player, PlayerWheelMethodsBonusData &bonusData, WheelSlots_t slotType, uint16_t points, const std::string &spellName) const {
-	if (points == player.wheel()->getPointsBySlotType(slotType)) {
+	if (isMaxPointAddedToSlot(player, points, slotType)) {
 		bonusData.spells.push_back(spellName);
 	}
 }
 
 void IOWheel::increaseResistance(Player &player, PlayerWheelMethodsBonusData &bonusData, WheelSlots_t slotType, uint16_t points, CombatType_t combat, int16_t value) const {
-	if (points == player.wheel()->getPointsBySlotType(slotType)) {
+	if (isMaxPointAddedToSlot(player, points, slotType)) {
 		bonusData.resistance[combatTypeToIndex(combat)] += value;
 	}
 }
@@ -389,7 +389,7 @@ void IOWheel::initializeWheelMapFunctions() {
 
 // SLOT_GREEN_200 = 1
 void IOWheel::slotGreen200(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) const {
-	auto pointsInSlot = isPointsOnSlot(player, points, WheelSlots_t::SLOT_GREEN_200);
+	auto pointsInSlot = isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_GREEN_200);
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.health += 3 * points;
 		bonusData.stats.mana += 1 * points;
@@ -428,14 +428,14 @@ void IOWheel::slotGreenTop100(Player &player, uint16_t points, uint8_t vocationC
 	} else {
 		bonusData.stats.health += 1 * points;
 	}
-	if (isPointsOnSlot(player, points, WheelSlots_t::SLOT_GREEN_TOP_100)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_GREEN_TOP_100)) {
 		bonusData.leech.lifeLeech += 0.75;
 	}
 }
 
 // SLOT_RED_TOP_100 = 4
 void IOWheel::slotRedTop100(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) const {
-	auto pointsInSlot = isPointsOnSlot(player, points, WheelSlots_t::SLOT_RED_TOP_100);
+	auto pointsInSlot = isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_RED_TOP_100);
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.mana += 1 * points;
 		if (pointsInSlot) {
@@ -464,7 +464,7 @@ void IOWheel::slotRedTop150(Player &player, uint16_t points, uint8_t vocationCip
 		bonusData.stats.health += 1 * points;
 	}
 
-	if (isPointsOnSlot(player, points, WheelSlots_t::SLOT_RED_TOP_150)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_RED_TOP_150)) {
 		bonusData.leech.manaLeech += 0.25; // 0,25%
 	}
 }
@@ -495,7 +495,7 @@ void IOWheel::slotRed200(Player &player, uint16_t points, uint8_t vocationCipId,
 // SLOT_GREEN_BOTTOM_150 = 7
 void IOWheel::slotGreenBottom150(Player &player, uint16_t points, uint8_t, PlayerWheelMethodsBonusData &bonusData) const {
 	bonusData.mitigation += 0.03 * points; // 0,03%
-	if (isPointsOnSlot(player, points, WheelSlots_t::SLOT_GREEN_BOTTOM_150)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_GREEN_BOTTOM_150)) {
 		bonusData.leech.manaLeech += 0.25; // 0,25%
 	}
 }
@@ -597,7 +597,7 @@ void IOWheel::slotGreenBottom100(Player &player, uint16_t points, uint8_t vocati
 
 // SLOT_GREEN_BOTTOM_75 = 14
 void IOWheel::slotGreenBottom75(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) const {
-	auto pointsInSlot = isPointsOnSlot(player, points, WheelSlots_t::SLOT_GREEN_BOTTOM_75);
+	auto pointsInSlot = isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_GREEN_BOTTOM_75);
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.mana += 1 * points;
 		if (pointsInSlot) {
@@ -652,7 +652,7 @@ void IOWheel::slotRedBottom75(Player &player, uint16_t points, uint8_t vocationC
 	} else {
 		bonusData.stats.capacity += 2 * points;
 	}
-	if (isPointsOnSlot(player, points, WheelSlots_t::SLOT_RED_BOTTOM_75)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_RED_BOTTOM_75)) {
 		bonusData.leech.lifeLeech += 0.75; // 0,75%
 	}
 }
@@ -685,7 +685,7 @@ void IOWheel::slotBlueTop75(Player &player, uint16_t points, uint8_t vocationCip
 	} else {
 		bonusData.stats.health += 1 * points;
 	}
-	if (isPointsOnSlot(player, points, WheelSlots_t::SLOT_BLUE_TOP_75)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_BLUE_TOP_75)) {
 		bonusData.leech.manaLeech += 0.25; // 0,25%
 	}
 }
@@ -726,7 +726,7 @@ void IOWheel::slotPurple50(Player &player, uint16_t points, uint8_t vocationCipI
 // SLOT_PURPLE_TOP_75 = 23
 void IOWheel::slotPurpleTop75(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) const {
 	bonusData.mitigation += 0.03 * points; // 0,03%
-	auto pointsInSlot = isPointsOnSlot(player, points, WheelSlots_t::SLOT_PURPLE_TOP_75);
+	auto pointsInSlot = isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_PURPLE_TOP_75);
 	if (isKnight(vocationCipId)) {
 		if (pointsInSlot) {
 			bonusData.skills.melee += 1;
@@ -838,7 +838,7 @@ void IOWheel::slotPurpleTop150(Player &player, uint16_t points, uint8_t vocation
 	} else {
 		bonusData.stats.mana += 6 * points;
 	}
-	if (isPointsOnSlot(player, points, WheelSlots_t::SLOT_PURPLE_TOP_150)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_PURPLE_TOP_150)) {
 		bonusData.leech.lifeLeech += 0.75; // 0,75%
 	}
 }
@@ -873,7 +873,7 @@ void IOWheel::slotBlueBottom150(Player &player, uint16_t points, uint8_t vocatio
 	} else {
 		bonusData.stats.capacity += 2 * points;
 	}
-	if (isPointsOnSlot(player, points, WheelSlots_t::SLOT_BLUE_BOTTOM_150)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_BLUE_BOTTOM_150)) {
 		bonusData.leech.lifeLeech += 0.75; // 0,75%
 	}
 }
@@ -881,7 +881,7 @@ void IOWheel::slotBlueBottom150(Player &player, uint16_t points, uint8_t vocatio
 // SLOT_BLUE_BOTTOM_100 = 33
 void IOWheel::slotBlueBottom100(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) const {
 	bonusData.mitigation += 0.03 * points; // 0,03%
-	bool onSlot = isPointsOnSlot(player, points, WheelSlots_t::SLOT_BLUE_BOTTOM_100);
+	bool onSlot = isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_BLUE_BOTTOM_100);
 	if (isKnight(vocationCipId) && onSlot) {
 		bonusData.skills.melee += 1;
 	} else if (isPaladin(vocationCipId) && onSlot) {
@@ -900,7 +900,7 @@ void IOWheel::slotPurpleBottom100(Player &player, uint16_t points, uint8_t vocat
 	} else {
 		bonusData.stats.capacity += 2 * points;
 	}
-	if (isPointsOnSlot(player, points, WheelSlots_t::SLOT_PURPLE_BOTTOM_100)) {
+	if (isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_PURPLE_BOTTOM_100)) {
 		bonusData.leech.manaLeech += 0.25; // 0,25%
 	}
 }
@@ -920,7 +920,7 @@ void IOWheel::slotPurpleBottom150(Player &player, uint16_t points, uint8_t vocat
 
 // SLOT_PURPLE_200 = 36
 void IOWheel::slotPurple200(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) const {
-	bool isPointsAtSlot = isPointsOnSlot(player, points, WheelSlots_t::SLOT_PURPLE_200);
+	bool isPointsAtSlot = isMaxPointAddedToSlot(player, points, WheelSlots_t::SLOT_PURPLE_200);
 	if (isKnight(vocationCipId)) {
 		bonusData.stats.health += 3 * points;
 		bonusData.stats.mana += 1 * points;

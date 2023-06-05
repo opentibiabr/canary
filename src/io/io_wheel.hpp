@@ -259,7 +259,7 @@ class IOWheel : public IOWheelBonusData {
 		 * @param slotType The slot type to be checked.
 		 * @return true if the number of points is equal to the player's points in the specified slot type, false otherwise.
 		 */
-		bool isPointsOnSlot(Player &player, uint16_t points, WheelSlots_t slotType) const;
+		bool isMaxPointAddedToSlot(Player &player, uint16_t points, WheelSlots_t slotType) const;
 
 		/**
 		 * @brief Checks if the vocation ID corresponds to a knight.

@@ -310,7 +310,7 @@ void IOWheel::initializeSorcererSpells() {
 	m_wheelBonusData.spells.sorcerer[4].grade[2].decrease.secondaryGroupCooldown = 4;
 }
 
-bool IOWheel::isMaxPointAddedToSlot(Player& player, uint16_t points, WheelSlots_t slotType) const {
+bool IOWheel::isMaxPointAddedToSlot(Player &player, uint16_t points, WheelSlots_t slotType) const {
 	return points == player.wheel()->getPointsBySlotType(slotType) && points == player.wheel()->getMaxPointsPerSlot(slotType);
 }
 

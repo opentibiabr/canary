@@ -1501,13 +1501,13 @@ WheelStageEnum_t PlayerWheel::getPlayerSliceStage(const std::string &color) cons
 void PlayerWheel::checkAbilities() {
 	// Wheel of destiny
 	bool reloadClient = false;
-	if (checkBattleInstinct() && getInstant("Battle Instinct") && getOnThinkTimer(WheelOnThink_t::BATTLE_INSTINCT) < OTSYS_TIME()) {
+	if (getInstant("Battle Instinct") && getOnThinkTimer(WheelOnThink_t::BATTLE_INSTINCT) < OTSYS_TIME() && checkBattleInstinct()) {
 		reloadClient = true;
 	}
-	if (checkPositionalTatics() && getInstant("Positional Tatics") && getOnThinkTimer(WheelOnThink_t::POSITIONAL_TATICS) < OTSYS_TIME()) {
+	if (getInstant("Positional Tatics") && getOnThinkTimer(WheelOnThink_t::POSITIONAL_TATICS) < OTSYS_TIME() && checkPositionalTatics()) {
 		reloadClient = true;
 	}
-	if (checkBallisticMastery() && getInstant("Ballistic Mastery") && getOnThinkTimer(WheelOnThink_t::BALLISTIC_MASTERY) < OTSYS_TIME()) {
+	if (getInstant("Ballistic Mastery") && getOnThinkTimer(WheelOnThink_t::BALLISTIC_MASTERY) < OTSYS_TIME() && checkBallisticMastery()) {
 		reloadClient = true;
 	}
 
@@ -1791,7 +1791,7 @@ int32_t PlayerWheel::checkTwinBurstByTarget(const Creature* target) const {
 
 	int32_t damageBonus = 0;
 	uint8_t stage = getStage(WheelStage_t::TWIN_BURST);
-	int32_t healthPercent = target->getHealth() * 100 / target->getMaxHealth();
+	int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
 	if (healthPercent > 60) {
 		if (stage >= 3) {
 			damageBonus = 60;
@@ -1812,7 +1812,7 @@ int32_t PlayerWheel::checkExecutionersThrow(const Creature* target) const {
 
 	int32_t damageBonus = 0;
 	uint8_t stage = getStage(WheelStage_t::EXECUTIONERS_THROW);
-	int32_t healthPercent = target->getHealth() * 100 / target->getMaxHealth();
+	int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
 	if (healthPercent <= 30) {
 		if (stage >= 3) {
 			damageBonus = 150;
@@ -1965,15 +1965,15 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 		return;
 	}
 	// Battle Instinct
-	if (checkBattleInstinct() && getInstant("Battle Instinct") && (force || getOnThinkTimer(WheelOnThink_t::BATTLE_INSTINCT) < OTSYS_TIME())) {
+	if (getInstant("Battle Instinct") && (force || getOnThinkTimer(WheelOnThink_t::BATTLE_INSTINCT) < OTSYS_TIME()) && checkBattleInstinct()) {
 		updateClient = true;
 	}
 	// Positional Tatics
-	if (checkPositionalTatics() && getInstant("Positional Tatics") && (force || getOnThinkTimer(WheelOnThink_t::POSITIONAL_TATICS) < OTSYS_TIME())) {
+	if (getInstant("Positional Tatics") && (force || getOnThinkTimer(WheelOnThink_t::POSITIONAL_TATICS) < OTSYS_TIME()) && checkPositionalTatics()) {
 		updateClient = true;
 	}
 	// Ballistic Mastery
-	if (checkBallisticMastery() && getInstant("Ballistic Mastery") && (force || getOnThinkTimer(WheelOnThink_t::BALLISTIC_MASTERY) < OTSYS_TIME())) {
+	if (getInstant("Ballistic Mastery") && (force || getOnThinkTimer(WheelOnThink_t::BALLISTIC_MASTERY) < OTSYS_TIME()) && checkBallisticMastery()) {
 		updateClient = true;
 	}
 	// Gift of life (Cooldown)
@@ -1981,11 +1981,11 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 		decreaseGiftOfCooldown(1);
 	}
 	// Combat Mastery
-	if (checkCombatMastery() && getInstant("Combat Mastery") && (force || getOnThinkTimer(WheelOnThink_t::COMBAT_MASTERY) < OTSYS_TIME())) {
+	if (getInstant("Combat Mastery") && (force || getOnThinkTimer(WheelOnThink_t::COMBAT_MASTERY) < OTSYS_TIME()) && checkCombatMastery()) {
 		updateClient = true;
 	}
 	// Divine Empowerment
-	if (checkDivineEmpowerment() && getInstant("Divine Empowerment") && (force || getOnThinkTimer(WheelOnThink_t::DIVINE_EMPOWERMENT) < OTSYS_TIME())) {
+	if (getInstant("Divine Empowerment") && (force || getOnThinkTimer(WheelOnThink_t::DIVINE_EMPOWERMENT) < OTSYS_TIME()) && checkDivineEmpowerment()) {
 		updateClient = true;
 	}
 	if (updateClient) {
@@ -2499,10 +2499,10 @@ void PlayerWheel::healIfBattleHealingActive() const {
 void PlayerWheel::adjustDamageBasedOnResistanceAndSkill(int32_t &damage, CombatType_t combatType) const {
 	int32_t wheelOfDestinyElementAbsorb = getResistance(combatType);
 	if (wheelOfDestinyElementAbsorb > 0) {
-		damage -= (damage * wheelOfDestinyElementAbsorb) / 10000;
+		damage -= std::ceil((damage * wheelOfDestinyElementAbsorb) / 10000.);
 	}
 
-	damage -= damage * checkAvatarSkill(WheelAvatarSkill_t::DAMAGE_REDUCTION) / 100;
+	damage -= std::ceil((damage * checkAvatarSkill(WheelAvatarSkill_t::DAMAGE_REDUCTION)) / 100.);
 }
 
 float PlayerWheel::calculateMitigation() const {

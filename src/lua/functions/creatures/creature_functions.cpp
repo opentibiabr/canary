@@ -346,6 +346,21 @@ int CreatureFunctions::luaCreatureGetSpeed(lua_State* L) {
 	return 1;
 }
 
+int CreatureFunctions::luaCreatureSetSpeed(lua_State* L) {
+	// creature:setSpeed(speed)
+	Creature* creature = getCreature(L, 1);
+	if (!creature) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	int32_t speed = getNumber<int32_t>(L, 2);
+	g_game().setCreatureSpeed(creature, speed);
+	pushBoolean(L, true);
+	return 1;
+}
+
 int CreatureFunctions::luaCreatureGetBaseSpeed(lua_State* L) {
 	// creature:getBaseSpeed()
 	const Creature* creature = getUserdata<const Creature>(L, 1);

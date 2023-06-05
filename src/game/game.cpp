@@ -5454,6 +5454,17 @@ void Game::changeSpeed(Creature* creature, int32_t varSpeedDelta) {
 	}
 }
 
+void Game::setCreatureSpeed(Creature* creature, int32_t speed) {
+	creature->setBaseSpeed(static_cast<uint16_t>(speed));
+
+	// send creature speed to client
+	SpectatorHashSet spectators;
+	map.getSpectators(spectators, creature->getPosition(), false, true);
+	for (Creature* spectator : spectators) {
+		spectator->getPlayer()->sendChangeSpeed(creature, creature->getStepSpeed());
+	}
+}
+
 void Game::changePlayerSpeed(Player &player, int32_t varSpeedDelta) {
 	int32_t varSpeed = player.getSpeed() - player.getBaseSpeed();
 	varSpeed += varSpeedDelta;

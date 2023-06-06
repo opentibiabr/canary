@@ -1456,6 +1456,8 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 			if (!allowAnything && item->getID() != ITEM_GOLD_COIN && item->getID() != ITEM_PLATINUM_COIN && item->getID() != ITEM_CRYSTAL_COIN) {
 				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 			}
+
+			return RETURNVALUE_NOERROR;
 		}
 
 		const Container* topParentContainer = toCylinder->getContainer()->getRootContainer();

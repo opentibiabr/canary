@@ -768,6 +768,18 @@ local items = {
 		slot = "armor"
 	},
 	{
+		-- green demon helmet
+		itemid = 37609,
+		type = "equip",
+		slot = "head"
+	},
+	{
+		-- green demon helmet
+		itemid = 37609,
+		type = "deequip",
+		slot = "head"
+	},
+	{
 		-- changing backpack
 		itemid = 37536,
 		type = "equip",
@@ -2195,6 +2207,18 @@ local items = {
 		itemid = 32585,
 		type = "deequip",
 		slot = "armor"
+	},
+	{
+		-- Traditional Gamsbart Hat
+		itemid = 32100,
+		type = "equip",
+		slot = "head"
+	},
+	{
+		-- Traditional Gamsbart Hat
+		itemid = 32100,
+		type = "deequip",
+		slot = "head"
 	},
 	{
 		-- meat hammer
@@ -5940,18 +5964,6 @@ local items = {
 		type = "deequip",
 		slot = "feet",
 		level = 150
-	},
-	{
-		-- Traditional Gamsbart Hat
-		itemid = 32100,
-		type = "equip",
-		slot = "head"
-	},
-	{
-		-- Traditional Gamsbart Hat
-		itemid = 32100,
-		type = "deequip",
-		slot = "head"
 	},
 	{
 		-- tiara of power
@@ -16641,18 +16653,6 @@ local items = {
 		itemid = 3366,
 		type = "deequip",
 		slot = "armor"
-	},
-	{
-		-- green demon helmet
-		itemid = 37609,
-		type = "equip",
-		slot = "head"
-	},
-	{
-		-- green demon helmet
-		itemid = 37609,
-		type = "deequip",
-		slot = "head"
 	},
 	{
 		-- golden helmet

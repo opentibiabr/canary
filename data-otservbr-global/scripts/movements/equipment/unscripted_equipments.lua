@@ -7227,7 +7227,7 @@ local items = {
 		slot = "necklace"
 	},
 	{
-		-- enchanted werewolf amulet - sword
+		-- enchanted werewolf helmet - sword
 		itemid = 22132,
 		type = "equip",
 		slot = "necklace"
@@ -7238,7 +7238,7 @@ local items = {
 		}
 	},
 	{
-		-- enchanted werewolf amulet - sword
+		-- enchanted werewolf helmet - sword
 		itemid = 22132,
 		type = "deequip",
 		slot = "necklace",

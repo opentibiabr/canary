@@ -7230,7 +7230,7 @@ local items = {
 		-- enchanted werewolf helmet - sword
 		itemid = 22132,
 		type = "equip",
-		slot = "necklace"
+		slot = "necklace",
 		level = 100,
 		vocation = {
 			{"Knight", true},

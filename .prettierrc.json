@@ -1,0 +1,7 @@
+{
+  "parser": "lua",
+  "plugins": ["@elsongabriel/lua-formatter"],
+  "trailingComma": "none",
+  "printWidth": 255,
+  "endOfLine": "auto"
+}

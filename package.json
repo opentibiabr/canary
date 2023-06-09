@@ -4,5 +4,14 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/opentibiabr/canary.git"
+  },
+  "scripts": {
+    "prettier": "prettier",
+    "prettier:format": "prettier -w \"**/*.lua\"",
+    "prettier:test": "prettier -w path/to/file.lua"
+  },
+  "dependencies": {
+    "@elsongabriel/prettier": "^1.0.1",
+    "@elsongabriel/lua-formatter": "^1.0.4"
   }
 }

@@ -1,0 +1,38 @@
+---
+name: Lua-formatter
+on:
+  pull_request:
+  push:
+jobs:
+
+  lua-formatter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Actions checkout
+        if: ${{ github.ref != 'refs/heads/main' }}
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run lua plugin prettier formatter
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: >
+          npm install && npm run prettier:format
+
+      - name: Run add and commit
+        if: ${{ github.ref != 'refs/heads/main' }}
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: GitHub Actions
+          author_email: github-actions[bot]@users.noreply.github.com
+          message: "Lua code format - (lua-format)"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

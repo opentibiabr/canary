@@ -768,6 +768,18 @@ local items = {
 		slot = "armor"
 	},
 	{
+		-- green demon helmet
+		itemid = 37609,
+		type = "equip",
+		slot = "head"
+	},
+	{
+		-- green demon helmet
+		itemid = 37609,
+		type = "deequip",
+		slot = "head"
+	},
+	{
 		-- changing backpack
 		itemid = 37536,
 		type = "equip",
@@ -2195,6 +2207,18 @@ local items = {
 		itemid = 32585,
 		type = "deequip",
 		slot = "armor"
+	},
+	{
+		-- Traditional Gamsbart Hat
+		itemid = 32100,
+		type = "equip",
+		slot = "head"
+	},
+	{
+		-- Traditional Gamsbart Hat
+		itemid = 32100,
+		type = "deequip",
+		slot = "head"
 	},
 	{
 		-- meat hammer
@@ -7203,8 +7227,46 @@ local items = {
 		slot = "necklace"
 	},
 	{
-		-- enchanted werewolf helmet
+		-- enchanted werewolf helmet - sword
+		itemid = 22132,
+		type = "equip",
+		slot = "necklace"
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- enchanted werewolf helmet - sword
+		itemid = 22132,
+		type = "deequip",
+		slot = "necklace",
+		level = 100
+	},
+	{
+		-- enchanted werewolf helmet - ml
 		itemid = 22130,
+		type = "equip",
+		slot = "head",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- enchanted werewolf helmet - ml
+		itemid = 22130,
+		type = "deequip",
+		slot = "head",
+		level = 100
+	},
+	{
+		-- enchanted werewolf helmet - distance
+		itemid = 22129,
 		type = "equip",
 		slot = "head",
 		level = 100,
@@ -7214,15 +7276,15 @@ local items = {
 		}
 	},
 	{
-		-- enchanted werewolf helmet
-		itemid = 22130,
+		-- enchanted werewolf helmet - distance
+		itemid = 22129,
 		type = "deequip",
 		slot = "head",
 		level = 100
 	},
 	{
-		-- enchanted werewolf helmet
-		itemid = 22129,
+		-- enchanted werewolf helmet - club
+		itemid = 22128,
 		type = "equip",
 		slot = "head",
 		level = 100,
@@ -7232,43 +7294,25 @@ local items = {
 		}
 	},
 	{
-		-- enchanted werewolf helmet
-		itemid = 22129,
-		type = "deequip",
-		slot = "head",
-		level = 100
-	},
-	{
-		-- enchanted werewolf helmet
-		itemid = 22128,
-		type = "equip",
-		slot = "head",
-		level = 100,
-		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
-	},
-	{
-		-- enchanted werewolf helmet
+		-- enchanted werewolf helmet - club
 		itemid = 22128,
 		type = "deequip",
 		slot = "head",
 		level = 100
 	},
 	{
-		-- enchanted werewolf helmet
+		-- enchanted werewolf helmet - axe
 		itemid = 22127,
 		type = "equip",
 		slot = "head",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Knight", true},
+			{"Elite Knight"}
 		}
 	},
 	{
-		-- enchanted werewolf helmet
+		-- enchanted werewolf helmet - axe
 		itemid = 22127,
 		type = "deequip",
 		slot = "head",
@@ -13706,13 +13750,13 @@ local items = {
 	},
 	{
 		-- mining helmet
-		itemid = 139,
+		itemid = 875,
 		type = "equip",
 		slot = "head"
 	},
 	{
 		-- mining helmet
-		itemid = 139,
+		itemid = 875,
 		type = "deequip",
 		slot = "head"
 	},

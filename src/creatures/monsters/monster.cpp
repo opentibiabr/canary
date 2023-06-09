@@ -2044,7 +2044,7 @@ bool Monster::challengeCreature(Creature* creature) {
 
 	bool result = selectTarget(creature);
 	if (result) {
-		targetChangeCooldown = 8000;
+		targetChangeCooldown = 6000;
 		challengeFocusDuration = targetChangeCooldown;
 		targetChangeTicks = 0;
 	}

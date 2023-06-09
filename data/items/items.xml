@@ -4508,7 +4508,6 @@
 		<attribute key="weight" value="179"/>
 	</item>
 	<item id="3011" article="a" name="crown">
-		<attribute key="defense" value="1"/>
 		<attribute key="weight" value="1900"/>
 	</item>
 	<item id="3012" article="a" name="wolf tooth chain">
@@ -4543,7 +4542,7 @@
 		<attribute key="weight" value="680"/>
 	</item>
 	<item id="3022" article="an" name="ancient tiara">
-		<attribute key="weight" value="819"/>
+		<attribute key="weight" value="820"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
 			<attribute key="skillboost axe" value="3"/>
@@ -5461,10 +5460,10 @@
 	</item>
 	<item id="3229" article="a" name="helmet of the ancients">
 		<attribute key="description" value="The gem of the helmet is burned out and should be replaced"/>
-		<attribute key="armor" value="11"/>
+		<attribute key="armor" value="8"/>
 		<attribute key="weight" value="2760"/>
 	</item>
-	<item id="3230" article="a" name="helmet of the ancients">
+	<item id="3230" article="a" name="full helmet of the ancients">
 		<attribute key="description" value="The gem is glowing with power"/>
 		<attribute key="duration" value="1800"/>
 		<attribute key="decayTo" value="3229"/>
@@ -6433,14 +6432,6 @@
 	<item id="3352" article="a" name="chain helmet">
 		<attribute key="armor" value="2"/>
 		<attribute key="weight" value="4200"/>
-		<attribute key="imbuementslot" value="1">
-			<attribute key="mana leech" value="3"/>
-			<attribute key="skillboost axe" value="3"/>
-			<attribute key="skillboost sword" value="3"/>
-			<attribute key="skillboost club" value="3"/>
-			<attribute key="skillboost shielding" value="3"/>
-			<attribute key="skillboost distance" value="3"/>
-		</attribute>
 	</item>
 	<item id="3353" article="an" name="iron helmet">
 		<attribute key="armor" value="5"/>
@@ -34543,6 +34534,7 @@
 	</item>
 	<item id="22757" article="a" name="shroud of despair">
 		<attribute key="armor" value="7"/>
+		<attribute key="absorbpercentdeath" value="3"/>
 		<attribute key="weight" value="3400"/>
 	</item>
 	<item id="22758" article="a" name="death gaze">
@@ -35317,7 +35309,7 @@
 		<attribute key="managain" value="8"/>
 		<attribute key="healthticks" value="6000"/>
 		<attribute key="healthgain" value="2"/>
-		<attribute key="speed" value="10"/>
+		<attribute key="speed" value="20"/>
 		<attribute key="duration" value="3600"/>
 		<attribute key="transformdeequipto" value="23474"/>
 		<attribute key="decayTo" value="0"/>
@@ -39947,7 +39939,7 @@
 		<attribute key="absorbpercentice" value="-2"/>
 		<attribute key="absorbpercentenergy" value="8"/>
 		<attribute key="magicpoints" value="2"/>
-		<attribute key="armor" value="7"/>
+		<attribute key="armor" value="8"/>
 		<attribute key="weight" value="2400"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
@@ -46923,16 +46915,7 @@
 	</item>
 	<item id="32630" article="a" name="spooky hood">
 		<attribute key="description" value="Every time you look away you have a strange feeling, as if something watches you from its depths"/>
-		<attribute key="armor" value="1"/>
 		<attribute key="weight" value="1250"/>
-		<attribute key="imbuementslot" value="2">
-			<attribute key="mana leech" value="3"/>
-			<attribute key="skillboost axe" value="3"/>
-			<attribute key="skillboost sword" value="3"/>
-			<attribute key="skillboost club" value="3"/>
-			<attribute key="skillboost shielding" value="3"/>
-			<attribute key="skillboost distance" value="3"/>
-		</attribute>
 	</item>
 	<item id="32631" article="a" name="ghost claw">
 		<attribute key="description" value="It is glowing in an unhealthy light"/>
@@ -51588,6 +51571,7 @@
 	<item id="36670" article="a" name="eldritch cowl">
 		<attribute key="absorbpercentice" value="7"/>
 		<attribute key="armor" value="7"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="weight" value="2600"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
@@ -51601,6 +51585,7 @@
 	<item id="36671" article="a" name="eldritch hood">
 		<attribute key="absorbpercentpoison" value="7"/>
 		<attribute key="armor" value="7"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="weight" value="2700"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>

@@ -3207,7 +3207,7 @@ local items = {
 		itemid = 29417,
 		type = "equip",
 		slot = "hand",
-		level = 250,
+		level = 220,
 		vocation = {
 			{"Paladin", true},
 			{"Royal Paladin"}
@@ -3217,7 +3217,12 @@ local items = {
 		-- living vine bow
 		itemid = 29417,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 220,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
 	},
 	{
 		-- golden axe
@@ -5495,13 +5500,15 @@ local items = {
 		-- royal star
 		itemid = 25759,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 120
 	},
 	{
 		-- royal star
 		itemid = 25759,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 120
 	},
 	{
 		-- spectral bolt
@@ -5519,13 +5526,15 @@ local items = {
 		-- leaf star
 		itemid = 25735,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 60
 	},
 	{
 		-- leaf star
 		itemid = 25735,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 60
 	},
 	{
 		-- dream blossom staff
@@ -7230,7 +7239,7 @@ local items = {
 		-- enchanted werewolf helmet - sword
 		itemid = 22132,
 		type = "equip",
-		slot = "necklace"
+		slot = "necklace",
 		level = 100,
 		vocation = {
 			{"Knight", true},
@@ -7900,13 +7909,15 @@ local items = {
 		-- glooth spear
 		itemid = 21158,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 60
 	},
 	{
 		-- glooth spear
 		itemid = 21158,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 60
 	},
 	{
 		-- cake backpack
@@ -8772,13 +8783,19 @@ local items = {
 		-- mean paladin spear
 		itemid = 17110,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		vocation = {
+			{"None", true}
+		}
 	},
 	{
 		-- mean paladin spear
 		itemid = 17110,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		vocation = {
+			{"None", true}
+		}
 	},
 	{
 		-- mean knight sword
@@ -12360,7 +12377,7 @@ local items = {
 		itemid = 8024,
 		type = "equip",
 		slot = "hand",
-		level = 120,
+		level = 100,
 		vocation = {
 			{"Paladin", true},
 			{"Royal Paladin"}
@@ -12370,7 +12387,12 @@ local items = {
 		-- The Devileye
 		itemid = 8024,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 100,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
 	},
 	{
 		-- royal crossbow
@@ -12522,6 +12544,18 @@ local items = {
 		slot = "necklace"
 	},
 	{
+		-- viper star
+		itemid = 7366,
+		type = "equip",
+		slot = "hand"
+	},
+	{
+		-- viper star
+		itemid = 7366,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
 		-- crimson sword
 		itemid = 860,
 		type = "equip",
@@ -12553,6 +12587,18 @@ local items = {
 	},
 	{
 		-- shapeshifter ring
+		itemid = 907,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- Throwing Cake
+		itemid = 904,
+		type = "equip",
+		slot = "ring"
+	},
+	{
+		-- Throwing Cake
 		itemid = 904,
 		type = "deequip",
 		slot = "ring"
@@ -14693,37 +14739,43 @@ local items = {
 		-- royal spear
 		itemid = 7378,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 25
 	},
 	{
 		-- royal spear
 		itemid = 7378,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 25
 	},
 	{
 		-- assassin star
 		itemid = 7368,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 80
 	},
 	{
 		-- assassin star
 		itemid = 7368,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 80
 	},
 	{
 		-- enchanted spear
 		itemid = 7367,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 42
 	},
 	{
 		-- enchanted spear
 		itemid = 7367,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 42
 	},
 	{
 		-- onyx arrow
@@ -15296,13 +15348,15 @@ local items = {
 		-- hunting spear
 		itemid = 3347,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 20
 	},
 	{
 		-- hunting spear
 		itemid = 3347,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 20
 	},
 	{
 		-- ripper lance

@@ -73,7 +73,7 @@ monster.loot = {
 	{name = "Headpecker Beak", chance = 11360},
 	{name = "Headpecker Feather", chance = 7620, minCount = 1, maxCount = 5},
 	{name = "Furry Club", chance = 5560},
-	{name = "Carrot", chance = 4950},
+	{id = 3595, chance = 4950, minCount = 1, maxCount = 3},
 	{name = "Knife", chance = 4260},
 	{name = "Spike Sword", chance = 4040},
 	{name = "War Hammer", chance = 2290},

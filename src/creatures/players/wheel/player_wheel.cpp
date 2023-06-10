@@ -21,16 +21,20 @@
 // Here are built-in helper functions
 namespace {
 	template <typename SpellType>
-	bool checkSpellArea(const std::array<SpellType, 5> &spellsTable, const std::string &spellName, uint8_t stage) {
-		for (const auto &spellTable : spellsTable) {
-			if (spellTable.name == spellName) {
-				for (size_t spellStage = 0; spellStage < 3; ++spellStage) {
-					if (stage >= spellStage && spellTable.grade[spellStage].increase.area) {
-						if (isDevMode()) {
-							spdlog::info("[{}] spell with name {}, and stage {} has increase area", __FUNCTION__, spellName, spellStage);
-						}
-						return true;
+	bool checkSpellArea(const std::array<SpellType, 5>& spellsTable, const std::string& spellName, uint8_t stage) {
+		for (const auto& spellTable : spellsTable) {
+			auto size = std::ssize(spellTable.grade);
+			if (isDevMode()) {
+				spdlog::info("spell area stage {}, grade {}", stage, size);
+			}
+			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
+				const auto& spellData = spellTable.grade[stage];
+				if (spellData.increase.area) {
+					if (isDevMode()) {
+						spdlog::info("[{}] spell with name {}, and stage {} has increase area", __FUNCTION__, spellName, stage);
 					}
+
+					return true;
 				}
 			}
 		}
@@ -38,10 +42,14 @@ namespace {
 	}
 
 	template <typename SpellType>
-	int checkSpellAdditionalTarget(const std::array<SpellType, 5> &spellsTable, const std::string &spellName, uint8_t stage) {
-		for (const auto &spellTable : spellsTable) {
-			if (spellTable.name == spellName && stage < std::ssize(spellTable.grade)) {
-				const auto &spellData = spellTable.grade[stage];
+	int checkSpellAdditionalTarget(const std::array<SpellType, 5>& spellsTable, const std::string& spellName, uint8_t stage) {
+		for (const auto& spellTable : spellsTable) {
+			auto size = std::ssize(spellTable.grade);
+			if (isDevMode()) {
+				spdlog::info("spell target stage {}, grade {}", stage, size);
+			}
+			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
+				const auto& spellData = spellTable.grade[stage];
 				if (spellData.increase.aditionalTarget) {
 					return spellData.increase.aditionalTarget;
 				}
@@ -51,10 +59,14 @@ namespace {
 	}
 
 	template <typename SpellType>
-	int checkSpellAdditionalDuration(const std::array<SpellType, 5> &spellsTable, const std::string &spellName, uint8_t stage) {
-		for (const auto &spellTable : spellsTable) {
-			if (spellTable.name == spellName && stage < std::ssize(spellTable.grade)) {
-				const auto &spellData = spellTable.grade[stage];
+	int checkSpellAdditionalDuration(const std::array<SpellType, 5>& spellsTable, const std::string& spellName, uint8_t stage) {
+		for (const auto& spellTable : spellsTable) {
+			auto size = std::ssize(spellTable.grade);
+			if (isDevMode()) {
+				spdlog::info("spell duration stage {}, grade {}", stage, size);
+			}
+			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
+				const auto& spellData = spellTable.grade[stage];
 				if (spellData.increase.duration > 0) {
 					return spellData.increase.duration;
 				}
@@ -722,8 +734,9 @@ void PlayerWheel::sendGiftOfLifeCooldown() const {
 
 bool PlayerWheel::checkSavePointsBySlotType(WheelSlots_t slotType, uint16_t points) {
 	if (points > 0 && !canPlayerSelectPointOnSlot(slotType, false)) {
-		spdlog::warn("[{}] Failed to save points: {}, from slot {}", __FUNCTION__, points, fmt::underlying(slotType));
-		spdlog::error("Possible manipulation of bytes of player {}", m_player.getName());
+		if (isDevMode()) {
+			spdlog::warn("[{}] Failed to save points: {}, from slot {}", __FUNCTION__, points, fmt::underlying(slotType));
+		}
 		return false;
 	}
 
@@ -960,10 +973,13 @@ uint8_t PlayerWheel::getPlayerVocationEnum() const {
 
 bool PlayerWheel::canSelectSlotFullOrPartial(WheelSlots_t slot) const {
 	if (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot)) {
+		if (isDevMode()) {
+			spdlog::info("[{}] points on slot {}, max points {}", __FUNCTION__, getPointsBySlotType(slot), getMaxPointsPerSlot(slot));
+		}
 		return true;
 	}
 	if (isDevMode()) {
-		spdlog::error("[{}] player: {}, had a error and not can select slot full or partial", __FUNCTION__, m_player.getName());
+		spdlog::error("[{}] slot {} is not full", __FUNCTION__, fmt::underlying(slot));
 	}
 	return false;
 }

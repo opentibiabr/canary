@@ -21,14 +21,14 @@
 // Here are built-in helper functions
 namespace {
 	template <typename SpellType>
-	bool checkSpellArea(const std::array<SpellType, 5>& spellsTable, const std::string& spellName, uint8_t stage) {
-		for (const auto& spellTable : spellsTable) {
+	bool checkSpellArea(const std::array<SpellType, 5> &spellsTable, const std::string &spellName, uint8_t stage) {
+		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			if (isDevMode()) {
 				spdlog::info("spell area stage {}, grade {}", stage, size);
 			}
 			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
-				const auto& spellData = spellTable.grade[stage];
+				const auto &spellData = spellTable.grade[stage];
 				if (spellData.increase.area) {
 					if (isDevMode()) {
 						spdlog::info("[{}] spell with name {}, and stage {} has increase area", __FUNCTION__, spellName, stage);
@@ -42,14 +42,14 @@ namespace {
 	}
 
 	template <typename SpellType>
-	int checkSpellAdditionalTarget(const std::array<SpellType, 5>& spellsTable, const std::string& spellName, uint8_t stage) {
-		for (const auto& spellTable : spellsTable) {
+	int checkSpellAdditionalTarget(const std::array<SpellType, 5> &spellsTable, const std::string &spellName, uint8_t stage) {
+		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			if (isDevMode()) {
 				spdlog::info("spell target stage {}, grade {}", stage, size);
 			}
 			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
-				const auto& spellData = spellTable.grade[stage];
+				const auto &spellData = spellTable.grade[stage];
 				if (spellData.increase.aditionalTarget) {
 					return spellData.increase.aditionalTarget;
 				}
@@ -59,14 +59,14 @@ namespace {
 	}
 
 	template <typename SpellType>
-	int checkSpellAdditionalDuration(const std::array<SpellType, 5>& spellsTable, const std::string& spellName, uint8_t stage) {
-		for (const auto& spellTable : spellsTable) {
+	int checkSpellAdditionalDuration(const std::array<SpellType, 5> &spellsTable, const std::string &spellName, uint8_t stage) {
+		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			if (isDevMode()) {
 				spdlog::info("spell duration stage {}, grade {}", stage, size);
 			}
 			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
-				const auto& spellData = spellTable.grade[stage];
+				const auto &spellData = spellTable.grade[stage];
 				if (spellData.increase.duration > 0) {
 					return spellData.increase.duration;
 				}

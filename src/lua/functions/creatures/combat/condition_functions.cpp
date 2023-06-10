@@ -185,7 +185,7 @@ int ConditionFunctions::luaConditionSetOutfit(lua_State* L) {
 		outfit.lookBody = getNumber<uint8_t>(L, 5);
 		outfit.lookHead = getNumber<uint8_t>(L, 4);
 		outfit.lookType = getNumber<uint16_t>(L, 3);
-		outfit.lookTypeEx = getNumber<uint16_t>(L, 2);
+		outfit.lookTypeEx = getNumber<uint32_t>(L, 2);
 	}
 
 	ConditionOutfit* condition = dynamic_cast<ConditionOutfit*>(getUserdata<Condition>(L, 1));

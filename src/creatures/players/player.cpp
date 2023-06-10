@@ -5900,7 +5900,7 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 			// Stow "all items" from loot pouch
 			auto itemParent = item->getParent();
 			auto lootPouch = itemParent->getItem();
-			if (itemParent && lootPouch && lootPouch->getID() == ITEM_LOOT_POUCH) {
+			if (itemParent && lootPouch && lootPouch->getID() == ITEM_GOLD_POUCH) {
 				sendStowItems(*item, *lootPouch, itemDict);
 			}
 		}

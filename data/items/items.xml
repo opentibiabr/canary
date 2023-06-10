@@ -4807,7 +4807,7 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="fire"/>
 		<attribute key="range" value="3"/>
-		<attribute key="weight" value="2100"/>
+		<attribute key="weight" value="2300"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
@@ -22758,7 +22758,7 @@
 	<item id="12603" article="a" name="wand of dimensions">
 		<attribute key="description" value="This wand controls the rift between time and space"/>
 		<attribute key="weaponType" value="wand"/>
-		<attribute key="shootType" value="death"/>
+		<attribute key="shootType" value="energy"/>
 		<attribute key="range" value="3"/>
 		<attribute key="weight" value="2800"/>
 	</item>
@@ -26207,6 +26207,8 @@
 	<item id="17111" article="a" name="sorcerer and druid staff">
 		<attribute key="description" value="It can only be wielded properly by players without vocation."/>
 		<attribute key="weaponType" value="wand"/>
+		<attribute key="shootType" value="energy"/>
+		<attribute key="range" value="3"/>
 		<attribute key="weight" value="1900"/>
 	</item>
 	<item id="17112" article="a" name="sorc and druid attack rune">
@@ -34617,7 +34619,7 @@
 		<attribute key="duration" value="86400"/>
 		<attribute key="decayTo" value="22764"/>
 		<attribute key="range" value="4"/>
-		<attribute key="weight" value="2900"/>
+		<attribute key="weight" value="2250"/>
 	</item>
 	<item id="22767" article="a" name="Ferumbras' amulet">
 		<attribute key="description" value="The rare jewel is made of sapphire and ruby and has a golden F-pendant"/>
@@ -37268,8 +37270,8 @@
 		<attribute key="description" value="It's a gnarly branch with a gleaming blue blossom"/>
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="energy"/>
-		<attribute key="magicpoints" value="2"/>
-		<attribute key="range" value="4"/>
+		<attribute key="magicpoints" value="1"/>
+		<attribute key="range" value="5"/>
 		<attribute key="weight" value="3200"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
@@ -39409,7 +39411,7 @@
 	<item id="27457" article="a" name="wand of destruction">
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="energy"/>
-		<attribute key="magicpoints" value="2"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="3500"/>
 		<attribute key="imbuementslot" value="2">
@@ -39422,7 +39424,7 @@
 	<item id="27458" article="a" name="rod of destruction">
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="smallice"/>
-		<attribute key="magicpoints" value="2"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="3500"/>
 		<attribute key="imbuementslot" value="2">
@@ -41858,7 +41860,9 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="absorbpercentholy" value="8"/>
-		<attribute key="magicpoints" value="3"/>
+		<attribute key="magicpoints" value="2"/>
+		<attribute key="criticalhitdamage" value="25"/>
+		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="range" value="5"/>
 		<attribute key="weight" value="3300"/>
 		<attribute key="imbuementslot" value="2">
@@ -49244,7 +49248,7 @@
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="lifeleechamount" value="18"/>
 		<attribute key="lifeleechchance" value="100"/>
-		<attribute key="range" value="4"/>
+		<attribute key="range" value="5"/>
 		<attribute key="weight" value="2100"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
@@ -51563,8 +51567,10 @@
 		<attribute key="shootType" value="fire"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="magicpoints" value="2"/>
-		<attribute key="range" value="4"/>
+		<attribute key="range" value="6"/>
 		<attribute key="weight" value="3700"/>
+		<!--attribute key="perfectshotdamage" value="65"/-->
+		<!--attribute key="perfectshotrange" value="4"/-->
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -51636,6 +51642,7 @@
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="3500"/>
+		<!--attribute key="healingmagiclevelpoints" value="2"/-->
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
 			<attribute key="skillboost axe" value="3"/>
@@ -51653,6 +51660,7 @@
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="3600"/>
+		<!--attribute key="healingmagiclevelpoints" value="2"/-->
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
 			<attribute key="skillboost axe" value="3"/>
@@ -54800,7 +54808,7 @@
 		<attribute key="absorbpercentfire" value="4"/>
 		<attribute key="magicpoints" value="2"/>
 		<!--attribute key="icemagiclevelpoints" value="2"/-->
-		<attribute key="range" value="6"/>
+		<attribute key="range" value="5"/>
 		<attribute key="weight" value="2900"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>

@@ -38,6 +38,7 @@ namespace {
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -55,6 +56,7 @@ namespace {
 				}
 			}
 		}
+
 		return 0;
 	}
 
@@ -72,6 +74,7 @@ namespace {
 				}
 			}
 		}
+
 		return 0;
 	}
 

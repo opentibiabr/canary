@@ -4502,7 +4502,7 @@
 		<attribute key="weight" value="490"/>
 	</item>
 	<item id="3009" article="a" name="bronze necklace">
-		<attribute key="weight" value="409"/>
+		<attribute key="weight" value="410"/>
 	</item>
 	<item id="3010" article="an" name="emerald bangle">
 		<attribute key="weight" value="179"/>
@@ -20454,7 +20454,7 @@
 	<item id="10457" article="a" name="beetle necklace">
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="speed" value="2"/>
-		<attribute key="weight" value="819"/>
+		<attribute key="weight" value="820"/>
 	</item>
 	<item id="10458" article="a" name="dead lancer beetle">
 		<attribute key="fluidsource" value="slime"/>
@@ -23892,7 +23892,7 @@
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentlifedrain" value="50"/>
 		<attribute key="charges" value="50"/>
-		<attribute key="weight" value="500"/>
+		<attribute key="weight" value="509"/>
 	</item>
 	<item id="13991" article="a" name="deepling axe">
 		<attribute key="weaponType" value="axe"/>
@@ -25533,7 +25533,7 @@
 		<attribute key="absorbpercentphysical" value="15"/>
 		<attribute key="absorbpercentpoison" value="10"/>
 		<attribute key="charges" value="750"/>
-		<attribute key="weight" value="409"/>
+		<attribute key="weight" value="410"/>
 	</item>
 	<item id="16109" article="a" name="prismatic helmet">
 		<attribute key="absorbpercentphysical" value="5"/>
@@ -31959,7 +31959,12 @@
 		<attribute key="showCharges" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentphysical" value="10"/>
-		<attribute key="absorbpercentmagic" value="10"/>
+		<attribute key="absorbpercentfire" value="10"/>
+		<attribute key="absorbpercentpoison" value="10"/>
+		<attribute key="absorbpercentenergy" value="10"/>
+		<attribute key="absorbpercentice" value="10"/>
+		<attribute key="absorbpercentholy" value="10"/>
+		<attribute key="absorbpercentdeath" value="10"/>
 		<attribute key="charges" value="20"/>
 		<attribute key="weight" value="220"/>
 	</item>
@@ -33746,7 +33751,6 @@
 		<attribute key="duration" value="60"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
-	<!-- axe -->
 	<item id="22134" article="an" name="enchanted werewolf amulet">
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
@@ -33754,7 +33758,6 @@
 		<attribute key="duration" value="3600"/>
 		<attribute key="decayTo" value="22060"/>
 		<attribute key="transformDeEquipTo" value="22061" />
-		<attribute key="duration" value="3600" />
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="550"/>
 	</item>
@@ -55142,6 +55145,7 @@
 		<attribute key="skillclub" value="3"/>
 		<attribute key="skillaxe" value="3"/>
 		<attribute key="skillsword" value="3"/>
+		<attribute key="armor" value="3"/>
 		<attribute key="transformDeEquipTo" value="39233"/>>
 		<attribute key="showduration" value="1" />
 		<attribute key="duration" value="7200"/>

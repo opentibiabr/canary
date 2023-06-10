@@ -15920,7 +15920,7 @@
 		<attribute key="ammotype" value="arrow"/>
 		<attribute key="hitchance" value="3"/>
 		<attribute key="range" value="6"/>
-		<attribute key="weight" value="2200"/>
+		<attribute key="weight" value="2500"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
 			<attribute key="life leech" value="3"/>
@@ -37362,7 +37362,7 @@
 		<attribute key="elementearth" value="2"/>
 		<attribute key="maxhitchance" value="86"/>
 		<attribute key="hitchance" value="90"/>
-		<attribute key="range" value="4"/>
+		<attribute key="range" value="5"/>
 		<attribute key="attack" value="48"/>
 		<attribute key="weight" value="200"/>
 	</item>
@@ -39380,9 +39380,9 @@
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="ammotype" value="arrow"/>
-		<attribute key="hitchance" value="6"/>
+		<attribute key="hitchance" value="5"/>
 		<attribute key="range" value="6"/>
-		<attribute key="attack" value="6"/>
+		<attribute key="attack" value="5"/>
 		<attribute key="weight" value="5500"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
@@ -39396,7 +39396,7 @@
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="ammotype" value="bolt"/>
-		<attribute key="hitchance" value="6"/>
+		<attribute key="hitchance" value="5"/>
 		<attribute key="range" value="5"/>
 		<attribute key="attack" value="6"/>
 		<attribute key="weight" value="6500"/>
@@ -45487,7 +45487,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="ammotype" value="arrow"/>
 		<attribute key="absorbpercentdeath" value="4"/>
-		<attribute key="skilldist" value="4"/>
+		<attribute key="skilldist" value="2"/>
 		<attribute key="hitchance" value="4"/>
 		<attribute key="range" value="6"/>
 		<attribute key="attack" value="6"/>
@@ -49216,7 +49216,7 @@
 		<attribute key="ammotype" value="arrow"/>
 		<attribute key="absorbpercentice" value="5"/>
 		<attribute key="skilldist" value="2"/>
-		<attribute key="hitchance" value="4"/>
+		<attribute key="hitchance" value="6"/>
 		<attribute key="range" value="6"/>
 		<attribute key="attack" value="6"/>
 		<attribute key="weight" value="4800"/>
@@ -51540,6 +51540,8 @@
 		<attribute key="slotType" value="right-hand"/>
 		<attribute key="containersize" value="8"/>
 		<attribute key="weight" value="2200"/>
+		<!--attribute key="perfectshotdamage" value="20"/-->
+		<!--attribute key="perfectshotrange" value="4"/-->
 	</item>
 	<item id="36667" article="a" name="eldritch breeches">
 		<attribute key="absorbpercentphysical" value="2"/>
@@ -54758,7 +54760,7 @@
 		<attribute key="ammotype" value="bolt"/>
 		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="skilldist" value="2"/>
-		<attribute key="hitchance" value="7"/>
+		<attribute key="hitchance" value="6"/>
 		<attribute key="range" value="6"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="weight" value="10200"/>
@@ -56510,10 +56512,11 @@
 		<attribute key="weight" value="380"/>
 		<attribute key="armor" value="1"/>
 	</item>
-	<item id="40535" article="the" name="broken Iks spear">
+	<item id="40535" name="broken Iks spear">
 		<attribute key="description" value="This spear was once wielded by the ancient Iks"/>
 		<attribute key="weight" value="1300"/>
 		<attribute key="attack" value="1"/>
+		<attribute key="defense" value="1"/>
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="shootType" value="spear"/>
 		<attribute key="range" value="3"/>

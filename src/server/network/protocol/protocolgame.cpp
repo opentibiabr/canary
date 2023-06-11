@@ -7858,7 +7858,7 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &posi
 				msg.addByte(bossOutfit.lookFeet); // LookFeet from boss unlocked
 				msg.addByte(bossOutfit.lookAddons); // LookAddon from boss unlocked
 			} else {
-				msg.add<uint32_t>(bossOutfit.lookTypeEx); // LookTypeEx from boss unlocked
+				msg.add<uint16_t>(bossOutfit.lookTypeEx); // LookTypeEx from boss unlocked
 			}
 		}
 	} else {

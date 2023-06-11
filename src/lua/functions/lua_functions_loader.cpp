@@ -320,7 +320,7 @@ Outfit_t LuaFunctionsLoader::getOutfit(lua_State* L, int32_t arg) {
 	outfit.lookBody = getField<uint8_t>(L, arg, "lookBody");
 	outfit.lookHead = getField<uint8_t>(L, arg, "lookHead");
 
-	outfit.lookTypeEx = getField<uint32_t>(L, arg, "lookTypeEx");
+	outfit.lookTypeEx = getField<uint16_t>(L, arg, "lookTypeEx");
 	outfit.lookType = getField<uint16_t>(L, arg, "lookType");
 
 	lua_pop(L, 13);

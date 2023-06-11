@@ -5544,7 +5544,7 @@
 	</item>
 	<item id="3245" article="a" name="ring of wishes">
 		<attribute key="description" value="(This item has 3 charges left)"/>
-		<attribute key="weight" value="90"/>
+		<attribute key="weight" value="50"/>
 	</item>
 	<item id="3246" name="boots of waterwalking">
 		<attribute key="description" value="(This item has 5 charges left)"/>
@@ -30948,7 +30948,7 @@
 	</item>
 	<item id="20209" article="an" name="unstable ring of ending">
 		<attribute key="description" value="Something is happening to this ring"/>
-		<attribute key="weight" value="0"/>
+		<attribute key="weight" value="60"/>
 	</item>
 	<item id="20210" article="a" name="filled cup">
 		<attribute key="description" value="The blend inside smells as if a dead green fairy had been dropped in it"/>
@@ -45368,7 +45368,7 @@
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="570"/>
 	</item>
-	<item id="31557" article="a" name="blister ring">
+	<item id="31557" article="a" name="enchanted blister ring">
 		<attribute key="stopduration" value="1"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="transformequipto" value="31616"/>
@@ -45618,7 +45618,7 @@
 		<attribute key="description" value="The spell on it has faded"/>
 		<attribute key="weight" value="4500"/>
 	</item>
-	<item id="31616" article="a" name="blister ring">
+	<item id="31616" article="a" name="enchanted blister ring">
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentfire" value="6"/>
@@ -46877,7 +46877,7 @@
 			<attribute key="increase capacity" value="3"/>
 		</attribute>
 	</item>
-	<item id="32621" article="a" name="ring of souls">
+	<item id="32621" article="a" name="enchanted ring of souls">
 		<attribute key="stopduration" value="1"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="transformequipto" value="32635"/>
@@ -46937,8 +46937,7 @@
 		<attribute key="weight" value="250"/>
 	</item>
 	<item id="32634" article="a" name="raw crystal deposit"/>
-	<item id="32635" article="a" name="ring of souls">
-		<attribute key="description" value="Wearing it makes you feel a little weaker than usual."/>
+	<item id="32635" article="a" name="enchanted ring of souls">
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentphysical" value="2"/>
@@ -54886,7 +54885,7 @@
 		<attribute key="weight" value="95"/>
 	</item>
 	<item id="39179" article="a" name="spiritthorn ring">
-		<attribute key="absorbpercentphysical" value="8"/>
+		<attribute key="absorbpercentphysical" value="2"/>
 		<attribute key="absorbpercentfire" value="4"/>
 		<attribute key="absorbpercentearth" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
@@ -54906,6 +54905,8 @@
 		<attribute key="absorbpercentearth" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
+		<attribute key="absorbpercentholy" value="4"/>
+		<attribute key="absorbpercentdeath" value="4"/>
 		<!--attribute key="holymagiclevelpoints" value="1"/-->
 		<attribute key="magicpoints" value="1"/>
 		<attribute key="skilldist" value="3"/>
@@ -54932,7 +54933,7 @@
 		<attribute key="showattributes" value="1" />
 		<attribute key="weight" value="90"/>
 	</item>
-	<item id="39184" article="a" name="charged arcanomancer ring">
+	<item id="39184" article="a" name="charged arcanomancer sigil">
 		<attribute key="absorbpercentfire" value="4"/>
 		<attribute key="absorbpercentearth" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>

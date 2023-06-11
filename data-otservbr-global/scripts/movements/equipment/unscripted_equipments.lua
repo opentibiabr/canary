@@ -275,7 +275,7 @@ local items = {
 		slot = "ring"
 	},
 	{
-		-- charged arcanomancer ring
+		-- charged arcanomancer sigil
 		itemid = 39184,
 		type = "equip",
 		slot = "ring",
@@ -286,7 +286,7 @@ local items = {
 		}
 	},
 	{
-		-- charged arcanomancer ring
+		-- charged arcanomancer sigil
 		itemid = 39184,
 		type = "deequip",
 		slot = "ring"
@@ -320,7 +320,7 @@ local items = {
 		}
 	},
 	{
-		-- charged alicorn ring
+		-- alicorn ring
 		itemid = 39182,
 		type = "deequip",
 		slot = "ring"
@@ -1997,19 +1997,13 @@ local items = {
 		-- lion ring
 		itemid = 34080,
 		type = "deequip",
-		slot = "ring",
-		level = 270
+		slot = "ring"
 	},
 	{
 		-- lion ring
 		itemid = 34080,
 		type = "equip",
-		slot = "ring",
-		level = 270,
-		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+		slot = "ring"
 	},
 	{
 		-- Lit Torch (Sparkling)
@@ -2050,14 +2044,14 @@ local items = {
 		level = 200
 	},
 	{
-		-- ring of souls
+		-- enchanted ring of souls
 		itemid = 32635,
 		type = "equip",
 		slot = "ring",
 		level = 200
 	},
 	{
-		-- ring of souls
+		-- enchanted ring of souls
 		itemid = 32635,
 		type = "deequip",
 		slot = "ring",
@@ -2094,14 +2088,14 @@ local items = {
 		level = 230
 	},
 	{
-		-- ring of souls
+		-- enchanted ring of souls
 		itemid = 32621,
 		type = "equip",
 		slot = "ring",
 		level = 200
 	},
 	{
-		-- ring of souls
+		-- enchanted ring of souls
 		itemid = 32621,
 		type = "deequip",
 		slot = "ring",
@@ -2303,14 +2297,14 @@ local items = {
 		level = 220,
 	},
 	{
-		-- blister ring
+		-- enchanted blister ring
 		itemid = 31616,
 		type = "equip",
 		slot = "ring",
 		level = 220,
 	},
 	{
-		-- blister ring
+		-- enchanted blister ring
 		itemid = 31616,
 		type = "deequip",
 		slot = "ring",
@@ -2458,14 +2452,14 @@ local items = {
 		level = 230,
 	},
 	{
-		-- blister ring
+		-- enchanted blister ring
 		itemid = 31557,
 		type = "equip",
 		slot = "ring",
 		level = 220,
 	},
 	{
-		-- blister ring
+		-- enchanted blister ring
 		itemid = 31557,
 		type = "deequip",
 		slot = "ring",
@@ -13771,25 +13765,25 @@ local items = {
 		slot = "legs"
 	},
 	{
-		-- suspicious signet ring
+		-- family signet ring
 		itemid = 406,
 		type = "equip",
 		slot = "ring"
 	},
 	{
-		-- suspicious signet ring
+		-- family signet ring
 		itemid = 406,
 		type = "deequip",
 		slot = "ring"
 	},
 	{
-		-- family signet ring
+		-- suspicious signet ring
 		itemid = 349,
 		type = "equip",
 		slot = "ring"
 	},
 	{
-		-- family signet ring
+		-- suspicious signet ring
 		itemid = 349,
 		type = "deequip",
 		slot = "ring"

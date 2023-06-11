@@ -217,6 +217,7 @@ CREATE TABLE IF NOT EXISTS `boosted_boss` (
     `boostname` TEXT,
     `date` varchar(250) NOT NULL DEFAULT '',
     `raceid` varchar(250) NOT NULL DEFAULT '',
+    `looktypeEx` int(11) NOT NULL DEFAULT "0",
     `looktype` int(11) NOT NULL DEFAULT "136",
     `lookfeet` int(11) NOT NULL DEFAULT "0",
     `looklegs` int(11) NOT NULL DEFAULT "0",

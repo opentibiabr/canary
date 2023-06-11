@@ -85,6 +85,7 @@ void IOBosstiary::loadBoostedBoss() {
 	query << "`boostname` = " << database.escapeString(bossName) << ",";
 	if (const MonsterType* bossType = getMonsterTypeByBossRaceId(bossId);
 		bossType) {
+		query << "`looktypeEx` = " << static_cast<int>(bossType->info.outfit.lookTypeEx) << ",";
 		query << "`looktype` = " << static_cast<int>(bossType->info.outfit.lookType) << ",";
 		query << "`lookfeet` = " << static_cast<int>(bossType->info.outfit.lookFeet) << ",";
 		query << "`looklegs` = " << static_cast<int>(bossType->info.outfit.lookLegs) << ",";

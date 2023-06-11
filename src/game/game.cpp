@@ -8582,6 +8582,7 @@ void Game::playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Pos
 
 	if (auto bossOutfit = mType->info.outfit;
 		bossOutfit.lookType != 0 && bossVisible) {
+		item->setCustomAttribute("LookTypeEx", static_cast<int64_t>(bossOutfit.lookTypeEx));
 		item->setCustomAttribute("LookType", static_cast<int64_t>(bossOutfit.lookType));
 		item->setCustomAttribute("LookHead", static_cast<int64_t>(bossOutfit.lookHead));
 		item->setCustomAttribute("LookBody", static_cast<int64_t>(bossOutfit.lookBody));

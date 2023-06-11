@@ -5891,10 +5891,18 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 
 	StashContainerList itemDict;
 	if (allItems) {
-		// Stow player backpack
-		if (auto inventoryItem = getInventoryItem(CONST_SLOT_BACKPACK);
-			inventoryItem && !item->isInsideDepot(true)) {
-			sendStowItems(*item, *inventoryItem, itemDict);
+		if (!item->isInsideDepot(true)) {
+			// Stow "all items" from player backpack
+			if (auto backpack = getInventoryItem(CONST_SLOT_BACKPACK)) {
+				sendStowItems(*item, *backpack, itemDict);
+			}
+
+			// Stow "all items" from loot pouch
+			auto itemParent = item->getParent();
+			auto lootPouch = itemParent->getItem();
+			if (itemParent && lootPouch && lootPouch->getID() == ITEM_GOLD_POUCH) {
+				sendStowItems(*item, *lootPouch, itemDict);
+			}
 		}
 
 		// Stow locker items

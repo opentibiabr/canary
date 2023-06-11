@@ -1,3 +1,5 @@
 function onUpdateDatabase()
-	return false -- true = There are others migrations file | false = this is the last migration file
+	Spdlog.info("Updating database to version 30 (looktypeEx)")
+	db.query("ALTER TABLE `boosted_boss` ADD `looktypeEx` int unsigned NOT NULL DEFAULT '0';")
+	return true
 end

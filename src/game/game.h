@@ -178,7 +178,7 @@ class Game {
 		ReturnValue internalMoveCreature(Creature* creature, Direction direction, uint32_t flags = 0);
 		ReturnValue internalMoveCreature(Creature &creature, Tile &toTile, uint32_t flags = 0);
 
-		ReturnValue checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder, Cylinder* toCylinder, Item* item);
+		ReturnValue checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder, Cylinder* toCylinder, Item* item, Position toPos);
 		ReturnValue internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index, Item* item, uint32_t count, Item** internalMoveItem, uint32_t flags = 0, Creature* actor = nullptr, Item* tradeItem = nullptr);
 
 		ReturnValue internalAddItem(Cylinder* toCylinder, Item* item, int32_t index = INDEX_WHEREEVER, uint32_t flags = 0, bool test = false);
@@ -388,6 +388,7 @@ class Game {
 		bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor) const;
 
 		void changeSpeed(Creature* creature, int32_t varSpeedDelta);
+		void setCreatureSpeed(Creature* creature, int32_t speed); // setCreatureSpeed
 		void changePlayerSpeed(Player &player, int32_t varSpeedDelta);
 		void internalCreatureChangeOutfit(Creature* creature, const Outfit_t &oufit);
 		void internalCreatureChangeVisible(Creature* creature, bool visible);

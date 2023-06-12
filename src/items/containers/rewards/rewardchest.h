@@ -32,6 +32,8 @@ class RewardChest final : public Container {
 		bool canRemove() const final {
 			return false;
 		}
+
+		void removeItem(Thing* thing, bool sendToClient = false) override;
 };
 
 #endif // SRC_ITEMS_CONTAINERS_REWARDS_REWARDCHEST_H_

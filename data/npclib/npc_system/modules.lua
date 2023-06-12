@@ -229,7 +229,7 @@ if Modules == nil then
 				destination = destination(player)
 			end
 
-			player:setStorageValue(NpcExhaust, 3 + os.time())
+			player:setStorageValue(Global.Storage.NpcExhaust, 3 + os.time())
 			player:teleportTo(destination)
 			playerPosition:sendMagicEffect(CONST_ME_TELEPORT)
 

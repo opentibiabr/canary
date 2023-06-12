@@ -162,7 +162,7 @@ TeleportUnique = {
 	[38002] = {
 		itemId = 1949,
 		itemPos = {x = 32234, y = 32502, z = 10},
-		destination = {x = 32210, y = 32437, z = 10},
+		destination = {x = 32167, y = 32438, z = 9},
 		effect = CONST_ME_TELEPORT
 	},
 	-- Draconia quest teleports

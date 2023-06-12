@@ -177,7 +177,7 @@ int CreatureFunctions::luaCreatureGetId(lua_State* L) {
 }
 
 int CreatureFunctions::luaCreatureGetName(lua_State* L) {
-	// creature:getTypeName()
+	// creature:getName()
 	const Creature* creature = getUserdata<const Creature>(L, 1);
 	if (creature) {
 		pushString(L, creature->getName());
@@ -188,7 +188,7 @@ int CreatureFunctions::luaCreatureGetName(lua_State* L) {
 }
 
 int CreatureFunctions::luaCreatureGetTypeName(lua_State* L) {
-	// creature:getName()
+	// creature:getTypeName()
 	const Creature* creature = getUserdata<const Creature>(L, 1);
 	if (creature) {
 		pushString(L, creature->getTypeName());
@@ -343,6 +343,21 @@ int CreatureFunctions::luaCreatureGetSpeed(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureSetSpeed(lua_State* L) {
+	// creature:setSpeed(speed)
+	Creature* creature = getCreature(L, 1);
+	if (!creature) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	int32_t speed = getNumber<int32_t>(L, 2);
+	g_game().setCreatureSpeed(creature, speed);
+	pushBoolean(L, true);
 	return 1;
 }
 

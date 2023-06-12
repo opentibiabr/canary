@@ -16,9 +16,9 @@
 #include "creatures/monsters/monster.h"
 #include "io/ioprey.h"
 
-bool IOLoginData::authenticateAccountPassword(const std::string &email, const std::string &password, account::Account* account) {
-	if (account::ERROR_NO != account->LoadAccountDB(email)) {
-		SPDLOG_ERROR("Email {} doesn't match any account.", email);
+bool IOLoginData::authenticateAccountPassword(const std::string &accountIdentifier, const std::string &password, account::Account* account) {
+	if (account::ERROR_NO != account->LoadAccountDB(accountIdentifier)) {
+		SPDLOG_ERROR("{} {} doesn't match any account.", account->getProtocolCompat() ? "Username" : "Email", accountIdentifier);
 		return false;
 	}
 
@@ -32,9 +32,10 @@ bool IOLoginData::authenticateAccountPassword(const std::string &email, const st
 	return true;
 }
 
-bool IOLoginData::gameWorldAuthentication(const std::string &email, const std::string &password, std::string &characterName, uint32_t* accountId) {
+bool IOLoginData::gameWorldAuthentication(const std::string &accountIdentifier, const std::string &password, std::string &characterName, uint32_t* accountId, bool oldProtocol) {
 	account::Account account;
-	if (!IOLoginData::authenticateAccountPassword(email, password, &account)) {
+	account.setProtocolCompat(oldProtocol);
+	if (!IOLoginData::authenticateAccountPassword(accountIdentifier, password, &account)) {
 		return false;
 	}
 
@@ -66,15 +67,18 @@ void IOLoginData::setAccountType(uint32_t accountId, account::AccountType accoun
 }
 
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
-	if (g_configManager().getBoolean(ALLOW_CLONES)) {
+	static phmap::flat_hash_map<uint32_t, bool> updateOnline;
+	if (login && updateOnline.find(guid) != updateOnline.end() || guid <= 0) {
 		return;
 	}
 
 	std::ostringstream query;
 	if (login) {
 		query << "INSERT INTO `players_online` VALUES (" << guid << ')';
+		updateOnline[guid] = true;
 	} else {
 		query << "DELETE FROM `players_online` WHERE `player_id` = " << guid;
+		updateOnline.erase(guid);
 	}
 	Database::getInstance().executeQuery(query.str());
 }
@@ -140,6 +144,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 	acc.SetDatabaseInterface(&db);
 	acc.LoadAccountDB(accountId);
 
+	bool oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL) && player->getProtocolVersion() < 1200;
 	player->setGUID(result->getNumber<uint32_t>("id"));
 	player->name = result->getString("name");
 	acc.GetID(&(player->accountNumber));
@@ -152,6 +157,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 	}
 
 	acc.GetCoins(&(player->coinBalance));
+	acc.GetTransferableCoins(&(player->coinTransferableBalance));
 
 	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
 	if (!group) {
@@ -473,9 +479,11 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 
 			Container* itemContainer = item->getContainer();
 			if (itemContainer) {
-				auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
-				if (cid > 0) {
-					openContainersList.emplace_back(std::make_pair(cid, itemContainer));
+				if (!oldProtocol) {
+					auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
+					if (cid > 0) {
+						openContainersList.emplace_back(std::make_pair(cid, itemContainer));
+					}
 				}
 				if (item->hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
 					auto flags = item->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
@@ -489,13 +497,15 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 		}
 	}
 
-	std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
-		return left.first < right.first;
-	});
+	if (!oldProtocol) {
+		std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
+			return left.first < right.first;
+		});
 
-	for (auto &it : openContainersList) {
-		player->addContainer(it.first - 1, it.second);
-		player->onSendContainer(it.second);
+		for (auto &it : openContainersList) {
+			player->addContainer(it.first - 1, it.second);
+			player->onSendContainer(it.second);
+		}
 	}
 
 	// Store Inbox
@@ -1349,7 +1359,10 @@ void IOLoginData::removeVIPEntry(uint32_t accountId, uint32_t guid) {
 
 void IOLoginData::addPremiumDays(uint32_t accountId, int32_t addDays) {
 	std::ostringstream query;
-	query << "UPDATE `accounts` SET `premdays` = `premdays` + " << addDays << " WHERE `id` = " << accountId;
+	query << "UPDATE `accounts` SET `premdays` = `premdays` + " << addDays
+		  << ", `lastday` = " << getTimeNow()
+		  << " WHERE `id` = " << accountId;
+
 	Database::getInstance().executeQuery(query.str());
 }
 

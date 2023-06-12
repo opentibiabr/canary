@@ -17,8 +17,11 @@ function rune.onCastSpell(creature, var, isHotkey)
 	return combat:execute(creature, var)
 end
 
+rune:id(7)
 rune:group("attack")
 rune:name("light magic missile rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_LIGHT_MAGIC_MISSILE_RUNE)
 rune:runeId(3174)
 rune:allowFarUse(true)
 rune:charges(10)

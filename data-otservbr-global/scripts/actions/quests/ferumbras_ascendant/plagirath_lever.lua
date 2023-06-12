@@ -22,8 +22,7 @@ local config = {
 
 local ferumbrasAscendantPlagirathLever = Action()
 function ferumbrasAscendantPlagirathLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
-	return true
+	return CreateDefaultLeverBoss(player, config)
 end
 
 ferumbrasAscendantPlagirathLever:uid(1022)

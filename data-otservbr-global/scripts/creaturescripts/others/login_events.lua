@@ -13,7 +13,7 @@ function loginEvents.onLogin(player)
 		"PlayerDeath",
 		"RookgaardAdvance",
 		"FamiliarLogin",
-		"AdvanceFamiliar",
+		"FamiliarAdvance",
 		--Quests
 		--Adventurers Guild Quest
 		"Thegreatdragonhuntkill",
@@ -116,7 +116,9 @@ function loginEvents.onLogin(player)
 		-- Secret Library
 		"SecretLibraryKill",
 		-- The Dream Courts
-		"DreamCourtsKill"
+		"DreamCourtsKill",
+		-- Hazard System
+		"HazardSystemCombat"
 	}
 
 	for i = 1, #events do

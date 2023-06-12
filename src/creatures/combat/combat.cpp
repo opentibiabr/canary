@@ -276,6 +276,8 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 			}
 
+			const Tile* targetPlayerTile = targetPlayer->getTile();
+
 			if (const Player* attackerPlayer = attacker->getPlayer()) {
 				if (attackerPlayer->hasFlag(PlayerFlags_t::CannotAttackPlayer)) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
@@ -286,10 +288,10 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target) {
 				}
 
 				// nopvp-zone
-				if (const Tile* targetPlayerTile = targetPlayer->getTile();
-					targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
+				auto attackerTile = attackerPlayer->getTile();
+				if (targetPlayerTile && targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
-				} else if (attackerPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE) && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)) {
+				} else if (attackerTile && attackerTile->hasFlag(TILESTATE_NOPVPZONE) && targetPlayerTile && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)) {
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 				}
 
@@ -304,7 +306,7 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 					}
 
-					if (targetPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE)) {
+					if (targetPlayerTile && targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
 						return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 					}
 
@@ -425,6 +427,16 @@ bool Combat::setParam(CombatParam_t param, uint32_t value) {
 			params.useCharges = (value != 0);
 			return true;
 		}
+
+		case COMBAT_PARAM_IMPACTSOUND: {
+			params.soundImpactEffect = static_cast<SoundEffect_t>(value);
+			return true;
+		}
+
+		case COMBAT_PARAM_CASTSOUND: {
+			params.soundCastEffect = static_cast<SoundEffect_t>(value);
+			return true;
+		}
 	}
 	return false;
 }
@@ -498,7 +510,7 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 
 	if (caster && attackerPlayer) {
 		Item* item = attackerPlayer->getWeapon();
-		damage = applyImbuementElementalDamage(item, damage);
+		damage = applyImbuementElementalDamage(attackerPlayer, item, damage);
 		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
 
 		if (targetPlayer && targetPlayer->getSkull() != SKULL_BLACK) {
@@ -539,9 +551,13 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 	}
 }
 
-CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage damage) {
+CombatDamage Combat::applyImbuementElementalDamage(Player* attackerPlayer, Item* item, CombatDamage damage) {
 	if (!item) {
 		return damage;
+	}
+
+	if (item->getWeaponType() == WEAPON_AMMO && attackerPlayer && attackerPlayer->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
+		item = attackerPlayer->getInventoryItem(CONST_SLOT_LEFT);
 	}
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
@@ -562,7 +578,11 @@ CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage dama
 		damage.primary.value = damage.primary.value * (1 - damagePercent);
 		damage.secondary.value = damage.primary.value * (damagePercent);
 
-		/* If damage imbuement is set, we can return without checking other slots */
+		if (imbuementInfo.imbuement->soundEffect != SoundEffect_t::SILENCE) {
+			g_game().sendSingleSoundEffect(item->getPosition(), imbuementInfo.imbuement->soundEffect, item->getHoldingPlayer());
+		}
+
+		// If damage imbuement is set, we can return without checking other slots
 		break;
 	}
 
@@ -583,6 +603,34 @@ void Combat::CombatManaFunc(Creature* caster, Creature* target, const CombatPara
 	}
 }
 
+bool Combat::checkFearConditionAffected(Player* player) {
+	if (player->isImmuneFear()) {
+		return false;
+	}
+
+	if (player->hasCondition(CONDITION_FEARED)) {
+		return false;
+	}
+
+	Party* party = player->getParty();
+	if (party) {
+		auto affectedCount = (party->getMemberCount() + 5) / 5;
+		SPDLOG_DEBUG("[{}] Player is member of a party, {} members can be feared", __FUNCTION__, affectedCount);
+
+		for (const auto member : party->getMembers()) {
+			if (member->hasCondition(CONDITION_FEARED)) {
+				affectedCount -= 1;
+			}
+		}
+
+		if (affectedCount <= 0) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void Combat::CombatConditionFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data) {
 	if (params.origin == ORIGIN_MELEE && data && data->primary.value == 0 && data->secondary.value == 0) {
 		return;
@@ -593,8 +641,8 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 		if (target) {
 			player = target->getPlayer();
 		}
-		// Cleanse charm rune (target as player)
 		if (player) {
+			// Cleanse charm rune (target as player)
 			if (player->isImmuneCleanse(condition->getType())) {
 				player->sendCancelMessage("You are still immune against this spell.");
 				return;
@@ -615,12 +663,17 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 					}
 				}
 			}
+
+			if (condition->getType() == CONDITION_FEARED && !checkFearConditionAffected(player)) {
+				return;
+			}
 		}
 
 		if (caster == target || target && !target->isImmune(condition->getType())) {
 			Condition* conditionCopy = condition->clone();
 			if (caster) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
+				conditionCopy->setPositionParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
 			}
 
 			// TODO: infight condition until all aggressive conditions has ended
@@ -725,11 +778,23 @@ void Combat::combatTileEffects(const SpectatorHashSet &spectators, Creature* cas
 	if (params.impactEffect != CONST_ME_NONE) {
 		Game::addMagicEffect(spectators, tile->getPosition(), params.impactEffect);
 	}
+
+	if (params.soundImpactEffect != SoundEffect_t::SILENCE) {
+		g_game().sendDoubleSoundEffect(tile->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+	} else if (params.soundCastEffect != SoundEffect_t::SILENCE) {
+		g_game().sendSingleSoundEffect(tile->getPosition(), params.soundCastEffect, caster);
+	}
 }
 
 void Combat::postCombatEffects(Creature* caster, const Position &pos, const CombatParams &params) {
 	if (caster && params.distanceEffect != CONST_ANI_NONE) {
 		addDistanceEffect(caster, caster->getPosition(), pos, params.distanceEffect);
+	}
+
+	if (params.soundImpactEffect != SoundEffect_t::SILENCE) {
+		g_game().sendDoubleSoundEffect(pos, params.soundCastEffect, params.soundImpactEffect, caster);
+	} else if (params.soundCastEffect != SoundEffect_t::SILENCE) {
+		g_game().sendSingleSoundEffect(pos, params.soundCastEffect, caster);
 	}
 }
 
@@ -850,7 +915,7 @@ void Combat::CombatFunc(Creature* caster, const Position &pos, const AreaCombat*
 			}
 		}
 	}
-	//
+
 	CombatDamage tmpDamage;
 	if (data) {
 		tmpDamage.origin = data->origin;
@@ -925,6 +990,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage &da
 					Charm* charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 					if (charm) {
 						chance += charm->percent;
+						g_game().sendDoubleSoundEffect(target->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, caster);
 					}
 				}
 			}
@@ -947,6 +1013,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage &da
 			}
 		}
 	}
+
 	if (canCombat) {
 		if (target && caster && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
@@ -955,6 +1022,12 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage &da
 		CombatHealthFunc(caster, target, params, &damage);
 		if (params.targetCallback) {
 			params.targetCallback->onTargetCombat(caster, target);
+		}
+
+		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
 }
@@ -1011,6 +1084,12 @@ void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage &dama
 		if (params.targetCallback) {
 			params.targetCallback->onTargetCombat(caster, target);
 		}
+
+		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
+		}
 	}
 }
 
@@ -1046,6 +1125,12 @@ void Combat::doCombatCondition(Creature* caster, Creature* target, const CombatP
 		if (params.targetCallback) {
 			params.targetCallback->onTargetCombat(caster, target);
 		}
+
+		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
+		}
 	}
 }
 
@@ -1069,6 +1154,12 @@ void Combat::doCombatDispel(Creature* caster, Creature* target, const CombatPara
 
 		if (target && caster && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
+		}
+
+		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
 }
@@ -1094,6 +1185,12 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatPar
 		if (caster && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
 		}
+
+		if (params.soundImpactEffect != SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
+		} else if (params.soundCastEffect != SoundEffect_t::SILENCE) {
+			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
+		}
 	}
 }
 
@@ -1104,7 +1201,7 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage &damage, bool u
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("[ValueCallback::getMinMaxValues - Player {} formula {}] "
 					 "Call stack overflow. Too many lua script calls being nested.",
-					 player->getName(), type);
+					 player->getName(), fmt::underlying(type));
 		return;
 	}
 
@@ -1225,7 +1322,7 @@ void TileCallback::onTileCombat(Creature* creature, Tile* tile) const {
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("[TileCallback::onTileCombat - Creature {} type {} on tile x: {} y: {} z: {}] "
 					 "Call stack overflow. Too many lua script calls being nested.",
-					 creature->getName(), type, (tile->getPosition()).getX(), (tile->getPosition()).getY(), (tile->getPosition()).getZ());
+					 creature->getName(), fmt::underlying(type), (tile->getPosition()).getX(), (tile->getPosition()).getY(), (tile->getPosition()).getZ());
 		return;
 	}
 
@@ -1593,8 +1690,8 @@ void MagicField::onStepInField(Creature &creature) {
 		auto ownerId = getAttribute<uint32_t>(ItemAttribute_t::OWNER);
 		if (ownerId) {
 			bool harmfulField = true;
-
-			if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || getTile()->hasFlag(TILESTATE_NOPVPZONE)) {
+			auto itemTile = getTile();
+			if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || itemTile && itemTile->hasFlag(TILESTATE_NOPVPZONE)) {
 				Creature* owner = g_game().getCreatureByID(ownerId);
 				if (owner) {
 					if (owner->getPlayer() || (owner->isSummon() && owner->getMaster()->getPlayer())) {

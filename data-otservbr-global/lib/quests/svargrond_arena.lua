@@ -286,7 +286,9 @@ function SvargrondArena.scheduleKickPlayer(cid, pitId)
 	SvargrondArena.cancelEvents(cid)
 	SvargrondArena.startTimer(pitId)
 	local eventId = addEvent(SvargrondArena.kickPlayer, SvargrondArena.kickTime * 1000, cid)
-	SvargrondArena.kickEvents[cid] = {eventId = eventId, pitId = pitId}
+	if eventId then
+		SvargrondArena.kickEvents[cid] = {eventId = eventId, pitId = pitId}
+	end
 end
 
 function SvargrondArena.startTimer(pitId)

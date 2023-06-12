@@ -155,6 +155,7 @@ bool Weapon::useFist(Player* player, Creature* target) {
 	params.combatType = COMBAT_PHYSICALDAMAGE;
 	params.blockedByArmor = true;
 	params.blockedByShield = true;
+	params.soundImpactEffect = SoundEffect_t::HUMAN_CLOSE_ATK_FIST;
 
 	CombatDamage damage;
 	damage.origin = ORIGIN_MELEE;
@@ -170,6 +171,14 @@ bool Weapon::useFist(Player* player, Creature* target) {
 }
 
 void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier) const {
+	if (player) {
+		if (params.soundCastEffect == SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
+		} else {
+			g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
+		}
+	}
+
 	if (isLoadedCallback()) {
 		LuaVariant var;
 		var.type = VARIANT_NUMBER;
@@ -202,6 +211,7 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Tile* tile) const {
 	} else {
 		Combat::postCombatEffects(player, tile->getPosition(), params);
 		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+		g_game().sendSingleSoundEffect(tile->getPosition(), SoundEffect_t::PHYSICAL_RANGE_MISS, player);
 	}
 	onUsedWeapon(player, item, tile);
 }

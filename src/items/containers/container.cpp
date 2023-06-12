@@ -195,12 +195,12 @@ uint32_t Container::getWeight() const {
 	return Item::getWeight() + totalWeight;
 }
 
-std::string Container::getContentDescription() const {
+std::string Container::getContentDescription(bool oldProtocol) const {
 	std::ostringstream os;
-	return getContentDescription(os).str();
+	return getContentDescription(os, oldProtocol).str();
 }
 
-std::ostringstream &Container::getContentDescription(std::ostringstream &os) const {
+std::ostringstream &Container::getContentDescription(std::ostringstream &os, bool oldProtocol) const {
 	bool firstitem = true;
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 		Item* item = *it;
@@ -216,7 +216,11 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os) con
 			os << ", ";
 		}
 
-		os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
+		if (oldProtocol) {
+			os << item->getNameDescription();
+		} else {
+			os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
+		}
 	}
 
 	if (firstitem) {
@@ -575,6 +579,9 @@ void Container::addThing(Thing* thing) {
 }
 
 void Container::addThing(int32_t index, Thing* thing) {
+	if (!thing)
+		return /*RETURNVALUE_NOTPOSSIBLE*/;
+
 	if (index >= static_cast<int32_t>(capacity())) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
 	}
@@ -770,6 +777,9 @@ void Container::internalAddThing(Thing* thing) {
 }
 
 void Container::internalAddThing(uint32_t, Thing* thing) {
+	if (!thing)
+		return;
+
 	Item* item = thing->getItem();
 	if (item == nullptr) {
 		return;
@@ -813,6 +823,28 @@ ContainerIterator Container::iterator() const {
 		cit.cur = itemlist.begin();
 	}
 	return cit;
+}
+
+void Container::removeItem(Thing* thing, bool sendUpdateToClient /* = false*/) {
+	if (thing == nullptr) {
+		return;
+	}
+
+	auto itemToRemove = thing->getItem();
+	if (itemToRemove == nullptr) {
+		return;
+	}
+
+	auto it = std::ranges::find(itemlist.begin(), itemlist.end(), itemToRemove);
+	if (it != itemlist.end()) {
+		// Send change to client
+		if (auto thingIndex = getThingIndex(thing); sendUpdateToClient && thingIndex != -1 && getParent()) {
+			onRemoveContainerItem(thingIndex, itemToRemove);
+		}
+
+		itemlist.erase(it);
+		itemToRemove->setParent(nullptr);
+	}
 }
 
 Item* ContainerIterator::operator*() {

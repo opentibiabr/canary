@@ -39,6 +39,9 @@ void Mailbox::addThing(Thing* thing) {
 }
 
 void Mailbox::addThing(int32_t, Thing* thing) {
+	if (!thing)
+		return;
+
 	Item* item = thing->getItem();
 	if (item && Mailbox::canSend(item)) {
 		sendItem(item);

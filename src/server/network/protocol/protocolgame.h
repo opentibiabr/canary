@@ -78,7 +78,7 @@ class ProtocolGame final : public Protocol {
 		ProtocolGame_ptr getThis() {
 			return std::static_pointer_cast<ProtocolGame>(shared_from_this());
 		}
-		void connect(uint32_t playerId, OperatingSystem_t operatingSystem);
+		void connect(const std::string &playerName, OperatingSystem_t operatingSystem);
 		void disconnectClient(const std::string &message) const;
 		void writeToOutputBuffer(const NetworkMessage &msg);
 
@@ -106,6 +106,8 @@ class ProtocolGame final : public Protocol {
 		void parseQuickLoot(NetworkMessage &msg);
 		void parseLootContainer(NetworkMessage &msg);
 		void parseQuickLootBlackWhitelist(NetworkMessage &msg);
+
+		void sendCreatureHelpers(uint32_t creatureId, uint16_t helpers);
 
 		// Depot search
 		void sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count);
@@ -187,6 +189,7 @@ class ProtocolGame final : public Protocol {
 		void parseCloseImbuementWindow(NetworkMessage &msg);
 
 		void parseModalWindowAnswer(NetworkMessage &msg);
+		void parseRewardContainerCollect(NetworkMessage &msg);
 
 		void parseBrowseField(NetworkMessage &msg);
 		void parseSeekInContainer(NetworkMessage &msg);
@@ -341,6 +344,7 @@ class ProtocolGame final : public Protocol {
 		void sendCloseTrade();
 		void updatePartyTrackerAnalyzer(const Party* party);
 
+		void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 		void sendTextWindow(uint32_t windowTextId, Item* item, uint16_t maxlen, bool canWrite);
 		void sendHouseWindow(uint32_t windowTextId, const std::string &text);
 		void sendOutfitWindow();
@@ -362,7 +366,7 @@ class ProtocolGame final : public Protocol {
 
 		void sendCreatureSquare(const Creature* creature, SquareColor_t color);
 
-		void sendSpellCooldown(uint8_t spellId, uint32_t time);
+		void sendSpellCooldown(uint16_t spellId, uint32_t time);
 		void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
 		void sendUseItemCooldown(uint32_t time);
 
@@ -446,6 +450,9 @@ class ProtocolGame final : public Protocol {
 		// otclient
 		void parseExtendedOpcode(NetworkMessage &msg);
 
+		void parseInventoryImbuements(NetworkMessage &msg);
+		void sendInventoryImbuements(const std::map<Slots_t, Item*> items);
+
 		// reloadCreature
 		void reloadCreature(const Creature* creature);
 
@@ -469,13 +476,26 @@ class ProtocolGame final : public Protocol {
 		bool loggedIn = false;
 		bool shouldAddExivaRestrictions = false;
 
-		void sendInventory();
+		bool oldProtocol = false;
 
+		void sendInventory();
 		void sendOpenStash();
 		void parseStashWithdraw(NetworkMessage &msg);
 		void sendSpecialContainersAvailable();
 		void addBless();
 		void parsePacketDead(uint8_t recvbyte);
+
+		void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
+		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
+
+		// Hazard system
+		void reloadHazardSystemIcon(uint16_t reference);
+
+		uint8_t m_playerDeathTime = 0;
+
+		void resetPlayerDeathTime() {
+			m_playerDeathTime = 0;
+		}
 };
 
 #endif // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

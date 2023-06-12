@@ -100,6 +100,11 @@ function login.onLogin(player)
 		player:setBaseXpGain(baseRate * 100)
 	end
 
+	local staminaBonus = player:getFinalBonusStamina()
+	player:setStaminaXpBoost(staminaBonus * 100)
+
+	player:getFinalLowLevelBonus()
+
 	return true
 end
 

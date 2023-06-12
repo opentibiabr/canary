@@ -1,4 +1,3 @@
---# Monster converted using Devm monster converter #--
 local mType = Game.createMonsterType("Demon")
 local monster = {}
 
@@ -80,6 +79,16 @@ monster.summon = {
 	maxSummons = 1,
 	summons = {
 		{name = "fire elemental", chance = 10, interval = 2000}
+	}
+}
+
+monster.sounds = {
+	ticks = 5000,
+	chance = 10,
+	death = SOUND_EFFECT_TYPE_DEMON_DEATH,
+	ids = {
+		SOUND_EFFECT_TYPE_DEMON_BARK,
+		SOUND_EFFECT_TYPE_UNKNOWN_CREATURE_DEATH_1
 	}
 }
 

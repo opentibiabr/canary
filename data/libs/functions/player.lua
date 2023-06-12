@@ -118,7 +118,7 @@ function Player.getCookiesDelivered(self)
 end
 
 function Player.allowMovement(self, allow)
-	return self:setStorageValue(Global.Storage.blockMovementStorage, allow and -1 or 1)
+	return self:setStorageValue(Global.Storage.BlockMovementStorage, allow and -1 or 1)
 end
 
 function Player.checkGnomeRank(self)
@@ -283,7 +283,7 @@ function Player:removeMoneyBank(amount)
 end
 
 function Player.hasAllowMovement(self)
-	return self:getStorageValue(Global.Storage.blockMovementStorage) ~= 1
+	return self:getStorageValue(Global.Storage.BlockMovementStorage) ~= 1
 end
 
 function Player.hasRookgaardShield(self)
@@ -451,7 +451,7 @@ function Player.getFinalBaseRateExperience(self)
 	local rateExperience = configManager.getNumber(configKeys.RATE_EXPERIENCE)
 	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
 		baseRate = getRateFromTable(experienceStages, self:getLevel(), rateExperience)
-	else 
+	else
 		baseRate = rateExperience
 	end
 	-- Event scheduler
@@ -459,4 +459,27 @@ function Player.getFinalBaseRateExperience(self)
 		baseRate = math.max(0, (baseRate * SCHEDULE_EXP_RATE) / 100)
 	end
 	return baseRate
+end
+
+function Player.getFinalBonusStamina(self)
+	local staminaBonus = 1
+	if configManager.getBoolean(configKeys.STAMINA_SYSTEM) then
+		local staminaMinutes = self:getStamina()
+		if staminaMinutes > 2340 and self:isPremium() then
+			staminaBonus = 1.5
+		elseif staminaMinutes <= 840 then
+			staminaBonus = 0.5
+		end
+	end
+	return staminaBonus
+end
+
+function Player.getFinalLowLevelBonus(self)
+	local level = self:getLevel()
+	if level > 0 and level <= 50 then
+		self:setGrindingXpBoost(configManager.getNumber(configKeys.LOW_LEVEL_BONUS_EXP))
+	else
+		self:setGrindingXpBoost(0)
+	end
+	return self:getGrindingXpBoost()
 end

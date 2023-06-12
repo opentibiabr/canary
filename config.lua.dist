@@ -33,9 +33,11 @@ onlyInvitedCanMoveHouseItems = true
 cleanProtectionZones = false
 
 -- Connection Config
+-- NOTE: allowOldProtocol can allow login on 10x protocol. (11.00)
 -- NOTE: maxPlayers set to 0 means no limit
 -- NOTE: MaxPacketsPerSeconds if you change you will be subject to bugs by WPE, keep the default value of 25
 ip = "127.0.0.1"
+allowOldProtocol = false
 bindOnlyGlobalAddress = false
 loginProtocolPort = 7171
 gameProtocolPort = 7172
@@ -44,7 +46,6 @@ maxPlayers = 0
 serverName = "OTServBR-Global"
 serverMotd = "Welcome to the OTServBR-Global!"
 onePlayerOnlinePerAccount = true
-allowClones = false
 statusTimeout = 5 * 1000
 replaceKickOnLogin = true
 maxPacketsPerSecond = 25
@@ -121,6 +122,20 @@ bestiaryRateCharmShopPrice  = 1.0
 boostedBossSlot = true
 boostedBossLootBonus = 250
 boostedBossKillBonus = 3
+
+-- Hazard system
+toogleHazardSystem = true
+hazardCriticalInterval = 2000
+hazardCriticalMultiplier = 25
+hazardDamageMultiplier = 200
+hazardDodgeMultiplier = 85
+hazardPodsDropMultiplier = 87
+hazardPodsTimeToDamage = 2000
+hazardPodsTimeToSpawn = 4000
+hazardExpBonusMultiplier = 2
+hazardLootBonusMultiplier = 2
+hazardPodsDamage = 5
+hazardSpawnPlunderMultiplier = 25
 
 -- Familiar system
 -- NOTE: the time will be divided by 2 to get half the value, the familiar lasts 15 minutes by default and the cooldown of the spell is 30 minutes
@@ -290,7 +305,9 @@ sortLootByChance = false
 -- Rates
 -- NOTE: rateExp, rateSkill and rateMagic is used when 'rateUseStages = false' - or a fallback only
 -- To configure rates see file data/stages.lua
+-- lowLevelBonusExp works up to level 50
 rateUseStages = false
+lowLevelBonusExp = 50
 rateExp = 1
 rateSkill = 1
 rateLoot = 1

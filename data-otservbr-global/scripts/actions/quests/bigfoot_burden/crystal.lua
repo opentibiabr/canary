@@ -7,6 +7,10 @@ end
 
 local bigfootCrystal = Action()
 function bigfootCrystal.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	if not target or type(target) ~= "userdata" or not target:isItem() then
+		return false
+	end
+	
 	local repairedCount = player:getStorageValue(Storage.BigfootBurden.RepairedCrystalCount)
 	if repairedCount == 5 or player:getStorageValue(Storage.BigfootBurden.MissionCrystalKeeper) ~= 1 then
 		return false

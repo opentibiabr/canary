@@ -1,6 +1,9 @@
 local exerciseTraining = Action()
 
 function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	if not target then
+		return
+	end
 	local playerId = player:getId()
 	local targetId = target:getId()
 
@@ -44,7 +47,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 			end
 		end
 
-		if player:getStorageValue(Storage.isTraining) > os.time() then
+		if player:getStorageValue(Storage.IsTraining) > os.time() then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This exercise dummy can only be used after a 30 second cooldown.")
 			return true
 		end
@@ -54,7 +57,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 			onExerciseTraining[playerId].event = addEvent(ExerciseEvent, 0, playerId, targetPos, item.itemid, targetId)
 			onExerciseTraining[playerId].dummyPos = targetPos
 			player:setTraining(true)
-			player:setStorageValue(Storage.isTraining, os.time() + 30)
+			player:setStorageValue(Storage.IsTraining, os.time() + 30)
 		end
 		return true
 	end

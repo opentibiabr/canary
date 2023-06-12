@@ -79,17 +79,19 @@ Reserved player action storage key ranges (const.h)
 
 Storage = {
 	-- General storages
-	isTraining = 30000,
+	IsTraining = 30000,
+	-- Reserved in Global.Storage.NpcExhaust = 30001
 	Dragonfetish = 30003,
 	EdronRopeQuest = 30004,
 	GhostShipQuest = 30005,
 	OrcKingGreeting = 30006,
 	MarkwinGreeting = 30007,
-	-- empty = 30008
+	-- EmoteSpells Storage cannot be changed, it is set in source code
+	EmoteSpells = 30008,
 	WagonTicket = 30009,
 	BloodHerbQuest = 30010,
-	firstMageWeapon = 30011,
-	toOutfoxAFoxQuest = 30012,
+	FirstMageWeapon = 30011,
+	ToOutfoxAFoxQuest = 30012,
 	KawillBlessing = 30014,
 	RentedHorseTimer = 30015,
 	FountainOfLife = 30016,
@@ -100,10 +102,12 @@ Storage = {
 	RookgaardDestiny = 30020,
 	EruaranGreeting = 30021,
 	MaryzaCookbook = 30022,
+	-- Reserved in Global.Storage.CombatProtectionStorage = 30023
 	Factions = 30024,
-	blockMovementStorage = 30025,
-	TrainerRoom = 30027,
-	NpcSpawn = 30028,
+	-- Reserved in Global.Storage.BlockMovementStorage = 30025
+	-- Reserved in Global.Storage.FamiliarSummon = 30026
+	-- unused TrainerRoom = 30027,
+	-- unused NpcSpawn = 30028,
 	ExerciseDummyExhaust = 30029,
 	SamsOldBackpack = 30030,
 	SamsOldBackpackDoor = 30031,
@@ -126,8 +130,11 @@ Storage = {
 	Navigator = 30048,
 	DwarvenLegs = 30049,
 	PrinceDrazzakTime = 30050,
+	-- Reserved in Global.Storage.StoreExaust = 30051
 	LemonCupcake = 30052,
 	BlueberryCupcake = 30053,
+	-- Reserved in Global.Storage.FamiliarSummonEvent10 = 30054
+	-- Reserved in Global.Storage.FamiliarSummonEvent60 = 30055
 	ChayenneKeyTime = 30056,
 	FreeQuests = 30057,
 	PremiumAccount = 30058,
@@ -596,7 +603,7 @@ Storage = {
 		Mission05 = 50604,
 		Mission06 = 50605,
 		Mission07 = 50606,
-		packageDoor = 50607
+		-- unused packageDoor = 50607
 	},
 	DjinnWar = {
 		-- Reserved storage from 50620 - 50649
@@ -1122,18 +1129,18 @@ Storage = {
 		GhostOfAPriest03 = 51319, --1072
 		InterdimensionalPotion = 51320, --1084
 		BossStatus = 51321, --1090
-		platinumReward = 51322,
-		backpackReward = 51323,
-		mainReward = 51324,
+		-- unused platinumReward = 51322,
+		-- unused backpackReward = 51323,
+		MainReward = 51324,
 		TeleportAccess = {
 			Rebel = 51325,
 			Zlak = 51326,
 			Zizzle = 51327,
-			sleepingDragon = 51328,
-			innerSanctum = 51329,
-			awarnessEmperor = 51330,
+			SleepingDragon = 51328,
+			InnerSanctum = 51329,
+			AwarnessEmperor = 51330,
 			Wote10 = 51331,
-			bossRoom = 51332
+			BossRoom = 51332
 		}
 	},
 	FriendsandTraders = {
@@ -1232,7 +1239,7 @@ Storage = {
 	TibiaTales = {
 		-- Reserved storage from 51480 - 51539
 		DefaultStart = 51480,
-		ultimateBoozeQuest = 51481,
+		UltimateBoozeQuest = 51481,
 		AgainstTheSpiderCult = 51482,
 		AnInterestInBotany = 51483,
 		AnInterestInBotanyChestDoor = 51484,
@@ -1345,12 +1352,12 @@ Storage = {
 	},
 	RookgaardTutorialIsland = {
 		-- Reserved storage from 51660 - 51679
-		tutorialHintsStorage = 51665,
+		TutorialHintsStorage = 51665,
 		SantiagoNpcGreetStorage = 51666,
 		SantiagoQuestLog = 51667,
-		cockroachKillStorage = 51668,
-		cockroachLegsMsgStorage = 51669,
-		cockroachBodyMsgStorage = 51670,
+		-- unused cockroachKillStorage = 51668,
+		-- unused cockroachLegsMsgStorage = 51669,
+		-- unused cockroachBodyMsgStorage = 51670,
 		ZirellaNpcGreetStorage = 51671,
 		ZirellaQuestLog = 51672,
 		CarlosNpcTradeStorage = 51673,
@@ -1665,7 +1672,6 @@ Storage = {
 		KnightHealthPotion = 52266,
 		KnightManaPotion = 52267,
 		KnightMeat = 52268,
-
 		Sorcerer = 52269,
 		Druid = 52270,
 		Paladin = 52271,
@@ -2671,15 +2677,15 @@ Storage = {
 					keyFragment01 = 45978,
 					keyFragment02 = 45979
 				},
-				corymRescued01 = 45980,
-				corymRescued02 = 45981,
-				corymRescued03 = 45982,
-				corymRescued04 = 45983,
-				corymRescued05 = 45984,
-				corymRescued06 = 45985,
-				corymRescued07 = 45986,
-				corymRescued08 = 45987,
-				corymRescueMission = 45988
+				CorymRescued01 = 45980,
+				CorymRescued02 = 45981,
+				CorymRescued03 = 45982,
+				CorymRescued04 = 45983,
+				CorymRescued05 = 45984,
+				CorymRescued06 = 45985,
+				CorymRescued07 = 45986,
+				CorymRescued08 = 45987,
+				CorymRescueMission = 45988
 			},
 			MakeshiftWarriorOutfits = {},
 		},
@@ -3085,7 +3091,7 @@ table.sort(extraction) -- Sort the table
 -- Scroll through the extracted table for duplicates
 if #extraction > 1 then
 	for i = 1, #extraction - 1 do
-		if extraction[i] == extraction[i+1] then
+		if extraction[i] == extraction[i + 1] then
 			Spdlog.warn(string.format("Duplicate storage value found: %d",
 				extraction[i]))
 		end

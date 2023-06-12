@@ -22,8 +22,7 @@ local config = {
 
 local ferumbrasAscendantTarbazLever = Action()
 function ferumbrasAscendantTarbazLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	CreateDefaultLeverBoss(player, config)
-	return true
+	return CreateDefaultLeverBoss(player, config)
 end
 
 ferumbrasAscendantTarbazLever:uid(1027)

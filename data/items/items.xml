@@ -54943,7 +54943,7 @@
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="manaleechamount" value="1"/>
 		<attribute key="manaleechchance" value="100"/>
-		<attribute key="transformDeEquipTo" value="39183"/>>
+		<attribute key="transformDeEquipTo" value="39183"/>
 		<attribute key="showduration" value="1" />
 		<attribute key="showattributes" value="1" />
 		<attribute key="duration" value="10800"/>

@@ -1,3 +1,13 @@
 function onUpdateDatabase()
-	return false -- true = There are others migrations file | false = this is the last migration file
+	Spdlog.info("Updating database to version 32 (account_sessions)")
+    db.query([[
+			CREATE TABLE IF NOT EXISTS `account_sessions` (
+				`id` VARCHAR(191) NOT NULL,
+				`account_id` INTEGER UNSIGNED NOT NULL,
+				`expires` BIGINT UNSIGNED NOT NULL,
+
+				PRIMARY KEY (`id`)
+		) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+	]])
+	return true
 end

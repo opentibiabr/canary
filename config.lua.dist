@@ -278,6 +278,9 @@ mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"
 
+-- Session Auth
+authType = "password" -- 'session' | 'password'
+
 -- Misc.
 -- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate
 allowChangeOutfit = true

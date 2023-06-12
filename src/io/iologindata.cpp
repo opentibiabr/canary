@@ -32,11 +32,49 @@ bool IOLoginData::authenticateAccountPassword(const std::string &accountIdentifi
 	return true;
 }
 
-bool IOLoginData::gameWorldAuthentication(const std::string &accountIdentifier, const std::string &password, std::string &characterName, uint32_t* accountId, bool oldProtocol) {
+bool IOLoginData::authenticateAccountSession(const std::string &accountIdentifier, const std::string &sessionId, account::Account* account) {
+	if (account::ERROR_NO != account->LoadAccountDB(accountIdentifier)) {
+		SPDLOG_ERROR("{} {} doesn't match any account.", account->getProtocolCompat() ? "Username" : "Email", accountIdentifier);
+		return false;
+	}
+
+	uint32_t accountId;
+	if (account::ERROR_NO != account->GetID(&accountId)) {
+		SPDLOG_ERROR("{} {} doesn't match any account.", account->getProtocolCompat() ? "Username" : "Email", accountIdentifier);
+		return false;
+	}
+
+	Database &db = Database::getInstance();
+	std::ostringstream query;
+	query << "SELECT `expires` FROM `account_sessions` WHERE `id` = " << db.escapeString(transformToSHA1(sessionId)) << " AND `account_id` = " << accountId;
+	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
+	if (!result) {
+		SPDLOG_ERROR("Session id {} for email {} not found in the database", sessionId, accountIdentifier);
+		return false;
+	} else {
+		uint32_t expires = result->getNumber<uint32_t>("expires");
+		if (expires < getTimeNow()) {
+			SPDLOG_ERROR("Session id {} for email {} found, but it is expired", sessionId, accountIdentifier);
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool IOLoginData::gameWorldAuthentication(const std::string &accountIdentifier, const std::string &sessionOrPassword, std::string &characterName, uint32_t* accountId, bool oldProtocol) {
 	account::Account account;
 	account.setProtocolCompat(oldProtocol);
-	if (!IOLoginData::authenticateAccountPassword(accountIdentifier, password, &account)) {
-		return false;
+	std::string authType = g_configManager().getString(AUTH_TYPE);
+
+	if (authType == "session") {
+		if (!IOLoginData::authenticateAccountSession(accountIdentifier, sessionOrPassword, &account)) {
+			return false;
+		}
+	} else { // authType == "password"
+		if (!IOLoginData::authenticateAccountPassword(accountIdentifier, sessionOrPassword, &account)) {
+			return false;
+		}
 	}
 
 	account::Player player;

@@ -232,10 +232,10 @@ function playerLogin.onLogin(player)
 		player:setBaseXpGain(baseRate * 100)
 	end
 
-	local staminaMinutes = player:getStamina()
-	local staminaBonus = (staminaMinutes > 2340) and 150 or ((staminaMinutes < 840) and 50 or 100)
+	local staminaBonus = player:getFinalBonusStamina()
+	player:setStaminaXpBoost(staminaBonus * 100)
 
-	player:setStaminaXpBoost(staminaBonus)
+	player:getFinalLowLevelBonus()
 
 	if onExerciseTraining[player:getId()] then -- onLogin & onLogout
 		stopEvent(onExerciseTraining[player:getId()].event)

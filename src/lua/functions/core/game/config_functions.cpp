@@ -205,6 +205,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", HAZARD_LOOT_BONUS_MULTIPLIER);
 	registerEnumIn(L, "configKeys", HAZARD_PODS_DAMAGE);
 	registerEnumIn(L, "configKeys", TOGGLE_HAZARDSYSTEM);
+	registerEnumIn(L, "configKeys", LOW_LEVEL_BONUS_EXP);
 #undef registerEnumIn
 }
 

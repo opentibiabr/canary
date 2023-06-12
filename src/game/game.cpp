@@ -1298,7 +1298,7 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 	}
 
 	// check if we can move this item
-	if (ReturnValue ret = checkMoveItemToCylinder(player, fromCylinder, toCylinder, item); ret != RETURNVALUE_NOERROR) {
+	if (ReturnValue ret = checkMoveItemToCylinder(player, fromCylinder, toCylinder, item, toPos); ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 		return;
 	}
@@ -1442,13 +1442,22 @@ bool Game::isTryingToStow(const Position &toPos, Cylinder* toCylinder) const {
 	return toCylinder->getContainer() && toCylinder->getItem()->getID() == ITEM_LOCKER && toPos.getZ() == ITEM_SUPPLY_STASH_INDEX;
 }
 
-ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder, Cylinder* toCylinder, Item* item) {
+ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder, Cylinder* toCylinder, Item* item, Position toPos) {
 	if (!player || !toCylinder || !item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	if (toCylinder->getContainer()) {
-		auto containerID = toCylinder->getContainer()->getID();
+	if (Container* toCylinderContainer = toCylinder->getContainer()) {
+		auto containerID = toCylinderContainer->getID();
+
+		// check the store inbox index if gold pouch forces it as containerID
+		if (containerID == ITEM_STORE_INBOX) {
+			Item* cylinderItem = toCylinderContainer->getItemByIndex(toPos.getZ());
+
+			if (cylinderItem && cylinderItem->getID() == ITEM_GOLD_POUCH) {
+				containerID = ITEM_GOLD_POUCH;
+			}
+		}
 
 		if (containerID == ITEM_GOLD_POUCH) {
 			bool allowAnything = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);
@@ -1456,9 +1465,16 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 			if (!allowAnything && item->getID() != ITEM_GOLD_COIN && item->getID() != ITEM_PLATINUM_COIN && item->getID() != ITEM_CRYSTAL_COIN) {
 				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 			}
+
+			// prevent move up
+			if (!item->isStoreItem() && fromCylinder->getContainer() && fromCylinder->getContainer()->getID() == ITEM_GOLD_POUCH) {
+				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+			}
+
+			return RETURNVALUE_NOERROR;
 		}
 
-		const Container* topParentContainer = toCylinder->getContainer()->getRootContainer();
+		const Container* topParentContainer = toCylinderContainer->getRootContainer();
 
 		if (!item->isStoreItem() && (containerID == ITEM_STORE_INBOX || topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
 			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
@@ -1470,7 +1486,7 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
 
-			if (containerID == ITEM_STORE_INBOX || containerID == ITEM_DEPOT || toCylinder->getContainer()->isDepotChest()) {
+			if (containerID == ITEM_STORE_INBOX || containerID == ITEM_DEPOT || toCylinderContainer->isDepotChest()) {
 				isValidMoveItem = true;
 			}
 
@@ -5447,9 +5463,9 @@ void Game::changeSpeed(Creature* creature, int32_t varSpeedDelta) {
 }
 
 void Game::setCreatureSpeed(Creature* creature, int32_t speed) {
-	creature->setBaseSpeed(speed);
+	creature->setBaseSpeed(static_cast<uint16_t>(speed));
 
-	// send to clients
+	// send creature speed to client
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), false, true);
 	for (Creature* spectator : spectators) {
@@ -8446,6 +8462,7 @@ void Game::playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Pos
 
 	if (auto bossOutfit = mType->info.outfit;
 		bossOutfit.lookType != 0 && bossVisible) {
+		item->setCustomAttribute("LookTypeEx", static_cast<int64_t>(bossOutfit.lookTypeEx));
 		item->setCustomAttribute("LookType", static_cast<int64_t>(bossOutfit.lookType));
 		item->setCustomAttribute("LookHead", static_cast<int64_t>(bossOutfit.lookHead));
 		item->setCustomAttribute("LookBody", static_cast<int64_t>(bossOutfit.lookBody));

@@ -4502,13 +4502,12 @@
 		<attribute key="weight" value="490"/>
 	</item>
 	<item id="3009" article="a" name="bronze necklace">
-		<attribute key="weight" value="409"/>
+		<attribute key="weight" value="410"/>
 	</item>
 	<item id="3010" article="an" name="emerald bangle">
 		<attribute key="weight" value="179"/>
 	</item>
 	<item id="3011" article="a" name="crown">
-		<attribute key="defense" value="1"/>
 		<attribute key="weight" value="1900"/>
 	</item>
 	<item id="3012" article="a" name="wolf tooth chain">
@@ -4543,7 +4542,7 @@
 		<attribute key="weight" value="680"/>
 	</item>
 	<item id="3022" article="an" name="ancient tiara">
-		<attribute key="weight" value="819"/>
+		<attribute key="weight" value="820"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
 			<attribute key="skillboost axe" value="3"/>
@@ -4808,7 +4807,7 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="fire"/>
 		<attribute key="range" value="3"/>
-		<attribute key="weight" value="2100"/>
+		<attribute key="weight" value="2300"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
@@ -5461,10 +5460,10 @@
 	</item>
 	<item id="3229" article="a" name="helmet of the ancients">
 		<attribute key="description" value="The gem of the helmet is burned out and should be replaced"/>
-		<attribute key="armor" value="11"/>
+		<attribute key="armor" value="8"/>
 		<attribute key="weight" value="2760"/>
 	</item>
-	<item id="3230" article="a" name="helmet of the ancients">
+	<item id="3230" article="a" name="full helmet of the ancients">
 		<attribute key="description" value="The gem is glowing with power"/>
 		<attribute key="duration" value="1800"/>
 		<attribute key="decayTo" value="3229"/>
@@ -5545,7 +5544,7 @@
 	</item>
 	<item id="3245" article="a" name="ring of wishes">
 		<attribute key="description" value="(This item has 3 charges left)"/>
-		<attribute key="weight" value="90"/>
+		<attribute key="weight" value="50"/>
 	</item>
 	<item id="3246" name="boots of waterwalking">
 		<attribute key="description" value="(This item has 5 charges left)"/>
@@ -6433,14 +6432,6 @@
 	<item id="3352" article="a" name="chain helmet">
 		<attribute key="armor" value="2"/>
 		<attribute key="weight" value="4200"/>
-		<attribute key="imbuementslot" value="1">
-			<attribute key="mana leech" value="3"/>
-			<attribute key="skillboost axe" value="3"/>
-			<attribute key="skillboost sword" value="3"/>
-			<attribute key="skillboost club" value="3"/>
-			<attribute key="skillboost shielding" value="3"/>
-			<attribute key="skillboost distance" value="3"/>
-		</attribute>
 	</item>
 	<item id="3353" article="an" name="iron helmet">
 		<attribute key="armor" value="5"/>
@@ -15929,7 +15920,7 @@
 		<attribute key="ammotype" value="arrow"/>
 		<attribute key="hitchance" value="3"/>
 		<attribute key="range" value="6"/>
-		<attribute key="weight" value="2200"/>
+		<attribute key="weight" value="2500"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
 			<attribute key="life leech" value="3"/>
@@ -20463,7 +20454,7 @@
 	<item id="10457" article="a" name="beetle necklace">
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="speed" value="2"/>
-		<attribute key="weight" value="819"/>
+		<attribute key="weight" value="820"/>
 	</item>
 	<item id="10458" article="a" name="dead lancer beetle">
 		<attribute key="fluidsource" value="slime"/>
@@ -22767,7 +22758,7 @@
 	<item id="12603" article="a" name="wand of dimensions">
 		<attribute key="description" value="This wand controls the rift between time and space"/>
 		<attribute key="weaponType" value="wand"/>
-		<attribute key="shootType" value="death"/>
+		<attribute key="shootType" value="energy"/>
 		<attribute key="range" value="3"/>
 		<attribute key="weight" value="2800"/>
 	</item>
@@ -23901,7 +23892,7 @@
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentlifedrain" value="50"/>
 		<attribute key="charges" value="50"/>
-		<attribute key="weight" value="500"/>
+		<attribute key="weight" value="509"/>
 	</item>
 	<item id="13991" article="a" name="deepling axe">
 		<attribute key="weaponType" value="axe"/>
@@ -25542,7 +25533,7 @@
 		<attribute key="absorbpercentphysical" value="15"/>
 		<attribute key="absorbpercentpoison" value="10"/>
 		<attribute key="charges" value="750"/>
-		<attribute key="weight" value="409"/>
+		<attribute key="weight" value="410"/>
 	</item>
 	<item id="16109" article="a" name="prismatic helmet">
 		<attribute key="absorbpercentphysical" value="5"/>
@@ -26216,6 +26207,8 @@
 	<item id="17111" article="a" name="sorcerer and druid staff">
 		<attribute key="description" value="It can only be wielded properly by players without vocation."/>
 		<attribute key="weaponType" value="wand"/>
+		<attribute key="shootType" value="energy"/>
+		<attribute key="range" value="3"/>
 		<attribute key="weight" value="1900"/>
 	</item>
 	<item id="17112" article="a" name="sorc and druid attack rune">
@@ -30955,7 +30948,7 @@
 	</item>
 	<item id="20209" article="an" name="unstable ring of ending">
 		<attribute key="description" value="Something is happening to this ring"/>
-		<attribute key="weight" value="0"/>
+		<attribute key="weight" value="60"/>
 	</item>
 	<item id="20210" article="a" name="filled cup">
 		<attribute key="description" value="The blend inside smells as if a dead green fairy had been dropped in it"/>
@@ -31968,7 +31961,12 @@
 		<attribute key="showCharges" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentphysical" value="10"/>
-		<attribute key="absorbpercentmagic" value="10"/>
+		<attribute key="absorbpercentfire" value="10"/>
+		<attribute key="absorbpercentpoison" value="10"/>
+		<attribute key="absorbpercentenergy" value="10"/>
+		<attribute key="absorbpercentice" value="10"/>
+		<attribute key="absorbpercentholy" value="10"/>
+		<attribute key="absorbpercentdeath" value="10"/>
 		<attribute key="charges" value="20"/>
 		<attribute key="weight" value="220"/>
 	</item>
@@ -33755,7 +33753,6 @@
 		<attribute key="duration" value="60"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
-	<!-- axe -->
 	<item id="22134" article="an" name="enchanted werewolf amulet">
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
@@ -33763,7 +33760,6 @@
 		<attribute key="duration" value="3600"/>
 		<attribute key="decayTo" value="22060"/>
 		<attribute key="transformDeEquipTo" value="22061" />
-		<attribute key="duration" value="3600" />
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="550"/>
 	</item>
@@ -34543,6 +34539,7 @@
 	</item>
 	<item id="22757" article="a" name="shroud of despair">
 		<attribute key="armor" value="7"/>
+		<attribute key="absorbpercentdeath" value="3"/>
 		<attribute key="weight" value="3400"/>
 	</item>
 	<item id="22758" article="a" name="death gaze">
@@ -34622,7 +34619,7 @@
 		<attribute key="duration" value="86400"/>
 		<attribute key="decayTo" value="22764"/>
 		<attribute key="range" value="4"/>
-		<attribute key="weight" value="2900"/>
+		<attribute key="weight" value="2250"/>
 	</item>
 	<item id="22767" article="a" name="Ferumbras' amulet">
 		<attribute key="description" value="The rare jewel is made of sapphire and ruby and has a golden F-pendant"/>
@@ -35317,7 +35314,7 @@
 		<attribute key="managain" value="8"/>
 		<attribute key="healthticks" value="6000"/>
 		<attribute key="healthgain" value="2"/>
-		<attribute key="speed" value="10"/>
+		<attribute key="speed" value="20"/>
 		<attribute key="duration" value="3600"/>
 		<attribute key="transformdeequipto" value="23474"/>
 		<attribute key="decayTo" value="0"/>
@@ -37273,8 +37270,8 @@
 		<attribute key="description" value="It's a gnarly branch with a gleaming blue blossom"/>
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="energy"/>
-		<attribute key="magicpoints" value="2"/>
-		<attribute key="range" value="4"/>
+		<attribute key="magicpoints" value="1"/>
+		<attribute key="range" value="5"/>
 		<attribute key="weight" value="3200"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
@@ -37365,7 +37362,7 @@
 		<attribute key="elementearth" value="2"/>
 		<attribute key="maxhitchance" value="86"/>
 		<attribute key="hitchance" value="90"/>
-		<attribute key="range" value="4"/>
+		<attribute key="range" value="5"/>
 		<attribute key="attack" value="48"/>
 		<attribute key="weight" value="200"/>
 	</item>
@@ -39383,9 +39380,9 @@
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="ammotype" value="arrow"/>
-		<attribute key="hitchance" value="6"/>
+		<attribute key="hitchance" value="5"/>
 		<attribute key="range" value="6"/>
-		<attribute key="attack" value="6"/>
+		<attribute key="attack" value="5"/>
 		<attribute key="weight" value="5500"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
@@ -39399,7 +39396,7 @@
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="ammotype" value="bolt"/>
-		<attribute key="hitchance" value="6"/>
+		<attribute key="hitchance" value="5"/>
 		<attribute key="range" value="5"/>
 		<attribute key="attack" value="6"/>
 		<attribute key="weight" value="6500"/>
@@ -39414,7 +39411,7 @@
 	<item id="27457" article="a" name="wand of destruction">
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="energy"/>
-		<attribute key="magicpoints" value="2"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="3500"/>
 		<attribute key="imbuementslot" value="2">
@@ -39427,7 +39424,7 @@
 	<item id="27458" article="a" name="rod of destruction">
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="smallice"/>
-		<attribute key="magicpoints" value="2"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="3500"/>
 		<attribute key="imbuementslot" value="2">
@@ -39947,7 +39944,7 @@
 		<attribute key="absorbpercentice" value="-2"/>
 		<attribute key="absorbpercentenergy" value="8"/>
 		<attribute key="magicpoints" value="2"/>
-		<attribute key="armor" value="7"/>
+		<attribute key="armor" value="8"/>
 		<attribute key="weight" value="2400"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
@@ -41863,7 +41860,9 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="absorbpercentholy" value="8"/>
-		<attribute key="magicpoints" value="3"/>
+		<attribute key="magicpoints" value="2"/>
+		<attribute key="criticalhitdamage" value="25"/>
+		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="range" value="5"/>
 		<attribute key="weight" value="3300"/>
 		<attribute key="imbuementslot" value="2">
@@ -45369,7 +45368,7 @@
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="570"/>
 	</item>
-	<item id="31557" article="a" name="blister ring">
+	<item id="31557" article="a" name="enchanted blister ring">
 		<attribute key="stopduration" value="1"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="transformequipto" value="31616"/>
@@ -45488,7 +45487,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="ammotype" value="arrow"/>
 		<attribute key="absorbpercentdeath" value="4"/>
-		<attribute key="skilldist" value="4"/>
+		<attribute key="skilldist" value="2"/>
 		<attribute key="hitchance" value="4"/>
 		<attribute key="range" value="6"/>
 		<attribute key="attack" value="6"/>
@@ -45619,7 +45618,7 @@
 		<attribute key="description" value="The spell on it has faded"/>
 		<attribute key="weight" value="4500"/>
 	</item>
-	<item id="31616" article="a" name="blister ring">
+	<item id="31616" article="a" name="enchanted blister ring">
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentfire" value="6"/>
@@ -46878,7 +46877,7 @@
 			<attribute key="increase capacity" value="3"/>
 		</attribute>
 	</item>
-	<item id="32621" article="a" name="ring of souls">
+	<item id="32621" article="a" name="enchanted ring of souls">
 		<attribute key="stopduration" value="1"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="transformequipto" value="32635"/>
@@ -46923,16 +46922,7 @@
 	</item>
 	<item id="32630" article="a" name="spooky hood">
 		<attribute key="description" value="Every time you look away you have a strange feeling, as if something watches you from its depths"/>
-		<attribute key="armor" value="1"/>
 		<attribute key="weight" value="1250"/>
-		<attribute key="imbuementslot" value="2">
-			<attribute key="mana leech" value="3"/>
-			<attribute key="skillboost axe" value="3"/>
-			<attribute key="skillboost sword" value="3"/>
-			<attribute key="skillboost club" value="3"/>
-			<attribute key="skillboost shielding" value="3"/>
-			<attribute key="skillboost distance" value="3"/>
-		</attribute>
 	</item>
 	<item id="32631" article="a" name="ghost claw">
 		<attribute key="description" value="It is glowing in an unhealthy light"/>
@@ -46947,8 +46937,7 @@
 		<attribute key="weight" value="250"/>
 	</item>
 	<item id="32634" article="a" name="raw crystal deposit"/>
-	<item id="32635" article="a" name="ring of souls">
-		<attribute key="description" value="Wearing it makes you feel a little weaker than usual."/>
+	<item id="32635" article="a" name="enchanted ring of souls">
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentphysical" value="2"/>
@@ -49226,7 +49215,7 @@
 		<attribute key="ammotype" value="arrow"/>
 		<attribute key="absorbpercentice" value="5"/>
 		<attribute key="skilldist" value="2"/>
-		<attribute key="hitchance" value="4"/>
+		<attribute key="hitchance" value="6"/>
 		<attribute key="range" value="6"/>
 		<attribute key="attack" value="6"/>
 		<attribute key="weight" value="4800"/>
@@ -49258,7 +49247,7 @@
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="lifeleechamount" value="18"/>
 		<attribute key="lifeleechchance" value="100"/>
-		<attribute key="range" value="4"/>
+		<attribute key="range" value="5"/>
 		<attribute key="weight" value="2100"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
@@ -51550,6 +51539,8 @@
 		<attribute key="slotType" value="right-hand"/>
 		<attribute key="containersize" value="8"/>
 		<attribute key="weight" value="2200"/>
+		<!--attribute key="perfectshotdamage" value="20"/-->
+		<!--attribute key="perfectshotrange" value="4"/-->
 	</item>
 	<item id="36667" article="a" name="eldritch breeches">
 		<attribute key="absorbpercentphysical" value="2"/>
@@ -51577,8 +51568,10 @@
 		<attribute key="shootType" value="fire"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="magicpoints" value="2"/>
-		<attribute key="range" value="4"/>
+		<attribute key="range" value="6"/>
 		<attribute key="weight" value="3700"/>
+		<!--attribute key="perfectshotdamage" value="65"/-->
+		<!--attribute key="perfectshotrange" value="4"/-->
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -51588,6 +51581,7 @@
 	<item id="36670" article="a" name="eldritch cowl">
 		<attribute key="absorbpercentice" value="7"/>
 		<attribute key="armor" value="7"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="weight" value="2600"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
@@ -51601,6 +51595,7 @@
 	<item id="36671" article="a" name="eldritch hood">
 		<attribute key="absorbpercentpoison" value="7"/>
 		<attribute key="armor" value="7"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="weight" value="2700"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
@@ -51648,6 +51643,7 @@
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="3500"/>
+		<!--attribute key="healingmagiclevelpoints" value="2"/-->
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
 			<attribute key="skillboost axe" value="3"/>
@@ -51665,6 +51661,7 @@
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="3600"/>
+		<!--attribute key="healingmagiclevelpoints" value="2"/-->
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
 			<attribute key="skillboost axe" value="3"/>
@@ -54762,7 +54759,7 @@
 		<attribute key="ammotype" value="bolt"/>
 		<attribute key="absorbpercentpoison" value="4"/>
 		<attribute key="skilldist" value="2"/>
-		<attribute key="hitchance" value="7"/>
+		<attribute key="hitchance" value="6"/>
 		<attribute key="range" value="6"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="weight" value="10200"/>
@@ -54812,7 +54809,7 @@
 		<attribute key="absorbpercentfire" value="4"/>
 		<attribute key="magicpoints" value="2"/>
 		<!--attribute key="icemagiclevelpoints" value="2"/-->
-		<attribute key="range" value="6"/>
+		<attribute key="range" value="5"/>
 		<attribute key="weight" value="2900"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
@@ -54888,7 +54885,7 @@
 		<attribute key="weight" value="95"/>
 	</item>
 	<item id="39179" article="a" name="spiritthorn ring">
-		<attribute key="absorbpercentphysical" value="8"/>
+		<attribute key="absorbpercentphysical" value="2"/>
 		<attribute key="absorbpercentfire" value="4"/>
 		<attribute key="absorbpercentearth" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
@@ -54908,6 +54905,8 @@
 		<attribute key="absorbpercentearth" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
 		<attribute key="absorbpercentice" value="4"/>
+		<attribute key="absorbpercentholy" value="4"/>
+		<attribute key="absorbpercentdeath" value="4"/>
 		<!--attribute key="holymagiclevelpoints" value="1"/-->
 		<attribute key="magicpoints" value="1"/>
 		<attribute key="skilldist" value="3"/>
@@ -54934,7 +54933,7 @@
 		<attribute key="showattributes" value="1" />
 		<attribute key="weight" value="90"/>
 	</item>
-	<item id="39184" article="a" name="charged arcanomancer ring">
+	<item id="39184" article="a" name="charged arcanomancer sigil">
 		<attribute key="absorbpercentfire" value="4"/>
 		<attribute key="absorbpercentearth" value="4"/>
 		<attribute key="absorbpercentenergy" value="4"/>
@@ -54944,7 +54943,7 @@
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="manaleechamount" value="1"/>
 		<attribute key="manaleechchance" value="100"/>
-		<attribute key="transformDeEquipTo" value="39183"/>>
+		<attribute key="transformDeEquipTo" value="39183"/>
 		<attribute key="showduration" value="1" />
 		<attribute key="showattributes" value="1" />
 		<attribute key="duration" value="10800"/>
@@ -55157,6 +55156,7 @@
 		<attribute key="skillclub" value="3"/>
 		<attribute key="skillaxe" value="3"/>
 		<attribute key="skillsword" value="3"/>
+		<attribute key="armor" value="3"/>
 		<attribute key="transformDeEquipTo" value="39233"/>>
 		<attribute key="showduration" value="1" />
 		<attribute key="duration" value="7200"/>
@@ -56513,10 +56513,11 @@
 		<attribute key="weight" value="380"/>
 		<attribute key="armor" value="1"/>
 	</item>
-	<item id="40535" article="the" name="broken Iks spear">
+	<item id="40535" name="broken Iks spear">
 		<attribute key="description" value="This spear was once wielded by the ancient Iks"/>
 		<attribute key="weight" value="1300"/>
 		<attribute key="attack" value="1"/>
+		<attribute key="defense" value="1"/>
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="shootType" value="spear"/>
 		<attribute key="range" value="3"/>

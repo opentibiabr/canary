@@ -810,6 +810,11 @@ void ItemParse::parseImbuement(const std::string &tmpStrValue, pugi::xml_node at
 void ItemParse::parseStackSize(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "stacksize") {
-		itemType.stackSize = pugi::cast<uint16_t>(valueAttribute.value());
+		auto stackSize = pugi::cast<uint16_t>(valueAttribute.value());
+		if (stackSize > 255) {
+			stackSize = 255;
+			spdlog::warn("[{}] Invalid stack size value: {}. Stack size must be between 1 and 255.", __FUNCTION__, stackSize);
+		}
+		itemType.stackSize = static_cast<uint8_t>(stackSize);
 	}
 }

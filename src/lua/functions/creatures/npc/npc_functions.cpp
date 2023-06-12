@@ -524,7 +524,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 
 	uint32_t itemsPurchased = 0;
 	uint8_t backpacksPurchased = 0;
-	uint16_t internalCount = it.stackable ? it.stackSize : 1;
+	uint8_t internalCount = it.stackable ? it.stackSize : 1;
 	auto remainingAmount = static_cast<uint32_t>(amount);
 	if (inBackpacks) {
 		while (remainingAmount > 0) {

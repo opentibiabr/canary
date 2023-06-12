@@ -111,9 +111,11 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 		if target.itemid == 7929 then
 			Game.setStorageValue(GlobalStorage.Inquisition, math.random(4,5))
 		end
-		target:transform(target.itemid + 1)
-		target:setAttribute(ITEM_ATTRIBUTE_DURATION, 20000)
-		target:decay()
+		local newShadowNexus = Game.createItem(target.itemid + 1, 1, shadowNexusPosition)
+		if newShadowNexus then
+			target:remove()
+			newShadowNexus:decay()
+		end
 		nexusMessage(player, player:getName() .. ' damaged the shadow nexus! You can\'t damage it while it\'s burning.')
 		toPosition:sendMagicEffect(CONST_ME_ENERGYHIT)
 	elseif target.itemid == 7931 then

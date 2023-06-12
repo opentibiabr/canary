@@ -11,14 +11,14 @@
 
 #include "security/rsa.h"
 
-RSA::RSA() {
+NetowrkMessageRSA::NetowrkMessageRSA() {
 	mpz_init(n);
 	mpz_init2(d, 1024);
 }
 
-RSA::~RSA() = default;
+NetowrkMessageRSA::~NetowrkMessageRSA() = default;
 
-void RSA::setKey(const char* pString, const char* qString, int base /* = 10*/) {
+void NetowrkMessageRSA::setKey(const char* pString, const char* qString, int base /* = 10*/) {
 	mpz_t p;
 	mpz_t q;
 	mpz_t e;
@@ -61,7 +61,7 @@ void RSA::setKey(const char* pString, const char* qString, int base /* = 10*/) {
 	mpz_clear(e);
 }
 
-void RSA::decrypt(char* msg) const {
+void NetowrkMessageRSA::decrypt(char* msg) const {
 	mpz_t c;
 	mpz_t m;
 	mpz_init2(c, 1024);
@@ -80,7 +80,7 @@ void RSA::decrypt(char* msg) const {
 	mpz_clear(m);
 }
 
-std::string RSA::base64Decrypt(const std::string &input) const {
+std::string NetowrkMessageRSA::base64Decrypt(const std::string &input) const {
 	auto posOfCharacter = [](const uint8_t chr) -> uint16_t {
 		if (chr >= 'A' && chr <= 'Z') {
 			return chr - 'A';
@@ -135,7 +135,7 @@ enum {
 	CRYPT_RSA_ASN1_BITSTRING = 3
 };
 
-uint16_t RSA::decodeLength(char*&pos) const {
+uint16_t NetowrkMessageRSA::decodeLength(char*&pos) const {
 	std::string buffer;
 	auto length = static_cast<uint16_t>(static_cast<uint8_t>(*pos++));
 	if (length & 0x80) {
@@ -162,7 +162,7 @@ uint16_t RSA::decodeLength(char*&pos) const {
 	return length;
 }
 
-void RSA::readHexString(char*&pos, uint16_t length, std::string &output) const {
+void NetowrkMessageRSA::readHexString(char*&pos, uint16_t length, std::string &output) const {
 	output.reserve(static_cast<size_t>(length) * 2);
 	for (uint16_t i = 0; i < length; ++i) {
 		auto hex = static_cast<uint8_t>(*pos++);
@@ -171,7 +171,7 @@ void RSA::readHexString(char*&pos, uint16_t length, std::string &output) const {
 	}
 }
 
-bool RSA::loadPEM(const std::string &filename) {
+bool NetowrkMessageRSA::loadPEM(const std::string &filename) {
 	std::ifstream file { filename };
 	if (!file.is_open()) {
 		return false;

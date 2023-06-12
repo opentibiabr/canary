@@ -32,11 +32,53 @@ bool IOLoginData::authenticateAccountPassword(const std::string &accountIdentifi
 	return true;
 }
 
-bool IOLoginData::gameWorldAuthentication(const std::string &accountIdentifier, const std::string &password, std::string &characterName, uint32_t* accountId, bool oldProtocol) {
+bool IOLoginData::authenticateAccountJWT(const std::string &token, account::Account* account) {
+	// Hardcoded header to save space on the token since we're limited to 128
+	// bytes total for the login message
+	// {"alg":"HS256","typ":"JWT"} base64 encoded
+	// -- Login server has to encode exactly, then strip the header
+	auto header = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.";
+	auto tokenWithHeader = header + token;
+	auto decoded = jwt::decode(tokenWithHeader);
+	auto secret = g_configManager().getString(JWT_SECRET);
+	auto verifier = jwt::verify()
+						.allow_algorithm(jwt::algorithm::hs256 { secret });
+
+	try {
+		verifier.verify(decoded);
+	} catch (const jwt::token_verification_exception &e) {
+		SPDLOG_ERROR("JWT token verification failed: {}", e.what());
+		return false;
+	}
+
+	try {
+		uint32_t id = decoded.get_payload_claim("id").as_int();
+		if (account::ERROR_NO != account->LoadAccountDB(id)) {
+			SPDLOG_ERROR("Id {} doesn't match any account.", id);
+			return false;
+		}
+	} catch (const jwt::error::claim_not_present_exception &e) {
+		SPDLOG_ERROR("JWT token doesn't contain \"id\" claim: {}", e.what());
+		return false;
+	}
+
+	return true;
+}
+
+bool IOLoginData::gameWorldAuthentication(const std::string &accountIdentifier, const std::string &sessionOrPassword, std::string &characterName, uint32_t* accountId, bool oldProtocol) {
 	account::Account account;
 	account.setProtocolCompat(oldProtocol);
-	if (!IOLoginData::authenticateAccountPassword(accountIdentifier, password, &account)) {
-		return false;
+	std::string authType = g_configManager().getString(AUTH_TYPE);
+
+	if (authType == "jwt") {
+		SPDLOG_INFO("JWT authentication is enabled.");
+		if (!IOLoginData::authenticateAccountJWT(sessionOrPassword, &account)) {
+			return false;
+		}
+	} else { // authType == "password"
+		if (!IOLoginData::authenticateAccountPassword(accountIdentifier, sessionOrPassword, &account)) {
+			return false;
+		}
 	}
 
 	account::Player player;

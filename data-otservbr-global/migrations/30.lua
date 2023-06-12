@@ -1,3 +1,8 @@
 function onUpdateDatabase()
-	return false -- true = There are others migrations file | false = this is the last migration file
+	Spdlog.info("Updating database to version 31 (allow longer password)")
+	-- Switch to TEXT to allow longer passwords (such as bcrypt encrypted)
+	db.query([[
+		ALTER TABLE `accounts` MODIFY `password` TEXT NOT NULL;
+	]])
+	return true
 end

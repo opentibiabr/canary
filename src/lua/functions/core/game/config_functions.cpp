@@ -206,6 +206,9 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", HAZARD_PODS_DAMAGE);
 	registerEnumIn(L, "configKeys", TOGGLE_HAZARDSYSTEM);
 	registerEnumIn(L, "configKeys", LOW_LEVEL_BONUS_EXP);
+
+	registerEnumIn(L, "configKeys", AUTH_TYPE);
+	registerEnumIn(L, "configKeys", JWT_SECRET);
 #undef registerEnumIn
 }
 

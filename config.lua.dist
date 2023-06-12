@@ -268,6 +268,11 @@ mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"
 
+-- Session Auth
+authType = "password" -- 'jwtSecret' | 'password'
+ -- used when authType is 'jwt' ; use a secure password here, must be shared with the login-server/aac
+jwtSecret = "you-must-change-this"
+
 -- Misc.
 -- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate
 allowChangeOutfit = true

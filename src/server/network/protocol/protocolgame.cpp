@@ -529,10 +529,11 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 
 	msg.skipBytes(1); // gamemaster flag
 
+	std::string authType = g_configManager().getString(AUTH_TYPE);
 	std::ostringstream ss;
 	std::string sessionKey = msg.getString();
 	size_t pos = sessionKey.find('\n');
-	if (pos == std::string::npos) {
+	if (authType != "jwt" && pos == std::string::npos) {
 		ss << "You must enter your " << (oldProtocol ? "username" : "email") << ".";
 		disconnectClient(ss.str());
 		return;
@@ -545,14 +546,18 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	std::string accountIdentifier = sessionKey.substr(0, pos);
-	if (accountIdentifier.empty()) {
+	std::string sessionOrPassword = sessionKey.substr(pos + 1);
+
+	if (authType == "jwt") {
+		accountIdentifier = "";
+		sessionOrPassword = sessionKey;
+	} else if (accountIdentifier.empty()) {
 		ss.str(std::string());
 		ss << "You must enter your " << (oldProtocol ? "username" : "email") << ".";
 		disconnectClient(ss.str());
 		return;
 	}
 
-	std::string password = sessionKey.substr(pos + 1);
 	std::string characterName = msg.getString();
 
 	const Player* foundPlayer = g_game().getPlayerUniqueLogin(characterName);
@@ -602,9 +607,13 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	uint32_t accountId;
-	if (!IOLoginData::gameWorldAuthentication(accountIdentifier, password, characterName, &accountId, oldProtocol)) {
+	if (!IOLoginData::gameWorldAuthentication(accountIdentifier, sessionOrPassword, characterName, &accountId, oldProtocol)) {
 		ss.str(std::string());
-		ss << (oldProtocol ? "Username" : "Email") << " or password is not correct.";
+		if (authType == "jwt") {
+			ss << "Your session has expired. Please log in again.";
+		} else { // authType == "password"
+			ss << "Your " << (oldProtocol ? "username" : "email") << " or password is not correct.";
+		}
 		disconnectClient(ss.str());
 		return;
 	}

@@ -50,6 +50,7 @@
 #include <fmt/chrono.h>
 #include <gmp.h>
 #include <json/json.h>
+#include <jwt-cpp/jwt.h>
 #if __has_include("luajit/lua.hpp")
 	#include <luajit/lua.hpp>
 #else

@@ -10,18 +10,18 @@
 #ifndef SRC_SECURITY_RSA_H_
 #define SRC_SECURITY_RSA_H_
 
-class RSA {
+class NetowrkMessageRSA {
 	public:
-		RSA();
-		~RSA();
+		NetowrkMessageRSA();
+		~NetowrkMessageRSA();
 
 		// Singleton - ensures we don't accidentally copy it
-		RSA(RSA const &) = delete;
-		void operator=(RSA const &) = delete;
+		NetowrkMessageRSA(const NetowrkMessageRSA &) = delete;
+		void operator=(const NetowrkMessageRSA &) = delete;
 
-		static RSA &getInstance() {
+		static NetowrkMessageRSA &getInstance() {
 			// Guaranteed to be destroyed
-			static RSA instance;
+			static NetowrkMessageRSA instance;
 			// Instantiated on first use
 			return instance;
 		}
@@ -39,6 +39,6 @@ class RSA {
 		mpz_t d;
 };
 
-constexpr auto g_RSA = &RSA::getInstance;
+constexpr auto g_RSA = &NetowrkMessageRSA::getInstance;
 
 #endif // SRC_SECURITY_RSA_H_

@@ -7,6 +7,7 @@
     "spdlog",
     "curl",
     "jsoncpp",
+    "jwt-cpp",
     "protobuf",
     "parallel-hashmap",
     "magic-enum",
@@ -18,7 +19,7 @@
     },
     {
       "name": "libmariadb",
-      "features": [ "mariadbclient" ]
+      "features": ["mariadbclient"]
     },
     {
       "name": "gmp",
@@ -29,5 +30,5 @@
       "platform": "windows"
     }
   ],
-  "builtin-baseline":"afbb37cfd648335fd980f6fb7dbc2d0c84c009cf"
+  "builtin-baseline": "afbb37cfd648335fd980f6fb7dbc2d0c84c009cf"
 }

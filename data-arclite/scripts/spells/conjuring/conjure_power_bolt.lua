@@ -7,7 +7,7 @@ end
 spell:name("Conjure Power Bolt")
 spell:words("exevo con vis")
 spell:group("support")
-spell:vocation("royal paladin;true")
+spell:vocation("royal paladin;true", "assassin;true")
 spell:id(95)
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)

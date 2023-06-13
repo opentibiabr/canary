@@ -7,7 +7,7 @@ end
 spell:name("Convince Creature Rune")
 spell:words("adeta sio")
 spell:group("support")
-spell:vocation("druid;true", "elder druid;true")
+spell:vocation("druid;true", "elder druid;true", "arch druid;true")
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:level(16)

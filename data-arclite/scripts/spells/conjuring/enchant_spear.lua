@@ -7,7 +7,7 @@ end
 spell:name("Enchant Spear")
 spell:words("exeta con")
 spell:group("support")
-spell:vocation("paladin;true", "royal paladin;true")
+spell:vocation("paladin;true", "royal paladin;true", "assassin;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_ENCHANT_SPEAR)
 spell:id(110)
 spell:cooldown(2 * 1000)

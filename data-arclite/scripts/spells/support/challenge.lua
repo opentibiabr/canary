@@ -17,7 +17,7 @@ end
 spell:name("Challenge")
 spell:words("exeta res")
 spell:group("support")
-spell:vocation("elite knight;true")
+spell:vocation("elite knight;true", "templar;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_CHALLENGE)
 spell:id(93)
 spell:cooldown(2 * 1000)

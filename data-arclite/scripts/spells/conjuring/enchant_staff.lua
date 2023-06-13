@@ -7,7 +7,7 @@ end
 spell:name("Enchant Staff")
 spell:words("exeta vis")
 spell:group("support")
-spell:vocation("master sorcerer;true")
+spell:vocation("master sorcerer;true", "pyromancer;true")
 spell:id(92)
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)

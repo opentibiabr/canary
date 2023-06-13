@@ -7,7 +7,7 @@ end
 spell:name("Destroy Field Rune")
 spell:words("adito grav")
 spell:group("support")
-spell:vocation("druid;true", "elder druid;true", "paladin;true", "royal paladin;true", "sorcerer;true", "master sorcerer;true")
+spell:vocation("druid;true", "elder druid;true", "arch druid;true", "paladin;true", "royal paladin;true", "assassin;true", "sorcerer;true", "master sorcerer;true", "pyromancer;true")
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:level(17)

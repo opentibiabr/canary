@@ -6,7 +6,7 @@ end
 spell:name("Conjure Piercing Bolt")
 spell:words("exevo con grav")
 spell:group("support")
-spell:vocation("paladin;true", "royal paladin;true")
+spell:vocation("paladin;true", "royal paladin;true", "assassin;true")
 spell:id(109)
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)

@@ -72,7 +72,7 @@ end
 spell:name("Heal Party")
 spell:words("utura mas sio")
 spell:group("support")
-spell:vocation("druid;true", "elder druid;true")
+spell:vocation("druid;true", "elder druid;true", "arch druid;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_HEAL_PARTY)
 spell:id(128)
 spell:cooldown(2 * 1000)

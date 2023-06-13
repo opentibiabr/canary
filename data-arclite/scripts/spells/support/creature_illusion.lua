@@ -27,7 +27,7 @@ end
 spell:name("Creature Illusion")
 spell:words("utevo res ina")
 spell:group("support")
-spell:vocation("druid;true", "elder druid;true", "sorcerer;true", "master sorcerer;true")
+spell:vocation("druid;true", "elder druid;true", "arch druid;true", "sorcerer;true", "master sorcerer;true", "pyromancer;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_CREATURE_ILLUSION)
 spell:id(38)
 spell:cooldown(2 * 1000)

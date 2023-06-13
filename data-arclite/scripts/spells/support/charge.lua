@@ -31,7 +31,7 @@ end
 spell:name("Charge")
 spell:words("utani tempo hur")
 spell:group("support")
-spell:vocation("knight;true", "elite knight;true")
+spell:vocation("knight;true", "elite knight;true", "templar;true")
 spell:id(131)
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)

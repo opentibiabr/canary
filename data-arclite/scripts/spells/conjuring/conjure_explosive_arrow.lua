@@ -7,7 +7,7 @@ end
 spell:name("Conjure Explosive Arrow")
 spell:words("exevo con flam")
 spell:group("support")
-spell:vocation("paladin;true", "royal paladin;true")
+spell:vocation("paladin;true", "royal paladin;true", "assassin;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_CONJURE_EXPLOSIVE_ARROW)
 spell:id(49)
 spell:cooldown(2 * 1000)

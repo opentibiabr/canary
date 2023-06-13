@@ -7,7 +7,7 @@ end
 spell:name("Chameleon Rune")
 spell:words("adevo ina")
 spell:group("support")
-spell:vocation("druid;true", "elder druid;true")
+spell:vocation("druid;true", "elder druid;true", "arch druid;true")
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:level(27)

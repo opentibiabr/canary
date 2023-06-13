@@ -12,7 +12,7 @@ end
 spell:name("Cancel Invisibility")
 spell:words("exana ina")
 spell:group("support")
-spell:vocation("paladin;true", "royal paladin;true")
+spell:vocation("paladin;true", "royal paladin;true", "assassin;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_CANCEL_INVISIBILITY)
 spell:id(90)
 spell:cooldown(2 * 1000)

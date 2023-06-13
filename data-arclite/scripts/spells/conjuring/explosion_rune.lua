@@ -7,7 +7,7 @@ end
 spell:name("Explosion Rune")
 spell:words("adevo mas hur")
 spell:group("support")
-spell:vocation("druid;true", "elder druid;true", "sorcerer;true", "master sorcerer;true")
+spell:vocation("druid;true", "elder druid;true", "arch druid;true", "sorcerer;true", "master sorcerer;true", "pyromancer;true")
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:level(31)

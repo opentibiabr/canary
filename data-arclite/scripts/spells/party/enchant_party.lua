@@ -71,7 +71,7 @@ end
 spell:name("Enchant Party")
 spell:words("utori mas sio")
 spell:group("support")
-spell:vocation("sorcerer;true", "master sorcerer;true")
+spell:vocation("sorcerer;true", "master sorcerer;true", "pyromancer;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_ENCHANT_PARTY)
 spell:id(129)
 spell:cooldown(2 * 1000)

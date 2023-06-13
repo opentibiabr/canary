@@ -71,7 +71,7 @@ end
 spell:name("Protect Party")
 spell:words("utamo mas sio")
 spell:group("support")
-spell:vocation("paladin;true", "royal paladin;true")
+spell:vocation("paladin;true", "royal paladin;true", "assassin;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_PROTECT_PARTY)
 spell:id(127)
 spell:cooldown(2 * 1000)

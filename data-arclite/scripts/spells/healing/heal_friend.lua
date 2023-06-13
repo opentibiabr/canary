@@ -22,7 +22,7 @@ end
 spell:name("Heal Friend")
 spell:words("exura sio")
 spell:group("healing")
-spell:vocation("druid;true", "elder druid;true")
+spell:vocation("druid;true", "elder druid;true", "arch druid;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_HEAL_FRIEND)
 spell:id(84)
 spell:cooldown(1000)

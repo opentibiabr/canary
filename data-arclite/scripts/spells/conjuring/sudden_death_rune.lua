@@ -7,7 +7,7 @@ end
 spell:name("Sudden Death Rune")
 spell:words("adori gran mort")
 spell:group("support")
-spell:vocation("sorcerer;true", "master sorcerer;true")
+spell:vocation("sorcerer;true", "master sorcerer;true", "pyromancer;true")
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:level(45)

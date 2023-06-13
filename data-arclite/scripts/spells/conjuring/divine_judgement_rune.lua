@@ -7,7 +7,7 @@ end
 spell:name("Divine Judgement Rune")
 spell:words("adori gran san")
 spell:group("support")
-spell:vocation("paladin;true", "royal paladin;true")
+spell:vocation("paladin;true", "royal paladin;true", "assassin;true")
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:level(75)

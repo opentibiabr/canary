@@ -15,7 +15,7 @@ end
 spell:name("Invisibility")
 spell:words("utana vid")
 spell:group("support")
-spell:vocation("druid;true", "elder druid;true", "sorcerer;true", "master sorcerer;true")
+spell:vocation("druid;true", "elder druid;true", "arch druid;true", "sorcerer;true", "master sorcerer;true", "pyromancer;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_INVISIBLE)
 spell:id(45)
 spell:cooldown(2 * 1000)

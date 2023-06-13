@@ -21,7 +21,7 @@ end
 spell:name("Wound Cleansing")
 spell:words("exura ico")
 spell:group("healing")
-spell:vocation("knight;true", "elite knight;true")
+spell:vocation("knight;true", "elite knight;true", "templar;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_WOUND_CLEANSING)
 spell:id(123)
 spell:cooldown(1 * 1000)

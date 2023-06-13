@@ -12,7 +12,7 @@ end
 spell:name("Cure Curse")
 spell:words("exana mort")
 spell:group("healing")
-spell:vocation("paladin;true", "royal paladin;true")
+spell:vocation("paladin;true", "royal paladin;true", "assassin;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_CURE_CURSE)
 spell:id(147)
 spell:cooldown(6000)

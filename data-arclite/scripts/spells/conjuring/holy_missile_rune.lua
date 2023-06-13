@@ -7,7 +7,7 @@ end
 spell:name("Holy Missile Rune")
 spell:words("adori san")
 spell:group("support")
-spell:vocation("paladin;true", "royal paladin;true")
+spell:vocation("paladin;true", "royal paladin;true", "assassin;true")
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:level(27)

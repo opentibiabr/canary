@@ -34,5 +34,5 @@ rune:groupCooldown(2 * 1000)
 rune:mana(1400)
 rune:needTarget(true)
 rune:isBlocking(true) -- True = Solid / False = Creature
-rune:vocation("druid;true", "elder druid;true")
+rune:vocation("druid;true", "elder druid;true", "arch druid;true")
 rune:register()

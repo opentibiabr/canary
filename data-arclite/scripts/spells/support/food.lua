@@ -23,7 +23,7 @@ end
 spell:name("Food")
 spell:words("exevo pan")
 spell:group("support")
-spell:vocation("druid;true", "elder druid;true")
+spell:vocation("druid;true", "elder druid;true", "arch druid;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_FOOD)
 spell:id(42)
 spell:cooldown(2 * 1000)

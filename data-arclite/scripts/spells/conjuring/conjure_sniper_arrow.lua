@@ -7,7 +7,7 @@ end
 spell:name("Conjure Sniper Arrow")
 spell:words("exevo con hur")
 spell:group("support")
-spell:vocation("paladin;true", "royal paladin;true")
+spell:vocation("paladin;true", "royal paladin;true", "assassin;true")
 spell:id(108)
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)

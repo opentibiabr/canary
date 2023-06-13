@@ -7,7 +7,7 @@ end
 spell:name("Arrow Call")
 spell:words("exevo infir con")
 spell:group("support")
-spell:vocation("paladin;true", "royal paladin;true")
+spell:vocation("paladin;true", "royal paladin;true", "assassin;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_ARROW_CALL)
 spell:id(176)
 spell:cooldown(2 * 1000)

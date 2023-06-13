@@ -17,7 +17,7 @@ end
 spell:name("Ultimate Light")
 spell:words("utevo vis lux")
 spell:group("support")
-spell:vocation("druid;true", "elder druid;true", "sorcerer;true", "master sorcerer;true")
+spell:vocation("druid;true", "elder druid;true", "arch druid;true", "sorcerer;true", "master sorcerer;true", "pyromancer;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_ULTIMATE_LIGHT)
 spell:id(75)
 spell:cooldown(2 * 1000)

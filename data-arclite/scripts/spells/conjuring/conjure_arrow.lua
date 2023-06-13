@@ -7,7 +7,7 @@ end
 spell:name("Conjure Arrow")
 spell:words("exevo con")
 spell:group("support")
-spell:vocation("paladin;true", "royal paladin;true")
+spell:vocation("paladin;true", "royal paladin;true", "assassin;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_CONJURE_ARROW)
 spell:id(51)
 spell:cooldown(2 * 1000)

@@ -7,7 +7,7 @@ end
 spell:name("Conjure Bolt")
 spell:words("exevo con mort")
 spell:group("support")
-spell:vocation("paladin;true", "royal paladin;true")
+spell:vocation("paladin;true", "royal paladin;true", "assassin;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_CONJURE_ARROW)
 spell:id(79)
 spell:cooldown(2 * 1000)

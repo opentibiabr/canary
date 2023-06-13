@@ -21,7 +21,7 @@ end
 spell:name("Ultimate Healing")
 spell:words("exura vita")
 spell:group("healing")
-spell:vocation("druid;true", "elder druid;true", "sorcerer;true", "master sorcerer;true")
+spell:vocation("druid;true", "elder druid;true", "arch druid;true", "sorcerer;true", "master sorcerer;true", "pyromancer;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_ULTIMATE_HEALING)
 spell:id(3)
 spell:cooldown(1 * 1000)

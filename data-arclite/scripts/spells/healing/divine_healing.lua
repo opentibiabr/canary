@@ -21,7 +21,7 @@ end
 spell:name("Divine Healing")
 spell:words("exura san")
 spell:group("healing")
-spell:vocation("paladin;true", "royal paladin;true")
+spell:vocation("paladin;true", "royal paladin;true", "assassin;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_DIVINE_HEALING)
 spell:id(125)
 spell:cooldown(1000)

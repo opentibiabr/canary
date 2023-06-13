@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Crystal Troll")
 local monster = {}
 
 monster.description = "a crystal troll"
-monster.experience = 100000
+monster.experience = 500000
 monster.outfit = {
 	lookType = 53,
 	lookHead = 0,
@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
-	chance = 0
+	chance = 50
 }
 
 monster.strategiesTarget = {
@@ -54,7 +54,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 90,
 	targetDistance = 5,
-	runHealth = 0,
+	runHealth = 4999,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = true,
@@ -72,13 +72,14 @@ monster.voices = {
 	chance = 10,
 	{text = "My coins!", yell = false},
 	{text = "You not have them!", yell = false},
-	{text = "Help! Goblinkiller!", yell = true},
+	{text = "HELP! THIEF!", yell = true},
 	{text = "MY PRECIOUS!!!", yell = true}
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 50320, maxCount = 25},
-	{name = "goblin ear", chance = 910}
+	{name = "crystal coin", chance = 100000, maxCount = 25},
+	{name = "crystal coin", chance = 10000, maxCount = 50},
+	{name = "crystal coin", chance = 1000, maxCount = 100}
 }
 
 monster.defenses = {
@@ -88,15 +89,15 @@ monster.defenses = {
 
 monster.elements = {
 	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 20},
-	{type = COMBAT_EARTHDAMAGE, percent = -10},
+	{type = COMBAT_ENERGYDAMAGE, percent = 0},
+	{type = COMBAT_EARTHDAMAGE, percent = 0},
 	{type = COMBAT_FIREDAMAGE, percent = 0},
 	{type = COMBAT_LIFEDRAIN, percent = 0},
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
 	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 20},
-	{type = COMBAT_DEATHDAMAGE , percent = -10}
+	{type = COMBAT_HOLYDAMAGE , percent = 0},
+	{type = COMBAT_DEATHDAMAGE , percent = 0}
 }
 
 monster.immunities = {

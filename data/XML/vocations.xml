@@ -91,7 +91,7 @@
 		<skill id="6" multiplier="1.1" />
 	</vocation>
 	<!-- <vocation id="9" clientid="17" baseid="1" name="Pyromancer" description="a pyromancer" magicshield="1" gaincap="10" gainhp="5" gainmana="30" gainhpticks="8000" gainhpamount="1" gainmanaticks="1500" gainmanaamount="2" manamultiplier="1.1" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="5"> -->
-	<vocation id="9" clientid="0" baseid="1" name="Pyromancer" description="a pyromancer" magicshield="1" gaincap="10" gainhp="5" gainmana="30" gainhpticks="8000" gainhpamount="1" gainmanaticks="1500" gainmanaamount="2" manamultiplier="1.1" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="5">
+	<vocation id="9" clientid="13" baseid="1" name="Pyromancer" description="a pyromancer" magicshield="1" gaincap="10" gainhp="5" gainmana="30" gainhpticks="8000" gainhpamount="1" gainmanaticks="1500" gainmanaamount="2" manamultiplier="1.1" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="5">
 		<formula meleeDamage="1.0" distDamage="1.0" defense="1.0" armor="1.0" />
 		<skill id="0" multiplier="1.5" />
 		<skill id="1" multiplier="2.0" />
@@ -102,7 +102,7 @@
 		<skill id="6" multiplier="1.1" />
 	</vocation>
 	<!-- <vocation id="10" clientid="18" baseid="2" name="Arch Druid" description="an arch druid" magicshield="1" gaincap="10" gainhp="5" gainmana="30" gainhpticks="8000" gainhpamount="1" gainmanaticks="1500" gainmanaamount="2" manamultiplier="1.1" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="6"> -->
-	<vocation id="10" clientid="0" baseid="2" name="Arch Druid" description="an arch druid" magicshield="1" gaincap="10" gainhp="5" gainmana="30" gainhpticks="8000" gainhpamount="1" gainmanaticks="1500" gainmanaamount="2" manamultiplier="1.1" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="6">
+	<vocation id="10" clientid="14" baseid="2" name="Arch Druid" description="an arch druid" magicshield="1" gaincap="10" gainhp="5" gainmana="30" gainhpticks="8000" gainhpamount="1" gainmanaticks="1500" gainmanaamount="2" manamultiplier="1.1" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="6">
 		<formula meleeDamage="1.0" distDamage="1.0" defense="1.0" armor="1.0" />
 		<skill id="0" multiplier="1.5" />
 		<skill id="1" multiplier="1.8" />
@@ -113,7 +113,7 @@
 		<skill id="6" multiplier="1.1" />
 	</vocation>
 	<!-- <vocation id="11" clientid="16" baseid="3" name="Assassin" description="an assassin" magicshield="0" gaincap="20" gainhp="10" gainmana="15" gainhpticks="6000" gainhpamount="1" gainmanaticks="2500" gainmanaamount="2" manamultiplier="1.4" attackspeed="1500" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="7"> -->
-	<vocation id="11" clientid="0" baseid="3" name="Assassin" description="an assassin" magicshield="0" gaincap="20" gainhp="10" gainmana="15" gainhpticks="6000" gainhpamount="1" gainmanaticks="2500" gainmanaamount="2" manamultiplier="1.4" attackspeed="1500" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="7">
+	<vocation id="11" clientid="12" baseid="3" name="Assassin" description="an assassin" magicshield="0" gaincap="20" gainhp="10" gainmana="15" gainhpticks="6000" gainhpamount="1" gainmanaticks="2500" gainmanaamount="2" manamultiplier="1.4" attackspeed="1500" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="7">
 		<formula meleeDamage="1.0" distDamage="1.1" defense="1.0" armor="1.0" />
 		<skill id="0" multiplier="1.2" />
 		<skill id="1" multiplier="1.2" />
@@ -124,7 +124,7 @@
 		<skill id="6" multiplier="1.1" />
 	</vocation>
 	<!-- <vocation id="12" clientid="15" baseid="4" name="Templar" description="a templar" magicshield="0" gaincap="25" gainhp="15" gainmana="5" gainhpticks="2000" gainhpamount="2" gainmanaticks="6000" gainmanaamount="2" manamultiplier="3.0" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="8"> -->
-	<vocation id="12" clientid="0" baseid="4" name="Templar" description="a templar" magicshield="0" gaincap="25" gainhp="15" gainmana="5" gainhpticks="2000" gainhpamount="2" gainmanaticks="6000" gainmanaamount="2" manamultiplier="3.0" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="8">
+	<vocation id="12" clientid="11" baseid="4" name="Templar" description="a templar" magicshield="0" gaincap="25" gainhp="15" gainmana="5" gainhpticks="2000" gainhpamount="2" gainmanaticks="6000" gainmanaamount="2" manamultiplier="3.0" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="8">
 		<formula meleeDamage="1.1" distDamage="1.0" defense="1.1" armor="1.1" />
 		<skill id="0" multiplier="1.1" />
 		<skill id="1" multiplier="1.1" />

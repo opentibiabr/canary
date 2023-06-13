@@ -112,7 +112,7 @@ bool ConfigManager::load() {
 		string[MYSQL_SOCK] = getGlobalString(L, "mysqlSock", "");
 
 		string[AUTH_TYPE] = getGlobalString(L, "authType", "password");
-		string[RESET_SESSIONS_ON_STARTUP] = getGlobalBoolean(L, "resetSessionsOnStartup", false);
+		boolean[RESET_SESSIONS_ON_STARTUP] = getGlobalBoolean(L, "resetSessionsOnStartup", false);
 
 		integer[SQL_PORT] = getGlobalNumber(L, "mysqlPort", 3306);
 		integer[GAME_PORT] = getGlobalNumber(L, "gameProtocolPort", 7172);

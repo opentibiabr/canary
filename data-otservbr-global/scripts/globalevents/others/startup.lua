@@ -59,6 +59,16 @@ function serverstartup.onStartup()
 	local time = os.time()
 	db.asyncQuery('TRUNCATE TABLE `players_online`')
 
+	local authType configManager.getString(configKeys.AUTH_TYPE)
+	local resetSessionsOnStartup = configManager.getBoolean(configKeys.RESET_SESSIONS_ON_STARTUP)
+	if authType == "session" then
+		if resetSessionsOnStartup then
+			db.query('TRUNCATE TABLE `account_sessions`')
+		else
+			db.query('DELETE FROM `account_sessions` WHERE `expires` <= ' .. time)
+		end
+	end
+
 	-- reset Daily Reward status
 	db.query('UPDATE `players` SET `isreward` = ' .. DAILY_REWARD_NOTCOLLECTED)
 

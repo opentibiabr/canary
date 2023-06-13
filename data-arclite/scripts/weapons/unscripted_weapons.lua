@@ -10,7 +10,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -24,7 +25,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -35,7 +37,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -46,7 +49,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -57,7 +61,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -68,7 +73,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -82,7 +88,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -96,7 +103,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -110,7 +118,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -124,7 +133,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -135,7 +145,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -146,7 +157,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -157,7 +169,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -168,7 +181,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -179,7 +193,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -190,7 +205,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -201,7 +217,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -212,7 +229,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -233,7 +251,8 @@ local weapons = {
 		damage = {80, 100},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -246,7 +265,8 @@ local weapons = {
 		damage = {80, 100},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -257,7 +277,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -268,7 +289,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -279,7 +301,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -290,7 +313,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -301,7 +325,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -312,7 +337,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -325,7 +351,8 @@ local weapons = {
 		damage = {89, 109},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -338,7 +365,8 @@ local weapons = {
 		damage = {85, 105},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -349,7 +377,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -362,7 +391,8 @@ local weapons = {
 		damage = {98, 118},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -375,7 +405,8 @@ local weapons = {
 		damage = {100, 120},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -386,7 +417,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -397,7 +429,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -408,7 +441,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -419,7 +453,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -430,7 +465,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -441,7 +477,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -452,7 +489,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -463,7 +501,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -474,7 +513,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -490,7 +530,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -501,7 +542,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -512,7 +554,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -525,7 +568,8 @@ local weapons = {
 		damage = {70, 110},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -538,7 +582,8 @@ local weapons = {
 		damage = {94, 100},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -549,7 +594,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -560,7 +606,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -571,7 +618,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -582,7 +630,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -602,7 +651,9 @@ local weapons = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -613,7 +664,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -624,7 +676,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -635,7 +688,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -646,7 +700,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -719,7 +774,9 @@ local weapons = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -734,7 +791,9 @@ local weapons = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -745,7 +804,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -756,7 +816,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -767,7 +828,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -778,7 +840,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -791,7 +854,8 @@ local weapons = {
 		damage = {86, 102},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -804,7 +868,8 @@ local weapons = {
 		damage = {87, 101},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -815,7 +880,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -838,7 +904,8 @@ local weapons = {
 		damage = {80, 110},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -851,7 +918,8 @@ local weapons = {
 		damage = {80, 110},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -862,7 +930,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -873,7 +942,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -884,7 +954,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -895,7 +966,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -906,7 +978,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -917,7 +990,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -928,7 +1002,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -939,7 +1014,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1522,7 +1598,8 @@ local weapons = {
 		damage = {80, 100},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -1561,7 +1638,9 @@ local weapons = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -1574,7 +1653,8 @@ local weapons = {
 		damage = {70, 105},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -1587,7 +1667,8 @@ local weapons = {
 		damage = {70, 105},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -1598,7 +1679,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1609,7 +1691,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1620,7 +1703,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1631,7 +1715,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1642,7 +1727,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1653,7 +1739,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1664,7 +1751,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1675,7 +1763,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1688,7 +1777,8 @@ local weapons = {
 		damage = {70, 105},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -1701,7 +1791,8 @@ local weapons = {
 		damage = {70, 105},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -1712,7 +1803,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1723,7 +1815,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1734,7 +1827,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1745,7 +1839,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1756,7 +1851,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1767,7 +1863,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1778,7 +1875,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1789,7 +1887,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1802,7 +1901,8 @@ local weapons = {
 		damage = {70, 105},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -1815,7 +1915,8 @@ local weapons = {
 		damage = {70, 105},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -1826,7 +1927,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1837,7 +1939,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1848,7 +1951,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1859,7 +1963,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1870,7 +1975,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1881,7 +1987,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1892,7 +1999,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1903,7 +2011,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1914,7 +2023,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1925,7 +2035,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1938,7 +2049,8 @@ local weapons = {
 		damage = {80, 110},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -1951,7 +2063,8 @@ local weapons = {
 		damage = {65, 95},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -1999,7 +2112,8 @@ local weapons = {
 		damage = {56, 74},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -2032,7 +2146,8 @@ local weapons = {
 		damage = {4, 8},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -2045,7 +2160,8 @@ local weapons = {
 		damage = {4, 8},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -2063,7 +2179,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2074,7 +2191,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2086,7 +2204,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2147,7 +2266,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2158,7 +2278,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2169,7 +2290,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2180,7 +2302,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2191,7 +2314,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2202,7 +2326,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2213,7 +2338,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2224,7 +2350,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2235,7 +2362,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2246,7 +2374,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2257,7 +2386,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2268,7 +2398,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2279,7 +2410,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2290,7 +2422,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2301,7 +2434,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2312,7 +2446,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2323,7 +2458,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2334,7 +2470,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2345,7 +2482,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2356,7 +2494,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2367,7 +2506,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2378,7 +2518,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2389,7 +2530,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2400,7 +2542,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2417,7 +2560,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2435,7 +2579,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2502,7 +2647,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2513,7 +2659,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2571,7 +2718,8 @@ local weapons = {
 		damage = {75, 95},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -2584,7 +2732,8 @@ local weapons = {
 		damage = {75, 95},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -2597,7 +2746,8 @@ local weapons = {
 		damage = {75, 95},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -2610,7 +2760,8 @@ local weapons = {
 		damage = {75, 95},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -2635,7 +2786,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2669,7 +2821,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2680,7 +2833,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2735,7 +2889,8 @@ local weapons = {
 		damage = {56, 74},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -2746,7 +2901,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2759,7 +2915,8 @@ local weapons = {
 		damage = {56, 74},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -2791,7 +2948,8 @@ local weapons = {
 		damage = {44, 62},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -2816,7 +2974,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2834,7 +2993,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2845,7 +3005,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2863,7 +3024,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2926,7 +3088,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2951,7 +3114,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2976,7 +3140,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3003,7 +3168,8 @@ local weapons = {
 		damage = {56, 74},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -3016,7 +3182,8 @@ local weapons = {
 		damage = {23, 37},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -3029,7 +3196,8 @@ local weapons = {
 		damage = {56, 74},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -3042,7 +3210,8 @@ local weapons = {
 		damage = {56, 74},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3055,7 +3224,8 @@ local weapons = {
 		damage = {23, 37},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3068,7 +3238,8 @@ local weapons = {
 		damage = {56, 74},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3079,7 +3250,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3090,7 +3262,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3101,7 +3274,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3112,7 +3286,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3123,7 +3298,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3134,7 +3310,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3145,7 +3322,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3156,7 +3334,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3167,7 +3346,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3178,7 +3358,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3205,7 +3386,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3249,7 +3431,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3261,7 +3444,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3297,7 +3481,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3309,7 +3494,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3343,7 +3529,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3387,7 +3574,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3399,7 +3587,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3435,7 +3624,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3447,7 +3637,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3513,7 +3704,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3557,7 +3749,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3569,7 +3762,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3605,7 +3799,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3617,7 +3812,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3651,7 +3847,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3695,7 +3892,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3707,7 +3905,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3743,7 +3942,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3755,7 +3955,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3802,7 +4003,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3813,7 +4015,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3824,7 +4027,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3842,7 +4046,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3853,7 +4058,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3876,7 +4082,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3936,7 +4143,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3975,7 +4183,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4042,7 +4251,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4053,7 +4263,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4099,7 +4310,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4110,7 +4322,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4121,7 +4334,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4139,7 +4353,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4150,7 +4365,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4168,7 +4384,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4207,7 +4424,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4239,7 +4457,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4257,7 +4476,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4323,7 +4543,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4342,7 +4563,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4358,7 +4580,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -4441,7 +4664,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4459,7 +4683,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4492,7 +4717,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4517,7 +4743,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4528,7 +4755,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4549,7 +4777,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4708,7 +4937,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4724,7 +4954,8 @@ local weapons = {
 		type = WEAPON_SWORD,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4756,7 +4987,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4826,7 +5058,8 @@ local weapons = {
 		action = "removecharge",
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4847,7 +5080,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4865,7 +5099,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4876,7 +5111,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4898,7 +5134,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4950,7 +5187,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4961,7 +5199,8 @@ local weapons = {
 		unproperly = true,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -4984,7 +5223,8 @@ local weapons = {
 		damage = {13, 25},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -4997,7 +5237,8 @@ local weapons = {
 		damage = {8, 18},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -5010,7 +5251,8 @@ local weapons = {
 		damage = {37, 53},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -5023,7 +5265,8 @@ local weapons = {
 		damage = {23, 37},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -5036,7 +5279,8 @@ local weapons = {
 		damage = {56, 74},
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -5049,7 +5293,8 @@ local weapons = {
 		damage = {13, 25},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -5062,7 +5307,8 @@ local weapons = {
 		damage = {23, 37},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -5075,7 +5321,8 @@ local weapons = {
 		damage = {56, 74},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -5088,7 +5335,8 @@ local weapons = {
 		damage = {8, 18},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -5101,7 +5349,8 @@ local weapons = {
 		damage = {37, 53},
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{

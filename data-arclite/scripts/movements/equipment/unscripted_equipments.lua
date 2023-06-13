@@ -7,7 +7,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -25,7 +26,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -43,7 +45,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -61,7 +64,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -79,7 +83,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -97,7 +102,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -115,7 +121,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -133,7 +140,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -163,7 +171,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		},
 	},
 	{
@@ -180,7 +189,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		},
 	},
 	{
@@ -197,7 +207,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		},
 	},
 	{
@@ -214,7 +225,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -231,7 +243,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -248,7 +261,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -265,7 +279,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -282,7 +297,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -299,7 +315,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -316,7 +333,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -333,7 +351,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -350,7 +369,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -367,7 +387,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -384,7 +405,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -401,7 +423,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -418,7 +441,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Druid", true, true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -435,7 +459,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -452,7 +477,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Druid", true, true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -469,7 +495,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -486,7 +513,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Druid", true, true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -503,7 +531,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -520,7 +549,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -537,7 +567,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -554,7 +585,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -571,7 +603,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -588,7 +621,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -605,7 +639,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -622,7 +657,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -639,7 +675,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Druid", true, true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -656,7 +693,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -673,7 +711,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -690,7 +729,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -707,7 +747,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -724,7 +765,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -741,7 +783,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -758,7 +801,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Knight", true, true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -787,7 +831,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Druid", true, true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -798,7 +843,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Druid", true, true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -809,7 +855,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Druid", true, true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -820,7 +867,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Druid", true, true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -831,7 +879,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Druid", true, true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -842,7 +891,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Druid", true, true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -853,7 +903,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -864,7 +915,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -875,7 +927,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Druid", true, true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -886,7 +939,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Druid", true, true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -897,7 +951,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -908,7 +963,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -919,7 +975,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -930,7 +987,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -941,7 +999,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -952,7 +1011,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Sorcerer", true, true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -963,7 +1023,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -974,7 +1035,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -985,7 +1047,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -996,7 +1059,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1007,7 +1071,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1018,7 +1083,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1029,7 +1095,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1040,7 +1107,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1051,7 +1119,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1062,7 +1131,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1073,7 +1143,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1084,7 +1155,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1095,7 +1167,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1106,7 +1179,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1117,7 +1191,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1128,7 +1203,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1139,7 +1215,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1150,7 +1227,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1161,7 +1239,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1172,7 +1251,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1183,7 +1263,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1194,7 +1275,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1205,7 +1287,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1216,7 +1299,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1239,7 +1323,8 @@ local items = {
 		vocation = {
 			{"None", true},
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1250,7 +1335,8 @@ local items = {
 		vocation = {
 			{"None", true},
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1261,7 +1347,8 @@ local items = {
 		vocation = {
 			{"None", true},
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1272,7 +1359,8 @@ local items = {
 		vocation = {
 			{"None", true},
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1283,7 +1371,8 @@ local items = {
 		vocation = {
 			{"None", true},
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1294,7 +1383,8 @@ local items = {
 		vocation = {
 			{"None", true},
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1305,7 +1395,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1316,7 +1407,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Paladin", true, true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1340,7 +1432,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -1357,7 +1450,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -1374,7 +1468,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -1391,7 +1486,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -1408,7 +1504,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1425,7 +1522,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1442,7 +1540,8 @@ local items = {
 		level = 130,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1459,7 +1558,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1476,7 +1576,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1493,7 +1594,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1510,7 +1612,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1548,7 +1651,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1565,7 +1669,8 @@ local items = {
 		level = 230,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1576,7 +1681,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1593,7 +1699,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1618,7 +1725,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -1629,7 +1738,8 @@ local items = {
 		level = 220,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -1646,7 +1756,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -1663,7 +1774,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1686,7 +1798,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1703,7 +1816,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1720,7 +1834,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1737,7 +1852,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -1754,7 +1870,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -1772,7 +1889,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1790,7 +1908,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -1808,7 +1927,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -1825,7 +1945,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -1842,7 +1963,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -1859,7 +1981,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1876,7 +1999,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -1893,7 +2017,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1910,7 +2035,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1927,7 +2053,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1944,7 +2071,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1961,7 +2089,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1978,7 +2107,8 @@ local items = {
 		level = 400,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -1996,7 +2126,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2071,7 +2202,8 @@ local items = {
 		level = 230,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2117,7 +2249,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -2137,7 +2271,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -2157,7 +2293,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2175,7 +2313,8 @@ local items = {
         level = 180,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
         }
 	},
 	{
@@ -2268,7 +2407,8 @@ local items = {
 		level = 220,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		},
 	},
 	{
@@ -2300,7 +2440,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2317,7 +2458,8 @@ local items = {
 		level = 220,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		},
 	},
 	{
@@ -2335,7 +2477,8 @@ local items = {
 		level = 220,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		},
 	},
 	{
@@ -2353,7 +2496,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2370,7 +2514,8 @@ local items = {
 		level = 220,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2387,7 +2532,8 @@ local items = {
 		level = 220,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		},
 	},
 	{
@@ -2405,7 +2551,8 @@ local items = {
 		level = 230,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		},
 	},
 	{
@@ -2423,7 +2570,8 @@ local items = {
 		level = 230,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		},
 	},
 	{
@@ -2555,7 +2703,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		},
 	},
 	{
@@ -2575,7 +2725,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		},
 	},
 	{
@@ -2595,7 +2747,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		},
 	},
 	{
@@ -2613,7 +2767,8 @@ local items = {
 		level = 220,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		},
 	},
 	{
@@ -2631,7 +2786,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		},
 	},
 	{
@@ -2649,7 +2805,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2666,7 +2823,8 @@ local items = {
 		level = 270,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		},
 	},
 	{
@@ -2684,7 +2842,8 @@ local items = {
 		level = 220,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
         }
 	},
 	{
@@ -2701,7 +2860,8 @@ local items = {
 		level = 220,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2718,7 +2878,8 @@ local items = {
 		level = 220,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		},
 	},
 	{
@@ -2736,7 +2897,8 @@ local items = {
 		level = 220,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2839,7 +3001,8 @@ local items = {
 		level = 180,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2857,7 +3020,8 @@ local items = {
 		level = 180,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2875,7 +3039,8 @@ local items = {
 		level = 180,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2893,7 +3058,8 @@ local items = {
 		level = 180,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2925,7 +3091,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -2943,7 +3111,8 @@ local items = {
 		level = 180,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -2961,7 +3130,8 @@ local items = {
 		level = 180,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2979,7 +3149,8 @@ local items = {
 		level = 180,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -2997,7 +3168,8 @@ local items = {
 		level = 180,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3017,7 +3189,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3037,7 +3211,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3057,7 +3233,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3077,7 +3255,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3095,7 +3275,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3112,7 +3293,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3131,7 +3313,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3149,7 +3333,8 @@ local items = {
 		level = 230,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3168,7 +3353,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3186,7 +3373,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3353,7 +3541,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3373,7 +3563,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3391,7 +3583,8 @@ local items = {
         level = 300,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3408,7 +3601,8 @@ local items = {
         level = 300,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 }
 	},
 	{
@@ -3425,7 +3619,8 @@ local items = {
         level = 300,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 }
 	},
 	{
@@ -3444,7 +3639,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3464,7 +3661,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3484,7 +3683,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3502,7 +3703,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3520,7 +3722,8 @@ local items = {
         level = 300,
         vocation = {
 			{"paladin", true},
-			{"royal paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
         }
 	},
 	{
@@ -3538,7 +3741,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -3556,7 +3760,8 @@ local items = {
 		level = 300,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3576,7 +3781,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3596,7 +3803,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3638,7 +3847,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3657,7 +3867,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Royal Paladin"},
-			{"Elite Knight"}
+			{"Assassin"},
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3677,7 +3889,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3695,7 +3909,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3715,7 +3930,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3783,7 +4000,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -3801,7 +4019,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -3819,7 +4038,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3836,7 +4056,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -3853,7 +4074,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3870,7 +4092,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3887,7 +4110,8 @@ local items = {
                 level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
         }
 	},
 	{
@@ -3904,7 +4128,8 @@ local items = {
         level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
         }
 	},
 	{
@@ -3921,7 +4146,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -3938,7 +4164,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -5457,7 +5684,8 @@ local items = {
 		level = 41,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -5513,7 +5741,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -5533,7 +5763,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -5685,7 +5917,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -5705,7 +5938,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -5723,7 +5958,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -5741,7 +5977,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -5759,7 +5996,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -5779,7 +6017,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -5799,7 +6039,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -5817,7 +6059,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -5835,7 +6078,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -5853,7 +6097,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -5873,7 +6118,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -5891,7 +6138,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -5951,7 +6199,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -5971,7 +6221,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -5989,7 +6241,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -6007,7 +6260,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -6121,7 +6375,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -6139,7 +6394,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -6241,7 +6497,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -6259,7 +6516,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -6397,7 +6655,8 @@ local items = {
 		level = 120,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -6414,7 +6673,8 @@ local items = {
 		level = 120,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -6487,7 +6747,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -6505,7 +6766,8 @@ local items = {
 		level = 65,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -6617,7 +6879,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -6659,7 +6923,8 @@ local items = {
         level = 70,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -6714,7 +6979,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -6734,7 +7001,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -6754,7 +7023,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -6774,7 +7045,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -6792,7 +7065,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -6810,7 +7084,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -6828,7 +7103,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -6846,7 +7122,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -6864,7 +7141,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -6882,7 +7160,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -6900,7 +7179,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -6918,7 +7198,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -6936,7 +7217,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -6954,7 +7236,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -6972,7 +7255,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -6990,7 +7274,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -7008,7 +7293,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -7026,7 +7312,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -7044,7 +7331,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -7062,7 +7350,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -7118,7 +7407,8 @@ local items = {
 		level = 37,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -7210,7 +7500,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -7228,7 +7519,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -7246,7 +7538,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -7264,7 +7557,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -7374,7 +7668,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -7491,7 +7787,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -7508,7 +7806,8 @@ local items = {
 		level = 1,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -7526,7 +7825,8 @@ local items = {
 		level = 1,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -7583,7 +7883,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -7601,7 +7903,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
         }
 	},
 	{
@@ -7618,7 +7921,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -7635,7 +7939,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -7758,7 +8063,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -7803,7 +8110,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -7822,7 +8131,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -7842,7 +8153,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -7936,7 +8249,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -7956,7 +8271,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -7976,7 +8293,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -7994,7 +8313,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -8011,7 +8331,8 @@ local items = {
 		level = 120,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -8028,7 +8349,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -8045,7 +8367,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -8062,7 +8385,8 @@ local items = {
 		level = 120,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -8079,7 +8403,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -8096,7 +8421,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8113,7 +8439,8 @@ local items = {
 		level = 120,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8130,7 +8457,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8147,7 +8475,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8164,7 +8493,8 @@ local items = {
 		level = 120,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8181,7 +8511,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8210,7 +8541,8 @@ local items = {
                 level = 120,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
         }
 	},
 	{
@@ -8227,7 +8559,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
         }
 	},
 	{
@@ -8244,7 +8577,8 @@ local items = {
                 level = 250,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
         }
 
 	},
@@ -8262,7 +8596,8 @@ local items = {
        level = 120,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
         }
 	},
 	{
@@ -8279,7 +8614,8 @@ local items = {
               level = 75,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
    }
 	},
 	{
@@ -8296,7 +8632,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8313,7 +8650,8 @@ local items = {
 		level = 120,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8330,7 +8668,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8347,7 +8686,8 @@ local items = {
 		level = 250,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8364,7 +8704,8 @@ local items = {
 		level = 120,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8381,7 +8722,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8412,7 +8754,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -8467,7 +8811,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -8546,7 +8892,8 @@ local items = {
 		level = 70,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -8648,7 +8995,8 @@ local items = {
 		level = 50,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8783,7 +9131,8 @@ local items = {
 		level = 105,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -8800,7 +9149,8 @@ local items = {
 		level = 90,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -8893,7 +9243,8 @@ local items = {
 		level = 65,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -8911,7 +9262,8 @@ local items = {
 		level = 65,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -8929,7 +9281,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -8947,7 +9300,8 @@ local items = {
 		level = 65,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -8993,7 +9347,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -9011,7 +9366,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -9031,7 +9387,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -9049,7 +9407,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -9083,7 +9442,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -9103,7 +9464,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -9123,7 +9486,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -9143,7 +9508,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -9185,7 +9552,8 @@ local items = {
 		level = 65,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -9229,7 +9597,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -9247,7 +9617,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -9362,7 +9733,8 @@ local items = {
 		level = 50,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -9379,7 +9751,8 @@ local items = {
 		level = 85,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -9437,7 +9810,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -9506,7 +9881,8 @@ local items = {
 		level = 130,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -9524,7 +9900,8 @@ local items = {
 		level = 185,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -9544,7 +9921,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -9562,7 +9941,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -9582,7 +9962,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -9614,7 +9996,8 @@ local items = {
 		level = 150,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -9632,7 +10015,8 @@ local items = {
 		level = 200,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -9714,7 +10098,8 @@ local items = {
 		level = 40,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -9744,7 +10129,8 @@ local items = {
 		level = 40,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -9761,7 +10147,8 @@ local items = {
 		level = 40,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -9853,7 +10240,8 @@ local items = {
 		level = 37,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -9872,7 +10260,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -9989,7 +10379,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -10009,7 +10401,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -10027,7 +10421,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -10045,7 +10440,8 @@ local items = {
 		level = 80,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -10065,7 +10461,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -10083,7 +10481,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -10102,7 +10501,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -10119,7 +10520,8 @@ local items = {
 		level = 58,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -10138,7 +10540,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -10206,7 +10610,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -10226,7 +10632,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -10246,7 +10654,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -10289,7 +10699,8 @@ local items = {
 		level = 20,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -10306,7 +10717,8 @@ local items = {
 		level = 55,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -10336,7 +10748,8 @@ local items = {
 		level = 50,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -10391,7 +10804,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -10410,7 +10825,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -10490,7 +10907,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -10522,7 +10941,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -10542,7 +10963,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -10561,7 +10984,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -11072,7 +11497,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -11168,7 +11595,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -11186,7 +11615,8 @@ local items = {
 		level = 80,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -11204,7 +11634,8 @@ local items = {
 		level = 80,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -11270,7 +11701,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -11313,7 +11745,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -11356,7 +11789,8 @@ local items = {
        level = 120,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
         }
 	},
 	{
@@ -11398,7 +11832,8 @@ local items = {
 		slot = "legs",
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -11415,7 +11850,8 @@ local items = {
 		level = 42,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -11433,7 +11869,8 @@ local items = {
 		level = 22,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -11451,7 +11888,8 @@ local items = {
 		level = 37,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -11471,7 +11909,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -11489,7 +11929,8 @@ local items = {
 		level = 37,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -11507,7 +11948,8 @@ local items = {
 		level = 22,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -11525,7 +11967,8 @@ local items = {
 		level = 42,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -11543,7 +11986,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -11561,7 +12005,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -11579,7 +12024,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -11597,7 +12043,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -11615,7 +12062,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -11635,7 +12083,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -11655,7 +12105,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -11675,7 +12127,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -11695,7 +12149,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -11715,7 +12171,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -11734,7 +12192,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -11750,7 +12210,8 @@ local items = {
 		slot = "armor",
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -11767,7 +12228,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -11785,7 +12247,8 @@ local items = {
 		level = 85,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -11803,7 +12266,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -11821,7 +12285,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -11839,7 +12304,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -11857,7 +12323,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -11875,7 +12342,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -11893,7 +12361,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -11911,7 +12380,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -11929,7 +12399,8 @@ local items = {
 		level = 100,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -11949,7 +12420,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -11969,7 +12442,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -11989,7 +12464,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -12009,7 +12486,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -12074,7 +12553,8 @@ local items = {
 		slot = "armor",
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -12092,7 +12572,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12110,7 +12592,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12127,7 +12611,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12145,7 +12630,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -12163,7 +12649,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -12181,7 +12668,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12199,7 +12687,8 @@ local items = {
 		level = 65,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -12217,7 +12706,8 @@ local items = {
 		level = 70,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -12234,7 +12724,8 @@ local items = {
 		level = 40,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -12251,7 +12742,8 @@ local items = {
 		level = 60,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -12268,7 +12760,8 @@ local items = {
 		level = 50,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -12285,7 +12778,8 @@ local items = {
 		level = 80,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -12302,7 +12796,8 @@ local items = {
 		level = 80,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -12319,7 +12814,8 @@ local items = {
 		level = 120,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -12336,7 +12832,8 @@ local items = {
 		level = 130,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -12353,7 +12850,8 @@ local items = {
 		level = 60,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -12370,7 +12868,8 @@ local items = {
 		level = 45,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -12402,7 +12901,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12420,7 +12921,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12534,7 +13037,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12552,7 +13057,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12570,7 +13077,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12588,7 +13097,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12607,7 +13118,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12627,7 +13140,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12647,7 +13162,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12667,7 +13184,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12687,7 +13206,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12707,7 +13228,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12727,7 +13250,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12747,7 +13272,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12767,7 +13294,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12843,7 +13372,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12863,7 +13394,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -12883,7 +13416,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -13022,7 +13557,8 @@ local items = {
 		level = 45,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -13846,7 +14382,8 @@ local items = {
         level = 30,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -13863,7 +14400,8 @@ local items = {
         level = 85,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
   		}
 	},
 	{
@@ -13906,7 +14444,8 @@ local items = {
 		level = 120,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -13923,7 +14462,8 @@ local items = {
 		level = 25,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -13965,7 +14505,8 @@ local items = {
     	level = 45,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14073,7 +14614,8 @@ local items = {
 		level = 55,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14142,7 +14684,8 @@ local items = {
 		level = 85,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14263,7 +14806,8 @@ local items = {
 		level = 60,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14280,7 +14824,8 @@ local items = {
         level = 40,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14362,7 +14907,8 @@ local items = {
 		level = 30,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14379,7 +14925,8 @@ local items = {
 		level = 35,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14396,7 +14943,8 @@ local items = {
 		level = 70,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14432,7 +14980,8 @@ local items = {
 		level = 65,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14468,7 +15017,8 @@ local items = {
 		level = 50,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14537,7 +15087,8 @@ local items = {
 		level = 40,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14593,7 +15144,8 @@ local items = {
 		level = 60,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14623,7 +15175,8 @@ local items = {
         level = 35,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14771,7 +15324,8 @@ local items = {
         level = 75,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -14812,7 +15366,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -15035,7 +15590,8 @@ local items = {
 		level = 75,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -15365,7 +15921,8 @@ local items = {
 		slot = "head",
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -15417,7 +15974,8 @@ local items = {
 		slot = "armor",
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -16228,7 +16786,8 @@ local items = {
 		level = 60,
 		vocation = {
 			{"Paladin", true},
-			{"Royal Paladin"}
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -16331,7 +16890,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -16385,7 +16946,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -16403,7 +16966,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -16529,7 +17094,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -16547,7 +17114,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -16601,7 +17170,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -16631,7 +17202,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -16685,7 +17258,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -16860,7 +17435,8 @@ local items = {
 		level = 70,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -16926,7 +17502,8 @@ local items = {
         level = 50,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -16943,7 +17520,8 @@ local items = {
 		level = 45,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -16972,7 +17550,8 @@ local items = {
 		level = 65,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -16989,7 +17568,8 @@ local items = {
         level = 70,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -17030,7 +17610,8 @@ local items = {
         level = 25,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -17348,7 +17929,8 @@ local items = {
         level = 95,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
         }
 	},
 	{
@@ -17438,7 +18020,8 @@ local items = {
 		level = 120,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -17625,7 +18208,8 @@ local items = {
 		level = 55,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -17655,7 +18239,8 @@ local items = {
 		level = 50,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -17672,7 +18257,8 @@ local items = {
 		level = 140,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -17713,7 +18299,8 @@ local items = {
         level = 25,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -17839,7 +18426,8 @@ local items = {
 		level = 20,
 		vocation = {
 			{"Knight", true},
-			{"Elite Knight"}
+			{"Elite Knight"},
+			{"Templar"}
 		}
 	},
 	{
@@ -17941,7 +18529,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -18127,7 +18717,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{
@@ -18252,7 +18844,8 @@ local items = {
 		level = 13,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -18270,7 +18863,8 @@ local items = {
 		level = 6,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -18288,7 +18882,8 @@ local items = {
 		level = 26,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -18306,7 +18901,8 @@ local items = {
 		level = 19,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -18324,7 +18920,8 @@ local items = {
 		level = 33,
 		vocation = {
 			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Master Sorcerer"},
+			{"Pyromancer"}
 		}
 	},
 	{
@@ -18342,7 +18939,8 @@ local items = {
 		level = 13,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -18360,7 +18958,8 @@ local items = {
 		level = 19,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -18378,7 +18977,8 @@ local items = {
 		level = 33,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -18396,7 +18996,8 @@ local items = {
 		level = 6,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -18414,7 +19015,8 @@ local items = {
 		level = 26,
 		vocation = {
 			{"Druid", true},
-			{"Elder Druid"}
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -18445,7 +19047,9 @@ local items = {
 			{"Sorcerer", true},
 			{"Druid", true, true},
 			{"Master Sorcerer"},
-			{"Elder Druid"}
+			{"Pyromancer"},
+			{"Elder Druid"},
+			{"Arch Druid"}
 		}
 	},
 	{
@@ -18535,7 +19139,9 @@ local items = {
 			{"Knight", true},
 			{"Paladin", true, true},
 			{"Elite Knight"},
-			{"Royal Paladin"}
+			{"Templar"},
+			{"Royal Paladin"},
+			{"Assassin"}
 		}
 	},
 	{

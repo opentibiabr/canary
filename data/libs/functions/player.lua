@@ -297,23 +297,23 @@ end
 
 
 function Player.isSorcerer(self)
-	return table.contains({VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER}, self:getVocation():getId())
+	return table.contains({VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER, VOCATION.ID.PYROMANCER}, self:getVocation():getId())
 end
 
 function Player.isDruid(self)
-	return table.contains({VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID}, self:getVocation():getId())
+	return table.contains({VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID, VOCATION.ID.ARCH_DRUID}, self:getVocation():getId())
 end
 
 function Player.isKnight(self)
-	return table.contains({VOCATION.ID.KNIGHT, VOCATION.ID.ELITE_KNIGHT}, self:getVocation():getId())
+	return table.contains({VOCATION.ID.KNIGHT, VOCATION.ID.ELITE_KNIGHT, VOCATION.ID.TEMPLAR}, self:getVocation():getId())
 end
 
 function Player.isPaladin(self)
-	return table.contains({VOCATION.ID.PALADIN, VOCATION.ID.ROYAL_PALADIN}, self:getVocation():getId())
+	return table.contains({VOCATION.ID.PALADIN, VOCATION.ID.ROYAL_PALADIN, VOCATION.ID.ASSASSIN}, self:getVocation():getId())
 end
 
 function Player.isMage(self)
-	return table.contains({VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER, VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID},
+	return table.contains({VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER, VOCATION.ID.PYROMANCER, VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID, VOCATION.ID.ARCH_DRUID},
 		self:getVocation():getId())
 end
 

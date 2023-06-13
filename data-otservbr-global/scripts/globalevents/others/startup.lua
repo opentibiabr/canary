@@ -59,9 +59,8 @@ function serverstartup.onStartup()
 	local time = os.time()
 	db.asyncQuery('TRUNCATE TABLE `players_online`')
 
-	local authType configManager.getString(configKeys.AUTH_TYPE)
 	local resetSessionsOnStartup = configManager.getBoolean(configKeys.RESET_SESSIONS_ON_STARTUP)
-	if authType == "session" then
+	if AUTH_TYPE == "session" then
 		if resetSessionsOnStartup then
 			db.query('TRUNCATE TABLE `account_sessions`')
 		else

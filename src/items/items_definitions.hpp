@@ -443,6 +443,7 @@ enum ItemParseAttributes_t {
 	ITEM_PARSE_WALKSTACK,
 	ITEM_PARSE_BLOCK_SOLID,
 	ITEM_PARSE_ALLOWDISTREAD,
+	ITEM_PARSE_STACKSIZE,
 };
 
 struct ImbuementInfo {

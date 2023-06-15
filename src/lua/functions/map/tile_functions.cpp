@@ -591,7 +591,7 @@ int TileFunctions::luaTileAddItem(lua_State* L) {
 
 	uint32_t subType = getNumber<uint32_t>(L, 3, 1);
 
-	Item* item = Item::CreateItem(itemId, std::min<uint32_t>(subType, 100));
+	Item* item = Item::CreateItem(itemId, std::min<uint32_t>(subType, Item::items[itemId].stackSize));
 	if (!item) {
 		lua_pushnil(L);
 		return 1;

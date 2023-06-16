@@ -666,7 +666,7 @@ int ItemFunctions::luaItemTransform(lua_State* L) {
 
 	const ItemType &it = Item::items[itemId];
 	if (it.stackable) {
-		subType = std::min<int32_t>(subType, 100);
+		subType = std::min<int32_t>(subType, it.stackSize);
 	}
 
 	ScriptEnvironment* env = getScriptEnv();

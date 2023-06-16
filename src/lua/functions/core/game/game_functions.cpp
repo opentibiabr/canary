@@ -265,7 +265,7 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 	const ItemType &it = Item::items[itemId];
 	if (it.hasSubType()) {
 		if (it.stackable) {
-			itemCount = std::ceil(count / (float_t)it.stackSize);
+			itemCount = std::ceil(count / 100.f);
 		}
 
 		subType = count;
@@ -289,7 +289,7 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 	for (int32_t i = 1; i <= itemCount; ++i) {
 		int32_t stackCount = subType;
 		if (it.stackable) {
-			stackCount = std::min<int32_t>(stackCount, it.stackSize);
+			stackCount = std::min<int32_t>(stackCount, 100);
 			subType -= stackCount;
 		}
 

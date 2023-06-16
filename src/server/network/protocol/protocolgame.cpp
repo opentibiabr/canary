@@ -6945,10 +6945,6 @@ void ProtocolGame::RemoveTileThing(NetworkMessage &msg, const Position &pos, uin
 }
 
 void ProtocolGame::sendKillTrackerUpdate(Container* corpse, const std::string &name, const Outfit_t creatureOutfit) {
-	if (oldProtocol) {
-		return;
-	}
-
 	bool isCorpseEmpty = corpse->empty();
 
 	NetworkMessage msg;

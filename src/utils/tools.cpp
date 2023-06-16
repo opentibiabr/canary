@@ -10,7 +10,6 @@
 #include "pch.hpp"
 
 #include "core.hpp"
-#include "items/item.h"
 #include "utils/tools.h"
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
@@ -190,7 +189,7 @@ std::string transformToSHA1(const std::string &input) {
 uint16_t getStashSize(StashItemList itemList) {
 	uint16_t size = 0;
 	for (auto item : itemList) {
-		size += ceil(item.second / (float_t)Item::items[item.first].stackSize);
+		size += ceil(item.second / 100.0);
 	}
 	return size;
 }

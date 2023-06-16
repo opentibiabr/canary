@@ -1880,11 +1880,9 @@
 	<item id="860" article="a" name="crimson sword">
 		<attribute key="description" value="Its blade is very notchy"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="attack" value="28"/>
-		<attribute key="extradef" value="1"/>
-		<attribute key="defense" value="20"/>
+		<attribute key="attack" value="18"/>
+		<attribute key="defense" value="10"/>
 		<attribute key="weight" value="3600"/>
-		<attribute key="imbuementslot" value="2"/>
 	</item>
 	<item id="861" article="a" name="dead troll">
 		<attribute key="fluidsource" value="blood"/>
@@ -5831,7 +5829,7 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="attack" value="9"/>
 		<attribute key="defense" value="7"/>
-		<attribute key="weight" value="1019"/>
+		<attribute key="weight" value="1020"/>
 	</item>
 	<item id="3291" article="a" name="knife">
 		<attribute key="weaponType" value="sword"/>
@@ -5843,7 +5841,7 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="defense" value="6"/>
-		<attribute key="weight" value="869"/>
+		<attribute key="weight" value="870"/>
 	</item>
 	<item id="3293" article="a" name="sickle">
 		<attribute key="weaponType" value="axe"/>
@@ -6209,7 +6207,7 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="attack" value="16"/>
 		<attribute key="defense" value="10"/>
-		<attribute key="weight" value="1839"/>
+		<attribute key="weight" value="1840"/>
 	</item>
 	<item id="3331" article="a" name="ravager's axe">
 		<attribute key="weaponType" value="axe"/>
@@ -34567,7 +34565,7 @@
 	<item id="22760" article="an" name="impaler of the igniter">
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="elementfire" value="26"/>
-		<attribute key="attack" value="26"/>
+		<attribute key="attack" value="25"/>
 		<attribute key="extradef" value="3"/>
 		<attribute key="defense" value="31"/>
 		<attribute key="weight" value="5900"/>
@@ -39300,7 +39298,7 @@
 		<attribute key="attack" value="50"/>
 		<attribute key="defense" value="33"/>
 		<attribute key="weight" value="5000"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="elemental damage" value="3"/>
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
@@ -39312,7 +39310,7 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="attack" value="52"/>
-		<attribute key="defense" value="32"/>
+		<attribute key="defense" value="30"/>
 		<attribute key="weight" value="7000"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
@@ -39995,7 +39993,7 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="elementenergy" value="42"/>
 		<attribute key="absorbpercentenergy" value="6"/>
-		<attribute key="skillsword" value="3"/>
+		<attribute key="skillsword" value="2"/>
 		<attribute key="attack" value="10"/>
 		<attribute key="extradef" value="3"/>
 		<attribute key="defense" value="29"/>
@@ -45603,7 +45601,7 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="elementearth" value="49"/>
-		<attribute key="skillsword" value="2"/>
+		<attribute key="skillsword" value="3"/>
 		<attribute key="attack" value="7"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="weight" value="8100"/>
@@ -56490,7 +56488,7 @@
 	<item id="40530" name="broken macuahuitl">
 		<attribute key="description" value="This macuahuitl was a once legendary obsidian sword wielded by the ancient Iks"/>
 		<attribute key="attack" value="1"/>
-		<attribute key="armor" value="1"/>
+		<attribute key="defense" value="1"/>
 		<attribute key="weight" value="2400"/>
 	</item>
 	 <item id="40531" article="the" name="broken Iks faulds">

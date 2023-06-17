@@ -17631,7 +17631,7 @@
 	</item>
 	<item id="9020" name="worn firewalker boots">
 		<attribute key="description" value="They can be recharged with an enchanted ruby"/>
-		<attribute key="weight" value="800"/>
+		<attribute key="weight" value="950"/>
 	</item>
 	<item id="9021" article="a" name="dead gozzler">
 		<attribute key="duration" value="300"/>
@@ -50365,7 +50365,7 @@
 		<attribute key="absorbpercentice" value="6"/>
 		<attribute key="magicpoints" value="1"/>
 		<attribute key="armor" value="2"/>
-		<attribute key="weight" value="1200"/>
+		<attribute key="weight" value="1450"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="increase speed" value="3"/>
 		</attribute>

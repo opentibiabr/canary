@@ -88,27 +88,27 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 			}
 		}
 
-		for (const auto& [eventName, rates] : eventsOnSameDay) {
-            std::vector<std::string> modifiedRates;
+		for (const auto &[eventName, rates] : eventsOnSameDay) {
+			std::vector<std::string> modifiedRates;
 
-            if (rates.exprate != 100 && currentEventRates.exprate != 100 && rates.exprate == currentEventRates.exprate) {
-                modifiedRates.emplace_back("exprate");
-            }
-            if (rates.lootrate != 100 && currentEventRates.lootrate != 100 && rates.lootrate == currentEventRates.lootrate) {
-                modifiedRates.emplace_back("lootrate");
-            }
-            if (rates.spawnrate != 100 && currentEventRates.spawnrate != 100 && rates.spawnrate == currentEventRates.spawnrate) {
-                modifiedRates.emplace_back("spawnrate");
-            }
-            if (rates.skillrate != 100 && currentEventRates.skillrate != 100 && rates.skillrate == currentEventRates.skillrate) {
-                modifiedRates.emplace_back("skillrate");
-            }
+			if (rates.exprate != 100 && currentEventRates.exprate != 100 && rates.exprate == currentEventRates.exprate) {
+				modifiedRates.emplace_back("exprate");
+			}
+			if (rates.lootrate != 100 && currentEventRates.lootrate != 100 && rates.lootrate == currentEventRates.lootrate) {
+				modifiedRates.emplace_back("lootrate");
+			}
+			if (rates.spawnrate != 100 && currentEventRates.spawnrate != 100 && rates.spawnrate == currentEventRates.spawnrate) {
+				modifiedRates.emplace_back("spawnrate");
+			}
+			if (rates.skillrate != 100 && currentEventRates.skillrate != 100 && rates.skillrate == currentEventRates.skillrate) {
+				modifiedRates.emplace_back("skillrate");
+			}
 
-            if (!modifiedRates.empty()) {
-                std::string ratesString = join(modifiedRates, ", ");
-                SPDLOG_WARN("{} - Events '{}' and '{}' have the same rates [{}] on the same day.", __FUNCTION__, eventNode.attribute("name").as_string(), eventName.c_str(), ratesString);
-            }
-        }
+			if (!modifiedRates.empty()) {
+				std::string ratesString = join(modifiedRates, ", ");
+				SPDLOG_WARN("{} - Events '{}' and '{}' have the same rates [{}] on the same day.", __FUNCTION__, eventNode.attribute("name").as_string(), eventName.c_str(), ratesString);
+			}
+		}
 
 		eventsOnSameDay[eventName] = currentEventRates;
 		eventScheduler.emplace_back(EventScheduler(eventName, startDays, endDays));
@@ -122,13 +122,13 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 	return true;
 }
 
-std::string EventsScheduler::join(const std::vector<std::string>& vec, const std::string& delim) {
-    std::stringstream result;
-    for (size_t i = 0; i < vec.size(); ++i) {
-        result << vec[i];
-        if (i != vec.size() - 1) {
-            result << delim;
-        }
-    }
-    return result.str();
+std::string EventsScheduler::join(const std::vector<std::string> &vec, const std::string &delim) {
+	std::stringstream result;
+	for (size_t i = 0; i < vec.size(); ++i) {
+		result << vec[i];
+		if (i != vec.size() - 1) {
+			result << delim;
+		}
+	}
+	return result.str();
 }

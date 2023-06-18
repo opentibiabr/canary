@@ -144,6 +144,18 @@ local items = {
 		level = 250
 	},
 	{
+		-- broken iks faulds
+		itemid = 40531,
+		type = "equip",
+		slot = "legs"
+	},
+	{
+		-- broken iks faulds
+		itemid = 40531,
+		type = "deequip",
+		slot = "legs"
+	},
+	{
 		-- 25 years backpack
 		itemid = 39693,
 		type = "equip",
@@ -778,6 +790,18 @@ local items = {
 		itemid = 37609,
 		type = "deequip",
 		slot = "head"
+	},
+	{
+		-- green demon legs
+		itemid = 37607,
+		type = "equip",
+		slot = "legs"
+	},
+	{
+		-- green demon legs
+		itemid = 37607,
+		type = "deequip",
+		slot = "legs"
 	},
 	{
 		-- changing backpack
@@ -2213,6 +2237,18 @@ local items = {
 		itemid = 32100,
 		type = "deequip",
 		slot = "head"
+	},
+	{
+		-- lederhosen
+		itemid = 32097,
+		type = "equip",
+		slot = "legs"
+	},
+	{
+		-- lederhosen
+		itemid = 32097,
+		type = "deequip",
+		slot = "legs"
 	},
 	{
 		-- meat hammer

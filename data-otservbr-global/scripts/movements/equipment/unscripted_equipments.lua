@@ -144,6 +144,18 @@ local items = {
 		level = 250
 	},
 	{
+		-- broken iks cuirass
+		itemid = 40533,
+		type = "equip",
+		slot = "armor"
+	},
+	{
+		-- broken iks cuirass
+		itemid = 40533,
+		type = "deequip",
+		slot = "armor"
+	},
+	{
 		-- 25 years backpack
 		itemid = 39693,
 		type = "equip",
@@ -778,6 +790,18 @@ local items = {
 		itemid = 37609,
 		type = "deequip",
 		slot = "head"
+	},
+	{
+		-- green demon armor
+		itemid = 37608,
+		type = "equip",
+		slot = "armor"
+	},
+	{
+		-- green demon armor
+		itemid = 37608,
+		type = "deequip",
+		slot = "armor"
 	},
 	{
 		-- changing backpack
@@ -1753,13 +1777,13 @@ local items = {
 		}
 	},
 	{
-		-- soulmantel armor
+		-- soulmantle
 		itemid = 34095,
 		type = "deequip",
 		slot = "armor"
 	},
 	{
-		-- soulmantel armor
+		-- soulmantle
 		itemid = 34095,
 		type = "equip",
 		slot = "armor",
@@ -2213,6 +2237,18 @@ local items = {
 		itemid = 32100,
 		type = "deequip",
 		slot = "head"
+	},
+	{
+		-- traditional shirt
+		itemid = 32099,
+		type = "equip",
+		slot = "armor"
+	},
+	{
+		-- traditional shirt
+		itemid = 32099,
+		type = "deequip",
+		slot = "armor"
 	},
 	{
 		-- meat hammer

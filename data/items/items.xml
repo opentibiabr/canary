@@ -30045,7 +30045,7 @@
 		<attribute key="absorbpercentpoison" value="2"/>
 		<attribute key="absorbpercentfire" value="-2"/>
 		<attribute key="armor" value="12"/>
-		<attribute key="weight" value="4800"/>
+		<attribute key="weight" value="5800"/>
 	</item>
 	<item id="19373" article="a" name="haunted mirror piece">
 		<attribute key="weaponType" value="shield"/>
@@ -46994,7 +46994,7 @@
 	</item>
 	<item id="32705" article="a" name="pair of old bracers">
 		<attribute key="armor" value="1"/>
-		<attribute key="weight" value="20"/>
+		<attribute key="weight" value="200"/>
 	</item>
 	<item id="32706" article="a" name="unknow">
 		<attribute key="weight" value="4"/>

@@ -18717,7 +18717,7 @@
 	</item>
 	<item id="9384" article="a" name="scythe of the reaper">
 		<attribute key="description" value="This scythe has harvested countless souls and still hungers for more"/>
-		<attribute key="weaponType" value="club"/>
+		<attribute key="weaponType" value="axe"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="attack" value="16"/>
 		<attribute key="defense" value="6"/>
@@ -18732,7 +18732,7 @@
 	</item>
 	<item id="9386" article="a" name="farmer's avenger">
 		<attribute key="description" value="A weapon forged to fight oppression of the poor underdogs"/>
-		<attribute key="weaponType" value="sword"/>
+		<attribute key="weaponType" value="axe"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="attack" value="17"/>
 		<attribute key="defense" value="7"/>
@@ -22897,7 +22897,7 @@
 		<attribute key="weight" value="4000"/>
 	</item>
 	<item id="12683" article="a" name="heavy trident">
-		<attribute key="weaponType" value="sword"/>
+		<attribute key="weaponType" value="axe"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="attack" value="35"/>
 		<attribute key="defense" value="17"/>
@@ -39327,7 +39327,7 @@
 		<attribute key="attack" value="51"/>
 		<attribute key="defense" value="31"/>
 		<attribute key="weight" value="5000"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="elemental damage" value="3"/>
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
@@ -39339,7 +39339,7 @@
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="attack" value="52"/>
-		<attribute key="defense" value="32"/>
+		<attribute key="defense" value="30"/>
 		<attribute key="weight" value="7000"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
@@ -48820,7 +48820,7 @@
 		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="skillaxe" value="5"/>
 		<attribute key="attack" value="10"/>
-		<attribute key="defense" value="35"/>
+		<attribute key="defense" value="34"/>
 		<attribute key="weight" value="7200"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="life leech" value="3"/>

@@ -6543,14 +6543,14 @@ local items = {
 		level = 65
 	},
 	{
-		-- Ferumbras' staff
+		-- Ferumbras' staff (club)
 		itemid = 22764,
 		type = "equip",
 		slot = "hand",
 		level = 100
 	},
 	{
-		-- Ferumbras' staff
+		-- Ferumbras' staff (club)
 		itemid = 22764,
 		type = "deequip",
 		slot = "hand"
@@ -13961,7 +13961,11 @@ local items = {
 		itemid = 7452,
 		type = "equip",
 		slot = "hand",
-		level = 30
+		level = 30,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+  		}
 	},
 	{
 		-- spiked squelcher
@@ -16949,11 +16953,7 @@ local items = {
 		itemid = 3340,
 		type = "equip",
 		slot = "hand",
-		level = 70,
-		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+		level = 70
 	},
 	{
 		-- heavy mace
@@ -17048,7 +17048,8 @@ local items = {
 		-- crystal mace
 		itemid = 3333,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 35
 	},
 	{
 		-- crystal mace
@@ -17339,7 +17340,8 @@ local items = {
 		-- clerical mace
 		itemid = 3311,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 20
 	},
 	{
 		-- clerical mace
@@ -18044,13 +18046,13 @@ local items = {
 	},
 	{
 		-- giant smithhammer
-		itemid = 12510,
+		itemid = 3208,
 		type = "equip",
 		slot = "hand"
 	},
 	{
 		-- giant smithhammer
-		itemid = 12510,
+		itemid = 3208,
 		type = "deequip",
 		slot = "hand"
 	},

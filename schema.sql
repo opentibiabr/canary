@@ -761,15 +761,6 @@ CREATE TABLE IF NOT EXISTS `towns` (
     UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
 
--- Table structure `account_sessions`
-CREATE TABLE IF NOT EXISTS `account_sessions` (
-  `id` VARCHAR(191) NOT NULL,
-  `account_id` INTEGER UNSIGNED NOT NULL,
-  `expires` BIGINT UNSIGNED NOT NULL,
-
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- Create Account god/god
 INSERT INTO `accounts`
 (`id`, `name`, `email`, `password`, `type`) VALUES

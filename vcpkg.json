@@ -12,10 +12,7 @@
     "magic-enum",
     "zlib",
     "mio",
-    {
-      "name": "luajit",
-      "platform": "!arm"
-    },
+    "luajit",
     {
       "name": "libmariadb",
       "features": [ "mariadbclient" ]
@@ -29,5 +26,5 @@
       "platform": "windows"
     }
   ],
-  "builtin-baseline":"afbb37cfd648335fd980f6fb7dbc2d0c84c009cf"
+  "builtin-baseline":"0d1150cbd2f8b3eb9247c51c9f41efbb3be9454b"
 }

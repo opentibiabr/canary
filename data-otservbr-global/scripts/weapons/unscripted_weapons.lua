@@ -2066,6 +2066,7 @@ local weapons = {
 		type = WEAPON_AXE,
 		level = 75,
 		unproperly = true,
+		action = "removecharge",
 		vocation = {
 			{"Knight", true},
 			{"Elite Knight"}
@@ -2077,6 +2078,7 @@ local weapons = {
 		type = WEAPON_SWORD,
 		level = 75,
 		unproperly = true,
+		action = "removecharge",
 		vocation = {
 			{"Knight", true},
 			{"Elite Knight"}
@@ -2299,7 +2301,7 @@ local weapons = {
 		}
 	},
 	{
-		-- guardian halberd
+		-- crude umbral chopper
 		itemid = 20073,
 		type = WEAPON_AXE,
 		level = 75,
@@ -4526,11 +4528,7 @@ local weapons = {
 		itemid = 3331,
 		type = WEAPON_AXE,
 		level = 70,
-		unproperly = true,
-		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+		unproperly = true
 	},
 	{
 		-- heavy machete

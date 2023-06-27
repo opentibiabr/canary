@@ -154,8 +154,8 @@ local items = {
 		itemid = 40531,
 		type = "deequip",
 		slot = "legs"
-  },
-  {
+	},
+	{
 		-- broken iks sandals
 		itemid = 40534,
 		type = "equip",
@@ -2300,8 +2300,8 @@ local items = {
 		itemid = 32097,
 		type = "deequip",
 		slot = "legs"
-  },
-  {
+	},
+	{
 		-- traditional leather shoes
 		itemid = 32098,
 		type = "equip",

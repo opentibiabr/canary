@@ -154,6 +154,18 @@ local items = {
 		itemid = 40534,
 		type = "deequip",
 		slot = "feet"
+  },
+  {
+		-- broken macuahuitl
+		itemid = 40530,
+		type = "equip",
+		slot = "hand"
+	},
+	{
+		-- broken macuahuitl
+		itemid = 40530,
+		type = "deequip",
+		slot = "hand"
 	},
 	{
 		-- 25 years backpack
@@ -790,6 +802,20 @@ local items = {
 		itemid = 37610,
 		type = "deequip",
 		slot = "feet"
+  },
+  {
+		-- Morshabaal's mask
+		itemid = 37611,
+		type = "equip",
+		slot = "shield",
+		level = 150
+	},
+	{
+		-- Morshabaal's mask
+		itemid = 37611,
+		type = "deequip",
+		slot = "shield",
+		level = 150
 	},
 	{
 		-- green demon helmet
@@ -1642,7 +1668,8 @@ local items = {
 		-- lion spellbook
 		itemid = 34153,
 		type = "deequip",
-		slot = "shield"
+		slot = "shield",
+		level = 220
 	},
 	{
 		-- lion spellbook
@@ -2700,7 +2727,7 @@ local items = {
 		itemid = 30398,
 		type = "equip",
 		slot = "hand",
-		level = 250,
+		level = 220,
 		vocation = {
 			{"Knight", true},
 			{"Elite Knight"}
@@ -2711,6 +2738,11 @@ local items = {
 		itemid = 30398,
 		type = "deequip",
 		slot = "hand",
+		level = 220,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- cobra hood
@@ -4004,7 +4036,12 @@ local items = {
 		-- blade of destruction
 		itemid = 27449,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- Journal Shield
@@ -7738,7 +7775,8 @@ local items = {
 		-- cowtana
 		itemid = 21177,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 25
 	},
 	{
 		-- execowtioner axe
@@ -8411,7 +8449,7 @@ local items = {
 		-- crude umbral slayer
 		itemid = 20067,
 		type = "equip",
-	slot = "hand",
+		slot = "hand",
 		level = 75,
 		vocation = {
 			{"Knight", true},
@@ -8422,7 +8460,12 @@ local items = {
 		-- crude umbral slayer
 		itemid = 20067,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 75,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- umbral masterblade
@@ -8473,7 +8516,12 @@ local items = {
 		-- crude umbral blade
 		itemid = 20064,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 75,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- strange good night songs
@@ -8831,7 +8879,10 @@ local items = {
 		-- mean knight sword
 		itemid = 17109,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		vocation = {
+			{"None", true}
+		}
 	},
 	{
 		-- mean knight sword
@@ -10055,7 +10106,8 @@ local items = {
 		-- blade of corruption
 		itemid = 11693,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 82
 	},
 	{
 		-- snake god's sceptre
@@ -10967,13 +11019,13 @@ local items = {
 	},
 	{
 		-- shield of the white knight
-		itemid = 3537,
+		itemid = 9377,
 		type = "equip",
 		slot = "shield"
 	},
 	{
 		-- shield of the white knight
-		itemid = 3537,
+		itemid = 9377,
 		type = "deequip",
 		slot = "shield"
 	},
@@ -14360,7 +14412,8 @@ local items = {
 		-- bloody edge
 		itemid = 7416,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 55
 	},
 	{
 		-- cranial basher
@@ -14506,7 +14559,8 @@ local items = {
 		-- blacksteel sword
 		itemid = 7406,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 35
 	},
 	{
 		-- havoc blade
@@ -14536,13 +14590,15 @@ local items = {
 		-- assassin dagger
 		itemid = 7404,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 40
 	},
 	{
 		-- berserker
 		itemid = 7403,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 65
 	},
 	{
 		-- berserker
@@ -14559,7 +14615,12 @@ local items = {
 		-- dragon slayer
 		itemid = 7402,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 45,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- dragon slayer
@@ -14677,7 +14738,8 @@ local items = {
 		-- crimson sword
 		itemid = 7385,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 20
 	},
 	{
 		-- mystic blade
@@ -17064,11 +17126,7 @@ local items = {
 		itemid = 3334,
 		type = "equip",
 		slot = "hand",
-		level = 45,
-		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+		level = 45
 	},
 	{
 		-- pharaoh sword
@@ -17498,13 +17556,21 @@ local items = {
 		-- broadsword
 		itemid = 3301,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- broadsword
 		itemid = 3301,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- katana
@@ -17582,7 +17648,8 @@ local items = {
 		-- bright sword
 		itemid = 3295,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 30
 	},
 	{
 		-- short sword

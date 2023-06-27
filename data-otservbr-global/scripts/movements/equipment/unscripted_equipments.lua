@@ -154,8 +154,8 @@ local items = {
 		itemid = 40534,
 		type = "deequip",
 		slot = "feet"
-  },
-  {
+	},
+	{
 		-- broken macuahuitl
 		itemid = 40530,
 		type = "equip",
@@ -802,8 +802,8 @@ local items = {
 		itemid = 37610,
 		type = "deequip",
 		slot = "feet"
-  },
-  {
+	},
+	{
 		-- Morshabaal's mask
 		itemid = 37611,
 		type = "equip",

@@ -4461,11 +4461,7 @@ local weapons = {
 		itemid = 3340,
 		type = WEAPON_CLUB,
 		level = 70,
-		unproperly = true,
-		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+		unproperly = true
 	},
 	{
 		-- djinn blade
@@ -4972,7 +4968,7 @@ local weapons = {
 	},
 	{
 		-- giant smithhammer
-		itemid = 12510,
+		itemid = 3208,
 		type = WEAPON_CLUB
 	},
 	{

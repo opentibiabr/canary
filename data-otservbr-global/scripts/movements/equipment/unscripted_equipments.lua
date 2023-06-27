@@ -154,8 +154,8 @@ local items = {
 		itemid = 40533,
 		type = "deequip",
 		slot = "armor"
-  },
-  {
+	},
+	{
 		-- broken iks faulds
 		itemid = 40531,
 		type = "equip",
@@ -864,8 +864,8 @@ local items = {
 		itemid = 37608,
 		type = "deequip",
 		slot = "armor"
-  },
-  {
+	},
+	{
 		-- green demon legs
 		itemid = 37607,
 		type = "equip",
@@ -2324,8 +2324,8 @@ local items = {
 		itemid = 32099,
 		type = "deequip",
 		slot = "armor"
-  },
-  {
+	},
+	{
 		-- lederhosen
 		itemid = 32097,
 		type = "equip",

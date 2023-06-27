@@ -1,5 +1,10 @@
 local weapons = {
 	{
+		-- broken macuahuitl
+		itemid = 40530,
+		type = WEAPON_SWORD
+	},
+	{
 		-- naga rod
 		itemId = 39163,
 		type = WEAPON_WAND,
@@ -4823,11 +4828,7 @@ local weapons = {
 		-- ice rapier
 		itemid = 3284,
 		type = WEAPON_SWORD,
-		action = "removecharge",
-		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+		action = "removecharge"
 	},
 	{
 		-- carlin sword

@@ -7012,7 +7012,7 @@
 	<item id="3426" article="a" name="studded shield">
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="defense" value="15"/>
-		<attribute key="weight" value="5900"/>
+		<attribute key="weight" value="5800"/>
 	</item>
 	<item id="3427" article="a" name="rose shield">
 		<attribute key="weaponType" value="shield"/>
@@ -42477,7 +42477,7 @@
 	</item>
 	<item id="29420" article="a" name="shoulder plate">
 		<attribute key="weaponType" value="shield"/>
-		<attribute key="absorbpercentphysical" value="4"/>
+		<attribute key="absorbpercentphysical" value="2"/>
 		<attribute key="absorbpercentpoison" value="6"/>
 		<attribute key="magicpoints" value="3"/>
 		<attribute key="defense" value="26"/>
@@ -51381,8 +51381,9 @@
 	<item id="36656" article="a" name="eldritch shield">
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="absorbpercentphysical" value="4"/>
+		<!--attribute key="damagereflection" value="42"/-->
 		<attribute key="defense" value="39"/>
-		<attribute key="weight" value="6600"/>
+		<attribute key="weight" value="6900"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection death" value="3"/>
 			<attribute key="elemental protection earth" value="3"/>
@@ -51610,6 +51611,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="absorbpercentpoison" value="6"/>
 		<attribute key="magicpoints" value="4"/>
+		<!-- attribute key="deathmagiclevelpoints" value="1"/-->
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="2800"/>
 		<attribute key="imbuementslot" value="1">
@@ -51625,6 +51627,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="absorbpercentfire" value="6"/>
 		<attribute key="magicpoints" value="4"/>
+		<!-- attribute key="earthmagiclevelpoints" value="1"/-->	
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="2600"/>
 		<attribute key="imbuementslot" value="1">
@@ -54036,6 +54039,10 @@
 		</attribute>
 	</item>
 	<item id="37611" name="Morshabaal's mask">
+		<!--attribute key="firemagiclevelpoints" value="1"/-->
+		<!--attribute key="icemagiclevelpoints" value="1"/-->
+		<!--attribute key="earthmagiclevelpoints" value="1"/-->
+		<!--attribute key="energymagiclevelpoints" value="1"/-->
 		<attribute key="weight" value="4100"/>
 	</item>
 	<item id="37613" article="a" name="Morshabaal's brain">
@@ -56591,11 +56598,10 @@
 	</item>
 	<item id="40594" article="an" name="alchemist's notepad">
 		<attribute key="weaponType" value="shield"/>
-		<attribute key="absorbpercentice" value="7"/>
-		<attribute key="absorbpercentphysical" value="3"/>
+		<attribute key="absorbpercentdeath" value="5"/>
 		<attribute key="magicpoints" value="2"/>
-		<!--attribute key="firemagiclevelpoints" value="2"/-->
-		<!--attribute key="energymagiclevelpoints" value="2"/-->
+		<!--attribute key="firemagiclevelpoints" value="3"/-->
+		<!--attribute key="energymagiclevelpoints" value="3"/-->
 		<attribute key="defense" value="20"/>
 		<attribute key="weight" value="1300"/>
 		<attribute key="imbuementslot" value="1">

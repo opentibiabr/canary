@@ -2433,7 +2433,7 @@ class Player final : public Creature, public Cylinder {
 		// This get all player inventory items
 		std::vector<Item*> getAllInventoryItems(bool ignoreEquiped = false, bool ignoreItemWithTier = false) const;
 		// this get all players slot items
-		std::vector<Item*> getAllSlotItems() const;
+		phmap::flat_hash_map<uint8_t, Item*> getAllSlotItems() const;
 
 		// This function is a override function of base class
 		std::map<uint32_t, uint32_t> &getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const override;

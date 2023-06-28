@@ -489,7 +489,7 @@ void Player::updateInventoryImbuement() {
 	bool isInFightMode = hasCondition(CONDITION_INFIGHT);
 
 	// Iterate through all items in the player's inventory
-	for (auto item : getAllInventoryItems()) {
+	for (auto item : getAllSlotItems()) {
 		// Iterate through all imbuement slots on the item
 
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
@@ -3817,6 +3817,20 @@ void Player::updateDamageReductionFromItemAbility(
 
 double_t Player::calculateDamageReduction(double_t currentTotal, int16_t resistance) const {
 	return (100 - currentTotal) / 100.0 * resistance + currentTotal;
+}
+
+std::vector<Item*> Player::getAllSlotItems() const {
+	std::vector<Item*> itemVector;
+	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
+		Item* item = inventory[i];
+		if (!item) {
+			continue;
+		}
+
+		itemVector.push_back(item);
+	}
+
+	return itemVector;
 }
 
 std::vector<Item*> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/, bool ignoreItemWithTier /* false*/) const {

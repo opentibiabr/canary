@@ -3833,6 +3833,10 @@ std::vector<Item*> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/) 
 		}
 		if (Container* container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+				if ((*it)->getTier() > 0) {
+					continue;
+				}
+
 				itemVector.push_back(*it);
 			}
 		}
@@ -3850,10 +3854,6 @@ std::map<uint32_t, uint32_t> &Player::getAllItemTypeCount(std::map<uint32_t, uin
 
 std::map<uint16_t, uint16_t> &Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const {
 	for (const auto item : getAllInventoryItems()) {
-		if (item->getTier() > 0) {
-			continue;
-		}
-
 		if (!item->hasImbuements()) {
 			countMap[item->getID()] += item->getItemCount();
 		}
@@ -4008,6 +4008,11 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 			} else {
 				autoCloseContainers(container);
 			}
+		}
+
+		// force list update if item exists tier
+		if (item->getTier() > 0 && !requireListUpdate) {
+			requireListUpdate = true;
 		}
 
 		if (shopOwner && !scheduledSaleUpdate && requireListUpdate) {

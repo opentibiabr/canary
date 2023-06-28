@@ -30,7 +30,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = true,
+	rewardBoss = false,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -49,8 +49,12 @@ monster.light = {
 	color = 0
 }
 
-monster.summon = {
-
+monster.summon = { 
+	maxSummons = 2,
+	summons = {
+		{name = "Headpecker", chance = 20, interval = 2000},
+		{name = "Sulphider", chance = 20, interval = 2000},
+	}
 }
 
 monster.voices = {
@@ -66,10 +70,9 @@ monster.attacks = {
 	{name ="melee", interval = 2000, chance = 85, minDamage = -2500, maxDamage = -3500},
 	{name ="combat", interval = 4000, chance = 35, type = COMBAT_EARTHDAMAGE, minDamage = -3000, maxDamage = -4000, length = 10, spread = 3, effect = CONST_ME_CARNIPHILA, target = false},
 	{name ="combat", interval = 2500, chance = 45, type = COMBAT_FIREDAMAGE, minDamage = -3000, maxDamage = -7000, length = 10, spread = 3, effect = CONST_ME_HITBYFIRE, target = false},
-    {name ="big death wave", interval = 3500, chance = 35, minDamage = -4000, maxDamage = -7000, target = false},
+	{name ="big death wave", interval = 3500, chance = 35, minDamage = -4000, maxDamage = -7000, target = false},
 	{name ="combat", interval = 5000, chance = 40, type = COMBAT_ENERGYDAMAGE, effect = CONST_ME_ENERGYHIT, minDamage = -3500, maxDamage = -4000, range = 4, target = false},
 	{name ="combat", interval = 2700, chance = 45, type = COMBAT_EARTHDAMAGE, shootEffect = CONST_ANI_POISON, effect = CONST_ANI_EARTH, minDamage = -1500, maxDamage = -4000, range = 4, target = false},
-
 }
 
 monster.defenses = {
@@ -97,11 +100,5 @@ monster.immunities = {
 	{type = "drunk", condition = true},
 	{type = "bleed", condition = false}
 }
-
-mType.onAppear = function(monster, creature)
-	if monster:getType():isRewardBoss() then
-		monster:setReward(true)
-	end
-end
 
 mType:register(monster)

@@ -233,7 +233,7 @@ class Monster final : public Creature {
 
 		bool isTarget(const Creature* creature) const;
 		bool isFleeing() const {
-			return !isSummon() && getHealth() <= mType->info.runAwayHealth && challengeFocusDuration <= 0;
+			return !isSummon() && getHealth() <= runAwayHealth && challengeFocusDuration <= 0 && challengeMeleeDuration <= 0;
 		}
 
 		bool getDistanceStep(const Position &targetPos, Direction &direction, bool flee = false);
@@ -366,6 +366,7 @@ class Monster final : public Creature {
 		int32_t targetDistance = 1;
 		int32_t challengeMeleeDuration = 0;
 		uint16_t totalPlayersOnScreen = 0;
+		int32_t runAwayHealth = 0;
 
 		Position masterPos;
 

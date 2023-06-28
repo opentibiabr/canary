@@ -3833,7 +3833,7 @@ std::vector<Item*> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/) 
 		}
 		if (Container* container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				if ((*it)->getTier() > 0) {
+				if (scheduledSaleUpdate && (*it)->getTier() > 0) {
 					continue;
 				}
 

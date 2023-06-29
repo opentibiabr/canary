@@ -3821,7 +3821,7 @@ double_t Player::calculateDamageReduction(double_t currentTotal, int16_t resista
 
 phmap::flat_hash_map<uint8_t, Item*> Player::getAllSlotItems() const {
 	phmap::flat_hash_map<uint8_t, Item*> itemVector;
-	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
+	for (uint8_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
 		Item* item = inventory[i];
 		if (!item) {
 			continue;

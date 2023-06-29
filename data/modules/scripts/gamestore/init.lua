@@ -1458,8 +1458,8 @@ function GameStore.processChargesPurchase(player, itemtype, name, charges, movea
 end
 
 function GameStore.processSignleBlessingPurchase(player, blessId, count)
-		player:addBlessing(blessId, count)
-	end
+	player:addBlessing(blessId, count)
+end
 
 function GameStore.processAllBlessingsPurchase(player, count)
 	player:addBlessing(1, count)

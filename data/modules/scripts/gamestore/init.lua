@@ -1458,8 +1458,8 @@ function GameStore.processChargesPurchase(player, itemtype, name, charges, movea
 end
 
 function GameStore.processSignleBlessingPurchase(player, blessId, count)
-	player:addBlessing(blessId, count)
-end
+		player:addBlessing(blessId, count)
+	end
 
 function GameStore.processAllBlessingsPurchase(player, count)
 	player:addBlessing(1, count)
@@ -1812,9 +1812,9 @@ function Player.canRemoveCoins(self, coins)
 end
 
 function Player.removeCoinsBalance(self, coins)
-	if self:canRemoveCoins(coins) then
+	if self:canRemoveAllCoins(coins) then
 		sendStoreBalanceUpdating(self:getId(), true)
-		return self:removeTibiaCoins(coins)
+		return self:removeAllCoins(coins)
 	end
 
 	return false

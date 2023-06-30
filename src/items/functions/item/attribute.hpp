@@ -17,44 +17,50 @@
 class ItemAttributeHelper {
 	public:
 		bool isAttributeInteger(ItemAttribute_t type) const {
-			std::underlying_type_t<ItemAttribute_t> checkTypes = 0;
-			checkTypes |= ItemAttribute_t::STORE;
-			checkTypes |= ItemAttribute_t::ACTIONID;
-			checkTypes |= ItemAttribute_t::UNIQUEID;
-			checkTypes |= ItemAttribute_t::DATE;
-			checkTypes |= ItemAttribute_t::WEIGHT;
-			checkTypes |= ItemAttribute_t::ATTACK;
-			checkTypes |= ItemAttribute_t::DEFENSE;
-			checkTypes |= ItemAttribute_t::EXTRADEFENSE;
-			checkTypes |= ItemAttribute_t::ARMOR;
-			checkTypes |= ItemAttribute_t::HITCHANCE;
-			checkTypes |= ItemAttribute_t::SHOOTRANGE;
-			checkTypes |= ItemAttribute_t::OWNER;
-			checkTypes |= ItemAttribute_t::DURATION;
-			checkTypes |= ItemAttribute_t::DECAYSTATE;
-			checkTypes |= ItemAttribute_t::CORPSEOWNER;
-			checkTypes |= ItemAttribute_t::CHARGES;
-			checkTypes |= ItemAttribute_t::FLUIDTYPE;
-			checkTypes |= ItemAttribute_t::DOORID;
-			checkTypes |= ItemAttribute_t::IMBUEMENT_SLOT;
-			checkTypes |= ItemAttribute_t::OPENCONTAINER;
-			checkTypes |= ItemAttribute_t::QUICKLOOTCONTAINER;
-			checkTypes |= ItemAttribute_t::DURATION_TIMESTAMP;
-			checkTypes |= ItemAttribute_t::TIER;
-			checkTypes |= ItemAttribute_t::AMOUNT;
-			return (type & static_cast<ItemAttribute_t>(checkTypes)) != 0;
+			switch (type) {
+				case ItemAttribute_t::STORE:
+				case ItemAttribute_t::ACTIONID:
+				case ItemAttribute_t::UNIQUEID:
+				case ItemAttribute_t::DATE:
+				case ItemAttribute_t::WEIGHT:
+				case ItemAttribute_t::ATTACK:
+				case ItemAttribute_t::DEFENSE:
+				case ItemAttribute_t::EXTRADEFENSE:
+				case ItemAttribute_t::ARMOR:
+				case ItemAttribute_t::HITCHANCE:
+				case ItemAttribute_t::SHOOTRANGE:
+				case ItemAttribute_t::OWNER:
+				case ItemAttribute_t::DURATION:
+				case ItemAttribute_t::DECAYSTATE:
+				case ItemAttribute_t::CORPSEOWNER:
+				case ItemAttribute_t::CHARGES:
+				case ItemAttribute_t::FLUIDTYPE:
+				case ItemAttribute_t::DOORID:
+				case ItemAttribute_t::IMBUEMENT_SLOT:
+				case ItemAttribute_t::OPENCONTAINER:
+				case ItemAttribute_t::QUICKLOOTCONTAINER:
+				case ItemAttribute_t::DURATION_TIMESTAMP:
+				case ItemAttribute_t::TIER:
+				case ItemAttribute_t::AMOUNT:
+					return true;
+				default:
+					return false;
+			}
 		}
 
 		bool isAttributeString(ItemAttribute_t type) const {
-			std::underlying_type_t<ItemAttribute_t> checkTypes = 0;
-			checkTypes |= ItemAttribute_t::DESCRIPTION;
-			checkTypes |= ItemAttribute_t::TEXT;
-			checkTypes |= ItemAttribute_t::WRITER;
-			checkTypes |= ItemAttribute_t::NAME;
-			checkTypes |= ItemAttribute_t::ARTICLE;
-			checkTypes |= ItemAttribute_t::PLURALNAME;
-			checkTypes |= ItemAttribute_t::SPECIAL;
-			return (type & static_cast<ItemAttribute_t>(checkTypes)) != 0;
+			switch (type) {
+				case ItemAttribute_t::DESCRIPTION:
+				case ItemAttribute_t::TEXT:
+				case ItemAttribute_t::WRITER:
+				case ItemAttribute_t::NAME:
+				case ItemAttribute_t::ARTICLE:
+				case ItemAttribute_t::PLURALNAME:
+				case ItemAttribute_t::SPECIAL:
+					return true;
+				default:
+					return false;
+			}
 		}
 };
 
@@ -80,9 +86,10 @@ class Attributes : public ItemAttributeHelper {
 		}
 
 		std::variant<int64_t, std::shared_ptr<std::string>> getDefaultValueForType(ItemAttribute_t attributeType) const {
-			if (isAttributeInteger(attributeType)) {
+			ItemAttributeHelper helper;
+			if (helper.isAttributeInteger(attributeType)) {
 				return 0;
-			} else if (isAttributeString(attributeType)) {
+			} else if (helper.isAttributeString(attributeType)) {
 				return std::make_shared<std::string>();
 			} else {
 				return {};
@@ -144,15 +151,17 @@ class ItemAttribute : public ItemAttributeHelper {
 		const std::string &getAttributeString(ItemAttribute_t type) const;
 		const int64_t &getAttributeValue(ItemAttribute_t type) const;
 
-		const std::underlying_type_t<ItemAttribute_t> &getAttributeBits() const {
-			return attributeBits;
-		}
 		const std::vector<Attributes> &getAttributeVector() const {
 			return attributeVector;
 		}
 
 		bool hasAttribute(ItemAttribute_t type) const {
-			return (type & static_cast<ItemAttribute_t>(attributeBits)) != 0;
+			for (const auto &attr : attributeVector) {
+				if (attr.getAttributeType() == type) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		const Attributes* getAttribute(ItemAttribute_t type) const;
@@ -161,7 +170,6 @@ class ItemAttribute : public ItemAttributeHelper {
 
 	private:
 		std::map<std::string, CustomAttribute, std::less<>> customAttributeMap;
-		std::underlying_type_t<ItemAttribute_t> attributeBits = 0;
 		std::vector<Attributes> attributeVector;
 };
 

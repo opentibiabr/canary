@@ -56,15 +56,12 @@ const Attributes* ItemAttribute::getAttribute(ItemAttribute_t type) const {
 }
 
 Attributes &ItemAttribute::getAttributesByType(ItemAttribute_t type) {
-	if (hasAttribute(type)) {
-		for (Attributes &attribute : attributeVector) {
-			if (attribute.getAttributeType() == type) {
-				return attribute;
-			}
+	for (Attributes &attribute : attributeVector) {
+		if (attribute.getAttributeType() == type) {
+			return attribute;
 		}
 	}
 
-	attributeBits |= type;
 	attributeVector.emplace_back(type);
 	return attributeVector.back();
 }
@@ -90,22 +87,14 @@ void ItemAttribute::setAttribute(ItemAttribute_t type, const std::string &value)
 }
 
 bool ItemAttribute::removeAttribute(ItemAttribute_t type) {
-	if (!hasAttribute(type)) {
-		return false;
-	}
-
-	std::ranges::for_each(attributeVector, [this, type](auto &it) {
-		if (it.getAttributeType() == type) {
-			it = std::move(attributeVector.back());
+	for (auto it = attributeVector.begin(); it != attributeVector.end(); ++it) {
+		if (it->getAttributeType() == type) {
+			*it = std::move(attributeVector.back());
 			attributeVector.pop_back();
-			return false;
+			return true;
 		}
-
-		return true;
-	});
-
-	attributeBits &= ~type;
-	return true;
+	}
+	return false;
 }
 
 /*

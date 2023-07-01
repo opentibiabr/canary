@@ -38,6 +38,7 @@ Monster::Monster(MonsterType* mType) :
 	float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
 	health = mType->info.health * multiplier;
 	healthMax = mType->info.healthMax * multiplier;
+	runAwayHealth = mType->info.runAwayHealth * multiplier;
 	baseSpeed = mType->getBaseSpeed();
 	internalLight = mType->info.light;
 	hiddenHealth = mType->info.hiddenHealth;

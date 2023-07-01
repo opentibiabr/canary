@@ -630,7 +630,12 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		} else { // authType == "password"
 			ss << "Your " << (oldProtocol ? "username" : "email") << " or password is not correct.";
 		}
-		disconnectClient(ss.str());
+
+		auto output = OutputMessagePool::getOutputMessage();
+		output->addByte(0x14);
+		output->addString(ss.str());
+		send(output);
+		g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::disconnect, getThis())));
 		return;
 	}
 

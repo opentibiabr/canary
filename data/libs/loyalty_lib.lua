@@ -50,7 +50,6 @@ function Player.initializeLoyaltySystem(self)
 		end
 	end
 
-	Spdlog.info("Bonus percentage: " .. bonusPercentage .. " x " .. configManager.getFloat(configKeys.LOYALTY_BONUS_PERCENTAGE_MULTIPLIER) .. " = " .. bonusPercentage * configManager.getFloat(configKeys.LOYALTY_BONUS_PERCENTAGE_MULTIPLIER))
 	self:setLoyaltyBonus(bonusPercentage * configManager.getFloat(configKeys.LOYALTY_BONUS_PERCENTAGE_MULTIPLIER))
 
 	if self:getLoyaltyBonus() ~= 0 then

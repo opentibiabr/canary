@@ -24,7 +24,9 @@ class Vocation {
 		const std::string &getVocDescription() const {
 			return description;
 		}
+		BigInt getTotalSkillTries(uint8_t skill, uint16_t level);
 		uint64_t getReqSkillTries(uint8_t skill, uint16_t level);
+		BigInt getTotalMana(uint32_t magLevel);
 		uint64_t getReqMana(uint32_t magLevel);
 
 		uint16_t getId() const {

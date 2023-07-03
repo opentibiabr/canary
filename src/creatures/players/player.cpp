@@ -130,6 +130,10 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		} else {
 			s << " You have no vocation.";
 		}
+
+		if (loyaltyTitle.length() != 0) {
+			s << " You are a " << loyaltyTitle << ".";
+		}
 	} else {
 		s << name;
 		if (!group->access) {
@@ -149,6 +153,14 @@ std::string Player::getDescription(int32_t lookDistance) const {
 			s << " is " << vocation->getVocDescription() << '.';
 		} else {
 			s << " has no vocation.";
+		}
+
+		if (loyaltyTitle.length() != 0) {
+			if (sex == PLAYERSEX_FEMALE) {
+				s << " She is a " << loyaltyTitle << ".";
+			} else {
+				s << " He is a " << loyaltyTitle << ".";
+			}
 		}
 	}
 
@@ -540,6 +552,34 @@ void Player::setTraining(bool value) {
 	}
 	this->statusVipList = VIPSTATUS_TRAINING;
 	setExerciseTraining(value);
+}
+
+uint16_t Player::getLoyaltySkill(skills_t skill) const {
+	uint16_t level = getBaseSkill(skill);
+	BigInt currReqTries = vocation->getReqSkillTries(skill, level);
+	BigInt nextReqTries = vocation->getReqSkillTries(skill, level + 1);
+	if (currReqTries >= nextReqTries) {
+		// player has reached max skill
+		return skills[skill].level;
+	}
+
+	BigInt tries = skills[skill].tries;
+	BigInt totalTries = vocation->getTotalSkillTries(skill, skills[skill].level) + tries;
+	BigInt loyaltyTries = (totalTries * getLoyaltyBonus()) / 100;
+	int i = 0;
+	while ((tries + loyaltyTries) >= nextReqTries) {
+		loyaltyTries -= nextReqTries - tries;
+		level++;
+		tries = 0;
+
+		currReqTries = nextReqTries;
+		nextReqTries = vocation->getReqSkillTries(skill, level + 1);
+		if (currReqTries >= nextReqTries) {
+			loyaltyTries = 0;
+			break;
+		}
+	}
+	return level;
 }
 
 void Player::addSkillAdvance(skills_t skill, uint64_t count) {
@@ -5026,6 +5066,55 @@ bool Player::isInWar(const Player* player) const {
 
 bool Player::isInWarList(uint32_t guildId) const {
 	return std::find(guildWarVector.begin(), guildWarVector.end(), guildId) != guildWarVector.end();
+}
+
+uint32_t Player::getMagicLevel() const {
+	uint32_t magic = std::max<int32_t>(0, getLoyaltyMagicLevel() + varStats[STAT_MAGICPOINTS]);
+	return magic;
+}
+
+uint32_t Player::getLoyaltyMagicLevel() const {
+	uint32_t level = getBaseMagicLevel();
+	BigInt currReqMana = vocation->getReqMana(level);
+	BigInt nextReqMana = vocation->getReqMana(level + 1);
+	if (currReqMana >= nextReqMana) {
+		// player has reached max magic level
+		return level;
+	}
+
+	BigInt spent = manaSpent;
+	BigInt totalMana = vocation->getTotalMana(level) + mana;
+	BigInt loyaltyMana = (totalMana * getLoyaltyBonus()) / 100;
+	while ((spent + loyaltyMana) >= nextReqMana) {
+		loyaltyMana -= nextReqMana - mana;
+		level++;
+		spent = 0;
+
+		currReqMana = nextReqMana;
+		nextReqMana = vocation->getReqMana(level + 1);
+		if (currReqMana >= nextReqMana) {
+			loyaltyMana = 0;
+			break;
+		}
+	}
+	return level;
+}
+
+uint16_t Player::getSkillLevel(skills_t skill, bool sendToClient /* = false */) const {
+	auto skillLevel = getLoyaltySkill(skill);
+	skillLevel = std::max<int32_t>(0, skillLevel + varSkills[skill]);
+
+	if (auto it = maxValuePerSkill.find(skill);
+		it != maxValuePerSkill.end()) {
+		skillLevel = std::min<int32_t>(it->second, skillLevel);
+	}
+
+	// Send to client multiplied skill mana/life leech (13.00+ version changed to decimal)
+	if (sendToClient && (skill == SKILL_MANA_LEECH_AMOUNT || skill == SKILL_LIFE_LEECH_AMOUNT)) {
+		return skillLevel * 100;
+	}
+
+	return std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), std::max<uint16_t>(0, static_cast<uint16_t>(skillLevel)));
 }
 
 bool Player::isPremium() const {

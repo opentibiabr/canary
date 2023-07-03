@@ -3509,3 +3509,65 @@ int PlayerFunctions::luaPlayerGetHazardSystemPoints(lua_State* L) {
 	lua_pushnumber(L, player->getHazardSystemPoints());
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerSetLoyaltyBonus(lua_State* L) {
+	// player:setLoyaltyBonus(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->setLoyaltyBonus(getNumber<uint16_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLoyaltyBonus(lua_State* L) {
+	// player:getLoyaltyBonus()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, player->getLoyaltyBonus());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLoyaltyPoints(lua_State* L) {
+	// player:getLoyaltyPoints()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, player->getLoyaltyPoints());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLoyaltyTitle(lua_State* L) {
+	// player:getLoyaltyTitle()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	pushString(L, player->getLoyaltyTitle());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetLoyaltyTitle(lua_State* L) {
+	// player:setLoyaltyTitle(name)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->setLoyaltyTitle(getString(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}

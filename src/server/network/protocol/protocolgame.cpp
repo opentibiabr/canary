@@ -3154,18 +3154,17 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	msg.addByte(1);
 	msg.add<uint16_t>(player->getMagicLevel());
 	msg.add<uint16_t>(player->getBaseMagicLevel());
-	// loyalty bonus
-	msg.add<uint16_t>(player->getBaseMagicLevel());
+	msg.add<uint16_t>(player->getLoyaltyMagicLevel());
 	msg.add<uint16_t>(player->getMagicLevelPercent() * 100);
 
 	for (uint8_t i = SKILL_FIRST; i < SKILL_CRITICAL_HIT_CHANCE; ++i) {
 		static const uint8_t HardcodedSkillIds[] = { 11, 9, 8, 10, 7, 6, 13 };
+		skills_t skill = static_cast<skills_t>(i);
 		msg.addByte(HardcodedSkillIds[i]);
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
-		msg.add<uint16_t>(player->getBaseSkill(i));
-		// loyalty bonus
-		msg.add<uint16_t>(player->getBaseSkill(i));
-		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
+		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint16_t>(player->getBaseSkill(skill));
+		msg.add<uint16_t>(player->getLoyaltySkill(skill));
+		msg.add<uint16_t>(player->getSkillPercent(skill) * 100);
 	}
 
 	// Version 12.70
@@ -3184,7 +3183,8 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
 	msg.addByte(0x00);
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i, true), std::numeric_limits<uint16_t>::max()));
+		skills_t skill = static_cast<skills_t>(i);
+		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(0);
 	}
 
@@ -3534,24 +3534,43 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 	msg.addString(player->getName());
 	AddOutfit(msg, player->getDefaultOutfit(), false);
 
-	msg.addByte(3);
+	// Player overall summary
+	uint8_t playerDescriptionSize = 0;
+	auto playerDescriptionPosition = msg.getBufferPosition();
+	msg.skipBytes(1);
+
+	// Level description
+	playerDescriptionSize++;
 	msg.addString("Level");
+
+	// Vocation description
+	playerDescriptionSize++;
 	msg.addString(std::to_string(player->getLevel()));
 	msg.addString("Vocation");
 	msg.addString(player->getVocation()->getVocName());
-	msg.addString("Outfit");
 
-	const Outfit* outfit = Outfits::getInstance().getOutfitByLookType(
-		player->getSex(),
-		player->getDefaultOutfit().lookType
-	);
-	if (outfit) {
+	// Loyalty title
+	if (player->getLoyaltyTitle().length() != 0) {
+		playerDescriptionSize++;
+		msg.addString("Loyalty Title");
+		msg.addString(player->getLoyaltyTitle());
+	}
+
+	// Outfit description
+	playerDescriptionSize++;
+	msg.addString("Outfit");
+	if (const Outfit* outfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), player->getDefaultOutfit().lookType)) {
 		msg.addString(outfit->name);
 	} else {
 		msg.addString("unknown");
 	}
+
 	msg.setBufferPosition(startInventory);
 	msg.addByte(inventoryItems);
+
+	msg.setBufferPosition(playerDescriptionPosition);
+	msg.addByte(playerDescriptionSize);
+
 	writeToOutputBuffer(msg);
 }
 
@@ -3563,9 +3582,17 @@ void ProtocolGame::sendCyclopediaCharacterBadges() {
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_BADGES);
-	msg.addByte(0x00);
+	msg.addByte(0x00); // 0x00 Here means 'no error'
+
+	msg.addByte(0x01); // Show info or not
+	// if not then return
+	msg.addByte(0x01); // Is online
+	msg.addByte(player->isPremium() ? 0x01 : 0x00);
+	msg.addString(player->getLoyaltyTitle());
+
 	// enable badges
 	msg.addByte(0x00);
+
 	writeToOutputBuffer(msg);
 }
 
@@ -6709,27 +6736,30 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 
 	if (oldProtocol) {
 		for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i) {
-			msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
-			msg.add<uint16_t>(player->getBaseSkill(i));
-			msg.addByte(std::min<uint8_t>(100, static_cast<uint8_t>(player->getSkillPercent(i))));
+			skills_t skill = static_cast<skills_t>(i);
+			msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
+			msg.add<uint16_t>(player->getBaseSkill(skill));
+			msg.addByte(std::min<uint8_t>(100, static_cast<uint8_t>(player->getSkillPercent(skill))));
 		}
 	} else {
 		msg.add<uint16_t>(player->getMagicLevel());
 		msg.add<uint16_t>(player->getBaseMagicLevel());
-		msg.add<uint16_t>(player->getBaseMagicLevel()); // Loyalty Bonus
+		msg.add<uint16_t>(player->getLoyaltyMagicLevel());
 		msg.add<uint16_t>(player->getMagicLevelPercent() * 100);
 
 		for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i) {
-			msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
-			msg.add<uint16_t>(player->getBaseSkill(i));
-			msg.add<uint16_t>(player->getBaseSkill(i)); // Loyalty Bonus
-			msg.add<uint16_t>(player->getSkillPercent(i) * 100);
+			skills_t skill = static_cast<skills_t>(i);
+			msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
+			msg.add<uint16_t>(player->getBaseSkill(skill));
+			msg.add<uint16_t>(player->getLoyaltySkill(skill));
+			msg.add<uint16_t>(player->getSkillPercent(skill) * 100);
 		}
 	}
 
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i, true), std::numeric_limits<uint16_t>::max()));
-		msg.add<uint16_t>(player->getBaseSkill(i));
+		skills_t skill = static_cast<skills_t>(i);
+		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill, true), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint16_t>(player->getBaseSkill(skill));
 	}
 
 	if (!oldProtocol) {

@@ -5817,7 +5817,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 }
 
 void Game::handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker) {
-	if (damage.primary.value != 0 && monster->isOnHazardSystem()) {
+	if (damage.primary.value != 0 && monster->getHazard()) {
 		if (isPlayerAttacker) {
 			player->parseAttackDealtHazardSystem(damage, monster);
 		} else {
@@ -9219,4 +9219,18 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 	if (returnValue != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(returnValue);
 	}
+}
+
+bool Game::createHazardArea(const Position &positionFrom, const Position &positionTo) {
+	for (int32_t x = positionFrom.x; x <= positionTo.x; ++x) {
+		for (int32_t y = positionFrom.y; y <= positionTo.y; ++y) {
+			for (int32_t z = positionFrom.z; z <= positionTo.z; ++z) {
+				Tile* tile = map.getTile(Position(x, y, z));
+				if (tile) {
+					tile->setHazard(true);
+				}
+			}
+		}
+	}
+	return true;
 }

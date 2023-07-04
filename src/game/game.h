@@ -616,6 +616,16 @@ class Game {
 		void removePlayerUniqueLogin(Player* player);
 		void playerCheckActivity(const std::string &playerName, int interval);
 
+		/**
+		 * @brief Registers a hazard area.
+		 * @details The function registers a hazard area to be used by the hazard system.
+		 *
+		 * @param positionFrom The top-left position of the hazard area at its lowest floor.
+		 * @param positionTo The bottom-right position of the hazard area at its highest floor.
+		 * @return bool
+		 */
+		bool createHazardArea(const Position &positionFrom, const Position &positionTo);
+
 	private:
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;
 		std::set<uint32_t> fiendishMonsters;

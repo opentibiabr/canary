@@ -483,3 +483,14 @@ function Player.getFinalLowLevelBonus(self)
 	end
 	return self:getGrindingXpBoost()
 end
+
+function Player.updateHazard(self)
+	local area = self:getPosition():getHazardArea()
+	if not area then
+		self:setHazardSystemPoints(0)
+		return true
+	end
+
+	area:setAsCurrent(self)
+	return true
+end

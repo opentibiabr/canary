@@ -683,3 +683,12 @@ int GameFunctions::luaGameGetBoostedBoss(lua_State* L) {
 	pushString(L, g_ioBosstiary().getBoostedBossName());
 	return 1;
 }
+
+int GameFunctions::luaGameCreateHazardArea(lua_State* L) {
+	// Game.createHazardArea(positionFrom, positionTo)
+	const Position &positionFrom = getPosition(L, 1);
+	const Position &positionTo = getPosition(L, 2);
+
+	pushBoolean(L, g_game().createHazardArea(positionFrom, positionTo));
+	return 1;
+}

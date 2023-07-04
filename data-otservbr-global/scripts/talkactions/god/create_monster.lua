@@ -26,6 +26,7 @@ function createMonster.onSay(player, words, param)
 	local position = player:getPosition()
 	local monster = Game.createMonster(monsterName, position)
 	if monster then
+		HazardMonster.onSpawn(monster, position)
 		if not monster:isForgeable() then
 			player:sendCancelMessage("Only allowed monsters can be fiendish or influenced.")
 			return false

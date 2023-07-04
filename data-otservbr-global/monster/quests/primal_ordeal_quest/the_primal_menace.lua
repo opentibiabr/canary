@@ -30,7 +30,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -49,7 +49,7 @@ monster.light = {
 	color = 0
 }
 
-monster.summon = { 
+monster.summon = {
 	maxSummons = 2,
 	summons = {
 		{name = "Headpecker", chance = 20, interval = 2000},

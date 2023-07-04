@@ -13,7 +13,6 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.raceId = 2271
 monster.Bestiary = {
 	class = "Giant",
 	race = BESTY_RACE_GIANT,

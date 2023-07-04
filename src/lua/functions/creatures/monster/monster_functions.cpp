@@ -514,11 +514,68 @@ int MonsterFunctions::luaMonsterGetName(lua_State* L) {
 	return 1;
 }
 
-int MonsterFunctions::luaMonsterIsOnHazardSystem(lua_State* L) {
-	// monster:isOnHazardSystem()
-	const Monster* monster = getUserdata<const Monster>(L, 1);
+int MonsterFunctions::luaMonsterHazard(lua_State* L) {
+	// get: monster:hazard() ; set: monster:hazard(hazard)
+	Monster* monster = getUserdata<Monster>(L, 1);
+	bool hazard = getBoolean(L, 2, false);
 	if (monster) {
-		pushBoolean(L, monster->isOnHazardSystem());
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monster->getHazard());
+		} else {
+			monster->setHazard(hazard);
+			pushBoolean(L, monster->getHazard());
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterHazardCrit(lua_State* L) {
+	// get: monster:hazardCrit() ; set: monster:hazardCrit(hazardCrit)
+	Monster* monster = getUserdata<Monster>(L, 1);
+	bool hazardCrit = getBoolean(L, 2, false);
+	if (monster) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monster->getHazardSystemCrit());
+		} else {
+			monster->setHazardSystemCrit(hazardCrit);
+			pushBoolean(L, monster->getHazardSystemCrit());
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterHazardDodge(lua_State* L) {
+	// get: monster:hazardDodge() ; set: monster:hazardDodge(hazardDodge)
+	Monster* monster = getUserdata<Monster>(L, 1);
+	bool hazardDodge = getBoolean(L, 2, false);
+	if (monster) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monster->getHazardSystemDodge());
+		} else {
+			monster->setHazardSystemDodge(hazardDodge);
+			pushBoolean(L, monster->getHazardSystemDodge());
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterHazardDamageBoost(lua_State* L) {
+	// get: monster:hazardDamageBoost() ; set: monster:hazardDamageBoost(hazardDamageBoost)
+	Monster* monster = getUserdata<Monster>(L, 1);
+	bool hazardDamageBoost = getBoolean(L, 2, false);
+	if (monster) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, monster->getHazardSystemDamageBoost());
+		} else {
+			monster->setHazardSystemDamageBoost(hazardDamageBoost);
+			pushBoolean(L, monster->getHazardSystemCrit());
+		}
 	} else {
 		lua_pushnil(L);
 	}

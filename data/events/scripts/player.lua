@@ -807,6 +807,7 @@ end
 function Player:onChangeHazard(isHazard)
 	if not isHazard then
 		self:setHazardSystemPoints(0)
+		player:getParty():updateHazard()
 		return true
 	end
 

@@ -491,6 +491,10 @@ function Player.updateHazard(self)
 		return true
 	end
 
-	area:setAsCurrent(self)
+	if self:getParty() then
+		self:getParty():refreshHazard()
+	else
+		area:refresh(self)
+	end
 	return true
 end

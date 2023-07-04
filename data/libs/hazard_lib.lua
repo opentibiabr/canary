@@ -28,18 +28,7 @@ function Hazard.createAreas()
 end
 
 function Hazard.getPlayerCurrentLevel(self, player)
-	local points = self.maxLevel
-	local party = player:getParty()
-	local members = party and party:getMembers() or { player }
-	if party then table.insert(members, party:getLeader()) end
-
-	for _, member in ipairs(members) do
-		local memberPoints = member:getStorageValue(self.storageCurrent) < 0 and 0 or member:getStorageValue(self.storageCurrent)
-		if memberPoints < points then
-			points = memberPoints
-		end
-	end
-	return points
+	return player:getStorageValue(self.storageCurrent) < 0 and 0 or player:getStorageValue(self.storageCurrent)
 end
 
 function Hazard.setPlayerCurrentLevel(self, player, level)
@@ -48,7 +37,7 @@ function Hazard.setPlayerCurrentLevel(self, player, level)
 		return false
 	end
 	player:setStorageValue(self.storageCurrent, level)
-	self:setAsCurrent(player)
+	player:updateHazard()
 	return true
 end
 
@@ -71,9 +60,11 @@ function Hazard.setPlayerMaxLevel(self, player, level)
 	player:setStorageValue(self.storageMax, level)
 end
 
-function Hazard.setAsCurrent(self, player)
+function Hazard.refresh(self, player)
 	if player:getPosition():isInArea(self) then
 		player:setHazardSystemPoints(self:getPlayerCurrentLevel(player))
+	else
+		player:setHazardSystemPoints(0)
 	end
 end
 

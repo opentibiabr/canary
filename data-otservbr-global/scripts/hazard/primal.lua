@@ -80,7 +80,7 @@ function primalKill.onKill(_player, creature)
 	for key, value in pairs(monster:getDamageMap()) do
 		local killer = Player(key)
 		if killer then
-			local killerPoints = hazard:getPlayerCurrentLevel(killer)
+			local killerPoints = killer:getHazardSystemPoints()
 			if points > killerPoints or points == -1 then
 				player = killer
 				points = killerPoints

@@ -173,14 +173,6 @@ class ItemProperties {
 			return attributePtr;
 		}
 
-		const std::underlying_type_t<ItemAttribute_t> &getAttributeBits() const {
-			static std::underlying_type_t<ItemAttribute_t> emptyType = {};
-			if (!attributePtr) {
-				return emptyType;
-			}
-
-			return attributePtr->getAttributeBits();
-		}
 		const std::vector<Attributes> &getAttributeVector() const {
 			static std::vector<Attributes> emptyVector = {};
 			if (!attributePtr) {

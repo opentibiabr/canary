@@ -6599,12 +6599,18 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 		if (otherPlayer) {
 			icon = creature->getIcon();
 			sendIcon = icon != CREATUREICON_NONE;
-			msg.addByte(sendIcon); // Icons
+			bool hasHazard = (otherPlayer->getHazardSystemReference() > 0 && otherPlayer->getHazardSystemPoints() > 0);
+
+			if (!hasHazard) {
+				msg.addByte(sendIcon); // Icons
+			}
+
 			if (sendIcon) {
 				msg.addByte(icon);
 				msg.addByte(1);
 				msg.add<uint16_t>(0);
-			} else if (useHazard && otherPlayer->getHazardSystemReference() > 0 && otherPlayer->getHazardSystemPoints() > 0) {
+			} else if (useHazard && hasHazard) {
+				msg.addByte(0x01); // Has icon
 				msg.addByte(22); // Hazard icon
 				msg.addByte(0);
 				msg.add<uint16_t>(otherPlayer->getHazardSystemPoints());

@@ -180,13 +180,6 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		return;
 	}
 
-	// OTCv8 version detection
-	uint16_t otclientV8 = 0;
-	uint16_t otcV8StringLength = msg.get<uint16_t>();
-	if (otcV8StringLength == 5 && msg.getString(5) == "OTCv8") {
-		otclientV8 = msg.get<uint16_t>(); // 253, 260, 261, ...
-	}
-
 	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
 	g_dispatcher().addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, accountIdentifier, password)));
 }

@@ -139,9 +139,6 @@ bool ConfigManager::load() {
 	boolean[WARN_UNSAFE_SCRIPTS] = getGlobalBoolean(L, "warnUnsafeScripts", true);
 	boolean[CONVERT_UNSAFE_SCRIPTS] = getGlobalBoolean(L, "convertUnsafeScripts", true);
 	boolean[CLASSIC_ATTACK_SPEED] = getGlobalBoolean(L, "classicAttackSpeed", false);
-	boolean[TOGGLE_ATTACK_SPEED_ONFIST] = getGlobalBoolean(L, "toggleAttackSpeedOnFist", false);
-	integer[MULTIPLIER_ATTACKONFIST] = getGlobalNumber(L, "multiplierSpeedOnFist", 5);
-	integer[MAX_SPEED_ATTACKONFIST] = getGlobalNumber(L, "maxSpeedOnFist", 500);
 	boolean[SCRIPTS_CONSOLE_LOGS] = getGlobalBoolean(L, "showScriptsLogInConsole", true);
 	boolean[STASH_MOVING] = getGlobalBoolean(L, "stashMoving", false);
 	boolean[ALLOW_BLOCK_SPAWN] = getGlobalBoolean(L, "allowBlockSpawn", true);

@@ -2688,7 +2688,7 @@ class Player final : public Creature, public Cylinder {
 			if (onFistAttackSpeed) {
 				uint32_t baseAttackSpeed = vocation->getAttackSpeed();
 				uint32_t skillLevel = getSkillLevel(SKILL_FIST);
-				int32_t attackSpeed = baseAttackSpeed - (skillLevel * g_configManager().getNumber(MULTIPLIER_ATTACKONFIST));
+				uint32_t attackSpeed = baseAttackSpeed - (skillLevel * g_configManager().getNumber(MULTIPLIER_ATTACKONFIST));
 
 				if (attackSpeed < MAX_ATTACK_SPEED) {
 					attackSpeed = MAX_ATTACK_SPEED;

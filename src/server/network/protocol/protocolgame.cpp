@@ -543,11 +543,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	std::ostringstream ss;
 	std::string sessionKey = msg.getString();
 	size_t pos = sessionKey.find('\n');
-	if (pos == std::string::npos) {
-		if (authType == "session") {
-			disconnectClient("Login request is missing a session key.");
-			return;
-		}
+	if (pos == std::string::npos && authType != "session") {
 		ss << "You must enter your " << (oldProtocol ? "username" : "email") << ".";
 		disconnectClient(ss.str());
 		return;
@@ -559,15 +555,20 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		msg.getString();
 	}
 
-	std::string accountIdentifier = sessionKey.substr(0, pos);
-	if (accountIdentifier.empty()) {
-		ss.str(std::string());
-		ss << "You must enter your " << (oldProtocol ? "username" : "email") << ".";
-		disconnectClient(ss.str());
-		return;
+	std::string accountIdentifier = "";
+
+	if (authType != "session") {
+		accountIdentifier = sessionKey.substr(0, pos);
+		if (accountIdentifier.empty()) {
+			ss.str(std::string());
+			ss << "You must enter your " << (oldProtocol ? "username" : "email") << ".";
+			disconnectClient(ss.str());
+			return;
+		}
+		pos += 1;
 	}
 
-	std::string sessionOrPassword = sessionKey.substr(pos + 1);
+	std::string sessionOrPassword = sessionKey.substr(pos);
 	std::string characterName = msg.getString();
 
 	const Player* foundPlayer = g_game().getPlayerUniqueLogin(characterName);

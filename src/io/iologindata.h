@@ -19,7 +19,7 @@ using ItemBlockList = std::list<std::pair<int32_t, Item*>>;
 class IOLoginData {
 	public:
 		static bool authenticateAccountPassword(const std::string &accountIdentifier, const std::string &password, account::Account* account);
-		static bool authenticateAccountSession(const std::string &accountIdentifier, const std::string &sessionId, account::Account* account);
+		static bool authenticateAccountSession(const std::string &sessionId, account::Account* account);
 		static bool gameWorldAuthentication(const std::string &accountIdentifier, const std::string &sessionOrPassword, std::string &characterName, uint32_t* accountId, bool oldProcotol);
 		static account::AccountType getAccountType(uint32_t accountId);
 		static void setAccountType(uint32_t accountId, account::AccountType accountType);

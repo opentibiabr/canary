@@ -85,8 +85,14 @@ function primalKill.onKill(_player, creature)
 				player = killer
 				points = killerPoints
 			end
-			if monster:getName():lower() == "the primal menace" then
-			hazard:levelUp(killer)
+		end
+	end
+	for key, value in pairs(monster:getDamageMap()) do
+		local killer = Player(key)
+		if killer then
+			local killerPoints = killer:getHazardSystemPoints()
+			if monster:getName():lower() == "the primal menace" and killerPoints == points then
+				hazard:levelUp(killer)
 			end
 		end
 	end

@@ -29,11 +29,11 @@ function Container.createLootItem(self, item, charm)
 			itemCount = 1
 		end
 	end
-	
+
 	while (itemCount > 0) do
 		local n = math.min(itemCount, 100)
 		itemCount = itemCount - n
-		
+
 		local tmpItem = self:addItem(item.itemId, n)
 		if not tmpItem then
 			return false

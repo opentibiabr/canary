@@ -468,6 +468,13 @@ class Item : virtual public Thing, public ItemProperties {
 			return items[id].article;
 		}
 
+		uint8_t getStackSize() const {
+			if (isStackable()) {
+				return items[id].stackSize;
+			}
+			return 1;
+		}
+
 		// get the number of items
 		uint16_t getItemCount() const {
 			return count;

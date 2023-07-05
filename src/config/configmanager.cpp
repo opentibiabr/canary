@@ -311,6 +311,7 @@ bool ConfigManager::load() {
 	integer[FAMILIAR_TIME] = getGlobalNumber(L, "familiarTime", 30);
 
 	boolean[TOGGLE_GOLD_POUCH_ALLOW_ANYTHING] = getGlobalBoolean(L, "toggleGoldPouchAllowAnything", false);
+	boolean[TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY] = getGlobalBoolean(L, "toggleGoldPouchQuickLootOnly", false);
 	boolean[TOGGLE_SERVER_IS_RETRO] = getGlobalBoolean(L, "toggleServerIsRetroPVP", false);
 	boolean[TOGGLE_TRAVELS_FREE] = getGlobalBoolean(L, "toggleTravelsFree", false);
 

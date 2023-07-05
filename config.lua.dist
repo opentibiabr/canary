@@ -160,6 +160,7 @@ onlyPremiumAccount = false
 -- NOTE: depotChest, the non-stackable items will be moved to the selected depot chest(I - XVIII).
 -- NOTE: autoBank = true, the dropped coins from monsters will be automatically deposited to your bank account.
 -- NOTE: toggleGoldPouchAllowAnything will allow players to move items or gold to gold pouch
+-- NOTE: toggleGoldPouchQuickLootOnly will ONLY allow quickloot to move items to gold pouch
 -- NOTE: toggleServerIsRetroPVP will make this server as retro, setting PARTY_PROTECTION and ADVANCED_SECURE_MODE to 0
 -- NOTE: toggleTravelsFree will make all travels from boat free
 weatherRain = false
@@ -170,6 +171,7 @@ depotChest = 4
 autoLoot = false
 autoBank = false
 toggleGoldPouchAllowAnything = false
+toggleGoldPouchQuickLootOnly = false
 toggleServerIsRetroPVP = false
 toggleTravelsFree = false
 

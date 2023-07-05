@@ -1,6 +1,6 @@
 local hazard = Hazard.new({
 	name = "Gnomprona Gardens",
-	from = Position(33498, 32739, 13),
+	from = Position(33502, 32740,13),
 	to = Position(33796, 32996, 15),
 	maxLevel = 12,
 	storageMax = Storage.Quest.U12_90.PrimalOrdeal.Hazard.Max,
@@ -70,7 +70,6 @@ function primalKill.onKill(_player, creature)
 
 	local monster = creature:getMonster()
 	if not creature or not monster or not monster:hazard() or not monster:getPosition():isInArea(hazard) then
-		Spdlog.info("PrimalHazardKill: Not a hazard monster")
 		return true
 	end
 

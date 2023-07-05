@@ -2694,7 +2694,7 @@ class Player final : public Creature, public Cylinder {
 					attackSpeed = MAX_ATTACK_SPEED;
 				}
 
-				return attackSpeed;
+				return static_cast<uint32_t>(attackSpeed);
 			} else {
 				return vocation->getAttackSpeed();
 			}

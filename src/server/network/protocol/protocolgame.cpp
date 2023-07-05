@@ -3651,9 +3651,13 @@ void ProtocolGame::sendBasicData() {
 	msg.add<uint16_t>(validSpells.size());
 	// Send each spell valid ids
 	for (auto spell : validSpells) {
+		if (!spell) {
+			continue;
+		}
+
 		// Only send valid spells to old client
-		if (oldProtocol && spell->getId() <= 255) {
-			msg.addByte((uint8_t)spell->getId());
+		if (oldProtocol) {
+			msg.addByte(spell->getId());
 			continue;
 		}
 

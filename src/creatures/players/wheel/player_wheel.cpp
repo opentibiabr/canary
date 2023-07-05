@@ -697,6 +697,10 @@ int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const 
 }
 
 void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const {
+	if (m_player.client->oldProtocol) {
+		return;
+	}
+
 	msg.addByte(0x5F);
 	bool canUse = canOpenWheel();
 	msg.add<uint32_t>(ownerId); // Player ID
@@ -768,6 +772,10 @@ void PlayerWheel::saveSlotPointsHandleRetryErrors(std::vector<SlotInfo> &retryTa
 }
 
 void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
+	if (m_player.client->oldProtocol) {
+		return;
+	}
+
 	auto startSaveTime = OTSYS_TIME();
 	if (!canOpenWheel()) {
 		return;
@@ -1017,6 +1025,10 @@ void PlayerWheel::resetPlayerBonusData() {
 }
 
 void PlayerWheel::initializePlayerData() {
+	if (m_player.client->oldProtocol) {
+		return;
+	}
+
 	resetPlayerBonusData();
 	loadPlayerBonusData();
 }

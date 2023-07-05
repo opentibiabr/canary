@@ -43,7 +43,8 @@ class Weapons final : public Scripts {
 		const Weapon* getWeapon(const Item* item) const;
 
 		static int32_t getMaxMeleeDamage(int32_t attackSkill, int32_t attackValue);
-		static int32_t getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t attackValue, float attackFactor, bool isMelee);
+		static int32_t getMaxWeaponDamage(const Player* player, int32_t attackSkill, int32_t attackValue, float attackFactor, int32_t attackValueBase, bool isMelee);
+		static int32_t calculateMeleeWeaponDamage(const int8_t multiplication_factor, const int8_t division_factor, const int32_t attack_value, const int32_t attack_skill, const int32_t attack_value_base, const bool is_balanced_mode);
 
 		bool registerLuaEvent(Weapon* event);
 		void clear();

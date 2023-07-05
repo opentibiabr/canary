@@ -749,6 +749,11 @@ class Player final : public Creature, public Cylinder {
 		void setFightMode(FightMode_t mode) {
 			fightMode = mode;
 		}
+
+		uint8_t getFightMode() const {
+			return fightMode;
+		}
+
 		void setSecureMode(bool mode) {
 			secureMode = mode;
 		}
@@ -828,6 +833,7 @@ class Player final : public Creature, public Cylinder {
 		int32_t getArmor() const override;
 		int32_t getDefense() const override;
 		float getAttackFactor() const override;
+		float getDistFactor() const override;
 		float getDefenseFactor() const override;
 
 		void addInFightTicks(bool pzlock = false);
@@ -2371,6 +2377,8 @@ class Player final : public Creature, public Cylinder {
 		void incrementeHazardSystemReference();
 		void decrementeHazardSystemReference();
 		/*******************************************************************************/
+
+		int32_t getBaseAttack(uint32_t level) const;
 
 	private:
 		static uint32_t playerFirstID;

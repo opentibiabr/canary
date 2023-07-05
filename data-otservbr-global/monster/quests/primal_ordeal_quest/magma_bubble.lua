@@ -83,7 +83,7 @@ monster.loot = {
 	{ name = "arboreal tome", chance = 250},
 	{ name = "arboreal crown", chance = 250},
 	{ name = "spiritthorn armor", id = 39147, chance = 250 },
-	{ name = "spiritthorm helmet", id = 39148, chance = 250 },
+	{ name = "spiritthorn helmet", id = 39148, chance = 250 },
 	{ name = "alicorn headguard", chance = 250 },
 	{ name = "alicorn quiver", chance = 250 },
 	{ name = "arcanomancer regalia", chance = 250 },

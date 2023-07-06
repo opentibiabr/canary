@@ -13,7 +13,6 @@
 // Definitions should be global.
 #include "utils/definitions.h"
 #include "utils/simd.hpp"
-#include "utils/BigInt.hpp"
 
 #include <bitset>
 #include <charconv>
@@ -47,6 +46,7 @@
 #endif
 
 #include <asio.hpp>
+#include <absl/numeric/int128.h>
 #include <curl/curl.h>
 #include <fmt/chrono.h>
 #include <gmp.h>

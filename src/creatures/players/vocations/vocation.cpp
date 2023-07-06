@@ -185,12 +185,13 @@ uint16_t Vocations::getPromotedVocation(uint16_t vocationId) const {
 
 uint32_t Vocation::skillBase[SKILL_LAST + 1] = { 50, 50, 50, 50, 30, 100, 20 };
 
-BigInt Vocation::getTotalSkillTries(uint8_t skill, uint16_t level) {
+absl::uint128 Vocation::getTotalSkillTries(uint8_t skill, uint16_t level) {
 	if (skill > SKILL_LAST) {
 		return 0;
 	}
 
-	return skillBase[skill] * ((pow(double(skillMultipliers[skill]), double(level - 11)) - 1) / (skillMultipliers[skill] - 1));
+	auto finalSkill = skillBase[skill] * ((pow(double(skillMultipliers[skill]), double(level - 11)) - 1) / (skillMultipliers[skill] - 1));
+	return static_cast<absl::uint128>(finalSkill);
 }
 
 uint64_t Vocation::getReqSkillTries(uint8_t skill, uint16_t level) {
@@ -208,8 +209,8 @@ uint64_t Vocation::getReqSkillTries(uint8_t skill, uint16_t level) {
 	return tries;
 }
 
-BigInt Vocation::getTotalMana(uint32_t magLevel) {
-	BigInt totalMana = 0;
+absl::uint128 Vocation::getTotalMana(uint32_t magLevel) {
+	absl::uint128 totalMana = 0;
 	for (uint32_t i = 1; i <= magLevel; ++i) {
 		totalMana += getReqMana(i);
 	}

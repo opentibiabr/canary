@@ -13,6 +13,7 @@
     "zlib",
     "mio",
     "luajit",
+    "abseil",
     {
       "name": "libmariadb",
       "features": [ "mariadbclient" ]

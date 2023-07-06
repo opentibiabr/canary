@@ -556,16 +556,16 @@ void Player::setTraining(bool value) {
 
 uint16_t Player::getLoyaltySkill(skills_t skill) const {
 	uint16_t level = getBaseSkill(skill);
-	BigInt currReqTries = vocation->getReqSkillTries(skill, level);
-	BigInt nextReqTries = vocation->getReqSkillTries(skill, level + 1);
+	absl::uint128 currReqTries = vocation->getReqSkillTries(skill, level);
+	absl::uint128 nextReqTries = vocation->getReqSkillTries(skill, level + 1);
 	if (currReqTries >= nextReqTries) {
 		// player has reached max skill
 		return skills[skill].level;
 	}
 
-	BigInt tries = skills[skill].tries;
-	BigInt totalTries = vocation->getTotalSkillTries(skill, skills[skill].level) + tries;
-	BigInt loyaltyTries = (totalTries * getLoyaltyBonus()) / 100;
+	absl::uint128 tries = skills[skill].tries;
+	absl::uint128 totalTries = vocation->getTotalSkillTries(skill, skills[skill].level) + tries;
+	absl::uint128 loyaltyTries = (totalTries * getLoyaltyBonus()) / 100;
 	int i = 0;
 	while ((tries + loyaltyTries) >= nextReqTries) {
 		loyaltyTries -= nextReqTries - tries;
@@ -5075,16 +5075,16 @@ uint32_t Player::getMagicLevel() const {
 
 uint32_t Player::getLoyaltyMagicLevel() const {
 	uint32_t level = getBaseMagicLevel();
-	BigInt currReqMana = vocation->getReqMana(level);
-	BigInt nextReqMana = vocation->getReqMana(level + 1);
+	absl::uint128 currReqMana = vocation->getReqMana(level);
+	absl::uint128 nextReqMana = vocation->getReqMana(level + 1);
 	if (currReqMana >= nextReqMana) {
 		// player has reached max magic level
 		return level;
 	}
 
-	BigInt spent = manaSpent;
-	BigInt totalMana = vocation->getTotalMana(level) + mana;
-	BigInt loyaltyMana = (totalMana * getLoyaltyBonus()) / 100;
+	absl::uint128 spent = manaSpent;
+	absl::uint128 totalMana = vocation->getTotalMana(level) + mana;
+	absl::uint128 loyaltyMana = (totalMana * getLoyaltyBonus()) / 100;
 	while ((spent + loyaltyMana) >= nextReqMana) {
 		loyaltyMana -= nextReqMana - mana;
 		level++;

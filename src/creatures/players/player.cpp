@@ -566,7 +566,6 @@ uint16_t Player::getLoyaltySkill(skills_t skill) const {
 	absl::uint128 tries = skills[skill].tries;
 	absl::uint128 totalTries = vocation->getTotalSkillTries(skill, skills[skill].level) + tries;
 	absl::uint128 loyaltyTries = (totalTries * getLoyaltyBonus()) / 100;
-	int i = 0;
 	while ((tries + loyaltyTries) >= nextReqTries) {
 		loyaltyTries -= nextReqTries - tries;
 		level++;

@@ -7267,7 +7267,7 @@ void Player::setHazardSystemPoints(int32_t count) {
 
 		Player* player = spectator->getPlayer();
 		if (client && player && !client->oldProtocol) {
-			player->sendCreatureIcon(getPlayer());
+			player->sendCreatureIcon(this);
 		}
 	}
 	if (client && !client->oldProtocol) {
@@ -7395,7 +7395,7 @@ void Player::reloadHazardSystemIcon() {
 
 				Player* player = spectator->getPlayer();
 				if (client && player && !client->oldProtocol) {
-					player->sendCreatureIcon(getPlayer());
+					player->sendCreatureIcon(this);
 				}
 			}
 		}

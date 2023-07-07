@@ -545,9 +545,8 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	std::string accountIdentifier = "";
 	std::string sessionOrPassword = sessionKey;
 
-	size_t pos = 0;
 	if (authType != "session") {
-		pos = sessionKey.find('\n');
+		size_t pos = sessionKey.find('\n');
 		if (pos == std::string::npos) {
 			ss << "You must enter your " << (oldProtocol ? "username" : "email") << ".";
 			disconnectClient(ss.str());

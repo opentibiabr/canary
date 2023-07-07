@@ -87,7 +87,7 @@ monster.loot = {
 	{name = "summerblade", chance = 500},
 	{name = "turquoise tendril lantern", chance = 300},
 	{name = "purple tendril lantern", chance = 300},
-	{name = "winterblade", chance = 500},
+	{name = "winterblade", chance = 500}
 }
 
 monster.attacks = {

@@ -182,6 +182,8 @@ function playerLogin.onLogin(player)
 
 	-- Attempt to check if we're in a hazard zone
 	player:updateHazard()
+	-- Loyalty system
+	player:initializeLoyaltySystem()
 
 	-- Stamina
 	nextUseStaminaTime[playerId] = 1

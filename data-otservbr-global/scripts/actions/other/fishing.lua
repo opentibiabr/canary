@@ -102,7 +102,6 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		if useWorms and not player:removeItem("worm", 1) then
 			return true
 		end
-		
 
 		if targetId == 13988 then
 			target:transform(targetId + 1)

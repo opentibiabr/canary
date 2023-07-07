@@ -91,3 +91,11 @@ end
 string.trim = function(str)
 	return str:match('^%s*(.*%S)') or ''
 end
+
+-- Function to format a string with a table of arguments
+-- Parameters: str (string) - the string to be formatted, args (table) - the table of arguments to be used
+-- Returns: the formatted string
+-- Example: string.formatNamed("Hello ${name}!", {name = "World"}) -> "Hello World!"
+string.formatNamed = function(str, args)
+	return (str:gsub('($%b{})', function(w) return args[w:sub(3, -2)] or w end))
+end

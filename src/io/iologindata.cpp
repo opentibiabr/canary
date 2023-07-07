@@ -88,9 +88,9 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string &name) {
 
 	std::ostringstream query;
 	query << "SELECT `id`, `account_id`, `group_id`, `deletion`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
-	if (!g_configManager().getBoolean(FREE_PREMIUM)) {
-		query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
-	}
+	query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
+	query << ", (SELECT `premdays_purchased` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days_purchased`";
+	query << ", (SELECT `creation` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `creation_timestamp`";
 	query << " FROM `players` WHERE `name` = " << db.escapeString(name);
 	DBResult_ptr result = db.storeQuery(query.str());
 	if (!result) {
@@ -115,6 +115,34 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string &name) {
 	} else {
 		player->premiumDays = std::numeric_limits<uint16_t>::max();
 	}
+
+	/*
+	  Loyalty system:
+	  - If creation timestamp is 0, that means it's the first time the player is trying to login on this account.
+	  - Since it's the first login, we must update the database manually.
+	  - This should be handled by the account manager, but not all of then do it so we handle it by ourself.
+	*/
+	time_t creation = result->getNumber<time_t>("creation_timestamp");
+	int32_t premiumDays = result->getNumber<int32_t>("premium_days");
+	int32_t premiumDaysPurchased = result->getNumber<int32_t>("premium_days_purchased");
+	if (creation == 0) {
+		query.str(std::string());
+		query << "UPDATE `accounts` SET `creation` = " << static_cast<uint32_t>(time(nullptr)) << " WHERE `id` = " << player->accountNumber;
+		db.storeQuery(query.str());
+	}
+
+	// If the player has more premium days than he purchased, it means data existed before the loyalty system was implemented.
+	// Update premdays_purchased to the minimum acceptable value.
+	if (premiumDays > premiumDaysPurchased) {
+		query.str(std::string());
+		query << "UPDATE `accounts` SET `premdays_purchased` = " << premiumDays << " WHERE `id` = " << player->accountNumber;
+		db.storeQuery(query.str());
+	}
+
+	player->loyaltyPoints = static_cast<uint32_t>(std::ceil((static_cast<double>(time(nullptr) - creation)) / 86400)) * g_configManager().getNumber(LOYALTY_POINTS_PER_CREATION_DAY)
+		+ (premiumDaysPurchased - premiumDays) * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT)
+		+ premiumDaysPurchased * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED);
+
 	return true;
 }
 
@@ -1359,7 +1387,9 @@ void IOLoginData::removeVIPEntry(uint32_t accountId, uint32_t guid) {
 
 void IOLoginData::addPremiumDays(uint32_t accountId, int32_t addDays) {
 	std::ostringstream query;
-	query << "UPDATE `accounts` SET `premdays` = `premdays` + " << addDays
+	query << "UPDATE `accounts` SET"
+		  << "`premdays` = `premdays` + " << addDays
+		  << ", `premdays_purchased` = `premdays_purchased` + " << addDays
 		  << ", `lastday` = " << getTimeNow()
 		  << " WHERE `id` = " << accountId;
 

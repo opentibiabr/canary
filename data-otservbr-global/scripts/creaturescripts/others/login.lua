@@ -180,6 +180,9 @@ function playerLogin.onLogin(player)
 		end
 	end
 
+	-- Loyalty system
+	player:initializeLoyaltySystem()
+
 	-- Stamina
 	nextUseStaminaTime[playerId] = 1
 

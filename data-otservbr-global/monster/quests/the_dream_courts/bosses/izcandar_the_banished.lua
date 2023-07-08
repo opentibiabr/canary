@@ -81,7 +81,13 @@ monster.loot = {
 	{name = "piggy bank", chance = 12800},
 	{name = "platinum coin", chance = 12000, maxCount = 10},
 	{name = "supreme health potion", chance = 12000, maxCount = 10},
-	{name = "ultimate mana potion", chance = 12000, maxCount = 20}
+	{name = "ultimate mana potion", chance = 12000, maxCount = 20},
+	{name = "ice shield", chance = 600},
+	{name = "soul stone", chance = 300},
+	{name = "summerblade", chance = 500},
+	{name = "turquoise tendril lantern", chance = 300},
+	{name = "purple tendril lantern", chance = 300},
+	{name = "winterblade", chance = 500}
 }
 
 monster.attacks = {

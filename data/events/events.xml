@@ -13,14 +13,15 @@
 	<event class="Monster" method="onSpawn" enabled="1" />
 
 	<!-- Party Methods -->
-	<event class="Party" method="onDisband" enabled="0" />
-	<event class="Party" method="onJoin" enabled="0" />
-	<event class="Party" method="onLeave" enabled="0" />
+	<event class="Party" method="onDisband" enabled="1" />
+	<event class="Party" method="onJoin" enabled="1" />
+	<event class="Party" method="onLeave" enabled="1" />
 	<event class="Party" method="onShareExperience" enabled="1" />
 
 	<!-- Player Methods -->
 	<event class="Player" method="onBrowseField" enabled="0" />
 	<event class="Player" method="onChangeZone" enabled="1" />
+	<event class="Player" method="onChangeHazard" enabled="1" />
 	<event class="Player" method="onGainExperience" enabled="1" />
 	<event class="Player" method="onGainSkillTries" enabled="1" />
 	<event class="Player" method="onItemMoved" enabled="1" />

@@ -46,6 +46,7 @@
 #endif
 
 #include <asio.hpp>
+#include <absl/numeric/int128.h>
 #include <curl/curl.h>
 #include <fmt/chrono.h>
 #include <gmp.h>

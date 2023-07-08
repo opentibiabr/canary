@@ -129,6 +129,7 @@ boostedBossKillBonus = 3
 -- Hazard system
 toogleHazardSystem = true
 hazardCriticalInterval = 2000
+hazardCriticalChance = 750
 hazardCriticalMultiplier = 25
 hazardDamageMultiplier = 200
 hazardDodgeMultiplier = 85
@@ -139,6 +140,13 @@ hazardExpBonusMultiplier = 2
 hazardLootBonusMultiplier = 2
 hazardPodsDamage = 5
 hazardSpawnPlunderMultiplier = 25
+
+-- Loyalty system
+loyaltyEnabled = true
+loyaltyPointsPerCreationDay = 1
+loyaltyPointsPerPremiumDaySpent = 0
+loyaltyPointsPerPremiumDayPurchased = 0
+loyaltyBonusPercentageMultiplier = 1.0
 
 -- Wheel of destiny system
 -- NOTE: set wheelSystemEnabled = false to disable the wheel of destiny
@@ -278,6 +286,10 @@ mysqlDatabase = "otservbr-global"
 mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"
+
+-- Session Auth
+authType = "password" -- 'session' | 'password'
+resetSessionsOnStartup = false
 
 -- Misc.
 -- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate

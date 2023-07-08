@@ -451,6 +451,9 @@ class ProtocolGame final : public Protocol {
 		// otclient
 		void parseExtendedOpcode(NetworkMessage &msg);
 
+		// OTCv8
+		void sendFeatures();
+
 		void parseInventoryImbuements(NetworkMessage &msg);
 		void sendInventoryImbuements(const std::map<Slots_t, Item*> items);
 
@@ -485,6 +488,8 @@ class ProtocolGame final : public Protocol {
 
 		bool oldProtocol = false;
 
+		uint16_t otclientV8 = 0;
+
 		void sendInventory();
 		void sendOpenStash();
 		void parseStashWithdraw(NetworkMessage &msg);
@@ -496,7 +501,7 @@ class ProtocolGame final : public Protocol {
 		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
 
 		// Hazard system
-		void reloadHazardSystemIcon(uint16_t reference);
+		void reloadHazardSystemIcon();
 
 		uint8_t m_playerDeathTime = 0;
 

@@ -260,24 +260,32 @@ class Monster final : public Creature {
 		}
 
 		// Hazard system
-		bool isOnHazardSystem() const {
-			return mType->info.hazardSystemCritChance != 0 || mType->info.canSpawnPod || mType->info.canDodge || mType->info.canDamageBoost;
+		bool getHazard() const {
+			return hazard;
+		}
+		void setHazard(bool value) {
+			hazard = value;
+		}
+
+		bool getHazardSystemCrit() const {
+			return hazardCrit;
+		}
+		void setHazardSystemCrit(bool value) {
+			hazardCrit = value;
 		}
 
 		bool getHazardSystemDodge() const {
-			return mType->info.canDodge;
+			return hazardDodge;
 		}
-
-		bool getHazardSystemSpawnPod() const {
-			return mType->info.canSpawnPod;
+		void setHazardSystemDodge(bool value) {
+			hazardDodge = value;
 		}
 
 		bool getHazardSystemDamageBoost() const {
-			return mType->info.canDamageBoost;
+			return hazardDamageBoost;
 		}
-
-		uint16_t getHazardSystemCritChance() const {
-			return mType->info.hazardSystemCritChance;
+		void setHazardSystemDamageBoost(bool value) {
+			hazardDamageBoost = value;
 		}
 		// Hazard end
 
@@ -378,6 +386,11 @@ class Monster final : public Creature {
 		bool randomStepping = false;
 		bool ignoreFieldDamage = false;
 
+		bool hazard = false;
+		bool hazardCrit = false;
+		bool hazardDodge = false;
+		bool hazardDamageBoost = false;
+
 		void onCreatureEnter(Creature* creature);
 		void onCreatureLeave(Creature* creature);
 		void onCreatureFound(Creature* creature, bool pushFront = false);
@@ -386,7 +399,6 @@ class Monster final : public Creature {
 
 		void addFriend(Creature* creature);
 		void removeFriend(Creature* creature);
-		void handleHazardSystem(Creature &creature) const;
 		void addTarget(Creature* creature, bool pushFront = false);
 		void removeTarget(Creature* creature);
 

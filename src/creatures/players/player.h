@@ -509,6 +509,7 @@ class Player final : public Creature, public Cylinder {
 			return levelPercent;
 		}
 		uint32_t getMagicLevel() const;
+		uint32_t getLoyaltyMagicLevel() const;
 		uint32_t getBaseMagicLevel() const {
 			return magLevel;
 		}
@@ -775,10 +776,11 @@ class Player final : public Creature, public Cylinder {
 		}
 
 		uint16_t getSkillLevel(uint8_t skill) const;
+		uint16_t getLoyaltySkill(skills_t skill) const;
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
 		}
-		double_t getSkillPercent(uint8_t skill) const {
+		double_t getSkillPercent(skills_t skill) const {
 			return skills[skill].percent;
 		}
 
@@ -829,6 +831,7 @@ class Player final : public Creature, public Cylinder {
 		void onAttackedCreatureChangeZone(ZoneType_t zone) override;
 		void onIdleStatus() override;
 		void onPlacedCreature() override;
+		void onChangeHazard(bool isHazard) override;
 
 		LightInfo getCreatureLight() const override;
 
@@ -2148,6 +2151,24 @@ class Player final : public Creature, public Cylinder {
 			return nullptr;
 		}
 
+		uint16_t getLoyaltyPoints() const {
+			return loyaltyPoints;
+		}
+
+		void setLoyaltyBonus(uint16_t bonus) {
+			loyaltyBonusPercent = bonus;
+			sendSkills();
+		}
+		void setLoyaltyTitle(std::string title) {
+			loyaltyTitle = title;
+		}
+		std::string getLoyaltyTitle() const {
+			return loyaltyTitle;
+		}
+		uint16_t getLoyaltyBonus() const {
+			return loyaltyBonusPercent;
+		}
+
 		// Depot search system
 		void requestDepotItems();
 		void requestDepotSearchItem(uint16_t itemId, uint8_t tier);
@@ -2335,7 +2356,7 @@ class Player final : public Creature, public Cylinder {
 		void parseAttackRecvHazardSystem(CombatDamage &damage, const Monster* monster);
 		void parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* monster);
 		// Points increase:
-		void addHazardSystemPoints(int32_t amount);
+		void setHazardSystemPoints(int32_t amount);
 		// Points get:
 		uint16_t getHazardSystemPoints() const {
 			int32_t points = 0;
@@ -2346,13 +2367,7 @@ class Player final : public Creature, public Cylinder {
 			return static_cast<uint16_t>(std::max<int32_t>(0, std::min<int32_t>(0xFFFF, points)));
 		}
 
-		// Reference counter used on client UI.
 		void reloadHazardSystemIcon();
-		uint16_t getHazardSystemReference() const {
-			return hazardSystemReferenceCounter;
-		}
-		void incrementeHazardSystemReference();
-		void decrementeHazardSystemReference();
 		/*******************************************************************************/
 
 		// Player wheel methods interface
@@ -2472,6 +2487,7 @@ class Player final : public Creature, public Cylinder {
 
 		std::string name;
 		std::string guildNick;
+		std::string loyaltyTitle;
 
 		Skill skills[SKILL_LAST + 1];
 		LightInfo itemsLight;
@@ -2545,6 +2561,7 @@ class Player final : public Creature, public Cylinder {
 		uint32_t lastIP = 0;
 		uint32_t accountNumber = 0;
 		uint32_t guid = 0;
+		uint32_t loyaltyPoints = 0;
 		uint8_t isDailyReward = DAILY_REWARD_NOTCOLLECTED;
 		uint32_t windowTextId = 0;
 		uint32_t editListId = 0;
@@ -2612,6 +2629,7 @@ class Player final : public Creature, public Cylinder {
 
 		uint8_t soul = 0;
 		uint8_t levelPercent = 0;
+		uint16_t loyaltyBonusPercent = 0;
 		double_t magLevelPercent = 0;
 
 		PlayerSex_t sex = PLAYERSEX_FEMALE;
@@ -2647,7 +2665,6 @@ class Player final : public Creature, public Cylinder {
 		// Hazard system
 		int64_t lastHazardSystemCriticalHit = 0;
 		bool reloadHazardSystemPointsCounter = true;
-		uint16_t hazardSystemReferenceCounter = 0;
 		// Hazard end
 
 		void updateItemsLight(bool internal = false);

@@ -1,14 +1,7 @@
 function onUpdateDatabase()
-	Spdlog.info("Updating database to version 31 (wheel of destiny)")
+	Spdlog.info("Updating database to version 31 (loyalty)")
 	db.query([[
-	CREATE TABLE IF NOT EXISTS `player_wheeldata` (
-		`player_id` int(11) NOT NULL,
-		`slot` blob NOT NULL,
-		INDEX `player_id` (`player_id`),
-		CONSTRAINT `player_wheeldata_players_fk`
-			FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
-			ON DELETE CASCADE
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		ALTER TABLE `accounts` ADD COLUMN `premdays_purchased` int(11) NOT NULL DEFAULT 0;
 	]])
 	return true
 end

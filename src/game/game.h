@@ -631,6 +631,16 @@ class Game {
 		void removePlayerUniqueLogin(Player* player);
 		void playerCheckActivity(const std::string &playerName, int interval);
 
+		/**
+		 * @brief Registers a hazard area.
+		 * @details The function registers a hazard area to be used by the hazard system.
+		 *
+		 * @param positionFrom The top-left position of the hazard area at its lowest floor.
+		 * @param positionTo The bottom-right position of the hazard area at its highest floor.
+		 * @return bool
+		 */
+		bool createHazardArea(const Position &positionFrom, const Position &positionTo);
+
 		std::unique_ptr<IOWheel> &getIOWheel();
 		const std::unique_ptr<IOWheel> &getIOWheel() const;
 

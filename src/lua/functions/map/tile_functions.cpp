@@ -655,3 +655,15 @@ int TileFunctions::luaTileGetHouse(lua_State* L) {
 	}
 	return 1;
 }
+
+int TileFunctions::luaTileIsHazard(lua_State* L) {
+	// tile:isHazard()
+	Tile* tile = getUserdata<Tile>(L, 1);
+	if (tile) {
+		TileFlags_t flag = getNumber<TileFlags_t>(L, 2);
+		pushBoolean(L, tile->isHazard());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}

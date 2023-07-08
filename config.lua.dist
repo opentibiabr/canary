@@ -126,6 +126,7 @@ boostedBossKillBonus = 3
 -- Hazard system
 toogleHazardSystem = true
 hazardCriticalInterval = 2000
+hazardCriticalChance = 750
 hazardCriticalMultiplier = 25
 hazardDamageMultiplier = 200
 hazardDodgeMultiplier = 85

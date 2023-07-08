@@ -195,6 +195,7 @@ void ConfigFunctions::init(lua_State* L) {
 
 	registerEnumIn(L, "configKeys", HAZARD_SPAWN_PLUNDER_MULTIPLIER);
 	registerEnumIn(L, "configKeys", HAZARD_CRITICAL_INTERVAL);
+	registerEnumIn(L, "configKeys", HAZARD_CRITICAL_CHANCE);
 	registerEnumIn(L, "configKeys", HAZARD_CRITICAL_MULTIPLIER);
 	registerEnumIn(L, "configKeys", HAZARD_DAMAGE_MULTIPLIER);
 	registerEnumIn(L, "configKeys", HAZARD_DODGE_MULTIPLIER);

@@ -317,6 +317,7 @@ bool ConfigManager::load() {
 
 	boolean[TOGGLE_HAZARDSYSTEM] = getGlobalBoolean(L, "toogleHazardSystem", true);
 	integer[HAZARD_CRITICAL_INTERVAL] = getGlobalNumber(L, "hazardCriticalInterval", 2000);
+	integer[HAZARD_CRITICAL_CHANCE] = getGlobalNumber(L, "hazardCriticalChance", 750);
 	integer[HAZARD_CRITICAL_MULTIPLIER] = getGlobalNumber(L, "hazardCriticalMultiplier", 25);
 	integer[HAZARD_DAMAGE_MULTIPLIER] = getGlobalNumber(L, "hazardDamageMultiplier", 200);
 	integer[HAZARD_DODGE_MULTIPLIER] = getGlobalNumber(L, "hazardDodgeMultiplier", 85);

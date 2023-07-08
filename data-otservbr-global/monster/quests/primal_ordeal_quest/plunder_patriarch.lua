@@ -1,10 +1,10 @@
-local mType = Game.createMonsterType("Magma Bubble")
+local mType = Game.createMonsterType("Plunder Patriarch")
 local monster = {}
 
-monster.description = "magma bubble"
-monster.experience = 80000
+monster.description = "plunder patriarch"
+monster.experience = 0
 monster.outfit = {
-	lookType = 1413,
+	lookType = 1567,
 	lookHead = 0,
 	lookBody = 0,
 	lookLegs = 0,
@@ -13,22 +13,16 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 300000
-monster.maxHealth = 300000
+monster.health = 20000
+monster.maxHealth = 20000
 monster.race = "undead"
-monster.corpse = 36843
+monster.corpse = 39538
 monster.speed = 40
 monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
 	chance = 20
-}
-
-monster.bosstiary = {
-	bossRaceId = 2242,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Quest.U12_90.PrimalOrdeal.Bosses.MagmaBubbleTimer
 }
 
 monster.strategiesTarget = {
@@ -50,7 +44,7 @@ monster.flags = {
 	canPushCreatures = true,
 	staticAttackChance = 98,
 	targetDistance = 1,
-	runHealth = 0,
+	runHealth = 5000,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = true,
@@ -69,38 +63,40 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin",chance = 100000, maxCount = 60},
+	{ name = "primal bag", chance = 100000, unique = true},
+	{ name = "crystal coin", chance = 100000, maxCount = 60},
 	{ name = "ultimate mana potion", chance = 32653, maxCount = 14},
-	{ name = "ultimate health potion",chance = 30612, maxCount = 14},
-	{ name = "bullseye potion",chance = 24490, maxCount = 5},
-	{ name = "berserk potion",chance = 22449, maxCount = 5},
-	{ name = "mastermind potion",chance = 18367, maxCount = 5},
+	{ name = "ultimate health potion", chance = 30612, maxCount = 14},
+	{ name = "bullseye potion", chance = 24490, maxCount = 5},
+	{ name = "berserk potion", chance = 22449, maxCount = 5},
+	{ name = "mastermind potion", chance = 18367, maxCount = 5},
+	{ name = "royal almandine", chance = 8322},
+	{ name = "raw watermelon tourmaline", chance = 7322},
 	{ name = "giant amethyst", chance = 6122},
 	{ name = "giant ruby", chance = 4082},
 	{ name = "giant emerald", chance = 4082},
 	{ name = "giant sapphire", chance = 2041},
 	{ name = "giant topaz", chance = 2041},
-	{ name = "arboreal tome", chance = 250},
-	{ name = "arboreal crown", chance = 250},
-	{ name = "spiritthorn armor", id = 39147, chance = 250 },
-	{ name = "spiritthorn helmet", id = 39148, chance = 250 },
-	{ name = "alicorn headguard", chance = 250 },
-	{ name = "alicorn quiver", chance = 250 },
-	{ name = "arcanomancer regalia", chance = 250 },
-	{ name = "arcanomancer folio", chance = 250 },
-	{ id = 39183, chance = 250 }, -- name = "charged arcanomancer sigil"
-	{ id = 39186, chance = 250 }, -- name = "charged arboreal ring"
-	{ id = 39180, chance = 250 }, -- name = "charged alicorn ring"
-	{ id = 39177, chance = 250 }, -- name = "charged spiritthorn ring"
+	{ name = "amber with a bug", chance = 2450},
+	{ name = "amber with a dragonfly", chance = 2150},
+	{ name = "arboreal tome", chance = 100},
+	{ name = "arboreal crown", chance = 100},
+	{ name = "spiritthorn armor", id = 39147, chance = 100 },
+	{ name = "spiritthorn helmet", id = 39148, chance = 100 },
+	{ name = "alicorn headguard", chance = 100 },
+	{ name = "alicorn quiver", chance = 100 },
+	{ name = "arcanomancer regalia", chance = 100 },
+	{ name = "arcanomancer folio", chance = 100 },
+	{ id = 39183, chance = 100 }, -- name = "charged arcanomancer sigil"
+	{ id = 39186, chance = 100 }, -- name = "charged arboreal ring"
+	{ id = 39180, chance = 100 }, -- name = "charged alicorn ring"
+	{ id = 39177, chance = 100 }, -- name = "charged spiritthorn ring"
 }
 
 monster.attacks = {
-	{name ="melee", interval = 200, chance = 20, minDamage = 0, maxDamage = -650},
-	{name ="combat", interval = 200, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -600, maxDamage = -1500, target = false},
-	{name ="combat", interval = 500, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -200, maxDamage = -2100, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = true},
-	{name ="combat", interval = 500, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -2600, radius = 8, effect = CONST_ME_MORTAREA, target = false},
-	{name ="combat", interval = 2000, chance = 30, type = COMBAT_FIREDAMAGE, minDamage = -1000, maxDamage = -2000, target = true},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_FIREDAMAGE, minDamage = -1500, maxDamage = -2000, length = 8, spread = 0, effect = CONST_ME_FIREAREA, target = false}
+	{name ="melee", interval = 200, chance = 20, minDamage = 0, maxDamage = -950},
+	{name ="combat", interval = 2000, chance = 30, type = COMBAT_FIREDAMAGE, minDamage = -600, maxDamage = -1000, target = true},
+	{name ="combat", interval = 2000, chance = 25, type = COMBAT_FIREDAMAGE, minDamage = -500, maxDamage = -700, length = 5, spread = 2, effect = CONST_ME_FIREAREA, target = false}
 }
 
 monster.defenses = {
@@ -113,7 +109,7 @@ monster.defenses = {
 monster.elements = {
 	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
 	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
+	{type = COMBAT_EARTHDAMAGE, percent = 0},
 	{type = COMBAT_FIREDAMAGE, percent = 0},
 	{type = COMBAT_LIFEDRAIN, percent = 0},
 	{type = COMBAT_MANADRAIN, percent = 0},

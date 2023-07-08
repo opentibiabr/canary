@@ -494,7 +494,7 @@ class ProtocolGame final : public Protocol {
 		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
 
 		// Hazard system
-		void reloadHazardSystemIcon(uint16_t reference);
+		void reloadHazardSystemIcon();
 
 		uint8_t m_playerDeathTime = 0;
 

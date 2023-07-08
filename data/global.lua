@@ -36,6 +36,8 @@ STORAGEVALUE_PROMOTION = 30018
 SERVER_NAME = configManager.getString(configKeys.SERVER_NAME)
 SERVER_MOTD = configManager.getString(configKeys.SERVER_MOTD)
 
+AUTH_TYPE = configManager.getString(configKeys.AUTH_TYPE)
+
 -- Bestiary charm
 GLOBAL_CHARM_GUT = 0
 GLOBAL_CHARM_SCAVENGE = 0

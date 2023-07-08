@@ -32,11 +32,42 @@ bool IOLoginData::authenticateAccountPassword(const std::string &accountIdentifi
 	return true;
 }
 
-bool IOLoginData::gameWorldAuthentication(const std::string &accountIdentifier, const std::string &password, std::string &characterName, uint32_t* accountId, bool oldProtocol) {
+bool IOLoginData::authenticateAccountSession(const std::string &sessionId, account::Account* account) {
+	Database &db = Database::getInstance();
+	std::ostringstream query;
+	query << "SELECT `account_id`, `expires` FROM `account_sessions` WHERE `id` = " << db.escapeString(transformToSHA1(sessionId));
+	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
+	if (!result) {
+		SPDLOG_ERROR("Session id {} not found in the database", sessionId);
+		return false;
+	}
+	uint32_t expires = result->getNumber<uint32_t>("expires");
+	if (expires < getTimeNow()) {
+		SPDLOG_ERROR("Session id {} found, but it is expired", sessionId);
+		return false;
+	}
+	uint32_t accountId = result->getNumber<uint32_t>("account_id");
+	if (account::ERROR_NO != account->LoadAccountDB(accountId)) {
+		SPDLOG_ERROR("Session id {} found account id {}, but it doesn't match any account.", sessionId, accountId);
+		return false;
+	}
+
+	return true;
+}
+
+bool IOLoginData::gameWorldAuthentication(const std::string &accountIdentifier, const std::string &sessionOrPassword, std::string &characterName, uint32_t* accountId, bool oldProtocol) {
 	account::Account account;
 	account.setProtocolCompat(oldProtocol);
-	if (!IOLoginData::authenticateAccountPassword(accountIdentifier, password, &account)) {
-		return false;
+	std::string authType = g_configManager().getString(AUTH_TYPE);
+
+	if (authType == "session") {
+		if (!IOLoginData::authenticateAccountSession(sessionOrPassword, &account)) {
+			return false;
+		}
+	} else { // authType == "password"
+		if (!IOLoginData::authenticateAccountPassword(accountIdentifier, sessionOrPassword, &account)) {
+			return false;
+		}
 	}
 
 	account::Player player;

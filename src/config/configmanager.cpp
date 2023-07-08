@@ -343,6 +343,11 @@ bool ConfigManager::load() {
 	boolean[TOGGLE_WHEELSYSTEM] = getGlobalBoolean(L, "wheelSystemEnabled", true);
 	integer[WHEEL_POINTS_PER_LEVEL] = getGlobalNumber(L, "wheelPointsPerLevel", 1);
 
+	boolean[PARTY_SHARE_LOOT_BOOSTS] = getGlobalBoolean(L, "partyShareLootBoosts", true);
+	integer[TIBIADROME_CONCOCTION_COOLDOWN] = getGlobalNumber(L, "tibiadromeConcoctionCooldown", 24 * 60 * 60);
+	integer[TIBIADROME_CONCOCTION_DURATION] = getGlobalNumber(L, "tibiadromeConcoctionDuration", 1 * 60 * 60);
+	string[TIBIADROME_CONCOCTION_TICK_TYPE] = getGlobalString(L, "tibiadromeConcoctionTickType", "online");
+
 	loaded = true;
 	lua_close(L);
 	return true;

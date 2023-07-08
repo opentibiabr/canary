@@ -3749,3 +3749,15 @@ int PlayerFunctions::luaPlayerGetWheelSpellAdditionalDuration(lua_State* L) {
 	lua_pushnumber(L, player->wheel()->getSpellAdditionalDuration(spellName));
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerUpdateConcoction(lua_State* L) {
+	// player:updateConcoction(itemid, timeLeft)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+	player->updateConcoction(getNumber<uint16_t>(L, 2), getNumber<uint16_t>(L, 3));
+	pushBoolean(L, true);
+	return 1;
+}

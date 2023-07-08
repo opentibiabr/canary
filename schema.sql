@@ -769,7 +769,7 @@ CREATE TABLE IF NOT EXISTS `account_sessions` (
   `expires` BIGINT UNSIGNED NOT NULL,
 
   PRIMARY KEY (`id`)
-) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create Account god/god
 INSERT INTO `accounts`

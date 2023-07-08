@@ -5100,6 +5100,33 @@ uint32_t Player::getMagicLevel() const {
 	return magic;
 }
 
+uint32_t Player::getLoyaltyMagicLevel() const {
+	uint32_t level = getBaseMagicLevel();
+	absl::uint128 currReqMana = vocation->getReqMana(level);
+	absl::uint128 nextReqMana = vocation->getReqMana(level + 1);
+	if (currReqMana >= nextReqMana) {
+		// player has reached max magic level
+		return level;
+	}
+
+	absl::uint128 spent = manaSpent;
+	absl::uint128 totalMana = vocation->getTotalMana(level) + mana;
+	absl::uint128 loyaltyMana = (totalMana * getLoyaltyBonus()) / 100;
+	while ((spent + loyaltyMana) >= nextReqMana) {
+		loyaltyMana -= nextReqMana - mana;
+		level++;
+		spent = 0;
+
+		currReqMana = nextReqMana;
+		nextReqMana = vocation->getReqMana(level + 1);
+		if (currReqMana >= nextReqMana) {
+			loyaltyMana = 0;
+			break;
+		}
+	}
+	return level;
+}
+
 uint32_t Player::getCapacity() const {
 	if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
 		return 0;

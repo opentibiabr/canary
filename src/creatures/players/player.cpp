@@ -1141,7 +1141,7 @@ void Player::removeReward(uint64_t rewardId) {
 }
 
 void Player::getRewardList(std::vector<uint64_t> &rewards) const {
-	rewards.reserve(rewardMap.size());
+	rewards.reserve(rewardMap.size()); // Reserve space for all rewards
 	for (auto &it : rewardMap) {
 		rewards.push_back(it.first);
 	}
@@ -1179,7 +1179,13 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 	auto rewardCount = rewardItemsVector.size();
 	uint32_t movedRewardItems = 0;
 	int32_t movedRewardMoney = 0;
+	uint32_t lootedRewardCount = 0; // Counter for looted rewards
+
 	for (auto item : rewardItemsVector) {
+		if (lootedRewardCount >= 50) { // Break the loop if 50 rewards are already looted
+			break;
+		}
+
 		if (uint32_t worth = item->getWorth(); worth > 0) {
 			movedRewardMoney += worth;
 			g_game().internalRemoveItem(item);
@@ -1187,21 +1193,22 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 			continue;
 		}
 
-		// Stop if player not have free capacity
+		// Stop if player does not have free capacity
 		if (getCapacity() < item->getWeight()) {
 			break;
 		}
 
-		// Limit the collect count if the "maxMoveItems" is not "0"
-		auto limitMove = maxMoveItems != 0 && movedRewardItems == maxMoveItems;
-		if (limitMove) {
-			sendCancelMessage(fmt::format("You can only collect {} items at a time.", maxMoveItems));
+		// Limit the loot count if "maxMoveItems" is not "0"
+		auto limitLoot = maxMoveItems != 0 && movedRewardItems == maxMoveItems;
+		if (limitLoot) {
+			sendCancelMessage(fmt::format("You can only loot {} items at a time.", maxMoveItems));
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
 		ObjectCategory_t category = g_game().getObjectCategory(item);
 		if (g_game().internalQuickLootItem(this, item, category) == RETURNVALUE_NOERROR) {
 			movedRewardItems++;
+			lootedRewardCount++; // Increment the counter for looted rewards
 		}
 	}
 

@@ -8,6 +8,8 @@ function onUpdateDatabase()
 
 				PRIMARY KEY (`id`)
 		) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+	]])
+	db.query([[
 		ALTER TABLE `accounts` MODIFY `password` TEXT NOT NULL;
 	]])
 	return true

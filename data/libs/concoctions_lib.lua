@@ -137,11 +137,15 @@ function Concoction:activate(player, item)
 	self:lastActivatedAt(player, os.time())
 	self:update(player)
 	local consumptionString = self:tickType() == ConcoctionTickType.Online and " while you are online" or " as you gain experience"
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have activated " .. item:getName() .. ". It will last for " .. durationString(self:totalDuration()) .. consumptionString .. ".")
-	item:remove(1)
-	if self:tickType() == ConcoctionTickType.Online then
-		addEvent(function() self:tick(player, updateInterval) end, updateInterval * 1000)
+	if self.config.callback then
+		self.config.callback(player, self.config)
+	else
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have activated " .. item:getName() .. ". It will last for " .. durationString(self:totalDuration()) .. consumptionString .. ".")
+		if self:tickType() == ConcoctionTickType.Online then
+			addEvent(function() self:tick(player, updateInterval) end, updateInterval * 1000)
+		end
 	end
+	item:remove(1)
 end
 
 function Concoction:register()

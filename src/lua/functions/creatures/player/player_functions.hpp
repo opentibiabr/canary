@@ -328,6 +328,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "setLoyaltyTitle", PlayerFunctions::luaPlayerSetLoyaltyTitle);
 
 			registerMethod(L, "Player", "updateConcoction", PlayerFunctions::luaPlayerUpdateConcoction);
+			registerMethod(L, "Player", "clearSpellCooldowns", PlayerFunctions::luaPlayerClearSpellCooldowns);
 
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
@@ -651,6 +652,7 @@ class PlayerFunctions final : LuaScriptInterface {
 
 		// Concoction system
 		static int luaPlayerUpdateConcoction(lua_State* L);
+		static int luaPlayerClearSpellCooldowns(lua_State* L);
 
 		friend class CreatureFunctions;
 };

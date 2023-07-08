@@ -4,6 +4,21 @@ local configs = {
 	--- cooldownOverride = 60,
 	--- tickTypeOverride = ConcoctionTickType.Experience,
 
+	[Concoction.Ids.StaminaExtension] = {
+		amount = 60, -- minutes
+		callback = function(player, config)
+			player:setStamina(player:getStamina() + config.amount)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have been granted " .. config.amount .. " minutes of stamina.")
+		end,
+ },
+
+ [Concoction.Ids.KooldownAid] = {
+		callback = function(player )
+			player:clearSpellCooldowns()
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your spells are no longer on cooldown.")
+		end,
+ },
+
 	[Concoction.Ids.BestiaryBetterment] = { multiplier = 2.0 },
 	[Concoction.Ids.WealthDuplex] = { multiplier = 2.0 },
 }

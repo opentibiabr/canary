@@ -2730,6 +2730,7 @@ class Player final : public Creature, public Cylinder {
 		}
 
 		void triggerMomentum();
+		void clearCooldowns();
 
 		friend class Game;
 		friend class Npc;

@@ -3761,3 +3761,15 @@ int PlayerFunctions::luaPlayerUpdateConcoction(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerClearSpellCooldowns(lua_State* L) {
+	// player:clearSpellCooldowns()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+	player->clearCooldowns();
+	pushBoolean(L, true);
+	return 1;
+}

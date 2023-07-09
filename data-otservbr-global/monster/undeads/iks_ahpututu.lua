@@ -71,19 +71,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 100000, maxCount = 477},
-	{id = 281, chance = 710}, -- giant shimmering pearl (green)
-	{name = "tiger Eye", chance = 710},
-	{name = "strong mana potion", chance = 638, maxCount = 4},
-	{name = "small sapphire", chance = 437, maxCount = 5},
-	{name = "daedal chisel", chance = 291},
-	{name = "opal", chance = 164, maxCount = 2},
-	{name = "ritual tooth", chance = 146},
-	{name = "spellbook of enlightenment", chance = 109},
-	{name = "gold ingot", chance = 73},
-	{name = "rotten feather", chance = 73},
-	{name = "broken iks faulds", chance = 36},
-	{name = "gold-brocaded cloth", chance = 36},
+	{name = "gold coin", chance = 1000000, maxCount = 477},
+	{id = 281, chance = 7100}, -- giant shimmering pearl (green)
+	{name = "tiger Eye", chance = 7100},
+	{name = "strong mana potion", chance = 6380, maxCount = 4},
+	{name = "small sapphire", chance = 4370, maxCount = 5},
+	{name = "daedal chisel", chance = 2910},
+	{name = "opal", chance = 1640, maxCount = 2},
+	{name = "ritual tooth", chance = 1460},
+	{name = "spellbook of enlightenment", chance = 1090},
+	{name = "gold ingot", chance = 730},
+	{name = "rotten feather", chance = 730},
+	{name = "broken iks faulds", chance = 360},
+	{name = "gold-brocaded cloth", chance = 360},
 }
 
 monster.attacks = {

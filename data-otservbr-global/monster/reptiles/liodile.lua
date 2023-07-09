@@ -75,16 +75,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 8054, maxCount = 18},
-	{name = "small sapphire", chance = 979, maxCount = 4},
-	{name = "green crystal shard", chance = 536},
-	{name = "liodile fang", chance = 403, maxCount = 3},
-	{name = "yellow gem", chance = 372},
-	{name = "assassin dagger", chance = 260},
-	{name = "terra legs", chance = 242},
-	{name = "springsprout rod", chance = 161},
-	{name = "sacred tree amulet", chance = 83},
-	{name = "leviathan's amulet", chance = 72},
+	{name = "platinum coin", chance = 80540, maxCount = 18},
+	{name = "small sapphire", chance = 9790, maxCount = 4},
+	{name = "green crystal shard", chance = 5360},
+	{name = "liodile fang", chance = 4030, maxCount = 3},
+	{name = "yellow gem", chance = 3720},
+	{name = "assassin dagger", chance = 2600},
+	{name = "terra legs", chance = 2420},
+	{name = "springsprout rod", chance = 1610},
+	{name = "sacred tree amulet", chance = 830},
+	{name = "leviathan's amulet", chance = 720},
 }
 
 monster.attacks = {

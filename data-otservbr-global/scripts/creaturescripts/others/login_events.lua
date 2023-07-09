@@ -117,6 +117,8 @@ function loginEvents.onLogin(player)
 		"SecretLibraryKill",
 		-- The Dream Courts
 		"DreamCourtsKill",
+		-- Prime Ordeal
+		"PrimeOrdealKill",
 		-- Hazard System
 		"PrimalHazardKill"
 	}

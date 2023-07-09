@@ -56493,6 +56493,55 @@
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="description" value="She is enjoying her bath between the lily pads"/>
 	</item>
+	<item id="39919" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="39921" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="39923" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="39925" name="stairs">
+		<attribute key="floorchange" value="south"/>
+	</item>
+	<item fromid="40022" toid="40085" article="an" name="ominous flask">
+	</item>
+	<item fromid="40086" toid="40103" name="ominous flasks">
+	</item>
+	<item id="40262" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="40263" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="40279" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="40281" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="40296" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="40298" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="40302" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="40428" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="40430" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="40432" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="40434" name="stairs">
+		<attribute key="floorchange" value="south"/>
+	</item>
 	<item id="40530" name="broken macuahuitl">
 		<attribute key="description" value="This macuahuitl was a once legendary obsidian sword wielded by the ancient Iks"/>
 		<attribute key="attack" value="1"/>

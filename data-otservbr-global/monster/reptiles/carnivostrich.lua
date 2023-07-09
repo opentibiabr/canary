@@ -29,7 +29,7 @@ monster.Bestiary = {
 monster.health = 8250
 monster.maxHealth = 8250
 monster.race = "blood"
-monster.corpse = 42226 
+monster.corpse = 42226
 monster.speed = 168
 monster.manaCost = 0
 
@@ -53,7 +53,7 @@ monster.flags = {
 	canPushItems = true,
 	canPushCreatures = true,
 	staticAttackChance = 90,
-	targetDistance = 1,
+	targetDistance = 3,
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
@@ -90,10 +90,11 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -498},
+	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -500, condition = {type = CONDITION_POISON, totalDamage = 480, interval = 4000}},
 	{name ="combat", interval = 2000, chance = 40, type = COMBAT_PHYSICALDAMAGE, minDamage = -386, maxDamage = -480, range = 7, shootEffect = CONST_ANI_LARGEROCK, target = true},
 	{name ="combat", interval = 2000, chance = 40, type = COMBAT_PHYSICALDAMAGE, minDamage = -100, maxDamage = -135, range = 7, shootEffect = CONST_ANI_SMALLSTONE, target = true},
 	{name ="combat", interval = 2000, chance = 30, type = COMBAT_DEATHDAMAGE, minDamage = -350, maxDamage = -495, length = 7, spread = 0, effect = CONST_ME_BLACKSMOKE, target = false},
+	{name ="combat", interval = 2000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -280, maxDamage = -320, length = 7, spread = 0, effect = CONST_ME_ENERGYHIT, target = false},
 	{name ="thunderstorm ring", interval = 2000, chance = 20, minDamage = -325, maxDamage = -415},
 }
 

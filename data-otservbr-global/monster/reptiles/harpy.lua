@@ -53,7 +53,7 @@ monster.flags = {
 	canPushItems = true,
 	canPushCreatures = true,
 	staticAttackChance = 90,
-	targetDistance = 1,
+	targetDistance = 3,
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
@@ -93,13 +93,12 @@ monster.loot = {
 monster.attacks = {
 	-- Chain Attack(155-249),
 
-	{name ="melee", interval = 2000, chance = 100, minDamage = 300, maxDamage = -345},
+	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -345},
+	{name ="combat", interval = 2000, chance = 30, type = COMBAT_PHYSICALDAMAGE, minDamage = -296, maxDamage = -350, range = 3, effect = CONST_ME_BIG_SCRATCH, target = true},
 	{name ="energy ring", interval = 2000, chance = 20, minDamage = -280, maxDamage = -350},
-	{name ="combat", interval = 2000, chance = 47, type = COMBAT_PHYSICALDAMAGE, minDamage = -296, maxDamage = -350, range = 3, effect = CONST_ME_BIG_SCRATCH, target = true},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -260, maxDamage = -300, length = 5, spread = 3, effect = CONST_ME_SOUND_BLUE, target = false},
-	{name ="combat", interval = 2000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -360, maxDamage = -420, range = 7, radius = 4, effect = CONST_ME_ENERGYHIT, target = true},
-	{name ="combat", interval = 2000, chance = 40, type = COMBAT_ENERGYDAMAGE, minDamage = -360, maxDamage = -420, range = 1, radius = 8, effect = CONST_ME_LIGHTBLUETELEPORT, target = false},
-	{name ="combat", interval = 2000, chance = 47, type = COMBAT_PHYSICALDAMAGE, minDamage = -425, maxDamage = -525, effect = CONST_ME_POISON, target = true},
+	{name ="combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -310, maxDamage = -405, length = 5, spread = 3, effect = CONST_ME_SOUND_BLUE, target = false},
+	{name ="combat", interval = 2000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -320, maxDamage = -420, range = 7, radius = 4, effect = CONST_ME_ENERGYHIT, target = true},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -425, maxDamage = -545, effect = CONST_ME_POISON, target = true},
 }
 
 monster.defenses = {

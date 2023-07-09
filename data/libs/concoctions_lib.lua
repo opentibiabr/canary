@@ -104,7 +104,9 @@ function Concoction:update(player)
 end
 
 function Concoction:tick(player, timeDeduction)
-	local timeLeft = self:timeLeft(player) - timeDeduction
+	local timeLeft = self:timeLeft(player)
+	if timeLeft <= 0 then return end
+	timeLeft = timeLeft - timeDeduction
 	self:timeLeft(player, timeLeft > 0 and timeLeft or 0)
 	self:update(player)
 	if timeLeft > 0 then

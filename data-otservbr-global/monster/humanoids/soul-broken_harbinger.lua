@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Soul-Broken Harbinger")
 local monster = {}
 
-monster.description = "a Soul-Broken Harbinger"
+monster.description = "a soul-broken harbinger"
 monster.experience = 5800
 monster.outfit = {
 	lookType = 1137,

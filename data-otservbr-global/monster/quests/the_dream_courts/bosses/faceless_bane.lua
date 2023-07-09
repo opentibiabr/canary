@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Faceless Bane")
 local monster = {}
 
-monster.description = "a Faceless Bane"
+monster.description = "Faceless Bane"
 monster.experience = 30000
 monster.outfit = {
 	lookType = 1119,

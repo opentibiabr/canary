@@ -2850,6 +2850,10 @@ Storage = {
 		U12_90 = { -- update 12.90 - Reserved Storages 47851 - 47900
 			PrimalOrdeal = {
 				QuestLine = 47851,
+				Hazard = {
+					Current = 47856,
+					Max = 47857,
+				},
 				Bosses = {
 					MagmaBubbleTimer = 47852,
 					MagmaBubbleKilled = 47853,

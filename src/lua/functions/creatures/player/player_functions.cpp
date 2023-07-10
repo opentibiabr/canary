@@ -3484,7 +3484,7 @@ int PlayerFunctions::luaPlayerRemoveGroupFlag(lua_State* L) {
 
 // Hazard system
 int PlayerFunctions::luaPlayerAddHazardSystemPoints(lua_State* L) {
-	// player:addHazardSystemPoints(amount)
+	// player:setHazardSystemPoints(amount)
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		pushBoolean(L, false);
@@ -3492,7 +3492,7 @@ int PlayerFunctions::luaPlayerAddHazardSystemPoints(lua_State* L) {
 		return 1;
 	}
 
-	player->addHazardSystemPoints(getNumber<int32_t>(L, 2, 0));
+	player->setHazardSystemPoints(getNumber<int32_t>(L, 2, 0));
 	pushBoolean(L, true);
 	return 1;
 }
@@ -3507,5 +3507,67 @@ int PlayerFunctions::luaPlayerGetHazardSystemPoints(lua_State* L) {
 	}
 
 	lua_pushnumber(L, player->getHazardSystemPoints());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetLoyaltyBonus(lua_State* L) {
+	// player:setLoyaltyBonus(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->setLoyaltyBonus(getNumber<uint16_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLoyaltyBonus(lua_State* L) {
+	// player:getLoyaltyBonus()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, player->getLoyaltyBonus());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLoyaltyPoints(lua_State* L) {
+	// player:getLoyaltyPoints()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, player->getLoyaltyPoints());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLoyaltyTitle(lua_State* L) {
+	// player:getLoyaltyTitle()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	pushString(L, player->getLoyaltyTitle());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetLoyaltyTitle(lua_State* L) {
+	// player:setLoyaltyTitle(name)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->setLoyaltyTitle(getString(L, 2));
+	pushBoolean(L, true);
 	return 1;
 }

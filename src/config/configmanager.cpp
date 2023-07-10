@@ -111,6 +111,9 @@ bool ConfigManager::load() {
 		string[MYSQL_DB] = getGlobalString(L, "mysqlDatabase", "canary");
 		string[MYSQL_SOCK] = getGlobalString(L, "mysqlSock", "");
 
+		string[AUTH_TYPE] = getGlobalString(L, "authType", "password");
+		boolean[RESET_SESSIONS_ON_STARTUP] = getGlobalBoolean(L, "resetSessionsOnStartup", false);
+
 		integer[SQL_PORT] = getGlobalNumber(L, "mysqlPort", 3306);
 		integer[GAME_PORT] = getGlobalNumber(L, "gameProtocolPort", 7172);
 		integer[LOGIN_PORT] = getGlobalNumber(L, "loginProtocolPort", 7171);
@@ -317,6 +320,7 @@ bool ConfigManager::load() {
 
 	boolean[TOGGLE_HAZARDSYSTEM] = getGlobalBoolean(L, "toogleHazardSystem", true);
 	integer[HAZARD_CRITICAL_INTERVAL] = getGlobalNumber(L, "hazardCriticalInterval", 2000);
+	integer[HAZARD_CRITICAL_CHANCE] = getGlobalNumber(L, "hazardCriticalChance", 750);
 	integer[HAZARD_CRITICAL_MULTIPLIER] = getGlobalNumber(L, "hazardCriticalMultiplier", 25);
 	integer[HAZARD_DAMAGE_MULTIPLIER] = getGlobalNumber(L, "hazardDamageMultiplier", 200);
 	integer[HAZARD_DODGE_MULTIPLIER] = getGlobalNumber(L, "hazardDodgeMultiplier", 85);
@@ -328,6 +332,12 @@ bool ConfigManager::load() {
 	integer[HAZARD_PODS_DAMAGE] = getGlobalNumber(L, "hazardPodsDamage", 5);
 	integer[HAZARD_SPAWN_PLUNDER_MULTIPLIER] = getGlobalNumber(L, "hazardSpawnPlunderMultiplier", 25);
 	integer[LOW_LEVEL_BONUS_EXP] = getGlobalNumber(L, "lowLevelBonusExp", 50);
+
+	boolean[LOYALTY_ENABLED] = getGlobalBoolean(L, "loyaltyEnabled", true);
+	integer[LOYALTY_POINTS_PER_CREATION_DAY] = getGlobalNumber(L, "loyaltyPointsPerCreationDay", 1);
+	integer[LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT] = getGlobalNumber(L, "loyaltyPointsPerPremiumDaySpent", 0);
+	integer[LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED] = getGlobalNumber(L, "loyaltyPointsPerPremiumDayPurchased", 0);
+	floating[LOYALTY_BONUS_PERCENTAGE_MULTIPLIER] = getGlobalFloat(L, "loyaltyBonusPercentageMultiplier", 1.0);
 
 	loaded = true;
 	lua_close(L);

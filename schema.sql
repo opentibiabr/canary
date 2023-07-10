@@ -13,9 +13,10 @@ INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '25'), ('m
 CREATE TABLE IF NOT EXISTS `accounts` (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(32) NOT NULL,
-    `password` char(40) NOT NULL,
+    `password` TEXT NOT NULL,
     `email` varchar(255) NOT NULL DEFAULT '',
     `premdays` int(11) NOT NULL DEFAULT '0',
+    `premdays_purchased` int(11) NOT NULL DEFAULT '0',
     `lastday` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `type` tinyint(1) UNSIGNED NOT NULL DEFAULT '1',
     `coins` int(12) UNSIGNED NOT NULL DEFAULT '0',
@@ -760,6 +761,15 @@ CREATE TABLE IF NOT EXISTS `towns` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+-- Table structure `account_sessions`
+CREATE TABLE IF NOT EXISTS `account_sessions` (
+  `id` VARCHAR(191) NOT NULL,
+  `account_id` INTEGER UNSIGNED NOT NULL,
+  `expires` BIGINT UNSIGNED NOT NULL,
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create Account god/god
 INSERT INTO `accounts`

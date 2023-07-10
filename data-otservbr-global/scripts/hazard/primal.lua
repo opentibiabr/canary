@@ -1,6 +1,19 @@
-local hazardSystemStepPod = MoveEvent()
+local hazard = Hazard.new({
+	name = "Gnomprona Gardens",
+	from = Position(33502, 32740,13),
+	to = Position(33796, 32996, 15),
+	maxLevel = 12,
+	storageMax = Storage.Quest.U12_90.PrimalOrdeal.Hazard.Max,
+	storageCurrent = Storage.Quest.U12_90.PrimalOrdeal.Hazard.Current,
 
-function hazardSystemStepPod.onStepIn(creature, item, position, fromPosition)
+	crit = true,
+	dodge = true,
+	damageBoost = true,
+})
+
+local primalPod = MoveEvent()
+
+function primalPod.onStepIn(creature, item, position, fromPosition)
 	if not configManager.getBoolean(configKeys.TOGGLE_HAZARDSYSTEM) then
 		item:remove()
 		return
@@ -32,10 +45,10 @@ function hazardSystemStepPod.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 
-hazardSystemStepPod:id(ITEM_PRIMAL_POD)
-hazardSystemStepPod:register()
+primalPod:id(ITEM_PRIMAL_POD)
+primalPod:register()
 
-local SpawnHazardSystemFungosaurus = function(position)
+local spawnFungosaurus = function(position)
 	local tile = Tile(position)
 	if tile then
 		local podItem = tile:getItemById(ITEM_PRIMAL_POD)
@@ -49,36 +62,46 @@ local SpawnHazardSystemFungosaurus = function(position)
 	end
 end
 
-local hazardSystemSpawnPod = CreatureEvent("HazardSystemCombat")
-
-function hazardSystemSpawnPod.onKill(player, creature, lastHit)
+local primalKill = CreatureEvent("PrimalHazardKill")
+function primalKill.onKill(_player, creature)
 	if not configManager.getBoolean(configKeys.TOGGLE_HAZARDSYSTEM) then
 		return true
 	end
 
 	local monster = creature:getMonster()
-	if not creature or not monster or not monster:isOnHazardSystem() then
+	if not creature or not monster or not monster:hazard() or not monster:getPosition():isInArea(hazard) then
 		return true
 	end
 
-	local points = player:getHazardSystemPoints()
-	if points > 0 then
-		local party = player:getParty()
-		if party then
-			for _, member in ipairs(party:getMembers()) do
-				if member and member:getHazardSystemPoints() < points then
-					points = member:getHazardSystemPoints()
-				end
-			end
+	local player = nil
+	local points = -1
 
-			local leader = party:getLeader()
-			if leader and leader:getHazardSystemPoints() < points then
-				points = leader:getHazardSystemPoints()
+	for key, value in pairs(monster:getDamageMap()) do
+		local killer = Player(key)
+		if killer then
+			local killerPoints = killer:getHazardSystemPoints()
+			if points > killerPoints or points == -1 then
+				player = killer
+				points = killerPoints
+			end
+		end
+	end
+	for key, value in pairs(monster:getDamageMap()) do
+		local killer = Player(key)
+		if killer then
+			local killerPoints = killer:getHazardSystemPoints()
+			if monster:getName():lower() == "the primal menace" and killerPoints == points then
+				hazard:levelUp(killer)
 			end
 		end
 	end
 
-	if points == 0 then
+	-- don't spawn pods or plunder if the monster is a reward boss
+	if monster:getType():isRewardBoss() then
+		return true
+	end
+
+	if points < 1 then
 		return true
 	end
 
@@ -89,13 +112,13 @@ function hazardSystemSpawnPod.onKill(player, creature, lastHit)
 		if primalPod then
 			primalPod:setCustomAttribute("HazardSystem_PodTimer", os.time() * 1000)
 			local podPos = primalPod:getPosition()
-			addEvent(SpawnHazardSystemFungosaurus, configManager.getNumber(configKeys.HAZARD_PODS_TIME_TO_SPAWN), podPos)
+			addEvent(spawnFungosaurus, configManager.getNumber(configKeys.HAZARD_PODS_TIME_TO_SPAWN), podPos)
 		end
 		return true
 	end
 
 	chanceTo = math.random(1, 10000)
-	if chanceTo <= (points * configManager.getNumber(configKeys.HAZARDSYSTEM_SPAWN_PLUNDER_MULTIPLIER)) then
+	if chanceTo <= (points * configManager.getNumber(configKeys.HAZARD_SPAWN_PLUNDER_MULTIPLIER)) then
 		local closesestPosition = player:getClosestFreePosition(monster:getPosition(), 4, true)
 		local monster = Game.createMonster("Plunder Patriarch", closesestPosition.x == 0 and monster:getPosition() or closesestPosition, false, true)
 		if monster then
@@ -103,8 +126,7 @@ function hazardSystemSpawnPod.onKill(player, creature, lastHit)
 		end
 		return true
 	end
-
 	return true
 end
 
-hazardSystemSpawnPod:register()
+primalKill:register()

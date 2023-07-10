@@ -184,9 +184,28 @@ uint16_t Vocations::getPromotedVocation(uint16_t vocationId) const {
 }
 
 uint32_t Vocation::skillBase[SKILL_LAST + 1] = { 50, 50, 50, 50, 30, 100, 20 };
+const uint16_t minSkillLevel = 10;
+
+absl::uint128 Vocation::getTotalSkillTries(uint8_t skill, uint16_t level) {
+	if (skill > SKILL_LAST) {
+		return 0;
+	}
+
+	auto it = cacheSkillTotal[skill].find(level);
+	if (it != cacheSkillTotal[skill].end()) {
+		return it->second;
+	}
+
+	absl::uint128 totalTries = 0;
+	for (uint16_t i = minSkillLevel; i <= level; ++i) {
+		totalTries += getReqSkillTries(skill, i);
+	}
+	cacheSkillTotal[skill][level] = totalTries;
+	return totalTries;
+}
 
 uint64_t Vocation::getReqSkillTries(uint8_t skill, uint16_t level) {
-	if (skill > SKILL_LAST || level <= 10) {
+	if (skill > SKILL_LAST || level <= minSkillLevel) {
 		return 0;
 	}
 
@@ -195,9 +214,24 @@ uint64_t Vocation::getReqSkillTries(uint8_t skill, uint16_t level) {
 		return it->second;
 	}
 
-	uint64_t tries = static_cast<uint64_t>(skillBase[skill] * std::pow(static_cast<double>(skillMultipliers[skill]), level - 11));
+	uint64_t tries = static_cast<uint64_t>(skillBase[skill] * std::pow(static_cast<double>(skillMultipliers[skill]), level - (minSkillLevel + 1)));
 	cacheSkill[skill][level] = tries;
 	return tries;
+}
+
+absl::uint128 Vocation::getTotalMana(uint32_t magLevel) {
+	if (magLevel == 0) {
+		return 0;
+	}
+	auto it = cacheManaTotal.find(magLevel);
+	if (it != cacheManaTotal.end()) {
+		return it->second;
+	}
+	absl::uint128 totalMana = 0;
+	for (uint32_t i = 1; i <= magLevel; ++i) {
+		totalMana += getReqMana(i);
+	}
+	return totalMana;
 }
 
 uint64_t Vocation::getReqMana(uint32_t magLevel) {

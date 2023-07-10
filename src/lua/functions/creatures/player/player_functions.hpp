@@ -309,8 +309,14 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "setGroupFlag", PlayerFunctions::luaPlayerSetGroupFlag);
 			registerMethod(L, "Player", "removeGroupFlag", PlayerFunctions::luaPlayerRemoveGroupFlag);
 
-			registerMethod(L, "Player", "addHazardSystemPoints", PlayerFunctions::luaPlayerAddHazardSystemPoints);
+			registerMethod(L, "Player", "setHazardSystemPoints", PlayerFunctions::luaPlayerAddHazardSystemPoints);
 			registerMethod(L, "Player", "getHazardSystemPoints", PlayerFunctions::luaPlayerGetHazardSystemPoints);
+
+			registerMethod(L, "Player", "setLoyaltyBonus", PlayerFunctions::luaPlayerSetLoyaltyBonus);
+			registerMethod(L, "Player", "getLoyaltyBonus", PlayerFunctions::luaPlayerGetLoyaltyBonus);
+			registerMethod(L, "Player", "getLoyaltyPoints", PlayerFunctions::luaPlayerGetLoyaltyPoints);
+			registerMethod(L, "Player", "getLoyaltyTitle", PlayerFunctions::luaPlayerGetLoyaltyTitle);
+			registerMethod(L, "Player", "setLoyaltyTitle", PlayerFunctions::luaPlayerSetLoyaltyTitle);
 
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
@@ -615,6 +621,13 @@ class PlayerFunctions final : LuaScriptInterface {
 		// Hazard system
 		static int luaPlayerAddHazardSystemPoints(lua_State* L);
 		static int luaPlayerGetHazardSystemPoints(lua_State* L);
+
+		// Loyalty system
+		static int luaPlayerSetLoyaltyBonus(lua_State* L);
+		static int luaPlayerGetLoyaltyBonus(lua_State* L);
+		static int luaPlayerGetLoyaltyPoints(lua_State* L);
+		static int luaPlayerGetLoyaltyTitle(lua_State* L);
+		static int luaPlayerSetLoyaltyTitle(lua_State* L);
 
 		friend class CreatureFunctions;
 };

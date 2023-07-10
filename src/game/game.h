@@ -33,7 +33,10 @@ class Npc;
 class CombatInfo;
 class Charm;
 class IOPrey;
+class IOWheel;
 class ItemClassification;
+class Guild;
+class Mounts;
 
 static constexpr int32_t EVENT_MS = 10000;
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
@@ -362,6 +365,9 @@ class Game {
 
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string &buffer);
 
+		void playerOpenWheel(uint32_t playerId, uint32_t ownerId);
+		void playerSaveWheel(uint32_t playerId, NetworkMessage &msg);
+
 		static void updatePremium(account::Account &account);
 		void updatePlayerHelpers(Player* player);
 
@@ -415,17 +421,24 @@ class Game {
 
 		void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint8_t &effect);
 
+		// Hazard combat helpers
 		void handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker);
 		void notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster);
+
+		// Wheel of destiny combat helpers
+		void applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, const Creature* target);
+		void applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const Player* attackerPlayer, const Creature* target) const;
+		int32_t applyHealthChange(CombatDamage &damage, const Creature* target) const;
+
 		bool combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent = false);
 		void applyCharmRune(const Monster* targetMonster, Player* attackerPlayer, Creature* target, const int32_t &realDamage) const;
 		void applyManaLeech(
 			Player* attackerPlayer, const Monster* targetMonster,
-			const CombatDamage &damage, const int32_t &realDamage
+			Creature* target, const CombatDamage &damage, const int32_t &realDamage
 		) const;
 		void applyLifeLeech(
 			Player* attackerPlayer, const Monster* targetMonster,
-			const CombatDamage &damage, const int32_t &realDamage
+			Creature* target, const CombatDamage &damage, const int32_t &realDamage
 		) const;
 		int32_t calculateLeechAmount(const int32_t &realDamage, const uint16_t &skillAmount, int targetsAffected) const;
 		bool combatChangeMana(Creature* attacker, Creature* target, CombatDamage &damage);
@@ -437,6 +450,8 @@ class Game {
 		void addPlayerVocation(const Player* target);
 		void addMagicEffect(const Position &pos, uint8_t effect);
 		static void addMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect);
+		void removeMagicEffect(const Position &pos, uint8_t effect);
+		static void removeMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect);
 		void addDistanceEffect(const Position &fromPos, const Position &toPos, uint8_t effect);
 		static void addDistanceEffect(const SpectatorHashSet &spectators, const Position &fromPos, const Position &toPos, uint8_t effect);
 
@@ -626,6 +641,9 @@ class Game {
 		 */
 		bool createHazardArea(const Position &positionFrom, const Position &positionTo);
 
+		std::unique_ptr<IOWheel> &getIOWheel();
+		const std::unique_ptr<IOWheel> &getIOWheel() const;
+
 	private:
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;
 		std::set<uint32_t> fiendishMonsters;
@@ -756,6 +774,9 @@ class Game {
 		) const;
 
 		void unwrapItem(Item* item, uint16_t unWrapId);
+
+		// Variable members (m_)
+		std::unique_ptr<IOWheel> m_IOWheel;
 };
 
 constexpr auto g_game = &Game::getInstance;

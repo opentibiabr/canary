@@ -179,6 +179,7 @@ PRIVATE
 	creatures/players/management/ban.cpp
 	creatures/players/management/waitlist.cpp
 	creatures/players/player.cpp
+	creatures/players/wheel/player_wheel.cpp
 	creatures/players/vocations/vocation.cpp
 	database/database.cpp
 	database/databasemanager.cpp
@@ -191,6 +192,7 @@ PRIVATE
 	game/scheduling/events_scheduler.cpp
 	game/scheduling/tasks.cpp
 	io/fileloader.cpp
+	io/io_wheel.cpp
 	io/iobestiary.cpp
 	io/io_bosstiary.cpp
 	io/ioguild.cpp
@@ -287,6 +289,7 @@ PRIVATE
 	map/house/housetile.cpp
 	map/map.cpp
 	otserv.cpp
+	pch.cpp
 	security/rsa.cpp
 	server/network/connection/connection.cpp
 	server/network/message/networkmessage.cpp

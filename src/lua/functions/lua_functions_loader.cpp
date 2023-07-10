@@ -114,7 +114,7 @@ int LuaFunctionsLoader::luaErrorHandler(lua_State* L) {
 }
 
 void LuaFunctionsLoader::pushVariant(lua_State* L, const LuaVariant &var) {
-	lua_createtable(L, 0, 2);
+	lua_createtable(L, 0, 4);
 	setField(L, "type", var.type);
 	switch (var.type) {
 		case VARIANT_NUMBER:
@@ -132,6 +132,8 @@ void LuaFunctionsLoader::pushVariant(lua_State* L, const LuaVariant &var) {
 		default:
 			break;
 	}
+	setField(L, "instantName", var.instantName);
+	setField(L, "runeName", var.runeName);
 	setMetatable(L, -1, "Variant");
 }
 
@@ -329,16 +331,18 @@ Outfit_t LuaFunctionsLoader::getOutfit(lua_State* L, int32_t arg) {
 
 LuaVariant LuaFunctionsLoader::getVariant(lua_State* L, int32_t arg) {
 	LuaVariant var;
+	var.instantName = getFieldString(L, arg, "instantName");
+	var.runeName = getFieldString(L, arg, "runeName");
 	switch (var.type = getField<LuaVariantType_t>(L, arg, "type")) {
 		case VARIANT_NUMBER: {
 			var.number = getField<uint32_t>(L, arg, "number");
-			lua_pop(L, 2);
+			lua_pop(L, 4);
 			break;
 		}
 
 		case VARIANT_STRING: {
 			var.text = getFieldString(L, arg, "string");
-			lua_pop(L, 2);
+			lua_pop(L, 4);
 			break;
 		}
 
@@ -346,13 +350,13 @@ LuaVariant LuaFunctionsLoader::getVariant(lua_State* L, int32_t arg) {
 		case VARIANT_TARGETPOSITION: {
 			lua_getfield(L, arg, "pos");
 			var.pos = getPosition(L, lua_gettop(L));
-			lua_pop(L, 2);
+			lua_pop(L, 4);
 			break;
 		}
 
 		default: {
 			var.type = VARIANT_NONE;
-			lua_pop(L, 1);
+			lua_pop(L, 3);
 			break;
 		}
 	}

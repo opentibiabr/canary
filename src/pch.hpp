@@ -72,4 +72,6 @@
 #include <string>
 #include <iostream>
 
+bool isDevMode();
+
 #endif // SRC_PCH_HPP_

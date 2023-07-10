@@ -273,6 +273,7 @@ class ProtocolGame final : public Protocol {
 
 		void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 		void sendMagicEffect(const Position &pos, uint8_t type);
+		void removeMagicEffect(const Position &pos, uint8_t type);
 		void sendRestingStatus(uint8_t protection);
 		void sendCreatureHealth(const Creature* creature);
 		void sendPartyCreatureUpdate(const Creature* target);
@@ -461,7 +462,13 @@ class ProtocolGame final : public Protocol {
 
 		void getForgeInfoMap(const Item* item, std::map<uint16_t, std::map<uint8_t, uint16_t>> &itemsMap) const;
 
+		// Wheel
+		void parseOpenWheel(NetworkMessage &msg);
+		void sendOpenWheelWindow(uint32_t ownerId);
+		void parseSaveWheel(NetworkMessage &msg);
+
 		friend class Player;
+		friend class PlayerWheel;
 
 		phmap::flat_hash_set<uint32_t> knownCreatureSet;
 		Player* player = nullptr;

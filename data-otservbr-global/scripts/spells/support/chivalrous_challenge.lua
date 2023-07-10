@@ -7,7 +7,7 @@ local function getDiagonalDistance(pos1, pos2)
 		return 14 * dstX + 10 * (dstY - dstX)
 	end
 end
-local function chain(player)
+local function chain(player, targets, duration)
 	local creatures = Game.getSpectators(player:getPosition(), false, false, 9, 9, 6, 6)
 	local totalChain = 0
 	local monsters = {}
@@ -24,8 +24,8 @@ local function chain(player)
 
 	local counter = 1
 	local tempSize = #monsters
-	if tempSize < 3 and #meleeMonsters > 0 then
-		for i = tempSize, 3 do
+	if tempSize < targets and #meleeMonsters > 0 then
+		for i = tempSize, targets do
 			if meleeMonsters[counter] ~= nil then
 				table.insert(monsters, meleeMonsters[counter])
 				counter = counter + 1
@@ -37,7 +37,7 @@ local function chain(player)
 	local lastChainPosition = player:getPosition()
 	local closestMonster, closestMonsterIndex, closestMonsterPosition
 	local path, tempPosition, updateLastChain
-	while (totalChain < 3 and #monsters > 0) do
+	while (totalChain < targets and #monsters > 0) do
 		closestMonster = nil
 		for index, monster in pairs(monsters) do
 			tempPosition = monster:getPosition()
@@ -45,7 +45,7 @@ local function chain(player)
 				closestMonster = monster
 				closestMonsterIndex = index
 				closestMonsterPosition = tempPosition
-				doChallengeCreature(player, monster)
+				doChallengeCreature(player, closestMonster)
 			end
 		end
 		table.remove(monsters, closestMonsterIndex)
@@ -64,7 +64,7 @@ local function chain(player)
 		end
 		if updateLastChain then
 			closestMonsterPosition:sendMagicEffect(CONST_ME_CHIVALRIOUS_CHALLENGE)
-			closestMonster:changeTargetDistance(1)
+			closestMonster:changeTargetDistance(1, duration)
 			lastChain = closestMonster
 			lastChainPosition = closestMonsterPosition
 			totalChain = totalChain + 1
@@ -76,7 +76,14 @@ end
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, variant)
-	local total = chain(creature)
+	local targets = 5
+	local duration = 12000
+	local player = creature:getPlayer()
+	if creature and player then
+		targets = targets + player:getWheelSpellAdditionalTarget("Chivalrous Challenge")
+		duration = duration + (player:getWheelSpellAdditionalDuration("Chivalrous Challenge") * 1000)
+	end
+	local total = chain(creature, targets, duration)
 	if total > 0 then
 		return true
 	elseif total == -1 then

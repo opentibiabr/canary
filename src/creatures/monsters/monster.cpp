@@ -11,6 +11,7 @@
 
 #include "creatures/monsters/monster.h"
 #include "creatures/combat/spells.h"
+#include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.h"
 #include "game/scheduling/tasks.h"
 #include "lua/creature/events.h"
@@ -624,6 +625,12 @@ BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int32
 		auto it = mType->info.elementMap.find(combatType);
 		if (it != mType->info.elementMap.end()) {
 			elementMod = it->second;
+		}
+
+		// Wheel of destiny
+		Player* player = attacker ? attacker->getPlayer() : nullptr;
+		if (player && player->wheel()->getInstant("Ballistic Mastery")) {
+			elementMod -= player->wheel()->checkElementSensitiveReduction(combatType);
 		}
 
 		if (elementMod != 0) {
@@ -2034,11 +2041,16 @@ bool Monster::challengeCreature(Creature* creature) {
 		targetChangeCooldown = 6000;
 		challengeFocusDuration = targetChangeCooldown;
 		targetChangeTicks = 0;
+		// Wheel of destiny
+		Player* player = creature ? creature->getPlayer() : nullptr;
+		if (player && !player->isRemoved()) {
+			player->wheel()->healIfBattleHealingActive();
+		}
 	}
 	return result;
 }
 
-bool Monster::changeTargetDistance(int32_t distance) {
+bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 12000*/) {
 	if (isSummon()) {
 		return false;
 	}
@@ -2048,7 +2060,7 @@ bool Monster::changeTargetDistance(int32_t distance) {
 	}
 
 	bool shouldUpdate = mType->info.targetDistance > distance ? true : false;
-	challengeMeleeDuration = 12000;
+	challengeMeleeDuration = duration;
 	targetDistance = distance;
 
 	if (shouldUpdate) {

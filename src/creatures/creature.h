@@ -214,6 +214,10 @@ class Creature : virtual public Thing {
 			return varBuffs[buff];
 		}
 
+		int32_t getBuff(int32_t buff) const {
+			return varBuffs[buff];
+		}
+
 		void setBuff(buffs_t buff, int32_t modifier) {
 			varBuffs[buff] += modifier;
 		}
@@ -266,6 +270,20 @@ class Creature : virtual public Thing {
 			return attackedCreature;
 		}
 		virtual bool setAttackedCreature(Creature* creature);
+
+		/**
+		 * @brief Mitigates damage inflicted on a creature.
+		 *
+		 * Used to mitigate the damage inflicted on a creature during combat.
+		 *
+		 * @note If the server is running in dev mode, this function will also log details about the mitigation process.
+		 *
+		 * @param creature Reference to the creature that is receiving the damage.
+		 * @param combatType Type of combat that is inflicting the damage. Note that mana drain and life drain are not mitigated.
+		 * @param blockType Reference to the block type, which may be modified to BLOCK_ARMOR if the damage is reduced to 0.
+		 * @param damage Reference to the amount of damage inflicted, which will be reduced by the creature's mitigation factor.
+		 */
+		void mitigateDamage(const CombatType_t &combatType, BlockType_t &blockType, int32_t &damage) const;
 		virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false);
 
 		bool setMaster(Creature* newMaster, bool reloadCreature = false);
@@ -298,6 +316,9 @@ class Creature : virtual public Thing {
 		virtual int32_t getArmor() const {
 			return 0;
 		}
+		virtual float getMitigation() const {
+			return 0;
+		}
 		virtual int32_t getDefense() const {
 			return 0;
 		}
@@ -320,6 +341,7 @@ class Creature : virtual public Thing {
 		void removeCombatCondition(ConditionType_t type);
 		Condition* getCondition(ConditionType_t type) const;
 		Condition* getCondition(ConditionType_t type, ConditionId_t conditionId, uint32_t subId = 0) const;
+		std::vector<Condition*> getConditionsByType(ConditionType_t type) const;
 		void executeConditions(uint32_t interval);
 		bool hasCondition(ConditionType_t type, uint32_t subId = 0) const;
 		virtual bool isImmune(ConditionType_t type) const;
@@ -499,6 +521,12 @@ class Creature : virtual public Thing {
 		CountMap getDamageMap() const {
 			return damageMap;
 		}
+		void setWheelOfDestinyDrainBodyDebuff(uint8_t value) {
+			wheelOfDestinyDrainBodyDebuff = value;
+		}
+		uint8_t getWheelOfDestinyDrainBodyDebuff() const {
+			return wheelOfDestinyDrainBodyDebuff;
+		}
 
 	protected:
 		virtual bool useCacheMap() const {
@@ -579,6 +607,8 @@ class Creature : virtual public Thing {
 		bool floorChange = false;
 		bool canUseDefense = true;
 		bool moveLocked = false;
+
+		uint8_t wheelOfDestinyDrainBodyDebuff = 0;
 
 		// creature script events
 		bool hasEventRegistered(CreatureEventType_t event) const {

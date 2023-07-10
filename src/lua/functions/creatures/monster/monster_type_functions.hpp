@@ -102,6 +102,7 @@ class MonsterTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "MonsterType", "maxSummons", MonsterTypeFunctions::luaMonsterTypeMaxSummons);
 
 			registerMethod(L, "MonsterType", "armor", MonsterTypeFunctions::luaMonsterTypeArmor);
+			registerMethod(L, "MonsterType", "mitigation", MonsterTypeFunctions::luaMonsterTypeMitigation);
 			registerMethod(L, "MonsterType", "defense", MonsterTypeFunctions::luaMonsterTypeDefense);
 			registerMethod(L, "MonsterType", "outfit", MonsterTypeFunctions::luaMonsterTypeOutfit);
 			registerMethod(L, "MonsterType", "race", MonsterTypeFunctions::luaMonsterTypeRace);
@@ -227,8 +228,8 @@ class MonsterTypeFunctions final : LuaScriptInterface {
 		static int luaMonsterTypeAddSummon(lua_State* L);
 
 		static int luaMonsterTypeMaxSummons(lua_State* L);
-
 		static int luaMonsterTypeArmor(lua_State* L);
+		static int luaMonsterTypeMitigation(lua_State* L);
 		static int luaMonsterTypeDefense(lua_State* L);
 		static int luaMonsterTypeOutfit(lua_State* L);
 		static int luaMonsterTypeRace(lua_State* L);

@@ -45,6 +45,8 @@ class Guild;
 class Imbuement;
 class PreySlot;
 class TaskHuntingSlot;
+class Spell;
+class PlayerWheel;
 
 enum class ForgeConversion_t : uint8_t {
 	FORGE_ACTION_FUSION = 0,
@@ -624,14 +626,7 @@ class Player final : public Creature, public Cylinder {
 			return capacity;
 		}
 
-		uint32_t getCapacity() const {
-			if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
-				return 0;
-			} else if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
-				return std::numeric_limits<uint32_t>::max();
-			}
-			return capacity + bonusCapacity;
-		}
+		uint32_t getCapacity() const;
 
 		uint32_t getFreeCapacity() const {
 			if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
@@ -643,12 +638,8 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
-		int32_t getMaxHealth() const override {
-			return std::max<int32_t>(1, healthMax + varStats[STAT_MAXHITPOINTS]);
-		}
-		uint32_t getMaxMana() const override {
-			return std::max<int32_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS]);
-		}
+		int32_t getMaxHealth() const override;
+		uint32_t getMaxMana() const override;
 
 		Item* getInventoryItem(Slots_t slot) const;
 
@@ -786,7 +777,7 @@ class Player final : public Creature, public Cylinder {
 
 		uint16_t getSkillLevel(skills_t skill, bool sendToClient = false) const;
 		uint16_t getLoyaltySkill(skills_t skill) const;
-		uint16_t getBaseSkill(skills_t skill) const {
+		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
 		}
 		double_t getSkillPercent(skills_t skill) const {
@@ -815,6 +806,8 @@ class Player final : public Creature, public Cylinder {
 		int32_t getDefense() const override;
 		float getAttackFactor() const override;
 		float getDefenseFactor() const override;
+		float getMitigation() const override;
+		double getMitigationMultiplier() const;
 
 		void addInFightTicks(bool pzlock = false);
 
@@ -1259,6 +1252,11 @@ class Player final : public Creature, public Cylinder {
 		void sendMagicEffect(const Position &pos, uint8_t type) const {
 			if (client) {
 				client->sendMagicEffect(pos, type);
+			}
+		}
+		void removeMagicEffect(const Position &pos, uint8_t type) const {
+			if (client) {
+				client->removeMagicEffect(pos, type);
 			}
 		}
 		void sendPing();
@@ -1939,6 +1937,7 @@ class Player final : public Creature, public Cylinder {
 		bool canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay = 500);
 
 		// Interfaces
+		// Account
 		error_t SetAccountInterface(account::Account* account);
 		error_t GetAccountInterface(account::Account* account);
 
@@ -2371,6 +2370,10 @@ class Player final : public Creature, public Cylinder {
 		void reloadHazardSystemIcon();
 		/*******************************************************************************/
 
+		// Player wheel methods interface
+		std::unique_ptr<PlayerWheel> &wheel();
+		const std::unique_ptr<PlayerWheel> &wheel() const;
+
 	private:
 		static uint32_t playerFirstID;
 		static uint32_t playerLastID;
@@ -2722,6 +2725,9 @@ class Player final : public Creature, public Cylinder {
 		friend class ProtocolGame;
 		friend class MoveEvent;
 		friend class BedItem;
+		friend class PlayerWheel;
+
+		std::unique_ptr<PlayerWheel> m_wheelPlayer;
 
 		account::Account* account_;
 

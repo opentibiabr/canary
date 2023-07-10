@@ -23,6 +23,7 @@
 #include "creatures/monsters/monsters.h"
 #include "server/network/message/outputmessage.h"
 #include "creatures/players/player.h"
+#include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/grouping/familiars.h"
 #include "server/network/protocol/protocolgame.h"
 #include "game/scheduling/scheduler.h"
@@ -395,7 +396,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (!IOLoginData::loadPlayerById(player, player->getGUID())) {
+		if (!IOLoginData::loadPlayerById(player, player->getGUID(), false)) {
 			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("Your character could not be loaded.");
 			SPDLOG_WARN("Player {} could not be loaded", player->getName());
@@ -810,6 +811,12 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			break; // otclient extended opcode
 		case 0x60:
 			parseInventoryImbuements(msg);
+			break;
+		case 0x61:
+			parseOpenWheel(msg);
+			break;
+		case 0x62:
+			parseSaveWheel(msg);
 			break;
 		case 0x64:
 			parseAutoWalk(msg);
@@ -2144,7 +2151,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 		newmsg.add<uint32_t>(mtype->info.experience);
 		newmsg.add<uint16_t>(mtype->getBaseSpeed());
 		newmsg.add<uint16_t>(mtype->info.armor);
-		newmsg.addDouble(0); // 13.00 Mitigation
+		newmsg.addDouble(mtype->info.mitigation);
 	}
 
 	if (currentLevel > 2) {
@@ -3214,7 +3221,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.addByte(0x00);
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
 		skills_t skill = static_cast<skills_t>(i);
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill, true), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(0);
 	}
 
@@ -3310,16 +3317,27 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 
 	msg.add<uint16_t>(player->getArmor());
 	msg.add<uint16_t>(player->getDefense());
-	msg.addDouble(0); // Mitigation
+	// Wheel of destiny mitigation
+	if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
+		msg.addDouble(player->getMitigation());
+	} else {
+		msg.addDouble(0);
+	}
 
 	uint8_t combats = 0;
 	auto startCombats = msg.getBufferPosition();
 	msg.skipBytes(1);
 
-	const std::array<double_t, COMBAT_COUNT> &damageReduction = player->getFinalDamageReduction();
+	std::array<double_t, COMBAT_COUNT> damageReduction = player->getFinalDamageReduction();
 	static const Cipbia_Elementals_t cipbiaCombats[] = { CIPBIA_ELEMENTAL_PHYSICAL, CIPBIA_ELEMENTAL_ENERGY, CIPBIA_ELEMENTAL_EARTH, CIPBIA_ELEMENTAL_FIRE, CIPBIA_ELEMENTAL_UNDEFINED,
 														 CIPBIA_ELEMENTAL_LIFEDRAIN, CIPBIA_ELEMENTAL_UNDEFINED, CIPBIA_ELEMENTAL_HEALING, CIPBIA_ELEMENTAL_DROWN, CIPBIA_ELEMENTAL_ICE, CIPBIA_ELEMENTAL_HOLY, CIPBIA_ELEMENTAL_DEATH };
 	for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+		// Wheel of destiny resistance
+		damageReduction[i] += static_cast<int16_t>(player->wheel()->getResistance(indexToCombatType(i))) / 100.f;
+		if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
+			damageReduction[i] += static_cast<int16_t>(player->wheel()->getResistance(indexToCombatType(i))) / 100.f;
+		}
+
 		auto finalDamage = std::clamp<uint8_t>(static_cast<uint8_t>(damageReduction[i]), 0, 255);
 		if (finalDamage != 0) {
 			msg.addByte(cipbiaCombats[i]);
@@ -3670,19 +3688,48 @@ void ProtocolGame::sendBasicData() {
 	msg.addByte(player->getVocation()->getClientId());
 
 	// Prey window
-	if (player->getVocation()->getId() == 0) {
+	if (player->getVocation()->getId() == 0 && player->getGroup()->id < account::GROUP_TYPE_GAMEMASTER) {
 		msg.addByte(0);
 	} else {
 		msg.addByte(1); // has reached Main (allow player to open Prey window)
 	}
 
+	// Filter only valid ids
 	std::list<uint16_t> spellsList = g_spells().getSpellsByVocation(player->getVocationId());
-	msg.add<uint16_t>(spellsList.size());
+	std::vector<InstantSpell*> validSpells;
 	for (uint16_t sid : spellsList) {
+		auto spell = g_spells().getInstantSpellById(sid);
+		if (spell && spell->getId() > 0) {
+			validSpells.push_back(spell);
+		}
+	}
+
+	// Send total size of spells
+	msg.add<uint16_t>(validSpells.size());
+	// Send each spell valid ids
+	for (auto spell : validSpells) {
+		if (!spell) {
+			continue;
+		}
+
+		// Only send valid spells to old client
 		if (oldProtocol) {
-			msg.addByte(sid);
+			msg.addByte(spell->getId());
+			continue;
+		}
+
+		if (spell->isLearnable() && !player->hasLearnedInstantSpell(spell->getName())) {
+			msg.add<uint16_t>(0);
+		} else if (spell && spell->isLearnable() && player->hasLearnedInstantSpell(spell->getName())) {
+			// Ignore spell if not have wheel grade (or send if have)
+			auto grade = player->wheel()->getSpellUpgrade(spell->getName());
+			if (static_cast<uint8_t>(grade) == 0) {
+				msg.add<uint16_t>(0);
+			} else {
+				msg.add<uint16_t>(spell->getId());
+			}
 		} else {
-			msg.add<uint16_t>(sid);
+			msg.add<uint16_t>(spell->getId());
 		}
 	}
 
@@ -4960,7 +5007,11 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			if (i != SKILL_CRITICAL_HIT_CHANCE) {
 				ss << std::showpos;
 			}
-			ss << it.abilities->skills[i] << '%';
+			if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
+				ss << (it.abilities->skills[i] / 100.) << '%';
+			} else {
+				ss << it.abilities->skills[i] << '%';
+			}
 
 			if (i != SKILL_CRITICAL_HIT_CHANCE) {
 				ss << std::noshowpos;
@@ -5400,6 +5451,14 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint8_t type) {
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::removeMagicEffect(const Position &pos, uint8_t type) {
+	NetworkMessage msg;
+	msg.addByte(0x84);
+	msg.addPosition(pos);
+	msg.addByte(type);
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::sendCreatureHealth(const Creature* creature) {
 	if (creature->isHealthHidden()) {
 		return;
@@ -5783,6 +5842,10 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 
 	sendLootContainers();
 	sendBasicData();
+	// Wheel of destiny cooldown
+	if (!oldProtocol && g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
+		player->wheel()->sendGiftOfLifeCooldown();
+	}
 
 	player->sendClientCheck();
 	player->sendGameNews();
@@ -8084,4 +8147,31 @@ void ProtocolGame::reloadHazardSystemIcon() {
 		msg.add<uint16_t>(hazardLevel);
 	}
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::parseOpenWheel(NetworkMessage &msg) {
+	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
+		return;
+	}
+
+	auto ownerId = msg.get<uint32_t>();
+	addGameTask(&Game::playerOpenWheel, player->getID(), ownerId);
+}
+
+void ProtocolGame::sendOpenWheelWindow(uint32_t ownerId) {
+	if (!player || oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
+		return;
+	}
+
+	NetworkMessage msg;
+	player->wheel()->sendOpenWheelWindow(msg, ownerId);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
+	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
+		return;
+	}
+
+	addGameTask(&Game::playerSaveWheel, player->getID(), msg);
 }

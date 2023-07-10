@@ -31,7 +31,7 @@ function Party:onLeave(player)
 			player:updateHazard()
 		end
 
-		for _, memberId in ipairs(membersIds) do
+		for _, memberId in ipairs(memberIds) do
 			local member = Player(memberId)
 			local party = member:getParty()
 			if party then
@@ -53,7 +53,7 @@ function Party:onDisband()
 		end
 	end
 	addEvent(function()
-		for _, memberId in ipairs(membersIds) do
+		for _, memberId in ipairs(memberIds) do
 			local member = Player(memberId)
 			if member then
 				member:updateHazard()
@@ -89,7 +89,6 @@ function Party:refreshHazard()
 		end
 	end
 	for _, member in ipairs(members) do
-		Spdlog.info("Party:refreshHazard: " .. member:getName() .. " level: " .. level)
 		member:setHazardSystemPoints(level)
 	end
 end

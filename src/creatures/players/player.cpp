@@ -5144,12 +5144,14 @@ uint32_t Player::getMaxMana() const {
 	return std::max<int32_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS] + m_wheelPlayer->getStat(WheelStat_t::MANA));
 }
 
-uint16_t Player::getSkillLevel(uint8_t skill) const {
-	if (skill == SKILL_LIFE_LEECH_CHANCE || skill == SKILL_MANA_LEECH_CHANCE) {
-		return std::min<uint16_t>(100, std::max<uint16_t>(0, skills[skill].level + varSkills[skill]));
-	}
+uint16_t Player::getSkillLevel(skills_t skill, bool sendToClient /*= false*/) const {
+	auto skillLevel = getLoyaltySkill(skill);
+	skillLevel = std::max<int32_t>(0, skillLevel + varSkills[skill]);
 
-	auto skillLevel = std::max<int32_t>(0, skills[skill].level + varSkills[skill]);
+	if (auto it = maxValuePerSkill.find(skill);
+		it != maxValuePerSkill.end()) {
+		skillLevel = std::min<int32_t>(it->second, skillLevel);
+	}
 
 	// Wheel of destiny
 	if (skill >= SKILL_CLUB && skill <= SKILL_AXE) {
@@ -5176,6 +5178,11 @@ uint16_t Player::getSkillLevel(uint8_t skill) const {
 	int32_t avatarCritChance = m_wheelPlayer->checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_CHANCE);
 	if (skill == SKILL_CRITICAL_HIT_CHANCE && avatarCritChance > 0) {
 		skillLevel = avatarCritChance; // 100%
+	}
+
+	// Send to client multiplied skill mana/life leech (13.00+ version changed to decimal)
+	if (sendToClient && (skill == SKILL_MANA_LEECH_AMOUNT || skill == SKILL_LIFE_LEECH_AMOUNT)) {
+		return skillLevel * 100;
 	}
 
 	return std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), std::max<uint16_t>(0, static_cast<uint16_t>(skillLevel)));

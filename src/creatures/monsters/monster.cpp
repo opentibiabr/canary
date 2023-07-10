@@ -36,10 +36,9 @@ Monster::Monster(MonsterType* mType) :
 	defaultOutfit = mType->info.outfit;
 	currentOutfit = mType->info.outfit;
 	skull = mType->info.skull;
-	float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
-	health = mType->info.health * multiplier;
-	healthMax = mType->info.healthMax * multiplier;
-	runAwayHealth = mType->info.runAwayHealth * multiplier;
+	health = mType->info.health * mType->getHealthMultiplier();
+	healthMax = mType->info.healthMax * mType->getHealthMultiplier();
+	runAwayHealth = mType->info.runAwayHealth * mType->getHealthMultiplier();
 	baseSpeed = mType->getBaseSpeed();
 	internalLight = mType->info.light;
 	hiddenHealth = mType->info.hiddenHealth;
@@ -847,9 +846,9 @@ void Monster::doAttacking(uint32_t interval) {
 
 				float multiplier;
 				if (maxCombatValue > 0) { // Defense
-					multiplier = g_configManager().getFloat(RATE_MONSTER_DEFENSE);
+					multiplier = mType->getDefenseMultiplier();
 				} else { // Attack
-					multiplier = g_configManager().getFloat(RATE_MONSTER_ATTACK);
+					multiplier = mType->getAttackMultiplier();
 				}
 
 				minCombatValue = spellBlock.minCombatValue * multiplier;
@@ -1916,9 +1915,9 @@ bool Monster::getCombatValues(int32_t &min, int32_t &max) {
 
 	float multiplier;
 	if (maxCombatValue > 0) { // Defense
-		multiplier = g_configManager().getFloat(RATE_MONSTER_DEFENSE);
+		multiplier = mType->getDefenseMultiplier();
 	} else { // Attack
-		multiplier = g_configManager().getFloat(RATE_MONSTER_ATTACK);
+		multiplier = mType->getAttackMultiplier();
 	}
 
 	min = minCombatValue * multiplier;
@@ -2139,9 +2138,8 @@ void Monster::clearFiendishStatus() {
 	forgeStack = 0;
 	monsterForgeClassification = ForgeClassifications_t::FORGE_NORMAL_MONSTER;
 
-	float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
-	health = mType->info.health * static_cast<int32_t>(multiplier);
-	healthMax = mType->info.healthMax * static_cast<int32_t>(multiplier);
+	health = mType->info.health * mType->getHealthMultiplier();
+	healthMax = mType->info.healthMax * mType->getHealthMultiplier();
 
 	// Set icon
 	setMonsterIcon(0, CREATUREICON_NONE);

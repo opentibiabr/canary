@@ -33,10 +33,12 @@ function Party:onLeave(player)
 
 		for _, memberId in ipairs(memberIds) do
 			local member = Player(memberId)
-			local party = member:getParty()
-			if party then
-				party:refreshHazard()
-				return -- Only one player needs to refresh the hazard for the party
+			if member then
+				local party = member:getParty()
+				if party then
+					party:refreshHazard()
+					return -- Only one player needs to refresh the hazard for the party
+				end
 			end
 		end
 	end, 100)

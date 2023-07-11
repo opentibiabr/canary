@@ -5110,10 +5110,10 @@ uint32_t Player::getLoyaltyMagicLevel() const {
 	}
 
 	absl::uint128 spent = manaSpent;
-	absl::uint128 totalMana = vocation->getTotalMana(level) + mana;
+	absl::uint128 totalMana = vocation->getTotalMana(level) + spent;
 	absl::uint128 loyaltyMana = (totalMana * getLoyaltyBonus()) / 100;
 	while ((spent + loyaltyMana) >= nextReqMana) {
-		loyaltyMana -= nextReqMana - mana;
+		loyaltyMana -= nextReqMana - spent;
 		level++;
 		spent = 0;
 

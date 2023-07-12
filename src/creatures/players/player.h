@@ -775,7 +775,7 @@ class Player final : public Creature, public Cylinder {
 			return lastAttack > 0 && ((OTSYS_TIME() - lastAttack) >= getAttackSpeed());
 		}
 
-		uint16_t getSkillLevel(skills_t skill, bool sendToClient = false) const;
+		uint16_t getSkillLevel(skills_t skill) const;
 		uint16_t getLoyaltySkill(skills_t skill) const;
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
@@ -2370,6 +2370,18 @@ class Player final : public Creature, public Cylinder {
 		void reloadHazardSystemIcon();
 		/*******************************************************************************/
 
+		// Concoction system
+		void updateConcoction(uint16_t itemId, uint16_t timeLeft) {
+			if (timeLeft < 0) {
+				activeConcoctions.erase(itemId);
+			} else {
+				activeConcoctions[itemId] = timeLeft;
+			}
+		}
+		std::map<uint16_t, uint16_t> getActiveConcoctions() const {
+			return activeConcoctions;
+		}
+
 		// Player wheel methods interface
 		std::unique_ptr<PlayerWheel> &wheel();
 		const std::unique_ptr<PlayerWheel> &wheel() const;
@@ -2667,6 +2679,10 @@ class Player final : public Creature, public Cylinder {
 		bool reloadHazardSystemPointsCounter = true;
 		// Hazard end
 
+		// Concoctions
+		// [ConcoctionID] = time
+		std::map<uint16_t, uint16_t> activeConcoctions;
+
 		void updateItemsLight(bool internal = false);
 		uint16_t getStepSpeed() const override {
 			return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));
@@ -2685,8 +2701,23 @@ class Player final : public Creature, public Cylinder {
 
 		bool isPromoted() const;
 
+		bool onFistAttackSpeed = g_configManager().getBoolean(TOGGLE_ATTACK_SPEED_ONFIST);
+		uint32_t MAX_ATTACK_SPEED = g_configManager().getNumber(MAX_SPEED_ATTACKONFIST);
+
 		uint32_t getAttackSpeed() const {
-			return vocation->getAttackSpeed();
+			if (onFistAttackSpeed) {
+				uint32_t baseAttackSpeed = vocation->getAttackSpeed();
+				uint32_t skillLevel = getSkillLevel(SKILL_FIST);
+				uint32_t attackSpeed = baseAttackSpeed - (skillLevel * g_configManager().getNumber(MULTIPLIER_ATTACKONFIST));
+
+				if (attackSpeed < MAX_ATTACK_SPEED) {
+					attackSpeed = MAX_ATTACK_SPEED;
+				}
+
+				return static_cast<uint32_t>(attackSpeed);
+			} else {
+				return vocation->getAttackSpeed();
+			}
 		}
 
 		static double_t getPercentLevel(uint64_t count, uint64_t nextLevelCount);
@@ -2714,6 +2745,7 @@ class Player final : public Creature, public Cylinder {
 		}
 
 		void triggerMomentum();
+		void clearCooldowns();
 
 		friend class Game;
 		friend class Npc;

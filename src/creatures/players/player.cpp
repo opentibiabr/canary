@@ -5110,10 +5110,10 @@ uint32_t Player::getLoyaltyMagicLevel() const {
 	}
 
 	absl::uint128 spent = manaSpent;
-	absl::uint128 totalMana = vocation->getTotalMana(level) + mana;
+	absl::uint128 totalMana = vocation->getTotalMana(level) + spent;
 	absl::uint128 loyaltyMana = (totalMana * getLoyaltyBonus()) / 100;
 	while ((spent + loyaltyMana) >= nextReqMana) {
-		loyaltyMana -= nextReqMana - mana;
+		loyaltyMana -= nextReqMana - spent;
 		level++;
 		spent = 0;
 
@@ -5144,7 +5144,7 @@ uint32_t Player::getMaxMana() const {
 	return std::max<int32_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS] + m_wheelPlayer->getStat(WheelStat_t::MANA));
 }
 
-uint16_t Player::getSkillLevel(skills_t skill, bool sendToClient /*= false*/) const {
+uint16_t Player::getSkillLevel(skills_t skill) const {
 	auto skillLevel = getLoyaltySkill(skill);
 	skillLevel = std::max<int32_t>(0, skillLevel + varSkills[skill]);
 
@@ -5178,11 +5178,6 @@ uint16_t Player::getSkillLevel(skills_t skill, bool sendToClient /*= false*/) co
 	int32_t avatarCritChance = m_wheelPlayer->checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_CHANCE);
 	if (skill == SKILL_CRITICAL_HIT_CHANCE && avatarCritChance > 0) {
 		skillLevel = avatarCritChance; // 100%
-	}
-
-	// Send to client multiplied skill mana/life leech (13.00+ version changed to decimal)
-	if (sendToClient && (skill == SKILL_MANA_LEECH_AMOUNT || skill == SKILL_LIFE_LEECH_AMOUNT)) {
-		return skillLevel * 100;
 	}
 
 	return std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), std::max<uint16_t>(0, static_cast<uint16_t>(skillLevel)));
@@ -6260,6 +6255,22 @@ void Player::triggerMomentum() {
 			g_game().addMagicEffect(getPosition(), CONST_ME_HOURGLASS);
 			sendTextMessage(MESSAGE_ATTENTION, "Momentum was triggered.");
 		}
+	}
+}
+
+void Player::clearCooldowns() {
+	auto it = conditions.begin();
+	while (it != conditions.end()) {
+		auto condItem = *it;
+		ConditionType_t type = condItem->getType();
+		auto maxu16 = std::numeric_limits<uint16_t>::max();
+		auto checkSpellId = condItem->getSubId();
+		auto spellId = checkSpellId > maxu16 ? 0u : static_cast<uint16_t>(checkSpellId);
+		if (type == CONDITION_SPELLCOOLDOWN || type == CONDITION_SPELLGROUPCOOLDOWN) {
+			condItem->setTicks(0);
+			type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), 0) : sendSpellCooldown(spellId, 0);
+		}
+		++it;
 	}
 }
 

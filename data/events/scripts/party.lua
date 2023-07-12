@@ -1,20 +1,67 @@
 function Party:onJoin(player)
-	addEvent(function() self:refreshHazard() end, 100)
+	local playerId = player:getId()
+	addEvent(function()
+		player = Player(playerId)
+		if not player then
+			return
+		end
+		local party = player:getParty()
+		if not party then
+			return
+		end
+		party:refreshHazard()
+	end, 100)
 	return true
 end
 
 function Party:onLeave(player)
-	addEvent(function() self:refreshHazard() end, 100)
-	addEvent(function() player:updateHazard() end, 100)
+	local playerId = player:getId()
+	local members = self:getMembers()
+	table.insert(members, self:getLeader())
+	local memberIds = {}
+	for _, member in ipairs(members) do
+		if member:getId() ~= playerId then
+			table.insert(memberIds, member:getId())
+		end
+	end
+
+	addEvent(function()
+		player = Player(playerId)
+		if player then
+			player:updateHazard()
+		end
+
+		for _, memberId in ipairs(memberIds) do
+			local member = Player(memberId)
+			if member then
+				local party = member:getParty()
+				if party then
+					party:refreshHazard()
+					return -- Only one player needs to refresh the hazard for the party
+				end
+			end
+		end
+	end, 100)
 	return true
 end
 
 function Party:onDisband()
 	local members = self:getMembers()
 	table.insert(members, self:getLeader())
+	local memberIds = {}
 	for _, member in ipairs(members) do
-		addEvent(function() member:updateHazard() end, 100)
+		if member:getId() ~= playerId then
+			table.insert(memberIds, member:getId())
+		end
 	end
+	addEvent(function()
+		for _, memberId in ipairs(memberIds) do
+			local member = Player(memberId)
+			if member then
+				member:updateHazard()
+			end
+		end
+	end, 100)
 	return true
 end
 
@@ -44,7 +91,6 @@ function Party:refreshHazard()
 		end
 	end
 	for _, member in ipairs(members) do
-		Spdlog.info("Party:refreshHazard: " .. member:getName() .. " level: " .. level)
 		member:setHazardSystemPoints(level)
 	end
 end

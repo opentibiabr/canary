@@ -160,7 +160,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string &name) {
 	if (creation == 0) {
 		query.str(std::string());
 		query << "UPDATE `accounts` SET `creation` = " << static_cast<uint32_t>(time(nullptr)) << " WHERE `id` = " << player->accountNumber;
-		db.storeQuery(query.str());
+		db.executeQuery(query.str());
 	}
 
 	// If the player has more premium days than he purchased, it means data existed before the loyalty system was implemented.
@@ -168,7 +168,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string &name) {
 	if (premiumDays > premiumDaysPurchased) {
 		query.str(std::string());
 		query << "UPDATE `accounts` SET `premdays_purchased` = " << premiumDays << " WHERE `id` = " << player->accountNumber;
-		db.storeQuery(query.str());
+		db.executeQuery(query.str());
 	}
 
 	player->loyaltyPoints = static_cast<uint32_t>(std::ceil((static_cast<double>(time(nullptr) - creation)) / 86400)) * g_configManager().getNumber(LOYALTY_POINTS_PER_CREATION_DAY)

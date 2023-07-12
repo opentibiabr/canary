@@ -119,6 +119,8 @@ function loginEvents.onLogin(player)
 		"DreamCourtsKill",
 		-- Prime Ordeal
 		"PrimeOrdealKill",
+		-- Concoctions
+		"ConcoctionsOnLogin",
 		-- Hazard System
 		"PrimalHazardKill"
 	}

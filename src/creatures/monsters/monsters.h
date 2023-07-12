@@ -116,6 +116,8 @@ class MonsterType {
 				BosstiaryRarity_t bosstiaryRace;
 				std::string bosstiaryClass;
 
+				float mitigation = 0;
+
 				uint32_t soundChance = 0;
 				uint32_t soundSpeedTicks = 0;
 				std::vector<SoundEffect_t> soundVector;

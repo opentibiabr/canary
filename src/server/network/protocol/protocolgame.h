@@ -273,6 +273,7 @@ class ProtocolGame final : public Protocol {
 
 		void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 		void sendMagicEffect(const Position &pos, uint8_t type);
+		void removeMagicEffect(const Position &pos, uint8_t type);
 		void sendRestingStatus(uint8_t protection);
 		void sendCreatureHealth(const Creature* creature);
 		void sendPartyCreatureUpdate(const Creature* target);
@@ -450,6 +451,9 @@ class ProtocolGame final : public Protocol {
 		// otclient
 		void parseExtendedOpcode(NetworkMessage &msg);
 
+		// OTCv8
+		void sendFeatures();
+
 		void parseInventoryImbuements(NetworkMessage &msg);
 		void sendInventoryImbuements(const std::map<Slots_t, Item*> items);
 
@@ -458,7 +462,13 @@ class ProtocolGame final : public Protocol {
 
 		void getForgeInfoMap(const Item* item, std::map<uint16_t, std::map<uint8_t, uint16_t>> &itemsMap) const;
 
+		// Wheel
+		void parseOpenWheel(NetworkMessage &msg);
+		void sendOpenWheelWindow(uint32_t ownerId);
+		void parseSaveWheel(NetworkMessage &msg);
+
 		friend class Player;
+		friend class PlayerWheel;
 
 		phmap::flat_hash_set<uint32_t> knownCreatureSet;
 		Player* player = nullptr;
@@ -478,6 +488,8 @@ class ProtocolGame final : public Protocol {
 
 		bool oldProtocol = false;
 
+		uint16_t otclientV8 = 0;
+
 		void sendInventory();
 		void sendOpenStash();
 		void parseStashWithdraw(NetworkMessage &msg);
@@ -489,7 +501,7 @@ class ProtocolGame final : public Protocol {
 		void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
 
 		// Hazard system
-		void reloadHazardSystemIcon(uint16_t reference);
+		void reloadHazardSystemIcon();
 
 		uint8_t m_playerDeathTime = 0;
 

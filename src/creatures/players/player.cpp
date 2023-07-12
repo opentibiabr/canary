@@ -14,6 +14,7 @@
 #include "creatures/monsters/monster.h"
 #include "creatures/monsters/monsters.h"
 #include "creatures/players/player.h"
+#include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 #include "grouping/familiars.h"
@@ -35,6 +36,7 @@ Player::Player(ProtocolGame_ptr p) :
 	inbox(new Inbox(ITEM_INBOX)),
 	client(std::move(p)) {
 	inbox->incrementReferenceCounter();
+	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 }
 
 Player::~Player() {
@@ -130,6 +132,10 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		} else {
 			s << " You have no vocation.";
 		}
+
+		if (loyaltyTitle.length() != 0) {
+			s << " You are a " << loyaltyTitle << ".";
+		}
 	} else {
 		s << name;
 		if (!group->access) {
@@ -149,6 +155,14 @@ std::string Player::getDescription(int32_t lookDistance) const {
 			s << " is " << vocation->getVocDescription() << '.';
 		} else {
 			s << " has no vocation.";
+		}
+
+		if (loyaltyTitle.length() != 0) {
+			if (sex == PLAYERSEX_FEMALE) {
+				s << " She is a " << loyaltyTitle << ".";
+			} else {
+				s << " He is a " << loyaltyTitle << ".";
+			}
 		}
 	}
 
@@ -369,6 +383,10 @@ void Player::getShieldAndWeapon(const Item*&shield, const Item*&weapon) const {
 	}
 }
 
+float Player::getMitigation() const {
+	return wheel()->calculateMitigation();
+}
+
 int32_t Player::getDefense() const {
 	int32_t defenseSkill = getSkillLevel(SKILL_FIST);
 	int32_t defenseValue = 7;
@@ -387,6 +405,10 @@ int32_t Player::getDefense() const {
 
 	if (shield) {
 		defenseValue = weapon != nullptr ? shield->getDefense() + weapon->getExtraDefense() : shield->getDefense();
+		// Wheel of destiny - Combat Mastery
+		if (shield->getDefense() > 0) {
+			defenseValue += wheel()->getMajorStatConditional("Combat Mastery", WheelMajor_t::DEFENSE);
+		}
 		defenseSkill = getSkillLevel(SKILL_SHIELD);
 	}
 
@@ -540,6 +562,33 @@ void Player::setTraining(bool value) {
 	}
 	this->statusVipList = VIPSTATUS_TRAINING;
 	setExerciseTraining(value);
+}
+
+uint16_t Player::getLoyaltySkill(skills_t skill) const {
+	uint16_t level = getBaseSkill(skill);
+	absl::uint128 currReqTries = vocation->getReqSkillTries(skill, level);
+	absl::uint128 nextReqTries = vocation->getReqSkillTries(skill, level + 1);
+	if (currReqTries >= nextReqTries) {
+		// player has reached max skill
+		return skills[skill].level;
+	}
+
+	absl::uint128 tries = skills[skill].tries;
+	absl::uint128 totalTries = vocation->getTotalSkillTries(skill, skills[skill].level) + tries;
+	absl::uint128 loyaltyTries = (totalTries * getLoyaltyBonus()) / 100;
+	while ((tries + loyaltyTries) >= nextReqTries) {
+		loyaltyTries -= nextReqTries - tries;
+		level++;
+		tries = 0;
+
+		currReqTries = nextReqTries;
+		nextReqTries = vocation->getReqSkillTries(skill, level + 1);
+		if (currReqTries >= nextReqTries) {
+			loyaltyTries = 0;
+			break;
+		}
+	}
+	return level;
 }
 
 void Player::addSkillAdvance(skills_t skill, uint64_t count) {
@@ -1123,27 +1172,6 @@ std::vector<Item*> Player::getRewardsFromContainer(const Container* container) c
 	return rewardItemsVector;
 }
 
-ReturnValue Player::recurseMoveItemToContainer(Item* item, Container* container) {
-	auto returnValue = g_game().internalMoveItem(item->getRealParent(), container, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
-	if (returnValue == RETURNVALUE_NOERROR) {
-		return RETURNVALUE_NOERROR;
-	}
-
-	for (auto containerItem : container->getItems(true)) {
-		auto subContainer = containerItem->getContainer();
-		if (!subContainer) {
-			continue;
-		}
-
-		returnValue = recurseMoveItemToContainer(item, subContainer);
-		if (returnValue == RETURNVALUE_NOERROR) {
-			return RETURNVALUE_NOERROR;
-		}
-	}
-
-	return RETURNVALUE_NOTENOUGHROOM;
-}
-
 ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*/, uint32_t maxMoveItems /* = 0*/) {
 	std::vector<Item*> rewardItemsVector;
 	if (fromCorpse) {
@@ -1158,60 +1186,40 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 		return fromCorpse ? RETURNVALUE_REWARDCONTAINERISEMPTY : RETURNVALUE_REWARDCHESTISEMPTY;
 	}
 
-	uint32_t movedRewardItems = 0;
 	auto rewardCount = rewardItemsVector.size();
-	bool fallbackConsumed = false;
-	Item* fallbackItem = getInventoryItem(CONST_SLOT_BACKPACK);
-	int32_t movedMoney = 0;
+	uint32_t movedRewardItems = 0;
+	int32_t movedRewardMoney = 0;
 	for (auto item : rewardItemsVector) {
 		if (uint32_t worth = item->getWorth(); worth > 0) {
-			movedMoney += worth;
+			movedRewardMoney += worth;
 			g_game().internalRemoveItem(item);
 			rewardCount--;
 			continue;
 		}
 
-		ObjectCategory_t category = g_game().getObjectCategory(item);
-		Container* lootContainer = getLootContainer(category);
-		// Limit the collect count if the "maxMoveItems" is not "0"
-		auto limitMove = maxMoveItems != 0 && movedItems == maxMoveItems;
-		if (!lootContainer && !quickLootFallbackToMainContainer || limitMove) {
-			if (limitMove) {
-				sendCancelMessage(fmt::format("You can only collect {} items at a time.", maxMoveItems));
-			} else {
-				sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your main backpack is not configured.");
-			}
+		// Stop if player not have free capacity
+		if (getCapacity() < item->getWeight()) {
 			break;
 		}
 
-		if (fallbackItem) {
-			if (Container* mainBackpack = fallbackItem->getContainer(); mainBackpack && !fallbackConsumed) {
-				setLootContainer(OBJECTCATEGORY_DEFAULT, mainBackpack);
-				sendInventoryItem(CONST_SLOT_BACKPACK, fallbackItem);
-			}
-
-			lootContainer = fallbackItem->getContainer();
-			fallbackConsumed = true;
-		}
-
-		if (!lootContainer) {
-			sendTextMessage(MESSAGE_EVENT_ADVANCE, "You don't have any backpack configured in quickloot to retrieve items.");
+		// Limit the collect count if the "maxMoveItems" is not "0"
+		auto limitMove = maxMoveItems != 0 && movedRewardItems == maxMoveItems;
+		if (limitMove) {
+			sendCancelMessage(fmt::format("You can only collect {} items at a time.", maxMoveItems));
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
-		auto recurseReturn = recurseMoveItemToContainer(item, lootContainer);
-		if (recurseReturn != RETURNVALUE_NOERROR) {
-			continue;
+		ObjectCategory_t category = g_game().getObjectCategory(item);
+		if (g_game().internalQuickLootItem(this, item, category) == RETURNVALUE_NOERROR) {
+			movedRewardItems++;
 		}
-
-		movedRewardItems++;
 	}
 
-	if (movedMoney > 0) {
-		setBankBalance(getBankBalance() + movedMoney);
+	if (movedRewardMoney > 0) {
+		setBankBalance(getBankBalance() + movedRewardMoney);
 	}
 
-	auto lootedMessage = fmt::format("{} of {} objects were picked up and {} gold moved to your bank.", movedRewardItems, rewardCount, movedMoney);
+	auto lootedMessage = fmt::format("{} of {} objects were picked up and {} gold moved to your bank.", movedRewardItems, rewardCount, movedRewardMoney);
 	sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedMessage);
 
 	auto finalReturn = movedRewardItems == 0 ? RETURNVALUE_NOTENOUGHROOM : RETURNVALUE_NOERROR;
@@ -1676,9 +1684,16 @@ void Player::onChangeZone(ZoneType_t zone) {
 	}
 
 	updateImbuementTrackerStats();
+	wheel()->onThink(true);
+	wheel()->sendGiftOfLifeCooldown();
 	g_game().updateCreatureWalkthrough(this);
 	sendIcons();
 	g_events().eventPlayerOnChangeZone(this, zone);
+}
+
+void Player::onChangeHazard(bool isHazard) {
+	g_events().eventPlayerOnChangeHazard(this, isHazard);
+	sendIcons();
 }
 
 void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
@@ -2074,6 +2089,9 @@ void Player::onThink(uint32_t interval) {
 	if (lastStatsTrainingTime != getOfflineTrainingTime() / 60 / 1000) {
 		sendStats();
 	}
+
+	// Wheel of destiny major spells
+	wheel()->onThink();
 }
 
 uint32_t Player::isMuted() const {
@@ -2211,7 +2229,7 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 
 	// Hazard system experience
 	const Monster* monster = target && target->getMonster() ? target->getMonster() : nullptr;
-	bool handleHazardExperience = monster && monster->isOnHazardSystem() && getHazardSystemPoints() > 0;
+	bool handleHazardExperience = monster && monster->getHazard() && getHazardSystemPoints() > 0;
 	if (handleHazardExperience) {
 		exp += (exp * (1.75 * getHazardSystemPoints() * g_configManager().getNumber(HAZARD_EXP_BONUS_MULTIPLIER))) / 100.;
 	}
@@ -2448,7 +2466,6 @@ bool Player::hasShield() const {
 
 BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool field /* = false*/) {
 	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor, field);
-
 	if (attacker) {
 		sendCreatureSquare(attacker, SQ_COLOR_BLACK);
 	}
@@ -2520,11 +2537,15 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 			}
 		}
 
+		// Wheel of destiny - apply resistance
+		wheel()->adjustDamageBasedOnResistanceAndSkill(damage, combatType);
+
 		if (damage <= 0) {
 			damage = 0;
 			blockType = BLOCK_ARMOR;
 		}
 	}
+
 	return blockType;
 }
 
@@ -2866,6 +2887,8 @@ Item* Player::getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature)
 }
 
 void Player::addInFightTicks(bool pzlock /*= false*/) {
+	wheel()->checkAbilities();
+
 	if (hasFlag(PlayerFlags_t::NotGainInFight)) {
 		return;
 	}
@@ -3241,8 +3264,8 @@ ReturnValue Player::queryMaxCount(int32_t index, const Thing &thing, uint32_t co
 							n += queryCount;
 						}
 					}
-				} else if (inventoryItem->isStackable() && item->equals(inventoryItem) && inventoryItem->getItemCount() < 100) {
-					uint32_t remainder = (100 - inventoryItem->getItemCount());
+				} else if (inventoryItem->isStackable() && item->equals(inventoryItem) && inventoryItem->getItemCount() < inventoryItem->getStackSize()) {
+					uint32_t remainder = (inventoryItem->getStackSize() - inventoryItem->getItemCount());
 
 					if (queryAdd(slotIndex, *item, remainder, flags) == RETURNVALUE_NOERROR) {
 						n += remainder;
@@ -3250,7 +3273,7 @@ ReturnValue Player::queryMaxCount(int32_t index, const Thing &thing, uint32_t co
 				}
 			} else if (queryAdd(slotIndex, *item, item->getItemCount(), flags) == RETURNVALUE_NOERROR) { // empty slot
 				if (item->isStackable()) {
-					n += 100;
+					n += item->getStackSize();
 				} else {
 					++n;
 				}
@@ -3267,14 +3290,14 @@ ReturnValue Player::queryMaxCount(int32_t index, const Thing &thing, uint32_t co
 		}
 
 		if (destItem) {
-			if (destItem->isStackable() && item->equals(destItem) && destItem->getItemCount() < 100) {
-				maxQueryCount = 100 - destItem->getItemCount();
+			if (destItem->isStackable() && item->equals(destItem) && destItem->getItemCount() < destItem->getStackSize()) {
+				maxQueryCount = destItem->getStackSize() - destItem->getItemCount();
 			} else {
 				maxQueryCount = 0;
 			}
 		} else if (queryAdd(index, *item, count, flags) == RETURNVALUE_NOERROR) { // empty slot
 			if (item->isStackable()) {
-				maxQueryCount = 100;
+				maxQueryCount = item->getStackSize();
 			} else {
 				maxQueryCount = 1;
 			}
@@ -3340,7 +3363,7 @@ Cylinder* Player::queryDestination(int32_t &index, const Thing &thing, Item** de
 				if (autoStack && isStackable) {
 					// try find an already existing item to stack with
 					if (queryAdd(slotIndex, *item, item->getItemCount(), 0) == RETURNVALUE_NOERROR) {
-						if (inventoryItem->equals(item) && inventoryItem->getItemCount() < 100) {
+						if (inventoryItem->equals(item) && inventoryItem->getItemCount() < inventoryItem->getStackSize()) {
 							index = slotIndex;
 							*destItem = inventoryItem;
 							return this;
@@ -3397,7 +3420,7 @@ Cylinder* Player::queryDestination(int32_t &index, const Thing &thing, Item** de
 				}
 
 				// try find an already existing item to stack with
-				if (tmpItem->equals(item) && tmpItem->getItemCount() < 100) {
+				if (tmpItem->equals(item) && tmpItem->getItemCount() < tmpItem->getStackSize()) {
 					index = n;
 					*destItem = tmpItem;
 					return tmpContainer;
@@ -3861,7 +3884,7 @@ double_t Player::calculateDamageReduction(double_t currentTotal, int16_t resista
 	return (100 - currentTotal) / 100.0 * resistance + currentTotal;
 }
 
-std::vector<Item*> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/) const {
+std::vector<Item*> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/, bool ignoreItemWithTier /* false*/) const {
 	std::vector<Item*> itemVector;
 	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
 		Item* item = inventory[i];
@@ -3875,6 +3898,10 @@ std::vector<Item*> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/) 
 		}
 		if (Container* container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+				if (ignoreItemWithTier && (*it)->getTier() > 0) {
+					continue;
+				}
+
 				itemVector.push_back(*it);
 			}
 		}
@@ -3917,11 +3944,7 @@ std::map<uint32_t, uint32_t> &Player::getAllItemTypeCount(std::map<uint32_t, uin
 }
 
 std::map<uint16_t, uint16_t> &Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const {
-	for (const auto item : getAllInventoryItems()) {
-		if (item->getTier() > 0) {
-			continue;
-		}
-
+	for (const auto item : getAllInventoryItems(false, true)) {
 		if (!item->hasImbuements()) {
 			countMap[item->getID()] += item->getItemCount();
 		}
@@ -4076,6 +4099,11 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 			} else {
 				autoCloseContainers(container);
 			}
+		}
+
+		// force list update if item exists tier
+		if (item->getTier() > 0 && !requireListUpdate) {
+			requireListUpdate = true;
 		}
 
 		if (shopOwner && !scheduledSaleUpdate && requireListUpdate) {
@@ -5095,6 +5123,97 @@ bool Player::isInWarList(uint32_t guildId) const {
 	return std::find(guildWarVector.begin(), guildWarVector.end(), guildId) != guildWarVector.end();
 }
 
+uint32_t Player::getMagicLevel() const {
+	uint32_t magic = std::max<int32_t>(0, getLoyaltyMagicLevel() + varStats[STAT_MAGICPOINTS]);
+	// Wheel of destiny magic bonus
+	magic += m_wheelPlayer->getStat(WheelStat_t::MAGIC); // Regular bonus
+	magic += m_wheelPlayer->getMajorStatConditional("Positional Tatics", WheelMajor_t::MAGIC); // Revelation bonus
+	return magic;
+}
+
+uint32_t Player::getLoyaltyMagicLevel() const {
+	uint32_t level = getBaseMagicLevel();
+	absl::uint128 currReqMana = vocation->getReqMana(level);
+	absl::uint128 nextReqMana = vocation->getReqMana(level + 1);
+	if (currReqMana >= nextReqMana) {
+		// player has reached max magic level
+		return level;
+	}
+
+	absl::uint128 spent = manaSpent;
+	absl::uint128 totalMana = vocation->getTotalMana(level) + spent;
+	absl::uint128 loyaltyMana = (totalMana * getLoyaltyBonus()) / 100;
+	while ((spent + loyaltyMana) >= nextReqMana) {
+		loyaltyMana -= nextReqMana - spent;
+		level++;
+		spent = 0;
+
+		currReqMana = nextReqMana;
+		nextReqMana = vocation->getReqMana(level + 1);
+		if (currReqMana >= nextReqMana) {
+			loyaltyMana = 0;
+			break;
+		}
+	}
+	return level;
+}
+
+uint32_t Player::getCapacity() const {
+	if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
+		return 0;
+	} else if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
+		return std::numeric_limits<uint32_t>::max();
+	}
+	return capacity + bonusCapacity + varStats[STAT_CAPACITY] + m_wheelPlayer->getStat(WheelStat_t::CAPACITY);
+}
+
+int32_t Player::getMaxHealth() const {
+	return std::max<int32_t>(1, healthMax + varStats[STAT_MAXHITPOINTS] + m_wheelPlayer->getStat(WheelStat_t::HEALTH));
+}
+
+uint32_t Player::getMaxMana() const {
+	return std::max<int32_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS] + m_wheelPlayer->getStat(WheelStat_t::MANA));
+}
+
+uint16_t Player::getSkillLevel(skills_t skill) const {
+	auto skillLevel = getLoyaltySkill(skill);
+	skillLevel = std::max<int32_t>(0, skillLevel + varSkills[skill]);
+
+	if (auto it = maxValuePerSkill.find(skill);
+		it != maxValuePerSkill.end()) {
+		skillLevel = std::min<int32_t>(it->second, skillLevel);
+	}
+
+	// Wheel of destiny
+	if (skill >= SKILL_CLUB && skill <= SKILL_AXE) {
+		skillLevel += m_wheelPlayer->getStat(WheelStat_t::MELEE);
+		skillLevel += m_wheelPlayer->getMajorStatConditional("Battle Instinct", WheelMajor_t::MELEE);
+	} else if (skill == SKILL_DISTANCE) {
+		skillLevel += m_wheelPlayer->getMajorStatConditional("Positional Tatics", WheelMajor_t::DISTANCE);
+		skillLevel += m_wheelPlayer->getStat(WheelStat_t::DISTANCE);
+	} else if (skill == SKILL_SHIELD) {
+		skillLevel += m_wheelPlayer->getMajorStatConditional("Battle Instinct", WheelMajor_t::SHIELD);
+	} else if (skill == SKILL_MAGLEVEL) {
+		skillLevel += m_wheelPlayer->getMajorStatConditional("Positional Tatics", WheelMajor_t::MAGIC);
+		skillLevel += m_wheelPlayer->getStat(WheelStat_t::MAGIC);
+	} else if (skill == SKILL_LIFE_LEECH_AMOUNT) {
+		skillLevel += m_wheelPlayer->getStat(WheelStat_t::LIFE_LEECH);
+	} else if (skill == SKILL_MANA_LEECH_AMOUNT) {
+		skillLevel += m_wheelPlayer->getStat(WheelStat_t::MANA_LEECH);
+	} else if (skill == SKILL_CRITICAL_HIT_DAMAGE) {
+		skillLevel += m_wheelPlayer->getMajorStatConditional("Combat Mastery", WheelMajor_t::CRITICAL_DMG_2);
+		skillLevel += m_wheelPlayer->getMajorStatConditional("Ballistic Mastery", WheelMajor_t::CRITICAL_DMG);
+		skillLevel += m_wheelPlayer->checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_DAMAGE);
+	}
+
+	int32_t avatarCritChance = m_wheelPlayer->checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_CHANCE);
+	if (skill == SKILL_CRITICAL_HIT_CHANCE && avatarCritChance > 0) {
+		skillLevel = avatarCritChance; // 100%
+	}
+
+	return std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), std::max<uint16_t>(0, static_cast<uint16_t>(skillLevel)));
+}
+
 bool Player::isPremium() const {
 	if (g_configManager().getBoolean(FREE_PREMIUM) || hasFlag(PlayerFlags_t::IsAlwaysPremium)) {
 		return true;
@@ -6090,10 +6209,18 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 
 	StashContainerList itemDict;
 	if (allItems) {
-		// Stow player backpack
-		if (auto inventoryItem = getInventoryItem(CONST_SLOT_BACKPACK);
-			inventoryItem && !item->isInsideDepot(true)) {
-			sendStowItems(*item, *inventoryItem, itemDict);
+		if (!item->isInsideDepot(true)) {
+			// Stow "all items" from player backpack
+			if (auto backpack = getInventoryItem(CONST_SLOT_BACKPACK)) {
+				sendStowItems(*item, *backpack, itemDict);
+			}
+
+			// Stow "all items" from loot pouch
+			auto itemParent = item->getParent();
+			auto lootPouch = itemParent->getItem();
+			if (itemParent && lootPouch && lootPouch->getID() == ITEM_GOLD_POUCH) {
+				sendStowItems(*item, *lootPouch, itemDict);
+			}
 		}
 
 		// Stow locker items
@@ -6726,7 +6853,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 		}
 		if (bonus != 2) {
 			if (coreCount != 0 && !removeItemCountById(ITEM_FORGE_CORE, coreCount)) {
-				SPDLOG_ERROR("[{}][Log 1] Failed to remove item 'id :{} count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, coreCount, getName());
+				SPDLOG_ERROR("[{}][Log 1] Failed to remove item 'id :{} count: {}' from player {}", __FUNCTION__, fmt::underlying(ITEM_FORGE_CORE), coreCount, getName());
 				sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 				return;
 			}
@@ -6801,7 +6928,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 		}
 
 		if (coreCount != 0 && !removeItemCountById(ITEM_FORGE_CORE, coreCount)) {
-			SPDLOG_ERROR("[{}][Log 2] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, coreCount, getName());
+			SPDLOG_ERROR("[{}][Log 2] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, fmt::underlying(ITEM_FORGE_CORE), coreCount, getName());
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
@@ -6830,7 +6957,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 	}
 	returnValue = g_game().internalAddItem(this, exaltationContainer, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("Failed to add exaltation chest to player with name {}", ITEM_EXALTATION_CHEST, getName());
+		SPDLOG_ERROR("Failed to add exaltation chest to player with name {}", fmt::underlying(ITEM_EXALTATION_CHEST), getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -6945,7 +7072,7 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 	}
 
 	if (!removeItemCountById(ITEM_FORGE_CORE, coresAmount)) {
-		SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, 1, getName());
+		SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, fmt::underlying(ITEM_FORGE_CORE), 1, getName());
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
@@ -6959,7 +7086,7 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 	returnValue = g_game().internalAddItem(this, exaltationContainer, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("[Log 10] Failed to add forge item {} from player with name {}", ITEM_EXALTATION_CHEST, getName());
+		SPDLOG_ERROR("[Log 10] Failed to add forge item {} from player with name {}", fmt::underlying(ITEM_EXALTATION_CHEST), getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -7011,7 +7138,7 @@ void Player::forgeResourceConversion(uint8_t action) {
 		}
 
 		if (!removeItemCountById(ITEM_FORGE_SLIVER, cost)) {
-			SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count {}' from player {}", __FUNCTION__, ITEM_FORGE_SLIVER, cost, getName());
+			SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count {}' from player {}", __FUNCTION__, fmt::underlying(ITEM_FORGE_SLIVER), cost, getName());
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
@@ -7343,36 +7470,33 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
  * Hazard system
  ******************************************************************************/
 
-void Player::addHazardSystemPoints(int32_t amount) {
-	addStorageValue(STORAGEVALUE_HAZARDCOUNT, std::max<int32_t>(0, std::min<int32_t>(0xFFFF, static_cast<int32_t>(getHazardSystemPoints()) + amount)), true);
+void Player::setHazardSystemPoints(int32_t count) {
+	addStorageValue(STORAGEVALUE_HAZARDCOUNT, std::max<int32_t>(0, std::min<int32_t>(0xFFFF, count)), true);
 	reloadHazardSystemPointsCounter = true;
-	if (hazardSystemReferenceCounter > 0) {
-		const auto tile = getTile();
-		if (!tile) {
-			return;
+	const auto tile = getTile();
+	if (!tile) {
+		return;
+	}
+
+	SpectatorHashSet spectators;
+	g_game().map.getSpectators(spectators, tile->getPosition(), true);
+	for (Creature* spectator : spectators) {
+		if (!spectator || spectator == this) {
+			continue;
 		}
 
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, tile->getPosition(), true);
-		for (Creature* spectator : spectators) {
-			if (!spectator || spectator == this) {
-				continue;
-			}
-
-			Player* player = spectator->getPlayer();
-			if (player && !client->oldProtocol) {
-				player->sendCreatureIcon(getPlayer());
-			}
+		Player* player = spectator->getPlayer();
+		if (client && player && !client->oldProtocol) {
+			player->sendCreatureIcon(this);
 		}
-
-		if (client && !client->oldProtocol) {
-			client->reloadHazardSystemIcon(hazardSystemReferenceCounter);
-		}
+	}
+	if (client && !client->oldProtocol) {
+		client->reloadHazardSystemIcon();
 	}
 }
 
 void Player::parseAttackRecvHazardSystem(CombatDamage &damage, const Monster* monster) {
-	if (!monster || !monster->isOnHazardSystem()) {
+	if (!monster || !monster->getHazard()) {
 		return;
 	}
 
@@ -7403,8 +7527,9 @@ void Player::parseAttackRecvHazardSystem(CombatDamage &damage, const Monster* mo
 
 	uint16_t stage = 0;
 	auto chance = static_cast<uint16_t>(normal_random(1, 10000));
+	auto critChance = g_configManager().getNumber(HAZARD_CRITICAL_CHANCE);
 	// Critical chance
-	if ((lastHazardSystemCriticalHit + g_configManager().getNumber(HAZARD_CRITICAL_INTERVAL)) <= OTSYS_TIME() && chance <= monster->getHazardSystemCritChance() && !damage.critical) {
+	if (monster->getHazardSystemCrit() && (lastHazardSystemCriticalHit + g_configManager().getNumber(HAZARD_CRITICAL_INTERVAL)) <= OTSYS_TIME() && chance <= critChance && !damage.critical) {
 		damage.critical = true;
 		damage.extension = true;
 		damage.exString = "(Hazard)";
@@ -7434,7 +7559,7 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* m
 		return;
 	}
 
-	if (!monster || !monster->isOnHazardSystem()) {
+	if (!monster || !monster->getHazard()) {
 		return;
 	}
 
@@ -7489,55 +7614,14 @@ void Player::reloadHazardSystemIcon() {
 				}
 
 				Player* player = spectator->getPlayer();
-				if (player && !client->oldProtocol) {
-					player->sendCreatureIcon(getPlayer());
+				if (client && player && !client->oldProtocol) {
+					player->sendCreatureIcon(this);
 				}
 			}
 		}
 		if (client && !client->oldProtocol) {
-			client->reloadHazardSystemIcon(hazardSystemReferenceCounter);
+			client->reloadHazardSystemIcon();
 		}
-	}
-}
-
-void Player::incrementeHazardSystemReference() {
-	hazardSystemReferenceCounter++;
-	if (hazardSystemReferenceCounter != 0) {
-		reloadHazardSystemIcon();
-	}
-}
-
-void Player::decrementeHazardSystemReference() {
-	if (hazardSystemReferenceCounter == 0) {
-		return;
-	}
-
-	hazardSystemReferenceCounter--;
-	if (hazardSystemReferenceCounter == 0) {
-		if (getHazardSystemPoints() > 0) {
-			Tile* tile = getTile();
-			if (!tile) {
-				return;
-			}
-
-			SpectatorHashSet spectators;
-			g_game().map.getSpectators(spectators, tile->getPosition(), true);
-			for (Creature* spectator : spectators) {
-				if (!spectator || spectator == this) {
-					continue;
-				}
-
-				Player* player = spectator->getPlayer();
-				if (player) {
-					player->sendCreatureIcon(getPlayer());
-				}
-			}
-		}
-
-		if (client) {
-			client->reloadHazardSystemIcon(hazardSystemReferenceCounter);
-		}
-		reloadHazardSystemPointsCounter = true;
 	}
 }
 
@@ -7545,6 +7629,16 @@ void Player::decrementeHazardSystemReference() {
  * Interfaces
  ******************************************************************************/
 
+// Wheel interface
+std::unique_ptr<PlayerWheel> &Player::wheel() {
+	return m_wheelPlayer;
+}
+
+const std::unique_ptr<PlayerWheel> &Player::wheel() const {
+	return m_wheelPlayer;
+}
+
+// Account interface
 error_t Player::SetAccountInterface(account::Account* account) {
 	if (account == nullptr) {
 		return account::ERROR_NULLPTR;

@@ -65,6 +65,7 @@ class Condition {
 		bool isRemovableOnDeath() const;
 
 	protected:
+		uint8_t drainBodyStage = 0;
 		int64_t endTime;
 		uint32_t subId;
 		int32_t ticks;

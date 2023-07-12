@@ -1160,7 +1160,14 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 					ss << std::showpos;
 				}
 
-				ss << getSkillName(i) << ' ' << it.abilities->skills[i] << '%' << std::noshowpos;
+				ss << getSkillName(i) << ' ';
+				// Show float
+				if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
+					ss << it.abilities->skills[i] / 100;
+				} else {
+					ss << it.abilities->skills[i];
+				}
+				ss << '%' << std::noshowpos;
 				skillBoost = true;
 			}
 
@@ -1559,7 +1566,15 @@ Item::getDescriptions(const ItemType &it, const Item* item /*= nullptr*/) {
 					ss << std::showpos;
 				}
 
-				ss << getSkillName(i) << ' ' << it.abilities->skills[i] << '%' << std::noshowpos;
+				ss << getSkillName(i) << ' ';
+				// Show float
+				if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
+					ss << it.abilities->skills[i] / 100;
+				} else {
+					ss << it.abilities->skills[i];
+				}
+				ss << '%' << std::noshowpos;
+
 				skillBoost = true;
 			}
 
@@ -2007,7 +2022,12 @@ std::string Item::parseShowAttributesDescription(const Item* item, const uint16_
 				if (i != SKILL_CRITICAL_HIT_CHANCE) {
 					itemDescription << std::showpos;
 				}
-				itemDescription << itemType.abilities->skills[i];
+				// Show float
+				if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
+					itemDescription << itemType.abilities->skills[i] / 100;
+				} else {
+					itemDescription << itemType.abilities->skills[i];
+				}
 				if (i != SKILL_CRITICAL_HIT_CHANCE) {
 					itemDescription << std::noshowpos;
 				}
@@ -2303,7 +2323,12 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 					if (i != SKILL_CRITICAL_HIT_CHANCE) {
 						s << std::showpos;
 					}
-					s << it.abilities->skills[i];
+					// Show float
+					if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
+						s << it.abilities->skills[i] / 100;
+					} else {
+						s << it.abilities->skills[i];
+					}
 					if (i != SKILL_CRITICAL_HIT_CHANCE) {
 						s << std::noshowpos;
 					}
@@ -2546,7 +2571,12 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 					if (i != SKILL_CRITICAL_HIT_CHANCE) {
 						s << std::showpos;
 					}
-					s << it.abilities->skills[i];
+					// Show float
+					if (i == SKILL_LIFE_LEECH_AMOUNT || i == SKILL_MANA_LEECH_AMOUNT) {
+						s << it.abilities->skills[i] / 100;
+					} else {
+						s << it.abilities->skills[i];
+					}
 					if (i != SKILL_CRITICAL_HIT_CHANCE) {
 						s << std::noshowpos;
 					}

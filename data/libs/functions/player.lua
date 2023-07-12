@@ -460,3 +460,41 @@ function Player.getFinalBaseRateExperience(self)
 	end
 	return baseRate
 end
+
+function Player.getFinalBonusStamina(self)
+	local staminaBonus = 1
+	if configManager.getBoolean(configKeys.STAMINA_SYSTEM) then
+		local staminaMinutes = self:getStamina()
+		if staminaMinutes > 2340 and self:isPremium() then
+			staminaBonus = 1.5
+		elseif staminaMinutes <= 840 then
+			staminaBonus = 0.5
+		end
+	end
+	return staminaBonus
+end
+
+function Player.getFinalLowLevelBonus(self)
+	local level = self:getLevel()
+	if level > 0 and level <= 50 then
+		self:setGrindingXpBoost(configManager.getNumber(configKeys.LOW_LEVEL_BONUS_EXP))
+	else
+		self:setGrindingXpBoost(0)
+	end
+	return self:getGrindingXpBoost()
+end
+
+function Player.updateHazard(self)
+	local area = self:getPosition():getHazardArea()
+	if not area then
+		self:setHazardSystemPoints(0)
+		return true
+	end
+
+	if self:getParty() then
+		self:getParty():refreshHazard()
+	else
+		area:refresh(self)
+	end
+	return true
+end

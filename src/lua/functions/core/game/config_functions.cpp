@@ -195,6 +195,7 @@ void ConfigFunctions::init(lua_State* L) {
 
 	registerEnumIn(L, "configKeys", HAZARD_SPAWN_PLUNDER_MULTIPLIER);
 	registerEnumIn(L, "configKeys", HAZARD_CRITICAL_INTERVAL);
+	registerEnumIn(L, "configKeys", HAZARD_CRITICAL_CHANCE);
 	registerEnumIn(L, "configKeys", HAZARD_CRITICAL_MULTIPLIER);
 	registerEnumIn(L, "configKeys", HAZARD_DAMAGE_MULTIPLIER);
 	registerEnumIn(L, "configKeys", HAZARD_DODGE_MULTIPLIER);
@@ -205,6 +206,16 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", HAZARD_LOOT_BONUS_MULTIPLIER);
 	registerEnumIn(L, "configKeys", HAZARD_PODS_DAMAGE);
 	registerEnumIn(L, "configKeys", TOGGLE_HAZARDSYSTEM);
+	registerEnumIn(L, "configKeys", LOW_LEVEL_BONUS_EXP);
+
+	registerEnumIn(L, "configKeys", LOYALTY_ENABLED);
+	registerEnumIn(L, "configKeys", LOYALTY_POINTS_PER_CREATION_DAY);
+	registerEnumIn(L, "configKeys", LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT);
+	registerEnumIn(L, "configKeys", LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED);
+	registerEnumIn(L, "configKeys", LOYALTY_BONUS_PERCENTAGE_MULTIPLIER);
+
+	registerEnumIn(L, "configKeys", AUTH_TYPE);
+	registerEnumIn(L, "configKeys", RESET_SESSIONS_ON_STARTUP);
 #undef registerEnumIn
 }
 

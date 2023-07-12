@@ -144,6 +144,54 @@ local items = {
 		level = 250
 	},
 	{
+		-- broken iks cuirass
+		itemid = 40533,
+		type = "equip",
+		slot = "armor"
+	},
+	{
+		-- broken iks cuirass
+		itemid = 40533,
+		type = "deequip",
+		slot = "armor"
+	},
+	{
+		-- broken iks faulds
+		itemid = 40531,
+		type = "equip",
+		slot = "legs"
+	},
+	{
+		-- broken iks faulds
+		itemid = 40531,
+		type = "deequip",
+		slot = "legs"
+	},
+	{
+		-- broken iks sandals
+		itemid = 40534,
+		type = "equip",
+		slot = "feet"
+	},
+	{
+		-- broken iks sandals
+		itemid = 40534,
+		type = "deequip",
+		slot = "feet"
+	},
+	{
+		-- broken macuahuitl
+		itemid = 40530,
+		type = "equip",
+		slot = "hand"
+	},
+	{
+		-- broken macuahuitl
+		itemid = 40530,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
 		-- 25 years backpack
 		itemid = 39693,
 		type = "equip",
@@ -167,7 +215,7 @@ local items = {
 		},
 	},
 	{
-		-- enchanted turtle amulet
+		-- turtle amulet
 		itemid = 39235,
 		type = "deequip",
 		slot = "necklace"
@@ -275,7 +323,7 @@ local items = {
 		slot = "ring"
 	},
 	{
-		-- charged arcanomancer ring
+		-- charged arcanomancer sigil
 		itemid = 39184,
 		type = "equip",
 		slot = "ring",
@@ -286,7 +334,7 @@ local items = {
 		}
 	},
 	{
-		-- charged arcanomancer ring
+		-- charged arcanomancer sigil
 		itemid = 39184,
 		type = "deequip",
 		slot = "ring"
@@ -320,7 +368,7 @@ local items = {
 		}
 	},
 	{
-		-- charged alicorn ring
+		-- alicorn ring
 		itemid = 39182,
 		type = "deequip",
 		slot = "ring"
@@ -766,6 +814,68 @@ local items = {
 		itemid = 39147,
 		type = "deequip",
 		slot = "armor"
+	},
+	{
+		-- green demon slippers
+		itemid = 37610,
+		type = "equip",
+		slot = "feet"
+	},
+	{
+		-- green demon slippers
+		itemid = 37610,
+		type = "deequip",
+		slot = "feet"
+	},
+	{
+		-- Morshabaal's mask
+		itemid = 37611,
+		type = "equip",
+		slot = "shield",
+		level = 150
+	},
+	{
+		-- Morshabaal's mask
+		itemid = 37611,
+		type = "deequip",
+		slot = "shield",
+		level = 150
+	},
+	{
+		-- green demon helmet
+		itemid = 37609,
+		type = "equip",
+		slot = "head"
+	},
+	{
+		-- green demon helmet
+		itemid = 37609,
+		type = "deequip",
+		slot = "head"
+	},
+	{
+		-- green demon armor
+		itemid = 37608,
+		type = "equip",
+		slot = "armor"
+	},
+	{
+		-- green demon armor
+		itemid = 37608,
+		type = "deequip",
+		slot = "armor"
+	},
+	{
+		-- green demon legs
+		itemid = 37607,
+		type = "equip",
+		slot = "legs"
+	},
+	{
+		-- green demon legs
+		itemid = 37607,
+		type = "deequip",
+		slot = "legs"
 	},
 	{
 		-- changing backpack
@@ -1606,7 +1716,8 @@ local items = {
 		-- lion spellbook
 		itemid = 34153,
 		type = "deequip",
-		slot = "shield"
+		slot = "shield",
+		level = 220
 	},
 	{
 		-- lion spellbook
@@ -1741,13 +1852,13 @@ local items = {
 		}
 	},
 	{
-		-- soulmantel armor
+		-- soulmantle
 		itemid = 34095,
 		type = "deequip",
 		slot = "armor"
 	},
 	{
-		-- soulmantel armor
+		-- soulmantle
 		itemid = 34095,
 		type = "equip",
 		slot = "armor",
@@ -1985,19 +2096,13 @@ local items = {
 		-- lion ring
 		itemid = 34080,
 		type = "deequip",
-		slot = "ring",
-		level = 270
+		slot = "ring"
 	},
 	{
 		-- lion ring
 		itemid = 34080,
 		type = "equip",
-		slot = "ring",
-		level = 270,
-		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+		slot = "ring"
 	},
 	{
 		-- Lit Torch (Sparkling)
@@ -2038,14 +2143,14 @@ local items = {
 		level = 200
 	},
 	{
-		-- ring of souls
+		-- enchanted ring of souls
 		itemid = 32635,
 		type = "equip",
 		slot = "ring",
 		level = 200
 	},
 	{
-		-- ring of souls
+		-- enchanted ring of souls
 		itemid = 32635,
 		type = "deequip",
 		slot = "ring",
@@ -2082,14 +2187,14 @@ local items = {
 		level = 230
 	},
 	{
-		-- ring of souls
+		-- enchanted ring of souls
 		itemid = 32621,
 		type = "equip",
 		slot = "ring",
 		level = 200
 	},
 	{
-		-- ring of souls
+		-- enchanted ring of souls
 		itemid = 32621,
 		type = "deequip",
 		slot = "ring",
@@ -2197,6 +2302,54 @@ local items = {
 		slot = "armor"
 	},
 	{
+		-- Traditional Gamsbart Hat
+		itemid = 32100,
+		type = "equip",
+		slot = "head"
+	},
+	{
+		-- Traditional Gamsbart Hat
+		itemid = 32100,
+		type = "deequip",
+		slot = "head"
+	},
+	{
+		-- traditional shirt
+		itemid = 32099,
+		type = "equip",
+		slot = "armor"
+	},
+	{
+		-- traditional shirt
+		itemid = 32099,
+		type = "deequip",
+		slot = "armor"
+	},
+	{
+		-- lederhosen
+		itemid = 32097,
+		type = "equip",
+		slot = "legs"
+	},
+	{
+		-- lederhosen
+		itemid = 32097,
+		type = "deequip",
+		slot = "legs"
+	},
+	{
+		-- traditional leather shoes
+		itemid = 32098,
+		type = "equip",
+		slot = "feet"
+	},
+	{
+		-- traditional leather shoes
+		itemid = 32098,
+		type = "deequip",
+		slot = "feet"
+	},
+	{
 		-- meat hammer
 		itemid = 32093,
 		type = "equip",
@@ -2279,14 +2432,14 @@ local items = {
 		level = 220,
 	},
 	{
-		-- blister ring
+		-- enchanted blister ring
 		itemid = 31616,
 		type = "equip",
 		slot = "ring",
 		level = 220,
 	},
 	{
-		-- blister ring
+		-- enchanted blister ring
 		itemid = 31616,
 		type = "deequip",
 		slot = "ring",
@@ -2434,14 +2587,14 @@ local items = {
 		level = 230,
 	},
 	{
-		-- blister ring
+		-- enchanted blister ring
 		itemid = 31557,
 		type = "equip",
 		slot = "ring",
 		level = 220,
 	},
 	{
-		-- blister ring
+		-- enchanted blister ring
 		itemid = 31557,
 		type = "deequip",
 		slot = "ring",
@@ -2546,7 +2699,7 @@ local items = {
 		slot = "ring",
 	},
 	{
-		-- amulet of theurgy
+		-- enchanted theurgic amulet
 		itemid = 30403,
 		type = "equip",
 		slot = "necklace",
@@ -2559,7 +2712,7 @@ local items = {
 		},
 	},
 	{
-		-- amulet of theurgy
+		-- enchanted theurgic amulet
 		itemid = 30403,
 		type = "deequip",
 		slot = "necklace",
@@ -2646,7 +2799,7 @@ local items = {
 		itemid = 30398,
 		type = "equip",
 		slot = "hand",
-		level = 250,
+		level = 220,
 		vocation = {
 			{"Knight", true},
 			{"Elite Knight"}
@@ -2657,6 +2810,11 @@ local items = {
 		itemid = 30398,
 		type = "deequip",
 		slot = "hand",
+		level = 220,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- cobra hood
@@ -3183,7 +3341,7 @@ local items = {
 		itemid = 29417,
 		type = "equip",
 		slot = "hand",
-		level = 250,
+		level = 220,
 		vocation = {
 			{"Paladin", true},
 			{"Royal Paladin"}
@@ -3193,7 +3351,12 @@ local items = {
 		-- living vine bow
 		itemid = 29417,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 220,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
 	},
 	{
 		-- golden axe
@@ -3884,7 +4047,7 @@ local items = {
 		itemid = 27452,
 		type = "equip",
 		slot = "hand",
-                level = 200,
+		level = 200,
 		vocation = {
 			{"Knight", true},
 			{"Elite Knight"}
@@ -3945,7 +4108,12 @@ local items = {
 		-- blade of destruction
 		itemid = 27449,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- Journal Shield
@@ -5471,13 +5639,15 @@ local items = {
 		-- royal star
 		itemid = 25759,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 120
 	},
 	{
 		-- royal star
 		itemid = 25759,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 120
 	},
 	{
 		-- spectral bolt
@@ -5495,13 +5665,15 @@ local items = {
 		-- leaf star
 		itemid = 25735,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 60
 	},
 	{
 		-- leaf star
 		itemid = 25735,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 60
 	},
 	{
 		-- dream blossom staff
@@ -6516,14 +6688,14 @@ local items = {
 		level = 65
 	},
 	{
-		-- Ferumbras' staff
+		-- Ferumbras' staff (club)
 		itemid = 22764,
 		type = "equip",
 		slot = "hand",
 		level = 100
 	},
 	{
-		-- Ferumbras' staff
+		-- Ferumbras' staff (club)
 		itemid = 22764,
 		type = "deequip",
 		slot = "hand"
@@ -6656,11 +6828,7 @@ local items = {
 		itemid = 22727,
 		type = "equip",
 		slot = "hand",
-        level = 70,
-		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+        level = 70
 	},
 	{
 		-- rift lance
@@ -7111,7 +7279,7 @@ local items = {
 		slot = "shield"
 	},
 	{
-		-- ogre sceptra
+		-- ogre scepta
 		itemid = 22183,
 		type = "equip",
 		slot = "hand",
@@ -7122,7 +7290,7 @@ local items = {
 		}
 	},
 	{
-		-- ogre sceptra
+		-- ogre scepta
 		itemid = 22183,
 		type = "deequip",
 		slot = "hand",
@@ -7203,8 +7371,46 @@ local items = {
 		slot = "necklace"
 	},
 	{
-		-- enchanted werewolf helmet
+		-- enchanted werewolf helmet - sword
+		itemid = 22132,
+		type = "equip",
+		slot = "necklace",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- enchanted werewolf helmet - sword
+		itemid = 22132,
+		type = "deequip",
+		slot = "necklace",
+		level = 100
+	},
+	{
+		-- enchanted werewolf helmet - ml
 		itemid = 22130,
+		type = "equip",
+		slot = "head",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- enchanted werewolf helmet - ml
+		itemid = 22130,
+		type = "deequip",
+		slot = "head",
+		level = 100
+	},
+	{
+		-- enchanted werewolf helmet - distance
+		itemid = 22129,
 		type = "equip",
 		slot = "head",
 		level = 100,
@@ -7214,15 +7420,15 @@ local items = {
 		}
 	},
 	{
-		-- enchanted werewolf helmet
-		itemid = 22130,
+		-- enchanted werewolf helmet - distance
+		itemid = 22129,
 		type = "deequip",
 		slot = "head",
 		level = 100
 	},
 	{
-		-- enchanted werewolf helmet
-		itemid = 22129,
+		-- enchanted werewolf helmet - club
+		itemid = 22128,
 		type = "equip",
 		slot = "head",
 		level = 100,
@@ -7232,43 +7438,25 @@ local items = {
 		}
 	},
 	{
-		-- enchanted werewolf helmet
-		itemid = 22129,
-		type = "deequip",
-		slot = "head",
-		level = 100
-	},
-	{
-		-- enchanted werewolf helmet
-		itemid = 22128,
-		type = "equip",
-		slot = "head",
-		level = 100,
-		vocation = {
-			{"Druid", true},
-			{"Elder Druid"}
-		}
-	},
-	{
-		-- enchanted werewolf helmet
+		-- enchanted werewolf helmet - club
 		itemid = 22128,
 		type = "deequip",
 		slot = "head",
 		level = 100
 	},
 	{
-		-- enchanted werewolf helmet
+		-- enchanted werewolf helmet - axe
 		itemid = 22127,
 		type = "equip",
 		slot = "head",
 		level = 100,
 		vocation = {
-			{"Sorcerer", true},
-			{"Master Sorcerer"}
+			{"Knight", true},
+			{"Elite Knight"}
 		}
 	},
 	{
-		-- enchanted werewolf helmet
+		-- enchanted werewolf helmet - axe
 		itemid = 22127,
 		type = "deequip",
 		slot = "head",
@@ -7655,7 +7843,8 @@ local items = {
 		-- cowtana
 		itemid = 21177,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 25
 	},
 	{
 		-- execowtioner axe
@@ -7687,7 +7876,7 @@ local items = {
 		itemid = 21174,
 		type = "equip",
 		slot = "hand",
-        level = 40
+        level = 45
 	},
 	{
 		-- mino lance
@@ -7856,13 +8045,15 @@ local items = {
 		-- glooth spear
 		itemid = 21158,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 60
 	},
 	{
 		-- glooth spear
 		itemid = 21158,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 60
 	},
 	{
 		-- cake backpack
@@ -8194,7 +8385,12 @@ local items = {
 		-- umbral master chopper
 		itemid = 20075,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+        level = 250,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+        }
 	},
 	{
 		-- umbral master chopper
@@ -8207,7 +8403,7 @@ local items = {
 		itemid = 20074,
 		type = "equip",
 		slot = "hand",
-                level = 120,
+        level = 120,
 		vocation = {
 			{"Knight", true},
 			{"Elite Knight"}
@@ -8276,7 +8472,7 @@ local items = {
 		itemid = 20070,
 		type = "equip",
 		slot = "hand",
-              level = 75,
+        level = 75,
 		vocation = {
 			{"Knight", true},
 			{"Elite Knight"}
@@ -8326,7 +8522,7 @@ local items = {
 		-- crude umbral slayer
 		itemid = 20067,
 		type = "equip",
-	slot = "hand",
+		slot = "hand",
 		level = 75,
 		vocation = {
 			{"Knight", true},
@@ -8337,7 +8533,12 @@ local items = {
 		-- crude umbral slayer
 		itemid = 20067,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 75,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- umbral masterblade
@@ -8388,7 +8589,12 @@ local items = {
 		-- crude umbral blade
 		itemid = 20064,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 75,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- strange good night songs
@@ -8728,19 +8934,28 @@ local items = {
 		-- mean paladin spear
 		itemid = 17110,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		vocation = {
+			{"None", true}
+		}
 	},
 	{
 		-- mean paladin spear
 		itemid = 17110,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		vocation = {
+			{"None", true}
+		}
 	},
 	{
 		-- mean knight sword
 		itemid = 17109,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		vocation = {
+			{"None", true}
+		}
 	},
 	{
 		-- mean knight sword
@@ -9964,7 +10179,8 @@ local items = {
 		-- blade of corruption
 		itemid = 11693,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 82
 	},
 	{
 		-- snake god's sceptre
@@ -10876,13 +11092,13 @@ local items = {
 	},
 	{
 		-- shield of the white knight
-		itemid = 3537,
+		itemid = 9377,
 		type = "equip",
 		slot = "shield"
 	},
 	{
 		-- shield of the white knight
-		itemid = 3537,
+		itemid = 9377,
 		type = "deequip",
 		slot = "shield"
 	},
@@ -12316,7 +12532,7 @@ local items = {
 		itemid = 8024,
 		type = "equip",
 		slot = "hand",
-		level = 120,
+		level = 100,
 		vocation = {
 			{"Paladin", true},
 			{"Royal Paladin"}
@@ -12326,7 +12542,12 @@ local items = {
 		-- The Devileye
 		itemid = 8024,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 100,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
 	},
 	{
 		-- royal crossbow
@@ -12478,6 +12699,18 @@ local items = {
 		slot = "necklace"
 	},
 	{
+		-- viper star
+		itemid = 7366,
+		type = "equip",
+		slot = "hand"
+	},
+	{
+		-- viper star
+		itemid = 7366,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
 		-- crimson sword
 		itemid = 860,
 		type = "equip",
@@ -12509,6 +12742,18 @@ local items = {
 	},
 	{
 		-- shapeshifter ring
+		itemid = 907,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- Throwing Cake
+		itemid = 904,
+		type = "equip",
+		slot = "ring"
+	},
+	{
+		-- Throwing Cake
 		itemid = 904,
 		type = "deequip",
 		slot = "ring"
@@ -13681,38 +13926,38 @@ local items = {
 		slot = "legs"
 	},
 	{
-		-- suspicious signet ring
+		-- family signet ring
 		itemid = 406,
 		type = "equip",
 		slot = "ring"
 	},
 	{
-		-- suspicious signet ring
+		-- family signet ring
 		itemid = 406,
 		type = "deequip",
 		slot = "ring"
 	},
 	{
-		-- family signet ring
+		-- suspicious signet ring
 		itemid = 349,
 		type = "equip",
 		slot = "ring"
 	},
 	{
-		-- family signet ring
+		-- suspicious signet ring
 		itemid = 349,
 		type = "deequip",
 		slot = "ring"
 	},
 	{
 		-- mining helmet
-		itemid = 139,
+		itemid = 875,
 		type = "equip",
 		slot = "head"
 	},
 	{
 		-- mining helmet
-		itemid = 139,
+		itemid = 875,
 		type = "deequip",
 		slot = "head"
 	},
@@ -13877,7 +14122,11 @@ local items = {
 		itemid = 7452,
 		type = "equip",
 		slot = "hand",
-		level = 30
+		level = 30,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+  		}
 	},
 	{
 		-- spiked squelcher
@@ -14240,7 +14489,8 @@ local items = {
 		-- bloody edge
 		itemid = 7416,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 55
 	},
 	{
 		-- cranial basher
@@ -14386,7 +14636,8 @@ local items = {
 		-- blacksteel sword
 		itemid = 7406,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 35
 	},
 	{
 		-- havoc blade
@@ -14416,13 +14667,15 @@ local items = {
 		-- assassin dagger
 		itemid = 7404,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 40
 	},
 	{
 		-- berserker
 		itemid = 7403,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 65
 	},
 	{
 		-- berserker
@@ -14439,7 +14692,12 @@ local items = {
 		-- dragon slayer
 		itemid = 7402,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 45,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- dragon slayer
@@ -14557,7 +14815,8 @@ local items = {
 		-- crimson sword
 		itemid = 7385,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 20
 	},
 	{
 		-- mystic blade
@@ -14649,37 +14908,43 @@ local items = {
 		-- royal spear
 		itemid = 7378,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 25
 	},
 	{
 		-- royal spear
 		itemid = 7378,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 25
 	},
 	{
 		-- assassin star
 		itemid = 7368,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 80
 	},
 	{
 		-- assassin star
 		itemid = 7368,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 80
 	},
 	{
 		-- enchanted spear
 		itemid = 7367,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 42
 	},
 	{
 		-- enchanted spear
 		itemid = 7367,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 42
 	},
 	{
 		-- onyx arrow
@@ -14873,15 +15138,13 @@ local items = {
 		-- pair of soft boots
 		itemid = 6529,
 		type = "equip",
-		slot = "feet",
-		level = 10
+		slot = "feet"
 	},
 	{
 		-- pair of soft boots
 		itemid = 6529,
 		type = "deequip",
-		slot = "feet",
-		level = 10
+		slot = "feet"
 	},
 	{
 		-- tortoise shield
@@ -15252,13 +15515,15 @@ local items = {
 		-- hunting spear
 		itemid = 3347,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 20
 	},
 	{
 		-- hunting spear
 		itemid = 3347,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 20
 	},
 	{
 		-- ripper lance
@@ -15658,15 +15923,13 @@ local items = {
 		-- pair of soft boots
 		itemid = 3549,
 		type = "equip",
-		slot = "feet",
-		level = 10
+		slot = "feet"
 	},
 	{
 		-- pair of soft boots
 		itemid = 3549,
 		type = "deequip",
-		slot = "feet",
-		level = 10
+		slot = "feet"
 	},
 	{
 		-- scythe
@@ -16831,7 +17094,11 @@ local items = {
 		itemid = 3342,
 		type = "equip",
 		slot = "hand",
-        level = 65
+        level = 65,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- war axe
@@ -16857,11 +17124,7 @@ local items = {
 		itemid = 3340,
 		type = "equip",
 		slot = "hand",
-		level = 70,
-		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+		level = 70
 	},
 	{
 		-- heavy mace
@@ -16940,11 +17203,7 @@ local items = {
 		itemid = 3334,
 		type = "equip",
 		slot = "hand",
-		level = 45,
-		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+		level = 45
 	},
 	{
 		-- pharaoh sword
@@ -16956,7 +17215,8 @@ local items = {
 		-- crystal mace
 		itemid = 3333,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 35
 	},
 	{
 		-- crystal mace
@@ -16986,11 +17246,7 @@ local items = {
 		itemid = 3331,
 		type = "equip",
 		slot = "hand",
-        level = 70,
-		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
+        level = 70
 	},
 	{
 		-- ravager's axe
@@ -17247,7 +17503,8 @@ local items = {
 		-- clerical mace
 		itemid = 3311,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		level = 20
 	},
 	{
 		-- clerical mace
@@ -17374,13 +17631,21 @@ local items = {
 		-- broadsword
 		itemid = 3301,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- broadsword
 		itemid = 3301,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- katana
@@ -17458,7 +17723,8 @@ local items = {
 		-- bright sword
 		itemid = 3295,
 		type = "deequip",
-		slot = "hand"
+		slot = "hand",
+		level = 30
 	},
 	{
 		-- short sword
@@ -17823,7 +18089,11 @@ local items = {
 		-- battle axe
 		itemid = 3266,
 		type = "equip",
-		slot = "hand"
+		slot = "hand",
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
 	},
 	{
 		-- battle axe
@@ -17952,13 +18222,13 @@ local items = {
 	},
 	{
 		-- giant smithhammer
-		itemid = 12510,
+		itemid = 3208,
 		type = "equip",
 		slot = "hand"
 	},
 	{
 		-- giant smithhammer
-		itemid = 12510,
+		itemid = 3208,
 		type = "deequip",
 		slot = "hand"
 	},
@@ -18389,7 +18659,7 @@ local items = {
 		level = 33
 	},
 	{
-		-- snakebit rod
+		-- snakebite rod
 		itemid = 3066,
 		type = "equip",
 		slot = "hand",
@@ -18400,7 +18670,7 @@ local items = {
 		}
 	},
 	{
-		-- snakebit rod
+		-- snakebite rod
 		itemid = 3066,
 		type = "deequip",
 		slot = "hand",

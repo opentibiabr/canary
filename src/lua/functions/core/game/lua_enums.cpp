@@ -12,6 +12,7 @@
 #include "lua/functions/core/game/lua_enums.hpp"
 
 #include "creatures/players/account/account.hpp"
+#include "creatures/players/wheel/wheel_definitions.hpp"
 #include "io/io_bosstiary.hpp"
 #include "config/configmanager.h"
 #include "creatures/creature.h"
@@ -26,6 +27,14 @@
 		auto name = magic_enum::enum_name(enumClassType).data(); \
 		registerGlobalVariable(luaState, name, number);          \
 	}                                                            \
+	void(0)
+
+#define registerEnumClassNamespace(luaState, luaNamespace, enumClassType)                    \
+	{                                                                                        \
+		auto number = magic_enum::enum_integer(enumClassType);                               \
+		auto name = std::string(luaNamespace) + magic_enum::enum_name(enumClassType).data(); \
+		registerGlobalVariable(luaState, name, number);                                      \
+	}                                                                                        \
 	void(0)
 
 #define registerEnum(L, value)                                                             \
@@ -98,6 +107,7 @@ void LuaEnums::init(lua_State* L) {
 	initWebhookEnums(L);
 	initBosstiaryEnums(L);
 	initSoundEnums(L);
+	initWheelEnums(L);
 }
 
 void LuaEnums::initOthersEnums(lua_State* L) {
@@ -393,6 +403,7 @@ void LuaEnums::initConditionParamEnums(lua_State* L) {
 	registerEnum(L, CONDITION_PARAM_MANASHIELD);
 	registerEnum(L, CONDITION_PARAM_BUFF_DAMAGEDEALT);
 	registerEnum(L, CONDITION_PARAM_BUFF_DAMAGERECEIVED);
+	registerEnum(L, CONDITION_PARAM_DRAIN_BODY);
 	registerEnum(L, CONDITION_PARAM_ABSORB_PHYSICALPERCENT);
 	registerEnum(L, CONDITION_PARAM_ABSORB_FIREPERCENT);
 	registerEnum(L, CONDITION_PARAM_ABSORB_ENERGYPERCENT);
@@ -553,6 +564,13 @@ void LuaEnums::initConstMeEnums(lua_State* L) {
 	registerEnum(L, CONST_ME_HORESTIS);
 	registerEnum(L, CONST_ME_DEVOVORGA);
 	registerEnum(L, CONST_ME_FERUMBRAS_2);
+	registerEnum(L, CONST_ME_WHITE_SMOKE);
+	registerEnum(L, CONST_ME_WHITE_SMOKES);
+	registerEnum(L, CONST_ME_WATER_DROP);
+	registerEnum(L, CONST_ME_AVATAR_APPEAR);
+	registerEnum(L, CONST_ME_DIVINE_GRENADE);
+	registerEnum(L, CONST_ME_DIVINE_EMPOWERMENT);
+	registerEnum(L, CONST_ME_WATER_FLOATING_THRASH);
 }
 
 void LuaEnums::initConstAniEnums(lua_State* L) {
@@ -839,6 +857,8 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 	registerEnum(L, ITEM_TIBIADROME_POTION_CHARM);
 	registerEnum(L, ITEM_TIBIADROME_POTION_LOOT);
 	registerEnum(L, ITEM_TIBIADROME_POTION_BESTIARY);
+
+	registerEnum(L, ITEM_DIVINE_EMPOWERMENT);
 
 	registerEnum(L, ITEM_FORGE_SLIVER);
 	registerEnum(L, ITEM_FORGE_CORE);
@@ -1677,4 +1697,35 @@ void LuaEnums::initSoundEnums(lua_State* L) {
 	registerEnumNamespace(L, soundNamespace, SoundEffect_t::ENV_WATER);
 	registerEnumNamespace(L, soundNamespace, SoundEffect_t::ENV_SNAKE_2);
 	registerEnumNamespace(L, soundNamespace, SoundEffect_t::GOD_SPELL_KILL_ALL_MONSTERS);
+}
+
+void LuaEnums::initWheelEnums(lua_State* L) {
+	std::string wheelNamespace = "WHEEL_INSTANT_";
+	for (auto value : magic_enum::enum_values<WheelInstant_t>()) {
+		registerEnumClassNamespace(L, wheelNamespace, value);
+	}
+
+	wheelNamespace = "WHEEL_STAGE_";
+	for (auto value : magic_enum::enum_values<WheelStage_t>()) {
+		registerEnumClassNamespace(L, wheelNamespace, value);
+	}
+	wheelNamespace = "WHEEL_GRADE_";
+	for (auto value : magic_enum::enum_values<WheelSpellGrade_t>()) {
+		registerEnumClassNamespace(L, wheelNamespace, value);
+	}
+
+	wheelNamespace = "WHEEL_AVATAR_SKILL_";
+	for (auto value : magic_enum::enum_values<WheelAvatarSkill_t>()) {
+		registerEnumClassNamespace(L, wheelNamespace, value);
+	}
+
+	wheelNamespace = "WHEEL_STAT_";
+	for (auto value : magic_enum::enum_values<WheelStat_t>()) {
+		registerEnumClassNamespace(L, wheelNamespace, value);
+	}
+
+	wheelNamespace = "WHEEL_BOOST_";
+	for (auto value : magic_enum::enum_values<WheelSpellBoost_t>()) {
+		registerEnumClassNamespace(L, wheelNamespace, value);
+	}
 }

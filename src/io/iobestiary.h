@@ -36,7 +36,7 @@ class Charm {
 		SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
 		SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
 
-		int8_t percent = 0;
+		uint16_t percent = 0;
 		int8_t chance = 0;
 		uint16_t points = 0;
 		int32_t binary = 0;

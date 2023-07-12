@@ -271,7 +271,7 @@ function createHirelingType(HirelingName)
 		{itemName = "venorean cabinet", clientId = 17974, buy = 90},
 		{itemName = "venorean drawer", clientId = 17977, buy = 40},
 		{itemName = "venorean wardrobe", clientId = 17975, buy = 50},
-		{itemName = "vial", clientId = 377, sell = 5},
+		{itemName = "vial", clientId = 2874, sell = 5},
 		{itemName = "viking helmet", clientId = 3367, sell = 66},
 		{itemName = "viking shield", clientId = 3431, sell = 85},
 		{itemName = "vortex bolt", clientId = 14252, buy = 6},

@@ -136,6 +136,7 @@ const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttribut
 	{ "blocking", ITEM_PARSE_BLOCK_SOLID },
 	{ "allowdistread", ITEM_PARSE_ALLOWDISTREAD },
 	{ "imbuementslot", ITEM_PARSE_IMBUEMENT },
+	{ "stacksize", ITEM_PARSE_STACKSIZE },
 	// 12.72 modifiers
 	{ "deathmagiclevelpoints", ITEM_PARSE_DEATHMAGICLEVELPOINTS },
 	{ "energymagiclevelpoints", ITEM_PARSE_ENERGYMAGICLEVELPOINTS },
@@ -151,7 +152,7 @@ const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttribut
 	{ "perfectshotrange", ITEM_PARSE_PERFECTSHOTRANGE },
 	{ "cleavepercent", ITEM_PARSE_CLEAVEPERCENT },
 	{ "reflectdamage", ITEM_PARSE_REFLECTDAMAGE },
-	{ "reflectpercentall", ITEM_PARSE_REFLECTPERCENTALL }
+	{ "reflectpercentall", ITEM_PARSE_REFLECTPERCENTALL },
 };
 
 const phmap::flat_hash_map<std::string, ItemTypes_t> ItemTypesMap = {
@@ -210,6 +211,7 @@ const phmap::flat_hash_map<std::string, WeaponType_t> WeaponTypesMap = {
 	{ "club", WEAPON_CLUB },
 	{ "axe", WEAPON_AXE },
 	{ "shield", WEAPON_SHIELD },
+	{ "spellbook", WEAPON_SHIELD },
 	{ "distance", WEAPON_DISTANCE },
 	{ "wand", WEAPON_WAND },
 	{ "ammunition", WEAPON_AMMO },
@@ -293,6 +295,7 @@ class ItemParse : public Items {
 		static void parseWalk(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parseAllowDistanceRead(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parseImbuement(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType);
+		static void parseStackSize(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parseSpecializedMagicLevelPoint(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parseMagicShieldCapacity(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parsePerfecShot(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);

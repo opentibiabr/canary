@@ -18,6 +18,13 @@ struct EventScheduler {
 		int endDays;
 };
 
+struct EventRates {
+		uint16_t exprate = 100;
+		uint32_t lootrate = 100;
+		uint32_t spawnrate = 100;
+		uint16_t skillrate = 100;
+};
+
 class EventsScheduler {
 	public:
 		EventsScheduler() = default;
@@ -73,6 +80,8 @@ class EventsScheduler {
 		uint32_t spawnMonsterSchedule = 100;
 
 		std::vector<EventScheduler> eventScheduler;
+
+		std::string join(const std::vector<std::string> &vec, const std::string &delim);
 };
 
 constexpr auto g_eventsScheduler = &EventsScheduler::getInstance;

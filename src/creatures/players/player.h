@@ -45,6 +45,8 @@ class Guild;
 class Imbuement;
 class PreySlot;
 class TaskHuntingSlot;
+class Spell;
+class PlayerWheel;
 
 enum class ForgeConversion_t : uint8_t {
 	FORGE_ACTION_FUSION = 0,
@@ -547,9 +549,8 @@ class Player final : public Creature, public Cylinder {
 		uint8_t getLevelPercent() const {
 			return levelPercent;
 		}
-		uint32_t getMagicLevel() const {
-			return std::max<int32_t>(0, magLevel + varStats[STAT_MAGICPOINTS]);
-		}
+		uint32_t getMagicLevel() const;
+		uint32_t getLoyaltyMagicLevel() const;
 		uint32_t getBaseMagicLevel() const {
 			return magLevel;
 		}
@@ -666,14 +667,7 @@ class Player final : public Creature, public Cylinder {
 			return capacity;
 		}
 
-		uint32_t getCapacity() const {
-			if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
-				return 0;
-			} else if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
-				return std::numeric_limits<uint32_t>::max();
-			}
-			return capacity + bonusCapacity;
-		}
+		uint32_t getCapacity() const;
 
 		uint32_t getFreeCapacity() const {
 			if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
@@ -685,12 +679,8 @@ class Player final : public Creature, public Cylinder {
 			}
 		}
 
-		int32_t getMaxHealth() const override {
-			return std::max<int32_t>(1, healthMax + varStats[STAT_MAXHITPOINTS]);
-		}
-		uint32_t getMaxMana() const override {
-			return std::max<int32_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS]);
-		}
+		int32_t getMaxHealth() const override;
+		uint32_t getMaxMana() const override;
 
 		Item* getInventoryItem(Slots_t slot) const;
 
@@ -826,25 +816,12 @@ class Player final : public Creature, public Cylinder {
 			return lastAttack > 0 && ((OTSYS_TIME() - lastAttack) >= getAttackSpeed());
 		}
 
-		uint16_t getSkillLevel(uint8_t skill, bool sendToClient = false) const {
-			auto skillLevel = std::max<int32_t>(0, skills[skill].level + varSkills[skill]);
-
-			if (auto it = maxValuePerSkill.find(skill);
-				it != maxValuePerSkill.end()) {
-				skillLevel = std::min<int32_t>(it->second, skillLevel);
-			}
-
-			// Send to client multiplied skill mana/life leech (13.00+ version changed to decimal)
-			if (sendToClient && (skill == SKILL_MANA_LEECH_AMOUNT || skill == SKILL_LIFE_LEECH_AMOUNT)) {
-				return skillLevel * 100;
-			}
-
-			return static_cast<uint16_t>(skillLevel);
-		}
+		uint16_t getSkillLevel(skills_t skill) const;
+		uint16_t getLoyaltySkill(skills_t skill) const;
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
 		}
-		double_t getSkillPercent(uint8_t skill) const {
+		double_t getSkillPercent(skills_t skill) const {
 			return skills[skill].percent;
 		}
 
@@ -870,6 +847,8 @@ class Player final : public Creature, public Cylinder {
 		int32_t getDefense() const override;
 		float getAttackFactor() const override;
 		float getDefenseFactor() const override;
+		float getMitigation() const override;
+		double getMitigationMultiplier() const;
 
 		void addInFightTicks(bool pzlock = false);
 
@@ -893,6 +872,7 @@ class Player final : public Creature, public Cylinder {
 		void onAttackedCreatureChangeZone(ZoneType_t zone) override;
 		void onIdleStatus() override;
 		void onPlacedCreature() override;
+		void onChangeHazard(bool isHazard) override;
 
 		LightInfo getCreatureLight() const override;
 
@@ -1313,6 +1293,11 @@ class Player final : public Creature, public Cylinder {
 		void sendMagicEffect(const Position &pos, uint8_t type) const {
 			if (client) {
 				client->sendMagicEffect(pos, type);
+			}
+		}
+		void removeMagicEffect(const Position &pos, uint8_t type) const {
+			if (client) {
+				client->removeMagicEffect(pos, type);
 			}
 		}
 		void sendPing();
@@ -1993,6 +1978,7 @@ class Player final : public Creature, public Cylinder {
 		bool canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay = 500);
 
 		// Interfaces
+		// Account
 		error_t SetAccountInterface(account::Account* account);
 		error_t GetAccountInterface(account::Account* account);
 
@@ -2206,6 +2192,24 @@ class Player final : public Creature, public Cylinder {
 			return nullptr;
 		}
 
+		uint16_t getLoyaltyPoints() const {
+			return loyaltyPoints;
+		}
+
+		void setLoyaltyBonus(uint16_t bonus) {
+			loyaltyBonusPercent = bonus;
+			sendSkills();
+		}
+		void setLoyaltyTitle(std::string title) {
+			loyaltyTitle = title;
+		}
+		std::string getLoyaltyTitle() const {
+			return loyaltyTitle;
+		}
+		uint16_t getLoyaltyBonus() const {
+			return loyaltyBonusPercent;
+		}
+
 		// Depot search system
 		void requestDepotItems();
 		void requestDepotSearchItem(uint16_t itemId, uint8_t tier);
@@ -2391,7 +2395,7 @@ class Player final : public Creature, public Cylinder {
 		void parseAttackRecvHazardSystem(CombatDamage &damage, const Monster* monster);
 		void parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* monster);
 		// Points increase:
-		void addHazardSystemPoints(int32_t amount);
+		void setHazardSystemPoints(int32_t amount);
 		// Points get:
 		uint16_t getHazardSystemPoints() const {
 			int32_t points = 0;
@@ -2402,14 +2406,12 @@ class Player final : public Creature, public Cylinder {
 			return static_cast<uint16_t>(std::max<int32_t>(0, std::min<int32_t>(0xFFFF, points)));
 		}
 
-		// Reference counter used on client UI.
 		void reloadHazardSystemIcon();
-		uint16_t getHazardSystemReference() const {
-			return hazardSystemReferenceCounter;
-		}
-		void incrementeHazardSystemReference();
-		void decrementeHazardSystemReference();
 		/*******************************************************************************/
+
+		// Player wheel methods interface
+		std::unique_ptr<PlayerWheel> &wheel();
+		const std::unique_ptr<PlayerWheel> &wheel() const;
 
 	private:
 		static uint32_t playerFirstID;
@@ -2470,7 +2472,7 @@ class Player final : public Creature, public Cylinder {
 		std::vector<Item*> getInventoryItemsFromId(uint16_t itemId, bool ignore = true) const;
 
 		// This get all player inventory items
-		std::vector<Item*> getAllInventoryItems(bool ignoreEquiped = false) const;
+		std::vector<Item*> getAllInventoryItems(bool ignoreEquiped = false, bool ignoreItemWithTier = false) const;
 
 		/**
 		 * @brief Get the equipped items of the player.
@@ -2531,6 +2533,7 @@ class Player final : public Creature, public Cylinder {
 
 		std::string name;
 		std::string guildNick;
+		std::string loyaltyTitle;
 
 		Skill skills[SKILL_LAST + 1];
 		LightInfo itemsLight;
@@ -2604,6 +2607,7 @@ class Player final : public Creature, public Cylinder {
 		uint32_t lastIP = 0;
 		uint32_t accountNumber = 0;
 		uint32_t guid = 0;
+		uint32_t loyaltyPoints = 0;
 		uint8_t isDailyReward = DAILY_REWARD_NOTCOLLECTED;
 		uint32_t windowTextId = 0;
 		uint32_t editListId = 0;
@@ -2671,6 +2675,7 @@ class Player final : public Creature, public Cylinder {
 
 		uint8_t soul = 0;
 		uint8_t levelPercent = 0;
+		uint16_t loyaltyBonusPercent = 0;
 		double_t magLevelPercent = 0;
 
 		PlayerSex_t sex = PLAYERSEX_FEMALE;
@@ -2706,7 +2711,6 @@ class Player final : public Creature, public Cylinder {
 		// Hazard system
 		int64_t lastHazardSystemCriticalHit = 0;
 		bool reloadHazardSystemPointsCounter = true;
-		uint16_t hazardSystemReferenceCounter = 0;
 		// Hazard end
 
 		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
@@ -2775,6 +2779,9 @@ class Player final : public Creature, public Cylinder {
 		friend class ProtocolGame;
 		friend class MoveEvent;
 		friend class BedItem;
+		friend class PlayerWheel;
+
+		std::unique_ptr<PlayerWheel> m_wheelPlayer;
 
 		account::Account* account_;
 

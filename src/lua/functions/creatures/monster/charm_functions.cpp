@@ -98,7 +98,7 @@ int CharmFunctions::luaCharmPercentage(lua_State* L) {
 	if (lua_gettop(L) == 1) {
 		lua_pushnumber(L, charm->percent);
 	} else {
-		charm->percent = getNumber<int8_t>(L, 2);
+		charm->percent = getNumber<uint16_t>(L, 2);
 		pushBoolean(L, true);
 	}
 	return 1;

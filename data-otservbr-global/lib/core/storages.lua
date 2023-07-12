@@ -2847,6 +2847,21 @@ Storage = {
 		U12_80 = { -- update 12.80 - Reserved Storages 47801 - 47850
 			RoyalCostumeOutfits = {}
 		},
+		U12_90 = { -- update 12.90 - Reserved Storages 47851 - 47900
+			PrimalOrdeal = {
+				QuestLine = 47851,
+				Hazard = {
+					Current = 47856,
+					Max = 47857,
+				},
+				Bosses = {
+					MagmaBubbleTimer = 47852,
+					MagmaBubbleKilled = 47853,
+					ThePrimalMenaceTimer = 47854,
+					ThePrimalMenaceKilled = 47855,
+				},
+			},
+		},
 	},
 	-- Reserved storage from 63951 - 63999
 	ThaisExhibition = {

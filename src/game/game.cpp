@@ -19,6 +19,7 @@
 #include "game/functions/game_reload.hpp"
 #include "lua/global/globalevent.h"
 #include "io/iologindata.h"
+#include "io/io_wheel.hpp"
 #include "io/iomarket.h"
 #include "items/items.h"
 #include "lua/scripts/lua_environment.hpp"
@@ -33,6 +34,7 @@
 #include "lua/modules/modules.h"
 #include "creatures/players/imbuements/imbuements.h"
 #include "creatures/players/account/account.hpp"
+#include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
 #include "server/network/webhook/webhook.h"
@@ -94,6 +96,9 @@ Game::Game() {
 	offlineTrainingWindow.defaultEscapeButton = 1;
 	offlineTrainingWindow.defaultEnterButton = 0;
 	offlineTrainingWindow.priority = true;
+
+	// Create instance of IOWheel to Game class
+	m_IOWheel = std::make_unique<IOWheel>();
 }
 
 Game::~Game() {
@@ -253,6 +258,9 @@ void Game::setGameState(GameState_t newState) {
 			loadPlayersRecord();
 
 			g_globalEvents().startup();
+
+			// Initialize wheel data
+			m_IOWheel->initializeGlobalData();
 			break;
 		}
 
@@ -1298,7 +1306,7 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 	}
 
 	// check if we can move this item
-	if (ReturnValue ret = checkMoveItemToCylinder(player, fromCylinder, toCylinder, item); ret != RETURNVALUE_NOERROR) {
+	if (ReturnValue ret = checkMoveItemToCylinder(player, fromCylinder, toCylinder, item, toPos); ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 		return;
 	}
@@ -1442,23 +1450,43 @@ bool Game::isTryingToStow(const Position &toPos, Cylinder* toCylinder) const {
 	return toCylinder->getContainer() && toCylinder->getItem()->getID() == ITEM_LOCKER && toPos.getZ() == ITEM_SUPPLY_STASH_INDEX;
 }
 
-ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder, Cylinder* toCylinder, Item* item) {
+ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder, Cylinder* toCylinder, Item* item, Position toPos) {
 	if (!player || !toCylinder || !item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	if (toCylinder->getContainer()) {
-		auto containerID = toCylinder->getContainer()->getID();
+	if (Container* toCylinderContainer = toCylinder->getContainer()) {
+		auto containerID = toCylinderContainer->getID();
+
+		// check the store inbox index if gold pouch forces it as containerID
+		if (containerID == ITEM_STORE_INBOX) {
+			Item* cylinderItem = toCylinderContainer->getItemByIndex(toPos.getZ());
+
+			if (cylinderItem && cylinderItem->getID() == ITEM_GOLD_POUCH) {
+				containerID = ITEM_GOLD_POUCH;
+			}
+		}
 
 		if (containerID == ITEM_GOLD_POUCH) {
+			if (g_configManager().getBoolean(TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY)) {
+				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+			}
+
 			bool allowAnything = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);
 
 			if (!allowAnything && item->getID() != ITEM_GOLD_COIN && item->getID() != ITEM_PLATINUM_COIN && item->getID() != ITEM_CRYSTAL_COIN) {
 				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 			}
+
+			// prevent move up
+			if (!item->isStoreItem() && fromCylinder->getContainer() && fromCylinder->getContainer()->getID() == ITEM_GOLD_POUCH) {
+				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+			}
+
+			return RETURNVALUE_NOERROR;
 		}
 
-		const Container* topParentContainer = toCylinder->getContainer()->getRootContainer();
+		const Container* topParentContainer = toCylinderContainer->getRootContainer();
 
 		if (!item->isStoreItem() && (containerID == ITEM_STORE_INBOX || topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
 			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
@@ -1470,7 +1498,7 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
 
-			if (containerID == ITEM_STORE_INBOX || containerID == ITEM_DEPOT || toCylinder->getContainer()->isDepotChest()) {
+			if (containerID == ITEM_STORE_INBOX || containerID == ITEM_DEPOT || toCylinderContainer->isDepotChest()) {
 				isValidMoveItem = true;
 			}
 
@@ -1645,7 +1673,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		uint32_t n;
 
 		if (toItem && item->equals(toItem)) {
-			n = std::min<uint32_t>(100 - toItem->getItemCount(), m);
+			n = std::min<uint32_t>(toItem->getStackSize() - toItem->getItemCount(), m);
 			toCylinder->updateThing(toItem, toItem->getID(), toItem->getItemCount() + n);
 			updateItem = toItem;
 		} else {
@@ -1798,7 +1826,7 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 
 	if (item->isStackable() && item->equals(toItem)) {
 		uint32_t m = std::min<uint32_t>(item->getItemCount(), maxQueryCount);
-		uint32_t n = std::min<uint32_t>(100 - toItem->getItemCount(), m);
+		uint32_t n = std::min<uint32_t>(toItem->getStackSize() - toItem->getItemCount(), m);
 
 		toCylinder->updateThing(toItem, toItem->getID(), toItem->getItemCount() + n);
 
@@ -2673,7 +2701,7 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 
 	Item* slotItem = player->getInventoryItem(slot);
 	Item* equipItem = searchForItem(backpack, it.id, hasTier, tier);
-	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == 100 || !equipItem)) {
+	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == slotItem->getStackSize() || !equipItem)) {
 		internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
 	} else if (equipItem) {
 		if (it.weaponType == WEAPON_AMMO) {
@@ -3811,12 +3839,12 @@ void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t coun
 		return;
 	}
 
-	int32_t NDSlots = ((freeSlots) - (count < 100 ? 1 : (count / 100)));
+	int32_t NDSlots = ((freeSlots) - (count < it.stackSize ? 1 : (count / it.stackSize)));
 	uint32_t SlotsWith = count;
 	uint32_t noSlotsWith = 0;
 
 	if (NDSlots <= 0) {
-		SlotsWith = (freeSlots * 100);
+		SlotsWith = (freeSlots * it.stackSize);
 		noSlotsWith = (count - SlotsWith);
 	}
 
@@ -5446,6 +5474,17 @@ void Game::changeSpeed(Creature* creature, int32_t varSpeedDelta) {
 	}
 }
 
+void Game::setCreatureSpeed(Creature* creature, int32_t speed) {
+	creature->setBaseSpeed(static_cast<uint16_t>(speed));
+
+	// send creature speed to client
+	SpectatorHashSet spectators;
+	map.getSpectators(spectators, creature->getPosition(), false, true);
+	for (Creature* spectator : spectators) {
+		spectator->getPlayer()->sendChangeSpeed(creature, creature->getStepSpeed());
+	}
+}
+
 void Game::changePlayerSpeed(Player &player, int32_t varSpeedDelta) {
 	int32_t varSpeed = player.getSpeed() - player.getBaseSpeed();
 	varSpeed += varSpeedDelta;
@@ -5518,6 +5557,11 @@ void Game::updateCreatureIcon(const Creature* creature) {
 }
 
 void Game::reloadCreature(const Creature* creature) {
+	if (!creature) {
+		spdlog::error("[{}] Creature is nullptr", __FUNCTION__);
+		return;
+	}
+
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), false, true);
 	for (Creature* spectator : spectators) {
@@ -5862,8 +5906,9 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 	}
 }
 
+// Hazard combat helpers
 void Game::handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker) {
-	if (damage.primary.value != 0 && monster->isOnHazardSystem()) {
+	if (damage.primary.value != 0 && monster->getHazard()) {
 		if (isPlayerAttacker) {
 			player->parseAttackDealtHazardSystem(damage, monster);
 		} else {
@@ -5900,6 +5945,83 @@ void Game::notifySpectators(const SpectatorHashSet &spectators, const Position &
 	}
 }
 
+// Wheel of destiny combat helpers
+void Game::applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, const Creature* target) {
+	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100.;
+
+	if (attackerPlayer) {
+		damage.primary.value += attackerPlayer->wheel()->getStat(WheelStat_t::HEALING);
+
+		if (damage.secondary.value != 0) {
+			damage.secondary.value += attackerPlayer->wheel()->getStat(WheelStat_t::HEALING);
+		}
+
+		if (damage.healingLink > 0) {
+			CombatDamage tmpDamage;
+			tmpDamage.primary.value = (damage.primary.value * damage.healingLink) / 100;
+			tmpDamage.primary.type = COMBAT_HEALING;
+			combatChangeHealth(attackerPlayer, attackerPlayer, tmpDamage);
+		}
+
+		if (attackerPlayer->wheel()->getInstant("Blessing of the Grove")) {
+			damage.primary.value += (damage.primary.value * attackerPlayer->wheel()->checkBlessingGroveHealingByTarget(target)) / 100.;
+		}
+	}
+}
+
+void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const Player* attackerPlayer, const Creature* target) const {
+	if (damage.damageMultiplier > 0) {
+		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100.;
+		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100.;
+	}
+
+	if (attackerPlayer) {
+		damage.primary.value -= attackerPlayer->wheel()->getStat(WheelStat_t::DAMAGE);
+		if (damage.secondary.value != 0) {
+			damage.secondary.value -= attackerPlayer->wheel()->getStat(WheelStat_t::DAMAGE);
+		}
+		if (damage.instantSpellName == "Twin Burst") {
+			int32_t damageBonus = attackerPlayer->wheel()->checkTwinBurstByTarget(target);
+			if (damageBonus != 0) {
+				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+			}
+		}
+		if (damage.instantSpellName == "Executioner's Throw") {
+			int32_t damageBonus = attackerPlayer->wheel()->checkExecutionersThrow(target);
+			if (damageBonus != 0) {
+				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+			}
+		}
+	}
+}
+
+int32_t Game::applyHealthChange(CombatDamage &damage, const Creature* target) const {
+	int32_t targetHealth = target->getHealth();
+
+	// Wheel of destiny (Gift of Life)
+	if (const Player* targetPlayer = target->getPlayer()) {
+		if (targetPlayer->wheel()->getInstant("Gift of Life") && targetPlayer->wheel()->getGiftOfCooldown() == 0 && (damage.primary.value + damage.secondary.value) >= targetHealth) {
+			int32_t overkillMultiplier = (damage.primary.value + damage.secondary.value) - targetHealth;
+			overkillMultiplier = (overkillMultiplier * 100) / targetPlayer->getMaxHealth();
+			if (overkillMultiplier <= targetPlayer->wheel()->getGiftOfLifeValue()) {
+				targetPlayer->wheel()->checkGiftOfLife();
+				targetHealth = target->getHealth();
+			}
+		}
+	}
+
+	if (damage.primary.value >= targetHealth) {
+		damage.primary.value = targetHealth;
+		damage.secondary.value = 0;
+	} else if (damage.secondary.value) {
+		damage.secondary.value = std::min<int32_t>(damage.secondary.value, targetHealth - damage.primary.value);
+	}
+
+	return targetHealth;
+}
+
 bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage &damage, bool isEvent /*= false*/) {
 	using namespace std;
 	const Position &targetPos = target->getPosition();
@@ -5930,6 +6052,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				return combatChangeHealth(attacker, target, damage);
 			}
 		}
+
+		// Wheel of destiny combat healing
+		applyWheelOfDestinyHealing(damage, attackerPlayer, target);
 
 		auto realHealthChange = target->getHealth();
 		target->gainHealth(attacker, damage.primary.value);
@@ -6024,6 +6149,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		if (attackerPlayer && targetPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
 			return false;
 		}
+
+		// Wheel of destiny apply combat effects
+		applyWheelOfDestinyEffectsToDamage(damage, attackerPlayer, target);
 
 		damage.primary.value = std::abs(damage.primary.value);
 		damage.secondary.value = std::abs(damage.secondary.value);
@@ -6252,7 +6380,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 		}
 
-		auto targetHealth = target->getHealth();
+		auto targetHealth = applyHealthChange(damage, target);
 		if (damage.primary.value >= targetHealth) {
 			damage.primary.value = targetHealth;
 			damage.secondary.value = 0;
@@ -6304,8 +6432,8 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		if (attackerPlayer) {
 			if (!damage.extension && damage.origin != ORIGIN_CONDITION) {
 				applyCharmRune(targetMonster, attackerPlayer, target, realDamage);
-				applyLifeLeech(attackerPlayer, targetMonster, damage, realDamage);
-				applyManaLeech(attackerPlayer, targetMonster, damage, realDamage);
+				applyLifeLeech(attackerPlayer, targetMonster, target, damage, realDamage);
+				applyManaLeech(attackerPlayer, targetMonster, target, damage, realDamage);
 			}
 			updatePlayerPartyHuntAnalyzer(damage, attackerPlayer);
 		}
@@ -6499,11 +6627,16 @@ void Game::applyCharmRune(
 	}
 }
 
+// Mana leech
 void Game::applyManaLeech(
-	Player* attackerPlayer, const Monster* targetMonster, const CombatDamage &damage, const int32_t &realDamage
+	Player* attackerPlayer, const Monster* targetMonster, Creature* target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
-	uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE);
-	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT);
+	// Wheel of destiny bonus - mana leech chance and amount
+	auto wheelLeechChance = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_MANA_LEECH_CHANCE);
+	auto wheelLeechAmount = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_MANA_LEECH_AMOUNT);
+
+	uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE) + wheelLeechChance + damage.manaLeechChance;
+	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) + wheelLeechAmount + damage.manaLeech;
 	if (normal_random(0, 100) >= manaChance) {
 		return;
 	}
@@ -6527,11 +6660,15 @@ void Game::applyManaLeech(
 	Combat::doCombatMana(nullptr, attackerPlayer, tmpDamage, tmpParams);
 }
 
+// Life leech
 void Game::applyLifeLeech(
-	Player* attackerPlayer, const Monster* targetMonster, const CombatDamage &damage, const int32_t &realDamage
+	Player* attackerPlayer, const Monster* targetMonster, Creature* target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
-	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE);
-	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT);
+	// Wheel of destiny bonus - life leech chance and amount
+	auto wheelLeechChance = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_LIFE_LEECH_CHANCE);
+	auto wheelLeechAmount = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT);
+	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE) + wheelLeechChance + damage.lifeLeechChance;
+	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + wheelLeechAmount + damage.lifeLeech;
 	if (normal_random(0, 100) >= lifeChance) {
 		return;
 	}
@@ -6555,7 +6692,7 @@ void Game::applyLifeLeech(
 }
 
 int32_t Game::calculateLeechAmount(const int32_t &realDamage, const uint16_t &skillAmount, int targetsAffected) const {
-	auto intermediateResult = realDamage * (skillAmount / 100.0) * (0.1 * targetsAffected + 0.9) / targetsAffected;
+	auto intermediateResult = realDamage * (skillAmount / 10000.0) * (0.1 * targetsAffected + 0.9) / targetsAffected;
 	return std::clamp<int32_t>(static_cast<int32_t>(std::lround(intermediateResult)), 0, realDamage);
 }
 
@@ -6822,6 +6959,20 @@ void Game::addMagicEffect(const SpectatorHashSet &spectators, const Position &po
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendMagicEffect(pos, effect);
+		}
+	}
+}
+
+void Game::removeMagicEffect(const Position &pos, uint8_t effect) {
+	SpectatorHashSet spectators;
+	map.getSpectators(spectators, pos, true, true);
+	removeMagicEffect(spectators, pos, effect);
+}
+
+void Game::removeMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect) {
+	for (Creature* spectator : spectators) {
+		if (const Player* tmpPlayer = spectator->getPlayer()) {
+			tmpPlayer->removeMagicEffect(pos, effect);
 		}
 	}
 }
@@ -7924,15 +8075,15 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account(player->getAccount());
 			account.LoadAccountDB();
-			uint32_t coins;
-			account.GetCoins(&coins);
+			uint32_t transferableCoins;
+			account.GetTransferableCoins(&transferableCoins);
 
-			if (amount > coins) {
+			if (amount > transferableCoins) {
 				offerStatus << "Amount is greater than coins for player " << player->getName();
 				return;
 			}
 
-			account.RemoveCoins(static_cast<uint32_t>(amount));
+			account.RemoveTransferableCoins(static_cast<uint32_t>(amount));
 		} else {
 			if (!removeOfferItems(*player, *depotLocker, it, amount, tier, offerStatus)) {
 				SPDLOG_ERROR("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -8022,11 +8173,11 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
 			account.LoadAccountDB(player->getAccount());
-			account.AddCoins(offer.amount);
+			account.AddTransferableCoins(offer.amount);
 		} else if (it.stackable) {
 			uint16_t tmpAmount = offer.amount;
 			while (tmpAmount > 0) {
-				int32_t stackCount = std::min<int32_t>(100, tmpAmount);
+				int32_t stackCount = std::min<int32_t>(it.stackSize, tmpAmount);
 				Item* item = Item::CreateItem(it.id, stackCount);
 				if (internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 					delete item;
@@ -8137,14 +8288,14 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
 			account.LoadAccountDB(player->getAccount());
-			uint32_t coins;
-			account.GetCoins(&coins);
-			if (amount > coins) {
+			uint32_t transferableCoins;
+			account.GetTransferableCoins(&transferableCoins);
+			if (amount > transferableCoins) {
 				offerStatus << "Amount is greater than coins";
 				return;
 			}
 
-			account.RemoveCoins(amount);
+			account.RemoveTransferableCoins(amount);
 			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount, "Sold on Market");
 		} else {
 			if (!removeOfferItems(*player, *depotLocker, it, amount, offer.tier, offerStatus)) {
@@ -8171,12 +8322,12 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
 			account.LoadAccountDB(buyerPlayer->getAccount());
-			account.AddCoins(amount);
+			account.AddTransferableCoins(amount);
 			account.RegisterCoinsTransaction(account::COIN_ADD, amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
-				uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
+				uint16_t stackCount = std::min<uint16_t>(it.stackSize, tmpAmount);
 				Item* item = Item::CreateItem(it.id, stackCount);
 				if (internalAddItem(buyerPlayer->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 					offerStatus << "Failed to add player inbox stackable item for buy offer for player " << player->getName();
@@ -8249,12 +8400,12 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
 			account.LoadAccountDB(player->getAccount());
-			account.AddCoins(amount);
+			account.AddTransferableCoins(amount);
 			account.RegisterCoinsTransaction(account::COIN_ADD, amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
-				uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
+				uint16_t stackCount = std::min<uint16_t>(it.stackSize, tmpAmount);
 				Item* item = Item::CreateItem(it.id, stackCount);
 				if (
 					// Init-statement
@@ -8262,7 +8413,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 					// Condition
 					ret != RETURNVALUE_NOERROR
 				) {
-					SPDLOG_ERROR("{} - Create offer internal add item error code: {}", __FUNCTION__, ret);
+					SPDLOG_ERROR("{} - Create offer internal add item error code: {}", __FUNCTION__, getReturnMessage(ret));
 					offerStatus << "Failed to add inbox stackable item for sell offer for player " << player->getName();
 					delete item;
 					break;
@@ -8553,6 +8704,7 @@ void Game::playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Pos
 
 	if (auto bossOutfit = mType->info.outfit;
 		bossOutfit.lookType != 0 && bossVisible) {
+		item->setCustomAttribute("LookTypeEx", static_cast<int64_t>(bossOutfit.lookTypeEx));
 		item->setCustomAttribute("LookType", static_cast<int64_t>(bossOutfit.lookType));
 		item->setCustomAttribute("LookHead", static_cast<int64_t>(bossOutfit.lookHead));
 		item->setCustomAttribute("LookBody", static_cast<int64_t>(bossOutfit.lookBody));
@@ -8671,6 +8823,42 @@ void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpe
 
 	player->sendInventoryImbuements(itemsWithImbueSlotMap);
 }
+
+void Game::playerOpenWheel(uint32_t playerId, uint32_t ownerId) {
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	if (playerId != ownerId) {
+		spdlog::error("[{}] player {} is trying to open wheel of another player", __FUNCTION__, player->getName());
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	player->wheel()->sendOpenWheelWindow(ownerId);
+	player->updateUIExhausted();
+}
+
+void Game::playerSaveWheel(uint32_t playerId, NetworkMessage &msg) {
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	player->wheel()->saveSlotPointsOnPressSaveButton(msg);
+	player->updateUIExhausted();
+}
+
 /* Player Methods end
 ********************/
 
@@ -9305,4 +9493,26 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 	if (returnValue != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(returnValue);
 	}
+}
+
+bool Game::createHazardArea(const Position &positionFrom, const Position &positionTo) {
+	for (int32_t x = positionFrom.x; x <= positionTo.x; ++x) {
+		for (int32_t y = positionFrom.y; y <= positionTo.y; ++y) {
+			for (int32_t z = positionFrom.z; z <= positionTo.z; ++z) {
+				Tile* tile = map.getTile(Position(x, y, z));
+				if (tile) {
+					tile->setHazard(true);
+				}
+			}
+		}
+	}
+	return true;
+}
+
+std::unique_ptr<IOWheel> &Game::getIOWheel() {
+	return m_IOWheel;
+}
+
+const std::unique_ptr<IOWheel> &Game::getIOWheel() const {
+	return m_IOWheel;
 }

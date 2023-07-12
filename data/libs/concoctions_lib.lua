@@ -134,9 +134,11 @@ function Concoction:init(player, sendMessage)
 		addEvent(tick, updateInterval * 1000, self.id, player:getId(), updateInterval)
 	end
 	if sendMessage then
-		addEvent(function(name, duration)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your concoction " .. name .. " is still active for another " .. duration .. ".")
-		end, 500, self.name, durationString(self:timeLeft(player)))
+		addEvent(function(playerId, name, duration)
+			local eventPlayer = Player(playerId)
+			if not player then return end
+			eventPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your concoction " .. name .. " is still active for another " .. duration .. ".")
+		end, 500, player:getId(), self.name, durationString(self:timeLeft(player)))
 	end
 end
 

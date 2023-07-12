@@ -314,6 +314,12 @@ criticalChance = 10
 inventoryGlowOnFiveBless = false
 adventurersBlessingLevel = 21
 experienceDisplayRates = true
+-- configure attack base on Fist Fighting skill/experience
+-- multiplierSpeedOnFist * 5  (multiplies the value obtained from the player fist skill and multiplies it * 5) max 25 is recommended due minTicks limits else player stop attack
+-- maxSpeedOnFist 500 miliseconds  (The maximum attack speed that can be obtained no matter how high the player has the Fist Fighting skill.)
+toggleAttackSpeedOnFist = false
+multiplierSpeedOnFist = 5
+maxSpeedOnFist = 500
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes

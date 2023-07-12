@@ -103,6 +103,14 @@ function Concoction:update(player)
 	player:updateConcoction(self.id, self:timeLeft(player))
 end
 
+local function tick(concoctionId, playerId, timeDeduction)
+	local player = Player(playerId)
+	if not player then return end
+	local concoction = Concoction.find(concoctionId)
+	if not concoction then return end
+	concoction:tick(player, timeDeduction)
+end
+
 function Concoction:tick(player, timeDeduction)
 	local timeLeft = self:timeLeft(player)
 	if timeLeft <= 0 then return end
@@ -111,7 +119,7 @@ function Concoction:tick(player, timeDeduction)
 	self:update(player)
 	if timeLeft > 0 then
 		if self:tickType() == ConcoctionTickType.Online then
-			addEvent(function() self:tick(player, timeDeduction) end, timeDeduction * 1000)
+			addEvent(tick, timeDeduction * 1000, self.id, player:getId(), timeDeduction)
 		end
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your concoction " .. self.name .. " has worn off.")
@@ -123,12 +131,12 @@ function Concoction:init(player, sendMessage)
 
 	self:update(player)
 	if self:tickType() == ConcoctionTickType.Online then
-		addEvent(function() self:tick(player, updateInterval) end, updateInterval * 1000)
+		addEvent(tick, updateInterval * 1000, self.id, player:getId(), updateInterval)
 	end
 	if sendMessage then
-		addEvent(function()
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your concoction " .. self.name .. " is still active for another " .. durationString(self:timeLeft(player)) .. ".")
-		end, 500)
+		addEvent(function(name, duration)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your concoction " .. name .. " is still active for another " .. duration .. ".")
+		end, 500, self.name, durationString(self:timeLeft(player)))
 	end
 end
 
@@ -148,7 +156,7 @@ function Concoction:activate(player, item)
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have activated " .. item:getName() .. ". It will last for " .. durationString(self:totalDuration()) .. consumptionString .. ".")
 		if self:tickType() == ConcoctionTickType.Online then
-			addEvent(function() self:tick(player, updateInterval) end, updateInterval * 1000)
+			addEvent(tick, updateInterval * 1000, self.id, player:getId(), updateInterval)
 		end
 	end
 	item:remove(1)

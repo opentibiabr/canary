@@ -23,7 +23,7 @@ function spell.onCastSpell(creature, var)
                 monster = Game.createMonster("Minion of Gaz'haragoth", creature:getPosition(), true, false)
                 creature:say("Minions! Follow my call!", TALKTYPE_ORANGE_1)
                 if monster then
-                    creature:setSummon(monster)
+                    monster:setSummon(sum)
                 end
             end
             creature:getPosition():sendMagicEffect(CONST_ME_SOUND_RED)
@@ -32,7 +32,7 @@ function spell.onCastSpell(creature, var)
                 local monster = Game.createMonster("Minion of Gaz'haragoth", creature:getPosition(), true, false)
                 creature:say("Minions! Follow my call!", TALKTYPE_ORANGE_1)
                 if monster then
-                    creature:setSummon(monster)
+                    monster:setSummon(sum)
                 end
                 creature:getPosition():sendMagicEffect(CONST_ME_SOUND_RED)
                 GazVariables.MinionsNow = GazVariables.MinionsNow + 1

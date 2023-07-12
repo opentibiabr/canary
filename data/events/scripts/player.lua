@@ -647,6 +647,30 @@ local function useStaminaXpBoost(player)
 	player:setExpBoostStamina(staminaMinutes * 60)
 end
 
+local function useConcoctionTime(player)
+	if not player then
+		return false
+	end
+
+	local playerId = player:getId()
+	if not playerId or not nextUseConcoctionTime[playerId] then
+		return false
+	end
+
+	local currentTime = os.time()
+	local timePassed = currentTime - nextUseConcoctionTime[playerId]
+	if timePassed <= 0 then
+		return false
+	end
+
+	local deduction = 60
+	if timePassed < 60 then
+		deduction = timePassed
+	end
+	nextUseConcoctionTime[playerId] = currentTime + 60
+	Concoction.experienceTick(player, deduction)
+end
+
 function Player:onGainExperience(target, exp, rawExp)
 	if not target or target:isPlayer() then
 		return exp
@@ -675,6 +699,9 @@ function Player:onGainExperience(target, exp, rawExp)
 		staminaBonusXp = self:getFinalBonusStamina()
 		self:setStaminaXpBoost(staminaBonusXp * 100)
 	end
+
+	-- Concoction System
+	useConcoctionTime(self)
 
 	-- Boosted creature
 	if target:getName():lower() == (Game.getBoostedCreature()):lower() then

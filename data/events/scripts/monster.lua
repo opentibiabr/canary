@@ -35,6 +35,7 @@ function Monster:onDropLoot(corpse)
 		local monsterLoot = mType:getLoot()
 		local charmBonus = false
 		local hazardMsg = false
+		local wealthDuplexMsg = false
 		if player and mType and mType:raceId() > 0 then
 			local charm = player:getCharmMonsterType(CHARM_GUT)
 			if charm and charm:raceId() == mType:raceId() then
@@ -42,10 +43,38 @@ function Monster:onDropLoot(corpse)
 			end
 		end
 
+		local participants = nil
+		local modifier = 1
+
+		if player then
+			participants = {player}
+			if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) then
+				local party = player:getParty()
+				if party and party:isSharedExperienceEnabled() then
+					participants = party:getMembers()
+					table.insert(participants, party:getLeader())
+				end
+			end
+		end
+
+		local wealthDuplex = Concoction.find(Concoction.Ids.WealthDuplex)
+		if wealthDuplex then
+			for i = 1, #participants do
+				local participant = participants[i]
+				if participant and wealthDuplex:active(player) then
+					modifier = modifier * wealthDuplex.config.multiplier
+					wealthDuplexMsg = true
+					break
+				end
+			end
+		else
+			Spdlog.warn("[Monster:onDropLoot] - Could not find WealthDuplex concoction.")
+		end
+
 		for i = 1, #monsterLoot do
 			local item = corpse:createLootItem(monsterLoot[i], charmBonus)
 			if self:getName():lower() == Game.getBoostedCreature():lower() then
-				local itemBoosted = corpse:createLootItem(monsterLoot[i], charmBonus)
+				local itemBoosted = corpse:createLootItem(monsterLoot[i], charmBonus, modifier)
 				if not itemBoosted then
 					Spdlog.warn(string.format("[1][Monster:onDropLoot] - Could not add loot item to boosted monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
 				end
@@ -66,9 +95,16 @@ function Monster:onDropLoot(corpse)
 			end
 		end
 
-		if player then
-			-- Runs the loot again if the player gets a chance to loot in the prey
+		if participants then
 			local preyLootPercent = player:getPreyLootPercentage(mType:raceId())
+			for i = 1, #participants do
+				local participant = participants[i]
+				local memberBoost = participant:getPreyLootPercentage(mType:raceId())
+				if memberBoost > preyLootPercent then
+					preyLootPercent = memberBoost
+				end
+			end
+			-- Runs the loot again if the player gets a chance to loot in the prey
 			if preyLootPercent > 0 then
 				local probability = math.random(0, 100)
 				if probability < preyLootPercent then
@@ -127,6 +163,9 @@ function Monster:onDropLoot(corpse)
 			end
 			if hazardMsg then
 				text = text .. " (Hazard system)"
+			end
+			if wealthDuplexMsg then
+				text = text .. " (active wealth duplex)"
 			end
 			local party = player:getParty()
 			if party then

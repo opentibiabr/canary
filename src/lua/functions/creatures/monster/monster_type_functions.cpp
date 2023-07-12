@@ -1091,6 +1091,24 @@ int MonsterTypeFunctions::luaMonsterTypeArmor(lua_State* L) {
 	return 1;
 }
 
+int MonsterTypeFunctions::luaMonsterTypeMitigation(lua_State* L) {
+	// get: monsterType:mitigation() set: monsterType:mitigation(mitigation)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (!monsterType) {
+		pushBoolean(L, false);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, monsterType->info.mitigation);
+	} else {
+		monsterType->info.mitigation = getNumber<float>(L, 2);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
 int MonsterTypeFunctions::luaMonsterTypeDefense(lua_State* L) {
 	// get: monsterType:defense() set: monsterType:defense(defense)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);

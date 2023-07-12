@@ -69,34 +69,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name="crystal coin",chance = 100000, maxCount = 60},
-	{ name="ultimate mana potion", chance = 32653, maxCount = 14},
-	{ name="ultimate health potion",chance = 30612, maxCount = 14},
-	{ name="bullseye potion",chance = 24490, maxCount = 5},
-	{ name="berserk potion",chance = 22449, maxCount = 5},
-	{ name="mastermind potion",chance = 18367, maxCount = 5},
-	{ name="giant amethyst", chance = 6122},
-	{ name="giant ruby", chance = 4082},
-	{ name="giant emerald", chance = 4082},
-	{ name ="giant sapphire", chance = 2041},
-	{ name ="giant topaz", chance = 2041},
-	{ name="arboreal tome", chance = 200},
-	{ name="arboreal crown", chance = 300},
-	--{ name = "charged arboreal ring", chance = 450 },
-	--{ name = "spiritthorn armor", chance = 450 },
-	--{ name = "spiritthorm helm", chance = 250 },
-	--{ name = "charged spiritthorn ring", chance = 250 },
+	{ name = "crystal coin",chance = 100000, maxCount = 60},
+	{ name = "ultimate mana potion", chance = 32653, maxCount = 14},
+	{ name = "ultimate health potion",chance = 30612, maxCount = 14},
+	{ name = "bullseye potion",chance = 24490, maxCount = 5},
+	{ name = "berserk potion",chance = 22449, maxCount = 5},
+	{ name = "mastermind potion",chance = 18367, maxCount = 5},
+	{ name = "giant amethyst", chance = 6122},
+	{ name = "giant ruby", chance = 4082},
+	{ name = "giant emerald", chance = 4082},
+	{ name = "giant sapphire", chance = 2041},
+	{ name = "giant topaz", chance = 2041},
+	{ name = "arboreal tome", chance = 250},
+	{ name = "arboreal crown", chance = 250},
+	{ name = "spiritthorn armor", id = 39147, chance = 250 },
+	{ name = "spiritthorn helmet", id = 39148, chance = 250 },
 	{ name = "alicorn headguard", chance = 250 },
 	{ name = "alicorn quiver", chance = 250 },
-	--{ name = "charged Alicorn ring", chance = 250 },
 	{ name = "arcanomancer regalia", chance = 250 },
 	{ name = "arcanomancer folio", chance = 250 },
-	{id = 39183, chance = 250 },
-	{id = 39186, chance = 50},
-	{id = 39180, chance = 50},
-	{id = 39177, chance = 50},
-	{id = 39147, chance = 50},
-	{id = 39148, chance = 50}
+	{ id = 39183, chance = 250 }, -- name = "charged arcanomancer sigil"
+	{ id = 39186, chance = 250 }, -- name = "charged arboreal ring"
+	{ id = 39180, chance = 250 }, -- name = "charged alicorn ring"
+	{ id = 39177, chance = 250 }, -- name = "charged spiritthorn ring"
 }
 
 monster.attacks = {

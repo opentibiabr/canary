@@ -19,15 +19,17 @@ using ItemBlockList = std::list<std::pair<int32_t, Item*>>;
 class IOLoginData {
 	public:
 		static bool authenticateAccountPassword(const std::string &accountIdentifier, const std::string &password, account::Account* account);
-		static bool gameWorldAuthentication(const std::string &accountIdentifier, const std::string &password, std::string &characterName, uint32_t* accountId, bool oldProcotol);
+		static bool authenticateAccountSession(const std::string &sessionId, account::Account* account);
+		static bool gameWorldAuthentication(const std::string &accountIdentifier, const std::string &sessionOrPassword, std::string &characterName, uint32_t* accountId, bool oldProcotol);
 		static account::AccountType getAccountType(uint32_t accountId);
 		static void setAccountType(uint32_t accountId, account::AccountType accountType);
 		static void updateOnlineStatus(uint32_t guid, bool login);
 		static bool preloadPlayer(Player* player, const std::string &name);
 
-		static bool loadPlayerById(Player* player, uint32_t id);
-		static bool loadPlayerByName(Player* player, const std::string &name);
-		static bool loadPlayer(Player* player, DBResult_ptr result);
+		// The boolean "disable" will desactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
+		static bool loadPlayerById(Player* player, uint32_t id, bool disable = true);
+		static bool loadPlayerByName(Player* player, const std::string &name, bool disable = true);
+		static bool loadPlayer(Player* player, DBResult_ptr result, bool disable = false);
 		static bool savePlayer(Player* player);
 		static uint32_t getGuidByName(const std::string &name);
 		static bool getGuidByNameEx(uint32_t &guid, bool &specialVip, std::string &name);

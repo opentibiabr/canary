@@ -65,6 +65,7 @@ class LuaEnums final : LuaScriptInterface {
 		static void initWebhookEnums(lua_State* L);
 		static void initBosstiaryEnums(lua_State* L);
 		static void initSoundEnums(lua_State* L);
+		static void initWheelEnums(lua_State* L);
 };
 
 #endif // SRC_LUA_FUNCTIONS_CORE_GAME_LUA_ENUMS_HPP_

@@ -408,6 +408,8 @@ void Creature::onChangeZone(ZoneType_t zone) {
 	}
 }
 
+void Creature::onChangeHazard(bool isHazard) { }
+
 void Creature::onAttackedCreatureChangeZone(ZoneType_t zone) {
 	if (zone == ZONE_PROTECTION) {
 		onCreatureDisappear(attackedCreature, false);
@@ -490,6 +492,10 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 
 		if (newTile->getZone() != oldTile->getZone()) {
 			onChangeZone(getZone());
+		}
+
+		if (newTile->isHazard() != oldTile->isHazard()) {
+			onChangeHazard(newTile->isHazard());
 		}
 
 		// update map cache
@@ -836,6 +842,23 @@ void Creature::drainMana(Creature* attacker, int32_t manaLoss) {
 	}
 }
 
+// Wheel of destiny - mitigation system for creature
+void Creature::mitigateDamage(const CombatType_t &combatType, BlockType_t &blockType, int32_t &damage) const {
+	if (combatType != COMBAT_MANADRAIN && combatType != COMBAT_LIFEDRAIN) { // Add agony check if the server does have agony combat type
+		// Increase mitigate damage
+		auto originalDamage = damage;
+		damage -= (damage * getMitigation()) / 100.;
+		if (isDevMode()) {
+			spdlog::info("[mitigation] creature: {}, original damage: {}, mitigation damage: {}", getName(), originalDamage, damage);
+		}
+
+		if (damage <= 0) {
+			damage = 0;
+			blockType = BLOCK_ARMOR;
+		}
+	}
+}
+
 BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int32_t &damage, bool checkDefense /* = false */, bool checkArmor /* = false */, bool /* field  = false */) {
 	BlockType_t blockType = BLOCK_NONE;
 
@@ -883,6 +906,8 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 		attacker->onAttackedCreature(this);
 		attacker->onAttackedCreatureBlockHit(blockType);
 	}
+
+	mitigateDamage(combatType, blockType, damage);
 
 	onAttacked();
 	return blockType;
@@ -1323,6 +1348,16 @@ Condition* Creature::getCondition(ConditionType_t type, ConditionId_t conditionI
 		}
 	}
 	return nullptr;
+}
+
+std::vector<Condition*> Creature::getConditionsByType(ConditionType_t type) const {
+	std::vector<Condition*> conditionsVec;
+	for (Condition* condition : conditions) {
+		if (condition->getType() == type) {
+			conditionsVec.push_back(condition);
+		}
+	}
+	return conditionsVec;
 }
 
 void Creature::executeConditions(uint32_t interval) {

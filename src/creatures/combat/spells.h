@@ -12,6 +12,7 @@
 
 #include "lua/scripts/luascript.h"
 #include "creatures/players/player.h"
+#include "creatures/players/wheel/wheel_definitions.hpp"
 #include "lua/creature/actions.h"
 #include "lua/creature/talkaction.h"
 #include "lua/scripts/scripts.h"
@@ -143,6 +144,9 @@ class Spell : public BaseSpell {
 		void postCastSpell(Player* player, bool finishedCast = true, bool payCost = true) const;
 		static void postCastSpell(Player* player, uint32_t manaCost, uint32_t soulCost);
 		virtual bool isInstant() const = 0;
+		bool isLearnable() const {
+			return learnable;
+		}
 
 		uint32_t getManaCost(const Player* player) const;
 		uint32_t getSoulCost() const {
@@ -289,6 +293,38 @@ class Spell : public BaseSpell {
 			pzLocked = b;
 		}
 
+		/**
+		 * @brief Get whether the wheel of destiny is upgraded.
+		 *
+		 * @return True if the wheel of destiny is upgraded, false otherwise.
+		 */
+		bool getWheelOfDestinyUpgraded() const;
+
+		/**
+		 * @brief Get the boost value for the wheel of destiny.
+		 *
+		 * @param boost The boost type.
+		 * @param grade The grade of the wheel of destiny.
+		 * @return The boost value for the specified boost and grade.
+		 */
+		int32_t getWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t grade) const;
+
+		/**
+		 * @brief Set whether the wheel of destiny is upgraded.
+		 *
+		 * @param value The value indicating whether the wheel of destiny is upgraded.
+		 */
+		void setWheelOfDestinyUpgraded(bool value);
+
+		/**
+		 * @brief Set the boost value for the wheel of destiny.
+		 *
+		 * @param boost The boost type.
+		 * @param grade The grade of the wheel of destiny.
+		 * @param value The boost value to be set.
+		 */
+		void setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t grade, int32_t value);
+
 		SpellType_t spellType = SPELL_UNDEFINED;
 
 	protected:
@@ -315,6 +351,10 @@ class Spell : public BaseSpell {
 		bool needTarget = false;
 		bool allowOnSelf = true;
 		bool pzLocked = false;
+
+		bool whellOfDestinyUpgraded = false;
+		std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyRegularBoost = { 0 };
+		std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyUpgradedBoost = { 0 };
 
 	private:
 		uint32_t mana = 0;

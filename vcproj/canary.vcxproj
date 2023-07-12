@@ -47,6 +47,8 @@
     <ClInclude Include="..\src\creatures\players\management\waitlist.h" />
     <ClInclude Include="..\src\creatures\players\player.h" />
     <ClInclude Include="..\src\creatures\players\vocations\vocation.h" />
+    <ClInclude Include="..\src\creatures\players\wheel\player_wheel.hpp" />
+    <ClInclude Include="..\src\creatures\players\wheel\wheel_definitions.hpp" />
     <ClInclude Include="..\src\database\database.h" />
     <ClInclude Include="..\src\database\databasemanager.h" />
     <ClInclude Include="..\src\database\databasetasks.h" />
@@ -64,6 +66,7 @@
     <ClInclude Include="..\src\io\fileloader.h" />
     <ClInclude Include="..\src\io\functions\iologindata_load_player.hpp" />
     <ClInclude Include="..\src\io\functions\iologindata_save_player.hpp" />
+    <ClInclude Include="..\src\io\io_wheel.hpp" />
     <ClInclude Include="..\src\io\iobestiary.h" />
     <ClInclude Include="..\src\io\ioguild.h" />
     <ClInclude Include="..\src\io\iologindata.h" />
@@ -216,6 +219,7 @@
     <ClCompile Include="..\src\creatures\players\management\waitlist.cpp" />
     <ClCompile Include="..\src\creatures\players\player.cpp" />
     <ClCompile Include="..\src\creatures\players\vocations\vocation.cpp" />
+    <ClCompile Include="..\src\creatures\players\wheel\player_wheel.cpp" />
     <ClCompile Include="..\src\database\database.cpp" />
     <ClCompile Include="..\src\database\databasemanager.cpp" />
     <ClCompile Include="..\src\database\databasetasks.cpp" />
@@ -229,6 +233,7 @@
     <ClCompile Include="..\src\io\fileloader.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_load_player.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_save_player.cpp" />
+    <ClCompile Include="..\src\io\io_wheel.cpp" />
     <ClCompile Include="..\src\io\iobestiary.cpp" />
     <ClCompile Include="..\src\io\ioguild.cpp" />
     <ClCompile Include="..\src\io\iologindata.cpp" />
@@ -322,6 +327,7 @@
     <ClCompile Include="..\src\map\house\housetile.cpp" />
     <ClCompile Include="..\src\map\map.cpp" />
     <ClCompile Include="..\src\otserv.cpp" />
+    <ClCompile Include="..\src\pch.cpp" />
     <ClCompile Include="..\src\protobuf\appearances.pb.cc" />
     <ClCompile Include="..\src\security\rsa.cpp" />
     <ClCompile Include="..\src\server\network\connection\connection.cpp" />

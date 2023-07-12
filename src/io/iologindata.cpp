@@ -14,6 +14,7 @@
 #include "io/functions/iologindata_save_player.hpp"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
+#include "creatures/players/wheel/player_wheel.hpp"
 #include "io/ioprey.h"
 
 bool IOLoginData::authenticateAccountPassword(const std::string &accountIdentifier, const std::string &password, account::Account* account) {
@@ -32,11 +33,42 @@ bool IOLoginData::authenticateAccountPassword(const std::string &accountIdentifi
 	return true;
 }
 
-bool IOLoginData::gameWorldAuthentication(const std::string &accountIdentifier, const std::string &password, std::string &characterName, uint32_t* accountId, bool oldProtocol) {
+bool IOLoginData::authenticateAccountSession(const std::string &sessionId, account::Account* account) {
+	Database &db = Database::getInstance();
+	std::ostringstream query;
+	query << "SELECT `account_id`, `expires` FROM `account_sessions` WHERE `id` = " << db.escapeString(transformToSHA1(sessionId));
+	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
+	if (!result) {
+		SPDLOG_ERROR("Session id {} not found in the database", sessionId);
+		return false;
+	}
+	uint32_t expires = result->getNumber<uint32_t>("expires");
+	if (expires < getTimeNow()) {
+		SPDLOG_ERROR("Session id {} found, but it is expired", sessionId);
+		return false;
+	}
+	uint32_t accountId = result->getNumber<uint32_t>("account_id");
+	if (account::ERROR_NO != account->LoadAccountDB(accountId)) {
+		SPDLOG_ERROR("Session id {} found account id {}, but it doesn't match any account.", sessionId, accountId);
+		return false;
+	}
+
+	return true;
+}
+
+bool IOLoginData::gameWorldAuthentication(const std::string &accountIdentifier, const std::string &sessionOrPassword, std::string &characterName, uint32_t* accountId, bool oldProtocol) {
 	account::Account account;
 	account.setProtocolCompat(oldProtocol);
-	if (!IOLoginData::authenticateAccountPassword(accountIdentifier, password, &account)) {
-		return false;
+	std::string authType = g_configManager().getString(AUTH_TYPE);
+
+	if (authType == "session") {
+		if (!IOLoginData::authenticateAccountSession(sessionOrPassword, &account)) {
+			return false;
+		}
+	} else { // authType == "password"
+		if (!IOLoginData::authenticateAccountPassword(accountIdentifier, sessionOrPassword, &account)) {
+			return false;
+		}
 	}
 
 	account::Player player;
@@ -88,9 +120,9 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string &name) {
 
 	std::ostringstream query;
 	query << "SELECT `id`, `account_id`, `group_id`, `deletion`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
-	if (!g_configManager().getBoolean(FREE_PREMIUM)) {
-		query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
-	}
+	query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
+	query << ", (SELECT `premdays_purchased` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days_purchased`";
+	query << ", (SELECT `creation` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `creation_timestamp`";
 	query << " FROM `players` WHERE `name` = " << db.escapeString(name);
 	DBResult_ptr result = db.storeQuery(query.str());
 	if (!result) {
@@ -115,24 +147,53 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string &name) {
 	} else {
 		player->premiumDays = std::numeric_limits<uint16_t>::max();
 	}
+
+	/*
+	  Loyalty system:
+	  - If creation timestamp is 0, that means it's the first time the player is trying to login on this account.
+	  - Since it's the first login, we must update the database manually.
+	  - This should be handled by the account manager, but not all of then do it so we handle it by ourself.
+	*/
+	time_t creation = result->getNumber<time_t>("creation_timestamp");
+	int32_t premiumDays = result->getNumber<int32_t>("premium_days");
+	int32_t premiumDaysPurchased = result->getNumber<int32_t>("premium_days_purchased");
+	if (creation == 0) {
+		query.str(std::string());
+		query << "UPDATE `accounts` SET `creation` = " << static_cast<uint32_t>(time(nullptr)) << " WHERE `id` = " << player->accountNumber;
+		db.executeQuery(query.str());
+	}
+
+	// If the player has more premium days than he purchased, it means data existed before the loyalty system was implemented.
+	// Update premdays_purchased to the minimum acceptable value.
+	if (premiumDays > premiumDaysPurchased) {
+		query.str(std::string());
+		query << "UPDATE `accounts` SET `premdays_purchased` = " << premiumDays << " WHERE `id` = " << player->accountNumber;
+		db.executeQuery(query.str());
+	}
+
+	player->loyaltyPoints = static_cast<uint32_t>(std::ceil((static_cast<double>(time(nullptr) - creation)) / 86400)) * g_configManager().getNumber(LOYALTY_POINTS_PER_CREATION_DAY)
+		+ (premiumDaysPurchased - premiumDays) * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT)
+		+ premiumDaysPurchased * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED);
+
 	return true;
 }
 
-bool IOLoginData::loadPlayerById(Player* player, uint32_t id) {
+// The boolean "disable" will desactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
+bool IOLoginData::loadPlayerById(Player* player, uint32_t id, bool disable /* = true*/) {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT * FROM `players` WHERE `id` = " << id;
-	return loadPlayer(player, db.storeQuery(query.str()));
+	return loadPlayer(player, db.storeQuery(query.str()), disable);
 }
 
-bool IOLoginData::loadPlayerByName(Player* player, const std::string &name) {
+bool IOLoginData::loadPlayerByName(Player* player, const std::string &name, bool disable /* = true*/) {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT * FROM `players` WHERE `name` = " << db.escapeString(name);
-	return loadPlayer(player, db.storeQuery(query.str()));
+	return loadPlayer(player, db.storeQuery(query.str()), disable);
 }
 
-bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
+bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /* = false*/) {
 	if (!result || !player) {
 		return false;
 	}
@@ -588,6 +649,11 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 		} while (result->next());
 	}
 
+	// We will not load the information from here on down, as they are functions that are not needed for the player preload
+	if (disable) {
+		return true;
+	}
+
 	// load vip
 	query.str(std::string());
 	query << "SELECT `player_id` FROM `account_viplist` WHERE `account_id` = " << player->getAccount();
@@ -682,6 +748,10 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 			} while (result->next());
 		}
 	}
+
+	// Wheel loading
+	player->wheel()->loadDBPlayerSlotPointsOnLogin();
+	player->wheel()->initializePlayerData();
 
 	player->initializePrey();
 	player->initializeTaskHunting();
@@ -1191,6 +1261,11 @@ bool IOLoginData::savePlayer(Player* player) {
 	IOLoginDataSave::savePlayerForgeHistory(player);
 	IOLoginDataSave::savePlayerBosstiary(player);
 
+	if (!player->wheel()->saveDBPlayerSlotPointsOnLogout()) {
+		spdlog::warn("Failed to save player wheel info to player: {}", player->getName());
+		return false;
+	}
+
 	query.str(std::string());
 	query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();
 	if (!db.executeQuery(query.str())) {
@@ -1359,7 +1434,9 @@ void IOLoginData::removeVIPEntry(uint32_t accountId, uint32_t guid) {
 
 void IOLoginData::addPremiumDays(uint32_t accountId, int32_t addDays) {
 	std::ostringstream query;
-	query << "UPDATE `accounts` SET `premdays` = `premdays` + " << addDays
+	query << "UPDATE `accounts` SET"
+		  << "`premdays` = `premdays` + " << addDays
+		  << ", `premdays_purchased` = `premdays_purchased` + " << addDays
 		  << ", `lastday` = " << getTimeNow()
 		  << " WHERE `id` = " << accountId;
 

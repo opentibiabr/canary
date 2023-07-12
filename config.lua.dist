@@ -6,6 +6,9 @@ useAnyDatapackFolder = false
 dataPackDirectory = "data-otservbr-global"
 -- Don't change this unless you know what you're doing
 coreDirectory = "data"
+-- Enable/disable development mode
+-- NOTE: In development mode, additional logs will be enabled, for deputation and testing purposes.
+developmentMode = false
 
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
@@ -126,6 +129,7 @@ boostedBossKillBonus = 3
 -- Hazard system
 toogleHazardSystem = true
 hazardCriticalInterval = 2000
+hazardCriticalChance = 750
 hazardCriticalMultiplier = 25
 hazardDamageMultiplier = 200
 hazardDodgeMultiplier = 85
@@ -136,6 +140,19 @@ hazardExpBonusMultiplier = 2
 hazardLootBonusMultiplier = 2
 hazardPodsDamage = 5
 hazardSpawnPlunderMultiplier = 25
+
+-- Loyalty system
+loyaltyEnabled = true
+loyaltyPointsPerCreationDay = 1
+loyaltyPointsPerPremiumDaySpent = 0
+loyaltyPointsPerPremiumDayPurchased = 0
+loyaltyBonusPercentageMultiplier = 1.0
+
+-- Wheel of destiny system
+-- NOTE: set wheelSystemEnabled = false to disable the wheel of destiny
+-- NOTE: only the wheel points are modified, all other data is on the client executable and cannot be modified
+wheelSystemEnabled = true
+wheelPointsPerLevel = 1
 
 -- Familiar system
 -- NOTE: the time will be divided by 2 to get half the value, the familiar lasts 15 minutes by default and the cooldown of the spell is 30 minutes
@@ -153,6 +170,7 @@ onlyPremiumAccount = false
 -- NOTE: depotChest, the non-stackable items will be moved to the selected depot chest(I - XVIII).
 -- NOTE: autoBank = true, the dropped coins from monsters will be automatically deposited to your bank account.
 -- NOTE: toggleGoldPouchAllowAnything will allow players to move items or gold to gold pouch
+-- NOTE: toggleGoldPouchQuickLootOnly will ONLY allow quickloot to move items to gold pouch
 -- NOTE: toggleServerIsRetroPVP will make this server as retro, setting PARTY_PROTECTION and ADVANCED_SECURE_MODE to 0
 -- NOTE: toggleTravelsFree will make all travels from boat free
 weatherRain = false
@@ -163,6 +181,7 @@ depotChest = 4
 autoLoot = false
 autoBank = false
 toggleGoldPouchAllowAnything = false
+toggleGoldPouchQuickLootOnly = false
 toggleServerIsRetroPVP = false
 toggleTravelsFree = false
 
@@ -267,6 +286,10 @@ mysqlDatabase = "otservbr-global"
 mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"
+
+-- Session Auth
+authType = "password" -- 'session' | 'password'
+resetSessionsOnStartup = false
 
 -- Misc.
 -- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate

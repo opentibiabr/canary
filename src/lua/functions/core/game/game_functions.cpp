@@ -22,6 +22,7 @@
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.h"
+#include "lua/creature/events.h"
 
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
@@ -400,6 +401,7 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 	bool extended = getBoolean(L, 3, false);
 	bool force = getBoolean(L, 4, false);
 	if (g_game().placeCreature(monster, position, extended, force)) {
+		g_events().eventMonsterOnSpawn(monster, position);
 		auto mtype = monster->getMonsterType();
 		if (mtype && mtype->info.bossRaceId > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {
 			SpectatorHashSet spectators;
@@ -681,5 +683,14 @@ int GameFunctions::luaGameGetFiendishMonsters(lua_State* L) {
 int GameFunctions::luaGameGetBoostedBoss(lua_State* L) {
 	// Game.getBoostedBoss()
 	pushString(L, g_ioBosstiary().getBoostedBossName());
+	return 1;
+}
+
+int GameFunctions::luaGameCreateHazardArea(lua_State* L) {
+	// Game.createHazardArea(positionFrom, positionTo)
+	const Position &positionFrom = getPosition(L, 1);
+	const Position &positionTo = getPosition(L, 2);
+
+	pushBoolean(L, g_game().createHazardArea(positionFrom, positionTo));
 	return 1;
 }

@@ -159,7 +159,8 @@ enum ConditionParam_t {
 	CONDITION_PARAM_BUFF_DAMAGERECEIVED = 57,
 	CONDITION_PARAM_SOUND_TICK = 58,
 	CONDITION_PARAM_SOUND_ADD = 59,
-	CONDITION_PARAM_CASTER_POSITION = 60
+	CONDITION_PARAM_CASTER_POSITION = 60,
+	CONDITION_PARAM_DRAIN_BODY = 61
 };
 
 enum stats_t {
@@ -492,6 +493,141 @@ enum class ForgeClassifications_t : uint8_t {
 	FORGE_FIENDISH_MONSTER = 2,
 };
 
+enum class GameFeature_t : uint8_t {
+	ProtocolChecksum = 1,
+	AccountNames = 2,
+	ChallengeOnLogin = 3,
+	PenalityOnDeath = 4,
+	NameOnNpcTrade = 5,
+	DoubleFreeCapacity = 6,
+	DoubleExperience = 7,
+	TotalCapacity = 8,
+	SkillsBase = 9,
+	PlayerRegenerationTime = 10,
+	ChannelPlayerList = 11,
+	PlayerMounts = 12,
+	EnvironmentEffect = 13,
+	CreatureEmblems = 14,
+	ItemAnimationPhase = 15,
+	MagicEffectU16 = 16,
+	PlayerMarket = 17,
+	SpritesU32 = 18,
+	TileAddThingWithStackpos = 19,
+	OfflineTrainingTime = 20,
+	PurseSlot = 21,
+	FormatCreatureName = 22,
+	SpellList = 23,
+	ClientPing = 24,
+	ExtendedClientPing = 25,
+	DoubleHealth = 28,
+	DoubleSkills = 29,
+	ChangeMapAwareRange = 30,
+	MapMovePosition = 31,
+	AttackSeq = 32,
+	BlueNpcNameColor = 33,
+	DiagonalAnimatedText = 34,
+	LoginPending = 35,
+	NewSpeedLaw = 36,
+	ForceFirstAutoWalkStep = 37,
+	MinimapRemove = 38,
+	DoubleShopSellAmount = 39,
+	ContainerPagination = 40,
+	ThingMarks = 41,
+	LooktypeU16 = 42,
+	PlayerStamina = 43,
+	PlayerAddons = 44,
+	MessageStatements = 45,
+	MessageLevel = 46,
+	NewFluids = 47,
+	PlayerStateU16 = 48,
+	NewOutfitProtocol = 49,
+	PVPMode = 50,
+	WritableDate = 51,
+	AdditionalVipInfo = 52,
+	BaseSkillU16 = 53,
+	CreatureIcons = 54,
+	HideNpcNames = 55,
+	SpritesAlphaChannel = 56,
+	PremiumExpiration = 57,
+	BrowseField = 58,
+	EnhancedAnimations = 59,
+	OGLInformation = 60,
+	MessageSizeCheck = 61,
+	PreviewState = 62,
+	LoginPacketEncryption = 63,
+	ClientVersion = 64,
+	ContentRevision = 65,
+	ExperienceBonus = 66,
+	Authenticator = 67,
+	UnjustifiedPoints = 68,
+	SessionKey = 69,
+	DeathType = 70,
+	IdleAnimations = 71,
+	KeepUnawareTiles = 72,
+	IngameStore = 73,
+	IngameStoreHighlights = 74,
+	IngameStoreServiceType = 75,
+	AdditionalSkills = 76,
+	DistanceEffectU16 = 77,
+	Prey = 78,
+	DoubleMagicLevel = 79,
+
+	ExtendedOpcode = 80,
+	MinimapLimitedToSingleFloor = 81,
+	SendWorldName = 82,
+
+	DoubleLevel = 83,
+	DoubleSoul = 84,
+	DoublePlayerGoodsMoney = 85,
+	CreatureWalkthrough = 86,
+	DoubleTradeMoney = 87,
+	SequencedPackets = 88,
+	Tibia12Protocol = 89,
+
+	// 90-99 otclientv8 features
+	NewWalking = 90,
+	SlowerManualWalking = 91,
+
+	ItemTooltip = 93,
+
+	Bot = 95,
+	BiggerMapCache = 96,
+	ForceLight = 97,
+	NoDebug = 98,
+	BotProtection = 99,
+
+	// Custom features for customer
+	FasterAnimations = 101,
+	CenteredOutfits = 102,
+	SendIdentifiers = 103,
+	WingsAndAura = 104,
+	PlayerStateU32 = 105,
+	OutfitShaders = 106,
+
+	// advanced features
+	PacketSizeU32 = 110,
+	PacketCompression = 111,
+	OldInformationBar = 112,
+	HealthInfoBackground = 113,
+	WingOffset = 114,
+	AuraFrontAndBack = 115,
+
+	MapDrawGroundFirst = 116,
+	MapIgnoreCorpseCorrection = 117,
+	DontCacheFiles = 118,
+	BigAurasCenter = 119,
+	NewUpdateWalk = 120,
+	NewCreatureStacking = 121,
+	CreaturesMana = 122,
+	QuickLootFlags = 123,
+	DontMergeAnimatedText = 124,
+	MissionId = 125,
+	ItemCustomAttributes = 126,
+	AnimatedTextCustomFont = 127,
+
+	LastGameFeature = 130
+};
+
 enum OperatingSystem_t : uint8_t {
 	CLIENTOS_NONE = 0,
 
@@ -505,6 +641,15 @@ enum OperatingSystem_t : uint8_t {
 	CLIENTOS_OTCLIENT_LINUX = 10,
 	CLIENTOS_OTCLIENT_WINDOWS = 11,
 	CLIENTOS_OTCLIENT_MAC = 12,
+	// by default OTCv8 uses CLIENTOS_WINDOWS for backward compatibility
+	// for correct value enable g_game.enableFeature(GameExtendedOpcode)
+	// in modules/game_features/features.lua
+	CLIENTOS_OTCLIENTV8_LINUX = 20,
+	CLIENTOS_OTCLIENTV8_WINDOWS = 21,
+	CLIENTOS_OTCLIENTV8_MAC = 22,
+	CLIENTOS_OTCLIENTV8_ANDROID = 23,
+	CLIENTOS_OTCLIENTV8_IOS = 24,
+	CLIENTOS_OTCLIENTV8_WEB = 25,
 };
 
 enum SpellGroup_t : uint8_t {
@@ -543,7 +688,13 @@ enum Vocation_t : uint16_t {
 	VOCATION_ELDER_DRUID = 6,
 	VOCATION_ROYAL_PALADIN = 7,
 	VOCATION_ELITE_KNIGHT = 8,
-	VOCATION_LAST = VOCATION_ELITE_KNIGHT
+	VOCATION_LAST = VOCATION_ELITE_KNIGHT,
+
+	// Cip tibia client ids
+	VOCATION_KNIGHT_CIP = 1,
+	VOCATION_PALADIN_CIP = 2,
+	VOCATION_SORCERER_CIP = 3,
+	VOCATION_DRUID_CIP = 4
 };
 
 enum FightMode_t : uint8_t {
@@ -1109,14 +1260,14 @@ enum SoundEffect_t : uint16_t {
 	ACTION_AIR_STRIKE = 2825,
 	ENV_WATER = 2828,
 	ENV_SNAKE_2 = 2829,
-	GOD_SPELL_KILL_ALL_MONSTERS = 10001, // No sound ingame
+	GOD_SPELL_KILL_ALL_MONSTERS = 10001 // No sound ingame
 };
 
 enum class SourceEffect_t : uint8_t {
 	GLOBAL = 0,
 	OWN = 1,
 	OTHERS = 2,
-	CREATURES = 3,
+	CREATURES = 3
 };
 
 // Structs
@@ -1292,27 +1443,32 @@ struct LightInfo {
 
 struct CombatDamage {
 		struct {
-				CombatType_t type;
-				int32_t value;
+				CombatType_t type = COMBAT_NONE;
+				int32_t value = 0;
 		} primary, secondary;
 
-		CombatOrigin origin;
-		bool critical;
-		int affected;
-		bool extension;
+		CombatOrigin origin = ORIGIN_NONE;
+		bool critical = false;
+		int affected = 1;
+		bool extension = false;
 		std::string exString;
-		bool fatal;
+		bool fatal = false;
 
-		CombatDamage() {
-			origin = ORIGIN_NONE;
-			primary.type = secondary.type = COMBAT_NONE;
-			primary.value = secondary.value = 0;
-			critical = false;
-			affected = 1;
-			extension = false;
-			exString = "";
-			fatal = false;
-		}
+		int32_t criticalDamage = 0;
+		int32_t criticalChance = 0;
+		int32_t damageMultiplier = 0;
+		int32_t damageReductionMultiplier = 0;
+		int32_t healingMultiplier = 0;
+		int32_t manaLeech = 0;
+		int32_t manaLeechChance = 0;
+		int32_t lifeLeech = 0;
+		int32_t lifeLeechChance = 0;
+		int32_t healingLink = 0;
+
+		std::string instantSpellName;
+		std::string runeSpellName;
+
+		CombatDamage() = default;
 };
 
 struct RespawnType {

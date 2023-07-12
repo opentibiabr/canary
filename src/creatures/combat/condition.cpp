@@ -24,6 +24,11 @@ bool Condition::setParam(ConditionParam_t param, int32_t value) {
 			return true;
 		}
 
+		case CONDITION_PARAM_DRAIN_BODY: {
+			drainBodyStage = std::min(static_cast<uint8_t>(value), std::numeric_limits<uint8_t>::max());
+			return true;
+		}
+
 		case CONDITION_PARAM_BUFF_SPELL: {
 			isBuff = (value != 0);
 			return true;
@@ -396,6 +401,10 @@ uint32_t ConditionGeneric::getIcons() const {
  */
 
 void ConditionAttributes::addCondition(Creature* creature, const Condition* addCondition) {
+	if (!creature) {
+		return;
+	}
+
 	if (updateCondition(addCondition)) {
 		setTicks(addCondition->getTicks());
 
@@ -420,6 +429,9 @@ void ConditionAttributes::addCondition(Creature* creature, const Condition* addC
 			updatePercentStats(player);
 			updateStats(player);
 		}
+	}
+	if (drainBodyStage > 0) {
+		creature->setWheelOfDestinyDrainBodyDebuff(drainBodyStage);
 	}
 }
 
@@ -515,12 +527,13 @@ void ConditionAttributes::updateStats(Player* player) {
 
 void ConditionAttributes::updatePercentSkills(Player* player) {
 	for (uint8_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-		if (skillsPercent[i] == 0) {
+		skills_t skill = static_cast<skills_t>(i);
+		if (skillsPercent[skill] == 0) {
 			continue;
 		}
 
-		int32_t unmodifiedSkill = player->getBaseSkill(i);
-		skills[i] = static_cast<int32_t>(unmodifiedSkill * ((skillsPercent[i] - 100) / 100.f));
+		int32_t unmodifiedSkill = player->getBaseSkill(skill);
+		skills[skill] = static_cast<int32_t>(unmodifiedSkill * ((skillsPercent[skill] - 100) / 100.f));
 	}
 }
 

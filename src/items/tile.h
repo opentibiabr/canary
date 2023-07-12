@@ -170,6 +170,17 @@ class Tile : public Cylinder {
 			this->flags &= ~flag;
 		}
 
+		void setHazard(bool hazard) {
+			if (hazard) {
+				setFlag(TILESTATE_HAZARD);
+			} else {
+				resetFlag(TILESTATE_HAZARD);
+			}
+		}
+		bool isHazard() const {
+			return hasFlag(TILESTATE_HAZARD);
+		}
+
 		ZoneType_t getZone() const {
 			if (hasFlag(TILESTATE_PROTECTIONZONE)) {
 				return ZONE_PROTECTION;

@@ -14,6 +14,7 @@
 #include "creatures/monsters/monster.h"
 #include "game/game.h"
 #include "lua/scripts/lua_environment.hpp"
+#include "creatures/players/wheel/player_wheel.hpp"
 
 Spells::Spells() = default;
 Spells::~Spells() = default;
@@ -423,7 +424,7 @@ bool Spell::playerSpellCheck(Player* player) const {
 			g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 			return false;
 		}
-	} else if (!vocSpellMap.empty() && !vocSpellMap.contains(player->getVocationId())) {
+	} else if (!vocSpellMap.empty() && !vocSpellMap.contains(player->getVocationId()) && player->getGroup()->id < account::GROUP_TYPE_GAMEMASTER) {
 		player->sendCancelMessage(RETURNVALUE_YOURVOCATIONCANNOTUSETHISSPELL);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
@@ -565,20 +566,78 @@ bool Spell::playerRuneSpellCheck(Player* player, const Position &toPos) {
 	return true;
 }
 
+// Wheel of destiny - Get:
+bool Spell::getWheelOfDestinyUpgraded() const {
+	return whellOfDestinyUpgraded;
+}
+
+int32_t Spell::getWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t grade) const {
+	int32_t value = 0;
+	try {
+		if (grade >= WheelSpellGrade_t::REGULAR) {
+			value += wheelOfDestinyRegularBoost.at(static_cast<uint8_t>(boost));
+		}
+		if (grade >= WheelSpellGrade_t::UPGRADED) {
+			value += wheelOfDestinyUpgradedBoost.at(static_cast<uint8_t>(boost));
+		}
+	} catch (const std::out_of_range &e) {
+		SPDLOG_ERROR("[{}] invalid grade value, error code: {}", __FUNCTION__, e.what());
+	}
+	return value;
+}
+
+// Wheel of destiny - Set:
+void Spell::setWheelOfDestinyUpgraded(bool value) {
+	whellOfDestinyUpgraded = value;
+}
+
+void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t grade, int32_t value) {
+	try {
+		if (grade == WheelSpellGrade_t::REGULAR) {
+			wheelOfDestinyRegularBoost.at(static_cast<uint8_t>(boost)) = value;
+		} else if (grade == WheelSpellGrade_t::UPGRADED) {
+			wheelOfDestinyUpgradedBoost.at(static_cast<uint8_t>(boost)) = value;
+		}
+	} catch (const std::out_of_range &e) {
+		SPDLOG_ERROR("[{}] invalid grade value, error code: {}", __FUNCTION__, e.what());
+	}
+}
+
 void Spell::applyCooldownConditions(Player* player) const {
+	WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
+	bool isUpgraded = getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0;
+	auto rate_cooldown = (int32_t)g_configManager().getFloat(RATE_SPELL_COOLDOWN);
 	if (cooldown > 0) {
-		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, cooldown / g_configManager().getFloat(RATE_SPELL_COOLDOWN), 0, false, spellId);
-		player->addCondition(condition);
+		int32_t spellCooldown = cooldown;
+		if (isUpgraded) {
+			spellCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, spellGrade);
+		}
+		if (spellCooldown > 0) {
+			Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rate_cooldown, 0, false, spellId);
+			player->addCondition(condition);
+		}
 	}
 
 	if (groupCooldown > 0) {
-		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, groupCooldown / g_configManager().getFloat(RATE_SPELL_COOLDOWN), 0, false, group);
-		player->addCondition(condition);
+		int32_t spellGroupCooldown = groupCooldown;
+		if (isUpgraded) {
+			spellGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::GROUP_COOLDOWN, spellGrade);
+		}
+		if (spellGroupCooldown > 0) {
+			Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellGroupCooldown / rate_cooldown, 0, false, group);
+			player->addCondition(condition);
+		}
 	}
 
 	if (secondaryGroupCooldown > 0) {
-		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, secondaryGroupCooldown / g_configManager().getFloat(RATE_SPELL_COOLDOWN), 0, false, secondaryGroup);
-		player->addCondition(condition);
+		int32_t spellSecondaryGroupCooldown = secondaryGroupCooldown;
+		if (isUpgraded) {
+			spellSecondaryGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, spellGrade);
+		}
+		if (spellSecondaryGroupCooldown > 0) {
+			Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellSecondaryGroupCooldown / rate_cooldown, 0, false, secondaryGroup);
+			player->addCondition(condition);
+		}
 	}
 }
 
@@ -617,12 +676,28 @@ void Spell::postCastSpell(Player* player, uint32_t manaCost, uint32_t soulCost) 
 
 uint32_t Spell::getManaCost(const Player* player) const {
 	if (mana != 0) {
+		WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
+		if (getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0) {
+			if (getWheelOfDestinyBoost(WheelSpellBoost_t::MANA, spellGrade) >= mana) {
+				return 0;
+			} else {
+				return (mana - getWheelOfDestinyBoost(WheelSpellBoost_t::MANA, spellGrade));
+			}
+		}
 		return mana;
 	}
 
 	if (manaPercent != 0) {
 		uint32_t maxMana = player->getMaxMana();
 		uint32_t manaCost = (maxMana * manaPercent) / 100;
+		WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
+		if (getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0) {
+			if (getWheelOfDestinyBoost(WheelSpellBoost_t::MANA, spellGrade) >= manaCost) {
+				return 0;
+			} else {
+				return (manaCost - getWheelOfDestinyBoost(WheelSpellBoost_t::MANA, spellGrade));
+			}
+		}
 		return manaCost;
 	}
 
@@ -635,6 +710,7 @@ bool InstantSpell::playerCastInstant(Player* player, std::string &param) {
 	}
 
 	LuaVariant var;
+	var.instantName = getName();
 	Player* playerTarget = nullptr;
 
 	if (selfTarget) {
@@ -760,6 +836,7 @@ bool InstantSpell::canThrowSpell(const Creature* creature, const Creature* targe
 
 bool InstantSpell::castSpell(Creature* creature) {
 	LuaVariant var;
+	var.instantName = getName();
 
 	if (casterTargetOrDirection) {
 		Creature* target = creature->getAttackedCreature();
@@ -770,6 +847,7 @@ bool InstantSpell::castSpell(Creature* creature) {
 
 			var.type = VARIANT_NUMBER;
 			var.number = target->getID();
+			var.instantName = getName();
 			return executeCastSpell(creature, var);
 		}
 
@@ -874,6 +952,7 @@ bool RuneSpell::executeUse(Player* player, Item* item, const Position &, Thing* 
 	}
 
 	LuaVariant var;
+	var.runeName = getName();
 
 	if (needTarget) {
 		var.type = VARIANT_NUMBER;
@@ -917,6 +996,7 @@ bool RuneSpell::castSpell(Creature* creature) {
 	LuaVariant var;
 	var.type = VARIANT_NUMBER;
 	var.number = creature->getID();
+	var.runeName = getName();
 	return internalCastSpell(creature, var, false);
 }
 
@@ -924,6 +1004,7 @@ bool RuneSpell::castSpell(Creature* creature, Creature* target) {
 	LuaVariant var;
 	var.type = VARIANT_NUMBER;
 	var.number = target->getID();
+	var.runeName = getName();
 	return internalCastSpell(creature, var, false);
 }
 

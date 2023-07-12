@@ -2505,22 +2505,6 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 						}
 					}
 				}
-				/* Review
-				if (attacker) {
-					const int16_t &reflectPercent = it.abilities->reflectPercent[combatTypeToIndex(combatType)];
-					if (reflectPercent != 0) {
-						CombatParams params;
-						params.combatType = combatType;
-						params.impactEffect = CONST_ME_MAGIC_BLUE;
-
-						CombatDamage reflectDamage;
-						reflectDamage.origin = ORIGIN_SPELL;
-						reflectDamage.primary.type = combatType;
-						reflectDamage.primary.value = std::round(-damage * (reflectPercent / 100.));
-
-						Combat::doCombatHealth(this, attacker, reflectDamage, params);
-					}
-				}*/
 			}
 
 			for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
@@ -4376,13 +4360,17 @@ void Player::onAddCombatCondition(ConditionType_t type) {
 			break;
 
 		case CONDITION_LESSERHEX:
+
 		case CONDITION_INTENSEHEX:
+
 		case CONDITION_GREATERHEX:
+
 			sendTextMessage(MESSAGE_FAILURE, "You are hexed.");
 			break;
 		case CONDITION_ROOTED:
 			sendTextMessage(MESSAGE_FAILURE, "You are rooted.");
 			break;
+
 		case CONDITION_FEARED:
 			sendTextMessage(MESSAGE_FAILURE, "You are feared.");
 			break;
@@ -5256,9 +5244,9 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 	}
 
 	for (const auto item : getEquippedItems()) {
-		const ItemType &it = Item::items[item->getID()];
-		if (it.abilities && it.abilities->perfectShotRange == range) {
-			result += it.abilities->perfectShotDamage;
+		const ItemType &itemType = Item::items[item->getID()];
+		if (itemType.abilities && itemType.abilities->perfectShotRange == range) {
+			result += itemType.abilities->perfectShotDamage;
 			uint16_t charges = item->getCharges();
 			if (useCharges && charges != 0) {
 				g_game().transformItem(item, item->getID(), charges - 1);

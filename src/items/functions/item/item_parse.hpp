@@ -86,6 +86,7 @@ const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttribut
 	{ "maxmanapoints", ITEM_PARSE_MAXMANAPOINTS },
 	{ "maxmanapointspercent", ITEM_PARSE_MAXMANAPOINTSPERCENT },
 	{ "magiclevelpoints", ITEM_PARSE_MAGICLEVELPOINTS },
+	{ "magicpoints", ITEM_PARSE_MAGICLEVELPOINTS },
 	{ "magicpointspercent", ITEM_PARSE_MAGICLEVELPOINTSPERCENT },
 	{ "fieldabsorbpercentenergy", ITEM_PARSE_FIELDABSORBPERCENTENERGY },
 	{ "fieldabsorbpercentfire", ITEM_PARSE_FIELDABSORBPERCENTFIRE },

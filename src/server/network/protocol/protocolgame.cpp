@@ -166,19 +166,19 @@ namespace {
 
 			uint8_t imbuementSlots = itemType.imbuementSlot;
 			if (imbuementSlots > 0) {
-				for (uint8_t i = 0; i < imbuementSlots; ++i) {
+				for (uint8_t slot = 0; slot < imbuementSlots; ++slot) {
 					ImbuementInfo imbuementInfo;
-					if (!item->getImbuementInfo(i, &imbuementInfo)) {
+					if (!item->getImbuementInfo(slot, &imbuementInfo)) {
 						continue;
 					}
 
 					if (imbuementInfo.duration > 0) {
 						auto imbuement = *imbuementInfo.imbuement;
-						for (uint16_t i = 0; i < COMBAT_COUNT; ++i) {
-							const int16_t &imbuementAbsorbPercent = imbuement.absorbPercent[i];
+						for (uint16_t combat = 0; combat < COMBAT_COUNT; ++combat) {
+							const int16_t &imbuementAbsorbPercent = imbuement.absorbPercent[combat];
 
 							if (imbuementAbsorbPercent != 0) {
-								damageReduction[i] *= (std::floor(100 - imbuementAbsorbPercent) / 100.);
+								damageReduction[combat] *= (std::floor(100 - imbuementAbsorbPercent) / 100.);
 							}
 						}
 					}

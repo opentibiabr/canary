@@ -6171,7 +6171,6 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		}
 
 		if (attacker && attackerPlayer && damage.extension == false && damage.origin == ORIGIN_RANGED && target == attackerPlayer->getAttackedCreature()) {
-			const Position &targetPos = target->getPosition();
 			const Position &attackerPos = attacker->getPosition();
 			if (targetPos.z == attackerPos.z) {
 				int32_t distanceX = Position::getDistanceX(targetPos, attackerPos);

@@ -51598,7 +51598,6 @@
 	</item>
 	<item id="36670" article="a" name="eldritch cowl">
 		<attribute key="absorbpercentice" value="7"/>
-		<attribute key="magiclevelpoints" value="2"/>
 		<attribute key="armor" value="7"/>
 		<attribute key="magiclevelpoints" value="2"/>
 		<attribute key="weight" value="2600"/>
@@ -51613,7 +51612,6 @@
 	</item>
 	<item id="36671" article="a" name="eldritch hood">
 		<attribute key="absorbpercentpoison" value="7"/>
-		<attribute key="magiclevelpoints" value="2"/>
 		<attribute key="armor" value="7"/>
 		<attribute key="magiclevelpoints" value="2"/>
 		<attribute key="weight" value="2700"/>
@@ -51647,7 +51645,6 @@
 	<item id="36673" article="a" name="eldritch tome">
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="absorbpercentfire" value="6"/>
-		<attribute key="magiclevelpoints" value="4"/>
 		<attribute key="magiclevelpoints" value="4"/>
 		<attribute key="earthmagiclevelpoints" value="1"/>
 		<attribute key="magicshieldCapacityflat" value="80"/>

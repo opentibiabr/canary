@@ -239,6 +239,7 @@ Condition* Condition::createCondition(ConditionId_t id, ConditionType_t type, in
 		case CONDITION_CHANNELMUTEDTICKS:
 		case CONDITION_YELLTICKS:
 		case CONDITION_PACIFIED:
+			return new ConditionGeneric(id, type, ticks, buff, subId);
 
 		default:
 			return nullptr;
@@ -1609,7 +1610,7 @@ bool ConditionDamage::doDamage(Creature* creature, int32_t healthChange) {
 
 	Creature* attacker = g_game().getCreatureByID(owner);
 	if (field && creature->getPlayer() && attacker && attacker->getPlayer()) {
-		damage.primary.value = damage.primary.value / 2;
+		damage.primary.value = static_cast<int32_t>(std::round(damage.primary.value / 2.));
 	}
 
 	if (!creature->isAttackable() || Combat::canDoCombat(attacker, creature) != RETURNVALUE_NOERROR) {

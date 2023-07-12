@@ -897,8 +897,8 @@ void ItemParse::parseReflectDamage(const std::string &tmpStrValue, pugi::xml_att
 		abilities.reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)] += pugi::cast<int32_t>(valueAttribute.value());
 	} else if (stringValue == "reflectpercentall") {
 		int32_t value = pugi::cast<int32_t>(valueAttribute.value());
-		for (auto &i : abilities.reflectPercent) {
-			i += value;
-		}
+		std::transform(std::begin(abilities.reflectPercent), std::end(abilities.reflectPercent), std::begin(abilities.reflectPercent), [&](auto& i) {
+			return i + value;
+		});
 	}
 }

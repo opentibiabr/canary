@@ -852,11 +852,6 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 
 	registerEnum(L, ITEM_GOLD_POUCH);
 	registerEnum(L, ITEM_STORE_INBOX);
-	registerEnum(L, ITEM_TIBIADROME_POTION_START);
-	registerEnum(L, ITEM_TIBIADROME_POTION_END);
-	registerEnum(L, ITEM_TIBIADROME_POTION_CHARM);
-	registerEnum(L, ITEM_TIBIADROME_POTION_LOOT);
-	registerEnum(L, ITEM_TIBIADROME_POTION_BESTIARY);
 
 	registerEnum(L, ITEM_DIVINE_EMPOWERMENT);
 

@@ -3453,6 +3453,24 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	// Now set the buffer position skiped and send the total combats count
 	msg.setBufferPosition(startCombats);
 	msg.addByte(combats);
+	msg.setBufferPosition(endCombats);
+
+	// Concoctions potions (12.70)
+	auto startConcoctions = msg.getBufferPosition();
+	msg.skipBytes(1);
+	auto activeConcoctions = player->getActiveConcoctions();
+	uint8_t concoctions = 0;
+	for (const auto &concoction : activeConcoctions) {
+		if (concoction.second == 0) {
+			continue;
+		}
+		msg.add<uint16_t>(concoction.first);
+		msg.add<uint16_t>(concoction.second);
+		++concoctions;
+	}
+
+	msg.setBufferPosition(startConcoctions);
+	msg.addByte(concoctions);
 
 	writeToOutputBuffer(msg);
 }

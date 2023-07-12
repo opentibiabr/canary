@@ -43,6 +43,10 @@ monster.flags = {
 	canWalkOnPoison = true
 }
 
+monster.events = {
+	"SoulcatcherSummon"
+}
+
 monster.light = {
 	level = 0,
 	color = 0

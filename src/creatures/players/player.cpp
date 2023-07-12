@@ -6432,6 +6432,22 @@ void Player::triggerMomentum() {
 	}
 }
 
+void Player::clearCooldowns() {
+	auto it = conditions.begin();
+	while (it != conditions.end()) {
+		auto condItem = *it;
+		ConditionType_t type = condItem->getType();
+		auto maxu16 = std::numeric_limits<uint16_t>::max();
+		auto checkSpellId = condItem->getSubId();
+		auto spellId = checkSpellId > maxu16 ? 0u : static_cast<uint16_t>(checkSpellId);
+		if (type == CONDITION_SPELLCOOLDOWN || type == CONDITION_SPELLGROUPCOOLDOWN) {
+			condItem->setTicks(0);
+			type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), 0) : sendSpellCooldown(spellId, 0);
+		}
+		++it;
+	}
+}
+
 /*******************************************************************************
  * Depot search system
  ******************************************************************************/

@@ -3451,6 +3451,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	calculateAbsorbValues(player, msg, combats);
 
 	// Now set the buffer position skiped and send the total combats count
+	auto endCombats = msg.getBufferPosition();
 	msg.setBufferPosition(startCombats);
 	msg.addByte(combats);
 	msg.setBufferPosition(endCombats);

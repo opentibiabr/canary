@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Crazed Winter Rearguard")
 local monster = {}
 
-monster.description = "a Crazed Winter Rearguard"
+monster.description = "a crazed winter rearguard"
 monster.experience = 4700
 monster.outfit = {
 	lookType = 1136,

@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Headpecker")
 local monster = {}
 
-monster.description = "a Headpecker"
+monster.description = "a headpecker"
 monster.experience = 12026
 monster.outfit = {
 	lookType = 1557,

@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Frozen Man")
 local monster = {}
 
-monster.description = "a Frozen Man"
+monster.description = "a frozen man"
 monster.experience = 0
 monster.outfit = {
 	lookTypeEx = 7311

@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Oberon's Spite")
 local monster = {}
 
-monster.description = "a Oberon's Spite"
+monster.description = "Oberon's Spite"
 monster.experience = 20000
 monster.outfit = {
 	lookTypeEx = 11212

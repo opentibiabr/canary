@@ -341,9 +341,9 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 
 	auto totalRemoved = amount - toRemove;
 	auto totalCost = static_cast<uint64_t>(sellPrice * totalRemoved);
-	if(getCurrency() == ITEM_GOLD_COIN){
+	if (getCurrency() == ITEM_GOLD_COIN) {
 		g_game().addMoney(player, totalCost);
-	}else{
+	} else {
 		Item* newItem = Item::CreateItem(getCurrency(), totalCost);
 		if (newItem) {
 			g_game().internalPlayerAddItem(player, newItem, true);

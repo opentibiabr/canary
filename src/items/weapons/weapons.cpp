@@ -209,7 +209,7 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Tile* tile) const {
 		var.pos = tile->getPosition();
 		executeUseWeapon(player, var);
 	} else {
-		Combat::postCombatEffects(player, tile->getPosition(), params);
+		Combat::postCombatEffects(player, player->getPosition(), tile->getPosition(), params);
 		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
 		g_game().sendSingleSoundEffect(tile->getPosition(), SoundEffect_t::PHYSICAL_RANGE_MISS, player);
 	}

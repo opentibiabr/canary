@@ -6183,8 +6183,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					if (quiver && quiver->getWeaponType()) {
 						if (quiver->getPerfectShotRange() == distanceX) {
 							damageX -= quiver->getPerfectShotDamage();
-						}
-						else if (quiver->getPerfectShotRange() == distanceY) {
+						} else if (quiver->getPerfectShotRange() == distanceY) {
 							damageY -= quiver->getPerfectShotDamage();
 						}
 					}

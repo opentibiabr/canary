@@ -6180,11 +6180,13 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				Item* item = attackerPlayer->getWeapon();
 				if (item && item->getWeaponType() == WEAPON_DISTANCE) {
 					Item* quiver = attackerPlayer->getInventoryItem(CONST_SLOT_RIGHT);
-					if (quiver->getWeaponType()) {
-						if (quiver->getPerfectShotRange() == distanceX)
+					if (quiver && quiver->getWeaponType()) {
+						if (quiver->getPerfectShotRange() == distanceX) {
 							damageX -= quiver->getPerfectShotDamage();
-						else if (quiver->getPerfectShotRange() == distanceY)
+						}
+						else if (quiver->getPerfectShotRange() == distanceY) {
 							damageY -= quiver->getPerfectShotDamage();
+						}
 					}
 				}
 				if (damageX != 0 || damageY != 0) {

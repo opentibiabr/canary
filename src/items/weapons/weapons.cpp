@@ -543,11 +543,13 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 
 	if (it.weaponType == WEAPON_DISTANCE) {
 		Item* quiver = player->getInventoryItem(CONST_SLOT_RIGHT);
-		if (quiver->getWeaponType()) {
-			if (quiver->getPerfectShotRange() == distanceX)
+		if (quiver && quiver->getWeaponType()) {
+			if (quiver->getPerfectShotRange() == distanceX) {
 				damageX -= quiver->getPerfectShotDamage();
-			else if (quiver->getPerfectShotRange() == distanceY)
+			}
+			else if (quiver->getPerfectShotRange() == distanceY) {
 				damageY -= quiver->getPerfectShotDamage();
+			}
 		}
 	}
 

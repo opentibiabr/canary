@@ -719,6 +719,10 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 
 void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 	if (recvbyte == 0x14) {
+		// Remove player from game if click "ok" using otcv8
+		if (player && otclientV8 > 0) {
+			g_game().removePlayerUniqueLogin(player->getName());
+		}
 		disconnect();
 		g_dispatcher().addTask(createTask(std::bind(&IOLoginData::updateOnlineStatus, player->getGUID(), false)));
 		return;

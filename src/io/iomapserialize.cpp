@@ -58,7 +58,7 @@ bool IOMapSerialize::saveHouseItems() {
 
 	// Start the transaction
 	DBTransaction transaction1;
-	if (!transaction1.start()) {
+	if (!transaction1.begin()) {
 		return false;
 	}
 
@@ -281,7 +281,7 @@ bool IOMapSerialize::saveHouseInfo() {
 	Database &db = Database::getInstance();
 
 	DBTransaction transaction2;
-	if (!transaction2.start()) {
+	if (!transaction2.begin()) {
 		return false;
 	}
 

@@ -859,6 +859,20 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList &itemList,
 }
 
 bool IOLoginData::savePlayer(Player* player) {
+    DBTransaction transaction;
+    DBTransactionGuard guard(transaction);
+    try {
+        guard.execute([&]() {
+            beatsDb(player);
+        });
+        return true;
+    } catch (const std::exception &exception) {
+        SPDLOG_ERROR("[{}] Error occurred while saving player, error: {}", __FUNCTION__, exception.what());
+        return false;
+    }
+}
+
+bool IOLoginData::beatsDb(Player* player) {
 	if (player->getHealth() <= 0) {
 		player->changeHealth(1);
 	}
@@ -1007,13 +1021,6 @@ bool IOLoginData::savePlayer(Player* player) {
 	}
 	query << " WHERE `id` = " << player->getGUID();
 
-	DBTransaction transaction;
-	if (!transaction.start()) {
-		return false;
-	}
-
-	DBTransactionGuard guard(transaction);
-
 	if (!db.executeQuery(query.str())) {
 		return false;
 	}
@@ -1160,6 +1167,8 @@ bool IOLoginData::savePlayer(Player* player) {
 			return false;
 		}
 	}
+
+	throw std::runtime_error("Simulated failure in beatsDb");
 
 	if (!IOLoginDataSave::saveRewardItems(player)) {
 		SPDLOG_ERROR("[{}] failed to save reward items");

@@ -111,6 +111,9 @@ bool ConfigManager::load() {
 		string[MYSQL_DB] = getGlobalString(L, "mysqlDatabase", "canary");
 		string[MYSQL_SOCK] = getGlobalString(L, "mysqlSock", "");
 
+		string[AUTH_TYPE] = getGlobalString(L, "authType", "password");
+		boolean[RESET_SESSIONS_ON_STARTUP] = getGlobalBoolean(L, "resetSessionsOnStartup", false);
+
 		integer[SQL_PORT] = getGlobalNumber(L, "mysqlPort", 3306);
 		integer[GAME_PORT] = getGlobalNumber(L, "gameProtocolPort", 7172);
 		integer[LOGIN_PORT] = getGlobalNumber(L, "loginProtocolPort", 7171);
@@ -139,6 +142,9 @@ bool ConfigManager::load() {
 	boolean[WARN_UNSAFE_SCRIPTS] = getGlobalBoolean(L, "warnUnsafeScripts", true);
 	boolean[CONVERT_UNSAFE_SCRIPTS] = getGlobalBoolean(L, "convertUnsafeScripts", true);
 	boolean[CLASSIC_ATTACK_SPEED] = getGlobalBoolean(L, "classicAttackSpeed", false);
+	boolean[TOGGLE_ATTACK_SPEED_ONFIST] = getGlobalBoolean(L, "toggleAttackSpeedOnFist", false);
+	integer[MULTIPLIER_ATTACKONFIST] = getGlobalNumber(L, "multiplierSpeedOnFist", 5);
+	integer[MAX_SPEED_ATTACKONFIST] = getGlobalNumber(L, "maxSpeedOnFist", 500);
 	boolean[SCRIPTS_CONSOLE_LOGS] = getGlobalBoolean(L, "showScriptsLogInConsole", true);
 	boolean[STASH_MOVING] = getGlobalBoolean(L, "stashMoving", false);
 	boolean[ALLOW_BLOCK_SPAWN] = getGlobalBoolean(L, "allowBlockSpawn", true);
@@ -314,6 +320,7 @@ bool ConfigManager::load() {
 	boolean[TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY] = getGlobalBoolean(L, "toggleGoldPouchQuickLootOnly", false);
 	boolean[TOGGLE_SERVER_IS_RETRO] = getGlobalBoolean(L, "toggleServerIsRetroPVP", false);
 	boolean[TOGGLE_TRAVELS_FREE] = getGlobalBoolean(L, "toggleTravelsFree", false);
+	boolean[DEVELOPMENT_MODE] = getGlobalBoolean(L, "developmentMode", true);
 
 	boolean[TOGGLE_HAZARDSYSTEM] = getGlobalBoolean(L, "toogleHazardSystem", true);
 	integer[HAZARD_CRITICAL_INTERVAL] = getGlobalNumber(L, "hazardCriticalInterval", 2000);
@@ -335,6 +342,14 @@ bool ConfigManager::load() {
 	integer[LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT] = getGlobalNumber(L, "loyaltyPointsPerPremiumDaySpent", 0);
 	integer[LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED] = getGlobalNumber(L, "loyaltyPointsPerPremiumDayPurchased", 0);
 	floating[LOYALTY_BONUS_PERCENTAGE_MULTIPLIER] = getGlobalFloat(L, "loyaltyBonusPercentageMultiplier", 1.0);
+
+	boolean[TOGGLE_WHEELSYSTEM] = getGlobalBoolean(L, "wheelSystemEnabled", true);
+	integer[WHEEL_POINTS_PER_LEVEL] = getGlobalNumber(L, "wheelPointsPerLevel", 1);
+
+	boolean[PARTY_SHARE_LOOT_BOOSTS] = getGlobalBoolean(L, "partyShareLootBoosts", true);
+	integer[TIBIADROME_CONCOCTION_COOLDOWN] = getGlobalNumber(L, "tibiadromeConcoctionCooldown", 24 * 60 * 60);
+	integer[TIBIADROME_CONCOCTION_DURATION] = getGlobalNumber(L, "tibiadromeConcoctionDuration", 1 * 60 * 60);
+	string[TIBIADROME_CONCOCTION_TICK_TYPE] = getGlobalString(L, "tibiadromeConcoctionTickType", "online");
 
 	loaded = true;
 	lua_close(L);

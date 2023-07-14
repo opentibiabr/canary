@@ -6,6 +6,9 @@ useAnyDatapackFolder = false
 dataPackDirectory = "data-otservbr-global"
 -- Don't change this unless you know what you're doing
 coreDirectory = "data"
+-- Enable/disable development mode
+-- NOTE: In development mode, additional logs will be enabled, for deputation and testing purposes.
+developmentMode = false
 
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
@@ -145,10 +148,22 @@ loyaltyPointsPerPremiumDaySpent = 0
 loyaltyPointsPerPremiumDayPurchased = 0
 loyaltyBonusPercentageMultiplier = 1.0
 
+-- Wheel of destiny system
+-- NOTE: set wheelSystemEnabled = false to disable the wheel of destiny
+-- NOTE: only the wheel points are modified, all other data is on the client executable and cannot be modified
+wheelSystemEnabled = true
+wheelPointsPerLevel = 1
+
 -- Familiar system
 -- NOTE: the time will be divided by 2 to get half the value, the familiar lasts 15 minutes by default and the cooldown of the spell is 30 minutes
 -- Only change it here if you know what you are doing or to make testing easier with familiars
 familiarTime = 30
+
+-- Tibiadrome concoctions
+partyShareLootBoosts = false
+tibiadromeConcoctionCooldown = 24 * 60 * 60 -- 24 hours
+tibiadromeConcoctionDuration = 60 * 60 -- 1 hour
+tibiadromeConcoctionTickType = "online" -- "online" | "experience"
 
 -- NOTE: Access only for Premium Account
 onlyPremiumAccount = false
@@ -278,6 +293,10 @@ mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"
 
+-- Session Auth
+authType = "password" -- 'session' | 'password'
+resetSessionsOnStartup = false
+
 -- Misc.
 -- NOTE: experienceDisplayRates: set to false to ignore exp rate or true to include exp rate
 allowChangeOutfit = true
@@ -295,6 +314,12 @@ criticalChance = 10
 inventoryGlowOnFiveBless = false
 adventurersBlessingLevel = 21
 experienceDisplayRates = true
+-- configure attack base on Fist Fighting skill/experience
+-- multiplierSpeedOnFist * 5  (multiplies the value obtained from the player fist skill and multiplies it * 5) max 25 is recommended due minTicks limits else player stop attack
+-- maxSpeedOnFist 500 miliseconds  (The maximum attack speed that can be obtained no matter how high the player has the Fist Fighting skill.)
+toggleAttackSpeedOnFist = false
+multiplierSpeedOnFist = 5
+maxSpeedOnFist = 500
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes

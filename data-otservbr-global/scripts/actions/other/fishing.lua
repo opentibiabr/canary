@@ -81,7 +81,7 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		return true
 	end
 
-	if useWorms and player:removeItem("worm", 1) and targetId == 21414 then
+	if useWorms and targetId == 21414 and player:removeItem("worm", 1) then
 		if player:getStorageValue(Storage.Quest.U10_55.Dawnport.TheDormKey) == 2 then
 			if math.random(100) >= 97 then
 				player:addItem(21402, 1)
@@ -94,7 +94,10 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		end
 	end
 
-	player:addSkillTries(SKILL_FISHING, 1, true)
+	if player:getItemCount(3492) > 0 then
+		player:addSkillTries(SKILL_FISHING, 1, true)
+	end
+	
 	if math.random(100) <= math.min(math.max(10 + (player:getEffectiveSkillLevel(SKILL_FISHING) - 10) * 0.597, 10), 50) then
 		if useWorms and not player:removeItem("worm", 1) then
 			return true

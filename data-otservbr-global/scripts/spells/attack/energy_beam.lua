@@ -1,19 +1,37 @@
-local combat = Combat()
-combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_ENERGYDAMAGE)
-combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ENERGYHIT)
-combat:setArea(createCombatArea(AREA_BEAM5, AREADIAGONAL_BEAM5))
-
-function onGetFormulaValues(player, level, maglevel)
+local function formulaFunction(player, level, maglevel)
 	local min = (level / 5) + (maglevel * 1.8) + 11
 	local max = (level / 5) + (maglevel * 3) + 19
 	return -min, -max
 end
 
-combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
+function onGetFormulaValues(player, level, maglevel)
+	return formulaFunction(player, level, maglevel)
+end
+
+function onGetFormulaValuesWOD(player, level, maglevel)
+	return formulaFunction(player, level, maglevel)
+end
+
+local function createCombat(area, areaDiagonal, combatFunc)
+	local initCombat = Combat()
+	initCombat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, combatFunc)
+	initCombat:setParameter(COMBAT_PARAM_TYPE, COMBAT_ENERGYDAMAGE)
+	initCombat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ENERGYHIT)
+	initCombat:setArea(createCombatArea(area, areaDiagonal))
+	return initCombat
+end
+
+local combat = createCombat(AREA_BEAM5, AREADIAGONAL_BEAM5, "onGetFormulaValues")
+local combatWOD = createCombat(AREA_BEAM7, AREADIAGONAL_BEAM7, "onGetFormulaValuesWOD")
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
+	local player = creature:getPlayer()
+	if creature and player and player:instantSkillWOD("Beam Mastery") then
+		var.runeName = "Beam Mastery"
+		return combatWOD:execute(creature, var)
+	end
 	return combat:execute(creature, var)
 end
 

@@ -190,6 +190,8 @@ enum BugReportType_t : uint8_t {
 struct LuaVariant {
 		LuaVariantType_t type = VARIANT_NONE;
 		std::string text;
+		std::string instantName;
+		std::string runeName;
 		Position pos;
 		uint32_t number = 0;
 };

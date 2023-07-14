@@ -901,3 +901,236 @@ int SpellFunctions::luaSpellCheckFloor(lua_State* L) {
 	}
 	return 1;
 }
+
+// Wheel of destiny
+int SpellFunctions::luaSpellManaWOD(lua_State* L) {
+	// spell:manaWOD(grade, mana)
+	Spell* spell = getUserdata<Spell>(L, 1);
+	WheelSpellGrade_t grade = getNumber<WheelSpellGrade_t>(L, 2);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, spell->getWheelOfDestinyBoost(WheelSpellBoost_t::MANA, grade));
+	} else {
+		spell->setWheelOfDestinyBoost(WheelSpellBoost_t::MANA, grade, getNumber<int32_t>(L, 3));
+		spell->setWheelOfDestinyUpgraded(true);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellCooldownWOD(lua_State* L) {
+	// spell:cooldownWOD(grade, time)
+	Spell* spell = getUserdata<Spell>(L, 1);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	WheelSpellGrade_t grade = getNumber<WheelSpellGrade_t>(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, spell->getWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, grade));
+	} else {
+		spell->setWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, grade, getNumber<int32_t>(L, 3));
+		spell->setWheelOfDestinyUpgraded(true);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellGroupCooldownWOD(lua_State* L) {
+	// spell:groupCooldownWOD(grade, time)
+	Spell* spell = getUserdata<Spell>(L, 1);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	WheelSpellGrade_t grade = getNumber<WheelSpellGrade_t>(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, spell->getWheelOfDestinyBoost(WheelSpellBoost_t::GROUP_COOLDOWN, grade));
+	} else {
+		spell->setWheelOfDestinyBoost(WheelSpellBoost_t::GROUP_COOLDOWN, grade, getNumber<int32_t>(L, 3));
+		spell->setWheelOfDestinyUpgraded(true);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellSecondaryGroupCooldownWOD(lua_State* L) {
+	// spell:secondaryGroupCooldownWOD(grade, time)
+	Spell* spell = getUserdata<Spell>(L, 1);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	WheelSpellGrade_t grade = getNumber<WheelSpellGrade_t>(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, spell->getWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, grade));
+	} else {
+		spell->setWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, grade, getNumber<int32_t>(L, 3));
+		spell->setWheelOfDestinyUpgraded(true);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellIncreaseManaLeechWOD(lua_State* L) {
+	// spell:increaseManaLeechWOD(grade, value)
+	Spell* spell = getUserdata<Spell>(L, 1);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	WheelSpellGrade_t grade = getNumber<WheelSpellGrade_t>(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, spell->getWheelOfDestinyBoost(WheelSpellBoost_t::MANA_LEECH, grade));
+	} else {
+		int32_t value = getNumber<int32_t>(L, 3);
+		if (value > 0) {
+			spell->setWheelOfDestinyBoost(WheelSpellBoost_t::MANA_LEECH_CHANCE, grade, 100);
+		} else {
+			spell->setWheelOfDestinyBoost(WheelSpellBoost_t::MANA_LEECH_CHANCE, grade, 0);
+		}
+		spell->setWheelOfDestinyBoost(WheelSpellBoost_t::MANA_LEECH, grade, value);
+		spell->setWheelOfDestinyUpgraded(true);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellIncreaselifeLeechWOD(lua_State* L) {
+	// spell:increaselifeLeechWOD(grade, value)
+	Spell* spell = getUserdata<Spell>(L, 1);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	WheelSpellGrade_t grade = getNumber<WheelSpellGrade_t>(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH, grade));
+	} else {
+		int32_t value = getNumber<int32_t>(L, 3);
+		if (value > 0) {
+			spell->setWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH_CHANCE, grade, 100);
+		} else {
+			spell->setWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH_CHANCE, grade, 0);
+		}
+		spell->setWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH, grade, value);
+		spell->setWheelOfDestinyUpgraded(true);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellIncreaseDamageWOD(lua_State* L) {
+	// spell:increaseDamageWOD(grade, value)
+	Spell* spell = getUserdata<Spell>(L, 1);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	WheelSpellGrade_t grade = getNumber<WheelSpellGrade_t>(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, spell->getWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE, grade));
+	} else {
+		spell->setWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE, grade, getNumber<int32_t>(L, 3));
+		spell->setWheelOfDestinyUpgraded(true);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellIncreaseDamageReductionWOD(lua_State* L) {
+	// spell:increaseDamageReductionWOD(grade, value)
+	Spell* spell = getUserdata<Spell>(L, 1);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	WheelSpellGrade_t grade = getNumber<WheelSpellGrade_t>(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, spell->getWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE_REDUCTION, grade));
+	} else {
+		spell->setWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE_REDUCTION, grade, getNumber<int32_t>(L, 3));
+		spell->setWheelOfDestinyUpgraded(true);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellIncreaseHealWOD(lua_State* L) {
+	// spell:increaseHealWOD(grade, value)
+	Spell* spell = getUserdata<Spell>(L, 1);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	WheelSpellGrade_t grade = getNumber<WheelSpellGrade_t>(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, spell->getWheelOfDestinyBoost(WheelSpellBoost_t::HEAL, grade));
+	} else {
+		spell->setWheelOfDestinyBoost(WheelSpellBoost_t::HEAL, grade, getNumber<int32_t>(L, 3));
+		spell->setWheelOfDestinyUpgraded(true);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellIncreaseCriticalDamageWOD(lua_State* L) {
+	// spell:increaseCriticalDamageWOD(grade, value)
+	Spell* spell = getUserdata<Spell>(L, 1);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	WheelSpellGrade_t grade = getNumber<WheelSpellGrade_t>(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, spell->getWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_DAMAGE, grade));
+	} else {
+		spell->setWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_DAMAGE, grade, getNumber<int32_t>(L, 3));
+		spell->setWheelOfDestinyUpgraded(true);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellIncreaseCriticalChanceWOD(lua_State* L) {
+	// spell:increaseCriticalChanceWOD(grade, value)
+	Spell* spell = getUserdata<Spell>(L, 1);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	WheelSpellGrade_t grade = getNumber<WheelSpellGrade_t>(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, spell->getWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_CHANCE, grade));
+	} else {
+		spell->setWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_CHANCE, grade, getNumber<int32_t>(L, 3));
+		spell->setWheelOfDestinyUpgraded(true);
+		pushBoolean(L, true);
+	}
+	return 1;
+}

@@ -159,7 +159,8 @@ enum ConditionParam_t {
 	CONDITION_PARAM_BUFF_DAMAGERECEIVED = 57,
 	CONDITION_PARAM_SOUND_TICK = 58,
 	CONDITION_PARAM_SOUND_ADD = 59,
-	CONDITION_PARAM_CASTER_POSITION = 60
+	CONDITION_PARAM_CASTER_POSITION = 60,
+	CONDITION_PARAM_DRAIN_BODY = 61
 };
 
 enum stats_t {
@@ -687,7 +688,13 @@ enum Vocation_t : uint16_t {
 	VOCATION_ELDER_DRUID = 6,
 	VOCATION_ROYAL_PALADIN = 7,
 	VOCATION_ELITE_KNIGHT = 8,
-	VOCATION_LAST = VOCATION_ELITE_KNIGHT
+	VOCATION_LAST = VOCATION_ELITE_KNIGHT,
+
+	// Cip tibia client ids
+	VOCATION_KNIGHT_CIP = 1,
+	VOCATION_PALADIN_CIP = 2,
+	VOCATION_SORCERER_CIP = 3,
+	VOCATION_DRUID_CIP = 4
 };
 
 enum FightMode_t : uint8_t {
@@ -1253,14 +1260,14 @@ enum SoundEffect_t : uint16_t {
 	ACTION_AIR_STRIKE = 2825,
 	ENV_WATER = 2828,
 	ENV_SNAKE_2 = 2829,
-	GOD_SPELL_KILL_ALL_MONSTERS = 10001, // No sound ingame
+	GOD_SPELL_KILL_ALL_MONSTERS = 10001 // No sound ingame
 };
 
 enum class SourceEffect_t : uint8_t {
 	GLOBAL = 0,
 	OWN = 1,
 	OTHERS = 2,
-	CREATURES = 3,
+	CREATURES = 3
 };
 
 // Structs
@@ -1436,27 +1443,32 @@ struct LightInfo {
 
 struct CombatDamage {
 		struct {
-				CombatType_t type;
-				int32_t value;
+				CombatType_t type = COMBAT_NONE;
+				int32_t value = 0;
 		} primary, secondary;
 
-		CombatOrigin origin;
-		bool critical;
-		int affected;
-		bool extension;
+		CombatOrigin origin = ORIGIN_NONE;
+		bool critical = false;
+		int affected = 1;
+		bool extension = false;
 		std::string exString;
-		bool fatal;
+		bool fatal = false;
 
-		CombatDamage() {
-			origin = ORIGIN_NONE;
-			primary.type = secondary.type = COMBAT_NONE;
-			primary.value = secondary.value = 0;
-			critical = false;
-			affected = 1;
-			extension = false;
-			exString = "";
-			fatal = false;
-		}
+		int32_t criticalDamage = 0;
+		int32_t criticalChance = 0;
+		int32_t damageMultiplier = 0;
+		int32_t damageReductionMultiplier = 0;
+		int32_t healingMultiplier = 0;
+		int32_t manaLeech = 0;
+		int32_t manaLeechChance = 0;
+		int32_t lifeLeech = 0;
+		int32_t lifeLeechChance = 0;
+		int32_t healingLink = 0;
+
+		std::string instantSpellName;
+		std::string runeSpellName;
+
+		CombatDamage() = default;
 };
 
 struct RespawnType {

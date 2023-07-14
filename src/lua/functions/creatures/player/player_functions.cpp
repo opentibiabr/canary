@@ -13,6 +13,7 @@
 #include "creatures/creature.h"
 #include "creatures/interactions/chat.h"
 #include "creatures/players/player.h"
+#include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.h"
 #include "io/iologindata.h"
 #include "io/ioprey.h"
@@ -553,8 +554,8 @@ int PlayerFunctions::luaPlayerGetIsTraining(lua_State* L) {
 	// player:isTraining()
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
+		pushBoolean(L, false);
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		lua_pushnil(L);
 		return 1;
 	}
 
@@ -3568,6 +3569,207 @@ int PlayerFunctions::luaPlayerSetLoyaltyTitle(lua_State* L) {
 	}
 
 	player->setLoyaltyTitle(getString(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+// Wheel of destiny system
+int PlayerFunctions::luaPlayerInstantSkillWOD(lua_State* L) {
+	// player:instantSkillWOD(name[, value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	std::string name = getString(L, 2);
+	if (lua_gettop(L) == 2) {
+		pushBoolean(L, player->wheel()->getInstant(name));
+	} else {
+		player->wheel()->setSpellInstant(name, getBoolean(L, 3));
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerUpgradeSpellWOD(lua_State* L) {
+	// player:upgradeSpellsWORD([name[, add]])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		player->wheel()->resetUpgradedSpells();
+		return 1;
+	}
+
+	std::string name = getString(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, static_cast<lua_Number>(player->wheel()->getSpellUpgrade(name)));
+		return 1;
+	}
+
+	bool add = getBoolean(L, 3);
+	if (add) {
+		player->wheel()->upgradeSpell(name);
+	} else {
+		player->wheel()->downgradeSpell(name);
+	}
+
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerReloadData(lua_State* L) {
+	// player:reloadData()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->sendSkills();
+	player->sendStats();
+	player->sendBasicData();
+	player->wheel()->sendGiftOfLifeCooldown();
+	g_game().reloadCreature(player);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerOnThinkWheelOfDestiny(lua_State* L) {
+	// player:onThinkWheelOfDestiny([force = false])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->wheel()->onThink(getBoolean(L, 2, false));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAvatarTimer(lua_State* L) {
+	// player:avatarTimer([value])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, (lua_Number)player->wheel()->getOnThinkTimer(WheelOnThink_t::AVATAR));
+	} else {
+		player->wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR, getNumber<int64_t>(L, 2));
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetWheelSpellAdditionalArea(lua_State* L) {
+	// player:getWheelSpellAdditionalArea(spellname)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto spellName = getString(L, 2);
+	if (spellName.empty()) {
+		reportErrorFunc("Spell name is empty");
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto spell = g_spells().getInstantSpellByName(spellName);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	pushBoolean(L, player->wheel()->getSpellAdditionalArea(spellName));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetWheelSpellAdditionalTarget(lua_State* L) {
+	// player:getWheelSpellAdditionalTarget(spellname)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto spellName = getString(L, 2);
+	if (spellName.empty()) {
+		reportErrorFunc("Spell name is empty");
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto spell = g_spells().getInstantSpellByName(spellName);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	lua_pushnumber(L, player->wheel()->getSpellAdditionalTarget(spellName));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetWheelSpellAdditionalDuration(lua_State* L) {
+	// player:getWheelSpellAdditionalDuration(spellname)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto spellName = getString(L, 2);
+	if (spellName.empty()) {
+		reportErrorFunc("Spell name is empty");
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto spell = g_spells().getInstantSpellByName(spellName);
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	lua_pushnumber(L, player->wheel()->getSpellAdditionalDuration(spellName));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerUpdateConcoction(lua_State* L) {
+	// player:updateConcoction(itemid, timeLeft)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+	player->updateConcoction(getNumber<uint16_t>(L, 2), getNumber<uint16_t>(L, 3));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerClearSpellCooldowns(lua_State* L) {
+	// player:clearSpellCooldowns()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+	player->clearCooldowns();
 	pushBoolean(L, true);
 	return 1;
 }

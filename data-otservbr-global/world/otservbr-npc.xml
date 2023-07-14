@@ -2959,4 +2959,7 @@
 	<npc centerx="33587" centery="32966" centerz="15" radius="1">
 		<npc name="Gnomish Operative (Raiders)" x="0" y="0" z="15" spawntime="60" />
 	</npc>
+	<npc centerx="33527" centery="32865" centerz="14" radius="1">
+		<npc name="Gnomadness" x="0" y="0" z="14" spawntime="60" />
+	</npc>
 </npcs>

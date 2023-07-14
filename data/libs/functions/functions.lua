@@ -19,8 +19,8 @@ function getFormattedWorldTime()
 	return hours .. ':' .. minutes
 end
 
-function getLootRandom()
-	local multi = (configManager.getNumber(configKeys.RATE_LOOT) * SCHEDULE_LOOT_RATE)
+function getLootRandom(modifier)
+	local multi = (configManager.getNumber(configKeys.RATE_LOOT) * SCHEDULE_LOOT_RATE) * (modifier or 1)
 	return math.random(0, MAX_LOOTCHANCE) * 100 / math.max(1, multi)
 end
 
@@ -908,4 +908,37 @@ function SetInfluenced(monsterType, monster, player, influencedLevel)
 	end
 	Game.addInfluencedMonster(monster)
 	monster:setForgeStack(influencedLevel)
+end
+
+
+function durationString(duration)
+	local durationHours = math.floor(duration / 3600)
+	duration = duration % 3600
+	local durationMinutes = math.floor(duration / 60)
+	local durationSeconds = duration % 60
+	local s = ""
+	if durationHours > 0 then
+		s = s .. durationHours .. " hours"
+	end
+	if durationMinutes > 0 then
+		if durationHours > 0 and durationSeconds > 0 then
+			s = s .. ", "
+		elseif durationHours > 0 then
+			s = s .. " and "
+		end
+		s = s .. durationMinutes .. " minutes"
+	end
+	if durationSeconds > 0 then
+		s = s .. " and " .. durationSeconds .. " seconds"
+	end
+	return s
+end
+
+function ReloadDataEvent(cid)
+	local player = Player(cid)
+	if not player then
+		return
+	end
+
+	player:reloadData()
 end

@@ -440,6 +440,9 @@ class Item : virtual public Thing, public ItemProperties {
 		bool isQuiver() const {
 			return items[id].isQuiver();
 		}
+		bool isSpellBook() const {
+			return items[id].isSpellBook();
+		}
 
 		const std::string &getName() const {
 			if (hasAttribute(ItemAttribute_t::NAME)) {

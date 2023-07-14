@@ -873,7 +873,7 @@ void Creature::applyAbsorbDamageModifications(const Creature* attacker, int32_t 
 		if (attacker) {
 			value = attacker->getIncreasePercent(combatType);
 			if (value != 0) {
-				damage += damage * (value / 100);
+				damage += std::round(damage * value / 100.f);
 			}
 		}
 	}

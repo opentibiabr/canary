@@ -291,8 +291,8 @@ PRIVATE
 	map/map.cpp
 	otserv.cpp
 	pch.cpp
-	security/rsa.cpp
 	security/argon.cpp
+	security/rsa.cpp
 	server/network/connection/connection.cpp
 	server/network/message/networkmessage.cpp
 	server/network/message/outputmessage.cpp

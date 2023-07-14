@@ -1,0 +1,55 @@
+version: '3.8'
+name: otbr
+services:
+  database:
+    image: mariadb:latest
+    restart: unless-stopped
+    env_file:
+       - '.env'
+    networks:
+      - canary-net
+    ports:
+      - '3306:3306'
+    volumes:
+      - 'db-volume:/var/lib/mysql'
+      - ../schema.sql:/docker-entrypoint-initdb.d/init.sql
+
+  server:
+    # cpuset: "0-4"
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+      target: prod
+    restart: unless-stopped
+    env_file:
+       - '.env'
+    networks:
+      - canary-net
+    ports:
+      - '7171:7171'
+      - '7172:7172'
+    volumes:
+      - '../:/srv/canary'
+    depends_on:
+      - database
+      - login
+
+  login:
+    image: opentibiabr/login-server:latest
+    restart: unless-stopped
+    ports:
+      - 8090:8090
+      - 9090:9090
+    env_file:
+       - '.env'
+    networks:
+      - canary-net
+    depends_on:
+      - database
+
+volumes:
+  db-volume:
+
+networks:
+  canary-net:
+    driver: bridge

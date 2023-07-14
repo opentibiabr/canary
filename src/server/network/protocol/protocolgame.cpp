@@ -187,15 +187,16 @@ namespace {
 		}
 
 		for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+			damageReduction[i] -= player->getAbsorbPercent(indexToCombatType(i));
+			if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
+				damageReduction[i] -= static_cast<int16_t>(player->wheel()->getResistance(indexToCombatType(i))) / 100.f;
+			}
 			if (damageReduction[i] != 100) {
-				// Wheel of destiny resistance
-				damageReduction[i] += static_cast<int16_t>(player->wheel()->getResistance(indexToCombatType(i))) / 100.f;
-				if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
-					damageReduction[i] += static_cast<int16_t>(player->wheel()->getResistance(indexToCombatType(i))) / 100.f;
+				if (isDevMode()) {
+					spdlog::info("CombatType: {}, DamageReduction: {}", i, damageReduction[i]);
 				}
-
 				msg.addByte(getCipbiaElement(indexToCombatType(i)));
-				msg.addByte(std::max<int16_t>(-100, std::min<int16_t>(100, (100 - damageReduction[i]))));
+				msg.addByte(std::max<int8_t>(-100, std::min<int8_t>(100, 100 - damageReduction[i])));
 				++combats;
 			}
 		}

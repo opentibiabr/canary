@@ -593,7 +593,7 @@ void ConditionAttributes::updatePercentAbsorbs(const Creature* creature) {
 		if (value == 0) {
 			continue;
 		}
-		setAbsorb(i, 100 - creature->getAbsorbPercent(indexToCombatType(i)) * value / 100);
+		setAbsorb(i, std::round((100 - creature->getAbsorbPercent(indexToCombatType(i))) * value / 100.f));
 	}
 }
 

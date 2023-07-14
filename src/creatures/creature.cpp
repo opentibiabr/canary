@@ -863,7 +863,7 @@ void Creature::applyAbsorbDamageModifications(const Creature* attacker, int32_t 
 	if (combatType != COMBAT_HEALING && damage != 0) {
 		int32_t value = getAbsorbPercent(combatType);
 		if (value != 0) {
-			damage -= damage * (value / 100);
+			damage -= std::round(damage * value / 100.f);
 		}
 		value = getAbsorbFlat(combatType);
 		if (value != 0) {

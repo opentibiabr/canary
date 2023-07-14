@@ -2,6 +2,7 @@
   "name": "canary",
   "version-string": "1.0.0",
   "dependencies": [
+    "argon2",
     "asio",
     "pugixml",
     "spdlog",

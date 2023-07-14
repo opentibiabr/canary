@@ -117,8 +117,12 @@ function loginEvents.onLogin(player)
 		"SecretLibraryKill",
 		-- The Dream Courts
 		"DreamCourtsKill",
+		-- Prime Ordeal
+		"PrimeOrdealKill",
+		-- Concoctions
+		"ConcoctionsOnLogin",
 		-- Hazard System
-		"HazardSystemCombat"
+		"PrimalHazardKill"
 	}
 
 	for i = 1, #events do

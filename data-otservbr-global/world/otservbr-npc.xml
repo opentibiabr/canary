@@ -573,7 +573,7 @@
 	<npc centerx="33611" centery="31886" centerz="6" radius="1">
 		<npc name="Graham" x="0" y="0" z="6" spawntime="60" />
 	</npc>
-	<npc centerx="32064" centery="31891" centerz="6" radius="1">
+	<npc centerx="32064" centery="31892" centerz="6" radius="1">
 		<npc name="Oressa" x="0" y="0" z="6" spawntime="60" />
 	</npc>
 	<npc centerx="33639" centery="31897" centerz="6" radius="1">
@@ -2958,5 +2958,8 @@
 	</npc>
 	<npc centerx="33587" centery="32966" centerz="15" radius="1">
 		<npc name="Gnomish Operative (Raiders)" x="0" y="0" z="15" spawntime="60" />
+	</npc>
+	<npc centerx="33527" centery="32865" centerz="14" radius="1">
+		<npc name="Gnomadness" x="0" y="0" z="14" spawntime="60" />
 	</npc>
 </npcs>

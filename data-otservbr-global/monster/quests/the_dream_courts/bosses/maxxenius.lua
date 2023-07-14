@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Maxxenius")
 local monster = {}
 
-monster.description = "a Maxxenius"
+monster.description = "Maxxenius"
 monster.experience = 55000
 monster.outfit = {
 	lookType = 1142,
@@ -127,7 +127,7 @@ monster.elements = {
 }
 
 monster.heals = {
-	{type = COMBAT_ENERGYDAMAGE, percent = 500}
+{type = COMBAT_ENERGYDAMAGE, percent = 500}
 }
 
 monster.immunities = {

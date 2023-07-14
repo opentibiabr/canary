@@ -24,7 +24,9 @@ class Vocation {
 		const std::string &getVocDescription() const {
 			return description;
 		}
+		absl::uint128 getTotalSkillTries(uint8_t skill, uint16_t level);
 		uint64_t getReqSkillTries(uint8_t skill, uint16_t level);
+		absl::uint128 getTotalMana(uint32_t magLevel);
 		uint64_t getReqMana(uint32_t magLevel);
 
 		uint16_t getId() const {
@@ -101,11 +103,17 @@ class Vocation {
 		float defenseMultiplier = 1.0f;
 		float armorMultiplier = 1.0f;
 
+		float mitigationFactor = 1.0f;
+		float mitigationPrimaryShield = 1.0f;
+		float mitigationSecondaryShield = 1.0f;
+
 	private:
 		friend class Vocations;
 
 		std::map<uint32_t, uint64_t> cacheMana;
+		std::map<uint32_t, absl::uint128> cacheManaTotal;
 		std::map<uint32_t, uint32_t> cacheSkill[SKILL_LAST + 1];
+		std::map<uint32_t, absl::uint128> cacheSkillTotal[SKILL_LAST + 1];
 
 		std::string name = "none";
 		std::string description;

@@ -180,11 +180,19 @@ function playerLogin.onLogin(player)
 		end
 	end
 
+	-- Attempt to check if we're in a hazard zone
+	player:updateHazard()
+	-- Loyalty system
+	player:initializeLoyaltySystem()
+
 	-- Stamina
 	nextUseStaminaTime[playerId] = 1
 
 	-- EXP Stamina
 	nextUseXpStamina[playerId] = 1
+
+	-- Concoction Duration
+	nextUseConcoctionTime[playerId] = 1
 
 	if (player:getAccountType() == ACCOUNT_TYPE_TUTOR) then
 	local msg = [[:: Tutor Rules

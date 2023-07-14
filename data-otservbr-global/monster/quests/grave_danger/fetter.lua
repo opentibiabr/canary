@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Fetter")
 local monster = {}
 
-monster.description = "a Fetter"
+monster.description = "a fetter"
 monster.experience = 0
 monster.outfit = {
 	lookType = 235,

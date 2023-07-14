@@ -1880,11 +1880,9 @@
 	<item id="860" article="a" name="crimson sword">
 		<attribute key="description" value="Its blade is very notchy"/>
 		<attribute key="weaponType" value="sword"/>
-		<attribute key="attack" value="28"/>
-		<attribute key="extradef" value="1"/>
-		<attribute key="defense" value="20"/>
+		<attribute key="attack" value="18"/>
+		<attribute key="defense" value="10"/>
 		<attribute key="weight" value="3600"/>
-		<attribute key="imbuementslot" value="2"/>
 	</item>
 	<item id="861" article="a" name="dead troll">
 		<attribute key="fluidsource" value="blood"/>
@@ -4710,7 +4708,7 @@
 	</item>
 	<item id="3059" article="a" name="spellbook">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="defense" value="14"/>
 		<attribute key="weight" value="1800"/>
 		<attribute key="imbuementslot" value="1">
@@ -5831,7 +5829,7 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="attack" value="9"/>
 		<attribute key="defense" value="7"/>
-		<attribute key="weight" value="1019"/>
+		<attribute key="weight" value="1020"/>
 	</item>
 	<item id="3291" article="a" name="knife">
 		<attribute key="weaponType" value="sword"/>
@@ -5843,7 +5841,7 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="defense" value="6"/>
-		<attribute key="weight" value="869"/>
+		<attribute key="weight" value="870"/>
 	</item>
 	<item id="3293" article="a" name="sickle">
 		<attribute key="weaponType" value="axe"/>
@@ -6209,7 +6207,7 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="attack" value="16"/>
 		<attribute key="defense" value="10"/>
-		<attribute key="weight" value="1839"/>
+		<attribute key="weight" value="1840"/>
 	</item>
 	<item id="3331" article="a" name="ravager's axe">
 		<attribute key="weaponType" value="axe"/>
@@ -7012,7 +7010,7 @@
 	<item id="3426" article="a" name="studded shield">
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="defense" value="15"/>
-		<attribute key="weight" value="5900"/>
+		<attribute key="weight" value="5800"/>
 	</item>
 	<item id="3427" article="a" name="rose shield">
 		<attribute key="weaponType" value="shield"/>
@@ -7249,7 +7247,7 @@
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="3453" article="a" name="scythe">
-		<attribute key="weaponType" value="axe"/>
+		<attribute key="weaponType" value="club"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="defense" value="3"/>
@@ -16128,7 +16126,7 @@
 	<item fromid="8070" toid="8071" article="a" name="chalk board"/>
 	<item id="8072" article="a" name="spellbook of enlightenment">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="magicpoints" value="1"/>
 		<attribute key="defense" value="18"/>
 		<attribute key="weight" value="1950"/>
@@ -16144,7 +16142,7 @@
 	</item>
 	<item id="8073" article="a" name="spellbook of warding">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="magicpoints" value="1"/>
 		<attribute key="defense" value="22"/>
 		<attribute key="weight" value="2100"/>
@@ -16160,21 +16158,21 @@
 	</item>
 	<item id="8074" article="a" name="spellbook of mind control">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="defense" value="16"/>
 		<attribute key="weight" value="2450"/>
 	</item>
 	<item id="8075" article="a" name="spellbook of lost souls">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="defense" value="20"/>
 		<attribute key="weight" value="2560"/>
 	</item>
 	<item id="8076" article="a" name="spellscroll of prophecies">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="magicpoints" value="3"/>
 		<attribute key="defense" value="12"/>
 		<attribute key="weight" value="2650"/>
@@ -16257,7 +16255,7 @@
 	<item fromid="8085" toid="8089" name="earth"/>
 	<item id="8090" article="a" name="spellbook of dark mysteries">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="magicpoints" value="3"/>
 		<attribute key="defense" value="16"/>
 		<attribute key="weight" value="2850"/>
@@ -17631,7 +17629,7 @@
 	</item>
 	<item id="9020" name="worn firewalker boots">
 		<attribute key="description" value="They can be recharged with an enchanted ruby"/>
-		<attribute key="weight" value="800"/>
+		<attribute key="weight" value="950"/>
 	</item>
 	<item id="9021" article="a" name="dead gozzler">
 		<attribute key="duration" value="300"/>
@@ -18717,7 +18715,7 @@
 	</item>
 	<item id="9384" article="a" name="scythe of the reaper">
 		<attribute key="description" value="This scythe has harvested countless souls and still hungers for more"/>
-		<attribute key="weaponType" value="club"/>
+		<attribute key="weaponType" value="axe"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="attack" value="16"/>
 		<attribute key="defense" value="6"/>
@@ -18732,7 +18730,7 @@
 	</item>
 	<item id="9386" article="a" name="farmer's avenger">
 		<attribute key="description" value="A weapon forged to fight oppression of the poor underdogs"/>
-		<attribute key="weaponType" value="sword"/>
+		<attribute key="weaponType" value="axe"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="attack" value="17"/>
 		<attribute key="defense" value="7"/>
@@ -22897,7 +22895,7 @@
 		<attribute key="weight" value="4000"/>
 	</item>
 	<item id="12683" article="a" name="heavy trident">
-		<attribute key="weaponType" value="sword"/>
+		<attribute key="weaponType" value="axe"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="attack" value="35"/>
 		<attribute key="defense" value="17"/>
@@ -24673,7 +24671,7 @@
 	</item>
 	<item id="14769" article="a" name="spellbook of ancient arcana">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentdeath" value="5"/>
 		<attribute key="magicpoints" value="4"/>
@@ -25519,7 +25517,7 @@
 	</item>
 	<item id="16107" article="a" name="spellbook of vigilance">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentpoison" value="3"/>
 		<attribute key="absorbpercentfire" value="-3"/>
@@ -30045,7 +30043,7 @@
 		<attribute key="absorbpercentpoison" value="2"/>
 		<attribute key="absorbpercentfire" value="-2"/>
 		<attribute key="armor" value="12"/>
-		<attribute key="weight" value="4800"/>
+		<attribute key="weight" value="5800"/>
 	</item>
 	<item id="19373" article="a" name="haunted mirror piece">
 		<attribute key="weaponType" value="shield"/>
@@ -30587,7 +30585,7 @@
 		</attribute>
 	</item>
 	<item id="20088" article="a" name="crude umbral spellbook">
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentice" value="2"/>
 		<attribute key="absorbpercentpoison" value="2"/>
 		<attribute key="absorbpercentfire" value="2"/>
@@ -30597,7 +30595,7 @@
 		<attribute key="weight" value="4000"/>
 	</item>
 	<item id="20089" article="an" name="umbral spellbook">
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentice" value="3"/>
 		<attribute key="absorbpercentpoison" value="3"/>
 		<attribute key="absorbpercentfire" value="3"/>
@@ -30612,7 +30610,7 @@
 		</attribute>
 	</item>
 	<item id="20090" article="an" name="umbral master spellbook">
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentice" value="5"/>
 		<attribute key="absorbpercentpoison" value="5"/>
 		<attribute key="absorbpercentfire" value="5"/>
@@ -32253,7 +32251,7 @@
 	<item fromid="21398" toid="21399" article="a" name="dead goblin"/>
 	<item id="21400" article="a" name="spellbook of the novice">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn"/>
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="defense" value="8"/>
 		<attribute key="weight" value="1400"/>
 	</item>
@@ -34567,7 +34565,7 @@
 	<item id="22760" article="an" name="impaler of the igniter">
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="elementfire" value="26"/>
-		<attribute key="attack" value="26"/>
+		<attribute key="attack" value="25"/>
 		<attribute key="extradef" value="3"/>
 		<attribute key="defense" value="31"/>
 		<attribute key="weight" value="5900"/>
@@ -37251,7 +37249,7 @@
 		<attribute key="weight" value="120"/>
 	</item>
 	<item id="25699" article="a" name="wooden spellbook">
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentpoison" value="5"/>
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="defense" value="16"/>
@@ -39300,7 +39298,7 @@
 		<attribute key="attack" value="50"/>
 		<attribute key="defense" value="33"/>
 		<attribute key="weight" value="5000"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="elemental damage" value="3"/>
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
@@ -39312,7 +39310,7 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="attack" value="52"/>
-		<attribute key="defense" value="32"/>
+		<attribute key="defense" value="30"/>
 		<attribute key="weight" value="7000"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
@@ -39327,7 +39325,7 @@
 		<attribute key="attack" value="51"/>
 		<attribute key="defense" value="31"/>
 		<attribute key="weight" value="5000"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="elemental damage" value="3"/>
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
@@ -39339,7 +39337,7 @@
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="attack" value="52"/>
-		<attribute key="defense" value="32"/>
+		<attribute key="defense" value="30"/>
 		<attribute key="weight" value="7000"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
@@ -39352,9 +39350,9 @@
 	<item id="27453" article="a" name="mace of destruction">
 		<attribute key="weaponType" value="club"/>
 		<attribute key="attack" value="50"/>
-		<attribute key="defense" value="30"/>
+		<attribute key="defense" value="32"/>
 		<attribute key="weight" value="5000"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="elemental damage" value="3"/>
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
@@ -39366,7 +39364,7 @@
 		<attribute key="weaponType" value="club"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="attack" value="53"/>
-		<attribute key="defense" value="30"/>
+		<attribute key="defense" value="29"/>
 		<attribute key="weight" value="7000"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
@@ -39995,7 +39993,7 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="elementenergy" value="42"/>
 		<attribute key="absorbpercentenergy" value="6"/>
-		<attribute key="skillsword" value="3"/>
+		<attribute key="skillsword" value="2"/>
 		<attribute key="attack" value="10"/>
 		<attribute key="extradef" value="3"/>
 		<attribute key="defense" value="29"/>
@@ -42463,6 +42461,7 @@
 	</item>
 	<item id="29419" article="a" name="resizer">
 		<attribute key="weaponType" value="club"/>
+		<attribute key="slotType" value="two-handed"/>
 		<attribute key="elementice" value="46"/>
 		<attribute key="skillclub" value="2"/>
 		<attribute key="attack" value="11"/>
@@ -42477,7 +42476,7 @@
 	</item>
 	<item id="29420" article="a" name="shoulder plate">
 		<attribute key="weaponType" value="shield"/>
-		<attribute key="absorbpercentphysical" value="4"/>
+		<attribute key="absorbpercentphysical" value="2"/>
 		<attribute key="absorbpercentpoison" value="6"/>
 		<attribute key="magicpoints" value="3"/>
 		<attribute key="defense" value="26"/>
@@ -44073,7 +44072,7 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="smallearth"/>
 		<attribute key="magicpoints" value="2"/>
-		<attribute key="lifeleechamount" value="18"/>
+		<attribute key="lifeleechamount" value="1800"/>
 		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="range" value="5"/>
 		<attribute key="weight" value="2500"/>
@@ -45603,7 +45602,7 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="elementearth" value="49"/>
-		<attribute key="skillsword" value="2"/>
+		<attribute key="skillsword" value="3"/>
 		<attribute key="attack" value="7"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="weight" value="8100"/>
@@ -46994,7 +46993,7 @@
 	</item>
 	<item id="32705" article="a" name="pair of old bracers">
 		<attribute key="armor" value="1"/>
-		<attribute key="weight" value="20"/>
+		<attribute key="weight" value="200"/>
 	</item>
 	<item id="32706" article="a" name="unknow">
 		<attribute key="weight" value="4"/>
@@ -48760,9 +48759,9 @@
 	<item id="34082" article="a" name="soulcutter">
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="elementdeath" value="45"/>
-		<attribute key="manaleechamount" value="3"/>
+		<attribute key="manaleechamount" value="300"/>
 		<attribute key="manaleechchance" value="100"/>
-		<attribute key="lifeleechamount" value="5"/>
+		<attribute key="lifeleechamount" value="500"/>
 		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="skillsword" value="5"/>
 		<attribute key="attack" value="7"/>
@@ -48796,9 +48795,9 @@
 	<item id="34084" article="a" name="soulbiter">
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="elementdeath" value="45"/>
-		<attribute key="manaleechamount" value="3"/>
+		<attribute key="manaleechamount" value="300"/>
 		<attribute key="manaleechchance" value="100"/>
-		<attribute key="lifeleechamount" value="5"/>
+		<attribute key="lifeleechamount" value="500"/>
 		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="skillaxe" value="5"/>
 		<attribute key="attack" value="7"/>
@@ -48820,7 +48819,7 @@
 		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="skillaxe" value="5"/>
 		<attribute key="attack" value="10"/>
-		<attribute key="defense" value="35"/>
+		<attribute key="defense" value="34"/>
 		<attribute key="weight" value="7200"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="life leech" value="3"/>
@@ -48832,9 +48831,9 @@
 	<item id="34086" article="a" name="soulcrusher">
 		<attribute key="weaponType" value="club"/>
 		<attribute key="elementice" value="46"/>
-		<attribute key="manaleechamount" value="3"/>
+		<attribute key="manaleechamount" value="300"/>
 		<attribute key="manaleechchance" value="100"/>
-		<attribute key="lifeleechamount" value="5"/>
+		<attribute key="lifeleechamount" value="500"/>
 		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="skillclub" value="5"/>
 		<attribute key="attack" value="6"/>
@@ -48925,9 +48924,9 @@
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="absorbpercentice" value="12"/>
 		<attribute key="magicpoints" value="5"/>
-		<attribute key="manaleechamount" value="3"/>
+		<attribute key="manaleechamount" value="300"/>
 		<attribute key="manaleechchance" value="100"/>
-		<attribute key="lifeleechamount" value="5"/>
+		<attribute key="lifeleechamount" value="500"/>
 		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="range" value="6"/>
 		<attribute key="weight" value="2500"/>
@@ -49245,7 +49244,7 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="magicpoints" value="2"/>
-		<attribute key="lifeleechamount" value="18"/>
+		<attribute key="lifeleechamount" value="1800"/>
 		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="range" value="5"/>
 		<attribute key="weight" value="2100"/>
@@ -49256,7 +49255,7 @@
 		</attribute>
 	</item>
 	<item id="34153" article="a" name="lion spellbook">
-		<attribute key="weaponType" value="shield"/>
+		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="absorbpercentphysical" value="3"/>
 		<attribute key="absorbpercentice" value="7"/>
 		<attribute key="magicpoints" value="4"/>
@@ -50365,7 +50364,7 @@
 		<attribute key="absorbpercentice" value="6"/>
 		<attribute key="magicpoints" value="1"/>
 		<attribute key="armor" value="2"/>
-		<attribute key="weight" value="1200"/>
+		<attribute key="weight" value="1450"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="increase speed" value="3"/>
 		</attribute>
@@ -51381,8 +51380,9 @@
 	<item id="36656" article="a" name="eldritch shield">
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="absorbpercentphysical" value="4"/>
+		<!--attribute key="damagereflection" value="42"/-->
 		<attribute key="defense" value="39"/>
-		<attribute key="weight" value="6600"/>
+		<attribute key="weight" value="6900"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection death" value="3"/>
 			<attribute key="elemental protection earth" value="3"/>
@@ -51610,6 +51610,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="absorbpercentpoison" value="6"/>
 		<attribute key="magicpoints" value="4"/>
+		<!-- attribute key="deathmagiclevelpoints" value="1"/-->
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="2800"/>
 		<attribute key="imbuementslot" value="1">
@@ -51625,6 +51626,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="absorbpercentfire" value="6"/>
 		<attribute key="magicpoints" value="4"/>
+		<!-- attribute key="earthmagiclevelpoints" value="1"/-->	
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="2600"/>
 		<attribute key="imbuementslot" value="1">
@@ -54036,6 +54038,10 @@
 		</attribute>
 	</item>
 	<item id="37611" name="Morshabaal's mask">
+		<!--attribute key="firemagiclevelpoints" value="1"/-->
+		<!--attribute key="icemagiclevelpoints" value="1"/-->
+		<!--attribute key="earthmagiclevelpoints" value="1"/-->
+		<!--attribute key="energymagiclevelpoints" value="1"/-->
 		<attribute key="weight" value="4100"/>
 	</item>
 	<item id="37613" article="a" name="Morshabaal's brain">
@@ -54877,7 +54883,7 @@
 		<attribute key="skillaxe" value="3"/>
 		<attribute key="skillsword" value="3"/>
 		<attribute key="armor" value="2"/>
-		<attribute key="transformDeEquipTo" value="39177"/>>
+		<attribute key="transformDeEquipTo" value="39177"/>
 		<attribute key="showduration" value="1" />
 		<attribute key="showattributes" value="1" />
 		<attribute key="duration" value="10800"/>
@@ -54910,7 +54916,7 @@
 		<!--attribute key="holymagiclevelpoints" value="1"/-->
 		<attribute key="magicpoints" value="1"/>
 		<attribute key="skilldist" value="3"/>
-		<attribute key="transformDeEquipTo" value="39180"/>>
+		<attribute key="transformDeEquipTo" value="39180"/>
 		<attribute key="showduration" value="1" />
 		<attribute key="showattributes" value="1" />
 		<attribute key="duration" value="10800"/>
@@ -54941,7 +54947,7 @@
 		<!--attribute key="firemagiclevelpoints" value="1"/-->
 		<!--attribute key="energymagiclevelpoints" value="1"/-->
 		<attribute key="magicpoints" value="2"/>
-		<attribute key="manaleechamount" value="1"/>
+		<attribute key="manaleechamount" value="100"/>
 		<attribute key="manaleechchance" value="100"/>
 		<attribute key="transformDeEquipTo" value="39183"/>
 		<attribute key="showduration" value="1" />
@@ -54974,7 +54980,7 @@
 		<attribute key="absorbpercentice" value="4"/>
 		<!--attribute key="healingmagiclevelpoints" value="2"/-->
 		<attribute key="magicpoints" value="2"/>
-		<attribute key="manaleechamount" value="1"/>
+		<attribute key="manaleechamount" value="100"/>
 		<attribute key="manaleechchance" value="100"/>
 		<attribute key="transformDeEquipTo" value="39186"/>
 		<attribute key="showattributes" value="1" />
@@ -55156,8 +55162,7 @@
 		<attribute key="skillclub" value="3"/>
 		<attribute key="skillaxe" value="3"/>
 		<attribute key="skillsword" value="3"/>
-		<attribute key="armor" value="3"/>
-		<attribute key="transformDeEquipTo" value="39233"/>>
+		<attribute key="transformDeEquipTo" value="39233"/>
 		<attribute key="showduration" value="1" />
 		<attribute key="duration" value="7200"/>
 		<attribute key="decayTo" value="39235"/>
@@ -56487,10 +56492,59 @@
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="description" value="She is enjoying her bath between the lily pads"/>
 	</item>
+	<item id="39919" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="39921" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="39923" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="39925" name="stairs">
+		<attribute key="floorchange" value="south"/>
+	</item>
+	<item fromid="40022" toid="40085" article="an" name="ominous flask">
+	</item>
+	<item fromid="40086" toid="40103" name="ominous flasks">
+	</item>
+	<item id="40262" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="40263" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="40279" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="40281" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="40296" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="40298" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="40302" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="40428" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="40430" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="40432" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="40434" name="stairs">
+		<attribute key="floorchange" value="south"/>
+	</item>
 	<item id="40530" name="broken macuahuitl">
 		<attribute key="description" value="This macuahuitl was a once legendary obsidian sword wielded by the ancient Iks"/>
 		<attribute key="attack" value="1"/>
-		<attribute key="armor" value="1"/>
+		<attribute key="defense" value="1"/>
 		<attribute key="weight" value="2400"/>
 	</item>
 	 <item id="40531" article="the" name="broken Iks faulds">
@@ -56591,11 +56645,10 @@
 	</item>
 	<item id="40594" article="an" name="alchemist's notepad">
 		<attribute key="weaponType" value="shield"/>
-		<attribute key="absorbpercentice" value="7"/>
-		<attribute key="absorbpercentphysical" value="3"/>
+		<attribute key="absorbpercentdeath" value="5"/>
 		<attribute key="magicpoints" value="2"/>
-		<!--attribute key="firemagiclevelpoints" value="2"/-->
-		<!--attribute key="energymagiclevelpoints" value="2"/-->
+		<!--attribute key="firemagiclevelpoints" value="3"/-->
+		<!--attribute key="energymagiclevelpoints" value="3"/-->
 		<attribute key="defense" value="20"/>
 		<attribute key="weight" value="1300"/>
 		<attribute key="imbuementslot" value="1">
@@ -56612,6 +56665,282 @@
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="armor" value="8"/>
 		<attribute key="weight" value="3500"/>
+	</item>
+	<item id="42050" article="a" name="dead iks">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="60" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42051" article="a" name="dead iks">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42050" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42052" article="a" name="dead iks">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42051" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42053" article="a" name="dead iks">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42052" />
+		<attribute key="duration" value="10" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42054" article="a" name="dead iks">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="60" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42055" article="a" name="dead iks">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42054" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42056" article="a" name="dead iks">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42055" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42057" article="a" name="dead iks">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42056" />
+		<attribute key="duration" value="10" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42058" article="a" name="dead iks">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="60" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42059" article="a" name="dead iks">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42058" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42060" article="a" name="dead iks">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42059" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42061" article="a" name="dead iks">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42060" />
+		<attribute key="duration" value="10" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42062" article="a" name="dead iks">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="60" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42063" article="a" name="dead iks">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42062" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42064" article="a" name="dead iks">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42063" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42065" article="a" name="dead iks">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42064" />
+		<attribute key="duration" value="10" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42066" name="Ahau's remains">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="60" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42067" name="Ahau's remains">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42070" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42068" name="Ahau's remains">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42071" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42069" name="Ahau's remains">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42072" />
+		<attribute key="duration" value="10" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42070" article="a" name="dead cursed ape">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="60" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42071" article="a" name="dead cursed ape">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42070" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42072" article="a" name="dead cursed ape">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42071" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42073" article="a" name="dead cursed ape">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42072" />
+		<attribute key="duration" value="10" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42207" article="a" name="dead crape man">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="60" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42208" article="a" name="dead crape man">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42207" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42209" article="a" name="dead crape man">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42208" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42210" article="a" name="dead crape man">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42209" />
+		<attribute key="duration" value="10" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42211" article="a" name="dead liodile">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="60" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42212" article="a" name="dead liodile">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42211" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42213" article="a" name="dead liodile">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42212" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42214" article="a" name="dead liodile">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42213" />
+		<attribute key="duration" value="10" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42215" article="a" name="dead boar man">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="60" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42216" article="a" name="dead boar man">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42215" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42217" article="a" name="dead boar man">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42216" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42218" article="a" name="dead boar man">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42217" />
+		<attribute key="duration" value="10" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42219" article="a" name="dead harpy">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="60" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42220" article="a" name="dead harpy">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42219" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42221" article="a" name="dead harpy">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42220" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42222" article="a" name="dead harpy">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42221" />
+		<attribute key="duration" value="10" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42223" article="a" name="dead carnivostrich">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="60" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42224" article="a" name="dead carnivostrich">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42223" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42225" article="a" name="dead carnivostrich">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42224" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42226" article="a" name="dead carnivostrich">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42225" />
+		<attribute key="duration" value="10" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42227" article="a" name="dead rhindeer">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="60" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42228" article="a" name="dead rhindeer">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42227" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42229" article="a" name="dead rhindeer">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42228" />
+		<attribute key="duration" value="300" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="42230" article="a" name="dead rhindeer">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="42229" />
+		<attribute key="duration" value="10" />
+		<attribute key="fluidSource" value="blood" />
 	</item>
 	<item id="42267" name="seafarer chair">
 		<attribute key="wrapableto" value="23398"/>

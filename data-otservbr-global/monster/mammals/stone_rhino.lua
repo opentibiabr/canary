@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Stone Rhino")
 local monster = {}
 
-monster.description = "a Stone Rhino"
+monster.description = "a stone rhino"
 monster.experience = 1800
 monster.outfit = {
 	lookType = 936,

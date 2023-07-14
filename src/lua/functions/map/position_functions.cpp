@@ -148,6 +148,34 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	return 1;
 }
 
+int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
+	// position:removeMagicEffect(magicEffect[, player = nullptr])
+	SpectatorHashSet spectators;
+	if (lua_gettop(L) >= 3) {
+		Player* player = getPlayer(L, 3);
+		if (player) {
+			spectators.insert(player);
+		}
+	}
+
+	MagicEffectClasses magicEffect = getNumber<MagicEffectClasses>(L, 2);
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !g_game().isMagicEffectRegistered(magicEffect)) {
+		SPDLOG_WARN("[PositionFunctions::luaPositionRemoveMagicEffect] An unregistered magic effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(magicEffect));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	const Position &position = getPosition(L, 1);
+	if (!spectators.empty()) {
+		Game::removeMagicEffect(spectators, position, magicEffect);
+	} else {
+		g_game().removeMagicEffect(position, magicEffect);
+	}
+
+	pushBoolean(L, true);
+	return 1;
+}
+
 int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	// position:sendDistanceEffect(positionEx, distanceEffect[, player = nullptr])
 	SpectatorHashSet spectators;

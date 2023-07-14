@@ -99,6 +99,8 @@ bool Events::loadFromXml() {
 				info.playerOnItemMoved = event;
 			} else if (methodName == "onChangeZone") {
 				info.playerOnChangeZone = event;
+			} else if (methodName == "onChangeHazard") {
+				info.playerOnChangeHazard = event;
 			} else if (methodName == "onMoveCreature") {
 				info.playerOnMoveCreature = event;
 			} else if (methodName == "onReportRuleViolation") {
@@ -823,6 +825,33 @@ void Events::eventPlayerOnChangeZone(Player* player, ZoneType_t zone) {
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
 	lua_pushnumber(L, zone);
+	scriptInterface.callVoidFunction(2);
+}
+
+void Events::eventPlayerOnChangeHazard(Player* player, bool isHazard) {
+	// Player:onChangeHazard(isHazard)
+	if (info.playerOnChangeHazard == -1) {
+		return;
+	}
+
+	if (!scriptInterface.reserveScriptEnv()) {
+		SPDLOG_ERROR("[Events::eventPlayerOnChangeHazard - "
+					 "Player {}] "
+					 "Call stack overflow. Too many lua script calls being nested.",
+					 player->getName());
+		return;
+	}
+
+	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	env->setScriptId(info.playerOnChangeHazard, &scriptInterface);
+
+	lua_State* L = scriptInterface.getLuaState();
+	scriptInterface.pushFunction(info.playerOnChangeHazard);
+
+	LuaScriptInterface::pushUserdata<Player>(L, player);
+	LuaScriptInterface::setMetatable(L, -1, "Player");
+
+	lua_pushnumber(L, isHazard);
 	scriptInterface.callVoidFunction(2);
 }
 

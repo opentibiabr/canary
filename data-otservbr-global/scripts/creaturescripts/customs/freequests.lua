@@ -293,6 +293,58 @@ local questTable = {
 	{storage = Storage.Quest.U12_60.APiratesTail.TentuglyDoor, storageValue = 1},
 	{storage = Storage.Quest.U12_60.APiratesTail.RascacoonShortcut, storageValue = 1},
 	{storage = Storage.Quest.U12_70.AdventuresOfGalthen.AccessDoor, storageValue = 1},
+
+	{storage = Storage.CultsOfTibia.Barkless.AccessDoor, storageValue = 1},
+	{storage = Storage.CultsOfTibia.Barkless.TrialAccessDoor, storageValue = 1},
+	{storage = Storage.CultsOfTibia.Barkless.TarAccessDoor, storageValue = 1},
+	{storage = Storage.CultsOfTibia.Barkless.BossAccessDoor, storageValue = 1},
+	{storage = Storage.CultsOfTibia.Life.AccessDoor, storageValue = 1},
+	{storage = Storage.CultsOfTibia.Misguided.AccessDoor, storageValue = 1},
+	{storage = Storage.CultsOfTibia.FinalBoss.AccessDoor, storageValue = 1},
+
+	{storage = Storage.FerumbrasAscension.FirstDoor, storageValue = 1},
+	{storage = Storage.FerumbrasAscension.MonsterDoor, storageValue = 1},
+	{storage = Storage.FerumbrasAscension.TarbazDoor, storageValue = 1},
+	{storage = Storage.FerumbrasAscension.HabitatsAccess, storageValue = 1},
+	{storage = Storage.FerumbrasAscension.TheLordOfTheLiceAccess, storageValue = 1},
+
+	{storage = Storage.Quest.U12_00.TheDreamCourts.AndrewDoor, storageValue = 1},
+
+	{storage = Storage.WrathoftheEmperor.TeleportAccess.AwarnessEmperor, storageValue = 1},
+	{storage = Storage.WrathoftheEmperor.TeleportAccess.BossRoom, storageValue = 1},
+	{storage = Storage.WrathoftheEmperor.TeleportAccess.InnerSanctum, storageValue = 1},
+	{storage = Storage.WrathoftheEmperor.TeleportAccess.Rebel, storageValue = 1},
+	{storage = Storage.WrathoftheEmperor.TeleportAccess.SleepingDragon, storageValue = 1},
+	{storage = Storage.WrathoftheEmperor.TeleportAccess.Wote10, storageValue = 1},
+	{storage = Storage.WrathoftheEmperor.TeleportAccess.Zizzle, storageValue = 1},
+	{storage = Storage.WrathoftheEmperor.TeleportAccess.Zlak, storageValue = 1},
+
+	{storage = Storage.TheSecretLibrary.FalconBastionAccess, storageValue = 1},
+	{storage = Storage.TheSecretLibrary.LowerBastionAccess, storageValue = 1},
+	{storage = Storage.TheSecretLibrary.UndergroundBastionAccess, storageValue = 1},
+	{storage = Storage.TheSecretLibrary.OberonAccess, storageValue = 1},
+	{storage = Storage.TheSecretLibrary.MotaDoor, storageValue = 1},
+	{storage = Storage.TheSecretLibrary.BasinDoor, storageValue = 1},
+	{storage = Storage.TheSecretLibrary.SkullDoor, storageValue = 1},
+	{storage = Storage.TheSecretLibrary.Mota, storageValue = 1},
+	{storage = Storage.TheSecretLibrary.MiniBosses.PreceptorLazare, storageValue = 1},
+	{storage = Storage.TheSecretLibrary.MiniBosses.GrandCanonDominus, storageValue = 1},
+	{storage = Storage.TheSecretLibrary.MiniBosses.GrandChaplainGaunder, storageValue = 1},
+	{storage = Storage.TheSecretLibrary.MiniBosses.GrandCommanderSoeren, storageValue = 1},
+	{storage = Storage.TheSecretLibrary.MiniBosses.DazedLeafGolem, storageValue = 1},
+
+	{storage = Storage.DjinnWar.EfreetFaction.DoorToLamp, storageValue = 1},
+	{storage = Storage.DjinnWar.EfreetFaction.DoorToMaridTerritory, storageValue = 1},
+	{storage = Storage.DjinnWar.MaridFaction.DoorToLamp, storageValue = 1},
+	{storage = Storage.DjinnWar.MaridFaction.DoorToEfreetTerritory, storageValue = 1},
+
+	{storage = Storage.Quest.U12_20.GraveDanger.QuestLine, storageValue = 14},
+	{storage = Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosDoor, storageValue = 1},
+
+	{storage = Storage.Quest.U13_10.CradleOfMonsters.Access.Ingol, storageValue = 1},
+	{storage = Storage.Quest.U13_10.CradleOfMonsters.Access.LowerIngol, storageValue = 1},
+	{storage = Storage.Quest.U13_10.CradleOfMonsters.Access.Monster, storageValue = 1},
+	{storage = Storage.Quest.U13_10.CradleOfMonsters.Access.MutatedAbomination, storageValue = 1},
 }
 
 local function playerFreeQuestStart(playerId, index)

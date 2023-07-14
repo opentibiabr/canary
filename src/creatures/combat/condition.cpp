@@ -614,7 +614,7 @@ void ConditionAttributes::updatePercentIncreases(const Creature* creature) {
 		if (increasePercentValue == 0) {
 			continue;
 		}
-		setIncrease(i, 100 - creature->getIncreasePercent(indexToCombatType(i)) * increasePercentValue / 100);
+		setIncrease(i, std::round((100 - creature->getIncreasePercent(indexToCombatType(i))) * increasePercentValue / 100.f));
 	}
 }
 

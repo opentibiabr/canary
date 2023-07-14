@@ -722,7 +722,7 @@ int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 				lua_pushnil(L);
 			}
 
-			monsterType->info.conditionImmunities[condition] = CONDITION_NONE;
+			monsterType->info.conditionImmunities[condition] = condition;
 		}
 
 		pushBoolean(L, true);

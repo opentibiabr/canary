@@ -697,7 +697,7 @@ int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const 
 }
 
 void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const {
-	if (m_player.client->oldProtocol) {
+	if (m_player.client && m_player.client->oldProtocol) {
 		return;
 	}
 
@@ -719,7 +719,7 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) con
 }
 
 void PlayerWheel::sendGiftOfLifeCooldown() const {
-	if (m_player.client->oldProtocol) {
+	if (!m_player.client || m_player.client->oldProtocol) {
 		return;
 	}
 
@@ -772,7 +772,7 @@ void PlayerWheel::saveSlotPointsHandleRetryErrors(std::vector<SlotInfo> &retryTa
 }
 
 void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
-	if (m_player.client->oldProtocol) {
+	if (m_player.client && m_player.client->oldProtocol) {
 		return;
 	}
 
@@ -1025,7 +1025,7 @@ void PlayerWheel::resetPlayerBonusData() {
 }
 
 void PlayerWheel::initializePlayerData() {
-	if (m_player.client->oldProtocol) {
+	if (m_player.client && m_player.client->oldProtocol) {
 		return;
 	}
 

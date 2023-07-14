@@ -351,6 +351,10 @@ bool ConfigManager::load() {
 	integer[TIBIADROME_CONCOCTION_DURATION] = getGlobalNumber(L, "tibiadromeConcoctionDuration", 1 * 60 * 60);
 	string[TIBIADROME_CONCOCTION_TICK_TYPE] = getGlobalString(L, "tibiadromeConcoctionTickType", "online");
 
+	string[M_CONST] = getGlobalString(L, "memoryConst", "1<<16");
+	integer[T_CONST] = getGlobalNumber(L, "temporaryConst", 2);
+	integer[PARALLELISM] = getGlobalNumber(L, "parallelism", 2);
+
 	loaded = true;
 	lua_close(L);
 	return true;

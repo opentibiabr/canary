@@ -44,13 +44,19 @@ function Concoction.find(identifier)
 end
 
 function Concoction.new(data)
-    local self = setmetatable({}, Concoction)
-		self.id = data.id
-		self.name = data.name or ItemType(data.id):getName()
-		self.timeLeftStorage = data.timeLeftStorage
-		self.lastActivatedAtStorage = data.lastActivatedAtStorage
-		self.config = data.config or {}
-    return self
+	local self = setmetatable({}, Concoction)
+	self.id = data.id
+	self.name = data.name or ItemType(data.id):getName()
+	self.timeLeftStorage = data.timeLeftStorage
+	self.lastActivatedAtStorage = data.lastActivatedAtStorage
+	self.config = data.config or {}
+	if self.config.condition then
+		self.condition = Condition(CONDITION_ATTRIBUTES, CONDITIONID_DEFAULT)
+		self.condition:setParameter(CONDITION_PARAM_SUBID, self.id)
+		self.condition:setParameter(CONDITION_PARAM_TICKS, -1)
+		self.condition:setParameter(self.config.condition[1], self.config.condition[2])
+	end
+	return self
 end
 
 function Concoction.initAll(player, sendMessage)
@@ -122,6 +128,7 @@ function Concoction:tick(player, timeDeduction)
 			addEvent(tick, timeDeduction * 1000, self.id, player:getId(), timeDeduction)
 		end
 	else
+		self:removeCondition(player)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your concoction " .. self.name .. " has worn off.")
 	end
 end
@@ -130,6 +137,7 @@ function Concoction:init(player, sendMessage)
 	if self:timeLeft(player) <= 0 then return true end
 
 	self:update(player)
+	self:addCondition(player)
 	if self:tickType() == ConcoctionTickType.Online then
 		addEvent(tick, updateInterval * 1000, self.id, player:getId(), updateInterval)
 	end
@@ -137,26 +145,42 @@ function Concoction:init(player, sendMessage)
 		addEvent(function(playerId, name, duration)
 			local eventPlayer = Player(playerId)
 			if not player then return end
-			eventPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your concoction " .. name .. " is still active for another " .. duration .. ".")
+			eventPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE,
+				"Your concoction " .. name .. " is still active for another " .. duration .. ".")
 		end, 500, player:getId(), self.name, durationString(self:timeLeft(player)))
 	end
+end
+
+function Concoction:addCondition(player)
+	if not self.condition then return end
+	player:addCondition(self.condition)
+end
+
+function Concoction:removeCondition(player)
+	if not self.condition then return end
+	player:removeCondition(CONDITION_ATTRIBUTES, CONDITIONID_DEFAULT, self.id)
 end
 
 function Concoction:activate(player, item)
 	local cooldown = self:cooldown()
 	if self:lastActivatedAt(player) + cooldown > os.time() then
 		local cooldownLeft = self:lastActivatedAt(player) + cooldown - os.time()
-		player:sendTextMessage(MESSAGE_STATUS_SMALL, "You must wait " .. durationString(cooldownLeft) .. " before using " .. item:getName() .. " again.")
+		player:sendTextMessage(MESSAGE_STATUS_SMALL,
+			"You must wait " .. durationString(cooldownLeft) .. " before using " .. item:getName() .. " again.")
 		return true
 	end
 	self:timeLeft(player, self:totalDuration())
 	self:lastActivatedAt(player, os.time())
 	self:update(player)
-	local consumptionString = self:tickType() == ConcoctionTickType.Online and " while you are online" or " as you gain experience"
+	local consumptionString = self:tickType() == ConcoctionTickType.Online and " while you are online" or
+			" as you gain experience"
 	if self.config.callback then
 		self.config.callback(player, self.config)
 	else
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have activated " .. item:getName() .. ". It will last for " .. durationString(self:totalDuration()) .. consumptionString .. ".")
+		self:addCondition(player)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
+			"You have activated " ..
+			item:getName() .. ". It will last for " .. durationString(self:totalDuration()) .. consumptionString .. ".")
 		if self:tickType() == ConcoctionTickType.Online then
 			addEvent(tick, updateInterval * 1000, self.id, player:getId(), updateInterval)
 		end

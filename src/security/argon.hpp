@@ -21,7 +21,7 @@ class Argon2 {
 		Argon2(const Argon2 &) = delete;
 		void operator=(const Argon2 &) = delete;
 
-		bool argon(const std::string &password_attempt, const std::string &hashed_password);
+		bool argon(const std::string &password_attempt, const std::string &hashed_password) const;
 
 	private:
 		uint32_t parseBitShift(const std::string &bitShiftStr) const;

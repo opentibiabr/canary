@@ -105,6 +105,6 @@ std::vector<uint8_t> Argon2::base64_decode(const std::string &input) const {
 	return ret;
 }
 
-bool Argon2::argon(const std::string &password_attempt, const std::string &hashed_password) {
+bool Argon2::argon(const std::string &password_attempt, const std::string &hashed_password) const {
 	return verifyPassword(password_attempt, hashed_password);
 }

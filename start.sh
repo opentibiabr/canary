@@ -1,5 +1,6 @@
 #!/bin/bash
 
+BIN_PATH=${1:-"./canary"}
 if [ -d "logs" ]
 then
 	echo -e "\e[01;32m Starting server \e[0m"
@@ -16,10 +17,10 @@ ulimit -c unlimited
 set -o pipefail
 
 while true; do
-	canary 2>&1 | awk '{ print strftime("%F %T - "),
+	"$BIN_PATH" 2>&1 | awk '{ print strftime("%F %T - "),
 	$0; fflush(); }' | tee "logs/$(date +"%F %H-%M-%S.log")"
 	# Verificar se a tecla 'q' foi pressionada
-    read -t 1 -N 1 input
+    read -t 1 -N 1 "input"
     if [[ $input = "q" ]]; then
         break
     fi

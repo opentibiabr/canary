@@ -9,11 +9,11 @@ substitute_lua_variable() {
   variable_name="$1"
   new_value="$2"
   if [[ $(echo "$new_value" | grep -E "^[0-9]+$") ]]; then
-    sed "s|$variable_name =.*|$variable_name = $new_value|" $lua_file > $lua_file.tmp
+    sed "s|$variable_name =.*|$variable_name = $new_value|" "$lua_file" > "$lua_file.tmp"
   else
-    sed "s|$variable_name =.*|$variable_name = \"$new_value\"|" $lua_file > $lua_file.tmp
+    sed "s|$variable_name =.*|$variable_name = \"$new_value\"|" "$lua_file" > "$lua_file.tmp"
   fi
-	mv $lua_file.tmp $lua_file
+	mv "$lua_file.tmp" "$lua_file"
 }
 
 # Get a named argument
@@ -47,8 +47,8 @@ verify_file() {
 	fi
 }
 
-verify_file $env_file "env"
-verify_file $lua_file "lua"
+verify_file "$env_file" "env"
+verify_file "$lua_file" "lua"
 
 # Reads the env file
 while IFS='=' read -r key value; do

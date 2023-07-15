@@ -5,7 +5,7 @@ services:
     image: mariadb:latest
     restart: unless-stopped
     env_file:
-       - '.env'
+      - '.env'
     networks:
       - canary-net
     ports:
@@ -22,7 +22,7 @@ services:
       target: prod
     restart: unless-stopped
     env_file:
-       - '.env'
+      - '.env'
     networks:
       - canary-net
     ports:
@@ -41,7 +41,7 @@ services:
       - 8090:8090
       - 9090:9090
     env_file:
-       - '.env'
+      - '.env'
     networks:
       - canary-net
     depends_on:

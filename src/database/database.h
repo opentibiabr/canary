@@ -264,35 +264,31 @@ class DBTransaction {
 };
 
 class DBTransactionGuard {
-	public:
-		explicit DBTransactionGuard(DBTransaction &transaction) :
-			transaction_(transaction) { }
+public:
+    explicit DBTransactionGuard() = default;
 
-		~DBTransactionGuard() = default;
+    ~DBTransactionGuard() = default;
 
-		// non-copyable
-		DBTransactionGuard(const DBTransactionGuard &) = delete;
-		DBTransactionGuard &operator=(const DBTransactionGuard &) = delete;
+    // non-copyable
+    DBTransactionGuard(const DBTransactionGuard &) = delete;
+    DBTransactionGuard &operator=(const DBTransactionGuard &) = delete;
 
-		// non-movable
-		DBTransactionGuard(DBTransactionGuard &&) = delete;
-		DBTransactionGuard &operator=(DBTransactionGuard &&) = delete;
+    // non-movable
+    DBTransactionGuard(DBTransactionGuard &&) = delete;
+    DBTransactionGuard &operator=(DBTransactionGuard &&) = delete;
 
-		static bool executeWithinTransaction(DBTransaction &transaction_, std::function<void()> toBeExecuted) {
-			try {
-				transaction_.begin();
-				toBeExecuted();
-				transaction_.commit();
-				return true;
-			} catch (const std::exception &exception) {
-				SPDLOG_ERROR("[{}] Error occurred while committing transaction, error: {}", __FUNCTION__, exception.what());
-				transaction_.rollback();
-				return false;
-			}
-		}
-
-	private:
-		DBTransaction &transaction_;
+    static bool executeWithinTransaction(std::function<void()> toBeExecuted) {
+        try {
+            DBTransaction transaction;
+            transaction.begin();
+            toBeExecuted();
+            transaction.commit();
+            return true;
+        } catch (const std::exception &exception) {
+            SPDLOG_ERROR("[{}] Error occurred while committing transaction, error: {}", __FUNCTION__, exception.what());
+            return false;
+        }
+    }
 };
 
 #endif // SRC_DATABASE_DATABASE_H_

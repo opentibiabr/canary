@@ -859,8 +859,7 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList &itemList,
 }
 
 bool IOLoginData::savePlayer(Player* player) {
-	DBTransaction transaction;
-	bool success = DBTransactionGuard::executeWithinTransaction(transaction, [&]() {
+	bool success = DBTransactionGuard::executeWithinTransaction([&]() {
 		beatsDb(player);
 	});
 

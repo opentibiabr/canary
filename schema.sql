@@ -415,7 +415,7 @@ CREATE TABLE IF NOT EXISTS `guild_membership` (
 CREATE TABLE IF NOT EXISTS `houses` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `world_id`int(11) unsigned not null default 1,
-    `xml_id` int(25) NOT NULL DEFAULT '0',
+    `map_id` int(25) NOT NULL DEFAULT '0',
     `owner` int(11) NOT NULL,
     `paid` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `warnings` int(11) NOT NULL DEFAULT '0',

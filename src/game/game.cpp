@@ -222,6 +222,19 @@ void Game::setWorldType(WorldType_t type) {
 	worldType = type;
 }
 
+void Game::setWorldId(){
+	Database &db = Database::getInstance();
+	std::ostringstream query;
+	std::string serverNameTemp = g_configManager().getString(SERVER_NAME);
+	query << "SELECT id,name FROM `worlds` WHERE name = " << (db.escapeString(serverNameTemp));
+	DBResult_ptr result = db.storeQuery(query.str());
+	worldId = (result->getNumber<uint8_t>("id"));
+}
+
+uint8_t Game::getWorldId(){
+	return worldId;
+}
+
 void Game::setGameState(GameState_t newState) {
 	if (gameState == GAME_STATE_SHUTDOWN) {
 		return; // this cannot be stopped

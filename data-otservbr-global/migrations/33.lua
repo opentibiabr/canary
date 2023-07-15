@@ -21,7 +21,7 @@ function onUpdateDatabase()
 	
 	db.query([[
 		ALTER TABLE houses 
-		ADD COLUMN IF NOT EXISTS xml_id int(25) not null,
+		ADD COLUMN IF NOT EXISTS map_id int(25) not null,
 		ADD COLUMN IF NOT EXISTS world_id int(11) unsigned not null default 1,
 		ADD CONSTRAINT `houses_world_id_fk`
 		FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`)

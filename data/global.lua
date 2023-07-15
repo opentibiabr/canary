@@ -34,7 +34,6 @@ NORTHEAST = DIRECTION_NORTHEAST
 STORAGEVALUE_PROMOTION = 30018
 
 SERVER_NAME = configManager.getString(configKeys.SERVER_NAME)
-WORLD_ID = configManager.getnUMBER(configKeys.WORLD_ID)
 SERVER_MOTD = configManager.getString(configKeys.SERVER_MOTD)
 
 AUTH_TYPE = configManager.getString(configKeys.AUTH_TYPE)

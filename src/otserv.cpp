@@ -165,6 +165,8 @@ void loadModules() {
 		startupErrorMessage();
 	}
 
+	g_game().setWorldId();
+
 	SPDLOG_INFO("Initializing lua environment...");
 	if (!g_luaEnvironment.getLuaState()) {
 		g_luaEnvironment.initState();

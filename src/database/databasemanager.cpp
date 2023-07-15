@@ -46,13 +46,13 @@ bool DatabaseManager::optimizeTables() {
 bool DatabaseManager::registerAndVerifyServer() {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
-	std::string worldIdTemp = std::to_string(g_configManager().getNumber(WORLD_ID));
+	//std::string worldIdTemp = std::to_string(g_configManager().getNumber(WORLD_ID));
 	std::string serverNameTemp = g_configManager().getString(SERVER_NAME);
-	query << "SELECT id,name FROM `worlds` WHERE id = " << (db.escapeString(worldIdTemp));
+	query << "SELECT id,name FROM `worlds` WHERE name = " << (db.escapeString(serverNameTemp));
 	DBResult_ptr result = db.storeQuery(query.str());
 	if (!result) {
 		std::ostringstream insertQuery;
-		insertQuery << "INSERT INTO `worlds` VALUES (" << worldIdTemp <<",'" << serverNameTemp << "');";
+		insertQuery << "INSERT INTO `worlds`(name) VALUES ('" << serverNameTemp << "');";
 		if(db.executeQuery(insertQuery.str())){
 			SPDLOG_INFO("Successfully inserted your world ID and Server Name into the DB worlds table...[Success]");
 			return true;
@@ -61,13 +61,8 @@ bool DatabaseManager::registerAndVerifyServer() {
 			return false;
 		}
 	}else{
-		if(result->getString("name") != serverNameTemp){
-			SPDLOG_ERROR("There is already a server occupying the id {}, please define a new one for your server.",worldIdTemp);
-			return false;
-		}else{
-			SPDLOG_INFO("World ID and server name are already properly set...[Success]");
-			return true;
-		}
+		SPDLOG_INFO("World ID and server name are already properly set...[Success]");
+		return true;
 	}
 
 	return false;

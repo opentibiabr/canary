@@ -250,15 +250,15 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, const Tile* tile) {
 
 bool IOMapSerialize::loadHouseInfo() {
 	Database &db = Database::getInstance();
-	const uint8_t worldid = g_configManager().getNumber(WORLD_ID);
+	const uint8_t worldid = g_game().getWorldId();
 
-	DBResult_ptr result = db.storeQuery("SELECT `xml_id`,`id`, `owner`, `paid`, `warnings` FROM `houses` where world_id =" + std::to_string(worldid));
+	DBResult_ptr result = db.storeQuery("SELECT `map_id`,`id`, `owner`, `paid`, `warnings` FROM `houses` where world_id =" + std::to_string(worldid));
 	if (!result) {
 		return false;
 	}
 
 	do {
-		House* house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("xml_id"));
+		House* house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("map_id"));
 		if (house) {
 			house->setOwner(result->getNumber<uint32_t>("owner"), false);
 			house->setPaidUntil(result->getNumber<time_t>("paid"));
@@ -266,7 +266,7 @@ bool IOMapSerialize::loadHouseInfo() {
 		}
 	} while (result->next());
 
-	result = db.storeQuery("SELECT houses.xml_id as `house_id`, `listid`, `list` FROM `house_lists` INNER JOIN houses ON houses.id = house_lists.house_id AND houses.world_id = " + std::to_string(worldid));
+	result = db.storeQuery("SELECT houses.map_id as `house_id`, `listid`, `list` FROM `house_lists` INNER JOIN houses ON houses.id = house_lists.house_id AND houses.world_id = " + std::to_string(worldid));
 	if (result) {
 		do {
 			House* house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("house_id"));
@@ -281,7 +281,7 @@ bool IOMapSerialize::loadHouseInfo() {
 bool IOMapSerialize::saveHouseInfo() {
 	Database &db = Database::getInstance();
 
-	const uint8_t worldid = g_configManager().getNumber(WORLD_ID);
+	const uint8_t worldid = g_game().getWorldId();
 
 	DBTransaction transaction;
 	if (!transaction.begin()) {
@@ -294,14 +294,14 @@ bool IOMapSerialize::saveHouseInfo() {
 
 	std::ostringstream query;
 	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
-		query << "SELECT `id` FROM `houses` WHERE `xml_id` = " << house->getId() << " and `world_id` = " << std::to_string(worldid);
+		query << "SELECT `id` FROM `houses` WHERE `map_id` = " << house->getId() << " and `world_id` = " << std::to_string(worldid);
 		DBResult_ptr result = db.storeQuery(query.str());
 		if (result) {
 			query.str(std::string());
-			query << "UPDATE `houses` SET `owner` = " << house->getOwner() << ", `paid` = " << house->getPaidUntil() << ", `warnings` = " << house->getPayRentWarnings() << ", `name` = " << db.escapeString(house->getName()) << ", `town_id` = " << house->getTownId() << ", `rent` = " << house->getRent() << ", `size` = " << house->getTiles().size() << ", `beds` = " << house->getBedCount() << " WHERE `xml_id` = " << house->getId() << " and `world_id` = " << std::to_string(worldid);
+			query << "UPDATE `houses` SET `owner` = " << house->getOwner() << ", `paid` = " << house->getPaidUntil() << ", `warnings` = " << house->getPayRentWarnings() << ", `name` = " << db.escapeString(house->getName()) << ", `town_id` = " << house->getTownId() << ", `rent` = " << house->getRent() << ", `size` = " << house->getTiles().size() << ", `beds` = " << house->getBedCount() << " WHERE `map_id` = " << house->getId() << " and `world_id` = " << std::to_string(worldid);
 		} else {
 			query.str(std::string());
-			query << "INSERT INTO `houses` (`xml_id`, `owner`, `paid`, `warnings`, `name`, `town_id`, `rent`, `size`, `beds`, `world_id`) VALUES (" << house->getId() << ',' << house->getOwner() << ',' << house->getPaidUntil() << ',' << house->getPayRentWarnings() << ',' << db.escapeString(house->getName()) << ',' << house->getTownId() << ',' << house->getRent() << ',' << house->getTiles().size() << ',' << house->getBedCount() << ',' << std::to_string(worldid) << ')';
+			query << "INSERT INTO `houses` (`map_id`, `owner`, `paid`, `warnings`, `name`, `town_id`, `rent`, `size`, `beds`, `world_id`) VALUES (" << house->getId() << ',' << house->getOwner() << ',' << house->getPaidUntil() << ',' << house->getPayRentWarnings() << ',' << db.escapeString(house->getName()) << ',' << house->getTownId() << ',' << house->getRent() << ',' << house->getTiles().size() << ',' << house->getBedCount() << ',' << std::to_string(worldid) << ')';
 		}
 
 		db.executeQuery(query.str());

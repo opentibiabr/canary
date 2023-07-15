@@ -238,7 +238,6 @@ bool ConfigManager::load() {
 	integer[BLACK_SKULL_DURATION] = getGlobalNumber(L, "blackSkullDuration", 45);
 	integer[ORANGE_SKULL_DURATION] = getGlobalNumber(L, "orangeSkullDuration", 7);
 	integer[GLOBAL_SERVER_SAVE_NOTIFY_DURATION] = getGlobalNumber(L, "globalServerSaveNotifyDuration", 5);
-	integer[WORLD_ID] = getGlobalNumber(L, "worldId");
 
 	integer[PARTY_LIST_MAX_DISTANCE] = getGlobalNumber(L, "partyListMaxDistance", 0);
 

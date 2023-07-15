@@ -6784,9 +6784,8 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 		msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
 	} else {
-		msg.add<uint32_t>(std::min<int32_t>(player->getHealth(), 10000000));
-		msg.add<uint32_t>(std::min<int32_t>(player->getMaxHealth(), 10000000));
-		//Newest protocols accept over int16(65535) health and mana, don't try int32 though. I've tested up to 100M, so I've decided to set to 10M.
+		msg.add<uint32_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<int32_t>::max()));
+		msg.add<uint32_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<int32_t>::max()));
 	}
 
 	msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
@@ -6810,8 +6809,8 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
 
 	if (!oldProtocol) {
-		msg.add<uint32_t>(std::min<int32_t>(player->getMana(), 10000000));
-		msg.add<uint32_t>(std::min<int32_t>(player->getMaxMana(), 10000000));
+		msg.add<uint32_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<int32_t>::max()));
+		msg.add<uint32_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<int32_t>::max()));
 	} else {
 		msg.add<uint16_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));

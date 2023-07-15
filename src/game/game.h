@@ -93,6 +93,10 @@ class Game {
 			return worldType;
 		}
 
+		void setWorldId();
+		uint8_t getWorldId();
+
+
 		std::map<uint32_t, TeamFinder*> getTeamFinderList() const {
 			return teamFinderMap;
 		}
@@ -648,6 +652,7 @@ class Game {
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;
 		std::set<uint32_t> fiendishMonsters;
 		std::set<uint32_t> influencedMonsters;
+		uint8_t worldId = 0;
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string &text);
 		void playerWhisper(Player* player, const std::string &text);

@@ -46,6 +46,7 @@ loginProtocolPort = 7171
 gameProtocolPort = 7172
 statusProtocolPort = 7171
 maxPlayers = 0
+worldId = 1
 serverName = "OTServBR-Global"
 serverMotd = "Welcome to the OTServBR-Global!"
 onePlayerOnlinePerAccount = true

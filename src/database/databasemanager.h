@@ -20,6 +20,7 @@ class DatabaseManager {
 		static bool isDatabaseSetup();
 
 		static bool optimizeTables();
+		static bool registerAndVerifyServer();
 		static void updateDatabase();
 
 		static bool getDatabaseConfig(const std::string &config, int32_t &value);

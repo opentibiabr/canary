@@ -160,6 +160,11 @@ void loadModules() {
 		SPDLOG_INFO("No tables were optimized");
 	}
 
+	if(!DatabaseManager::registerAndVerifyServer()){
+		SPDLOG_ERROR("Your world ID and server name are not properly configured.");
+		startupErrorMessage();
+	}
+
 	SPDLOG_INFO("Initializing lua environment...");
 	if (!g_luaEnvironment.getLuaState()) {
 		g_luaEnvironment.initState();

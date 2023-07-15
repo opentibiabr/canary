@@ -9,6 +9,14 @@ CREATE TABLE IF NOT EXISTS `server_config` (
 
 INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '25'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
+
+CREATE TABLE IF NOT EXISTS `worlds`(
+    `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` varchar(32) NOT NULL,
+    CONSTRAINT `worlds_pk` PRIMARY KEY (`id`),
+    CONSTRAINT `worlds_unique` UNIQUE (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -47,6 +55,7 @@ CREATE TABLE IF NOT EXISTS `coins_transactions` (
 CREATE TABLE IF NOT EXISTS `players` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
+    `world_id`int(11) unsigned not null default 1,
     `group_id` int(11) NOT NULL DEFAULT '1',
     `account_id` int(11) UNSIGNED NOT NULL DEFAULT '0',
     `level` int(11) NOT NULL DEFAULT '1',
@@ -153,6 +162,10 @@ CREATE TABLE IF NOT EXISTS `players` (
     CONSTRAINT `players_account_fk`
     FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
     ON DELETE CASCADE
+    CONSTRAINT `world_id_fk`
+        FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `account_bans`
@@ -401,6 +414,8 @@ CREATE TABLE IF NOT EXISTS `guild_membership` (
 -- Table structure `houses`
 CREATE TABLE IF NOT EXISTS `houses` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
+    `world_id`int(11) unsigned not null default 1,
+    `xml_id` int(25) NOT NULL DEFAULT '0',
     `owner` int(11) NOT NULL,
     `paid` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `warnings` int(11) NOT NULL DEFAULT '0',
@@ -414,6 +429,10 @@ CREATE TABLE IF NOT EXISTS `houses` (
     `size` int(11) NOT NULL DEFAULT '0',
     `guildid` int(11),
     `beds` int(11) NOT NULL DEFAULT '0',
+    CONSTRAINT `house_world_id_fk`
+        FOREIGN KEY (`world_id`) REFERENCES `worlds` (`id`)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
     INDEX `owner` (`owner`),
     INDEX `town_id` (`town_id`),
     CONSTRAINT `houses_pk` PRIMARY KEY (`id`)

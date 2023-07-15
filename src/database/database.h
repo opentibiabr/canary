@@ -266,9 +266,9 @@ class DBTransaction {
 class DBTransactionGuard {
 	public:
 		explicit DBTransactionGuard(DBTransaction &transaction) :
-			transaction_(transaction) {
-			transaction_.begin();
-		}
+			transaction_(transaction) { }
+
+		~DBTransactionGuard() = default;
 
 		// non-copyable
 		DBTransactionGuard(const DBTransactionGuard &) = delete;
@@ -278,27 +278,17 @@ class DBTransactionGuard {
 		DBTransactionGuard(DBTransactionGuard &&) = delete;
 		DBTransactionGuard &operator=(DBTransactionGuard &&) = delete;
 
-		~DBTransactionGuard() noexcept {
-			if (!transaction_.isCommitted()) {
-				try {
-					transaction_.rollback();
-				} catch (const std::exception &exception) {
-					// Error occurred while rolling back transaction
-					SPDLOG_ERROR("[{}] Error occurred while rolling back transaction, error: {}", __FUNCTION__, exception.what());
-				}
-			}
-		}
-
-		bool execute(std::function<void()> toBeExecuted) {
+		static bool executeWithinTransaction(DBTransaction &transaction_, std::function<void()> toBeExecuted) {
 			try {
+				transaction_.begin();
 				toBeExecuted();
 				transaction_.commit();
 				return true;
 			} catch (const std::exception &exception) {
-				SPDLOG_ERROR("[{}] Error occurred while committing transaction, erro: {}", __FUNCTION__, exception.what());
-				throw;
+				SPDLOG_ERROR("[{}] Error occurred while committing transaction, error: {}", __FUNCTION__, exception.what());
+				transaction_.rollback();
+				return false;
 			}
-			return false;
 		}
 
 	private:

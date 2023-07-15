@@ -859,17 +859,16 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList &itemList,
 }
 
 bool IOLoginData::savePlayer(Player* player) {
-    DBTransaction transaction;
-    DBTransactionGuard guard(transaction);
-    try {
-        guard.execute([&]() {
-            beatsDb(player);
-        });
-        return true;
-    } catch (const std::exception &exception) {
-        SPDLOG_ERROR("[{}] Error occurred while saving player, error: {}", __FUNCTION__, exception.what());
-        return false;
-    }
+	DBTransaction transaction;
+	bool success = DBTransactionGuard::executeWithinTransaction(transaction, [&]() {
+		beatsDb(player);
+	});
+
+	if (!success) {
+		SPDLOG_ERROR("[{}] Error occurred saving player", __FUNCTION__);
+	}
+
+	return success;
 }
 
 bool IOLoginData::beatsDb(Player* player) {

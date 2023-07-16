@@ -51,7 +51,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 	SPDLOG_INFO("Loaded house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
 }
 bool IOMapSerialize::beatsSaveHouseItems() {
-	bool success = DBTransaction::executeWithinTransaction([&]() {
+	bool success = DBTransaction::executeWithinTransaction([]() {
 		saveHouseItems();
 	});
 
@@ -281,7 +281,7 @@ bool IOMapSerialize::loadHouseInfo() {
 }
 
 bool IOMapSerialize::beatsSaveHouseInfo() {
-	bool success = DBTransaction::executeWithinTransaction([&]() {
+	bool success = DBTransaction::executeWithinTransaction([]() {
 		saveHouseInfo();
 	});
 

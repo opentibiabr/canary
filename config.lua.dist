@@ -293,6 +293,17 @@ mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"
 
+-- NOTE: memoryConst: This is the memory cost for the Argon2 hash algorithm. It specifies the amount of memory that the algorithm will use when calculating a hash.
+--The memory cost is measured in units of KiB (1024 bytes). A higher memory cost makes the algorithm more resistant to brute-force and hash-table attacks, but also consumes more memory.
+-- NOTE: temporaryConst: This is the time cost for the Argon2 hash algorithm. It specifies the amount of computational time that the algorithm will spend when calculating a hash.
+--A higher time cost makes the algorithm more secure but also slower.
+-- NOTE: parallelism: This is the parallelism factor for the Argon2 hash algorithm. It specifies the number of parallel threads that the algorithm will use when calculating a hash.
+--In general, a higher level of parallelism can make the algorithm faster on systems with multiple CPU cores, but it can also increase memory usage.
+-- NOTE: These settings have to be the same on the site and server.
+memoryConst = "1<<16"
+temporaryConst= 2
+parallelism = 2
+
 -- Session Auth
 authType = "password" -- 'session' | 'password'
 resetSessionsOnStartup = false

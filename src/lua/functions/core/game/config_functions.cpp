@@ -225,6 +225,10 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", MULTIPLIER_ATTACKONFIST);
 	registerEnumIn(L, "configKeys", MAX_SPEED_ATTACKONFIST);
 
+	registerEnumIn(L, "configKeys", M_CONST);
+	registerEnumIn(L, "configKeys", T_CONST);
+	registerEnumIn(L, "configKeys", PARALLELISM);
+
 #undef registerEnumIn
 }
 

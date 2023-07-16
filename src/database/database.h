@@ -33,6 +33,8 @@ class Database {
 
 		bool connect();
 
+		bool connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock);
+
 		bool executeQuery(const std::string_view &query);
 
 		DBResult_ptr storeQuery(const std::string_view &query);
@@ -68,7 +70,6 @@ class Database {
 		uint64_t maxPacketSize = 1048576;
 
 		friend class DBTransaction;
-		friend class DBTransactionGuard;
 };
 
 class DBResult {
@@ -180,23 +181,32 @@ class DBInsert {
 
 class DBTransaction {
 	public:
-		constexpr DBTransaction() = default;
+		explicit DBTransaction() = default;
 
-		~DBTransaction() noexcept {
-			if (state == STATE_START) {
-				try {
-					rollback();
-				} catch (const std::exception &exception) {
-					// Error occurred while rollback transaction
-					SPDLOG_ERROR("[{}] Error occurred while rolling back transaction, error: {}", __FUNCTION__, exception.what());
-				}
-			}
-		}
+		~DBTransaction()= default;
 
 		// non-copyable
 		DBTransaction(const DBTransaction &) = delete;
 		DBTransaction &operator=(const DBTransaction &) = delete;
 
+		// non-movable
+		DBTransaction(const DBTransaction &&) = delete;
+		DBTransaction &operator=(const DBTransaction &&) = delete;
+
+		static bool executeWithinTransaction(std::function<void()> toBeExecuted) {
+        try {
+            DBTransaction transaction;
+            transaction.begin();
+            toBeExecuted();
+            transaction.commit();
+            return true;
+        } catch (const std::exception &exception) {
+            SPDLOG_ERROR("[{}] Error occurred while committing transaction, error: {}", __FUNCTION__, exception.what());
+            return false;
+        }
+    }
+
+	private:
 		bool begin() {
 			// Ensure that the transaction has not already been started
 			if (state != STATE_NO_START) {
@@ -259,36 +269,7 @@ class DBTransaction {
 			return state == STATE_NO_START;
 		}
 
-	private:
 		TransactionStates_t state = STATE_NO_START;
-};
-
-class DBTransactionGuard {
-public:
-    explicit DBTransactionGuard() = default;
-
-    ~DBTransactionGuard() = default;
-
-    // non-copyable
-    DBTransactionGuard(const DBTransactionGuard &) = delete;
-    DBTransactionGuard &operator=(const DBTransactionGuard &) = delete;
-
-    // non-movable
-    DBTransactionGuard(DBTransactionGuard &&) = delete;
-    DBTransactionGuard &operator=(DBTransactionGuard &&) = delete;
-
-    static bool executeWithinTransaction(std::function<void()> toBeExecuted) {
-        try {
-            DBTransaction transaction;
-            transaction.begin();
-            toBeExecuted();
-            transaction.commit();
-            return true;
-        } catch (const std::exception &exception) {
-            SPDLOG_ERROR("[{}] Error occurred while committing transaction, error: {}", __FUNCTION__, exception.what());
-            return false;
-        }
-    }
 };
 
 #endif // SRC_DATABASE_DATABASE_H_

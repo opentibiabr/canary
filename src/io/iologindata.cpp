@@ -859,7 +859,7 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList &itemList,
 }
 
 bool IOLoginData::savePlayer(Player* player) {
-	bool success = DBTransactionGuard::executeWithinTransaction([&]() {
+	bool success = DBTransaction::executeWithinTransaction([&]() {
 		beatsDb(player);
 	});
 
@@ -1165,8 +1165,6 @@ bool IOLoginData::beatsDb(Player* player) {
 			return false;
 		}
 	}
-
-	throw std::runtime_error("Simulated failure in beatsDb");
 
 	if (!IOLoginDataSave::saveRewardItems(player)) {
 		SPDLOG_ERROR("[{}] failed to save reward items");

@@ -19,31 +19,34 @@ Database::~Database() {
 }
 
 bool Database::connect() {
+	const std::string host = g_configManager().getString(MYSQL_HOST);
+	const std::string user = g_configManager().getString(MYSQL_USER);
+	const std::string password = g_configManager().getString(MYSQL_PASS);
+	const std::string database = g_configManager().getString(MYSQL_DB);
+	const uint32_t port = g_configManager().getNumber(SQL_PORT);
+	const std::string sock = g_configManager().getString(MYSQL_SOCK);
+
+	return connect(&host, &user, &password, &database, port, &sock);
+}
+
+bool Database::connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock) {
 	// connection handle initialization
 	handle = mysql_init(nullptr);
 	if (!handle) {
-		SPDLOG_ERROR("Failed to initialize MySQL connection handle");
+		SPDLOG_ERROR("Failed to initialize MySQL connection handle.");
 		return false;
+	}
+
+	if (host->empty() || user->empty() || password->empty() || database->empty() || port <= 0) {
+		SPDLOG_WARN("MySQL host, user, password, database or port not provided");
 	}
 
 	// automatic reconnect
 	bool reconnect = true;
 	mysql_options(handle, MYSQL_OPT_RECONNECT, &reconnect);
 
-	// check if all required parameters have been provided
-	const std::string host = g_configManager().getString(MYSQL_HOST);
-	const std::string user = g_configManager().getString(MYSQL_USER);
-	const std::string password = g_configManager().getString(MYSQL_PASS);
-	const std::string database = g_configManager().getString(MYSQL_DB);
-	const int port = g_configManager().getNumber(SQL_PORT);
-	const std::string socket = g_configManager().getString(MYSQL_SOCK);
-
-	if (host.empty() || user.empty() || password.empty() || database.empty() || port <= 0) {
-		SPDLOG_WARN("MySQL host, user, password, database or port not provided");
-	}
-
 	// connects to database
-	if (!mysql_real_connect(handle, host.c_str(), user.c_str(), password.c_str(), database.c_str(), port, socket.c_str(), 0)) {
+	if (!mysql_real_connect(handle, host->c_str(), user->c_str(), password->c_str(), database->c_str(), port, sock->c_str(), 0)) {
 		SPDLOG_ERROR("MySQL Error Message: {}", mysql_error(handle));
 		return false;
 	}

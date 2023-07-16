@@ -193,7 +193,8 @@ class DBTransaction {
 		DBTransaction(const DBTransaction &&) = delete;
 		DBTransaction &operator=(const DBTransaction &&) = delete;
 
-		static bool executeWithinTransaction(std::function<void()> toBeExecuted) {
+		template <typename Func>
+		static bool executeWithinTransaction(const Func &toBeExecuted) {
 			try {
 				DBTransaction transaction;
 				transaction.begin();

@@ -191,7 +191,7 @@ DBResult::DBResult(MYSQL_RES* res) {
 
 	int num_fields = mysql_num_fields(handle);
 
-	MYSQL_FIELD* fields = mysql_fetch_fields(handle);
+	const MYSQL_FIELD* fields = mysql_fetch_fields(handle);
 	for (size_t i = 0; i < num_fields; i++) {
 		listNames[fields[i].name] = i;
 	}

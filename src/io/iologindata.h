@@ -46,7 +46,7 @@ class IOLoginData {
 		static void addPremiumDays(uint32_t accountId, int32_t addDays);
 		static void removePremiumDays(uint32_t accountId, int32_t removeDays);
 
-		static bool beatsDb(Player* player);
+		static bool savePlayerGuard(Player* player);
 
 	protected:
 		using ItemMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;

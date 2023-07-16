@@ -50,7 +50,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 	} while (result->next());
 	SPDLOG_INFO("Loaded house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
 }
-bool IOMapSerialize::beatsSaveHouseItems() {
+bool IOMapSerialize::SaveHouseItemsGuard() {
 	bool success = DBTransaction::executeWithinTransaction([]() {
 		saveHouseItems();
 	});
@@ -280,7 +280,7 @@ bool IOMapSerialize::loadHouseInfo() {
 	return true;
 }
 
-bool IOMapSerialize::beatsSaveHouseInfo() {
+bool IOMapSerialize::SaveHouseInfoGuard() {
 	bool success = DBTransaction::executeWithinTransaction([]() {
 		saveHouseInfo();
 	});

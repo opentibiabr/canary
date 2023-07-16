@@ -183,7 +183,7 @@ class DBTransaction {
 	public:
 		explicit DBTransaction() = default;
 
-		~DBTransaction()= default;
+		~DBTransaction() = default;
 
 		// non-copyable
 		DBTransaction(const DBTransaction &) = delete;
@@ -194,17 +194,17 @@ class DBTransaction {
 		DBTransaction &operator=(const DBTransaction &&) = delete;
 
 		static bool executeWithinTransaction(std::function<void()> toBeExecuted) {
-        try {
-            DBTransaction transaction;
-            transaction.begin();
-            toBeExecuted();
-            transaction.commit();
-            return true;
-        } catch (const std::exception &exception) {
-            SPDLOG_ERROR("[{}] Error occurred while committing transaction, error: {}", __FUNCTION__, exception.what());
-            return false;
-        }
-    }
+			try {
+				DBTransaction transaction;
+				transaction.begin();
+				toBeExecuted();
+				transaction.commit();
+				return true;
+			} catch (const std::exception &exception) {
+				SPDLOG_ERROR("[{}] Error occurred while committing transaction, error: {}", __FUNCTION__, exception.what());
+				return false;
+			}
+		}
 
 	private:
 		bool begin() {

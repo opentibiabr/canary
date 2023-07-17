@@ -587,14 +587,14 @@ int GameFunctions::luaGameReload(lua_State* L) {
 
 int GameFunctions::luaGameHasEffect(lua_State* L) {
 	// Game.hasEffect(effectId)
-	uint8_t effectId = getNumber<uint8_t>(L, 1);
+	uint16_t effectId = getNumber<uint16_t>(L, 1);
 	pushBoolean(L, g_game().hasEffect(effectId));
 	return 1;
 }
 
 int GameFunctions::luaGameHasDistanceEffect(lua_State* L) {
 	// Game.hasDistanceEffect(effectId)
-	uint8_t effectId = getNumber<uint8_t>(L, 1);
+	uint16_t effectId = getNumber<uint16_t>(L, 1);
 	pushBoolean(L, g_game().hasDistanceEffect(effectId));
 	return 1;
 }

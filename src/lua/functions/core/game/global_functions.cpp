@@ -293,7 +293,7 @@ int GlobalFunctions::luaDoAreaCombatHealth(lua_State* L) {
 
 		CombatParams params;
 		params.combatType = combatType;
-		params.impactEffect = getNumber<uint8_t>(L, 7);
+		params.impactEffect = getNumber<uint16_t>(L, 7);
 
 		CombatDamage damage;
 		damage.origin = getNumber<CombatOrigin>(L, 8, ORIGIN_SPELL);
@@ -337,7 +337,7 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 
 	CombatParams params;
 	params.combatType = combatType;
-	params.impactEffect = getNumber<uint8_t>(L, 6);
+	params.impactEffect = getNumber<uint16_t>(L, 6);
 
 	CombatDamage damage;
 	damage.origin = getNumber<CombatOrigin>(L, 7, ORIGIN_SPELL);
@@ -375,7 +375,7 @@ int GlobalFunctions::luaDoAreaCombatMana(lua_State* L) {
 	const AreaCombat* area = g_luaEnvironment.getAreaObject(areaId);
 	if (area || areaId == 0) {
 		CombatParams params;
-		params.impactEffect = getNumber<uint8_t>(L, 6);
+		params.impactEffect = getNumber<uint16_t>(L, 6);
 
 		CombatDamage damage;
 		damage.origin = getNumber<CombatOrigin>(L, 7, ORIGIN_SPELL);
@@ -417,7 +417,7 @@ int GlobalFunctions::luaDoTargetCombatMana(lua_State* L) {
 	}
 
 	CombatParams params;
-	params.impactEffect = getNumber<uint8_t>(L, 5);
+	params.impactEffect = getNumber<uint16_t>(L, 5);
 
 	CombatDamage damage;
 	damage.origin = getNumber<CombatOrigin>(L, 6, ORIGIN_SPELL);
@@ -457,7 +457,7 @@ int GlobalFunctions::luaDoAreaCombatCondition(lua_State* L) {
 	const AreaCombat* area = g_luaEnvironment.getAreaObject(areaId);
 	if (area || areaId == 0) {
 		CombatParams params;
-		params.impactEffect = getNumber<uint8_t>(L, 5);
+		params.impactEffect = getNumber<uint16_t>(L, 5);
 		params.conditionList.emplace_front(condition);
 		Combat::doCombatCondition(creature, getPosition(L, 2), area, params);
 		pushBoolean(L, true);
@@ -492,7 +492,7 @@ int GlobalFunctions::luaDoTargetCombatCondition(lua_State* L) {
 	}
 
 	CombatParams params;
-	params.impactEffect = getNumber<uint8_t>(L, 4);
+	params.impactEffect = getNumber<uint16_t>(L, 4);
 	params.conditionList.emplace_front(condition->clone());
 	Combat::doCombatCondition(creature, target, params);
 	pushBoolean(L, true);
@@ -512,7 +512,7 @@ int GlobalFunctions::luaDoAreaCombatDispel(lua_State* L) {
 	const AreaCombat* area = g_luaEnvironment.getAreaObject(areaId);
 	if (area || areaId == 0) {
 		CombatParams params;
-		params.impactEffect = getNumber<uint8_t>(L, 5);
+		params.impactEffect = getNumber<uint16_t>(L, 5);
 		params.dispelType = getNumber<ConditionType_t>(L, 4);
 		Combat::doCombatDispel(creature, getPosition(L, 2), area, params);
 
@@ -542,7 +542,7 @@ int GlobalFunctions::luaDoTargetCombatDispel(lua_State* L) {
 
 	CombatParams params;
 	params.dispelType = getNumber<ConditionType_t>(L, 3);
-	params.impactEffect = getNumber<uint8_t>(L, 4);
+	params.impactEffect = getNumber<uint16_t>(L, 4);
 	Combat::doCombatDispel(creature, target, params);
 	pushBoolean(L, true);
 	return 1;

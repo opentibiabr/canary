@@ -922,12 +922,12 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {
 		// Registering distance effects
 		for (uint32_t it = 0; it < appearances.effect_size(); it++) {
-			registeredMagicEffects.push_back(static_cast<uint8_t>(appearances.effect(it).id()));
+			registeredMagicEffects.push_back(static_cast<uint16_t>(appearances.effect(it).id()));
 		}
 
 		// Registering missile effects
 		for (uint32_t it = 0; it < appearances.missile_size(); it++) {
-			registeredDistanceEffects.push_back(static_cast<uint8_t>(appearances.missile(it).id()));
+			registeredDistanceEffects.push_back(static_cast<uint16_t>(appearances.missile(it).id()));
 		}
 
 		// Registering outfits
@@ -5759,7 +5759,7 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 	return (primaryBlockType != BLOCK_NONE) && (secondaryBlockType != BLOCK_NONE);
 }
 
-void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint8_t &effect) {
+void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint16_t &effect) {
 	switch (combatType) {
 		case COMBAT_PHYSICALDAMAGE: {
 			Item* splash = nullptr;
@@ -6510,7 +6510,7 @@ void Game::sendEffects(
 	Creature* target, const CombatDamage &damage, const Position &targetPos, TextMessage &message,
 	const SpectatorHashSet &spectators
 ) {
-	uint8_t hitEffect;
+	uint16_t hitEffect;
 	if (message.primary.value) {
 		combatGetTypeInfo(damage.primary.type, target, message.primary.color, hitEffect);
 		if (hitEffect != CONST_ME_NONE) {
@@ -6863,13 +6863,13 @@ void Game::addPlayerVocation(const Player* target) {
 	}
 }
 
-void Game::addMagicEffect(const Position &pos, uint8_t effect) {
+void Game::addMagicEffect(const Position &pos, uint16_t effect) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, pos, true, true);
 	addMagicEffect(spectators, pos, effect);
 }
 
-void Game::addMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect) {
+void Game::addMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint16_t effect) {
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendMagicEffect(pos, effect);
@@ -6877,13 +6877,13 @@ void Game::addMagicEffect(const SpectatorHashSet &spectators, const Position &po
 	}
 }
 
-void Game::removeMagicEffect(const Position &pos, uint8_t effect) {
+void Game::removeMagicEffect(const Position &pos, uint16_t effect) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, pos, true, true);
 	removeMagicEffect(spectators, pos, effect);
 }
 
-void Game::removeMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect) {
+void Game::removeMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint16_t effect) {
 	for (Creature* spectator : spectators) {
 		if (const Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->removeMagicEffect(pos, effect);
@@ -6891,14 +6891,14 @@ void Game::removeMagicEffect(const SpectatorHashSet &spectators, const Position 
 	}
 }
 
-void Game::addDistanceEffect(const Position &fromPos, const Position &toPos, uint8_t effect) {
+void Game::addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, fromPos, false, true);
 	map.getSpectators(spectators, toPos, false, true);
 	addDistanceEffect(spectators, fromPos, toPos, effect);
 }
 
-void Game::addDistanceEffect(const SpectatorHashSet &spectators, const Position &fromPos, const Position &toPos, uint8_t effect) {
+void Game::addDistanceEffect(const SpectatorHashSet &spectators, const Position &fromPos, const Position &toPos, uint16_t effect) {
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect);
@@ -8910,8 +8910,8 @@ void Game::removeUniqueItem(uint16_t uniqueId) {
 	}
 }
 
-bool Game::hasEffect(uint8_t effectId) {
-	for (uint8_t i = CONST_ME_NONE; i <= CONST_ME_LAST; i++) {
+bool Game::hasEffect(uint16_t effectId) {
+	for (uint16_t i = CONST_ME_NONE; i <= CONST_ME_LAST; i++) {
 		MagicEffectClasses effect = static_cast<MagicEffectClasses>(i);
 		if (effect == effectId) {
 			return true;
@@ -8920,8 +8920,8 @@ bool Game::hasEffect(uint8_t effectId) {
 	return false;
 }
 
-bool Game::hasDistanceEffect(uint8_t effectId) {
-	for (uint8_t i = CONST_ANI_NONE; i <= CONST_ANI_LAST; i++) {
+bool Game::hasDistanceEffect(uint16_t effectId) {
+	for (uint16_t i = CONST_ANI_NONE; i <= CONST_ANI_LAST; i++) {
 		ShootType_t effect = static_cast<ShootType_t>(i);
 		if (effect == effectId) {
 			return true;

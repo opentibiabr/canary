@@ -31,7 +31,7 @@ class Charm {
 		charm_t type;
 		charmRune_t id = CHARM_NONE;
 		CombatType_t dmgtype = COMBAT_NONE;
-		uint8_t effect = CONST_ME_NONE;
+		uint16_t effect = CONST_ME_NONE;
 
 		SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
 		SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;

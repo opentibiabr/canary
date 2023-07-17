@@ -43,7 +43,7 @@ bool DatabaseManager::optimizeTables() {
 	return true;
 }
 
-bool DatabaseManager::registerAndVerifyServer() {
+int DatabaseManager::getOrCreateServerID() {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	std::string worldIdTemp = std::to_string(g_configManager().getNumber(WORLD_ID));

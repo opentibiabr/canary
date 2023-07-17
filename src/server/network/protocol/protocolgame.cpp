@@ -3225,7 +3225,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
 	msg.addByte(0x00);
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		if (oldProtocol && (i == SKILL_LIFE_LEECH_CHANCE || i == SKILL_MANA_LEECH_CHANCE)) {
+		if (!oldProtocol && (i == SKILL_LIFE_LEECH_CHANCE || i == SKILL_MANA_LEECH_CHANCE)) {
 			continue;
 		}
 		skills_t skill = static_cast<skills_t>(i);
@@ -6901,7 +6901,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 	}
 
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		if (oldProtocol && (i == SKILL_LIFE_LEECH_CHANCE || i == SKILL_MANA_LEECH_CHANCE)) {
+		if (!oldProtocol && (i == SKILL_LIFE_LEECH_CHANCE || i == SKILL_MANA_LEECH_CHANCE)) {
 			continue;
 		}
 		skills_t skill = static_cast<skills_t>(i);

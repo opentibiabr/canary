@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Plagueroot")
 local monster = {}
 
-monster.description = "a Plagueroot"
+monster.description = "Plagueroot"
 monster.experience = 55000
 monster.outfit = {
 	lookType = 1121,
@@ -137,7 +137,7 @@ monster.elements = {
 }
 
 monster.heals = {
-	{type = COMBAT_EARTHDAMAGE, percent = 500}
+{type = COMBAT_EARTHDAMAGE, percent = 500}
 }
 
 monster.immunities = {

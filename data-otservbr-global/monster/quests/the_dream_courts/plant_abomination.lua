@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Plant Abomination")
 local monster = {}
 
-monster.description = "a Plant Abomination"
+monster.description = "a plant abomination"
 monster.experience = 310
 monster.outfit = {
 	lookType = 310,

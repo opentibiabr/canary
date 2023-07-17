@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Crazed Summer Vanguard")
 local monster = {}
 
-monster.description = "a Crazed Summer Vanguard"
+monster.description = "a crazed summer vanguard"
 monster.experience = 5000
 monster.outfit = {
 	lookType = 1137,

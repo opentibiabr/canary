@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Cheese Thief")
 local monster = {}
 
-monster.description = "a Cheese Thief"
+monster.description = "a cheese thief"
 monster.experience = 800
 monster.outfit = {
 	lookType = 534,

@@ -61,11 +61,11 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 	// monster:setType(name or raceid)
 	Monster* monster = getUserdata<Monster>(L, 1);
 	if (monster) {
-		MonsterType* monsterType = nullptr;
+		MonsterType* mType = nullptr;
 		if (isNumber(L, 2)) {
-			monsterType = g_monsters().getMonsterTypeByRaceId(getNumber<uint16_t>(L, 2));
+			mType = g_monsters().getMonsterTypeByRaceId(getNumber<uint16_t>(L, 2));
 		} else {
-			monsterType = g_monsters().getMonsterType(getString(L, 2));
+			mType = g_monsters().getMonsterType(getString(L, 2));
 		}
 		// Unregister creature events (current MonsterType)
 		for (const std::string &scriptName : monster->mType->info.scripts) {
@@ -74,20 +74,19 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 			}
 		}
 		// Assign new MonsterType
-		monster->mType = monsterType;
-		monster->strDescription = asLowerCaseString(monsterType->nameDescription);
-		monster->defaultOutfit = monsterType->info.outfit;
-		monster->currentOutfit = monsterType->info.outfit;
-		monster->skull = monsterType->info.skull;
-		float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
-		monster->health = monsterType->info.health * multiplier;
-		monster->healthMax = monsterType->info.healthMax * multiplier;
-		monster->baseSpeed = monsterType->getBaseSpeed();
-		monster->internalLight = monsterType->info.light;
-		monster->hiddenHealth = monsterType->info.hiddenHealth;
-		monster->targetDistance = monsterType->info.targetDistance;
+		monster->mType = mType;
+		monster->strDescription = asLowerCaseString(mType->nameDescription);
+		monster->defaultOutfit = mType->info.outfit;
+		monster->currentOutfit = mType->info.outfit;
+		monster->skull = mType->info.skull;
+		monster->health = mType->info.health * mType->getHealthMultiplier();
+		monster->healthMax = mType->info.healthMax * mType->getHealthMultiplier();
+		monster->baseSpeed = mType->getBaseSpeed();
+		monster->internalLight = mType->info.light;
+		monster->hiddenHealth = mType->info.hiddenHealth;
+		monster->targetDistance = mType->info.targetDistance;
 		// Register creature events (new MonsterType)
-		for (const std::string &scriptName : monsterType->info.scripts) {
+		for (const std::string &scriptName : mType->info.scripts) {
 			if (!monster->registerCreatureEvent(scriptName)) {
 				SPDLOG_WARN("[Warning - MonsterFunctions::luaMonsterSetType] Unknown event name: {}", scriptName);
 			}

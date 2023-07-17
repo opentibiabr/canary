@@ -131,6 +131,9 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", RATE_MONSTER_HEALTH);
 	registerEnumIn(L, "configKeys", RATE_MONSTER_ATTACK);
 	registerEnumIn(L, "configKeys", RATE_MONSTER_DEFENSE);
+	registerEnumIn(L, "configKeys", RATE_BOSS_HEALTH);
+	registerEnumIn(L, "configKeys", RATE_BOSS_ATTACK);
+	registerEnumIn(L, "configKeys", RATE_BOSS_DEFENSE);
 	registerEnumIn(L, "configKeys", RATE_NPC_HEALTH);
 	registerEnumIn(L, "configKeys", RATE_NPC_ATTACK);
 	registerEnumIn(L, "configKeys", RATE_NPC_DEFENSE);
@@ -224,6 +227,10 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", TOGGLE_ATTACK_SPEED_ONFIST);
 	registerEnumIn(L, "configKeys", MULTIPLIER_ATTACKONFIST);
 	registerEnumIn(L, "configKeys", MAX_SPEED_ATTACKONFIST);
+
+	registerEnumIn(L, "configKeys", M_CONST);
+	registerEnumIn(L, "configKeys", T_CONST);
+	registerEnumIn(L, "configKeys", PARALLELISM);
 
 #undef registerEnumIn
 }

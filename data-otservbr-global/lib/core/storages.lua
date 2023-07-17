@@ -393,7 +393,7 @@ Storage = {
 			Objects = 50230,
 			Temp = 50231,
 			BossTimer = 50232,
-			TrialAccessDoor = 50233,
+			TrialAccessDoor = 50243, -- 50233 is used by an ore wagon
 			TarAccessDoor = 50234,
 			AccessDoor = 50235,
 			BossAccessDoor = 50236
@@ -2862,6 +2862,17 @@ Storage = {
 				},
 			},
 		},
+		U13_10 = { -- update 13.10 - Reserved Storages 47901 - 47951
+			CradleOfMonsters = {
+				QuestLine = 47901,
+				Access = {
+					Ingol = 47902,
+					LowerIngol = 47903,
+					Monster = 47904,
+					MutatedAbomination = 47905,
+				},
+			}
+		}
 	},
 	-- Reserved storage from 63951 - 63999
 	ThaisExhibition = {

@@ -948,6 +948,20 @@ void Player::onReceiveMail() const {
 
 Container* Player::setLootContainer(ObjectCategory_t category, Container* container, bool loading /* = false*/) {
 	Container* previousContainer = nullptr;
+	if (auto it = quickLootContainers.find(category);
+		it != quickLootContainers.end() && !loading) {
+		previousContainer = (*it).second;
+		auto flags = previousContainer->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
+		flags &= ~(1 << category);
+		if (flags == 0) {
+			previousContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
+		} else {
+			previousContainer->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, flags);
+		}
+
+		previousContainer->decrementReferenceCounter();
+		quickLootContainers.erase(it);
+	}
 	if (container) {
 		previousContainer = container;
 		quickLootContainers[category] = container;
@@ -959,21 +973,6 @@ Container* Player::setLootContainer(ObjectCategory_t category, Container* contai
 			container->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, sendAttribute);
 		}
 		return previousContainer;
-	} else {
-		if (auto it = quickLootContainers.find(category);
-			it != quickLootContainers.end() && !loading) {
-			previousContainer = (*it).second;
-			auto flags = previousContainer->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
-			flags &= ~(1 << category);
-			if (flags == 0) {
-				previousContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
-			} else {
-				previousContainer->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, flags);
-			}
-
-			previousContainer->decrementReferenceCounter();
-			quickLootContainers.erase(it);
-		}
 	}
 
 	return nullptr;

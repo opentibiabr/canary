@@ -10,6 +10,8 @@
 #ifndef SRC_CREATURES_PLAYERS_WHEEL_PLAYER_WHEEL_DEFINITIONS_HPP_
 #define SRC_CREATURES_PLAYERS_WHEEL_PLAYER_WHEEL_DEFINITIONS_HPP_
 
+#include "creatures/creatures_definitions.hpp"
+
 enum WheelSlots_t : uint8_t {
 	SLOT_GREEN_200 = 1,
 	SLOT_GREEN_TOP_150 = 2,
@@ -195,8 +197,8 @@ struct PlayerWheelMethodsBonusData {
 				int damage = 0;
 				int healing = 0;
 		};
-		// value * 100. Example: 1% == 100, NOTE: the "12" is the "COMBAT_COUNT"
-		std::array<uint16_t, 12> resistance = {};
+		// value * 100. Example: 1% == 100
+		std::array<uint16_t, COMBAT_COUNT> resistance = {};
 
 		// Raw value. Example: 1 == 1
 		struct Skills {

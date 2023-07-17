@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Nightmarish Dream")
 local monster = {}
 
-monster.description = "a Nightmarish Dream"
+monster.description = "a nightmarish dream"
 monster.experience = 900
 monster.outfit = {
 	lookType = 78,

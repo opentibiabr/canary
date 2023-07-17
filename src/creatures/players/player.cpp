@@ -948,6 +948,20 @@ void Player::onReceiveMail() const {
 
 Container* Player::setLootContainer(ObjectCategory_t category, Container* container, bool loading /* = false*/) {
 	Container* previousContainer = nullptr;
+	if (auto it = quickLootContainers.find(category);
+		it != quickLootContainers.end() && !loading) {
+		previousContainer = (*it).second;
+		auto flags = previousContainer->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
+		flags &= ~(1 << category);
+		if (flags == 0) {
+			previousContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
+		} else {
+			previousContainer->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, flags);
+		}
+
+		previousContainer->decrementReferenceCounter();
+		quickLootContainers.erase(it);
+	}
 	if (container) {
 		previousContainer = container;
 		quickLootContainers[category] = container;
@@ -959,21 +973,6 @@ Container* Player::setLootContainer(ObjectCategory_t category, Container* contai
 			container->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, sendAttribute);
 		}
 		return previousContainer;
-	} else {
-		if (auto it = quickLootContainers.find(category);
-			it != quickLootContainers.end() && !loading) {
-			previousContainer = (*it).second;
-			auto flags = previousContainer->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
-			flags &= ~(1 << category);
-			if (flags == 0) {
-				previousContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
-			} else {
-				previousContainer->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, flags);
-			}
-
-			previousContainer->decrementReferenceCounter();
-			quickLootContainers.erase(it);
-		}
 	}
 
 	return nullptr;
@@ -6243,6 +6242,22 @@ void Player::triggerMomentum() {
 			g_game().addMagicEffect(getPosition(), CONST_ME_HOURGLASS);
 			sendTextMessage(MESSAGE_ATTENTION, "Momentum was triggered.");
 		}
+	}
+}
+
+void Player::clearCooldowns() {
+	auto it = conditions.begin();
+	while (it != conditions.end()) {
+		auto condItem = *it;
+		ConditionType_t type = condItem->getType();
+		auto maxu16 = std::numeric_limits<uint16_t>::max();
+		auto checkSpellId = condItem->getSubId();
+		auto spellId = checkSpellId > maxu16 ? 0u : static_cast<uint16_t>(checkSpellId);
+		if (type == CONDITION_SPELLCOOLDOWN || type == CONDITION_SPELLGROUPCOOLDOWN) {
+			condItem->setTicks(0);
+			type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), 0) : sendSpellCooldown(spellId, 0);
+		}
+		++it;
 	}
 }
 

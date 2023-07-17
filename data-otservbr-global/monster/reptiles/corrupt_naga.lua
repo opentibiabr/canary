@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Corrupt Naga")
 local monster = {}
 
-monster.description = "a Corrupt Naga"
+monster.description = "a corrupt naga"
 monster.experience = 4380
 monster.outfit = {
 	lookType = 1538,

@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Jungle Moa")
 local monster = {}
 
-monster.description = "a Jungle Moa"
+monster.description = "a jungle moa"
 monster.experience = 1200
 monster.outfit = {
 	lookType = 1534,

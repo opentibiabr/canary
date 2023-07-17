@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Unchained Fire")
 local monster = {}
 
-monster.description = "a Unchained Fire"
+monster.description = "a unchained fire"
 monster.experience = 0
 monster.outfit = {
 	lookType = 242,

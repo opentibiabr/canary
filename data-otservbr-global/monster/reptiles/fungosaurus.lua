@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Fungosaurus")
 local monster = {}
 
-monster.description = "a Fungosaurus"
+monster.description = "a fungosaurus"
 monster.experience = 0
 monster.outfit = {
 	lookType = 1555,

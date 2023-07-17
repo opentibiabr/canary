@@ -32,7 +32,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@main
 
       - name: Install vcpkg
         run: |
@@ -45,8 +45,9 @@ jobs:
         run: msbuild.exe /p:VcpkgEnableManifest=true /p:Configuration=Release /p:Platform=x64 /p:VcpkgRoot=$env:GITHUB_WORKSPACE/vcpkg vcproj/canary.sln
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@main
         with:
           name: ${{ matrix.os }}-${{ matrix.buildtype }}
           path: |
-            ${{ github.workspace }}/vcproj/x64/${{ matrix.buildtype }}/
+            ${{ github.workspace }}/**/*.dll
+            ${{ github.workspace }}/**/*.exe

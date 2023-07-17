@@ -2370,6 +2370,18 @@ class Player final : public Creature, public Cylinder {
 		void reloadHazardSystemIcon();
 		/*******************************************************************************/
 
+		// Concoction system
+		void updateConcoction(uint16_t itemId, uint16_t timeLeft) {
+			if (timeLeft < 0) {
+				activeConcoctions.erase(itemId);
+			} else {
+				activeConcoctions[itemId] = timeLeft;
+			}
+		}
+		std::map<uint16_t, uint16_t> getActiveConcoctions() const {
+			return activeConcoctions;
+		}
+
 		// Player wheel methods interface
 		std::unique_ptr<PlayerWheel> &wheel();
 		const std::unique_ptr<PlayerWheel> &wheel() const;
@@ -2667,6 +2679,10 @@ class Player final : public Creature, public Cylinder {
 		bool reloadHazardSystemPointsCounter = true;
 		// Hazard end
 
+		// Concoctions
+		// [ConcoctionID] = time
+		std::map<uint16_t, uint16_t> activeConcoctions;
+
 		void updateItemsLight(bool internal = false);
 		uint16_t getStepSpeed() const override {
 			return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));
@@ -2729,6 +2745,7 @@ class Player final : public Creature, public Cylinder {
 		}
 
 		void triggerMomentum();
+		void clearCooldowns();
 
 		friend class Game;
 		friend class Npc;

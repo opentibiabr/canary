@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Retainer of Baeloc")
 local monster = {}
 
-monster.description = "a Retainer of Baeloc"
+monster.description = "a retainer of baeloc"
 monster.experience = 0
 monster.outfit = {
 	lookType = 100,

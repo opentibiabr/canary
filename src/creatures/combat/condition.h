@@ -146,8 +146,6 @@ class ConditionAttributes final : public ConditionGeneric {
 		std::array<int32_t, COMBAT_COUNT> absorbsPercent = {};
 		std::array<int32_t, COMBAT_COUNT> increases = {};
 		std::array<int32_t, COMBAT_COUNT> increasesPercent = {};
-		uint8_t currentAbsorb = 0;
-		uint8_t currentIncrease = 0;
 
 		bool disableDefense = false;
 

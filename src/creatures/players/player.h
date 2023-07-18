@@ -2421,6 +2421,19 @@ class Player final : public Creature, public Cylinder {
 			return activeConcoctions;
 		}
 
+		// Get specific inventory item from itemid
+		std::vector<Item*> getInventoryItemsFromId(uint16_t itemId, bool ignore = true) const;
+
+		// This get all player inventory items
+		std::vector<Item*> getAllInventoryItems(bool ignoreEquiped = false, bool ignoreItemWithTier = false) const;
+
+		/**
+		 * @brief Get the equipped items of the player.
+		 * @details This function returns a vector containing the items currently equipped by the player
+		 * @return A vector of pointers to the equipped items.
+		 */
+		std::vector<Item*> getEquippedItems() const;
+
 		// Player wheel methods interface
 		std::unique_ptr<PlayerWheel> &wheel();
 		const std::unique_ptr<PlayerWheel> &wheel() const;
@@ -2480,18 +2493,6 @@ class Player final : public Creature, public Cylinder {
 		void stashContainer(StashContainerList itemDict);
 		ItemsTierCountList getInventoryItemsId() const;
 
-		// Get specific inventory item from itemid
-		std::vector<Item*> getInventoryItemsFromId(uint16_t itemId, bool ignore = true) const;
-
-		// This get all player inventory items
-		std::vector<Item*> getAllInventoryItems(bool ignoreEquiped = false, bool ignoreItemWithTier = false) const;
-
-		/**
-		 * @brief Get the equipped items of the player.
-		 * @details This function returns a vector containing the items currently equipped by the player
-		 * @return A vector of pointers to the equipped items.
-		 */
-		std::vector<Item*> getEquippedItems() const;
 		// This function is a override function of base class
 		std::map<uint32_t, uint32_t> &getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const override;
 		// Function from player class with correct type sizes (uint16_t)

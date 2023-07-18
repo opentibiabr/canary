@@ -1036,6 +1036,41 @@ uint8_t toCombatIndex(CombatType_t combatType) {
 	}
 }
 
+std::string combatTypeToName(CombatType_t combatType) {
+	switch (combatType) {
+		case COMBAT_PHYSICALDAMAGE:
+			return "physical";
+		case COMBAT_ENERGYDAMAGE:
+			return "energy";
+		case COMBAT_EARTHDAMAGE:
+			return "earth";
+		case COMBAT_FIREDAMAGE:
+			return "fire";
+		case COMBAT_UNDEFINEDDAMAGE:
+			return "undefined";
+		case COMBAT_LIFEDRAIN:
+			return "life drain";
+		case COMBAT_MANADRAIN:
+			return "mana drain";
+		case COMBAT_HEALING:
+			return "healing";
+		case COMBAT_DROWNDAMAGE:
+			return "drown";
+		case COMBAT_ICEDAMAGE:
+			return "ice";
+		case COMBAT_HOLYDAMAGE:
+			return "holy";
+		case COMBAT_DEATHDAMAGE:
+			return "death";
+		default:
+			spdlog::error("Combat type {} is out of range", fmt::underlying(combatType));
+			// Uncomment for catch the function call with debug
+			//throw std::out_of_range("Combat is out of range");
+	}
+
+	return {};
+}
+
 CombatType_t indexToCombatType(size_t v) {
 	return static_cast<CombatType_t>(1 << v);
 }

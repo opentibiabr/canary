@@ -455,13 +455,29 @@ bool ConditionAttributes::unserializeProp(ConditionAttr_t attr, PropStream &prop
 	} else if (attr == CONDITIONATTR_BUFFS) {
 		return propStream.read<int32_t>(buffs[currentBuff++]);
 	} else if (attr == CONDITIONATTR_ABSORBS) {
-		value = getAbsorbByIndex(currentAbsorb);
-		currentAbsorb++;
-		return propStream.read<int32_t>(value);
+		for (int32_t i = 0; i < CombatType_t::COMBAT_COUNT; ++i) {
+			uint8_t index;
+			int32_t value;
+			if (!propStream.read<uint8_t>(index) || !propStream.read<int32_t>(value)) {
+				return false;
+			}
+
+			setAbsorb(index, value);
+		}
+
+		return true;
 	} else if (attr == CONDITIONATTR_INCREASES) {
-		value = getIncraseByIndex(currentIncrease);
-		currentIncrease++;
-		return propStream.read<int32_t>(value);
+		for (int32_t i = 0; i < CombatType_t::COMBAT_COUNT; ++i) {
+			uint8_t index;
+			int32_t value;
+			if (!propStream.read<uint8_t>(index) || !propStream.read<int32_t>(value)) {
+				return false;
+			}
+
+			setIncrease(index, value);
+		}
+
+		return true;
 	}
 	return Condition::unserializeProp(attr, propStream);
 }
@@ -484,14 +500,22 @@ void ConditionAttributes::serialize(PropWriteStream &propWriteStream) {
 		propWriteStream.write<int32_t>(buffs[i]);
 	}
 
-	for (uint8_t i = 0; i < CombatType_t::COMBAT_COUNT; ++i) {
-		int32_t value = getAbsorbByIndex(i);
-		propWriteStream.write<uint8_t>(CONDITIONATTR_ABSORBS);
-		propWriteStream.write<int32_t>(value);
+	// Save attribute absorbs
+	propWriteStream.write<uint8_t>(CONDITIONATTR_ABSORBS);
+	for (int32_t i = 0; i < CombatType_t::COMBAT_COUNT; ++i) {
+		// Save index
+		propWriteStream.write<uint8_t>(i);
+		// Save percent
+		propWriteStream.write<int32_t>(getAbsorbByIndex(i));
+	}
 
-		value = getIncraseByIndex(i);
-		propWriteStream.write<uint8_t>(CONDITIONATTR_INCREASES);
-		propWriteStream.write<int32_t>(value);
+	// Save attribute increases
+	propWriteStream.write<uint8_t>(CONDITIONATTR_INCREASES);
+	for (int32_t i = 0; i < CombatType_t::COMBAT_COUNT; ++i) {
+		// Save index
+		propWriteStream.write<uint8_t>(i);
+		// Save percent
+		propWriteStream.write<int32_t>(getIncraseByIndex(i));
 	}
 }
 

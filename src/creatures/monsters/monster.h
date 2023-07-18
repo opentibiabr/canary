@@ -134,7 +134,7 @@ class Monster final : public Creature {
 			this->spawnMonster = newSpawnMonster;
 		}
 
-		uint32_t getReflectValue(CombatType_t combatType) const;
+		int32_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const override;
 		uint32_t getHealingCombatValue(CombatType_t healingType) const;
 
 		bool canWalkOnFieldType(CombatType_t combatType) const;
@@ -444,7 +444,7 @@ class Monster final : public Creature {
 		uint32_t getDamageImmunities() const override {
 			return mType->info.damageImmunities;
 		}
-		uint32_t getConditionImmunities() const override {
+		const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionImmunities() const override {
 			return mType->info.conditionImmunities;
 		}
 		void getPathSearchParams(const Creature* creature, FindPathParams &fpp) const override;

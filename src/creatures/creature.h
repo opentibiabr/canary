@@ -286,6 +286,8 @@ class Creature : virtual public Thing {
 		void mitigateDamage(const CombatType_t &combatType, BlockType_t &blockType, int32_t &damage) const;
 		virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false);
 
+		void applyAbsorbDamageModifications(const Creature* attacker, int32_t &damage, CombatType_t combatType) const;
+
 		bool setMaster(Creature* newMaster, bool reloadCreature = false);
 
 		void removeMaster() {
@@ -350,11 +352,14 @@ class Creature : virtual public Thing {
 		virtual uint32_t getDamageImmunities() const {
 			return 0;
 		}
-		virtual uint32_t getConditionImmunities() const {
-			return 0;
+		virtual const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionImmunities() const {
+			const static std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> array = {};
+			return array;
 		}
-		virtual uint32_t getConditionSuppressions() const {
-			return 0;
+
+		virtual const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionSuppressions() const {
+			const static std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> array = {};
+			return array;
 		}
 		virtual bool isAttackable() const {
 			return true;
@@ -528,6 +533,88 @@ class Creature : virtual public Thing {
 			return wheelOfDestinyDrainBodyDebuff;
 		}
 
+		/**
+		 * @brief Retrieves the reflection percentage for a given combat type.
+		 *
+		 * @param combatType The combat type.
+		 * @param useCharges Indicates whether charges should be considered.
+		 * @return The reflection percentage for the specified combat type.
+		 */
+		virtual int32_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const;
+
+		/**
+		 * @brief Retrieves the flat reflection value for a given combat type.
+		 *
+		 * @param combatType The combat type.
+		 * @param useCharges Indicates whether charges should be considered.
+		 * @return The flat reflection value for the specified combat type.
+		 */
+		virtual int32_t getReflectFlat(CombatType_t combatType, bool useCharges = false) const;
+
+		/**
+		 * @brief Sets the reflection percentage for a given combat type.
+		 *
+		 * @param combatType The combat type.
+		 * @param value The reflection percentage value.
+		 */
+		virtual void setReflectPercent(CombatType_t combatType, int32_t value);
+
+		/**
+		 * @brief Sets the flat reflection value for a given combat type.
+		 *
+		 * @param combatType The combat type.
+		 * @param value The flat reflection value.
+		 */
+		virtual void setReflectFlat(CombatType_t combatType, int32_t value);
+
+		/**
+		 * @brief Retrieves the flat absorption value for a given combat type.
+		 *
+		 * @param combat The combat type.
+		 * @return The flat absorption value for the specified combat type.
+		 */
+		int32_t getAbsorbFlat(CombatType_t combat) const;
+
+		/**
+		 * @brief Sets the flat absorption value for a given combat type.
+		 *
+		 * @param combat The combat type.
+		 * @param value The flat absorption value.
+		 */
+		void setAbsorbFlat(CombatType_t combat, int32_t value);
+
+		/**
+		 * @brief Retrieves the absorption percentage for a given combat type.
+		 *
+		 * @param combat The combat type.
+		 * @return The absorption percentage for the specified combat type.
+		 */
+		int32_t getAbsorbPercent(CombatType_t combat) const;
+
+		/**
+		 * @brief Sets the absorption percentage for a given combat type.
+		 *
+		 * @param combat The combat type.
+		 * @param value The absorption percentage value.
+		 */
+		void setAbsorbPercent(CombatType_t combat, int32_t value);
+
+		/**
+		 * @brief Retrieves the increase percentage for a given combat type.
+		 *
+		 * @param combat The combat type.
+		 * @return The increase percentage for the specified combat type.
+		 */
+		int32_t getIncreasePercent(CombatType_t combat) const;
+
+		/**
+		 * @brief Sets the increase percentage for a given combat type.
+		 *
+		 * @param combat The combat type.
+		 * @param value The increase percentage value.
+		 */
+		void setIncreasePercent(CombatType_t combat, int32_t value);
+
 	protected:
 		virtual bool useCacheMap() const {
 			return false;
@@ -581,7 +668,14 @@ class Creature : virtual public Thing {
 
 		uint16_t manaShield = 0;
 		uint16_t maxManaShield = 0;
-		int32_t varBuffs[BUFF_LAST + 1] = { 100, 100 };
+		int32_t varBuffs[BUFF_LAST + 1] = { 100, 100, 100 };
+
+		std::array<int32_t, COMBAT_COUNT> reflectPercent = { 0 };
+		std::array<int32_t, COMBAT_COUNT> reflectFlat = { 0 };
+
+		std::array<int32_t, COMBAT_COUNT> absorbPercent = { 0 };
+		std::array<int32_t, COMBAT_COUNT> increasePercent = { 0 };
+		std::array<int32_t, COMBAT_COUNT> absorbFlat = { 0 };
 
 		Outfit_t currentOutfit;
 		Outfit_t defaultOutfit;

@@ -120,15 +120,32 @@ class ConditionAttributes final : public ConditionGeneric {
 		bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) final;
 
 	private:
+		// Helpers
+		int32_t getAbsorbByIndex(uint8_t index) const;
+		void setAbsorb(uint8_t index, int32_t value);
+		int32_t getAbsorbPercentByIndex(uint8_t index) const;
+		void setAbsorbPercent(uint8_t index, int32_t value);
+		int32_t getIncreaseByIndex(uint8_t index) const;
+		void setIncrease(uint8_t index, int32_t value);
+		int32_t getIncreasePercentById(uint8_t index) const;
+		void setIncreasePercent(uint8_t index, int32_t value);
+
 		int32_t skills[SKILL_LAST + 1] = {};
 		int32_t skillsPercent[SKILL_LAST + 1] = {};
 		int32_t stats[STAT_LAST + 1] = {};
 		int32_t statsPercent[STAT_LAST + 1] = {};
 		int32_t buffsPercent[BUFF_LAST + 1] = {};
 		int32_t buffs[BUFF_LAST + 1] = {};
+
 		int32_t currentSkill = 0;
 		int32_t currentStat = 0;
 		int32_t currentBuff = 0;
+
+		// 12.72 mechanics
+		std::array<int32_t, COMBAT_COUNT> absorbs = {};
+		std::array<int32_t, COMBAT_COUNT> absorbsPercent = {};
+		std::array<int32_t, COMBAT_COUNT> increases = {};
+		std::array<int32_t, COMBAT_COUNT> increasesPercent = {};
 
 		bool disableDefense = false;
 
@@ -136,8 +153,14 @@ class ConditionAttributes final : public ConditionGeneric {
 		void updateStats(Player* player);
 		void updatePercentSkills(Player* player);
 		void updateSkills(Player* player);
-		void updatePercentBuffs(Creature* creature);
 		void updateBuffs(Creature* creature);
+
+		// 12.72 mechanics
+		void updatePercentAbsorbs(const Creature* creature);
+		void updateAbsorbs(Creature* creature) const;
+		void updatePercentIncreases(const Creature* creature);
+		void updateIncreases(Creature* creature) const;
+		void updatePercentBuffs(Creature* creature);
 };
 
 class ConditionRegeneration final : public ConditionGeneric {

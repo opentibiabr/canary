@@ -176,6 +176,9 @@ namespace {
 						auto imbuement = *imbuementInfo.imbuement;
 						for (uint16_t combat = 0; combat < COMBAT_COUNT; ++combat) {
 							const int16_t &imbuementAbsorbPercent = imbuement.absorbPercent[combat];
+							if (isDevMode()) {
+								spdlog::warn("[cyclopedia damage reduction] imbued item {}, reduced {} percent, for element {}", item->getName(), imbuementAbsorbPercent, combatTypeToName(indexToCombatType(combat)));
+							}
 
 							if (imbuementAbsorbPercent != 0) {
 								damageReduction[combat] *= (std::floor(100 - imbuementAbsorbPercent) / 100.);

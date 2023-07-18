@@ -192,28 +192,6 @@ namespace {
 				damageReduction[i] -= static_cast<int16_t>(player->wheel()->getResistance(indexToCombatType(i))) / 100.f;
 			}
 
-			// Save imbuement damage to reduction array
-			for (const auto &item : player->getEquippedItems()) {
-				if (!item->hasImbuements()) {
-					continue;
-				}
-
-				for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
-					ImbuementInfo imbuementInfo;
-					if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
-						continue;
-					}
-
-					auto imbuementAbsorbPercent = imbuementInfo.imbuement->absorbPercent[i];
-					if (imbuementAbsorbPercent != COMBAT_NONE) {
-						if (isDevMode()) {
-							spdlog::warn("[cyclopedia damage reduction] imbued item {}, reduced {} percent, for element {}", item->getName(), imbuementAbsorbPercent, combatTypeToName(indexToCombatType(i)));
-						}
-						damageReduction[i] += imbuementAbsorbPercent;
-					}
-				}
-			}
-
 			if (damageReduction[i] != 100) {
 				if (isDevMode()) {
 					spdlog::info("CombatType: {}, DamageReduction: {}", i, damageReduction[i]);

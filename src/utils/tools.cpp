@@ -996,9 +996,50 @@ size_t combatTypeToIndex(CombatType_t combatType) {
 			return 10;
 		case COMBAT_DEATHDAMAGE:
 			return 11;
+		case COMBAT_NEUTRALDAMAGE:
+			return 12;
 		default:
-			return 0;
+			spdlog::error("Combat type {} is out of range", fmt::underlying(combatType));
+			// Uncomment for catch the function call with debug
+			// throw std::out_of_range("Combat is out of range");
 	}
+
+	return {};
+}
+
+std::string combatTypeToName(CombatType_t combatType) {
+	switch (combatType) {
+		case COMBAT_PHYSICALDAMAGE:
+			return "physical";
+		case COMBAT_ENERGYDAMAGE:
+			return "energy";
+		case COMBAT_EARTHDAMAGE:
+			return "earth";
+		case COMBAT_FIREDAMAGE:
+			return "fire";
+		case COMBAT_UNDEFINEDDAMAGE:
+			return "undefined";
+		case COMBAT_LIFEDRAIN:
+			return "life drain";
+		case COMBAT_MANADRAIN:
+			return "mana drain";
+		case COMBAT_HEALING:
+			return "healing";
+		case COMBAT_DROWNDAMAGE:
+			return "drown";
+		case COMBAT_ICEDAMAGE:
+			return "ice";
+		case COMBAT_HOLYDAMAGE:
+			return "holy";
+		case COMBAT_DEATHDAMAGE:
+			return "death";
+		default:
+			spdlog::error("Combat type {} is out of range", fmt::underlying(combatType));
+			// Uncomment for catch the function call with debug
+			// throw std::out_of_range("Combat is out of range");
+	}
+
+	return {};
 }
 
 CombatType_t indexToCombatType(size_t v) {
@@ -1167,7 +1208,7 @@ const char* getReturnMessage(ReturnValue value) {
 			return "You do not have the required magic level to use this rune.";
 
 		case RETURNVALUE_YOUAREALREADYTRADING:
-			return "You are already trading.";
+			return "You are already trading. Finish this trade first.";
 
 		case RETURNVALUE_THISPLAYERISALREADYTRADING:
 			return "This player is already trading.";

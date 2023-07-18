@@ -80,12 +80,13 @@ bool Monster::canWalkOnFieldType(CombatType_t combatType) const {
 	}
 }
 
-uint32_t Monster::getReflectValue(CombatType_t reflectType) const {
+int32_t Monster::getReflectPercent(CombatType_t reflectType, bool useCharges) const {
+	int32_t result = Creature::getReflectPercent(reflectType, useCharges);
 	auto it = mType->info.reflectMap.find(reflectType);
 	if (it != mType->info.reflectMap.end()) {
-		return it->second;
+		result += it->second;
 	}
-	return 0;
+	return result;
 }
 
 uint32_t Monster::getHealingCombatValue(CombatType_t healingType) const {
@@ -968,7 +969,11 @@ void Monster::onThinkTarget(uint32_t interval) {
 					}
 
 					if (mType->info.changeTargetChance >= uniform_random(1, 100)) {
-						searchTarget(TARGETSEARCH_DEFAULT);
+						if (mType->info.targetDistance <= 1) {
+							searchTarget(TARGETSEARCH_RANDOM);
+						} else {
+							searchTarget(TARGETSEARCH_NEAREST);
+						}
 					}
 				}
 			}

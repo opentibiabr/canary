@@ -83,6 +83,7 @@ bool booleanString(const std::string &str);
 std::string getWeaponName(WeaponType_t weaponType);
 
 size_t combatTypeToIndex(CombatType_t combatType);
+std::string combatTypeToName(CombatType_t combatType);
 CombatType_t indexToCombatType(size_t v);
 
 ItemAttribute_t stringToItemAttribute(const std::string &str);
@@ -127,6 +128,8 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 			return CIPBIA_ELEMENTAL_HOLY;
 		case COMBAT_DEATHDAMAGE:
 			return CIPBIA_ELEMENTAL_DEATH;
+		case COMBAT_MANADRAIN:
+			return CIPBIA_ELEMENTAL_MANADRAIN;
 		default:
 			return CIPBIA_ELEMENTAL_UNDEFINED;
 	}

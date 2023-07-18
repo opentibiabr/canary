@@ -846,6 +846,60 @@ int PlayerFunctions::luaPlayerGetLevel(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat(lua_State* L) {
+	// player:getMagicShieldCapacityFlat(useCharges)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		lua_pushnumber(L, player->getMagicShieldCapacityFlat(getBoolean(L, 2, false)));
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent(lua_State* L) {
+	// player:getMagicShieldCapacityPercent(useCharges)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		lua_pushnumber(L, player->getMagicShieldCapacityPercent(getBoolean(L, 2, false)));
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendSpellCooldown(lua_State* L) {
+	// player:sendSpellCooldown(spellId, time)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+	uint8_t spellId = getNumber<uint32_t>(L, 2, 1);
+	uint32_t time = getNumber<uint32_t>(L, 3, 0);
+
+	player->sendSpellCooldown(spellId, time);
+	pushBoolean(L, true);
+
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendSpellGroupCooldown(lua_State* L) {
+	// player:sendSpellGroupCooldown(groupId, time)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+	SpellGroup_t groupId = getNumber<SpellGroup_t>(L, 2, SPELLGROUP_ATTACK);
+	uint32_t time = getNumber<uint32_t>(L, 3, 0);
+
+	player->sendSpellGroupCooldown(groupId, time);
+	pushBoolean(L, true);
+
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetMagicLevel(lua_State* L) {
 	// player:getMagicLevel()
 	Player* player = getUserdata<Player>(L, 1);

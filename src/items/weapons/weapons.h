@@ -178,7 +178,7 @@ class Weapon : public Script {
 		}
 
 	protected:
-		void internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier) const;
+		void internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier, int32_t cleavePercent = 0) const;
 		void internalUseWeapon(Player* player, Item* item, Tile* tile) const;
 
 	private:

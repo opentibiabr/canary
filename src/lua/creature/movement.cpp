@@ -535,10 +535,8 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 			g_game().changePlayerSpeed(*player, it.abilities->speed);
 		}
 
-		if (it.abilities->conditionSuppressions != 0) {
-			player->addConditionSuppressions(it.abilities->conditionSuppressions);
-			player->sendIcons();
-		}
+		player->addConditionSuppressions(it.abilities->conditionSuppressions);
+		player->sendIcons();
 
 		if (it.abilities->regeneration) {
 			Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_REGENERATION, -1, 0);
@@ -630,10 +628,8 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 			g_game().changePlayerSpeed(*player, -it.abilities->speed);
 		}
 
-		if (it.abilities->conditionSuppressions != 0) {
-			player->removeConditionSuppressions(it.abilities->conditionSuppressions);
-			player->sendIcons();
-		}
+		player->removeConditionSuppressions();
+		player->sendIcons();
 
 		if (it.abilities->regeneration) {
 			player->removeCondition(CONDITION_REGENERATION, static_cast<ConditionId_t>(slot));

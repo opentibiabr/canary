@@ -34,7 +34,7 @@ int32_t Combat::getLevelFormula(const Player* player, const Spell* wheelSpell, c
 		}
 	}
 
-	int32_t levelFormula = player->getLevel() * 2 + /*player->getSpecializedMagicLevel() +*/ magicLevelSkill * 3;
+	int32_t levelFormula = player->getLevel() * 2 + (player->getMagicLevel() + player->getSpecializedMagicLevel(damage.primary.type, true)) * 3;
 	return levelFormula;
 }
 
@@ -1132,7 +1132,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, const Position &
 		}
 	}
 
-	if (caster && caster->getPlayer()) {
+	if (!damage.extension && caster && caster->getPlayer()) {
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + (uint16_t)damage.criticalChance;
 		// Charm low blow rune)
@@ -1438,7 +1438,7 @@ uint32_t ValueCallback::getMagicLevelSkill(const Player* player, const CombatDam
 		}
 	}
 
-	return magicLevelSkill;
+	return magicLevelSkill + player->getSpecializedMagicLevel(damage.primary.type, true);
 }
 
 void ValueCallback::getMinMaxValues(Player* player, CombatDamage &damage, bool useCharges) const {

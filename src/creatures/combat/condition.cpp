@@ -447,7 +447,6 @@ void ConditionAttributes::addCondition(Creature* creature, const Condition* addC
 }
 
 bool ConditionAttributes::unserializeProp(ConditionAttr_t attr, PropStream &propStream) {
-	int32_t value;
 	if (attr == CONDITIONATTR_SKILLS) {
 		return propStream.read<int32_t>(skills[currentSkill++]);
 	} else if (attr == CONDITIONATTR_STATS) {
@@ -515,7 +514,7 @@ void ConditionAttributes::serialize(PropWriteStream &propWriteStream) {
 		// Save index
 		propWriteStream.write<uint8_t>(i);
 		// Save percent
-		propWriteStream.write<int32_t>(getIncraseByIndex(i));
+		propWriteStream.write<int32_t>(getIncreaseByIndex(i));
 	}
 }
 
@@ -644,7 +643,7 @@ void ConditionAttributes::updatePercentIncreases(const Creature* creature) {
 
 void ConditionAttributes::updateIncreases(Creature* creature) const {
 	for (uint8_t i = 0; i < COMBAT_COUNT; i++) {
-		auto increaseValue = getIncraseByIndex(i);
+		auto increaseValue = getIncreaseByIndex(i);
 		if (increaseValue == 0) {
 			continue;
 		}
@@ -716,7 +715,7 @@ void ConditionAttributes::endCondition(Creature* creature) {
 		if (value) {
 			creature->setAbsorbPercent(indexToCombatType(i), -value);
 		}
-		auto increaseValue = getIncraseByIndex(i);
+		auto increaseValue = getIncreaseByIndex(i);
 		if (increaseValue > 0) {
 			creature->setIncreasePercent(indexToCombatType(i), -increaseValue);
 		}
@@ -1038,11 +1037,11 @@ void ConditionAttributes::setAbsorbPercent(uint8_t index, int32_t value) {
 	}
 }
 
-int32_t ConditionAttributes::getIncraseByIndex(uint8_t index) const {
+int32_t ConditionAttributes::getIncreaseByIndex(uint8_t index) const {
 	try {
 		return increases.at(index);
 	} catch (const std::out_of_range &e) {
-		spdlog::error("Index {} is out of range in getIncraseByIndex: {}", index, e.what());
+		spdlog::error("Index {} is out of range in getIncreaseByIndex: {}", index, e.what());
 	}
 	return 0;
 }

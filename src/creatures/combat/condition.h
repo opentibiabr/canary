@@ -125,7 +125,7 @@ class ConditionAttributes final : public ConditionGeneric {
 		void setAbsorb(uint8_t index, int32_t value);
 		int32_t getAbsorbPercentByIndex(uint8_t index) const;
 		void setAbsorbPercent(uint8_t index, int32_t value);
-		int32_t getIncraseByIndex(uint8_t index) const;
+		int32_t getIncreaseByIndex(uint8_t index) const;
 		void setIncrease(uint8_t index, int32_t value);
 		int32_t getIncreasePercentById(uint8_t index) const;
 		void setIncreasePercent(uint8_t index, int32_t value);

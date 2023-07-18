@@ -7874,6 +7874,7 @@ void ProtocolGame::parseSendBosstiary() {
 		msg.addByte(bossRace);
 		msg.add<uint32_t>(killCount);
 		msg.addByte(0);
+		msg.addByte(0x00); // Tracker
 		++bossesCount;
 	}
 

@@ -166,9 +166,9 @@ namespace {
 
 			uint8_t imbuementSlots = itemType.imbuementSlot;
 			if (imbuementSlots > 0) {
-				for (uint8_t slot = 0; slot < imbuementSlots; ++slot) {
+				for (uint8_t slotId = 0; slotId < imbuementSlots; ++slotId) {
 					ImbuementInfo imbuementInfo;
-					if (!item->getImbuementInfo(slot, &imbuementInfo)) {
+					if (!item->getImbuementInfo(slotId, &imbuementInfo)) {
 						continue;
 					}
 

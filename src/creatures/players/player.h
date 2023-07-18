@@ -2736,8 +2736,6 @@ class Player final : public Creature, public Cylinder {
 		int32_t magicShieldCapacityFlat = 0;
 		int32_t magicShieldCapacityPercent = 0;
 
-		static uint32_t playerAutoID;
-
 		void updateItemsLight(bool internal = false);
 		uint16_t getStepSpeed() const override {
 			return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));

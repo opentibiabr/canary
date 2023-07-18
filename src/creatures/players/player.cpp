@@ -1187,15 +1187,7 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 
 	auto rewardCount = rewardItemsVector.size();
 	uint32_t movedRewardItems = 0;
-	int32_t movedRewardMoney = 0;
 	for (auto item : rewardItemsVector) {
-		if (uint32_t worth = item->getWorth(); worth > 0) {
-			movedRewardMoney += worth;
-			g_game().internalRemoveItem(item);
-			rewardCount--;
-			continue;
-		}
-
 		// Stop if player not have free capacity
 		if (getCapacity() < item->getWeight()) {
 			break;
@@ -1214,11 +1206,7 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 		}
 	}
 
-	if (movedRewardMoney > 0) {
-		setBankBalance(getBankBalance() + movedRewardMoney);
-	}
-
-	auto lootedMessage = fmt::format("{} of {} objects were picked up and {} gold moved to your bank.", movedRewardItems, rewardCount, movedRewardMoney);
+	auto lootedMessage = fmt::format("{} of {} objects were picked up.", movedRewardItems, rewardCount);
 	sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedMessage);
 
 	auto finalReturn = movedRewardItems == 0 ? RETURNVALUE_NOTENOUGHROOM : RETURNVALUE_NOERROR;

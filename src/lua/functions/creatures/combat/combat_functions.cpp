@@ -155,6 +155,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 	const LuaVariant &variant = getVariant(L, 3);
 	combat->setInstantSpellName(variant.instantName);
 	combat->setRuneSpellName(variant.runeName);
+	bool result = false;
 	switch (variant.type) {
 		case VARIANT_NUMBER: {
 			Creature* target = g_game().getCreatureByID(variant.number);
@@ -172,15 +173,15 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 		}
 
 		case VARIANT_POSITION: {
-			combat->doCombat(creature, variant.pos);
+			result = combat->doCombat(creature, variant.pos);
 			break;
 		}
 
 		case VARIANT_TARGETPOSITION: {
 			if (combat->hasArea()) {
-				combat->doCombat(creature, variant.pos);
+				result = combat->doCombat(creature, variant.pos);
 			} else {
-				combat->postCombatEffects(creature, variant.pos);
+				combat->postCombatEffects(creature, creature->getPosition(), variant.pos);
 				g_game().addMagicEffect(variant.pos, CONST_ME_POFF);
 			}
 			break;
@@ -193,7 +194,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 				return 1;
 			}
 
-			combat->doCombat(creature, target);
+			result = combat->doCombat(creature, target);
 			break;
 		}
 
@@ -208,6 +209,6 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 		}
 	}
 
-	pushBoolean(L, true);
+	pushBoolean(L, result);
 	return 1;
 }

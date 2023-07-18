@@ -244,6 +244,8 @@ void LuaEnums::initCallbackParamEnums(lua_State* L) {
 	registerEnum(L, CALLBACK_PARAM_SKILLVALUE);
 	registerEnum(L, CALLBACK_PARAM_TARGETTILE);
 	registerEnum(L, CALLBACK_PARAM_TARGETCREATURE);
+	registerEnum(L, CALLBACK_PARAM_CHAINVALUE);
+	registerEnum(L, CALLBACK_PARAM_CHAINPICKER);
 }
 
 void LuaEnums::initCombatEnums(lua_State* L) {

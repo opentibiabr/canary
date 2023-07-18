@@ -225,7 +225,7 @@ int main(int argc, char* argv[]) {
 	if (serviceManager.is_running()) {
 		SPDLOG_INFO("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
 		if (isDevMode()) {
-			spdlog::warn("Atteption, server running in development mode... Additional logs are active!");
+			spdlog::warn("server running in development mode... Additional logs are active!");
 		}
 		serviceManager.run();
 	} else {

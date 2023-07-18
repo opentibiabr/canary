@@ -60,6 +60,9 @@ struct Position {
 		static int16_t getDistanceZ(const Position &p1, const Position &p2) {
 			return std::abs(Position::getOffsetZ(p1, p2));
 		}
+		static int32_t getDiagonalDistance(const Position &p1, const Position &p2) {
+			return std::max(Position::getDistanceX(p1, p2), Position::getDistanceY(p1, p2));
+		}
 
 		static Direction getRandomDirection();
 

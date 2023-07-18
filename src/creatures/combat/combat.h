@@ -57,12 +57,24 @@ class TargetCallback final : public CallBack {
 		formulaType_t type;
 };
 
+class ChainCallback final : public CallBack {
+	public:
+		void onChainCombat(Creature* creature, uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking) const;
+};
+
+class ChainPickerCallback final : public CallBack {
+	public:
+		bool onChainCombat(Creature* creature, Creature* target) const;
+};
+
 struct CombatParams {
 		std::forward_list<std::unique_ptr<const Condition>> conditionList;
 
 		std::unique_ptr<ValueCallback> valueCallback;
 		std::unique_ptr<TileCallback> tileCallback;
 		std::unique_ptr<TargetCallback> targetCallback;
+		std::unique_ptr<ChainCallback> chainCallback;
+		std::unique_ptr<ChainPickerCallback> chainPickerCallback;
 
 		uint16_t itemId = 0;
 
@@ -81,6 +93,8 @@ struct CombatParams {
 		bool targetCasterOrTopMost = false;
 		bool aggressive = true;
 		bool useCharges = false;
+
+		uint8_t chainEffect = CONST_ME_NONE;
 };
 
 using CombatFunction = std::function<void(Creature*, Creature*, const CombatParams &, CombatDamage*)>;
@@ -264,12 +278,13 @@ class Combat {
 		static ReturnValue canTargetCreature(Player* attacker, Creature* target);
 		static ReturnValue canDoCombat(Creature* caster, Tile* tile, bool aggressive);
 		static ReturnValue canDoCombat(Creature* attacker, Creature* target);
-		static void postCombatEffects(Creature* caster, const Position &pos, const CombatParams &params);
+		static void postCombatEffects(Creature* caster, const Position &origin, const Position &pos, const CombatParams &params);
 
 		static void addDistanceEffect(Creature* caster, const Position &fromPos, const Position &toPos, uint8_t effect);
 
-		void doCombat(Creature* caster, Creature* target) const;
-		void doCombat(Creature* caster, const Position &pos) const;
+		bool doCombat(Creature* caster, Creature* target) const;
+		bool doCombat(Creature* caster, Creature* target, const Position &origin) const;
+		bool doCombat(Creature* caster, const Position &pos) const;
 
 		bool setCallback(CallBackParam_t key);
 		CallBack* getCallback(CallBackParam_t key);
@@ -285,8 +300,8 @@ class Combat {
 			params.conditionList.emplace_front(condition);
 		}
 		void setPlayerCombatValues(formulaType_t formulaType, double mina, double minb, double maxa, double maxb);
-		void postCombatEffects(Creature* caster, const Position &pos) const {
-			postCombatEffects(caster, pos, params);
+		void postCombatEffects(Creature* caster, const Position &origin, const Position &pos) const {
+			postCombatEffects(caster, origin, pos, params);
 		}
 
 		void setOrigin(CombatOrigin origin) {
@@ -308,9 +323,16 @@ class Combat {
 		void setRuneSpellName(const std::string &value);
 
 	private:
+		static void doChainEffect(const Position &origin, const Position &pos, uint8_t effect);
+		static void pickChainTargets(Creature* caster, std::vector<Creature*> &targets, std::set<uint32_t> &targetSet, std::set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking);
+
 		static void doCombatDefault(Creature* caster, Creature* target, const CombatParams &params);
 
-		static void CombatFunc(Creature* caster, const Position &pos, const AreaCombat* area, const CombatParams &params, CombatFunction func, CombatDamage* data);
+		static void doCombatHealth(Creature* caster, Creature* target, const Position &origin, CombatDamage &damage, const CombatParams &params);
+		static void doCombatMana(Creature* caster, Creature* target, const Position &origin, CombatDamage &damage, const CombatParams &params);
+		static void doCombatDefault(Creature* caster, Creature* target, const Position &origin, const CombatParams &params);
+
+		static void CombatFunc(Creature* caster, const Position &origin, const Position &pos, const AreaCombat* area, const CombatParams &params, CombatFunction func, CombatDamage* data);
 
 		static void CombatHealthFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data);
 		static CombatDamage applyImbuementElementalDamage(Player* attackerPlayer, Item* item, CombatDamage damage);
@@ -346,6 +368,8 @@ class Combat {
 		 */
 		int32_t getLevelFormula(const Player* player, const Spell* wheelSpell, const CombatDamage &damage) const;
 		CombatDamage getCombatDamage(Creature* creature, Creature* target) const;
+
+		bool doCombatChain(Creature* caster, Creature* target) const;
 
 		// configureable
 		CombatParams params;

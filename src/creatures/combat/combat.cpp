@@ -975,7 +975,8 @@ bool Combat::doCombat(Creature* caster, const Position &position) const {
 			doCombatMana(caster, position, area.get(), damage, params);
 		}
 	} else {
-		CombatFunc(caster, caster->getPosition(), position, area.get(), params, CombatNullFunc, nullptr);
+		auto origin = caster != nullptr ? caster->getPosition() : Position();
+		CombatFunc(caster, origin, position, area.get(), params, CombatNullFunc, nullptr);
 	}
 
 	return true;
@@ -1207,7 +1208,8 @@ void Combat::doCombatHealth(Creature* caster, const Position &position, const Ar
 			}
 		}
 	}
-	CombatFunc(caster, caster->getPosition(), position, area, params, CombatHealthFunc, &damage);
+	auto origin = caster ? caster->getPosition() : Position();
+	CombatFunc(caster, origin, position, area, params, CombatHealthFunc, &damage);
 }
 
 void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage &damage, const CombatParams &params) {
@@ -1379,7 +1381,6 @@ void Combat::pickChainTargets(Creature* caster, std::vector<Creature*> &targets,
 		spdlog::info("Combat::pickChainTargets: currentTarget: {}, spectators: {}", currentTarget->getName(), spectators.size());
 	}
 	auto maxBacktrackingAttempts = 10;
-	auto attempts = 0;
 	for (auto attempts = 0; targets.size() < maxTargets && attempts < maxBacktrackingAttempts; ++attempts) {
 		auto closestDistance = std::numeric_limits<uint16_t>::max();
 		Creature* closestSpectator = nullptr;

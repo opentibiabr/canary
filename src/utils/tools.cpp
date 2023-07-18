@@ -1065,7 +1065,7 @@ std::string combatTypeToName(CombatType_t combatType) {
 		default:
 			spdlog::error("Combat type {} is out of range", fmt::underlying(combatType));
 			// Uncomment for catch the function call with debug
-			//throw std::out_of_range("Combat is out of range");
+			// throw std::out_of_range("Combat is out of range");
 	}
 
 	return {};

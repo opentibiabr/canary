@@ -899,102 +899,102 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value) {
 		}
 
 		case CONDITION_PARAM_ABSORB_PHYSICALPERCENT: {
-			setAbsorbPercent(toCombatIndex(COMBAT_PHYSICALDAMAGE), value);
+			setAbsorbPercent(combatTypeToIndex(COMBAT_PHYSICALDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_FIREPERCENT: {
-			setAbsorbPercent(toCombatIndex(COMBAT_FIREDAMAGE), value);
+			setAbsorbPercent(combatTypeToIndex(COMBAT_FIREDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_ENERGYPERCENT: {
-			setAbsorbPercent(toCombatIndex(COMBAT_ENERGYDAMAGE), value);
+			setAbsorbPercent(combatTypeToIndex(COMBAT_ENERGYDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_ICEPERCENT: {
-			setAbsorbPercent(toCombatIndex(COMBAT_ICEDAMAGE), value);
+			setAbsorbPercent(combatTypeToIndex(COMBAT_ICEDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_EARTHPERCENT: {
-			setAbsorbPercent(toCombatIndex(COMBAT_EARTHDAMAGE), value);
+			setAbsorbPercent(combatTypeToIndex(COMBAT_EARTHDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_DEATHPERCENT: {
-			setAbsorbPercent(toCombatIndex(COMBAT_DEATHDAMAGE), value);
+			setAbsorbPercent(combatTypeToIndex(COMBAT_DEATHDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_HOLYPERCENT: {
-			setAbsorbPercent(toCombatIndex(COMBAT_HOLYDAMAGE), value);
+			setAbsorbPercent(combatTypeToIndex(COMBAT_HOLYDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_LIFEDRAINPERCENT: {
-			setAbsorbPercent(toCombatIndex(COMBAT_LIFEDRAIN), value);
+			setAbsorbPercent(combatTypeToIndex(COMBAT_LIFEDRAIN), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_MANADRAINPERCENT: {
-			setAbsorbPercent(toCombatIndex(COMBAT_MANADRAIN), value);
+			setAbsorbPercent(combatTypeToIndex(COMBAT_MANADRAIN), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_ABSORB_DROWNPERCENT: {
-			setAbsorbPercent(toCombatIndex(COMBAT_DROWNDAMAGE), value);
+			setAbsorbPercent(combatTypeToIndex(COMBAT_DROWNDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_PHYSICALPERCENT: {
-			setIncreasePercent(toCombatIndex(COMBAT_PHYSICALDAMAGE), value);
+			setIncreasePercent(combatTypeToIndex(COMBAT_PHYSICALDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_FIREPERCENT: {
-			setIncreasePercent(toCombatIndex(COMBAT_FIREDAMAGE), value);
+			setIncreasePercent(combatTypeToIndex(COMBAT_FIREDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_ENERGYPERCENT: {
-			setIncreasePercent(toCombatIndex(COMBAT_ENERGYDAMAGE), value);
+			setIncreasePercent(combatTypeToIndex(COMBAT_ENERGYDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_ICEPERCENT: {
-			setIncreasePercent(toCombatIndex(COMBAT_ICEDAMAGE), value);
+			setIncreasePercent(combatTypeToIndex(COMBAT_ICEDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_EARTHPERCENT: {
-			setIncreasePercent(toCombatIndex(COMBAT_EARTHDAMAGE), value);
+			setIncreasePercent(combatTypeToIndex(COMBAT_EARTHDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_DEATHPERCENT: {
-			setIncreasePercent(toCombatIndex(COMBAT_DEATHDAMAGE), value);
+			setIncreasePercent(combatTypeToIndex(COMBAT_DEATHDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_HOLYPERCENT: {
-			setIncreasePercent(toCombatIndex(COMBAT_HOLYDAMAGE), value);
+			setIncreasePercent(combatTypeToIndex(COMBAT_HOLYDAMAGE), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_LIFEDRAINPERCENT: {
-			setIncreasePercent(toCombatIndex(COMBAT_LIFEDRAIN), value);
+			setIncreasePercent(combatTypeToIndex(COMBAT_LIFEDRAIN), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_MANADRAINPERCENT: {
-			setIncreasePercent(toCombatIndex(COMBAT_MANADRAIN), value);
+			setIncreasePercent(combatTypeToIndex(COMBAT_MANADRAIN), value);
 			return true;
 		}
 
 		case CONDITION_PARAM_INCREASE_DROWNPERCENT: {
-			setIncreasePercent(toCombatIndex(COMBAT_DROWNDAMAGE), value);
+			setIncreasePercent(combatTypeToIndex(COMBAT_DROWNDAMAGE), value);
 			return true;
 		}
 

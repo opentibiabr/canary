@@ -67,7 +67,7 @@ monster.summon = {
 	summons = {
 		{name = "walker", chance = 10, interval = 2000, count = 2},
 		{name = "glooth trasher", chance = 10, interval = 2000, count = 2},
-		{name = "glooth smasher", chance = 10, interval = 2000, count = 2},
+		{name = "glooth masher", chance = 10, interval = 2000, count = 2},
 		{name = "glooth slasher", chance = 10, interval = 2000, count = 2}
 	}
 }
@@ -78,8 +78,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 21901, chance = 1000, unique = true}, -- glooth glider casing
-	{id = 21292, chance = 1000} -- feedbag
+	{id = 21203, chance = 100000, maxCount = 4},-- glooth bag
+	{id = 3035, chance = 50000, maxCount = 5}, -- platinum coin
+	{id = 8898, chance = 41667}, -- rusted legs
+	{id = 8895, chance = 33333}, -- rusted armor
+	{id = 21901, chance = 2500}, -- Glooth Glider Casing
+	{id = 21292, chance = 450}, -- feedbag
+	{id = 7403, chance = 200}, -- Beserker
+	{id = 9058, chance = 2000}, -- gold ingot
+	{id = 8896, chance = 2000} -- slightly rusted armor
 }
 
 monster.attacks = {

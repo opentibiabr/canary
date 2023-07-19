@@ -1,5 +1,5 @@
 ---
-name: Build - Windows
+name: Build - Windows - Solution
 
 on:
   workflow_dispatch:
@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2022]
-        buildtype: [Release, Debug]
+        buildtype: [Release]
         include:
           - os: windows-2022
             triplet: x64-windows
@@ -49,5 +49,5 @@ jobs:
         with:
           name: ${{ matrix.os }}-${{ matrix.buildtype }}
           path: |
-            ${{ github.workspace }}/**/*.dll
-            ${{ github.workspace }}/**/*.exe
+            ${{ github.workspace }}/*.dll
+            ${{ github.workspace }}/*.exe

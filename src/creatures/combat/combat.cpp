@@ -1294,7 +1294,8 @@ void Combat::doCombatCondition(Creature* caster, Creature* target, const CombatP
 }
 
 void Combat::doCombatDispel(Creature* caster, const Position &position, const AreaCombat* area, const CombatParams &params) {
-	CombatFunc(caster, caster->getPosition(), position, area, params, CombatDispelFunc, nullptr);
+	auto origin = caster ? caster->getPosition() : Position();
+	CombatFunc(caster, origin, position, area, params, CombatDispelFunc, nullptr);
 }
 
 void Combat::doCombatDispel(Creature* caster, Creature* target, const CombatParams &params) {

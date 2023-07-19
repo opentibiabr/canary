@@ -52,6 +52,12 @@ std::string getFirstLine(const std::string &str);
 
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);
+/**
+ * @brief Format the enum name by replacing underscores with spaces and converting to lowercase.
+ * @param name The enum name to format.
+ * @return A string with the formatted enum name.
+ */
+std::string formatEnumName(std::string_view name);
 std::time_t getTimeNow();
 std::time_t getTimeMsNow();
 std::string convertIPToString(uint32_t ip);
@@ -82,8 +88,22 @@ bool booleanString(const std::string &str);
 
 std::string getWeaponName(WeaponType_t weaponType);
 
+/**
+ * @brief Convert the CombatType_t enumeration to its corresponding index.
+ * @param combatType The CombatType_t enumeration to convert.
+ * @return The corresponding index of the CombatType_t enumeration.
+ * If the CombatType_t is out of range, this function will log an error and return an empty size_t.
+ */
 size_t combatTypeToIndex(CombatType_t combatType);
+
+/**
+ * @brief Convert the CombatType_t enumeration to its corresponding string representation.
+ * @param combatType The CombatType_t enumeration to convert.
+ * @return The corresponding string representation of the CombatType_t enumeration.
+ * If the CombatType_t is out of range, this function will log an error and return an empty string.
+ */
 std::string combatTypeToName(CombatType_t combatType);
+
 CombatType_t indexToCombatType(size_t v);
 
 ItemAttribute_t stringToItemAttribute(const std::string &str);

@@ -365,6 +365,14 @@ std::string formatDateShort(time_t time) {
 	return {};
 }
 
+std::string formatEnumName(std::string_view name) {
+	std::string result{name.begin(), name.end()};
+	std::replace(result.begin(), result.end(), '_', ' ');
+	std::transform(result.begin(), result.end(), result.begin(),
+					[](unsigned char c){ return std::tolower(c); });
+	return result;
+}
+
 std::time_t getTimeNow() {
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
@@ -971,72 +979,24 @@ std::string getWeaponName(WeaponType_t weaponType) {
 }
 
 size_t combatTypeToIndex(CombatType_t combatType) {
-	switch (combatType) {
-		case COMBAT_PHYSICALDAMAGE:
-			return 0;
-		case COMBAT_ENERGYDAMAGE:
-			return 1;
-		case COMBAT_EARTHDAMAGE:
-			return 2;
-		case COMBAT_FIREDAMAGE:
-			return 3;
-		case COMBAT_UNDEFINEDDAMAGE:
-			return 4;
-		case COMBAT_LIFEDRAIN:
-			return 5;
-		case COMBAT_MANADRAIN:
-			return 6;
-		case COMBAT_HEALING:
-			return 7;
-		case COMBAT_DROWNDAMAGE:
-			return 8;
-		case COMBAT_ICEDAMAGE:
-			return 9;
-		case COMBAT_HOLYDAMAGE:
-			return 10;
-		case COMBAT_DEATHDAMAGE:
-			return 11;
-		case COMBAT_NEUTRALDAMAGE:
-			return 12;
-		default:
-			spdlog::error("Combat type {} is out of range", fmt::underlying(combatType));
-			// Uncomment for catch the function call with debug
-			// throw std::out_of_range("Combat is out of range");
+	auto enum_index_opt = magic_enum::enum_index(combatType);
+	if(enum_index_opt.has_value() && enum_index_opt.value() < COMBAT_COUNT) {
+		return enum_index_opt.value();
+	} else {
+		spdlog::error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
+		// Uncomment for catch the function call with debug
+		// throw std::out_of_range("Combat is out of range");
 	}
 
 	return {};
 }
 
 std::string combatTypeToName(CombatType_t combatType) {
-	switch (combatType) {
-		case COMBAT_PHYSICALDAMAGE:
-			return "physical";
-		case COMBAT_ENERGYDAMAGE:
-			return "energy";
-		case COMBAT_EARTHDAMAGE:
-			return "earth";
-		case COMBAT_FIREDAMAGE:
-			return "fire";
-		case COMBAT_UNDEFINEDDAMAGE:
-			return "undefined";
-		case COMBAT_LIFEDRAIN:
-			return "life drain";
-		case COMBAT_MANADRAIN:
-			return "mana drain";
-		case COMBAT_HEALING:
-			return "healing";
-		case COMBAT_DROWNDAMAGE:
-			return "drown";
-		case COMBAT_ICEDAMAGE:
-			return "ice";
-		case COMBAT_HOLYDAMAGE:
-			return "holy";
-		case COMBAT_DEATHDAMAGE:
-			return "death";
-		default:
-			spdlog::error("Combat type {} is out of range", fmt::underlying(combatType));
-			// Uncomment for catch the function call with debug
-			// throw std::out_of_range("Combat is out of range");
+	std::string_view name = magic_enum::enum_name(combatType);
+	if(!name.empty() && combatType < COMBAT_COUNT) {
+		return formatEnumName(name);
+	} else {
+		spdlog::error("[{}] Combat type {} is out of range", __FUNCTION__, combatType);
 	}
 
 	return {};

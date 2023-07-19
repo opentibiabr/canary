@@ -366,10 +366,9 @@ std::string formatDateShort(time_t time) {
 }
 
 std::string formatEnumName(std::string_view name) {
-	std::string result{name.begin(), name.end()};
+	std::string result { name.begin(), name.end() };
 	std::replace(result.begin(), result.end(), '_', ' ');
-	std::transform(result.begin(), result.end(), result.begin(),
-					[](unsigned char c){ return std::tolower(c); });
+	std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) { return std::tolower(c); });
 	return result;
 }
 
@@ -980,7 +979,7 @@ std::string getWeaponName(WeaponType_t weaponType) {
 
 size_t combatTypeToIndex(CombatType_t combatType) {
 	auto enum_index_opt = magic_enum::enum_index(combatType);
-	if(enum_index_opt.has_value() && enum_index_opt.value() < COMBAT_COUNT) {
+	if (enum_index_opt.has_value() && enum_index_opt.value() < COMBAT_COUNT) {
 		return enum_index_opt.value();
 	} else {
 		spdlog::error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
@@ -993,7 +992,7 @@ size_t combatTypeToIndex(CombatType_t combatType) {
 
 std::string combatTypeToName(CombatType_t combatType) {
 	std::string_view name = magic_enum::enum_name(combatType);
-	if(!name.empty() && combatType < COMBAT_COUNT) {
+	if (!name.empty() && combatType < COMBAT_COUNT) {
 		return formatEnumName(name);
 	} else {
 		spdlog::error("[{}] Combat type {} is out of range", __FUNCTION__, combatType);

@@ -44,8 +44,8 @@ jobs:
       - name: Restore artifacts and install vcpkg
         id: vcpkg-step
         run: |
-          json=$(Get-Content vcpkg.json -Raw | ConvertFrom-Json)
-          vcpkgCommitId=$json.'builtin-baseline'
+          $json=Get-Content vcpkg.json -Raw | ConvertFrom-Json
+          $vcpkgCommitId=$json.'builtin-baseline'
           Write-Host "vcpkg commit ID: $vcpkgCommitId"
           echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" | Out-File -FilePath $env:GITHUB_ENV -Append
 

@@ -1426,6 +1426,8 @@ bool Creature::isImmune(CombatType_t type) const {
 	} catch (const std::out_of_range &exception) {
 		SPDLOG_ERROR("[{}] invalid index {}, error code: {}", __FUNCTION__, static_cast<uint8_t>(type), exception.what());
 	}
+
+	return false;
 }
 
 bool Creature::isImmune(ConditionType_t type) const {

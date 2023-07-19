@@ -51,4 +51,3 @@ jobs:
           path: |
             ${{ github.workspace }}/*.dll
             ${{ github.workspace }}/*.exe
-

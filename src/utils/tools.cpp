@@ -995,7 +995,7 @@ std::string combatTypeToName(CombatType_t combatType) {
 	if (!name.empty() && combatType < COMBAT_COUNT) {
 		return formatEnumName(name);
 	} else {
-		spdlog::error("[{}] Combat type {} is out of range", __FUNCTION__, combatType);
+		spdlog::error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
 	}
 
 	return {};

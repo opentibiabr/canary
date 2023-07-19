@@ -170,7 +170,7 @@ bool Weapon::useFist(Player* player, Creature* target) {
 	return true;
 }
 
-void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier) const {
+void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier, int32_t cleavePercent) const {
 	if (player) {
 		if (params.soundCastEffect == SoundEffect_t::SILENCE) {
 			g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
@@ -180,6 +180,10 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
 	}
 
 	if (isLoadedCallback()) {
+		if (cleavePercent != 0) {
+			return;
+		}
+
 		LuaVariant var;
 		var.type = VARIANT_NUMBER;
 		var.number = target->getID();
@@ -195,7 +199,26 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
 		damage.primary.type = params.combatType;
 		damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
 		damage.secondary.type = getElementType();
-		damage.secondary.value = getElementDamage(player, target, item);
+
+		// Cleave damage
+		uint16_t damagePercent = 100;
+		if (cleavePercent != 0) {
+			damage.extension = true;
+			damagePercent = cleavePercent;
+			if (!damage.exString.empty()) {
+				damage.exString += ", ";
+			}
+			damage.exString += "cleave damage";
+		}
+
+		if (damage.secondary.type == COMBAT_NONE) {
+			damage.primary.value = (getWeaponDamage(player, target, item, false) * damageModifier / 100) * damagePercent / 100;
+			damage.secondary.value = 0;
+		} else {
+			damage.primary.value = (getWeaponDamage(player, target, item, false) * damageModifier / 100) * damagePercent / 100;
+			damage.secondary.value = (getElementDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
+		}
+
 		Combat::doCombatHealth(player, target, damage, params);
 	}
 
@@ -209,7 +232,7 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Tile* tile) const {
 		var.pos = tile->getPosition();
 		executeUseWeapon(player, var);
 	} else {
-		Combat::postCombatEffects(player, tile->getPosition(), params);
+		Combat::postCombatEffects(player, player->getPosition(), tile->getPosition(), params);
 		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
 		g_game().sendSingleSoundEffect(tile->getPosition(), SoundEffect_t::PHYSICAL_RANGE_MISS, player);
 	}
@@ -352,6 +375,52 @@ bool WeaponMelee::useWeapon(Player* player, Item* item, Creature* target) const 
 		return false;
 	}
 
+	int32_t cleavePercent = player->getCleavePercent(true);
+	if (cleavePercent > 0) {
+		const Position &targetPos = target->getPosition();
+		const Position &playerPos = player->getPosition();
+		if (playerPos != targetPos) {
+			Position firstCleaveTargetPos = targetPos;
+			Position secondCleaveTargetPos = targetPos;
+			if (targetPos.x == playerPos.x) {
+				firstCleaveTargetPos.x++;
+				secondCleaveTargetPos.x--;
+			} else if (targetPos.y == playerPos.y) {
+				firstCleaveTargetPos.y++;
+				secondCleaveTargetPos.y--;
+			} else {
+				if (targetPos.x > playerPos.x)
+					firstCleaveTargetPos.x--;
+				else
+					firstCleaveTargetPos.x++;
+
+				if (targetPos.y > playerPos.y)
+					secondCleaveTargetPos.y--;
+				else
+					secondCleaveTargetPos.y++;
+			}
+			Tile* firstTile = g_game().map.getTile(firstCleaveTargetPos.x, firstCleaveTargetPos.y, firstCleaveTargetPos.z);
+			Tile* secondTile = g_game().map.getTile(secondCleaveTargetPos.x, secondCleaveTargetPos.y, secondCleaveTargetPos.z);
+
+			if (firstTile) {
+				if (CreatureVector* tileCreatures = firstTile->getCreatures()) {
+					for (Creature* tileCreature : *tileCreatures) {
+						if (tileCreature->getMonster() || (tileCreature->getPlayer() && !player->hasSecureMode()))
+							internalUseWeapon(player, item, tileCreature, damageModifier, cleavePercent);
+					}
+				}
+			}
+			if (secondTile) {
+				if (CreatureVector* tileCreatures = secondTile->getCreatures()) {
+					for (Creature* tileCreature : *tileCreatures) {
+						if (tileCreature->getMonster() || (tileCreature->getPlayer() && !player->hasSecureMode()))
+							internalUseWeapon(player, item, tileCreature, damageModifier, cleavePercent);
+					}
+				}
+			}
+		}
+	}
+
 	internalUseWeapon(player, item, target, damageModifier);
 	return true;
 }
@@ -464,13 +533,33 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 		return false;
 	}
 
+	bool perfectShot = false;
+	const Position &playerPos = player->getPosition();
+	const Position &targetPos = target->getPosition();
+	int32_t distanceX = Position::getDistanceX(targetPos, playerPos);
+	int32_t distanceY = Position::getDistanceY(targetPos, playerPos);
+	int32_t damageX = player->getPerfectShotDamage(distanceX);
+	int32_t damageY = player->getPerfectShotDamage(distanceY);
+
+	if (it.weaponType == WEAPON_DISTANCE) {
+		Item* quiver = player->getInventoryItem(CONST_SLOT_RIGHT);
+		if (quiver && quiver->getWeaponType()) {
+			if (quiver->getPerfectShotRange() == distanceX) {
+				damageX -= quiver->getPerfectShotDamage();
+			} else if (quiver->getPerfectShotRange() == distanceY) {
+				damageY -= quiver->getPerfectShotDamage();
+			}
+		}
+	}
+
 	int32_t chance;
-	if (it.hitChance == 0) {
+	if (damageX != 0 || damageY != 0) {
+		chance = 100;
+		perfectShot = true;
+	} else if (it.hitChance == 0) {
 		// hit chance is based on distance to target and distance skill
 		uint32_t skill = player->getSkillLevel(SKILL_DISTANCE);
-		const Position &playerPos = player->getPosition();
-		const Position &targetPos = target->getPosition();
-		uint32_t distance = std::max<uint32_t>(Position::getDistanceX(playerPos, targetPos), Position::getDistanceY(playerPos, targetPos));
+		uint32_t distance = std::max<uint32_t>(distanceX, distanceY);
 
 		uint32_t maxHitChance;
 		if (it.maxHitChance != -1) {
@@ -565,7 +654,7 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 		chance = it.hitChance;
 	}
 
-	if (item->getWeaponType() == WEAPON_AMMO) {
+	if (!perfectShot && item->getWeaponType() == WEAPON_AMMO) {
 		Item* bow = player->getWeapon(true);
 		if (bow && bow->getHitChance() != 0) {
 			chance += bow->getHitChance();

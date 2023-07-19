@@ -43,7 +43,7 @@ function Monster:onDropLoot(corpse)
 			end
 		end
 
-		local participants = nil
+		local participants = {}
 		local modifier = 1
 
 		if player then

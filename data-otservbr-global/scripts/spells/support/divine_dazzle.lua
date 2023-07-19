@@ -1,86 +1,61 @@
-local function getDiagonalDistance(pos1, pos2)
-	local dstX = math.abs(pos1.x - pos2.x)
-	local dstY = math.abs(pos1.y - pos2.y)
-	if dstX > dstY then
-		return 14 * dstY + 10 * (dstX - dstY)
-	else
-		return 14 * dstX + 10 * (dstY - dstX)
+local combat = Combat()
+combat:setParameter(COMBAT_PARAM_CHAIN_EFFECT, CONST_ME_DIVINE_DAZZLE)
+
+function canChain(creature, target)
+	if target:isMonster() then
+		if target:getType():isRewardBoss() then
+			return false
+		elseif target:getMaster() == nil and target:getType():getTargetDistance() > 1 then
+			return true
+		end
 	end
+	return false
 end
-local function chain(player, targets, duration)
-	local creatures = Game.getSpectators(player:getPosition(), false, false, 6, 6, 6, 6)
-	local totalChain = 0
-	local monsters = {}
-	for _, creature in pairs(creatures) do
-		if creature:isMonster() then
-			if creature:getType():isRewardBoss() then
-				return -1
-			elseif creature:getMaster() == nil and creature:getType():getTargetDistance() > 1 then
-				table.insert(monsters, creature)
-			end
-		end
+combat:setCallback(CALLBACK_PARAM_CHAINPICKER, "canChain")
+
+function getChainValue(creature)
+	local targets = 3
+	local player = creature:getPlayer()
+	if creature and player then
+		targets = targets + player:getWheelSpellAdditionalTarget("Divine Dazzle")
 	end
-	local lastChain = player
-	local lastChainPosition = player:getPosition()
-	local closestMonster, closestMonsterIndex, closestMonsterPosition
-	local path, tempPosition, updateLastChain
-	while (totalChain < targets and #monsters > 0) do
-		closestMonster = nil
-		for index, monster in pairs(monsters) do
-			tempPosition = monster:getPosition()
-			if not closestMonster or getDiagonalDistance(lastChain:getPosition(), tempPosition) < getDiagonalDistance(lastChain:getPosition(), closestMonsterPosition) then
-				closestMonster = monster
-				closestMonsterIndex = index
-				closestMonsterPosition = tempPosition
-			end
-		end
-		table.remove(monsters, closestMonsterIndex)
-		updateLastChain = false
-		if lastChainPosition:getDistance(closestMonsterPosition) == 1 then
-			updateLastChain = true
-		else
-			path = lastChainPosition:getPathTo(closestMonsterPosition, 0, 1, true, true, 9)
-			if path and #path > 0 then
-				for i=1, #path do
-					lastChainPosition:getNextPosition(path[i], 1)
-					lastChainPosition:sendMagicEffect(CONST_ME_DIVINE_DAZZLE)
-				end
-				updateLastChain = true
-			end
-		end
-		if updateLastChain then
-			closestMonsterPosition:sendMagicEffect(CONST_ME_DIVINE_DAZZLE)
-			closestMonster:changeTargetDistance(1, duration)
-			lastChain = closestMonster
-			lastChainPosition = closestMonsterPosition
-			totalChain = totalChain + 1
-		end
-	end
-	return totalChain
+	return targets, 6, false
 end
+combat:setCallback(CALLBACK_PARAM_CHAINVALUE, "getChainValue")
+
+function onChain(creature, target)
+	local duration = 12000
+	local player = creature:getPlayer()
+	if creature and player then
+		duration = duration + (player:getWheelSpellAdditionalDuration("Divine Dazzle") * 1000)
+	end
+	if target and target:isMonster() then
+		target:changeTargetDistance(1, duration)
+	end
+	return true
+end
+combat:setCallback(CALLBACK_PARAM_TARGETCREATURE, "onChain")
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, variant)
-	local targets = 3
-	local duration = 12000
-	local player = creature:getPlayer()
-	if creature and player then
-		targets = targets + player:getWheelSpellAdditionalTarget("Divine Dazzle")
-		duration = duration + (player:getWheelSpellAdditionalDuration("Divine Dazzle") * 1000)
+	local spectators = Game.getSpectators(creature:getPosition(), false, false)
+	for _, spectator in pairs(spectators) do
+		if spectator:isMonster() then
+			if spectator:getType():isRewardBoss() then
+				creature:sendCancelMessage("You can't use this spell if there's a boss.")
+				creature:getPosition():sendMagicEffect(CONST_ME_POFF)
+				return false
+			end
+		end
 	end
-	local total = chain(creature, targets, duration)
-	if total > 0 then
-		return true
-	elseif total == -1 then
-		creature:sendCancelMessage("You can't use this spell if there's a boss.")
-		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
-		return false
-	else
+
+	if not combat:execute(creature, variant) then
 		creature:sendCancelMessage("There are no ranged monsters.")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
+	return true
 end
 
 spell:group("support")

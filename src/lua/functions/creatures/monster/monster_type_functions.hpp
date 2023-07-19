@@ -139,11 +139,6 @@ class MonsterTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "MonsterType", "addSound", MonsterTypeFunctions::luaMonsterTypeAddSound);
 			registerMethod(L, "MonsterType", "getSounds", MonsterTypeFunctions::luaMonsterTypeGetSounds);
 			registerMethod(L, "MonsterType", "deathSound", MonsterTypeFunctions::luaMonsterTypedeathSound);
-
-			registerMethod(L, "MonsterType", "hazardSystemCrit", MonsterTypeFunctions::luaMonsterTypeHazardSystemCrit);
-			registerMethod(L, "MonsterType", "hazardSystemDodge", MonsterTypeFunctions::luaMonsterTypeHazardSystemDodge);
-			registerMethod(L, "MonsterType", "hazardSystemSpawnPod", MonsterTypeFunctions::luaMonsterTypeHazardSystemSpawnPod);
-			registerMethod(L, "MonsterType", "hazardSystemDamageBoost", MonsterTypeFunctions::luaMonsterTypeHazardSystemDamageBoost);
 		}
 
 	private:

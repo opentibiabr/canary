@@ -50,6 +50,7 @@ option(OPTIONS_ENABLE_OPENMP "Enable Open Multi-Processing support." ON)
 option(DEBUG_LOG "Enable Debug Log" OFF)
 option(ASAN_ENABLED "Build this target with AddressSanitizer" OFF)
 option(BUILD_STATIC_LIBRARY "Build using static libraries" OFF)
+option(SPEED_UP_BUILD_UNITY "Compile using build unity for speed up build" ON)
 
 
 # *****************************************************************************
@@ -129,6 +130,12 @@ endif(DEBUG_LOG)
 
 # === PRECOMPILED HEADER ===
 target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
+
+# === UNITY BUILD (compile time reducer) ===
+if(SPEED_UP_BUILD_UNITY)
+	set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ON)
+	log_option_enabled("Build unity for speed up compilation")
+endif()
 
 # *****************************************************************************
 # Packages / Libs

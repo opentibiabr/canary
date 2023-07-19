@@ -341,7 +341,14 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 
 	auto totalRemoved = amount - toRemove;
 	auto totalCost = static_cast<uint64_t>(sellPrice * totalRemoved);
-	g_game().addMoney(player, totalCost);
+	if (getCurrency() == ITEM_GOLD_COIN) {
+		g_game().addMoney(player, totalCost);
+	} else {
+		Item* newItem = Item::CreateItem(getCurrency(), totalCost);
+		if (newItem) {
+			g_game().internalPlayerAddItem(player, newItem, true);
+		}
+	}
 
 	// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);

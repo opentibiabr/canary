@@ -625,48 +625,47 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, monsterType->info.damageImmunities);
+			lua_createtable(L, monsterType->info.damageImmunities.size(), 0);
+			uint8_t combatCount = COMBAT_NONE;
+			for (auto &combat : monsterType->info.damageImmunities) {
+				combatCount++;
+				lua_pushnumber(L, combat);
+				lua_rawseti(L, -2, combatCount);
+			}
 		} else {
 			std::string immunity = getString(L, 2);
+			CombatType_t combatType = COMBAT_NONE;
 			if (immunity == "physical") {
-				monsterType->info.damageImmunities |= COMBAT_PHYSICALDAMAGE;
-				pushBoolean(L, true);
+				combatType = COMBAT_PHYSICALDAMAGE;
 			} else if (immunity == "energy") {
-				monsterType->info.damageImmunities |= COMBAT_ENERGYDAMAGE;
-				pushBoolean(L, true);
+				combatType = COMBAT_ENERGYDAMAGE;
 			} else if (immunity == "fire") {
-				monsterType->info.damageImmunities |= COMBAT_FIREDAMAGE;
-				pushBoolean(L, true);
+				combatType = COMBAT_FIREDAMAGE;
 			} else if (immunity == "poison" || immunity == "earth") {
-				monsterType->info.damageImmunities |= COMBAT_EARTHDAMAGE;
-				pushBoolean(L, true);
+				combatType = COMBAT_EARTHDAMAGE;
 			} else if (immunity == "drown") {
-				monsterType->info.damageImmunities |= COMBAT_DROWNDAMAGE;
-				pushBoolean(L, true);
+				combatType = COMBAT_DROWNDAMAGE;
 			} else if (immunity == "ice") {
-				monsterType->info.damageImmunities |= COMBAT_ICEDAMAGE;
-				pushBoolean(L, true);
+				combatType = COMBAT_ICEDAMAGE;
 			} else if (immunity == "holy") {
-				monsterType->info.damageImmunities |= COMBAT_HOLYDAMAGE;
-				pushBoolean(L, true);
+				combatType = COMBAT_HOLYDAMAGE;
 			} else if (immunity == "death") {
-				monsterType->info.damageImmunities |= COMBAT_DEATHDAMAGE;
-				pushBoolean(L, true);
+				combatType = COMBAT_DEATHDAMAGE;
 			} else if (immunity == "lifedrain") {
-				monsterType->info.damageImmunities |= COMBAT_LIFEDRAIN;
-				pushBoolean(L, true);
+				combatType = COMBAT_LIFEDRAIN;
 			} else if (immunity == "manadrain") {
-				monsterType->info.damageImmunities |= COMBAT_MANADRAIN;
-				pushBoolean(L, true);
+				combatType = COMBAT_MANADRAIN;
 			} else if (immunity == "neutral") {
-				monsterType->info.damageImmunities |= COMBAT_NEUTRALDAMAGE;
-				pushBoolean(L, true);
+				combatType = COMBAT_NEUTRALDAMAGE;
 			} else {
 				SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeCombatImmunities] - "
 							"Unknown immunity name {} for monster: {}",
 							immunity, monsterType->name);
 				lua_pushnil(L);
 			}
+
+			monsterType->info.damageImmunities[combatType] = combatType;
+			pushBoolean(L, true);
 		}
 	} else {
 		lua_pushnil(L);

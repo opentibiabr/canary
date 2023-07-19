@@ -441,7 +441,7 @@ class Monster final : public Creature {
 			return mType->info.lookcorpse;
 		}
 		void dropLoot(Container* corpse, Creature* lastHitCreature) override;
-		uint32_t getDamageImmunities() const override {
+		const std::array<CombatType_t, CombatType_t::COMBAT_COUNT> &getDamageImmunities() const override {
 			return mType->info.damageImmunities;
 		}
 		const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionImmunities() const override {

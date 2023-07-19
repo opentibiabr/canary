@@ -349,8 +349,9 @@ class Creature : virtual public Thing {
 		virtual bool isImmune(ConditionType_t type) const;
 		virtual bool isImmune(CombatType_t type) const;
 		virtual bool isSuppress(ConditionType_t type) const;
-		virtual uint32_t getDamageImmunities() const {
-			return 0;
+		virtual const std::array<CombatType_t, CombatType_t::COMBAT_COUNT> &getDamageImmunities() const {
+			const static std::array<CombatType_t, CombatType_t::COMBAT_COUNT> array = {};
+			return array;
 		}
 		virtual const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionImmunities() const {
 			const static std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> array = {};

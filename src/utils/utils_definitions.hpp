@@ -101,6 +101,7 @@ enum Cipbia_Elementals_t : uint8_t {
 	CIPBIA_ELEMENTAL_LIFEDRAIN = 9,
 	CIPBIA_ELEMENTAL_MANADRAIN = 10,
 	CIPBIA_ELEMENTAL_UNDEFINED = 11,
+	CIPBIA_ELEMENTAL_NEUTRAL = 12,
 };
 
 enum MagicEffectClasses : uint8_t {

@@ -688,6 +688,7 @@ CombatTypeNames combatTypeNames = {
 	{ COMBAT_LIFEDRAIN, "lifedrain" },
 	{ COMBAT_MANADRAIN, "manadrain" },
 	{ COMBAT_PHYSICALDAMAGE, "physical" },
+	{ COMBAT_NEUTRALDAMAGE, "neutral" },
 };
 
 AmmoTypeNames ammoTypeNames = {
@@ -782,22 +783,6 @@ ShootType_t getShootType(const std::string &strValue) {
 		return shootType->second;
 	}
 	return CONST_ANI_NONE;
-}
-
-std::string getCombatName(CombatType_t combatType) {
-	auto combatName = combatTypeNames.find(combatType);
-	if (combatName != combatTypeNames.end()) {
-		return combatName->second;
-	}
-	return "unknown";
-}
-
-CombatType_t getCombatType(const std::string &combatname) {
-	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](const std::pair<CombatType_t, std::string> &pair) {
-		return pair.second == combatname;
-	});
-
-	return it != combatTypeNames.end() ? it->first : COMBAT_NONE;
 }
 
 Ammo_t getAmmoType(const std::string &strValue) {
@@ -977,6 +962,22 @@ std::string getWeaponName(WeaponType_t weaponType) {
 	}
 }
 
+std::string getCombatName(CombatType_t combatType) {
+	auto combatName = combatTypeNames.find(combatType);
+	if (combatName != combatTypeNames.end()) {
+		return combatName->second;
+	}
+	return "unknown";
+}
+
+CombatType_t getCombatTypeByName(const std::string &combatname) {
+	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](const std::pair<CombatType_t, std::string> &pair) {
+		return pair.second == combatname;
+	});
+
+	return it != combatTypeNames.end() ? it->first : COMBAT_NONE;
+}
+
 size_t combatTypeToIndex(CombatType_t combatType) {
 	auto enum_index_opt = magic_enum::enum_index(combatType);
 	if (enum_index_opt.has_value() && enum_index_opt.value() < COMBAT_COUNT) {
@@ -987,7 +988,7 @@ size_t combatTypeToIndex(CombatType_t combatType) {
 		// throw std::out_of_range("Combat is out of range");
 	}
 
-	return {};
+	return COMBAT_NONE;
 }
 
 std::string combatTypeToName(CombatType_t combatType) {
@@ -996,13 +997,24 @@ std::string combatTypeToName(CombatType_t combatType) {
 		return formatEnumName(name);
 	} else {
 		spdlog::error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
+		// Uncomment for catch the function call with debug
+		// throw std::out_of_range("Index is out of range");
 	}
 
 	return {};
 }
 
-CombatType_t indexToCombatType(size_t v) {
-	return static_cast<CombatType_t>(1 << v);
+CombatType_t indexToCombatType(size_t index) {
+	auto enum_opt = magic_enum::enum_cast<CombatType_t>(index);
+	if (enum_opt.has_value() && enum_opt < COMBAT_COUNT) {
+		return enum_opt.value();
+	} else {
+		spdlog::error("[{}] Index {} is out of range", __FUNCTION__, index);
+		// Uncomment for catch the function call with debug
+		// throw std::out_of_range("Index is out of range");
+	}
+
+	return COMBAT_NONE;
 }
 
 ItemAttribute_t stringToItemAttribute(const std::string &str) {

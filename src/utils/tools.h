@@ -70,13 +70,11 @@ Ammo_t getAmmoType(const std::string &strValue);
 WeaponAction_t getWeaponAction(const std::string &strValue);
 Skulls_t getSkullType(const std::string &strValue);
 ImbuementTypes_t getImbuementType(const std::string &strValue);
-std::string getCombatName(CombatType_t combatType);
 /**
  * @Deprecated
  * It will be dropped with monsters. Use RespawnPeriod_t instead.
  */
 SpawnType_t getSpawnType(const std::string &strValue);
-CombatType_t getCombatType(const std::string &combatname);
 
 std::string getSkillName(uint8_t skillid);
 
@@ -87,6 +85,9 @@ std::string ucwords(std::string str);
 bool booleanString(const std::string &str);
 
 std::string getWeaponName(WeaponType_t weaponType);
+
+std::string getCombatName(CombatType_t combatType);
+CombatType_t getCombatTypeByName(const std::string &combatname);
 
 /**
  * @brief Convert the CombatType_t enumeration to its corresponding index.
@@ -150,6 +151,8 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 			return CIPBIA_ELEMENTAL_DEATH;
 		case COMBAT_MANADRAIN:
 			return CIPBIA_ELEMENTAL_MANADRAIN;
+		case COMBAT_NEUTRALDAMAGE:
+			return CIPBIA_ELEMENTAL_NEUTRAL;
 		default:
 			return CIPBIA_ELEMENTAL_UNDEFINED;
 	}

@@ -1421,7 +1421,11 @@ bool Creature::hasCondition(ConditionType_t type, uint32_t subId /* = 0*/) const
 }
 
 bool Creature::isImmune(CombatType_t type) const {
-	return hasBitSet(static_cast<uint32_t>(type), getDamageImmunities());
+	try {
+		return type == getDamageImmunities().at(type);
+	} catch (const std::out_of_range &exception) {
+		SPDLOG_ERROR("[{}] invalid index {}, error code: {}", __FUNCTION__, static_cast<uint8_t>(type), exception.what());
+	}
 }
 
 bool Creature::isImmune(ConditionType_t type) const {

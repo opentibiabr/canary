@@ -2606,7 +2606,7 @@ class Player final : public Creature, public Cylinder {
 		uint32_t inventoryWeight = 0;
 		uint32_t capacity = 40000;
 		uint32_t bonusCapacity = 0;
-		uint32_t damageImmunities = 0;
+		std::array<CombatType_t, CombatType_t::COMBAT_COUNT> damageImmunities = {};
 		std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionImmunities = {};
 		std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionSuppressions = {};
 		uint32_t level = 1;
@@ -2778,7 +2778,7 @@ class Player final : public Creature, public Cylinder {
 		uint64_t getLostExperience() const override {
 			return skillLoss ? static_cast<uint64_t>(experience * getLostPercent()) : 0;
 		}
-		uint32_t getDamageImmunities() const override {
+		const std::array<CombatType_t, CombatType_t::COMBAT_COUNT> &getDamageImmunities() const override {
 			return damageImmunities;
 		}
 		const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionImmunities() const override {

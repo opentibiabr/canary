@@ -18,6 +18,9 @@ constexpr std::size_t SLOT_LIMIT_THREE = 20;
 constexpr std::size_t SLOT_LIMIT_FOUR = 50;
 constexpr std::size_t TIMEOUT_EXTRA = 15;
 
+WaitingList::WaitingList() :
+	info(new WaitListInfo) { }
+
 WaitingList &WaitingList::getInstance() {
 	static WaitingList waitingList;
 	return waitingList;
@@ -123,6 +126,3 @@ std::size_t WaitingList::getClientSlot(const Player* player) {
 	}
 	return slot;
 }
-
-WaitingList::WaitingList() :
-	info(new WaitListInfo) { }

@@ -10,6 +10,8 @@
 #ifndef SRC_CREATURES_PLAYERS_MANAGEMENT_WAITLIST_H_
 #define SRC_CREATURES_PLAYERS_MANAGEMENT_WAITLIST_H_
 
+class Player;
+
 struct WaitListInfo;
 
 struct Wait {

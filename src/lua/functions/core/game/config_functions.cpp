@@ -131,6 +131,9 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", RATE_MONSTER_HEALTH);
 	registerEnumIn(L, "configKeys", RATE_MONSTER_ATTACK);
 	registerEnumIn(L, "configKeys", RATE_MONSTER_DEFENSE);
+	registerEnumIn(L, "configKeys", RATE_BOSS_HEALTH);
+	registerEnumIn(L, "configKeys", RATE_BOSS_ATTACK);
+	registerEnumIn(L, "configKeys", RATE_BOSS_DEFENSE);
 	registerEnumIn(L, "configKeys", RATE_NPC_HEALTH);
 	registerEnumIn(L, "configKeys", RATE_NPC_ATTACK);
 	registerEnumIn(L, "configKeys", RATE_NPC_DEFENSE);

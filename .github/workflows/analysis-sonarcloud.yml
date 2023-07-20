@@ -36,12 +36,6 @@ jobs:
         run: >
           sudo apt-get update && sudo apt-get install ccache linux-headers-$(uname -r)
 
-      - name: Switch to gcc-11
-        run: |
-          sudo apt install gcc-11 g++-11
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
-          sudo update-alternatives --set gcc /usr/bin/gcc-11
-
       - name: CCache
         id: ccache
         uses: actions/cache@main
@@ -78,7 +72,7 @@ jobs:
       - name: Generate compilation database
         run: |
           mkdir -p build
-          cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DOPTIONS_ENABLE_CCACHE=ON -S . -B build
+          cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DOPTIONS_ENABLE_CCACHE=ON -DSPEED_UP_BUILD_UNITY=OFF -S . -B build
 
       - name: Run PR sonar-scanner
         if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}

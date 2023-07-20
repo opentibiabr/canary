@@ -31,7 +31,7 @@ class Charm {
 		charm_t type;
 		charmRune_t id = CHARM_NONE;
 		CombatType_t dmgtype = COMBAT_NONE;
-		uint8_t effect = CONST_ME_NONE;
+		uint16_t effect = CONST_ME_NONE;
 
 		SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
 		SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
@@ -59,7 +59,7 @@ class IOBestiary {
 
 		Charm* getBestiaryCharm(charmRune_t activeCharm, bool force = false);
 		void addBestiaryKill(Player* player, MonsterType* mtype, uint32_t amount = 1);
-		bool parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage);
+		bool parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage, bool dueToPotion = false, bool checkArmor = false);
 		void addCharmPoints(Player* player, uint16_t amount, bool negative = false);
 		void sendBuyCharmRune(Player* player, charmRune_t runeID, uint8_t action, uint16_t raceid);
 		void setCharmRuneCreature(Player* player, Charm* charm, uint16_t raceid);

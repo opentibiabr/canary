@@ -146,7 +146,7 @@ int CharmFunctions::luaCharmEffect(lua_State* L) {
 	if (lua_gettop(L) == 1) {
 		lua_pushnumber(L, charm->effect);
 	} else {
-		charm->effect = getNumber<uint8_t>(L, 2);
+		charm->effect = getNumber<uint16_t>(L, 2);
 		pushBoolean(L, true);
 	}
 	return 1;

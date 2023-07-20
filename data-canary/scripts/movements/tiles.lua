@@ -27,18 +27,20 @@ function tile.onStepIn(creature, item, position, fromPosition)
 	end
 
 	if Tile(position):hasFlag(TILESTATE_PROTECTIONZONE) then
-		local lookPosition = player:getPosition()
-		lookPosition:getNextPosition(player:getDirection())
-		local depotItem = lookPosition:getTile():getItemByType(ITEM_TYPE_DEPOT)
-		if depotItem ~= nil then
-			local depotItems = 0
-			for id = 1, configManager.getNumber("depotBoxes") do
-			depotItems = depotItems + player:getDepotChest(id, true):getItemHoldingCount()
+		for _, direction in ipairs(DIRECTIONS_TABLE) do
+			local playerPosition = player:getPosition()
+			playerPosition:getNextPosition(direction)
+			local depotItem = playerPosition:getTile():getItemByType(ITEM_TYPE_DEPOT)
+			if depotItem ~= nil then
+				local depotItems = 0
+				for id = 1, configManager.getNumber("depotBoxes") do
+				depotItems = depotItems + player:getDepotChest(id, true):getItemHoldingCount()
+				end
+				player:sendTextMessage(MESSAGE_FAILURE, "Your depot contains " .. depotItems .. " item" .. (depotItems > 1 and "s." or ".") .. "\
+				Your supply stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount()	 > 1 and "s." or "."))
+				player:setSpecialContainersAvailable(true, true, true)
+				return true
 			end
-			player:sendTextMessage(MESSAGE_FAILURE, "Your depot contains " .. depotItems .. " item" .. (depotItems > 1 and "s." or ".") .. "\
-			Your supply stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount()	 > 1 and "s." or "."))
-			player:setSpecialContainersAvailable(true, true, true)
-			return true
 		end
 	end
 

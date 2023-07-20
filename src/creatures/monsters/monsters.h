@@ -83,19 +83,13 @@ class MonsterType {
 
 				uint64_t experience = 0;
 
-				// Hazard system (0-10000), divide by 100 gives us %
-				uint16_t hazardSystemCritChance = 0;
-				bool canDamageBoost = false;
-				bool canSpawnPod = false;
-				bool canDodge = false;
-
 				uint32_t manaCost = 0;
 				uint32_t yellChance = 0;
 				uint32_t yellSpeedTicks = 0;
 				uint32_t staticAttackChance = 95;
 				uint32_t maxSummons = 0;
 				uint32_t changeTargetSpeed = 0;
-				uint32_t conditionImmunities = 0;
+				std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionImmunities = {};
 				uint32_t damageImmunities = 0;
 
 				// Bestiary
@@ -188,6 +182,18 @@ class MonsterType {
 
 		void setBaseSpeed(const uint16_t initBaseSpeed) {
 			info.baseSpeed = initBaseSpeed;
+		}
+
+		float getHealthMultiplier() const {
+			return info.bossRaceId > 0 ? g_configManager().getFloat(RATE_BOSS_HEALTH) : g_configManager().getFloat(RATE_MONSTER_HEALTH);
+		}
+
+		float getAttackMultiplier() const {
+			return info.bossRaceId > 0 ? g_configManager().getFloat(RATE_BOSS_ATTACK) : g_configManager().getFloat(RATE_MONSTER_ATTACK);
+		}
+
+		float getDefenseMultiplier() const {
+			return info.bossRaceId > 0 ? g_configManager().getFloat(RATE_BOSS_DEFENSE) : g_configManager().getFloat(RATE_MONSTER_DEFENSE);
 		}
 
 		void loadLoot(MonsterType* monsterType, LootBlock lootblock);

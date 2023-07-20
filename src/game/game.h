@@ -419,7 +419,7 @@ class Game {
 
 		bool combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* target, bool checkDefense, bool checkArmor, bool field);
 
-		void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint8_t &effect);
+		void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint16_t &effect);
 
 		// Hazard combat helpers
 		void handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker);
@@ -448,12 +448,12 @@ class Game {
 		static void addCreatureHealth(const SpectatorHashSet &spectators, const Creature* target);
 		void addPlayerMana(const Player* target);
 		void addPlayerVocation(const Player* target);
-		void addMagicEffect(const Position &pos, uint8_t effect);
-		static void addMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect);
-		void removeMagicEffect(const Position &pos, uint8_t effect);
-		static void removeMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect);
-		void addDistanceEffect(const Position &fromPos, const Position &toPos, uint8_t effect);
-		static void addDistanceEffect(const SpectatorHashSet &spectators, const Position &fromPos, const Position &toPos, uint8_t effect);
+		void addMagicEffect(const Position &pos, uint16_t effect);
+		static void addMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint16_t effect);
+		void removeMagicEffect(const Position &pos, uint16_t effect);
+		static void removeMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint16_t effect);
+		void addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect);
+		static void addDistanceEffect(const SpectatorHashSet &spectators, const Position &fromPos, const Position &toPos, uint16_t effect);
 
 		int32_t getLightHour() const {
 			return lightHour;
@@ -518,8 +518,8 @@ class Game {
 		bool addUniqueItem(uint16_t uniqueId, Item* item);
 		void removeUniqueItem(uint16_t uniqueId);
 
-		bool hasEffect(uint8_t effectId);
-		bool hasDistanceEffect(uint8_t effectId);
+		bool hasEffect(uint16_t effectId);
+		bool hasDistanceEffect(uint16_t effectId);
 
 		Groups groups;
 		Map map;
@@ -553,11 +553,11 @@ class Game {
 		}
 
 		FILELOADER_ERRORS loadAppearanceProtobuf(const std::string &file);
-		bool isMagicEffectRegistered(uint8_t type) const {
+		bool isMagicEffectRegistered(uint16_t type) const {
 			return std::find(registeredMagicEffects.begin(), registeredMagicEffects.end(), type) != registeredMagicEffects.end();
 		}
 
-		bool isDistanceEffectRegistered(uint8_t type) const {
+		bool isDistanceEffectRegistered(uint16_t type) const {
 			return std::find(registeredDistanceEffects.begin(), registeredDistanceEffects.end(), type) != registeredDistanceEffects.end();
 		}
 
@@ -676,8 +676,8 @@ class Game {
 		std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 		std::vector<Item*> ToReleaseItems;
 
-		std::vector<uint8_t> registeredMagicEffects;
-		std::vector<uint8_t> registeredDistanceEffects;
+		std::vector<uint16_t> registeredMagicEffects;
+		std::vector<uint16_t> registeredDistanceEffects;
 		std::vector<uint16_t> registeredLookTypes;
 
 		size_t lastBucket = 0;

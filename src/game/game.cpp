@@ -922,12 +922,12 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {
 		// Registering distance effects
 		for (uint32_t it = 0; it < appearances.effect_size(); it++) {
-			registeredMagicEffects.push_back(static_cast<uint8_t>(appearances.effect(it).id()));
+			registeredMagicEffects.push_back(static_cast<uint16_t>(appearances.effect(it).id()));
 		}
 
 		// Registering missile effects
 		for (uint32_t it = 0; it < appearances.missile_size(); it++) {
-			registeredDistanceEffects.push_back(static_cast<uint8_t>(appearances.missile(it).id()));
+			registeredDistanceEffects.push_back(static_cast<uint16_t>(appearances.missile(it).id()));
 		}
 
 		// Registering outfits
@@ -5681,31 +5681,73 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 	CombatDamage damageHeal;
 	damageHeal.primary.type = COMBAT_HEALING;
 
+	bool damageAbsorbMessage = false;
+	bool damageIncreaseMessage = false;
+
 	bool canReflect = false;
 	CombatDamage damageReflected;
+	CombatParams damageReflectedParams;
 
 	BlockType_t primaryBlockType, secondaryBlockType;
+	Player* targetPlayer = target->getPlayer();
+
 	if (damage.primary.type != COMBAT_NONE) {
+
 		// Damage reflection primary
-		if (attacker && target->getMonster()) {
-			uint32_t primaryReflect = target->getMonster()->getReflectValue(damage.primary.type);
-			if (primaryReflect > 0) {
-				damageReflected.primary.type = damage.primary.type;
-				damageReflected.primary.value = std::ceil((damage.primary.value) * (primaryReflect / 100.));
-				damageReflected.extension = true;
-				damageReflected.exString = "(damage reflection)";
-				canReflect = true;
+		if (!damage.extension && attacker) {
+			if (targetPlayer && attacker->getMonster() && damage.primary.type != COMBAT_HEALING) {
+				// Charm rune (target as player)
+				MonsterType* mType = g_monsters().getMonsterType(attacker->getName());
+				if (mType) {
+					IOBestiary g_bestiary;
+					charmRune_t activeCharm = g_bestiary.getCharmFromTarget(targetPlayer, mType);
+					if (activeCharm == CHARM_PARRY) {
+						Charm* charm = g_bestiary.getBestiaryCharm(activeCharm);
+						if (charm && charm->type == CHARM_DEFENSIVE && (charm->chance > normal_random(0, 100))) {
+							g_bestiary.parseCharmCombat(charm, targetPlayer, attacker, (damage.primary.value + damage.secondary.value));
+						}
+					}
+				}
+			}
+			int32_t primaryReflectPercent = target->getReflectPercent(damage.primary.type, true);
+			int32_t primaryReflectFlat = target->getReflectFlat(damage.primary.type, true);
+			if (primaryReflectPercent > 0 || primaryReflectFlat > 0) {
+				int32_t distanceX = Position::getDistanceX(target->getPosition(), attacker->getPosition());
+				int32_t distanceY = Position::getDistanceY(target->getPosition(), attacker->getPosition());
+				if (target->getMonster() || damage.primary.type != COMBAT_PHYSICALDAMAGE || primaryReflectPercent > 0 || std::max(distanceX, distanceY) < 2) {
+					damageReflected.primary.value = std::ceil(damage.primary.value * primaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.primary.value, -(static_cast<int32_t>(primaryReflectFlat))));
+					if (targetPlayer)
+						damageReflected.primary.type = COMBAT_NEUTRALDAMAGE;
+					else
+						damageReflected.primary.type = damage.primary.type;
+					if (!damageReflected.exString.empty()) {
+						damageReflected.exString += ", ";
+					}
+					damageReflected.extension = true;
+					damageReflected.exString += "damage reflection";
+					damageReflectedParams.combatType = damage.primary.type;
+					damageReflectedParams.aggressive = true;
+					canReflect = true;
+				}
 			}
 		}
 		damage.primary.value = -damage.primary.value;
 		// Damage healing primary
-		if (attacker && target->getMonster()) {
-			uint32_t primaryHealing = target->getMonster()->getHealingCombatValue(damage.primary.type);
-			if (primaryHealing > 0) {
-				damageHeal.primary.value = std::ceil((damage.primary.value) * (primaryHealing / 100.));
-				canHeal = true;
+		if (attacker) {
+			if (target->getMonster()) {
+				uint32_t primaryHealing = target->getMonster()->getHealingCombatValue(damage.primary.type);
+				if (primaryHealing > 0) {
+					damageHeal.primary.value = std::ceil((damage.primary.value) * (primaryHealing / 100.));
+					canHeal = true;
+				}
 			}
+			if (targetPlayer && attacker->getAbsorbPercent(damage.primary.type) != 0)
+				damageAbsorbMessage = true;
+			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.primary.type) != 0)
+				damageIncreaseMessage = true;
+			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
 		}
+		damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
 
 		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
 
@@ -5717,18 +5759,24 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 
 	if (damage.secondary.type != COMBAT_NONE) {
 		// Damage reflection secondary
-		if (attacker && target->getMonster()) {
-			uint32_t secondaryReflect = target->getMonster()->getReflectValue(damage.secondary.type);
-			if (secondaryReflect > 0) {
+		if (!damage.extension && attacker && target->getMonster()) {
+			uint32_t secondaryReflectPercent = target->getReflectPercent(damage.secondary.type, true);
+			uint32_t secondaryReflectFlat = target->getReflectFlat(damage.secondary.type, true);
+			if (secondaryReflectPercent > 0 || secondaryReflectFlat > 0) {
 				if (!canReflect) {
 					damageReflected.primary.type = damage.secondary.type;
-					damageReflected.primary.value = std::ceil((damage.secondary.value) * (secondaryReflect / 100.));
+					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.secondary.value, -(static_cast<int32_t>(secondaryReflectFlat))));
+					if (!damageReflected.exString.empty()) {
+						damageReflected.exString += ", ";
+					}
 					damageReflected.extension = true;
-					damageReflected.exString = "(damage reflection)";
+					damageReflected.exString += "damage reflection";
+					damageReflectedParams.combatType = damage.primary.type;
+					damageReflectedParams.aggressive = true;
 					canReflect = true;
 				} else {
 					damageReflected.secondary.type = damage.secondary.type;
-					damageReflected.secondary.value = std::ceil((damage.secondary.value) * (secondaryReflect / 100.));
+					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.secondary.value, -(static_cast<int32_t>(secondaryReflectFlat))));
 				}
 			}
 		}
@@ -5741,7 +5789,13 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				damageHeal.primary.value += std::ceil((damage.secondary.value) * (secondaryHealing / 100.));
 				canHeal = true;
 			}
+			if (targetPlayer && attacker->getAbsorbPercent(damage.secondary.type) != 0)
+				damageAbsorbMessage = true;
+			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.secondary.type) != 0)
+				damageIncreaseMessage = true;
+			damage.secondary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
 		}
+		damage.secondary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
 
 		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
 
@@ -5750,8 +5804,26 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 	} else {
 		secondaryBlockType = BLOCK_NONE;
 	}
+
+	if (damage.primary.type == COMBAT_HEALING)
+		damage.primary.value *= target->getBuff(BUFF_HEALINGRECEIVED) / 100.;
+
+	if (damageAbsorbMessage) {
+		if (!damage.exString.empty()) {
+			damage.exString += ", ";
+		}
+		damage.exString += "active elemental resiliance";
+	}
+
+	if (damageIncreaseMessage) {
+		if (!damage.exString.empty()) {
+			damage.exString += ", ";
+		}
+		damage.exString += "active elemental amplification";
+	}
+
 	if (canReflect) {
-		combatChangeHealth(target, attacker, damageReflected, false);
+		Combat::doCombatHealth(target, attacker, damageReflected, damageReflectedParams);
 	}
 	if (canHeal) {
 		combatChangeHealth(nullptr, target, damageHeal);
@@ -5759,7 +5831,7 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 	return (primaryBlockType != BLOCK_NONE) && (secondaryBlockType != BLOCK_NONE);
 }
 
-void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint8_t &effect) {
+void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint16_t &effect) {
 	switch (combatType) {
 		case COMBAT_PHYSICALDAMAGE: {
 			Item* splash = nullptr;
@@ -5849,6 +5921,11 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 		case COMBAT_LIFEDRAIN: {
 			color = TEXTCOLOR_RED;
 			effect = CONST_ME_MAGIC_RED;
+			break;
+		}
+		case COMBAT_NEUTRALDAMAGE: {
+			color = TEXTCOLOR_NEUTRALDAMAGE;
+			effect = CONST_ME_REDSMOKE;
 			break;
 		}
 		default: {
@@ -6123,6 +6200,37 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			attackerMonster = nullptr;
 		}
 
+		if (attacker && attackerPlayer && damage.extension == false && damage.origin == ORIGIN_RANGED && target == attackerPlayer->getAttackedCreature()) {
+			const Position &attackerPos = attacker->getPosition();
+			if (targetPos.z == attackerPos.z) {
+				int32_t distanceX = Position::getDistanceX(targetPos, attackerPos);
+				int32_t distanceY = Position::getDistanceY(targetPos, attackerPos);
+				int32_t damageX = attackerPlayer->getPerfectShotDamage(distanceX, true);
+				int32_t damageY = attackerPlayer->getPerfectShotDamage(distanceY, true);
+				Item* item = attackerPlayer->getWeapon();
+				if (item && item->getWeaponType() == WEAPON_DISTANCE) {
+					Item* quiver = attackerPlayer->getInventoryItem(CONST_SLOT_RIGHT);
+					if (quiver && quiver->getWeaponType()) {
+						if (quiver->getPerfectShotRange() == distanceX) {
+							damageX -= quiver->getPerfectShotDamage();
+						} else if (quiver->getPerfectShotRange() == distanceY) {
+							damageY -= quiver->getPerfectShotDamage();
+						}
+					}
+				}
+				if (damageX != 0 || damageY != 0) {
+					int32_t totalDamage = damageX;
+					if (distanceX != distanceY)
+						totalDamage += damageY;
+					damage.primary.value += totalDamage;
+					if (!damage.exString.empty()) {
+						damage.exString += ", ";
+					}
+					damage.exString += "perfect shot";
+				}
+			}
+		}
+
 		TextMessage message;
 		message.position = targetPos;
 
@@ -6173,6 +6281,11 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 		}
 
+		std::stringstream ss;
+		ss << (damage.critical ? "critical " : " ") << "attack";
+		std::string attackMsg = ss.str();
+		ss.str({});
+
 		if (target->hasCondition(CONDITION_MANASHIELD) && damage.primary.type != COMBAT_UNDEFINEDDAMAGE) {
 			int32_t manaDamage = std::min<int32_t>(target->getMana(), healthChange);
 			uint16_t manaShield = target->getManaShield();
@@ -6209,8 +6322,6 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 				addMagicEffect(spectators, targetPos, CONST_ME_LOSEENERGY);
 
-				std::stringstream ss;
-
 				std::string damageString = std::to_string(manaDamage);
 
 				std::string spectatorMessage;
@@ -6234,7 +6345,11 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 					if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
 						ss.str({});
-						ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana due to your attack.";
+						ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana due to your " << attackMsg << ".";
+
+						if (!damage.exString.empty()) {
+							ss << " (" << damage.exString << ")";
+						}
 						message.type = MESSAGE_DAMAGE_DEALT;
 						message.text = ss.str();
 					} else if (tmpPlayer == targetPlayer) {
@@ -6243,9 +6358,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 						if (!attacker) {
 							ss << '.';
 						} else if (targetPlayer == attackerPlayer) {
-							ss << " due to your own attack.";
+							ss << " due to your own " << attackMsg << ".";
 						} else {
-							ss << " due to an attack by " << attacker->getNameDescription() << '.';
+							ss << " due to an " << attackMsg << " by " << attacker->getNameDescription() << '.';
 						}
 						message.type = MESSAGE_DAMAGE_RECEIVED;
 						message.text = ss.str();
@@ -6256,9 +6371,10 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 							if (attacker) {
 								ss << " due to ";
 								if (attacker == target) {
-									ss << (targetPlayer ? (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own attack" : "his own attack") : "its own attack");
+									ss << (targetPlayer ? (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own " : "his own ") : "its own ");
+									ss << attackMsg;
 								} else {
-									ss << "an attack by " << attacker->getNameDescription();
+									ss << "an " << attackMsg << " by " << attacker->getNameDescription();
 								}
 							}
 							ss << '.';
@@ -6510,7 +6626,7 @@ void Game::sendEffects(
 	Creature* target, const CombatDamage &damage, const Position &targetPos, TextMessage &message,
 	const SpectatorHashSet &spectators
 ) {
-	uint8_t hitEffect;
+	uint16_t hitEffect;
 	if (message.primary.value) {
 		combatGetTypeInfo(damage.primary.type, target, message.primary.color, hitEffect);
 		if (hitEffect != CONST_ME_NONE) {
@@ -6863,13 +6979,13 @@ void Game::addPlayerVocation(const Player* target) {
 	}
 }
 
-void Game::addMagicEffect(const Position &pos, uint8_t effect) {
+void Game::addMagicEffect(const Position &pos, uint16_t effect) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, pos, true, true);
 	addMagicEffect(spectators, pos, effect);
 }
 
-void Game::addMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect) {
+void Game::addMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint16_t effect) {
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendMagicEffect(pos, effect);
@@ -6877,13 +6993,13 @@ void Game::addMagicEffect(const SpectatorHashSet &spectators, const Position &po
 	}
 }
 
-void Game::removeMagicEffect(const Position &pos, uint8_t effect) {
+void Game::removeMagicEffect(const Position &pos, uint16_t effect) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, pos, true, true);
 	removeMagicEffect(spectators, pos, effect);
 }
 
-void Game::removeMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint8_t effect) {
+void Game::removeMagicEffect(const SpectatorHashSet &spectators, const Position &pos, uint16_t effect) {
 	for (Creature* spectator : spectators) {
 		if (const Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->removeMagicEffect(pos, effect);
@@ -6891,14 +7007,14 @@ void Game::removeMagicEffect(const SpectatorHashSet &spectators, const Position 
 	}
 }
 
-void Game::addDistanceEffect(const Position &fromPos, const Position &toPos, uint8_t effect) {
+void Game::addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect) {
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, fromPos, false, true);
 	map.getSpectators(spectators, toPos, false, true);
 	addDistanceEffect(spectators, fromPos, toPos, effect);
 }
 
-void Game::addDistanceEffect(const SpectatorHashSet &spectators, const Position &fromPos, const Position &toPos, uint8_t effect) {
+void Game::addDistanceEffect(const SpectatorHashSet &spectators, const Position &fromPos, const Position &toPos, uint16_t effect) {
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect);
@@ -7022,9 +7138,6 @@ void Game::shutdown() {
 	ConnectionManager::getInstance().closeAll();
 
 	SPDLOG_INFO("Done!");
-#ifdef _WIN32
-	exit(0);
-#endif
 }
 
 void Game::cleanup() {
@@ -7136,7 +7249,9 @@ void Game::updateCreatureType(Creature* creature) {
 		}
 	} else {
 		for (Creature* spectator : spectators) {
-			spectator->getPlayer()->sendCreatureType(creature, creatureType);
+			if (Player* player = spectator->getPlayer()) {
+				player->sendCreatureType(creature, creatureType);
+			}
 		}
 	}
 }
@@ -8910,8 +9025,8 @@ void Game::removeUniqueItem(uint16_t uniqueId) {
 	}
 }
 
-bool Game::hasEffect(uint8_t effectId) {
-	for (uint8_t i = CONST_ME_NONE; i <= CONST_ME_LAST; i++) {
+bool Game::hasEffect(uint16_t effectId) {
+	for (uint16_t i = CONST_ME_NONE; i <= CONST_ME_LAST; i++) {
 		MagicEffectClasses effect = static_cast<MagicEffectClasses>(i);
 		if (effect == effectId) {
 			return true;
@@ -8920,8 +9035,8 @@ bool Game::hasEffect(uint8_t effectId) {
 	return false;
 }
 
-bool Game::hasDistanceEffect(uint8_t effectId) {
-	for (uint8_t i = CONST_ANI_NONE; i <= CONST_ANI_LAST; i++) {
+bool Game::hasDistanceEffect(uint16_t effectId) {
+	for (uint16_t i = CONST_ANI_NONE; i <= CONST_ANI_LAST; i++) {
 		ShootType_t effect = static_cast<ShootType_t>(i);
 		if (effect == effectId) {
 			return true;

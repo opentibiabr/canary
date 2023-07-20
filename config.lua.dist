@@ -382,6 +382,11 @@ rateMonsterHealth = 1.0
 rateMonsterAttack = 1.0
 rateMonsterDefense = 1.0
 
+-- Boss rates
+rateBossHealth = 1.0
+rateBossAttack = 1.0
+rateBossDefense = 1.0
+
 -- Monsters
 deSpawnRange = 2
 deSpawnRadius = 50

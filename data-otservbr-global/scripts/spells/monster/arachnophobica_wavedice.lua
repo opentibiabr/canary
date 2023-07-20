@@ -1,5 +1,5 @@
 local combat = createCombatObject()
-setCombatParam(combat, COMBAT_PARAM_TYPE, CONDITION_DROWN)
+setCombatParam(combat, COMBAT_PARAM_TYPE, COMBAT_DROWNDAMAGE)
 setCombatParam(combat, COMBAT_PARAM_EFFECT, CONST_ME_CRAPS)
 
 	arr = {

@@ -1,5 +1,5 @@
 # Stage 1: Download all dependencies
-FROM ubuntu:22.04 AS dependencies
+FROM ubuntu:23.04 AS dependencies
 
 RUN --mount=type=cache,target=/var/cache/apt \
 	apt-get update && apt-get install -y --no-install-recommends cmake git \
@@ -31,7 +31,7 @@ COPY recompile.sh CMakeLists.txt CMakePresets.json vcpkg.json ./
 RUN ./recompile.sh "/opt"
 
 # Stage 3: execute
-FROM ubuntu:22.04 AS prod
+FROM ubuntu:23.04 AS prod
 COPY --from=build /srv/build/build/linux-release/bin/canary /bin/canary
 WORKDIR /srv/canary
 ENTRYPOINT ["/srv/canary/start.sh", "canary"]

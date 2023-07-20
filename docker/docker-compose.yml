@@ -33,6 +33,8 @@ services:
     depends_on:
       - database
       - login
+    links:
+      - database
 
   login:
     image: opentibiabr/login-server:latest
@@ -45,6 +47,8 @@ services:
     networks:
       - canary-net
     depends_on:
+      - database
+    links:
       - database
 
 volumes:

@@ -17,6 +17,7 @@ ulimit -c unlimited
 set -o pipefail
 
 while true; do
+	sleep 2
 	"$BIN_PATH" 2>&1 | awk '{ print strftime("%F %T - "),
 	$0; fflush(); }' | tee "logs/$(date +"%F %H-%M-%S.log")"
 	# Verificar se a tecla 'q' foi pressionada
@@ -24,5 +25,4 @@ while true; do
     if [[ $input = "q" ]]; then
         break
     fi
-	sleep 2
 done

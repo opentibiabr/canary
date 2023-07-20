@@ -75,8 +75,8 @@ while IFS='=' read -r key value; do
       SERVER_PORT)
         substitute_lua_variable "gameProtocolPort" "$value"
         ;;
-			MYSQL_SOCKS)
-        substitute_lua_variable "mysqlSock" "$value"
+			*)
+        substitute_lua_variable "$key" "$value"
         ;;
     esac
   fi

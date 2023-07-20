@@ -103,7 +103,7 @@ enum Cipbia_Elementals_t : uint8_t {
 	CIPBIA_ELEMENTAL_UNDEFINED = 11,
 };
 
-enum MagicEffectClasses : uint8_t {
+enum MagicEffectClasses : uint16_t {
 	CONST_ME_NONE,
 
 	CONST_ME_DRAWBLOOD = 1,

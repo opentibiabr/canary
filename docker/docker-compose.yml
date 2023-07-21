@@ -9,10 +9,16 @@ services:
     networks:
       - canary-net
     ports:
-      - '3306:3306'
+      - '$MYSQL_PORT:3306'
     volumes:
       - 'db-volume:/var/lib/mysql'
       - ../schema.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 
   server:
     # cpuset: "0-4"
@@ -26,30 +32,27 @@ services:
     networks:
       - canary-net
     ports:
-      - '7171:7171'
-      - '7172:7172'
+      - '$gameProtocolPort:$gameProtocolPort'
+      - '$statusProtocolPort:$statusProtocolPort'
     volumes:
       - '../:/srv/canary'
     depends_on:
-      - database
-      - login
-    links:
-      - database
+      database:
+        condition: service_healthy
 
   login:
     image: opentibiabr/login-server:latest
     restart: unless-stopped
     ports:
-      - 8090:8090
-      - 9090:9090
+      - '$LOGIN_HTTP_PORT:$LOGIN_HTTP_PORT'
+      - '$LOGIN_GRPC_PORT:$LOGIN_GRPC_PORT'
     env_file:
       - '.env'
     networks:
       - canary-net
     depends_on:
-      - database
-    links:
-      - database
+      database:
+        condition: service_healthy
 
 volumes:
   db-volume:

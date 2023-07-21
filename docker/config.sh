@@ -8,12 +8,15 @@
 substitute_lua_variable() {
   variable_name="$1"
   new_value="$2"
-  if [[ $(echo "$new_value" | grep -E "^[0-9]+$") ]]; then
+  if [[ "$new_value" == "true" || "$new_value" == "false" ]]; then
+    sed "s|$variable_name =.*|$variable_name = $new_value|" "$lua_file" > "$lua_file.tmp"
+  elif [[ $(echo "$new_value" | grep -E "^[0-9]+$") ]]; then
     sed "s|$variable_name =.*|$variable_name = $new_value|" "$lua_file" > "$lua_file.tmp"
   else
     sed "s|$variable_name =.*|$variable_name = \"$new_value\"|" "$lua_file" > "$lua_file.tmp"
   fi
-	mv "$lua_file.tmp" "$lua_file"
+
+  mv "$lua_file.tmp" "$lua_file"
 }
 
 # Get a named argument

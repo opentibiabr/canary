@@ -284,6 +284,11 @@ bool Map::placeCreature(const Position &centerPos, Creature* creature, bool exte
 				continue;
 			}
 
+			// Will never add the creature inside a teleport, avoiding infinite loop bug
+			if (tile->hasFlag(TILESTATE_TELEPORT)) {
+				continue;
+			}
+
 			if (monster) {
 				monster->ignoreFieldDamage = true;
 			}

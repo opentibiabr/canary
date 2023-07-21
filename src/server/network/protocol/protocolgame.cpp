@@ -3323,7 +3323,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	for (uint8_t i = SKILL_FIRST; i < SKILL_CRITICAL_HIT_CHANCE; ++i) {
 		static const uint8_t HardcodedSkillIds[] = { 11, 9, 8, 10, 7, 6, 13 };
 		skills_t skill = static_cast<skills_t>(i);
-		if (oldProtocol && (skill == SKILL_LIFE_LEECH_CHANCE || skill == SKILL_MANA_LEECH_CHANCE)) {
+		if (!oldProtocol && (skill == SKILL_LIFE_LEECH_CHANCE || skill == SKILL_MANA_LEECH_CHANCE)) {
 			continue;
 		}
 		msg.addByte(HardcodedSkillIds[i]);
@@ -5917,6 +5917,10 @@ void ProtocolGame::sendFightModes() {
 }
 
 void ProtocolGame::sendAllowBugReport() {
+	if (oldProtocol) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0x1A);
 	if (player->getAccountType() >= account::ACCOUNT_TYPE_NORMAL) {
@@ -5992,9 +5996,7 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	writeToOutputBuffer(msg);
 
 	// Allow bug report (Ctrl + Z)
-	if (!oldProtocol) {
-		sendAllowBugReport();
-	}
+	sendAllowBugReport();
 
 	sendTibiaTime(g_game().getLightHour());
 	sendPendingStateEntered();

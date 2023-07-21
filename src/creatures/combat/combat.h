@@ -82,10 +82,10 @@ struct CombatParams {
 		CombatType_t combatType = COMBAT_NONE;
 		CombatOrigin origin = ORIGIN_SPELL;
 
-		uint8_t impactEffect = CONST_ME_NONE;
+		uint16_t impactEffect = CONST_ME_NONE;
 		SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
 
-		uint8_t distanceEffect = CONST_ANI_NONE;
+		uint16_t distanceEffect = CONST_ANI_NONE;
 		SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
 
 		bool blockedByArmor = false;
@@ -280,7 +280,7 @@ class Combat {
 		static ReturnValue canDoCombat(Creature* attacker, Creature* target);
 		static void postCombatEffects(Creature* caster, const Position &origin, const Position &pos, const CombatParams &params);
 
-		static void addDistanceEffect(Creature* caster, const Position &fromPos, const Position &toPos, uint8_t effect);
+		static void addDistanceEffect(Creature* caster, const Position &fromPos, const Position &toPos, uint16_t effect);
 
 		bool doCombat(Creature* caster, Creature* target) const;
 		bool doCombat(Creature* caster, Creature* target, const Position &origin) const;

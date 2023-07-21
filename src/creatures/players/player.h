@@ -1263,7 +1263,7 @@ class Player final : public Creature, public Cylinder {
 				client->sendPlayerVocation(player);
 			}
 		}
-		void sendDistanceShoot(const Position &from, const Position &to, uint8_t type) const {
+		void sendDistanceShoot(const Position &from, const Position &to, uint16_t type) const {
 			if (client) {
 				client->sendDistanceShoot(from, to, type);
 			}
@@ -1290,12 +1290,12 @@ class Player final : public Creature, public Cylinder {
 				client->sendGameNews();
 			}
 		}
-		void sendMagicEffect(const Position &pos, uint8_t type) const {
+		void sendMagicEffect(const Position &pos, uint16_t type) const {
 			if (client) {
 				client->sendMagicEffect(pos, type);
 			}
 		}
-		void removeMagicEffect(const Position &pos, uint8_t type) const {
+		void removeMagicEffect(const Position &pos, uint16_t type) const {
 			if (client) {
 				client->removeMagicEffect(pos, type);
 			}

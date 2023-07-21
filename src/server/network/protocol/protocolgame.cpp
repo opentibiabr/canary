@@ -256,7 +256,6 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint
 
 	if (it.isContainer()) {
 		msg.addByte(0x00);
-		msg.addByte(0x00);
 	}
 
 	if (it.isPodium) {
@@ -315,8 +314,10 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item* item) {
 	}
 
 	if (it.isContainer()) {
+		uint8_t containerType = 0;
+
 		const Container* container = item->getContainer();
-		if (container && container->getHoldingPlayer() == player) {
+		if (container && containerType == 0 && container->getHoldingPlayer() == player) {
 			uint32_t lootFlags = 0;
 			for (auto itt : player->quickLootContainers) {
 				if (itt.second == container) {
@@ -325,26 +326,26 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item* item) {
 			}
 
 			if (lootFlags != 0) {
-				msg.addByte(0x01);
+				containerType = 1;
+				msg.addByte(containerType);
 				msg.add<uint32_t>(lootFlags);
-			} else {
-				msg.addByte(0x00);
 			}
-		} else {
-			msg.addByte(0x00);
 		}
 
 		// Quiver ammo count
-		if (container && item->isQuiver() && player->getThing(CONST_SLOT_RIGHT) == item) {
+		if (container && containerType == 0 && item->isQuiver() && player->getThing(CONST_SLOT_RIGHT) == item) {
 			uint16_t ammoTotal = 0;
 			for (Item* listItem : container->getItemList()) {
 				if (player->getLevel() >= Item::items[listItem->getID()].minReqLevel) {
 					ammoTotal += listItem->getItemCount();
 				}
 			}
-			msg.addByte(0x01);
+			containerType = 2;
+			msg.addByte(containerType);
 			msg.add<uint32_t>(ammoTotal);
-		} else {
+		}
+
+		if (containerType == 0) {
 			msg.addByte(0x00);
 		}
 	}
@@ -495,8 +496,8 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 		WaitingList &waitingList = WaitingList::getInstance();
 		if (!waitingList.clientLogin(player)) {
-			uint32_t currentSlot = waitingList.getClientSlot(player);
-			uint32_t retryTime = WaitingList::getTime(currentSlot);
+			auto currentSlot = static_cast<uint32_t>(waitingList.getClientSlot(player));
+			auto retryTime = static_cast<uint32_t>(WaitingList::getTime(currentSlot));
 			std::ostringstream ss;
 
 			ss << "Too many players online.\nYou are at place "
@@ -508,6 +509,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			output->addByte(retryTime);
 			send(output);
 			disconnect();
+			g_game().removePlayerUniqueLogin(player);
 			return;
 		}
 
@@ -2686,6 +2688,7 @@ void ProtocolGame::refreshBestiaryTracker(std::list<MonsterType*> trackerList) {
 
 	NetworkMessage msg;
 	msg.addByte(0xB9);
+	msg.addByte(0x00); // Bestiary ENUM
 	msg.addByte(trackerList.size());
 	for (MonsterType* mtype : trackerList) {
 		uint32_t killAmount = player->getBestiaryKillCount(mtype->info.raceid);
@@ -3320,6 +3323,9 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	for (uint8_t i = SKILL_FIRST; i < SKILL_CRITICAL_HIT_CHANCE; ++i) {
 		static const uint8_t HardcodedSkillIds[] = { 11, 9, 8, 10, 7, 6, 13 };
 		skills_t skill = static_cast<skills_t>(i);
+		if (oldProtocol && (skill == SKILL_LIFE_LEECH_CHANCE || skill == SKILL_MANA_LEECH_CHANCE)) {
+			continue;
+		}
 		msg.addByte(HardcodedSkillIds[i]);
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(skill));
@@ -3353,6 +3359,9 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
 	msg.addByte(0x00);
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
+		if (!oldProtocol && (i == SKILL_LIFE_LEECH_CHANCE || i == SKILL_MANA_LEECH_CHANCE)) {
+			continue;
+		}
 		skills_t skill = static_cast<skills_t>(i);
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(0);
@@ -4105,6 +4114,7 @@ void ProtocolGame::sendIcons(uint32_t icons) {
 		msg.add<uint16_t>(static_cast<uint16_t>(icons));
 	} else {
 		msg.add<uint32_t>(icons);
+		msg.addByte(0x00); // 13.20 icon counter
 	}
 	writeToOutputBuffer(msg);
 }
@@ -5230,6 +5240,10 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		msg.add<uint16_t>(0x00);
 	}
 
+	if (!oldProtocol) {
+		msg.add<uint16_t>(0x00); // Augment
+	}
+
 	if (it.imbuementSlot > 0) {
 		msg.addString(std::to_string(it.imbuementSlot));
 	} else {
@@ -5564,18 +5578,18 @@ void ProtocolGame::sendPingBack() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint8_t type) {
+void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint16_t type) {
 	NetworkMessage msg;
 	if (oldProtocol) {
 		msg.addByte(0x85);
 		msg.addPosition(from);
 		msg.addPosition(to);
-		msg.addByte(type);
+		msg.addByte(std::max<uint8_t>(0xFF, type));
 	} else {
 		msg.addByte(0x83);
 		msg.addPosition(from);
 		msg.addByte(MAGIC_EFFECTS_CREATE_DISTANCEEFFECT);
-		msg.addByte(type);
+		msg.add<uint16_t>(type);
 		msg.addByte(static_cast<uint8_t>(static_cast<int8_t>(static_cast<int32_t>(to.x) - static_cast<int32_t>(from.x))));
 		msg.addByte(static_cast<uint8_t>(static_cast<int8_t>(static_cast<int32_t>(to.y) - static_cast<int32_t>(from.y))));
 		msg.addByte(MAGIC_EFFECTS_END_LOOP);
@@ -5622,7 +5636,7 @@ void ProtocolGame::sendRestingStatus(uint8_t protection) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendMagicEffect(const Position &pos, uint8_t type) {
+void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
 	if (!canSee(pos)) {
 		return;
 	}
@@ -5631,22 +5645,26 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint8_t type) {
 	if (oldProtocol) {
 		msg.addByte(0x83);
 		msg.addPosition(pos);
-		msg.addByte(type);
+		msg.addByte(std::max<uint8_t>(0xFF, type));
 	} else {
 		msg.addByte(0x83);
 		msg.addPosition(pos);
 		msg.addByte(MAGIC_EFFECTS_CREATE_EFFECT);
-		msg.addByte(type);
+		msg.add<uint16_t>(type);
 		msg.addByte(MAGIC_EFFECTS_END_LOOP);
 	}
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::removeMagicEffect(const Position &pos, uint8_t type) {
+void ProtocolGame::removeMagicEffect(const Position &pos, uint16_t type) {
 	NetworkMessage msg;
 	msg.addByte(0x84);
 	msg.addPosition(pos);
-	msg.addByte(type);
+	if (oldProtocol) {
+		msg.addByte(std::max<uint8_t>(255, type));
+	} else {
+		msg.add<uint16_t>(type);
+	}
 	writeToOutputBuffer(msg);
 }
 
@@ -5898,6 +5916,17 @@ void ProtocolGame::sendFightModes() {
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendAllowBugReport() {
+	NetworkMessage msg;
+	msg.addByte(0x1A);
+	if (player->getAccountType() >= account::ACCOUNT_TYPE_NORMAL) {
+		msg.addByte(0x01);
+	} else {
+		msg.addByte(0x00);
+	}
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos, int32_t stackpos, bool isLogin) {
 	if (!canSee(pos)) {
 		return;
@@ -5941,11 +5970,13 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	msg.addDouble(Creature::speedB, 3);
 	msg.addDouble(Creature::speedC, 3);
 
-	// can report bugs?
-	if (player->getAccountType() >= account::ACCOUNT_TYPE_NORMAL) {
-		msg.addByte(0x01);
-	} else {
-		msg.addByte(0x00);
+	// Allow bug report (Ctrl + Z)
+	if (oldProtocol) {
+		if (player->getAccountType() >= account::ACCOUNT_TYPE_NORMAL) {
+			msg.addByte(0x01);
+		} else {
+			msg.addByte(0x00);
+		}
 	}
 
 	msg.addByte(0x00); // can change pvp framing option
@@ -5959,6 +5990,11 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	}
 
 	writeToOutputBuffer(msg);
+
+	// Allow bug report (Ctrl + Z)
+	if (!oldProtocol) {
+		sendAllowBugReport();
+	}
 
 	sendTibiaTime(g_game().getLightHour());
 	sendPendingStateEntered();
@@ -7041,6 +7077,9 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 	}
 
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
+		if (!oldProtocol && (i == SKILL_LIFE_LEECH_CHANCE || i == SKILL_MANA_LEECH_CHANCE)) {
+			continue;
+		}
 		skills_t skill = static_cast<skills_t>(i);
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(skill));
@@ -8011,6 +8050,7 @@ void ProtocolGame::parseSendBosstiary() {
 		msg.addByte(bossRace);
 		msg.add<uint32_t>(killCount);
 		msg.addByte(0);
+		msg.addByte(0x00); // Tracker
 		++bossesCount;
 	}
 

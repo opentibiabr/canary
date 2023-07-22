@@ -157,7 +157,7 @@ std::string Database::escapeString(const std::string &s) const {
 	auto length = static_cast<uint32_t>(len);
 	std::string escaped = escapeBlob(s.c_str(), length);
 	if (escaped.empty()) {
-		SPDLOG_ERROR("Error escaping string");
+		SPDLOG_WARN("Error escaping string");
 	}
 	return escaped;
 }

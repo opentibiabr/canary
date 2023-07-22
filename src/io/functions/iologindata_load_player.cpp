@@ -51,7 +51,7 @@ bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
 bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 	if (!result || !player) {
 		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player or Result nullptr: {}", __FUNCTION__);
-		return;
+		return false;
 	}
 
 	Database &db = Database::getInstance();
@@ -768,7 +768,7 @@ void IOLoginDataLoad::loadPlayerBosstiary(Player* player, DBResult_ptr result) {
 	}
 }
 
-void IOLoginDataLoad::loadPlayerInitializeSystem(Player* player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerInitializeSystem(Player* player) {
 	if (!player) {
 		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
 		return;

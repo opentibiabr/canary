@@ -765,4 +765,10 @@ const phmap::flat_hash_map<Blessings_t, std::string> BlessingNames = {
 	{ HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain" },
 };
 
+enum BedItemPart_t : uint8_t {
+	BED_NONE_PART,
+	BED_PILLOW_PART,
+	BED_BLANKET_PART,
+};
+
 #endif // SRC_UTILS_UTILS_DEFINITIONS_HPP_

@@ -317,6 +317,11 @@ void House::addBed(BedItem* bed) {
 	bed->setHouse(this);
 }
 
+void House::removeBed(BedItem* bed) {
+	bed->setHouse(nullptr);
+	bedsList.remove(bed);
+}
+
 Door* House::getDoorByNumber(uint32_t doorId) const {
 	for (Door* door : doorList) {
 		if (door->getDoorId() == doorId) {
@@ -624,6 +629,7 @@ bool Houses::loadHousesXML(const std::string &filename) {
 
 		house->setRent(pugi::cast<uint32_t>(houseNode.attribute("rent").value()));
 		house->setTownId(pugi::cast<uint32_t>(houseNode.attribute("townid").value()));
+		house->setMaxBeds(pugi::cast<uint32_t>(houseNode.attribute("beds").value()));
 
 		house->setOwner(0, false);
 	}

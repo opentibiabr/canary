@@ -19,14 +19,7 @@ Database::~Database() {
 }
 
 bool Database::connect() {
-	const std::string host = g_configManager().getString(MYSQL_HOST);
-	const std::string user = g_configManager().getString(MYSQL_USER);
-	const std::string password = g_configManager().getString(MYSQL_PASS);
-	const std::string database = g_configManager().getString(MYSQL_DB);
-	const uint32_t port = g_configManager().getNumber(SQL_PORT);
-	const std::string sock = g_configManager().getString(MYSQL_SOCK);
-
-	return connect(&host, &user, &password, &database, port, &sock);
+	return connect(&g_configManager().getString(MYSQL_HOST), &g_configManager().getString(MYSQL_USER), &g_configManager().getString(MYSQL_PASS), &g_configManager().getString(MYSQL_DB), g_configManager().getNumber(SQL_PORT), &g_configManager().getString(MYSQL_SOCK));
 }
 
 bool Database::connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock) {
@@ -62,7 +55,7 @@ bool Database::beginTransaction() {
 	if (!executeQuery("BEGIN")) {
 		return false;
 	}
-	std::scoped_lock lock { databaseLock };
+	databaseLock.lock();
 	return true;
 }
 
@@ -72,13 +65,13 @@ bool Database::rollback() {
 		return false;
 	}
 
-	std::scoped_lock lock { databaseLock };
-
 	if (mysql_rollback(handle) != 0) {
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
+		databaseLock.unlock();
 		return false;
 	}
 
+	databaseLock.unlock();
 	return true;
 }
 
@@ -87,12 +80,13 @@ bool Database::commit() {
 		SPDLOG_ERROR("Database not initialized!");
 		return false;
 	}
-	std::scoped_lock lock { databaseLock };
 	if (mysql_commit(handle) != 0) {
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
+		databaseLock.unlock();
 		return false;
 	}
 
+	databaseLock.unlock();
 	return true;
 }
 

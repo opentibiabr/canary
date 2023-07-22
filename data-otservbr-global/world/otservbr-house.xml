@@ -71,9 +71,9 @@
 	<house name="Magician's Alley 5f" houseid="2724" entryx="32322" entryy="31807" entryz="6" rent="80000" townid="6" size="16" beds="2" />
 	<house name="Magician's Alley 5b" houseid="2725" entryx="32325" entryy="31804" entryz="7" rent="50000" townid="6" size="14" beds="2" />
 	<house name="Magician's Alley 5a" houseid="2727" entryx="32326" entryy="31804" entryz="7" rent="50000" townid="6" size="17" beds="2" />
-	<house name="Central Plaza 3 (Shop)" houseid="2729" entryx="32345" entryy="31800" entryz="7" rent="50000" townid="6" size="8" />
-	<house name="Central Plaza 2 (Shop)" houseid="2730" entryx="32345" entryy="31806" entryz="7" rent="25000" townid="6" size="8" />
-	<house name="Central Plaza 1 (Shop)" houseid="2731" entryx="32345" entryy="31812" entryz="7" rent="50000" townid="6" size="8" />
+	<house name="Central Plaza 3 (Shop)" houseid="2729" entryx="32345" entryy="31800" entryz="7" rent="50000" townid="6" size="8" beds="1" />
+	<house name="Central Plaza 2 (Shop)" houseid="2730" entryx="32345" entryy="31806" entryz="7" rent="25000" townid="6" size="8" beds="1" />
+	<house name="Central Plaza 1 (Shop)" houseid="2731" entryx="32345" entryy="31812" entryz="7" rent="50000" townid="6" size="8" beds="1" />
 	<house name="Theater Avenue 8b" houseid="2732" entryx="32357" entryy="31795" entryz="6" rent="100000" townid="6" size="21" beds="3" />
 	<house name="Harbour Lane 1 (Shop)" houseid="2733" entryx="32366" entryy="31799" entryz="6" rent="100000" townid="6" size="20" beds="0" />
 	<house name="Theater Avenue 6f" houseid="2734" entryx="32375" entryy="31794" entryz="6" rent="80000" townid="6" size="11" beds="2" />
@@ -248,7 +248,7 @@
 	<house name="Beach Home Apartments, Flat 15" houseid="2915" entryx="32309" entryy="32234" entryz="6" rent="25000" townid="8" size="4" beds="1" />
 	<house name="Beach Home Apartments, Flat 16" houseid="2916" entryx="32303" entryy="32244" entryz="6" rent="80000" townid="8" size="14" beds="2" />
 	<house name="Demon Tower" houseid="2917" entryx="32601" entryy="32116" entryz="7" rent="100000" townid="8" size="59" beds="2" />
-	<house name="Farm Lane, 1st floor (Shop)" houseid="2918" entryx="32382" entryy="32232" entryz="7" rent="80000" townid="8" size="15" />
+	<house name="Farm Lane, 1st floor (Shop)" houseid="2918" entryx="32382" entryy="32232" entryz="7" rent="80000" townid="8" size="15" beds="0" />
 	<house name="Farm Lane, 2nd Floor (Shop)" houseid="2919" entryx="32382" entryy="32233" entryz="6" rent="50000" townid="8" size="15" beds="0" />
 	<house name="Farm Lane, Basement (Shop)" houseid="2920" entryx="32382" entryy="32231" entryz="8" rent="50000" townid="8" size="15" beds="0" />
 	<house name="Fibula Village 1" houseid="2921" entryx="32176" entryy="32433" entryz="7" rent="25000" townid="8" size="10" beds="1" />
@@ -258,7 +258,7 @@
 	<house name="Fibula Village 3" houseid="2925" entryx="32196" entryy="32438" entryz="7" rent="80000" townid="8" size="46" beds="4" />
 	<house name="Fibula Village, Tower Flat" houseid="2926" entryx="32159" entryy="32439" entryz="7" rent="100000" townid="8" size="73" beds="2" />
 	<house name="Guildhall of the Red Rose" houseid="2927" entryx="32180" entryy="32427" entryz="7" rent="250000" guildhall="true" townid="8" size="339" beds="15" />
-	<house name="Fibula Village, Bar (Shop)" houseid="2928" entryx="32151" entryy="32399" entryz="7" rent="100000" townid="8" size="60" />
+	<house name="Fibula Village, Bar (Shop)" houseid="2928" entryx="32151" entryy="32399" entryz="7" rent="100000" townid="8" size="60" beds="2" />
 	<house name="Fibula Village, Villa" houseid="2929" entryx="32140" entryy="32374" entryz="7" rent="200000" townid="8" size="182" beds="7" />
 	<house name="Greenshore Village 1" houseid="2930" entryx="32274" entryy="32062" entryz="7" rent="80000" townid="8" size="30" beds="3" />
 	<house name="Greenshore Clanhall" houseid="2931" entryx="32278" entryy="32069" entryz="7" rent="250000" guildhall="true" townid="8" size="130" beds="10" />
@@ -272,7 +272,7 @@
 	<house name="Harbour Place 1 (Shop)" houseid="2941" entryx="32336" entryy="32222" entryz="7" rent="800000" townid="8" size="14" beds="1" />
 	<house name="Harbour Place 2 (Shop)" houseid="2942" entryx="32336" entryy="32210" entryz="7" rent="600000" townid="8" size="19" beds="1" />
 	<house name="Harbour Place 3" houseid="2943" entryx="32331" entryy="32208" entryz="7" rent="800000" townid="8" size="84" beds="5" />
-	<house name="Harbour Place 4" houseid="2944" entryx="32332" entryy="32257" entryz="7" rent="80000" townid="8" size="14" />
+	<house name="Harbour Place 4" houseid="2944" entryx="32332" entryy="32257" entryz="7" rent="80000" townid="8" size="14" beds="5" />
 	<house name="Lower Swamp Lane 1" houseid="2945" entryx="32356" entryy="32262" entryz="7" rent="400000" townid="8" size="58" beds="4" />
 	<house name="Lower Swamp Lane 3" houseid="2946" entryx="32368" entryy="32262" entryz="7" rent="400000" townid="8" size="58" beds="4" />
 	<house name="Main Street 9, 1st floor (Shop)" houseid="2947" entryx="32377" entryy="32224" entryz="7" rent="200000" townid="8" size="25" beds="1" />

@@ -7290,7 +7290,7 @@ void Game::updatePremium(account::Account &account) {
 		save = true;
 	}
 
-	if (save && !account.SaveAccountDB()) {
+	if (save && account.SaveAccountDB() != 0) {
 		account.GetAccountIdentifier(&accountIdentifier);
 		SPDLOG_ERROR("Failed to save account: {}", accountIdentifier);
 	}

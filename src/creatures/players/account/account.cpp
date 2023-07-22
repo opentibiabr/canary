@@ -333,9 +333,9 @@ namespace account {
 			query << "`email` = " << db_->escapeString(accountIdentifier_) << " , ";
 		}
 
-		query << "`type` = " << account_type_ << " , "
-			  << "`password` = " << db_->escapeString(password_) << " , "
-			  << "`premdays` = " << premium_remaining_days_ << " , "
+		// query << "`type` = " << account_type_ << " , ";
+		// query << "`password` = " << db_->escapeString(password_) << " , "
+		query << "`premdays` = " << premium_remaining_days_ << " , "
 			  << "`lastday` = " << premium_last_day_;
 
 		if (id_ != 0) {

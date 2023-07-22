@@ -942,6 +942,9 @@ void Monster::onThinkTarget(uint32_t interval) {
 				challengeFocusDuration -= interval;
 				canChangeTarget = false;
 
+				SPDLOG_WARN("challengeFocusDuration: {}", challengeFocusDuration);
+				SPDLOG_WARN("canChangeTarget: {}", canChangeTarget);
+
 				if (challengeFocusDuration <= 0) {
 					challengeFocusDuration = 0;
 				}
@@ -961,6 +964,8 @@ void Monster::onThinkTarget(uint32_t interval) {
 			if (canChangeTarget) {
 				targetChangeTicks += interval;
 
+				SPDLOG_WARN("if canChangeTarget");
+
 				if (targetChangeTicks >= mType->info.changeTargetSpeed) {
 					targetChangeTicks = 0;
 					targetChangeCooldown = mType->info.changeTargetSpeed;
@@ -969,7 +974,10 @@ void Monster::onThinkTarget(uint32_t interval) {
 						challengeFocusDuration = 0;
 					}
 
+					SPDLOG_WARN("2 if canChangeTarget");
+
 					if (mType->info.changeTargetChance >= uniform_random(1, 100)) {
+						SPDLOG_WARN("3 if canChangeTarget");
 						if (mType->info.targetDistance <= 1) {
 							searchTarget(TARGETSEARCH_RANDOM);
 						} else {

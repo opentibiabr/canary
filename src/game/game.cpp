@@ -3657,10 +3657,11 @@ Item* Game::wrapItem(Item* item, House* house) {
 	if (isCaskItem(item->getID())) {
 		hiddenCharges = item->getSubType();
 	}
-	uint16_t oldItemID = item->getID();
 	if (house != nullptr && Item::items.getItemType(item->getID()).isBed()) {
+		item->getBed()->wakeUp(nullptr);
 		house->removeBed(item->getBed());
 	}
+	uint16_t oldItemID = item->getID();
 	Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
 	newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
 	item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + item->getName() + ">.");

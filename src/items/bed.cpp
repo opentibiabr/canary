@@ -169,6 +169,9 @@ void BedItem::wakeUp(Player* player) {
 	if (house == nullptr) {
 		return;
 	}
+	if (sleeperGUID == 0) {
+		return;
+	}
 
 	if (sleeperGUID != 0) {
 		if (player == nullptr) {

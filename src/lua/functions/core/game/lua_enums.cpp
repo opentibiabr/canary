@@ -262,6 +262,7 @@ void LuaEnums::initCombatEnums(lua_State* L) {
 	registerEnum(L, COMBAT_ICEDAMAGE);
 	registerEnum(L, COMBAT_HOLYDAMAGE);
 	registerEnum(L, COMBAT_DEATHDAMAGE);
+	registerEnum(L, COMBAT_NEUTRALDAMAGE);
 }
 
 void LuaEnums::initCombatParamEnums(lua_State* L) {

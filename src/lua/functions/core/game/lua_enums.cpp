@@ -263,6 +263,7 @@ void LuaEnums::initCombatEnums(lua_State* L) {
 	registerEnum(L, COMBAT_HOLYDAMAGE);
 	registerEnum(L, COMBAT_DEATHDAMAGE);
 	registerEnum(L, COMBAT_NEUTRALDAMAGE);
+	registerEnum(L, COMBAT_AGONYDAMAGE);
 }
 
 void LuaEnums::initCombatParamEnums(lua_State* L) {
@@ -574,6 +575,7 @@ void LuaEnums::initConstMeEnums(lua_State* L) {
 	registerEnum(L, CONST_ME_DIVINE_GRENADE);
 	registerEnum(L, CONST_ME_DIVINE_EMPOWERMENT);
 	registerEnum(L, CONST_ME_WATER_FLOATING_THRASH);
+	registerEnum(L, CONST_ME_AGONY);
 }
 
 void LuaEnums::initConstAniEnums(lua_State* L) {

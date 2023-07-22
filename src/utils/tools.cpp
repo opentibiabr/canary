@@ -998,6 +998,8 @@ size_t combatTypeToIndex(CombatType_t combatType) {
 			return 11;
 		case COMBAT_NEUTRALDAMAGE:
 			return 12;
+		case COMBAT_AGONYDAMAGE:
+			return 13;
 		default:
 			spdlog::error("Combat type {} is out of range", fmt::underlying(combatType));
 			// Uncomment for catch the function call with debug
@@ -1033,6 +1035,8 @@ std::string combatTypeToName(CombatType_t combatType) {
 			return "holy";
 		case COMBAT_DEATHDAMAGE:
 			return "death";
+		case COMBAT_AGONYDAMAGE:
+			return "agony";
 		default:
 			spdlog::error("Combat type {} is out of range", fmt::underlying(combatType));
 			// Uncomment for catch the function call with debug

@@ -5659,7 +5659,7 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 		return true;
 	}
 
-	if (damage.primary.value > 0) {
+	if (damage.primary.value > 0 || damage.primary.type == COMBAT_AGONYDAMAGE) {
 		return false;
 	}
 
@@ -5926,6 +5926,11 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 		case COMBAT_NEUTRALDAMAGE: {
 			color = TEXTCOLOR_NEUTRALDAMAGE;
 			effect = CONST_ME_REDSMOKE;
+			break;
+		}
+		case COMBAT_AGONYDAMAGE: {
+			color = TEXTCOLOR_DARKBROWN;
+			effect = CONST_ME_AGONY;
 			break;
 		}
 		default: {

@@ -661,6 +661,9 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 			} else if (immunity == "neutral") {
 				monsterType->info.damageImmunities |= COMBAT_NEUTRALDAMAGE;
 				pushBoolean(L, true);
+			} else if (immunity == "agony") {
+				monsterType->info.damageImmunities |= COMBAT_AGONYDAMAGE;
+				pushBoolean(L, true);
 			} else {
 				SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeCombatImmunities] - "
 							"Unknown immunity name {} for monster: {}",

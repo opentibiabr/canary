@@ -940,6 +940,7 @@ void Monster::onThinkTarget(uint32_t interval) {
 
 			if (challengeFocusDuration > 0) {
 				challengeFocusDuration -= interval;
+				canChangeTarget = false;
 
 				if (challengeFocusDuration <= 0) {
 					challengeFocusDuration = 0;

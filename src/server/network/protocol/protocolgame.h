@@ -45,10 +45,10 @@ struct TextMessage {
 };
 
 struct TokenInfo {
-			std::chrono::system_clock::time_point lastAttempt;
-			std::chrono::system_clock::time_point tokenExpiry;
-			std::string storedToken;
-	};
+		std::chrono::system_clock::time_point lastAttempt;
+		std::chrono::system_clock::time_point tokenExpiry;
+		std::string storedToken;
+};
 
 class ProtocolGame final : public Protocol {
 	public:
@@ -517,7 +517,7 @@ class ProtocolGame final : public Protocol {
 		}
 
 		bool checkAndRefreshToken(const std::string token, uint32_t accountId, const std::string &durationToken);
-		void sendErrorMessage(const std::string& message);
+		void sendErrorMessage(const std::string &message);
 };
 
 #endif // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

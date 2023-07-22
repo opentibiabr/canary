@@ -371,6 +371,7 @@ tasks.json
 config.lua
 config_canary.lua
 client_assertions.txt
+.env
 # Extensions
 *.ini
 *.otb

@@ -47613,7 +47613,7 @@
 		<attribute key="rotateTo" value="32513"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
-	<item id="32545" article="a" name="hammock headboard section">
+	<item id="32545" article="a" name="hammock head section">
 		<attribute key="type" value="bed"/>
 		<attribute key="bedpart" value="pillow"/>
 		<attribute key="bedpartof" value="33463"/>
@@ -47633,7 +47633,7 @@
 		<attribute key="rotateTo" value="32515"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
-	<item id="32547" article="a" name="straw headboard head section">
+	<item id="32547" article="a" name="straw bed head section">
 		<attribute key="type" value="bed"/>
 		<attribute key="bedpart" value="pillow"/>
 		<attribute key="bedpartof" value="33465"/>
@@ -47704,7 +47704,7 @@
 		<attribute key="rotateTo" value="32522"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
-	<item id="32554" article="a" name="hammock headboard section">
+	<item id="32554" article="a" name="hammock head section">
 		<attribute key="type" value="bed"/>
 		<attribute key="bedpart" value="pillow"/>
 		<attribute key="bedpartof" value="33463"/>
@@ -47724,7 +47724,7 @@
 		<attribute key="rotateTo" value="32524"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
-	<item id="32556" article="a" name="straw headboard head section">
+	<item id="32556" article="a" name="straw bed head section">
 		<attribute key="type" value="bed"/>
 		<attribute key="bedpart" value="pillow"/>
 		<attribute key="bedpartof" value="33465"/>
@@ -47795,7 +47795,7 @@
 		<attribute key="rotateTo" value="32531"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
-	<item id="32563" article="a" name="hammock footboard section">
+	<item id="32563" article="a" name="hammock foot section">
 		<attribute key="type" value="bed"/>
 		<attribute key="bedpart" value="blanket"/>
 		<attribute key="bedpartof" value="33554"/>
@@ -47815,7 +47815,7 @@
 		<attribute key="rotateTo" value="32533"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
-	<item id="32565" article="a" name="straw footboard head section">
+	<item id="32565" article="a" name="straw bed foot section">
 		<attribute key="type" value="bed"/>
 		<attribute key="bedpart" value="blanket"/>
 		<attribute key="bedpartof" value="33556"/>

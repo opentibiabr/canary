@@ -156,6 +156,7 @@ find_package(unofficial-libmariadb CONFIG REQUIRED)
 find_package(mio REQUIRED)
 find_package(Threads REQUIRED)
 find_package(ZLIB REQUIRED)
+find_package(Poco CONFIG REQUIRED Foundation Crypto)
 
 include(GNUInstallDirs)
 
@@ -300,6 +301,7 @@ PRIVATE
 	pch.cpp
 	security/argon.cpp
 	security/rsa.cpp
+	security/TOTPAuthenticator.cpp
 	server/network/connection/connection.cpp
 	server/network/message/networkmessage.cpp
 	server/network/message/outputmessage.cpp
@@ -359,6 +361,8 @@ if (MSVC)
 			fmt::fmt
 			magic_enum::magic_enum
 			mio::mio
+			Poco::Foundation
+			Poco::Crypto
 			protobuf::libprotobuf
 			pugixml::pugixml
 			spdlog::spdlog
@@ -389,6 +393,8 @@ else()
 			jsoncpp_static
 			magic_enum::magic_enum
 			mio::mio
+			Poco::Foundation
+			Poco::Crypto
 			protobuf::libprotobuf
 			pugixml::pugixml
 			spdlog::spdlog

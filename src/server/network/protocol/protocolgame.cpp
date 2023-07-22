@@ -30,6 +30,7 @@
 #include "creatures/combat/spells.h"
 #include "creatures/players/management/waitlist.h"
 #include "items/weapons/weapons.h"
+#include "security/TOTPAuthenticator.hpp"
 
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.h" file
@@ -660,24 +661,25 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	std::string authType = g_configManager().getString(AUTH_TYPE);
 	std::ostringstream ss;
 	std::string sessionKey = msg.getString();
-	std::string accountIdentifier = "";
+	std::istringstream sessionStream(sessionKey);
+	std::string accountIdentifier, token, durationToken;
 	std::string sessionOrPassword = sessionKey;
 
 	if (authType != "session") {
-		size_t pos = sessionKey.find('\n');
-		if (pos == std::string::npos) {
+		if (!std::getline(sessionStream, accountIdentifier, '\n')) {
 			ss << "You must enter your " << (oldProtocol ? "username" : "email") << ".";
 			disconnectClient(ss.str());
 			return;
 		}
-		accountIdentifier = sessionKey.substr(0, pos);
-		if (accountIdentifier.empty()) {
-			ss.str(std::string());
-			ss << "You must enter your " << (oldProtocol ? "username" : "email") << ".";
+		if (!std::getline(sessionStream, sessionOrPassword, '\n')) {
+			ss << "You must enter your password"
+			   << ".";
 			disconnectClient(ss.str());
 			return;
 		}
-		sessionOrPassword = sessionKey.substr(pos + 1);
+
+		std::getline(sessionStream, token, '\n');
+		std::getline(sessionStream, durationToken, '\n');
 	}
 
 	if (!oldProtocol && operatingSystem == CLIENTOS_NEW_LINUX) {
@@ -754,6 +756,10 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		output->addString(ss.str());
 		send(output);
 		g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::disconnect, getThis())));
+		return;
+	}
+
+	if (!token.empty() && accountId > 0 && !durationToken.empty() && !checkAndRefreshToken(token, accountId, durationToken)) {
 		return;
 	}
 
@@ -8407,4 +8413,52 @@ void ProtocolGame::parseSaveWheel(NetworkMessage &msg) {
 	}
 
 	addGameTask(&Game::playerSaveWheel, player->getID(), msg);
+}
+
+bool ProtocolGame::checkAndRefreshToken(const std::string token, uint32_t accountId, const std::string &durationToken) {
+	auto currentTime = std::chrono::system_clock::now();
+	int timeValueInt = std::stoi(durationToken);
+	auto oneHour = std::chrono::minutes(timeValueInt);
+
+	static phmap::flat_hash_map<uint32_t, TokenInfo> lastTokenCheck;
+
+	auto found = lastTokenCheck.find(accountId);
+	if (found != lastTokenCheck.end()) {
+		auto timeDiff = currentTime - found->second.lastAttempt;
+		if (timeDiff > std::chrono::seconds(10) && token != found->second.storedToken) {
+			lastTokenCheck.erase(accountId);
+		} else if (currentTime > found->second.tokenExpiry) {
+			found->second.lastAttempt = currentTime;
+			sendErrorMessage("Token expired, please login again.");
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	TOTPAuthenticator authenticator;
+	auto timerToken = static_cast<uint32_t>(std::chrono::system_clock::to_time_t(currentTime) / AUTHENTICATOR_PERIOD);
+	bool checkToken = token == authenticator.verifyToken(accountId, timerToken)
+		|| token == authenticator.verifyToken(accountId, timerToken - 2)
+		|| token == authenticator.verifyToken(accountId, timerToken - 1)
+		|| token == authenticator.verifyToken(accountId, timerToken + 1)
+		|| token == authenticator.verifyToken(accountId, timerToken + 2);
+
+	if (!checkToken) {
+		sendErrorMessage("Invalid token.");
+		return false;
+	}
+
+	lastTokenCheck[accountId] = { currentTime, currentTime + oneHour, token };
+	return true;
+}
+
+void ProtocolGame::sendErrorMessage(const std::string &message) {
+	std::stringstream ss;
+	ss << message;
+	auto output = OutputMessagePool::getOutputMessage();
+	output->addByte(0x14);
+	output->addString(ss.str());
+	send(output);
+	g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::disconnect, getThis())));
 }

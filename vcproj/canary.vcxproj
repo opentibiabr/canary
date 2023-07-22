@@ -331,6 +331,7 @@
     <ClCompile Include="..\src\protobuf\appearances.pb.cc" />
     <ClCompile Include="..\src\security\argon.cpp" />
     <ClCompile Include="..\src\security\rsa.cpp" />
+    <ClCompile Include="..\src\security\TOTPAuthenticator.cpp" />
     <ClCompile Include="..\src\server\network\connection\connection.cpp" />
     <ClCompile Include="..\src\server\network\message\networkmessage.cpp" />
     <ClCompile Include="..\src\server\network\message\outputmessage.cpp" />

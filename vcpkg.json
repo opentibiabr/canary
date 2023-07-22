@@ -20,6 +20,10 @@
       "features": [ "mariadbclient" ]
     },
     {
+      "name": "poco",
+      "features": [ "crypto" ]
+    },
+    {
       "name": "gmp",
       "platform": "linux"
     },

@@ -44,6 +44,12 @@ struct TextMessage {
 		} primary, secondary;
 };
 
+struct TokenInfo {
+			std::chrono::system_clock::time_point lastAttempt;
+			std::chrono::system_clock::time_point tokenExpiry;
+			std::string storedToken;
+	};
+
 class ProtocolGame final : public Protocol {
 	public:
 		// Static protocol information.
@@ -509,6 +515,9 @@ class ProtocolGame final : public Protocol {
 		void resetPlayerDeathTime() {
 			m_playerDeathTime = 0;
 		}
+
+		bool checkAndRefreshToken(const std::string token, uint32_t accountId, const std::string &durationToken);
+		void sendErrorMessage(const std::string& message);
 };
 
 #endif // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

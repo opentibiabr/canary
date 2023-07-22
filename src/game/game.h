@@ -590,7 +590,7 @@ class Game {
 
 		bool addInfluencedMonster(Monster* monster);
 		void sendUpdateCreature(const Creature* creature);
-		Item* wrapItem(Item* item, House* house = nullptr);
+		Item* wrapItem(Item* item, House* house);
 
 		/**
 		 * @brief Adds a player to the unique login map.

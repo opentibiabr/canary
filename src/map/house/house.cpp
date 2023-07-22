@@ -259,7 +259,7 @@ void House::handleWrapableItem(ItemList &moveItemList, Item* item, Player* playe
 		handleContainer(moveItemList, item);
 	}
 
-	Item* newItem = g_game().wrapItem(item);
+	Item* newItem = g_game().wrapItem(item, houseTile->getHouse());
 	if (newItem->isRemoved() && !newItem->getParent()) {
 		SPDLOG_WARN("[{}] item removed during wrapping - check ground type - player name: {} item id: {} position: {}", __FUNCTION__, player->getName(), item->getID(), houseTile->getPosition().toString());
 		return;

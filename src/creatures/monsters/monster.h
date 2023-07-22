@@ -152,7 +152,7 @@ class Monster final : public Creature {
 
 		void onThink(uint32_t interval) override;
 
-		bool challengeCreature(Creature* creature) override;
+		bool challengeCreature(Creature* creature, int targetChangeCooldown) override;
 
 		bool changeTargetDistance(int32_t distance, uint32_t duration = 12000);
 

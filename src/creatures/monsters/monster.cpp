@@ -2035,14 +2035,13 @@ void Monster::changeHealth(int32_t healthChange, bool sendHealthChange /* = true
 	Creature::changeHealth(healthChange, sendHealthChange);
 }
 
-bool Monster::challengeCreature(Creature* creature) {
+bool Monster::challengeCreature(Creature* creature, int targetChangeCooldown) {
 	if (isSummon()) {
 		return false;
 	}
 
 	bool result = selectTarget(creature);
 	if (result) {
-		targetChangeCooldown = 6000;
 		challengeFocusDuration = targetChangeCooldown;
 		targetChangeTicks = 0;
 		// Wheel of destiny

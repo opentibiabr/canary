@@ -549,7 +549,7 @@ int GlobalFunctions::luaDoTargetCombatDispel(lua_State* L) {
 }
 
 int GlobalFunctions::luaDoChallengeCreature(lua_State* L) {
-	// doChallengeCreature(cid, target)
+	// doChallengeCreature(cid, target, targetChangeCooldown)
 	Creature* creature = getCreature(L, 1);
 	if (!creature) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
@@ -564,7 +564,17 @@ int GlobalFunctions::luaDoChallengeCreature(lua_State* L) {
 		return 1;
 	}
 
-	target->challengeCreature(creature);
+	int targetChangeCooldown;
+	if (lua_isnil(L, 3)) { // if the third argument is nil
+		targetChangeCooldown = 6000; // use a default value
+	} else {
+		targetChangeCooldown = lua_tonumber(L, 3); // read the delay argument
+	}
+
+	// Assuming challengeCreature now takes a targetChangeCooldown argument.
+	// This function must be defined to take and handle the targetChangeCooldown.
+	target->challengeCreature(creature, targetChangeCooldown);
+
 	pushBoolean(L, true);
 	return 1;
 }

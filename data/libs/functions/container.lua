@@ -30,6 +30,9 @@ function Container.createLootItem(self, item, charm, modifier)
 		end
 	end
 
+	if itemCount == 0 then
+		return false
+	end
 	while (itemCount > 0) do
 		local n = math.min(itemCount, 100)
 		itemCount = itemCount - n

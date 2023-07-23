@@ -3,7 +3,7 @@ local config = {
 		teleportPosition = {x = 33491, y = 31398, z = 8},
 		bossName = "Irgix the Flimsy",
 		requiredLevel = 250,
-		timeToFightAgain = 10, -- In hour
+		timeToFightAgain = 20, -- In hour
 		timeToDefeat = 10, -- In minutes
 		destination = Position(33467, 31405, 8),
 		bossPosition = Position(33467, 31399, 8),
@@ -18,7 +18,7 @@ local config = {
 		teleportPosition = {x = 33566, y = 31475, z = 8},
 		bossName = "Unaz the Mean",
 		requiredLevel = 250,
-		timeToFightAgain = 10, -- In hour
+		timeToFightAgain = 20, -- In hour
 		timeToDefeat = 10, -- In minutes
 		destination = Position(33576, 31494, 8),
 		bossPosition = Position(33565, 31496, 8),
@@ -33,7 +33,7 @@ local config = {
 		teleportPosition = {x = 33509, y = 31450, z = 9},
 		bossName = "Vok The Freakish",
 		requiredLevel = 250,
-		timeToFightAgain = 10, -- In hour
+		timeToFightAgain = 20, -- In hour
 		timeToDefeat = 10, -- In minutes
 		destination = Position(33508, 31494, 9),
 		bossPosition = Position(33508, 31486, 9),

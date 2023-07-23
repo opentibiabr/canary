@@ -1,6 +1,6 @@
 local config = {
 	bossName = "Thorn Knight",
-	timeToFightAgain = 10, -- In hour
+	timeToFightAgain = 20, -- In hour
 	timeToDefeat = 15, -- In minutes
 	playerPositions = {
 		{ pos = Position(32657, 32877, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },

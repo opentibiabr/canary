@@ -1,6 +1,6 @@
 local config = {
 	bossName = "Lady Tenebris",
-	timeToFightAgain = 10, -- In hour
+	timeToFightAgain = 20, -- In hour
 	timeToDefeat = 15, -- In minutes
 	playerPositions = {
 		{ pos = Position(32902, 31623, 14), teleport = Position(32911, 31603, 14), effect = CONST_ME_TELEPORT },

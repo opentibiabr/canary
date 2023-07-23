@@ -1,7 +1,7 @@
 local config = {
 	bossName = "Thorn Knight",
-	timeToFightAgain = 20, -- In hour
-	timeToDefeatBoss = 15, -- In minutes
+	timeToFightAgain = 10, -- In hour
+	timeToDefeat = 15, -- In minutes
 	playerPositions = {
 		{ pos = Position(32657, 32877, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32657, 32878, 14), teleport = Position(32624, 32886, 14), effect = CONST_ME_TELEPORT },
@@ -88,7 +88,7 @@ function forgottenKnowledgeThorn.onUse(player, item, fromPosition, target, toPos
 				end
 			end
 			spec:removePlayers(player_remove)
-		end, config.timeToDefeatBoss * 60 * 1000)
+		end, config.timeToDefeat * 60 * 1000)
 	end
 end
 

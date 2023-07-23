@@ -25,7 +25,8 @@ monster.speed = 212
 
 monster.bosstiary = {
 	bossRaceId = 1784,
-	bossRace = RARITY_ARCHFOE
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosTimer,
 }
 
 monster.changeTarget = {

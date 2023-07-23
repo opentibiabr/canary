@@ -4,8 +4,7 @@ local config = {
 		position = Position(32726, 32727, 11)
 	},
 	requiredLevel = 250,
-	timeToFightAgain = 20 * 60 * 60,
-	timeToDefeatBoss = 20 * 60,
+
 	playerPositions = {
 		{pos = Position(32676, 32743, 11), teleport = Position(32726, 32733, 11), effect = CONST_ME_TELEPORT},
 		{pos = Position(32676, 32744, 11), teleport = Position(32726, 32733, 11), effect = CONST_ME_TELEPORT},
@@ -26,10 +25,6 @@ local config = {
 	storage = Storage.Quest.U11_80.TheSecretLibrary.ScourgeOfOblivionTimer
 }
 
-local scourgeOfOblivionLever = Action()
-function scourgeOfOblivionLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	return CreateDefaultLeverBoss(player, config)
-end
-
-scourgeOfOblivionLever:position({x = 32675, y = 32743, z = 11})
-scourgeOfOblivionLever:register()
+local lever = BossLever(config)
+lever:position({x = 32675, y = 32743, z = 11})
+lever:register()

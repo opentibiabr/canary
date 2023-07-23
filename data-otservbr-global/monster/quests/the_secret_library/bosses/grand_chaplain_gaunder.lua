@@ -58,6 +58,10 @@ monster.flags = {
 	canWalkOnPoison = true
 }
 
+monster.events = {
+	"GrandChaplainGaunderDeath"
+}
+
 monster.light = {
 	level = 0,
 	color = 0

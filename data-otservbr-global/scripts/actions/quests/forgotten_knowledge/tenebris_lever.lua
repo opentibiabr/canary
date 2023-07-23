@@ -1,7 +1,7 @@
 local config = {
 	bossName = "Lady Tenebris",
-	timeToFightAgain = 20, -- In hour
-	timeToDefeatBoss = 15, -- In minutes
+	timeToFightAgain = 10, -- In hour
+	timeToDefeat = 15, -- In minutes
 	playerPositions = {
 		{ pos = Position(32902, 31623, 14), teleport = Position(32911, 31603, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32902, 31624, 14), teleport = Position(32911, 31603, 14), effect = CONST_ME_TELEPORT },
@@ -88,7 +88,7 @@ function forgottenKnowledgeTenebris.onUse(player, item, fromPosition, target, to
 				end
 			end
 			spec:removePlayers(player_remove)
-		end, config.timeToDefeatBoss * 60 * 1000)
+		end, config.timeToDefeat * 60 * 1000)
 	end
 end
 

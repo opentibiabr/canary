@@ -52,7 +52,8 @@ function graveScarlettUid.onUse(player, item, fromPosition, target, toPosition, 
 				local nPlayer = Player(p)
 				if nPlayer then
 					nPlayer:teleportTo(Position(33395, 32656, 6))
-					nPlayer:setStorageValue(info.timer, os.time() + 20*60*60)
+					nPlayer:setStorageValue(info.timer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
+					nPlayer:sendBosstiaryCooldownTimer()
 				end
 			end
 			local scarlett = Game.createMonster("Scarlett Etzel", Position(33396, 32640, 6))

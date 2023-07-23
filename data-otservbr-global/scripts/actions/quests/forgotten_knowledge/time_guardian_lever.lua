@@ -1,7 +1,7 @@
 local config = {
 	bossName = "The Time Guardian",
-	timeToFightAgain = 20, -- In hour
-	timeToDefeatBoss = 15, -- In minutes
+	timeToFightAgain = 10, -- In hour
+	timeToDefeat = 15, -- In minutes
 	playerPositions = {
 		{ pos = Position(33010, 31660, 14), teleport = Position(32977, 31667, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33010, 31661, 14), teleport = Position(32977, 31667, 14), effect = CONST_ME_TELEPORT },
@@ -98,7 +98,7 @@ function forgottenKnowledgeGuardianLever.onUse(player, item, fromPosition, targe
 				end
 			end
 			spec:removePlayers(player_remove)
-		end, config.timeToDefeatBoss * 60 * 1000)
+		end, config.timeToDefeat * 60 * 1000)
 	end
 end
 

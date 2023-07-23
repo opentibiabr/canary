@@ -290,6 +290,8 @@ bool ConfigManager::load() {
 	floating[RATE_BOSS_HEALTH] = getGlobalFloat(L, "rateBossHealth", 1.0);
 	floating[RATE_BOSS_ATTACK] = getGlobalFloat(L, "rateBossAttack", 1.0);
 	floating[RATE_BOSS_DEFENSE] = getGlobalFloat(L, "rateBossDefense", 1.0);
+	integer[BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN] = getGlobalNumber(L, "bossDefaultTimeToFightAgain", 20 * 60 * 60);
+	integer[BOSS_DEFAULT_TIME_TO_DEFEAT] = getGlobalNumber(L, "bossDefaultTimeToDefeat", 20 * 60);
 
 	floating[RATE_NPC_HEALTH] = getGlobalFloat(L, "rateNpcHealth", 1.0);
 	floating[RATE_NPC_ATTACK] = getGlobalFloat(L, "rateNpcAttack", 1.0);

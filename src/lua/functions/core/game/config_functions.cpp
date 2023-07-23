@@ -134,6 +134,8 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", RATE_BOSS_HEALTH);
 	registerEnumIn(L, "configKeys", RATE_BOSS_ATTACK);
 	registerEnumIn(L, "configKeys", RATE_BOSS_DEFENSE);
+	registerEnumIn(L, "configKeys", BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN);
+	registerEnumIn(L, "configKeys", BOSS_DEFAULT_TIME_TO_DEFEAT);
 	registerEnumIn(L, "configKeys", RATE_NPC_HEALTH);
 	registerEnumIn(L, "configKeys", RATE_NPC_ATTACK);
 	registerEnumIn(L, "configKeys", RATE_NPC_DEFENSE);
@@ -210,6 +212,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", HAZARD_PODS_DAMAGE);
 	registerEnumIn(L, "configKeys", TOGGLE_HAZARDSYSTEM);
 	registerEnumIn(L, "configKeys", LOW_LEVEL_BONUS_EXP);
+
 	registerEnumIn(L, "configKeys", LOYALTY_ENABLED);
 	registerEnumIn(L, "configKeys", LOYALTY_POINTS_PER_CREATION_DAY);
 	registerEnumIn(L, "configKeys", LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT);

@@ -45,7 +45,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 		}
 
 		while (item_count--) {
-			loadItem(propStream, tile);
+			loadItem(propStream, tile, true);
 		}
 	} while (result->next());
 	SPDLOG_INFO("Loaded house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
@@ -114,7 +114,9 @@ bool IOMapSerialize::loadContainer(PropStream &propStream, Container* container)
 	return true;
 }
 
-bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent) {
+uint32_t NEW_BEDS_START_ID = 32482;
+
+bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent, bool isHouseItem /*= false*/) {
 	uint16_t id;
 	if (!propStream.read<uint16_t>(id)) {
 		return false;
@@ -126,6 +128,9 @@ bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent) {
 	}
 
 	const ItemType &iType = Item::items[id];
+	if (isHouseItem && iType.isBed() && id < NEW_BEDS_START_ID) {
+		return false;
+	}
 	if (iType.moveable || !tile || iType.isCarpet() || iType.isBed()) {
 		// create a new item
 		Item* item = Item::CreateItem(id);

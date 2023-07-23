@@ -970,7 +970,6 @@ void Monster::onThinkTarget(uint32_t interval) {
 					}
 
 					if (mType->info.changeTargetChance >= uniform_random(1, 100)) {
-						SPDLOG_WARN("3 if canChangeTarget");
 						if (mType->info.targetDistance <= 1) {
 							searchTarget(TARGETSEARCH_RANDOM);
 						} else {

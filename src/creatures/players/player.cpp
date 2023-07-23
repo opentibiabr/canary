@@ -1159,12 +1159,13 @@ void Player::getRewardList(std::vector<uint64_t> &rewards) const {
 std::vector<Item*> Player::getRewardsFromContainer(const Container* container) const {
 	std::vector<Item*> rewardItemsVector;
 	if (container) {
-		for (auto item : container->getItems(true)) {
+		for (auto item : container->getItems(false)) {
 			if (item->getID() == ITEM_REWARD_CONTAINER) {
-				continue;
+				auto items = getRewardsFromContainer(item->getContainer());
+				rewardItemsVector.insert(rewardItemsVector.end(), items.begin(), items.end());
+			} else {
+				rewardItemsVector.push_back(item);
 			}
-
-			rewardItemsVector.push_back(item);
 		}
 	}
 
@@ -1176,13 +1177,15 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 	if (fromCorpse) {
 		auto rewardId = fromCorpse->getAttribute<time_t>(ItemAttribute_t::DATE);
 		auto reward = getReward(rewardId, false);
+		if (reward->empty()) {
+			return RETURNVALUE_REWARDCONTAINERISEMPTY;
+		}
 		rewardItemsVector = getRewardsFromContainer(reward->getContainer());
 	} else {
+		if (rewardChest->empty()) {
+			return RETURNVALUE_REWARDCHESTISEMPTY;
+		}
 		rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());
-	}
-
-	if (rewardItemsVector.empty()) {
-		return fromCorpse ? RETURNVALUE_REWARDCONTAINERISEMPTY : RETURNVALUE_REWARDCHESTISEMPTY;
 	}
 
 	auto rewardCount = rewardItemsVector.size();

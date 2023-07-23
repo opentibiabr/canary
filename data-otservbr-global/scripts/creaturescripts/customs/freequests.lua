@@ -118,7 +118,7 @@ local questTable = {
 	{storage = Storage.ForgottenKnowledge.LloydKilled, storageValue = 1},
 	{storage = Storage.ForgottenKnowledge.LadyTenebrisKilled, storageValue = 1},
 	{storage = Storage.ForgottenKnowledge.AccessMachine, storageValue = 1},
-	{storage = Storage.BarbarianTest.Questline, storageValue = 1},
+	{storage = Storage.BarbarianTest.Questline, storageValue = 8},
 	{storage = Storage.BarbarianTest.Mission01, storageValue = 3},
 	{storage = Storage.BarbarianTest.Mission02, storageValue = 3},
 	{storage = Storage.BarbarianTest.Mission03, storageValue = 3},
@@ -345,6 +345,8 @@ local questTable = {
 	{storage = Storage.Quest.U13_10.CradleOfMonsters.Access.LowerIngol, storageValue = 1},
 	{storage = Storage.Quest.U13_10.CradleOfMonsters.Access.Monster, storageValue = 1},
 	{storage = Storage.Quest.U13_10.CradleOfMonsters.Access.MutatedAbomination, storageValue = 1},
+	{storage = Storage.Quest.U8_54.TheNewFrontier.SnakeHeadTeleport, storageValue = 1},
+	{storage = Storage.LiquidBlackQuest.Visitor, storageValue = 5},
 }
 
 local function playerFreeQuestStart(playerId, index)

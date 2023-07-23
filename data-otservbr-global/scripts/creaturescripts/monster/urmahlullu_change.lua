@@ -1,11 +1,6 @@
 local timetochange = 60 --in seconds
 local time = os.time()
 
--- local bodyToRemove = {
--- 	{ itemId = 31413 },
--- 	{ itemId = 2886 },
--- }
-
 local healthMultiplier = configManager.getFloat(configKeys.RATE_BOSS_HEALTH)
 
 --base urmahlullu have 515000/515000 hp, next form 400000/515000,

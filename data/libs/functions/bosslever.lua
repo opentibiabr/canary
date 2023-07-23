@@ -6,6 +6,7 @@
 ---@field private timeToDefeat number
 ---@field private requiredLevel number
 ---@field private storage number
+---@field private onUseExtra function
 ---@field private _position Position
 ---@field private _uid number
 ---@field private _aid number
@@ -34,9 +35,10 @@ local config = {
 		from = Position(33607, 32553, 13),
 		to = Position(33627, 32570, 13)
 	},
-	condition = function(creature)
-		return true
-	end, -- If it is nil the condition will be default
+	onUseExtra = function(player)
+		player:teleportTo(Position(33618, 32523, 15))
+		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+	end,
 	exit = Position(33618, 32523, 15),
 	storage = Storage.Quest.U12_00.TheDreamCourts.FacelessBaneTime
 }
@@ -58,6 +60,7 @@ setmetatable(BossLever, {
 			createBoss = boss.createFunction,
 			storage = config.storage,
 			playerPositions = config.playerPositions,
+			onUseExtra = config.onUseExtra or function() end,
 			exit = config.exit,
 			area = config.specPos,
 			monsters = config.monsters or {},
@@ -141,6 +144,7 @@ function BossLever:onUse(player)
 			end
 			return false
 		end
+		self.onUseExtra(creature)
 		return true
 	end)
 

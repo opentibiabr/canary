@@ -1,10 +1,12 @@
+local nictrosPosition = Position(33427, 31428, 13)
+local baelocPosition = Position(33422, 31428, 13)
+
 local config = {
 	boss = {
 		name = "Sir Nictros",
 		createFunction = function()
-			local nictros = Game.createMonster("Sir Nictros", Position(33427, 31428, 13), true, true):registerEvent(
-			"SirNictrosThink")
-			local baeloc = Game.createMonster("Sir Baeloc", Position(33422, 31428, 13), true, true):registerEvent("SirBaelocThink")
+			local nictros = Game.createMonster("Sir Nictros", nictrosPosition, true, true):registerEvent("SirNictrosThink")
+			local baeloc = Game.createMonster("Sir Baeloc", baelocPosition, true, true):registerEvent("SirBaelocThink")
 			return nictros and baeloc
 		end,
 	},
@@ -20,6 +22,12 @@ local config = {
 		from = Position(33414, 31426, 13),
 		to = Position(33433, 31449, 13),
 	},
+	onUseExtra = function(player)
+		addEvent(function()
+			local nictros = Tile(nictrosPosition):getTopCreature()
+			nictros:teleportTo(Position(33427, 31436, 13))
+		end, 5 * 1000)
+	end,
 	exit = Position(33290, 32474, 9),
 	storage = Storage.Quest.U12_20.GraveDanger.Bosses.BaelocNictrosTimer
 }

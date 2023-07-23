@@ -230,54 +230,84 @@ bool IOLoginData::savePlayer(Player* player) {
 	try {
 		DBTransaction transaction;
 		if (!transaction.begin()) {
+			SPDLOG_WARN("[{}] - Transaction couldn't start: {}", __FUNCTION__, player->getName());
 			return false;
 		}
-		// First, an UPDATE query to write the player itself
-		IOLoginDataSave::savePlayerFirst(player);
 
-		// stash saving
-		IOLoginDataSave::savePlayerStash(player);
+		if (!IOLoginDataSave::savePlayerFirst(player)) {
+			SPDLOG_WARN("[{}] - Failed to save player first: {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
-		// learned spells
-		IOLoginDataSave::savePlayerSpells(player);
+		if (!IOLoginDataSave::savePlayerStash(player)) {
+			SPDLOG_WARN("[{}] - Failed to save player stash: {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
-		// player kills
-		IOLoginDataSave::savePlayerKills(player);
+		if (!IOLoginDataSave::savePlayerSpells(player)) {
+			SPDLOG_WARN("[{}] - Failed to save player spells: {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
-		// player bestiary charms and Bestiary tracker
-		IOLoginDataSave::savePlayerBestiarySystem(player);
+		if (!IOLoginDataSave::savePlayerKills(player)) {
+			SPDLOG_WARN("[{}] - Failed to save player kills: {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
-		// item saving
-		IOLoginDataSave::savePlayerItem(player);
+		if (!IOLoginDataSave::savePlayerBestiarySystem(player)) {
+			SPDLOG_WARN("[{}] - Failed to save player bestiary system: {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
-		// save depot items
-		IOLoginDataSave::savePlayerDepotItems(player);
+		if (!IOLoginDataSave::savePlayerItem(player)) {
+			SPDLOG_WARN("[{}] - Failed to save player item: {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
-		// save reward items
-		IOLoginDataSave::saveRewardItems(player);
+		if (!IOLoginDataSave::savePlayerDepotItems(player)) {
+			SPDLOG_WARN("[{}] - Failed to save depot items: {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
-		// save inbox items
-		IOLoginDataSave::savePlayerInbox(player);
+		if (!IOLoginDataSave::saveRewardItems(player)) {
+			SPDLOG_WARN("[{}] - Failed to save reward items: {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
-		// save prey class
-		IOLoginDataSave::savePlayerPreyClass(player);
+		if (!IOLoginDataSave::savePlayerInbox(player)) {
+			SPDLOG_WARN("[{}] - Failed to save player inbox: {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
-		// save task hunting class
-		IOLoginDataSave::savePlayerTaskHuntingClass(player);
+		if (!IOLoginDataSave::savePlayerPreyClass(player)) {
+			SPDLOG_WARN("[{}] - Failed to save player prey class: {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
-		// save forge history
-		IOLoginDataSave::savePlayerForgeHistory(player);
+		if (!IOLoginDataSave::savePlayerTaskHuntingClass(player)) {
+			SPDLOG_WARN("[{}] - Failed to save player task hunting class: {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
-		// save forge history
-		IOLoginDataSave::savePlayerBosstiary(player);
+		if (!IOLoginDataSave::savePlayerForgeHistory(player)) {
+			SPDLOG_WARN("[{}] - Failed to save player forge history: {}", __FUNCTION__, player->getName());
+			return false;
+		}
+
+		if (!IOLoginDataSave::savePlayerBosstiary(player)) {
+			SPDLOG_WARN("[{}] - Failed to save player bosstiary: {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
 		if (!player->wheel()->saveDBPlayerSlotPointsOnLogout()) {
-			spdlog::warn("Failed to save player wheel info to player: {}", player->getName());
+			SPDLOG_WARN("[{}] - Failed to save player wheel info: {}", __FUNCTION__, player->getName());
 			return false;
 		}
 
-		// save storage
-		IOLoginDataSave::savePlayerStorage(player);
+		if (!IOLoginDataSave::savePlayerStorage(player)) {
+			SPDLOG_WARN("[{}] - Failed to save player storage: {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
 		return transaction.commit();
 	} catch (const std::system_error &error) {

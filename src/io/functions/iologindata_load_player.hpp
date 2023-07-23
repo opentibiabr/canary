@@ -26,6 +26,7 @@ class IOLoginDataLoad : public IOLoginData {
 		static void loadPlayerGuild(Player* player, DBResult_ptr result);
 		static void loadPlayerStashItems(Player* player, DBResult_ptr result);
 		static void loadPlayerBestiaryCharms(Player* player, DBResult_ptr result);
+		static void loadPlayerInstantSpellList(Player* player, DBResult_ptr result);
 		static void loadPlayerInventoryItems(Player* player, DBResult_ptr result);
 		static void loadPlayerStoreInbox(Player* player);
 		static void loadPlayerDepotItems(Player* player, DBResult_ptr result);

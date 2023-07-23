@@ -10,17 +10,17 @@
 #include "pch.hpp"
 
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "io/functions/iologindata_load_player.hpp"
 #include "game/game.h"
-
 
 bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
 	Database &db = Database::getInstance();
+
 	std::ostringstream query;
 	query << "SELECT `id`, `account_id`, `group_id`, `deletion`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
-	if (!g_configManager().getBoolean(FREE_PREMIUM)) {
-		query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
-	}
-
+	query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
+	query << ", (SELECT `premdays_purchased` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days_purchased`";
+	query << ", (SELECT `creation` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `creation_timestamp`";
 	query << " FROM `players` WHERE `name` = " << db.escapeString(name);
 	DBResult_ptr result = db.storeQuery(query.str());
 	if (!result) {
@@ -45,6 +45,34 @@ bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
 	} else {
 		player->premiumDays = std::numeric_limits<uint16_t>::max();
 	}
+
+	/*
+	  Loyalty system:
+	  - If creation timestamp is 0, that means it's the first time the player is trying to login on this account.
+	  - Since it's the first login, we must update the database manually.
+	  - This should be handled by the account manager, but not all of then do it so we handle it by ourself.
+	*/
+	time_t creation = result->getNumber<time_t>("creation_timestamp");
+	int32_t premiumDays = result->getNumber<int32_t>("premium_days");
+	int32_t premiumDaysPurchased = result->getNumber<int32_t>("premium_days_purchased");
+	if (creation == 0) {
+		query.str(std::string());
+		query << "UPDATE `accounts` SET `creation` = " << static_cast<uint32_t>(time(nullptr)) << " WHERE `id` = " << player->accountNumber;
+		db.executeQuery(query.str());
+	}
+
+	// If the player has more premium days than he purchased, it means data existed before the loyalty system was implemented.
+	// Update premdays_purchased to the minimum acceptable value.
+	if (premiumDays > premiumDaysPurchased) {
+		query.str(std::string());
+		query << "UPDATE `accounts` SET `premdays_purchased` = " << premiumDays << " WHERE `id` = " << player->accountNumber;
+		db.executeQuery(query.str());
+	}
+
+	player->loyaltyPoints = static_cast<uint32_t>(std::ceil((static_cast<double>(time(nullptr) - creation)) / 86400)) * g_configManager().getNumber(LOYALTY_POINTS_PER_CREATION_DAY)
+		+ (premiumDaysPurchased - premiumDays) * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_SPENT)
+		+ premiumDaysPurchased * g_configManager().getNumber(LOYALTY_POINTS_PER_PREMIUM_DAY_PURCHASED);
+
 	return true;
 }
 
@@ -61,10 +89,13 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 	acc.SetDatabaseInterface(&db);
 	acc.LoadAccountDB(accountId);
 
+	bool oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL) && player->getProtocolVersion() < 1200;
 	player->setGUID(result->getNumber<uint32_t>("id"));
 	player->name = result->getString("name");
 	acc.GetID(&(player->accountNumber));
 	acc.GetAccountType(&(player->accountType));
+	acc.GetCoins(&(player->coinBalance));
+	acc.GetTransferableCoins(&(player->coinTransferableBalance));
 
 	if (g_configManager().getBoolean(FREE_PREMIUM)) {
 		player->premiumDays = std::numeric_limits<uint16_t>::max();
@@ -72,13 +103,18 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 		acc.GetPremiumRemaningDays(&(player->premiumDays));
 	}
 
+	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
+	if (!group) {
+		SPDLOG_ERROR("Player {} has group id {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
+		return false;
+	}
+	player->setGroup(group);
+
 	if (!player->setVocation(result->getNumber<uint16_t>("vocation"))) {
 		SPDLOG_ERROR("Player {} has vocation id {} which doesn't exist", player->name, result->getNumber<uint16_t>("vocation"));
 		return false;
 	}
 
-	acc.GetCoins(&(player->coinBalance));
-	acc.GetTransferableCoins(&(player->coinTransferableBalance));
 	player->setBankBalance(result->getNumber<uint64_t>("balance"));
 	player->quickLootFallbackToMainContainer = result->getNumber<bool>("quickloot_fallback");
 	player->setSex(static_cast<PlayerSex_t>(result->getNumber<uint16_t>("sex")));
@@ -88,6 +124,16 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 	player->mana = result->getNumber<uint32_t>("mana");
 	player->manaMax = result->getNumber<uint32_t>("manamax");
 	player->magLevel = result->getNumber<uint32_t>("maglevel");
+	uint64_t nextManaCount = player->vocation->getReqMana(player->magLevel + 1);
+	uint64_t manaSpent = result->getNumber<uint64_t>("manaspent");
+	if (manaSpent > nextManaCount) {
+		manaSpent = 0;
+	}
+	player->manaSpent = manaSpent;
+	player->magLevelPercent = Player::getPercentLevel(player->manaSpent, nextManaCount);
+	player->health = result->getNumber<int32_t>("health");
+	player->healthMax = result->getNumber<int32_t>("healthmax");
+	player->isDailyReward = static_cast<uint8_t>(result->getNumber<uint16_t>("isreward"));
 	player->loginPosition.x = result->getNumber<uint16_t>("posx");
 	player->loginPosition.y = result->getNumber<uint16_t>("posy");
 	player->loginPosition.z = static_cast<uint8_t>(result->getNumber<uint16_t>("posz"));
@@ -99,30 +145,9 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 	player->addBossPoints(result->getNumber<uint32_t>("boss_points"));
 	player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
 	player->lastLogout = result->getNumber<time_t>("lastlogout");
-	player->staminaMinutes = result->getNumber<uint16_t>("stamina");
-	player->setStoreXpBoost(result->getNumber<uint16_t>("xpboost_value"));
-	player->setExpBoostStamina(result->getNumber<uint16_t>("xpboost_stamina"));
-	player->setManaShield(result->getNumber<uint16_t>("manashield"));
-	player->setMaxManaShield(result->getNumber<uint16_t>("max_manashield"));
-	player->isDailyReward = static_cast<uint8_t>(result->getNumber<uint16_t>("isreward"));
-	player->health = result->getNumber<int32_t>("health");
-	player->healthMax = result->getNumber<int32_t>("healthmax");
-
-	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
-	if (!group) {
-		SPDLOG_ERROR("Player {} has group id {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
-		return false;
-	}
-	player->setGroup(group);
-
-	uint64_t nextManaCount = player->vocation->getReqMana(player->magLevel + 1);
-	uint64_t manaSpent = result->getNumber<uint64_t>("manaspent");
-	if (manaSpent > nextManaCount) {
-		manaSpent = 0;
-	}
-	player->manaSpent = manaSpent;
-	player->magLevelPercent = Player::getPercentLevel(player->manaSpent, nextManaCount);
-
+	player->offlineTrainingTime = result->getNumber<int32_t>("offlinetraining_time") * 1000;
+	auto skill = result->getInt8FromString(result->getString("offlinetraining_skill"), __FUNCTION__);
+	player->setOfflineTrainingSkill(skill);
 	Town* town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
 	if (!town) {
 		SPDLOG_ERROR("Player {} has town id {} which doesn't exist", player->name, result->getNumber<uint16_t>("town_id"));
@@ -134,6 +159,13 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 	if (loginPos.x == 0 && loginPos.y == 0 && loginPos.z == 0) {
 		player->loginPosition = player->getTemplePosition();
 	}
+
+	player->staminaMinutes = result->getNumber<uint16_t>("stamina");
+	player->setStoreXpBoost(result->getNumber<uint16_t>("xpboost_value"));
+	player->setExpBoostStamina(result->getNumber<uint16_t>("xpboost_stamina"));
+
+	player->setManaShield(result->getNumber<uint16_t>("manashield"));
+	player->setMaxManaShield(result->getNumber<uint16_t>("max_manashield"));
 }
 
 void IOLoginDataLoad::loadPlayerExperience(Player* player, DBResult_ptr result) {
@@ -269,10 +301,6 @@ void IOLoginDataLoad::loadPlayerSkill(Player* player, DBResult_ptr result) {
 		player->skills[i].tries = skillTries;
 		player->skills[i].percent = Player::getPercentLevel(skillTries, nextSkillTries);
 	}
-
-	player->offlineTrainingTime = result->getNumber<int32_t>("offlinetraining_time") * 1000;
-	auto skill = result->getInt8FromString(result->getString("offlinetraining_skill"), __FUNCTION__);
-	player->setOfflineTrainingSkill(skill);
 }
 
 void IOLoginDataLoad::loadPlayerKills(Player* player, DBResult_ptr result) {
@@ -411,8 +439,16 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(Player* player, DBResult_ptr resu
 		query << "INSERT INTO `player_charms` (`player_guid`) VALUES (" << player->getGUID() << ')';
 		Database::getInstance().executeQuery(query.str());
 	}
+}
 
-	query.str("");
+void IOLoginDataLoad::loadPlayerInstantSpellList(Player* player, DBResult_ptr result) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		return;
+	}
+
+	Database &db = Database::getInstance();
+	std::ostringstream query;
 	query << "SELECT `player_id`, `name` FROM `player_spells` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
 		do {
@@ -768,31 +804,6 @@ void IOLoginDataLoad::loadPlayerBosstiary(Player* player, DBResult_ptr result) {
 	}
 }
 
-void IOLoginDataLoad::loadPlayerInitializeSystem(Player* player) {
-	if (!player) {
-		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
-		return;
-	}
-	
-	// Wheel loading
-	player->wheel()->loadDBPlayerSlotPointsOnLogin();
-	player->wheel()->initializePlayerData();
-
-	player->initializePrey();
-	player->initializeTaskHunting();
-}
-
-void IOLoginDataLoad::loadPlayerUpdateSystem(Player* player) {
-	if (!player) {
-		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
-		return;
-	}
-
-	player->updateBaseSpeed();
-	player->updateInventoryWeight();
-	player->updateItemsLight(true);
-}
-
 void IOLoginDataLoad::bindRewardBag(Player* player, RewardItemsMap &rewardItemsMap) {
 	if (!player) {
 		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
@@ -831,4 +842,29 @@ void IOLoginDataLoad::insertItemsIntoRewardBag(const RewardItemsMap &rewardItems
 			container->internalAddThing(item);
 		}
 	}
+}
+
+void IOLoginDataLoad::loadPlayerInitializeSystem(Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		return;
+	}
+
+	// Wheel loading
+	player->wheel()->loadDBPlayerSlotPointsOnLogin();
+	player->wheel()->initializePlayerData();
+
+	player->initializePrey();
+	player->initializeTaskHunting();
+}
+
+void IOLoginDataLoad::loadPlayerUpdateSystem(Player* player) {
+	if (!player) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
+		return;
+	}
+
+	player->updateBaseSpeed();
+	player->updateInventoryWeight();
+	player->updateItemsLight(true);
 }

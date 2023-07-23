@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
 #include "io/functions/iologindata_save_player.hpp"
+#include "game/game.h"
 
 bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {
@@ -110,11 +110,11 @@ bool IOLoginDataSave::savePlayerFirst(Player* player) {
 		return false;
 	}
 
-	Database &db = Database::getInstance();
-
 	if (player->getHealth() <= 0) {
 		player->changeHealth(1);
 	}
+
+	Database &db = Database::getInstance();
 
 	std::ostringstream query;
 	query << "SELECT `save` FROM `players` WHERE `id` = " << player->getGUID();

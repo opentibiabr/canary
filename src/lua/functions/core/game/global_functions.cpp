@@ -565,7 +565,7 @@ int GlobalFunctions::luaDoChallengeCreature(lua_State* L) {
 	}
 
 	int targetChangeCooldown;
-	if (lua_isnil(L, 3)) { // if the third argument is nil
+	if (lua_tonumber(L, 3)) { // if the third argument is nil
 		targetChangeCooldown = 6000; // use a default value
 	} else {
 		targetChangeCooldown = lua_tonumber(L, 3); // read the delay argument

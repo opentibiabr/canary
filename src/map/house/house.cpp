@@ -410,8 +410,8 @@ void AccessList::parseList(const std::string &list) {
 	playerList.clear();
 	guildRankList.clear();
 	allowEveryone = false;
+	this->list = validList;
 	if (list.empty()) {
-		this->list = validList;
 		return;
 	}
 
@@ -444,7 +444,6 @@ void AccessList::parseList(const std::string &list) {
 			addPlayer(line);
 		}
 	}
-	this->list = validList;
 }
 
 void AccessList::addPlayer(const std::string &name) {

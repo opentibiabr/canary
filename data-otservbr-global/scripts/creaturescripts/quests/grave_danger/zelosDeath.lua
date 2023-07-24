@@ -1,5 +1,5 @@
 local config = {
-    centerPosition = Position(33443, 31545, 13), -- Center Room  
+    centerPosition = Position(33443, 31545, 13),
 	rangeX = 11,
 	rangeY = 11,
 }

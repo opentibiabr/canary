@@ -14,7 +14,7 @@ function KingzelosDeath.onPrepareDeath(creature)
             cid:remove()
         elseif cid:isPlayer() then
             if cid:getStorageValue(67099) == -1 then
-                cid:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Congratulations you won Hand of the Inquisition Outfit.")
+                cid:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Congratulations you received the Hand of the Inquisition Outfit.")
                 cid:addOutfit(1244, 0)
                 cid:addOutfit(1243, 0)
                 cid:setStorageValue(67099, 1)

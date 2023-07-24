@@ -6645,13 +6645,17 @@ void Game::sendEffects(
 void Game::applyCharmRune(
 	const Monster* targetMonster, Player* attackerPlayer, Creature* target, const int32_t &realDamage
 ) const {
-	if (!targetMonster) {
+	if (!targetMonster || !attackerPlayer) {
 		return;
 	}
 	if (charmRune_t activeCharm = g_iobestiary().getCharmFromTarget(attackerPlayer, g_monsters().getMonsterTypeByRaceId(targetMonster->getRaceId()));
 		activeCharm != CHARM_NONE) {
-		if (Charm* charm = g_iobestiary().getBestiaryCharm(activeCharm);
-			charm->type == CHARM_OFFENSIVE && (charm->chance >= normal_random(0, 100))) {
+		Charm* charm = g_iobestiary().getBestiaryCharm(activeCharm);
+		int8_t chance = charm->id == CHARM_CRIPPLE ? charm->chance : charm->chance + attackerPlayer->getCharmChanceModifier();
+		if (isDevMode()) {
+			spdlog::info("charm chance: {}, base: {}, bonus: {}", chance, charm->chance, attackerPlayer->getCharmChanceModifier());
+		}
+		if (charm->type == CHARM_OFFENSIVE && (chance >= normal_random(0, 100))) {
 			g_iobestiary().parseCharmCombat(charm, attackerPlayer, target, realDamage);
 		}
 	}

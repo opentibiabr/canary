@@ -141,6 +141,8 @@ class ConditionAttributes final : public ConditionGeneric {
 		int32_t currentStat = 0;
 		int32_t currentBuff = 0;
 
+		int8_t charmChanceModifier = 0;
+
 		// 12.72 mechanics
 		std::array<int32_t, COMBAT_COUNT> absorbs = {};
 		std::array<int32_t, COMBAT_COUNT> absorbsPercent = {};
@@ -160,6 +162,7 @@ class ConditionAttributes final : public ConditionGeneric {
 		void updateAbsorbs(Creature* creature) const;
 		void updatePercentIncreases(const Creature* creature);
 		void updateIncreases(Creature* creature) const;
+		void updateCharmChanceModifier(Creature* creature) const;
 		void updatePercentBuffs(Creature* creature);
 };
 

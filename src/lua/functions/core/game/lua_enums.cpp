@@ -427,6 +427,7 @@ void LuaEnums::initConditionParamEnums(lua_State* L) {
 	registerEnum(L, CONDITION_PARAM_INCREASE_LIFEDRAINPERCENT);
 	registerEnum(L, CONDITION_PARAM_INCREASE_MANADRAINPERCENT);
 	registerEnum(L, CONDITION_PARAM_INCREASE_DROWNPERCENT);
+	registerEnum(L, CONDITION_PARAM_CHARM_CHANCE_MODIFIER);
 }
 
 void LuaEnums::initConstMeEnums(lua_State* L) {

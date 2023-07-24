@@ -2773,6 +2773,7 @@ Storage = {
 					KingZelosDoor = 46875,
 					KingZelosTimer = 46876,
 					KingZelosKilled = 46877,
+					InquisitionOutfitReceived = 46878,
 				},
 				Cobra = 46864
 			},

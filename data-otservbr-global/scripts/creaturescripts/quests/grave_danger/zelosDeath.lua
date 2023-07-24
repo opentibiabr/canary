@@ -13,11 +13,11 @@ function KingzelosDeath.onPrepareDeath(creature)
         if removeMonsters and cid:isMonster() and not cid:getMaster() then
             cid:remove()
         elseif cid:isPlayer() then
-            if cid:getStorageValue(67099) == -1 then
+            if cid:getStorageValue(Storage.Quest.U12_20.GraveDanger.Bosses.InquisitionOutfitReceived) == -1 then
                 cid:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Congratulations you received the Hand of the Inquisition Outfit.")
                 cid:addOutfit(1244, 0)
                 cid:addOutfit(1243, 0)
-                cid:setStorageValue(67099, 1)
+                cid:setStorageValue(Storage.Quest.U12_20.GraveDanger.Bosses.InquisitionOutfitReceived, 1)
             end
         end
     end

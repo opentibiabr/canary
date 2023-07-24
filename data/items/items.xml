@@ -39076,7 +39076,7 @@
 		<attribute key="type" value="bed"/>
 		<attribute key="bedpart" value="blanket"/>
 		<attribute key="bedpartof" value="26090"/>
-		<attribute key="partnerdirection" value2608826088="west"/>
+		<attribute key="partnerdirection" value="west"/>
 		<attribute key="femaletransformto" value="26095"/>
 		<attribute key="maletransformto" value="26089"/>
 		<attribute key="description" value="Somebody is sleeping there"/>
@@ -39094,7 +39094,7 @@
 		<attribute key="type" value="bed"/>
 		<attribute key="bedpart" value="blanket"/>
 		<attribute key="bedpartof" value="26092"/>
-		<attribute key="partnerdirection" value2609026090="north"/>
+		<attribute key="partnerdirection" value="north"/>
 		<attribute key="maletransformto" value="26089"/>
 		<attribute key="description" value="Somebody is sleeping there"/>
 		<attribute key="wrapableTo" value="23398"/>
@@ -39111,7 +39111,7 @@
 		<attribute key="type" value="bed"/>
 		<attribute key="bedpart" value="blanket"/>
 		<attribute key="bedpartof" value="26094"/>
-		<attribute key="partnerdirection" value2609226092="west"/>
+		<attribute key="partnerdirection" value="west"/>
 		<attribute key="maletransformto" value="26091"/>
 		<attribute key="description" value="Somebody is sleeping there"/>
 		<attribute key="wrapableTo" value="23398"/>

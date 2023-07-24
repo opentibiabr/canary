@@ -40,7 +40,6 @@ local function revert(cid, name)
 end
 
 local function changeStage(cid, stage)
-	Spdlog.info("Changing stage to " .. stage .. " for creature " .. cid)
 	changeEvent = nil
 	local creature = Creature(cid)
 	if not creature then return end

@@ -108,11 +108,8 @@ function Monster:onDropLoot(corpse)
 			if preyLootPercent > 0 then
 				local probability = math.random(0, 100)
 				if probability < preyLootPercent then
-					for i, loot in pairs(monsterLoot) do
-						local item = corpse:createLootItem(monsterLoot[i], charmBonus)
-						if not item then
-							Spdlog.warn(string.format("[3][Monster:onDropLoot] - Could not add loot item to monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
-						end
+					for _, loot in pairs(monsterLoot) do
+						 corpse:createLootItem(loot, charmBonus)
 					end
 				end
 			end

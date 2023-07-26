@@ -427,6 +427,15 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		writeToOutputBuffer(opcodeMessage);
 	}
 
+	account::Account playerAccount;
+	if (playerAccount.LoadAccountDB(accountId) != account::ERROR_NO) {
+		disconnectClient("Your account could not be loaded.");
+		return;
+	}
+
+	// Update premium days
+	Game::updatePremium(playerAccount);
+
 	// dispatcher thread
 	Player* foundPlayer = g_game().getPlayerUniqueLogin(name);
 	if (!foundPlayer) {

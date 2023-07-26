@@ -309,11 +309,11 @@
 	</item>
 	<item id="237" article="a" name="strong mana potion">
 		<attribute key="weight" value="290"/>
-		<attribute key="description" value="This potion can only be consumed by sorcerers, druids and paladins of level 50 or higher."/>
+		<attribute key="description" value="This potion can only be consumed by players of level 50 or higher."/>
 	</item>
 	<item id="238" article="a" name="great mana potion">
 		<attribute key="weight" value="310"/>
-		<attribute key="description" value="This potion can only be consumed by sorcerers and druids of level 80 or higher."/>
+		<attribute key="description" value="This potion can only be consumed by sorcerers, druids and paladins of level 80 or higher."/>
 	</item>
 	<item id="239" article="a" name="great health potion">
 		<attribute key="weight" value="310"/>

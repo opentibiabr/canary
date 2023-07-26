@@ -371,7 +371,7 @@ class Monster final : public Creature {
 
 		int32_t minCombatValue = 0;
 		int32_t maxCombatValue = 0;
-		int32_t targetChangeCooldown = 0;
+		int32_t m_targetChangeCooldown = 0;
 		int32_t challengeFocusDuration = 0;
 		int32_t stepDuration = 0;
 		int32_t targetDistance = 1;

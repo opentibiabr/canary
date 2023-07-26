@@ -564,14 +564,7 @@ int GlobalFunctions::luaDoChallengeCreature(lua_State* L) {
 		return 1;
 	}
 
-	int targetChangeCooldown;
-	if (lua_tonumber(L, 3)) { // if the third argument is nil
-		targetChangeCooldown = 6000; // use a default value
-	} else {
-		targetChangeCooldown = lua_tonumber(L, 3); // read the delay argument
-	}
-
-	// Assuming challengeCreature now takes a targetChangeCooldown argument.
+	int targetChangeCooldown = getNumber<int32_t>(L, 3, 6000);
 	// This function must be defined to take and handle the targetChangeCooldown.
 	target->challengeCreature(creature, targetChangeCooldown);
 

@@ -197,11 +197,11 @@ class House {
 			return static_cast<uint32_t>(std::floor(bedsList.size() / 2.)); // each bed takes 2 sqms of space, ceil is just for bad maps
 		}
 
-		void setMaxBeds(uint32_t count) {
+		void setMaxBeds(int32_t count) {
 			maxBeds = count;
 		}
 
-		uint32_t getMaxBeds() const {
+		int32_t getMaxBeds() const {
 			return maxBeds;
 		}
 
@@ -232,7 +232,7 @@ class House {
 		uint32_t rent = 0;
 		uint32_t townId = 0;
 		uint32_t maxBeds = 4;
-		uint32_t bedsCount = 0;
+		int32_t bedsCount = -1;
 
 		Position posEntry = {};
 

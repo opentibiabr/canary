@@ -406,15 +406,16 @@ bool House::executeTransfer(HouseTransferItem* item, Player* newOwner) {
 }
 
 void AccessList::parseList(const std::string &list) {
+	std::string validList = validateNameHouse(list);
 	playerList.clear();
 	guildRankList.clear();
 	allowEveryone = false;
-	this->list = list;
+	this->list = validList;
 	if (list.empty()) {
 		return;
 	}
 
-	auto lines = explodeString(list, "\n", 100);
+	auto lines = explodeString(validList, "\n", 100);
 	for (auto &line : lines) {
 		trimString(line);
 		trim_left(line, '\t');

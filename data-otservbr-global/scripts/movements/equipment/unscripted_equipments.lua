@@ -1,5 +1,533 @@
 local items = {
 	{
+		-- sanguine galoshes
+		itemid = 43887,
+		type = "equip",
+		slot = "feet",
+		level = 500,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- sanguine galoshes
+		itemid = 43887,
+		type = "deequip",
+		slot = "feet",
+		level = 500,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- grand sanguine rod
+		itemid = 43886,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- grand sanguine rod
+		itemid = 43886,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- sanguine rod
+		itemid = 43885,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- sanguine rod
+		itemid = 43885,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- sanguine boots
+		itemid = 43884,
+		type = "equip",
+		slot = "feet",
+		level = 500,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- sanguine boots
+		itemid = 43884,
+		type = "deequip",
+		slot = "feet",
+		level = 500,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- grand sanguine coil
+		itemid = 43883,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- grand sanguine coil
+		itemid = 43883,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- sanguine coil
+		itemid = 43882,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- sanguine coil
+		itemid = 43882,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- sanguine Greaves
+		itemid = 43881,
+		type = "equip",
+		slot = "legs",
+		level = 500,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- sanguine Greaves
+		itemid = 43881,
+		type = "deequip",
+		slot = "legs",
+		level = 500,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- grand sanguine crossbow
+		itemid = 43880,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- grand sanguine crossbow
+		itemid = 43880,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- sanguine crossbow
+		itemid = 43879,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- sanguine crossbow
+		itemid = 43879,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- grand sanguine bow
+		itemid = 43878,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- grand sanguine bow
+		itemid = 43878,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- sanguine bow
+		itemid = 43877,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- sanguine bow
+		itemid = 43877,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- sanguine legs
+		itemid = 43876,
+		type = "equip",
+		slot = "legs",
+		level = 500,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- sanguine legs
+		itemid = 43876,
+		type = "deequip",
+		slot = "legs",
+		level = 500,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- grand sanguine battleaxe
+		itemid = 43875,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- grand sanguine battleaxe
+		itemid = 43875,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- sanguine battleaxe
+		itemid = 43874,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- sanguine battleaxe
+		itemid = 43874,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- grand sanguine bludgeon
+		itemid = 43873,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- grand sanguine bludgeon
+		itemid = 43873,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- sanguine bludgeon
+		itemid = 43872,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- sanguine bludgeon
+		itemid = 43872,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- grand sanguine razor
+		itemid = 43871,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- grand sanguine razor
+		itemid = 43871,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- sanguine razor
+		itemid = 43870,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- sanguine razor
+		itemid = 43870,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- grand sanguine hatchet
+		itemid = 43869,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- grand sanguine hatchet
+		itemid = 43869,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- sanguine hatchet
+		itemid = 43868,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- sanguine hatchet
+		itemid = 43868,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- grand sanguine cudgel
+		itemid = 43867,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- grand sanguine cudgel
+		itemid = 43867,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- sanguine cudgel
+		itemid = 43866,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- sanguine cudgel
+		itemid = 43866,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- grand sanguine blade
+		itemid = 43865,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- grand sanguine blade
+		itemid = 43865,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- sanguine blade
+		itemid = 43864,
+		type = "equip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- sanguine blade
+		itemid = 43864,
+		type = "deequip",
+		slot = "hand",
+		level = 600,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
 		-- mutant bone kilt
 		itemid = 40595,
 		type = "equip",

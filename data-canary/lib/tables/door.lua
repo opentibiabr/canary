@@ -136,7 +136,9 @@ CustomDoorTable = {
 	{closedDoor = 30851, openDoor = 30855},
 	{closedDoor = 30852, openDoor = 30856},
 	{closedDoor = 31663, openDoor = 31664},
-	{closedDoor = 31665, openDoor = 31666}
+	{closedDoor = 31665, openDoor = 31666},
+	{closedDoor = 15890, openDoor = 15891},
+	{closedDoor = 15892, openDoor = 15893},
 }
 
 -- These are the doors for missions, they need access from some mission (storage) to be able to enter
@@ -240,8 +242,6 @@ LevelDoorTable = {
 	{closedDoor = 11237, openDoor = 11238},
 	{closedDoor = 11246, openDoor = 11247},
 	{closedDoor = 12033, openDoor = 12034},
-	{closedDoor = 15890, openDoor = 15891},
-	{closedDoor = 15892, openDoor = 15893},
 	{closedDoor = 17565, openDoor = 17566},
 	{closedDoor = 17574, openDoor = 17575},
 	{closedDoor = 17705, openDoor = 17706},

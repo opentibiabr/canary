@@ -35,6 +35,7 @@ class Database {
 
 		bool connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock);
 
+		bool retryQuery(const std::string_view &query, int retries);
 		bool executeQuery(const std::string_view &query);
 
 		DBResult_ptr storeQuery(const std::string_view &query);

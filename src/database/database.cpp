@@ -90,6 +90,24 @@ bool Database::commit() {
 	return true;
 }
 
+bool Database::retryQuery(const std::string_view &query, int retries) {
+	while (retries > 0 && mysql_query(handle, query.data()) != 0) {
+		SPDLOG_ERROR("Query: {}", query.substr(0, 256));
+		SPDLOG_ERROR("MySQL error [{}]: {}", mysql_errno(handle), mysql_error(handle));
+		if (!isRecoverableError(mysql_errno(handle))) {
+			return false;
+		}
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+		retries--;
+	}
+	if (retries == 0) {
+		SPDLOG_ERROR("Query {} failed after {} retries.", query, 10);
+		return false;
+	}
+
+	return true;
+}
+
 bool Database::executeQuery(const std::string_view &query) {
 	if (!handle) {
 		SPDLOG_ERROR("Database not initialized!");
@@ -98,26 +116,9 @@ bool Database::executeQuery(const std::string_view &query) {
 
 	std::scoped_lock lock { databaseLock };
 
-	bool success = true;
-	int retry = 10;
-	while (retry > 0 && mysql_query(handle, query.data()) != 0) {
-		SPDLOG_ERROR("Query: {}", query.substr(0, 256));
-		SPDLOG_ERROR("MySQL error [{}]: {}", mysql_errno(handle), mysql_error(handle));
-		if (!isRecoverableError(mysql_errno(handle))) {
-			success = false;
-			break;
-		}
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-		retry--;
-	}
+	bool success = retryQuery(query, 10);
 
-	if (retry == 0) {
-		SPDLOG_ERROR("Query {} failed after {} retries.", query, 10);
-		success = false;
-	}
-
-	auto m_res = std::unique_ptr<MYSQL_RES, decltype(&mysql_free_result)>(mysql_store_result(handle), &mysql_free_result);
-
+	mysql_free_result(mysql_store_result(handle));
 	return success;
 }
 

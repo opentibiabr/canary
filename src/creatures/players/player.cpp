@@ -1177,12 +1177,12 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 	if (fromCorpse) {
 		auto rewardId = fromCorpse->getAttribute<time_t>(ItemAttribute_t::DATE);
 		auto reward = getReward(rewardId, false);
-		if (reward->empty()) {
+		if (reward && reward->empty()) {
 			return RETURNVALUE_REWARDCONTAINERISEMPTY;
 		}
 		rewardItemsVector = getRewardsFromContainer(reward->getContainer());
 	} else {
-		if (rewardChest->empty()) {
+		if (rewardChest && rewardChest->empty()) {
 			return RETURNVALUE_REWARDCHESTISEMPTY;
 		}
 		rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());
@@ -1192,7 +1192,7 @@ ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*
 	uint32_t movedRewardItems = 0;
 	for (auto item : rewardItemsVector) {
 		// Stop if player not have free capacity
-		if (getCapacity() < item->getWeight()) {
+		if (item && getCapacity() < item->getWeight()) {
 			break;
 		}
 

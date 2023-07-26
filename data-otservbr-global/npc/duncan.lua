@@ -62,16 +62,16 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if isInArray({'outfit', 'addon'}, message) and player:getStorageValue(Storage.OutfitQuest.PirateBaseOutfit) == 1 then
 		npcHandler:say(
-			"You're talking about my sabre? Well, even though you earned our trust, \
+			"You're talking about my sabre? Well, even though you earned our trust, \z
 			you'd have to fulfill a task first before you are granted to wear such a sabre.",
-		creature)
+		npc, creature)
 	elseif MsgContains(message, 'mission') then
 		if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 6 then
 			npcHandler:say(
-				'I need a new quality atlas for our captains. Only one of the best will do it. \
-				I heard the explorers society sells the best, but only to members of a certain rank. \
+				'I need a new quality atlas for our captains. Only one of the best will do it. \z
+				I heard the explorers society sells the best, but only to members of a certain rank. \z
 				You will have to get this rank or ask a high ranking member to buy it for you.',
-			creature)
+			npc, creature)
 			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 7)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 7 then
@@ -82,10 +82,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:getStorageValue(Storage.TheShatteredIsles.TortoiseEggNargorDoor) < 0
 		 then
 			npcHandler:say(
-				'You did some impressive things. I think people here start considering you as one of us. \
-				But these are dire times and everyone of us is expected to give his best and even exceed himself. \
-				Do you think you can handle that?',
-				creature)
+				'You did some impressive things. I think people here start considering you as one of us. \z
+				But these are dire times and everyone of us is expected to give his best and even exceed himself. \z
+				Do you think you can handle that?', npc, creature)
 			npcHandler:setTopic(playerId, 7)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.TortoiseEggNargorDoor) == 1 then
 			npcHandler:say('Did you rescue one of those poor soon-to-be baby tortoises from Nargor?', npc, creature)
@@ -95,7 +94,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(storage) < 1 then
 			npcHandler:say(
 				"Are you up to the task which I'm going to give you and willing to prove you're worthy of wearing such a sabre?",
-				creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, 'eye patches') then
@@ -115,14 +114,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, 'yes') then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say(
-				{
-					'Listen, the task is not that hard. Simply prove that you are with us and not with the \
+			npcHandler:say( {
+					'Listen, the task is not that hard. Simply prove that you are with us and not with the \z
 					pirates from Nargor by bringingme some of their belongings. ...',
 					'Bring me 100 of their eye patches, 100 of their peg legs and 100 of their hooks, in that order. ...',
 					'Have you understood everything I told you and are willing to handle this task?'
-				},
-				creature)
+				}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			player:setStorageValue(storage, 1)
@@ -178,8 +175,7 @@ local function creatureSayCallback(npc, creature, type, message)
 						This is the opportunity to save a tortoise from a gruesome fate! ...',
 						'I will ask Sebastian to bring you there. \
 						Travel to Nargor, find their tortoise eggs and bring me at least one of them.'
-					},
-				creature)
+					}, npc, creature)
 				player:setStorageValue(Storage.TheShatteredIsles.TortoiseEggNargorDoor, 1)
 				npcHandler:setTopic(playerId, 0)
 			end

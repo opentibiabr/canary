@@ -134,18 +134,18 @@ end
 notReadyKeyword(
 	'outfit',
 	{
-		"Hum? Sorry, but I don't sense enough spiritual wisdom in you to even allow \
+		"Hum? Sorry, but I don't sense enough spiritual wisdom in you to even allow \z
 		you to touch the mask and staff I'm wearing... yet. ...",
-		'I know of a really wise ape healer, though, who might be able to bless you with shamanic energy. \
+		'I know of a really wise ape healer, though, who might be able to bless you with shamanic energy. \z
 		You should become his apprentice first if you desire to become mine.'
 	}
 )
 notReadyKeyword(
 	'addon',
 	{
-		"Hum? Sorry, but I don't sense enough spiritual wisdom in you to even allow \
+		"Hum? Sorry, but I don't sense enough spiritual wisdom in you to even allow \z
 		you to touch the mask and staff I'm wearing... yet. ...",
-		'I know of a really wise ape healer, though, who might be able to bless you with shamanic energy. \
+		'I know of a really wise ape healer, though, who might be able to bless you with shamanic energy. \z
 		You should become his apprentice first if you desire to become mine.'
 	}
 )
@@ -196,14 +196,14 @@ end
 -- Staff
 addTaskKeyword(
 	{
-		"If you fulfil a task for me, I'll grant you a staff like the one I'm wearing. \
+		"If you fulfil a task for me, I'll grant you a staff like the one I'm wearing. \z
 		Do you want to hear the requirements?",
 		{
-			'Deep in the Tiquandian jungle a monster lurks which is seldom seen. \
+			'Deep in the Tiquandian jungle a monster lurks which is seldom seen. \z
 			It is the revenge of the jungle against humankind. ...',
-			'This monster, if slain, carries a rare root called Mandrake. If you find it, bring it to me. \
+			'This monster, if slain, carries a rare root called Mandrake. If you find it, bring it to me. \z
 			Also, gather 5 of the voodoo dolls used by the mysterious dworc voodoomasters. ...',
-			'If you manage to fulfil this task, I will grant you your own staff. \
+			'If you manage to fulfil this task, I will grant you your own staff. \z
 			Have you understood everything and are ready for this test?'
 		},
 		"Good! Come back once you've found a mandrake and collected 5 dworcish voodoo dolls."
@@ -215,15 +215,15 @@ addTaskKeyword(
 -- Mask
 addTaskKeyword(
 	{
-		"You have successfully passed the first task. \
-		If you can fulfil my second task, I'll grant you a mask like the one I'm wearing. \
+		"You have successfully passed the first task. \z
+		If you can fulfil my second task, I'll grant you a mask like the one I'm wearing. \z
 		Do you want to hear the requirements?",
 		{
-			"The dworcs of Tiquanda like to wear certain tribal masks which I'd like to take a look at. \
+			"The dworcs of Tiquanda like to wear certain tribal masks which I'd like to take a look at. \z
 			Please bring me 5 of these masks. ...",
-			"Secondly, the high ape magicians of Banuta use banana staffs. \
+			"Secondly, the high ape magicians of Banuta use banana staffs. \z
 			I'd love to learn more about theses staffs, so please bring me 5 of them, too. ...",
-			"If you manage to fulfil this task, I'll grant you your own mask. \
+			"If you manage to fulfil this task, I'll grant you your own mask. \z
 			Have you understood everything and are you ready for this test?"
 		},
 		'Good! Come back once you have collected 5 tribal masks and 5 banana staffs.'

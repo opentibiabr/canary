@@ -63,9 +63,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getItemCount(3506) > 0 then
 				if player:removeItem(3506, 1) then
 					npcHandler:say(
-						'A letter from that youngster Morgan? I believed him dead since years. \
+						'A letter from that youngster Morgan? I believed him dead since years. \z
 						These news are good news indeed. Thank you very much, my friend.',
-					creature)
+						npc, creature)
 					player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 5)
 				end
 			end

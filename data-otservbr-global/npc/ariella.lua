@@ -86,16 +86,14 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Are you here to bring me the 100 pieces of bread that I requested?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 10 then
-			npcHandler:say(
-			{
-				"The sailors always tell tales about the famous beer of Carlin. \
+			npcHandler:say({
+				"The sailors always tell tales about the famous beer of Carlin. \z
 				You must know, alcohol is forbidden in that city. ...",
-				"The beer is served in a secret whisper bar anyway. \
+				"The beer is served in a secret whisper bar anyway. \z
 				Bring me a sample of the whisper beer, NOT the usual beer but whisper beer. I hope you are listening."
-			},
-			npc, creature)
+			}, npc, creature)
 			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 11)
-		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 12 then
+		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 12 or player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 11 then
 			npcHandler:say("Did you get a sample of the whisper beer from Carlin?", npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		end

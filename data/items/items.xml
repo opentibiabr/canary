@@ -57615,7 +57615,7 @@
 		<attribute key="absorbpercentphysical" value="7"/>
 		<attribute key="absorbpercentenergy" value="9"/>
 		<attribute key="skilldist" value="4"/>
-		<!--<attribute key="holymagiclevelpoints" value="1"/>-->
+		<attribute key="holymagiclevelpoints" value="1"/>
 		<attribute key="armor" value="11"/>
 		<attribute key="weight" value="3200"/>
 	</item>
@@ -57623,9 +57623,9 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="energy"/>
 		<attribute key="absorbpercentearth" value="7"/>
-		<!--<attribute key="magiclevelpoints" value="5"/>-->
-		<!--<attribute key="firemagiclevelpoints" value="1"/>-->
-		<!--<attribute key="energymagiclevelpoints" value="1"/>-->
+		<attribute key="magiclevelpoints" value="5"/>
+		<attribute key="firemagiclevelpoints" value="1"/>
+		<attribute key="energymagiclevelpoints" value="1"/>
 		<attribute key="criticalhitdamage" value="12"/>
 		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="weight" value="2200"/>
@@ -57640,8 +57640,8 @@
 		<attribute key="shootType" value="energy"/>
 		<attribute key="absorbpercentearth" value="7"/>
 		<attribute key="magiclevelpoints" value="5"/>
-		<!--<attribute key="firemagiclevelpoints" value="1"/>-->
-		<!--<attribute key="energymagiclevelpoints" value="1"/>-->
+		<attribute key="firemagiclevelpoints" value="1"/>
+		<attribute key="energymagiclevelpoints" value="1"/>
 		<attribute key="criticalhitdamage" value="12"/>
 		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="weight" value="2100"/>
@@ -57655,7 +57655,7 @@
 		<attribute key="absorbpercentphysical" value="2"/>
 		<attribute key="absorbpercentice" value="8"/>
 		<attribute key="magiclevelpoints" value="2"/>
-		<!--<attribute key="deathmagiclevelpoints" value="1"/>-->
+		<attribute key="deathmagiclevelpoints" value="1"/>
 		<attribute key="speed" value="10"/>
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="1900"/>
@@ -57668,8 +57668,8 @@
 		<attribute key="shootType" value="earth"/>
 		<attribute key="absorbpercentdeath" value="7"/>
 		<attribute key="magiclevelpoints" value="5"/>
-		<!--<attribute key="earthmagiclevelpoints" value="1"/>-->
-		<!--<attribute key="icemagiclevelpoints" value="1"/>-->
+		<attribute key="earthmagiclevelpoints" value="1"/>
+		<attribute key="icemagiclevelpoints" value="1"/>
 		<attribute key="criticalhitdamage" value="5"/>
 		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="weight" value="2500"/>
@@ -57684,8 +57684,8 @@
 		<attribute key="shootType" value="earth"/>
 		<attribute key="absorbpercentdeath" value="7"/>
 		<attribute key="magiclevelpoints" value="5"/>
-		<!--<attribute key="earthmagiclevelpoints" value="1"/>-->
-		<!--<attribute key="icemagiclevelpoints" value="1"/>-->
+		<attribute key="earthmagiclevelpoints" value="1"/>
+		<attribute key="icemagiclevelpoints" value="1"/>
 		<attribute key="criticalhitdamage" value="5"/>
 		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="weight" value="2400"/>
@@ -57699,7 +57699,7 @@
 		<attribute key="absorbpercentphysical" value="2"/>
 		<attribute key="absorbpercentfire" value="8"/>
 		<attribute key="magiclevelpoints" value="2"/>
-		<!--<attribute key="healingmagiclevelpoints" value="1"/>-->
+		<attribute key="healingmagiclevelpoints" value="1"/>
 		<attribute key="speed" value="10"/>
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="1700"/>

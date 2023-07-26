@@ -29,7 +29,8 @@ local function revert(cid, name)
 
 	local position = creature:getPosition()
 	creature:remove()
-	Game.createMonster(name, position, true, true)
+	local monster = Game.createMonster(name, position, true, true)
+	if not monster then return end
 	if name ~= stages[5].name then
 		changeEvent = nil
 		revertEvent = addEvent(revert, timetochange * 1000, creature:getId(), stages[1].name)
@@ -48,6 +49,7 @@ local function changeStage(cid, stage)
 	local previousName = creature:getName()
 	creature:remove()
 	local newCreature = Game.createMonster(stage, position, true, true)
+	if not newCreature then return end
 	revertEvent = addEvent(revert, timetochange * 1000, newCreature:getId(), previousName)
 end
 

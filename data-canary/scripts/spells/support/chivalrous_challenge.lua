@@ -45,7 +45,7 @@ local function chain(player)
 				closestMonster = monster
 				closestMonsterIndex = index
 				closestMonsterPosition = tempPosition
-				doChallengeCreature(player, monster)
+				doChallengeCreature(player, monster, 12000)
 			end
 		end
 		table.remove(monsters, closestMonsterIndex)

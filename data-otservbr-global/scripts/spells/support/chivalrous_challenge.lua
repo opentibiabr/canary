@@ -30,7 +30,7 @@ function onChain(creature, target)
 		duration = duration + (player:getWheelSpellAdditionalDuration("Chivalrous Challenge") * 1000)
 	end
 	if target and target:isMonster() then
-		doChallengeCreature(player, closestMonster)
+		doChallengeCreature(player, target:getMonster(), 12000)
 		target:changeTargetDistance(1, duration)
 	end
 	return true

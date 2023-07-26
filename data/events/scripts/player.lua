@@ -663,11 +663,6 @@ local function useConcoctionTime(player)
 		return false
 	end
 
-	if timePassed < 60 then
-		deduction = timePassed
-	end
-	nextUseConcoctionTime[playerId] = currentTime + 60
-
 	local deduction = 60
 	if timePassed > 60 then
 		nextUseConcoctionTime[playerId] = currentTime + 120

@@ -15,8 +15,10 @@
 class IOMapSerialize {
 	public:
 		static void loadHouseItems(Map* map);
+		static bool SaveHouseItemsGuard();
 		static bool saveHouseItems();
 		static bool loadHouseInfo();
+		static bool SaveHouseInfoGuard();
 		static bool saveHouseInfo();
 
 	private:

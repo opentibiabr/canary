@@ -425,6 +425,7 @@ void ConditionAttributes::addCondition(Creature* creature, const Condition* addC
 		absorbsPercent = conditionAttrs.absorbsPercent;
 		increases = conditionAttrs.increases;
 		increasesPercent = conditionAttrs.increasesPercent;
+		charmChanceModifier = conditionAttrs.charmChanceModifier;
 
 		updatePercentBuffs(creature);
 		updateBuffs(creature);
@@ -432,6 +433,7 @@ void ConditionAttributes::addCondition(Creature* creature, const Condition* addC
 		updateAbsorbs(creature);
 		updatePercentIncreases(creature);
 		updateIncreases(creature);
+		updateCharmChanceModifier(creature);
 		disableDefense = conditionAttrs.disableDefense;
 
 		if (Player* player = creature->getPlayer()) {
@@ -477,6 +479,8 @@ bool ConditionAttributes::unserializeProp(ConditionAttr_t attr, PropStream &prop
 		}
 
 		return true;
+	} else if (attr == CONDITIONATTR_CHARM_CHANCE_MODIFIER) {
+		return propStream.read<int8_t>(charmChanceModifier);
 	}
 	return Condition::unserializeProp(attr, propStream);
 }
@@ -516,6 +520,10 @@ void ConditionAttributes::serialize(PropWriteStream &propWriteStream) {
 		// Save percent
 		propWriteStream.write<int32_t>(getIncreaseByIndex(i));
 	}
+
+	// Save charm percent
+	propWriteStream.write<uint8_t>(CONDITIONATTR_CHARM_CHANCE_MODIFIER);
+	propWriteStream.write<int8_t>(charmChanceModifier);
 }
 
 bool ConditionAttributes::startCondition(Creature* creature) {
@@ -531,6 +539,7 @@ bool ConditionAttributes::startCondition(Creature* creature) {
 	updateAbsorbs(creature);
 	updatePercentIncreases(creature);
 	updateIncreases(creature);
+	updateCharmChanceModifier(creature);
 	if (Player* player = creature->getPlayer()) {
 		updatePercentSkills(player);
 		updateSkills(player);
@@ -651,6 +660,10 @@ void ConditionAttributes::updateIncreases(Creature* creature) const {
 	}
 }
 
+void ConditionAttributes::updateCharmChanceModifier(Creature* creature) const {
+	creature->setCharmChanceModifier(creature->getCharmChanceModifier() + charmChanceModifier);
+}
+
 void ConditionAttributes::updatePercentBuffs(Creature* creature) {
 	for (int32_t i = BUFF_FIRST; i <= BUFF_LAST; ++i) {
 		if (buffsPercent[i] == 0) {
@@ -697,6 +710,8 @@ void ConditionAttributes::endCondition(Creature* creature) {
 				player->setVarStats(static_cast<stats_t>(i), -stats[i]);
 			}
 		}
+
+		player->setCharmChanceModifier(player->getCharmChanceModifier() - charmChanceModifier);
 
 		if (needUpdate) {
 			player->sendStats();
@@ -995,6 +1010,11 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value) {
 
 		case CONDITION_PARAM_INCREASE_DROWNPERCENT: {
 			setIncreasePercent(combatTypeToIndex(COMBAT_DROWNDAMAGE), value);
+			return true;
+		}
+
+		case CONDITION_PARAM_CHARM_CHANCE_MODIFIER: {
+			charmChanceModifier = static_cast<int8_t>(value);
 			return true;
 		}
 

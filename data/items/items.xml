@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <items>
-	<!--  Liquids -->
-	<!--  Fluid type 0 is same as water (id="1") -->
+	<!-- Liquids -->
+	<!-- Fluid type 0 is same as water (id="1") -->
 	<item id="1" name="water" />
 	<item id="2" name="wine" />
 	<item id="3" name="beer" />
@@ -46209,7 +46209,7 @@
 	</item>
 	<item id="32021" name="burning wall"/>
 	<item fromid="32022" toid="32035" name="addled egg">
-    	<attribute key="weight" value="100"/>
+		<attribute key="weight" value="100"/>
 	</item>
 	<item fromid="32036" toid="32038" name="reserved sprite"/>
 	<item fromid="32039" toid="32042" name="unknown"/>
@@ -53213,7 +53213,7 @@
 		<attribute key="description" value="Juding by the pinching of his beak, this one seems to be born to joust"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
-	<!--  Unmoveable decorative items -->
+	<!-- Unmoveable decorative items -->
 	<item id="37213" article="a" name="blue balloon"/>
 	<item id="37214" article="a" name="green balloon"/>
 	<item id="37215" article="an" name="orange balloon"/>
@@ -55171,7 +55171,7 @@
 	<item id="39230" article="a" name="charged flame">
 		<attribute key="description" value="You should follow gnomish advice and use it on green crystals" />
 		<attribute key="weight" value="85"/>
-	  </item>
+	</item>
 	<item id="39233" article="an" name="enchanted turtle amulet">
 		<attribute key="weight" value="480"/>
 		<attribute key="transformEquipTo" value="39234" />
@@ -55560,7 +55560,7 @@
 	<item id="39340" article="a" name="butterfly conservation kit">
 		<attribute key="description" value="It contains a damselfly" />
 		<attribute key="weight" value="800"/>
-	  </item>
+	</item>
 	<item id="39341" article="a" name="dead foam stalker">
 		<attribute key="decayTo" value="0" />
 		<attribute key="duration" value="60" />
@@ -56070,7 +56070,7 @@
 	<item id="39565" article="a" name="lava hole"/>
 	<item fromid="39568" toid="39569" article="a" name="naga nest">
 		<attribute key="weight" value="1000"/>
-	  </item>
+	</item>
 	<item id="39570" article="a" name="stony face"/>
 	<item id="39571" article="a" name="canary feather">
 		<attribute key="weight" value="36"/>
@@ -57560,7 +57560,7 @@
 		<attribute key="attack" value="9"/>
 		<attribute key="weight" value="4700"/>
 		<attribute key="imbuementslot" value="3">
-		    <attribute key="skillboost distance" value="4"/>
+			<attribute key="skillboost distance" value="4"/>
 		</attribute>
 	</item>
 	<item id="43878" article="a" name="grand sanguine bow">

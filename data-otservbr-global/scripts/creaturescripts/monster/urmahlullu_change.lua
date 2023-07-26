@@ -1,109 +1,79 @@
 local timetochange = 60 --in seconds
 local time = os.time()
 
-local bodyToRemove = {
-	{itemId = 31413},
-	{itemId = 2886},
-}
-
 local healthMultiplier = configManager.getFloat(configKeys.RATE_BOSS_HEALTH)
-
-local healthStages = {
-	515000 * healthMultiplier,
-	400000 * healthMultiplier,
-	300000 * healthMultiplier,
-	200000 * healthMultiplier,
-	100000 * healthMultiplier,
-}
 
 --base urmahlullu have 515000/515000 hp, next form 400000/515000,
 -- next form 300000/515000, next form 200000/515000, and last 100000/515000
 
 local urmahlulluChanges = CreatureEvent("UrmahlulluChanges")
 
-function urmahlulluChanges.onHealthChange(creature, attacker, primaryDamage, primaryType,
-                                          secondaryDamage, secondaryType)
-	if creature and creature:getName() == 'Urmahlullu the Immaculate' then
-		if creature:getHealth() <= healthStages[2] then
-			position = creature:getPosition()
-			creature:remove()
-			Game.createMonster('Wildness of Urmahlullu', position, true, true)
-			time = os.time()
-			-- make change and start counter (~ 1 minute)
+local stages = {
+	{ name = "Urmahlullu the Immaculate", health = 515000 * healthMultiplier },
+	{ name = "Wildness of Urmahlullu", health = 400000 * healthMultiplier },
+	{ name = "Urmahlullu the Tamed", health = 300000 * healthMultiplier },
+	{ name = "Wisdom of Urmahlullu", health = 200000 * healthMultiplier },
+	{ name = "Urmahlullu the Weakened", health = 100000 * healthMultiplier },
+}
+
+local changeEvent = nil
+local revertEvent = nil
+
+local function revert(cid, name)
+	local creature = Creature(cid, name)
+	if not creature then return end
+
+	if creature:getName() == name then
+		return
+	end
+
+	local position = creature:getPosition()
+	creature:remove()
+	local monster = Game.createMonster(name, position, true, true)
+	if not monster then return end
+	if name ~= stages[5].name then
+		changeEvent = nil
+		revertEvent = addEvent(revert, timetochange * 1000, creature:getId(), stages[1].name)
+	else
+		changeEvent = nil
+		revertEvent = nil
+	end
+end
+
+local function changeStage(cid, stage)
+	changeEvent = nil
+	local creature = Creature(cid)
+	if not creature then return end
+
+	local position = creature:getPosition()
+	local previousName = creature:getName()
+	creature:remove()
+	local newCreature = Game.createMonster(stage, position, true, true)
+	if not newCreature then return end
+	revertEvent = addEvent(revert, timetochange * 1000, newCreature:getId(), previousName)
+end
+
+function urmahlulluChanges.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType)
+	if not creature then return primaryDamage, primaryType, secondaryDamage, secondaryType end
+	local name = creature:getName()
+	local nextStageIndex = 1
+	for i, stage in ipairs(stages) do
+		if stage.name == name then
+			nextStageIndex = i + 1
+			break
 		end
 	end
-	if creature and creature:getName() == 'Wildness of Urmahlullu' then
-		if creature:getHealth() <= healthStages[3] then
-			if os.time() <= time + timetochange  then
-				position = creature:getPosition()
-				creature:remove()
-				Game.createMonster('Urmahlullu the Tamed', position, true, true)
-				time = os.time()
-				-- make change to urmahlullu the tamed and start new count (~1 minute)
-			else
-				position = creature:getPosition()
-				creature:remove()
-				Game.createMonster('Urmahlullu the Immaculate', position, true, true)
-				-- back to wildness of urmahlullu
-			end
-		end
+
+	if nextStageIndex > #stages then return primaryDamage, primaryType, secondaryDamage, secondaryType end
+
+	local stage = stages[nextStageIndex]
+	if creature:getHealth() <= stage.health and not changeEvent then
+		if revertEvent then stopEvent(revertEvent) end
+		revertEvent = nil
+		changeEvent = addEvent(changeStage, SCHEDULER_MIN_TICKS, creature:getId(), stage.name)
 	end
-	if creature and creature:getName() == 'Urmahlullu the Tamed' then
-		if creature:getHealth() <= healthStages[4] then
-			if os.time() <= time + timetochange then
-				position = creature:getPosition()
-				creature:remove()
-				Game.createMonster('Wisdom of Urmahlullu', position, true, true)
-				time = os.time()
-				-- make change to wisdom of urmahlullu and start new count (~1 minute)
-			else
-				position = creature:getPosition()
-				creature:remove()
-				Game.createMonster('Wildness of Urmahlullu', position, true, true)
-				time = os.time()
-				-- back to wildness of urmahlullu
-			end
-		end
-	end
-	if creature and creature:getName() == 'Wisdom of Urmahlullu' then
-		if creature:getHealth() <= healthStages[5] then
-			if os.time() <= time + timetochange then
-				position = creature:getPosition()
-				creature:remove()
-				Game.createMonster('Urmahlullu the Weakened', position, true, true)
-				time = os.time()
-				-- make change to urmahlullu the weakened and start new count (~1 minute)
-			else
-				position = creature:getPosition()
-				creature:remove()
-				Game.createMonster('Urmahlullu the Tamed', position, true, true)
-				time = os.time()
-				--back to urmahlullu the tamed
-			end
-		end
-	end
+
 	return primaryDamage, primaryType, secondaryDamage, secondaryType
 end
 
 urmahlulluChanges:register()
-
-local weakenedDeath = CreatureEvent("WeakenedDeath")
-
-function weakenedDeath.onDeath(creature, corpse, killer, mostDamageKiller, unjustified, mostDamageUnjustified)
-	if creature and creature:getName() == 'Urmahlullu the Weakened' then
-		if os.time() > time + timetochange then
-			local position = creature:getPosition()
-			for _, tab in ipairs(bodyToRemove) do
-				local item = Tile(position):getItemById(tab.itemId)
-				if item then
-					item:remove()
-				end
-			end
-			Game.createMonster('Wisdom of Urmahlullu', position, true, true)
-			time = os.time()
-		end
-	end
-	return true
-end
-
-weakenedDeath:register()

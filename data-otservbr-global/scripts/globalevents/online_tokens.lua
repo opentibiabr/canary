@@ -1,19 +1,29 @@
 local config = {
-	storage = tonumber(Storage.VipSystem.GainTokens),
-	checkDuplicateIps = true,
+	enabled = false,
+	storage = Storage.VipSystem.OnlineTokensGain,
+	checkDuplicateIps = false,
+
 	tokenItemId = 14112, -- bar of gold
-	tokensPerHour = 2, -- amount of tokens, players free will win
-	tokensPerHourVip = 5 -- amount of tokens, players vip will win
+
+	interval = 60 * 1000,
+
+	-- per hour | system will calculate how many tokens will be given and when
+	tokensPerHour = {
+		free = 5,
+		vip = 10,
+	},
+
+	awardOn = 5,
 }
 
-local onlineTokensEvent = GlobalEvent("GainTokenPerHour")
+local onlineTokensEvent = GlobalEvent("GainTokenInterval")
+local runsPerHour = 3600 / (config.interval / 1000)
+
+local function tokensPerRun(tokensPerRun)
+	return tokensPerRun / runsPerHour
+end
 
 function onlineTokensEvent.onThink(interval)
-	if (not configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED)
-		or not configManager.getBoolean(configKeys.VIP_SYSTEM_GAIN_TOKENS_ENABLED)) then
-		return false
-	end
-
 	local players = Game.getPlayers()
 	if #players == 0 then
 		return true
@@ -21,34 +31,33 @@ function onlineTokensEvent.onThink(interval)
 
 	local checkIp = {}
 	for _, player in pairs(players) do
+		if player:getAccountType() >= ACCOUNT_TYPE_GAMEMASTER then
+			goto continue
+		end
+
 		local ip = player:getIp()
 		if ip ~= 0 and (not config.checkDuplicateIps or not checkIp[ip]) then
 			checkIp[ip] = true
-			local seconds = math.max(0, player:getStorageValue(config.storage))
-			if seconds >= 3600 then
-
-				if player:getAccountType() >= ACCOUNT_TYPE_GAMEMASTER then
-					return true
+			local remainder = math.max(0, player:getStorageValue(config.storage)) / 10000000
+			local tokens = tokensPerRun(player:isVip() and config.tokensPerHour.vip or config.tokensPerHour.free) + remainder
+			player:setStorageValue(config.storage, tokens * 10000000)
+			if tokens >= config.awardOn then
+				local item = player:addItem(config.tokenItemId, math.floor(tokens))
+				if item then
+					player:sendTextMessage(MESSAGE_EVENT_DEFAULT,
+						player:sendTextMessage(MESSAGE_STATUS_SMALL, "You have received " .. math.floor(tokens) .. " tokens.")
+					)
 				end
-
-				local tokensToWin = (player:isVip() and config.tokensPerHourVip) or config.tokensPerHour
-				if tokensToWin > 0 then
-					player:setStorageValue(config.storage, 0)
-					local item = player:addItem(config.tokenItemId, tokensToWin)
-					if item then
-						player:sendTextMessage(MESSAGE_EVENT_DEFAULT,
-							string.format("Congratulations %s!\z You have received %d %s for being online%s.", player:getName(), tokensToWin, "tokens", (player:isVip() and " and being VIP") or "")
-						)
-					end
-				end
-
-				return true
+				player:setStorageValue(config.storage, (tokens - math.floor(tokens)) * 10000000)
 			end
-			player:setStorageValue(config.storage, seconds + math.ceil(interval / 1000))
 		end
+
+		::continue::
 	end
 	return true
 end
 
-onlineTokensEvent:interval(10000)
-onlineTokensEvent:register()
+if config.enabled then
+	onlineTokensEvent:interval(config.interval)
+	onlineTokensEvent:register()
+end

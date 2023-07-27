@@ -384,7 +384,7 @@ function Player.sendWeatherEffect(self, groundEffect, fallEffect, thunderEffect)
     end
 end
 
-function Player:CreateFamiliarSpell()
+function Player:CreateFamiliarSpell(spellid)
 	local playerPosition = self:getPosition()
 	if not self:isPremium() then
 		playerPosition:sendMagicEffect(CONST_ME_POFF)
@@ -442,6 +442,14 @@ function Player:CreateFamiliarSpell()
 			)
 		)
 	end
+	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, spellid)
+	local cooldown = configManager.getNumber(configKeys.FAMILIAR_TIME) * 60 * 1000
+	if self:isVip() then
+		cooldown = cooldown - configManager.getNumber(configKeys.VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION)
+	end
+	condition:setTicks((cooldown) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+	self:addCondition(condition)
+
 	return true
 end
 

@@ -136,10 +136,6 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		if (loyaltyTitle.length() != 0) {
 			s << " You are a " << loyaltyTitle << ".";
 		}
-
-		if (isVIP()) {
-			s << " You are VIP.";
-		}
 	} else {
 		s << name;
 		if (!group->access) {
@@ -147,13 +143,11 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		}
 		s << '.';
 
-		std::string pronoun;
 		if (sex == PLAYERSEX_FEMALE) {
-			pronoun = " She";
+			s << " She";
 		} else {
-			pronoun = " He";
+			s << " He";
 		}
-		s << pronoun;
 
 		if (group->access) {
 			s << " is " << group->name << '.';
@@ -169,10 +163,6 @@ std::string Player::getDescription(int32_t lookDistance) const {
 			} else {
 				s << " He is a " << loyaltyTitle << ".";
 			}
-		}
-
-		if (isVIP()) {
-			s << pronoun << " is VIP.";
 		}
 	}
 
@@ -2066,8 +2056,8 @@ void Player::onThink(uint32_t interval) {
 	// Momentum (cooldown resets)
 	triggerMomentum();
 	auto playerTile = getTile();
-	const bool canKickVipPlayers = !g_configManager().getBoolean(VIP_SYSTEM_ENABLED) || (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && g_configManager().getBoolean(VIP_SYSTEM_CAN_KICK_IDLE_PLAYER));
-	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && canKickVipPlayers) {
+	const bool vipStaysOnline = isVip() && g_configManager().getBoolean(VIP_STAY_ONLINE);
+	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && !vipStaysOnline) {
 		idleTime += interval;
 		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
 		if (idleTime > (kickAfterMinutes * 60000) + 60000) {
@@ -2236,13 +2226,13 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 
 	if (sendText) {
 		std::string expString = fmt::format("{} experience point{}.", exp, (exp != 1 ? "s" : ""));
-
-		if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && isVIP()) {
-			uint8_t expPercent = g_configManager().getNumber(VIP_SYSTEM_EXP_PERCENT);
+		if (isVip()) {
+			uint8_t expPercent = g_configManager().getNumber(VIP_BONUS_EXP);
 			if (expPercent > 0) {
-				expString = expString + fmt::format(" (vip exp bonus {}%)", expPercent > 100 ? 100 : expPercent);
+				expString = expString + fmt::format(" (VIP bonus {}%)", expPercent > 100 ? 100 : expPercent);
 			}
 		}
+
 		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString + (handleHazardExperience ? " (Hazard)" : ""));
 		message.position = position;
 		message.primary.value = exp;
@@ -5207,10 +5197,6 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 }
 
 bool Player::isPremium() const {
-	if (isVIP()) {
-		return true;
-	}
-
 	if (g_configManager().getBoolean(FREE_PREMIUM) || hasFlag(PlayerFlags_t::IsAlwaysPremium)) {
 		return true;
 	}
@@ -5221,10 +5207,6 @@ bool Player::isPremium() const {
 void Player::setPremiumDays(int32_t v) {
 	premiumDays = v;
 	sendBasicData();
-}
-
-bool Player::isVIP() const {
-	return (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && vipDays > 0);
 }
 
 void Player::setTibiaCoins(int32_t v) {

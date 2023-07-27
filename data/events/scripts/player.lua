@@ -718,12 +718,10 @@ function Player:onGainExperience(target, exp, rawExp)
 		end
 	end
 
-	-- Vip system
 	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
-		local vipExpPercent = configManager.getNumber(configKeys.VIP_SYSTEM_EXP_PERCENT)
-		if (vipExpPercent > 0 and self:isVip()) then
-			vipExpPercent = (vipExpPercent > 100 and 100) or vipExpPercent
-			exp = exp * (1 + (vipExpPercent / 100))
+		local vipBonusExp = configManager.getNumber(configKeys.VIP_BONUS_EXP)
+		if (vipBonusExp > 0 and self:isVip()) then
+			exp = exp * (1 + (vipBonusExp / 100))
 		end
 	end
 
@@ -770,6 +768,9 @@ function Player:onGainSkillTries(skill, tries)
 	if SCHEDULE_SKILL_RATE ~= 100 then
 		skillOrMagicRate = math.max(0, (skillOrMagicRate * SCHEDULE_SKILL_RATE) / 100)
 	end
+
+	local vipBoost = configManager.getNumber(configKeys.VIP_BONUS_SKILL)
+	rate = skillOrMagicRate + (skillOrMagicRate * (vipBoost / 100))
 
 	return tries / 100 * (skillOrMagicRate * 100)
 end

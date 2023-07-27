@@ -3827,3 +3827,25 @@ int PlayerFunctions::luaPlayerClearSpellCooldowns(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerIsVip(lua_State* L) {
+	// player:isVip()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+	pushBoolean(L, player->isVip());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetVipDays(lua_State* L) {
+	// player:getVipDays()
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		lua_pushnumber(L, player->getVipDays());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}

@@ -45,6 +45,7 @@ function Monster:onDropLoot(corpse)
 
 		local participants = {}
 		local modifier = 1
+		local vipBoost = 0
 
 		if player then
 			participants = {player}
@@ -71,20 +72,16 @@ function Monster:onDropLoot(corpse)
 			Spdlog.warn("[Monster:onDropLoot] - Could not find WealthDuplex concoction.")
 		end
 
-		-- Vip system
-		local vipLootPercent = 0
-		if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
-			local percent = configManager.getNumber(configKeys.VIP_SYSTEM_LOOT_PERCENT)
-			if (percent > 0 and player and player:isVip()) then
-				vipLootPercent = ((percent > 100 and 100) or percent) / 100
+		for i = 1, #participants do
+			local participant = participants[i]
+			if participant:isVip() then
+				vipBoost = vipBoost + configManager.getNumber(configKeys.VIP_BONUS_LOOT) / 100
 			end
 		end
+		vipBoost = vipBoost / ((#participants) ^ 0.5)
+		modifier = modifier * (1 + vipBoost)
 
 		for i = 1, #monsterLoot do
-			if vipLootPercent > 0 then
-				monsterLoot[i].chance = monsterLoot[i].chance + (monsterLoot[i].chance * vipLootPercent)
-			end
-
 			local item = corpse:createLootItem(monsterLoot[i], charmBonus)
 			if self:getName():lower() == Game.getBoostedCreature():lower() then
 				local itemBoosted = corpse:createLootItem(monsterLoot[i], charmBonus, modifier)

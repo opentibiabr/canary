@@ -21,14 +21,6 @@ end
 local playerLogin = CreatureEvent("PlayerLogin")
 
 function playerLogin.onLogin(player)
-
-	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
-		-- Vip system functions
-		player:loadVipData()
-		player:updateVipTime()
-		player:addAddonMount()
-	end
-
 	local items = {
 		{3003, 1},
 		{3031, 3}

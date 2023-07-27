@@ -114,7 +114,7 @@ bool IOMapSerialize::loadContainer(PropStream &propStream, Container* container)
 	return true;
 }
 
-uint32_t NEW_BEDS_START_ID = 32482;
+uint32_t NEW_BEDS_START_ID = 30000;
 
 bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent, bool isHouseItem /*= false*/) {
 	uint16_t id;

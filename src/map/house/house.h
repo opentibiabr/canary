@@ -194,7 +194,7 @@ class House {
 			return bedsList;
 		}
 		uint32_t getBedCount() {
-			return static_cast<uint32_t>(std::floor(bedsList.size() / 2.)); // each bed takes 2 sqms of space, ceil is just for bad maps
+			return static_cast<uint32_t>(std::floor(bedsList.size() / 2.));
 		}
 
 		void setMaxBeds(int32_t count) {

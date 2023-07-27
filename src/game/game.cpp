@@ -3678,7 +3678,7 @@ Item* Game::wrapItem(Item* item, House* house) {
 void Game::unwrapItem(Item* item, uint16_t unWrapId, House* house, Player* player) {
 	auto hiddenCharges = item->getAttribute<uint16_t>(DATE);
 	const ItemType &newiType = Item::items.getItemType(unWrapId);
-	if (player != nullptr && house != nullptr && newiType.isBed() && house->getMaxBeds() > -1 && house->getBedCount() + 1 > house->getMaxBeds()) {
+	if (player != nullptr && house != nullptr && newiType.isBed() && house->getMaxBeds() > -1 && house->getBedCount() >= house->getMaxBeds()) {
 		player->sendCancelMessage("You reached the maximum beds in this house");
 		return;
 	}

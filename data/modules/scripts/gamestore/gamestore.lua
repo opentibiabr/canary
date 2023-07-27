@@ -76,7 +76,7 @@ GameStore.Categories = {
 				price = 1500,
 				id = 3180,
 				validUntil = 180,
-				description = "<i>Enhance your gaming experience by gaining advantages:</i>\n\n&#8226; +20% experience rate\n&#8226; +20% skill training speed\n&#8226; +20% loot\n&#8226; gain loyalty bonuses for playing\n&#8226; stay online idle without getting disconnected\n&#8226; exclusive outfits and mounts\n\n{usablebyallicon} valid for all characters on this account\n{activated}",
+				description = premiumDescription,```
 				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
 			},
 			{

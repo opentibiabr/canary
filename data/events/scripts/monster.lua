@@ -72,14 +72,14 @@ function Monster:onDropLoot(corpse)
 		end
 
 		for i = 1, #monsterLoot do
-			corpse:createLootItem(monsterLoot[i], charmBonus)
+			corpse:createLootItem(monsterLoot[i], charmBonus, modifier)
 			if self:getName():lower() == Game.getBoostedCreature():lower() then
 				 corpse:createLootItem(monsterLoot[i], charmBonus, modifier)
 			end
 			if self:hazard() and player then
 				local chanceTo = math.random(1, 100)
 				if chanceTo <= (2 * player:getHazardSystemPoints() * configManager.getNumber(configKeys.HAZARDSYSTEM_LOOT_BONUS_MULTIPLIER)) then
-					if corpse:createLootItem(monsterLoot[i], charmBonus, preyChanceBoost) then
+					if corpse:createLootItem(monsterLoot[i], charmBonus, modifier) then
 						hazardMsg = true
 					end
 				end
@@ -100,7 +100,7 @@ function Monster:onDropLoot(corpse)
 				local probability = math.random(0, 100)
 				if probability < preyLootPercent then
 					for _, loot in pairs(monsterLoot) do
-						 corpse:createLootItem(loot, charmBonus)
+						 corpse:createLootItem(loot, charmBonus, modifier)
 					end
 				end
 			end

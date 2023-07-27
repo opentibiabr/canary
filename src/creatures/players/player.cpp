@@ -1172,21 +1172,12 @@ std::vector<Item*> Player::getRewardsFromContainer(const Container* container) c
 	return rewardItemsVector;
 }
 
-ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*/, uint32_t maxMoveItems /* = 0*/) {
+ReturnValue Player::rewardChestCollect(uint32_t maxMoveItems /* = 0*/) {
 	std::vector<Item*> rewardItemsVector;
-	if (fromCorpse) {
-		auto rewardId = fromCorpse->getAttribute<time_t>(ItemAttribute_t::DATE);
-		auto reward = getReward(rewardId, false);
-		if (reward && reward->empty()) {
-			return RETURNVALUE_REWARDCONTAINERISEMPTY;
-		}
-		rewardItemsVector = getRewardsFromContainer(reward->getContainer());
-	} else {
-		if (rewardChest && rewardChest->empty()) {
-			return RETURNVALUE_REWARDCHESTISEMPTY;
-		}
-		rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());
+	if (rewardChest && rewardChest->empty()) {
+		return RETURNVALUE_REWARDCHESTISEMPTY;
 	}
+	rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());
 
 	auto rewardCount = rewardItemsVector.size();
 	uint32_t movedRewardItems = 0;

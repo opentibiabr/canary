@@ -1,14 +1,14 @@
 local config = {
-    -- Starting position to where players will be teleported when the map is flooded and are not in raft
+    -- Area segura onde os players serao puxados caso estejam fora das plataformas.
     waitPosition = Position(33893, 31020, 8),
 
-    -- Time to change, default time is 2 minutes (120 * 1000)
-    interval = (30 * 1000),
+    -- Tempo que levara para alterar o mapa de seco para inundado, padrao 2 minutos.
+    interval = (120 * 1000),
 
-    -- Central basement position on the first floor to be used as a getSpectators reference
+    -- Area matriz do primeiro andar.
 	positionFirstFloor = {fromPosition = Position(33873, 30994, 8), toPosition = Position(33961, 31149, 8), center = Position(33919, 31072, 8)},
 
-    -- Basement positions on the second floor to be used as a getSpectators reference
+    -- Area matriz do segundo andar.
 	positionSecondFloor = {fromPosition = Position(33873, 30994, 9), toPosition = Position(33961, 31149, 9),center = Position(33919, 31072, 9)},
 
 	boatPositionEmptyRoom = {
@@ -33,7 +33,7 @@ local config = {
 		{center = Position(33939, 31108, 8), rangeMinX = 2, rangeMaxX = 3, rangeMinY = 2, rangeMaxY = 2}
 	},
 
-	safeSpots = {
+	safeSpots = {  -- Area de segurança configurada acima.
 		{center = Position(33893, 31020, 8), rangeMinX = 0, rangeMaxX = 0, rangeMinY = 0, rangeMaxY = 0} -- Onde o Player sera teleportado caso esteja fora da balsa ao encher.
 	}
 }

@@ -151,7 +151,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				end
 			end
 		elseif npcHandler:getTopic(playerId) == 4 then
-			if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 12 then
+			if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 12 or player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 11 then
 				if player:removeItem(6106, 1) then
 					npcHandler:say("Thank you very much. I will test this beauty in privacy.", npc, creature)
 					player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 14)

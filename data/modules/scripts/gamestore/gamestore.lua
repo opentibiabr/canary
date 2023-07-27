@@ -76,7 +76,7 @@ GameStore.Categories = {
 				price = 1500,
 				id = 3180,
 				validUntil = 180,
-				description = premiumDescription,```
+				description = premiumDescription,
 				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
 			},
 			{

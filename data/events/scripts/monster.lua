@@ -48,7 +48,7 @@ function Monster:onDropLoot(corpse)
 		local vipBoost = 0
 
 		if player then
-			participants = {player}
+			participants = { player }
 			if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) then
 				local party = player:getParty()
 				if party and party:isSharedExperienceEnabled() then
@@ -75,7 +75,9 @@ function Monster:onDropLoot(corpse)
 		for i = 1, #participants do
 			local participant = participants[i]
 			if participant:isVip() then
-				vipBoost = vipBoost + configManager.getNumber(configKeys.VIP_BONUS_LOOT) / 100
+				local boost = configManager.getNumber(configKeys.VIP_BONUS_LOOT)
+				boost = ((boost > 100 and 100) or boost) / 100
+				vipBoost = vipBoost + boost
 			end
 		end
 		vipBoost = vipBoost / ((#participants) ^ 0.5)
@@ -168,8 +170,8 @@ function Monster:onDropLoot(corpse)
 			if preyLootPercent > 0 then
 				text = text .. " (active prey bonus)"
 			end
-			if (vipLootPercent > 0) then
-				text = text .. " (vip loot bonus " .. (vipLootPercent * 100) .. "%)"
+			if (vipBoost > 0) then
+				text = text .. " (vip loot bonus " .. (vipBoost * 100) .. "%)"
 			end
 			if charmBonus then
 				text = text .. " (active charm bonus)"

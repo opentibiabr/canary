@@ -29,7 +29,6 @@ void DatabaseTasks::start() {
 	if (db_ == nullptr) {
 		return;
 	}
-	db_->connect();
 	ThreadHolder::start();
 }
 

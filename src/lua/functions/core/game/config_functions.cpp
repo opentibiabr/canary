@@ -221,14 +221,6 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", TIBIADROME_CONCOCTION_DURATION);
 	registerEnumIn(L, "configKeys", TIBIADROME_CONCOCTION_TICK_TYPE);
 
-	registerEnumIn(L, "configKeys", VIP_SYSTEM_ENABLED);
-	registerEnumIn(L, "configKeys", VIP_BONUS_EXP);
-	registerEnumIn(L, "configKeys", VIP_BONUS_LOOT);
-	registerEnumIn(L, "configKeys", VIP_BONUS_SKILL);
-	registerEnumIn(L, "configKeys", VIP_STAY_ONLINE);
-	registerEnumIn(L, "configKeys", VIP_AUTOLOOT_VIP_ONLY);
-	registerEnumIn(L, "configKeys", VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION);
-
 	registerEnumIn(L, "configKeys", AUTH_TYPE);
 	registerEnumIn(L, "configKeys", RESET_SESSIONS_ON_STARTUP);
 
@@ -243,13 +235,12 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", AUTOLOOT);
 
 	registerEnumIn(L, "configKeys", VIP_SYSTEM_ENABLED);
-	registerEnumIn(L, "configKeys", VIP_SYSTEM_EXP_PERCENT);
-	registerEnumIn(L, "configKeys", VIP_SYSTEM_LOOT_PERCENT);
-	registerEnumIn(L, "configKeys", VIP_SYSTEM_GAIN_COINS_ENABLED);
-	registerEnumIn(L, "configKeys", VIP_SYSTEM_GAIN_TOKENS_ENABLED);
-	registerEnumIn(L, "configKeys", VIP_SYSTEM_AUTO_LOOT_ONLY_VIP);
-	registerEnumIn(L, "configKeys", VIP_SYSTEM_FAMILIAR_TIME_DEBIT);
-	registerEnumIn(L, "configKeys", VIP_SYSTEM_CAN_KICK_IDLE_PLAYER);
+	registerEnumIn(L, "configKeys", VIP_BONUS_EXP);
+	registerEnumIn(L, "configKeys", VIP_BONUS_LOOT);
+	registerEnumIn(L, "configKeys", VIP_BONUS_SKILL);
+    registerEnumIn(L, "configKeys", VIP_AUTOLOOT_VIP_ONLY);
+    registerEnumIn(L, "configKeys", VIP_STAY_ONLINE);
+	registerEnumIn(L, "configKeys", VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION);
 #undef registerEnumIn
 }
 

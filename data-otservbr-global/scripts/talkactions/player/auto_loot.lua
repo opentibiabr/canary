@@ -5,7 +5,7 @@ function autoLoot.onSay(player, words, param)
 		return false
 	end
 	if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and
-		configManager.getBoolean(configKeys.VIP_SYSTEM_AUTO_LOOT_ONLY_VIP) and not player:isVip()) then
+		configManager.getBoolean(configKeys.VIP_AUTOLOOT_VIP_ONLY) and not player:isVip()) then
 		player:sendCancelMessage("You need to be VIP to use this command!")
 		return false
 	end

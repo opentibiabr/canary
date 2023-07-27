@@ -777,7 +777,7 @@ function Player:onGainSkillTries(skill, tries)
 	end
 
 	local vipBoost = configManager.getNumber(configKeys.VIP_BONUS_SKILL)
-	rate = skillOrMagicRate + (skillOrMagicRate * (vipBoost / 100))
+	skillOrMagicRate = skillOrMagicRate + (skillOrMagicRate * (vipBoost / 100))
 
 	return tries / 100 * (skillOrMagicRate * 100)
 end

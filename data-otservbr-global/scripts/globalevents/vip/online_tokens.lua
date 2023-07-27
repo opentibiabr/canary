@@ -8,6 +8,7 @@ local config = {
 	interval = 60 * 1000,
 
 	-- per hour | system will calculate how many tokens will be given and when
+	-- put 0 in tokensPerHour.free to disable free from receiving tokens
 	tokensPerHour = {
 		free = 5,
 		vip = 10,
@@ -19,8 +20,8 @@ local config = {
 local onlineTokensEvent = GlobalEvent("GainTokenInterval")
 local runsPerHour = 3600 / (config.interval / 1000)
 
-local function tokensPerRun(tokensPerRun)
-	return tokensPerRun / runsPerHour
+local function tokensPerRun(tokensPerHour)
+	return tokensPerHour / runsPerHour
 end
 
 function onlineTokensEvent.onThink(interval)
@@ -42,17 +43,16 @@ function onlineTokensEvent.onThink(interval)
 			local tokens = tokensPerRun(player:isVip() and config.tokensPerHour.vip or config.tokensPerHour.free) + remainder
 			player:setStorageValue(config.storage, tokens * 10000000)
 			if tokens >= config.awardOn then
-				local item = player:addItem(config.tokenItemId, math.floor(tokens))
+				local tokensMath = math.floor(tokens)
+				local item = player:addItem(config.tokenItemId, tokensMath)
 				if item then
-					player:sendTextMessage(MESSAGE_EVENT_DEFAULT,
-						player:sendTextMessage(MESSAGE_STATUS_SMALL, "You have received " .. math.floor(tokens) .. " tokens.")
-					)
+					player:sendTextMessage(MESSAGE_STATUS_SMALL, string.format("Congratulations %s!\z You have received %d %s for being online.", player:getName(), tokensMath, "tokens"))
 				end
-				player:setStorageValue(config.storage, (tokens - math.floor(tokens)) * 10000000)
+				player:setStorageValue(config.storage, (tokens - tokensMath) * 10000000)
 			end
 		end
 
-		::continue::
+		:: continue ::
 	end
 	return true
 end

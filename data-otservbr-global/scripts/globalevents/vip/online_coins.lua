@@ -6,12 +6,14 @@ local config = {
 	interval = 60 * 1000,
 
 	-- per hour | system will calculate how many coins will be given and when
+	-- put 0 in coinsPerHour.free to disable free from receiving coins
 	coinsPerHour = {
-		free = 50,
-		vip = 100,
+		free = 1,
+		vip = 5,
 	},
 
-	awardOn = 50,
+	-- system will distribute when the player accumulate x coins
+	awardOn = 5,
 }
 
 local onlineCoinsEvent = GlobalEvent("GainCoinInterval")
@@ -29,6 +31,10 @@ function onlineCoinsEvent.onThink(interval)
 
 	local checkIp = {}
 	for _, player in pairs(players) do
+		if player:getAccountType() >= ACCOUNT_TYPE_GAMEMASTER then
+			goto continue
+		end
+
 		local ip = player:getIp()
 		if ip ~= 0 and (not config.checkDuplicateIps or not checkIp[ip]) then
 			checkIp[ip] = true
@@ -36,11 +42,14 @@ function onlineCoinsEvent.onThink(interval)
 			local coins = coinsPerRun(player:isVip() and config.coinsPerHour.vip or config.coinsPerHour.free) + remainder
 			player:setStorageValue(config.storage, coins * 10000000)
 			if coins >= config.awardOn then
-				player:addTibiaCoins(math.floor(coins), true)
-				player:sendTextMessage(MESSAGE_STATUS_SMALL, "You have received " .. math.floor(coins) .. " online points.")
-				player:setStorageValue(config.storage, (coins - math.floor(coins)) * 10000000)
+				local coinsMath = math.floor(coins)
+				player:addTibiaCoins(coinsMath, true)
+				player:sendTextMessage(MESSAGE_STATUS_SMALL, string.format("Congratulations %s!\z You have received %d %s for being online.", player:getName(), coinsMath, "tibia coins"))
+				player:setStorageValue(config.storage, (coins - coinsMath) * 10000000)
 			end
 		end
+
+		:: continue ::
 	end
 	return true
 end

@@ -1,12 +1,12 @@
 local spell = Spell("instant")
-local spellid = 196
+local spellId = 196
 
 function spell.onCastSpell(player, variant)
-	return player:CreateFamiliarSpell(spellid)
+	return player:CreateFamiliarSpell(spellId)
 end
 
 spell:group("support")
-spell:id(spellid)
+spell:id(spellId)
 spell:name("Sorcerer familiar")
 spell:words("utevo gran res ven")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_SUMMON_SORCERER_FAMILIAR)

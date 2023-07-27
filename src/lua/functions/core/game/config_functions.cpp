@@ -238,8 +238,8 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", VIP_BONUS_EXP);
 	registerEnumIn(L, "configKeys", VIP_BONUS_LOOT);
 	registerEnumIn(L, "configKeys", VIP_BONUS_SKILL);
-    registerEnumIn(L, "configKeys", VIP_AUTOLOOT_VIP_ONLY);
-    registerEnumIn(L, "configKeys", VIP_STAY_ONLINE);
+	registerEnumIn(L, "configKeys", VIP_AUTOLOOT_VIP_ONLY);
+	registerEnumIn(L, "configKeys", VIP_STAY_ONLINE);
 	registerEnumIn(L, "configKeys", VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION);
 #undef registerEnumIn
 }

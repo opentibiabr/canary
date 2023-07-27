@@ -31,6 +31,7 @@ class IOLoginData {
 		static bool loadPlayerByName(Player* player, const std::string &name, bool disable = true);
 		static bool loadPlayer(Player* player, DBResult_ptr result, bool disable = false);
 		static bool savePlayer(Player* player);
+		static bool savePlayerGuard(Player* player);
 		static uint32_t getGuidByName(const std::string &name);
 		static bool getGuidByNameEx(uint32_t &guid, bool &specialVip, std::string &name);
 		static std::string getNameByGuid(uint32_t guid);
@@ -45,8 +46,6 @@ class IOLoginData {
 
 		static void addPremiumDays(uint32_t accountId, int32_t addDays);
 		static void removePremiumDays(uint32_t accountId, int32_t removeDays);
-
-		static bool savePlayerGuard(Player* player);
 
 	protected:
 		using ItemMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;

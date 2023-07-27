@@ -664,10 +664,12 @@ local function useConcoctionTime(player)
 	end
 
 	local deduction = 60
-	if timePassed < 60 then
-		deduction = timePassed
+	if timePassed > 60 then
+		nextUseConcoctionTime[playerId] = currentTime + 120
+		deduction = 120
+	else
+		nextUseConcoctionTime[playerId] = currentTime + 60
 	end
-	nextUseConcoctionTime[playerId] = currentTime + 60
 	Concoction.experienceTick(player, deduction)
 end
 

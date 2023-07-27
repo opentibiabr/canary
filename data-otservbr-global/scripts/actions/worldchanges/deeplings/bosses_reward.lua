@@ -3,32 +3,32 @@ local rewards = {
 		storage = Storage.DeeplingBosses.Jaul,
 		bossName = 'Jaul',
 		items = {
-			{rand = true, itemId = {13990, 14021}},
-			{itemId = 3035, count = 50},
-			{itemId = 14224},
-			{itemId = 14042}
+			{ rand = true, itemId = { 13990, 14021 } },
+			{ itemId = 3035, count = 50 },
+			{ itemId = 14224 },
+			{ itemId = 14042 }
 		}
 	},
 	[9303] = {
 		storage = Storage.DeeplingBosses.Tanjis,
 		bossName = 'Tanjis',
 		items = {
-			{rand = true, itemId = {14022, 3027}},
-			{itemId = 14223},
-			{itemId = 3035, count = 20},
-			{itemId = 13990},
-			{itemId = 14042}
+			{ rand = true, itemId = { 14022, 3027 } },
+			{ itemId = 14223 },
+			{ itemId = 3035, count = 20 },
+			{ itemId = 13990 },
+			{ itemId = 14042 }
 		}
 	},
 	[9304] = {
 		storage = Storage.DeeplingBosses.Obujos,
 		bossName = 'Obujos',
 		items = {
-			{rand = true, itemId = {14023, 281}},
-			{itemId = 14222},
-			{itemId = 14043},
-			{itemId = 3035, count = 30},
-			{itemId = 13987}
+			{ rand = true, itemId = { 14023, 281 } },
+			{ itemId = 14222 },
+			{ itemId = 14043 },
+			{ itemId = 3035, count = 30 },
+			{ itemId = 13987 }
 		}
 	}
 }
@@ -36,7 +36,7 @@ local rewards = {
 local bossesReward = Action()
 
 function bossesReward.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-    if item.uid > 25609 and item.uid < 25613 then
+	if item.uid >= 9302 and item.uid <= 9304 then
 		local reward = rewards[item.uid]
 		if not reward then
 			return true
@@ -66,4 +66,3 @@ end
 
 bossesReward:uid(9302, 9303, 9304)
 bossesReward:register()
-

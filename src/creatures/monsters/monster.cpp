@@ -940,17 +940,18 @@ void Monster::onThinkTarget(uint32_t interval) {
 
 			if (challengeFocusDuration > 0) {
 				challengeFocusDuration -= interval;
+				canChangeTarget = false;
 
 				if (challengeFocusDuration <= 0) {
 					challengeFocusDuration = 0;
 				}
 			}
 
-			if (targetChangeCooldown > 0) {
-				targetChangeCooldown -= interval;
+			if (m_targetChangeCooldown > 0) {
+				m_targetChangeCooldown -= interval;
 
-				if (targetChangeCooldown <= 0) {
-					targetChangeCooldown = 0;
+				if (m_targetChangeCooldown <= 0) {
+					m_targetChangeCooldown = 0;
 					targetChangeTicks = mType->info.changeTargetSpeed;
 				} else {
 					canChangeTarget = false;
@@ -962,7 +963,7 @@ void Monster::onThinkTarget(uint32_t interval) {
 
 				if (targetChangeTicks >= mType->info.changeTargetSpeed) {
 					targetChangeTicks = 0;
-					targetChangeCooldown = mType->info.changeTargetSpeed;
+					m_targetChangeCooldown = mType->info.changeTargetSpeed;
 
 					if (challengeFocusDuration > 0) {
 						challengeFocusDuration = 0;
@@ -2035,14 +2036,13 @@ void Monster::changeHealth(int32_t healthChange, bool sendHealthChange /* = true
 	Creature::changeHealth(healthChange, sendHealthChange);
 }
 
-bool Monster::challengeCreature(Creature* creature) {
+bool Monster::challengeCreature(Creature* creature, int targetChangeCooldown) {
 	if (isSummon()) {
 		return false;
 	}
 
 	bool result = selectTarget(creature);
 	if (result) {
-		targetChangeCooldown = 6000;
 		challengeFocusDuration = targetChangeCooldown;
 		targetChangeTicks = 0;
 		// Wheel of destiny

@@ -427,6 +427,15 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		writeToOutputBuffer(opcodeMessage);
 	}
 
+	account::Account playerAccount;
+	if (playerAccount.LoadAccountDB(accountId) != account::ERROR_NO) {
+		disconnectClient("Your account could not be loaded.");
+		return;
+	}
+
+	// Update premium days
+	Game::updatePremium(playerAccount);
+
 	// dispatcher thread
 	Player* foundPlayer = g_game().getPlayerUniqueLogin(name);
 	if (!foundPlayer) {
@@ -5579,12 +5588,15 @@ void ProtocolGame::sendPingBack() {
 }
 
 void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint16_t type) {
+	if (oldProtocol && type > 0xFF) {
+		return;
+	}
 	NetworkMessage msg;
 	if (oldProtocol) {
 		msg.addByte(0x85);
 		msg.addPosition(from);
 		msg.addPosition(to);
-		msg.addByte(std::max<uint8_t>(0xFF, type));
+		msg.addByte(static_cast<uint8_t>(type));
 	} else {
 		msg.addByte(0x83);
 		msg.addPosition(from);
@@ -5637,7 +5649,7 @@ void ProtocolGame::sendRestingStatus(uint8_t protection) {
 }
 
 void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
-	if (!canSee(pos)) {
+	if (!canSee(pos) || (oldProtocol && type > 0xFF)) {
 		return;
 	}
 
@@ -5645,7 +5657,7 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
 	if (oldProtocol) {
 		msg.addByte(0x83);
 		msg.addPosition(pos);
-		msg.addByte(std::max<uint8_t>(0xFF, type));
+		msg.addByte(static_cast<uint8_t>(type));
 	} else {
 		msg.addByte(0x83);
 		msg.addPosition(pos);
@@ -5657,11 +5669,14 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
 }
 
 void ProtocolGame::removeMagicEffect(const Position &pos, uint16_t type) {
+	if (oldProtocol && type > 0xFF) {
+		return;
+	}
 	NetworkMessage msg;
 	msg.addByte(0x84);
 	msg.addPosition(pos);
 	if (oldProtocol) {
-		msg.addByte(std::max<uint8_t>(255, type));
+		msg.addByte(static_cast<uint8_t>(type));
 	} else {
 		msg.add<uint16_t>(type);
 	}

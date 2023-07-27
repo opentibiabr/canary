@@ -236,7 +236,7 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 					if (!item_list.size() == 0) {
 						for (Item* item : item_list) {
 							if (item) {
-								g_game().internalRemoveItem(item);
+								g_game().internalRemoveItem(item, -1, false, 0, true);
 							}
 						}
 					}
@@ -244,7 +244,7 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 
 				if (Item* ground = tile->getGround();
 					ground) {
-					g_game().internalRemoveItem(ground);
+					g_game().internalRemoveItem(ground, -1, false, 0, true);
 				}
 			}
 			continue;

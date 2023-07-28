@@ -24,7 +24,7 @@ function vipGod.onSay(player, words, param)
 	local target = Player(targetName)
 
 	if not action or not targetName then
-		player:sendTextMessage(MESSAGE_INFO_DESCR, 'Command invalid.\nUsage:\n/vip <action>, <name>, [, <value>]\n\nAvailable actions:\ncheck, adddays, addinfinite, removedays, remove')
+		player:sendTextMessage(MESSAGE_INFO_DESCR, 'Command invalid.\nUsage:\n/vip <action>, <name>, [, <value>]\n\nAvailable actions:\ncheck, adddays, removedays, remove')
 		return false
 	end
 
@@ -32,11 +32,13 @@ function vipGod.onSay(player, words, param)
 		player:sendTextMessage(MESSAGE_INFO_DESCR, string.format('Player "%s" is not online or does not exist!', targetName))
 		return false
 	end
+
 	local targetVipDays = target:getVipDays()
 	targetName = target:getName()
 
 	if action == "check" then
 		player:sendTextMessage(MESSAGE_STATUS, string.format('"%s" has %s VIP day(s) left.', targetName, (targetVipDays == 0xFFFF and 'infinite' or targetVipDays)))
+
 	elseif action == "adddays" then
 		local amount = tonumber(params[3])
 		if not amount or amount <= 0 then
@@ -46,17 +48,14 @@ function vipGod.onSay(player, words, param)
 
 		if amount < config.minDays or amount > config.maxDays then
 			player:sendTextMessage(MESSAGE_INFO_DESCR, string.format('You can only add %d to %d VIP days at a time.', config.minDays, config.maxDays))
-			target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 			return false
 		end
 
-		target:addVipDays(amount)
+		target:addPremiumDays(amount)
+		target:onAddVip(amount)
+		target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 		player:sendTextMessage(MESSAGE_STATUS, string.format('"%s" received %d VIP day(s) and now has %d VIP day(s)', targetName, amount, target:getVipDays()))
-		target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
-	elseif action == 'addinfinite' then
-		target:addInfiniteVip()
-		player:sendTextMessage(MESSAGE_STATUS, string.format('%s now has infinite vip time.', targetName))
-		target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
+
 	elseif action == 'removedays' then
 		local amount = tonumber(params[3])
 		if not amount then
@@ -64,19 +63,23 @@ function vipGod.onSay(player, words, param)
 			return false
 		end
 		if amount > targetVipDays then
-			target:removeVip()
-			player:sendTextMessage(MESSAGE_STATUS, string.format('You removed all vip days from %s.', targetName))
+			target:removePremiumDays(targetVipDays)
+			target:onRemoveVip()
 			target:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
+			player:sendTextMessage(MESSAGE_STATUS, string.format('You removed all VIP days from %s.', targetName))
 		else
-			target:removeVipDays(amount)
-			player:sendTextMessage(MESSAGE_STATUS, string.format('%s lost %s vip day(s) and now has %s vip day(s).', targetName, amount, target:getVipDays()))
+			target:removePremiumDays(amount)
+			player:sendTextMessage(MESSAGE_STATUS, string.format('%s lost %s VIP day(s) and now has %s VIP day(s).', targetName, amount, target:getVipDays()))
 		end
+
 	elseif action == 'remove' then
-		target:removeVip()
-		player:sendTextMessage(MESSAGE_STATUS, string.format('You removed all vip days from %s.', targetName))
+		target:removePremiumDays(targetVipDays)
+		target:onRemoveVip()
 		target:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
+		player:sendTextMessage(MESSAGE_STATUS, string.format('You removed all VIP days from %s.', targetName))
+
 	else
-		player:sendTextMessage(MESSAGE_INFO_DESCR, 'Action is required.\nUsage:\n/vip <action>, <name>, [, <value>]\n\nAvailable actions:\ncheck, adddays, addinfinite, removedays, remove')
+		player:sendTextMessage(MESSAGE_INFO_DESCR, 'Action is required.\nUsage:\n/vip <action>, <name>, [, <value>]\n\nAvailable actions:\ncheck, adddays, removedays, remove')
 		return false
 	end
 	return true

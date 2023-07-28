@@ -7,103 +7,92 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_CALLBACKS_EVENTCALLBACK_HPP_
-#define SRC_LUA_CALLBACKS_EVENTCALLBACK_HPP_
+#ifndef SRC_LUA_CALLBACKS_EVENT_CALLBACK__HPP_
+#define SRC_LUA_CALLBACKS_EVENT_CALLBACK__HPP_
 
-#include "lua/scripts/luascript.h"
+#include "lua/callbacks/callbacks_definitions.hpp"
+#include "creatures/creatures_definitions.hpp"
+#include "items/items_definitions.hpp"
+#include "utils/utils_definitions.hpp"
 #include "lua/scripts/scripts.h"
-#include "lua/callbacks/event_callback_functions.hpp"
+
+class Creature;
+class Player;
+class Tile;
+class Party;
+class ItemType;
+class Monster;
 
 /**
- * @class Callbacks
- * @brief Class managing all event callbacks.
+ * @class EventCallback
+ * @brief Class representing an event callback.
  *
- * @note This class is a singleton that holds all registered event callbacks.
- * @details It provides functions to add new callbacks and retrieve callbacks by type.
+ * @note This class is used to encapsulate the logic of a Lua event callback.
+ * @details It is derived from the Script class and includes additional information specific to event callbacks.
+ *
+ * @see Script
  */
+class EventCallback : public Script {
+	private:
+		EventCallback_t m_callbackType = EventCallback_t::None;
+		std::string m_scriptTypeName;
 
-class Callbacks {
-public:
-	Callbacks();
-	~Callbacks();
+	public:
+		EventCallback(LuaScriptInterface* scriptInterface);
 
-	Callbacks(const Callbacks &) = delete;
-	Callbacks &operator=(const Callbacks &) = delete;
+		std::string getScriptTypeName() const override;
 
-	static Callbacks &getInstance();
+		void setScriptTypeName(const std::string_view newName);
 
-	void addCallback(EventCallback* callback);
+		EventCallback_t getType() const;
 
-	std::vector<EventCallback*> getCallbacks();
+		void setType(EventCallback_t type);
 
-	std::vector<EventCallback*> getCallbacksByType(EventCallback_t type);
+		// Creature
+		bool creatureOnChangeOutfit(Creature* creature, const Outfit_t &outfit);
+		ReturnValue creatureOnAreaCombat(Creature* creature, Tile* tile, bool aggressive);
+		ReturnValue creatureOnTargetCombat(Creature* creature, Creature* target);
+		void creatureOnHear(Creature* creature, Creature* speaker, const std::string &words, SpeakClasses type);
+		void creatureOnDrainHealth(Creature* creature, Creature* attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary);
 
-private:
-	std::vector<EventCallback*> callbacks;
+		// Party
+		bool partyOnJoin(Party* party, Player* player);
+		bool partyOnLeave(Party* party, Player* player);
+		bool partyOnDisband(Party* party);
+		void partyOnShareExperience(Party* party, uint64_t &exp);
+
+		// Player
+		bool playerOnBrowseField(Player* player, const Position &position);
+		void playerOnLook(Player* player, const Position &position, Thing* thing, uint8_t stackpos, int32_t lookDistance);
+		void playerOnLookInBattleList(Player* player, Creature* creature, int32_t lookDistance);
+		void playerOnLookInTrade(Player* player, Player* partner, Item* item, int32_t lookDistance);
+		bool playerOnLookInShop(Player* player, const ItemType* itemType, uint8_t count);
+		bool playerOnMoveItem(Player* player, Item* item, uint16_t count, const Position &fromPosition, const Position &toPosition, Cylinder* fromCylinder, Cylinder* toCylinder);
+		void playerOnItemMoved(Player* player, Item* item, uint16_t count, const Position &fromPosition, const Position &toPosition, Cylinder* fromCylinder, Cylinder* toCylinder);
+		void playerOnChangeZone(Player* player, ZoneType_t zone);
+		void playerOnChangeHazard(Player* player, bool isHazard);
+		bool playerOnMoveCreature(Player* player, Creature* creature, const Position &fromPosition, const Position &toPosition);
+		void playerOnReportRuleViolation(Player* player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation);
+		void playerOnReportBug(Player* player, const std::string &message, const Position &position, uint8_t category);
+		bool playerOnTurn(Player* player, Direction direction);
+		bool playerOnTradeRequest(Player* player, Player* target, Item* item);
+		bool playerOnTradeAccept(Player* player, Player* target, Item* item, Item* targetItem);
+		void playerOnGainExperience(Player* player, Creature* target, uint64_t &exp, uint64_t rawExp);
+		void playerOnLoseExperience(Player* player, uint64_t &exp);
+		void playerOnGainSkillTries(Player* player, skills_t skill, uint64_t &tries);
+		void playerOnRemoveCount(Player* player, Item* item);
+		void playerOnRequestQuestLog(Player* player);
+		void playerOnRequestQuestLine(Player* player, uint16_t questId);
+		void playerOnStorageUpdate(Player* player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime);
+		void playerOnCombat(Player* player, Creature* target, Item* item, CombatDamage &damage);
+		void playerOnInventoryUpdate(Player* player, Item* item, Slots_t slot, bool equip);
+
+		// Monster
+		void monsterOnDropLoot(Monster* monster, Container* corpse);
+		void monsterOnSpawn(Monster* monster, const Position &position);
+
+		// Monster
+		void npcOnSpawn(Npc* npc, const Position &position);
 };
 
-constexpr auto g_callbacks = &Callbacks::getInstance;
-
-/**
- * @class CallbackFunctions
- * @brief Class providing Lua functions for manipulating event callbacks.
- *
- * @note This class is derived from LuaScriptInterface and defines several static functions that are exposed to the Lua environment.
- * @details It allows Lua scripts to create, configure, and register event callbacks.
- *
- * @see LuaScriptInterface
- */
-class CallbackLuaFunctionsBinder : LuaScriptInterface {
-public:
-	static void init(lua_State* luaState);
-
-private:
-	static int luaEventCallbackCreate(lua_State* luaState);
-	static int luaEventCallbackType(lua_State* luaState);
-	static int luaEventCallbackRegister(lua_State* luaState);
-
-	// Callback functions
-	// Creature
-	static int luaEventCallbackCreatureOnChangeOutfit(lua_State* luaState);
-	static int luaEventCallbackCreatureOnAreaCombat(lua_State* luaState);
-	static int luaEventCallbackCreatureOnTargetCombat(lua_State* luaState);
-	static int luaEventCallbackCreatureOnHear(lua_State* luaState);
-	static int luaEventCallbackCreatureOnDrainHealth(lua_State* luaState);
-	// Party
-	static int luaEventCallbackPartyOnJoin(lua_State* luaState);
-	static int luaEventCallbackPartyOnLeave(lua_State* luaState);
-	static int luaEventCallbackPartyOnDisband(lua_State* luaState);
-	static int luaEventCallbackPartyOnShareExperience(lua_State* luaState);
-	// Player
-	static int luaEventCallbackPlayerOnBrowseField(lua_State* luaState);
-	static int luaEventCallbackPlayerOnLook(lua_State* luaState);
-	static int luaEventCallbackPlayerOnLookInBattleList(lua_State* luaState);
-	static int luaEventCallbackPlayerOnLookInTrade(lua_State* luaState);
-	static int luaEventCallbackPlayerOnLookInShop(lua_State* luaState);
-	static int luaEventCallbackPlayerOnMoveItem(lua_State* luaState);
-	static int luaEventCallbackPlayerOnItemMoved(lua_State* luaState);
-	static int luaEventCallbackPlayerOnChangeZone(lua_State* luaState);
-	static int luaEventCallbackPlayerOnChangeHazard(lua_State* luaState);
-	static int luaEventCallbackPlayerOnMoveCreature(lua_State* luaState);
-	static int luaEventCallbackPlayerOnReportRuleViolation(lua_State* luaState);
-	static int luaEventCallbackPlayerOnReportBug(lua_State* luaState);
-	static int luaEventCallbackPlayerOnTurn(lua_State* luaState);
-	static int luaEventCallbackPlayerOnTradeRequest(lua_State* luaState);
-	static int luaEventCallbackPlayerOnTradeAccept(lua_State* luaState);
-	static int luaEventCallbackPlayerOnGainExperience(lua_State* luaState);
-	static int luaEventCallbackPlayerOnLoseExperience(lua_State* luaState);
-	static int luaEventCallbackPlayerOnGainSkillTries(lua_State* luaState);
-	static int luaEventCallbackPlayerOnRemoveCount(lua_State* luaState);
-	static int luaEventCallbackPlayerOnRequestQuestLog(lua_State* luaState);
-	static int luaEventCallbackPlayerOnRequestQuestLine(lua_State* luaState);
-	static int luaEventCallbackPlayerOnStorageUpdate(lua_State* luaState);
-	static int luaEventCallbackPlayerOnCombat(lua_State* luaState);
-	static int luaEventCallbackPlayerOnInventoryUpdate(lua_State* luaState);
-	// Monster
-	static int luaEventCallbackMonsterOnDropLoot(lua_State* luaState);
-	static int luaEventCallbackMonsterOnSpawn(lua_State* luaState);
-	// Npc
-	static int luaEventCallbackNpcOnSpawn(lua_State* luaState);
-};
-
-#endif // SRC_LUA_CALLBACKS_EVENTCALLBACK_HPP_
+#endif // SRC_LUA_CALLBACKS_EVENT_CALLBACK__HPP_

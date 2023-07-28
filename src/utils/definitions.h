@@ -14,7 +14,10 @@
 	#define __FUNCTION__ __func__
 #endif
 
-#define spdlog_dev(level, message, ...) if (isDevMode()) { spdlog::level(message, ##__VA_ARGS__); }
+#define spdlog_dev(level, message, ...)        \
+	if (isDevMode()) {                         \
+		spdlog::level(message, ##__VA_ARGS__); \
+	}
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 	#define _CRT_SECURE_NO_WARNINGS

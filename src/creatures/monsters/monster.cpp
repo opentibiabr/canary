@@ -16,6 +16,7 @@
 #include "game/scheduling/tasks.h"
 #include "lua/creature/events.h"
 #include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;

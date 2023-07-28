@@ -12,6 +12,7 @@
 #include "game/game.h"
 #include "lua/creature/events.h"
 #include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/movement.h"
 
 void MoveEvents::clear() {

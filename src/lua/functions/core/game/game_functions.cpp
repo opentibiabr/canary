@@ -24,6 +24,7 @@
 #include "lua/scripts/scripts.h"
 #include "lua/creature/events.h"
 #include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {

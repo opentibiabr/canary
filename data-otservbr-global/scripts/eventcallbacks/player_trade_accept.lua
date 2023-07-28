@@ -5,7 +5,6 @@ function callback.playerOnTradeAccept(player, target, item, targetItem)
 	target:closeForge()
 	player:closeImbuementWindow()
 	target:closeImbuementWindow()
-	print("trade accept running")
 	return true
 end
 

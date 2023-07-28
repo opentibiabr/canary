@@ -233,7 +233,7 @@ PRIVATE
 	items/weapons/weapons.cpp
 	lua/callbacks/creaturecallback.cpp
 	lua/callbacks/event_callback.cpp
-	lua/callbacks/event_callback_functions.cpp
+	lua/callbacks/events_callbacks.cpp
 	lua/creature/actions.cpp
 	lua/creature/creatureevent.cpp
 	lua/creature/events.cpp
@@ -273,6 +273,7 @@ PRIVATE
 	lua/functions/creatures/player/vocation_functions.cpp
 	lua/functions/events/action_functions.cpp
 	lua/functions/events/creature_event_functions.cpp
+	lua/functions/events/event_callback_functions.cpp
 	lua/functions/events/events_scheduler_functions.cpp
 	lua/functions/events/global_event_functions.cpp
 	lua/functions/events/move_event_functions.cpp

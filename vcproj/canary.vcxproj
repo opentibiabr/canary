@@ -86,6 +86,8 @@
     <ClInclude Include="..\src\items\trashholder.h" />
     <ClInclude Include="..\src\items\weapons\weapons.h" />
     <ClInclude Include="..\src\lua\callbacks\creaturecallback.h" />
+    <ClInclude Include="..\src\lua\callbacks\event_callback.hpp" />
+    <ClInclude Include="..\src\lua\callbacks\events_callbacks.hpp" />
     <ClInclude Include="..\src\lua\creature\actions.h" />
     <ClInclude Include="..\src\lua\creature\creatureevent.h" />
     <ClInclude Include="..\src\lua\creature\events.h" />
@@ -128,6 +130,7 @@
     <ClInclude Include="..\src\lua\functions\creatures\player\vocation_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\events\action_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\events\creature_event_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\events\event_callback_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\events\events_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\events\events_scheduler_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\events\global_event_functions.hpp" />
@@ -250,6 +253,8 @@
     <ClCompile Include="..\src\items\trashholder.cpp" />
     <ClCompile Include="..\src\items\weapons\weapons.cpp" />
     <ClCompile Include="..\src\lua\callbacks\creaturecallback.cpp" />
+    <ClCompile Include="..\src\lua\callbacks\event_callback.cpp" />
+    <ClCompile Include="..\src\lua\callbacks\events_callbacks.cpp" />
     <ClCompile Include="..\src\lua\creature\actions.cpp" />
     <ClCompile Include="..\src\lua\creature\creatureevent.cpp" />
     <ClCompile Include="..\src\lua\creature\events.cpp" />
@@ -288,6 +293,7 @@
     <ClCompile Include="..\src\lua\functions\creatures\player\vocation_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\events\action_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\events\creature_event_functions.cpp" />
+    <ClCompile Include="..\src\lua\functions\events\event_callback_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\events\events_scheduler_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\events\global_event_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\events\move_event_functions.cpp" />

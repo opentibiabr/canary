@@ -12,6 +12,7 @@
 #include "creatures/players/grouping/party.h"
 #include "game/game.h"
 #include "lua/creature/events.h"
+#include "lua/callbacks/event_callback.hpp"
 
 Party::Party(Player* initLeader) :
 	leader(initLeader) {
@@ -21,6 +22,14 @@ Party::Party(Player* initLeader) :
 void Party::disband() {
 	if (!g_events().eventPartyOnDisband(this)) {
 		return;
+	}
+
+	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PartyOnDisband)) {
+		if (callback->isLoadedCallback()) {
+			if (!callback->partyOnDisband(this)) {
+				return;
+			}
+		}
 	}
 
 	Player* currentLeader = leader;
@@ -76,6 +85,14 @@ bool Party::leaveParty(Player* player) {
 
 	if (!g_events().eventPartyOnLeave(this, player)) {
 		return false;
+	}
+
+	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PartyOnLeave)) {
+		if (callback->isLoadedCallback()) {
+			if (!callback->partyOnLeave(this, player)) {
+				return false;
+			}
+		}
 	}
 
 	bool missingLeader = false;
@@ -174,6 +191,14 @@ bool Party::passPartyLeadership(Player* player) {
 bool Party::joinParty(Player &player) {
 	if (!g_events().eventPartyOnJoin(this, &player)) {
 		return false;
+	}
+
+	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PartyOnJoin)) {
+		if (callback->isLoadedCallback()) {
+			if (!callback->partyOnJoin(this, &player)) {
+				return false;
+			}
+		}
 	}
 
 	auto it = std::find(inviteList.begin(), inviteList.end(), &player);
@@ -375,6 +400,12 @@ bool Party::setSharedExperience(Player* player, bool newSharedExpActive) {
 void Party::shareExperience(uint64_t experience, Creature* target /* = nullptr*/) {
 	uint64_t shareExperience = experience;
 	g_events().eventPartyOnShareExperience(this, shareExperience);
+	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PartyOnShareExperience)) {
+		if (callback->isLoadedCallback()) {
+			callback->partyOnShareExperience(this, shareExperience);
+		}
+	}
+
 	for (Player* member : memberList) {
 		member->onGainSharedExperience(shareExperience, target);
 	}

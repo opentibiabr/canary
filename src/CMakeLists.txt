@@ -232,6 +232,8 @@ PRIVATE
 	items/trashholder.cpp
 	items/weapons/weapons.cpp
 	lua/callbacks/creaturecallback.cpp
+	lua/callbacks/event_callback.cpp
+	lua/callbacks/event_callback_functions.cpp
 	lua/creature/actions.cpp
 	lua/creature/creatureevent.cpp
 	lua/creature/events.cpp

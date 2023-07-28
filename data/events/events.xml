@@ -39,7 +39,7 @@
 	<event class="Player" method="onRequestQuestLine" enabled="1" />
 	<event class="Player" method="onRequestQuestLog" enabled="1" />
 	<event class="Player" method="onStorageUpdate" enabled="1" />
-	<event class="Player" method="onTradeAccept" enabled="1" />
+	<event class="Player" method="onTradeAccept" enabled="0" />
 	<event class="Player" method="onTradeRequest" enabled="1" />
 	<event class="Player" method="onTurn" enabled="1" />
 	<event class="Player" method="onCombat" enabled="1" />

@@ -226,3 +226,10 @@ int PositionFunctions::luaPositionSendDoubleSoundEffect(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int PositionFunctions::luaPositionToString(lua_State* L) {
+	// position:toString()
+	const Position &position = getPosition(L, 1);
+	pushString(L, position.toString());
+	return 1;
+}

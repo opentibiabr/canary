@@ -563,14 +563,6 @@ function Player:onTradeRequest(target, item)
 	return true
 end
 
-function Player:onTradeAccept(target, item, targetItem)
-	self:closeForge()
-	target:closeForge()
-	self:closeImbuementWindow()
-	target:closeImbuementWindow()
-	return true
-end
-
 local soulCondition = Condition(CONDITION_SOUL, CONDITIONID_DEFAULT)
 soulCondition:setTicks(4 * 60 * 1000)
 soulCondition:setParameter(CONDITION_PARAM_SOULGAIN, 1)

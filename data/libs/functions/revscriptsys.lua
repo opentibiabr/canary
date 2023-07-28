@@ -98,6 +98,89 @@ do
 	rawgetmetatable("TalkAction").__newindex = TalkActionNewIndex
 end
 
+-- Sets a custom __newindex behavior for the EventCallback class's metatable. It dynamically maps certain keys to predefined callback methods within the EventCallback class. When a key matching a method name is added, it triggers the associated function, sets the event type, and logs the registration. This allows for flexible, runtime assignment of various event handlers through Lua scripts.
+do
+	local function EventCallbackNewIndex(self, key, value)
+		if key == "creatureOnChangeOutfit" then
+			self:creatureOnChangeOutfit(value)
+		elseif key == "creatureOnAreaCombat" then
+			self:creatureOnAreaCombat(value)
+		elseif key == "creatureOnTargetCombat" then
+			self:creatureOnTargetCombat(value)
+		elseif key == "creatureOnHear" then
+			self:creatureOnHear(value)
+		elseif key == "creatureOnDrainHealth" then
+			self:creatureOnDrainHealth(value)
+		elseif key == "partyOnJoin" then
+			self:partyOnJoin(value)
+		elseif key == "partyOnLeave" then
+			self:partyOnLeave(value)
+		elseif key == "partyOnDisband" then
+			self:partyOnDisband(value)
+		elseif key == "partyOnShareExperience" then
+			self:partyOnShareExperience(value)
+		elseif key == "playerOnBrowseField" then
+			self:playerOnBrowseField(value)
+		elseif key == "playerOnLook" then
+			self:playerOnLook(value)
+		elseif key == "playerOnLookInBattleList" then
+			self:playerOnLookInBattleList(value)
+		elseif key == "playerOnLookInTrade" then
+			self:playerOnLookInTrade(value)
+		elseif key == "playerOnLookInShop" then
+			self:playerOnLookInShop(value)
+		elseif key == "playerOnMoveItem" then
+			self:playerOnMoveItem(value)
+		elseif key == "playerOnItemMoved" then
+			self:playerOnItemMoved(value)
+		elseif key == "playerOnChangeZone" then
+			self:playerOnChangeZone(value)
+		elseif key == "playerOnChangeHazard" then
+			self:playerOnChangeHazard(value)
+		elseif key == "playerOnMoveCreature" then
+			self:playerOnMoveCreature(value)
+		elseif key == "playerOnReportRuleViolation" then
+			self:playerOnReportRuleViolation(value)
+		elseif key == "playerOnReportBug" then
+			self:playerOnReportBug(value)
+		elseif key == "playerOnTurn" then
+			self:playerOnTurn(value)
+		elseif key == "playerOnTradeRequest" then
+			self:playerOnTradeRequest(value)
+		elseif key == "playerOnTradeAccept" then
+			self:playerOnTradeAccept(value)
+		elseif key == "playerOnGainExperience" then
+			self:playerOnGainExperience(value)
+		elseif key == "playerOnLoseExperience" then
+			self:playerOnLoseExperience(value)
+		elseif key == "playerOnGainSkillTries" then
+			self:playerOnGainSkillTries(value)
+		elseif key == "playerOnRemoveCount" then
+			self:playerOnRemoveCount(value)
+		elseif key == "playerOnRequestQuestLog" then
+			self:playerOnRequestQuestLog(value)
+		elseif key == "playerOnRequestQuestLine" then
+			self:playerOnRequestQuestLine(value)
+		elseif key == "playerOnStorageUpdate" then
+			self:playerOnStorageUpdate(value)
+		elseif key == "playerOnCombat" then
+			self:playerOnCombat(value)
+		elseif key == "playerOnInventoryUpdate" then
+			self:playerOnInventoryUpdate(value)
+		elseif key == "monsterOnDropLoot" then
+			self:monsterOnDropLoot(value)
+		elseif key == "monsterOnSpawn" then
+			self:monsterOnSpawn(value)
+		elseif key == "npcOnSpawn" then
+			self:npcOnSpawn(value)
+		else
+			rawset(self, key, value)
+		end
+		self:type(key)
+	end
+	rawgetmetatable("EventCallback").__newindex = EventCallbackNewIndex
+end
+
 -- CreatureEvent revscriptsys
 do
 	local function CreatureEventNewIndex(self, key, value)

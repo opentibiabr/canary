@@ -15,6 +15,7 @@
 #include "game/game.h"
 #include "game/scheduling/tasks.h"
 #include "lua/creature/events.h"
+#include "lua/callbacks/event_callback.hpp"
 
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
@@ -2002,6 +2003,11 @@ void Monster::dropLoot(Container* corpse, Creature*) {
 			Item* sliver = Item::CreateItem(ITEM_FORGE_SLIVER, sliverCount);
 			if (g_game().internalAddItem(corpse, sliver) != RETURNVALUE_NOERROR) {
 				corpse->internalAddThing(sliver);
+			}
+		}
+		for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::MonsterOnDropLoot)) {
+			if (callback->isLoadedCallback()) {
+				callback->monsterOnDropLoot(this, corpse);
 			}
 		}
 		g_events().eventMonsterOnDropLoot(this, corpse);

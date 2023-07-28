@@ -1174,7 +1174,7 @@ std::vector<Item*> Player::getRewardsFromContainer(const Container* container) c
 
 ReturnValue Player::rewardChestCollect(uint32_t maxMoveItems /* = 0*/) {
 	std::vector<Item*> rewardItemsVector;
-	if (rewardChest && rewardChest->empty()) {
+	if (!rewardChest || rewardChest->empty()) {
 		return RETURNVALUE_REWARDCHESTISEMPTY;
 	}
 	rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());

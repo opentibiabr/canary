@@ -540,7 +540,15 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 
 			backpacksPurchased++;
 			uint8_t internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-			Item* item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
+			const ItemType &iType = Item::items[itemId];
+			Item* item;
+			if (iType.isBed()) {
+				item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
+				item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
+				item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
+			} else {
+				item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
+			}
 			if (actionId != 0) {
 				item->setAttribute(ItemAttribute_t::ACTIONID, actionId);
 			}
@@ -554,12 +562,26 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 				itemsPurchased += internalAmount;
 				remainingAmount -= internalAmount;
 				internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-				item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
+				if (iType.isBed()) {
+					item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
+					item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
+					item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
+				} else {
+					item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
+				}
 			}
 		}
 	} else {
 		uint8_t internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-		Item* item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
+		const ItemType &iType = Item::items[itemId];
+		Item* item;
+		if (iType.isBed()) {
+			item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
+			item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
+			item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
+		} else {
+			item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
+		}
 		if (actionId != 0) {
 			item->setAttribute(ItemAttribute_t::ACTIONID, actionId);
 		}
@@ -573,7 +595,13 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 			itemsPurchased += internalAmount;
 			remainingAmount -= internalAmount;
 			internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
-			item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
+			if (iType.isBed()) {
+				item = Item::CreateItem(ITEM_DECORATION_KIT, subType);
+				item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap this item in your own house to create a <" + iType.name + ">.");
+				item->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
+			} else {
+				item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
+			}
 		}
 	}
 

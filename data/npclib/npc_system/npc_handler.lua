@@ -610,6 +610,7 @@ if NpcHandler == nil then
 	-- This implements the currently set type of talkdelay.
 	-- The "delay" variable sets the delay for the interval between messages
 	function NpcHandler:say(message, npc, player, delay, textType)
+		if not player then return end
 		local playerId = player:getId()
 		if type(message) == "table" then
 			return self:doNPCTalkALot(message, delay, npc, player)

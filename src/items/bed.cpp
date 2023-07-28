@@ -83,6 +83,14 @@ bool BedItem::canUse(Player* player) {
 		return false;
 	}
 
+	if (getNextBedItem() == nullptr) {
+		return false;
+	}
+
+	if (Item::items[id].bedPart != BED_PILLOW_PART) {
+		return false;
+	}
+
 	if (sleeperGUID == 0) {
 		return true;
 	}
@@ -159,6 +167,9 @@ bool BedItem::sleep(Player* player) {
 
 void BedItem::wakeUp(Player* player) {
 	if (house == nullptr) {
+		return;
+	}
+	if (sleeperGUID == 0) {
 		return;
 	}
 

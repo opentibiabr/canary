@@ -125,6 +125,8 @@ const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttribut
 	{ "malesleeper", ITEM_PARSE_MALETRANSFORMTO },
 	{ "femaletransformto", ITEM_PARSE_FEMALETRANSFORMTO },
 	{ "femalesleeper", ITEM_PARSE_FEMALETRANSFORMTO },
+	{ "bedpart", ITEM_PARSE_PARTNERDIRECTION },
+	{ "bedpartof", ITEM_PARSE_PARTNERDIRECTION },
 	{ "transformto", ITEM_PARSE_TRANSFORMTO },
 	{ "destroyto", ITEM_PARSE_DESTROYTO },
 	{ "elementice", ITEM_PARSE_ELEMENTICE },

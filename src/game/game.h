@@ -590,7 +590,7 @@ class Game {
 
 		bool addInfluencedMonster(Monster* monster);
 		void sendUpdateCreature(const Creature* creature);
-		Item* wrapItem(Item* item);
+		Item* wrapItem(Item* item, House* house);
 
 		/**
 		 * @brief Adds a player to the unique login map.
@@ -773,7 +773,7 @@ class Game {
 			const std::string &damageString, std::string &spectatorMessage
 		) const;
 
-		void unwrapItem(Item* item, uint16_t unWrapId);
+		void unwrapItem(Item* item, uint16_t unWrapId, House* house, Player* player);
 
 		// Variable members (m_)
 		std::unique_ptr<IOWheel> m_IOWheel;

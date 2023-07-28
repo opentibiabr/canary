@@ -407,7 +407,7 @@ function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS   then GameStore.processAllBlessingsPurchase(player, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREMIUM        then GameStore.processPremiumPurchase(player, offer.id)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_STACKABLE      then GameStore.processStackablePurchase(player, offer.itemtype, offer.count, offer.name, offer.moveable)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HOUSE          then GameStore.processHouseRelatedPurchase(player, offer.itemtype, offer.count, offer.moveable)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HOUSE          then GameStore.processHouseRelatedPurchase(player, offer)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT         then GameStore.processOutfitPurchase(player, offer.sexId, offer.addon)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON   then GameStore.processOutfitPurchase(player, offer.sexId, offer.addon)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT          then GameStore.processMountPurchase(player, offer.id)
@@ -424,7 +424,7 @@ function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_SEXCHANGE   then GameStore.processHirelingChangeSexPurchase(player, offer)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL       then GameStore.processHirelingSkillPurchase(player, offer)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT      then GameStore.processHirelingOutfitPurchase(player, offer)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_BED             then GameStore.processHouseRelatedPurchase(player, offer.itemtype, offer.count)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_BED             then GameStore.processHouseRelatedPurchase(player, offer)
 		else
 			-- This should never happen by our convention, but just in case the guarding condition is messed up...
 			error({code = 0, message = "This offer is unavailable [2]"})
@@ -1549,7 +1549,7 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 	end
 end
 
-function GameStore.processHouseRelatedPurchase(player, offerId, offerCount, moveable)
+function GameStore.processHouseRelatedPurchase(player, offer)
 	local function isCaskItem(itemId)
 		return (itemId >= ITEM_HEALTH_CASK_START and itemId <= ITEM_HEALTH_CASK_END) or
 		(itemId >= ITEM_MANA_CASK_START and itemId <= ITEM_MANA_CASK_END) or
@@ -1557,17 +1557,23 @@ function GameStore.processHouseRelatedPurchase(player, offerId, offerCount, move
 	end
 
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if inbox and inbox:getEmptySlots() > 0 then
-		local decoKit = inbox:addItem(23398, 1)
-		if decoKit then
-			decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(offerId):getName() .. ">.")
-			decoKit:setCustomAttribute("unWrapId", offerId)
-			if isCaskItem(offerId) then
-				decoKit:setAttribute(ITEM_ATTRIBUTE_DATE, offerCount)
-			end
+	local itemIds = offer.itemtype
+	if type(itemIds) ~= "table" then
+		itemIds = {itemIds}
+	end
+	if inbox and inbox:getEmptySlots() >= #itemIds then
+		for _, itemId in ipairs(itemIds) do
+			local decoKit = inbox:addItem(23398, 1)
+			if decoKit then
+				decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(itemId):getName() .. ">.")
+				decoKit:setCustomAttribute("unWrapId", itemId)
+				if isCaskItem(itemId) then
+					decoKit:setAttribute(ITEM_ATTRIBUTE_DATE, offer.count)
+				end
 
-			if moveable ~= true then
-				decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+				if offer.moveable ~= true then
+					decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+				end
 			end
 		end
 	else

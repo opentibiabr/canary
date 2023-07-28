@@ -671,7 +671,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 							return RETURNVALUE_NOTENOUGHROOM;
 						}
 
-						if (!iiType.hasHeight || iiType.isBed()) {
+						if (!iiType.hasHeight) {
 							return RETURNVALUE_NOTENOUGHROOM;
 						}
 					}
@@ -693,7 +693,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 						return RETURNVALUE_NOTENOUGHROOM;
 					}
 
-					if (!iiType.hasHeight || iiType.pickupable || iiType.isBed()) {
+					if (!iiType.hasHeight || iiType.pickupable) {
 						return RETURNVALUE_NOTENOUGHROOM;
 					}
 				}
@@ -1439,15 +1439,8 @@ void Tile::internalAddThing(Thing* thing) {
 
 			Door* door = item->getDoor();
 			House* house = houseTile->getHouse();
-			if (door) {
-				if (door->getDoorId() != 0) {
-					house->addDoor(door);
-				}
-			} else {
-				BedItem* bed = item->getBed();
-				if (bed) {
-					house->addBed(bed);
-				}
+			if (door && door->getDoorId() != 0) {
+				house->addDoor(door);
 			}
 		}
 	}

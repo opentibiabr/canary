@@ -42,7 +42,7 @@ combat_i.setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_RED)
 combat_i.setParameter(COMBAT_PARAM_AGGRESSIVE, 0)
 local condition_i = Condition(CONDITION_INVISIBLE)
 condition_i.setParameter(CONDITION_PARAM_TICKS, 600000)
-combat_i.addCondition(combat_i, condition_i)
+combat_i.addCondition(condition_i)
 local itemIds = {[9079] = 0, [9080] = 1, [9081] = 2, [9082] = 3, [9083] = 4, [9084] = 5, [9085] = 6, [9086] = 7, [10000] = 8, [9088] = 9, [11584] = 10, [11586] = 11, [11587] = 12, [11588] = 13}
 
 local jeanPierreFood = Action()

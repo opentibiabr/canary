@@ -335,8 +335,12 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 			if (player->getGroup()->id >= account::GROUP_TYPE_GAMEMASTER) {
 				return RETURNVALUE_YOUCANTOPENCORPSEADM;
 			}
-			if (!player->getReward(rewardId, false)) {
+			auto reward = player->getReward(rewardId, false);
+			if (!reward) {
 				return RETURNVALUE_YOUARENOTTHEOWNER;
+			}
+			if (reward->empty()) {
+				return RETURNVALUE_REWARDCONTAINERISEMPTY;
 			}
 		} else if (corpseOwner != 0 && !player->canOpenCorpse(corpseOwner)) {
 			return RETURNVALUE_YOUARENOTTHEOWNER;

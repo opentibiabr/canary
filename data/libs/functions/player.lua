@@ -214,7 +214,7 @@ function Player.transferMoneyTo(self, target, amount)
 
 		local query_town = db.storeQuery('SELECT `town_id` FROM `players` WHERE `name` = ' .. db.escapeString(target) ..' LIMIT 1;')
 		if query_town ~= false then
-			local town = Result.getDataInt(query_town, "town_id")
+			local town = Result.getNumber(query_town, "town_id")
 			if town then
 				local town_id = Town(town) and Town(town):getId()
 				if town_id and town_id  == TOWNS_LIST.DAWNPORT or town_id == TOWNS_LIST.DAWNPORT_TUTORIAL then -- Blocking transfer to Dawnport
@@ -326,7 +326,7 @@ function Player.getAccountStorage(self, accountId, key, forceUpdate)
 
 	local query = db.storeQuery("SELECT `key`, MAX(`value`) as value FROM `player_storage` WHERE `player_id` IN (SELECT `id` FROM `players` WHERE `account_id` = ".. accountId ..") AND `key` = ".. key .." GROUP BY `key` LIMIT 1;")
 	if query ~= false then
-		local value = Result.getDataInt(query, "value")
+		local value = Result.getNumber(query, "value")
 		ACCOUNT_STORAGES[accountId] = value
 		Result.free(query)
 		return value

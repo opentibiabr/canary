@@ -5,7 +5,7 @@ local oven = {2535, 2537, 2539, 2541}
 local baking = Action()
 
 function baking.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if item.itemid == 3603 and isInArray(liquidContainers, target.itemid) then -- flour
+	if item.itemid == 3603 and table.contains(liquidContainers, target.itemid) then -- flour
 		if target.type == 1 then -- water / holy water
 			if target.itemid == 133 then
 				item:transform(item.itemid, item.type - 1)
@@ -32,8 +32,8 @@ function baking.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	elseif item.itemid == 8196 and target.itemid == 3464 then -- baking tray
 		item:transform(item.itemid, item.type - 1)
 		target:transform(8198) -- baking tray with garlic cookie dough on it
-	elseif isInArray(oven, target.itemid) then
-		if isInArray({6276, 8018}, item.itemid) then
+	elseif table.contains(oven, target.itemid) then
+		if table.contains({6276, 8018}, item.itemid) then
 			player:addItem(item.itemid + 1, 1) -- cake / chocolate cake
 			item:transform(item.itemid, item.type - 1)
 		elseif item.itemid == 8196 then -- lump of garlic dough
@@ -49,7 +49,7 @@ function baking.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	elseif item.itemid == 5466 and target.itemid == 3605 then -- bunch of sugar cane, bunch of wheat
 		item:transform(12802) -- sugar oat
 		target:remove()
-	elseif isInArray(millstones, target.itemid) then
+	elseif table.contains(millstones, target.itemid) then
 		item:transform(item.itemid, item.type - 1)
 		player:addItem(3603, 1) -- flour
 	else

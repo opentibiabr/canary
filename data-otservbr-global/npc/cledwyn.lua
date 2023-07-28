@@ -139,11 +139,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say({"The following items can be enchanted: {pendulet}, {sleep shawl}, {blister ring}, {theurgic amulet}, {ring of souls}. ...",
 						"For sufficient silver tokens you can also enchant: {spiritthorn ring}, {alicorn ring}, {arcanomancer sigil}, {arboreal ring}, {turtle amulet}. Make you choice!"}, npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif isInArray({'pendulet', 'sleep shawl', 'blister ring', 'theurgic amulet', 'ring of souls', 'turtle amulet'}, message:lower()) and npcHandler:getTopic(playerId) == 1 then
+	elseif table.contains({'pendulet', 'sleep shawl', 'blister ring', 'theurgic amulet', 'ring of souls', 'turtle amulet'}, message:lower()) and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say("Should I enchant the item " .. message .. " for 2 ".. ItemType(npc:getCurrency()):getPluralName():lower() .."?", npc, creature)
 		charge = message:lower()
 		npcHandler:setTopic(playerId, 2)
-	elseif isInArray({'spiritthorn ring', 'alicorn ring', 'arcanomancer sigil', 'arboreal ring'}, message:lower()) and npcHandler:getTopic(playerId) == 1 then
+	elseif table.contains({'spiritthorn ring', 'alicorn ring', 'arcanomancer sigil', 'arboreal ring'}, message:lower()) and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say("Should I enchant the item " .. message .. " for 5 ".. ItemType(npc:getCurrency()):getPluralName():lower() .."?", npc, creature)
 		charge = message:lower()
 		npcHandler:setTopic(playerId, 2)
@@ -173,7 +173,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("Sorry, friend, but one good turn deserves another. You need to obtain the rift warrior outfit first.", npc, creature)
 		end
-	elseif isInArray({'first', 'second'}, message:lower()) and npcHandler:getTopic(playerId) == 3 then
+	elseif table.contains({'first', 'second'}, message:lower()) and npcHandler:getTopic(playerId) == 3 then
 		if message:lower() == 'first' then
 			if not(player:hasOutfit(846, 1)) and not(player:hasOutfit(845, 1)) then
 				if player:removeItem(22516, 100) then

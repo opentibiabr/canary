@@ -1,4 +1,4 @@
-local combat = createCombatObject()
+local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_ENERGYDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ENERGYAREA)
 
@@ -12,7 +12,7 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ENERGYAREA)
 	}
 
 local area = createCombatArea(arr)
-	setCombatArea(combat, area)
+Combat.setArea(combat, area)
 
 
 local spell = Spell("instant")

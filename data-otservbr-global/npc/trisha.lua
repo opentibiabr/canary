@@ -116,7 +116,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	local player, storage = Player(creature), Storage.OutfitQuest.WarriorShoulderAddon
 	if npcHandler:getTopic(playerId) == 0 then
-		if isInArray({"outfit", "addon"}, message) then
+		if table.contains({"outfit", "addon"}, message) then
 			npcHandler:say("Are you talking about my spiky shoulder pad? You can't buy one of these. \z
 				They have to be {earned}.", npc, creature)
 		elseif MsgContains(message, "earn") then

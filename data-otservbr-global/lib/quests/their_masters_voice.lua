@@ -107,7 +107,7 @@ function revertQuest()
 end
 
 function Gobbler_onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not target or not isInArray(slime_ids, target.itemid) then
+	if not target or not table.contains(slime_ids, target.itemid) then
 		return false
 	end
 
@@ -124,7 +124,7 @@ function Gobbler_onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	slimes_removed[#slimes_removed + 1] = {cid = player.uid, id = target.itemid, pos = toPosition}
 	target:transform(12065)
 
-	if not isInArray(valid_participants, player.uid) then
+	if not table.contains(valid_participants, player.uid) then
 		local slime_count = 0
 		for i = 1, #slimes_removed do
 			if slimes_removed[i].cid == player.uid then
@@ -162,7 +162,7 @@ function Servant_onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnju
 end
 
 function Mage_onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjustified)
-	if killer and isInArray(valid_participants, killer.uid) then
+	if killer and table.contains(valid_participants, killer.uid) then
 		-- add achievements if needed
 	end
 	revertQuest()

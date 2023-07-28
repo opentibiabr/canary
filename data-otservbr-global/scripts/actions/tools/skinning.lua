@@ -185,7 +185,7 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 			target:remove()
 		end
 	elseif random <= skin.value then
-		if isInArray({7441, 7442, 7444, 7445}, target.itemid) then
+		if table.contains({7441, 7442, 7444, 7445}, target.itemid) then
 			if skin.newItem == 7446 then
 				player:addAchievement('Ice Sculptor')
 			end
@@ -195,7 +195,7 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 			player:addItem(skin.newItem, skin.amount or 1)
 		end
 	else
-		if isInArray({7441, 7442, 7444, 7445}, target.itemid) then
+		if table.contains({7441, 7442, 7444, 7445}, target.itemid) then
 			player:say('The attempt of sculpting failed miserably.', TALKTYPE_MONSTER_SAY)
 			effect = CONST_ME_HITAREA
 			target:remove()

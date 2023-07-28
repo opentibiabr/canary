@@ -18,7 +18,7 @@ function adventurersGuildHunt.onKill(creature, target)
 		return true
 	end
 
-	if isInArray({ 'dragon lord', 'dragon' }, target:getName():lower()) then
+	if table.contains({ 'dragon lord', 'dragon' }, target:getName():lower()) then
 		for _, area in ipairs(areas) do
 			if creature:getPosition():isInRange(area.from, area.to) then
 				creature:setStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter, creature:getStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter) + 1)

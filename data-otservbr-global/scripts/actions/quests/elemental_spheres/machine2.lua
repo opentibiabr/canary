@@ -4,7 +4,7 @@ function elementalSpheresMachine2.onUse(player, item, fromPosition, target, toPo
 		return false
 	end
 
-	if isInArray({844, 845}, item.itemid) then
+	if table.contains({844, 845}, item.itemid) then
 		toPosition.y = toPosition.y + (item.itemid == 844 and 1 or -1)
 		local machineItem = Tile(toPosition):getItemById(item.itemid == 844 and 845 or 844)
 		if machineItem then

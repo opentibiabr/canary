@@ -34,7 +34,7 @@ local taskBoss = {
 }
 local function killCheck(player, targetName, taskName, taskStage, taskInfo, taskAltKillCount, taskkillCount)
 	if player:getStorageValue(taskName) == taskStage then
-		if isInArray(taskInfo, targetName) then
+		if table.contains(taskInfo, targetName) then
 			for k = 1, #taskInfo do
 				if targetName == taskInfo[k] then
 					player:setStorageValue(taskAltKillCount + k - 1, player:getStorageValue(taskAltKillCount + k - 1) + 1)
@@ -55,7 +55,7 @@ function killingInTheNameOfKill.onKill(player, target)
 	local targetName, startedTasks, taskId = target:getName():lower(), player:getStartedTasks()
 	for i = 1, #startedTasks do
 		taskId = startedTasks[i]
-		if isInArray(tasks.GrizzlyAdams[taskId].creatures, targetName) then
+		if table.contains(tasks.GrizzlyAdams[taskId].creatures, targetName) then
 			if #tasks.GrizzlyAdams[taskId].creatures > 1 then
 				for a = 1, #tasks.GrizzlyAdams[taskId].creatures do
 					if targetName == tasks.GrizzlyAdams[taskId].creatures[a] then

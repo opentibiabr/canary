@@ -1,6 +1,6 @@
-local combat = createCombatObject()
-setCombatParam(combat, COMBAT_PARAM_TYPE, COMBAT_DROWNDAMAGE)
-setCombatParam(combat, COMBAT_PARAM_EFFECT, CONST_ME_CRAPS)
+local combat = Combat()
+Combat.setParameter(combat, COMBAT_PARAM_TYPE, COMBAT_DROWNDAMAGE)
+Combat.setParameter(combat, COMBAT_PARAM_EFFECT, CONST_ME_CRAPS)
 
 	arr = {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -12,7 +12,7 @@ setCombatParam(combat, COMBAT_PARAM_EFFECT, CONST_ME_CRAPS)
 	}
 
 local area = createCombatArea(arr)
-	setCombatArea(combat, area)
+Combat.setArea(combat, area)
 
 
 local spell = Spell("instant")

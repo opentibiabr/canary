@@ -19,9 +19,9 @@ end
 
 local theHiddenBeregar = Action()
 function theHiddenBeregar.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if isInArray({32568, 32570}, item:getPosition().x) and player:getPosition().x ~= 32569 then
+	if table.contains({32568, 32570}, item:getPosition().x) and player:getPosition().x ~= 32569 then
 		wall(1)
-	elseif isInArray({32599, 32601}, item:getPosition().x) and player:getPosition().x ~= 32600 then
+	elseif table.contains({32599, 32601}, item:getPosition().x) and player:getPosition().x ~= 32600 then
 		wall(2)
 	end
 	return item:transform(item.itemid == 2772 and 2773 or 2772)

@@ -3923,7 +3923,7 @@ void ProtocolGame::sendBlessStatus() {
 	if (oldProtocol) {
 		msg.add<uint16_t>(blessCount >= 5 ? 0x01 : 0x00);
 	} else {
-		bool glow = g_configManager().getBoolean(INVENTORY_GLOW) || player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL);
+		bool glow = (blessCount >= 5 && g_configManager().getBoolean(INVENTORY_GLOW)) || player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL);
 		msg.add<uint16_t>(glow ? 1 : 0); // Show up the glowing effect in items if have all blesses or adventurer's blessing
 		msg.addByte((blessCount >= 7) ? 3 : ((blessCount >= 5) ? 2 : 1)); // 1 = Disabled | 2 = normal | 3 = green
 	}

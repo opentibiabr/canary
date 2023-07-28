@@ -390,7 +390,7 @@ RANGE = {
 	[16] = {1, 2}, [17] = {1, 2}, [18] = {1, 2}, [19] = {1, 2}
 }
 
-function Creature:Condition.addDamage(target, conditionType, listType, damage, time, rounds)
+function Creature:addDamageCondition(target, conditionType, listType, damage, time, rounds)
 	if target:isImmune(conditionType) then
 		return false
 	end

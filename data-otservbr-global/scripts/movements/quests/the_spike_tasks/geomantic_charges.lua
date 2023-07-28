@@ -1,6 +1,6 @@
 local condition = Condition(CONDITION_OUTFIT)
-Condition.setParameter(condition, CONDITION_PARAM_TICKS, 120000)
-Condition.setOutfit(condition, 0, 307, 0, 0, 0, 0)
+condition.setParameter(CONDITION_PARAM_TICKS, 120000)
+condition.setOutfit(0, 307, 0, 0, 0, 0)
 
 local geomanticCharges = MoveEvent()
 

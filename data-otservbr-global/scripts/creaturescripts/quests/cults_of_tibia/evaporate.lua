@@ -26,7 +26,7 @@ function onTargetTile(creature, pos)
 	end
 end
 
-Combat.setCallback(combat, CALLBACK_PARAM_TARGETTILE, "onTargetTile")
+combat.setCallback(CALLBACK_PARAM_TARGETTILE, "onTargetTile")
 
 local evaporate = CreatureEvent("Evaporate")
 function evaporate.onThink(creature)

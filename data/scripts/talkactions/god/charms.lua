@@ -1,14 +1,17 @@
 local addCharm = TalkAction("/addcharms")
 
 function addCharm.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	local usage = "/addcharms PLAYER NAME,AMOUNT"
 	if param == "" then
-		player:sendCancelMessage("Command param required. Usage: ".. usage)
+		player:sendCancelMessage("Command param required. Usage: " .. usage)
 		return false
 	end
 	local split = param:split(",")
 	if not split[2] then
-		player:sendCancelMessage("Insufficient parameters. Usage: ".. usage)
+		player:sendCancelMessage("Insufficient parameters. Usage: " .. usage)
 		return false
 	end
 	local target = Player(split[1])
@@ -29,9 +32,13 @@ addCharm:separator(" ")
 addCharm:groupType("god")
 addCharm:register()
 
+---------------- // ----------------
 local resetCharm = TalkAction("/resetcharms")
 
 function resetCharm.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		param = player:getName()
 	end
@@ -52,9 +59,13 @@ resetCharm:separator(" ")
 resetCharm:groupType("god")
 resetCharm:register()
 
+---------------- // ----------------
 local charmExpansion = TalkAction("/charmexpansion")
 
 function charmExpansion.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		param = player:getName()
 	end
@@ -75,9 +86,13 @@ charmExpansion:separator(" ")
 charmExpansion:groupType("god")
 charmExpansion:register()
 
+---------------- // ----------------
 local charmRune = TalkAction("/charmrunes")
 
 function charmRune.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		param = player:getName()
 	end
@@ -98,17 +113,21 @@ charmRune:separator(" ")
 charmRune:groupType("god")
 charmRune:register()
 
+---------------- // ----------------
 local setBestiary = TalkAction("/setbestiary")
 
 function setBestiary.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	local usage = "/setbestiary PLAYER NAME,MONSTER NAME,AMOUNT"
 	if param == "" then
-		player:sendCancelMessage("Command param required. Usage: ".. usage)
+		player:sendCancelMessage("Command param required. Usage: " .. usage)
 		return false
 	end
 	local split = param:split(",")
 	if not split[3] then
-		player:sendCancelMessage("Insufficient parameters. Usage: ".. usage)
+		player:sendCancelMessage("Insufficient parameters. Usage: " .. usage)
 		return false
 	end
 	local target = Player(split[1])
@@ -122,7 +141,7 @@ function setBestiary.onSay(player, words, param)
 
 	local monsterName = split[2]
 	local mType = MonsterType(monsterName)
-	if not(mType) or (mType and mType:raceId() == 0) then
+	if not (mType) or (mType and mType:raceId() == 0) then
 		player:sendCancelMessage("This monster has no bestiary. Type the name exactly as in game.")
 		return false
 	end
@@ -132,12 +151,11 @@ function setBestiary.onSay(player, words, param)
 		return false
 	end
 
-	player:sendCancelMessage("Set bestiary kill of monster '".. monsterName .. "' from player '" .. target:getName() .. "' to '" .. amount .. "'.")
-	target:sendCancelMessage("Updated kills of monster '".. monsterName .. "'!")
+	player:sendCancelMessage("Set bestiary kill of monster '" .. monsterName .. "' from player '" .. target:getName() .. "' to '" .. amount .. "'.")
+	target:sendCancelMessage("Updated kills of monster '" .. monsterName .. "'!")
 	target:addBestiaryKill(monsterName, amount)
 	target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 end
-
 
 setBestiary:separator(" ")
 setBestiary:groupType("god")

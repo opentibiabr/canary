@@ -1,4 +1,6 @@
-local addons = TalkAction("/addons")
+-- /addaddons playername
+
+local addons = TalkAction("/addaddons")
 local looktypes = {
 
 	-- Female Outfits
@@ -13,13 +15,16 @@ local looktypes = {
 	128, 129, 130, 131, 132, 133, 134, 143, 144, 145, 146, 151, 152, 153, 154, 251, 268, 273, 278, 289,
 	325, 328, 335, 367, 430, 432, 463, 465, 472, 512, 516, 541, 574, 577, 610, 619, 633, 634, 637, 665,
 	667, 684, 695, 697, 699, 725, 733, 746, 750, 760, 846, 853, 873, 884, 899, 908, 931, 955, 957, 962,
-	964, 966, 968, 970, 972, 974, 1021, 1023, 1042, 1051, 1056, 1069, 1094, 1102, 1127, 1146, 1161,	1173, 1186,
+	964, 966, 968, 970, 972, 974, 1021, 1023, 1042, 1051, 1056, 1069, 1094, 1102, 1127, 1146, 1161, 1173, 1186,
 	1202, 1204, 1206, 1210, 1243, 1245, 1251, 1270, 1279, 1282, 1288, 1292, 1322, 1331, 1338, 1371, 1382, 1384,
 	1386, 1415, 1436, 1444, 1449, 1457, 1460, 1489, 1500
 
 }
 
 function addons.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	local target
 	if param == '' then
 		target = player:getTarget()
@@ -33,6 +38,11 @@ function addons.onSay(player, words, param)
 
 	if not target then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Player ' .. param .. ' is currently not online.')
+		return false
+	end
+
+	if player:getAccountType() < ACCOUNT_TYPE_GOD then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Cannot perform action.')
 		return false
 	end
 

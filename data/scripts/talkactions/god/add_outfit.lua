@@ -9,6 +9,9 @@ local printConsole = true
 local addOutfit = TalkAction("/addoutfit")
 
 function addOutfit.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false
@@ -21,8 +24,8 @@ function addOutfit.onSay(player, words, param)
 	local target = Player(name)
 	if target then
 		target:addOutfit(lookType)
-		target:sendTextMessage(MESSAGE_ADMINISTRADOR, "".. player:getName() .." has been added a new outfit for you.")
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, "You have sucessfull added looktype ".. lookType .. " to the player ".. target:getName() ..".")
+		target:sendTextMessage(MESSAGE_ADMINISTRADOR, "" .. player:getName() .. " has been added a new outfit for you.")
+		player:sendTextMessage(MESSAGE_ADMINISTRADOR, "You have sucessfull added looktype " .. lookType .. " to the player " .. target:getName() .. ".")
 		if printConsole then
 			Spdlog.info(string.format("[addOutfit.onSay] - Player: %s has been added looktype: %s to the player: %s",
 				player:getName(), lookType, target:getName()))

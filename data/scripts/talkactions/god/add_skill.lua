@@ -21,10 +21,12 @@ local function getExpForLevel(level)
 	return ((50 * level * level * level) - (150 * level * level) + (400 * level)) / 3
 end
 
-
 local addSkill = TalkAction("/addskill")
 
 function addSkill.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false

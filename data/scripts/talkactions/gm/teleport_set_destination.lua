@@ -3,6 +3,9 @@
 local teleportSetDestination = TalkAction("/teleport")
 
 function teleportSetDestination.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Teleport position required.")
 		return false

@@ -1,6 +1,11 @@
+-- /addmoney playername, 100000
+
 local addMoney = TalkAction("/addmoney")
 
 function addMoney.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required")
@@ -19,9 +24,9 @@ function addMoney.onSay(player, words, param)
 	-- Check if player is online
 	local targetPlayer = Player(name)
 	if not targetPlayer then
-		player:sendCancelMessage("Player ".. string.titleCase(name) .." is not online.")
+		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
-		Spdlog.error("[addMoney.onSay] - Player ".. string.titleCase(name) .." is not online")
+		Spdlog.error("[addMoney.onSay] - Player " .. string.titleCase(name) .. " is not online")
 		return false
 	end
 
@@ -32,12 +37,10 @@ function addMoney.onSay(player, words, param)
 	end
 
 	targetPlayer:setBankBalance(targetPlayer:getBankBalance() + money)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull added ".. money .." \z
-                           gold coins for the ".. targetPlayer:getName() .." player.")
-	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added \z
-	                             ".. money .." gold coins to your character.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Successful added %d gold coins for the %s player.", money, targetPlayer:getName()))
+	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s added %d gold coins to your character.", player:getName(), money))
 	-- Distro log
-	Spdlog.info("".. player:getName() .." added ".. money .." gold coins to ".. targetPlayer:getName() .." player")
+	Spdlog.info("" .. player:getName() .. " added " .. money .. " gold coins to " .. targetPlayer:getName() .. " player")
 	return true
 end
 

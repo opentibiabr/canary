@@ -1,6 +1,9 @@
 local createMonster = TalkAction("/m")
 
 function createMonster.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	-- Usage: "/m monstername, fiendish" for create a fiendish monster (/m rat, fiendish)
 	-- Usage: "/m monstername, [1-5]" for create a influenced monster with specific level (/m rat, 2)
 	if param == "" then
@@ -44,5 +47,5 @@ function createMonster.onSay(player, words, param)
 end
 
 createMonster:separator(" ")
-createMonster:groupType("gamemaster")
+createMonster:groupType("god")
 createMonster:register()

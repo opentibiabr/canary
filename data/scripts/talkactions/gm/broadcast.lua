@@ -1,12 +1,17 @@
 local broadcast = TalkAction("/b")
 
 function broadcast.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false
 	end
 
-	Spdlog.info("" .. player:getName() .. " broadcasted: ".. param)
+	local text = player:getName() .. " broadcasted: " .. param
+	Spdlog.info(text)
+	Webhook.send("Broadcast", text, WEBHOOK_COLOR_WARNING, announcementChannels["serverAnnouncements"])
 	for _, targetPlayer in ipairs(Game.getPlayers()) do
 		targetPlayer:sendPrivateMessage(player, param, TALKTYPE_BROADCAST)
 	end
@@ -14,5 +19,5 @@ function broadcast.onSay(player, words, param)
 end
 
 broadcast:separator(" ")
-broadcast:groupType("god")
+broadcast:groupType("gamemaster")
 broadcast:register()

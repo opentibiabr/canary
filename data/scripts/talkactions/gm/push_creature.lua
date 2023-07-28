@@ -1,6 +1,9 @@
 local pushCreature = TalkAction("/c")
 
 function pushCreature.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false
@@ -27,5 +30,5 @@ function pushCreature.onSay(player, words, param)
 end
 
 pushCreature:separator(" ")
-pushCreature:groupType("god")
+pushCreature:groupType("gamemaster")
 pushCreature:register()

@@ -1,6 +1,7 @@
 local gold_rank = TalkAction("/goldrank")
 
 function gold_rank.onSay(player, words, param)
+	-- create log
 	logCommand(player, words, param)
 
 	local resultId = db.storeQuery("SELECT `balance`, `name` FROM `players` WHERE group_id < 3 ORDER BY balance DESC LIMIT 10")
@@ -9,7 +10,7 @@ function gold_rank.onSay(player, words, param)
 		local x = 0
 		repeat
 			x = x + 1
-				str = str.."\n"..x.."- "..Result.getString(resultId, "name").." ("..Result.getNumber(resultId, "balance")..")."
+			str = str .. "\n" .. x .. "- " .. Result.getString(resultId, "name") .. " (" .. Result.getNumber(resultId, "balance") .. ")."
 		until not Result.next(resultId)
 		Result.free(resultId)
 		if str == "" then

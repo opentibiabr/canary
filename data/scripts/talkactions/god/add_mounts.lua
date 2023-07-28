@@ -1,4 +1,6 @@
-local mounts = TalkAction("/mounts")
+-- /addmounts playername
+
+local mounts = TalkAction("/addmounts")
 function mounts.onSay(player, words, param)
 	local target
 	if param == '' then

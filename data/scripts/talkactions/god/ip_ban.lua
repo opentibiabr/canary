@@ -3,6 +3,9 @@ local ipBanDays = 7
 local ipBan = TalkAction("/ipban")
 
 function ipBan.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false
@@ -36,7 +39,7 @@ function ipBan.onSay(player, words, param)
 
 	local timeNow = os.time()
 	db.query("INSERT INTO `ip_bans` (`ip`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (" ..
-			targetIp .. ", '', " .. timeNow .. ", " .. timeNow + (ipBanDays * 86400) .. ", " .. player:getGuid() .. ")")
+		targetIp .. ", '', " .. timeNow .. ", " .. timeNow + (ipBanDays * 86400) .. ", " .. player:getGuid() .. ")")
 	player:sendTextMessage(MESSAGE_ADMINISTRADOR, targetName .. "  has been IP banned.")
 	return false
 end

@@ -1,6 +1,9 @@
 local houseOwner = TalkAction("/owner")
 
 function houseOwner.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	local tile = Tile(player:getPosition())
 	local house = tile and tile:getHouse()
 	if not house then
@@ -24,5 +27,5 @@ function houseOwner.onSay(player, words, param)
 end
 
 houseOwner:separator(" ")
-houseOwner:groupType("gamemaster")
+houseOwner:groupType("god")
 houseOwner:register()

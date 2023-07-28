@@ -1,6 +1,8 @@
 local talk = TalkAction("/hireling")
 
 function talk.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
 
 	local split = param:split(",")
 	local name = split[1] ~= "" and split[1] or "Hireling " .. player:getName()

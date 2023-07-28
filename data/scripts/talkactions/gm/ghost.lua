@@ -1,6 +1,9 @@
 local ghost = TalkAction("/ghost")
 
 function ghost.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	local position = player:getPosition()
 	local isGhost = not player:isInGhostMode()
 

@@ -1,6 +1,9 @@
 local createNpc = TalkAction("/n")
 
 function createNpc.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false

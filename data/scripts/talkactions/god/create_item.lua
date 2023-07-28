@@ -5,6 +5,9 @@ local invalidIds = {
 local createItem = TalkAction("/i")
 
 function createItem.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	local split = param:split(",")
 
 	local itemType = ItemType(split[1])
@@ -27,7 +30,7 @@ function createItem.onSay(player, words, param)
 			count = math.min(10000, math.max(1, count))
 		elseif not itemType:isFluidContainer() then
 			local min = 100;
-			if(charges > 0) then
+			if (charges > 0) then
 				min = charges;
 			end
 			count = math.min(min, math.max(1, count))

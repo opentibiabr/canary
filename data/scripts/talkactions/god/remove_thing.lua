@@ -1,6 +1,9 @@
 local removeThing = TalkAction("/r")
 
 function removeThing.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	local position = player:getPosition()
 	position:getNextPosition(player:getDirection())
 
@@ -31,5 +34,5 @@ function removeThing.onSay(player, words, param)
 end
 
 removeThing:separator(" ")
-removeThing:groupType("gamemaster")
+removeThing:groupType("god")
 removeThing:register()

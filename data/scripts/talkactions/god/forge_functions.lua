@@ -1,5 +1,8 @@
 local addDusts = TalkAction("/adddusts")
 function addDusts.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required.")
@@ -18,9 +21,9 @@ function addDusts.onSay(player, words, param)
 	-- Check if player is online
 	local targetPlayer = Player(name)
 	if not targetPlayer then
-		player:sendCancelMessage("Player ".. string.titleCase(name) .." is not online.")
+		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
-		Spdlog.error("[addDusts.onSay] - Player ".. string.titleCase(name) .." is not online.")
+		Spdlog.error("[addDusts.onSay] - Player " .. string.titleCase(name) .. " is not online.")
 		return false
 	end
 
@@ -37,12 +40,10 @@ function addDusts.onSay(player, words, param)
 	end
 
 	targetPlayer:addForgeDusts(dustAmount)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successful added ".. dustAmount .." \z
-                           dusts for the ".. targetPlayer:getName() .." player.")
-	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added \z
-	                             ".. dustAmount .." dusts to your character.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Successful added %d dusts for the %s player.", dustAmount, targetPlayer:getName()))
+	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s added %d dusts to your character.", player:getName(), dustAmount))
 	-- Distro log
-	Spdlog.info("".. player:getName() .." added ".. dustAmount .." dusts to ".. targetPlayer:getName() .." player.")
+	Spdlog.info("" .. player:getName() .. " added " .. dustAmount .. " dusts to " .. targetPlayer:getName() .. " player.")
 	return true
 end
 
@@ -50,8 +51,13 @@ addDusts:separator(" ")
 addDusts:groupType("god")
 addDusts:register()
 
+---------------- // ----------------
 local removeDusts = TalkAction("/removedusts")
+
 function removeDusts.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required.")
@@ -70,9 +76,9 @@ function removeDusts.onSay(player, words, param)
 	-- Check if player is online
 	local targetPlayer = Player(name)
 	if not targetPlayer then
-		player:sendCancelMessage("Player ".. string.titleCase(name) .." is not online.")
+		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
-		Spdlog.error("[removeDusts.onSay] - Player ".. string.titleCase(name) .." is not online.")
+		Spdlog.error("[removeDusts.onSay] - Player " .. string.titleCase(name) .. " is not online.")
 		return false
 	end
 
@@ -89,12 +95,10 @@ function removeDusts.onSay(player, words, param)
 	end
 
 	targetPlayer:removeForgeDusts(dustAmount)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successful removed ".. dustAmount .." \z
-                           dusts for the ".. targetPlayer:getName() .." player.")
-	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." removed \z
-	                             ".. dustAmount .." dusts to your character.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Successful removed %d dusts for the %s player.", dustAmount, targetPlayer:getName()))
+	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s removed %d dusts to your character.", player:getName(), dustAmount))
 	-- Distro log
-	Spdlog.info("".. player:getName() .." removed ".. dustAmount .." dusts to ".. targetPlayer:getName() .." player.")
+	Spdlog.info("" .. player:getName() .. " removed " .. dustAmount .. " dusts to " .. targetPlayer:getName() .. " player.")
 	return true
 end
 
@@ -102,8 +106,13 @@ removeDusts:separator(" ")
 removeDusts:groupType("god")
 removeDusts:register()
 
+---------------- // ----------------
 local getDusts = TalkAction("/getdusts")
+
 function getDusts.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required.")
@@ -112,23 +121,21 @@ function getDusts.onSay(player, words, param)
 		return false
 	end
 
-
 	-- Check if player is online
 	local split = param:split(",")
 	local name = split[1]
 	local targetPlayer = Player(name)
 	if not targetPlayer then
-		player:sendCancelMessage("Player ".. string.titleCase(name) .." is not online.")
+		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
-		Spdlog.error("[getDusts.onSay] - Player ".. string.titleCase(name) .." is not online.")
+		Spdlog.error("[getDusts.onSay] - Player " .. string.titleCase(name) .. " is not online.")
 		return false
 	end
 
-	local dustAmount
-	dustAmount = targetPlayer:getForgeDusts()
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. targetPlayer:getName() .." has ".. dustAmount .." dusts.")
+	local dustAmount = targetPlayer:getForgeDusts()
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "" .. targetPlayer:getName() .. " has " .. dustAmount .. " dusts.")
 	-- Distro log
-	Spdlog.info("".. targetPlayer:getName() .." has ".. dustAmount .." dusts.")
+	Spdlog.info("" .. targetPlayer:getName() .. " has " .. dustAmount .. " dusts.")
 	return true
 end
 
@@ -136,8 +143,13 @@ getDusts:separator(" ")
 getDusts:groupType("god")
 getDusts:register()
 
+---------------- // ----------------
 local setDusts = TalkAction("/setdusts")
+
 function setDusts.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required.")
@@ -156,9 +168,9 @@ function setDusts.onSay(player, words, param)
 	-- Check if player is online
 	local targetPlayer = Player(name)
 	if not targetPlayer then
-		player:sendCancelMessage("Player ".. string.titleCase(name) .." is not online.")
+		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
-		Spdlog.error("[setDusts.onSay] - Player ".. string.titleCase(name) .." is not online.")
+		Spdlog.error("[setDusts.onSay] - Player " .. string.titleCase(name) .. " is not online.")
 		return false
 	end
 
@@ -174,12 +186,10 @@ function setDusts.onSay(player, words, param)
 	end
 
 	targetPlayer:setForgeDusts(dustAmount)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successful set ".. dustAmount .." \z
-							dusts for the ".. targetPlayer:getName() .." player.")
-	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." set \z
-	                             ".. dustAmount .." dusts to your character.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Successful set %d dusts for the %s player.", dustAmount, targetPlayer:getName()))
+	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s set %d dusts to your character.", player:getName(), dustAmount))
 	-- Distro log
-	Spdlog.info("".. player:getName() .." set ".. dustAmount .." dusts to ".. targetPlayer:getName() .." player.")
+	Spdlog.info("" .. player:getName() .. " set " .. dustAmount .. " dusts to " .. targetPlayer:getName() .. " player.")
 	return true
 end
 
@@ -187,10 +197,14 @@ setDusts:separator(" ")
 setDusts:groupType("god")
 setDusts:register()
 
+---------------- // ----------------
 -- Goto fiendish monster
 local gotoFiendish = TalkAction("/fiendish")
 
 function gotoFiendish.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	local monster = Monster(ForgeMonster:pickFiendish())
 	if monster then
 		player:teleportTo(monster:getPosition())
@@ -203,10 +217,14 @@ end
 gotoFiendish:groupType("god")
 gotoFiendish:register()
 
+---------------- // ----------------
 -- Goto influenced monster
 local gotoInfluenced = TalkAction("/influenced")
 
 function gotoInfluenced.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	local monster = Monster(ForgeMonster:pickInfluenced())
 	if monster then
 		player:teleportTo(monster:getPosition())
@@ -219,20 +237,28 @@ end
 gotoInfluenced:groupType("god")
 gotoInfluenced:register()
 
+---------------- // ----------------
 -- Set a new fiendish monster
 local setFiendish = TalkAction("/setfiendish")
 
 function setFiendish.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	return player:setFiendish()
 end
 
 setFiendish:groupType("god")
 setFiendish:register()
 
+---------------- // ----------------
 -- Open forge window
 local forge = TalkAction("/openforge")
 
 function forge.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	return player:openForge()
 end
 

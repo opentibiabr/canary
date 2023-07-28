@@ -1,13 +1,16 @@
 local areasound = TalkAction("/areasound")
 
 function areasound.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false
 	end
 
 	local split = param:split(",")
-	if not(split[2]) then
+	if not (split[2]) then
 		local primaryEffect = tonumber(param)
 		if (primaryEffect == nil or primaryEffect == 0) then
 			player:sendCancelMessage("Invalid command param.")
@@ -32,19 +35,23 @@ function areasound.onSay(player, words, param)
 end
 
 areasound:separator(" ")
-areasound:groupType("gamemaster")
+areasound:groupType("god")
 areasound:register()
 
+---------------- // ----------------
 local internalsound = TalkAction("/internalsound")
 
 function internalsound.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false
 	end
 
 	local split = param:split(",")
-	if not(split[2]) then
+	if not (split[2]) then
 		local primaryEffect = tonumber(param)
 		if (primaryEffect == nil or primaryEffect == 0) then
 			player:sendCancelMessage("Invalid command param.")
@@ -69,19 +76,23 @@ function internalsound.onSay(player, words, param)
 end
 
 internalsound:separator(" ")
-internalsound:groupType("gamemaster")
+internalsound:groupType("god")
 internalsound:register()
 
+---------------- // ----------------
 local globalsound = TalkAction("/globalsound")
 
 function globalsound.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false
 	end
 
 	local split = param:split(",")
-	if not(split[2]) then
+	if not (split[2]) then
 		local primaryEffect = tonumber(param)
 		if (primaryEffect == nil or primaryEffect == 0) then
 			player:sendCancelMessage("Invalid command param.")
@@ -110,5 +121,5 @@ function globalsound.onSay(player, words, param)
 end
 
 globalsound:separator(" ")
-globalsound:groupType("gamemaster")
+globalsound:groupType("god")
 globalsound:register()

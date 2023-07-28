@@ -19,8 +19,8 @@ function spell.onCastSpell(creature, variant)
 				local deltaSpeed = math.max(creature:getBaseSpeed() - summon:getBaseSpeed(), 0)
 				local FamiliarSpeed = ((summon:getBaseSpeed() + deltaSpeed) * 0.9) - 72
 				local FamiliarHaste = Condition(CONDITION_HASTE)
-				FamiliarHaste.setParameter(CONDITION_PARAM_TICKS, 5000)
-				FamiliarHaste.setParameter(CONDITION_PARAM_SPEED, FamiliarSpeed)
+				FamiliarHaste:setParameter(CONDITION_PARAM_TICKS, 5000)
+				FamiliarHaste:setParameter(CONDITION_PARAM_SPEED, FamiliarSpeed)
 				summon:addCondition(FamiliarHaste)
 			end
 		end

@@ -20,7 +20,7 @@ function onTargetTile(cid, pos)
 	spellCallback(param)
 end
 
-combat.setCallback(CALLBACK_PARAM_TARGETTILE, "onTargetTile")
+combat:setCallback(CALLBACK_PARAM_TARGETTILE, "onTargetTile")
 
 local gnomeAvalanche = MoveEvent()
 

@@ -3643,18 +3643,22 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 	}
 
 	if (item->isWrapable() && item->getID() != ITEM_DECORATION_KIT) {
-		wrapItem(item);
+		wrapItem(item, houseTile->getHouse());
 	} else if (item->getID() == ITEM_DECORATION_KIT && unWrapId != 0) {
-		unwrapItem(item, unWrapId);
+		unwrapItem(item, unWrapId, houseTile->getHouse(), player);
 	}
 	addMagicEffect(pos, CONST_ME_POFF);
 }
 
-Item* Game::wrapItem(Item* item) {
+Item* Game::wrapItem(Item* item, House* house) {
 	uint16_t hiddenCharges = 0;
 	uint16_t amount = item->getItemCount();
 	if (isCaskItem(item->getID())) {
 		hiddenCharges = item->getSubType();
+	}
+	if (house != nullptr && Item::items.getItemType(item->getID()).isBed()) {
+		item->getBed()->wakeUp(nullptr);
+		house->removeBed(item->getBed());
 	}
 	uint16_t oldItemID = item->getID();
 	Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
@@ -3670,13 +3674,21 @@ Item* Game::wrapItem(Item* item) {
 	return newItem;
 }
 
-void Game::unwrapItem(Item* item, uint16_t unWrapId) {
+void Game::unwrapItem(Item* item, uint16_t unWrapId, House* house, Player* player) {
 	auto hiddenCharges = item->getAttribute<uint16_t>(DATE);
+	const ItemType &newiType = Item::items.getItemType(unWrapId);
+	if (player != nullptr && house != nullptr && newiType.isBed() && house->getMaxBeds() > -1 && house->getBedCount() >= house->getMaxBeds()) {
+		player->sendCancelMessage("You reached the maximum beds in this house");
+		return;
+	}
 	auto amount = item->getAttribute<uint16_t>(AMOUNT);
 	if (!amount) {
 		amount = 1;
 	}
 	Item* newItem = transformItem(item, unWrapId, amount);
+	if (house && newiType.isBed()) {
+		house->addBed(newItem->getBed());
+	}
 	if (newItem) {
 		if (hiddenCharges > 0 && isCaskItem(unWrapId)) {
 			newItem->setSubType(hiddenCharges);

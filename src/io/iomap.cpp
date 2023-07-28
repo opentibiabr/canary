@@ -318,6 +318,11 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 						break;
 					}
 
+					const ItemType &iType = Item::items[id];
+					if (isHouseTile && iType.isBed()) {
+						continue;
+					}
+
 					Item* item = Item::CreateItem(id, tilePosition);
 					if (!item) {
 						continue;
@@ -405,6 +410,11 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 				setLastErrorString(ss.str());
 				SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
 				break;
+			}
+
+			const ItemType &iType = Item::items[id];
+			if (isHouseTile && iType.isBed()) {
+				continue;
 			}
 
 			Item* item = Item::CreateItem(id, tilePosition);

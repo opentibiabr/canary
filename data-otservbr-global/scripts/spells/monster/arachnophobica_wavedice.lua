@@ -1,6 +1,6 @@
 local combat = Combat()
-combat.setParameter(COMBAT_PARAM_TYPE, COMBAT_DROWNDAMAGE)
-combat.setParameter(COMBAT_PARAM_EFFECT, CONST_ME_CRAPS)
+combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_DROWNDAMAGE)
+combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_CRAPS)
 
 local area = createCombatArea({
 	{1, 1, 1},

@@ -1110,6 +1110,8 @@ ItemAttribute_t stringToItemAttribute(const std::string &str) {
 		return ItemAttribute_t::AMOUNT;
 	} else if (str == "tier") {
 		return ItemAttribute_t::TIER;
+	} else if (str == "lootmessagesuffix") {
+		return ItemAttribute_t::LOOTMESSAGE_SUFFIX;
 	}
 
 	SPDLOG_ERROR("[{}] attribute type {} is not registered", __FUNCTION__, str);

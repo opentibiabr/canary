@@ -244,7 +244,6 @@ end
 
 -- player:removeMoneyBank(money)
 function Player:removeMoneyBank(amount)
-
 	if type(amount) == 'string' then
 		amount = tonumber(amount)
 	end
@@ -262,7 +261,6 @@ function Player:removeMoneyBank(amount)
 
 		-- The player doens't have all the money with him
 	elseif amount <= (moneyCount + bankCount) then
-
 		-- Check if the player has some money
 		if moneyCount ~= 0 then
 			-- Removes player inventory money
@@ -274,7 +272,6 @@ function Player:removeMoneyBank(amount)
 
 			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d from inventory and %d gold from bank account. Your account balance is now %d gold."):format(moneyCount, amount - moneyCount, self:getBankBalance()))
 			return true
-
 		else
 			self:setBankBalance(bankCount - amount)
 			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from bank account. Your account balance is now %d gold."):format(amount, self:getBankBalance()))
@@ -291,10 +288,10 @@ end
 function Player.hasRookgaardShield(self)
 	-- Wooden Shield, Studded Shield, Brass Shield, Plate Shield, Copper Shield
 	return self:getItemCount(3412) > 0
-		or self:getItemCount(3426) > 0
-		or self:getItemCount(3411) > 0
-		or self:getItemCount(3410) > 0
-		or self:getItemCount(3430) > 0
+			or self:getItemCount(3426) > 0
+			or self:getItemCount(3411) > 0
+			or self:getItemCount(3410) > 0
+			or self:getItemCount(3430) > 0
 end
 
 function Player.isSorcerer(self)
@@ -435,11 +432,11 @@ function Player:CreateFamiliarSpell(spellId)
 			addEvent(
 			-- Calling function
 				SendMessageFunction,
-			-- Time for execute event
+				-- Time for execute event
 				(summonDuration * 60 - FAMILIAR_TIMER[sendMessage].countdown) * 1000,
-			-- Param "playerId"
+				-- Param "playerId"
 				self:getId(),
-			-- Param "message"
+				-- Param "message"
 				FAMILIAR_TIMER[sendMessage].message
 			)
 		)

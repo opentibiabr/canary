@@ -217,6 +217,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", LOYALTY_BONUS_PERCENTAGE_MULTIPLIER);
 
 	registerEnumIn(L, "configKeys", PARTY_SHARE_LOOT_BOOSTS);
+	registerEnumIn(L, "configKeys", PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR);
 	registerEnumIn(L, "configKeys", TIBIADROME_CONCOCTION_COOLDOWN);
 	registerEnumIn(L, "configKeys", TIBIADROME_CONCOCTION_DURATION);
 	registerEnumIn(L, "configKeys", TIBIADROME_CONCOCTION_TICK_TYPE);

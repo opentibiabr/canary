@@ -739,6 +739,14 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 			bool corpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
 			if (mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
 				Player* player = mostDamageCreature->getPlayer();
+				std::ostringstream lootMessage;
+				lootMessage << "Loot of " << getNameDescription() << ": " << corpse->getContainer()->getContentDescription(player->getProtocolVersion() < 1200);
+				auto suffix = corpse->getContainer()->getAttribute<std::string>(ItemAttribute_t::LOOTMESSAGE_SUFFIX);
+				if (suffix.length() > 0) {
+					lootMessage << suffix;
+				}
+				player->sendLootMessage(lootMessage.str());
+
 				if (g_configManager().getBoolean(AUTOBANK)) {
 					if (!corpse->getContainer()) {
 						return true;

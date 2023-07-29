@@ -7697,3 +7697,18 @@ error_t Player::GetAccountInterface(account::Account* account) {
 	account = account_;
 	return account::ERROR_NO;
 }
+
+void Player::sendLootMessage(const std::string &message) const {
+	Party* party = getParty();
+	if (!party) {
+		sendTextMessage(MESSAGE_LOOT, message);
+		return;
+	}
+
+	party->getLeader()->sendTextMessage(MESSAGE_LOOT, message);
+	for (const auto partyMember : party->getMembers()) {
+		if (partyMember) {
+			partyMember->sendTextMessage(MESSAGE_LOOT, message);
+		}
+	}
+}

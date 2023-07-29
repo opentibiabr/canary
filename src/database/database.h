@@ -202,10 +202,12 @@ class DBTransaction {
 				bool result = toBeExecuted();
 				if (!result) {
 					transaction.rollback();
+					return false;
 				}
 				transaction.commit();
 				return result;
 			} catch (const std::exception &exception) {
+				transaction.rollback();
 				SPDLOG_ERROR("[{}] Error occurred committing transaction, error: {}", __FUNCTION__, exception.what());
 				return false;
 			}

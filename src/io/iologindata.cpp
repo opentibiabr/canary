@@ -147,11 +147,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string &name) {
 	player->setGroup(group);
 	player->accountNumber = result->getNumber<uint32_t>("account_id");
 	player->accountType = static_cast<account::AccountType>(result->getNumber<uint16_t>("account_type"));
-	if (!g_configManager().getBoolean(FREE_PREMIUM)) {
-		player->premiumDays = result->getNumber<uint16_t>("premium_days");
-	} else {
-		player->premiumDays = std::numeric_limits<uint16_t>::max();
-	}
+	player->premiumDays = result->getNumber<uint16_t>("premium_days");
 
 	/*
 	  Loyalty system:
@@ -216,11 +212,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 	acc.GetID(&(player->accountNumber));
 	acc.GetAccountType(&(player->accountType));
 
-	if (g_configManager().getBoolean(FREE_PREMIUM)) {
-		player->premiumDays = std::numeric_limits<uint16_t>::max();
-	} else {
-		acc.GetPremiumRemaningDays(&(player->premiumDays));
-	}
+	acc.GetPremiumRemaningDays(&(player->premiumDays));
 
 	acc.GetCoins(&(player->coinBalance));
 	acc.GetTransferableCoins(&(player->coinTransferableBalance));
@@ -858,9 +850,9 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList &itemList,
 	return query_insert.execute();
 }
 
-bool IOLoginData::savePlayerGuard(Player* player) {
+bool IOLoginData::savePlayer(Player* player) {
 	bool success = DBTransaction::executeWithinTransaction([player]() {
-		savePlayer(player);
+		return savePlayerGuard(player);
 	});
 
 	if (!success) {
@@ -870,7 +862,7 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 	return success;
 }
 
-bool IOLoginData::savePlayer(Player* player) {
+bool IOLoginData::savePlayerGuard(Player* player) {
 	if (player->getHealth() <= 0) {
 		player->changeHealth(1);
 	}

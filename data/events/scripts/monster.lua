@@ -1,5 +1,5 @@
 local function calculateBonus(bonus)
-	local bonusCount = math.floor(bonus/100)
+	local bonusCount = math.floor(bonus / 100)
 	local remainder = bonus % 100
 	if remainder > 0 then
 		local probability = math.random(0, 100)
@@ -45,9 +45,10 @@ function Monster:onDropLoot(corpse)
 
 		local participants = {}
 		local modifier = 1
+		local vipBoost = 0
 
 		if player then
-			participants = {player}
+			participants = { player }
 			if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) then
 				local party = player:getParty()
 				if party and party:isSharedExperienceEnabled() then
@@ -70,6 +71,17 @@ function Monster:onDropLoot(corpse)
 		else
 			Spdlog.warn("[Monster:onDropLoot] - Could not find WealthDuplex concoction.")
 		end
+
+		for i = 1, #participants do
+			local participant = participants[i]
+			if participant:isVip() then
+				local boost = configManager.getNumber(configKeys.VIP_BONUS_LOOT)
+				boost = ((boost > 100 and 100) or boost) / 100
+				vipBoost = vipBoost + boost
+			end
+		end
+		vipBoost = vipBoost / ((#participants) ^ 0.5)
+		modifier = modifier * (1 + vipBoost)
 
 		for i = 1, #monsterLoot do
 			corpse:createLootItem(monsterLoot[i], charmBonus, modifier)
@@ -107,7 +119,7 @@ function Monster:onDropLoot(corpse)
 
 			local boostedMessage
 			local isBoostedBoss = self:getName():lower() == (Game.getBoostedBoss()):lower()
-			local bossRaceIds = {player:getSlotBossId(1), player:getSlotBossId(2)}
+			local bossRaceIds = { player:getSlotBossId(1), player:getSlotBossId(2) }
 			local isBoss = table.contains(bossRaceIds, mType:bossRaceId()) or isBoostedBoss
 			if isBoss and mType:bossRaceId() ~= 0 then
 				local bonus
@@ -145,6 +157,9 @@ function Monster:onDropLoot(corpse)
 			end
 			if preyLootPercent > 0 then
 				text = text .. " (active prey bonus)"
+			end
+			if (vipBoost > 0) then
+				text = text .. " (vip loot bonus " .. (vipBoost * 100) .. "%)"
 			end
 			if charmBonus then
 				text = text .. " (active charm bonus)"

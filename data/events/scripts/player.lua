@@ -42,18 +42,18 @@ local storeItemID = {
 local blockTeleportTrashing = true
 
 local titles = {
-	{storageID = 14960, title = " Scout"},
-	{storageID = 14961, title = " Sentinel"},
-	{storageID = 14962, title = " Steward"},
-	{storageID = 14963, title = " Warden"},
-	{storageID = 14964, title = " Squire"},
-	{storageID = 14965, title = " Warrior"},
-	{storageID = 14966, title = " Keeper"},
-	{storageID = 14967, title = " Guardian"},
-	{storageID = 14968, title = " Sage"},
-	{storageID = 14969, title = " Tutor"},
-	{storageID = 14970, title = " Senior Tutor"},
-	{storageID = 14971, title = " King"},
+	{ storageID = 14960, title = " Scout" },
+	{ storageID = 14961, title = " Sentinel" },
+	{ storageID = 14962, title = " Steward" },
+	{ storageID = 14963, title = " Warden" },
+	{ storageID = 14964, title = " Squire" },
+	{ storageID = 14965, title = " Warrior" },
+	{ storageID = 14966, title = " Keeper" },
+	{ storageID = 14967, title = " Guardian" },
+	{ storageID = 14968, title = " Sage" },
+	{ storageID = 14969, title = " Tutor" },
+	{ storageID = 14970, title = " Senior Tutor" },
+	{ storageID = 14971, title = " King" },
 }
 
 local config = {
@@ -78,7 +78,7 @@ local function antiPush(self, item, count, fromPosition, toPosition, fromCylinde
 
 	local cid = self:getId()
 	if not pushDelay[cid] then
-		pushDelay[cid] = {items = 0, time = 0}
+		pushDelay[cid] = { items = 0, time = 0 }
 	end
 
 	pushDelay[cid].items = pushDelay[cid].items + 1
@@ -253,7 +253,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 
 	-- No move parcel very heavy
 	if CONTAINER_WEIGHT_CHECK and ItemType(item:getId()):isContainer()
-	and item:getWeight() > CONTAINER_WEIGHT_MAX then
+		and item:getWeight() > CONTAINER_WEIGHT_MAX then
 		self:sendCancelMessage("Your cannot move this item too heavy.")
 		return false
 	end
@@ -271,14 +271,16 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	-- SSA exhaust
 	local exhaust = { }
 	if toPosition.x == CONTAINER_POSITION and toPosition.y == CONST_SLOT_NECKLACE
-	and item:getId() == ITEM_STONE_SKIN_AMULET then
+		and item:getId() == ITEM_STONE_SKIN_AMULET then
 		local pid = self:getId()
 		if exhaust[pid] then
 			self:sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED)
 			return false
 		else
 			exhaust[pid] = true
-			addEvent(function() exhaust[pid] = false end, 2000, pid)
+			addEvent(function()
+				exhaust[pid] = false
+			end, 2000, pid)
 			return true
 		end
 	end
@@ -339,7 +341,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		-- The player also shouldn't be able to insert items into the boss corpse
 		local tileCorpse = Tile(container:getPosition())
 		for index, value in ipairs(tileCorpse:getItems() or { }) do
-			if value:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2^31 - 1 and value:getName() == container:getName() then
+			if value:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 and value:getName() == container:getName() then
 				self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 				return false
 			end
@@ -347,7 +349,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	end
 
 	-- Do not let the player move the boss corpse.
-	if item:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2^31 - 1 then
+	if item:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end
@@ -360,7 +362,8 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		return false
 	end
 
-	if tile and tile:getItemById(370) then -- Trapdoor
+	if tile and tile:getItemById(370) then
+		-- Trapdoor
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		self:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
@@ -394,9 +397,9 @@ function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder,
 					if Game.getStorageValue('healthSoul') > 0 then
 						monster:addHealth(-(monster:getHealth() - Game.getStorageValue('healthSoul')))
 					end
-					Game.setStorageValue('CheckTile', os.time()+30)
+					Game.setStorageValue('CheckTile', os.time() + 30)
 				elseif tileBoss:getTopCreature():getName():lower() == 'the corruptor of souls' then
-					Game.setStorageValue('CheckTile', os.time()+30)
+					Game.setStorageValue('CheckTile', os.time() + 30)
 					removeItem = true
 				end
 			end
@@ -505,7 +508,7 @@ function Player:onTradeRequest(target, item)
 		return false
 	end
 
-	if table.contains(storeItemID,item.itemid) then
+	if table.contains(storeItemID, item.itemid) then
 		return false
 	end
 	return true
@@ -556,10 +559,18 @@ function Player:onGainExperience(target, exp, rawExp)
 		end
 	end
 
+	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+		local vipBonusExp = configManager.getNumber(configKeys.VIP_BONUS_EXP)
+		if (vipBonusExp > 0 and self:isVip()) then
+			vipBonusExp = (vipBonusExp > 100 and 100) or vipBonusExp
+			exp = exp * (1 + (vipBonusExp / 100))
+		end
+	end
+
 	local lowLevelBonuxExp = self:getFinalLowLevelBonus()
 	local baseRate = self:getFinalBaseRateExperience()
 
-	return (exp + (exp * (storeXpBoostAmount/100) + (exp * (lowLevelBonuxExp/100)))) * staminaBonusXp * baseRate
+	return (exp + (exp * (storeXpBoostAmount / 100) + (exp * (lowLevelBonuxExp / 100)))) * staminaBonusXp * baseRate
 end
 
 function Player:onLoseExperience(exp)
@@ -568,7 +579,7 @@ end
 
 function Player:onGainSkillTries(skill, tries)
 	-- Dawnport skills limit
-	if  IsRunningGlobalDatapack() and isSkillGrowthLimited(self, skill) then
+	if IsRunningGlobalDatapack() and isSkillGrowthLimited(self, skill) then
 		return 0
 	end
 	if APPLY_SKILL_MULTIPLIER == false then
@@ -584,7 +595,8 @@ function Player:onGainSkillTries(skill, tries)
 	SKILL_DEFAULT = self:getSkillLevel(skill)
 	RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
 
-	if(skill == SKILL_MAGLEVEL) then -- Magic Level
+	if (skill == SKILL_MAGLEVEL) then
+		-- Magic Level
 		if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
 			STAGES_DEFAULT = magicLevelStages
 		else
@@ -600,6 +612,9 @@ function Player:onGainSkillTries(skill, tries)
 		skillOrMagicRate = math.max(0, (skillOrMagicRate * SCHEDULE_SKILL_RATE) / 100)
 	end
 
+	local vipBoost = configManager.getNumber(configKeys.VIP_BONUS_SKILL)
+	skillOrMagicRate = skillOrMagicRate + (skillOrMagicRate * (vipBoost / 100))
+
 	return tries / 100 * (skillOrMagicRate * 100)
 end
 
@@ -609,7 +624,7 @@ function Player:onCombat(target, item, primaryDamage, primaryType, secondaryDama
 	end
 
 	if ItemType(item:getId()):getWeaponType() == WEAPON_AMMO then
-		if table.contains({ITEM_OLD_DIAMOND_ARROW, ITEM_DIAMOND_ARROW}, item:getId()) then
+		if table.contains({ ITEM_OLD_DIAMOND_ARROW, ITEM_DIAMOND_ARROW }, item:getId()) then
 			return primaryDamage, primaryType, secondaryDamage, secondaryType
 		else
 			item = self:getSlotItem(CONST_SLOT_LEFT)
@@ -632,12 +647,10 @@ function Player:onChangeZone(zone)
 							delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY)
 						end
 
-						self:sendTextMessage(MESSAGE_STATUS,
-                                             string.format("In protection zone. \
-                                                           Every %i minutes, gain %i stamina.",
-                                                           delay, configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
-                                             )
-                        )
+						local message = string.format("In protection zone. Every %i minutes, gain %i stamina.",
+							delay, configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
+						)
+						self:sendTextMessage(MESSAGE_STATUS, message)
 						staminaBonus.eventsPz[self:getId()] = addEvent(addStamina, delay * 60 * 1000, nil, self:getId(), delay * 60 * 1000)
 					end
 				end

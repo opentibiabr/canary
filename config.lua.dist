@@ -415,3 +415,23 @@ location = "South America"
 -- Leave empty if you wish to disable.
 discordWebhookURL = ""
 
+-- Vip System (Get more info in: https://github.com/opentibiabr/canary/pull/1063)
+-- NOTE: set vipSystemEnabled to true to enable the vip system functionalities (this overrides premium checks)
+-- NOTE: vipBonusExp = 0 is deactivated, active changing value between 1 and 100 (percent xp bonus to gain. ex: 3 = 3%, 30 = 30%)
+-- NOTE: vipBonusLoot = 0 is deactivated, active changing value between 1 and 100 (percent loot bonus to gain. ex: 3 = 3%, 30 = 30%)
+-- NOTE: vipBonusSkill = 0 is deactivated, active changing value between 1 and 100 (percent skill bonus to gain. ex: 3 = 3%, 30 = 30%)
+-- NOTE: vipAutoLootVipOnly = activates only vip to get automatic loot, config 'autoLoot' need to be enabled, for this config works
+-- NOTE: vipStayOnline = when this config is activated, players vip will be kicked after 'kickIdlePlayerAfterMinutes' config minutes too
+-- NOTE: vipFamiliarTimeCooldownReduction = the minutes that will be debited from the familiar time cooldown for vip accounts, use 0 to deactivate the bonus (the default maximum value is 15, but it is calculated automatically)
+-- 		examples: The default config 'familiarTime' is 30, this value is divided by 2 (15 minutes familiar and 15 minutes to cooldown)
+-- 		If you use 'vipFamiliarTimeCooldownReduction = 10' the vip players will have only, in this case, 5 minutes of cooldown.
+-- 		If you use 'vipFamiliarTimeCooldownReduction' greater than half of 'familiarTime', it will get the highest possible value, in this case 15
+-- NOTE: GainCoin function, please configure script: data-otservbr-global/scripts/globalevents/vip/online_coins.lua
+-- NOTE: GainToken function, please configure script: data-otservbr-global/scripts/globalevents/vip/online_tokens.lua
+vipSystemEnabled = false
+vipBonusExp = 0
+vipBonusLoot = 0
+vipBonusSkill = 0
+vipAutoLootVipOnly = false
+vipStayOnline = false
+vipFamiliarTimeCooldownReduction = 0

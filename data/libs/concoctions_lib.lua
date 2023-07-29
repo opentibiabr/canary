@@ -144,7 +144,7 @@ function Concoction:init(player, sendMessage)
 	if sendMessage then
 		addEvent(function(playerId, name, duration)
 			local eventPlayer = Player(playerId)
-			if not player then return end
+			if not eventPlayer then return end
 			eventPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE,
 				"Your concoction " .. name .. " is still active for another " .. duration .. ".")
 		end, 500, player:getId(), self.name, durationString(self:timeLeft(player)))

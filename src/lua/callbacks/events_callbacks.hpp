@@ -11,6 +11,7 @@
 #define SRC_LUA_CALLBACKS_EVENTS_CALLBACKS_HPP_
 
 #include "lua/callbacks/callbacks_definitions.hpp"
+#include "lua/callbacks/event_callback.hpp"
 #include "lua/scripts/luascript.h"
 
 class EventCallback;

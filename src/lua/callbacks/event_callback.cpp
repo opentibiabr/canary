@@ -28,7 +28,6 @@
  */
 EventCallback::EventCallback(LuaScriptInterface* scriptInterface) :
 	Script(scriptInterface) {
-	// spdlog_dev(info, "Constructing class {}", __func__);
 }
 
 std::string EventCallback::getScriptTypeName() const {

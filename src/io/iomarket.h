@@ -14,47 +14,47 @@
 #include "declarations.hpp"
 
 class IOMarket {
-		using StatisticsMap = phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, MarketStatistics>>;
+	using StatisticsMap = phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, MarketStatistics>>;
 
-	public:
-		IOMarket() = default;
+public:
+	IOMarket() = default;
 
-		static IOMarket &getInstance() {
-			return inject<IOMarket>();
-		}
+	static IOMarket &getInstance() {
+		return inject<IOMarket>();
+	}
 
-		static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier);
-		static MarketOfferList getOwnOffers(MarketAction_t action, uint32_t playerId);
-		static HistoryMarketOfferList getOwnHistory(MarketAction_t action, uint32_t playerId);
+	static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier);
+	static MarketOfferList getOwnOffers(MarketAction_t action, uint32_t playerId);
+	static HistoryMarketOfferList getOwnHistory(MarketAction_t action, uint32_t playerId);
 
-		static void processExpiredOffers(DBResult_ptr result, bool);
-		static void checkExpiredOffers();
+	static void processExpiredOffers(DBResult_ptr result, bool);
+	static void checkExpiredOffers();
 
-		static uint32_t getPlayerOfferCount(uint32_t playerId);
-		static MarketOfferEx getOfferByCounter(uint32_t timestamp, uint16_t counter);
+	static uint32_t getPlayerOfferCount(uint32_t playerId);
+	static MarketOfferEx getOfferByCounter(uint32_t timestamp, uint16_t counter);
 
-		static void createOffer(uint32_t playerId, MarketAction_t action, uint32_t itemId, uint16_t amount, uint64_t price, uint8_t tier, bool anonymous);
-		static void acceptOffer(uint32_t offerId, uint16_t amount);
-		static void deleteOffer(uint32_t offerId);
+	static void createOffer(uint32_t playerId, MarketAction_t action, uint32_t itemId, uint16_t amount, uint64_t price, uint8_t tier, bool anonymous);
+	static void acceptOffer(uint32_t offerId, uint16_t amount);
+	static void deleteOffer(uint32_t offerId);
 
-		static void appendHistory(uint32_t playerId, MarketAction_t type, uint16_t itemId, uint16_t amount, uint64_t price, time_t timestamp, uint8_t tier, MarketOfferState_t state);
-		static bool moveOfferToHistory(uint32_t offerId, MarketOfferState_t state);
+	static void appendHistory(uint32_t playerId, MarketAction_t type, uint16_t itemId, uint16_t amount, uint64_t price, time_t timestamp, uint8_t tier, MarketOfferState_t state);
+	static bool moveOfferToHistory(uint32_t offerId, MarketOfferState_t state);
 
-		void updateStatistics();
+	void updateStatistics();
 
-		StatisticsMap getPurchaseStatistics() const {
-			return purchaseStatistics;
-		}
-		StatisticsMap getSaleStatistics() const {
-			return saleStatistics;
-		}
+	StatisticsMap getPurchaseStatistics() const {
+		return purchaseStatistics;
+	}
+	StatisticsMap getSaleStatistics() const {
+		return saleStatistics;
+	}
 
-		static uint8_t getTierFromDatabaseTable(const std::string &string);
+	static uint8_t getTierFromDatabaseTable(const std::string &string);
 
-	private:
-		// [uint16_t = item id, [uint8_t = item tier, MarketStatistics = structure of the statistics]]
-		StatisticsMap purchaseStatistics;
-		StatisticsMap saleStatistics;
+private:
+	// [uint16_t = item id, [uint8_t = item tier, MarketStatistics = structure of the statistics]]
+	StatisticsMap purchaseStatistics;
+	StatisticsMap saleStatistics;
 };
 
 #endif // SRC_IO_IOMARKET_H_

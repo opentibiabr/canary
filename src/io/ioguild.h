@@ -14,11 +14,11 @@ class Guild;
 using GuildWarVector = std::vector<uint32_t>;
 
 class IOGuild {
-	public:
-		static std::shared_ptr<Guild> loadGuild(uint32_t guildId);
-		static void saveGuild(const std::shared_ptr<Guild> &guild);
-		static uint32_t getGuildIdByName(const std::string &name);
-		static void getWarList(uint32_t guildId, GuildWarVector &guildWarVector);
+public:
+	static std::shared_ptr<Guild> loadGuild(uint32_t guildId);
+	static void saveGuild(const std::shared_ptr<Guild> &guild);
+	static uint32_t getGuildIdByName(const std::string &name);
+	static void getWarList(uint32_t guildId, GuildWarVector &guildWarVector);
 };
 
 #endif // SRC_IO_IOGUILD_H_

@@ -224,8 +224,8 @@ void Game::loadBoostedCreature() {
 	const auto &monsterlist = getBestiaryList();
 
 	struct MonsterRace {
-			uint16_t raceId { 0 };
-			std::string name;
+		uint16_t raceId { 0 };
+		std::string name;
 	};
 
 	MonsterRace selectedMonster;

@@ -10,23 +10,23 @@
 #define SRC_UTILS_THREAD_POOL_H_
 
 class ThreadPool {
-	public:
-		explicit ThreadPool(Logger &logger);
+public:
+	explicit ThreadPool(Logger &logger);
 
-		// Ensures that we don't accidentally copy it
-		ThreadPool(const ThreadPool &) = delete;
-		ThreadPool operator=(const ThreadPool &) = delete;
+	// Ensures that we don't accidentally copy it
+	ThreadPool(const ThreadPool &) = delete;
+	ThreadPool operator=(const ThreadPool &) = delete;
 
-		void start();
-		void shutdown();
-		asio::io_context &getIoContext();
-		void addLoad(const std::function<void(void)> &load);
+	void start();
+	void shutdown();
+	asio::io_context &getIoContext();
+	void addLoad(const std::function<void(void)> &load);
 
-	private:
-		Logger &logger;
-		asio::io_context ioService;
-		std::vector<std::jthread> threads;
-		asio::io_context::work work { ioService };
+private:
+	Logger &logger;
+	asio::io_context ioService;
+	std::vector<std::jthread> threads;
+	asio::io_context::work work { ioService };
 };
 
 #endif // SRC_UTILS_THREAD_POOL_H_

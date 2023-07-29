@@ -11,23 +11,23 @@
 #define SRC_CREATURES_PLAYERS_STORAGES_STORAGES_HPP_
 
 class Storages {
-	public:
-		Storages() = default;
+public:
+	Storages() = default;
 
-		// Singleton - ensures we don't accidentally copy it
-		Storages(const Storages &) = delete;
-		void operator=(const Storages &) = delete;
+	// Singleton - ensures we don't accidentally copy it
+	Storages(const Storages &) = delete;
+	void operator=(const Storages &) = delete;
 
-		static Storages &getInstance() {
-			return inject<Storages>();
-		}
+	static Storages &getInstance() {
+		return inject<Storages>();
+	}
 
-		bool loadFromXML();
+	bool loadFromXML();
 
-		const phmap::btree_map<std::string, uint32_t> &getStorageMap() const;
+	const phmap::btree_map<std::string, uint32_t> &getStorageMap() const;
 
-	private:
-		phmap::btree_map<std::string, uint32_t> m_storageMap;
+private:
+	phmap::btree_map<std::string, uint32_t> m_storageMap;
 };
 
 constexpr auto g_storages = Storages::getInstance;

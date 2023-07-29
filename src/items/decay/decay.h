@@ -13,25 +13,25 @@
 #include "items/item.h"
 
 class Decay {
-	public:
-		Decay() = default;
+public:
+	Decay() = default;
 
-		Decay(const Decay &) = delete;
-		void operator=(const Decay &) = delete;
+	Decay(const Decay &) = delete;
+	void operator=(const Decay &) = delete;
 
-		static Decay &getInstance() {
-			return inject<Decay>();
-		}
+	static Decay &getInstance() {
+		return inject<Decay>();
+	}
 
-		void startDecay(Item* item);
-		void stopDecay(Item* item);
+	void startDecay(Item* item);
+	void stopDecay(Item* item);
 
-	private:
-		void checkDecay();
-		void internalDecayItem(Item* item);
+private:
+	void checkDecay();
+	void internalDecayItem(Item* item);
 
-		uint32_t eventId { 0 };
-		phmap::btree_map<int64_t, std::vector<Item*>> decayMap;
+	uint32_t eventId { 0 };
+	phmap::btree_map<int64_t, std::vector<Item*>> decayMap;
 };
 
 constexpr auto g_decay = Decay::getInstance;

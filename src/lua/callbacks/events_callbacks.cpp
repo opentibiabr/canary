@@ -36,11 +36,11 @@ EventsCallbacks &EventsCallbacks::getInstance() {
 }
 
 void EventsCallbacks::addCallback(EventCallback* callback) {
-	callbacks.push_back(callback);
+	m_callbacks.push_back(callback);
 }
 
 std::vector<EventCallback*> EventsCallbacks::getCallbacks() {
-	return callbacks;
+	return m_callbacks;
 }
 
 std::vector<EventCallback*> EventsCallbacks::getCallbacksByType(EventCallback_t type) {
@@ -54,4 +54,8 @@ std::vector<EventCallback*> EventsCallbacks::getCallbacksByType(EventCallback_t 
 	}
 
 	return eventCallbacks;
+}
+
+void EventsCallbacks::clear() {
+	m_callbacks.clear();
 }

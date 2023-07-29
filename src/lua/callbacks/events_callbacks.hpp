@@ -39,6 +39,8 @@ class EventsCallbacks {
 
 		std::vector<EventCallback*> getCallbacksByType(EventCallback_t type);
 
+		void clear();
+
 		template <typename CallbackFunc, typename... Args>
 		void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args)
 		{
@@ -63,7 +65,7 @@ class EventsCallbacks {
 		}
 
 	private:
-		std::vector<EventCallback*> callbacks;
+		std::vector<EventCallback*> m_callbacks;
 };
 
 constexpr auto g_callbacks = &EventsCallbacks::getInstance;

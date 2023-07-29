@@ -404,11 +404,7 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 	bool force = getBoolean(L, 4, false);
 	if (g_game().placeCreature(monster, position, extended, force)) {
 		g_events().eventMonsterOnSpawn(monster, position);
-		for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::MonsterOnSpawn)) {
-			if (callback->isLoadedCallback()) {
-				callback->monsterOnSpawn(monster, position);
-			}
-		}
+		g_callbacks().executeCallback(EventCallback_t::MonsterOnSpawn, &EventCallback::monsterOnSpawn, monster, position);
 		auto mtype = monster->getMonsterType();
 		if (mtype && mtype->info.bossRaceId > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {
 			SpectatorHashSet spectators;

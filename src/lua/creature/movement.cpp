@@ -322,11 +322,7 @@ uint32_t MoveEvents::onPlayerEquip(Player &player, Item &item, Slots_t slot, boo
 		return 1;
 	}
 	g_events().eventPlayerOnInventoryUpdate(&player, &item, slot, true);
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnInventoryUpdate)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnInventoryUpdate(&player, &item, slot, true);
-		}
-	}
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnInventoryUpdate, &EventCallback::playerOnInventoryUpdate, &player, &item, slot, true);
 	return moveEvent->fireEquip(player, item, slot, isCheck);
 }
 
@@ -336,11 +332,7 @@ uint32_t MoveEvents::onPlayerDeEquip(Player &player, Item &item, Slots_t slot) {
 		return 1;
 	}
 	g_events().eventPlayerOnInventoryUpdate(&player, &item, slot, false);
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnInventoryUpdate)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnInventoryUpdate(&player, &item, slot, false);
-		}
-	}
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnInventoryUpdate, &EventCallback::playerOnInventoryUpdate, &player, &item, slot, false);
 	return moveEvent->fireEquip(player, item, slot, false);
 }
 

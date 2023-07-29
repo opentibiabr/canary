@@ -2006,12 +2006,8 @@ void Monster::dropLoot(Container* corpse, Creature*) {
 				corpse->internalAddThing(sliver);
 			}
 		}
-		for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::MonsterOnDropLoot)) {
-			if (callback->isLoadedCallback()) {
-				callback->monsterOnDropLoot(this, corpse);
-			}
-		}
 		g_events().eventMonsterOnDropLoot(this, corpse);
+		g_callbacks().executeCallback(EventCallback_t::MonsterOnDropLoot, &EventCallback::monsterOnDropLoot, this, corpse);
 	}
 }
 

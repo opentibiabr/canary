@@ -191,12 +191,8 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, MonsterType* monsterTyp
 
 	spawnedMonsterMap.insert(spawned_pair(spawnMonsterId, monster));
 	spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::MonsterOnSpawn)) {
-		if (callback->isLoadedCallback()) {
-			callback->monsterOnSpawn(monster, pos);
-		}
-	}
 	g_events().eventMonsterOnSpawn(monster, pos);
+	g_callbacks().executeCallback(EventCallback_t::MonsterOnSpawn, &EventCallback::monsterOnSpawn, monster, pos);
 	return true;
 }
 

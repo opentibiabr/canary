@@ -1105,12 +1105,8 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 		return;
 	}
 
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnMoveCreature)) {
-		if (callback->isLoadedCallback()) {
-			if (!callback->playerOnMoveCreature(player, movingCreature, movingCreaturePos, toPos)) {
-				return;
-			}
-		}
+	if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnMoveCreature, &EventCallback::playerOnMoveCreature, player, movingCreature, movingCreaturePos, toPos)) {
+		return;
 	}
 
 	ReturnValue ret = internalMoveCreature(*movingCreature, *toTile);
@@ -1421,12 +1417,8 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 		return;
 	}
 
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnMoveItem)) {
-		if (callback->isLoadedCallback()) {
-			if (!callback->playerOnMoveItem(player, item, count, fromPos, toPos, fromCylinder, toCylinder)) {
-				return;
-			}
-		}
+	if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnMoveItem, &EventCallback::playerOnMoveItem, player, item, count, fromPos, toPos, fromCylinder, toCylinder)) {
+		return;
 	}
 
 	if (!g_events().eventPlayerOnMoveItem(player, item, count, fromPos, toPos, fromCylinder, toCylinder)) {
@@ -1462,11 +1454,7 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 	item->checkDecayMapItemOnMove();
 
 	g_events().eventPlayerOnItemMoved(player, item, count, fromPos, toPos, fromCylinder, toCylinder);
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnItemMoved)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnItemMoved(player, item, count, fromPos, toPos, fromCylinder, toCylinder);
-		}
-	}
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnItemMoved, &EventCallback::playerOnItemMoved, player, item, count, fromPos, toPos, fromCylinder, toCylinder);
 }
 
 bool Game::isTryingToStow(const Position &toPos, Cylinder* toCylinder) const {
@@ -3361,12 +3349,8 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 			return;
 		}
 
-		for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnBrowseField)) {
-			if (callback->isLoadedCallback()) {
-				if (!callback->playerOnBrowseField(player, tile->getPosition())) {
-					return;
-				}
-			}
+		if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnBrowseField, &EventCallback::playerOnBrowseField, player, tile->getPosition())) {
+			return;
 		}
 
 		auto it = browseFields.find(tile);
@@ -3822,12 +3806,8 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 		return;
 	}
 
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnBrowseField)) {
-		if (callback->isLoadedCallback()) {
-			if (!callback->playerOnBrowseField(player, tile->getPosition())) {
-				return;
-			}
-		}
+	if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnBrowseField, &EventCallback::playerOnBrowseField, player, tile->getPosition())) {
+		return;
 	}
 
 	Container* container;
@@ -4123,12 +4103,8 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 		return;
 	}
 
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnTradeRequest)) {
-		if (callback->isLoadedCallback()) {
-			if (!callback->playerOnTradeRequest(player, tradePartner, tradeItem)) {
-				return;
-			}
-		}
+	if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnTradeRequest, &EventCallback::playerOnTradeRequest, player, tradePartner, tradeItem)) {
+		return;
 	}
 
 	internalStartTrade(player, tradePartner, tradeItem);
@@ -4196,13 +4172,9 @@ void Game::playerAcceptTrade(uint32_t playerId) {
 			return;
 		}
 
-		for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnTradeAccept)) {
-			if (callback->isLoadedCallback()) {
-				if (!callback->playerOnTradeAccept(player, tradePartner, tradeItem1, tradeItem2)) {
-					internalCloseTrade(player);
-					return;
-				}
-			}
+		if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnTradeAccept, &EventCallback::playerOnTradeAccept, player, tradePartner, tradeItem1, tradeItem2)) {
+			internalCloseTrade(player);
+			return;
 		}
 
 		player->setTradeState(TRADE_TRANSFER);
@@ -4336,11 +4308,7 @@ void Game::playerLookInTrade(uint32_t playerId, bool lookAtCounterOffer, uint8_t
 	);
 	if (index == 0) {
 		g_events().eventPlayerOnLookInTrade(player, tradePartner, tradeItem, lookDistance);
-		for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnLookInTrade)) {
-			if (callback->isLoadedCallback()) {
-				callback->playerOnLookInTrade(player, tradePartner, tradeItem, lookDistance);
-			}
-		}
+		g_callbacks().executeCallback(EventCallback_t::PlayerOnLookInTrade, &EventCallback::playerOnLookInTrade, player, tradePartner, tradeItem, lookDistance);
 		return;
 	}
 
@@ -4361,11 +4329,7 @@ void Game::playerLookInTrade(uint32_t playerId, bool lookAtCounterOffer, uint8_t
 
 			if (--index == 0) {
 				g_events().eventPlayerOnLookInTrade(player, tradePartner, item, lookDistance);
-				for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnLookInTrade)) {
-					if (callback->isLoadedCallback()) {
-						callback->playerOnLookInTrade(player, tradePartner, item, lookDistance);
-					}
-				}
+				g_callbacks().executeCallback(EventCallback_t::PlayerOnLookInTrade, &EventCallback::playerOnLookInTrade, player, tradePartner, item, lookDistance);
 				return;
 			}
 		}
@@ -4525,12 +4489,8 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t itemId, uint8_t count) {
 		return;
 	}
 
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnLookInShop)) {
-		if (callback->isLoadedCallback()) {
-			if (!callback->playerOnLookInShop(player, &it, count)) {
-				return;
-			}
-		}
+	if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnLookInShop, &EventCallback::playerOnLookInShop, player, &it, count)) {
+		return;
 	}
 
 	std::ostringstream ss;
@@ -4571,11 +4531,7 @@ void Game::playerLookAt(uint32_t playerId, uint16_t itemId, const Position &pos,
 
 	// Parse onLook from event player
 	g_events().eventPlayerOnLook(player, pos, thing, stackPos, lookDistance);
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnLook)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnLook(player, pos, thing, stackPos, lookDistance);
-		}
-	}
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnLook, &EventCallback::playerOnLook, player, pos, thing, stackPos, lookDistance);
 }
 
 void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId) {
@@ -4610,11 +4566,7 @@ void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	g_events().eventPlayerOnLookInBattleList(player, creature, lookDistance);
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnLookInBattleList)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnLookInBattleList(player, creature, lookDistance);
-		}
-	}
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnLookInBattleList, &EventCallback::playerOnLookInBattleList, player, creature, lookDistance);
 }
 
 void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, Item* defaultItem, bool lootAllCorpses, bool autoLoot) {
@@ -5145,12 +5097,8 @@ void Game::playerTurn(uint32_t playerId, Direction dir) {
 		return;
 	}
 
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnTurn)) {
-		if (callback->isLoadedCallback()) {
-			if (!callback->playerOnTurn(player, dir)) {
-				return;
-			}
-		}
+	if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnTurn, &EventCallback::playerOnTurn, player, dir)) {
+		return;
 	}
 
 	player->resetIdleTime();
@@ -5252,11 +5200,7 @@ void Game::playerShowQuestLog(uint32_t playerId) {
 	}
 
 	g_events().eventPlayerOnRequestQuestLog(player);
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnRequestQuestLog)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnRequestQuestLog(player);
-		}
-	}
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnRequestQuestLog, &EventCallback::playerOnRequestQuestLog, player);
 }
 
 void Game::playerShowQuestLine(uint32_t playerId, uint16_t questId) {
@@ -5266,11 +5210,7 @@ void Game::playerShowQuestLine(uint32_t playerId, uint16_t questId) {
 	}
 
 	g_events().eventPlayerOnRequestQuestLine(player, questId);
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnRequestQuestLine)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnRequestQuestLine(player, questId);
-		}
-	}
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnRequestQuestLine, &EventCallback::playerOnRequestQuestLine, player, questId);
 }
 
 void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text) {
@@ -5529,11 +5469,7 @@ bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std:
 		spectator->onCreatureSay(creature, type, text);
 		if (creature != spectator) {
 			g_events().eventCreatureOnHear(spectator, creature, text, type);
-			for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::CreatureOnHear)) {
-				if (callback->isLoadedCallback()) {
-					callback->creatureOnHear(spectator, creature, text, type);
-				}
-			}
+			g_callbacks().executeCallback(EventCallback_t::CreatureOnHear, &EventCallback::creatureOnHear, spectator, creature, text, type);
 		}
 	}
 	return true;
@@ -5663,12 +5599,8 @@ void Game::internalCreatureChangeOutfit(Creature* creature, const Outfit_t &outf
 		return;
 	}
 
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::CreatureOnChangeOutfit)) {
-		if (callback->isLoadedCallback()) {
-			if (!callback->creatureOnChangeOutfit(creature, outfit)) {
-				return;
-			}
-		}
+	if (!g_callbacks().checkCallback(EventCallback_t::CreatureOnChangeOutfit, &EventCallback::creatureOnChangeOutfit, creature, outfit)) {
+		return;
 	}
 
 	creature->setCurrentOutfit(outfit);
@@ -6362,11 +6294,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		if (!isEvent) {
 			g_events().eventCreatureOnDrainHealth(target, attacker, damage.primary.type, damage.primary.value, damage.secondary.type, damage.secondary.value, message.primary.color, message.secondary.color);
-			for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::CreatureOnDrainHealth)) {
-				if (callback->isLoadedCallback()) {
-					callback->creatureOnDrainHealth(target, attacker, damage.primary.type, damage.primary.value, damage.secondary.type, damage.secondary.value, message.primary.color, message.secondary.color);
-				}
-			}
+			g_callbacks().executeCallback(EventCallback_t::CreatureOnDrainHealth, &EventCallback::creatureOnDrainHealth, target, attacker, damage.primary.type, damage.primary.value, damage.secondary.type, damage.secondary.value, message.primary.color, message.secondary.color);
 		}
 		if (damage.origin != ORIGIN_NONE && attacker && damage.primary.type != COMBAT_HEALING) {
 			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
@@ -7944,11 +7872,7 @@ void Game::playerReportRuleViolationReport(uint32_t playerId, const std::string 
 	}
 
 	g_events().eventPlayerOnReportRuleViolation(player, targetName, reportType, reportReason, comment, translation);
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnReportRuleViolation)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnReportRuleViolation(player, targetName, reportType, reportReason, comment, translation);
-		}
-	}
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnReportRuleViolation, &EventCallback::playerOnReportRuleViolation, player, targetName, reportType, reportReason, comment, translation);
 }
 
 void Game::playerReportBug(uint32_t playerId, const std::string &message, const Position &position, uint8_t category) {
@@ -7958,11 +7882,7 @@ void Game::playerReportBug(uint32_t playerId, const std::string &message, const 
 	}
 
 	g_events().eventPlayerOnReportBug(player, message, position, category);
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnReportBug)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnReportBug(player, message, position, category);
-		}
-	}
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnReportBug, &EventCallback::playerOnReportBug, player, message, position, category);
 }
 
 void Game::playerDebugAssert(uint32_t playerId, const std::string &assertLine, const std::string &date, const std::string &description, const std::string &comment) {

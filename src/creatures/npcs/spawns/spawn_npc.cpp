@@ -179,12 +179,9 @@ bool SpawnNpc::spawnNpc(uint32_t spawnId, NpcType* npcType, const Position &pos,
 
 	spawnedNpcMap.insert(spawned_pair(spawnId, npc));
 	spawnNpcMap[spawnId].lastSpawnNpc = OTSYS_TIME();
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::NpcOnSpawn)) {
-		if (callback->isLoadedCallback()) {
-			callback->npcOnSpawn(npc, pos);
-		}
-	}
+
 	g_events().eventNpcOnSpawn(npc, pos);
+	g_callbacks().executeCallback(EventCallback_t::NpcOnSpawn, &EventCallback::npcOnSpawn, npc, pos);
 	return true;
 }
 

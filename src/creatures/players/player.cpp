@@ -601,13 +601,8 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 		return;
 	}
 
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnGainSkillTries)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnGainSkillTries(this, skill, count);
-		}
-	}
-
 	g_events().eventPlayerOnGainSkillTries(this, skill, count);
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, skill, count);
 	if (count == 0) {
 		return;
 	}
@@ -833,13 +828,8 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 
 		if (!isLogin) {
 			auto currentFrameTime = g_dispatcher().getDispatcherCycle();
-			for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnStorageUpdate)) {
-				if (callback->isLoadedCallback()) {
-					callback->playerOnStorageUpdate(this, key, value, getStorageValue(key), currentFrameTime);
-				}
-			}
-
 			g_events().eventOnStorageUpdate(this, key, value, getStorageValue(key), currentFrameTime);
+			g_callbacks().executeCallback(EventCallback_t::PlayerOnStorageUpdate, &EventCallback::playerOnStorageUpdate, this, key, value, getStorageValue(key), currentFrameTime);
 		}
 	} else {
 		storageMap.erase(key);
@@ -1685,20 +1675,12 @@ void Player::onChangeZone(ZoneType_t zone) {
 	sendIcons();
 	g_events().eventPlayerOnChangeZone(this, zone);
 
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnChangeZone)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnChangeZone(this, zone);
-		}
-	}
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnChangeZone, &EventCallback::playerOnChangeZone, this, zone);
 }
 
 void Player::onChangeHazard(bool isHazard) {
 	g_events().eventPlayerOnChangeHazard(this, isHazard);
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnChangeHazard)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnChangeHazard(this, isHazard);
-		}
-	}
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnChangeHazard, &EventCallback::playerOnChangeHazard, this, isHazard);
 	sendIcons();
 }
 
@@ -2172,13 +2154,8 @@ void Player::addManaSpent(uint64_t amount) {
 		return;
 	}
 
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnGainSkillTries)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnGainSkillTries(this, SKILL_MAGLEVEL, amount);
-		}
-	}
-
 	g_events().eventPlayerOnGainSkillTries(this, SKILL_MAGLEVEL, amount);
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, SKILL_MAGLEVEL, amount);
 	if (amount == 0) {
 		return;
 	}
@@ -2234,11 +2211,7 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 		return;
 	}
 
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnGainExperience)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnGainExperience(this, target, exp, rawExp);
-		}
-	}
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnGainExperience, &EventCallback::playerOnGainExperience, this, target, exp, rawExp);
 
 	g_events().eventPlayerOnGainExperience(this, target, exp, rawExp);
 	if (exp == 0) {
@@ -2337,13 +2310,8 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 		return;
 	}
 
-	for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnLoseExperience)) {
-		if (callback->isLoadedCallback()) {
-			callback->playerOnLoseExperience(this, exp);
-		}
-	}
-
 	g_events().eventPlayerOnLoseExperience(this, exp);
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnLoseExperience, &EventCallback::playerOnLoseExperience, this, exp);
 	if (exp == 0) {
 		return;
 	}
@@ -2639,11 +2607,7 @@ void Player::death(Creature* lastHitCreature) {
 		// Level loss
 		uint64_t expLoss = static_cast<uint64_t>(experience * deathLossPercent);
 		g_events().eventPlayerOnLoseExperience(this, expLoss);
-		for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnLoseExperience)) {
-			if (callback->isLoadedCallback()) {
-				callback->playerOnLoseExperience(this, expLoss);
-			}
-		}
+		g_callbacks().executeCallback(EventCallback_t::PlayerOnLoseExperience, &EventCallback::playerOnLoseExperience,this, expLoss);
 
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are dead.");
 		std::ostringstream lostExp;
@@ -5768,15 +5732,10 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldSkillValue = magLevel;
 		oldPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
 
-		for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnGainSkillTries)) {
-			if (callback->isLoadedCallback()) {
-				callback->playerOnGainSkillTries(this, SKILL_MAGLEVEL, tries);
-			}
-		}
-
 		g_events().eventPlayerOnGainSkillTries(this, SKILL_MAGLEVEL, tries);
-		uint32_t currMagLevel = magLevel;
+		g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, SKILL_MAGLEVEL, tries);
 
+		uint32_t currMagLevel = magLevel;
 		while ((manaSpent + tries) >= nextReqMana) {
 			tries -= nextReqMana - manaSpent;
 
@@ -5828,13 +5787,8 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldSkillValue = skills[skill].level;
 		oldPercentToNextLevel = static_cast<long double>(skills[skill].tries * 100) / nextReqTries;
 
-		for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::PlayerOnGainSkillTries)) {
-			if (callback->isLoadedCallback()) {
-				callback->playerOnGainSkillTries(this, skill, tries);
-			}
-		}
-
 		g_events().eventPlayerOnGainSkillTries(this, skill, tries);
+		g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, skill, tries);
 		uint32_t currSkillLevel = skills[skill].level;
 
 		while ((skills[skill].tries + tries) >= nextReqTries) {
@@ -6832,11 +6786,7 @@ bool Player::saySpell(
 		tmpPlayer->onCreatureSay(this, type, text);
 		if (this != tmpPlayer) {
 			g_events().eventCreatureOnHear(tmpPlayer, this, text, type);
-			for (auto callback : g_callbacks().getCallbacksByType(EventCallback_t::CreatureOnHear)) {
-				if (callback->isLoadedCallback()) {
-					callback->creatureOnHear(tmpPlayer, this, text, type);
-				}
-			}
+			g_callbacks().executeCallback(EventCallback_t::CreatureOnHear, &EventCallback::creatureOnHear, tmpPlayer, this, text, type);
 		}
 	}
 	return true;

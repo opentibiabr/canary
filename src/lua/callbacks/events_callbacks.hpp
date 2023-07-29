@@ -42,8 +42,7 @@ class EventsCallbacks {
 		void clear();
 
 		template <typename CallbackFunc, typename... Args>
-		void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args)
-		{
+		void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 			for (auto callback : getCallbacksByType(eventType)) {
 				if (callback->isLoadedCallback()) {
 					(callback->*callbackFunc)(std::forward<Args>(args)...);
@@ -51,8 +50,7 @@ class EventsCallbacks {
 			}
 		}
 		template <typename CallbackFunc, typename... Args>
-		bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args... args)
-		{
+		bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args... args) {
 			bool allCallbacksSucceeded = true;
 
 			for (auto callback : getCallbacksByType(eventType)) {

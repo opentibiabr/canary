@@ -850,9 +850,9 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList &itemList,
 	return query_insert.execute();
 }
 
-bool IOLoginData::savePlayerGuard(Player* player) {
+bool IOLoginData::savePlayer(Player* player) {
 	bool success = DBTransaction::executeWithinTransaction([player]() {
-		savePlayer(player);
+		return savePlayerGuard(player);
 	});
 
 	if (!success) {
@@ -862,7 +862,7 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 	return success;
 }
 
-bool IOLoginData::savePlayer(Player* player) {
+bool IOLoginData::savePlayerGuard(Player* player) {
 	if (player->getHealth() <= 0) {
 		player->changeHealth(1);
 	}

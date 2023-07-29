@@ -16,14 +16,14 @@
 #include "lua/functions/core/network/core_network_functions.hpp"
 
 class CoreFunctions final : LuaScriptInterface {
-	public:
-		static void init(lua_State* L) {
-			CoreGameFunctions::init(L);
-			CoreLibsFunctions::init(L);
-			CoreNetworkFunctions::init(L);
-		}
+public:
+	static void init(lua_State* L) {
+		CoreGameFunctions::init(L);
+		CoreLibsFunctions::init(L);
+		CoreNetworkFunctions::init(L);
+	}
 
-	private:
+private:
 };
 
 #endif // SRC_LUA_FUNCTIONS_CORE_CORE_FUNCTIONS_HPP_

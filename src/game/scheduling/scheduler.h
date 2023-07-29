@@ -21,24 +21,24 @@ class Task;
  * given period. Once the time has passed, scheduler calls the task.
  */
 class Scheduler {
-	public:
-		explicit Scheduler(ThreadPool &threadPool);
+public:
+	explicit Scheduler(ThreadPool &threadPool);
 
-		// Ensures that we don't accidentally copy it
-		Scheduler(const Scheduler &) = delete;
-		Scheduler operator=(const Scheduler &) = delete;
+	// Ensures that we don't accidentally copy it
+	Scheduler(const Scheduler &) = delete;
+	Scheduler operator=(const Scheduler &) = delete;
 
-		static Scheduler &getInstance();
+	static Scheduler &getInstance();
 
-		uint64_t addEvent(uint32_t delay, std::function<void(void)> f);
-		uint64_t addEvent(const std::shared_ptr<Task> &task);
-		void stopEvent(uint64_t eventId);
+	uint64_t addEvent(uint32_t delay, std::function<void(void)> f);
+	uint64_t addEvent(const std::shared_ptr<Task> &task);
+	void stopEvent(uint64_t eventId);
 
-	private:
-		ThreadPool &threadPool;
-		std::mutex threadSafetyMutex;
-		std::atomic<uint64_t> lastEventId { 0 };
-		std::unordered_map<uint64_t, asio::steady_timer> eventIds;
+private:
+	ThreadPool &threadPool;
+	std::mutex threadSafetyMutex;
+	std::atomic<uint64_t> lastEventId { 0 };
+	std::unordered_map<uint64_t, asio::steady_timer> eventIds;
 };
 
 constexpr auto g_scheduler = Scheduler::getInstance;

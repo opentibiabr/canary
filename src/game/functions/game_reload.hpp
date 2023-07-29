@@ -36,37 +36,37 @@ enum class Reload_t : uint8_t {
 };
 
 class GameReload : public Game {
-	public:
-		GameReload();
-		~GameReload();
+public:
+	GameReload();
+	~GameReload();
 
-		// non-copyable
-		GameReload(const GameReload &) = delete;
-		GameReload &operator=(const GameReload &) = delete;
+	// non-copyable
+	GameReload(const GameReload &) = delete;
+	GameReload &operator=(const GameReload &) = delete;
 
-		static GameReload &getInstance() {
-			return inject<GameReload>();
-		}
+	static GameReload &getInstance() {
+		return inject<GameReload>();
+	}
 
-		bool init(Reload_t reloadType) const;
-		uint8_t getReloadNumber(Reload_t reloadTypes) const;
+	bool init(Reload_t reloadType) const;
+	uint8_t getReloadNumber(Reload_t reloadTypes) const;
 
-	private:
-		bool reloadAll() const;
-		bool reloadChat() const;
-		bool reloadConfig() const;
-		bool reloadEvents() const;
-		bool reloadCore() const;
-		bool reloadImbuements() const;
-		bool reloadItems() const;
-		bool reloadModules() const;
-		bool reloadMonsters() const;
-		bool reloadMounts() const;
-		bool reloadNpcs() const;
-		bool reloadRaids() const;
-		bool reloadScripts() const;
-		bool reloadTalkaction() const;
-		bool reloadGroups() const;
+private:
+	bool reloadAll() const;
+	bool reloadChat() const;
+	bool reloadConfig() const;
+	bool reloadEvents() const;
+	bool reloadCore() const;
+	bool reloadImbuements() const;
+	bool reloadItems() const;
+	bool reloadModules() const;
+	bool reloadMonsters() const;
+	bool reloadMounts() const;
+	bool reloadNpcs() const;
+	bool reloadRaids() const;
+	bool reloadScripts() const;
+	bool reloadTalkaction() const;
+	bool reloadGroups() const;
 };
 
 constexpr auto g_gameReload = GameReload::getInstance;

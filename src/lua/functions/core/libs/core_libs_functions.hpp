@@ -17,15 +17,15 @@
 #include "lua/functions/core/libs/logger_functions.hpp"
 
 class CoreLibsFunctions final : LuaScriptInterface {
-	public:
-		static void init(lua_State* L) {
-			BitFunctions::init(L);
-			DBFunctions::init(L);
-			ResultFunctions::init(L);
-			LoggerFunctions::init(L);
-		}
+public:
+	static void init(lua_State* L) {
+		BitFunctions::init(L);
+		DBFunctions::init(L);
+		ResultFunctions::init(L);
+		LoggerFunctions::init(L);
+	}
 
-	private:
+private:
 };
 
 #endif // SRC_LUA_FUNCTIONS_CORE_LIBS_CORE_LIBS_FUNCTIONS_HPP_

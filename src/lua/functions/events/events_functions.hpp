@@ -20,19 +20,19 @@
 #include "lua/functions/events/event_callback_functions.hpp"
 
 class EventFunctions final : LuaScriptInterface {
-	public:
-		static void init(lua_State* L) {
-			ActionFunctions::init(L);
-			CreatureEventFunctions::init(L);
-			EventsSchedulerFunctions::init(L);
-			GlobalEventFunctions::init(L);
-			MoveEventFunctions::init(L);
-			TalkActionFunctions::init(L);
-			EventCallbackFunctions::init(L);
-			/* Move, Creature, Talk, Global events goes all here */
-		}
+public:
+	static void init(lua_State* L) {
+		ActionFunctions::init(L);
+		CreatureEventFunctions::init(L);
+		EventsSchedulerFunctions::init(L);
+		GlobalEventFunctions::init(L);
+		MoveEventFunctions::init(L);
+		TalkActionFunctions::init(L);
+		EventCallbackFunctions::init(L);
+		/* Move, Creature, Talk, Global events goes all here */
+	}
 
-	private:
+private:
 };
 
 #endif // SRC_LUA_FUNCTIONS_EVENTS_EVENTS_FUNCTIONS_HPP_

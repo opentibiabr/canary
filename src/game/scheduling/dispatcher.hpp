@@ -22,26 +22,26 @@ class Task;
  * time, after which the task will be ignored.
  */
 class Dispatcher {
-	public:
-		explicit Dispatcher(ThreadPool &threadPool);
+public:
+	explicit Dispatcher(ThreadPool &threadPool);
 
-		// Ensures that we don't accidentally copy it
-		Dispatcher(const Dispatcher &) = delete;
-		Dispatcher operator=(const Dispatcher &) = delete;
+	// Ensures that we don't accidentally copy it
+	Dispatcher(const Dispatcher &) = delete;
+	Dispatcher operator=(const Dispatcher &) = delete;
 
-		static Dispatcher &getInstance();
+	static Dispatcher &getInstance();
 
-		void addTask(std::function<void(void)> f, uint32_t expiresAfterMs = 0);
-		void addTask(const std::shared_ptr<Task> &task, uint32_t expiresAfterMs = 0);
+	void addTask(std::function<void(void)> f, uint32_t expiresAfterMs = 0);
+	void addTask(const std::shared_ptr<Task> &task, uint32_t expiresAfterMs = 0);
 
-		[[nodiscard]] uint64_t getDispatcherCycle() const {
-			return dispatcherCycle;
-		}
+	[[nodiscard]] uint64_t getDispatcherCycle() const {
+		return dispatcherCycle;
+	}
 
-	private:
-		ThreadPool &threadPool;
-		uint64_t dispatcherCycle = 0;
-		std::mutex threadSafetyMutex;
+private:
+	ThreadPool &threadPool;
+	uint64_t dispatcherCycle = 0;
+	std::mutex threadSafetyMutex;
 };
 
 constexpr auto g_dispatcher = Dispatcher::getInstance;

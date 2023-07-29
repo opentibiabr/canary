@@ -11,32 +11,32 @@
 #define SRC_GAME_TASK_H_
 
 class Task {
-	public:
-		// DO NOT allocate this class on the stack
-		Task(std::function<void(void)> &&f, uint32_t delay = 0) :
-			func(std::move(f)), delay(delay) { }
+public:
+	// DO NOT allocate this class on the stack
+	Task(std::function<void(void)> &&f, uint32_t delay = 0) :
+		func(std::move(f)), delay(delay) { }
 
-		virtual ~Task() = default;
-		void operator()() {
-			func();
-		}
+	virtual ~Task() = default;
+	void operator()() {
+		func();
+	}
 
-		void setEventId(uint64_t id) {
-			eventId = id;
-		}
+	void setEventId(uint64_t id) {
+		eventId = id;
+	}
 
-		uint64_t getEventId() const {
-			return eventId;
-		}
+	uint64_t getEventId() const {
+		return eventId;
+	}
 
-		uint32_t getDelay() const {
-			return delay;
-		}
+	uint32_t getDelay() const {
+		return delay;
+	}
 
-	private:
-		uint32_t delay = 0;
-		uint64_t eventId = 0;
-		std::function<void(void)> func {};
+private:
+	uint32_t delay = 0;
+	uint64_t eventId = 0;
+	std::function<void(void)> func {};
 };
 
 #endif // SRC_GAME_TASK_H_

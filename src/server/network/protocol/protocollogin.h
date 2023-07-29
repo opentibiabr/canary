@@ -16,26 +16,26 @@ class NetworkMessage;
 class OutputMessage;
 
 class ProtocolLogin : public Protocol {
-	public:
-		// static protocol information
-		enum { SERVER_SENDS_FIRST = false };
-		enum { PROTOCOL_IDENTIFIER = 0x01 };
-		enum { USE_CHECKSUM = true };
-		static const char* protocol_name() {
-			return "login protocol";
-		}
+public:
+	// static protocol information
+	enum { SERVER_SENDS_FIRST = false };
+	enum { PROTOCOL_IDENTIFIER = 0x01 };
+	enum { USE_CHECKSUM = true };
+	static const char* protocol_name() {
+		return "login protocol";
+	}
 
-		explicit ProtocolLogin(Connection_ptr loginConnection) :
-			Protocol(loginConnection) { }
+	explicit ProtocolLogin(Connection_ptr loginConnection) :
+		Protocol(loginConnection) { }
 
-		void onRecvFirstMessage(NetworkMessage &msg);
+	void onRecvFirstMessage(NetworkMessage &msg);
 
-	private:
-		void disconnectClient(const std::string &message);
+private:
+	void disconnectClient(const std::string &message);
 
-		void getCharacterList(const std::string &accountIdentifier, const std::string &password);
+	void getCharacterList(const std::string &accountIdentifier, const std::string &password);
 
-		bool oldProtocol = false;
+	bool oldProtocol = false;
 };
 
 #endif // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLLOGIN_H_

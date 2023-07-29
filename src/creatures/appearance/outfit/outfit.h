@@ -13,42 +13,42 @@
 #include "declarations.hpp"
 
 struct Outfit {
-		Outfit(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initFrom) :
-			name(initName), lookType(initLookType), premium(initPremium), unlocked(initUnlocked), from(initFrom) { }
+	Outfit(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initFrom) :
+		name(initName), lookType(initLookType), premium(initPremium), unlocked(initUnlocked), from(initFrom) { }
 
-		std::string name;
-		uint16_t lookType;
-		bool premium;
-		bool unlocked;
-		std::string from;
+	std::string name;
+	uint16_t lookType;
+	bool premium;
+	bool unlocked;
+	std::string from;
 };
 
 struct ProtocolOutfit {
-		ProtocolOutfit(const std::string &initName, uint16_t initLookType, uint8_t initAddons) :
-			name(initName), lookType(initLookType), addons(initAddons) { }
+	ProtocolOutfit(const std::string &initName, uint16_t initLookType, uint8_t initAddons) :
+		name(initName), lookType(initLookType), addons(initAddons) { }
 
-		const std::string &name;
-		uint16_t lookType;
-		uint8_t addons;
+	const std::string &name;
+	uint16_t lookType;
+	uint8_t addons;
 };
 
 class Outfits {
-	public:
-		static Outfits &getInstance() {
-			return inject<Outfits>();
-		}
+public:
+	static Outfits &getInstance() {
+		return inject<Outfits>();
+	}
 
-		std::shared_ptr<Outfit> getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType);
+	std::shared_ptr<Outfit> getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType);
 
-		bool loadFromXml();
+	bool loadFromXml();
 
-		[[nodiscard]] std::shared_ptr<Outfit> getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;
-		[[nodiscard]] const std::vector<std::shared_ptr<Outfit>> &getOutfits(PlayerSex_t sex) const {
-			return outfits[sex];
-		}
+	[[nodiscard]] std::shared_ptr<Outfit> getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;
+	[[nodiscard]] const std::vector<std::shared_ptr<Outfit>> &getOutfits(PlayerSex_t sex) const {
+		return outfits[sex];
+	}
 
-	private:
-		std::vector<std::shared_ptr<Outfit>> outfits[PLAYERSEX_LAST + 1];
+private:
+	std::vector<std::shared_ptr<Outfit>> outfits[PLAYERSEX_LAST + 1];
 };
 
 #endif // SRC_CREATURES_APPEARANCE_OUTFIT_OUTFIT_H_

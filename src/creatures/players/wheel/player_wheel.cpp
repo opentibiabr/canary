@@ -71,9 +71,9 @@ namespace {
 	}
 
 	struct PromotionScroll {
-			uint16_t itemId;
-			std::string storageKey;
-			uint8_t extraPoints;
+		uint16_t itemId;
+		std::string storageKey;
+		uint8_t extraPoints;
 	};
 
 	std::vector<PromotionScroll> WheelOfDestinyPromotionScrolls = {

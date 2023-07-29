@@ -13,51 +13,51 @@
 #include "lua/scripts/luascript.h"
 
 class ConditionFunctions final : LuaScriptInterface {
-	public:
-		static void init(lua_State* L) {
-			registerClass(L, "Condition", "", ConditionFunctions::luaConditionCreate);
-			registerMetaMethod(L, "Condition", "__eq", ConditionFunctions::luaUserdataCompare);
-			registerMetaMethod(L, "Condition", "__gc", ConditionFunctions::luaConditionDelete);
-			registerMethod(L, "Condition", "delete", ConditionFunctions::luaConditionDelete);
+public:
+	static void init(lua_State* L) {
+		registerClass(L, "Condition", "", ConditionFunctions::luaConditionCreate);
+		registerMetaMethod(L, "Condition", "__eq", ConditionFunctions::luaUserdataCompare);
+		registerMetaMethod(L, "Condition", "__gc", ConditionFunctions::luaConditionDelete);
+		registerMethod(L, "Condition", "delete", ConditionFunctions::luaConditionDelete);
 
-			registerMethod(L, "Condition", "getId", ConditionFunctions::luaConditionGetId);
-			registerMethod(L, "Condition", "getSubId", ConditionFunctions::luaConditionGetSubId);
-			registerMethod(L, "Condition", "getType", ConditionFunctions::luaConditionGetType);
-			registerMethod(L, "Condition", "getIcons", ConditionFunctions::luaConditionGetIcons);
-			registerMethod(L, "Condition", "getEndTime", ConditionFunctions::luaConditionGetEndTime);
+		registerMethod(L, "Condition", "getId", ConditionFunctions::luaConditionGetId);
+		registerMethod(L, "Condition", "getSubId", ConditionFunctions::luaConditionGetSubId);
+		registerMethod(L, "Condition", "getType", ConditionFunctions::luaConditionGetType);
+		registerMethod(L, "Condition", "getIcons", ConditionFunctions::luaConditionGetIcons);
+		registerMethod(L, "Condition", "getEndTime", ConditionFunctions::luaConditionGetEndTime);
 
-			registerMethod(L, "Condition", "clone", ConditionFunctions::luaConditionClone);
+		registerMethod(L, "Condition", "clone", ConditionFunctions::luaConditionClone);
 
-			registerMethod(L, "Condition", "getTicks", ConditionFunctions::luaConditionGetTicks);
-			registerMethod(L, "Condition", "setTicks", ConditionFunctions::luaConditionSetTicks);
+		registerMethod(L, "Condition", "getTicks", ConditionFunctions::luaConditionGetTicks);
+		registerMethod(L, "Condition", "setTicks", ConditionFunctions::luaConditionSetTicks);
 
-			registerMethod(L, "Condition", "setParameter", ConditionFunctions::luaConditionSetParameter);
-			registerMethod(L, "Condition", "setFormula", ConditionFunctions::luaConditionSetFormula);
-			registerMethod(L, "Condition", "setOutfit", ConditionFunctions::luaConditionSetOutfit);
+		registerMethod(L, "Condition", "setParameter", ConditionFunctions::luaConditionSetParameter);
+		registerMethod(L, "Condition", "setFormula", ConditionFunctions::luaConditionSetFormula);
+		registerMethod(L, "Condition", "setOutfit", ConditionFunctions::luaConditionSetOutfit);
 
-			registerMethod(L, "Condition", "addDamage", ConditionFunctions::luaConditionAddDamage);
-		}
+		registerMethod(L, "Condition", "addDamage", ConditionFunctions::luaConditionAddDamage);
+	}
 
-	private:
-		static int luaConditionCreate(lua_State* L);
-		static int luaConditionDelete(lua_State* L);
+private:
+	static int luaConditionCreate(lua_State* L);
+	static int luaConditionDelete(lua_State* L);
 
-		static int luaConditionGetId(lua_State* L);
-		static int luaConditionGetSubId(lua_State* L);
-		static int luaConditionGetType(lua_State* L);
-		static int luaConditionGetIcons(lua_State* L);
-		static int luaConditionGetEndTime(lua_State* L);
+	static int luaConditionGetId(lua_State* L);
+	static int luaConditionGetSubId(lua_State* L);
+	static int luaConditionGetType(lua_State* L);
+	static int luaConditionGetIcons(lua_State* L);
+	static int luaConditionGetEndTime(lua_State* L);
 
-		static int luaConditionClone(lua_State* L);
+	static int luaConditionClone(lua_State* L);
 
-		static int luaConditionGetTicks(lua_State* L);
-		static int luaConditionSetTicks(lua_State* L);
+	static int luaConditionGetTicks(lua_State* L);
+	static int luaConditionSetTicks(lua_State* L);
 
-		static int luaConditionSetParameter(lua_State* L);
-		static int luaConditionSetFormula(lua_State* L);
-		static int luaConditionSetOutfit(lua_State* L);
+	static int luaConditionSetParameter(lua_State* L);
+	static int luaConditionSetFormula(lua_State* L);
+	static int luaConditionSetOutfit(lua_State* L);
 
-		static int luaConditionAddDamage(lua_State* L);
+	static int luaConditionAddDamage(lua_State* L);
 };
 
 #endif // SRC_LUA_FUNCTIONS_CREATURES_COMBAT_CONDITION_FUNCTIONS_HPP_

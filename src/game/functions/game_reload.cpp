@@ -17,7 +17,6 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/modules/modules.h"
 #include "lua/scripts/scripts.h"
-#include "lua/callbacks/events_callbacks.hpp"
 
 GameReload::GameReload() = default;
 GameReload::~GameReload() = default;
@@ -151,7 +150,6 @@ bool GameReload::reloadScripts() const {
 		return false;
 	}
 	g_scripts().clearAllScripts();
-	g_callbacks().clear();
 
 	if (g_scripts().loadScripts("scripts", false, true)) {
 		return true;

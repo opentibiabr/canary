@@ -3832,7 +3832,8 @@ int PlayerFunctions::luaPlayerIsVip(lua_State* L) {
 	// player:isVip()
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
 		return 1;
 	}
 	pushBoolean(L, player->isVip());
@@ -3842,10 +3843,12 @@ int PlayerFunctions::luaPlayerIsVip(lua_State* L) {
 int PlayerFunctions::luaPlayerGetVipDays(lua_State* L) {
 	// player:getVipDays()
 	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		lua_pushnumber(L, player->getVipDays());
-	} else {
-		lua_pushnil(L);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
 	}
+
+	lua_pushnumber(L, player->getVipDays());
 	return 1;
 }

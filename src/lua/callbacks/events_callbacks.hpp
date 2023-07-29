@@ -35,7 +35,7 @@ class EventsCallbacks {
 
 		void addCallback(EventCallback* callback);
 
-		std::vector<EventCallback*> getCallbacks();
+		std::vector<EventCallback*> getCallbacks() const;
 
 		std::vector<EventCallback*> getCallbacksByType(EventCallback_t type);
 
@@ -50,7 +50,7 @@ class EventsCallbacks {
 			}
 		}
 		template <typename CallbackFunc, typename... Args>
-		bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args... args) {
+		bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 			bool allCallbacksSucceeded = true;
 
 			for (auto callback : getCallbacksByType(eventType)) {

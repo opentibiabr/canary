@@ -21,7 +21,7 @@
  *
  * @see LuaScriptInterface
  */
-class EventCallbackFunctions : LuaScriptInterface {
+class EventCallbackFunctions : public LuaScriptInterface {
 	public:
 		static void init(lua_State* luaState);
 

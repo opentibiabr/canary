@@ -17,7 +17,8 @@
 #define spdlog_dev(level, message, ...)        \
 	if (isDevMode()) {                         \
 		spdlog::level(message, ##__VA_ARGS__); \
-	}
+	}                                          \
+	while (0)
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 	#define _CRT_SECURE_NO_WARNINGS

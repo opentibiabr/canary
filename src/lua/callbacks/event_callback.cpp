@@ -28,7 +28,7 @@
  */
 EventCallback::EventCallback(LuaScriptInterface* scriptInterface) :
 	Script(scriptInterface) {
-	spdlog_dev(info, "Constructing class {}", __func__);
+	// spdlog_dev(info, "Constructing class {}", __func__);
 }
 
 std::string EventCallback::getScriptTypeName() const {
@@ -49,7 +49,7 @@ void EventCallback::setType(EventCallback_t type) {
 
 // Lua functions
 // Creature
-bool EventCallback::creatureOnChangeOutfit(Creature* creature, const Outfit_t &outfit) {
+bool EventCallback::creatureOnChangeOutfit(Creature* creature, const Outfit_t &outfit) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::creatureOnChangeOutfit - Creature {}] "
 					 "Call stack overflow. Too many lua script calls being nested.",
@@ -71,7 +71,7 @@ bool EventCallback::creatureOnChangeOutfit(Creature* creature, const Outfit_t &o
 	return getScriptInterface()->callFunction(2);
 }
 
-ReturnValue EventCallback::creatureOnAreaCombat(Creature* creature, Tile* tile, bool aggressive) {
+ReturnValue EventCallback::creatureOnAreaCombat(Creature* creature, Tile* tile, bool aggressive) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::creatureOnAreaCombat - "
 					 "Creature {} on tile position {}] "
@@ -111,7 +111,7 @@ ReturnValue EventCallback::creatureOnAreaCombat(Creature* creature, Tile* tile, 
 	return returnValue;
 }
 
-ReturnValue EventCallback::creatureOnTargetCombat(Creature* creature, Creature* target) {
+ReturnValue EventCallback::creatureOnTargetCombat(Creature* creature, Creature* target) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::creatureOnTargetCombat - "
 					 "Creature {} target {}] "
@@ -149,7 +149,7 @@ ReturnValue EventCallback::creatureOnTargetCombat(Creature* creature, Creature* 
 	return returnValue;
 }
 
-void EventCallback::creatureOnHear(Creature* creature, Creature* speaker, const std::string &words, SpeakClasses type) {
+void EventCallback::creatureOnHear(Creature* creature, Creature* speaker, const std::string &words, SpeakClasses type) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::creatureOnHear - "
 					 "Creature {} speaker {}] "
@@ -176,7 +176,7 @@ void EventCallback::creatureOnHear(Creature* creature, Creature* speaker, const 
 	getScriptInterface()->callVoidFunction(4);
 }
 
-void EventCallback::creatureOnDrainHealth(Creature* creature, Creature* attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) {
+void EventCallback::creatureOnDrainHealth(Creature* creature, Creature* attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::creatureOnDrainHealth - "
 					 "Creature {} attacker {}] "
@@ -228,7 +228,7 @@ void EventCallback::creatureOnDrainHealth(Creature* creature, Creature* attacker
 }
 
 // Party
-bool EventCallback::partyOnJoin(Party* party, Player* player) {
+bool EventCallback::partyOnJoin(Party* party, Player* player) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::partyOnJoin - "
 					 "Player {}] "
@@ -252,7 +252,7 @@ bool EventCallback::partyOnJoin(Party* party, Player* player) {
 	return getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::partyOnLeave(Party* party, Player* player) {
+bool EventCallback::partyOnLeave(Party* party, Player* player) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::partyOnLeave - "
 					 "Player {}] "
@@ -276,7 +276,7 @@ bool EventCallback::partyOnLeave(Party* party, Player* player) {
 	return getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::partyOnDisband(Party* party) {
+bool EventCallback::partyOnDisband(Party* party) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::partyOnDisband - Party leader {}] Call stack "
 					 "overflow. Too many lua script calls being nested.",
@@ -296,7 +296,7 @@ bool EventCallback::partyOnDisband(Party* party) {
 	return getScriptInterface()->callFunction(1);
 }
 
-void EventCallback::partyOnShareExperience(Party* party, uint64_t &exp) {
+void EventCallback::partyOnShareExperience(Party* party, uint64_t &exp) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("Party leader {}. Call stack overflow. Too many lua script calls being nested.", party->getLeader()->getName());
 		return;
@@ -324,7 +324,7 @@ void EventCallback::partyOnShareExperience(Party* party, uint64_t &exp) {
 }
 
 // Player
-bool EventCallback::playerOnBrowseField(Player* player, const Position &position) {
+bool EventCallback::playerOnBrowseField(Player* player, const Position &position) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnBrowseField - "
 					 "Player {}] "
@@ -347,7 +347,7 @@ bool EventCallback::playerOnBrowseField(Player* player, const Position &position
 	return getScriptInterface()->callFunction(2);
 }
 
-void EventCallback::playerOnLook(Player* player, const Position &position, Thing* thing, uint8_t stackpos, int32_t lookDistance) {
+void EventCallback::playerOnLook(Player* player, const Position &position, Thing* thing, uint8_t stackpos, int32_t lookDistance) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnLook - "
 					 "Player {}] "
@@ -381,7 +381,7 @@ void EventCallback::playerOnLook(Player* player, const Position &position, Thing
 	getScriptInterface()->callVoidFunction(4);
 }
 
-void EventCallback::playerOnLookInBattleList(Player* player, Creature* creature, int32_t lookDistance) {
+void EventCallback::playerOnLookInBattleList(Player* player, Creature* creature, int32_t lookDistance) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnLookInBattleList - "
 					 "Player {}] "
@@ -407,7 +407,7 @@ void EventCallback::playerOnLookInBattleList(Player* player, Creature* creature,
 	getScriptInterface()->callVoidFunction(3);
 }
 
-void EventCallback::playerOnLookInTrade(Player* player, Player* partner, Item* item, int32_t lookDistance) {
+void EventCallback::playerOnLookInTrade(Player* player, Player* partner, Item* item, int32_t lookDistance) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnLookInTrade - "
 					 "Player {}] "
@@ -436,7 +436,7 @@ void EventCallback::playerOnLookInTrade(Player* player, Player* partner, Item* i
 	getScriptInterface()->callVoidFunction(4);
 }
 
-bool EventCallback::playerOnLookInShop(Player* player, const ItemType* itemType, uint8_t count) {
+bool EventCallback::playerOnLookInShop(Player* player, const ItemType* itemType, uint8_t count) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnLookInShop - "
 					 "Player {} itemType {}] "
@@ -462,8 +462,7 @@ bool EventCallback::playerOnLookInShop(Player* player, const ItemType* itemType,
 	return getScriptInterface()->callFunction(3);
 }
 
-void EventCallback::playerOnRemoveCount(Player* player, Item* item) {
-	// playerOnRemoveCount()
+void EventCallback::playerOnRemoveCount(Player* player, Item* item) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnMove - "
 					 "Player {} item {}] "
@@ -487,7 +486,7 @@ void EventCallback::playerOnRemoveCount(Player* player, Item* item) {
 	getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::playerOnMoveItem(Player* player, Item* item, uint16_t count, const Position &fromPos, const Position &toPos, Cylinder* fromCylinder, Cylinder* toCylinder) {
+bool EventCallback::playerOnMoveItem(Player* player, Item* item, uint16_t count, const Position &fromPos, const Position &toPos, Cylinder* fromCylinder, Cylinder* toCylinder) const {
 	if (!getScriptInterface()) {
 		spdlog::error("script interface nullptr");
 		return false;
@@ -522,7 +521,7 @@ bool EventCallback::playerOnMoveItem(Player* player, Item* item, uint16_t count,
 	return getScriptInterface()->callFunction(7);
 }
 
-void EventCallback::playerOnItemMoved(Player* player, Item* item, uint16_t count, const Position &fromPosition, const Position &toPosition, Cylinder* fromCylinder, Cylinder* toCylinder) {
+void EventCallback::playerOnItemMoved(Player* player, Item* item, uint16_t count, const Position &fromPosition, const Position &toPosition, Cylinder* fromCylinder, Cylinder* toCylinder) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnItemMoved - "
 					 "Player {} item {}] "
@@ -553,7 +552,7 @@ void EventCallback::playerOnItemMoved(Player* player, Item* item, uint16_t count
 	getScriptInterface()->callVoidFunction(7);
 }
 
-void EventCallback::playerOnChangeZone(Player* player, ZoneType_t zone) {
+void EventCallback::playerOnChangeZone(Player* player, ZoneType_t zone) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnChangeZone - "
 					 "Player {}] "
@@ -575,7 +574,7 @@ void EventCallback::playerOnChangeZone(Player* player, ZoneType_t zone) {
 	getScriptInterface()->callVoidFunction(2);
 }
 
-void EventCallback::playerOnChangeHazard(Player* player, bool isHazard) {
+void EventCallback::playerOnChangeHazard(Player* player, bool isHazard) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnChangeHazard - "
 					 "Player {}] "
@@ -597,7 +596,7 @@ void EventCallback::playerOnChangeHazard(Player* player, bool isHazard) {
 	getScriptInterface()->callVoidFunction(2);
 }
 
-bool EventCallback::playerOnMoveCreature(Player* player, Creature* creature, const Position &fromPosition, const Position &toPosition) {
+bool EventCallback::playerOnMoveCreature(Player* player, Creature* creature, const Position &fromPosition, const Position &toPosition) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnMoveCreature - "
 					 "Player {} creature {}] "
@@ -624,7 +623,7 @@ bool EventCallback::playerOnMoveCreature(Player* player, Creature* creature, con
 	return getScriptInterface()->callFunction(4);
 }
 
-void EventCallback::playerOnReportRuleViolation(Player* player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) {
+void EventCallback::playerOnReportRuleViolation(Player* player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnReportRuleViolation - "
 					 "Player {}] "
@@ -653,7 +652,7 @@ void EventCallback::playerOnReportRuleViolation(Player* player, const std::strin
 	getScriptInterface()->callVoidFunction(6);
 }
 
-void EventCallback::playerOnReportBug(Player* player, const std::string &message, const Position &position, uint8_t category) {
+void EventCallback::playerOnReportBug(Player* player, const std::string &message, const Position &position, uint8_t category) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnReportBug - "
 					 "Player {}] "
@@ -678,7 +677,7 @@ void EventCallback::playerOnReportBug(Player* player, const std::string &message
 	getScriptInterface()->callFunction(4);
 }
 
-bool EventCallback::playerOnTurn(Player* player, Direction direction) {
+bool EventCallback::playerOnTurn(Player* player, Direction direction) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnTurn - "
 					 "Player {}] "
@@ -701,7 +700,7 @@ bool EventCallback::playerOnTurn(Player* player, Direction direction) {
 	return getScriptInterface()->callFunction(2);
 }
 
-bool EventCallback::playerOnTradeRequest(Player* player, Player* target, Item* item) {
+bool EventCallback::playerOnTradeRequest(Player* player, Player* target, Item* item) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnTradeRequest - "
 					 "Player {} target {}] "
@@ -728,7 +727,7 @@ bool EventCallback::playerOnTradeRequest(Player* player, Player* target, Item* i
 	return getScriptInterface()->callFunction(3);
 }
 
-bool EventCallback::playerOnTradeAccept(Player* player, Player* target, Item* item, Item* targetItem) {
+bool EventCallback::playerOnTradeAccept(Player* player, Player* target, Item* item, Item* targetItem) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnTradeAccept - "
 					 "Player {} target {}] "
@@ -758,7 +757,7 @@ bool EventCallback::playerOnTradeAccept(Player* player, Player* target, Item* it
 	return getScriptInterface()->callFunction(4);
 }
 
-void EventCallback::playerOnGainExperience(Player* player, Creature* target, uint64_t &exp, uint64_t rawExp) {
+void EventCallback::playerOnGainExperience(Player* player, Creature* target, uint64_t &exp, uint64_t rawExp) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnGainExperience - "
 					 "Player {} target {}] "
@@ -796,7 +795,7 @@ void EventCallback::playerOnGainExperience(Player* player, Creature* target, uin
 	getScriptInterface()->resetScriptEnv();
 }
 
-void EventCallback::playerOnLoseExperience(Player* player, uint64_t &exp) {
+void EventCallback::playerOnLoseExperience(Player* player, uint64_t &exp) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnLoseExperience - "
 					 "Player {}] "
@@ -826,7 +825,7 @@ void EventCallback::playerOnLoseExperience(Player* player, uint64_t &exp) {
 	getScriptInterface()->resetScriptEnv();
 }
 
-void EventCallback::playerOnGainSkillTries(Player* player, skills_t skill, uint64_t &tries) {
+void EventCallback::playerOnGainSkillTries(Player* player, skills_t skill, uint64_t &tries) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnGainSkillTries - "
 					 "Player {} skill {}] "
@@ -857,7 +856,7 @@ void EventCallback::playerOnGainSkillTries(Player* player, skills_t skill, uint6
 	getScriptInterface()->resetScriptEnv();
 }
 
-void EventCallback::playerOnCombat(Player* player, Creature* target, Item* item, CombatDamage &damage) {
+void EventCallback::playerOnCombat(Player* player, Creature* target, Item* item, CombatDamage &damage) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnCombat - "
 					 "Player {} target {}] "
@@ -919,7 +918,7 @@ void EventCallback::playerOnCombat(Player* player, Creature* target, Item* item,
 	getScriptInterface()->resetScriptEnv();
 }
 
-void EventCallback::playerOnRequestQuestLog(Player* player) {
+void EventCallback::playerOnRequestQuestLog(Player* player) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnRequestQuestLog - "
 					 "Player {}] "
@@ -940,7 +939,7 @@ void EventCallback::playerOnRequestQuestLog(Player* player) {
 	getScriptInterface()->callVoidFunction(1);
 }
 
-void EventCallback::playerOnRequestQuestLine(Player* player, uint16_t questId) {
+void EventCallback::playerOnRequestQuestLine(Player* player, uint16_t questId) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::playerOnRequestQuestLine - "
 					 "Player {} questId {}] "
@@ -963,7 +962,7 @@ void EventCallback::playerOnRequestQuestLine(Player* player, uint16_t questId) {
 	getScriptInterface()->callVoidFunction(2);
 }
 
-void EventCallback::playerOnInventoryUpdate(Player* player, Item* item, Slots_t slot, bool equip) {
+void EventCallback::playerOnInventoryUpdate(Player* player, Item* item, Slots_t slot, bool equip) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[{}] Call stack overflow", __FUNCTION__);
 		return;
@@ -987,7 +986,7 @@ void EventCallback::playerOnInventoryUpdate(Player* player, Item* item, Slots_t 
 	getScriptInterface()->callVoidFunction(4);
 }
 
-void EventCallback::playerOnStorageUpdate(Player* player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) {
+void EventCallback::playerOnStorageUpdate(Player* player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::eventOnStorageUpdate - "
 					 "Player {} key {}] "
@@ -1014,7 +1013,7 @@ void EventCallback::playerOnStorageUpdate(Player* player, const uint32_t key, co
 }
 
 // Monster
-void EventCallback::monsterOnDropLoot(Monster* monster, Container* corpse) {
+void EventCallback::monsterOnDropLoot(Monster* monster, Container* corpse) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::monsterOnDropLoot - "
 					 "Monster corpse {}] "
@@ -1038,8 +1037,7 @@ void EventCallback::monsterOnDropLoot(Monster* monster, Container* corpse) {
 	return getScriptInterface()->callVoidFunction(2);
 }
 
-void EventCallback::monsterOnSpawn(Monster* monster, const Position &position) {
-	// monsterOnSpawn(position)
+void EventCallback::monsterOnSpawn(Monster* monster, const Position &position) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("{} - "
 					 "Position {}"
@@ -1068,8 +1066,7 @@ void EventCallback::monsterOnSpawn(Monster* monster, const Position &position) {
 }
 
 // Npc
-void EventCallback::npcOnSpawn(Npc* npc, const Position &position) {
-	// npcOnSpawn(position)
+void EventCallback::npcOnSpawn(Npc* npc, const Position &position) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("{} - "
 					 "Position {}"

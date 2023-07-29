@@ -53,9 +53,6 @@ enum class EventCallback_t : int16_t {
 	MonsterOnSpawn,
 	// Npc
 	NpcOnSpawn,
-
-	First = CreatureOnChangeOutfit,
-	Last = NpcOnSpawn
 };
 
 #endif // SRC_LUA_CALLBACKS_CALLBACKS_DEFINITIONS_HPP_

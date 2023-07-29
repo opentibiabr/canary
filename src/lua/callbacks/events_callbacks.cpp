@@ -20,13 +20,9 @@
  * @note This class is a singleton that holds all registered event callbacks.
  * @details It provides functions to add new callbacks and retrieve callbacks by type.
  */
-EventsCallbacks::EventsCallbacks() {
-	spdlog_dev(info, "Constructing singleton for class {}", __func__);
-}
+EventsCallbacks::EventsCallbacks() = default;
 
-EventsCallbacks::~EventsCallbacks() {
-	spdlog_dev(info, "Destructing singleton for class {}", __func__);
-}
+EventsCallbacks::~EventsCallbacks() = default;
 
 EventsCallbacks &EventsCallbacks::getInstance() {
 	// Guaranteed to be destroyed
@@ -39,7 +35,7 @@ void EventsCallbacks::addCallback(EventCallback* callback) {
 	m_callbacks.push_back(callback);
 }
 
-std::vector<EventCallback*> EventsCallbacks::getCallbacks() {
+std::vector<EventCallback*> EventsCallbacks::getCallbacks() const {
 	return m_callbacks;
 }
 

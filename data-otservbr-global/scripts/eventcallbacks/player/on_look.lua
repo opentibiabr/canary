@@ -23,10 +23,11 @@ function callback.playerOnLook(player, thing, position, distance)
 		description = description .. thing:getDescription(distance)
 		if thing:isMonster() then
 			local master = thing:getMaster()
-			if master and table.contains({'sorcerer familiar','knight familiar','druid familiar','paladin familiar'},
-																						thing:getName():lower()) then
-				description = description..' (Master: ' .. master:getName() .. '). \z
-				It will disappear in ' .. getTimeinWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
+			if master and table.contains({ 'sorcerer familiar', 'knight familiar', 'druid familiar', 'paladin familiar' },
+				thing:getName():lower()) then
+				description = string.format('%s (Master: %s). \z It will disappear in %s',
+					description, master:getName(), getTimeinWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
+				)
 			end
 		end
 	end

@@ -143,10 +143,10 @@ do
 		local func = keyToFunctionMap[key]
 		if func then
 			func(self, value)
+			self:type(key)
 		else
 			rawset(self, key, value)
 		end
-		self:type(key)
 	end
 	rawgetmetatable("EventCallback").__newindex = EventCallbackNewIndex
 end

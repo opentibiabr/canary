@@ -2495,7 +2495,6 @@
 		<npc name="Doctor Gnomedix" x="0" y="0" z="10" spawntime="60" />
 		<npc name="Gnomenursey" x="1" y="0" z="10" spawntime="60" />
 	</npc>
-	<npc centerx="32770" centery="31771" centerz="10" radius="1" />
 	<npc centerx="32787" centery="31776" centerz="10" radius="1">
 		<npc name="Gnomejam" x="0" y="0" z="10" spawntime="60" />
 	</npc>

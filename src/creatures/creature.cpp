@@ -737,7 +737,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 			dropLoot(corpse->getContainer(), lastHitCreature);
 			corpse->startDecaying();
 			bool corpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
-			if (mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
+			if (corpse->getContainer() && mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
 				Player* player = mostDamageCreature->getPlayer();
 				std::ostringstream lootMessage;
 				lootMessage << "Loot of " << getNameDescription() << ": " << corpse->getContainer()->getContentDescription(player->getProtocolVersion() < 1200);

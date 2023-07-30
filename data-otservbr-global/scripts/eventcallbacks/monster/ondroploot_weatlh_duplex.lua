@@ -45,12 +45,13 @@ function callback.monsterOnDropLoot(monster, corpse)
 		rolls = math.floor(rolls)
 	end
 
+	if rolls == 0 then return end
+
 	if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) and rolls > 1 then
 		msgSuffix = msgSuffix .. " (active wealth duplex, " .. rolls .. " extra rolls)"
 	else
 		msgSuffix = msgSuffix .. " (active wealth duplex)"
 	end
-
 
 	local lootTable = {}
 	for _ = 1, rolls do

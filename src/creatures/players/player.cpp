@@ -1723,16 +1723,10 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout) {
 
 		closeShopWindow();
 
-		bool saved = false;
 		for (uint32_t tries = 0; tries < 3; ++tries) {
 			if (IOLoginData::savePlayer(this)) {
-				saved = true;
 				break;
 			}
-		}
-
-		if (!saved) {
-			g_logger().warn("Error while saving player: {}", getName());
 		}
 	}
 

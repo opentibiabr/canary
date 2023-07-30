@@ -136,6 +136,10 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		if (loyaltyTitle.length() != 0) {
 			s << " You are a " << loyaltyTitle << ".";
 		}
+
+		if (isVip()) {
+			s << " You are VIP.";
+		}
 	} else {
 		s << name;
 		if (!group->access) {
@@ -143,11 +147,13 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		}
 		s << '.';
 
+		std::string pronoun;
 		if (sex == PLAYERSEX_FEMALE) {
-			s << " She";
+			pronoun = " She";
 		} else {
-			s << " He";
+			pronoun = " He";
 		}
+		s << pronoun;
 
 		if (group->access) {
 			s << " is " << group->name << '.';
@@ -163,6 +169,10 @@ std::string Player::getDescription(int32_t lookDistance) const {
 			} else {
 				s << " He is a " << loyaltyTitle << ".";
 			}
+		}
+
+		if (isVip()) {
+			s << pronoun << " is VIP.";
 		}
 	}
 
@@ -1159,37 +1169,31 @@ void Player::getRewardList(std::vector<uint64_t> &rewards) const {
 std::vector<Item*> Player::getRewardsFromContainer(const Container* container) const {
 	std::vector<Item*> rewardItemsVector;
 	if (container) {
-		for (auto item : container->getItems(true)) {
+		for (auto item : container->getItems(false)) {
 			if (item->getID() == ITEM_REWARD_CONTAINER) {
-				continue;
+				auto items = getRewardsFromContainer(item->getContainer());
+				rewardItemsVector.insert(rewardItemsVector.end(), items.begin(), items.end());
+			} else {
+				rewardItemsVector.push_back(item);
 			}
-
-			rewardItemsVector.push_back(item);
 		}
 	}
 
 	return rewardItemsVector;
 }
 
-ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*/, uint32_t maxMoveItems /* = 0*/) {
+ReturnValue Player::rewardChestCollect(uint32_t maxMoveItems /* = 0*/) {
 	std::vector<Item*> rewardItemsVector;
-	if (fromCorpse) {
-		auto rewardId = fromCorpse->getAttribute<time_t>(ItemAttribute_t::DATE);
-		auto reward = getReward(rewardId, false);
-		rewardItemsVector = getRewardsFromContainer(reward->getContainer());
-	} else {
-		rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());
+	if (!rewardChest || rewardChest->empty()) {
+		return RETURNVALUE_REWARDCHESTISEMPTY;
 	}
-
-	if (rewardItemsVector.empty()) {
-		return fromCorpse ? RETURNVALUE_REWARDCONTAINERISEMPTY : RETURNVALUE_REWARDCHESTISEMPTY;
-	}
+	rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());
 
 	auto rewardCount = rewardItemsVector.size();
 	uint32_t movedRewardItems = 0;
 	for (auto item : rewardItemsVector) {
 		// Stop if player not have free capacity
-		if (getCapacity() < item->getWeight()) {
+		if (item && getCapacity() < item->getWeight()) {
 			break;
 		}
 
@@ -2056,7 +2060,8 @@ void Player::onThink(uint32_t interval) {
 	// Momentum (cooldown resets)
 	triggerMomentum();
 	auto playerTile = getTile();
-	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining()) {
+	const bool vipStaysOnline = isVip() && g_configManager().getBoolean(VIP_STAY_ONLINE);
+	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && !vipStaysOnline) {
 		idleTime += interval;
 		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
 		if (idleTime > (kickAfterMinutes * 60000) + 60000) {
@@ -2225,6 +2230,12 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 
 	if (sendText) {
 		std::string expString = fmt::format("{} experience point{}.", exp, (exp != 1 ? "s" : ""));
+		if (isVip()) {
+			uint8_t expPercent = g_configManager().getNumber(VIP_BONUS_EXP);
+			if (expPercent > 0) {
+				expString = expString + fmt::format(" (VIP bonus {}%)", expPercent > 100 ? 100 : expPercent);
+			}
+		}
 
 		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString + (handleHazardExperience ? " (Hazard)" : ""));
 		message.position = position;

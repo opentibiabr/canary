@@ -196,14 +196,19 @@ class DBTransaction {
 
 		template <typename Func>
 		static bool executeWithinTransaction(const Func &toBeExecuted) {
+			DBTransaction transaction;
 			try {
-				DBTransaction transaction;
 				transaction.begin();
-				toBeExecuted();
+				bool result = toBeExecuted();
+				if (!result) {
+					transaction.rollback();
+					return false;
+				}
 				transaction.commit();
-				return true;
+				return result;
 			} catch (const std::exception &exception) {
-				SPDLOG_ERROR("[{}] Error occurred while committing transaction, error: {}", __FUNCTION__, exception.what());
+				transaction.rollback();
+				SPDLOG_ERROR("[{}] Error occurred committing transaction, error: {}", __FUNCTION__, exception.what());
 				return false;
 			}
 		}

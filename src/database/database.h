@@ -275,15 +275,16 @@ class DBTransaction {
 };
 
 class DatabaseException : public std::exception {
-public:
-    explicit DatabaseException(const std::string& message) : message(message) {}
+	public:
+		explicit DatabaseException(const std::string &message) :
+			message(message) { }
 
-    virtual const char* what() const throw() {
-        return message.c_str();
-    }
+		virtual const char* what() const throw() {
+			return message.c_str();
+		}
 
-private:
-    std::string message;
+	private:
+		std::string message;
 };
 
 #endif // SRC_DATABASE_DATABASE_H_

@@ -426,7 +426,7 @@ function Player:CreateFamiliarSpell(spellId)
 	playerPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	myFamiliar:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	-- Divide by 2 to get half the time (the default total time is 30 / 2 = 15)
-	local summonDuration = math.floor(configManager.getNumber(configKeys.FAMILIAR_TIME) / 2)
+	local summonDuration = configManager.getNumber(configKeys.FAMILIAR_TIME) / 2
 	self:setStorageValue(Global.Storage.FamiliarSummon, os.time() + summonDuration * 60)
 	addEvent(RemoveFamiliar, summonDuration * 60 * 1000, myFamiliar:getId(), self:getId())
 	for sendMessage = 1, #FAMILIAR_TIMER do
@@ -445,9 +445,11 @@ function Player:CreateFamiliarSpell(spellId)
 		)
 	end
 	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, spellId)
-	local cooldown = configManager.getNumber(configKeys.FAMILIAR_TIME) * 60 * 1000
+	local cooldown = summonDuration * 60 * 1000
 	if self:isVip() then
-		cooldown = cooldown - configManager.getNumber(configKeys.VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION)
+		local reduction = configManager.getNumber(configKeys.VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION)
+		reduction = (reduction > summonDuration and summonDuration) or reduction
+		cooldown = cooldown - reduction
 	end
 	condition:setTicks((cooldown) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 	self:addCondition(condition)

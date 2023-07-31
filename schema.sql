@@ -18,8 +18,6 @@ CREATE TABLE IF NOT EXISTS `accounts` (
     `premdays` int(11) NOT NULL DEFAULT '0',
     `premdays_purchased` int(11) NOT NULL DEFAULT '0',
     `lastday` int(10) UNSIGNED NOT NULL DEFAULT '0',
-    `vipdays` int(11) NOT NULL DEFAULT '0',
-    `viplastday` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `type` tinyint(1) UNSIGNED NOT NULL DEFAULT '1',
     `coins` int(12) UNSIGNED NOT NULL DEFAULT '0',
     `coins_transferable` int(12) UNSIGNED NOT NULL DEFAULT '0',

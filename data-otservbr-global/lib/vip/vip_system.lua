@@ -42,7 +42,7 @@ function Player.onAddVip(self, days)
 	end
 
 	for _, mount in ipairs(config.mounts) do
-		self:removeMount(mount)
+		self:addMount(mount)
 	end
 
 	self:setStorageValue(Storage.VipSystem.IsVip, 1)

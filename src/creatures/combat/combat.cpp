@@ -1382,7 +1382,7 @@ void Combat::pickChainTargets(Creature* caster, std::vector<Creature*> &targets,
 		spdlog::info("Combat::pickChainTargets: currentTarget: {}, spectators: {}", currentTarget->getName(), spectators.size());
 	}
 	auto maxBacktrackingAttempts = 10;
-	for (auto attempts = 0; targets.size() < maxTargets && attempts < maxBacktrackingAttempts; ++attempts) {
+	for (auto attempts = 0; targets.size() <= maxTargets && attempts < maxBacktrackingAttempts; ++attempts) {
 		auto closestDistance = std::numeric_limits<uint16_t>::max();
 		Creature* closestSpectator = nullptr;
 		for (auto spectator : spectators) {

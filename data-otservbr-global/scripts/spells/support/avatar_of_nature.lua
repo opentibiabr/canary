@@ -8,7 +8,7 @@ function spell.onCastSpell(creature, variant)
 		return false
 	end
 
-	local grade = creature:upgradeSpellsWORD("Avatar of Nature")
+	local grade = creature:upgradeSpellsWOD("Avatar of Nature")
 	if grade == WHEEL_GRADE_NONE then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)

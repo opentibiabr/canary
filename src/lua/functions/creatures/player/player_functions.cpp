@@ -3647,7 +3647,7 @@ int PlayerFunctions::luaPlayerInstantSkillWOD(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerUpgradeSpellWOD(lua_State* L) {
-	// player:upgradeSpellsWORD([name[, add]])
+	// player:upgradeSpellsWOD([name[, add]])
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);

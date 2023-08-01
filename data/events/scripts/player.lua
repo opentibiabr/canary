@@ -612,8 +612,13 @@ function Player:onGainSkillTries(skill, tries)
 		skillOrMagicRate = math.max(0, (skillOrMagicRate * SCHEDULE_SKILL_RATE) / 100)
 	end
 
-	local vipBoost = configManager.getNumber(configKeys.VIP_BONUS_SKILL)
-	skillOrMagicRate = skillOrMagicRate + (skillOrMagicRate * (vipBoost / 100))
+	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+		local vipBoost = configManager.getNumber(configKeys.VIP_BONUS_SKILL)
+		if (vipBoost > 0 and self:isVip()) then
+			vipBoost = (vipBoost > 100 and 100) or vipBoost
+			skillOrMagicRate = skillOrMagicRate + (skillOrMagicRate * (vipBoost / 100))
+		end
+	end
 
 	return tries / 100 * (skillOrMagicRate * 100)
 end

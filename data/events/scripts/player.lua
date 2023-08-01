@@ -56,193 +56,6 @@ local titles = {
 	{ storageID = 14971, title = " King" },
 }
 
-local function getTitle(uid)
-	local player = Player(uid)
-	if not player then
-		return false
-	end
-
-	for i = #titles, 1, -1 do
-		if player:getStorageValue(titles[i].storageID) == 1 then
-			return titles[i].title
-		end
-	end
-
-	return false
-end
-
-function Player:onBrowseField(position)
-	return true
-end
-
-local function getHours(seconds)
-	return math.floor((seconds / 60) / 60)
-end
-
-local function getMinutes(seconds)
-	return math.floor(seconds / 60)
-end
-
-local function getSeconds(seconds)
-	return seconds % 60
-end
-
-local function getTime(seconds)
-	local hours, minutes = getHours(seconds), getMinutes(seconds)
-	if (minutes > 59) then
-		minutes = minutes - hours * 60
-	end
-
-	if (minutes < 10) then
-		minutes = "0" .. minutes
-	end
-
-	return hours .. ":" .. minutes .. "h"
-end
-
-local function getTimeinWords(secs)
-	local hours, minutes, seconds = getHours(secs), getMinutes(secs), getSeconds(secs)
-	if (minutes > 59) then
-		minutes = minutes - hours * 60
-	end
-
-	local timeStr = ''
-
-	if hours > 0 then
-		timeStr = timeStr .. ' hours '
-	end
-
-	timeStr = timeStr .. minutes .. ' minutes and ' .. seconds .. ' seconds.'
-
-	return timeStr
-end
-
-function Player:onLook(thing, position, distance)
-	local description = "You see "
-	if thing:isItem() then
-		if thing.actionid == 5640 then
-			description = description .. "a honeyflower patch."
-		elseif thing.actionid == 5641 then
-			description = description .. "a banana palm."
-		elseif thing.itemid >= ITEM_HEALTH_CASK_START and thing.itemid <= ITEM_HEALTH_CASK_END
-			or thing.itemid >= ITEM_MANA_CASK_START and thing.itemid <= ITEM_MANA_CASK_END
-			or thing.itemid >= ITEM_SPIRIT_CASK_START and thing.itemid <= ITEM_SPIRIT_CASK_END
-			or thing.itemid >= ITEM_KEG_START and thing.itemid <= ITEM_KEG_END then
-			description = description .. thing:getDescription(distance)
-			local charges = thing:getCharges()
-			if charges then
-				description = string.format("%s\nIt has %d refillings left.", description, charges)
-			end
-		else
-			description = description .. thing:getDescription(distance)
-		end
-	else
-		description = description .. thing:getDescription(distance)
-		if thing:isMonster() then
-			local master = thing:getMaster()
-			if master and table.contains({ 'sorcerer familiar', 'knight familiar', 'druid familiar', 'paladin familiar' },
-				thing:getName():lower()) then
-				description = string.format('%s (Master: %s). \z It will disappear in %s',
-					description, master:getName(), getTimeinWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time()))
-			end
-		end
-	end
-
-	if self:getGroup():getAccess() then
-		if thing:isItem() then
-			description = string.format("%s\nClient ID: %d", description, thing:getId())
-
-			local actionId = thing:getActionId()
-			if actionId ~= 0 then
-				description = string.format("%s, Action ID: %d", description, actionId)
-			end
-
-			local uniqueId = thing:getAttribute(ITEM_ATTRIBUTE_UNIQUEID)
-			if uniqueId > 0 and uniqueId < 65536 then
-				description = string.format("%s, Unique ID: %d", description, uniqueId)
-			end
-
-			local itemType = thing:getType()
-
-			local transformEquipId = itemType:getTransformEquipId()
-			local transformDeEquipId = itemType:getTransformDeEquipId()
-			if transformEquipId ~= 0 then
-				description = string.format("%s\nTransforms to: %d (onEquip)", description, transformEquipId)
-			elseif transformDeEquipId ~= 0 then
-				description = string.format("%s\nTransforms to: %d (onDeEquip)", description, transformDeEquipId)
-			end
-
-			local decayId = itemType:getDecayId()
-			if decayId ~= -1 then
-				description = string.format("%s\nDecays to: %d", description, decayId)
-			end
-
-		elseif thing:isCreature() then
-			local str = "%s\nHealth: %d / %d"
-			if thing:isPlayer() and thing:getMaxMana() > 0 then
-				str = string.format("%s, Mana: %d / %d", str, thing:getMana(), thing:getMaxMana())
-			end
-			description = string.format(str, description, thing:getHealth(), thing:getMaxHealth()) .. "."
-		end
-
-		description = string.format(
-			"%s\nPosition: %d, %d, %d",
-			description, position.x, position.y, position.z
-		)
-
-		if thing:isCreature() then
-			local speedBase = thing:getBaseSpeed()
-			local speed = thing:getSpeed()
-			description = string.format("%s\nSpeedBase: %d", description, speedBase)
-			description = string.format("%s\nSpeed: %d", description, speed)
-
-			if thing:isPlayer() then
-				description = string.format("%s\nIP: %s.", description, Game.convertIpToString(thing:getIp()))
-			end
-		end
-	end
-	self:sendTextMessage(MESSAGE_LOOK, description)
-end
-
-function Player:onLookInBattleList(creature, distance)
-	local description = "You see " .. creature:getDescription(distance)
-	if creature:isMonster() then
-		local master = creature:getMaster()
-		local summons = { 'sorcerer familiar', 'knight familiar', 'druid familiar', 'paladin familiar' }
-		if master and table.contains(summons, creature:getName():lower()) then
-			description = description .. ' (Master: ' .. master:getName() .. '). \z
-				It will disappear in ' .. getTimeinWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
-		end
-	end
-	if self:getGroup():getAccess() then
-		local str = "%s\nHealth: %d / %d"
-		if creature:isPlayer() and creature:getMaxMana() > 0 then
-			str = string.format("%s, Mana: %d / %d", str, creature:getMana(), creature:getMaxMana())
-		end
-		description = string.format(str, description, creature:getHealth(), creature:getMaxHealth()) .. "."
-
-		local position = creature:getPosition()
-		description = string.format(
-			"%s\nPosition: %d, %d, %d",
-			description, position.x, position.y, position.z
-
-		)
-
-		if creature:isPlayer() then
-			description = string.format("%s\nIP: %s", description, Game.convertIpToString(creature:getIp()))
-		end
-	end
-	self:sendTextMessage(MESSAGE_LOOK, description)
-end
-
-function Player:onLookInTrade(partner, item, distance)
-	self:sendTextMessage(MESSAGE_LOOK, "You see " .. item:getDescription(distance))
-end
-
-function Player:onLookInShop(itemType, count)
-	return true
-end
-
 local config = {
 	maxItemsPerSeconds = 1,
 	exhaustTime = 2000,
@@ -290,6 +103,139 @@ local function antiPush(self, item, count, fromPosition, toPosition, fromCylinde
 	end
 
 	return true
+end
+
+local soulCondition = Condition(CONDITION_SOUL, CONDITIONID_DEFAULT)
+soulCondition:setTicks(4 * 60 * 1000)
+soulCondition:setParameter(CONDITION_PARAM_SOULGAIN, 1)
+
+local function useStamina(player)
+	if not player then
+		return false
+	end
+
+	local staminaMinutes = player:getStamina()
+	if staminaMinutes == 0 then
+		return
+	end
+
+	local playerId = player:getId()
+	if not playerId or not nextUseStaminaTime[playerId] then
+		return false
+	end
+
+	local currentTime = os.time()
+	local timePassed = currentTime - nextUseStaminaTime[playerId]
+	if timePassed <= 0 then
+		return
+	end
+
+	if timePassed > 60 then
+		if staminaMinutes > 2 then
+			staminaMinutes = staminaMinutes - 2
+		else
+			staminaMinutes = 0
+		end
+		nextUseStaminaTime[playerId] = currentTime + 120
+		player:removePreyStamina(120)
+	else
+		staminaMinutes = staminaMinutes - 1
+		nextUseStaminaTime[playerId] = currentTime + 60
+		player:removePreyStamina(60)
+	end
+	player:setStamina(staminaMinutes)
+end
+
+local function useStaminaXpBoost(player)
+	if not player then
+		return false
+	end
+
+	local staminaMinutes = player:getExpBoostStamina() / 60
+	if staminaMinutes == 0 then
+		return
+	end
+
+	local playerId = player:getId()
+	if not playerId then
+		return false
+	end
+
+	local currentTime = os.time()
+	local timePassed = currentTime - nextUseXpStamina[playerId]
+	if timePassed <= 0 then
+		return
+	end
+
+	if timePassed > 60 then
+		if staminaMinutes > 2 then
+			staminaMinutes = staminaMinutes - 2
+		else
+			staminaMinutes = 0
+		end
+		nextUseXpStamina[playerId] = currentTime + 120
+	else
+		staminaMinutes = staminaMinutes - 1
+		nextUseXpStamina[playerId] = currentTime + 60
+	end
+	player:setExpBoostStamina(staminaMinutes * 60)
+end
+
+local function useConcoctionTime(player)
+	if not player then
+		return false
+	end
+
+	local playerId = player:getId()
+	if not playerId or not nextUseConcoctionTime[playerId] then
+		return false
+	end
+
+	local currentTime = os.time()
+	local timePassed = currentTime - nextUseConcoctionTime[playerId]
+	if timePassed <= 0 then
+		return false
+	end
+
+	local deduction = 60
+	if timePassed > 60 then
+		nextUseConcoctionTime[playerId] = currentTime + 120
+		deduction = 120
+	else
+		nextUseConcoctionTime[playerId] = currentTime + 60
+	end
+	Concoction.experienceTick(player, deduction)
+end
+
+function Player:onLookInBattleList(creature, distance)
+	local description = "You see " .. creature:getDescription(distance)
+	if creature:isMonster() then
+		local master = creature:getMaster()
+		local summons = {'sorcerer familiar','knight familiar','druid familiar','paladin familiar'}
+		if master and table.contains(summons, creature:getName():lower()) then
+			description = description..' (Master: ' .. master:getName() .. '). \z
+				It will disappear in ' .. getTimeinWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
+		end
+	end
+	if self:getGroup():getAccess() then
+		local str = "%s\nHealth: %d / %d"
+		if creature:isPlayer() and creature:getMaxMana() > 0 then
+			str = string.format("%s, Mana: %d / %d", str, creature:getMana(), creature:getMaxMana())
+		end
+		description = string.format(str, description, creature:getHealth(), creature:getMaxHealth()) .. "."
+
+		local position = creature:getPosition()
+		description = string.format(
+		"%s\nPosition: %d, %d, %d",
+		description, position.x, position.y, position.z
+
+		)
+
+		if creature:isPlayer() then
+			description = string.format("%s\nIP: %s", description, Game.convertIpToString(creature:getIp()))
+		end
+	end
+	self:sendTextMessage(MESSAGE_LOOK, description)
 end
 
 function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
@@ -568,116 +514,6 @@ function Player:onTradeRequest(target, item)
 	return true
 end
 
-function Player:onTradeAccept(target, item, targetItem)
-	self:closeForge()
-	target:closeForge()
-	self:closeImbuementWindow()
-	target:closeImbuementWindow()
-	return true
-end
-
-local soulCondition = Condition(CONDITION_SOUL, CONDITIONID_DEFAULT)
-soulCondition:setTicks(4 * 60 * 1000)
-soulCondition:setParameter(CONDITION_PARAM_SOULGAIN, 1)
-
-local function useStamina(player)
-	if not player then
-		return false
-	end
-
-	local staminaMinutes = player:getStamina()
-	if staminaMinutes == 0 then
-		return
-	end
-
-	local playerId = player:getId()
-	if not playerId or not nextUseStaminaTime[playerId] then
-		return false
-	end
-
-	local currentTime = os.time()
-	local timePassed = currentTime - nextUseStaminaTime[playerId]
-	if timePassed <= 0 then
-		return
-	end
-
-	if timePassed > 60 then
-		if staminaMinutes > 2 then
-			staminaMinutes = staminaMinutes - 2
-		else
-			staminaMinutes = 0
-		end
-		nextUseStaminaTime[playerId] = currentTime + 120
-		player:removePreyStamina(120)
-	else
-		staminaMinutes = staminaMinutes - 1
-		nextUseStaminaTime[playerId] = currentTime + 60
-		player:removePreyStamina(60)
-	end
-	player:setStamina(staminaMinutes)
-end
-
-local function useStaminaXpBoost(player)
-	if not player then
-		return false
-	end
-
-	local staminaMinutes = player:getExpBoostStamina() / 60
-	if staminaMinutes == 0 then
-		return
-	end
-
-	local playerId = player:getId()
-	if not playerId then
-		return false
-	end
-
-	local currentTime = os.time()
-	local timePassed = currentTime - nextUseXpStamina[playerId]
-	if timePassed <= 0 then
-		return
-	end
-
-	if timePassed > 60 then
-		if staminaMinutes > 2 then
-			staminaMinutes = staminaMinutes - 2
-		else
-			staminaMinutes = 0
-		end
-		nextUseXpStamina[playerId] = currentTime + 120
-	else
-		staminaMinutes = staminaMinutes - 1
-		nextUseXpStamina[playerId] = currentTime + 60
-	end
-	player:setExpBoostStamina(staminaMinutes * 60)
-end
-
-local function useConcoctionTime(player)
-	if not player then
-		return false
-	end
-
-	local playerId = player:getId()
-	if not playerId or not nextUseConcoctionTime[playerId] then
-		return false
-	end
-
-	local currentTime = os.time()
-	local timePassed = currentTime - nextUseConcoctionTime[playerId]
-	if timePassed <= 0 then
-		return false
-	end
-
-	local deduction = 60
-	if timePassed > 60 then
-		nextUseConcoctionTime[playerId] = currentTime + 120
-		deduction = 120
-	else
-		nextUseConcoctionTime[playerId] = currentTime + 60
-	end
-	Concoction.experienceTick(player, deduction)
-end
-
 function Player:onGainExperience(target, exp, rawExp)
 	if not target or target:isPlayer() then
 		return exp
@@ -782,22 +618,6 @@ function Player:onGainSkillTries(skill, tries)
 	return tries / 100 * (skillOrMagicRate * 100)
 end
 
-function Player:onRemoveCount(item)
-	self:sendWaste(item:getId())
-end
-
-function Player:onRequestQuestLog()
-	self:sendQuestLog()
-end
-
-function Player:onRequestQuestLine(questId)
-	self:sendQuestLine(questId)
-end
-
-function Player:onStorageUpdate(key, value, oldValue, currentFrameTime)
-	self:updateStorage(key, value, oldValue, currentFrameTime)
-end
-
 function Player:onCombat(target, item, primaryDamage, primaryType, secondaryDamage, secondaryType)
 	if not item or not target then
 		return primaryDamage, primaryType, secondaryDamage, secondaryType
@@ -827,12 +647,10 @@ function Player:onChangeZone(zone)
 							delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY)
 						end
 
-						self:sendTextMessage(MESSAGE_STATUS,
-							string.format("In protection zone. \
-                                                           Every %i minutes, gain %i stamina.",
-								delay, configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
-							)
+						local message = string.format("In protection zone. Every %i minutes, gain %i stamina.",
+							delay, configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
 						)
+						self:sendTextMessage(MESSAGE_STATUS, message)
 						staminaBonus.eventsPz[self:getId()] = addEvent(addStamina, delay * 60 * 1000, nil, self:getId(), delay * 60 * 1000)
 					end
 				end

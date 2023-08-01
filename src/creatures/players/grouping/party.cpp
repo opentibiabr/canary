@@ -12,6 +12,8 @@
 #include "creatures/players/grouping/party.h"
 #include "game/game.h"
 #include "lua/creature/events.h"
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 
 Party::Party(Player* initLeader) :
 	leader(initLeader) {
@@ -20,6 +22,10 @@ Party::Party(Player* initLeader) :
 
 void Party::disband() {
 	if (!g_events().eventPartyOnDisband(this)) {
+		return;
+	}
+
+	if (!g_callbacks().checkCallback(EventCallback_t::PartyOnDisband, &EventCallback::partyOnDisband, this)) {
 		return;
 	}
 
@@ -75,6 +81,10 @@ bool Party::leaveParty(Player* player) {
 	}
 
 	if (!g_events().eventPartyOnLeave(this, player)) {
+		return false;
+	}
+
+	if (!g_callbacks().checkCallback(EventCallback_t::PartyOnLeave, &EventCallback::partyOnLeave, this, player)) {
 		return false;
 	}
 
@@ -173,6 +183,10 @@ bool Party::passPartyLeadership(Player* player) {
 
 bool Party::joinParty(Player &player) {
 	if (!g_events().eventPartyOnJoin(this, &player)) {
+		return false;
+	}
+
+	if (!g_callbacks().checkCallback(EventCallback_t::PartyOnJoin, &EventCallback::partyOnJoin, this, &player)) {
 		return false;
 	}
 
@@ -375,6 +389,8 @@ bool Party::setSharedExperience(Player* player, bool newSharedExpActive) {
 void Party::shareExperience(uint64_t experience, Creature* target /* = nullptr*/) {
 	uint64_t shareExperience = experience;
 	g_events().eventPartyOnShareExperience(this, shareExperience);
+	g_callbacks().executeCallback(EventCallback_t::PartyOnShareExperience, &EventCallback::partyOnShareExperience, this, shareExperience);
+
 	for (Player* member : memberList) {
 		member->onGainSharedExperience(shareExperience, target);
 	}

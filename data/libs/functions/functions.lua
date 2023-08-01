@@ -1,4 +1,3 @@
--- From here down are the functions of TFS
 function getTibiaTimerDayOrNight()
 	local light = getWorldLight()
 	if (light == 40) then
@@ -17,6 +16,62 @@ function getFormattedWorldTime()
 		minutes = '0' .. minutes
 	end
 	return hours .. ':' .. minutes
+end
+
+
+function getTitle(uid)
+	local player = Player(uid)
+	if not player then return false end
+
+	for i = #titles, 1, -1 do
+		if player:getStorageValue(titles[i].storageID) == 1 then
+			return titles[i].title
+		end
+	end
+
+	return false
+end
+
+function getHours(seconds)
+	return math.floor((seconds/60)/60)
+end
+
+function getMinutes(seconds)
+	return math.floor(seconds/60)
+end
+
+function getSeconds(seconds)
+	return seconds%60
+end
+
+function getTime(seconds)
+	local hours, minutes = getHours(seconds), getMinutes(seconds)
+	if (minutes > 59) then
+		minutes = minutes-hours*60
+	end
+
+	if (minutes < 10) then
+		minutes = "0" ..minutes
+	end
+
+	return hours..":"..minutes.. "h"
+end
+
+function getTimeinWords(secs)
+	local hours, minutes, seconds = getHours(secs), getMinutes(secs), getSeconds(secs)
+	if (minutes > 59) then
+		minutes = minutes-hours*60
+	end
+
+	local timeStr = ''
+
+	if hours > 0 then
+		timeStr = timeStr .. ' hours '
+	end
+
+	timeStr = timeStr .. minutes .. ' minutes and '.. seconds .. ' seconds.'
+
+	return timeStr
 end
 
 function getLootRandom(modifier)

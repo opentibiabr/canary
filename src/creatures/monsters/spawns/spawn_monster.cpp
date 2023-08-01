@@ -15,6 +15,8 @@
 #include "game/scheduling/scheduler.h"
 #include "game/scheduling/events_scheduler.hpp"
 #include "lua/creature/events.h"
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 #include "utils/pugicast.h"
 
 static constexpr int32_t MONSTER_MINSPAWN_INTERVAL = 1000; // 1 second
@@ -190,6 +192,7 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, MonsterType* monsterTyp
 	spawnedMonsterMap.insert(spawned_pair(spawnMonsterId, monster));
 	spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
 	g_events().eventMonsterOnSpawn(monster, pos);
+	g_callbacks().executeCallback(EventCallback_t::MonsterOnSpawn, &EventCallback::monsterOnSpawn, monster, pos);
 	return true;
 }
 

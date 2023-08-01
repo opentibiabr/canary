@@ -8,3 +8,33 @@ function Party.broadcastPartyLoot(self, text)
 		end
 	end
 end
+
+function Party.refreshHazard(self)
+	local members = self:getMembers()
+	table.insert(members, self:getLeader())
+	local hazard = nil
+	local level = -1
+
+	for _, member in ipairs(members) do
+		local memberHazard = member:getPosition():getHazardArea()
+		if memberHazard then
+			if not hazard then
+				hazard = memberHazard
+			elseif hazard.name ~= memberHazard.name then
+				-- Party members are in different hazard areas so we can't calculate the level
+				level = 0
+				break
+			end
+		end
+
+		if hazard then
+			local memberLevel = hazard:getPlayerCurrentLevel(member)
+			if memberLevel < level or level == -1 then
+				level = memberLevel
+			end
+		end
+	end
+	for _, member in ipairs(members) do
+		member:setHazardSystemPoints(level)
+	end
+end

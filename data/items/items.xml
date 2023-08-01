@@ -49740,6 +49740,7 @@
 	</item>
 	<item id="34015" article="a" name="lion statue"/>
 	<item id="34016" article="a" name="lit torch">
+		<attribute key="showAttributes" value="1"/>
 		<attribute key="description" value="It sparkles slightly"/>
 		<attribute key="absorbpercentholy" value="2"/>
 		<attribute key="weight" value="500"/>

@@ -94,9 +94,10 @@ monster.loot = {
 }
 
 monster.attacks = {
-    {name ="combat", interval = 2000, chance = 100, minDamage = -300, maxDamage = -600, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_PURPLEENERGY, target = true},
-    {name ="nagadeath", interval = 6000, chance = 39, target = false, minDamage = -1000, maxDamage = -2200},
-    {name ="nagadeathattack", interval = 3000, chance = 68, target = true, minDamage = -400, maxDamage = -600},
+    {name ="combat", interval = 2000, chance = 100, minDamage = -95, maxDamage = -390, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_PURPLEENERGY, target = true},
+    {name ="nagadeath", interval = 6000, chance = 39, target = false, minDamage = -380, maxDamage = -470},
+    {name ="nagadeathattack", interval = 3000, chance = 30, target = true, minDamage = -430, maxDamage = -505},
+		{name ="death chain", interval = 2000, chance = 20, minDamage = -460, maxDamage = -520, range = 3, target = true},
 }
 
 monster.defenses = {

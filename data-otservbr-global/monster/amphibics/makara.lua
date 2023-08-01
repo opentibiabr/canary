@@ -89,11 +89,10 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -361},
-	{name ="combat", interval = 1000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -320, maxDamage = -320, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = true},
-	{name ="combat", interval = 2000, chance = 50, type = COMBAT_ICEDAMAGE, minDamage = -282, maxDamage = -315, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_WATERSPLASH, target = true},
-	{name ="combat", interval = 6000, chance = 50, type = COMBAT_EARTHDAMAGE, minDamage = -282, maxDamage = -315, range = 7, shootEffect = CONST_ME_STONES, effect = CONST_ANI_EARTH, target = false},
-	{name ="makarawatersplash", interval = 6000, chance = 38, minDamage = -800, maxDamage = -1300}
+	{name ="melee", interval = 2000, chance = 100, minDamage = -145, maxDamage = -390},
+	{name ="combat", interval = 1000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -360, maxDamage = -390, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = true},
+	{name ="combat", interval = 6000, chance = 50, type = COMBAT_EARTHDAMAGE, minDamage = -305, maxDamage = -390, range = 7, shootEffect = CONST_ME_STONES, effect = CONST_ANI_EARTH, target = false},
+	{name ="makarawatersplash", interval = 6000, chance = 38, minDamage = -380, maxDamage = -455}
 }
 
 monster.defenses = {

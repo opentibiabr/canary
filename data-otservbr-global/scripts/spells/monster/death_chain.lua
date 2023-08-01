@@ -15,6 +15,7 @@ function spell.onCastSpell(creature, var)
 end
 
 spell:name("death chain")
+spell:words("###6009")
 spell:needLearn(true)
 spell:cooldown("2000")
 spell:isSelfTarget(true)

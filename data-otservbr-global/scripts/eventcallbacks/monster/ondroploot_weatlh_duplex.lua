@@ -35,7 +35,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 
 	if #wealthActivators > 0 then
 		local numActivators = #wealthActivators
-		chance = chance / numActivators ^ configManager.getNumber(configKeys.PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR)
+		chance = chance / numActivators ^ configManager.getFloat(configKeys.PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR)
 	end
 
 	local rolls = chance / 100

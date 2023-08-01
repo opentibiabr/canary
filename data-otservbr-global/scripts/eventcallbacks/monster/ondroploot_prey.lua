@@ -28,7 +28,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 	end
 	if #preyActivators > 0 then
 		local numActivators = #preyActivators
-		preyChance = preyChance / numActivators ^ configManager.getNumber(configKeys.PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR)
+		preyChance = preyChance / numActivators ^ configManager.getFloat(configKeys.PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR)
 	end
 	if math.random(0, 100) > preyChance then
 		return

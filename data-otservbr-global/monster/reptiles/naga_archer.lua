@@ -80,23 +80,23 @@ monster.loot = {
   {name = "naga archer scales", chance = 15050, maxCount = 3},
   {name = "naga earring", chance = 12850},
   {name = "naga armring", chance = 5960},
-  {name = "crystal ring", chance = 5330},
+  {id = 3007, chance = 5330}, -- crystal ring
   {name = "hunting spear", chance = 3760},
   {name = "crossbow", chance = 3130},
   {name = "blue crystal shard", chance = 1880},
   {name = "bow", chance = 1570},
   {name = "elvish bow", chance = 1250},
   {name = "ornate crossbow", chance = 630},
-  {name = "ice cube", chance = 630},
+  {id = 7441, chance = 630}, -- ice cube
   {name = "emerald bangle", chance = 630},
   {name = "silver brooch", chance = 310},
 }
 
 monster.attacks = {
   {name = "combat", interval = 2000, chance = 100, type = COMBAT_PHYSICALDAMAGE, minDamage = -95, maxDamage = -390, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_PURPLEENERGY, range = 6, target = true},  -- basic_attack
-  {name = "nagadeathattack", interval = 2000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = -430, maxDamage = -505, range = 6, target = true},  -- death_strike
-  {name = "nagadeath", interval = 2000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = -380, maxDamage = -470, target = true},  -- short_death_wave
-  {name = "death chain", interval = 2000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = -460, maxDamage = -520, range = 6, target = true},  -- death_chain
+  {name = "nagadeathattack", interval = 2000, chance = 25, minDamage = -430, maxDamage = -505, range = 6, target = true},  -- death_strike
+  {name = "nagadeath", interval = 2000, chance = 25, minDamage = -380, maxDamage = -470, target = true},  -- short_death_wave
+  {name = "death chain", interval = 2000, chance = 25, minDamage = -460, maxDamage = -520, range = 6, target = true},  -- death_chain
   {name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = -85, maxDamage = -190, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_PURPLEENERGY, range = 6, target = true},  -- explosion_strike
 }
 

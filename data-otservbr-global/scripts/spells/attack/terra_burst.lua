@@ -18,7 +18,7 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	local grade = creature:upgradeSpellsWORD("Twin Burst")
+	local grade = creature:upgradeSpellsWOD("Twin Burst")
 	if grade == WHEEL_GRADE_NONE then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)

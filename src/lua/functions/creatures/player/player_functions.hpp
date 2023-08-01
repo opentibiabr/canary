@@ -278,7 +278,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "openMarket", PlayerFunctions::luaPlayerOpenMarket);
 
 			registerMethod(L, "Player", "instantSkillWOD", PlayerFunctions::luaPlayerInstantSkillWOD);
-			registerMethod(L, "Player", "upgradeSpellsWORD", PlayerFunctions::luaPlayerUpgradeSpellWOD);
+			registerMethod(L, "Player", "upgradeSpellsWOD", PlayerFunctions::luaPlayerUpgradeSpellWOD);
 			registerMethod(L, "Player", "reloadData", PlayerFunctions::luaPlayerReloadData);
 			registerMethod(L, "Player", "onThinkWheelOfDestiny", PlayerFunctions::luaPlayerOnThinkWheelOfDestiny);
 			registerMethod(L, "Player", "avatarTimer", PlayerFunctions::luaPlayerAvatarTimer);

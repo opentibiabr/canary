@@ -132,7 +132,6 @@ int EventCallbackFunctions::luaEventCallbackRegister(lua_State* luaState) {
 }
 
 // Callback functions
-
 // Creature
 int EventCallbackFunctions::luaEventCallbackCreatureOnChangeOutfit(lua_State* luaState) {
 	auto callback = getUserdata<EventCallback>(luaState, 1);

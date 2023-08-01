@@ -39,7 +39,7 @@ std::vector<EventCallback*> EventsCallbacks::getCallbacks() const {
 	return m_callbacks;
 }
 
-std::vector<EventCallback*> EventsCallbacks::getCallbacksByType(EventCallback_t type) {
+std::vector<EventCallback*> EventsCallbacks::getCallbacksByType(EventCallback_t type) const {
 	std::vector<EventCallback*> eventCallbacks;
 	for (auto callback : getCallbacks()) {
 		if (callback->getType() != type) {

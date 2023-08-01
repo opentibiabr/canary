@@ -10,6 +10,14 @@
 #ifndef SRC_LUA_CALLBACKS_CALLBACKS_DEFINITIONS_HPP_
 #define SRC_LUA_CALLBACKS_CALLBACKS_DEFINITIONS_HPP_
 
+/**
+ * @enum EventCallback_t
+ * @brief Defines the types of events that can trigger callbacks.
+ *
+ * @details This enumeration represents different types of game events that can be associated
+ * with specific callbacks.
+ * @note The events are categorized by the type of game entity they relate to.
+ */
 enum class EventCallback_t : int16_t {
 	None,
 	// Creature

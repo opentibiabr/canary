@@ -95,7 +95,7 @@ monster.loot = {
 monster.attacks = {
   {name = "combat", interval = 2000, chance = 100, type = COMBAT_PHYSICALDAMAGE, minDamage = -95, maxDamage = -390, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_PURPLEENERGY, range = 6, target = true},  -- basic_attack
   {name = "nagadeathattack", interval = 2000, chance = 25, minDamage = -430, maxDamage = -505, range = 6, target = true},  -- death_strike
-  {name = "nagadeath", interval = 2000, chance = 25, minDamage = -380, maxDamage = -470, target = true},  -- short_death_wave
+  {name = "nagadeath", interval = 2000, chance = 25, minDamage = -380, maxDamage = -470, target = false},  -- short_death_wave
   {name = "death chain", interval = 2000, chance = 25, minDamage = -460, maxDamage = -520, range = 6, target = true},  -- death_chain
   {name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = -85, maxDamage = -190, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_PURPLEENERGY, range = 6, target = true},  -- explosion_strike
 }

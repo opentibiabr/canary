@@ -26,7 +26,7 @@ function callback.playerOnLook(player, thing, position, distance)
 			if master and table.contains({ 'sorcerer familiar', 'knight familiar', 'druid familiar', 'paladin familiar' },
 				thing:getName():lower()) then
 				description = string.format('%s (Master: %s). \z It will disappear in %s',
-					description, master:getName(), getTimeinWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
+					description, master:getName(), getTimeInWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
 				)
 			end
 		end

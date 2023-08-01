@@ -72,7 +72,7 @@ class EventCallbackFunctions : public LuaScriptInterface {
 		 *
 		 * Each function takes the Lua state as a parameter and returns the number of return values on the Lua stack.
 		 *
-		* @note here start the lua binder functions {
+		 * @note here start the lua binder functions {
 		 */
 		// Creature
 		static int luaEventCallbackCreatureOnChangeOutfit(lua_State* luaState);

@@ -507,3 +507,50 @@ function Player.updateHazard(self)
 	end
 	return true
 end
+
+
+---@param monster Monster
+---@return {factor: number, msgSuffix: string}
+function Player:calculateLootFactor(monster)
+	if self:getStamina() <= 840 then
+		return {
+			factor = 0.0,
+			msgSuffix = " (due to low stamina)"
+		}
+	end
+
+	local participants = { self }
+	local factor = 1
+	if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) then
+		local party = self:getParty()
+		if party and party:isSharedExperienceEnabled() then
+			participants = party:getMembers()
+			table.insert(participants, party:getLeader())
+		end
+	end
+
+	local vipActivators = 0
+	local vipBoost = 0
+	local suffix = ""
+
+	for _, participant in ipairs(participants) do
+		if participant:isVip() then
+			local boost = configManager.getNumber(configKeys.VIP_BONUS_LOOT)
+			boost = ((boost > 100 and 100) or boost) / 100
+			vipBoost = vipBoost + boost
+			vipActivators = vipActivators + 1
+		end
+	end
+	if vipActivators > 0 then
+		vipBoost = vipBoost / (vipActivators ^ configManager.getFloat(configKeys.PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR))
+		factor = factor * (1 + vipBoost)
+	end
+	if vipBoost > 0 then
+		suffix = suffix .. (" (vip bonus: %d%%)"):format(math.floor(vipBoost * 100 + 0.5))
+	end
+
+	return {
+		factor = factor,
+		msgSuffix = suffix
+	}
+end

@@ -3144,6 +3144,13 @@ GlobalStorage = {
 	IceCrack = 65016,
 	UglyMonster = 65017,
 	KeysUpdate = 40000, -- Reserved storage from 40000 - 40000
+	SoulWarQuest = {
+		EddAndFlow = {
+			Empty = 60170,
+			doors = 60171,
+			Active = 60172,
+		}
+	}
 }
 
 startupGlobalStorages = {

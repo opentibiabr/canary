@@ -4,7 +4,7 @@ local trapDoor = Action()
 
 function trapDoor.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local ground = Tile(exitPosition):getGround()
-	if ground and isInArray({369, 416}, ground.itemid) then
+	if ground and table.contains({369, 416}, ground.itemid) then
 		ground:transform(ground.itemid == 369 and 416 or 369)
 
 		if ground.itemid == 369 then

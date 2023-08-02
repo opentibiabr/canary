@@ -16,7 +16,7 @@ function craftHelmet.onAddItem(moveitem, tileitem, position)
 		return true
 	end
 
-	if not isInArray(helmetIds, moveitem.itemid) then
+	if not table.contains(helmetIds, moveitem.itemid) then
 		return true
 	end
 

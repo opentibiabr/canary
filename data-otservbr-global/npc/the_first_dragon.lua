@@ -154,7 +154,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	end
 
-return TRUE
+	return true
 end
 
 keywordHandler:addKeyword({'times'}, StdModule.say, {npcHandler = npcHandler, text = "Times have changed <sigh>. In the past dragons were feared and respected. Only the {demons} rivalled our notoriety."})

@@ -34,7 +34,7 @@ local function helmet(player, item, fromPosition, position)
 		position:sendMagicEffect(CONST_ME_TELEPORT)
 		return true
 	end
-	if isInArray({5460, 11585, 13995}, headItem.itemid) then
+	if table.contains({5460, 11585, 13995}, headItem.itemid) then
 		if fromPosition == config[1] or fromPosition == config[2] then
 			player:teleportTo(Position(33247, 31771, 8))
 			player:getPosition():sendMagicEffect(CONST_ME_WATERSPLASH)

@@ -15,7 +15,7 @@ function removeMonster()
 			end
 		end
     end
-    return TRUE
+    return true
 end
 
 
@@ -31,7 +31,7 @@ function removeTrap()
 			end
 		end
     end
-    return TRUE
+    return true
 end
 
 

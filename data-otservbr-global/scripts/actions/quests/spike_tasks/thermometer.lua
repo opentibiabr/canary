@@ -18,7 +18,7 @@ local spikeTasksThermometer = Action()
 function spikeTasksThermometer.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local status = player:getStorageValue(SPIKE_LOWER_LAVA_MAIN)
 
-	if isInArray({-1, 1}, status) then
+	if table.contains({-1, 1}, status) then
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 	end
 

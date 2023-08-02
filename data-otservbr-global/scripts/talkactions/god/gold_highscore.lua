@@ -18,7 +18,7 @@ function gold_rank.onSay(player, words, param)
 		local x = 0
 		repeat
 			x = x + 1
-				str = str.."\n"..x.."- "..Result.getDataString(resultId, "name").." ("..Result.getDataInt(resultId, "balance")..")."
+				str = str.."\n"..x.."- "..Result.getString(resultId, "name").." ("..Result.getNumber(resultId, "balance")..")."
 		until not Result.next(resultId)
 		Result.free(resultId)
 		if str == "" then

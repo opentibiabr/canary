@@ -6,7 +6,7 @@ local range = {
 
 local lowerSpikeKill = CreatureEvent("LowerSpikeKill")
 function lowerSpikeKill.onKill(creature, target)
-	if not isInArray({-1, 7}, creature:getStorageValue(SPIKE_LOWER_KILL_MAIN)) then
+	if not table.contains({-1, 7}, creature:getStorageValue(SPIKE_LOWER_KILL_MAIN)) then
 		if creature:getPosition():isInRange(range.from, range.to) then
 			if target:isMonster() and (target:getMaster() == nil) and (target:getName():lower() == "drillworm") then
 				local sum = creature:getStorageValue(SPIKE_LOWER_KILL_MAIN) + 1

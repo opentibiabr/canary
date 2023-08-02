@@ -43,8 +43,8 @@ enum ItemAttribute_t : uint64_t {
 	AMOUNT = 29,
 	TIER = 30,
 	STORE = 31,
-
-	CUSTOM = 32
+	CUSTOM = 32,
+	LOOTMESSAGE_SUFFIX = 33,
 };
 
 enum ItemDecayState_t : uint8_t {

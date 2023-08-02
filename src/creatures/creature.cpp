@@ -742,7 +742,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 				std::ostringstream lootMessage;
 				lootMessage << "Loot of " << getNameDescription() << ": " << corpse->getContainer()->getContentDescription(player->getProtocolVersion() < 1200);
 				auto suffix = corpse->getContainer()->getAttribute<std::string>(ItemAttribute_t::LOOTMESSAGE_SUFFIX);
-				if (suffix.length() > 0) {
+				if (!suffix.empty()) {
 					lootMessage << suffix;
 				}
 				player->sendLootMessage(lootMessage.str());

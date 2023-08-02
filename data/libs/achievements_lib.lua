@@ -573,7 +573,8 @@ achievements =
 
 	--Custom
 	[477] = {name = "Waypoint Explorer", grade = 1, points = 1, description = "You've explored all the towns of Tibia and discovered each town's waypoint."},
-	[478] = {name = "Up the Molehill", grade = 1, points = 3, description = "Putting this candle stump on your new mount was kind of a waiting game. You're even tempted to call it whack-a-mole. But in the end you found a loyal companion for your journeys into the depths."}
+	[478] = {name = "Up the Molehill", grade = 1, points = 3, description = "Putting this candle stump on your new mount was kind of a waiting game. You're even tempted to call it whack-a-mole. But in the end you found a loyal companion for your journeys into the depths."},
+	[479] = {name = "Inquisitions Arm", grade = 1, points = 2, description = "Your special outfit, bestowed exclusively on a dedicated hand of the Inquisition, is now complete."}
 }
 
 ACHIEVEMENT_FIRST = 1

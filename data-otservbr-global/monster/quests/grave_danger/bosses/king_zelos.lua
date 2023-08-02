@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.events = {
+	"zelosDeath"
+}
+
 monster.health = 480000
 monster.maxHealth = 480000
 monster.race = "venom"

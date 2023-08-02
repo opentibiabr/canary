@@ -28,16 +28,16 @@ namespace ItemLadderIdsArray {
 	constexpr std::array<uint16_t, 12> get() {
 		return {
 			static_cast<uint16_t>(ItemLadderIds_t::Item_1),
-				static_cast<uint16_t>(ItemLadderIds_t::Item_2),
-				static_cast<uint16_t>(ItemLadderIds_t::Item_3),
-				static_cast<uint16_t>(ItemLadderIds_t::Item_4),
-				static_cast<uint16_t>(ItemLadderIds_t::Item_5),
-				static_cast<uint16_t>(ItemLadderIds_t::Item_6),
-				static_cast<uint16_t>(ItemLadderIds_t::Item_7),
-				static_cast<uint16_t>(ItemLadderIds_t::Item_8),
-				static_cast<uint16_t>(ItemLadderIds_t::Item_9),
-				static_cast<uint16_t>(ItemLadderIds_t::Item_10),
-				static_cast<uint16_t>(ItemLadderIds_t::Item_11),
+			static_cast<uint16_t>(ItemLadderIds_t::Item_2),
+			static_cast<uint16_t>(ItemLadderIds_t::Item_3),
+			static_cast<uint16_t>(ItemLadderIds_t::Item_4),
+			static_cast<uint16_t>(ItemLadderIds_t::Item_5),
+			static_cast<uint16_t>(ItemLadderIds_t::Item_6),
+			static_cast<uint16_t>(ItemLadderIds_t::Item_7),
+			static_cast<uint16_t>(ItemLadderIds_t::Item_8),
+			static_cast<uint16_t>(ItemLadderIds_t::Item_9),
+			static_cast<uint16_t>(ItemLadderIds_t::Item_10),
+			static_cast<uint16_t>(ItemLadderIds_t::Item_11),
 		};
 	}
 }

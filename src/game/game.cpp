@@ -24,6 +24,8 @@
 #include "io/io_wheel.hpp"
 #include "io/iomarket.h"
 #include "items/items.h"
+#include "enums/item_dummy_ids.hpp"
+#include "enums/item_ladder_ids.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "creatures/monsters/monster.h"
 #include "lua/creature/movement.h"
@@ -83,6 +85,65 @@ namespace InternalGame {
 		if (blockType != BLOCK_NONE) {
 			g_game().sendSingleSoundEffect(targetPos, SoundEffect_t::NO_DAMAGE, source);
 		}
+	}
+
+	bool playerCanUseItemOnHouseTile(Player* player, Item* item) {
+		if (!player || !item) {
+			return false;
+		}
+
+		auto itemTile = item->getTile();
+		if (!itemTile) {
+			return false;
+		}
+
+		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(itemTile)) {
+			House* house = houseTile->getHouse();
+			// If not invited return false
+			if (!house || !house->isInvited(player)) {
+				return false;
+			}
+
+			// Check is guest player
+			auto isGuest = house->getHouseAccessLevel(player) == HOUSE_GUEST;
+			// Cannot use in browse field
+			auto container = item->getParent() ? item->getParent()->getContainer() : nullptr;
+			if (isGuest && container && container->getID() == ITEM_BROWSEFIELD) {
+				return false;
+			}
+
+			auto realItemParent = item->getRealParent();
+			// Check if item is not in player inventory or player backpack/storeinbox
+			auto canUseItem = realItemParent && (realItemParent == player || realItemParent->getContainer());
+			auto array = ItemLadderIdsArray::get();
+			bool isExceptedItem = std::find(array.begin(), array.end(), item->getID()) != array.end();
+			if (isGuest && !canUseItem && !isExceptedItem) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	bool playerCanUseItemWithOnHouseTile(Player* player, Item* item, const Position &toPos, int toStackPos, int toItemId) {
+		if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
+			if (HouseTile* houseTile = dynamic_cast<HouseTile*>(item->getTile())) {
+				House* house = houseTile->getHouse();
+				Thing* targetThing = g_game().internalGetThing(player, toPos, toStackPos, toItemId, STACKPOS_FIND_THING);
+				auto targetItem = targetThing ? targetThing->getItem() : nullptr;
+				uint16_t targetId = targetItem ? targetItem->getID() : 0;
+				auto invitedCheckUseWith = house && item->getRealParent() && item->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST);
+
+				auto array = ItemDummyIdsArray::get();
+				bool isExceptedItem = std::find(array.begin(), array.end(), targetId) != array.end();
+				if (targetId != 0 && !isExceptedItem && invitedCheckUseWith) {
+					player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 } // Namespace InternalGame
@@ -2981,14 +3042,9 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 		return;
 	}
 
-	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
-		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(item->getTile())) {
-			House* house = houseTile->getHouse();
-			if (house && item->getRealParent() && item->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST)) {
-				player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
-				return;
-			}
-		}
+	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS) && !InternalGame::playerCanUseItemWithOnHouseTile(player, item, toPos, toStackPos, toItemId)) {
+		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+		return;
 	}
 
 	Position walkToPos = fromPos;
@@ -3115,14 +3171,9 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		return;
 	}
 
-	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
-		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(item->getTile())) {
-			House* house = houseTile->getHouse();
-			if (house && item->getRealParent() && item->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST)) {
-				player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
-				return;
-			}
-		}
+	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS) && !InternalGame::playerCanUseItemOnHouseTile(player, item)) {
+		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+		return;
 	}
 
 	const ItemType &it = Item::items[item->getID()];

@@ -14,6 +14,8 @@
 #include "game/functions/game_reload.hpp"
 #include "game/game.h"
 #include "items/item.h"
+#include "enums/item_dummy_ids.hpp"
+#include "enums/item_ladder_ids.hpp"
 #include "io/iobestiary.h"
 #include "io/io_bosstiary.hpp"
 #include "io/iologindata.h"
@@ -647,6 +649,40 @@ int GameFunctions::luaGameGetInfluencedMonsters(lua_State* L) {
 		++index;
 		lua_pushnumber(L, monsterId);
 		lua_rawseti(L, -2, index);
+	}
+
+	return 1;
+}
+
+int GameFunctions::luaGameGetLadderTable(lua_State* L) {
+	// Game.getLadderTable()
+	lua_newtable(L);
+	int index = 1;
+	auto array = ItemLadderIdsArray::get();
+	for (const auto &itemId : array) {
+		if (itemId == 0) {
+			continue;
+		}
+
+		lua_pushnumber(L, static_cast<lua_Number>(itemId));
+		lua_rawseti(L, -2, index++);
+	}
+
+	return 1;
+}
+
+int GameFunctions::luaGameGetDummyTable(lua_State* L) {
+	// Game.getDummyTable()
+	lua_newtable(L);
+	int index = 1;
+	auto array = ItemLadderIdsArray::get();
+	for (const auto &itemId : array) {
+		if (itemId == 0) {
+			continue;
+		}
+
+		lua_pushnumber(L, static_cast<lua_Number>(itemId));
+		lua_rawseti(L, -2, index++);
 	}
 
 	return 1;

@@ -1,4 +1,6 @@
-local upFloorIds = {1948, 1968, 5542, 20474, 20475, 1968, 28656, 31262, 31129, 31130, 34243}
+local ladderTable = Game.getLadderTable()
+
+local upFloorIds = ladderTable
 
 local teleport = Action()
 
@@ -12,5 +14,7 @@ function teleport.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	return true
 end
 
-teleport:id(435, 1948, 1968, 5542, 20474, 20475, 28656, 31129, 31130, 31262, 34243)
+-- Gate
+teleport:id(435)
+teleport:id(unpack(ladderTable))
 teleport:register()

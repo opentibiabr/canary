@@ -146,8 +146,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(TheHuntForTheSeaSerpent.SuccessSwitch, 0)
 			player:setStorageValue(TheHuntForTheSeaSerpent.Direction, 0)
 		end
-	elseif isInArray({"god", "svargrond", "back", "hunt", "passage", "trip"}, message:lower()) then
-		if isInArray({"god", "svargrond", "back", "hunt"}, message:lower()) then
+	elseif table.contains({"god", "svargrond", "back", "hunt", "passage", "trip"}, message:lower()) then
+		if table.contains({"god", "svargrond", "back", "hunt"}, message:lower()) then
 			npcHandler:say("Already got enough, huh? I kind o' expected that, landlubber! Let's head for Svargrond! Ready?", npc, creature)
 		else
 			npcHandler:say("Y' already wanna give up?? I should've known. I bring ya back to Svargrond, 'kay?", npc, creature)

@@ -77,7 +77,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			'However, sometimes people come and just... DESTROY them! Destroy my work!! Why? Do those people help me removing the slime instead? NO! Not at all.',
 			'All they do is ruining my experiments, my perfect testing conditions. It makes me just FURIOUS! And boy do I get FURIOUS, I tell you.'
 		}, npc, creature)
-	elseif isInArray({"slime", "fungus"}, message) then
+	elseif table.contains({"slime", "fungus"}, message) then
 		npcHandler:say({
 			'My experiments, my work - not at the moment, however. I\'m on vacation. Trying to get away from it... it\'s all not right. Why... why am I doing this anyway.',
 			'NO! I should not talk like that, I just... I shouldn\'t. That\'s not even ME. I... I used to be MAD. A MAD SCIENTIST! THE BEST! THE... the... WORST! A SUPERLATIVE! Ah, nevermind.'

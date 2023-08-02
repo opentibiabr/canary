@@ -147,7 +147,7 @@ function Concoction:init(player, sendMessage)
 			if not eventPlayer then return end
 			eventPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE,
 				"Your concoction " .. name .. " is still active for another " .. duration .. ".")
-		end, 500, player:getId(), self.name, durationString(self:timeLeft(player)))
+		end, 500, player:getId(), self.name, getTimeInWords(self:timeLeft(player)))
 	end
 end
 
@@ -166,7 +166,7 @@ function Concoction:activate(player, item)
 	if self:lastActivatedAt(player) + cooldown > os.time() then
 		local cooldownLeft = self:lastActivatedAt(player) + cooldown - os.time()
 		player:sendTextMessage(MESSAGE_STATUS_SMALL,
-			"You must wait " .. durationString(cooldownLeft) .. " before using " .. item:getName() .. " again.")
+			"You must wait " .. getTimeInWords(cooldownLeft) .. " before using " .. item:getName() .. " again.")
 		return true
 	end
 	self:timeLeft(player, self:totalDuration())
@@ -180,7 +180,7 @@ function Concoction:activate(player, item)
 		self:addCondition(player)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
 			"You have activated " ..
-			item:getName() .. ". It will last for " .. durationString(self:totalDuration()) .. consumptionString .. ".")
+			item:getName() .. ". It will last for " .. getTimeInWords(self:totalDuration()) .. consumptionString .. ".")
 		if self:tickType() == ConcoctionTickType.Online then
 			addEvent(tick, updateInterval * 1000, self.id, player:getId(), updateInterval)
 		end

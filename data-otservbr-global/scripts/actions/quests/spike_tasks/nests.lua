@@ -2,7 +2,7 @@ local summon = {"Spider", "Larva", "Scarab", "Tarantula"}
 
 local spikeTasksNests = Action()
 function spikeTasksNests.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if isInArray({-1, 8}, player:getStorageValue(SPIKE_MIDDLE_NEST_MAIN)) then
+	if table.contains({-1, 8}, player:getStorageValue(SPIKE_MIDDLE_NEST_MAIN)) then
 		return false
 	end
 

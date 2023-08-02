@@ -65,7 +65,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.InServiceofYalahar.Mission02, player:getStorageValue(Storage.InServiceofYalahar.Mission02) + 1) -- StorageValue for Questlog "Mission 02: Watching the Watchmen"
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif isInArray({"pass", "gate"}, message:lower()) then
+	elseif table.contains({"pass", "gate"}, message:lower()) then
 		npcHandler:say("Pass the gate? If it must be. Are you headed for the {factory} or the former {trade} quarter?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif(MsgContains(message, "factory")) then

@@ -187,7 +187,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say('Let us see if I have what you need.', npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif MsgContains(message, 'no') and isInArray({1, 3, 4, 5}, npcHandler:getTopic(playerId)) then
+	elseif MsgContains(message, 'no') and table.contains({1, 3, 4, 5}, npcHandler:getTopic(playerId)) then
 		npcHandler:say('As you like.', npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end

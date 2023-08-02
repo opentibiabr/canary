@@ -345,7 +345,7 @@ local function checkX(npc, player, d, message)
 		if tasks.GrizzlyAdams[m].bossName then
 			if tasks.GrizzlyAdams[m].bossName:lower() == message:lower() then
 				for n = 1, #tasks.GrizzlyAdams[m].rewards do
-					if isInArray({REWARD_STORAGE, "storage", "stor"}, tasks.GrizzlyAdams[m].rewards[n].type:lower()) then
+					if table.contains({REWARD_STORAGE, "storage", "stor"}, tasks.GrizzlyAdams[m].rewards[n].type:lower()) then
 						if player:getStorageValue(tasks.GrizzlyAdams[m].rewards[n].value[1]) < 0 and player:getLevel() >= d then
 							npcHandler:say("You're a lucky one. You can go and kill him without spending your 'boss points'. Have fun!", npc, player)
 							player:setStorageValue(tasks.GrizzlyAdams[m].rewards[n].value[1], 1)
@@ -379,7 +379,7 @@ end
 local function checkZ(npc, player, message)
 	for k = 1, #tasks.GrizzlyAdams do
 		for o = 1, #tasks.GrizzlyAdams[k].rewards do
-			if isInArray({REWARD_ACHIEVEMENT, "achievement", "ach"}, tasks.GrizzlyAdams[k].rewards[o].type:lower()) then
+			if table.contains({REWARD_ACHIEVEMENT, "achievement", "ach"}, tasks.GrizzlyAdams[k].rewards[o].type:lower()) then
 				if player:getStorageValue(tasks.GrizzlyAdams[k].rewards[o + 1].value[1]) == 2 and player:getStorageValue(tasks.GrizzlyAdams[k].rewards[o + 1].value[2]) == 0 then
 					player:setStorageValue(tasks.GrizzlyAdams[k].rewards[o + 1].value[1], 1)
 				end
@@ -410,13 +410,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		player:setStorageValue(Storage.KillingInTheNameOf.QuestLogEntry, 0)
 		player:setStorageValue(POINTSSTORAGE, 0)
 		npcHandler:say("Great! A warm welcome to our newest member: |PLAYERNAME|! Ask me for a {task} if you want to go on a hunt.", npc, creature)
-	elseif isInArray({"report", "reports"}, message:lower()) then
+	elseif table.contains({"report", "reports"}, message:lower()) then
 		if checkZ(npc, player, message) == true then
 			return true
 		else
 			npcHandler:say("You have nothing to report.", npc, creature)
 		end
-	elseif isInArray({"tasks", "task", "mission"}, message:lower()) then
+	elseif table.contains({"tasks", "task", "mission"}, message:lower()) then
 		if player:getStorageValue(Storage.KillingInTheNameOf.QuestLogEntry) ~= 0 then
 			return npcHandler:say("You'll have to {join}, to get any {tasks}.", npc, creature)
 		end
@@ -450,17 +450,17 @@ local function creatureSayCallback(npc, creature, type, message)
 								deny = true
 							end
 						end
-						if isInArray({REWARD_MONEY, "money"}, reward.type:lower()) and not deny then
+						if table.contains({REWARD_MONEY, "money"}, reward.type:lower()) and not deny then
 							player:addMoney(reward.value[1])
-						elseif isInArray({REWARD_EXP, "exp", "experience"}, reward.type:lower()) and not deny then
+						elseif table.contains({REWARD_EXP, "exp", "experience"}, reward.type:lower()) and not deny then
 							player:addExperience(reward.value[1], true)
-						elseif isInArray({REWARD_STORAGE, "storage", "stor"}, reward.type:lower()) and not deny then
+						elseif table.contains({REWARD_STORAGE, "storage", "stor"}, reward.type:lower()) and not deny then
 							if #reward.value == 2 then
 								player:setStorageValue(reward.value[1], reward.value[2])
 								if tasks.GrizzlyAdams[id].raceName:lower() == "demons" then
 									messageAltExtra = true
 								end
-							elseif isInArray({1, 2}, player:getStorageValue(reward.value[1])) then
+							elseif table.contains({1, 2}, player:getStorageValue(reward.value[1])) then
 								player:setStorageValue(Storage.KillingInTheNameOf.BossPoints, player:getStorageValue(Storage.KillingInTheNameOf.BossPoints) + 1)
 							else
 								player:setStorageValue(reward.value[1], reward.value[3])
@@ -468,7 +468,7 @@ local function creatureSayCallback(npc, creature, type, message)
 								messageAlt = true
 								messageAltId = tasks.GrizzlyAdams[id].bossId
 							end
-						elseif isInArray({REWARD_POINT, "points", "point"}, reward.type:lower()) and not deny then
+						elseif table.contains({REWARD_POINT, "points", "point"}, reward.type:lower()) and not deny then
 							local ratePoints = 1
 							if configKeys.RATE_KILLING_IN_THE_NAME_OF_POINTS then
 								ratePoints = configManager.getNumber(configKeys.RATE_KILLING_IN_THE_NAME_OF_POINTS)
@@ -498,7 +498,7 @@ local function creatureSayCallback(npc, creature, type, message)
 								player:setStorageValue(POINTSSTORAGE, getPlayerTasksPoints(creature) + pointsToReceive)
 								player:setStorageValue(Storage.KillingInTheNameOf.QuestLogEntry, player:getStorageValue(Storage.KillingInTheNameOf.QuestLogEntry)) -- fake update
 							end
-						elseif isInArray({REWARD_ITEM, "item", "items", "object"}, reward.type:lower()) and not deny then
+						elseif table.contains({REWARD_ITEM, "item", "items", "object"}, reward.type:lower()) and not deny then
 							player:addItem(reward.value[1], reward.value[2])
 						end
 
@@ -608,55 +608,55 @@ local function creatureSayCallback(npc, creature, type, message)
 			return false
 		end
 		local messageElse = "You already achieved the maximum rank for your level range. If you accept this task, you won't gain points for our society. Hunt "..tasks.GrizzlyAdams[task].killsRequired.." "..tasks.GrizzlyAdams[task].raceName.." and you'll be rewarded with experience and the possibility to choose a {boss}. Are you in, old chap?"
-		if isInArray(tier[1].allName, message:lower()) then
+		if table.contains(tier[1].allName, message:lower()) then
 			if player:getStorageValue(POINTSSTORAGE) >= 40 and player:getLevel() < 50 then
 				npcHandler:say(messageElse, npc, creature)
-			elseif isInArray({"carniphilas", "carniphila"}, message:lower()) then
+			elseif table.contains({"carniphilas", "carniphila"}, message:lower()) then
 				local chanceX = math.random(2)
 				local messageCarniphilas = {
 					[1] = "Interesting kind and not so easy to find. The fun begins when you want to hunt {Tiquanda's Revenge}. It's strong and smart like no other carniphila.",
 					[2] = "Damn walking weed-thingies! You'll find them deeper in the jungle. Weed out 150 carniphilas for our society. Alright?"
 				}
 				npcHandler:say(messageCarniphilas[chanceX], npc, creature)
-			elseif isInArray(tier[1].withsName, message:lower()) then
+			elseif table.contains(tier[1].withsName, message:lower()) then
 				npcHandler:say(messageStartTask[message:lower()], npc, creature)
 			else
 				npcHandler:say(messageStartTaskAlt[message:lower()], npc, creature)
 			end
-		elseif isInArray(tier[2].allName, message:lower()) then
+		elseif table.contains(tier[2].allName, message:lower()) then
 			if player:getStorageValue(POINTSSTORAGE) >= 70 and player:getLevel() < 80 then
 				npcHandler:say(messageElse, npc, creature)
-			elseif isInArray(tier[2].withsName, message:lower()) then
+			elseif table.contains(tier[2].withsName, message:lower()) then
 				npcHandler:say(messageStartTask[message:lower()], npc, creature)
 			else
 				npcHandler:say(messageStartTaskAlt[message:lower()], npc, creature)
 			end
-		elseif isInArray(tier[3].allName, message:lower()) then
+		elseif table.contains(tier[3].allName, message:lower()) then
 			if player:getStorageValue(POINTSSTORAGE) >= 100 and player:getLevel() < 130 then
 				npcHandler:say(messageElse, npc, creature)
-			elseif isInArray(tier[3].withsName, message:lower()) then
+			elseif table.contains(tier[3].withsName, message:lower()) then
 				npcHandler:say(messageStartTask[message:lower()], npc, creature)
 			else
 				npcHandler:say(messageStartTaskAlt[message:lower()], npc, creature)
 			end
-		elseif isInArray(tier[4].allName, message:lower()) then
-			if isInArray(tier[4].withsName, message:lower()) then
+		elseif table.contains(tier[4].allName, message:lower()) then
+			if table.contains(tier[4].withsName, message:lower()) then
 				npcHandler:say(messageStartTask[message:lower()], npc, creature)
 			else
 				npcHandler:say(messageStartTaskAlt[message:lower()], npc, creature)
 			end
-		elseif isInArray({"demons", "demon"}, message:lower()) and player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 7 then
+		elseif table.contains({"demons", "demon"}, message:lower()) and player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) == 7 then
 			npcHandler:say("The spawn of pure evil must be erased from Tibia. You'll find demons lurking in the northern ruins of Edron as well as in some other deeper dungeons of Tibia. Slay 6666 demons for the greater good! Do you think you can handle this task?", npc, creature)
 		else
 			npcHandler:say("In this task you must defeat "..tasks.GrizzlyAdams[task].killsRequired.." "..tasks.GrizzlyAdams[task].raceName..". Are you sure that you want to start this task?", npc, creature)
 		end
 		choose[playerId] = task
 		npcHandler:setTopic(playerId, 1)
-	elseif isInArray(tier[1].allName, message:lower()) and player:getLevel() < 50 and npcHandler:getTopic(playerId) < 2 then
+	elseif table.contains(tier[1].allName, message:lower()) and player:getLevel() < 50 and npcHandler:getTopic(playerId) < 2 then
 		checkY(npc, player, message)
-	elseif isInArray(tier[2].allName, message:lower()) and player:getLevel() < 80 and npcHandler:getTopic(playerId) < 2 then
+	elseif table.contains(tier[2].allName, message:lower()) and player:getLevel() < 80 and npcHandler:getTopic(playerId) < 2 then
 		checkY(npc, player, message)
-	elseif isInArray(tier[3].allName, message:lower()) and player:getLevel() < 130 and npcHandler:getTopic(playerId) < 2 then
+	elseif table.contains(tier[3].allName, message:lower()) and player:getLevel() < 130 and npcHandler:getTopic(playerId) < 2 then
 		checkY(npc, player, message)
 	elseif message:lower() == "yes" and npcHandler:getTopic(playerId) == 1 then
 		player:setStorageValue(QUESTSTORAGE_BASE + choose[playerId], 1)
@@ -723,7 +723,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("You haven't started any task yet.", npc, creature)
 		end
-	elseif isInArray({"promotion", "promotions"}, message:lower()) then
+	elseif table.contains({"promotion", "promotions"}, message:lower()) then
 		if player:getStorageValue(Storage.KillingInTheNameOf.PawAndFurRank) < 0 and player:getStorageValue(POINTSSTORAGE) >= 10 and player:getLevel() >= 6 then -- to Huntsman Rank
 			npcHandler:say({
 			"You gained 10 points! Let me promote you to the first rank: 'Huntsman'. Congratulations! ...",
@@ -750,7 +750,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("You have not enough points for promotion.", npc, creature)
 		end
-	elseif isInArray({"boss", "bosses"}, message:lower()) then
+	elseif table.contains({"boss", "bosses"}, message:lower()) then
 		if checkZ(npc, player, message) == true then
 			return true
 		end
@@ -777,18 +777,18 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("You have "..player:getStorageValue(Storage.KillingInTheNameOf.BossPoints).." boss points.", npc, creature)
 		end
-	elseif isInArray({"snapper", "hide", "deathbine", "bloodtusk"}, message:lower()) and npcHandler:getTopic(playerId) >= 4 and npcHandler:getTopic(playerId) <= 7 then
+	elseif table.contains({"snapper", "hide", "deathbine", "bloodtusk"}, message:lower()) and npcHandler:getTopic(playerId) >= 4 and npcHandler:getTopic(playerId) <= 7 then
 		checkX(npc, player, 50, message)
-	elseif isInArray({"shardhead", "fleshcrawler", "ribstride", "bloodweb", "esmeralda"}, message:lower()) and npcHandler:getTopic(playerId) >= 5 and npcHandler:getTopic(playerId) <= 7 then
+	elseif table.contains({"shardhead", "fleshcrawler", "ribstride", "bloodweb", "esmeralda"}, message:lower()) and npcHandler:getTopic(playerId) >= 5 and npcHandler:getTopic(playerId) <= 7 then
 		checkX(npc, player, 80, message)
-	elseif isInArray({"thul", "flameborn", "sulphur scuttler", "old widow", "hemming", "tormentor", "fazzrah", "tromphonyte", "bruise payne"}, message:lower()) and npcHandler:getTopic(playerId) >= 6 and npcHandler:getTopic(playerId) <= 7 then
+	elseif table.contains({"thul", "flameborn", "sulphur scuttler", "old widow", "hemming", "tormentor", "fazzrah", "tromphonyte", "bruise payne"}, message:lower()) and npcHandler:getTopic(playerId) >= 6 and npcHandler:getTopic(playerId) <= 7 then
 		checkX(npc, player, 130, message)
-	elseif isInArray({"many", "noxious spawn", "stonecracker", "gorgo", "kerberos", "ethershreck", "zanakeph", "paiz the pauperizer", "bretzecutioner", "leviathan"}, message:lower()) and npcHandler:getTopic(playerId) == 7 then
+	elseif table.contains({"many", "noxious spawn", "stonecracker", "gorgo", "kerberos", "ethershreck", "zanakeph", "paiz the pauperizer", "bretzecutioner", "leviathan"}, message:lower()) and npcHandler:getTopic(playerId) == 7 then
 		for w = 1, #tasks.GrizzlyAdams do
 			if tasks.GrizzlyAdams[w].bossName then
 				if tasks.GrizzlyAdams[w].bossName:lower() == message:lower() then
 					for y = 1, #tasks.GrizzlyAdams[w].rewards do
-						if isInArray({REWARD_STORAGE, "storage", "stor"}, tasks.GrizzlyAdams[w].rewards[y].type:lower()) then
+						if table.contains({REWARD_STORAGE, "storage", "stor"}, tasks.GrizzlyAdams[w].rewards[y].type:lower()) then
 							if player:getStorageValue(tasks.GrizzlyAdams[w].rewards[y].value[1]) == 3 or player:getStorageValue(tasks.GrizzlyAdams[w].rewards[y].value[1]) < 0 then
 								npcHandler:say(messageBossStart[tasks.GrizzlyAdams[w].bossId], npc, creature)
 								player:setStorageValue(tasks.GrizzlyAdams[w].rewards[y].value[1], 1)
@@ -853,7 +853,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif ((getTaskByName(message)) and
 			(npcHandler:getTopic(playerId) == 2) and
-			(isInArray(getPlayerStartedTasks(creature), getTaskByName(message)))) then
+			(table.contains(getPlayerStartedTasks(creature), getTaskByName(message)))) then
 		local task = getTaskByName(message)
 		if player:getStorageValue(KillCounter + task) > 0 then
 			npcHandler:say("You currently killed " .. player:getStorageValue(KillCounter + task) .. "/" ..
@@ -867,7 +867,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		cancel[playerId] = task
 	elseif ((getTaskByName(message)) and
 			(npcHandler:getTopic(playerId) == 1) and
-			(isInArray(getPlayerStartedTasks(creature), getTaskByName(message)))) then
+			(table.contains(getPlayerStartedTasks(creature), getTaskByName(message)))) then
 		local task = getTaskByName(message)
 		if player:getStorageValue(KillCounter + task) > 0 then
 			npcHandler:say("You currently killed " ..
@@ -885,7 +885,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say("You have canceled the task " ..
 					(tasks.GrizzlyAdams[cancel[playerId]].name or tasks.GrizzlyAdams[cancel[playerId]].raceName) .. ".", npc, creature)
 		npcHandler:setTopic(playerId, 0)
-	elseif isInArray({"points", "rank"}, message:lower()) then
+	elseif table.contains({"points", "rank"}, message:lower()) then
 		npcHandler:say("At this time, you have " .. player:getPawAndFurPoints() .. " Paw & Fur points. You " ..
 					(player:getPawAndFurRank() == 6 and "are an Elite Hunter" or
 					player:getPawAndFurRank() == 5 and "are a Trophy Hunter" or
@@ -898,7 +898,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif message:lower() == "no" and npcHandler:getTopic(playerId) == 10 then
 		npcHandler:say("Speak to me again when you are done hunting", npc, creature)
 		npcHandler:setTopic(playerId, 0)
-	elseif isInArray({"special", "special task"}, message:lower()) then
+	elseif table.contains({"special", "special task"}, message:lower()) then
 		if player:getPawAndFurPoints() >= 70 and player:getLevel() >= 80 then
 			if player:getStorageValue(Storage.KillingInTheNameOf.MissionTiquandasRevenge) < 1 then
 				npcHandler:say({

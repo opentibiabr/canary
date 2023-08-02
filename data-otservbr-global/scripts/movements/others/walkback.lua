@@ -9,7 +9,7 @@ function walkback.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if (Container(item.uid) and not isInArray(SPECIAL_QUESTS, item.actionid) and item.uid > 65535) then
+	if (Container(item.uid) and not table.contains(SPECIAL_QUESTS, item.actionid) and item.uid > 65535) then
 		return true
 	end
 

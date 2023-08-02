@@ -252,7 +252,7 @@ function crate.onStepIn(creature, item, position, fromPosition, toPosition)
 				end
 				for i = 1, #trapDoors do
 					local pos = trapDoors[i].doorPos
-					if isInArray({Position(pos.x+1, pos.y, 8), Position(pos.x+2, pos.y, 8), Position(pos.x+3, pos.y, 8)}, player:getPosition()) and Tile(pos):getItemById(11257) then
+					if table.contains({Position(pos.x+1, pos.y, 8), Position(pos.x+2, pos.y, 8), Position(pos.x+3, pos.y, 8)}, player:getPosition()) and Tile(pos):getItemById(11257) then
 						catchPlayer(player)
 					end
 				end

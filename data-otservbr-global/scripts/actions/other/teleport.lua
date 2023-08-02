@@ -12,5 +12,7 @@ function teleport.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	return true
 end
 
-teleport:id(435, 1948, 1968, 5542, 20474, 20475, 28656, 31129, 31130, 31262, 34243)
+for index, value in ipairs(upFloorIds) do
+    teleport:id(value)
+end
 teleport:register()

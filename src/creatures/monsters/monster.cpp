@@ -2005,6 +2005,7 @@ void Monster::dropLoot(Container* corpse, Creature*) {
 			if (g_game().internalAddItem(corpse, sliver) != RETURNVALUE_NOERROR) {
 				corpse->internalAddThing(sliver);
 			}
+			g_events().eventMonsterOnDropLoot(this, corpse);
 		}
 		g_callbacks().executeCallback(EventCallback_t::MonsterOnDropLoot, &EventCallback::monsterOnDropLoot, this, corpse);
 	}

@@ -309,7 +309,8 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target) {
 
 	if (attacker) {
 		const Creature* attackerMaster = attacker->getMaster();
-		if (const Player* targetPlayer = target->getPlayer()) {
+		auto targetPlayer = target->getPlayer() ? target->getPlayer() : nullptr;
+		if (targetPlayer) {
 			if (targetPlayer->hasFlag(PlayerFlags_t::CannotBeAttacked)) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 			}

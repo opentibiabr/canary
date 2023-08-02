@@ -2,7 +2,7 @@ local combat = {}
 
 for i = 25, 30 do
 	combat[i] = Combat()
-	combat[i]:setParameter(COMBAT_PARAM_TYPE, COMBAT_POISONDAMAGE)
+	combat[i]:setParameter(COMBAT_PARAM_TYPE, COMBAT_EARTHDAMAGE)
 	combat[i]:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HITBYPOISON)
 
 	local condition = Condition(CONDITION_POISON)

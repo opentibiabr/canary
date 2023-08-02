@@ -58,7 +58,7 @@ function spell.onCastSpell(creature, var, isHotkey)
 		return false
 	end
 
-	creature:addMana(-(mana - baseMana), FALSE)
+	creature:addMana(-(mana - baseMana), false)
 	creature:addManaSpent((mana - baseMana))
 
 	for _, targetPlayer in ipairs(affectedList) do

@@ -60,10 +60,10 @@ local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if isInArray({-1, 4}, player:getStorageValue(SPIKE_LOWER_PARCEL_MAIN)) then
+	if table.contains({-1, 4}, player:getStorageValue(SPIKE_LOWER_PARCEL_MAIN)) then
 		return false
 	end
-	if isInArray(DELIVERED_PARCELS[player:getGuid()], npc:getId()) then
+	if table.contains(DELIVERED_PARCELS[player:getGuid()], npc:getId()) then
 		return false
 	end
 	return true
@@ -77,8 +77,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		DELIVERED_PARCELS[player:getGuid()] = {}
 	end
 
-	if MsgContains(message, 'something') and not isInArray({-1, 4}, status) then
-		if isInArray(DELIVERED_PARCELS[player:getGuid()], npc:getId()) then
+	if MsgContains(message, 'something') and not table.contains({-1, 4}, status) then
+		if table.contains(DELIVERED_PARCELS[player:getGuid()], npc:getId()) then
 			return true
 		end
 

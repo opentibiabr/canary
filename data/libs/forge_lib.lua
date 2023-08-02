@@ -65,7 +65,7 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 			for i = 1, #partyMembers do
 				local member = partyMembers[i]
 				if member and member:isPlayer() then
-					if not isInArray(killers, member) then
+					if not table.contains(killers, member) then
 						table.insert(killers, member)
 					end
 				end

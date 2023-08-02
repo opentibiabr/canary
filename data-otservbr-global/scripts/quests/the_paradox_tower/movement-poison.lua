@@ -17,7 +17,7 @@ function poison.onStepOut(creature, item, position, fromPosition)
 
 	local removeHealth = Tile({x = 32497, y = 31889, z = 7}):getFieldItem()
 	if not removeHealth then
-		player:addHealth(-200, COMBAT_POISONDAMAGE)
+		player:addHealth(-200, COMBAT_EARTHDAMAGE)
 		for i = 1, #positions do
 			local tile = Tile(positions[i]):getFieldItem()
 			if not tile then

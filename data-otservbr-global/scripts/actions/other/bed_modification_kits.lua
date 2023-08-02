@@ -35,12 +35,12 @@ function bedModificationKits.onUse(player, item, fromPosition, target, toPositio
 	end
 
 	for kit, bed in pairs(beds) do
-		if bed[1][1] == target.itemid or isInArray({2491, 5501, 15506}, target.itemid) then
+		if bed[1][1] == target.itemid or table.contains({2491, 5501, 15506}, target.itemid) then
 			toPosition:sendMagicEffect(CONST_ME_POFF)
 			toPosition.y = toPosition.y + 1
 			internalBedTransform(item, target, toPosition, newBed[1])
 			break
-		elseif bed[2][1] == target.itemid or isInArray({2489, 5499, 15508}, target.itemid) then
+		elseif bed[2][1] == target.itemid or table.contains({2489, 5499, 15508}, target.itemid) then
 			toPosition:sendMagicEffect(CONST_ME_POFF)
 			toPosition.x = toPosition.x + 1
 			internalBedTransform(item, target, toPosition, newBed[2])

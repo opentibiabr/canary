@@ -781,9 +781,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	elseif MsgContains(message, 'no') and npcHandler:getTopic(playerId) ~= 0 then
-		if isInArray({1, 2}, npcHandler:getTopic(playerId)) then
+		if table.contains({1, 2}, npcHandler:getTopic(playerId)) then
 			npcHandler:say('Too bad, I\'m convinced you have it in you.', npc, creature)
-		elseif isInArray({3, 4}, npcHandler:getTopic(playerId)) then
+		elseif table.contains({3, 4}, npcHandler:getTopic(playerId)) then
 			if player:getStorageValue(Storage.WhatAFoolish.Questline) == 11
 					and player:getStorageValue(Storage.WhatAFoolish.EmperorBeardShave) == 1 then
 				player:setStorageValue(Storage.WhatAFoolish.Questline, 12)

@@ -65,7 +65,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if isInArray({"vial", "ticket", "bonus", "deposit"}, message) then
+	if table.contains({"vial", "ticket", "bonus", "deposit"}, message) then
 		if player:getStorageValue(Storage.OutfitQuest.MageSummoner.AddonBelt) < 1 then
 			npcHandler:say(
 				"You have " ..

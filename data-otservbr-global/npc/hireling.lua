@@ -1065,7 +1065,7 @@ function createHirelingType(HirelingName)
 					"knightsample",
 					"paladinsample"
 				}
-				if isInArray(arrayDenied, string.gsub(transfer[playerId]:lower(), " ", "")) then
+				if table.contains(arrayDenied, string.gsub(transfer[playerId]:lower(), " ", "")) then
 					npcHandler:say("This player does not exist.", npc, creature)
 					npcHandler:setTopic(playerId, 1445)
 					return true

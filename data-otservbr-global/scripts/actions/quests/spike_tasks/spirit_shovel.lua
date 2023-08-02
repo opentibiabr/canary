@@ -8,7 +8,7 @@ local chance = {
 
 local spikeTasksShovel = Action()
 function spikeTasksShovel.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if isInArray({-1, 4}, player:getStorageValue(SPIKE_UPPER_MOUND_MAIN)) then
+	if table.contains({-1, 4}, player:getStorageValue(SPIKE_UPPER_MOUND_MAIN)) then
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 	end
 

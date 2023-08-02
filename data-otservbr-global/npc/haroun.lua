@@ -53,19 +53,19 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if isInArray({"enchanted chicken wing", "boots of haste"}, message) then
+	if table.contains({"enchanted chicken wing", "boots of haste"}, message) then
 		npcHandler:say('Do you want to trade Boots of haste for Enchanted Chicken Wing?', npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif isInArray({"warrior sweat", "warrior helmet"}, message) then
+	elseif table.contains({"warrior sweat", "warrior helmet"}, message) then
 		npcHandler:say('Do you want to trade 4 Warrior Helmet for Warrior Sweat?', npc, creature)
 		npcHandler:setTopic(playerId, 2)
-	elseif isInArray({"fighting spirit", "royal helmet"}, message) then
+	elseif table.contains({"fighting spirit", "royal helmet"}, message) then
 		npcHandler:say('Do you want to trade 2 Royal Helmet for Fighting Spirit', npc, creature)
 		npcHandler:setTopic(playerId, 3)
-	elseif isInArray({"magic sulphur", "fire sword"}, message) then
+	elseif table.contains({"magic sulphur", "fire sword"}, message) then
 		npcHandler:say('Do you want to trade 3 Fire Sword for Magic Sulphur', npc, creature)
 		npcHandler:setTopic(playerId, 4)
-	elseif isInArray({"job", "items"}, message) then
+	elseif table.contains({"job", "items"}, message) then
 		npcHandler:say('I trade Enchanted Chicken Wing for Boots of Haste, Warrior Sweat for 4 Warrior Helmets, Fighting Spirit for 2 Royal Helmet Magic Sulphur for 3 Fire Swords', npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message,'yes') and npcHandler:getTopic(playerId) <= 4 and npcHandler:getTopic(playerId) >= 1 then

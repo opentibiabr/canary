@@ -67,7 +67,7 @@ local spikeTasksGhost = Action()
 function spikeTasksGhost.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local stat = player:getStorageValue(SPIKE_UPPER_TRACK_MAIN)
 
-	if isInArray({-1, 3}, stat) then
+	if table.contains({-1, 3}, stat) then
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 	end
 

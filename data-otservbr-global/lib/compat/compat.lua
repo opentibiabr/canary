@@ -316,7 +316,7 @@ function getPlayerGUIDByName(name)
 
 	local resultId = db.storeQuery("SELECT `id` FROM `players` WHERE `name` = " .. db.escapeString(name))
 	if resultId ~= false then
-		local guid = result.getDataInt(resultId, "id")
+		local guid = Result.getNumber(resultId, "id")
 		result.free(resultId)
 		return guid
 	end
@@ -330,7 +330,7 @@ function getAccountNumberByPlayerName(name)
 
 	local resultId = db.storeQuery("SELECT `account_id` FROM `players` WHERE `name` = " .. db.escapeString(name))
 	if resultId ~= false then
-		local accountId = result.getDataInt(resultId, "account_id")
+		local accountId = Result.getNumber(resultId, "account_id")
 		result.free(resultId)
 		return accountId
 	end
@@ -584,7 +584,7 @@ function getGuildId(guildName)
 		return false
 	end
 
-	local guildId = result.getDataInt(resultId, "id")
+	local guildId = Result.getNumber(resultId, "id")
 	result.free(resultId)
 	return guildId
 end

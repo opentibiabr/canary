@@ -82,7 +82,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	if MsgContains(message, 'tokens') then
-	elseif isInArray({'dangerous', 'beasts'}, message:lower()) then
+	elseif table.contains({'dangerous', 'beasts'}, message:lower()) then
 		npcHandler:say("So you don't know it yet. This island, Grimvale, is affected by were-sickness. Many {pitiful}, who are stricken with the curse, dwell in the {tunnels} and caverns underneath the village and the nearby hurst.", npc, creature)
 	elseif MsgContains(message, 'pitiful') then
 		npcHandler:say("Yes, pitiful. For they are savage beasts now who regularly come up from below to attack the village. But once they were inhabitants of Grimvale, before they {changed}.", npc, creature)
@@ -90,7 +90,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say("Through a bite or even a scratch, you may be infected with the were-sickness. If that happens, there is little {hope} - until the next full moon you'll change into a were-creature, depending on the animal that hurt you.", npc, creature)
 	elseif MsgContains(message, 'hope') then
 		npcHandler:say("There is a plant, the purple nightshade. It blossoms exclusively in the light of the full moon and only underground, where the full moon's light is falling through fissures in the surface. Only this plant's blossoms are able to defeat the {were-sickness}.", npc, creature)
-	elseif isInArray({'were-sickness', 'curse'}, message:lower()) then
+	elseif table.contains({'were-sickness', 'curse'}, message:lower()) then
 		npcHandler:say({"It transforms peaceful villagers into savage beasts. We're not sure how this curse found the way into our small village. But one day it began. At first it befell just a few people. ...",
 			"In a full moon night they changed into bears and wolves, and tore apart their unsuspecting relatives while they were asleep. ...",
 			"Those merely wounded, first thought they were lucky. But then we realised they were changing, too. Later, others assumed the forms of badgers and boars also. ...",
@@ -137,7 +137,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("So, which profession would you give preference to when enchanting the helmet: {knight}, {sorcerer}, {druid} or {paladin}?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
-	elseif isInArray({'knight', 'sorcerer', 'druid', 'paladin'}, message:lower()) and npcHandler:getTopic(playerId) == 2 then
+	elseif table.contains({'knight', 'sorcerer', 'druid', 'paladin'}, message:lower()) and npcHandler:getTopic(playerId) == 2 then
 		local helmet = message:lower()
 		if not vocations[helmet] then
 			return false
@@ -156,7 +156,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			--end
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif isInArray({'axe', 'club', 'sword'}, message:lower()) and npcHandler:getTopic(playerId) == 3 then
+	elseif table.contains({'axe', 'club', 'sword'}, message:lower()) and npcHandler:getTopic(playerId) == 3 then
 		local weapontype = message:lower()
 		if not vocations[knightChoice[playerId]][weapontype] then
 			return false

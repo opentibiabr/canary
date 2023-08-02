@@ -80,7 +80,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if isInArray({"mission", "hunt", "passage"}, message:lower()) then
+	if table.contains({"mission", "hunt", "passage"}, message:lower()) then
 		if MsgContains(message, "passage") then
 			if player:getStorageValue(FishForASerpent.QuestLine) < 5 then
 				npcHandler:say("Hold your horses! First we need to get more {bait} fo' the sea serpent. Bring me the fish I requested and we can set sails immediately.", npc, creature)

@@ -195,7 +195,7 @@ end
 function getPlayerSpouse(id)
 	local resultQuery = db.storeQuery("SELECT `marriage_spouse` FROM `players` WHERE `id` = " .. db.escapeString(id))
 	if resultQuery ~= false then
-		local ret = Result.getDataInt(resultQuery, "marriage_spouse")
+		local ret = Result.getNumber(resultQuery, "marriage_spouse")
 		Result.free(resultQuery)
 		return ret
 	end
@@ -205,7 +205,7 @@ end
 function getPlayerMarriageStatus(id)
 	local resultQuery = db.storeQuery("SELECT `marriage_status` FROM `players` WHERE `id` = " .. db.escapeString(id))
 	if resultQuery ~= false then
-		local ret = Result.getDataInt(resultQuery, "marriage_status")
+		local ret = Result.getNumber(resultQuery, "marriage_status")
 		Result.free(resultQuery)
 		return ret
 	end
@@ -214,7 +214,7 @@ end
 
 function getPlayerNameById(id)
 	local resultName = db.storeQuery("SELECT `name` FROM `players` WHERE `id` = " .. db.escapeString(id))
-	local name = Result.getDataString(resultName, "name")
+	local name = Result.getString(resultName, "name")
 	if resultName ~= false then
 		Result.free(resultName)
 		return name

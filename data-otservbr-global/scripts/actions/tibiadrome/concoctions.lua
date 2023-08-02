@@ -19,7 +19,7 @@ local configs = {
 	},
 	[Concoction.Ids.StrikeEnhancement] = { condition = { CONDITION_PARAM_SKILL_CRITICAL_HIT_CHANCE, 5 } },
 	[Concoction.Ids.CharmUpgrade] = { condition = { CONDITION_PARAM_CHARM_CHANCE_MODIFIER, 5 } },
-	[Concoction.Ids.WealthDuplex] = { multiplier = 2.0 },
+	[Concoction.Ids.WealthDuplex] = { rate = 100 },
 	[Concoction.Ids.BestiaryBetterment] = { multiplier = 2.0 },
 	[Concoction.Ids.FireResilience] = { condition = { CONDITION_PARAM_ABSORB_FIREPERCENT, 8 } },
 	[Concoction.Ids.IceResilience] = { condition = { CONDITION_PARAM_ABSORB_ICEPERCENT, 8 } },

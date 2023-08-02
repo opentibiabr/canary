@@ -30,62 +30,42 @@ function Monster:setRewardBoss()
 	end
 end
 
-function MonsterType.createLootItem(self, lootBlock, chance, lootTable)
-	if lootTable == nil then
-		lootTable = {}
-	end
-	local itemCount = 0
-	local randvalue = math.random(0, 100000) / (configManager.getNumber(configKeys.RATE_LOOT) * chance)
-	if randvalue < lootBlock.chance then
-		if (ItemType(lootBlock.itemId):isStackable()) then
-			itemCount = randvalue % lootBlock.maxCount + 1
-		else
-			itemCount = 1
-		end
-	end
-
-	local itemType = ItemType(lootBlock.itemId)
-	local decayTo = itemType:getDecayId()
-	local decayTime = itemType:getDecayTime()
-	if decayTo and decayTo >= 0 and decayTime and decayTime ~= 0 then
-		local transformDeEquipId = itemType:getTransformDeEquipId()
-		if transformDeEquipId and transformDeEquipId > 0 then
-			Spdlog.warn("[MonsterType.createLootItem] - Convert boss '" .. self:name() .. "' reward ID '" .. lootBlock.itemId .. "' to ID " .. transformDeEquipId .. ".")
-			lootBlock.itemId = transformDeEquipId
-		else
-			Spdlog.error("[MonsterType.createLootItem] Cannot add item " .. lootBlock.itemId .. " as boss " .. self:name() .. " reward. It has decay.")
-			return lootTable
-		end
-	end
-
-	local charges, n = itemType:getCharges()
-	while itemCount > 0 do
-		if charges > 0 then
-			n = charges
-			itemCount = itemCount - 1
-		else
-			n = math.min(itemCount, 100)
-			itemCount = itemCount - n
-		end
-
-		table.insert(lootTable, {lootBlock.itemId, n})
-	end
-
-	return lootTable
+local function isEquipment(itemType)
+	local t = itemType:getType()
+	local equipmentTypes = {
+		ITEM_TYPE_ARMOR,
+		ITEM_TYPE_AMULET,
+		ITEM_TYPE_BOOTS,
+		ITEM_TYPE_HELMET,
+		ITEM_TYPE_LEGS,
+		ITEM_TYPE_RING,
+		ITEM_TYPE_SHIELD,
+		ITEM_TYPE_AXE,
+		ITEM_TYPE_CLUB,
+		ITEM_TYPE_DISTANCE,
+		ITEM_TYPE_SWORD,
+		ITEM_TYPE_WAND,
+		ITEM_TYPE_QUIVER,
+	}
+	return table.contains(equipmentTypes, t)
 end
 
-function MonsterType.getBossReward(self, lootFactor, topScore)
-	local result = {}
-	if configManager.getNumber(configKeys.RATE_LOOT) > 0 then
-		local loot = self:getLoot() or {}
-		for i = #loot, 0, -1 do
-			local lootBlock = loot[i]
-			if lootBlock then
-				if not lootBlock.unique or topScore then
-					self:createLootItem(lootBlock, lootFactor, result)
-				end
-			end
-		end
+function MonsterType.getBossReward(self, lootFactor, topScore, equipmentOnly, lootTable)
+	if configManager.getNumber(configKeys.RATE_LOOT) <= 0 then
+		return lootTable or {}
 	end
-	return result
+
+	return self:generateLootRoll({
+		factor = lootFactor,
+		gut = false,
+		filter = function(itemType, unique)
+			if unique and not topScore then
+				return false
+			end
+			if equipmentOnly then
+				return not unique and isEquipment(itemType)
+			end
+			return true
+		end
+	}, lootTable)
 end

@@ -57,7 +57,7 @@ function getTime(seconds)
 	return hours..":"..minutes.. "h"
 end
 
-function getTimeinWords(secs)
+function getTimeInWords(secs)
 	local hours, minutes, seconds = getHours(secs), getMinutes(secs), getSeconds(secs)
 	if (minutes > 59) then
 		minutes = minutes-hours*60
@@ -65,8 +65,10 @@ function getTimeinWords(secs)
 
 	local timeStr = ''
 
-	if hours > 0 then
-		timeStr = timeStr .. ' hours '
+	if hours > 1 then
+		timeStr = hours .. ' hours '
+	elseif hours == 1 then
+		timeStr = hours .. ' hour '
 	end
 
 	timeStr = timeStr .. minutes .. ' minutes and '.. seconds .. ' seconds.'
@@ -963,30 +965,6 @@ function SetInfluenced(monsterType, monster, player, influencedLevel)
 	end
 	Game.addInfluencedMonster(monster)
 	monster:setForgeStack(influencedLevel)
-end
-
-
-function durationString(duration)
-	local durationHours = math.floor(duration / 3600)
-	duration = duration % 3600
-	local durationMinutes = math.floor(duration / 60)
-	local durationSeconds = duration % 60
-	local s = ""
-	if durationHours > 0 then
-		s = s .. durationHours .. " hours"
-	end
-	if durationMinutes > 0 then
-		if durationHours > 0 and durationSeconds > 0 then
-			s = s .. ", "
-		elseif durationHours > 0 then
-			s = s .. " and "
-		end
-		s = s .. durationMinutes .. " minutes"
-	end
-	if durationSeconds > 0 then
-		s = s .. " and " .. durationSeconds .. " seconds"
-	end
-	return s
 end
 
 function ReloadDataEvent(cid)

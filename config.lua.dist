@@ -159,8 +159,10 @@ wheelPointsPerLevel = 1
 -- Only change it here if you know what you are doing or to make testing easier with familiars
 familiarTime = 30
 
--- Tibiadrome concoctions
 partyShareLootBoosts = false
+partyShareLootBoostsDimishingFactor = 0.7
+
+-- Tibiadrome concoctions
 tibiadromeConcoctionCooldown = 24 * 60 * 60 -- 24 hours
 tibiadromeConcoctionDuration = 60 * 60 -- 1 hour
 tibiadromeConcoctionTickType = "online" -- "online" | "experience"

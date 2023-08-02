@@ -25,6 +25,7 @@ local config = {
 	onUseExtra = function(player)
 		addEvent(function()
 			local nictros = Tile(nictrosPosition):getTopCreature()
+			if not nictros then return end
 			nictros:teleportTo(Position(33427, 31436, 13))
 		end, 5 * 1000)
 	end,

@@ -664,10 +664,10 @@ class Game {
 		void playerSpeakToNpc(Player* player, const std::string &text);
 
 		/**
-		  * Player wants to loot a corpse
-		  * \param player Player pointer
-		  * \param corpse Container pointer to be looted
-		  */
+		 * Player wants to loot a corpse
+		 * \param player Player pointer
+		 * \param corpse Container pointer to be looted
+		 */
 		void internalQuickLootCorpse(Player* player, Container* corpse);
 
 		/**

@@ -2456,7 +2456,7 @@ void Game::internalQuickLootCorpse(Player* player, Container* corpse) {
 
 Container* Game::findLootContainer(Player* player, bool &fallbackConsumed, ObjectCategory_t category) {
 	Container* lootContainer = player->getLootContainer(category);
-	if (!allowAnything && !lootContainer && player->quickLootFallbackToMainContainer && !fallbackConsumed) {
+	if (!lootContainer && player->quickLootFallbackToMainContainer && !fallbackConsumed) {
 		Item* fallbackItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
 		Container* mainBackpack = fallbackItem ? fallbackItem->getContainer() : nullptr;
 

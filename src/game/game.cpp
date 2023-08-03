@@ -9629,7 +9629,7 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 		return;
 	}
 
-	if (auto function = std::bind(&Game::playerRewardChestCollect, this, player->getID(), pos, itemId, stackPos, 0);
+	if (auto function = std::bind(&Game::playerRewardChestCollect, this, player->getID(), pos, itemId, stackPos, maxMoveItems);
 		player->canAutoWalk(item->getPosition(), function)) {
 		return;
 	}

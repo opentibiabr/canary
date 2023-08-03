@@ -677,7 +677,7 @@ class Game {
 		 *
 		 * @return Pointer to the loot container or nullptr if not found.
 		 */
-		Container* findLootContainer(Player* player, bool& fallbackConsumed, ObjectCategory_t category);
+		Container* findLootContainer(Player* player, bool &fallbackConsumed, ObjectCategory_t category);
 
 		/**
 		 * @brief Finds the next available sub-container within a container.
@@ -687,7 +687,7 @@ class Game {
 		 * @param lootContainer Reference to the loot container being used.
 		 * @return Pointer to the next available container or nullptr if not found.
 		 */
-		Container* findNextAvailableContainer(ContainerIterator& containerIterator, Container*& lastSubContainer, Container*& lootContainer);
+		Container* findNextAvailableContainer(ContainerIterator &containerIterator, Container*&lastSubContainer, Container*&lootContainer);
 
 		/**
 		 * @brief Handles the fallback logic for loot containers.
@@ -698,7 +698,7 @@ class Game {
 		 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
 		 * @return True if fallback logic was handled, false otherwise.
 		 */
-		bool handleFallbackLogic(Player* player, Container*& lootContainer, ContainerIterator& containerIterator, bool& fallbackConsumed);
+		bool handleFallbackLogic(Player* player, Container*&lootContainer, ContainerIterator &containerIterator, bool &fallbackConsumed);
 
 		/**
 		 * @brief Processes the movement or addition of an item to a loot container.
@@ -709,7 +709,7 @@ class Game {
 		 * @param player Pointer to the player object.
 		 * @return Return value indicating success or error.
 		 */
-		ReturnValue processMoveOrAddItemToLootContainer(Item* item, Container* lootContainer, uint32_t& remainderCount, Player* player);
+		ReturnValue processMoveOrAddItemToLootContainer(Item* item, Container* lootContainer, uint32_t &remainderCount, Player* player);
 
 		/**
 		 * @brief Processes loot items and places them into the appropriate containers.
@@ -720,7 +720,7 @@ class Game {
 		 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
 		 * @return Return value indicating success or error.
 		 */
-		ReturnValue processLootItems(Player* player, Container* lootContainer, Item* item, bool& fallbackConsumed);
+		ReturnValue processLootItems(Player* player, Container* lootContainer, Item* item, bool &fallbackConsumed);
 
 		/**
 		 * @brief Internally collects loot items from a given item and places them into the loot container.

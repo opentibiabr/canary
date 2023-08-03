@@ -2454,7 +2454,7 @@ void Game::internalQuickLootCorpse(Player* player, Container* corpse) {
 	player->lastQuickLootNotification = OTSYS_TIME();
 }
 
-Container* Game::findLootContainer(Player* player, bool& fallbackConsumed, ObjectCategory_t category) {
+Container* Game::findLootContainer(Player* player, bool &fallbackConsumed, ObjectCategory_t category) {
 	bool allowAnything = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);
 	Container* lootContainer = player->getLootContainer(category);
 
@@ -2475,7 +2475,7 @@ Container* Game::findLootContainer(Player* player, bool& fallbackConsumed, Objec
 	return (lootPouch && allowAnything) ? lootPouch : lootContainer;
 }
 
-Container* Game::findNextAvailableContainer(ContainerIterator& containerIterator, Container*& lootContainer, Container*& lastSubContainer) {
+Container* Game::findNextAvailableContainer(ContainerIterator &containerIterator, Container*&lootContainer, Container*&lastSubContainer) {
 	while (containerIterator.hasNext()) {
 		Item* cur = *containerIterator;
 		Container* subContainer = cur ? cur->getContainer() : nullptr;
@@ -2499,13 +2499,14 @@ Container* Game::findNextAvailableContainer(ContainerIterator& containerIterator
 	return nullptr;
 }
 
-bool Game::handleFallbackLogic(Player* player, Container*& lootContainer, ContainerIterator& containerIterator, bool& fallbackConsumed) {
+bool Game::handleFallbackLogic(Player* player, Container*&lootContainer, ContainerIterator &containerIterator, bool &fallbackConsumed) {
 	if (fallbackConsumed || !player->quickLootFallbackToMainContainer) {
 		return false;
 	}
 
 	Item* fallbackItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
-	if (!fallbackItem || !fallbackItem->getContainer()) return false;
+	if (!fallbackItem || !fallbackItem->getContainer())
+		return false;
 
 	lootContainer = fallbackItem->getContainer();
 	containerIterator = lootContainer->iterator();
@@ -2513,7 +2514,7 @@ bool Game::handleFallbackLogic(Player* player, Container*& lootContainer, Contai
 	return true;
 }
 
-ReturnValue Game::processMoveOrAddItemToLootContainer(Item* item, Container* lootContainer, uint32_t& remainderCount, Player* player) {
+ReturnValue Game::processMoveOrAddItemToLootContainer(Item* item, Container* lootContainer, uint32_t &remainderCount, Player* player) {
 	Item* moveItem = nullptr;
 	ReturnValue ret;
 	if (item->getParent()) {
@@ -2527,7 +2528,7 @@ ReturnValue Game::processMoveOrAddItemToLootContainer(Item* item, Container* loo
 	return ret;
 }
 
-ReturnValue Game::processLootItems(Player* player, Container* lootContainer, Item* item, bool& fallbackConsumed) {
+ReturnValue Game::processLootItems(Player* player, Container* lootContainer, Item* item, bool &fallbackConsumed) {
 	Container* lastSubContainer = nullptr;
 	uint32_t remainderCount = item->getItemCount();
 	ContainerIterator containerIterator = lootContainer->iterator();
@@ -2573,7 +2574,7 @@ ReturnValue Game::collectRewardChestItems(Player* player, uint32_t maxMoveItems 
 	auto rewardItemsVector = player->getRewardsFromContainer(rewardChest->getContainer());
 	auto rewardCount = rewardItemsVector.size();
 	uint32_t movedRewardItems = 0;
-	for (auto item: rewardItemsVector) {
+	for (auto item : rewardItemsVector) {
 		// Stop if player not have free capacity
 		if (item && player->getCapacity() < item->getWeight()) {
 			player->sendCancelMessage(RETURNVALUE_NOTENOUGHCAPACITY);

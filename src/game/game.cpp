@@ -2574,6 +2574,7 @@ ReturnValue Game::collectRewardChestItems(Player* player, uint32_t maxMoveItems 
 	auto rewardItemsVector = player->getRewardsFromContainer(rewardChest->getContainer());
 	auto rewardCount = rewardItemsVector.size();
 	uint32_t movedRewardItems = 0;
+	std::string lootedItemsMessage;
 	for (auto item : rewardItemsVector) {
 		// Stop if player not have free capacity
 		if (item && player->getCapacity() < item->getWeight()) {
@@ -2584,7 +2585,8 @@ ReturnValue Game::collectRewardChestItems(Player* player, uint32_t maxMoveItems 
 		// Limit the collect count if the "maxMoveItems" is not "0"
 		auto limitMove = maxMoveItems != 0 && movedRewardItems == maxMoveItems;
 		if (limitMove) {
-			player->sendCancelMessage(fmt::format("You can only collect {} items at a time.", maxMoveItems));
+			lootedItemsMessage = fmt::format("You can only collect {} items at a time. {} of {} objects were picked up.", maxMoveItems, movedRewardItems, rewardCount);
+			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedItemsMessage);
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
@@ -2594,8 +2596,8 @@ ReturnValue Game::collectRewardChestItems(Player* player, uint32_t maxMoveItems 
 		}
 	}
 
-	auto lootedMessage = fmt::format("{} of {} objects were picked up.", movedRewardItems, rewardCount);
-	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedMessage);
+	lootedItemsMessage = fmt::format("{} of {} objects were picked up.", movedRewardItems, rewardCount);
+	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedItemsMessage);
 
 	if (movedRewardItems == 0) {
 		return RETURNVALUE_NOTENOUGHROOM;

@@ -350,6 +350,7 @@ bool ConfigManager::load() {
 	integer[WHEEL_POINTS_PER_LEVEL] = getGlobalNumber(L, "wheelPointsPerLevel", 1);
 
 	boolean[PARTY_SHARE_LOOT_BOOSTS] = getGlobalBoolean(L, "partyShareLootBoosts", true);
+	floating[PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR] = getGlobalFloat(L, "partyShareLootBoostsDimishingFactor", 0.7f);
 	integer[TIBIADROME_CONCOCTION_COOLDOWN] = getGlobalNumber(L, "tibiadromeConcoctionCooldown", 24 * 60 * 60);
 	integer[TIBIADROME_CONCOCTION_DURATION] = getGlobalNumber(L, "tibiadromeConcoctionDuration", 1 * 60 * 60);
 	string[TIBIADROME_CONCOCTION_TICK_TYPE] = getGlobalString(L, "tibiadromeConcoctionTickType", "online");
@@ -357,6 +358,15 @@ bool ConfigManager::load() {
 	string[M_CONST] = getGlobalString(L, "memoryConst", "1<<16");
 	integer[T_CONST] = getGlobalNumber(L, "temporaryConst", 2);
 	integer[PARALLELISM] = getGlobalNumber(L, "parallelism", 2);
+
+	// Vip System
+	boolean[VIP_SYSTEM_ENABLED] = getGlobalBoolean(L, "vipSystemEnabled", false);
+	integer[VIP_BONUS_EXP] = getGlobalNumber(L, "vipBonusExp", 0);
+	integer[VIP_BONUS_LOOT] = getGlobalNumber(L, "vipBonusLoot", 0);
+	integer[VIP_BONUS_SKILL] = getGlobalNumber(L, "vipBonusSkill", 0);
+	boolean[VIP_AUTOLOOT_VIP_ONLY] = getGlobalBoolean(L, "vipAutoLootVipOnly", false);
+	boolean[VIP_STAY_ONLINE] = getGlobalBoolean(L, "vipStayOnline", false);
+	integer[VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION] = getGlobalNumber(L, "vipFamiliarTimeCooldownReduction", 0);
 
 	loaded = true;
 	lua_close(L);

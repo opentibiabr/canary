@@ -278,7 +278,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "openMarket", PlayerFunctions::luaPlayerOpenMarket);
 
 			registerMethod(L, "Player", "instantSkillWOD", PlayerFunctions::luaPlayerInstantSkillWOD);
-			registerMethod(L, "Player", "upgradeSpellsWORD", PlayerFunctions::luaPlayerUpgradeSpellWOD);
+			registerMethod(L, "Player", "upgradeSpellsWOD", PlayerFunctions::luaPlayerUpgradeSpellWOD);
 			registerMethod(L, "Player", "reloadData", PlayerFunctions::luaPlayerReloadData);
 			registerMethod(L, "Player", "onThinkWheelOfDestiny", PlayerFunctions::luaPlayerOnThinkWheelOfDestiny);
 			registerMethod(L, "Player", "avatarTimer", PlayerFunctions::luaPlayerAvatarTimer);
@@ -335,6 +335,9 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "updateConcoction", PlayerFunctions::luaPlayerUpdateConcoction);
 			registerMethod(L, "Player", "clearSpellCooldowns", PlayerFunctions::luaPlayerClearSpellCooldowns);
+
+			registerMethod(L, "Player", "isVip", PlayerFunctions::luaPlayerIsVip);
+			registerMethod(L, "Player", "getVipDays", PlayerFunctions::luaPlayerGetVipDays);
 
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
@@ -665,6 +668,9 @@ class PlayerFunctions final : LuaScriptInterface {
 		// Concoction system
 		static int luaPlayerUpdateConcoction(lua_State* L);
 		static int luaPlayerClearSpellCooldowns(lua_State* L);
+
+		static int luaPlayerIsVip(lua_State* L);
+		static int luaPlayerGetVipDays(lua_State* L);
 
 		friend class CreatureFunctions;
 };

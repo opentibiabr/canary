@@ -15,6 +15,7 @@
 #include "lua/creature/movement.h"
 #include "lua/scripts/scripts.h"
 #include "creatures/combat/spells.h"
+#include "lua/callbacks/events_callbacks.hpp"
 
 Scripts::Scripts() :
 	scriptInterface("Scripts Interface") {
@@ -33,6 +34,7 @@ void Scripts::clearAllScripts() const {
 	g_spells().clear();
 	g_moveEvents().clear();
 	g_weapons().clear();
+	g_callbacks().clear();
 }
 
 bool Scripts::loadEventSchedulerScripts(const std::string &fileName) {

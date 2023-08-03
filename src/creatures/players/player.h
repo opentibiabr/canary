@@ -566,6 +566,16 @@ class Player final : public Creature, public Cylinder {
 		bool isPremium() const;
 		void setPremiumDays(int32_t v);
 
+		int32_t getVipDays() const {
+			return premiumDays;
+		}
+		bool isVip() const {
+			if (!g_configManager().getBoolean(VIP_SYSTEM_ENABLED)) {
+				return false;
+			}
+			return getVipDays() > 0;
+		}
+
 		void setTibiaCoins(int32_t v);
 		void setTransferableTibiaCoins(int32_t v);
 
@@ -708,7 +718,7 @@ class Player final : public Creature, public Cylinder {
 
 		ReturnValue recurseMoveItemToContainer(Item* item, Container* container);
 		std::vector<Item*> getRewardsFromContainer(const Container* container) const;
-		ReturnValue rewardChestCollect(const Container* fromCorpse = nullptr, uint32_t maxMoveItems = 0);
+		ReturnValue rewardChestCollect(uint32_t maxMoveItems = 0);
 
 		DepotChest* getDepotChest(uint32_t depotId, bool autoCreate);
 		DepotLocker* getDepotLocker(uint32_t depotId);
@@ -2421,6 +2431,14 @@ class Player final : public Creature, public Cylinder {
 			return activeConcoctions;
 		}
 
+		bool checkAutoLoot() const {
+			const bool autoLoot = g_configManager().getBoolean(AUTOLOOT) && getStorageValue(STORAGEVALUE_AUTO_LOOT) != 0;
+			if (g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && g_configManager().getBoolean(VIP_AUTOLOOT_VIP_ONLY)) {
+				return autoLoot && isVip();
+			}
+			return autoLoot;
+		}
+
 		// Get specific inventory item from itemid
 		std::vector<Item*> getInventoryItemsFromId(uint16_t itemId, bool ignore = true) const;
 
@@ -2437,6 +2455,8 @@ class Player final : public Creature, public Cylinder {
 		// Player wheel methods interface
 		std::unique_ptr<PlayerWheel> &wheel();
 		const std::unique_ptr<PlayerWheel> &wheel() const;
+
+		void sendLootMessage(const std::string &message) const;
 
 	private:
 		static uint32_t playerFirstID;

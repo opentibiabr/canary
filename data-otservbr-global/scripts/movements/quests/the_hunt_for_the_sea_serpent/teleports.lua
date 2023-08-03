@@ -17,7 +17,7 @@ function teleports.onStepIn(creature, item, position, fromPosition)
 			if config[b].condition then
 				if player:getStorageValue(config[b].condition) == 2 then
 					if player:getSlotItem(CONST_SLOT_HEAD) then
-						if isInArray({5460, 11585, 13995}, player:getSlotItem(CONST_SLOT_HEAD).itemid) then
+						if table.contains({5460, 11585, 13995}, player:getSlotItem(CONST_SLOT_HEAD).itemid) then
 							player:teleportTo(config[b].destination)
 							player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 						else

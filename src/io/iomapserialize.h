@@ -26,7 +26,7 @@ class IOMapSerialize {
 		static void saveTile(PropWriteStream &stream, const Tile* tile);
 
 		static bool loadContainer(PropStream &propStream, Container* container);
-		static bool loadItem(PropStream &propStream, Cylinder* parent);
+		static bool loadItem(PropStream &propStream, Cylinder* parent, bool isHouseItem = false);
 };
 
 #endif // SRC_IO_IOMAPSERIALIZE_H_

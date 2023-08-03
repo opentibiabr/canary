@@ -26,7 +26,7 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	local grade = creature:upgradeSpellsWORD("Great Death Beam")
+	local grade = creature:upgradeSpellsWOD("Great Death Beam")
 	if grade == WHEEL_GRADE_NONE then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)

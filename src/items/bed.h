@@ -30,7 +30,7 @@ class BedItem final : public Item {
 		void serializeAttr(PropWriteStream &propWriteStream) const override;
 
 		bool canRemove() const override {
-			return house == nullptr;
+			return true;
 		}
 
 		uint32_t getSleeper() const {

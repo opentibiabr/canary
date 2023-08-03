@@ -1593,7 +1593,8 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 				newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
 				newOutfit.lookFamiliarsType = msg.get<uint16_t>();
 			}
-			g_game().playerChangeOutfit(player->getID(), newOutfit);
+			uint8_t isMountRandomized = msg.getByte();
+			g_game().playerChangeOutfit(player->getID(), newOutfit, isMountRandomized);
 		} else if (outfitType == 1) {
 			// This value probably has something to do with try outfit variable inside outfit window dialog
 			// if try outfit is set to 2 it expects uint32_t value after mounted and disable mounts from outfit window dialog
@@ -3837,9 +3838,10 @@ void ProtocolGame::sendStats() {
 void ProtocolGame::sendBasicData() {
 	NetworkMessage msg;
 	msg.addByte(0x9F);
-	if (player->isPremium()) {
+	if (player->isPremium() || player->isVip()) {
 		msg.addByte(1);
-		msg.add<uint32_t>(time(nullptr) + (player->premiumDays * 86400));
+		uint32_t days = player->premiumDays;
+		msg.add<uint32_t>(time(nullptr) + (days * 86400));
 	} else {
 		msg.addByte(0);
 		msg.add<uint32_t>(0);
@@ -3932,7 +3934,7 @@ void ProtocolGame::sendBlessStatus() {
 }
 
 void ProtocolGame::sendPremiumTrigger() {
-	if (!g_configManager().getBoolean(FREE_PREMIUM)) {
+	if (!g_configManager().getBoolean(FREE_PREMIUM) && !g_configManager().getBoolean(VIP_SYSTEM_ENABLED)) {
 		NetworkMessage msg;
 		msg.addByte(0x9E);
 		msg.addByte(16);

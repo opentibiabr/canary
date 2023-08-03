@@ -54,7 +54,7 @@ end
 
 function InsertRewardItems(playerGuid, timestamp, itemList)
 	local maxSidQueryResult = db.query('select max(`sid`) as max_sid from `player_rewards` where player_id = '..playerGuid..';')
-	local bagSid = (Result.getDataInt(maxSidQueryResult, 'max_sid') or 0) + 1;
+	local bagSid = (Result.getNumber(maxSidQueryResult, 'max_sid') or 0) + 1;
 	local nextSid = bagSid + 1;
 	local buffer = {'INSERT INTO `player_rewards` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES'}
 	local info = {

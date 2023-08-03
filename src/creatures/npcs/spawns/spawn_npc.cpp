@@ -14,6 +14,8 @@
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 #include "lua/creature/events.h"
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 #include "utils/pugicast.h"
 
 static constexpr int32_t MINSPAWN_INTERVAL = 1000; // 1 second
@@ -177,7 +179,9 @@ bool SpawnNpc::spawnNpc(uint32_t spawnId, NpcType* npcType, const Position &pos,
 
 	spawnedNpcMap.insert(spawned_pair(spawnId, npc));
 	spawnNpcMap[spawnId].lastSpawnNpc = OTSYS_TIME();
+
 	g_events().eventNpcOnSpawn(npc, pos);
+	g_callbacks().executeCallback(EventCallback_t::NpcOnSpawn, &EventCallback::npcOnSpawn, npc, pos);
 	return true;
 }
 

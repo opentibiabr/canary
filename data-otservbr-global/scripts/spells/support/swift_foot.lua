@@ -20,16 +20,16 @@ function spell.onCastSpell(creature, var)
 			if summon_t and summon_t:familiar() then
 				local deltaSpeed = math.max(creature:getBaseSpeed() - summon:getBaseSpeed(), 0)
 				local FamiliarSpeed = ((summon:getBaseSpeed() + deltaSpeed) * 0.8) - 72
-				local FamiliarHaste = createConditionObject(CONDITION_HASTE)
-				setConditionParam(FamiliarHaste, CONDITION_PARAM_TICKS, spellDuration)
-				setConditionParam(FamiliarHaste, CONDITION_PARAM_SPEED, FamiliarSpeed)
+				local FamiliarHaste = Condition(CONDITION_HASTE)
+				FamiliarHaste:setParameter(CONDITION_PARAM_TICKS, spellDuration)
+				FamiliarHaste:setParameter(CONDITION_PARAM_SPEED, FamiliarSpeed)
 				summon:addCondition(FamiliarHaste)
 			end
 		end
 	end
 
 	if combat:execute(creature, var) then
-		local grade = creature:upgradeSpellsWORD("Swift Foot")
+		local grade = creature:upgradeSpellsWOD("Swift Foot")
 		if grade == WHEEL_GRADE_NONE then
 			local exhaust = Condition(CONDITION_EXHAUST_COMBAT)
 			exhaust:setParameter(CONDITION_PARAM_TICKS, spellDuration)
@@ -55,12 +55,12 @@ end
 
 spell:name("Swift Foot")
 spell:words("utamo tempo san")
-spell:group("support", "Focus")
+spell:group("support", "focus")
 spell:vocation("paladin;true", "royal paladin;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_SWIFT_FOOT)
 spell:id(134)
-spell:cooldown(2 * 1000)
-spell:groupCooldown(2 * 1000)
+spell:cooldown(10 * 1000)
+spell:groupCooldown(2 * 1000, 10 * 1000)
 spell:level(55)
 spell:mana(400)
 spell:isSelfTarget(true)

@@ -75,25 +75,25 @@ monster.voices = {
 
 monster.loot = {
 	{name = "platinum coin", chance = 100000, maxCount = 13},
-	{name = "meat", chance = 7600},
-	{name = "cyan crystal fragment", chance = 2570},
-	{name = "sea horse figurine", chance = 290},
-	{name = "makara fin", chance = 10800},
-	{name = "green crystal shard", chance = 2860},
-	{name = "yellow gem", chance = 2510},
-	{name = "blue gem", chance = 1940},
-	{name = "makara tongue", chance = 9540},
-	{name = "green crystal fragment", chance = 2630},
-	{name = "rainbow quartz", chance = 2340, maxCount = 2},
-	{name = "small diamond", chance = 1770, maxCount = 3}
+	{name = "makara tongue", chance = 10160},
+	{name = "makara fin", chance = 7420},
+	{name = "meat", chance = 7030, maxCount = 2},
+	{name = "cyan crystal fragment", chance = 4300},
+	{name = "yellow gem", chance = 4100},
+	{name = "rainbow quartz", chance = 3320, maxCount = 2},
+	{name = "small diamond", chance = 2340, maxCount = 3},
+	{name = "blue gem", chance = 2150},
+	{name = "green crystal shard", chance = 1950},
+	{name = "green crystal fragment", chance = 1170},
+	{name = "sea horse figurine", chance = 200},
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -361},
-	{name ="combat", interval = 1000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -320, maxDamage = -320, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = true},
-	{name ="combat", interval = 2000, chance = 50, type = COMBAT_ICEDAMAGE, minDamage = -282, maxDamage = -315, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_WATERSPLASH, target = true},
-	{name ="combat", interval = 6000, chance = 50, type = COMBAT_EARTHDAMAGE, minDamage = -282, maxDamage = -315, range = 7, shootEffect = CONST_ME_STONES, effect = CONST_ANI_EARTH, target = false},
-	{name ="makarawatersplash", interval = 6000, chance = 38, minDamage = -800, maxDamage = -1300}
+	{name = "combat", interval = 2000, chance = 100, type = COMBAT_PHYSICALDAMAGE, minDamage = -145, maxDamage = -390, target = true},	-- basic_attack
+	{name = "combat", interval = 2000, chance = 25, type = COMBAT_EARTHDAMAGE, minDamage = -305, maxDamage = -390, radius = 3, effect = CONST_ME_STONES, shootEffect = CONST_ANI_EARTH, target = true},	-- stone_shower_ball
+	{name = "combat", interval = 2000, chance = 25, type = COMBAT_EARTHDAMAGE, minDamage = -305, maxDamage = -390, radius = 5, effect = CONST_ME_STONES, shootEffect = CONST_ANI_EARTH, target = true},	-- great_stone_shower_ball
+	{name = "combat", interval = 2000, chance = 25, type = COMBAT_ICEDAMAGE, minDamage = -360, maxDamage = -390, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = true},	-- ice_strike
+	{name = "makarawatersplash", interval = 2000, chance = 25, minDamage = -380, maxDamage = -455, target = false},	-- short_water_cone-wave
 }
 
 monster.defenses = {

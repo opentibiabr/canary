@@ -3647,7 +3647,7 @@ int PlayerFunctions::luaPlayerInstantSkillWOD(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerUpgradeSpellWOD(lua_State* L) {
-	// player:upgradeSpellsWORD([name[, add]])
+	// player:upgradeSpellsWOD([name[, add]])
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
@@ -3825,5 +3825,30 @@ int PlayerFunctions::luaPlayerClearSpellCooldowns(lua_State* L) {
 	}
 	player->clearCooldowns();
 	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerIsVip(lua_State* L) {
+	// player:isVip()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	pushBoolean(L, player->isVip());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetVipDays(lua_State* L) {
+	// player:getVipDays()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushnumber(L, player->getVipDays());
 	return 1;
 }

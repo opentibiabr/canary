@@ -14,48 +14,78 @@ HomeBanners = {
 	delay = 10
 }
 
+local premiumCategoryName = "Premium Time"
+local premiumOfferName = "Premium Time"
+if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+	premiumCategoryName = "VIP Shop"
+	premiumOfferName = "VIP"
+end
+
+local premiumDescription = "<i>Enhance your gaming experience by gaining additional abilities and advantages:</i>\n\n&#8226; access to Premium areas\n&#8226; use Tibia's transport system (ships, carpet)\n&#8226; more spells\n&#8226; rent houses\n&#8226; found guilds\n&#8226; offline training\n&#8226; larger depots\n&#8226; and many more\n\n{usablebyallicon} valid for all characters on this account\n{activated}"
+if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+	local vipBonusExp = configManager.getNumber(configKeys.VIP_BONUS_EXP)
+	local vipBonusLoot = configManager.getNumber(configKeys.VIP_BONUS_LOOT)
+	local vipBonusSkill = configManager.getNumber(configKeys.VIP_BONUS_SKILL)
+	local vipStayOnline = configManager.getBoolean(configKeys.VIP_STAY_ONLINE)
+
+	premiumDescription = "<i>Enhance your gaming experience by gaining advantages:</i>\n\n"
+	if vipBonusExp > 0 then
+		premiumDescription = premiumDescription .. "&#8226; +" .. vipBonusExp .. "% experience rate\n"
+	end
+	if vipBonusSkill > 0 then
+		premiumDescription = premiumDescription .. "&#8226; +" .. vipBonusSkill .. "% skill training speed\n"
+	end
+	if vipBonusLoot > 0 then
+		premiumDescription = premiumDescription .. "&#8226; +" .. vipBonusLoot .. "% loot\n"
+	end
+	if vipStayOnline then
+		premiumDescription = premiumDescription .. "&#8226; stay online idle without getting disconnected\n"
+	end
+	premiumDescription = premiumDescription .. "\n{usablebyallicon} valid for all characters on this account\n{activated}"
+end
+
 GameStore.Categories = {
 	-- Premium Time
 	{
 		icons = { "Category_PremiumTime.png" },
-		name = "Premium Time",
+		name = premiumCategoryName,
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
 		offers = {
 			{
 				icons = { "Premium_Time_30.png" },
-				name = "30 Days of Premium Time",
+				name = string.format("30 Days of %s", premiumOfferName),
 				price = 250,
 				id = 3030,
 				validUntil = 30,
-				description = "<i>Enhance your gaming experience by gaining additional abilities and advantages:</i>\n\n&#8226; access to Premium areas\n&#8226; use Tibia's transport system (ships, carpet)\n&#8226; more spells\n&#8226; rent houses\n&#8226; found guilds\n&#8226; offline training\n&#8226; larger depots\n&#8226; and many more\n\n{usablebyallicon} valid for all characters on this account\n{activated}",
+				description = premiumDescription,
 				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
 			},
 			{
 				icons = { "Premium_Time_90.png" },
-				name = "90 Days of Premium Time",
+				name = string.format("90 Days of %s", premiumOfferName),
 				price = 750,
 				id = 3090,
 				validUntil = 90,
-				description = "<i>Enhance your gaming experience by gaining additional abilities and advantages:</i>\n\n&#8226; access to Premium areas\n&#8226; use Tibia's transport system (ships, carpet)\n&#8226; more spells\n&#8226; rent houses\n&#8226; found guilds\n&#8226; offline training\n&#8226; larger depots\n&#8226; and many more\n\n{usablebyallicon} valid for all characters on this account\n{activated}",
+				description = premiumDescription,
 				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
 			},
 			{
 				icons = { "Premium_Time_180.png" },
-				name = "180 Days of Premium Time",
+				name = string.format("180 Days of %s", premiumOfferName),
 				price = 1500,
 				id = 3180,
 				validUntil = 180,
-				description = "<i>Enhance your gaming experience by gaining additional abilities and advantages:</i>\n\n&#8226; access to Premium areas\n&#8226; use Tibia's transport system (ships, carpet)\n&#8226; more spells\n&#8226; rent houses\n&#8226; found guilds\n&#8226; offline training\n&#8226; larger depots\n&#8226; and many more\n\n{usablebyallicon} valid for all characters on this account\n{activated}",
+				description = premiumDescription,
 				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
 			},
 			{
 				icons = { "Premium_Time_360.png" },
-				name = "360 Days of Premium Time",
+				name = string.format("360 Days of %s", premiumOfferName),
 				price = 3000,
 				id = 3360,
 				validUntil = 360,
-				description = "<i>Enhance your gaming experience by gaining additional abilities and advantages:</i>\n\n&#8226; access to Premium areas\n&#8226; use Tibia's transport system (ships, carpet)\n&#8226; more spells\n&#8226; rent houses\n&#8226; found guilds\n&#8226; offline training\n&#8226; larger depots\n&#8226; and many more\n\n{usablebyallicon} valid for all characters on this account\n{activated}",
+				description = premiumDescription,
 				type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
 			},
 		},
@@ -3873,7 +3903,6 @@ GameStore.Categories = {
 				name = "Painting of Tibiasula",
 				price = 250,
 				itemtype = 28947,
-				itemtype = 28948,
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
@@ -5765,17 +5794,8 @@ GameStore.Categories = {
 			{
 				icons = { "Flower_Bed.png" },
 				name = "Flower Bed",
-				price = 75,
-				itemtype = 39788,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Flower_Bed.png" },
-				name = "Flower Bed",
-				price = 75,
-				itemtype = 39789,
+				price = 150,
+				itemtype = { 39788, 39789 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -5783,17 +5803,8 @@ GameStore.Categories = {
 			{
 				icons = { "Grandiose_Bed.png" },
 				name = "Grandiose Bed",
-				price = 75,
-				itemtype = 35936,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Grandiose_Bed.png" },
-				name = "Grandiose Bed",
-				price = 75,
-				itemtype = 35937,
+				price = 150,
+				itemtype = { 35936, 35937 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -5801,17 +5812,8 @@ GameStore.Categories = {
 			{
 				icons = { "Homely_Bed.png" },
 				name = "Homely Bed",
-				price = 60,
-				itemtype = 34320,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Homely_Bed.png" },
-				name = "Homely Bed",
-				price = 60,
-				itemtype = 34321,
+				price = 120,
+				itemtype = { 34320, 34321 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -5819,17 +5821,8 @@ GameStore.Categories = {
 			{
 				icons = { "Knightly_Bed.png" },
 				name = "Knightly Bed",
-				price = 90,
-				itemtype = 39437,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Knightly_Bed.png" },
-				name = "Knightly Bed",
-				price = 90,
-				itemtype = 39438,
+				price = 180,
+				itemtype = { 39437, 39438 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -5837,17 +5830,8 @@ GameStore.Categories = {
 			{
 				icons = { "Kraken_Bed.png" },
 				name = "Kraken Bed",
-				price = 75,
-				itemtype = 37201,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Kraken_Bed.png" },
-				name = "Kraken Bed",
-				price = 75,
-				itemtype = 37202,
+				price = 150,
+				itemtype = { 37201, 37202 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -5855,17 +5839,8 @@ GameStore.Categories = {
 			{
 				icons = { "Log_Bed.png" },
 				name = "Log Bed",
-				price = 75,
-				itemtype = 37031,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Log_Bed.png" },
-				name = "Log Bed",
-				price = 75,
-				itemtype = 37032,
+				price = 150,
+				itemtype = { 37031, 37032 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -5873,17 +5848,8 @@ GameStore.Categories = {
 			{
 				icons = { "Magnificent_Bed.png" },
 				name = "Magnificent Bed",
-				price = 90,
-				itemtype = 35859,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Magnificent_Bed.png" },
-				name = "Magnificent Bed",
-				price = 90,
-				itemtype = 35860,
+				price = 180,
+				itemtype = { 35859, 35860 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -5891,17 +5857,8 @@ GameStore.Categories = {
 			{
 				icons = { "Opulent_Kline.png" },
 				name = "Opulent Kline",
-				price = 60,
-				itemtype = 42359,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Opulent_Kline.png" },
-				name = "Opulent Kline",
-				price = 60,
-				itemtype = 42360,
+				price = 120,
+				itemtype = { 42359, 42360 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -5909,17 +5866,8 @@ GameStore.Categories = {
 			{
 				icons = { "Ornate_Bed.png" },
 				name = "Ornate Bed",
-				price = 90,
-				itemtype = 35871,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Ornate_Bed.png" },
-				name = "Ornate Bed",
-				price = 90,
-				itemtype = 35872,
+				price = 180,
+				itemtype = { 35871, 35872 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -5927,17 +5875,8 @@ GameStore.Categories = {
 			{
 				icons = { "Seafarer_Bed.png" },
 				name = "Seafarer Bed",
-				price = 90,
-				itemtype = 42287,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Seafarer_Bed.png" },
-				name = "Seafarer Bed",
-				price = 90,
-				itemtype = 42288,
+				price = 180,
+				itemtype = { 42287, 42288 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -5945,17 +5884,8 @@ GameStore.Categories = {
 			{
 				icons = { "Sleeping_Mat.png" },
 				name = "Sleeping Mat",
-				price = 60,
-				itemtype = 37793,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Sleeping_Mat.png" },
-				name = "Sleeping Mat",
-				price = 60,
-				itemtype = 37794,
+				price = 120,
+				itemtype = { 37793, 37794 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -5963,17 +5893,8 @@ GameStore.Categories = {
 			{
 				icons = { "Vengothic_Bed.png" },
 				name = "Vengothic Bed",
-				price = 90,
-				itemtype = 35883,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Vengothic_Bed.png" },
-				name = "Vengothic Bed",
-				price = 90,
-				itemtype = 35884,
+				price = 180,
+				itemtype = { 35883, 35884 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -5981,17 +5902,8 @@ GameStore.Categories = {
 			{
 				icons = { "Verdant_Bed.png" },
 				name = "Verdant Bed",
-				price = 75,
-				itemtype = 26096,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Verdant_Bed.png" },
-				name = "Verdant Bed",
-				price = 75,
-				itemtype = 26097,
+				price = 150,
+				itemtype = { 26096, 26097 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -5999,17 +5911,8 @@ GameStore.Categories = {
 			{
 				icons = { "Wrought-Iron_Bed.png" },
 				name = "Wrought-Iron Bed",
-				price = 75,
-				itemtype = 35206,
-				count = 1,
-				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
-				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
-			},
-			{
-				icons = { "Wrought-Iron_Bed.png" },
-				name = "Wrought-Iron Bed",
-				price = 75,
-				itemtype = 35207,
+				price = 150,
+				itemtype = { 35206, 35207 },
 				count = 1,
 				description = "<i>Sleep in a bed to restore soul, mana and hit points and to train your skills!</i>\n\n{house}\n{boxicon}comes in 2 boxes which can only be unwrapped by purchasing character, put the 2 parts together to get a functional bed\n{storeinbox}\n{usablebyallicon}if not already occupied, it can be used by every Premium character that has access to the house\n{useicon}use it to sleep in it\n{backtoinbox}\n",
 				type = GameStore.OfferTypes.OFFER_TYPE_ITEM_BED,
@@ -6432,14 +6335,14 @@ GameStore.Categories = {
 			},
 		},
 	},
-	--Tournament
+	-- Tournament
 	{
 		icons = { "Category_Tournament.png" },
 		name = "Tournament",
 		rookgaard = true,
 		subclasses = { "Tickets", "Exclusive Offers" },
 	},
-	-- Tickets
+	-- Tournament ~ Tickets
 	{
 		icons = { "Category_Tickets.png" },
 		parent = "Tournament",
@@ -6453,7 +6356,7 @@ GameStore.Categories = {
 			},
 		},
 	},
-	-- Exclusive Offers
+	-- Tournament ~ Exclusive Offers
 	{
 		icons = { "Category_ExclusiveOffers.png" },
 		name = "Exclusive Offers",

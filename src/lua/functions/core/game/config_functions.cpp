@@ -217,6 +217,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", LOYALTY_BONUS_PERCENTAGE_MULTIPLIER);
 
 	registerEnumIn(L, "configKeys", PARTY_SHARE_LOOT_BOOSTS);
+	registerEnumIn(L, "configKeys", PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR);
 	registerEnumIn(L, "configKeys", TIBIADROME_CONCOCTION_COOLDOWN);
 	registerEnumIn(L, "configKeys", TIBIADROME_CONCOCTION_DURATION);
 	registerEnumIn(L, "configKeys", TIBIADROME_CONCOCTION_TICK_TYPE);
@@ -232,6 +233,15 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", T_CONST);
 	registerEnumIn(L, "configKeys", PARALLELISM);
 
+	registerEnumIn(L, "configKeys", AUTOLOOT);
+
+	registerEnumIn(L, "configKeys", VIP_SYSTEM_ENABLED);
+	registerEnumIn(L, "configKeys", VIP_BONUS_EXP);
+	registerEnumIn(L, "configKeys", VIP_BONUS_LOOT);
+	registerEnumIn(L, "configKeys", VIP_BONUS_SKILL);
+	registerEnumIn(L, "configKeys", VIP_AUTOLOOT_VIP_ONLY);
+	registerEnumIn(L, "configKeys", VIP_STAY_ONLINE);
+	registerEnumIn(L, "configKeys", VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION);
 #undef registerEnumIn
 }
 

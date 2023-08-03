@@ -117,7 +117,7 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			player:sendTextMessage(MESSAGE_FAILURE, 'It is empty.')
 
 		elseif target.uid == player.uid then
-			if isInArray({2, 3, 16}, item.type) then
+			if table.contains({2, 3, 16}, item.type) then
 				player:addCondition(drunk)
 
 			elseif item.type == 6 then

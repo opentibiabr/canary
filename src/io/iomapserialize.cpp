@@ -45,14 +45,14 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 		}
 
 		while (item_count--) {
-			loadItem(propStream, tile);
+			loadItem(propStream, tile, true);
 		}
 	} while (result->next());
 	SPDLOG_INFO("Loaded house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
 }
-bool IOMapSerialize::SaveHouseItemsGuard() {
+bool IOMapSerialize::saveHouseItems() {
 	bool success = DBTransaction::executeWithinTransaction([]() {
-		saveHouseItems();
+		return SaveHouseItemsGuard();
 	});
 
 	if (!success) {
@@ -62,7 +62,7 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 	return success;
 }
 
-bool IOMapSerialize::saveHouseItems() {
+bool IOMapSerialize::SaveHouseItemsGuard() {
 	int64_t start = OTSYS_TIME();
 	Database &db = Database::getInstance();
 	std::ostringstream query;
@@ -117,7 +117,9 @@ bool IOMapSerialize::loadContainer(PropStream &propStream, Container* container)
 	return true;
 }
 
-bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent) {
+uint32_t NEW_BEDS_START_ID = 30000;
+
+bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent, bool isHouseItem /*= false*/) {
 	uint16_t id;
 	if (!propStream.read<uint16_t>(id)) {
 		return false;
@@ -129,7 +131,10 @@ bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent) {
 	}
 
 	const ItemType &iType = Item::items[id];
-	if (iType.moveable || !tile || iType.isCarpet()) {
+	if (isHouseItem && iType.isBed() && id < NEW_BEDS_START_ID) {
+		return false;
+	}
+	if (iType.moveable || !tile || iType.isCarpet() || iType.isBed()) {
 		// create a new item
 		Item* item = Item::CreateItem(id);
 		if (item) {
@@ -280,9 +285,9 @@ bool IOMapSerialize::loadHouseInfo() {
 	return true;
 }
 
-bool IOMapSerialize::SaveHouseInfoGuard() {
+bool IOMapSerialize::saveHouseInfo() {
 	bool success = DBTransaction::executeWithinTransaction([]() {
-		saveHouseInfo();
+		return SaveHouseInfoGuard();
 	});
 
 	if (!success) {
@@ -292,7 +297,7 @@ bool IOMapSerialize::SaveHouseInfoGuard() {
 	return success;
 }
 
-bool IOMapSerialize::saveHouseInfo() {
+bool IOMapSerialize::SaveHouseInfoGuard() {
 	Database &db = Database::getInstance();
 
 	if (!db.executeQuery("DELETE FROM `house_lists`")) {

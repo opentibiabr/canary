@@ -20,6 +20,8 @@
 #include "grouping/familiars.h"
 #include "lua/creature/creatureevent.h"
 #include "lua/creature/events.h"
+#include "lua/callbacks/event_callback.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/movement.h"
 #include "io/iologindata.h"
 #include "io/iobestiary.h"
@@ -136,6 +138,10 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		if (loyaltyTitle.length() != 0) {
 			s << " You are a " << loyaltyTitle << ".";
 		}
+
+		if (isVip()) {
+			s << " You are VIP.";
+		}
 	} else {
 		s << name;
 		if (!group->access) {
@@ -143,11 +149,13 @@ std::string Player::getDescription(int32_t lookDistance) const {
 		}
 		s << '.';
 
+		std::string pronoun;
 		if (sex == PLAYERSEX_FEMALE) {
-			s << " She";
+			pronoun = " She";
 		} else {
-			s << " He";
+			pronoun = " He";
 		}
+		s << pronoun;
 
 		if (group->access) {
 			s << " is " << group->name << '.';
@@ -163,6 +171,10 @@ std::string Player::getDescription(int32_t lookDistance) const {
 			} else {
 				s << " He is a " << loyaltyTitle << ".";
 			}
+		}
+
+		if (isVip()) {
+			s << pronoun << " is VIP.";
 		}
 	}
 
@@ -600,6 +612,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 	}
 
 	g_events().eventPlayerOnGainSkillTries(this, skill, count);
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, skill, count);
 	if (count == 0) {
 		return;
 	}
@@ -826,6 +839,7 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 		if (!isLogin) {
 			auto currentFrameTime = g_dispatcher().getDispatcherCycle();
 			g_events().eventOnStorageUpdate(this, key, value, getStorageValue(key), currentFrameTime);
+			g_callbacks().executeCallback(EventCallback_t::PlayerOnStorageUpdate, &EventCallback::playerOnStorageUpdate, this, key, value, getStorageValue(key), currentFrameTime);
 		}
 	} else {
 		storageMap.erase(key);
@@ -1159,37 +1173,31 @@ void Player::getRewardList(std::vector<uint64_t> &rewards) const {
 std::vector<Item*> Player::getRewardsFromContainer(const Container* container) const {
 	std::vector<Item*> rewardItemsVector;
 	if (container) {
-		for (auto item : container->getItems(true)) {
+		for (auto item : container->getItems(false)) {
 			if (item->getID() == ITEM_REWARD_CONTAINER) {
-				continue;
+				auto items = getRewardsFromContainer(item->getContainer());
+				rewardItemsVector.insert(rewardItemsVector.end(), items.begin(), items.end());
+			} else {
+				rewardItemsVector.push_back(item);
 			}
-
-			rewardItemsVector.push_back(item);
 		}
 	}
 
 	return rewardItemsVector;
 }
 
-ReturnValue Player::rewardChestCollect(const Container* fromCorpse /* = nullptr*/, uint32_t maxMoveItems /* = 0*/) {
+ReturnValue Player::rewardChestCollect(uint32_t maxMoveItems /* = 0*/) {
 	std::vector<Item*> rewardItemsVector;
-	if (fromCorpse) {
-		auto rewardId = fromCorpse->getAttribute<time_t>(ItemAttribute_t::DATE);
-		auto reward = getReward(rewardId, false);
-		rewardItemsVector = getRewardsFromContainer(reward->getContainer());
-	} else {
-		rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());
+	if (!rewardChest || rewardChest->empty()) {
+		return RETURNVALUE_REWARDCHESTISEMPTY;
 	}
-
-	if (rewardItemsVector.empty()) {
-		return fromCorpse ? RETURNVALUE_REWARDCONTAINERISEMPTY : RETURNVALUE_REWARDCHESTISEMPTY;
-	}
+	rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());
 
 	auto rewardCount = rewardItemsVector.size();
 	uint32_t movedRewardItems = 0;
 	for (auto item : rewardItemsVector) {
 		// Stop if player not have free capacity
-		if (getCapacity() < item->getWeight()) {
+		if (item && getCapacity() < item->getWeight()) {
 			break;
 		}
 
@@ -1676,10 +1684,13 @@ void Player::onChangeZone(ZoneType_t zone) {
 	g_game().updateCreatureWalkthrough(this);
 	sendIcons();
 	g_events().eventPlayerOnChangeZone(this, zone);
+
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnChangeZone, &EventCallback::playerOnChangeZone, this, zone);
 }
 
 void Player::onChangeHazard(bool isHazard) {
 	g_events().eventPlayerOnChangeHazard(this, isHazard);
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnChangeHazard, &EventCallback::playerOnChangeHazard, this, isHazard);
 	sendIcons();
 }
 
@@ -2056,7 +2067,8 @@ void Player::onThink(uint32_t interval) {
 	// Momentum (cooldown resets)
 	triggerMomentum();
 	auto playerTile = getTile();
-	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining()) {
+	const bool vipStaysOnline = isVip() && g_configManager().getBoolean(VIP_STAY_ONLINE);
+	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && !vipStaysOnline) {
 		idleTime += interval;
 		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
 		if (idleTime > (kickAfterMinutes * 60000) + 60000) {
@@ -2154,6 +2166,7 @@ void Player::addManaSpent(uint64_t amount) {
 	}
 
 	g_events().eventPlayerOnGainSkillTries(this, SKILL_MAGLEVEL, amount);
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, SKILL_MAGLEVEL, amount);
 	if (amount == 0) {
 		return;
 	}
@@ -2209,6 +2222,8 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 		return;
 	}
 
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnGainExperience, &EventCallback::playerOnGainExperience, this, target, exp, rawExp);
+
 	g_events().eventPlayerOnGainExperience(this, target, exp, rawExp);
 	if (exp == 0) {
 		return;
@@ -2225,6 +2240,12 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 
 	if (sendText) {
 		std::string expString = fmt::format("{} experience point{}.", exp, (exp != 1 ? "s" : ""));
+		if (isVip()) {
+			uint8_t expPercent = g_configManager().getNumber(VIP_BONUS_EXP);
+			if (expPercent > 0) {
+				expString = expString + fmt::format(" (VIP bonus {}%)", expPercent > 100 ? 100 : expPercent);
+			}
+		}
 
 		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString + (handleHazardExperience ? " (Hazard)" : ""));
 		message.position = position;
@@ -2307,6 +2328,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 	}
 
 	g_events().eventPlayerOnLoseExperience(this, exp);
+	g_callbacks().executeCallback(EventCallback_t::PlayerOnLoseExperience, &EventCallback::playerOnLoseExperience, this, exp);
 	if (exp == 0) {
 		return;
 	}
@@ -2602,6 +2624,7 @@ void Player::death(Creature* lastHitCreature) {
 		// Level loss
 		uint64_t expLoss = static_cast<uint64_t>(experience * deathLossPercent);
 		g_events().eventPlayerOnLoseExperience(this, expLoss);
+		g_callbacks().executeCallback(EventCallback_t::PlayerOnLoseExperience, &EventCallback::playerOnLoseExperience, this, expLoss);
 
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are dead.");
 		std::ostringstream lostExp;
@@ -5727,8 +5750,9 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
 
 		g_events().eventPlayerOnGainSkillTries(this, SKILL_MAGLEVEL, tries);
-		uint32_t currMagLevel = magLevel;
+		g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, SKILL_MAGLEVEL, tries);
 
+		uint32_t currMagLevel = magLevel;
 		while ((manaSpent + tries) >= nextReqMana) {
 			tries -= nextReqMana - manaSpent;
 
@@ -5781,6 +5805,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldPercentToNextLevel = static_cast<long double>(skills[skill].tries * 100) / nextReqTries;
 
 		g_events().eventPlayerOnGainSkillTries(this, skill, tries);
+		g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, skill, tries);
 		uint32_t currSkillLevel = skills[skill].level;
 
 		while ((skills[skill].tries + tries) >= nextReqTries) {
@@ -6778,6 +6803,7 @@ bool Player::saySpell(
 		tmpPlayer->onCreatureSay(this, type, text);
 		if (this != tmpPlayer) {
 			g_events().eventCreatureOnHear(tmpPlayer, this, text, type);
+			g_callbacks().executeCallback(EventCallback_t::CreatureOnHear, &EventCallback::creatureOnHear, tmpPlayer, this, text, type);
 		}
 	}
 	return true;
@@ -7670,4 +7696,18 @@ error_t Player::SetAccountInterface(account::Account* account) {
 error_t Player::GetAccountInterface(account::Account* account) {
 	account = account_;
 	return account::ERROR_NO;
+}
+
+void Player::sendLootMessage(const std::string &message) const {
+	if (!party) {
+		sendTextMessage(MESSAGE_LOOT, message);
+		return;
+	}
+
+	party->getLeader()->sendTextMessage(MESSAGE_LOOT, message);
+	for (const auto partyMember : party->getMembers()) {
+		if (partyMember) {
+			partyMember->sendTextMessage(MESSAGE_LOOT, message);
+		}
+	}
 }

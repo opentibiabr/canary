@@ -116,7 +116,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			'Travellers from the north have told stories of these creatures, watching them from within the ice in the deepest caves, still vigilant as if frozen in time. \'Ursagrodon\' they called them. ...',
 			'With tinder and some kind of fireproof vessel, you could create a device to melt the ice surrounding their remains and see for yourself what this is all about.'
 		}, npc, creature)
-	elseif isInArray({"arkarra", "stampor"}, message) then
+	elseif table.contains({"arkarra", "stampor"}, message) then
 		npcHandler:say({
 			'The stampor in the back? She\'s my friend, but she came to me out of her own free will. I must admit I\'ve never managed to tame any other stampor. ...',
 			'I heard that there\'s some sort of voodoo magic which would allow you to summon a stampor, but I\'m not a voodoo expert, so I wouldn\'t know.'

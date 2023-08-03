@@ -2485,7 +2485,7 @@ Container* Game::findNextAvailableContainer(ContainerIterator &containerIterator
 	}
 
 	// Fix last empty sub-container
-	if (lastSubContainer && lastSubContainer->size() > 0) {
+	if (lastSubContainer && !lastSubContainer->empty()) {
 		Item* cur = lastSubContainer->getItemByIndex(lastSubContainer->size() - 1);
 		lootContainer = cur ? cur->getContainer() : nullptr;
 		lastSubContainer = nullptr;
@@ -2495,7 +2495,7 @@ Container* Game::findNextAvailableContainer(ContainerIterator &containerIterator
 	return nullptr;
 }
 
-bool Game::handleFallbackLogic(Player* player, Container*&lootContainer, ContainerIterator &containerIterator, bool &fallbackConsumed) {
+bool Game::handleFallbackLogic(const Player* player, Container*&lootContainer, ContainerIterator &containerIterator, const bool &fallbackConsumed) {
 	if (fallbackConsumed || !player->quickLootFallbackToMainContainer) {
 		return false;
 	}
@@ -2535,7 +2535,7 @@ ReturnValue Game::processLootItems(Player* player, Container* lootContainer, Ite
 			return ret;
 		}
 
-		Container* nextContainer = findNextAvailableContainer(containerIterator, lastSubContainer, lootContainer);
+		const Container* nextContainer = findNextAvailableContainer(containerIterator, lootContainer, lastSubContainer);
 		if (!nextContainer && !handleFallbackLogic(player, lootContainer, containerIterator, fallbackConsumed)) {
 			break;
 		}
@@ -2579,7 +2579,7 @@ ReturnValue Game::internalCollectLootItems(Player* player, Item* item, ObjectCat
 ReturnValue Game::collectRewardChestItems(Player* player, uint32_t maxMoveItems /* = 0*/) {
 	// Check if have item on player reward chest
 	RewardChest* rewardChest = player->getRewardChest();
-	if (!rewardChest || rewardChest->size() == 0) {
+	if (!rewardChest || rewardChest->empty()) {
 		SPDLOG_DEBUG("Reward chest is wrong or empty");
 		return RETURNVALUE_NOTPOSSIBLE;
 	}

@@ -703,7 +703,7 @@ class Game {
 		 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
 		 * @return True if fallback logic was handled, false otherwise.
 		 */
-		bool handleFallbackLogic(Player* player, Container*&lootContainer, ContainerIterator &containerIterator, bool &fallbackConsumed);
+		bool handleFallbackLogic(const Player* player, Container*&lootContainer, ContainerIterator &containerIterator, const bool &fallbackConsumed);
 
 		/**
 		 * @brief Processes the movement or addition of an item to a loot container.

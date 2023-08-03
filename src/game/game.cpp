@@ -2455,9 +2455,7 @@ void Game::internalQuickLootCorpse(Player* player, Container* corpse) {
 }
 
 Container* Game::findLootContainer(Player* player, bool &fallbackConsumed, ObjectCategory_t category) {
-	bool allowAnything = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING);
 	Container* lootContainer = player->getLootContainer(category);
-
 	if (!allowAnything && !lootContainer && player->quickLootFallbackToMainContainer && !fallbackConsumed) {
 		Item* fallbackItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
 		Container* mainBackpack = fallbackItem ? fallbackItem->getContainer() : nullptr;
@@ -2470,9 +2468,7 @@ Container* Game::findLootContainer(Player* player, bool &fallbackConsumed, Objec
 		}
 	}
 
-	// If the player has a loot pouch and is able to use it for any loot, then we will use it, if not we will use the loot container
-	auto lootPouch = player->getLootPouch();
-	return (lootPouch && allowAnything) ? lootPouch : lootContainer;
+	return lootContainer;
 }
 
 Container* Game::findNextAvailableContainer(ContainerIterator &containerIterator, Container*&lootContainer, Container*&lastSubContainer) {

@@ -663,6 +663,11 @@ class Game {
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
 		void playerSpeakToNpc(Player* player, const std::string &text);
 
+		/**
+		  * Player wants to loot a corpse
+		  * \param player Player pointer
+		  * \param corpse Container pointer to be looted
+		  */
 		void internalQuickLootCorpse(Player* player, Container* corpse);
 
 		/**

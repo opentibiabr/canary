@@ -7680,7 +7680,7 @@ void Player::sendLootMessage(const std::string &message) const {
 Container* Player::getLootPouch() const {
 	// Allow players with CM access or higher have the loot pouch anywhere
 	auto parentItem = getParent() ? getParent()->getItem() : nullptr;
-	if (isNormalPlayer() && parentItem && parentItem->getID() != ITEM_STORE_INBOX) {
+	if (isPlayerGroup() && parentItem && parentItem->getID() != ITEM_STORE_INBOX) {
 		return nullptr;
 	}
 

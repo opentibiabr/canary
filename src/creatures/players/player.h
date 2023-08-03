@@ -563,7 +563,7 @@ class Player final : public Creature, public Cylinder {
 		bool isAccessPlayer() const {
 			return group->access;
 		}
-		bool isGroupPlayer() const {
+		bool isNormalPlayer() const {
 			return group->id <= account::GROUP_TYPE_SENIORTUTOR;
 		}
 		bool isPremium() const;

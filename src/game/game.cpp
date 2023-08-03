@@ -2551,18 +2551,20 @@ ReturnValue Game::internalCollectLootItems(Player* player, Item* item, ObjectCat
 	}
 
 	// Send money to the bank
-	if (item->getID() == ITEM_GOLD_COIN || item->getID() == ITEM_PLATINUM_COIN || item->getID() == ITEM_CRYSTAL_COIN) {
-		uint64_t money = 0;
-		if (item->getID() == ITEM_PLATINUM_COIN) {
-			money = item->getItemCount() * 100;
-		} else if (item->getID() == ITEM_CRYSTAL_COIN) {
-			money = item->getItemCount() * 10000;
-		} else {
-			money = item->getItemCount();
+	if (g_configManager().getBoolean(AUTOBANK)) {
+		if (item->getID() == ITEM_GOLD_COIN || item->getID() == ITEM_PLATINUM_COIN || item->getID() == ITEM_CRYSTAL_COIN) {
+			uint64_t money = 0;
+			if (item->getID() == ITEM_PLATINUM_COIN) {
+				money = item->getItemCount() * 100;
+			} else if (item->getID() == ITEM_CRYSTAL_COIN) {
+				money = item->getItemCount() * 10000;
+			} else {
+				money = item->getItemCount();
+			}
+			internalRemoveItem(item, item->getItemCount());
+			player->setBankBalance(player->getBankBalance() + money);
+			return RETURNVALUE_NOERROR;
 		}
-		internalRemoveItem(item, item->getItemCount());
-		player->setBankBalance(player->getBankBalance() + money);
-		return RETURNVALUE_NOERROR;
 	}
 
 	bool fallbackConsumed = false;

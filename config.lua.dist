@@ -437,3 +437,8 @@ vipBonusSkill = 0
 vipAutoLootVipOnly = false
 vipStayOnline = false
 vipFamiliarTimeCooldownReduction = 0
+
+-- NOTE: set rewardChestCollectEnabled to true to enable the reward collect system
+-- NOTE set rewardChestMaxCollectItems max items per collect action
+rewardChestCollectEnabled = true
+rewardChestMaxCollectItems = 0

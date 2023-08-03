@@ -189,7 +189,7 @@ class ProtocolGame final : public Protocol {
 		void parseCloseImbuementWindow(NetworkMessage &msg);
 
 		void parseModalWindowAnswer(NetworkMessage &msg);
-		void parseRewardContainerCollect(NetworkMessage &msg);
+		void parseRewardChestCollect(NetworkMessage &msg);
 
 		void parseBrowseField(NetworkMessage &msg);
 		void parseSeekInContainer(NetworkMessage &msg);

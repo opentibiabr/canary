@@ -1186,41 +1186,6 @@ std::vector<Item*> Player::getRewardsFromContainer(const Container* container) c
 	return rewardItemsVector;
 }
 
-ReturnValue Player::rewardChestCollect(uint32_t maxMoveItems /* = 0*/) {
-	std::vector<Item*> rewardItemsVector;
-	if (!rewardChest || rewardChest->empty()) {
-		return RETURNVALUE_REWARDCHESTISEMPTY;
-	}
-	rewardItemsVector = getRewardsFromContainer(rewardChest->getContainer());
-
-	auto rewardCount = rewardItemsVector.size();
-	uint32_t movedRewardItems = 0;
-	for (auto item : rewardItemsVector) {
-		// Stop if player not have free capacity
-		if (item && getCapacity() < item->getWeight()) {
-			break;
-		}
-
-		// Limit the collect count if the "maxMoveItems" is not "0"
-		auto limitMove = maxMoveItems != 0 && movedRewardItems == maxMoveItems;
-		if (limitMove) {
-			sendCancelMessage(fmt::format("You can only collect {} items at a time.", maxMoveItems));
-			return RETURNVALUE_NOTPOSSIBLE;
-		}
-
-		ObjectCategory_t category = g_game().getObjectCategory(item);
-		if (g_game().internalQuickLootItem(this, item, category) == RETURNVALUE_NOERROR) {
-			movedRewardItems++;
-		}
-	}
-
-	auto lootedMessage = fmt::format("{} of {} objects were picked up.", movedRewardItems, rewardCount);
-	sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedMessage);
-
-	auto finalReturn = movedRewardItems == 0 ? RETURNVALUE_NOTENOUGHROOM : RETURNVALUE_NOERROR;
-	return finalReturn;
-}
-
 void Player::sendCancelMessage(ReturnValue message) const {
 	sendCancelMessage(getReturnMessage(message));
 }
@@ -6202,7 +6167,7 @@ bool Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 		itemCount -= addValue;
 		Item* newItem = Item::CreateItem(itemId, addValue);
 
-		if (g_game().internalQuickLootItem(this, newItem, OBJECTCATEGORY_STASHRETRIEVE) != RETURNVALUE_NOERROR) {
+		if (g_game().canRetrieveStashItems(this, newItem)) {
 			g_game().internalPlayerAddItem(this, newItem, true);
 		}
 	}
@@ -6599,7 +6564,7 @@ void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool
 	ReturnValue ret = RETURNVALUE_NOERROR;
 	for (Item* item : itemsVector) {
 		// First lets try to retrieve the item to the stash retrieve container.
-		if (ret = g_game().internalQuickLootItem(this, item, OBJECTCATEGORY_STASHRETRIEVE); ret == RETURNVALUE_NOERROR) {
+		if (g_game().canRetrieveStashItems(this, item)) {
 			continue;
 		}
 
@@ -7710,4 +7675,27 @@ void Player::sendLootMessage(const std::string &message) const {
 			partyMember->sendTextMessage(MESSAGE_LOOT, message);
 		}
 	}
+}
+
+Container* Player::getLootPouch() const {
+	// Allow players with CM access or higher have the loot pouch anywhere
+	auto parentItem = getParent() ? getParent()->getItem() : nullptr;
+	if (isGroupPlayer() && parentItem->getID() != ITEM_STORE_INBOX) {
+		return nullptr;
+	}
+
+	auto inventoryItems = getInventoryItemsFromId(ITEM_GOLD_POUCH);
+	if (inventoryItems.empty()) {
+		return nullptr;
+	}
+	auto containerItem = inventoryItems.front();
+	if (!containerItem) {
+		return nullptr;
+	}
+	auto container = containerItem->getContainer();
+	if (!container) {
+		return nullptr;
+	}
+
+	return container;
 }

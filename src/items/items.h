@@ -391,10 +391,10 @@ class Items {
 			dummys.push_back(newId);
 		}
 
-		const std::vector<uint16_t>& getLadders() const {
+		const std::vector<uint16_t> &getLadders() const {
 			return ladders;
 		}
-		const std::vector<uint16_t>& getDummys() const {
+		const std::vector<uint16_t> &getDummys() const {
 			return dummys;
 		}
 

@@ -6167,7 +6167,7 @@ bool Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 		itemCount -= addValue;
 		Item* newItem = Item::CreateItem(itemId, addValue);
 
-		if (g_game().canRetrieveStashItems(this, newItem)) {
+		if (!g_game().tryRetrieveStashItems(this, newItem)) {
 			g_game().internalPlayerAddItem(this, newItem, true);
 		}
 	}
@@ -6564,7 +6564,7 @@ void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool
 	ReturnValue ret = RETURNVALUE_NOERROR;
 	for (Item* item : itemsVector) {
 		// First lets try to retrieve the item to the stash retrieve container.
-		if (g_game().canRetrieveStashItems(this, item)) {
+		if (g_game().tryRetrieveStashItems(this, item)) {
 			continue;
 		}
 

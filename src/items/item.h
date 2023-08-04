@@ -570,10 +570,18 @@ class Item : virtual public Thing, public ItemProperties {
 		void incrementReferenceCounter() {
 			++referenceCounter;
 		}
+
 		void decrementReferenceCounter() {
-			if (--referenceCounter == 0) {
-				delete this;
+			if (--referenceCounter != 0) {
+				return;
 			}
+
+			std::lock_guard<std::mutex> lock(deletionMutex);
+			if (referenceCounter != 0) {
+				// Another thread has already deleted this object
+				return;
+			}
+			delete this;
 		}
 
 		Cylinder* getParent() const override {
@@ -690,7 +698,8 @@ class Item : virtual public Thing, public ItemProperties {
 	protected:
 		Cylinder* parent = nullptr;
 
-		uint32_t referenceCounter = 0;
+		std::atomic<uint32_t> referenceCounter = 0;
+		std::mutex deletionMutex;
 
 		uint16_t id; // the same id as in ItemType
 		uint8_t count = 1; // number of stacked items

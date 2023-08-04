@@ -248,7 +248,7 @@ class Game {
 
 		bool addItemStoreInbox(const Player* player, uint32_t itemId);
 
-		void playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems = 0);
+		void playerStartRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos);
 
 		void playerReportRuleViolationReport(uint32_t playerId, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation);
 
@@ -742,9 +742,9 @@ class Game {
 		 *
 		 * @param player Pointer to the player object.
 		 * @param maxMoveItems Maximum number of items to move (default is 0, which means no limit).
-		 * @return Return value indicating success or error.
 		 */
-		ReturnValue collectRewardChestItems(Player* player, uint32_t maxMoveItems = 0);
+		void collectItems(uint32_t playerId, const std::vector<Item*> &items, uint32_t maxMoveItems = 0);
+		void collectItemsAsync(uint32_t playerId, const std::vector<Item*> &items, uint32_t maxMoveItems = 0);
 
 		phmap::flat_hash_map<std::string, Player*> m_uniqueLoginPlayerNames;
 		phmap::flat_hash_map<uint32_t, Player*> players;
@@ -865,6 +865,12 @@ class Game {
 		) const;
 
 		void unwrapItem(Item* item, uint16_t unWrapId, House* house, Player* player);
+		void playerCollectItemsAsync(uint32_t playerId, const std::vector<Item*> &items, uint32_t maxMoveItems = 0);
+
+		void playerCollectItems(uint32_t playerId, const std::vector<Item*> &items, uint32_t maxMoveItems = 0);
+		// using a list to speed up the process of deleting futures on cleanup
+		std::list<std::future<void>> futures;
+		void removeCompletedFutures();
 
 		// Variable members (m_)
 		std::unique_ptr<IOWheel> m_IOWheel;

@@ -166,6 +166,7 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 
 	player->setManaShield(result->getNumber<uint16_t>("manashield"));
 	player->setMaxManaShield(result->getNumber<uint16_t>("max_manashield"));
+	return true;
 }
 
 void IOLoginDataLoad::loadPlayerExperience(Player* player, DBResult_ptr result) {

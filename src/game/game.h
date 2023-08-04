@@ -206,10 +206,6 @@ class Game {
 
 		bool internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, SpectatorHashSet* spectatorsPtr = nullptr, const Position* pos = nullptr);
 
-		void internalQuickLootCorpse(Player* player, Container* corpse);
-
-		ReturnValue internalQuickLootItem(Player* player, Item* item, ObjectCategory_t category = OBJECTCATEGORY_DEFAULT);
-
 		ObjectCategory_t getObjectCategory(const Item* item);
 
 		uint64_t getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, bool buyPrice) const;
@@ -641,6 +637,18 @@ class Game {
 		 */
 		bool createHazardArea(const Position &positionFrom, const Position &positionTo);
 
+		/**
+		 * @brief Checks if the player can retrieve stash items for a given item.
+		 *
+		 * @details This function leverages the internalCollectLootItems function with the OBJECTCATEGORY_STASHRETRIEVE category
+		 * to determine if the player is capable of retrieving the stash items.
+		 *
+		 * @param player Pointer to the player object.
+		 * @param item Pointer to the item to be checked.
+		 * @return True if stash items can be retrieved, false otherwise.
+		 */
+		bool canRetrieveStashItems(Player* player, Item* item);
+
 		std::unique_ptr<IOWheel> &getIOWheel();
 		const std::unique_ptr<IOWheel> &getIOWheel() const;
 
@@ -654,6 +662,89 @@ class Game {
 		bool playerYell(Player* player, const std::string &text);
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
 		void playerSpeakToNpc(Player* player, const std::string &text);
+
+		/**
+		 * Player wants to loot a corpse
+		 * \param player Player pointer
+		 * \param corpse Container pointer to be looted
+		 */
+		void internalQuickLootCorpse(Player* player, Container* corpse);
+
+		/**
+		 * @brief Finds the container for loot based on the given parameters.
+		 *
+		 * @param player Pointer to the player object.
+		 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
+		 * @param category The category of the object.
+		 *
+		 * @note If it's enabled in config.lua to use the gold pouch to store any item, then the system will check whether the player has a loot pouch.
+		 * @note If the player does have one, the loot pouch will be used instead of the loot containers.
+		 *
+		 * @return Pointer to the loot container or nullptr if not found.
+		 */
+		Container* findLootContainer(Player* player, bool &fallbackConsumed, ObjectCategory_t category);
+
+		/**
+		 * @brief Finds the next available sub-container within a container.
+		 *
+		 * @param containerIterator Iterator for the current container.
+		 * @param lastSubContainer Reference to the last sub-container found.
+		 * @param lootContainer Reference to the loot container being used.
+		 * @return Pointer to the next available container or nullptr if not found.
+		 */
+		Container* findNextAvailableContainer(ContainerIterator &containerIterator, Container*&lastSubContainer, Container*&lootContainer);
+
+		/**
+		 * @brief Handles the fallback logic for loot containers.
+		 *
+		 * @param player Pointer to the player object.
+		 * @param lootContainer Reference to the loot container.
+		 * @param containerIterator Iterator for the current container.
+		 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
+		 * @return True if fallback logic was handled, false otherwise.
+		 */
+		bool handleFallbackLogic(const Player* player, Container*&lootContainer, ContainerIterator &containerIterator, const bool &fallbackConsumed);
+
+		/**
+		 * @brief Processes the movement or addition of an item to a loot container.
+		 *
+		 * @param item Pointer to the item to be moved or added.
+		 * @param lootContainer Pointer to the loot container.
+		 * @param remainderCount Reference to the remaining count of the item.
+		 * @param player Pointer to the player object.
+		 * @return Return value indicating success or error.
+		 */
+		ReturnValue processMoveOrAddItemToLootContainer(Item* item, Container* lootContainer, uint32_t &remainderCount, Player* player);
+
+		/**
+		 * @brief Processes loot items and places them into the appropriate containers.
+		 *
+		 * @param player Pointer to the player object.
+		 * @param lootContainer Pointer to the loot container.
+		 * @param item Pointer to the item being looted.
+		 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
+		 * @return Return value indicating success or error.
+		 */
+		ReturnValue processLootItems(Player* player, Container* lootContainer, Item* item, bool &fallbackConsumed);
+
+		/**
+		 * @brief Internally collects loot items from a given item and places them into the loot container.
+		 *
+		 * @param player Pointer to the player object.
+		 * @param item Pointer to the item being looted.
+		 * @param category Category of the item (default is OBJECTCATEGORY_DEFAULT).
+		 * @return Return value indicating success or error.
+		 */
+		ReturnValue internalCollectLootItems(Player* player, Item* item, ObjectCategory_t category = OBJECTCATEGORY_DEFAULT);
+
+		/**
+		 * @brief Collects items from the reward chest.
+		 *
+		 * @param player Pointer to the player object.
+		 * @param maxMoveItems Maximum number of items to move (default is 0, which means no limit).
+		 * @return Return value indicating success or error.
+		 */
+		ReturnValue collectRewardChestItems(Player* player, uint32_t maxMoveItems = 0);
 
 		phmap::flat_hash_map<std::string, Player*> m_uniqueLoginPlayerNames;
 		phmap::flat_hash_map<uint32_t, Player*> players;

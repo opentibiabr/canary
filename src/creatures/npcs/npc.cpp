@@ -315,15 +315,7 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 		return;
 	}
 	if (itemId == ITEM_GOLD_POUCH) {
-		auto inventoryItems = player->getInventoryItemsFromId(ITEM_GOLD_POUCH);
-		if (inventoryItems.empty()) {
-			return;
-		}
-		auto containerItem = inventoryItems.front();
-		if (!containerItem) {
-			return;
-		}
-		auto container = containerItem->getContainer();
+		auto container = player->getLootPouch();
 		if (!container) {
 			return;
 		}

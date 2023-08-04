@@ -1015,13 +1015,18 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 		return false;
 	}
 
+	// First, delete all items from the player's stash
+	query.str(std::string());
+	query << "DELETE FROM `player_stash` WHERE `player_id` = " << player->getGUID();
+	db.executeQuery(query.str());
+
+	// Then, insert the current items in the stash
 	for (auto it : player->getStashItems()) {
 		query.str(std::string());
 		query << "INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES ("
 			  << player->getGUID() << ", "
 			  << it.first << ", "
-			  << it.second << ")"
-			  << " ON DUPLICATE KEY UPDATE `item_count` = VALUES(`item_count`)";
+			  << it.second << ")";
 		db.executeQuery(query.str());
 	}
 

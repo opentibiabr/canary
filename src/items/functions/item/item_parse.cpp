@@ -84,6 +84,13 @@ void ItemParse::parseType(const std::string &tmpStrValue, pugi::xml_attribute va
 			if (itemType.type == ITEM_TYPE_CONTAINER) {
 				itemType.group = ITEM_GROUP_CONTAINER;
 			}
+			if (itemType.type == ITEM_TYPE_LADDER) {
+				Item::items.addLadderId(itemType.id);
+			}
+			if (itemType.type == ITEM_TYPE_DUMMY) {
+				Item::items.addDummyId(itemType.id);
+			}
+
 		} else {
 			SPDLOG_WARN("[Items::parseItemNode] - Unknown type: {}", valueAttribute.as_string());
 		}

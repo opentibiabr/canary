@@ -176,6 +176,9 @@ const phmap::flat_hash_map<std::string, ItemTypes_t> ItemTypesMap = {
 	{ "food", ITEM_TYPE_FOOD },
 	{ "valuable", ITEM_TYPE_VALUABLE },
 	{ "potion", ITEM_TYPE_POTION },
+
+	{ "ladder", ITEM_TYPE_LADDER },
+	{ "dummy", ITEM_TYPE_DUMMY },
 };
 
 const phmap::flat_hash_map<std::string, TileFlags_t> TileStatesMap = {

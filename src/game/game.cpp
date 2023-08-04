@@ -24,8 +24,6 @@
 #include "io/io_wheel.hpp"
 #include "io/iomarket.h"
 #include "items/items.h"
-#include "enums/item_dummy_ids.hpp"
-#include "enums/item_ladder_ids.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "creatures/monsters/monster.h"
 #include "lua/creature/movement.h"
@@ -115,9 +113,7 @@ namespace InternalGame {
 			auto realItemParent = item->getRealParent();
 			// Check if item is not in player inventory or player backpack/storeinbox
 			auto canUseItem = realItemParent && (realItemParent == player || realItemParent->getContainer());
-			auto array = ItemLadderIdsArray::get();
-			bool isExceptedItem = std::find(array.begin(), array.end(), item->getID()) != array.end();
-			if (isGuest && !canUseItem && !isExceptedItem) {
+			if (isGuest && !canUseItem && !item->isLadder()) {
 				return false;
 			}
 		}
@@ -133,10 +129,7 @@ namespace InternalGame {
 				auto targetItem = targetThing ? targetThing->getItem() : nullptr;
 				uint16_t targetId = targetItem ? targetItem->getID() : 0;
 				auto invitedCheckUseWith = house && item->getRealParent() && item->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST);
-
-				auto array = ItemDummyIdsArray::get();
-				bool isExceptedItem = std::find(array.begin(), array.end(), targetId) != array.end();
-				if (targetId != 0 && !isExceptedItem && invitedCheckUseWith) {
+				if (targetId != 0 && !targetItem->isDummy() && invitedCheckUseWith) {
 					player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
 					return false;
 				}

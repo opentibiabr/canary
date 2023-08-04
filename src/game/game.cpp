@@ -2588,11 +2588,11 @@ void Game::collectItemsAsync(uint32_t playerId, const std::vector<Item*> &items,
 		std::future<void> future = std::async(std::launch::async, &Game::collectItems, this, playerId, items, 0);
 		futures.push_back(std::move(future));
 	} catch (std::system_error &e) {
-		collectItems(playerId, items, 200);
+		collectItems(playerId, items, g_configManager().getNumber(REWARD_CHEST_MAX_COLLECT_ITEMS));
 		SPDLOG_WARN("Failed to create a new thread for asynchronous reward collect, running synchronously: {}", e.what());
 		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "An error occurred while collecting rewards. Please report it to the administrador.");
 	} catch (std::future_error &e) {
-		collectItems(playerId, items, 200);
+		collectItems(playerId, items, g_configManager().getNumber(REWARD_CHEST_MAX_COLLECT_ITEMS));
 		SPDLOG_ERROR("Failed to run asynchronous reward collect: {}", e.what());
 		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "An error occurred while collecting rewards. Please report it to the administrador.");
 	}

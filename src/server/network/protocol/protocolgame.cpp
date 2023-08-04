@@ -3001,6 +3001,11 @@ void ProtocolGame::parseRewardChestCollect(NetworkMessage &msg) {
 	const auto position = msg.getPosition();
 	auto itemId = msg.get<uint16_t>();
 	auto stackPosition = msg.getByte();
+	auto useCollect = g_configManager().getBoolean(REWARD_CHEST_COLLECT_ENABLED);
+	if (!useCollect) {
+		return;
+	}
+
 	addGameTask(&Game::playerStartRewardChestCollect, player->getID(), position, itemId, stackPosition);
 }
 

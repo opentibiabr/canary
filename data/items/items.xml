@@ -44812,7 +44812,9 @@
 	<item id="31261" article="a" name="box with waterproof balm">
 		<attribute key="weight" value="240"/>
 	</item>
-	<item id="31262" article="a" name="ladder"/>
+	<item id="31262" article="a" name="ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
 	<item id="31263" article="a" name="Ring of Secret Thoughts">
 		<attribute key="weight" value="90"/>
 	</item>

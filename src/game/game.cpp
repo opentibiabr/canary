@@ -97,23 +97,19 @@ namespace InternalGame {
 
 		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(itemTile)) {
 			House* house = houseTile->getHouse();
-			// If not invited return false
 			if (!house || !house->isInvited(player)) {
 				return false;
 			}
 
-			// Check is guest player
 			auto isGuest = house->getHouseAccessLevel(player) == HOUSE_GUEST;
-			// Cannot use in browse field
 			auto container = item->getParent() ? item->getParent()->getContainer() : nullptr;
 			if (isGuest && container && container->getID() == ITEM_BROWSEFIELD) {
 				return false;
 			}
 
 			auto realItemParent = item->getRealParent();
-			// Check if item is not in player inventory or player backpack/storeinbox
-			auto canUseItem = realItemParent && (realItemParent == player || realItemParent->getContainer());
-			if (isGuest && !canUseItem && !item->isLadder()) {
+			auto isItemInGuestInventory = realItemParent && (realItemParent == player || realItemParent->getContainer());
+			if (isGuest && !isItemInGuestInventory && !item->isLadder()) {
 				return false;
 			}
 		}

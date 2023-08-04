@@ -652,8 +652,8 @@ int GameFunctions::luaGameGetInfluencedMonsters(lua_State* L) {
 	return 1;
 }
 
-int GameFunctions::luaGameGetLadderTable(lua_State* L) {
-	// Game.getLadderTable()
+int GameFunctions::luaGameGetLadderIds(lua_State* L) {
+	// Game.getDummyIds()
 	const auto ladders = Item::items.getLadders();
 	lua_createtable(L, static_cast<int>(ladders.size()), 0);
 	int index = 0;
@@ -666,7 +666,7 @@ int GameFunctions::luaGameGetLadderTable(lua_State* L) {
 	return 1;
 }
 
-int GameFunctions::luaGameGetDummyTable(lua_State* L) {
+int GameFunctions::luaGameGetDummyIds(lua_State* L) {
 	// Game.getDummyTable()
 	const auto dummys = Item::items.getDummys();
 	lua_createtable(L, static_cast<int>(dummys.size()), 0);

@@ -469,6 +469,7 @@ bool IOLoginDataSave::savePlayerDepotItems(const Player* player) {
 		}
 		return true;
 	}
+	return true;
 }
 
 bool IOLoginDataSave::saveRewardItems(Player* player) {

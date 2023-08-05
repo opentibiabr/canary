@@ -102,8 +102,9 @@ namespace InternalGame {
 			}
 
 			auto isGuest = house->getHouseAccessLevel(player) == HOUSE_GUEST;
-			auto container = item->getParent() ? item->getParent()->getContainer() : nullptr;
-			if (isGuest && container && container->getID() == ITEM_BROWSEFIELD) {
+			auto itemParentContainer = item->getParent() ? item->getParent()->getContainer() : nullptr;
+			auto itemParentContainerIsBrowseField = itemParentContainer && itemParentContainer->getID() == ITEM_BROWSEFIELD;
+			if (isGuest && itemParentContainerIsBrowseField) {
 				return false;
 			}
 
@@ -118,14 +119,23 @@ namespace InternalGame {
 	}
 
 	bool playerCanUseItemWithOnHouseTile(Player* player, Item* item, const Position &toPos, int toStackPos, int toItemId) {
+		if (!player || !item) {
+			return false;
+		}
+
+		auto itemTile = item->getTile();
+		if (!itemTile) {
+			return false;
+		}
+
 		if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
-			if (HouseTile* houseTile = dynamic_cast<HouseTile*>(item->getTile())) {
+			if (HouseTile* houseTile = dynamic_cast<HouseTile*>(itemTile)) {
 				House* house = houseTile->getHouse();
 				Thing* targetThing = g_game().internalGetThing(player, toPos, toStackPos, toItemId, STACKPOS_FIND_THING);
 				auto targetItem = targetThing ? targetThing->getItem() : nullptr;
 				uint16_t targetId = targetItem ? targetItem->getID() : 0;
 				auto invitedCheckUseWith = house && item->getRealParent() && item->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST);
-				if (targetId != 0 && !targetItem->isDummy() && invitedCheckUseWith) {
+				if (targetId != 0 && targetItem && !targetItem->isDummy() && invitedCheckUseWith) {
 					player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
 					return false;
 				}

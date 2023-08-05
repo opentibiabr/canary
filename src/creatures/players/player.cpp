@@ -1170,22 +1170,6 @@ void Player::getRewardList(std::vector<uint64_t> &rewards) const {
 	}
 }
 
-std::vector<Item*> Player::getRewardsFromContainer(const Container* container) const {
-	std::vector<Item*> rewardItemsVector;
-	if (container) {
-		for (auto item : container->getItems(false)) {
-			if (item->getID() == ITEM_REWARD_CONTAINER) {
-				auto items = getRewardsFromContainer(item->getContainer());
-				rewardItemsVector.insert(rewardItemsVector.end(), items.begin(), items.end());
-			} else {
-				rewardItemsVector.push_back(item);
-			}
-		}
-	}
-
-	return rewardItemsVector;
-}
-
 void Player::sendCancelMessage(ReturnValue message) const {
 	sendCancelMessage(getReturnMessage(message));
 }

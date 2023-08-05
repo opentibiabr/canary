@@ -2529,8 +2529,9 @@ ReturnValue Game::processLootItems(Player* player, Container* lootContainer, Ite
 	uint32_t remainderCount = item->getItemCount();
 	ContainerIterator containerIterator = lootContainer->iterator();
 
+	ReturnValue ret = RETURNVALUE_NOERROR;
 	do {
-		ReturnValue ret = processMoveOrAddItemToLootContainer(item, lootContainer, remainderCount, player);
+		ret = processMoveOrAddItemToLootContainer(item, lootContainer, remainderCount, player);
 		if (ret != RETURNVALUE_CONTAINERNOTENOUGHROOM) {
 			return ret;
 		}
@@ -2542,7 +2543,7 @@ ReturnValue Game::processLootItems(Player* player, Container* lootContainer, Ite
 		fallbackConsumed = (nextContainer == nullptr);
 	} while (remainderCount != 0);
 
-	return RETURNVALUE_NOERROR;
+	return ret;
 }
 
 ReturnValue Game::internalCollectLootItems(Player* player, Item* item, ObjectCategory_t category /* = OBJECTCATEGORY_DEFAULT*/) {
@@ -2576,37 +2577,51 @@ ReturnValue Game::internalCollectLootItems(Player* player, Item* item, ObjectCat
 	return processLootItems(player, lootContainer, item, fallbackConsumed);
 }
 
-void Game::collectItemsAsync(uint32_t playerId, const std::vector<Item*> &items, uint32_t maxMoveItems /* = 0 */) {
+void Game::collectItemsAsync(uint32_t playerId, const std::vector<Item*> &rewardContainers, uint32_t maxMoveItems /* = 0 */) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
+	}
+	std::vector<Item*> items;
+	for (auto item : rewardContainers) {
+		if (item->getContainer()) {
+			for (auto subItem : item->getContainer()->getItems()) {
+				items.push_back(subItem);
+			}
+		}
+	}
+	for (auto container : rewardContainers) {
+		container->incrementReferenceCounter();
 	}
 	for (auto item : items) {
 		item->incrementReferenceCounter();
 	}
 	try {
-		std::future<void> future = std::async(std::launch::async, &Game::collectItems, this, playerId, items, 0);
+		std::future<void> future = std::async(std::launch::async, &Game::collectItems, this, playerId, items, rewardContainers, 0);
 		futures.push_back(std::move(future));
 	} catch (std::system_error &e) {
-		collectItems(playerId, items, g_configManager().getNumber(REWARD_CHEST_MAX_COLLECT_ITEMS));
+		collectItems(playerId, items, rewardContainers, g_configManager().getNumber(REWARD_CHEST_MAX_COLLECT_ITEMS));
 		SPDLOG_WARN("Failed to create a new thread for asynchronous reward collect, running synchronously: {}", e.what());
 		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "An error occurred while collecting rewards. Please report it to the administrador.");
 	} catch (std::future_error &e) {
-		collectItems(playerId, items, g_configManager().getNumber(REWARD_CHEST_MAX_COLLECT_ITEMS));
+		collectItems(playerId, items, rewardContainers, g_configManager().getNumber(REWARD_CHEST_MAX_COLLECT_ITEMS));
 		SPDLOG_ERROR("Failed to run asynchronous reward collect: {}", e.what());
 		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "An error occurred while collecting rewards. Please report it to the administrador.");
 	}
 }
 
-void Game::collectItems(uint32_t playerId, const std::vector<Item*> &items, uint32_t maxMoveItems /* = 0 */) {
+void Game::collectItems(uint32_t playerId, const std::vector<Item*> &items, const std::vector<Item*> &rewardContainers, uint32_t maxMoveItems /* = 0 */) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 	// Ensure that we decrement the reference counter of the items after the function returns
-	auto decrementReferenceCounter = [&items]() {
+	auto decrementReferenceCounter = [&items, &rewardContainers]() {
 		for (auto item : items) {
 			item->decrementReferenceCounter();
+		}
+		for (auto container : rewardContainers) {
+			container->decrementReferenceCounter();
 		}
 	};
 
@@ -9689,8 +9704,20 @@ void Game::playerStartRewardChestCollect(uint32_t playerId, const Position &pos,
 	if (!player->rewardChest) {
 		return;
 	}
-	auto items = player->getRewardsFromContainer(player->rewardChest->getContainer());
-	collectItemsAsync(player->getID(), std::move(items));
+	auto rewardContainers = getRewardContainers(player->rewardChest->getContainer());
+	collectItemsAsync(player->getID(), std::move(rewardContainers));
+}
+
+std::vector<Item*> Game::getRewardContainers(const Container* container) const {
+	std::vector<Item*> containerItems;
+	if (container) {
+		for (auto item : container->getItems(false)) {
+			if (item->getID() == ITEM_REWARD_CONTAINER) {
+				containerItems.push_back(item);
+			}
+		}
+	}
+	return containerItems;
 }
 
 bool Game::createHazardArea(const Position &positionFrom, const Position &positionTo) {

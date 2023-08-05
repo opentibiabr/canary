@@ -743,8 +743,9 @@ class Game {
 		 * @param player Pointer to the player object.
 		 * @param maxMoveItems Maximum number of items to move (default is 0, which means no limit).
 		 */
-		void collectItems(uint32_t playerId, const std::vector<Item*> &items, uint32_t maxMoveItems = 0);
-		void collectItemsAsync(uint32_t playerId, const std::vector<Item*> &items, uint32_t maxMoveItems = 0);
+		void collectItemsAsync(uint32_t playerId, const std::vector<Item*> &rewardContainers, uint32_t maxMoveItems = 0);
+		void collectItems(uint32_t playerId, const std::vector<Item*> &items, const std::vector<Item*> &rewardContainers, uint32_t maxMoveItems = 0);
+		std::vector<Item*> getRewardContainers(const Container* container) const;
 
 		phmap::flat_hash_map<std::string, Player*> m_uniqueLoginPlayerNames;
 		phmap::flat_hash_map<uint32_t, Player*> players;

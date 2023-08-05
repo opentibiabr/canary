@@ -103,8 +103,8 @@ namespace InternalGame {
 
 			auto isGuest = house->getHouseAccessLevel(player) == HOUSE_GUEST;
 			auto itemParentContainer = item->getParent() ? item->getParent()->getContainer() : nullptr;
-			auto itemParentContainerIsBrowseField = itemParentContainer && itemParentContainer->getID() == ITEM_BROWSEFIELD;
-			if (isGuest && itemParentContainerIsBrowseField) {
+			auto isItemParentContainerBrowseField = itemParentContainer && itemParentContainer->getID() == ITEM_BROWSEFIELD;
+			if (isGuest && isItemParentContainerBrowseField) {
 				return false;
 			}
 

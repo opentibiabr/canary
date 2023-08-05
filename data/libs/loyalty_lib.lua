@@ -33,19 +33,19 @@ function Player.initializeLoyaltySystem(self)
 		return true
 	end
 
-    local playerLoyaltyPoints = self:getLoyaltyPoints()
+	local playerLoyaltyPoints = self:getLoyaltyPoints()
 
 	-- Title
 	local title = ""
-	for _, titleTable in ipairs(loyaltySystem.titles) do
+    for _, titleTable in ipairs(loyaltySystem.titles) do
 		if playerLoyaltyPoints >= titleTable.points then
 			title = titleTable.name
 		end
 	end
 
-    if title ~= "" then
-      self:setLoyaltyTitle(title)
-    end
+	if title ~= "" then
+		self:setLoyaltyTitle(title)
+	end
 
 	-- Bonus
 	local playerBonusPercentage = 0
@@ -55,7 +55,7 @@ function Player.initializeLoyaltySystem(self)
 		end
 	end
 
-    playerBonusPercentage = playerBonusPercentage * configManager.getFloat(configKeys.LOYALTY_BONUS_PERCENTAGE_MULTIPLIER)
+	playerBonusPercentage = playerBonusPercentage * configManager.getFloat(configKeys.LOYALTY_BONUS_PERCENTAGE_MULTIPLIER)
 	self:setLoyaltyBonus(playerBonusPercentage)
 
 	if self:getLoyaltyBonus() ~= 0 then

@@ -37,7 +37,7 @@ function Player.initializeLoyaltySystem(self)
 
 	-- Title
 	local title = ""
-    for _, titleTable in ipairs(loyaltySystem.titles) do
+	for _, titleTable in ipairs(loyaltySystem.titles) do
 		if playerLoyaltyPoints >= titleTable.points then
 			title = titleTable.name
 		end

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Mould Phantom")
 local monster = {}
 
 monster.description = "a mould phantom"
-monster.experience = 23920
+monster.experience = 18330
 monster.outfit = {
 	lookType = 1298,
 	lookHead = 106,
@@ -18,13 +18,13 @@ monster.Bestiary = {
 	class = "Undead",
 	race = BESTY_RACE_UNDEAD,
 	toKill = 5000,
-	FirstUnlock = 25,
-	SecondUnlock = 3394,
+	FirstUnlock = 200,
+	SecondUnlock = 2000,
 	CharmsPoints = 100,
 	Stars = 5,
 	Occurrence = 0,
 	Locations = "Rotten Wasteland."
-	}
+}
 
 monster.health = 28000
 monster.maxHealth = 28000
@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -75,36 +75,40 @@ monster.voices = {
 	chance = 10,
 	{text = "Everything decomposes.", yell = false},
 	{text = "I love the smell of rotten flesh.", yell = false},
-	{text = "The earth will take you back.", yell = false}
+	{text = "The earth will take you back.", yell = false},
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540},
-	{name = "gold ingot", chance = 54560},
-	{name = "violet gem", chance = 74560},
-	{name = "green gem", chance = 64560},
-	{name = "blue gem", chance = 54560},
-	{name = "wand of starstorm", chance = 31920},
-	{name = "wand of voodoo", chance = 21920},
-	{name = "ornate crossbow", chance = 41920},
-	{name = "wand of defiance", chance = 21920, maxCount = 3},
-	{id = 23529, chance = 28920}, -- ring of blue plasma
-	{id = 23542, chance = 28920}, -- collar of blue plasma
-	{id = 34141, chance = 12920}, -- mould heart
-	{name = "crystal crossbow", chance = 1920},
-	{id = 34109, chance = 50} -- bag you desire
+	{name = "crystal coin", chance = 57370},
+	{name = "gold ingot", chance = 11840},
+	{name = "wand of starstorm", chance = 4440},
+	{name = "green gem", chance = 3800},
+	{name = "violet gem", chance = 3550},
+	{name = "mould heart", chance = 3490},
+	{name = "wand of defiance", chance = 2930},
+	{name = "blue gem", chance = 2440},
+	{name = "wand of voodoo", chance = 2360},
+	{name = "mould robe", chance = 2200},
+	{id = 23542, chance = 1070}, -- collar of blue plasma
+	{id = 23530, chance = 1040}, -- ring of blue plasma
+	{name = "ornate crossbow", chance = 840},
+	{name = "crystal crossbow", chance = 620},
+	{id = 34109, chance = 20}, -- bag you desire
 }
 
 monster.attacks = {
-	{name ="combat", interval = 3000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -650, maxDamage = -1000, radius = 4, effect = CONST_ME_GREEN_RINGS, target = false},
-	{name ="combat", interval = 3000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -650, maxDamage = -1000, range = 7, radius = 4, shootEffect = CONST_ANI_POISON, effect = CONST_ME_SMALLPLANTS, target = true},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_HOLYDAMAGE, minDamage = -800, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYDAMAGE, target = true}
-	-- Chain: const_me-> CONST_ME_GREEN_ENERGY_SPARK, combat_t->COMBAT_EARTHDAMAGE
+	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900},
+	{name ="poison chain", interval = 2000, chance = 15, minDamage = -1000, maxDamage = -1250, range = 7},
+	{name ="combat", interval = 3000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -1100, maxDamage = -1350, radius = 4, effect = CONST_ME_GREEN_RINGS, target = false},
+	{name ="combat", interval = 2000, chance = 25, type = COMBAT_HOLYDAMAGE, minDamage = -1030, maxDamage = -1350, range = 7, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYDAMAGE, target = true},
+	{name ="combat", interval = 2000, chance = 25, type = COMBAT_HOLYDAMAGE, minDamage = -1100, maxDamage = -1300, radius = 4, range = 7, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYDAMAGE, target = true},
+	{name ="extended holy chain", interval = 2000, chance = 15, minDamage = -400, maxDamage = -700, range = 7},
 }
 
 monster.defenses = {
-	defense = 75,
-	armor = 100
+	defense = 100,
+	armor = 100,
+	mitigation = 2.45,
 }
 
 monster.elements = {
@@ -116,8 +120,8 @@ monster.elements = {
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
 	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{type = COMBAT_HOLYDAMAGE, percent = 0},
+	{type = COMBAT_DEATHDAMAGE, percent = 0},
 }
 
 monster.immunities = {

@@ -18,13 +18,13 @@ monster.Bestiary = {
 	class = "Undead",
 	race = BESTY_RACE_UNDEAD,
 	toKill = 5000,
-	FirstUnlock = 25,
-	SecondUnlock = 3394,
+	FirstUnlock = 200,
+	SecondUnlock = 2000,
 	CharmsPoints = 100,
 	Stars = 5,
 	Occurrence = 0,
 	Locations = "Mirrored Nightmare."
-	}
+}
 
 monster.health = 25000
 monster.maxHealth = 25000
@@ -77,35 +77,38 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540},
-	{name = "platinum coin", chance = 81920, maxCount = 33},
-	{name = "great mana potion", chance = 71920, maxCount = 5},
-	{id = 281, chance = 54560}, -- giant shimmering pearl (green)
-	{id = 282, chance = 54560}, -- giant shimmering pearl (brown)
-	{name = "blue gem", chance = 64560},
-	{id = 23533, chance = 29000}, -- ring of red plasma
-	{name = "wand of voodoo", chance = 31920},
-	{name = "wand of defiance", chance = 25920},
-	{name = "wand of everblazing", chance = 20920},
-	{name = "alloy legs", chance = 17920},
-	{id = 23529, chance = 29000}, -- ring of blue plasma
-	{id = 23531, chance = 29000}, -- ring of green plasma
-	{name = "wand of starstorm", chance = 11920}
+	{name = "crystal coin", chance = 79040},
+	{name = "great mana potion", chance = 62450, maxCount = 3},
+	-- {name = "giant shimmering pearl", chance = 10040}, -- unknown item: giant shimmering pearl
+	{name = "blue gem", chance = 5240},
+	{id = 23534, chance = 4370}, -- ring of red plasma
+	{name = "wand of voodoo", chance = 4370},
+	{id = 23532, chance = 3490}, -- ring of green plasma
+	{id = 23530, chance = 3060}, -- ring of blue plasma
+	{name = "violet gem", chance = 2620},
+	{name = "glacier amulet", chance = 2620},
+	{name = "wand of everblazing", chance = 2180},
+	{name = "wand of defiance", chance = 1750},
+	{name = "wand of starstorm", chance = 1310},
+	{name = "stone skin amulet", chance = 1310},
+	{name = "alloy legs", chance = 440},
+	{id = 34109, chance = 20}, -- bag you desire
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -800},
-	{name ="combat", interval = 2000, chance = 13, type = COMBAT_ICEDAMAGE, minDamage = -750, maxDamage = -900, range = 7, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_BIGCLOUDS, target = true},
-	{name ="combat", interval = 2000, chance = 17, type = COMBAT_HOLYDAMAGE, minDamage = -750, maxDamage = -900, radius = 4, effect = CONST_ME_HOLYAREA, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -750, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -750, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = true},
-	{name ="combat", interval = 2000, chance = 13, type = COMBAT_ICEDAMAGE, minDamage = -750, maxDamage = -900, radius = 3, effect = CONST_ME_ICEATTACK, target = false}
-	-- Chain: const_me-> CONST_ME_BLUE_ENERGY_SPARK, combat_t->COMBAT_ICEDAMAGE
+	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -1080, maxDamage = -1300, range = 7, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_BIGCLOUDS, target = true},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -1100, maxDamage = -1300, radius = 3, effect = CONST_ME_BIGCLOUDS, target = false},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -1100, maxDamage = -1300, range = 7, shootEffect = CONST_ANI_ICE, effect = CONST_ME_BIGCLOUDS, target = true},
+	{name ="ice chain", interval = 2000, chance = 15, minDamage = -1100, maxDamage = -1300, range = 7},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -1100, maxDamage = -1250, range = 7, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true},
+	{name ="combat", interval = 2000, chance = 17, type = COMBAT_HOLYDAMAGE, minDamage = -1250, maxDamage = -1400, radius = 4, effect = CONST_ME_HOLYAREA, target = false},
 }
 
 monster.defenses = {
-	defense = 75,
-	armor = 100
+	defense = 100,
+	armor = 100,
+	mitigation = 2.74,
 }
 
 monster.elements = {

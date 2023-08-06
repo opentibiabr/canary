@@ -44,6 +44,13 @@ if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
 	premiumDescription = premiumDescription .. "\n{usablebyallicon} valid for all characters on this account\n{activated}"
 end
 
+-- GameStore.SearchCategory = {
+-- 	icons = {},
+-- 	name = "Search Results",
+-- 	rookgaard = true,
+-- 	state = GameStore.States.STATE_NONE,
+-- }
+
 GameStore.Categories = {
 	-- Premium Time
 	{

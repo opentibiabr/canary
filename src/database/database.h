@@ -170,11 +170,13 @@ class DBResult {
 class DBInsert {
 	public:
 		explicit DBInsert(std::string query);
+		void upsert(const std::vector<std::string> &columns);
 		bool addRow(const std::string_view row);
 		bool addRow(std::ostringstream &row);
 		bool execute();
 
 	private:
+		std::vector<std::string> upsertColumns;
 		std::string query;
 		std::string values;
 		size_t length;

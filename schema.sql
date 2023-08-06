@@ -622,6 +622,8 @@ CREATE TABLE IF NOT EXISTS `player_wheeldata` (
 	CONSTRAINT `player_wheeldata_players_fk`
 		FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
 		ON DELETE CASCADE
+  CONSTRAINT `player_wheeldata_pk`
+      PRIMARY KEY (`player_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

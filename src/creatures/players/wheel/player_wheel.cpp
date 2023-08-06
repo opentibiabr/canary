@@ -883,6 +883,7 @@ bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 	query.str(std::string());
 
 	DBInsert insertWheelData("INSERT INTO `player_wheeldata` (`player_id`, `slot`) VALUES ");
+	insertWheelData.upsert({ "slot" });
 	PropWriteStream stream;
 	const auto &wheelSlots = getSlots();
 	for (uint8_t i = 1; i < wheelSlots.size(); ++i) {

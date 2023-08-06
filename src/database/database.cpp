@@ -298,14 +298,26 @@ bool DBInsert::addRow(std::ostringstream &row) {
 	return ret;
 }
 
+void DBInsert::upsert(const std::vector<std::string> &columns) {
+	upsertColumns = columns;
+}
+
 bool DBInsert::execute() {
 	if (values.empty()) {
 		return true;
 	}
 
-	// executes buffer
-	bool res = Database::getInstance().executeQuery(query + values);
-	values.clear();
-	length = query.length();
-	return res;
+	std::ostringstream query;
+	query << this->query << " " << values;
+
+	if (!upsertColumns.empty()) {
+		query << " ON DUPLICATE KEY UPDATE ";
+		for (size_t i = 0; i < upsertColumns.size(); ++i) {
+			query << "`" << upsertColumns[i] << "` = VALUES(`" << upsertColumns[i] << "`)";
+			if (i < upsertColumns.size() - 1) {
+				query << ", ";
+			}
+		}
+	}
+	return Database::getInstance().executeQuery(query.str());
 }

@@ -20,5 +20,9 @@ function onUpdateDatabase()
 		ALTER TABLE `player_stash`
 		ADD PRIMARY KEY (`player_id`, `item_id`);
 	]])
+	db.query([[
+		ALTER TABLE `player_wheeldata`
+		ADD PRIMARY KEY (`player_id`);
+	]])
 	return true
 end

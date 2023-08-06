@@ -9669,7 +9669,7 @@ bool Game::createHazardArea(const Position &positionFrom, const Position &positi
 	return true;
 }
 
-bool Game::canRetrieveStashItems(Player* player, Item* item) {
+bool Game::tryRetrieveStashItems(Player* player, Item* item) {
 	return internalCollectLootItems(player, item, OBJECTCATEGORY_STASHRETRIEVE) == RETURNVALUE_NOERROR;
 }
 

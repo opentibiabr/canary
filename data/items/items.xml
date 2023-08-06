@@ -56159,6 +56159,7 @@
 			<attribute key="skillboost club" value="3"/>
 			<attribute key="skillboost shielding" value="3"/>
 			<attribute key="skillboost distance" value="3"/>
+			<attribute key="skillboost magic level" value="2"/>
 		</attribute>
 	</item>
 	<item id="39149" article="an" name="alicorn headguard">

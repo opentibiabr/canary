@@ -376,9 +376,10 @@ function parseRequestStoreOffers(playerId, msg)
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category, offerId)
 		end
 	elseif actionType == GameStore.ActionType.OPEN_SEARCH then
-		local results = GameStore.fuzzySearchOffer(msg:getString())
+		local searchString = msg:getString()
+		local results = GameStore.fuzzySearchOffer(searchString())
 		if not results or #results == 0 then
-			return addPlayerEvent(sendStoreError, 250, playerId, GameStore.StoreErrors.STORE_ERROR_INFORMATION, "No results found fo r \"" .. msg:getString() .. "\".")
+			return addPlayerEvent(sendStoreError, 250, playerId, GameStore.StoreErrors.STORE_ERROR_INFORMATION, "No results found fo r \"" .. searchString .. "\".")
 		end
 
 		local searchResultsCategory = {

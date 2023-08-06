@@ -472,63 +472,67 @@ void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr resu
 	InventoryItemsMap inventoryItems;
 	std::vector<std::pair<uint8_t, Container*>> openContainersList;
 
-	if ((result = db.storeQuery(query.str()))) {
-		loadItems(inventoryItems, result, *player);
+	try {
+		if ((result = db.storeQuery(query.str()))) {
+			loadItems(inventoryItems, result, *player);
 
-		for (InventoryItemsMap::const_reverse_iterator it = inventoryItems.rbegin(), end = inventoryItems.rend(); it != end; ++it) {
-			const std::pair<Item*, int32_t> &pair = it->second;
-			Item* item = pair.first;
-			if (!item) {
-				continue;
-			}
-
-			int32_t pid = pair.second;
-
-			if (pid >= CONST_SLOT_FIRST && pid <= CONST_SLOT_LAST) {
-				player->internalAddThing(pid, item);
-				item->startDecaying();
-			} else {
-				InventoryItemsMap::const_iterator it2 = inventoryItems.find(pid);
-				if (it2 == inventoryItems.end()) {
+			for (InventoryItemsMap::const_reverse_iterator it = inventoryItems.rbegin(), end = inventoryItems.rend(); it != end; ++it) {
+				const std::pair<Item*, int32_t> &pair = it->second;
+				Item* item = pair.first;
+				if (!item) {
 					continue;
 				}
 
-				Container* container = it2->second.first->getContainer();
-				if (container) {
-					container->internalAddThing(item);
-					item->startDecaying();
-				}
-			}
+				int32_t pid = pair.second;
 
-			Container* itemContainer = item->getContainer();
-			if (itemContainer) {
-				if (!oldProtocol) {
-					auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
-					if (cid > 0) {
-						openContainersList.emplace_back(std::make_pair(cid, itemContainer));
+				if (pid >= CONST_SLOT_FIRST && pid <= CONST_SLOT_LAST) {
+					player->internalAddThing(pid, item);
+					item->startDecaying();
+				} else {
+					InventoryItemsMap::const_iterator it2 = inventoryItems.find(pid);
+					if (it2 == inventoryItems.end()) {
+						continue;
+					}
+
+					Container* container = it2->second.first->getContainer();
+					if (container) {
+						container->internalAddThing(item);
+						item->startDecaying();
 					}
 				}
-				if (item->hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
-					auto flags = item->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
-					for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
-						if (hasBitSet(1 << category, static_cast<uint32_t>(flags))) {
-							player->setLootContainer(static_cast<ObjectCategory_t>(category), itemContainer, true);
+
+				Container* itemContainer = item->getContainer();
+				if (itemContainer) {
+					if (!oldProtocol) {
+						auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
+						if (cid > 0) {
+							openContainersList.emplace_back(std::make_pair(cid, itemContainer));
+						}
+					}
+					if (item->hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
+						auto flags = item->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
+						for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
+							if (hasBitSet(1 << category, static_cast<uint32_t>(flags))) {
+								player->setLootContainer(static_cast<ObjectCategory_t>(category), itemContainer, true);
+							}
 						}
 					}
 				}
 			}
 		}
-	}
 
-	if (!oldProtocol) {
-		std::ranges::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
-			return left.first < right.first;
-		});
+		if (!oldProtocol) {
+			std::ranges::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
+				return left.first < right.first;
+			});
 
-		for (auto &it : openContainersList) {
-			player->addContainer(it.first - 1, it.second);
-			player->onSendContainer(it.second);
+			for (auto &it : openContainersList) {
+				player->addContainer(it.first - 1, it.second);
+				player->onSendContainer(it.second);
+			}
 		}
+	} catch (const std::exception &e) {
+		SPDLOG_ERROR("[IOLoginDataLoad::loadPlayerInventoryItems] - Exceção durante o carregamento do inventário: {}", e.what());
 	}
 }
 

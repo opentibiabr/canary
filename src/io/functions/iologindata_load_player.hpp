@@ -14,8 +14,8 @@
 
 class IOLoginDataLoad : public IOLoginData {
 	public:
-		static bool preLoadPlayer(Player* player, const std::string &name);
 		static bool loadPlayerFirst(Player* player, DBResult_ptr result);
+		static bool preLoadPlayer(Player* player, const std::string &name);
 		static void loadPlayerExperience(Player* player, DBResult_ptr result);
 		static void loadPlayerBlessings(Player* player, DBResult_ptr result);
 		static void loadPlayerConditions(const Player* player, DBResult_ptr result);
@@ -52,25 +52,40 @@ class IOLoginDataLoad : public IOLoginData {
 
 		template <typename T>
 		static void loadItems(T &container, DBResult_ptr result, Player &player) {
-			do {
-				uint32_t sid = result->getNumber<uint32_t>("sid");
-				uint32_t pid = result->getNumber<uint32_t>("pid");
-				uint16_t type = result->getNumber<uint16_t>("itemtype");
-				uint16_t count = result->getNumber<uint16_t>("count");
-				unsigned long attrSize;
-				const char* attr = result->getStream("attributes", attrSize);
-				PropStream propStream;
-				propStream.init(attr, attrSize);
-				Item* item = Item::CreateItem(type, count);
-				if (item) {
-					if (!item->unserializeAttr(propStream)) {
-						SPDLOG_WARN("[IOLoginData::loadItems] - Failed to unserialize attributes of item {}, of player {}, from account id {}", item->getID(), player.getName(), player.getAccount());
-						savePlayer(&player);
+			try {
+				do {
+					uint32_t sid = result->getNumber<uint32_t>("sid");
+					uint32_t pid = result->getNumber<uint32_t>("pid");
+					uint16_t type = result->getNumber<uint16_t>("itemtype");
+					uint16_t count = result->getNumber<uint16_t>("count");
+					unsigned long attrSize;
+					const char* attr = result->getStream("attributes", attrSize);
+					PropStream propStream;
+					propStream.init(attr, attrSize);
+
+					try {
+						Item* item = Item::CreateItem(type, count);
+						if (item) {
+							if (!item->unserializeAttr(propStream)) {
+								SPDLOG_WARN("[IOLoginData::loadItems] - Falha ao desserializar os atributos do item {}, do jogador {}, da conta id {}", item->getID(), player.getName(), player.getAccount());
+								savePlayer(&player);
+								SPDLOG_INFO("[IOLoginData::loadItems] - Deletando item defeituoso: {}", item->getID());
+								delete item; // Delete o item defeituoso
+								continue;
+							}
+							std::pair<Item*, uint32_t> pair(item, pid);
+							container[sid] = pair;
+						} else {
+							SPDLOG_WARN("[IOLoginData::loadItems] - Falha ao criar o item do tipo {} para o jogador {}, da conta id {}", type, player.getName(), player.getAccount());
+						}
+					} catch (const std::exception &e) {
+						SPDLOG_WARN("[IOLoginData::loadItems] - Exceção durante a criação ou desserialização do item: {}", e.what());
+						continue;
 					}
-					std::pair<Item*, uint32_t> pair(item, pid);
-					container[sid] = pair;
-				}
-			} while (result->next());
+				} while (result->next());
+			} catch (const std::exception &e) {
+				SPDLOG_ERROR("[IOLoginData::loadItems] - Exceção geral durante o carregamento do item: {}", e.what());
+			}
 		}
 };
 

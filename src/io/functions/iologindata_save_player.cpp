@@ -22,23 +22,33 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 	std::ostringstream ss;
 
 	// Initialize variables
-	const auto &openContainers = player->getOpenContainers();
-	std::list<std::pair<Container*, int32_t>> queue;
+	using ContainerBlock = std::pair<Container*, int32_t>;
+	std::list<ContainerBlock> queue;
 	int32_t runningId = 100;
 
 	// Loop through each item in itemList
-	for (const auto &[pid, item] : itemList) {
+	const auto &openContainers = player->getOpenContainers();
+	for (const auto &it : itemList) {
+		int32_t pid = it.first;
+		Item* item = it.second;
 		++runningId;
 
 		// Update container attributes if necessary
 		if (Container* container = item->getContainer()) {
+			if (!container)
+				continue; // Check for null container
+
 			if (container->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER) > 0) {
 				container->setAttribute(ItemAttribute_t::OPENCONTAINER, 0);
 			}
+
 			if (!openContainers.empty()) {
-				for (const auto &[index, openContainer] : openContainers) {
-					if (openContainer.container == container) {
-						container->setAttribute(ItemAttribute_t::OPENCONTAINER, ((int)index) + 1);
+				for (const auto &its : openContainers) {
+					auto openContainer = its.second;
+					auto opcontainer = openContainer.container;
+
+					if (opcontainer == container) {
+						container->setAttribute(ItemAttribute_t::OPENCONTAINER, ((int)its.first) + 1);
 						break;
 					}
 				}
@@ -49,38 +59,57 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 		}
 
 		// Serialize item attributes
-		propWriteStream.clear();
-		item->serializeAttr(propWriteStream);
+		try {
+			propWriteStream.clear();
+			item->serializeAttr(propWriteStream);
+		} catch (...) {
+			SPDLOG_ERROR("Error serializing item attributes.");
+			return false;
+		}
+
 		size_t attributesSize;
 		const char* attributes = propWriteStream.getStream(attributesSize);
 
 		// Build query string and add row
 		ss << player->getGUID() << ',' << pid << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
 		if (!query_insert.addRow(ss)) {
+			SPDLOG_ERROR("Error adding row to query.");
 			return false;
 		}
-		ss.clear();
 	}
 
 	// Loop through containers in queue
 	while (!queue.empty()) {
-		const auto &[container, parentId] = queue.front();
+		const ContainerBlock &cb = queue.front();
+		Container* container = cb.first;
+		int32_t parentId = cb.second;
 		queue.pop_front();
+
+		if (!container)
+			continue; // Check for null container
 
 		// Loop through items in container
 		for (Item* item : container->getItemList()) {
+			if (!item)
+				continue; // Check for null item
+
 			++runningId;
 
 			// Update sub-container attributes if necessary
-			if (Container* subContainer = item->getContainer()) {
+			Container* subContainer = item->getContainer();
+			if (subContainer) {
 				queue.emplace_back(subContainer, runningId);
 				if (subContainer->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER) > 0) {
 					subContainer->setAttribute(ItemAttribute_t::OPENCONTAINER, 0);
 				}
+
 				if (!openContainers.empty()) {
-					for (const auto &[index, openContainer] : openContainers) {
-						if (openContainer.container == subContainer) {
-							subContainer->setAttribute(ItemAttribute_t::OPENCONTAINER, index + 1);
+					for (const auto &it : openContainers) {
+						auto openContainer = it.second;
+						auto opcontainer = openContainer.container;
+
+						if (opcontainer == subContainer) {
+							subContainer->setAttribute(ItemAttribute_t::OPENCONTAINER, (it.first) + 1);
 							break;
 						}
 					}
@@ -88,20 +117,32 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 			}
 
 			// Serialize item attributes
-			propWriteStream.clear();
-			item->serializeAttr(propWriteStream);
+			try {
+				propWriteStream.clear();
+				item->serializeAttr(propWriteStream);
+			} catch (...) {
+				SPDLOG_ERROR("Error serializing item attributes in container.");
+				return false;
+			}
+
 			size_t attributesSize;
 			const char* attributes = propWriteStream.getStream(attributesSize);
 
 			// Build query string and add row
 			ss << player->getGUID() << ',' << parentId << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
 			if (!query_insert.addRow(ss)) {
+				SPDLOG_ERROR("Error adding row to query for container item.");
 				return false;
 			}
 		}
 	}
+
 	// Execute query
-	return query_insert.execute();
+	if (!query_insert.execute()) {
+		SPDLOG_ERROR("Error executing query.");
+		return false;
+	}
+	return true;
 }
 
 bool IOLoginDataSave::savePlayerFirst(Player* player) {
@@ -417,8 +458,6 @@ bool IOLoginDataSave::savePlayerItem(const Player* player) {
 		SPDLOG_WARN("[IOLoginData::savePlayer] - Error delete query 'player_items' from player: {}", player->getName());
 		return false;
 	}
-
-	query.str("");
 
 	DBInsert itemsQuery("INSERT INTO `player_items` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
 

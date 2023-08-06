@@ -89,6 +89,7 @@ void LuaEnums::init(lua_State* L) {
 	initFightModeEnums(L);
 	initItemAttributeEnums(L);
 	initItemTypeEnums(L);
+	initFluidEnums(L);
 	initItemIdEnums(L);
 	initPlayerFlagEnums(L);
 	initReportReasonEnums(L);
@@ -802,6 +803,28 @@ void LuaEnums::initItemTypeEnums(lua_State* L) {
 	registerEnum(L, ITEM_TYPE_RETRIEVE);
 	registerEnum(L, ITEM_TYPE_GOLD);
 	registerEnum(L, ITEM_TYPE_UNASSIGNED);
+}
+
+void LuaEnums::initFluidEnums(lua_State* L) {
+	registerEnum(L, FLUID_NONE);
+	registerEnum(L, FLUID_WATER);
+	registerEnum(L, FLUID_WINE);
+	registerEnum(L, FLUID_BEER);
+	registerEnum(L, FLUID_MUD);
+	registerEnum(L, FLUID_BLOOD);
+	registerEnum(L, FLUID_SLIME);
+	registerEnum(L, FLUID_OIL);
+	registerEnum(L, FLUID_URINE);
+	registerEnum(L, FLUID_MILK);
+	registerEnum(L, FLUID_MANA);
+	registerEnum(L, FLUID_LIFE);
+	registerEnum(L, FLUID_LEMONADE);
+	registerEnum(L, FLUID_RUM);
+	registerEnum(L, FLUID_FRUITJUICE);
+	registerEnum(L, FLUID_COCONUTMILK);
+	registerEnum(L, FLUID_MEAD);
+	registerEnum(L, FLUID_TEA);
+	registerEnum(L, FLUID_INK);
 }
 
 void LuaEnums::initItemIdEnums(lua_State* L) {

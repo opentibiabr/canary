@@ -667,7 +667,7 @@ int GameFunctions::luaGameGetLadderIds(lua_State* L) {
 }
 
 int GameFunctions::luaGameGetDummyIds(lua_State* L) {
-	// Game.getDummyTable()
+	// Game.getDummyIds()
 	const auto dummys = Item::items.getDummys();
 	lua_createtable(L, static_cast<int>(dummys.size()), 0);
 	int index = 0;

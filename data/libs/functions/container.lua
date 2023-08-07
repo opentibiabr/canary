@@ -7,7 +7,7 @@ end
 ---@param loot LootItems
 function Container:addLoot(loot)
 	for itemId, item in pairs(loot) do
-		Spdlog.info(string.format("[Container:addLoot] - Adding loot item id: %d to container id: %d", itemId, self:getId()))
+		Spdlog.debug(string.format("[Container:addLoot] - Adding loot item id: %d to container id: %d", itemId, self:getId()))
 		local tmpItem = self:addItem(itemId, item.count)
 		if tmpItem then
 			if tmpItem:isContainer() and item.childLoot then

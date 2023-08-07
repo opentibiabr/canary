@@ -10,7 +10,13 @@ local config = {
 	-- makeshift warrior
 	[27655] = {female = 1043, male = 1042},
 	[27657] = {female = 1043, male = 1042, addon = 1, achievement = 'Cobbled and Patched'},
-	[27656] = {female = 1043, male = 1042, addon = 2, achievement = 'Cobbled and Patched'}
+	[27656] = {female = 1043, male = 1042, addon = 2, achievement = 'Cobbled and Patched'},
+	-- hand of the inquisition
+	[31738] = {female = 1244, male = 1243, addon = 1, effect = CONST_ME_HOLYAREA, achievement = "Inquisition's Arm"},
+	[31737] = {female = 1244, male = 1243, addon = 2, effect = CONST_ME_HOLYAREA, achievement = "Inquisition's Arm"},
+	-- poltergeist
+	[32630] = {female = 1271, male = 1270, addon = 1, effect = CONST_ME_BLUE_GHOST, achievement = "Mainstreet Nightmare"},
+	[32631] = {female = 1271, male = 1270, addon = 2, effect = CONST_ME_BLUE_GHOST, achievement = "Mainstreet Nightmare"},
 }
 
 local addons = Action()
@@ -33,7 +39,7 @@ function addons.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 
 		player:addOutfitAddon(useItem.female, useItem.addon)
 		player:addOutfitAddon(useItem.male, useItem.addon)
-		player:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
+		player:getPosition():sendMagicEffect(useItem.effect or CONST_ME_GIFT_WRAPS)
 		if player:hasOutfit(looktype, 3) then
 			player:addAchievement(useItem.achievement)
 		end

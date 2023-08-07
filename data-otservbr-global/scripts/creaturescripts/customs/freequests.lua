@@ -79,7 +79,7 @@ local questTable = {
 	{storage = Storage.CultsOfTibia.Orcs.Mission, storageValue = 1},
 	{storage = Storage.CultsOfTibia.Orcs.lookType, storageValue = 1},
 	{storage = Storage.CultsOfTibia.Orcs.bossTimer, storageValue = 1},
-	{storage = Storage.CultsOfTibia.Life.Mission, storageValue = 1},
+	{storage = Storage.CultsOfTibia.Life.Mission, storageValue = 7},
 	{storage = Storage.CultsOfTibia.Life.bossTimer, storageValue = 1},
 	{storage = Storage.CultsOfTibia.Humans.Mission, storageValue = 1},
 	{storage = Storage.CultsOfTibia.Humans.Vaporized, storageValue = 1},

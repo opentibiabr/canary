@@ -76,25 +76,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3031, chance = 100000, maxCount = 120}, -- gold coin
-	{id = 3035, chance = 39860, maxCount = 3}, -- platinum coin
-	{id = 21202, chance = 15030}, -- mooh'tah shell
-	{id = 237, chance = 7110}, -- strong mana potion
-	{id = 236, chance = 6390}, -- strong health potion
-	{id = 5878, chance = 5530}, -- minotaur leather
-	{id = 3030, chance = 5470}, -- small ruby
-	{id = 3032, chance = 5280}, -- small emerald
-	{id = 3033, chance = 5200}, -- small amethyst
-	{id = 9057, chance = 4760}, -- small topaz
-	{id = 11472, chance = 4710, maxCount = 2}, -- minotaur horn
-	{id = 21177, chance = 1380}, -- cowtana
-	{id = 3091, chance = 1110}, -- sword ring
-	{id = 21166, chance = 1090}, -- mooh'tah plate
-	{id = 3415, chance = 1020}, -- guardian shield
-	{id = 3371, chance = 710}, -- knight legs
-	{id = 5911, chance = 650}, -- red piece of cloth
-	{id = 3370, chance = 490}, -- knight armor
-	{id = 7401, chance = 150} -- minotaur trophy
+	{name = "gold coin", chance = 100000, maxCount = 119},
+	{name = "platinum coin", chance = 45450, maxCount = 3},
+	{id = 21202, chance = 18970}, -- mooh'tah shell
+	{name = "strong mana potion", chance = 9290},
+	{name = "strong health potion", chance = 8500},
+	{name = "small ruby", chance = 7710},
+	{name = "small emerald", chance = 6320},
+	{name = "small amethyst", chance = 5340},
+	{name = "minotaur leather", chance = 5340},
+	{name = "minotaur horn", chance = 4550, maxCount = 2},
+	{name = "small topaz", chance = 4350},
+	{id = 3094, chance = 1580}, -- sword ring
+	{name = "cowtana", chance = 1380},
+	{id = 21166, chance = 1380}, -- mooh'tah plate
+	{name = "knight armor", chance = 990},
+	{name = "red piece of cloth", chance = 790},
+	{name = "knight legs", chance = 590},
+	{name = "guardian shield", chance = 590},
+	{id = 7401, chance = 160}, -- minotaur trophy
 }
 
 monster.attacks = {
@@ -105,11 +105,13 @@ monster.attacks = {
 	{name ="mooh'tah master skill reducer", interval = 2000, chance = 19, range = 7, target = false}
 }
 
+
 monster.defenses = {
-	defense = 30,
-	armor = 30,
+	defense = 37,
+	armor = 37,
+	mitigation = 1.35,
 	{name ="combat", interval = 2000, chance = 22, type = COMBAT_HEALING, minDamage = 110, maxDamage = 160, effect = CONST_ME_MAGIC_BLUE, target = false},
-	{name ="haste", interval = 2000, chance = 8, speedChange = 220, effect = CONST_ME_MAGIC_RED, target = false, duration = 1000}
+	{name ="haste", interval = 2000, chance = 8, speedChange = 220, effect = CONST_ME_MAGIC_RED, target = false, duration = 1000},
 }
 
 monster.elements = {

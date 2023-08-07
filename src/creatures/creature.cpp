@@ -747,27 +747,6 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 				}
 				player->sendLootMessage(lootMessage.str());
 
-				if (g_configManager().getBoolean(AUTOBANK)) {
-					if (!corpse->getContainer()) {
-						return true;
-					}
-
-					int32_t money = 0;
-					for (Item* item : corpse->getContainer()->getItems()) {
-						if (uint32_t worth = item->getWorth(); worth > 0) {
-							money += worth;
-							g_game().internalRemoveItem(item);
-						}
-					}
-
-					if (money > 0) {
-						player->setBankBalance(player->getBankBalance() + money);
-						std::ostringstream ss;
-						ss << "Added " << money << " gold coins to your bank account.";
-						player->sendTextMessage(MESSAGE_STATUS, ss.str());
-					}
-				}
-
 				if (player->checkAutoLoot()) {
 					int32_t pos = tile->getStackposOfItem(player, corpse);
 					g_dispatcher().addTask(createTask(std::bind(&Game::playerQuickLoot, &g_game(), mostDamageCreature->getID(), this->getPosition(), corpse->getID(), pos - 1, nullptr, false, true)));

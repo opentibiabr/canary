@@ -20,6 +20,10 @@ monster.corpse = 32702
 monster.speed = 125
 monster.manaCost = 0
 
+monster.events = {
+	"paleWormDeath"
+}
+
 monster.changeTarget = {
 	interval = 60000,
 	chance = 0

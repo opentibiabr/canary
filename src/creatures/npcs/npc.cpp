@@ -14,6 +14,8 @@
 #include "declarations.hpp"
 #include "game/game.h"
 #include "lua/callbacks/creaturecallback.h"
+#include "game/scheduling/tasks.h"
+#include "game/scheduling/scheduler.h"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -60,11 +62,11 @@ void Npc::removeList() {
 	g_game().removeNpc(this);
 }
 
-bool Npc::canInteract(const Position &pos) const {
+bool Npc::canInteract(const Position &pos, uint32_t range /* = 4 */) const {
 	if (pos.z != getPosition().z) {
 		return false;
 	}
-	return Creature::canSee(getPosition(), pos, 4, 4);
+	return Creature::canSee(getPosition(), pos, range, range);
 }
 
 void Npc::onCreatureAppear(Creature* creature, bool isLogin) {
@@ -303,7 +305,66 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId, uint8_t subType, uint
 }
 
 void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore) {
+	uint64_t totalPrice = 0;
+	onPlayerSellItem(player, itemId, subType, amount, ignore, totalPrice);
+}
+
+void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, uint64_t totalPrice) {
+	Player* player = g_game().getPlayerByID(playerId);
 	if (!player) {
+		return;
+	}
+	if (itemId == ITEM_GOLD_POUCH) {
+		auto container = player->getLootPouch();
+		if (!container) {
+			return;
+		}
+		bool hasMore = false;
+		uint64_t toSellCount = 0;
+		phmap::flat_hash_map<uint16_t, uint16_t> toSell;
+		int64_t start = OTSYS_TIME();
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			if (toSellCount >= 500) {
+				hasMore = true;
+				break;
+			}
+			auto item = *it;
+			if (!item) {
+				continue;
+			}
+			toSell[item->getID()] += item->getItemAmount();
+			if (item->isStackable()) {
+				toSellCount++;
+			} else {
+				toSellCount += item->getItemAmount();
+			}
+		}
+		for (auto &[itemId, amount] : toSell) {
+			onPlayerSellItem(player, itemId, 0, amount, ignore, totalPrice);
+		}
+		auto ss = std::stringstream();
+		if (totalPrice == 0) {
+			ss << "You have no items in your loot pouch.";
+			player->sendTextMessage(MESSAGE_TRANSACTION, ss.str());
+			return;
+		}
+		if (hasMore) {
+			g_scheduler().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, totalPrice)));
+			return;
+		}
+		ss << "You sold all of the items from your loot pouch for ";
+		ss << totalPrice << " gold.";
+		player->sendTextMessage(MESSAGE_TRANSACTION, ss.str());
+		player->openPlayerContainers();
+	}
+}
+
+void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, uint64_t &totalPrice) {
+	if (!player) {
+		return;
+	}
+	if (itemId == ITEM_GOLD_POUCH) {
+		g_scheduler().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, 0)));
 		return;
 	}
 
@@ -314,6 +375,9 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 		if (itemType.id == shopBlock.itemId && shopBlock.itemSellPrice != 0) {
 			sellPrice = shopBlock.itemSellPrice;
 		}
+	}
+	if (sellPrice == 0) {
+		return;
 	}
 
 	auto toRemove = amount;
@@ -342,7 +406,12 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 	auto totalRemoved = amount - toRemove;
 	auto totalCost = static_cast<uint64_t>(sellPrice * totalRemoved);
 	if (getCurrency() == ITEM_GOLD_COIN) {
-		g_game().addMoney(player, totalCost);
+		totalPrice += totalCost;
+		if (g_configManager().getBoolean(AUTOBANK)) {
+			player->setBankBalance(player->getBankBalance() + totalCost);
+		} else {
+			g_game().addMoney(player, totalCost);
+		}
 	} else {
 		Item* newItem = Item::CreateItem(getCurrency(), totalCost);
 		if (newItem) {

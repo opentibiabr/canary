@@ -368,6 +368,9 @@ bool ConfigManager::load() {
 	boolean[VIP_STAY_ONLINE] = getGlobalBoolean(L, "vipStayOnline", false);
 	integer[VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION] = getGlobalNumber(L, "vipFamiliarTimeCooldownReduction", 0);
 
+	boolean[REWARD_CHEST_COLLECT_ENABLED] = getGlobalBoolean(L, "rewardChestCollectEnabled", true);
+	integer[REWARD_CHEST_MAX_COLLECT_ITEMS] = getGlobalNumber(L, "rewardChestMaxCollectItems", 200);
+
 	loaded = true;
 	lua_close(L);
 	return true;

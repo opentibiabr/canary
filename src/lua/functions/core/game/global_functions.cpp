@@ -417,12 +417,15 @@ int GlobalFunctions::luaDoTargetCombatMana(lua_State* L) {
 	}
 
 	CombatParams params;
+	auto minval = getNumber<int32_t>(L, 3);
+	auto maxval = getNumber<int32_t>(L, 4);
+	params.aggressive = minval + maxval < 0;
 	params.impactEffect = getNumber<uint16_t>(L, 5);
 
 	CombatDamage damage;
 	damage.origin = getNumber<CombatOrigin>(L, 6, ORIGIN_SPELL);
 	damage.primary.type = COMBAT_MANADRAIN;
-	damage.primary.value = normal_random(getNumber<int32_t>(L, 3), getNumber<int32_t>(L, 4));
+	damage.primary.value = normal_random(minval, maxval);
 
 	damage.instantSpellName = getString(L, 7);
 	damage.runeSpellName = getString(L, 8);

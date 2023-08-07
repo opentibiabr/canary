@@ -2613,7 +2613,7 @@ ReturnValue Game::collectRewardChestItems(Player* player, uint32_t maxMoveItems 
 	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedItemsMessage);
 
 	if (movedRewardItems == 0) {
-		return RETURNVALUE_NOTENOUGHROOM;
+		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	return RETURNVALUE_NOERROR;

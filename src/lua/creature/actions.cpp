@@ -299,10 +299,6 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 		// reward chest
 		if (container->getRewardChest() != nullptr && container->getParent()) {
 			RewardChest* myRewardChest = player->getRewardChest();
-			if (!player->hasOtherRewardContainerOpen(container->getParent()->getContainer())) {
-				player->removeEmptyRewards();
-			}
-
 			if (myRewardChest->size() == 0) {
 				return RETURNVALUE_REWARDCHESTISEMPTY;
 			}

@@ -387,21 +387,21 @@ class Items {
 		void addLadderId(uint16_t newId) {
 			ladders.push_back(newId);
 		}
-		void addDummyId(uint16_t newId) {
-			dummys.push_back(newId);
+		void addDummyId(uint16_t newId, bool isPremium) {
+			dummys[newId] = isPremium;
 		}
 
 		const std::vector<uint16_t> &getLadders() const {
 			return ladders;
 		}
-		const std::vector<uint16_t> &getDummys() const {
+		const std::unordered_map<uint16_t, bool> &getDummys() const {
 			return dummys;
 		}
 
 	private:
 		std::vector<ItemType> items;
 		std::vector<uint16_t> ladders;
-		std::vector<uint16_t> dummys;
+		std::unordered_map<uint16_t, bool> dummys;
 		InventoryVector inventory;
 };
 

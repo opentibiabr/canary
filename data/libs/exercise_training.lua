@@ -29,9 +29,11 @@ ExerciseWeaponsTable = {
 	[35290] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_FIRE, allowFarUse = true }
 }
 
-FreeDummies = {28558, 28565}
+local dummyIds = Game.getDummyIds()
+FreeDummies = {unpack(dummyIds[false])}
+HouseDummies = {unpack(dummyIds[true])}
+
 MaxAllowedOnADummy = configManager.getNumber(configKeys.MAX_ALLOWED_ON_A_DUMMY)
-HouseDummies = {28559, 28560, 28561, 28562, 28563, 28564}
 
 local magicLevelRate = configManager.getNumber(configKeys.RATE_MAGIC)
 local skillLevelRate = configManager.getNumber(configKeys.RATE_SKILL)

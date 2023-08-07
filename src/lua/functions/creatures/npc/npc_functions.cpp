@@ -322,9 +322,10 @@ int NpcFunctions::luaNpcIsPlayerInteractingOnTopic(lua_State* L) {
 }
 
 int NpcFunctions::luaNpcIsInTalkRange(lua_State* L) {
-	// npc:isInTalkRange()
+	// npc:isInTalkRange(position[, range = 4])
 	Npc* npc = getUserdata<Npc>(L, 1);
 	const Position &position = getPosition(L, 2);
+	uint32_t range = getNumber<uint32_t>(L, 3, 4);
 
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
@@ -332,7 +333,7 @@ int NpcFunctions::luaNpcIsInTalkRange(lua_State* L) {
 		return 1;
 	}
 
-	pushBoolean(L, npc && npc->canInteract(position));
+	pushBoolean(L, npc && npc->canInteract(position, range));
 	return 1;
 }
 

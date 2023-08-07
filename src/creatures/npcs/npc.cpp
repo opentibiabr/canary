@@ -62,11 +62,11 @@ void Npc::removeList() {
 	g_game().removeNpc(this);
 }
 
-bool Npc::canInteract(const Position &pos) const {
+bool Npc::canInteract(const Position &pos, uint32_t range /* = 4 */) const {
 	if (pos.z != getPosition().z) {
 		return false;
 	}
-	return Creature::canSee(getPosition(), pos, 4, 4);
+	return Creature::canSee(getPosition(), pos, range, range);
 }
 
 void Npc::onCreatureAppear(Creature* creature, bool isLogin) {

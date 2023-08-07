@@ -228,7 +228,6 @@ function GameStore.fuzzySearchOffer(searchString)
 	return results
 end
 
-
 local function queueSendStoreAlertToUser(message, delay, playerId, storeErrorCode)
 	storeErrorCode = storeErrorCode and storeErrorCode or  GameStore.StoreErrors.STORE_ERROR_NETWORK
 	addPlayerEvent(sendStoreError, delay, playerId, storeErrorCode, message)
@@ -379,7 +378,7 @@ function parseRequestStoreOffers(playerId, msg)
 		local searchString = msg:getString()
 		local results = GameStore.fuzzySearchOffer(searchString)
 		if not results or #results == 0 then
-			return addPlayerEvent(sendStoreError, 250, playerId, GameStore.StoreErrors.STORE_ERROR_INFORMATION, "No results found fo r \"" .. searchString .. "\".")
+			return addPlayerEvent(sendStoreError, 250, playerId, GameStore.StoreErrors.STORE_ERROR_INFORMATION, "No results found for \"" .. searchString .. "\".")
 		end
 
 		local searchResultsCategory = {

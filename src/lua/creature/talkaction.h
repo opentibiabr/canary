@@ -55,7 +55,7 @@ class TalkAction : public Script {
 			m_groupType = newGroupType;
 		}
 
-		const account::GroupType& getGroupType() const {
+		const account::GroupType &getGroupType() const {
 			return m_groupType;
 		}
 

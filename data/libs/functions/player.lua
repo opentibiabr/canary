@@ -554,3 +554,15 @@ function Player:calculateLootFactor(monster)
 		msgSuffix = suffix
 	}
 end
+
+function Player.setExhaustion(self, key, seconds)
+	return self:setStorageValue(key, os.time() + seconds)
+end
+
+function Player.getExhaustion(self, key)
+	return math.max(self:getStorageValue(key) - os.time(), 0)
+end
+
+function Player:hasExhaustion(self, key)
+	return self:getExhaustion(key) > 0 and true or false
+end

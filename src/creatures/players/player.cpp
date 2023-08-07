@@ -740,9 +740,6 @@ void Player::closeContainer(uint8_t cid) {
 	OpenContainer openContainer = it->second;
 	Container* container = openContainer.container;
 
-	if (container && container->isAnyKindOfRewardChest() && !hasOtherRewardContainerOpen(container)) {
-		removeEmptyRewards();
-	}
 	openContainers.erase(it);
 	if (container && container->getID() == ITEM_BROWSEFIELD) {
 		container->decrementReferenceCounter();
@@ -762,6 +759,10 @@ void Player::removeEmptyRewards() {
 }
 
 bool Player::hasOtherRewardContainerOpen(const Container* container) const {
+	if (!container) {
+		return false;
+	}
+
 	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [container](const auto &containerPair) {
 		return containerPair.second.container != container && containerPair.second.container->isAnyKindOfRewardContainer();
 	});

@@ -40941,7 +40941,7 @@
 	<item id="28558" article="an" name="exercise dummy">
 		<attribute key="description" value="You can train your skills by using training weapons with this exercise dummy."/>
 		<attribute key="type" value="dummy">
-			<attribute key="premium" value="0"/>
+			<attribute key="rate" value="100"/>
 		</attribute>
 	</item>
 	<item id="28559" article="a" name="ferumbras exercise dummy">
@@ -40949,7 +40949,7 @@
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28560"/>
 		<attribute key="type" value="dummy">
-			<attribute key="premium" value="1"/>
+			<attribute key="rate" value="110"/>
 		</attribute>
 	</item>
 	<item id="28560" article="a" name="ferumbras exercise dummy">
@@ -40957,7 +40957,7 @@
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28559"/>
 		<attribute key="type" value="dummy">
-			<attribute key="premium" value="1"/>
+			<attribute key="rate" value="110"/>
 		</attribute>
 	</item>
 	<item id="28561" article="a" name="demon exercise dummy">
@@ -40965,7 +40965,7 @@
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28562"/>
 		<attribute key="type" value="dummy">
-			<attribute key="premium" value="1"/>
+			<attribute key="rate" value="110"/>
 		</attribute>
 	</item>
 	<item id="28562" article="a" name="demon exercise dummy">
@@ -40973,7 +40973,7 @@
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28561"/>
 		<attribute key="type" value="dummy">
-			<attribute key="premium" value="1"/>
+			<attribute key="rate" value="110"/>
 		</attribute>
 	</item>
 	<item id="28563" article="a" name="monk exercise dummy">
@@ -40981,7 +40981,7 @@
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28564"/>
 		<attribute key="type" value="dummy">
-			<attribute key="premium" value="1"/>
+			<attribute key="rate" value="110"/>
 		</attribute>
 	</item>
 	<item id="28564" article="a" name="monk exercise dummy">
@@ -40989,13 +40989,13 @@
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28563"/>
 		<attribute key="type" value="dummy">
-			<attribute key="premium" value="1"/>
+			<attribute key="rate" value="110"/>
 		</attribute>
 	</item>
 	<item id="28565" article="an" name="exercise dummy">
 		<attribute key="description" value="You can train your skills by using training weapons with this exercise dummy."/>
 		<attribute key="type" value="dummy">
-			<attribute key="premium" value="0"/>
+			<attribute key="rate" value="100"/>
 		</attribute>
 	</item>
 	<item id="28566" article="a" name="silken bookmark">

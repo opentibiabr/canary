@@ -78,7 +78,7 @@ class GameFunctions final : LuaScriptInterface {
 			registerMethod(L, "Game", "createHazardArea", GameFunctions::luaGameCreateHazardArea);
 
 			registerMethod(L, "Game", "getLadderIds", GameFunctions::luaGameGetLadderIds);
-			registerMethod(L, "Game", "getDummyIds", GameFunctions::luaGameGetDummyIds);
+			registerMethod(L, "Game", "getDummies", GameFunctions::luaGameGetDummies);
 		}
 
 	private:
@@ -144,7 +144,7 @@ class GameFunctions final : LuaScriptInterface {
 		static int luaGameCreateHazardArea(lua_State* L);
 
 		static int luaGameGetLadderIds(lua_State* L);
-		static int luaGameGetDummyIds(lua_State* L);
+		static int luaGameGetDummies(lua_State* L);
 };
 
 #endif // SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_

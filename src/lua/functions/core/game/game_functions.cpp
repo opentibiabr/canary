@@ -666,45 +666,22 @@ int GameFunctions::luaGameGetLadderIds(lua_State* L) {
 	return 1;
 }
 
-int GameFunctions::luaGameGetDummyIds(lua_State* L) {
+int GameFunctions::luaGameGetDummies(lua_State* L) {
 	/**
 	 * @brief Retrieve dummy IDs categorized by type.
 	 * @details This function provides a table containing two sub-tables: one for free dummies and one for house (or premium) dummies.
 
 	* @note usage on lua:
-		local dummyIds = Game.getDummyIds()
-		local freeDummies = {unpack(dummyIds[false])}  -- Extract free dummy IDs
-		local houseDummies = {unpack(dummyIds[true])}  -- Extract house (or premium) dummy IDs
+		local dummies = Game.getDummies()
+		local rate = dummies[1] -- Retrieve dummy rate
 	*/
 
-	const auto &dummys = Item::items.getDummys();
-	// Table for the two categories of dummies
-	lua_createtable(L, 0, 2);
-	lua_pushboolean(L, true);
-	// Subtable for premium dummies
-	lua_newtable(L);
-	int premiumIndex = 0;
-	for (const auto &[dummyId, isPremium] : dummys) {
-		if (isPremium) {
-			premiumIndex++;
-			lua_pushnumber(L, static_cast<lua_Number>(dummyId));
-			lua_rawseti(L, -2, premiumIndex);
-		}
+	const auto &dummies = Item::items.getDummys();
+	lua_createtable(L, dummies.size(), 0);
+	for (const auto &[dummyId, rate] : dummies) {
+		lua_pushnumber(L, static_cast<lua_Number>(rate));
+		lua_rawseti(L, -2, dummyId);
 	}
-	lua_settable(L, -3);
-
-	lua_pushboolean(L, false);
-	// Subtable for free dummies
-	lua_newtable(L);
-	int freeIndex = 0;
-	for (const auto &[dummyId, isPremium] : dummys) {
-		if (!isPremium) {
-			freeIndex++;
-			lua_pushnumber(L, static_cast<lua_Number>(dummyId));
-			lua_rawseti(L, -2, freeIndex);
-		}
-	}
-	lua_settable(L, -3);
 	return 1;
 }
 

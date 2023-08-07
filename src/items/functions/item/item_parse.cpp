@@ -74,7 +74,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
 }
 
-void ItemParse::parseDummyPremium(pugi::xml_node attributeNode, ItemType &itemType) {
+void ItemParse::parseDummyRate(pugi::xml_node attributeNode, ItemType &itemType) {
 	for (auto subAttributeNode : attributeNode.children()) {
 		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
 		if (!subKeyAttribute) {
@@ -87,9 +87,9 @@ void ItemParse::parseDummyPremium(pugi::xml_node attributeNode, ItemType &itemTy
 		}
 
 		auto stringValue = asLowerCaseString(subKeyAttribute.as_string());
-		if (stringValue == "premium") {
-			bool isPremium = subValueAttribute.as_bool();
-			Item::items.addDummyId(itemType.id, isPremium);
+		if (stringValue == "rate") {
+			uint16_t rate = subValueAttribute.as_uint();
+			Item::items.addDummyId(itemType.id, rate);
 		}
 	}
 }
@@ -108,7 +108,7 @@ void ItemParse::parseType(const std::string &tmpStrValue, pugi::xml_node attribu
 				Item::items.addLadderId(itemType.id);
 			}
 			if (itemType.type == ITEM_TYPE_DUMMY) {
-				parseDummyPremium(attributeNode, itemType);
+				parseDummyRate(attributeNode, itemType);
 			}
 		} else {
 			SPDLOG_WARN("[Items::parseItemNode] - Unknown type: {}", valueAttribute.as_string());

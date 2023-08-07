@@ -806,25 +806,9 @@ void LuaEnums::initItemTypeEnums(lua_State* L) {
 }
 
 void LuaEnums::initFluidEnums(lua_State* L) {
-	registerEnum(L, FLUID_NONE);
-	registerEnum(L, FLUID_WATER);
-	registerEnum(L, FLUID_WINE);
-	registerEnum(L, FLUID_BEER);
-	registerEnum(L, FLUID_MUD);
-	registerEnum(L, FLUID_BLOOD);
-	registerEnum(L, FLUID_SLIME);
-	registerEnum(L, FLUID_OIL);
-	registerEnum(L, FLUID_URINE);
-	registerEnum(L, FLUID_MILK);
-	registerEnum(L, FLUID_MANA);
-	registerEnum(L, FLUID_LIFE);
-	registerEnum(L, FLUID_LEMONADE);
-	registerEnum(L, FLUID_RUM);
-	registerEnum(L, FLUID_FRUITJUICE);
-	registerEnum(L, FLUID_COCONUTMILK);
-	registerEnum(L, FLUID_MEAD);
-	registerEnum(L, FLUID_TEA);
-	registerEnum(L, FLUID_INK);
+	for (auto value : magic_enum::enum_values<Fluids_t>()) {
+		registerEnumClass(L, value);
+	}
 }
 
 void LuaEnums::initItemIdEnums(lua_State* L) {

@@ -10,6 +10,7 @@
 #ifndef SRC_LUA_CREATURE_TALKACTION_H_
 #define SRC_LUA_CREATURE_TALKACTION_H_
 
+#include "creatures/players/account/account.hpp"
 #include "lua/global/baseevents.h"
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
@@ -25,6 +26,12 @@ class TalkAction : public Script {
 
 		const std::string &getWords() const {
 			return words;
+		}
+		const std::string &getName() const {
+			return name;
+		}
+		void setName(std::string newName) {
+			name.append(newName);
 		}
 		const std::vector<std::string> &getWordsMap() const {
 			return wordsMap;
@@ -44,14 +51,24 @@ class TalkAction : public Script {
 		bool executeSay(Player* player, const std::string &words, const std::string &param, SpeakClasses type) const;
 		//
 
+		void setGroupType(account::GroupType newGroupType) {
+			m_groupType = newGroupType;
+		}
+
+		const account::GroupType& getGroupType() const {
+			return m_groupType;
+		}
+
 	private:
 		std::string getScriptTypeName() const override {
 			return "onSay";
 		}
 
 		std::string words;
+		std::string name;
 		std::vector<std::string> wordsMap;
 		std::string separator = "\"";
+		account::GroupType m_groupType;
 };
 
 class TalkActions final : public Scripts {

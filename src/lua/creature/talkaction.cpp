@@ -30,6 +30,8 @@ bool TalkActions::registerLuaEvent(TalkAction* event) {
 		} else {
 			talkActions.emplace(words[i], *talkAction);
 		}
+
+		talkAction->setName(words[i]);
 	}
 
 	return true;

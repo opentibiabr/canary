@@ -9,6 +9,7 @@
 
 #include "pch.hpp"
 
+#include "creatures/players/account/account.hpp"
 #include "lua/creature/talkaction.h"
 #include "lua/functions/events/talk_action_functions.hpp"
 
@@ -42,6 +43,51 @@ int TalkActionFunctions::luaTalkActionOnSay(lua_State* L) {
 	return 1;
 }
 
+int TalkActionFunctions::luaTalkActionGroupType(lua_State* L) {
+	// talkAction:groupType(GroupType = GROUP_TYPE_NORMAL)
+	TalkAction* talk = getUserdata<TalkAction>(L, 1);
+	if (!talk) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	account::GroupType groupType;
+
+	int type = lua_type(L, 2);
+	if (type == LUA_TNUMBER) {
+		groupType = static_cast<account::GroupType>(getNumber<uint8_t>(L, 2));
+	} else if (type == LUA_TSTRING) {
+		std::string strValue = getString(L, 2);
+		if (strValue == "normal") {
+			groupType = account::GROUP_TYPE_NORMAL;
+		} else if (strValue == "tutor") {
+			groupType = account::GROUP_TYPE_TUTOR;
+		} else if (strValue == "seniortutor") {
+			groupType = account::GROUP_TYPE_SENIORTUTOR;
+		} else if (strValue == "gamemaster") {
+			groupType = account::GROUP_TYPE_GAMEMASTER;
+		} else if (strValue == "communitymanager") {
+			groupType = account::GROUP_TYPE_COMMUNITYMANAGER;
+		} else if (strValue == "god") {
+			groupType = account::GROUP_TYPE_GOD;
+		} else {
+			reportErrorFunc("Invalid group type string value.");
+			pushBoolean(L, false);
+			return 1;
+		}
+	} else {
+		reportErrorFunc("Expected number or string value for group type.");
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	spdlog::info("registering group type {}", static_cast<uint8_t>(groupType));
+	talk->setGroupType(groupType);
+	pushBoolean(L, true);
+	return 1;
+}
+
 int TalkActionFunctions::luaTalkActionRegister(lua_State* L) {
 	// talkAction:register()
 	TalkAction* talk = getUserdata<TalkAction>(L, 1);
@@ -66,5 +112,31 @@ int TalkActionFunctions::luaTalkActionSeparator(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int TalkActionFunctions::luaTalkActionGetName(lua_State* L) {
+	// local name = talkAction:getName()
+	TalkAction* talk = getUserdata<TalkAction>(L, 1);
+	if (!talk) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushString(L, talkaction->getName());
+	return 1;
+}
+
+int TalkActionFunctions::luaTalkActionGetGroupType(lua_State* L) {
+	// local groupType = talkAction:getGroupType()
+	TalkAction* talk = getUserdata<TalkAction>(L, 1);
+	if (!talk) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushnumber(L, static_cast<lua_Number>(talk->getGroupType()));
 	return 1;
 }

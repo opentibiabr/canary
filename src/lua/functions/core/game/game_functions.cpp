@@ -19,6 +19,7 @@
 #include "io/iologindata.h"
 #include "lua/functions/core/game/game_functions.hpp"
 #include "game/scheduling/tasks.h"
+#include "lua/creature/talkaction.h"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.h"
@@ -698,16 +699,15 @@ int GameFunctions::luaGameCreateHazardArea(lua_State* L) {
 	return 1;
 }
 
-int GameFunctions::luaGameGetTalkActionsWords(lua_State* L) {
-	// Game.getTalkActionsWords()
-	const auto &talkactionsMap = g_talkActions().getTalkActionsMap();
+int GameFunctions::luaGameGetTalkActions(lua_State* L) {
+	// Game.getTalkActions()
+	const auto& talkactionsMap = g_talkActions().getTalkActionsMap();
 	lua_createtable(L, talkactionsMap.size(), 0);
 
-	int index = 0;
 	for (auto [talkName, talkaction] : talkactionsMap) {
-		index++;
-		pushString(L, talkName);
-		lua_rawseti(L, -2, index);
+		pushUserdata<TalkAction>(L, &talkaction);
+		setMetatable(L, -1, "TalkAction");
+		lua_setfield(L, -2, talkName.c_str());
 	}
 	return 1;
 }

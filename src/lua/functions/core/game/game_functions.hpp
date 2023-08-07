@@ -77,7 +77,7 @@ class GameFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Game", "createHazardArea", GameFunctions::luaGameCreateHazardArea);
 
-			registerMethod(L, "Game", "getTalkActionsWords", GameFunctions::luaGameGetTalkActionsWords);
+			registerMethod(L, "Game", "getTalkActions", GameFunctions::luaGameGetTalkActions);
 		}
 
 	private:
@@ -142,7 +142,7 @@ class GameFunctions final : LuaScriptInterface {
 
 		static int luaGameCreateHazardArea(lua_State* L);
 
-		static int luaGameGetTalkActionsWords(lua_State* L);
+		static int luaGameGetTalkActions(lua_State* L);
 };
 
 #endif // SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_

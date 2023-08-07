@@ -78,6 +78,8 @@ std::string LuaFunctionsLoader::getErrorDesc(ErrorCode_t code) {
 			return "Spell not found";
 		case LUA_ERROR_ACTION_NOT_FOUND:
 			return "Action not found";
+		case LUA_ERROR_TALK_ACTION_NOT_FOUND:
+			return "TalkAction not found";
 		default:
 			return "Bad error code";
 	}

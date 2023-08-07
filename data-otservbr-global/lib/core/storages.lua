@@ -2845,7 +2845,9 @@ Storage = {
 			},
 			CitizenOfIssaviOutfits = {},
 			RoyalBounaceanAdvisorOutfits = {},
-			TooHotToHandle = {}
+			TooHotToHandle = {
+				BrainstealerTimer = 47611,
+			}
 		},
 		U12_80 = { -- update 12.80 - Reserved Storages 47801 - 47850
 			RoyalCostumeOutfits = {}
@@ -2864,6 +2866,9 @@ Storage = {
 					ThePrimalMenaceKilled = 47855,
 				},
 			},
+			WithinTheTides = {
+				TimiraTimer = 47858,
+			}
 		},
 		U13_10 = { -- update 13.10 - Reserved Storages 47901 - 47951
 			CradleOfMonsters = {
@@ -2991,11 +2996,6 @@ Storage = {
 			TimeLeft = 64038,
 			LastActivatedAt = 64039,
 		},
-	},
-
-	Marapur = {
-		-- Timira
-		Timira = 100800
 	},
 
 	VipSystem = {

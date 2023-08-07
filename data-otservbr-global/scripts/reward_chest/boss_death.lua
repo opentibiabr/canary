@@ -10,6 +10,10 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 	local monsterType = creature:getType()
 	-- Make sure it is a boss
 	if monsterType and monsterType:isRewardBoss() then
+		if not corpse:isContainer() then
+			Spdlog.warn("[bossDeath.onDeath] Corpse (id: " .. corpse:getId() .. ") for reward boss " .. creature:getName() .. " is not a container.")
+		end
+		corpse:registerReward()
 		local bossId = creature:getId()
 		local rewardId = corpse:getAttribute(ITEM_ATTRIBUTE_DATE)
 

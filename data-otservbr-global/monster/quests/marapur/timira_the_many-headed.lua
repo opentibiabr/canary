@@ -8,9 +8,14 @@ monster.outfit = {
 	lookType = 1542,
 }
 
-monster.health = 200000
-monster.maxHealth = 200000
-monster.runHealth = 0
+monster.bosstiary = {
+	bossRaceId = 2250,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.Quest.U12_90.WithinTheTides.TimiraTimer,
+}
+
+monster.health = 75000
+monster.maxHealth = 75000
 monster.race = "blood"
 monster.corpse = 39712
 monster.speed = 400

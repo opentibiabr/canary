@@ -256,6 +256,8 @@ function playerLogin.onLogin(player)
 		onExerciseTraining[player:getId()] = nil
 		player:setTraining(false)
 	end
+
+	player:disableLoginMusic()
 	return true
 end
 playerLogin:register()

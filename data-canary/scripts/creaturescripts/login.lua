@@ -105,6 +105,7 @@ function login.onLogin(player)
 
 	player:getFinalLowLevelBonus()
 
+	player:disableLoginMusic()
 	return true
 end
 

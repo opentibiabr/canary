@@ -115,13 +115,13 @@ class Game {
 
 		Npc* getNpcByID(uint32_t id);
 
-		Player* getPlayerByID(uint32_t id);
-
 		Creature* getCreatureByName(const std::string &s);
 
 		Npc* getNpcByName(const std::string &s);
 
-		Player* getPlayerByName(const std::string &s);
+		Player* getPlayerByID(uint32_t id, bool loadTmp = false);
+
+		Player* getPlayerByName(const std::string &s, bool loadTmp = false);
 
 		Player* getPlayerByGUID(const uint32_t &guid);
 

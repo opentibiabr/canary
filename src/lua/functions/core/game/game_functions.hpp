@@ -66,6 +66,7 @@ class GameFunctions final : LuaScriptInterface {
 			registerMethod(L, "Game", "hasDistanceEffect", GameFunctions::luaGameHasDistanceEffect);
 			registerMethod(L, "Game", "hasEffect", GameFunctions::luaGameHasEffect);
 			registerMethod(L, "Game", "getOfflinePlayer", GameFunctions::luaGameGetOfflinePlayer);
+			registerMethod(L, "Game", "getNormalizedPlayerName", GameFunctions::luaGameGetNormalizedPlayerName);
 
 			registerMethod(L, "Game", "addInfluencedMonster", GameFunctions::luaGameAddInfluencedMonster);
 			registerMethod(L, "Game", "removeInfluencedMonster", GameFunctions::luaGameRemoveInfluencedMonster);
@@ -132,6 +133,7 @@ class GameFunctions final : LuaScriptInterface {
 		static int luaGameReload(lua_State* L);
 
 		static int luaGameGetOfflinePlayer(lua_State* L);
+		static int luaGameGetNormalizedPlayerName(lua_State* L);
 		static int luaGameHasEffect(lua_State* L);
 		static int luaGameHasDistanceEffect(lua_State* L);
 

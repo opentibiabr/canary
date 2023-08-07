@@ -619,6 +619,21 @@ int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
 	return 1;
 }
 
+int GameFunctions::luaGameGetNormalizedPlayerName(lua_State* L) {
+	// Game.getNormalizedPlayerName(name)
+	auto name = getString(L, 1);
+	Player* player = g_game().getPlayerByName(name, true);
+	if (player) {
+		pushString(L, player->getName());
+		if (!player->isOnline()) {
+			delete player;
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int GameFunctions::luaGameAddInfluencedMonster(lua_State* L) {
 	// Game.addInfluencedMonster(monster)
 	Monster* monster = getUserdata<Monster>(L, 1);

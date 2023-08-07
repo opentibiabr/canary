@@ -1,13 +1,14 @@
 local aol = TalkAction("!aol")
 
 function aol.onSay(player, words, param)
-	if player:removeMoneyBank(50000) then
+	local totalCost = 50000 + (configManager.getNumber(configKeys.BUY_AOL_COMMAND_FEE) or 0)
+	if player:removeMoneyBank(totalCost) then
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 		player:addItem(3057, 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have bought an amulet of loss for 50K!")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have bought an amulet of loss for %i gold!", totalCost))
 	else
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
-		player:sendCancelMessage("You do not have enough money.")
+		player:sendCancelMessage(string.format("You do not have enough money. You need %i gold to buy aol!", totalCost))
 	end
 end
 

@@ -30,7 +30,6 @@ ExerciseWeaponsTable = {
 }
 
 local dummies = Game.getDummies()
-local maxAllowedOnADummy = configManager.getNumber(configKeys.MAX_ALLOWED_ON_A_DUMMY)
 
 function LeaveTraining(playerId)
 	if onExerciseTraining[playerId] then
@@ -92,7 +91,6 @@ function ExerciseEvent(playerId, tilePosition, weaponId, dummyId)
 	local isMagic = ExerciseWeaponsTable[weaponId].skill == SKILL_MAGLEVEL
 	if not dummies[dummyId] then return false end
 	local rate = dummies[dummyId] / 100
-	Spdlog.info(rate)
 
 	if isMagic then
 		player:addManaSpent(500 * rate)

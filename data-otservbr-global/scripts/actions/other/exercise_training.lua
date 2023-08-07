@@ -1,4 +1,6 @@
 local exerciseTraining = Action()
+
+local maxAllowedOnADummy = configManager.getNumber(configKeys.MAX_ALLOWED_ON_A_DUMMY)
 local dummies = Game.getDummies()
 local function isDummy(id)
 	return dummies[id] and dummies[id] > 0
@@ -44,7 +46,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 					playersOnDummy = playersOnDummy + 1
 				end
 
-				if playersOnDummy == MaxAllowedOnADummy then
+				if playersOnDummy == maxAllowedOnADummy then
 					player:sendTextMessage(MESSAGE_FAILURE, "That exercise dummy is busy.")
 					return true
 				end

@@ -75,6 +75,10 @@ class TalkActions final : public Scripts {
 		bool registerLuaEvent(TalkAction* event);
 		void clear();
 
+		const std::map<std::string, TalkAction> &getTalkActionsMap() const {
+			return talkActions;
+		};
+
 	private:
 		std::map<std::string, TalkAction> talkActions;
 };

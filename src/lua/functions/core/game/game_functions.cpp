@@ -697,3 +697,17 @@ int GameFunctions::luaGameCreateHazardArea(lua_State* L) {
 	pushBoolean(L, g_game().createHazardArea(positionFrom, positionTo));
 	return 1;
 }
+
+int GameFunctions::luaGameGetTalkActionsWords(lua_State* L) {
+	// Game.getTalkActionsWords()
+	const auto &talkactionsMap = g_talkActions().getTalkActionsMap();
+	lua_createtable(L, talkactionsMap.size(), 0);
+
+	int index = 0;
+	for (auto [talkName, talkaction] : talkactionsMap) {
+		index++;
+		pushString(L, talkName);
+		lua_rawseti(L, -2, index);
+	}
+	return 1;
+}

@@ -33,4 +33,5 @@ function storageSet.onSay(cid, words, param)
 end
 
 storageSet:separator(" ")
+storageSet:groupType("god")
 storageSet:register()

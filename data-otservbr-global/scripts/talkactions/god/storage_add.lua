@@ -3,10 +3,6 @@
 local storage = TalkAction("/addstorage")
 
 function storage.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	-- Sanity check for parameters
 	if param == "" then
 		player:sendCancelMessage("You need to pass at least the storage that will be set.")
@@ -36,4 +32,5 @@ function storage.onSay(player, words, param)
 end
 
 storage:separator(" ")
+storage:groupType("god")
 storage:register()

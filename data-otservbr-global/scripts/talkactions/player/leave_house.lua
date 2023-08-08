@@ -37,4 +37,5 @@ function leaveHouse.onSay(player, words, param)
 end
 
 leaveHouse:separator(" ")
+leaveHouse:groupType("normal")
 leaveHouse:register()

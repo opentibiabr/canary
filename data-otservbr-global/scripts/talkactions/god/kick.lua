@@ -1,10 +1,6 @@
 local kick = TalkAction("/kick")
 
 function kick.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	local target = Player(param)
 	if not target then
 		player:sendCancelMessage("Player not found.")
@@ -21,4 +17,5 @@ function kick.onSay(player, words, param)
 end
 
 kick:separator(" ")
+kick:groupType("gamemaster")
 kick:register()

@@ -32,4 +32,5 @@ function storageGet.onSay(cid, words, param)
 end
 
 storageGet:separator(" ")
+storageGet:groupType("gamemaster")
 storageGet:register()

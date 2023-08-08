@@ -5,6 +5,7 @@ function flag.onSay(player, words, param)
 end
 
 flag:separator(" ")
+flag:groupType("god")
 flag:register()
 
 flag = TalkAction("/setflag")
@@ -14,6 +15,7 @@ function flag.onSay(player, words, param)
 end
 
 flag:separator(" ")
+flag:groupType("god")
 flag:register()
 
 flag = TalkAction("/removeflag")
@@ -23,4 +25,5 @@ function flag.onSay(player, words, param)
 end
 
 flag:separator(" ")
+flag:groupType("god")
 flag:register()

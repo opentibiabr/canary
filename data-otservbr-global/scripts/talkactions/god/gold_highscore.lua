@@ -32,4 +32,5 @@ return false
 end
 
 gold_rank:separator(" ")
+gold_rank:groupType("gamemaster")
 gold_rank:register()

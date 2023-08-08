@@ -12,4 +12,5 @@ function vip.onSay(player, words, param)
 	return false
 end
 
+vip:groupType("normal")
 vip:register()

@@ -5,10 +5,6 @@ local invalidIds = {
 local createItem = TalkAction("/i")
 
 function createItem.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	local split = param:split(",")
 
 	local itemType = ItemType(split[1])
@@ -59,7 +55,7 @@ function createItem.onSay(player, words, param)
 		if tier <= 0 or tier > 10 then
 			player:sendCancelMessage("Invalid tier count.")
 			return false
-		else 
+		else
 			result = player:addItem(itemType:getId(), count, true, 0, CONST_SLOT_WHEREEVER, tier)
 		end
 	end
@@ -80,4 +76,5 @@ function createItem.onSay(player, words, param)
 end
 
 createItem:separator(" ")
+createItem:groupType("god")
 createItem:register()

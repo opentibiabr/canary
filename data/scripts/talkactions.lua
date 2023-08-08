@@ -41,12 +41,6 @@ local PlayerFlags_t = {
 	["IgnoredByNpcs"] = IgnoredByNpcs,
 }
 
-local function notAccountTypeGod(player)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-end
-
 local function sendValidKeys(player)
 	local flagsList = {}
 	for flagName, _ in pairs(PlayerFlags_t) do
@@ -94,10 +88,6 @@ function GetFlagNameByType(flagType)
 end
 
 function Player.talkactionHasFlag(self, param, flagType)
-	if notAccountTypeGod(self) then
-		return true
-	end
-
 	if not hasValidParams(self, param, "Usage: /hasflag <playerName>, <flagnumber or name>") then
 		return false
 	end
@@ -127,10 +117,6 @@ function Player.talkactionHasFlag(self, param, flagType)
 end
 
 function Player.talkactionSetFlag(self, param, flagType)
-	if notAccountTypeGod(self) then
-		return true
-	end
-
 	if not hasValidParams(self, param, "Usage: /setflag <playerName>, <flagnumber or name>") then
 		return false
 	end
@@ -162,10 +148,6 @@ function Player.talkactionSetFlag(self, param, flagType)
 end
 
 function Player.talkactionRemoveFlag(self, param, flagType)
-	if notAccountTypeGod(self) then
-		return true
-	end
-
 	if not hasValidParams(self, param, "Usage: /removeflag <playerName>, <flagnumber or name>") then
 		return false
 	end
@@ -246,10 +228,6 @@ function Player.reloadTalkaction(self, words, param)
 		["group"] = RELOAD_TYPE_GROUPS,
 		["groups"] = RELOAD_TYPE_GROUPS
 	}
-
-	if notAccountTypeGod(self) then
-		return true
-	end
 
 	if not configManager.getBoolean(configKeys.ALLOW_RELOAD) then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,"Reload command is disabled.")

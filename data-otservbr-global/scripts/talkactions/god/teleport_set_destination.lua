@@ -3,10 +3,6 @@
 local teleportSetDestination = TalkAction("/teleport")
 
 function teleportSetDestination.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	if param == "" then
 		player:sendCancelMessage("Teleport position required.")
 		return false
@@ -39,4 +35,5 @@ function teleportSetDestination.onSay(player, words, param)
 end
 
 teleportSetDestination:separator(" ")
+teleportSetDestination:groupType("gamemaster")
 teleportSetDestination:register()

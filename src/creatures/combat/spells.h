@@ -327,6 +327,22 @@ class Spell : public BaseSpell {
 
 		SpellType_t spellType = SPELL_UNDEFINED;
 
+		const std::string &getWords() const {
+			return m_words;
+		}
+
+		void setWords(std::string newWord) {
+			m_words = newWord;
+		}
+
+		const std::string& getSeparator() const {
+			return m_separator;
+		}
+
+		void setSeparator(std::string newSeparator) {
+			m_separator = newSeparator;
+		}
+
 	protected:
 		void applyCooldownConditions(Player* player) const;
 		bool playerSpellCheck(Player* player) const;
@@ -369,13 +385,14 @@ class Spell : public BaseSpell {
 		bool enabled = true;
 		bool premium = false;
 
-	private:
 		std::string name;
+		std::string m_words;
+		std::string m_separator;
 };
 
-class InstantSpell final : public TalkAction, public Spell {
+class InstantSpell final : public Script, public Spell {
 	public:
-		using TalkAction::TalkAction;
+		using Script::Script;
 
 		virtual bool playerCastInstant(Player* player, std::string &param);
 

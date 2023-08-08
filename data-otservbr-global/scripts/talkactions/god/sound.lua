@@ -1,10 +1,6 @@
 local areasound = TalkAction("/areasound")
 
 function areasound.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false
@@ -36,15 +32,12 @@ function areasound.onSay(player, words, param)
 end
 
 areasound:separator(" ")
+areasound:groupType("gamemaster")
 areasound:register()
 
 local internalsound = TalkAction("/internalsound")
 
 function internalsound.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false
@@ -76,15 +69,12 @@ function internalsound.onSay(player, words, param)
 end
 
 internalsound:separator(" ")
+internalsound:groupType("gamemaster")
 internalsound:register()
 
 local globalsound = TalkAction("/globalsound")
 
 function globalsound.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false
@@ -120,4 +110,5 @@ function globalsound.onSay(player, words, param)
 end
 
 globalsound:separator(" ")
+globalsound:groupType("gamemaster")
 globalsound:register()

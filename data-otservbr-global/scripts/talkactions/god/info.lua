@@ -7,10 +7,6 @@ function info.onSay(player, words, param)
 		return false
 	end
 
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false
@@ -39,4 +35,5 @@ function info.onSay(player, words, param)
 end
 
 info:separator(" ")
+info:groupType("gamemaster")
 info:register()

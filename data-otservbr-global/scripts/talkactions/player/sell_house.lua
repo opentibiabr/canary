@@ -21,4 +21,5 @@ function sellHouse.onSay(player, words, param)
 end
 
 sellHouse:separator(" ")
+sellHouse:groupType("normal")
 sellHouse:register()

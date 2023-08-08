@@ -1,10 +1,6 @@
 local addMoney = TalkAction("/addmoney")
 
 function addMoney.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required")
@@ -46,4 +42,5 @@ function addMoney.onSay(player, words, param)
 end
 
 addMoney:separator(" ")
+addMoney:groupType("god")
 addMoney:register()

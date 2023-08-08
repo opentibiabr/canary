@@ -1,10 +1,6 @@
 local houseOwner = TalkAction("/owner")
 
 function houseOwner.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	local tile = Tile(player:getPosition())
 	local house = tile and tile:getHouse()
 	if not house then
@@ -28,4 +24,5 @@ function houseOwner.onSay(player, words, param)
 end
 
 houseOwner:separator(" ")
+houseOwner:groupType("gamemaster")
 houseOwner:register()

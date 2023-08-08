@@ -8,15 +8,14 @@ function commands.onSay(player, words, param)
 
 	for _, talkaction in pairs(allTalkActions) do
 		if talkaction:getGroupType() ~= 0 then
-		print("group type ".. talkaction:getGroupType())
-		print("talk name ".. talkaction:getName())
-		if talkaction:getGroupType() <= playerGroupId then
-			text = text .. talkaction:getName() .. "\n"
+			if talkaction:getGroupType() <= playerGroupId then
+				text = text .. talkaction:getName() .. "\n"
+			end
 		end
-	end
 	end
 
 	player:showTextDialog(639, text)
 end
 
+commands:groupType("normal")
 commands:register()

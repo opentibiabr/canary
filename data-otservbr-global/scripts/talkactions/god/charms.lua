@@ -1,9 +1,6 @@
 local addCharm = TalkAction("/addcharms")
 
 function addCharm.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
 	local usage = "/addcharms PLAYER NAME,AMOUNT"
 	if param == "" then
 		player:sendCancelMessage("Command param required. Usage: ".. usage)
@@ -29,15 +26,12 @@ function addCharm.onSay(player, words, param)
 
 end
 addCharm:separator(" ")
+addCharm:groupType("god")
 addCharm:register()
 
 local resetCharm = TalkAction("/resetcharms")
 
 function resetCharm.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	if param == "" then
 		param = player:getName()
 	end
@@ -55,15 +49,12 @@ function resetCharm.onSay(player, words, param)
 end
 
 resetCharm:separator(" ")
+resetCharm:groupType("god")
 resetCharm:register()
 
 local charmExpansion = TalkAction("/charmexpansion")
 
 function charmExpansion.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	if param == "" then
 		param = player:getName()
 	end
@@ -81,15 +72,12 @@ function charmExpansion.onSay(player, words, param)
 end
 
 charmExpansion:separator(" ")
+charmExpansion:groupType("god")
 charmExpansion:register()
 
 local charmRune = TalkAction("/charmrunes")
 
 function charmRune.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	if param == "" then
 		param = player:getName()
 	end
@@ -107,15 +95,12 @@ function charmRune.onSay(player, words, param)
 end
 
 charmRune:separator(" ")
+charmRune:groupType("god")
 charmRune:register()
 
 local setBestiary = TalkAction("/setbestiary")
 
 function setBestiary.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	local usage = "/setbestiary PLAYER NAME,MONSTER NAME,AMOUNT"
 	if param == "" then
 		player:sendCancelMessage("Command param required. Usage: ".. usage)
@@ -155,4 +140,5 @@ end
 
 
 setBestiary:separator(" ")
+setBestiary:groupType("god")
 setBestiary:register()

@@ -1,14 +1,4 @@
-local function accountTypeGod(player)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-end
-
 function Player.setFiendish(self)
-	if accountTypeGod(self) then
-		return true
-	end
-
 	local position = self:getPosition()
 	position:getNextPosition(self:getDirection())
 

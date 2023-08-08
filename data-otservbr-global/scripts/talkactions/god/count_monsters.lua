@@ -44,4 +44,5 @@ return false
 end
 
 count_monsters:separator(" ")
+count_monsters:groupType("gamemaster")
 count_monsters:register()

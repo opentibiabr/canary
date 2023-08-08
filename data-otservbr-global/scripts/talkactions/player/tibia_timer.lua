@@ -8,4 +8,5 @@ function statusTime.onSay(player, words, param)
 	return false
 end
 
+statusTime:groupType("normal")
 statusTime:register()

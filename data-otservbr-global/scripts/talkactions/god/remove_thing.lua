@@ -1,10 +1,6 @@
 local removeThing = TalkAction("/r")
 
 function removeThing.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	local position = player:getPosition()
 	position:getNextPosition(player:getDirection())
 
@@ -35,4 +31,5 @@ function removeThing.onSay(player, words, param)
 end
 
 removeThing:separator(" ")
+removeThing:groupType("gamemaster")
 removeThing:register()

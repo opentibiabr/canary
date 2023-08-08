@@ -1,10 +1,6 @@
 local createMonster = TalkAction("/m")
 
 function createMonster.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	-- Usage: "/m monstername, fiendish" for create a fiendish monster (/m rat, fiendish)
 	-- Usage: "/m monstername, [1-5]" for create a influenced monster with specific level (/m rat, 2)
 	if param == "" then
@@ -48,4 +44,5 @@ function createMonster.onSay(player, words, param)
 end
 
 createMonster:separator(" ")
+createMonster:groupType("gamemaster")
 createMonster:register()

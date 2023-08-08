@@ -24,7 +24,7 @@ function serverInfo.onSay(player, words, param)
 		.. "\nSpawns rate: " .. configManager.getNumber(configKeys.RATE_SPAWN) .. "x"
 	end
 		text = text .. "\n\nMore Server Info: \n"
-		.. "\nLevel to buy house: " .. configManager.getNumber(configKeys.HOUSE_BUY_LEVEL) 
+		.. "\nLevel to buy house: " .. configManager.getNumber(configKeys.HOUSE_BUY_LEVEL)
 		.. "\nProtection level: " .. configManager.getNumber(configKeys.PROTECTION_LEVEL)
 		.. "\nWorldType: " .. configManager.getString(configKeys.WORLD_TYPE)
 		.. "\nKills/day to red skull: " .. configManager.getNumber(configKeys.DAY_KILLS_TO_RED)
@@ -36,4 +36,5 @@ function serverInfo.onSay(player, words, param)
 end
 
 serverInfo:separator(" ")
+serverInfo:groupType("normal")
 serverInfo:register()

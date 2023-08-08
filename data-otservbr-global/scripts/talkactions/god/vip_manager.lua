@@ -11,10 +11,6 @@ function vipGod.onSay(player, words, param)
 		return false
 	end
 
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	-- create log
 	logCommand(player, words, param)
 
@@ -86,4 +82,5 @@ function vipGod.onSay(player, words, param)
 end
 
 vipGod:separator(" ")
+vipGod:groupType("god")
 vipGod:register()

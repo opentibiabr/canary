@@ -27,4 +27,5 @@ function playersOnline.onSay(player, words, param)
 	return false
 end
 
+playersOnline:groupType("normal")
 playersOnline:register()

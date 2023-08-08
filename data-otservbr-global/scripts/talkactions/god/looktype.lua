@@ -52,4 +52,5 @@ function looktype.onSay(player, words, param)
 end
 
 looktype:separator(" ")
+looktype:groupType("gamemaster")
 looktype:register()

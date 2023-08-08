@@ -1583,3 +1583,15 @@ std::string formatPrice(std::string price, bool space /* = false*/) {
 
 	return price;
 }
+
+std::vector<std::string> split(const std::string &str) {
+    std::vector<std::string> tokens;
+    std::string token;
+    std::istringstream tokenStream(str);
+    while (std::getline(tokenStream, token, ',')) {
+		auto trimedToken = token;
+		trimString(trimedToken);
+        tokens.push_back(trimedToken);
+    }
+    return tokens;
+}

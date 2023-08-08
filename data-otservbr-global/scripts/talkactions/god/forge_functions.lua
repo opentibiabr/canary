@@ -1,9 +1,5 @@
 local addDusts = TalkAction("/adddusts")
 function addDusts.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required.")
@@ -51,14 +47,11 @@ function addDusts.onSay(player, words, param)
 end
 
 addDusts:separator(" ")
+addDusts:groupType("god")
 addDusts:register()
 
 local removeDusts = TalkAction("/removedusts")
 function removeDusts.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required.")
@@ -106,14 +99,11 @@ function removeDusts.onSay(player, words, param)
 end
 
 removeDusts:separator(" ")
+removeDusts:groupType("god")
 removeDusts:register()
 
 local getDusts = TalkAction("/getdusts")
 function getDusts.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required.")
@@ -143,14 +133,11 @@ function getDusts.onSay(player, words, param)
 end
 
 getDusts:separator(" ")
+getDusts:groupType("god")
 getDusts:register()
 
 local setDusts = TalkAction("/setdusts")
 function setDusts.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required.")
@@ -197,16 +184,13 @@ function setDusts.onSay(player, words, param)
 end
 
 setDusts:separator(" ")
+setDusts:groupType("god")
 setDusts:register()
 
 -- Goto fiendish monster
 local gotoFiendish = TalkAction("/fiendish")
 
 function gotoFiendish.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	local monster = Monster(ForgeMonster:pickFiendish())
 	if monster then
 		player:teleportTo(monster:getPosition())
@@ -216,16 +200,13 @@ function gotoFiendish.onSay(player, words, param)
 	return false
 end
 
+gotoFiendish:groupType("god")
 gotoFiendish:register()
 
 -- Goto influenced monster
 local gotoInfluenced = TalkAction("/influenced")
 
 function gotoInfluenced.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	local monster = Monster(ForgeMonster:pickInfluenced())
 	if monster then
 		player:teleportTo(monster:getPosition())
@@ -235,6 +216,7 @@ function gotoInfluenced.onSay(player, words, param)
 	return false
 end
 
+gotoInfluenced:groupType("god")
 gotoInfluenced:register()
 
 -- Set a new fiendish monster
@@ -244,17 +226,15 @@ function setFiendish.onSay(player, words, param)
 	return player:setFiendish()
 end
 
+setFiendish:groupType("god")
 setFiendish:register()
 
 -- Open forge window
 local forge = TalkAction("/openforge")
 
 function forge.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	return player:openForge()
 end
 
+forge:groupType("god")
 forge:register()

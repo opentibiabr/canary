@@ -1,10 +1,6 @@
 local createSummon = TalkAction("/s")
 
 function createSummon.onSay(player, words, param)
-	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return true
-	end
-
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false
@@ -27,4 +23,5 @@ function createSummon.onSay(player, words, param)
 end
 
 createSummon:separator(" ")
+createSummon:groupType("god")
 createSummon:register()

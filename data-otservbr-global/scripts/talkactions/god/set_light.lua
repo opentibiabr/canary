@@ -40,4 +40,5 @@ function set_light.onSay(player, words, param)
 end
 
 set_light:separator(" ")
+set_light:groupType("gamemaster")
 set_light:register()

@@ -563,6 +563,6 @@ function Player.getExhaustion(self, key)
 	return math.max(self:getStorageValue(key) - os.time(), 0)
 end
 
-function Player:hasExhaustion(self, key)
+function Player.hasExhaustion(self, key)
 	return self:getExhaustion(key) > 0 and true or false
 end

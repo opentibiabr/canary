@@ -2675,7 +2675,9 @@
 	<item id="1947" name="stairs">
 		<attribute key="floorchange" value="north"/>
 	</item>
-	<item id="1948" article="a" name="ladder"/>
+	<item id="1948" article="a" name="ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
 	<item id="1949" article="a" name="magic forcefield">
 		<attribute key="type" value="teleport"/>
 		<attribute key="description" value="You can see the other side through it."/>
@@ -2721,7 +2723,9 @@
 		<attribute key="floorchange" value="north"/>
 	</item>
 	<item id="1967" article="a" name="ramp"/>
-	<item id="1968" article="a" name="ladder"/>
+	<item id="1968" article="a" name="ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
 	<item id="1969" article="a" name="ramp">
 		<attribute key="floorchange" value="east"/>
 	</item>
@@ -11075,7 +11079,9 @@
 		<attribute key="decayTo" value="0"/>
 		<attribute key="weight" value="4000"/>
 	</item>
-	<item id="5542" article="a" name="rope-ladder"/>
+	<item id="5542" article="a" name="rope-ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
 	<item id="5543" article="a" name="cart"/>
 	<item id="5544" article="a" name="trapdoor">
 		<attribute key="floorchange" value="down"/>
@@ -31520,7 +31526,9 @@
 	<item fromid="20469" toid="20473" name="ladder rung">
 		<attribute key="floorchange" value="down"/>
 	</item>
-	<item fromid="20474" toid="20475" name="ladder rung"/>
+	<item fromid="20474" toid="20475" name="ladder rung">
+		<attribute key="type" value="ladder"/>
+	</item>
 	<item fromid="20476" toid="20477" article="a" name="wall"/>
 	<item fromid="20478" toid="20479" article="a" name="city foundation"/>
 	<item fromid="20480" toid="20485" article="a" name="buttress"/>
@@ -40932,39 +40940,63 @@
 	</item>
 	<item id="28558" article="an" name="exercise dummy">
 		<attribute key="description" value="You can train your skills by using training weapons with this exercise dummy."/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="100"/>
+		</attribute>
 	</item>
 	<item id="28559" article="a" name="ferumbras exercise dummy">
 		<attribute key="description" value="You can train your skills by using training weapons with this expert exercise dummy"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28560"/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="110"/>
+		</attribute>
 	</item>
 	<item id="28560" article="a" name="ferumbras exercise dummy">
 		<attribute key="description" value="You can train your skills by using training weapons with this expert exercise dummy"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28559"/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="110"/>
+		</attribute>
 	</item>
 	<item id="28561" article="a" name="demon exercise dummy">
 		<attribute key="description" value="You can train your skills by using training weapons with this expert exercise dummy"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28562"/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="110"/>
+		</attribute>
 	</item>
 	<item id="28562" article="a" name="demon exercise dummy">
 		<attribute key="description" value="You can train your skills by using training weapons with this expert exercise dummy"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28561"/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="110"/>
+		</attribute>
 	</item>
 	<item id="28563" article="a" name="monk exercise dummy">
 		<attribute key="description" value="You can train your skills by using training weapons with this expert exercise dummy"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28564"/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="110"/>
+		</attribute>
 	</item>
 	<item id="28564" article="a" name="monk exercise dummy">
 		<attribute key="description" value="You can train your skills by using training weapons with this expert exercise dummy"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28563"/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="110"/>
+		</attribute>
 	</item>
 	<item id="28565" article="an" name="exercise dummy">
 		<attribute key="description" value="You can train your skills by using training weapons with this exercise dummy."/>
+		<attribute key="type" value="dummy">
+			<attribute key="rate" value="100"/>
+		</attribute>
 	</item>
 	<item id="28566" article="a" name="silken bookmark">
 		<attribute key="weight" value="100"/>
@@ -41364,7 +41396,9 @@
 	<item id="28655" article="a" name="hole">
 		<attribute key="floorchange" value="down"/>
 	</item>
-	<item id="28656" article="a" name="ladder"/>
+	<item id="28656" article="a" name="ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
 	<item id="28657" name="unknown item"/>
 	<item fromid="28658" toid="28659" article="a" name="closed door">
 		<attribute key="type" value="door"/>
@@ -44588,9 +44622,11 @@
 	</item>
 	<item id="31129" article="a" name="wooden ladder">
 		<attribute key="floorchange" value="north"/>
+		<attribute key="type" value="ladder"/>
 	</item>
 	<item id="31130" article="a" name="wooden ladder">
 		<attribute key="floorchange" value="west"/>
+		<attribute key="type" value="ladder"/>
 	</item>
 	<item fromid="31131" toid="31133" article="a" name="obelisk"/>
 	<item fromid="31134" toid="31138" name="RESERVED SPRITE"/>
@@ -44792,7 +44828,9 @@
 	<item id="31261" article="a" name="box with waterproof balm">
 		<attribute key="weight" value="240"/>
 	</item>
-	<item id="31262" article="a" name="ladder"/>
+	<item id="31262" article="a" name="ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
 	<item id="31263" article="a" name="Ring of Secret Thoughts">
 		<attribute key="weight" value="90"/>
 	</item>
@@ -49089,7 +49127,9 @@
 		<attribute key="blockProjectile" value="1"/>
 	</item>
 	<item id="33769" article="a" name="smoke"/>
-	<item id="33770" article="a" name="ladder"/>
+	<item id="33770" article="a" name="ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
 	<item fromid="33772" toid="33774" article="a" name="pool"/>
 	<item id="33776" article="a" name="bard doll">
 		<attribute key="description" value="A mythical bard rumoured to magically appear in Tibian taverns with a lute and a mug to tell amazing and funny stories. Granted by Tibiaria.com"/>
@@ -50824,7 +50864,9 @@
 	<item fromid="34228" toid="34231" article="a" name="statue"/>
 	<item id="34237" name="dead frog"/>
 	<item id="34238" article="a" name="paper"/>
-	<item id="34243" article="a" name="ladder"/>
+	<item id="34243" article="a" name="ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
 	<item id="34244" article="a" name="dead white lion">
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="34245"/>

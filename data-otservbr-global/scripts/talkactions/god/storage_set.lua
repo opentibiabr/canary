@@ -1,4 +1,4 @@
-local talkaction = TalkAction("/addstorage")
+local talkaction = TalkAction("/setstorage")
 
 function talkaction.onSay(player, words, param)
 	return player:setStorageValueTalkaction(param)

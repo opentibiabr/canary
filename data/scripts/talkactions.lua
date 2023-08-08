@@ -279,15 +279,15 @@ end
 
 function Player.setStorageValueTalkaction(self, param)
 	-- Sanity check for parameters
-	-- Example: /addstorage wheel.abridged, 1, god
-	-- Example: /addstorage 10001, 1
+	-- Example: /setstorage wheel.abridged, 1, god
+	-- Example: /setstorage 10001, 1
 	-- If you don't add the player's name, the storage will be added to whoever is using the talkaction (self)
-	if not hasValidParams(self, param, "Usage: /addstorage <storagekey or name>, <value>, <player name>=default self") then
+	if not hasValidParams(self, param, "Usage: /setstorage <storagekey or name>, <value>, <player name>=default self") then
 		return false
 	end
 
 	local split = param:split(",")
-	local value = 1 -- Check if it was passed some value to be set to the storage
+	local value = 1
 	if split[2] then
 		value = split[2]
 	end
@@ -295,7 +295,7 @@ function Player.setStorageValueTalkaction(self, param)
 	-- Try to convert the first parameter to a number. If it's not a number, treat it as a storage name
 	local storageKey = tonumber(split[1])
 	if storageKey == nil then
-		-- The key is a name, so call addStorageValueByName instead of setStorageValue
+		-- The key is a name, so call setStorageValueByName instead of setStorageValue
 		if split[3] then
 			local targetPlayer = Player(split[3])
 			if not targetPlayer then

@@ -66,7 +66,7 @@ TalkActionResult_t TalkActions::checkPlayerCanSayTalkAction(Player* player, Spea
 	for (const auto &[talkactionWords, talkActionPtr] : talkActions) {
 		if (talkactionWords.find(',') != std::string::npos) {
 			auto wordsList = split(talkactionWords);
-			for (const auto& word : wordsList) {
+			for (const auto &word : wordsList) {
 				if (checkWord(player, type, words, word, talkActionPtr)) {
 					return TALKACTION_CONTINUE;
 				}

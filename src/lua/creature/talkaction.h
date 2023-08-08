@@ -28,8 +28,8 @@ class TalkAction : public Script {
 			return m_word;
 		}
 
-		void setWords(const std::vector<std::string>& newWords) {
-			for (const auto& word : newWords) {
+		void setWords(const std::vector<std::string> &newWords) {
+			for (const auto &word : newWords) {
 				if (!m_word.empty()) {
 					m_word.append(", ");
 				}

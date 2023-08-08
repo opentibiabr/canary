@@ -102,3 +102,13 @@ bool Bank::deposit(std::shared_ptr<Bank> &destination) {
 	auto amount = bankable->getPlayer()->getMoney();
 	return deposit(destination, amount);
 }
+
+bool Bank::deposit(std::shared_ptr<Bank> &destination, uint64_t amount) {
+	if (destination == nullptr) {
+		return false;
+	}
+	if (!g_game().removeMoney(bankable->getPlayer(), amount)) {
+		return false;
+	}
+	return destination->credit(amount);
+}

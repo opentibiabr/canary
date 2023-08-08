@@ -837,7 +837,7 @@ int32_t Player::getStorageValue(const uint32_t key) const {
 	return value;
 }
 
-int32_t Player::getStorageValueByName(const std::string& name) const {
+int32_t Player::getStorageValueByName(const std::string &name) const {
 	auto it = g_storages().getStorageMap().find(name);
 	if (it == g_storages().getStorageMap().end()) {
 		return -1;
@@ -848,7 +848,7 @@ int32_t Player::getStorageValueByName(const std::string& name) const {
 }
 
 // New function that adds a storage value by name
-void Player::addStorageValueByName(const std::string& name, const int32_t value, const bool isLogin /* = false*/) {
+void Player::addStorageValueByName(const std::string &name, const int32_t value, const bool isLogin /* = false*/) {
 	auto it = g_storages().getStorageMap().find(name);
 	if (it == g_storages().getStorageMap().end()) {
 		return;

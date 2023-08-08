@@ -935,7 +935,7 @@ uint16_t PlayerWheel::getExtraPoints() const {
 	};
 
 	uint16_t totalBonus = 0;
-	for (const auto& [storageName, points] : availableScrolls) {
+	for (const auto &[storageName, points] : availableScrolls) {
 		auto storageValue = m_player.getStorageValueByName(storageName);
 		if (storageValue > 0) {
 			totalBonus += points;
@@ -945,7 +945,7 @@ uint16_t PlayerWheel::getExtraPoints() const {
 	return totalBonus;
 }
 
-uint16_t PlayerWheel::getWheelPoints(bool includeExtraPoints/* = true*/) const {
+uint16_t PlayerWheel::getWheelPoints(bool includeExtraPoints /* = true*/) const {
 	uint32_t level = m_player.getLevel();
 	auto totalPoints = std::max(0u, (level - m_minLevelToStartCountPoints)) * m_pointsPerLevel;
 

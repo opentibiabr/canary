@@ -25,13 +25,13 @@ bool Storages::loadFromXML() {
 		return false;
 	}
 
-	for (pugi::xml_node range: doc.child("storages").children("range")) {
+	for (pugi::xml_node range : doc.child("storages").children("range")) {
 		uint32_t start = range.attribute("start").as_uint();
 		uint32_t end = range.attribute("end").as_uint();
 
 		// TODO: Check if this range conflicts with any previously defined range
 
-		for (pugi::xml_node storage: range.children("storage")) {
+		for (pugi::xml_node storage : range.children("storage")) {
 			std::string name = storage.attribute("name").as_string();
 			uint32_t key = storage.attribute("key").as_uint();
 
@@ -57,6 +57,6 @@ bool Storages::loadFromXML() {
 	return true;
 }
 
-const std::map<std::string, uint32_t>& Storages::getStorageMap() const {
+const std::map<std::string, uint32_t> &Storages::getStorageMap() const {
 	return m_storageMap;
 }

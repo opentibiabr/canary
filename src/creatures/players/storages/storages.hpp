@@ -25,7 +25,7 @@ class Storages {
 
 		bool loadFromXML();
 
-		const std::map<std::string, uint32_t>& getStorageMap() const;
+		const std::map<std::string, uint32_t> &getStorageMap() const;
 
 	private:
 		Storages() = default;

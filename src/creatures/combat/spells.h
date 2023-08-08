@@ -335,7 +335,7 @@ class Spell : public BaseSpell {
 			m_words = newWord;
 		}
 
-		const std::string& getSeparator() const {
+		const std::string &getSeparator() const {
 			return m_separator;
 		}
 

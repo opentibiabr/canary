@@ -52,7 +52,7 @@ class LuaFunctionsLoader {
 		template <class T>
 		static void pushSharedUserdata(lua_State* L, std::shared_ptr<T> value) {
 			std::shared_ptr<T>* userdata = static_cast<std::shared_ptr<T>*>(lua_newuserdata(L, sizeof(std::shared_ptr<T>)));
-			new(userdata) std::shared_ptr<T>(value);
+			new (userdata) std::shared_ptr<T>(value);
 		}
 
 		static void setMetatable(lua_State* L, int32_t index, const std::string &name);
@@ -93,7 +93,7 @@ class LuaFunctionsLoader {
 
 		template <class T>
 		static std::shared_ptr<T> getSharedUserdata(lua_State* L, int32_t arg) {
-			void *ud = lua_touserdata(L, arg);
+			void* ud = lua_touserdata(L, arg);
 			if (!ud) {
 				return {};
 			}

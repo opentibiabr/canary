@@ -195,6 +195,7 @@ PRIVATE
 	database/databasetasks.cpp
 	game/functions/game_reload.cpp
 	game/game.cpp
+	game/bank/bank.cpp
 	game/movement/position.cpp
 	game/movement/teleport.cpp
 	game/scheduling/scheduler.cpp

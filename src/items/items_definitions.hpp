@@ -180,6 +180,10 @@ enum ItemTypes_t {
 	ITEM_TYPE_GOLD,
 	ITEM_TYPE_UNASSIGNED,
 
+	// Other types
+	ITEM_TYPE_LADDER,
+	ITEM_TYPE_DUMMY,
+
 	ITEM_TYPE_LAST,
 };
 

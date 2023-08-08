@@ -19,6 +19,8 @@ Items::Items() = default;
 
 void Items::clear() {
 	items.clear();
+	ladders.clear();
+	dummys.clear();
 	nameToItems.clear();
 }
 

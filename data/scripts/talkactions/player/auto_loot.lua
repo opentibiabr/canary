@@ -20,7 +20,7 @@ function autoLoot.onSay(player, words, param)
 		player:setStorageValue(STORAGEVALUE_AUTO_LOOT, 0)
 		player:sendTextMessage(MESSAGE_INFO_DESCR, "You have successfully disabled your automatic looting!")
 	end
-	return true
+	return false
 end
 
 autoLoot:separator(" ")

@@ -2,6 +2,14 @@ local count = {}
 local transfer = {}
 local receiptFormat = "Date: %s\nType: %s\nGold Amount: %d\nReceipt Owner: %s\nRecipient: %s\n\n%s"
 
+local function GetReceipt(info)
+	local receipt = Game.createItem(info.success and 19598 or 19599)
+	receipt:setAttribute(ITEM_ATTRIBUTE_TEXT, receiptFormat:format(os.date("%d. %b %Y - %H:%M:%S"),
+                         info.type, info.amount, info.owner, info.recipient, info.message))
+
+	return receipt
+end
+
 function Npc:parseBankMessages(message, npc, creature, npcHandler)
 	local messagesTable = {
 		["money"] = "We can {change} money for you. You can also access your {bank account}",
@@ -33,25 +41,30 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 	local player = Player(creature)
 	local playerId = creature:getId()
 	-- Balance
+	if MsgContains(message, "guild") then
+		return true
+	end
+
 	if MsgContains(message, "balance") then
-		if player:getBankBalance() >= 100000000 then
+		local balance = Bank.balance(player)
+		if balance >= 100000000 then
 			npcHandler:say(string.format("I think you must be one of the richest inhabitants in the world! \z
-                           Your account balance is %d gold.", player:getBankBalance()), npc, creature)
+                           Your account balance is %d gold.", balance), npc, creature)
 			return true
-		elseif player:getBankBalance() >= 10000000 then
+		elseif balance >= 10000000 then
 			npcHandler:say(string.format("You have made ten millions and it still grows! \z
-                           Your account balance is %d gold.", player:getBankBalance()), npc, creature)
+                           Your account balance is %d gold.", balance), npc, creature)
 			return true
-		elseif player:getBankBalance() >= 1000000 then
+		elseif balance >= 1000000 then
 			npcHandler:say(string.format("Wow, you have reached the magic number of a million gp!!! \z
-                           Your account balance is %d gold!", player:getBankBalance()), npc, creature)
+                           Your account balance is %d gold!", balance), npc, creature)
 			return true
-		elseif player:getBankBalance() >= 100000 then
+		elseif balance >= 100000 then
 			npcHandler:say(string.format("You certainly have made a pretty penny. \z
-                           Your account balance is %d gold.", player:getBankBalance()), npc, creature)
+                           Your account balance is %d gold.", balance), npc, creature)
 			return true
 		else
-			npcHandler:say(string.format("Your account balance is %d gold.", player:getBankBalance()), npc, creature)
+			npcHandler:say(string.format("Your account balance is %d gold.", balance), npc, creature)
 			return true
 		end
 	-- Deposit
@@ -170,7 +183,8 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 					npcHandler:setTopic(playerId, 0)
 					return true
 				end
-				if playerExists(transfer[playerId]) then
+				local playerName = Game.getNormalizedPlayerName(transfer[playerId])
+				if playerName then
 					local arrayDenied = {
 						"accountmanager",
 						"rooksample",
@@ -204,7 +218,7 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 		npcHandler:setTopic(playerId, 11)
 	elseif npcHandler:getTopic(playerId) == 11 then
 		count[playerId] = getMoneyCount(message)
-		if player:getBankBalance() < count[playerId] then
+		if not Bank.hasBalance(player, count[playerId]) then
 			npcHandler:say("There is not enough gold on your account.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			return true
@@ -223,7 +237,8 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 			npcHandler:setTopic(playerId, 0)
 			return true
 		end
-		if playerExists(transfer[playerId]) then
+		local playerName = Game.getNormalizedPlayerName(transfer[playerId])
+		if playerName then
 			local arrayDenied = {
 				"accountmanager",
 				"rooksample",
@@ -237,8 +252,7 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 				npcHandler:setTopic(playerId, 0)
 				return true
 			end
-			npcHandler:say(string.format("So you would like to transfer %d gold to %s?",
-                           count[playerId], string.titleCase(transfer[playerId])), npc, creature)
+			npcHandler:say(string.format("So you would like to transfer %d gold to %s?", count[playerId], playerName), npc, creature)
 			npcHandler:setTopic(playerId, 13)
 		else
 			npcHandler:say("This player does not exist.", npc, creature)
@@ -378,7 +392,7 @@ function Npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
 			npcHandler:say("You are not a member of a guild.", npc, creature)
 			return false
 		end
-		npcHandler:say(string.format("Your guild account balance is %d gold.", player:getGuild():getBankBalance()), npc, creature)
+		npcHandler:say(string.format("Your guild account balance is %d gold.", Bank.balance(player:getGuild())), npc, creature)
 		return true
 	-- Guild deposit
 	elseif MsgFind(message, "guild deposit") then
@@ -389,33 +403,33 @@ function Npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
 		end
 		if string.match(message, "%d+") then
 			count[playerId] = getMoneyCount(message)
-			if count[playerId] < 1 then
+			if Bank.hasBalance(player, count[playerId]) then
 				npcHandler:say("You do not have enough gold.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return false
 			end
 			npcHandler:say(string.format("Would you really like to deposit %d gold to your {guild account}?",
                            count[playerId]), npc, creature)
-			npcHandler:setTopic(playerId, 23)
+			npcHandler:setTopic(playerId, 123)
 			return true
 		else
-			npcHandler:say("Please tell me how much gold it is you would like to deposit.", npc, creature)
-			npcHandler:setTopic(playerId, 22)
+			npcHandler:say("Please tell me how much gold it is you would like to deposit into your guild account.", npc, creature)
+			npcHandler:setTopic(playerId, 122)
 			return true
 		end
-	elseif npcHandler:getTopic(playerId) == 22 then
+	elseif npcHandler:getTopic(playerId) == 122 then
 		count[playerId] = getMoneyCount(message)
 		if isValidMoney(count[playerId]) then
 			npcHandler:say(string.format("Would you really like to deposit %d gold to your {guild account}?",
                            count[playerId]), npc, creature)
-			npcHandler:setTopic(playerId, 23)
+			npcHandler:setTopic(playerId, 123)
 			return true
 		else
 			npcHandler:say("You do not have enough gold.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			return true
 		end
-	elseif npcHandler:getTopic(playerId) == 23 then
+	elseif npcHandler:getTopic(playerId) == 123 then
 		if MsgContains(message, "yes") then
 			npcHandler:say(string.format("Alright, we have placed an order to deposit the amount of %d gold to \z
                            your guild account. Please check your inbox for confirmation.",
@@ -427,16 +441,15 @@ function Npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
 				owner = player:getName() .. " of " .. guild:getName(),
 				recipient = guild:getName()
 			}
-			local playerBalance = player:getBankBalance()
-			if playerBalance < tonumber(count[playerId]) then
+			local amount = tonumber(count[playerId])
+			if Bank.hasBalance(player, amount) then
+				info.message = "We are happy to inform you that your transfer request was successfully carried out."
+				info.success = true
+				Bank.transfer(player, guild, amount)
+			else
 				info.message = "We are sorry to inform you that we could not fulfill your request, \z
                                 due to a lack of the required sum on your bank account."
 				info.success = false
-			else
-				info.message = "We are happy to inform you that your transfer request was successfully carried out."
-				info.success = true
-				guild:setBankBalance(guild:getBankBalance() + tonumber(count[playerId]))
-				player:setBankBalance(playerBalance - tonumber(count[playerId]))
 			end
 
 			local inbox = player:getInbox()
@@ -463,7 +476,7 @@ function Npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
 			count[playerId] = getMoneyCount(message)
 			if isValidMoney(count[playerId]) then
 				npcHandler:say("Are you sure you wish to withdraw %d gold from your guild account?", npc, creature)
-				npcHandler:setTopic(playerId, 25)
+				npcHandler:setTopic(playerId, 125)
 			else
 				npcHandler:say("There is not enough gold on your guild account.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
@@ -471,24 +484,23 @@ function Npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
 			return true
 		else
 			npcHandler:say("Please tell me how much gold you would like to withdraw from your guild account.", npc, creature)
-			npcHandler:setTopic(playerId, 24)
+			npcHandler:setTopic(playerId, 124)
 			return true
 		end
-	elseif npcHandler:getTopic(playerId) == 24 then
+	elseif npcHandler:getTopic(playerId) == 124 then
 		count[playerId] = getMoneyCount(message)
 		if isValidMoney(count[playerId]) then
 			npcHandler:say(string.format("Are you sure you wish to withdraw %d gold from your guild account?",
                            count[playerId]), npc, creature)
-			npcHandler:setTopic(playerId, 25)
+			npcHandler:setTopic(playerId, 125)
 		else
 			npcHandler:say("There is not enough gold on your guild account.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 		return true
-	elseif npcHandler:getTopic(playerId) == 25 then
+	elseif npcHandler:getTopic(playerId) == 125 then
 		if MsgContains(message, "yes") then
 			local guild = player:getGuild()
-			local balance = guild:getBankBalance()
 			npcHandler:say(string.format("We placed an order to withdraw %d gold from your guild account. \z
                             Please check your inbox for confirmation.",
                             count[playerId]), npc, creature)
@@ -498,16 +510,14 @@ function Npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
 				owner = player:getName() .. " of " .. guild:getName(),
 				recipient = player:getName()
 			}
-			if balance < tonumber(count[playerId]) then
+			if Bank.hasBalance(guild, tonumber(count[playerId])) then
+				info.message = "We are happy to inform you that your transfer request was successfully carried out."
+				info.success = true
+				Bank.transfer(guild, player, tonumber(count[playerId]))
+			else
 				info.message = "We are sorry to inform you that we could not fulfill your request, \z
                                 due to a lack of the required sum on your guild account."
 				info.success = false
-			else
-				info.message = "We are happy to inform you that your transfer request was successfully carried out."
-				info.success = true
-				guild:setBankBalance(balance - tonumber(count[playerId]))
-				local playerBalance = player:getBankBalance()
-				player:setBankBalance(playerBalance + tonumber(count[playerId]))
 			end
 
 			local inbox = player:getInbox()
@@ -535,75 +545,82 @@ function Npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
 			count[playerId] = getMoneyCount(message)
 			if isValidMoney(count[playerId]) then
 				transfer[playerId] = string.match(message, "to%s*(.+)$")
-				if transfer[playerId] then
-					npcHandler:say(string.format("So you would like to transfer %d gold from your guild account to guild %d?",
-                                                 count[playerId], string.titleCase(transfer[playerId])), npc, creature)
-					npcHandler:setTopic(playerId, 28)
+				local guildName = Game.getNormalizedGuildName(transfer[playerId])
+				if Game.getNormalizedGuildName(transfer[playerId]) then
+					npcHandler:say(string.format("So you would like to transfer %d gold from your guild account to guild %s?", count[playerId], guildName), npc, creature)
+					npcHandler:setTopic(playerId, 128)
 				else
 					npcHandler:say(string.format("Which guild would you like to transfer %d gold to?",
                                    count[playerId]), npc, creature)
-					npcHandler:setTopic(playerId, 27)
+					npcHandler:setTopic(playerId, 127)
 				end
 			else
 				npcHandler:say("There is not enough gold on your guild account.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 		else
-			npcHandler:say("Please tell me the amount of gold you would like to transfer.", npc, creature)
-			npcHandler:setTopic(playerId, 26)
+			npcHandler:say("Please tell me the amount of gold you would like to transfer to a guild.", npc, creature)
+			npcHandler:setTopic(playerId, 126)
 		end
 		return true
-	elseif npcHandler:getTopic(playerId) == 26 then
+	elseif npcHandler:getTopic(playerId) == 126 then
 		count[playerId] = getMoneyCount(message)
-		if player:getGuild():getBankBalance() < count[playerId] then
+		local guild = player:getGuild()
+		if not guild or not Bank.hasBalance(guild, count[playerId]) then
 			npcHandler:say("There is not enough gold on your guild account.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			return true
 		end
 		if isValidMoney(count[playerId]) then
-			npcHandler:say(string.format("Which guild would you like to transfer %d gold to?",
-                           count[playerId]), npc, creature)
-			npcHandler:setTopic(playerId, 27)
+			npcHandler:say(string.format("Which guild would you like to transfer %d gold to?", count[playerId]), npc, creature)
+			npcHandler:setTopic(playerId, 127)
 		else
 			npcHandler:say("There is not enough gold on your account.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 		return true
-	elseif npcHandler:getTopic(playerId) == 27 then
+	elseif npcHandler:getTopic(playerId) == 127 then
 		transfer[playerId] = message
-		if player:getGuild():getName() == transfer[playerId] then
+		local guild = player:getGuild()
+		if guild:getName() == transfer[playerId] then
 			npcHandler:say("Fill in this field with person who receives your gold!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			return true
 		end
-		npcHandler:say(string.format("So you would like to transfer %d gold from your guild account to guild %d?",
-                                     count[playerId], string.titleCase(transfer[playerId])), npc, creature)
-		npcHandler:setTopic(playerId, 28)
+		local guildName = Game.getNormalizedGuildName(transfer[playerId])
+		if Game.getNormalizedGuildName(transfer[playerId]) then
+			npcHandler:say(string.format("So you would like to transfer %d gold from your guild account to guild %s?", count[playerId], guildName), npc, creature)
+			npcHandler:setTopic(playerId, 128)
+		else
+			npcHandler:say("This guild does not exist.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
+			return false
+		end
 		return true
-	elseif npcHandler:getTopic(playerId) == 28 then
+	elseif npcHandler:getTopic(playerId) == 128 then
 		if MsgContains(message, "yes") then
-			npcHandler:say(string.format("We have placed an order to transfer %d gold from your guild account to guild %. \z
-                            Please check your inbox for confirmation.",
+			npcHandler:say(string.format("We have placed an order to transfer %d gold from your guild account to guild %s.  Please check your inbox for confirmation.",
                             count[playerId], string.titleCase(transfer[playerId])), npc, creature)
 			local guild = player:getGuild()
-			local balance = guild:getBankBalance()
 			local info = {
 				type = "Guild to Guild Transfer",
 				amount = count[playerId],
 				owner = player:getName() .. " of " .. guild:getName(),
 				recipient = transfer[playerId]
 			}
-			if balance < tonumber(count[playerId]) then
-				info.message = "We are sorry to inform you that we could not fulfill your request, \z
-                                due to a lack of the required sum on your guild account."
-				info.success = false
-				local inbox = player:getInbox()
-				local receipt = GetReceipt(info)
-				inbox:addItemEx(receipt, INDEX_WHEREEVER, FLAG_NOLIMIT)
+			local amount = tonumber(count[playerId])
+			if Bank.transferToGuild(guild, transfer[playerId], amount) then
+				Spdlog.info(string.format("Guild %s transferred %d gold to guild %s.", guild:getName(), amount, transfer[playerId]))
+				info.success = true
+				info.message = "We are happy to inform you that your transfer request was successfully carried out."
 			else
-				GetGuildIdByName(transfer[playerId], TransferFactory(player:getName(),
-                                 tonumber(count[playerId]), guild:getId(), info))
+				Spdlog.info(string.format("Guild %s failed to transfer %d gold to guild %s.", guild:getName(), amount, transfer[playerId]))
+				info.message = "We are sorry to inform you that we could not fulfill your request, due to a lack of the required sum on your guild account."
+				info.success = false
 			end
+			local inbox = player:getInbox()
+			local receipt = GetReceipt(info)
+			inbox:addItemEx(receipt, INDEX_WHEREEVER, FLAG_NOLIMIT)
 			npcHandler:setTopic(playerId, 0)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("Alright, is there something else I can do for you?", npc, creature)
@@ -617,83 +634,4 @@ function NpcBankGreetCallback(npc, creature)
 	local playerId = creature:getId()
 	count[playerId], transfer[playerId] = nil, nil
 	return true
-end
-
-function GetReceipt(info)
-	local receipt = Game.createItem(info.success and 19598 or 19599)
-	receipt:setAttribute(ITEM_ATTRIBUTE_TEXT, receiptFormat:format(os.date("%d. %b %Y - %H:%M:%S"),
-                         info.type, info.amount, info.owner, info.recipient, info.message))
-
-	return receipt
-end
-
-function GetGuildIdByName(name, func)
-	db.asyncStoreQuery("SELECT `id` FROM `guilds` WHERE `name` = " .. db.escapeString(name),
-		function(resultId)
-			if resultId then
-				func(Result.getNumber(resultId, "id"))
-				Result.free(resultId)
-			else
-				func(nil)
-			end
-		end
-	)
-end
-
-function GetGuildBalance(id)
-	local guild = Guild(id)
-	if guild then
-		return guild:getBankBalance()
-	else
-		local balance
-		local resultId = db.storeQuery("SELECT `balance` FROM `guilds` WHERE `id` = " .. id)
-		if resultId then
-			balance = Result.getNumber(resultId, "balance")
-			Result.free(resultId)
-		end
-
-		return balance
-	end
-end
-
-function SetGuildBalance(id, balance)
-	local guild = Guild(id)
-	if guild then
-		guild:setBankBalance(balance)
-	else
-		db.query("UPDATE `guilds` SET `balance` = " .. balance .. " WHERE `id` = " .. id)
-	end
-end
-
-function TransferFactory(playerName, amount, fromGuildId, info)
-	return function(toGuildId)
-		if not toGuildId then
-			local player = Player(playerName)
-			if player then
-				info.success = false
-				info.message = "We are sorry to inform you that we could not fulfil your request, because we could not find the recipient guild."
-				local inbox = player:getInbox()
-				local receipt = GetReceipt(info)
-				inbox:addItemEx(receipt, INDEX_WHEREEVER, FLAG_NOLIMIT)
-			end
-		else
-			local fromBalance = GetGuildBalance(fromGuildId)
-			if fromBalance < amount then
-				info.success = false
-				info.message = "We are sorry to inform you that we could not fulfill your request, due to a lack of the required sum on your guild account."
-			else
-				info.success = true
-				info.message = "We are happy to inform you that your transfer request was successfully carried out."
-				SetGuildBalance(fromGuildId, fromBalance - amount)
-				SetGuildBalance(toGuildId, GetGuildBalance(toGuildId) + amount)
-			end
-
-			local player = Player(playerName)
-			if player then
-				local inbox = player:getInbox()
-				local receipt = GetReceipt(info)
-				inbox:addItemEx(receipt, INDEX_WHEREEVER, FLAG_NOLIMIT)
-			end
-		end
-	end
 end

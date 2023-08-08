@@ -244,6 +244,7 @@ PRIVATE
 	lua/functions/lua_functions_loader.cpp
 	lua/functions/core/game/config_functions.cpp
 	lua/functions/core/game/game_functions.cpp
+	lua/functions/core/game/bank_functions.cpp
 	lua/functions/core/game/global_functions.cpp
 	lua/functions/core/game/lua_enums.cpp
 	lua/functions/core/game/modal_window_functions.cpp

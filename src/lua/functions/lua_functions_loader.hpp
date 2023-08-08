@@ -23,6 +23,7 @@ class InstantSpell;
 class Item;
 class Player;
 class Thing;
+class Guild;
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 
@@ -106,7 +107,8 @@ class LuaFunctionsLoader {
 
 		static Thing* getThing(lua_State* L, int32_t arg);
 		static Creature* getCreature(lua_State* L, int32_t arg);
-		static Player* getPlayer(lua_State* L, int32_t arg);
+		static Player* getPlayer(lua_State* L, int32_t arg, bool allowOffline = false);
+		static Guild* getGuild(lua_State* L, int32_t arg, bool allowOffline = false);
 
 		template <typename T>
 		static T getField(lua_State* L, int32_t arg, const std::string &key) {

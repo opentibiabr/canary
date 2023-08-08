@@ -33,6 +33,7 @@
 #include "map/town.h"
 #include "vocations/vocation.h"
 #include "creatures/npcs/npc.h"
+#include "game/bank/bank.hpp"
 
 class House;
 class NetworkMessage;
@@ -91,7 +92,7 @@ static constexpr int32_t PLAYER_MAX_SPEED = 65535;
 static constexpr int32_t PLAYER_MIN_SPEED = 10;
 static constexpr int32_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
-class Player final : public Creature, public Cylinder {
+class Player final : public Creature, public Cylinder, public Bankable {
 	public:
 		explicit Player(ProtocolGame_ptr p);
 		~Player();

@@ -9133,9 +9133,24 @@ void Game::removeMonster(Monster* monster) {
 	monsters.erase(monster->getID());
 }
 
-Guild* Game::getGuild(uint32_t id) const {
+Guild* Game::getGuild(uint32_t id, bool allowOffline /* = flase */) const {
 	auto it = guilds.find(id);
 	if (it == guilds.end()) {
+		if (allowOffline) {
+			return IOGuild::loadGuild(id);
+		}
+		return nullptr;
+	}
+	return it->second;
+}
+
+Guild* Game::getGuildByName(const std::string name, bool allowOffline /* = flase */) const {
+	auto id = IOGuild::getGuildIdByName(name);
+	auto it = guilds.find(id);
+	if (it == guilds.end()) {
+		if (allowOffline) {
+			return IOGuild::loadGuild(id);
+		}
 		return nullptr;
 	}
 	return it->second;

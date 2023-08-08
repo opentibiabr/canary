@@ -634,6 +634,21 @@ int GameFunctions::luaGameGetNormalizedPlayerName(lua_State* L) {
 	return 1;
 }
 
+int GameFunctions::luaGameGetNormalizedGuildName(lua_State* L) {
+	// Game.getNormalizedGuildName(name)
+	auto name = getString(L, 1);
+	Guild* guild = g_game().getGuildByName(name, true);
+	if (guild) {
+		pushString(L, guild->getName());
+		if (!guild->isOnline()) {
+			delete guild;
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int GameFunctions::luaGameAddInfluencedMonster(lua_State* L) {
 	// Game.addInfluencedMonster(monster)
 	Monster* monster = getUserdata<Monster>(L, 1);

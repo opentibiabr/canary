@@ -276,3 +276,90 @@ function Player.reloadTalkaction(self, words, param)
 	end
 	return false
 end
+
+function Player.setStorageValueTalkaction(self, param)
+	-- Sanity check for parameters
+	-- Example: /addstorage wheel.abridged, 1, god
+	-- Example: /addstorage 10001, 1
+	-- If you don't add the player's name, the storage will be added to whoever is using the talkaction (self)
+	if not hasValidParams(self, param, "Usage: /addstorage <storagekey or name>, <value>, <player name>=default self") then
+		return false
+	end
+
+	local split = param:split(",")
+	local value = 1 -- Check if it was passed some value to be set to the storage
+	if split[2] then
+		value = split[2]
+	end
+
+	-- Try to convert the first parameter to a number. If it's not a number, treat it as a storage name
+	local storageKey = tonumber(split[1])
+	if storageKey == nil then
+		-- The key is a name, so call addStorageValueByName instead of setStorageValue
+		if split[3] then
+			local targetPlayer = Player(split[3])
+			if not targetPlayer then
+				self:sendCancelMessage("Player not found.")
+				return false
+			else
+				targetself:setStorageValueByName(split[1], value)
+				return false
+			end
+		else
+			self:setStorageValueByName(split[1], value)
+		end
+	else
+		-- The key is a number, so call setStorageValue as before
+		if split[3] then
+			local targetPlayer = Player(split[3])
+			if not targetPlayer then
+				self:sendCancelMessage("Player not found.")
+				return false
+			else
+				targetself:setStorageValue(storageKey, value)
+				return false
+			end
+		else
+			self:setStorageValue(storageKey, value)
+		end
+	end
+	return false
+end
+
+function Player.getStorageValueTalkaction(self, param)
+	-- Sanity check for parameters
+	-- Example: /getstorage god, wheel.abridged
+	-- Example: /getstorage god, 10000
+	if not hasValidParams(self, param, "Usage: /getstorage <playername>, <storage key or name>") then
+		return false
+	end
+
+	local split = param:split(",")
+	if split[2] == nil then
+		player:sendCancelMessage("Insufficient parameters.")
+		return false
+	end
+
+	local target = Player(split[1])
+	if target == nil then
+		self:sendCancelMessage("A player with that name is not online.")
+		return false
+	end
+
+	-- Trim left
+	split[2] = split[2]:gsub("^%s*(.-)$", "%1")
+
+	-- Try to convert the second parameter to a number. If it's not a number, treat it as a storage name
+	local storageKey = tonumber(split[2])
+	if storageKey == nil then
+		-- Get the key for this storage name
+		local storageName = tostring(split[2])
+		local storageValue = self:getStorageValueByName(storageName)
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: "..storageName.." from player "..split[1].." is: "..storageValue..".")
+		return false
+	end
+
+	local storageValue = self:getStorageValue(storageKey)
+	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: "..storageKey.." from player "..split[1].." is: "..storageValue..".")
+	return false
+end

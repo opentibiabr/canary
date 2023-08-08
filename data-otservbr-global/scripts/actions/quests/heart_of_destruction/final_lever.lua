@@ -33,9 +33,8 @@ local function doCheckArea()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, creatureUid in pairs(creatures) do
-							local creature = Creature(creatureUid)
-							if creature and creature:isPlayer() then
+						for _, c in pairs(creatures) do
+							if isPlayer(c) then
 								return true
 							end
 						end
@@ -227,14 +226,11 @@ local function clearHunger()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, creatureUid in pairs(creatures) do
-							local creature = Creature(creatureUid)
-							if creature then
-								if creature:isPlayer() then
-									creature:teleportTo({x = 32208, y = 31372, z = 14})
-								elseif creature:isMonster() and creature:getName() ~= "Spark of Destruction" then
-									creature:remove()
-								end
+						for _, c in pairs(creatures) do
+							if isPlayer(c) then
+								c:teleportTo({x = 32208, y = 31372, z = 14})
+							elseif isMonster(c) and c:getName() ~= "Spark of Destruction" then
+								c:remove()
 							end
 						end
 					end
@@ -256,14 +252,11 @@ local function clearDestruction()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, creatureUid in pairs(creatures) do
-							local creature = Creature(creatureUid)
-							if creature then
-								if creature:isPlayer() then
-									creature:teleportTo({x = 32208, y = 31372, z = 14})
-								elseif creature:isMonster() and creature:getName() ~= "Spark of Destruction" then
-									creature:remove()
-								end
+						for _, c in pairs(creatures) do
+							if isPlayer(c) then
+								c:teleportTo({x = 32208, y = 31372, z = 14})
+							elseif isMonster(c) and c:getName() ~= "Spark of Destruction" then
+								c:remove()
 							end
 						end
 					end
@@ -285,14 +278,11 @@ local function clearRage()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, creatureUid in pairs(creatures) do
-							local creature = Creature(creatureUid)
-							if creature then
-								if creature:isPlayer() then
-									creature:teleportTo({x = 32208, y = 31372, z = 14})
-								elseif creature:isMonster() and creature:getName() ~= "Spark of Destruction" then
-									creature:remove()
-								end
+						for _, c in pairs(creatures) do
+							if isPlayer(c) then
+								c:teleportTo({x = 32208, y = 31372, z = 14})
+							elseif isMonster(c) and c:getName() ~= "Spark of Destruction" then
+								c:remove()
 							end
 						end
 					end
@@ -314,14 +304,11 @@ function clearDevourer()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, creatureUid in pairs(creatures) do
-							local creature = Creature(creatureUid)
-							if creature then
-								if creature:isPlayer() then
-									creature:teleportTo({x = 32208, y = 31372, z = 14})
-								elseif creature:isMonster() then
-									creature:remove()
-								end
+						for _, c in pairs(creatures) do
+							if isPlayer(c) then
+								c:teleportTo({x = 32208, y = 31372, z = 14})
+							elseif isMonster(c) then
+								c:remove()
 							end
 						end
 					end
@@ -380,21 +367,21 @@ function heartDestructionFinal.onUse(player, item, fromPosition, itemEx, toPosit
 
 				for i = 1, #config.hungerPositions do
 					hungerTile = Tile(config.hungerPositions[i]):getTopCreature()
-					if hungerTile and hungerTile:isPlayer() then
+					if isPlayer(hungerTile) then
 						storeHunger[#storeHunger + 1] = hungerTile
 					end
 				end
 
 				for i = 1, #config.destructionPositions do
 					destructionTile = Tile(config.destructionPositions[i]):getTopCreature()
-					if destructionTile and destructionTile:isPlayer() then
+					if isPlayer(destructionTile) then
 						storeDestruction[#storeDestruction + 1] = destructionTile
 					end
 				end
 
 				for i = 1, #config.ragePositions do
 					rageTile = Tile(config.ragePositions[i]):getTopCreature()
-					if rageTile and rageTile:isPlayer() then
+					if isPlayer(rageTile) then
 						storeRage[#storeRage + 1] = rageTile
 					end
 				end

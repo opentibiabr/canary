@@ -124,7 +124,7 @@ int TalkActionFunctions::luaTalkActionGetName(lua_State* L) {
 		return 1;
 	}
 
-	pushString(L, talkaction->getName());
+	pushString(L, talk->getWordName());
 	return 1;
 }
 

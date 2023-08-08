@@ -27,11 +27,11 @@ class TalkAction : public Script {
 		const std::string &getWords() const {
 			return words;
 		}
-		const std::string &getName() const {
-			return name;
+		const std::string &getWordName() const {
+			return m_wordName;
 		}
-		void setName(std::string newName) {
-			name.append(newName);
+		void setWordName(std::string newName) {
+			m_wordName.append(newName);
 		}
 		const std::vector<std::string> &getWordsMap() const {
 			return wordsMap;
@@ -65,7 +65,7 @@ class TalkAction : public Script {
 		}
 
 		std::string words;
-		std::string name;
+		std::string m_wordName;
 		std::vector<std::string> wordsMap;
 		std::string separator = "\"";
 		account::GroupType m_groupType;

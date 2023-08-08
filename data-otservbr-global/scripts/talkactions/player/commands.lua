@@ -7,11 +7,13 @@ function commands.onSay(player, words, param)
 	local text = "Available commands:\n"
 
 	for _, talkaction in pairs(allTalkActions) do
+		if talkaction:getGroupType() ~= 0 then
 		print("group type ".. talkaction:getGroupType())
-		print("talk name ".. talkaction:getWords())
+		print("talk name ".. talkaction:getName())
 		if talkaction:getGroupType() <= playerGroupId then
-			text = text .. talkaction:getWords() .. "\n"
+			text = text .. talkaction:getName() .. "\n"
 		end
+	end
 	end
 
 	player:showTextDialog(639, text)

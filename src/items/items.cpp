@@ -19,6 +19,8 @@ Items::Items() = default;
 
 void Items::clear() {
 	items.clear();
+	ladders.clear();
+	dummys.clear();
 	nameToItems.clear();
 }
 
@@ -237,17 +239,12 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 	if (id >= items.size()) {
 		items.resize(id + 1);
 	}
-	ItemType &iType = items[id];
-	if (iType.id == 0 && (iType.name.empty() || iType.name == asLowerCaseString("reserved sprite"))) {
-		return;
-	}
-
-	iType.id = id;
-
 	ItemType &itemType = getItemType(id);
-	if (itemType.id == 0) {
+	// Ids 0-100 are used for fluids in the XML
+	if (id >= 100 && (itemType.id == 0 && (itemType.name.empty() || itemType.name == asLowerCaseString("reserved sprite")))) {
 		return;
 	}
+	itemType.id = id;
 
 	if (itemType.loaded) {
 		SPDLOG_WARN("[Items::parseItemNode] - Duplicate item with id: {}", id);

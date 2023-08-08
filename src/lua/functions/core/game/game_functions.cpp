@@ -652,6 +652,39 @@ int GameFunctions::luaGameGetInfluencedMonsters(lua_State* L) {
 	return 1;
 }
 
+int GameFunctions::luaGameGetLadderIds(lua_State* L) {
+	// Game.getLadderIds()
+	const auto ladders = Item::items.getLadders();
+	lua_createtable(L, static_cast<int>(ladders.size()), 0);
+	int index = 0;
+	for (const auto ladderId : ladders) {
+		++index;
+		lua_pushnumber(L, static_cast<lua_Number>(ladderId));
+		lua_rawseti(L, -2, index);
+	}
+
+	return 1;
+}
+
+int GameFunctions::luaGameGetDummies(lua_State* L) {
+	/**
+	 * @brief Retrieve dummy IDs categorized by type.
+	 * @details This function provides a table containing two sub-tables: one for free dummies and one for house (or premium) dummies.
+
+	* @note usage on lua:
+		local dummies = Game.getDummies()
+		local rate = dummies[1] -- Retrieve dummy rate
+	*/
+
+	const auto &dummies = Item::items.getDummys();
+	lua_createtable(L, dummies.size(), 0);
+	for (const auto &[dummyId, rate] : dummies) {
+		lua_pushnumber(L, static_cast<lua_Number>(rate));
+		lua_rawseti(L, -2, dummyId);
+	}
+	return 1;
+}
+
 int GameFunctions::luaGameMakeFiendishMonster(lua_State* L) {
 	// Game.makeFiendishMonster(monsterId[default= 0])
 	uint32_t monsterId = getNumber<uint32_t>(L, 1, 0);

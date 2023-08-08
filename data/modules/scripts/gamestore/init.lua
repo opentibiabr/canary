@@ -61,6 +61,7 @@ GameStore.ActionType = {
 	OPEN_CATEGORY = 2,
 	OPEN_USEFUL_THINGS = 3,
 	OPEN_OFFER = 4,
+	OPEN_SEARCH = 5,
 }
 
 GameStore.CoinType = {
@@ -213,6 +214,20 @@ GameStore.isItsPacket = function(byte)
 	return false
 end
 
+function GameStore.fuzzySearchOffer(searchString)
+	local results = {}
+	for i, category in ipairs(GameStore.Categories) do
+			if category.offers then
+					for j, offer in ipairs(category.offers) do
+							if string.match(offer.name:lower(), searchString:lower()) then
+									table.insert(results, offer)
+							end
+					end
+			end
+	end
+	return results
+end
+
 local function queueSendStoreAlertToUser(message, delay, playerId, storeErrorCode)
 	storeErrorCode = storeErrorCode and storeErrorCode or  GameStore.StoreErrors.STORE_ERROR_NETWORK
 	addPlayerEvent(sendStoreError, delay, playerId, storeErrorCode, message)
@@ -359,6 +374,19 @@ function parseRequestStoreOffers(playerId, msg)
 		if category then
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category, offerId)
 		end
+	elseif actionType == GameStore.ActionType.OPEN_SEARCH then
+		local searchString = msg:getString()
+		local results = GameStore.fuzzySearchOffer(searchString)
+		if not results or #results == 0 then
+			return addPlayerEvent(sendStoreError, 250, playerId, GameStore.StoreErrors.STORE_ERROR_INFORMATION, "No results found for \"" .. searchString .. "\".")
+		end
+
+		local searchResultsCategory = {
+				name = "Search",
+				offers = results,
+		}
+
+		addPlayerEvent(sendShowStoreOffers, 250, playerId, searchResultsCategory)
 	end
 end
 
@@ -508,32 +536,34 @@ function openStore(playerId)
 	else
 		GameStoreCategories, GameStoreCount = GameStore.Categories, #GameStore.Categories
 	end
+	local addCategory = function(category)
+		msg:addString(category.name)
+		if oldProtocol then
+			msg:addString(category.description)
+		end
 
-	if (GameStoreCategories) then
-		msg:addU16(GameStoreCount)
-		for k, category in ipairs(GameStoreCategories) do
-			msg:addString(category.name)
-			if oldProtocol then
-				msg:addString(category.description)
-			end
-
-			msg:addByte(category.state or GameStore.States.STATE_NONE)
-			local size = #category.icons > 255 and 255 or #category.icons
-			msg:addByte(size)
-			for m, icon in ipairs(category.icons) do
-				if size > 0 then
-					msg:addString(icon)
-					size = size - 1
-				end
-			end
-
-			if category.parent then
-				msg:addString(category.parent)
-			else
-				msg:addU16(0)
+		msg:addByte(category.state or GameStore.States.STATE_NONE)
+		local size = #category.icons > 255 and 255 or #category.icons
+		msg:addByte(size)
+		for _, icon in ipairs(category.icons) do
+			if size > 0 then
+				msg:addString(icon)
+				size = size - 1
 			end
 		end
 
+		if category.parent then
+			msg:addString(category.parent)
+		else
+			msg:addU16(0)
+		end
+	end
+
+	if (GameStoreCategories) then
+		msg:addU16(GameStoreCount)
+		for _, category in ipairs(GameStoreCategories) do
+			addCategory(category)
+		end
 		msg:sendToPlayer(player)
 		sendStoreBalanceUpdating(playerId, true)
 	end
@@ -881,6 +911,10 @@ function sendShowStoreOffers(playerId, category, redirectId)
 
 			msg:addU16(0) -- Products Capacity (unnused)
 		end
+	end
+
+	if category.name == "Search" then
+		msg:addByte(0) -- Too many search results
 	end
 
 	player:sendButtonIndication(haveSaleOffer, 1)

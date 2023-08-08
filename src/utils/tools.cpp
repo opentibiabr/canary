@@ -273,7 +273,7 @@ std::string asUpperCaseString(std::string source) {
 	return source;
 }
 
-std::string toCamelCase(const std::string& string) {
+std::string toCamelCase(const std::string &string) {
 	if (string.empty()) {
 		return string;
 	}

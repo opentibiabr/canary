@@ -14,19 +14,13 @@
 #include "lua/functions/events/talk_action_functions.hpp"
 
 int TalkActionFunctions::luaCreateTalkAction(lua_State* L) {
-	// TalkAction(words)
-	auto talkActionPtr = std::make_shared<TalkAction>(getScriptEnv()->getScriptInterface());
-	if (!talkActionPtr) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_TALK_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
-		return 1;
-	}
-
+	// TalkAction(words) or TalkAction(word1, word2, word3)
 	std::vector<std::string> wordsVector;
 	for (int i = 2; i <= lua_gettop(L); i++) {
 		wordsVector.push_back(getString(L, i));
 	}
 
+	auto talkActionPtr = std::make_shared<TalkAction>(getScriptEnv()->getScriptInterface());
 	talkActionPtr->setWords(std::move(wordsVector));
 	pushSharedUserdata<TalkAction>(L, talkActionPtr);
 	setMetatable(L, -1, "TalkAction");

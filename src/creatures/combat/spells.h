@@ -331,16 +331,16 @@ class Spell : public BaseSpell {
 			return m_words;
 		}
 
-		void setWords(std::string newWord) {
-			m_words = newWord;
+		void setWords(const std::string_view& newWord) {
+			m_words = newWord.data();
 		}
 
 		const std::string &getSeparator() const {
 			return m_separator;
 		}
 
-		void setSeparator(std::string newSeparator) {
-			m_separator = newSeparator;
+		void setSeparator(const std::string_view& newSeparator) {
+			m_separator = newSeparator.data();
 		}
 
 	protected:

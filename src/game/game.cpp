@@ -3489,6 +3489,10 @@ void Game::playerRotateItem(uint32_t playerId, const Position &pos, uint8_t stac
 		return;
 	}
 
+	if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnRotateItem, &EventCallback::playerOnRotateItem, player, item, pos)) {
+		return;
+	}
+
 	uint16_t newId = Item::items[item->getID()].rotateTo;
 	if (newId != 0) {
 		transformItem(item, newId);

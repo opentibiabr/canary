@@ -273,6 +273,16 @@ std::string asUpperCaseString(std::string source) {
 	return source;
 }
 
+std::string toCamelCase(const std::string& string) {
+	if (string.empty()) {
+		return string;
+	}
+
+	std::string result = string;
+	result[0] = std::tolower(result[0]);
+	return result;
+}
+
 StringVector explodeString(const std::string &inString, const std::string &separator, int32_t limit /* = -1*/) {
 	StringVector returnVector;
 	std::string::size_type start = 0, end = 0;

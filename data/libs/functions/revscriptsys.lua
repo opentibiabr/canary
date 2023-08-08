@@ -135,6 +135,7 @@ do
 			playerOnStorageUpdate = self.playerOnStorageUpdate,
 			playerOnCombat = self.playerOnCombat,
 			playerOnInventoryUpdate = self.playerOnInventoryUpdate,
+			playerOnRotateItem = self.playerOnRotateItem,
 			monsterOnDropLoot = self.monsterOnDropLoot,
 			monsterOnSpawn = self.monsterOnSpawn,
 			npcOnSpawn = self.npcOnSpawn,

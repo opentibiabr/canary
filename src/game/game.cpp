@@ -9144,7 +9144,7 @@ Guild* Game::getGuild(uint32_t id, bool allowOffline /* = flase */) const {
 	return it->second;
 }
 
-Guild* Game::getGuildByName(const std::string name, bool allowOffline /* = flase */) const {
+Guild* Game::getGuildByName(const std::string &name, bool allowOffline /* = flase */) const {
 	auto id = IOGuild::getGuildIdByName(name);
 	auto it = guilds.find(id);
 	if (it == guilds.end()) {

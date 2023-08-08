@@ -21,7 +21,7 @@ class Bankable {
 
 class Bank {
 	public:
-		Bank(Bankable* bankable);
+		explicit Bank(Bankable* bankable);
 		~Bank();
 
 		// Deleted copy constructor and assignment operator.

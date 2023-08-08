@@ -498,7 +498,7 @@ class Game {
 		void removeMonster(Monster* npc);
 
 		Guild* getGuild(uint32_t id, bool allowOffline = false) const;
-		Guild* getGuildByName(const std::string name, bool allowOffline = false) const;
+		Guild* getGuildByName(const std::string &name, bool allowOffline = false) const;
 		void addGuild(Guild* guild);
 		void removeGuild(uint32_t guildId);
 		void decreaseBrowseFieldRef(const Position &pos);

@@ -331,7 +331,7 @@ class Spell : public BaseSpell {
 			return m_words;
 		}
 
-		void setWords(const std::string_view& newWord) {
+		void setWords(const std::string_view &newWord) {
 			m_words = newWord.data();
 		}
 
@@ -339,7 +339,7 @@ class Spell : public BaseSpell {
 			return m_separator;
 		}
 
-		void setSeparator(const std::string_view& newSeparator) {
+		void setSeparator(const std::string_view &newSeparator) {
 			m_separator = newSeparator.data();
 		}
 

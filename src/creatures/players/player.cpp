@@ -15,6 +15,7 @@
 #include "creatures/monsters/monsters.h"
 #include "creatures/players/player.h"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/storages/storages.hpp"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 #include "grouping/familiars.h"
@@ -834,6 +835,26 @@ int32_t Player::getStorageValue(const uint32_t key) const {
 
 	value = it->second;
 	return value;
+}
+
+int32_t Player::getStorageValueByName(const std::string &storageName) const {
+	auto it = g_storages().getStorageMap().find(storageName);
+	if (it == g_storages().getStorageMap().end()) {
+		return -1;
+	}
+	uint32_t key = it->second;
+
+	return getStorageValue(key);
+}
+
+void Player::addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin /* = false*/) {
+	auto it = g_storages().getStorageMap().find(storageName);
+	if (it == g_storages().getStorageMap().end()) {
+		spdlog::error("[{}] Storage name '{}' not found in storage map, register your storage in 'storages.xml' first for use", __func__, storageName);
+		return;
+	}
+	uint32_t key = it->second;
+	addStorageValue(key, value, isLogin);
 }
 
 bool Player::canSee(const Position &pos) const {

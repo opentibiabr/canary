@@ -75,7 +75,19 @@ class PlayerWheel {
 		/*
 		 * Functions for manage points
 		 */
-		uint16_t getWheelPoints() const;
+		/**
+		 * @brief Returns the total wheel points for the player.
+		 *
+		 * This function calculates the wheel points for the player based on their level.
+		 * Extra points can either be included or not in the calculation depending on the value of the includeExtraPoints parameter.
+		 *
+		 * @note In the sendOpenWheelWindow function, extra points are not included (false is passed) because they are already sent separately in a different byte.
+		 *
+		 * @param includeExtraPoints If true, extra points are included in the total returned. If false, only the base points are returned. Default is true.
+		 * @return The total wheel points for the player. Includes extra points if includeExtraPoints is true.
+		 */
+		uint16_t getWheelPoints(bool includeExtraPoints = true) const;
+		uint16_t getExtraPoints() const;
 		uint8_t getMaxPointsPerSlot(WheelSlots_t slot) const;
 		uint16_t getUnusedPoints() const;
 

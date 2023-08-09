@@ -712,8 +712,8 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) con
 	msg.addByte(getOptions(ownerId)); // Options
 	msg.addByte(getPlayerVocationEnum()); // Vocation id
 
-	msg.add<uint16_t>(getWheelPoints()); // Points
-	msg.add<uint16_t>(0x00); // Extra points
+	msg.add<uint16_t>(getWheelPoints(false)); // Points (false param for not send extra points)
+	msg.add<uint16_t>(getExtraPoints()); // Extra points
 	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
 		msg.add<uint16_t>(getPointsBySlotType(i));
 	}
@@ -920,9 +920,41 @@ bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 	return true;
 }
 
-uint16_t PlayerWheel::getWheelPoints() const {
+uint16_t PlayerWheel::getExtraPoints() const {
+	if (m_player.getLevel() < 51) {
+		spdlog::error("Character level must be above 50.");
+		return 0;
+	}
+
+	std::map<std::string, uint16_t> availableScrolls = {
+		{ "wheel.scroll.abridged", 3 },
+		{ "wheel.scroll.basic", 5 },
+		{ "wheel.scroll.revised", 9 },
+		{ "wheel.scroll.extended", 13 },
+		{ "wheel.scroll.advanced", 20 },
+	};
+
+	uint16_t totalBonus = 0;
+	for (const auto &[storageName, points] : availableScrolls) {
+		auto storageValue = m_player.getStorageValueByName(storageName);
+		if (storageValue > 0) {
+			totalBonus += points;
+		}
+	}
+
+	return totalBonus;
+}
+
+uint16_t PlayerWheel::getWheelPoints(bool includeExtraPoints /* = true*/) const {
 	uint32_t level = m_player.getLevel();
-	return std::max(0u, (level - m_minLevelToStartCountPoints)) * m_pointsPerLevel;
+	auto totalPoints = std::max(0u, (level - m_minLevelToStartCountPoints)) * m_pointsPerLevel;
+
+	if (includeExtraPoints) {
+		const auto &extraPoints = getExtraPoints();
+		totalPoints += extraPoints;
+	}
+
+	return totalPoints;
 }
 
 bool PlayerWheel::canOpenWheel() const {

@@ -1,10 +1,11 @@
 math.randomseed(os.time())
 
 dofile(DATA_DIRECTORY .. "/lib/lib.lua")
-local startupFile=io.open(DATA_DIRECTORY.. "/startup/startup.lua", "r")
+
+local startupFile = io.open(DATA_DIRECTORY .. "/startup/startup.lua", "r")
 if startupFile ~= nil then
 	io.close(startupFile)
-	dofile(DATA_DIRECTORY.. "/startup/startup.lua")
+	dofile(DATA_DIRECTORY .. "/startup/startup.lua")
 end
 
 function IsRunningGlobalDatapack()
@@ -18,6 +19,7 @@ end
 function IsRetroPVP()
 	return configManager.getBoolean(configKeys.TOGGLE_SERVER_IS_RETRO)
 end
+
 -- NOTE: 0 is disabled.
 PARTY_PROTECTION = (IsRetroPVP() and 0) or 1
 ADVANCED_SECURE_MODE = (IsRetroPVP() and 0) or 1
@@ -41,8 +43,6 @@ DIRECTIONS_TABLE = {
 	DIRECTION_NORTHWEST,
 	DIRECTION_NORTHEAST
 }
-
-STORAGEVALUE_PROMOTION = 30018
 
 SERVER_NAME = configManager.getString(configKeys.SERVER_NAME)
 SERVER_MOTD = configManager.getString(configKeys.SERVER_MOTD)
@@ -84,16 +84,16 @@ ropeSpots = {386, 421, 386, 7762, 12202, 12936, 14238, 17238, 23363, 21965, 2196
 specialRopeSpots = { 12935 }
 
 -- Impact Analyser
--- Every 2 seconds
-updateInterval = 2
 if not GlobalBosses then
 	GlobalBosses = {}
 end
+
 -- Healing
 -- Global table to insert data
 if healingImpact == nil then
 	healingImpact = {}
 end
+
 -- Damage
 -- Global table to insert data
 if damageImpact == nil then

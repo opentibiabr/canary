@@ -1658,10 +1658,11 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetStorageValueByName(lua_State* L) {
 	// player:getStorageValue(name)
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
-		lua_pushnil(L);
-		return 1;
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
 
 	auto name = getString(L, 2);
@@ -1670,7 +1671,7 @@ int PlayerFunctions::luaPlayerGetStorageValueByName(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerSetStorageValueByName(lua_State* L) {
-	// player:setStorageValueByName(name, value)
+	// player:setStorageValueByName(storageName, value)
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1678,15 +1679,11 @@ int PlayerFunctions::luaPlayerSetStorageValueByName(lua_State* L) {
 		return 0;
 	}
 
-	auto name = getString(L, 2);
+	auto storageName = getString(L, 2);
 	int32_t value = getNumber<int32_t>(L, 3);
 
-	if (player) {
-		player->addStorageValueByName(name, value);
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
+	player->addStorageValueByName(storageName, value);
+	pushBoolean(L, true);
 	return 1;
 }
 

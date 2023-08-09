@@ -463,8 +463,8 @@ class Player final : public Creature, public Cylinder {
 		void addStorageValue(const uint32_t key, const int32_t value, const bool isLogin = false);
 		int32_t getStorageValue(const uint32_t key) const;
 
-		int32_t getStorageValueByName(const std::string &name) const;
-		void addStorageValueByName(const std::string &name, const int32_t value, const bool isLogin = false);
+		int32_t getStorageValueByName(const std::string &storageName) const;
+		void addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin = false);
 
 		void genReservedStorageRange();
 

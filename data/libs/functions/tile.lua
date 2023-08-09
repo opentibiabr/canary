@@ -62,7 +62,7 @@ end
 -- Functions from OTServbr-Global
 function Tile.isHouse(self)
 	local house = self:getHouse()
-	return not not house
+	return house and true or false
 end
 
 function Tile.isPz(self)

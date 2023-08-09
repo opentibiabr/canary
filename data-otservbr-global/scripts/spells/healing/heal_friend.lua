@@ -7,10 +7,6 @@ combat:setParameter(COMBAT_PARAM_AGGRESSIVE, false)
 function onGetFormulaValues(player, level, magicLevel)
 	local min = (level * 0.2 + magicLevel * 10) + 3
 	local max = (level * 0.2 + magicLevel * 14) + 5
-	local grade = player:upgradeSpellsWORD("Nature's Embrace")
-	if grade >= WHEEL_GRADE_UPGRADED then
-		return min * 1.1, max * 1.1
-	end
 	return min, max
 end
 

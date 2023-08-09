@@ -65,7 +65,7 @@ end
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
-	if isInArray({"mission", "note", "vampire"}, message:lower()) then
+	if table.contains({"mission", "note", "vampire"}, message:lower()) then
 		if player:getStorageValue(BloodBrothers.QuestLine) < 0 then
 			npcHandler:say("Our nightly blood-sucking visitors put the inhabitants of Yalahar in constant danger. The worst thing is that anyone in this city could be a vampire. Maybe an outsider like you could help us. Would you try?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
@@ -166,7 +166,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("No, no, you didn't eat it! Vampire Brood! Say '{aaah}' once you have eaten the bread or get out of her instantly!", npc, creature)
 		end
-	elseif isInArray({"maris", "ortheus", "serafin", "lisander", "armenius"}, message:lower()) and npcHandler:getTopic(playerId) == 8 then
+	elseif table.contains({"maris", "ortheus", "serafin", "lisander", "armenius"}, message:lower()) and npcHandler:getTopic(playerId) == 8 then
 		if MsgContains(message, "maris") then
 			if player:getStorageValue(BloodBrothers.Cookies.Maris) == 1 then
 				npcHandler:say("He really doesn't look like the man of the sea he pretends to be, does he? Noted down! Any other name?", npc, creature)

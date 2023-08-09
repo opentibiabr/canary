@@ -86,7 +86,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
 
-		elseif isInArray({1, 2}, missionProgress) then
+		elseif table.contains({1, 2}, missionProgress) then
 			npcHandler:say('Did you find the thief of our supplies?', npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		else

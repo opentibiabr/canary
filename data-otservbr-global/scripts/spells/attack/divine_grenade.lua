@@ -6,7 +6,7 @@ function onGetFormulaValues(player, level, maglevel)
 	local min = (level / 5) + (maglevel * 4)
 	local max = (level / 5) + (maglevel * 6)
 	local multiplier = 1.0
-	local grade = player:upgradeSpellsWORD("Divine Grenade")
+	local grade = player:upgradeSpellsWOD("Divine Grenade")
 	if grade >= WHEEL_GRADE_MAX then
 		multiplier = 2.0
 	elseif grade >= WHEEL_GRADE_UPGRADED then
@@ -62,7 +62,7 @@ function spell.onCastSpell(creature, var)
 	if not (creature and creature:isPlayer()) then
 		return false
 	end
-	local grade = creature:upgradeSpellsWORD("Divine Grenade")
+	local grade = creature:upgradeSpellsWOD("Divine Grenade")
 	if grade == WHEEL_GRADE_NONE then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)

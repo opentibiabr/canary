@@ -186,6 +186,7 @@ PRIVATE
 	creatures/players/imbuements/imbuements.cpp
 	creatures/players/management/ban.cpp
 	creatures/players/management/waitlist.cpp
+	creatures/players/storages/storages.cpp
 	creatures/players/player.cpp
 	creatures/players/wheel/player_wheel.cpp
 	creatures/players/vocations/vocation.cpp
@@ -232,6 +233,8 @@ PRIVATE
 	items/trashholder.cpp
 	items/weapons/weapons.cpp
 	lua/callbacks/creaturecallback.cpp
+	lua/callbacks/event_callback.cpp
+	lua/callbacks/events_callbacks.cpp
 	lua/creature/actions.cpp
 	lua/creature/creatureevent.cpp
 	lua/creature/events.cpp
@@ -271,6 +274,7 @@ PRIVATE
 	lua/functions/creatures/player/vocation_functions.cpp
 	lua/functions/events/action_functions.cpp
 	lua/functions/events/creature_event_functions.cpp
+	lua/functions/events/event_callback_functions.cpp
 	lua/functions/events/events_scheduler_functions.cpp
 	lua/functions/events/global_event_functions.cpp
 	lua/functions/events/move_event_functions.cpp

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Brachiodemon")
 local monster = {}
 
 monster.description = "a brachiodemon"
-monster.experience = 22880
+monster.experience = 15770
 monster.outfit = {
 	lookType = 1299,
 	lookHead = 0,
@@ -18,13 +18,13 @@ monster.Bestiary = {
 	class = "Demon",
 	race = BESTY_RACE_DEMON,
 	toKill = 5000,
-	FirstUnlock = 25,
-	SecondUnlock = 3394,
+	FirstUnlock = 200,
+	SecondUnlock = 2000,
 	CharmsPoints = 100,
 	Stars = 5,
 	Occurrence = 0,
 	Locations = "Claustrophobic Inferno."
-	}
+}
 
 monster.health = 25000
 monster.maxHealth = 25000
@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -75,46 +75,45 @@ monster.voices = {
 	chance = 10,
 	{text = "Feel the heat!", yell = false},
 	{text = "Hand over your life.", yell = false},
-	{text = "I can give you a hand... or two.", yell = false}
+	{text = "I can give you a hand... or two.", yell = false},
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540},
-	{name = "platinum coin", chance = 90540, maxCount = 32},
-	{name = "ultimate health potion", chance = 32220, maxCount = 7},
-	{id = 33936, chance = 35560}, -- hand
-	{name = "skull staff", chance = 65560},
-	{name = "epee", chance = 75560},
-	{name = "crystal mace", chance = 25560},
-	{name = "noble axe", chance = 8560},
-	{name = "spellbook of mind control", chance = 9000},
-	{id = 33937, chance = 7500}, -- head
-	{name = "fire axe", chance = 13500},
-	{name = "royal helmet", chance = 15500},
-	{name = "mastermind shield", chance = 9500},
-	{name = "assassin dagger", chance = 8500},
-	{name = "butcher's axe", chance = 7500},
-	{name = "jade hammer", chance = 6500},
-	{name = "crystalline sword", chance = 5500},
-	{name = "alloy legs", chance = 4500},
-	{name = "metal bat", chance = 3500},
-	{id = 23531, chance = 8920}, -- ring of green plasma
-	{id = 34025, chance = 1550}, -- diabolic skull
-	{id = 34109, chance = 50} -- bag you desire
+	{name = "crystal coin", chance = 58990},
+	{name = "ultimate health potion", chance = 29110, maxCount = 4},
+	{id = 33936, chance = 5490}, -- hand
+	{id = 33932, chance = 3710}, -- head many faces
+	{name = "epee", chance = 3290},
+	{name = "crystal mace", chance = 1690},
+	{name = "noble axe", chance = 1600},
+	{name = "spellbook of mind control", chance = 1180},
+	{name = "skull staff", chance = 930},
+	{id = 23532, chance = 930}, -- ring of green plasma
+	{name = "royal helmet", chance = 840},
+	{name = "jade hammer", chance = 840},
+	{name = "metal bat", chance = 760},
+	{name = "diabolic skull", chance = 590},
+	{name = "fire axe", chance = 590},
+	{name = "crystalline sword", chance = 420},
+	{name = "butcher's axe", chance = 420},
+	{name = "mastermind shield", chance = 420},
+	{name = "assassin dagger", chance = 340},
+	{name = "alloy legs", chance = 170},
+	{id = 34109, chance = 20} -- bag you desire
 }
 
 monster.attacks = {
 	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -950},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -450, maxDamage = -700, range = 7, radius = 4, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true},
-	{name ="combat", interval = 2000, chance = 18, type = COMBAT_FIREDAMAGE, minDamage = -450, maxDamage = -900, radius = 3, effect = CONST_ME_FIREAREA, target = false},
-	{name ="combat", interval = 2000, chance = 22, type = COMBAT_DEATHDAMAGE, minDamage = -450, maxDamage = -900, radius = 4, effect = CONST_ME_EXPLOSIONHIT, target = false},
-	{name ="combat", interval = 2000, chance = 24, type = COMBAT_FIREDAMAGE, minDamage = -450, maxDamage = -1000, radius = 4, effect = CONST_ME_EXPLOSIONAREA, target = false},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -700, maxDamage = -1150, length = 8, effect = CONST_ME_EXPLOSIONHIT, target = false},
+	{name ="combat", interval = 2000, chance = 24, type = COMBAT_FIREDAMAGE, minDamage = -1100, maxDamage = -1550, radius = 4, effect = CONST_ME_EXPLOSIONAREA, target = false},
+	{name ="combat", interval = 2000, chance = 22, type = COMBAT_DEATHDAMAGE, minDamage = -900, maxDamage = -1280, radius = 4, effect = CONST_ME_EXPLOSIONHIT, target = false},
+	{name ="combat", interval = 2000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -1150, maxDamage = -1460, range = 7, effect = CONST_ANI_SUDDENDEATH, target = true},
+	{name ="combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -950, maxDamage = -1100, range = 7, radius = 4, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true},
 }
 
 monster.defenses = {
-	defense = 90,
-	armor = 105
+	defense = 100,
+	armor = 100,
+	mitigation = 2.75,
 }
 
 monster.elements = {
@@ -126,8 +125,8 @@ monster.elements = {
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
 	{type = COMBAT_ICEDAMAGE, percent = -25},
-	{type = COMBAT_HOLYDAMAGE , percent = -35},
-	{type = COMBAT_DEATHDAMAGE , percent = 50}
+	{type = COMBAT_HOLYDAMAGE, percent = -35},
+	{type = COMBAT_DEATHDAMAGE, percent = 50},
 }
 
 monster.immunities = {

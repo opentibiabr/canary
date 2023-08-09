@@ -1,4 +1,28 @@
--- From here down are the functions of TFS
+function PrettyString(tbl, indent)
+	if not indent then indent = 0 end
+	local toprint = string.rep(" ", indent) .. "{\n"
+	indent = indent + 2
+	for k, v in pairs(tbl) do
+		toprint = toprint .. string.rep(" ", indent)
+		if (type(k) == "number") then
+			toprint = toprint .. "[" .. k .. "] = "
+		elseif (type(k) == "string") then
+			toprint = toprint .. k .. "= "
+		end
+		if (type(v) == "number") then
+			toprint = toprint .. v .. ",\n"
+		elseif (type(v) == "string") then
+			toprint = toprint .. "\"" .. v .. "\",\n"
+		elseif (type(v) == "table") then
+			toprint = toprint .. PrettyString(v, indent + 2) .. ",\n"
+		else
+			toprint = toprint .. "\"" .. tostring(v) .. "\",\n"
+		end
+	end
+	toprint = toprint .. string.rep(" ", indent - 2) .. "}"
+	return toprint
+end
+
 function getTibiaTimerDayOrNight()
 	local light = getWorldLight()
 	if (light == 40) then
@@ -17,6 +41,64 @@ function getFormattedWorldTime()
 		minutes = '0' .. minutes
 	end
 	return hours .. ':' .. minutes
+end
+
+
+function getTitle(uid)
+	local player = Player(uid)
+	if not player then return false end
+
+	for i = #titles, 1, -1 do
+		if player:getStorageValue(titles[i].storageID) == 1 then
+			return titles[i].title
+		end
+	end
+
+	return false
+end
+
+function getHours(seconds)
+	return math.floor((seconds/60)/60)
+end
+
+function getMinutes(seconds)
+	return math.floor(seconds/60)
+end
+
+function getSeconds(seconds)
+	return seconds%60
+end
+
+function getTime(seconds)
+	local hours, minutes = getHours(seconds), getMinutes(seconds)
+	if (minutes > 59) then
+		minutes = minutes-hours*60
+	end
+
+	if (minutes < 10) then
+		minutes = "0" ..minutes
+	end
+
+	return hours..":"..minutes.. "h"
+end
+
+function getTimeInWords(secs)
+	local hours, minutes, seconds = getHours(secs), getMinutes(secs), getSeconds(secs)
+	if (minutes > 59) then
+		minutes = minutes-hours*60
+	end
+
+	local timeStr = ''
+
+	if hours > 1 then
+		timeStr = hours .. ' hours '
+	elseif hours == 1 then
+		timeStr = hours .. ' hour '
+	end
+
+	timeStr = timeStr .. minutes .. ' minutes and '.. seconds .. ' seconds.'
+
+	return timeStr
 end
 
 function getLootRandom(modifier)
@@ -140,7 +222,7 @@ end
 function getPlayerSpouse(id)
 	local resultQuery = db.storeQuery("SELECT `marriage_spouse` FROM `players` WHERE `id` = " .. db.escapeString(id))
 	if resultQuery ~= false then
-		local ret = Result.getDataInt(resultQuery, "marriage_spouse")
+		local ret = Result.getNumber(resultQuery, "marriage_spouse")
 		Result.free(resultQuery)
 		return ret
 	end
@@ -150,7 +232,7 @@ end
 function getPlayerMarriageStatus(id)
 	local resultQuery = db.storeQuery("SELECT `marriage_status` FROM `players` WHERE `id` = " .. db.escapeString(id))
 	if resultQuery ~= false then
-		local ret = Result.getDataInt(resultQuery, "marriage_status")
+		local ret = Result.getNumber(resultQuery, "marriage_status")
 		Result.free(resultQuery)
 		return ret
 	end
@@ -159,7 +241,7 @@ end
 
 function getPlayerNameById(id)
 	local resultName = db.storeQuery("SELECT `name` FROM `players` WHERE `id` = " .. db.escapeString(id))
-	local name = Result.getDataString(resultName, "name")
+	local name = Result.getString(resultName, "name")
 	if resultName ~= false then
 		Result.free(resultName)
 		return name
@@ -910,30 +992,6 @@ function SetInfluenced(monsterType, monster, player, influencedLevel)
 	monster:setForgeStack(influencedLevel)
 end
 
-
-function durationString(duration)
-	local durationHours = math.floor(duration / 3600)
-	duration = duration % 3600
-	local durationMinutes = math.floor(duration / 60)
-	local durationSeconds = duration % 60
-	local s = ""
-	if durationHours > 0 then
-		s = s .. durationHours .. " hours"
-	end
-	if durationMinutes > 0 then
-		if durationHours > 0 and durationSeconds > 0 then
-			s = s .. ", "
-		elseif durationHours > 0 then
-			s = s .. " and "
-		end
-		s = s .. durationMinutes .. " minutes"
-	end
-	if durationSeconds > 0 then
-		s = s .. " and " .. durationSeconds .. " seconds"
-	end
-	return s
-end
-
 function ReloadDataEvent(cid)
 	local player = Player(cid)
 	if not player then
@@ -941,4 +999,19 @@ function ReloadDataEvent(cid)
 	end
 
 	player:reloadData()
+end
+
+function HasValidTalkActionParams(player, param, usage)
+	if not param or param == "" then
+		player:sendCancelMessage("Command param required. Usage: ".. usage)
+		return false
+	end
+
+	local split = param:split(",")
+	if not split[2] then
+		player:sendCancelMessage("Insufficient parameters. Usage: ".. usage)
+		return false
+	end
+
+	return true
 end

@@ -1,6 +1,6 @@
-local condition = createConditionObject(CONDITION_OUTFIT)
-setConditionParam(condition, CONDITION_PARAM_TICKS, 120000)
-addOutfitCondition(condition, 0, 307, 0, 0, 0, 0)
+local condition = Condition(CONDITION_OUTFIT)
+condition:setParameter(CONDITION_PARAM_TICKS, 120000)
+condition:setOutfit(0, 307, 0, 0, 0, 0)
 
 local geomanticCharges = MoveEvent()
 
@@ -11,7 +11,7 @@ function geomanticCharges.onStepIn(creature, item, position, fromPosition)
 	end
 
 	local tasksLoaded = {}
-	if not isInArray({-1, 8}, player:getStorageValue(SPIKE_MIDDLE_NEST_MAIN)) then
+	if not table.contains({-1, 8}, player:getStorageValue(SPIKE_MIDDLE_NEST_MAIN)) then
 		tasksLoaded["NEST"] = true
 	end
 	if player:getStorageValue(SPIKE_MIDDLE_CHARGE_MAIN) == 1 then

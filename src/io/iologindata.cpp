@@ -147,11 +147,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string &name) {
 	player->setGroup(group);
 	player->accountNumber = result->getNumber<uint32_t>("account_id");
 	player->accountType = static_cast<account::AccountType>(result->getNumber<uint16_t>("account_type"));
-	if (!g_configManager().getBoolean(FREE_PREMIUM)) {
-		player->premiumDays = result->getNumber<uint16_t>("premium_days");
-	} else {
-		player->premiumDays = std::numeric_limits<uint16_t>::max();
-	}
+	player->premiumDays = result->getNumber<uint16_t>("premium_days");
 
 	/*
 	  Loyalty system:
@@ -216,11 +212,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 	acc.GetID(&(player->accountNumber));
 	acc.GetAccountType(&(player->accountType));
 
-	if (g_configManager().getBoolean(FREE_PREMIUM)) {
-		player->premiumDays = std::numeric_limits<uint16_t>::max();
-	} else {
-		acc.GetPremiumRemaningDays(&(player->premiumDays));
-	}
+	acc.GetPremiumRemaningDays(&(player->premiumDays));
 
 	acc.GetCoins(&(player->coinBalance));
 	acc.GetTransferableCoins(&(player->coinTransferableBalance));
@@ -859,6 +851,18 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList &itemList,
 }
 
 bool IOLoginData::savePlayer(Player* player) {
+	bool success = DBTransaction::executeWithinTransaction([player]() {
+		return savePlayerGuard(player);
+	});
+
+	if (!success) {
+		SPDLOG_ERROR("[{}] Error occurred saving player", __FUNCTION__);
+	}
+
+	return success;
+}
+
+bool IOLoginData::savePlayerGuard(Player* player) {
 	if (player->getHealth() <= 0) {
 		player->changeHealth(1);
 	}
@@ -1006,11 +1010,6 @@ bool IOLoginData::savePlayer(Player* player) {
 			  << " = " << static_cast<uint32_t>(player->getBlessingCount(i)) << ((i == 8) ? ' ' : ',');
 	}
 	query << " WHERE `id` = " << player->getGUID();
-
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
 
 	if (!db.executeQuery(query.str())) {
 		return false;
@@ -1294,7 +1293,7 @@ bool IOLoginData::savePlayer(Player* player) {
 	}
 
 	// End the transaction
-	return transaction.commit();
+	return true;
 }
 
 std::string IOLoginData::getNameByGuid(uint32_t guid) {

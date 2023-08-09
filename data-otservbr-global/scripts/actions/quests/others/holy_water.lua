@@ -107,7 +107,7 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 	end
 
 	-- Shadow Nexus
-	if isInArray({7925, 7927, 7929}, target.itemid) then
+	if table.contains({7925, 7927, 7929}, target.itemid) then
 		if target.itemid == 7929 then
 			Game.setStorageValue(GlobalStorage.Inquisition, math.random(4,5))
 		end

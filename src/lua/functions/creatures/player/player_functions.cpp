@@ -1656,6 +1656,37 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetStorageValueByName(lua_State* L) {
+	// player:getStorageValueByName(name)
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto name = getString(L, 2);
+	lua_pushnumber(L, player->getStorageValueByName(name));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetStorageValueByName(lua_State* L) {
+	// player:setStorageValueByName(storageName, value)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto storageName = getString(L, 2);
+	int32_t value = getNumber<int32_t>(L, 3);
+
+	player->addStorageValueByName(storageName, value);
+	pushBoolean(L, true);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 	// player:addItem(itemId, count = 1, canDropOnMap = true, subType = 1, slot = CONST_SLOT_WHEREEVER, tier = 0)
 	Player* player = getUserdata<Player>(L, 1);
@@ -3647,7 +3678,7 @@ int PlayerFunctions::luaPlayerInstantSkillWOD(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerUpgradeSpellWOD(lua_State* L) {
-	// player:upgradeSpellsWORD([name[, add]])
+	// player:upgradeSpellsWOD([name[, add]])
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
@@ -3825,5 +3856,30 @@ int PlayerFunctions::luaPlayerClearSpellCooldowns(lua_State* L) {
 	}
 	player->clearCooldowns();
 	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerIsVip(lua_State* L) {
+	// player:isVip()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	pushBoolean(L, player->isVip());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetVipDays(lua_State* L) {
+	// player:getVipDays()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushnumber(L, player->getVipDays());
 	return 1;
 }

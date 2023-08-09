@@ -2,65 +2,37 @@ function Container.isContainer(self)
 	return true
 end
 
-function Container.createLootItem(self, item, charm, modifier)
-	if self:getEmptySlots() == 0 then
-		return false
-	end
+---@alias LootItems table<number, {count: number, subType?: number, text?: string, actionId?: number, gut?: boolean, childLoot: LootItems}>
 
-	local itemCount = 0
-	local randvalue = getLootRandom(modifier)
-	local lootBlockType = ItemType(item.itemId)
-	local chanceTo = item.chance
-
-	if not lootBlockType then
-		return false
-	end
-
-	-- Bestiary charm bonus
-	if charm and lootBlockType:getType() == ITEM_TYPE_CREATUREPRODUCT then
-		chanceTo = math.ceil((chanceTo * GLOBAL_CHARM_GUT) / 100)
-	end
-
-	if randvalue < chanceTo then
-		if lootBlockType:isStackable() then
-			local maxc, minc = item.maxCount or 1, item.minCount or 1
-			itemCount = math.max(0, randvalue % (maxc - minc + 1)) + minc
-		else
-			itemCount = 1
-		end
-	end
-
-	while (itemCount > 0) do
-		local n = math.min(itemCount, 100)
-		itemCount = itemCount - n
-
-		local tmpItem = self:addItem(item.itemId, n)
-		if not tmpItem then
-			return false
-		end
-
-		if tmpItem:isContainer() then
-			for i = 1, #item.childLoot do
-				if not tmpItem:createLootItem(item.childLoot[i], charm) then
+---@param loot LootItems
+function Container:addLoot(loot)
+	for itemId, item in pairs(loot) do
+		Spdlog.debug(string.format("[Container:addLoot] - Adding loot item id: %d to container id: %d", itemId, self:getId()))
+		local tmpItem = self:addItem(itemId, item.count)
+		if tmpItem then
+			if tmpItem:isContainer() and item.childLoot then
+				if not tmpItem:addLoot(item.childLoot) then
 					tmpItem:remove()
-					return false
+					goto continue
 				end
+			end
+
+			local iType = ItemType(itemId)
+			if item.subType ~= -1 then
+				tmpItem:transform(itemId, item.subType)
+			elseif iType:isFluidContainer() then
+				tmpItem:transform(itemId, 0)
+			end
+
+			if item.actionId ~= -1 then
+				tmpItem:setActionId(item.actionId)
+			end
+
+			if item.text and item.text ~= "" then
+				tmpItem:setText(item.text)
 			end
 		end
 
-		if item.subType ~= -1 then
-			tmpItem:transform(item.itemId, item.subType)
-		elseif lootBlockType:isFluidContainer() then
-			tmpItem:transform(item.itemId, 0)
-		end
-
-		if item.actionId ~= -1 then
-			tmpItem:setActionId(item.actionId)
-		end
-
-		if item.text and item.text ~= "" then
-			tmpItem:setText(item.text)
-		end
+		::continue::
 	end
-	return true
 end

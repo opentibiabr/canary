@@ -273,6 +273,78 @@ std::string asUpperCaseString(std::string source) {
 	return source;
 }
 
+std::string toCamelCase(const std::string &str) {
+	std::string result;
+	bool capitalizeNext = false;
+
+	for (char ch : str) {
+		if (ch == '_' || std::isspace(ch) || ch == '-') {
+			capitalizeNext = true;
+		} else {
+			if (capitalizeNext) {
+				result += std::toupper(ch);
+				capitalizeNext = false;
+			} else {
+				result += std::tolower(ch);
+			}
+		}
+	}
+
+	return result;
+}
+
+std::string toPascalCase(const std::string &str) {
+	std::string result;
+	bool capitalizeNext = true;
+
+	for (char ch : str) {
+		if (ch == '_' || std::isspace(ch) || ch == '-') {
+			capitalizeNext = true;
+		} else {
+			if (capitalizeNext) {
+				result += std::toupper(ch);
+				capitalizeNext = false;
+			} else {
+				result += std::tolower(ch);
+			}
+		}
+	}
+
+	return result;
+}
+
+std::string toSnakeCase(const std::string &str) {
+	std::string result;
+	for (char ch : str) {
+		if (std::isupper(ch)) {
+			result += '_';
+			result += std::tolower(ch);
+		} else if (std::isspace(ch) || ch == '-') {
+			result += '_';
+		} else {
+			result += ch;
+		}
+	}
+
+	return result;
+}
+
+std::string toKebabCase(const std::string &str) {
+	std::string result;
+	for (char ch : str) {
+		if (std::isupper(ch)) {
+			result += '-';
+			result += std::tolower(ch);
+		} else if (std::isspace(ch) || ch == '_') {
+			result += '-';
+		} else {
+			result += ch;
+		}
+	}
+
+	return result;
+}
+
 StringVector explodeString(const std::string &inString, const std::string &separator, int32_t limit /* = -1*/) {
 	StringVector returnVector;
 	std::string::size_type start = 0, end = 0;
@@ -372,6 +444,15 @@ std::time_t getTimeNow() {
 std::time_t getTimeMsNow() {
 	auto duration = std::chrono::system_clock::now().time_since_epoch();
 	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+}
+
+BedItemPart_t getBedPart(const std::string_view string) {
+	if (string == "pillow" || string == "1") {
+		return BED_PILLOW_PART;
+	} else if (string == "blanket" || string == "2") {
+		return BED_BLANKET_PART;
+	}
+	return BED_NONE_PART;
 }
 
 Direction getDirection(const std::string &string) {
@@ -1101,6 +1182,8 @@ ItemAttribute_t stringToItemAttribute(const std::string &str) {
 		return ItemAttribute_t::AMOUNT;
 	} else if (str == "tier") {
 		return ItemAttribute_t::TIER;
+	} else if (str == "lootmessagesuffix") {
+		return ItemAttribute_t::LOOTMESSAGE_SUFFIX;
 	}
 
 	SPDLOG_ERROR("[{}] attribute type {} is not registered", __FUNCTION__, str);
@@ -1428,6 +1511,17 @@ void consoleHandlerExit() {
 	return;
 }
 
+std::string validateNameHouse(const std::string &list) {
+	std::string result;
+	for (char c : list) {
+		if (isalpha(c) || c == ' ' || c == '\'' || c == '!' || c == '\n'
+			|| c == '?' || c == '#' || c == '@' || c == '*') {
+			result += c;
+		}
+	}
+	return result;
+}
+
 NameEval_t validateName(const std::string &name) {
 	StringVector prohibitedWords = { "owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "cm", "gm", "tutor", "counsellor", "god" };
 	StringVector toks;
@@ -1560,4 +1654,16 @@ std::string formatPrice(std::string price, bool space /* = false*/) {
 	}
 
 	return price;
+}
+
+std::vector<std::string> split(const std::string &str) {
+	std::vector<std::string> tokens;
+	std::string token;
+	std::istringstream tokenStream(str);
+	while (std::getline(tokenStream, token, ',')) {
+		auto trimedToken = token;
+		trimString(trimedToken);
+		tokens.push_back(trimedToken);
+	}
+	return tokens;
 }

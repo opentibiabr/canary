@@ -45,22 +45,27 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 		}
 
 		while (item_count--) {
-			loadItem(propStream, tile);
+			loadItem(propStream, tile, true);
 		}
 	} while (result->next());
 	SPDLOG_INFO("Loaded house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
 }
-
 bool IOMapSerialize::saveHouseItems() {
+	bool success = DBTransaction::executeWithinTransaction([]() {
+		return SaveHouseItemsGuard();
+	});
+
+	if (!success) {
+		SPDLOG_ERROR("[{}] Error occurred saving houses", __FUNCTION__);
+	}
+
+	return success;
+}
+
+bool IOMapSerialize::SaveHouseItemsGuard() {
 	int64_t start = OTSYS_TIME();
 	Database &db = Database::getInstance();
 	std::ostringstream query;
-
-	// Start the transaction
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
-	}
 
 	// clear old tile data
 	if (!db.executeQuery("DELETE FROM `tile_store`")) {
@@ -91,10 +96,8 @@ bool IOMapSerialize::saveHouseItems() {
 		return false;
 	}
 
-	// End the transaction
-	bool success = transaction.commit();
 	SPDLOG_INFO("Saved house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
-	return success;
+	return true;
 }
 
 bool IOMapSerialize::loadContainer(PropStream &propStream, Container* container) {
@@ -114,7 +117,9 @@ bool IOMapSerialize::loadContainer(PropStream &propStream, Container* container)
 	return true;
 }
 
-bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent) {
+uint32_t NEW_BEDS_START_ID = 30000;
+
+bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent, bool isHouseItem /*= false*/) {
 	uint16_t id;
 	if (!propStream.read<uint16_t>(id)) {
 		return false;
@@ -126,7 +131,10 @@ bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent) {
 	}
 
 	const ItemType &iType = Item::items[id];
-	if (iType.moveable || !tile || iType.isCarpet()) {
+	if (isHouseItem && iType.isBed() && id < NEW_BEDS_START_ID) {
+		return false;
+	}
+	if (iType.moveable || !tile || iType.isCarpet() || iType.isBed()) {
 		// create a new item
 		Item* item = Item::CreateItem(id);
 		if (item) {
@@ -278,12 +286,19 @@ bool IOMapSerialize::loadHouseInfo() {
 }
 
 bool IOMapSerialize::saveHouseInfo() {
-	Database &db = Database::getInstance();
+	bool success = DBTransaction::executeWithinTransaction([]() {
+		return SaveHouseInfoGuard();
+	});
 
-	DBTransaction transaction;
-	if (!transaction.begin()) {
-		return false;
+	if (!success) {
+		SPDLOG_ERROR("[{}] Error occurred saving houses info", __FUNCTION__);
 	}
+
+	return success;
+}
+
+bool IOMapSerialize::SaveHouseInfoGuard() {
+	Database &db = Database::getInstance();
 
 	if (!db.executeQuery("DELETE FROM `house_lists`")) {
 		return false;
@@ -343,5 +358,5 @@ bool IOMapSerialize::saveHouseInfo() {
 		return false;
 	}
 
-	return transaction.commit();
+	return true;
 }

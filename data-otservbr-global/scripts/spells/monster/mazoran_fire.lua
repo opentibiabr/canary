@@ -894,7 +894,7 @@ local itemsRoom = {
 local function revertLava()
 	for i = 1, #itemsRoom do
 		local item = itemsRoom[i]
-		if isInArray(tiles, item.itemid) then
+		if table.contains(tiles, item.itemid) then
 			local ground = Tile(item.position):getGround()
 			local transformid = item.itemid
 			if ground then
@@ -938,7 +938,7 @@ local function lavaGrounds (cid)
 				for i = 1, #items do
 					local item = items[i]
 					local itemId = item:getId()
-					if not isInArray(Montains, itemId) then
+					if not table.contains(Montains, itemId) then
 						item:remove()
 					end
 				end

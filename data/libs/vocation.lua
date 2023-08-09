@@ -27,5 +27,5 @@ VOCATION = {
         DRUID = 2,
         PALADIN = 3,
         KNIGHT = 4
-    }
+	}
 }

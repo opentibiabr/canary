@@ -10,7 +10,7 @@ local function targetFunction(creature, target)
 
 	local buff = 90
 	if creature and creature:getPlayer() then
-		local grade = creature:upgradeSpellsWORD("Sap Strength")
+		local grade = creature:upgradeSpellsWOD("Sap Strength")
 		if grade == WHEEL_GRADE_UPGRADED then
 			buff = 80
 		end
@@ -22,7 +22,7 @@ local function targetFunction(creature, target)
 
 	local gradeBuff = 0
 	if creature and creature:getPlayer() then
-		gradeBuff = creature:upgradeSpellsWORD("Drain_Body_Spells")
+		gradeBuff = creature:upgradeSpellsWOD("Drain_Body_Spells")
 	end
 	condition:setParameter(CONDITION_PARAM_DRAIN_BODY, gradeBuff)
 

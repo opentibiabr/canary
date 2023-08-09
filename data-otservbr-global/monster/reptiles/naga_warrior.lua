@@ -77,23 +77,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 100000, maxCount = 13},
-	{name = "naga armring", chance = 7730},
-	{name = "spiky club", chance = 3090},
-	{name = "crystal crossbow", chance = 430},
-	{name = "naga archer scales", chance = 15640},
-	{name = "violet crystal shard", chance = 1980},
-	{name = "naga warrior scales", chance = 430},
-	{name = "knight armor", chance = 430},
-	{name = "serpent sword", chance = 90},
-	{name = "naga earring", chance = 13830},
-	{name = "relic sword", chance = 430},
+	{name = "platinum coin", chance = 100000, maxCount = 12},
+	{name = "dagger", chance = 38810},
+	{name = "strong health potion", chance = 14930, maxCount = 2},
+	{name = "naga warrior scales", chance = 10600, maxCount = 4},
+	{name = "naga earring", chance = 6420, maxCount = 2},
+	{id = 3307, chance = 5520}, -- scimitar
+	{name = "naga armring", chance = 3730},
+	{name = "plate armor", chance = 2990},
+	{name = "spiky club", chance = 2090},
+	{name = "serpent sword", chance = 1940},
+	{name = "violet crystal shard", chance = 1640},
+	{name = "katana", chance = 1490},
+	{name = "relic sword", chance = 1190},
+	{name = "knight armor", chance = 450},
+  {id = 7441, chance = 300}, -- ice cube
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 300, maxDamage = -801},
-	{name ="combat", interval = 3000, chance = 47, type = COMBAT_PHYSICALDAMAGE, minDamage = -800, maxDamage = -1500, effect = CONST_ME_YELLOWSMOKE, target = true},
-	{name ="combat", interval = 4000, chance = 31, type = COMBAT_LIFEDRAIN, minDamage = -800, maxDamage = -1500, radius = 4, effect = CONST_ME_DRAWBLOOD, target = false},
+	{name = "combat", interval = 2000, chance = 100, type = COMBAT_PHYSICALDAMAGE, minDamage = -120, maxDamage = -340, target = true},	-- basic_attack
+	{name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = -320, maxDamage = -430,effect = CONST_ME_YELLOWSMOKE, range = 3, target = true},	-- eruption_strike
+	{name = "nagadeathattack", interval = 2000, chance = 25, minDamage = -360, maxDamage = -415, target = true},	-- death_strike
+	{name ="combat", interval = 4000, chance = 31, type = COMBAT_LIFEDRAIN, minDamage = -360, maxDamage = -386, radius = 4, effect = CONST_ME_DRAWBLOOD, target = false},	-- great_blood_ball
 }
 
 monster.defenses = {

@@ -60,7 +60,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, 'transport') then
 		npcHandler:say('We can bring you to Thais with one of our coaches for 125 gold. Are you interested?', npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif isInArray({'rent', 'horses'}, message) then
+	elseif table.contains({'rent', 'horses'}, message) then
 		npcHandler:say('Do you want to rent a horse for one day at a price of 500 gold?', npc, creature)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, 'yes') then

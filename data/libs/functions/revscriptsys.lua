@@ -98,6 +98,22 @@ do
 	rawgetmetatable("TalkAction").__newindex = TalkActionNewIndex
 end
 
+-- Sets a custom __newindex behavior for the EventCallback class's metatable. It dynamically maps certain keys to predefined callback methods within the EventCallback class. When a key matching a method name is added, it triggers the associated function, sets the event type, and logs the registration. This allows for flexible, runtime assignment of various event handlers through Lua scripts.
+local eventCallbacks = Game.getEventCallbacks()
+do
+	local function EventCallbackNewIndex(self, key, value)
+		local func = eventCallbacks[key]
+		if func and type(func) == "function" then
+			Spdlog.debug("[Registering EventCallback: " .. key)
+			func(self, value)
+			self:type(key)
+		else
+			reportError("Invalid EventCallback with name: ".. tostring(key))
+		end
+	end
+	rawgetmetatable("EventCallback").__newindex = EventCallbackNewIndex
+end
+
 -- CreatureEvent revscriptsys
 do
 	local function CreatureEventNewIndex(self, key, value)

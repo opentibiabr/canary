@@ -12,7 +12,7 @@ function theOutlawOven.onUse(player, item, fromPosition, target, toPosition, isH
 
 
 	local oven = Tile(useItem.position[1]):getTopTopItem()
-	if oven and isInArray({2535, 2536}, oven.itemid) then
+	if oven and table.contains({2535, 2536}, oven.itemid) then
 		oven:moveTo(useItem.position[2])
 	end
 

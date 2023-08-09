@@ -70,7 +70,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if isInArray({"recruitment", "violence", "outfit", "addon"}, message) then
+	if table.contains({"recruitment", "violence", "outfit", "addon"}, message) then
 		if player:getStorageValue(Storage.OutfitQuest.BarbarianAddon) < 1 then
 			npcHandler:say({
 				"Convincing Ajax that it is not always necessary to use brute force... this would be such an achievement. Definitely a hard task though. ...",

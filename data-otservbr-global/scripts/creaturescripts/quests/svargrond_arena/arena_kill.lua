@@ -16,7 +16,7 @@ function svargrondArenaKill.onKill(creature, target)
 		return
 	end
 
-	if not isInArray(ARENA[arena].creatures, targetMonster:getName():lower()) then
+	if not table.contains(ARENA[arena].creatures, targetMonster:getName():lower()) then
 		return
 	end
 

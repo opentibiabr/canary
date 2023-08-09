@@ -61,6 +61,7 @@ GameStore.ActionType = {
 	OPEN_CATEGORY = 2,
 	OPEN_USEFUL_THINGS = 3,
 	OPEN_OFFER = 4,
+	OPEN_SEARCH = 5,
 }
 
 GameStore.CoinType = {
@@ -213,6 +214,20 @@ GameStore.isItsPacket = function(byte)
 	return false
 end
 
+function GameStore.fuzzySearchOffer(searchString)
+	local results = {}
+	for i, category in ipairs(GameStore.Categories) do
+			if category.offers then
+					for j, offer in ipairs(category.offers) do
+							if string.match(offer.name:lower(), searchString:lower()) then
+									table.insert(results, offer)
+							end
+					end
+			end
+	end
+	return results
+end
+
 local function queueSendStoreAlertToUser(message, delay, playerId, storeErrorCode)
 	storeErrorCode = storeErrorCode and storeErrorCode or  GameStore.StoreErrors.STORE_ERROR_NETWORK
 	addPlayerEvent(sendStoreError, delay, playerId, storeErrorCode, message)
@@ -324,8 +339,12 @@ function parseRequestStoreOffers(playerId, msg)
 		local subAction = msg:getByte()
 		local category = nil
 
+		local premiumCategoryName = "Premium Time"
+		if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+			premiumCategoryName = "VIP Shop"
+		end
 		if subAction == 0 then
-			category = GameStore.getCategoryByName("Premium Time")
+			category = GameStore.getCategoryByName(premiumCategoryName)
 		else
 			category = GameStore.getCategoryByName("Boosts")
 		end
@@ -355,6 +374,19 @@ function parseRequestStoreOffers(playerId, msg)
 		if category then
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category, offerId)
 		end
+	elseif actionType == GameStore.ActionType.OPEN_SEARCH then
+		local searchString = msg:getString()
+		local results = GameStore.fuzzySearchOffer(searchString)
+		if not results or #results == 0 then
+			return addPlayerEvent(sendStoreError, 250, playerId, GameStore.StoreErrors.STORE_ERROR_INFORMATION, "No results found for \"" .. searchString .. "\".")
+		end
+
+		local searchResultsCategory = {
+				name = "Search",
+				offers = results,
+		}
+
+		addPlayerEvent(sendShowStoreOffers, 250, playerId, searchResultsCategory)
 	end
 end
 
@@ -407,7 +439,7 @@ function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS   then GameStore.processAllBlessingsPurchase(player, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREMIUM        then GameStore.processPremiumPurchase(player, offer.id)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_STACKABLE      then GameStore.processStackablePurchase(player, offer.itemtype, offer.count, offer.name, offer.moveable)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HOUSE          then GameStore.processHouseRelatedPurchase(player, offer.itemtype, offer.count, offer.moveable)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HOUSE          then GameStore.processHouseRelatedPurchase(player, offer)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT         then GameStore.processOutfitPurchase(player, offer.sexId, offer.addon)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON   then GameStore.processOutfitPurchase(player, offer.sexId, offer.addon)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT          then GameStore.processMountPurchase(player, offer.id)
@@ -424,7 +456,7 @@ function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_SEXCHANGE   then GameStore.processHirelingChangeSexPurchase(player, offer)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL       then GameStore.processHirelingSkillPurchase(player, offer)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT      then GameStore.processHirelingOutfitPurchase(player, offer)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_BED             then GameStore.processHouseRelatedPurchase(player, offer.itemtype, offer.count)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_BED             then GameStore.processHouseRelatedPurchase(player, offer)
 		else
 			-- This should never happen by our convention, but just in case the guarding condition is messed up...
 			error({code = 0, message = "This offer is unavailable [2]"})
@@ -504,32 +536,34 @@ function openStore(playerId)
 	else
 		GameStoreCategories, GameStoreCount = GameStore.Categories, #GameStore.Categories
 	end
+	local addCategory = function(category)
+		msg:addString(category.name)
+		if oldProtocol then
+			msg:addString(category.description)
+		end
 
-	if (GameStoreCategories) then
-		msg:addU16(GameStoreCount)
-		for k, category in ipairs(GameStoreCategories) do
-			msg:addString(category.name)
-			if oldProtocol then
-				msg:addString(category.description)
-			end
-
-			msg:addByte(category.state or GameStore.States.STATE_NONE)
-			local size = #category.icons > 255 and 255 or #category.icons
-			msg:addByte(size)
-			for m, icon in ipairs(category.icons) do
-				if size > 0 then
-					msg:addString(icon)
-					size = size - 1
-				end
-			end
-
-			if category.parent then
-				msg:addString(category.parent)
-			else
-				msg:addU16(0)
+		msg:addByte(category.state or GameStore.States.STATE_NONE)
+		local size = #category.icons > 255 and 255 or #category.icons
+		msg:addByte(size)
+		for _, icon in ipairs(category.icons) do
+			if size > 0 then
+				msg:addString(icon)
+				size = size - 1
 			end
 		end
 
+		if category.parent then
+			msg:addString(category.parent)
+		else
+			msg:addU16(0)
+		end
+	end
+
+	if (GameStoreCategories) then
+		msg:addU16(GameStoreCount)
+		for _, category in ipairs(GameStoreCategories) do
+			addCategory(category)
+		end
 		msg:sendToPlayer(player)
 		sendStoreBalanceUpdating(playerId, true)
 	end
@@ -877,6 +911,10 @@ function sendShowStoreOffers(playerId, category, redirectId)
 
 			msg:addU16(0) -- Products Capacity (unnused)
 		end
+	end
+
+	if category.name == "Search" then
+		msg:addByte(0) -- Too many search results
 	end
 
 	player:sendButtonIndication(haveSaleOffer, 1)
@@ -1485,6 +1523,9 @@ end
 
 function GameStore.processPremiumPurchase(player, offerId)
 	player:addPremiumDays(offerId - 3000)
+	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+		player:onAddVip(offerId - 3000)
+	end
 end
 
 function GameStore.processStackablePurchase(player, offerId, offerCount, offerName, moveable)
@@ -1549,7 +1590,7 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 	end
 end
 
-function GameStore.processHouseRelatedPurchase(player, offerId, offerCount, moveable)
+function GameStore.processHouseRelatedPurchase(player, offer)
 	local function isCaskItem(itemId)
 		return (itemId >= ITEM_HEALTH_CASK_START and itemId <= ITEM_HEALTH_CASK_END) or
 		(itemId >= ITEM_MANA_CASK_START and itemId <= ITEM_MANA_CASK_END) or
@@ -1557,17 +1598,23 @@ function GameStore.processHouseRelatedPurchase(player, offerId, offerCount, move
 	end
 
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if inbox and inbox:getEmptySlots() > 0 then
-		local decoKit = inbox:addItem(23398, 1)
-		if decoKit then
-			decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(offerId):getName() .. ">.")
-			decoKit:setCustomAttribute("unWrapId", offerId)
-			if isCaskItem(offerId) then
-				decoKit:setAttribute(ITEM_ATTRIBUTE_DATE, offerCount)
-			end
+	local itemIds = offer.itemtype
+	if type(itemIds) ~= "table" then
+		itemIds = {itemIds}
+	end
+	if inbox and inbox:getEmptySlots() >= #itemIds then
+		for _, itemId in ipairs(itemIds) do
+			local decoKit = inbox:addItem(23398, 1)
+			if decoKit then
+				decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(itemId):getName() .. ">.")
+				decoKit:setCustomAttribute("unWrapId", itemId)
+				if isCaskItem(itemId) then
+					decoKit:setAttribute(ITEM_ATTRIBUTE_DATE, offer.count)
+				end
 
-			if moveable ~= true then
-				decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+				if offer.moveable ~= true then
+					decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+				end
 			end
 		end
 	else

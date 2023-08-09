@@ -375,7 +375,7 @@ class Creature : virtual public Thing {
 		virtual void drainHealth(Creature* attacker, int32_t damage);
 		virtual void drainMana(Creature* attacker, int32_t manaLoss);
 
-		virtual bool challengeCreature(Creature*) {
+		virtual bool challengeCreature(Creature*, int targetChangeCooldown) {
 			return false;
 		}
 
@@ -615,6 +615,24 @@ class Creature : virtual public Thing {
 		 */
 		void setIncreasePercent(CombatType_t combat, int32_t value);
 
+		/**
+		 * @brief Retrieves the charm percent modifier for the creature.
+		 *
+		 * @return The charm percent modifier for the creature.
+		 */
+		int8_t getCharmChanceModifier() const {
+			return charmChanceModifier;
+		}
+
+		/**
+		 * @brief Sets the charm percent modifier for the creature.
+		 *
+		 * @param value The charm percent modifier value.
+		 */
+		void setCharmChanceModifier(int8_t value) {
+			charmChanceModifier = value;
+		}
+
 	protected:
 		virtual bool useCacheMap() const {
 			return false;
@@ -701,6 +719,7 @@ class Creature : virtual public Thing {
 		bool floorChange = false;
 		bool canUseDefense = true;
 		bool moveLocked = false;
+		int8_t charmChanceModifier = 0;
 
 		uint8_t wheelOfDestinyDrainBodyDebuff = 0;
 

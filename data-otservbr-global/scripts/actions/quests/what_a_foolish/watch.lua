@@ -10,7 +10,7 @@ function whatFoolishWatch.onUse(player, item, fromPosition, target, toPosition, 
 	end
 
 	local playerPos = player:getPosition()
-	if not isInArray(targetDestination, playerPos) then
+	if not table.contains(targetDestination, playerPos) then
 		return false
 	end
 

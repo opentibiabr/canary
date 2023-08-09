@@ -427,6 +427,15 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		writeToOutputBuffer(opcodeMessage);
 	}
 
+	account::Account playerAccount;
+	if (playerAccount.LoadAccountDB(accountId) != account::ERROR_NO) {
+		disconnectClient("Your account could not be loaded.");
+		return;
+	}
+
+	// Update premium days
+	Game::updatePremium(playerAccount);
+
 	// dispatcher thread
 	Player* foundPlayer = g_game().getPlayerUniqueLogin(name);
 	if (!foundPlayer) {
@@ -1258,7 +1267,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			parseModalWindowAnswer(msg);
 			break;
 		case 0xFF:
-			parseRewardContainerCollect(msg);
+			parseRewardChestCollect(msg);
 			break;
 			// case 0xFA: parseStoreOpen(msg); break;
 			// case 0xFB: parseStoreRequestOffers(msg); break;
@@ -1584,7 +1593,8 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 				newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
 				newOutfit.lookFamiliarsType = msg.get<uint16_t>();
 			}
-			g_game().playerChangeOutfit(player->getID(), newOutfit);
+			uint8_t isMountRandomized = msg.getByte();
+			g_game().playerChangeOutfit(player->getID(), newOutfit, isMountRandomized);
 		} else if (outfitType == 1) {
 			// This value probably has something to do with try outfit variable inside outfit window dialog
 			// if try outfit is set to 2 it expects uint32_t value after mounted and disable mounts from outfit window dialog
@@ -2987,28 +2997,19 @@ void ProtocolGame::parseModalWindowAnswer(NetworkMessage &msg) {
 	addGameTask(&Game::playerAnswerModalWindow, player->getID(), id, button, choice);
 }
 
-void ProtocolGame::parseRewardContainerCollect(NetworkMessage &msg) {
+void ProtocolGame::parseRewardChestCollect(NetworkMessage &msg) {
 	const auto position = msg.getPosition();
 	auto itemId = msg.get<uint16_t>();
 	auto stackPosition = msg.getByte();
 
-	addGameTask([position, itemId, stackPosition, this](Game* game, uint32_t playerId) {
-		try {
-			// Try to run the reward collect asynchronously
-			auto future = std::async(std::launch::async, &Game::playerRewardChestCollect, game, playerId, position, itemId, stackPosition, 0);
-			// Waits for the asynchronous operation to complete
-			future.wait();
-		} catch (std::system_error &e) {
-			game->playerRewardChestCollect(playerId, position, itemId, stackPosition, 200);
-			SPDLOG_WARN("Failed to create a new thread for asynchronous reward collect, running synchronously: {}", e.what());
-			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "An error occurred while collecting rewards. Please report it to the administrador.");
-		} catch (std::future_error &e) {
-			game->playerRewardChestCollect(playerId, position, itemId, stackPosition, 200);
-			SPDLOG_ERROR("Failed to run asynchronous reward collect: {}", e.what());
-			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "An error occurred while collecting rewards. Please report it to the administrador.");
-		}
-	},
-				player->getID());
+	// Block collect reward
+	auto useCollect = g_configManager().getBoolean(REWARD_CHEST_COLLECT_ENABLED);
+	if (!useCollect) {
+		return;
+	}
+
+	auto maxCollectItems = g_configManager().getNumber(REWARD_CHEST_MAX_COLLECT_ITEMS);
+	addGameTask(&Game::playerRewardChestCollect, player->getID(), position, itemId, stackPosition, maxCollectItems);
 }
 
 void ProtocolGame::parseBrowseField(NetworkMessage &msg) {
@@ -3828,9 +3829,10 @@ void ProtocolGame::sendStats() {
 void ProtocolGame::sendBasicData() {
 	NetworkMessage msg;
 	msg.addByte(0x9F);
-	if (player->isPremium()) {
+	if (player->isPremium() || player->isVip()) {
 		msg.addByte(1);
-		msg.add<uint32_t>(time(nullptr) + (player->premiumDays * 86400));
+		uint32_t days = player->premiumDays;
+		msg.add<uint32_t>(time(nullptr) + (days * 86400));
 	} else {
 		msg.addByte(0);
 		msg.add<uint32_t>(0);
@@ -3923,7 +3925,7 @@ void ProtocolGame::sendBlessStatus() {
 }
 
 void ProtocolGame::sendPremiumTrigger() {
-	if (!g_configManager().getBoolean(FREE_PREMIUM)) {
+	if (!g_configManager().getBoolean(FREE_PREMIUM) && !g_configManager().getBoolean(VIP_SYSTEM_ENABLED)) {
 		NetworkMessage msg;
 		msg.addByte(0x9E);
 		msg.addByte(16);
@@ -5579,12 +5581,15 @@ void ProtocolGame::sendPingBack() {
 }
 
 void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint16_t type) {
+	if (oldProtocol && type > 0xFF) {
+		return;
+	}
 	NetworkMessage msg;
 	if (oldProtocol) {
 		msg.addByte(0x85);
 		msg.addPosition(from);
 		msg.addPosition(to);
-		msg.addByte(std::max<uint8_t>(0xFF, type));
+		msg.addByte(static_cast<uint8_t>(type));
 	} else {
 		msg.addByte(0x83);
 		msg.addPosition(from);
@@ -5637,7 +5642,7 @@ void ProtocolGame::sendRestingStatus(uint8_t protection) {
 }
 
 void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
-	if (!canSee(pos)) {
+	if (!canSee(pos) || (oldProtocol && type > 0xFF)) {
 		return;
 	}
 
@@ -5645,7 +5650,7 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
 	if (oldProtocol) {
 		msg.addByte(0x83);
 		msg.addPosition(pos);
-		msg.addByte(std::max<uint8_t>(0xFF, type));
+		msg.addByte(static_cast<uint8_t>(type));
 	} else {
 		msg.addByte(0x83);
 		msg.addPosition(pos);
@@ -5657,11 +5662,14 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
 }
 
 void ProtocolGame::removeMagicEffect(const Position &pos, uint16_t type) {
+	if (oldProtocol && type > 0xFF) {
+		return;
+	}
 	NetworkMessage msg;
 	msg.addByte(0x84);
 	msg.addPosition(pos);
 	if (oldProtocol) {
-		msg.addByte(std::max<uint8_t>(255, type));
+		msg.addByte(static_cast<uint8_t>(type));
 	} else {
 		msg.add<uint16_t>(type);
 	}

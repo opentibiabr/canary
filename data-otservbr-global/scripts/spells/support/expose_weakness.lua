@@ -14,7 +14,7 @@ function onTargetCreature(creature, target)
 
 	local grade = 0
 	if (creature and creature:getPlayer()) then
-		grade = creature:upgradeSpellsWORD("Drain_Body_Spells")
+		grade = creature:upgradeSpellsWOD("Drain_Body_Spells")
 	end
 	condition:setParameter(CONDITION_PARAM_DRAIN_BODY, grade)
 

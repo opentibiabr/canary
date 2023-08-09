@@ -1657,7 +1657,7 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerGetStorageValueByName(lua_State* L) {
-	// player:getStorageValue(name)
+	// player:getStorageValueByName(name)
 	const Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));

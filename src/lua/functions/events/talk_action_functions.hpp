@@ -15,7 +15,7 @@
 class TalkActionFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-			registerClass(L, "TalkAction", "", TalkActionFunctions::luaCreateTalkAction);
+			registerSharedClass(L, "TalkAction", "", TalkActionFunctions::luaCreateTalkAction);
 			registerMethod(L, "TalkAction", "onSay", TalkActionFunctions::luaTalkActionOnSay);
 			registerMethod(L, "TalkAction", "groupType", TalkActionFunctions::luaTalkActionGroupType);
 			registerMethod(L, "TalkAction", "register", TalkActionFunctions::luaTalkActionRegister);

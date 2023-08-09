@@ -629,3 +629,10 @@ int LuaFunctionsLoader::luaUserdataCompare(lua_State* L) {
 	pushBoolean(L, getUserdata<void>(L, 1) == getUserdata<void>(L, 2));
 	return 1;
 }
+
+int LuaFunctionsLoader::luaGarbageCollection(lua_State* L) {
+	if (const auto ptr = getRawUserSharedData<Condition>(L, 1)) {
+		ptr->reset();
+	}
+	return 0;
+}

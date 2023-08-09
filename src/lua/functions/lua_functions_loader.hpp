@@ -173,7 +173,7 @@ class LuaFunctionsLoader {
 
 		template <class T>
 		static std::shared_ptr<T> getUserdataShared(lua_State* L, int32_t arg) {
-			std::shared_ptr<T>* userdata = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, arg));
+			auto userdata = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, arg));
 			if (!userdata) {
 				return nullptr;
 			}
@@ -188,9 +188,9 @@ class LuaFunctionsLoader {
 		template <class T>
 		static void pushUserdata(lua_State* L, std::shared_ptr<T> value) {
 			// This is basically malloc from C++ point of view.
-			std::shared_ptr<T>* ud = static_cast<std::shared_ptr<T>*>(lua_newuserdata(L, sizeof(std::shared_ptr<T>)));
+			auto userData = static_cast<std::shared_ptr<T>*>(lua_newuserdata(L, sizeof(std::shared_ptr<T>)));
 			// Copy constructor, bumps ref count.
-			new (ud) std::shared_ptr<T>(value);
+			new (userData) std::shared_ptr<T>(value);
 		}
 
 	protected:

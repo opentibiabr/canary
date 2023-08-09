@@ -21,12 +21,12 @@ void TalkActions::clear() {
 }
 
 bool TalkActions::registerLuaEvent(TalkAction_ptr talkAction) {
-	auto [iterator, inserted] = talkActions.emplace(talkAction->getWords(), talkAction);
+	auto [iterator, inserted] = talkActions.try_emplace(talkAction->getWords(), talkAction);
 	return inserted;
 }
 
 bool TalkActions::checkWord(Player* player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const {
-	auto spacePos = std::find_if(words.begin(), words.end(), ::isspace);
+	auto spacePos = std::ranges::find_if(words.begin(), words.end(), ::isspace);
 	std::string firstWord = words.substr(0, spacePos - words.begin());
 
 	// Check for exact equality from saying word and talkaction stored word
@@ -34,7 +34,7 @@ bool TalkActions::checkWord(Player* player, SpeakClasses type, const std::string
 		return false;
 	}
 
-	auto &groupId = player->getGroup()->id;
+	auto groupId = player->getGroup()->id;
 	if (groupId < talkActionPtr->getGroupType()) {
 		return false;
 	}

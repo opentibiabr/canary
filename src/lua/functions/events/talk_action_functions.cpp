@@ -21,7 +21,7 @@ int TalkActionFunctions::luaCreateTalkAction(lua_State* L) {
 	}
 
 	auto talkactionSharedPtr = std::make_shared<TalkAction>(getScriptEnv()->getScriptInterface());
-	talkactionSharedPtr->setWords(std::move(wordsVector));
+	talkactionSharedPtr->setWords(wordsVector);
 	pushUserdata<TalkAction>(L, talkactionSharedPtr);
 	setMetatable(L, -1, "TalkAction");
 	return 1;

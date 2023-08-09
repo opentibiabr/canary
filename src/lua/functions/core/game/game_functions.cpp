@@ -735,9 +735,9 @@ int GameFunctions::luaGameCreateHazardArea(lua_State* L) {
 int GameFunctions::luaGameGetTalkActions(lua_State* L) {
 	// Game.getTalkActions()
 	const auto &talkactionsMap = g_talkActions().getTalkActionsMap();
-	lua_createtable(L, talkactionsMap.size(), 0);
+	lua_createtable(L, static_cast<int>(talkactionsMap.size()), 0);
 
-	for (auto [talkName, talkactionSharedPtr] : talkactionsMap) {
+	for (const auto &[talkName, talkactionSharedPtr] : talkactionsMap) {
 		pushUserdata<TalkAction>(L, talkactionSharedPtr);
 		setMetatable(L, -1, "TalkAction");
 		lua_setfield(L, -2, talkName.c_str());

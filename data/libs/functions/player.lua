@@ -554,3 +554,13 @@ function Player:calculateLootFactor(monster)
 		msgSuffix = suffix
 	}
 end
+
+function Player:addEventStamina(target)
+	local monster = target:getMonster()
+	if monster and monster:getName() == staminaBonus.target then
+		local playerId = self:getId()
+		if not staminaBonus.eventsTrainer[playerId] then
+			staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
+		end
+	end
+end

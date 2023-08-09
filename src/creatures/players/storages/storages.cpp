@@ -19,17 +19,26 @@ bool Storages::loadFromXML() {
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 
 	if (!result) {
-		spdlog::error("[{}] parsed with errors");
+		spdlog::error("[{}] parsed with errors", folder);
 		spdlog::warn("Error description: {}", result.description());
-		spdlog::warn("Error offset: ", result.offset);
+		spdlog::warn("Error offset: {}", result.offset);
 		return false;
 	}
+
+	std::vector<std::pair<uint32_t, uint32_t>> ranges;
 
 	for (pugi::xml_node range : doc.child("storages").children("range")) {
 		uint32_t start = range.attribute("start").as_uint();
 		uint32_t end = range.attribute("end").as_uint();
 
-		// TODO: Check if this range conflicts with any previously defined range
+		for (const auto &existingRange : ranges) {
+			if ((start >= existingRange.first && start <= existingRange.second) || (end >= existingRange.first && end <= existingRange.second)) {
+				spdlog::warn("[{}] Storage range from {} to {} conflicts with a previously defined range", __func__, start, end);
+				continue;
+			}
+		}
+
+		ranges.emplace_back(start, end);
 
 		for (pugi::xml_node storage : range.children("storage")) {
 			std::string name = storage.attribute("name").as_string();

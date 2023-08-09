@@ -432,7 +432,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'">
     <IncludePath>..\src;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>$(ProjectName)-sln</TargetName>
+    <TargetName>$(ProjectName)-sln-dbg</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>..\src;$(IncludePath)</IncludePath>
@@ -442,7 +442,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>..\src;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>$(ProjectName)-sln</TargetName>
+    <TargetName>$(ProjectName)-sln-dbg</TargetName>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>

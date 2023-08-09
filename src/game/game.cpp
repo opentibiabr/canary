@@ -85,6 +85,66 @@ namespace InternalGame {
 		}
 	}
 
+	bool playerCanUseItemOnHouseTile(Player* player, Item* item) {
+		if (!player || !item) {
+			return false;
+		}
+
+		auto itemTile = item->getTile();
+		if (!itemTile) {
+			return false;
+		}
+
+		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(itemTile)) {
+			House* house = houseTile->getHouse();
+			if (!house || !house->isInvited(player)) {
+				return false;
+			}
+
+			auto isGuest = house->getHouseAccessLevel(player) == HOUSE_GUEST;
+			auto itemParentContainer = item->getParent() ? item->getParent()->getContainer() : nullptr;
+			auto isItemParentContainerBrowseField = itemParentContainer && itemParentContainer->getID() == ITEM_BROWSEFIELD;
+			if (isGuest && isItemParentContainerBrowseField) {
+				return false;
+			}
+
+			auto realItemParent = item->getRealParent();
+			auto isItemInGuestInventory = realItemParent && (realItemParent == player || realItemParent->getContainer());
+			if (isGuest && !isItemInGuestInventory && !item->isLadder()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	bool playerCanUseItemWithOnHouseTile(Player* player, Item* item, const Position &toPos, int toStackPos, int toItemId) {
+		if (!player || !item) {
+			return false;
+		}
+
+		auto itemTile = item->getTile();
+		if (!itemTile) {
+			return false;
+		}
+
+		if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
+			if (HouseTile* houseTile = dynamic_cast<HouseTile*>(itemTile)) {
+				House* house = houseTile->getHouse();
+				Thing* targetThing = g_game().internalGetThing(player, toPos, toStackPos, toItemId, STACKPOS_FIND_THING);
+				auto targetItem = targetThing ? targetThing->getItem() : nullptr;
+				uint16_t targetId = targetItem ? targetItem->getID() : 0;
+				auto invitedCheckUseWith = house && item->getRealParent() && item->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST);
+				if (targetId != 0 && targetItem && !targetItem->isDummy() && invitedCheckUseWith) {
+					player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
 } // Namespace InternalGame
 
 Game::Game() {
@@ -3047,14 +3107,9 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 		return;
 	}
 
-	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
-		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(item->getTile())) {
-			House* house = houseTile->getHouse();
-			if (house && item->getRealParent() && item->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST)) {
-				player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
-				return;
-			}
-		}
+	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS) && !InternalGame::playerCanUseItemWithOnHouseTile(player, item, toPos, toStackPos, toItemId)) {
+		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+		return;
 	}
 
 	Position walkToPos = fromPos;
@@ -3181,14 +3236,9 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		return;
 	}
 
-	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
-		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(item->getTile())) {
-			House* house = houseTile->getHouse();
-			if (house && item->getRealParent() && item->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST)) {
-				player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
-				return;
-			}
-		}
+	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS) && !InternalGame::playerCanUseItemOnHouseTile(player, item)) {
+		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+		return;
 	}
 
 	const ItemType &it = Item::items[item->getID()];

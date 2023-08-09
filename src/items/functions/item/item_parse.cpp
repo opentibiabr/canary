@@ -14,7 +14,7 @@
 
 void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	// Parse all item attributes
-	ItemParse::parseType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseType(tmpStrValue, attributeNode, valueAttribute, itemType);
 	ItemParse::parseDescription(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseRuneSpellName(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWeight(tmpStrValue, valueAttribute, itemType);
@@ -74,7 +74,27 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
 }
 
-void ItemParse::parseType(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+void ItemParse::parseDummyRate(pugi::xml_node attributeNode, ItemType &itemType) {
+	for (auto subAttributeNode : attributeNode.children()) {
+		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
+		if (!subKeyAttribute) {
+			continue;
+		}
+
+		pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
+		if (!subValueAttribute) {
+			continue;
+		}
+
+		auto stringValue = asLowerCaseString(subKeyAttribute.as_string());
+		if (stringValue == "rate") {
+			uint16_t rate = subValueAttribute.as_uint();
+			Item::items.addDummyId(itemType.id, rate);
+		}
+	}
+}
+
+void ItemParse::parseType(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "type") {
 		stringValue = asLowerCaseString(valueAttribute.as_string());
@@ -83,6 +103,12 @@ void ItemParse::parseType(const std::string &tmpStrValue, pugi::xml_attribute va
 			itemType.type = itemMap->second;
 			if (itemType.type == ITEM_TYPE_CONTAINER) {
 				itemType.group = ITEM_GROUP_CONTAINER;
+			}
+			if (itemType.type == ITEM_TYPE_LADDER) {
+				Item::items.addLadderId(itemType.id);
+			}
+			if (itemType.type == ITEM_TYPE_DUMMY) {
+				parseDummyRate(attributeNode, itemType);
 			}
 		} else {
 			SPDLOG_WARN("[Items::parseItemNode] - Unknown type: {}", valueAttribute.as_string());

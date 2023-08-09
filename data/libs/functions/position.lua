@@ -20,7 +20,7 @@ function Position:getNextPosition(direction, steps)
 end
 
 function Position:moveUpstairs()
-	local swap = function (lhs, rhs)
+	local swap = function(lhs, rhs)
 		lhs.x, rhs.x = rhs.x, lhs.x
 		lhs.y, rhs.y = rhs.y, lhs.y
 		lhs.z, rhs.z = rhs.z, lhs.z
@@ -36,7 +36,8 @@ function Position:moveUpstairs()
 				direction = DIRECTION_WEST
 			end
 
-			local position = self + Position.directionOffset[direction]
+			local position = Position(self)
+			position:getNextPosition(direction)
 			toTile = Tile(position)
 			if toTile and toTile:isWalkable(false, false, false, false, true) then
 				swap(self, position)
@@ -65,7 +66,7 @@ function Position:isInRange(from, to)
 		}
 	}
 
-	if  self.x >= zone.nW.x and self.x <= zone.sE.x
+	if self.x >= zone.nW.x and self.x <= zone.sE.x
 	and self.y >= zone.nW.y and self.y <= zone.sE.y
 	and self.z >= zone.nW.z and self.z <= zone.sE.z then
 		return true
@@ -260,8 +261,8 @@ teleportTo: is where you will teleport the player (it is only necessary to put t
 function Position.hasCreatureInArea(fromPosition, toPosition, removeCreatures, removePlayer, teleportTo)
 	for positionX = fromPosition.x, toPosition.x do
 		for positionY = fromPosition.y, toPosition.y do
-        	for positionZ = fromPosition.z, toPosition.z do
-		        local room = {x = positionX, y = positionY, z= positionZ}
+			for positionZ = fromPosition.z, toPosition.z do
+				local room = {x = positionX, y = positionY, z= positionZ}
 				local tile = Tile(room)
 				if tile then
 					local creatures = tile:getCreatures()

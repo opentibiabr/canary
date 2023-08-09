@@ -612,7 +612,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 	}
 
 	g_events().eventPlayerOnGainSkillTries(this, skill, count);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, skill, count);
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, skill, count);
 	if (count == 0) {
 		return;
 	}
@@ -818,7 +818,7 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 		if (!isLogin) {
 			auto currentFrameTime = g_dispatcher().getDispatcherCycle();
 			g_events().eventOnStorageUpdate(this, key, value, getStorageValue(key), currentFrameTime);
-			g_callbacks().executeCallback(EventCallback_t::PlayerOnStorageUpdate, &EventCallback::playerOnStorageUpdate, this, key, value, getStorageValue(key), currentFrameTime);
+			g_callbacks().executeCallback(EventCallback_t::playerOnStorageUpdate, &EventCallback::playerOnStorageUpdate, this, key, value, getStorageValue(key), currentFrameTime);
 		}
 	} else {
 		storageMap.erase(key);
@@ -1629,12 +1629,12 @@ void Player::onChangeZone(ZoneType_t zone) {
 	sendIcons();
 	g_events().eventPlayerOnChangeZone(this, zone);
 
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnChangeZone, &EventCallback::playerOnChangeZone, this, zone);
+	g_callbacks().executeCallback(EventCallback_t::playerOnChangeZone, &EventCallback::playerOnChangeZone, this, zone);
 }
 
 void Player::onChangeHazard(bool isHazard) {
 	g_events().eventPlayerOnChangeHazard(this, isHazard);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnChangeHazard, &EventCallback::playerOnChangeHazard, this, isHazard);
+	g_callbacks().executeCallback(EventCallback_t::playerOnChangeHazard, &EventCallback::playerOnChangeHazard, this, isHazard);
 	sendIcons();
 }
 
@@ -2110,7 +2110,7 @@ void Player::addManaSpent(uint64_t amount) {
 	}
 
 	g_events().eventPlayerOnGainSkillTries(this, SKILL_MAGLEVEL, amount);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, SKILL_MAGLEVEL, amount);
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, SKILL_MAGLEVEL, amount);
 	if (amount == 0) {
 		return;
 	}
@@ -2166,7 +2166,7 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 		return;
 	}
 
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnGainExperience, &EventCallback::playerOnGainExperience, this, target, exp, rawExp);
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainExperience, &EventCallback::playerOnGainExperience, this, target, exp, rawExp);
 
 	g_events().eventPlayerOnGainExperience(this, target, exp, rawExp);
 	if (exp == 0) {
@@ -2272,7 +2272,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 	}
 
 	g_events().eventPlayerOnLoseExperience(this, exp);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnLoseExperience, &EventCallback::playerOnLoseExperience, this, exp);
+	g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, this, exp);
 	if (exp == 0) {
 		return;
 	}
@@ -2568,7 +2568,7 @@ void Player::death(Creature* lastHitCreature) {
 		// Level loss
 		uint64_t expLoss = static_cast<uint64_t>(experience * deathLossPercent);
 		g_events().eventPlayerOnLoseExperience(this, expLoss);
-		g_callbacks().executeCallback(EventCallback_t::PlayerOnLoseExperience, &EventCallback::playerOnLoseExperience, this, expLoss);
+		g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, this, expLoss);
 
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are dead.");
 		std::ostringstream lostExp;
@@ -5694,7 +5694,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
 
 		g_events().eventPlayerOnGainSkillTries(this, SKILL_MAGLEVEL, tries);
-		g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, SKILL_MAGLEVEL, tries);
+		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, SKILL_MAGLEVEL, tries);
 
 		uint32_t currMagLevel = magLevel;
 		while ((manaSpent + tries) >= nextReqMana) {
@@ -5749,7 +5749,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldPercentToNextLevel = static_cast<long double>(skills[skill].tries * 100) / nextReqTries;
 
 		g_events().eventPlayerOnGainSkillTries(this, skill, tries);
-		g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, skill, tries);
+		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, skill, tries);
 		uint32_t currSkillLevel = skills[skill].level;
 
 		while ((skills[skill].tries + tries) >= nextReqTries) {
@@ -6747,7 +6747,7 @@ bool Player::saySpell(
 		tmpPlayer->onCreatureSay(this, type, text);
 		if (this != tmpPlayer) {
 			g_events().eventCreatureOnHear(tmpPlayer, this, text, type);
-			g_callbacks().executeCallback(EventCallback_t::CreatureOnHear, &EventCallback::creatureOnHear, tmpPlayer, this, text, type);
+			g_callbacks().executeCallback(EventCallback_t::creatureOnHear, &EventCallback::creatureOnHear, tmpPlayer, this, text, type);
 		}
 	}
 	return true;

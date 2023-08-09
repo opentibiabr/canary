@@ -33,7 +33,7 @@ class Monster;
  */
 class EventCallback : public Script {
 	private:
-		EventCallback_t m_callbackType = EventCallback_t::None; ///< The type of the event callback.
+		EventCallback_t m_callbackType = EventCallback_t::none; ///< The type of the event callback.
 		std::string m_scriptTypeName; ///< The name associated with the script type.
 
 	public:

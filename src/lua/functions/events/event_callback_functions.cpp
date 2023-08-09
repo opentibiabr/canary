@@ -31,12 +31,6 @@ void EventCallbackFunctions::init(lua_State* luaState) {
 	registerClass(luaState, "EventCallback", "", EventCallbackFunctions::luaEventCallbackCreate);
 	registerMethod(luaState, "EventCallback", "type", EventCallbackFunctions::luaEventCallbackType);
 	registerMethod(luaState, "EventCallback", "register", EventCallbackFunctions::luaEventCallbackRegister);
-
-	for (auto [value, name] : magic_enum::enum_entries<EventCallback_t>()) {
-		if (value != EventCallback_t::None) {
-			registerMethod(luaState, "EventCallback", toCamelCase(magic_enum::enum_name(value).data()), EventCallbackFunctions::luaEventCallbackLoad);
-		}
-	}
 }
 
 int EventCallbackFunctions::luaEventCallbackCreate(lua_State* luaState) {
@@ -90,7 +84,6 @@ int EventCallbackFunctions::luaEventCallbackRegister(lua_State* luaState) {
 	}
 
 	if (!callback->isLoadedCallback()) {
-		reportErrorFunc("Callback not is loaded, failed to register script");
 		return 0;
 	}
 

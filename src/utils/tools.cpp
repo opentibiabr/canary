@@ -273,13 +273,75 @@ std::string asUpperCaseString(std::string source) {
 	return source;
 }
 
-std::string toCamelCase(const std::string &string) {
-	if (string.empty()) {
-		return string;
+std::string toCamelCase(const std::string &str) {
+	std::string result;
+	bool capitalizeNext = false;
+
+	for (char ch : str) {
+		if (ch == '_' || std::isspace(ch) || ch == '-') {
+			capitalizeNext = true;
+		} else {
+			if (capitalizeNext) {
+				result += std::toupper(ch);
+				capitalizeNext = false;
+			} else {
+				result += std::tolower(ch);
+			}
+		}
 	}
 
-	std::string result = string;
-	result[0] = std::tolower(result[0]);
+	return result;
+}
+
+std::string toPascalCase(const std::string &str) {
+	std::string result;
+	bool capitalizeNext = true;
+
+	for (char ch : str) {
+		if (ch == '_' || std::isspace(ch) || ch == '-') {
+			capitalizeNext = true;
+		} else {
+			if (capitalizeNext) {
+				result += std::toupper(ch);
+				capitalizeNext = false;
+			} else {
+				result += std::tolower(ch);
+			}
+		}
+	}
+
+	return result;
+}
+
+std::string toSnakeCase(const std::string &str) {
+	std::string result;
+	for (char ch : str) {
+		if (std::isupper(ch)) {
+			result += '_';
+			result += std::tolower(ch);
+		} else if (std::isspace(ch) || ch == '-') {
+			result += '_';
+		} else {
+			result += ch;
+		}
+	}
+
+	return result;
+}
+
+std::string toKebabCase(const std::string &str) {
+	std::string result;
+	for (char ch : str) {
+		if (std::isupper(ch)) {
+			result += '-';
+			result += std::tolower(ch);
+		} else if (std::isspace(ch) || ch == '_') {
+			result += '-';
+		} else {
+			result += ch;
+		}
+	}
+
 	return result;
 }
 

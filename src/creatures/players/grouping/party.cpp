@@ -25,7 +25,7 @@ void Party::disband() {
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::PartyOnDisband, &EventCallback::partyOnDisband, this)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnDisband, &EventCallback::partyOnDisband, this)) {
 		return;
 	}
 
@@ -84,7 +84,7 @@ bool Party::leaveParty(Player* player) {
 		return false;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::PartyOnLeave, &EventCallback::partyOnLeave, this, player)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnLeave, &EventCallback::partyOnLeave, this, player)) {
 		return false;
 	}
 
@@ -186,7 +186,7 @@ bool Party::joinParty(Player &player) {
 		return false;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::PartyOnJoin, &EventCallback::partyOnJoin, this, &player)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnJoin, &EventCallback::partyOnJoin, this, &player)) {
 		return false;
 	}
 
@@ -389,7 +389,7 @@ bool Party::setSharedExperience(Player* player, bool newSharedExpActive) {
 void Party::shareExperience(uint64_t experience, Creature* target /* = nullptr*/) {
 	uint64_t shareExperience = experience;
 	g_events().eventPartyOnShareExperience(this, shareExperience);
-	g_callbacks().executeCallback(EventCallback_t::PartyOnShareExperience, &EventCallback::partyOnShareExperience, this, shareExperience);
+	g_callbacks().executeCallback(EventCallback_t::partyOnShareExperience, &EventCallback::partyOnShareExperience, this, shareExperience);
 
 	for (Player* member : memberList) {
 		member->onGainSharedExperience(shareExperience, target);

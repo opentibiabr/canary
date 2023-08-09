@@ -31,6 +31,12 @@ class EventCallbackFunctions : public LuaScriptInterface {
 		 */
 		static void init(lua_State* luaState);
 
+		/**
+		 * @brief Send the load of callbacks to lua
+		 * @param luaState The Lua state to initialize.
+		 */
+		static int luaEventCallbackLoad(lua_State* luaState);
+
 	private:
 		/**
 		 * @brief Creates a new EventCallback object in Lua.
@@ -63,8 +69,6 @@ class EventCallbackFunctions : public LuaScriptInterface {
 		 * @return Number of return values on the Lua stack.
 		 */
 		static int luaEventCallbackRegister(lua_State* luaState);
-
-		static int luaEventCallbackLoad(lua_State* luaState);
 
 		/**
 		 * @note here end the lua binder functions }

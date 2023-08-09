@@ -18,6 +18,7 @@
 #include "io/io_bosstiary.hpp"
 #include "io/iologindata.h"
 #include "lua/functions/core/game/game_functions.hpp"
+#include "lua/functions/events/event_callback_functions.hpp"
 #include "game/scheduling/tasks.h"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
@@ -404,7 +405,7 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 	bool force = getBoolean(L, 4, false);
 	if (g_game().placeCreature(monster, position, extended, force)) {
 		g_events().eventMonsterOnSpawn(monster, position);
-		g_callbacks().executeCallback(EventCallback_t::MonsterOnSpawn, &EventCallback::monsterOnSpawn, monster, position);
+		g_callbacks().executeCallback(EventCallback_t::monsterOnSpawn, &EventCallback::monsterOnSpawn, monster, position);
 		auto mtype = monster->getMonsterType();
 		if (mtype && mtype->info.bossRaceId > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {
 			SpectatorHashSet spectators;
@@ -697,3 +698,21 @@ int GameFunctions::luaGameCreateHazardArea(lua_State* L) {
 	pushBoolean(L, g_game().createHazardArea(positionFrom, positionTo));
 	return 1;
 }
+
+int GameFunctions::luaGameGetEventCallbacks(lua_State* L) {
+	lua_createtable(L, 0, 0);
+	lua_pushcfunction(L, EventCallbackFunctions::luaEventCallbackLoad);
+	for (auto [value, name] : magic_enum::enum_entries<EventCallback_t>()) {
+		if (value != EventCallback_t::none) {
+			std::string methodName = magic_enum::enum_name(value).data();
+			lua_pushstring(L, methodName.c_str());
+			// Copy the function reference to the top of the stack
+			lua_pushvalue(L, -2);
+			lua_settable(L, -4);
+		}
+	}
+	// Pop the function
+	lua_pop(L, 1);
+	return 1;
+}
+

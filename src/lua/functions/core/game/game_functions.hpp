@@ -76,6 +76,7 @@ class GameFunctions final : LuaScriptInterface {
 			registerMethod(L, "Game", "getBoostedBoss", GameFunctions::luaGameGetBoostedBoss);
 
 			registerMethod(L, "Game", "createHazardArea", GameFunctions::luaGameCreateHazardArea);
+			registerMethod(L, "Game", "getEventCallbacks", GameFunctions::luaGameGetEventCallbacks);
 		}
 
 	private:
@@ -139,6 +140,7 @@ class GameFunctions final : LuaScriptInterface {
 		static int luaGameGetBoostedBoss(lua_State* L);
 
 		static int luaGameCreateHazardArea(lua_State* L);
+		static int luaGameGetEventCallbacks(lua_State* L);
 };
 
 #endif // SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_

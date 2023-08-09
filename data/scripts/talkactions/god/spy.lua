@@ -24,20 +24,12 @@ local function getItemsInContainer(cont, sep)
 			end
 		end
 	end
-return text
+	return text
 end
 
 local spy = TalkAction("/spy")
 
 function spy.onSay(cid, words, param)
-	if not cid:getGroup():getAccess() then
-		return true
-	end
-
-	if cid:getAccountType() < ACCOUNT_TYPE_GAMEMASTER then
-		return false
-	end
-
 	logCommand(Player(cid), words, param)
 
 	if(param == "") then
@@ -73,7 +65,7 @@ function spy.onSay(cid, words, param)
 	else
 		cid:sendCancelMessage("This player is offline or doesn't exist.")
 	end
-    return false
+	return false
 end
 
 spy:separator(" ")

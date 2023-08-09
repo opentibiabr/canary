@@ -10,14 +10,6 @@ purple: 375 or 845 or 667 or 155 or 917
 local set_light = TalkAction("/setlight")
 
 function set_light.onSay(player, words, param)
-	if not player:getGroup():getAccess() then
-		return true
-	end
-
-	if player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return false
-	end
-
 	logCommand(player, words, param)
 
 	local split = param:split(",")

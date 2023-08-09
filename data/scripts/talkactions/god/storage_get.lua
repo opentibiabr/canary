@@ -1,15 +1,6 @@
 local storageGet = TalkAction("/get")
 
-function storageGet.onSay(cid, words, param)
-	local player = Player(cid)
-	if not player:getGroup():getAccess() then
-		return true
-	end
-
-	if player:getAccountType() < ACCOUNT_TYPE_GOD then
-		return false
-	end
-
+function storageGet.onSay(player, words, param)
 	local split = param:split(",")
 	if split[2] == nil then
 		player:sendCancelMessage("Insufficient parameters.")
@@ -27,7 +18,7 @@ function storageGet.onSay(cid, words, param)
 
 	local ch = split[2]
 	sto=getPlayerStorageValue(getPlayerByName(split[1]), tonumber(ch))
-	doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "The storage with id: "..tonumber(ch).." from player "..split[1].." is: "..sto..".")
+	doPlayerSendTextMessage(player, MESSAGE_EVENT_ADVANCE, "The storage with id: "..tonumber(ch).." from player "..split[1].." is: "..sto..".")
 	return false
 end
 

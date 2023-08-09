@@ -1,5 +1,3 @@
--- /addons playername
-
 local addons = TalkAction("/addons")
 local looktypes = {
 
@@ -22,10 +20,6 @@ local looktypes = {
 }
 
 function addons.onSay(player, words, param)
-	if not player:getGroup():getAccess() then
-		return true
-	end
-
 	local target
 	if param == '' then
 		target = player:getTarget()
@@ -39,11 +33,6 @@ function addons.onSay(player, words, param)
 
 	if not target then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Player ' .. param .. ' is currently not online.')
-		return false
-	end
-
-	if player:getAccountType() < ACCOUNT_TYPE_GOD  then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Cannot perform action.')
 		return false
 	end
 

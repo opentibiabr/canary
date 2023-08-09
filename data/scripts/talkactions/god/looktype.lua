@@ -31,10 +31,6 @@ local invalidTypes = {
 local looktype = TalkAction("/looktype")
 
 function looktype.onSay(player, words, param)
-	if not player:getGroup():getAccess() then
-		return true
-	end
-
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false

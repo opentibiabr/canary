@@ -1,18 +1,9 @@
-local xml_monster_dir = DATA_DIRECTORY.. '/world/otservbr-spawn.xml' -- Diretório do arquivo onde contém os monstros.
+local xml_monster_dir = DATA_DIRECTORY.. '/world/otservbr-spawn.xml'
 local new_file_name = 'monster_count.txt'
 
 local count_monsters = TalkAction("/countmonsters")
 
 function count_monsters.onSay(player, words, param)
-
-    if not player:getGroup():getAccess() then
-        return true
-    end
-
-    if player:getAccountType() < ACCOUNT_TYPE_GOD then
-        return false
-    end
-
 	logCommand(player, words, param)
 
 	local open_file = io.open(xml_monster_dir, "r")
@@ -32,7 +23,7 @@ function count_monsters.onSay(player, words, param)
 		end
 	end
 
-	writing_file:write('--- Total de Monstros no Servidor ---\n')
+	writing_file:write('--- Total of monsters on server ---\n')
 
 	for monster, count in pairsByKeys(monsters) do
 		writing_file:write(monster..' - '..count..'\n')

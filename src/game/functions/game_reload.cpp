@@ -49,8 +49,6 @@ bool GameReload::init(Reload_t reloadTypes) const {
 			return reloadRaids();
 		case Reload_t::RELOAD_TYPE_SCRIPTS:
 			return reloadScripts();
-		case Reload_t::RELOAD_TYPE_TALKACTION:
-			return reloadTalkaction();
 		case Reload_t::RELOAD_TYPE_GROUPS:
 			return reloadGroups();
 		default:
@@ -99,7 +97,8 @@ bool GameReload::reloadCore() const {
 	if (auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 		g_luaEnvironment.loadFile(coreFolder + "/core.lua", "core.lua") == 0) {
 		// Reload scripts lib
-		if (!g_scripts().loadScripts("scripts/lib", true, false)) {
+		auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+		if (!g_scripts().loadScripts(datapackFolder + "scripts/lib", true, false)) {
 			return false;
 		}
 
@@ -122,11 +121,12 @@ bool GameReload::reloadModules() const {
 
 bool GameReload::reloadMonsters() const {
 	// Resets monster spells to prevent the spell from being incorrectly cleared from memory
-	if (!g_scripts().loadScripts("scripts/lib", true, false)) {
+	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+	if (!g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false)) {
 		return false;
 	}
 
-	if (g_scripts().loadScripts("monster", false, true) && g_scripts().loadScripts("scripts/lib", true, true)) {
+	if (g_scripts().loadScripts(datapackFolder + "/monster", false, true) && g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, true)) {
 		return true;
 	}
 	return false;
@@ -146,20 +146,14 @@ bool GameReload::reloadRaids() const {
 
 bool GameReload::reloadScripts() const {
 	// Resets monster spells to prevent the spell from being incorrectly cleared from memory
-	if (!g_scripts().loadScripts("scripts/lib", true, false)) {
+	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+	if (!g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false)) {
 		return false;
 	}
 	g_scripts().clearAllScripts();
 
-	if (g_scripts().loadScripts("scripts", false, true)) {
-		return true;
-	}
-	return false;
-}
-
-bool GameReload::reloadTalkaction() const {
-	if (auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-		g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua", "talkactions.lua") == 0) {
+	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+	if (g_scripts().loadScripts(datapackFolder + "/scripts", false, true) && g_scripts().loadScripts(coreFolder + "/scripts", false, true)) {
 		return true;
 	}
 	return false;

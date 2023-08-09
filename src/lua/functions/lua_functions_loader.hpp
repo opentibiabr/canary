@@ -171,8 +171,34 @@ class LuaFunctionsLoader {
 			scriptEnv[scriptEnvIndex--].resetEnv();
 		}
 
+		template <class T>
+		static std::shared_ptr<T> getUserdataShared(lua_State* L, int32_t arg) {
+			auto userdata = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, arg));
+			if (!userdata) {
+				return nullptr;
+			}
+			return *userdata;
+		}
+
+		template <class T>
+		static std::shared_ptr<T>* getRawUserDataShared(lua_State* L, int32_t arg) {
+			return static_cast<std::shared_ptr<T>*>(lua_touserdata(L, arg));
+		}
+
+		template <class T>
+		static void pushUserdata(lua_State* L, std::shared_ptr<T> value) {
+			// This is basically malloc from C++ point of view.
+			auto userData = static_cast<std::shared_ptr<T>*>(lua_newuserdata(L, sizeof(std::shared_ptr<T>)));
+			// Copy constructor, bumps ref count.
+			new (userData) std::shared_ptr<T>(value);
+		}
+
 	protected:
 		static void registerClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
+		static void registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr) {
+			registerClass(L, className, baseClass, newFunction);
+			registerMetaMethod(L, className, "__gc", luaGarbageCollection);
+		}
 		static void registerMethod(lua_State* L, const std::string &globalName, const std::string &methodName, lua_CFunction func);
 		static void registerMetaMethod(lua_State* L, const std::string &className, const std::string &methodName, lua_CFunction func);
 		static void registerTable(lua_State* L, const std::string &tableName);
@@ -187,6 +213,9 @@ class LuaFunctionsLoader {
 
 		static ScriptEnvironment scriptEnv[16];
 		static int32_t scriptEnvIndex;
+
+	private:
+		static int luaGarbageCollection(lua_State* L);
 };
 
 #endif

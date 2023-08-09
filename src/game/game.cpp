@@ -5403,7 +5403,7 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string &
 	}
 
 	std::string words = text;
-	TalkActionResult_t result = g_talkActions().playerSaySpell(player, type, words);
+	TalkActionResult_t result = g_talkActions().checkPlayerCanSayTalkAction(player, type, words);
 	if (result == TALKACTION_BREAK) {
 		return true;
 	}

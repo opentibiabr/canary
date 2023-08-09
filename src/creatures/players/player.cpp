@@ -847,10 +847,10 @@ int32_t Player::getStorageValueByName(const std::string &storageName) const {
 	return getStorageValue(key);
 }
 
-// New function that adds a storage value by name
 void Player::addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin /* = false*/) {
 	auto it = g_storages().getStorageMap().find(storageName);
 	if (it == g_storages().getStorageMap().end()) {
+		spdlog::error("[{}] Storage name '{}' not found in storage map, register your storage in 'storages.xml' first for use", __func__, storageName);
 		return;
 	}
 	uint32_t key = it->second;

@@ -20,6 +20,7 @@
 #include "lua/functions/core/game/game_functions.hpp"
 #include "lua/functions/events/event_callback_functions.hpp"
 #include "game/scheduling/tasks.h"
+#include "lua/creature/talkaction.h"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.h"
@@ -729,6 +730,19 @@ int GameFunctions::luaGameCreateHazardArea(lua_State* L) {
 	const Position &positionTo = getPosition(L, 2);
 
 	pushBoolean(L, g_game().createHazardArea(positionFrom, positionTo));
+	return 1;
+}
+
+int GameFunctions::luaGameGetTalkActions(lua_State* L) {
+	// Game.getTalkActions()
+	const auto &talkactionsMap = g_talkActions().getTalkActionsMap();
+	lua_createtable(L, static_cast<int>(talkactionsMap.size()), 0);
+
+	for (const auto &[talkName, talkactionSharedPtr] : talkactionsMap) {
+		pushUserdata<TalkAction>(L, talkactionSharedPtr);
+		setMetatable(L, -1, "TalkAction");
+		lua_setfield(L, -2, talkName.c_str());
+	}
 	return 1;
 }
 

@@ -30,6 +30,11 @@ void toLowerCaseString(std::string &source);
 std::string asLowerCaseString(std::string source);
 std::string asUpperCaseString(std::string source);
 
+std::string toCamelCase(const std::string &str);
+std::string toPascalCase(const std::string &str);
+std::string toSnakeCase(const std::string &str);
+std::string toKebabCase(const std::string &str);
+
 using StringVector = std::vector<std::string>;
 using IntegerVector = std::vector<int32_t>;
 

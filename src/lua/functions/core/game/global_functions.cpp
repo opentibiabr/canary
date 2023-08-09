@@ -845,6 +845,13 @@ int GlobalFunctions::luaSystemTime(lua_State* L) {
 	return 1;
 }
 
+int GlobalFunctions::luaReportError(lua_State* L) {
+	// reportError(errorDescription)
+	auto errorDescription = getString(L, 1);
+	reportError(__func__, errorDescription, true);
+	return 1;
+}
+
 bool GlobalFunctions::getArea(lua_State* L, std::list<uint32_t> &list, uint32_t &rows) {
 	lua_pushnil(L);
 	for (rows = 0; lua_next(L, -2) != 0; ++rows) {

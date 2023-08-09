@@ -12,6 +12,7 @@
 #include "declarations.hpp"
 #include "creatures/combat/spells.h"
 #include "creatures/players/grouping/familiars.h"
+#include "creatures/players/storages/storages.hpp"
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
 #include "game/game.h"
@@ -182,6 +183,7 @@ void loadModules() {
 	modulesLoadHelper(Outfits::getInstance().loadFromXml(), "XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(), "XML/familiars.xml");
 	modulesLoadHelper(g_imbuements().loadFromXml(), "XML/imbuements.xml");
+	modulesLoadHelper(g_storages().loadFromXML(), "XML/storages.xml");
 	modulesLoadHelper(g_modules().loadFromXml(), "modules/modules.xml");
 	modulesLoadHelper(g_events().loadFromXml(), "events/events.xml");
 	modulesLoadHelper((g_npcs().load(true, false)), "npclib");

@@ -2007,7 +2007,7 @@ void Monster::dropLoot(Container* corpse, Creature*) {
 			}
 		}
 		g_events().eventMonsterOnDropLoot(this, corpse);
-		g_callbacks().executeCallback(EventCallback_t::MonsterOnDropLoot, &EventCallback::monsterOnDropLoot, this, corpse);
+		g_callbacks().executeCallback(EventCallback_t::monsterOnDropLoot, &EventCallback::monsterOnDropLoot, this, corpse);
 	}
 }
 

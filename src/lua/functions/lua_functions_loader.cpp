@@ -631,7 +631,7 @@ int LuaFunctionsLoader::luaUserdataCompare(lua_State* L) {
 }
 
 int LuaFunctionsLoader::luaGarbageCollection(lua_State* L) {
-	if (const auto ptr = getRawUserSharedData<Condition>(L, 1)) {
+	if (const auto ptr = getRawUserDataShared<Condition>(L, 1)) {
 		ptr->reset();
 	}
 	return 0;

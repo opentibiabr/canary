@@ -181,7 +181,7 @@ class LuaFunctionsLoader {
 		}
 
 		template <class T>
-		static std::shared_ptr<T>* getRawUserSharedData(lua_State* L, int32_t arg) {
+		static std::shared_ptr<T>* getRawUserDataShared(lua_State* L, int32_t arg) {
 			return static_cast<std::shared_ptr<T>*>(lua_touserdata(L, arg));
 		}
 

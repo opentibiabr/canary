@@ -26,12 +26,11 @@ bool TalkActions::registerLuaEvent(TalkAction_ptr talkAction) {
 }
 
 bool TalkActions::checkWord(Player* player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const {
-	std::string trimmedWords = words;
-	trimString(trimmedWords);
-	std::string trimmedWord = word.data();
-	trimString(trimmedWord);
+	auto spacePos = std::find_if(words.begin(), words.end(), ::isspace);
+	std::string firstWord = words.substr(0, spacePos - words.begin());
 
-	if (trimmedWords.find(trimmedWord) == std::string::npos) {
+	// Check for exact equality
+	if (firstWord != word) {
 		return false;
 	}
 
@@ -41,10 +40,10 @@ bool TalkActions::checkWord(Player* player, SpeakClasses type, const std::string
 	}
 
 	std::string param;
-	size_t wordPos = trimmedWords.find(trimmedWord);
-	size_t talkactionLength = trimmedWord.length();
-	if (wordPos != std::string::npos && wordPos + talkactionLength < trimmedWords.length()) {
-		param = trimmedWords.substr(wordPos + talkactionLength);
+	size_t wordPos = words.find(word);
+	size_t talkactionLength = word.length();
+	if (wordPos != std::string::npos && wordPos + talkactionLength < words.length()) {
+		param = words.substr(wordPos + talkactionLength);
 		trim_left(param, ' ');
 	}
 

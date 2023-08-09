@@ -29,7 +29,7 @@ bool TalkActions::checkWord(Player* player, SpeakClasses type, const std::string
 	auto spacePos = std::find_if(words.begin(), words.end(), ::isspace);
 	std::string firstWord = words.substr(0, spacePos - words.begin());
 
-	// Check for exact equality
+	// Check for exact equality from saying word and talkaction stored word
 	if (firstWord != word) {
 		return false;
 	}
@@ -67,12 +67,12 @@ TalkActionResult_t TalkActions::checkPlayerCanSayTalkAction(Player* player, Spea
 			auto wordsList = split(talkactionWords);
 			for (const auto &word : wordsList) {
 				if (checkWord(player, type, words, word, talkActionPtr)) {
-					return TALKACTION_CONTINUE;
+					return TALKACTION_BREAK;
 				}
 			}
 		} else {
 			if (checkWord(player, type, words, talkactionWords, talkActionPtr)) {
-				return TALKACTION_CONTINUE;
+				return TALKACTION_BREAK;
 			}
 		}
 	}

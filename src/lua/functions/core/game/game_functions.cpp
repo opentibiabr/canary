@@ -737,8 +737,8 @@ int GameFunctions::luaGameGetTalkActions(lua_State* L) {
 	const auto &talkactionsMap = g_talkActions().getTalkActionsMap();
 	lua_createtable(L, talkactionsMap.size(), 0);
 
-	for (auto [talkName, talkaction] : talkactionsMap) {
-		pushUserdata<TalkAction>(L, talkaction);
+	for (auto [talkName, talkactionSharedPtr] : talkactionsMap) {
+		pushUserdata<TalkAction>(L, talkactionSharedPtr);
 		setMetatable(L, -1, "TalkAction");
 		lua_setfield(L, -2, talkName.c_str());
 	}

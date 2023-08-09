@@ -985,6 +985,29 @@ void EventCallback::playerOnInventoryUpdate(Player* player, Item* item, Slots_t 
 	getScriptInterface()->callVoidFunction(4);
 }
 
+bool EventCallback::playerOnRotateItem(Player* player, Item* item, const Position &position) const {
+	if (!getScriptInterface()->reserveScriptEnv()) {
+		SPDLOG_ERROR("[{}] Call stack overflow", __FUNCTION__);
+		return false;
+	}
+
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
+
+	lua_State* L = getScriptInterface()->getLuaState();
+	getScriptInterface()->pushFunction(getScriptId());
+
+	LuaScriptInterface::pushUserdata<Player>(L, player);
+	LuaScriptInterface::setMetatable(L, -1, "Player");
+
+	LuaScriptInterface::pushUserdata<Item>(L, item);
+	LuaScriptInterface::setItemMetatable(L, -1, item);
+
+	LuaScriptInterface::pushPosition(L, position);
+
+	return getScriptInterface()->callFunction(3);
+}
+
 void EventCallback::playerOnStorageUpdate(Player* player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[EventCallback::eventOnStorageUpdate - "

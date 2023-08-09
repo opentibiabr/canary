@@ -1,28 +1,71 @@
-local storageSet = TalkAction("/set")
+function Player.setStorageValueTalkaction(self, param)
+	-- Sanity check for parameters
+	-- Example: /setstorage wheel.scroll.abridged, 1, god
+	-- Example: /setstorage 10001, 1
+	-- If you don't add the player's name, the storage will be added to whoever is using the talkaction (self)
+	if not HasValidTalkActionParams(self, param, "Usage: /setstorage <storagekey or name>, <value>, <player name>=default self") then
+		return false
+	end
 
-function storageSet.onSay(player, words, param)
 	local split = param:split(",")
-	if split[2] == nil then
-		player:sendCancelMessage("Insufficient parameters.")
-		return false
+	local value = 1
+	if split[2] then
+		value = split[2]
 	end
 
-	local target = Player(split[1])
-	if target == nil then
-		player:sendCancelMessage("A player with that name is not online.")
-		return false
+	-- Try to convert the first parameter to a number. If it's not a number, treat it as a storage name
+	local storageKey = tonumber(split[1])
+	if storageKey == nil then
+		storageKey = split[1]
+		-- The key is a name, so call setStorageValueByName instead of setStorageValue
+		if split[3] then
+			local targetPlayer = Player(string.trim(split[3]))
+			if not targetPlayer then
+				self:sendCancelMessage("Player not found.")
+				return false
+			else
+				local message = "Set storage: "..storageKey.." to player "..split[3].." newValue: "..value.."."
+				self:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+				targetPlayer:setStorageValueByName(storageKey, value)
+				targetPlayer:save()
+				return false
+			end
+		else
+			local message = "Set storage: "..storageKey.." to player "..self:getName()..", newValue: "..value.."."
+			self:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+			self:setStorageValueByName(split[1], value)
+			self:save()
+		end
+	else
+		-- The key is a number, so call setStorageValue as before
+		if split[3] then
+			local targetPlayer = Player(string.trim(split[3]))
+			if not targetPlayer then
+				self:sendCancelMessage("Player not found.")
+				return false
+			else
+				local message = "Set storage: "..storageKey.." to player "..split[3].." newValue: "..value.."."
+				self:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+				targetPlayer:setStorageValue(storageKey, value)
+				targetPlayer:save()
+				return false
+			end
+		else
+			local message = "Set storage: "..storageKey.." to player "..self:getName()..", newValue: "..value.."."
+			self:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+			self:setStorageValue(storageKey, value)
+			self:save()
+		end
 	end
-
-	-- Trim left
-	split[2] = split[2]:gsub("^%s*(.-)$", "%1")
-	split[3] = split[3]:gsub("^%s*(.-)$", "%1")
-	local ch = split[2]
-	local ch2 = split[3]
-	setPlayerStorageValue(getPlayerByName(split[1]), tonumber(ch), tonumber(ch2))
-	doPlayerSendTextMessage(player, MESSAGE_EVENT_ADVANCE, "The storage with id: "..tonumber(ch).." from player "..split[1].." is now: "..ch2..".")
 	return false
 end
 
-storageSet:separator(" ")
-storageSet:groupType("god")
-storageSet:register()
+local talkaction = TalkAction("/setstorage")
+
+function talkaction.onSay(player, words, param)
+	return player:setStorageValueTalkaction(param)
+end
+
+talkaction:separator(" ")
+talkaction:groupType("god")
+talkaction:register()

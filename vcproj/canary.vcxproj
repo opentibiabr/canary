@@ -41,6 +41,7 @@
     <ClInclude Include="..\src\creatures\players\imbuements\imbuements.h" />
     <ClInclude Include="..\src\creatures\players\management\ban.h" />
     <ClInclude Include="..\src\creatures\players\management\waitlist.h" />
+    <ClInclude Include="..\src\creatures\players\storages\storages.hpp" />
     <ClInclude Include="..\src\creatures\players\player.h" />
     <ClInclude Include="..\src\creatures\players\vocations\vocation.h" />
     <ClInclude Include="..\src\creatures\players\wheel\player_wheel.hpp" />
@@ -216,6 +217,7 @@
     <ClCompile Include="..\src\creatures\players\imbuements\imbuements.cpp" />
     <ClCompile Include="..\src\creatures\players\management\ban.cpp" />
     <ClCompile Include="..\src\creatures\players\management\waitlist.cpp" />
+    <ClCompile Include="..\src\creatures\players\storages\storages.cpp" />
     <ClCompile Include="..\src\creatures\players\player.cpp" />
     <ClCompile Include="..\src\creatures\players\vocations\vocation.cpp" />
     <ClCompile Include="..\src\creatures\players\wheel\player_wheel.cpp" />

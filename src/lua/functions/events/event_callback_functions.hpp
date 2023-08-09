@@ -31,6 +31,12 @@ class EventCallbackFunctions : public LuaScriptInterface {
 		 */
 		static void init(lua_State* luaState);
 
+		/**
+		 * @brief Send the load of callbacks to lua
+		 * @param luaState The Lua state to initialize.
+		 */
+		static int luaEventCallbackLoad(lua_State* luaState);
+
 	private:
 		/**
 		 * @brief Creates a new EventCallback object in Lua.
@@ -63,58 +69,6 @@ class EventCallbackFunctions : public LuaScriptInterface {
 		 * @return Number of return values on the Lua stack.
 		 */
 		static int luaEventCallbackRegister(lua_State* luaState);
-
-		/**
-		 * @defgroup Event Callback Functions
-		 * @brief Lua binding functions for handling various events related to Creatures and Party, Player, Monster and Npc.
-		 *
-		 * These functions serve as the entry points for various event types related to varios classes in the game. They are triggered by specific game events.
-		 *
-		 * Each function takes the Lua state as a parameter and returns the number of return values on the Lua stack.
-		 *
-		 * @note here start the lua binder functions {
-		 */
-		// Creature
-		static int luaEventCallbackCreatureOnChangeOutfit(lua_State* luaState);
-		static int luaEventCallbackCreatureOnAreaCombat(lua_State* luaState);
-		static int luaEventCallbackCreatureOnTargetCombat(lua_State* luaState);
-		static int luaEventCallbackCreatureOnHear(lua_State* luaState);
-		static int luaEventCallbackCreatureOnDrainHealth(lua_State* luaState);
-		// Party
-		static int luaEventCallbackPartyOnJoin(lua_State* luaState);
-		static int luaEventCallbackPartyOnLeave(lua_State* luaState);
-		static int luaEventCallbackPartyOnDisband(lua_State* luaState);
-		static int luaEventCallbackPartyOnShareExperience(lua_State* luaState);
-		// Player
-		static int luaEventCallbackPlayerOnBrowseField(lua_State* luaState);
-		static int luaEventCallbackPlayerOnLook(lua_State* luaState);
-		static int luaEventCallbackPlayerOnLookInBattleList(lua_State* luaState);
-		static int luaEventCallbackPlayerOnLookInTrade(lua_State* luaState);
-		static int luaEventCallbackPlayerOnLookInShop(lua_State* luaState);
-		static int luaEventCallbackPlayerOnMoveItem(lua_State* luaState);
-		static int luaEventCallbackPlayerOnItemMoved(lua_State* luaState);
-		static int luaEventCallbackPlayerOnChangeZone(lua_State* luaState);
-		static int luaEventCallbackPlayerOnChangeHazard(lua_State* luaState);
-		static int luaEventCallbackPlayerOnMoveCreature(lua_State* luaState);
-		static int luaEventCallbackPlayerOnReportRuleViolation(lua_State* luaState);
-		static int luaEventCallbackPlayerOnReportBug(lua_State* luaState);
-		static int luaEventCallbackPlayerOnTurn(lua_State* luaState);
-		static int luaEventCallbackPlayerOnTradeRequest(lua_State* luaState);
-		static int luaEventCallbackPlayerOnTradeAccept(lua_State* luaState);
-		static int luaEventCallbackPlayerOnGainExperience(lua_State* luaState);
-		static int luaEventCallbackPlayerOnLoseExperience(lua_State* luaState);
-		static int luaEventCallbackPlayerOnGainSkillTries(lua_State* luaState);
-		static int luaEventCallbackPlayerOnRemoveCount(lua_State* luaState);
-		static int luaEventCallbackPlayerOnRequestQuestLog(lua_State* luaState);
-		static int luaEventCallbackPlayerOnRequestQuestLine(lua_State* luaState);
-		static int luaEventCallbackPlayerOnStorageUpdate(lua_State* luaState);
-		static int luaEventCallbackPlayerOnCombat(lua_State* luaState);
-		static int luaEventCallbackPlayerOnInventoryUpdate(lua_State* luaState);
-		// Monster
-		static int luaEventCallbackMonsterOnDropLoot(lua_State* luaState);
-		static int luaEventCallbackMonsterOnSpawn(lua_State* luaState);
-		// Npc
-		static int luaEventCallbackNpcOnSpawn(lua_State* luaState);
 
 		/**
 		 * @note here end the lua binder functions }

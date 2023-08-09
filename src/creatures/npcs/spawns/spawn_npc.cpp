@@ -181,7 +181,7 @@ bool SpawnNpc::spawnNpc(uint32_t spawnId, NpcType* npcType, const Position &pos,
 	spawnNpcMap[spawnId].lastSpawnNpc = OTSYS_TIME();
 
 	g_events().eventNpcOnSpawn(npc, pos);
-	g_callbacks().executeCallback(EventCallback_t::NpcOnSpawn, &EventCallback::npcOnSpawn, npc, pos);
+	g_callbacks().executeCallback(EventCallback_t::npcOnSpawn, &EventCallback::npcOnSpawn, npc, pos);
 	return true;
 }
 

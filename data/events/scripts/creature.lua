@@ -1,5 +1,5 @@
-local function removeCombatProtection(cid)
-	local player = Player(cid)
+local function removeCombatProtection(playerUid)
+	local player = Player(playerUid)
 	if not player then
 		return true
 	end
@@ -14,28 +14,20 @@ local function removeCombatProtection(cid)
 	end
 
 	player:setStorageValue(Global.Storage.CombatProtectionStorage, 2)
-	addEvent(function(cid)
-		local player = Player(cid)
-		if not player then
+	addEvent(function(playerUid)
+		local playerEvent = Player(playerUid)
+		if not playerEvent then
 			return
 		end
 
-		player:setStorageValue(Global.Storage.CombatProtectionStorage, 0)
-		player:remove()
-	end, time * 1000, cid)
+		playerEvent:setStorageValue(Global.Storage.CombatProtectionStorage, 0)
+		playerEvent:remove()
+	end, time * 1000, playerUid)
 end
 
-picIf = {}
 function Creature:onTargetCombat(target)
 	if not self then
 		return true
-	end
-
-	if not picIf[target.uid] then
-		if target:isMonster() then
-			target:registerEvent("RewardSystemSlogan")
-			picIf[target.uid] = {}
-		end
 	end
 
 	if target:isPlayer() then
@@ -96,9 +88,9 @@ function Creature:onChangeOutfit(outfit)
 		if familiarLookType ~= 0 then
 			for _, summon in pairs(self:getSummons()) do
 				if summon:getType():familiar() then
-						if summon:getOutfit().lookType ~= familiarLookType then
-							summon:setOutfit({lookType = familiarLookType})
-						end
+					if summon:getOutfit().lookType ~= familiarLookType then
+						summon:setOutfit({lookType = familiarLookType})
+					end
 					break
 				end
 			end

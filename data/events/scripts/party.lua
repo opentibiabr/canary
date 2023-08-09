@@ -1,11 +1,11 @@
 function Party:onJoin(player)
 	local playerId = player:getId()
 	addEvent(function()
-		player = Player(playerId)
-		if not player then
+		local playerEvent = Player(playerId)
+		if not playerEvent then
 			return
 		end
-		local party = player:getParty()
+		local party = playerEvent:getParty()
 		if not party then
 			return
 		end
@@ -26,9 +26,9 @@ function Party:onLeave(player)
 	end
 
 	addEvent(function()
-		player = Player(playerId)
-		if player then
-			player:updateHazard()
+		local playerEvent = Player(playerId)
+		if playerEvent then
+			playerEvent:updateHazard()
 		end
 
 		for _, memberId in ipairs(memberIds) do
@@ -86,5 +86,5 @@ function Party:onShareExperience(exp)
 		sharedExperienceMultiplier = 1.0 + ((size * (5 * (size - 1) + 10)) / 100)
 	end
 
-	return (exp * sharedExperienceMultiplier) / (#self:getMembers() + 1)
+	return math.ceil((exp * sharedExperienceMultiplier) / (#self:getMembers() + 1))
 end

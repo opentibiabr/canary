@@ -62,13 +62,11 @@ bool Scripts::loadEventSchedulerScripts(const std::string &fileName) {
 	return false;
 }
 
-bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
-	// Build the full path of the folder that should be loaded
-	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
-	const auto dir = std::filesystem::current_path() / datapackFolder / folderName;
+bool Scripts::loadScripts(std::string loadPath, bool isLib, bool reload) {
+	const auto dir = std::filesystem::current_path() / loadPath;
 	// Checks if the folder exists and is really a folder
 	if (!std::filesystem::exists(dir) || !std::filesystem::is_directory(dir)) {
-		SPDLOG_ERROR("Can not load folder {}", folderName);
+		SPDLOG_ERROR("Can not load folder {}", loadPath);
 		return false;
 	}
 

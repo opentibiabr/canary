@@ -927,11 +927,11 @@ uint16_t PlayerWheel::getExtraPoints() const {
 	}
 
 	std::map<std::string, uint16_t> availableScrolls = {
-		{ "wheel.abridged", 3 },
-		{ "wheel.basic", 5 },
-		{ "wheel.revised", 9 },
-		{ "wheel.extended", 13 },
-		{ "wheel.advanced", 20 },
+		{ "wheel.scroll.abridged", 3 },
+		{ "wheel.scroll.basic", 5 },
+		{ "wheel.scroll.revised", 9 },
+		{ "wheel.scroll.extended", 13 },
+		{ "wheel.scroll.advanced", 20 },
 	};
 
 	uint16_t totalBonus = 0;

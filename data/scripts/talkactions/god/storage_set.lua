@@ -1,6 +1,6 @@
 function Player.setStorageValueTalkaction(self, param)
 	-- Sanity check for parameters
-	-- Example: /setstorage wheel.abridged, 1, god
+	-- Example: /setstorage wheel.scroll.abridged, 1, god
 	-- Example: /setstorage 10001, 1
 	-- If you don't add the player's name, the storage will be added to whoever is using the talkaction (self)
 	if not HasValidTalkActionParams(self, param, "Usage: /setstorage <storagekey or name>, <value>, <player name>=default self") then

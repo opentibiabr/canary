@@ -1,6 +1,6 @@
 function Player.getStorageValueTalkaction(self, param)
 	-- Sanity check for parameters
-	-- Example: /getstorage god, wheel.abridged
+	-- Example: /getstorage god, wheel.scroll.abridged
 	-- Example: /getstorage god, 10000
 	if not HasValidTalkActionParams(self, param, "Usage: /getstorage <playername>, <storage key or name>") then
 		return false

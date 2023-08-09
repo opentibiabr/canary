@@ -189,7 +189,7 @@ void loadModules() {
 	SPDLOG_INFO("Loading datapack scripts on folder: {}/", datapackName);
 	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false), datapackFolder + "/scripts/libs");
 	// Load scripts
-	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts", false, false), datapackFolder +"/scripts");
+	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts", false, false), datapackFolder + "/scripts");
 	// Load monsters
 	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/monster", false, false), datapackFolder + "/monster");
 	modulesLoadHelper((g_npcs().load(false, true)), "npc");

@@ -18,8 +18,8 @@ monster.Bestiary = {
 	class = "Undead",
 	race = BESTY_RACE_UNDEAD,
 	toKill = 5000,
-	FirstUnlock = 25,
-	SecondUnlock = 3394,
+	FirstUnlock = 200,
+	SecondUnlock = 2000,
 	CharmsPoints = 100,
 	Stars = 5,
 	Occurrence = 0,
@@ -72,37 +72,38 @@ monster.light = {
 
 monster.voices = {
 	interval = 5000,
-	chance = 10,	
+	chance = 10,
 	{text = "I am you. Just better!", yell = false},
 	{text = "I'll take your place when you are gone.", yell = false}
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540},
-	{name = "platinum coin", chance = 81920, maxCount = 33},
-	{name = "green gem", chance = 64560},
-	{name = "epee", chance = 31920},
-	{name = "ultimate health potion", chance = 71920, maxCount = 5},
-	{name = "violet gem", chance = 44560},
-	{name = "giant sword", chance = 25920},
-	{name = "crystal mace", chance = 22920},
-	{name = "crown shield", chance = 18920},
-	{name = "jade hammer", chance = 15920}
+	{name = "crystal coin", chance = 76610},
+	{name = "ultimate health potion", chance = 9010},
+	{name = "epee", chance = 6870},
+	{name = "green gem", chance = 4940},
+	{name = "violet gem", chance = 3860},
+	{name = "glacier amulet", chance = 3860},
+	{name = "crystal mace", chance = 2360},
+	{name = "giant sword", chance = 1720},
+	{name = "stone skin amulet", chance = 1500},
+	{name = "crown shield", chance = 640},
+	{id = 34109, chance = 20}, -- bag you desire
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1000},
-	{name ="combat", interval = 2000, chance = 13, type = COMBAT_ICEDAMAGE, minDamage = -450, maxDamage = -1000, range = 7, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_BIGCLOUDS, target = true},
-	{name ="combat", interval = 2000, chance = 17, type = COMBAT_HOLYDAMAGE, minDamage = -550, maxDamage = -900, radius = 4, effect = CONST_ME_HOLYAREA, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -750, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -750, maxDamage = -1100, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = true},
-	{name ="combat", interval = 2000, chance = 13, type = COMBAT_PHYSICALDAMAGE, minDamage = -550, maxDamage = -900, radius = 3, effect = CONST_ME_GROUNDSHAKER, target = false}
-	-- Chain: const_me-> CONST_ME_BLUE_ENERGY_SPARK, combat_t->COMBAT_ICEDAMAGE
+	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -840, maxDamage = -1000, range = 7, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_BIGCLOUDS, target = true},
+	{name ="ice chain", interval = 2000, chance = 15, minDamage = -1050, maxDamage = -1300, range = 7},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -1050, maxDamage = -1300, range = 7, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true},
+	{name ="combat", interval = 2000, chance = 17, type = COMBAT_HOLYDAMAGE, minDamage = -1100, maxDamage = -1400, radius = 4, effect = CONST_ME_HOLYAREA, target = false},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -850, maxDamage = -1000, radius = 4, effect = CONST_ME_GROUNDSHAKER, target = false},
 }
 
 monster.defenses = {
-	defense = 75,
-	armor = 100
+	defense = 100,
+	armor = 100,
+	mitigation = 3.04
 }
 
 monster.elements = {

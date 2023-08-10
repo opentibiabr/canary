@@ -216,6 +216,7 @@ function Player.transferMoneyTo(self, target, amount)
 		local query_town = db.storeQuery('SELECT `town_id` FROM `players` WHERE `name` = ' .. db.escapeString(target) .. ' LIMIT 1;')
 		if query_town ~= false then
 			local town = Result.getNumber(query_town, "town_id")
+			Result.free(query_town)
 			if town then
 				local town_id = Town(town) and Town(town):getId()
 				if town_id and town_id == TOWNS_LIST.DAWNPORT or town_id == TOWNS_LIST.DAWNPORT_TUTORIAL then
@@ -223,7 +224,6 @@ function Player.transferMoneyTo(self, target, amount)
 					return false
 				end
 			end
-			Result.free(consulta)
 			db.query("UPDATE `players` SET `balance` = `balance` + '" .. amount .. "' WHERE `name` = " .. db.escapeString(target))
 		end
 	end
@@ -553,4 +553,22 @@ function Player:calculateLootFactor(monster)
 		factor = factor,
 		msgSuffix = suffix
 	}
+end
+
+function Player.setFiendish(self)
+	local position = self:getPosition()
+	position:getNextPosition(self:getDirection())
+
+	local tile = Tile(position)
+	local thing = tile:getTopVisibleThing(self)
+	if not tile or thing and not thing:isMonster() then
+		self:sendCancelMessage("Monster not found.")
+		return false
+	end
+
+	local monster = thing:getMonster()
+	if monster then
+		monster:setFiendish(position, self)
+	end
+	return false
 end

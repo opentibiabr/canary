@@ -66,7 +66,7 @@ if NpcHandler == nil then
 	NpcHandler = {
 		keywordHandler = nil,
 		talkStart = nil,
-		talkDelay = 1000, -- Delay from each messages
+		talkDelay = 300, -- Delay from each messages
 		talkDelayTimeForOutgoingMessages = 1, -- Seconds to delay outgoing messages
 		callbackFunctions = nil,
 		modules = nil,
@@ -74,6 +74,7 @@ if NpcHandler == nil then
 		eventSay = nil,
 		eventDelayedSay = nil,
 		topic = nil,
+		talkRange = 4,
 		messages = {
 			-- These are the default replies of all npcs. They can/should be changed individually for each npc.
 			-- Leave empty for no send message
@@ -116,6 +117,14 @@ if NpcHandler == nil then
 		setmetatable(obj, self)
 		self.__index = self
 		return obj
+	end
+
+	function NpcHandler:getTalkRange()
+		return self.talkRange
+	end
+
+	function NpcHandler:setTalkRange(newRange)
+		self.talkRange = newRange
 	end
 
 	-- NpcHandler get and set obj
@@ -504,7 +513,7 @@ if NpcHandler == nil then
 
 	-- Tries to greet the player with the given player.
 	function NpcHandler:onGreet(npc, player, message)
-		if npc:isInTalkRange(Player(player):getPosition()) then
+		if npc:isInTalkRange(Player(player):getPosition(), self:getTalkRange()) then
 			if not self:checkInteraction(npc, player) then
 				self:greet(npc, player, message)
 				return true

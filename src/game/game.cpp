@@ -85,6 +85,66 @@ namespace InternalGame {
 		}
 	}
 
+	bool playerCanUseItemOnHouseTile(Player* player, Item* item) {
+		if (!player || !item) {
+			return false;
+		}
+
+		auto itemTile = item->getTile();
+		if (!itemTile) {
+			return false;
+		}
+
+		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(itemTile)) {
+			House* house = houseTile->getHouse();
+			if (!house || !house->isInvited(player)) {
+				return false;
+			}
+
+			auto isGuest = house->getHouseAccessLevel(player) == HOUSE_GUEST;
+			auto itemParentContainer = item->getParent() ? item->getParent()->getContainer() : nullptr;
+			auto isItemParentContainerBrowseField = itemParentContainer && itemParentContainer->getID() == ITEM_BROWSEFIELD;
+			if (isGuest && isItemParentContainerBrowseField) {
+				return false;
+			}
+
+			auto realItemParent = item->getRealParent();
+			auto isItemInGuestInventory = realItemParent && (realItemParent == player || realItemParent->getContainer());
+			if (isGuest && !isItemInGuestInventory && !item->isLadder()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	bool playerCanUseItemWithOnHouseTile(Player* player, Item* item, const Position &toPos, int toStackPos, int toItemId) {
+		if (!player || !item) {
+			return false;
+		}
+
+		auto itemTile = item->getTile();
+		if (!itemTile) {
+			return false;
+		}
+
+		if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
+			if (HouseTile* houseTile = dynamic_cast<HouseTile*>(itemTile)) {
+				House* house = houseTile->getHouse();
+				Thing* targetThing = g_game().internalGetThing(player, toPos, toStackPos, toItemId, STACKPOS_FIND_THING);
+				auto targetItem = targetThing ? targetThing->getItem() : nullptr;
+				uint16_t targetId = targetItem ? targetItem->getID() : 0;
+				auto invitedCheckUseWith = house && item->getRealParent() && item->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST);
+				if (targetId != 0 && targetItem && !targetItem->isDummy() && invitedCheckUseWith) {
+					player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
 } // Namespace InternalGame
 
 Game::Game() {
@@ -1105,7 +1165,7 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnMoveCreature, &EventCallback::playerOnMoveCreature, player, movingCreature, movingCreaturePos, toPos)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnMoveCreature, &EventCallback::playerOnMoveCreature, player, movingCreature, movingCreaturePos, toPos)) {
 		return;
 	}
 
@@ -1417,7 +1477,7 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnMoveItem, &EventCallback::playerOnMoveItem, player, item, count, fromPos, toPos, fromCylinder, toCylinder)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnMoveItem, &EventCallback::playerOnMoveItem, player, item, count, fromPos, toPos, fromCylinder, toCylinder)) {
 		return;
 	}
 
@@ -1454,7 +1514,7 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 	item->checkDecayMapItemOnMove();
 
 	g_events().eventPlayerOnItemMoved(player, item, count, fromPos, toPos, fromCylinder, toCylinder);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnItemMoved, &EventCallback::playerOnItemMoved, player, item, count, fromPos, toPos, fromCylinder, toCylinder);
+	g_callbacks().executeCallback(EventCallback_t::playerOnItemMoved, &EventCallback::playerOnItemMoved, player, item, count, fromPos, toPos, fromCylinder, toCylinder);
 }
 
 bool Game::isTryingToStow(const Position &toPos, Cylinder* toCylinder) const {
@@ -3090,14 +3150,9 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 		return;
 	}
 
-	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
-		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(item->getTile())) {
-			House* house = houseTile->getHouse();
-			if (house && item->getRealParent() && item->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST)) {
-				player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
-				return;
-			}
-		}
+	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS) && !InternalGame::playerCanUseItemWithOnHouseTile(player, item, toPos, toStackPos, toItemId)) {
+		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+		return;
 	}
 
 	Position walkToPos = fromPos;
@@ -3224,14 +3279,9 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		return;
 	}
 
-	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
-		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(item->getTile())) {
-			House* house = houseTile->getHouse();
-			if (house && item->getRealParent() && item->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST)) {
-				player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
-				return;
-			}
-		}
+	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS) && !InternalGame::playerCanUseItemOnHouseTile(player, item)) {
+		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+		return;
 	}
 
 	const ItemType &it = Item::items[item->getID()];
@@ -3461,7 +3511,7 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 			return;
 		}
 
-		if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnBrowseField, &EventCallback::playerOnBrowseField, player, tile->getPosition())) {
+		if (!g_callbacks().checkCallback(EventCallback_t::playerOnBrowseField, &EventCallback::playerOnBrowseField, player, tile->getPosition())) {
 			return;
 		}
 
@@ -3529,6 +3579,10 @@ void Game::playerRotateItem(uint32_t playerId, const Position &pos, uint8_t stac
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
 		}
+		return;
+	}
+
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnRotateItem, &EventCallback::playerOnRotateItem, player, item, pos)) {
 		return;
 	}
 
@@ -3918,7 +3972,7 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnBrowseField, &EventCallback::playerOnBrowseField, player, tile->getPosition())) {
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnBrowseField, &EventCallback::playerOnBrowseField, player, tile->getPosition())) {
 		return;
 	}
 
@@ -4215,7 +4269,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnTradeRequest, &EventCallback::playerOnTradeRequest, player, tradePartner, tradeItem)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnTradeRequest, &EventCallback::playerOnTradeRequest, player, tradePartner, tradeItem)) {
 		return;
 	}
 
@@ -4284,7 +4338,7 @@ void Game::playerAcceptTrade(uint32_t playerId) {
 			return;
 		}
 
-		if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnTradeAccept, &EventCallback::playerOnTradeAccept, player, tradePartner, tradeItem1, tradeItem2)) {
+		if (!g_callbacks().checkCallback(EventCallback_t::playerOnTradeAccept, &EventCallback::playerOnTradeAccept, player, tradePartner, tradeItem1, tradeItem2)) {
 			internalCloseTrade(player);
 			return;
 		}
@@ -4420,7 +4474,7 @@ void Game::playerLookInTrade(uint32_t playerId, bool lookAtCounterOffer, uint8_t
 	);
 	if (index == 0) {
 		g_events().eventPlayerOnLookInTrade(player, tradePartner, tradeItem, lookDistance);
-		g_callbacks().executeCallback(EventCallback_t::PlayerOnLookInTrade, &EventCallback::playerOnLookInTrade, player, tradePartner, tradeItem, lookDistance);
+		g_callbacks().executeCallback(EventCallback_t::playerOnLookInTrade, &EventCallback::playerOnLookInTrade, player, tradePartner, tradeItem, lookDistance);
 		return;
 	}
 
@@ -4441,7 +4495,7 @@ void Game::playerLookInTrade(uint32_t playerId, bool lookAtCounterOffer, uint8_t
 
 			if (--index == 0) {
 				g_events().eventPlayerOnLookInTrade(player, tradePartner, item, lookDistance);
-				g_callbacks().executeCallback(EventCallback_t::PlayerOnLookInTrade, &EventCallback::playerOnLookInTrade, player, tradePartner, item, lookDistance);
+				g_callbacks().executeCallback(EventCallback_t::playerOnLookInTrade, &EventCallback::playerOnLookInTrade, player, tradePartner, item, lookDistance);
 				return;
 			}
 		}
@@ -4601,7 +4655,7 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t itemId, uint8_t count) {
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnLookInShop, &EventCallback::playerOnLookInShop, player, &it, count)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnLookInShop, &EventCallback::playerOnLookInShop, player, &it, count)) {
 		return;
 	}
 
@@ -4643,7 +4697,7 @@ void Game::playerLookAt(uint32_t playerId, uint16_t itemId, const Position &pos,
 
 	// Parse onLook from event player
 	g_events().eventPlayerOnLook(player, pos, thing, stackPos, lookDistance);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnLook, &EventCallback::playerOnLook, player, pos, thing, stackPos, lookDistance);
+	g_callbacks().executeCallback(EventCallback_t::playerOnLook, &EventCallback::playerOnLook, player, pos, thing, stackPos, lookDistance);
 }
 
 void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId) {
@@ -4678,7 +4732,7 @@ void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	g_events().eventPlayerOnLookInBattleList(player, creature, lookDistance);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnLookInBattleList, &EventCallback::playerOnLookInBattleList, player, creature, lookDistance);
+	g_callbacks().executeCallback(EventCallback_t::playerOnLookInBattleList, &EventCallback::playerOnLookInBattleList, player, creature, lookDistance);
 }
 
 void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, Item* defaultItem, bool lootAllCorpses, bool autoLoot) {
@@ -5209,7 +5263,7 @@ void Game::playerTurn(uint32_t playerId, Direction dir) {
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::PlayerOnTurn, &EventCallback::playerOnTurn, player, dir)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnTurn, &EventCallback::playerOnTurn, player, dir)) {
 		return;
 	}
 
@@ -5312,7 +5366,7 @@ void Game::playerShowQuestLog(uint32_t playerId) {
 	}
 
 	g_events().eventPlayerOnRequestQuestLog(player);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnRequestQuestLog, &EventCallback::playerOnRequestQuestLog, player);
+	g_callbacks().executeCallback(EventCallback_t::playerOnRequestQuestLog, &EventCallback::playerOnRequestQuestLog, player);
 }
 
 void Game::playerShowQuestLine(uint32_t playerId, uint16_t questId) {
@@ -5322,7 +5376,7 @@ void Game::playerShowQuestLine(uint32_t playerId, uint16_t questId) {
 	}
 
 	g_events().eventPlayerOnRequestQuestLine(player, questId);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnRequestQuestLine, &EventCallback::playerOnRequestQuestLine, player, questId);
+	g_callbacks().executeCallback(EventCallback_t::playerOnRequestQuestLine, &EventCallback::playerOnRequestQuestLine, player, questId);
 }
 
 void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text) {
@@ -5396,7 +5450,7 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string &
 	}
 
 	std::string words = text;
-	TalkActionResult_t result = g_talkActions().playerSaySpell(player, type, words);
+	TalkActionResult_t result = g_talkActions().checkPlayerCanSayTalkAction(player, type, words);
 	if (result == TALKACTION_BREAK) {
 		return true;
 	}
@@ -5581,7 +5635,7 @@ bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std:
 		spectator->onCreatureSay(creature, type, text);
 		if (creature != spectator) {
 			g_events().eventCreatureOnHear(spectator, creature, text, type);
-			g_callbacks().executeCallback(EventCallback_t::CreatureOnHear, &EventCallback::creatureOnHear, spectator, creature, text, type);
+			g_callbacks().executeCallback(EventCallback_t::creatureOnHear, &EventCallback::creatureOnHear, spectator, creature, text, type);
 		}
 	}
 	return true;
@@ -5711,7 +5765,7 @@ void Game::internalCreatureChangeOutfit(Creature* creature, const Outfit_t &outf
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::CreatureOnChangeOutfit, &EventCallback::creatureOnChangeOutfit, creature, outfit)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::creatureOnChangeOutfit, &EventCallback::creatureOnChangeOutfit, creature, outfit)) {
 		return;
 	}
 
@@ -6406,7 +6460,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		if (!isEvent) {
 			g_events().eventCreatureOnDrainHealth(target, attacker, damage.primary.type, damage.primary.value, damage.secondary.type, damage.secondary.value, message.primary.color, message.secondary.color);
-			g_callbacks().executeCallback(EventCallback_t::CreatureOnDrainHealth, &EventCallback::creatureOnDrainHealth, target, attacker, damage.primary.type, damage.primary.value, damage.secondary.type, damage.secondary.value, message.primary.color, message.secondary.color);
+			g_callbacks().executeCallback(EventCallback_t::creatureOnDrainHealth, &EventCallback::creatureOnDrainHealth, target, attacker, damage.primary.type, damage.primary.value, damage.secondary.type, damage.secondary.value, message.primary.color, message.secondary.color);
 		}
 		if (damage.origin != ORIGIN_NONE && attacker && damage.primary.type != COMBAT_HEALING) {
 			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
@@ -7994,7 +8048,7 @@ void Game::playerReportRuleViolationReport(uint32_t playerId, const std::string 
 	}
 
 	g_events().eventPlayerOnReportRuleViolation(player, targetName, reportType, reportReason, comment, translation);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnReportRuleViolation, &EventCallback::playerOnReportRuleViolation, player, targetName, reportType, reportReason, comment, translation);
+	g_callbacks().executeCallback(EventCallback_t::playerOnReportRuleViolation, &EventCallback::playerOnReportRuleViolation, player, targetName, reportType, reportReason, comment, translation);
 }
 
 void Game::playerReportBug(uint32_t playerId, const std::string &message, const Position &position, uint8_t category) {
@@ -8004,7 +8058,7 @@ void Game::playerReportBug(uint32_t playerId, const std::string &message, const 
 	}
 
 	g_events().eventPlayerOnReportBug(player, message, position, category);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnReportBug, &EventCallback::playerOnReportBug, player, message, position, category);
+	g_callbacks().executeCallback(EventCallback_t::playerOnReportBug, &EventCallback::playerOnReportBug, player, message, position, category);
 }
 
 void Game::playerDebugAssert(uint32_t playerId, const std::string &assertLine, const std::string &date, const std::string &description, const std::string &comment) {

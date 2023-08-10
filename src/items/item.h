@@ -475,6 +475,12 @@ class Item : virtual public Thing, public ItemProperties {
 		bool isSpellBook() const {
 			return items[id].isSpellBook();
 		}
+		bool isLadder() const {
+			return items[id].isLadder();
+		}
+		bool isDummy() const {
+			return items[id].isDummy();
+		}
 
 		const std::string &getName() const {
 			if (hasAttribute(ItemAttribute_t::NAME)) {

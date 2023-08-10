@@ -112,7 +112,8 @@ bool Npcs::load(bool loadLibs /* = true*/, bool loadNpcs /* = true*/, bool reloa
 		return g_luaEnvironment.loadFile(coreFolder + "/npclib/load.lua", "load.lua") == 0;
 	}
 	if (loadNpcs) {
-		return g_scripts().loadScripts("npc", false, reloading);
+		auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+		return g_scripts().loadScripts(datapackFolder + "/npc", false, reloading);
 	}
 	return false;
 }

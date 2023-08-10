@@ -273,6 +273,78 @@ std::string asUpperCaseString(std::string source) {
 	return source;
 }
 
+std::string toCamelCase(const std::string &str) {
+	std::string result;
+	bool capitalizeNext = false;
+
+	for (char ch : str) {
+		if (ch == '_' || std::isspace(ch) || ch == '-') {
+			capitalizeNext = true;
+		} else {
+			if (capitalizeNext) {
+				result += std::toupper(ch);
+				capitalizeNext = false;
+			} else {
+				result += std::tolower(ch);
+			}
+		}
+	}
+
+	return result;
+}
+
+std::string toPascalCase(const std::string &str) {
+	std::string result;
+	bool capitalizeNext = true;
+
+	for (char ch : str) {
+		if (ch == '_' || std::isspace(ch) || ch == '-') {
+			capitalizeNext = true;
+		} else {
+			if (capitalizeNext) {
+				result += std::toupper(ch);
+				capitalizeNext = false;
+			} else {
+				result += std::tolower(ch);
+			}
+		}
+	}
+
+	return result;
+}
+
+std::string toSnakeCase(const std::string &str) {
+	std::string result;
+	for (char ch : str) {
+		if (std::isupper(ch)) {
+			result += '_';
+			result += std::tolower(ch);
+		} else if (std::isspace(ch) || ch == '-') {
+			result += '_';
+		} else {
+			result += ch;
+		}
+	}
+
+	return result;
+}
+
+std::string toKebabCase(const std::string &str) {
+	std::string result;
+	for (char ch : str) {
+		if (std::isupper(ch)) {
+			result += '-';
+			result += std::tolower(ch);
+		} else if (std::isspace(ch) || ch == '_') {
+			result += '-';
+		} else {
+			result += ch;
+		}
+	}
+
+	return result;
+}
+
 StringVector explodeString(const std::string &inString, const std::string &separator, int32_t limit /* = -1*/) {
 	StringVector returnVector;
 	std::string::size_type start = 0, end = 0;
@@ -1582,4 +1654,16 @@ std::string formatPrice(std::string price, bool space /* = false*/) {
 	}
 
 	return price;
+}
+
+std::vector<std::string> split(const std::string &str) {
+	std::vector<std::string> tokens;
+	std::string token;
+	std::istringstream tokenStream(str);
+	while (std::getline(tokenStream, token, ',')) {
+		auto trimedToken = token;
+		trimString(trimedToken);
+		tokens.push_back(trimedToken);
+	}
+	return tokens;
 }

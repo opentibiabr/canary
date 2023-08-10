@@ -89,6 +89,7 @@ void LuaEnums::init(lua_State* L) {
 	initFightModeEnums(L);
 	initItemAttributeEnums(L);
 	initItemTypeEnums(L);
+	initFluidEnums(L);
 	initItemIdEnums(L);
 	initPlayerFlagEnums(L);
 	initReportReasonEnums(L);
@@ -802,6 +803,12 @@ void LuaEnums::initItemTypeEnums(lua_State* L) {
 	registerEnum(L, ITEM_TYPE_RETRIEVE);
 	registerEnum(L, ITEM_TYPE_GOLD);
 	registerEnum(L, ITEM_TYPE_UNASSIGNED);
+}
+
+void LuaEnums::initFluidEnums(lua_State* L) {
+	for (auto value : magic_enum::enum_values<Fluids_t>()) {
+		registerEnumClass(L, value);
+	}
 }
 
 void LuaEnums::initItemIdEnums(lua_State* L) {

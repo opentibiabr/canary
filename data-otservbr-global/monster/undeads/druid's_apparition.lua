@@ -17,9 +17,8 @@ monster.raceId = 1946
 monster.Bestiary = {
 	class = "Undead",
 	race = BESTY_RACE_UNDEAD,
-	toKill = 5000,
-	FirstUnlock = 25,
-	SecondUnlock = 3394,
+	FirstUnlock = 200,
+	SecondUnlock = 2000,
 	CharmsPoints = 100,
 	Stars = 5,
 	Occurrence = 0,
@@ -72,40 +71,41 @@ monster.light = {
 
 monster.voices = {
 	interval = 5000,
-	chance = 10,	
+	chance = 10,
 	{text = "Healing is what I do best.", yell = false},
 	{text = "I'll take your place when you are gone.", yell = false}
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540},
-	{name = "platinum coin", chance = 81920, maxCount = 33},
-	{name = "great mana potion", chance = 71920, maxCount = 5},
-	{name = "green gem", chance = 64560},
-	{name = "terra rod", chance = 41920},
-	{name = "stone skin amulet", chance = 31920},
-	{name = "magma amulet", chance = 21920},
-	{name = "glacier robe", chance = 15920},
-	{name = "platinum amulet", chance = 13920},
-	{name = "underworld rod", chance = 18920},
-	{name = "springsprout rod", chance = 14920},
-	{name = "sacred tree amulet", chance = 19920},
-	{id = 23544, chance = 29000} -- collar of red plasma
+	{name = "crystal coin", chance = 80700},
+	{name = "terra rod", chance = 17540},
+	{name = "great mana potion", chance = 17110, maxCount = 3},
+	{name = "blue gem", chance = 12720},
+	{name = "green gem", chance = 6580},
+	{name = "stone skin amulet", chance = 4820},
+	{name = "glacier amulet", chance = 3510},
+	{name = "sacred tree amulet", chance = 3070},
+	{name = "springsprout rod", chance = 2190},
+	{name = "underworld rod", chance = 2190},
+	{name = "platinum amulet", chance = 1750},
+	{name = "glacier robe", chance = 880},
+	{id = 23544, chance = 440}, -- collar of red plasma
+	{id = 34109, chance = 20}, -- bag you desire
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1000},
-	{name ="combat", interval = 2000, chance = 13, type = COMBAT_ICEDAMAGE, minDamage = -650, maxDamage = -1000, range = 7, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_BIGCLOUDS, target = true},
-	{name ="combat", interval = 2000, chance = 17, type = COMBAT_HOLYDAMAGE, minDamage = -450, maxDamage = -900, radius = 4, effect = CONST_ME_HOLYAREA, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -750, maxDamage = -900, range = 7, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -550, maxDamage = -1000, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = true},
-	{name ="combat", interval = 2000, chance = 13, type = COMBAT_ICEDAMAGE, minDamage = -750, maxDamage = -1000, radius = 4, effect = CONST_ME_ICEATTACK, target = false}
-	-- Chain: const_me-> CONST_ME_BLUE_ENERGY_SPARK, combat_t->COMBAT_ICEDAMAGE
+	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -850},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -1080, maxDamage = -1300, range = 7, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_BIGCLOUDS, target = true},
+	{name ="ice chain", interval = 2000, chance = 15, minDamage = -1100, maxDamage = -1300, range = 7},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -1100, maxDamage = -1250, range = 7, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true},
+	{name ="combat", interval = 2000, chance = 17, type = COMBAT_HOLYDAMAGE, minDamage = -1250, maxDamage = -1400, radius = 4, effect = CONST_ME_HOLYAREA, target = false},
 }
 
 monster.defenses = {
-	defense = 75,
-	armor = 100
+	defense = 100,
+	armor = 100,
+	mitigation = 2.75,
+	{name ="combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 1000, maxDamage = 1100, effect = CONST_ME_MAGIC_BLUE, target = false},
 }
 
 monster.elements = {

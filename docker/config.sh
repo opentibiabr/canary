@@ -10,7 +10,7 @@ substitute_lua_variable() {
   new_value="$2"
   if [[ "$new_value" == "true" || "$new_value" == "false" ]]; then
     sed "s|$variable_name =.*|$variable_name = $new_value|" "$lua_file" > "$lua_file.tmp"
-  elif [[ $(expr "$new_value" | grep -E "^[0-9]+$") ]]; then
+  elif [[ $( echo "$new_value" | grep -E "^[0-9]+$") ]]; then
     sed "s|$variable_name =.*|$variable_name = $new_value|" "$lua_file" > "$lua_file.tmp"
   else
     sed "s|$variable_name =.*|$variable_name = \"$new_value\"|" "$lua_file" > "$lua_file.tmp"

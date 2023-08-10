@@ -45,6 +45,7 @@ Event callbacks are available for several categories of game entities, such as `
 - `(void)` `playerOnStorageUpdate`
 - `(void)` `playerOnCombat`
 - `(void)` `playerOnInventoryUpdate`
+- `(bool)` `playerOnRotateItem`
 - `(void)` `monsterOnDropLoot`
 - `(void)` `monsterOnSpawn`
 - `(void)` `npcOnSpawn`

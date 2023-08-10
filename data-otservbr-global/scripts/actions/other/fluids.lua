@@ -10,24 +10,24 @@ poison:setParameter(CONDITION_PARAM_TICKINTERVAL, 4000)
 poison:setParameter(CONDITION_PARAM_FORCEUPDATE, true)
 
 local fluidMessage = {
-	[1] = "Gulp.", -- water
-	[2] = "Aah...", -- wine
-	[3] = "Aah...", -- beer
-	[4] = "Gulp.", -- mud
-	[5] = "Gulp.", -- blood
-	[6] = "Urgh!", -- slime
-	[7] = "Gulp.", -- oil
-	[8] = "Urgh!", -- urine
-	[9] = "Gulp.", -- milk
-	[10] = "Aaaah...", -- manafluid
-	[11] = "Aaaah...", -- lifefluid
-	[12] = "Mmmh.", -- lemonade
-	[13] = "Aah...", -- rum
-	[14] = "Mmmh.", -- fruit juice
-	[15] = "Mmmh.", -- coconut milk
-	[16] = "Aah...", -- mead
-	[17] = "Gulp.", -- tea
-	[18] = "Urgh!" -- ink
+	[FLUID_NONE] = "Gulp.", -- water
+	[FLUID_WATER] = "Aah...", -- wine
+	[FLUID_WINE] = "Aah...", -- beer
+	[FLUID_BEER] = "Gulp.", -- mud
+	[FLUID_MUD] = "Gulp.", -- blood
+	[FLUID_BLOOD] = "Urgh!", -- slime
+	[FLUID_SLIME] = "Gulp.", -- oil
+	[FLUID_OIL] = "Urgh!", -- urine
+	[FLUID_URINE] = "Gulp.", -- milk
+	[FLUID_MILK] = "Aaaah...", -- manafluid
+	[FLUID_MANA] = "Aaaah...", -- lifefluid
+	[FLUID_LIFE] = "Mmmh.", -- lemonade
+	[FLUID_LEMONADE] = "Aah...", -- rum
+	[FLUID_RUM] = "Mmmh.", -- fruit juice
+	[FLUID_FRUITJUICE] = "Mmmh.", -- coconut milk
+	[FLUID_COCONUTMILK] = "Aah...", -- mead
+	[FLUID_MEAD] = "Gulp.", -- tea
+	[FLUID_TEA] = "Urgh!" -- ink
 }
 
 local function graveStoneTeleport(cid, fromPosition, toPosition)
@@ -101,7 +101,7 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if target.itemid == 26076 then
 		if item.type == 0 then
 			player:sendTextMessage(MESSAGE_FAILURE, 'It is empty.')
-		
+
 		elseif item.type == 1 then
 			toPosition:sendMagicEffect(CONST_ME_WATER_SPLASH)
 			target:transform(target.itemid + 1)
@@ -111,7 +111,7 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		end
 		return true
 	end
-			
+
 	if target.itemid == 1 then
 		if item.type == 0 then
 			player:sendTextMessage(MESSAGE_FAILURE, 'It is empty.')

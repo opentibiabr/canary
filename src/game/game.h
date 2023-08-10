@@ -638,7 +638,7 @@ class Game {
 		bool createHazardArea(const Position &positionFrom, const Position &positionTo);
 
 		/**
-		 * @brief Checks if the player can retrieve stash items for a given item.
+		 * @brief Attemtps to retrieve an item from the stash.
 		 *
 		 * @details This function leverages the internalCollectLootItems function with the OBJECTCATEGORY_STASHRETRIEVE category
 		 * to determine if the player is capable of retrieving the stash items.
@@ -647,7 +647,7 @@ class Game {
 		 * @param item Pointer to the item to be checked.
 		 * @return True if stash items can be retrieved, false otherwise.
 		 */
-		bool canRetrieveStashItems(Player* player, Item* item);
+		bool tryRetrieveStashItems(Player* player, Item* item);
 
 		std::unique_ptr<IOWheel> &getIOWheel();
 		const std::unique_ptr<IOWheel> &getIOWheel() const;

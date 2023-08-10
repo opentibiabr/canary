@@ -2799,7 +2799,9 @@ Storage = {
 				PaleWormTimer = 47018,
 				PaleWormKilled = 47019,
 			},
-			PoltergeistOutfits = {}
+			PoltergeistOutfits = {
+				Received = 47020,
+			}
 		},
 		U12_40 = { -- update 12.40 - Reserved Storages 47201 - 47500
 			RevenantOutfits = {},

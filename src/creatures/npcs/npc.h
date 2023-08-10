@@ -110,7 +110,7 @@ class Npc final : public Creature {
 			return false;
 		}
 
-		bool canInteract(const Position &pos) const;
+		bool canInteract(const Position &pos, uint32_t range = 4) const;
 		bool canSeeInvisibility() const override {
 			return true;
 		}

@@ -15,6 +15,7 @@
 #include "creatures/monsters/monsters.h"
 #include "creatures/players/player.h"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/storages/storages.hpp"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 #include "grouping/familiars.h"
@@ -612,7 +613,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 	}
 
 	g_events().eventPlayerOnGainSkillTries(this, skill, count);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, skill, count);
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, skill, count);
 	if (count == 0) {
 		return;
 	}
@@ -740,31 +741,10 @@ void Player::closeContainer(uint8_t cid) {
 	OpenContainer openContainer = it->second;
 	Container* container = openContainer.container;
 
-	if (container && container->isAnyKindOfRewardChest() && !hasOtherRewardContainerOpen(container)) {
-		removeEmptyRewards();
-	}
 	openContainers.erase(it);
 	if (container && container->getID() == ITEM_BROWSEFIELD) {
 		container->decrementReferenceCounter();
 	}
-}
-
-void Player::removeEmptyRewards() {
-	std::erase_if(rewardMap, [this](const auto &rewardBag) {
-		auto [id, reward] = rewardBag;
-		if (reward->empty()) {
-			getRewardChest()->removeItem(reward);
-			reward->decrementReferenceCounter();
-			return true;
-		}
-		return false;
-	});
-}
-
-bool Player::hasOtherRewardContainerOpen(const Container* container) const {
-	return std::ranges::any_of(openContainers.begin(), openContainers.end(), [container](const auto &containerPair) {
-		return containerPair.second.container != container && containerPair.second.container->isAnyKindOfRewardContainer();
-	});
 }
 
 void Player::setContainerIndex(uint8_t cid, uint16_t index) {
@@ -839,7 +819,7 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 		if (!isLogin) {
 			auto currentFrameTime = g_dispatcher().getDispatcherCycle();
 			g_events().eventOnStorageUpdate(this, key, value, getStorageValue(key), currentFrameTime);
-			g_callbacks().executeCallback(EventCallback_t::PlayerOnStorageUpdate, &EventCallback::playerOnStorageUpdate, this, key, value, getStorageValue(key), currentFrameTime);
+			g_callbacks().executeCallback(EventCallback_t::playerOnStorageUpdate, &EventCallback::playerOnStorageUpdate, this, key, value, getStorageValue(key), currentFrameTime);
 		}
 	} else {
 		storageMap.erase(key);
@@ -855,6 +835,26 @@ int32_t Player::getStorageValue(const uint32_t key) const {
 
 	value = it->second;
 	return value;
+}
+
+int32_t Player::getStorageValueByName(const std::string &storageName) const {
+	auto it = g_storages().getStorageMap().find(storageName);
+	if (it == g_storages().getStorageMap().end()) {
+		return -1;
+	}
+	uint32_t key = it->second;
+
+	return getStorageValue(key);
+}
+
+void Player::addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin /* = false*/) {
+	auto it = g_storages().getStorageMap().find(storageName);
+	if (it == g_storages().getStorageMap().end()) {
+		spdlog::error("[{}] Storage name '{}' not found in storage map, register your storage in 'storages.xml' first for use", __func__, storageName);
+		return;
+	}
+	uint32_t key = it->second;
+	addStorageValue(key, value, isLogin);
 }
 
 bool Player::canSee(const Position &pos) const {
@@ -1650,12 +1650,12 @@ void Player::onChangeZone(ZoneType_t zone) {
 	sendIcons();
 	g_events().eventPlayerOnChangeZone(this, zone);
 
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnChangeZone, &EventCallback::playerOnChangeZone, this, zone);
+	g_callbacks().executeCallback(EventCallback_t::playerOnChangeZone, &EventCallback::playerOnChangeZone, this, zone);
 }
 
 void Player::onChangeHazard(bool isHazard) {
 	g_events().eventPlayerOnChangeHazard(this, isHazard);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnChangeHazard, &EventCallback::playerOnChangeHazard, this, isHazard);
+	g_callbacks().executeCallback(EventCallback_t::playerOnChangeHazard, &EventCallback::playerOnChangeHazard, this, isHazard);
 	sendIcons();
 }
 
@@ -2131,7 +2131,7 @@ void Player::addManaSpent(uint64_t amount) {
 	}
 
 	g_events().eventPlayerOnGainSkillTries(this, SKILL_MAGLEVEL, amount);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, SKILL_MAGLEVEL, amount);
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, SKILL_MAGLEVEL, amount);
 	if (amount == 0) {
 		return;
 	}
@@ -2187,7 +2187,7 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 		return;
 	}
 
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnGainExperience, &EventCallback::playerOnGainExperience, this, target, exp, rawExp);
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainExperience, &EventCallback::playerOnGainExperience, this, target, exp, rawExp);
 
 	g_events().eventPlayerOnGainExperience(this, target, exp, rawExp);
 	if (exp == 0) {
@@ -2293,7 +2293,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 	}
 
 	g_events().eventPlayerOnLoseExperience(this, exp);
-	g_callbacks().executeCallback(EventCallback_t::PlayerOnLoseExperience, &EventCallback::playerOnLoseExperience, this, exp);
+	g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, this, exp);
 	if (exp == 0) {
 		return;
 	}
@@ -2589,7 +2589,7 @@ void Player::death(Creature* lastHitCreature) {
 		// Level loss
 		uint64_t expLoss = static_cast<uint64_t>(experience * deathLossPercent);
 		g_events().eventPlayerOnLoseExperience(this, expLoss);
-		g_callbacks().executeCallback(EventCallback_t::PlayerOnLoseExperience, &EventCallback::playerOnLoseExperience, this, expLoss);
+		g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, this, expLoss);
 
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are dead.");
 		std::ostringstream lostExp;
@@ -5715,7 +5715,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
 
 		g_events().eventPlayerOnGainSkillTries(this, SKILL_MAGLEVEL, tries);
-		g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, SKILL_MAGLEVEL, tries);
+		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, SKILL_MAGLEVEL, tries);
 
 		uint32_t currMagLevel = magLevel;
 		while ((manaSpent + tries) >= nextReqMana) {
@@ -5770,7 +5770,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldPercentToNextLevel = static_cast<long double>(skills[skill].tries * 100) / nextReqTries;
 
 		g_events().eventPlayerOnGainSkillTries(this, skill, tries);
-		g_callbacks().executeCallback(EventCallback_t::PlayerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, skill, tries);
+		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, this, skill, tries);
 		uint32_t currSkillLevel = skills[skill].level;
 
 		while ((skills[skill].tries + tries) >= nextReqTries) {
@@ -6167,7 +6167,7 @@ bool Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 		itemCount -= addValue;
 		Item* newItem = Item::CreateItem(itemId, addValue);
 
-		if (g_game().canRetrieveStashItems(this, newItem)) {
+		if (!g_game().tryRetrieveStashItems(this, newItem)) {
 			g_game().internalPlayerAddItem(this, newItem, true);
 		}
 	}
@@ -6564,7 +6564,7 @@ void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool
 	ReturnValue ret = RETURNVALUE_NOERROR;
 	for (Item* item : itemsVector) {
 		// First lets try to retrieve the item to the stash retrieve container.
-		if (g_game().canRetrieveStashItems(this, item)) {
+		if (g_game().tryRetrieveStashItems(this, item)) {
 			continue;
 		}
 
@@ -6768,7 +6768,7 @@ bool Player::saySpell(
 		tmpPlayer->onCreatureSay(this, type, text);
 		if (this != tmpPlayer) {
 			g_events().eventCreatureOnHear(tmpPlayer, this, text, type);
-			g_callbacks().executeCallback(EventCallback_t::CreatureOnHear, &EventCallback::creatureOnHear, tmpPlayer, this, text, type);
+			g_callbacks().executeCallback(EventCallback_t::creatureOnHear, &EventCallback::creatureOnHear, tmpPlayer, this, text, type);
 		}
 	}
 	return true;

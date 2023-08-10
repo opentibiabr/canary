@@ -12,6 +12,7 @@
 #include "declarations.hpp"
 #include "creatures/combat/spells.h"
 #include "creatures/players/grouping/familiars.h"
+#include "creatures/players/storages/storages.hpp"
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
 #include "game/game.h"
@@ -165,31 +166,34 @@ void loadModules() {
 		g_luaEnvironment.initState();
 	}
 
-	// Core start
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+	// Load items dependencies
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
 	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
 
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	SPDLOG_INFO("Loading core scripts on folder: {}/", coreFolder);
+	// Load first core Lua libs
 	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/core.lua", "core.lua") == 0), "core.lua");
-	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua", "talkactions.lua") == 0), "scripts/talkactions.lua");
+	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts", false, false), "/data/scripts");
+
+	// Second XML scripts
 	modulesLoadHelper(g_vocations().loadFromXml(), "XML/vocations.xml");
 	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(), "XML/events.xml");
 	modulesLoadHelper(Outfits::getInstance().loadFromXml(), "XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(), "XML/familiars.xml");
 	modulesLoadHelper(g_imbuements().loadFromXml(), "XML/imbuements.xml");
+	modulesLoadHelper(g_storages().loadFromXML(), "XML/storages.xml");
 	modulesLoadHelper(g_modules().loadFromXml(), "modules/modules.xml");
 	modulesLoadHelper(g_events().loadFromXml(), "events/events.xml");
 	modulesLoadHelper((g_npcs().load(true, false)), "npclib");
 
 	SPDLOG_INFO("Loading datapack scripts on folder: {}/", datapackName);
-	// Load libs first
-	modulesLoadHelper(g_scripts().loadScripts("scripts/lib", true, false), "scripts/libs");
+	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false), datapackFolder + "/scripts/libs");
 	// Load scripts
-	modulesLoadHelper(g_scripts().loadScripts("scripts", false, false), "scripts");
+	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts", false, false), datapackFolder + "/scripts");
 	// Load monsters
-	modulesLoadHelper(g_scripts().loadScripts("monster", false, false), "monster");
+	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/monster", false, false), datapackFolder + "/monster");
 	modulesLoadHelper((g_npcs().load(false, true)), "npc");
 
 	g_game().loadBoostedCreature();

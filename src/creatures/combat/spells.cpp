@@ -95,8 +95,8 @@ bool Spells::registerInstantLuaEvent(InstantSpell* event) {
 	if (instant) {
 		// If the spell not have the "spell:words()" return a error message
 		const std::string &instantName = instant->getName();
-		if (instant->getWordsMap().empty()) {
-			SPDLOG_ERROR("[Spells::registerInstantLuaEvent] - Missing register words for spell with name {}", instantName);
+		if (instant->getWords().empty()) {
+			SPDLOG_ERROR("[Spells::registerInstantLuaEvent] - Missing register word for spell with name {}", instantName);
 			return false;
 		}
 

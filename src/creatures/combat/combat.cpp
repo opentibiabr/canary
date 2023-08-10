@@ -1219,7 +1219,7 @@ void Combat::doCombatHealth(Creature* caster, const Position &position, const Ar
 			}
 		}
 	}
-	auto origin = caster ? caster->getPosition() : Position();
+	const auto &origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatHealthFunc, &damage);
 }
 
@@ -1273,12 +1273,12 @@ void Combat::doCombatMana(Creature* caster, const Position &position, const Area
 			damage.secondary.value += (damage.secondary.value * (caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + damage.criticalDamage)) / 100;
 		}
 	}
-	auto origin = caster ? caster->getPosition() : Position();
+	const auto &origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatManaFunc, &damage);
 }
 
 void Combat::doCombatCondition(Creature* caster, const Position &position, const AreaCombat* area, const CombatParams &params) {
-	auto origin = caster ? caster->getPosition() : Position();
+	const auto &origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatConditionFunc, nullptr);
 }
 
@@ -1307,7 +1307,7 @@ void Combat::doCombatCondition(Creature* caster, Creature* target, const CombatP
 }
 
 void Combat::doCombatDispel(Creature* caster, const Position &position, const AreaCombat* area, const CombatParams &params) {
-	auto origin = caster ? caster->getPosition() : Position();
+	const auto &origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatDispelFunc, nullptr);
 }
 

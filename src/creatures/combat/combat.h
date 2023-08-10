@@ -324,7 +324,7 @@ class Combat {
 
 	private:
 		static void doChainEffect(const Position &origin, const Position &pos, uint8_t effect);
-		static void pickChainTargets(Creature* caster, std::vector<Creature*> &targets, std::set<uint32_t> &targetSet, std::set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive);
+		static void pickChainTargets(Creature* caster, std::vector<Creature*> &targets, phmap::btree_set<uint32_t> &targetSet, phmap::btree_set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive);
 
 		static void doCombatDefault(Creature* caster, Creature* target, const CombatParams &params);
 

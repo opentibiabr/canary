@@ -180,7 +180,7 @@ class Npc final : public Creature {
 
 		std::map<uint32_t, uint16_t> playerInteractions;
 
-		std::set<Player*> shopPlayerSet;
+		phmap::btree_set<Player*> shopPlayerSet;
 
 		NpcType* npcType;
 		SpawnNpc* spawnNpc = nullptr;

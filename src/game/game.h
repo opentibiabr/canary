@@ -565,11 +565,11 @@ class Game {
 			mapLuaItemsStored[position] = itemId;
 		}
 
-		std::set<uint32_t> getFiendishMonsters() const {
+		phmap::btree_set<uint32_t> getFiendishMonsters() const {
 			return fiendishMonsters;
 		}
 
-		std::set<uint32_t> getInfluencedMonsters() const {
+		phmap::btree_set<uint32_t> getInfluencedMonsters() const {
 			return influencedMonsters;
 		}
 
@@ -654,8 +654,8 @@ class Game {
 
 	private:
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;
-		std::set<uint32_t> fiendishMonsters;
-		std::set<uint32_t> influencedMonsters;
+		phmap::btree_set<uint32_t> fiendishMonsters;
+		phmap::btree_set<uint32_t> influencedMonsters;
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string &text);
 		void playerWhisper(Player* player, const std::string &text);

@@ -638,7 +638,7 @@ void Creature::onDeath() {
 	const int64_t timeNow = OTSYS_TIME();
 	const uint32_t inFightTicks = g_configManager().getNumber(PZ_LOCKED);
 	int32_t mostDamage = 0;
-	std::map<Creature*, uint64_t> experienceMap;
+	phmap::btree_map<Creature*, uint64_t> experienceMap;
 	for (const auto &it : damageMap) {
 		if (Creature* attacker = g_game().getCreatureByID(it.first)) {
 			CountBlock_t cb = it.second;

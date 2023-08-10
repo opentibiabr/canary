@@ -926,7 +926,7 @@ uint16_t PlayerWheel::getExtraPoints() const {
 		return 0;
 	}
 
-	std::map<std::string, uint16_t> availableScrolls = {
+	phmap::btree_map<std::string, uint16_t> availableScrolls = {
 		{ "wheel.scroll.abridged", 3 },
 		{ "wheel.scroll.basic", 5 },
 		{ "wheel.scroll.revised", 9 },

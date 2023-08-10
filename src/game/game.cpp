@@ -412,7 +412,7 @@ bool Game::loadItemsPrice() {
 		marketQuery << "SELECT `price`, `tier` FROM `market_offers` WHERE `itemtype` = " << itemId << " ORDER BY `price` DESC LIMIT 1";
 		DBResult_ptr marketOffersResult = db.storeQuery(marketQuery.str());
 		if (marketOffersResult) {
-			std::map<uint8_t, uint64_t> tierAndCount;
+			phmap::btree_map<uint8_t, uint64_t> tierAndCount;
 			auto tier = marketOffersResult->getNumber<uint8_t>("tier");
 			auto price = marketOffersResult->getNumber<uint64_t>("price");
 			tierAndCount[tier] = price;
@@ -2748,7 +2748,7 @@ ObjectCategory_t Game::getObjectCategory(const Item* item) {
 	return category;
 }
 
-uint64_t Game::getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, bool buyPrice) const {
+uint64_t Game::getItemMarketPrice(const phmap::btree_map<uint16_t, uint64_t> &itemMap, bool buyPrice) const {
 	uint64_t total = 0;
 	for (const auto &it : itemMap) {
 		if (it.first == ITEM_GOLD_COIN) {
@@ -8336,7 +8336,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	IOMarket::createOffer(player->getGUID(), static_cast<MarketAction_t>(type), it.id, amount, price, tier, anonymous);
 
 	// uint8_t = tier, uint64_t price
-	std::map<uint8_t, uint64_t> tierAndPriceMap;
+	phmap::btree_map<uint8_t, uint64_t> tierAndPriceMap;
 	tierAndPriceMap[tier] = price;
 	auto ColorItem = itemsPriceMap.find(it.id);
 	if (ColorItem == itemsPriceMap.end()) {
@@ -9018,7 +9018,7 @@ void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpe
 		return;
 	}
 
-	std::map<Slots_t, Item*> itemsWithImbueSlotMap;
+	phmap::btree_map<Slots_t, Item*> itemsWithImbueSlotMap;
 	for (uint8_t inventorySlot = CONST_SLOT_FIRST; inventorySlot <= CONST_SLOT_LAST; ++inventorySlot) {
 		auto item = player->getInventoryItem(static_cast<Slots_t>(inventorySlot));
 		if (!item) {
@@ -9083,7 +9083,7 @@ void Game::updatePlayerSaleItems(uint32_t playerId) {
 		return;
 	}
 
-	std::map<uint16_t, uint16_t> inventoryMap;
+	phmap::btree_map<uint16_t, uint16_t> inventoryMap;
 	player->sendSaleItemList(player->getAllSaleItemIdAndCount(inventoryMap));
 	player->setScheduledSaleUpdate(false);
 }

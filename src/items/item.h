@@ -32,7 +32,7 @@ class BedItem;
 class Imbuement;
 class Item;
 
-// This class ItemProperties that serves as an interface to access and modify attributes of an item. The item's attributes are stored in an instance of ItemAttribute. The class ItemProperties has methods to get and set integer and string attributes, check if an attribute exists, remove an attribute, get the underlying attribute bits, and get a vector of attributes. It also has methods to get and set custom attributes, which are stored in a std::map<std::string, CustomAttribute, std::less<>>. The class has a data member attributePtr of type std::unique_ptr<ItemAttribute> that stores a pointer to the item's attributes methods.
+// This class ItemProperties that serves as an interface to access and modify attributes of an item. The item's attributes are stored in an instance of ItemAttribute. The class ItemProperties has methods to get and set integer and string attributes, check if an attribute exists, remove an attribute, get the underlying attribute bits, and get a vector of attributes. It also has methods to get and set custom attributes, which are stored in a phmap::btree_map<std::string, CustomAttribute, std::less<>>. The class has a data member attributePtr of type std::unique_ptr<ItemAttribute> that stores a pointer to the item's attributes methods.
 class ItemProperties {
 	public:
 		template <typename T>
@@ -77,8 +77,8 @@ class ItemProperties {
 		}
 
 		// Custom Attributes
-		const std::map<std::string, CustomAttribute, std::less<>> &getCustomAttributeMap() const {
-			static std::map<std::string, CustomAttribute, std::less<>> map = {};
+		const phmap::btree_map<std::string, CustomAttribute, std::less<>> &getCustomAttributeMap() const {
+			static phmap::btree_map<std::string, CustomAttribute, std::less<>> map = {};
 			if (!attributePtr) {
 				return map;
 			}

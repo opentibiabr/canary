@@ -244,7 +244,7 @@ class AreaCombat {
 			return it->second;
 		}
 
-		std::map<Direction, MatrixArea*> areas;
+		phmap::btree_map<Direction, MatrixArea*> areas;
 		bool hasExtArea = false;
 };
 

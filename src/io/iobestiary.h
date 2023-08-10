@@ -79,9 +79,9 @@ class IOBestiary {
 
 		charmRune_t getCharmFromTarget(Player* player, MonsterType* mtype);
 
-		std::map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(Player* player, std::map<uint16_t, std::string> mtype_list) const;
-		std::map<uint8_t, int16_t> getMonsterElements(MonsterType* mtype) const;
-		std::map<uint16_t, std::string> findRaceByName(const std::string &race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
+		phmap::btree_map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(Player* player, phmap::btree_map<uint16_t, std::string> mtype_list) const;
+		phmap::btree_map<uint8_t, int16_t> getMonsterElements(MonsterType* mtype) const;
+		phmap::btree_map<uint16_t, std::string> findRaceByName(const std::string &race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
 };
 
 constexpr auto g_iobestiary = &IOBestiary::getInstance;

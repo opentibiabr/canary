@@ -25,12 +25,12 @@ class Storages {
 
 		bool loadFromXML();
 
-		const std::map<std::string, uint32_t> &getStorageMap() const;
+		const phmap::btree_map<std::string, uint32_t> &getStorageMap() const;
 
 	private:
 		Storages() = default;
 
-		std::map<std::string, uint32_t> m_storageMap;
+		phmap::btree_map<std::string, uint32_t> m_storageMap;
 };
 
 constexpr auto g_storages = &Storages::getInstance;

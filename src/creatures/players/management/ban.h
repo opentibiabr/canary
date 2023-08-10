@@ -25,7 +25,7 @@ struct ConnectBlock {
 		uint32_t count;
 };
 
-using IpConnectMap = std::map<uint32_t, ConnectBlock>;
+using IpConnectMap = phmap::btree_map<uint32_t, ConnectBlock>;
 
 class Ban {
 	public:

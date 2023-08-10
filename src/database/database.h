@@ -159,7 +159,7 @@ class DBResult {
 		MYSQL_RES* handle;
 		MYSQL_ROW row;
 
-		std::map<std::string_view, size_t> listNames;
+		phmap::btree_map<std::string_view, size_t> listNames;
 
 		friend class Database;
 };

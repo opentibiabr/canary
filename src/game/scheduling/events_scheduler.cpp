@@ -29,8 +29,8 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 
 	// Keep track of loaded scripts to check for duplicates
 	int count = 0;
-	std::set<std::string_view, std::less<>> loadedScripts;
-	std::map<std::string, EventRates> eventsOnSameDay;
+	phmap::btree_set<std::string_view, std::less<>> loadedScripts;
+	phmap::btree_map<std::string, EventRates> eventsOnSameDay;
 	for (const auto &eventNode : doc.child("events").children()) {
 		std::string eventScript = eventNode.attribute("script").as_string();
 		std::string eventName = eventNode.attribute("name").as_string();

@@ -310,7 +310,7 @@ MonsterType* Monsters::getMonsterType(const std::string &name) {
 }
 
 MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t thisrace) {
-	std::map<uint16_t, std::string> raceid_list = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> raceid_list = g_game().getBestiaryList();
 	auto it = raceid_list.find(thisrace);
 	if (it == raceid_list.end()) {
 		return nullptr;

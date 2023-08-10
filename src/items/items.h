@@ -286,7 +286,7 @@ class ItemType {
 		RaceType_t corpseType = RACE_NONE;
 		Fluids_t fluidSource = FLUID_NONE;
 		TileFlags_t floorChange = TILESTATE_NONE;
-		std::map<ImbuementTypes_t, uint16_t> imbuementTypes;
+		phmap::btree_map<ImbuementTypes_t, uint16_t> imbuementTypes;
 
 		uint8_t upgradeClassification = 0;
 		uint8_t alwaysOnTopOrder = 0;

@@ -16,7 +16,7 @@
 #include "game/scheduling/tasks.h"
 #include "server/network/message/outputmessage.h"
 
-std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
+phmap::btree_map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME();
 
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
@@ -24,7 +24,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 	if (ip != 0x0100007F) {
 		std::string ipStr = convertIPToString(ip);
 		if (ipStr != g_configManager().getString(IP)) {
-			std::map<uint32_t, int64_t>::const_iterator it = ipConnectMap.find(ip);
+			phmap::btree_map<uint32_t, int64_t>::const_iterator it = ipConnectMap.find(ip);
 			if (it != ipConnectMap.end() && (OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT)))) {
 				disconnect();
 				return;
@@ -96,7 +96,7 @@ void ProtocolStatus::sendStatusString() {
 
 	pugi::xml_node players = tsqp.append_child("players");
 	uint32_t real = 0;
-	std::map<uint32_t, uint32_t> listIP;
+	phmap::btree_map<uint32_t, uint32_t> listIP;
 	for (const auto &[key, player] : g_game().getPlayers()) {
 		if (player->getIP() != 0) {
 			auto ip = listIP.find(player->getIP());

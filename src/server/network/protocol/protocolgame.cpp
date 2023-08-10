@@ -2155,7 +2155,7 @@ void ProtocolGame::parseBestiarysendRaces() {
 	NetworkMessage msg;
 	msg.addByte(0xd5);
 	msg.add<uint16_t>(BESTY_RACE_LAST);
-	std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 	for (uint8_t i = BESTY_RACE_FIRST; i <= BESTY_RACE_LAST; i++) {
 		std::string BestClass = "";
 		uint16_t count = 0;
@@ -2198,7 +2198,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	uint16_t raceId = msg.get<uint16_t>();
 	std::string Class = "";
 	MonsterType* mtype = nullptr;
-	std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 
 	auto ait = mtype_list.find(raceId);
 	if (ait != mtype_list.end()) {
@@ -2286,7 +2286,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	}
 
 	if (currentLevel > 2) {
-		std::map<uint8_t, int16_t> elements = g_iobestiary().getMonsterElements(mtype);
+		phmap::btree_map<uint8_t, int16_t> elements = g_iobestiary().getMonsterElements(mtype);
 
 		newmsg.addByte(elements.size());
 		for (auto it = std::begin(elements), end = std::end(elements); it != end; it++) {
@@ -2315,7 +2315,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 
 void ProtocolGame::addBestiaryTrackerList(NetworkMessage &msg) {
 	uint16_t thisrace = msg.get<uint16_t>();
-	std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 	auto it = mtype_list.find(thisrace);
 	if (it != mtype_list.end()) {
 		MonsterType* mtype = g_monsters().getMonsterType(it->second);
@@ -2333,7 +2333,7 @@ void ProtocolGame::sendTeamFinderList() {
 	NetworkMessage msg;
 	msg.addByte(0x2D);
 	msg.addByte(0x00); // Bool value, with 'true' the player exceed packets for second.
-	std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+	phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 	msg.add<uint16_t>(teamFinder.size());
 	for (auto it : teamFinder) {
 		const Player* leader = g_game().getPlayerByGUID(it.first);
@@ -2397,7 +2397,7 @@ void ProtocolGame::sendLeaderTeamFinder(bool reset) {
 	}
 
 	TeamFinder* teamAssemble = nullptr;
-	std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+	phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 	auto it = teamFinder.find(player->getGUID());
 	if (it != teamFinder.end()) {
 		teamAssemble = it->second;
@@ -2479,8 +2479,8 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg) {
 		return;
 	}
 
-	std::map<uint32_t, uint8_t> members;
-	std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+	phmap::btree_map<uint32_t, uint8_t> members;
+	phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 	TeamFinder* teamAssemble = nullptr;
 	auto it = teamFinder.find(player->getGUID());
 	if (it != teamFinder.end()) {
@@ -2593,7 +2593,7 @@ void ProtocolGame::parseLeaderFinderWindow(NetworkMessage &msg) {
 			if (!member)
 				return;
 
-			std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+			phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 			TeamFinder* teamAssemble = nullptr;
 			auto it = teamFinder.find(player->getGUID());
 			if (it != teamFinder.end()) {
@@ -2655,7 +2655,7 @@ void ProtocolGame::parseMemberFinderWindow(NetworkMessage &msg) {
 		if (!leader)
 			return;
 
-		std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+		phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 		TeamFinder* teamAssemble = nullptr;
 		auto it = teamFinder.find(leaderID);
 		if (it != teamFinder.end()) {
@@ -2778,13 +2778,13 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 	}
 
 	std::ostringstream ss;
-	std::map<uint16_t, std::string> race = {};
+	phmap::btree_map<uint16_t, std::string> race = {};
 	std::string text = "";
 	uint8_t search = msg.getByte();
 
 	if (search == 1) {
 		uint16_t monsterAmount = msg.get<uint16_t>();
-		std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+		phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 		for (uint16_t monsterCount = 1; monsterCount <= monsterAmount; monsterCount++) {
 			uint16_t raceid = msg.get<uint16_t>();
 			if (player->getBestiaryKillCount(raceid) > 0) {
@@ -2810,7 +2810,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 	newmsg.addByte(0xd6);
 	newmsg.addString(text);
 	newmsg.add<uint16_t>(race.size());
-	std::map<uint16_t, uint32_t> creaturesKilled = g_iobestiary().getBestiaryKillCountByMonsterIDs(player, race);
+	phmap::btree_map<uint16_t, uint32_t> creaturesKilled = g_iobestiary().getBestiaryKillCountByMonsterIDs(player, race);
 
 	for (auto it_ : race) {
 		uint16_t raceid_ = it_.first;
@@ -4194,7 +4194,7 @@ void ProtocolGame::sendLootContainers() {
 	NetworkMessage msg;
 	msg.addByte(0xC0);
 	msg.addByte(player->quickLootFallbackToMainContainer ? 1 : 0);
-	std::map<ObjectCategory_t, Container*> quickLoot;
+	phmap::btree_map<ObjectCategory_t, Container*> quickLoot;
 	for (auto it : player->quickLootContainers) {
 		if (it.second && !it.second->isRemoved()) {
 			quickLoot[it.first] = it.second;
@@ -4311,7 +4311,7 @@ void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value) 
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap) {
+void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const phmap::btree_map<uint16_t, uint16_t> &inventoryMap) {
 	// Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
 	uint64_t playerMoney = 0;
 	auto it = inventoryMap.find(ITEM_CRYSTAL_COIN);
@@ -4656,7 +4656,7 @@ void ProtocolGame::sendMarketCancelOffer(const MarketOfferEx &offer) {
 
 void ProtocolGame::sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyOffers, const HistoryMarketOfferList &sellOffers) {
 	uint32_t i = 0;
-	std::map<uint32_t, uint16_t> counterMap;
+	phmap::btree_map<uint32_t, uint16_t> counterMap;
 	uint32_t buyOffersToSend = std::min<uint32_t>(buyOffers.size(), 810 + std::max<int32_t>(0, 810 - sellOffers.size()));
 	uint32_t sellOffersToSend = std::min<uint32_t>(sellOffers.size(), 810 + std::max<int32_t>(0, 810 - buyOffers.size()));
 
@@ -4712,7 +4712,7 @@ void ProtocolGame::sendForgingData() {
 	NetworkMessage msg;
 	msg.addByte(0x86);
 
-	std::map<uint8_t, uint16_t> tierCorePrices;
+	phmap::btree_map<uint8_t, uint16_t> tierCorePrices;
 
 	const auto &classifications = g_game().getItemsClassifications();
 	msg.addByte(classifications.size());
@@ -4767,9 +4767,9 @@ void ProtocolGame::sendForgingData() {
 
 void ProtocolGame::sendOpenForge() {
 	// We will use it when sending the bytes to send the item information to the client
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> donorTierItemMap;
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> receiveTierItemMap;
+	phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint16_t>> fusionItemsMap;
+	phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint16_t>> donorTierItemMap;
+	phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint16_t>> receiveTierItemMap;
 
 	/*
 	 *Start - Parsing items informations
@@ -6757,7 +6757,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot) {
 			}
 		});
 	} else if (slot->state == PreyDataState_ListSelection) {
-		const std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
+		const phmap::btree_map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto &mType) {
 			msg.add<uint16_t>(mType.first);
@@ -7406,7 +7406,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
 		});
 	} else if (slot->state == PreyTaskDataState_ListSelection) {
 		const Player* user = player;
-		const std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
+		const phmap::btree_map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg, user](auto &mType) {
 			msg.add<uint16_t>(mType.first);
@@ -7590,7 +7590,7 @@ void ProtocolGame::sendFeatures() {
 		return;
 	}
 
-	std::map<GameFeature_t, bool> features;
+	phmap::btree_map<GameFeature_t, bool> features;
 	// Place for non-standard OTCv8 features
 	features[GameFeature_t::ExtendedOpcode] = true;
 
@@ -7617,7 +7617,7 @@ void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg) {
 	addGameTask(&Game::playerRequestInventoryImbuements, player->getID(), isTrackerOpen);
 }
 
-void ProtocolGame::sendInventoryImbuements(const std::map<Slots_t, Item*> items) {
+void ProtocolGame::sendInventoryImbuements(const phmap::btree_map<Slots_t, Item*> items) {
 	if (oldProtocol) {
 		return;
 	}
@@ -7963,8 +7963,8 @@ void ProtocolGame::sendUpdateCreature(const Creature* creature) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::getForgeInfoMap(const Item* item, std::map<uint16_t, std::map<uint8_t, uint16_t>> &itemsMap) const {
-	std::map<uint8_t, uint16_t> itemInfo;
+void ProtocolGame::getForgeInfoMap(const Item* item, phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint16_t>> &itemsMap) const {
+	phmap::btree_map<uint8_t, uint16_t> itemInfo;
 	itemInfo.insert({ item->getTier(), item->getItemCount() });
 	auto [first, inserted] = itemsMap.try_emplace(item->getID(), itemInfo);
 	if (!inserted) {
@@ -8047,7 +8047,7 @@ void ProtocolGame::parseSendBosstiary() {
 	NetworkMessage msg;
 	msg.addByte(0x73);
 
-	std::map<uint32_t, std::string> mtype_list = g_ioBosstiary().getBosstiaryMap();
+	phmap::btree_map<uint32_t, std::string> mtype_list = g_ioBosstiary().getBosstiaryMap();
 	auto bossesBuffer = msg.getBufferPosition();
 	uint16_t bossesCount = 0;
 	msg.skipBytes(2);

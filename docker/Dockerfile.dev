@@ -14,7 +14,7 @@ RUN vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' |
 	&& echo "vcpkg commit ID: $vcpkgCommitId" \
 	&& git clone https://github.com/Microsoft/vcpkg.git \
 	&& cd vcpkg \
-	&& git checkout $vcpkgCommitId \
+	&& git checkout "$vcpkgCommitId" \
 	&& ./bootstrap-vcpkg.sh
 
 WORKDIR /opt/vcpkg

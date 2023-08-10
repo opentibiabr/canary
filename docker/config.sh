@@ -83,7 +83,7 @@ while IFS='=' read -r key value; do
         ;;
     esac
   fi
-done < $env_file
+done < "$env_file"
 
 # # Substitutes other variables provided as command line arguments
 args=("$@")

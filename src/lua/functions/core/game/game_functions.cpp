@@ -92,7 +92,7 @@ int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 	bool name = getBoolean(L, 2, false);
 
 	if (lua_gettop(L) <= 2) {
-		std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+		phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 		for (auto ita : mtype_list) {
 			if (name) {
 				pushString(L, ita.second);
@@ -103,7 +103,7 @@ int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 		}
 	} else {
 		if (isNumber(L, 2)) {
-			std::map<uint16_t, std::string> tmplist = g_iobestiary().findRaceByName("CANARY", false, getNumber<BestiaryType_t>(L, 2));
+			phmap::btree_map<uint16_t, std::string> tmplist = g_iobestiary().findRaceByName("CANARY", false, getNumber<BestiaryType_t>(L, 2));
 			for (auto itb : tmplist) {
 				if (name) {
 					pushString(L, itb.second);
@@ -113,7 +113,7 @@ int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 				lua_rawseti(L, -2, ++index);
 			}
 		} else {
-			std::map<uint16_t, std::string> tmplist = g_iobestiary().findRaceByName(getString(L, 2));
+			phmap::btree_map<uint16_t, std::string> tmplist = g_iobestiary().findRaceByName(getString(L, 2));
 			for (auto itc : tmplist) {
 				if (name) {
 					pushString(L, itc.second);

@@ -70,7 +70,7 @@ class LuaScriptInterface : public LuaFunctionsLoader {
 		lua_State* luaState = nullptr;
 		int32_t eventTableRef = -1;
 		int32_t runningEventId = EVENT_ID_USER;
-		std::map<int32_t, std::string> cacheFiles;
+		phmap::btree_map<int32_t, std::string> cacheFiles;
 
 	private:
 		std::string lastLuaError;

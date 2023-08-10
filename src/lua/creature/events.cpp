@@ -30,7 +30,7 @@ bool Events::loadFromXml() {
 
 	info = {};
 
-	std::set<std::string> classes;
+	phmap::btree_set<std::string> classes;
 	for (auto eventNode : doc.child("events").children()) {
 		if (!eventNode.attribute("enabled").as_bool()) {
 			continue;

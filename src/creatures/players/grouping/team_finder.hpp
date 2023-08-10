@@ -18,7 +18,7 @@
 class TeamFinder {
 	public:
 		TeamFinder() = default;
-		TeamFinder(uint16_t initMinLevel, uint16_t initMaxLevel, uint8_t initVocationIDs, uint16_t initTeamSlots, uint16_t initFreeSlots, bool initPartyBool, uint32_t initTimestamp, uint8_t initTeamType, uint16_t initBossID, uint16_t initHunt_type, uint16_t initHunt_area, uint16_t initQuestID, uint32_t initLeaderGuid, std::map<uint32_t, uint8_t> initMembersMap) :
+		TeamFinder(uint16_t initMinLevel, uint16_t initMaxLevel, uint8_t initVocationIDs, uint16_t initTeamSlots, uint16_t initFreeSlots, bool initPartyBool, uint32_t initTimestamp, uint8_t initTeamType, uint16_t initBossID, uint16_t initHunt_type, uint16_t initHunt_area, uint16_t initQuestID, uint32_t initLeaderGuid, phmap::btree_map<uint32_t, uint8_t> initMembersMap) :
 			minLevel(initMinLevel),
 			maxLevel(initMaxLevel),
 			vocationIDs(initVocationIDs),
@@ -50,7 +50,7 @@ class TeamFinder {
 		uint32_t leaderGuid = 0;
 
 		// list: player:getGuid(), player status
-		std::map<uint32_t, uint8_t> membersMap = {};
+		phmap::btree_map<uint32_t, uint8_t> membersMap = {};
 };
 
 #endif // SRC_CREATURES_PLAYERS_GROUPING_TEAM_FINDER_HPP_

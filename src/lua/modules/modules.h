@@ -80,7 +80,7 @@ class Modules final : public BaseEvents {
 		bool registerEvent(Event_ptr event, const pugi::xml_node &node) override;
 		void clear(bool) override final;
 
-		typedef std::map<uint8_t, Module> ModulesList;
+		typedef phmap::btree_map<uint8_t, Module> ModulesList;
 		ModulesList recvbyteList;
 
 		LuaScriptInterface scriptInterface;

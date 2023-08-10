@@ -137,7 +137,7 @@ bool Spells::registerRuneLuaEvent(RuneSpell* event) {
 std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId) {
 	std::list<uint16_t> spellsList;
 	VocSpellMap vocSpells;
-	std::map<uint16_t, bool>::const_iterator vocSpellsIt;
+	phmap::btree_map<uint16_t, bool>::const_iterator vocSpellsIt;
 
 	for (const auto &it : instants) {
 		vocSpells = it.second.getVocMap();

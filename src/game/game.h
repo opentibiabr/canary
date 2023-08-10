@@ -93,7 +93,7 @@ class Game {
 			return worldType;
 		}
 
-		std::map<uint32_t, TeamFinder*> getTeamFinderList() const {
+		phmap::btree_map<uint32_t, TeamFinder*> getTeamFinderList() const {
 			return teamFinderMap;
 		}
 		void registerTeamFinderAssemble(uint32_t leaderGuid, TeamFinder* teamFinder) {
@@ -208,7 +208,7 @@ class Game {
 
 		ObjectCategory_t getObjectCategory(const Item* item);
 
-		uint64_t getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, bool buyPrice) const;
+		uint64_t getItemMarketPrice(const phmap::btree_map<uint16_t, uint64_t> &itemMap, bool buyPrice) const;
 
 		void loadPlayersRecord();
 		void checkPlayersRecord();
@@ -373,7 +373,7 @@ class Game {
 		void ReleaseCreature(Creature* creature);
 		void ReleaseItem(Item* item);
 		void addBestiaryList(uint16_t raceid, std::string name);
-		const std::map<uint16_t, std::string> &getBestiaryList() const {
+		const phmap::btree_map<uint16_t, std::string> &getBestiaryList() const {
 			return BestiaryList;
 		}
 
@@ -471,16 +471,16 @@ class Game {
 
 		void sendOfflineTrainingDialog(Player* player);
 
-		const std::map<uint16_t, std::map<uint8_t, uint64_t>> &getItemsPrice() const {
+		const phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint64_t>> &getItemsPrice() const {
 			return itemsPriceMap;
 		}
 		const phmap::flat_hash_map<uint32_t, Player*> &getPlayers() const {
 			return players;
 		}
-		const std::map<uint32_t, Monster*> &getMonsters() const {
+		const phmap::btree_map<uint32_t, Monster*> &getMonsters() const {
 			return monsters;
 		}
-		const std::map<uint32_t, Npc*> &getNpcs() const {
+		const phmap::btree_map<uint32_t, Npc*> &getNpcs() const {
 			return npcs;
 		}
 
@@ -565,11 +565,11 @@ class Game {
 			mapLuaItemsStored[position] = itemId;
 		}
 
-		std::set<uint32_t> getFiendishMonsters() const {
+		phmap::btree_set<uint32_t> getFiendishMonsters() const {
 			return fiendishMonsters;
 		}
 
-		std::set<uint32_t> getInfluencedMonsters() const {
+		phmap::btree_set<uint32_t> getInfluencedMonsters() const {
 			return influencedMonsters;
 		}
 
@@ -653,9 +653,9 @@ class Game {
 		const std::unique_ptr<IOWheel> &getIOWheel() const;
 
 	private:
-		std::map<uint32_t, int32_t> forgeMonsterEventIds;
-		std::set<uint32_t> fiendishMonsters;
-		std::set<uint32_t> influencedMonsters;
+		phmap::btree_map<uint32_t, int32_t> forgeMonsterEventIds;
+		phmap::btree_set<uint32_t> fiendishMonsters;
+		phmap::btree_set<uint32_t> influencedMonsters;
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string &text);
 		void playerWhisper(Player* player, const std::string &text);
@@ -751,15 +751,15 @@ class Game {
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
 		phmap::flat_hash_map<uint32_t, Guild*> guilds;
 		phmap::flat_hash_map<uint16_t, Item*> uniqueItems;
-		std::map<uint32_t, uint32_t> stages;
+		phmap::btree_map<uint32_t, uint32_t> stages;
 
 		/* Items stored from the lua scripts positions
 		 * For example: ActionFunctions::luaActionPosition
 		 * This basically works so that the item is created after the map is loaded, because the scripts are loaded before the map is loaded, we will use this table to create items that don't exist in the map natively through each script
 		 */
-		std::map<Position, uint16_t> mapLuaItemsStored;
+		phmap::btree_map<Position, uint16_t> mapLuaItemsStored;
 
-		std::map<uint16_t, std::string> BestiaryList;
+		phmap::btree_map<uint16_t, std::string> BestiaryList;
 		std::string boostedCreature = "";
 
 		std::vector<Charm*> CharmList;
@@ -776,16 +776,16 @@ class Game {
 
 		WildcardTreeNode wildcardTree { false };
 
-		std::map<uint32_t, Npc*> npcs;
-		std::map<uint32_t, Monster*> monsters;
+		phmap::btree_map<uint32_t, Npc*> npcs;
+		phmap::btree_map<uint32_t, Monster*> monsters;
 		std::vector<uint32_t> forgeableMonsters;
 
-		std::map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
+		phmap::btree_map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
 
 		// list of items that are in trading state, mapped to the player
-		std::map<Item*, uint32_t> tradeItems;
+		phmap::btree_map<Item*, uint32_t> tradeItems;
 
-		std::map<uint32_t, BedItem*> bedSleepersMap;
+		phmap::btree_map<uint32_t, BedItem*> bedSleepersMap;
 
 		phmap::flat_hash_set<Tile*> tilesToClean;
 
@@ -819,7 +819,7 @@ class Game {
 		std::string motdHash;
 		uint32_t motdNum = 0;
 
-		std::map<uint16_t, std::map<uint8_t, uint64_t>> itemsPriceMap;
+		phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint64_t>> itemsPriceMap;
 		uint16_t itemsSaleCount;
 
 		std::vector<ItemClassification*> itemsClassifications;

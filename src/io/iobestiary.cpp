@@ -111,9 +111,9 @@ Charm* IOBestiary::getBestiaryCharm(charmRune_t activeCharm, bool force /*= fals
 	return nullptr;
 }
 
-std::map<uint16_t, std::string> IOBestiary::findRaceByName(const std::string &race, bool Onlystring /*= true*/, BestiaryType_t raceNumber /*= BESTY_RACE_NONE*/) const {
-	std::map<uint16_t, std::string> best_list = g_game().getBestiaryList();
-	std::map<uint16_t, std::string> race_list;
+phmap::btree_map<uint16_t, std::string> IOBestiary::findRaceByName(const std::string &race, bool Onlystring /*= true*/, BestiaryType_t raceNumber /*= BESTY_RACE_NONE*/) const {
+	phmap::btree_map<uint16_t, std::string> best_list = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> race_list;
 
 	if (Onlystring) {
 		for (auto it : best_list) {
@@ -186,7 +186,7 @@ uint16_t IOBestiary::getBestiaryRaceUnlocked(Player* player, BestiaryType_t race
 	}
 
 	uint16_t count = 0;
-	std::map<uint16_t, std::string> besty_l = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> besty_l = g_game().getBestiaryList();
 
 	for (auto it : besty_l) {
 		const MonsterType* mtype = g_monsters().getMonsterType(it.second);
@@ -347,8 +347,8 @@ void IOBestiary::sendBuyCharmRune(Player* player, charmRune_t runeID, uint8_t ac
 	return;
 }
 
-std::map<uint8_t, int16_t> IOBestiary::getMonsterElements(MonsterType* mtype) const {
-	std::map<uint8_t, int16_t> defaultMap = {};
+phmap::btree_map<uint8_t, int16_t> IOBestiary::getMonsterElements(MonsterType* mtype) const {
+	phmap::btree_map<uint8_t, int16_t> defaultMap = {};
 	for (uint8_t i = 0; i <= 7; i++) {
 		defaultMap[i] = 100;
 	}
@@ -385,8 +385,8 @@ std::map<uint8_t, int16_t> IOBestiary::getMonsterElements(MonsterType* mtype) co
 	return defaultMap;
 }
 
-std::map<uint16_t, uint32_t> IOBestiary::getBestiaryKillCountByMonsterIDs(Player* player, std::map<uint16_t, std::string> mtype_list) const {
-	std::map<uint16_t, uint32_t> raceMonsters = {};
+phmap::btree_map<uint16_t, uint32_t> IOBestiary::getBestiaryKillCountByMonsterIDs(Player* player, phmap::btree_map<uint16_t, std::string> mtype_list) const {
+	phmap::btree_map<uint16_t, uint32_t> raceMonsters = {};
 	for (auto it : mtype_list) {
 		uint16_t raceid = it.first;
 		uint32_t thisKilled = player->getBestiaryKillCount(raceid);
@@ -399,7 +399,7 @@ std::map<uint16_t, uint32_t> IOBestiary::getBestiaryKillCountByMonsterIDs(Player
 
 std::list<uint16_t> IOBestiary::getBestiaryFinished(Player* player) const {
 	std::list<uint16_t> finishedMonsters = {};
-	std::map<uint16_t, std::string> besty_l = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> besty_l = g_game().getBestiaryList();
 
 	for (auto nt : besty_l) {
 		uint16_t raceid = nt.first;

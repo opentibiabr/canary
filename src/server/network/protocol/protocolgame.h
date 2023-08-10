@@ -332,7 +332,7 @@ class ProtocolGame final : public Protocol {
 		void sendGameNews();
 		void sendResourcesBalance(uint64_t money = 0, uint64_t bank = 0, uint64_t preyCards = 0, uint64_t taskHunting = 0, uint64_t forgeDust = 0, uint64_t forgeSliver = 0, uint64_t forgeCores = 0);
 		void sendResourceBalance(Resource_t resourceType, uint64_t value);
-		void sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap);
+		void sendSaleItemList(const std::vector<ShopBlock> &shopVector, const phmap::btree_map<uint16_t, uint16_t> &inventoryMap);
 		void sendMarketEnter(uint32_t depotId);
 		void updateCoinBalance();
 		void sendMarketLeave();
@@ -456,12 +456,12 @@ class ProtocolGame final : public Protocol {
 		void sendFeatures();
 
 		void parseInventoryImbuements(NetworkMessage &msg);
-		void sendInventoryImbuements(const std::map<Slots_t, Item*> items);
+		void sendInventoryImbuements(const phmap::btree_map<Slots_t, Item*> items);
 
 		// reloadCreature
 		void reloadCreature(const Creature* creature);
 
-		void getForgeInfoMap(const Item* item, std::map<uint16_t, std::map<uint8_t, uint16_t>> &itemsMap) const;
+		void getForgeInfoMap(const Item* item, phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint16_t>> &itemsMap) const;
 
 		// Wheel
 		void parseOpenWheel(NetworkMessage &msg);

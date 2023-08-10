@@ -173,7 +173,7 @@ class Actions final : public Scripts {
 			return false;
 		}
 
-		std::map<Position, Action> getPositionsMap() const {
+		phmap::btree_map<Position, Action> getPositionsMap() const {
 			return actionPositionMap;
 		}
 
@@ -220,11 +220,11 @@ class Actions final : public Scripts {
 		ReturnValue internalUseItem(Player* player, const Position &pos, uint8_t index, Item* item, bool isHotkey);
 		static void showUseHotkeyMessage(Player* player, const Item* item, uint32_t count);
 
-		using ActionUseMap = std::map<uint16_t, Action>;
+		using ActionUseMap = phmap::btree_map<uint16_t, Action>;
 		ActionUseMap useItemMap;
 		ActionUseMap uniqueItemMap;
 		ActionUseMap actionItemMap;
-		std::map<Position, Action> actionPositionMap;
+		phmap::btree_map<Position, Action> actionPositionMap;
 
 		Action* getAction(const Item* item);
 };

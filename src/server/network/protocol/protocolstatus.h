@@ -34,7 +34,7 @@ class ProtocolStatus final : public Protocol {
 		static const uint64_t start;
 
 	private:
-		static std::map<uint32_t, int64_t> ipConnectMap;
+		static phmap::btree_map<uint32_t, int64_t> ipConnectMap;
 };
 
 #endif // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLSTATUS_H_

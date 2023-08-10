@@ -40,7 +40,7 @@ class Town {
 		Position templePosition;
 };
 
-using TownMap = std::map<uint32_t, Town*>;
+using TownMap = phmap::btree_map<uint32_t, Town*>;
 
 class Towns {
 	public:

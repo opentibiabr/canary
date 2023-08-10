@@ -128,7 +128,7 @@ bool MoveEvents::registerLuaEvent(MoveEvent &moveEvent) {
 	return false;
 }
 
-bool MoveEvents::registerEvent(MoveEvent &moveEvent, int32_t id, std::map<int32_t, MoveEventList> &moveListMap) const {
+bool MoveEvents::registerEvent(MoveEvent &moveEvent, int32_t id, phmap::btree_map<int32_t, MoveEventList> &moveListMap) const {
 	auto it = moveListMap.find(id);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
@@ -192,7 +192,7 @@ MoveEvent* MoveEvents::getEvent(Item &item, MoveEvent_t eventType, Slots_t slot)
 	}
 
 	if (item.hasAttribute(ItemAttribute_t::ACTIONID)) {
-		std::map<int32_t, MoveEventList>::iterator it = actionIdMap.find(item.getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
+		phmap::btree_map<int32_t, MoveEventList>::iterator it = actionIdMap.find(item.getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
 		if (it != actionIdMap.end()) {
 			std::list<MoveEvent> &moveEventList = it->second.moveEvent[eventType];
 			for (MoveEvent &moveEvent : moveEventList) {
@@ -216,7 +216,7 @@ MoveEvent* MoveEvents::getEvent(Item &item, MoveEvent_t eventType, Slots_t slot)
 }
 
 MoveEvent* MoveEvents::getEvent(Item &item, MoveEvent_t eventType) {
-	std::map<int32_t, MoveEventList>::iterator it;
+	phmap::btree_map<int32_t, MoveEventList>::iterator it;
 	if (item.hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		it = uniqueIdMap.find(item.getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID));
 		if (it != uniqueIdMap.end()) {
@@ -247,7 +247,7 @@ MoveEvent* MoveEvents::getEvent(Item &item, MoveEvent_t eventType) {
 	return nullptr;
 }
 
-bool MoveEvents::registerEvent(MoveEvent &moveEvent, const Position &position, std::map<Position, MoveEventList> &moveListMap) const {
+bool MoveEvents::registerEvent(MoveEvent &moveEvent, const Position &position, phmap::btree_map<Position, MoveEventList> &moveListMap) const {
 	auto it = moveListMap.find(position);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
@@ -497,7 +497,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 			return 0;
 		}
 
-		const std::map<uint16_t, bool> &vocEquipMap = moveEvent->getVocEquipMap();
+		const phmap::btree_map<uint16_t, bool> &vocEquipMap = moveEvent->getVocEquipMap();
 		if (!vocEquipMap.empty() && !vocEquipMap.contains(player->getVocationId())) {
 			return 0;
 		}

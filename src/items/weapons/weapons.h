@@ -49,7 +49,7 @@ class Weapons final : public Scripts {
 		void clear();
 
 	private:
-		std::map<uint32_t, Weapon*> weapons;
+		phmap::btree_map<uint32_t, Weapon*> weapons;
 };
 
 constexpr auto g_weapons = &Weapons::getInstance;
@@ -213,7 +213,7 @@ class Weapon : public Script {
 		WeaponAction_t action = WEAPONACTION_NONE;
 		CombatParams params;
 		WeaponType_t weaponType;
-		std::map<uint16_t, bool> vocWeaponMap;
+		phmap::btree_map<uint16_t, bool> vocWeaponMap;
 
 		friend class Combat;
 		friend class WeaponWand;

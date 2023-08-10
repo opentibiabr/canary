@@ -44,9 +44,9 @@ class IOBosstiary {
 		void loadBoostedBoss();
 
 		void addBosstiaryMonster(uint32_t raceId, const std::string &name);
-		const std::map<uint32_t, std::string> &getBosstiaryMap() const;
+		const phmap::btree_map<uint32_t, std::string> &getBosstiaryMap() const;
 
-		const std::map<BosstiaryRarity_t, std::vector<LevelInfo>> levelInfos = {
+		const phmap::btree_map<BosstiaryRarity_t, std::vector<LevelInfo>> levelInfos = {
 			{ BosstiaryRarity_t::RARITY_BANE, { { 25, 5 }, { 100, 15 }, { 300, 30 } } },
 			{ BosstiaryRarity_t::RARITY_ARCHFOE, { { 5, 10 }, { 20, 30 }, { 60, 60 } } },
 			{ BosstiaryRarity_t::RARITY_NEMESIS, { { 1, 10 }, { 3, 30 }, { 5, 60 } } }
@@ -70,7 +70,7 @@ class IOBosstiary {
 		IOBosstiary() = default;
 		~IOBosstiary() = default;
 
-		std::map<uint32_t, std::string> bosstiaryMap;
+		phmap::btree_map<uint32_t, std::string> bosstiaryMap;
 		std::string boostedBoss;
 		uint32_t boostedBossId = 0;
 };

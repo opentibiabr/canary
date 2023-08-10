@@ -66,6 +66,6 @@ bool Storages::loadFromXML() {
 	return true;
 }
 
-const std::map<std::string, uint32_t> &Storages::getStorageMap() const {
+const phmap::btree_map<std::string, uint32_t> &Storages::getStorageMap() const {
 	return m_storageMap;
 }

@@ -1273,11 +1273,13 @@ void Combat::doCombatMana(Creature* caster, const Position &position, const Area
 			damage.secondary.value += (damage.secondary.value * (caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + damage.criticalDamage)) / 100;
 		}
 	}
-	CombatFunc(caster, caster->getPosition(), position, area, params, CombatManaFunc, &damage);
+	auto origin = caster ? caster->getPosition() : Position();
+	CombatFunc(caster, origin, position, area, params, CombatManaFunc, &damage);
 }
 
 void Combat::doCombatCondition(Creature* caster, const Position &position, const AreaCombat* area, const CombatParams &params) {
-	CombatFunc(caster, caster->getPosition(), position, area, params, CombatConditionFunc, nullptr);
+	auto origin = caster ? caster->getPosition() : Position();
+	CombatFunc(caster, origin, position, area, params, CombatConditionFunc, nullptr);
 }
 
 void Combat::doCombatCondition(Creature* caster, Creature* target, const CombatParams &params) {

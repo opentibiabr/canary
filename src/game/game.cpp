@@ -6181,6 +6181,11 @@ void Game::applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlay
 }
 
 void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const Player* attackerPlayer, const Creature* target) const {
+	// If damage is 0, it means the target is immune to the damage type, or that we missed.
+	if (damage.primary.value == 0 && damage.secondary.value == 0) {
+		return;
+	}
+
 	if (damage.damageMultiplier > 0) {
 		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100.;
 		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100.;

@@ -936,7 +936,7 @@ void ItemParse::parseReflectDamage(const std::string &tmpStrValue, pugi::xml_att
 	}
 }
 
-void ItemParse::parseTransformOnUse(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+void ItemParse::parseTransformOnUse(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (tmpStrValue == "transformonuse") {
 		itemType.m_transformOnUse = pugi::cast<uint16_t>(valueAttribute.value());
 	}

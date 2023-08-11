@@ -64,7 +64,7 @@ class IOBosstiary {
 		std::vector<uint16_t> getBosstiaryFinished(const Player* player, uint8_t level = 1) const;
 		uint8_t getBossCurrentLevel(const Player* player, uint16_t bossId) const;
 		uint32_t calculteRemoveBoss(uint8_t removeTimes) const;
-		std::vector<uint32_t> getBosstiaryCooldown(const Player* player) const;
+		std::vector<uint16_t> getBosstiaryCooldownRaceId(const Player* player) const;
 
 	private:
 		IOBosstiary() = default;

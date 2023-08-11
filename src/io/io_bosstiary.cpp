@@ -163,7 +163,7 @@ void IOBosstiary::addBosstiaryKill(Player* player, const MonsterType* mtype, uin
 	}
 
 	auto oldBossLevel = getBossCurrentLevel(player, bossId);
-	player->addBestiaryKillCount(static_cast<uint16_t>(bossId), amount);
+	player->addBestiaryKillCount(bossId, amount);
 	auto newBossLevel = getBossCurrentLevel(player, bossId);
 	if (oldBossLevel == newBossLevel) {
 		return;
@@ -225,7 +225,7 @@ std::vector<uint16_t> IOBosstiary::getBosstiaryFinished(const Player* player, ui
 
 	for (phmap::btree_map<uint16_t, std::string> bossesMap = getBosstiaryMap();
 		 const auto &[bossId, bossName] : bossesMap) {
-		uint32_t bossKills = player->getBestiaryKillCount(static_cast<uint16_t>(bossId));
+		uint32_t bossKills = player->getBestiaryKillCount(bossId);
 		if (bossKills == 0) {
 			continue;
 		}
@@ -261,7 +261,7 @@ uint8_t IOBosstiary::getBossCurrentLevel(const Player* player, uint16_t bossId) 
 		return 0;
 	}
 
-	uint32_t currentKills = player->getBestiaryKillCount(static_cast<uint16_t>(bossId));
+	uint32_t currentKills = player->getBestiaryKillCount(bossId);
 	auto bossRace = mType->info.bosstiaryRace;
 	uint8_t level = 0;
 	if (auto it = levelInfos.find(bossRace);
@@ -285,15 +285,15 @@ uint32_t IOBosstiary::calculteRemoveBoss(uint8_t removeTimes) const {
 	return 300000 * removeTimes - 500000;
 }
 
-std::vector<uint32_t> IOBosstiary::getBosstiaryCooldown(const Player* player) const {
-	std::vector<uint32_t> bossesCooldown;
+std::vector<uint16_t> IOBosstiary::getBosstiaryCooldownRaceId(const Player* player) const {
+	std::vector<uint16_t> bossesCooldownRaceId;
 	if (!player) {
-		return bossesCooldown;
+		return bossesCooldownRaceId;
 	}
 
 	for (phmap::btree_map<uint16_t, std::string> bossesMap = getBosstiaryMap();
 		 const auto &[bossId, bossName] : bossesMap) {
-		uint32_t bossKills = player->getBestiaryKillCount(static_cast<uint16_t>(bossId));
+		uint32_t bossKills = player->getBestiaryKillCount(bossId);
 
 		const MonsterType* mType = g_monsters().getMonsterType(bossName);
 		if (!mType) {
@@ -306,9 +306,9 @@ std::vector<uint32_t> IOBosstiary::getBosstiaryCooldown(const Player* player) co
 		}
 
 		if (bossKills >= 1 || player->getStorageValue(bossStorage) > 0) {
-			bossesCooldown.push_back(bossId);
+			bossesCooldownRaceId.push_back(bossId);
 		}
 	}
 
-	return bossesCooldown;
+	return bossesCooldownRaceId;
 }

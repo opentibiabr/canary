@@ -2762,11 +2762,10 @@ void ProtocolGame::BestiarysendCharms() {
 	for (charmRune_t charmRune : usedRunes) {
 		Charm* tmpCharm = g_iobestiary().getBestiaryCharm(charmRune);
 		uint16_t tmp_raceid = player->parseRacebyCharm(tmpCharm->id, false, 0);
-		auto removeMonster = std::remove(finishedMonstersVector.begin(), finishedMonstersVector.end(), tmp_raceid);
-		finishedMonstersVector.erase(removeMonster, finishedMonstersVector.end());
+		std::erase_if(finishedMonstersVector, [tmp_raceid](uint16_t val) { return val == tmp_raceid; });
 	}
 
-	msg.add<uint16_t>(finishedMonstersVector.size());
+	msg.add<uint16_t>(static_cast<uint16_t>(finishedMonstersVector.size()));
 	for (uint16_t raceid_tmp : finishedMonstersVector) {
 		msg.add<uint16_t>(raceid_tmp);
 	}
@@ -8057,7 +8056,7 @@ void ProtocolGame::parseSendBosstiary() {
 	for (const auto &[bossid, name] : mtype_map) {
 		const MonsterType* mType = g_monsters().getMonsterType(name);
 		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-		auto killCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossid));
+		auto killCount = player->getBestiaryKillCount(bossid);
 		msg.add<uint32_t>(bossid);
 		msg.addByte(bossRace);
 		msg.add<uint32_t>(killCount);
@@ -8106,12 +8105,12 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.addByte(isSlotOneUnlocked ? 1 : 0);
 	msg.add<uint32_t>(isSlotOneUnlocked ? bossIdSlotOne : 0);
 	if (isSlotOneUnlocked && bossIdSlotOne != 0) {
-		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotOne);
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
 		if (mType) {
 			// Variables Boss Slot One
 			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
 			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
-			auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotOne);
+			auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotOne);
 			uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
 			uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
 			// Bytes Slot One
@@ -8128,11 +8127,11 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.add<uint32_t>(isSlotTwoUnlocked ? bossIdSlotTwo : slotTwoPoints);
 	if (isSlotTwoUnlocked && bossIdSlotTwo != 0) {
 		// Variables Boss Slot Two
-		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotTwo);
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
 		if (mType) {
 			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotTwo));
-			auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotTwo);
+			auto bossKillCount = player->getBestiaryKillCount((uint16_t)(bossIdSlotTwo));
+			auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotTwo);
 			uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
 			uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
 			// Bytes Slot Two
@@ -8289,15 +8288,16 @@ void ProtocolGame::parseSetMonsterPodium(NetworkMessage &msg) const {
 		return;
 	}
 
-	uint32_t bossRaceId = msg.get<uint32_t>();
+	// For some reason the cip sends uint32_t, but we use uint16_t, so let's just ignore that
+	uint16_t monsterRaceId = (uint16_t)msg.get<uint32_t>();
 	Position pos = msg.getPosition();
 	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
 	uint8_t direction = msg.getByte();
 	uint8_t podiumVisible = msg.getByte();
-	uint8_t bossVisible = msg.getByte();
+	uint8_t monsterVisible = msg.getByte();
 
-	g_game().playerSetMonsterPodium(player->getID(), bossRaceId, pos, stackpos, itemId, direction, podiumVisible, bossVisible);
+	g_game().playerSetMonsterPodium(player->getID(), monsterRaceId, pos, stackpos, itemId, direction, std::make_pair(podiumVisible, monsterVisible));
 }
 
 void ProtocolGame::sendBosstiaryCooldownTimer() {
@@ -8308,7 +8308,7 @@ void ProtocolGame::sendBosstiaryCooldownTimer() {
 	NetworkMessage msg;
 	msg.addByte(0xBD);
 
-	auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldown(player);
+	auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldownRaceId(player);
 	auto bossesOnTrackerSize = static_cast<uint16_t>(bossesOnTracker.size());
 	msg.add<uint16_t>(bossesOnTrackerSize); // Number of bosses on timer
 	for (const auto &bossRaceId : bossesOnTracker) {

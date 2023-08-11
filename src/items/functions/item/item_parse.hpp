@@ -308,7 +308,7 @@ class ItemParse : public Items {
 		static void parsePerfecShot(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parseCleavePercent(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parseReflectDamage(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
-		static void parseTransformOnUse(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+		static void parseTransformOnUse(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 
 	private:
 		// Parent of the function: static void parseField

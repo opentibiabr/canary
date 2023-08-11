@@ -141,6 +141,7 @@ endif()
 # Packages / Libs
 # *****************************************************************************
 find_package(asio CONFIG REQUIRED)
+find_package(eventpp CONFIG REQUIRED)
 find_package(absl CONFIG REQUIRED)
 find_package(CURL CONFIG REQUIRED)
 find_package(GMP REQUIRED)
@@ -358,6 +359,7 @@ if (MSVC)
 			${LUAJIT_LIBRARIES}
 			${MYSQL_CLIENT_LIBS}
 			asio::asio
+			eventpp::eventpp
 			absl::any absl::log absl::base absl::bits
 			CURL::libcurl
 			fmt::fmt
@@ -387,6 +389,7 @@ else()
 			${LUAJIT_LIBRARIES}
 			${GMP_LIBRARIES}
 			asio::asio
+			eventpp::eventpp
 			absl::any absl::log absl::base absl::bits
 			CURL::libcurl
 			fmt::fmt

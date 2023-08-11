@@ -94,6 +94,9 @@
     <ClInclude Include="..\src\items\tile.h" />
     <ClInclude Include="..\src\items\trashholder.h" />
     <ClInclude Include="..\src\items\weapons\weapons.h" />
+    <ClInclude Include="..\src\lib\messaging\command.hpp" />
+    <ClInclude Include="..\src\lib\messaging\event.hpp" />
+    <ClInclude Include="..\src\lib\messaging\message.hpp" />
     <ClInclude Include="..\src\lua\callbacks\creaturecallback.h" />
     <ClInclude Include="..\src\lua\callbacks\event_callback.hpp" />
     <ClInclude Include="..\src\lua\callbacks\events_callbacks.hpp" />

@@ -235,6 +235,7 @@ PRIVATE
 	items/tile.cpp
 	items/trashholder.cpp
 	items/weapons/weapons.cpp
+	lib/logging/LogWithSpdLog.cpp
 	lua/callbacks/creaturecallback.cpp
 	lua/callbacks/event_callback.cpp
 	lua/callbacks/events_callbacks.cpp

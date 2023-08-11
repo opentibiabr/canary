@@ -20,7 +20,7 @@ function gold_rank.onSay(player, words, param)
 	else
 		player:sendCancelMessage("No highscore to show.")
 	end
-	return false
+	return true
 end
 
 gold_rank:separator(" ")

@@ -8,7 +8,7 @@ function addDusts.onSay(player, words, param)
 		player:sendCancelMessage("Player name param required.")
 		-- Distro log
 		Spdlog.error("[addDusts.onSay] - Player name param not found.")
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -24,13 +24,13 @@ function addDusts.onSay(player, words, param)
 		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
 		Spdlog.error("[addDusts.onSay] - Player " .. string.titleCase(name) .. " is not online.")
-		return false
+		return true
 	end
 
 	-- Check if the dustAmount is valid
 	if dustAmount <= 0 or dustAmount == nil then
 		player:sendCancelMessage("Invalid dust count.")
-		return false
+		return true
 	end
 
 	-- Check dust level
@@ -63,7 +63,7 @@ function removeDusts.onSay(player, words, param)
 		player:sendCancelMessage("Player name param required.")
 		-- Distro log
 		Spdlog.error("[removeDusts.onSay] - Player name param not found.")
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -79,13 +79,13 @@ function removeDusts.onSay(player, words, param)
 		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
 		Spdlog.error("[removeDusts.onSay] - Player " .. string.titleCase(name) .. " is not online.")
-		return false
+		return true
 	end
 
 	-- Check if the dustAmount is valid
 	if dustAmount <= 0 or dustAmount == nil then
 		player:sendCancelMessage("Invalid dust count.")
-		return false
+		return true
 	end
 
 	-- Check dust level
@@ -118,7 +118,7 @@ function getDusts.onSay(player, words, param)
 		player:sendCancelMessage("Player name param required.")
 		-- Distro log
 		Spdlog.error("[getDusts.onSay] - Player name param not found.")
-		return false
+		return true
 	end
 
 	-- Check if player is online
@@ -129,7 +129,7 @@ function getDusts.onSay(player, words, param)
 		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
 		Spdlog.error("[getDusts.onSay] - Player " .. string.titleCase(name) .. " is not online.")
-		return false
+		return true
 	end
 
 	local dustAmount = targetPlayer:getForgeDusts()
@@ -155,7 +155,7 @@ function setDusts.onSay(player, words, param)
 		player:sendCancelMessage("Player name param required.")
 		-- Distro log
 		Spdlog.error("[setDusts.onSay] - Player name param not found.")
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -171,13 +171,13 @@ function setDusts.onSay(player, words, param)
 		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
 		Spdlog.error("[setDusts.onSay] - Player " .. string.titleCase(name) .. " is not online.")
-		return false
+		return true
 	end
 
 	-- Check if the dustAmount is valid
 	if dustAmount <= 0 or dustAmount == nil then
 		player:sendCancelMessage("Invalid dust count.")
-		return false
+		return true
 	end
 
 	-- Check dust level
@@ -211,7 +211,7 @@ function gotoFiendish.onSay(player, words, param)
 	else
 		player:sendCancelMessage("There are not fiendish monsters right now.")
 	end
-	return false
+	return true
 end
 
 gotoFiendish:groupType("god")
@@ -231,7 +231,7 @@ function gotoInfluenced.onSay(player, words, param)
 	else
 		player:sendCancelMessage("There are not influenced monsters right now.")
 	end
-	return false
+	return true
 end
 
 gotoInfluenced:groupType("god")

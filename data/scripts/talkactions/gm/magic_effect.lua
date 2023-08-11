@@ -6,7 +6,7 @@ function magicEffect.onSay(player, words, param)
 
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
-		return false
+		return true
 	end
 
 	local effect = tonumber(param)
@@ -14,7 +14,7 @@ function magicEffect.onSay(player, words, param)
 		player:getPosition():sendMagicEffect(effect)
 	end
 
-	return false
+	return true
 end
 
 magicEffect:separator(" ")

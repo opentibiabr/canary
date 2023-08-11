@@ -29,19 +29,19 @@ function addSkill.onSay(player, words, param)
 
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
-		return false
+		return true
 	end
 
 	local split = param:split(",")
 	if not split[2] then
 		player:sendCancelMessage("Insufficient parameters.")
-		return false
+		return true
 	end
 
 	local target = Player(split[1])
 	if not target then
 		player:sendCancelMessage("A player with that name is not online.")
-		return false
+		return true
 	end
 
 	-- Trim left
@@ -68,7 +68,7 @@ function addSkill.onSay(player, words, param)
 			target:addSkillTries(skillId, target:getVocation():getRequiredSkillTries(skillId, target:getSkillLevel(skillId) + 1) - target:getSkillTries(skillId), true)
 		end
 	end
-	return false
+	return true
 end
 
 addSkill:separator(" ")

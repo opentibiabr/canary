@@ -57,7 +57,7 @@ function attributes.onSay(player, words, param)
 
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
-		return false
+		return true
 	end
 
 	local position = player:getPosition()
@@ -69,7 +69,7 @@ function attributes.onSay(player, words, param)
 		local item = Tile(position):getTopVisibleThing(player)
 		if (not item or not item:isItem()) then
 			player:sendCancelMessage("Item not found.")
-			return false
+			return true
 		end
 		if (itemFunction.targetFunction(item, split[2])) then
 			position:sendMagicEffect(CONST_ME_MAGIC_GREEN)
@@ -80,7 +80,7 @@ function attributes.onSay(player, words, param)
 		local creature = Tile(position):getTopCreature()
 		if (not creature or not creature:isCreature()) then
 			player:sendCancelMessage("Creature not found.")
-			return false
+			return true
 		end
 		if (creatureFunction.targetFunction(creature, split[2])) then
 			position:sendMagicEffect(CONST_ME_MAGIC_GREEN)
@@ -91,7 +91,7 @@ function attributes.onSay(player, words, param)
 		local targetPlayer = Tile(position):getTopCreature()
 		if (not targetPlayer or not targetPlayer:getPlayer()) then
 			player:sendCancelMessage("Player not found.")
-			return false
+			return true
 		end
 		if (playerFunction.targetFunction(targetPlayer, split[2])) then
 			position:sendMagicEffect(CONST_ME_MAGIC_GREEN)
@@ -99,9 +99,9 @@ function attributes.onSay(player, words, param)
 			player:sendCancelMessage("You cannot add that attribute to this player.")
 		end
 	else
-		player:sendCancelMessage("Unknow attribute.")
+		player:sendCancelMessage("Unknown attribute.")
 	end
-	return false
+	return true
 end
 
 attributes:separator(" ")

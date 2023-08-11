@@ -6,7 +6,7 @@ function createNpc.onSay(player, words, param)
 
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
-		return false
+		return true
 	end
 
 	local position = player:getPosition()
@@ -18,7 +18,7 @@ function createNpc.onSay(player, words, param)
 		player:sendCancelMessage("There is not enough room.")
 		position:sendMagicEffect(CONST_ME_POFF)
 	end
-	return false
+	return true
 end
 
 createNpc:separator(" ")

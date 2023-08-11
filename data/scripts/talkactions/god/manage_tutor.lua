@@ -9,7 +9,7 @@ function addTutor.onSay(player, words, param)
 		player:sendCancelMessage("Player name param required")
 		-- Distro log
 		Spdlog.error("[addTutor.onSay] - Player name param not found")
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -21,12 +21,12 @@ function addTutor.onSay(player, words, param)
 		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
 		Spdlog.error("[addTutor.onSay] - Player " .. string.titleCase(name) .. " is not online")
-		return false
+		return true
 	end
 
 	if targetPlayer:getAccountType() ~= ACCOUNT_TYPE_NORMAL then
 		player:sendCancelMessage("You can only promote a normal player to a tutor.")
-		return false
+		return true
 	end
 
 	targetPlayer:setAccountType(ACCOUNT_TYPE_TUTOR)
@@ -51,7 +51,7 @@ function removeTutor.onSay(player, words, param)
 		player:sendCancelMessage("Player name param required")
 		-- Distro log
 		Spdlog.error("[removeTutor.onSay] - Player name param not found")
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -63,12 +63,12 @@ function removeTutor.onSay(player, words, param)
 		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
 		Spdlog.error("[removeTutor.onSay] - Player " .. string.titleCase(name) .. " is not online")
-		return false
+		return true
 	end
 
 	if targetPlayer:getAccountType() ~= ACCOUNT_TYPE_TUTOR then
 		player:sendCancelMessage("You can only demote a tutor to a normal player")
-		return false
+		return true
 	end
 
 	targetPlayer:setAccountType(ACCOUNT_TYPE_NORMAL)

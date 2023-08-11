@@ -16,7 +16,7 @@ function position.onSay(player, words, param)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your current position is: \z
 		" .. position.x .. ", " .. position.y .. ", " .. position.z .. ".")
 	end
-	return false
+	return true
 end
 
 position:separator(" ")

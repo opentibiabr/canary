@@ -7,17 +7,17 @@ function addCharm.onSay(player, words, param)
 	local usage = "/addcharms PLAYER NAME,AMOUNT"
 	if param == "" then
 		player:sendCancelMessage("Command param required. Usage: " .. usage)
-		return false
+		return true
 	end
 	local split = param:split(",")
 	if not split[2] then
 		player:sendCancelMessage("Insufficient parameters. Usage: " .. usage)
-		return false
+		return true
 	end
 	local target = Player(split[1])
 	if not target then
 		player:sendCancelMessage("A player with that name is not online.")
-		return false
+		return true
 	end
 	--trim left
 	split[2] = split[2]:gsub("^%s*(.-)$", "%1")
@@ -45,7 +45,7 @@ function resetCharm.onSay(player, words, param)
 	local target = Player(param)
 	if not target then
 		player:sendCancelMessage("A player with that name is not online.")
-		return false
+		return true
 	end
 
 	player:sendCancelMessage("Reseted charm points from character '" .. target:getName() .. "'.")
@@ -72,7 +72,7 @@ function charmExpansion.onSay(player, words, param)
 	local target = Player(param)
 	if not target then
 		player:sendCancelMessage("A player with that name is not online.")
-		return false
+		return true
 	end
 
 	player:sendCancelMessage("Added charm expansion for player '" .. target:getName() .. "'.")
@@ -99,7 +99,7 @@ function charmRune.onSay(player, words, param)
 	local target = Player(param)
 	if not target then
 		player:sendCancelMessage("A player with that name is not online.")
-		return false
+		return true
 	end
 
 	player:sendCancelMessage("Added all charm runes to '" .. target:getName() .. "'.")
@@ -123,17 +123,17 @@ function setBestiary.onSay(player, words, param)
 	local usage = "/setbestiary PLAYER NAME,MONSTER NAME,AMOUNT"
 	if param == "" then
 		player:sendCancelMessage("Command param required. Usage: " .. usage)
-		return false
+		return true
 	end
 	local split = param:split(",")
 	if not split[3] then
 		player:sendCancelMessage("Insufficient parameters. Usage: " .. usage)
-		return false
+		return true
 	end
 	local target = Player(split[1])
 	if not target then
 		player:sendCancelMessage("A player with that name is not online.")
-		return false
+		return true
 	end
 
 	split[2] = split[2]:gsub("^%s*(.-)$", "%1") --Trim left
@@ -143,12 +143,12 @@ function setBestiary.onSay(player, words, param)
 	local mType = MonsterType(monsterName)
 	if not (mType) or (mType and mType:raceId() == 0) then
 		player:sendCancelMessage("This monster has no bestiary. Type the name exactly as in game.")
-		return false
+		return true
 	end
 	local amount = tonumber(split[3])
 	if not amount then
 		player:sendCancelMessage("Wrong kill amount")
-		return false
+		return true
 	end
 
 	player:sendCancelMessage("Set bestiary kill of monster '" .. monsterName .. "' from player '" .. target:getName() .. "' to '" .. amount .. "'.")

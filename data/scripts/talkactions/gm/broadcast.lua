@@ -6,7 +6,7 @@ function broadcast.onSay(player, words, param)
 
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
-		return false
+		return true
 	end
 
 	local text = player:getName() .. " broadcasted: " .. param
@@ -15,7 +15,7 @@ function broadcast.onSay(player, words, param)
 	for _, targetPlayer in ipairs(Game.getPlayers()) do
 		targetPlayer:sendPrivateMessage(player, param, TALKTYPE_BROADCAST)
 	end
-	return false
+	return true
 end
 
 broadcast:separator(" ")

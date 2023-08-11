@@ -61,7 +61,7 @@ function Player.reloadTalkaction(self, words, param)
 
 	if param == "" then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Command param required.")
-		return false
+		return true
 	end
 
 	-- create log
@@ -78,13 +78,11 @@ function Player.reloadTalkaction(self, words, param)
 		Game.reload(reloadType)
 		self:sendTextMessage(MESSAGE_LOOK, string.format("Reloaded %s.", param:lower()))
 		Spdlog.info("Reloaded " .. param:lower() .. "")
-		return true
 	elseif not reloadType then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Reload type not found.")
 		Spdlog.warn("[reload.onSay] - Reload type '" .. param .. "' not found")
-		return false
 	end
-	return false
+	return true
 end
 
 local reload = TalkAction("/reload")

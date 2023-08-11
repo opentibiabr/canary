@@ -8,7 +8,7 @@ function openServer.onSay(player, words, param)
 	player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Server is now open.")
 	Webhook.send("Server Open", "Server was opened by: " .. player:getName(),
 		WEBHOOK_COLOR_WARNING, announcementChannels["serverAnnouncements"])
-	return false
+	return true
 end
 
 openServer:separator(" ")

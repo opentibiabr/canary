@@ -4,7 +4,7 @@ function info.onSay(player, words, param)
 	local target = Player(param)
 	if not target then
 		player:sendCancelMessage("Player not found.")
-		return false
+		return true
 	end
 
 	-- create log
@@ -12,7 +12,7 @@ function info.onSay(player, words, param)
 
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
-		return false
+		return true
 	end
 
 	local targetIp = target:getIp()
@@ -46,7 +46,7 @@ function info.onSay(player, words, param)
 	if #players > 0 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Other players on same IP: " .. table.concat(players, ", ") .. ".")
 	end
-	return false
+	return true
 end
 
 info:separator(" ")

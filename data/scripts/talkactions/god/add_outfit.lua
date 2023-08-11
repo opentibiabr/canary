@@ -14,7 +14,7 @@ function addOutfit.onSay(player, words, param)
 
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -35,7 +35,7 @@ function addOutfit.onSay(player, words, param)
 		player:sendCancelMessage("Player not found.")
 		return true
 	end
-	return false
+	return true
 end
 
 addOutfit:separator(" ")

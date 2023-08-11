@@ -74,7 +74,7 @@ end
 
 function Player.talkactionHasFlag(self, param, flagType)
 	if not HasValidTalkActionParams(self, param, "Usage: /hasflag <playerName>, <flagnumber or name>") then
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -83,13 +83,13 @@ function Player.talkactionHasFlag(self, param, flagType)
 	local flagValue = getFlagNumberOrName(flag)
 	if not flagValue then
 		sendValidKeys(self)
-		return false
+		return true
 	end
 
 	local targetPlayer = Player(playerName)
 	if not targetPlayer then
 		self:sendCancelMessage("Player " .. playerName .. " not found.")
-		return false
+		return true
 	end
 
 	if not targetPlayer:hasGroupFlag(flagValue) then
@@ -103,7 +103,7 @@ end
 
 function Player.talkactionSetFlag(self, param, flagType)
 	if not HasValidTalkActionParams(self, param, "Usage: /setflag <playerName>, <flagnumber or name>") then
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -112,18 +112,18 @@ function Player.talkactionSetFlag(self, param, flagType)
 	local flagValue = getFlagNumberOrName(flag)
 	if not flagValue then
 		sendValidKeys(self)
-		return false
+		return true
 	end
 
 	local targetPlayer = Player(playerName)
 	if not targetPlayer then
 		self:sendCancelMessage("Player " .. playerName .. " not found.")
-		return false
+		return true
 	end
 
 	if targetPlayer:hasFlag(flagValue) then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player " .. playerName .. " already has flag " .. getFlagNameByType(flagValue) .. ".")
-		return false
+		return true
 	end
 
 	targetPlayer:setGroupFlag(flagValue)
@@ -134,7 +134,7 @@ end
 
 function Player.talkactionRemoveFlag(self, param, flagType)
 	if not HasValidTalkActionParams(self, param, "Usage: /removeflag <playerName>, <flagnumber or name>") then
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -143,18 +143,18 @@ function Player.talkactionRemoveFlag(self, param, flagType)
 	local flagValue = getFlagNumberOrName(flag)
 	if not flagValue then
 		sendValidKeys(self)
-		return false
+		return true
 	end
 
 	local targetPlayer = Player(playerName)
 	if not targetPlayer then
 		self:sendCancelMessage("Player " .. playerName .. " not found.")
-		return false
+		return true
 	end
 
 	if not targetPlayer:hasFlag(flagValue) then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player " .. playerName .. " not have flag " .. getFlagNameByType(flagValue) .. ".")
-		return false
+		return true
 	end
 
 	targetPlayer:removeGroupFlag(flagValue)

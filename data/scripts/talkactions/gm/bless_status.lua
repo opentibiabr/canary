@@ -7,7 +7,7 @@ function blessStatus.onSay(player, words, param)
 	logCommand(player, words, param)
 
 	Blessings.sendBlessStatus(player)
-	return false
+	return true
 end
 
 blessStatus:separator(" ")

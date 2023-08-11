@@ -15,12 +15,12 @@ function createItem.onSay(player, words, param)
 		itemType = ItemType(tonumber(split[1]))
 		if not tonumber(split[1]) or itemType:getId() == 0 then
 			player:sendCancelMessage("There is no item with that id or name.")
-			return false
+			return true
 		end
 	end
 
 	if table.contains(invalidIds, itemType:getId()) then
-		return false
+		return true
 	end
 
 	local charges = itemType:getCharges()
@@ -41,7 +41,7 @@ function createItem.onSay(player, words, param)
 		if not itemType:isFluidContainer() then
 			if charges > 0 then
 				player:addItem(itemType:getId(), 0)
-				return false
+				return true
 			else
 				count = 1
 			end
@@ -57,7 +57,7 @@ function createItem.onSay(player, words, param)
 	else
 		if tier <= 0 or tier > 10 then
 			player:sendCancelMessage("Invalid tier count.")
-			return false
+			return true
 		else
 			result = player:addItem(itemType:getId(), count, true, 0, CONST_SLOT_WHEREEVER, tier)
 		end
@@ -75,7 +75,7 @@ function createItem.onSay(player, words, param)
 		end
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 	end
-	return false
+	return true
 end
 
 createItem:separator(" ")

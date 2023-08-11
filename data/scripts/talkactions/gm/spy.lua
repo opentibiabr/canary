@@ -37,7 +37,7 @@ function spy.onSay(cid, words, param)
 
 	if (param == "") then
 		player:sendCancelMessage("Write the name of the character to be spyed.")
-		return false
+		return true
 	end
 
 	local slotName = { "Helmet", "Amulet", "Backpack", "Armor", "Right Hand", "Left Hand", "Legs", "Boots", "Ring", "Arrow" }
@@ -68,7 +68,7 @@ function spy.onSay(cid, words, param)
 	else
 		player:sendCancelMessage("This player is offline or doesn't exist.")
 	end
-	return false
+	return true
 end
 
 spy:separator(" ")

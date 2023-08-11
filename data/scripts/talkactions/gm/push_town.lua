@@ -10,7 +10,7 @@ function pushTown.onSay(player, words, param)
 		local targetPlayer = Player(param)
 		if not targetPlayer then
 			player:sendCancelMessage("A player with that name is not online.")
-			return false
+			return true
 		end
 		player:sendTextMessage(MESSAGE_STATUS, "You have teleported " .. targetPlayer:getName() .. " to temple.")
 		targetPlayer:teleportTo(targetPlayer:getTown():getTemplePosition())
@@ -20,7 +20,7 @@ function pushTown.onSay(player, words, param)
 		Spdlog.info("[pushTown.onSay] - " .. text)
 		Webhook.send("Player Teleported", text, WEBHOOK_COLOR_WARNING, announcementChannels["serverAnnouncements"])
 	end
-	return false
+	return true
 end
 
 pushTown:separator(" ")

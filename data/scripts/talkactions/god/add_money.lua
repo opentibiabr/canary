@@ -11,7 +11,7 @@ function addMoney.onSay(player, words, param)
 		player:sendCancelMessage("Player name param required")
 		-- Distro log
 		Spdlog.error("[addMoney.onSay] - Player name param not found")
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -27,13 +27,13 @@ function addMoney.onSay(player, words, param)
 		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
 		Spdlog.error("[addMoney.onSay] - Player " .. string.titleCase(name) .. " is not online")
-		return false
+		return true
 	end
 
 	-- Check if the coins is valid
 	if money <= 0 or money == nil then
 		player:sendCancelMessage("Invalid money count.")
-		return false
+		return true
 	end
 
 	targetPlayer:setBankBalance(targetPlayer:getBankBalance() + money)

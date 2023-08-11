@@ -12,7 +12,7 @@ function talk.onSay(player, words, param)
 	if result then
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 	end
-	return false
+	return true
 end
 
 talk:separator(" ")

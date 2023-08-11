@@ -6,7 +6,7 @@ function startRaid.onSay(player, words, param)
 
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
-		return false
+		return true
 	end
 
 	local returnValue = Game.startRaid(param)
@@ -15,7 +15,7 @@ function startRaid.onSay(player, words, param)
 	else
 		player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Raid started.")
 	end
-	return false
+	return true
 end
 
 startRaid:separator(" ")

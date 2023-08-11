@@ -18,7 +18,7 @@ function set_light.onSay(player, words, param)
 	local color = split[1]
 	if color == nil then
 		player:sendCancelMessage("You need to specify the light color.")
-		return false
+		return true
 	end
 	local intensity = tonumber(split[2]) or 4--32
 
@@ -29,7 +29,7 @@ function set_light.onSay(player, words, param)
 		player:sendCancelMessage("Use like this: /setlight color (0-" .. 1500 .. "), (1-32). The first param is color and the second is intensity.")
 	end
 
-	return false
+	return true
 end
 
 set_light:separator(" ")

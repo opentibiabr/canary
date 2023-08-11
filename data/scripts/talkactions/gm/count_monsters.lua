@@ -32,7 +32,7 @@ function count_monsters.onSay(player, words, param)
 
 	writing_file:close()
 
-	return false
+	return true
 end
 
 count_monsters:separator(" ")

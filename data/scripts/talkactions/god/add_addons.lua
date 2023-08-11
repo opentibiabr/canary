@@ -30,7 +30,7 @@ function addons.onSay(player, words, param)
 		target = player:getTarget()
 		if not target then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Gives players the ability to wear all addons. Usage: /addons <player name>')
-			return false
+			return true
 		end
 	else
 		target = Player(param)
@@ -38,12 +38,12 @@ function addons.onSay(player, words, param)
 
 	if not target then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Player ' .. param .. ' is currently not online.')
-		return false
+		return true
 	end
 
 	if player:getAccountType() < ACCOUNT_TYPE_GOD then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Cannot perform action.')
-		return false
+		return true
 	end
 
 	for i = 1, #looktypes do
@@ -52,7 +52,7 @@ function addons.onSay(player, words, param)
 
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'All addons unlocked for ' .. target:getName() .. '.')
 	target:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'All of your addons have been unlocked!')
-	return false
+	return true
 end
 
 addons:separator(" ")

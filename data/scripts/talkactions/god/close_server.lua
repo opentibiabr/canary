@@ -14,7 +14,7 @@ function closeServer.onSay(player, words, param)
 		Webhook.send("Server Closed", "Server was closed by: " .. player:getName(),
 			WEBHOOK_COLOR_WARNING, announcementChannels["serverAnnouncements"])
 	end
-	return false
+	return true
 end
 
 closeServer:separator(" ")

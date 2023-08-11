@@ -4,6 +4,7 @@
   "dependencies": [
     "argon2",
     "asio",
+    "boost-di",
     "eventpp",
     "pugixml",
     "spdlog",

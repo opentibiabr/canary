@@ -33,7 +33,7 @@ function serverInfo.onSay(player, words, param)
 		.. "\nKills/month to red skull: " .. configManager.getNumber(configKeys.MONTH_KILLS_TO_RED)
 		.. "\nServer Save: " .. configManager.getString(configKeys.GLOBAL_SERVER_SAVE_TIME)
 	player:showTextDialog(34266, text)
-	return false
+	return true
 end
 
 serverInfo:separator(" ")

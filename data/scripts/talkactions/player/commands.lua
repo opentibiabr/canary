@@ -15,6 +15,8 @@ function commands.onSay(player, words, param)
 	end
 
 	player:showTextDialog(639, text)
+
+	return true
 end
 
 commands:groupType("normal")

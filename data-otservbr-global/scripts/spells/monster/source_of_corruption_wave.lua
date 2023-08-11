@@ -15,7 +15,7 @@ function spellCallback(param)
 		if creatureTop then
 			if creatureTop:isPlayer() then
 				creatureTop:addHealth( - math.random(0, 600))
-		elseif creatureTop:isMonster() and creatureTop:getName():lower() == "stolen soul" then
+			elseif creatureTop:isMonster() and creatureTop:getName():lower() == "stolen soul" then
 				creatureTop:addHealth( - math.random(700, 1500))
 			end
 		end

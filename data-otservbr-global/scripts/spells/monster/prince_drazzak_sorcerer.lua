@@ -43,7 +43,6 @@ function onTargetTile(creature, pos)
 			if creatureTable[r] ~= creature then
 				local min = 4000
 				local max = 8000
-                local max = 8000
 				local creatureTarget = Creature(creatureTable[r])
 				if creatureTarget then
 					if (creatureTarget:isPlayer() and table.contains({VOCATION.BASE_ID.SORCERER}, creatureTarget:getVocation():getBaseId())) or creatureTarget:isMonster() then

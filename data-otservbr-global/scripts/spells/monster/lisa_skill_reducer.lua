@@ -56,7 +56,7 @@ for i = 60, 75 do
 			for r = 1, #creatureTable do
 				if creatureTable[r] ~= creature then
 					local player = Player(creatureTable[r])
-					if player and player:isPlayer() then
+					if player then
 						local vocationClientId = player:getVocation():getBaseId()
 						if table.contains({VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID}, vocationClientId) then
 							player:addCondition(condition2)

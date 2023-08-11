@@ -1510,6 +1510,10 @@ int MonsterTypeFunctions::luaMonsterTypeBossRace(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
+		if (monsterType->info.bosstiaryClass.empty()) {
+			lua_pushnil(L);
+			return 1;
+		}
 		pushString(L, monsterType->info.bosstiaryClass);
 	} else {
 		auto bossRace = getNumber<uint8_t>(L, 2, 0);
@@ -1533,7 +1537,11 @@ int MonsterTypeFunctions::luaMonsterTypeBossRaceId(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.raceid));
+		if (monsterType->info.bosstiaryClass.empty()) {
+			lua_pushnumber(L, 0);
+		} else {
+			lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.bosstiaryRace));
+		}
 	} else {
 		auto raceId = getNumber<uint16_t>(L, 2, 0);
 		monsterType->info.raceid = raceId;

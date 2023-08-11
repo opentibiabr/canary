@@ -9,12 +9,17 @@
 #ifndef CANARY_CONTAINER_HPP
 #define CANARY_CONTAINER_HPP
 
+#include "lib/logging/Logger.hpp"
+#include "lib/logging/LogWithSpdLog.hpp"
+
 namespace di = boost::di;
 
 class DI final {
 	private:
 		inline static auto &container() {
-			static auto injector = di::make_injector();
+			static auto injector = di::make_injector(
+				di::bind<Logger>().to<LogWithSpdLog>().in(di::singleton)
+			);
 
 			return injector;
 		}

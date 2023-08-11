@@ -130,4 +130,14 @@
 
 bool isDevMode();
 
-#endif // SRC_PCH_HPP_
+/**
+ * Static custom libraries that can be pre-compiled like DI and messaging
+ */
+#include "lib/messaging/message.hpp"
+#include "lib/messaging/command.hpp"
+#include "lib/messaging/event.hpp"
+
+#include <eventpp/utilities/scopedremover.h>
+#include <eventpp/eventdispatcher.h>
+
+#endif // SRC_PCH_HHPP_

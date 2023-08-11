@@ -71,6 +71,7 @@
 
 // FMT
 #include <fmt/chrono.h>
+#include <fmt/core.h>
 
 // GMP
 #include <gmp.h>
@@ -137,8 +138,9 @@ bool isDevMode();
 #include "lib/messaging/command.hpp"
 #include "lib/messaging/event.hpp"
 
-#include "lib/externals/boost_di.hpp"
 #include <eventpp/utilities/scopedremover.h>
 #include <eventpp/eventdispatcher.h>
+
+#include "lib/di/container.hpp"
 
 #endif // SRC_PCH_HPP_

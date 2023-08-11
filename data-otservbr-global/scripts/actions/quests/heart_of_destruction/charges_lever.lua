@@ -26,9 +26,9 @@ local function doCheckArea()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, creatureUid in pairs(creatures) do
-							local creature = Creature(creatureUid)
-							if creature and creature:isPlayer() then
+						for _, creature in pairs(creatures) do
+							local player = Player(creature)
+							if player then
 								return true
 							end
 						end
@@ -50,9 +50,9 @@ local function doCheckArea()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, creatureUid in pairs(creatures) do
-							local creature = Creature(creatureUid)
-							if creature and creature:isPlayer() then
+						for _, creature in pairs(creatures) do
+							local player = Player(creature)
+							if player then
 								return true
 							end
 						end
@@ -173,10 +173,10 @@ function teleportToCharger()
 				if tile then
 					local creatures = tile:getCreatures()
 					if creatures and #creatures > 0 then
-						for _, creatureUid in pairs(creatures) do
-							local creature = Creature(creatureUid)
-							if creature and creature:isPlayer() then
-								creature:teleportTo({x = creature:getPosition().x, y = creature:getPosition().y, z = creature:getPosition().z - 1})
+						for _, creature in pairs(creatures) do
+							local player = Player(creature)
+							if player then
+								player:teleportTo({x = player:getPosition().x, y = player:getPosition().y, z = player:getPosition().z - 1})
 							end
 						end
 					end

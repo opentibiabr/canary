@@ -72,6 +72,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parsePerfecShot(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseCleavePercent(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseTransformOnUse(tmpStrValue, valueAttribute, itemType);
 }
 
 void ItemParse::parseDummyRate(pugi::xml_node attributeNode, ItemType &itemType) {
@@ -932,5 +933,11 @@ void ItemParse::parseReflectDamage(const std::string &tmpStrValue, pugi::xml_att
 		std::transform(std::begin(abilities.reflectPercent), std::end(abilities.reflectPercent), std::begin(abilities.reflectPercent), [&](const auto &i) {
 			return i + value;
 		});
+	}
+}
+
+void ItemParse::parseTransformOnUse(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	if (tmpStrValue == "transformonuse") {
+		itemType.m_transformOnUse = pugi::cast<uint16_t>(valueAttribute.value());
 	}
 }

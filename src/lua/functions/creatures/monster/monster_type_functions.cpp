@@ -1533,10 +1533,10 @@ int MonsterTypeFunctions::luaMonsterTypeBossRaceId(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.bossRaceId));
+		lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.raceid));
 	} else {
 		auto raceId = getNumber<uint16_t>(L, 2, 0);
-		monsterType->info.bossRaceId = raceId;
+		monsterType->info.raceid = raceId;
 		g_ioBosstiary().addBosstiaryMonster(raceId, monsterType->name);
 		pushBoolean(L, true);
 	}

@@ -38,10 +38,10 @@ void IOBosstiary::loadBoostedBoss() {
 	}
 
 	std::string bossName;
-	uint32_t bossId = 0;
+	uint16_t bossId = 0;
 	if (date == today) {
 		bossName = result->getString("boostname");
-		bossId = result->getNumber<uint32_t>("raceid");
+		bossId = result->getNumber<uint16_t>("raceid");
 		setBossBoostedName(bossName);
 		setBossBoostedId(bossId);
 		SPDLOG_INFO("Boosted boss: {}", bossName);
@@ -49,7 +49,7 @@ void IOBosstiary::loadBoostedBoss() {
 	}
 
 	// Filter only archfoe bosses
-	phmap::btree_map<uint32_t, std::string> bossInfo;
+	phmap::btree_map<uint16_t, std::string> bossInfo;
 	for (auto [infoBossRaceId, infoBossName] : bossMap) {
 		const MonsterType* mType = getMonsterTypeByBossRaceId(infoBossRaceId);
 		if (!mType || mType->info.bosstiaryRace != BosstiaryRarity_t::RARITY_ARCHFOE) {
@@ -65,7 +65,7 @@ void IOBosstiary::loadBoostedBoss() {
 		return;
 	}
 
-	uint32_t oldBossRace = result->getNumber<uint32_t>("raceid");
+	uint16_t oldBossRace = result->getNumber<uint16_t>("raceid");
 	while (true) {
 		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossInfo.size()));
 		auto it = std::next(bossInfo.begin(), randomIndex);
@@ -105,18 +105,18 @@ void IOBosstiary::loadBoostedBoss() {
 	SPDLOG_INFO("Boosted boss: {}", bossName);
 }
 
-void IOBosstiary::addBosstiaryMonster(uint32_t raceId, const std::string &name) {
+void IOBosstiary::addBosstiaryMonster(uint16_t raceId, const std::string &name) {
 	if (auto it = bosstiaryMap.find(raceId);
 		it != bosstiaryMap.end()) {
 		return;
 	}
 
 	bosstiaryMap.try_emplace(raceId, name);
-	auto boss = std::pair<uint32_t, std::string>(raceId, name);
+	auto boss = std::pair<uint16_t, std::string>(raceId, name);
 	bosstiaryMap.insert(boss);
 }
 
-const phmap::btree_map<uint32_t, std::string> &IOBosstiary::getBosstiaryMap() const {
+const phmap::btree_map<uint16_t, std::string> &IOBosstiary::getBosstiaryMap() const {
 	return bosstiaryMap;
 }
 
@@ -128,15 +128,15 @@ std::string IOBosstiary::getBoostedBossName() const {
 	return boostedBoss;
 }
 
-void IOBosstiary::setBossBoostedId(uint32_t raceId) {
+void IOBosstiary::setBossBoostedId(uint16_t raceId) {
 	boostedBossId = raceId;
 }
 
-uint32_t IOBosstiary::getBoostedBossId() const {
+uint16_t IOBosstiary::getBoostedBossId() const {
 	return boostedBossId;
 }
 
-MonsterType* IOBosstiary::getMonsterTypeByBossRaceId(uint32_t raceId) const {
+MonsterType* IOBosstiary::getMonsterTypeByBossRaceId(uint16_t raceId) const {
 	for ([[maybe_unused]] const auto &[bossRaceId, bossName] : getBosstiaryMap()) {
 		if (bossRaceId == raceId) {
 			MonsterType* monsterType = g_monsters().getMonsterType(bossName);
@@ -157,7 +157,7 @@ void IOBosstiary::addBosstiaryKill(Player* player, const MonsterType* mtype, uin
 		return;
 	}
 
-	uint32_t bossId = mtype->info.bossRaceId;
+	uint16_t bossId = mtype->info.raceid;
 	if (bossId == 0) {
 		return;
 	}
@@ -217,13 +217,13 @@ uint32_t IOBosstiary::calculateBossPoints(uint16_t lootBonus) const {
 	return static_cast<uint32_t>((2.5 * lootBonus * lootBonus) - (477.5 * lootBonus) + 24000);
 }
 
-std::vector<uint32_t> IOBosstiary::getBosstiaryFinished(const Player* player, uint8_t level /* = 1*/) const {
-	std::vector<uint32_t> unlockedMonsters;
+std::vector<uint16_t> IOBosstiary::getBosstiaryFinished(const Player* player, uint8_t level /* = 1*/) const {
+	std::vector<uint16_t> unlockedMonsters;
 	if (!player) {
 		return unlockedMonsters;
 	}
 
-	for (phmap::btree_map<uint32_t, std::string> bossesMap = getBosstiaryMap();
+	for (phmap::btree_map<uint16_t, std::string> bossesMap = getBosstiaryMap();
 		 const auto &[bossId, bossName] : bossesMap) {
 		uint32_t bossKills = player->getBestiaryKillCount(static_cast<uint16_t>(bossId));
 		if (bossKills == 0) {
@@ -251,7 +251,7 @@ std::vector<uint32_t> IOBosstiary::getBosstiaryFinished(const Player* player, ui
 	return unlockedMonsters;
 }
 
-uint8_t IOBosstiary::getBossCurrentLevel(const Player* player, uint32_t bossId) const {
+uint8_t IOBosstiary::getBossCurrentLevel(const Player* player, uint16_t bossId) const {
 	if (bossId == 0 || !player) {
 		return 0;
 	}
@@ -291,7 +291,7 @@ std::vector<uint32_t> IOBosstiary::getBosstiaryCooldown(const Player* player) co
 		return bossesCooldown;
 	}
 
-	for (phmap::btree_map<uint32_t, std::string> bossesMap = getBosstiaryMap();
+	for (phmap::btree_map<uint16_t, std::string> bossesMap = getBosstiaryMap();
 		 const auto &[bossId, bossName] : bossesMap) {
 		uint32_t bossKills = player->getBestiaryKillCount(static_cast<uint16_t>(bossId));
 

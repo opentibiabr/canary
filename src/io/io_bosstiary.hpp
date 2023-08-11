@@ -43,8 +43,8 @@ class IOBosstiary {
 
 		void loadBoostedBoss();
 
-		void addBosstiaryMonster(uint32_t raceId, const std::string &name);
-		const phmap::btree_map<uint32_t, std::string> &getBosstiaryMap() const;
+		void addBosstiaryMonster(uint16_t raceId, const std::string &name);
+		const phmap::btree_map<uint16_t, std::string> &getBosstiaryMap() const;
 
 		const phmap::btree_map<BosstiaryRarity_t, std::vector<LevelInfo>> levelInfos = {
 			{ BosstiaryRarity_t::RARITY_BANE, { { 25, 5 }, { 100, 15 }, { 300, 30 } } },
@@ -54,15 +54,15 @@ class IOBosstiary {
 
 		void setBossBoostedName(const std::string_view &name);
 		std::string getBoostedBossName() const;
-		void setBossBoostedId(uint32_t raceId);
-		uint32_t getBoostedBossId() const;
-		MonsterType* getMonsterTypeByBossRaceId(uint32_t raceId) const;
+		void setBossBoostedId(uint16_t raceId);
+		uint16_t getBoostedBossId() const;
+		MonsterType* getMonsterTypeByBossRaceId(uint16_t raceId) const;
 
 		void addBosstiaryKill(Player* player, const MonsterType* mtype, uint32_t amount = 1) const;
 		uint16_t calculateLootBonus(uint32_t bossPoints) const;
 		uint32_t calculateBossPoints(uint16_t lootBonus) const;
-		std::vector<uint32_t> getBosstiaryFinished(const Player* player, uint8_t level = 1) const;
-		uint8_t getBossCurrentLevel(const Player* player, uint32_t bossId) const;
+		std::vector<uint16_t> getBosstiaryFinished(const Player* player, uint8_t level = 1) const;
+		uint8_t getBossCurrentLevel(const Player* player, uint16_t bossId) const;
 		uint32_t calculteRemoveBoss(uint8_t removeTimes) const;
 		std::vector<uint32_t> getBosstiaryCooldown(const Player* player) const;
 
@@ -70,9 +70,9 @@ class IOBosstiary {
 		IOBosstiary() = default;
 		~IOBosstiary() = default;
 
-		phmap::btree_map<uint32_t, std::string> bosstiaryMap;
+		phmap::btree_map<uint16_t, std::string> bosstiaryMap;
 		std::string boostedBoss;
-		uint32_t boostedBossId = 0;
+		uint16_t boostedBossId = 0;
 };
 
 constexpr auto g_ioBosstiary = &IOBosstiary::getInstance;

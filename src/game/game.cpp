@@ -145,6 +145,11 @@ namespace InternalGame {
 		return true;
 	}
 
+	int64_t getCustomAttributeValue(Item* item, const std::string &attributeName) {
+		auto attribute = item->getCustomAttribute(attributeName);
+		return attribute ? attribute->getInteger() : 0;
+	}
+
 } // Namespace InternalGame
 
 Game::Game() {
@@ -3566,15 +3571,16 @@ void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position &pos, 
 		return;
 	}
 
+	bool isPodiumOfRenown = itemId == ITEM_PODIUM_OF_RENOWN1 || itemId == ITEM_PODIUM_OF_RENOWN2;
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		std::forward_list<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
 			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 			SchedulerTask* task;
-			if (itemId != ITEM_PODIUM_OF_VIGOUR) {
+			if (isPodiumOfRenown) {
 				task = createSchedulerTask(400, std::bind_front(&Player::sendPodiumWindow, player, item, pos, itemId, stackPos));
 			} else {
-				task = createSchedulerTask(400, std::bind_front(&Player::sendBossPodiumWindow, player, item, pos, itemId, stackPos));
+				task = createSchedulerTask(400, std::bind_front(&Player::sendMonsterPodiumWindow, player, item, pos, itemId, stackPos));
 			}
 			player->setNextWalkActionTask(task);
 		} else {
@@ -3583,10 +3589,10 @@ void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position &pos, 
 		return;
 	}
 
-	if (itemId != ITEM_PODIUM_OF_VIGOUR) {
+	if (isPodiumOfRenown) {
 		player->sendPodiumWindow(item, pos, itemId, stackPos);
 	} else {
-		player->sendBossPodiumWindow(item, pos, itemId, stackPos);
+		player->sendMonsterPodiumWindow(item, pos, itemId, stackPos);
 	}
 }
 
@@ -3607,7 +3613,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		return;
 	}
 
-	Tile* tile = dynamic_cast<Tile*>(item->getParent());
+	Tile* tile = item->getParent() ? item->getParent()->getTile() : nullptr;
 	if (!tile) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
@@ -3674,7 +3680,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	// Change Podium name
 	if (outfit.lookType != 0 || outfit.lookMount != 0) {
 		std::ostringstream name;
-		name << "podium of renown displaying the ";
+		name << item->getName() << " displaying the ";
 		bool outfited = false;
 		if (outfit.lookType != 0) {
 			const Outfit* outfitInfo = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
@@ -8868,7 +8874,7 @@ void Game::playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selec
 	player->setSlotBossId(slotId, selectedBossId);
 }
 
-void Game::playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, uint8_t podiumVisible, uint8_t bossVisible) {
+void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, uint8_t podiumVisible, uint8_t monsterVisible) {
 	Player* player = getPlayerByID(playerId);
 	if (!player || pos.x == 0xFFFF) {
 		return;
@@ -8885,21 +8891,20 @@ void Game::playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Pos
 		return;
 	}
 
-	if (bossRaceId != 0) {
-		item->setCustomAttribute("PodiumBossId", static_cast<int64_t>(bossRaceId));
-	} else {
-		auto podiumBoss = item->getCustomAttribute("PodiumBossId");
-		if (podiumBoss) {
-			bossRaceId = static_cast<uint32_t>(podiumBoss->getInteger());
-		}
+	if (monsterRaceId != 0) {
+		item->setCustomAttribute("PodiumMonsterRaceId", static_cast<int64_t>(monsterRaceId));
+	} else if (auto podiumMonsterRace = item->getCustomAttribute("PodiumMonsterRaceId")) {
+		monsterRaceId = static_cast<uint32_t>(podiumMonsterRace->getInteger());
 	}
 
-	const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossRaceId);
+	const MonsterType* mType = g_monsters().getMonsterTypeByRaceId(monsterRaceId, itemId == ITEM_PODIUM_OF_VIGOUR);
 	if (!mType) {
+		player->sendCancelMessage(RETURNVALUE_CONTACTADMINISTRATOR);
+		spdlog::error("[{}] player {} is trying to add invalid monster to podium {}", __FUNCTION__, player->getName(), item->getName());
 		return;
 	}
 
-	const auto tile = dynamic_cast<Tile*>(item->getParent());
+	const auto tile = item->getParent() ? item->getParent()->getTile() : nullptr;
 	if (!tile) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
@@ -8917,27 +8922,27 @@ void Game::playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Pos
 		return;
 	}
 
-	if (auto bossOutfit = mType->info.outfit;
-		bossOutfit.lookType != 0 && bossVisible) {
-		item->setCustomAttribute("LookTypeEx", static_cast<int64_t>(bossOutfit.lookTypeEx));
-		item->setCustomAttribute("LookType", static_cast<int64_t>(bossOutfit.lookType));
-		item->setCustomAttribute("LookHead", static_cast<int64_t>(bossOutfit.lookHead));
-		item->setCustomAttribute("LookBody", static_cast<int64_t>(bossOutfit.lookBody));
-		item->setCustomAttribute("LookLegs", static_cast<int64_t>(bossOutfit.lookLegs));
-		item->setCustomAttribute("LookFeet", static_cast<int64_t>(bossOutfit.lookFeet));
-		item->setCustomAttribute("LookAddons", static_cast<int64_t>(bossOutfit.lookAddons));
+	if (auto monsterOutfit = mType->info.outfit;
+		monsterOutfit.lookType != 0 && monsterVisible) {
+		item->setCustomAttribute("LookTypeEx", static_cast<int64_t>(monsterOutfit.lookTypeEx));
+		item->setCustomAttribute("LookType", static_cast<int64_t>(monsterOutfit.lookType));
+		item->setCustomAttribute("LookHead", static_cast<int64_t>(monsterOutfit.lookHead));
+		item->setCustomAttribute("LookBody", static_cast<int64_t>(monsterOutfit.lookBody));
+		item->setCustomAttribute("LookLegs", static_cast<int64_t>(monsterOutfit.lookLegs));
+		item->setCustomAttribute("LookFeet", static_cast<int64_t>(monsterOutfit.lookFeet));
+		item->setCustomAttribute("LookAddons", static_cast<int64_t>(monsterOutfit.lookAddons));
 	} else {
 		item->removeCustomAttribute("LookType");
 	}
 
 	item->setCustomAttribute("PodiumVisible", static_cast<int64_t>(podiumVisible));
 	item->setCustomAttribute("LookDirection", static_cast<int64_t>(direction));
-	item->setCustomAttribute("BossVisible", static_cast<int64_t>(bossVisible));
+	item->setCustomAttribute("MonsterVisible", static_cast<int64_t>(monsterVisible));
 
 	// Change Podium name
-	if (bossVisible) {
+	if (monsterVisible) {
 		std::ostringstream name;
-		name << "podium of vigour displaying " << mType->name;
+		name << item->getName() << " displaying " << mType->name;
 		item->setAttribute(ItemAttribute_t::NAME, name.str());
 	} else {
 		item->removeAttribute(ItemAttribute_t::NAME);
@@ -8984,12 +8989,12 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 		return;
 	}
 
-	auto podiumBoss = item->getCustomAttribute("PodiumBossId");
+	auto podiumRaceIdAttribute = item->getCustomAttribute("PodiumMonsterRaceId");
 	auto lookDirection = item->getCustomAttribute("LookDirection");
 	auto podiumVisible = item->getCustomAttribute("PodiumVisible");
-	auto bossVisible = item->getCustomAttribute("BossVisible");
+	auto monsterVisible = item->getCustomAttribute("MonsterVisible");
 
-	auto podiumBossId = static_cast<uint8_t>(podiumBoss ? podiumBoss->getInteger() : 0);
+	auto podiumRaceId = podiumRaceIdAttribute ? podiumRaceIdAttribute->getInteger() : 0;
 	uint8_t directionValue;
 	if (lookDirection) {
 		directionValue = static_cast<uint8_t>(lookDirection->getInteger() >= 3 ? 0 : lookDirection->getInteger() + 1);
@@ -8997,14 +9002,33 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 		directionValue = 2;
 	}
 	auto isPodiumVisible = static_cast<uint8_t>(podiumVisible ? podiumVisible->getInteger() : 1);
-	bool isBossVisible = bossVisible ? bossVisible->getInteger() : false;
+	bool isMonsterVisible = monsterVisible ? monsterVisible->getInteger() : false;
 
-	if (!isBossVisible || podiumBossId == 0) {
-		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+	// Rotate monster podium (bestiary or bosstiary) to the new direction
+	bool isPodiumOfRenown = itemId == ITEM_PODIUM_OF_RENOWN1 || itemId == ITEM_PODIUM_OF_RENOWN2;
+	if (!isPodiumOfRenown) {
+		if (!isMonsterVisible || podiumRaceId == 0) {
+			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return;
+		}
+
+		playerSetMonsterPodium(playerId, podiumRaceId, pos, stackPos, itemId, directionValue, isPodiumVisible, isMonsterVisible);
 		return;
 	}
 
-	playerSetBossPodium(playerId, podiumBossId, pos, stackPos, itemId, directionValue, isPodiumVisible, isBossVisible);
+	// We retrieve the outfit information to be able to rotate in the new direction
+	Outfit_t newOutfit;
+	newOutfit.lookType = InternalGame::getCustomAttributeValue(item, "LookType");
+	newOutfit.lookHead = InternalGame::getCustomAttributeValue(item, "LookHead");
+	newOutfit.lookBody = InternalGame::getCustomAttributeValue(item, "LookBody");
+	newOutfit.lookLegs = InternalGame::getCustomAttributeValue(item, "LookLegs");
+	newOutfit.lookFeet = InternalGame::getCustomAttributeValue(item, "LookFeet");
+	newOutfit.lookMount = InternalGame::getCustomAttributeValue(item, "LookMount");
+	newOutfit.lookMountHead = InternalGame::getCustomAttributeValue(item, "LookMountHead");
+	newOutfit.lookMountBody = InternalGame::getCustomAttributeValue(item, "LookMountBody");
+	newOutfit.lookMountLegs = InternalGame::getCustomAttributeValue(item, "LookMountLegs");
+	newOutfit.lookMountFeet = InternalGame::getCustomAttributeValue(item, "LookMountFeet");
+	playerSetShowOffSocket(player->getID(), newOutfit, pos, stackPos, itemId, isPodiumVisible, directionValue);
 }
 
 void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen) {

@@ -127,7 +127,7 @@ const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttribut
 	{ "femalesleeper", ITEM_PARSE_FEMALETRANSFORMTO },
 	{ "bedpart", ITEM_PARSE_PARTNERDIRECTION },
 	{ "bedpartof", ITEM_PARSE_PARTNERDIRECTION },
-	{ "transformto", ITEM_PARSE_TRANSFORMTO },
+	{ "transformonuse", ITEM_PARSE_TRANSFORMONUSE },
 	{ "destroyto", ITEM_PARSE_DESTROYTO },
 	{ "elementice", ITEM_PARSE_ELEMENTICE },
 	{ "elementearth", ITEM_PARSE_ELEMENTEARTH },
@@ -308,6 +308,7 @@ class ItemParse : public Items {
 		static void parsePerfecShot(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parseCleavePercent(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parseReflectDamage(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+		static void parseTransformOnUse(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 
 	private:
 		// Parent of the function: static void parseField

@@ -98,7 +98,7 @@ bool GameReload::reloadCore() const {
 		g_luaEnvironment.loadFile(coreFolder + "/core.lua", "core.lua") == 0) {
 		// Reload scripts lib
 		auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
-		if (!g_scripts().loadScripts(datapackFolder + "scripts/lib", true, false)) {
+		if (!g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false)) {
 			return false;
 		}
 

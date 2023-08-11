@@ -32,13 +32,13 @@ class Guild : public Bankable {
 		void addMember(Player* player);
 		void removeMember(Player* player);
 
-		Guild* getGuild() {
-			return this;
+		bool isGuild() {
+			return true;
 		}
-		void setOnline(bool online) {
-			this->online = online;
+		void setOnline(bool value) override {
+			online = value;
 		}
-		bool isOnline() const {
+		bool isOnline() const override {
 			return online;
 		}
 
@@ -57,10 +57,10 @@ class Guild : public Bankable {
 		void setMemberCount(uint32_t count) {
 			memberCount = count;
 		}
-		uint64_t getBankBalance() const {
+		uint64_t getBankBalance() const override {
 			return bankBalance;
 		}
-		void setBankBalance(uint64_t balance) {
+		void setBankBalance(uint64_t balance) override {
 			bankBalance = balance;
 		}
 

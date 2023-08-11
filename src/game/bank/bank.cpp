@@ -15,12 +15,16 @@ Bank::~Bank() {
 	Player* player = bankable->getPlayer();
 	if (player && !player->isOnline()) {
 		IOLoginData::savePlayer(player);
+		delete player;
+		return;
 	}
-	Guild* guild = bankable->getGuild();
-	if (guild && !guild->isOnline()) {
-		IOGuild::saveGuild(guild);
+	if (bankable->isGuild()) {
+		Guild* guild = static_cast<Guild*>(bankable);
+		if (guild && !guild->isOnline()) {
+			IOGuild::saveGuild(guild);
+			delete guild;
+		}
 	}
-	delete bankable;
 }
 
 bool Bank::credit(uint64_t amount) {

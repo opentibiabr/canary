@@ -110,10 +110,10 @@ class Player final : public Creature, public Cylinder, public Bankable {
 
 		void setID() override;
 
-		void setOnline(bool online) {
-			this->online = online;
+		void setOnline(bool value) override {
+			online = value;
 		}
-		bool isOnline() const {
+		bool isOnline() const override {
 			return online;
 		}
 
@@ -240,10 +240,10 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			offlineTrainingSkill = skill;
 		}
 
-		uint64_t getBankBalance() const {
+		uint64_t getBankBalance() const override {
 			return bankBalance;
 		}
-		void setBankBalance(uint64_t balance) {
+		void setBankBalance(uint64_t balance) override {
 			bankBalance = balance;
 		}
 

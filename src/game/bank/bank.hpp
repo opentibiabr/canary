@@ -12,8 +12,8 @@ class Bankable {
 		virtual Player* getPlayer() {
 			return nullptr;
 		}
-		virtual Guild* getGuild() {
-			return nullptr;
+		virtual bool isGuild() {
+			return false;
 		}
 		virtual void setOnline(bool online) = 0;
 		virtual bool isOnline() const = 0;

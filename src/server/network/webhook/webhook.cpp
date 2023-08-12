@@ -137,7 +137,7 @@ void Webhook::threadMain() {
 		auto response_code = sendRequest(task.url.c_str(), payload.c_str(), &response_body);
 
 		if (response_code == 429 || response_code == 504) {
-			SPDLOG_ERROR("Encountered error code {}. Requeueing task.", response_code);
+			SPDLOG_DEBUG("[{}] encountered error code {}. Requeueing task and sleeping for two seconds.", response_code);
 
 			taskLockUnique.lock();
 			taskDeque.push_front(task);

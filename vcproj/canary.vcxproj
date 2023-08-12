@@ -51,6 +51,7 @@
     <ClInclude Include="..\src\game\functions\game_reload.hpp" />
     <ClInclude Include="..\src\game\game.h" />
     <ClInclude Include="..\src\game\bank\bank.hpp" />
+    <ClInclude Include="..\src\game\zones\zone.hpp" />
     <ClInclude Include="..\src\game\game_definitions.hpp" />
     <ClInclude Include="..\src\game\movement\position.h" />
     <ClInclude Include="..\src\game\movement\teleport.h" />
@@ -114,6 +115,7 @@
     <ClInclude Include="..\src\lua\functions\core\game\game_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\global_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\bank_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\core\game\zone_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\lua_enums.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\modal_window_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\bit_functions.hpp" />
@@ -237,6 +239,7 @@
     <ClCompile Include="..\src\game\functions\game_reload.cpp" />
     <ClCompile Include="..\src\game\game.cpp" />
     <ClCompile Include="..\src\game\bank\bank.cpp" />
+    <ClCompile Include="..\src\game\zones\zone.cpp" />
     <ClCompile Include="..\src\game\movement\position.cpp" />
     <ClCompile Include="..\src\game\movement\teleport.cpp" />
     <ClCompile Include="..\src\game\scheduling\events_scheduler.cpp" />
@@ -288,6 +291,7 @@
     <ClCompile Include="..\src\lua\functions\core\game\game_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\global_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\bank_functions.cpp" />
+    <ClCompile Include="..\src\lua\functions\core\game\zone_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\lua_enums.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\modal_window_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\bit_functions.cpp" />

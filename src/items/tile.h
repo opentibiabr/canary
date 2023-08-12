@@ -180,7 +180,7 @@ class Tile : public Cylinder {
 			return hasFlag(TILESTATE_HAZARD);
 		}
 
-		ZoneType_t getZone() const {
+		ZoneType_t getZoneType() const {
 			if (hasFlag(TILESTATE_PROTECTIONZONE)) {
 				return ZONE_PROTECTION;
 			} else if (hasFlag(TILESTATE_NOPVPZONE)) {

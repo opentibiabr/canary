@@ -6313,7 +6313,7 @@ void Player::initializePrey() {
 void Player::removePreySlotById(PreySlot_t slotid) {
 	auto it = std::remove_if(preys.begin(), preys.end(), [slotid](const PreySlot* preyIt) {
 		return preyIt->id == slotid;
-		});
+	});
 
 	for (auto i = it; i != preys.end(); ++i) {
 		delete *i;

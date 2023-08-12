@@ -10,8 +10,47 @@
 #ifndef SRC_SERVER_NETWORK_WEBHOOK_WEBHOOK_H_
 #define SRC_SERVER_NETWORK_WEBHOOK_WEBHOOK_H_
 
-void webhook_init();
+#include "utils/thread_holder_base.h"
 
-void webhook_send_message(std::string title, std::string message, int color, std::string url);
+class Webhook : public ThreadHolder<Webhook> {
+	private:
+		Webhook();
+		~Webhook();
+
+		// Singleton - ensures we don't accidentally copy it
+		Webhook(const Webhook &) = delete;
+		void operator=(const Webhook &) = delete;
+
+		struct Task {
+				std::string title;
+				std::string message;
+				int color;
+				std::string url;
+		};
+
+		std::mutex taskLock;
+		std::condition_variable taskSignal;
+		std::queue<Task> taskQueue;
+		bool isInitialized = false;
+		curl_slist* headers = nullptr;
+		CURL* curl;
+
+	public:
+		static Webhook &getInstance() {
+			// Guaranteed to be destroyed
+			static Webhook instance;
+			// Instantiated on first use
+			return instance;
+		}
+
+		void init();
+		void sendMessage(const std::string title, const std::string message, int color, std::string url = "");
+		int sendRequest(const char* url, const char* payload, std::string* response_body);
+		std::string getPayload(const std::string title, const std::string message, int color);
+		void threadMain();
+		void shutdown();
+};
+
+constexpr auto g_webhook = &Webhook::getInstance;
 
 #endif // SRC_SERVER_NETWORK_WEBHOOK_WEBHOOK_H_

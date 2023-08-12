@@ -12,13 +12,10 @@
 #include "server/network/webhook/webhook.h"
 #include "config/configmanager.h"
 
-// Tread no further, adventurer!
-// Go back while you still can.
+Webhook::Webhook() = default;
+Webhook::~Webhook() = default;
 
-static bool init = false;
-static curl_slist* headers = NULL;
-
-void webhook_init() {
+void Webhook::init() {
 	if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
 		SPDLOG_ERROR("Failed to init curl, no webhook messages may be sent");
 		return;
@@ -31,41 +28,55 @@ void webhook_init() {
 		return;
 	}
 
-	init = true;
+	isInitialized = true;
 }
 
-static int webhook_send_message_(const char* url, const char* payload, std::string* response_body);
-static std::string get_payload(std::string title, std::string message, int color);
-
-void webhook_send_message(std::string title, std::string message, int color, std::string url) {
+void Webhook::sendMessage(const std::string title, const std::string message, int color, std::string url) {
 	if (url.empty()) {
+		url = g_configManager().getString(DISCORD_WEBHOOK_URL);
+	}
+	if (url.empty() || title.empty() || message.empty() || !isInitialized) {
 		return;
 	}
 
-	if (!init) {
-		SPDLOG_ERROR("Failed to send webhook message; Did not (successfully) init");
-		return;
+	Task task { title, message, color, url };
+	{
+		std::lock_guard<std::mutex> lock(taskLock);
+		taskQueue.push(std::move(task));
 	}
-
-	if (title.empty() || message.empty()) {
-		SPDLOG_ERROR("Failed to send webhook message; "
-					 "title or message to send was empty");
-		return;
-	}
-
-	std::string payload = get_payload(title, message, color);
-	std::string response_body = "";
-	int response_code = webhook_send_message_(url.c_str(), payload.c_str(), &response_body);
-
-	if (response_code != 204 && response_code != -1) {
-		SPDLOG_ERROR("Failed to send webhook message; "
-					 "HTTP request failed with code: {}"
-					 "response body: {} request body: {}",
-					 response_code, response_body, payload);
-	}
+	taskSignal.notify_one();
 }
 
-static std::string get_payload(std::string title, std::string message, int color) {
+int Webhook::sendRequest(const char* url, const char* payload, std::string* response_body) {
+	CURL* curl = curl_easy_init();
+	if (!curl) {
+		SPDLOG_ERROR("Failed to send webhook message; curl_easy_init failed");
+		return -1;
+	}
+
+	curl_easy_setopt(curl, CURLOPT_URL, url);
+	curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+	curl_easy_setopt(curl, CURLOPT_POST, 1L);
+	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, reinterpret_cast<void*>(response_body));
+	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+	curl_easy_setopt(curl, CURLOPT_USERAGENT, "canary (https://github.com/Hydractify/canary)");
+
+	CURLcode res = curl_easy_perform(curl);
+
+	int response_code = -1;
+	if (res == CURLE_OK) {
+		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+	} else {
+		SPDLOG_ERROR("Failed to send webhook message with the error: {}", curl_easy_strerror(res));
+	}
+
+	curl_easy_cleanup(curl);
+
+	return response_code;
+}
+
+std::string Webhook::getPayload(const std::string title, const std::string message, int color) {
 	time_t now;
 	time(&now);
 	struct tm tm;
@@ -85,58 +96,51 @@ static std::string get_payload(std::string title, std::string message, int color
 		<< g_configManager().getNumber(GAME_PORT) << " | "
 		<< time_buf << " UTC";
 
-	Json::Value footer(Json::objectValue);
-	footer["text"] = Json::Value(footer_text.str());
-
-	Json::Value embed(Json::objectValue);
-	embed["title"] = Json::Value(title);
-	embed["description"] = Json::Value(message);
-	embed["footer"] = footer;
+	std::stringstream payload;
+	payload << "{ \"embeds\": [{ ";
+	payload << "\"title\": \"" << title << "\", ";
+	payload << "\"description\": \"" << message << "\", ";
+	payload << "\"footer\": { \"text\": \"" << footer_text.str() << "\" }, ";
 	if (color >= 0) {
-		embed["color"] = color;
+		payload << "\"color\": " << color;
 	}
+	payload << " }] }";
 
-	Json::Value embeds(Json::arrayValue);
-	embeds.append(embed);
-
-	Json::Value payload(Json::objectValue);
-	payload["embeds"] = embeds;
-
-	Json::StreamWriterBuilder builder;
-	builder["commentSyle"] = "None";
-	builder["indentation"] = "";
-
-	std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-	std::stringstream out;
-	writer->write(payload, &out);
-	return out.str();
+	return payload.str();
 }
 
-static int webhook_send_message_(const char* url, const char* payload, std::string* response_body) {
-	CURL* curl = curl_easy_init();
-	if (!curl) {
-		SPDLOG_ERROR("Failed to send webhook message; curl_easy_init failed");
-		return -1;
+void Webhook::threadMain() {
+	while (getState() != THREAD_STATE_TERMINATED) {
+		std::unique_lock<std::mutex> taskLockUnique(taskLock);
+		taskSignal.wait(taskLockUnique, [this] { return !taskQueue.empty() || getState() == THREAD_STATE_TERMINATED; });
+
+		if (getState() == THREAD_STATE_TERMINATED)
+			break;
+
+		Task task;
+		{
+			task = std::move(taskQueue.front());
+			taskQueue.pop();
+		}
+		taskLockUnique.unlock();
+
+		std::string payload = getPayload(task.title, task.message, task.color);
+		std::string response_body = "";
+		auto response_code = sendRequest(task.url.c_str(), payload.c_str(), &response_body);
+		if (response_code != 204 && response_code != -1) {
+			SPDLOG_ERROR("Failed to send webhook message; "
+						 "HTTP request failed with code: {}"
+						 "response body: {} request body: {}",
+						 response_code, response_body, payload);
+		}
+
+		// Adds half a second of time to execute the next webhook, ensuring that the server doesn't have any overhead, because discord only receives a webhook more or less in this time
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 	}
+}
 
-	curl_easy_setopt(curl, CURLOPT_URL, url);
-	curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
-	curl_easy_setopt(curl, CURLOPT_POST, 1L);
-	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, reinterpret_cast<void*>(&response_body));
-	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-	curl_easy_setopt(curl, CURLOPT_USERAGENT, "canary (https://github.com/Hydractify/canary)");
-
-	CURLcode res = curl_easy_perform(curl);
-
-	int response_code = -1;
-	if (res == CURLE_OK) {
-		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-	} else {
-		SPDLOG_ERROR("Failed to send webhook message with the error: {}", curl_easy_strerror(res));
-	}
-
-	curl_easy_cleanup(curl);
-
-	return response_code;
+void Webhook::shutdown() {
+	std::lock_guard<std::mutex> taskLockGuard(taskLock);
+	setState(THREAD_STATE_TERMINATED);
+	taskSignal.notify_all();
 }

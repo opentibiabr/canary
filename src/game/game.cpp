@@ -7303,8 +7303,7 @@ void Game::dieSafely(std::string errorMsg /* = "" */) {
 }
 
 void Game::shutdown() {
-	std::string url = g_configManager().getString(DISCORD_WEBHOOK_URL);
-	webhook_send_message("Server is shutting down", "Shutting down...", WEBHOOK_COLOR_OFFLINE, url);
+	g_webhook().sendMessage("Server is shutting down", "Shutting down...", WEBHOOK_COLOR_OFFLINE);
 
 	SPDLOG_INFO("Shutting down...");
 

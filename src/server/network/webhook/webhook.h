@@ -30,7 +30,7 @@ class Webhook : public ThreadHolder<Webhook> {
 
 		std::mutex taskLock;
 		std::condition_variable taskSignal;
-		std::queue<Task> taskQueue;
+		std::deque<Task> taskDeque;
 		bool isInitialized = false;
 		curl_slist* headers = nullptr;
 		CURL* curl;
@@ -46,6 +46,7 @@ class Webhook : public ThreadHolder<Webhook> {
 		void init();
 		void sendMessage(const std::string title, const std::string message, int color, std::string url = "");
 		int sendRequest(const char* url, const char* payload, std::string* response_body);
+		static size_t writeCallback(void* contents, size_t size, size_t nmemb, void* userp);
 		std::string getPayload(const std::string title, const std::string message, int color);
 		void threadMain();
 		void shutdown();

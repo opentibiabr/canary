@@ -42,7 +42,7 @@ void Webhook::sendMessage(const std::string title, const std::string message, in
 	Task task { title, message, color, url };
 	{
 		std::lock_guard<std::mutex> lock(taskLock);
-		taskQueue.push(std::move(task));
+		taskDeque.push_back(std::move(task));
 	}
 	taskSignal.notify_one();
 }
@@ -58,6 +58,7 @@ int Webhook::sendRequest(const char* url, const char* payload, std::string* resp
 	curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
 	curl_easy_setopt(curl, CURLOPT_POST, 1L);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &Webhook::writeCallback);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, reinterpret_cast<void*>(response_body));
 	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 	curl_easy_setopt(curl, CURLOPT_USERAGENT, "canary (https://github.com/Hydractify/canary)");
@@ -74,6 +75,13 @@ int Webhook::sendRequest(const char* url, const char* payload, std::string* resp
 	curl_easy_cleanup(curl);
 
 	return response_code;
+}
+
+size_t Webhook::writeCallback(void* contents, size_t size, size_t nmemb, void* userp) {
+	size_t real_size = size * nmemb;
+	std::string* str = reinterpret_cast<std::string*>(userp);
+	str->append(reinterpret_cast<char*>(contents), real_size);
+	return real_size;
 }
 
 std::string Webhook::getPayload(const std::string title, const std::string message, int color) {
@@ -112,29 +120,37 @@ std::string Webhook::getPayload(const std::string title, const std::string messa
 void Webhook::threadMain() {
 	while (getState() != THREAD_STATE_TERMINATED) {
 		std::unique_lock<std::mutex> taskLockUnique(taskLock);
-		taskSignal.wait(taskLockUnique, [this] { return !taskQueue.empty() || getState() == THREAD_STATE_TERMINATED; });
+		taskSignal.wait(taskLockUnique, [this] { return !taskDeque.empty() || getState() == THREAD_STATE_TERMINATED; });
 
 		if (getState() == THREAD_STATE_TERMINATED)
 			break;
 
 		Task task;
 		{
-			task = std::move(taskQueue.front());
-			taskQueue.pop();
+			task = std::move(taskDeque.front());
+			taskDeque.pop_front();
 		}
 		taskLockUnique.unlock();
 
 		std::string payload = getPayload(task.title, task.message, task.color);
 		std::string response_body = "";
 		auto response_code = sendRequest(task.url.c_str(), payload.c_str(), &response_body);
-		if (response_code != 204 && response_code != -1) {
+
+		if (response_code == 429 || response_code == 504) {
+			SPDLOG_ERROR("Encountered error code {}. Requeueing task.", response_code);
+
+			taskLockUnique.lock();
+			taskDeque.push_front(task);
+			taskLockUnique.unlock();
+
+			std::this_thread::sleep_for(std::chrono::seconds(2));
+		} else if (response_code != 204 && response_code != -1) {
 			SPDLOG_ERROR("Failed to send webhook message; "
 						 "HTTP request failed with code: {}"
 						 "response body: {} request body: {}",
 						 response_code, response_body, payload);
 		}
 
-		// Adds half a second of time to execute the next webhook, ensuring that the server doesn't have any overhead, because discord only receives a webhook more or less in this time
 		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 	}
 }

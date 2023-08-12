@@ -256,10 +256,7 @@ class Monsters {
 		Monsters &operator=(const Monsters &) = delete;
 
 		static Monsters &getInstance() {
-			// Guaranteed to be destroyed
-			static Monsters instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Monsters>();
 		}
 
 		MonsterType* getMonsterType(const std::string &name);
@@ -276,6 +273,6 @@ class Monsters {
 		MonsterType* loadMonster(const std::string &file, const std::string &monsterName, bool reloading = false);
 };
 
-constexpr auto g_monsters = &Monsters::getInstance;
+constexpr auto g_monsters = Monsters::getInstance;
 
 #endif // SRC_CREATURES_MONSTERS_MONSTERS_H_

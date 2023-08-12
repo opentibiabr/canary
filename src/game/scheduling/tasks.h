@@ -60,10 +60,7 @@ class Dispatcher : public ThreadHolder<Dispatcher> {
 		void operator=(const Dispatcher &) = delete;
 
 		static Dispatcher &getInstance() {
-			// Guaranteed to be destroyed
-			static Dispatcher instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Dispatcher>();
 		}
 
 		void addTask(Task* task, bool push_front = false);
@@ -84,6 +81,6 @@ class Dispatcher : public ThreadHolder<Dispatcher> {
 		uint64_t dispatcherCycle = 0;
 };
 
-constexpr auto g_dispatcher = &Dispatcher::getInstance;
+constexpr auto g_dispatcher = Dispatcher::getInstance;
 
 #endif // SRC_GAME_SCHEDULING_TASKS_H_

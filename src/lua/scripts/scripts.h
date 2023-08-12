@@ -22,10 +22,7 @@ class Scripts {
 		Scripts &operator=(const Scripts &) = delete;
 
 		static Scripts &getInstance() {
-			// Guaranteed to be destroyed
-			static Scripts instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Scripts>();
 		}
 
 		void clearAllScripts() const;
@@ -49,7 +46,7 @@ class Scripts {
 		LuaScriptInterface scriptInterface;
 };
 
-constexpr auto g_scripts = &Scripts::getInstance;
+constexpr auto g_scripts = Scripts::getInstance;
 
 class Script {
 	public:

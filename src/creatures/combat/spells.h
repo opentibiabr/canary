@@ -35,10 +35,7 @@ class Spells final : public Scripts {
 		Spells &operator=(const Spells &) = delete;
 
 		static Spells &getInstance() {
-			// Guaranteed to be destroyed
-			static Spells instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Spells>();
 		}
 
 		Spell* getSpellByName(const std::string &name);
@@ -77,7 +74,7 @@ class Spells final : public Scripts {
 		friend class CombatSpell;
 };
 
-constexpr auto g_spells = &Spells::getInstance;
+constexpr auto g_spells = Spells::getInstance;
 
 using RuneSpellFunction = std::function<bool(const RuneSpell* spell, Player* player, const Position &posTo)>;
 

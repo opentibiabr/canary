@@ -110,6 +110,6 @@ class EventsCallbacks {
 		std::vector<EventCallback*> m_callbacks;
 };
 
-constexpr auto g_callbacks = &EventsCallbacks::getInstance;
+constexpr auto g_callbacks = EventsCallbacks::getInstance;
 
 #endif // SRC_LUA_CALLBACKS_EVENTS_CALLBACKS_HPP_

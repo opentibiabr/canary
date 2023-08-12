@@ -25,10 +25,7 @@ EventsCallbacks::EventsCallbacks() = default;
 EventsCallbacks::~EventsCallbacks() = default;
 
 EventsCallbacks &EventsCallbacks::getInstance() {
-	// Guaranteed to be destroyed
-	static EventsCallbacks instance;
-	// Instantiated on first use
-	return instance;
+	return inject<EventsCallbacks>();
 }
 
 void EventsCallbacks::addCallback(EventCallback* callback) {

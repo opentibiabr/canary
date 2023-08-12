@@ -1,12 +1,15 @@
 local createMonster = TalkAction("/m")
 
 function createMonster.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	-- Usage: "/m monstername, fiendish" for create a fiendish monster (/m rat, fiendish)
 	-- Usage: "/m monstername, [1-5]" for create a influenced monster with specific level (/m rat, 2)
 	if param == "" then
 		player:sendCancelMessage("Monster name param required.")
 		Spdlog.error("[createMonster.onSay] - Monster name param not found.")
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -24,7 +27,7 @@ function createMonster.onSay(player, words, param)
 	if monster then
 		if not monster:isForgeable() then
 			player:sendCancelMessage("Only allowed monsters can be fiendish or influenced.")
-			return false
+			return true
 		end
 		monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		position:sendMagicEffect(CONST_ME_MAGIC_RED)
@@ -40,9 +43,9 @@ function createMonster.onSay(player, words, param)
 		player:sendCancelMessage("There is not enough room.")
 		position:sendMagicEffect(CONST_ME_POFF)
 	end
-	return false
+	return true
 end
 
 createMonster:separator(" ")
-createMonster:groupType("gamemaster")
+createMonster:groupType("god")
 createMonster:register()

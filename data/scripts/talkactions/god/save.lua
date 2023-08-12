@@ -11,6 +11,9 @@ end
 local save = TalkAction("/save")
 
 function save.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if isNumber(param) then
 		stopEvent(savingEvent)
 		saveLoop(tonumber(param) * 60 * 1000)

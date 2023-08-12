@@ -1,6 +1,8 @@
 local talk = TalkAction("/hireling")
 
 function talk.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
 
 	local split = param:split(",")
 	local name = split[1] ~= "" and split[1] or "Hireling " .. player:getName()
@@ -10,7 +12,7 @@ function talk.onSay(player, words, param)
 	if result then
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 	end
-	return false
+	return true
 end
 
 talk:separator(" ")

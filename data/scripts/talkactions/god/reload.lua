@@ -55,29 +55,34 @@ function Player.reloadTalkaction(self, words, param)
 	}
 
 	if not configManager.getBoolean(configKeys.ALLOW_RELOAD) then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,"Reload command is disabled.")
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Reload command is disabled.")
 		return true
 	end
 
 	if param == "" then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,"Command param required.")
-		return false
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Command param required.")
+		return true
 	end
 
+	-- create log
 	logCommand(self, "/reload", param)
 
 	local reloadType = reloadTypes[param:lower()]
 	if reloadType then
+		-- Force save server before reload
+		saveServer()
+		SaveHirelings()
+		Spdlog.info("Saved Hirelings")
+		self:sendTextMessage(MESSAGE_ADMINISTRADOR, "Server is saved.. Now will reload configs!")
+
 		Game.reload(reloadType)
 		self:sendTextMessage(MESSAGE_LOOK, string.format("Reloaded %s.", param:lower()))
 		Spdlog.info("Reloaded " .. param:lower() .. "")
-		return true
 	elseif not reloadType then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,"Reload type not found.")
-		Spdlog.warn("[reload.onSay] - Reload type '".. param.. "' not found")
-		return false
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Reload type not found.")
+		Spdlog.warn("[reload.onSay] - Reload type '" .. param .. "' not found")
 	end
-	return false
+	return true
 end
 
 local reload = TalkAction("/reload")

@@ -3,9 +3,12 @@
 local teleportSetDestination = TalkAction("/teleport")
 
 function teleportSetDestination.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Teleport position required.")
-		return false
+		return true
 	end
 
 	local position = player:getPosition()
@@ -16,7 +19,7 @@ function teleportSetDestination.onSay(player, words, param)
 		local split = param:split(",") -- Split always return a table, even if it's empty
 		if #split ~= 3 then
 			player:sendCancelMessage("You need to declare the X, Y of Z of destination. Please use \"/teleport X, Y, Z\".")
-			return false
+			return true
 		else
 			local destPosition = Position(split[1], split[2], split[3])
 			if destPosition and destPosition:getTile() then
@@ -24,14 +27,14 @@ function teleportSetDestination.onSay(player, words, param)
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("New position: %s", param))
 			else
 				player:sendCancelMessage("Destination position is not valid.")
-				return false
+				return true
 			end
 		end
 	else
 		player:sendCancelMessage("The item is not a teleport type")
-		return false
+		return true
 	end
-	return false
+	return true
 end
 
 teleportSetDestination:separator(" ")

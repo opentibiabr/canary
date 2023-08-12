@@ -1,9 +1,12 @@
 local teleportToTown = TalkAction("/town")
 
 function teleportToTown.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
-		return false
+		return true
 	end
 
 	local town = Town(param) or Town(tonumber(param))
@@ -12,7 +15,7 @@ function teleportToTown.onSay(player, words, param)
 	else
 		player:sendCancelMessage("Town not found.")
 	end
-	return false
+	return true
 end
 
 teleportToTown:separator(" ")

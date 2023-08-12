@@ -1,6 +1,9 @@
 local mcCheck = TalkAction("/mc")
 
 function mcCheck.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Multiclient Check List:")
 	local ipList = {}
 	local players = Game.getPlayers()
@@ -29,7 +32,7 @@ function mcCheck.onSay(player, words, param)
 			player:sendTextMessage(MESSAGE_ADMINISTRADOR, message .. ".")
 		end
 	end
-	return false
+	return true
 end
 
 mcCheck:separator(" ")

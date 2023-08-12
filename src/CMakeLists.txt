@@ -306,6 +306,7 @@ PRIVATE
 	map/house/house.cpp
 	map/house/housetile.cpp
 	map/map.cpp
+	CanaryServer.cpp
 	otserv.cpp
 	security/argon.cpp
 	security/rsa.cpp

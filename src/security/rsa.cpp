@@ -11,12 +11,29 @@
 
 #include "security/rsa.h"
 
-RSA::RSA() {
+RSA::RSA(Logger &logger) :
+	logger(logger) {
 	mpz_init(n);
 	mpz_init2(d, 1024);
 }
 
 RSA::~RSA() = default;
+
+void RSA::start() {
+	const char* p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
+	const char* q("7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");
+	try {
+		if (!loadPEM("key.pem")) {
+			// file doesn't exist - switch to base10-hardcoded keys
+			logger.error("File key.pem not found or have problem on loading... Setting standard rsa key\n");
+			setKey(p, q);
+		}
+	} catch (const std::system_error &e) {
+		logger.error("Loading RSA Key from key.pem failed with error: {}\n", e.what());
+		logger.error("Switching to a default key...");
+		setKey(p, q);
+	}
+}
 
 void RSA::setKey(const char* pString, const char* qString, int base /* = 10*/) {
 	mpz_t p;

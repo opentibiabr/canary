@@ -14,6 +14,7 @@
 #include "server/network/protocol/protocol.h"
 #include "server/network/protocol/protocolgame.h"
 #include "game/scheduling/scheduler.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "server/server.h"
 
 Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort) {

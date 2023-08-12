@@ -12,8 +12,9 @@
 #include "server/network/webhook/webhook.h"
 #include "config/configmanager.h"
 
-Webhook::Webhook() = default;
-Webhook::~Webhook() = default;
+Webhook::Webhook() {
+	init();
+}
 
 void Webhook::init() {
 	if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
@@ -35,6 +36,7 @@ void Webhook::sendMessage(const std::string title, const std::string message, in
 	if (url.empty()) {
 		url = g_configManager().getString(DISCORD_WEBHOOK_URL);
 	}
+
 	if (url.empty() || title.empty() || message.empty() || !isInitialized) {
 		return;
 	}

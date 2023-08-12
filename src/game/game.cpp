@@ -42,6 +42,8 @@
 #include "creatures/npcs/npcs.h"
 #include "server/network/webhook/webhook.h"
 #include "protobuf/appearances.pb.h"
+#include "server/network/protocol/protocollogin.h"
+#include "server/network/protocol/protocolstatus.h"
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, Creature* source) {
@@ -280,6 +282,12 @@ void Game::loadBoostedCreature() {
 }
 
 void Game::start(ServiceManager* manager) {
+	// Game client protocols
+	manager->add<ProtocolGame>(static_cast<uint16_t>(g_configManager().getNumber(GAME_PORT)));
+	manager->add<ProtocolLogin>(static_cast<uint16_t>(g_configManager().getNumber(LOGIN_PORT)));
+	// OT protocols
+	manager->add<ProtocolStatus>(static_cast<uint16_t>(g_configManager().getNumber(STATUS_PORT)));
+
 	serviceManager = manager;
 
 	time_t now = time(0);

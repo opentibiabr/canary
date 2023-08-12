@@ -15,7 +15,6 @@
 class Webhook : public ThreadHolder<Webhook> {
 	private:
 		Webhook();
-		~Webhook();
 
 		// Singleton - ensures we don't accidentally copy it
 		Webhook(const Webhook &) = delete;

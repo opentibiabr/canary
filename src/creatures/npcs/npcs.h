@@ -100,7 +100,7 @@ class Npcs {
 		Npcs &operator=(const Npcs &) = delete;
 
 		static Npcs &getInstance() {
-			return inject(Npcs);
+			return inject<Npcs>();
 		}
 
 		NpcType* getNpcType(const std::string &name, bool create = false);

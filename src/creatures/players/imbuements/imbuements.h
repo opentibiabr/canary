@@ -53,7 +53,7 @@ class Imbuements {
 		Imbuements &operator=(const Imbuements &) = delete;
 
 		static Imbuements &getInstance() {
-			return inject(Imbuements);
+			return inject<Imbuements>();
 		}
 
 		Imbuement* getImbuement(uint16_t id);

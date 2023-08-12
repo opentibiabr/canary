@@ -20,7 +20,7 @@ class RSA {
 		void operator=(RSA const &) = delete;
 
 		static RSA &getInstance() {
-			return inject(RSA);
+			return inject<RSA>();
 		}
 
 		void setKey(const char* pString, const char* qString, int base = 10);

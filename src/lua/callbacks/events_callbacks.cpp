@@ -25,7 +25,7 @@ EventsCallbacks::EventsCallbacks() = default;
 EventsCallbacks::~EventsCallbacks() = default;
 
 EventsCallbacks &EventsCallbacks::getInstance() {
-	return inject(EventsCallbacks);
+	return inject<EventsCallbacks>();
 }
 
 void EventsCallbacks::addCallback(EventCallback* callback) {

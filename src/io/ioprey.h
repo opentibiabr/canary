@@ -214,7 +214,7 @@ class IOPrey {
 		void operator=(const IOPrey &) = delete;
 
 		static IOPrey &getInstance() {
-			return inject(IOPrey);
+			return inject<IOPrey>();
 		}
 
 		void CheckPlayerPreys(Player* player, uint8_t amount) const;

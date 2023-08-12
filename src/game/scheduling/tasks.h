@@ -60,7 +60,7 @@ class Dispatcher : public ThreadHolder<Dispatcher> {
 		void operator=(const Dispatcher &) = delete;
 
 		static Dispatcher &getInstance() {
-			return inject(Dispatcher);
+			return inject<Dispatcher>();
 		}
 
 		void addTask(Task* task, bool push_front = false);

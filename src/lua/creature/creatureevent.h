@@ -75,7 +75,7 @@ class CreatureEvents final : public Scripts {
 		CreatureEvents &operator=(const CreatureEvents &) = delete;
 
 		static CreatureEvents &getInstance() {
-			return inject(CreatureEvents);
+			return inject<CreatureEvents>();
 		}
 
 		// global events

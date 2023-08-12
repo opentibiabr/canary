@@ -76,7 +76,7 @@ class TalkActions final : public Scripts {
 		TalkActions &operator=(const TalkActions &) = delete;
 
 		static TalkActions &getInstance() {
-			return inject(TalkActions);
+			return inject<TalkActions>();
 		}
 
 		bool checkWord(Player* player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const;

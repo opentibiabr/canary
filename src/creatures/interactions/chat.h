@@ -118,7 +118,7 @@ class Chat {
 		Chat &operator=(const Chat &) = delete;
 
 		static Chat &getInstance() {
-			return inject(Chat);
+			return inject<Chat>();
 		}
 
 		bool load();

@@ -53,7 +53,7 @@ class Scheduler : public ThreadHolder<Scheduler> {
 		void operator=(const Scheduler &) = delete;
 
 		static Scheduler &getInstance() {
-			return inject(Scheduler);
+			return inject<Scheduler>();
 		}
 
 		uint32_t addEvent(SchedulerTask* task);

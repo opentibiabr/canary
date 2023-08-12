@@ -22,7 +22,7 @@ class Scripts {
 		Scripts &operator=(const Scripts &) = delete;
 
 		static Scripts &getInstance() {
-			return inject(Scripts);
+			return inject<Scripts>();
 		}
 
 		void clearAllScripts() const;

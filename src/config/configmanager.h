@@ -21,7 +21,7 @@ class ConfigManager {
 		void operator=(const ConfigManager &) = delete;
 
 		static ConfigManager &getInstance() {
-			return inject(ConfigManager);
+			return inject<ConfigManager>();
 		}
 
 		bool load();

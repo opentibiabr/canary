@@ -31,7 +31,7 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks> {
 		void operator=(const DatabaseTasks &) = delete;
 
 		static DatabaseTasks &getInstance() {
-			return inject(DatabaseTasks);
+			return inject<DatabaseTasks>();
 		}
 
 		bool SetDatabaseInterface(Database* database);

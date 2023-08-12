@@ -20,7 +20,7 @@ class Decay {
 		void operator=(const Decay &) = delete;
 
 		static Decay &getInstance() {
-			return inject(Decay);
+			return inject<Decay>();
 		}
 
 		void startDecay(Item* item);

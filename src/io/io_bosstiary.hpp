@@ -37,7 +37,7 @@ class IOBosstiary {
 		void operator=(const IOBosstiary &) = delete;
 
 		static IOBosstiary &getInstance() {
-			return inject(IOBosstiary);
+			return inject<IOBosstiary>();
 		}
 
 		void loadBoostedBoss();

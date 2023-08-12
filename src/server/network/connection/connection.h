@@ -34,7 +34,7 @@ class ConnectionManager {
 		ConnectionManager() = default;
 
 		static ConnectionManager &getInstance() {
-			return inject(ConnectionManager);
+			return inject<ConnectionManager>();
 		}
 
 		Connection_ptr createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort);

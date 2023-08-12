@@ -27,7 +27,7 @@ class GlobalEvents final : public Scripts {
 		GlobalEvents &operator=(const GlobalEvents &) = delete;
 
 		static GlobalEvents &getInstance() {
-			return inject(GlobalEvents);
+			return inject<GlobalEvents>();
 		}
 
 		void startup() const;

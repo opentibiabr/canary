@@ -20,7 +20,7 @@ class IOMarket {
 		IOMarket() = default;
 
 		static IOMarket &getInstance() {
-			return inject(IOMarket);
+			return inject<IOMarket>();
 		}
 
 		static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier);

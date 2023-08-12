@@ -22,7 +22,7 @@ WaitingList::WaitingList() :
 	info(new WaitListInfo) { }
 
 WaitingList &WaitingList::getInstance() {
-	return inject(WaitingList);
+	return inject<WaitingList>();
 }
 
 void WaitingList::cleanupList(WaitList &list) {

@@ -76,7 +76,7 @@ class OutputMessagePool {
 		OutputMessagePool &operator=(const OutputMessagePool &) = delete;
 
 		static OutputMessagePool &getInstance() {
-			return inject(OutputMessagePool);
+			return inject<OutputMessagePool>();
 		}
 
 		void sendAll();

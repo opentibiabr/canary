@@ -256,7 +256,7 @@ class Monsters {
 		Monsters &operator=(const Monsters &) = delete;
 
 		static Monsters &getInstance() {
-			return inject(Monsters);
+			return inject<Monsters>();
 		}
 
 		MonsterType* getMonsterType(const std::string &name);

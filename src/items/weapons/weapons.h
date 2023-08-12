@@ -34,7 +34,7 @@ class Weapons final : public Scripts {
 		Weapons &operator=(const Weapons &) = delete;
 
 		static Weapons &getInstance() {
-			return inject(Weapons);
+			return inject<Weapons>();
 		}
 
 		const Weapon* getWeapon(const Item* item) const;

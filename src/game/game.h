@@ -54,7 +54,7 @@ class Game {
 		Game &operator=(const Game &) = delete;
 
 		static Game &getInstance() {
-			return inject(Game);
+			return inject<Game>();
 		}
 
 		void resetMonsters() const;

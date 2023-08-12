@@ -35,7 +35,7 @@ struct ProtocolOutfit {
 class Outfits {
 	public:
 		static Outfits &getInstance() {
-			return inject(Outfits);
+			return inject<Outfits>();
 		}
 
 		const Outfit* getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType);

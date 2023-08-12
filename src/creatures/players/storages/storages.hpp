@@ -19,7 +19,7 @@ class Storages {
 		void operator=(const Storages &) = delete;
 
 		static Storages &getInstance() {
-			return inject(Storages);
+			return inject<Storages>();
 		}
 
 		bool loadFromXML();

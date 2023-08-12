@@ -51,7 +51,7 @@ class IOBestiary {
 		void operator=(const IOBestiary &) = delete;
 
 		static IOBestiary &getInstance() {
-			return inject(IOBestiary);
+			return inject<IOBestiary>();
 		}
 
 		Charm* getBestiaryCharm(charmRune_t activeCharm, bool force = false);

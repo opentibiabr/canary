@@ -34,7 +34,7 @@ class EventsScheduler {
 		EventsScheduler &operator=(const EventsScheduler &) = delete;
 
 		static EventsScheduler &getInstance() {
-			return inject(EventsScheduler);
+			return inject<EventsScheduler>();
 		}
 
 		// Event schedule xml load

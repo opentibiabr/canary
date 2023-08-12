@@ -78,7 +78,7 @@ class Events {
 		void operator=(const Events &) = delete;
 
 		static Events &getInstance() {
-			return inject(Events);
+			return inject<Events>();
 		}
 
 		// Creature

@@ -33,7 +33,7 @@ class Npc final : public Creature {
 		void operator=(const Npc &) = delete;
 
 		static Npc &getInstance() {
-			return inject(Npc);
+			return inject<Npc>();
 		}
 
 		Npc* getNpc() override {

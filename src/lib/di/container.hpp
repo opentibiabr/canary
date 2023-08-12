@@ -47,10 +47,13 @@ class DI final {
 };
 
 /**
- * Simplified macro for contextual injection. Keep in mind that constructor injection is always
+ * Simplified global function for contextual injection. Keep in mind that constructor injection is always
  * a better choice than contextual injection. This is only a helper to simplify injection in
  * complex legacy contexts.
  */
-#define inject(Type) DI::get<Type>()
+template <typename Type>
+inline Type &inject() {
+	return DI::get<Type>();
+}
 
 #endif // CANARY_CONTAINER_HPP

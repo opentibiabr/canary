@@ -35,7 +35,7 @@ class Spells final : public Scripts {
 		Spells &operator=(const Spells &) = delete;
 
 		static Spells &getInstance() {
-			return inject(Spells);
+			return inject<Spells>();
 		}
 
 		Spell* getSpellByName(const std::string &name);

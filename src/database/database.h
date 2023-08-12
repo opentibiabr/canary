@@ -25,7 +25,7 @@ class Database {
 		Database &operator=(const Database &) = delete;
 
 		static Database &getInstance() {
-			return inject(Database);
+			return inject<Database>();
 		}
 
 		bool connect();

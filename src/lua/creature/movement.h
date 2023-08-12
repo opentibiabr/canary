@@ -34,7 +34,7 @@ class MoveEvents final : public Scripts {
 		MoveEvents &operator=(const MoveEvents &) = delete;
 
 		static MoveEvents &getInstance() {
-			return inject(MoveEvents);
+			return inject<MoveEvents>();
 		}
 
 		uint32_t onCreatureMove(Creature &creature, Tile &tile, MoveEvent_t eventType);

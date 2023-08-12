@@ -64,7 +64,7 @@ class Modules final : public BaseEvents {
 		Modules &operator=(const Modules &) = delete;
 
 		static Modules &getInstance() {
-			return inject(Modules);
+			return inject<Modules>();
 		}
 
 		void executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t byte) const;

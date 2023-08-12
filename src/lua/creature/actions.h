@@ -143,7 +143,7 @@ class Actions final : public Scripts {
 		Actions &operator=(const Actions &) = delete;
 
 		static Actions &getInstance() {
-			return inject(Actions);
+			return inject<Actions>();
 		}
 
 		bool useItem(Player* player, const Position &pos, uint8_t index, Item* item, bool isHotkey);

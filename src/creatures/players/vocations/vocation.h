@@ -153,7 +153,7 @@ class Vocations {
 		void operator=(const Vocations &) = delete;
 
 		static Vocations &getInstance() {
-			return inject(Vocations);
+			return inject<Vocations>();
 		}
 
 		bool loadFromXml();

@@ -53,10 +53,7 @@ class Scheduler : public ThreadHolder<Scheduler> {
 		void operator=(const Scheduler &) = delete;
 
 		static Scheduler &getInstance() {
-			// Guaranteed to be destroyed
-			static Scheduler instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Scheduler>();
 		}
 
 		uint32_t addEvent(SchedulerTask* task);
@@ -76,6 +73,6 @@ class Scheduler : public ThreadHolder<Scheduler> {
 		phmap::flat_hash_set<uint32_t> eventIds;
 };
 
-constexpr auto g_scheduler = &Scheduler::getInstance;
+constexpr auto g_scheduler = Scheduler::getInstance;
 
 #endif // SRC_GAME_SCHEDULING_SCHEDULER_H_

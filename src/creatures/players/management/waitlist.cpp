@@ -22,8 +22,7 @@ WaitingList::WaitingList() :
 	info(new WaitListInfo) { }
 
 WaitingList &WaitingList::getInstance() {
-	static WaitingList waitingList;
-	return waitingList;
+	return inject<WaitingList>();
 }
 
 void WaitingList::cleanupList(WaitList &list) {

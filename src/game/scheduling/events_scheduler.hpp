@@ -34,10 +34,7 @@ class EventsScheduler {
 		EventsScheduler &operator=(const EventsScheduler &) = delete;
 
 		static EventsScheduler &getInstance() {
-			// Guaranteed to be destroyed
-			static EventsScheduler instance;
-			// Instantiated on first use
-			return instance;
+			return inject<EventsScheduler>();
 		}
 
 		// Event schedule xml load
@@ -84,6 +81,6 @@ class EventsScheduler {
 		std::string join(const std::vector<std::string> &vec, const std::string &delim);
 };
 
-constexpr auto g_eventsScheduler = &EventsScheduler::getInstance;
+constexpr auto g_eventsScheduler = EventsScheduler::getInstance;
 
 #endif // SRC_GAME_SCHEDUNLING_EVENTS_SCHEDULER_HPP_

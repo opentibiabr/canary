@@ -1101,7 +1101,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			addGameTask(&Game::playerCloseNpcChannel, player->getID());
 			break;
 		case 0x9F:
-			parseSetBossPodium(msg);
+			parseSetMonsterPodium(msg);
 			break;
 		case 0xA0:
 			parseFightModes(msg);
@@ -1895,7 +1895,8 @@ void ProtocolGame::parseRotateItem(NetworkMessage &msg) {
 	Position pos = msg.getPosition();
 	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
-	if (itemId == ITEM_PODIUM_OF_VIGOUR) {
+	const auto &itemType = Item::items[itemId];
+	if (itemType.isPodium) {
 		addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerRotatePodium, player->getID(), pos, stackpos, itemId);
 	} else {
 		addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerRotateItem, player->getID(), pos, stackpos, itemId);
@@ -2755,17 +2756,17 @@ void ProtocolGame::BestiarysendCharms() {
 	}
 	msg.addByte(4); // Unknown
 
-	std::list<uint16_t> finishedMonsters = g_iobestiary().getBestiaryFinished(player);
+	auto finishedMonstersVector = g_iobestiary().getBestiaryFinished(player);
 	std::list<charmRune_t> usedRunes = g_iobestiary().getCharmUsedRuneBitAll(player);
 
 	for (charmRune_t charmRune : usedRunes) {
 		Charm* tmpCharm = g_iobestiary().getBestiaryCharm(charmRune);
 		uint16_t tmp_raceid = player->parseRacebyCharm(tmpCharm->id, false, 0);
-		finishedMonsters.remove(tmp_raceid);
+		std::erase_if(finishedMonstersVector, [tmp_raceid](uint16_t val) { return val == tmp_raceid; });
 	}
 
-	msg.add<uint16_t>(finishedMonsters.size());
-	for (uint16_t raceid_tmp : finishedMonsters) {
+	msg.add<uint16_t>(static_cast<uint16_t>(finishedMonstersVector.size()));
+	for (uint16_t raceid_tmp : finishedMonstersVector) {
 		msg.add<uint16_t>(raceid_tmp);
 	}
 
@@ -8047,15 +8048,15 @@ void ProtocolGame::parseSendBosstiary() {
 	NetworkMessage msg;
 	msg.addByte(0x73);
 
-	phmap::btree_map<uint32_t, std::string> mtype_list = g_ioBosstiary().getBosstiaryMap();
+	auto mtype_map = g_ioBosstiary().getBosstiaryMap();
 	auto bossesBuffer = msg.getBufferPosition();
 	uint16_t bossesCount = 0;
 	msg.skipBytes(2);
 
-	for (const auto &[bossid, name] : mtype_list) {
+	for (const auto &[bossid, name] : mtype_map) {
 		const MonsterType* mType = g_monsters().getMonsterType(name);
 		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-		auto killCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossid));
+		auto killCount = player->getBestiaryKillCount(bossid);
 		msg.add<uint32_t>(bossid);
 		msg.addByte(bossRace);
 		msg.add<uint32_t>(killCount);
@@ -8104,12 +8105,12 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.addByte(isSlotOneUnlocked ? 1 : 0);
 	msg.add<uint32_t>(isSlotOneUnlocked ? bossIdSlotOne : 0);
 	if (isSlotOneUnlocked && bossIdSlotOne != 0) {
-		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotOne);
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
 		if (mType) {
 			// Variables Boss Slot One
 			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
 			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
-			auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotOne);
+			auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotOne);
 			uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
 			uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
 			// Bytes Slot One
@@ -8126,11 +8127,11 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.add<uint32_t>(isSlotTwoUnlocked ? bossIdSlotTwo : slotTwoPoints);
 	if (isSlotTwoUnlocked && bossIdSlotTwo != 0) {
 		// Variables Boss Slot Two
-		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotTwo);
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
 		if (mType) {
 			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotTwo));
-			auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotTwo);
+			auto bossKillCount = player->getBestiaryKillCount((uint16_t)(bossIdSlotTwo));
+			auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotTwo);
 			uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
 			uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
 			// Bytes Slot Two
@@ -8192,7 +8193,38 @@ void ProtocolGame::parseBosstiarySlot(NetworkMessage &msg) {
 	addGameTask(&Game::playerBosstiarySlot, player->getID(), slotBossId, selectedBossId);
 }
 
-void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos) {
+void ProtocolGame::sendPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss) {
+	auto toSendMonstersSize = static_cast<uint16_t>(toSendMonsters.size());
+	msg.add<uint16_t>(toSendMonstersSize);
+	for (const auto &raceId : toSendMonsters) {
+		const MonsterType* mType = g_monsters().getMonsterTypeByRaceId(raceId, isBoss);
+		if (!mType) {
+			continue;
+		}
+
+		// Podium of tenacity only need raceId
+		if (!isBoss) {
+			msg.add<uint16_t>(raceId);
+			continue;
+		}
+
+		auto monsterOutfit = mType->info.outfit;
+		msg.add<uint16_t>(raceId);
+		msg.addString(mType->name);
+		msg.add<uint16_t>(monsterOutfit.lookType);
+		if (monsterOutfit.lookType != 0) {
+			msg.addByte(monsterOutfit.lookHead);
+			msg.addByte(monsterOutfit.lookBody);
+			msg.addByte(monsterOutfit.lookLegs);
+			msg.addByte(monsterOutfit.lookFeet);
+			msg.addByte(monsterOutfit.lookAddons);
+		} else {
+			msg.add<uint16_t>(monsterOutfit.lookTypeEx);
+		}
+	}
+}
+
+void ProtocolGame::sendMonsterPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos) {
 	if (!podium || oldProtocol) {
 		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
 		return;
@@ -8231,36 +8263,14 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &posi
 	}
 	msg.add<uint16_t>(0); // Size of an unknown list. (No ingame visual effect)
 
-	auto unlockedBosses = g_ioBosstiary().getBosstiaryFinished(player, 2);
-	auto unlockedBossesSize = static_cast<uint16_t>(unlockedBosses.size());
 	bool isBossPodium = podium->getID() == ITEM_PODIUM_OF_VIGOUR;
 	msg.addByte(isBossPodium ? 0x01 : 0x00); // Bosstiary or bestiary
 	if (isBossPodium) {
-		msg.add<uint16_t>(unlockedBossesSize);
-
-		for (const auto &boss : unlockedBosses) {
-			const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(boss);
-			if (!mType) {
-				continue;
-			}
-			const auto &bossName = mType->name;
-			auto bossOutfit = mType->info.outfit;
-
-			msg.add<uint16_t>(boss); // ID from boss unlocked
-			msg.addString(bossName); // Nome from boss unlocked
-			msg.add<uint16_t>(bossOutfit.lookType); // LookType from boss unlocked
-			if (bossOutfit.lookType != 0) {
-				msg.addByte(bossOutfit.lookHead); // LookHead from boss unlocked
-				msg.addByte(bossOutfit.lookBody); // LookBody from boss unlocked
-				msg.addByte(bossOutfit.lookLegs); // LookLegs from boss unlocked
-				msg.addByte(bossOutfit.lookFeet); // LookFeet from boss unlocked
-				msg.addByte(bossOutfit.lookAddons); // LookAddon from boss unlocked
-			} else {
-				msg.add<uint16_t>(bossOutfit.lookTypeEx); // LookTypeEx from boss unlocked
-			}
-		}
+		const auto &unlockedBosses = g_ioBosstiary().getBosstiaryFinished(player, 2);
+		sendPodiumDetails(msg, unlockedBosses, true);
 	} else {
-		msg.add<uint16_t>(0x00);
+		const auto &unlockedMonsters = g_iobestiary().getBestiaryFinished(player);
+		sendPodiumDetails(msg, unlockedMonsters, false);
 	}
 
 	msg.addPosition(position); // Position of the podium on the map
@@ -8273,20 +8283,21 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &posi
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::parseSetBossPodium(NetworkMessage &msg) const {
+void ProtocolGame::parseSetMonsterPodium(NetworkMessage &msg) const {
 	if (oldProtocol) {
 		return;
 	}
 
-	uint32_t bossRaceId = msg.get<uint32_t>();
+	// For some reason the cip sends uint32_t, but we use uint16_t, so let's just ignore that
+	uint16_t monsterRaceId = (uint16_t)msg.get<uint32_t>();
 	Position pos = msg.getPosition();
 	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
 	uint8_t direction = msg.getByte();
 	uint8_t podiumVisible = msg.getByte();
-	uint8_t bossVisible = msg.getByte();
+	uint8_t monsterVisible = msg.getByte();
 
-	g_game().playerSetBossPodium(player->getID(), bossRaceId, pos, stackpos, itemId, direction, podiumVisible, bossVisible);
+	g_game().playerSetMonsterPodium(player->getID(), monsterRaceId, pos, stackpos, itemId, direction, std::make_pair(podiumVisible, monsterVisible));
 }
 
 void ProtocolGame::sendBosstiaryCooldownTimer() {
@@ -8297,7 +8308,7 @@ void ProtocolGame::sendBosstiaryCooldownTimer() {
 	NetworkMessage msg;
 	msg.addByte(0xBD);
 
-	auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldown(player);
+	auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldownRaceId(player);
 	auto bossesOnTrackerSize = static_cast<uint16_t>(bossesOnTracker.size());
 	msg.add<uint16_t>(bossesOnTrackerSize); // Number of bosses on timer
 	for (const auto &bossRaceId : bossesOnTracker) {

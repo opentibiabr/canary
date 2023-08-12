@@ -256,7 +256,21 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 		}
 	}
 
+	auto itemId = item->getID();
+	const ItemType &itemType = Item::items[itemId];
+	auto transformTo = itemType.m_transformOnUse;
 	Action* action = getAction(item);
+	if (!action && transformTo > 0 && itemId != transformTo) {
+		if (g_game().transformItem(item, transformTo) == nullptr) {
+			spdlog::warn("[{}] item with id {} failed to transform to item {}", __FUNCTION__, itemId, transformTo);
+			return RETURNVALUE_CANNOTUSETHISOBJECT;
+		}
+
+		return RETURNVALUE_NOERROR;
+	} else if (transformTo > 0 && action) {
+		spdlog::warn("[{}] item with id {} already have action registered and cannot be use transformTo tag", __FUNCTION__, itemId);
+	}
+
 	if (action != nullptr) {
 		if (action->isLoadedCallback()) {
 			if (action->executeUse(player, item, pos, nullptr, pos, isHotkey)) {

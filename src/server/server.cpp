@@ -15,8 +15,6 @@
 #include "game/scheduling/scheduler.h"
 #include "creatures/players/management/ban.h"
 
-Ban g_bans;
-
 ServiceManager::~ServiceManager() {
 	try {
 		stop();
@@ -94,7 +92,7 @@ void ServicePort::onAccept(Connection_ptr connection, const std::error_code &err
 		}
 
 		auto remote_ip = connection->getIP();
-		if (remote_ip != 0 && g_bans.acceptConnection(remote_ip)) {
+		if (remote_ip != 0 && inject<Ban>().acceptConnection(remote_ip)) {
 			Service_ptr service = services.front();
 			if (service->is_single_socket()) {
 				connection->accept(service->make_protocol(connection));

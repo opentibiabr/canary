@@ -162,8 +162,8 @@ void loadModules() {
 	}
 
 	SPDLOG_INFO("Initializing lua environment...");
-	if (!g_luaEnvironment.getLuaState()) {
-		g_luaEnvironment.initState();
+	if (!g_luaEnvironment().getLuaState()) {
+		g_luaEnvironment().initState();
 	}
 
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
@@ -174,7 +174,7 @@ void loadModules() {
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	SPDLOG_INFO("Loading core scripts on folder: {}/", coreFolder);
 	// Load first core Lua libs
-	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/core.lua", "core.lua") == 0), "core.lua");
+	modulesLoadHelper((g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0), "core.lua");
 	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts", false, false), "/data/scripts");
 
 	// Second XML scripts

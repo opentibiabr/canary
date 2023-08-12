@@ -26,9 +26,15 @@ class LuaEnvironment : public LuaScriptInterface {
 		LuaEnvironment();
 		~LuaEnvironment();
 
+		lua_State* getLuaState() override;
+
 		// non-copyable
 		LuaEnvironment(const LuaEnvironment &) = delete;
 		LuaEnvironment &operator=(const LuaEnvironment &) = delete;
+
+		static LuaEnvironment &getInstance() {
+			return inject<LuaEnvironment>();
+		}
 
 		bool initState() override;
 		bool reInitState();
@@ -95,8 +101,10 @@ class LuaEnvironment : public LuaScriptInterface {
 		friend class LuaScriptInterface;
 		friend class GlobalFunctions;
 		friend class CombatSpell;
+
+		bool shuttingDown = false;
 };
 
-inline LuaEnvironment g_luaEnvironment;
+constexpr auto g_luaEnvironment = LuaEnvironment::getInstance;
 
 #endif // SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_

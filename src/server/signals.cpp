@@ -122,10 +122,10 @@ void Signals::sighupHandler() {
 	g_chat().load();
 	SPDLOG_INFO("Reloaded chatchannels");
 
-	g_luaEnvironment.loadFile(g_configManager().getString(CORE_DIRECTORY) + "/core.lua", "core.lua");
+	g_luaEnvironment().loadFile(g_configManager().getString(CORE_DIRECTORY) + "/core.lua", "core.lua");
 	SPDLOG_INFO("Reloaded core.lua");
 
-	lua_gc(g_luaEnvironment.getLuaState(), LUA_GCCOLLECT, 0);
+	lua_gc(g_luaEnvironment().getLuaState(), LUA_GCCOLLECT, 0);
 }
 
 void Signals::sigintHandler() {

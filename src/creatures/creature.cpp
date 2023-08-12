@@ -491,8 +491,8 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 			}
 		}
 
-		if (newTile->getZone() != oldTile->getZone()) {
-			onChangeZone(getZone());
+		if (newTile->getZoneType() != oldTile->getZoneType()) {
+			onChangeZone(getZoneType());
 		}
 
 		if (newTile->isHazard() != oldTile->isHazard()) {
@@ -615,8 +615,8 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 				g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
 			}
 
-			if (newTile->getZone() != oldTile->getZone()) {
-				onAttackedCreatureChangeZone(attackedCreature->getZone());
+			if (newTile->getZoneType() != oldTile->getZoneType()) {
+				onAttackedCreatureChangeZone(attackedCreature->getZoneType());
 			}
 		}
 	}

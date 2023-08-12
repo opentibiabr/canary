@@ -740,7 +740,7 @@ void PlayerWheel::sendGiftOfLifeCooldown() const {
 	msg.add<uint32_t>(getGiftOfCooldown());
 	msg.add<uint32_t>(getGiftOfLifeTotalCooldown());
 	// Checking if the cooldown if decreasing or it's stopped
-	if (m_player.getZone() != ZONE_PROTECTION && m_player.hasCondition(CONDITION_INFIGHT)) {
+	if (m_player.getZoneType() != ZONE_PROTECTION && m_player.hasCondition(CONDITION_INFIGHT)) {
 		msg.addByte(0x01);
 	} else {
 		msg.addByte(0x00);
@@ -981,7 +981,7 @@ uint8_t PlayerWheel::getOptions(uint32_t ownerId) const {
 	}
 
 	// Check if is in the temple range (we assume the temple is within the range of 10 sqms)
-	if (m_player.getZone() == ZONE_PROTECTION) {
+	if (m_player.getZoneType() == ZONE_PROTECTION) {
 		for (auto [townid, town] : g_game().map.towns.getTowns()) {
 			if (Position::areInRange<1, 10>(town->getTemplePosition(), m_player.getPosition())) {
 				return 1;
@@ -1997,7 +1997,7 @@ int32_t PlayerWheel::checkElementSensitiveReduction(CombatType_t type) const {
 void PlayerWheel::onThink(bool force /* = false*/) {
 	bool updateClient = false;
 	m_creaturesNearby = 0;
-	if (!m_player.hasCondition(CONDITION_INFIGHT) || m_player.getZone() == ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tatics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
+	if (!m_player.hasCondition(CONDITION_INFIGHT) || m_player.getZoneType() == ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tatics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
 		bool mustReset = false;
 		for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
 			if (getMajorStat(static_cast<WheelMajor_t>(i)) != 0) {

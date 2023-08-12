@@ -236,9 +236,9 @@ class Creature : virtual public Thing {
 			return defaultOutfit;
 		}
 		bool isInvisible() const;
-		ZoneType_t getZone() const {
+		ZoneType_t getZoneType() const {
 			if (getTile()) {
-				return tile->getZone();
+				return tile->getZoneType();
 			}
 
 			return ZONE_NORMAL;

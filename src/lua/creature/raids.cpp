@@ -115,7 +115,11 @@ void Raids::checkRaids() {
 		for (auto it = raidList.begin(), end = raidList.end(); it != end; ++it) {
 			const auto &raid = *it;
 			if (now >= (getLastRaidEnd() + raid->getMargin())) {
-				if (((MAX_RAND_RANGE * CHECK_RAIDS_INTERVAL) / raid->getInterval()) >= static_cast<uint32_t>(uniform_random(0, MAX_RAND_RANGE))) {
+				auto roll = static_cast<uint32_t>(uniform_random(0, MAX_RAND_RANGE));
+				auto required = static_cast<uint32_t>(MAX_RAND_RANGE * raid->getInterval()) / CHECK_RAIDS_INTERVAL;
+				g_logger().info("allowed to run, rolled {} and required {}", roll, required);
+				auto shouldStart = required >= roll;
+				if (shouldStart) {
 					setRunning(raid);
 					raid->startRaid();
 
@@ -211,6 +215,9 @@ void Raid::startRaid() {
 	if (raidEvent) {
 		state = RAIDSTATE_EXECUTING;
 		nextEventEvent = g_scheduler().addEvent(raidEvent->getDelay(), std::bind(&Raid::executeRaidEvent, this, raidEvent));
+	} else {
+		g_logger().warn("[raids] Raid {} has no events", name);
+		resetRaid();
 	}
 }
 
@@ -235,6 +242,7 @@ void Raid::resetRaid() {
 	state = RAIDSTATE_IDLE;
 	g_game().raids.setRunning(nullptr);
 	g_game().raids.setLastRaidEnd(OTSYS_TIME());
+	g_logger().info("[raids] Raid {} - FINISHED", name);
 }
 
 void Raid::stopEvents() {

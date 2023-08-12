@@ -573,20 +573,20 @@ int GameFunctions::luaGameGetClientVersion(lua_State* L) {
 int GameFunctions::luaGameReload(lua_State* L) {
 	// Game.reload(reloadType)
 	Reload_t reloadType = getNumber<Reload_t>(L, 1);
-	if (g_gameReload.getReloadNumber(reloadType) == g_gameReload.getReloadNumber(Reload_t::RELOAD_TYPE_NONE)) {
+	if (g_gameReload().getReloadNumber(reloadType) == g_gameReload().getReloadNumber(Reload_t::RELOAD_TYPE_NONE)) {
 		reportErrorFunc("Reload type is none");
 		pushBoolean(L, false);
 		return 0;
 	}
 
-	if (g_gameReload.getReloadNumber(reloadType) >= g_gameReload.getReloadNumber(Reload_t::RELOAD_TYPE_LAST)) {
+	if (g_gameReload().getReloadNumber(reloadType) >= g_gameReload().getReloadNumber(Reload_t::RELOAD_TYPE_LAST)) {
 		reportErrorFunc("Reload type not exist");
 		pushBoolean(L, false);
 		return 0;
 	}
 
-	pushBoolean(L, g_gameReload.init(reloadType));
-	lua_gc(g_luaEnvironment.getLuaState(), LUA_GCCOLLECT, 0);
+	pushBoolean(L, g_gameReload().init(reloadType));
+	lua_gc(g_luaEnvironment().getLuaState(), LUA_GCCOLLECT, 0);
 	return 1;
 }
 

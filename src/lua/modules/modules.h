@@ -64,10 +64,7 @@ class Modules final : public BaseEvents {
 		Modules &operator=(const Modules &) = delete;
 
 		static Modules &getInstance() {
-			// Guaranteed to be destroyed
-			static Modules instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Modules>();
 		}
 
 		void executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t byte) const;
@@ -86,6 +83,6 @@ class Modules final : public BaseEvents {
 		LuaScriptInterface scriptInterface;
 };
 
-constexpr auto g_modules = &Modules::getInstance;
+constexpr auto g_modules = Modules::getInstance;
 
 #endif // SRC_LUA_MODULES_MODULES_H_

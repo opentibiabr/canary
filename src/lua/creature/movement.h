@@ -34,10 +34,7 @@ class MoveEvents final : public Scripts {
 		MoveEvents &operator=(const MoveEvents &) = delete;
 
 		static MoveEvents &getInstance() {
-			// Guaranteed to be destroyed
-			static MoveEvents instance;
-			// Instantiated on first use
-			return instance;
+			return inject<MoveEvents>();
 		}
 
 		uint32_t onCreatureMove(Creature &creature, Tile &tile, MoveEvent_t eventType);
@@ -134,7 +131,7 @@ class MoveEvents final : public Scripts {
 		phmap::btree_map<Position, MoveEventList> positionsMap;
 };
 
-constexpr auto g_moveEvents = &MoveEvents::getInstance;
+constexpr auto g_moveEvents = MoveEvents::getInstance;
 
 class MoveEvent final : public Script {
 	public:

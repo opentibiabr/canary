@@ -31,9 +31,10 @@ using ConstServicePort_ptr = std::shared_ptr<const ServicePort>;
 
 class ConnectionManager {
 	public:
+		ConnectionManager() = default;
+
 		static ConnectionManager &getInstance() {
-			static ConnectionManager instance;
-			return instance;
+			return inject<ConnectionManager>();
 		}
 
 		Connection_ptr createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort);
@@ -41,8 +42,6 @@ class ConnectionManager {
 		void closeAll();
 
 	private:
-		ConnectionManager() = default;
-
 		phmap::flat_hash_set<Connection_ptr> connections;
 		std::mutex connectionManagerLock;
 };

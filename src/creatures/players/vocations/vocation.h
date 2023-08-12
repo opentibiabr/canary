@@ -153,10 +153,7 @@ class Vocations {
 		void operator=(const Vocations &) = delete;
 
 		static Vocations &getInstance() {
-			// Guaranteed to be destroyed
-			static Vocations instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Vocations>();
 		}
 
 		bool loadFromXml();
@@ -172,6 +169,6 @@ class Vocations {
 		phmap::btree_map<uint16_t, Vocation> vocationsMap;
 };
 
-constexpr auto g_vocations = &Vocations::getInstance;
+constexpr auto g_vocations = Vocations::getInstance;
 
 #endif // SRC_CREATURES_PLAYERS_VOCATIONS_VOCATION_H_

@@ -40,7 +40,7 @@ class NetworkMessage;
 class Weapon;
 class ProtocolGame;
 class Party;
-class SchedulerTask;
+class Task;
 class Bed;
 class Guild;
 class Imbuement;
@@ -107,6 +107,8 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		const Player* getPlayer() const override {
 			return this;
 		}
+
+		static std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f);
 
 		void setID() override;
 
@@ -2496,11 +2498,11 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		 */
 		void updateInventoryImbuement();
 
-		void setNextWalkActionTask(SchedulerTask* task);
-		void setNextWalkTask(SchedulerTask* task);
-		void setNextActionTask(SchedulerTask* task, bool resetIdleTime = true);
-		void setNextActionPushTask(SchedulerTask* task);
-		void setNextPotionActionTask(SchedulerTask* task);
+		void setNextWalkActionTask(std::shared_ptr<Task> task);
+		void setNextWalkTask(std::shared_ptr<Task> task);
+		void setNextActionTask(std::shared_ptr<Task> task, bool resetIdleTime = true);
+		void setNextActionPushTask(std::shared_ptr<Task> task);
+		void setNextPotionActionTask(std::shared_ptr<Task> task);
 
 		void death(Creature* lastHitCreature) override;
 		bool spawn();
@@ -2634,7 +2636,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		Party* party = nullptr;
 		Player* tradePartner = nullptr;
 		ProtocolGame_ptr client;
-		SchedulerTask* walkTask = nullptr;
+		std::shared_ptr<Task> walkTask;
 		Town* town = nullptr;
 		Vocation* vocation = nullptr;
 		RewardChest* rewardChest = nullptr;

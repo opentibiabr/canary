@@ -12,7 +12,7 @@
 #include "server/network/protocol/protocol.h"
 #include "server/network/message/outputmessage.h"
 #include "security/rsa.h"
-#include "game/scheduling/tasks.h"
+#include "game/scheduling/dispatcher.hpp"
 
 Protocol::~Protocol() = default;
 
@@ -58,7 +58,7 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 			}
 		}
 	};
-	g_dispatcher().addTask(createTask(callback));
+	g_dispatcher().addTask(callback);
 	return true;
 }
 

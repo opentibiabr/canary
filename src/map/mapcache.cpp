@@ -166,28 +166,28 @@ BasicItemPtr MapCache::getOriginalItem(const BasicItemPtr &ref) {
 }
 
 void BasicTile::hash(size_t &h) const {
-	if (ground != nullptr)
-		ground->hash(h);
-
 	const uint32_t arr[] = { flags, houseId, type, isStatic };
 	for (const auto v : arr) {
 		if (v > 0)
 			stdext::hash_combine(h, v);
 	}
 
+	if (ground != nullptr)
+		ground->hash(h);
+
 	for (const auto &item : items)
 		item->hash(h);
 }
 
 void BasicItem::hash(size_t &h) const {
-	if (!text.empty())
-		stdext::hash_combine(h, text);
-
 	const uint32_t arr[] = { id, guid, sleepStart, charges, actionId, uniqueId, destX, destY, destZ, doorOrDepotId };
 	for (const auto v : arr) {
 		if (v > 0)
 			stdext::hash_combine(h, v);
 	}
+
+	if (!text.empty())
+		stdext::hash_combine(h, text);
 
 	for (const auto &item : items)
 		item->hash(h);

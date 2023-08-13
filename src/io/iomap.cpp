@@ -123,6 +123,8 @@ bool IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, 
 		}
 	}
 
+	map->cache.clear();
+
 	SPDLOG_INFO("Map loading time: {} seconds", (OTSYS_TIME() - start) / (1000.));
 	return true;
 }
@@ -198,11 +200,9 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 		return false;
 	}
 
-	uint16_t base_x = area_coord.x;
-	uint16_t base_y = area_coord.y;
-	uint16_t base_z = area_coord.z;
-
-	static phmap::btree_map<uint64_t, uint64_t> teleportMap;
+	const uint16_t base_x = area_coord.x;
+	const uint16_t base_y = area_coord.y;
+	const uint16_t base_z = area_coord.z;
 
 	for (auto &tileNode : tileAreaNode.children) {
 		if (tileNode.type != OTBM_TILE && tileNode.type != OTBM_HOUSETILE) {
@@ -221,43 +221,16 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 			return false;
 		}
 
-		uint16_t x = base_x + tile_coord.x + pos.x;
-		uint16_t y = base_y + tile_coord.y + pos.y;
-		uint8_t z = static_cast<uint8_t>(base_z + pos.z);
+		const auto &tile = std::make_shared<BasicTile>();
 
-		auto tilePosition = Position(x, y, z);
+		const uint16_t x = base_x + tile_coord.x + pos.x;
+		const uint16_t y = base_y + tile_coord.y + pos.y;
+		const uint8_t z = static_cast<uint8_t>(base_z + pos.z);
 
-		if (unload) {
-			Tile* tile = map.getTile(Position(x, y, z));
-			if (tile) {
-				if (const TileItemVector* items = tile->getItemList();
-					items) {
-					TileItemVector item_list = *items;
-					if (!item_list.size() == 0) {
-						for (Item* item : item_list) {
-							if (item) {
-								g_game().internalRemoveItem(item, -1, false, 0, true);
-							}
-						}
-					}
-				}
-
-				if (Item* ground = tile->getGround();
-					ground) {
-					g_game().internalRemoveItem(ground, -1, false, 0, true);
-				}
-			}
-			continue;
-		}
-
-		bool isHouseTile = false;
-		House* house = nullptr;
-		Tile* tile = nullptr;
-		Item* ground_item = nullptr;
-		uint32_t tileflags = TILESTATE_NONE;
+		uint32_t houseId = 0;
+		bool tileIsStatic = false;
 
 		if (tileNode.type == OTBM_HOUSETILE) {
-			uint32_t houseId;
 			if (!propStream.read<uint32_t>(houseId)) {
 				std::ostringstream ss;
 				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Could not read house id.";
@@ -265,19 +238,14 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 				return false;
 			}
 
-			if (!unload) {
-				house = map.houses.addHouse(houseId);
-				if (!house) {
-					std::ostringstream ss;
-					ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Could not create house id: " << houseId;
-					setLastErrorString(ss.str());
-					return false;
-				}
-
-				tile = new HouseTile(x, y, z, house);
-				house->addTile(static_cast<HouseTile*>(tile));
-				isHouseTile = true;
+			if (!map.houses.addHouse(houseId)) {
+				std::ostringstream ss;
+				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Could not create house id: " << houseId;
+				setLastErrorString(ss.str());
+				return false;
 			}
+
+			tile->houseId = houseId;
 		}
 
 		uint8_t attribute;
@@ -285,29 +253,26 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 		while (propStream.read<uint8_t>(attribute)) {
 			switch (attribute) {
 				case OTBM_ATTR_TILE_FLAGS: {
-					if (!unload) {
-						uint32_t flags;
-						if (!propStream.read<uint32_t>(flags)) {
-							std::ostringstream ss;
-							ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to read tile flags.";
-							setLastErrorString(ss.str());
-							return false;
-						}
-
-						if ((flags & OTBM_TILEFLAG_PROTECTIONZONE) != 0) {
-							tileflags |= TILESTATE_PROTECTIONZONE;
-						} else if ((flags & OTBM_TILEFLAG_NOPVPZONE) != 0) {
-							tileflags |= TILESTATE_NOPVPZONE;
-						} else if ((flags & OTBM_TILEFLAG_PVPZONE) != 0) {
-							tileflags |= TILESTATE_PVPZONE;
-						}
-
-						if ((flags & OTBM_TILEFLAG_NOLOGOUT) != 0) {
-							tileflags |= TILESTATE_NOLOGOUT;
-						}
+					uint32_t flags;
+					if (!propStream.read<uint32_t>(flags)) {
+						std::ostringstream ss;
+						ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to read tile flags.";
+						setLastErrorString(ss.str());
+						return false;
 					}
-					break;
-				}
+
+					if ((flags & OTBM_TILEFLAG_PROTECTIONZONE) != 0) {
+						tile->flags |= TILESTATE_PROTECTIONZONE;
+					} else if ((flags & OTBM_TILEFLAG_NOPVPZONE) != 0) {
+						tile->flags |= TILESTATE_NOPVPZONE;
+					} else if ((flags & OTBM_TILEFLAG_PVPZONE) != 0) {
+						tile->flags |= TILESTATE_PVPZONE;
+					}
+
+					if ((flags & OTBM_TILEFLAG_NOLOGOUT) != 0) {
+						tile->flags |= TILESTATE_NOLOGOUT;
+					}
+				} break;
 
 				case OTBM_ATTR_ITEM: {
 					uint16_t id;
@@ -319,65 +284,27 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 					}
 
 					const ItemType &iType = Item::items[id];
-					if (isHouseTile && iType.isBed()) {
+					if (tile->isHouse() && iType.isBed()) {
 						continue;
 					}
 
-					Item* item = Item::CreateItem(id, tilePosition);
-					if (!item) {
-						continue;
-					}
+					if (iType.blockSolid)
+						tileIsStatic = true;
 
-					if (Teleport* teleport = item->getTeleport()) {
-						const Position &destPos = teleport->getDestPos();
-						uint64_t teleportPosition = (static_cast<uint64_t>(x) << 24) | (y << 8) | z;
-						uint64_t destinationPosition = (static_cast<uint64_t>(destPos.x) << 24) | (destPos.y << 8) | destPos.z;
-						teleportMap.emplace(teleportPosition, destinationPosition);
-						auto it = teleportMap.find(destinationPosition);
-						if (it != teleportMap.end()) {
-							SPDLOG_WARN("[IOMap::loadMap] - "
-										"Teleport in position: x {}, y {}, z {} "
-										"is leading to another teleport",
-										x, y, z);
-						}
-						for (const auto &it2 : teleportMap) {
-							if (it2.second == teleportPosition) {
-								uint16_t fx = (it2.first >> 24) & 0xFFFF;
-								uint16_t fy = (it2.first >> 8) & 0xFFFF;
-								uint8_t fz = (it2.first) & 0xFF;
-								SPDLOG_WARN("[IOMap::loadMap] - "
-											"Teleport in position: x {}, y {}, z {} "
-											"is leading to another teleport",
-											fx, fy, static_cast<uint16_t>(fz));
-							}
-						}
-					}
+					const auto &item = std::make_shared<BasicItem>();
+					item->id = id;
 
-					if (isHouseTile && item->isMoveable()) {
+					if (tile->isHouse() && iType.moveable) {
 						SPDLOG_WARN("[IOMap::loadMap] - "
 									"Moveable item with ID: {}, in house: {}, "
 									"at position: x {}, y {}, z {}",
-									item->getID(), house->getId(), x, y, z);
-						delete item;
+									id, houseId, x, y, z);
+					} else if (iType.isGroundTile()) {
+						tile->ground = map.cache.getOriginalItem(item);
 					} else {
-						if (item->getItemCount() <= 0) {
-							item->setItemCount(1);
-						}
-
-						if (tile) {
-							tile->internalAddThing(item);
-							item->startDecaying();
-							item->setLoadedFromMap(true);
-						} else if (item->isGroundTile()) {
-							delete ground_item;
-							ground_item = item;
-						} else {
-							tile = createTile(ground_item, item, x, y, z);
-							tile->internalAddThing(item);
-							item->startDecaying();
-							item->setLoadedFromMap(true);
-						}
+						tile->items.emplace_back(map.cache.getOriginalItem(item));
 					}
+
 					break;
 				}
 
@@ -413,57 +340,38 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 			}
 
 			const ItemType &iType = Item::items[id];
-			if (isHouseTile && iType.isBed()) {
+			if (tile->isHouse() && iType.isBed())
 				continue;
-			}
 
-			Item* item = Item::CreateItem(id, tilePosition);
-			if (!item) {
-				continue;
-			}
+			if (iType.blockSolid)
+				tileIsStatic = true;
 
-			if (!item->unserializeItemNode(loader, itemNode, stream, tilePosition)) {
+			const auto &item = std::make_shared<BasicItem>();
+			item->id = id;
+
+			if (!item->unserializeItemNode(loader, itemNode, stream)) {
 				std::ostringstream ss;
-				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to load item " << item->getID() << '.';
+				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to load item " << id << '.';
 				setLastErrorString(ss.str());
-				delete item;
 				continue;
 			}
 
-			if (isHouseTile && item->isMoveable()) {
+			if (tile->isHouse() && iType.moveable) {
 				SPDLOG_WARN("[IOMap::loadMap] - "
 							"Moveable item with ID: {}, in house: {}, "
 							"at position: x {}, y {}, z {}",
-							item->getID(), house->getId(), x, y, z);
-				delete item;
+							id, houseId, x, y, z);
+			} else if (iType.isGroundTile()) {
+				tile->ground = map.cache.getOriginalItem(item);
 			} else {
-				if (item->getItemCount() <= 0) {
-					item->setItemCount(1);
-				}
-
-				if (tile) {
-					tile->internalAddThing(item);
-					item->startDecaying();
-					item->setLoadedFromMap(true);
-				} else if (item->isGroundTile()) {
-					delete ground_item;
-					ground_item = item;
-				} else {
-					tile = createTile(ground_item, item, x, y, z);
-					tile->internalAddThing(item);
-					item->startDecaying();
-					item->setLoadedFromMap(true);
-				}
+				tile->items.emplace_back(map.cache.getOriginalItem(item));
 			}
 		}
 
-		if (!tile) {
-			tile = createTile(ground_item, nullptr, x, y, z);
-		}
+		if (tile->isEmpty())
+			continue;
 
-		tile->setFlag(static_cast<TileFlags_t>(tileflags));
-
-		map.setTile(x, y, z, tile);
+		map.cache.setTile(x, y, z, tile);
 	}
 	return true;
 }
@@ -487,19 +395,11 @@ bool IOMap::parseTowns(OTB::Loader &loader, const OTB::Node &townsNode, Map &map
 			return false;
 		}
 
-		Town* town = map.towns.getTown(townId);
-		if (!town) {
-			town = new Town(townId);
-			map.towns.addTown(townId, town);
-		}
-
 		std::string townName;
 		if (!propStream.readString(townName)) {
 			setLastErrorString("Could not read town name.");
 			return false;
 		}
-
-		town->setName(townName);
 
 		OTBM_Destination_coords town_coords;
 		if (!propStream.read(town_coords)) {
@@ -507,6 +407,8 @@ bool IOMap::parseTowns(OTB::Loader &loader, const OTB::Node &townsNode, Map &map
 			return false;
 		}
 
+		auto town = map.towns.getOrCreateTown(townId);
+		town->setName(townName);
 		town->setTemplePos(Position(town_coords.x, town_coords.y, town_coords.z));
 	}
 	return true;

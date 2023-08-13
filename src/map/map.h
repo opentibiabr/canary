@@ -17,16 +17,13 @@
 #include "map/house/house.h"
 #include "creatures/monsters/spawns/spawn_monster.h"
 #include "creatures/npcs/spawns/spawn_npc.h"
+#include "mapcache.h"
 
 class Creature;
 class Player;
 class Game;
 class Tile;
 class Map;
-
-static constexpr int8_t MAP_MAX_LAYERS = 16;
-static constexpr int8_t MAP_INIT_SURFACE_LAYER = 7; // (MAP_MAX_LAYERS / 2) -1
-static constexpr int8_t MAP_LAYER_VIEW_LIMIT = 2;
 
 struct FindPathParams;
 struct AStarNode {
@@ -36,7 +33,6 @@ struct AStarNode {
 };
 
 static constexpr int32_t MAX_NODES = 512;
-
 static constexpr int32_t MAP_NORMALWALKCOST = 10;
 static constexpr int32_t MAP_PREFERDIAGONALWALKCOST = 14;
 static constexpr int32_t MAP_DIAGONALWALKCOST = 25;
@@ -65,10 +61,6 @@ class AStarNodes {
 
 using SpectatorCache = phmap::btree_map<Position, SpectatorHashSet>;
 
-static constexpr int32_t FLOOR_BITS = 3;
-static constexpr int32_t FLOOR_SIZE = (1 << FLOOR_BITS);
-static constexpr int32_t FLOOR_MASK = (FLOOR_SIZE - 1);
-
 struct Floor {
 		constexpr Floor() = default;
 		~Floor();
@@ -81,84 +73,11 @@ struct Floor {
 };
 
 class FrozenPathingConditionCall;
-class QTreeLeafNode;
-
-class QTreeNode {
-	public:
-		constexpr QTreeNode() = default;
-		virtual ~QTreeNode();
-
-		// non-copyable
-		QTreeNode(const QTreeNode &) = delete;
-		QTreeNode &operator=(const QTreeNode &) = delete;
-
-		bool isLeaf() const {
-			return leaf;
-		}
-
-		QTreeLeafNode* getLeaf(uint32_t x, uint32_t y);
-
-		template <typename Leaf, typename Node>
-		static Leaf getLeafStatic(Node node, uint32_t x, uint32_t y) {
-			do {
-				node = node->child[((x & 0x8000) >> 15) | ((y & 0x8000) >> 14)];
-				if (!node) {
-					return nullptr;
-				}
-
-				x <<= 1;
-				y <<= 1;
-			} while (!node->leaf);
-			return static_cast<Leaf>(node);
-		}
-
-		QTreeLeafNode* createLeaf(uint32_t x, uint32_t y, uint32_t level);
-
-	protected:
-		QTreeNode* child[4] = {};
-
-		bool leaf = false;
-
-		friend class Map;
-};
-
-class QTreeLeafNode final : public QTreeNode {
-	public:
-		QTreeLeafNode() {
-			leaf = true;
-			newLeaf = true;
-		}
-		~QTreeLeafNode();
-
-		// non-copyable
-		QTreeLeafNode(const QTreeLeafNode &) = delete;
-		QTreeLeafNode &operator=(const QTreeLeafNode &) = delete;
-
-		Floor* createFloor(uint32_t z);
-		Floor* getFloor(uint8_t z) const {
-			return array[z];
-		}
-
-		void addCreature(Creature* c);
-		void removeCreature(Creature* c);
-
-	private:
-		static bool newLeaf;
-		QTreeLeafNode* leafS = nullptr;
-		QTreeLeafNode* leafE = nullptr;
-		Floor* array[MAP_MAX_LAYERS] = {};
-		CreatureVector creature_list;
-		CreatureVector player_list;
-
-		friend class Map;
-		friend class QTreeNode;
-};
 
 /**
  * Map class.
  * Holds all the actual map-data
  */
-
 class Map {
 	public:
 		static constexpr int32_t maxClientViewportX = 8;
@@ -204,8 +123,8 @@ class Map {
 		 * Get a single tile.
 		 * \returns A pointer to that tile.
 		 */
-		Tile* getTile(uint16_t x, uint16_t y, uint8_t z) const;
-		Tile* getTile(const Position &pos) const {
+		Tile* getTile(uint16_t x, uint16_t y, uint8_t z);
+		Tile* getTile(const Position &pos) {
 			return getTile(pos.x, pos.y, pos.z);
 		}
 
@@ -241,7 +160,7 @@ class Map {
 		 *	\param checkLineOfSight checks if there is any blocking objects in the way
 		 *	\returns The result if you can throw there or not
 		 */
-		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
+		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY);
 
 		/**
 		 * Checks if path is clear from fromPos to toPos
@@ -251,19 +170,19 @@ class Map {
 		 *	\param floorCheck if true then view is not clear if fromPos.z is not the same as toPos.z
 		 *	\returns The result if there is no obstacles
 		 */
-		bool isSightClear(const Position &fromPos, const Position &toPos, bool floorCheck) const;
-		bool checkSightLine(const Position &fromPos, const Position &toPos) const;
+		bool isSightClear(const Position &fromPos, const Position &toPos, bool floorCheck);
+		bool checkSightLine(const Position &fromPos, const Position &toPos);
 
-		const Tile* canWalkTo(const Creature &creature, const Position &pos) const;
+		const Tile* canWalkTo(const Creature &creature, const Position &pos);
 
-		bool getPathMatching(const Creature &creature, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) const;
+		bool getPathMatching(const Creature &creature, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 
-		bool getPathMatching(const Position &startPos, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) const;
+		bool getPathMatching(const Position &startPos, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 
 		phmap::btree_map<std::string, Position> waypoints;
 
-		QTreeLeafNode* getQTNode(uint16_t x, uint16_t y) {
-			return QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y);
+		QTreeLeafNode<Floor>* getQTNode(uint16_t x, uint16_t y) {
+			return QTreeNode<Floor>::getLeafStatic<QTreeLeafNode<Floor>*, QTreeNode<Floor>*>(&root, x, y);
 		}
 
 		// Storage made by "loadFromXML" of houses, monsters and npcs for main map
@@ -281,7 +200,8 @@ class Map {
 		SpectatorCache spectatorCache;
 		SpectatorCache playersSpectatorCache;
 
-		QTreeNode root;
+		QTreeNode<Floor> root;
+		MapCache cache;
 
 		std::string monsterfile;
 		std::string housefile;

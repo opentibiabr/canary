@@ -170,6 +170,7 @@
     <ClInclude Include="..\src\map\house\house.h" />
     <ClInclude Include="..\src\map\house\housetile.h" />
     <ClInclude Include="..\src\map\map.h" />
+    <ClInclude Include="..\src\map\mapcache.h" />
     <ClInclude Include="..\src\map\map_definitions.hpp" />
     <ClInclude Include="..\src\map\town.h" />
     <ClInclude Include="..\src\protobuf\appearances.pb.h" />
@@ -187,7 +188,9 @@
     <ClInclude Include="..\src\server\signals.h" />
     <ClInclude Include="..\src\utils\const.hpp" />
     <ClInclude Include="..\src\utils\definitions.h" />
+    <ClInclude Include="..\src\utils\hash.h" />
     <ClInclude Include="..\src\utils\pugicast.h" />
+    <ClInclude Include="..\src\utils\qtreenode.h" />
     <ClInclude Include="..\src\utils\simd.hpp" />
     <ClInclude Include="..\src\utils\thread_holder_base.h" />
     <ClInclude Include="..\src\utils\tools.h" />
@@ -330,6 +333,7 @@
     <ClCompile Include="..\src\map\house\house.cpp" />
     <ClCompile Include="..\src\map\house\housetile.cpp" />
     <ClCompile Include="..\src\map\map.cpp" />
+    <ClCompile Include="..\src\map\mapcache.cpp" />
     <ClCompile Include="..\src\otserv.cpp" />
     <ClCompile Include="..\src\pch.cpp" />
     <ClCompile Include="..\src\protobuf\appearances.pb.cc" />
@@ -345,6 +349,7 @@
     <ClCompile Include="..\src\server\network\webhook\webhook.cpp" />
     <ClCompile Include="..\src\server\server.cpp" />
     <ClCompile Include="..\src\server\signals.cpp" />
+    <ClCompile Include="..\src\utils\qtreenode.cpp" />
     <ClCompile Include="..\src\utils\tools.cpp" />
     <ClCompile Include="..\src\utils\wildcardtree.cpp" />
   </ItemGroup>

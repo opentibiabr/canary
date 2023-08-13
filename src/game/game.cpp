@@ -507,7 +507,7 @@ void Game::loadMap(const std::string &path, const Position &pos, bool unload) {
 	map.loadMap(path, false, false, false, false, pos, unload);
 }
 
-Cylinder* Game::internalGetCylinder(Player* player, const Position &pos) const {
+Cylinder* Game::internalGetCylinder(Player* player, const Position &pos) {
 	if (pos.x != 0xFFFF) {
 		return map.getTile(pos);
 	}
@@ -522,7 +522,7 @@ Cylinder* Game::internalGetCylinder(Player* player, const Position &pos) const {
 	return player;
 }
 
-Thing* Game::internalGetThing(Player* player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type) const {
+Thing* Game::internalGetThing(Player* player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type) {
 	if (pos.x != 0xFFFF) {
 		Tile* tile = map.getTile(pos);
 		if (!tile) {
@@ -1851,7 +1851,6 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		}
 
 		if (Player* player = actor->getPlayer()) {
-
 			// Refresh depot search window if necessary
 			if (player->isDepotSearchOpenOnItem(item->getID()) && ((fromCylinder->getItem() && fromCylinder->getItem()->isInsideDepot(true)) || (toCylinder->getItem() && toCylinder->getItem()->isInsideDepot(true)))) {
 				player->requestDepotSearchItem(item->getID(), item->getTier());
@@ -3712,7 +3711,6 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 			name << mount->name << " mount";
 		}
 		item->setAttribute(ItemAttribute_t::NAME, name.str());
-
 	} else {
 		item->removeAttribute(ItemAttribute_t::NAME);
 	}
@@ -5442,7 +5440,6 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string &
 		} else {
 			return player->saySpell(type, words, false);
 		}
-
 	} else if (result == TALKACTION_FAILED) {
 		return true;
 	}
@@ -5541,11 +5538,11 @@ void Game::playerSpeakToNpc(Player* player, const std::string &text) {
 }
 
 //--
-bool Game::canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight /*= true*/, int32_t rangex /*= Map::maxClientViewportX*/, int32_t rangey /*= Map::maxClientViewportY*/) const {
+bool Game::canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight /*= true*/, int32_t rangex /*= Map::maxClientViewportX*/, int32_t rangey /*= Map::maxClientViewportY*/) {
 	return map.canThrowObjectTo(fromPos, toPos, checkLineOfSight, rangex, rangey);
 }
 
-bool Game::isSightClear(const Position &fromPos, const Position &toPos, bool floorCheck) const {
+bool Game::isSightClear(const Position &fromPos, const Position &toPos, bool floorCheck) {
 	return map.isSightClear(fromPos, toPos, floorCheck);
 }
 
@@ -5892,7 +5889,6 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 	Player* targetPlayer = target->getPlayer();
 
 	if (damage.primary.type != COMBAT_NONE) {
-
 		// Damage reflection primary
 		if (!damage.extension && attacker) {
 			if (targetPlayer && attacker->getMonster() && damage.primary.type != COMBAT_HEALING) {

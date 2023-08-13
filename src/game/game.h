@@ -103,8 +103,8 @@ class Game {
 			teamFinderMap.erase(leaderGuid);
 		}
 
-		Cylinder* internalGetCylinder(Player* player, const Position &pos) const;
-		Thing* internalGetThing(Player* player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type) const;
+		Cylinder* internalGetCylinder(Player* player, const Position &pos);
+		Thing* internalGetThing(Player* player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type);
 		static void internalGetPosition(Item* item, Position &pos, uint8_t &stackpos);
 
 		static std::string getTradeErrorDescription(ReturnValue ret, Item* item);
@@ -386,8 +386,8 @@ class Game {
 			return boostedCreature;
 		}
 
-		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
-		bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor) const;
+		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY);
+		bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor);
 
 		void changeSpeed(Creature* creature, int32_t varSpeedDelta);
 		void setCreatureSpeed(Creature* creature, int32_t speed); // setCreatureSpeed

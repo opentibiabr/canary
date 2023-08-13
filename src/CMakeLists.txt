@@ -164,7 +164,6 @@ include(GNUInstallDirs)
 # *****************************************************************************
 target_sources(${PROJECT_NAME}
 PRIVATE
-	config/configmanager.cpp
 	creatures/appearance/mounts/mounts.cpp
 	creatures/appearance/outfit/outfit.cpp
 	creatures/combat/combat.cpp
@@ -186,10 +185,10 @@ PRIVATE
 	creatures/players/imbuements/imbuements.cpp
 	creatures/players/management/ban.cpp
 	creatures/players/management/waitlist.cpp
-	creatures/players/storages/storages.cpp
 	creatures/players/player.cpp
-	creatures/players/wheel/player_wheel.cpp
+	creatures/players/storages/storages.cpp
 	creatures/players/vocations/vocation.cpp
+	creatures/players/wheel/player_wheel.cpp
 	database/database.cpp
 	database/databasemanager.cpp
 	database/databasetasks.cpp
@@ -197,22 +196,21 @@ PRIVATE
 	game/game.cpp
 	game/movement/position.cpp
 	game/movement/teleport.cpp
-	game/scheduling/scheduler.cpp
 	game/scheduling/events_scheduler.cpp
+	game/scheduling/scheduler.cpp
 	game/scheduling/tasks.cpp
 	io/fileloader.cpp
-	io/io_wheel.cpp
-	io/iobestiary.cpp
-	io/io_bosstiary.cpp
-	io/ioguild.cpp
-	io/iologindata.cpp
 	io/functions/iologindata_load_player.cpp
 	io/functions/iologindata_save_player.cpp
+	io/io_bosstiary.cpp
+	io/io_wheel.cpp
+	io/iobestiary.cpp
+	io/ioguild.cpp
+	io/iologindata.cpp
 	io/iomap.cpp
 	io/iomapserialize.cpp
 	io/iomarket.cpp
 	io/ioprey.cpp
-	protobuf/appearances.pb.cc
 	items/bed.cpp
 	items/containers/container.cpp
 	items/containers/depot/depotchest.cpp
@@ -223,11 +221,11 @@ PRIVATE
 	items/containers/rewards/rewardchest.cpp
 	items/cylinder.cpp
 	items/decay/decay.cpp
-	items/item.cpp
-	items/items.cpp
 	items/functions/item/attribute.cpp
 	items/functions/item/custom_attribute.cpp
 	items/functions/item/item_parse.cpp
+	items/item.cpp
+	items/items.cpp
 	items/thing.cpp
 	items/tile.cpp
 	items/trashholder.cpp
@@ -241,7 +239,6 @@ PRIVATE
 	lua/creature/movement.cpp
 	lua/creature/raids.cpp
 	lua/creature/talkaction.cpp
-	lua/functions/lua_functions_loader.cpp
 	lua/functions/core/game/config_functions.cpp
 	lua/functions/core/game/game_functions.cpp
 	lua/functions/core/game/global_functions.cpp
@@ -285,6 +282,7 @@ PRIVATE
 	lua/functions/items/item_functions.cpp
 	lua/functions/items/item_type_functions.cpp
 	lua/functions/items/weapon_functions.cpp
+	lua/functions/lua_functions_loader.cpp
 	lua/functions/map/house_functions.cpp
 	lua/functions/map/position_functions.cpp
 	lua/functions/map/teleport_functions.cpp
@@ -300,8 +298,10 @@ PRIVATE
 	map/house/house.cpp
 	map/house/housetile.cpp
 	map/map.cpp
+	map/mapcache.cpp
 	otserv.cpp
 	pch.cpp
+	protobuf/appearances.pb.cc
 	security/argon.cpp
 	security/rsa.cpp
 	server/network/connection/connection.cpp
@@ -314,8 +314,10 @@ PRIVATE
 	server/network/webhook/webhook.cpp
 	server/server.cpp
 	server/signals.cpp
+	utils/qtreenode.cpp
 	utils/tools.cpp
 	utils/wildcardtree.cpp
+	config/configmanager.cpp
 )
 
 if (MSVC)

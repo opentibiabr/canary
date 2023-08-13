@@ -897,7 +897,6 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		void onAttackedCreatureChangeZone(ZoneType_t zone) override;
 		void onIdleStatus() override;
 		void onPlacedCreature() override;
-		void onChangeHazard(bool isHazard) override;
 
 		LightInfo getCreatureLight() const override;
 

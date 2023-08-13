@@ -1664,12 +1664,6 @@ void Player::onChangeZone(ZoneType_t zone) {
 	g_callbacks().executeCallback(EventCallback_t::playerOnChangeZone, &EventCallback::playerOnChangeZone, this, zone);
 }
 
-void Player::onChangeHazard(bool isHazard) {
-	g_events().eventPlayerOnChangeHazard(this, isHazard);
-	g_callbacks().executeCallback(EventCallback_t::playerOnChangeHazard, &EventCallback::playerOnChangeHazard, this, isHazard);
-	sendIcons();
-}
-
 void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
 	if (zone == ZONE_PROTECTION) {
 		if (!hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {

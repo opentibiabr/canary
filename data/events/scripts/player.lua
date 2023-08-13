@@ -673,15 +673,5 @@ function Player:onChangeZone(zone)
 	return false
 end
 
-function Player:onChangeHazard(isHazard)
-	if not isHazard then
-		self:setHazardSystemPoints(0)
-		player:getParty():updateHazard()
-		return true
-	end
-
-	return self:updateHazard()
-end
-
 function Player:onInventoryUpdate(item, slot, equip)
 end

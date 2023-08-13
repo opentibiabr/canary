@@ -828,33 +828,6 @@ void Events::eventPlayerOnChangeZone(Player* player, ZoneType_t zone) {
 	scriptInterface.callVoidFunction(2);
 }
 
-void Events::eventPlayerOnChangeHazard(Player* player, bool isHazard) {
-	// Player:onChangeHazard(isHazard)
-	if (info.playerOnChangeHazard == -1) {
-		return;
-	}
-
-	if (!scriptInterface.reserveScriptEnv()) {
-		g_logger().error("[Events::eventPlayerOnChangeHazard - "
-						 "Player {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 player->getName());
-		return;
-	}
-
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
-	env->setScriptId(info.playerOnChangeHazard, &scriptInterface);
-
-	lua_State* L = scriptInterface.getLuaState();
-	scriptInterface.pushFunction(info.playerOnChangeHazard);
-
-	LuaScriptInterface::pushUserdata<Player>(L, player);
-	LuaScriptInterface::setMetatable(L, -1, "Player");
-
-	lua_pushnumber(L, isHazard);
-	scriptInterface.callVoidFunction(2);
-}
-
 bool Events::eventPlayerOnMoveCreature(Player* player, Creature* creature, const Position &fromPosition, const Position &toPosition) {
 	// Player:onMoveCreature(creature, fromPosition, toPosition) or Player.onMoveCreature(self, creature, fromPosition, toPosition)
 	if (info.playerOnMoveCreature == -1) {

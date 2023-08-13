@@ -56,8 +56,6 @@ class TileFunctions final : LuaScriptInterface {
 			registerMethod(L, "Tile", "addItemEx", TileFunctions::luaTileAddItemEx);
 
 			registerMethod(L, "Tile", "getHouse", TileFunctions::luaTileGetHouse);
-
-			registerMethod(L, "Tile", "isHazard", TileFunctions::luaTileIsHazard);
 		}
 
 	private:
@@ -101,8 +99,6 @@ class TileFunctions final : LuaScriptInterface {
 		static int luaTileAddItemEx(lua_State* L);
 
 		static int luaTileGetHouse(lua_State* L);
-
-		static int luaTileIsHazard(lua_State* L);
 };
 
 #endif // SRC_LUA_FUNCTIONS_MAP_TILE_FUNCTIONS_HPP_

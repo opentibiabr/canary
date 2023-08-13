@@ -169,10 +169,5 @@ function serverstartup.onStartup()
 
 	-- Hireling System
 	HirelingsInit()
-
-	-- Hazard System
-	if configManager.getBoolean(configKeys.TOGGLE_HAZARDSYSTEM) then
-		Hazard.createAreas()
-	end
 end
 serverstartup:register()

@@ -407,7 +407,6 @@ class Creature : virtual public Thing {
 		virtual void onChangeZone(ZoneType_t zone);
 		virtual void onAttackedCreatureChangeZone(ZoneType_t zone);
 		virtual void onIdleStatus();
-		virtual void onChangeHazard(bool isHazard);
 
 		virtual LightInfo getCreatureLight() const;
 		virtual void setNormalCreatureLight();

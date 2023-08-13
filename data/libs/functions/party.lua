@@ -9,21 +9,24 @@ function Party.broadcastPartyLoot(self, text)
 	end
 end
 
-function Party.refreshHazard(self)
+function Party:refreshHazard()
 	local members = self:getMembers()
 	table.insert(members, self:getLeader())
 	local hazard = nil
 	local level = -1
 
 	for _, member in ipairs(members) do
-		local memberHazard = member:getPosition():getHazardArea()
-		if memberHazard then
-			if not hazard then
-				hazard = memberHazard
-			elseif hazard.name ~= memberHazard.name then
-				-- Party members are in different hazard areas so we can't calculate the level
-				level = 0
-				break
+		local zone = member:getZone()
+		if zone then
+			local memberHazard = Hazard.getByName(zone:getName())
+			if memberHazard then
+				if not hazard then
+					hazard = memberHazard
+				elseif hazard.name ~= memberHazard.name then
+					-- Party members are in different hazard areas so we can't calculate the level
+					level = 0
+					break
+				end
 			end
 		end
 

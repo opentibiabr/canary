@@ -84,7 +84,7 @@ struct BasicTile {
 
 class MapCache {
 	public:
-		void setTile(uint16_t x, uint16_t i, uint8_t z, BasicTilePtr BasicTile);
+		void setTile(uint16_t x, uint16_t i, uint8_t z, const BasicTilePtr &BasicTile);
 
 		bool tryCreateTile(Map* map, uint16_t x, uint16_t y, uint8_t z);
 

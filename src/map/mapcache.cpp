@@ -102,29 +102,29 @@ Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
 }
 
 bool MapCache::tryCreateTile(Map* map, uint16_t x, uint16_t y, uint8_t z) {
-	const auto &BasicTiled = getTile(x, y, z);
-	if (!BasicTiled)
+	const auto &cachedTile = getTile(x, y, z);
+	if (!cachedTile)
 		return false;
 
 	Tile* tile = nullptr;
-	if (BasicTiled->isHouse()) {
-		const auto house = map->houses.getHouse(BasicTiled->houseId);
+	if (cachedTile->isHouse()) {
+		const auto house = map->houses.getHouse(cachedTile->houseId);
 		tile = new HouseTile(x, y, z, house);
 		house->addTile(static_cast<HouseTile*>(tile));
-	} else if (BasicTiled->isStatic) {
+	} else if (cachedTile->isStatic) {
 		tile = new StaticTile(x, y, z);
 	} else
 		tile = new DynamicTile(x, y, z);
 
 	auto pos = Position(x, y, z);
 
-	if (BasicTiled->ground != nullptr)
-		tile->internalAddThing(createItem(BasicTiled->ground, pos));
+	if (cachedTile->ground != nullptr)
+		tile->internalAddThing(createItem(cachedTile->ground, pos));
 
-	for (const auto &BasicItemd : BasicTiled->items)
+	for (const auto &BasicItemd : cachedTile->items)
 		tile->internalAddThing(createItem(BasicItemd, pos));
 
-	tile->setFlag(static_cast<TileFlags_t>(BasicTiled->flags));
+	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
 
 	map->setTile(pos, tile);
 
@@ -149,7 +149,7 @@ BasicTilePtr MapCache::getTile(uint16_t x, uint16_t y, uint8_t z) {
 	return floor->tiles[x & FLOOR_MASK][y & FLOOR_MASK];
 }
 
-void MapCache::setTile(uint16_t x, uint16_t y, uint8_t z, BasicTilePtr newTile) {
+void MapCache::setTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePtr &newTile) {
 	if (z >= MAP_MAX_LAYERS) {
 		SPDLOG_ERROR("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;

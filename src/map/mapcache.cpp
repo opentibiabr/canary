@@ -16,8 +16,6 @@
 #include <map/map.h>
 #include <utils/hash.h>
 
-bool QTreeLeafNode<MapCache::Floor>::newLeaf = false;
-
 static phmap::flat_hash_map<size_t, BasicItemPtr> items;
 static phmap::flat_hash_map<size_t, BasicTilePtr> tiles;
 

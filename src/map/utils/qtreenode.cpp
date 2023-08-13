@@ -2,6 +2,9 @@
 #include <creatures/creature.h>
 
 template <typename T>
+bool QTreeLeafNode<T>::newLeaf = false;
+
+template <typename T>
 void QTreeLeafNode<T>::addCreature(Creature* c) {
 	creature_list.push_back(c);
 

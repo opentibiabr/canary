@@ -20,12 +20,6 @@ Raids::Raids() {
 	scriptInterface.initState();
 }
 
-Raids::~Raids() {
-	for (Raid* raid : raidList) {
-		delete raid;
-	}
-}
-
 bool Raids::loadFromXml() {
 	if (isLoaded()) {
 		return true;
@@ -87,12 +81,11 @@ bool Raids::loadFromXml() {
 			repeat = false;
 		}
 
-		Raid* newRaid = new Raid(name, interval, margin, repeat);
+		auto newRaid = std::make_shared<Raid>(name, interval, margin, repeat);
 		if (newRaid->loadFromXml(g_configManager().getString(DATA_DIRECTORY) + "/raids/" + file)) {
 			raidList.push_back(newRaid);
 		} else {
 			g_logger().error("{} - Failed to load raid: {}", __FUNCTION__, name);
-			delete newRaid;
 		}
 	}
 
@@ -120,7 +113,7 @@ void Raids::checkRaids() {
 		uint64_t now = OTSYS_TIME();
 
 		for (auto it = raidList.begin(), end = raidList.end(); it != end; ++it) {
-			Raid* raid = *it;
+			const auto &raid = *it;
 			if (now >= (getLastRaidEnd() + raid->getMargin())) {
 				if (((MAX_RAND_RANGE * CHECK_RAIDS_INTERVAL) / raid->getInterval()) >= static_cast<uint32_t>(uniform_random(0, MAX_RAND_RANGE))) {
 					setRunning(raid);
@@ -142,9 +135,8 @@ void Raids::clear() {
 	g_scheduler().stopEvent(checkRaidsEvent);
 	checkRaidsEvent = 0;
 
-	for (Raid* raid : raidList) {
+	for (const auto &raid : raidList) {
 		raid->stopEvents();
-		delete raid;
 	}
 	raidList.clear();
 
@@ -161,19 +153,13 @@ bool Raids::reload() {
 	return loadFromXml();
 }
 
-Raid* Raids::getRaidByName(const std::string &name) {
-	for (Raid* raid : raidList) {
+std::shared_ptr<Raid> Raids::getRaidByName(const std::string &name) {
+	for (const auto &raid : raidList) {
 		if (strcasecmp(raid->getName().c_str(), name.c_str()) == 0) {
 			return raid;
 		}
 	}
 	return nullptr;
-}
-
-Raid::~Raid() {
-	for (RaidEvent* raidEvent : raidEvents) {
-		delete raidEvent;
-	}
 }
 
 bool Raid::loadFromXml(const std::string &filename) {
@@ -189,15 +175,15 @@ bool Raid::loadFromXml(const std::string &filename) {
 	}
 
 	for (auto eventNode : doc.child("raid").children()) {
-		RaidEvent* event;
+		std::shared_ptr<RaidEvent> event;
 		if (strcasecmp(eventNode.name(), "announce") == 0) {
-			event = new AnnounceEvent();
+			event = std::make_shared<AnnounceEvent>();
 		} else if (strcasecmp(eventNode.name(), "singlespawn") == 0) {
-			event = new SingleSpawnEvent();
+			event = std::make_shared<SingleSpawnEvent>();
 		} else if (strcasecmp(eventNode.name(), "areaspawn") == 0) {
-			event = new AreaSpawnEvent();
+			event = std::make_shared<AreaSpawnEvent>();
 		} else if (strcasecmp(eventNode.name(), "script") == 0) {
-			event = new ScriptEvent(&g_game().raids.getScriptInterface());
+			event = std::make_shared<ScriptEvent>(&g_game().raids.getScriptInterface());
 		} else {
 			continue;
 		}
@@ -208,12 +194,11 @@ bool Raid::loadFromXml(const std::string &filename) {
 			g_logger().error("{} - "
 							 "In file: {}, eventNode: {}",
 							 __FUNCTION__, filename, eventNode.name());
-			delete event;
 		}
 	}
 
 	// sort by delay time
-	std::sort(raidEvents.begin(), raidEvents.end(), [](const RaidEvent* lhs, const RaidEvent* rhs) {
+	std::sort(raidEvents.begin(), raidEvents.end(), [](const std::shared_ptr<RaidEvent> &lhs, const std::shared_ptr<RaidEvent> &rhs) {
 		return lhs->getDelay() < rhs->getDelay();
 	});
 
@@ -222,17 +207,17 @@ bool Raid::loadFromXml(const std::string &filename) {
 }
 
 void Raid::startRaid() {
-	RaidEvent* raidEvent = getNextRaidEvent();
+	const auto &raidEvent = getNextRaidEvent();
 	if (raidEvent) {
 		state = RAIDSTATE_EXECUTING;
 		nextEventEvent = g_scheduler().addEvent(raidEvent->getDelay(), std::bind(&Raid::executeRaidEvent, this, raidEvent));
 	}
 }
 
-void Raid::executeRaidEvent(RaidEvent* raidEvent) {
+void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> &raidEvent) {
 	if (raidEvent->executeEvent()) {
 		nextEvent++;
-		RaidEvent* newRaidEvent = getNextRaidEvent();
+		const auto &newRaidEvent = getNextRaidEvent();
 
 		if (newRaidEvent) {
 			uint32_t ticks = static_cast<uint32_t>(std::max<int32_t>(RAID_MINTICKS, newRaidEvent->getDelay() - raidEvent->getDelay()));
@@ -259,7 +244,7 @@ void Raid::stopEvents() {
 	}
 }
 
-RaidEvent* Raid::getNextRaidEvent() {
+std::shared_ptr<RaidEvent> Raid::getNextRaidEvent() {
 	if (nextEvent < raidEvents.size()) {
 		return raidEvents[nextEvent];
 	} else {

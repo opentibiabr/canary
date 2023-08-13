@@ -71,6 +71,7 @@
 
 // FMT
 #include <fmt/chrono.h>
+#include <fmt/core.h>
 
 // GMP
 #include <gmp.h>
@@ -113,6 +114,8 @@
 // Zlib
 #include <zlib.h>
 
+#include <boost/di.hpp>
+
 // -------------------------
 // GIT Metadata Includes
 // -------------------------
@@ -129,5 +132,17 @@
 #include <iostream>
 
 bool isDevMode();
+
+/**
+ * Static custom libraries that can be pre-compiled like DI and messaging
+ */
+#include "lib/messaging/message.hpp"
+#include "lib/messaging/command.hpp"
+#include "lib/messaging/event.hpp"
+
+#include <eventpp/utilities/scopedremover.h>
+#include <eventpp/eventdispatcher.h>
+
+#include "lib/di/container.hpp"
 
 #endif // SRC_PCH_HPP_

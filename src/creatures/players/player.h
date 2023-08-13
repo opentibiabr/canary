@@ -2005,6 +2005,7 @@ class Player final : public Creature, public Cylinder {
 
 		// Prey system
 		void initializePrey();
+		void removePreySlotById(PreySlot_t slotid);
 
 		void sendPreyData() const {
 			if (client) {
@@ -2385,9 +2386,9 @@ class Player final : public Creature, public Cylinder {
 			return bossRemoveTimes;
 		}
 
-		void sendBossPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackpos) const {
+		void sendMonsterPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackpos) const {
 			if (client) {
-				client->sendBossPodiumWindow(podium, position, itemId, stackpos);
+				client->sendMonsterPodiumWindow(podium, position, itemId, stackpos);
 			}
 		}
 

@@ -408,12 +408,12 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 		g_events().eventMonsterOnSpawn(monster, position);
 		g_callbacks().executeCallback(EventCallback_t::monsterOnSpawn, &EventCallback::monsterOnSpawn, monster, position);
 		auto mtype = monster->getMonsterType();
-		if (mtype && mtype->info.bossRaceId > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {
+		if (mtype && mtype->info.raceid > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {
 			SpectatorHashSet spectators;
 			g_game().map.getSpectators(spectators, monster->getPosition(), true);
 			for (Creature* spectator : spectators) {
 				if (Player* tmpPlayer = spectator->getPlayer()) {
-					auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldown(tmpPlayer);
+					auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldownRaceId(tmpPlayer);
 					// If not have boss to update, then kill loop for economize resources
 					if (bossesOnTracker.size() == 0) {
 						break;

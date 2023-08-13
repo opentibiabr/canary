@@ -10,6 +10,7 @@ function aol.onSay(player, words, param)
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		player:sendCancelMessage(string.format("You do not have enough money. You need %i gold to buy aol!", totalCost))
 	end
+	return true
 end
 
 aol:groupType("normal")

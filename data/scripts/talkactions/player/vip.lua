@@ -9,7 +9,7 @@ function vip.onSay(player, words, param)
 	else
 		player:sendTextMessage(MESSAGE_STATUS, string.format('You have %s VIP day%s left.', (days == 0xFFFF and 'infinite amount of' or days), (days == 1 and '' or 's')))
 	end
-	return false
+	return true
 end
 
 vip:groupType("normal")

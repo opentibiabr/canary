@@ -95,6 +95,12 @@
     <ClInclude Include="..\src\items\tile.h" />
     <ClInclude Include="..\src\items\trashholder.h" />
     <ClInclude Include="..\src\items\weapons\weapons.h" />
+    <ClInclude Include="..\src\lib\di\container.hpp" />
+    <ClInclude Include="..\src\lib\logging\Logger.hpp" />
+    <ClInclude Include="..\src\lib\logging\LogWithSpdLog.hpp" />
+    <ClInclude Include="..\src\lib\messaging\command.hpp" />
+    <ClInclude Include="..\src\lib\messaging\event.hpp" />
+    <ClInclude Include="..\src\lib\messaging\message.hpp" />
     <ClInclude Include="..\src\lua\callbacks\creaturecallback.h" />
     <ClInclude Include="..\src\lua\callbacks\event_callback.hpp" />
     <ClInclude Include="..\src\lua\callbacks\events_callbacks.hpp" />
@@ -265,6 +271,7 @@
     <ClCompile Include="..\src\items\tile.cpp" />
     <ClCompile Include="..\src\items\trashholder.cpp" />
     <ClCompile Include="..\src\items\weapons\weapons.cpp" />
+    <ClCompile Include="..\src\lib\logging\LogWithSpdLog.cpp" />
     <ClCompile Include="..\src\lua\callbacks\creaturecallback.cpp" />
     <ClCompile Include="..\src\lua\callbacks\event_callback.cpp" />
     <ClCompile Include="..\src\lua\callbacks\events_callbacks.cpp" />

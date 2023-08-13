@@ -3,11 +3,9 @@
 #include <pch.hpp>
 #include <map/map_const.h>
 
-class Creature;
-using CreatureVector = std::vector<Creature*>;
-
 template <typename T>
 class QTreeLeafNode;
+class Creature;
 
 template <typename T>
 class QTreeNode {
@@ -27,8 +25,6 @@ class QTreeNode {
 			return leaf;
 		}
 
-		QTreeLeafNode<T>* getLeaf(uint32_t x, uint32_t y);
-
 		template <typename Leaf, typename Node>
 		static Leaf getLeafStatic(Node node, uint32_t x, uint32_t y) {
 			do {
@@ -43,6 +39,7 @@ class QTreeNode {
 			return static_cast<Leaf>(node);
 		}
 
+		QTreeLeafNode<T>* getLeaf(uint32_t x, uint32_t y);
 		QTreeLeafNode<T>* createLeaf(uint32_t x, uint32_t y, uint32_t level);
 		QTreeLeafNode<T>* getBestLeaf(uint32_t x, uint32_t y, uint32_t level);
 
@@ -82,8 +79,8 @@ class QTreeLeafNode final : public QTreeNode<T> {
 
 		std::unique_ptr<T> array[MAP_MAX_LAYERS] = {};
 
-		CreatureVector creature_list;
-		CreatureVector player_list;
+		std::vector<Creature*> creature_list;
+		std::vector<Creature*> player_list;
 
 		friend class Map;
 		friend class MapCache;

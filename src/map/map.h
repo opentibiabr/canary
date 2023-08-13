@@ -13,9 +13,6 @@
 #include "mapcache.h"
 #include "utils/astarnodes.h"
 
-#include "game/movement/position.h"
-#include "items/item.h"
-#include "items/tile.h"
 #include "map/town.h"
 #include "map/house/house.h"
 #include "creatures/monsters/spawns/spawn_monster.h"
@@ -31,17 +28,6 @@ struct FindPathParams;
 
 using SpectatorCache = phmap::btree_map<Position, SpectatorHashSet>;
 
-struct Floor {
-		constexpr Floor() = default;
-		~Floor();
-
-		// non-copyable
-		Floor(const Floor &) = delete;
-		Floor &operator=(const Floor &) = delete;
-
-		Tile* tiles[FLOOR_SIZE][FLOOR_SIZE] = {};
-};
-
 class FrozenPathingConditionCall;
 
 /**
@@ -50,6 +36,15 @@ class FrozenPathingConditionCall;
  */
 class Map {
 	public:
+		struct Floor {
+				~Floor() {
+					for (auto &row : tiles)
+						for (auto tile : row)
+							delete tile;
+				}
+				Tile* tiles[FLOOR_SIZE][FLOOR_SIZE] = {};
+		};
+
 		uint32_t clean() const;
 
 		/**

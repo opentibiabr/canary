@@ -374,7 +374,7 @@ void Map::getSpectatorsInternal(SpectatorHashSet &spectators, const Position &ce
 		leafE = leafS;
 		for (int_fast32_t nx = startx1; nx <= endx2; nx += FLOOR_SIZE) {
 			if (leafE) {
-				const CreatureVector &node_list = (onlyPlayers ? leafE->player_list : leafE->creature_list);
+				const auto &node_list = (onlyPlayers ? leafE->player_list : leafE->creature_list);
 				for (Creature* creature : node_list) {
 					const Position &cpos = creature->getPosition();
 					if (minRangeZ > cpos.z || maxRangeZ < cpos.z) {
@@ -1065,15 +1065,6 @@ int_fast32_t AStarNodes::getTileWalkCost(const Creature &creature, const Tile* t
 		}
 	}
 	return cost;
-}
-
-// Floor
-Floor::~Floor() {
-	for (auto &row : tiles) {
-		for (auto tile : row) {
-			delete tile;
-		}
-	}
 }
 
 uint32_t Map::clean() const {

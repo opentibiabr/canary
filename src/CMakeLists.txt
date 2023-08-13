@@ -167,8 +167,9 @@ include(GNUInstallDirs)
 # *****************************************************************************
 target_sources(${PROJECT_NAME}
 PRIVATE
-	creatures/appearance/mounts/mounts.cpp
+	config/configmanager.cpp
 	creatures/appearance/outfit/outfit.cpp
+	creatures/appearance/mounts/mounts.cpp
 	creatures/combat/combat.cpp
 	creatures/combat/condition.cpp
 	creatures/combat/spells.cpp
@@ -299,9 +300,9 @@ PRIVATE
 	lua/scripts/luascript.cpp
 	lua/scripts/script_environment.cpp
 	lua/scripts/scripts.cpp
-	map/utils/qtreenode.cpp
 	map/house/house.cpp
 	map/house/housetile.cpp
+	map/utils/qtreenode.cpp
 	map/map.cpp
 	map/mapcache.cpp
 	otserv.cpp
@@ -321,7 +322,6 @@ PRIVATE
 	server/signals.cpp
 	utils/tools.cpp
 	utils/wildcardtree.cpp
-	config/configmanager.cpp
 )
 
 if (MSVC)

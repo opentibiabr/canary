@@ -960,3 +960,22 @@ int CreatureFunctions::luaCreatureGetZoneType(lua_State* L) {
 	}
 	return 1;
 }
+
+int CreatureFunctions::luaCreatureGetZone(lua_State* L) {
+	// creature:getZone()
+	Creature* creature = getUserdata<Creature>(L, 1);
+	if (creature == nullptr) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto zone = creature->getZone();
+	if (zone == nullptr) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	pushUserdata<Zone>(L, zone);
+	setMetatable(L, -1, "Zone");
+	return 1;
+}

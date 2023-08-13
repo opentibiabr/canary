@@ -13,6 +13,7 @@
 #include "creatures/creature.h"
 #include "creatures/combat/combat.h"
 #include "game/game.h"
+#include "game/zones/zone.hpp"
 #include "items/containers/mailbox/mailbox.h"
 #include "creatures/monsters/monster.h"
 #include "lua/creature/movement.h"
@@ -1655,4 +1656,11 @@ Item* Tile::getDoorItem() const {
 	}
 
 	return nullptr;
+}
+
+std::shared_ptr<Zone> Tile::getZone() {
+	if (!zone) {
+		zone = Zone::getZone(getPosition());
+	}
+	return zone;
 }

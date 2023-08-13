@@ -120,6 +120,31 @@ int PositionFunctions::luaPositionIsSightClear(lua_State* L) {
 	return 1;
 }
 
+int PositionFunctions::luaPositionGetTile(lua_State* L) {
+	// position:getTile()
+	const Position &position = getPosition(L, 1);
+	pushUserdata(L, g_game().map.getTile(position));
+	return 1;
+}
+
+int PositionFunctions::luaPositionGetZone(lua_State* L) {
+	// position:getZone()
+	const Position &position = getPosition(L, 1);
+	auto tile = g_game().map.getTile(position);
+	if (tile == nullptr) {
+		lua_pushnil(L);
+		return 1;
+	}
+	auto zone = tile->getZone();
+	if (zone == nullptr) {
+		lua_pushnil(L);
+		return 1;
+	}
+	pushUserdata<Zone>(L, zone);
+	setMetatable(L, -1, "Zone");
+	return 1;
+}
+
 int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	// position:sendMagicEffect(magicEffect[, player = nullptr])
 	SpectatorHashSet spectators;

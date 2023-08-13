@@ -2579,7 +2579,7 @@ int PlayerFunctions::luaPlayerCanLearnSpell(lua_State* L) {
 	}
 
 	const std::string &spellName = getString(L, 2);
-	const InstantSpell* spell = g_spells().getInstantSpellByName(spellName);
+	const auto& spell = g_spells().getInstantSpellByName(spellName);
 	if (!spell) {
 		reportErrorFunc("Spell \"" + spellName + "\" not found");
 		pushBoolean(L, false);
@@ -2922,10 +2922,10 @@ int PlayerFunctions::luaPlayerGetInstantSpells(lua_State* L) {
 		return 1;
 	}
 
-	std::vector<const InstantSpell*> spells;
+	std::vector<std::shared_ptr<InstantSpell>> spells;
 	for (auto &[key, spell] : g_spells().getInstantSpells()) {
-		if (spell.canCast(player)) {
-			spells.push_back(&spell);
+		if (spell->canCast(player)) {
+			spells.push_back(spell);
 		}
 	}
 
@@ -2942,7 +2942,7 @@ int PlayerFunctions::luaPlayerGetInstantSpells(lua_State* L) {
 int PlayerFunctions::luaPlayerCanCast(lua_State* L) {
 	// player:canCast(spell)
 	Player* player = getUserdata<Player>(L, 1);
-	InstantSpell* spell = getUserdata<InstantSpell>(L, 2);
+	const auto& spell = getUserdataShared<InstantSpell>(L, 2);
 	if (player && spell) {
 		pushBoolean(L, spell->canCast(player));
 	} else {

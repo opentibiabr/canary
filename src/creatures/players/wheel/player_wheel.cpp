@@ -2075,8 +2075,8 @@ void PlayerWheel::downgradeSpell(const std::string &name) {
 	}
 }
 
-Spell* PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
-	Spell* spell = nullptr;
+std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
+	std::shared_ptr<Spell> spell = nullptr;
 	damage.damageMultiplier += getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
 	WheelSpellGrade_t spellGrade = WheelSpellGrade_t::NONE;
 	if (!(damage.instantSpellName).empty()) {

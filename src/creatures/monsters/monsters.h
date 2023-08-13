@@ -28,7 +28,7 @@ class Loot {
 class BaseSpell;
 struct spellBlock_t {
 		constexpr spellBlock_t() = default;
-		~spellBlock_t();
+		~spellBlock_t() = default;
 		spellBlock_t(const spellBlock_t &other) = delete;
 		spellBlock_t &operator=(const spellBlock_t &other) = delete;
 		spellBlock_t(spellBlock_t &&other) :
@@ -43,7 +43,7 @@ struct spellBlock_t {
 			other.spell = nullptr;
 		}
 
-		BaseSpell* spell = nullptr;
+		std::shared_ptr<BaseSpell> spell = nullptr;
 		uint32_t chance = 100;
 		uint32_t speed = 2000;
 		uint32_t range = 0;

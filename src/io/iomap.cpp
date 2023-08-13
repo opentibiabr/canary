@@ -300,9 +300,9 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 									"at position: x {}, y {}, z {}",
 									id, houseId, x, y, z);
 					} else if (iType.isGroundTile()) {
-						tile->ground = map.cache.getOriginalItem(item);
+						tile->ground = map.cache.tryReplaceItemFromCache(item);
 					} else {
-						tile->items.emplace_back(map.cache.getOriginalItem(item));
+						tile->items.emplace_back(map.cache.tryReplaceItemFromCache(item));
 					}
 
 					break;
@@ -362,9 +362,9 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 							"at position: x {}, y {}, z {}",
 							id, houseId, x, y, z);
 			} else if (iType.isGroundTile()) {
-				tile->ground = map.cache.getOriginalItem(item);
+				tile->ground = map.cache.tryReplaceItemFromCache(item);
 			} else {
-				tile->items.emplace_back(map.cache.getOriginalItem(item));
+				tile->items.emplace_back(map.cache.tryReplaceItemFromCache(item));
 			}
 		}
 

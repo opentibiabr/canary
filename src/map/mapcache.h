@@ -88,7 +88,7 @@ class MapCache {
 
 		bool tryCreateTile(Map* map, uint16_t x, uint16_t y, uint8_t z);
 
-		BasicItemPtr getOriginalItem(const BasicItemPtr &ref);
+		BasicItemPtr tryReplaceItemFromCache(const BasicItemPtr &ref);
 
 		void clear();
 

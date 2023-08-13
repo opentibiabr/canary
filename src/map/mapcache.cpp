@@ -161,7 +161,7 @@ void MapCache::setTile(uint16_t x, uint16_t y, uint8_t z, BasicTilePtr newTile) 
 	floor->tiles[x & FLOOR_MASK][y & FLOOR_MASK] = getTileFromCache(newTile);
 }
 
-BasicItemPtr MapCache::getOriginalItem(const BasicItemPtr &ref) {
+BasicItemPtr MapCache::tryReplaceItemFromCache(const BasicItemPtr &ref) {
 	return getItemFromCache(ref);
 }
 

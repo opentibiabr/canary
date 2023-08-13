@@ -1,6 +1,9 @@
 local ghost = TalkAction("/ghost")
 
 function ghost.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	local position = player:getPosition()
 	local isGhost = not player:isInGhostMode()
 
@@ -13,7 +16,7 @@ function ghost.onSay(player, words, param)
 		position.x = position.x + 1
 		position:sendMagicEffect(CONST_ME_SMOKE)
 	end
-	return false
+	return true
 end
 
 ghost:separator(" ")

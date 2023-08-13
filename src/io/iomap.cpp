@@ -202,7 +202,7 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 	uint16_t base_y = area_coord.y;
 	uint16_t base_z = area_coord.z;
 
-	static std::map<uint64_t, uint64_t> teleportMap;
+	static phmap::btree_map<uint64_t, uint64_t> teleportMap;
 
 	for (auto &tileNode : tileAreaNode.children) {
 		if (tileNode.type != OTBM_TILE && tileNode.type != OTBM_HOUSETILE) {

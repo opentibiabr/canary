@@ -22,10 +22,10 @@ VOCATION = {
 		ELDER_DRUID = 14
 	},
 	BASE_ID = {
-        NONE = 0,
-        SORCERER = 1,
-        DRUID = 2,
-        PALADIN = 3,
-        KNIGHT = 4
+		NONE = 0,
+		SORCERER = 1,
+		DRUID = 2,
+		PALADIN = 3,
+		KNIGHT = 4
 	}
 }

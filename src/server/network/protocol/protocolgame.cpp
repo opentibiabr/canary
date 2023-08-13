@@ -1101,7 +1101,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			addGameTask(&Game::playerCloseNpcChannel, player->getID());
 			break;
 		case 0x9F:
-			parseSetBossPodium(msg);
+			parseSetMonsterPodium(msg);
 			break;
 		case 0xA0:
 			parseFightModes(msg);
@@ -1895,7 +1895,8 @@ void ProtocolGame::parseRotateItem(NetworkMessage &msg) {
 	Position pos = msg.getPosition();
 	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
-	if (itemId == ITEM_PODIUM_OF_VIGOUR) {
+	const auto &itemType = Item::items[itemId];
+	if (itemType.isPodium) {
 		addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerRotatePodium, player->getID(), pos, stackpos, itemId);
 	} else {
 		addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerRotateItem, player->getID(), pos, stackpos, itemId);
@@ -2155,7 +2156,7 @@ void ProtocolGame::parseBestiarysendRaces() {
 	NetworkMessage msg;
 	msg.addByte(0xd5);
 	msg.add<uint16_t>(BESTY_RACE_LAST);
-	std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 	for (uint8_t i = BESTY_RACE_FIRST; i <= BESTY_RACE_LAST; i++) {
 		std::string BestClass = "";
 		uint16_t count = 0;
@@ -2198,7 +2199,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	uint16_t raceId = msg.get<uint16_t>();
 	std::string Class = "";
 	MonsterType* mtype = nullptr;
-	std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 
 	auto ait = mtype_list.find(raceId);
 	if (ait != mtype_list.end()) {
@@ -2286,7 +2287,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	}
 
 	if (currentLevel > 2) {
-		std::map<uint8_t, int16_t> elements = g_iobestiary().getMonsterElements(mtype);
+		phmap::btree_map<uint8_t, int16_t> elements = g_iobestiary().getMonsterElements(mtype);
 
 		newmsg.addByte(elements.size());
 		for (auto it = std::begin(elements), end = std::end(elements); it != end; it++) {
@@ -2315,7 +2316,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 
 void ProtocolGame::addBestiaryTrackerList(NetworkMessage &msg) {
 	uint16_t thisrace = msg.get<uint16_t>();
-	std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 	auto it = mtype_list.find(thisrace);
 	if (it != mtype_list.end()) {
 		MonsterType* mtype = g_monsters().getMonsterType(it->second);
@@ -2333,7 +2334,7 @@ void ProtocolGame::sendTeamFinderList() {
 	NetworkMessage msg;
 	msg.addByte(0x2D);
 	msg.addByte(0x00); // Bool value, with 'true' the player exceed packets for second.
-	std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+	phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 	msg.add<uint16_t>(teamFinder.size());
 	for (auto it : teamFinder) {
 		const Player* leader = g_game().getPlayerByGUID(it.first);
@@ -2397,7 +2398,7 @@ void ProtocolGame::sendLeaderTeamFinder(bool reset) {
 	}
 
 	TeamFinder* teamAssemble = nullptr;
-	std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+	phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 	auto it = teamFinder.find(player->getGUID());
 	if (it != teamFinder.end()) {
 		teamAssemble = it->second;
@@ -2479,8 +2480,8 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg) {
 		return;
 	}
 
-	std::map<uint32_t, uint8_t> members;
-	std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+	phmap::btree_map<uint32_t, uint8_t> members;
+	phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 	TeamFinder* teamAssemble = nullptr;
 	auto it = teamFinder.find(player->getGUID());
 	if (it != teamFinder.end()) {
@@ -2593,7 +2594,7 @@ void ProtocolGame::parseLeaderFinderWindow(NetworkMessage &msg) {
 			if (!member)
 				return;
 
-			std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+			phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 			TeamFinder* teamAssemble = nullptr;
 			auto it = teamFinder.find(player->getGUID());
 			if (it != teamFinder.end()) {
@@ -2655,7 +2656,7 @@ void ProtocolGame::parseMemberFinderWindow(NetworkMessage &msg) {
 		if (!leader)
 			return;
 
-		std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+		phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 		TeamFinder* teamAssemble = nullptr;
 		auto it = teamFinder.find(leaderID);
 		if (it != teamFinder.end()) {
@@ -2755,17 +2756,17 @@ void ProtocolGame::BestiarysendCharms() {
 	}
 	msg.addByte(4); // Unknown
 
-	std::list<uint16_t> finishedMonsters = g_iobestiary().getBestiaryFinished(player);
+	auto finishedMonstersVector = g_iobestiary().getBestiaryFinished(player);
 	std::list<charmRune_t> usedRunes = g_iobestiary().getCharmUsedRuneBitAll(player);
 
 	for (charmRune_t charmRune : usedRunes) {
 		Charm* tmpCharm = g_iobestiary().getBestiaryCharm(charmRune);
 		uint16_t tmp_raceid = player->parseRacebyCharm(tmpCharm->id, false, 0);
-		finishedMonsters.remove(tmp_raceid);
+		std::erase_if(finishedMonstersVector, [tmp_raceid](uint16_t val) { return val == tmp_raceid; });
 	}
 
-	msg.add<uint16_t>(finishedMonsters.size());
-	for (uint16_t raceid_tmp : finishedMonsters) {
+	msg.add<uint16_t>(static_cast<uint16_t>(finishedMonstersVector.size()));
+	for (uint16_t raceid_tmp : finishedMonstersVector) {
 		msg.add<uint16_t>(raceid_tmp);
 	}
 
@@ -2778,13 +2779,13 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 	}
 
 	std::ostringstream ss;
-	std::map<uint16_t, std::string> race = {};
+	phmap::btree_map<uint16_t, std::string> race = {};
 	std::string text = "";
 	uint8_t search = msg.getByte();
 
 	if (search == 1) {
 		uint16_t monsterAmount = msg.get<uint16_t>();
-		std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+		phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 		for (uint16_t monsterCount = 1; monsterCount <= monsterAmount; monsterCount++) {
 			uint16_t raceid = msg.get<uint16_t>();
 			if (player->getBestiaryKillCount(raceid) > 0) {
@@ -2810,7 +2811,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 	newmsg.addByte(0xd6);
 	newmsg.addString(text);
 	newmsg.add<uint16_t>(race.size());
-	std::map<uint16_t, uint32_t> creaturesKilled = g_iobestiary().getBestiaryKillCountByMonsterIDs(player, race);
+	phmap::btree_map<uint16_t, uint32_t> creaturesKilled = g_iobestiary().getBestiaryKillCountByMonsterIDs(player, race);
 
 	for (auto it_ : race) {
 		uint16_t raceid_ = it_.first;
@@ -4194,7 +4195,7 @@ void ProtocolGame::sendLootContainers() {
 	NetworkMessage msg;
 	msg.addByte(0xC0);
 	msg.addByte(player->quickLootFallbackToMainContainer ? 1 : 0);
-	std::map<ObjectCategory_t, Container*> quickLoot;
+	phmap::btree_map<ObjectCategory_t, Container*> quickLoot;
 	for (auto it : player->quickLootContainers) {
 		if (it.second && !it.second->isRemoved()) {
 			quickLoot[it.first] = it.second;
@@ -4311,7 +4312,7 @@ void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value) 
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap) {
+void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const phmap::btree_map<uint16_t, uint16_t> &inventoryMap) {
 	// Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
 	uint64_t playerMoney = 0;
 	auto it = inventoryMap.find(ITEM_CRYSTAL_COIN);
@@ -4656,7 +4657,7 @@ void ProtocolGame::sendMarketCancelOffer(const MarketOfferEx &offer) {
 
 void ProtocolGame::sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyOffers, const HistoryMarketOfferList &sellOffers) {
 	uint32_t i = 0;
-	std::map<uint32_t, uint16_t> counterMap;
+	phmap::btree_map<uint32_t, uint16_t> counterMap;
 	uint32_t buyOffersToSend = std::min<uint32_t>(buyOffers.size(), 810 + std::max<int32_t>(0, 810 - sellOffers.size()));
 	uint32_t sellOffersToSend = std::min<uint32_t>(sellOffers.size(), 810 + std::max<int32_t>(0, 810 - buyOffers.size()));
 
@@ -4712,7 +4713,7 @@ void ProtocolGame::sendForgingData() {
 	NetworkMessage msg;
 	msg.addByte(0x86);
 
-	std::map<uint8_t, uint16_t> tierCorePrices;
+	phmap::btree_map<uint8_t, uint16_t> tierCorePrices;
 
 	const auto &classifications = g_game().getItemsClassifications();
 	msg.addByte(classifications.size());
@@ -4767,9 +4768,9 @@ void ProtocolGame::sendForgingData() {
 
 void ProtocolGame::sendOpenForge() {
 	// We will use it when sending the bytes to send the item information to the client
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> donorTierItemMap;
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> receiveTierItemMap;
+	phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint16_t>> fusionItemsMap;
+	phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint16_t>> donorTierItemMap;
+	phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint16_t>> receiveTierItemMap;
 
 	/*
 	 *Start - Parsing items informations
@@ -6757,7 +6758,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot) {
 			}
 		});
 	} else if (slot->state == PreyDataState_ListSelection) {
-		const std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
+		const phmap::btree_map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto &mType) {
 			msg.add<uint16_t>(mType.first);
@@ -7406,7 +7407,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
 		});
 	} else if (slot->state == PreyTaskDataState_ListSelection) {
 		const Player* user = player;
-		const std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
+		const phmap::btree_map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg, user](auto &mType) {
 			msg.add<uint16_t>(mType.first);
@@ -7590,7 +7591,7 @@ void ProtocolGame::sendFeatures() {
 		return;
 	}
 
-	std::map<GameFeature_t, bool> features;
+	phmap::btree_map<GameFeature_t, bool> features;
 	// Place for non-standard OTCv8 features
 	features[GameFeature_t::ExtendedOpcode] = true;
 
@@ -7617,7 +7618,7 @@ void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg) {
 	addGameTask(&Game::playerRequestInventoryImbuements, player->getID(), isTrackerOpen);
 }
 
-void ProtocolGame::sendInventoryImbuements(const std::map<Slots_t, Item*> items) {
+void ProtocolGame::sendInventoryImbuements(const phmap::btree_map<Slots_t, Item*> items) {
 	if (oldProtocol) {
 		return;
 	}
@@ -7963,8 +7964,8 @@ void ProtocolGame::sendUpdateCreature(const Creature* creature) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::getForgeInfoMap(const Item* item, std::map<uint16_t, std::map<uint8_t, uint16_t>> &itemsMap) const {
-	std::map<uint8_t, uint16_t> itemInfo;
+void ProtocolGame::getForgeInfoMap(const Item* item, phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint16_t>> &itemsMap) const {
+	phmap::btree_map<uint8_t, uint16_t> itemInfo;
 	itemInfo.insert({ item->getTier(), item->getItemCount() });
 	auto [first, inserted] = itemsMap.try_emplace(item->getID(), itemInfo);
 	if (!inserted) {
@@ -8047,15 +8048,15 @@ void ProtocolGame::parseSendBosstiary() {
 	NetworkMessage msg;
 	msg.addByte(0x73);
 
-	std::map<uint32_t, std::string> mtype_list = g_ioBosstiary().getBosstiaryMap();
+	auto mtype_map = g_ioBosstiary().getBosstiaryMap();
 	auto bossesBuffer = msg.getBufferPosition();
 	uint16_t bossesCount = 0;
 	msg.skipBytes(2);
 
-	for (const auto &[bossid, name] : mtype_list) {
+	for (const auto &[bossid, name] : mtype_map) {
 		const MonsterType* mType = g_monsters().getMonsterType(name);
 		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-		auto killCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossid));
+		auto killCount = player->getBestiaryKillCount(bossid);
 		msg.add<uint32_t>(bossid);
 		msg.addByte(bossRace);
 		msg.add<uint32_t>(killCount);
@@ -8104,12 +8105,12 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.addByte(isSlotOneUnlocked ? 1 : 0);
 	msg.add<uint32_t>(isSlotOneUnlocked ? bossIdSlotOne : 0);
 	if (isSlotOneUnlocked && bossIdSlotOne != 0) {
-		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotOne);
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
 		if (mType) {
 			// Variables Boss Slot One
 			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
 			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
-			auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotOne);
+			auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotOne);
 			uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
 			uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
 			// Bytes Slot One
@@ -8126,11 +8127,11 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.add<uint32_t>(isSlotTwoUnlocked ? bossIdSlotTwo : slotTwoPoints);
 	if (isSlotTwoUnlocked && bossIdSlotTwo != 0) {
 		// Variables Boss Slot Two
-		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotTwo);
+		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
 		if (mType) {
 			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotTwo));
-			auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotTwo);
+			auto bossKillCount = player->getBestiaryKillCount((uint16_t)(bossIdSlotTwo));
+			auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotTwo);
 			uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
 			uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
 			// Bytes Slot Two
@@ -8192,7 +8193,38 @@ void ProtocolGame::parseBosstiarySlot(NetworkMessage &msg) {
 	addGameTask(&Game::playerBosstiarySlot, player->getID(), slotBossId, selectedBossId);
 }
 
-void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos) {
+void ProtocolGame::sendPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss) {
+	auto toSendMonstersSize = static_cast<uint16_t>(toSendMonsters.size());
+	msg.add<uint16_t>(toSendMonstersSize);
+	for (const auto &raceId : toSendMonsters) {
+		const MonsterType* mType = g_monsters().getMonsterTypeByRaceId(raceId, isBoss);
+		if (!mType) {
+			continue;
+		}
+
+		// Podium of tenacity only need raceId
+		if (!isBoss) {
+			msg.add<uint16_t>(raceId);
+			continue;
+		}
+
+		auto monsterOutfit = mType->info.outfit;
+		msg.add<uint16_t>(raceId);
+		msg.addString(mType->name);
+		msg.add<uint16_t>(monsterOutfit.lookType);
+		if (monsterOutfit.lookType != 0) {
+			msg.addByte(monsterOutfit.lookHead);
+			msg.addByte(monsterOutfit.lookBody);
+			msg.addByte(monsterOutfit.lookLegs);
+			msg.addByte(monsterOutfit.lookFeet);
+			msg.addByte(monsterOutfit.lookAddons);
+		} else {
+			msg.add<uint16_t>(monsterOutfit.lookTypeEx);
+		}
+	}
+}
+
+void ProtocolGame::sendMonsterPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos) {
 	if (!podium || oldProtocol) {
 		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
 		return;
@@ -8231,36 +8263,14 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &posi
 	}
 	msg.add<uint16_t>(0); // Size of an unknown list. (No ingame visual effect)
 
-	auto unlockedBosses = g_ioBosstiary().getBosstiaryFinished(player, 2);
-	auto unlockedBossesSize = static_cast<uint16_t>(unlockedBosses.size());
 	bool isBossPodium = podium->getID() == ITEM_PODIUM_OF_VIGOUR;
 	msg.addByte(isBossPodium ? 0x01 : 0x00); // Bosstiary or bestiary
 	if (isBossPodium) {
-		msg.add<uint16_t>(unlockedBossesSize);
-
-		for (const auto &boss : unlockedBosses) {
-			const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(boss);
-			if (!mType) {
-				continue;
-			}
-			const auto &bossName = mType->name;
-			auto bossOutfit = mType->info.outfit;
-
-			msg.add<uint16_t>(boss); // ID from boss unlocked
-			msg.addString(bossName); // Nome from boss unlocked
-			msg.add<uint16_t>(bossOutfit.lookType); // LookType from boss unlocked
-			if (bossOutfit.lookType != 0) {
-				msg.addByte(bossOutfit.lookHead); // LookHead from boss unlocked
-				msg.addByte(bossOutfit.lookBody); // LookBody from boss unlocked
-				msg.addByte(bossOutfit.lookLegs); // LookLegs from boss unlocked
-				msg.addByte(bossOutfit.lookFeet); // LookFeet from boss unlocked
-				msg.addByte(bossOutfit.lookAddons); // LookAddon from boss unlocked
-			} else {
-				msg.add<uint16_t>(bossOutfit.lookTypeEx); // LookTypeEx from boss unlocked
-			}
-		}
+		const auto &unlockedBosses = g_ioBosstiary().getBosstiaryFinished(player, 2);
+		sendPodiumDetails(msg, unlockedBosses, true);
 	} else {
-		msg.add<uint16_t>(0x00);
+		const auto &unlockedMonsters = g_iobestiary().getBestiaryFinished(player);
+		sendPodiumDetails(msg, unlockedMonsters, false);
 	}
 
 	msg.addPosition(position); // Position of the podium on the map
@@ -8273,20 +8283,21 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &posi
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::parseSetBossPodium(NetworkMessage &msg) const {
+void ProtocolGame::parseSetMonsterPodium(NetworkMessage &msg) const {
 	if (oldProtocol) {
 		return;
 	}
 
-	uint32_t bossRaceId = msg.get<uint32_t>();
+	// For some reason the cip sends uint32_t, but we use uint16_t, so let's just ignore that
+	uint16_t monsterRaceId = (uint16_t)msg.get<uint32_t>();
 	Position pos = msg.getPosition();
 	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
 	uint8_t direction = msg.getByte();
 	uint8_t podiumVisible = msg.getByte();
-	uint8_t bossVisible = msg.getByte();
+	uint8_t monsterVisible = msg.getByte();
 
-	g_game().playerSetBossPodium(player->getID(), bossRaceId, pos, stackpos, itemId, direction, podiumVisible, bossVisible);
+	g_game().playerSetMonsterPodium(player->getID(), monsterRaceId, pos, stackpos, itemId, direction, std::make_pair(podiumVisible, monsterVisible));
 }
 
 void ProtocolGame::sendBosstiaryCooldownTimer() {
@@ -8297,7 +8308,7 @@ void ProtocolGame::sendBosstiaryCooldownTimer() {
 	NetworkMessage msg;
 	msg.addByte(0xBD);
 
-	auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldown(player);
+	auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldownRaceId(player);
 	auto bossesOnTrackerSize = static_cast<uint16_t>(bossesOnTracker.size());
 	msg.add<uint16_t>(bossesOnTrackerSize); // Number of bosses on timer
 	for (const auto &bossRaceId : bossesOnTracker) {

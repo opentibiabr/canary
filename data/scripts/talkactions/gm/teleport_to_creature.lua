@@ -1,9 +1,12 @@
 local teleportToCreature = TalkAction("/goto")
 
 function teleportToCreature.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
-		return false
+		return true
 	end
 
 	local target = Creature(param)
@@ -12,7 +15,7 @@ function teleportToCreature.onSay(player, words, param)
 	else
 		player:sendCancelMessage("Creature not found.")
 	end
-	return false
+	return true
 end
 
 teleportToCreature:separator(" ")

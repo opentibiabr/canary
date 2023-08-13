@@ -381,7 +381,6 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target, bool aggre
 				const Creature* targetMaster = target->getMaster();
 
 				if ((!targetMaster || !targetMaster->getPlayer()) && attacker->getFaction() == FACTION_DEFAULT) {
-
 					if (!attackerMaster || !attackerMaster->getPlayer()) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 					}
@@ -915,8 +914,8 @@ void Combat::doChainEffect(const Position &origin, const Position &dest, uint8_t
 
 bool Combat::doCombatChain(Creature* caster, Creature* target, bool aggressive) const {
 	auto targets = std::vector<Creature*>();
-	auto targetSet = std::set<uint32_t>();
-	auto visitedChain = std::set<uint32_t>();
+	auto targetSet = phmap::btree_set<uint32_t>();
+	auto visitedChain = phmap::btree_set<uint32_t>();
 	if (target != nullptr) {
 		targets.push_back(target);
 		targetSet.insert(target->getID());
@@ -1220,7 +1219,7 @@ void Combat::doCombatHealth(Creature* caster, const Position &position, const Ar
 			}
 		}
 	}
-	auto origin = caster ? caster->getPosition() : Position();
+	const auto &origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatHealthFunc, &damage);
 }
 
@@ -1274,11 +1273,13 @@ void Combat::doCombatMana(Creature* caster, const Position &position, const Area
 			damage.secondary.value += (damage.secondary.value * (caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + damage.criticalDamage)) / 100;
 		}
 	}
-	CombatFunc(caster, caster->getPosition(), position, area, params, CombatManaFunc, &damage);
+	const auto &origin = caster ? caster->getPosition() : Position();
+	CombatFunc(caster, origin, position, area, params, CombatManaFunc, &damage);
 }
 
 void Combat::doCombatCondition(Creature* caster, const Position &position, const AreaCombat* area, const CombatParams &params) {
-	CombatFunc(caster, caster->getPosition(), position, area, params, CombatConditionFunc, nullptr);
+	const auto &origin = caster ? caster->getPosition() : Position();
+	CombatFunc(caster, origin, position, area, params, CombatConditionFunc, nullptr);
 }
 
 void Combat::doCombatCondition(Creature* caster, Creature* target, const CombatParams &params) {
@@ -1306,7 +1307,7 @@ void Combat::doCombatCondition(Creature* caster, Creature* target, const CombatP
 }
 
 void Combat::doCombatDispel(Creature* caster, const Position &position, const AreaCombat* area, const CombatParams &params) {
-	auto origin = caster ? caster->getPosition() : Position();
+	const auto &origin = caster ? caster->getPosition() : Position();
 	CombatFunc(caster, origin, position, area, params, CombatDispelFunc, nullptr);
 }
 
@@ -1378,7 +1379,7 @@ void Combat::setRuneSpellName(const std::string &value) {
 	runeSpellName = value;
 }
 
-void Combat::pickChainTargets(Creature* caster, std::vector<Creature*> &targets, std::set<uint32_t> &targetSet, std::set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive) {
+void Combat::pickChainTargets(Creature* caster, std::vector<Creature*> &targets, phmap::btree_set<uint32_t> &targetSet, phmap::btree_set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive) {
 	if (maxTargets == 0 || targets.size() > maxTargets) {
 		return;
 	}
@@ -1556,7 +1557,6 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage &damage, bool u
 			int32_t physDmg = std::round(defaultDmg * (1.0 - factor));
 			damage.primary.value = physDmg;
 			damage.secondary.value = elementDamage;
-
 		} else {
 			damage.primary.value = defaultDmg;
 			damage.secondary.type = COMBAT_NONE;

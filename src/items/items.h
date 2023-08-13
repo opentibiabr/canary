@@ -275,7 +275,7 @@ class ItemType {
 		uint16_t speed = 0;
 		uint16_t wareId = 0;
 		uint16_t bedPartOf = 0;
-		uint8_t stackSize = 100;
+		uint16_t m_transformOnUse = 0;
 
 		MagicEffectClasses magicEffect = CONST_ME_NONE;
 		Direction bedPartnerDir = DIRECTION_NONE;
@@ -286,7 +286,7 @@ class ItemType {
 		RaceType_t corpseType = RACE_NONE;
 		Fluids_t fluidSource = FLUID_NONE;
 		TileFlags_t floorChange = TILESTATE_NONE;
-		std::map<ImbuementTypes_t, uint16_t> imbuementTypes;
+		phmap::btree_map<ImbuementTypes_t, uint16_t> imbuementTypes;
 
 		uint8_t upgradeClassification = 0;
 		uint8_t alwaysOnTopOrder = 0;
@@ -294,6 +294,8 @@ class ItemType {
 		uint8_t lightColor = 0;
 		uint8_t shootRange = 1;
 		uint8_t imbuementSlot = 0;
+		uint8_t stackSize = 100;
+
 		int8_t hitChance = 0;
 
 		// 12.90

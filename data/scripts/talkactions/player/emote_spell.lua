@@ -1,9 +1,10 @@
+-- Usage talkaction: "!emote on" or "!emote off"
 local emoteSpell = TalkAction("!emote")
 
 function emoteSpell.onSay(player, words, param)
 	if param == "" then
 		player:sendCancelMessage("You need to specify on/off param.")
-		return false
+		return true
 	end
 	if param == "on" then
 		player:setStorageValue(STORAGEVALUE_EMOTE, 1)

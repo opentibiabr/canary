@@ -1,9 +1,12 @@
 local position = TalkAction("/pos", "!pos")
 
 function position.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	local param = string.gsub(param, "%s+", "")
 	local position = player:getPosition()
-	local tile = load("return "..param)()
+	local tile = load("return " .. param)()
 	local split = param:split(",")
 	if type(tile) == "table" and tile.x and tile.y and tile.z then
 		player:teleportTo(Position(tile.x, tile.y, tile.z))
@@ -13,7 +16,7 @@ function position.onSay(player, words, param)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your current position is: \z
 		" .. position.x .. ", " .. position.y .. ", " .. position.z .. ".")
 	end
-	return false
+	return true
 end
 
 position:separator(" ")

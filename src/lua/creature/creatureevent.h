@@ -94,7 +94,7 @@ class CreatureEvents final : public Scripts {
 
 	private:
 		// creature events
-		using CreatureEventMap = std::map<std::string, CreatureEvent>;
+		using CreatureEventMap = phmap::btree_map<std::string, CreatureEvent>;
 		CreatureEventMap creatureEvents;
 };
 

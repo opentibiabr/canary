@@ -198,6 +198,8 @@ bool ConfigManager::load() {
 	string[GLOBAL_SERVER_SAVE_TIME] = getGlobalString(L, "globalServerSaveTime", "06:00");
 	string[DATA_DIRECTORY] = getGlobalString(L, "dataPackDirectory", "data-otservbr-global");
 	string[CORE_DIRECTORY] = getGlobalString(L, "coreDirectory", "data");
+	boolean[DEVELOPMENT_MODE] = getGlobalBoolean(L, "developmentMode", true);
+
 	string[FORGE_FIENDISH_INTERVAL_TYPE] = getGlobalString(L, "forgeFiendishIntervalType", "hour");
 	string[FORGE_FIENDISH_INTERVAL_TIME] = getGlobalString(L, "forgeFiendishIntervalTime", "1");
 
@@ -323,7 +325,8 @@ bool ConfigManager::load() {
 	boolean[TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY] = getGlobalBoolean(L, "toggleGoldPouchQuickLootOnly", false);
 	boolean[TOGGLE_SERVER_IS_RETRO] = getGlobalBoolean(L, "toggleServerIsRetroPVP", false);
 	boolean[TOGGLE_TRAVELS_FREE] = getGlobalBoolean(L, "toggleTravelsFree", false);
-	boolean[DEVELOPMENT_MODE] = getGlobalBoolean(L, "developmentMode", true);
+	integer[BUY_AOL_COMMAND_FEE] = getGlobalNumber(L, "buyAolCommandFee", 0);
+	integer[BUY_BLESS_COMMAND_FEE] = getGlobalNumber(L, "buyBlessCommandFee", 0);
 
 	boolean[TOGGLE_HAZARDSYSTEM] = getGlobalBoolean(L, "toogleHazardSystem", true);
 	integer[HAZARD_CRITICAL_INTERVAL] = getGlobalNumber(L, "hazardCriticalInterval", 2000);

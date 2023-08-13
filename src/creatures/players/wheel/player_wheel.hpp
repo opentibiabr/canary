@@ -331,7 +331,7 @@ class PlayerWheel {
 		std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 
 		int32_t m_creaturesNearby = 0;
-		std::map<std::string, WheelSpellGrade_t> m_spellsSelected;
+		phmap::btree_map<std::string, WheelSpellGrade_t> m_spellsSelected;
 		std::vector<std::string> m_learnedSpellsSelected;
 };
 

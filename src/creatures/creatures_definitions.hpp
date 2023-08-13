@@ -1451,9 +1451,9 @@ struct HistoryMarketOffer {
 
 using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
-using StashItemList = std::map<uint16_t, uint32_t>;
+using StashItemList = phmap::btree_map<uint16_t, uint32_t>;
 
-using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
+using ItemsTierCountList = phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint32_t>>;
 /*
 	> ItemsTierCountList structure:
 	|- [itemID]
@@ -1639,8 +1639,8 @@ struct PartyAnalyzer {
 		uint64_t lootPrice = 0;
 		uint64_t supplyPrice = 0;
 
-		std::map<uint16_t, uint64_t> lootMap; // [itemID] = amount
-		std::map<uint16_t, uint64_t> supplyMap; // [itemID] = amount
+		phmap::btree_map<uint16_t, uint64_t> lootMap; // [itemID] = amount
+		phmap::btree_map<uint16_t, uint64_t> supplyMap; // [itemID] = amount
 };
 
 #endif // SRC_CREATURES_CREATURES_DEFINITIONS_HPP_

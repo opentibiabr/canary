@@ -31,9 +31,12 @@ local invalidTypes = {
 local looktype = TalkAction("/looktype")
 
 function looktype.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
-		return false
+		return true
 	end
 
 	local lookType = tonumber(param)
@@ -44,7 +47,7 @@ function looktype.onSay(player, words, param)
 	else
 		player:sendCancelMessage("A look type with that id does not exist.")
 	end
-	return false
+	return true
 end
 
 looktype:separator(" ")

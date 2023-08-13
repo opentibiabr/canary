@@ -1,12 +1,17 @@
+-- /addmoney playername, 100000
+
 local addMoney = TalkAction("/addmoney")
 
 function addMoney.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required")
 		-- Distro log
 		Spdlog.error("[addMoney.onSay] - Player name param not found")
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -16,7 +21,7 @@ function addMoney.onSay(player, words, param)
 		amount = tonumber(split[2])
 	end
 
-	-- Check if the coins is valid
+  -- Check if the coins is valid
 	if amount <= 0 or amount == nil then
 		player:sendCancelMessage("Invalid amount.")
 		return false

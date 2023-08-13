@@ -178,9 +178,9 @@ class Npc final : public Creature {
 
 		std::string strDescription;
 
-		std::map<uint32_t, uint16_t> playerInteractions;
+		phmap::btree_map<uint32_t, uint16_t> playerInteractions;
 
-		std::set<Player*> shopPlayerSet;
+		phmap::btree_set<Player*> shopPlayerSet;
 
 		NpcType* npcType;
 		SpawnNpc* spawnNpc = nullptr;

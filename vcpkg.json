@@ -4,8 +4,6 @@
   "dependencies": [
     "argon2",
     "asio",
-    "bext-di",
-    "eventpp",
     "pugixml",
     "spdlog",
     "curl",

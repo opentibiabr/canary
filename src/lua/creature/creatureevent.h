@@ -15,7 +15,6 @@
 #include "lua/scripts/scripts.h"
 
 class CreatureEvent;
-using CreatureEvent_ptr = std::unique_ptr<CreatureEvent>;
 
 class CreatureEvent final : public Script {
 	public:
@@ -41,7 +40,7 @@ class CreatureEvent final : public Script {
 		}
 
 		void clearEvent();
-		void copyEvent(const CreatureEvent* creatureEvent);
+		void copyEvent(const std::shared_ptr<CreatureEvent> &creatureEvent);
 
 		// scripting
 		bool executeOnLogin(Player* player) const;
@@ -83,15 +82,15 @@ class CreatureEvents final : public Scripts {
 		bool playerLogout(Player* player) const;
 		bool playerAdvance(Player* player, skills_t, uint32_t, uint32_t) const;
 
-		CreatureEvent* getEventByName(const std::string &name, bool forceLoaded = true);
+		std::shared_ptr<CreatureEvent> getEventByName(const std::string &name, bool forceLoaded = true);
 
-		bool registerLuaEvent(CreatureEvent* event);
+		bool registerLuaEvent(const std::shared_ptr<CreatureEvent> &event);
 		void removeInvalidEvents();
 		void clear();
 
 	private:
 		// creature events
-		using CreatureEventMap = phmap::btree_map<std::string, CreatureEvent>;
+		using CreatureEventMap = phmap::btree_map<std::string, std::shared_ptr<CreatureEvent>>;
 		CreatureEventMap creatureEvents;
 };
 

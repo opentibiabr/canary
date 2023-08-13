@@ -53,7 +53,7 @@ int CreatureFunctions::luaCreatureGetEvents(lua_State* L) {
 	lua_createtable(L, eventList.size(), 0);
 
 	int index = 0;
-	for (CreatureEvent* event : eventList) {
+	for (const auto &event : eventList) {
 		pushString(L, event->getName());
 		lua_rawseti(L, -2, ++index);
 	}

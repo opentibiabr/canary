@@ -82,7 +82,7 @@ class TalkActions final : public Scripts {
 		bool checkWord(Player* player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const;
 		TalkActionResult_t checkPlayerCanSayTalkAction(Player* player, SpeakClasses type, const std::string &words) const;
 
-		bool registerLuaEvent(TalkAction_ptr talkAction);
+		bool registerLuaEvent(const TalkAction_ptr &talkAction);
 		void clear();
 
 		const phmap::btree_map<std::string, std::shared_ptr<TalkAction>> &getTalkActionsMap() const {

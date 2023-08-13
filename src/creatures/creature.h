@@ -29,6 +29,7 @@ class Monster;
 class Npc;
 class Item;
 class Tile;
+class Zone;
 
 static constexpr int32_t EVENT_CREATURECOUNT = 10;
 static constexpr int32_t EVENT_CREATURE_THINK_INTERVAL = 1000;
@@ -242,6 +243,14 @@ class Creature : virtual public Thing {
 			}
 
 			return ZONE_NORMAL;
+		}
+
+		std::shared_ptr<Zone> getZone() {
+			if (getTile()) {
+				return tile->getZone();
+			}
+
+			return nullptr;
 		}
 
 		// walk functions

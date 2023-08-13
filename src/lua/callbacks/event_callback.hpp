@@ -22,6 +22,7 @@ class Tile;
 class Party;
 class ItemType;
 class Monster;
+class Zone;
 
 /**
  * @class EventCallback
@@ -125,6 +126,10 @@ class EventCallback : public Script {
 
 		// Npc
 		void npcOnSpawn(Npc* npc, const Position &position) const;
+
+		// Zone
+		bool zoneOnCreatureEnter(std::shared_ptr<Zone> zone, Creature* creature) const;
+		bool zoneOnCreatureLeave(std::shared_ptr<Zone> zone, Creature* creature) const;
 
 		/**
 		 * @note here end the lua binder functions }

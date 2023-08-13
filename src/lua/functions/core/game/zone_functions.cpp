@@ -1,0 +1,251 @@
+#include "pch.hpp"
+#include "lua/functions/core/game/zone_functions.hpp"
+#include "game/zones/zone.hpp"
+#include "game/game.h"
+
+// Zone
+int ZoneFunctions::luaZoneCreate(lua_State* L) {
+	// Zone(name)
+	auto name = getString(L, 2);
+	auto zone = Zone::getZone(name);
+	if (!zone) {
+		zone = Zone::addZone(name);
+	}
+	pushUserdata<Zone>(L, zone);
+	setMetatable(L, -1, "Zone");
+	return 1;
+}
+
+int ZoneFunctions::luaZoneCompare(lua_State* L) {
+	auto zone1 = getUserdataShared<Zone>(L, 1);
+	auto zone2 = getUserdataShared<Zone>(L, 2);
+	if (!zone1) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	if (!zone2) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushBoolean(L, zone1->getName() == zone2->getName());
+	return 1;
+}
+
+int ZoneFunctions::luaZoneGetName(lua_State* L) {
+	// Zone:getName()
+	auto zone = getUserdataShared<Zone>(L, 1);
+	if (!zone) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	pushString(L, zone->getName());
+	return 1;
+}
+
+int ZoneFunctions::luaZoneAddArea(lua_State* L) {
+	// Zone:addArea(area, fromPos, toPos)
+	auto zone = getUserdataShared<Zone>(L, 1);
+	if (!zone) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	auto fromPos = getPosition(L, 2);
+	auto toPos = getPosition(L, 3);
+	auto area = Area(fromPos, toPos);
+	zone->addArea(area);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int ZoneFunctions::luaZoneGetPositions(lua_State* L) {
+	// Zone:getPositions()
+	auto zone = getUserdataShared<Zone>(L, 1);
+	if (!zone) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	auto positions = zone->getPositions();
+	lua_createtable(L, static_cast<int>(positions.size()), 0);
+
+	int index = 0;
+	for (auto pos : positions) {
+		index++;
+		pushPosition(L, pos);
+		lua_rawseti(L, -2, index);
+	}
+	return 1;
+}
+
+int ZoneFunctions::luaZoneGetTiles(lua_State* L) {
+	// Zone:getTiles()
+	auto zone = getUserdataShared<Zone>(L, 1);
+	if (!zone) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	auto tiles = zone->getTiles();
+	lua_createtable(L, static_cast<int>(tiles.size()), 0);
+
+	int index = 0;
+	for (auto tile : tiles) {
+		index++;
+		pushUserdata<Tile>(L, tile);
+		setMetatable(L, -1, "Tile");
+		lua_rawseti(L, -2, index);
+	}
+	return 1;
+}
+
+int ZoneFunctions::luaZoneGetCreatures(lua_State* L) {
+	// Zone:getCreatures()
+	auto zone = getUserdataShared<Zone>(L, 1);
+	if (!zone) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	auto creatures = zone->getCreatures();
+	lua_createtable(L, static_cast<int>(creatures.size()), 0);
+
+	int index = 0;
+	for (auto creature : creatures) {
+		index++;
+		pushUserdata<Creature>(L, creature);
+		setMetatable(L, -1, "Creature");
+		lua_rawseti(L, -2, index);
+	}
+	return 1;
+}
+
+int ZoneFunctions::luaZoneGetPlayers(lua_State* L) {
+	// Zone:getPlayers()
+	auto zone = getUserdataShared<Zone>(L, 1);
+	if (!zone) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	auto players = zone->getPlayers();
+	lua_createtable(L, static_cast<int>(players.size()), 0);
+
+	int index = 0;
+	for (auto player : players) {
+		index++;
+		pushUserdata<Player>(L, player);
+		setMetatable(L, -1, "Player");
+		lua_rawseti(L, -2, index);
+	}
+	return 1;
+}
+
+int ZoneFunctions::luaZoneGetMonsters(lua_State* L) {
+	// Zone:getMonsters()
+	auto zone = getUserdataShared<Zone>(L, 1);
+	if (!zone) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	auto monsters = zone->getMonsters();
+	lua_createtable(L, static_cast<int>(monsters.size()), 0);
+
+	int index = 0;
+	for (auto monster : monsters) {
+		index++;
+		pushUserdata<Monster>(L, monster);
+		setMetatable(L, -1, "Monster");
+		lua_rawseti(L, -2, index);
+	}
+	return 1;
+}
+
+int ZoneFunctions::luaZoneGetNpcs(lua_State* L) {
+	// Zone:getNpcs()
+	auto zone = getUserdataShared<Zone>(L, 1);
+	if (!zone) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	auto npcs = zone->getNpcs();
+	lua_createtable(L, static_cast<int>(npcs.size()), 0);
+
+	int index = 0;
+	for (auto npc : npcs) {
+		index++;
+		pushUserdata<Npc>(L, npc);
+		setMetatable(L, -1, "Npc");
+		lua_rawseti(L, -2, index);
+	}
+	return 1;
+}
+
+int ZoneFunctions::luaZoneGetItems(lua_State* L) {
+	// Zone:getItems()
+	auto zone = getUserdataShared<Zone>(L, 1);
+	if (!zone) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	auto items = zone->getItems();
+	lua_createtable(L, static_cast<int>(items.size()), 0);
+
+	int index = 0;
+	for (auto item : items) {
+		index++;
+		pushUserdata<Item>(L, item);
+		setMetatable(L, -1, "Item");
+		lua_rawseti(L, -2, index);
+	}
+	return 1;
+}
+
+int ZoneFunctions::luaZoneClearMonsters(lua_State* L) {
+	// Zone:clearMonsters()
+	auto zone = getUserdataShared<Zone>(L, 1);
+	if (!zone) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	zone->clearMonsters();
+	return 0;
+}
+
+int ZoneFunctions::luaZoneRegister(lua_State* L) {
+	// Zone:register()
+	auto zone = getUserdataShared<Zone>(L, 1);
+	if (!zone) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	pushBoolean(L, true);
+	return 1;
+}
+
+int ZoneFunctions::luaZoneGetByPosition(lua_State* L) {
+	// Zone.getByPosition(pos)
+	auto pos = getPosition(L, 1);
+	auto tile = g_game().map.getTile(pos);
+	if (!tile) {
+		lua_pushnil(L);
+		return 1;
+	}
+	auto zone = tile->getZone();
+	if (!zone) {
+		lua_pushnil(L);
+		return 1;
+	}
+	pushUserdata<Zone>(L, zone);
+	setMetatable(L, -1, "Zone");
+	return 1;
+}

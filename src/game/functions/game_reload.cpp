@@ -17,6 +17,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/modules/modules.h"
 #include "lua/scripts/scripts.h"
+#include "game/zones/zone.hpp"
 
 GameReload::GameReload() = default;
 GameReload::~GameReload() = default;
@@ -151,6 +152,7 @@ bool GameReload::reloadScripts() const {
 		return false;
 	}
 	g_scripts().clearAllScripts();
+	Zone::clearZones();
 
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	if (g_scripts().loadScripts(datapackFolder + "/scripts", false, true) && g_scripts().loadScripts(coreFolder + "/scripts", false, true)) {

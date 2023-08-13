@@ -21,6 +21,7 @@ class TrashHolder;
 class Mailbox;
 class MagicField;
 class BedItem;
+class Zone;
 
 using CreatureVector = std::vector<Creature*>;
 using ItemVector = std::vector<Item*>;
@@ -180,6 +181,8 @@ class Tile : public Cylinder {
 			return hasFlag(TILESTATE_HAZARD);
 		}
 
+		std::shared_ptr<Zone> getZone();
+
 		ZoneType_t getZoneType() const {
 			if (hasFlag(TILESTATE_PROTECTIONZONE)) {
 				return ZONE_PROTECTION;
@@ -264,6 +267,7 @@ class Tile : public Cylinder {
 		Item* ground = nullptr;
 		Position tilePos;
 		uint32_t flags = 0;
+		std::shared_ptr<Zone> zone;
 };
 
 // Used for walkable tiles, where there is high likeliness of

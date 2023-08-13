@@ -15,6 +15,7 @@
 #include "creatures/players/imbuements/imbuements.h"
 #include "creatures/players/player.h"
 #include "creatures/players/grouping/guild.h"
+#include "game/zones/zone.hpp"
 #include "game/game.h"
 #include "game/movement/teleport.h"
 #include "items/weapons/weapons.h"
@@ -24,6 +25,7 @@
 #include "lua/functions/items/item_functions.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/functions/map/map_functions.hpp"
+#include "lua/functions/core/game/zone_functions.hpp"
 
 class LuaScriptInterface;
 
@@ -39,6 +41,7 @@ void LuaFunctionsLoader::load(lua_State* L) {
 	EventFunctions::init(L);
 	ItemFunctions::init(L);
 	MapFunctions::init(L);
+	ZoneFunctions::init(L);
 }
 
 std::string LuaFunctionsLoader::getErrorDesc(ErrorCode_t code) {
@@ -81,6 +84,8 @@ std::string LuaFunctionsLoader::getErrorDesc(ErrorCode_t code) {
 			return "Action not found";
 		case LUA_ERROR_TALK_ACTION_NOT_FOUND:
 			return "TalkAction not found";
+		case LUA_ERROR_ZONE_NOT_FOUND:
+			return "Zone not found";
 		default:
 			return "Bad error code";
 	}
@@ -568,6 +573,8 @@ void LuaFunctionsLoader::registerClass(lua_State* L, const std::string &classNam
 		lua_pushnumber(L, LuaData_Tile);
 	} else if (className == "Guild") {
 		lua_pushnumber(L, LuaData_Guild);
+	} else if (className == "Zone") {
+		lua_pushnumber(L, LuaData_Zone);
 	} else {
 		lua_pushnumber(L, LuaData_Unknown);
 	}

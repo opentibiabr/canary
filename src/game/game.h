@@ -386,7 +386,7 @@ class Game {
 			return boostedCreature;
 		}
 
-		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY);
+		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
 		bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor);
 
 		void changeSpeed(Creature* creature, int32_t varSpeedDelta);

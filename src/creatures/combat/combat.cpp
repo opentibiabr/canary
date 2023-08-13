@@ -1021,8 +1021,8 @@ void Combat::CombatFunc(Creature* caster, const Position &origin, const Position
 		}
 	}
 
-	const int32_t rangeX = maxX + Map::maxViewportX;
-	const int32_t rangeY = maxY + Map::maxViewportY;
+	const int32_t rangeX = maxX + MAP_MAX_VIEW_PORT_X;
+	const int32_t rangeY = maxY + MAP_MAX_VIEW_PORT_Y;
 	g_game().map.getSpectators(spectators, pos, true, true, rangeX, rangeX, rangeY, rangeY);
 
 	int affected = 0;

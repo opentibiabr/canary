@@ -295,6 +295,7 @@ PRIVATE
 	lua/scripts/luascript.cpp
 	lua/scripts/script_environment.cpp
 	lua/scripts/scripts.cpp
+	map/utils/qtreenode.cpp
 	map/house/house.cpp
 	map/house/housetile.cpp
 	map/map.cpp
@@ -314,7 +315,6 @@ PRIVATE
 	server/network/webhook/webhook.cpp
 	server/server.cpp
 	server/signals.cpp
-	utils/qtreenode.cpp
 	utils/tools.cpp
 	utils/wildcardtree.cpp
 	config/configmanager.cpp

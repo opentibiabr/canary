@@ -10,6 +10,9 @@
 #ifndef SRC_MAP_MAP_H_
 #define SRC_MAP_MAP_H_
 
+#include "mapcache.h"
+#include "utils/astarnodes.h"
+
 #include "game/movement/position.h"
 #include "items/item.h"
 #include "items/tile.h"
@@ -17,7 +20,6 @@
 #include "map/house/house.h"
 #include "creatures/monsters/spawns/spawn_monster.h"
 #include "creatures/npcs/spawns/spawn_npc.h"
-#include "mapcache.h"
 
 class Creature;
 class Player;
@@ -26,38 +28,6 @@ class Tile;
 class Map;
 
 struct FindPathParams;
-struct AStarNode {
-		AStarNode* parent;
-		int_fast32_t f;
-		uint16_t x, y;
-};
-
-static constexpr int32_t MAX_NODES = 512;
-static constexpr int32_t MAP_NORMALWALKCOST = 10;
-static constexpr int32_t MAP_PREFERDIAGONALWALKCOST = 14;
-static constexpr int32_t MAP_DIAGONALWALKCOST = 25;
-
-class AStarNodes {
-	public:
-		AStarNodes(uint32_t x, uint32_t y);
-
-		AStarNode* createOpenNode(AStarNode* parent, uint32_t x, uint32_t y, int_fast32_t f);
-		AStarNode* getBestNode();
-		void closeNode(AStarNode* node);
-		void openNode(AStarNode* node);
-		int_fast32_t getClosedNodes() const;
-		AStarNode* getNodeByPosition(uint32_t x, uint32_t y);
-
-		static int_fast32_t getMapWalkCost(AStarNode* node, const Position &neighborPos, bool preferDiagonal = false);
-		static int_fast32_t getTileWalkCost(const Creature &creature, const Tile* tile);
-
-	private:
-		AStarNode nodes[MAX_NODES];
-		bool openNodes[MAX_NODES];
-		phmap::flat_hash_map<uint32_t, AStarNode*> nodeTable;
-		size_t curNode;
-		int_fast32_t closedNodes;
-};
 
 using SpectatorCache = phmap::btree_map<Position, SpectatorHashSet>;
 
@@ -80,11 +50,6 @@ class FrozenPathingConditionCall;
  */
 class Map {
 	public:
-		static constexpr int32_t maxClientViewportX = 8;
-		static constexpr int32_t maxClientViewportY = 6;
-		static constexpr int32_t maxViewportX = maxClientViewportX + 3; // min value: maxClientViewportX + 1
-		static constexpr int32_t maxViewportY = maxClientViewportY + 5; // min value: maxClientViewportY + 1
-
 		uint32_t clean() const;
 
 		/**
@@ -160,7 +125,7 @@ class Map {
 		 *	\param checkLineOfSight checks if there is any blocking objects in the way
 		 *	\returns The result if you can throw there or not
 		 */
-		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY);
+		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
 
 		/**
 		 * Checks if path is clear from fromPos to toPos

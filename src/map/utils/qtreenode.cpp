@@ -55,7 +55,7 @@ QTreeLeafNode<T>* QTreeNode<T>::createLeaf(uint32_t x, uint32_t y, uint32_t leve
 template <typename T>
 QTreeLeafNode<T>* QTreeNode<T>::getBestLeaf(uint32_t x, uint32_t y, uint32_t level) {
 	QTreeLeafNode<T>::newLeaf = false;
-	auto leaf = createLeaf<T>(x, y, 15);
+	auto leaf = createLeaf(x, y, 15);
 
 	if (QTreeLeafNode<T>::newLeaf) {
 		// update north

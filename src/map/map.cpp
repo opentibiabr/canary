@@ -412,12 +412,12 @@ void Map::getSpectators(SpectatorHashSet &spectators, const Position &centerPos,
 	bool foundCache = false;
 	bool cacheResult = false;
 
-	minRangeX = (minRangeX == 0 ? -maxViewportX : -minRangeX);
-	maxRangeX = (maxRangeX == 0 ? maxViewportX : maxRangeX);
-	minRangeY = (minRangeY == 0 ? -maxViewportY : -minRangeY);
-	maxRangeY = (maxRangeY == 0 ? maxViewportY : maxRangeY);
+	minRangeX = (minRangeX == 0 ? -MAP_MAX_CLIENT_VIEW_PORT_X : -minRangeX);
+	maxRangeX = (maxRangeX == 0 ? MAP_MAX_CLIENT_VIEW_PORT_X : maxRangeX);
+	minRangeY = (minRangeY == 0 ? -MAP_MAX_CLIENT_VIEW_PORT_Y : -minRangeY);
+	maxRangeY = (maxRangeY == 0 ? MAP_MAX_CLIENT_VIEW_PORT_Y : maxRangeY);
 
-	if (minRangeX == -maxViewportX && maxRangeX == maxViewportX && minRangeY == -maxViewportY && maxRangeY == maxViewportY && multifloor) {
+	if (minRangeX == -MAP_MAX_CLIENT_VIEW_PORT_X && maxRangeX == MAP_MAX_CLIENT_VIEW_PORT_X && minRangeY == -MAP_MAX_CLIENT_VIEW_PORT_Y && maxRangeY == MAP_MAX_CLIENT_VIEW_PORT_Y && multifloor) {
 		if (onlyPlayers) {
 			auto it = playersSpectatorCache.find(centerPos);
 			if (it != playersSpectatorCache.end()) {
@@ -501,7 +501,7 @@ void Map::clearSpectatorCache() {
 	playersSpectatorCache.clear();
 }
 
-bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight /*= true*/, int32_t rangex /*= Map::maxClientViewportX*/, int32_t rangey /*= Map::maxClientViewportY*/) {
+bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight /*= true*/, int32_t rangex /*= MAP_MAX_CLIENT_VIEW_PORT_X*/, int32_t rangey /*= MAP_MAX_CLIENT_VIEW_PORT_Y*/) {
 	// z checks
 	// underground 8->15
 	// ground level and above 7->0

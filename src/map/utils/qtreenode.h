@@ -1,10 +1,7 @@
 #pragma once
 
 #include <pch.hpp>
-
-static constexpr int32_t FLOOR_BITS = 3;
-static constexpr int32_t FLOOR_SIZE = (1 << FLOOR_BITS);
-static constexpr int32_t FLOOR_MASK = (FLOOR_SIZE - 1);
+#include <map/map_const.h>
 
 class Creature;
 using CreatureVector = std::vector<Creature*>;
@@ -83,8 +80,7 @@ class QTreeLeafNode final : public QTreeNode<T> {
 		QTreeLeafNode* leafS = nullptr;
 		QTreeLeafNode* leafE = nullptr;
 
-		// MAP_MAX_LAYERS
-		std::unique_ptr<T> array[16] = {};
+		std::unique_ptr<T> array[MAP_MAX_LAYERS] = {};
 
 		CreatureVector creature_list;
 		CreatureVector player_list;

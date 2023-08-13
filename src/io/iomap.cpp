@@ -339,7 +339,7 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 				break;
 			}
 
-			const ItemType &iType = Item::items[id];
+			const auto &iType = Item::items[id];
 			if (tile->isHouse() && iType.isBed())
 				continue;
 

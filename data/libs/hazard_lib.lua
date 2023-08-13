@@ -15,37 +15,35 @@ function Hazard.new(prototype)
 	instance.dodge = prototype.dodge
 	instance.damageBoost = prototype.damageBoost
 
+	instance.zone = Zone(instance.name)
+	instance.zone:addArea(instance.from, instance.to)
+
 	setmetatable(instance, { __index = Hazard })
 
-	Hazard.areas[instance.name] = instance
 	return instance
 end
 
-function Hazard.createAreas()
-	for _, area in pairs(Hazard.areas) do
-		Game.createHazardArea(area.from, area.to)
-	end
-end
-
-function Hazard.getPlayerCurrentLevel(self, player)
+function Hazard:getPlayerCurrentLevel(player)
 	return player:getStorageValue(self.storageCurrent) < 0 and 0 or player:getStorageValue(self.storageCurrent)
 end
 
-function Hazard.setPlayerCurrentLevel(self, player, level)
+function Hazard:setPlayerCurrentLevel(player, level)
 	local max = self:getPlayerMaxLevel(player)
 	if level > max then
 		return false
 	end
 	player:setStorageValue(self.storageCurrent, level)
-	player:updateHazard()
+	if player:getZone() == self.zone then
+		player:setHazardSystemPoints(level)
+	end
 	return true
 end
 
-function Hazard.getPlayerMaxLevel(self, player)
+function Hazard:getPlayerMaxLevel(player)
 	return player:getStorageValue(self.storageMax) < 0 and 0 or player:getStorageValue(self.storageMax)
 end
 
-function Hazard.levelUp(self, player)
+function Hazard:levelUp(player)
 	local current = self:getPlayerCurrentLevel(player)
 	local max = self:getPlayerMaxLevel(player)
 	if current == max then
@@ -53,36 +51,54 @@ function Hazard.levelUp(self, player)
 	end
 end
 
-function Hazard.setPlayerMaxLevel(self, player, level)
+function Hazard:setPlayerMaxLevel(player, level)
 	if level > self.maxLevel then
 		level = self.maxLevel
 	end
 	player:setStorageValue(self.storageMax, level)
 end
 
-function Hazard.refresh(self, player)
-	if player:getPosition():isInArea(self) then
-		player:setHazardSystemPoints(self:getPlayerCurrentLevel(player))
-	else
-		player:setHazardSystemPoints(0)
+function Hazard:isInZone(position)
+	local zone = position:getZone()
+	if not zone then return false end
+	local hazard = Hazard.getByName(zone:getName())
+	if not hazard then return false end
+	return hazard == self
+end
+
+function Hazard:register()
+	if not configManager.getBoolean(configKeys.TOGGLE_HAZARDSYSTEM) then
+		return
 	end
+
+	local onEnter = EventCallback()
+	local onLeave = EventCallback()
+
+	function onEnter.zoneOnCreatureEnter(zone, creature)
+		if zone ~= self.zone then return true end
+		local player = creature:getPlayer()
+		if not player then return true end
+		player:setHazardSystemPoints(self:getPlayerCurrentLevel(player))
+		return true
+	end
+
+	function onLeave.zoneOnCreatureLeave(zone, creature)
+		if zone ~= self.zone then return true end
+		local player = creature:getPlayer()
+		if not player then return true end
+		player:setHazardSystemPoints(0)
+		return true
+	end
+
+	onEnter:register()
+	onLeave:register()
+
+	Hazard.areas[self.name] = self
+	self.zone:register()
 end
 
 function Hazard.getByName(name)
 	return Hazard.areas[name]
-end
-
-function Position.getHazardArea(self)
-	for _, area in pairs(Hazard.areas) do
-		if self.x >= area.from.x and self.y >= area.from.y and self.z >= area.from.z and self.x <= area.to.x and self.y <= area.to.y and self.z <= area.to.z then
-			return area
-		end
-	end
-	return nil
-end
-
-function Position.isInArea(self, area)
-	return self.x >= area.from.x and self.y >= area.from.y and self.z >= area.from.z and self.x <= area.to.x and self.y <= area.to.y and self.z <= area.to.z
 end
 
 if not HazardMonster then
@@ -95,10 +111,11 @@ function HazardMonster.onSpawn(monster, position)
 		return false
 	end
 
-	local tile = Tile(position)
-	if tile and tile:isHazard() then
+	local zone = position:getZone()
+	if not zone then return true end
+	local hazard = Hazard.getByName(zone:getName())
+	if hazard then
 		monster:hazard(true)
-		local hazard = position:getHazardArea()
 		if hazard then
 			monster:hazardCrit(hazard.crit)
 			monster:hazardDodge(hazard.dodge)

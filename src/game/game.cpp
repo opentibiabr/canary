@@ -9847,20 +9847,6 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 	}
 }
 
-bool Game::createHazardArea(const Position &positionFrom, const Position &positionTo) {
-	for (int32_t x = positionFrom.x; x <= positionTo.x; ++x) {
-		for (int32_t y = positionFrom.y; y <= positionTo.y; ++y) {
-			for (int32_t z = positionFrom.z; z <= positionTo.z; ++z) {
-				Tile* tile = map.getTile(Position(x, y, z));
-				if (tile) {
-					tile->setHazard(true);
-				}
-			}
-		}
-	}
-	return true;
-}
-
 bool Game::tryRetrieveStashItems(Player* player, Item* item) {
 	return internalCollectLootItems(player, item, OBJECTCATEGORY_STASHRETRIEVE) == RETURNVALUE_NOERROR;
 }

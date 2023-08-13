@@ -16,7 +16,6 @@ static constexpr int8_t MAP_MAX_LAYERS = 16;
 static constexpr int8_t MAP_INIT_SURFACE_LAYER = 7; // (MAP_MAX_LAYERS / 2) -1
 static constexpr int8_t MAP_LAYER_VIEW_LIMIT = 2;
 
-
 class Map;
 class BasicItem;
 class BasicTile;

@@ -17,7 +17,6 @@
 #include <game/game.h>
 #include <creatures/monsters/monster.h>
 
-
 bool Map::load(const std::string &identifier, const Position &pos, bool unload) {
 	try {
 		IOMap loader;

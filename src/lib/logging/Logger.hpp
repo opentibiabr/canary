@@ -19,34 +19,61 @@ class Logger {
 		// Ensures that we don't accidentally copy it
 		virtual Logger &operator=(const Logger &) = delete;
 
+		virtual void setLevel(const std::string &name) = 0;
+		[[nodiscard]] virtual std::string getLevel() const = 0;
+
 		template <typename... Args>
 		void trace(const std::string &format, Args &&... args) {
-			_trace(_format(format, args...));
+			trace(_format(format, args...));
+		}
+
+		void trace(const std::string &msg) {
+			_trace(msg);
 		}
 
 		template <typename... Args>
 		void debug(const std::string &format, Args &&... args) {
-			_debug(_format(format, args...));
+			debug(_format(format, args...));
+		}
+
+		void debug(const std::string &msg) {
+			_debug(msg);
 		}
 
 		template <typename... Args>
 		void info(const std::string &format, Args &&... args) {
-			_info(_format(format, args...));
+			info(_format(format, args...));
+		}
+
+		void info(const std::string &msg) {
+			_info(msg);
 		}
 
 		template <typename... Args>
 		void warn(auto &format, Args &&... args) {
-			_warn(_format(format, args...));
+			warn(_format(format, args...));
+		}
+
+		void warn(const std::string &msg) {
+			_warn(msg);
 		}
 
 		template <typename... Args>
 		void error(const std::string &format, Args &&... args) {
-			_error(_format(format, args...));
+			error(_format(format, args...));
+		}
+
+		void error(const std::string &msg) {
+			_error(msg);
 		}
 
 		template <typename... Args>
 		void critical(const std::string &format, Args &&... args) {
-			_critical(_format(format, args...));
+			critical(_format(format, args...));
+		}
+
+		void critical(const std::string &msg) {
+			_critical(msg);
 		}
 
 	private:

@@ -24,7 +24,7 @@ function playersOnline.onSay(player, words, param)
 	end
 
 	player:popupFYI("~ Players Online ~\n\n" .. listPlayers)
-	return false
+	return true
 end
 
 playersOnline:groupType("normal")

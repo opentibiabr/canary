@@ -54,6 +54,7 @@
     <ClInclude Include="..\src\enums\item_attribute.hpp" />
     <ClInclude Include="..\src\game\functions\game_reload.hpp" />
     <ClInclude Include="..\src\game\game.h" />
+    <ClInclude Include="..\src\game\bank\bank.hpp" />
     <ClInclude Include="..\src\game\game_definitions.hpp" />
     <ClInclude Include="..\src\game\movement\position.h" />
     <ClInclude Include="..\src\game\movement\teleport.h" />
@@ -94,6 +95,12 @@
     <ClInclude Include="..\src\items\tile.h" />
     <ClInclude Include="..\src\items\trashholder.h" />
     <ClInclude Include="..\src\items\weapons\weapons.h" />
+    <ClInclude Include="..\src\lib\di\container.hpp" />
+    <ClInclude Include="..\src\lib\logging\Logger.hpp" />
+    <ClInclude Include="..\src\lib\logging\LogWithSpdLog.hpp" />
+    <ClInclude Include="..\src\lib\messaging\command.hpp" />
+    <ClInclude Include="..\src\lib\messaging\event.hpp" />
+    <ClInclude Include="..\src\lib\messaging\message.hpp" />
     <ClInclude Include="..\src\lua\callbacks\creaturecallback.h" />
     <ClInclude Include="..\src\lua\callbacks\event_callback.hpp" />
     <ClInclude Include="..\src\lua\callbacks\events_callbacks.hpp" />
@@ -108,6 +115,7 @@
     <ClInclude Include="..\src\lua\functions\core\game\core_game_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\game_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\global_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\core\game\bank_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\lua_enums.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\modal_window_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\bit_functions.hpp" />
@@ -226,6 +234,7 @@
     <ClCompile Include="..\src\database\databasetasks.cpp" />
     <ClCompile Include="..\src\game\functions\game_reload.cpp" />
     <ClCompile Include="..\src\game\game.cpp" />
+    <ClCompile Include="..\src\game\bank\bank.cpp" />
     <ClCompile Include="..\src\game\movement\position.cpp" />
     <ClCompile Include="..\src\game\movement\teleport.cpp" />
     <ClCompile Include="..\src\game\scheduling\events_scheduler.cpp" />
@@ -262,6 +271,7 @@
     <ClCompile Include="..\src\items\tile.cpp" />
     <ClCompile Include="..\src\items\trashholder.cpp" />
     <ClCompile Include="..\src\items\weapons\weapons.cpp" />
+    <ClCompile Include="..\src\lib\logging\LogWithSpdLog.cpp" />
     <ClCompile Include="..\src\lua\callbacks\creaturecallback.cpp" />
     <ClCompile Include="..\src\lua\callbacks\event_callback.cpp" />
     <ClCompile Include="..\src\lua\callbacks\events_callbacks.cpp" />
@@ -274,6 +284,7 @@
     <ClCompile Include="..\src\lua\functions\core\game\config_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\game_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\global_functions.cpp" />
+    <ClCompile Include="..\src\lua\functions\core\game\bank_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\lua_enums.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\modal_window_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\bit_functions.cpp" />

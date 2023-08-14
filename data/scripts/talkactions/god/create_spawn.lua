@@ -1,9 +1,12 @@
 local createMonster = TalkAction("/spawn")
 
 function createMonster.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
-		return false
+		return true
 	end
 
 	local spawn = Spawn()
@@ -20,7 +23,7 @@ function createMonster.onSay(player, words, param)
 	spawn:executeSpawn()
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have spawned " .. parameter[1] .. ".")
-	return false
+	return true
 end
 
 createMonster:separator(" ")

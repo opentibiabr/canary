@@ -397,8 +397,8 @@ phmap::btree_map<uint16_t, uint32_t> IOBestiary::getBestiaryKillCountByMonsterID
 	return raceMonsters;
 }
 
-std::list<uint16_t> IOBestiary::getBestiaryFinished(Player* player) const {
-	std::list<uint16_t> finishedMonsters = {};
+std::vector<uint16_t> IOBestiary::getBestiaryFinished(Player* player) const {
+	std::vector<uint16_t> finishedMonsters = {};
 	phmap::btree_map<uint16_t, std::string> besty_l = g_game().getBestiaryList();
 
 	for (auto nt : besty_l) {
@@ -406,7 +406,7 @@ std::list<uint16_t> IOBestiary::getBestiaryFinished(Player* player) const {
 		uint32_t thisKilled = player->getBestiaryKillCount(raceid);
 		const MonsterType* mtype = g_monsters().getMonsterType(nt.second);
 		if (mtype && thisKilled >= mtype->info.bestiaryToUnlock) {
-			finishedMonsters.push_front(raceid);
+			finishedMonsters.push_back(raceid);
 		}
 	}
 	return finishedMonsters;

@@ -1,4 +1,3 @@
-
 local PlayerFlags_t = {
 	["CannotUseCombat"] = CannotUseCombat,
 	["CannotAttackPlayer"] = CannotAttackPlayer,
@@ -48,7 +47,7 @@ local function sendValidKeys(player)
 		table.insert(flagsList, flagName)
 	end
 
-	local text = "Invalid flag. Valid flags are: ".. table.concat(flagsList, "\n")
+	local text = "Invalid flag. Valid flags are: " .. table.concat(flagsList, "\n")
 	player:showTextDialog(2019, text)
 end
 
@@ -75,7 +74,7 @@ end
 
 function Player.talkactionHasFlag(self, param, flagType)
 	if not HasValidTalkActionParams(self, param, "Usage: /hasflag <playerName>, <flagnumber or name>") then
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -84,13 +83,13 @@ function Player.talkactionHasFlag(self, param, flagType)
 	local flagValue = getFlagNumberOrName(flag)
 	if not flagValue then
 		sendValidKeys(self)
-		return false
+		return true
 	end
 
 	local targetPlayer = Player(playerName)
 	if not targetPlayer then
 		self:sendCancelMessage("Player " .. playerName .. " not found.")
-		return false
+		return true
 	end
 
 	if not targetPlayer:hasGroupFlag(flagValue) then
@@ -104,7 +103,7 @@ end
 
 function Player.talkactionSetFlag(self, param, flagType)
 	if not HasValidTalkActionParams(self, param, "Usage: /setflag <playerName>, <flagnumber or name>") then
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -113,29 +112,29 @@ function Player.talkactionSetFlag(self, param, flagType)
 	local flagValue = getFlagNumberOrName(flag)
 	if not flagValue then
 		sendValidKeys(self)
-		return false
+		return true
 	end
 
 	local targetPlayer = Player(playerName)
 	if not targetPlayer then
 		self:sendCancelMessage("Player " .. playerName .. " not found.")
-		return false
+		return true
 	end
 
 	if targetPlayer:hasFlag(flagValue) then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,"Player " .. playerName .. " already has flag " .. getFlagNameByType(flagValue) .. ".")
-		return false
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player " .. playerName .. " already has flag " .. getFlagNameByType(flagValue) .. ".")
+		return true
 	end
 
 	targetPlayer:setGroupFlag(flagValue)
-	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Flag " .. getFlagNameByType(flagValue)  .. " set for player " .. playerName .. ".")
-	Spdlog.info("[Player.talkactionSetFlag] Added flag " .. getFlagNameByType(flagValue) .. " to ".. targetPlayer:getName().. " character by " .. self:getName() .. ".")
+	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Flag " .. getFlagNameByType(flagValue) .. " set for player " .. playerName .. ".")
+	Spdlog.info("[Player.talkactionSetFlag] Added flag " .. getFlagNameByType(flagValue) .. " to " .. targetPlayer:getName() .. " character by " .. self:getName() .. ".")
 	return true
 end
 
 function Player.talkactionRemoveFlag(self, param, flagType)
 	if not HasValidTalkActionParams(self, param, "Usage: /removeflag <playerName>, <flagnumber or name>") then
-		return false
+		return true
 	end
 
 	local split = param:split(",")
@@ -144,52 +143,64 @@ function Player.talkactionRemoveFlag(self, param, flagType)
 	local flagValue = getFlagNumberOrName(flag)
 	if not flagValue then
 		sendValidKeys(self)
-		return false
+		return true
 	end
 
 	local targetPlayer = Player(playerName)
 	if not targetPlayer then
 		self:sendCancelMessage("Player " .. playerName .. " not found.")
-		return false
+		return true
 	end
 
 	if not targetPlayer:hasFlag(flagValue) then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player " .. playerName .. " not have flag " .. getFlagNameByType(flagValue) .. ".")
-		return false
+		return true
 	end
 
 	targetPlayer:removeGroupFlag(flagValue)
 	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Flag " .. getFlagNameByType(flagValue) .. " removed from player " .. playerName .. ".")
-	Spdlog.info("[Player.talkactionRemoveFlag] Removed flag " .. getFlagNameByType(flagValue) .. " from ".. targetPlayer:getName().. " character by " .. self:getName() .. ".")
+	Spdlog.info("[Player.talkactionRemoveFlag] Removed flag " .. getFlagNameByType(flagValue) .. " from " .. targetPlayer:getName() .. " character by " .. self:getName() .. ".")
 	return true
 end
 
-local flag = TalkAction("/hasflag")
+---------------- // ----------------
+local hasFlag = TalkAction("/hasflag")
 
-function flag.onSay(player, words, param)
+function hasFlag.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	return player:talkactionHasFlag(param)
 end
 
-flag:separator(" ")
-flag:groupType("god")
-flag:register()
+hasFlag:separator(" ")
+hasFlag:groupType("god")
+hasFlag:register()
 
-flag = TalkAction("/setflag")
+---------------- // ----------------
+local setFlag = TalkAction("/setflag")
 
-function flag.onSay(player, words, param)
+function setFlag.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	return player:talkactionSetFlag(param)
 end
 
-flag:separator(" ")
-flag:groupType("god")
-flag:register()
+setFlag:separator(" ")
+setFlag:groupType("god")
+setFlag:register()
 
-flag = TalkAction("/removeflag")
+---------------- // ----------------
+local removeFlag = TalkAction("/removeflag")
 
-function flag.onSay(player, words, param)
+function removeFlag.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	return player:talkactionRemoveFlag(param)
 end
 
-flag:separator(" ")
-flag:groupType("god")
-flag:register()
+removeFlag:separator(" ")
+removeFlag:groupType("god")
+removeFlag:register()

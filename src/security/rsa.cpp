@@ -156,7 +156,7 @@ uint16_t RSA::decodeLength(char*&pos) const {
 			default:
 				break;
 		}
-		std::memcpy(&length, buffer, sizeof(length)); // buffer é um array, então não precisa de .data()
+		std::memcpy(&length, buffer, sizeof(length));
 	}
 	return length;
 }

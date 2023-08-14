@@ -6192,21 +6192,11 @@ void Game::notifySpectators(const SpectatorHashSet &spectators, const Position &
 
 // Custom PvP System combat helpers
 void Game::applyPvPDamage(CombatDamage &damage, Player* attacker, Player* target) {
-	float pvpDamageReceivedMultiplier = target->vocation->pvpDamageReceivedMultiplier;
-	float pvpAttackerDealtMultiplier = attacker->vocation->pvpDamageDealtMultiplier;
-	float pvpLevelDifferenceDamageMultiplier = this->pvpLevelDifferenceDamageMultiplier(attacker, target);
+	float targetDamageReceivedMultiplier = target->vocation->pvpDamageReceivedMultiplier;
+	float attackerDamageDealtMultiplier = attacker->vocation->pvpDamageDealtMultiplier;
+	float levelDifferenceDamageMultiplier = this->pvpLevelDifferenceDamageMultiplier(attacker, target);
 
-	float pvpDamageMultiplier = pvpDamageReceivedMultiplier * pvpAttackerDealtMultiplier * pvpLevelDifferenceDamageMultiplier;
-
-	std::stringstream ss;
-
-	ss << "Initial damage: " << damage.primary.value << " (primary) " << damage.secondary.value << " (secondary). ";
-	ss << "pvpDamageReceivedMultiplier " << pvpDamageReceivedMultiplier << " ";
-	ss << "pvpAttackerDealtMultiplier " << pvpAttackerDealtMultiplier << " ";
-	ss << "pvpLevelDifferenceDamageMultiplier " << pvpLevelDifferenceDamageMultiplier << ".";
-	ss << " Total damage multiplier " << pvpDamageMultiplier;
-
-	attacker->sendTextMessage(MESSAGE_DAMAGE_DEALT, ss.str());
+	float pvpDamageMultiplier = targetDamageReceivedMultiplier * attackerDamageDealtMultiplier * levelDifferenceDamageMultiplier;
 
 	damage.primary.value = std::round(damage.primary.value * pvpDamageMultiplier);
 	damage.secondary.value = std::round(damage.secondary.value * pvpDamageMultiplier);

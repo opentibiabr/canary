@@ -79,7 +79,7 @@ bool Mailbox::sendItem(Item* item) const {
 		return false;
 	}
 
-	const Player* player = g_game().getPlayerByName(receiver);
+	Player* player = g_game().getPlayerByName(receiver, true);
 	std::string writer;
 	time_t date = time(0);
 	std::string text;
@@ -96,23 +96,12 @@ bool Mailbox::sendItem(Item* item) const {
 				newItem->setAttribute(ItemAttribute_t::DATE, date);
 				newItem->setAttribute(ItemAttribute_t::TEXT, text);
 			}
-			player->onReceiveMail();
-			return true;
-		}
-	} else {
-		Player tmpPlayer(nullptr);
-		if (!IOLoginData::loadPlayerByName(&tmpPlayer, receiver)) {
-			return false;
-		}
-
-		if (item && g_game().internalMoveItem(item->getParent(), tmpPlayer.getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
-			Item* newItem = g_game().transformItem(item, item->getID() + 1);
-			if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && writer != "") {
-				newItem->setAttribute(ItemAttribute_t::WRITER, writer);
-				newItem->setAttribute(ItemAttribute_t::DATE, date);
-				newItem->setAttribute(ItemAttribute_t::TEXT, text);
+			if (player->isOnline()) {
+				player->onReceiveMail();
+			} else {
+				IOLoginData::savePlayer(player);
+				delete player;
 			}
-			IOLoginData::savePlayer(&tmpPlayer);
 			return true;
 		}
 	}

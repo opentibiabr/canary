@@ -15,32 +15,39 @@ function addMoney.onSay(player, words, param)
 	end
 
 	local split = param:split(",")
-	local name = split[1]
-	local money = nil
+	local name = split[1]:trim()
+	local amount = nil
 	if split[2] then
-		money = tonumber(split[2])
+		amount = tonumber(split[2])
 	end
 
-	-- Check if player is online
-	local targetPlayer = Player(name)
-	if not targetPlayer then
-		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
+  -- Check if the coins is valid
+	if amount <= 0 or amount == nil then
+		player:sendCancelMessage("Invalid amount.")
+		return false
+	end
+
+	local normalizedName = Game.getNormalizedPlayerName(name)
+	if not normalizedName then
+		player:sendCancelMessage("A player with name " .. name .. " does not exist.")
+		return false
+	end
+	name = normalizedName
+
+	if not Bank.credit(name, amount) then
+		player:sendCancelMessage("Failed to add money to " .. name .. ".")
 		-- Distro log
-		Spdlog.error("[addMoney.onSay] - Player " .. string.titleCase(name) .. " is not online")
-		return true
+		Spdlog.error("[addMoney.onSay] - Failed to add money to player")
+		return false
 	end
 
-	-- Check if the coins is valid
-	if money <= 0 or money == nil then
-		player:sendCancelMessage("Invalid money count.")
-		return true
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull added ".. amount .." gold coins to ".. name ..".")
+	local targetPlayer = Player(name)
+	if targetPlayer then
+		targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added ".. amount .." gold coins to your character.")
 	end
-
-	targetPlayer:setBankBalance(targetPlayer:getBankBalance() + money)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Successful added %d gold coins for the %s player.", money, targetPlayer:getName()))
-	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s added %d gold coins to your character.", player:getName(), money))
 	-- Distro log
-	Spdlog.info("" .. player:getName() .. " added " .. money .. " gold coins to " .. targetPlayer:getName() .. " player")
+	Spdlog.info("".. player:getName() .." added ".. amount .." gold coins to ".. name .." player")
 	return true
 end
 

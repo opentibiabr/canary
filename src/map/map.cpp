@@ -154,7 +154,7 @@ Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 	if (z >= MAP_MAX_LAYERS)
 		return nullptr;
 
-	const auto &leaf = QTreeNode<Floor>::getLeafStatic<const QTreeLeafNode<Floor>*, const QTreeNode<Floor>*>(&root, x, y);
+	const auto leaf = getQTNode(x, y);
 	if (!leaf)
 		return cache.tryCreateTile(this, x, y, z) ? getTile(x, y, z) : nullptr;
 

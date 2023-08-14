@@ -75,7 +75,7 @@ class IOBestiary {
 		bool hasCharmUnlockedRuneBit(Charm* charm, int32_t input) const;
 
 		std::list<charmRune_t> getCharmUsedRuneBitAll(Player* player);
-		std::list<uint16_t> getBestiaryFinished(Player* player) const;
+		std::vector<uint16_t> getBestiaryFinished(Player* player) const;
 
 		charmRune_t getCharmFromTarget(Player* player, MonsterType* mtype);
 

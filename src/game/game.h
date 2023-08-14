@@ -115,13 +115,13 @@ class Game {
 
 		Npc* getNpcByID(uint32_t id);
 
-		Player* getPlayerByID(uint32_t id);
-
 		Creature* getCreatureByName(const std::string &s);
 
 		Npc* getNpcByName(const std::string &s);
 
-		Player* getPlayerByName(const std::string &s);
+		Player* getPlayerByID(uint32_t id, bool allowOffline = false);
+
+		Player* getPlayerByName(const std::string &s, bool allowOffline = false);
 
 		Player* getPlayerByGUID(const uint32_t &guid);
 
@@ -241,7 +241,7 @@ class Game {
 		void playerBrowseForgeHistory(uint32_t playerId, uint8_t page);
 
 		void playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selectedBossId);
-		void playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, uint8_t podiumVisible, uint8_t bossVisible);
+		void playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, const std::pair<uint8_t, uint8_t> &podiumAndMonsterVisible);
 		void playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId);
 
 		void playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen);
@@ -497,7 +497,8 @@ class Game {
 		void addMonster(Monster* npc);
 		void removeMonster(Monster* npc);
 
-		Guild* getGuild(uint32_t id) const;
+		Guild* getGuild(uint32_t id, bool allowOffline = false) const;
+		Guild* getGuildByName(const std::string &name, bool allowOffline = false) const;
 		void addGuild(Guild* guild);
 		void removeGuild(uint32_t guildId);
 		void decreaseBrowseFieldRef(const Position &pos);

@@ -52,9 +52,12 @@ local playerFunctions = {
 local attributes = TalkAction("/attr")
 
 function attributes.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
-		return false
+		return true
 	end
 
 	local position = player:getPosition()
@@ -62,43 +65,43 @@ function attributes.onSay(player, words, param)
 
 	local split = param:split(",")
 	local itemFunction, creatureFunction, playerFunction = itemFunctions[split[1]:lower()], creatureFunctions[split[1]:lower()], playerFunctions[split[1]:lower()]
-	if(itemFunction and itemFunction.isActive) then
+	if (itemFunction and itemFunction.isActive) then
 		local item = Tile(position):getTopVisibleThing(player)
-		if(not item or not item:isItem()) then
+		if (not item or not item:isItem()) then
 			player:sendCancelMessage("Item not found.")
-			return false
+			return true
 		end
-		if(itemFunction.targetFunction(item, split[2])) then
+		if (itemFunction.targetFunction(item, split[2])) then
 			position:sendMagicEffect(CONST_ME_MAGIC_GREEN)
 		else
 			player:sendCancelMessage("You cannot add that attribute to this item.")
 		end
-	elseif(creatureFunction and creatureFunction.isActive) then
+	elseif (creatureFunction and creatureFunction.isActive) then
 		local creature = Tile(position):getTopCreature()
-		if(not creature or not creature:isCreature()) then
+		if (not creature or not creature:isCreature()) then
 			player:sendCancelMessage("Creature not found.")
-			return false
+			return true
 		end
-		if(creatureFunction.targetFunction(creature, split[2])) then
+		if (creatureFunction.targetFunction(creature, split[2])) then
 			position:sendMagicEffect(CONST_ME_MAGIC_GREEN)
 		else
 			player:sendCancelMessage("You cannot add that attribute to this creature.")
 		end
-	elseif(playerFunction and playerFunction.isActive) then
+	elseif (playerFunction and playerFunction.isActive) then
 		local targetPlayer = Tile(position):getTopCreature()
-		if(not targetPlayer or not targetPlayer:getPlayer()) then
+		if (not targetPlayer or not targetPlayer:getPlayer()) then
 			player:sendCancelMessage("Player not found.")
-			return false
+			return true
 		end
-		if(playerFunction.targetFunction(targetPlayer, split[2])) then
+		if (playerFunction.targetFunction(targetPlayer, split[2])) then
 			position:sendMagicEffect(CONST_ME_MAGIC_GREEN)
 		else
 			player:sendCancelMessage("You cannot add that attribute to this player.")
 		end
 	else
-		player:sendCancelMessage("Unknow attribute.")
+		player:sendCancelMessage("Unknown attribute.")
 	end
-	return false
+	return true
 end
 
 attributes:separator(" ")

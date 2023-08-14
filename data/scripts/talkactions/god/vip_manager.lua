@@ -8,7 +8,7 @@ local config = {
 function vipGod.onSay(player, words, param)
 	if not configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
 		player:sendCancelMessage('Vip System are not enabled!')
-		return false
+		return true
 	end
 
 	-- create log
@@ -21,12 +21,12 @@ function vipGod.onSay(player, words, param)
 
 	if not action or not targetName then
 		player:sendTextMessage(MESSAGE_INFO_DESCR, 'Command invalid.\nUsage:\n/vip <action>, <name>, [, <value>]\n\nAvailable actions:\ncheck, adddays, removedays, remove')
-		return false
+		return true
 	end
 
 	if not target then
 		player:sendTextMessage(MESSAGE_INFO_DESCR, string.format('Player "%s" is not online or does not exist!', targetName))
-		return false
+		return true
 	end
 
 	local targetVipDays = target:getVipDays()
@@ -39,12 +39,12 @@ function vipGod.onSay(player, words, param)
 		local amount = tonumber(params[3])
 		if not amount or amount <= 0 then
 			player:sendCancelMessage('<value> has to be a numeric value.')
-			return false
+			return true
 		end
 
 		if amount < config.minDays or amount > config.maxDays then
 			player:sendTextMessage(MESSAGE_INFO_DESCR, string.format('You can only add %d to %d VIP days at a time.', config.minDays, config.maxDays))
-			return false
+			return true
 		end
 
 		target:addPremiumDays(amount)
@@ -56,7 +56,7 @@ function vipGod.onSay(player, words, param)
 		local amount = tonumber(params[3])
 		if not amount then
 			player:sendTextMessage(MESSAGE_INFO_DESCR, '<value> has to be a numeric value.')
-			return false
+			return true
 		end
 		if amount > targetVipDays then
 			target:removePremiumDays(targetVipDays)
@@ -76,7 +76,7 @@ function vipGod.onSay(player, words, param)
 
 	else
 		player:sendTextMessage(MESSAGE_INFO_DESCR, 'Action is required.\nUsage:\n/vip <action>, <name>, [, <value>]\n\nAvailable actions:\ncheck, adddays, removedays, remove')
-		return false
+		return true
 	end
 	return true
 end

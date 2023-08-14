@@ -266,8 +266,9 @@ class ProtocolGame final : public Protocol {
 		void parseSendBosstiary();
 		void parseSendBosstiarySlots();
 		void parseBosstiarySlot(NetworkMessage &msg);
-		void sendBossPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos);
-		void parseSetBossPodium(NetworkMessage &msg) const;
+		void sendPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss);
+		void sendMonsterPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos);
+		void parseSetMonsterPodium(NetworkMessage &msg) const;
 		void sendBosstiaryCooldownTimer();
 		void sendBosstiaryEntryChanged(uint32_t bossid);
 

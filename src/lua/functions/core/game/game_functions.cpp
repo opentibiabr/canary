@@ -408,12 +408,12 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 		g_events().eventMonsterOnSpawn(monster, position);
 		g_callbacks().executeCallback(EventCallback_t::monsterOnSpawn, &EventCallback::monsterOnSpawn, monster, position);
 		auto mtype = monster->getMonsterType();
-		if (mtype && mtype->info.bossRaceId > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {
+		if (mtype && mtype->info.raceid > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {
 			SpectatorHashSet spectators;
 			g_game().map.getSpectators(spectators, monster->getPosition(), true);
 			for (Creature* spectator : spectators) {
 				if (Player* tmpPlayer = spectator->getPlayer()) {
-					auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldown(tmpPlayer);
+					auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldownRaceId(tmpPlayer);
 					// If not have boss to update, then kill loop for economize resources
 					if (bossesOnTracker.size() == 0) {
 						break;
@@ -616,6 +616,36 @@ int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
 		setMetatable(L, -1, "Player");
 	}
 
+	return 1;
+}
+
+int GameFunctions::luaGameGetNormalizedPlayerName(lua_State* L) {
+	// Game.getNormalizedPlayerName(name)
+	auto name = getString(L, 1);
+	Player* player = g_game().getPlayerByName(name, true);
+	if (player) {
+		pushString(L, player->getName());
+		if (!player->isOnline()) {
+			delete player;
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetNormalizedGuildName(lua_State* L) {
+	// Game.getNormalizedGuildName(name)
+	auto name = getString(L, 1);
+	Guild* guild = g_game().getGuildByName(name, true);
+	if (guild) {
+		pushString(L, guild->getName());
+		if (!guild->isOnline()) {
+			delete guild;
+		}
+	} else {
+		lua_pushnil(L);
+	}
 	return 1;
 }
 

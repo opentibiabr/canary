@@ -52605,9 +52605,11 @@
 		<attribute key="decayTo" value="35969"/>
 	</item>
 	<item id="35973" article="a" name="podium of renown">
+		<attribute key="transformOnUse" value="35974" />
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="35974" article="a" name="podium of renown">
+		<attribute key="transformOnUse" value="35973" />
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item fromid="35977" toid="35978" name="sarcophagus"/>
@@ -59051,9 +59053,11 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42367" name="podium of tenacity">
+		<attribute key="transformOnUse" value="42368" />
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42368" name="podium of tenacity">
+		<attribute key="transformOnUse" value="42367" />
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="43510" name="tibiora's box replica">

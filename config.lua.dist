@@ -10,6 +10,11 @@ coreDirectory = "data"
 -- NOTE: In development mode, additional logs will be enabled, for deputation and testing purposes.
 developmentMode = false
 
+-- Set log level
+-- It can be trace, debug, info, warning, error, critical, off (default: info).
+-- NOTE: Will only display logs with level higher or equal the one set.
+logLevel = debug
+
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
 worldType = "pvp"

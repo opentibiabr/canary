@@ -24,10 +24,6 @@ void LogWithSpdLog::setLevel(const std::string &name) {
 	info("Setting log level to {}.", name);
 	auto level = spdlog::level::from_str(name);
 	spdlog::set_level(level);
-
-	if (spdlog::level::from_str(name) <= SPDLOG_LEVEL_DEBUG) {
-		spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [file %@] [func %!] [thread %t] [%^%l%$] %v ");
-	}
 }
 
 std::string LogWithSpdLog::getLevel() const {

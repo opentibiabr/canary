@@ -208,15 +208,27 @@ int ZoneFunctions::luaZoneGetItems(lua_State* L) {
 	return 1;
 }
 
-int ZoneFunctions::luaZoneClearMonsters(lua_State* L) {
-	// Zone:clearMonsters()
+int ZoneFunctions::luaZoneRemoveMonsters(lua_State* L) {
+	// Zone:removeMonsters()
 	auto zone = getUserdataShared<Zone>(L, 1);
 	if (!zone) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		pushBoolean(L, false);
 		return 1;
 	}
-	zone->clearMonsters();
+	zone->removeMonsters();
+	return 0;
+}
+
+int ZoneFunctions::luaZoneRemoveNpcs(lua_State* L) {
+	// Zone:removeNpcs()
+	auto zone = getUserdataShared<Zone>(L, 1);
+	if (!zone) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	zone->removeNpcs();
 	return 0;
 }
 

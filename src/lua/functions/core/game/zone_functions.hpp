@@ -21,7 +21,8 @@ class ZoneFunctions final : LuaScriptInterface {
 			registerMethod(L, "Zone", "getNpcs", ZoneFunctions::luaZoneGetNpcs);
 			registerMethod(L, "Zone", "getItems", ZoneFunctions::luaZoneGetItems);
 
-			registerMethod(L, "Zone", "clearMonsters", ZoneFunctions::luaZoneClearMonsters);
+			registerMethod(L, "Zone", "removeMonsters", ZoneFunctions::luaZoneRemoveMonsters);
+			registerMethod(L, "Zone", "removeNpcs", ZoneFunctions::luaZoneRemoveNpcs);
 
 			registerMethod(L, "Zone", "register", ZoneFunctions::luaZoneRegister);
 
@@ -43,7 +44,8 @@ class ZoneFunctions final : LuaScriptInterface {
 		static int luaZoneGetNpcs(lua_State* L);
 		static int luaZoneGetItems(lua_State* L);
 
-		static int luaZoneClearMonsters(lua_State* L);
+		static int luaZoneRemoveMonsters(lua_State* L);
+		static int luaZoneRemoveNpcs(lua_State* L);
 
 		static int luaZoneRegister(lua_State* L);
 

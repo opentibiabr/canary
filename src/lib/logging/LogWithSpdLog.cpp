@@ -16,6 +16,10 @@ LogWithSpdLog::LogWithSpdLog() {
 #endif
 }
 
+LogWithSpdLog &LogWithSpdLog::getInstance() {
+	return inject<LogWithSpdLog>();
+}
+
 void LogWithSpdLog::setLevel(const std::string &name) {
 	info("Setting log level to {}.", name);
 	auto level = spdlog::level::from_str(name);

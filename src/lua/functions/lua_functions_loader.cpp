@@ -14,6 +14,7 @@
 #include "creatures/npcs/npc.h"
 #include "creatures/players/imbuements/imbuements.h"
 #include "creatures/players/player.h"
+#include "creatures/players/grouping/guild.h"
 #include "game/game.h"
 #include "game/movement/teleport.h"
 #include "items/weapons/weapons.h"
@@ -406,11 +407,28 @@ Creature* LuaFunctionsLoader::getCreature(lua_State* L, int32_t arg) {
 	return g_game().getCreatureByID(getNumber<uint32_t>(L, arg));
 }
 
-Player* LuaFunctionsLoader::getPlayer(lua_State* L, int32_t arg) {
+Player* LuaFunctionsLoader::getPlayer(lua_State* L, int32_t arg, bool allowOffline /* = false */) {
 	if (isUserdata(L, arg)) {
 		return getUserdata<Player>(L, arg);
+	} else if (isNumber(L, arg)) {
+		return g_game().getPlayerByID(getNumber<uint64_t>(L, arg), allowOffline);
+	} else if (isString(L, arg)) {
+		return g_game().getPlayerByName(getString(L, arg), allowOffline);
 	}
-	return g_game().getPlayerByID(getNumber<uint32_t>(L, arg));
+	spdlog::warn("LuaFunctionsLoader::getPlayer: Invalid argument.");
+	return nullptr;
+}
+
+Guild* LuaFunctionsLoader::getGuild(lua_State* L, int32_t arg, bool allowOffline /* = false */) {
+	if (isUserdata(L, arg)) {
+		return getUserdata<Guild>(L, arg);
+	} else if (isNumber(L, arg)) {
+		return g_game().getGuild(getNumber<uint64_t>(L, arg), allowOffline);
+	} else if (isString(L, arg)) {
+		return g_game().getGuildByName(getString(L, arg), allowOffline);
+	}
+	spdlog::warn("LuaFunctionsLoader::getGuild: Invalid argument.");
+	return nullptr;
 }
 
 std::string LuaFunctionsLoader::getFieldString(lua_State* L, int32_t arg, const std::string &key) {
@@ -548,6 +566,8 @@ void LuaFunctionsLoader::registerClass(lua_State* L, const std::string &classNam
 		lua_pushnumber(L, LuaData_Npc);
 	} else if (className == "Tile") {
 		lua_pushnumber(L, LuaData_Tile);
+	} else if (className == "Guild") {
+		lua_pushnumber(L, LuaData_Guild);
 	} else {
 		lua_pushnumber(L, LuaData_Unknown);
 	}

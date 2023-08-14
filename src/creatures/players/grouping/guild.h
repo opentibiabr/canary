@@ -10,6 +10,8 @@
 #ifndef SRC_CREATURES_PLAYERS_GROUPING_GUILD_H_
 #define SRC_CREATURES_PLAYERS_GROUPING_GUILD_H_
 
+#include "game/bank/bank.hpp"
+
 class Player;
 
 struct GuildRank {
@@ -22,13 +24,23 @@ struct GuildRank {
 };
 
 using GuildRank_ptr = std::shared_ptr<GuildRank>;
-class Guild {
+class Guild : public Bankable {
 	public:
 		Guild(uint32_t initId, std::string initName) :
 			name(std::move(initName)), id(initId) { }
 
 		void addMember(Player* player);
 		void removeMember(Player* player);
+
+		bool isGuild() {
+			return true;
+		}
+		void setOnline(bool value) override {
+			online = value;
+		}
+		bool isOnline() const override {
+			return online;
+		}
 
 		uint32_t getId() const {
 			return id;
@@ -45,10 +57,10 @@ class Guild {
 		void setMemberCount(uint32_t count) {
 			memberCount = count;
 		}
-		uint64_t getBankBalance() const {
+		uint64_t getBankBalance() const override {
 			return bankBalance;
 		}
-		void setBankBalance(uint64_t balance) {
+		void setBankBalance(uint64_t balance) override {
 			bankBalance = balance;
 		}
 
@@ -76,6 +88,7 @@ class Guild {
 		std::string motd;
 		uint32_t id;
 		uint32_t memberCount = 0;
+		bool online = true;
 };
 
 #endif // SRC_CREATURES_PLAYERS_GROUPING_GUILD_H_

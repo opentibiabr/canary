@@ -33,6 +33,7 @@
 #include "map/town.h"
 #include "vocations/vocation.h"
 #include "creatures/npcs/npc.h"
+#include "game/bank/bank.hpp"
 
 class House;
 class NetworkMessage;
@@ -91,7 +92,7 @@ static constexpr int32_t PLAYER_MAX_SPEED = 65535;
 static constexpr int32_t PLAYER_MIN_SPEED = 10;
 static constexpr int32_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
-class Player final : public Creature, public Cylinder {
+class Player final : public Creature, public Cylinder, public Bankable {
 	public:
 		explicit Player(ProtocolGame_ptr p);
 		~Player();
@@ -108,6 +109,13 @@ class Player final : public Creature, public Cylinder {
 		}
 
 		void setID() override;
+
+		void setOnline(bool value) override {
+			online = value;
+		}
+		bool isOnline() const override {
+			return online;
+		}
 
 		static uint32_t getFirstID();
 		static uint32_t getLastID();
@@ -232,10 +240,10 @@ class Player final : public Creature, public Cylinder {
 			offlineTrainingSkill = skill;
 		}
 
-		uint64_t getBankBalance() const {
+		uint64_t getBankBalance() const override {
 			return bankBalance;
 		}
-		void setBankBalance(uint64_t balance) {
+		void setBankBalance(uint64_t balance) override {
 			bankBalance = balance;
 		}
 
@@ -2843,6 +2851,7 @@ class Player final : public Creature, public Cylinder {
 		std::unique_ptr<PlayerWheel> m_wheelPlayer;
 
 		account::Account* account_;
+		bool online = true;
 
 		bool hasQuiverEquipped() const;
 

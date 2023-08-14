@@ -835,9 +835,7 @@ void Creature::mitigateDamage(const CombatType_t &combatType, BlockType_t &block
 		// Increase mitigate damage
 		auto originalDamage = damage;
 		damage -= (damage * getMitigation()) / 100.;
-		if (isDevMode()) {
-			spdlog::info("[mitigation] creature: {}, original damage: {}, mitigation damage: {}", getName(), originalDamage, damage);
-		}
+		spdlog::debug("[mitigation] creature: {}, original damage: {}, mitigation damage: {}", getName(), originalDamage, damage);
 
 		if (damage <= 0) {
 			damage = 0;

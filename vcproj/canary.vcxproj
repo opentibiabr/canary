@@ -342,7 +342,6 @@
     <ClCompile Include="..\src\map\house\housetile.cpp" />
     <ClCompile Include="..\src\map\map.cpp" />
     <ClCompile Include="..\src\otserv.cpp" />
-    <ClCompile Include="..\src\pch.cpp" />
     <ClCompile Include="..\src\protobuf\appearances.pb.cc" />
     <ClCompile Include="..\src\security\argon.cpp" />
     <ClCompile Include="..\src\security\rsa.cpp" />

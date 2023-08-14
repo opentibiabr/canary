@@ -183,9 +183,7 @@ namespace {
 							continue;
 						}
 
-						if (isDevMode()) {
-							spdlog::warn("[cyclopedia damage reduction] imbued item {}, reduced {} percent, for element {}", item->getName(), imbuementAbsorbPercent, combatTypeToName(indexToCombatType(combat)));
-						}
+						spdlog::debug("[cyclopedia damage reduction] imbued item {}, reduced {} percent, for element {}", item->getName(), imbuementAbsorbPercent, combatTypeToName(indexToCombatType(combat)));
 
 						damageReduction[combat] *= (std::floor(100 - imbuementAbsorbPercent) / 100.);
 					}
@@ -200,9 +198,7 @@ namespace {
 			}
 
 			if (damageReduction[i] != 100) {
-				if (isDevMode()) {
-					spdlog::info("CombatType: {}, DamageReduction: {}", i, damageReduction[i]);
-				}
+				spdlog::debug("CombatType: {}, DamageReduction: {}", i, damageReduction[i]);
 				msg.addByte(getCipbiaElement(indexToCombatType(i)));
 				msg.addByte(std::max<int8_t>(-100, std::min<int8_t>(100, 100 - damageReduction[i])));
 				++combats;

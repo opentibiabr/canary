@@ -307,7 +307,6 @@ PRIVATE
 	map/house/housetile.cpp
 	map/map.cpp
 	otserv.cpp
-	pch.cpp
 	security/argon.cpp
 	security/rsa.cpp
 	server/network/connection/connection.cpp

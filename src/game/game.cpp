@@ -6867,9 +6867,7 @@ void Game::applyCharmRune(
 		activeCharm != CHARM_NONE) {
 		Charm* charm = g_iobestiary().getBestiaryCharm(activeCharm);
 		int8_t chance = charm->id == CHARM_CRIPPLE ? charm->chance : charm->chance + attackerPlayer->getCharmChanceModifier();
-		if (isDevMode()) {
-			spdlog::info("charm chance: {}, base: {}, bonus: {}", chance, charm->chance, attackerPlayer->getCharmChanceModifier());
-		}
+		spdlog::debug("charm chance: {}, base: {}, bonus: {}", chance, charm->chance, attackerPlayer->getCharmChanceModifier());
 		if (charm->type == CHARM_OFFENSIVE && (chance >= normal_random(0, 100))) {
 			g_iobestiary().parseCharmCombat(charm, attackerPlayer, target, realDamage);
 		}

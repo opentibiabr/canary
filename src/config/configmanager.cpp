@@ -89,7 +89,9 @@ bool ConfigManager::load() {
 		return false;
 	}
 
+#ifndef DEBUG_LOG
 	g_logger().setLevel(getGlobalString(L, "logLevel", "info"));
+#endif
 
 	// Parse config
 	// Info that must be loaded one time (unless we reset the modules involved)

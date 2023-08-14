@@ -9,8 +9,18 @@
 #ifndef CANARY_ILOGGER_HPP
 #define CANARY_ILOGGER_HPP
 
-#include <fmt/core.h>
-#include <string>
+#define LOG_LEVEL_TRACE \
+	std::string { "trace" }
+#define LOG_LEVEL_DEBUG \
+	std::string { "debug" }
+#define LOG_LEVEL_INFO \
+	std::string { "info" }
+#define LOG_LEVEL_WARNING \
+	std::string { "warning" }
+#define LOG_LEVEL_ERROR \
+	std::string { "error" }
+#define LOG_LEVEL_CRITICAL \
+	std::string { "critical" }
 
 class Logger {
 	public:
@@ -21,73 +31,67 @@ class Logger {
 
 		virtual void setLevel(const std::string &name) = 0;
 		[[nodiscard]] virtual std::string getLevel() const = 0;
+		virtual void log(std::string lvl, fmt::basic_string_view<char> msg) const = 0;
 
 		template <typename... Args>
-		void trace(const std::string &format, Args &&... args) {
-			trace(_format(format, args...));
-		}
-
-		void trace(const std::string &msg) {
-			_trace(msg);
+		void trace(const fmt::format_string<Args...> &fmt, Args &&... args) {
+			trace(fmt::format(fmt, std::forward<Args>(args)...));
 		}
 
 		template <typename... Args>
-		void debug(const std::string &format, Args &&... args) {
-			debug(_format(format, args...));
-		}
-
-		void debug(const std::string &msg) {
-			_debug(msg);
+		void debug(const fmt::format_string<Args...> &fmt, Args &&... args) {
+			debug(fmt::format(fmt, std::forward<Args>(args)...));
 		}
 
 		template <typename... Args>
-		void info(const std::string &format, Args &&... args) {
-			info(_format(format, args...));
-		}
-
-		void info(const std::string &msg) {
-			_info(msg);
+		void info(fmt::format_string<Args...> fmt, Args &&... args) {
+			info(fmt::format(fmt, std::forward<Args>(args)...));
 		}
 
 		template <typename... Args>
-		void warn(auto &format, Args &&... args) {
-			warn(_format(format, args...));
-		}
-
-		void warn(const std::string &msg) {
-			_warn(msg);
+		void warn(const fmt::format_string<Args...> &fmt, Args &&... args) {
+			warn(fmt::format(fmt, std::forward<Args>(args)...));
 		}
 
 		template <typename... Args>
-		void error(const std::string &format, Args &&... args) {
-			error(_format(format, args...));
-		}
-
-		void error(const std::string &msg) {
-			_error(msg);
+		void error(const fmt::format_string<Args...> fmt, Args &&... args) {
+			error(fmt::format(fmt, std::forward<Args>(args)...));
 		}
 
 		template <typename... Args>
-		void critical(const std::string &format, Args &&... args) {
-			critical(_format(format, args...));
+		void critical(const fmt::format_string<Args...> fmt, Args &&... args) {
+			critical(fmt::format(fmt, std::forward<Args>(args)...));
 		}
 
-		void critical(const std::string &msg) {
-			_critical(msg);
+		template <typename T>
+		void trace(const T &msg) {
+			log(LOG_LEVEL_TRACE, msg);
 		}
 
-	private:
-		template <typename... Args>
-		std::string _format(const std::string &format, Args &&... args) const {
-			return fmt::format(fmt::runtime(format), args...);
+		template <typename T>
+		void debug(const T &msg) {
+			log(LOG_LEVEL_DEBUG, msg);
 		}
 
-		virtual void _trace(const std::string &format) = 0;
-		virtual void _debug(const std::string &format) = 0;
-		virtual void _info(const std::string &format) = 0;
-		virtual void _warn(const std::string &format) = 0;
-		virtual void _error(const std::string &format) = 0;
-		virtual void _critical(const std::string &format) = 0;
+		template <typename T>
+		void info(const T &msg) {
+			log(LOG_LEVEL_INFO, msg);
+		}
+
+		template <typename T>
+		void warn(const T &msg) {
+			log(LOG_LEVEL_WARNING, msg);
+		}
+
+		template <typename T>
+		void error(const T &msg) {
+			log(LOG_LEVEL_ERROR, msg);
+		}
+
+		template <typename T>
+		void critical(const T &msg) {
+			log(LOG_LEVEL_CRITICAL, msg);
+		}
 };
 
 #endif // CANARY_ILOGGER_HPP

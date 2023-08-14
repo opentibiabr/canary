@@ -6,9 +6,6 @@ useAnyDatapackFolder = false
 dataPackDirectory = "data-otservbr-global"
 -- Don't change this unless you know what you're doing
 coreDirectory = "data"
--- Enable/disable development mode
--- NOTE: In development mode, additional logs will be enabled, for deputation and testing purposes.
-developmentMode = false
 
 -- Set log level
 -- It can be trace, debug, info, warning, error, critical, off (default: info).

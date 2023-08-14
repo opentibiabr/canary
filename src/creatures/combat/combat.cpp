@@ -937,9 +937,7 @@ bool Combat::doCombatChain(Creature* caster, Creature* target, bool aggressive) 
 		if (currentTarget == caster) {
 			continue;
 		}
-		if (isDevMode()) {
-			spdlog::info("Combat: {} -> {}", previousTarget ? previousTarget->getName() : "none", currentTarget ? currentTarget->getName() : "none");
-		}
+		spdlog::debug("Combat: {} -> {}", previousTarget ? previousTarget->getName() : "none", currentTarget ? currentTarget->getName() : "none");
 		auto origin = previousTarget != nullptr ? previousTarget->getPosition() : Position();
 		doChainEffect(origin, currentTarget->getPosition(), params.chainEffect);
 		doCombat(caster, currentTarget, origin);
@@ -1391,9 +1389,7 @@ void Combat::pickChainTargets(Creature* caster, std::vector<Creature*> &targets,
 	auto currentTarget = targets.back();
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, currentTarget->getPosition(), false, false, chainDistance, chainDistance, chainDistance, chainDistance);
-	if (isDevMode()) {
-		spdlog::info("Combat::pickChainTargets: currentTarget: {}, spectators: {}", currentTarget->getName(), spectators.size());
-	}
+	spdlog::debug("Combat::pickChainTargets: currentTarget: {}, spectators: {}", currentTarget->getName(), spectators.size());
 	auto maxBacktrackingAttempts = 10;
 	for (auto attempts = 0; targets.size() <= maxTargets && attempts < maxBacktrackingAttempts; ++attempts) {
 		auto closestDistance = std::numeric_limits<uint16_t>::max();
@@ -1419,9 +1415,7 @@ void Combat::pickChainTargets(Creature* caster, std::vector<Creature*> &targets,
 		}
 
 		if (closestSpectator != nullptr) {
-			if (isDevMode()) {
-				spdlog::info("Combat::pickChainTargets: closestSpectator: {}", closestSpectator->getName());
-			}
+			spdlog::debug("Combat::pickChainTargets: closestSpectator: {}", closestSpectator->getName());
 			targets.push_back(closestSpectator);
 			targetSet.insert(closestSpectator->getID());
 			visited.insert(closestSpectator->getID());

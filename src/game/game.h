@@ -421,6 +421,10 @@ class Game {
 		void handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker);
 		void notifySpectators(const SpectatorHashSet &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster);
 
+		// Custom PvP System combat helpers
+		void applyPvPDamage(CombatDamage &damage, Player* attacker, Player* target);
+		float pvpLevelDifferenceDamageMultiplier(Player* attacker, Player* target);
+
 		// Wheel of destiny combat helpers
 		void applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, const Creature* target);
 		void applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const Player* attackerPlayer, const Creature* target) const;

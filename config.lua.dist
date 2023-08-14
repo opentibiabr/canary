@@ -148,6 +148,14 @@ loyaltyPointsPerPremiumDaySpent = 0
 loyaltyPointsPerPremiumDayPurchased = 0
 loyaltyBonusPercentageMultiplier = 1.0
 
+-- Custom PvP system
+-- NOTE: Rate is additive for each level and applied multiplicative to totalDamage
+-- NOTE: Damage multipliers for each vocation are adjusted in data/XML/vocations.xml
+pvpRateDamageTakenPerLevel = 0.0 -- recommended below 0.001
+pvpRateDamageReductionPerLevel = 0.0 -- recommended below 0.001
+pvpMaxLevelDifference = 0
+
+
 -- Wheel of destiny system
 -- NOTE: set wheelSystemEnabled = false to disable the wheel of destiny
 -- NOTE: only the wheel points are modified, all other data is on the client executable and cannot be modified

@@ -126,13 +126,13 @@ phmap::btree_set<Item*> Zone::getItems() const {
 	return zoneItems;
 }
 
-void Zone::clearMonsters() {
+void Zone::removeMonsters() {
 	for (auto monster : getMonsters()) {
 		g_game().removeCreature(monster);
 	}
 }
 
-void Zone::clearNpcs() {
+void Zone::removeNpcs() {
 	for (auto npc : getNpcs()) {
 		g_game().removeCreature(npc);
 	}

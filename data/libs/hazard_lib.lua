@@ -71,30 +71,25 @@ function Hazard:register()
 		return
 	end
 
-	local onEnter = EventCallback()
-	local onLeave = EventCallback()
+	local event = ZoneEvent(self.zone)
 
-	function onEnter.zoneOnCreatureEnter(zone, creature)
-		if zone ~= self.zone then return true end
+	function event.onEnter(zone, creature)
 		local player = creature:getPlayer()
 		if not player then return true end
 		player:setHazardSystemPoints(self:getPlayerCurrentLevel(player))
 		return true
 	end
 
-	function onLeave.zoneOnCreatureLeave(zone, creature)
-		if zone ~= self.zone then return true end
+	function event.onLeave(zone, creature)
 		local player = creature:getPlayer()
 		if not player then return true end
 		player:setHazardSystemPoints(0)
 		return true
 	end
 
-	onEnter:register()
-	onLeave:register()
-
 	Hazard.areas[self.name] = self
 	self.zone:register()
+	event:register()
 end
 
 function Hazard.getByName(name)

@@ -117,7 +117,6 @@ void Raids::checkRaids() {
 			if (now >= (getLastRaidEnd() + raid->getMargin())) {
 				auto roll = static_cast<uint32_t>(uniform_random(0, MAX_RAND_RANGE));
 				auto required = static_cast<uint32_t>(MAX_RAND_RANGE * raid->getInterval()) / CHECK_RAIDS_INTERVAL;
-				g_logger().info("allowed to run, rolled {} and required {}", roll, required);
 				auto shouldStart = required >= roll;
 				if (shouldStart) {
 					setRunning(raid);
@@ -242,7 +241,6 @@ void Raid::resetRaid() {
 	state = RAIDSTATE_IDLE;
 	g_game().raids.setRunning(nullptr);
 	g_game().raids.setLastRaidEnd(OTSYS_TIME());
-	g_logger().info("[raids] Raid {} - FINISHED", name);
 }
 
 void Raid::stopEvents() {

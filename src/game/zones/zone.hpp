@@ -58,8 +58,8 @@ class Zone {
 		phmap::btree_set<Npc*> getNpcs() const;
 		phmap::btree_set<Item*> getItems() const;
 
-		void clearMonsters();
-		void clearNpcs();
+		void removeMonsters();
+		void removeNpcs();
 
 		static std::shared_ptr<Zone> addZone(const std::string &name);
 		static std::shared_ptr<Zone> getZone(const std::string &name);

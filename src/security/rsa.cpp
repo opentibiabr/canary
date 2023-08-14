@@ -135,8 +135,8 @@ enum {
 	CRYPT_RSA_ASN1_BITSTRING = 3
 };
 
-uint16_t RSA::decodeLength(char*& pos) const {
-	uint8_t buffer[4] = {0}; // Inicialize buffer como um array de 4 bytes
+uint16_t RSA::decodeLength(char*&pos) const {
+	uint8_t buffer[4] = { 0 }; // Inicialize buffer como um array de 4 bytes
 	auto length = static_cast<uint16_t>(static_cast<uint8_t>(*pos++));
 	if (length & 0x80) {
 		length &= 0x7F;
@@ -146,17 +146,21 @@ uint16_t RSA::decodeLength(char*& pos) const {
 		}
 		// Removendo a inicialização redundante de buffer
 		switch (length) {
-			case 4: buffer[3] = static_cast<uint8_t>(*pos++);
-			case 3: buffer[2] = static_cast<uint8_t>(*pos++);
-			case 2: buffer[1] = static_cast<uint8_t>(*pos++);
-			case 1: buffer[0] = static_cast<uint8_t>(*pos++);
-			default: break;
+			case 4:
+				buffer[3] = static_cast<uint8_t>(*pos++);
+			case 3:
+				buffer[2] = static_cast<uint8_t>(*pos++);
+			case 2:
+				buffer[1] = static_cast<uint8_t>(*pos++);
+			case 1:
+				buffer[0] = static_cast<uint8_t>(*pos++);
+			default:
+				break;
 		}
 		std::memcpy(&length, buffer, sizeof(length)); // buffer é um array, então não precisa de .data()
 	}
 	return length;
 }
-
 
 void RSA::readHexString(char*&pos, uint16_t length, std::string &output) const {
 	output.reserve(static_cast<size_t>(length) * 2);

@@ -34,10 +34,7 @@ class Weapons final : public Scripts {
 		Weapons &operator=(const Weapons &) = delete;
 
 		static Weapons &getInstance() {
-			// Guaranteed to be destroyed
-			static Weapons instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Weapons>();
 		}
 
 		const Weapon* getWeapon(const Item* item) const;
@@ -52,7 +49,7 @@ class Weapons final : public Scripts {
 		phmap::btree_map<uint32_t, Weapon*> weapons;
 };
 
-constexpr auto g_weapons = &Weapons::getInstance;
+constexpr auto g_weapons = Weapons::getInstance;
 
 class Weapon : public Script {
 	public:

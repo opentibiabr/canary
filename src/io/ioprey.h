@@ -214,10 +214,7 @@ class IOPrey {
 		void operator=(const IOPrey &) = delete;
 
 		static IOPrey &getInstance() {
-			// Guaranteed to be destroyed
-			static IOPrey instance;
-			// Instantiated on first use
-			return instance;
+			return inject<IOPrey>();
 		}
 
 		void CheckPlayerPreys(Player* player, uint8_t amount) const;
@@ -240,6 +237,6 @@ class IOPrey {
 		std::vector<TaskHuntingOption*> taskOption;
 };
 
-constexpr auto g_ioprey = &IOPrey::getInstance;
+constexpr auto g_ioprey = IOPrey::getInstance;
 
 #endif // SRC_IO_IOPREY_H_

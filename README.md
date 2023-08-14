@@ -71,6 +71,12 @@ Before [creating a pull request](https://github.com/opentibiabr/canary/pulls) pl
 
 See our [donate page](https://docs.opentibiabr.com/home/donate)
 
+## Project supported by JetBrains
+
+We extend our heartfelt gratitude to Jetbrains for generously granting us licenses to collaborate on this and various other open-source initiatives.
+
+[![JetBrains](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://jb.gg/OpenSourceSupport/?from=https://github.com/opentibiabr/canary)
+
 ### Partners
 
 [![Supported by OTServ Brasil](https://raw.githubusercontent.com/otbr/otserv-brasil/main/otbr.png)](https://forums.otserv.com.br)

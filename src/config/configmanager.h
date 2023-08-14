@@ -21,10 +21,7 @@ class ConfigManager {
 		void operator=(const ConfigManager &) = delete;
 
 		static ConfigManager &getInstance() {
-			// Guaranteed to be destroyed
-			static ConfigManager instance;
-			// Instantiated on first use
-			return instance;
+			return inject<ConfigManager>();
 		}
 
 		bool load();
@@ -55,6 +52,6 @@ class ConfigManager {
 		bool loaded = false;
 };
 
-constexpr auto g_configManager = &ConfigManager::getInstance;
+constexpr auto g_configManager = ConfigManager::getInstance;
 
 #endif // SRC_CONFIG_CONFIGMANAGER_H_

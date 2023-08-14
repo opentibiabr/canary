@@ -33,6 +33,7 @@ struct WaitListInfo {
 
 class WaitingList {
 	public:
+		WaitingList();
 		static WaitingList &getInstance();
 		bool clientLogin(const Player* player);
 		std::size_t getClientSlot(const Player* player);
@@ -42,7 +43,6 @@ class WaitingList {
 		void cleanupList(WaitList &list);
 		std::size_t getTimeout(std::size_t slot);
 		void addPlayerToList(const Player* player);
-		WaitingList();
 		std::unique_ptr<WaitListInfo> info;
 };
 

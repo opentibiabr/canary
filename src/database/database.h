@@ -25,10 +25,7 @@ class Database {
 		Database &operator=(const Database &) = delete;
 
 		static Database &getInstance() {
-			// Guaranteed to be destroyed.
-			static Database instance;
-			// Instantiated on first use.
-			return instance;
+			return inject<Database>();
 		}
 
 		bool connect();

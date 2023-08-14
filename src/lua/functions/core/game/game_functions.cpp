@@ -573,20 +573,20 @@ int GameFunctions::luaGameGetClientVersion(lua_State* L) {
 int GameFunctions::luaGameReload(lua_State* L) {
 	// Game.reload(reloadType)
 	Reload_t reloadType = getNumber<Reload_t>(L, 1);
-	if (g_gameReload.getReloadNumber(reloadType) == g_gameReload.getReloadNumber(Reload_t::RELOAD_TYPE_NONE)) {
+	if (g_gameReload().getReloadNumber(reloadType) == g_gameReload().getReloadNumber(Reload_t::RELOAD_TYPE_NONE)) {
 		reportErrorFunc("Reload type is none");
 		pushBoolean(L, false);
 		return 0;
 	}
 
-	if (g_gameReload.getReloadNumber(reloadType) >= g_gameReload.getReloadNumber(Reload_t::RELOAD_TYPE_LAST)) {
+	if (g_gameReload().getReloadNumber(reloadType) >= g_gameReload().getReloadNumber(Reload_t::RELOAD_TYPE_LAST)) {
 		reportErrorFunc("Reload type not exist");
 		pushBoolean(L, false);
 		return 0;
 	}
 
-	pushBoolean(L, g_gameReload.init(reloadType));
-	lua_gc(g_luaEnvironment.getLuaState(), LUA_GCCOLLECT, 0);
+	pushBoolean(L, g_gameReload().init(reloadType));
+	lua_gc(g_luaEnvironment().getLuaState(), LUA_GCCOLLECT, 0);
 	return 1;
 }
 
@@ -616,6 +616,36 @@ int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
 		setMetatable(L, -1, "Player");
 	}
 
+	return 1;
+}
+
+int GameFunctions::luaGameGetNormalizedPlayerName(lua_State* L) {
+	// Game.getNormalizedPlayerName(name)
+	auto name = getString(L, 1);
+	Player* player = g_game().getPlayerByName(name, true);
+	if (player) {
+		pushString(L, player->getName());
+		if (!player->isOnline()) {
+			delete player;
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetNormalizedGuildName(lua_State* L) {
+	// Game.getNormalizedGuildName(name)
+	auto name = getString(L, 1);
+	Guild* guild = g_game().getGuildByName(name, true);
+	if (guild) {
+		pushString(L, guild->getName());
+		if (!guild->isOnline()) {
+			delete guild;
+		}
+	} else {
+		lua_pushnil(L);
+	}
 	return 1;
 }
 

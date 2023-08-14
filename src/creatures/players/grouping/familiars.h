@@ -15,8 +15,7 @@
 class Familiars {
 	public:
 		static Familiars &getInstance() {
-			static Familiars instance;
-			return instance;
+			return inject<Familiars>();
 		}
 		bool loadFromXml();
 		const std::vector<Familiar> &getFamiliars(uint16_t vocation) const {

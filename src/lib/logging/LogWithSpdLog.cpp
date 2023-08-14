@@ -9,34 +9,48 @@
 #include "pch.hpp"
 
 LogWithSpdLog::LogWithSpdLog() {
-#ifdef DEBUG_LOG
-	SPDLOG_DEBUG("[CANARY] SPDLOG LOG DEBUG ENABLED");
-	spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [file %@] [func %!] [thread %t] [%^%l%$] %v ");
-#else
 	spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [%^%l%$] %v ");
+
+#ifdef DEBUG_LOG
+	setLevel("debug");
 #endif
 }
 
+void LogWithSpdLog::setLevel(const std::string &name) {
+	info("Setting log level to {}.", name);
+	auto level = spdlog::level::from_str(name);
+	spdlog::set_level(level);
+
+	if (spdlog::level::from_str(name) <= SPDLOG_LEVEL_DEBUG) {
+		spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [file %@] [func %!] [thread %t] [%^%l%$] %v ");
+	}
+}
+
+std::string LogWithSpdLog::getLevel() const {
+	auto level = spdlog::level::to_string_view(spdlog::get_level());
+	return std::string { level.begin(), level.end() };
+}
+
 void LogWithSpdLog::_trace(const std::string &format) {
-	SPDLOG_TRACE(format);
+	spdlog::trace(format);
 }
 
 void LogWithSpdLog::_debug(const std::string &format) {
-	SPDLOG_DEBUG(format);
+	spdlog::debug(format);
 }
 
 void LogWithSpdLog::_info(const std::string &format) {
-	SPDLOG_INFO(format);
+	spdlog::info(format);
 }
 
 void LogWithSpdLog::_warn(const std::string &format) {
-	SPDLOG_WARN(format);
+	spdlog::warn(format);
 }
 
 void LogWithSpdLog::_error(const std::string &format) {
-	SPDLOG_ERROR(format);
+	spdlog::error(format);
 }
 
 void LogWithSpdLog::_critical(const std::string &format) {
-	SPDLOG_CRITICAL(format);
+	spdlog::critical(format);
 }

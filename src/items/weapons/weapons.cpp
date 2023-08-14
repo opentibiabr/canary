@@ -320,9 +320,9 @@ int32_t Weapon::getHealthCost(const Player* player) const {
 bool Weapon::executeUseWeapon(Player* player, const LuaVariant &var) const {
 	// onUseWeapon(player, var)
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		SPDLOG_ERROR("[Weapon::executeUseWeapon - Player {} weaponId {}]"
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 player->getName(), getID());
+		g_logger().error("[Weapon::executeUseWeapon - Player {} weaponId {}]"
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 player->getName(), getID());
 		return false;
 	}
 

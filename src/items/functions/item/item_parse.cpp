@@ -112,7 +112,7 @@ void ItemParse::parseType(const std::string &tmpStrValue, pugi::xml_node attribu
 				parseDummyRate(attributeNode, itemType);
 			}
 		} else {
-			SPDLOG_WARN("[Items::parseItemNode] - Unknown type: {}", valueAttribute.as_string());
+			g_logger().warn("[Items::parseItemNode] - Unknown type: {}", valueAttribute.as_string());
 		}
 	}
 }
@@ -224,7 +224,7 @@ void ItemParse::parseFloorChange(const std::string &tmpStrValue, pugi::xml_attri
 		if (itemMap != TileStatesMap.end()) {
 			itemType.floorChange = itemMap->second;
 		} else {
-			SPDLOG_WARN("[ItemParse::parseFloorChange] - Unknown floorChange {}", valueAttribute.as_string());
+			g_logger().warn("[ItemParse::parseFloorChange] - Unknown floorChange {}", valueAttribute.as_string());
 		}
 	}
 }
@@ -244,7 +244,7 @@ void ItemParse::parseFluidSource(const std::string &tmpStrValue, pugi::xml_attri
 		if (itemMap != FluidTypesMap.end()) {
 			itemType.fluidSource = itemMap->second;
 		} else {
-			SPDLOG_WARN("[Items::parseItemNode] - Unknown fluidSource {}", valueAttribute.as_string());
+			g_logger().warn("[Items::parseItemNode] - Unknown fluidSource {}", valueAttribute.as_string());
 		}
 	}
 }
@@ -274,7 +274,7 @@ void ItemParse::parseWeaponType(const std::string &tmpStrValue, pugi::xml_attrib
 			}
 			itemType.weaponType = itemMap->second;
 		} else {
-			SPDLOG_WARN("[Items::parseItemNode] - Unknown weaponType {}", valueAttribute.as_string());
+			g_logger().warn("[Items::parseItemNode] - Unknown weaponType {}", valueAttribute.as_string());
 		}
 	}
 }
@@ -309,7 +309,7 @@ void ItemParse::parseSlotType(const std::string &tmpStrValue, pugi::xml_attribut
 		} else if (stringValue == "hand") {
 			itemType.slotPosition |= SLOTP_HAND;
 		} else {
-			SPDLOG_WARN("[itemParseSlotType - Items::parseItemNode] - Unknown slotType {}", valueAttribute.as_string());
+			g_logger().warn("[itemParseSlotType - Items::parseItemNode] - Unknown slotType {}", valueAttribute.as_string());
 		}
 	}
 }
@@ -319,7 +319,7 @@ void ItemParse::parseAmmoType(const std::string &tmpStrValue, pugi::xml_attribut
 	if (stringValue == "ammotype") {
 		itemType.ammoType = getAmmoType(asLowerCaseString(valueAttribute.as_string()));
 		if (itemType.ammoType == AMMO_NONE) {
-			SPDLOG_WARN("[Items::parseItemNode] - Unknown ammoType {}", valueAttribute.as_string());
+			g_logger().warn("[Items::parseItemNode] - Unknown ammoType {}", valueAttribute.as_string());
 		}
 	}
 }
@@ -331,7 +331,7 @@ void ItemParse::parseShootType(const std::string &tmpStrValue, pugi::xml_attribu
 		if (shoot != CONST_ANI_NONE) {
 			itemType.shootType = shoot;
 		} else {
-			SPDLOG_WARN("[Items::parseItemNode] - Unknown shootType {}", valueAttribute.as_string());
+			g_logger().warn("[Items::parseItemNode] - Unknown shootType {}", valueAttribute.as_string());
 		}
 	}
 }
@@ -343,7 +343,7 @@ void ItemParse::parseMagicEffect(const std::string &tmpStrValue, pugi::xml_attri
 		if (effect != CONST_ME_NONE) {
 			itemType.magicEffect = effect;
 		} else {
-			SPDLOG_WARN("[Items::parseItemNode] - Unknown effect {}", valueAttribute.as_string());
+			g_logger().warn("[Items::parseItemNode] - Unknown effect {}", valueAttribute.as_string());
 		}
 	}
 }
@@ -631,7 +631,7 @@ std::tuple<ConditionId_t, ConditionType_t> ItemParse::parseFieldConditions(std::
 		conditionType = CONDITION_BLEEDING;
 		return std::make_tuple(conditionId, conditionType);
 	} else {
-		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}", valueAttribute.as_string());
+		g_logger().warn("[Items::parseItemNode] Unknown field value {}", valueAttribute.as_string());
 	}
 	return std::make_tuple(CONDITIONID_DEFAULT, CONDITION_NONE);
 }
@@ -649,7 +649,7 @@ CombatType_t ItemParse::parseFieldCombatType(std::string lowerStringValue, pugi:
 	} else if (lowerStringValue == "physical") {
 		return COMBAT_PHYSICALDAMAGE;
 	} else {
-		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}", valueAttribute.as_string());
+		g_logger().warn("[Items::parseItemNode] Unknown field value {}", valueAttribute.as_string());
 	}
 	return COMBAT_NONE;
 }
@@ -848,7 +848,7 @@ void ItemParse::parseImbuement(const std::string &tmpStrValue, pugi::xml_node at
 				continue;
 			}
 		} else {
-			SPDLOG_WARN("[ParseImbuement::initParseImbuement] - Unknown type: {}", valueAttribute.as_string());
+			g_logger().warn("[ParseImbuement::initParseImbuement] - Unknown type: {}", valueAttribute.as_string());
 		}
 	}
 }
@@ -859,7 +859,7 @@ void ItemParse::parseStackSize(const std::string &tmpStrValue, pugi::xml_attribu
 		auto stackSize = pugi::cast<uint16_t>(valueAttribute.value());
 		if (stackSize > 255) {
 			stackSize = 255;
-			spdlog::warn("[{}] Invalid stack size value: {}. Stack size must be between 1 and 255.", __FUNCTION__, stackSize);
+			g_logger().warn("[{}] Invalid stack size value: {}. Stack size must be between 1 and 255.", __FUNCTION__, stackSize);
 		}
 		itemType.stackSize = static_cast<uint8_t>(stackSize);
 	}

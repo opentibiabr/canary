@@ -76,9 +76,9 @@ int WeaponFunctions::luaWeaponAction(lua_State* L) {
 		} else if (tmpStr == "move") {
 			weapon->action = WEAPONACTION_MOVE;
 		} else {
-			SPDLOG_ERROR("[WeaponFunctions::luaWeaponAction] - "
-						 "No valid action {}",
-						 typeName);
+			g_logger().error("[WeaponFunctions::luaWeaponAction] - "
+							 "No valid action {}",
+							 typeName);
 			pushBoolean(L, false);
 		}
 		pushBoolean(L, true);
@@ -284,9 +284,9 @@ int WeaponFunctions::luaWeaponElement(lua_State* L) {
 			} else if (tmpStrValue == "holy") {
 				weapon->params.combatType = COMBAT_HOLYDAMAGE;
 			} else {
-				SPDLOG_WARN("[WeaponFunctions:luaWeaponElement] - "
-							"Type {} does not exist",
-							element);
+				g_logger().warn("[WeaponFunctions:luaWeaponElement] - "
+								"Type {} does not exist",
+								element);
 			}
 		} else {
 			weapon->params.combatType = getNumber<CombatType_t>(L, 2);
@@ -538,9 +538,9 @@ int WeaponFunctions::luaWeaponAmmoType(lua_State* L) {
 		} else if (type == "bolt") {
 			it.ammoType = AMMO_BOLT;
 		} else {
-			SPDLOG_WARN("[WeaponFunctions:luaWeaponAmmoType] - "
-						"Type {} does not exist",
-						type);
+			g_logger().warn("[WeaponFunctions:luaWeaponAmmoType] - "
+							"Type {} does not exist",
+							type);
 			lua_pushnil(L);
 			return 1;
 		}
@@ -603,9 +603,9 @@ int WeaponFunctions::luaWeaponExtraElement(lua_State* L) {
 			} else if (tmpStrValue == "holy") {
 				it.abilities.get()->elementType = COMBAT_HOLYDAMAGE;
 			} else {
-				SPDLOG_WARN("[WeaponFunctions:luaWeaponExtraElement] - "
-							"Type {} does not exist",
-							element);
+				g_logger().warn("[WeaponFunctions:luaWeaponExtraElement] - "
+								"Type {} does not exist",
+								element);
 			}
 		} else {
 			it.abilities.get()->elementType = getNumber<CombatType_t>(L, 3);

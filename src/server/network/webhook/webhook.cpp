@@ -17,14 +17,14 @@ Webhook::~Webhook() = default;
 
 void Webhook::init() {
 	if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
-		SPDLOG_ERROR("Failed to init curl, no webhook messages may be sent");
+		g_logger().error("Failed to init curl, no webhook messages may be sent");
 		return;
 	}
 
 	headers = curl_slist_append(headers, "content-type: application/json");
 	headers = curl_slist_append(headers, "accept: application/json");
 	if (headers == NULL) {
-		SPDLOG_ERROR("Failed to init curl, appending request headers failed");
+		g_logger().error("Failed to init curl, appending request headers failed");
 		return;
 	}
 
@@ -50,7 +50,7 @@ void Webhook::sendMessage(const std::string title, const std::string message, in
 int Webhook::sendRequest(const char* url, const char* payload, std::string* response_body) {
 	CURL* curl = curl_easy_init();
 	if (!curl) {
-		SPDLOG_ERROR("Failed to send webhook message; curl_easy_init failed");
+		g_logger().error("Failed to send webhook message; curl_easy_init failed");
 		return -1;
 	}
 
@@ -69,7 +69,7 @@ int Webhook::sendRequest(const char* url, const char* payload, std::string* resp
 	if (res == CURLE_OK) {
 		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
 	} else {
-		SPDLOG_ERROR("Failed to send webhook message with the error: {}", curl_easy_strerror(res));
+		g_logger().error("Failed to send webhook message with the error: {}", curl_easy_strerror(res));
 	}
 
 	curl_easy_cleanup(curl);
@@ -137,7 +137,7 @@ void Webhook::threadMain() {
 		auto response_code = sendRequest(task.url.c_str(), payload.c_str(), &response_body);
 
 		if (response_code == 429 || response_code == 504) {
-			SPDLOG_DEBUG("[{}] encountered error code {}. Requeueing task and sleeping for two seconds.", response_code);
+			g_logger().debug("[{}] encountered error code {}. Requeueing task and sleeping for two seconds.", response_code);
 
 			taskLockUnique.lock();
 			taskDeque.push_front(task);
@@ -145,7 +145,7 @@ void Webhook::threadMain() {
 
 			std::this_thread::sleep_for(std::chrono::seconds(2));
 		} else if (response_code != 204 && response_code != -1) {
-			SPDLOG_ERROR("Failed to send webhook message; "
+			g_logger().error("Failed to send webhook message; "
 						 "HTTP request failed with code: {}"
 						 "response body: {} request body: {}",
 						 response_code, response_body, payload);

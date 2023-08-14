@@ -67,9 +67,9 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/, Position* it
 		newItem->incrementReferenceCounter();
 	} else if (type > 0 && itemPosition) {
 		auto position = *itemPosition;
-		SPDLOG_WARN("[Item::CreateItem] Item with id '{}', in position '{}' not exists in the appearances.dat and cannot be created.", type, position.toString());
+		g_logger().warn("[Item::CreateItem] Item with id '{}', in position '{}' not exists in the appearances.dat and cannot be created.", type, position.toString());
 	} else {
-		SPDLOG_WARN("[Item::CreateItem] Item with id '{}' is not registered and cannot be created.", type);
+		g_logger().warn("[Item::CreateItem] Item with id '{}' is not registered and cannot be created.", type);
 	}
 
 	return newItem;
@@ -108,7 +108,7 @@ void Item::addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 
 	// Checks if the item already has the imbuement category id
 	if (hasImbuementCategoryId(categoryImbuement->id)) {
-		SPDLOG_ERROR("[Item::setImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement of the same type: {}", player->getName(), imbuement->getName());
+		g_logger().error("[Item::setImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement of the same type: {}", player->getName(), imbuement->getName());
 		player->sendImbuementResult("An error ocurred, please reopen imbuement window.");
 		return;
 	}
@@ -218,7 +218,7 @@ Item::Item(const Item &i) :
 Item* Item::clone() const {
 	Item* item = Item::CreateItem(id, count);
 	if (item == nullptr) {
-		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
+		g_logger().error("[{}] item is nullptr", __FUNCTION__);
 		return nullptr;
 	}
 
@@ -750,7 +750,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 		case ATTR_TIER: {
 			uint8_t tier;
 			if (!propStream.read<uint8_t>(tier)) {
-				SPDLOG_ERROR("[{}] failed to read tier", __FUNCTION__);
+				g_logger().error("[{}] failed to read tier", __FUNCTION__);
 				return ATTR_READ_ERROR;
 			}
 
@@ -761,7 +761,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 		case ATTR_AMOUNT: {
 			uint16_t amount;
 			if (!propStream.read<uint16_t>(amount)) {
-				SPDLOG_ERROR("[{}] failed to read amount", __FUNCTION__);
+				g_logger().error("[{}] failed to read amount", __FUNCTION__);
 				return ATTR_READ_ERROR;
 			}
 
@@ -772,7 +772,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 		case ATTR_CUSTOM: {
 			uint64_t size;
 			if (!propStream.read<uint64_t>(size)) {
-				SPDLOG_ERROR("[{}] failed to read size", __FUNCTION__);
+				g_logger().error("[{}] failed to read size", __FUNCTION__);
 				return ATTR_READ_ERROR;
 			}
 
@@ -780,13 +780,13 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 				// Unserialize custom attribute key type
 				std::string key;
 				if (!propStream.readString(key)) {
-					SPDLOG_ERROR("[{}] failed to read custom type", __FUNCTION__);
+					g_logger().error("[{}] failed to read custom type", __FUNCTION__);
 					return ATTR_READ_ERROR;
 				};
 
 				CustomAttribute customAttribute;
 				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
-					SPDLOG_ERROR("[{}] failed to read custom value", __FUNCTION__);
+					g_logger().error("[{}] failed to read custom value", __FUNCTION__);
 					return ATTR_READ_ERROR;
 				}
 
@@ -3096,7 +3096,7 @@ void Item::stopDecaying() {
 Item* Item::transform(uint16_t itemId, uint16_t itemCount /*= -1*/) {
 	Cylinder* cylinder = getParent();
 	if (cylinder == nullptr) {
-		SPDLOG_INFO("[{}] failed to transform item {}, cylinder is nullptr", __FUNCTION__, getID());
+		g_logger().info("[{}] failed to transform item {}, cylinder is nullptr", __FUNCTION__, getID());
 		return nullptr;
 	}
 

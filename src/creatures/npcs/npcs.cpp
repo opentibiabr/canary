@@ -33,7 +33,7 @@ bool NpcType::canSpawn(const Position &pos) {
 bool NpcType::loadCallback(LuaScriptInterface* scriptInterface) {
 	int32_t id = scriptInterface->getEvent();
 	if (id == -1) {
-		SPDLOG_WARN("[NpcType::loadCallback] - Event not found");
+		g_logger().warn("[NpcType::loadCallback] - Event not found");
 		return false;
 	}
 

@@ -45,7 +45,7 @@ class LuaScriptInterface : public LuaFunctionsLoader {
 		const std::string &getLoadingScriptName() const {
 			// If scripty name is empty, return warning informing
 			if (loadedScriptName.empty()) {
-				SPDLOG_WARN("[LuaScriptInterface::getLoadingScriptName] - Script name is empty");
+				g_logger().warn("[LuaScriptInterface::getLoadingScriptName] - Script name is empty");
 			}
 
 			return loadedScriptName;

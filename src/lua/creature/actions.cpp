@@ -38,7 +38,7 @@ bool Actions::registerLuaItemEvent(Action* action) {
 	for (const auto &itemId : itemIdVector) {
 		// Check if the item is already registered and prevent it from being registered again
 		if (hasItemId(itemId)) {
-			SPDLOG_WARN(
+			g_logger().warn(
 				"[{}] - Duplicate "
 				"registered item with id: {} in range from id: {}, to id: {}, for script: {}",
 				__FUNCTION__,
@@ -75,7 +75,7 @@ bool Actions::registerLuaUniqueEvent(Action* action) {
 			setUniqueId(uniqueId, std::move(*action));
 			tmpVector.emplace_back(uniqueId);
 		} else {
-			SPDLOG_WARN(
+			g_logger().warn(
 				"[{}] duplicate registered item with uid: {} in range from uid: {}, to uid: {}, for script: {}",
 				__FUNCTION__,
 				uniqueId,
@@ -106,7 +106,7 @@ bool Actions::registerLuaActionEvent(Action* action) {
 			setActionId(actionId, std::move(*action));
 			tmpVector.emplace_back(actionId);
 		} else {
-			SPDLOG_WARN(
+			g_logger().warn(
 				"[{}] duplicate registered item with aid: {} in range from aid: {}, to aid: {}, for script: {}",
 				__FUNCTION__,
 				actionId,
@@ -137,7 +137,7 @@ bool Actions::registerLuaPositionEvent(Action* action) {
 			setPosition(position, std::move(*action));
 			tmpVector.emplace_back(position);
 		} else {
-			SPDLOG_WARN(
+			g_logger().warn(
 				"[{}] duplicate registered script with range position: {}, for script: {}",
 				__FUNCTION__,
 				position.toString(),
@@ -157,14 +157,14 @@ bool Actions::registerLuaEvent(Action* action) {
 	if (registerLuaItemEvent(action) || registerLuaUniqueEvent(action) || registerLuaActionEvent(action) || registerLuaPositionEvent(action)) {
 		return true;
 	} else {
-		SPDLOG_WARN(
+		g_logger().warn(
 			"[{}] missing id/aid/uid/position for one script event, for script: {}",
 			__FUNCTION__,
 			action->getScriptInterface()->getLoadingScriptName()
 		);
 		return false;
 	}
-	SPDLOG_DEBUG("[{}] missing or incorrect script: {}", __FUNCTION__, action->getScriptInterface()->getLoadingScriptName());
+	g_logger().debug("[{}] missing or incorrect script: {}", __FUNCTION__, action->getScriptInterface()->getLoadingScriptName());
 	return false;
 }
 
@@ -237,7 +237,7 @@ Action* Actions::getAction(const Item* item) {
 			tile) {
 			if (const Player* player = item->getHoldingPlayer();
 				player && item->getTopParent() == player) {
-				SPDLOG_DEBUG("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());
+				g_logger().debug("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());
 				return nullptr;
 			}
 
@@ -262,13 +262,13 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 	Action* action = getAction(item);
 	if (!action && transformTo > 0 && itemId != transformTo) {
 		if (g_game().transformItem(item, transformTo) == nullptr) {
-			spdlog::warn("[{}] item with id {} failed to transform to item {}", __FUNCTION__, itemId, transformTo);
+			g_logger().warn("[{}] item with id {} failed to transform to item {}", __FUNCTION__, itemId, transformTo);
 			return RETURNVALUE_CANNOTUSETHISOBJECT;
 		}
 
 		return RETURNVALUE_NOERROR;
 	} else if (transformTo > 0 && action) {
-		spdlog::warn("[{}] item with id {} already have action registered and cannot be use transformTo tag", __FUNCTION__, itemId);
+		g_logger().warn("[{}] item with id {} already have action registered and cannot be use transformTo tag", __FUNCTION__, itemId);
 	}
 
 	if (action != nullptr) {
@@ -507,9 +507,9 @@ Thing* Action::getTarget(Player* player, Creature* targetCreature, const Positio
 bool Action::executeUse(Player* player, Item* item, const Position &fromPosition, Thing* target, const Position &toPosition, bool isHotkey) {
 	// onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		SPDLOG_ERROR("[Action::executeUse - Player {}, on item {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 player->getName(), item->getName());
+		g_logger().error("[Action::executeUse - Player {}, on item {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 player->getName(), item->getName());
 		return false;
 	}
 

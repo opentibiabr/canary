@@ -18,6 +18,9 @@ class LogWithSpdLog final : public Logger {
 		LogWithSpdLog(const LogWithSpdLog &) = delete;
 		LogWithSpdLog &operator=(const LogWithSpdLog &) = delete;
 
+		void setLevel(const std::string &name) override;
+		[[nodiscard]] virtual std::string getLevel() const override;
+
 	private:
 		void _trace(const std::string &format) override;
 		void _debug(const std::string &format) override;

@@ -446,27 +446,29 @@
     <TargetName>$(ProjectName)-sln-dbg</TargetName>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
-    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+    <VcpkgEnableManifest>false</VcpkgEnableManifest>
     <VcpkgAutoLink>false</VcpkgAutoLink>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'">
-    <VcpkgInstalledDir>
-    </VcpkgInstalledDir>
+    <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
     <VcpkgTriplet>x64-windows</VcpkgTriplet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Vcpkg">
-    <VcpkgInstalledDir />
+    <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
     <VcpkgTriplet>x64-windows</VcpkgTriplet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Vcpkg">
-    <VcpkgInstalledDir />
+    <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
     <VcpkgTriplet>x64-windows</VcpkgTriplet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      $(VcpkgRoot)\installed\$(VcpkgTriplet)\include\;
+      vcpkg_installed\$(VcpkgTriplet)\include\
+      </AdditionalIncludeDirectories>
       <WarningLevel>Level1</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -478,7 +480,10 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(VcpkgRoot)\installed\$(VcpkgTriplet)\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>
+      $(VcpkgRoot)\installed\$(VcpkgTriplet)\lib\;
+      vcpkg_installed\$(VcpkgTriplet)\lib\
+      </AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <GenerateMapFile>false</GenerateMapFile>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
@@ -490,7 +495,10 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      $(VcpkgRoot)\installed\$(VcpkgTriplet)\include\;
+      vcpkg_installed\$(VcpkgTriplet)\include\
+      </AdditionalIncludeDirectories>
       <WarningLevel>Level1</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -502,7 +510,10 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(VcpkgRoot)\installed\$(VcpkgTriplet)\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>
+      $(VcpkgRoot)\installed\$(VcpkgTriplet)\lib\;
+      vcpkg_installed\$(VcpkgTriplet)\lib\
+      </AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <GenerateMapFile>false</GenerateMapFile>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
@@ -514,7 +525,10 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      $(VcpkgRoot)\installed\$(VcpkgTriplet)\include\;
+      vcpkg_installed\$(VcpkgTriplet)\include\
+      </AdditionalIncludeDirectories>
       <WarningLevel>Level1</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -526,7 +540,10 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(VcpkgRoot)\installed\$(VcpkgTriplet)\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>
+      $(VcpkgRoot)\installed\$(VcpkgTriplet)\lib\;
+      vcpkg_installed\$(VcpkgTriplet)\lib\
+      </AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <GenerateMapFile>false</GenerateMapFile>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>

@@ -11,8 +11,6 @@
 #define SRC_MAP_MAP_H_
 
 #include "mapcache.h"
-#include "utils/astarnodes.h"
-
 #include "map/town.h"
 #include "map/house/house.h"
 #include "creatures/monsters/spawns/spawn_monster.h"

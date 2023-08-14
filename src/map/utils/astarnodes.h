@@ -1,3 +1,5 @@
+#pragma once
+
 struct AStarNode {
 		AStarNode* parent;
 		int_fast32_t f;

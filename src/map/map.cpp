@@ -7,14 +7,16 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "map.h"
+#include "utils/astarnodes.h"
 
-#include "io/iomap.h"
-#include "io/iomapserialize.h"
-#include "creatures/combat/combat.h"
-#include "creatures/creature.h"
-#include "game/game.h"
-#include "creatures/monsters/monster.h"
+#include <io/iomap.h>
+#include <io/iomapserialize.h>
+#include <creatures/combat/combat.h>
+#include <creatures/creature.h>
+#include <game/game.h>
+#include <creatures/monsters/monster.h>
+
 
 bool Map::load(const std::string &identifier, const Position &pos, bool unload) {
 	try {

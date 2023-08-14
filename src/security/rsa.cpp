@@ -144,7 +144,6 @@ uint16_t RSA::decodeLength(char*&pos) const {
 			SPDLOG_ERROR("[RSA::loadPEM] - Invalid 'length'");
 			return 0;
 		}
-		// Removendo a inicialização redundante de buffer
 		switch (length) {
 			case 4:
 				buffer[3] = static_cast<uint8_t>(*pos++);

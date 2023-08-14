@@ -89,7 +89,7 @@ bool ConfigManager::load() {
 		return false;
 	}
 
-	inject<Logger>().setLevel(getGlobalString(L, "logLevel", "info"));
+	g_logger().setLevel(getGlobalString(L, "logLevel", "info"));
 
 	// Parse config
 	// Info that must be loaded one time (unless we reset the modules involved)

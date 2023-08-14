@@ -265,7 +265,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	platform = "unknown";
 #endif
 
-	inject<Logger>().info("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, platform);
+	g_logger().info("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, platform);
 
 #if defined(LUAJIT_VERSION)
 	SPDLOG_INFO("Linked with {} for Lua support", LUAJIT_VERSION);

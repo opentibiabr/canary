@@ -18,6 +18,8 @@ class LogWithSpdLog final : public Logger {
 		LogWithSpdLog(const LogWithSpdLog &) = delete;
 		LogWithSpdLog &operator=(const LogWithSpdLog &) = delete;
 
+		static LogWithSpdLog &getInstance();
+
 		void setLevel(const std::string &name) override;
 		[[nodiscard]] virtual std::string getLevel() const override;
 
@@ -29,5 +31,7 @@ class LogWithSpdLog final : public Logger {
 		void _error(const std::string &format) override;
 		void _critical(const std::string &format) override;
 };
+
+constexpr auto g_logger = LogWithSpdLog::getInstance;
 
 #endif // CANARY_LOGWITHSPDLOG_HPP

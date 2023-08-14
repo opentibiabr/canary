@@ -143,10 +143,7 @@ class Actions final : public Scripts {
 		Actions &operator=(const Actions &) = delete;
 
 		static Actions &getInstance() {
-			// Guaranteed to be destroyed
-			static Actions instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Actions>();
 		}
 
 		bool useItem(Player* player, const Position &pos, uint8_t index, Item* item, bool isHotkey);
@@ -229,6 +226,6 @@ class Actions final : public Scripts {
 		Action* getAction(const Item* item);
 };
 
-constexpr auto g_actions = &Actions::getInstance;
+constexpr auto g_actions = Actions::getInstance;
 
 #endif // SRC_LUA_CREATURE_ACTIONS_H_

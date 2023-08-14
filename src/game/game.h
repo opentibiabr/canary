@@ -54,10 +54,7 @@ class Game {
 		Game &operator=(const Game &) = delete;
 
 		static Game &getInstance() {
-			// Guaranteed to be destroyed
-			static Game instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Game>();
 		}
 
 		void resetMonsters() const;
@@ -871,6 +868,6 @@ class Game {
 		std::unique_ptr<IOWheel> m_IOWheel;
 };
 
-constexpr auto g_game = &Game::getInstance;
+constexpr auto g_game = Game::getInstance;
 
 #endif // SRC_GAME_GAME_H_

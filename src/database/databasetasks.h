@@ -31,10 +31,7 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks> {
 		void operator=(const DatabaseTasks &) = delete;
 
 		static DatabaseTasks &getInstance() {
-			// Guaranteed to be destroyed
-			static DatabaseTasks instance;
-			// Instantiated on first use
-			return instance;
+			return inject<DatabaseTasks>();
 		}
 
 		bool SetDatabaseInterface(Database* database);
@@ -59,6 +56,6 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks> {
 		bool flushTasks = false;
 };
 
-constexpr auto g_databaseTasks = &DatabaseTasks::getInstance;
+constexpr auto g_databaseTasks = DatabaseTasks::getInstance;
 
 #endif // SRC_DATABASE_DATABASETASKS_H_

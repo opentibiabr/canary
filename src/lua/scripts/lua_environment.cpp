@@ -21,7 +21,21 @@ LuaEnvironment::~LuaEnvironment() {
 	if (!testInterface) {
 		delete testInterface;
 	}
+
+	shuttingDown = true;
 	closeState();
+}
+
+lua_State* LuaEnvironment::getLuaState() {
+	if (shuttingDown) {
+		return luaState;
+	}
+
+	if (luaState == nullptr) {
+		initState();
+	}
+
+	return luaState;
 }
 
 bool LuaEnvironment::initState() {

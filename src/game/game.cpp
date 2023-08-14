@@ -5910,12 +5910,11 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				// Charm rune (target as player)
 				MonsterType* mType = g_monsters().getMonsterType(attacker->getName());
 				if (mType) {
-					IOBestiary g_bestiary;
-					charmRune_t activeCharm = g_bestiary.getCharmFromTarget(targetPlayer, mType);
+					charmRune_t activeCharm = g_iobestiary().getCharmFromTarget(targetPlayer, mType);
 					if (activeCharm == CHARM_PARRY) {
-						Charm* charm = g_bestiary.getBestiaryCharm(activeCharm);
+						Charm* charm = g_iobestiary().getBestiaryCharm(activeCharm);
 						if (charm && charm->type == CHARM_DEFENSIVE && (charm->chance > normal_random(0, 100))) {
-							g_bestiary.parseCharmCombat(charm, targetPlayer, attacker, (damage.primary.value + damage.secondary.value));
+							g_iobestiary().parseCharmCombat(charm, targetPlayer, attacker, (damage.primary.value + damage.secondary.value));
 						}
 					}
 				}

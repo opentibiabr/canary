@@ -54,7 +54,7 @@ class LuaScriptInterface : public LuaFunctionsLoader {
 			loadedScriptName = scriptName;
 		}
 
-		lua_State* getLuaState() const {
+		virtual lua_State* getLuaState() {
 			return luaState;
 		}
 

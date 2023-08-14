@@ -8,6 +8,10 @@
 phmap::btree_map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
 
 std::shared_ptr<Zone> Zone::addZone(const std::string &name) {
+	if (zones[name]) {
+		spdlog::error("Zone {} already exists", name);
+		return nullptr;
+	}
 	zones[name] = std::make_shared<Zone>(name);
 	return zones[name];
 }
@@ -77,7 +81,10 @@ phmap::btree_set<Tile*> Zone::getTiles() const {
 phmap::btree_set<Creature*> Zone::getCreatures() const {
 	phmap::btree_set<Creature*> zoneCreatures;
 	for (Tile* tile : getTiles()) {
-		auto creatures = tile->getCreatures();
+		const auto creatures = tile->getCreatures();
+		if (!creatures) {
+			continue;
+		}
 		for (auto creature : *creatures) {
 			zoneCreatures.insert(creature);
 		}
@@ -140,4 +147,12 @@ void Zone::removeNpcs() {
 
 void Zone::clearZones() {
 	zones.clear();
+}
+
+std::vector<std::shared_ptr<Zone>> Zone::getZones() {
+	std::vector<std::shared_ptr<Zone>> result;
+	for (auto &[name, zone] : zones) {
+		result.push_back(zone);
+	}
+	return result;
 }

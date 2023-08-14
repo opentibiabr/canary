@@ -34,7 +34,7 @@ struct Area {
 class Zone {
 	public:
 		Zone(const std::string &name) :
-			name(name) { }
+			name(name), areas({}) { }
 
 		// Deleted copy constructor and assignment operator.
 		Zone(const Zone &) = delete;
@@ -64,11 +64,12 @@ class Zone {
 		static std::shared_ptr<Zone> addZone(const std::string &name);
 		static std::shared_ptr<Zone> getZone(const std::string &name);
 		static std::shared_ptr<Zone> getZone(const Position &position);
+		static std::vector<std::shared_ptr<Zone>> getZones();
 		static void clearZones();
 
 	private:
 		std::string name;
-		std::vector<Area> areas = {};
+		std::vector<Area> areas;
 
 		static phmap::btree_map<std::string, std::shared_ptr<Zone>> zones;
 };

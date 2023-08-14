@@ -28,6 +28,7 @@ class ZoneFunctions final : LuaScriptInterface {
 
 			// static methods
 			registerMethod(L, "Zone", "getByPosition", ZoneFunctions::luaZoneGetByPosition);
+			registerMethod(L, "Zone", "getAll", ZoneFunctions::luaZoneGetAll);
 		}
 
 	private:
@@ -50,6 +51,7 @@ class ZoneFunctions final : LuaScriptInterface {
 		static int luaZoneRegister(lua_State* L);
 
 		static int luaZoneGetByPosition(lua_State* L);
+		static int luaZoneGetAll(lua_State* L);
 };
 
 #endif // SRC_LUA_FUNCTIONS_CORE_GAME_ZONE_FUNCTIONS_HPP_

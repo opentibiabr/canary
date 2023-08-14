@@ -261,3 +261,18 @@ int ZoneFunctions::luaZoneGetByPosition(lua_State* L) {
 	setMetatable(L, -1, "Zone");
 	return 1;
 }
+
+int ZoneFunctions::luaZoneGetAll(lua_State* L) {
+	// Zone.getAll()
+	auto zones = Zone::getZones();
+	lua_createtable(L, static_cast<int>(zones.size()), 0);
+
+	int index = 0;
+	for (auto zone : zones) {
+		index++;
+		pushUserdata<Zone>(L, zone);
+		setMetatable(L, -1, "Zone");
+		lua_rawseti(L, -2, index);
+	}
+	return 1;
+}

@@ -454,23 +454,23 @@ ReturnValue Container::queryMaxCount(int32_t index, const Thing &thing, uint32_t
 ReturnValue Container::queryRemove(const Thing &thing, uint32_t count, uint32_t flags, Creature* actor /*= nullptr */) const {
 	int32_t index = getThingIndex(&thing);
 	if (index == -1) {
-		SPDLOG_DEBUG("{} - Failed to get thing index", __FUNCTION__);
+		g_logger().debug("{} - Failed to get thing index", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	const Item* item = thing.getItem();
 	if (item == nullptr) {
-		SPDLOG_DEBUG("{} - Item is nullptr", __FUNCTION__);
+		g_logger().debug("{} - Item is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	if (count == 0 || (item->isStackable() && count > item->getItemCount())) {
-		SPDLOG_DEBUG("{} - Failed to get item count", __FUNCTION__);
+		g_logger().debug("{} - Failed to get item count", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	if (!item->isMoveable() && !hasBitSet(FLAG_IGNORENOTMOVEABLE, flags)) {
-		SPDLOG_DEBUG("{} - Item is not moveable", __FUNCTION__);
+		g_logger().debug("{} - Item is not moveable", __FUNCTION__);
 		return RETURNVALUE_NOTMOVEABLE;
 	}
 	const HouseTile* houseTile = dynamic_cast<const HouseTile*>(getTopParent());

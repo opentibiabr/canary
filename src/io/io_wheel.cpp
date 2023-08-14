@@ -49,7 +49,7 @@ namespace InternalPlayerWheel {
 	void registerWheelSpellTable(const T &spellData, const std::string &name, WheelSpellGrade_t gradeType) {
 		if (name == "Any_Focus_Mage_Spell") {
 			for (const std::string &focusSpellName : m_focusSpells) {
-				spdlog::debug("[{}] registered any spell: {}", __FUNCTION__, focusSpellName);
+				g_logger().debug("[{}] registered any spell: {}", __FUNCTION__, focusSpellName);
 				registerWheelSpellTable(spellData, focusSpellName, gradeType);
 			}
 			return;
@@ -57,7 +57,7 @@ namespace InternalPlayerWheel {
 
 		auto spell = g_spells().getInstantSpellByName(name);
 		if (spell) {
-			spdlog::debug("[{}] registering instant spell with name {}", __FUNCTION__, spell->getName());
+			g_logger().debug("[{}] registering instant spell with name {}", __FUNCTION__, spell->getName());
 			// Increase data
 			const auto &increaseData = spellData.increase;
 			if (increaseData.damage > 0) {
@@ -94,7 +94,7 @@ namespace InternalPlayerWheel {
 			}
 			spell->setWheelOfDestinyUpgraded(true);
 		} else {
-			spdlog::warn("[{}] Spell with name {} could not be found and was ignored", __FUNCTION__, name);
+			g_logger().warn("[{}] Spell with name {} could not be found and was ignored", __FUNCTION__, name);
 		}
 	}
 
@@ -155,9 +155,9 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 
 	// Register enum with default values for each vocation
 	if (!reload) {
-		spdlog::info("Loading wheel of destiny... [Success]");
+		g_logger().info("Loading wheel of destiny... [Success]");
 	} else {
-		spdlog::info("Reloading wheel of destiny... [Success]");
+		g_logger().info("Reloading wheel of destiny... [Success]");
 	}
 	return true;
 }
@@ -203,7 +203,7 @@ int8_t IOWheel::getSlotPrioritaryOrder(WheelSlots_t slot) const {
 		return 4;
 	}
 
-	spdlog::error("[{}] unknown whell slot type': {}", __FUNCTION__, std::to_string(slot));
+	g_logger().error("[{}] unknown whell slot type': {}", __FUNCTION__, std::to_string(slot));
 	return -1;
 }
 

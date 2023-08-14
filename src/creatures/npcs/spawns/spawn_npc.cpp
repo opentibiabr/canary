@@ -52,7 +52,7 @@ bool SpawnsNpc::loadFromXml(const std::string &fileNpcName) {
 		}
 
 		if (!spawnNode.first_child()) {
-			SPDLOG_WARN("[SpawnsNpc::loadFromXml] - Empty spawn at position: {} with radius: {}", centerPos.toString(), radius);
+			g_logger().warn("[SpawnsNpc::loadFromXml] - Empty spawn at position: {} with radius: {}", centerPos.toString(), radius);
 			continue;
 		}
 
@@ -87,9 +87,9 @@ bool SpawnsNpc::loadFromXml(const std::string &fileNpcName) {
 					spawnNpc.addNpc(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
 				} else {
 					if (interval <= MINSPAWN_INTERVAL) {
-						SPDLOG_WARN("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be less than {} seconds", nameAttribute.as_string(), pos.toString(), MINSPAWN_INTERVAL / 1000);
+						g_logger().warn("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be less than {} seconds", nameAttribute.as_string(), pos.toString(), MINSPAWN_INTERVAL / 1000);
 					} else {
-						SPDLOG_WARN("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be more than {} seconds", nameAttribute.as_string(), pos.toString(), MAXSPAWN_INTERVAL / 1000);
+						g_logger().warn("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be more than {} seconds", nameAttribute.as_string(), pos.toString(), MAXSPAWN_INTERVAL / 1000);
 					}
 				}
 			}
@@ -252,7 +252,7 @@ void SpawnNpc::cleanup() {
 bool SpawnNpc::addNpc(const std::string &name, const Position &pos, Direction dir, uint32_t scheduleInterval) {
 	NpcType* npcType = g_npcs().getNpcType(name);
 	if (!npcType) {
-		SPDLOG_ERROR("Can not find {}", name);
+		g_logger().error("Can not find {}", name);
 		return false;
 	}
 

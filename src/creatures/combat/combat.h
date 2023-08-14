@@ -146,7 +146,7 @@ class MatrixArea {
 			if (row < rows && col < cols) {
 				data_[row][col] = value;
 			} else {
-				SPDLOG_ERROR("[{}] Access exceeds the upper limit of memory block");
+				g_logger().error("[{}] Access exceeds the upper limit of memory block");
 				throw std::out_of_range("Access exceeds the upper limit of memory block");
 			}
 		}

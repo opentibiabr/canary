@@ -39,9 +39,9 @@ Signals::Signals(asio::io_service &service) :
 void Signals::asyncWait() {
 	set.async_wait([this](std::error_code err, int signal) {
 		if (err) {
-			SPDLOG_ERROR("[Signals::asyncWait] - "
-						 "Signal handling error: {}",
-						 err.message());
+			g_logger().error("[Signals::asyncWait] - "
+							 "Signal handling error: {}",
+							 err.message());
 			return;
 		}
 		dispatchSignalHandler(signal);
@@ -83,53 +83,53 @@ void Signals::dispatchSignalHandler(int signal) {
 
 void Signals::sigbreakHandler() {
 	// Dispatcher thread
-	SPDLOG_INFO("SIGBREAK received, shutting game server down...");
+	g_logger().info("SIGBREAK received, shutting game server down...");
 	g_game().setGameState(GAME_STATE_SHUTDOWN);
 }
 
 void Signals::sigtermHandler() {
 	// Dispatcher thread
-	SPDLOG_INFO("SIGTERM received, shutting game server down...");
+	g_logger().info("SIGTERM received, shutting game server down...");
 	g_game().setGameState(GAME_STATE_SHUTDOWN);
 }
 
 void Signals::sigusr1Handler() {
 	// Dispatcher thread
-	SPDLOG_INFO("SIGUSR1 received, saving the game state...");
+	g_logger().info("SIGUSR1 received, saving the game state...");
 	g_game().saveGameState();
 }
 
 void Signals::sighupHandler() {
 	// Dispatcher thread
-	SPDLOG_INFO("SIGHUP received, reloading config files...");
+	g_logger().info("SIGHUP received, reloading config files...");
 
 	g_configManager().reload();
-	SPDLOG_INFO("Reloaded config");
+	g_logger().info("Reloaded config");
 
 	g_game().raids.reload();
 	g_game().raids.startup();
-	SPDLOG_INFO("Reloaded raids");
+	g_logger().info("Reloaded raids");
 
 	Item::items.reload();
-	SPDLOG_INFO("Reloaded items");
+	g_logger().info("Reloaded items");
 
 	g_game().mounts.reload();
-	SPDLOG_INFO("Reloaded mounts");
+	g_logger().info("Reloaded mounts");
 
 	g_events().loadFromXml();
-	SPDLOG_INFO("Reloaded events");
+	g_logger().info("Reloaded events");
 
 	g_chat().load();
-	SPDLOG_INFO("Reloaded chatchannels");
+	g_logger().info("Reloaded chatchannels");
 
 	g_luaEnvironment().loadFile(g_configManager().getString(CORE_DIRECTORY) + "/core.lua", "core.lua");
-	SPDLOG_INFO("Reloaded core.lua");
+	g_logger().info("Reloaded core.lua");
 
 	lua_gc(g_luaEnvironment().getLuaState(), LUA_GCCOLLECT, 0);
 }
 
 void Signals::sigintHandler() {
 	// Dispatcher thread
-	SPDLOG_INFO("SIGINT received, shutting game server down...");
+	g_logger().info("SIGINT received, shutting game server down...");
 	g_game().setGameState(GAME_STATE_SHUTDOWN);
 }

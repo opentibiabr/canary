@@ -20,14 +20,14 @@ static curl_slist* headers = NULL;
 
 void webhook_init() {
 	if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
-		SPDLOG_ERROR("Failed to init curl, no webhook messages may be sent");
+		g_logger().error("Failed to init curl, no webhook messages may be sent");
 		return;
 	}
 
 	headers = curl_slist_append(headers, "content-type: application/json");
 	headers = curl_slist_append(headers, "accept: application/json");
 	if (headers == NULL) {
-		SPDLOG_ERROR("Failed to init curl, appending request headers failed");
+		g_logger().error("Failed to init curl, appending request headers failed");
 		return;
 	}
 
@@ -43,13 +43,13 @@ void webhook_send_message(std::string title, std::string message, int color, std
 	}
 
 	if (!init) {
-		SPDLOG_ERROR("Failed to send webhook message; Did not (successfully) init");
+		g_logger().error("Failed to send webhook message; Did not (successfully) init");
 		return;
 	}
 
 	if (title.empty() || message.empty()) {
-		SPDLOG_ERROR("Failed to send webhook message; "
-					 "title or message to send was empty");
+		g_logger().error("Failed to send webhook message; "
+						 "title or message to send was empty");
 		return;
 	}
 
@@ -58,10 +58,10 @@ void webhook_send_message(std::string title, std::string message, int color, std
 	int response_code = webhook_send_message_(url.c_str(), payload.c_str(), &response_body);
 
 	if (response_code != 204 && response_code != -1) {
-		SPDLOG_ERROR("Failed to send webhook message; "
-					 "HTTP request failed with code: {}"
-					 "response body: {} request body: {}",
-					 response_code, response_body, payload);
+		g_logger().error("Failed to send webhook message; "
+						 "HTTP request failed with code: {}"
+						 "response body: {} request body: {}",
+						 response_code, response_body, payload);
 	}
 }
 
@@ -115,7 +115,7 @@ static std::string get_payload(std::string title, std::string message, int color
 static int webhook_send_message_(const char* url, const char* payload, std::string* response_body) {
 	CURL* curl = curl_easy_init();
 	if (!curl) {
-		SPDLOG_ERROR("Failed to send webhook message; curl_easy_init failed");
+		g_logger().error("Failed to send webhook message; curl_easy_init failed");
 		return -1;
 	}
 
@@ -133,7 +133,7 @@ static int webhook_send_message_(const char* url, const char* payload, std::stri
 	if (res == CURLE_OK) {
 		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
 	} else {
-		SPDLOG_ERROR("Failed to send webhook message with the error: {}", curl_easy_strerror(res));
+		g_logger().error("Failed to send webhook message with the error: {}", curl_easy_strerror(res));
 	}
 
 	curl_easy_cleanup(curl);

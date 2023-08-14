@@ -96,16 +96,16 @@ bool Spells::registerInstantLuaEvent(InstantSpell* event) {
 		// If the spell not have the "spell:words()" return a error message
 		const std::string &instantName = instant->getName();
 		if (instant->getWords().empty()) {
-			SPDLOG_ERROR("[Spells::registerInstantLuaEvent] - Missing register word for spell with name {}", instantName);
+			g_logger().error("[Spells::registerInstantLuaEvent] - Missing register word for spell with name {}", instantName);
 			return false;
 		}
 
 		const std::string &words = instant->getWords();
 		// Checks if there is any spell registered with the same name
 		if (hasInstantSpell(words)) {
-			SPDLOG_WARN("[Spells::registerInstantLuaEvent] - "
-						"Duplicate registered instant spell with words: {}, on spell with name: {}",
-						words, instantName);
+			g_logger().warn("[Spells::registerInstantLuaEvent] - "
+							"Duplicate registered instant spell with words: {}, on spell with name: {}",
+							words, instantName);
 			return false;
 		}
 		// Register spell word in the map
@@ -121,7 +121,7 @@ bool Spells::registerRuneLuaEvent(RuneSpell* event) {
 		uint16_t id = rune->getRuneItemId();
 		auto result = runes.emplace(rune->getRuneItemId(), std::move(*rune));
 		if (!result.second) {
-			SPDLOG_WARN(
+			g_logger().warn(
 				"[{}] duplicate registered rune with id: {}, for script: {}",
 				__FUNCTION__,
 				id,
@@ -329,9 +329,9 @@ bool CombatSpell::castSpell(Creature* creature, Creature* target) {
 bool CombatSpell::executeCastSpell(Creature* creature, const LuaVariant &var) const {
 	// onCastSpell(creature, var)
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		SPDLOG_ERROR("[CombatSpell::executeCastSpell - Creature {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 creature->getName());
+		g_logger().error("[CombatSpell::executeCastSpell - Creature {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 creature->getName());
 		return false;
 	}
 
@@ -581,7 +581,7 @@ int32_t Spell::getWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t
 			value += wheelOfDestinyUpgradedBoost.at(static_cast<uint8_t>(boost));
 		}
 	} catch (const std::out_of_range &e) {
-		SPDLOG_ERROR("[{}] invalid grade value, error code: {}", __FUNCTION__, e.what());
+		g_logger().error("[{}] invalid grade value, error code: {}", __FUNCTION__, e.what());
 	}
 	return value;
 }
@@ -599,7 +599,7 @@ void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t gr
 			wheelOfDestinyUpgradedBoost.at(static_cast<uint8_t>(boost)) = value;
 		}
 	} catch (const std::out_of_range &e) {
-		SPDLOG_ERROR("[{}] invalid grade value, error code: {}", __FUNCTION__, e.what());
+		g_logger().error("[{}] invalid grade value, error code: {}", __FUNCTION__, e.what());
 	}
 }
 
@@ -877,9 +877,9 @@ bool InstantSpell::castSpell(Creature* creature, Creature* target) {
 bool InstantSpell::executeCastSpell(Creature* creature, const LuaVariant &var) const {
 	// onCastSpell(creature, var)
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		SPDLOG_ERROR("[InstantSpell::executeCastSpell - Creature {} words {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 creature->getName(), getWords());
+		g_logger().error("[InstantSpell::executeCastSpell - Creature {} words {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 creature->getName(), getWords());
 		return false;
 	}
 
@@ -1021,9 +1021,9 @@ bool RuneSpell::internalCastSpell(Creature* creature, const LuaVariant &var, boo
 bool RuneSpell::executeCastSpell(Creature* creature, const LuaVariant &var, bool isHotkey) const {
 	// onCastSpell(creature, var, isHotkey)
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		SPDLOG_ERROR("[RuneSpell::executeCastSpell - Creature {} runeId {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 creature->getName(), getRuneItemId());
+		g_logger().error("[RuneSpell::executeCastSpell - Creature {} runeId {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 creature->getName(), getRuneItemId());
 		return false;
 	}
 

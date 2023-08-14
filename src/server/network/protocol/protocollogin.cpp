@@ -122,7 +122,7 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	 */
 
 	if (!Protocol::RSA_decrypt(msg)) {
-		SPDLOG_WARN("[ProtocolLogin::onRecvFirstMessage] - RSA Decrypt Failed");
+		g_logger().warn("[ProtocolLogin::onRecvFirstMessage] - RSA Decrypt Failed");
 		disconnect();
 		return;
 	}

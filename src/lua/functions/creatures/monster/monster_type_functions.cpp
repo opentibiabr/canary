@@ -662,9 +662,9 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 				monsterType->info.damageImmunities |= COMBAT_NEUTRALDAMAGE;
 				pushBoolean(L, true);
 			} else {
-				SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeCombatImmunities] - "
-							"Unknown immunity name {} for monster: {}",
-							immunity, monsterType->name);
+				g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeCombatImmunities] - "
+								"Unknown immunity name {} for monster: {}",
+								immunity, monsterType->name);
 				lua_pushnil(L);
 			}
 		}
@@ -716,9 +716,9 @@ int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 			} else if (immunity == "bleed") {
 				condition = CONDITION_BLEEDING;
 			} else {
-				SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeConditionImmunities] - "
-							"Unknown immunity name: {} for monster: {}",
-							immunity, monsterType->name);
+				g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeConditionImmunities] - "
+								"Unknown immunity name: {} for monster: {}",
+								immunity, monsterType->name);
 				lua_pushnil(L);
 			}
 
@@ -771,7 +771,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddAttack(lua_State* L) {
 			if (g_monsters().deserializeSpell(spell, sb, monsterType->name)) {
 				monsterType->info.attackSpells.push_back(std::move(sb));
 			} else {
-				SPDLOG_WARN("Monster: {}, cant load spell: {}", monsterType->name, spell->name);
+				g_logger().warn("Monster: {}, cant load spell: {}", monsterType->name, spell->name);
 			}
 		} else {
 			lua_pushnil(L);
@@ -832,7 +832,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddDefense(lua_State* L) {
 			if (g_monsters().deserializeSpell(spell, sb, monsterType->name)) {
 				monsterType->info.defenseSpells.push_back(std::move(sb));
 			} else {
-				SPDLOG_WARN("Monster: {}, Cant load spell: {}", monsterType->name, spell->name);
+				g_logger().warn("Monster: {}, Cant load spell: {}", monsterType->name, spell->name);
 			}
 		} else {
 			lua_pushnil(L);
@@ -1135,7 +1135,7 @@ int MonsterTypeFunctions::luaMonsterTypeOutfit(lua_State* L) {
 		} else {
 			Outfit_t outfit = getOutfit(L, 2);
 			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
-				SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
+				g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
 				lua_pushnil(L);
 			} else {
 				monsterType->info.outfit = outfit;
@@ -1169,9 +1169,9 @@ int MonsterTypeFunctions::luaMonsterTypeRace(lua_State* L) {
 			} else if (race == "ink") {
 				monsterType->info.race = RACE_INK;
 			} else {
-				SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeRace] - "
-							"Unknown race type {}",
-							race);
+				g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeRace] - "
+								"Unknown race type {}",
+								race);
 				lua_pushnil(L);
 				return 1;
 			}

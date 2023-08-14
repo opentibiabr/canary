@@ -35,26 +35,6 @@ std::string LogWithSpdLog::getLevel() const {
 	return std::string { level.begin(), level.end() };
 }
 
-void LogWithSpdLog::_trace(const std::string &format) {
-	spdlog::trace(format);
-}
-
-void LogWithSpdLog::_debug(const std::string &format) {
-	spdlog::debug(format);
-}
-
-void LogWithSpdLog::_info(const std::string &format) {
-	spdlog::info(format);
-}
-
-void LogWithSpdLog::_warn(const std::string &format) {
-	spdlog::warn(format);
-}
-
-void LogWithSpdLog::_error(const std::string &format) {
-	spdlog::error(format);
-}
-
-void LogWithSpdLog::_critical(const std::string &format) {
-	spdlog::critical(format);
+void LogWithSpdLog::log(const std::string lvl, const fmt::basic_string_view<char> msg) const {
+	spdlog::log(spdlog::level::from_str(lvl), msg);
 }

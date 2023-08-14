@@ -160,6 +160,13 @@ find_package(unofficial-libmariadb CONFIG REQUIRED)
 
 find_path(BOOST_DI_INCLUDE_DIRS "boost/di.hpp")
 
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARY_DEBUG})
+else()
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARY_RELEASE})
+endif()
+
+
 include(GNUInstallDirs)
 
 # *****************************************************************************

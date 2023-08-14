@@ -585,7 +585,7 @@ void ItemParse::parseAbsorbPercent(const std::string &tmpStrValue, pugi::xml_att
 void ItemParse::parseSupressDrunk(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	std::string stringValue = tmpStrValue;
 	if (valueAttribute.as_bool()) {
-		ConditionType_t conditionType;
+		ConditionType_t conditionType = CONDITION_NONE;
 		if (stringValue == "suppressdrunk") {
 			conditionType = CONDITION_DRUNK;
 		} else if (stringValue == "suppressenergy") {

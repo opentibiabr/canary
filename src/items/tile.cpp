@@ -347,6 +347,10 @@ void Tile::onAddTileItem(Item* item) {
 
 	setTileFlags(item);
 
+	if (getZone()) {
+		getZone()->itemAdded(item);
+	}
+
 	const Position &cylinderMapPos = getPosition();
 
 	SpectatorHashSet spectators;
@@ -415,6 +419,10 @@ void Tile::onRemoveTileItem(const SpectatorHashSet &spectators, const std::vecto
 		if (it != g_game().browseFields.end()) {
 			it->second->removeThing(item, item->getItemCount());
 		}
+	}
+
+	if (getZone()) {
+		getZone()->itemRemoved(item);
 	}
 
 	resetTileFlags(item);

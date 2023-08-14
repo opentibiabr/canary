@@ -846,11 +846,7 @@ bool Game::internalPlaceCreature(Creature* creature, const Position &pos, bool e
 
 	auto fromZone = creature->getZone();
 	auto toZone = Zone::getZone(pos);
-
-	if (fromZone && !g_callbacks().checkCallback(EventCallback_t::zoneOnCreatureLeave, &EventCallback::zoneOnCreatureLeave, fromZone, creature)) {
-		return false;
-	}
-	if (toZone && !g_callbacks().checkCallback(EventCallback_t::zoneOnCreatureEnter, &EventCallback::zoneOnCreatureEnter, toZone, creature)) {
+	if (auto ret = onCreatureZoneChange(creature, fromZone, toZone); ret != RETURNVALUE_NOERROR) {
 		return false;
 	}
 
@@ -934,6 +930,9 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/) {
 	}
 
 	creature->getParent()->postRemoveNotification(creature, nullptr, 0);
+	if (creature->getZone()) {
+		creature->getZone()->creatureRemoved(creature);
+	}
 
 	creature->removeList();
 	creature->setRemoved();
@@ -1288,13 +1287,8 @@ ReturnValue Game::internalMoveCreature(Creature &creature, Tile &toTile, uint32_
 
 	auto fromZone = creature.getTile()->getZone();
 	auto toZone = toTile.getZone();
-	if (fromZone != toZone) {
-		if (fromZone && !g_callbacks().checkCallback(EventCallback_t::zoneOnCreatureLeave, &EventCallback::zoneOnCreatureLeave, fromZone, &creature)) {
-			return RETURNVALUE_NOTPOSSIBLE;
-		}
-		if (toZone && !g_callbacks().checkCallback(EventCallback_t::zoneOnCreatureEnter, &EventCallback::zoneOnCreatureEnter, toZone, &creature)) {
-			return RETURNVALUE_NOTPOSSIBLE;
-		}
+	if (auto ret = onCreatureZoneChange(&creature, fromZone, toZone); ret != RETURNVALUE_NOERROR) {
+		return ret;
 	}
 
 	map.moveCreature(creature, toTile);
@@ -2408,13 +2402,8 @@ ReturnValue Game::internalTeleport(Thing* thing, const Position &newPos, bool pu
 	if (Creature* creature = thing->getCreature()) {
 		auto fromZone = creature->getTile()->getZone();
 		auto toZone = toTile->getZone();
-		if (fromZone != toZone) {
-			if (fromZone && !g_callbacks().checkCallback(EventCallback_t::zoneOnCreatureLeave, &EventCallback::zoneOnCreatureLeave, fromZone, creature)) {
-				return RETURNVALUE_NOTPOSSIBLE;
-			}
-			if (toZone && !g_callbacks().checkCallback(EventCallback_t::zoneOnCreatureEnter, &EventCallback::zoneOnCreatureEnter, toZone, creature)) {
-				return RETURNVALUE_NOTPOSSIBLE;
-			}
+		if (auto ret = onCreatureZoneChange(creature, fromZone, toZone); ret != RETURNVALUE_NOERROR) {
+			return ret;
 		}
 
 		ReturnValue ret = toTile->queryAdd(0, *creature, 1, FLAG_NOLIMIT);
@@ -9861,12 +9850,6 @@ const std::unique_ptr<IOWheel> &Game::getIOWheel() const {
 
 ReturnValue Game::onCreatureZoneChange(Creature* creature, std::shared_ptr<Zone> &fromZone, std::shared_ptr<Zone> &toZone) {
 	if (fromZone == toZone) {
-		// creatureAdded is idempotent, so we can just call it. This is useful for
-		// when a creature is added to a zone since the from is going to be the same
-		// as the to.
-		if (toZone) {
-			toZone->creatureAdded(creature);
-		}
 		return RETURNVALUE_NOERROR;
 	}
 	if (!creature) {

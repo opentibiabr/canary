@@ -1,23 +1,38 @@
-#include "zone.hpp"
+/**
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
+ */
 
+#include "pch.hpp"
+
+#include "zone.hpp"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "creatures/npcs/npc.h"
 #include "creatures/players/player.h"
 
 phmap::btree_map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
+const static std::shared_ptr<Zone> nullZone = nullptr;
 
-std::shared_ptr<Zone> Zone::addZone(const std::string &name) {
+const std::shared_ptr<Zone> &Zone::addZone(const std::string &name) {
+	if (name == "default") {
+		spdlog::error("Zone name {} is reserved", name);
+		return nullZone;
+	}
 	if (zones[name]) {
 		spdlog::error("Zone {} already exists", name);
-		return nullptr;
+		return nullZone;
 	}
 	zones[name] = std::make_shared<Zone>(name);
 	return zones[name];
 }
 
 void Zone::addArea(Area area) {
-	for (auto &[name, zone] : zones) {
+	for (const auto &[name, zone] : zones) {
 		for (Area a : zone->areas) {
 			if (zone.get() == this) {
 				continue;
@@ -29,118 +44,72 @@ void Zone::addArea(Area area) {
 		}
 	}
 	areas.push_back(area);
-}
-
-bool Zone::isPositionInZone(const Position &pos) const {
-	for (Area area : areas) {
-		if (area.contains(pos)) {
-			return true;
-		}
-	}
-	return false;
-}
-
-std::shared_ptr<Zone> Zone::getZone(const Position &postion) {
-	for (auto &[name, zone] : zones) {
-		if (zone->isPositionInZone(postion)) {
-			return zone;
-		}
-	}
-	return nullptr;
-}
-
-std::shared_ptr<Zone> Zone::getZone(const std::string &name) {
-	return zones[name];
-}
-
-phmap::btree_set<Position> Zone::getPositions() const {
-	phmap::btree_set<Position> positions;
-	for (Area area : areas) {
-		for (int x = area.from.x; x <= area.to.x; x++) {
-			for (int y = area.from.y; y <= area.to.y; y++) {
-				for (int z = area.from.z; z <= area.to.z; z++) {
-					positions.insert(Position(x, y, z));
-				}
-			}
-		}
-	}
-	return positions;
-}
-
-phmap::btree_set<Tile*> Zone::getTiles() const {
-	phmap::btree_set<Tile*> tiles;
-	for (Position pos : getPositions()) {
+	for (const Position &pos : area) {
+		positions.insert(pos);
 		Tile* tile = g_game().map.getTile(pos);
 		if (tile) {
 			tiles.insert(tile);
 		}
 	}
+}
+
+bool Zone::isPositionInZone(const Position &pos) const {
+	return positions.contains(pos);
+}
+
+const std::shared_ptr<Zone> &Zone::getZone(const Position &postion) {
+	for (auto &[name, zone] : zones) {
+		if (zone->isPositionInZone(postion)) {
+			return zone;
+		}
+	}
+	return nullZone;
+}
+
+const std::shared_ptr<Zone> &Zone::getZone(const std::string &name) {
+	return zones[name];
+}
+
+const phmap::btree_set<Position> &Zone::getPositions() const {
+	return positions;
+}
+
+const phmap::btree_set<Tile*> &Zone::getTiles() const {
 	return tiles;
 }
 
-phmap::btree_set<Creature*> Zone::getCreatures() const {
-	phmap::btree_set<Creature*> zoneCreatures;
-	for (Tile* tile : getTiles()) {
-		const auto creatures = tile->getCreatures();
-		if (!creatures) {
-			continue;
-		}
-		for (auto creature : *creatures) {
-			zoneCreatures.insert(creature);
-		}
-	}
-	return zoneCreatures;
+const phmap::btree_set<Creature*> &Zone::getCreatures() const {
+	return creatures;
 }
 
-phmap::btree_set<Player*> Zone::getPlayers() const {
-	phmap::btree_set<Player*> zonePlayers;
-	for (Creature* creature : getCreatures()) {
-		if (creature->getPlayer()) {
-			zonePlayers.insert(creature->getPlayer());
-		}
-	}
-	return zonePlayers;
+const phmap::btree_set<Player*> &Zone::getPlayers() const {
+	return players;
 }
 
-phmap::btree_set<Monster*> Zone::getMonsters() const {
-	phmap::btree_set<Monster*> zoneMonsters;
-	for (Creature* creature : getCreatures()) {
-		if (creature->getMonster()) {
-			zoneMonsters.insert(creature->getMonster());
-		}
-	}
-	return zoneMonsters;
+const phmap::btree_set<Monster*> &Zone::getMonsters() const {
+	return monsters;
 }
 
-phmap::btree_set<Npc*> Zone::getNpcs() const {
-	phmap::btree_set<Npc*> zoneNpcs;
-	for (Creature* creature : getCreatures()) {
-		if (creature->getNpc()) {
-			zoneNpcs.insert(creature->getNpc());
-		}
-	}
-	return zoneNpcs;
+const phmap::btree_set<Npc*> &Zone::getNpcs() const {
+	return npcs;
 }
 
-phmap::btree_set<Item*> Zone::getItems() const {
-	phmap::btree_set<Item*> zoneItems;
-	for (Tile* tile : getTiles()) {
-		auto items = tile->getItemList();
-		for (auto item : *items) {
-			zoneItems.insert(item);
-		}
-	}
-	return zoneItems;
+const phmap::btree_set<Item*> &Zone::getItems() const {
+	return items;
 }
 
-void Zone::removeMonsters() {
-	for (auto monster : getMonsters()) {
+const void Zone::removeMonsters() {
+	// copy monsters because removeCreature will remove monster from monsters
+	phmap::btree_set<Monster*> monstersCopy = monsters;
+	for (auto monster : monstersCopy) {
 		g_game().removeCreature(monster);
 	}
 }
 
-void Zone::removeNpcs() {
-	for (auto npc : getNpcs()) {
+const void Zone::removeNpcs() {
+	// copy npcs because removeCreature will remove npc from npcs
+	phmap::btree_set<Npc*> npcsCopy = npcs;
+	for (auto npc : npcsCopy) {
 		g_game().removeCreature(npc);
 	}
 }
@@ -149,10 +118,45 @@ void Zone::clearZones() {
 	zones.clear();
 }
 
-std::vector<std::shared_ptr<Zone>> Zone::getZones() {
-	std::vector<std::shared_ptr<Zone>> result;
-	for (auto &[name, zone] : zones) {
-		result.push_back(zone);
+const std::vector<std::shared_ptr<Zone>> &Zone::getZones() {
+	static std::vector<std::shared_ptr<Zone>> zonesVector;
+	zonesVector.clear();
+	for (const auto &[_, zone] : zones) {
+		zonesVector.push_back(zone);
 	}
-	return result;
+	return zonesVector;
+}
+
+void Zone::creatureAdded(Creature* creature) {
+	creatures.insert(creature);
+	if (creature->getPlayer()) {
+		players.insert(creature->getPlayer());
+	}
+	if (creature->getMonster()) {
+		monsters.insert(creature->getMonster());
+	}
+	if (creature->getNpc()) {
+		npcs.insert(creature->getNpc());
+	}
+}
+
+void Zone::creatureRemoved(Creature* creature) {
+	creatures.erase(creature);
+	if (creature->getPlayer()) {
+		players.erase(creature->getPlayer());
+	}
+	if (creature->getMonster()) {
+		monsters.erase(creature->getMonster());
+	}
+	if (creature->getNpc()) {
+		npcs.erase(creature->getNpc());
+	}
+}
+
+void Zone::itemAdded(Item* item) {
+	items.insert(item);
+}
+
+void Zone::itemRemoved(Item* item) {
+	items.erase(item);
 }

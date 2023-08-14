@@ -156,7 +156,7 @@ namespace InternalGame {
 
 		int64_t value = attribute->getInteger();
 		if (value < std::numeric_limits<T>::min() || value > std::numeric_limits<T>::max()) {
-			spdlog::error("[{}] value is out of range for the specified type", __FUNCTION__);
+			g_logger().error("[{}] value is out of range for the specified type", __FUNCTION__);
 			return 0;
 		}
 
@@ -210,8 +210,8 @@ void Game::loadBoostedCreature() {
 	auto &db = Database::getInstance();
 	const auto &result = db.storeQuery("SELECT * FROM `boosted_creature`");
 	if (!result) {
-		SPDLOG_WARN("[Game::loadBoostedCreature] - "
-					"Failed to detect boosted creature database. (CODE 01)");
+		g_logger().warn("[Game::loadBoostedCreature] - "
+						"Failed to detect boosted creature database. (CODE 01)");
 		return;
 	}
 
@@ -245,16 +245,16 @@ void Game::loadBoostedCreature() {
 	}
 
 	if (selectedMonster.raceId == 0) {
-		SPDLOG_WARN("[Game::loadBoostedCreature] - "
-					"It was not possible to generate a new boosted creature.");
+		g_logger().warn("[Game::loadBoostedCreature] - "
+						"It was not possible to generate a new boosted creature.");
 		return;
 	}
 
 	const auto monsterType = g_monsters().getMonsterType(selectedMonster.name);
 	if (!monsterType) {
-		SPDLOG_WARN("[Game::loadBoostedCreature] - "
-					"It was not possible to generate a new boosted creature. Monster '"
-					+ selectedMonster.name + "' not found.");
+		g_logger().warn("[Game::loadBoostedCreature] - "
+						"It was not possible to generate a new boosted creature. Monster '"
+						+ selectedMonster.name + "' not found.");
 		return;
 	}
 
@@ -273,8 +273,8 @@ void Game::loadBoostedCreature() {
 		+ "`raceid` = '" + std::to_string(selectedMonster.raceId) + "'";
 
 	if (!db.executeQuery(query)) {
-		SPDLOG_WARN("[Game::loadBoostedCreature] - "
-					"Failed to detect boosted creature database. (CODE 02)");
+		g_logger().warn("[Game::loadBoostedCreature] - "
+						"Failed to detect boosted creature database. (CODE 02)");
 	}
 }
 
@@ -393,7 +393,7 @@ void Game::saveGameState() {
 		setGameState(GAME_STATE_MAINTAIN);
 	}
 
-	SPDLOG_INFO("Saving server...");
+	g_logger().info("Saving server...");
 
 	for (const auto &it : players) {
 		it.second->loginPosition = it.second->getPosition();
@@ -456,7 +456,7 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 
 	if (!fs::exists(customMapPath)) {
 		if (!fs::create_directory(customMapPath)) {
-			SPDLOG_ERROR("Failed to create custom map directory {}", customMapPath);
+			g_logger().error("Failed to create custom map directory {}", customMapPath);
 			return false;
 		}
 	}
@@ -473,25 +473,25 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 
 		// Do not load more maps than possible
 		if (customMapIndex >= 50) {
-			SPDLOG_WARN("Maximum number of custom maps loaded. Custom map {} [ignored]", filename);
+			g_logger().warn("Maximum number of custom maps loaded. Custom map {} [ignored]", filename);
 			continue;
 		}
 
 		// Filenames that start with a # are ignored.
 		if (filename.at(0) == '#') {
-			SPDLOG_INFO("Custom map {} [disabled]", filename);
+			g_logger().info("Custom map {} [disabled]", filename);
 			continue;
 		}
 
 		// Avoid loading main map again.
 		if (filename == g_configManager().getString(MAP_NAME)) {
-			SPDLOG_WARN("Custom map {} is main map", filename);
+			g_logger().warn("Custom map {} is main map", filename);
 			continue;
 		}
 
-		SPDLOG_INFO("Loading custom map {}", filename);
+		g_logger().info("Loading custom map {}", filename);
 		if (!map.loadMapCustom(filename, true, true, true, customMapIndex)) {
-			SPDLOG_ERROR("Failed to load custom map {}", filename);
+			g_logger().error("Failed to load custom map {}", filename);
 			return false;
 		}
 		customMapIndex++;
@@ -691,7 +691,7 @@ Creature* Game::getCreatureByID(uint32_t id) {
 	} else if (id <= Npc::npcAutoID) {
 		return getNpcByID(id);
 	} else {
-		SPDLOG_WARN("Creature with id {} not exists");
+		g_logger().warn("Creature with id {} not exists");
 	}
 	return nullptr;
 }
@@ -995,7 +995,7 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 
 	std::fstream fileStream(file, std::ios::in | std::ios::binary);
 	if (!fileStream.is_open()) {
-		SPDLOG_ERROR("[Game::loadAppearanceProtobuf] - Failed to load {}, file cannot be oppened", file);
+		g_logger().error("[Game::loadAppearanceProtobuf] - Failed to load {}, file cannot be oppened", file);
 		fileStream.close();
 		return ERROR_NOT_OPEN;
 	}
@@ -1005,7 +1005,7 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 	appearances = Appearances();
 	if (!appearances.ParseFromIstream(&fileStream)) {
-		SPDLOG_ERROR("[Game::loadAppearanceProtobuf] - Failed to parse binary file {}, file is invalid", file);
+		g_logger().error("[Game::loadAppearanceProtobuf] - Failed to parse binary file {}, file is invalid", file);
 		fileStream.close();
 		return ERROR_NOT_OPEN;
 	}
@@ -1651,11 +1651,11 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 
 ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index, Item* item, uint32_t count, Item** internalMoveItem, uint32_t flags /*= 0*/, Creature* actor /*=nullptr*/, Item* tradeItem /* = nullptr*/) {
 	if (fromCylinder == nullptr) {
-		SPDLOG_ERROR("[{}] fromCylinder is nullptr", __FUNCTION__);
+		g_logger().error("[{}] fromCylinder is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 	if (toCylinder == nullptr) {
-		SPDLOG_ERROR("[{}] toCylinder is nullptr", __FUNCTION__);
+		g_logger().error("[{}] toCylinder is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
@@ -1893,11 +1893,11 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 
 ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t index, uint32_t flags, bool test, uint32_t &remainderCount) {
 	if (toCylinder == nullptr) {
-		SPDLOG_ERROR("[{}] fromCylinder is nullptr", __FUNCTION__);
+		g_logger().error("[{}] fromCylinder is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 	if (item == nullptr) {
-		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
+		g_logger().error("[{}] item is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
@@ -1981,12 +1981,12 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 
 ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool test /*= false*/, uint32_t flags /*= 0*/, bool force /*= false*/) {
 	if (item == nullptr) {
-		SPDLOG_DEBUG("{} - Item is nullptr", __FUNCTION__);
+		g_logger().debug("{} - Item is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 	Cylinder* cylinder = item->getParent();
 	if (cylinder == nullptr) {
-		SPDLOG_DEBUG("{} - Cylinder is nullptr", __FUNCTION__);
+		g_logger().debug("{} - Cylinder is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 	Tile* fromTile = cylinder->getTile();
@@ -2001,17 +2001,17 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 	}
 	ReturnValue ret = cylinder->queryRemove(*item, count, flags | FLAG_IGNORENOTMOVEABLE);
 	if (!force && ret != RETURNVALUE_NOERROR) {
-		SPDLOG_DEBUG("{} - Failed to execute query remove", __FUNCTION__);
+		g_logger().debug("{} - Failed to execute query remove", __FUNCTION__);
 		return ret;
 	}
 	if (!force && !item->canRemove()) {
-		SPDLOG_DEBUG("{} - Failed to remove item", __FUNCTION__);
+		g_logger().debug("{} - Failed to remove item", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	// Not remove item with decay loaded from map
 	if (!force && item->canDecay() && cylinder->getTile() && item->getLoadedFromMap()) {
-		SPDLOG_DEBUG("Cannot remove item with id {}, name {}, on position {}", item->getID(), item->getName(), cylinder->getPosition().toString());
+		g_logger().debug("Cannot remove item with id {}, name {}, on position {}", item->getID(), item->getName(), cylinder->getPosition().toString());
 		item->stopDecaying();
 		return RETURNVALUE_THISISIMPOSSIBLE;
 	}
@@ -2065,7 +2065,7 @@ ReturnValue Game::internalPlayerAddItem(Player* player, Item* item, bool dropOnM
 
 Item* Game::findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depthSearch /*= true*/, int32_t subType /*= -1*/) const {
 	if (cylinder == nullptr) {
-		SPDLOG_ERROR("[{}] Cylinder is nullptr", __FUNCTION__);
+		g_logger().error("[{}] Cylinder is nullptr", __FUNCTION__);
 		return nullptr;
 	}
 
@@ -2112,7 +2112,7 @@ Item* Game::findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depth
 
 bool Game::removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*/, bool useBalance /*= false*/) {
 	if (cylinder == nullptr) {
-		SPDLOG_ERROR("[{}] cylinder is nullptr", __FUNCTION__);
+		g_logger().error("[{}] cylinder is nullptr", __FUNCTION__);
 		return false;
 	}
 	if (money == 0) {
@@ -2194,7 +2194,7 @@ bool Game::removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*
 
 void Game::addMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*/) {
 	if (cylinder == nullptr) {
-		SPDLOG_ERROR("[{}] cylinder is nullptr", __FUNCTION__);
+		g_logger().error("[{}] cylinder is nullptr", __FUNCTION__);
 		return;
 	}
 	if (money == 0) {
@@ -2315,7 +2315,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 					// Replacing the the old item with the new while maintaining the old position
 					auto newItem = item->transform(newItemId);
 					if (newItem == nullptr) {
-						SPDLOG_ERROR("[{}] new item with id {} is nullptr, (ERROR CODE: 01)", __FUNCTION__, newItemId);
+						g_logger().error("[{}] new item with id {} is nullptr, (ERROR CODE: 01)", __FUNCTION__, newItemId);
 						return nullptr;
 					}
 
@@ -2366,7 +2366,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 	// Replacing the the old item with the new while maintaining the old position
 	auto newItem = item->transform(newId, newCount);
 	if (newItem == nullptr) {
-		SPDLOG_ERROR("[{}] new item with id {} is nullptr (ERROR CODE: 02)", __FUNCTION__, newId);
+		g_logger().error("[{}] new item with id {} is nullptr (ERROR CODE: 02)", __FUNCTION__, newId);
 		return nullptr;
 	}
 
@@ -2375,7 +2375,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 
 ReturnValue Game::internalTeleport(Thing* thing, const Position &newPos, bool pushMove /* = true*/, uint32_t flags /*= 0*/) {
 	if (thing == nullptr) {
-		SPDLOG_ERROR("[{}] thing is nullptr", __FUNCTION__);
+		g_logger().error("[{}] thing is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
@@ -2673,7 +2673,7 @@ ReturnValue Game::collectRewardChestItems(Player* player, uint32_t maxMoveItems 
 	// Check if have item on player reward chest
 	RewardChest* rewardChest = player->getRewardChest();
 	if (!rewardChest || rewardChest->empty()) {
-		SPDLOG_DEBUG("Reward chest is wrong or empty");
+		g_logger().debug("Reward chest is wrong or empty");
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
@@ -2919,7 +2919,7 @@ bool Game::playerBroadcastMessage(Player* player, const std::string &text) const
 		return false;
 	}
 
-	SPDLOG_INFO("{} broadcasted: {}", player->getName(), text);
+	g_logger().info("{} broadcasted: {}", player->getName(), text);
 
 	for (const auto &it : players) {
 		it.second->sendPrivateMessage(player, TALKTYPE_BROADCAST, text);
@@ -4878,7 +4878,7 @@ void Game::playerLootAllCorpses(Player* player, const Position &pos, bool lootAl
 				&& tileCorpse->getCorpseOwner() != 0
 				&& !player->canOpenCorpse(tileCorpse->getCorpseOwner())) {
 				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-				SPDLOG_DEBUG("Player {} cannot loot corpse from id {} in position {}", player->getName(), tileItem->getID(), tileItem->getPosition());
+				g_logger().debug("Player {} cannot loot corpse from id {} in position {}", player->getName(), tileItem->getID(), tileItem->getPosition().toString());
 				continue;
 			}
 
@@ -5208,7 +5208,7 @@ void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t
 	}
 
 	if (item->getTopParent() != player) {
-		SPDLOG_ERROR("[Game::playerApplyImbuement] - An error occurred while player with name {} try to apply imbuement", player->getName());
+		g_logger().error("[Game::playerApplyImbuement] - An error occurred while player with name {} try to apply imbuement", player->getName());
 		player->sendImbuementResult("An error has occurred, reopen the imbuement window. If the problem persists, contact your administrator.");
 		return;
 	}
@@ -5534,7 +5534,7 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string &r
 
 void Game::playerSpeakToNpc(Player* player, const std::string &text) {
 	if (player == nullptr) {
-		SPDLOG_ERROR("[Game::playerSpeakToNpc] - Player is nullptr");
+		g_logger().error("[Game::playerSpeakToNpc] - Player is nullptr");
 		return;
 	}
 
@@ -5737,13 +5737,13 @@ void Game::changePlayerSpeed(Player &player, int32_t varSpeedDelta) {
 	map.getSpectators(spectators, player.getPosition(), false, true);
 	for (Creature* creatureSpectator : spectators) {
 		if (creatureSpectator == nullptr) {
-			SPDLOG_ERROR("[Game::changePlayerSpeed] - Creature spectator is nullptr");
+			g_logger().error("[Game::changePlayerSpeed] - Creature spectator is nullptr");
 			continue;
 		}
 
 		const Player* playerSpectator = creatureSpectator->getPlayer();
 		if (playerSpectator == nullptr) {
-			SPDLOG_ERROR("[Game::changePlayerSpeed] - Player spectator is nullptr");
+			g_logger().error("[Game::changePlayerSpeed] - Player spectator is nullptr");
 			continue;
 		}
 
@@ -5803,7 +5803,7 @@ void Game::updateCreatureIcon(const Creature* creature) {
 
 void Game::reloadCreature(const Creature* creature) {
 	if (!creature) {
-		spdlog::error("[{}] Creature is nullptr", __FUNCTION__);
+		g_logger().error("[{}] Creature is nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -6867,7 +6867,7 @@ void Game::applyCharmRune(
 		activeCharm != CHARM_NONE) {
 		Charm* charm = g_iobestiary().getBestiaryCharm(activeCharm);
 		int8_t chance = charm->id == CHARM_CRIPPLE ? charm->chance : charm->chance + attackerPlayer->getCharmChanceModifier();
-		spdlog::debug("charm chance: {}, base: {}, bonus: {}", chance, charm->chance, attackerPlayer->getCharmChanceModifier());
+		g_logger().debug("charm chance: {}, base: {}, bonus: {}", chance, charm->chance, attackerPlayer->getCharmChanceModifier());
 		if (charm->type == CHARM_OFFENSIVE && (chance >= normal_random(0, 100))) {
 			g_iobestiary().parseCharmCombat(charm, attackerPlayer, target, realDamage);
 		}
@@ -7329,7 +7329,7 @@ bool Game::gameIsDay() {
 }
 
 void Game::dieSafely(std::string errorMsg /* = "" */) {
-	SPDLOG_ERROR(errorMsg);
+	g_logger().error(errorMsg);
 	shutdown();
 }
 
@@ -7337,7 +7337,7 @@ void Game::shutdown() {
 	std::string url = g_configManager().getString(DISCORD_WEBHOOK_URL);
 	webhook_send_message("Server is shutting down", "Shutting down...", WEBHOOK_COLOR_OFFLINE, url);
 
-	SPDLOG_INFO("Shutting down...");
+	g_logger().info("Shutting down...");
 
 	g_scheduler().shutdown();
 	g_databaseTasks().shutdown();
@@ -7354,7 +7354,7 @@ void Game::shutdown() {
 
 	ConnectionManager::getInstance().closeAll();
 
-	SPDLOG_INFO("Done!");
+	g_logger().info("Done!");
 }
 
 void Game::cleanup() {
@@ -7392,7 +7392,7 @@ void Game::addBestiaryList(uint16_t raceid, std::string name) {
 }
 
 void Game::broadcastMessage(const std::string &text, MessageClasses type) const {
-	SPDLOG_INFO("Broadcasted message: {}", text);
+	g_logger().info("Broadcasted message: {}", text);
 	for (const auto &it : players) {
 		it.second->sendTextMessage(type, text);
 	}
@@ -7491,7 +7491,7 @@ void Game::updatePremium(account::Account &account) {
 				if (days >= rem_days) {
 					if (!account.SetPremiumRemaningDays(0) || !account.SetPremiumLastDay(0)) {
 						account.GetAccountIdentifier(&accountIdentifier);
-						SPDLOG_ERROR("Failed to set account premium days, account {}: {}", account.getProtocolCompat() ? "name" : " email", accountIdentifier);
+						g_logger().error("Failed to set account premium days, account {}: {}", account.getProtocolCompat() ? "name" : " email", accountIdentifier);
 					}
 				} else {
 					account.SetPremiumRemaningDays((rem_days - days));
@@ -7509,7 +7509,7 @@ void Game::updatePremium(account::Account &account) {
 
 	if (save && account.SaveAccountDB() != 0) {
 		account.GetAccountIdentifier(&accountIdentifier);
-		SPDLOG_ERROR("Failed to save account: {}", accountIdentifier);
+		g_logger().error("Failed to save account: {}", accountIdentifier);
 	}
 }
 
@@ -8224,7 +8224,7 @@ namespace {
 			}
 		}
 		if (removeAmount > 0) {
-			SPDLOG_ERROR("Player {} tried to sell an item {} without this item", itemType.id, player.getName());
+			g_logger().error("Player {} tried to sell an item {} without this item", itemType.id, player.getName());
 			offerStatus << "The item you tried to market is not correct. Check the item again.";
 			return false;
 		}
@@ -8273,7 +8273,7 @@ bool checkCanInitCreateMarketOffer(const Player* player, uint8_t type, const Ite
 		return false;
 	}
 
-	SPDLOG_DEBUG("{} - Offer amount: {}", __FUNCTION__, amount);
+	g_logger().debug("{} - Offer amount: {}", __FUNCTION__, amount);
 
 	if (g_configManager().getBoolean(MARKET_PREMIUM) && !player->isPremium()) {
 		player->sendTextMessage(MESSAGE_MARKET, "Only premium accounts may create offers for that object.");
@@ -8298,7 +8298,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 	// Make sure everything is ok before the create market offer starts
 	if (!checkCanInitCreateMarketOffer(player, type, it, amount, price, offerStatus)) {
-		SPDLOG_ERROR("{} - Player {} had an error on init offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
+		g_logger().error("{} - Player {} had an error on init offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
 		return;
 	}
 
@@ -8332,7 +8332,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			account.RemoveTransferableCoins(static_cast<uint32_t>(amount));
 		} else {
 			if (!removeOfferItems(*player, *depotLocker, it, amount, tier, offerStatus)) {
-				SPDLOG_ERROR("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
+				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
 				return;
 			}
 		}
@@ -8360,7 +8360,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		} else {
 			player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
 		}
-		SPDLOG_ERROR("{} - Player {} had an error creating an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
+		g_logger().error("{} - Player {} had an error creating an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
 		return;
 	}
 
@@ -8545,7 +8545,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount, "Sold on Market");
 		} else {
 			if (!removeOfferItems(*player, *depotLocker, it, amount, offer.tier, offerStatus)) {
-				SPDLOG_ERROR("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
+				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
 				return;
 			}
 		}
@@ -8558,7 +8558,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			} else {
 				player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
 			}
-			SPDLOG_ERROR("{} - Player {} had an error creating an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
+			g_logger().error("{} - Player {} had an error creating an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
 			player->sendMarketEnter(player->getLastDepotId());
 			return;
 		}
@@ -8659,7 +8659,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 					// Condition
 					ret != RETURNVALUE_NOERROR
 				) {
-					SPDLOG_ERROR("{} - Create offer internal add item error code: {}", __FUNCTION__, getReturnMessage(ret));
+					g_logger().error("{} - Create offer internal add item error code: {}", __FUNCTION__, getReturnMessage(ret));
 					offerStatus << "Failed to add inbox stackable item for sell offer for player " << player->getName();
 					delete item;
 					break;
@@ -8720,7 +8720,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	if (!offerStatus.str().empty()) {
 		player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
-		SPDLOG_ERROR("{} - Player {} had an error accepting an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
+		g_logger().error("{} - Player {} had an error accepting an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
 		return;
 	}
 
@@ -8925,7 +8925,7 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 	const MonsterType* mType = g_monsters().getMonsterTypeByRaceId(monsterRaceId, itemId == ITEM_PODIUM_OF_VIGOUR);
 	if (!mType) {
 		player->sendCancelMessage(RETURNVALUE_CONTACTADMINISTRATOR);
-		spdlog::error("[{}] player {} is trying to add invalid monster to podium {}", __FUNCTION__, player->getName(), item->getName());
+		g_logger().error("[{}] player {} is trying to add invalid monster to podium {}", __FUNCTION__, player->getName(), item->getName());
 		return;
 	}
 
@@ -9097,7 +9097,7 @@ void Game::playerOpenWheel(uint32_t playerId, uint32_t ownerId) {
 	}
 
 	if (playerId != ownerId) {
-		spdlog::error("[{}] player {} is trying to open wheel of another player", __FUNCTION__, player->getName());
+		g_logger().error("[{}] player {} is trying to open wheel of another player", __FUNCTION__, player->getName());
 		return;
 	}
 
@@ -9267,7 +9267,7 @@ Item* Game::getUniqueItem(uint16_t uniqueId) {
 bool Game::addUniqueItem(uint16_t uniqueId, Item* item) {
 	auto result = uniqueItems.emplace(uniqueId, item);
 	if (!result.second) {
-		SPDLOG_WARN("Duplicate unique id: {}", uniqueId);
+		g_logger().warn("Duplicate unique id: {}", uniqueId);
 	}
 	return result.second;
 }
@@ -9303,21 +9303,21 @@ void Game::createLuaItemsOnMap() {
 	for (const auto [position, itemId] : mapLuaItemsStored) {
 		Item* item = Item::CreateItem(itemId, 1);
 		if (!item) {
-			SPDLOG_WARN("[Game::createLuaItemsOnMap] - Cannot create item with id {}", itemId);
+			g_logger().warn("[Game::createLuaItemsOnMap] - Cannot create item with id {}", itemId);
 			continue;
 		}
 
 		if (position.x != 0) {
 			Tile* tile = g_game().map.getTile(position);
 			if (!tile) {
-				SPDLOG_WARN("[Game::createLuaItemsOnMap] - Tile is wrong or not found position: {}", position.toString());
+				g_logger().warn("[Game::createLuaItemsOnMap] - Tile is wrong or not found position: {}", position.toString());
 				delete item;
 				continue;
 			}
 
 			// If the item already exists on the map, then ignore it and send warning
 			if (g_game().findItemOfType(tile, itemId, false, -1)) {
-				SPDLOG_WARN("[Game::createLuaItemsOnMap] - Cannot create item with id {} on position {}, item already exists", itemId, position.toString());
+				g_logger().warn("[Game::createLuaItemsOnMap] - Cannot create item with id {} on position {}, item already exists", itemId, position.toString());
 				continue;
 			}
 
@@ -9479,7 +9479,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 
 	uint32_t finalTime = 0;
 	if (intervalTime == 0) {
-		SPDLOG_WARN("Fiendish interval type is wrong, setting default time to 1h");
+		g_logger().warn("Fiendish interval type is wrong, setting default time to 1h");
 		finalTime = 3600 * 1000;
 	} else {
 		finalTime = static_cast<uint32_t>(saveIntervalConfigTime * intervalTime);
@@ -9505,7 +9505,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 void Game::updateFiendishMonsterStatus(uint32_t monsterId, const std::string &monsterName) {
 	Monster* monster = getMonsterByID(monsterId);
 	if (!monster) {
-		SPDLOG_WARN("[{}] Failed to update monster with id {} and name {}, monster not found", __FUNCTION__, monsterId, monsterName);
+		g_logger().warn("[{}] Failed to update monster with id {} and name {}, monster not found", __FUNCTION__, monsterId, monsterName);
 		return;
 	}
 
@@ -9533,7 +9533,7 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create /* = false*/) {
 			g_scheduler().addEvent(createSchedulerTask(200 * 1000, std::bind_front(&Game::makeInfluencedMonster, this)));
 		}
 	} else {
-		SPDLOG_WARN("[Game::removeInfluencedMonster] - Failed to remove a Influenced Monster, error code: monster id not exist in the influenced monsters map");
+		g_logger().warn("[Game::removeInfluencedMonster] - Failed to remove a Influenced Monster, error code: monster id not exist in the influenced monsters map");
 	}
 	return false;
 }
@@ -9549,7 +9549,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 			g_scheduler().addEvent(createSchedulerTask(300 * 1000, std::bind_front(&Game::makeFiendishMonster, this, 0, false)));
 		}
 	} else {
-		SPDLOG_WARN("[Game::removeFiendishMonster] - Failed to remove a Fiendish Monster, error code: monster id not exist in the fiendish monsters map");
+		g_logger().warn("[Game::removeFiendishMonster] - Failed to remove a Fiendish Monster, error code: monster id not exist in the fiendish monsters map");
 	}
 
 	return false;
@@ -9584,7 +9584,7 @@ void Game::createFiendishMonsters() {
 	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
 	while (fiendishMonsters.size() < fiendishLimit) {
 		if (fiendishMonsters.size() >= fiendishLimit) {
-			SPDLOG_WARN("[{}] - Returning in creation of Fiendish, size: {}, max is: {}.", __FUNCTION__, fiendishMonsters.size(), fiendishLimit);
+			g_logger().warn("[{}] - Returning in creation of Fiendish, size: {}, max is: {}.", __FUNCTION__, fiendishMonsters.size(), fiendishLimit);
 			break;
 		}
 
@@ -9603,7 +9603,7 @@ void Game::createInfluencedMonsters() {
 	uint32_t influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
 	while (created < influencedLimit) {
 		if (influencedMonsters.size() >= influencedLimit) {
-			SPDLOG_WARN("[{}] - Returning in creation of Influenced, size: {}, max is: {}.", __FUNCTION__, influencedMonsters.size(), influencedLimit);
+			g_logger().warn("[{}] - Returning in creation of Influenced, size: {}, max is: {}.", __FUNCTION__, influencedMonsters.size(), influencedLimit);
 			break;
 		}
 
@@ -9675,7 +9675,7 @@ bool Game::addItemStoreInbox(const Player* player, uint32_t itemId) {
 
 void Game::addPlayerUniqueLogin(Player* player) {
 	if (!player) {
-		SPDLOG_ERROR("Attempted to add null player to unique player names list");
+		g_logger().error("Attempted to add null player to unique player names list");
 		return;
 	}
 
@@ -9685,7 +9685,7 @@ void Game::addPlayerUniqueLogin(Player* player) {
 
 Player* Game::getPlayerUniqueLogin(const std::string &playerName) const {
 	if (playerName.empty()) {
-		SPDLOG_ERROR("Attempted to get player with empty name string");
+		g_logger().error("Attempted to get player with empty name string");
 		return nullptr;
 	}
 
@@ -9695,7 +9695,7 @@ Player* Game::getPlayerUniqueLogin(const std::string &playerName) const {
 
 void Game::removePlayerUniqueLogin(const std::string &playerName) {
 	if (playerName.empty()) {
-		SPDLOG_ERROR("Attempted to remove player with empty name string from unique player names list");
+		g_logger().error("Attempted to remove player with empty name string from unique player names list");
 		return;
 	}
 
@@ -9705,7 +9705,7 @@ void Game::removePlayerUniqueLogin(const std::string &playerName) {
 
 void Game::removePlayerUniqueLogin(Player* player) {
 	if (!player) {
-		SPDLOG_ERROR("Attempted to remove null player from unique player names list.");
+		g_logger().error("Attempted to remove null player from unique player names list.");
 		return;
 	}
 
@@ -9722,7 +9722,7 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 	if (player->getIP() == 0) {
 		g_game().removePlayerUniqueLogin(playerName);
 		IOLoginData::updateOnlineStatus(player->guid, false);
-		SPDLOG_INFO("Player with name '{}' has logged out due to exited in death screen", player->getName());
+		g_logger().info("Player with name '{}' has logged out due to exited in death screen", player->getName());
 		player->disconnect();
 		return;
 	}
@@ -9735,7 +9735,7 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 		player->m_deathTime += interval;
 		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
 		if (player->m_deathTime > (kickAfterMinutes * 60000) + 60000) {
-			SPDLOG_INFO("Player with name '{}' has logged out due to inactivity after death", player->getName());
+			g_logger().info("Player with name '{}' has logged out due to inactivity after death", player->getName());
 			g_game().removePlayerUniqueLogin(playerName);
 			IOLoginData::updateOnlineStatus(player->guid, false);
 			player->disconnect();

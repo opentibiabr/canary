@@ -20,7 +20,7 @@
 
 bool IOLoginData::authenticateAccountPassword(const std::string &accountIdentifier, const std::string &password, account::Account* account) {
 	if (account::ERROR_NO != account->LoadAccountDB(accountIdentifier)) {
-		SPDLOG_ERROR("{} {} doesn't match any account.", account->getProtocolCompat() ? "Username" : "Email", accountIdentifier);
+		g_logger().error("{} {} doesn't match any account.", account->getProtocolCompat() ? "Username" : "Email", accountIdentifier);
 		return false;
 	}
 
@@ -30,7 +30,7 @@ bool IOLoginData::authenticateAccountPassword(const std::string &accountIdentifi
 	Argon2 argon2;
 	if (!argon2.argon(password.c_str(), accountPassword)) {
 		if (transformToSHA1(password) != accountPassword) {
-			SPDLOG_ERROR("Password '{}' doesn't match any account", accountPassword);
+			g_logger().error("Password '{}' doesn't match any account", accountPassword);
 			return false;
 		}
 	}
@@ -44,17 +44,17 @@ bool IOLoginData::authenticateAccountSession(const std::string &sessionId, accou
 	query << "SELECT `account_id`, `expires` FROM `account_sessions` WHERE `id` = " << db.escapeString(transformToSHA1(sessionId));
 	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
 	if (!result) {
-		SPDLOG_ERROR("Session id {} not found in the database", sessionId);
+		g_logger().error("Session id {} not found in the database", sessionId);
 		return false;
 	}
 	uint32_t expires = result->getNumber<uint32_t>("expires");
 	if (expires < getTimeNow()) {
-		SPDLOG_ERROR("Session id {} found, but it is expired", sessionId);
+		g_logger().error("Session id {} found, but it is expired", sessionId);
 		return false;
 	}
 	uint32_t accountId = result->getNumber<uint32_t>("account_id");
 	if (account::ERROR_NO != account->LoadAccountDB(accountId)) {
-		SPDLOG_ERROR("Session id {} found account id {}, but it doesn't match any account.", sessionId, accountId);
+		g_logger().error("Session id {} found account id {}, but it doesn't match any account.", sessionId, accountId);
 		return false;
 	}
 
@@ -78,7 +78,7 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountIdentifier, 
 
 	account::Player player;
 	if (account::ERROR_NO != account.GetAccountPlayer(&player, characterName)) {
-		SPDLOG_ERROR("Player not found or deleted for account.");
+		g_logger().error("Player not found or deleted for account.");
 		return false;
 	}
 
@@ -141,7 +141,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string &name) {
 	player->setGUID(result->getNumber<uint32_t>("id"));
 	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
 	if (!group) {
-		SPDLOG_ERROR("Player {} has group id {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
+		g_logger().error("Player {} has group id {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
 		return false;
 	}
 	player->setGroup(group);
@@ -219,7 +219,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 
 	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
 	if (!group) {
-		SPDLOG_ERROR("Player {} has group id {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
+		g_logger().error("Player {} has group id {} which doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
 		return false;
 	}
 	player->setGroup(group);
@@ -271,7 +271,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 	}
 
 	if (!player->setVocation(result->getNumber<uint16_t>("vocation"))) {
-		SPDLOG_ERROR("Player {} has vocation id {} which doesn't exist", player->name, result->getNumber<uint16_t>("vocation"));
+		g_logger().error("Player {} has vocation id {} which doesn't exist", player->name, result->getNumber<uint16_t>("vocation"));
 		return false;
 	}
 
@@ -293,7 +293,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 
 	player->defaultOutfit.lookType = result->getNumber<uint16_t>("looktype");
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookType)) {
-		SPDLOG_WARN("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookType);
+		g_logger().warn("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookType);
 		return false;
 	}
 	player->defaultOutfit.lookHead = result->getNumber<uint16_t>("lookhead");
@@ -307,7 +307,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 	player->defaultOutfit.lookMountFeet = result->getNumber<uint16_t>("lookmountfeet");
 	player->defaultOutfit.lookFamiliarsType = result->getNumber<uint16_t>("lookfamiliarstype");
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
-		SPDLOG_WARN("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookFamiliarsType);
+		g_logger().warn("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookFamiliarsType);
 		return false;
 	}
 	player->isDailyReward = result->getNumber<uint16_t>("isreward");
@@ -348,7 +348,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 
 	Town* town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
 	if (!town) {
-		SPDLOG_ERROR("Player {} has town id {} which doesn't exist", player->name, result->getNumber<uint16_t>("town_id"));
+		g_logger().error("Player {} has town id {} which doesn't exist", player->name, result->getNumber<uint16_t>("town_id"));
 		return false;
 	}
 
@@ -856,7 +856,7 @@ bool IOLoginData::savePlayer(Player* player) {
 	});
 
 	if (!success) {
-		SPDLOG_ERROR("[{}] Error occurred saving player", __FUNCTION__);
+		g_logger().error("[{}] Error occurred saving player", __FUNCTION__);
 	}
 
 	return success;
@@ -872,7 +872,7 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 	query << "SELECT `save` FROM `players` WHERE `id` = " << player->getGUID();
 	DBResult_ptr result = db.storeQuery(query.str());
 	if (!result) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Error for select result query from player: {}", player->getName());
+		g_logger().warn("[IOLoginData::savePlayer] - Error for select result query from player: {}", player->getName());
 		return false;
 	}
 
@@ -1094,7 +1094,7 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 	query << " WHERE `player_guid` = " << player->getGUID();
 
 	if (!db.executeQuery(query.str())) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Error saving bestiary data from player: {}", player->getName());
+		g_logger().warn("[IOLoginData::savePlayer] - Error saving bestiary data from player: {}", player->getName());
 		return false;
 	}
 
@@ -1115,7 +1115,7 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 	// item saving
 	query << "DELETE FROM `player_items` WHERE `player_id` = " << player->getGUID();
 	if (!db.executeQuery(query.str())) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Error delete query 'player_items' from player: {}", player->getName());
+		g_logger().warn("[IOLoginData::savePlayer] - Error delete query 'player_items' from player: {}", player->getName());
 		return false;
 	}
 
@@ -1130,7 +1130,7 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 	}
 
 	if (!saveItems(player, itemList, itemsQuery, propWriteStream)) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Failed for save items from player: {}", player->getName());
+		g_logger().warn("[IOLoginData::savePlayer] - Failed for save items from player: {}", player->getName());
 		return false;
 	}
 
@@ -1159,7 +1159,7 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 	}
 
 	if (!IOLoginDataSave::saveRewardItems(player)) {
-		SPDLOG_ERROR("[{}] failed to save reward items");
+		g_logger().error("[{}] failed to save reward items");
 		return false;
 	}
 
@@ -1215,7 +1215,7 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 				query << db.escapeBlob(preyList, static_cast<uint32_t>(preySize)) << ")";
 
 				if (!db.executeQuery(query.str())) {
-					SPDLOG_WARN("[IOLoginData::savePlayer] - Error saving prey slot data from player: {}", player->getName());
+					g_logger().warn("[IOLoginData::savePlayer] - Error saving prey slot data from player: {}", player->getName());
 					return false;
 				}
 			}
@@ -1255,7 +1255,7 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 				query << db.escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize)) << ")";
 
 				if (!db.executeQuery(query.str())) {
-					SPDLOG_WARN("[IOLoginData::savePlayer] - Error saving task hunting slot data from player: {}", player->getName());
+					g_logger().warn("[IOLoginData::savePlayer] - Error saving task hunting slot data from player: {}", player->getName());
 					return false;
 				}
 			}
@@ -1266,7 +1266,7 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 	IOLoginDataSave::savePlayerBosstiary(player);
 
 	if (!player->wheel()->saveDBPlayerSlotPointsOnLogout()) {
-		spdlog::warn("Failed to save player wheel info to player: {}", player->getName());
+		g_logger().warn("Failed to save player wheel info to player: {}", player->getName());
 		return false;
 	}
 
@@ -1369,7 +1369,7 @@ void IOLoginData::loadItems(ItemMap &itemMap, DBResult_ptr result, Player &playe
 		Item* item = Item::CreateItem(type, count);
 		if (item) {
 			if (!item->unserializeAttr(propStream)) {
-				SPDLOG_WARN("[IOLoginData::loadItems] - Failed to unserialize attributes of item {}, of player {}, from account id {}", item->getID(), player.getName(), player.getAccount());
+				g_logger().warn("[IOLoginData::loadItems] - Failed to unserialize attributes of item {}, of player {}, from account id {}", item->getID(), player.getName(), player.getAccount());
 				savePlayer(&player);
 			}
 

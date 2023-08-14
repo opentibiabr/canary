@@ -620,7 +620,7 @@ int CreatureFunctions::luaCreatureSetOutfit(lua_State* L) {
 	if (creature) {
 		Outfit_t outfit = getOutfit(L, 2);
 		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
-			SPDLOG_WARN("[CreatureFunctions::luaCreatureSetOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
+			g_logger().warn("[CreatureFunctions::luaCreatureSetOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
 			return 1;
 		}
 
@@ -766,7 +766,7 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 	const Position oldPosition = creature->getPosition();
 	if (auto ret = g_game().internalTeleport(creature, position, pushMovement);
 		ret != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("[{}] Failed to teleport creature {}, on position {}, error code: {}", __FUNCTION__, creature->getName(), oldPosition.toString(), getReturnMessage(ret));
+		g_logger().error("[{}] Failed to teleport creature {}, on position {}, error code: {}", __FUNCTION__, creature->getName(), oldPosition.toString(), getReturnMessage(ret));
 		pushBoolean(L, false);
 		return 1;
 	}

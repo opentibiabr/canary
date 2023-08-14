@@ -57,9 +57,9 @@ int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 		} else if (tmpStr == "extendedopcode") {
 			creature->setEventType(CREATURE_EVENT_EXTENDED_OPCODE);
 		} else {
-			SPDLOG_ERROR("[CreatureEventFunctions::luaCreatureEventType] - "
-						 "Invalid type for creature event: {}",
-						 typeName);
+			g_logger().error("[CreatureEventFunctions::luaCreatureEventType] - "
+							 "Invalid type for creature event: {}",
+							 typeName);
 			pushBoolean(L, false);
 		}
 		creature->setLoaded(true);

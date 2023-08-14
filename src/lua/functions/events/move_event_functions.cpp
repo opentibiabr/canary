@@ -50,9 +50,9 @@ int MoveEventFunctions::luaMoveEventType(lua_State* L) {
 			moveevent->setEventType(MOVE_EVENT_REMOVE_ITEM);
 			moveevent->moveFunction = moveevent->RemoveItemField;
 		} else {
-			SPDLOG_ERROR("[MoveEventFunctions::luaMoveEventType] - "
-						 "No valid event name: {}",
-						 typeName);
+			g_logger().error("[MoveEventFunctions::luaMoveEventType] - "
+							 "No valid event name: {}",
+							 typeName);
 			pushBoolean(L, false);
 		}
 		pushBoolean(L, true);
@@ -129,9 +129,9 @@ int MoveEventFunctions::luaMoveEventSlot(lua_State* L) {
 		} else if (slotName == "ammo") {
 			moveevent->setSlot(SLOTP_AMMO);
 		} else {
-			SPDLOG_WARN("[MoveEventFunctions::luaMoveEventSlot] - "
-						"Unknown slot type: {}",
-						slotName);
+			g_logger().warn("[MoveEventFunctions::luaMoveEventSlot] - "
+							"Unknown slot type: {}",
+							slotName);
 			pushBoolean(L, false);
 			return 1;
 		}

@@ -45,8 +45,8 @@ int GlobalEventFunctions::luaGlobalEventType(lua_State* L) {
 		} else if (tmpStr == "onthink") {
 			global->setEventType(GLOBALEVENT_ON_THINK);
 		} else {
-			SPDLOG_ERROR("[GlobalEventFunctions::luaGlobalEventType] - "
-						 "Invalid type for global event: {}");
+			g_logger().error("[GlobalEventFunctions::luaGlobalEventType] - "
+							 "Invalid type for global event: {}");
 			pushBoolean(L, false);
 		}
 		pushBoolean(L, true);
@@ -65,7 +65,7 @@ int GlobalEventFunctions::luaGlobalEventRegister(lua_State* L) {
 			return 1;
 		}
 		if (globalevent->getEventType() == GLOBALEVENT_NONE && globalevent->getInterval() == 0) {
-			SPDLOG_ERROR("{} - No interval for globalevent with name {}", __FUNCTION__, globalevent->getName());
+			g_logger().error("{} - No interval for globalevent with name {}", __FUNCTION__, globalevent->getName());
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -100,9 +100,9 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 
 		int32_t hour = params.front();
 		if (hour < 0 || hour > 23) {
-			SPDLOG_ERROR("[GlobalEventFunctions::luaGlobalEventTime] - "
-						 "Invalid hour {} for globalevent with name: {}",
-						 timer, globalevent->getName());
+			g_logger().error("[GlobalEventFunctions::luaGlobalEventTime] - "
+							 "Invalid hour {} for globalevent with name: {}",
+							 timer, globalevent->getName());
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -114,9 +114,9 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 		if (params.size() > 1) {
 			min = params[1];
 			if (min < 0 || min > 59) {
-				SPDLOG_ERROR("[GlobalEventFunctions::luaGlobalEventTime] - "
-							 "Invalid minute: {} for globalevent with name: {}",
-							 timer, globalevent->getName());
+				g_logger().error("[GlobalEventFunctions::luaGlobalEventTime] - "
+								 "Invalid minute: {} for globalevent with name: {}",
+								 timer, globalevent->getName());
 				pushBoolean(L, false);
 				return 1;
 			}
@@ -124,9 +124,9 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 			if (params.size() > 2) {
 				sec = params[2];
 				if (sec < 0 || sec > 59) {
-					SPDLOG_ERROR("[GlobalEventFunctions::luaGlobalEventTime] - "
-								 "Invalid minute: {} for globalevent with name: {}",
-								 timer, globalevent->getName());
+					g_logger().error("[GlobalEventFunctions::luaGlobalEventTime] - "
+									 "Invalid minute: {} for globalevent with name: {}",
+									 timer, globalevent->getName());
 					pushBoolean(L, false);
 					return 1;
 				}

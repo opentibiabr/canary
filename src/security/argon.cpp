@@ -35,7 +35,7 @@ uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {
 	char op2;
 
 	if (!(ss >> base >> op1 >> op2 >> shift) || op1 != '<' || op2 != '<') {
-		SPDLOG_WARN("Invalid bit shift string");
+		g_logger().warn("Invalid bit shift string");
 	}
 
 	return base << shift;
@@ -44,7 +44,7 @@ uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {
 bool Argon2::verifyPassword(const std::string &password, const std::string &phash) const {
 	std::smatch match;
 	if (!std::regex_search(phash, match, re)) {
-		SPDLOG_DEBUG("Failed to parse hash string");
+		g_logger().debug("Failed to parse hash string");
 		return false;
 	}
 
@@ -54,7 +54,7 @@ bool Argon2::verifyPassword(const std::string &password, const std::string &phas
 	// Hash the password
 	std::vector<uint8_t> computed_hash(hash.size());
 	if (argon2id_hash_raw(t_cost, m_cost, parallelism, password.c_str(), password.length(), salt.data(), salt.size(), computed_hash.data(), computed_hash.size()) != ARGON2_OK) {
-		SPDLOG_WARN("Error hashing password");
+		g_logger().warn("Error hashing password");
 	}
 
 	// Compare
@@ -72,9 +72,9 @@ std::vector<uint8_t> Argon2::base64_decode(const std::string &input) const {
 
 		size_t pos = base64_chars.find(c);
 		if (pos == std::string::npos) {
-			SPDLOG_WARN("Invalid character in base64 string");
+			g_logger().warn("Invalid character in base64 string");
 		} else if (pos > std::numeric_limits<uint32_t>::max()) {
-			SPDLOG_WARN("Position too large for uint32_t");
+			g_logger().warn("Position too large for uint32_t");
 		} else {
 			val = (val << 6) + static_cast<uint32_t>(pos);
 		}
@@ -88,7 +88,7 @@ std::vector<uint8_t> Argon2::base64_decode(const std::string &input) const {
 
 	switch (i % 4) {
 		case 1:
-			SPDLOG_WARN("Invalid length for base64 string");
+			g_logger().warn("Invalid length for base64 string");
 			break;
 		case 2:
 			ret.push_back((val >> 4) & 0xFF);
@@ -98,7 +98,7 @@ std::vector<uint8_t> Argon2::base64_decode(const std::string &input) const {
 			ret.push_back((val >> 2) & 0xFF);
 			break;
 		default:
-			SPDLOG_WARN("Unexpected remainder when dividing string length by 4");
+			g_logger().warn("Unexpected remainder when dividing string length by 4");
 			break;
 	}
 

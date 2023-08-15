@@ -19,8 +19,7 @@
 
 bool Map::load(const std::string &identifier, const Position &pos, bool unload) {
 	try {
-		IOMap loader;
-		loader.loadMap(this, identifier, pos, unload);
+		IOMap::loadMap(this, identifier, pos, unload);
 		return true;
 	} catch (const IOMapException &e) {
 		g_logger().error("[Map::load] - {}", e.what());
@@ -168,15 +167,15 @@ Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 
 	const auto leaf = getQTNode(x, y);
 	if (!leaf)
-		return tryCreateTileFromCache(this, x, y, z) ? getTile(x, y, z) : nullptr;
+		return tryCreateTileFromCache(x, y, z) ? getTile(x, y, z) : nullptr;
 
 	const auto &floor = leaf->getFloor(z);
 	if (!floor)
-		return tryCreateTileFromCache(this, x, y, z) ? getTile(x, y, z) : nullptr;
+		return tryCreateTileFromCache(x, y, z) ? getTile(x, y, z) : nullptr;
 
 	const auto &tile = floor->getTile(x, y);
 	if (!tile)
-		return tryCreateTileFromCache(this, x, y, z) ? getTile(x, y, z) : nullptr;
+		return tryCreateTileFromCache(x, y, z) ? getTile(x, y, z) : nullptr;
 
 	return tile;
 }

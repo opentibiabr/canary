@@ -101,10 +101,12 @@ Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
 	return item;
 }
 
-bool MapCache::tryCreateTileFromCache(Map* map, uint16_t x, uint16_t y, uint8_t z) {
+bool MapCache::tryCreateTileFromCache(uint16_t x, uint16_t y, uint8_t z) {
 	const auto &cachedTile = getTileFromCache(x, y, z);
 	if (!cachedTile)
 		return false;
+
+	auto map = static_cast<Map*>(this);
 
 	Tile* tile = nullptr;
 	if (cachedTile->isHouse()) {

@@ -182,9 +182,9 @@ void Decay::internalDecayItem(Item* item) {
 
 		ReturnValue ret = g_game().internalRemoveItem(item);
 		if (ret != RETURNVALUE_NOERROR) {
-			SPDLOG_ERROR("[Decay::internalDecayItem] - internalDecayItem failed, "
-						 "error code: {}, item id: {}",
-						 static_cast<uint32_t>(ret), item->getID());
+			g_logger().error("[Decay::internalDecayItem] - internalDecayItem failed, "
+							 "error code: {}, item id: {}",
+							 static_cast<uint32_t>(ret), item->getID());
 		}
 	}
 }

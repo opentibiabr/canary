@@ -82,7 +82,7 @@ void Items::loadFromProtobuf() {
 
 		// This scenario should never happen but on custom assets this can break the loader.
 		if (!object.has_flags()) {
-			SPDLOG_WARN("[Items::loadFromProtobuf] - Item with id '{}' is invalid and was ignored.", object.id());
+			g_logger().warn("[Items::loadFromProtobuf] - Item with id '{}' is invalid and was ignored.", object.id());
 			continue;
 		}
 
@@ -203,15 +203,15 @@ bool Items::loadFromXml() {
 
 		auto fromIdAttribute = itemNode.attribute("fromid");
 		if (!fromIdAttribute) {
-			SPDLOG_WARN("[Items::loadFromXml] - No item id found, use id or fromid");
+			g_logger().warn("[Items::loadFromXml] - No item id found, use id or fromid");
 			continue;
 		}
 
 		auto toIdAttribute = itemNode.attribute("toid");
 		if (!toIdAttribute) {
-			SPDLOG_WARN("[Items::loadFromXml] - "
-						"tag fromid: {} without toid",
-						fromIdAttribute.value());
+			g_logger().warn("[Items::loadFromXml] - "
+							"tag fromid: {} without toid",
+							fromIdAttribute.value());
 			continue;
 		}
 
@@ -247,7 +247,7 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 	itemType.id = id;
 
 	if (itemType.loaded) {
-		SPDLOG_WARN("[Items::parseItemNode] - Duplicate item with id: {}", id);
+		g_logger().warn("[Items::parseItemNode] - Duplicate item with id: {}", id);
 		return;
 	}
 
@@ -294,13 +294,13 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 		if (parseAttribute != ItemParseAttributesMap.end()) {
 			ItemParse::initParse(tmpStrValue, attributeNode, valueAttribute, itemType);
 		} else {
-			SPDLOG_WARN("[Items::parseItemNode] - Unknown key value: {}", keyAttribute.as_string());
+			g_logger().warn("[Items::parseItemNode] - Unknown key value: {}", keyAttribute.as_string());
 		}
 	}
 
 	// Check bed items
 	if ((itemType.transformToFree != 0 || itemType.transformToOnUse[PLAYERSEX_FEMALE] != 0 || itemType.transformToOnUse[PLAYERSEX_MALE] != 0) && itemType.type != ITEM_TYPE_BED) {
-		SPDLOG_WARN("[Items::parseItemNode] - Item {} is not set as a bed-type", itemType.id);
+		g_logger().warn("[Items::parseItemNode] - Item {} is not set as a bed-type", itemType.id);
 	}
 }
 

@@ -46,7 +46,7 @@ Npc::Npc(NpcType* npcType) :
 	// register creature events
 	for (const std::string &scriptName : npcType->info.scripts) {
 		if (!registerCreatureEvent(scriptName)) {
-			SPDLOG_WARN("Unknown event name: {}", scriptName);
+			g_logger().warn("Unknown event name: {}", scriptName);
 		}
 	}
 }
@@ -233,7 +233,7 @@ void Npc::onThink(uint32_t interval) {
 
 void Npc::onPlayerBuyItem(Player* player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, bool inBackpacks) {
 	if (player == nullptr) {
-		SPDLOG_ERROR("[Npc::onPlayerBuyItem] - Player is nullptr");
+		g_logger().error("[Npc::onPlayerBuyItem] - Player is nullptr");
 		return;
 	}
 
@@ -277,12 +277,12 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId, uint8_t subType, uint
 	}
 
 	if (getCurrency() == ITEM_GOLD_COIN && (player->getMoney() + player->getBankBalance()) < totalCost) {
-		SPDLOG_ERROR("[Npc::onPlayerBuyItem (getMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
-		SPDLOG_DEBUG("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
+		g_logger().error("[Npc::onPlayerBuyItem (getMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+		g_logger().debug("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
 		return;
 	} else if (getCurrency() != ITEM_GOLD_COIN && (player->getItemTypeCount(getCurrency()) < totalCost || ((player->getMoney() + player->getBankBalance()) < bagsCost))) {
-		SPDLOG_ERROR("[Npc::onPlayerBuyItem (getItemTypeCount)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
-		SPDLOG_DEBUG("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
+		g_logger().error("[Npc::onPlayerBuyItem (getItemTypeCount)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+		g_logger().debug("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
 		return;
 	}
 
@@ -389,7 +389,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 		auto removeCount = std::min<uint16_t>(toRemove, item->getItemCount());
 
 		if (g_game().internalRemoveItem(item, removeCount) != RETURNVALUE_NOERROR) {
-			SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
+			g_logger().error("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
 			continue;
 		}
 
@@ -400,7 +400,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 	}
 
 	if (toRemove != 0) {
-		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Problem while removing items from player {} amount {} of items with id {} on shop for npc {}, the payment will be made based on amount of removed items.", player->getName(), toRemove, itemId, getName());
+		g_logger().error("[Npc::onPlayerSellItem] - Problem while removing items from player {} amount {} of items with id {} on shop for npc {}, the payment will be made based on amount of removed items.", player->getName(), toRemove, itemId, getName());
 	}
 
 	auto totalRemoved = amount - toRemove;

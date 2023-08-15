@@ -440,7 +440,7 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) cons
 
 				if (Tile* masterTile = creatureMaster->getTile()) {
 					if (masterTile->hasFlag(TILESTATE_TELEPORT)) {
-						SPDLOG_WARN("[{}] cannot teleport summon, position has teleport. {}", __FUNCTION__, creatureMaster->getPosition().toString());
+						g_logger().warn("[{}] cannot teleport summon, position has teleport. {}", __FUNCTION__, creatureMaster->getPosition().toString());
 					} else {
 						g_game().internalTeleport(creature, creatureMaster->getPosition(), true);
 						continue;
@@ -835,9 +835,7 @@ void Creature::mitigateDamage(const CombatType_t &combatType, BlockType_t &block
 		// Increase mitigate damage
 		auto originalDamage = damage;
 		damage -= (damage * getMitigation()) / 100.;
-		if (isDevMode()) {
-			spdlog::info("[mitigation] creature: {}, original damage: {}, mitigation damage: {}", getName(), originalDamage, damage);
-		}
+		g_logger().debug("[mitigation] creature: {}, original damage: {}, mitigation damage: {}", getName(), originalDamage, damage);
 
 		if (damage <= 0) {
 			damage = 0;
@@ -1415,7 +1413,7 @@ bool Creature::isImmune(ConditionType_t type) const {
 	try {
 		return type == getConditionImmunities().at(type);
 	} catch (const std::out_of_range &exception) {
-		SPDLOG_ERROR("[{}] invalid index {}, error code: {}", __FUNCTION__, static_cast<uint8_t>(type), exception.what());
+		g_logger().error("[{}] invalid index {}, error code: {}", __FUNCTION__, static_cast<uint8_t>(type), exception.what());
 	}
 
 	return false;
@@ -1425,7 +1423,7 @@ bool Creature::isSuppress(ConditionType_t type) const {
 	try {
 		return type == getConditionSuppressions().at(type);
 	} catch (const std::out_of_range &exception) {
-		SPDLOG_ERROR("[{}] invalid index {}, error code: {}", __FUNCTION__, static_cast<uint8_t>(type), exception.what());
+		g_logger().error("[{}] invalid index {}, error code: {}", __FUNCTION__, static_cast<uint8_t>(type), exception.what());
 	}
 
 	return false;
@@ -1724,7 +1722,7 @@ int32_t Creature::getReflectPercent(CombatType_t combatType, bool useCharges /*=
 	try {
 		return reflectPercent.at(combatTypeToIndex(combatType));
 	} catch (const std::out_of_range &e) {
-		spdlog::error("Index is out of range in getReflectPercent: {}", e.what());
+		g_logger().error("Index is out of range in getReflectPercent: {}", e.what());
 	}
 	return 0;
 }
@@ -1733,7 +1731,7 @@ void Creature::setReflectPercent(CombatType_t combatType, int32_t value) {
 	try {
 		reflectPercent.at(combatTypeToIndex(combatType)) = std::max(0, reflectPercent.at(combatTypeToIndex(combatType)) + value);
 	} catch (const std::out_of_range &e) {
-		spdlog::error("Index is out of range in setReflectPercent: {}", e.what());
+		g_logger().error("Index is out of range in setReflectPercent: {}", e.what());
 	}
 }
 
@@ -1741,7 +1739,7 @@ int32_t Creature::getReflectFlat(CombatType_t combatType, bool useCharges /* = f
 	try {
 		return reflectFlat.at(combatTypeToIndex(combatType));
 	} catch (const std::out_of_range &e) {
-		spdlog::error("Index is out of range in getReflectFlat: {}", e.what());
+		g_logger().error("Index is out of range in getReflectFlat: {}", e.what());
 	}
 	return 0;
 }
@@ -1750,7 +1748,7 @@ void Creature::setReflectFlat(CombatType_t combatType, int32_t value) {
 	try {
 		reflectFlat.at(combatTypeToIndex(combatType)) = std::max(0, reflectFlat.at(combatTypeToIndex(combatType)) + value);
 	} catch (const std::out_of_range &e) {
-		spdlog::error("Index is out of range in setReflectFlat: {}", e.what());
+		g_logger().error("Index is out of range in setReflectFlat: {}", e.what());
 	}
 }
 
@@ -1758,7 +1756,7 @@ int32_t Creature::getAbsorbFlat(CombatType_t combat) const {
 	try {
 		return absorbFlat.at(combatTypeToIndex(combat));
 	} catch (const std::out_of_range &e) {
-		spdlog::error("Index is out of range in getAbsorbFlat: {}", e.what());
+		g_logger().error("Index is out of range in getAbsorbFlat: {}", e.what());
 	}
 	return 0;
 }
@@ -1767,7 +1765,7 @@ void Creature::setAbsorbFlat(CombatType_t combat, int32_t value) {
 	try {
 		absorbFlat.at(combatTypeToIndex(combat)) += value;
 	} catch (const std::out_of_range &e) {
-		spdlog::error("Index is out of range in setAbsorbFlat: {}", e.what());
+		g_logger().error("Index is out of range in setAbsorbFlat: {}", e.what());
 	}
 }
 
@@ -1775,7 +1773,7 @@ int32_t Creature::getAbsorbPercent(CombatType_t combat) const {
 	try {
 		return absorbPercent.at(combatTypeToIndex(combat));
 	} catch (const std::out_of_range &e) {
-		spdlog::error("Index is out of range in getAbsorbPercent: {}", e.what());
+		g_logger().error("Index is out of range in getAbsorbPercent: {}", e.what());
 	}
 	return 0;
 }
@@ -1784,7 +1782,7 @@ void Creature::setAbsorbPercent(CombatType_t combat, int32_t value) {
 	try {
 		absorbPercent.at(combatTypeToIndex(combat)) += value;
 	} catch (const std::out_of_range &e) {
-		spdlog::error("Index is out of range in setAbsorbPercent: {}", e.what());
+		g_logger().error("Index is out of range in setAbsorbPercent: {}", e.what());
 	}
 }
 
@@ -1792,7 +1790,7 @@ int32_t Creature::getIncreasePercent(CombatType_t combat) const {
 	try {
 		return increasePercent.at(combatTypeToIndex(combat));
 	} catch (const std::out_of_range &e) {
-		spdlog::error("Index is out of range in getIncreasePercent: {}", e.what());
+		g_logger().error("Index is out of range in getIncreasePercent: {}", e.what());
 	}
 	return 0;
 }
@@ -1801,6 +1799,6 @@ void Creature::setIncreasePercent(CombatType_t combat, int32_t value) {
 	try {
 		increasePercent.at(combatTypeToIndex(combat)) += value;
 	} catch (const std::out_of_range &e) {
-		spdlog::error("Index is out of range in setIncreasePercent: {}", e.what());
+		g_logger().error("Index is out of range in setIncreasePercent: {}", e.what());
 	}
 }

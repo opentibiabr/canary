@@ -56,7 +56,7 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 		}
 
 		if (!spawnMonsterNode.first_child()) {
-			SPDLOG_WARN("[SpawnsMonster::loadFromXml] - Empty spawn at position: {} with radius: {}", centerPos.toString(), radius);
+			g_logger().warn("[SpawnsMonster::loadFromXml] - Empty spawn at position: {} with radius: {}", centerPos.toString(), radius);
 			continue;
 		}
 
@@ -98,10 +98,10 @@ bool SpawnsMonster::loadFromXML(const std::string &filemonstername) {
 					spawnMonster.addMonster(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
 				} else {
 					if (interval <= MONSTER_MINSPAWN_INTERVAL) {
-						SPDLOG_WARN("[SpawnsMonster::loadFromXml] - {} {} spawntime cannot be less than {} seconds, set to {} by default.", nameAttribute.as_string(), pos.toString(), MONSTER_MINSPAWN_INTERVAL / 1000, MONSTER_MINSPAWN_INTERVAL / 1000);
+						g_logger().warn("[SpawnsMonster::loadFromXml] - {} {} spawntime cannot be less than {} seconds, set to {} by default.", nameAttribute.as_string(), pos.toString(), MONSTER_MINSPAWN_INTERVAL / 1000, MONSTER_MINSPAWN_INTERVAL / 1000);
 						spawnMonster.addMonster(nameAttribute.as_string(), pos, dir, MONSTER_MINSPAWN_INTERVAL);
 					} else {
-						SPDLOG_WARN("[SpawnsMonster::loadFromXml] - {} {} spawntime can not be more than {} seconds", nameAttribute.as_string(), pos.toString(), MONSTER_MAXSPAWN_INTERVAL / 1000);
+						g_logger().warn("[SpawnsMonster::loadFromXml] - {} {} spawntime can not be more than {} seconds", nameAttribute.as_string(), pos.toString(), MONSTER_MAXSPAWN_INTERVAL / 1000);
 					}
 				}
 			}
@@ -273,7 +273,7 @@ void SpawnMonster::cleanup() {
 bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t scheduleInterval) {
 	MonsterType* monsterType = g_monsters().getMonsterType(name);
 	if (!monsterType) {
-		SPDLOG_ERROR("Can not find {}", name);
+		g_logger().error("Can not find {}", name);
 		return false;
 	}
 

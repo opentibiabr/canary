@@ -14,7 +14,7 @@
 int SpdlogFunctions::luaSpdlogInfo(lua_State* L) {
 	// Spdlog.info(text)
 	if (isString(L, 1)) {
-		SPDLOG_INFO(getString(L, 1));
+		g_logger().info(getString(L, 1));
 	} else {
 		lua_pushnil(L);
 	}
@@ -24,7 +24,7 @@ int SpdlogFunctions::luaSpdlogInfo(lua_State* L) {
 int SpdlogFunctions::luaSpdlogWarn(lua_State* L) {
 	// Spdlog.warn(text)
 	if (isString(L, 1)) {
-		SPDLOG_WARN(getString(L, 1));
+		g_logger().warn(getString(L, 1));
 	} else {
 		lua_pushnil(L);
 	}
@@ -34,7 +34,7 @@ int SpdlogFunctions::luaSpdlogWarn(lua_State* L) {
 int SpdlogFunctions::luaSpdlogError(lua_State* L) {
 	// Spdlog.error(text)
 	if (isString(L, 1)) {
-		SPDLOG_ERROR(getString(L, 1));
+		g_logger().error(getString(L, 1));
 	} else {
 		lua_pushnil(L);
 	}
@@ -44,7 +44,7 @@ int SpdlogFunctions::luaSpdlogError(lua_State* L) {
 int SpdlogFunctions::luaSpdlogDebug(lua_State* L) {
 	// Spdlog.debug(text)
 	if (isString(L, 1)) {
-		SPDLOG_DEBUG(getString(L, 1));
+		g_logger().debug(getString(L, 1));
 	} else {
 		lua_pushnil(L);
 	}

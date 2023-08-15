@@ -14,7 +14,7 @@
 #include "utils/tools.h"
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
-	SPDLOG_ERROR("[{}] Failed to load {}: {}", where, fileName, result.description());
+	g_logger().error("[{}] Failed to load {}: {}", where, fileName, result.description());
 
 	FILE* file = fopen(fileName.c_str(), "rb");
 	if (!file) {
@@ -49,16 +49,16 @@ void printXMLError(const std::string &where, const std::string &fileName, const 
 	} while (bytes == 32768);
 	fclose(file);
 
-	SPDLOG_ERROR("Line {}:", currentLine);
-	SPDLOG_ERROR("{}", line);
+	g_logger().error("Line {}:", currentLine);
+	g_logger().error("{}", line);
 	for (size_t i = 0; i < lineOffsetPosition; i++) {
 		if (line[i] == '\t') {
-			SPDLOG_ERROR("\t");
+			g_logger().error("\t");
 		} else {
-			SPDLOG_ERROR(" ");
+			g_logger().error(" ");
 		}
 	}
-	SPDLOG_ERROR("^");
+	g_logger().error("^");
 }
 
 static uint32_t circularShift(int bits, uint32_t value) {
@@ -423,7 +423,7 @@ std::string formatDate(time_t time) {
 	try {
 		return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
 	} catch (const std::out_of_range &exception) {
-		SPDLOG_ERROR("Failed to format date with error code {}", exception.what());
+		g_logger().error("Failed to format date with error code {}", exception.what());
 	}
 	return {};
 }
@@ -432,7 +432,7 @@ std::string formatDateShort(time_t time) {
 	try {
 		return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
 	} catch (const std::out_of_range &exception) {
-		SPDLOG_ERROR("Failed to format date short with error code {}", exception.what());
+		g_logger().error("Failed to format date short with error code {}", exception.what());
 	}
 	return {};
 }
@@ -1080,7 +1080,7 @@ size_t combatTypeToIndex(CombatType_t combatType) {
 		case COMBAT_NEUTRALDAMAGE:
 			return 12;
 		default:
-			spdlog::error("Combat type {} is out of range", fmt::underlying(combatType));
+			g_logger().error("Combat type {} is out of range", fmt::underlying(combatType));
 			// Uncomment for catch the function call with debug
 			// throw std::out_of_range("Combat is out of range");
 	}
@@ -1115,7 +1115,7 @@ std::string combatTypeToName(CombatType_t combatType) {
 		case COMBAT_DEATHDAMAGE:
 			return "death";
 		default:
-			spdlog::error("Combat type {} is out of range", fmt::underlying(combatType));
+			g_logger().error("Combat type {} is out of range", fmt::underlying(combatType));
 			// Uncomment for catch the function call with debug
 			// throw std::out_of_range("Combat is out of range");
 	}
@@ -1186,7 +1186,7 @@ ItemAttribute_t stringToItemAttribute(const std::string &str) {
 		return ItemAttribute_t::LOOTMESSAGE_SUFFIX;
 	}
 
-	SPDLOG_ERROR("[{}] attribute type {} is not registered", __FUNCTION__, str);
+	g_logger().error("[{}] attribute type {} is not registered", __FUNCTION__, str);
 	return ItemAttribute_t::NONE;
 }
 
@@ -1504,7 +1504,7 @@ void capitalizeWords(std::string &source) {
  * Then can press any key to close
  */
 void consoleHandlerExit() {
-	SPDLOG_ERROR("The program will close after pressing the enter key...");
+	g_logger().error("The program will close after pressing the enter key...");
 	if (isatty(STDIN_FILENO)) {
 		getchar();
 	}

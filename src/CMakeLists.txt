@@ -309,7 +309,6 @@ PRIVATE
 	map/map.cpp
 	map/mapcache.cpp
 	otserv.cpp
-	pch.cpp
 	security/argon.cpp
 	security/rsa.cpp
 	server/network/connection/connection.cpp

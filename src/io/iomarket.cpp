@@ -18,7 +18,7 @@
 uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
 	auto tier = static_cast<uint8_t>(std::atoi(string.c_str()));
 	if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
-		SPDLOG_ERROR("{} - Failed to get number value {} for tier table result", __FUNCTION__, tier);
+		g_logger().error("{} - Failed to get number value {} for tier table result", __FUNCTION__, tier);
 		return 0;
 	}
 
@@ -146,7 +146,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool) {
 					uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
 					Item* item = Item::CreateItem(itemType.id, stackCount);
 					if (g_game().internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
-						SPDLOG_ERROR("[{}] Ocurred an error to add item with id {} to player {}", __FUNCTION__, itemType.id, player->getName());
+						g_logger().error("[{}] Ocurred an error to add item with id {} to player {}", __FUNCTION__, itemType.id, player->getName());
 						delete item;
 						break;
 					}

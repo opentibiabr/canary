@@ -22,7 +22,7 @@ void IOBosstiary::loadBoostedBoss() {
 	query << "SELECT * FROM `boosted_boss`";
 	DBResult_ptr result = database.storeQuery(query.str());
 	if (!result) {
-		SPDLOG_ERROR("[{}] Failed to detect boosted boss database. (CODE 01)", __FUNCTION__);
+		g_logger().error("[{}] Failed to detect boosted boss database. (CODE 01)", __FUNCTION__);
 		return;
 	}
 
@@ -33,7 +33,7 @@ void IOBosstiary::loadBoostedBoss() {
 
 	auto bossMap = getBosstiaryMap();
 	if (bossMap.size() <= 1) {
-		SPDLOG_ERROR("[{}] It is not possible to create a boosted boss with only one registered boss. (CODE 02)", __FUNCTION__);
+		g_logger().error("[{}] It is not possible to create a boosted boss with only one registered boss. (CODE 02)", __FUNCTION__);
 		return;
 	}
 
@@ -44,7 +44,7 @@ void IOBosstiary::loadBoostedBoss() {
 		bossId = result->getNumber<uint16_t>("raceid");
 		setBossBoostedName(bossName);
 		setBossBoostedId(bossId);
-		SPDLOG_INFO("Boosted boss: {}", bossName);
+		g_logger().info("Boosted boss: {}", bossName);
 		return;
 	}
 
@@ -61,7 +61,7 @@ void IOBosstiary::loadBoostedBoss() {
 
 	// Check if not have archfoe registered boss
 	if (bossInfo.size() == 0) {
-		SPDLOG_ERROR("Failed to boost a boss. There is no boss registered with the Archfoe Rarity.");
+		g_logger().error("Failed to boost a boss. There is no boss registered with the Archfoe Rarity.");
 		return;
 	}
 
@@ -96,13 +96,13 @@ void IOBosstiary::loadBoostedBoss() {
 	}
 	query << "`raceid` = '" << bossId << "'";
 	if (!database.executeQuery(query.str())) {
-		SPDLOG_ERROR("[{}] Failed to detect boosted boss database. (CODE 03)", __FUNCTION__);
+		g_logger().error("[{}] Failed to detect boosted boss database. (CODE 03)", __FUNCTION__);
 		return;
 	}
 
 	setBossBoostedName(bossName);
 	setBossBoostedId(bossId);
-	SPDLOG_INFO("Boosted boss: {}", bossName);
+	g_logger().info("Boosted boss: {}", bossName);
 }
 
 void IOBosstiary::addBosstiaryMonster(uint16_t raceId, const std::string &name) {
@@ -141,7 +141,7 @@ MonsterType* IOBosstiary::getMonsterTypeByBossRaceId(uint16_t raceId) const {
 		if (bossRaceId == raceId) {
 			MonsterType* monsterType = g_monsters().getMonsterType(bossName);
 			if (!monsterType) {
-				SPDLOG_ERROR("[{}] Boss with id not found in boss map", raceId);
+				g_logger().error("[{}] Boss with id not found in boss map", raceId);
 				continue;
 			}
 
@@ -244,7 +244,7 @@ std::vector<uint16_t> IOBosstiary::getBosstiaryFinished(const Player* player, ui
 				unlockedMonsters.push_back(bossId);
 			}
 		} else {
-			SPDLOG_WARN("[{}] boss with id {} and name {} not found in bossRace", __FUNCTION__, bossId, bossName);
+			g_logger().warn("[{}] boss with id {} and name {} not found in bossRace", __FUNCTION__, bossId, bossName);
 		}
 	}
 
@@ -273,7 +273,7 @@ uint8_t IOBosstiary::getBossCurrentLevel(const Player* player, uint16_t bossId) 
 			}
 		}
 	} else {
-		SPDLOG_WARN("[{}] boss with id {} and name {} not found in bossRace", __FUNCTION__, bossId, mType->name);
+		g_logger().warn("[{}] boss with id {} and name {} not found in bossRace", __FUNCTION__, bossId, mType->name);
 	}
 
 	return level;

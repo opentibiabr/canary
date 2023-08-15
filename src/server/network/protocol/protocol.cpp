@@ -45,7 +45,7 @@ void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 
 bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 	if (encryptionEnabled && !XTEA_decrypt(msg)) {
-		SPDLOG_ERROR("[Protocol::onRecvMessage] - XTEA_decrypt Failed");
+		g_logger().error("[Protocol::onRecvMessage] - XTEA_decrypt Failed");
 		return false;
 	}
 
@@ -214,7 +214,7 @@ void Protocol::enableCompression() {
 			defStream->opaque = Z_NULL;
 			if (deflateInit2(defStream.get(), compressionLevel, Z_DEFLATED, -15, 9, Z_DEFAULT_STRATEGY) != Z_OK) {
 				defStream.reset();
-				SPDLOG_ERROR("[Protocol::enableCompression()] - Zlib deflateInit2 error: {}", (defStream->msg ? defStream->msg : " unknown error"));
+				g_logger().error("[Protocol::enableCompression()] - Zlib deflateInit2 error: {}", (defStream->msg ? defStream->msg : " unknown error"));
 			} else {
 				compreesionEnabled = true;
 			}
@@ -225,7 +225,7 @@ void Protocol::enableCompression() {
 bool Protocol::compression(OutputMessage &msg) const {
 	auto outputMessageSize = msg.getLength();
 	if (outputMessageSize > NETWORKMESSAGE_MAXSIZE) {
-		SPDLOG_ERROR("[NetworkMessage::compression] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, outputMessageSize);
+		g_logger().error("[NetworkMessage::compression] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, outputMessageSize);
 		return false;
 	}
 

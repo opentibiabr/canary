@@ -168,9 +168,9 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 			outfit.lookTypeEx = spell->outfitItem;
 			condition->setOutfit(outfit);
 		} else {
-			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-						 "Missing outfit monster or item in outfit spell for: {}",
-						 description);
+			g_logger().error("[Monsters::deserializeSpell] - "
+							 "Missing outfit monster or item in outfit spell for: {}",
+							 description);
 			return false;
 		}
 
@@ -212,18 +212,18 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 		combatPtr->setParam(COMBAT_PARAM_CREATEITEM, ITEM_ENERGYFIELD_PVP);
 	} else if (spellName == "condition") {
 		if (spell->conditionType == CONDITION_NONE) {
-			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-						 "{} condition is not set for: {}",
-						 description, spell->name);
+			g_logger().error("[Monsters::deserializeSpell] - "
+							 "{} condition is not set for: {}",
+							 description, spell->name);
 		}
 	} else if (spellName == "strength") {
 		//
 	} else if (spellName == "effect") {
 		//
 	} else {
-		SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-					 "{} unknown or missing parameter on spell with name: {}",
-					 description, spell->name);
+		g_logger().error("[Monsters::deserializeSpell] - "
+						 "{} unknown or missing parameter on spell with name: {}",
+						 description, spell->name);
 	}
 
 	if (spell->shoot != CONST_ANI_NONE) {
@@ -278,7 +278,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	int32_t id = scriptInterface->getEvent();
 	if (id == -1) {
-		SPDLOG_WARN("[MonsterType::loadCallback] - Event not found");
+		g_logger().warn("[MonsterType::loadCallback] - Event not found");
 		return false;
 	}
 
@@ -305,7 +305,7 @@ MonsterType* Monsters::getMonsterType(const std::string &name) {
 		&& it->first.find(lowerCaseName) != it->first.npos) {
 		return it->second;
 	}
-	SPDLOG_ERROR("[Monsters::getMonsterType] - Monster with name {} not exist", lowerCaseName);
+	g_logger().error("[Monsters::getMonsterType] - Monster with name {} not exist", lowerCaseName);
 	return nullptr;
 }
 

@@ -90,7 +90,7 @@ bool IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, 
 		return false;
 	}
 
-	SPDLOG_INFO("Map size: {}x{}", root_header.width, root_header.height);
+	g_logger().info("Map size: {}x{}", root_header.width, root_header.height);
 	map->width = root_header.width;
 	map->height = root_header.height;
 
@@ -125,7 +125,7 @@ bool IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, 
 
 	map->cache.clear();
 
-	SPDLOG_INFO("Map loading time: {} seconds", (OTSYS_TIME() - start) / (1000.));
+	g_logger().info("Map loading time: {} seconds", (OTSYS_TIME() - start) / (1000.));
 	return true;
 }
 
@@ -295,15 +295,12 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 					item->id = id;
 
 					if (tile->isHouse() && iType.moveable) {
-						SPDLOG_WARN("[IOMap::loadMap] - "
-									"Moveable item with ID: {}, in house: {}, "
-									"at position: x {}, y {}, z {}",
-									id, houseId, x, y, z);
+						g_logger().warn("[IOMap::loadMap] - "
+										"Moveable item with ID: {}, in house: {}, "
+										"at position: x {}, y {}, z {}",
+										id, houseId, x, y, z);
 					} else if (iType.isGroundTile()) {
 						tile->ground = map.cache.tryReplaceItemFromCache(item);
-					} else {
-						tile->items.emplace_back(map.cache.tryReplaceItemFromCache(item));
-					}
 
 					break;
 				}
@@ -335,7 +332,7 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 				std::ostringstream ss;
 				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
 				setLastErrorString(ss.str());
-				SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
+				g_logger().warn("[IOMap::loadMap] - {}", ss.str());
 				break;
 			}
 
@@ -357,10 +354,10 @@ bool IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 			}
 
 			if (tile->isHouse() && iType.moveable) {
-				SPDLOG_WARN("[IOMap::loadMap] - "
-							"Moveable item with ID: {}, in house: {}, "
-							"at position: x {}, y {}, z {}",
-							id, houseId, x, y, z);
+			g_logger().warn("[IOMap::loadMap] - "
+								"Moveable item with ID: {}, in house: {}, "
+								"at position: x {}, y {}, z {}",
+								id, houseId, x, y, z);
 			} else if (iType.isGroundTile()) {
 				tile->ground = map.cache.tryReplaceItemFromCache(item);
 			} else {

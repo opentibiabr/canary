@@ -148,6 +148,20 @@ bool Map::save() {
 	return false;
 }
 
+Tile* Map::getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic) {
+	auto tile = getTile(x, y, z);
+	if (!tile) {
+		if (isDynamic)
+			tile = new DynamicTile(x, y, z);
+		else
+			tile = new StaticTile(x, y, z);
+
+		setTile(x, y, z, tile);
+	}
+
+	return tile;
+}
+
 Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 	if (z >= MAP_MAX_LAYERS)
 		return nullptr;

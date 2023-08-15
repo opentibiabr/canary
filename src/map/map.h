@@ -77,12 +77,9 @@ class Map : protected MapCache {
 			return getTile(pos.x, pos.y, pos.z);
 		}
 
-		/**
-		 * Set a single tile.
-		 */
-		void setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile);
-		void setTile(const Position &pos, Tile* newTile) {
-			setTile(pos.x, pos.y, pos.z, newTile);
+		Tile* getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic = false);
+		Tile* getOrCreateTile(const Position &pos, bool isDynamic = false) {
+			return getOrCreateTile(pos.x, pos.y, pos.z, isDynamic);
 		}
 
 		/**
@@ -146,6 +143,14 @@ class Map : protected MapCache {
 		Houses housesCustomMaps[50];
 
 	private:
+		/**
+		 * Set a single tile.
+		 */
+		void setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile);
+		void setTile(const Position &pos, Tile* newTile) {
+			setTile(pos.x, pos.y, pos.z, newTile);
+		}
+
 		SpectatorCache spectatorCache;
 		SpectatorCache playersSpectatorCache;
 
@@ -161,6 +166,7 @@ class Map : protected MapCache {
 
 		friend class Game;
 		friend class IOMap;
+		friend class MapCache;
 };
 
 #endif // SRC_MAP_MAP_H_

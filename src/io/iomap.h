@@ -56,8 +56,6 @@ class IOMapException : public std::exception {
 };
 
 class IOMap {
-		static Tile* createTile(Item*&ground, Item* item, uint16_t x, uint16_t y, uint8_t z);
-
 	public:
 		static void loadMap(Map* map, const std::string &identifier, const Position &pos = Position(), bool unload = false);
 

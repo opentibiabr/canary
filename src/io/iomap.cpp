@@ -36,24 +36,6 @@
 	|--- OTBM_ITEM_DEF (not implemented)
 */
 
-Tile* IOMap::createTile(Item*&ground, Item* item, uint16_t x, uint16_t y, uint8_t z) {
-	if (!ground) {
-		return new StaticTile(x, y, z);
-	}
-
-	Tile* tile;
-	if ((item && item->isBlocking()) || ground->isBlocking()) {
-		tile = new StaticTile(x, y, z);
-	} else {
-		tile = new DynamicTile(x, y, z);
-	}
-
-	tile->internalAddThing(ground);
-	ground->startDecaying();
-	ground = nullptr;
-	return tile;
-}
-
 void IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, bool unload) {
 	int64_t start = OTSYS_TIME();
 	OTB::Loader loader { fileName, OTB::Identifier { { 'O', 'T', 'B', 'M' } } };

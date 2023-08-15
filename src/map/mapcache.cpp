@@ -19,11 +19,11 @@
 static phmap::flat_hash_map<size_t, BasicItemPtr> items;
 static phmap::flat_hash_map<size_t, BasicTilePtr> tiles;
 
-BasicItemPtr static_getItemFromCache(const BasicItemPtr &ref) {
+BasicItemPtr static_tryGetItemFromCache(const BasicItemPtr &ref) {
 	return ref ? items.try_emplace(ref->hash(), ref).first->second : nullptr;
 }
 
-BasicTilePtr static_getTileFromCache(const BasicTilePtr &ref) {
+BasicTilePtr static_tryGetTileFromCache(const BasicTilePtr &ref) {
 	return ref ? tiles.try_emplace(ref->hash(), ref).first->second : nullptr;
 }
 
@@ -155,11 +155,11 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePt
 		return;
 	}
 
-	root.getBestLeaf(x, y, 15)->createFloor(z)->setTileCache(x, y, static_getTileFromCache(newTile));
+	root.getBestLeaf(x, y, 15)->createFloor(z)->setTileCache(x, y, static_tryGetTileFromCache(newTile));
 }
 
 BasicItemPtr MapCache::tryReplaceItemFromCache(const BasicItemPtr &ref) {
-	return static_getItemFromCache(ref);
+	return static_tryGetItemFromCache(ref);
 }
 
 void BasicTile::hash(size_t &h) const {
@@ -225,7 +225,7 @@ bool BasicItem::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, 
 			continue;
 		}
 
-		items.emplace_back(static_getItemFromCache(item));
+		items.emplace_back(static_tryGetItemFromCache(item));
 	}
 
 	return true;

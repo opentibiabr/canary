@@ -607,7 +607,7 @@ void ItemParse::parseSupressDrunk(const std::string &tmpStrValue, pugi::xml_attr
 		}
 
 		// Initialize condititon with value 0
-		itemType.getAbilities().conditionSuppressions[conditionType] = CONDITION_NONE;
+		itemType.getAbilities().conditionSuppressions[conditionType] = conditionType;
 	}
 }
 

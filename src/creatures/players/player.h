@@ -2642,9 +2642,9 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		uint32_t inventoryWeight = 0;
 		uint32_t capacity = 40000;
 		uint32_t bonusCapacity = 0;
-		uint32_t damageImmunities = 0;
-		std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionImmunities = {};
-		std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionSuppressions = {};
+		std::bitset<CombatType_t::COMBAT_NONE> m_damageImmunities;
+		std::bitset<ConditionType_t::CONDITION_NONE> m_conditionImmunities;
+		std::bitset<ConditionType_t::CONDITION_NONE> m_conditionSuppressions;
 		uint32_t level = 1;
 		uint32_t magLevel = 0;
 		uint32_t actionTaskEvent = 0;
@@ -2814,15 +2814,8 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		uint64_t getLostExperience() const override {
 			return skillLoss ? static_cast<uint64_t>(experience * getLostPercent()) : 0;
 		}
-		uint32_t getDamageImmunities() const override {
-			return damageImmunities;
-		}
-		const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionImmunities() const override {
-			return conditionImmunities;
-		}
-		const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionSuppressions() const override {
-			return conditionSuppressions;
-		}
+		bool isSuppress(ConditionType_t conditionType) const override;
+		void addConditionSuppression(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addConditions);
 		uint16_t getLookCorpse() const override;
 		void getPathSearchParams(const Creature* creature, FindPathParams &fpp) const override;
 

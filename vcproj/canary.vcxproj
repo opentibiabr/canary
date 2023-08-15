@@ -60,7 +60,8 @@
     <ClInclude Include="..\src\game\movement\teleport.h" />
     <ClInclude Include="..\src\game\scheduling\events_scheduler.hpp" />
     <ClInclude Include="..\src\game\scheduling\scheduler.h" />
-    <ClInclude Include="..\src\game\scheduling\tasks.h" />
+    <ClInclude Include="..\src\game\scheduling\dispatcher.h" />
+    <ClInclude Include="..\src\game\scheduling\task.hpp" />
     <ClInclude Include="..\src\io\fileloader.h" />
     <ClInclude Include="..\src\io\functions\iologindata_load_player.hpp" />
     <ClInclude Include="..\src\io\functions\iologindata_save_player.hpp" />
@@ -239,7 +240,7 @@
     <ClCompile Include="..\src\game\movement\teleport.cpp" />
     <ClCompile Include="..\src\game\scheduling\events_scheduler.cpp" />
     <ClCompile Include="..\src\game\scheduling\scheduler.cpp" />
-    <ClCompile Include="..\src\game\scheduling\tasks.cpp" />
+    <ClCompile Include="..\src\game\scheduling\dispatcher.cpp" />
     <ClCompile Include="..\src\io\fileloader.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_load_player.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_save_player.cpp" />

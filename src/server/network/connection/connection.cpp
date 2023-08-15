@@ -66,9 +66,7 @@ void Connection::close(bool force) {
 	connectionState = CONNECTION_STATE_CLOSED;
 
 	if (protocol) {
-		g_dispatcher().addTask(
-			createSchedulerTask(1000, std::bind_front(&Protocol::release, protocol))
-		);
+		g_dispatcher().addTask(std::bind_front(&Protocol::release, protocol), 1000);
 	}
 
 	if (messageQueue.empty() || force) {
@@ -95,7 +93,7 @@ void Connection::closeSocket() {
 void Connection::accept(Protocol_ptr protocolPtr) {
 	this->connectionState = CONNECTION_STATE_IDENTIFYING;
 	this->protocol = protocolPtr;
-	g_dispatcher().addTask(createSchedulerTask(1000, std::bind_front(&Protocol::onConnect, protocolPtr)));
+	g_dispatcher().addTask(std::bind_front(&Protocol::onConnect, protocolPtr), 1000);
 
 	// Call second accept for not duplicate code
 	accept(false);

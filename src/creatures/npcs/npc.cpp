@@ -14,7 +14,7 @@
 #include "declarations.hpp"
 #include "game/game.h"
 #include "lua/callbacks/creaturecallback.h"
-#include "game/scheduling/tasks.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/scheduler.h"
 
 int32_t Npc::despawnRange;
@@ -349,7 +349,7 @@ void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, u
 			return;
 		}
 		if (hasMore) {
-			g_scheduler().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, totalPrice)));
+			g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, totalPrice));
 			return;
 		}
 		ss << "You sold all of the items from your loot pouch for ";
@@ -364,7 +364,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 		return;
 	}
 	if (itemId == ITEM_GOLD_POUCH) {
-		g_scheduler().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, 0)));
+		g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, 0));
 		return;
 	}
 

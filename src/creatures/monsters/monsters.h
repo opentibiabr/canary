@@ -90,8 +90,8 @@ class MonsterType {
 				uint32_t maxSummons = 0;
 				uint32_t changeTargetSpeed = 0;
 
-				std::bitset<ConditionType_t::CONDITION_NONE> m_conditionImmunities;
-				std::bitset<ConditionType_t::CONDITION_NONE> m_damageImmunities;
+				std::bitset<ConditionType_t::CONDITION_COUNT> m_conditionImmunities;
+				std::bitset<CombatType_t::COMBAT_COUNT> m_damageImmunities;
 
 				// Bestiary
 				uint8_t bestiaryOccurrence = 0;

@@ -2642,9 +2642,9 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		uint32_t inventoryWeight = 0;
 		uint32_t capacity = 40000;
 		uint32_t bonusCapacity = 0;
-		std::bitset<CombatType_t::COMBAT_NONE> m_damageImmunities;
-		std::bitset<ConditionType_t::CONDITION_NONE> m_conditionImmunities;
-		std::bitset<ConditionType_t::CONDITION_NONE> m_conditionSuppressions;
+		std::bitset<CombatType_t::COMBAT_COUNT> m_damageImmunities;
+		std::bitset<ConditionType_t::CONDITION_COUNT> m_conditionImmunities;
+		std::bitset<ConditionType_t::CONDITION_COUNT> m_conditionSuppressions;
 		uint32_t level = 1;
 		uint32_t magLevel = 0;
 		uint32_t actionTaskEvent = 0;

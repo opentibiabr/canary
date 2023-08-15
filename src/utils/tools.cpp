@@ -1124,7 +1124,7 @@ std::string combatTypeToName(CombatType_t combatType) {
 }
 
 CombatType_t indexToCombatType(size_t v) {
-	return static_cast<CombatType_t>(1 << v);
+	return static_cast<CombatType_t>(v);
 }
 
 ItemAttribute_t stringToItemAttribute(const std::string &str) {

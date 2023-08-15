@@ -669,7 +669,7 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 		lua_pushnil(L);
 	}
 
-	monsterType->info.m_damageImmunities.set(static_cast<size_t>(combatType), true);
+	monsterType->info.m_damageImmunities.set(combatTypeToIndex(combatType), true);
 	pushBoolean(L, true);
 	return 1;
 }

@@ -8153,13 +8153,12 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	if (isSlotOneUnlocked && bossIdSlotOne != 0) {
 		if (mTypeSlotOne) {
 			// Variables Boss Slot One
-			auto bossRace = static_cast<uint8_t>(mTypeSlotOne->info.bosstiaryRace);
 			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
 			auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotOne);
 			uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
 			uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
 			// Bytes Slot One
-			sendBosstiarySlotsBytes(msg, bossRace, bossKillCount, bonusBossSlotOne, 0, isSlotOneInactive, removePrice);
+			sendBosstiarySlotsBytes(msg, bossRaceSlotOne, bossKillCount, bonusBossSlotOne, 0, isSlotOneInactive, removePrice);
 			bossesUnlockedSize--;
 		}
 	}
@@ -8171,13 +8170,12 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	if (isSlotTwoUnlocked && bossIdSlotTwo != 0) {
 		// Variables Boss Slot Two
 		if (mTypeSlotTwo) {
-			auto bossRace = static_cast<uint8_t>(mTypeSlotTwo->info.bosstiaryRace);
 			auto bossKillCount = player->getBestiaryKillCount((uint16_t)(bossIdSlotTwo));
 			auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotTwo);
 			uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
 			uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
 			// Bytes Slot Two
-			sendBosstiarySlotsBytes(msg, bossRace, bossKillCount, bonusBossSlotTwo, 0, isSlotTwoInactive, removePrice);
+			sendBosstiarySlotsBytes(msg, bossRaceSlotTwo, bossKillCount, bonusBossSlotTwo, 0, isSlotTwoInactive, removePrice);
 			bossesUnlockedSize--;
 		}
 	}
@@ -8187,7 +8185,6 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.add<uint32_t>(boostedBossId);
 	if (isTodaySlotUnlocked && boostedBossId != 0) {
 		if (mTypeBoosted) {
-			auto boostedBossRace = static_cast<uint8_t>(mTypeBoosted->info.bosstiaryRace);
 			auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
 			auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
 			auto bosstiaryMultiplier = static_cast<uint8_t>(g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER));

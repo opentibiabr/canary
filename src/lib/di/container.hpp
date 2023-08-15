@@ -9,8 +9,8 @@
 #ifndef CANARY_CONTAINER_HPP
 #define CANARY_CONTAINER_HPP
 
-#include "lib/logging/Logger.hpp"
-#include "lib/logging/LogWithSpdLog.hpp"
+#include "lib/logging/logger.hpp"
+#include "lib/logging/log_with_spd_log.hpp"
 
 namespace di = boost::di;
 

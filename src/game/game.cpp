@@ -27,6 +27,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "creatures/monsters/monster.h"
 #include "lua/creature/movement.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/scheduler.h"
 #include "server/server.h"
 #include "creatures/combat/spells.h"
@@ -41,6 +42,8 @@
 #include "creatures/npcs/npcs.h"
 #include "server/network/webhook/webhook.h"
 #include "protobuf/appearances.pb.h"
+#include "server/network/protocol/protocollogin.h"
+#include "server/network/protocol/protocolstatus.h"
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, Creature* source) {
@@ -279,6 +282,12 @@ void Game::loadBoostedCreature() {
 }
 
 void Game::start(ServiceManager* manager) {
+	// Game client protocols
+	manager->add<ProtocolGame>(static_cast<uint16_t>(g_configManager().getNumber(GAME_PORT)));
+	manager->add<ProtocolLogin>(static_cast<uint16_t>(g_configManager().getNumber(LOGIN_PORT)));
+	// OT protocols
+	manager->add<ProtocolStatus>(static_cast<uint16_t>(g_configManager().getNumber(STATUS_PORT)));
+
 	serviceManager = manager;
 
 	time_t now = time(0);
@@ -286,12 +295,12 @@ void Game::start(ServiceManager* manager) {
 	int minutes = tms->tm_min;
 	lightHour = (minutes * LIGHT_DAY_LENGTH) / 60;
 
-	g_scheduler().addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this)));
-	g_scheduler().addEvent(createSchedulerTask(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this, 0)));
-	g_scheduler().addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
-	g_scheduler().addEvent(createSchedulerTask(EVENT_MS, std::bind_front(&Game::updateForgeableMonsters, this)));
-	g_scheduler().addEvent(createSchedulerTask(EVENT_MS + 1000, std::bind_front(&Game::createFiendishMonsters, this)));
-	g_scheduler().addEvent(createSchedulerTask(EVENT_MS + 1000, std::bind_front(&Game::createInfluencedMonsters, this)));
+	g_scheduler().addEvent(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this));
+	g_scheduler().addEvent(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this, 0));
+	g_scheduler().addEvent(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this));
+	g_scheduler().addEvent(EVENT_MS, std::bind_front(&Game::updateForgeableMonsters, this));
+	g_scheduler().addEvent(EVENT_MS + 1000, std::bind_front(&Game::createFiendishMonsters, this));
+	g_scheduler().addEvent(EVENT_MS + 1000, std::bind_front(&Game::createInfluencedMonsters, this));
 }
 
 GameState_t Game::getGameState() const {
@@ -357,13 +366,8 @@ void Game::setGameState(GameState_t newState) {
 			saveMotdNum();
 			saveGameState();
 
-			g_dispatcher().addTask(
-				createTask(std::bind(&Game::shutdown, this))
-			);
+			g_dispatcher().addTask(std::bind(&Game::shutdown, this));
 
-			g_scheduler().stop();
-			g_databaseTasks().stop();
-			g_dispatcher().stop();
 			break;
 		}
 
@@ -405,8 +409,6 @@ void Game::saveGameState() {
 	}
 
 	Map::save();
-
-	g_databaseTasks().flush();
 
 	if (gameState == GAME_STATE_MAINTAIN) {
 		setGameState(GAME_STATE_NORMAL);
@@ -1081,7 +1083,7 @@ void Game::playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t 
 		}
 
 		if (Position::areInRange<1, 1, 0>(movingCreature->getPosition(), player->getPosition())) {
-			SchedulerTask* task = createSchedulerTask(
+			std::shared_ptr<Task> task = createPlayerTask(
 				g_configManager().getNumber(PUSH_DELAY),
 				std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreature->getPosition(), tile->getPosition())
 			);
@@ -1123,7 +1125,7 @@ void Game::playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, 
 void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Position &movingCreatureOrigPos, Tile* toTile) {
 	if (!player->canDoAction()) {
 		uint32_t delay = 600;
-		SchedulerTask* task = createSchedulerTask(delay, std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()));
+		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()));
 
 		player->setNextActionPushTask(task);
 		return;
@@ -1135,9 +1137,9 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 		// need to walk to the creature first before moving it
 		std::forward_list<Direction> listDir;
 		if (player->getPathTo(movingCreatureOrigPos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
+			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
 
-			SchedulerTask* task = createSchedulerTask(600, std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()));
+			std::shared_ptr<Task> task = createPlayerTask(600, std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()));
 
 			player->pushEvent(true);
 			player->setNextActionPushTask(task);
@@ -1337,7 +1339,7 @@ void Game::playerMoveItemByPlayerID(uint32_t playerId, const Position &fromPos, 
 void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, Item* item, Cylinder* toCylinder) {
 	if (!player->canDoAction()) {
 		uint32_t delay = player->getNextActionTime();
-		SchedulerTask* task = createSchedulerTask(delay, std::bind(&Game::playerMoveItemByPlayerID, this, player->getID(), fromPos, itemId, fromStackPos, toPos, count));
+		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerMoveItemByPlayerID, this, player->getID(), fromPos, itemId, fromStackPos, toPos, count));
 		player->setNextActionTask(task);
 		return;
 	}
@@ -1432,9 +1434,9 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 		// need to walk to the item first before using it
 		std::forward_list<Direction> listDir;
 		if (player->getPathTo(item->getPosition(), listDir, 0, 1, true, true)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
+			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
 
-			SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerMoveItemByPlayerID, this, player->getID(), fromPos, itemId, fromStackPos, toPos, count));
+			std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerMoveItemByPlayerID, this, player->getID(), fromPos, itemId, fromStackPos, toPos, count));
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -1489,9 +1491,9 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 
 			std::forward_list<Direction> listDir;
 			if (player->getPathTo(walkPos, listDir, 0, 0, true, true)) {
-				g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
+				g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
 
-				SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerMoveItemByPlayerID, this, player->getID(), itemPos, itemId, itemStackPos, toPos, count));
+				std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerMoveItemByPlayerID, this, player->getID(), itemPos, itemId, itemStackPos, toPos, count));
 				player->setNextWalkActionTask(task);
 			} else {
 				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -3182,9 +3184,9 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 
 			std::forward_list<Direction> listDir;
 			if (player->getPathTo(walkToPos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
+				g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
 
-				SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerUseItemEx, this, playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId));
+				std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerUseItemEx, this, playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId));
 				if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 					player->setNextPotionActionTask(task);
 				} else {
@@ -3210,7 +3212,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 			delay = player->getNextPotionActionTime();
 		}
-		SchedulerTask* task = createSchedulerTask(delay, std::bind(&Game::playerUseItemEx, this, playerId, fromPos, fromStackPos, fromItemId, toPos, toStackPos, toItemId));
+		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerUseItemEx, this, playerId, fromPos, fromStackPos, fromItemId, toPos, toStackPos, toItemId));
 		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 			player->setNextPotionActionTask(task);
 		} else {
@@ -3287,9 +3289,9 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		if (ret == RETURNVALUE_TOOFARAWAY) {
 			std::forward_list<Direction> listDir;
 			if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
+				g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
 
-				SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerUseItem, this, playerId, pos, stackPos, index, itemId));
+				std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerUseItem, this, playerId, pos, stackPos, index, itemId));
 				if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 					player->setNextPotionActionTask(task);
 				} else {
@@ -3315,7 +3317,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 			delay = player->getNextPotionActionTime();
 		}
-		SchedulerTask* task = createSchedulerTask(delay, std::bind(&Game::playerUseItem, this, playerId, pos, stackPos, index, itemId));
+		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerUseItem, this, playerId, pos, stackPos, index, itemId));
 		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 			player->setNextPotionActionTask(task);
 		} else {
@@ -3421,9 +3423,9 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 
 			std::forward_list<Direction> listDir;
 			if (player->getPathTo(walkToPos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
+				g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
 
-				SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerUseWithCreature, this, playerId, itemPos, itemStackPos, creatureId, itemId));
+				std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerUseWithCreature, this, playerId, itemPos, itemStackPos, creatureId, itemId));
 				if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 					player->setNextPotionActionTask(task);
 				} else {
@@ -3449,7 +3451,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 			delay = player->getNextPotionActionTime();
 		}
-		SchedulerTask* task = createSchedulerTask(delay, std::bind(&Game::playerUseWithCreature, this, playerId, fromPos, fromStackPos, creatureId, itemId));
+		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerUseWithCreature, this, playerId, fromPos, fromStackPos, creatureId, itemId));
 
 		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 			player->setNextPotionActionTask(task);
@@ -3510,7 +3512,7 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 			parentContainer = new Container(tile);
 			parentContainer->incrementReferenceCounter();
 			browseFields[tile] = parentContainer;
-			g_scheduler().addEvent(createSchedulerTask(30000, std::bind(&Game::decreaseBrowseFieldRef, this, tile->getPosition())));
+			g_scheduler().addEvent(30000, std::bind(&Game::decreaseBrowseFieldRef, this, tile->getPosition()));
 		} else {
 			parentContainer = it->second;
 		}
@@ -3562,9 +3564,9 @@ void Game::playerRotateItem(uint32_t playerId, const Position &pos, uint8_t stac
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		std::forward_list<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
+			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
 
-			SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerRotateItem, this, playerId, pos, stackPos, itemId));
+			std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerRotateItem, this, playerId, pos, stackPos, itemId));
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -3603,12 +3605,12 @@ void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position &pos, 
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		std::forward_list<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
-			SchedulerTask* task;
+			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+			std::shared_ptr<Task> task;
 			if (isPodiumOfRenown) {
-				task = createSchedulerTask(400, std::bind_front(&Player::sendPodiumWindow, player, item, pos, itemId, stackPos));
+				task = createPlayerTask(400, std::bind_front(&Player::sendPodiumWindow, player, item, pos, itemId, stackPos));
 			} else {
-				task = createSchedulerTask(400, std::bind_front(&Player::sendMonsterPodiumWindow, player, item, pos, itemId, stackPos));
+				task = createPlayerTask(400, std::bind_front(&Player::sendMonsterPodiumWindow, player, item, pos, itemId, stackPos));
 			}
 			player->setNextWalkActionTask(task);
 		} else {
@@ -3658,8 +3660,8 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		std::forward_list<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
-			SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerBrowseField, this, playerId, pos));
+			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+			std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerBrowseField, this, playerId, pos));
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -3780,9 +3782,9 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		std::forward_list<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
+			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
 
-			SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerWrapableItem, this, playerId, pos, stackPos, itemId));
+			std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerWrapableItem, this, playerId, pos, stackPos, itemId));
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -3945,8 +3947,8 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 	if (!Position::areInRange<1, 1>(playerPos, pos)) {
 		std::forward_list<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
-			SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerBrowseField, this, playerId, pos));
+			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+			std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerBrowseField, this, playerId, pos));
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -3974,7 +3976,7 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 		container = new Container(tile);
 		container->incrementReferenceCounter();
 		browseFields[tile] = container;
-		g_scheduler().addEvent(createSchedulerTask(30000, std::bind(&Game::decreaseBrowseFieldRef, this, tile->getPosition())));
+		g_scheduler().addEvent(30000, std::bind(&Game::decreaseBrowseFieldRef, this, tile->getPosition()));
 	} else {
 		container = it->second;
 	}
@@ -4190,9 +4192,9 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 	if (!Position::areInRange<1, 1>(tradeItemPosition, playerPosition)) {
 		std::forward_list<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
+			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
 
-			SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerRequestTrade, this, playerId, pos, stackPos, tradePlayerId, itemId));
+			std::shared_ptr<Task> task = createPlayerTask(400, std::bind(&Game::playerRequestTrade, this, playerId, pos, stackPos, tradePlayerId, itemId));
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -4734,7 +4736,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 
 	if (!player->canDoAction()) {
 		uint32_t delay = player->getNextActionTime();
-		SchedulerTask* task = createSchedulerTask(delay, std::bind(&Game::playerQuickLoot, this, player->getID(), pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot));
+		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerQuickLoot, this, player->getID(), pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot));
 		player->setNextActionTask(task);
 		return;
 	}
@@ -4744,8 +4746,8 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 			// need to walk to the corpse first before looting it
 			std::forward_list<Direction> listDir;
 			if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
-				SchedulerTask* task = createSchedulerTask(0, std::bind(&Game::playerQuickLoot, this, player->getID(), pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot));
+				g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+				std::shared_ptr<Task> task = createPlayerTask(0, std::bind(&Game::playerQuickLoot, this, player->getID(), pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot));
 				player->setNextWalkActionTask(task);
 			} else {
 				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -5104,7 +5106,7 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	player->setAttackedCreature(attackCreature);
-	g_dispatcher().addTask(createTask(std::bind(&Game::updateCreatureWalk, this, player->getID())));
+	g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, this, player->getID()));
 }
 
 void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
@@ -5114,7 +5116,7 @@ void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	player->setAttackedCreature(nullptr);
-	g_dispatcher().addTask(createTask(std::bind(&Game::updateCreatureWalk, this, player->getID())));
+	g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, this, player->getID()));
 	player->setFollowCreature(getCreatureByID(creatureId));
 }
 
@@ -5555,6 +5557,10 @@ void Game::playerSpeakToNpc(Player* player, const std::string &text) {
 	player->updateUIExhausted();
 }
 
+std::shared_ptr<Task> Game::createPlayerTask(uint32_t delay, std::function<void(void)> f) {
+	return Player::createPlayerTask(delay, f);
+}
+
 //--
 bool Game::canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight /*= true*/, int32_t rangex /*= Map::maxClientViewportX*/, int32_t rangey /*= Map::maxClientViewportY*/) const {
 	return map.canThrowObjectTo(fromPos, toPos, checkLineOfSight, rangex, rangey);
@@ -5674,7 +5680,7 @@ void Game::removeCreatureCheck(Creature* creature) {
 }
 
 void Game::checkCreatures(size_t index) {
-	g_scheduler().addEvent(createSchedulerTask(EVENT_CHECK_CREATURE_INTERVAL, std::bind(&Game::checkCreatures, this, (index + 1) % EVENT_CREATURECOUNT)));
+	g_scheduler().addEvent(EVENT_CHECK_CREATURE_INTERVAL, std::bind(&Game::checkCreatures, this, (index + 1) % EVENT_CREATURECOUNT));
 
 	auto &checkCreatureList = checkCreatureLists[index];
 	size_t it = 0, end = checkCreatureList.size();
@@ -6214,6 +6220,11 @@ void Game::applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlay
 }
 
 void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const Player* attackerPlayer, const Creature* target) const {
+	// If damage is 0, it means the target is immune to the damage type, or that we missed.
+	if (damage.primary.value == 0 && damage.secondary.value == 0) {
+		return;
+	}
+
 	if (damage.damageMultiplier > 0) {
 		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100.;
 		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100.;
@@ -7240,7 +7251,7 @@ void Game::addDistanceEffect(const SpectatorHashSet &spectators, const Position 
 }
 
 void Game::checkImbuements() {
-	g_scheduler().addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
+	g_scheduler().addEvent(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this));
 
 	for (const auto &[mapPlayerId, mapPlayer] : getPlayers()) {
 		if (!mapPlayer) {
@@ -7252,7 +7263,7 @@ void Game::checkImbuements() {
 }
 
 void Game::checkLight() {
-	g_scheduler().addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this)));
+	g_scheduler().addEvent(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this));
 
 	lightHour += lightHourDelta;
 
@@ -7338,10 +7349,6 @@ void Game::shutdown() {
 	webhook_send_message("Server is shutting down", "Shutting down...", WEBHOOK_COLOR_OFFLINE, url);
 
 	g_logger().info("Shutting down...");
-
-	g_scheduler().shutdown();
-	g_databaseTasks().shutdown();
-	g_dispatcher().shutdown();
 	map.spawnsMonster.clear();
 	map.spawnsNpc.clear();
 	raids.clear();
@@ -8938,8 +8945,8 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		if (std::forward_list<Direction> listDir;
 			player->getPathTo(pos, listDir, 0, 1, true, false)) {
-			g_dispatcher().addTask(createTask(std::bind_front(&Game::playerAutoWalk, this, player->getID(), listDir)));
-			SchedulerTask* task = createSchedulerTask(400, std::bind_front(&Game::playerBrowseField, this, playerId, pos));
+			g_dispatcher().addTask(std::bind_front(&Game::playerAutoWalk, this, player->getID(), listDir));
+			std::shared_ptr<Task> task = createPlayerTask(400, std::bind_front(&Game::playerBrowseField, this, playerId, pos));
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -9005,9 +9012,9 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		if (std::forward_list<Direction> listDir;
 			player->getPathTo(pos, listDir, 0, 1, true, true)) {
-			g_dispatcher().addTask(createTask(std::bind_front(&Game::playerAutoWalk, this, player->getID(), listDir)));
+			g_dispatcher().addTask(std::bind_front(&Game::playerAutoWalk, this, player->getID(), listDir));
 
-			SchedulerTask* task = createSchedulerTask(400, std::bind_front(&Game::playerRotatePodium, this, playerId, pos, stackPos, itemId));
+			std::shared_ptr<Task> task = createPlayerTask(400, std::bind_front(&Game::playerRotatePodium, this, playerId, pos, stackPos, itemId));
 			player->setNextWalkActionTask(task);
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -9491,7 +9498,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 		monster->setTimeToChangeFiendish(timeToChangeFiendish + getTimeNow());
 		fiendishMonsters.insert(monster->getID());
 
-		auto schedulerTask = createSchedulerTask(
+		auto schedulerTask = createPlayerTask(
 			finalTime,
 			std::bind_front(&Game::updateFiendishMonsterStatus, this, monster->getID(), monster->getName())
 		);
@@ -9530,7 +9537,7 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create /* = false*/) {
 		influencedMonsters.erase(find);
 
 		if (create) {
-			g_scheduler().addEvent(createSchedulerTask(200 * 1000, std::bind_front(&Game::makeInfluencedMonster, this)));
+			g_scheduler().addEvent(200 * 1000, std::bind_front(&Game::makeInfluencedMonster, this));
 		}
 	} else {
 		g_logger().warn("[Game::removeInfluencedMonster] - Failed to remove a Influenced Monster, error code: monster id not exist in the influenced monsters map");
@@ -9546,7 +9553,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 		checkForgeEventId(id);
 
 		if (create) {
-			g_scheduler().addEvent(createSchedulerTask(300 * 1000, std::bind_front(&Game::makeFiendishMonster, this, 0, false)));
+			g_scheduler().addEvent(300 * 1000, std::bind_front(&Game::makeFiendishMonster, this, 0, false));
 		}
 	} else {
 		g_logger().warn("[Game::removeFiendishMonster] - Failed to remove a Fiendish Monster, error code: monster id not exist in the fiendish monsters map");
@@ -9556,7 +9563,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 }
 
 void Game::updateForgeableMonsters() {
-	g_scheduler().addEvent(createSchedulerTask(EVENT_FORGEABLEMONSTERCHECKINTERVAL, std::bind_front(&Game::updateForgeableMonsters, this)));
+	g_scheduler().addEvent(EVENT_FORGEABLEMONSTERCHECKINTERVAL, std::bind_front(&Game::updateForgeableMonsters, this));
 	forgeableMonsters.clear();
 	for (auto [monsterId, monster] : monsters) {
 		auto monsterTile = monster->getTile();
@@ -9743,7 +9750,7 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 		}
 	}
 
-	g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&Game::playerCheckActivity, this, playerName, interval)));
+	g_scheduler().addEvent(1000, std::bind(&Game::playerCheckActivity, this, playerName, interval));
 }
 
 void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems /* = 0*/) {

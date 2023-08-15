@@ -6,8 +6,8 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#ifndef CANARY_LOGWITHSPDLOG_HPP
-#define CANARY_LOGWITHSPDLOG_HPP
+#ifndef CANARY_LOG_WITH_SPD_LOG_HPP
+#define CANARY_LOG_WITH_SPD_LOG_HPP
 
 class LogWithSpdLog final : public Logger {
 	public:
@@ -28,4 +28,4 @@ class LogWithSpdLog final : public Logger {
 
 constexpr auto g_logger = LogWithSpdLog::getInstance;
 
-#endif // CANARY_LOGWITHSPDLOG_HPP
+#endif // CANARY_LOG_WITH_SPD_LOG_HPP

@@ -6,8 +6,8 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#ifndef CANARY_ILOGGER_HPP
-#define CANARY_ILOGGER_HPP
+#ifndef CANARY_LOGGER_HPP
+#define CANARY_LOGGER_HPP
 
 #define LOG_LEVEL_TRACE \
 	std::string { "trace" }
@@ -94,4 +94,4 @@ class Logger {
 		}
 };
 
-#endif // CANARY_ILOGGER_HPP
+#endif // CANARY_LOGGER_HPP

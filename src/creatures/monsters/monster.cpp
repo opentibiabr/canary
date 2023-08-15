@@ -13,7 +13,7 @@
 #include "creatures/combat/spells.h"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.h"
-#include "game/scheduling/tasks.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "lua/creature/events.h"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
@@ -675,7 +675,7 @@ bool Monster::selectTarget(Creature* creature) {
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
+			g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
 		}
 	}
 	return setFollowCreature(creature);

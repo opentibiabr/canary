@@ -203,7 +203,7 @@ PRIVATE
 	game/movement/teleport.cpp
 	game/scheduling/scheduler.cpp
 	game/scheduling/events_scheduler.cpp
-	game/scheduling/tasks.cpp
+	game/scheduling/dispatcher.cpp
 	io/fileloader.cpp
 	io/io_wheel.cpp
 	io/iobestiary.cpp
@@ -236,7 +236,7 @@ PRIVATE
 	items/tile.cpp
 	items/trashholder.cpp
 	items/weapons/weapons.cpp
-	lib/logging/LogWithSpdLog.cpp
+	lib/logging/log_with_spd_log.cpp
 	lua/callbacks/creaturecallback.cpp
 	lua/callbacks/event_callback.cpp
 	lua/callbacks/events_callbacks.cpp
@@ -306,6 +306,7 @@ PRIVATE
 	map/house/house.cpp
 	map/house/housetile.cpp
 	map/map.cpp
+	canary_server.cpp
 	otserv.cpp
 	security/argon.cpp
 	security/rsa.cpp

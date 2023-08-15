@@ -131,7 +131,7 @@ bool SpawnsNpc::isInZone(const Position &centerPos, int32_t radius, const Positi
 
 void SpawnNpc::startSpawnNpcCheck() {
 	if (checkSpawnNpcEvent == 0) {
-		checkSpawnNpcEvent = g_scheduler().addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this)));
+		checkSpawnNpcEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this));
 	}
 }
 
@@ -221,7 +221,7 @@ void SpawnNpc::checkSpawnNpc() {
 	}
 
 	if (spawnedNpcMap.size() < spawnNpcMap.size()) {
-		checkSpawnNpcEvent = g_scheduler().addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this)));
+		checkSpawnNpcEvent = g_scheduler().addEvent(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this));
 	}
 }
 
@@ -230,7 +230,7 @@ void SpawnNpc::scheduleSpawnNpc(uint32_t spawnId, spawnBlockNpc_t &sb, uint16_t 
 		spawnNpc(spawnId, sb.npcType, sb.pos, sb.direction);
 	} else {
 		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
-		g_scheduler().addEvent(createSchedulerTask(1400, std::bind(&SpawnNpc::scheduleSpawnNpc, this, spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL)));
+		g_scheduler().addEvent(1400, std::bind(&SpawnNpc::scheduleSpawnNpc, this, spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL));
 	}
 }
 

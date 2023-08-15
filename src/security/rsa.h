@@ -10,9 +10,11 @@
 #ifndef SRC_SECURITY_RSA_H_
 #define SRC_SECURITY_RSA_H_
 
+class Logger;
+
 class RSA {
 	public:
-		RSA();
+		RSA(Logger &logger);
 		~RSA();
 
 		// Singleton - ensures we don't accidentally copy it
@@ -23,6 +25,8 @@ class RSA {
 			return inject<RSA>();
 		}
 
+		void start();
+
 		void setKey(const char* pString, const char* qString, int base = 10);
 		void decrypt(char* msg) const;
 
@@ -32,6 +36,7 @@ class RSA {
 		bool loadPEM(const std::string &filename);
 
 	private:
+		Logger &logger;
 		mpz_t n;
 		mpz_t d;
 };

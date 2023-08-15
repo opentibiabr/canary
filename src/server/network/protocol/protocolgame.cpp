@@ -26,6 +26,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/grouping/familiars.h"
 #include "server/network/protocol/protocolgame.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/scheduler.h"
 #include "creatures/combat/spells.h"
 #include "creatures/players/management/waitlist.h"
@@ -215,12 +216,12 @@ ProtocolGame::ProtocolGame(Connection_ptr initConnection) :
 
 template <typename Callable, typename... Args>
 void ProtocolGame::addGameTask(Callable function, Args &&... args) {
-	g_dispatcher().addTask(createTask(std::bind(function, &g_game(), std::forward<Args>(args)...)));
+	g_dispatcher().addTask(std::bind(function, &g_game(), std::forward<Args>(args)...));
 }
 
 template <typename Callable, typename... Args>
 void ProtocolGame::addGameTaskTimed(uint32_t delay, Callable function, Args &&... args) {
-	g_dispatcher().addTask(createTask(delay, std::bind(function, &g_game(), std::forward<Args>(args)...)));
+	g_dispatcher().addTask(std::bind(function, &g_game(), std::forward<Args>(args)...), delay);
 }
 
 void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) {
@@ -548,7 +549,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			foundPlayer->disconnect();
 			foundPlayer->isConnecting = true;
 
-			eventConnect = g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getName(), operatingSystem)));
+			eventConnect = g_scheduler().addEvent(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getName(), operatingSystem));
 		} else {
 			connect(foundPlayer->getName(), operatingSystem);
 		}
@@ -758,11 +759,11 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		output->addByte(0x14);
 		output->addString(ss.str());
 		send(output);
-		g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::disconnect, getThis())));
+		g_scheduler().addEvent(1000, std::bind(&ProtocolGame::disconnect, getThis()));
 		return;
 	}
 
-	g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem)));
+	g_dispatcher().addTask(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem));
 }
 
 void ProtocolGame::onConnect() {
@@ -827,16 +828,16 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 			m_playerDeathTime++;
 		}
 
-		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte)));
+		g_dispatcher().addTask(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte));
 		return;
 	}
 
 	// Modules system
 	if (player && recvbyte != 0xD3) {
-		g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, &g_modules(), player->getID(), msg, recvbyte)));
+		g_dispatcher().addTask(std::bind(&Modules::executeOnRecvbyte, &g_modules(), player->getID(), msg, recvbyte));
 	}
 
-	g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
+	g_dispatcher().addTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte));
 }
 
 void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
@@ -846,7 +847,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			g_game().removePlayerUniqueLogin(player->getName());
 		}
 		disconnect();
-		g_dispatcher().addTask(createTask(std::bind(&IOLoginData::updateOnlineStatus, player->getGUID(), false)));
+		g_dispatcher().addTask(std::bind(&IOLoginData::updateOnlineStatus, player->getGUID(), false));
 		return;
 	}
 
@@ -855,7 +856,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			return;
 		}
 
-		g_scheduler().addEvent(createSchedulerTask(100, std::bind(&ProtocolGame::sendPing, getThis())));
+		g_scheduler().addEvent(100, std::bind(&ProtocolGame::sendPing, getThis()));
 
 		if (!player->spawn()) {
 			disconnect();
@@ -863,15 +864,15 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			return;
 		}
 
-		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::sendAddCreature, getThis(), player, player->getPosition(), 0, false)));
-		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::addBless, getThis())));
+		g_dispatcher().addTask(std::bind(&ProtocolGame::sendAddCreature, getThis(), player, player->getPosition(), 0, false));
+		g_dispatcher().addTask(std::bind(&ProtocolGame::addBless, getThis()));
 		resetPlayerDeathTime();
 		return;
 	}
 
 	if (recvbyte == 0x1D) {
 		// keep the connection alive
-		g_scheduler().addEvent(createSchedulerTask(100, std::bind(&ProtocolGame::sendPingBack, getThis())));
+		g_scheduler().addEvent(100, std::bind(&ProtocolGame::sendPingBack, getThis()));
 		return;
 	}
 }
@@ -906,7 +907,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 
 	switch (recvbyte) {
 		case 0x14:
-			g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::logout, getThis(), true, false)));
+			g_dispatcher().addTask(std::bind(&ProtocolGame::logout, getThis(), true, false));
 			break;
 		case 0x1D:
 			addGameTask(&Game::playerReceivePingBack, player->getID());
@@ -1176,9 +1177,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xD2:
 			addGameTask(&Game::playerRequestOutfit, player->getID());
 			break;
-		// g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte)));
+		// g_dispatcher().addTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte));
 		case 0xD3:
-			g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parseSetOutfit, getThis(), msg)));
+			g_dispatcher().addTask(std::bind(&ProtocolGame::parseSetOutfit, getThis(), msg));
 			break;
 		case 0xD4:
 			parseToggleMount(msg);
@@ -4455,7 +4456,7 @@ void ProtocolGame::updateCoinBalance() {
 	}
 
 	g_dispatcher().addTask(
-		createTask(std::bind([](uint32_t playerId) {
+		std::bind([](uint32_t playerId) {
 			Player* threadPlayer = g_game().getPlayerByID(playerId);
 			if (threadPlayer) {
 				account::Account account;
@@ -4469,7 +4470,7 @@ void ProtocolGame::updateCoinBalance() {
 				threadPlayer->sendCoinBalance();
 			}
 		},
-							 player->getID()))
+				  player->getID())
 	);
 }
 

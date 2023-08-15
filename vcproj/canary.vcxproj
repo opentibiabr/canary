@@ -60,7 +60,8 @@
     <ClInclude Include="..\src\game\movement\teleport.h" />
     <ClInclude Include="..\src\game\scheduling\events_scheduler.hpp" />
     <ClInclude Include="..\src\game\scheduling\scheduler.h" />
-    <ClInclude Include="..\src\game\scheduling\tasks.h" />
+    <ClInclude Include="..\src\game\scheduling\dispatcher.h" />
+    <ClInclude Include="..\src\game\scheduling\task.hpp" />
     <ClInclude Include="..\src\io\fileloader.h" />
     <ClInclude Include="..\src\io\functions\iologindata_load_player.hpp" />
     <ClInclude Include="..\src\io\functions\iologindata_save_player.hpp" />
@@ -96,8 +97,8 @@
     <ClInclude Include="..\src\items\trashholder.h" />
     <ClInclude Include="..\src\items\weapons\weapons.h" />
     <ClInclude Include="..\src\lib\di\container.hpp" />
-    <ClInclude Include="..\src\lib\logging\Logger.hpp" />
-    <ClInclude Include="..\src\lib\logging\LogWithSpdLog.hpp" />
+    <ClInclude Include="..\src\lib\logging\logger.hpp" />
+    <ClInclude Include="..\src\lib\logging\log_with_spd_log.hpp" />
     <ClInclude Include="..\src\lib\messaging\command.hpp" />
     <ClInclude Include="..\src\lib\messaging\event.hpp" />
     <ClInclude Include="..\src\lib\messaging\message.hpp" />
@@ -239,7 +240,7 @@
     <ClCompile Include="..\src\game\movement\teleport.cpp" />
     <ClCompile Include="..\src\game\scheduling\events_scheduler.cpp" />
     <ClCompile Include="..\src\game\scheduling\scheduler.cpp" />
-    <ClCompile Include="..\src\game\scheduling\tasks.cpp" />
+    <ClCompile Include="..\src\game\scheduling\dispatcher.cpp" />
     <ClCompile Include="..\src\io\fileloader.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_load_player.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_save_player.cpp" />
@@ -271,7 +272,7 @@
     <ClCompile Include="..\src\items\tile.cpp" />
     <ClCompile Include="..\src\items\trashholder.cpp" />
     <ClCompile Include="..\src\items\weapons\weapons.cpp" />
-    <ClCompile Include="..\src\lib\logging\LogWithSpdLog.cpp" />
+    <ClCompile Include="..\src\lib\logging\log_with_spd_log.cpp" />
     <ClCompile Include="..\src\lua\callbacks\creaturecallback.cpp" />
     <ClCompile Include="..\src\lua\callbacks\event_callback.cpp" />
     <ClCompile Include="..\src\lua\callbacks\events_callbacks.cpp" />
@@ -342,6 +343,7 @@
     <ClCompile Include="..\src\map\house\housetile.cpp" />
     <ClCompile Include="..\src\map\map.cpp" />
     <ClCompile Include="..\src\otserv.cpp" />
+    <ClCompile Include="..\src\canary_server.cpp" />
     <ClCompile Include="..\src\protobuf\appearances.pb.cc" />
     <ClCompile Include="..\src\security\argon.cpp" />
     <ClCompile Include="..\src\security\rsa.cpp" />

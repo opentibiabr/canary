@@ -2468,7 +2468,6 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		 */
 		std::vector<Item*> getEquippedItems() const;
 
-
 		// Player wheel methods interface
 		std::unique_ptr<PlayerWheel> &wheel();
 		const std::unique_ptr<PlayerWheel> &wheel() const;

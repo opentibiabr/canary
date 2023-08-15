@@ -8,7 +8,7 @@
  */
 
 #include "pch.hpp"
-#include "CanaryServer.hpp"
+#include "canary_server.hpp"
 
 #ifndef UNIT_TESTING
 int main() {

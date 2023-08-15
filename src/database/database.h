@@ -25,10 +25,7 @@ class Database {
 		Database &operator=(const Database &) = delete;
 
 		static Database &getInstance() {
-			// Guaranteed to be destroyed.
-			static Database instance;
-			// Instantiated on first use.
-			return instance;
+			return inject<Database>();
 		}
 
 		bool connect();
@@ -86,7 +83,7 @@ class DBResult {
 		T getNumber(const std::string &s) const {
 			auto it = listNames.find(s);
 			if (it == listNames.end()) {
-				SPDLOG_ERROR("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", s);
+				g_logger().error("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", s);
 				return T();
 			}
 
@@ -114,7 +111,7 @@ class DBResult {
 						data = static_cast<T>(std::stoll(row[it->second]));
 					} else {
 						// Throws exception indicating that type T is invalid
-						SPDLOG_ERROR("Invalid signed type T");
+						g_logger().error("Invalid signed type T");
 					}
 				} else if (std::is_same<T, bool>::value) {
 					data = static_cast<T>(std::stoi(row[it->second]));
@@ -130,16 +127,16 @@ class DBResult {
 						data = static_cast<T>(std::stoull(row[it->second]));
 					} else {
 						// Send log indicating that type T is invalid
-						SPDLOG_ERROR("Column '{}' has an invalid unsigned T is invalid", s);
+						g_logger().error("Column '{}' has an invalid unsigned T is invalid", s);
 					}
 				}
 			} catch (std::invalid_argument &e) {
 				// Value of string is invalid
-				SPDLOG_ERROR("Column '{}' has an invalid value set, error code: {}", s, e.what());
+				g_logger().error("Column '{}' has an invalid value set, error code: {}", s, e.what());
 				data = T();
 			} catch (std::out_of_range &e) {
 				// Value of string is too large to fit the range allowed by type T
-				SPDLOG_ERROR("Column '{}' has a value out of range, error code: {}", s, e.what());
+				g_logger().error("Column '{}' has a value out of range, error code: {}", s, e.what());
 				data = T();
 			}
 
@@ -208,7 +205,7 @@ class DBTransaction {
 				return result;
 			} catch (const std::exception &exception) {
 				transaction.rollback();
-				SPDLOG_ERROR("[{}] Error occurred committing transaction, error: {}", __FUNCTION__, exception.what());
+				g_logger().error("[{}] Error occurred committing transaction, error: {}", __FUNCTION__, exception.what());
 				return false;
 			}
 		}
@@ -227,7 +224,7 @@ class DBTransaction {
 			} catch (const std::exception &exception) {
 				// An error occurred while starting the transaction
 				state = STATE_NO_START;
-				SPDLOG_ERROR("[{}] An error occurred while starting the transaction, error: {}", __FUNCTION__, exception.what());
+				g_logger().error("[{}] An error occurred while starting the transaction, error: {}", __FUNCTION__, exception.what());
 				return false;
 			}
 		}
@@ -244,14 +241,14 @@ class DBTransaction {
 				Database::getInstance().rollback();
 			} catch (const std::exception &exception) {
 				// An error occurred while rolling back the transaction
-				SPDLOG_ERROR("[{}] An error occurred while rolling back the transaction, error: {}", __FUNCTION__, exception.what());
+				g_logger().error("[{}] An error occurred while rolling back the transaction, error: {}", __FUNCTION__, exception.what());
 			}
 		}
 
 		void commit() {
 			// Ensure that the transaction has been started
 			if (state != STATE_START) {
-				SPDLOG_ERROR("Transaction not started");
+				g_logger().error("Transaction not started");
 				return;
 			}
 
@@ -262,7 +259,7 @@ class DBTransaction {
 			} catch (const std::exception &exception) {
 				// An error occurred while committing the transaction
 				state = STATE_NO_START;
-				SPDLOG_ERROR("[{}] An error occurred while committing the transaction, error: {}", __FUNCTION__, exception.what());
+				g_logger().error("[{}] An error occurred while committing the transaction, error: {}", __FUNCTION__, exception.what());
 			}
 		}
 

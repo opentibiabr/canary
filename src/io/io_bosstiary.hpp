@@ -17,7 +17,10 @@
 enum class BosstiaryRarity_t : uint8_t {
 	RARITY_BANE = 0,
 	RARITY_ARCHFOE = 1,
-	RARITY_NEMESIS = 2
+	RARITY_NEMESIS = 2,
+
+	// Only for server reading, not send to the client
+	BOSS_INVALID = 10,
 };
 
 struct LevelInfo {
@@ -30,15 +33,14 @@ class Player;
 
 class IOBosstiary {
 	public:
+		IOBosstiary() = default;
+
 		// Non copyable
 		IOBosstiary(const IOBosstiary &) = delete;
 		void operator=(const IOBosstiary &) = delete;
 
 		static IOBosstiary &getInstance() {
-			// Guaranteed to be destroyed
-			static IOBosstiary instance;
-			// Instantiated on first use
-			return instance;
+			return inject<IOBosstiary>();
 		}
 
 		void loadBoostedBoss();
@@ -67,14 +69,11 @@ class IOBosstiary {
 		std::vector<uint16_t> getBosstiaryCooldownRaceId(const Player* player) const;
 
 	private:
-		IOBosstiary() = default;
-		~IOBosstiary() = default;
-
 		phmap::btree_map<uint16_t, std::string> bosstiaryMap;
 		std::string boostedBoss;
 		uint16_t boostedBossId = 0;
 };
 
-constexpr auto g_ioBosstiary = &IOBosstiary::getInstance;
+constexpr auto g_ioBosstiary = IOBosstiary::getInstance;
 
 #endif // SRC_IO_IO_BOSSTIARY_HPP_

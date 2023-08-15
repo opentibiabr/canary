@@ -17,7 +17,9 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "game/game.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/scheduler.h"
+#include "game/scheduling/task.hpp"
 #include "grouping/familiars.h"
 #include "lua/creature/creatureevent.h"
 #include "lua/creature/events.h"
@@ -25,7 +27,6 @@
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/movement.h"
 #include "io/iologindata.h"
-#include "io/iobestiary.h"
 #include "items/bed.h"
 #include "items/weapons/weapons.h"
 #include "core.hpp"
@@ -104,6 +105,10 @@ bool Player::isPushable() const {
 	return Creature::isPushable();
 }
 
+std::shared_ptr<Task> Player::createPlayerTask(uint32_t delay, std::function<void(void)> f) {
+	return std::make_shared<Task>(std::move(f), delay);
+}
+
 uint32_t Player::playerFirstID = 0x10000000;
 uint32_t Player::playerLastID = 0x50000000;
 uint32_t Player::getFirstID() {
@@ -118,7 +123,7 @@ void Player::setID() {
 	if (id == 0 && guid != 0) {
 		id = getFirstID() + guid;
 		if (id == std::numeric_limits<uint32_t>::max()) {
-			SPDLOG_ERROR("[{}] Player {} has max 'id' value of uint32_t", __FUNCTION__, getName());
+			g_logger().error("[{}] Player {} has max 'id' value of uint32_t", __FUNCTION__, getName());
 		}
 	}
 }
@@ -408,7 +413,7 @@ int32_t Player::getDefense() const {
 	try {
 		getShieldAndWeapon(shield, weapon);
 	} catch (const std::exception &e) {
-		SPDLOG_ERROR("{} got exception {}", getName(), e.what());
+		g_logger().error("{} got exception {}", getName(), e.what());
 	}
 
 	if (weapon) {
@@ -558,7 +563,7 @@ void Player::updateInventoryImbuement() {
 				continue;
 			}
 
-			SPDLOG_DEBUG("Decaying imbuement {} from item {} of player {}", imbuement->getName(), item->getName(), getName());
+			g_logger().debug("Decaying imbuement {} from item {} of player {}", imbuement->getName(), item->getName(), getName());
 			// Calculate the new duration of the imbuement, making sure it doesn't go below 0
 			uint64_t duration = std::max<uint64_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
 			// Update the imbuement's duration in the item
@@ -808,7 +813,7 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 			);
 			return;
 		} else {
-			SPDLOG_WARN("Unknown reserved key: {} for player: {}", key, getName());
+			g_logger().warn("Unknown reserved key: {} for player: {}", key, getName());
 			return;
 		}
 	}
@@ -850,7 +855,7 @@ int32_t Player::getStorageValueByName(const std::string &storageName) const {
 void Player::addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin /* = false*/) {
 	auto it = g_storages().getStorageMap().find(storageName);
 	if (it == g_storages().getStorageMap().end()) {
-		spdlog::error("[{}] Storage name '{}' not found in storage map, register your storage in 'storages.xml' first for use", __func__, storageName);
+		g_logger().error("[{}] Storage name '{}' not found in storage map, register your storage in 'storages.xml' first for use", __func__, storageName);
 		return;
 	}
 	uint32_t key = it->second;
@@ -1305,7 +1310,7 @@ void Player::onApplyImbuement(Imbuement* imbuement, Item* item, uint8_t slot, bo
 
 	ImbuementInfo imbuementInfo;
 	if (item->getImbuementInfo(slot, &imbuementInfo)) {
-		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
+		g_logger().error("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
 		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
 		return;
 	}
@@ -1330,7 +1335,7 @@ void Player::onApplyImbuement(Imbuement* imbuement, Item* item, uint8_t slot, bo
 	if (!g_game().removeMoney(this, price, 0, true)) {
 		std::string message = fmt::format("You don't have {} gold coins.", price);
 
-		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
+		g_logger().error("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
 		sendImbuementResult(message);
 		return;
 	}
@@ -1379,7 +1384,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot) {
 
 	ImbuementInfo imbuementInfo;
 	if (!item->getImbuementInfo(slot, &imbuementInfo)) {
-		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, item not contains imbuement", this->getName());
+		g_logger().error("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, item not contains imbuement", this->getName());
 		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
 		return;
 	}
@@ -1392,7 +1397,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot) {
 	if (!g_game().removeMoney(this, baseImbuement->removeCost, 0, true)) {
 		std::string message = fmt::format("You don't have {} gold coins.", baseImbuement->removeCost);
 
-		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
+		g_logger().error("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
 		this->sendImbuementResult(message);
 		this->openImbuementWindow(item);
 		return;
@@ -1571,7 +1576,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 		}
 
 		auto version = client->oldProtocol ? getProtocolVersion() : CLIENT_VERSION;
-		SPDLOG_INFO("{} has logged in. (Protocol: {})", name, version);
+		g_logger().info("{} has logged in. (Protocol: {})", name, version);
 
 		if (guild) {
 			guild->addMember(this);
@@ -1696,7 +1701,7 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout) {
 			g_game().removePlayerUniqueLogin(this);
 			loginPosition = getPosition();
 			lastLogout = time(nullptr);
-			SPDLOG_INFO("{} has logged out", getName());
+			g_logger().info("{} has logged out", getName());
 			g_chat().removeUserFromAllChannels(*this);
 			clearPartyInvitations();
 			IOLoginData::updateOnlineStatus(guid, false);
@@ -1721,7 +1726,7 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout) {
 		}
 
 		if (!saved) {
-			SPDLOG_WARN("Error while saving player: {}", getName());
+			g_logger().warn("Error while saving player: {}", getName());
 		}
 	}
 
@@ -1733,7 +1738,7 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout) {
 
 bool Player::openShopWindow(Npc* npc) {
 	if (!npc) {
-		SPDLOG_ERROR("[Player::openShopWindow] - Npc is wrong or nullptr");
+		g_logger().error("[Player::openShopWindow] - Npc is wrong or nullptr");
 		return false;
 	}
 
@@ -1786,7 +1791,7 @@ void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Posit
 
 	if (hasFollowPath && (creature == followCreature || (creature == this && followCreature))) {
 		isUpdatingPath = false;
-		g_dispatcher().addTask(createTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID())));
+		g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID()));
 	}
 
 	if (creature != this) {
@@ -1937,17 +1942,16 @@ void Player::checkTradeState(const Item* item) {
 	}
 }
 
-void Player::setNextWalkActionTask(SchedulerTask* task) {
+void Player::setNextWalkActionTask(std::shared_ptr<Task> task) {
 	if (walkTaskEvent != 0) {
 		g_scheduler().stopEvent(walkTaskEvent);
 		walkTaskEvent = 0;
 	}
 
-	delete walkTask;
 	walkTask = task;
 }
 
-void Player::setNextWalkTask(SchedulerTask* task) {
+void Player::setNextWalkTask(std::shared_ptr<Task> task) {
 	if (nextStepEvent != 0) {
 		g_scheduler().stopEvent(nextStepEvent);
 		nextStepEvent = 0;
@@ -1959,7 +1963,7 @@ void Player::setNextWalkTask(SchedulerTask* task) {
 	}
 }
 
-void Player::setNextActionTask(SchedulerTask* task, bool resetIdleTime /*= true */) {
+void Player::setNextActionTask(std::shared_ptr<Task> task, bool resetIdleTime /*= true */) {
 	if (actionTaskEvent != 0) {
 		g_scheduler().stopEvent(actionTaskEvent);
 		actionTaskEvent = 0;
@@ -1977,7 +1981,7 @@ void Player::setNextActionTask(SchedulerTask* task, bool resetIdleTime /*= true 
 	}
 }
 
-void Player::setNextActionPushTask(SchedulerTask* task) {
+void Player::setNextActionPushTask(std::shared_ptr<Task> task) {
 	if (actionTaskEventPush != 0) {
 		g_scheduler().stopEvent(actionTaskEventPush);
 		actionTaskEventPush = 0;
@@ -1988,7 +1992,7 @@ void Player::setNextActionPushTask(SchedulerTask* task) {
 	}
 }
 
-void Player::setNextPotionActionTask(SchedulerTask* task) {
+void Player::setNextPotionActionTask(std::shared_ptr<Task> task) {
 	if (actionPotionTaskEvent != 0) {
 		g_scheduler().stopEvent(actionPotionTaskEvent);
 		actionPotionTaskEvent = 0;
@@ -2995,7 +2999,7 @@ bool Player::hasCapacity(const Item* item, uint32_t count) const {
 ReturnValue Player::queryAdd(int32_t index, const Thing &thing, uint32_t count, uint32_t flags, Creature*) const {
 	const Item* item = thing.getItem();
 	if (item == nullptr) {
-		SPDLOG_ERROR("[Player::queryAdd] - Item is nullptr");
+		g_logger().error("[Player::queryAdd] - Item is nullptr");
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
@@ -4077,7 +4081,7 @@ bool Player::updateSaleShopList(const Item* item) {
 	if (!itemId || !item)
 		return true;
 
-	g_dispatcher().addTask(createTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID())));
+	g_dispatcher().addTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID()));
 	scheduledSaleUpdate = true;
 	return true;
 }
@@ -4147,7 +4151,7 @@ bool Player::setAttackedCreature(Creature* creature) {
 	}
 
 	if (creature) {
-		g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
+		g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
 	}
 	return true;
 }
@@ -4202,7 +4206,7 @@ void Player::doAttacking(uint32_t) {
 			result = Weapon::useFist(this, attackedCreature);
 		}
 
-		SchedulerTask* task = createSchedulerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
+		std::shared_ptr<Task> task = createPlayerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
 		if (!classicSpeed) {
 			setNextActionTask(task, false);
 		} else {
@@ -4261,7 +4265,7 @@ void Player::onWalkComplete() {
 		 * makes the fleeing more smooth and with litle to no hickups.
 		 */
 
-		SPDLOG_DEBUG("[Player::onWalkComplete] Executing feared conditions as players completed it's walk.");
+		g_logger().debug("[Player::onWalkComplete] Executing feared conditions as players completed it's walk.");
 		Condition* f = getCondition(CONDITION_FEARED);
 		f->executeCondition(this, 0);
 	}
@@ -4673,7 +4677,7 @@ void Player::changeSoul(int32_t soulChange) {
 
 bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0 && !g_game().isLookTypeRegistered(lookType)) {
-		SPDLOG_WARN("[Player::canWear] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
+		g_logger().warn("[Player::canWear] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
 		return false;
 	}
 
@@ -6476,7 +6480,7 @@ void Player::requestDepotItems() {
 		auto itemMap_it = itemMap.find(itemId);
 		// Stackable items not have upgrade classification
 		if (Item::items[itemId].upgradeClassification > 0) {
-			SPDLOG_ERROR("{} - Player {} have wrong item with id {} on stash with upgrade classification", __FUNCTION__, getName(), itemId);
+			g_logger().error("{} - Player {} have wrong item with id {} on stash with upgrade classification", __FUNCTION__, getName(), itemId);
 			continue;
 		}
 
@@ -6645,7 +6649,7 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position &pos) {
 
 std::pair<std::vector<Item*>, phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint32_t>>> Player::requestLockerItems(DepotLocker* depotLocker, bool sendToClient /*= false*/, uint8_t tier /*= 0*/) const {
 	if (depotLocker == nullptr) {
-		SPDLOG_ERROR("{} - Depot locker is nullptr", __FUNCTION__);
+		g_logger().error("{} - Depot locker is nullptr", __FUNCTION__);
 		return {};
 	}
 
@@ -6731,7 +6735,7 @@ bool Player::saySpell(
 	const Position* pos /* = nullptr*/
 ) {
 	if (text.empty()) {
-		SPDLOG_DEBUG("{} - Spell text is empty for player {}", __FUNCTION__, getName());
+		g_logger().debug("{} - Spell text is empty for player {}", __FUNCTION__, getName());
 		return false;
 	}
 
@@ -6796,26 +6800,26 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 	auto firstForgingItem = getForgeItemFromId(itemId, tier);
 	if (!firstForgingItem) {
-		SPDLOG_ERROR("[Log 1] Player with name {} failed to fuse item with id {}", getName(), itemId);
+		g_logger().error("[Log 1] Player with name {} failed to fuse item with id {}", getName(), itemId);
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	auto returnValue = g_game().internalRemoveItem(firstForgingItem, 1);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("[Log 1] Failed to remove forge item {} from player with name {}", itemId, getName());
+		g_logger().error("[Log 1] Failed to remove forge item {} from player with name {}", itemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	auto secondForgingItem = getForgeItemFromId(itemId, tier);
 	if (!secondForgingItem) {
-		SPDLOG_ERROR("[Log 2] Player with name {} failed to fuse item with id {}", getName(), itemId);
+		g_logger().error("[Log 2] Player with name {} failed to fuse item with id {}", getName(), itemId);
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	if (returnValue = g_game().internalRemoveItem(secondForgingItem, 1);
 		returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("[Log 2] Failed to remove forge item {} from player with name {}", itemId, getName());
+		g_logger().error("[Log 2] Failed to remove forge item {} from player with name {}", itemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -6823,27 +6827,27 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 	auto exaltationChest = Item::CreateItem(ITEM_EXALTATION_CHEST, 1);
 	if (!exaltationChest) {
-		SPDLOG_ERROR("Failed to create exaltation chest");
+		g_logger().error("Failed to create exaltation chest");
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	auto exaltationContainer = exaltationChest->getContainer();
 	if (!exaltationContainer) {
-		SPDLOG_ERROR("Failed to create exaltation container");
+		g_logger().error("Failed to create exaltation container");
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	Item* firstForgedItem = Item::CreateItem(itemId, 1);
 	if (!firstForgedItem) {
-		SPDLOG_ERROR("[Log 3] Player with name {} failed to fuse item with id {}", getName(), itemId);
+		g_logger().error("[Log 3] Player with name {} failed to fuse item with id {}", getName(), itemId);
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	firstForgedItem->setTier(tier);
 	returnValue = g_game().internalAddItem(exaltationContainer, firstForgedItem, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("[Log 1] Failed to add forge item {} from player with name {}", itemId, getName());
+		g_logger().error("[Log 1] Failed to add forge item {} from player with name {}", itemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -6851,7 +6855,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 	Item* secondForgedItem = Item::CreateItem(itemId, 1);
 	if (!secondForgedItem) {
-		SPDLOG_ERROR("[Log 4] Player with name {} failed to fuse item with id {}", getName(), itemId);
+		g_logger().error("[Log 4] Player with name {} failed to fuse item with id {}", getName(), itemId);
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
@@ -6859,7 +6863,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 	secondForgedItem->setTier(tier);
 	returnValue = g_game().internalAddItem(exaltationContainer, secondForgedItem, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("[Log 2] Failed to add forge item {} from player with name {}", itemId, getName());
+		g_logger().error("[Log 2] Failed to add forge item {} from player with name {}", itemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -6875,7 +6879,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 		}
 		if (bonus != 2) {
 			if (coreCount != 0 && !removeItemCountById(ITEM_FORGE_CORE, coreCount)) {
-				SPDLOG_ERROR("[{}][Log 1] Failed to remove item 'id :{} count: {}' from player {}", __FUNCTION__, fmt::underlying(ITEM_FORGE_CORE), coreCount, getName());
+				g_logger().error("[{}][Log 1] Failed to remove item 'id :{} count: {}' from player {}", __FUNCTION__, fmt::underlying(ITEM_FORGE_CORE), coreCount, getName());
 				sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 				return;
 			}
@@ -6897,7 +6901,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 				break;
 			}
 			if (!g_game().removeMoney(this, cost, 0, true)) {
-				SPDLOG_ERROR("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, cost, getName());
+				g_logger().error("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, cost, getName());
 				sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 				return;
 			}
@@ -6917,7 +6921,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 		if (bonus != 4 && bonus != 5 && bonus != 6 && bonus != 8) {
 			returnValue = g_game().internalRemoveItem(secondForgedItem, 1);
 			if (returnValue != RETURNVALUE_NOERROR) {
-				SPDLOG_ERROR("[Log 6] Failed to remove forge item {} from player with name {}", itemId, getName());
+				g_logger().error("[Log 6] Failed to remove forge item {} from player with name {}", itemId, getName());
 				sendCancelMessage(getReturnMessage(returnValue));
 				sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 				return;
@@ -6931,7 +6935,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			} else {
 				returnValue = g_game().internalRemoveItem(secondForgedItem, 1);
 				if (returnValue != RETURNVALUE_NOERROR) {
-					SPDLOG_ERROR("[Log 7] Failed to remove forge item {} from player with name {}", itemId, getName());
+					g_logger().error("[Log 7] Failed to remove forge item {} from player with name {}", itemId, getName());
 					sendCancelMessage(getReturnMessage(returnValue));
 					sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 					return;
@@ -6942,7 +6946,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 		history.coresCost = coreCount;
 
 		if (getForgeDusts() < dustCost) {
-			SPDLOG_ERROR("[Log 7] Failed to remove fuse dusts from player with name {}", getName());
+			g_logger().error("[Log 7] Failed to remove fuse dusts from player with name {}", getName());
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		} else {
@@ -6950,7 +6954,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 		}
 
 		if (coreCount != 0 && !removeItemCountById(ITEM_FORGE_CORE, coreCount)) {
-			SPDLOG_ERROR("[{}][Log 2] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, fmt::underlying(ITEM_FORGE_CORE), coreCount, getName());
+			g_logger().error("[{}][Log 2] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, fmt::underlying(ITEM_FORGE_CORE), coreCount, getName());
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
@@ -6970,7 +6974,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			break;
 		}
 		if (!g_game().removeMoney(this, cost, 0, true)) {
-			SPDLOG_ERROR("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, cost, getName());
+			g_logger().error("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, cost, getName());
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
@@ -6979,7 +6983,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 	}
 	returnValue = g_game().internalAddItem(this, exaltationContainer, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("Failed to add exaltation chest to player with name {}", fmt::underlying(ITEM_EXALTATION_CHEST), getName());
+		g_logger().error("Failed to add exaltation chest to player with name {}", fmt::underlying(ITEM_EXALTATION_CHEST), getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -7001,13 +7005,13 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 	auto donorItem = getForgeItemFromId(donorItemId, tier);
 	if (!donorItem) {
-		SPDLOG_ERROR("[Log 1] Player with name {} failed to transfer item with id {}", getName(), donorItemId);
+		g_logger().error("[Log 1] Player with name {} failed to transfer item with id {}", getName(), donorItemId);
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	auto returnValue = g_game().internalRemoveItem(donorItem, 1);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("[Log 1] Failed to remove transfer item {} from player with name {}", donorItemId, getName());
+		g_logger().error("[Log 1] Failed to remove transfer item {} from player with name {}", donorItemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -7015,13 +7019,13 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 	auto receiveItem = getForgeItemFromId(receiveItemId, 0);
 	if (!receiveItem) {
-		SPDLOG_ERROR("[Log 2] Player with name {} failed to transfer item with id {}", getName(), receiveItemId);
+		g_logger().error("[Log 2] Player with name {} failed to transfer item with id {}", getName(), receiveItemId);
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	if (returnValue = g_game().internalRemoveItem(receiveItem, 1);
 		returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("[Log 2] Failed to remove transfer item {} from player with name {}", receiveItemId, getName());
+		g_logger().error("[Log 2] Failed to remove transfer item {} from player with name {}", receiveItemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -7029,26 +7033,26 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 	auto exaltationChest = Item::CreateItem(ITEM_EXALTATION_CHEST, 1);
 	if (!exaltationChest) {
-		SPDLOG_ERROR("Exaltation chest is nullptr");
+		g_logger().error("Exaltation chest is nullptr");
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	auto exaltationContainer = exaltationChest->getContainer();
 	if (!exaltationContainer) {
-		SPDLOG_ERROR("Exaltation container is nullptr");
+		g_logger().error("Exaltation container is nullptr");
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	Item* newDonorItem = Item::CreateItem(donorItemId, 1);
 	if (!newDonorItem) {
-		SPDLOG_ERROR("[Log 4] Player with name {} failed to transfer item with id {}", getName(), donorItemId);
+		g_logger().error("[Log 4] Player with name {} failed to transfer item with id {}", getName(), donorItemId);
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	returnValue = g_game().internalAddItem(exaltationContainer, newDonorItem, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("[Log 5] Failed to add forge item {} from player with name {}", donorItemId, getName());
+		g_logger().error("[Log 5] Failed to add forge item {} from player with name {}", donorItemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -7056,21 +7060,21 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 	Item* newReceiveItem = Item::CreateItem(receiveItemId, 1);
 	if (!newReceiveItem) {
-		SPDLOG_ERROR("[Log 6] Player with name {} failed to fuse item with id {}", getName(), receiveItemId);
+		g_logger().error("[Log 6] Player with name {} failed to fuse item with id {}", getName(), receiveItemId);
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	newReceiveItem->setTier(tier - 1);
 	returnValue = g_game().internalAddItem(exaltationContainer, newReceiveItem, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("[Log 7] Failed to add forge item {} from player with name {}", receiveItemId, getName());
+		g_logger().error("[Log 7] Failed to add forge item {} from player with name {}", receiveItemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	if (getForgeDusts() < g_configManager().getNumber(FORGE_TRANSFER_DUST_COST)) {
-		SPDLOG_ERROR("[Log 8] Failed to remove transfer dusts from player with name {}", getName());
+		g_logger().error("[Log 8] Failed to remove transfer dusts from player with name {}", getName());
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	} else {
@@ -7094,13 +7098,13 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 	}
 
 	if (!removeItemCountById(ITEM_FORGE_CORE, coresAmount)) {
-		SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, fmt::underlying(ITEM_FORGE_CORE), 1, getName());
+		g_logger().error("[{}] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, fmt::underlying(ITEM_FORGE_CORE), 1, getName());
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	if (!g_game().removeMoney(this, cost, 0, true)) {
-		SPDLOG_ERROR("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, cost, getName());
+		g_logger().error("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, cost, getName());
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
@@ -7108,7 +7112,7 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 	returnValue = g_game().internalAddItem(this, exaltationContainer, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("[Log 10] Failed to add forge item {} from player with name {}", fmt::underlying(ITEM_EXALTATION_CHEST), getName());
+		g_logger().error("[Log 10] Failed to add forge item {} from player with name {}", fmt::underlying(ITEM_EXALTATION_CHEST), getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -7133,7 +7137,7 @@ void Player::forgeResourceConversion(uint8_t action) {
 		auto dusts = getForgeDusts();
 		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER) * g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
 		if (cost > dusts) {
-			SPDLOG_ERROR("[{}] Not enough dust", __FUNCTION__);
+			g_logger().error("[{}] Not enough dust", __FUNCTION__);
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
@@ -7142,7 +7146,7 @@ void Player::forgeResourceConversion(uint8_t action) {
 		Item* item = Item::CreateItem(ITEM_FORGE_SLIVER, itemCount);
 		returnValue = g_game().internalPlayerAddItem(this, item);
 		if (returnValue != RETURNVALUE_NOERROR) {
-			SPDLOG_ERROR("Failed to add {} slivers to player with name {}", itemCount, getName());
+			g_logger().error("Failed to add {} slivers to player with name {}", itemCount, getName());
 			sendCancelMessage(getReturnMessage(returnValue));
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
@@ -7154,13 +7158,13 @@ void Player::forgeResourceConversion(uint8_t action) {
 		auto [sliverCount, coreCount] = getForgeSliversAndCores();
 		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_CORE_COST));
 		if (cost > sliverCount) {
-			SPDLOG_ERROR("[{}] Not enough sliver", __FUNCTION__);
+			g_logger().error("[{}] Not enough sliver", __FUNCTION__);
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
 
 		if (!removeItemCountById(ITEM_FORGE_SLIVER, cost)) {
-			SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count {}' from player {}", __FUNCTION__, fmt::underlying(ITEM_FORGE_SLIVER), cost, getName());
+			g_logger().error("[{}] Failed to remove item 'id: {}, count {}' from player {}", __FUNCTION__, fmt::underlying(ITEM_FORGE_SLIVER), cost, getName());
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
@@ -7170,7 +7174,7 @@ void Player::forgeResourceConversion(uint8_t action) {
 			returnValue = g_game().internalPlayerAddItem(this, item);
 		}
 		if (returnValue != RETURNVALUE_NOERROR) {
-			SPDLOG_ERROR("Failed to add one core to player with name {}", getName());
+			g_logger().error("Failed to add one core to player with name {}", getName());
 			sendCancelMessage(getReturnMessage(returnValue));
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
@@ -7181,7 +7185,7 @@ void Player::forgeResourceConversion(uint8_t action) {
 	} else {
 		auto dustLevel = getForgeDustLevel();
 		if (dustLevel >= g_configManager().getNumber(FORGE_MAX_DUST)) {
-			SPDLOG_ERROR("[{}] Maximum level reached", __FUNCTION__);
+			g_logger().error("[{}] Maximum level reached", __FUNCTION__);
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
@@ -7189,7 +7193,7 @@ void Player::forgeResourceConversion(uint8_t action) {
 		auto upgradeCost = dustLevel - 75;
 		if (auto dusts = getForgeDusts();
 			upgradeCost > dusts) {
-			SPDLOG_ERROR("[{}] Not enough dust", __FUNCTION__);
+			g_logger().error("[{}] Not enough dust", __FUNCTION__);
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
@@ -7476,9 +7480,9 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		// Check if can walk to the toPosition and send event to use function
 		std::forward_list<Direction> listDir;
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir)));
+			g_dispatcher().addTask(std::bind(&Game::playerAutoWalk, &g_game(), getID(), listDir));
 
-			SchedulerTask* task = createSchedulerTask(delay, function);
+			std::shared_ptr<Task> task = createPlayerTask(delay, function);
 			setNextWalkActionTask(task);
 			return true;
 		} else {

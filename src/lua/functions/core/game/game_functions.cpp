@@ -19,7 +19,7 @@
 #include "io/iologindata.h"
 #include "lua/functions/core/game/game_functions.hpp"
 #include "lua/functions/events/event_callback_functions.hpp"
-#include "game/scheduling/tasks.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "lua/creature/talkaction.h"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
@@ -143,7 +143,7 @@ int GameFunctions::luaGameGetPlayers(lua_State* L) {
 int GameFunctions::luaGameLoadMap(lua_State* L) {
 	// Game.loadMap(path)
 	const std::string &path = getString(L, 1);
-	g_dispatcher().addTask(createTask([path]() { g_game().loadMap(path); }));
+	g_dispatcher().addTask([path]() { g_game().loadMap(path); });
 	return 0;
 }
 
@@ -152,7 +152,7 @@ int GameFunctions::luaGameloadMapChunk(lua_State* L) {
 	const std::string &path = getString(L, 1);
 	const Position &position = getPosition(L, 2);
 	bool unload = getBoolean(L, 3);
-	g_dispatcher().addTask(createTask([path, position, unload]() { g_game().loadMap(path, position, unload); }));
+	g_dispatcher().addTask([path, position, unload]() { g_game().loadMap(path, position, unload); });
 	return 0;
 }
 
@@ -573,20 +573,20 @@ int GameFunctions::luaGameGetClientVersion(lua_State* L) {
 int GameFunctions::luaGameReload(lua_State* L) {
 	// Game.reload(reloadType)
 	Reload_t reloadType = getNumber<Reload_t>(L, 1);
-	if (g_gameReload.getReloadNumber(reloadType) == g_gameReload.getReloadNumber(Reload_t::RELOAD_TYPE_NONE)) {
+	if (g_gameReload().getReloadNumber(reloadType) == g_gameReload().getReloadNumber(Reload_t::RELOAD_TYPE_NONE)) {
 		reportErrorFunc("Reload type is none");
 		pushBoolean(L, false);
 		return 0;
 	}
 
-	if (g_gameReload.getReloadNumber(reloadType) >= g_gameReload.getReloadNumber(Reload_t::RELOAD_TYPE_LAST)) {
+	if (g_gameReload().getReloadNumber(reloadType) >= g_gameReload().getReloadNumber(Reload_t::RELOAD_TYPE_LAST)) {
 		reportErrorFunc("Reload type not exist");
 		pushBoolean(L, false);
 		return 0;
 	}
 
-	pushBoolean(L, g_gameReload.init(reloadType));
-	lua_gc(g_luaEnvironment.getLuaState(), LUA_GCCOLLECT, 0);
+	pushBoolean(L, g_gameReload().init(reloadType));
+	lua_gc(g_luaEnvironment().getLuaState(), LUA_GCCOLLECT, 0);
 	return 1;
 }
 

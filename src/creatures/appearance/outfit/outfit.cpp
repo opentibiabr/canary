@@ -30,26 +30,26 @@ bool Outfits::loadFromXml() {
 		}
 
 		if (!(attr = outfitNode.attribute("type"))) {
-			SPDLOG_WARN("[Outfits::loadFromXml] - Missing outfit type");
+			g_logger().warn("[Outfits::loadFromXml] - Missing outfit type");
 			continue;
 		}
 
 		uint16_t type = pugi::cast<uint16_t>(attr.value());
 		if (type > PLAYERSEX_LAST) {
-			SPDLOG_WARN("[Outfits::loadFromXml] - Invalid outfit type {}", type);
+			g_logger().warn("[Outfits::loadFromXml] - Invalid outfit type {}", type);
 			continue;
 		}
 
 		pugi::xml_attribute lookTypeAttribute = outfitNode.attribute("looktype");
 		if (!lookTypeAttribute) {
-			SPDLOG_WARN("[Outfits::loadFromXml] - Missing looktype on outfit");
+			g_logger().warn("[Outfits::loadFromXml] - Missing looktype on outfit");
 			continue;
 		}
 
 		if (uint16_t lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
 			g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
 			&& !g_game().isLookTypeRegistered(lookType)) {
-			SPDLOG_WARN("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
+			g_logger().warn("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
 			return false;
 		}
 

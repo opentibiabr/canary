@@ -131,8 +131,6 @@
 #include <string>
 #include <iostream>
 
-bool isDevMode();
-
 /**
  * Static custom libraries that can be pre-compiled like DI and messaging
  */

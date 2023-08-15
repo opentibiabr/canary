@@ -90,7 +90,7 @@ uint32_t ScriptEnvironment::addThing(Thing* thing) {
 void ScriptEnvironment::insertItem(uint32_t uid, Item* item) {
 	auto result = localMap.emplace(uid, item);
 	if (!result.second) {
-		SPDLOG_ERROR("Thing uid already taken: {}", uid);
+		g_logger().error("Thing uid already taken: {}", uid);
 	}
 }
 

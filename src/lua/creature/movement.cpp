@@ -113,17 +113,17 @@ bool MoveEvents::registerLuaEvent(MoveEvent &moveEvent) {
 		|| registerLuaPositionEvent(moveEvent)) {
 		return true;
 	} else {
-		SPDLOG_WARN(
+		g_logger().warn(
 			"[{}] missing id, aid, uid or position for script: {}",
 			__FUNCTION__,
 			moveEvent.getScriptInterface()->getLoadingScriptName()
 		);
 		return false;
 	}
-	SPDLOG_DEBUG(
+	g_logger().debug(
 		"[{}] missing or incorrect event for script: {}",
 		__FUNCTION__,
-		moveEvent->getScriptInterface()->getLoadingScriptName()
+		moveEvent.getScriptInterface()->getLoadingScriptName()
 	);
 	return false;
 }
@@ -139,7 +139,7 @@ bool MoveEvents::registerEvent(MoveEvent &moveEvent, int32_t id, phmap::btree_ma
 		std::list<MoveEvent> &moveEventList = it->second.moveEvent[moveEvent.getEventType()];
 		for (MoveEvent &existingMoveEvent : moveEventList) {
 			if (existingMoveEvent.getSlot() == moveEvent.getSlot()) {
-				SPDLOG_WARN(
+				g_logger().warn(
 					"[{}] duplicate move event found: {}, for script: {}",
 					__FUNCTION__,
 					id,
@@ -257,7 +257,7 @@ bool MoveEvents::registerEvent(MoveEvent &moveEvent, const Position &position, p
 	} else {
 		std::list<MoveEvent> &moveEventList = it->second.moveEvent[moveEvent.getEventType()];
 		if (!moveEventList.empty()) {
-			SPDLOG_WARN(
+			g_logger().warn(
 				"[{}] duplicate move event found: {}, for script {}",
 				__FUNCTION__,
 				position.toString(),
@@ -406,7 +406,7 @@ std::string MoveEvent::getScriptTypeName() const {
 		case MOVE_EVENT_REMOVE_ITEM:
 			return "onRemoveItem";
 		default:
-			SPDLOG_ERROR(
+			g_logger().error(
 				"[{}] invalid event type for script: {}",
 				__FUNCTION__,
 				getScriptInterface()->getLoadingScriptName()
@@ -417,12 +417,12 @@ std::string MoveEvent::getScriptTypeName() const {
 
 uint32_t MoveEvent::StepInField(Creature* creature, Item* item, const Position &) {
 	if (creature == nullptr) {
-		SPDLOG_ERROR("[MoveEvent::StepInField] - Creature is nullptr");
+		g_logger().error("[MoveEvent::StepInField] - Creature is nullptr");
 		return 0;
 	}
 
 	if (item == nullptr) {
-		SPDLOG_ERROR("[MoveEvent::StepInField] - Item is nullptr");
+		g_logger().error("[MoveEvent::StepInField] - Item is nullptr");
 		return 0;
 	}
 
@@ -441,24 +441,24 @@ uint32_t MoveEvent::StepOutField(Creature*, Item*, const Position &) {
 
 uint32_t MoveEvent::AddItemField(Item* item, Item*, const Position &) {
 	if (item == nullptr) {
-		SPDLOG_ERROR("[MoveEvent::AddItemField] - Item is nullptr");
+		g_logger().error("[MoveEvent::AddItemField] - Item is nullptr");
 		return 0;
 	}
 
 	if (MagicField* field = item->getMagicField()) {
 		Tile* tile = item->getTile();
 		if (tile == nullptr) {
-			SPDLOG_DEBUG("[MoveEvent::AddItemField] - Tile is nullptr");
+			g_logger().debug("[MoveEvent::AddItemField] - Tile is nullptr");
 			return 0;
 		}
 		const CreatureVector* creatures = tile->getCreatures();
 		if (creatures == nullptr) {
-			SPDLOG_DEBUG("[MoveEvent::AddItemField] - Creatures is nullptr");
+			g_logger().debug("[MoveEvent::AddItemField] - Creatures is nullptr");
 			return 0;
 		}
 		for (Creature* creature : *creatures) {
 			if (field == nullptr) {
-				SPDLOG_DEBUG("[MoveEvent::AddItemField] - MagicField is nullptr");
+				g_logger().debug("[MoveEvent::AddItemField] - MagicField is nullptr");
 				return 0;
 			}
 
@@ -475,12 +475,12 @@ uint32_t MoveEvent::RemoveItemField(Item*, Item*, const Position &) {
 
 uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool isCheck) {
 	if (player == nullptr) {
-		SPDLOG_ERROR("[MoveEvent::EquipItem] - Player is nullptr");
+		g_logger().error("[MoveEvent::EquipItem] - Player is nullptr");
 		return 0;
 	}
 
 	if (item == nullptr) {
-		SPDLOG_ERROR("[MoveEvent::EquipItem] - Item is nullptr");
+		g_logger().error("[MoveEvent::EquipItem] - Item is nullptr");
 		return 0;
 	}
 
@@ -589,12 +589,12 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 
 uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t slot, bool) {
 	if (player == nullptr) {
-		SPDLOG_ERROR("[MoveEvent::EquipItem] - Player is nullptr");
+		g_logger().error("[MoveEvent::EquipItem] - Player is nullptr");
 		return 0;
 	}
 
 	if (item == nullptr) {
-		SPDLOG_ERROR("[MoveEvent::EquipItem] - Item is nullptr");
+		g_logger().error("[MoveEvent::EquipItem] - Item is nullptr");
 		return 0;
 	}
 
@@ -687,7 +687,7 @@ bool MoveEvent::executeStep(Creature &creature, Item* item, const Position &pos)
 	auto fromPosition = creature.getLastPosition();
 	if (auto player = creature.getPlayer(); item && fromPosition == pos && getEventType() == MOVE_EVENT_STEP_IN) {
 		if (const ItemType &itemType = Item::items[item->getID()]; player && itemType.isTeleport()) {
-			SPDLOG_WARN("[{}] cannot teleport player: {}, to the same position: {} of fromPosition: {}", __FUNCTION__, player->getName(), pos.toString(), fromPosition.toString());
+			g_logger().warn("[{}] cannot teleport player: {}, to the same position: {} of fromPosition: {}", __FUNCTION__, player->getName(), pos.toString(), fromPosition.toString());
 			g_game().internalTeleport(player, player->getTemplePosition());
 			player->sendMagicEffect(player->getTemplePosition(), CONST_ME_TELEPORT);
 			player->sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));
@@ -698,13 +698,13 @@ bool MoveEvent::executeStep(Creature &creature, Item* item, const Position &pos)
 
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		if (item != nullptr) {
-			SPDLOG_ERROR("[MoveEvent::executeStep - Creature {} item {}, position {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 creature.getName(), item->getName(), pos.toString());
+			g_logger().error("[MoveEvent::executeStep - Creature {} item {}, position {}] "
+							 "Call stack overflow. Too many lua script calls being nested.",
+							 creature.getName(), item->getName(), pos.toString());
 		} else {
-			SPDLOG_ERROR("[MoveEvent::executeStep - Creature {}, position {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 creature.getName(), pos.toString());
+			g_logger().error("[MoveEvent::executeStep - Creature {}, position {}] "
+							 "Call stack overflow. Too many lua script calls being nested.",
+							 creature.getName(), pos.toString());
 		}
 		return false;
 	}
@@ -741,9 +741,9 @@ bool MoveEvent::executeEquip(Player &player, Item &item, Slots_t onSlot, bool is
 	// onEquip(player, item, slot, isCheck)
 	// onDeEquip(player, item, slot, isCheck)
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		SPDLOG_ERROR("[MoveEvent::executeEquip - Player {} item {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 player.getName(), item.getName());
+		g_logger().error("[MoveEvent::executeEquip - Player {} item {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 player.getName(), item.getName());
 		return false;
 	}
 
@@ -774,10 +774,10 @@ bool MoveEvent::executeAddRemItem(Item &item, Item &fromTile, const Position &po
 	// onAddItem(moveitem, tileitem, pos)
 	// onRemoveItem(moveitem, tileitem, pos)
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		SPDLOG_ERROR("[MoveEvent::executeAddRemItem - "
-					 "Item {} item on tile x: {} y: {} z: {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 item.getName(), pos.getX(), pos.getY(), pos.getZ());
+		g_logger().error("[MoveEvent::executeAddRemItem - "
+						 "Item {} item on tile x: {} y: {} z: {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 item.getName(), pos.getX(), pos.getY(), pos.getZ());
 		return false;
 	}
 
@@ -806,10 +806,10 @@ bool MoveEvent::executeAddRemItem(Item &item, const Position &pos) const {
 	// onaddItem(moveitem, pos)
 	// onRemoveItem(moveitem, pos)
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		SPDLOG_ERROR("[MoveEvent::executeAddRemItem - "
-					 "Item {} item on tile x: {} y: {} z: {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 item.getName(), pos.getX(), pos.getY(), pos.getZ());
+		g_logger().error("[MoveEvent::executeAddRemItem - "
+						 "Item {} item on tile x: {} y: {} z: {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 item.getName(), pos.getX(), pos.getY(), pos.getZ());
 		return false;
 	}
 

@@ -15,13 +15,11 @@
 #include "game/scheduling/scheduler.h"
 #include "creatures/players/management/ban.h"
 
-Ban g_bans;
-
 ServiceManager::~ServiceManager() {
 	try {
 		stop();
 	} catch (std::exception &exception) {
-		SPDLOG_ERROR("{} - Catch exception error: {}", __FUNCTION__, exception.what());
+		g_logger().error("{} - Catch exception error: {}", __FUNCTION__, exception.what());
 	}
 }
 
@@ -46,7 +44,7 @@ void ServiceManager::stop() {
 		try {
 			io_service.post(std::bind_front(&ServicePort::onStopServer, servicePortIt.second));
 		} catch (const std::system_error &e) {
-			SPDLOG_WARN("[ServiceManager::stop] - Network error: {}", e.what());
+			g_logger().warn("[ServiceManager::stop] - Network error: {}", e.what());
 		}
 	}
 
@@ -94,7 +92,7 @@ void ServicePort::onAccept(Connection_ptr connection, const std::error_code &err
 		}
 
 		auto remote_ip = connection->getIP();
-		if (remote_ip != 0 && g_bans.acceptConnection(remote_ip)) {
+		if (remote_ip != 0 && inject<Ban>().acceptConnection(remote_ip)) {
 			Service_ptr service = services.front();
 			if (service->is_single_socket()) {
 				connection->accept(service->make_protocol(connection));
@@ -110,7 +108,7 @@ void ServicePort::onAccept(Connection_ptr connection, const std::error_code &err
 		if (!pendingStart) {
 			close();
 			pendingStart = true;
-			g_scheduler().addEvent(createSchedulerTask(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), serverPort)));
+			g_scheduler().addEvent(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), serverPort));
 		}
 	}
 }
@@ -156,10 +154,10 @@ void ServicePort::open(uint16_t port) {
 
 		accept();
 	} catch (const std::system_error &e) {
-		SPDLOG_WARN("[ServicePort::open] - Error code: {}", e.what());
+		g_logger().warn("[ServicePort::open] - Error code: {}", e.what());
 
 		pendingStart = true;
-		g_scheduler().addEvent(createSchedulerTask(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port)));
+		g_scheduler().addEvent(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port));
 	}
 }
 

@@ -78,9 +78,9 @@ void Teleport::addThing(int32_t, Thing* thing) {
 	// Prevent infinity loop
 	if (checkInfinityLoop(destTile)) {
 		const Position &pos = getPosition();
-		SPDLOG_WARN("[Teleport:addThing] - "
-					"Infinity loop teleport at position: {}",
-					pos.toString());
+		g_logger().warn("[Teleport:addThing] - "
+						"Infinity loop teleport at position: {}",
+						pos.toString());
 		return;
 	}
 

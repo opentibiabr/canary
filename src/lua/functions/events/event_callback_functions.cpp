@@ -68,7 +68,7 @@ int EventCallbackFunctions::luaEventCallbackType(lua_State* luaState) {
 	}
 
 	if (!found) {
-		SPDLOG_ERROR("[{}] No valid event name: {}", __func__, typeName);
+		g_logger().error("[{}] No valid event name: {}", __func__, typeName);
 		pushBoolean(luaState, false);
 	}
 

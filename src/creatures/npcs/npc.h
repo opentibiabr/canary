@@ -33,10 +33,7 @@ class Npc final : public Creature {
 		void operator=(const Npc &) = delete;
 
 		static Npc &getInstance() {
-			// Guaranteed to be destroyed
-			static Npc instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Npc>();
 		}
 
 		Npc* getNpc() override {
@@ -206,6 +203,6 @@ class Npc final : public Creature {
 		void loadPlayerSpectators();
 };
 
-constexpr auto g_npc = &Npc::getInstance;
+constexpr auto g_npc = Npc::getInstance;
 
 #endif // SRC_CREATURES_NPCS_NPC_H_

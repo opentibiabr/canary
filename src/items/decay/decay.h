@@ -14,22 +14,19 @@
 
 class Decay {
 	public:
+		Decay() = default;
+
 		Decay(const Decay &) = delete;
 		void operator=(const Decay &) = delete;
 
 		static Decay &getInstance() {
-			// Guaranteed to be destroyed
-			static Decay instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Decay>();
 		}
 
 		void startDecay(Item* item);
 		void stopDecay(Item* item);
 
 	private:
-		Decay() = default;
-
 		void checkDecay();
 		void internalDecayItem(Item* item);
 
@@ -37,6 +34,6 @@ class Decay {
 		phmap::btree_map<int64_t, std::vector<Item*>> decayMap;
 };
 
-constexpr auto g_decay = &Decay::getInstance;
+constexpr auto g_decay = Decay::getInstance;
 
 #endif // SRC_ITEMS_DECAY_DECAY_H_

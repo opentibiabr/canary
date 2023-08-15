@@ -236,7 +236,7 @@ PRIVATE
 	items/tile.cpp
 	items/trashholder.cpp
 	items/weapons/weapons.cpp
-	lib/logging/LogWithSpdLog.cpp
+	lib/logging/log_with_spd_log.cpp
 	lua/callbacks/creaturecallback.cpp
 	lua/callbacks/event_callback.cpp
 	lua/callbacks/events_callbacks.cpp
@@ -306,7 +306,7 @@ PRIVATE
 	map/house/house.cpp
 	map/house/housetile.cpp
 	map/map.cpp
-	CanaryServer.cpp
+	canary_server.cpp
 	otserv.cpp
 	security/argon.cpp
 	security/rsa.cpp

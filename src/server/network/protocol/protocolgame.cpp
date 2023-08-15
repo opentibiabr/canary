@@ -8064,10 +8064,19 @@ void ProtocolGame::parseSendBosstiary() {
 
 	for (const auto &[bossid, name] : mtype_map) {
 		const MonsterType* mType = g_monsters().getMonsterType(name);
-		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+		if (!mType) {
+			continue;
+		}
+
+		auto bossRace = mType->info.bosstiaryRace;
+		if (bossRace < BosstiaryRarity_t::RARITY_BANE || bossRace > BosstiaryRarity_t::RARITY_NEMESIS) {
+			g_logger().error("[{}] monster {} have wrong boss race {}", __FUNCTION__, mType->name, fmt::underlying(bossRace));
+			continue;
+		}
+
 		auto killCount = player->getBestiaryKillCount(bossid);
 		msg.add<uint32_t>(bossid);
-		msg.addByte(bossRace);
+		msg.addByte(static_cast<uint8_t>(bossRace));
 		msg.add<uint32_t>(killCount);
 		msg.addByte(0);
 		msg.addByte(0x00); // Tracker

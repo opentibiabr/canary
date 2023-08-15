@@ -241,9 +241,9 @@ void LuaFunctionsLoader::setWeakMetatable(lua_State* L, int32_t index, const std
 }
 
 void LuaFunctionsLoader::setItemMetatable(lua_State* L, int32_t index, const Item* item) {
-	if (item->getContainer()) {
+	if (item && item->getContainer()) {
 		luaL_getmetatable(L, "Container");
-	} else if (item->getTeleport()) {
+	} else if (item && item->getTeleport()) {
 		luaL_getmetatable(L, "Teleport");
 	} else {
 		luaL_getmetatable(L, "Item");
@@ -252,9 +252,9 @@ void LuaFunctionsLoader::setItemMetatable(lua_State* L, int32_t index, const Ite
 }
 
 void LuaFunctionsLoader::setCreatureMetatable(lua_State* L, int32_t index, const Creature* creature) {
-	if (creature->getPlayer()) {
+	if (creature && creature->getPlayer()) {
 		luaL_getmetatable(L, "Player");
-	} else if (creature->getMonster()) {
+	} else if (creature && creature->getMonster()) {
 		luaL_getmetatable(L, "Monster");
 	} else {
 		luaL_getmetatable(L, "Npc");

@@ -15,34 +15,45 @@
 template <typename Derived>
 class ThreadHolder {
 	public:
-		ThreadHolder() { }
+		ThreadHolder() = default;
+
+		// Ensures that we don't accidentally copy it
+		ThreadHolder(const ThreadHolder &) = delete;
+		ThreadHolder operator=(const ThreadHolder &) = delete;
+
 		void start() {
-			setState(THREAD_STATE_RUNNING);
-			thread = std::thread(&Derived::threadMain, static_cast<Derived*>(this));
+			thread = std::thread(
+				[this] { io_service.run(); }
+			);
 		}
 
-		void stop() {
-			setState(THREAD_STATE_CLOSING);
+		void addLoad(const std::function<void(void)> &load) {
+			asio::post(io_service, [load]() { load(); });
+		}
+
+		void shutdown(const std::function<void(void)> &callback = []() {}) {
+			asio::post(
+				io_service,
+				[this, callback]() { callback(); io_service.stop(); }
+			);
+
+			join();
 		}
 
 		void join() {
-			if (thread.joinable()) {
-				thread.join();
+			if (!thread.joinable()) {
+				return;
 			}
+
+			thread.join();
 		}
 
 	protected:
-		void setState(ThreadState newState) {
-			threadState.store(newState, std::memory_order_relaxed);
-		}
-
-		ThreadState getState() const {
-			return threadState.load(std::memory_order_relaxed);
-		}
+		asio::io_service io_service {};
 
 	private:
-		std::atomic<ThreadState> threadState { THREAD_STATE_TERMINATED };
-		std::thread thread;
+		std::thread thread {};
+		asio::io_service::work work { io_service };
 };
 
 #endif // SRC_UTILS_THREAD_HOLDER_H_

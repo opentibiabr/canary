@@ -8157,7 +8157,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
 		uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
 		// Bytes Slot One
-		sendBosstiarySlotsBytes(msg, bossRaceSlotOne, bossKillCount, bonusBossSlotOne, 0, isSlotOneInactive, removePrice);
+		sendBosstiarySlotsBytes(msg, static_cast<uint8_t>(bossRaceSlotOne), bossKillCount, bonusBossSlotOne, 0, isSlotOneInactive, removePrice);
 		bossesUnlockedSize--;
 	}
 
@@ -8172,7 +8172,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
 		uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
 		// Bytes Slot Two
-		sendBosstiarySlotsBytes(msg, bossRaceSlotTwo, bossKillCount, bonusBossSlotTwo, 0, isSlotTwoInactive, removePrice);
+		sendBosstiarySlotsBytes(msg, static_cast<uint8_t>(bossRaceSlotTwo), bossKillCount, bonusBossSlotTwo, 0, isSlotTwoInactive, removePrice);
 		bossesUnlockedSize--;
 	}
 
@@ -8184,7 +8184,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
 		auto bosstiaryMultiplier = static_cast<uint8_t>(g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER));
 		auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
-		sendBosstiarySlotsBytes(msg, boostedBossRace, boostedBossKillCount, boostedLootBonus, bosstiaryMultiplier + boostedKillBonus, 0, 0);
+		sendBosstiarySlotsBytes(msg, static_cast<uint8_t>(boostedBossRace), boostedBossKillCount, boostedLootBonus, bosstiaryMultiplier + boostedKillBonus, 0, 0);
 	}
 
 	msg.addByte(bossesUnlockedSize != 0 ? 1 : 0);

@@ -106,7 +106,7 @@ class MonsterType {
 
 				// Bosstiary
 				uint32_t bossStorageCooldown = 0;
-				BosstiaryRarity_t bosstiaryRace;
+				BosstiaryRarity_t bosstiaryRace = BosstiaryRarity_t::BOSS_INVALID;
 				std::string bosstiaryClass;
 
 				float mitigation = 0;

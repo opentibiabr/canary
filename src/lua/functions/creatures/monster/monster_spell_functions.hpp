@@ -16,8 +16,7 @@ class MonsterSpellFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
 			registerClass(L, "MonsterSpell", "", MonsterSpellFunctions::luaCreateMonsterSpell);
-			registerMetaMethod(L, "MonsterSpell", "__gc", MonsterSpellFunctions::luaDeleteMonsterSpell);
-			registerMethod(L, "MonsterSpell", "delete", MonsterSpellFunctions::luaDeleteMonsterSpell);
+
 			registerMethod(L, "MonsterSpell", "setType", MonsterSpellFunctions::luaMonsterSpellSetType);
 			registerMethod(L, "MonsterSpell", "setScriptName", MonsterSpellFunctions::luaMonsterSpellSetScriptName);
 			registerMethod(L, "MonsterSpell", "setChance", MonsterSpellFunctions::luaMonsterSpellSetChance);
@@ -45,7 +44,6 @@ class MonsterSpellFunctions final : LuaScriptInterface {
 
 	private:
 		static int luaCreateMonsterSpell(lua_State* L);
-		static int luaDeleteMonsterSpell(lua_State* L);
 		static int luaMonsterSpellSetType(lua_State* L);
 		static int luaMonsterSpellSetScriptName(lua_State* L);
 		static int luaMonsterSpellSetChance(lua_State* L);

@@ -22,7 +22,7 @@ spellBlock_t::~spellBlock_t() {
 	}
 }
 
-void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock) {
+void MonsterType::loadLoot(const std::shared_ptr<MonsterType> &monsterType, LootBlock lootBlock) {
 	if (lootBlock.childLoot.empty()) {
 		bool isContainer = Item::items[lootBlock.id].isContainer();
 		if (isContainer) {
@@ -58,7 +58,7 @@ ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType, int
 	return condition;
 }
 
-bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std::string &description) {
+bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spellBlock_t &sb, const std::string &description) {
 	if (!spell->scriptName.empty()) {
 		spell->isScripted = true;
 	} else if (!spell->name.empty()) {
@@ -297,7 +297,7 @@ bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	return true;
 }
 
-MonsterType* Monsters::getMonsterType(const std::string &name) {
+std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name) {
 	std::string lowerCaseName = asLowerCaseString(name);
 	if (auto it = monsters.find(lowerCaseName);
 		it != monsters.end()
@@ -309,8 +309,8 @@ MonsterType* Monsters::getMonsterType(const std::string &name) {
 	return nullptr;
 }
 
-MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t raceId, bool isBoss /* = false*/) {
-	MonsterType* bossType = g_ioBosstiary().getMonsterTypeByBossRaceId(raceId);
+std::shared_ptr<MonsterType> Monsters::getMonsterTypeByRaceId(uint16_t raceId, bool isBoss /* = false*/) {
+	const auto &bossType = g_ioBosstiary().getMonsterTypeByBossRaceId(raceId);
 	if (isBoss && bossType) {
 		return bossType;
 	}
@@ -324,7 +324,7 @@ MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t raceId, bool isBoss /* = 
 	return g_monsters().getMonsterType(it->second);
 }
 
-void Monsters::addMonsterType(const std::string &name, MonsterType* mType) {
+void Monsters::addMonsterType(const std::string &name, const std::shared_ptr<MonsterType> &mType) {
 	std::string lowerName = asLowerCaseString(name);
 	monsters[lowerName] = mType;
 }

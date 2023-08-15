@@ -168,6 +168,7 @@
     <ClInclude Include="..\src\lua\functions\map\town_functions.hpp" />
     <ClInclude Include="..\src\lua\global\baseevents.h" />
     <ClInclude Include="..\src\lua\global\globalevent.h" />
+    <ClInclude include "..\src\lua\global\shared_object.hpp" />
     <ClInclude Include="..\src\lua\lua_definitions.hpp" />
     <ClInclude Include="..\src\lua\modules\modules.h" />
     <ClInclude Include="..\src\lua\scripts\luajit_sync.hpp" />

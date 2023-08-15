@@ -106,7 +106,7 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 		}
 
 		blackList.push_back(raceId);
-		const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId);
+		const auto &mtype = g_monsters().getMonsterTypeByRaceId(raceId);
 		if (!mtype || mtype->info.experience == 0) {
 			continue;
 		} else if (stageOne != 0 && mtype->info.bestiaryStars <= 1) {
@@ -187,7 +187,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 		}
 
 		blackList.push_back(raceId);
-		const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId);
+		const auto &mtype = g_monsters().getMonsterTypeByRaceId(raceId);
 		if (!mtype || mtype->info.experience == 0) {
 			continue;
 		} else if (stageOne != 0 && mtype->info.bestiaryStars <= 1) {
@@ -453,7 +453,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 			return;
 		}
 
-		if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {
+		if (const auto &mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {
 			slot->currentKills = 0;
 			slot->selectedRaceId = raceId;
 			slot->removeMonsterType(raceId);
@@ -562,7 +562,7 @@ void IOPrey::InitializeTaskHuntOptions() {
 	phmap::btree_map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 	msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 	std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto &mType) {
-		const MonsterType* mtype = g_monsters().getMonsterType(mType.second);
+		const auto &mtype = g_monsters().getMonsterType(mType.second);
 		if (!mtype) {
 			return;
 		}
@@ -594,7 +594,7 @@ TaskHuntingOption* IOPrey::GetTaskRewardOption(const TaskHuntingSlot* slot) cons
 		return nullptr;
 	}
 
-	const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId);
+	const auto &mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId);
 	if (!mtype) {
 		return nullptr;
 	}

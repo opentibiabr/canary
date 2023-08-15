@@ -143,4 +143,6 @@
 
 #include "lib/di/container.hpp"
 
+#include "lua/global/shared_object.hpp"
+
 #endif // SRC_PCH_HPP_

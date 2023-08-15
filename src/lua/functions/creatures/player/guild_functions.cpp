@@ -14,10 +14,8 @@
 #include "lua/functions/creatures/player/guild_functions.hpp"
 
 int GuildFunctions::luaGuildCreate(lua_State* L) {
-	// Guild(id)
 	uint32_t id = getNumber<uint32_t>(L, 2);
-
-	Guild* guild = g_game().getGuild(id);
+	const auto &guild = g_game().getGuild(id);
 	if (guild) {
 		pushUserdata<Guild>(L, guild);
 		setMetatable(L, -1, "Guild");
@@ -28,8 +26,7 @@ int GuildFunctions::luaGuildCreate(lua_State* L) {
 }
 
 int GuildFunctions::luaGuildGetId(lua_State* L) {
-	// guild:getId()
-	Guild* guild = getUserdata<Guild>(L, 1);
+	const auto &guild = getUserdataShared<Guild>(L, 1);
 	if (guild) {
 		lua_pushnumber(L, guild->getId());
 	} else {
@@ -40,18 +37,18 @@ int GuildFunctions::luaGuildGetId(lua_State* L) {
 
 int GuildFunctions::luaGuildGetName(lua_State* L) {
 	// guild:getName()
-	Guild* guild = getUserdata<Guild>(L, 1);
-	if (guild) {
-		pushString(L, guild->getName());
-	} else {
+	const auto &guild = getUserdataShared<Guild>(L, 1);
+	if (!guild) {
 		lua_pushnil(L);
+		return 1;
 	}
+	pushString(L, guild->getName());
 	return 1;
 }
 
 int GuildFunctions::luaGuildGetMembersOnline(lua_State* L) {
 	// guild:getMembersOnline()
-	const Guild* guild = getUserdata<const Guild>(L, 1);
+	const auto &guild = getUserdataShared<const Guild>(L, 1);
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;
@@ -71,18 +68,18 @@ int GuildFunctions::luaGuildGetMembersOnline(lua_State* L) {
 
 int GuildFunctions::luaGuildGetBankBalance(lua_State* L) {
 	// guild:getBankBalance()
-	Guild* guild = getUserdata<Guild>(L, 1);
-	if (guild) {
-		lua_pushnumber(L, guild->getBankBalance());
-	} else {
+	const auto &guild = getUserdataShared<Guild>(L, 1);
+	if (!guild) {
 		lua_pushnil(L);
+		return 1;
 	}
+	lua_pushnumber(L, guild->getBankBalance());
 	return 1;
 }
 
 int GuildFunctions::luaGuildSetBankBalance(lua_State* L) {
 	// guild:setBankBalance(bankBalance)
-	Guild* guild = getUserdata<Guild>(L, 1);
+	const auto guild = getUserdataShared<Guild>(L, 1);
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;
@@ -95,22 +92,22 @@ int GuildFunctions::luaGuildSetBankBalance(lua_State* L) {
 
 int GuildFunctions::luaGuildAddRank(lua_State* L) {
 	// guild:addRank(id, name, level)
-	Guild* guild = getUserdata<Guild>(L, 1);
-	if (guild) {
-		uint32_t id = getNumber<uint32_t>(L, 2);
-		const std::string &name = getString(L, 3);
-		uint8_t level = getNumber<uint8_t>(L, 4);
-		guild->addRank(id, name, level);
-		pushBoolean(L, true);
-	} else {
+	const auto guild = getUserdataShared<Guild>(L, 1);
+	if (!guild) {
 		lua_pushnil(L);
+		return 1;
 	}
+	uint32_t id = getNumber<uint32_t>(L, 2);
+	const std::string &name = getString(L, 3);
+	uint8_t level = getNumber<uint8_t>(L, 4);
+	guild->addRank(id, name, level);
+	pushBoolean(L, true);
 	return 1;
 }
 
 int GuildFunctions::luaGuildGetRankById(lua_State* L) {
 	// guild:getRankById(id)
-	Guild* guild = getUserdata<Guild>(L, 1);
+	const auto &guild = getUserdataShared<Guild>(L, 1);
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;
@@ -131,7 +128,7 @@ int GuildFunctions::luaGuildGetRankById(lua_State* L) {
 
 int GuildFunctions::luaGuildGetRankByLevel(lua_State* L) {
 	// guild:getRankByLevel(level)
-	const Guild* guild = getUserdata<const Guild>(L, 1);
+	const auto &guild = getUserdataShared<Guild>(L, 1);
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;
@@ -152,24 +149,24 @@ int GuildFunctions::luaGuildGetRankByLevel(lua_State* L) {
 
 int GuildFunctions::luaGuildGetMotd(lua_State* L) {
 	// guild:getMotd()
-	Guild* guild = getUserdata<Guild>(L, 1);
-	if (guild) {
-		pushString(L, guild->getMotd());
-	} else {
+	const auto &guild = getUserdataShared<Guild>(L, 1);
+	if (!guild) {
 		lua_pushnil(L);
+		return 1;
 	}
+	pushString(L, guild->getMotd());
 	return 1;
 }
 
 int GuildFunctions::luaGuildSetMotd(lua_State* L) {
 	// guild:setMotd(motd)
-	const std::string &motd = getString(L, 2);
-	Guild* guild = getUserdata<Guild>(L, 1);
-	if (guild) {
-		guild->setMotd(motd);
-		pushBoolean(L, true);
-	} else {
+	const auto guild = getUserdataShared<Guild>(L, 1);
+	if (!guild) {
 		lua_pushnil(L);
+		return 1;
 	}
+	const std::string &motd = getString(L, 2);
+	guild->setMotd(motd);
+	pushBoolean(L, true);
 	return 1;
 }

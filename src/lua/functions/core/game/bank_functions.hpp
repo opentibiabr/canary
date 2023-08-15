@@ -1,3 +1,12 @@
+/**
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
+ */
+
 #ifndef SRC_LUA_FUNCTIONS_CORE_GAME_BANK_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CORE_GAME_BANK_FUNCTIONS_HPP_
 
@@ -8,7 +17,7 @@ class Bank;
 class BankFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-			registerTable(L, "Bank");
+			registerSharedClass(L, "Bank", "");
 			registerMethod(L, "Bank", "credit", BankFunctions::luaBankCredit);
 			registerMethod(L, "Bank", "debit", BankFunctions::luaBankDebit);
 			registerMethod(L, "Bank", "balance", BankFunctions::luaBankBalance);
@@ -29,7 +38,7 @@ class BankFunctions final : LuaScriptInterface {
 		static int luaBankWithdraw(lua_State* L);
 		static int luaBankDeposit(lua_State* L);
 
-		static std::unique_ptr<Bank> getBank(lua_State* L, int32_t arg, bool isGuild = false);
+		static std::shared_ptr<Bank> getBank(lua_State* L, int32_t arg, bool isGuild = false);
 };
 
 #endif // SRC_LUA_FUNCTIONS_CORE_GAME_BANK_FUNCTIONS_HPP_

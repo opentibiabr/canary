@@ -2562,7 +2562,7 @@ void Player::death(Creature* lastHitCreature) {
 		// Charm bless bestiary
 		if (lastHitCreature && lastHitCreature->getMonster()) {
 			if (charmRuneBless != 0) {
-				const MonsterType* mType = g_monsters().getMonsterType(lastHitCreature->getName());
+				const auto &mType = g_monsters().getMonsterType(lastHitCreature->getName());
 				if (mType && mType->info.raceid == charmRuneBless) {
 					deathLossPercent = (deathLossPercent * 90) / 100;
 				}
@@ -5074,7 +5074,7 @@ bool Player::isInWar(const Player* player) const {
 		return false;
 	}
 
-	const Guild* playerGuild = player->getGuild();
+	const auto &playerGuild = player->getGuild();
 	if (!playerGuild) {
 		return false;
 	}
@@ -5455,7 +5455,7 @@ GuildEmblems_t Player::getGuildEmblem(const Player* player) const {
 		return GUILDEMBLEM_NONE;
 	}
 
-	const Guild* playerGuild = player->getGuild();
+	const auto &playerGuild = player->getGuild();
 	if (!playerGuild) {
 		return GUILDEMBLEM_NONE;
 	}
@@ -5993,12 +5993,12 @@ std::forward_list<Condition*> Player::getMuteConditions() const {
 	return muteConditions;
 }
 
-void Player::setGuild(Guild* newGuild) {
+void Player::setGuild(const std::shared_ptr<Guild> &newGuild) {
 	if (newGuild == this->guild) {
 		return;
 	}
 
-	Guild* oldGuild = this->guild;
+	const auto &oldGuild = this->guild;
 
 	this->guildNick.clear();
 	this->guild = nullptr;
@@ -6380,7 +6380,7 @@ std::string Player::getBlessingsName() const {
 	return os.str();
 }
 
-bool Player::isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
+bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> &mtype) const {
 	if (!mtype) {
 		return false;
 	}

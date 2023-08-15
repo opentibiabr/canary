@@ -10,12 +10,12 @@
 #include "pch.hpp"
 
 #include "declarations.hpp"
-#include "creatures/combat/spells.h"
 #include "creatures/players/grouping/familiars.h"
 #include "creatures/players/storages/storages.hpp"
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
 #include "game/game.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/scheduler.h"
 #include "game/scheduling/events_scheduler.hpp"
 #include "io/iomarket.h"
@@ -66,6 +66,13 @@ std::string getCompiler() {
 #endif
 }
 
+void shutdown() {
+	g_scheduler().shutdown();
+	g_databaseTasks().shutdown();
+	g_dispatcher().shutdown();
+	g_webhook().shutdown();
+}
+
 void startupErrorMessage() {
 	g_logger().error("The program will close after pressing the enter key...");
 
@@ -75,12 +82,8 @@ void startupErrorMessage() {
 
 	g_loaderSignal.notify_all();
 
-#ifdef _WIN32
+	shutdown();
 	exit(-1);
-#else
-	g_scheduler().shutdown();
-	exit(-1);
-#endif
 }
 
 void mainLoader(int argc, char* argv[], ServiceManager* servicer);
@@ -93,12 +96,8 @@ void badAllocationHandler() {
 		getchar();
 	}
 
-#ifdef _WIN32
+	shutdown();
 	exit(-1);
-#else
-	g_scheduler().shutdown();
-	exit(-1);
-#endif
 }
 
 void modulesLoadHelper(bool loaded, std::string moduleName) {
@@ -216,26 +215,23 @@ int main(int argc, char* argv[]) {
 	g_webhook().init();
 	g_webhook().start();
 
-	g_dispatcher().addTask(createTask(std::bind(mainLoader, argc, argv, &serviceManager)));
+	g_dispatcher().addTask(std::bind(mainLoader, argc, argv, &serviceManager));
 
 	g_loaderSignal.wait(g_loaderUniqueLock, [] {
 		return g_loaderDone;
 	});
 
-	if (serviceManager.is_running()) {
-		g_logger().info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
-		serviceManager.run();
-	} else {
+	if (!serviceManager.is_running()) {
 		g_logger().error("No services running. The server is NOT online!");
-		g_databaseTasks().shutdown();
-		g_dispatcher().shutdown();
+		shutdown();
 		exit(-1);
 	}
 
-	g_scheduler().join();
-	g_databaseTasks().join();
-	g_dispatcher().join();
-	g_webhook().join();
+	g_logger().info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
+
+	serviceManager.run();
+
+	shutdown();
 	return 0;
 }
 #endif

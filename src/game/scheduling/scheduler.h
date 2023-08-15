@@ -10,67 +10,33 @@
 #ifndef SRC_GAME_SCHEDULING_SCHEDULER_H_
 #define SRC_GAME_SCHEDULING_SCHEDULER_H_
 
-#include "game/scheduling/tasks.h"
 #include "utils/thread_holder_base.h"
 
 static constexpr int32_t SCHEDULER_MINTICKS = 50;
 
-class SchedulerTask : public Task {
-	public:
-		void setEventId(uint32_t id) {
-			eventId = id;
-		}
-		uint32_t getEventId() const {
-			return eventId;
-		}
+class Task;
 
-		std::chrono::system_clock::time_point getCycle() const {
-			return expiration;
-		}
-
-	private:
-		SchedulerTask(uint32_t delay, std::function<void(void)> &&f) :
-			Task(delay, std::move(f)) { }
-
-		uint32_t eventId = 0;
-
-		friend SchedulerTask* createSchedulerTask(uint32_t, std::function<void(void)>);
-};
-
-SchedulerTask* createSchedulerTask(uint32_t delay, std::function<void(void)> f);
-
-struct TaskComparator {
-		bool operator()(const SchedulerTask* lhs, const SchedulerTask* rhs) const {
-			return lhs->getCycle() > rhs->getCycle();
-		}
-};
-
+/**
+ * Scheduler allow you to schedule a task async to be executed after a
+ * given period. Once the time has passed, scheduler calls the task.
+ */
 class Scheduler : public ThreadHolder<Scheduler> {
 	public:
 		Scheduler() = default;
 
+		// Ensures that we don't accidentally copy it
 		Scheduler(const Scheduler &) = delete;
-		void operator=(const Scheduler &) = delete;
+		Scheduler operator=(const Scheduler &) = delete;
 
-		static Scheduler &getInstance() {
-			return inject<Scheduler>();
-		}
+		static Scheduler &getInstance();
 
-		uint32_t addEvent(SchedulerTask* task);
-		bool stopEvent(uint32_t eventId);
-
-		void shutdown();
-
-		void threadMain();
+		uint64_t addEvent(uint32_t delay, std::function<void(void)> f);
+		uint64_t addEvent(const std::shared_ptr<Task> &task);
+		void stopEvent(uint64_t eventId);
 
 	private:
-		std::thread thread;
-		std::mutex eventLock;
-		std::condition_variable eventSignal;
-
-		uint32_t lastEventId { 0 };
-		std::priority_queue<SchedulerTask*, std::deque<SchedulerTask*>, TaskComparator> eventList;
-		phmap::flat_hash_set<uint32_t> eventIds;
+		std::atomic<uint64_t> lastEventId { 0 };
+		std::unordered_map<uint64_t, asio::steady_timer> eventIds;
 };
 
 constexpr auto g_scheduler = Scheduler::getInstance;

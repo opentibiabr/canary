@@ -13,6 +13,7 @@
 #include "server/network/message/outputmessage.h"
 #include "server/network/protocol/protocol.h"
 #include "server/network/protocol/protocolgame.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/scheduler.h"
 #include "server/server.h"
 

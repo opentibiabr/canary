@@ -35,6 +35,7 @@ class Scheduler {
 
 	private:
 		ThreadPool &threadPool;
+		std::mutex threadSafetyMutex;
 		std::atomic<uint64_t> lastEventId { 0 };
 		std::unordered_map<uint64_t, asio::steady_timer> eventIds;
 };

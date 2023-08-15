@@ -22,11 +22,16 @@ ThreadPool::ThreadPool(Logger &logger) :
 }
 
 ThreadPool::~ThreadPool() {
-	shutdown();
+	//	shutdown();
 }
 
 void ThreadPool::shutdown() {
+	if (ioService.stopped()) {
+		return;
+	}
+
 	ioService.stop();
+
 	for (auto &thread : threads) {
 		if (thread.joinable()) {
 			thread.join();
@@ -39,6 +44,11 @@ asio::io_context &ThreadPool::getIoService() {
 }
 
 void ThreadPool::addLoad(const std::function<void(void)> &load) {
+	if (ioService.stopped()) {
+		logger.error("Shutting down, cannot execute task.");
+		return;
+	}
+
 	asio::post(ioService, [this, load]() {
 		try {
 			load();

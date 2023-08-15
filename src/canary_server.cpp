@@ -104,12 +104,15 @@ int CanaryServer::run() {
 
 	if (!serviceManager.is_running()) {
 		logger.error("No services running. The server is NOT online!");
+		threadPool.shutdown();
 		exit(-1);
 	}
 
 	logger.info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
 
 	serviceManager.run();
+
+	threadPool.shutdown();
 
 	return 0;
 }
@@ -214,6 +217,7 @@ void CanaryServer::badAllocationHandler() {
 		getchar();
 	}
 
+	inject<ThreadPool>().shutdown();
 	exit(-1);
 }
 
@@ -364,5 +368,6 @@ void CanaryServer::startupErrorMessage() {
 
 	g_loaderSignal.notify_all();
 
+	threadPool.shutdown();
 	exit(-1);
 }

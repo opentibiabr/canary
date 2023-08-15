@@ -27,8 +27,9 @@ class DatabaseTasks {
 		void addTask(std::string query, std::function<void(DBResult_ptr, bool)> callback = nullptr, bool store = false);
 
 	private:
-		ThreadPool &threadPool;
 		Database* db_;
+		ThreadPool &threadPool;
+		std::mutex threadSafetyMutex;
 };
 
 constexpr auto g_databaseTasks = DatabaseTasks::getInstance;

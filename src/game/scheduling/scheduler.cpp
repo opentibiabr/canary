@@ -30,6 +30,7 @@ uint64_t Scheduler::addEvent(const std::shared_ptr<Task> &task) {
 	}
 
 	threadPool.addLoad([this, task]() {
+		std::lock_guard<std::mutex> lockClass(threadSafetyMutex);
 		auto res = eventIds.emplace(task->getEventId(), asio::steady_timer(threadPool.getIoService()));
 
 		asio::steady_timer &timer = res.first->second;
@@ -51,6 +52,7 @@ uint64_t Scheduler::addEvent(const std::shared_ptr<Task> &task) {
 
 void Scheduler::stopEvent(uint64_t eventId) {
 	threadPool.addLoad([this, eventId]() {
+		std::lock_guard<std::mutex> lockClass(threadSafetyMutex);
 		auto it = eventIds.find(eventId);
 
 		if (it != eventIds.end()) {

@@ -24,6 +24,8 @@ DatabaseTasks &DatabaseTasks::getInstance() {
 
 void DatabaseTasks::addTask(std::string query, std::function<void(DBResult_ptr, bool)> callback /* = nullptr*/, bool store /* = false*/) {
 	threadPool.addLoad([this, query, callback, store]() {
+		std::lock_guard<std::mutex> lockClass(threadSafetyMutex);
+
 		if (db_ == nullptr) {
 			return;
 		}

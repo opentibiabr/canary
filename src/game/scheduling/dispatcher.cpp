@@ -27,6 +27,7 @@ void Dispatcher::addTask(std::function<void(void)> f, uint32_t expiresAfterMs /*
 void Dispatcher::addTask(const std::shared_ptr<Task> &task, uint32_t expiresAfterMs /* = 0*/) {
 	if (expiresAfterMs == 0) {
 		threadPool.addLoad([this, task]() {
+			std::lock_guard<std::mutex> lockClass(threadSafetyMutex);
 			++dispatcherCycle;
 			(*task)();
 		});
@@ -46,6 +47,7 @@ void Dispatcher::addTask(const std::shared_ptr<Task> &task, uint32_t expiresAfte
 	});
 
 	threadPool.addLoad([this, task, timer]() {
+		std::lock_guard<std::mutex> lockClass(threadSafetyMutex);
 		if (timer->cancel() <= 0) {
 			return;
 		}

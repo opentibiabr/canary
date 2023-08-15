@@ -40,6 +40,7 @@ class Dispatcher {
 	private:
 		ThreadPool &threadPool;
 		uint64_t dispatcherCycle = 0;
+		std::mutex threadSafetyMutex;
 };
 
 constexpr auto g_dispatcher = Dispatcher::getInstance;

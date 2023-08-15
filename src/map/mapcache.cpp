@@ -19,15 +19,15 @@
 static phmap::flat_hash_map<size_t, BasicItemPtr> items;
 static phmap::flat_hash_map<size_t, BasicTilePtr> tiles;
 
-BasicItemPtr getItemFromCache(const BasicItemPtr &ref) {
+BasicItemPtr static_getItemFromCache(const BasicItemPtr &ref) {
 	return ref ? items.try_emplace(ref->hash(), ref).first->second : nullptr;
 }
 
-BasicTilePtr getTileFromCache(const BasicTilePtr &ref) {
+BasicTilePtr static_getTileFromCache(const BasicTilePtr &ref) {
 	return ref ? tiles.try_emplace(ref->hash(), ref).first->second : nullptr;
 }
 
-void MapCache::clear() {
+void MapCache::flush() {
 	items.clear();
 	tiles.clear();
 }
@@ -101,8 +101,8 @@ Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
 	return item;
 }
 
-bool MapCache::tryCreateTile(Map* map, uint16_t x, uint16_t y, uint8_t z) {
-	const auto &cachedTile = getTile(x, y, z);
+bool MapCache::tryCreateTileFromCache(Map* map, uint16_t x, uint16_t y, uint8_t z) {
+	const auto &cachedTile = getTileFromCache(x, y, z);
 	if (!cachedTile)
 		return false;
 
@@ -129,12 +129,12 @@ bool MapCache::tryCreateTile(Map* map, uint16_t x, uint16_t y, uint8_t z) {
 	map->setTile(pos, tile);
 
 	// Remove Tile from cache
-	setTile(x, y, z, nullptr);
+	setBasicTile(x, y, z, nullptr);
 
 	return true;
 }
 
-BasicTilePtr MapCache::getTile(uint16_t x, uint16_t y, uint8_t z) {
+BasicTilePtr MapCache::getTileFromCache(uint16_t x, uint16_t y, uint8_t z) {
 	if (z >= MAP_MAX_LAYERS)
 		return nullptr;
 
@@ -146,21 +146,20 @@ BasicTilePtr MapCache::getTile(uint16_t x, uint16_t y, uint8_t z) {
 	if (!floor)
 		return nullptr;
 
-	return floor->tiles[x & FLOOR_MASK][y & FLOOR_MASK];
+	return floor->getTileCache(x, y);
 }
 
-void MapCache::setTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePtr &newTile) {
+void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePtr &newTile) {
 	if (z >= MAP_MAX_LAYERS) {
 		SPDLOG_ERROR("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;
 	}
 
-	const auto &floor = root.getBestLeaf(x, y, 15)->createFloor(z);
-	floor->tiles[x & FLOOR_MASK][y & FLOOR_MASK] = getTileFromCache(newTile);
+	root.getBestLeaf(x, y, 15)->createFloor(z)->setTileCache(x, y, static_getTileFromCache(newTile));
 }
 
 BasicItemPtr MapCache::tryReplaceItemFromCache(const BasicItemPtr &ref) {
-	return getItemFromCache(ref);
+	return static_getItemFromCache(ref);
 }
 
 void BasicTile::hash(size_t &h) const {
@@ -226,7 +225,7 @@ bool BasicItem::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, 
 			continue;
 		}
 
-		items.emplace_back(getItemFromCache(item));
+		items.emplace_back(static_getItemFromCache(item));
 	}
 
 	return true;

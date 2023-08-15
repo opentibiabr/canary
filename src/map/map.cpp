@@ -20,15 +20,14 @@
 bool Map::load(const std::string &identifier, const Position &pos, bool unload) {
 	try {
 		IOMap loader;
-		if (!loader.loadMap(this, identifier, pos, unload)) {
-			g_logger().error("[Map::load] - {}", loader.getLastErrorString());
-			return false;
-		}
-	} catch (const std::exception) {
+		loader.loadMap(this, identifier, pos, unload);
+		return true;
+	} catch (const IOMapException &e) {
+		g_logger().error("[Map::load] - {}", e.what());
+	} catch (const std::exception &) {
 		g_logger().error("[Map::load] - The map in folder {} is missing or corrupted", identifier);
-		return false;
 	}
-	return true;
+	return false;
 }
 
 bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool loadHouses /*= false*/, bool loadMonsters /*= false*/, bool loadNpcs /*= false*/, const Position &pos /*= Position()*/, bool unload /*= false*/) {
@@ -155,15 +154,15 @@ Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 
 	const auto leaf = getQTNode(x, y);
 	if (!leaf)
-		return cache.tryCreateTile(this, x, y, z) ? getTile(x, y, z) : nullptr;
+		return tryCreateTileFromCache(this, x, y, z) ? getTile(x, y, z) : nullptr;
 
 	const auto &floor = leaf->getFloor(z);
 	if (!floor)
-		return cache.tryCreateTile(this, x, y, z) ? getTile(x, y, z) : nullptr;
+		return tryCreateTileFromCache(this, x, y, z) ? getTile(x, y, z) : nullptr;
 
-	const auto &tile = floor->tiles[x & FLOOR_MASK][y & FLOOR_MASK];
+	const auto &tile = floor->getTile(x, y);
 	if (!tile)
-		return cache.tryCreateTile(this, x, y, z) ? getTile(x, y, z) : nullptr;
+		return tryCreateTileFromCache(this, x, y, z) ? getTile(x, y, z) : nullptr;
 
 	return tile;
 }
@@ -174,8 +173,7 @@ void Map::setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile) {
 		return;
 	}
 
-	const auto &floor = root.getBestLeaf(x, y, 15)->createFloor(z);
-	floor->tiles[x & FLOOR_MASK][y & FLOOR_MASK] = newTile;
+	root.getBestLeaf(x, y, 15)->createFloor(z)->setTile(x, y, newTile);
 }
 
 bool Map::placeCreature(const Position &centerPos, Creature* creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {
@@ -1102,6 +1100,6 @@ uint32_t Map::clean() const {
 		g_game().setGameState(GAME_STATE_NORMAL);
 	}
 
-	g_logger().info("CLEAN: Removed {} item{} from {} tile{} in {} seconds", count, (count != 1 ? "s" : ""), tiles, (tiles != 1 ? "s" : ""), (OTSYS_TIME() - start) / (1000.));
+	g_logger().info("CLEAN: Removed {} item{} from {} tile{} in {} seconds", count, (count != 1 ? "s" : ""), tiles, (tiles != 1 ? "s" : ""), (OTSYS_TIME() - start) / (1000.f));
 	return count;
 }

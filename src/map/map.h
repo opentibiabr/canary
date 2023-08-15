@@ -32,17 +32,8 @@ class FrozenPathingConditionCall;
  * Map class.
  * Holds all the actual map-data
  */
-class Map {
+class Map : protected MapCache {
 	public:
-		struct Floor {
-				~Floor() {
-					for (auto &row : tiles)
-						for (auto tile : row)
-							delete tile;
-				}
-				Tile* tiles[FLOOR_SIZE][FLOOR_SIZE] = {};
-		};
-
 		uint32_t clean() const;
 
 		/**
@@ -157,9 +148,6 @@ class Map {
 	private:
 		SpectatorCache spectatorCache;
 		SpectatorCache playersSpectatorCache;
-
-		QTreeNode<Floor> root;
-		MapCache cache;
 
 		std::string monsterfile;
 		std::string housefile;

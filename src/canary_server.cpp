@@ -20,6 +20,7 @@
 #include "game/scheduling/scheduler.h"
 #include "game/scheduling/events_scheduler.hpp"
 #include "io/iomarket.h"
+#include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.h"
 #include "lua/modules/modules.h"
 #include "lua/scripts/lua_environment.hpp"
@@ -37,11 +38,13 @@
 CanaryServer::CanaryServer(
 	Logger &logger,
 	RSA &rsa,
-	ServiceManager &serviceManager
+	ServiceManager &serviceManager,
+	ThreadPool &threadPool
 ) :
 	logger(logger),
 	rsa(rsa),
 	serviceManager(serviceManager),
+	threadPool(threadPool),
 	g_loaderUniqueLock(g_loaderLock) {
 	logInfos();
 	toggleForceCloseButton();
@@ -55,9 +58,6 @@ CanaryServer::CanaryServer(
 }
 
 int CanaryServer::run() {
-	g_dispatcher().start();
-	g_scheduler().start();
-
 	g_dispatcher().addTask([this] {
 		loadConfigLua();
 
@@ -104,7 +104,6 @@ int CanaryServer::run() {
 
 	if (!serviceManager.is_running()) {
 		logger.error("No services running. The server is NOT online!");
-		shutdown();
 		exit(-1);
 	}
 
@@ -112,7 +111,6 @@ int CanaryServer::run() {
 
 	serviceManager.run();
 
-	shutdown();
 	return 0;
 }
 
@@ -216,7 +214,6 @@ void CanaryServer::badAllocationHandler() {
 		getchar();
 	}
 
-	shutdown();
 	exit(-1);
 }
 
@@ -292,7 +289,6 @@ void CanaryServer::initializeDatabase() {
 		startupErrorMessage();
 	}
 
-	g_databaseTasks().start();
 	DatabaseManager::updateDatabase();
 
 	if (g_configManager().getBoolean(OPTIMIZE_DATABASE)
@@ -368,12 +364,5 @@ void CanaryServer::startupErrorMessage() {
 
 	g_loaderSignal.notify_all();
 
-	shutdown();
 	exit(-1);
-}
-
-void CanaryServer::shutdown() {
-	g_scheduler().shutdown();
-	g_databaseTasks().shutdown();
-	g_dispatcher().shutdown();
 }

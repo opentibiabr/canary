@@ -13,19 +13,22 @@
 class Logger;
 class RSA;
 class ServiceManager;
+class ThreadPool;
 
 class CanaryServer {
 	public:
 		explicit CanaryServer(
 			Logger &logger,
 			RSA &rsa,
-			ServiceManager &serviceManager
+			ServiceManager &serviceManager,
+			ThreadPool &threadPool
 		);
 
 		int run();
 
 	private:
 		ServiceManager &serviceManager;
+		ThreadPool &threadPool;
 		Logger &logger;
 		RSA &rsa;
 
@@ -39,8 +42,6 @@ class CanaryServer {
 		static void toggleForceCloseButton();
 
 		static void badAllocationHandler();
-
-		static void shutdown();
 
 		static std::string getCompiler();
 

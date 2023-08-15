@@ -9,10 +9,12 @@
 
 #include "pch.hpp"
 
+#include "lib/thread/thread_pool.hpp"
 #include "database/databasetasks.h"
 #include "game/scheduling/dispatcher.hpp"
 
-DatabaseTasks::DatabaseTasks() {
+DatabaseTasks::DatabaseTasks(ThreadPool &threadPool) :
+	threadPool(threadPool) {
 	db_ = &Database::getInstance();
 }
 
@@ -21,7 +23,7 @@ DatabaseTasks &DatabaseTasks::getInstance() {
 }
 
 void DatabaseTasks::addTask(std::string query, std::function<void(DBResult_ptr, bool)> callback /* = nullptr*/, bool store /* = false*/) {
-	addLoad([this, query, callback, store]() {
+	threadPool.addLoad([this, query, callback, store]() {
 		if (db_ == nullptr) {
 			return;
 		}

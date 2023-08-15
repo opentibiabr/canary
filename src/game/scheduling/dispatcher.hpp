@@ -10,20 +10,19 @@
 #ifndef SRC_GAME_DISPATCHER_H_
 #define SRC_GAME_DISPATCHER_H_
 
-#include "utils/thread_holder_base.h"
-
 const int DISPATCHER_TASK_EXPIRATION = 2000;
 
 class Task;
+class ThreadPool;
 
 /**
  * Dispatcher allow you to dispatch a task async to be executed
  * in the dispatching thread. You can dispatch with an expiration
  * time, after which the task will be ignored.
  */
-class Dispatcher : public ThreadHolder<Dispatcher> {
+class Dispatcher {
 	public:
-		Dispatcher() = default;
+		Dispatcher(ThreadPool &threadPool);
 
 		// Ensures that we don't accidentally copy it
 		Dispatcher(const Dispatcher &) = delete;
@@ -39,6 +38,7 @@ class Dispatcher : public ThreadHolder<Dispatcher> {
 		}
 
 	private:
+		ThreadPool &threadPool;
 		uint64_t dispatcherCycle = 0;
 };
 

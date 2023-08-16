@@ -153,7 +153,7 @@ enum {
 };
 
 uint16_t RSA::decodeLength(char*&pos) const {
-	std::string buffer;
+	uint8_t buffer[4] = { 0 };
 	auto length = static_cast<uint16_t>(static_cast<uint8_t>(*pos++));
 	if (length & 0x80) {
 		length &= 0x7F;
@@ -161,7 +161,6 @@ uint16_t RSA::decodeLength(char*&pos) const {
 			g_logger().error("[RSA::loadPEM] - Invalid 'length'");
 			return 0;
 		}
-		buffer[0] = buffer[1] = buffer[2] = buffer[3] = 0;
 		switch (length) {
 			case 4:
 				buffer[3] = static_cast<uint8_t>(*pos++);
@@ -174,7 +173,7 @@ uint16_t RSA::decodeLength(char*&pos) const {
 			default:
 				break;
 		}
-		std::memcpy(&length, buffer.data(), sizeof(length));
+		std::memcpy(&length, buffer, sizeof(length));
 	}
 	return length;
 }

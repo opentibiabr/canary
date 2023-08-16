@@ -289,7 +289,6 @@ void CanaryServer::initializeDatabase() {
 		startupErrorMessage();
 	}
 
-	g_databaseTasks().start();
 	DatabaseManager::updateDatabase();
 
 	if (g_configManager().getBoolean(OPTIMIZE_DATABASE)
@@ -370,8 +369,7 @@ void CanaryServer::startupErrorMessage() {
 }
 
 void CanaryServer::shutdown() {
-	g_databaseTasks().shutdown();
-	g_scheduler().shutdown();
 	g_dispatcher().shutdown();
+	g_scheduler().shutdown();
 	inject<ThreadPool>().shutdown();
 }

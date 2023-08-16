@@ -1,6 +1,6 @@
 local storagesTable = {
-    {storage = Storage.Quest.U12_30.FeasterOfSouls.FearFeasterKilled, bossName = "The Fear Feaster"},
-    {storage = Storage.Quest.U12_30.FeasterOfSouls.DreadMaidenKilled, bossName = "The Dread Maiden"},
+	{storage = Storage.Quest.U12_30.FeasterOfSouls.FearFeasterKilled, bossName = "The Fear Feaster"},
+	{storage = Storage.Quest.U12_30.FeasterOfSouls.DreadMaidenKilled, bossName = "The Dread Maiden"},
 	{storage = Storage.Quest.U12_30.FeasterOfSouls.UnwelcomeKilled, bossName = "The Unwelcome"},
 }
 

@@ -395,6 +395,9 @@ rateBossHealth = 1.0
 rateBossAttack = 1.0
 rateBossDefense = 1.0
 
+bossDefaultTimeToFightAgain = 20 * 60 * 60 -- 20 hours
+bossDefaultTimeToDefeat = 20 * 60 -- 20 minutes
+
 -- Monsters
 deSpawnRange = 2
 deSpawnRadius = 50

@@ -10,7 +10,6 @@
 #include "pch.hpp"
 
 #include "game/game.h"
-#include "game/scheduling/scheduler.h"
 #include "game/scheduling/dispatcher.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.h"
@@ -69,7 +68,6 @@ void Signals::dispatchSignalHandler(int signal) {
 		case SIGBREAK: // Shuts the server down
 			g_dispatcher().addTask(sigbreakHandler);
 			// hold the thread until other threads end
-			g_scheduler().shutdown();
 			inject<ThreadPool>().shutdown();
 			break;
 #endif

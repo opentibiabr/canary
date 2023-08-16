@@ -67,6 +67,30 @@ registerMonsterType.Bestiary = function(mtype, mask)
 		end
 	end
 end
+registerMonsterType.bosstiary = function(mtype, mask)
+	local bossClass = nil
+	if mask.bosstiary then
+		if mask.bosstiary.bossRaceId then
+			mtype:bossRaceId(mask.bosstiary.bossRaceId)
+		end
+		if mask.bosstiary.bossRace then
+			if mask.bosstiary.bossRace == RARITY_BANE then
+				bossClass = "Bane"
+			elseif mask.bosstiary.bossRace == RARITY_ARCHFOE then
+				bossClass = "Archfoe"
+			elseif mask.bosstiary.bossRace == RARITY_NEMESIS then
+				bossClass = "Nemesis"
+			end
+			if bossClass ~= nil then
+				mtype:bossRace(mask.bosstiary.bossRace, bossClass)
+			end
+			local storage = mask.bosstiary.storageCooldown
+			if storage ~= nil then
+				mtype:bossStorageCooldown(storage)
+			end
+		end
+	end
+end
 registerMonsterType.skull = function(mtype, mask)
 	if mask.skull then
 		mtype:skull(mask.skull)
@@ -502,23 +526,6 @@ registerMonsterType.defenses = function(mtype, mask)
 			if type(defense) == "table" then
 				mtype:addDefense(readSpell(defense, mtype))
 			end
-		end
-	end
-end
-
-registerMonsterType.hazard = function(mtype, mask)
-	if mask.hazard ~= nil then
-		if mask.hazard.criticalChance ~= nil then
-			mtype:hazardSystemCrit(mask.hazard.criticalChance)
-		end
-		if mask.hazard.canDodge ~= nil then
-			mtype:hazardSystemDodge(mask.hazard.canDodge)
-		end
-		if mask.hazard.canSpawnPod ~= nil then
-			mtype:hazardSystemSpawnPod(mask.hazard.canSpawnPod)
-		end
-		if mask.hazard.canDealMoreDamage ~= nil then
-			mtype:hazardSystemDamageBoost(mask.hazard.canDealMoreDamage)
 		end
 	end
 end

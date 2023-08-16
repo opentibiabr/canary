@@ -3,8 +3,8 @@ local config = {
 		name = "Mazoran",
 		position = Position(33584, 32689, 14)
 	},
-	timeToFightAgain = 20 * 60 * 60,
-	timeToDefeatBoss = 30 * 60,
+
+	timeToDefeat = 30 * 60,
 	playerPositions = {
 		{ pos = Position(33593, 32644, 14), teleport = Position(33585, 32693, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33593, 32645, 14), teleport = Position(33585, 32693, 14), effect = CONST_ME_TELEPORT },
@@ -20,10 +20,6 @@ local config = {
 	storage = Storage.FerumbrasAscension.MazoranTimer
 }
 
-local ferumbrasAscendantMazoranLever = Action()
-function ferumbrasAscendantMazoranLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	return CreateDefaultLeverBoss(player, config)
-end
-
-ferumbrasAscendantMazoranLever:uid(1025)
-ferumbrasAscendantMazoranLever:register()
+local lever = BossLever(config)
+lever:uid(1025)
+lever:register()

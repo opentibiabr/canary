@@ -4,8 +4,7 @@ local config = {
 		position = Position(33456, 31434, 13)
 	},
 	requiredLevel = 250,
-	timeToFightAgain = 20 * 60 * 60,
-	timeToDefeatBoss = 20 * 60,
+
 	playerPositions = {
 		{pos = Position(33455, 31413, 13), teleport = Position(33454, 31445, 13), effect = CONST_ME_TELEPORT},
 		{pos = Position(33456, 31413, 13), teleport = Position(33454, 31445, 13), effect = CONST_ME_TELEPORT},
@@ -21,10 +20,6 @@ local config = {
 	storage = Storage.Quest.U12_20.GraveDanger.Bosses.CountVlarkorthTimer
 }
 
-local countVlarkorthLever = Action()
-function countVlarkorthLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	return CreateDefaultLeverBoss(player, config)
-end
-
-countVlarkorthLever:position({x = 33454, y = 31413, z = 13})
-countVlarkorthLever:register()
+local lever = BossLever(config)
+lever:position({x = 33454, y = 31413, z = 13})
+lever:register()

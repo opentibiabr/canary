@@ -10,4 +10,4 @@ function thePrimalMenaceDeath.onDeath(creature, corpse, killer, mostDamage, unju
 	end
 end
 
-thePrimalMenaceDeath.register()
+thePrimalMenaceDeath:register()

@@ -10,4 +10,4 @@ function magmaBubbleDeath.onDeath(creature, corpse, killer, mostDamage, unjustif
 	end
 end
 
-magmaBubbleDeath.register()
+magmaBubbleDeath:register()

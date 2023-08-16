@@ -11,11 +11,11 @@
 #define SRC_DATABASE_DATABASETASKS_H_
 
 #include "database/database.h"
-#include "utils/thread_holder_base.h"
+#include "lib/thread/thread_pool.hpp"
 
-class DatabaseTasks : public ThreadHolder<DatabaseTasks> {
+class DatabaseTasks {
 	public:
-		DatabaseTasks();
+		explicit DatabaseTasks(ThreadPool &threadPool);
 
 		// Ensures that we don't accidentally copy it
 		DatabaseTasks(const DatabaseTasks &) = delete;
@@ -27,6 +27,8 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks> {
 
 	private:
 		Database* db_;
+		ThreadPool &threadPool;
+		std::mutex threadSafetyMutex;
 };
 
 constexpr auto g_databaseTasks = DatabaseTasks::getInstance;

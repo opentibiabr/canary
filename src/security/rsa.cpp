@@ -153,7 +153,7 @@ enum {
 };
 
 uint16_t RSA::decodeLength(char*&pos) const {
-	uint8_t buffer[4] = { 0 }; // Inicialize buffer como um array de 4 bytes
+	uint8_t buffer[4] = { 0 };
 	auto length = static_cast<uint16_t>(static_cast<uint8_t>(*pos++));
 	if (length & 0x80) {
 		length &= 0x7F;

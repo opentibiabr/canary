@@ -18,6 +18,7 @@
 #include "lua/creature/raids.h"
 #include "lua/scripts/lua_environment.hpp"
 #include "server/signals.h"
+#include "lib/thread/thread_pool.hpp"
 
 Signals::Signals(asio::io_service &service) :
 	set(service) {

@@ -11,6 +11,7 @@
 
 #include "creatures/creature.h"
 #include "declarations.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "game/scheduling/scheduler.h"

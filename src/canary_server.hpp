@@ -10,10 +10,11 @@
 #ifndef SRC_CANARY_SERVER_HPP_
 #define SRC_CANARY_SERVER_HPP_
 
+#include "server/server.h"
+#include "security/rsa.h"
+#include "lib/thread/thread_pool.hpp"
+
 class Logger;
-class RSA;
-class ServiceManager;
-class ThreadPool;
 
 class CanaryServer {
 	public:

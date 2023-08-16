@@ -7,8 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "canary_server.hpp"
+
 #include "pch.hpp"
+
+#include "canary_server.hpp"
 
 #include "declarations.hpp"
 #include "creatures/players/grouping/familiars.h"

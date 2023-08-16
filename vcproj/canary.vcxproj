@@ -182,6 +182,7 @@
     <ClInclude Include="..\src\map\map.h" />
     <ClInclude Include="..\src\map\map_definitions.hpp" />
     <ClInclude Include="..\src\map\town.h" />
+    <ClInclude Include="..\src\canary_server.hpp" />
     <ClInclude Include="..\src\protobuf\appearances.pb.h" />
     <ClInclude Include="..\src\security\rsa.h" />
     <ClInclude Include="..\src\server\network\connection\connection.h" />

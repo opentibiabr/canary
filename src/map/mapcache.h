@@ -95,7 +95,7 @@ class MapCache {
 
 	protected:
 		struct Floor {
-				Floor(uint8_t z) :
+				explicit Floor(uint8_t z) :
 					z(z) {};
 
 				Tile* getTile(uint16_t x, uint16_t y) const {

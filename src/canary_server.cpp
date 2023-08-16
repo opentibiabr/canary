@@ -21,6 +21,7 @@
 #include "game/scheduling/scheduler.h"
 #include "game/scheduling/events_scheduler.hpp"
 #include "io/iomarket.h"
+#include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.h"
 #include "lua/modules/modules.h"
 #include "lua/scripts/lua_environment.hpp"
@@ -372,7 +373,8 @@ void CanaryServer::startupErrorMessage() {
 }
 
 void CanaryServer::shutdown() {
-	g_scheduler().shutdown();
 	g_databaseTasks().shutdown();
+	g_scheduler().shutdown();
 	g_dispatcher().shutdown();
+	inject<ThreadPool>().shutdown();
 }

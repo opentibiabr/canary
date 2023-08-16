@@ -26,9 +26,9 @@ class CanaryServer {
 		int run();
 
 	private:
-		ServiceManager &serviceManager;
-		Logger &logger;
 		RSA &rsa;
+		Logger &logger;
+		ServiceManager &serviceManager;
 
 		std::mutex g_loaderLock;
 		std::condition_variable g_loaderSignal;

@@ -14,6 +14,7 @@
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 #include "game/scheduling/dispatcher.hpp"
+#include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.h"
 #include "lua/creature/raids.h"
 #include "lua/scripts/lua_environment.hpp"
@@ -74,6 +75,7 @@ void Signals::dispatchSignalHandler(int signal) {
 			g_scheduler().shutdown();
 			g_databaseTasks().shutdown();
 			g_dispatcher().shutdown();
+			inject<ThreadPool>().shutdown();
 			break;
 #endif
 		default:

@@ -3753,7 +3753,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 	// Outfit description
 	playerDescriptionSize++;
 	msg.addString("Outfit");
-	if (const auto& outfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), player->getDefaultOutfit().lookType)) {
+	if (const auto &outfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), player->getDefaultOutfit().lookType)) {
 		msg.addString(outfit->name);
 	} else {
 		msg.addString("unknown");

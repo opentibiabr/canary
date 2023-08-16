@@ -20,7 +20,8 @@ template <typename T>
 class QTreeNode {
 	public:
 		constexpr QTreeNode() = default;
-		~QTreeNode() {
+
+		virtual ~QTreeNode() {
 			for (auto* ptr : child) {
 				delete ptr;
 			}

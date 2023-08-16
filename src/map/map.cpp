@@ -51,7 +51,7 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 	}
 
 	// Load the map
-	this->load(identifier, pos, unload);
+	load(identifier, pos, unload);
 
 	// Only create items from lua functions if is loading main map
 	// It needs to be after the load map to ensure the map already exists before creating the items
@@ -91,9 +91,9 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 
 	// Files need to be cleaned up if custom map is enabled to open, or will try to load main map files
 	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
-		this->monsterfile.clear();
-		this->housefile.clear();
-		this->npcfile.clear();
+		monsterfile.clear();
+		housefile.clear();
+		npcfile.clear();
 	}
 	return true;
 }
@@ -101,8 +101,8 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 bool Map::loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, int customMapIndex) {
 	// Load the map
 	std::string path = g_configManager().getString(DATA_DIRECTORY) + "/world/custom/" + mapName + ".otbm";
-	this->load(path, Position(0, 0, 0), true);
-	this->load(path);
+	load(path, Position(0, 0, 0), true);
+	load(path);
 
 	if (loadMonsters) {
 		if (!IOMap::loadMonstersCustom(this, mapName, customMapIndex)) {
@@ -123,9 +123,9 @@ bool Map::loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMo
 	}
 
 	// Files need to be cleaned up or will try to load previous map files again
-	this->monsterfile.clear();
-	this->housefile.clear();
-	this->npcfile.clear();
+	monsterfile.clear();
+	housefile.clear();
+	npcfile.clear();
 	return true;
 }
 
@@ -1076,7 +1076,7 @@ int_fast32_t AStarNodes::getTileWalkCost(const Creature &creature, const Tile* t
 	return cost;
 }
 
-uint32_t Map::clean() const {
+uint32_t Map::clean() {
 	uint64_t start = OTSYS_TIME();
 	size_t tiles = 0;
 

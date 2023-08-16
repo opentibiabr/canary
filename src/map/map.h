@@ -34,7 +34,7 @@ class FrozenPathingConditionCall;
  */
 class Map : protected MapCache {
 	public:
-		uint32_t clean() const;
+		static uint32_t clean();
 
 		/**
 		 * Load a map.

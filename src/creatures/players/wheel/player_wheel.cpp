@@ -2287,6 +2287,50 @@ bool PlayerWheel::getInstant(WheelInstant_t type) const {
 	return false;
 }
 
+uint8_t PlayerWheel::getStage(const std::string name) const {
+	if (name == "Battle Instinct") {
+		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_INSTINCT);
+	} else if (name == "Battle Healing") {
+		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_HEALING);
+	} else if (name == "Positional Tatics") {
+		return PlayerWheel::getInstant(WheelInstant_t::POSITIONAL_TATICS);
+	} else if (name == "Ballistic Mastery") {
+		return PlayerWheel::getInstant(WheelInstant_t::BALLISTIC_MASTERY);
+	} else if (name == "Healing Link") {
+		return PlayerWheel::getInstant(WheelInstant_t::HEALING_LINK);
+	} else if (name == "Runic Mastery") {
+		return PlayerWheel::getInstant(WheelInstant_t::RUNIC_MASTERY);
+	} else if (name == "Focus Mastery") {
+		return PlayerWheel::getInstant(WheelInstant_t::FOCUS_MASTERY);
+	} else if (name == "Beam Mastery") {
+		return PlayerWheel::getStage(WheelStage_t::BEAM_MASTERY);
+	} else if (name == "Combat Mastery") {
+		return PlayerWheel::getStage(WheelStage_t::COMBAT_MASTERY);
+	} else if (name == "Gift of Life") {
+		return PlayerWheel::getStage(WheelStage_t::GIFT_OF_LIFE);
+	} else if (name == "Blessing of the Grove") {
+		return PlayerWheel::getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
+	} else if (name == "Drain Body") {
+		return PlayerWheel::getStage(WheelStage_t::DRAIN_BODY);
+	} else if (name == "Divine Empowerment") {
+		return PlayerWheel::getStage(WheelStage_t::DIVINE_EMPOWERMENT);
+	} else if (name == "Twin Burst") {
+		return PlayerWheel::getStage(WheelStage_t::TWIN_BURST);
+	} else if (name == "Executioner's Thow") {
+		return PlayerWheel::getStage(WheelStage_t::EXECUTIONERS_THROW);
+	} else if (name == "Avatar of Light") {
+		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_LIGHT);
+	} else if (name == "Avatar of Nature") {
+		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_NATURE);
+	} else if (name == "Avatar of Steel") {
+		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STEEL);
+	} else if (name == "Avatar of Storm") {
+		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STORM);
+	}
+
+	return false;
+}
+
 uint8_t PlayerWheel::getStage(WheelStage_t type) const {
 	auto enumValue = static_cast<uint8_t>(type);
 	try {

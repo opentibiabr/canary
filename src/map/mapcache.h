@@ -89,15 +89,16 @@ class MapCache {
 	public:
 		void setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePtr &BasicTile);
 
-		bool tryCreateTileFromCache(uint16_t x, uint16_t y, uint8_t z);
-
 		BasicItemPtr tryReplaceItemFromCache(const BasicItemPtr &ref);
 
 		void flush();
 
 	protected:
 		struct Floor {
-				Tile* getTile(uint16_t x, uint16_t y) {
+				Floor(uint8_t z) :
+					z(z) {};
+
+				Tile* getTile(uint16_t x, uint16_t y) const {
 					return tiles[x & FLOOR_MASK][y & FLOOR_MASK].first.get();
 				}
 
@@ -105,7 +106,7 @@ class MapCache {
 					tiles[x & FLOOR_MASK][y & FLOOR_MASK].first.reset(tile);
 				}
 
-				BasicTilePtr getTileCache(uint16_t x, uint16_t y) {
+				BasicTilePtr getTileCache(uint16_t x, uint16_t y) const {
 					return tiles[x & FLOOR_MASK][y & FLOOR_MASK].second;
 				}
 
@@ -113,13 +114,20 @@ class MapCache {
 					tiles[x & FLOOR_MASK][y & FLOOR_MASK].second = newTile;
 				}
 
+				uint8_t getZ() const {
+					return z;
+				}
+
 			private:
 				std::pair<TilePtr, BasicTilePtr> tiles[FLOOR_SIZE][FLOOR_SIZE] = {};
+				uint8_t z { 0 };
 		};
+
+		Tile* getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y);
+
 		QTreeNode<Floor> root;
 
 	private:
-		BasicTilePtr getTileFromCache(uint16_t x, uint16_t i, uint8_t z);
 		void parseItemAttr(const BasicItemPtr &BasicItem, Item* item);
 		Item* createItem(const BasicItemPtr &BasicItem, Position position);
 };

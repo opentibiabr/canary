@@ -167,17 +167,14 @@ Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 
 	const auto leaf = getQTNode(x, y);
 	if (!leaf)
-		return tryCreateTileFromCache(x, y, z) ? getTile(x, y, z) : nullptr;
+		return nullptr;
 
 	const auto &floor = leaf->getFloor(z);
 	if (!floor)
-		return tryCreateTileFromCache(x, y, z) ? getTile(x, y, z) : nullptr;
+		return nullptr;
 
-	const auto &tile = floor->getTile(x, y);
-	if (!tile)
-		return tryCreateTileFromCache(x, y, z) ? getTile(x, y, z) : nullptr;
-
-	return tile;
+	const auto tile = floor->getTile(x, y);
+	return tile ? tile : getOrCreateTileFromCache(floor, x, y);
 }
 
 void Map::setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile) {

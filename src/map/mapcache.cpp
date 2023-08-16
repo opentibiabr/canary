@@ -101,10 +101,12 @@ Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
 	return item;
 }
 
-bool MapCache::tryCreateTileFromCache(uint16_t x, uint16_t y, uint8_t z) {
-	const auto &cachedTile = getTileFromCache(x, y, z);
+Tile* MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y) {
+	const auto &cachedTile = floor->getTileCache(x, y);
 	if (!cachedTile)
-		return false;
+		return floor->getTile(x, y);
+
+	const uint8_t z = floor->getZ();
 
 	auto map = static_cast<Map*>(this);
 
@@ -128,27 +130,12 @@ bool MapCache::tryCreateTileFromCache(uint16_t x, uint16_t y, uint8_t z) {
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
 
-	map->setTile(pos, tile);
+	floor->setTile(x, y, tile);
 
 	// Remove Tile from cache
-	setBasicTile(x, y, z, nullptr);
+	floor->setTileCache(x, y, nullptr);
 
-	return true;
-}
-
-BasicTilePtr MapCache::getTileFromCache(uint16_t x, uint16_t y, uint8_t z) {
-	if (z >= MAP_MAX_LAYERS)
-		return nullptr;
-
-	const auto leaf = QTreeNode<Floor>::getLeafStatic<const QTreeLeafNode<Floor>*, const QTreeNode<Floor>*>(&root, x, y);
-	if (!leaf)
-		return nullptr;
-
-	const auto &floor = leaf->getFloor(z);
-	if (!floor)
-		return nullptr;
-
-	return floor->getTileCache(x, y);
+	return tile;
 }
 
 void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePtr &newTile) {

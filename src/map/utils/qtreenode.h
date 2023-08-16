@@ -62,7 +62,7 @@ class QTreeLeafNode final : public QTreeNode<T> {
 		QTreeLeafNode &operator=(const QTreeLeafNode &) = delete;
 
 		const std::unique_ptr<T> &createFloor(uint32_t z) {
-			return array[z] ? array[z] : (array[z] = std::make_unique<T>());
+			return array[z] ? array[z] : (array[z] = std::make_unique<T>(z));
 		}
 
 		const std::unique_ptr<T> &getFloor(uint8_t z) const {

@@ -639,8 +639,8 @@ CombatDamage Combat::applyImbuementElementalDamage(Player* attackerPlayer, Item*
 		float damagePercent = imbuementInfo.imbuement->elementDamage / 100.0;
 
 		damage.secondary.type = imbuementInfo.imbuement->combatType;
-		damage.primary.value = damage.primary.value * (1 - damagePercent);
 		damage.secondary.value = damage.primary.value * (damagePercent);
+		damage.primary.value = damage.primary.value * (1 - damagePercent);
 
 		if (imbuementInfo.imbuement->soundEffect != SoundEffect_t::SILENCE) {
 			g_game().sendSingleSoundEffect(item->getPosition(), imbuementInfo.imbuement->soundEffect, item->getHoldingPlayer());
@@ -679,7 +679,7 @@ bool Combat::checkFearConditionAffected(Player* player) {
 	Party* party = player->getParty();
 	if (party) {
 		auto affectedCount = (party->getMemberCount() + 5) / 5;
-		SPDLOG_DEBUG("[{}] Player is member of a party, {} members can be feared", __FUNCTION__, affectedCount);
+		g_logger().debug("[{}] Player is member of a party, {} members can be feared", __FUNCTION__, affectedCount);
 
 		for (const auto member : party->getMembers()) {
 			if (member->hasCondition(CONDITION_FEARED)) {
@@ -937,9 +937,7 @@ bool Combat::doCombatChain(Creature* caster, Creature* target, bool aggressive) 
 		if (currentTarget == caster) {
 			continue;
 		}
-		if (isDevMode()) {
-			spdlog::info("Combat: {} -> {}", previousTarget ? previousTarget->getName() : "none", currentTarget ? currentTarget->getName() : "none");
-		}
+		g_logger().debug("Combat: {} -> {}", previousTarget ? previousTarget->getName() : "none", currentTarget ? currentTarget->getName() : "none");
 		auto origin = previousTarget != nullptr ? previousTarget->getPosition() : Position();
 		doChainEffect(origin, currentTarget->getPosition(), params.chainEffect);
 		doCombat(caster, currentTarget, origin);
@@ -1391,9 +1389,7 @@ void Combat::pickChainTargets(Creature* caster, std::vector<Creature*> &targets,
 	auto currentTarget = targets.back();
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, currentTarget->getPosition(), false, false, chainDistance, chainDistance, chainDistance, chainDistance);
-	if (isDevMode()) {
-		spdlog::info("Combat::pickChainTargets: currentTarget: {}, spectators: {}", currentTarget->getName(), spectators.size());
-	}
+	g_logger().debug("Combat::pickChainTargets: currentTarget: {}, spectators: {}", currentTarget->getName(), spectators.size());
 	auto maxBacktrackingAttempts = 10;
 	for (auto attempts = 0; targets.size() <= maxTargets && attempts < maxBacktrackingAttempts; ++attempts) {
 		auto closestDistance = std::numeric_limits<uint16_t>::max();
@@ -1419,9 +1415,7 @@ void Combat::pickChainTargets(Creature* caster, std::vector<Creature*> &targets,
 		}
 
 		if (closestSpectator != nullptr) {
-			if (isDevMode()) {
-				spdlog::info("Combat::pickChainTargets: closestSpectator: {}", closestSpectator->getName());
-			}
+			g_logger().debug("Combat::pickChainTargets: closestSpectator: {}", closestSpectator->getName());
 			targets.push_back(closestSpectator);
 			targetSet.insert(closestSpectator->getID());
 			visited.insert(closestSpectator->getID());
@@ -1459,9 +1453,9 @@ uint32_t ValueCallback::getMagicLevelSkill(const Player* player, const CombatDam
 void ValueCallback::getMinMaxValues(Player* player, CombatDamage &damage, bool useCharges) const {
 	// onGetPlayerMinMaxValues(...)
 	if (!scriptInterface->reserveScriptEnv()) {
-		SPDLOG_ERROR("[ValueCallback::getMinMaxValues - Player {} formula {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 player->getName(), fmt::underlying(type));
+		g_logger().error("[ValueCallback::getMinMaxValues - Player {} formula {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 player->getName(), fmt::underlying(type));
 		return;
 	}
 
@@ -1536,7 +1530,7 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage &damage, bool u
 		}
 
 		default: {
-			SPDLOG_WARN("[ValueCallback::getMinMaxValues] - Unknown callback type");
+			g_logger().warn("[ValueCallback::getMinMaxValues] - Unknown callback type");
 			scriptInterface->resetScriptEnv();
 			return;
 		}
@@ -1578,9 +1572,9 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage &damage, bool u
 void TileCallback::onTileCombat(Creature* creature, Tile* tile) const {
 	// onTileCombat(creature, pos)
 	if (!scriptInterface->reserveScriptEnv()) {
-		SPDLOG_ERROR("[TileCallback::onTileCombat - Creature {} type {} on tile x: {} y: {} z: {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 creature->getName(), fmt::underlying(type), (tile->getPosition()).getX(), (tile->getPosition()).getY(), (tile->getPosition()).getZ());
+		g_logger().error("[TileCallback::onTileCombat - Creature {} type {} on tile x: {} y: {} z: {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 creature->getName(), fmt::underlying(type), (tile->getPosition()).getX(), (tile->getPosition()).getY(), (tile->getPosition()).getZ());
 		return;
 	}
 
@@ -1609,9 +1603,9 @@ void TileCallback::onTileCombat(Creature* creature, Tile* tile) const {
 void TargetCallback::onTargetCombat(Creature* creature, Creature* target) const {
 	// onTargetCombat(creature, target)
 	if (!scriptInterface->reserveScriptEnv()) {
-		SPDLOG_ERROR("[TargetCallback::onTargetCombat - Creature {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 creature->getName());
+		g_logger().error("[TargetCallback::onTargetCombat - Creature {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 creature->getName());
 		return;
 	}
 
@@ -1657,9 +1651,9 @@ void TargetCallback::onTargetCombat(Creature* creature, Creature* target) const 
 void ChainCallback::onChainCombat(Creature* creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking) const {
 	// onChainCombat(creature)
 	if (!scriptInterface->reserveScriptEnv()) {
-		SPDLOG_ERROR("[ChainCallback::onTargetCombat - Creature {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 creature->getName());
+		g_logger().error("[ChainCallback::onTargetCombat - Creature {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 creature->getName());
 		return;
 	}
 
@@ -1699,9 +1693,9 @@ void ChainCallback::onChainCombat(Creature* creature, uint8_t &maxTargets, uint8
 bool ChainPickerCallback::onChainCombat(Creature* creature, Creature* target) const {
 	// onChainCombat(creature, target)
 	if (!scriptInterface->reserveScriptEnv()) {
-		SPDLOG_ERROR("[ChainPickerCallback::onTargetCombat - Creature {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 creature->getName());
+		g_logger().error("[ChainPickerCallback::onTargetCombat - Creature {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 creature->getName());
 		return true;
 	}
 

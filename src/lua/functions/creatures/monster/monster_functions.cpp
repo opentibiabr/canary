@@ -70,7 +70,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		// Unregister creature events (current MonsterType)
 		for (const std::string &scriptName : monster->mType->info.scripts) {
 			if (!monster->unregisterCreatureEvent(scriptName)) {
-				SPDLOG_WARN("[Warning - MonsterFunctions::luaMonsterSetType] Unknown event name: {}", scriptName);
+				g_logger().warn("[Warning - MonsterFunctions::luaMonsterSetType] Unknown event name: {}", scriptName);
 			}
 		}
 		// Assign new MonsterType
@@ -88,7 +88,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		// Register creature events (new MonsterType)
 		for (const std::string &scriptName : mType->info.scripts) {
 			if (!monster->registerCreatureEvent(scriptName)) {
-				SPDLOG_WARN("[Warning - MonsterFunctions::luaMonsterSetType] Unknown event name: {}", scriptName);
+				g_logger().warn("[Warning - MonsterFunctions::luaMonsterSetType] Unknown event name: {}", scriptName);
 			}
 		}
 		// Reload creature on spectators

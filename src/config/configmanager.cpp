@@ -84,10 +84,14 @@ bool ConfigManager::load() {
 	luaL_openlibs(L);
 
 	if (luaL_dofile(L, configFileLua.c_str())) {
-		SPDLOG_ERROR("[ConfigManager::load] - {}", lua_tostring(L, -1));
+		g_logger().error("[ConfigManager::load] - {}", lua_tostring(L, -1));
 		lua_close(L);
 		return false;
 	}
+
+#ifndef DEBUG_LOG
+	g_logger().setLevel(getGlobalString(L, "logLevel", "info"));
+#endif
 
 	// Parse config
 	// Info that must be loaded one time (unless we reset the modules involved)
@@ -198,7 +202,6 @@ bool ConfigManager::load() {
 	string[GLOBAL_SERVER_SAVE_TIME] = getGlobalString(L, "globalServerSaveTime", "06:00");
 	string[DATA_DIRECTORY] = getGlobalString(L, "dataPackDirectory", "data-otservbr-global");
 	string[CORE_DIRECTORY] = getGlobalString(L, "coreDirectory", "data");
-	boolean[DEVELOPMENT_MODE] = getGlobalBoolean(L, "developmentMode", true);
 
 	string[FORGE_FIENDISH_INTERVAL_TYPE] = getGlobalString(L, "forgeFiendishIntervalType", "hour");
 	string[FORGE_FIENDISH_INTERVAL_TIME] = getGlobalString(L, "forgeFiendishIntervalTime", "1");
@@ -292,6 +295,8 @@ bool ConfigManager::load() {
 	floating[RATE_BOSS_HEALTH] = getGlobalFloat(L, "rateBossHealth", 1.0);
 	floating[RATE_BOSS_ATTACK] = getGlobalFloat(L, "rateBossAttack", 1.0);
 	floating[RATE_BOSS_DEFENSE] = getGlobalFloat(L, "rateBossDefense", 1.0);
+	integer[BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN] = getGlobalNumber(L, "bossDefaultTimeToFightAgain", 20 * 60 * 60);
+	integer[BOSS_DEFAULT_TIME_TO_DEFEAT] = getGlobalNumber(L, "bossDefaultTimeToDefeat", 20 * 60);
 
 	floating[RATE_NPC_HEALTH] = getGlobalFloat(L, "rateNpcHealth", 1.0);
 	floating[RATE_NPC_ATTACK] = getGlobalFloat(L, "rateNpcAttack", 1.0);
@@ -391,7 +396,7 @@ static std::string dummyStr;
 
 const std::string &ConfigManager::getString(stringConfig_t what) const {
 	if (what >= LAST_STRING_CONFIG) {
-		SPDLOG_WARN("[ConfigManager::getString] - Accessing invalid index: {}", fmt::underlying(what));
+		g_logger().warn("[ConfigManager::getString] - Accessing invalid index: {}", fmt::underlying(what));
 		return dummyStr;
 	}
 	return string[what];
@@ -399,7 +404,7 @@ const std::string &ConfigManager::getString(stringConfig_t what) const {
 
 int32_t ConfigManager::getNumber(integerConfig_t what) const {
 	if (what >= LAST_INTEGER_CONFIG) {
-		SPDLOG_WARN("[ConfigManager::getNumber] - Accessing invalid index: {}", fmt::underlying(what));
+		g_logger().warn("[ConfigManager::getNumber] - Accessing invalid index: {}", fmt::underlying(what));
 		return 0;
 	}
 	return integer[what];
@@ -407,7 +412,7 @@ int32_t ConfigManager::getNumber(integerConfig_t what) const {
 
 int16_t ConfigManager::getShortNumber(integerConfig_t what) const {
 	if (what >= LAST_INTEGER_CONFIG) {
-		SPDLOG_WARN("[ConfigManager::getShortNumber] - Accessing invalid index: {}", fmt::underlying(what));
+		g_logger().warn("[ConfigManager::getShortNumber] - Accessing invalid index: {}", fmt::underlying(what));
 		return 0;
 	}
 	return integer[what];
@@ -415,7 +420,7 @@ int16_t ConfigManager::getShortNumber(integerConfig_t what) const {
 
 bool ConfigManager::getBoolean(booleanConfig_t what) const {
 	if (what >= LAST_BOOLEAN_CONFIG) {
-		SPDLOG_WARN("[ConfigManager::getBoolean] - Accessing invalid index: {}", fmt::underlying(what));
+		g_logger().warn("[ConfigManager::getBoolean] - Accessing invalid index: {}", fmt::underlying(what));
 		return false;
 	}
 	return boolean[what];
@@ -423,7 +428,7 @@ bool ConfigManager::getBoolean(booleanConfig_t what) const {
 
 float ConfigManager::getFloat(floatingConfig_t what) const {
 	if (what >= LAST_FLOATING_CONFIG) {
-		SPDLOG_WARN("[ConfigManager::getFLoat] - Accessing invalid index: {}", fmt::underlying(what));
+		g_logger().warn("[ConfigManager::getFLoat] - Accessing invalid index: {}", fmt::underlying(what));
 		return 0;
 	}
 	return floating[what];

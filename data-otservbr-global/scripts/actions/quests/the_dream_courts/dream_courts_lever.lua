@@ -9,8 +9,7 @@ local config = {
 		['Sunday'] = 'Alptramun'
 	},
 	requiredLevel = 250,
-	timeToFightAgain = 20, -- In hour
-	timeToDefeatBoss = 20, -- In minutes
+	timeToFightAgain = 10, -- In hour
 	playerPositions = {
 		{pos = Position(32208, 32021, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT},
 		{pos = Position(32208, 32022, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT},
@@ -93,7 +92,7 @@ function dreamCourtsLever.onUse(player, item, fromPosition, target, toPosition, 
 				end
 			end
 			spec:removePlayers(player_remove)
-		end, config.timeToDefeatBoss * 60 * 1000)
+		end, config.timeToDefeat * 60 * 1000)
 	end
 end
 

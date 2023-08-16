@@ -15,15 +15,6 @@ function Monster.setReward(self, enable)
 	return true
 end
 
--- For use of: data\events\scripts\monster.lua
-function Monster:registerRewardBoss(corpse)
-	local mType = self:getType()
-	if mType:isRewardBoss() then
-		corpse:registerReward()
-		return
-	end
-end
-
 function Monster:setRewardBoss()
 	if self:getType():isRewardBoss() then
 		self:setReward(true)

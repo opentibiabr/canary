@@ -4,8 +4,7 @@ local config = {
 		position = Position(33710, 31599, 14)
 	},
 	requiredLevel = 250,
-	timeToFightAgain = 20 * 60 * 60,
-	timeToDefeatBoss = 20 * 60,
+
 	playerPositions = {
 		{pos = Position(33679, 31599, 14), teleport = Position(33710, 31605, 14), effect = CONST_ME_TELEPORT},
 		{pos = Position(33680, 31599, 14), teleport = Position(33710, 31605, 14), effect = CONST_ME_TELEPORT},
@@ -21,10 +20,6 @@ local config = {
 	storage = Storage.Quest.U12_40.SoulWar.GoshnarMaliceTimer
 }
 
-local goshnarsMaliceLever = Action()
-function goshnarsMaliceLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	return CreateDefaultLeverBoss(player, config)
-end
-
-goshnarsMaliceLever:position({x = 33678, y = 31599, z = 14})
-goshnarsMaliceLever:register()
+local lever = BossLever(config)
+lever:position({x = 33678, y = 31599, z = 14})
+lever:register()

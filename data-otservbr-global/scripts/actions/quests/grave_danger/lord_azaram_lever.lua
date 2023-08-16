@@ -4,8 +4,7 @@ local config = {
 		position = Position(33424, 31473, 13)
 	},
 	requiredLevel = 250,
-	timeToFightAgain = 20 * 60 * 60,
-	timeToDefeatBoss = 20 * 60,
+
 	playerPositions = {
 		{pos = Position(33422, 31493, 13), teleport = Position(33423, 31465, 13), effect = CONST_ME_TELEPORT},
 		{pos = Position(33423, 31493, 13), teleport = Position(33423, 31465, 13), effect = CONST_ME_TELEPORT},
@@ -21,10 +20,6 @@ local config = {
 	storage = Storage.Quest.U12_20.GraveDanger.Bosses.LordAzaramTimer
 }
 
-local lordAzaramLever = Action()
-function lordAzaramLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	return CreateDefaultLeverBoss(player, config)
-end
-
-lordAzaramLever:position({x = 33421, y = 31493, z = 13})
-lordAzaramLever:register()
+local lever = BossLever(config)
+lever:position({x = 33421, y = 31493, z = 13})
+lever:register()

@@ -6,9 +6,11 @@ useAnyDatapackFolder = false
 dataPackDirectory = "data-otservbr-global"
 -- Don't change this unless you know what you're doing
 coreDirectory = "data"
--- Enable/disable development mode
--- NOTE: In development mode, additional logs will be enabled, for deputation and testing purposes.
-developmentMode = false
+
+-- Set log level
+-- It can be trace, debug, info, warning, error, critical, off (default: info).
+-- NOTE: Will only display logs with level higher or equal the one set.
+logLevel = debug
 
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
@@ -392,6 +394,9 @@ rateMonsterDefense = 1.0
 rateBossHealth = 1.0
 rateBossAttack = 1.0
 rateBossDefense = 1.0
+
+bossDefaultTimeToFightAgain = 20 * 60 * 60 -- 20 hours
+bossDefaultTimeToDefeat = 20 * 60 -- 20 minutes
 
 -- Monsters
 deSpawnRange = 2

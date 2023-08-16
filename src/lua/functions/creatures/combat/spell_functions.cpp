@@ -17,8 +17,8 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 	// Spell(words, name or id) to get an existing spell
 	// Spell(type) ex: Spell(SPELL_INSTANT) or Spell(SPELL_RUNE) to create a new spell
 	if (lua_gettop(L) == 1) {
-		SPDLOG_ERROR("[SpellFunctions::luaSpellCreate] - "
-					 "There is no parameter set!");
+		g_logger().error("[SpellFunctions::luaSpellCreate] - "
+						 "There is no parameter set!");
 		lua_pushnil(L);
 		return 1;
 	}
@@ -217,17 +217,17 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 				if (group != SPELLGROUP_NONE) {
 					spell->setGroup(group);
 				} else {
-					SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-								"Unknown group: {}",
-								getString(L, 2));
+					g_logger().warn("[SpellFunctions::luaSpellGroup] - "
+									"Unknown group: {}",
+									getString(L, 2));
 					pushBoolean(L, false);
 					return 1;
 				}
 				pushBoolean(L, true);
 			} else {
-				SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-							"Unknown group: {}",
-							getString(L, 2));
+				g_logger().warn("[SpellFunctions::luaSpellGroup] - "
+								"Unknown group: {}",
+								getString(L, 2));
 				pushBoolean(L, false);
 				return 1;
 			}
@@ -243,9 +243,9 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 				if (primaryGroup != SPELLGROUP_NONE) {
 					spell->setGroup(primaryGroup);
 				} else {
-					SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-								"Unknown primaryGroup: {}",
-								getString(L, 2));
+					g_logger().warn("[SpellFunctions::luaSpellGroup] - "
+									"Unknown primaryGroup: {}",
+									getString(L, 2));
 					pushBoolean(L, false);
 					return 1;
 				}
@@ -253,17 +253,17 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 				if (secondaryGroup != SPELLGROUP_NONE) {
 					spell->setSecondaryGroup(secondaryGroup);
 				} else {
-					SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-								"Unknown secondaryGroup: {}",
-								getString(L, 3));
+					g_logger().warn("[SpellFunctions::luaSpellGroup] - "
+									"Unknown secondaryGroup: {}",
+									getString(L, 3));
 					pushBoolean(L, false);
 					return 1;
 				}
 				pushBoolean(L, true);
 			} else {
-				SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-							"Unknown primaryGroup: {} or secondaryGroup: {}",
-							getString(L, 2), getString(L, 3));
+				g_logger().warn("[SpellFunctions::luaSpellGroup] - "
+								"Unknown primaryGroup: {} or secondaryGroup: {}",
+								getString(L, 2), getString(L, 3));
 				pushBoolean(L, false);
 				return 1;
 			}

@@ -261,7 +261,7 @@ void House::handleWrapableItem(ItemList &moveItemList, Item* item, Player* playe
 
 	Item* newItem = g_game().wrapItem(item, houseTile->getHouse());
 	if (newItem->isRemoved() && !newItem->getParent()) {
-		SPDLOG_WARN("[{}] item removed during wrapping - check ground type - player name: {} item id: {} position: {}", __FUNCTION__, player->getName(), item->getID(), houseTile->getPosition().toString());
+		g_logger().warn("[{}] item removed during wrapping - check ground type - player name: {} item id: {} position: {}", __FUNCTION__, player->getName(), item->getID(), houseTile->getPosition().toString());
 		return;
 	}
 
@@ -610,7 +610,7 @@ bool Houses::loadHousesXML(const std::string &filename) {
 
 		House* house = getHouse(houseId);
 		if (!house) {
-			SPDLOG_ERROR("[Houses::loadHousesXML] - Unknown house, id: {}", houseId);
+			g_logger().error("[Houses::loadHousesXML] - Unknown house, id: {}", houseId);
 			return false;
 		}
 
@@ -622,9 +622,9 @@ bool Houses::loadHousesXML(const std::string &filename) {
 			pugi::cast<uint16_t>(houseNode.attribute("entryz").value())
 		);
 		if (entryPos.x == 0 && entryPos.y == 0 && entryPos.z == 0) {
-			SPDLOG_WARN("[Houses::loadHousesXML] - Entry not set for house "
-						"name: {} with id: {}",
-						house->getName(), houseId);
+			g_logger().warn("[Houses::loadHousesXML] - Entry not set for house "
+							"name: {} with id: {}",
+							house->getName(), houseId);
 		}
 		house->setEntryPos(entryPos);
 

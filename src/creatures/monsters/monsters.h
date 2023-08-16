@@ -89,8 +89,9 @@ class MonsterType {
 				uint32_t staticAttackChance = 95;
 				uint32_t maxSummons = 0;
 				uint32_t changeTargetSpeed = 0;
-				std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionImmunities = {};
-				uint32_t damageImmunities = 0;
+
+				std::bitset<ConditionType_t::CONDITION_COUNT> m_conditionImmunities;
+				std::bitset<CombatType_t::COMBAT_COUNT> m_damageImmunities;
 
 				// Bestiary
 				uint8_t bestiaryOccurrence = 0;
@@ -106,7 +107,7 @@ class MonsterType {
 
 				// Bosstiary
 				uint32_t bossStorageCooldown = 0;
-				BosstiaryRarity_t bosstiaryRace;
+				BosstiaryRarity_t bosstiaryRace = BosstiaryRarity_t::BOSS_INVALID;
 				std::string bosstiaryClass;
 
 				float mitigation = 0;

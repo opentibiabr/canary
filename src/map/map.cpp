@@ -422,12 +422,12 @@ void Map::getSpectators(SpectatorHashSet &spectators, const Position &centerPos,
 	bool foundCache = false;
 	bool cacheResult = false;
 
-	minRangeX = (minRangeX == 0 ? -MAP_MAX_CLIENT_VIEW_PORT_X : -minRangeX);
-	maxRangeX = (maxRangeX == 0 ? MAP_MAX_CLIENT_VIEW_PORT_X : maxRangeX);
-	minRangeY = (minRangeY == 0 ? -MAP_MAX_CLIENT_VIEW_PORT_Y : -minRangeY);
-	maxRangeY = (maxRangeY == 0 ? MAP_MAX_CLIENT_VIEW_PORT_Y : maxRangeY);
+	minRangeX = (minRangeX == 0 ? -MAP_MAX_VIEW_PORT_X : -minRangeX);
+	maxRangeX = (maxRangeX == 0 ? MAP_MAX_VIEW_PORT_X : maxRangeX);
+	minRangeY = (minRangeY == 0 ? -MAP_MAX_VIEW_PORT_Y : -minRangeY);
+	maxRangeY = (maxRangeY == 0 ? MAP_MAX_VIEW_PORT_Y : maxRangeY);
 
-	if (minRangeX == -MAP_MAX_CLIENT_VIEW_PORT_X && maxRangeX == MAP_MAX_CLIENT_VIEW_PORT_X && minRangeY == -MAP_MAX_CLIENT_VIEW_PORT_Y && maxRangeY == MAP_MAX_CLIENT_VIEW_PORT_Y && multifloor) {
+	if (minRangeX == -MAP_MAX_VIEW_PORT_X && maxRangeX == MAP_MAX_VIEW_PORT_X && minRangeY == -MAP_MAX_VIEW_PORT_Y && maxRangeY == MAP_MAX_VIEW_PORT_Y && multifloor) {
 		if (onlyPlayers) {
 			auto it = playersSpectatorCache.find(centerPos);
 			if (it != playersSpectatorCache.end()) {

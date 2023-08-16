@@ -5,7 +5,7 @@ function magmaBubbleDeath.onDeath(creature, corpse, killer, mostDamage, unjustif
 	for key, value in pairs(damageMap) do
 		local player = Player(key)
 		if player and player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.MagmaBubbleKilled) < 1 then
-			player:setStorageValue(Storage.Quest.U12_90.PrimalOrdeal.MagmaBubbleKilled, 1) -- Access to The primal menace boss fight
+			player:setStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Bosses.MagmaBubbleKilled, 1) -- Access to The primal menace boss fight
 		end
 	end
 end

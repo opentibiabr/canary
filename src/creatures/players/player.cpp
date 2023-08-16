@@ -244,12 +244,18 @@ Item* Player::getInventoryItem(Slots_t slot) const {
 	return inventory[slot];
 }
 
+bool Player::isSuppress(ConditionType_t conditionType) const {
+	return m_conditionSuppressions[static_cast<size_t>(conditionType)];
+}
+
 void Player::addConditionSuppressions(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addConditions) {
-	conditionSuppressions = addConditions;
+	for (const auto &conditionType : addConditions) {
+		m_conditionSuppressions[static_cast<size_t>(conditionType)] = true;
+	}
 }
 
 void Player::removeConditionSuppressions() {
-	conditionSuppressions = {};
+	m_conditionSuppressions.reset();
 }
 
 Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const {
@@ -4632,7 +4638,8 @@ bool Player::isImmune(ConditionType_t type) const {
 	if (hasFlag(PlayerFlags_t::CannotBeAttacked)) {
 		return true;
 	}
-	return Creature::isImmune(type);
+
+	return m_conditionImmunities[static_cast<size_t>(type)];
 }
 
 bool Player::isAttackable() const {

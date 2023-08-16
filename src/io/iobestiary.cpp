@@ -211,7 +211,7 @@ void IOBestiary::addCharmPoints(Player* player, uint16_t amount, bool negative /
 	player->setCharmPoints(myCharms);
 }
 
-void IOBestiary::addBestiaryKill(Player* player, std::shared_ptr<MonsterType> &mtype, uint32_t amount /*= 1*/) {
+void IOBestiary::addBestiaryKill(Player* player, const std::shared_ptr<MonsterType> &mtype, uint32_t amount /*= 1*/) {
 	uint16_t raceid = mtype->info.raceid;
 	if (raceid == 0 || !player || !mtype) {
 		return;
@@ -347,7 +347,7 @@ void IOBestiary::sendBuyCharmRune(Player* player, charmRune_t runeID, uint8_t ac
 	return;
 }
 
-phmap::btree_map<uint8_t, int16_t> IOBestiary::getMonsterElements(std::shared_ptr<MonsterType> &mtype) const {
+phmap::btree_map<uint8_t, int16_t> IOBestiary::getMonsterElements(const std::shared_ptr<MonsterType> &mtype) const {
 	phmap::btree_map<uint8_t, int16_t> defaultMap = {};
 	for (uint8_t i = 0; i <= 7; i++) {
 		defaultMap[i] = 100;

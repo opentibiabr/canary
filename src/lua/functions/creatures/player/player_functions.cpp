@@ -286,7 +286,7 @@ int PlayerFunctions::luaPlayerAddBestiaryKill(lua_State* L) {
 	// player:addBestiaryKill(name[, amount = 1])
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		auto mtype = g_monsters().getMonsterType(getString(L, 2));
+		const auto &mtype = g_monsters().getMonsterType(getString(L, 2));
 		if (mtype) {
 			g_iobestiary().addBestiaryKill(player, mtype, getNumber<uint32_t>(L, 3, 1));
 			pushBoolean(L, true);

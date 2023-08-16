@@ -136,7 +136,7 @@ uint16_t IOBosstiary::getBoostedBossId() const {
 	return boostedBossId;
 }
 
-const std::shared_ptr<MonsterType> IOBosstiary::getMonsterTypeByBossRaceId(uint16_t raceId) const {
+std::shared_ptr<MonsterType> IOBosstiary::getMonsterTypeByBossRaceId(uint16_t raceId) const {
 	for ([[maybe_unused]] const auto &[bossRaceId, bossName] : getBosstiaryMap()) {
 		if (bossRaceId == raceId) {
 			const auto &monsterType = g_monsters().getMonsterType(bossName);
@@ -230,7 +230,7 @@ std::vector<uint16_t> IOBosstiary::getBosstiaryFinished(const Player* player, ui
 			continue;
 		}
 
-		const std::shared_ptr<MonsterType> mType = g_monsters().getMonsterType(bossName);
+		const auto &mType = g_monsters().getMonsterType(bossName);
 		if (!mType) {
 			continue;
 		}

@@ -765,7 +765,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddAttack(lua_State* L) {
 	// monsterType:addAttack(monsterspell)
 	const auto &monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
-		std::shared_ptr<MonsterSpell> spell = getUserdataShared<MonsterSpell>(L, 2);
+		const auto &spell = getUserdataShared<MonsterSpell>(L, 2);
 		if (spell) {
 			spellBlock_t sb;
 			if (g_monsters().deserializeSpell(spell, sb, monsterType->name)) {
@@ -826,7 +826,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddDefense(lua_State* L) {
 	// monsterType:addDefense(monsterspell)
 	const auto &monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
-		std::shared_ptr<MonsterSpell> spell = getUserdataShared<MonsterSpell>(L, 2);
+		const auto &spell = getUserdataShared<MonsterSpell>(L, 2);
 		if (spell) {
 			spellBlock_t sb;
 			if (g_monsters().deserializeSpell(spell, sb, monsterType->name)) {
@@ -950,7 +950,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddLoot(lua_State* L) {
 	// monsterType:addLoot(loot)
 	const auto &monsterType = getUserdataShared<MonsterType>(L, 1);
 	if (monsterType) {
-		std::shared_ptr<Loot> loot = getUserdataShared<Loot>(L, 2);
+		const auto &loot = getUserdataShared<Loot>(L, 2);
 		if (loot) {
 			monsterType->loadLoot(monsterType, loot->lootBlock);
 			pushBoolean(L, true);
@@ -1013,7 +1013,7 @@ int MonsterTypeFunctions::luaMonsterTypeEventOnCallback(lua_State* L) {
 
 int MonsterTypeFunctions::luaMonsterTypeEventType(lua_State* L) {
 	// monstertype:eventType(event)
-	std::shared_ptr<MonsterType> mType = getUserdataShared<MonsterType>(L, 1);
+	const auto &mType = getUserdataShared<MonsterType>(L, 1);
 	if (mType) {
 		mType->info.eventType = getNumber<MonstersEvent_t>(L, 2);
 		pushBoolean(L, true);

@@ -16,7 +16,7 @@
 
 int CombatFunctions::luaCombatCreate(lua_State* L) {
 	// Combat()
-	pushUserdata<Combat>(L, g_luaEnvironment.createCombatObject(getScriptEnv()->getScriptInterface()).get());
+	pushUserdata<Combat>(L, g_luaEnvironment().createCombatObject(getScriptEnv()->getScriptInterface()).get());
 	setMetatable(L, -1, "Combat");
 	return 1;
 }
@@ -67,7 +67,7 @@ int CombatFunctions::luaCombatSetArea(lua_State* L) {
 		return 1;
 	}
 
-	const AreaCombat* area = g_luaEnvironment.getAreaObject(getNumber<uint32_t>(L, 2));
+	const AreaCombat* area = g_luaEnvironment().getAreaObject(getNumber<uint32_t>(L, 2));
 	if (!area) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_AREA_NOT_FOUND));
 		lua_pushnil(L);

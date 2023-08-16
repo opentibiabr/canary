@@ -53,10 +53,7 @@ class Imbuements {
 		Imbuements &operator=(const Imbuements &) = delete;
 
 		static Imbuements &getInstance() {
-			// Guaranteed to be destroyed
-			static Imbuements instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Imbuements>();
 		}
 
 		Imbuement* getImbuement(uint16_t id);
@@ -78,7 +75,7 @@ class Imbuements {
 		uint32_t runningid = 0;
 };
 
-constexpr auto g_imbuements = &Imbuements::getInstance;
+constexpr auto g_imbuements = Imbuements::getInstance;
 
 class Imbuement {
 	public:

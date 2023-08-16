@@ -99,53 +99,16 @@ do
 end
 
 -- Sets a custom __newindex behavior for the EventCallback class's metatable. It dynamically maps certain keys to predefined callback methods within the EventCallback class. When a key matching a method name is added, it triggers the associated function, sets the event type, and logs the registration. This allows for flexible, runtime assignment of various event handlers through Lua scripts.
+local eventCallbacks = Game.getEventCallbacks()
 do
 	local function EventCallbackNewIndex(self, key, value)
-		local keyToFunctionMap = {
-			creatureOnChangeOutfit = self.creatureOnChangeOutfit,
-			creatureOnAreaCombat = self.creatureOnAreaCombat,
-			creatureOnTargetCombat = self.creatureOnTargetCombat,
-			creatureOnHear = self.creatureOnHear,
-			creatureOnDrainHealth = self.creatureOnDrainHealth,
-			partyOnJoin = self.partyOnJoin,
-			partyOnLeave = self.partyOnLeave,
-			partyOnDisband = self.partyOnDisband,
-			partyOnShareExperience = self.partyOnShareExperience,
-			playerOnBrowseField = self.playerOnBrowseField,
-			playerOnLook = self.playerOnLook,
-			playerOnLookInBattleList = self.playerOnLookInBattleList,
-			playerOnLookInTrade = self.playerOnLookInTrade,
-			playerOnLookInShop = self.playerOnLookInShop,
-			playerOnMoveItem = self.playerOnMoveItem,
-			playerOnItemMoved = self.playerOnItemMoved,
-			playerOnChangeZone = self.playerOnChangeZone,
-			playerOnChangeHazard = self.playerOnChangeHazard,
-			playerOnMoveCreature = self.playerOnMoveCreature,
-			playerOnReportRuleViolation = self.playerOnReportRuleViolation,
-			playerOnReportBug = self.playerOnReportBug,
-			playerOnTurn = self.playerOnTurn,
-			playerOnTradeRequest = self.playerOnTradeRequest,
-			playerOnTradeAccept = self.playerOnTradeAccept,
-			playerOnGainExperience = self.playerOnGainExperience,
-			playerOnLoseExperience = self.playerOnLoseExperience,
-			playerOnGainSkillTries = self.playerOnGainSkillTries,
-			playerOnRemoveCount = self.playerOnRemoveCount,
-			playerOnRequestQuestLog = self.playerOnRequestQuestLog,
-			playerOnRequestQuestLine = self.playerOnRequestQuestLine,
-			playerOnStorageUpdate = self.playerOnStorageUpdate,
-			playerOnCombat = self.playerOnCombat,
-			playerOnInventoryUpdate = self.playerOnInventoryUpdate,
-			monsterOnDropLoot = self.monsterOnDropLoot,
-			monsterOnSpawn = self.monsterOnSpawn,
-			npcOnSpawn = self.npcOnSpawn,
-		}
-
-		local func = keyToFunctionMap[key]
-		if func then
+		local func = eventCallbacks[key]
+		if func and type(func) == "function" then
+			Spdlog.debug("[Registering EventCallback: " .. key)
 			func(self, value)
 			self:type(key)
 		else
-			rawset(self, key, value)
+			reportError("Invalid EventCallback with name: ".. tostring(key))
 		end
 	end
 	rawgetmetatable("EventCallback").__newindex = EventCallbackNewIndex

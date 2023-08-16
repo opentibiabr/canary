@@ -29,7 +29,6 @@ enum class Reload_t : uint8_t {
 	RELOAD_TYPE_NPCS,
 	RELOAD_TYPE_RAIDS,
 	RELOAD_TYPE_SCRIPTS,
-	RELOAD_TYPE_TALKACTION,
 	RELOAD_TYPE_GROUPS,
 
 	// Every is last
@@ -44,6 +43,10 @@ class GameReload : public Game {
 		// non-copyable
 		GameReload(const GameReload &) = delete;
 		GameReload &operator=(const GameReload &) = delete;
+
+		static GameReload &getInstance() {
+			return inject<GameReload>();
+		}
 
 		bool init(Reload_t reloadType) const;
 		uint8_t getReloadNumber(Reload_t reloadTypes) const;
@@ -66,6 +69,6 @@ class GameReload : public Game {
 		bool reloadGroups() const;
 };
 
-const inline GameReload g_gameReload;
+constexpr auto g_gameReload = GameReload::getInstance;
 
 #endif // SRC_GAME_FUNCTIONS_GAME_RELOAD_HPP_

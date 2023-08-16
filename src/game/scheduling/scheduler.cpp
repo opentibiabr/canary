@@ -8,118 +8,49 @@
  */
 
 #include "pch.hpp"
-
+#include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/scheduler.h"
+#include "game/scheduling/task.hpp"
 
-void Scheduler::threadMain() {
-	std::unique_lock<std::mutex> eventLockUnique(eventLock, std::defer_lock);
-	while (getState() != THREAD_STATE_TERMINATED) {
-		std::cv_status ret = std::cv_status::no_timeout;
-
-		eventLockUnique.lock();
-		if (eventList.empty()) {
-			eventSignal.wait(eventLockUnique, [this] {
-				return !eventList.empty() || getState() == THREAD_STATE_TERMINATED;
-			});
-		} else {
-			ret = eventSignal.wait_until(eventLockUnique, eventList.top()->getCycle());
-		}
-
-		// the mutex is locked again now...
-		if (ret == std::cv_status::timeout && !eventList.empty()) {
-			// ok we had a timeout, so there has to be an event we have to execute...
-			SchedulerTask* task = eventList.top();
-			eventList.pop();
-
-			// check if the event was stopped
-			auto it = eventIds.find(task->getEventId());
-			if (it == eventIds.end()) {
-				eventLockUnique.unlock();
-				delete task;
-				continue;
-			}
-			eventIds.erase(it);
-			eventLockUnique.unlock();
-
-			task->setDontExpire();
-			g_dispatcher().addTask(task, true);
-		} else {
-			eventLockUnique.unlock();
-		}
-	}
+Scheduler &Scheduler::getInstance() {
+	return inject<Scheduler>();
 }
 
-uint32_t Scheduler::addEvent(SchedulerTask* task) {
-	bool do_signal;
-	eventLock.lock();
+uint64_t Scheduler::addEvent(uint32_t delay, std::function<void(void)> f) {
+	return addEvent(std::make_shared<Task>(std::move(f), delay));
+}
 
-	if (getState() == THREAD_STATE_RUNNING) {
-		// check if the event has a valid id
-		if (task->getEventId() == 0) {
-			// if not generate one
-			if (++lastEventId == 0) {
-				lastEventId = 1;
+uint64_t Scheduler::addEvent(const std::shared_ptr<Task> &task) {
+	if (task->getEventId() == 0) {
+		task->setEventId(++lastEventId);
+	}
+
+	addLoad([this, task]() {
+		auto res = eventIds.emplace(task->getEventId(), asio::steady_timer(io_service));
+
+		asio::steady_timer &timer = res.first->second;
+		timer.expires_from_now(std::chrono::milliseconds(task->getDelay()));
+
+		timer.async_wait([this, task](const asio::error_code &error) {
+			eventIds.erase(task->getEventId());
+
+			if (error == asio::error::operation_aborted || io_service.stopped()) {
+				return;
 			}
 
-			task->setEventId(lastEventId);
-		}
-
-		// insert the event id in the list of active events
-		eventIds.insert(task->getEventId());
-
-		// add the event to the queue
-		eventList.push(task);
-
-		// if the list was empty or this event is the top in the list
-		// we have to signal it
-		do_signal = (task == eventList.top());
-	} else {
-		eventLock.unlock();
-		delete task;
-		return 0;
-	}
-
-	eventLock.unlock();
-
-	if (do_signal) {
-		eventSignal.notify_one();
-	}
+			g_dispatcher().addTask(task);
+		});
+	});
 
 	return task->getEventId();
 }
 
-bool Scheduler::stopEvent(uint32_t eventid) {
-	if (eventid == 0) {
-		return false;
-	}
+void Scheduler::stopEvent(uint64_t eventId) {
+	addLoad([this, eventId]() {
+		auto it = eventIds.find(eventId);
 
-	std::lock_guard<std::mutex> lockClass(eventLock);
-
-	// search the event id..
-	auto it = eventIds.find(eventid);
-	if (it == eventIds.end()) {
-		return false;
-	}
-
-	eventIds.erase(it);
-	return true;
-}
-
-void Scheduler::shutdown() {
-	setState(THREAD_STATE_TERMINATED);
-	eventLock.lock();
-
-	// this list should already be empty
-	while (!eventList.empty()) {
-		delete eventList.top();
-		eventList.pop();
-	}
-
-	eventIds.clear();
-	eventLock.unlock();
-	eventSignal.notify_one();
-}
-
-SchedulerTask* createSchedulerTask(uint32_t delay, std::function<void(void)> f) {
-	return new SchedulerTask(delay, std::move(f));
+		if (it != eventIds.end()) {
+			it->second.cancel();
+		}
+	});
 }

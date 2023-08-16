@@ -127,7 +127,7 @@ const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttribut
 	{ "femalesleeper", ITEM_PARSE_FEMALETRANSFORMTO },
 	{ "bedpart", ITEM_PARSE_PARTNERDIRECTION },
 	{ "bedpartof", ITEM_PARSE_PARTNERDIRECTION },
-	{ "transformto", ITEM_PARSE_TRANSFORMTO },
+	{ "transformonuse", ITEM_PARSE_TRANSFORMONUSE },
 	{ "destroyto", ITEM_PARSE_DESTROYTO },
 	{ "elementice", ITEM_PARSE_ELEMENTICE },
 	{ "elementearth", ITEM_PARSE_ELEMENTEARTH },
@@ -176,6 +176,9 @@ const phmap::flat_hash_map<std::string, ItemTypes_t> ItemTypesMap = {
 	{ "food", ITEM_TYPE_FOOD },
 	{ "valuable", ITEM_TYPE_VALUABLE },
 	{ "potion", ITEM_TYPE_POTION },
+
+	{ "ladder", ITEM_TYPE_LADDER },
+	{ "dummy", ITEM_TYPE_DUMMY },
 };
 
 const phmap::flat_hash_map<std::string, TileFlags_t> TileStatesMap = {
@@ -246,8 +249,9 @@ class ItemParse : public Items {
 	public:
 		static void initParse(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType);
 
-	protected:
-		static void parseType(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+	private:
+		static void parseDummyRate(pugi::xml_node attributeNode, ItemType &itemType);
+		static void parseType(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parseDescription(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parseRuneSpellName(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parseWeight(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
@@ -304,6 +308,7 @@ class ItemParse : public Items {
 		static void parsePerfecShot(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parseCleavePercent(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 		static void parseReflectDamage(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+		static void parseTransformOnUse(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 
 	private:
 		// Parent of the function: static void parseField

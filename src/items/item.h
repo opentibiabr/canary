@@ -32,7 +32,7 @@ class BedItem;
 class Imbuement;
 class Item;
 
-// This class ItemProperties that serves as an interface to access and modify attributes of an item. The item's attributes are stored in an instance of ItemAttribute. The class ItemProperties has methods to get and set integer and string attributes, check if an attribute exists, remove an attribute, get the underlying attribute bits, and get a vector of attributes. It also has methods to get and set custom attributes, which are stored in a std::map<std::string, CustomAttribute, std::less<>>. The class has a data member attributePtr of type std::unique_ptr<ItemAttribute> that stores a pointer to the item's attributes methods.
+// This class ItemProperties that serves as an interface to access and modify attributes of an item. The item's attributes are stored in an instance of ItemAttribute. The class ItemProperties has methods to get and set integer and string attributes, check if an attribute exists, remove an attribute, get the underlying attribute bits, and get a vector of attributes. It also has methods to get and set custom attributes, which are stored in a phmap::btree_map<std::string, CustomAttribute, std::less<>>. The class has a data member attributePtr of type std::unique_ptr<ItemAttribute> that stores a pointer to the item's attributes methods.
 class ItemProperties {
 	public:
 		template <typename T>
@@ -46,7 +46,7 @@ class ItemProperties {
 					std::numeric_limits<T>::max()
 				);
 			}
-			SPDLOG_ERROR("Failed to convert attribute for type {}", fmt::underlying(type));
+			g_logger().error("Failed to convert attribute for type {}", fmt::underlying(type));
 			return {};
 		}
 
@@ -77,8 +77,8 @@ class ItemProperties {
 		}
 
 		// Custom Attributes
-		const std::map<std::string, CustomAttribute, std::less<>> &getCustomAttributeMap() const {
-			static std::map<std::string, CustomAttribute, std::less<>> map = {};
+		const phmap::btree_map<std::string, CustomAttribute, std::less<>> &getCustomAttributeMap() const {
+			static phmap::btree_map<std::string, CustomAttribute, std::less<>> map = {};
 			if (!attributePtr) {
 				return map;
 			}
@@ -475,6 +475,12 @@ class Item : virtual public Thing, public ItemProperties {
 		bool isSpellBook() const {
 			return items[id].isSpellBook();
 		}
+		bool isLadder() const {
+			return items[id].isLadder();
+		}
+		bool isDummy() const {
+			return items[id].isDummy();
+		}
 
 		const std::string &getName() const {
 			if (hasAttribute(ItemAttribute_t::NAME)) {
@@ -662,7 +668,7 @@ class Item : virtual public Thing, public ItemProperties {
 
 			auto tier = getAttribute<uint8_t>(ItemAttribute_t::TIER);
 			if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
-				SPDLOG_ERROR("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
+				g_logger().error("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
 				return 0;
 			}
 
@@ -671,7 +677,7 @@ class Item : virtual public Thing, public ItemProperties {
 		void setTier(uint8_t tier) {
 			auto configTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);
 			if (tier > configTier) {
-				SPDLOG_ERROR("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
+				g_logger().error("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
 				return;
 			}
 

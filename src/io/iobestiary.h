@@ -51,10 +51,7 @@ class IOBestiary {
 		void operator=(const IOBestiary &) = delete;
 
 		static IOBestiary &getInstance() {
-			// Guaranteed to be destroyed
-			static IOBestiary instance;
-			// Instantiated on first use
-			return instance;
+			return inject<IOBestiary>();
 		}
 
 		Charm* getBestiaryCharm(charmRune_t activeCharm, bool force = false);
@@ -75,15 +72,15 @@ class IOBestiary {
 		bool hasCharmUnlockedRuneBit(Charm* charm, int32_t input) const;
 
 		std::list<charmRune_t> getCharmUsedRuneBitAll(Player* player);
-		std::list<uint16_t> getBestiaryFinished(Player* player) const;
+		std::vector<uint16_t> getBestiaryFinished(Player* player) const;
 
 		charmRune_t getCharmFromTarget(Player* player, MonsterType* mtype);
 
-		std::map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(Player* player, std::map<uint16_t, std::string> mtype_list) const;
-		std::map<uint8_t, int16_t> getMonsterElements(MonsterType* mtype) const;
-		std::map<uint16_t, std::string> findRaceByName(const std::string &race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
+		phmap::btree_map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(Player* player, phmap::btree_map<uint16_t, std::string> mtype_list) const;
+		phmap::btree_map<uint8_t, int16_t> getMonsterElements(MonsterType* mtype) const;
+		phmap::btree_map<uint16_t, std::string> findRaceByName(const std::string &race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
 };
 
-constexpr auto g_iobestiary = &IOBestiary::getInstance;
+constexpr auto g_iobestiary = IOBestiary::getInstance;
 
 #endif // SRC_IO_IOBESTIARY_H_

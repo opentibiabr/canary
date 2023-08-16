@@ -3618,7 +3618,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 	uint16_t mountSize = 0;
 	auto startMounts = msg.getBufferPosition();
 	msg.skipBytes(2);
-	for (const auto& mount : g_game().mounts.getMounts()) {
+	for (const auto &mount : g_game().mounts.getMounts()) {
 		const std::string type = mount->type;
 		if (player->hasMount(mount)) {
 			++mountSize;
@@ -6294,7 +6294,7 @@ void ProtocolGame::sendOutfitWindow() {
 
 	if (oldProtocol) {
 		Outfit_t currentOutfit = player->getDefaultOutfit();
-		const auto& currentMount = g_game().mounts.getMountByID(player->getCurrentMount());
+		const auto &currentMount = g_game().mounts.getMountByID(player->getCurrentMount());
 		if (currentMount) {
 			currentOutfit.lookMount = currentMount->clientId;
 		}
@@ -6343,7 +6343,7 @@ void ProtocolGame::sendOutfitWindow() {
 		}
 
 		msg.addByte(mounts.size());
-		for (const auto& mount : mounts) {
+		for (const auto &mount : mounts) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name);
 		}
@@ -6354,7 +6354,7 @@ void ProtocolGame::sendOutfitWindow() {
 
 	bool mounted = false;
 	Outfit_t currentOutfit = player->getDefaultOutfit();
-	const auto& currentMount = g_game().mounts.getMountByID(player->getCurrentMount());
+	const auto &currentMount = g_game().mounts.getMountByID(player->getCurrentMount());
 	if (currentMount) {
 		mounted = (currentOutfit.lookMount == currentMount->clientId);
 		currentOutfit.lookMount = currentMount->clientId;

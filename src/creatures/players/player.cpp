@@ -5579,7 +5579,7 @@ bool Player::toggleMount(bool mount) {
 			currentMountId = getRandomMountId();
 		}
 
-		const auto& currentMount = g_game().mounts.getMountByID(currentMountId);
+		const auto &currentMount = g_game().mounts.getMountByID(currentMountId);
 		if (!currentMount) {
 			return false;
 		}
@@ -5666,7 +5666,7 @@ bool Player::untameMount(uint8_t mountId) {
 	return true;
 }
 
-bool Player::hasMount(const std::shared_ptr<Mount>& mount) const {
+bool Player::hasMount(const std::shared_ptr<Mount> &mount) const {
 	if (isAccessPlayer()) {
 		return true;
 	}
@@ -5686,7 +5686,7 @@ bool Player::hasMount(const std::shared_ptr<Mount>& mount) const {
 }
 
 void Player::dismount() {
-	const auto& mount = g_game().mounts.getMountByID(getCurrentMount());
+	const auto &mount = g_game().mounts.getMountByID(getCurrentMount());
 	if (mount && mount->speed > 0) {
 		g_game().changeSpeed(this, -mount->speed);
 	}

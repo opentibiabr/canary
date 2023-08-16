@@ -56,7 +56,6 @@ std::shared_ptr<Mount> Mounts::getMountByID(uint8_t id) {
 	return it != mounts.end() ? *it : nullptr; // Returning the shared_ptr to the Mount object
 }
 
-
 std::shared_ptr<Mount> Mounts::getMountByName(const std::string &name) {
 	auto mountName = name.c_str();
 	auto it = std::find_if(mounts.begin(), mounts.end(), [mountName](const std::shared_ptr<Mount> &mount) {
@@ -65,7 +64,6 @@ std::shared_ptr<Mount> Mounts::getMountByName(const std::string &name) {
 
 	return it != mounts.end() ? *it : nullptr;
 }
-
 
 std::shared_ptr<Mount> Mounts::getMountByClientID(uint16_t clientId) {
 	auto it = std::find_if(mounts.begin(), mounts.end(), [clientId](const std::shared_ptr<Mount> &mount) {

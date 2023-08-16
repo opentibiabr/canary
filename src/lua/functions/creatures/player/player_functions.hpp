@@ -282,6 +282,7 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "instantSkillWOD", PlayerFunctions::luaPlayerInstantSkillWOD);
 			registerMethod(L, "Player", "upgradeSpellsWOD", PlayerFunctions::luaPlayerUpgradeSpellWOD);
+			registerMethod(L, "Player", "revelationStageWOD", PlayerFunctions::luaPlayerRevelationStageWOD);
 			registerMethod(L, "Player", "reloadData", PlayerFunctions::luaPlayerReloadData);
 			registerMethod(L, "Player", "onThinkWheelOfDestiny", PlayerFunctions::luaPlayerOnThinkWheelOfDestiny);
 			registerMethod(L, "Player", "avatarTimer", PlayerFunctions::luaPlayerAvatarTimer);
@@ -615,6 +616,7 @@ class PlayerFunctions final : LuaScriptInterface {
 
 		static int luaPlayerInstantSkillWOD(lua_State* L);
 		static int luaPlayerUpgradeSpellWOD(lua_State* L);
+		static int luaPlayerRevelationStageWOD(lua_State* L);
 		static int luaPlayerReloadData(lua_State* L);
 		static int luaPlayerOnThinkWheelOfDestiny(lua_State* L);
 		static int luaPlayerAvatarTimer(lua_State* L);

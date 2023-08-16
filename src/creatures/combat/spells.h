@@ -62,8 +62,8 @@ class Spells final : public Scripts {
 		}
 
 		void clear();
-		bool registerInstantLuaEvent(const std::shared_ptr<InstantSpell>& instant);
-		bool registerRuneLuaEvent(const std::shared_ptr<RuneSpell>& rune);
+		bool registerInstantLuaEvent(const std::shared_ptr<InstantSpell> &instant);
+		bool registerRuneLuaEvent(const std::shared_ptr<RuneSpell> &rune);
 
 	private:
 		std::map<uint16_t, std::shared_ptr<RuneSpell>> runes;
@@ -91,7 +91,7 @@ class BaseSpell {
 class CombatSpell final : public Script, public BaseSpell, public std::enable_shared_from_this<CombatSpell> {
 	public:
 		// Constructor
-		CombatSpell(const std::shared_ptr<Combat>& newCombat, bool newNeedTarget, bool newNeedDirection);
+		CombatSpell(const std::shared_ptr<Combat> &newCombat, bool newNeedTarget, bool newNeedDirection);
 
 		// The copy constructor and the assignment operator have been deleted to prevent accidental copying.
 		CombatSpell(const CombatSpell &) = delete;

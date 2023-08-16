@@ -19,7 +19,7 @@
 #include "creatures/monsters/monsters.h"
 #include "items/weapons/weapons.h"
 
-int32_t Combat::getLevelFormula(const Player* player, const std::shared_ptr<Spell>& wheelSpell, const CombatDamage &damage) const {
+int32_t Combat::getLevelFormula(const Player* player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
 		return 0;
 	}
@@ -1438,9 +1438,9 @@ uint32_t ValueCallback::getMagicLevelSkill(const Player* player, const CombatDam
 	uint32_t magicLevelSkill = player->getMagicLevel();
 	// Wheel of destiny
 	if (player && player->wheel()->getInstant("Runic Mastery") && damage.instantSpellName.empty()) {
-		const std::shared_ptr<Spell>& spell = g_spells().getRuneSpellByName(damage.runeSpellName);
+		const std::shared_ptr<Spell> &spell = g_spells().getRuneSpellByName(damage.runeSpellName);
 		// Rune conjuring spell have the same name as the rune item spell.
-		const  std::shared_ptr<InstantSpell>& conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
+		const std::shared_ptr<InstantSpell> &conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
 		if (spell && conjuringSpell && conjuringSpell != spell && normal_random(0, 100) <= 25) {
 			uint32_t castResult = conjuringSpell->canCast(player) ? 20 : 10;
 			magicLevelSkill += magicLevelSkill * castResult / 100;

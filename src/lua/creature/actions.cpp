@@ -181,7 +181,7 @@ ReturnValue Actions::canUse(const Player* player, const Position &pos) {
 }
 
 ReturnValue Actions::canUse(const Player* player, const Position &pos, const Item* item) {
-	const std::shared_ptr<Action>& action = getAction(item);
+	const std::shared_ptr<Action> &action = getAction(item);
 	if (action != nullptr) {
 		return action->canExecuteAction(player, pos);
 	}

@@ -55,7 +55,6 @@ CanaryServer::CanaryServer(
 }
 
 int CanaryServer::run() {
-	g_dispatcher().start();
 	g_scheduler().start();
 
 	g_dispatcher().addTask([this] {
@@ -369,7 +368,6 @@ void CanaryServer::startupErrorMessage() {
 }
 
 void CanaryServer::shutdown() {
-	g_dispatcher().shutdown();
 	g_scheduler().shutdown();
 	inject<ThreadPool>().shutdown();
 }

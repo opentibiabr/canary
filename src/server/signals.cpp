@@ -70,7 +70,6 @@ void Signals::dispatchSignalHandler(int signal) {
 			g_dispatcher().addTask(sigbreakHandler);
 			// hold the thread until other threads end
 			g_scheduler().shutdown();
-			g_dispatcher().shutdown();
 			inject<ThreadPool>().shutdown();
 			break;
 #endif

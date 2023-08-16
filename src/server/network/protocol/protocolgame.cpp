@@ -3878,8 +3878,7 @@ void ProtocolGame::sendBasicData() {
 	msg.addByte(0x9F);
 	if (player->isPremium() || player->isVip()) {
 		msg.addByte(1);
-		uint32_t days = player->premiumDays;
-		msg.add<uint32_t>(time(nullptr) + (days * 86400));
+		msg.add<uint32_t>(time(nullptr) + (player->premiumDays * 86400));
 	} else {
 		msg.addByte(0);
 		msg.add<uint32_t>(0);

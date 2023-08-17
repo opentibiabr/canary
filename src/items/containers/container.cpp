@@ -273,29 +273,6 @@ bool Container::isHoldingItemWithId(const uint16_t id) const {
 	return false;
 }
 
-bool Container::isInsideContainerWithId(const uint16_t id) const {
-	auto nextParent = parent;
-	while (nextParent != nullptr && nextParent->getContainer()) {
-		if (nextParent->getContainer()->getID() == id) {
-			return true;
-		}
-		nextParent = nextParent->getRealParent();
-	}
-	return false;
-}
-
-bool Container::isAnyKindOfRewardChest() const {
-	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER && parent && parent->getContainer() && parent->getContainer()->getID() == ITEM_REWARD_CHEST || isBrowseFieldAndHoldsRewardChest();
-}
-
-bool Container::isAnyKindOfRewardContainer() const {
-	return getID() == ITEM_REWARD_CHEST || getID() == ITEM_REWARD_CONTAINER || isHoldingItemWithId(ITEM_REWARD_CONTAINER) || isInsideContainerWithId(ITEM_REWARD_CONTAINER);
-}
-
-bool Container::isBrowseFieldAndHoldsRewardChest() const {
-	return getID() == ITEM_BROWSEFIELD && isHoldingItemWithId(ITEM_REWARD_CHEST);
-}
-
 void Container::onAddContainerItem(Item* item) {
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
@@ -477,23 +454,23 @@ ReturnValue Container::queryMaxCount(int32_t index, const Thing &thing, uint32_t
 ReturnValue Container::queryRemove(const Thing &thing, uint32_t count, uint32_t flags, Creature* actor /*= nullptr */) const {
 	int32_t index = getThingIndex(&thing);
 	if (index == -1) {
-		SPDLOG_DEBUG("{} - Failed to get thing index", __FUNCTION__);
+		g_logger().debug("{} - Failed to get thing index", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	const Item* item = thing.getItem();
 	if (item == nullptr) {
-		SPDLOG_DEBUG("{} - Item is nullptr", __FUNCTION__);
+		g_logger().debug("{} - Item is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	if (count == 0 || (item->isStackable() && count > item->getItemCount())) {
-		SPDLOG_DEBUG("{} - Failed to get item count", __FUNCTION__);
+		g_logger().debug("{} - Failed to get item count", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	if (!item->isMoveable() && !hasBitSet(FLAG_IGNORENOTMOVEABLE, flags)) {
-		SPDLOG_DEBUG("{} - Item is not moveable", __FUNCTION__);
+		g_logger().debug("{} - Item is not moveable", __FUNCTION__);
 		return RETURNVALUE_NOTMOVEABLE;
 	}
 	const HouseTile* houseTile = dynamic_cast<const HouseTile*>(getTopParent());
@@ -719,7 +696,7 @@ uint32_t Container::getItemTypeCount(uint16_t itemId, int32_t subType /* = -1*/)
 	return count;
 }
 
-std::map<uint32_t, uint32_t> &Container::getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const {
+phmap::btree_map<uint32_t, uint32_t> &Container::getAllItemTypeCount(phmap::btree_map<uint32_t, uint32_t> &countMap) const {
 	for (Item* item : itemlist) {
 		countMap[item->getID()] += item->getItemCount();
 	}

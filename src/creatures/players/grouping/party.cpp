@@ -25,7 +25,7 @@ void Party::disband() {
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::PartyOnDisband, &EventCallback::partyOnDisband, this)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnDisband, &EventCallback::partyOnDisband, this)) {
 		return;
 	}
 
@@ -84,7 +84,7 @@ bool Party::leaveParty(Player* player) {
 		return false;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::PartyOnLeave, &EventCallback::partyOnLeave, this, player)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnLeave, &EventCallback::partyOnLeave, this, player)) {
 		return false;
 	}
 
@@ -186,7 +186,7 @@ bool Party::joinParty(Player &player) {
 		return false;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::PartyOnJoin, &EventCallback::partyOnJoin, this, &player)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnJoin, &EventCallback::partyOnJoin, this, &player)) {
 		return false;
 	}
 
@@ -389,7 +389,7 @@ bool Party::setSharedExperience(Player* player, bool newSharedExpActive) {
 void Party::shareExperience(uint64_t experience, Creature* target /* = nullptr*/) {
 	uint64_t shareExperience = experience;
 	g_events().eventPartyOnShareExperience(this, shareExperience);
-	g_callbacks().executeCallback(EventCallback_t::PartyOnShareExperience, &EventCallback::partyOnShareExperience, this, shareExperience);
+	g_callbacks().executeCallback(EventCallback_t::partyOnShareExperience, &EventCallback::partyOnShareExperience, this, shareExperience);
 
 	for (Player* member : memberList) {
 		member->onGainSharedExperience(shareExperience, target);
@@ -610,7 +610,7 @@ void Party::addPlayerLoot(const Player* player, const Item* item) {
 	if (priceType == LEADER_PRICE) {
 		playerAnalyzer->lootPrice += leader->getItemCustomPrice(item->getID()) * count;
 	} else {
-		std::map<uint16_t, uint64_t> itemMap { { item->getID(), count } };
+		phmap::btree_map<uint16_t, uint64_t> itemMap { { item->getID(), count } };
 		playerAnalyzer->lootPrice += g_game().getItemMarketPrice(itemMap, false);
 	}
 	updateTrackerAnalyzer();
@@ -632,7 +632,7 @@ void Party::addPlayerSupply(const Player* player, const Item* item) {
 	if (priceType == LEADER_PRICE) {
 		playerAnalyzer->supplyPrice += leader->getItemCustomPrice(item->getID(), true);
 	} else {
-		std::map<uint16_t, uint64_t> itemMap { { item->getID(), 1 } };
+		phmap::btree_map<uint16_t, uint64_t> itemMap { { item->getID(), 1 } };
 		playerAnalyzer->supplyPrice += g_game().getItemMarketPrice(itemMap, true);
 	}
 	updateTrackerAnalyzer();

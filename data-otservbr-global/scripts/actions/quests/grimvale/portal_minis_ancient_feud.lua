@@ -3,8 +3,8 @@ local config = {
 		teleportPosition = {x = 33123, y = 32239, z = 12},
 		bossName = "Yirkas Blue Scales",
 		requiredLevel = 250,
-		timeToFightAgain = 20, -- In hour
-		timeToDefeatBoss = 10, -- In minutes
+		timeToFightAgain = 10, -- In hour
+		timeToDefeat = 10, -- In minutes
 		destination = Position(33154, 32246, 12),
 		bossPosition = Position(33154, 32252, 12),
 		specPos = {
@@ -18,8 +18,8 @@ local config = {
 		teleportPosition = {x = 33131, y = 32252, z = 12},
 		bossName = "Srezz Yellow Eyes",
 		requiredLevel = 250,
-		timeToFightAgain = 20, -- In hour
-		timeToDefeatBoss = 10, -- In minutes
+		timeToFightAgain = 10, -- In hour
+		timeToDefeat = 10, -- In minutes
 		destination = Position(33120, 32278, 12),
 		bossPosition = Position(33122, 32285, 12),
 		specPos = {
@@ -33,8 +33,8 @@ local config = {
 		teleportPosition = {x = 33123, y = 32265, z = 12},
 		bossName = "Utua Stone Sting",
 		requiredLevel = 250,
-		timeToFightAgain = 20, -- In hour
-		timeToDefeatBoss = 10, -- In minutes
+		timeToFightAgain = 10, -- In hour
+		timeToDefeat = 10, -- In minutes
 		destination = Position(33087, 32240, 12),
 		bossPosition = Position(33087, 32245, 12),
 		specPos = {
@@ -48,8 +48,8 @@ local config = {
 		teleportPosition = {x = 33114, y = 32252, z = 12},
 		bossName = "Katex Blood Tongue",
 		requiredLevel = 250,
-		timeToFightAgain = 20, -- In hour
-		timeToDefeatBoss = 10, -- In minutes
+		timeToFightAgain = 10, -- In hour
+		timeToDefeat = 10, -- In minutes
 		destination = Position(33149, 32283, 12),
 		bossPosition = Position(33152, 32289, 12),
 		specPos = {
@@ -125,7 +125,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 				spec:setOnlyPlayer(true)
 				spec:check()
 				spec:removePlayers()
-			end, value.timeToDefeatBoss * 60 * 1000)
+			end, value.timeToDefeat * 60 * 1000)
 		end
 	end
 end

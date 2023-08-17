@@ -54,10 +54,7 @@ class Game {
 		Game &operator=(const Game &) = delete;
 
 		static Game &getInstance() {
-			// Guaranteed to be destroyed
-			static Game instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Game>();
 		}
 
 		void resetMonsters() const;
@@ -93,7 +90,7 @@ class Game {
 			return worldType;
 		}
 
-		std::map<uint32_t, TeamFinder*> getTeamFinderList() const {
+		phmap::btree_map<uint32_t, TeamFinder*> getTeamFinderList() const {
 			return teamFinderMap;
 		}
 		void registerTeamFinderAssemble(uint32_t leaderGuid, TeamFinder* teamFinder) {
@@ -115,13 +112,13 @@ class Game {
 
 		Npc* getNpcByID(uint32_t id);
 
-		Player* getPlayerByID(uint32_t id);
-
 		Creature* getCreatureByName(const std::string &s);
 
 		Npc* getNpcByName(const std::string &s);
 
-		Player* getPlayerByName(const std::string &s);
+		Player* getPlayerByID(uint32_t id, bool allowOffline = false);
+
+		Player* getPlayerByName(const std::string &s, bool allowOffline = false);
 
 		Player* getPlayerByGUID(const uint32_t &guid);
 
@@ -208,7 +205,7 @@ class Game {
 
 		ObjectCategory_t getObjectCategory(const Item* item);
 
-		uint64_t getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, bool buyPrice) const;
+		uint64_t getItemMarketPrice(const phmap::btree_map<uint16_t, uint64_t> &itemMap, bool buyPrice) const;
 
 		void loadPlayersRecord();
 		void checkPlayersRecord();
@@ -241,7 +238,7 @@ class Game {
 		void playerBrowseForgeHistory(uint32_t playerId, uint8_t page);
 
 		void playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selectedBossId);
-		void playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, uint8_t podiumVisible, uint8_t bossVisible);
+		void playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, const std::pair<uint8_t, uint8_t> &podiumAndMonsterVisible);
 		void playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId);
 
 		void playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen);
@@ -373,13 +370,13 @@ class Game {
 		void ReleaseCreature(Creature* creature);
 		void ReleaseItem(Item* item);
 		void addBestiaryList(uint16_t raceid, std::string name);
-		const std::map<uint16_t, std::string> &getBestiaryList() const {
+		const phmap::btree_map<uint16_t, std::string> &getBestiaryList() const {
 			return BestiaryList;
 		}
 
 		void setBoostedName(std::string name) {
 			boostedCreature = name;
-			SPDLOG_INFO("Boosted creature: {}", name);
+			g_logger().info("Boosted creature: {}", name);
 		}
 
 		std::string getBoostedMonsterName() const {
@@ -471,16 +468,16 @@ class Game {
 
 		void sendOfflineTrainingDialog(Player* player);
 
-		const std::map<uint16_t, std::map<uint8_t, uint64_t>> &getItemsPrice() const {
+		const phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint64_t>> &getItemsPrice() const {
 			return itemsPriceMap;
 		}
 		const phmap::flat_hash_map<uint32_t, Player*> &getPlayers() const {
 			return players;
 		}
-		const std::map<uint32_t, Monster*> &getMonsters() const {
+		const phmap::btree_map<uint32_t, Monster*> &getMonsters() const {
 			return monsters;
 		}
-		const std::map<uint32_t, Npc*> &getNpcs() const {
+		const phmap::btree_map<uint32_t, Npc*> &getNpcs() const {
 			return npcs;
 		}
 
@@ -497,7 +494,8 @@ class Game {
 		void addMonster(Monster* npc);
 		void removeMonster(Monster* npc);
 
-		Guild* getGuild(uint32_t id) const;
+		Guild* getGuild(uint32_t id, bool allowOffline = false) const;
+		Guild* getGuildByName(const std::string &name, bool allowOffline = false) const;
 		void addGuild(Guild* guild);
 		void removeGuild(uint32_t guildId);
 		void decreaseBrowseFieldRef(const Position &pos);
@@ -565,11 +563,11 @@ class Game {
 			mapLuaItemsStored[position] = itemId;
 		}
 
-		std::set<uint32_t> getFiendishMonsters() const {
+		phmap::btree_set<uint32_t> getFiendishMonsters() const {
 			return fiendishMonsters;
 		}
 
-		std::set<uint32_t> getInfluencedMonsters() const {
+		phmap::btree_set<uint32_t> getInfluencedMonsters() const {
 			return influencedMonsters;
 		}
 
@@ -653,15 +651,16 @@ class Game {
 		const std::unique_ptr<IOWheel> &getIOWheel() const;
 
 	private:
-		std::map<uint32_t, int32_t> forgeMonsterEventIds;
-		std::set<uint32_t> fiendishMonsters;
-		std::set<uint32_t> influencedMonsters;
+		phmap::btree_map<uint32_t, int32_t> forgeMonsterEventIds;
+		phmap::btree_set<uint32_t> fiendishMonsters;
+		phmap::btree_set<uint32_t> influencedMonsters;
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string &text);
 		void playerWhisper(Player* player, const std::string &text);
 		bool playerYell(Player* player, const std::string &text);
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
 		void playerSpeakToNpc(Player* player, const std::string &text);
+		std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f);
 
 		/**
 		 * Player wants to loot a corpse
@@ -751,15 +750,15 @@ class Game {
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
 		phmap::flat_hash_map<uint32_t, Guild*> guilds;
 		phmap::flat_hash_map<uint16_t, Item*> uniqueItems;
-		std::map<uint32_t, uint32_t> stages;
+		phmap::btree_map<uint32_t, uint32_t> stages;
 
 		/* Items stored from the lua scripts positions
 		 * For example: ActionFunctions::luaActionPosition
 		 * This basically works so that the item is created after the map is loaded, because the scripts are loaded before the map is loaded, we will use this table to create items that don't exist in the map natively through each script
 		 */
-		std::map<Position, uint16_t> mapLuaItemsStored;
+		phmap::btree_map<Position, uint16_t> mapLuaItemsStored;
 
-		std::map<uint16_t, std::string> BestiaryList;
+		phmap::btree_map<uint16_t, std::string> BestiaryList;
 		std::string boostedCreature = "";
 
 		std::vector<Charm*> CharmList;
@@ -776,16 +775,16 @@ class Game {
 
 		WildcardTreeNode wildcardTree { false };
 
-		std::map<uint32_t, Npc*> npcs;
-		std::map<uint32_t, Monster*> monsters;
+		phmap::btree_map<uint32_t, Npc*> npcs;
+		phmap::btree_map<uint32_t, Monster*> monsters;
 		std::vector<uint32_t> forgeableMonsters;
 
-		std::map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
+		phmap::btree_map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
 
 		// list of items that are in trading state, mapped to the player
-		std::map<Item*, uint32_t> tradeItems;
+		phmap::btree_map<Item*, uint32_t> tradeItems;
 
-		std::map<uint32_t, BedItem*> bedSleepersMap;
+		phmap::btree_map<uint32_t, BedItem*> bedSleepersMap;
 
 		phmap::flat_hash_set<Tile*> tilesToClean;
 
@@ -819,7 +818,7 @@ class Game {
 		std::string motdHash;
 		uint32_t motdNum = 0;
 
-		std::map<uint16_t, std::map<uint8_t, uint64_t>> itemsPriceMap;
+		phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint64_t>> itemsPriceMap;
 		uint16_t itemsSaleCount;
 
 		std::vector<ItemClassification*> itemsClassifications;
@@ -870,6 +869,6 @@ class Game {
 		std::unique_ptr<IOWheel> m_IOWheel;
 };
 
-constexpr auto g_game = &Game::getInstance;
+constexpr auto g_game = Game::getInstance;
 
 #endif // SRC_GAME_GAME_H_

@@ -166,6 +166,9 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "getStorageValue", PlayerFunctions::luaPlayerGetStorageValue);
 			registerMethod(L, "Player", "setStorageValue", PlayerFunctions::luaPlayerSetStorageValue);
 
+			registerMethod(L, "Player", "getStorageValueByName", PlayerFunctions::luaPlayerGetStorageValueByName);
+			registerMethod(L, "Player", "setStorageValueByName", PlayerFunctions::luaPlayerSetStorageValueByName);
+
 			registerMethod(L, "Player", "addItem", PlayerFunctions::luaPlayerAddItem);
 			registerMethod(L, "Player", "addItemEx", PlayerFunctions::luaPlayerAddItemEx);
 			registerMethod(L, "Player", "removeStashItem", PlayerFunctions::luaPlayerRemoveStashItem);
@@ -279,6 +282,7 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "instantSkillWOD", PlayerFunctions::luaPlayerInstantSkillWOD);
 			registerMethod(L, "Player", "upgradeSpellsWOD", PlayerFunctions::luaPlayerUpgradeSpellWOD);
+			registerMethod(L, "Player", "revelationStageWOD", PlayerFunctions::luaPlayerRevelationStageWOD);
 			registerMethod(L, "Player", "reloadData", PlayerFunctions::luaPlayerReloadData);
 			registerMethod(L, "Player", "onThinkWheelOfDestiny", PlayerFunctions::luaPlayerOnThinkWheelOfDestiny);
 			registerMethod(L, "Player", "avatarTimer", PlayerFunctions::luaPlayerAvatarTimer);
@@ -491,6 +495,8 @@ class PlayerFunctions final : LuaScriptInterface {
 
 		static int luaPlayerGetStorageValue(lua_State* L);
 		static int luaPlayerSetStorageValue(lua_State* L);
+		static int luaPlayerGetStorageValueByName(lua_State* L);
+		static int luaPlayerSetStorageValueByName(lua_State* L);
 
 		static int luaPlayerAddItem(lua_State* L);
 		static int luaPlayerAddItemEx(lua_State* L);
@@ -610,6 +616,7 @@ class PlayerFunctions final : LuaScriptInterface {
 
 		static int luaPlayerInstantSkillWOD(lua_State* L);
 		static int luaPlayerUpgradeSpellWOD(lua_State* L);
+		static int luaPlayerRevelationStageWOD(lua_State* L);
 		static int luaPlayerReloadData(lua_State* L);
 		static int luaPlayerOnThinkWheelOfDestiny(lua_State* L);
 		static int luaPlayerAvatarTimer(lua_State* L);

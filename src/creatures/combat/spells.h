@@ -21,7 +21,7 @@ class InstantSpell;
 class RuneSpell;
 class Spell;
 
-using VocSpellMap = std::map<uint16_t, bool>;
+using VocSpellMap = phmap::btree_map<uint16_t, bool>;
 using InstantSpell_ptr = std::unique_ptr<InstantSpell>;
 using RuneSpell_ptr = std::unique_ptr<RuneSpell>;
 
@@ -35,10 +35,7 @@ class Spells final : public Scripts {
 		Spells &operator=(const Spells &) = delete;
 
 		static Spells &getInstance() {
-			// Guaranteed to be destroyed
-			static Spells instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Spells>();
 		}
 
 		Spell* getSpellByName(const std::string &name);
@@ -77,7 +74,7 @@ class Spells final : public Scripts {
 		friend class CombatSpell;
 };
 
-constexpr auto g_spells = &Spells::getInstance;
+constexpr auto g_spells = Spells::getInstance;
 
 using RuneSpellFunction = std::function<bool(const RuneSpell* spell, Player* player, const Position &posTo)>;
 
@@ -327,6 +324,22 @@ class Spell : public BaseSpell {
 
 		SpellType_t spellType = SPELL_UNDEFINED;
 
+		const std::string &getWords() const {
+			return m_words;
+		}
+
+		void setWords(const std::string_view &newWord) {
+			m_words = newWord.data();
+		}
+
+		const std::string &getSeparator() const {
+			return m_separator;
+		}
+
+		void setSeparator(const std::string_view &newSeparator) {
+			m_separator = newSeparator.data();
+		}
+
 	protected:
 		void applyCooldownConditions(Player* player) const;
 		bool playerSpellCheck(Player* player) const;
@@ -369,13 +382,14 @@ class Spell : public BaseSpell {
 		bool enabled = true;
 		bool premium = false;
 
-	private:
 		std::string name;
+		std::string m_words;
+		std::string m_separator;
 };
 
-class InstantSpell final : public TalkAction, public Spell {
+class InstantSpell final : public Script, public Spell {
 	public:
-		using TalkAction::TalkAction;
+		using Script::Script;
 
 		virtual bool playerCastInstant(Player* player, std::string &param);
 

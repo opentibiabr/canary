@@ -3,6 +3,10 @@ function bestiaryOnKill.onKill(player, creature, lastHit)
 	if not player:isPlayer() or not creature:isMonster() or creature:hasBeenSummoned() or creature:isPlayer() then
 		return true
 	end
+	local mType = MonsterType(creature:getName())
+	if not mType or mType:bossRace() then
+		return true
+	end
 
 	local bestiaryBetterment = Concoction.find(Concoction.Ids.BestiaryBetterment)
 	if not bestiaryBetterment then

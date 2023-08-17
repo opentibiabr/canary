@@ -42,8 +42,8 @@ int LootFunctions::luaLootSetId(lua_State* L) {
 			loot->lootBlock.id = getNumber<uint16_t>(L, 2);
 			pushBoolean(L, true);
 		} else {
-			SPDLOG_WARN("[LootFunctions::luaLootSetId] - "
-						"Unknown loot item loot, int value expected");
+			g_logger().warn("[LootFunctions::luaLootSetId] - "
+							"Unknown loot item loot, int value expected");
 			lua_pushnil(L);
 		}
 	} else {
@@ -60,17 +60,17 @@ int LootFunctions::luaLootSetIdFromName(lua_State* L) {
 		auto ids = Item::items.nameToItems.equal_range(asLowerCaseString(name));
 
 		if (ids.first == Item::items.nameToItems.cend()) {
-			SPDLOG_WARN("[LootFunctions::luaLootSetIdFromName] - "
-						"Unknown loot item {}",
-						name);
+			g_logger().warn("[LootFunctions::luaLootSetIdFromName] - "
+							"Unknown loot item {}",
+							name);
 			lua_pushnil(L);
 			return 1;
 		}
 
 		if (std::next(ids.first) != ids.second) {
-			SPDLOG_WARN("[LootFunctions::luaLootSetIdFromName] - "
-						"Non-unique loot item {}",
-						name);
+			g_logger().warn("[LootFunctions::luaLootSetIdFromName] - "
+							"Non-unique loot item {}",
+							name);
 			lua_pushnil(L);
 			return 1;
 		}
@@ -78,8 +78,8 @@ int LootFunctions::luaLootSetIdFromName(lua_State* L) {
 		loot->lootBlock.id = ids.first->second;
 		pushBoolean(L, true);
 	} else {
-		SPDLOG_WARN("[LootFunctions::luaLootSetIdFromName] - "
-					"Unknown loot item loot, string value expected");
+		g_logger().warn("[LootFunctions::luaLootSetIdFromName] - "
+						"Unknown loot item loot, string value expected");
 		lua_pushnil(L);
 	}
 	return 1;

@@ -22,10 +22,7 @@ class Scripts {
 		Scripts &operator=(const Scripts &) = delete;
 
 		static Scripts &getInstance() {
-			// Guaranteed to be destroyed
-			static Scripts instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Scripts>();
 		}
 
 		void clearAllScripts() const;
@@ -49,7 +46,7 @@ class Scripts {
 		LuaScriptInterface scriptInterface;
 };
 
-constexpr auto g_scripts = &Scripts::getInstance;
+constexpr auto g_scripts = Scripts::getInstance;
 
 class Script {
 	public:
@@ -80,13 +77,13 @@ class Script {
 		// Load revscriptsys callback
 		bool loadCallback() {
 			if (!scriptInterface || scriptId != 0) {
-				SPDLOG_ERROR("[Script::loadCallback] scriptInterface is nullptr, scriptid = {}, scriptName {}", scriptId, scriptInterface->getLoadingScriptName());
+				g_logger().error("[Script::loadCallback] scriptInterface is nullptr, scriptid = {}, scriptName {}", scriptId, scriptInterface->getLoadingScriptName());
 				return false;
 			}
 
 			int32_t id = scriptInterface->getEvent();
 			if (id == -1) {
-				SPDLOG_ERROR("[Script::loadCallback] Event {} not found for script with name {}", getScriptTypeName(), scriptInterface->getLoadingScriptName());
+				g_logger().error("[Script::loadCallback] Event {} not found for script with name {}", getScriptTypeName(), scriptInterface->getLoadingScriptName());
 				return false;
 			}
 

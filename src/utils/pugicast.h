@@ -37,13 +37,13 @@ namespace pugi {
 		// If the string could not be parsed as the specified type
 		if (errorCode == std::errc::invalid_argument) {
 			// Throw an exception indicating that the argument is invalid
-			SPDLOG_ERROR("Invalid argument {}", str);
+			g_logger().error("Invalid argument {}", str);
 			throw std::invalid_argument("Invalid argument: " + std::string(str));
 		}
 		// If the parsed value is out of range for the specified type
 		else if (errorCode == std::errc::result_out_of_range) {
 			// Throw an exception indicating that the result is out of range
-			SPDLOG_ERROR("Result out of range: {}", str);
+			g_logger().error("Result out of range: {}", str);
 			throw std::out_of_range("Result out of range: " + std::string(str));
 		}
 

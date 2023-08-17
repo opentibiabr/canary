@@ -1656,6 +1656,37 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetStorageValueByName(lua_State* L) {
+	// player:getStorageValueByName(name)
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto name = getString(L, 2);
+	lua_pushnumber(L, player->getStorageValueByName(name));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetStorageValueByName(lua_State* L) {
+	// player:setStorageValueByName(storageName, value)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto storageName = getString(L, 2);
+	int32_t value = getNumber<int32_t>(L, 3);
+
+	player->addStorageValueByName(storageName, value);
+	pushBoolean(L, true);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 	// player:addItem(itemId, count = 1, canDropOnMap = true, subType = 1, slot = CONST_SLOT_WHEREEVER, tier = 0)
 	Player* player = getUserdata<Player>(L, 1);
@@ -3671,6 +3702,32 @@ int PlayerFunctions::luaPlayerUpgradeSpellWOD(lua_State* L) {
 	} else {
 		player->wheel()->downgradeSpell(name);
 	}
+
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRevelationStageWOD(lua_State* L) {
+	// player:revelationStagesWOD([name[, set]])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		player->wheel()->resetUpgradedSpells();
+		return 1;
+	}
+
+	std::string name = getString(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, static_cast<lua_Number>(player->wheel()->getStage(name)));
+		return 1;
+	}
+
+	bool value = getNumber<uint8_t>(L, 3);
+	player->wheel()->setSpellInstant(name, value);
 
 	pushBoolean(L, true);
 	return 1;

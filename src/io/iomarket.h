@@ -14,12 +14,13 @@
 #include "declarations.hpp"
 
 class IOMarket {
-		using StatisticsMap = std::map<uint16_t, std::map<uint8_t, MarketStatistics>>;
+		using StatisticsMap = phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, MarketStatistics>>;
 
 	public:
+		IOMarket() = default;
+
 		static IOMarket &getInstance() {
-			static IOMarket instance;
-			return instance;
+			return inject<IOMarket>();
 		}
 
 		static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier);
@@ -51,8 +52,6 @@ class IOMarket {
 		static uint8_t getTierFromDatabaseTable(const std::string &string);
 
 	private:
-		IOMarket() = default;
-
 		// [uint16_t = item id, [uint8_t = item tier, MarketStatistics = structure of the statistics]]
 		StatisticsMap purchaseStatistics;
 		StatisticsMap saleStatistics;

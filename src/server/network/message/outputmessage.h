@@ -69,13 +69,14 @@ class OutputMessage : public NetworkMessage {
 
 class OutputMessagePool {
 	public:
+		OutputMessagePool() = default;
+
 		// non-copyable
 		OutputMessagePool(const OutputMessagePool &) = delete;
 		OutputMessagePool &operator=(const OutputMessagePool &) = delete;
 
 		static OutputMessagePool &getInstance() {
-			static OutputMessagePool instance;
-			return instance;
+			return inject<OutputMessagePool>();
 		}
 
 		void sendAll();
@@ -87,7 +88,6 @@ class OutputMessagePool {
 		void removeProtocolFromAutosend(const Protocol_ptr &protocol);
 
 	private:
-		OutputMessagePool() = default;
 		// NOTE: A vector is used here because this container is mostly read
 		// and relatively rarely modified (only when a client connects/disconnects)
 		std::vector<Protocol_ptr> bufferedProtocols;

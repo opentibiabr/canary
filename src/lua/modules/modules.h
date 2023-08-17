@@ -64,10 +64,7 @@ class Modules final : public BaseEvents {
 		Modules &operator=(const Modules &) = delete;
 
 		static Modules &getInstance() {
-			// Guaranteed to be destroyed
-			static Modules instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Modules>();
 		}
 
 		void executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t byte) const;
@@ -80,12 +77,12 @@ class Modules final : public BaseEvents {
 		bool registerEvent(Event_ptr event, const pugi::xml_node &node) override;
 		void clear(bool) override final;
 
-		typedef std::map<uint8_t, Module> ModulesList;
+		typedef phmap::btree_map<uint8_t, Module> ModulesList;
 		ModulesList recvbyteList;
 
 		LuaScriptInterface scriptInterface;
 };
 
-constexpr auto g_modules = &Modules::getInstance;
+constexpr auto g_modules = Modules::getInstance;
 
 #endif // SRC_LUA_MODULES_MODULES_H_

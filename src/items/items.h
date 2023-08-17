@@ -172,6 +172,12 @@ class ItemType {
 		bool isQuiver() const {
 			return (type == ITEM_TYPE_QUIVER);
 		}
+		bool isLadder() const {
+			return (type == ITEM_TYPE_LADDER);
+		}
+		bool isDummy() const {
+			return (type == ITEM_TYPE_DUMMY);
+		}
 		bool hasSubType() const {
 			return (isFluidContainer() || isSplash() || stackable || charges != 0);
 		}
@@ -269,7 +275,7 @@ class ItemType {
 		uint16_t speed = 0;
 		uint16_t wareId = 0;
 		uint16_t bedPartOf = 0;
-		uint8_t stackSize = 100;
+		uint16_t m_transformOnUse = 0;
 
 		MagicEffectClasses magicEffect = CONST_ME_NONE;
 		Direction bedPartnerDir = DIRECTION_NONE;
@@ -280,7 +286,7 @@ class ItemType {
 		RaceType_t corpseType = RACE_NONE;
 		Fluids_t fluidSource = FLUID_NONE;
 		TileFlags_t floorChange = TILESTATE_NONE;
-		std::map<ImbuementTypes_t, uint16_t> imbuementTypes;
+		phmap::btree_map<ImbuementTypes_t, uint16_t> imbuementTypes;
 
 		uint8_t upgradeClassification = 0;
 		uint8_t alwaysOnTopOrder = 0;
@@ -288,6 +294,8 @@ class ItemType {
 		uint8_t lightColor = 0;
 		uint8_t shootRange = 1;
 		uint8_t imbuementSlot = 0;
+		uint8_t stackSize = 100;
+
 		int8_t hitChance = 0;
 
 		// 12.90
@@ -378,8 +386,24 @@ class Items {
 
 		NameMap nameToItems;
 
+		void addLadderId(uint16_t newId) {
+			ladders.push_back(newId);
+		}
+		void addDummyId(uint16_t newId, uint16_t rate) {
+			dummys[newId] = rate;
+		}
+
+		const std::vector<uint16_t> &getLadders() const {
+			return ladders;
+		}
+		const std::unordered_map<uint16_t, uint16_t> &getDummys() const {
+			return dummys;
+		}
+
 	private:
 		std::vector<ItemType> items;
+		std::vector<uint16_t> ladders;
+		std::unordered_map<uint16_t, uint16_t> dummys;
 		InventoryVector inventory;
 };
 

@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Goshnar's Malice")
 local monster = {}
 
 monster.description = "Goshnar's Malice"
-monster.experience = 200000
+monster.experience = 75000
 monster.outfit = {
 	lookType = 1306,
 	lookHead = 0,
@@ -18,6 +18,7 @@ monster.maxHealth = 300000
 monster.race = "undead"
 monster.corpse = 33871
 monster.speed = 150
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 2000,
@@ -60,7 +61,7 @@ monster.flags = {
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -74,7 +75,6 @@ monster.summon = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "GOSHNAR'S MALICE PREPARES TO DEVOUR A TRAPPED SOUL!", yell = true}
 }
 
 monster.loot = {
@@ -104,17 +104,25 @@ monster.loot = {
 	{name = "bag you desire", chance = 100},
 }
 
+-- TODO: monster-abilities
+--monster.attacks = {
+--	{name ="melee", interval = 2000, chance = 100, minDamage = -0, maxDamage = -0},
+--	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -?, maxDamage = -?, range = ?, effect = <>, target = ?}, --Ice Wave
+--	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -?, maxDamage = -?, range = ?, effect = <>, target = ?}, --Ice Beam
+--	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -?, maxDamage = -?, range = ?, effect = <>, target = ?}, --Ice Bomb on self
+--}
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -2000},
-	{name ="combat", interval = 2000, chance = 22, type = COMBAT_ICEDAMAGE, minDamage = -450, maxDamage = -1400, length = 10, spread = 4, effect = CONST_ME_ICEAREA, target = false},
-	{name ="combat", interval = 2000, chance = 30, type = COMBAT_ICEDAMAGE, minDamage = -350, maxDamage = -1000, range = 7, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEAREA, target = true}
+	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5000},
+	{name ="combat", interval = 2000, chance = 22, type = COMBAT_ICEDAMAGE, minDamage = -2450, maxDamage = -4400, length = 10, spread = 4, effect = CONST_ME_ICEAREA, target = false},
+	{name ="combat", interval = 2000, chance = 30, type = COMBAT_ICEDAMAGE, minDamage = -2350, maxDamage = -3000, range = 7, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEAREA, target = true}
 }
 
 monster.defenses = {
 	defense = 160,
 	armor = 160,
-	{name ="speed", interval = 1000, chance = 20, speedChange = 100, effect = CONST_ME_MAGIC_RED, target = false, duration = 30000},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 350, maxDamage = 1250, effect = CONST_ME_MAGIC_BLUE, target = false},
+	mitigation = 5.40,
+	{name ="speed", interval = 1000, chance = 20, speedChange = 500, effect = CONST_ME_MAGIC_RED, target = false, duration = 10000},
+	{name ="combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 1250, maxDamage = 3250, effect = CONST_ME_MAGIC_BLUE, target = false},
 }
 
 monster.elements = {
@@ -122,12 +130,12 @@ monster.elements = {
 	{type = COMBAT_ENERGYDAMAGE, percent = 15},
 	{type = COMBAT_EARTHDAMAGE, percent = 15},
 	{type = COMBAT_FIREDAMAGE, percent = 15},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
+	{type = COMBAT_LIFEDRAIN, percent = 0},
 	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
+	{type = COMBAT_DROWNDAMAGE, percent = 0},
 	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{type = COMBAT_HOLYDAMAGE, percent = 0},
+	{type = COMBAT_DEATHDAMAGE, percent = 0},
 }
 
 monster.immunities = {

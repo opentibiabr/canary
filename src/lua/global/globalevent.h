@@ -27,10 +27,7 @@ class GlobalEvents final : public Scripts {
 		GlobalEvents &operator=(const GlobalEvents &) = delete;
 
 		static GlobalEvents &getInstance() {
-			// Guaranteed to be destroyed
-			static GlobalEvents instance;
-			// Instantiated on first use
-			return instance;
+			return inject<GlobalEvents>();
 		}
 
 		void startup() const;
@@ -49,7 +46,7 @@ class GlobalEvents final : public Scripts {
 		int32_t thinkEventId = 0, timerEventId = 0;
 };
 
-constexpr auto g_globalEvents = &GlobalEvents::getInstance;
+constexpr auto g_globalEvents = GlobalEvents::getInstance;
 
 class GlobalEvent final : public Script {
 	public:

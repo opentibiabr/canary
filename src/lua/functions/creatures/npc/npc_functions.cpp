@@ -322,9 +322,10 @@ int NpcFunctions::luaNpcIsPlayerInteractingOnTopic(lua_State* L) {
 }
 
 int NpcFunctions::luaNpcIsInTalkRange(lua_State* L) {
-	// npc:isInTalkRange()
+	// npc:isInTalkRange(position[, range = 4])
 	Npc* npc = getUserdata<Npc>(L, 1);
 	const Position &position = getPosition(L, 2);
+	uint32_t range = getNumber<uint32_t>(L, 3, 4);
 
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
@@ -332,7 +333,7 @@ int NpcFunctions::luaNpcIsInTalkRange(lua_State* L) {
 		return 1;
 	}
 
-	pushBoolean(L, npc && npc->canInteract(position));
+	pushBoolean(L, npc && npc->canInteract(position, range));
 	return 1;
 }
 
@@ -610,8 +611,8 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 	uint64_t backpackCost = backpacksPurchased * shoppingBagPrice;
 	if (npc->getCurrency() == ITEM_GOLD_COIN) {
 		if (!g_game().removeMoney(player, itemCost + backpackCost, 0, true)) {
-			SPDLOG_ERROR("[NpcFunctions::luaNpcSellItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npc->getName());
-			SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, npc->getName(), player->getPosition().toString());
+			g_logger().error("[NpcFunctions::luaNpcSellItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npc->getName());
+			g_logger().debug("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, npc->getName(), player->getPosition().toString());
 		} else if (backpacksPurchased > 0) {
 			ss << "Bought " << std::to_string(itemsPurchased) << "x " << it.name << " and " << std::to_string(backpacksPurchased);
 			if (backpacksPurchased > 1) {
@@ -634,8 +635,8 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 		}
 	} else {
 		if (!g_game().removeMoney(player, backpackCost, 0, true) || !player->removeItemOfType(npc->getCurrency(), itemCost, -1, false)) {
-			SPDLOG_ERROR("[NpcFunctions::luaNpcSellItem (removeItemOfType)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npc->getName());
-			SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, npc->getName(), player->getPosition().toString());
+			g_logger().error("[NpcFunctions::luaNpcSellItem (removeItemOfType)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npc->getName());
+			g_logger().debug("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, npc->getName(), player->getPosition().toString());
 		} else if (backpacksPurchased > 0) {
 			ss << "Bought " << std::to_string(itemsPurchased) << "x " << it.name << " for " << std::to_string(itemCost) << " " << Item::items[npc->getCurrency()].name;
 			if (itemCost > 1) {

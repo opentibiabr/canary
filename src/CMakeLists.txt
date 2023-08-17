@@ -140,22 +140,32 @@ endif()
 # *****************************************************************************
 # Packages / Libs
 # *****************************************************************************
-find_package(asio CONFIG REQUIRED)
-find_package(absl CONFIG REQUIRED)
 find_package(CURL CONFIG REQUIRED)
 find_package(GMP REQUIRED)
-find_package(jsoncpp CONFIG REQUIRED)
 find_package(LuaJIT REQUIRED)
 find_package(MySQL REQUIRED)
-find_package(magic_enum CONFIG REQUIRED)
 find_package(Protobuf REQUIRED)
+find_package(Threads REQUIRED)
+find_package(ZLIB REQUIRED)
+find_package(absl CONFIG REQUIRED)
+find_package(asio CONFIG REQUIRED)
+find_package(eventpp CONFIG REQUIRED)
+find_package(jsoncpp CONFIG REQUIRED)
+find_package(magic_enum CONFIG REQUIRED)
+find_package(mio REQUIRED)
 find_package(pugixml CONFIG REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(unofficial-argon2 CONFIG REQUIRED)
 find_package(unofficial-libmariadb CONFIG REQUIRED)
-find_package(mio REQUIRED)
-find_package(Threads REQUIRED)
-find_package(ZLIB REQUIRED)
+
+find_path(BOOST_DI_INCLUDE_DIRS "boost/di.hpp")
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARY_DEBUG})
+else()
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARY_RELEASE})
+endif()
+
 
 include(GNUInstallDirs)
 
@@ -186,6 +196,7 @@ PRIVATE
 	creatures/players/imbuements/imbuements.cpp
 	creatures/players/management/ban.cpp
 	creatures/players/management/waitlist.cpp
+	creatures/players/storages/storages.cpp
 	creatures/players/player.cpp
 	creatures/players/wheel/player_wheel.cpp
 	creatures/players/vocations/vocation.cpp
@@ -194,11 +205,12 @@ PRIVATE
 	database/databasetasks.cpp
 	game/functions/game_reload.cpp
 	game/game.cpp
+	game/bank/bank.cpp
 	game/movement/position.cpp
 	game/movement/teleport.cpp
 	game/scheduling/scheduler.cpp
 	game/scheduling/events_scheduler.cpp
-	game/scheduling/tasks.cpp
+	game/scheduling/dispatcher.cpp
 	io/fileloader.cpp
 	io/io_wheel.cpp
 	io/iobestiary.cpp
@@ -231,6 +243,7 @@ PRIVATE
 	items/tile.cpp
 	items/trashholder.cpp
 	items/weapons/weapons.cpp
+	lib/logging/log_with_spd_log.cpp
 	lua/callbacks/creaturecallback.cpp
 	lua/callbacks/event_callback.cpp
 	lua/callbacks/events_callbacks.cpp
@@ -243,6 +256,7 @@ PRIVATE
 	lua/functions/lua_functions_loader.cpp
 	lua/functions/core/game/config_functions.cpp
 	lua/functions/core/game/game_functions.cpp
+	lua/functions/core/game/bank_functions.cpp
 	lua/functions/core/game/global_functions.cpp
 	lua/functions/core/game/lua_enums.cpp
 	lua/functions/core/game/modal_window_functions.cpp
@@ -299,8 +313,8 @@ PRIVATE
 	map/house/house.cpp
 	map/house/housetile.cpp
 	map/map.cpp
+	canary_server.cpp
 	otserv.cpp
-	pch.cpp
 	security/argon.cpp
 	security/rsa.cpp
 	server/network/connection/connection.cpp
@@ -344,10 +358,11 @@ if (MSVC)
 
 	target_include_directories(${PROJECT_NAME}
 		PRIVATE
+			${BOOST_DI_INCLUDE_DIRS}
 			${CMAKE_SOURCE_DIR}/src
+			${GMP_INCLUDE_DIR}
 			${LUAJIT_INCLUDE_DIRS}
 			${PARALLEL_HASHMAP_INCLUDE_DIRS}
-			${GMP_INCLUDE_DIR}
 	)
 
 	target_link_libraries(${PROJECT_NAME}
@@ -356,9 +371,11 @@ if (MSVC)
 			${GMP_LIBRARIES}
 			${LUAJIT_LIBRARIES}
 			${MYSQL_CLIENT_LIBS}
-			asio::asio
-			absl::any absl::log absl::base absl::bits
 			CURL::libcurl
+			ZLIB::ZLIB
+			absl::any absl::log absl::base absl::bits
+			asio::asio
+			eventpp::eventpp
 			fmt::fmt
 			magic_enum::magic_enum
 			mio::mio
@@ -368,26 +385,28 @@ if (MSVC)
 			unofficial::argon2::libargon2
 			unofficial::libmariadb
 			unofficial::mariadbclient
-			ZLIB::ZLIB
 	)
 
 else()
 
 	target_include_directories(${PROJECT_NAME}
 		PRIVATE
+			${BOOST_DI_INCLUDE_DIRS}
 			${CMAKE_SOURCE_DIR}/src
+			${GMP_INCLUDE_DIRS}
 			${LUAJIT_INCLUDE_DIRS}
 			${PARALLEL_HASHMAP_INCLUDE_DIRS}
-			${GMP_INCLUDE_DIRS}
 	)
 
 	target_link_libraries(${PROJECT_NAME}
 		PRIVATE
 			${LUAJIT_LIBRARIES}
 			${GMP_LIBRARIES}
-			asio::asio
-			absl::any absl::log absl::base absl::bits
 			CURL::libcurl
+			ZLIB::ZLIB
+			absl::any absl::log absl::base absl::bits
+			asio::asio
+			eventpp::eventpp
 			fmt::fmt
 			jsoncpp_static
 			magic_enum::magic_enum
@@ -398,7 +417,6 @@ else()
 			unofficial::argon2::libargon2
 			unofficial::libmariadb
 			unofficial::mariadbclient
-			ZLIB::ZLIB
 
 			Threads::Threads
 	)

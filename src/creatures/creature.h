@@ -346,21 +346,17 @@ class Creature : virtual public Thing {
 		std::vector<Condition*> getConditionsByType(ConditionType_t type) const;
 		void executeConditions(uint32_t interval);
 		bool hasCondition(ConditionType_t type, uint32_t subId = 0) const;
-		virtual bool isImmune(ConditionType_t type) const;
-		virtual bool isImmune(CombatType_t type) const;
-		virtual bool isSuppress(ConditionType_t type) const;
-		virtual uint32_t getDamageImmunities() const {
-			return 0;
-		}
-		virtual const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionImmunities() const {
-			const static std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> array = {};
-			return array;
-		}
 
-		virtual const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionSuppressions() const {
-			const static std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> array = {};
-			return array;
+		virtual bool isImmune(CombatType_t type) const {
+			return false;
 		}
+		virtual bool isImmune(ConditionType_t type) const {
+			return false;
+		}
+		virtual bool isSuppress(ConditionType_t type) const {
+			return false;
+		};
+
 		virtual bool isAttackable() const {
 			return true;
 		}
@@ -522,7 +518,7 @@ class Creature : virtual public Thing {
 				int32_t total;
 				int64_t ticks;
 		};
-		using CountMap = std::map<uint32_t, CountBlock_t>;
+		using CountMap = phmap::btree_map<uint32_t, CountBlock_t>;
 		CountMap getDamageMap() const {
 			return damageMap;
 		}

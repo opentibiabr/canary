@@ -63,7 +63,7 @@ class AStarNodes {
 		int_fast32_t closedNodes;
 };
 
-using SpectatorCache = std::map<Position, SpectatorHashSet>;
+using SpectatorCache = phmap::btree_map<Position, SpectatorHashSet>;
 
 static constexpr int32_t FLOOR_BITS = 3;
 static constexpr int32_t FLOOR_SIZE = (1 << FLOOR_BITS);
@@ -260,7 +260,7 @@ class Map {
 
 		bool getPathMatching(const Position &startPos, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) const;
 
-		std::map<std::string, Position> waypoints;
+		phmap::btree_map<std::string, Position> waypoints;
 
 		QTreeLeafNode* getQTNode(uint16_t x, uint16_t y) {
 			return QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y);

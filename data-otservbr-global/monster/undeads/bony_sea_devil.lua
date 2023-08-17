@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Bony Sea Devil")
 local monster = {}
 
 monster.description = "a bony sea devil"
-monster.experience = 32500
+monster.experience = 19470
 monster.outfit = {
 	lookType = 1294,
 	lookHead = 0,
@@ -18,13 +18,13 @@ monster.Bestiary = {
 	class = "Undead",
 	race = BESTY_RACE_UNDEAD,
 	toKill = 5000,
-	FirstUnlock = 25,
-	SecondUnlock = 3394,
+	FirstUnlock = 200,
+	SecondUnlock = 2000,
 	CharmsPoints = 100,
 	Stars = 5,
 	Occurrence = 0,
 	Locations = "Ebb and Flow."
-	}
+}
 
 monster.health = 24000
 monster.maxHealth = 24000
@@ -62,56 +62,57 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 4,
+	color = 143,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{text = "Bling.", yell = false},
-	{text = "Clank.", yell = false}
+	{text = "Clank.", yell = false},
 }
 
 monster.loot = {
-	{name = "crystal coin", chance = 70540},
-	{name = "platinum coin", chance = 90540, maxCount = 32},
-	{name = "ultimate health potion", chance = 72220, maxCount = 7},
-	{id = 281, chance = 54560}, -- giant shimmering pearl (green)
-	{id = 282, chance = 54560}, -- giant shimmering pearl (brown)
-	{name = "gold ingot", chance = 34920},
-	{name = "glacier kilt", chance = 12920},
-	{name = "northwind rod", chance = 11920},
-	{name = "wand of voodoo", chance = 14000},
-	{name = "glacial rod", chance = 13450},
-	{name = "green crystal fragment", chance = 22920},
-	{name = "onyx chip", chance = 20000},
-	{name = "rainbow quartz", chance = 13660, maxCount = 2},
-	{id = 33929, chance = 14560}, -- rod
-	{id = 34014, chance = 14560}, -- jaws
-	{name = "skullcracker armor", chance = 1680},
+	{name = "crystal coin", chance = 59290},
+	{name = "ultimate health potion", chance = 19470, maxCount = 6},
+	{name = "gold ingot", chance = 15040},
+	{id = 282, chance = 9730}, -- giant shimmering pearl
+	{name = "hailstorm rod", chance = 7960},
+	{name = "onyx chip", chance = 6190},
+	{name = "green crystal fragment", chance = 5310},
+	{name = "wand of voodoo", chance = 4420},
+	{name = "violet gem", chance = 4420},
+	{name = "jaws", chance = 3540},
+	{name = "rainbow quartz", chance = 2650, maxCount = 3},
+	{name = "northwind rod", chance = 1770},
+	{name = "underworld rod", chance = 1770},
+	{name = "skullcracker armor", chance = 1770},
+	{id = 33929, chance = 880}, -- rod
 	{name = "goblet of gloom", chance = 880},
-	{id = 34109, chance = 50} -- bag you desire
+	{name = "glacier kilt", chance = 880},
+	{name = "glacial rod", chance = 1210},
+	{id = 34109, chance = 20}, -- bag you desire
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -600},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -550, maxDamage = -1100, length = 5, spread = 3, effect = CONST_ME_GROUNDSHAKER, target = false},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -1000, radius = 7, effect = CONST_ME_BIGCLOUDS, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -550, maxDamage = -1000, range = 7, shootEffect = CONST_ANI_SNOWBALL, effect = CONST_ME_ICEATTACK, target = true},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_ICEDAMAGE, minDamage = -300, maxDamage = -700, range = 7, radius = 5, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEAREA, target = true}
-	-- Fear 
-	-- Chain: const_me-> CONST_ME_ICEATTACK, combat_t->COMBAT_ICEDAMAGE
-
+	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900},
+	{name ="combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -900, maxDamage = -1350, length = 5, spread = 3, effect = CONST_ME_GROUNDSHAKER, target = false},
+	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -700, maxDamage = -1000, radius = 7, effect = CONST_ME_BIGCLOUDS, target = false},
+	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -950, maxDamage = -1260, range = 7, shootEffect = CONST_ANI_SNOWBALL, effect = CONST_ME_ICEATTACK, target = true},
+	{name ="combat", interval = 2000, chance = 25, type = COMBAT_ICEDAMAGE, minDamage = -950, maxDamage = -1100, range = 7, radius = 5, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEAREA, target = true},
+	{name ="ice chain", interval = 2000, chance = 15, minDamage = -1100, maxDamage = -1300, range = 7},
+	{name ="fear", interval = 2000, chance = 1, target = true},
 }
 
 monster.defenses = {
-	defense = 80,
-	armor = 100
+	defense = 100,
+	armor = 100,
+	mitigation = 3.34,
 }
 
 monster.elements = {
@@ -123,8 +124,8 @@ monster.elements = {
 	{type = COMBAT_MANADRAIN, percent = 0},
 	{type = COMBAT_DROWNDAMAGE, percent = 0},
 	{type = COMBAT_ICEDAMAGE, percent = 60},
-	{type = COMBAT_HOLYDAMAGE , percent = -10},
-	{type = COMBAT_DEATHDAMAGE , percent = 5}
+	{type = COMBAT_HOLYDAMAGE, percent = -10},
+	{type = COMBAT_DEATHDAMAGE, percent = 5},
 }
 
 monster.immunities = {

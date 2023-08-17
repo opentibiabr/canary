@@ -22,8 +22,7 @@ WaitingList::WaitingList() :
 	info(new WaitListInfo) { }
 
 WaitingList &WaitingList::getInstance() {
-	static WaitingList waitingList;
-	return waitingList;
+	return inject<WaitingList>();
 }
 
 void WaitingList::cleanupList(WaitList &list) {
@@ -32,7 +31,7 @@ void WaitingList::cleanupList(WaitList &list) {
 	auto it = list.begin();
 	while (it != list.end()) {
 		auto timeout = static_cast<int64_t>(it->timeout);
-		SPDLOG_WARN("time: {}", timeout - time);
+		g_logger().warn("time: {}", timeout - time);
 		if ((timeout - time) <= 0) {
 			info->playerReferences.erase(it->playerGUID);
 			it = list.erase(it);

@@ -5,6 +5,10 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug - Unity Build|x64">
+      <Configuration>Debug - Unity Build</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -37,6 +41,7 @@
     <ClInclude Include="..\src\creatures\players\imbuements\imbuements.h" />
     <ClInclude Include="..\src\creatures\players\management\ban.h" />
     <ClInclude Include="..\src\creatures\players\management\waitlist.h" />
+    <ClInclude Include="..\src\creatures\players\storages\storages.hpp" />
     <ClInclude Include="..\src\creatures\players\player.h" />
     <ClInclude Include="..\src\creatures\players\vocations\vocation.h" />
     <ClInclude Include="..\src\creatures\players\wheel\player_wheel.hpp" />
@@ -49,12 +54,14 @@
     <ClInclude Include="..\src\enums\item_attribute.hpp" />
     <ClInclude Include="..\src\game\functions\game_reload.hpp" />
     <ClInclude Include="..\src\game\game.h" />
+    <ClInclude Include="..\src\game\bank\bank.hpp" />
     <ClInclude Include="..\src\game\game_definitions.hpp" />
     <ClInclude Include="..\src\game\movement\position.h" />
     <ClInclude Include="..\src\game\movement\teleport.h" />
     <ClInclude Include="..\src\game\scheduling\events_scheduler.hpp" />
     <ClInclude Include="..\src\game\scheduling\scheduler.h" />
-    <ClInclude Include="..\src\game\scheduling\tasks.h" />
+    <ClInclude Include="..\src\game\scheduling\dispatcher.h" />
+    <ClInclude Include="..\src\game\scheduling\task.hpp" />
     <ClInclude Include="..\src\io\fileloader.h" />
     <ClInclude Include="..\src\io\functions\iologindata_load_player.hpp" />
     <ClInclude Include="..\src\io\functions\iologindata_save_player.hpp" />
@@ -89,6 +96,12 @@
     <ClInclude Include="..\src\items\tile.h" />
     <ClInclude Include="..\src\items\trashholder.h" />
     <ClInclude Include="..\src\items\weapons\weapons.h" />
+    <ClInclude Include="..\src\lib\di\container.hpp" />
+    <ClInclude Include="..\src\lib\logging\logger.hpp" />
+    <ClInclude Include="..\src\lib\logging\log_with_spd_log.hpp" />
+    <ClInclude Include="..\src\lib\messaging\command.hpp" />
+    <ClInclude Include="..\src\lib\messaging\event.hpp" />
+    <ClInclude Include="..\src\lib\messaging\message.hpp" />
     <ClInclude Include="..\src\lua\callbacks\creaturecallback.h" />
     <ClInclude Include="..\src\lua\callbacks\event_callback.hpp" />
     <ClInclude Include="..\src\lua\callbacks\events_callbacks.hpp" />
@@ -103,6 +116,7 @@
     <ClInclude Include="..\src\lua\functions\core\game\core_game_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\game_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\global_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\core\game\bank_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\lua_enums.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\modal_window_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\bit_functions.hpp" />
@@ -212,6 +226,7 @@
     <ClCompile Include="..\src\creatures\players\imbuements\imbuements.cpp" />
     <ClCompile Include="..\src\creatures\players\management\ban.cpp" />
     <ClCompile Include="..\src\creatures\players\management\waitlist.cpp" />
+    <ClCompile Include="..\src\creatures\players\storages\storages.cpp" />
     <ClCompile Include="..\src\creatures\players\player.cpp" />
     <ClCompile Include="..\src\creatures\players\vocations\vocation.cpp" />
     <ClCompile Include="..\src\creatures\players\wheel\player_wheel.cpp" />
@@ -220,11 +235,12 @@
     <ClCompile Include="..\src\database\databasetasks.cpp" />
     <ClCompile Include="..\src\game\functions\game_reload.cpp" />
     <ClCompile Include="..\src\game\game.cpp" />
+    <ClCompile Include="..\src\game\bank\bank.cpp" />
     <ClCompile Include="..\src\game\movement\position.cpp" />
     <ClCompile Include="..\src\game\movement\teleport.cpp" />
     <ClCompile Include="..\src\game\scheduling\events_scheduler.cpp" />
     <ClCompile Include="..\src\game\scheduling\scheduler.cpp" />
-    <ClCompile Include="..\src\game\scheduling\tasks.cpp" />
+    <ClCompile Include="..\src\game\scheduling\dispatcher.cpp" />
     <ClCompile Include="..\src\io\fileloader.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_load_player.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_save_player.cpp" />
@@ -256,6 +272,7 @@
     <ClCompile Include="..\src\items\tile.cpp" />
     <ClCompile Include="..\src\items\trashholder.cpp" />
     <ClCompile Include="..\src\items\weapons\weapons.cpp" />
+    <ClCompile Include="..\src\lib\logging\log_with_spd_log.cpp" />
     <ClCompile Include="..\src\lua\callbacks\creaturecallback.cpp" />
     <ClCompile Include="..\src\lua\callbacks\event_callback.cpp" />
     <ClCompile Include="..\src\lua\callbacks\events_callbacks.cpp" />
@@ -268,6 +285,7 @@
     <ClCompile Include="..\src\lua\functions\core\game\config_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\game_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\global_functions.cpp" />
+    <ClCompile Include="..\src\lua\functions\core\game\bank_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\lua_enums.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\modal_window_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\bit_functions.cpp" />
@@ -325,7 +343,7 @@
     <ClCompile Include="..\src\map\house\housetile.cpp" />
     <ClCompile Include="..\src\map\map.cpp" />
     <ClCompile Include="..\src\otserv.cpp" />
-    <ClCompile Include="..\src\pch.cpp" />
+    <ClCompile Include="..\src\canary_server.cpp" />
     <ClCompile Include="..\src\protobuf\appearances.pb.cc" />
     <ClCompile Include="..\src\security\argon.cpp" />
     <ClCompile Include="..\src\security\rsa.cpp" />
@@ -344,6 +362,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\pch.hpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
@@ -356,22 +375,21 @@
     <RootNamespace>Canary</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <OutDir>..\</OutDir>
+    <OutDir>$(ProjectDir)../</OutDir>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'">
+    <PlatformToolset>v143</PlatformToolset>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <EnableUnitySupport>true</EnableUnitySupport>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PlatformToolset>v143</PlatformToolset>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
     <EnableUnitySupport>true</EnableUnitySupport>
@@ -385,6 +403,9 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <Import Project="settings.props" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
   </ImportGroup>
@@ -394,16 +415,26 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.21006.1</_ProjectFileVersion>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'" />
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'">$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'">$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'">
+    <IncludePath>..\src;$(IncludePath)</IncludePath>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)-sln-dbg</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>..\src;$(IncludePath)</IncludePath>
@@ -416,55 +447,109 @@
     <TargetName>$(ProjectName)-sln-dbg</TargetName>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
-    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+    <VcpkgEnableManifest>false</VcpkgEnableManifest>
     <VcpkgAutoLink>false</VcpkgAutoLink>
   </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <VcpkgInstalledDir>
-    </VcpkgInstalledDir>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'">
+    <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
+    <VcpkgTriplet>x64-windows</VcpkgTriplet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Vcpkg">
+    <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
     <VcpkgTriplet>x64-windows</VcpkgTriplet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Vcpkg">
-    <VcpkgInstalledDir />
+    <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
     <VcpkgTriplet>x64-windows</VcpkgTriplet>
-    <VcpkgConfiguration>Debug</VcpkgConfiguration>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug - Unity Build|x64'">
     <ClCompile>
-      <Optimization>Full</Optimization>
+      <Optimization>Disabled</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      $(VcpkgRoot)\installed\$(VcpkgTriplet)\include\;
+      vcpkg_installed\$(VcpkgTriplet)\include\
+      </AdditionalIncludeDirectories>
       <WarningLevel>Level1</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeaderFile />
       <SupportJustMyCode>true</SupportJustMyCode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(VcpkgRoot)\installed\$(VcpkgTriplet)\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>
+      $(VcpkgRoot)\installed\$(VcpkgTriplet)\lib\;
+      vcpkg_installed\$(VcpkgTriplet)\lib\
+      </AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <GenerateMapFile>false</GenerateMapFile>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>
+      $(VcpkgRoot)\installed\$(VcpkgTriplet)\include\;
+      vcpkg_installed\$(VcpkgTriplet)\include\
+      </AdditionalIncludeDirectories>
+      <WarningLevel>Level1</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeaderFile />
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>
+      $(VcpkgRoot)\installed\$(VcpkgTriplet)\lib\;
+      vcpkg_installed\$(VcpkgTriplet)\lib\
+      </AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <GenerateMapFile>false</GenerateMapFile>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>
+      $(VcpkgRoot)\installed\$(VcpkgTriplet)\include\;
+      vcpkg_installed\$(VcpkgTriplet)\include\
+      </AdditionalIncludeDirectories>
       <WarningLevel>Level1</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
+      <PrecompiledHeaderFile />
       <SupportJustMyCode>true</SupportJustMyCode>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
       <IncludeInUnityFile>false</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(VcpkgRoot)\installed\$(VcpkgTriplet)\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CANARY_LIBDEPS_D)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      $(VcpkgRoot)\installed\$(VcpkgTriplet)\lib\;
+      vcpkg_installed\$(VcpkgTriplet)\lib\
+      </AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <GenerateMapFile>false</GenerateMapFile>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

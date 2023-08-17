@@ -1,5 +1,5 @@
 local loyaltySystem = {
-	enable = configManager.getBoolean(LOYALTY_SYSTEM_ENABLED),
+	enable = configManager.getBoolean(LOYALTY_ENABLED),
 	titles = {
 		[1] = {name = "Scout of Tibia", points = 50},
 		[2] = {name = "Sentinel of Tibia", points = 100},
@@ -33,27 +33,33 @@ function Player.initializeLoyaltySystem(self)
 		return true
 	end
 
+	local playerLoyaltyPoints = self:getLoyaltyPoints()
+
 	-- Title
 	local title = ""
 	for _, titleTable in ipairs(loyaltySystem.titles) do
-		if (self:getLoyaltyPoints() > titleTable.points) then
+		if playerLoyaltyPoints >= titleTable.points then
 			title = titleTable.name
 		end
 	end
-	self:setLoyaltyTitle(title)
+
+	if title ~= "" then
+		self:setLoyaltyTitle(title)
+	end
 
 	-- Bonus
-	local bonusPercentage = 0
+	local playerBonusPercentage = 0
 	for _, bonusTable in ipairs(loyaltySystem.bonus) do
-		if self:getLoyaltyPoints() >= bonusTable.minPoints then
-			bonusPercentage = bonusTable.percentage
+		if playerLoyaltyPoints >= bonusTable.minPoints then
+			playerBonusPercentage = bonusTable.percentage
 		end
 	end
 
-	self:setLoyaltyBonus(bonusPercentage * configManager.getFloat(configKeys.LOYALTY_BONUS_PERCENTAGE_MULTIPLIER))
+	playerBonusPercentage = playerBonusPercentage * configManager.getFloat(configKeys.LOYALTY_BONUS_PERCENTAGE_MULTIPLIER)
+	self:setLoyaltyBonus(playerBonusPercentage)
 
 	if self:getLoyaltyBonus() ~= 0 then
-		self:sendTextMessage(MESSAGE_STATUS, string.formatNamed(loyaltySystem.messageTemplate, { bonusPercentage = self:getLoyaltyBonus(), loyaltyPoints = self:getLoyaltyPoints()}))
+		self:sendTextMessage(MESSAGE_STATUS, string.formatNamed(loyaltySystem.messageTemplate, { bonusPercentage = playerBonusPercentage, loyaltyPoints = playerLoyaltyPoints}))
 	end
 
 	return true

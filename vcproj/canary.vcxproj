@@ -438,6 +438,7 @@
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
     <VcpkgTriplet>x64-windows</VcpkgTriplet>
+    <VcpkgConfiguration>Release</VcpkgConfiguration>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Vcpkg">
     <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
@@ -471,6 +472,7 @@
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <AdditionalDependencies>$(CANARY_LIBDEPS)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

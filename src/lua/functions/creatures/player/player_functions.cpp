@@ -3707,6 +3707,32 @@ int PlayerFunctions::luaPlayerUpgradeSpellWOD(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerRevelationStageWOD(lua_State* L) {
+	// player:revelationStagesWOD([name[, set]])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		player->wheel()->resetUpgradedSpells();
+		return 1;
+	}
+
+	std::string name = getString(L, 2);
+	if (lua_gettop(L) == 2) {
+		lua_pushnumber(L, static_cast<lua_Number>(player->wheel()->getStage(name)));
+		return 1;
+	}
+
+	bool value = getNumber<uint8_t>(L, 3);
+	player->wheel()->setSpellInstant(name, value);
+
+	pushBoolean(L, true);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerReloadData(lua_State* L) {
 	// player:reloadData()
 	Player* player = getUserdata<Player>(L, 1);

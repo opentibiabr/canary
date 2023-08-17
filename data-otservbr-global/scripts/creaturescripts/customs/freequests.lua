@@ -90,6 +90,8 @@ local questTable = {
 	{storage = Storage.CultsOfTibia.Misguided.Exorcisms, storageValue = 1},
 	{storage = Storage.CultsOfTibia.Misguided.Time, storageValue = 1},
 	{storage = Storage.CultsOfTibia.Misguided.bossTimer, storageValue = 1},
+	{storage = Storage.CultsOfTibia.Minotaurs.EntranceAccessDoor, storageValue = 1},
+	{storage = Storage.CultsOfTibia.Minotaurs.AccessDoor, storageValue = 1},
 	{storage = Storage.ExplorerSociety.QuestLine, storageValue = 1},
 	{storage = Storage.ExplorerSociety.QuestLine, storageValue = 4},
 	{storage = Storage.ExplorerSociety.QuestLine, storageValue = 7},

@@ -71,9 +71,9 @@ void Signals::dispatchSignalHandler(int signal) {
 		case SIGBREAK: // Shuts the server down
 			g_dispatcher().addTask(sigbreakHandler);
 			// hold the thread until other threads end
-			g_scheduler().join();
-			g_databaseTasks().join();
-			g_dispatcher().join();
+			g_scheduler().shutdown();
+			g_databaseTasks().shutdown();
+			g_dispatcher().shutdown();
 			break;
 #endif
 		default:

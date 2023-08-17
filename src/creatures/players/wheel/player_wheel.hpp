@@ -249,6 +249,7 @@ class PlayerWheel {
 		// Wheel of destiny - Header get:
 		bool getInstant(WheelInstant_t type) const;
 		bool getHealingLinkUpgrade(const std::string &spell) const;
+		uint8_t getStage(const std::string name) const;
 		uint8_t getStage(WheelStage_t type) const;
 		WheelSpellGrade_t getSpellUpgrade(const std::string &name) const;
 		int32_t getMajorStat(WheelMajor_t type) const;

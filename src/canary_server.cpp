@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "canary_server.hpp"
 #include "pch.hpp"
+
+#include "canary_server.hpp"
 
 #include "declarations.hpp"
 #include "creatures/players/grouping/familiars.h"
@@ -24,11 +25,9 @@
 #include "lua/modules/modules.h"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.h"
-#include "security/rsa.h"
 #include "server/network/protocol/protocollogin.h"
 #include "server/network/protocol/protocolstatus.h"
 #include "server/network/webhook/webhook.h"
-#include "server/server.h"
 #include "io/ioprey.h"
 #include "io/io_bosstiary.hpp"
 

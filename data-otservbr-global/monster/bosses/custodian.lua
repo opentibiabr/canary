@@ -68,7 +68,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "small sapphire", chance = 33500}
+	{name = "throwing star", chance = 65000, maxCount = 6},
+	{name = "hunting spear", chance = 62000},
+	{name = "gold ingot", chance = 48000},
+	{name = "blue gem", chance = 31000},
+	{name = "yellow gem", chance = 31000},
+	{name = "green crystal shard", chance = 8600},
+	{id = 281, chance = 28000}, -- giant shimmering pearl (green)
+	{name = "cobra crest", chance = 11000},
+	{name = "skull helmet", chance = 7500},
 }
 
 monster.attacks = {

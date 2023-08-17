@@ -11,6 +11,7 @@
 
 #include "creatures/creature.h"
 #include "declarations.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "game/scheduling/scheduler.h"
@@ -202,7 +203,7 @@ void Creature::onCreatureWalk() {
 
 void Creature::onWalk(Direction &dir) {
 	if (hasCondition(CONDITION_DRUNK)) {
-		uint32_t r = uniform_random(0, 20);
+		uint32_t r = uniform_random(0, 60);
 		if (r <= DIRECTION_DIAGONAL_MASK) {
 			if (r < DIRECTION_DIAGONAL_MASK) {
 				dir = static_cast<Direction>(r);
@@ -258,7 +259,7 @@ void Creature::addEventWalk(bool firstStep) {
 		g_game().checkCreatureWalk(getID());
 	}
 
-	eventWalk = g_scheduler().addEvent(createSchedulerTask(static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID())));
+	eventWalk = g_scheduler().addEvent(static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID()));
 }
 
 void Creature::stopEventWalk() {
@@ -597,7 +598,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 	if (followCreature && (creature == this || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
-			g_dispatcher().addTask(createTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID())));
+			g_dispatcher().addTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID()));
 		}
 
 		if (newPos.z != oldPos.z || !canSee(followCreature->getPosition())) {
@@ -611,7 +612,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 		} else {
 			if (hasExtraSwing()) {
 				// our target is moving lets see if we can get in hit
-				g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
+				g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
 			}
 
 			if (newTile->getZone() != oldTile->getZone()) {
@@ -749,7 +750,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 
 				if (player->checkAutoLoot()) {
 					int32_t pos = tile->getStackposOfItem(player, corpse);
-					g_dispatcher().addTask(createTask(std::bind(&Game::playerQuickLoot, &g_game(), mostDamageCreature->getID(), this->getPosition(), corpse->getID(), pos - 1, nullptr, false, true)));
+					g_dispatcher().addTask(std::bind(&Game::playerQuickLoot, &g_game(), mostDamageCreature->getID(), this->getPosition(), corpse->getID(), pos - 1, nullptr, false, true));
 				}
 			}
 		}
@@ -793,7 +794,7 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = tru
 		g_game().addCreatureHealth(this);
 	}
 	if (health <= 0) {
-		g_dispatcher().addTask(createTask(std::bind(&Game::executeDeath, &g_game(), getID())));
+		g_dispatcher().addTask(std::bind(&Game::executeDeath, &g_game(), getID()));
 	}
 }
 
@@ -1300,7 +1301,7 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 		if (!force && conditionType == CONDITION_PARALYZE) {
 			int32_t walkDelay = getWalkDelay();
 			if (walkDelay > 0) {
-				g_scheduler().addEvent(createSchedulerTask(walkDelay, std::bind(&Game::forceRemoveCondition, &g_game(), getID(), conditionType, conditionId)));
+				g_scheduler().addEvent(walkDelay, std::bind(&Game::forceRemoveCondition, &g_game(), getID(), conditionType, conditionId));
 				return;
 			}
 		}
@@ -1402,30 +1403,6 @@ bool Creature::hasCondition(ConditionType_t type, uint32_t subId /* = 0*/) const
 			return true;
 		}
 	}
-	return false;
-}
-
-bool Creature::isImmune(CombatType_t type) const {
-	return hasBitSet(static_cast<uint32_t>(type), getDamageImmunities());
-}
-
-bool Creature::isImmune(ConditionType_t type) const {
-	try {
-		return type == getConditionImmunities().at(type);
-	} catch (const std::out_of_range &exception) {
-		g_logger().error("[{}] invalid index {}, error code: {}", __FUNCTION__, static_cast<uint8_t>(type), exception.what());
-	}
-
-	return false;
-}
-
-bool Creature::isSuppress(ConditionType_t type) const {
-	try {
-		return type == getConditionSuppressions().at(type);
-	} catch (const std::out_of_range &exception) {
-		g_logger().error("[{}] invalid index {}, error code: {}", __FUNCTION__, static_cast<uint8_t>(type), exception.what());
-	}
-
 	return false;
 }
 

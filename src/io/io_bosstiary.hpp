@@ -17,7 +17,10 @@
 enum class BosstiaryRarity_t : uint8_t {
 	RARITY_BANE = 0,
 	RARITY_ARCHFOE = 1,
-	RARITY_NEMESIS = 2
+	RARITY_NEMESIS = 2,
+
+	// Only for server reading, not send to the client
+	BOSS_INVALID = 10,
 };
 
 struct LevelInfo {

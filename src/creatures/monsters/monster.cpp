@@ -13,7 +13,7 @@
 #include "creatures/combat/spells.h"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.h"
-#include "game/scheduling/tasks.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "lua/creature/events.h"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
@@ -675,7 +675,7 @@ bool Monster::selectTarget(Creature* creature) {
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
+			g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
 		}
 	}
 	return setFollowCreature(creature);
@@ -2074,6 +2074,14 @@ bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 1200
 		g_game().updateCreatureIcon(this);
 	}
 	return true;
+}
+
+bool Monster::isImmune(ConditionType_t conditionType) const {
+	return mType->info.m_conditionImmunities[static_cast<size_t>(conditionType)];
+}
+
+bool Monster::isImmune(CombatType_t combatType) const {
+	return mType->info.m_damageImmunities[combatTypeToIndex(combatType)];
 }
 
 void Monster::getPathSearchParams(const Creature* creature, FindPathParams &fpp) const {

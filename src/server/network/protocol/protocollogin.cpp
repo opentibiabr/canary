@@ -11,7 +11,7 @@
 
 #include "server/network/protocol/protocollogin.h"
 #include "server/network/message/outputmessage.h"
-#include "game/scheduling/tasks.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/account/account.hpp"
 #include "io/iologindata.h"
 #include "creatures/players/management/ban.h"
@@ -176,5 +176,5 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-	g_dispatcher().addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, accountIdentifier, password)));
+	g_dispatcher().addTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, accountIdentifier, password));
 }

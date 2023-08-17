@@ -11,7 +11,7 @@
 
 #include "creatures/combat/condition.h"
 #include "game/game.h"
-#include "game/scheduling/tasks.h"
+#include "game/scheduling/dispatcher.hpp"
 
 /**
  *  Condition
@@ -2039,7 +2039,7 @@ bool ConditionFeared::executeCondition(Creature* creature, int32_t interval) {
 		}
 
 		if (getFleePath(creature, currentPos, listDir)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::forcePlayerAutoWalk, &g_game(), creature->getID(), listDir)), true);
+			g_dispatcher().addTask(std::bind(&Game::forcePlayerAutoWalk, &g_game(), creature->getID(), listDir), true);
 			g_logger().debug("[ConditionFeared::executeCondition] Walking Scheduled");
 		}
 	}

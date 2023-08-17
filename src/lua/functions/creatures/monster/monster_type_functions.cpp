@@ -622,7 +622,7 @@ int MonsterTypeFunctions::luaMonsterTypeBestiaryrace(lua_State* L) {
 
 int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 	// get: monsterType:combatImmunities() set: monsterType:combatImmunities(immunity)
-	const auto &monsterType = getUserdataShared<MonsterType>(L, 1);
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (!monsterType) {
 		pushBoolean(L, false);
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));
@@ -676,7 +676,7 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 
 int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 	// get: monsterType:conditionImmunities() set: monsterType:conditionImmunities(immunity)
-	const auto &monsterType = getUserdataShared<MonsterType>(L, 1);
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (!monsterType) {
 		pushBoolean(L, false);
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));
@@ -727,15 +727,9 @@ int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 		lua_pushnil(L);
 	}
 
-	monsterType->info.conditionImmunities[condition] = condition;
-}
-
-pushBoolean(L, true);
-}
-else {
-	lua_pushnil(L);
-}
-return 1;
+	monsterType->info.m_conditionImmunities[static_cast<size_t>(conditionType)] = true;
+	pushBoolean(L, true);
+	return 1;
 }
 
 int MonsterTypeFunctions::luaMonsterTypeGetAttackList(lua_State* L) {

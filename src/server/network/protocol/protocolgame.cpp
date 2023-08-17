@@ -26,6 +26,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/grouping/familiars.h"
 #include "server/network/protocol/protocolgame.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/scheduler.h"
 #include "creatures/combat/spells.h"
 #include "creatures/players/management/waitlist.h"
@@ -85,7 +86,7 @@ namespace {
 	}
 
 	// Send bytes function for avoid repetitions
-	void sendBosstiarySlotsBytes(NetworkMessage &msg, uint8_t bossRace = 0, uint32_t bossKillCount = 0, uint16_t bonusBossSlotOne = 0, uint8_t killBonus = 0, uint8_t isSlotOneInactive = 0, uint32_t removePrice = 0) {
+	void sendBosstiarySlotsBytes(NetworkMessage &msg, uint8_t bossRace, uint32_t bossKillCount, uint16_t bonusBossSlotOne, uint8_t killBonus, uint8_t isSlotOneInactive, uint32_t removePrice) {
 		msg.addByte(bossRace); // Boss Race
 		msg.add<uint32_t>(bossKillCount); // Kill Count
 		msg.add<uint16_t>(bonusBossSlotOne); // Loot Bonus
@@ -215,12 +216,12 @@ ProtocolGame::ProtocolGame(Connection_ptr initConnection) :
 
 template <typename Callable, typename... Args>
 void ProtocolGame::addGameTask(Callable function, Args &&... args) {
-	g_dispatcher().addTask(createTask(std::bind(function, &g_game(), std::forward<Args>(args)...)));
+	g_dispatcher().addTask(std::bind(function, &g_game(), std::forward<Args>(args)...));
 }
 
 template <typename Callable, typename... Args>
 void ProtocolGame::addGameTaskTimed(uint32_t delay, Callable function, Args &&... args) {
-	g_dispatcher().addTask(createTask(delay, std::bind(function, &g_game(), std::forward<Args>(args)...)));
+	g_dispatcher().addTask(std::bind(function, &g_game(), std::forward<Args>(args)...), delay);
 }
 
 void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) {
@@ -548,7 +549,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			foundPlayer->disconnect();
 			foundPlayer->isConnecting = true;
 
-			eventConnect = g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getName(), operatingSystem)));
+			eventConnect = g_scheduler().addEvent(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getName(), operatingSystem));
 		} else {
 			connect(foundPlayer->getName(), operatingSystem);
 		}
@@ -758,11 +759,11 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		output->addByte(0x14);
 		output->addString(ss.str());
 		send(output);
-		g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::disconnect, getThis())));
+		g_scheduler().addEvent(1000, std::bind(&ProtocolGame::disconnect, getThis()));
 		return;
 	}
 
-	g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem)));
+	g_dispatcher().addTask(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem));
 }
 
 void ProtocolGame::onConnect() {
@@ -827,16 +828,16 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 			m_playerDeathTime++;
 		}
 
-		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte)));
+		g_dispatcher().addTask(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte));
 		return;
 	}
 
 	// Modules system
 	if (player && recvbyte != 0xD3) {
-		g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, &g_modules(), player->getID(), msg, recvbyte)));
+		g_dispatcher().addTask(std::bind(&Modules::executeOnRecvbyte, &g_modules(), player->getID(), msg, recvbyte));
 	}
 
-	g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
+	g_dispatcher().addTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte));
 }
 
 void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
@@ -846,7 +847,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			g_game().removePlayerUniqueLogin(player->getName());
 		}
 		disconnect();
-		g_dispatcher().addTask(createTask(std::bind(&IOLoginData::updateOnlineStatus, player->getGUID(), false)));
+		g_dispatcher().addTask(std::bind(&IOLoginData::updateOnlineStatus, player->getGUID(), false));
 		return;
 	}
 
@@ -855,7 +856,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			return;
 		}
 
-		g_scheduler().addEvent(createSchedulerTask(100, std::bind(&ProtocolGame::sendPing, getThis())));
+		g_scheduler().addEvent(100, std::bind(&ProtocolGame::sendPing, getThis()));
 
 		if (!player->spawn()) {
 			disconnect();
@@ -863,15 +864,15 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			return;
 		}
 
-		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::sendAddCreature, getThis(), player, player->getPosition(), 0, false)));
-		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::addBless, getThis())));
+		g_dispatcher().addTask(std::bind(&ProtocolGame::sendAddCreature, getThis(), player, player->getPosition(), 0, false));
+		g_dispatcher().addTask(std::bind(&ProtocolGame::addBless, getThis()));
 		resetPlayerDeathTime();
 		return;
 	}
 
 	if (recvbyte == 0x1D) {
 		// keep the connection alive
-		g_scheduler().addEvent(createSchedulerTask(100, std::bind(&ProtocolGame::sendPingBack, getThis())));
+		g_scheduler().addEvent(100, std::bind(&ProtocolGame::sendPingBack, getThis()));
 		return;
 	}
 }
@@ -906,7 +907,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 
 	switch (recvbyte) {
 		case 0x14:
-			g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::logout, getThis(), true, false)));
+			g_dispatcher().addTask(std::bind(&ProtocolGame::logout, getThis(), true, false));
 			break;
 		case 0x1D:
 			addGameTask(&Game::playerReceivePingBack, player->getID());
@@ -1176,9 +1177,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xD2:
 			addGameTask(&Game::playerRequestOutfit, player->getID());
 			break;
-		// g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte)));
+		// g_dispatcher().addTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte));
 		case 0xD3:
-			g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parseSetOutfit, getThis(), msg)));
+			g_dispatcher().addTask(std::bind(&ProtocolGame::parseSetOutfit, getThis(), msg));
 			break;
 		case 0xD4:
 			parseToggleMount(msg);
@@ -4455,7 +4456,7 @@ void ProtocolGame::updateCoinBalance() {
 	}
 
 	g_dispatcher().addTask(
-		createTask(std::bind([](uint32_t playerId) {
+		std::bind([](uint32_t playerId) {
 			Player* threadPlayer = g_game().getPlayerByID(playerId);
 			if (threadPlayer) {
 				account::Account account;
@@ -4469,7 +4470,7 @@ void ProtocolGame::updateCoinBalance() {
 				threadPlayer->sendCoinBalance();
 			}
 		},
-							 player->getID()))
+				  player->getID())
 	);
 }
 
@@ -8063,7 +8064,7 @@ void ProtocolGame::parseSendBosstiary() {
 	msg.skipBytes(2);
 
 	for (const auto &[bossid, name] : mtype_map) {
-		const auto &mType = g_monsters().getMonsterType(name);
+		const MonsterType* mType = g_monsters().getMonsterType(name);
 		if (!mType) {
 			continue;
 		}
@@ -8076,7 +8077,7 @@ void ProtocolGame::parseSendBosstiary() {
 
 		auto killCount = player->getBestiaryKillCount(bossid);
 		msg.add<uint32_t>(bossid);
-		msg.addByte(bossRace);
+		msg.addByte(static_cast<uint8_t>(bossRace));
 		msg.add<uint32_t>(killCount);
 		msg.addByte(0);
 		msg.addByte(0x00); // Tracker
@@ -8100,7 +8101,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 
 	// Sanity checks
 	std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
-	const auto mTypeBoosted = g_monsters().getMonsterType(boostedBossName);
+	const MonsterType* mTypeBoosted = g_monsters().getMonsterType(boostedBossName);
 	auto boostedBossRace = mTypeBoosted ? mTypeBoosted->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBoostedBoss = boostedBossId == 0 || boostedBossRace >= BosstiaryRarity_t::RARITY_BANE && boostedBossRace <= BosstiaryRarity_t::RARITY_NEMESIS;
 	if (!isValidBoostedBoss) {
@@ -8108,7 +8109,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		return;
 	}
 
-	const auto mTypeSlotOne = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
+	const MonsterType* mTypeSlotOne = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
 	auto bossRaceSlotOne = mTypeSlotOne ? mTypeSlotOne->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBossSlotOne = bossIdSlotOne == 0 || bossRaceSlotOne >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotOne <= BosstiaryRarity_t::RARITY_NEMESIS;
 	if (!isValidBossSlotOne) {
@@ -8116,7 +8117,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		return;
 	}
 
-	const auto mTypeSlotTwo = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
+	const MonsterType* mTypeSlotTwo = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
 	auto bossRaceSlotTwo = mTypeSlotTwo ? mTypeSlotTwo->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBossSlotTwo = bossIdSlotTwo == 0 || bossRaceSlotTwo >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotTwo <= BosstiaryRarity_t::RARITY_NEMESIS;
 	if (!isValidBossSlotTwo) {
@@ -8137,9 +8138,6 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.add<uint16_t>(currentBonus); // Current Bonus
 	msg.add<uint16_t>(currentBonus + 1); // Next Bonus
 
-	uint32_t bossIdSlotOne = player->getSlotBossId(1);
-	uint32_t bossIdSlotTwo = player->getSlotBossId(2);
-	uint32_t boostedBossId = g_ioBosstiary().getBoostedBossId();
 	uint32_t removePrice = g_ioBosstiary().calculteRemoveBoss(player->getRemoveTimes());
 
 	auto bossesUnlockedList = g_ioBosstiary().getBosstiaryFinished(player);
@@ -8153,20 +8151,14 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.addByte(isSlotOneUnlocked ? 1 : 0);
 	msg.add<uint32_t>(isSlotOneUnlocked ? bossIdSlotOne : 0);
 	if (isSlotOneUnlocked && bossIdSlotOne != 0) {
-		const auto &mType = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
-		if (mType) {
-			// Variables Boss Slot One
-			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
-			auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotOne);
-			uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
-			uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
-			// Bytes Slot One
-			sendBosstiarySlotsBytes(msg, bossRace, bossKillCount, bonusBossSlotOne, 0, isSlotOneInactive, removePrice);
-			bossesUnlockedSize--;
-		} else {
-			sendBosstiarySlotsBytes(msg);
-		}
+		// Variables Boss Slot One
+		auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
+		auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotOne);
+		uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
+		uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
+		// Bytes Slot One
+		sendBosstiarySlotsBytes(msg, static_cast<uint8_t>(bossRaceSlotOne), bossKillCount, bonusBossSlotOne, 0, isSlotOneInactive, removePrice);
+		bossesUnlockedSize--;
 	}
 
 	uint32_t slotTwoPoints = 1500;
@@ -8175,55 +8167,53 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.add<uint32_t>(isSlotTwoUnlocked ? bossIdSlotTwo : slotTwoPoints);
 	if (isSlotTwoUnlocked && bossIdSlotTwo != 0) {
 		// Variables Boss Slot Two
-		const auto &mType = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
-		if (mType) {
-			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-			auto bossKillCount = player->getBestiaryKillCount((uint16_t)(bossIdSlotTwo));
-			auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotTwo);
-			uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
-			uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
-			// Bytes Slot Two
-			sendBosstiarySlotsBytes(msg, bossRace, bossKillCount, bonusBossSlotTwo, 0, isSlotTwoInactive, removePrice);
-			bossesUnlockedSize--;
-		} else {
-			sendBosstiarySlotsBytes(msg);
-		}
+		auto bossKillCount = player->getBestiaryKillCount((uint16_t)(bossIdSlotTwo));
+		auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotTwo);
+		uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
+		uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
+		// Bytes Slot Two
+		sendBosstiarySlotsBytes(msg, static_cast<uint8_t>(bossRaceSlotTwo), bossKillCount, bonusBossSlotTwo, 0, isSlotTwoInactive, removePrice);
+		bossesUnlockedSize--;
 	}
 
 	bool isTodaySlotUnlocked = g_configManager().getBoolean(BOOSTED_BOSS_SLOT);
 	msg.addByte(isTodaySlotUnlocked ? 1 : 0);
 	msg.add<uint32_t>(boostedBossId);
 	if (isTodaySlotUnlocked && boostedBossId != 0) {
-		std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
-		const auto &mType = g_monsters().getMonsterType(boostedBossName);
-		if (mType) {
-			auto boostedBossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-			auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
-			auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
-			auto bosstiaryMultiplier = static_cast<uint8_t>(g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER));
-			auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
-			sendBosstiarySlotsBytes(msg, boostedBossRace, boostedBossKillCount, boostedLootBonus, bosstiaryMultiplier + boostedKillBonus, 0, 0);
-		} else {
-			sendBosstiarySlotsBytes(msg);
-		}
+		auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
+		auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
+		auto bosstiaryMultiplier = static_cast<uint8_t>(g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER));
+		auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
+		sendBosstiarySlotsBytes(msg, static_cast<uint8_t>(boostedBossRace), boostedBossKillCount, boostedLootBonus, bosstiaryMultiplier + boostedKillBonus, 0, 0);
 	}
 
 	msg.addByte(bossesUnlockedSize != 0 ? 1 : 0);
 	if (bossesUnlockedSize != 0) {
-		msg.add<uint16_t>(bossesUnlockedSize);
+		auto unlockCountBuffer = msg.getBufferPosition();
+		uint16_t bossesCount = 0;
+		msg.skipBytes(2);
 		for (const auto &bossId : bossesUnlockedList) {
 			if (bossId == bossIdSlotOne || bossId == bossIdSlotTwo)
 				continue;
 
 			const auto &mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossId);
 			if (!mType) {
+				g_logger().error("[{}] monster {} not found", __FUNCTION__, bossId);
 				continue;
 			}
 
-			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+			auto bossRace = mType->info.bosstiaryRace;
+			if (bossRace < BosstiaryRarity_t::RARITY_BANE || bossRace > BosstiaryRarity_t::RARITY_NEMESIS) {
+				g_logger().error("[{}] monster {} have wrong boss race {}", __FUNCTION__, mType->name, fmt::underlying(bossRace));
+				continue;
+			}
+
 			msg.add<uint32_t>(bossId);
-			msg.addByte(bossRace);
+			msg.addByte(static_cast<uint8_t>(bossRace));
+			bossesCount++;
 		}
+		msg.setBufferPosition(unlockCountBuffer);
+		msg.add<uint16_t>(bossesCount);
 	}
 
 	writeToOutputBuffer(msg);

@@ -15,6 +15,10 @@ using SharedObjectPtr = std::shared_ptr<SharedObject>;
 
 class SharedObject : public std::enable_shared_from_this<SharedObject> {
 	public:
+		virtual ~SharedObject() = default;
+
+		SharedObject &operator=(const SharedObject &) = delete;
+
 		SharedObjectPtr asSharedObject() {
 			return shared_from_this();
 		}
@@ -38,8 +42,6 @@ class SharedObject : public std::enable_shared_from_this<SharedObject> {
 		std::shared_ptr<TargetType> dynamic_self_cast(std::shared_ptr<SourceType> &source) {
 			return std::dynamic_pointer_cast<TargetType>(source);
 		}
-
-		SharedObject &operator=(const SharedObject &) = delete;
 };
 
 #endif // SRC_LUA_GLOBAL_SHARED_OBJECT_PTR_

@@ -91,7 +91,7 @@ function heartDestructionEradicator.onUse(player, item, fromPosition, itemEx, to
 						players = storePlayers[i]
 						config.playerPositions[i]:sendMagicEffect(CONST_ME_POFF)
 						players:teleportTo(config.newPos)
-						players:setStorageValue(14329, os.time() + 20*60*60)
+						players:setStorageValue(14329, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 					end
 					Position(config.newPos):sendMagicEffect(11)
 

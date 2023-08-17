@@ -86,6 +86,8 @@
 	#include <lua.hpp>
 #endif
 
+#include "lua/global/shared_object.hpp"
+
 // Magic Enum
 #include <magic_enum.hpp>
 

@@ -659,7 +659,6 @@ int LuaFunctionsLoader::luaGarbageCollection(lua_State* L) {
 	auto objPtr = static_cast<std::shared_ptr<SharedObject>*>(lua_touserdata(L, 1));
 	if (objPtr) {
 		objPtr->reset();
-		delete objPtr;
 	}
 	return 0;
 }

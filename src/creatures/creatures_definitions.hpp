@@ -10,6 +10,8 @@
 #ifndef SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
 #define SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
 
+#include <pch.hpp>
+
 // Enum
 
 enum SkillsId_t {

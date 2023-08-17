@@ -197,10 +197,7 @@ class LuaFunctionsLoader {
 
 	protected:
 		static void registerClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
-		static void registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr) {
-			registerClass(L, className, baseClass, newFunction);
-			registerMetaMethod(L, className, "__gc", luaGarbageCollection);
-		}
+		static void registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
 		static void registerMethod(lua_State* L, const std::string &globalName, const std::string &methodName, lua_CFunction func);
 		static void registerMetaMethod(lua_State* L, const std::string &className, const std::string &methodName, lua_CFunction func);
 		static void registerTable(lua_State* L, const std::string &tableName);

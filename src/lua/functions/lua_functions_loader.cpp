@@ -650,9 +650,15 @@ int LuaFunctionsLoader::luaUserdataCompare(lua_State* L) {
 	return 1;
 }
 
+void LuaFunctionsLoader::registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction) {
+	registerClass(L, className, baseClass, newFunction);
+	registerMetaMethod(L, className, "__gc", luaGarbageCollection);
+}
+
 int LuaFunctionsLoader::luaGarbageCollection(lua_State* L) {
-	if (const auto ptr = getRawUserDataShared<Condition>(L, 1)) {
-		ptr->reset();
+	auto objPtr = static_cast<std::shared_ptr<SharedObject>*>(lua_touserdata(L, 1));
+	if (objPtr) {
+		objPtr->reset();
 	}
 	return 0;
 }

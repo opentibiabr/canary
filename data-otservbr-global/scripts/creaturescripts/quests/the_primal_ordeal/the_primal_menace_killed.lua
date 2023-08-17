@@ -7,14 +7,16 @@ function thePrimalMenaceDeath.onDeath(creature, corpse, killer, mostDamage, unju
 
 	for key, value in pairs(damageMap) do
 		local player = Player(key)
+		if player then
+			if player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Bosses.ThePrimalMenaceKilled) < 1 then
+				player:setStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Bosses.ThePrimalMenaceKilled, 1)
+			end
 
-		if player and player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Bosses.ThePrimalMenaceKilled) < 1 then
-			player:setStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Bosses.ThePrimalMenaceKilled, 1)
+			if player:getHazardSystemPoints() == hazardPoints then
+				gnompronaHazard:levelUp(player)
+			end
 		end
 
-		if player:getHazardSystemPoints() == hazardPoints then
-			gnompronaHazard:levelUp(player)
-		end
 	end
 
 

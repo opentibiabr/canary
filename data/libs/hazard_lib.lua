@@ -33,12 +33,15 @@ function Hazard.getHazardPlayerAndPoints(self, damageMap)
 	local hazardPoints = -1
 	for key, value in pairs(damageMap) do
 		local player = Player(key)
-		local playerHazardPoints = player:getHazardSystemPoints()
+		if player then
+			local playerHazardPoints = player:getHazardSystemPoints()
 
-		if playerHazardPoints < hazardPoints or hazardPoints == -1 then
-			hazardPlayer = player
-			hazardPoints = playerHazardPoints
+			if playerHazardPoints < hazardPoints or hazardPoints == -1 then
+				hazardPlayer = player
+				hazardPoints = playerHazardPoints
+			end
 		end
+
 	end
 
 	return hazardPlayer, hazardPoints

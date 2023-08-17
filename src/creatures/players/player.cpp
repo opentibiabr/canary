@@ -5228,7 +5228,7 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 }
 
 bool Player::isPremium() const {
-	if ((!g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && g_configManager().getBoolean(FREE_PREMIUM)) || hasFlag(PlayerFlags_t::IsAlwaysPremium)) {
+	if (g_configManager().getBoolean(FREE_PREMIUM) || hasFlag(PlayerFlags_t::IsAlwaysPremium)) {
 		return true;
 	}
 

@@ -2076,6 +2076,14 @@ bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 1200
 	return true;
 }
 
+bool Monster::isImmune(ConditionType_t conditionType) const {
+	return mType->info.m_conditionImmunities[static_cast<size_t>(conditionType)];
+}
+
+bool Monster::isImmune(CombatType_t combatType) const {
+	return mType->info.m_damageImmunities[combatTypeToIndex(combatType)];
+}
+
 void Monster::getPathSearchParams(const Creature* creature, FindPathParams &fpp) const {
 	Creature::getPathSearchParams(creature, fpp);
 

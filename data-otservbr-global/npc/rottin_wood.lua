@@ -98,7 +98,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Trap, - 1) -- reset storage
 				setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Corpse, - 1) -- reset storage
 				-----------------------------------------------------
-				setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Time, os.time() + 20 * 60 * 60) -- set time to start mission again
+				setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Time, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN)) -- set time to start mission again
 				setPlayerStorageValue(creature, Storage.RottinWoodAndMaried.Questline, 2) -- quest log
 			------------------- ITEM RANDOM --------------------
 			local items = {

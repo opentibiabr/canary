@@ -70,7 +70,7 @@ monster.voices = {
 
 monster.loot = {
 	{name = "energy bar", chance = 100000},
-	{name = "platinum coin", chance = 87000, maxCount = 5},
+	{name = "platinum coin", chance = 87000, maxCount = 9},
 	{name = "green gem", chance = 85000},
 	{name = "supreme health potion", chance = 53700, maxCount = 14},
 	{name = "ultimate mana potion", chance = 48150, maxCount = 20},
@@ -109,7 +109,7 @@ monster.attacks = {
 	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -600},
 	{name ="sudden death rune", interval = 2000, chance = 16, minDamage = -400, maxDamage = -600, target = true},
 	{name ="combat", interval = 2000, chance = 13, type = COMBAT_HOLYDAMAGE, minDamage = -450, maxDamage = -640, length = 7, spread = 3, effect = CONST_ME_HOLYAREA, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -480, maxDamage = -630, radius = 5, effect = CONST_ME_EXPLOSIONHIT, target = false}
+	{name ="combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -480, maxDamage = -630, radius = 5, effect = CONST_ME_EXPLOSIONHIT, target = false},
 }
 
 monster.defenses = {

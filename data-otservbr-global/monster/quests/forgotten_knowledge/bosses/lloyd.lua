@@ -73,44 +73,47 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3031, chance = 97000, maxCount = 200}, -- gold coin
-	{id = 3035, chance = 90000, maxCount = 30}, -- platinum coin
-	{id = 238, chance = 22120, maxCount = 3}, -- great mana potion
-	{id = 7643, chance = 19500, maxCount = 3}, -- ultimate health potion
-	{id = 3387, chance = 1000}, -- demon helmet
-	{id = 16119, chance = 9660, maxCount = 5}, -- blue crystal shard
-	{id = 16120, chance = 9660, maxCount = 5}, -- violet crystal shard
-	{id = 16121, chance = 9660, maxCount = 5}, -- green crystal shard
-	{id = 3032, chance = 9660, maxCount = 5}, -- small emerald
-	{id = 3030, chance = 7360, maxCount = 5}, -- small ruby
-	{id = 9057, chance = 7350, maxCount = 5}, -- small topaz
-	{id = 3033, chance = 7150, maxCount = 5}, -- small amethyst
-	{id = 5888, chance = 5888, maxCount = 2}, -- piece of hell steel
-	{id = 5887, chance = 5909, maxCount = 2}, -- piece of royal steel
-	{id = 7424, chance = 5000}, -- lunar staff
-	{id = 3041, chance = 5000}, -- blue gem
-	{id = 3038, chance = 5000}, -- green gem
-	{id = 3037, chance = 5000}, -- yellow gem
-	{id = 3079, chance = 5000}, -- boots of haste
-	{id = 23542, chance = 5000}, -- collar of blue plasma
-	{id = 5891, chance = 5000}, -- enchanted chicken wing
-	{id = 822, chance = 5000}, -- lightning legs
-	{id = 11454, chance = 5000}, -- luminous orb
-	{id = 7440, chance = 5000}, -- mastermind potion
-	{id = 5904, chance = 5000}, -- magic sulphur
+	{name = "gold coin", chance = 100000, maxCount = 329},
+	{name = "platinum coin", chance = 100000, maxCount = 35},
+	{id = 3100, chance = 100000}, -- ring of healing
+	{name = "wand of starstorm", chance = 100000},
+	{name = "mastermind potion", chance = 100000},
+	{name = "violet crystal shard", chance = 71790, maxCount = 5},
+	{name = "blue crystal shard", chance = 69230, maxCount = 5},
+	{name = "great spirit potion", chance = 61540, maxCount = 10},
+	{name = "ultimate health potion", chance = 56410, maxCount = 10},
+	{name = "green crystal shard", chance = 56410, maxCount = 5},
+	{name = "great mana potion", chance = 46150, maxCount = 10},
+	{name = "luminous orb", chance = 41030},
+	{id = 23542, chance = 38460}, -- collar of blue plasma
+	{name = "gold token", chance = 30770},
+	{id = 282, chance = 30770}, -- giant shimmering pearl
+	{name = "rusted armor", chance = 28210},
+	{id = 3039, chance = 28210}, -- red gem
+	{name = "small emerald", chance = 25640, maxCount = 10},
+	{name = "small amethyst", chance = 25640, maxCount = 12},
+	{name = "silver token", chance = 25640},
+	{name = "small topaz", chance = 20510, maxCount = 10},
+	{name = "small ruby", chance = 17950, maxCount = 18},
+	{name = "spellbook of warding", chance = 15380},
+	{name = "yellow gem", chance = 12820},
+	{name = "small diamond", chance = 10260, maxCount = 10},
+	{name = "white piece of cloth", chance = 10260, maxCount = 3},
+	{name = "piece of hell steel", chance = 10260, maxCount = 3},
+	{name = "blue gem", chance = 10260},
+	{name = "green gem", chance = 10260},
+	{name = "lightning legs", chance = 7690},
+	{name = "violet gem", chance = 7690},
+	{name = "spellweaver's robe", chance = 5130},
+	{name = "demon helmet", chance = 5130},
+	{name = "boots of haste", chance = 2560},
 	{id = 24959, chance = 500, unique = true}, -- part of a rune
-	{id = 3098, chance = 1970}, -- ring of healing
-	{id = 8092, chance = 1970}, -- wand of starstorm
-	{id = 8072, chance = 1970}, -- spellbook of enlightenment
-	{id = 10438, chance = 1970}, -- spellweaver's robe
-	{id = 22727, chance = 1970}, -- rift lance
-	{id = 22721, chance = 100000}, -- gold token
-	{id = 22516, chance = 100000} -- silver token
+	{name = "pillow backpack", chance = 256},
 }
 
 monster.attacks = {
 	{name ="melee", interval = 2000, chance = 100, minDamage = -200, maxDamage = -1400},
-	{name ="combat", interval = 2000, chance = 12, type = COMBAT_ENERGYDAMAGE, minDamage = -130, maxDamage = -460, length = 6, spread = 3, effect = CONST_ME_PURPLEENERGY, target = false},
+	{name ="combat", interval = 2000, chance = 12, type = COMBAT_ENERGYDAMAGE, minDamage = -330, maxDamage = -660, length = 6, spread = 3, effect = CONST_ME_PURPLEENERGY, target = false},
 	{name ="lloyd wave", interval = 2000, chance = 12, minDamage = -430, maxDamage = -560, target = false},
 	{name ="lloyd wave2", interval = 2000, chance = 12, minDamage = -230, maxDamage = -460, target = false},
 	{name ="lloyd wave3", interval = 2000, chance = 12, minDamage = -430, maxDamage = -660, target = false}

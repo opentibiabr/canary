@@ -2656,7 +2656,13 @@ ReturnValue Game::internalCollectLootItems(Player* player, Item* item, ObjectCat
 			} else {
 				money = item->getItemCount();
 			}
-			internalRemoveItem(item, item->getItemCount());
+			auto parent = item->getParent();
+			if (parent) {
+				parent->removeThing(item, item->getItemCount());
+			} else {
+				g_logger().debug("Item has no parent");
+				return RETURNVALUE_NOTPOSSIBLE;
+			}
 			player->setBankBalance(player->getBankBalance() + money);
 			return RETURNVALUE_NOERROR;
 		}
@@ -4734,7 +4740,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 		return;
 	}
 
-	if (!player->canDoAction()) {
+	if (!autoLoot && !player->canDoAction()) {
 		uint32_t delay = player->getNextActionTime();
 		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerQuickLoot, this, player->getID(), pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot));
 		player->setNextActionTask(task);
@@ -4760,7 +4766,10 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 		return;
 	}
 
-	player->setNextActionTask(nullptr);
+	std::lock_guard<std::mutex> lock(player->quickLootMutex);
+	if (!autoLoot) {
+		player->setNextActionTask(nullptr);
+	}
 
 	Item* item = nullptr;
 	if (!defaultItem) {
@@ -9775,6 +9784,8 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 		player->canAutoWalk(item->getPosition(), function)) {
 		return;
 	}
+
+	std::lock_guard<std::mutex> lock(player->quickLootMutex);
 
 	ReturnValue returnValue = collectRewardChestItems(player, maxMoveItems);
 	if (returnValue != RETURNVALUE_NOERROR) {

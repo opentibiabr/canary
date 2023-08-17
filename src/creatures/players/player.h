@@ -2845,6 +2845,8 @@ class Player final : public Creature, public Cylinder, public Bankable {
 
 		std::unique_ptr<PlayerWheel> m_wheelPlayer;
 
+		std::mutex quickLootMutex;
+
 		account::Account* account_;
 		bool online = true;
 

@@ -2006,8 +2006,10 @@ void Monster::dropLoot(Container* corpse, Creature*) {
 				corpse->internalAddThing(sliver);
 			}
 		}
-		g_events().eventMonsterOnDropLoot(this, corpse);
-		g_callbacks().executeCallback(EventCallback_t::monsterOnDropLoot, &EventCallback::monsterOnDropLoot, this, corpse);
+		if (!this->isRewardBoss() && g_configManager().getNumber(RATE_LOOT) > 0) {
+			g_callbacks().executeCallback(EventCallback_t::monsterOnDropLoot, &EventCallback::monsterOnDropLoot, this, corpse);
+			g_callbacks().executeCallback(EventCallback_t::monsterPostDropLoot, &EventCallback::monsterPostDropLoot, this, corpse);
+		}
 	}
 }
 

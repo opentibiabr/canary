@@ -15,7 +15,7 @@
 
 class DatabaseTasks {
 	public:
-		explicit DatabaseTasks(ThreadPool &threadPool);
+		DatabaseTasks(ThreadPool &threadPool, Database &db);
 
 		// Ensures that we don't accidentally copy it
 		DatabaseTasks(const DatabaseTasks &) = delete;
@@ -26,7 +26,7 @@ class DatabaseTasks {
 		void addTask(std::string query, std::function<void(DBResult_ptr, bool)> callback = nullptr, bool store = false);
 
 	private:
-		Database* db_;
+		Database &db;
 		ThreadPool &threadPool;
 		std::mutex threadSafetyMutex;
 };

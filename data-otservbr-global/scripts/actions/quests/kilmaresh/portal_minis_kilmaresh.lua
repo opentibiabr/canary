@@ -3,8 +3,8 @@ local config = {
 		teleportPosition = {x = 33886, y = 31477, z = 6},
 		bossName = "Neferi The Spy",
 		requiredLevel = 250,
-		timeToFightAgain = 20, -- In hour
-		timeToDefeatBoss = 10, -- In minutes
+		timeToFightAgain = 10, -- In hour
+		timeToDefeat = 10, -- In minutes
 		destination = Position(33871, 31547, 8),
 		bossPosition = Position(33871, 31552, 8),
 		specPos = {
@@ -18,8 +18,8 @@ local config = {
 		teleportPosition = {x = 33883, y = 31467, z = 9},
 		bossName = "Sister Hetai",
 		requiredLevel = 250,
-		timeToFightAgain = 20, -- In hour
-		timeToDefeatBoss = 10, -- In minutes
+		timeToFightAgain = 10, -- In hour
+		timeToDefeat = 10, -- In minutes
 		destination = Position(33833, 31490, 9),
 		bossPosition = Position(33833, 31496, 9),
 		specPos = {
@@ -33,8 +33,8 @@ local config = {
 		teleportPosition = {x = 33819, y = 31773, z = 10},
 		bossName = "Amenef the Burning",
 		requiredLevel = 250,
-		timeToFightAgain = 20, -- In hour
-		timeToDefeatBoss = 10, -- In minutes
+		timeToFightAgain = 10, -- In hour
+		timeToDefeat = 10, -- In minutes
 		destination = Position(33849, 31782, 10),
 		bossPosition = Position(33849, 31787, 10),
 		specPos = {
@@ -106,7 +106,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 				spec:setOnlyPlayer(true)
 				spec:check()
 				spec:removePlayers()
-			end, value.timeToDefeatBoss * 60 * 1000)
+			end, value.timeToDefeat * 60 * 1000)
 		end
 	end
 end

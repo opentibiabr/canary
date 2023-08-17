@@ -53708,17 +53708,17 @@
 	</item>
 	<item id="36841" article="a" name="dead the brainstealer">
 		<attribute key="containerSize" value="25" />
-		<attribute key="decayTo" value="36844" />
+		<attribute key="decayTo" value="36840" />
 		<attribute key="duration" value="300" />
 	</item>
 	<item id="36842" article="a" name="dead the brainstealer">
 		<attribute key="containerSize" value="25" />
-		<attribute key="decayTo" value="36845" />
+		<attribute key="decayTo" value="36841" />
 		<attribute key="duration" value="300" />
 	</item>
 	<item id="36843" article="a" name="dead the brainstealer">
 		<attribute key="containerSize" value="25" />
-		<attribute key="decayTo" value="36846" />
+		<attribute key="decayTo" value="36842" />
 		<attribute key="duration" value="10" />
 	</item>
 	<item id="36844" article="a" name="dead the mega magmaoid">

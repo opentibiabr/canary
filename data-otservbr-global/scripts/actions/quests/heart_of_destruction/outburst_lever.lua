@@ -93,7 +93,7 @@ function heartDestructionOutburst.onUse(player, item, fromPosition, itemEx, toPo
 						end
 						config.playerPositions[i]:sendMagicEffect(CONST_ME_POFF)
 						players:teleportTo(config.newPos)
-						players:setStorageValue(14331, os.time() + 20*60*60)
+						players:setStorageValue(14331, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 					end
 					Position(config.newPos):sendMagicEffect(11)
 

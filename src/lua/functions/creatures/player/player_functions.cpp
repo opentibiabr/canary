@@ -3401,6 +3401,50 @@ int PlayerFunctions::luaPlayerBosstiaryCooldownTimer(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetBosstiaryLevel(lua_State* L) {
+	// player:getBosstiaryLevel(name)
+	if (Player* player = getUserdata<Player>(L, 1);
+		player) {
+		const auto mtype = g_monsters().getMonsterType(getString(L, 2));
+		if (mtype) {
+			uint32_t bossId = mtype->info.raceid;
+			if (bossId == 0) {
+				lua_pushnil(L);
+				return 0;
+			}
+			auto level = g_ioBosstiary().getBossCurrentLevel(player, bossId);
+			lua_pushnumber(L, level);
+		} else {
+			lua_pushnil(L);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetBosstiaryKills(lua_State* L) {
+	// player:getBosstiaryKills(name)
+	if (Player* player = getUserdata<Player>(L, 1);
+		player) {
+		const auto mtype = g_monsters().getMonsterType(getString(L, 2));
+		if (mtype) {
+			uint32_t bossId = mtype->info.raceid;
+			if (bossId == 0) {
+				lua_pushnil(L);
+				return 0;
+			}
+			uint32_t currentKills = player->getBestiaryKillCount(static_cast<uint16_t>(bossId));
+			lua_pushnumber(L, currentKills);
+		} else {
+			lua_pushnil(L);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerAddBosstiaryKill(lua_State* L) {
 	// player:addBosstiaryKill(name[, amount = 1])
 	if (Player* player = getUserdata<Player>(L, 1);

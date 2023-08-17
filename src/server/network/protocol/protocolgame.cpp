@@ -8064,7 +8064,16 @@ void ProtocolGame::parseSendBosstiary() {
 
 	for (const auto &[bossid, name] : mtype_map) {
 		const auto &mType = g_monsters().getMonsterType(name);
-		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+		if (!mType) {
+			continue;
+		}
+
+		auto bossRace = mType->info.bosstiaryRace;
+		if (bossRace < BosstiaryRarity_t::RARITY_BANE || bossRace > BosstiaryRarity_t::RARITY_NEMESIS) {
+			g_logger().error("[{}] monster {} have wrong boss race {}", __FUNCTION__, mType->name, fmt::underlying(bossRace));
+			continue;
+		}
+
 		auto killCount = player->getBestiaryKillCount(bossid);
 		msg.add<uint32_t>(bossid);
 		msg.addByte(bossRace);
@@ -8082,6 +8091,36 @@ void ProtocolGame::parseSendBosstiary() {
 
 void ProtocolGame::parseSendBosstiarySlots() {
 	if (oldProtocol) {
+		return;
+	}
+
+	uint32_t bossIdSlotOne = player->getSlotBossId(1);
+	uint32_t bossIdSlotTwo = player->getSlotBossId(2);
+	uint32_t boostedBossId = g_ioBosstiary().getBoostedBossId();
+
+	// Sanity checks
+	std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
+	const auto mTypeBoosted = g_monsters().getMonsterType(boostedBossName);
+	auto boostedBossRace = mTypeBoosted ? mTypeBoosted->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
+	auto isValidBoostedBoss = boostedBossId == 0 || boostedBossRace >= BosstiaryRarity_t::RARITY_BANE && boostedBossRace <= BosstiaryRarity_t::RARITY_NEMESIS;
+	if (!isValidBoostedBoss) {
+		g_logger().error("[{}] The boosted boss '{}' has an invalid race", __FUNCTION__, boostedBossName);
+		return;
+	}
+
+	const auto mTypeSlotOne = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
+	auto bossRaceSlotOne = mTypeSlotOne ? mTypeSlotOne->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
+	auto isValidBossSlotOne = bossIdSlotOne == 0 || bossRaceSlotOne >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotOne <= BosstiaryRarity_t::RARITY_NEMESIS;
+	if (!isValidBossSlotOne) {
+		g_logger().error("[{}] boss slot1 with race id '{}' has an invalid race", __FUNCTION__, bossIdSlotOne);
+		return;
+	}
+
+	const auto mTypeSlotTwo = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
+	auto bossRaceSlotTwo = mTypeSlotTwo ? mTypeSlotTwo->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
+	auto isValidBossSlotTwo = bossIdSlotTwo == 0 || bossRaceSlotTwo >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotTwo <= BosstiaryRarity_t::RARITY_NEMESIS;
+	if (!isValidBossSlotTwo) {
+		g_logger().error("[{}] boss slot1 with race id '{}' has an invalid race", __FUNCTION__, bossIdSlotTwo);
 		return;
 	}
 

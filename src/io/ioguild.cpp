@@ -18,7 +18,7 @@ std::shared_ptr<Guild> IOGuild::loadGuild(uint32_t guildId) {
 	std::ostringstream query;
 	query << "SELECT `name`, `balance` FROM `guilds` WHERE `id` = " << guildId;
 	if (DBResult_ptr result = db.storeQuery(query.str())) {
-		auto guild = std::make_shared<Guild>(guildId, result->getString("name"));
+		const auto &guild = std::make_shared<Guild>(guildId, result->getString("name"));
 		guild->setBankBalance(result->getNumber<uint64_t>("balance"));
 		query.str(std::string());
 		query << "SELECT `id`, `name`, `level` FROM `guild_ranks` WHERE `guild_id` = " << guildId;

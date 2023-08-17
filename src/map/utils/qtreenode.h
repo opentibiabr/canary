@@ -50,12 +50,12 @@ class QTreeNode {
 		}
 
 		QTreeLeafNode<T>* getLeaf(uint32_t x, uint32_t y);
-		QTreeLeafNode<T>* createLeaf(uint32_t x, uint32_t y, uint32_t level);
 		QTreeLeafNode<T>* getBestLeaf(uint32_t x, uint32_t y, uint32_t level);
 
-	protected:
-		QTreeNode<T>* child[4] = {};
+		QTreeLeafNode<T>* createLeaf(uint32_t x, uint32_t y, uint32_t level);
 
+	protected:
+		QTreeNode<T>* child[4];
 		bool leaf = false;
 };
 

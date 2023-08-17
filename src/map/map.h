@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_MAP_MAP_H_
-#define SRC_MAP_MAP_H_
+#pragma once
 
 #include "mapcache.h"
 #include "map/town.h"
@@ -168,5 +167,3 @@ class Map : protected MapCache {
 		friend class IOMap;
 		friend class MapCache;
 };
-
-#endif // SRC_MAP_MAP_H_

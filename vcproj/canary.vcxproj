@@ -348,6 +348,7 @@
     <ClCompile Include="..\src\map\house\housetile.cpp" />
     <ClCompile Include="..\src\map\map.cpp" />
     <ClCompile Include="..\src\map\mapcache.cpp" />
+    <ClCompile Include="..\src\map\utils\astarnodes.cpp" />
     <ClCompile Include="..\src\map\utils\qtreenode.cpp" />
     <ClCompile Include="..\src\otserv.cpp" />
     <ClCompile Include="..\src\canary_server.cpp" />

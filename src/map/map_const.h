@@ -21,7 +21,3 @@ static constexpr int8_t MAP_LAYER_VIEW_LIMIT = 2;
 static constexpr int32_t FLOOR_BITS = 3;
 static constexpr int32_t FLOOR_SIZE = (1 << FLOOR_BITS);
 static constexpr int32_t FLOOR_MASK = (FLOOR_SIZE - 1);
-static constexpr int32_t MAX_NODES = 512;
-static constexpr int32_t MAP_NORMALWALKCOST = 10;
-static constexpr int32_t MAP_PREFERDIAGONALWALKCOST = 14;
-static constexpr int32_t MAP_DIAGONALWALKCOST = 25;

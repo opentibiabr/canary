@@ -14,30 +14,6 @@ template <typename T>
 bool QTreeLeafNode<T>::newLeaf = false;
 
 template <typename T>
-void QTreeLeafNode<T>::addCreature(Creature* c) {
-	creature_list.push_back(c);
-
-	if (c->getPlayer()) {
-		player_list.push_back(c);
-	}
-}
-
-template <typename T>
-void QTreeLeafNode<T>::removeCreature(Creature* c) {
-	auto iter = std::find(creature_list.begin(), creature_list.end(), c);
-	assert(iter != creature_list.end());
-	*iter = creature_list.back();
-	creature_list.pop_back();
-
-	if (c->getPlayer()) {
-		iter = std::find(player_list.begin(), player_list.end(), c);
-		assert(iter != player_list.end());
-		*iter = player_list.back();
-		player_list.pop_back();
-	}
-}
-
-template <typename T>
 QTreeLeafNode<T>* QTreeNode<T>::getLeaf(uint32_t x, uint32_t y) {
 	if (leaf)
 		return static_cast<QTreeLeafNode<T>*>(this);
@@ -92,4 +68,28 @@ QTreeLeafNode<T>* QTreeNode<T>::getBestLeaf(uint32_t x, uint32_t y, uint32_t lev
 	}
 
 	return leaf;
+}
+
+template <typename T>
+void QTreeLeafNode<T>::addCreature(Creature* c) {
+	creature_list.push_back(c);
+
+	if (c->getPlayer()) {
+		player_list.push_back(c);
+	}
+}
+
+template <typename T>
+void QTreeLeafNode<T>::removeCreature(Creature* c) {
+	auto iter = std::find(creature_list.begin(), creature_list.end(), c);
+	assert(iter != creature_list.end());
+	*iter = creature_list.back();
+	creature_list.pop_back();
+
+	if (c->getPlayer()) {
+		iter = std::find(player_list.begin(), player_list.end(), c);
+		assert(iter != player_list.end());
+		*iter = player_list.back();
+		player_list.pop_back();
+	}
 }

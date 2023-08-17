@@ -10,12 +10,10 @@
 #include "map.h"
 #include "utils/astarnodes.h"
 
+#include <creatures/monsters/monster.h>
+#include <game/game.h>
 #include <io/iomap.h>
 #include <io/iomapserialize.h>
-#include <creatures/combat/combat.h>
-#include <creatures/creature.h>
-#include <game/game.h>
-#include <creatures/monsters/monster.h>
 
 bool Map::load(const std::string &identifier, const Position &pos, bool unload) {
 	try {
@@ -61,16 +59,12 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 		g_game().createLuaItemsOnMap();
 	}
 
-	if (loadMonsters) {
-		if (!IOMap::loadMonsters(this)) {
-			g_logger().warn("Failed to load spawn data");
-		}
-	}
+	if (loadMonsters && !IOMap::loadMonsters(this))
+		g_logger().warn("Failed to load spawn data");
 
 	if (loadHouses) {
-		if (!IOMap::loadHouses(this)) {
+		if (!IOMap::loadHouses(this))
 			g_logger().warn("Failed to load house data");
-		}
 
 		/**
 		 * Only load houses items if map custom load is disabled
@@ -83,11 +77,8 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 		}
 	}
 
-	if (loadNpcs) {
-		if (!IOMap::loadNpcs(this)) {
-			g_logger().warn("Failed to load npc spawn data");
-		}
-	}
+	if (loadNpcs && !IOMap::loadNpcs(this))
+		g_logger().warn("Failed to load npc spawn data");
 
 	// Files need to be cleaned up if custom map is enabled to open, or will try to load main map files
 	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
@@ -104,23 +95,14 @@ bool Map::loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMo
 	load(path, Position(0, 0, 0), true);
 	load(path);
 
-	if (loadMonsters) {
-		if (!IOMap::loadMonstersCustom(this, mapName, customMapIndex)) {
-			g_logger().warn("Failed to load monster custom data");
-		}
-	}
+	if (loadMonsters && !IOMap::loadMonstersCustom(this, mapName, customMapIndex))
+		g_logger().warn("Failed to load monster custom data");
 
-	if (loadHouses) {
-		if (!IOMap::loadHousesCustom(this, mapName, customMapIndex)) {
-			g_logger().warn("Failed to load house custom data");
-		}
-	}
+	if (loadHouses && !IOMap::loadHousesCustom(this, mapName, customMapIndex))
+		g_logger().warn("Failed to load house custom data");
 
-	if (loadNpcs) {
-		if (!IOMap::loadNpcsCustom(this, mapName, customMapIndex)) {
-			g_logger().warn("Failed to load npc custom spawn data");
-		}
-	}
+	if (loadNpcs && !IOMap::loadNpcsCustom(this, mapName, customMapIndex))
+		g_logger().warn("Failed to load npc custom spawn data");
 
 	// Files need to be cleaned up or will try to load previous map files again
 	monsterfile.clear();
@@ -960,122 +942,6 @@ bool Map::getPathMatching(const Position &start, std::forward_list<Direction> &d
 	return true;
 }
 
-// AStarNodes
-
-AStarNodes::AStarNodes(uint32_t x, uint32_t y) :
-	nodes(), openNodes() {
-	curNode = 1;
-	closedNodes = 0;
-	openNodes[0] = true;
-
-	AStarNode &startNode = nodes[0];
-	startNode.parent = nullptr;
-	startNode.x = x;
-	startNode.y = y;
-	startNode.f = 0;
-	nodeTable[(x << 16) | y] = nodes;
-}
-
-AStarNode* AStarNodes::createOpenNode(AStarNode* parent, uint32_t x, uint32_t y, int_fast32_t f) {
-	if (curNode >= MAX_NODES) {
-		return nullptr;
-	}
-
-	size_t retNode = curNode++;
-	openNodes[retNode] = true;
-
-	AStarNode* node = nodes + retNode;
-	nodeTable[(x << 16) | y] = node;
-	node->parent = parent;
-	node->x = x;
-	node->y = y;
-	node->f = f;
-	return node;
-}
-
-AStarNode* AStarNodes::getBestNode() {
-	if (curNode == 0) {
-		return nullptr;
-	}
-
-	int32_t best_node_f = std::numeric_limits<int32_t>::max();
-	int32_t best_node = -1;
-	for (size_t i = 0; i < curNode; i++) {
-		if (openNodes[i] && nodes[i].f < best_node_f) {
-			best_node_f = nodes[i].f;
-			best_node = i;
-		}
-	}
-
-	if (best_node >= 0) {
-		return nodes + best_node;
-	}
-	return nullptr;
-}
-
-void AStarNodes::closeNode(AStarNode* node) {
-	size_t index = node - nodes;
-	assert(index < MAX_NODES);
-	openNodes[index] = false;
-	++closedNodes;
-}
-
-void AStarNodes::openNode(AStarNode* node) {
-	size_t index = node - nodes;
-	assert(index < MAX_NODES);
-	if (!openNodes[index]) {
-		openNodes[index] = true;
-		--closedNodes;
-	}
-}
-
-int_fast32_t AStarNodes::getClosedNodes() const {
-	return closedNodes;
-}
-
-AStarNode* AStarNodes::getNodeByPosition(uint32_t x, uint32_t y) {
-	auto it = nodeTable.find((x << 16) | y);
-	if (it == nodeTable.end()) {
-		return nullptr;
-	}
-	return it->second;
-}
-
-int_fast32_t AStarNodes::getMapWalkCost(AStarNode* node, const Position &neighborPos, bool preferDiagonal) {
-	if (std::abs(node->x - neighborPos.x) == std::abs(node->y - neighborPos.y)) {
-		// diagonal movement extra cost
-		if (preferDiagonal)
-			return MAP_PREFERDIAGONALWALKCOST;
-		else
-			return MAP_DIAGONALWALKCOST;
-	}
-	return MAP_NORMALWALKCOST;
-}
-
-int_fast32_t AStarNodes::getTileWalkCost(const Creature &creature, const Tile* tile) {
-	int_fast32_t cost = 0;
-	if (tile->getTopVisibleCreature(&creature) != nullptr) {
-		// destroy creature cost
-		cost += MAP_NORMALWALKCOST * 3;
-	}
-
-	if (const MagicField* field = tile->getFieldItem()) {
-		CombatType_t combatType = field->getCombatType();
-		const Monster* monster = creature.getMonster();
-		if (!creature.isImmune(combatType) && !creature.hasCondition(Combat::DamageToConditionType(combatType)) && (monster && !monster->canWalkOnFieldType(combatType))) {
-			cost += MAP_NORMALWALKCOST * 18;
-		}
-		/**
-		 * Make player try to avoid magic fields, when calculating pathing
-		 */
-		const Player* player = creature.getPlayer();
-		if (player && !field->isBlocking() && field->getDamage() != 0) {
-			cost += MAP_NORMALWALKCOST * 18;
-		}
-	}
-	return cost;
-}
-
 uint32_t Map::clean() {
 	uint64_t start = OTSYS_TIME();
 	size_t tiles = 0;
@@ -1110,6 +976,7 @@ uint32_t Map::clean() {
 		g_game().setGameState(GAME_STATE_NORMAL);
 	}
 
-	g_logger().info("CLEAN: Removed {} item{} from {} tile{} in {} seconds", count, (count != 1 ? "s" : ""), tiles, (tiles != 1 ? "s" : ""), (OTSYS_TIME() - start) / (1000.f));
+	uint64_t end = OTSYS_TIME();
+	g_logger().info("CLEAN: Removed {} item{} from {} tile{} in {} seconds", count, (count != 1 ? "s" : ""), tiles, (tiles != 1 ? "s" : ""), (end - start) / (1000.f));
 	return count;
 }

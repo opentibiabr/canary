@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2022]
-        buildtype: [Release]
+        buildtype: [Debug]
         include:
           - os: windows-2022
             triplet: x64-windows
@@ -42,7 +42,7 @@ jobs:
           ./vcpkg integrate install
 
       - name: Build project
-        run: msbuild.exe /p:VcpkgEnableManifest=true /p:Configuration=Release /p:Platform=x64 /p:VcpkgRoot=$env:GITHUB_WORKSPACE/vcpkg vcproj/canary.sln
+        run: msbuild.exe /p:VcpkgEnableManifest=true /p:Configuration=Debug /p:Platform=x64 /p:VcpkgRoot=$env:GITHUB_WORKSPACE/vcpkg vcproj/canary.sln
 
       - name: Upload artifacts
         uses: actions/upload-artifact@main

@@ -27,8 +27,8 @@ class AStarNodes {
 
 		AStarNode* createOpenNode(AStarNode* parent, uint32_t x, uint32_t y, int_fast32_t f);
 		AStarNode* getBestNode();
-		void closeNode(AStarNode* node);
-		void openNode(AStarNode* node);
+		void closeNode(const AStarNode* node);
+		void openNode(const AStarNode* node);
 		int_fast32_t getClosedNodes() const;
 		AStarNode* getNodeByPosition(uint32_t x, uint32_t y);
 

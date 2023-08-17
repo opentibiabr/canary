@@ -62,14 +62,14 @@ AStarNode* AStarNodes::getBestNode() {
 	return nullptr;
 }
 
-void AStarNodes::closeNode(AStarNode* node) {
+void AStarNodes::closeNode(const AStarNode* node) {
 	size_t index = node - nodes;
 	assert(index < MAX_NODES);
 	openNodes[index] = false;
 	++closedNodes;
 }
 
-void AStarNodes::openNode(AStarNode* node) {
+void AStarNodes::openNode(const AStarNode* node) {
 	size_t index = node - nodes;
 	assert(index < MAX_NODES);
 	if (!openNodes[index]) {

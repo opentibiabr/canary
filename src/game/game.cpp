@@ -2634,7 +2634,7 @@ ReturnValue Game::processLootItems(Player* player, Container* lootContainer, Ite
 		if (!nextContainer && !handleFallbackLogic(player, lootContainer, containerIterator, fallbackConsumed)) {
 			break;
 		}
-		fallbackConsumed = (nextContainer == nullptr);
+		fallbackConsumed = fallbackConsumed || (nextContainer == nullptr);
 	} while (remainderCount != 0);
 
 	return RETURNVALUE_NOERROR;

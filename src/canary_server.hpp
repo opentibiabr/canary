@@ -10,9 +10,10 @@
 #ifndef SRC_CANARY_SERVER_HPP_
 #define SRC_CANARY_SERVER_HPP_
 
+#include "security/rsa.h"
+#include "server/server.h"
+
 class Logger;
-class RSA;
-class ServiceManager;
 
 class CanaryServer {
 	public:

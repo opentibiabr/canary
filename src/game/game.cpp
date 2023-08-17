@@ -7829,7 +7829,7 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 				} while (result->next());
 				player->sendCyclopediaCharacterRecentDeaths(page, static_cast<uint16_t>(pages), entries);
 			};
-			g_databaseTasks().addTask(query.str(), callback, true);
+			g_databaseTasks().store(query.str(), callback);
 			player->addAsyncOngoingTask(PlayerAsyncTask_RecentDeaths);
 			break;
 		}
@@ -7882,7 +7882,7 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 				} while (result->next());
 				player->sendCyclopediaCharacterRecentPvPKills(page, static_cast<uint16_t>(pages), entries);
 			};
-			g_databaseTasks().addTask(query.str(), callback, true);
+			g_databaseTasks().store(query.str(), callback);
 			player->addAsyncOngoingTask(PlayerAsyncTask_RecentPvPKills);
 			break;
 		}
@@ -8027,7 +8027,7 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 		} while (result->next());
 		player->sendHighscores(characters, category, vocation, page, static_cast<uint16_t>(pages));
 	};
-	g_databaseTasks().addTask(query.str(), callback, true);
+	g_databaseTasks().store(query.str(), callback);
 	player->addAsyncOngoingTask(PlayerAsyncTask_Highscore);
 }
 

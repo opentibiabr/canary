@@ -13,9 +13,8 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "lib/thread/thread_pool.hpp"
 
-DatabaseTasks::DatabaseTasks(ThreadPool &threadPool) :
-	threadPool(threadPool) {
-	db_ = &Database::getInstance();
+DatabaseTasks::DatabaseTasks(ThreadPool &threadPool, Database &db) :
+	db(db), threadPool(threadPool) {
 }
 
 DatabaseTasks &DatabaseTasks::getInstance() {
@@ -25,18 +24,15 @@ DatabaseTasks &DatabaseTasks::getInstance() {
 void DatabaseTasks::addTask(std::string query, std::function<void(DBResult_ptr, bool)> callback /* = nullptr*/, bool store /* = false*/) {
 	threadPool.addLoad([this, query, callback, store]() {
 		std::lock_guard lockClass(threadSafetyMutex);
-		if (db_ == nullptr) {
-			return;
-		}
 
 		bool success;
 		DBResult_ptr result;
 		if (store) {
-			result = db_->storeQuery(query);
+			result = db.storeQuery(query);
 			success = true;
 		} else {
 			result = nullptr;
-			success = db_->executeQuery(query);
+			success = db.executeQuery(query);
 		}
 
 		if (callback) {

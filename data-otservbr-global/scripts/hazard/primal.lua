@@ -72,39 +72,18 @@ function primalKill.onKill(_player, creature)
 	if not creature or not monster or not monster:hazard() or not monster:getPosition():isInArea(hazard) then
 		return true
 	end
-
-	local player = nil
-	local points = -1
-
-	for key, value in pairs(monster:getDamageMap()) do
-		local killer = Player(key)
-		if killer then
-			local killerPoints = killer:getHazardSystemPoints()
-			if points > killerPoints or points == -1 then
-				player = killer
-				points = killerPoints
-			end
-		end
-	end
-	for key, value in pairs(monster:getDamageMap()) do
-		local killer = Player(key)
-		if killer then
-			local killerPoints = killer:getHazardSystemPoints()
-			if monster:getName():lower() == "the primal menace" and killerPoints == points then
-				hazard:levelUp(killer)
-			end
-		end
-	end
-
 	-- don't spawn pods or plunder if the monster is a reward boss
 	if monster:getType():isRewardBoss() then
 		return true
 	end
 
+
+	local player, points = hazard:getHazardPlayerAndPoints(monster:getDamageMap())
 	if points < 1 then
 		return true
 	end
 
+	-- Pod
 	local chanceTo = math.random(1, 10000)
 	if chanceTo <= (points * configManager.getNumber(configKeys.HAZARD_PODS_DROP_MULTIPLIER)) then
 		local closesestPosition = player:getClosestFreePosition(monster:getPosition(), 4, true)
@@ -117,6 +96,7 @@ function primalKill.onKill(_player, creature)
 		return true
 	end
 
+	-- Plunder patriarch
 	chanceTo = math.random(1, 10000)
 	if chanceTo <= (points * configManager.getNumber(configKeys.HAZARD_SPAWN_PLUNDER_MULTIPLIER)) then
 		local closesestPosition = player:getClosestFreePosition(monster:getPosition(), 4, true)

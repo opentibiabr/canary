@@ -27,6 +27,23 @@ function Hazard.createAreas()
 	end
 end
 
+function Hazard.getHazardPlayerAndPoints(self, damageMap)
+	-- Placed here to allow getHazardPoints from player based on which hazard
+	local hazardPlayer = nil
+	local hazardPoints = -1
+	for key, value in pairs(damageMap) do
+		local player = Player(key)
+		local playerHazardPoints = player:getHazardSystemPoints()
+
+		if playerHazardPoints < hazardPoints or hazardPoints == -1 then
+			hazardPlayer = player
+			hazardPoints = playerHazardPoints
+		end
+	end
+
+	return hazardPlayer, hazardPoints
+end
+
 function Hazard.getPlayerCurrentLevel(self, player)
 	return player:getStorageValue(self.storageCurrent) < 0 and 0 or player:getStorageValue(self.storageCurrent)
 end

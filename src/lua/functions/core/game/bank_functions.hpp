@@ -17,7 +17,7 @@ class Bank;
 class BankFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-			registerSharedClass(L, "Bank", "");
+			registerTable(L, "Bank");
 			registerMethod(L, "Bank", "credit", BankFunctions::luaBankCredit);
 			registerMethod(L, "Bank", "debit", BankFunctions::luaBankDebit);
 			registerMethod(L, "Bank", "balance", BankFunctions::luaBankBalance);

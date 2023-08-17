@@ -8064,7 +8064,7 @@ void ProtocolGame::parseSendBosstiary() {
 	msg.skipBytes(2);
 
 	for (const auto &[bossid, name] : mtype_map) {
-		const MonsterType* mType = g_monsters().getMonsterType(name);
+		const auto &mType = g_monsters().getMonsterType(name);
 		if (!mType) {
 			continue;
 		}
@@ -8101,7 +8101,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 
 	// Sanity checks
 	std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
-	const MonsterType* mTypeBoosted = g_monsters().getMonsterType(boostedBossName);
+	const auto &mTypeBoosted = g_monsters().getMonsterType(boostedBossName);
 	auto boostedBossRace = mTypeBoosted ? mTypeBoosted->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBoostedBoss = boostedBossId == 0 || boostedBossRace >= BosstiaryRarity_t::RARITY_BANE && boostedBossRace <= BosstiaryRarity_t::RARITY_NEMESIS;
 	if (!isValidBoostedBoss) {
@@ -8109,7 +8109,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		return;
 	}
 
-	const MonsterType* mTypeSlotOne = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
+	const auto &mTypeSlotOne = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
 	auto bossRaceSlotOne = mTypeSlotOne ? mTypeSlotOne->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBossSlotOne = bossIdSlotOne == 0 || bossRaceSlotOne >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotOne <= BosstiaryRarity_t::RARITY_NEMESIS;
 	if (!isValidBossSlotOne) {
@@ -8117,7 +8117,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		return;
 	}
 
-	const MonsterType* mTypeSlotTwo = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
+	const auto &mTypeSlotTwo = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
 	auto bossRaceSlotTwo = mTypeSlotTwo ? mTypeSlotTwo->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBossSlotTwo = bossIdSlotTwo == 0 || bossRaceSlotTwo >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotTwo <= BosstiaryRarity_t::RARITY_NEMESIS;
 	if (!isValidBossSlotTwo) {

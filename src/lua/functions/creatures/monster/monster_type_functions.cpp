@@ -663,9 +663,9 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 	} else if (immunity == "neutral") {
 		combatType = COMBAT_NEUTRALDAMAGE;
 	} else {
-		SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeCombatImmunities] - "
-					"Unknown immunity name {} for monster: {}",
-					immunity, monsterType->name);
+		g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeCombatImmunities] - "
+						"Unknown immunity name {} for monster: {}",
+						immunity, monsterType->name);
 		lua_pushnil(L);
 	}
 
@@ -721,9 +721,9 @@ int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 	} else if (immunity == "bleed") {
 		conditionType = CONDITION_BLEEDING;
 	} else {
-		SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeConditionImmunities] - "
-					"Unknown immunity name: {} for monster: {}",
-					immunity, monsterType->name);
+		g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeConditionImmunities] - "
+						"Unknown immunity name: {} for monster: {}",
+						immunity, monsterType->name);
 		lua_pushnil(L);
 	}
 

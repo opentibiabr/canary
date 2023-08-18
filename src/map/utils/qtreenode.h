@@ -9,14 +9,12 @@
 
 #pragma once
 
-#include <pch.hpp>
-#include <map/map_const.h>
+#include "map/map_const.h"
 
-template <typename T>
+struct Floor;
 class QTreeLeafNode;
 class Creature;
 
-template <typename T>
 class QTreeNode {
 	public:
 		constexpr QTreeNode() = default;
@@ -49,21 +47,20 @@ class QTreeNode {
 			return static_cast<Leaf>(node);
 		}
 
-		QTreeLeafNode<T>* getLeaf(uint32_t x, uint32_t y);
-		QTreeLeafNode<T>* getBestLeaf(uint32_t x, uint32_t y, uint32_t level);
+		QTreeLeafNode* getLeaf(uint32_t x, uint32_t y);
+		QTreeLeafNode* getBestLeaf(uint32_t x, uint32_t y, uint32_t level);
 
-		QTreeLeafNode<T>* createLeaf(uint32_t x, uint32_t y, uint32_t level);
+		QTreeLeafNode* createLeaf(uint32_t x, uint32_t y, uint32_t level);
 
 	protected:
-		QTreeNode<T>* child[4] = {};
+		QTreeNode* child[4] = {};
 		bool leaf = false;
 };
 
-template <typename T>
-class QTreeLeafNode final : public QTreeNode<T> {
+class QTreeLeafNode final : public QTreeNode {
 	public:
 		QTreeLeafNode() {
-			QTreeNode<T>::leaf = true;
+			QTreeNode::leaf = true;
 			newLeaf = true;
 		}
 
@@ -71,11 +68,11 @@ class QTreeLeafNode final : public QTreeNode<T> {
 		QTreeLeafNode(const QTreeLeafNode &) = delete;
 		QTreeLeafNode &operator=(const QTreeLeafNode &) = delete;
 
-		const std::unique_ptr<T> &createFloor(uint32_t z) {
-			return array[z] ? array[z] : (array[z] = std::make_unique<T>(z));
+		const std::unique_ptr<Floor> &createFloor(uint32_t z) {
+			return array[z] ? array[z] : (array[z] = std::make_unique<Floor>(z));
 		}
 
-		const std::unique_ptr<T> &getFloor(uint8_t z) const {
+		const std::unique_ptr<Floor> &getFloor(uint8_t z) const {
 			return array[z];
 		}
 
@@ -87,12 +84,12 @@ class QTreeLeafNode final : public QTreeNode<T> {
 		QTreeLeafNode* leafS = nullptr;
 		QTreeLeafNode* leafE = nullptr;
 
-		std::unique_ptr<T> array[MAP_MAX_LAYERS] = {};
+		std::unique_ptr<Floor> array[MAP_MAX_LAYERS] = {};
 
 		std::vector<Creature*> creature_list;
 		std::vector<Creature*> player_list;
 
 		friend class Map;
 		friend class MapCache;
-		friend class QTreeNode<T>;
+		friend class QTreeNode;
 };

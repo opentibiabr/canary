@@ -7,45 +7,42 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "qtreenode.h"
-#include <creatures/creature.h>
 
-template <typename T>
-bool QTreeLeafNode<T>::newLeaf = false;
+bool QTreeLeafNode::newLeaf = false;
 
-template <typename T>
-QTreeLeafNode<T>* QTreeNode<T>::getLeaf(uint32_t x, uint32_t y) {
+QTreeLeafNode* QTreeNode::getLeaf(uint32_t x, uint32_t y) {
 	if (leaf)
-		return static_cast<QTreeLeafNode<T>*>(this);
+		return static_cast<QTreeLeafNode*>(this);
 
 	const auto node = child[((x & 0x8000) >> 15) | ((y & 0x8000) >> 14)];
 	return node ? node->getLeaf(x << 1, y << 1) : nullptr;
 }
 
-template <typename T>
-QTreeLeafNode<T>* QTreeNode<T>::createLeaf(uint32_t x, uint32_t y, uint32_t level) {
+QTreeLeafNode* QTreeNode::createLeaf(uint32_t x, uint32_t y, uint32_t level) {
 	if (isLeaf())
-		return static_cast<QTreeLeafNode<T>*>(this);
+		return static_cast<QTreeLeafNode*>(this);
 
 	const uint32_t index = ((x & 0x8000) >> 15) | ((y & 0x8000) >> 14);
 	if (!child[index]) {
 		if (level != FLOOR_BITS) {
-			child[index] = new QTreeNode<T>();
+			child[index] = new QTreeNode();
 		} else {
-			child[index] = new QTreeLeafNode<T>();
-			QTreeLeafNode<T>::newLeaf = true;
+			child[index] = new QTreeLeafNode();
+			QTreeLeafNode::newLeaf = true;
 		}
 	}
 
 	return child[index]->createLeaf(x * 2, y * 2, level - 1);
 }
 
-template <typename T>
-QTreeLeafNode<T>* QTreeNode<T>::getBestLeaf(uint32_t x, uint32_t y, uint32_t level) {
-	QTreeLeafNode<T>::newLeaf = false;
+QTreeLeafNode* QTreeNode::getBestLeaf(uint32_t x, uint32_t y, uint32_t level) {
+	QTreeLeafNode::newLeaf = false;
 	auto leaf = createLeaf(x, y, 15);
 
-	if (QTreeLeafNode<T>::newLeaf) {
+	if (QTreeLeafNode::newLeaf) {
 		// update north
 		if (const auto northLeaf = getLeaf(x, y - FLOOR_SIZE)) {
 			northLeaf->leafS = leaf;
@@ -70,8 +67,7 @@ QTreeLeafNode<T>* QTreeNode<T>::getBestLeaf(uint32_t x, uint32_t y, uint32_t lev
 	return leaf;
 }
 
-template <typename T>
-void QTreeLeafNode<T>::addCreature(Creature* c) {
+void QTreeLeafNode::addCreature(Creature* c) {
 	creature_list.push_back(c);
 
 	if (c->getPlayer()) {
@@ -79,8 +75,7 @@ void QTreeLeafNode<T>::addCreature(Creature* c) {
 	}
 }
 
-template <typename T>
-void QTreeLeafNode<T>::removeCreature(Creature* c) {
+void QTreeLeafNode::removeCreature(Creature* c) {
 	auto iter = std::find(creature_list.begin(), creature_list.end(), c);
 	assert(iter != creature_list.end());
 	*iter = creature_list.back();

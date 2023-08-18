@@ -437,6 +437,15 @@ std::string formatDateShort(time_t time) {
 	return {};
 }
 
+std::string formatTime(time_t time) {
+	try {
+		return fmt::format("{:%H:%M:%S}", fmt::localtime(time));
+	} catch (const std::out_of_range &exception) {
+		g_logger().error("Failed to format time with error code {}", exception.what());
+	}
+	return {};
+}
+
 std::time_t getTimeNow() {
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }

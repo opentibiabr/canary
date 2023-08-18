@@ -7,13 +7,15 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "map.h"
 #include "utils/astarnodes.h"
 
-#include <creatures/monsters/monster.h>
-#include <game/game.h>
-#include <io/iomap.h>
-#include <io/iomapserialize.h>
+#include "creatures/monsters/monster.h"
+#include "game/game.h"
+#include "io/iomap.h"
+#include "io/iomapserialize.h"
 
 bool Map::load(const std::string &identifier, const Position &pos, bool unload) {
 	try {
@@ -357,9 +359,9 @@ void Map::getSpectatorsInternal(SpectatorHashSet &spectators, const Position &ce
 	int32_t endx2 = x2 - (x2 % FLOOR_SIZE);
 	int32_t endy2 = y2 - (y2 % FLOOR_SIZE);
 
-	const auto startLeaf = QTreeNode<Floor>::getLeafStatic<const QTreeLeafNode<Floor>*, const QTreeNode<Floor>*>(&root, startx1, starty1);
-	const QTreeLeafNode<Floor>* leafS = startLeaf;
-	const QTreeLeafNode<Floor>* leafE;
+	const auto startLeaf = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, starty1);
+	const QTreeLeafNode* leafS = startLeaf;
+	const QTreeLeafNode* leafE;
 
 	for (int_fast32_t ny = starty1; ny <= endy2; ny += FLOOR_SIZE) {
 		leafE = leafS;
@@ -381,14 +383,14 @@ void Map::getSpectatorsInternal(SpectatorHashSet &spectators, const Position &ce
 				}
 				leafE = leafE->leafE;
 			} else {
-				leafE = QTreeNode<Floor>::getLeafStatic<const QTreeLeafNode<Floor>*, const QTreeNode<Floor>*>(&root, nx + FLOOR_SIZE, ny);
+				leafE = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, nx + FLOOR_SIZE, ny);
 			}
 		}
 
 		if (leafS) {
 			leafS = leafS->leafS;
 		} else {
-			leafS = QTreeNode<Floor>::getLeafStatic<const QTreeLeafNode<Floor>*, const QTreeNode<Floor>*>(&root, startx1, ny + FLOOR_SIZE);
+			leafS = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, ny + FLOOR_SIZE);
 		}
 	}
 }

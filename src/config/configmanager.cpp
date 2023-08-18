@@ -13,6 +13,7 @@
 #include "declarations.hpp"
 #include "game/game.h"
 #include "lua/scripts/luajit_sync.hpp"
+#include "server/network/webhook/webhook.h"
 
 #if LUA_VERSION_NUM >= 502
 	#undef lua_strlen
@@ -276,6 +277,7 @@ bool ConfigManager::load() {
 	integer[FORGE_MAX_SLIVERS] = getGlobalNumber(L, "forgeMaxSlivers", 7);
 	integer[FORGE_INFLUENCED_CREATURES_LIMIT] = getGlobalNumber(L, "forgeInfluencedLimit", 300);
 	integer[FORGE_FIENDISH_CREATURES_LIMIT] = getGlobalNumber(L, "forgeFiendishLimit", 3);
+	integer[DISCORD_WEBHOOK_DELAY_MS] = getGlobalNumber(L, "discordWebhookDelayMs", Webhook::DEFAULT_DELAY_MS);
 
 	floating[BESTIARY_RATE_CHARM_SHOP_PRICE] = getGlobalFloat(L, "bestiaryRateCharmShopPrice", 1.0);
 	floating[RATE_HEALTH_REGEN] = getGlobalFloat(L, "rateHealthRegen", 1.0);

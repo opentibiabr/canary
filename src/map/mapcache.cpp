@@ -7,14 +7,17 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "mapcache.h"
 
-#include <game/movement/teleport.h>
-#include <items/bed.h>
-#include <io/iologindata.h>
-#include <game/game.h>
-#include <map/map.h>
-#include <utils/hash.h>
+#include "game/movement/teleport.h"
+#include "items/bed.h"
+#include "io/iologindata.h"
+#include "items/item.h"
+#include "game/game.h"
+#include "map/map.h"
+#include "utils/hash.h"
 
 static phmap::flat_hash_map<size_t, BasicItemPtr> items;
 static phmap::flat_hash_map<size_t, BasicTilePtr> tiles;
@@ -140,7 +143,7 @@ Tile* MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, ui
 
 void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePtr &newTile) {
 	if (z >= MAP_MAX_LAYERS) {
-		SPDLOG_ERROR("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
+		g_logger().error("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;
 	}
 

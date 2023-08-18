@@ -37,7 +37,7 @@ Webhook &Webhook::getInstance() {
 
 void Webhook::run() {
 	threadPool.addLoad([this] { sendWebhook(); });
-	g_scheduler().addEvent(WEBHOOK_DELAY_MS, [this] { run(); });
+	g_scheduler().addEvent(g_configManager().getNumber(DISCORD_WEBHOOK_DELAY_MS), [this] { run(); });
 }
 
 void Webhook::sendMessage(const std::string payload, std::string url) {

@@ -19,6 +19,8 @@ struct WebhookTask {
 
 class Webhook {
 	public:
+		static constexpr size_t DEFAULT_DELAY_MS = 1000;
+
 		explicit Webhook(ThreadPool &threadPool);
 
 		// Singleton - ensures we don't accidentally copy it
@@ -33,14 +35,13 @@ class Webhook {
 		void sendMessage(const std::string title, const std::string message, int color, std::string url = "");
 
 	private:
-		static constexpr size_t WEBHOOK_DELAY_MS = 1000;
-
 		std::mutex taskLock;
 		ThreadPool &threadPool;
 		std::deque<std::shared_ptr<WebhookTask>> webhooks;
 		curl_slist* headers = nullptr;
 
 		void sendWebhook();
+
 		int sendRequest(const char* url, const char* payload, std::string* response_body) const;
 		static size_t writeCallback(void* contents, size_t size, size_t nmemb, void* userp);
 		std::string getPayload(const std::string title, const std::string message, int color) const;

@@ -10,47 +10,32 @@
 #ifndef SRC_SERVER_NETWORK_WEBHOOK_WEBHOOK_H_
 #define SRC_SERVER_NETWORK_WEBHOOK_WEBHOOK_H_
 
-#include "utils/thread_holder_base.h"
+#include "lib/thread/thread_pool.hpp"
 
-class Webhook : public ThreadHolder<Webhook> {
-	private:
-		Webhook();
+class Webhook {
+	public:
+		Webhook(ThreadPool &threadPool);
 
 		// Singleton - ensures we don't accidentally copy it
 		Webhook(const Webhook &) = delete;
 		void operator=(const Webhook &) = delete;
 
-		struct Task {
-				std::string title;
-				std::string message;
-				int color;
-				std::string url;
-		};
+		static Webhook &getInstance();
 
-		std::mutex taskLock;
-		std::condition_variable taskSignal;
-		std::deque<Task> taskDeque;
-		bool isInitialized = false;
+	void requeueMessage(const std::string payload, std::string url);
+	void sendMessage(const std::string payload, std::string url);
+	void sendMessage(const std::string title, const std::string message, int color);
+	void sendMessage(const std::string title, const std::string message, int color, std::string url);
+
+	private:
+		ThreadPool &threadPool;
 		curl_slist* headers = nullptr;
-		CURL* curl;
 
-	public:
-		static Webhook &getInstance() {
-			// Guaranteed to be destroyed
-			static Webhook instance;
-			// Instantiated on first use
-			return instance;
-		}
-
-		void init();
-		void sendMessage(const std::string title, const std::string message, int color, std::string url = "");
 		int sendRequest(const char* url, const char* payload, std::string* response_body);
 		static size_t writeCallback(void* contents, size_t size, size_t nmemb, void* userp);
 		std::string getPayload(const std::string title, const std::string message, int color);
-		void threadMain();
-		void shutdown();
 };
 
-constexpr auto g_webhook = &Webhook::getInstance;
+constexpr auto g_webhook = Webhook::getInstance;
 
 #endif // SRC_SERVER_NETWORK_WEBHOOK_WEBHOOK_H_

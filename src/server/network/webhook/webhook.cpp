@@ -12,11 +12,8 @@
 #include "server/network/webhook/webhook.h"
 #include "config/configmanager.h"
 
-Webhook::Webhook() {
-	init();
-}
-
-void Webhook::init() {
+Webhook::Webhook(ThreadPool &threadPool)
+	: threadPool(threadPool) {
 	if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
 		g_logger().error("Failed to init curl, no webhook messages may be sent");
 		return;
@@ -24,29 +21,61 @@ void Webhook::init() {
 
 	headers = curl_slist_append(headers, "content-type: application/json");
 	headers = curl_slist_append(headers, "accept: application/json");
+
 	if (headers == NULL) {
 		g_logger().error("Failed to init curl, appending request headers failed");
 		return;
 	}
+}
 
-	isInitialized = true;
+Webhook &Webhook::getInstance() {
+	return inject<Webhook>();
+}
+
+void Webhook::requeueMessage(const std::string payload, std::string url) {
+	threadPool.addLoad([this, &payload, &url]{
+		std::this_thread::sleep_for(std::chrono::seconds(2));
+		sendMessage(payload, url);
+	});
+}
+
+void Webhook::sendMessage(const std::string payload, std::string url) {
+	threadPool.addLoad([this, &payload, &url]{
+		std::string response_body;
+		auto response_code = sendRequest(url.c_str(), payload.c_str(), &response_body);
+
+		if (response_code == 204 || response_code == 504) {
+			g_logger().debug("Webhook encountered error code {}. Re-queueing task and sleeping for two seconds.", response_code);
+			requeueMessage(payload, url);
+
+			return;
+		}
+
+		if (response_code > 300) {
+			g_logger().error(
+				"Failed to send webhook message, error code: {} response body: {} request body: {}",
+				response_code,
+				response_body,
+				payload
+			);
+
+			return;
+		}
+
+		g_logger().info("Webhook successfully sent to {}", url);
+	});
+}
+
+void Webhook::sendMessage(const std::string title, const std::string message, int color) {
+	sendMessage(title, message, color, g_configManager().getString(DISCORD_WEBHOOK_URL));
 }
 
 void Webhook::sendMessage(const std::string title, const std::string message, int color, std::string url) {
-	if (url.empty()) {
-		url = g_configManager().getString(DISCORD_WEBHOOK_URL);
-	}
-
-	if (url.empty() || title.empty() || message.empty() || !isInitialized) {
+	if (url.empty() || title.empty() || message.empty()) {
 		return;
 	}
 
-	Task task { title, message, color, url };
-	{
-		std::lock_guard<std::mutex> lock(taskLock);
-		taskDeque.push_back(std::move(task));
-	}
-	taskSignal.notify_one();
+	sendMessage(getPayload(title, message, color), url);
 }
 
 int Webhook::sendRequest(const char* url, const char* payload, std::string* response_body) {
@@ -67,13 +96,16 @@ int Webhook::sendRequest(const char* url, const char* payload, std::string* resp
 
 	CURLcode res = curl_easy_perform(curl);
 
-	int response_code = -1;
-	if (res == CURLE_OK) {
-		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-	} else {
+	if (res != CURLE_OK) {
 		g_logger().error("Failed to send webhook message with the error: {}", curl_easy_strerror(res));
+		curl_easy_cleanup(curl);
+
+		return 500;
 	}
 
+	int response_code;
+
+	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
 	curl_easy_cleanup(curl);
 
 	return response_code;
@@ -117,48 +149,4 @@ std::string Webhook::getPayload(const std::string title, const std::string messa
 	payload << " }] }";
 
 	return payload.str();
-}
-
-void Webhook::threadMain() {
-	while (getState() != THREAD_STATE_TERMINATED) {
-		std::unique_lock<std::mutex> taskLockUnique(taskLock);
-		taskSignal.wait(taskLockUnique, [this] { return !taskDeque.empty() || getState() == THREAD_STATE_TERMINATED; });
-
-		if (getState() == THREAD_STATE_TERMINATED)
-			break;
-
-		Task task;
-		{
-			task = std::move(taskDeque.front());
-			taskDeque.pop_front();
-		}
-		taskLockUnique.unlock();
-
-		std::string payload = getPayload(task.title, task.message, task.color);
-		std::string response_body = "";
-		auto response_code = sendRequest(task.url.c_str(), payload.c_str(), &response_body);
-
-		if (response_code == 429 || response_code == 504) {
-			g_logger().debug("[{}] encountered error code {}. Requeueing task and sleeping for two seconds.", response_code);
-
-			taskLockUnique.lock();
-			taskDeque.push_front(task);
-			taskLockUnique.unlock();
-
-			std::this_thread::sleep_for(std::chrono::seconds(2));
-		} else if (response_code != 204 && response_code != -1) {
-			g_logger().error("Failed to send webhook message; "
-						 "HTTP request failed with code: {}"
-						 "response body: {} request body: {}",
-						 response_code, response_body, payload);
-		}
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(500));
-	}
-}
-
-void Webhook::shutdown() {
-	std::lock_guard<std::mutex> taskLockGuard(taskLock);
-	setState(THREAD_STATE_TERMINATED);
-	taskSignal.notify_all();
 }

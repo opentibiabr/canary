@@ -41,7 +41,7 @@ void Webhook::run() {
 }
 
 void Webhook::sendMessage(const std::string payload, std::string url) {
-	std::scoped_lock lock{taskLock};
+	std::scoped_lock lock { taskLock };
 	webhooks.push_back(std::make_shared<WebhookTask>(payload, url));
 }
 
@@ -135,7 +135,7 @@ void Webhook::sendWebhook() {
 		return;
 	}
 
-	std::scoped_lock lock{taskLock};
+	std::scoped_lock lock { taskLock };
 	auto task = webhooks.front();
 
 	std::string response_body;

@@ -12,8 +12,6 @@
 
 #include "lib/thread/thread_pool.hpp"
 
-#define WEBHOOK_DELAY_MS 1000
-
 struct WebhookTask {
 		std::string payload;
 		std::string url;
@@ -35,6 +33,8 @@ class Webhook {
 		void sendMessage(const std::string title, const std::string message, int color, std::string url = "");
 
 	private:
+		static constexpr size_t WEBHOOK_DELAY_MS = 1000;
+
 		std::mutex taskLock;
 		ThreadPool &threadPool;
 		std::deque<std::shared_ptr<WebhookTask>> webhooks;

@@ -13,8 +13,8 @@
 #include "lib/thread/thread_pool.hpp"
 
 struct WebhookTask {
-	std::string payload;
-	std::string url;
+		std::string payload;
+		std::string url;
 };
 
 class Webhook {

@@ -339,8 +339,9 @@ private:
 		registerMethod(L, "Player", "updateConcoction", PlayerFunctions::luaPlayerUpdateConcoction);
 		registerMethod(L, "Player", "clearSpellCooldowns", PlayerFunctions::luaPlayerClearSpellCooldowns);
 
-		registerMethod(L, "Player", "isVip", PlayerFunctions::luaPlayerIsVip);
-		registerMethod(L, "Player", "getVipDays", PlayerFunctions::luaPlayerGetVipDays);
+			registerMethod(L, "Player", "isVip", PlayerFunctions::luaPlayerIsVip);
+			registerMethod(L, "Player", "getVipDays", PlayerFunctions::luaPlayerGetVipDays);
+			registerMethod(L, "Player", "getVipTime", PlayerFunctions::luaPlayerGetVipTime);
 
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
@@ -675,8 +676,9 @@ private:
 	static int luaPlayerUpdateConcoction(lua_State* L);
 	static int luaPlayerClearSpellCooldowns(lua_State* L);
 
-	static int luaPlayerIsVip(lua_State* L);
-	static int luaPlayerGetVipDays(lua_State* L);
+		static int luaPlayerIsVip(lua_State* L);
+		static int luaPlayerGetVipDays(lua_State* L);
+		static int luaPlayerGetVipTime(lua_State* L);
 
 	friend class CreatureFunctions;
 };

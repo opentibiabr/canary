@@ -1635,3 +1635,22 @@ std::vector<std::string> split(const std::string &str) {
 	}
 	return tokens;
 }
+
+std::string getFormattedTime(uint32_t time) {
+	time_t currentTimestamp = std::time(nullptr);
+	time_t timeRemaining = time - currentTimestamp;
+
+	int days = static_cast<int>(std::floor(timeRemaining / (24 * 60 * 60)));
+	int hours = static_cast<int>(std::floor((timeRemaining % (24 * 60 * 60)) / (60 * 60)));
+	int minutes = static_cast<int>(std::floor((timeRemaining % (60 * 60)) / 60));
+	int seconds = static_cast<int>(timeRemaining % 60);
+
+	std::stringstream output;
+	if (days > 1) {
+		output << days << " days";
+		return output.str();
+	}
+
+	output << hours << " hours, " << minutes << " minutes and " << seconds << " seconds";
+	return output.str();
+}

@@ -353,6 +353,45 @@ namespace account {
 		return ERROR_NO;
 	}
 
+	void Account::UpdatePremium() {
+		bool save = false;
+		uint32_t remainingDays = 0;
+		time_t lastDay;
+		std::string accountIdentifier;
+		GetPremiumRemainingDays(&remainingDays);
+		GetPremiumLastDay(&lastDay);
+		GetAccountIdentifier(&accountIdentifier);
+
+		if (remainingDays == 0) {
+			if (lastDay != 0) {
+				SetPremiumLastDay(0);
+				save = true;
+			}
+		} else if (lastDay == 0) {
+			SetPremiumRemainingDays(0);
+			save = true;
+		} else {
+			time_t currentTime = time(nullptr);
+			uint32_t daysLeft = static_cast<int>((lastDay - currentTime) / 86400);
+			uint32_t timeLeft = static_cast<int>((lastDay - currentTime) % 86400);
+			if (daysLeft > 0) {
+				SetPremiumRemainingDays(daysLeft);
+			} else if (daysLeft == 0 && timeLeft > 0) {
+				SetPremiumRemainingDays(1);
+			} else {
+				if (!SetPremiumRemainingDays(0) || !SetPremiumLastDay(0)) {
+					g_logger().error("Failed to set account premium days, account {}: {}", getProtocolCompat() ? "name" : " email", accountIdentifier);
+				}
+			}
+			save = true;
+		}
+
+		if (save && SaveAccountDB() != 0) {
+			GetAccountIdentifier(&accountIdentifier);
+			g_logger().error("Failed to save account: {}", accountIdentifier);
+		}
+	}
+
 	/*******************************************************************************
 	 * Setters and Getters
 	 ******************************************************************************/

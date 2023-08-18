@@ -440,7 +440,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	}
 
 	// Update premium days
-	Game::updatePremium(playerAccount);
+	playerAccount.UpdatePremium();
 
 	// dispatcher thread
 	Player* foundPlayer = g_game().getPlayerUniqueLogin(name);

@@ -205,9 +205,15 @@ namespace account {
 		 */
 		error_t SaveAccountDB();
 
-		/***************************************************************************
-		 * Setters and Getters
-		 **************************************************************************/
+			/**
+			 * @brief Calculate and update remaining days and last day of premium account
+			 *
+			 */
+			void UpdatePremium();
+
+			/***************************************************************************
+			 * Setters and Getters
+			 **************************************************************************/
 
 		error_t GetID(uint32_t* id);
 

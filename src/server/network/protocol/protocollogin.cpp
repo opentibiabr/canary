@@ -48,7 +48,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountIdentifier, const
 	}
 
 	// Update premium days
-	Game::updatePremium(account);
+	account.UpdatePremium();
 
 	auto output = OutputMessagePool::getOutputMessage();
 	const std::string &motd = g_configManager().getString(SERVER_MOTD);

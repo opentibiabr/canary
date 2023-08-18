@@ -7508,45 +7508,6 @@ void Game::updateCreatureType(Creature* creature) {
 	}
 }
 
-void Game::updatePremium(account::Account &account) {
-	bool save = false;
-	uint32_t remainingDays = 0;
-	time_t lastDay;
-	std::string accountIdentifier;
-	account.GetPremiumRemainingDays(&remainingDays);
-	account.GetPremiumLastDay(&lastDay);
-	account.GetAccountIdentifier(&accountIdentifier);
-
-	if (remainingDays == 0) {
-		if (lastDay != 0) {
-			account.SetPremiumLastDay(0);
-			save = true;
-		}
-	} else if (lastDay == 0) {
-		account.SetPremiumRemainingDays(0);
-		save = true;
-	} else {
-		time_t currentTime = time(nullptr);
-		uint32_t daysLeft = static_cast<int>((lastDay - currentTime) / 86400);
-		uint32_t timeLeft = static_cast<int>((lastDay - currentTime) % 86400);
-		if (daysLeft > 0) {
-			account.SetPremiumRemainingDays(daysLeft);
-		} else if (daysLeft == 0 && timeLeft > 0) {
-			account.SetPremiumRemainingDays(1);
-		} else {
-			if (!account.SetPremiumRemainingDays(0) || !account.SetPremiumLastDay(0)) {
-				g_logger().error("Failed to set account premium days, account {}: {}", account.getProtocolCompat() ? "name" : " email", accountIdentifier);
-			}
-		}
-		save = true;
-	}
-
-	if (save && account.SaveAccountDB() != 0) {
-		account.GetAccountIdentifier(&accountIdentifier);
-		g_logger().error("Failed to save account: {}", accountIdentifier);
-	}
-}
-
 void Game::loadMotdNum() {
 	Database &db = Database::getInstance();
 

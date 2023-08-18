@@ -3911,3 +3911,16 @@ int PlayerFunctions::luaPlayerGetVipDays(lua_State* L) {
 	lua_pushnumber(L, player->getPremiumDays());
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerGetVipTime(lua_State* L) {
+	// player:getVipTime()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushinteger(L, player->getPremiumLastDay());
+	return 1;
+}

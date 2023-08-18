@@ -347,8 +347,8 @@ void Tile::onAddTileItem(Item* item) {
 
 	setTileFlags(item);
 
-	if (getZone()) {
-		getZone()->itemAdded(item);
+	for (const auto zone : getZones()) {
+		zone->itemAdded(item);
 	}
 
 	const Position &cylinderMapPos = getPosition();
@@ -421,8 +421,8 @@ void Tile::onRemoveTileItem(const SpectatorHashSet &spectators, const std::vecto
 		}
 	}
 
-	if (getZone()) {
-		getZone()->itemRemoved(item);
+	for (const auto zone : getZones()) {
+		zone->itemRemoved(item);
 	}
 
 	resetTileFlags(item);
@@ -1666,9 +1666,6 @@ Item* Tile::getDoorItem() const {
 	return nullptr;
 }
 
-std::shared_ptr<Zone> Tile::getZone() {
-	if (!zone) {
-		zone = Zone::getZone(getPosition());
-	}
-	return zone;
+const phmap::btree_set<std::shared_ptr<Zone>> Tile::getZones() {
+	return Zone::getZones(getPosition());
 }

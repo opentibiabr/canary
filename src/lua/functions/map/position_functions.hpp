@@ -25,7 +25,7 @@ class PositionFunctions final : LuaScriptInterface {
 			registerMethod(L, "Position", "isSightClear", PositionFunctions::luaPositionIsSightClear);
 
 			registerMethod(L, "Position", "getTile", PositionFunctions::luaPositionGetTile);
-			registerMethod(L, "Position", "getZone", PositionFunctions::luaPositionGetZone);
+			registerMethod(L, "Position", "getZones", PositionFunctions::luaPositionGetZones);
 
 			registerMethod(L, "Position", "sendMagicEffect", PositionFunctions::luaPositionSendMagicEffect);
 			registerMethod(L, "Position", "removeMagicEffect", PositionFunctions::luaPositionRemoveMagicEffect);
@@ -48,7 +48,7 @@ class PositionFunctions final : LuaScriptInterface {
 		static int luaPositionIsSightClear(lua_State* L);
 
 		static int luaPositionGetTile(lua_State* L);
-		static int luaPositionGetZone(lua_State* L);
+		static int luaPositionGetZones(lua_State* L);
 
 		static int luaPositionSendMagicEffect(lua_State* L);
 		static int luaPositionRemoveMagicEffect(lua_State* L);

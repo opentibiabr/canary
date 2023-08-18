@@ -127,21 +127,21 @@ int PositionFunctions::luaPositionGetTile(lua_State* L) {
 	return 1;
 }
 
-int PositionFunctions::luaPositionGetZone(lua_State* L) {
-	// position:getZone()
+int PositionFunctions::luaPositionGetZones(lua_State* L) {
+	// position:getZones()
 	const Position &position = getPosition(L, 1);
 	auto tile = g_game().map.getTile(position);
 	if (tile == nullptr) {
 		lua_pushnil(L);
 		return 1;
 	}
-	auto zone = tile->getZone();
-	if (zone == nullptr) {
-		lua_pushnil(L);
-		return 1;
+	int index = 0;
+	for (auto zone : tile->getZones()) {
+		index++;
+		pushUserdata<Zone>(L, zone);
+		setMetatable(L, -1, "Zone");
+		lua_rawseti(L, -2, index);
 	}
-	pushUserdata<Zone>(L, zone);
-	setMetatable(L, -1, "Zone");
 	return 1;
 }
 

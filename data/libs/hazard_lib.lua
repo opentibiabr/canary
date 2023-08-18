@@ -33,8 +33,17 @@ function Hazard:setPlayerCurrentLevel(player, level)
 		return false
 	end
 	player:setStorageValue(self.storageCurrent, level)
-	if player:getZone() == self.zone then
-		player:setHazardSystemPoints(level)
+	local zones = player:getZones()
+	if not zones then return true end
+	for _, zone in ipairs(zones) do
+		local hazard = Hazard.getByName(zone:getName())
+		if hazard then
+			if hazard == self then
+				player:setHazardSystemPoints(level)
+			else
+				player:setHazardSystemPoints(0)
+			end
+		end
 	end
 	return true
 end
@@ -59,11 +68,15 @@ function Hazard:setPlayerMaxLevel(player, level)
 end
 
 function Hazard:isInZone(position)
-	local zone = position:getZone()
-	if not zone then return false end
-	local hazard = Hazard.getByName(zone:getName())
-	if not hazard then return false end
-	return hazard == self
+	local zones = position:getZones()
+	if not zones then return false end
+	for _, zone in ipairs(zones) do
+		local hazard = Hazard.getByName(zone:getName())
+		if hazard then
+			return hazard == self
+		end
+	end
+	return false
 end
 
 function Hazard:register()
@@ -88,7 +101,6 @@ function Hazard:register()
 	end
 
 	Hazard.areas[self.name] = self
-	self.zone:register()
 	event:register()
 end
 
@@ -106,15 +118,17 @@ function HazardMonster.onSpawn(monster, position)
 		return false
 	end
 
-	local zone = position:getZone()
-	if not zone then return true end
-	local hazard = Hazard.getByName(zone:getName())
-	if hazard then
-		monster:hazard(true)
+	local zones = position:getZones()
+	if not zones then return true end
+	for _, zone in ipairs(zones) do
+		local hazard = Hazard.getByName(zone:getName())
 		if hazard then
-			monster:hazardCrit(hazard.crit)
-			monster:hazardDodge(hazard.dodge)
-			monster:hazardDamageBoost(hazard.damageBoost)
+			monster:hazard(true)
+			if hazard then
+				monster:hazardCrit(hazard.crit)
+				monster:hazardDodge(hazard.dodge)
+				monster:hazardDamageBoost(hazard.damageBoost)
+			end
 		end
 	end
 	return true

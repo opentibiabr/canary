@@ -37,10 +37,6 @@ void Zone::addArea(Area area) {
 			if (zone.get() == this) {
 				continue;
 			}
-			if (a.intersects(area)) {
-				spdlog::error("Zone {} intersects with zone {}", this->name, name);
-				return;
-			}
 		}
 	}
 	areas.push_back(area);
@@ -55,15 +51,6 @@ void Zone::addArea(Area area) {
 
 bool Zone::isPositionInZone(const Position &pos) const {
 	return positions.contains(pos);
-}
-
-const std::shared_ptr<Zone> &Zone::getZone(const Position &postion) {
-	for (auto &[name, zone] : zones) {
-		if (zone->isPositionInZone(postion)) {
-			return zone;
-		}
-	}
-	return nullZone;
 }
 
 const std::shared_ptr<Zone> &Zone::getZone(const std::string &name) {
@@ -118,13 +105,22 @@ void Zone::clearZones() {
 	zones.clear();
 }
 
-const std::vector<std::shared_ptr<Zone>> &Zone::getZones() {
-	static std::vector<std::shared_ptr<Zone>> zonesVector;
-	zonesVector.clear();
-	for (const auto &[_, zone] : zones) {
-		zonesVector.push_back(zone);
+const phmap::btree_set<std::shared_ptr<Zone>> Zone::getZones(const Position &postion) {
+	phmap::btree_set<std::shared_ptr<Zone>> zonesSet;
+	for (auto &[name, zone] : zones) {
+		if (zone->isPositionInZone(postion)) {
+			zonesSet.insert(zone);
+		}
 	}
-	return zonesVector;
+	return zonesSet;
+}
+
+const phmap::btree_set<std::shared_ptr<Zone>> &Zone::getZones() {
+	static phmap::btree_set<std::shared_ptr<Zone>> zonesSet;
+	for (auto &[name, zone] : zones) {
+		zonesSet.insert(zone);
+	}
+	return zonesSet;
 }
 
 void Zone::creatureAdded(Creature* creature) {

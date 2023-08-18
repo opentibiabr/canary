@@ -15,6 +15,7 @@
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "game/scheduling/scheduler.h"
+#include "game/zones/zone.hpp"
 
 double Creature::speedA = 857.36;
 double Creature::speedB = 261.29;
@@ -1772,4 +1773,8 @@ void Creature::setIncreasePercent(CombatType_t combat, int32_t value) {
 	} catch (const std::out_of_range &e) {
 		g_logger().error("Index is out of range in setIncreasePercent: {}", e.what());
 	}
+}
+
+const phmap::btree_set<std::shared_ptr<Zone>> Creature::getZones() {
+	return Zone::getZones(getPosition());
 }

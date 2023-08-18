@@ -34,7 +34,7 @@ function zones.onSay(player, words, param)
 			player:sendTextMessage(MESSAGE_HEALED, "Zone not found.")
 			return false
 		end
-		local zone = Zone(zoneName)
+		local zone = Zone.getByName(zoneName)
 		if not zone then
 			player:sendTextMessage(MESSAGE_HEALED, "Zone not found.")
 			return false

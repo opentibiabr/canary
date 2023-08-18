@@ -115,8 +115,8 @@ class Zone {
 
 		const static std::shared_ptr<Zone> &addZone(const std::string &name);
 		const static std::shared_ptr<Zone> &getZone(const std::string &name);
-		const static std::shared_ptr<Zone> &getZone(const Position &position);
-		static const std::vector<std::shared_ptr<Zone>> &getZones();
+		const static phmap::btree_set<std::shared_ptr<Zone>> getZones(const Position &position);
+		const static phmap::btree_set<std::shared_ptr<Zone>> &getZones();
 		static void clearZones();
 
 	private:

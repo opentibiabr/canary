@@ -232,15 +232,16 @@ int ZoneFunctions::luaZoneRemoveNpcs(lua_State* L) {
 	return 0;
 }
 
-int ZoneFunctions::luaZoneRegister(lua_State* L) {
-	// Zone:register()
-	auto zone = getUserdataShared<Zone>(L, 1);
+int ZoneFunctions::luaZoneGetByName(lua_State* L) {
+	// Zone.getByName(name)
+	auto name = getString(L, 2);
+	auto zone = Zone::getZone(name);
 	if (!zone) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
-		pushBoolean(L, false);
+		lua_pushnil(L);
 		return 1;
 	}
-	pushBoolean(L, true);
+	pushUserdata<Zone>(L, zone);
+	setMetatable(L, -1, "Zone");
 	return 1;
 }
 
@@ -252,13 +253,13 @@ int ZoneFunctions::luaZoneGetByPosition(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
-	auto zone = tile->getZone();
-	if (!zone) {
-		lua_pushnil(L);
-		return 1;
+	int index = 0;
+	for (auto zone : tile->getZones()) {
+		index++;
+		pushUserdata<Zone>(L, zone);
+		setMetatable(L, -1, "Zone");
+		lua_rawseti(L, -2, index);
 	}
-	pushUserdata<Zone>(L, zone);
-	setMetatable(L, -1, "Zone");
 	return 1;
 }
 

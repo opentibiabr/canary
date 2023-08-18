@@ -36,48 +36,12 @@ Webhook &Webhook::getInstance() {
 }
 
 void Webhook::run() {
-	threadPool.addLoad([this] {
-		if (webhooks.empty()) {
-			return;
-		}
-
-		std::lock_guard<std::mutex> lock(taskLock);
-		auto task = webhooks.front();
-
-		std::string response_body;
-		auto response_code = sendRequest(task->url.c_str(), task->payload.c_str(), &response_body);
-
-		if (response_code == -1) {
-			return;
-		}
-
-		if (response_code == 429 || response_code == 504) {
-			g_logger().warn("Webhook encountered error code {}, re-queueing task.", response_code);
-
-			return;
-		}
-
-		webhooks.pop_front();
-
-		if (response_code >= 300) {
-			g_logger().error(
-				"Failed to send webhook message, error code: {} response body: {} request body: {}",
-				response_code,
-				response_body,
-				task->payload
-			);
-
-			return;
-		}
-
-		g_logger().debug("Webhook successfully sent to {}", task->url);
-	});
-
+	threadPool.addLoad([this] { sendWebhook(); });
 	g_scheduler().addEvent(WEBHOOK_DELAY_MS, [this] { run(); });
 }
 
 void Webhook::sendMessage(const std::string payload, std::string url) {
-	std::lock_guard<std::mutex> lock(taskLock);
+	std::scoped_lock lock{taskLock};
 	webhooks.push_back(std::make_shared<WebhookTask>(payload, url));
 }
 
@@ -93,7 +57,7 @@ void Webhook::sendMessage(const std::string title, const std::string message, in
 	sendMessage(getPayload(title, message, color), url);
 }
 
-int Webhook::sendRequest(const char* url, const char* payload, std::string* response_body) {
+int Webhook::sendRequest(const char* url, const char* payload, std::string* response_body) const {
 	CURL* curl = curl_easy_init();
 	if (!curl) {
 		g_logger().error("Failed to send webhook message; curl_easy_init failed");
@@ -128,12 +92,12 @@ int Webhook::sendRequest(const char* url, const char* payload, std::string* resp
 
 size_t Webhook::writeCallback(void* contents, size_t size, size_t nmemb, void* userp) {
 	size_t real_size = size * nmemb;
-	std::string* str = reinterpret_cast<std::string*>(userp);
+	auto* str = reinterpret_cast<std::string*>(userp);
 	str->append(reinterpret_cast<char*>(contents), real_size);
 	return real_size;
 }
 
-std::string Webhook::getPayload(const std::string title, const std::string message, int color) {
+std::string Webhook::getPayload(const std::string title, const std::string message, int color) const {
 	time_t now;
 	time(&now);
 	struct tm tm;
@@ -164,4 +128,41 @@ std::string Webhook::getPayload(const std::string title, const std::string messa
 	payload << " }] }";
 
 	return payload.str();
+}
+
+void Webhook::sendWebhook() {
+	if (webhooks.empty()) {
+		return;
+	}
+
+	std::scoped_lock lock{taskLock};
+	auto task = webhooks.front();
+
+	std::string response_body;
+	auto response_code = sendRequest(task->url.c_str(), task->payload.c_str(), &response_body);
+
+	if (response_code == -1) {
+		return;
+	}
+
+	if (response_code == 429 || response_code == 504) {
+		g_logger().warn("Webhook encountered error code {}, re-queueing task.", response_code);
+
+		return;
+	}
+
+	webhooks.pop_front();
+
+	if (response_code >= 300) {
+		g_logger().error(
+			"Failed to send webhook message, error code: {} response body: {} request body: {}",
+			response_code,
+			response_body,
+			task->payload
+		);
+
+		return;
+	}
+
+	g_logger().debug("Webhook successfully sent to {}", task->url);
 }

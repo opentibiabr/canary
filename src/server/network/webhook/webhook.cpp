@@ -11,6 +11,7 @@
 
 #include "server/network/webhook/webhook.h"
 #include "config/configmanager.h"
+#include "game/scheduling/scheduler.h"
 
 Webhook::Webhook(ThreadPool &threadPool) :
 	threadPool(threadPool) {
@@ -26,48 +27,58 @@ Webhook::Webhook(ThreadPool &threadPool) :
 		g_logger().error("Failed to init curl, appending request headers failed");
 		return;
 	}
+
+	run();
 }
 
 Webhook &Webhook::getInstance() {
 	return inject<Webhook>();
 }
 
-void Webhook::requeueMessage(const std::string payload, std::string url) {
-	threadPool.addLoad([this, payload, url] {
-		std::this_thread::sleep_for(std::chrono::seconds(2));
-		sendMessage(payload, url);
-	});
-}
+void Webhook::run() {
+	threadPool.addLoad([this] {
+		if (webhooks.empty()) {
+			return;
+		}
 
-void Webhook::sendMessage(const std::string payload, std::string url) {
-	threadPool.addLoad([this, payload, url] {
+		std::lock_guard<std::mutex> lock(taskLock);
+		auto task = webhooks.front();
+
 		std::string response_body;
-		auto response_code = sendRequest(url.c_str(), payload.c_str(), &response_body);
+		auto response_code = sendRequest(task->url.c_str(), task->payload.c_str(), &response_body);
 
 		if (response_code == -1) {
 			return;
 		}
 
 		if (response_code == 429 || response_code == 504) {
-			g_logger().debug("Webhook encountered error code {}. Re-queueing task and sleeping for two seconds.", response_code);
-			requeueMessage(payload, url);
+			g_logger().debug("Webhook encountered error code {}, re-queueing task.", response_code);
 
 			return;
 		}
+
+		webhooks.pop_front();
 
 		if (response_code >= 300) {
 			g_logger().error(
 				"Failed to send webhook message, error code: {} response body: {} request body: {}",
 				response_code,
 				response_body,
-				payload
+				task->payload
 			);
 
 			return;
 		}
 
-		g_logger().debug("Webhook successfully sent to {}", url);
+		g_logger().debug("Webhook successfully sent to {}", task->url);
 	});
+
+	g_scheduler().addEvent(300, [this] { run(); });
+}
+
+void Webhook::sendMessage(const std::string payload, std::string url) {
+	std::lock_guard<std::mutex> lock(taskLock);
+	webhooks.push_back(std::make_shared<WebhookTask>(payload, url));
 }
 
 void Webhook::sendMessage(const std::string title, const std::string message, int color, std::string url) {

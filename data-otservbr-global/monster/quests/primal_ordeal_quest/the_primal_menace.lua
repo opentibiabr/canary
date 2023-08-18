@@ -308,8 +308,9 @@ local function handlePrimalBeasts(monster)
 	for index, beastData in pairs(primalBeasts) do
 		local monster = beastData.Monster
 		local created = beastData.Created
-
-		if (os.time() - created > 20 and monster:getHealth() > 0) then
+		if not monster:getHealth() then
+			table.insert(indexesToRemove, index)
+		elseif (os.time() - created > 20 and monster:getHealth() > 0) then
 			local position = monster:getPosition()
 			monster:remove()
 			table.insert(indexesToRemove, index)

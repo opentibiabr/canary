@@ -855,7 +855,7 @@ class Game {
 
 		void unwrapItem(Item* item, uint16_t unWrapId, House* house, Player* player);
 
-		ReturnValue onCreatureZoneChange(Creature* creature, std::shared_ptr<Zone> &fromZone, std::shared_ptr<Zone> &toZone);
+		ReturnValue onCreatureZoneChange(Creature* creature, const phmap::btree_set<std::shared_ptr<Zone>> &fromZones, const phmap::btree_set<std::shared_ptr<Zone>> &toZones);
 
 		// Variable members (m_)
 		std::unique_ptr<IOWheel> m_IOWheel;

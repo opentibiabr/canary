@@ -245,13 +245,7 @@ class Creature : virtual public Thing {
 			return ZONE_NORMAL;
 		}
 
-		std::shared_ptr<Zone> getZone() {
-			if (getTile()) {
-				return tile->getZone();
-			}
-
-			return nullptr;
-		}
+		const phmap::btree_set<std::shared_ptr<Zone>> getZones();
 
 		// walk functions
 		void startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions = false);

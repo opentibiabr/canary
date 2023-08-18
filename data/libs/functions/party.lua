@@ -16,16 +16,18 @@ function Party:refreshHazard()
 	local level = -1
 
 	for _, member in ipairs(members) do
-		local zone = member:getZone()
-		if zone then
-			local memberHazard = Hazard.getByName(zone:getName())
-			if memberHazard then
-				if not hazard then
-					hazard = memberHazard
-				elseif hazard.name ~= memberHazard.name then
-					-- Party members are in different hazard areas so we can't calculate the level
-					level = 0
-					break
+		local zones = member:getZones()
+		if zones then
+			for _, zone in ipairs(zones) do
+				local memberHazard = Hazard.getByName(zone:getName())
+				if memberHazard then
+					if not hazard then
+						hazard = memberHazard
+					elseif hazard.name ~= memberHazard.name then
+						-- Party members are in different hazard areas so we can't calculate the level
+						level = 0
+						break
+					end
 				end
 			end
 		end

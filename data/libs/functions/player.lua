@@ -447,22 +447,25 @@ function Player.getFinalLowLevelBonus(self)
 end
 
 function Player.updateHazard(self)
-	local zone = self:getZone()
-	if not zone then
+	local zones = self:getZones()
+	if not zones or #zones == 0 then
 		self:setHazardSystemPoints(0)
 		return true
 	end
 
-	local hazard = Hazard.getByName(zone:getName())
-	if not hazard then
-		self:setHazardSystemPoints(0)
-		return true
-	end
+	for _, zone in pairs(zones) do
+		local hazard = Hazard.getByName(zone:getName())
+		if not hazard then
+			self:setHazardSystemPoints(0)
+			return true
+		end
 
-	if self:getParty() then
-		self:getParty():refreshHazard()
-	else
-		self:setHazardSystemPoints(hazard:getPlayerCurrentLevel(self))
+		if self:getParty() then
+			self:getParty():refreshHazard()
+		else
+			self:setHazardSystemPoints(hazard:getPlayerCurrentLevel(self))
+		end
+		return true
 	end
 	return true
 end

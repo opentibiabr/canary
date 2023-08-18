@@ -32,8 +32,7 @@ function ZoneEvent:register()
 		local onEnter = EventCallback()
 		function onEnter.zoneOnCreatureEnter(zone, creature)
 			if zone ~= self.zone then return true end
-			self.onEnter(zone, creature)
-			return true
+			return self.onEnter(zone, creature)
 		end
 		onEnter:register()
 	end
@@ -42,8 +41,7 @@ function ZoneEvent:register()
 		local onLeave = EventCallback()
 		function onLeave.zoneOnCreatureLeave(zone, creature)
 			if zone ~= self.zone then return true end
-			self.onLeave(zone, creature)
-			return true
+			return self.onLeave(zone, creature)
 		end
 		onLeave:register()
 	end

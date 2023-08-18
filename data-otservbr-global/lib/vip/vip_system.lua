@@ -48,3 +48,29 @@ function Player.onAddVip(self, days)
 	self:setStorageValue(Storage.VipSystem.IsVip, 1)
 end
 
+function checkPremiumAndPrint(player, msgType)
+	if (player:getVipDays() == 0xFFFF) then
+		player:sendTextMessage(msgType, 'You have infinite amount of VIP days left.')
+		return true
+	end
+
+	local playerVipTime = player:getVipTime()
+	if (playerVipTime < os.time()) then
+		local msg = 'You do not have VIP on your account.'
+		player:sendTextMessage(msgType, msg)
+		return true
+	end
+
+	local timeRemaining = playerVipTime - os.time()
+	local days = math.floor(timeRemaining / 86400)
+	if days > 1 then
+		player:sendTextMessage(msgType, string.format("You have %d VIP days left.", days))
+		return true
+	end
+
+	local hours = math.floor((timeRemaining % 86400) / 3600)
+	local minutes = math.floor((timeRemaining % 3600) / 60)
+	local seconds = timeRemaining % 60
+	player:sendTextMessage(msgType, string.format("You have %d hours, %d minutes and %d seconds VIP days left.", hours, minutes, seconds))
+end
+

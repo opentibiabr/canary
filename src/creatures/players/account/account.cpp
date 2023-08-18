@@ -272,7 +272,7 @@ namespace account {
 		this->SetAccountIdentifier(oldProtocol_ ? result->getString("name") : result->getString("email"));
 		this->SetAccountType(static_cast<AccountType>(result->getNumber<int32_t>("type")));
 		this->SetPassword(result->getString("password"));
-		this->SetPremiumRemainingDays(result->getNumber<uint16_t>("premdays"));
+		this->SetPremiumRemainingDays(result->getNumber<uint32_t>("premdays"));
 		this->SetPremiumLastDay(result->getNumber<time_t>("lastday"));
 
 		return ERROR_NO;
@@ -354,7 +354,6 @@ namespace account {
 	}
 
 	void Account::UpdatePremium() {
-		bool save = false;
 		uint32_t remainingDays = 0;
 		time_t lastDay;
 		std::string accountIdentifier;
@@ -362,14 +361,12 @@ namespace account {
 		GetPremiumLastDay(&lastDay);
 		GetAccountIdentifier(&accountIdentifier);
 
-		if (remainingDays == 0) {
-			if (lastDay != 0) {
-				SetPremiumLastDay(0);
-				save = true;
+		if (lastDay < getTimeNow()) {
+			if (SetPremiumRemainingDays(0) != ERROR_NO || SetPremiumLastDay(0) != ERROR_NO) {
+				g_logger().error("Failed to reset premium from account {}: {}", getProtocolCompat() ? "name" : "email", accountIdentifier);
 			}
 		} else if (lastDay == 0) {
 			SetPremiumRemainingDays(0);
-			save = true;
 		} else {
 			time_t currentTime = time(nullptr);
 			uint32_t daysLeft = static_cast<int>((lastDay - currentTime) / 86400);
@@ -379,14 +376,13 @@ namespace account {
 			} else if (daysLeft == 0 && timeLeft > 0) {
 				SetPremiumRemainingDays(1);
 			} else {
-				if (!SetPremiumRemainingDays(0) || !SetPremiumLastDay(0)) {
-					g_logger().error("Failed to set account premium days, account {}: {}", getProtocolCompat() ? "name" : " email", accountIdentifier);
+				if (SetPremiumRemainingDays(0) != ERROR_NO || SetPremiumLastDay(0) != ERROR_NO) {
+					g_logger().error("Failed to remove premium from account {}: {}", getProtocolCompat() ? "name" : "email", accountIdentifier);
 				}
 			}
-			save = true;
 		}
 
-		if (save && SaveAccountDB() != 0) {
+		if (SaveAccountDB() != ERROR_NO) {
 			GetAccountIdentifier(&accountIdentifier);
 			g_logger().error("Failed to save account: {}", accountIdentifier);
 		}

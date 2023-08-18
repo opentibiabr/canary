@@ -70,11 +70,11 @@ void Webhook::sendMessage(const std::string payload, std::string url) {
 	});
 }
 
-void Webhook::sendMessage(const std::string title, const std::string message, int color) {
-	sendMessage(title, message, color, g_configManager().getString(DISCORD_WEBHOOK_URL));
-}
-
 void Webhook::sendMessage(const std::string title, const std::string message, int color, std::string url) {
+	if (url.empty()) {
+		url = g_configManager().getString(DISCORD_WEBHOOK_URL);
+	}
+
 	if (url.empty() || title.empty() || message.empty()) {
 		return;
 	}

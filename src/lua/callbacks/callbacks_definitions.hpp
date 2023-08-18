@@ -59,6 +59,7 @@ enum class EventCallback_t : uint16_t {
 	playerOnRotateItem,
 	// Monster
 	monsterOnDropLoot,
+	monsterPostDropLoot,
 	monsterOnSpawn,
 	// Npc
 	npcOnSpawn,

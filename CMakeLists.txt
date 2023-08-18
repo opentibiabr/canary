@@ -24,14 +24,17 @@ set(VCPKG_BUILD_TYPE "release")
 # *****************************************************************************
 # Project canary
 # *****************************************************************************
-project(canary)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    project(canary-debug)
+else()
+    project(canary)
+endif()
 
 
 # *****************************************************************************
 # Append cmake search path
 # *****************************************************************************
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
 # *****************************************************************************
 # Include cmake tools
@@ -46,8 +49,6 @@ include(LoggingHelper)
 option(OPTIONS_ENABLE_CCACHE "Enable ccache" OFF)
 option(OPTIONS_ENABLE_SCCACHE "Use sccache to speed up compilation process" OFF)
 option(OPTIONS_ENABLE_IPO "Check and Enable interprocedural optimization (IPO/LTO)" ON)
-
-
 
 # *****************************************************************************
 # Options Code

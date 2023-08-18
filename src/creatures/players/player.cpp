@@ -6758,9 +6758,9 @@ bool Player::saySpell(
 		// used (hopefully the compiler will optimize away the construction of
 		// the temporary when it's not used).
 		if (type != TALKTYPE_YELL && type != TALKTYPE_MONSTER_YELL) {
-			g_game().map.getSpectators(spectators, *pos, false, false, Map::maxClientViewportX, Map::maxClientViewportX, Map::maxClientViewportY, Map::maxClientViewportY);
+			g_game().map.getSpectators(spectators, *pos, false, false, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_Y, MAP_MAX_CLIENT_VIEW_PORT_Y);
 		} else {
-			g_game().map.getSpectators(spectators, *pos, true, false, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2);
+			g_game().map.getSpectators(spectators, *pos, true, false, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2);
 		}
 	} else {
 		spectators = (*spectatorsPtr);

@@ -312,7 +312,10 @@ PRIVATE
 	lua/scripts/scripts.cpp
 	map/house/house.cpp
 	map/house/housetile.cpp
+	map/utils/astarnodes.cpp
+	map/utils/qtreenode.cpp
 	map/map.cpp
+	map/mapcache.cpp
 	canary_server.cpp
 	otserv.cpp
 	security/argon.cpp

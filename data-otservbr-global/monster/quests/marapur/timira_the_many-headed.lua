@@ -46,12 +46,6 @@ monster.flags = {
 	rewardBoss = true
 }
 
-monster.bosstiary = {
-	bossRaceId = 2250,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.Marapur.Timira
-}
-
 monster.light = {
 	level = 0,
 	color = 0

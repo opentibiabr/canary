@@ -1121,10 +1121,10 @@ void EventCallback::npcOnSpawn(Npc* npc, const Position &position) const {
 
 bool EventCallback::zoneOnCreatureEnter(std::shared_ptr<Zone> zone, Creature* creature) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		SPDLOG_ERROR("[EventCallback::zoneOnCreatureEnter - "
-					 "Zone {} Creature {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 zone->getName(), creature->getName());
+		g_logger().error("[EventCallback::zoneOnCreatureEnter - "
+						 "Zone {} Creature {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 zone->getName(), creature->getName());
 		return false;
 	}
 
@@ -1145,10 +1145,10 @@ bool EventCallback::zoneOnCreatureEnter(std::shared_ptr<Zone> zone, Creature* cr
 
 bool EventCallback::zoneOnCreatureLeave(std::shared_ptr<Zone> zone, Creature* creature) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		SPDLOG_ERROR("[EventCallback::zoneOnCreatureLeave - "
-					 "Zone {} Creature {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 zone->getName(), creature->getName());
+		g_logger().error("[EventCallback::zoneOnCreatureLeave - "
+						 "Zone {} Creature {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 zone->getName(), creature->getName());
 		return false;
 	}
 

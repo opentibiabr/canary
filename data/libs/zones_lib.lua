@@ -46,3 +46,12 @@ function ZoneEvent:register()
 		onLeave:register()
 	end
 end
+
+function Zone:blockFamiliars()
+	local event = ZoneEvent(self)
+	function event.onEnter(_zone, creature)
+		local monster = creature:getMonster()
+		return not (monster and monster:getMaster() and monster:getMaster():isPlayer())
+	end
+	event:register()
+end

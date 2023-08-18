@@ -94,7 +94,7 @@ local bosses = {
 		toPos = {x = 32220, y = 31260, z = 14},
 		storage = 14328
 	},
-	["eradicator"] = {
+	["eradicator1"] = {
 		tile = {x = 32318, y = 31284, z = 14},
 		actionId = 14325,
 		fromPos = {x = 32297, y = 31272, z = 14},

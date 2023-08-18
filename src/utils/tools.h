@@ -58,6 +58,7 @@ std::string getFirstLine(const std::string &str);
 
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);
+std::string formatTime(time_t time);
 std::time_t getTimeNow();
 std::time_t getTimeMsNow();
 std::string convertIPToString(uint32_t ip);

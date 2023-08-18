@@ -6009,14 +6009,16 @@ void Player::setGuild(const std::shared_ptr<Guild> &newGuild) {
 		return;
 	}
 
-	const std::shared_ptr<Guild> oldGuild = guild;
+	if (guild) {
+		guild->removeMember(this);
+		guild = nullptr;
+	}
 
 	guildNick.clear();
-	guild = nullptr;
 	guildRank = nullptr;
 
 	if (newGuild) {
-		GuildRank_ptr rank = newGuild->getRankByLevel(1);
+		const auto &rank = newGuild->getRankByLevel(1);
 		if (!rank) {
 			return;
 		}
@@ -6024,10 +6026,6 @@ void Player::setGuild(const std::shared_ptr<Guild> &newGuild) {
 		guild = newGuild;
 		guildRank = rank;
 		newGuild->addMember(this);
-	}
-
-	if (oldGuild) {
-		oldGuild->removeMember(this);
 	}
 }
 

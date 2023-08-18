@@ -104,7 +104,7 @@ std::string Webhook::getPayload(const std::string title, const std::string messa
 	std::stringstream footer_text;
 	footer_text
 		<< g_configManager().getString(SERVER_NAME) << " | "
-		<< time_buf << " Local Time";
+		<< time_buf;
 
 	std::stringstream payload;
 	payload << "{ \"embeds\": [{ ";

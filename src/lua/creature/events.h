@@ -11,6 +11,7 @@
 #define SRC_LUA_CREATURE_EVENTS_H_
 
 #include "creatures/players/imbuements/imbuements.h"
+#include "lib/di/container.hpp"
 #include "lua/scripts/luascript.h"
 #include "creatures/combat/spells.h"
 

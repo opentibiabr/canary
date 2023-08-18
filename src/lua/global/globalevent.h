@@ -11,6 +11,7 @@
 #define SRC_LUA_GLOBAL_GLOBALEVENT_H_
 
 #include "utils/utils_definitions.hpp"
+#include "lib/di/container.hpp"
 #include "lua/scripts/scripts.h"
 
 class GlobalEvent;

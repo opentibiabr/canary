@@ -11,6 +11,7 @@
 #define SRC_CREATURES_NPCS_NPCS_H_
 
 #include "creatures/creature.h"
+#include "lib/di/container.hpp"
 
 class Shop {
 	public:

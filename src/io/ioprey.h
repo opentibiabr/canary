@@ -10,6 +10,7 @@
 #ifndef SRC_IO_IOPREY_H_
 #define SRC_IO_IOPREY_H_
 
+#include "lib/di/container.hpp"
 #include "server/network/protocol/protocolgame.h"
 
 enum PreySlot_t : uint8_t {

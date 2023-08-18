@@ -10,6 +10,8 @@
 #ifndef SRC_SECURITY_RSA_H_
 #define SRC_SECURITY_RSA_H_
 
+#include "lib/di/container.hpp"
+
 class Logger;
 
 class RSA {

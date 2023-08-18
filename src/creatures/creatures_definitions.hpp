@@ -10,6 +10,8 @@
 #ifndef SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
 #define SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
 
+#include <parallel_hashmap/btree.h>
+
 // Enum
 
 enum SkillsId_t {

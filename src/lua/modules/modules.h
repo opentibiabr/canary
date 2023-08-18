@@ -12,6 +12,7 @@
 
 #include "lua/global/baseevents.h"
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 #include "lua/scripts/luascript.h"
 #include "server/network/message/networkmessage.h"
 

@@ -10,7 +10,10 @@
 #ifndef SRC_LUA_CREATURE_CREATUREEVENT_H_
 #define SRC_LUA_CREATURE_CREATUREEVENT_H_
 
+#include <parallel_hashmap/btree.h>
+
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 #include "lua/scripts/luascript.h"
 #include "lua/scripts/scripts.h"
 

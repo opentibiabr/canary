@@ -12,6 +12,7 @@
 
 #include "declarations.hpp"
 #include "items/item.h"
+#include "lib/di/container.hpp"
 
 class Vocation {
 	public:

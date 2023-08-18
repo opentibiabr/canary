@@ -9,6 +9,8 @@
 #ifndef CANARY_COMMAND_HPP
 #define CANARY_COMMAND_HPP
 
+#include "lib/messaging/message.hpp"
+
 enum class CommandType {
 	start,
 	load,

@@ -10,6 +10,8 @@
 #ifndef SRC_MAP_TOWN_H_
 #define SRC_MAP_TOWN_H_
 
+#include <parallel_hashmap/btree.h>
+
 #include "game/movement/position.h"
 
 class Town {

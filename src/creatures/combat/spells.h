@@ -16,6 +16,7 @@
 #include "lua/creature/actions.h"
 #include "lua/creature/talkaction.h"
 #include "lua/scripts/scripts.h"
+#include "lib/di/container.hpp"
 
 class InstantSpell;
 class RuneSpell;

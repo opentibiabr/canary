@@ -11,6 +11,7 @@
 #define SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_
 
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 #include "server/network/message/networkmessage.h"
 
 static constexpr int32_t CONNECTION_WRITE_TIMEOUT = 30;

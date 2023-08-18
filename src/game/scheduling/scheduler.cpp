@@ -13,6 +13,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/scheduler.h"
 #include "game/scheduling/task.hpp"
+#include "lib/di/container.hpp"
 
 Scheduler::Scheduler(ThreadPool &threadPool) :
 	threadPool(threadPool) { }

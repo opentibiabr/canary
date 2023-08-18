@@ -11,6 +11,7 @@
 #define SRC_IO_IOBESTIARY_H_
 
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 #include "lua/scripts/luascript.h"
 #include "creatures/players/player.h"
 

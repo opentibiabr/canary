@@ -20,6 +20,7 @@
 #include "creatures/npcs/npc.h"
 #include "movement/position.h"
 #include "creatures/players/player.h"
+#include "lib/di/container.hpp"
 #include "lua/creature/raids.h"
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.h"

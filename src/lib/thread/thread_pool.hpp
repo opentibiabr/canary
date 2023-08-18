@@ -9,6 +9,8 @@
 #ifndef SRC_UTILS_THREAD_POOL_H_
 #define SRC_UTILS_THREAD_POOL_H_
 
+#include "lib/logging/logger.hpp"
+
 class ThreadPool {
 	public:
 		explicit ThreadPool(Logger &logger);

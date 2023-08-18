@@ -9,10 +9,8 @@
 
 #include "pch.hpp"
 
+#include "lib/logging/log_with_spd_log.hpp"
 #include "lua/callbacks/event_callback.hpp"
-
-#include "lua/callbacks/event_callback.hpp"
-#include "lua/callbacks/events_callbacks.hpp"
 #include "utils/tools.h"
 #include "items/item.h"
 #include "creatures/players/player.h"
@@ -1061,7 +1059,7 @@ void EventCallback::monsterOnDropLoot(Monster* monster, Container* corpse) const
 
 void EventCallback::monsterPostDropLoot(Monster* monster, Container* corpse) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		SPDLOG_ERROR("[EventCallback::monsterPostDropLoot - "
+		g_logger().error("[EventCallback::monsterPostDropLoot - "
 					 "Monster corpse {}] "
 					 "Call stack overflow. Too many lua script calls being nested.",
 					 corpse->getName());

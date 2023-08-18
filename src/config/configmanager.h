@@ -11,6 +11,7 @@
 #define SRC_CONFIG_CONFIGMANAGER_H_
 
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 
 class ConfigManager {
 	public:

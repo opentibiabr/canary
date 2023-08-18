@@ -9,6 +9,8 @@
 #ifndef CANARY_EVENT_HPP
 #define CANARY_EVENT_HPP
 
+#include "lib/messaging/message.hpp"
+
 enum class EventType {
 };
 

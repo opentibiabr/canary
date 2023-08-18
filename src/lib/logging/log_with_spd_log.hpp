@@ -9,6 +9,8 @@
 #ifndef CANARY_LOG_WITH_SPD_LOG_HPP
 #define CANARY_LOG_WITH_SPD_LOG_HPP
 
+#include "lib/logging/logger.hpp"
+
 class LogWithSpdLog final : public Logger {
 	public:
 		LogWithSpdLog();

@@ -12,6 +12,7 @@
 
 #include "creatures/combat/combat.h"
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 #include "lua/scripts/luascript.h"
 #include "items/weapons/weapons.h"
 

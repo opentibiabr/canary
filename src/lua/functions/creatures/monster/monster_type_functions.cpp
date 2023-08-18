@@ -13,6 +13,7 @@
 #include "io/io_bosstiary.hpp"
 #include "creatures/combat/spells.h"
 #include "creatures/monsters/monsters.h"
+#include "lib/logging/log_with_spd_log.hpp"
 #include "lua/functions/creatures/monster/monster_type_functions.hpp"
 #include "lua/scripts/scripts.h"
 
@@ -663,7 +664,7 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 	} else if (immunity == "neutral") {
 		combatType = COMBAT_NEUTRALDAMAGE;
 	} else {
-		SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeCombatImmunities] - "
+		g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeCombatImmunities] - "
 					"Unknown immunity name {} for monster: {}",
 					immunity, monsterType->name);
 		lua_pushnil(L);
@@ -721,7 +722,7 @@ int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 	} else if (immunity == "bleed") {
 		conditionType = CONDITION_BLEEDING;
 	} else {
-		SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeConditionImmunities] - "
+		g_logger().warn("[MonsterTypeFunctions::luaMonsterTypeConditionImmunities] - "
 					"Unknown immunity name: {} for monster: {}",
 					immunity, monsterType->name);
 		lua_pushnil(L);

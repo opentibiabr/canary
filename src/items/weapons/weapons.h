@@ -16,6 +16,7 @@
 #include "creatures/combat/combat.h"
 #include "utils/utils_definitions.hpp"
 #include "creatures/players/vocations/vocation.h"
+#include "lib/di/container.hpp"
 
 class Weapon;
 class WeaponMelee;

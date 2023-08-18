@@ -11,6 +11,7 @@
 #define SRC_CREATURES_PLAYERS_GROUPING_FAMILIARS_H_
 
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 
 class Familiars {
 	public:

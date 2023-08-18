@@ -11,6 +11,7 @@
 #define SRC_CREATURES_INTERACTIONS_CHAT_H_
 
 #include "utils/utils_definitions.hpp"
+#include "lib/di/container.hpp"
 #include "lua/scripts/luascript.h"
 
 class Party;

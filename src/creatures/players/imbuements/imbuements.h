@@ -12,6 +12,7 @@
 
 #include "creatures/players/player.h"
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 #include "utils/tools.h"
 
 class Player;

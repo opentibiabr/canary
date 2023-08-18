@@ -10,7 +10,10 @@
 #ifndef SRC_DATABASE_DATABASE_H_
 #define SRC_DATABASE_DATABASE_H_
 
+#include <parallel_hashmap/btree.h>
+
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 
 class DBResult;
 using DBResult_ptr = std::shared_ptr<DBResult>;

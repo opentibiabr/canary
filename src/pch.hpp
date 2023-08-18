@@ -28,8 +28,8 @@
 #include <fstream>
 #include <forward_list>
 #include <list>
-#include <map>
 #include <queue>
+#include <map>
 #include <random>
 #include <ranges>
 #include <regex>
@@ -106,18 +106,12 @@
 
 // Parallel Hash Map
 #include <parallel_hashmap/phmap.h>
-#include <parallel_hashmap/btree.h>
 
 // PugiXML
 #include <pugixml.hpp>
 
-// SPDLog
-#include <spdlog/spdlog.h>
-
 // Zlib
 #include <zlib.h>
-
-#include <boost/di.hpp>
 
 // -------------------------
 // GIT Metadata Includes
@@ -133,17 +127,5 @@
 
 #include <string>
 #include <iostream>
-
-/**
- * Static custom libraries that can be pre-compiled like DI and messaging
- */
-#include "lib/messaging/message.hpp"
-#include "lib/messaging/command.hpp"
-#include "lib/messaging/event.hpp"
-
-#include <eventpp/utilities/scopedremover.h>
-#include <eventpp/eventdispatcher.h>
-
-#include "lib/di/container.hpp"
 
 #endif // SRC_PCH_HPP_

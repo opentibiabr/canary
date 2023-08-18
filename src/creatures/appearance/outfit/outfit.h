@@ -11,6 +11,7 @@
 #define SRC_CREATURES_APPEARANCE_OUTFIT_OUTFIT_H_
 
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 
 struct Outfit {
 		Outfit(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initFrom) :

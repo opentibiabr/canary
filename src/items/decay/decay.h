@@ -11,6 +11,7 @@
 #define SRC_ITEMS_DECAY_DECAY_H_
 
 #include "items/item.h"
+#include "lib/di/container.hpp"
 
 class Decay {
 	public:

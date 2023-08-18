@@ -10,6 +10,7 @@
 #ifndef SRC_SERVER_NETWORK_MESSAGE_OUTPUTMESSAGE_H_
 #define SRC_SERVER_NETWORK_MESSAGE_OUTPUTMESSAGE_H_
 
+#include "lib/di/container.hpp"
 #include "server/network/message/networkmessage.h"
 #include "server/network/connection/connection.h"
 #include "utils/tools.h"

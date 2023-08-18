@@ -13,6 +13,7 @@
 #include "creatures/npcs/npcs.h"
 #include "declarations.hpp"
 #include "items/tile.h"
+#include "lib/di/container.hpp"
 
 class Creature;
 class Game;

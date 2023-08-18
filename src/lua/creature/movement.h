@@ -12,6 +12,7 @@
 
 #include "declarations.hpp"
 #include "items/item.h"
+#include "lib/di/container.hpp"
 #include "lua/functions/events/move_event_functions.hpp"
 #include "lua/scripts/scripts.h"
 #include "creatures/players/vocations/vocation.h"

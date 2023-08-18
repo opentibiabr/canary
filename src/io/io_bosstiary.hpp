@@ -10,9 +10,8 @@
 #ifndef SRC_IO_IO_BOSSTIARY_HPP_
 #define SRC_IO_IO_BOSSTIARY_HPP_
 
-#include <map>
-#include <string>
-#include <vector>
+#include "lib/di/container.hpp"
+#include <parallel_hashmap/btree.h>
 
 enum class BosstiaryRarity_t : uint8_t {
 	RARITY_BANE = 0,

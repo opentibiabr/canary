@@ -12,6 +12,7 @@
 #include <game/movement/teleport.h>
 #include <items/bed.h>
 #include <io/iologindata.h>
+#include "lib/logging/log_with_spd_log.hpp"
 #include <game/game.h>
 #include <map/map.h>
 #include <utils/hash.h>
@@ -140,7 +141,7 @@ Tile* MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, ui
 
 void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePtr &newTile) {
 	if (z >= MAP_MAX_LAYERS) {
-		SPDLOG_ERROR("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
+		g_logger().error("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;
 	}
 

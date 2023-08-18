@@ -14,6 +14,7 @@
 #include "lua/global/baseevents.h"
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 #include "lua/scripts/luascript.h"
 #include "lua/scripts/scripts.h"
 

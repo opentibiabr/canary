@@ -9,6 +9,7 @@
 #ifndef CANARY_CONTAINER_HPP
 #define CANARY_CONTAINER_HPP
 
+#include <boost/di.hpp>
 #include "lib/logging/logger.hpp"
 #include "lib/logging/log_with_spd_log.hpp"
 

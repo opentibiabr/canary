@@ -13,6 +13,7 @@
 #include "io/io_bosstiary.hpp"
 #include "creatures/creature.h"
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 
 class Loot {
 	public:

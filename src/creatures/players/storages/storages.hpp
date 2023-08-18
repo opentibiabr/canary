@@ -10,6 +10,8 @@
 #ifndef SRC_CREATURES_PLAYERS_STORAGES_STORAGES_HPP_
 #define SRC_CREATURES_PLAYERS_STORAGES_STORAGES_HPP_
 
+#include "lib/di/container.hpp"
+
 class Storages {
 	public:
 		Storages() = default;

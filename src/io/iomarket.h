@@ -12,6 +12,7 @@
 
 #include "database/database.h"
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 
 class IOMarket {
 		using StatisticsMap = phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, MarketStatistics>>;

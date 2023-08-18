@@ -13,6 +13,7 @@
 #include "lua/scripts/scripts.h"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.h"
+#include "lib/di/container.hpp"
 
 class Action;
 class Position;

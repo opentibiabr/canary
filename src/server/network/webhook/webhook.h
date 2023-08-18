@@ -22,10 +22,10 @@ class Webhook {
 
 		static Webhook &getInstance();
 
-	void requeueMessage(const std::string payload, std::string url);
-	void sendMessage(const std::string payload, std::string url);
-	void sendMessage(const std::string title, const std::string message, int color);
-	void sendMessage(const std::string title, const std::string message, int color, std::string url);
+		void requeueMessage(const std::string payload, std::string url);
+		void sendMessage(const std::string payload, std::string url);
+		void sendMessage(const std::string title, const std::string message, int color);
+		void sendMessage(const std::string title, const std::string message, int color, std::string url);
 
 	private:
 		ThreadPool &threadPool;

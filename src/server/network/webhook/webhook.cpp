@@ -12,8 +12,8 @@
 #include "server/network/webhook/webhook.h"
 #include "config/configmanager.h"
 
-Webhook::Webhook(ThreadPool &threadPool)
-	: threadPool(threadPool) {
+Webhook::Webhook(ThreadPool &threadPool) :
+	threadPool(threadPool) {
 	if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
 		g_logger().error("Failed to init curl, no webhook messages may be sent");
 		return;
@@ -33,14 +33,14 @@ Webhook &Webhook::getInstance() {
 }
 
 void Webhook::requeueMessage(const std::string payload, std::string url) {
-	threadPool.addLoad([this, &payload, &url]{
+	threadPool.addLoad([this, &payload, &url] {
 		std::this_thread::sleep_for(std::chrono::seconds(2));
 		sendMessage(payload, url);
 	});
 }
 
 void Webhook::sendMessage(const std::string payload, std::string url) {
-	threadPool.addLoad([this, &payload, &url]{
+	threadPool.addLoad([this, &payload, &url] {
 		std::string response_body;
 		auto response_code = sendRequest(url.c_str(), payload.c_str(), &response_body);
 

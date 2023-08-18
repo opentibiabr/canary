@@ -1,7 +1,5 @@
 #pragma once
 
-#include <pch.hpp>
-
 namespace stdext {
 	template <class _Kty>
 	using hash = phmap::Hash<_Kty>;

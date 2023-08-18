@@ -7,8 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "qtreenode.h"
-#include <creatures/creature.h>
+
+#include "creatures/creature.h"
 
 template <typename T>
 bool QTreeLeafNode<T>::newLeaf = false;

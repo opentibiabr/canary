@@ -20,11 +20,11 @@ const static std::shared_ptr<Zone> nullZone = nullptr;
 
 const std::shared_ptr<Zone> &Zone::addZone(const std::string &name) {
 	if (name == "default") {
-		spdlog::error("Zone name {} is reserved", name);
+		g_logger().error("Zone name {} is reserved", name);
 		return nullZone;
 	}
 	if (zones[name]) {
-		spdlog::error("Zone {} already exists", name);
+		g_logger().error("Zone {} already exists", name);
 		return nullZone;
 	}
 	zones[name] = std::make_shared<Zone>(name);

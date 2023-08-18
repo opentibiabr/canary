@@ -33,25 +33,29 @@ Webhook &Webhook::getInstance() {
 }
 
 void Webhook::requeueMessage(const std::string payload, std::string url) {
-	threadPool.addLoad([this, &payload, &url] {
+	threadPool.addLoad([this, payload, url] {
 		std::this_thread::sleep_for(std::chrono::seconds(2));
 		sendMessage(payload, url);
 	});
 }
 
 void Webhook::sendMessage(const std::string payload, std::string url) {
-	threadPool.addLoad([this, &payload, &url] {
+	threadPool.addLoad([this, payload, url] {
 		std::string response_body;
 		auto response_code = sendRequest(url.c_str(), payload.c_str(), &response_body);
 
-		if (response_code == 204 || response_code == 504) {
+		if (response_code == -1) {
+			return;
+		}
+
+		if (response_code == 429 || response_code == 504) {
 			g_logger().debug("Webhook encountered error code {}. Re-queueing task and sleeping for two seconds.", response_code);
 			requeueMessage(payload, url);
 
 			return;
 		}
 
-		if (response_code > 300) {
+		if (response_code >= 300) {
 			g_logger().error(
 				"Failed to send webhook message, error code: {} response body: {} request body: {}",
 				response_code,
@@ -62,7 +66,7 @@ void Webhook::sendMessage(const std::string payload, std::string url) {
 			return;
 		}
 
-		g_logger().info("Webhook successfully sent to {}", url);
+		g_logger().debug("Webhook successfully sent to {}", url);
 	});
 }
 
@@ -100,7 +104,7 @@ int Webhook::sendRequest(const char* url, const char* payload, std::string* resp
 		g_logger().error("Failed to send webhook message with the error: {}", curl_easy_strerror(res));
 		curl_easy_cleanup(curl);
 
-		return 500;
+		return -1;
 	}
 
 	int response_code;

@@ -121,7 +121,7 @@ class MapCache {
 				}
 
 			private:
-				std::pair<TilePtr, BasicTilePtr> tiles[FLOOR_SIZE][FLOOR_SIZE];
+				std::pair<TilePtr, BasicTilePtr> tiles[FLOOR_SIZE][FLOOR_SIZE] = {};
 				uint8_t z { 0 };
 		};
 

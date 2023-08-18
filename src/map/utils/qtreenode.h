@@ -55,7 +55,7 @@ class QTreeNode {
 		QTreeLeafNode<T>* createLeaf(uint32_t x, uint32_t y, uint32_t level);
 
 	protected:
-		QTreeNode<T>* child[4];
+		QTreeNode<T>* child[4] = {};
 		bool leaf = false;
 };
 

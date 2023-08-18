@@ -140,7 +140,7 @@ Tile* MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, ui
 
 void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePtr &newTile) {
 	if (z >= MAP_MAX_LAYERS) {
-		SPDLOG_ERROR("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
+		g_logger().error("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;
 	}
 

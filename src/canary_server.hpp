@@ -15,6 +15,21 @@
 
 class Logger;
 
+class FailedToInitializeCanary : public std::exception {
+	private:
+		std::string message;
+
+	public:
+		// Constructor accepts a specific message
+		explicit FailedToInitializeCanary(const std::string &msg) :
+			message("Canary load couldn't be completed. " + msg) { }
+
+		// Override the what() method from std::exception
+		const char* what() const noexcept override {
+			return message.c_str();
+		}
+};
+
 class CanaryServer {
 	public:
 		explicit CanaryServer(
@@ -26,14 +41,16 @@ class CanaryServer {
 		int run();
 
 	private:
-		ServiceManager &serviceManager;
-		Logger &logger;
 		RSA &rsa;
+		Logger &logger;
+		ServiceManager &serviceManager;
 
-		std::mutex g_loaderLock;
-		std::condition_variable g_loaderSignal;
-		std::unique_lock<std::mutex> g_loaderUniqueLock;
-		bool g_loaderDone = false;
+		std::mutex loaderLock;
+		std::condition_variable loaderSignal;
+		std::unique_lock<std::mutex> loaderUniqueLock;
+
+		bool loaderDone = false;
+		bool loadFailed = false;
 
 		void logInfos();
 
@@ -60,8 +77,6 @@ class CanaryServer {
 		void setupHousesRent();
 
 		void modulesLoadHelper(bool loaded, std::string moduleName);
-
-		void startupErrorMessage();
 };
 
 #endif // SRC_CANARY_SERVER_HPP_

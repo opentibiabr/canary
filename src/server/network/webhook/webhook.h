@@ -12,6 +12,8 @@
 
 #include "lib/thread/thread_pool.hpp"
 
+#define WEBHOOK_DELAY_MS 1000
+
 struct WebhookTask {
 		std::string payload;
 		std::string url;

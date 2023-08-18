@@ -52,7 +52,7 @@ void Webhook::run() {
 		}
 
 		if (response_code == 429 || response_code == 504) {
-			g_logger().debug("Webhook encountered error code {}, re-queueing task.", response_code);
+			g_logger().warn("Webhook encountered error code {}, re-queueing task.", response_code);
 
 			return;
 		}
@@ -73,7 +73,7 @@ void Webhook::run() {
 		g_logger().debug("Webhook successfully sent to {}", task->url);
 	});
 
-	g_scheduler().addEvent(300, [this] { run(); });
+	g_scheduler().addEvent(WEBHOOK_DELAY_MS, [this] { run(); });
 }
 
 void Webhook::sendMessage(const std::string payload, std::string url) {

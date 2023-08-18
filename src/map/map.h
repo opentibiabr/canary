@@ -126,8 +126,8 @@ class Map : protected MapCache {
 
 		phmap::btree_map<std::string, Position> waypoints;
 
-		QTreeLeafNode<Floor>* getQTNode(uint16_t x, uint16_t y) {
-			return QTreeNode<Floor>::getLeafStatic<QTreeLeafNode<Floor>*, QTreeNode<Floor>*>(&root, x, y);
+		QTreeLeafNode* getQTNode(uint16_t x, uint16_t y) {
+			return QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y);
 		}
 
 		// Storage made by "loadFromXML" of houses, monsters and npcs for main map

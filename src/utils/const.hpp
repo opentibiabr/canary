@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include <stdint.h>
-
 static constexpr uint32_t MAX_LOOTCHANCE = 100000;
 static constexpr uint32_t MAX_STATICWALK = 100;
 

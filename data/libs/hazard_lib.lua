@@ -41,11 +41,14 @@ function Hazard.getHazardPlayerAndPoints(self, damageMap)
 				hazardPoints = playerHazardPoints
 			end
 		end
+	end
 
+	if hazardPoints == -1 then
+		hazardPoints = 0
 	end
 
 	return hazardPlayer, hazardPoints
-end
+	end
 
 function Hazard.getPlayerCurrentLevel(self, player)
 	return player:getStorageValue(self.storageCurrent) < 0 and 0 or player:getStorageValue(self.storageCurrent)

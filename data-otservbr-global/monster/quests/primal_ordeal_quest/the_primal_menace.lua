@@ -1,6 +1,55 @@
 local mType = Game.createMonsterType("The Primal Menace")
 local monster = {}
 
+local thePrimalMenaceConfig = {
+	Storage = {
+		Initialized = 1,
+		SpawnPos = 2,
+		NextPodSpawn = 3,
+		NextMonsterSpawn = 4,
+		PrimalBeasts = 5, -- List of monsters and when they were created in order to turn them into fungosaurus {monster, created}
+	},
+
+	-- Spawn area
+	SpawnRadius = 5,
+
+	-- Monster spawn time
+	MonsterConfig = {
+		IntervalBase = 30,
+		IntervalReductionPer10PercentHp = 0.97,
+		IntervalReductionPerHazard = 0.985,
+
+		CountBase = 4,
+		CountVarianceRate = 0.5,
+		CountGrowthPerHazard = 1.05,
+		CountMax = 7,
+		MonsterPool = {
+			"Emerald Tortoise",
+			"Beast Gore Horn",
+			"Beast Gorerilla",
+			"Headpecker",
+			"Beast Hulking Prehemoth",
+			"Mantosaurus",
+			"Nighthunter",
+			"Noxious Ripptor",
+			"Beast Sabretooth",
+			"Stalking Stalk",
+			"Sulphider",
+		}
+	},
+
+	PodConfig = {
+		IntervalBase = 22.5,
+		IntervalReductionPer10PercentHp = 0.97,
+		IntervalReductionPerHazard = 0.99,
+
+		CountBase = 2,
+		CountVarianceRate = 0.5,
+		CountGrowthPerHazard = 1.1,
+		CountMax = 4,
+	},
+}
+
 monster.description = "The Primal Menace"
 monster.experience = 80000
 monster.outfit = {
@@ -17,8 +66,8 @@ monster.events = {
 	"ThePrimalMenaceDeath"
 }
 
-monster.health = 1000000
-monster.maxHealth = 1000000
+monster.health = 650000
+monster.maxHealth = 650000
 monster.race = "blood"
 monster.corpse = 39530
 monster.speed = 180
@@ -53,22 +102,7 @@ monster.light = {
 	color = 0
 }
 
-monster.summon = {
-	maxSummons = 6,
-	summons = {
-		{name = "Emerald Tortoise", chance = 2, interval = 2000, count = 6},
-		{name = "Gore Horn", chance = 2, interval = 2000, count = 6},
-		{name = "Gorerilla", chance = 2, interval = 2000, count = 6},
-		{name = "Headpecker", chance = 2, interval = 2000, count = 6},
-		{name = "Hulking Prehemoth", chance = 2, interval = 2000, count = 6},
-		{name = "Mantosaurus", chance = 2, interval = 2000, count = 6},
-		{name = "Nighthunter", chance = 2, interval = 2000, count = 6},
-		{name = "Noxious Ripptor", chance = 2, interval = 2000, count = 6},
-		{name = "Sabretooth", chance = 2, interval = 2000, count = 6},
-		{name = "Stalking Stalk", chance = 2, interval = 2000, count = 6},
-		{name = "Sulphider", chance = 2, interval = 2000, count = 6},
-	}
-}
+monster.summon = {}
 
 monster.voices = {
 	interval = 5000,
@@ -76,16 +110,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "primal bag", chance = 50},
+	{ name = "primal bag", chance = 50 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 85, minDamage = -0, maxDamage = -763},
-	{name ="combat", interval = 4000, chance = 35, type = COMBAT_EARTHDAMAGE, minDamage = -1500, maxDamage = -2200, length = 10, spread = 3, effect = CONST_ME_CARNIPHILA, target = false},
-	{name ="combat", interval = 2500, chance = 45, type = COMBAT_FIREDAMAGE, minDamage = -700, maxDamage = -1000, length = 10, spread = 3, effect = CONST_ME_HITBYFIRE, target = false},
-	{name ="big death wave", interval = 3500, chance = 35, minDamage = -250, maxDamage = -300, target = false},
-	{name ="combat", interval = 5000, chance = 40, type = COMBAT_ENERGYDAMAGE, effect = CONST_ME_ENERGYHIT, minDamage = -1200, maxDamage = -1300, range = 4, target = false},
-	{name ="combat", interval = 2700, chance = 45, type = COMBAT_EARTHDAMAGE, shootEffect = CONST_ANI_POISON, effect = CONST_ANI_EARTH, minDamage = -600, maxDamage = -1800, range = 4, target = false},
+	{ name = "melee", interval = 2000, chance = 85, minDamage = -0, maxDamage = -763 },
+	{ name = "combat", interval = 4000, chance = 35, type = COMBAT_EARTHDAMAGE, minDamage = -1500, maxDamage = -2200, length = 10, spread = 3, effect = CONST_ME_CARNIPHILA, target = false },
+	{ name = "combat", interval = 2500, chance = 45, type = COMBAT_FIREDAMAGE, minDamage = -700, maxDamage = -1000, length = 10, spread = 3, effect = CONST_ME_HITBYFIRE, target = false },
+	{ name = "big death wave", interval = 3500, chance = 35, minDamage = -250, maxDamage = -300, target = false },
+	{ name = "combat", interval = 5000, chance = 40, type = COMBAT_ENERGYDAMAGE, effect = CONST_ME_ENERGYHIT, minDamage = -1200, maxDamage = -1300, range = 4, target = false },
+	{ name = "combat", interval = 2700, chance = 45, type = COMBAT_EARTHDAMAGE, shootEffect = CONST_ANI_POISON, effect = CONST_ANI_EARTH, minDamage = -600, maxDamage = -1800, range = 4, target = false },
 }
 
 monster.defenses = {
@@ -94,24 +128,213 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 5},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 50},
-	{type = COMBAT_HOLYDAMAGE , percent = 40},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -5 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 5 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 50 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 40 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "drunk", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "drunk", condition = true },
+	{ type = "bleed", condition = false }
 }
+
+local function initialize(monster)
+	if (monster:getStorageValue(thePrimalMenaceConfig.Storage.Initialized) == true) then
+		return
+	end
+
+	monster:setStorageValue(thePrimalMenaceConfig.Storage.SpawnPos, monster:getPosition())
+	monster:setStorageValue(thePrimalMenaceConfig.Storage.NextPodSpawn, os.time() + 5)
+	monster:setStorageValue(thePrimalMenaceConfig.Storage.NextMonsterSpawn, os.time() + 10)
+	monster:setStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts, {})
+
+	monster:setStorageValue(thePrimalMenaceConfig.Storage.Initialized, true)
+end
+
+-- Functions for the fight
+mType.onAppear = function(monster, creature)
+	if monster:getId() == creature:getId() then
+		initialize(monster)
+	end
+
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+local function getHazardPoints(monster)
+	local hazard = Hazard.getByName("Gnomprona Gardens")
+
+	local _, hazardPoints = hazard:getHazardPlayerAndPoints(monster:getDamageMap())
+	return hazardPoints
+end
+
+local function setNextTimeToSpawn(monster, spawnStorageValue, spawnConfig, hazardPoints)
+	local intervalBase = spawnConfig.IntervalBase
+	local intervalReductionPer10PercentHp = spawnConfig.IntervalReductionPer10PercentHp
+	local intervalReductionPerHazard = spawnConfig.IntervalReductionPerHazard
+
+	local maxHealth = monster:getMaxHealth()
+	local currentHealth = monster:getHealth()
+	local count10PercentHpMissing = math.floor((maxHealth - currentHealth) / maxHealth * 10)
+
+	local interval = intervalBase * (intervalReductionPer10PercentHp ^ count10PercentHpMissing) * (intervalReductionPerHazard ^ hazardPoints)
+
+	local nextTimeToSpawn = os.time() + interval
+	monster:setStorageValue(spawnStorageValue, nextTimeToSpawn)
+end
+
+local function spawnCount(spawnConfig, hazardPoints)
+	local countBase = spawnConfig.CountBase
+	local countVarianceRate = spawnConfig.CountVarianceRate
+	local countGrowthPerHazard = spawnConfig.CountGrowthPerHazard
+	local countMax = spawnConfig.CountMax
+
+	local directions = { -1, 1 }
+	local variance = math.random() * countVarianceRate * directions[math.random(#directions)]
+	local count = math.floor(countBase * (countGrowthPerHazard ^ hazardPoints) + variance)
+
+	return math.min(count, countMax)
+end
+
+local function getSpawnPosition(monster)
+	local attempts = 20
+	local attempt = 0
+	local spawnPosition = nil
+	local radius = thePrimalMenaceConfig.SpawnRadius
+	local centerPos = monster:getStorageValue(thePrimalMenaceConfig.Storage.SpawnPos)
+
+	while (not spawnPosition or attempt < attempts) do
+
+		local centerX = centerPos.x
+		local centerY = centerPos.y
+
+		local directions = { -1, 1 }
+		local xCoord = centerX + math.ceil(math.random() * radius) * directions[math.random(#directions)]
+		local yCoord = centerY + math.ceil(math.random() * radius) * directions[math.random(#directions)]
+
+		local positionAttempt = Position(xCoord, yCoord, centerPos.z)
+		local spawnTile = Tile(positionAttempt)
+		if (spawnTile and spawnTile:getCreatureCount() == 0 and not spawnTile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID)) then
+			spawnPosition = positionAttempt
+		end
+		attempt = attempt + 1
+	end
+
+	-- Fallback
+	if not spawnPosition then
+		spawnPosition = centerPos
+	end
+
+	return spawnPosition
+end
+
+local function spawnTimer(monster, spawnPosition, spawnCallback)
+	local time_to_spawn = 3
+	for i = 1, time_to_spawn do
+		addEvent(function()
+			spawnPosition:sendMagicEffect(CONST_ME_TELEPORT)
+		end, i * 1000)
+	end
+	addEvent(function()
+		spawnCallback(monster, spawnPosition)
+	end, time_to_spawn * 1000)
+end
+
+local function spawnPod(monster, position)
+	createPrimalPod(position)
+end
+
+local function spawnPods(monster, hazardPoints)
+	local count = spawnCount(thePrimalMenaceConfig.PodConfig, hazardPoints)
+	for i = 1, count do
+		local spawnPosition = getSpawnPosition(monster)
+		spawnTimer(monster, spawnPosition, spawnPod)
+	end
+end
+
+local function handlePodSpawn(monster, hazardPoints)
+	local nextSpawn = monster:getStorageValue(thePrimalMenaceConfig.Storage.NextPodSpawn)
+	if (nextSpawn - os.time() < 0) then
+		spawnPods(monster, hazardPoints)
+
+		setNextTimeToSpawn(monster, thePrimalMenaceConfig.Storage.NextPodSpawn, thePrimalMenaceConfig.PodConfig, hazardPoints)
+	end
+end
+
+local function spawnMonster(monster, spawnPosition)
+	local randomMonsterIndex = math.random(#thePrimalMenaceConfig.MonsterConfig.MonsterPool)
+	local primalBeastEntry = {
+		Monster = Game.createMonster(thePrimalMenaceConfig.MonsterConfig.MonsterPool[randomMonsterIndex], spawnPosition),
+		Created = os.time()
+	}
+
+	local primalBeasts = monster:getStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts)
+	table.insert(primalBeasts, primalBeastEntry)
+	monster:setStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts, primalBeasts)
+end
+
+local function spawnMonsters(monster, hazardPoints)
+	local count = spawnCount(thePrimalMenaceConfig.MonsterConfig, hazardPoints)
+	for i = 1, count do
+		local spawnPosition = getSpawnPosition(monster)
+		spawnTimer(monster, spawnPosition, spawnMonster)
+	end
+end
+
+local function handleMonsterSpawn(monster, hazardPoints)
+	local nextSpawn = monster:getStorageValue(thePrimalMenaceConfig.Storage.NextMonsterSpawn)
+	if (nextSpawn - os.time() < 0) then
+		spawnMonsters(monster, hazardPoints)
+
+		setNextTimeToSpawn(monster, thePrimalMenaceConfig.Storage.NextMonsterSpawn, thePrimalMenaceConfig.MonsterConfig, hazardPoints)
+	end
+end
+
+local function handlePrimalBeasts(monster)
+	primalBeasts = monster:getStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts)
+	indexesToRemove = {}
+
+	for index, beastData in pairs(primalBeasts) do
+		local monster = beastData.Monster
+		local created = beastData.Created
+
+		if (os.time() - created > 20 and monster:getHealth() > 0) then
+			local position = monster:getPosition()
+			monster:remove()
+			table.insert(indexesToRemove, index)
+			Game.createMonster("Fungosaurus", position)
+		end
+	end
+
+	for i = #indexesToRemove, 1, -1 do
+		table.remove(primalBeasts, i)
+	end
+
+	monster:setStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts, primalBeasts)
+end
+
+mType.onThink = function(monster, interval)
+	if (monster:getStorageValue(thePrimalMenaceConfig.Storage.Initialized) == -1) then
+		initialize(monster)
+	end
+
+	local hazardPoints = getHazardPoints(monster)
+
+	handleMonsterSpawn(monster, hazardPoints)
+	handlePodSpawn(monster, hazardPoints)
+
+	handlePrimalBeasts(monster)
+end
 
 mType:register(monster)

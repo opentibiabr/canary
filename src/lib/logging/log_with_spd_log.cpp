@@ -6,6 +6,8 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
+#include <spdlog/spdlog.h>
+
 #include "pch.hpp"
 
 LogWithSpdLog::LogWithSpdLog() {

@@ -208,13 +208,13 @@ local function spawnCount(spawnConfig, hazardPoints)
 end
 
 local function getSpawnPosition(monster)
-	local attempts = 20
+	local attempts = 6
 	local attempt = 0
 	local spawnPosition = nil
 	local radius = thePrimalMenaceConfig.SpawnRadius
 	local centerPos = monster:getStorageValue(thePrimalMenaceConfig.Storage.SpawnPos)
 
-	while (not spawnPosition or attempt < attempts) do
+	while (not spawnPosition and attempt < attempts) do
 
 		local centerX = centerPos.x
 		local centerY = centerPos.y
@@ -229,6 +229,7 @@ local function getSpawnPosition(monster)
 			spawnPosition = positionAttempt
 		end
 		attempt = attempt + 1
+		Spdlog.info("Attempts: " .. attempt)
 	end
 
 	-- Fallback
@@ -309,6 +310,7 @@ local function handlePrimalBeasts(monster)
 		local monster = beastData.Monster
 		local created = beastData.Created
 		if not monster:getHealth() then
+			Spdlog.info("Removing monster that has dissappeared")
 			table.insert(indexesToRemove, index)
 		elseif (os.time() - created > 20 and monster:getHealth() > 0) then
 			local position = monster:getPosition()
@@ -318,8 +320,11 @@ local function handlePrimalBeasts(monster)
 		end
 	end
 
+		Spdlog.info("Nbr of indexes to remove: " .. #indexesToRemove)
 	for i = #indexesToRemove, 1, -1 do
-		table.remove(primalBeasts, i)
+		local indexToRemove = indexesToRemove[i]
+		table.remove(primalBeasts, indexToRemove)
+		Spdlog.info("Removed index: " .. indexesToRemove)
 	end
 
 	monster:setStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts, primalBeasts)
@@ -330,11 +335,16 @@ mType.onThink = function(monster, interval)
 		initialize(monster)
 	end
 
+	Spdlog.info("hazardPoints: " .. hazardPoints)
 	local hazardPoints = getHazardPoints(monster)
 
+	Spdlog.info("handleMonsterSpawn: " .. handleMonsterSpawn)
 	handleMonsterSpawn(monster, hazardPoints)
+
+	Spdlog.info("handlePodSpawn: " .. handlePodSpawn)
 	handlePodSpawn(monster, hazardPoints)
 
+	Spdlog.info("handlePrimalBeasts: " .. handlePrimalBeasts)
 	handlePrimalBeasts(monster)
 end
 

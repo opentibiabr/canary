@@ -16,13 +16,15 @@ local thePrimalMenaceConfig = {
 	-- Monster spawn time
 	MonsterConfig = {
 		IntervalBase = 30,
-		IntervalReductionPer10PercentHp = 0.97,
+		IntervalReductionPer10PercentHp = 0.98,
 		IntervalReductionPerHazard = 0.985,
 
 		CountBase = 4,
 		CountVarianceRate = 0.5,
 		CountGrowthPerHazard = 1.05,
-		CountMax = 7,
+		CountMax = 6,
+
+		HpRateOnSpawn = 0.7,
 		MonsterPool = {
 			"Emerald Tortoise",
 			"Beast Gore Horn",
@@ -39,9 +41,9 @@ local thePrimalMenaceConfig = {
 	},
 
 	PodConfig = {
-		IntervalBase = 22.5,
-		IntervalReductionPer10PercentHp = 0.97,
-		IntervalReductionPerHazard = 0.99,
+		IntervalBase = 30,
+		IntervalReductionPer10PercentHp = 0.98,
+		IntervalReductionPerHazard = 0.985,
 
 		CountBase = 2,
 		CountVarianceRate = 0.5,
@@ -66,8 +68,8 @@ monster.events = {
 	"ThePrimalMenaceDeath"
 }
 
-monster.health = 650000
-monster.maxHealth = 650000
+monster.health = 400000
+monster.maxHealth = 400000
 monster.race = "blood"
 monster.corpse = 39530
 monster.speed = 180
@@ -154,7 +156,7 @@ local function initialize(monster)
 	end
 
 	monster:setStorageValue(thePrimalMenaceConfig.Storage.SpawnPos, monster:getPosition())
-	monster:setStorageValue(thePrimalMenaceConfig.Storage.NextPodSpawn, os.time() + 5)
+	monster:setStorageValue(thePrimalMenaceConfig.Storage.NextPodSpawn, os.time() + 20)
 	monster:setStorageValue(thePrimalMenaceConfig.Storage.NextMonsterSpawn, os.time() + 10)
 	monster:setStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts, {})
 
@@ -278,6 +280,8 @@ local function spawnMonster(monster, spawnPosition)
 		Monster = Game.createMonster(thePrimalMenaceConfig.MonsterConfig.MonsterPool[randomMonsterIndex], spawnPosition),
 		Created = os.time()
 	}
+	local monsterMaxHealth = primalBeastEntry.Monster:getMaxHealth()
+	primalBeastEntry.Monster:setHealth(monsterMaxHealth * thePrimalMenaceConfig.MonsterConfig.HpRateOnSpawn)
 
 	local primalBeasts = monster:getStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts)
 	table.insert(primalBeasts, primalBeastEntry)
@@ -308,27 +312,21 @@ local function handlePrimalBeasts(monster)
 	for index, beastData in pairs(primalBeasts) do
 		local monster = beastData.Monster
 		local created = beastData.Created
-		if not monster:getHealth() then
-			Spdlog.info("Removing monster that has dissappeared")
-			table.insert(indexesToRemove, index)
-		elseif  monster:getHealth() == 0 then
-			Spdlog.info("Removing dead monster")
+		if not monster:getHealth() or monster:getHealth() == 0 then
 			table.insert(indexesToRemove, index)
 		elseif (os.time() - created > 20 and monster:getHealth() > 0) then
-			Spdlog.info("Converting mob to fungosaurus")
 			local position = monster:getPosition()
 			monster:remove()
 			table.insert(indexesToRemove, index)
-			Game.createMonster("Fungosaurus", position)
+			if position then
+				Game.createMonster("Fungosaurus", position)
+			end
 		end
 	end
 
-	Spdlog.info("Size of primal beasts: " .. #primalBeasts)
-	Spdlog.info("Nbr of indexes to remove: " .. #indexesToRemove)
 	for i = #indexesToRemove, 1, -1 do
 		local indexToRemove = indexesToRemove[i]
 		table.remove(primalBeasts, indexToRemove)
-		Spdlog.info("Removed index: " .. #indexesToRemove)
 	end
 
 	monster:setStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts, primalBeasts)
@@ -340,15 +338,8 @@ mType.onThink = function(monster, interval)
 	end
 
 	local hazardPoints = getHazardPoints(monster)
-	Spdlog.info("hazardPoints: " .. hazardPoints)
-
-	Spdlog.info("handleMonsterSpawn")
 	handleMonsterSpawn(monster, hazardPoints)
-
-	Spdlog.info("handlePodSpawn")
 	handlePodSpawn(monster, hazardPoints)
-
-	Spdlog.info("handlePrimalBeasts")
 	handlePrimalBeasts(monster)
 end
 

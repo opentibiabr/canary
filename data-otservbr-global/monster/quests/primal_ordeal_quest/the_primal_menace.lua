@@ -229,7 +229,6 @@ local function getSpawnPosition(monster)
 			spawnPosition = positionAttempt
 		end
 		attempt = attempt + 1
-		Spdlog.info("Attempts: " .. attempt)
 	end
 
 	-- Fallback
@@ -312,7 +311,11 @@ local function handlePrimalBeasts(monster)
 		if not monster:getHealth() then
 			Spdlog.info("Removing monster that has dissappeared")
 			table.insert(indexesToRemove, index)
+		elseif  monster:getHealth() == 0 then
+			Spdlog.info("Removing dead monster")
+			table.insert(indexesToRemove, index)
 		elseif (os.time() - created > 20 and monster:getHealth() > 0) then
+			Spdlog.info("Converting mob to fungosaurus")
 			local position = monster:getPosition()
 			monster:remove()
 			table.insert(indexesToRemove, index)
@@ -320,11 +323,12 @@ local function handlePrimalBeasts(monster)
 		end
 	end
 
-		Spdlog.info("Nbr of indexes to remove: " .. #indexesToRemove)
+	Spdlog.info("Size of primal beasts: " .. #primalBeasts)
+	Spdlog.info("Nbr of indexes to remove: " .. #indexesToRemove)
 	for i = #indexesToRemove, 1, -1 do
 		local indexToRemove = indexesToRemove[i]
 		table.remove(primalBeasts, indexToRemove)
-		Spdlog.info("Removed index: " .. indexesToRemove)
+		Spdlog.info("Removed index: " .. #indexesToRemove)
 	end
 
 	monster:setStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts, primalBeasts)

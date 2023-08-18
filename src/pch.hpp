@@ -111,9 +111,6 @@
 // PugiXML
 #include <pugixml.hpp>
 
-// SPDLog
-#include <spdlog/spdlog.h>
-
 // Zlib
 #include <zlib.h>
 

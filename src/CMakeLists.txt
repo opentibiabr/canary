@@ -244,6 +244,7 @@ PRIVATE
 	items/trashholder.cpp
 	items/weapons/weapons.cpp
 	lib/logging/log_with_spd_log.cpp
+	lib/thread/thread_pool.cpp
 	lua/callbacks/creaturecallback.cpp
 	lua/callbacks/event_callback.cpp
 	lua/callbacks/events_callbacks.cpp

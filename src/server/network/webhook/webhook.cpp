@@ -98,24 +98,13 @@ size_t Webhook::writeCallback(void* contents, size_t size, size_t nmemb, void* u
 }
 
 std::string Webhook::getPayload(const std::string title, const std::string message, int color) const {
-	time_t now;
-	time(&now);
-	struct tm tm;
-
-#ifdef _MSC_VER
-	gmtime_s(&tm, &now);
-#else
-	gmtime_r(&now, &tm);
-#endif
-
-	char time_buf[sizeof "00:00"];
-	strftime(time_buf, sizeof time_buf, "%R", &tm);
+	std::time_t now = getTimeNow();
+	std::string time_buf = formatDate(now);
 
 	std::stringstream footer_text;
 	footer_text
-		<< g_configManager().getString(IP) << ":"
-		<< g_configManager().getNumber(GAME_PORT) << " | "
-		<< time_buf << " UTC";
+		<< g_configManager().getString(SERVER_NAME) << " | "
+		<< time_buf << " Local Time";
 
 	std::stringstream payload;
 	payload << "{ \"embeds\": [{ ";

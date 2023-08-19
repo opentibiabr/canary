@@ -8970,8 +8970,14 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 	}
 
 	const auto &[podiumVisible, monsterVisible] = podiumAndMonsterVisible;
+	bool changeTentuglyName = false;
 	if (auto monsterOutfit = mType->info.outfit;
 		(monsterOutfit.lookType != 0 || monsterOutfit.lookTypeEx != 0) && monsterVisible) {
+		// "Tantugly's Head" boss have to send other looktype to the podium
+		if (monsterOutfit.lookTypeEx == 35105) {
+			monsterOutfit.lookTypeEx = 39003;
+			changeTentuglyName = true;
+		}
 		item->setCustomAttribute("LookTypeEx", static_cast<int64_t>(monsterOutfit.lookTypeEx));
 		item->setCustomAttribute("LookType", static_cast<int64_t>(monsterOutfit.lookType));
 		item->setCustomAttribute("LookHead", static_cast<int64_t>(monsterOutfit.lookHead));
@@ -8991,7 +8997,12 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 	if (monsterVisible) {
 		std::ostringstream name;
 		item->removeAttribute(ItemAttribute_t::NAME);
-		name << item->getName() << " displaying " << mType->name;
+		name << item->getName() << " displaying ";
+		if (changeTentuglyName) {
+			name << "Tentugly";
+		} else {
+			name << mType->name;
+		}
 		item->setAttribute(ItemAttribute_t::NAME, name.str());
 	} else {
 		item->removeAttribute(ItemAttribute_t::NAME);
@@ -9061,7 +9072,8 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 	// Rotate monster podium (bestiary or bosstiary) to the new direction
 	bool isPodiumOfRenown = itemId == ITEM_PODIUM_OF_RENOWN1 || itemId == ITEM_PODIUM_OF_RENOWN2;
 	if (!isPodiumOfRenown) {
-		if (!isMonsterVisible || podiumRaceId == 0) {
+		auto lookTypeExAttribute = item->getCustomAttribute("LookTypeEx");
+		if (!isMonsterVisible || podiumRaceId == 0 || lookTypeExAttribute && lookTypeExAttribute->getInteger() == 39003) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return;
 		}

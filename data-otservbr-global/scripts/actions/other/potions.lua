@@ -267,7 +267,7 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 		target:say("Aaaah...", MESSAGE_POTION)
 		if fromPosition.x == CONTAINER_POSITION and not container == store_inbox then
 			local container = Container(item:getParent().uid)
-			if player:getStorageValue(flaskOnOff) ~= 1 then
+			if player:getStorageValueByName("talkaction.potions.flask") ~= 1 then
 				container:addItem(potion.flask, 1)
 			end
 		else

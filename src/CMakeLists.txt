@@ -5,14 +5,19 @@ include(BaseConfig)
 add_library(${PROJECT_NAME}_lib "")
 add_executable(${PROJECT_NAME} otserv.cpp)
 
-# Import configurations, source definitions, and linker settings
+# Define compiler options
 include(Options)
-include(Sources)
-include(LinkerSettings)
+
+# Add public pre compiler header to lib, to pass down to related targets
+target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)
 
 # Standardize settings and properties across targets
-setup_target(${PROJECT_NAME}_lib)
 setup_target(${PROJECT_NAME})
+setup_target(${PROJECT_NAME}_lib)
+
+# Import configurations, source definitions, and linker settings
+include(Sources)
+include(LinkerSettings)
 
 # Establish the dependency of the executable on the library
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_lib)

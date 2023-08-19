@@ -365,8 +365,51 @@ void Tile::onAddTileItem(Item* item) {
 
 	if ((!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES))
 		&& item->isCleanable()) {
-		if (!dynamic_cast<HouseTile*>(this)) {
+		if (!this->getHouse()) {
 			g_game().addTileToClean(this);
+		}
+	}
+
+	if (item->isCarpet() && !item->isMoveable()) {
+		if (getTopTopItem() && getTopTopItem()->canReceiveAutoCarpet()) {
+			return;
+		}
+		auto house = getHouse();
+		if (!house) {
+			return;
+		}
+
+		std::vector<Tile*> surroundings = {
+			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y - 1, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y + 1, cylinderMapPos.z)
+		};
+
+		for (const auto &tile : surroundings) {
+			if (!tile || !tile->getGround() || tile->getGround()->getID() != getGround()->getID()) {
+				continue;
+			}
+			auto topItem = tile->getTopTopItem();
+			if (!topItem || !topItem->canReceiveAutoCarpet()) {
+				continue;
+			}
+
+			// Check if tile is part of the same house
+			if (auto tileHouse = tile->getHouse(); !tileHouse || house != house) {
+				continue;
+			}
+
+			// Clear any existing carpet
+			for (auto tileItem : *tile->getItemList()) {
+				if (tileItem && tileItem->isCarpet()) {
+					tile->removeThing(tileItem, tileItem->getItemCount());
+				}
+			}
+
+			auto carpet = item->clone();
+			carpet->setAttribute(ItemAttribute_t::ACTIONID, IMMOVABLE_ACTION_ID);
+			tile->addThing(carpet);
 		}
 	}
 }
@@ -451,6 +494,35 @@ void Tile::onRemoveTileItem(const SpectatorHashSet &spectators, const std::vecto
 
 		if (!ret) {
 			g_game().removeTileToClean(this);
+		}
+	}
+
+	if (item->isCarpet() && !item->isMoveable()) {
+		if (getTopTopItem() && getTopTopItem()->isBlocking() && getTopTopItem()->isAlwaysOnTop()) {
+			return;
+		}
+
+		std::vector<Tile*> surroundings = {
+			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y - 1, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y + 1, cylinderMapPos.z)
+		};
+
+		for (const auto &tile : surroundings) {
+			if (!tile || !tile->getGround() || tile->getGround()->getID() != getGround()->getID()) {
+				continue;
+			}
+			auto topItem = tile->getTopTopItem();
+			if (!topItem || !topItem->isBlocking() || !topItem->isAlwaysOnTop()) {
+				continue;
+			}
+
+			for (auto tileItem : *tile->getItemList()) {
+				if (tileItem && tileItem->getID() == item->getID()) {
+					tile->removeThing(tileItem, tileItem->getItemCount());
+				}
+			}
 		}
 	}
 }
@@ -667,7 +739,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 				const ItemType &iiType = Item::items[ground->getID()];
 				if (iiType.blockSolid) {
 					if (!iiType.pickupable || item->isMagicField() || item->isBlocking()) {
-						if (!item->isPickupable()) {
+						if (!item->isPickupable() && !item->isCarpet()) {
 							return RETURNVALUE_NOTENOUGHROOM;
 						}
 
@@ -1431,14 +1503,13 @@ void Tile::internalAddThing(Thing* thing) {
 		return;
 	}
 
-	if (HouseTile* houseTile = dynamic_cast<HouseTile*>(thing->getTile())) {
+	if (auto house = thing->getTile()->getHouse()) {
 		if (Item* item = thing->getItem()) {
 			if (item->getParent() != this) {
 				return;
 			}
 
 			Door* door = item->getDoor();
-			House* house = houseTile->getHouse();
 			if (door && door->getDoorId() != 0) {
 				house->addDoor(door);
 			}

@@ -8,9 +8,14 @@
  */
 
 #include "pch.hpp"
+
+#include "lib/thread/thread_pool.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/scheduler.h"
 #include "game/scheduling/task.hpp"
+
+Scheduler::Scheduler(ThreadPool &threadPool) :
+	threadPool(threadPool) { }
 
 Scheduler &Scheduler::getInstance() {
 	return inject<Scheduler>();
@@ -25,16 +30,18 @@ uint64_t Scheduler::addEvent(const std::shared_ptr<Task> &task) {
 		task->setEventId(++lastEventId);
 	}
 
-	addLoad([this, task]() {
-		auto res = eventIds.emplace(task->getEventId(), asio::steady_timer(io_service));
+	threadPool.addLoad([this, task]() {
+		std::lock_guard lockAdd(threadSafetyMutex);
+		auto [item, wasAdded] = eventIds.try_emplace(task->getEventId(), threadPool.getIoContext());
 
-		asio::steady_timer &timer = res.first->second;
+		asio::steady_timer &timer = item->second;
 		timer.expires_from_now(std::chrono::milliseconds(task->getDelay()));
 
 		timer.async_wait([this, task](const asio::error_code &error) {
+			std::lock_guard lockAsyncCallback(threadSafetyMutex);
 			eventIds.erase(task->getEventId());
 
-			if (error == asio::error::operation_aborted || io_service.stopped()) {
+			if (error == asio::error::operation_aborted || threadPool.getIoContext().stopped()) {
 				return;
 			}
 
@@ -46,7 +53,8 @@ uint64_t Scheduler::addEvent(const std::shared_ptr<Task> &task) {
 }
 
 void Scheduler::stopEvent(uint64_t eventId) {
-	addLoad([this, eventId]() {
+	threadPool.addLoad([this, eventId]() {
+		std::lock_guard lockClass(threadSafetyMutex);
 		auto it = eventIds.find(eventId);
 
 		if (it != eventIds.end()) {

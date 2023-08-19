@@ -49,6 +49,8 @@ class BedItem final : public Item {
 
 		BedItem* getNextBedItem() const;
 
+		friend class MapCache;
+
 	private:
 		void updateAppearance(const Player* player);
 		void regeneratePlayer(Player* player) const;

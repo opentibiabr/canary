@@ -48,6 +48,7 @@
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
+        "BUILD_STATIC_LIBRARY": "ON",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "OPTIONS_ENABLE_CCACHE": "ON"
       },
@@ -98,6 +99,7 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "DEBUG_LOG": "ON",
+        "BUILD_STATIC_LIBRARY": "OFF",
         "ASAN_ENABLED": "ON"
       }
     }

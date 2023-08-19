@@ -43,7 +43,6 @@ if (MSVC)
     endif()
 
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_CLIENT_LIBS})
-
 else()
     target_link_libraries(${PROJECT_NAME}_lib PUBLIC jsoncpp_static Threads::Threads)
 endif (MSVC)

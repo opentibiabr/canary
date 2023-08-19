@@ -39,6 +39,21 @@ else()
     log_option_disabled("asan")
 endif()
 
+# Build static libs
+if(BUILD_STATIC_LIBRARY)
+    log_option_enabled("STATIC_LIBRARY")
+
+    if(MSVC)
+        set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
+    elseif(UNIX AND NOT APPLE)
+        set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+    elseif(APPLE)
+        set(CMAKE_FIND_LIBRARY_SUFFIXES ".a" ".dylib")
+    endif()
+else()
+    log_option_disabled("STATIC_LIBRARY")
+endif()
+
 # === DEBUG LOG ===
 # cmake -DDEBUG_LOG=ON ..
 if(DEBUG_LOG)
@@ -63,13 +78,6 @@ if (MSVC)
         string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
     endif()
 
-    if(BUILD_STATIC_LIBRARY)
-        log_option_enabled("STATIC_LIBRARY")
-        set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
-    else()
-        log_option_disabled("STATIC_LIBRARY")
-    endif()
-
     add_compile_options(/MP /FS /Zf /EHsc)
 endif (MSVC)
 
@@ -88,21 +96,12 @@ function(set_output_directory target_name)
     endif()
 endfunction()
 
-## Setup msvc static library options to targets
-function(setup_msvc_options TARGET)
-    # Static library settings
-    if(BUILD_STATIC_LIBRARY)
-        set_property(TARGET ${TARGET} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-    endif()
-endfunction()
-
 ## Setup shared target basic configurations
 function(setup_target TARGET_NAME)
     set_output_directory(${TARGET_NAME})
-    target_precompile_headers(${TARGET_NAME} PRIVATE pch.hpp)
 
-    if (MSVC)
-        setup_msvc_options(${TARGET_NAME})
+    if (MSVC AND BUILD_STATIC_LIBRARY)
+        set_property(TARGET ${TARGET_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     endif()
 endfunction()
 

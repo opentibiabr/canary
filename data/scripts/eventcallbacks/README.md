@@ -12,6 +12,7 @@ Event callbacks are available for several categories of game entities, such as `
 - `(void)`: The function does not return any value. It just performs an action and then terminates.
 
 ### These are the functions available to use
+
 - `(bool)` `creatureOnChangeOutfit`
 - `(bool)` `creatureOnAreaCombat`
 - `(bool)` `creatureOnTargetCombat`
@@ -47,6 +48,7 @@ Event callbacks are available for several categories of game entities, such as `
 - `(void)` `playerOnInventoryUpdate`
 - `(bool)` `playerOnRotateItem`
 - `(void)` `monsterOnDropLoot`
+- `(void)` `monsterPostDropLoot`
 - `(void)` `monsterOnSpawn`
 - `(void)` `npcOnSpawn`
 
@@ -70,6 +72,7 @@ callback:register()
 ```
 
 ### Player Callback
+
 ```lua
 local callback = EventCallback()
 
@@ -81,6 +84,7 @@ callback:register()
 ```
 
 ### Party Callback
+
 ```lua
 local callback = EventCallback()
 
@@ -92,6 +96,7 @@ callback:register()
 ```
 
 ### Monster Callback
+
 ```lua
 local callback = EventCallback()
 
@@ -103,6 +108,7 @@ callback:register()
 ```
 
 ### Npc Callback
+
 ```lua
 local callback = EventCallback()
 
@@ -148,6 +154,7 @@ It also allows you to use the same callback in different parts of your Lua scrip
 Here is an example of defining multiple callbacks for the creatureOnAreaCombat event:
 
 #### Example 1
+
 ```lua
 local example1 = EventCallback()
 
@@ -157,7 +164,9 @@ end
 
 example1:register()
 ```
+
 #### Example 2
+
 ```lua
 local example2 = EventCallback()
 

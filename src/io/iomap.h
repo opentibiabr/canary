@@ -42,11 +42,22 @@ struct OTBM_Tile_coords {
 
 #pragma pack()
 
-class IOMap {
-		static Tile* createTile(Item*&ground, Item* item, uint16_t x, uint16_t y, uint8_t z);
-
+class IOMapException : public std::exception {
 	public:
-		bool loadMap(Map* map, const std::string &identifier, const Position &pos = Position(), bool unload = false);
+		IOMapException(const std::string &msg) :
+			message(msg) { }
+
+		const char* what() const noexcept override {
+			return message.c_str();
+		}
+
+	private:
+		std::string message;
+};
+
+class IOMap {
+	public:
+		static void loadMap(Map* map, const std::string &identifier, const Position &pos = Position(), bool unload = false);
 
 		/**
 		 * Load main map monsters
@@ -142,20 +153,11 @@ class IOMap {
 			return map->housesCustomMaps[customMapIndex].loadHousesXML(map->housefile);
 		}
 
-		const std::string &getLastErrorString() const {
-			return errorString;
-		}
-
-		void setLastErrorString(std::string error) {
-			errorString = std::move(error);
-		}
-
 	private:
-		bool parseMapDataAttributes(OTB::Loader &loader, const OTB::Node &mapNode, Map &map, const std::string &fileName);
-		bool parseWaypoints(OTB::Loader &loader, const OTB::Node &waypointsNode, Map &map);
-		bool parseTowns(OTB::Loader &loader, const OTB::Node &townsNode, Map &map);
-		bool parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Map &map, const Position &pos, bool unload);
-		std::string errorString;
+		static void parseMapDataAttributes(OTB::Loader &loader, const OTB::Node &mapNode, Map &map, const std::string &fileName);
+		static void parseWaypoints(OTB::Loader &loader, const OTB::Node &waypointsNode, Map &map);
+		static void parseTowns(OTB::Loader &loader, const OTB::Node &townsNode, Map &map);
+		static void parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Map &map, const Position &pos, bool unload);
 };
 
 #endif // SRC_IO_IOMAP_H_

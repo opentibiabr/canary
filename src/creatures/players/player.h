@@ -249,12 +249,12 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			bankBalance = balance;
 		}
 
-		Guild* getGuild() const {
+		[[nodiscard]] std::shared_ptr<Guild> getGuild() const {
 			return guild;
 		}
-		void setGuild(Guild* guild);
+		void setGuild(const std::shared_ptr<Guild> &guild);
 
-		GuildRank_ptr getGuildRank() const {
+		[[nodiscard]] GuildRank_ptr getGuildRank() const {
 			return guildRank;
 		}
 		void setGuildRank(GuildRank_ptr newGuildRank) {
@@ -263,7 +263,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 
 		bool isGuildMate(const Player* player) const;
 
-		const std::string &getGuildNick() const {
+		[[nodiscard]] const std::string &getGuildNick() const {
 			return guildNick;
 		}
 		void setGuildNick(std::string nick) {
@@ -290,11 +290,11 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			return guildWarVector;
 		}
 
-		std::list<MonsterType*> getBestiaryTrackerList() const {
+		std::list<std::shared_ptr<MonsterType>> getBestiaryTrackerList() const {
 			return BestiaryTracker;
 		}
 
-		void addBestiaryTrackerList(MonsterType* mtype) {
+		void addBestiaryTrackerList(const std::shared_ptr<MonsterType> &mtype) {
 			if (client) {
 				auto it = std::find(BestiaryTracker.begin(), BestiaryTracker.end(), mtype);
 				if (it == BestiaryTracker.end()) {
@@ -312,7 +312,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			}
 		}
 
-		void refreshBestiaryTracker(std::list<MonsterType*> trackerList) {
+		void refreshBestiaryTracker(std::list<std::shared_ptr<MonsterType>> trackerList) {
 			if (client) {
 				client->refreshBestiaryTracker(trackerList);
 			}
@@ -2120,7 +2120,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 
 		// Task hunting system
 		void initializeTaskHunting();
-		bool isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const;
+		bool isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> &mtype) const;
 
 		bool setTaskHuntingSlotClass(TaskHuntingSlot* slot) {
 			if (getTaskHuntingSlotById(slot->id)) {
@@ -2580,7 +2580,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
 		std::forward_list<Condition*> storedConditionList;
 
-		std::list<MonsterType*> BestiaryTracker;
+		std::list<std::shared_ptr<MonsterType>> BestiaryTracker;
 
 		std::string name;
 		std::string guildNick;
@@ -2623,7 +2623,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		std::vector<Kill> unjustifiedKills;
 
 		BedItem* bedItem = nullptr;
-		Guild* guild = nullptr;
+		std::shared_ptr<Guild> guild = nullptr;
 		GuildRank_ptr guildRank;
 		Group* group = nullptr;
 		Inbox* inbox;
@@ -2844,6 +2844,8 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		friend class PlayerWheel;
 
 		std::unique_ptr<PlayerWheel> m_wheelPlayer;
+
+		std::mutex quickLootMutex;
 
 		account::Account* account_;
 		bool online = true;

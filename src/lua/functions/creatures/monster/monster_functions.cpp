@@ -61,7 +61,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 	// monster:setType(name or raceid)
 	Monster* monster = getUserdata<Monster>(L, 1);
 	if (monster) {
-		MonsterType* mType = nullptr;
+		std::shared_ptr<MonsterType> mType = nullptr;
 		if (isNumber(L, 2)) {
 			mType = g_monsters().getMonsterTypeByRaceId(getNumber<uint16_t>(L, 2));
 		} else {

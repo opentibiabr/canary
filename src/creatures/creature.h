@@ -634,8 +634,8 @@ class Creature : virtual public Thing {
 			return false;
 		}
 
-		static constexpr int32_t mapWalkWidth = Map::maxViewportX * 2 + 1;
-		static constexpr int32_t mapWalkHeight = Map::maxViewportY * 2 + 1;
+		static constexpr int32_t mapWalkWidth = MAP_MAX_VIEW_PORT_X * 2 + 1;
+		static constexpr int32_t mapWalkHeight = MAP_MAX_VIEW_PORT_Y * 2 + 1;
 		static constexpr int32_t maxWalkCacheWidth = (mapWalkWidth - 1) / 2;
 		static constexpr int32_t maxWalkCacheHeight = (mapWalkHeight - 1) / 2;
 

@@ -66,7 +66,7 @@ monster.summon = {
 	maxSummons = 3,
 	summons = {
 		{name = "Phantasm", chance = 7, interval = 2000, count = 3},
-		{name = "Phantasm summon", chance = 7, interval = 2000, count = 3}
+		{name = "Phantasm Summon", chance = 7, interval = 2000, count = 3}
 	}
 }
 

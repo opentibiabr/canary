@@ -10,8 +10,6 @@
 #include "pch.hpp"
 #include "canary_server.hpp"
 
-#ifndef UNIT_TESTING
 int main() {
 	return inject<CanaryServer>().run();
 }
-#endif

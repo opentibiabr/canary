@@ -5,6 +5,7 @@
     "argon2",
     "asio",
     "bext-di",
+    "bext-ut",
     "eventpp",
     "pugixml",
     "spdlog",

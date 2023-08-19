@@ -20,12 +20,12 @@ function vipGod.onSay(player, words, param)
 	local target = Player(targetName)
 
 	if not action or not targetName then
-		player:sendTextMessage(MESSAGE_INFO_DESCR, 'Command invalid.\nUsage:\n/vip <action>, <name>, [, <value>]\n\nAvailable actions:\ncheck, adddays, removedays, remove')
+		player:sendTextMessage(MESSAGE_LOOK, 'Command invalid.\nUsage:\n/vip <action>, <name>, [, <value>]\n\nAvailable actions:\ncheck, adddays, removedays, remove')
 		return true
 	end
 
 	if not target then
-		player:sendTextMessage(MESSAGE_INFO_DESCR, string.format('Player "%s" is not online or does not exist!', targetName))
+		player:sendTextMessage(MESSAGE_LOOK, string.format('Player "%s" is not online or does not exist!', targetName))
 		return true
 	end
 
@@ -43,7 +43,7 @@ function vipGod.onSay(player, words, param)
 		end
 
 		if amount < config.minDays or amount > config.maxDays then
-			player:sendTextMessage(MESSAGE_INFO_DESCR, string.format('You can only add %d to %d VIP days at a time.', config.minDays, config.maxDays))
+			player:sendTextMessage(MESSAGE_LOOK, string.format('You can only add %d to %d VIP days at a time.', config.minDays, config.maxDays))
 			return true
 		end
 
@@ -55,7 +55,7 @@ function vipGod.onSay(player, words, param)
 	elseif action == 'removedays' then
 		local amount = tonumber(params[3])
 		if not amount then
-			player:sendTextMessage(MESSAGE_INFO_DESCR, '<value> has to be a numeric value.')
+			player:sendTextMessage(MESSAGE_LOOK, '<value> has to be a numeric value.')
 			return true
 		end
 		if amount > targetVipDays then
@@ -75,7 +75,7 @@ function vipGod.onSay(player, words, param)
 		player:sendTextMessage(MESSAGE_STATUS, string.format('You removed all VIP days from %s.', targetName))
 
 	else
-		player:sendTextMessage(MESSAGE_INFO_DESCR, 'Action is required.\nUsage:\n/vip <action>, <name>, [, <value>]\n\nAvailable actions:\ncheck, adddays, removedays, remove')
+		player:sendTextMessage(MESSAGE_LOOK, 'Action is required.\nUsage:\n/vip <action>, <name>, [, <value>]\n\nAvailable actions:\ncheck, adddays, removedays, remove')
 		return true
 	end
 	return true

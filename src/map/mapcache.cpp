@@ -43,7 +43,7 @@ void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
 		item->setAttribute(ItemAttribute_t::ACTIONID, BasicItem->actionId);
 
 	if (BasicItem->uniqueId > 0)
-		item->setAttribute(ItemAttribute_t::UNIQUEID, BasicItem->actionId);
+		item->setAttribute(ItemAttribute_t::UNIQUEID, BasicItem->uniqueId);
 
 	if (item->getTeleport() && (BasicItem->destX != 0 || BasicItem->destY != 0 || BasicItem->destZ != 0)) {
 		auto dest = Position(BasicItem->destX, BasicItem->destY, BasicItem->destZ);
@@ -307,8 +307,15 @@ Attr_ReadValue BasicItem::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		// Teleport class
 		case ATTR_TELE_DEST: {
-			if (!propStream.read<uint16_t>(destX) || !propStream.read<uint16_t>(destY) || !propStream.read<uint8_t>(destZ))
+			if (!propStream.read<uint16_t>(destX))
 				return ATTR_READ_ERROR;
+
+			if (!propStream.read<uint16_t>(destY))
+				return ATTR_READ_ERROR;
+
+			if (!propStream.read<uint8_t>(destZ))
+				return ATTR_READ_ERROR;
+
 			break;
 		}
 

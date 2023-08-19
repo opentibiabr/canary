@@ -360,15 +360,15 @@ namespace account {
 		GetPremiumRemainingDays(&remainingDays);
 		GetPremiumLastDay(&lastDay);
 		GetAccountIdentifier(&accountIdentifier);
+		time_t currentTime = getTimeNow();
 
-		if (lastDay < getTimeNow()) {
+		if (lastDay < currentTime) {
 			if (SetPremiumRemainingDays(0) != ERROR_NO || SetPremiumLastDay(0) != ERROR_NO) {
 				g_logger().error("Failed to reset premium from account {}: {}", getProtocolCompat() ? "name" : "email", accountIdentifier);
 			}
 		} else if (lastDay == 0) {
 			SetPremiumRemainingDays(0);
 		} else {
-			time_t currentTime = time(nullptr);
 			uint32_t daysLeft = static_cast<int>((lastDay - currentTime) / 86400);
 			uint32_t timeLeft = static_cast<int>((lastDay - currentTime) % 86400);
 			if (daysLeft > 0) {

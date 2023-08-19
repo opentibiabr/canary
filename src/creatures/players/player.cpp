@@ -5232,7 +5232,7 @@ bool Player::isPremium() const {
 		return true;
 	}
 
-	return premiumDays > 0 || premiumLastDay > time(nullptr);
+	return premiumDays > 0 || premiumLastDay > getTimeNow();
 }
 
 void Player::setPremiumDays(uint32_t v) {

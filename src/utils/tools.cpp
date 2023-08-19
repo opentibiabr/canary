@@ -1637,7 +1637,7 @@ std::vector<std::string> split(const std::string &str) {
 }
 
 std::string getFormattedTime(uint32_t time) {
-	time_t currentTimestamp = std::time(nullptr);
+	time_t currentTimestamp = getTimeNow();
 	time_t timeRemaining = time - currentTimestamp;
 
 	int days = static_cast<int>(std::floor(timeRemaining / (24 * 60 * 60)));

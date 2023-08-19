@@ -266,18 +266,18 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 		player:addAchievementProgress('Potion Addict', 100000)
 		target:say("Aaaah...", MESSAGE_POTION)
 		if fromPosition.x == CONTAINER_POSITION and not container == store_inbox then
-            local container = Container(item:getParent().uid)
-            if player:getStorageValue(flaskOnOff) ~= 1 then
-                container:addItem(potion.flask, 1)
-            end
-        else
-            if player:getStorageValue(flaskOnOff) ~= 1 then
-                player:addItem(potion.flask, 1)
-            end
-        end
-        player:addCondition(exhaust)
-        player:setStorageValue(38412, player:getStorageValue(38412)+1)
-    end
+			local container = Container(item:getParent().uid)
+			if player:getStorageValue(flaskOnOff) ~= 1 then
+				container:addItem(potion.flask, 1)
+			end
+		else
+			if player:getStorageValue(flaskOnOff) ~= 1 then
+				player:addItem(potion.flask, 1)
+			end
+		end
+		player:addCondition(exhaust)
+		player:setStorageValue(38412, player:getStorageValue(38412) + 1)
+	end
 
 	player:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ITEM_USE_POTION, player:isInGhostMode() and nil or player)
 	-- Delay potion

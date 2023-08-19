@@ -39,7 +39,7 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 			lua_error(L);
 			delete monsterType;
 			return 1;
-		};
+		}
 
 		if (!monsterType) {
 			lua_pushstring(L, "MonsterType is nullptr");

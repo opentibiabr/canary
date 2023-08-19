@@ -8971,7 +8971,7 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 
 	const auto &[podiumVisible, monsterVisible] = podiumAndMonsterVisible;
 	if (auto monsterOutfit = mType->info.outfit;
-		monsterOutfit.lookType != 0 && monsterVisible) {
+		(monsterOutfit.lookType != 0 || monsterOutfit.lookTypeEx != 0) && monsterVisible) {
 		item->setCustomAttribute("LookTypeEx", static_cast<int64_t>(monsterOutfit.lookTypeEx));
 		item->setCustomAttribute("LookType", static_cast<int64_t>(monsterOutfit.lookType));
 		item->setCustomAttribute("LookHead", static_cast<int64_t>(monsterOutfit.lookHead));

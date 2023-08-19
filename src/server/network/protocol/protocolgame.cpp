@@ -349,11 +349,15 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item* item) {
 	if (it.isPodium) {
 		const auto podiumVisible = item->getCustomAttribute("PodiumVisible");
 		const auto lookType = item->getCustomAttribute("LookType");
+		const auto lookTypeEx = item->getCustomAttribute("LookTypeEx");
 		const auto lookMount = item->getCustomAttribute("LookMount");
 		const auto lookDirection = item->getCustomAttribute("LookDirection");
 
-		if (lookType) {
+		if (lookType && lookType->getAttribute<uint16_t>() != 0) {
 			addOutfitAndMountBytes(msg, item, lookType, "LookHead", "LookBody", "LookLegs", "LookFeet", true);
+		} else if (lookTypeEx) {
+			msg.add<uint16_t>(0);
+			msg.add<uint16_t>(lookTypeEx->getAttribute<uint16_t>());
 		} else {
 			msg.add<uint16_t>(0);
 			msg.add<uint16_t>(0);
@@ -8278,7 +8282,7 @@ void ProtocolGame::sendMonsterPodiumWindow(const Item* podium, const Position &p
 	uint16_t lookValue = 0;
 	if (lookType) {
 		lookValue = static_cast<uint16_t>(lookType->getInteger());
-		isBossSelected = true;
+		isBossSelected = lookValue > 0;
 	}
 
 	msg.add<uint16_t>(isBossSelected ? lookValue : 0); // Boss LookType

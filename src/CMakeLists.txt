@@ -6,6 +6,6 @@ include(GNUInstallDirs)
 include(CanaryLib)
 
 # Define main executable target, set it up and link to main library
-add_executable(${PROJECT_NAME} otserv.cpp)
+add_executable(${PROJECT_NAME} main.cpp)
 setup_target(${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_lib)

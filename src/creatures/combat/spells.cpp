@@ -468,11 +468,7 @@ bool Spell::playerInstantSpellCheck(Player* player, const Position &toPos) const
 		return false;
 	}
 
-	Tile* tile = g_game().map.getTile(toPos);
-	if (!tile) {
-		tile = new StaticTile(toPos.x, toPos.y, toPos.z);
-		g_game().map.setTile(toPos, tile);
-	}
+	const auto tile = g_game().map.getOrCreateTile(toPos);
 
 	ReturnValue ret = Combat::canDoCombat(player, tile, aggressive);
 	if (ret != RETURNVALUE_NOERROR) {

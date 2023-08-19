@@ -16,7 +16,7 @@
 #include "game/game.h"
 #include "items/weapons/weapons.h"
 
-void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock) {
+void MonsterType::loadLoot(const std::shared_ptr<MonsterType> &monsterType, LootBlock lootBlock) {
 	if (lootBlock.childLoot.empty()) {
 		bool isContainer = Item::items[lootBlock.id].isContainer();
 		if (isContainer) {
@@ -52,7 +52,7 @@ ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType, int
 	return condition;
 }
 
-bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std::string &description) {
+bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spellBlock_t &sb, const std::string &description) {
 	if (!spell->scriptName.empty()) {
 		spell->isScripted = true;
 	} else if (!spell->name.empty()) {
@@ -63,7 +63,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 
 	sb.speed = spell->interval;
 	sb.chance = std::min((int)spell->chance, 100);
-	sb.range = std::min((int)spell->range, Map::maxViewportX * 2);
+	sb.range = std::min((int)spell->range, MAP_MAX_VIEW_PORT_X * 2);
 	sb.minCombatValue = std::min(spell->minCombatValue, spell->maxCombatValue);
 	sb.maxCombatValue = std::max(spell->minCombatValue, spell->maxCombatValue);
 	sb.soundCastEffect = spell->soundCastEffect;
@@ -291,7 +291,7 @@ bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	return true;
 }
 
-MonsterType* Monsters::getMonsterType(const std::string &name) {
+std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name) {
 	std::string lowerCaseName = asLowerCaseString(name);
 	if (auto it = monsters.find(lowerCaseName);
 		it != monsters.end()
@@ -303,8 +303,8 @@ MonsterType* Monsters::getMonsterType(const std::string &name) {
 	return nullptr;
 }
 
-MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t raceId, bool isBoss /* = false*/) {
-	MonsterType* bossType = g_ioBosstiary().getMonsterTypeByBossRaceId(raceId);
+std::shared_ptr<MonsterType> Monsters::getMonsterTypeByRaceId(uint16_t raceId, bool isBoss /* = false*/) const {
+	const auto &bossType = g_ioBosstiary().getMonsterTypeByBossRaceId(raceId);
 	if (isBoss && bossType) {
 		return bossType;
 	}
@@ -318,7 +318,13 @@ MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t raceId, bool isBoss /* = 
 	return g_monsters().getMonsterType(it->second);
 }
 
-void Monsters::addMonsterType(const std::string &name, MonsterType* mType) {
+bool Monsters::tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> &mType) {
 	std::string lowerName = asLowerCaseString(name);
+	if (monsters.find(lowerName) != monsters.end()) {
+		g_logger().debug("[{}] the monster with name '{}' already exist", __FUNCTION__, name);
+		return false;
+	}
+
 	monsters[lowerName] = mType;
+	return true;
 }

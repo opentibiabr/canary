@@ -83,7 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local time = 20*60*60
+	local time = configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN)
 
 	-- missão measurements
 	if MsgContains(message, "measurements") and npcHandler:getTopic(playerId) == 1 then

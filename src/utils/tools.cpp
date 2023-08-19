@@ -437,6 +437,15 @@ std::string formatDateShort(time_t time) {
 	return {};
 }
 
+std::string formatTime(time_t time) {
+	try {
+		return fmt::format("{:%H:%M:%S}", fmt::localtime(time));
+	} catch (const std::out_of_range &exception) {
+		g_logger().error("Failed to format time with error code {}", exception.what());
+	}
+	return {};
+}
+
 std::time_t getTimeNow() {
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
@@ -1124,7 +1133,7 @@ std::string combatTypeToName(CombatType_t combatType) {
 }
 
 CombatType_t indexToCombatType(size_t v) {
-	return static_cast<CombatType_t>(1 << v);
+	return static_cast<CombatType_t>(v);
 }
 
 ItemAttribute_t stringToItemAttribute(const std::string &str) {

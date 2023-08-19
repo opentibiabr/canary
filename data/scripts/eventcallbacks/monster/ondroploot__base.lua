@@ -1,10 +1,6 @@
 local callback = EventCallback()
 
 function callback.monsterOnDropLoot(monster, corpse)
-	if configManager.getNumber(configKeys.RATE_LOOT) == 0 then return end
-	local mType = monster:getType()
-	if mType:isRewardBoss() then corpse:registerReward() return end
-
 	local player = Player(corpse:getCorpseOwner())
 	local factor = 1.0
 	local msgSuffix = ""
@@ -13,6 +9,8 @@ function callback.monsterOnDropLoot(monster, corpse)
 		factor = config.factor
 		msgSuffix = config.msgSuffix
 	end
+	local mType = monster:getType()
+	if not mType then return end
 
 	local charm = player and player:getCharmMonsterType(CHARM_GUT)
 	local gut = charm and charm:raceId() == mType:raceId()

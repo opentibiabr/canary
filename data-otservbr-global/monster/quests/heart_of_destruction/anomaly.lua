@@ -63,6 +63,11 @@ monster.events = {
 	"HeartBossDeath"
 }
 
+monster.events = {
+	"AnomalyTransform",
+	"HeartBossDeath"
+}
+
 monster.light = {
 	level = 0,
 	color = 0

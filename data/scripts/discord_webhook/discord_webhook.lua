@@ -1,4 +1,4 @@
--- Sends Discord webhook special notifications.
+-- Sends Discord webhook notifications.
 -- The URL layout is https://discord.com/api/webhooks/:id/:token
 -- Leave empty if you wish to disable.
 
@@ -14,7 +14,7 @@ announcementChannels = {
 
 	local message = blablabla
 	local title = test
-	Webhook.send(title, message, WEBHOOK_COLOR_WARNING,
+	Webhook.sendMessage(title, message, WEBHOOK_COLOR_WARNING,
                         announcementChannels["serverAnnouncements"])
 
 	Dev Comment: This lib can be used to add special webhook channels

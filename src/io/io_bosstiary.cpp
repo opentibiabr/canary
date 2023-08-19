@@ -51,7 +51,7 @@ void IOBosstiary::loadBoostedBoss() {
 	// Filter only archfoe bosses
 	phmap::btree_map<uint16_t, std::string> bossInfo;
 	for (auto [infoBossRaceId, infoBossName] : bossMap) {
-		const MonsterType* mType = getMonsterTypeByBossRaceId(infoBossRaceId);
+		const auto &mType = getMonsterTypeByBossRaceId(infoBossRaceId);
 		if (!mType || mType->info.bosstiaryRace != BosstiaryRarity_t::RARITY_ARCHFOE) {
 			continue;
 		}
@@ -83,7 +83,7 @@ void IOBosstiary::loadBoostedBoss() {
 	query << "UPDATE `boosted_boss` SET ";
 	query << "`date` = '" << today << "',";
 	query << "`boostname` = " << database.escapeString(bossName) << ",";
-	if (const MonsterType* bossType = getMonsterTypeByBossRaceId(bossId);
+	if (const auto &bossType = getMonsterTypeByBossRaceId(bossId);
 		bossType) {
 		query << "`looktypeEx` = " << static_cast<int>(bossType->info.outfit.lookTypeEx) << ",";
 		query << "`looktype` = " << static_cast<int>(bossType->info.outfit.lookType) << ",";
@@ -136,10 +136,10 @@ uint16_t IOBosstiary::getBoostedBossId() const {
 	return boostedBossId;
 }
 
-MonsterType* IOBosstiary::getMonsterTypeByBossRaceId(uint16_t raceId) const {
+std::shared_ptr<MonsterType> IOBosstiary::getMonsterTypeByBossRaceId(uint16_t raceId) const {
 	for ([[maybe_unused]] const auto &[bossRaceId, bossName] : getBosstiaryMap()) {
 		if (bossRaceId == raceId) {
-			MonsterType* monsterType = g_monsters().getMonsterType(bossName);
+			const auto &monsterType = g_monsters().getMonsterType(bossName);
 			if (!monsterType) {
 				g_logger().error("[{}] Boss with id not found in boss map", raceId);
 				continue;
@@ -152,7 +152,7 @@ MonsterType* IOBosstiary::getMonsterTypeByBossRaceId(uint16_t raceId) const {
 	return nullptr;
 }
 
-void IOBosstiary::addBosstiaryKill(Player* player, const MonsterType* mtype, uint32_t amount /*= 1*/) const {
+void IOBosstiary::addBosstiaryKill(Player* player, const std::shared_ptr<MonsterType> &mtype, uint32_t amount /*= 1*/) const {
 	if (!player || !mtype) {
 		return;
 	}
@@ -230,7 +230,7 @@ std::vector<uint16_t> IOBosstiary::getBosstiaryFinished(const Player* player, ui
 			continue;
 		}
 
-		const MonsterType* mType = g_monsters().getMonsterType(bossName);
+		const auto &mType = g_monsters().getMonsterType(bossName);
 		if (!mType) {
 			continue;
 		}
@@ -295,7 +295,7 @@ std::vector<uint16_t> IOBosstiary::getBosstiaryCooldownRaceId(const Player* play
 		 const auto &[bossId, bossName] : bossesMap) {
 		uint32_t bossKills = player->getBestiaryKillCount(bossId);
 
-		const MonsterType* mType = g_monsters().getMonsterType(bossName);
+		const auto &mType = g_monsters().getMonsterType(bossName);
 		if (!mType) {
 			continue;
 		}

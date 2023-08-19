@@ -9,8 +9,12 @@
 
 #include "pch.hpp"
 
+#include "lib/thread/thread_pool.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/task.hpp"
+
+Dispatcher::Dispatcher(ThreadPool &threadPool) :
+	threadPool(threadPool) { }
 
 Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
@@ -22,7 +26,8 @@ void Dispatcher::addTask(std::function<void(void)> f, uint32_t expiresAfterMs /*
 
 void Dispatcher::addTask(const std::shared_ptr<Task> &task, uint32_t expiresAfterMs /* = 0*/) {
 	if (expiresAfterMs == 0) {
-		addLoad([this, task]() {
+		threadPool.addLoad([this, task]() {
+			std::lock_guard lockClass(threadSafetyMutex);
 			++dispatcherCycle;
 			(*task)();
 		});
@@ -30,7 +35,7 @@ void Dispatcher::addTask(const std::shared_ptr<Task> &task, uint32_t expiresAfte
 		return;
 	};
 
-	auto timer = std::make_shared<asio::steady_timer>(io_service);
+	auto timer = std::make_shared<asio::steady_timer>(threadPool.getIoContext());
 	timer->expires_after(std::chrono::milliseconds(expiresAfterMs));
 
 	timer->async_wait([task, expiresAfterMs](const std::error_code &error) {
@@ -41,7 +46,8 @@ void Dispatcher::addTask(const std::shared_ptr<Task> &task, uint32_t expiresAfte
 		g_logger().info("Task was not executed within {} ms, so it was cancelled.", expiresAfterMs);
 	});
 
-	addLoad([this, task, timer]() {
+	threadPool.addLoad([this, task, timer]() {
+		std::lock_guard lockClass(threadSafetyMutex);
 		if (timer->cancel() <= 0) {
 			return;
 		}

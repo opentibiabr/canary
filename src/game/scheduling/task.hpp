@@ -10,8 +10,6 @@
 #ifndef SRC_GAME_TASK_H_
 #define SRC_GAME_TASK_H_
 
-#include "utils/thread_holder_base.h"
-
 class Task {
 	public:
 		// DO NOT allocate this class on the stack

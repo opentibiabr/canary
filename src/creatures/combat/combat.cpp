@@ -387,13 +387,13 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target, bool aggre
 
 		if (g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
 			if (attacker->getPlayer() || (attackerMaster && attackerMaster->getPlayer())) {
-				if (target->getPlayer()) {
+				if (targetPlayer) {
 					if (!isInPvpZone(attacker, target)) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 					}
 				}
 
-				if (target->isSummon() && target->getMaster()->getPlayer()) {
+				if (target && target->isSummon() && target->getMaster()->getPlayer()) {
 					if (!isInPvpZone(attacker, target)) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 					}

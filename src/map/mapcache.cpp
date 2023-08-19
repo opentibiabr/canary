@@ -164,8 +164,11 @@ void BasicTile::hash(size_t &h) const {
 	if (ground != nullptr)
 		ground->hash(h);
 
-	for (const auto &item : items)
-		item->hash(h);
+	if (!items.empty()) {
+		stdext::hash_combine(h, items.size());
+		for (const auto &item : items)
+			item->hash(h);
+	}
 }
 
 void BasicItem::hash(size_t &h) const {
@@ -178,8 +181,11 @@ void BasicItem::hash(size_t &h) const {
 	if (!text.empty())
 		stdext::hash_combine(h, text);
 
-	for (const auto &item : items)
-		item->hash(h);
+	if (!items.empty()) {
+		stdext::hash_combine(h, items.size());
+		for (const auto &item : items)
+			item->hash(h);
+	}
 }
 
 bool BasicItem::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream) {

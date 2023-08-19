@@ -24,10 +24,11 @@ When adding a new range or storage, make sure that the ranges do not overlap, an
 
 <storages>
 	<range start="1000000" end="2000000">
-		<storage name="wheel.scroll.abridged" key="1" />
-		<storage name="wheel.scroll.basic" key="2" />
-		<storage name="wheel.scroll.revised" key="3" />
-		<storage name="wheel.scroll.extended" key="4" />
-		<storage name="wheel.scroll.advanced" key="5" />
-	</range>
+        <storage name="wheel.scroll.abridged" key="1" />
+        <storage name="wheel.scroll.basic" key="2" />
+        <storage name="wheel.scroll.revised" key="3" />
+        <storage name="wheel.scroll.extended" key="4" />
+        <storage name="wheel.scroll.advanced" key="5" />
+        <storage name="talkaction.potions.flask" key="6" />
+    </range>
 </storages>

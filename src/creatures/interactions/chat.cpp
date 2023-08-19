@@ -79,7 +79,7 @@ bool ChatChannel::addUser(Player &player) {
 
 	// TODO: Move to script when guild channels can be scripted
 	if (id == CHANNEL_GUILD) {
-		Guild* guild = player.getGuild();
+		const auto &guild = player.getGuild();
 		if (guild && !guild->getMotd().empty()) {
 			g_scheduler().addEvent(150, std::bind(&Game::sendGuildMotd, &g_game(), player.getID()));
 		}
@@ -332,7 +332,7 @@ ChatChannel* Chat::createChannel(const Player &player, uint16_t channelId) {
 
 	switch (channelId) {
 		case CHANNEL_GUILD: {
-			Guild* guild = player.getGuild();
+			const auto &guild = player.getGuild();
 			if (guild != nullptr) {
 				auto ret = guildChannels.emplace(std::make_pair(guild->getId(), ChatChannel(channelId, guild->getName())));
 				return &ret.first->second;
@@ -376,7 +376,7 @@ ChatChannel* Chat::createChannel(const Player &player, uint16_t channelId) {
 bool Chat::deleteChannel(const Player &player, uint16_t channelId) {
 	switch (channelId) {
 		case CHANNEL_GUILD: {
-			Guild* guild = player.getGuild();
+			const auto &guild = player.getGuild();
 			if (guild == nullptr) {
 				return false;
 			}
@@ -547,7 +547,7 @@ ChannelList Chat::getChannelList(const Player &player) {
 ChatChannel* Chat::getChannel(const Player &player, uint16_t channelId) {
 	switch (channelId) {
 		case CHANNEL_GUILD: {
-			Guild* guild = player.getGuild();
+			const auto &guild = player.getGuild();
 			if (guild != nullptr) {
 				auto it = guildChannels.find(guild->getId());
 				if (it != guildChannels.end()) {

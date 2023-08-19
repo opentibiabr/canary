@@ -389,7 +389,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 		uint32_t playerRankId = result->getNumber<uint32_t>("rank_id");
 		player->guildNick = result->getString("nick");
 
-		Guild* guild = g_game().getGuild(guildId);
+		auto guild = g_game().getGuild(guildId);
 		if (!guild) {
 			guild = IOGuild::loadGuild(guildId);
 			g_game().addGuild(guild);
@@ -468,7 +468,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result, bool disable /
 
 		uint16_t raceid_t;
 		while (propBestStream.read<uint16_t>(raceid_t)) {
-			MonsterType* tmp_tt = g_monsters().getMonsterTypeByRaceId(raceid_t);
+			const auto &tmp_tt = g_monsters().getMonsterTypeByRaceId(raceid_t);
 			if (tmp_tt) {
 				player->addBestiaryTrackerList(tmp_tt);
 			}
@@ -1087,7 +1087,7 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 
 	// Bestiary tracker
 	PropWriteStream propBestiaryStream;
-	for (MonsterType* trackedType : player->getBestiaryTrackerList()) {
+	for (const auto &trackedType : player->getBestiaryTrackerList()) {
 		propBestiaryStream.write<uint16_t>(trackedType->info.raceid);
 	}
 	size_t trackerSize;

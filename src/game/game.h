@@ -494,9 +494,9 @@ class Game {
 		void addMonster(Monster* npc);
 		void removeMonster(Monster* npc);
 
-		Guild* getGuild(uint32_t id, bool allowOffline = false) const;
-		Guild* getGuildByName(const std::string &name, bool allowOffline = false) const;
-		void addGuild(Guild* guild);
+		std::shared_ptr<Guild> getGuild(uint32_t id, bool allowOffline = false) const;
+		std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;
+		void addGuild(const std::shared_ptr<Guild> &guild);
 		void removeGuild(uint32_t guildId);
 		void decreaseBrowseFieldRef(const Position &pos);
 
@@ -537,12 +537,12 @@ class Game {
 		void playerInspectItem(Player* player, const Position &pos);
 		void playerInspectItem(Player* player, uint16_t itemId, uint8_t itemCount, bool cyclopedia);
 
-		void addCharmRune(Charm* charm) {
+		void addCharmRune(const std::shared_ptr<Charm> &charm) {
 			CharmList.push_back(charm);
 			CharmList.shrink_to_fit();
 		}
 
-		std::vector<Charm*> getCharmList() {
+		std::vector<std::shared_ptr<Charm>> &getCharmList() {
 			return CharmList;
 		}
 
@@ -748,7 +748,7 @@ class Game {
 		phmap::flat_hash_map<std::string, Player*> m_uniqueLoginPlayerNames;
 		phmap::flat_hash_map<uint32_t, Player*> players;
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
-		phmap::flat_hash_map<uint32_t, Guild*> guilds;
+		phmap::flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
 		phmap::flat_hash_map<uint16_t, Item*> uniqueItems;
 		phmap::btree_map<uint32_t, uint32_t> stages;
 
@@ -761,7 +761,7 @@ class Game {
 		phmap::btree_map<uint16_t, std::string> BestiaryList;
 		std::string boostedCreature = "";
 
-		std::vector<Charm*> CharmList;
+		std::vector<std::shared_ptr<Charm>> CharmList;
 		std::vector<Creature*> ToReleaseCreatures;
 		std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 		std::vector<Item*> ToReleaseItems;

@@ -6,12 +6,12 @@ function closeServer.onSay(player, words, param)
 
 	if param == "shutdown" then
 		Game.setGameState(GAME_STATE_SHUTDOWN)
-		Webhook.send("Server Shutdown", "Server was shutdown by: " .. player:getName(),
+		Webhook.sendMessage("Server Shutdown", "Server was shutdown by: " .. player:getName(),
 			WEBHOOK_COLOR_WARNING, announcementChannels["serverAnnouncements"])
 	else
 		Game.setGameState(GAME_STATE_CLOSED)
 		player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Server is now closed.")
-		Webhook.send("Server Closed", "Server was closed by: " .. player:getName(),
+		Webhook.sendMessage("Server Closed", "Server was closed by: " .. player:getName(),
 			WEBHOOK_COLOR_WARNING, announcementChannels["serverAnnouncements"])
 	end
 	return true

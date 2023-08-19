@@ -323,7 +323,6 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 				}
 				return 1;
 			}
-
 		} else {
 			getScriptEnv()->addTempItem(item);
 			item->setParent(VirtualCylinder::virtualCylinder);
@@ -485,18 +484,7 @@ int GameFunctions::luaGameCreateTile(lua_State* L) {
 		isDynamic = getBoolean(L, 4, false);
 	}
 
-	Tile* tile = g_game().map.getTile(position);
-	if (!tile) {
-		if (isDynamic) {
-			tile = new DynamicTile(position.x, position.y, position.z);
-		} else {
-			tile = new StaticTile(position.x, position.y, position.z);
-		}
-
-		g_game().map.setTile(position, tile);
-	}
-
-	pushUserdata(L, tile);
+	pushUserdata(L, g_game().map.getOrCreateTile(position, isDynamic));
 	setMetatable(L, -1, "Tile");
 	return 1;
 }

@@ -244,6 +244,7 @@ PRIVATE
 	items/trashholder.cpp
 	items/weapons/weapons.cpp
 	lib/logging/log_with_spd_log.cpp
+	lib/thread/thread_pool.cpp
 	lua/callbacks/creaturecallback.cpp
 	lua/callbacks/event_callback.cpp
 	lua/callbacks/events_callbacks.cpp
@@ -312,7 +313,10 @@ PRIVATE
 	lua/scripts/scripts.cpp
 	map/house/house.cpp
 	map/house/housetile.cpp
+	map/utils/astarnodes.cpp
+	map/utils/qtreenode.cpp
 	map/map.cpp
+	map/mapcache.cpp
 	canary_server.cpp
 	otserv.cpp
 	security/argon.cpp

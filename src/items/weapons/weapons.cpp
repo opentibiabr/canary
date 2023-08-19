@@ -320,9 +320,10 @@ int32_t Weapon::getHealthCost(const Player* player) const {
 bool Weapon::executeUseWeapon(Player* player, const LuaVariant &var) const {
 	// onUseWeapon(player, var)
 	if (!getScriptInterface()->reserveScriptEnv()) {
+		std::string playerName = player ? player->getName() : "Player nullptr";
 		g_logger().error("[Weapon::executeUseWeapon - Player {} weaponId {}]"
 						 "Call stack overflow. Too many lua script calls being nested.",
-						 player->getName(), getID());
+						 playerName, getID());
 		return false;
 	}
 

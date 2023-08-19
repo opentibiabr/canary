@@ -16,14 +16,14 @@ function vipGod.onSay(player, words, param)
 
 	local params = param:split(',')
 	local action = params[1]:trim():lower()
-	local targetName = params[2]:trim()
-	local target = Player(targetName)
 
+	local targetName = params[2]:trim()
 	if not action or not targetName then
 		player:sendTextMessage(MESSAGE_LOOK, 'Command invalid.\nUsage:\n/vip <action>, <name>, [, <value>]\n\nAvailable actions:\ncheck, adddays, removedays, remove')
 		return true
 	end
 
+	local target = Player(targetName)
 	if not target then
 		player:sendTextMessage(MESSAGE_LOOK, string.format('Player "%s" is not online or does not exist!', targetName))
 		return true

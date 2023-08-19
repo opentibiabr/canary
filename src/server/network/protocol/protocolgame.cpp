@@ -26,6 +26,7 @@
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/grouping/familiars.h"
 #include "server/network/protocol/protocolgame.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/scheduler.h"
 #include "creatures/combat/spells.h"
 #include "creatures/players/management/waitlist.h"
@@ -85,7 +86,7 @@ namespace {
 	}
 
 	// Send bytes function for avoid repetitions
-	void sendBosstiarySlotsBytes(NetworkMessage &msg, uint8_t bossRace = 0, uint32_t bossKillCount = 0, uint16_t bonusBossSlotOne = 0, uint8_t killBonus = 0, uint8_t isSlotOneInactive = 0, uint32_t removePrice = 0) {
+	void sendBosstiarySlotsBytes(NetworkMessage &msg, uint8_t bossRace, uint32_t bossKillCount, uint16_t bonusBossSlotOne, uint8_t killBonus, uint8_t isSlotOneInactive, uint32_t removePrice) {
 		msg.addByte(bossRace); // Boss Race
 		msg.add<uint32_t>(bossKillCount); // Kill Count
 		msg.add<uint16_t>(bonusBossSlotOne); // Loot Bonus
@@ -183,9 +184,7 @@ namespace {
 							continue;
 						}
 
-						if (isDevMode()) {
-							spdlog::warn("[cyclopedia damage reduction] imbued item {}, reduced {} percent, for element {}", item->getName(), imbuementAbsorbPercent, combatTypeToName(indexToCombatType(combat)));
-						}
+						g_logger().debug("[cyclopedia damage reduction] imbued item {}, reduced {} percent, for element {}", item->getName(), imbuementAbsorbPercent, combatTypeToName(indexToCombatType(combat)));
 
 						damageReduction[combat] *= (std::floor(100 - imbuementAbsorbPercent) / 100.);
 					}
@@ -200,16 +199,13 @@ namespace {
 			}
 
 			if (damageReduction[i] != 100) {
-				if (isDevMode()) {
-					spdlog::info("CombatType: {}, DamageReduction: {}", i, damageReduction[i]);
-				}
+				g_logger().debug("CombatType: {}, DamageReduction: {}", i, damageReduction[i]);
 				msg.addByte(getCipbiaElement(indexToCombatType(i)));
 				msg.addByte(std::max<int8_t>(-100, std::min<int8_t>(100, 100 - damageReduction[i])));
 				++combats;
 			}
 		}
 	}
-
 } // namespace
 
 ProtocolGame::ProtocolGame(Connection_ptr initConnection) :
@@ -219,12 +215,12 @@ ProtocolGame::ProtocolGame(Connection_ptr initConnection) :
 
 template <typename Callable, typename... Args>
 void ProtocolGame::addGameTask(Callable function, Args &&... args) {
-	g_dispatcher().addTask(createTask(std::bind(function, &g_game(), std::forward<Args>(args)...)));
+	g_dispatcher().addTask(std::bind(function, &g_game(), std::forward<Args>(args)...));
 }
 
 template <typename Callable, typename... Args>
 void ProtocolGame::addGameTaskTimed(uint32_t delay, Callable function, Args &&... args) {
-	g_dispatcher().addTask(createTask(delay, std::bind(function, &g_game(), std::forward<Args>(args)...)));
+	g_dispatcher().addTask(std::bind(function, &g_game(), std::forward<Args>(args)...), delay);
 }
 
 void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) {
@@ -525,7 +521,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		if (!IOLoginData::loadPlayerById(player, player->getGUID(), false)) {
 			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("Your character could not be loaded.");
-			SPDLOG_WARN("Player {} could not be loaded", player->getName());
+			g_logger().warn("Player {} could not be loaded", player->getName());
 			return;
 		}
 
@@ -534,7 +530,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		if (!g_game().placeCreature(player, player->getLoginPosition()) && !g_game().placeCreature(player, player->getTemplePosition(), false, true)) {
 			g_game().removePlayerUniqueLogin(player);
 			disconnectClient("Temple position is wrong. Please, contact the administrator.");
-			SPDLOG_WARN("Player {} temple position is wrong", player->getName());
+			g_logger().warn("Player {} temple position is wrong", player->getName());
 			return;
 		}
 
@@ -552,7 +548,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			foundPlayer->disconnect();
 			foundPlayer->isConnecting = true;
 
-			eventConnect = g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getName(), operatingSystem)));
+			eventConnect = g_scheduler().addEvent(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getName(), operatingSystem));
 		} else {
 			connect(foundPlayer->getName(), operatingSystem);
 		}
@@ -655,7 +651,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	msg.skipBytes(3); // U16 dat revision, U8 game preview state
 
 	if (!Protocol::RSA_decrypt(msg)) {
-		SPDLOG_WARN("[ProtocolGame::onRecvFirstMessage] - RSA Decrypt Failed");
+		g_logger().warn("[ProtocolGame::onRecvFirstMessage] - RSA Decrypt Failed");
 		disconnect();
 		return;
 	}
@@ -762,11 +758,11 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		output->addByte(0x14);
 		output->addString(ss.str());
 		send(output);
-		g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::disconnect, getThis())));
+		g_scheduler().addEvent(1000, std::bind(&ProtocolGame::disconnect, getThis()));
 		return;
 	}
 
-	g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem)));
+	g_dispatcher().addTask(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem));
 }
 
 void ProtocolGame::onConnect() {
@@ -831,16 +827,16 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 			m_playerDeathTime++;
 		}
 
-		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte)));
+		g_dispatcher().addTask(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte));
 		return;
 	}
 
 	// Modules system
 	if (player && recvbyte != 0xD3) {
-		g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, &g_modules(), player->getID(), msg, recvbyte)));
+		g_dispatcher().addTask(std::bind(&Modules::executeOnRecvbyte, &g_modules(), player->getID(), msg, recvbyte));
 	}
 
-	g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
+	g_dispatcher().addTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte));
 }
 
 void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
@@ -850,7 +846,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			g_game().removePlayerUniqueLogin(player->getName());
 		}
 		disconnect();
-		g_dispatcher().addTask(createTask(std::bind(&IOLoginData::updateOnlineStatus, player->getGUID(), false)));
+		g_dispatcher().addTask(std::bind(&IOLoginData::updateOnlineStatus, player->getGUID(), false));
 		return;
 	}
 
@@ -859,7 +855,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			return;
 		}
 
-		g_scheduler().addEvent(createSchedulerTask(100, std::bind(&ProtocolGame::sendPing, getThis())));
+		g_scheduler().addEvent(100, std::bind(&ProtocolGame::sendPing, getThis()));
 
 		if (!player->spawn()) {
 			disconnect();
@@ -867,15 +863,15 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			return;
 		}
 
-		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::sendAddCreature, getThis(), player, player->getPosition(), 0, false)));
-		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::addBless, getThis())));
+		g_dispatcher().addTask(std::bind(&ProtocolGame::sendAddCreature, getThis(), player, player->getPosition(), 0, false));
+		g_dispatcher().addTask(std::bind(&ProtocolGame::addBless, getThis()));
 		resetPlayerDeathTime();
 		return;
 	}
 
 	if (recvbyte == 0x1D) {
 		// keep the connection alive
-		g_scheduler().addEvent(createSchedulerTask(100, std::bind(&ProtocolGame::sendPingBack, getThis())));
+		g_scheduler().addEvent(100, std::bind(&ProtocolGame::sendPingBack, getThis()));
 		return;
 	}
 }
@@ -910,7 +906,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 
 	switch (recvbyte) {
 		case 0x14:
-			g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::logout, getThis(), true, false)));
+			g_dispatcher().addTask(std::bind(&ProtocolGame::logout, getThis(), true, false));
 			break;
 		case 0x1D:
 			addGameTask(&Game::playerReceivePingBack, player->getID());
@@ -1101,7 +1097,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			addGameTask(&Game::playerCloseNpcChannel, player->getID());
 			break;
 		case 0x9F:
-			parseSetBossPodium(msg);
+			parseSetMonsterPodium(msg);
 			break;
 		case 0xA0:
 			parseFightModes(msg);
@@ -1180,9 +1176,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xD2:
 			addGameTask(&Game::playerRequestOutfit, player->getID());
 			break;
-		// g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte)));
+		// g_dispatcher().addTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte));
 		case 0xD3:
-			g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parseSetOutfit, getThis(), msg)));
+			g_dispatcher().addTask(std::bind(&ProtocolGame::parseSetOutfit, getThis(), msg));
 			break;
 		case 0xD4:
 			parseToggleMount(msg);
@@ -1278,7 +1274,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			// case 0xDF, 0xE0, 0xE1, 0xFB, 0xFC, 0xFD, 0xFE Premium Shop.
 
 		default:
-			SPDLOG_DEBUG("Player: {} sent an unknown packet header: x0{}", player->getName(), static_cast<uint16_t>(recvbyte));
+			g_logger().debug("Player: {} sent an unknown packet header: x0{}", player->getName(), static_cast<uint16_t>(recvbyte));
 			break;
 	}
 }
@@ -1487,7 +1483,7 @@ bool ProtocolGame::canSee(int32_t x, int32_t y, int32_t z) const {
 
 	// negative offset means that the action taken place is on a lower floor than ourself
 	const int8_t offsetz = myPos.getZ() - z;
-	return (x >= myPos.getX() - Map::maxClientViewportX + offsetz) && (x <= myPos.getX() + (Map::maxClientViewportX + 1) + offsetz) && (y >= myPos.getY() - Map::maxClientViewportY + offsetz) && (y <= myPos.getY() + (Map::maxClientViewportY + 1) + offsetz);
+	return (x >= myPos.getX() - MAP_MAX_CLIENT_VIEW_PORT_X + offsetz) && (x <= myPos.getX() + (MAP_MAX_CLIENT_VIEW_PORT_X + 1) + offsetz) && (y >= myPos.getY() - MAP_MAX_CLIENT_VIEW_PORT_Y + offsetz) && (y <= myPos.getY() + (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) + offsetz);
 }
 
 // Parse methods
@@ -1895,7 +1891,8 @@ void ProtocolGame::parseRotateItem(NetworkMessage &msg) {
 	Position pos = msg.getPosition();
 	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
-	if (itemId == ITEM_PODIUM_OF_VIGOUR) {
+	const auto &itemType = Item::items[itemId];
+	if (itemType.isPodium) {
 		addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerRotatePodium, player->getID(), pos, stackpos, itemId);
 	} else {
 		addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerRotateItem, player->getID(), pos, stackpos, itemId);
@@ -2155,7 +2152,7 @@ void ProtocolGame::parseBestiarysendRaces() {
 	NetworkMessage msg;
 	msg.addByte(0xd5);
 	msg.add<uint16_t>(BESTY_RACE_LAST);
-	std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 	for (uint8_t i = BESTY_RACE_FIRST; i <= BESTY_RACE_LAST; i++) {
 		std::string BestClass = "";
 		uint16_t count = 0;
@@ -2198,7 +2195,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	uint16_t raceId = msg.get<uint16_t>();
 	std::string Class = "";
 	MonsterType* mtype = nullptr;
-	std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 
 	auto ait = mtype_list.find(raceId);
 	if (ait != mtype_list.end()) {
@@ -2210,8 +2207,8 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	}
 
 	if (!mtype) {
-		SPDLOG_WARN("[ProtocolGame::parseBestiarysendMonsterData] - "
-					"MonsterType was not found");
+		g_logger().warn("[ProtocolGame::parseBestiarysendMonsterData] - "
+						"MonsterType was not found");
 		return;
 	}
 
@@ -2286,7 +2283,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	}
 
 	if (currentLevel > 2) {
-		std::map<uint8_t, int16_t> elements = g_iobestiary().getMonsterElements(mtype);
+		phmap::btree_map<uint8_t, int16_t> elements = g_iobestiary().getMonsterElements(mtype);
 
 		newmsg.addByte(elements.size());
 		for (auto it = std::begin(elements), end = std::end(elements); it != end; it++) {
@@ -2315,7 +2312,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 
 void ProtocolGame::addBestiaryTrackerList(NetworkMessage &msg) {
 	uint16_t thisrace = msg.get<uint16_t>();
-	std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 	auto it = mtype_list.find(thisrace);
 	if (it != mtype_list.end()) {
 		MonsterType* mtype = g_monsters().getMonsterType(it->second);
@@ -2333,7 +2330,7 @@ void ProtocolGame::sendTeamFinderList() {
 	NetworkMessage msg;
 	msg.addByte(0x2D);
 	msg.addByte(0x00); // Bool value, with 'true' the player exceed packets for second.
-	std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+	phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 	msg.add<uint16_t>(teamFinder.size());
 	for (auto it : teamFinder) {
 		const Player* leader = g_game().getPlayerByGUID(it.first);
@@ -2397,7 +2394,7 @@ void ProtocolGame::sendLeaderTeamFinder(bool reset) {
 	}
 
 	TeamFinder* teamAssemble = nullptr;
-	std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+	phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 	auto it = teamFinder.find(player->getGUID());
 	if (it != teamFinder.end()) {
 		teamAssemble = it->second;
@@ -2479,8 +2476,8 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg) {
 		return;
 	}
 
-	std::map<uint32_t, uint8_t> members;
-	std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+	phmap::btree_map<uint32_t, uint8_t> members;
+	phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 	TeamFinder* teamAssemble = nullptr;
 	auto it = teamFinder.find(player->getGUID());
 	if (it != teamFinder.end()) {
@@ -2593,7 +2590,7 @@ void ProtocolGame::parseLeaderFinderWindow(NetworkMessage &msg) {
 			if (!member)
 				return;
 
-			std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+			phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 			TeamFinder* teamAssemble = nullptr;
 			auto it = teamFinder.find(player->getGUID());
 			if (it != teamFinder.end()) {
@@ -2655,7 +2652,7 @@ void ProtocolGame::parseMemberFinderWindow(NetworkMessage &msg) {
 		if (!leader)
 			return;
 
-		std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
+		phmap::btree_map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 		TeamFinder* teamAssemble = nullptr;
 		auto it = teamFinder.find(leaderID);
 		if (it != teamFinder.end()) {
@@ -2755,17 +2752,17 @@ void ProtocolGame::BestiarysendCharms() {
 	}
 	msg.addByte(4); // Unknown
 
-	std::list<uint16_t> finishedMonsters = g_iobestiary().getBestiaryFinished(player);
+	auto finishedMonstersVector = g_iobestiary().getBestiaryFinished(player);
 	std::list<charmRune_t> usedRunes = g_iobestiary().getCharmUsedRuneBitAll(player);
 
 	for (charmRune_t charmRune : usedRunes) {
 		Charm* tmpCharm = g_iobestiary().getBestiaryCharm(charmRune);
 		uint16_t tmp_raceid = player->parseRacebyCharm(tmpCharm->id, false, 0);
-		finishedMonsters.remove(tmp_raceid);
+		std::erase_if(finishedMonstersVector, [tmp_raceid](uint16_t val) { return val == tmp_raceid; });
 	}
 
-	msg.add<uint16_t>(finishedMonsters.size());
-	for (uint16_t raceid_tmp : finishedMonsters) {
+	msg.add<uint16_t>(static_cast<uint16_t>(finishedMonstersVector.size()));
+	for (uint16_t raceid_tmp : finishedMonstersVector) {
 		msg.add<uint16_t>(raceid_tmp);
 	}
 
@@ -2778,13 +2775,13 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 	}
 
 	std::ostringstream ss;
-	std::map<uint16_t, std::string> race = {};
+	phmap::btree_map<uint16_t, std::string> race = {};
 	std::string text = "";
 	uint8_t search = msg.getByte();
 
 	if (search == 1) {
 		uint16_t monsterAmount = msg.get<uint16_t>();
-		std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
+		phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 		for (uint16_t monsterCount = 1; monsterCount <= monsterAmount; monsterCount++) {
 			uint16_t raceid = msg.get<uint16_t>();
 			if (player->getBestiaryKillCount(raceid) > 0) {
@@ -2799,9 +2796,9 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 		race = g_iobestiary().findRaceByName(raceName);
 
 		if (race.size() == 0) {
-			SPDLOG_WARN("[ProtocolGame::parseBestiarysendCreature] - "
-						"Race was not found: {}, search: {}",
-						raceName, search);
+			g_logger().warn("[ProtocolGame::parseBestiarysendCreature] - "
+							"Race was not found: {}, search: {}",
+							raceName, search);
 			return;
 		}
 		text = raceName;
@@ -2810,7 +2807,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 	newmsg.addByte(0xd6);
 	newmsg.addString(text);
 	newmsg.add<uint16_t>(race.size());
-	std::map<uint16_t, uint32_t> creaturesKilled = g_iobestiary().getBestiaryKillCountByMonsterIDs(player, race);
+	phmap::btree_map<uint16_t, uint32_t> creaturesKilled = g_iobestiary().getBestiaryKillCountByMonsterIDs(player, race);
 
 	for (auto it_ : race) {
 		uint16_t raceid_ = it_.first;
@@ -3939,7 +3936,7 @@ void ProtocolGame::sendPremiumTrigger() {
 
 void ProtocolGame::sendTextMessage(const TextMessage &message) {
 	if (message.type == MESSAGE_NONE) {
-		SPDLOG_ERROR("[ProtocolGame::sendTextMessage] - Message type is wrong, missing or invalid for player with name {}, on position {}", player->getName(), player->getPosition().toString());
+		g_logger().error("[ProtocolGame::sendTextMessage] - Message type is wrong, missing or invalid for player with name {}, on position {}", player->getName(), player->getPosition().toString());
 		player->sendTextMessage(MESSAGE_ADMINISTRADOR, "There was a problem requesting your message, please contact the administrator");
 		return;
 	}
@@ -4194,7 +4191,7 @@ void ProtocolGame::sendLootContainers() {
 	NetworkMessage msg;
 	msg.addByte(0xC0);
 	msg.addByte(player->quickLootFallbackToMainContainer ? 1 : 0);
-	std::map<ObjectCategory_t, Container*> quickLoot;
+	phmap::btree_map<ObjectCategory_t, Container*> quickLoot;
 	for (auto it : player->quickLootContainers) {
 		if (it.second && !it.second->isRemoved()) {
 			quickLoot[it.first] = it.second;
@@ -4311,7 +4308,7 @@ void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value) 
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap) {
+void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const phmap::btree_map<uint16_t, uint16_t> &inventoryMap) {
 	// Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
 	uint64_t playerMoney = 0;
 	auto it = inventoryMap.find(ITEM_CRYSTAL_COIN);
@@ -4458,7 +4455,7 @@ void ProtocolGame::updateCoinBalance() {
 	}
 
 	g_dispatcher().addTask(
-		createTask(std::bind([](uint32_t playerId) {
+		std::bind([](uint32_t playerId) {
 			Player* threadPlayer = g_game().getPlayerByID(playerId);
 			if (threadPlayer) {
 				account::Account account;
@@ -4472,7 +4469,7 @@ void ProtocolGame::updateCoinBalance() {
 				threadPlayer->sendCoinBalance();
 			}
 		},
-							 player->getID()))
+				  player->getID())
 	);
 }
 
@@ -4656,7 +4653,7 @@ void ProtocolGame::sendMarketCancelOffer(const MarketOfferEx &offer) {
 
 void ProtocolGame::sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyOffers, const HistoryMarketOfferList &sellOffers) {
 	uint32_t i = 0;
-	std::map<uint32_t, uint16_t> counterMap;
+	phmap::btree_map<uint32_t, uint16_t> counterMap;
 	uint32_t buyOffersToSend = std::min<uint32_t>(buyOffers.size(), 810 + std::max<int32_t>(0, 810 - sellOffers.size()));
 	uint32_t sellOffersToSend = std::min<uint32_t>(sellOffers.size(), 810 + std::max<int32_t>(0, 810 - buyOffers.size()));
 
@@ -4712,7 +4709,7 @@ void ProtocolGame::sendForgingData() {
 	NetworkMessage msg;
 	msg.addByte(0x86);
 
-	std::map<uint8_t, uint16_t> tierCorePrices;
+	phmap::btree_map<uint8_t, uint16_t> tierCorePrices;
 
 	const auto &classifications = g_game().getItemsClassifications();
 	msg.addByte(classifications.size());
@@ -4767,9 +4764,9 @@ void ProtocolGame::sendForgingData() {
 
 void ProtocolGame::sendOpenForge() {
 	// We will use it when sending the bytes to send the item information to the client
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> donorTierItemMap;
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> receiveTierItemMap;
+	phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint16_t>> fusionItemsMap;
+	phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint16_t>> donorTierItemMap;
+	phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint16_t>> receiveTierItemMap;
 
 	/*
 	 *Start - Parsing items informations
@@ -5837,7 +5834,7 @@ void ProtocolGame::sendMapDescription(const Position &pos) {
 	NetworkMessage msg;
 	msg.addByte(0x64);
 	msg.addPosition(player->getPosition());
-	GetMapDescription(pos.x - Map::maxClientViewportX, pos.y - Map::maxClientViewportY, pos.z, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, msg);
+	GetMapDescription(pos.x - MAP_MAX_CLIENT_VIEW_PORT_X, pos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, pos.z, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, msg);
 	writeToOutputBuffer(msg);
 }
 
@@ -6122,18 +6119,18 @@ void ProtocolGame::sendMoveCreature(const Creature* creature, const Position &ne
 
 			if (oldPos.y > newPos.y) { // north, for old x
 				msg.addByte(0x65);
-				GetMapDescription(oldPos.x - Map::maxClientViewportX, newPos.y - Map::maxClientViewportY, newPos.z, (Map::maxClientViewportX + 1) * 2, 1, msg);
+				GetMapDescription(oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, newPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, 1, msg);
 			} else if (oldPos.y < newPos.y) { // south, for old x
 				msg.addByte(0x67);
-				GetMapDescription(oldPos.x - Map::maxClientViewportX, newPos.y + (Map::maxClientViewportY + 1), newPos.z, (Map::maxClientViewportX + 1) * 2, 1, msg);
+				GetMapDescription(oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, newPos.y + (MAP_MAX_CLIENT_VIEW_PORT_Y + 1), newPos.z, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, 1, msg);
 			}
 
 			if (oldPos.x < newPos.x) { // east, [with new y]
 				msg.addByte(0x66);
-				GetMapDescription(newPos.x + (Map::maxClientViewportX + 1), newPos.y - Map::maxClientViewportY, newPos.z, 1, (Map::maxClientViewportY + 1) * 2, msg);
+				GetMapDescription(newPos.x + (MAP_MAX_CLIENT_VIEW_PORT_X + 1), newPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z, 1, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, msg);
 			} else if (oldPos.x > newPos.x) { // west, [with new y]
 				msg.addByte(0x68);
-				GetMapDescription(newPos.x - Map::maxClientViewportX, newPos.y - Map::maxClientViewportY, newPos.z, 1, (Map::maxClientViewportY + 1) * 2, msg);
+				GetMapDescription(newPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, newPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z, 1, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, msg);
 			}
 			writeToOutputBuffer(msg);
 		}
@@ -6504,7 +6501,7 @@ void ProtocolGame::sendOutfitWindow() {
 
 void ProtocolGame::sendPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackpos) {
 	if (!podium || oldProtocol) {
-		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
+		g_logger().error("[{}] item is nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -6682,6 +6679,17 @@ void ProtocolGame::sendPreyTimeLeft(const PreySlot* slot) {
 }
 
 void ProtocolGame::sendPreyData(const PreySlot* slot) {
+	std::vector<uint16_t> validRaceIds;
+	for (auto raceId : slot->raceIdList) {
+		if (g_monsters().getMonsterTypeByRaceId(raceId)) {
+			validRaceIds.push_back(raceId);
+		} else {
+			g_logger().debug("[ProtocolGame::sendPreyData] - Unknown monster type raceid: {}, removing prey slot from player {}", raceId, player->getName());
+			player->removePreySlotById(slot->id);
+			return;
+		}
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xE8);
 	msg.addByte(static_cast<uint8_t>(slot->id));
@@ -6712,58 +6720,60 @@ void ProtocolGame::sendPreyData(const PreySlot* slot) {
 			msg.add<uint16_t>(slot->bonusTimeLeft);
 		}
 	} else if (slot->state == PreyDataState_Selection) {
-		msg.addByte(static_cast<uint8_t>(slot->raceIdList.size()));
-		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId) {
-			if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {
-				msg.addString(mtype->name);
-				const Outfit_t outfit = mtype->info.outfit;
-				msg.add<uint16_t>(outfit.lookType);
-				if (outfit.lookType == 0) {
-					msg.add<uint16_t>(outfit.lookTypeEx);
-				} else {
-					msg.addByte(outfit.lookHead);
-					msg.addByte(outfit.lookBody);
-					msg.addByte(outfit.lookLegs);
-					msg.addByte(outfit.lookFeet);
-					msg.addByte(outfit.lookAddons);
-				}
-			} else {
-				SPDLOG_WARN("[ProtocolGame::sendPreyData] - Unknown monster type raceid: {}", raceId);
-				return;
+		msg.addByte(static_cast<uint8_t>(validRaceIds.size()));
+		for (uint16_t raceId : validRaceIds) {
+			const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId);
+			if (!mtype) {
+				continue;
 			}
-		});
+
+			msg.addString(mtype->name);
+			const Outfit_t outfit = mtype->info.outfit;
+			msg.add<uint16_t>(outfit.lookType);
+			if (outfit.lookType == 0) {
+				msg.add<uint16_t>(outfit.lookTypeEx);
+				continue;
+			}
+
+			msg.addByte(outfit.lookHead);
+			msg.addByte(outfit.lookBody);
+			msg.addByte(outfit.lookLegs);
+			msg.addByte(outfit.lookFeet);
+			msg.addByte(outfit.lookAddons);
+		}
 	} else if (slot->state == PreyDataState_SelectionChangeMonster) {
 		msg.addByte(static_cast<uint8_t>(slot->bonus));
 		msg.add<uint16_t>(slot->bonusPercentage);
 		msg.addByte(slot->bonusRarity);
-		msg.addByte(static_cast<uint8_t>(slot->raceIdList.size()));
-		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId) {
-			if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {
-				msg.addString(mtype->name);
-				const Outfit_t outfit = mtype->info.outfit;
-				msg.add<uint16_t>(outfit.lookType);
-				if (outfit.lookType == 0) {
-					msg.add<uint16_t>(outfit.lookTypeEx);
-				} else {
-					msg.addByte(outfit.lookHead);
-					msg.addByte(outfit.lookBody);
-					msg.addByte(outfit.lookLegs);
-					msg.addByte(outfit.lookFeet);
-					msg.addByte(outfit.lookAddons);
-				}
-			} else {
-				SPDLOG_WARN("[ProtocolGame::sendPreyData] - Unknown monster type raceid: {}", raceId);
-				return;
+		msg.addByte(static_cast<uint8_t>(validRaceIds.size()));
+		for (uint16_t raceId : validRaceIds) {
+			const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId);
+			if (!mtype) {
+				continue;
 			}
-		});
+
+			msg.addString(mtype->name);
+			const Outfit_t outfit = mtype->info.outfit;
+			msg.add<uint16_t>(outfit.lookType);
+			if (outfit.lookType == 0) {
+				msg.add<uint16_t>(outfit.lookTypeEx);
+				continue;
+			}
+
+			msg.addByte(outfit.lookHead);
+			msg.addByte(outfit.lookBody);
+			msg.addByte(outfit.lookLegs);
+			msg.addByte(outfit.lookFeet);
+			msg.addByte(outfit.lookAddons);
+		}
 	} else if (slot->state == PreyDataState_ListSelection) {
-		const std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
+		const phmap::btree_map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto &mType) {
 			msg.add<uint16_t>(mType.first);
 		});
 	} else {
-		SPDLOG_WARN("[ProtocolGame::sendPreyData] - Unknown prey state: {}", fmt::underlying(slot->state));
+		g_logger().warn("[ProtocolGame::sendPreyData] - Unknown prey state: {}", fmt::underlying(slot->state));
 		return;
 	}
 
@@ -7406,7 +7416,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
 		});
 	} else if (slot->state == PreyTaskDataState_ListSelection) {
 		const Player* user = player;
-		const std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
+		const phmap::btree_map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg, user](auto &mType) {
 			msg.add<uint16_t>(mType.first);
@@ -7425,7 +7435,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
 			msg.add<uint16_t>(slot->currentKills);
 			msg.addByte(slot->rarity);
 		} else {
-			SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", fmt::underlying(slot->id), player->getName());
+			g_logger().warn("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", fmt::underlying(slot->id), player->getName());
 			return;
 		}
 	} else if (slot->state == PreyTaskDataState_Completed) {
@@ -7442,11 +7452,11 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
 			}
 			msg.addByte(slot->rarity);
 		} else {
-			SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", fmt::underlying(slot->id), player->getName());
+			g_logger().warn("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", fmt::underlying(slot->id), player->getName());
 			return;
 		}
 	} else {
-		SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown task hunting state: {}", fmt::underlying(slot->state));
+		g_logger().warn("[ProtocolGame::sendTaskHuntingData] - Unknown task hunting state: {}", fmt::underlying(slot->state));
 		return;
 	}
 
@@ -7465,12 +7475,12 @@ void ProtocolGame::MoveUpCreature(NetworkMessage &msg, const Creature* creature,
 	// going to surface
 	if (newPos.z == MAP_INIT_SURFACE_LAYER) {
 		int32_t skip = -1;
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 5, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 3, skip); //(floor 7 and 6 already set)
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 4, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 4, skip);
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 3, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 5, skip);
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 6, skip);
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 1, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 7, skip);
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 0, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 8, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, 5, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 3, skip); //(floor 7 and 6 already set)
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, 4, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 4, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, 3, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 5, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, 2, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 6, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, 1, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 7, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, 0, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 8, skip);
 
 		if (skip >= 0) {
 			msg.addByte(skip);
@@ -7480,7 +7490,7 @@ void ProtocolGame::MoveUpCreature(NetworkMessage &msg, const Creature* creature,
 	// underground, going one floor up (still underground)
 	else if (newPos.z > MAP_INIT_SURFACE_LAYER) {
 		int32_t skip = -1;
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, oldPos.getZ() - 3, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 3, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, oldPos.getZ() - 3, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 3, skip);
 
 		if (skip >= 0) {
 			msg.addByte(skip);
@@ -7491,11 +7501,11 @@ void ProtocolGame::MoveUpCreature(NetworkMessage &msg, const Creature* creature,
 	// moving up a floor up makes us out of sync
 	// west
 	msg.addByte(0x68);
-	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y - (Map::maxClientViewportY - 1), newPos.z, 1, (Map::maxClientViewportY + 1) * 2, msg);
+	GetMapDescription(oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - (MAP_MAX_CLIENT_VIEW_PORT_Y - 1), newPos.z, 1, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, msg);
 
 	// north
 	msg.addByte(0x65);
-	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z, (Map::maxClientViewportX + 1) * 2, 1, msg);
+	GetMapDescription(oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, 1, msg);
 }
 
 void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature* creature, const Position &newPos, const Position &oldPos) {
@@ -7510,9 +7520,9 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature* creatur
 	if (newPos.z == MAP_INIT_SURFACE_LAYER + 1) {
 		int32_t skip = -1;
 
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -1, skip);
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z + 1, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -2, skip);
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z + 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -3, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, -1, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z + 1, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, -2, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z + 2, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, -3, skip);
 
 		if (skip >= 0) {
 			msg.addByte(skip);
@@ -7522,7 +7532,7 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature* creatur
 	// going further down
 	else if (newPos.z > oldPos.z && newPos.z > MAP_INIT_SURFACE_LAYER + 1 && newPos.z < MAP_MAX_LAYERS - MAP_LAYER_VIEW_LIMIT) {
 		int32_t skip = -1;
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z + MAP_LAYER_VIEW_LIMIT, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -3, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z + MAP_LAYER_VIEW_LIMIT, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, -3, skip);
 
 		if (skip >= 0) {
 			msg.addByte(skip);
@@ -7533,11 +7543,11 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature* creatur
 	// moving down a floor makes us out of sync
 	// east
 	msg.addByte(0x66);
-	GetMapDescription(oldPos.x + Map::maxClientViewportX + 1, oldPos.y - (Map::maxClientViewportY + 1), newPos.z, 1, ((Map::maxClientViewportY + 1) * 2), msg);
+	GetMapDescription(oldPos.x + MAP_MAX_CLIENT_VIEW_PORT_X + 1, oldPos.y - (MAP_MAX_CLIENT_VIEW_PORT_Y + 1), newPos.z, 1, ((MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2), msg);
 
 	// south
 	msg.addByte(0x67);
-	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y + (Map::maxClientViewportY + 1), newPos.z, ((Map::maxClientViewportX + 1) * 2), 1, msg);
+	GetMapDescription(oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y + (MAP_MAX_CLIENT_VIEW_PORT_Y + 1), newPos.z, ((MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2), 1, msg);
 }
 
 void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg) {
@@ -7590,7 +7600,7 @@ void ProtocolGame::sendFeatures() {
 		return;
 	}
 
-	std::map<GameFeature_t, bool> features;
+	phmap::btree_map<GameFeature_t, bool> features;
 	// Place for non-standard OTCv8 features
 	features[GameFeature_t::ExtendedOpcode] = true;
 
@@ -7617,7 +7627,7 @@ void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg) {
 	addGameTask(&Game::playerRequestInventoryImbuements, player->getID(), isTrackerOpen);
 }
 
-void ProtocolGame::sendInventoryImbuements(const std::map<Slots_t, Item*> items) {
+void ProtocolGame::sendInventoryImbuements(const phmap::btree_map<Slots_t, Item*> items) {
 	if (oldProtocol) {
 		return;
 	}
@@ -7799,7 +7809,7 @@ void ProtocolGame::parseStashWithdraw(NetworkMessage &msg) {
 			break;
 		}
 		default:
-			SPDLOG_ERROR("Unknown 'supply stash' action switch: {}", fmt::underlying(action));
+			g_logger().error("Unknown 'supply stash' action switch: {}", fmt::underlying(action));
 			break;
 	}
 
@@ -7963,8 +7973,8 @@ void ProtocolGame::sendUpdateCreature(const Creature* creature) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::getForgeInfoMap(const Item* item, std::map<uint16_t, std::map<uint8_t, uint16_t>> &itemsMap) const {
-	std::map<uint8_t, uint16_t> itemInfo;
+void ProtocolGame::getForgeInfoMap(const Item* item, phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint16_t>> &itemsMap) const {
+	phmap::btree_map<uint8_t, uint16_t> itemInfo;
 	itemInfo.insert({ item->getTier(), item->getItemCount() });
 	auto [first, inserted] = itemsMap.try_emplace(item->getID(), itemInfo);
 	if (!inserted) {
@@ -8047,17 +8057,26 @@ void ProtocolGame::parseSendBosstiary() {
 	NetworkMessage msg;
 	msg.addByte(0x73);
 
-	std::map<uint32_t, std::string> mtype_list = g_ioBosstiary().getBosstiaryMap();
+	auto mtype_map = g_ioBosstiary().getBosstiaryMap();
 	auto bossesBuffer = msg.getBufferPosition();
 	uint16_t bossesCount = 0;
 	msg.skipBytes(2);
 
-	for (const auto &[bossid, name] : mtype_list) {
+	for (const auto &[bossid, name] : mtype_map) {
 		const MonsterType* mType = g_monsters().getMonsterType(name);
-		auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-		auto killCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossid));
+		if (!mType) {
+			continue;
+		}
+
+		auto bossRace = mType->info.bosstiaryRace;
+		if (bossRace < BosstiaryRarity_t::RARITY_BANE || bossRace > BosstiaryRarity_t::RARITY_NEMESIS) {
+			g_logger().error("[{}] monster {} have wrong boss race {}", __FUNCTION__, mType->name, fmt::underlying(bossRace));
+			continue;
+		}
+
+		auto killCount = player->getBestiaryKillCount(bossid);
 		msg.add<uint32_t>(bossid);
-		msg.addByte(bossRace);
+		msg.addByte(static_cast<uint8_t>(bossRace));
 		msg.add<uint32_t>(killCount);
 		msg.addByte(0);
 		msg.addByte(0x00); // Tracker
@@ -8075,6 +8094,36 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		return;
 	}
 
+	uint32_t bossIdSlotOne = player->getSlotBossId(1);
+	uint32_t bossIdSlotTwo = player->getSlotBossId(2);
+	uint32_t boostedBossId = g_ioBosstiary().getBoostedBossId();
+
+	// Sanity checks
+	std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
+	const MonsterType* mTypeBoosted = g_monsters().getMonsterType(boostedBossName);
+	auto boostedBossRace = mTypeBoosted ? mTypeBoosted->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
+	auto isValidBoostedBoss = boostedBossId == 0 || boostedBossRace >= BosstiaryRarity_t::RARITY_BANE && boostedBossRace <= BosstiaryRarity_t::RARITY_NEMESIS;
+	if (!isValidBoostedBoss) {
+		g_logger().error("[{}] The boosted boss '{}' has an invalid race", __FUNCTION__, boostedBossName);
+		return;
+	}
+
+	const MonsterType* mTypeSlotOne = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
+	auto bossRaceSlotOne = mTypeSlotOne ? mTypeSlotOne->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
+	auto isValidBossSlotOne = bossIdSlotOne == 0 || bossRaceSlotOne >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotOne <= BosstiaryRarity_t::RARITY_NEMESIS;
+	if (!isValidBossSlotOne) {
+		g_logger().error("[{}] boss slot1 with race id '{}' has an invalid race", __FUNCTION__, bossIdSlotOne);
+		return;
+	}
+
+	const MonsterType* mTypeSlotTwo = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
+	auto bossRaceSlotTwo = mTypeSlotTwo ? mTypeSlotTwo->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
+	auto isValidBossSlotTwo = bossIdSlotTwo == 0 || bossRaceSlotTwo >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotTwo <= BosstiaryRarity_t::RARITY_NEMESIS;
+	if (!isValidBossSlotTwo) {
+		g_logger().error("[{}] boss slot1 with race id '{}' has an invalid race", __FUNCTION__, bossIdSlotTwo);
+		return;
+	}
+
 	sendBosstiaryData();
 
 	NetworkMessage msg;
@@ -8088,9 +8137,6 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.add<uint16_t>(currentBonus); // Current Bonus
 	msg.add<uint16_t>(currentBonus + 1); // Next Bonus
 
-	uint32_t bossIdSlotOne = player->getSlotBossId(1);
-	uint32_t bossIdSlotTwo = player->getSlotBossId(2);
-	uint32_t boostedBossId = g_ioBosstiary().getBoostedBossId();
 	uint32_t removePrice = g_ioBosstiary().calculteRemoveBoss(player->getRemoveTimes());
 
 	auto bossesUnlockedList = g_ioBosstiary().getBosstiaryFinished(player);
@@ -8104,20 +8150,14 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.addByte(isSlotOneUnlocked ? 1 : 0);
 	msg.add<uint32_t>(isSlotOneUnlocked ? bossIdSlotOne : 0);
 	if (isSlotOneUnlocked && bossIdSlotOne != 0) {
-		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotOne);
-		if (mType) {
-			// Variables Boss Slot One
-			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
-			auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotOne);
-			uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
-			uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
-			// Bytes Slot One
-			sendBosstiarySlotsBytes(msg, bossRace, bossKillCount, bonusBossSlotOne, 0, isSlotOneInactive, removePrice);
-			bossesUnlockedSize--;
-		} else {
-			sendBosstiarySlotsBytes(msg);
-		}
+		// Variables Boss Slot One
+		auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotOne));
+		auto slotOneBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotOne);
+		uint16_t bonusBossSlotOne = currentBonus + (slotOneBossLevel == 3 ? 25 : 0);
+		uint8_t isSlotOneInactive = bossIdSlotOne == boostedBossId ? 1 : 0;
+		// Bytes Slot One
+		sendBosstiarySlotsBytes(msg, static_cast<uint8_t>(bossRaceSlotOne), bossKillCount, bonusBossSlotOne, 0, isSlotOneInactive, removePrice);
+		bossesUnlockedSize--;
 	}
 
 	uint32_t slotTwoPoints = 1500;
@@ -8126,55 +8166,53 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	msg.add<uint32_t>(isSlotTwoUnlocked ? bossIdSlotTwo : slotTwoPoints);
 	if (isSlotTwoUnlocked && bossIdSlotTwo != 0) {
 		// Variables Boss Slot Two
-		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossIdSlotTwo);
-		if (mType) {
-			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-			auto bossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(bossIdSlotTwo));
-			auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, bossIdSlotTwo);
-			uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
-			uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
-			// Bytes Slot Two
-			sendBosstiarySlotsBytes(msg, bossRace, bossKillCount, bonusBossSlotTwo, 0, isSlotTwoInactive, removePrice);
-			bossesUnlockedSize--;
-		} else {
-			sendBosstiarySlotsBytes(msg);
-		}
+		auto bossKillCount = player->getBestiaryKillCount((uint16_t)(bossIdSlotTwo));
+		auto slotTwoBossLevel = g_ioBosstiary().getBossCurrentLevel(player, (uint16_t)bossIdSlotTwo);
+		uint16_t bonusBossSlotTwo = currentBonus + (slotTwoBossLevel == 3 ? 25 : 0);
+		uint8_t isSlotTwoInactive = bossIdSlotTwo == boostedBossId ? 1 : 0;
+		// Bytes Slot Two
+		sendBosstiarySlotsBytes(msg, static_cast<uint8_t>(bossRaceSlotTwo), bossKillCount, bonusBossSlotTwo, 0, isSlotTwoInactive, removePrice);
+		bossesUnlockedSize--;
 	}
 
 	bool isTodaySlotUnlocked = g_configManager().getBoolean(BOOSTED_BOSS_SLOT);
 	msg.addByte(isTodaySlotUnlocked ? 1 : 0);
 	msg.add<uint32_t>(boostedBossId);
 	if (isTodaySlotUnlocked && boostedBossId != 0) {
-		std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
-		const MonsterType* mType = g_monsters().getMonsterType(boostedBossName);
-		if (mType) {
-			auto boostedBossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
-			auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
-			auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
-			auto bosstiaryMultiplier = static_cast<uint8_t>(g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER));
-			auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
-			sendBosstiarySlotsBytes(msg, boostedBossRace, boostedBossKillCount, boostedLootBonus, bosstiaryMultiplier + boostedKillBonus, 0, 0);
-		} else {
-			sendBosstiarySlotsBytes(msg);
-		}
+		auto boostedBossKillCount = player->getBestiaryKillCount(static_cast<uint16_t>(boostedBossId));
+		auto boostedLootBonus = static_cast<uint16_t>(g_configManager().getNumber(BOOSTED_BOSS_LOOT_BONUS));
+		auto bosstiaryMultiplier = static_cast<uint8_t>(g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER));
+		auto boostedKillBonus = static_cast<uint8_t>(g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS));
+		sendBosstiarySlotsBytes(msg, static_cast<uint8_t>(boostedBossRace), boostedBossKillCount, boostedLootBonus, bosstiaryMultiplier + boostedKillBonus, 0, 0);
 	}
 
 	msg.addByte(bossesUnlockedSize != 0 ? 1 : 0);
 	if (bossesUnlockedSize != 0) {
-		msg.add<uint16_t>(bossesUnlockedSize);
+		auto unlockCountBuffer = msg.getBufferPosition();
+		uint16_t bossesCount = 0;
+		msg.skipBytes(2);
 		for (const auto &bossId : bossesUnlockedList) {
 			if (bossId == bossIdSlotOne || bossId == bossIdSlotTwo)
 				continue;
 
 			const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossId);
 			if (!mType) {
+				g_logger().error("[{}] monster {} not found", __FUNCTION__, bossId);
 				continue;
 			}
 
-			auto bossRace = magic_enum::enum_integer<BosstiaryRarity_t>(mType->info.bosstiaryRace);
+			auto bossRace = mType->info.bosstiaryRace;
+			if (bossRace < BosstiaryRarity_t::RARITY_BANE || bossRace > BosstiaryRarity_t::RARITY_NEMESIS) {
+				g_logger().error("[{}] monster {} have wrong boss race {}", __FUNCTION__, mType->name, fmt::underlying(bossRace));
+				continue;
+			}
+
 			msg.add<uint32_t>(bossId);
-			msg.addByte(bossRace);
+			msg.addByte(static_cast<uint8_t>(bossRace));
+			bossesCount++;
 		}
+		msg.setBufferPosition(unlockCountBuffer);
+		msg.add<uint16_t>(bossesCount);
 	}
 
 	writeToOutputBuffer(msg);
@@ -8192,9 +8230,40 @@ void ProtocolGame::parseBosstiarySlot(NetworkMessage &msg) {
 	addGameTask(&Game::playerBosstiarySlot, player->getID(), slotBossId, selectedBossId);
 }
 
-void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos) {
+void ProtocolGame::sendPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss) {
+	auto toSendMonstersSize = static_cast<uint16_t>(toSendMonsters.size());
+	msg.add<uint16_t>(toSendMonstersSize);
+	for (const auto &raceId : toSendMonsters) {
+		const MonsterType* mType = g_monsters().getMonsterTypeByRaceId(raceId, isBoss);
+		if (!mType) {
+			continue;
+		}
+
+		// Podium of tenacity only need raceId
+		if (!isBoss) {
+			msg.add<uint16_t>(raceId);
+			continue;
+		}
+
+		auto monsterOutfit = mType->info.outfit;
+		msg.add<uint16_t>(raceId);
+		msg.addString(mType->name);
+		msg.add<uint16_t>(monsterOutfit.lookType);
+		if (monsterOutfit.lookType != 0) {
+			msg.addByte(monsterOutfit.lookHead);
+			msg.addByte(monsterOutfit.lookBody);
+			msg.addByte(monsterOutfit.lookLegs);
+			msg.addByte(monsterOutfit.lookFeet);
+			msg.addByte(monsterOutfit.lookAddons);
+		} else {
+			msg.add<uint16_t>(monsterOutfit.lookTypeEx);
+		}
+	}
+}
+
+void ProtocolGame::sendMonsterPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos) {
 	if (!podium || oldProtocol) {
-		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
+		g_logger().error("[{}] item is nullptr", __FUNCTION__);
 		return;
 	}
 
@@ -8231,36 +8300,14 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &posi
 	}
 	msg.add<uint16_t>(0); // Size of an unknown list. (No ingame visual effect)
 
-	auto unlockedBosses = g_ioBosstiary().getBosstiaryFinished(player, 2);
-	auto unlockedBossesSize = static_cast<uint16_t>(unlockedBosses.size());
 	bool isBossPodium = podium->getID() == ITEM_PODIUM_OF_VIGOUR;
 	msg.addByte(isBossPodium ? 0x01 : 0x00); // Bosstiary or bestiary
 	if (isBossPodium) {
-		msg.add<uint16_t>(unlockedBossesSize);
-
-		for (const auto &boss : unlockedBosses) {
-			const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(boss);
-			if (!mType) {
-				continue;
-			}
-			const auto &bossName = mType->name;
-			auto bossOutfit = mType->info.outfit;
-
-			msg.add<uint16_t>(boss); // ID from boss unlocked
-			msg.addString(bossName); // Nome from boss unlocked
-			msg.add<uint16_t>(bossOutfit.lookType); // LookType from boss unlocked
-			if (bossOutfit.lookType != 0) {
-				msg.addByte(bossOutfit.lookHead); // LookHead from boss unlocked
-				msg.addByte(bossOutfit.lookBody); // LookBody from boss unlocked
-				msg.addByte(bossOutfit.lookLegs); // LookLegs from boss unlocked
-				msg.addByte(bossOutfit.lookFeet); // LookFeet from boss unlocked
-				msg.addByte(bossOutfit.lookAddons); // LookAddon from boss unlocked
-			} else {
-				msg.add<uint16_t>(bossOutfit.lookTypeEx); // LookTypeEx from boss unlocked
-			}
-		}
+		const auto &unlockedBosses = g_ioBosstiary().getBosstiaryFinished(player, 2);
+		sendPodiumDetails(msg, unlockedBosses, true);
 	} else {
-		msg.add<uint16_t>(0x00);
+		const auto &unlockedMonsters = g_iobestiary().getBestiaryFinished(player);
+		sendPodiumDetails(msg, unlockedMonsters, false);
 	}
 
 	msg.addPosition(position); // Position of the podium on the map
@@ -8273,20 +8320,21 @@ void ProtocolGame::sendBossPodiumWindow(const Item* podium, const Position &posi
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::parseSetBossPodium(NetworkMessage &msg) const {
+void ProtocolGame::parseSetMonsterPodium(NetworkMessage &msg) const {
 	if (oldProtocol) {
 		return;
 	}
 
-	uint32_t bossRaceId = msg.get<uint32_t>();
+	// For some reason the cip sends uint32_t, but we use uint16_t, so let's just ignore that
+	uint16_t monsterRaceId = (uint16_t)msg.get<uint32_t>();
 	Position pos = msg.getPosition();
 	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
 	uint8_t direction = msg.getByte();
 	uint8_t podiumVisible = msg.getByte();
-	uint8_t bossVisible = msg.getByte();
+	uint8_t monsterVisible = msg.getByte();
 
-	g_game().playerSetBossPodium(player->getID(), bossRaceId, pos, stackpos, itemId, direction, podiumVisible, bossVisible);
+	g_game().playerSetMonsterPodium(player->getID(), monsterRaceId, pos, stackpos, itemId, direction, std::make_pair(podiumVisible, monsterVisible));
 }
 
 void ProtocolGame::sendBosstiaryCooldownTimer() {
@@ -8297,7 +8345,7 @@ void ProtocolGame::sendBosstiaryCooldownTimer() {
 	NetworkMessage msg;
 	msg.addByte(0xBD);
 
-	auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldown(player);
+	auto bossesOnTracker = g_ioBosstiary().getBosstiaryCooldownRaceId(player);
 	auto bossesOnTrackerSize = static_cast<uint16_t>(bossesOnTracker.size());
 	msg.add<uint16_t>(bossesOnTrackerSize); // Number of bosses on timer
 	for (const auto &bossRaceId : bossesOnTracker) {

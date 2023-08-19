@@ -78,10 +78,7 @@ class Events {
 		void operator=(const Events &) = delete;
 
 		static Events &getInstance() {
-			// Guaranteed to be destroyed
-			static Events instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Events>();
 		}
 
 		// Creature
@@ -135,6 +132,6 @@ class Events {
 		EventsInfo info;
 };
 
-constexpr auto g_events = &Events::getInstance;
+constexpr auto g_events = Events::getInstance;
 
 #endif // SRC_LUA_CREATURE_EVENTS_H_

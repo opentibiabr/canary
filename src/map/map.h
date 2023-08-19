@@ -7,12 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_MAP_MAP_H_
-#define SRC_MAP_MAP_H_
+#pragma once
 
-#include "game/movement/position.h"
-#include "items/item.h"
-#include "items/tile.h"
+#include "mapcache.h"
 #include "map/town.h"
 #include "map/house/house.h"
 #include "creatures/monsters/spawns/spawn_monster.h"
@@ -24,149 +21,19 @@ class Game;
 class Tile;
 class Map;
 
-static constexpr int8_t MAP_MAX_LAYERS = 16;
-static constexpr int8_t MAP_INIT_SURFACE_LAYER = 7; // (MAP_MAX_LAYERS / 2) -1
-static constexpr int8_t MAP_LAYER_VIEW_LIMIT = 2;
-
 struct FindPathParams;
-struct AStarNode {
-		AStarNode* parent;
-		int_fast32_t f;
-		uint16_t x, y;
-};
 
-static constexpr int32_t MAX_NODES = 512;
-
-static constexpr int32_t MAP_NORMALWALKCOST = 10;
-static constexpr int32_t MAP_PREFERDIAGONALWALKCOST = 14;
-static constexpr int32_t MAP_DIAGONALWALKCOST = 25;
-
-class AStarNodes {
-	public:
-		AStarNodes(uint32_t x, uint32_t y);
-
-		AStarNode* createOpenNode(AStarNode* parent, uint32_t x, uint32_t y, int_fast32_t f);
-		AStarNode* getBestNode();
-		void closeNode(AStarNode* node);
-		void openNode(AStarNode* node);
-		int_fast32_t getClosedNodes() const;
-		AStarNode* getNodeByPosition(uint32_t x, uint32_t y);
-
-		static int_fast32_t getMapWalkCost(AStarNode* node, const Position &neighborPos, bool preferDiagonal = false);
-		static int_fast32_t getTileWalkCost(const Creature &creature, const Tile* tile);
-
-	private:
-		AStarNode nodes[MAX_NODES];
-		bool openNodes[MAX_NODES];
-		phmap::flat_hash_map<uint32_t, AStarNode*> nodeTable;
-		size_t curNode;
-		int_fast32_t closedNodes;
-};
-
-using SpectatorCache = std::map<Position, SpectatorHashSet>;
-
-static constexpr int32_t FLOOR_BITS = 3;
-static constexpr int32_t FLOOR_SIZE = (1 << FLOOR_BITS);
-static constexpr int32_t FLOOR_MASK = (FLOOR_SIZE - 1);
-
-struct Floor {
-		constexpr Floor() = default;
-		~Floor();
-
-		// non-copyable
-		Floor(const Floor &) = delete;
-		Floor &operator=(const Floor &) = delete;
-
-		Tile* tiles[FLOOR_SIZE][FLOOR_SIZE] = {};
-};
+using SpectatorCache = phmap::btree_map<Position, SpectatorHashSet>;
 
 class FrozenPathingConditionCall;
-class QTreeLeafNode;
-
-class QTreeNode {
-	public:
-		constexpr QTreeNode() = default;
-		virtual ~QTreeNode();
-
-		// non-copyable
-		QTreeNode(const QTreeNode &) = delete;
-		QTreeNode &operator=(const QTreeNode &) = delete;
-
-		bool isLeaf() const {
-			return leaf;
-		}
-
-		QTreeLeafNode* getLeaf(uint32_t x, uint32_t y);
-
-		template <typename Leaf, typename Node>
-		static Leaf getLeafStatic(Node node, uint32_t x, uint32_t y) {
-			do {
-				node = node->child[((x & 0x8000) >> 15) | ((y & 0x8000) >> 14)];
-				if (!node) {
-					return nullptr;
-				}
-
-				x <<= 1;
-				y <<= 1;
-			} while (!node->leaf);
-			return static_cast<Leaf>(node);
-		}
-
-		QTreeLeafNode* createLeaf(uint32_t x, uint32_t y, uint32_t level);
-
-	protected:
-		QTreeNode* child[4] = {};
-
-		bool leaf = false;
-
-		friend class Map;
-};
-
-class QTreeLeafNode final : public QTreeNode {
-	public:
-		QTreeLeafNode() {
-			leaf = true;
-			newLeaf = true;
-		}
-		~QTreeLeafNode();
-
-		// non-copyable
-		QTreeLeafNode(const QTreeLeafNode &) = delete;
-		QTreeLeafNode &operator=(const QTreeLeafNode &) = delete;
-
-		Floor* createFloor(uint32_t z);
-		Floor* getFloor(uint8_t z) const {
-			return array[z];
-		}
-
-		void addCreature(Creature* c);
-		void removeCreature(Creature* c);
-
-	private:
-		static bool newLeaf;
-		QTreeLeafNode* leafS = nullptr;
-		QTreeLeafNode* leafE = nullptr;
-		Floor* array[MAP_MAX_LAYERS] = {};
-		CreatureVector creature_list;
-		CreatureVector player_list;
-
-		friend class Map;
-		friend class QTreeNode;
-};
 
 /**
  * Map class.
  * Holds all the actual map-data
  */
-
-class Map {
+class Map : protected MapCache {
 	public:
-		static constexpr int32_t maxClientViewportX = 8;
-		static constexpr int32_t maxClientViewportY = 6;
-		static constexpr int32_t maxViewportX = maxClientViewportX + 3; // min value: maxClientViewportX + 1
-		static constexpr int32_t maxViewportY = maxClientViewportY + 5; // min value: maxClientViewportY + 1
-
-		uint32_t clean() const;
+		static uint32_t clean();
 
 		/**
 		 * Load a map.
@@ -204,17 +71,14 @@ class Map {
 		 * Get a single tile.
 		 * \returns A pointer to that tile.
 		 */
-		Tile* getTile(uint16_t x, uint16_t y, uint8_t z) const;
-		Tile* getTile(const Position &pos) const {
+		Tile* getTile(uint16_t x, uint16_t y, uint8_t z);
+		Tile* getTile(const Position &pos) {
 			return getTile(pos.x, pos.y, pos.z);
 		}
 
-		/**
-		 * Set a single tile.
-		 */
-		void setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile);
-		void setTile(const Position &pos, Tile* newTile) {
-			setTile(pos.x, pos.y, pos.z, newTile);
+		Tile* getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic = false);
+		Tile* getOrCreateTile(const Position &pos, bool isDynamic = false) {
+			return getOrCreateTile(pos.x, pos.y, pos.z, isDynamic);
 		}
 
 		/**
@@ -241,7 +105,7 @@ class Map {
 		 *	\param checkLineOfSight checks if there is any blocking objects in the way
 		 *	\returns The result if you can throw there or not
 		 */
-		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
+		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
 
 		/**
 		 * Checks if path is clear from fromPos to toPos
@@ -251,16 +115,16 @@ class Map {
 		 *	\param floorCheck if true then view is not clear if fromPos.z is not the same as toPos.z
 		 *	\returns The result if there is no obstacles
 		 */
-		bool isSightClear(const Position &fromPos, const Position &toPos, bool floorCheck) const;
-		bool checkSightLine(const Position &fromPos, const Position &toPos) const;
+		bool isSightClear(const Position &fromPos, const Position &toPos, bool floorCheck);
+		bool checkSightLine(const Position &fromPos, const Position &toPos);
 
-		const Tile* canWalkTo(const Creature &creature, const Position &pos) const;
+		const Tile* canWalkTo(const Creature &creature, const Position &pos);
 
-		bool getPathMatching(const Creature &creature, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) const;
+		bool getPathMatching(const Creature &creature, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 
-		bool getPathMatching(const Position &startPos, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) const;
+		bool getPathMatching(const Position &startPos, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 
-		std::map<std::string, Position> waypoints;
+		phmap::btree_map<std::string, Position> waypoints;
 
 		QTreeLeafNode* getQTNode(uint16_t x, uint16_t y) {
 			return QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y);
@@ -278,10 +142,16 @@ class Map {
 		Houses housesCustomMaps[50];
 
 	private:
+		/**
+		 * Set a single tile.
+		 */
+		void setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile);
+		void setTile(const Position &pos, Tile* newTile) {
+			setTile(pos.x, pos.y, pos.z, newTile);
+		}
+
 		SpectatorCache spectatorCache;
 		SpectatorCache playersSpectatorCache;
-
-		QTreeNode root;
 
 		std::string monsterfile;
 		std::string housefile;
@@ -295,6 +165,5 @@ class Map {
 
 		friend class Game;
 		friend class IOMap;
+		friend class MapCache;
 };
-
-#endif // SRC_MAP_MAP_H_

@@ -6,7 +6,7 @@ local function serverSave(interval)
 	saveServer()
 	local message = "Server save complete. Next save in %d %ss!"
 	local messageSingle = "Server save complete. Next save in %d %s!"
-	Webhook.send("Server save", message, WEBHOOK_COLOR_WARNING)
+	Webhook.sendMessage("Server save", message, WEBHOOK_COLOR_WARNING)
 	if SAVE_INTERVAL_CONFIG_TIME > 1 then
 		Game.broadcastMessage(string.format(message, SAVE_INTERVAL_CONFIG_TIME, SAVE_INTERVAL_TYPE), MESSAGE_GAME_HIGHLIGHT)
 		Spdlog.info(string.format(message, SAVE_INTERVAL_CONFIG_TIME, SAVE_INTERVAL_TYPE))

@@ -45,7 +45,7 @@ class LuaScriptInterface : public LuaFunctionsLoader {
 		const std::string &getLoadingScriptName() const {
 			// If scripty name is empty, return warning informing
 			if (loadedScriptName.empty()) {
-				SPDLOG_WARN("[LuaScriptInterface::getLoadingScriptName] - Script name is empty");
+				g_logger().warn("[LuaScriptInterface::getLoadingScriptName] - Script name is empty");
 			}
 
 			return loadedScriptName;
@@ -54,7 +54,7 @@ class LuaScriptInterface : public LuaFunctionsLoader {
 			loadedScriptName = scriptName;
 		}
 
-		lua_State* getLuaState() const {
+		virtual lua_State* getLuaState() {
 			return luaState;
 		}
 
@@ -70,7 +70,7 @@ class LuaScriptInterface : public LuaFunctionsLoader {
 		lua_State* luaState = nullptr;
 		int32_t eventTableRef = -1;
 		int32_t runningEventId = EVENT_ID_USER;
-		std::map<int32_t, std::string> cacheFiles;
+		phmap::btree_map<int32_t, std::string> cacheFiles;
 
 	private:
 		std::string lastLuaError;

@@ -76,10 +76,7 @@ class TalkActions final : public Scripts {
 		TalkActions &operator=(const TalkActions &) = delete;
 
 		static TalkActions &getInstance() {
-			// Guaranteed to be destroyed
-			static TalkActions instance;
-			// Instantiated on first use
-			return instance;
+			return inject<TalkActions>();
 		}
 
 		bool checkWord(Player* player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const;
@@ -88,14 +85,14 @@ class TalkActions final : public Scripts {
 		bool registerLuaEvent(TalkAction_ptr talkAction);
 		void clear();
 
-		const std::map<std::string, std::shared_ptr<TalkAction>> &getTalkActionsMap() const {
+		const phmap::btree_map<std::string, std::shared_ptr<TalkAction>> &getTalkActionsMap() const {
 			return talkActions;
 		};
 
 	private:
-		std::map<std::string, std::shared_ptr<TalkAction>> talkActions;
+		phmap::btree_map<std::string, std::shared_ptr<TalkAction>> talkActions;
 };
 
-constexpr auto g_talkActions = &TalkActions::getInstance;
+constexpr auto g_talkActions = TalkActions::getInstance;
 
 #endif // SRC_LUA_CREATURE_TALKACTION_H_

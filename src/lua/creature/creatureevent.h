@@ -75,10 +75,7 @@ class CreatureEvents final : public Scripts {
 		CreatureEvents &operator=(const CreatureEvents &) = delete;
 
 		static CreatureEvents &getInstance() {
-			// Guaranteed to be destroyed
-			static CreatureEvents instance;
-			// Instantiated on first use
-			return instance;
+			return inject<CreatureEvents>();
 		}
 
 		// global events
@@ -94,10 +91,10 @@ class CreatureEvents final : public Scripts {
 
 	private:
 		// creature events
-		using CreatureEventMap = std::map<std::string, CreatureEvent>;
+		using CreatureEventMap = phmap::btree_map<std::string, CreatureEvent>;
 		CreatureEventMap creatureEvents;
 };
 
-constexpr auto g_creatureEvents = &CreatureEvents::getInstance;
+constexpr auto g_creatureEvents = CreatureEvents::getInstance;
 
 #endif // SRC_LUA_CREATURE_CREATUREEVENT_H_

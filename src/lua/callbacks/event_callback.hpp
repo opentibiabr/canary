@@ -120,6 +120,7 @@ class EventCallback : public Script {
 
 		// Monster
 		void monsterOnDropLoot(Monster* monster, Container* corpse) const;
+		void monsterPostDropLoot(Monster* monster, Container* corpse) const;
 		void monsterOnSpawn(Monster* monster, const Position &position) const;
 
 		// Npc

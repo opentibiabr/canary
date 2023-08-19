@@ -14,6 +14,7 @@
 #include "creatures/npcs/npc.h"
 #include "creatures/players/imbuements/imbuements.h"
 #include "creatures/players/player.h"
+#include "creatures/players/grouping/guild.h"
 #include "game/game.h"
 #include "game/movement/teleport.h"
 #include "items/weapons/weapons.h"
@@ -102,9 +103,9 @@ void LuaFunctionsLoader::reportError(const char* function, const std::string &er
 	LuaScriptInterface* scriptInterface;
 	getScriptEnv()->getEventInfo(scriptId, scriptInterface, callbackId, timerEvent);
 
-	SPDLOG_ERROR("Lua script error: \nscriptInterface: [{}]\nscriptId: [{}]"
-				 "\ntimerEvent: [{}]\n callbackId:[{}]\nfunction: [{}]\nerror [{}]",
-				 scriptInterface ? scriptInterface->getInterfaceName() : "", scriptId ? scriptInterface->getFileById(scriptId) : "", timerEvent ? "in a timer event called from:" : "", callbackId ? scriptInterface->getFileById(callbackId) : "", function ? scriptInterface->getInterfaceName() : "", (stack_trace && scriptInterface) ? scriptInterface->getStackTrace(error_desc) : error_desc);
+	g_logger().error("Lua script error: \nscriptInterface: [{}]\nscriptId: [{}]"
+					 "\ntimerEvent: [{}]\n callbackId:[{}]\nfunction: [{}]\nerror [{}]",
+					 scriptInterface ? scriptInterface->getInterfaceName() : "", scriptId ? scriptInterface->getFileById(scriptId) : "", timerEvent ? "in a timer event called from:" : "", callbackId ? scriptInterface->getFileById(callbackId) : "", function ? scriptInterface->getInterfaceName() : "", (stack_trace && scriptInterface) ? scriptInterface->getStackTrace(error_desc) : error_desc);
 }
 
 int LuaFunctionsLoader::luaErrorHandler(lua_State* L) {
@@ -206,7 +207,7 @@ void LuaFunctionsLoader::setMetatable(lua_State* L, int32_t index, const std::st
 }
 
 void LuaFunctionsLoader::setWeakMetatable(lua_State* L, int32_t index, const std::string &name) {
-	static std::set<std::string> weakObjectTypes;
+	static phmap::btree_set<std::string> weakObjectTypes;
 	const std::string &weakName = name + "_weak";
 
 	auto result = weakObjectTypes.emplace(name);
@@ -240,9 +241,9 @@ void LuaFunctionsLoader::setWeakMetatable(lua_State* L, int32_t index, const std
 }
 
 void LuaFunctionsLoader::setItemMetatable(lua_State* L, int32_t index, const Item* item) {
-	if (item->getContainer()) {
+	if (item && item->getContainer()) {
 		luaL_getmetatable(L, "Container");
-	} else if (item->getTeleport()) {
+	} else if (item && item->getTeleport()) {
 		luaL_getmetatable(L, "Teleport");
 	} else {
 		luaL_getmetatable(L, "Item");
@@ -251,9 +252,9 @@ void LuaFunctionsLoader::setItemMetatable(lua_State* L, int32_t index, const Ite
 }
 
 void LuaFunctionsLoader::setCreatureMetatable(lua_State* L, int32_t index, const Creature* creature) {
-	if (creature->getPlayer()) {
+	if (creature && creature->getPlayer()) {
 		luaL_getmetatable(L, "Player");
-	} else if (creature->getMonster()) {
+	} else if (creature && creature->getMonster()) {
 		luaL_getmetatable(L, "Monster");
 	} else {
 		luaL_getmetatable(L, "Npc");
@@ -406,11 +407,28 @@ Creature* LuaFunctionsLoader::getCreature(lua_State* L, int32_t arg) {
 	return g_game().getCreatureByID(getNumber<uint32_t>(L, arg));
 }
 
-Player* LuaFunctionsLoader::getPlayer(lua_State* L, int32_t arg) {
+Player* LuaFunctionsLoader::getPlayer(lua_State* L, int32_t arg, bool allowOffline /* = false */) {
 	if (isUserdata(L, arg)) {
 		return getUserdata<Player>(L, arg);
+	} else if (isNumber(L, arg)) {
+		return g_game().getPlayerByID(getNumber<uint64_t>(L, arg), allowOffline);
+	} else if (isString(L, arg)) {
+		return g_game().getPlayerByName(getString(L, arg), allowOffline);
 	}
-	return g_game().getPlayerByID(getNumber<uint32_t>(L, arg));
+	g_logger().warn("LuaFunctionsLoader::getPlayer: Invalid argument.");
+	return nullptr;
+}
+
+Guild* LuaFunctionsLoader::getGuild(lua_State* L, int32_t arg, bool allowOffline /* = false */) {
+	if (isUserdata(L, arg)) {
+		return getUserdata<Guild>(L, arg);
+	} else if (isNumber(L, arg)) {
+		return g_game().getGuild(getNumber<uint64_t>(L, arg), allowOffline);
+	} else if (isString(L, arg)) {
+		return g_game().getGuildByName(getString(L, arg), allowOffline);
+	}
+	g_logger().warn("LuaFunctionsLoader::getGuild: Invalid argument.");
+	return nullptr;
 }
 
 std::string LuaFunctionsLoader::getFieldString(lua_State* L, int32_t arg, const std::string &key) {
@@ -548,6 +566,8 @@ void LuaFunctionsLoader::registerClass(lua_State* L, const std::string &classNam
 		lua_pushnumber(L, LuaData_Npc);
 	} else if (className == "Tile") {
 		lua_pushnumber(L, LuaData_Tile);
+	} else if (className == "Guild") {
+		lua_pushnumber(L, LuaData_Guild);
 	} else {
 		lua_pushnumber(L, LuaData_Unknown);
 	}
@@ -630,9 +650,15 @@ int LuaFunctionsLoader::luaUserdataCompare(lua_State* L) {
 	return 1;
 }
 
+void LuaFunctionsLoader::registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction) {
+	registerClass(L, className, baseClass, newFunction);
+	registerMetaMethod(L, className, "__gc", luaGarbageCollection);
+}
+
 int LuaFunctionsLoader::luaGarbageCollection(lua_State* L) {
-	if (const auto ptr = getRawUserDataShared<Condition>(L, 1)) {
-		ptr->reset();
+	auto objPtr = static_cast<std::shared_ptr<SharedObject>*>(lua_touserdata(L, 1));
+	if (objPtr) {
+		objPtr->reset();
 	}
 	return 0;
 }

@@ -249,6 +249,7 @@ class PlayerWheel {
 		// Wheel of destiny - Header get:
 		bool getInstant(WheelInstant_t type) const;
 		bool getHealingLinkUpgrade(const std::string &spell) const;
+		uint8_t getStage(const std::string name) const;
 		uint8_t getStage(WheelStage_t type) const;
 		WheelSpellGrade_t getSpellUpgrade(const std::string &name) const;
 		int32_t getMajorStat(WheelMajor_t type) const;
@@ -331,7 +332,7 @@ class PlayerWheel {
 		std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 
 		int32_t m_creaturesNearby = 0;
-		std::map<std::string, WheelSpellGrade_t> m_spellsSelected;
+		phmap::btree_map<std::string, WheelSpellGrade_t> m_spellsSelected;
 		std::vector<std::string> m_learnedSpellsSelected;
 };
 

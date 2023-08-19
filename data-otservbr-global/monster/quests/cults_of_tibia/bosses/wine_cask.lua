@@ -50,6 +50,10 @@ monster.events = {
 	"Splash"
 }
 
+monster.events = {
+	"Splash"
+}
+
 monster.light = {
 	level = 0,
 	color = 0

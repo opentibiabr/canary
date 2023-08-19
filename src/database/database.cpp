@@ -26,12 +26,12 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 	// connection handle initialization
 	handle = mysql_init(nullptr);
 	if (!handle) {
-		SPDLOG_ERROR("Failed to initialize MySQL connection handle.");
+		g_logger().error("Failed to initialize MySQL connection handle.");
 		return false;
 	}
 
 	if (host->empty() || user->empty() || password->empty() || database->empty() || port <= 0) {
-		SPDLOG_WARN("MySQL host, user, password, database or port not provided");
+		g_logger().warn("MySQL host, user, password, database or port not provided");
 	}
 
 	// automatic reconnect
@@ -40,7 +40,7 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 
 	// connects to database
 	if (!mysql_real_connect(handle, host->c_str(), user->c_str(), password->c_str(), database->c_str(), port, sock->c_str(), 0)) {
-		SPDLOG_ERROR("MySQL Error Message: {}", mysql_error(handle));
+		g_logger().error("MySQL Error Message: {}", mysql_error(handle));
 		return false;
 	}
 
@@ -61,12 +61,12 @@ bool Database::beginTransaction() {
 
 bool Database::rollback() {
 	if (!handle) {
-		SPDLOG_ERROR("Database not initialized!");
+		g_logger().error("Database not initialized!");
 		return false;
 	}
 
 	if (mysql_rollback(handle) != 0) {
-		SPDLOG_ERROR("Message: {}", mysql_error(handle));
+		g_logger().error("Message: {}", mysql_error(handle));
 		databaseLock.unlock();
 		return false;
 	}
@@ -77,11 +77,11 @@ bool Database::rollback() {
 
 bool Database::commit() {
 	if (!handle) {
-		SPDLOG_ERROR("Database not initialized!");
+		g_logger().error("Database not initialized!");
 		return false;
 	}
 	if (mysql_commit(handle) != 0) {
-		SPDLOG_ERROR("Message: {}", mysql_error(handle));
+		g_logger().error("Message: {}", mysql_error(handle));
 		databaseLock.unlock();
 		return false;
 	}
@@ -92,8 +92,8 @@ bool Database::commit() {
 
 bool Database::retryQuery(const std::string_view &query, int retries) {
 	while (retries > 0 && mysql_query(handle, query.data()) != 0) {
-		SPDLOG_ERROR("Query: {}", query.substr(0, 256));
-		SPDLOG_ERROR("MySQL error [{}]: {}", mysql_errno(handle), mysql_error(handle));
+		g_logger().error("Query: {}", query.substr(0, 256));
+		g_logger().error("MySQL error [{}]: {}", mysql_errno(handle), mysql_error(handle));
 		if (!isRecoverableError(mysql_errno(handle))) {
 			return false;
 		}
@@ -101,7 +101,7 @@ bool Database::retryQuery(const std::string_view &query, int retries) {
 		retries--;
 	}
 	if (retries == 0) {
-		SPDLOG_ERROR("Query {} failed after {} retries.", query, 10);
+		g_logger().error("Query {} failed after {} retries.", query, 10);
 		return false;
 	}
 
@@ -110,7 +110,7 @@ bool Database::retryQuery(const std::string_view &query, int retries) {
 
 bool Database::executeQuery(const std::string_view &query) {
 	if (!handle) {
-		SPDLOG_ERROR("Database not initialized!");
+		g_logger().error("Database not initialized!");
 		return false;
 	}
 
@@ -124,7 +124,7 @@ bool Database::executeQuery(const std::string_view &query) {
 
 DBResult_ptr Database::storeQuery(const std::string_view &query) {
 	if (!handle) {
-		SPDLOG_ERROR("Database not initialized!");
+		g_logger().error("Database not initialized!");
 		return nullptr;
 	}
 
@@ -132,8 +132,8 @@ DBResult_ptr Database::storeQuery(const std::string_view &query) {
 
 retry:
 	if (mysql_query(handle, query.data()) != 0) {
-		SPDLOG_ERROR("Query: {}", query);
-		SPDLOG_ERROR("Message: {}", mysql_error(handle));
+		g_logger().error("Query: {}", query);
+		g_logger().error("Message: {}", mysql_error(handle));
 		if (!isRecoverableError(mysql_errno(handle))) {
 			return nullptr;
 		}
@@ -158,7 +158,7 @@ std::string Database::escapeString(const std::string &s) const {
 	auto length = static_cast<uint32_t>(len);
 	std::string escaped = escapeBlob(s.c_str(), length);
 	if (escaped.empty()) {
-		SPDLOG_WARN("Error escaping string");
+		g_logger().warn("Error escaping string");
 	}
 	return escaped;
 }
@@ -200,7 +200,7 @@ DBResult::~DBResult() {
 std::string DBResult::getString(const std::string &s) const {
 	auto it = listNames.find(s);
 	if (it == listNames.end()) {
-		SPDLOG_ERROR("Column '{}' does not exist in result set", s);
+		g_logger().error("Column '{}' does not exist in result set", s);
 		return std::string();
 	}
 	if (row[it->second] == nullptr) {
@@ -212,7 +212,7 @@ std::string DBResult::getString(const std::string &s) const {
 const char* DBResult::getStream(const std::string &s, unsigned long &size) const {
 	auto it = listNames.find(s);
 	if (it == listNames.end()) {
-		SPDLOG_ERROR("Column '{}' doesn't exist in the result set", s);
+		g_logger().error("Column '{}' doesn't exist in the result set", s);
 		size = 0;
 		return nullptr;
 	}
@@ -229,7 +229,7 @@ const char* DBResult::getStream(const std::string &s, unsigned long &size) const
 uint8_t DBResult::getU8FromString(const std::string &string, const std::string &function) const {
 	auto result = static_cast<uint8_t>(std::atoi(string.c_str()));
 	if (result > std::numeric_limits<uint8_t>::max()) {
-		SPDLOG_ERROR("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
+		g_logger().error("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
 		return 0;
 	}
 
@@ -239,7 +239,7 @@ uint8_t DBResult::getU8FromString(const std::string &string, const std::string &
 int8_t DBResult::getInt8FromString(const std::string &string, const std::string &function) const {
 	auto result = static_cast<int8_t>(std::atoi(string.c_str()));
 	if (result > std::numeric_limits<int8_t>::max()) {
-		SPDLOG_ERROR("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
+		g_logger().error("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
 		return 0;
 	}
 
@@ -256,7 +256,7 @@ bool DBResult::hasNext() const {
 
 bool DBResult::next() {
 	if (!handle) {
-		SPDLOG_ERROR("Database not initialized!");
+		g_logger().error("Database not initialized!");
 		return false;
 	}
 	row = mysql_fetch_row(handle);

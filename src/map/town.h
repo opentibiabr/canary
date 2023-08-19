@@ -40,7 +40,7 @@ class Town {
 		Position templePosition;
 };
 
-using TownMap = std::map<uint32_t, Town*>;
+using TownMap = phmap::btree_map<uint32_t, Town*>;
 
 class Towns {
 	public:
@@ -74,6 +74,15 @@ class Towns {
 				return nullptr;
 			}
 			return it->second;
+		}
+
+		Town* getOrCreateTown(uint32_t townId) {
+			auto town = getTown(townId);
+			if (!town) {
+				town = new Town(townId);
+				addTown(townId, town);
+			}
+			return town;
 		}
 
 		const TownMap &getTowns() const {

@@ -342,6 +342,9 @@ class Monster final : public Creature {
 		void clearFiendishStatus();
 		bool canDropLoot() const;
 
+		bool isImmune(ConditionType_t conditionType) const override;
+		bool isImmune(CombatType_t combatType) const override;
+
 	private:
 		CreatureHashSet friendList;
 		CreatureList targetList;
@@ -441,12 +444,6 @@ class Monster final : public Creature {
 			return mType->info.lookcorpse;
 		}
 		void dropLoot(Container* corpse, Creature* lastHitCreature) override;
-		uint32_t getDamageImmunities() const override {
-			return mType->info.damageImmunities;
-		}
-		const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionImmunities() const override {
-			return mType->info.conditionImmunities;
-		}
 		void getPathSearchParams(const Creature* creature, FindPathParams &fpp) const override;
 		bool useCacheMap() const override {
 			return !randomStepping;

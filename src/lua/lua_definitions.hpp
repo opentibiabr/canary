@@ -28,6 +28,7 @@ enum LuaDataType {
 	LuaData_Monster,
 	LuaData_Npc,
 	LuaData_Tile,
+	LuaData_Guild,
 };
 
 enum CreatureEventType_t {

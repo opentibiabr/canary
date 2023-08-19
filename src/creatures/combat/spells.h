@@ -21,7 +21,7 @@ class InstantSpell;
 class RuneSpell;
 class Spell;
 
-using VocSpellMap = std::map<uint16_t, bool>;
+using VocSpellMap = phmap::btree_map<uint16_t, bool>;
 using InstantSpell_ptr = std::unique_ptr<InstantSpell>;
 using RuneSpell_ptr = std::unique_ptr<RuneSpell>;
 
@@ -35,10 +35,7 @@ class Spells final : public Scripts {
 		Spells &operator=(const Spells &) = delete;
 
 		static Spells &getInstance() {
-			// Guaranteed to be destroyed
-			static Spells instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Spells>();
 		}
 
 		Spell* getSpellByName(const std::string &name);
@@ -77,7 +74,7 @@ class Spells final : public Scripts {
 		friend class CombatSpell;
 };
 
-constexpr auto g_spells = &Spells::getInstance;
+constexpr auto g_spells = Spells::getInstance;
 
 using RuneSpellFunction = std::function<bool(const RuneSpell* spell, Player* player, const Position &posTo)>;
 

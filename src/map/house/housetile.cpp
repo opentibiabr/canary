@@ -94,10 +94,10 @@ Tile* HouseTile::queryDestination(int32_t &index, const Thing &thing, Item** des
 				const Position &entryPos = house->getEntryPosition();
 				Tile* destTile = g_game().map.getTile(entryPos);
 				if (!destTile) {
-					SPDLOG_ERROR("[HouseTile::queryDestination] - "
-								 "Entry not correct for house name: {} "
-								 "with id: {} not found tile: {}",
-								 house->getName(), house->getId(), entryPos.toString());
+					g_logger().error("[HouseTile::queryDestination] - "
+									 "Entry not correct for house name: {} "
+									 "with id: {} not found tile: {}",
+									 house->getName(), house->getId(), entryPos.toString());
 					destTile = g_game().map.getTile(player->getTemplePosition());
 					if (!destTile) {
 						destTile = &(Tile::nullptr_tile);

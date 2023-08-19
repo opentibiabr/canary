@@ -60,8 +60,8 @@ if Modules == nil then
 		local parseInfo = {
 			[TAG_PLAYERNAME] = player:getName(),
 			[TAG_TIME] = getFormattedWorldTime(),
-			[TAG_BLESSCOST] = Blessings.getBlessingsCost(player:getLevel()),
-			[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel()),
+			[TAG_BLESSCOST] = Blessings.getBlessingsCost(player:getLevel(), false),
+			[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel(), false),
 			[TAG_TRAVELCOST] = costMessage
 		}
 		if parameters.text then
@@ -157,8 +157,8 @@ if Modules == nil then
 		end
 
 		local parseInfo = {
-			[TAG_BLESSCOST] = Blessings.getBlessingsCost(player:getLevel()),
-			[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel())
+			[TAG_BLESSCOST] = Blessings.getBlessingsCost(player:getLevel(), false),
+			[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel(), false)
 		}
 		if player:hasBlessing(parameters.bless) then
 			npcHandler:say("You already possess this blessing.", npc, player)

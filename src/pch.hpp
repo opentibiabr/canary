@@ -34,6 +34,7 @@
 #include <ranges>
 #include <regex>
 #include <set>
+#include <thread>
 #include <vector>
 #include <variant>
 
@@ -71,6 +72,7 @@
 
 // FMT
 #include <fmt/chrono.h>
+#include <fmt/core.h>
 
 // GMP
 #include <gmp.h>
@@ -84,6 +86,8 @@
 #else
 	#include <lua.hpp>
 #endif
+
+#include "lua/global/shared_object.hpp"
 
 // Magic Enum
 #include <magic_enum.hpp>
@@ -102,15 +106,15 @@
 
 // Parallel Hash Map
 #include <parallel_hashmap/phmap.h>
+#include <parallel_hashmap/btree.h>
 
 // PugiXML
 #include <pugixml.hpp>
 
-// SPDLog
-#include <spdlog/spdlog.h>
-
 // Zlib
 #include <zlib.h>
+
+#include <boost/di.hpp>
 
 // -------------------------
 // GIT Metadata Includes
@@ -127,6 +131,16 @@
 #include <string>
 #include <iostream>
 
-bool isDevMode();
+/**
+ * Static custom libraries that can be pre-compiled like DI and messaging
+ */
+#include "lib/messaging/message.hpp"
+#include "lib/messaging/command.hpp"
+#include "lib/messaging/event.hpp"
+
+#include <eventpp/utilities/scopedremover.h>
+#include <eventpp/eventdispatcher.h>
+
+#include "lib/di/container.hpp"
 
 #endif // SRC_PCH_HPP_

@@ -83,7 +83,7 @@ monster.loot = {
 	{name = "terra rod", chance = 13980},
 	{name = "violet gem", chance = 8600},
 	{name = "vibrant heart", chance = 6450},
-	{id =281, chance = 6450}, -- giant shimmering pearl
+	{id = 281, chance = 6450}, -- giant shimmering pearl
 	{name = "gold ingot", chance = 4300},
 	{name = "blue crystal shard", chance = 4300},
 	{name = "vibrant robe", chance = 3230},
@@ -92,7 +92,7 @@ monster.loot = {
 	{name = "hailstorm rod", chance = 3230},
 	{name = "underworld rod", chance = 2150},
 	{name = "violet crystal shard", chance = 1080},
-	{id = 23530, chance = 1080}, -- ring of blue plasma
+	{id = 23529, chance = 1080}, -- ring of blue plasma
 	{name = "green gem", chance = 1080},
 	{id = 34109, chance = 20}, -- bag you desire
 }

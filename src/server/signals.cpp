@@ -9,13 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/appearance/mounts/mounts.h"
-#include "database/databasetasks.h"
 #include "game/game.h"
-#include "game/scheduling/scheduler.h"
 #include "game/scheduling/dispatcher.hpp"
+#include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.h"
-#include "lua/creature/raids.h"
 #include "lua/scripts/lua_environment.hpp"
 #include "server/signals.h"
 
@@ -71,9 +68,7 @@ void Signals::dispatchSignalHandler(int signal) {
 		case SIGBREAK: // Shuts the server down
 			g_dispatcher().addTask(sigbreakHandler);
 			// hold the thread until other threads end
-			g_scheduler().join();
-			g_databaseTasks().join();
-			g_dispatcher().join();
+			inject<ThreadPool>().shutdown();
 			break;
 #endif
 		default:

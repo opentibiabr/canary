@@ -100,8 +100,8 @@ class Game {
 			teamFinderMap.erase(leaderGuid);
 		}
 
-		Cylinder* internalGetCylinder(Player* player, const Position &pos) const;
-		Thing* internalGetThing(Player* player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type) const;
+		Cylinder* internalGetCylinder(Player* player, const Position &pos);
+		Thing* internalGetThing(Player* player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type);
 		static void internalGetPosition(Item* item, Position &pos, uint8_t &stackpos);
 
 		static std::string getTradeErrorDescription(ReturnValue ret, Item* item);
@@ -383,8 +383,8 @@ class Game {
 			return boostedCreature;
 		}
 
-		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
-		bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor) const;
+		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
+		bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor);
 
 		void changeSpeed(Creature* creature, int32_t varSpeedDelta);
 		void setCreatureSpeed(Creature* creature, int32_t speed); // setCreatureSpeed
@@ -494,9 +494,9 @@ class Game {
 		void addMonster(Monster* npc);
 		void removeMonster(Monster* npc);
 
-		Guild* getGuild(uint32_t id, bool allowOffline = false) const;
-		Guild* getGuildByName(const std::string &name, bool allowOffline = false) const;
-		void addGuild(Guild* guild);
+		std::shared_ptr<Guild> getGuild(uint32_t id, bool allowOffline = false) const;
+		std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;
+		void addGuild(const std::shared_ptr<Guild> &guild);
 		void removeGuild(uint32_t guildId);
 		void decreaseBrowseFieldRef(const Position &pos);
 
@@ -537,12 +537,12 @@ class Game {
 		void playerInspectItem(Player* player, const Position &pos);
 		void playerInspectItem(Player* player, uint16_t itemId, uint8_t itemCount, bool cyclopedia);
 
-		void addCharmRune(Charm* charm) {
+		void addCharmRune(const std::shared_ptr<Charm> &charm) {
 			CharmList.push_back(charm);
 			CharmList.shrink_to_fit();
 		}
 
-		std::vector<Charm*> getCharmList() {
+		std::vector<std::shared_ptr<Charm>> &getCharmList() {
 			return CharmList;
 		}
 
@@ -748,7 +748,7 @@ class Game {
 		phmap::flat_hash_map<std::string, Player*> m_uniqueLoginPlayerNames;
 		phmap::flat_hash_map<uint32_t, Player*> players;
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
-		phmap::flat_hash_map<uint32_t, Guild*> guilds;
+		phmap::flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
 		phmap::flat_hash_map<uint16_t, Item*> uniqueItems;
 		phmap::btree_map<uint32_t, uint32_t> stages;
 
@@ -761,7 +761,7 @@ class Game {
 		phmap::btree_map<uint16_t, std::string> BestiaryList;
 		std::string boostedCreature = "";
 
-		std::vector<Charm*> CharmList;
+		std::vector<std::shared_ptr<Charm>> CharmList;
 		std::vector<Creature*> ToReleaseCreatures;
 		std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 		std::vector<Item*> ToReleaseItems;

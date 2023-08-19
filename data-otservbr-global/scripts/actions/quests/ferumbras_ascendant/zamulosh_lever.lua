@@ -3,8 +3,8 @@ local config = {
 		name = "Zamulosh",
 		position = Position(33643, 32756, 11)
 	},
-	timeToFightAgain = 20 * 60 * 60,
-	timeToDefeatBoss = 30 * 60,
+
+	timeToDefeat = 30 * 60,
 	playerPositions = {
 		{ pos = Position(33680, 32741, 11), teleport = Position(33644, 32760, 11), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33680, 32742, 11), teleport = Position(33644, 32760, 11), effect = CONST_ME_TELEPORT },

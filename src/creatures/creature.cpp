@@ -11,6 +11,7 @@
 
 #include "creatures/creature.h"
 #include "declarations.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "game/scheduling/scheduler.h"
@@ -56,7 +57,7 @@ bool Creature::canSee(const Position &myPos, const Position &pos, int32_t viewRa
 }
 
 bool Creature::canSee(const Position &pos) const {
-	return canSee(getPosition(), pos, Map::maxViewportX, Map::maxViewportY);
+	return canSee(getPosition(), pos, MAP_MAX_VIEW_PORT_X, MAP_MAX_VIEW_PORT_Y);
 }
 
 bool Creature::canSeeCreature(const Creature* creature) const {
@@ -202,7 +203,7 @@ void Creature::onCreatureWalk() {
 
 void Creature::onWalk(Direction &dir) {
 	if (hasCondition(CONDITION_DRUNK)) {
-		uint32_t r = uniform_random(0, 20);
+		uint32_t r = uniform_random(0, 60);
 		if (r <= DIRECTION_DIAGONAL_MASK) {
 			if (r < DIRECTION_DIAGONAL_MASK) {
 				dir = static_cast<Direction>(r);
@@ -1402,30 +1403,6 @@ bool Creature::hasCondition(ConditionType_t type, uint32_t subId /* = 0*/) const
 			return true;
 		}
 	}
-	return false;
-}
-
-bool Creature::isImmune(CombatType_t type) const {
-	return hasBitSet(static_cast<uint32_t>(type), getDamageImmunities());
-}
-
-bool Creature::isImmune(ConditionType_t type) const {
-	try {
-		return type == getConditionImmunities().at(type);
-	} catch (const std::out_of_range &exception) {
-		g_logger().error("[{}] invalid index {}, error code: {}", __FUNCTION__, static_cast<uint8_t>(type), exception.what());
-	}
-
-	return false;
-}
-
-bool Creature::isSuppress(ConditionType_t type) const {
-	try {
-		return type == getConditionSuppressions().at(type);
-	} catch (const std::out_of_range &exception) {
-		g_logger().error("[{}] invalid index {}, error code: {}", __FUNCTION__, static_cast<uint8_t>(type), exception.what());
-	}
-
 	return false;
 }
 

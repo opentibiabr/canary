@@ -90,7 +90,7 @@ monster.loot = {
 	{name = "wand of voodoo", chance = 2360},
 	{name = "mould robe", chance = 2200},
 	{id = 23542, chance = 1070}, -- collar of blue plasma
-	{id = 23530, chance = 1040}, -- ring of blue plasma
+	{id = 23529, chance = 1040}, -- ring of blue plasma
 	{name = "ornate crossbow", chance = 840},
 	{name = "crystal crossbow", chance = 620},
 	{id = 34109, chance = 20}, -- bag you desire

@@ -15,7 +15,7 @@
 class CharmFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-			registerClass(L, "Charm", "", CharmFunctions::luaCharmCreate);
+			registerSharedClass(L, "Charm", "", CharmFunctions::luaCharmCreate);
 			registerMetaMethod(L, "Charm", "__eq", CharmFunctions::luaUserdataCompare);
 
 			registerMethod(L, "Charm", "name", CharmFunctions::luaCharmName);

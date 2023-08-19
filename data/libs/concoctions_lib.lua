@@ -165,7 +165,7 @@ function Concoction:activate(player, item)
 	local cooldown = self:cooldown()
 	if self:lastActivatedAt(player) + cooldown > os.time() then
 		local cooldownLeft = self:lastActivatedAt(player) + cooldown - os.time()
-		player:sendTextMessage(MESSAGE_STATUS_SMALL,
+		player:sendTextMessage(MESSAGE_FAILURE,
 			"You must wait " .. getTimeInWords(cooldownLeft) .. " before using " .. item:getName() .. " again.")
 		return true
 	end

@@ -4,8 +4,7 @@ local config = {
 		position = Position(33488, 31441, 13)
 	},
 	requiredLevel = 250,
-	timeToFightAgain = 20 * 60 * 60,
-	timeToDefeatBoss = 20 * 60,
+
 	playerPositions = {
 		{pos = Position(33516, 31444, 13), teleport = Position(33488, 31430, 13), effect = CONST_ME_TELEPORT},
 		{pos = Position(33517, 31444, 13), teleport = Position(33488, 31430, 13), effect = CONST_ME_TELEPORT},
@@ -21,10 +20,6 @@ local config = {
 	storage = Storage.Quest.U12_20.GraveDanger.Bosses.EarlOsamTimer
 }
 
-local earlOsamLever = Action()
-function earlOsamLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	return CreateDefaultLeverBoss(player, config)
-end
-
-earlOsamLever:position({x = 33515, y = 31444, z = 13})
-earlOsamLever:register()
+local lever = BossLever(config)
+lever:position({x = 33515, y = 31444, z = 13})
+lever:register()

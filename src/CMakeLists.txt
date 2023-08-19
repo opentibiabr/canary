@@ -160,6 +160,13 @@ find_package(unofficial-libmariadb CONFIG REQUIRED)
 
 find_path(BOOST_DI_INCLUDE_DIRS "boost/di.hpp")
 
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARY_DEBUG})
+else()
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARY_RELEASE})
+endif()
+
+
 include(GNUInstallDirs)
 
 # *****************************************************************************
@@ -237,6 +244,7 @@ PRIVATE
 	items/trashholder.cpp
 	items/weapons/weapons.cpp
 	lib/logging/log_with_spd_log.cpp
+	lib/thread/thread_pool.cpp
 	lua/callbacks/creaturecallback.cpp
 	lua/callbacks/event_callback.cpp
 	lua/callbacks/events_callbacks.cpp
@@ -305,7 +313,10 @@ PRIVATE
 	lua/scripts/scripts.cpp
 	map/house/house.cpp
 	map/house/housetile.cpp
+	map/utils/astarnodes.cpp
+	map/utils/qtreenode.cpp
 	map/map.cpp
+	map/mapcache.cpp
 	canary_server.cpp
 	otserv.cpp
 	security/argon.cpp

@@ -4,8 +4,7 @@ local config = {
 		position = Position(32687, 32715, 10)
 	},
 	requiredLevel = 250,
-	timeToFightAgain = 20 * 60 * 60,
-	timeToDefeatBoss = 20 * 60,
+
 	playerPositions = {
 		{pos = Position(32747, 32749, 10), teleport = Position(32686, 32721, 10), effect = CONST_ME_TELEPORT},
 		{pos = Position(32748, 32749, 10), teleport = Position(32686, 32721, 10), effect = CONST_ME_TELEPORT},
@@ -21,10 +20,6 @@ local config = {
 	storage = Storage.Quest.U11_80.TheSecretLibrary.GorzindelTimer
 }
 
-local gorzindelLever = Action()
-function gorzindelLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	return CreateDefaultLeverBoss(player, config)
-end
-
-gorzindelLever:position({x = 32746, y = 32749, z = 10})
-gorzindelLever:register()
+local lever = BossLever(config)
+lever:position({x = 32746, y = 32749, z = 10})
+lever:register()

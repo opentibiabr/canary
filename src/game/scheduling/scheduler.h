@@ -10,7 +10,7 @@
 #ifndef SRC_GAME_SCHEDULING_SCHEDULER_H_
 #define SRC_GAME_SCHEDULING_SCHEDULER_H_
 
-#include "utils/thread_holder_base.h"
+#include "lib/thread/thread_pool.hpp"
 
 static constexpr int32_t SCHEDULER_MINTICKS = 50;
 
@@ -20,9 +20,9 @@ class Task;
  * Scheduler allow you to schedule a task async to be executed after a
  * given period. Once the time has passed, scheduler calls the task.
  */
-class Scheduler : public ThreadHolder<Scheduler> {
+class Scheduler {
 	public:
-		Scheduler() = default;
+		explicit Scheduler(ThreadPool &threadPool);
 
 		// Ensures that we don't accidentally copy it
 		Scheduler(const Scheduler &) = delete;
@@ -35,6 +35,8 @@ class Scheduler : public ThreadHolder<Scheduler> {
 		void stopEvent(uint64_t eventId);
 
 	private:
+		ThreadPool &threadPool;
+		std::mutex threadSafetyMutex;
 		std::atomic<uint64_t> lastEventId { 0 };
 		std::unordered_map<uint64_t, asio::steady_timer> eventIds;
 };

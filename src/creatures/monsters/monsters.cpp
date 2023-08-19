@@ -309,7 +309,7 @@ std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name) {
 	return nullptr;
 }
 
-std::shared_ptr<MonsterType> Monsters::getMonsterTypeByRaceId(uint16_t raceId, bool isBoss /* = false*/) {
+std::shared_ptr<MonsterType> Monsters::getMonsterTypeByRaceId(uint16_t raceId, bool isBoss /* = false*/) const {
 	const auto &bossType = g_ioBosstiary().getMonsterTypeByBossRaceId(raceId);
 	if (isBoss && bossType) {
 		return bossType;

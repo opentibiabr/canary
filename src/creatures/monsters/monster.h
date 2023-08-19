@@ -307,7 +307,7 @@ class Monster final : public Creature {
 			return mType->info.isForgeCreature;
 		}
 
-		void setForgeMonster(bool forge) {
+		void setForgeMonster(bool forge) const {
 			mType->info.isForgeCreature = forge;
 		}
 

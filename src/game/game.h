@@ -494,8 +494,8 @@ class Game {
 		void addMonster(Monster* npc);
 		void removeMonster(Monster* npc);
 
-		const std::shared_ptr<Guild> getGuild(uint32_t id, bool allowOffline = false) const;
-		const std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;
+		std::shared_ptr<Guild> getGuild(uint32_t id, bool allowOffline = false) const;
+		std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;
 		void addGuild(const std::shared_ptr<Guild> &guild);
 		void removeGuild(uint32_t guildId);
 		void decreaseBrowseFieldRef(const Position &pos);

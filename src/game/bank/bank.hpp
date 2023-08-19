@@ -31,7 +31,7 @@ class Bankable {
 class Bank : public SharedObject {
 	public:
 		explicit Bank(const std::shared_ptr<Bankable> &bankable);
-		~Bank();
+		~Bank() override;
 
 		// Deleted copy constructor and assignment operator.
 		Bank(const Bank &) = delete;
@@ -40,7 +40,7 @@ class Bank : public SharedObject {
 		// Bank functions by Bankable pointer; these are the only ones that should actually perform any logic.
 		bool credit(uint64_t amount);
 		bool debit(uint64_t amount);
-		bool balance(uint64_t amount);
+		bool balance(uint64_t amount) const;
 		uint64_t balance();
 		bool hasBalance(uint64_t amount);
 		bool transferTo(const std::shared_ptr<Bank> &destination, uint64_t amount);

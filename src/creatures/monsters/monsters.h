@@ -261,7 +261,7 @@ class Monsters {
 		}
 
 		std::shared_ptr<MonsterType> getMonsterType(const std::string &name);
-		std::shared_ptr<MonsterType> getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false);
+		std::shared_ptr<MonsterType> getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false) const;
 		void addMonsterType(const std::string &name, const std::shared_ptr<MonsterType> &mType);
 		bool deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spellBlock_t &sb, const std::string &description = "");
 

@@ -92,7 +92,7 @@ bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> &charm, Player* p
 	return false;
 }
 
-std::shared_ptr<Charm> IOBestiary::getBestiaryCharm(charmRune_t activeCharm, bool force /*= false*/) {
+std::shared_ptr<Charm> IOBestiary::getBestiaryCharm(charmRune_t activeCharm, bool force /*= false*/) const {
 	const auto &charmInternal = g_game().getCharmList();
 	for (const auto &tmpCharm : charmInternal) {
 		if (tmpCharm->id == activeCharm) {

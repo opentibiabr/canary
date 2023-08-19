@@ -175,10 +175,10 @@ int GameFunctions::luaGameGetNpcCount(lua_State* L) {
 
 int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 	// Game.getMonsterTypes()
-	auto &type = g_monsters().monsters;
+	const auto &type = g_monsters().monsters;
 	lua_createtable(L, type.size(), 0);
 
-	for (auto &mType : type) {
+	for (const auto &mType : type) {
 		pushUserdata<MonsterType>(L, mType.second);
 		setMetatable(L, -1, "MonsterType");
 		lua_setfield(L, -2, mType.first.c_str());

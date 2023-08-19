@@ -8916,7 +8916,7 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 		monsterRaceId = static_cast<uint32_t>(podiumMonsterRace->getInteger());
 	}
 
-	const auto &mType = g_monsters().getMonsterTypeByRaceId(monsterRaceId, itemId == ITEM_PODIUM_OF_VIGOUR);
+	const auto &mType = g_monsters().getMonsterTypeByRaceId(static_cast<uint16_t>(monsterRaceId), itemId == ITEM_PODIUM_OF_VIGOUR);
 	if (!mType) {
 		player->sendCancelMessage(RETURNVALUE_CONTACTADMINISTRATOR);
 		g_logger().error("[{}] player {} is trying to add invalid monster to podium {}", __FUNCTION__, player->getName(), item->getName());
@@ -9163,7 +9163,7 @@ void Game::removeMonster(Monster* monster) {
 	monsters.erase(monster->getID());
 }
 
-const std::shared_ptr<Guild> Game::getGuild(uint32_t id, bool allowOffline /* = flase */) const {
+std::shared_ptr<Guild> Game::getGuild(uint32_t id, bool allowOffline /* = flase */) const {
 	auto it = guilds.find(id);
 	if (it == guilds.end()) {
 		if (allowOffline) {
@@ -9174,7 +9174,7 @@ const std::shared_ptr<Guild> Game::getGuild(uint32_t id, bool allowOffline /* = 
 	return it->second;
 }
 
-const std::shared_ptr<Guild> Game::getGuildByName(const std::string &name, bool allowOffline /* = flase */) const {
+std::shared_ptr<Guild> Game::getGuildByName(const std::string &name, bool allowOffline /* = flase */) const {
 	auto id = IOGuild::getGuildIdByName(name);
 	auto it = guilds.find(id);
 	if (it == guilds.end()) {

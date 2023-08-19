@@ -47,7 +47,7 @@ bool Bank::debit(uint64_t amount) {
 	return balance(balance() - amount);
 }
 
-bool Bank::balance(uint64_t amount) {
+bool Bank::balance(uint64_t amount) const {
 	if (bankable == nullptr) {
 		return 0;
 	}

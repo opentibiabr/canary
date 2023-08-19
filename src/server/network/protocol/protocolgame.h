@@ -146,7 +146,7 @@ class ProtocolGame final : public Protocol {
 		void parseBestiarysendCreatures(NetworkMessage &msg);
 		void BestiarysendCharms();
 		void sendBestiaryEntryChanged(uint16_t raceid);
-		void refreshBestiaryTracker(std::list<MonsterType*> trackerList);
+		void refreshBestiaryTracker(const std::list<std::shared_ptr<MonsterType>> &trackerList);
 		void sendTeamFinderList();
 		void sendLeaderTeamFinder(bool reset);
 		void createLeaderTeamFinder(NetworkMessage &msg);

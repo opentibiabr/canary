@@ -4,8 +4,7 @@ local config = {
 		position = Position(32208, 32046, 15)
 	},
 	requiredLevel = 250,
-	timeToFightAgain = 20 * 60 * 60,
-	timeToDefeatBoss = 20 * 60,
+
 	playerPositions = {
 		{pos = Position(32212, 32070, 15), teleport = Position(32208, 32052, 15), effect = CONST_ME_TELEPORT},
 		{pos = Position(32210, 32070, 15), teleport = Position(32208, 32052, 15), effect = CONST_ME_TELEPORT},
@@ -26,10 +25,6 @@ local config = {
 	storage = Storage.Quest.U12_00.TheDreamCourts.NightmareBeastTimer
 }
 
-local nightmareBeastLever = Action()
-function nightmareBeastLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	return CreateDefaultLeverBoss(player, config)
-end
-
-nightmareBeastLever:position({x = 32212, y = 32069, z = 15})
-nightmareBeastLever:register()
+local lever = BossLever(config)
+lever:position({x = 32212, y = 32069, z = 15})
+lever:register()

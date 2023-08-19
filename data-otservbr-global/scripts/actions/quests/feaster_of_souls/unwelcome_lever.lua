@@ -4,8 +4,7 @@ local config = {
 		position = Position(33708, 31539, 14)
 	},
 	requiredLevel = 250,
-	timeToFightAgain = 20 * 60 * 60,
-	timeToDefeatBoss = 20 * 60,
+
 	playerPositions = {
 		{pos = Position(33736, 31537, 14), teleport = Position(33708, 31547, 14), effect = CONST_ME_TELEPORT},
 		{pos = Position(33737, 31537, 14), teleport = Position(33708, 31547, 14), effect = CONST_ME_TELEPORT},
@@ -21,10 +20,6 @@ local config = {
 	storage = Storage.Quest.U12_30.FeasterOfSouls.UnwelcomeTimer
 }
 
-local unwelcomeLever = Action()
-function unwelcomeLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	return CreateDefaultLeverBoss(player, config)
-end
-
-unwelcomeLever:position({x = 33735, y = 31537, z = 14})
-unwelcomeLever:register()
+local lever = BossLever(config)
+lever:position({x = 33735, y = 31537, z = 14})
+lever:register()

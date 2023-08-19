@@ -76,8 +76,13 @@ class Script {
 
 		// Load revscriptsys callback
 		bool loadCallback() {
-			if (!scriptInterface || scriptId != 0) {
-				g_logger().error("[Script::loadCallback] scriptInterface is nullptr, scriptid = {}, scriptName {}", scriptId, scriptInterface->getLoadingScriptName());
+			if (!scriptInterface) {
+				g_logger().error("[Script::loadCallback] scriptInterface is nullptr, scriptid = {}", scriptId);
+				return false;
+			}
+
+			if (scriptId != 0) {
+				g_logger().error("[Script::loadCallback] scriptid is not zero, scriptid = {}, scriptName {}", scriptId, scriptInterface->getLoadingScriptName());
 				return false;
 			}
 

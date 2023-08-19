@@ -24,14 +24,14 @@ int32_t Monster::despawnRadius;
 uint32_t Monster::monsterAutoID = 0x50000001;
 
 Monster* Monster::createMonster(const std::string &name) {
-	MonsterType* mType = g_monsters().getMonsterType(name);
+	const auto &mType = g_monsters().getMonsterType(name);
 	if (!mType) {
 		return nullptr;
 	}
 	return new Monster(mType);
 }
 
-Monster::Monster(MonsterType* mType) :
+Monster::Monster(const std::shared_ptr<MonsterType> &mType) :
 	Creature(),
 	strDescription(asLowerCaseString(mType->nameDescription)),
 	mType(mType) {
@@ -2006,8 +2006,10 @@ void Monster::dropLoot(Container* corpse, Creature*) {
 				corpse->internalAddThing(sliver);
 			}
 		}
-		g_events().eventMonsterOnDropLoot(this, corpse);
-		g_callbacks().executeCallback(EventCallback_t::monsterOnDropLoot, &EventCallback::monsterOnDropLoot, this, corpse);
+		if (!this->isRewardBoss() && g_configManager().getNumber(RATE_LOOT) > 0) {
+			g_callbacks().executeCallback(EventCallback_t::monsterOnDropLoot, &EventCallback::monsterOnDropLoot, this, corpse);
+			g_callbacks().executeCallback(EventCallback_t::monsterPostDropLoot, &EventCallback::monsterPostDropLoot, this, corpse);
+		}
 	}
 }
 
@@ -2076,6 +2078,14 @@ bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 1200
 	return true;
 }
 
+bool Monster::isImmune(ConditionType_t conditionType) const {
+	return mType->info.m_conditionImmunities[static_cast<size_t>(conditionType)];
+}
+
+bool Monster::isImmune(CombatType_t combatType) const {
+	return mType->info.m_damageImmunities[combatTypeToIndex(combatType)];
+}
+
 void Monster::getPathSearchParams(const Creature* creature, FindPathParams &fpp) const {
 	Creature::getPathSearchParams(creature, fpp);
 
@@ -2092,8 +2102,8 @@ void Monster::getPathSearchParams(const Creature* creature, FindPathParams &fpp)
 			fpp.fullPathSearch = !canUseAttack(getPosition(), creature);
 		}
 	} else if (isFleeing()) {
-		// Distance should be higher than the client view range (Map::maxClientViewportX/Map::maxClientViewportY)
-		fpp.maxTargetDist = Map::maxViewportX;
+		// Distance should be higher than the client view range (MAP_MAX_CLIENT_VIEW_PORT_X/MAP_MAX_CLIENT_VIEW_PORT_Y)
+		fpp.maxTargetDist = MAP_MAX_VIEW_PORT_X;
 		fpp.clearSight = false;
 		fpp.keepDistance = true;
 		fpp.fullPathSearch = false;

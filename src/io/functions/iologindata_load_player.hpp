@@ -67,24 +67,24 @@ class IOLoginDataLoad : public IOLoginData {
 						Item* item = Item::CreateItem(type, count);
 						if (item) {
 							if (!item->unserializeAttr(propStream)) {
-								SPDLOG_WARN("[IOLoginData::loadItems] - Falha ao desserializar os atributos do item {}, do jogador {}, da conta id {}", item->getID(), player.getName(), player.getAccount());
+								g_logger().warn("[IOLoginData::loadItems] - Falha ao desserializar os atributos do item {}, do jogador {}, da conta id {}", item->getID(), player.getName(), player.getAccount());
 								savePlayer(&player);
-								SPDLOG_INFO("[IOLoginData::loadItems] - Deletando item defeituoso: {}", item->getID());
+								g_logger().info("[IOLoginData::loadItems] - Deletando item defeituoso: {}", item->getID());
 								delete item; // Delete o item defeituoso
 								continue;
 							}
 							std::pair<Item*, uint32_t> pair(item, pid);
 							container[sid] = pair;
 						} else {
-							SPDLOG_WARN("[IOLoginData::loadItems] - Falha ao criar o item do tipo {} para o jogador {}, da conta id {}", type, player.getName(), player.getAccount());
+							g_logger().warn("[IOLoginData::loadItems] - Falha ao criar o item do tipo {} para o jogador {}, da conta id {}", type, player.getName(), player.getAccount());
 						}
 					} catch (const std::exception &e) {
-						SPDLOG_WARN("[IOLoginData::loadItems] - Exceção durante a criação ou desserialização do item: {}", e.what());
+						g_logger().warn("[IOLoginData::loadItems] - Exceção durante a criação ou desserialização do item: {}", e.what());
 						continue;
 					}
 				} while (result->next());
 			} catch (const std::exception &e) {
-				SPDLOG_ERROR("[IOLoginData::loadItems] - Exceção geral durante o carregamento do item: {}", e.what());
+				g_logger().error("[IOLoginData::loadItems] - Exceção geral durante o carregamento do item: {}", e.what());
 			}
 		}
 };

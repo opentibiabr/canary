@@ -14,7 +14,7 @@
 
 bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -63,7 +63,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 			propWriteStream.clear();
 			item->serializeAttr(propWriteStream);
 		} catch (...) {
-			SPDLOG_ERROR("Error serializing item attributes.");
+			g_logger().error("Error serializing item attributes.");
 			return false;
 		}
 
@@ -73,7 +73,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 		// Build query string and add row
 		ss << player->getGUID() << ',' << pid << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
 		if (!query_insert.addRow(ss)) {
-			SPDLOG_ERROR("Error adding row to query.");
+			g_logger().error("Error adding row to query.");
 			return false;
 		}
 	}
@@ -121,7 +121,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 				propWriteStream.clear();
 				item->serializeAttr(propWriteStream);
 			} catch (...) {
-				SPDLOG_ERROR("Error serializing item attributes in container.");
+				g_logger().error("Error serializing item attributes in container.");
 				return false;
 			}
 
@@ -131,7 +131,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 			// Build query string and add row
 			ss << player->getGUID() << ',' << parentId << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
 			if (!query_insert.addRow(ss)) {
-				SPDLOG_ERROR("Error adding row to query for container item.");
+				g_logger().error("Error adding row to query for container item.");
 				return false;
 			}
 		}
@@ -139,7 +139,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 
 	// Execute query
 	if (!query_insert.execute()) {
-		SPDLOG_ERROR("Error executing query.");
+		g_logger().error("Error executing query.");
 		return false;
 	}
 	return true;
@@ -147,7 +147,7 @@ bool IOLoginDataSave::saveItems(const Player* player, const ItemBlockList &itemL
 
 bool IOLoginDataSave::savePlayerFirst(Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -161,7 +161,7 @@ bool IOLoginDataSave::savePlayerFirst(Player* player) {
 	query << "SELECT `save` FROM `players` WHERE `id` = " << player->getGUID();
 	DBResult_ptr result = db.storeQuery(query.str());
 	if (!result) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Error for select result query from player: {}", player->getName());
+		g_logger().warn("[IOLoginData::savePlayer] - Error for select result query from player: {}", player->getName());
 		return false;
 	}
 
@@ -312,7 +312,7 @@ bool IOLoginDataSave::savePlayerFirst(Player* player) {
 
 bool IOLoginDataSave::savePlayerStash(const Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -338,7 +338,7 @@ bool IOLoginDataSave::savePlayerStash(const Player* player) {
 
 bool IOLoginDataSave::savePlayerSpells(const Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -367,7 +367,7 @@ bool IOLoginDataSave::savePlayerSpells(const Player* player) {
 
 bool IOLoginDataSave::savePlayerKills(const Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -396,7 +396,7 @@ bool IOLoginDataSave::savePlayerKills(const Player* player) {
 
 bool IOLoginDataSave::savePlayerBestiarySystem(const Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -429,7 +429,7 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const Player* player) {
 	query << "`UnlockedRunesBit` = " << player->UnlockedRunesBit << ",";
 
 	PropWriteStream propBestiaryStream;
-	for (const MonsterType* trackedType : player->getBestiaryTrackerList()) {
+	for (const std::shared_ptr<MonsterType> trackedType : player->getBestiaryTrackerList()) {
 		propBestiaryStream.write<uint16_t>(trackedType->info.raceid);
 	}
 	size_t trackerSize;
@@ -438,7 +438,7 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const Player* player) {
 	query << " WHERE `player_guid` = " << player->getGUID();
 
 	if (!db.executeQuery(query.str())) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Error saving bestiary data from player: {}", player->getName());
+		g_logger().warn("[IOLoginData::savePlayer] - Error saving bestiary data from player: {}", player->getName());
 		return false;
 	}
 	return true;
@@ -446,7 +446,7 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const Player* player) {
 
 bool IOLoginDataSave::savePlayerItem(const Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -455,7 +455,7 @@ bool IOLoginDataSave::savePlayerItem(const Player* player) {
 	std::ostringstream query;
 	query << "DELETE FROM `player_items` WHERE `player_id` = " << player->getGUID();
 	if (!db.executeQuery(query.str())) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Error delete query 'player_items' from player: {}", player->getName());
+		g_logger().warn("[IOLoginData::savePlayer] - Error delete query 'player_items' from player: {}", player->getName());
 		return false;
 	}
 
@@ -470,7 +470,7 @@ bool IOLoginDataSave::savePlayerItem(const Player* player) {
 	}
 
 	if (!saveItems(player, itemList, itemsQuery, propWriteStream)) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Failed for save items from player: {}", player->getName());
+		g_logger().warn("[IOLoginData::savePlayer] - Failed for save items from player: {}", player->getName());
 		return false;
 	}
 	return true;
@@ -478,7 +478,7 @@ bool IOLoginDataSave::savePlayerItem(const Player* player) {
 
 bool IOLoginDataSave::savePlayerDepotItems(const Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -513,7 +513,7 @@ bool IOLoginDataSave::savePlayerDepotItems(const Player* player) {
 
 bool IOLoginDataSave::saveRewardItems(Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -547,7 +547,7 @@ bool IOLoginDataSave::saveRewardItems(Player* player) {
 
 bool IOLoginDataSave::savePlayerInbox(const Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -575,7 +575,7 @@ bool IOLoginDataSave::savePlayerInbox(const Player* player) {
 
 bool IOLoginDataSave::savePlayerPreyClass(Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -613,7 +613,7 @@ bool IOLoginDataSave::savePlayerPreyClass(Player* player) {
 				query << db.escapeBlob(preyList, static_cast<uint32_t>(preySize)) << ")";
 
 				if (!db.executeQuery(query.str())) {
-					SPDLOG_WARN("[IOLoginData::savePlayer] - Error saving prey slot data from player: {}", player->getName());
+					g_logger().warn("[IOLoginData::savePlayer] - Error saving prey slot data from player: {}", player->getName());
 					return false;
 				}
 			}
@@ -624,7 +624,7 @@ bool IOLoginDataSave::savePlayerPreyClass(Player* player) {
 
 bool IOLoginDataSave::savePlayerTaskHuntingClass(Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -661,7 +661,7 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(Player* player) {
 				query << db.escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize)) << ")";
 
 				if (!db.executeQuery(query.str())) {
-					SPDLOG_WARN("[IOLoginData::savePlayer] - Error saving task hunting slot data from player: {}", player->getName());
+					g_logger().warn("[IOLoginData::savePlayer] - Error saving task hunting slot data from player: {}", player->getName());
 					return false;
 				}
 			}
@@ -672,7 +672,7 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(Player* player) {
 
 bool IOLoginDataSave::savePlayerForgeHistory(Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -706,7 +706,7 @@ bool IOLoginDataSave::savePlayerForgeHistory(Player* player) {
 
 bool IOLoginDataSave::savePlayerBosstiary(const Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
@@ -737,7 +737,7 @@ bool IOLoginDataSave::savePlayerBosstiary(const Player* player) {
 
 bool IOLoginDataSave::savePlayerStorage(Player* player) {
 	if (!player) {
-		SPDLOG_WARN("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 

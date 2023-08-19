@@ -15,7 +15,7 @@
 class MonsterTypeFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-			registerClass(L, "MonsterType", "", MonsterTypeFunctions::luaMonsterTypeCreate);
+			registerSharedClass(L, "MonsterType", "", MonsterTypeFunctions::luaMonsterTypeCreate);
 			registerMetaMethod(L, "MonsterType", "__eq", MonsterTypeFunctions::luaUserdataCompare);
 
 			registerMethod(L, "MonsterType", "isAttackable", MonsterTypeFunctions::luaMonsterTypeIsAttackable);

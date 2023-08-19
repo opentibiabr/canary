@@ -206,7 +206,6 @@ namespace {
 			}
 		}
 	}
-
 } // namespace
 
 ProtocolGame::ProtocolGame(Connection_ptr initConnection) :
@@ -1484,7 +1483,7 @@ bool ProtocolGame::canSee(int32_t x, int32_t y, int32_t z) const {
 
 	// negative offset means that the action taken place is on a lower floor than ourself
 	const int8_t offsetz = myPos.getZ() - z;
-	return (x >= myPos.getX() - Map::maxClientViewportX + offsetz) && (x <= myPos.getX() + (Map::maxClientViewportX + 1) + offsetz) && (y >= myPos.getY() - Map::maxClientViewportY + offsetz) && (y <= myPos.getY() + (Map::maxClientViewportY + 1) + offsetz);
+	return (x >= myPos.getX() - MAP_MAX_CLIENT_VIEW_PORT_X + offsetz) && (x <= myPos.getX() + (MAP_MAX_CLIENT_VIEW_PORT_X + 1) + offsetz) && (y >= myPos.getY() - MAP_MAX_CLIENT_VIEW_PORT_Y + offsetz) && (y <= myPos.getY() + (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) + offsetz);
 }
 
 // Parse methods
@@ -2158,7 +2157,7 @@ void ProtocolGame::parseBestiarysendRaces() {
 		std::string BestClass = "";
 		uint16_t count = 0;
 		for (auto rit : mtype_list) {
-			const MonsterType* mtype = g_monsters().getMonsterType(rit.second);
+			const auto &mtype = g_monsters().getMonsterType(rit.second);
 			if (!mtype) {
 				return;
 			}
@@ -2195,12 +2194,12 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 
 	uint16_t raceId = msg.get<uint16_t>();
 	std::string Class = "";
-	MonsterType* mtype = nullptr;
+	std::shared_ptr<MonsterType> mtype = nullptr;
 	phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 
 	auto ait = mtype_list.find(raceId);
 	if (ait != mtype_list.end()) {
-		MonsterType* mType = g_monsters().getMonsterType(ait->second);
+		auto mType = g_monsters().getMonsterType(ait->second);
 		if (mType) {
 			Class = mType->info.bestiaryClass;
 			mtype = mType;
@@ -2316,7 +2315,7 @@ void ProtocolGame::addBestiaryTrackerList(NetworkMessage &msg) {
 	phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 	auto it = mtype_list.find(thisrace);
 	if (it != mtype_list.end()) {
-		MonsterType* mtype = g_monsters().getMonsterType(it->second);
+		const auto &mtype = g_monsters().getMonsterType(it->second);
 		if (mtype) {
 			player->addBestiaryTrackerList(mtype);
 		}
@@ -2689,7 +2688,7 @@ void ProtocolGame::parseSendBuyCharmRune(NetworkMessage &msg) {
 	g_iobestiary().sendBuyCharmRune(player, runeID, action, raceid);
 }
 
-void ProtocolGame::refreshBestiaryTracker(std::list<MonsterType*> trackerList) {
+void ProtocolGame::refreshBestiaryTracker(const std::list<std::shared_ptr<MonsterType>> &trackerList) {
 	if (!player || oldProtocol) {
 		return;
 	}
@@ -2698,7 +2697,7 @@ void ProtocolGame::refreshBestiaryTracker(std::list<MonsterType*> trackerList) {
 	msg.addByte(0xB9);
 	msg.addByte(0x00); // Bestiary ENUM
 	msg.addByte(trackerList.size());
-	for (MonsterType* mtype : trackerList) {
+	for (const auto &mtype : trackerList) {
 		uint32_t killAmount = player->getBestiaryKillCount(mtype->info.raceid);
 		msg.add<uint16_t>(mtype->info.raceid);
 		msg.add<uint32_t>(killAmount);
@@ -2728,9 +2727,9 @@ void ProtocolGame::BestiarysendCharms() {
 	msg.addByte(0xd8);
 	msg.add<uint32_t>(player->getCharmPoints());
 
-	std::vector<Charm*> charmList = g_game().getCharmList();
+	const auto &charmList = g_game().getCharmList();
 	msg.addByte(charmList.size());
-	for (Charm* c_type : charmList) {
+	for (const auto &c_type : charmList) {
 		msg.addByte(c_type->id);
 		msg.addString(c_type->name);
 		msg.addString(c_type->description);
@@ -2757,7 +2756,7 @@ void ProtocolGame::BestiarysendCharms() {
 	std::list<charmRune_t> usedRunes = g_iobestiary().getCharmUsedRuneBitAll(player);
 
 	for (charmRune_t charmRune : usedRunes) {
-		Charm* tmpCharm = g_iobestiary().getBestiaryCharm(charmRune);
+		const auto &tmpCharm = g_iobestiary().getBestiaryCharm(charmRune);
 		uint16_t tmp_raceid = player->parseRacebyCharm(tmpCharm->id, false, 0);
 		std::erase_if(finishedMonstersVector, [tmp_raceid](uint16_t val) { return val == tmp_raceid; });
 	}
@@ -2817,7 +2816,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 		uint8_t progress = 0;
 		for (const auto &_it : creaturesKilled) {
 			if (_it.first == raceid_) {
-				MonsterType* tmpType = g_monsters().getMonsterType(it_.second);
+				const auto &tmpType = g_monsters().getMonsterType(it_.second);
 				if (!tmpType) {
 					return;
 				}
@@ -5835,7 +5834,7 @@ void ProtocolGame::sendMapDescription(const Position &pos) {
 	NetworkMessage msg;
 	msg.addByte(0x64);
 	msg.addPosition(player->getPosition());
-	GetMapDescription(pos.x - Map::maxClientViewportX, pos.y - Map::maxClientViewportY, pos.z, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, msg);
+	GetMapDescription(pos.x - MAP_MAX_CLIENT_VIEW_PORT_X, pos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, pos.z, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, msg);
 	writeToOutputBuffer(msg);
 }
 
@@ -6120,18 +6119,18 @@ void ProtocolGame::sendMoveCreature(const Creature* creature, const Position &ne
 
 			if (oldPos.y > newPos.y) { // north, for old x
 				msg.addByte(0x65);
-				GetMapDescription(oldPos.x - Map::maxClientViewportX, newPos.y - Map::maxClientViewportY, newPos.z, (Map::maxClientViewportX + 1) * 2, 1, msg);
+				GetMapDescription(oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, newPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, 1, msg);
 			} else if (oldPos.y < newPos.y) { // south, for old x
 				msg.addByte(0x67);
-				GetMapDescription(oldPos.x - Map::maxClientViewportX, newPos.y + (Map::maxClientViewportY + 1), newPos.z, (Map::maxClientViewportX + 1) * 2, 1, msg);
+				GetMapDescription(oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, newPos.y + (MAP_MAX_CLIENT_VIEW_PORT_Y + 1), newPos.z, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, 1, msg);
 			}
 
 			if (oldPos.x < newPos.x) { // east, [with new y]
 				msg.addByte(0x66);
-				GetMapDescription(newPos.x + (Map::maxClientViewportX + 1), newPos.y - Map::maxClientViewportY, newPos.z, 1, (Map::maxClientViewportY + 1) * 2, msg);
+				GetMapDescription(newPos.x + (MAP_MAX_CLIENT_VIEW_PORT_X + 1), newPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z, 1, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, msg);
 			} else if (oldPos.x > newPos.x) { // west, [with new y]
 				msg.addByte(0x68);
-				GetMapDescription(newPos.x - Map::maxClientViewportX, newPos.y - Map::maxClientViewportY, newPos.z, 1, (Map::maxClientViewportY + 1) * 2, msg);
+				GetMapDescription(newPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, newPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z, 1, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, msg);
 			}
 			writeToOutputBuffer(msg);
 		}
@@ -6701,7 +6700,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot) {
 	} else if (slot->state == PreyDataState_Inactive) {
 		// Empty
 	} else if (slot->state == PreyDataState_Active) {
-		if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId)) {
+		if (const auto &mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId)) {
 			msg.addString(mtype->name);
 			const Outfit_t outfit = mtype->info.outfit;
 			msg.add<uint16_t>(outfit.lookType);
@@ -6723,7 +6722,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot) {
 	} else if (slot->state == PreyDataState_Selection) {
 		msg.addByte(static_cast<uint8_t>(validRaceIds.size()));
 		for (uint16_t raceId : validRaceIds) {
-			const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId);
+			const auto &mtype = g_monsters().getMonsterTypeByRaceId(raceId);
 			if (!mtype) {
 				continue;
 			}
@@ -6748,7 +6747,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot) {
 		msg.addByte(slot->bonusRarity);
 		msg.addByte(static_cast<uint8_t>(validRaceIds.size()));
 		for (uint16_t raceId : validRaceIds) {
-			const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId);
+			const auto &mtype = g_monsters().getMonsterTypeByRaceId(raceId);
 			if (!mtype) {
 				continue;
 			}
@@ -7476,12 +7475,12 @@ void ProtocolGame::MoveUpCreature(NetworkMessage &msg, const Creature* creature,
 	// going to surface
 	if (newPos.z == MAP_INIT_SURFACE_LAYER) {
 		int32_t skip = -1;
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 5, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 3, skip); //(floor 7 and 6 already set)
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 4, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 4, skip);
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 3, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 5, skip);
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 6, skip);
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 1, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 7, skip);
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 0, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 8, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, 5, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 3, skip); //(floor 7 and 6 already set)
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, 4, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 4, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, 3, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 5, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, 2, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 6, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, 1, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 7, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, 0, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 8, skip);
 
 		if (skip >= 0) {
 			msg.addByte(skip);
@@ -7491,7 +7490,7 @@ void ProtocolGame::MoveUpCreature(NetworkMessage &msg, const Creature* creature,
 	// underground, going one floor up (still underground)
 	else if (newPos.z > MAP_INIT_SURFACE_LAYER) {
 		int32_t skip = -1;
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, oldPos.getZ() - 3, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 3, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, oldPos.getZ() - 3, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, 3, skip);
 
 		if (skip >= 0) {
 			msg.addByte(skip);
@@ -7502,11 +7501,11 @@ void ProtocolGame::MoveUpCreature(NetworkMessage &msg, const Creature* creature,
 	// moving up a floor up makes us out of sync
 	// west
 	msg.addByte(0x68);
-	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y - (Map::maxClientViewportY - 1), newPos.z, 1, (Map::maxClientViewportY + 1) * 2, msg);
+	GetMapDescription(oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - (MAP_MAX_CLIENT_VIEW_PORT_Y - 1), newPos.z, 1, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, msg);
 
 	// north
 	msg.addByte(0x65);
-	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z, (Map::maxClientViewportX + 1) * 2, 1, msg);
+	GetMapDescription(oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, 1, msg);
 }
 
 void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature* creature, const Position &newPos, const Position &oldPos) {
@@ -7521,9 +7520,9 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature* creatur
 	if (newPos.z == MAP_INIT_SURFACE_LAYER + 1) {
 		int32_t skip = -1;
 
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -1, skip);
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z + 1, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -2, skip);
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z + 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -3, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, -1, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z + 1, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, -2, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z + 2, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, -3, skip);
 
 		if (skip >= 0) {
 			msg.addByte(skip);
@@ -7533,7 +7532,7 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature* creatur
 	// going further down
 	else if (newPos.z > oldPos.z && newPos.z > MAP_INIT_SURFACE_LAYER + 1 && newPos.z < MAP_MAX_LAYERS - MAP_LAYER_VIEW_LIMIT) {
 		int32_t skip = -1;
-		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z + MAP_LAYER_VIEW_LIMIT, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -3, skip);
+		GetFloorDescription(msg, oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y - MAP_MAX_CLIENT_VIEW_PORT_Y, newPos.z + MAP_LAYER_VIEW_LIMIT, (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2, (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2, -3, skip);
 
 		if (skip >= 0) {
 			msg.addByte(skip);
@@ -7544,11 +7543,11 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature* creatur
 	// moving down a floor makes us out of sync
 	// east
 	msg.addByte(0x66);
-	GetMapDescription(oldPos.x + Map::maxClientViewportX + 1, oldPos.y - (Map::maxClientViewportY + 1), newPos.z, 1, ((Map::maxClientViewportY + 1) * 2), msg);
+	GetMapDescription(oldPos.x + MAP_MAX_CLIENT_VIEW_PORT_X + 1, oldPos.y - (MAP_MAX_CLIENT_VIEW_PORT_Y + 1), newPos.z, 1, ((MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2), msg);
 
 	// south
 	msg.addByte(0x67);
-	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y + (Map::maxClientViewportY + 1), newPos.z, ((Map::maxClientViewportX + 1) * 2), 1, msg);
+	GetMapDescription(oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X, oldPos.y + (MAP_MAX_CLIENT_VIEW_PORT_Y + 1), newPos.z, ((MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2), 1, msg);
 }
 
 void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg) {
@@ -8064,7 +8063,7 @@ void ProtocolGame::parseSendBosstiary() {
 	msg.skipBytes(2);
 
 	for (const auto &[bossid, name] : mtype_map) {
-		const MonsterType* mType = g_monsters().getMonsterType(name);
+		const auto &mType = g_monsters().getMonsterType(name);
 		if (!mType) {
 			continue;
 		}
@@ -8101,7 +8100,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 
 	// Sanity checks
 	std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
-	const MonsterType* mTypeBoosted = g_monsters().getMonsterType(boostedBossName);
+	const auto &mTypeBoosted = g_monsters().getMonsterType(boostedBossName);
 	auto boostedBossRace = mTypeBoosted ? mTypeBoosted->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBoostedBoss = boostedBossId == 0 || boostedBossRace >= BosstiaryRarity_t::RARITY_BANE && boostedBossRace <= BosstiaryRarity_t::RARITY_NEMESIS;
 	if (!isValidBoostedBoss) {
@@ -8109,7 +8108,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		return;
 	}
 
-	const MonsterType* mTypeSlotOne = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
+	const auto &mTypeSlotOne = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
 	auto bossRaceSlotOne = mTypeSlotOne ? mTypeSlotOne->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBossSlotOne = bossIdSlotOne == 0 || bossRaceSlotOne >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotOne <= BosstiaryRarity_t::RARITY_NEMESIS;
 	if (!isValidBossSlotOne) {
@@ -8117,7 +8116,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		return;
 	}
 
-	const MonsterType* mTypeSlotTwo = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
+	const auto &mTypeSlotTwo = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
 	auto bossRaceSlotTwo = mTypeSlotTwo ? mTypeSlotTwo->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBossSlotTwo = bossIdSlotTwo == 0 || bossRaceSlotTwo >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotTwo <= BosstiaryRarity_t::RARITY_NEMESIS;
 	if (!isValidBossSlotTwo) {
@@ -8196,7 +8195,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 			if (bossId == bossIdSlotOne || bossId == bossIdSlotTwo)
 				continue;
 
-			const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossId);
+			const auto &mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossId);
 			if (!mType) {
 				g_logger().error("[{}] monster {} not found", __FUNCTION__, bossId);
 				continue;
@@ -8235,7 +8234,7 @@ void ProtocolGame::sendPodiumDetails(NetworkMessage &msg, const std::vector<uint
 	auto toSendMonstersSize = static_cast<uint16_t>(toSendMonsters.size());
 	msg.add<uint16_t>(toSendMonstersSize);
 	for (const auto &raceId : toSendMonsters) {
-		const MonsterType* mType = g_monsters().getMonsterTypeByRaceId(raceId, isBoss);
+		const auto &mType = g_monsters().getMonsterTypeByRaceId(raceId, isBoss);
 		if (!mType) {
 			continue;
 		}
@@ -8350,7 +8349,7 @@ void ProtocolGame::sendBosstiaryCooldownTimer() {
 	auto bossesOnTrackerSize = static_cast<uint16_t>(bossesOnTracker.size());
 	msg.add<uint16_t>(bossesOnTrackerSize); // Number of bosses on timer
 	for (const auto &bossRaceId : bossesOnTracker) {
-		const MonsterType* mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossRaceId);
+		const auto &mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossRaceId);
 		if (!mType) {
 			continue;
 		}

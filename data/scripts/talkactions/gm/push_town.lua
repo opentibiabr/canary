@@ -18,7 +18,7 @@ function pushTown.onSay(player, words, param)
 		targetPlayer:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 		local text = "Player " .. targetPlayer:getName() .. " has been teleported to temple by " .. player:getName() .. "."
 		Spdlog.info("[pushTown.onSay] - " .. text)
-		Webhook.send("Player Teleported", text, WEBHOOK_COLOR_WARNING, announcementChannels["serverAnnouncements"])
+		Webhook.sendMessage("Player Teleported", text, WEBHOOK_COLOR_WARNING, announcementChannels["serverAnnouncements"])
 	end
 	return true
 end

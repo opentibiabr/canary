@@ -10,7 +10,11 @@ function eradicatorTransform.onThink(creature)
 			local health = creature:getHealth()
 			creature:remove()
 
-			local monster = Game.createMonster("eradicator2", pos, false, true)
+			local monster = Game.createMonster("Eradicator2", pos, false, true)
+			if not monster then
+				Spdlog.error("Cannot create Eradicator2")
+				return false
+			end
 			monster:addHealth(-monster:getHealth() + health, COMBAT_PHYSICALDAMAGE)
 			Game.createMonster("spark of destruction", {x = 32304, y = 31282, z = 14}, false, true)
 			Game.createMonster("spark of destruction", {x = 32305, y = 31287, z = 14}, false, true)
@@ -25,7 +29,11 @@ function eradicatorTransform.onThink(creature)
 
 			creature:remove()
 
-			local monster = Game.createMonster("eradicator", pos, false, true)
+			local monster = Game.createMonster("Eradicator1", pos, false, true)
+			if not monster then
+				Spdlog.error("Cannot create Eradicator1")
+				return false
+			end
 			monster:addHealth(-monster:getHealth() + health, COMBAT_PHYSICALDAMAGE)
 			eradicatorWeak = 0
 			eradicatorReleaseT = false -- Release spell

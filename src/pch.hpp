@@ -34,6 +34,7 @@
 #include <ranges>
 #include <regex>
 #include <set>
+#include <thread>
 #include <vector>
 #include <variant>
 
@@ -110,9 +111,6 @@
 // PugiXML
 #include <pugixml.hpp>
 
-// SPDLog
-#include <spdlog/spdlog.h>
-
 // Zlib
 #include <zlib.h>
 
@@ -144,5 +142,7 @@
 #include <eventpp/eventdispatcher.h>
 
 #include "lib/di/container.hpp"
+
+#include "lua/global/shared_object.hpp"
 
 #endif // SRC_PCH_HPP_

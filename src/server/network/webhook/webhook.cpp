@@ -12,6 +12,7 @@
 #include "server/network/webhook/webhook.h"
 #include "config/configmanager.h"
 #include "game/scheduling/scheduler.h"
+#include "utils/tools.h"
 
 Webhook::Webhook(ThreadPool &threadPool) :
 	threadPool(threadPool) {

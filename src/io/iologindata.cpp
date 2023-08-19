@@ -1015,16 +1015,18 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 		return false;
 	}
 
-	// Stash save items
+	// First, delete all items from the player's stash
 	query.str(std::string());
 	query << "DELETE FROM `player_stash` WHERE `player_id` = " << player->getGUID();
 	db.executeQuery(query.str());
+
+	// Then, insert the current items in the stash
 	for (auto it : player->getStashItems()) {
 		query.str(std::string());
-		query << "INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES (";
-		query << player->getGUID() << ", ";
-		query << it.first << ", ";
-		query << it.second << ")";
+		query << "INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES ("
+			  << player->getGUID() << ", "
+			  << it.first << ", "
+			  << it.second << ")";
 		db.executeQuery(query.str());
 	}
 
@@ -1183,27 +1185,21 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 
 	// Save prey class
 	if (g_configManager().getBoolean(PREY_ENABLED)) {
-		query.str(std::string());
-		query << "DELETE FROM `player_prey` WHERE `player_id` = " << player->getGUID();
-		if (!db.executeQuery(query.str())) {
-			return false;
-		}
-
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
 			PreySlot* slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
 			if (slot) {
 				query.str(std::string());
-				query << "INSERT INTO `player_prey` (`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, `bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) VALUES (";
-				query << player->getGUID() << ", ";
-				query << static_cast<uint16_t>(slot->id) << ", ";
-				query << static_cast<uint16_t>(slot->state) << ", ";
-				query << slot->selectedRaceId << ", ";
-				query << static_cast<uint16_t>(slot->option) << ", ";
-				query << static_cast<uint16_t>(slot->bonus) << ", ";
-				query << static_cast<uint16_t>(slot->bonusRarity) << ", ";
-				query << slot->bonusPercentage << ", ";
-				query << slot->bonusTimeLeft << ", ";
-				query << slot->freeRerollTimeStamp << ", ";
+				query << "INSERT INTO player_prey (`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, `bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) "
+					  << "VALUES (" << player->getGUID() << ", "
+					  << static_cast<uint16_t>(slot->id) << ", "
+					  << static_cast<uint16_t>(slot->state) << ", "
+					  << slot->selectedRaceId << ", "
+					  << static_cast<uint16_t>(slot->option) << ", "
+					  << static_cast<uint16_t>(slot->bonus) << ", "
+					  << static_cast<uint16_t>(slot->bonusRarity) << ", "
+					  << slot->bonusPercentage << ", "
+					  << slot->bonusTimeLeft << ", "
+					  << slot->freeRerollTimeStamp << ", ";
 
 				PropWriteStream propPreyStream;
 				std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propPreyStream](uint16_t raceId) {
@@ -1213,6 +1209,17 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 				size_t preySize;
 				const char* preyList = propPreyStream.getStream(preySize);
 				query << db.escapeBlob(preyList, static_cast<uint32_t>(preySize)) << ")";
+
+				query << " ON DUPLICATE KEY UPDATE "
+					  << "`state` = VALUES(`state`), "
+					  << "`raceid` = VALUES(`raceid`), "
+					  << "`option` = VALUES(`option`), "
+					  << "`bonus_type` = VALUES(`bonus_type`), "
+					  << "`bonus_rarity` = VALUES(`bonus_rarity`), "
+					  << "`bonus_percentage` = VALUES(`bonus_percentage`), "
+					  << "`bonus_time` = VALUES(`bonus_time`), "
+					  << "`free_reroll` = VALUES(`free_reroll`), "
+					  << "`monster_list` = VALUES(`monster_list`)";
 
 				if (!db.executeQuery(query.str())) {
 					g_logger().warn("[IOLoginData::savePlayer] - Error saving prey slot data from player: {}", player->getName());
@@ -1224,12 +1231,6 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 
 	// Save task hunting class
 	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
-		query.str(std::string());
-		query << "DELETE FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
-		if (!db.executeQuery(query.str())) {
-			return false;
-		}
-
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
 			TaskHuntingSlot* slot = player->getTaskHuntingSlotById(static_cast<PreySlot_t>(slotId));
 			if (slot) {
@@ -1253,6 +1254,16 @@ bool IOLoginData::savePlayerGuard(Player* player) {
 				size_t taskHuntingSize;
 				const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);
 				query << db.escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize)) << ")";
+
+				query << " ON DUPLICATE KEY UPDATE "
+					  << "`state` = VALUES(`state`), "
+					  << "`raceid` = VALUES(`raceid`), "
+					  << "`upgrade` = VALUES(`upgrade`), "
+					  << "`rarity` = VALUES(`rarity`), "
+					  << "`kills` = VALUES(`kills`), "
+					  << "`disabled_time` = VALUES(`disabled_time`), "
+					  << "`free_reroll` = VALUES(`free_reroll`), "
+					  << "`monster_list` = VALUES(`monster_list`)";
 
 				if (!db.executeQuery(query.str())) {
 					g_logger().warn("[IOLoginData::savePlayer] - Error saving task hunting slot data from player: {}", player->getName());

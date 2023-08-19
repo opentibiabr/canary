@@ -324,7 +324,13 @@ MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t raceId, bool isBoss /* = 
 	return g_monsters().getMonsterType(it->second);
 }
 
-void Monsters::addMonsterType(const std::string &name, MonsterType* mType) {
+bool Monsters::tryAddMonsterType(const std::string &name, MonsterType* mType) {
 	std::string lowerName = asLowerCaseString(name);
+	if (monsters.find(lowerName) != monsters.end()) {
+		g_logger().debug("[{}] the monster with name '{}' already exist", __FUNCTION__, name);
+		return false;
+	}
+
 	monsters[lowerName] = mType;
+	return true;
 }

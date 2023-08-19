@@ -14,8 +14,8 @@ local function removeCombatProtection(playerUid)
 	end
 
 	player:setStorageValue(Global.Storage.CombatProtectionStorage, 2)
-	addEvent(function(playerUid)
-		local playerEvent = Player(playerUid)
+	addEvent(function(playerFuncUid)
+		local playerEvent = Player(playerFuncUid)
 		if not playerEvent then
 			return
 		end

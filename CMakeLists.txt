@@ -42,7 +42,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 include(MessageColors)
 include(LoggingHelper)
 
-
 # *****************************************************************************
 # Options
 # *****************************************************************************
@@ -95,9 +94,14 @@ else()
   log_option_disabled("ipo")
 endif()
 
+option(BUILD_TESTS "Build tests" OFF) # By default, tests will not be built
 
 # *****************************************************************************
 # Add project
 # *****************************************************************************
 add_subdirectory(src/protobuf)
 add_subdirectory(src)
+
+if(BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

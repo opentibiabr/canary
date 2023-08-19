@@ -58,6 +58,7 @@ std::string getFirstLine(const std::string &str);
 
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);
+std::string formatTime(time_t time);
 std::time_t getTimeNow();
 std::time_t getTimeMsNow();
 std::string convertIPToString(uint32_t ip);
@@ -113,6 +114,10 @@ uint8_t forgeBonus(int32_t number);
 
 std::string formatPrice(std::string price, bool space /* = false*/);
 std::vector<std::string> split(const std::string &str);
+
+static inline unsigned int getNumberOfCores() {
+	return std::thread::hardware_concurrency();
+}
 
 static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	switch (combatType) {

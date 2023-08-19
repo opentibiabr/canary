@@ -1059,6 +1059,30 @@ void EventCallback::monsterOnDropLoot(Monster* monster, Container* corpse) const
 	return getScriptInterface()->callVoidFunction(2);
 }
 
+void EventCallback::monsterPostDropLoot(Monster* monster, Container* corpse) const {
+	if (!getScriptInterface()->reserveScriptEnv()) {
+		g_logger().error("[EventCallback::monsterPostDropLoot - "
+						 "Monster corpse {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 corpse->getName());
+		return;
+	}
+
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
+
+	lua_State* L = getScriptInterface()->getLuaState();
+	getScriptInterface()->pushFunction(getScriptId());
+
+	LuaScriptInterface::pushUserdata<Monster>(L, monster);
+	LuaScriptInterface::setMetatable(L, -1, "Monster");
+
+	LuaScriptInterface::pushUserdata<Container>(L, corpse);
+	LuaScriptInterface::setMetatable(L, -1, "Container");
+
+	return getScriptInterface()->callVoidFunction(2);
+}
+
 void EventCallback::monsterOnSpawn(Monster* monster, const Position &position) const {
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("{} - "

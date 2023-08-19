@@ -16,11 +16,11 @@ class WebhookFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
 			registerTable(L, "Webhook");
-			registerMethod(L, "Webhook", "send", WebhookFunctions::webhookSend);
+			registerMethod(L, "Webhook", "sendMessage", WebhookFunctions::luaWebhookSendMessage);
 		}
 
 	private:
-		static int webhookSend(lua_State* L);
+		static int luaWebhookSendMessage(lua_State* L);
 };
 
 #endif // SRC_LUA_FUNCTIONS_CORE_NETWORK_WEBHOOK_FUNCTIONS_HPP_

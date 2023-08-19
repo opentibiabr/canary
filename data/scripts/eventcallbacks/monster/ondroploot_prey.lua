@@ -30,7 +30,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 		local numActivators = #preyActivators
 		preyChance = preyChance / numActivators ^ configManager.getFloat(configKeys.PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR)
 	end
-	if math.random(0, 100) > preyChance then
+	if math.random(1, 100) > preyChance then
 		return
 	end
 

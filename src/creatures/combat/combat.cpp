@@ -308,7 +308,7 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target, bool aggre
 
 	if (attacker) {
 		const Creature* attackerMaster = attacker->getMaster();
-		auto targetPlayer = target->getPlayer() ? target->getPlayer() : nullptr;
+		auto targetPlayer = target ? target->getPlayer() : nullptr;
 		if (targetPlayer) {
 			if (targetPlayer->hasFlag(PlayerFlags_t::CannotBeAttacked)) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
@@ -387,13 +387,13 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target, bool aggre
 
 		if (g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
 			if (attacker->getPlayer() || (attackerMaster && attackerMaster->getPlayer())) {
-				if (target->getPlayer()) {
+				if (targetPlayer) {
 					if (!isInPvpZone(attacker, target)) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 					}
 				}
 
-				if (target->isSummon() && target->getMaster()->getPlayer()) {
+				if (target && target->isSummon() && target->getMaster()->getPlayer()) {
 					if (!isInPvpZone(attacker, target)) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 					}
@@ -708,9 +708,9 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 			} else if (caster && caster->getMonster()) {
 				uint16_t playerCharmRaceid = player->parseRacebyCharm(CHARM_CLEANSE, false, 0);
 				if (playerCharmRaceid != 0) {
-					const MonsterType* mType = g_monsters().getMonsterType(caster->getName());
+					const auto &mType = g_monsters().getMonsterType(caster->getName());
 					if (mType && playerCharmRaceid == mType->info.raceid) {
-						Charm* charm = g_iobestiary().getBestiaryCharm(CHARM_CLEANSE);
+						const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_CLEANSE);
 						if (charm && (charm->chance > normal_random(0, 100))) {
 							if (player->hasCondition(condition->getType())) {
 								player->removeCondition(condition->getType());
@@ -1143,9 +1143,9 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, const Position &
 		if (target && target->getMonster() && damage.primary.type != COMBAT_HEALING) {
 			uint16_t playerCharmRaceid = caster->getPlayer()->parseRacebyCharm(CHARM_LOW, false, 0);
 			if (playerCharmRaceid != 0) {
-				const MonsterType* mType = g_monsters().getMonsterType(target->getName());
+				const auto &mType = g_monsters().getMonsterType(target->getName());
 				if (mType && playerCharmRaceid == mType->info.raceid) {
-					Charm* charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
+					const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 					if (charm) {
 						chance += charm->percent;
 						g_game().sendDoubleSoundEffect(target->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, caster);

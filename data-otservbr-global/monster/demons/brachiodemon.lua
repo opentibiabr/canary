@@ -88,7 +88,7 @@ monster.loot = {
 	{name = "noble axe", chance = 1600},
 	{name = "spellbook of mind control", chance = 1180},
 	{name = "skull staff", chance = 930},
-	{id = 23532, chance = 930}, -- ring of green plasma
+	{id = 23531, chance = 930}, -- ring of green plasma
 	{name = "royal helmet", chance = 840},
 	{name = "jade hammer", chance = 840},
 	{name = "metal bat", chance = 760},

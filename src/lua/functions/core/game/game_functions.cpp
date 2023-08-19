@@ -37,14 +37,12 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 		if (!g_monsters().tryAddMonsterType(name, monsterType)) {
 			lua_pushstring(L, fmt::format("The monster with name {} already registered", name).c_str());
 			lua_error(L);
-			delete monsterType;
 			return 1;
 		}
 
 		if (!monsterType) {
 			lua_pushstring(L, "MonsterType is nullptr");
 			lua_error(L);
-			delete monsterType;
 			return 1;
 		}
 

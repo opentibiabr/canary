@@ -7,14 +7,17 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "mapcache.h"
 
-#include <game/movement/teleport.h>
-#include <items/bed.h>
-#include <io/iologindata.h>
-#include <game/game.h>
-#include <map/map.h>
-#include <utils/hash.h>
+#include "game/movement/teleport.h"
+#include "items/bed.h"
+#include "io/iologindata.h"
+#include "items/item.h"
+#include "game/game.h"
+#include "map/map.h"
+#include "utils/hash.h"
 
 static phmap::flat_hash_map<size_t, BasicItemPtr> items;
 static phmap::flat_hash_map<size_t, BasicTilePtr> tiles;
@@ -40,7 +43,7 @@ void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
 		item->setAttribute(ItemAttribute_t::ACTIONID, BasicItem->actionId);
 
 	if (BasicItem->uniqueId > 0)
-		item->setAttribute(ItemAttribute_t::UNIQUEID, BasicItem->actionId);
+		item->setAttribute(ItemAttribute_t::UNIQUEID, BasicItem->uniqueId);
 
 	if (item->getTeleport() && (BasicItem->destX != 0 || BasicItem->destY != 0 || BasicItem->destZ != 0)) {
 		auto dest = Position(BasicItem->destX, BasicItem->destY, BasicItem->destZ);
@@ -140,7 +143,7 @@ Tile* MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, ui
 
 void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePtr &newTile) {
 	if (z >= MAP_MAX_LAYERS) {
-		SPDLOG_ERROR("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
+		g_logger().error("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;
 	}
 
@@ -161,8 +164,11 @@ void BasicTile::hash(size_t &h) const {
 	if (ground != nullptr)
 		ground->hash(h);
 
-	for (const auto &item : items)
-		item->hash(h);
+	if (!items.empty()) {
+		stdext::hash_combine(h, items.size());
+		for (const auto &item : items)
+			item->hash(h);
+	}
 }
 
 void BasicItem::hash(size_t &h) const {
@@ -175,8 +181,11 @@ void BasicItem::hash(size_t &h) const {
 	if (!text.empty())
 		stdext::hash_combine(h, text);
 
-	for (const auto &item : items)
-		item->hash(h);
+	if (!items.empty()) {
+		stdext::hash_combine(h, items.size());
+		for (const auto &item : items)
+			item->hash(h);
+	}
 }
 
 bool BasicItem::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream) {
@@ -298,8 +307,15 @@ Attr_ReadValue BasicItem::readAttr(AttrTypes_t attr, PropStream &propStream) {
 
 		// Teleport class
 		case ATTR_TELE_DEST: {
-			if (!propStream.read<uint16_t>(destX) || !propStream.read<uint16_t>(destY) || !propStream.read<uint8_t>(destZ))
+			if (!propStream.read<uint16_t>(destX))
 				return ATTR_READ_ERROR;
+
+			if (!propStream.read<uint16_t>(destY))
+				return ATTR_READ_ERROR;
+
+			if (!propStream.read<uint8_t>(destZ))
+				return ATTR_READ_ERROR;
+
 			break;
 		}
 

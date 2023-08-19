@@ -95,6 +95,7 @@
     <ClInclude Include="..\src\lib\di\container.hpp" />
     <ClInclude Include="..\src\lib\logging\logger.hpp" />
     <ClInclude Include="..\src\lib\logging\log_with_spd_log.hpp" />
+    <ClInclude Include="..\src\lib\thread\thread_pool.hpp" />
     <ClInclude Include="..\src\lib\messaging\command.hpp" />
     <ClInclude Include="..\src\lib\messaging\event.hpp" />
     <ClInclude Include="..\src\lib\messaging\message.hpp" />
@@ -199,7 +200,6 @@
     <ClInclude Include="..\src\utils\hash.h" />
     <ClInclude Include="..\src\utils\pugicast.h" />
     <ClInclude Include="..\src\utils\simd.hpp" />
-    <ClInclude Include="..\src\utils\thread_holder_base.h" />
     <ClInclude Include="..\src\utils\tools.h" />
     <ClInclude Include="..\src\utils\utils_definitions.hpp" />
     <ClInclude Include="..\src\utils\wildcardtree.h" />
@@ -274,6 +274,7 @@
     <ClCompile Include="..\src\items\trashholder.cpp" />
     <ClCompile Include="..\src\items\weapons\weapons.cpp" />
     <ClCompile Include="..\src\lib\logging\log_with_spd_log.cpp" />
+    <ClCompile Include="..\src\lib\thread\thread_pool.cpp" />
     <ClCompile Include="..\src\lua\callbacks\creaturecallback.cpp" />
     <ClCompile Include="..\src\lua\callbacks\event_callback.cpp" />
     <ClCompile Include="..\src\lua\callbacks\events_callbacks.cpp" />
@@ -460,6 +461,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <IncludeInUnityFile>true</IncludeInUnityFile>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -491,6 +493,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <IncludeInUnityFile>true</IncludeInUnityFile>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -34,6 +34,7 @@
 #include <ranges>
 #include <regex>
 #include <set>
+#include <thread>
 #include <vector>
 #include <variant>
 
@@ -109,9 +110,6 @@
 
 // PugiXML
 #include <pugixml.hpp>
-
-// SPDLog
-#include <spdlog/spdlog.h>
 
 // Zlib
 #include <zlib.h>

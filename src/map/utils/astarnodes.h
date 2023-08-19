@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include <pch.hpp>
-
 class Position;
 class Creature;
 class Tile;

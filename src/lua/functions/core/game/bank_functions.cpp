@@ -3,8 +3,6 @@
 #include "game/bank/bank.hpp"
 #include "game/game.h"
 
-using defer = std::shared_ptr<void>;
-
 int BankFunctions::luaBankCredit(lua_State* L) {
 	// Bank.credit(playerOrGuild, amount)
 	auto bank = getBank(L, 1);

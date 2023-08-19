@@ -1,7 +1,7 @@
 function Party:onJoin(player)
-	local playerId = player:getId()
-	addEvent(function()
-		local playerEvent = Player(playerId)
+	local playerGuid = player:getGuid()
+	addEvent(function(playerFuncUid)
+		local playerEvent = Player(playerFuncUid)
 		if not playerEvent then
 			return
 		end
@@ -10,7 +10,7 @@ function Party:onJoin(player)
 			return
 		end
 		party:refreshHazard()
-	end, 100)
+	end, 100, playerGuid)
 	return true
 end
 

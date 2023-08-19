@@ -1,5 +1,5 @@
 function Party:onJoin(player)
-	local playerGuid = player:getGuid()
+	local playerUid = player:getGuid()
 	addEvent(function(playerFuncUid)
 		local playerEvent = Player(playerFuncUid)
 		if not playerEvent then
@@ -10,29 +10,29 @@ function Party:onJoin(player)
 			return
 		end
 		party:refreshHazard()
-	end, 100, playerGuid)
+	end, 100, playerUid)
 	return true
 end
 
 function Party:onLeave(player)
-	local playerId = player:getId()
+	local playerUid = player:getGuid()
 	local members = self:getMembers()
 	table.insert(members, self:getLeader())
-	local memberIds = {}
+	local memberUids = {}
 	for _, member in ipairs(members) do
-		if member:getId() ~= playerId then
-			table.insert(memberIds, member:getId())
+		if member:getGuid() ~= playerUid then
+			table.insert(memberUids, member:getGuid())
 		end
 	end
 
-	addEvent(function()
-		local playerEvent = Player(playerId)
+	addEvent(function(playerFuncUid, memberUidsTableEvent)
+		local playerEvent = Player(playerFuncUid)
 		if playerEvent then
 			playerEvent:updateHazard()
 		end
 
-		for _, memberId in ipairs(memberIds) do
-			local member = Player(memberId)
+		for _, memberUid in ipairs(memberUidsTableEvent) do
+			local member = Player(memberUid)
 			if member then
 				local party = member:getParty()
 				if party then
@@ -41,7 +41,7 @@ function Party:onLeave(player)
 				end
 			end
 		end
-	end, 100)
+	end, 100, playerUid, memberUids)
 	return true
 end
 

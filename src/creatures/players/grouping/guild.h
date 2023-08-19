@@ -24,6 +24,7 @@ struct GuildRank {
 };
 
 using GuildRank_ptr = std::shared_ptr<GuildRank>;
+
 class Guild : public Bankable {
 	public:
 		Guild(uint32_t initId, std::string initName) :

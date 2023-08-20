@@ -141,7 +141,7 @@ std::shared_ptr<MonsterType> IOBosstiary::getMonsterTypeByBossRaceId(uint16_t ra
 		if (bossRaceId == raceId) {
 			const auto &monsterType = g_monsters().getMonsterType(bossName);
 			if (!monsterType) {
-				g_logger().error("[{}] Boss with id not found in boss map", raceId);
+				g_logger().error("[{}] Boss with id {} not found in boss map", __FUNCTION__, raceId);
 				continue;
 			}
 

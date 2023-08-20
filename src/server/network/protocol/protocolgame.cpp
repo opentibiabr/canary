@@ -3595,16 +3595,16 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 	msg.skipBytes(2);
 
 	const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
-	for (const Outfit &outfit : outfits) {
+	for (const auto &outfit : outfits) {
 		uint8_t addons;
 		if (!player->getOutfitAddons(outfit, addons)) {
 			continue;
 		}
-		const std::string from = outfit.from;
+		const std::string from = outfit->from;
 		++outfitSize;
 
-		msg.add<uint16_t>(outfit.lookType);
-		msg.addString(outfit.name);
+		msg.add<uint16_t>(outfit->lookType);
+		msg.addString(outfit->name);
 		msg.addByte(addons);
 		if (from == "store")
 			msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITTYPE_STORE);
@@ -3612,7 +3612,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 			msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITTYPE_QUEST);
 		else
 			msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITTYPE_NONE);
-		if (outfit.lookType == currentOutfit.lookType) {
+		if (outfit->lookType == currentOutfit.lookType) {
 			msg.add<uint32_t>(1000);
 		} else {
 			msg.add<uint32_t>(0);
@@ -3762,7 +3762,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 	// Outfit description
 	playerDescriptionSize++;
 	msg.addString("Outfit");
-	if (const Outfit* outfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), player->getDefaultOutfit().lookType)) {
+	if (const auto &outfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), player->getDefaultOutfit().lookType)) {
 		msg.addString(outfit->name);
 	} else {
 		msg.addString("unknown");
@@ -6325,13 +6325,13 @@ void ProtocolGame::sendOutfitWindow() {
 
 		const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
 		protocolOutfits.reserve(outfits.size());
-		for (const Outfit &outfit : outfits) {
+		for (const auto &outfit : outfits) {
 			uint8_t addons;
 			if (!player->getOutfitAddons(outfit, addons)) {
 				continue;
 			}
 
-			protocolOutfits.emplace_back(outfit.name, outfit.lookType, addons);
+			protocolOutfits.emplace_back(outfit->name, outfit->lookType, addons);
 			// Game client doesn't allow more than 100 outfits
 			if (protocolOutfits.size() == 150) {
 				break;
@@ -6406,30 +6406,30 @@ void ProtocolGame::sendOutfitWindow() {
 
 	const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
 
-	for (const Outfit &outfit : outfits) {
+	for (const auto &outfit : outfits) {
 		uint8_t addons;
 		if (player->getOutfitAddons(outfit, addons)) {
-			msg.add<uint16_t>(outfit.lookType);
-			msg.addString(outfit.name);
+			msg.add<uint16_t>(outfit->lookType);
+			msg.addString(outfit->name);
 			msg.addByte(addons);
 			msg.addByte(0x00);
 			++outfitSize;
-		} else if (outfit.lookType == 1210 || outfit.lookType == 1211) {
-			msg.add<uint16_t>(outfit.lookType);
-			msg.addString(outfit.name);
+		} else if (outfit->lookType == 1210 || outfit->lookType == 1211) {
+			msg.add<uint16_t>(outfit->lookType);
+			msg.addString(outfit->name);
 			msg.addByte(3);
 			msg.addByte(0x02);
 			++outfitSize;
-		} else if (outfit.lookType == 1456 || outfit.lookType == 1457) {
-			msg.add<uint16_t>(outfit.lookType);
-			msg.addString(outfit.name);
+		} else if (outfit->lookType == 1456 || outfit->lookType == 1457) {
+			msg.add<uint16_t>(outfit->lookType);
+			msg.addString(outfit->name);
 			msg.addByte(3);
 			msg.addByte(0x03);
 			++outfitSize;
-		} else if (outfit.from == "store") {
-			msg.add<uint16_t>(outfit.lookType);
-			msg.addString(outfit.name);
-			msg.addByte(outfit.lookType >= 962 && outfit.lookType <= 975 ? 0 : 3);
+		} else if (outfit->from == "store") {
+			msg.add<uint16_t>(outfit->lookType);
+			msg.addString(outfit->name);
+			msg.addByte(outfit->lookType >= 962 && outfit->lookType <= 975 ? 0 : 3);
 			msg.addByte(0x01);
 			msg.add<uint32_t>(0x00);
 			++outfitSize;
@@ -6545,14 +6545,14 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position &position
 	msg.skipBytes(2);
 
 	const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
-	for (const Outfit &outfit : outfits) {
+	for (const auto &outfit : outfits) {
 		uint8_t addons;
 		if (!player->getOutfitAddons(outfit, addons)) {
 			continue;
 		}
 
-		msg.add<uint16_t>(outfit.lookType);
-		msg.addString(outfit.name);
+		msg.add<uint16_t>(outfit->lookType);
+		msg.addString(outfit->name);
 		msg.addByte(addons);
 		msg.addByte(0x00);
 		if (++outfitSize == limitOutfits) {

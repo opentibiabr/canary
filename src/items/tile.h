@@ -124,8 +124,7 @@ class Tile : public Cylinder {
 			return nullptr;
 		}
 
-		int32_t
-		getThrowRange() const override final {
+		int32_t getThrowRange() const override final {
 			return 0;
 		}
 		bool isPushable() const override final {
@@ -213,7 +212,7 @@ class Tile : public Cylinder {
 		ReturnValue queryRemove(const Thing &thing, uint32_t count, uint32_t tileFlags, Creature* actor = nullptr) const override;
 		Tile* queryDestination(int32_t &index, const Thing &thing, Item** destItem, uint32_t &flags) override;
 
-		const std::vector<Tile*> getSurroundingTiles() const;
+	std::vector<Tile*> getSurroundingTiles() const;
 
 		void addThing(Thing* thing) override final;
 		void addThing(int32_t index, Thing* thing) override;

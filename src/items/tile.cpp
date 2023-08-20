@@ -379,18 +379,7 @@ void Tile::onAddTileItem(Item* item) {
 			return;
 		}
 
-		std::vector<Tile*> surroundings = {
-			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y - 1, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y + 1, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y - 1, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y + 1, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y - 1, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y + 1, cylinderMapPos.z)
-		};
-
-		for (const auto &tile : surroundings) {
+		for (const auto &tile : getSurroundingTiles()) {
 			if (!tile || !tile->getGround() || tile->getGround()->getID() != getGround()->getID()) {
 				continue;
 			}
@@ -506,18 +495,7 @@ void Tile::onRemoveTileItem(const SpectatorHashSet &spectators, const std::vecto
 			return;
 		}
 
-		std::vector<Tile*> surroundings = {
-			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y - 1, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y + 1, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y - 1, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y + 1, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y - 1, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y + 1, cylinderMapPos.z)
-		};
-
-		for (const auto &tile : surroundings) {
+		for (const auto &tile : getSurroundingTiles()) {
 			if (!tile || !tile->getGround() || tile->getGround()->getID() != getGround()->getID()) {
 				continue;
 			}
@@ -916,6 +894,20 @@ Tile* Tile::queryDestination(int32_t &, const Thing &, Item** destItem, uint32_t
 		}
 	}
 	return destTile;
+}
+
+const std::vector<Tile*> Tile::getSurroundingTiles() const {
+	const auto &position = getPosition();
+	return {
+		g_game().map.getTile(position.x - 1, position.y, position.z),
+		g_game().map.getTile(position.x + 1, position.y, position.z),
+		g_game().map.getTile(position.x, position.y - 1, position.z),
+		g_game().map.getTile(position.x, position.y + 1, position.z),
+		g_game().map.getTile(position.x - 1, position.y - 1, position.z),
+		g_game().map.getTile(position.x + 1, position.y + 1, position.z),
+		g_game().map.getTile(position.x + 1, position.y - 1, position.z),
+		g_game().map.getTile(position.x - 1, position.y + 1, position.z)
+	};
 }
 
 void Tile::addThing(Thing* thing) {

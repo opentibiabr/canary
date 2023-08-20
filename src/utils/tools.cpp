@@ -240,14 +240,12 @@ std::string generateToken(const std::string &key, uint32_t ticks) {
 }
 
 void replaceString(std::string &str, const std::string &sought, const std::string &replacement) {
-	size_t pos = 0;
-	size_t start = 0;
-	size_t soughtLen = sought.length();
-	size_t replaceLen = replacement.length();
+	if (str.empty()) {
+		return;
+	}
 
-	while ((pos = str.find(sought, start)) != std::string::npos) {
-		str = str.substr(0, pos) + replacement + str.substr(pos + soughtLen);
-		start = pos + replaceLen;
+	for (size_t startPos = 0; (startPos = str.find(sought, startPos)) != std::string::npos; startPos += replacement.length()) {
+		str.replace(startPos, sought.length(), replacement);
 	}
 }
 
@@ -534,12 +532,12 @@ Position getNextPosition(Direction direction, Position pos) {
 }
 
 Direction getDirectionTo(const Position &from, const Position &to, bool exactDiagonalOnly /* =true*/) {
-	int32_t dx = Position::getOffsetX(from, to);
-	int32_t dy = Position::getOffsetY(from, to);
+	int_fast32_t dx = Position::getOffsetX(from, to);
+	int_fast32_t dy = Position::getOffsetY(from, to);
 
 	if (exactDiagonalOnly) {
-		int32_t absDx = std::abs(dx);
-		int32_t absDy = std::abs(dy);
+		int_fast32_t absDx = std::abs(dx);
+		int_fast32_t absDy = std::abs(dy);
 
 		/*
 		 * Only consider diagonal if dx and dy are equal (exact diagonal).

@@ -110,7 +110,7 @@ namespace account {
 		query << "UPDATE `accounts` SET `coins_transferable` = " << (current_coins + amount)
 			  << " WHERE `id` = " << id_;
 
-		db_tasks_->addTask(query.str());
+		db_tasks_->execute(query.str());
 		return ERROR_NO;
 	}
 
@@ -135,7 +135,7 @@ namespace account {
 		query << "UPDATE `accounts` SET `coins_transferable` = " << (current_coins - amount)
 			  << " WHERE `id` = " << id_;
 
-		db_tasks_->addTask(query.str());
+		db_tasks_->execute(query.str());
 
 		return ERROR_NO;
 	}
@@ -177,7 +177,7 @@ namespace account {
 		query << "UPDATE `accounts` SET `coins` = " << (current_coins + amount)
 			  << " WHERE `id` = " << id_;
 
-		db_tasks_->addTask(query.str());
+		db_tasks_->execute(query.str());
 		return ERROR_NO;
 	}
 
@@ -202,7 +202,7 @@ namespace account {
 		query << "UPDATE `accounts` SET `coins` = " << (current_coins - amount)
 			  << " WHERE `id` = " << id_;
 
-		db_tasks_->addTask(query.str());
+		db_tasks_->execute(query.str());
 
 		return ERROR_NO;
 	}

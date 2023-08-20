@@ -200,7 +200,7 @@ void IOMarket::checkExpiredOffers() {
 
 	std::ostringstream query;
 	query << "SELECT `id`, `amount`, `price`, `itemtype`, `player_id`, `sale`, `tier` FROM `market_offers` WHERE `created` <= " << lastExpireDate;
-	g_databaseTasks().addTask(query.str(), IOMarket::processExpiredOffers, true);
+	g_databaseTasks().store(query.str(), IOMarket::processExpiredOffers);
 
 	int32_t checkExpiredMarketOffersEachMinutes = g_configManager().getNumber(CHECK_EXPIRED_MARKET_OFFERS_EACH_MINUTES);
 	if (checkExpiredMarketOffersEachMinutes <= 0) {
@@ -275,7 +275,7 @@ void IOMarket::appendHistory(uint32_t playerId, MarketAction_t type, uint16_t it
 	query << "INSERT INTO `market_history` (`player_id`, `sale`, `itemtype`, `amount`, `price`, `expires_at`, `inserted`, `state`, `tier`) VALUES ("
 		  << playerId << ',' << type << ',' << itemId << ',' << amount << ',' << price << ','
 		  << timestamp << ',' << getTimeNow() << ',' << state << ',' << std::to_string(tier) << ')';
-	g_databaseTasks().addTask(query.str());
+	g_databaseTasks().execute(query.str());
 }
 
 bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state) {

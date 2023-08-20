@@ -16,12 +16,6 @@
 #include "game/game.h"
 #include "items/weapons/weapons.h"
 
-spellBlock_t::~spellBlock_t() {
-	if (combatSpell) {
-		delete spell;
-	}
-}
-
 void MonsterType::loadLoot(const std::shared_ptr<MonsterType> &monsterType, LootBlock lootBlock) {
 	if (lootBlock.childLoot.empty()) {
 		bool isContainer = Item::items[lootBlock.id].isContainer();
@@ -80,9 +74,9 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spel
 		return true;
 	}
 
-	CombatSpell* combatSpell = nullptr;
+	std::shared_ptr<CombatSpell> combatSpell = nullptr;
 
-	auto combatPtr = std::make_unique<Combat>();
+	auto combatPtr = std::make_shared<Combat>();
 
 	sb.combatSpell = true;
 
@@ -258,7 +252,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spel
 	}
 
 	combatPtr->setPlayerCombatValues(COMBAT_FORMULA_DAMAGE, sb.minCombatValue, 0, sb.maxCombatValue, 0);
-	combatSpell = new CombatSpell(combatPtr.release(), spell->needTarget, spell->needDirection);
+	combatSpell = std::make_shared<CombatSpell>(combatPtr, spell->needTarget, spell->needDirection);
 	// Sanity check
 	if (!combatSpell) {
 		return false;

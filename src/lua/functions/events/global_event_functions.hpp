@@ -15,7 +15,7 @@
 class GlobalEventFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-			registerClass(L, "GlobalEvent", "", GlobalEventFunctions::luaCreateGlobalEvent);
+			registerSharedClass(L, "GlobalEvent", "", GlobalEventFunctions::luaCreateGlobalEvent);
 			registerMethod(L, "GlobalEvent", "type", GlobalEventFunctions::luaGlobalEventType);
 			registerMethod(L, "GlobalEvent", "register", GlobalEventFunctions::luaGlobalEventRegister);
 			registerMethod(L, "GlobalEvent", "time", GlobalEventFunctions::luaGlobalEventTime);

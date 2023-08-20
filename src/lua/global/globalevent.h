@@ -14,8 +14,7 @@
 #include "lua/scripts/scripts.h"
 
 class GlobalEvent;
-using GlobalEvent_ptr = std::unique_ptr<GlobalEvent>;
-using GlobalEventMap = std::map<std::string, GlobalEvent>;
+using GlobalEventMap = std::map<std::string, std::shared_ptr<GlobalEvent>>;
 
 class GlobalEvents final : public Scripts {
 	public:
@@ -38,7 +37,7 @@ class GlobalEvents final : public Scripts {
 
 		GlobalEventMap getEventMap(GlobalEvent_t type);
 
-		bool registerLuaEvent(GlobalEvent* event);
+		bool registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEvent);
 		void clear();
 
 	private:

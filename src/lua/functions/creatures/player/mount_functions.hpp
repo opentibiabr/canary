@@ -15,7 +15,7 @@
 class MountFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-			registerClass(L, "Mount", "", MountFunctions::luaCreateMount);
+			registerSharedClass(L, "Mount", "", MountFunctions::luaCreateMount);
 			registerMetaMethod(L, "Mount", "__eq", MountFunctions::luaUserdataCompare);
 
 			registerMethod(L, "Mount", "getName", MountFunctions::luaMountGetName);

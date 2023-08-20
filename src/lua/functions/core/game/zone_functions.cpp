@@ -254,7 +254,9 @@ int ZoneFunctions::luaZoneGetByPosition(lua_State* L) {
 		return 1;
 	}
 	int index = 0;
-	for (auto zone : tile->getZones()) {
+	const auto &zones = tile->getZones();
+	lua_createtable(L, static_cast<int>(zones.size()), 0);
+	for (auto zone : zones) {
 		index++;
 		pushUserdata<Zone>(L, zone);
 		setMetatable(L, -1, "Zone");
@@ -265,7 +267,7 @@ int ZoneFunctions::luaZoneGetByPosition(lua_State* L) {
 
 int ZoneFunctions::luaZoneGetAll(lua_State* L) {
 	// Zone.getAll()
-	auto zones = Zone::getZones();
+	const auto &zones = Zone::getZones();
 	lua_createtable(L, static_cast<int>(zones.size()), 0);
 
 	int index = 0;

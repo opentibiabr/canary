@@ -1775,6 +1775,6 @@ void Creature::setIncreasePercent(CombatType_t combat, int32_t value) {
 	}
 }
 
-const phmap::btree_set<std::shared_ptr<Zone>> Creature::getZones() {
+const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Creature::getZones() {
 	return Zone::getZones(getPosition());
 }

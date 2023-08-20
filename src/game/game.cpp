@@ -9849,8 +9849,8 @@ const std::unique_ptr<IOWheel> &Game::getIOWheel() const {
 }
 
 template <typename T>
-phmap::btree_set<T> setDifference(const phmap::btree_set<T> &setA, const phmap::btree_set<T> &setB) {
-	phmap::btree_set<T> setResult;
+phmap::parallel_flat_hash_set<T> setDifference(const phmap::parallel_flat_hash_set<T> &setA, const phmap::parallel_flat_hash_set<T> &setB) {
+	phmap::parallel_flat_hash_set<T> setResult;
 	for (const auto &elem : setA) {
 		if (setB.find(elem) == setB.end()) {
 			setResult.insert(elem);
@@ -9859,7 +9859,7 @@ phmap::btree_set<T> setDifference(const phmap::btree_set<T> &setA, const phmap::
 	return setResult;
 }
 
-ReturnValue Game::onCreatureZoneChange(Creature* creature, const phmap::btree_set<std::shared_ptr<Zone>> &fromZones, const phmap::btree_set<std::shared_ptr<Zone>> &toZones) {
+ReturnValue Game::onCreatureZoneChange(Creature* creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones) {
 	if (!creature) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}

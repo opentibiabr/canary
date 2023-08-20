@@ -16,9 +16,11 @@
 #include "creatures/players/player.h"
 
 phmap::btree_map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
+std::mutex Zone::zonesMutex = {};
 const static std::shared_ptr<Zone> nullZone = nullptr;
 
 const std::shared_ptr<Zone> &Zone::addZone(const std::string &name) {
+	std::lock_guard lock(zonesMutex);
 	if (name == "default") {
 		g_logger().error("Zone name {} is reserved", name);
 		return nullZone;
@@ -32,14 +34,6 @@ const std::shared_ptr<Zone> &Zone::addZone(const std::string &name) {
 }
 
 void Zone::addArea(Area area) {
-	for (const auto &[name, zone] : zones) {
-		for (Area a : zone->areas) {
-			if (zone.get() == this) {
-				continue;
-			}
-		}
-	}
-	areas.push_back(area);
 	for (const Position &pos : area) {
 		positions.insert(pos);
 		Tile* tile = g_game().map.getTile(pos);
@@ -54,6 +48,7 @@ bool Zone::isPositionInZone(const Position &pos) const {
 }
 
 const std::shared_ptr<Zone> &Zone::getZone(const std::string &name) {
+	std::lock_guard lock(zonesMutex);
 	return zones[name];
 }
 
@@ -61,64 +56,67 @@ const phmap::btree_set<Position> &Zone::getPositions() const {
 	return positions;
 }
 
-const phmap::btree_set<Tile*> &Zone::getTiles() const {
+const phmap::parallel_flat_hash_set<Tile*> &Zone::getTiles() const {
 	return tiles;
 }
 
-const phmap::btree_set<Creature*> &Zone::getCreatures() const {
+const phmap::parallel_flat_hash_set<Creature*> &Zone::getCreatures() const {
 	return creatures;
 }
 
-const phmap::btree_set<Player*> &Zone::getPlayers() const {
+const phmap::parallel_flat_hash_set<Player*> &Zone::getPlayers() const {
 	return players;
 }
 
-const phmap::btree_set<Monster*> &Zone::getMonsters() const {
+const phmap::parallel_flat_hash_set<Monster*> &Zone::getMonsters() const {
 	return monsters;
 }
 
-const phmap::btree_set<Npc*> &Zone::getNpcs() const {
+const phmap::parallel_flat_hash_set<Npc*> &Zone::getNpcs() const {
 	return npcs;
 }
 
-const phmap::btree_set<Item*> &Zone::getItems() const {
+const phmap::parallel_flat_hash_set<Item*> &Zone::getItems() const {
 	return items;
 }
 
-const void Zone::removeMonsters() {
+void Zone::removeMonsters() const {
 	// copy monsters because removeCreature will remove monster from monsters
-	phmap::btree_set<Monster*> monstersCopy = monsters;
+	phmap::parallel_flat_hash_set<Monster*> monstersCopy = monsters;
 	for (auto monster : monstersCopy) {
 		g_game().removeCreature(monster);
 	}
 }
 
-const void Zone::removeNpcs() {
+void Zone::removeNpcs() const {
 	// copy npcs because removeCreature will remove npc from npcs
-	phmap::btree_set<Npc*> npcsCopy = npcs;
+	phmap::parallel_flat_hash_set<Npc*> npcsCopy = npcs;
 	for (auto npc : npcsCopy) {
 		g_game().removeCreature(npc);
 	}
 }
 
 void Zone::clearZones() {
+	std::lock_guard lock(zonesMutex);
 	zones.clear();
 }
 
-const phmap::btree_set<std::shared_ptr<Zone>> Zone::getZones(const Position &postion) {
-	phmap::btree_set<std::shared_ptr<Zone>> zonesSet;
-	for (auto &[name, zone] : zones) {
-		if (zone->isPositionInZone(postion)) {
+phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Zone::getZones(const Position &postion) {
+	std::lock_guard lock(zonesMutex);
+	phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> zonesSet;
+	for (const auto &[_, zone] : zones) {
+		if (zone && zone->isPositionInZone(postion)) {
 			zonesSet.insert(zone);
 		}
 	}
 	return zonesSet;
 }
 
-const phmap::btree_set<std::shared_ptr<Zone>> &Zone::getZones() {
-	static phmap::btree_set<std::shared_ptr<Zone>> zonesSet;
-	for (auto &[name, zone] : zones) {
-		zonesSet.insert(zone);
+const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &Zone::getZones() {
+	static phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> zonesSet;
+	for (const auto &[_, zone] : zones) {
+		if (zone)
+			zonesSet.insert(zone);
 	}
 	return zonesSet;
 }

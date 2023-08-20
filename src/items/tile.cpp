@@ -1666,6 +1666,6 @@ Item* Tile::getDoorItem() const {
 	return nullptr;
 }
 
-const phmap::btree_set<std::shared_ptr<Zone>> Tile::getZones() {
+const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Tile::getZones() {
 	return Zone::getZones(getPosition());
 }

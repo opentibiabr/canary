@@ -234,7 +234,7 @@ int ZoneFunctions::luaZoneRemoveNpcs(lua_State* L) {
 
 int ZoneFunctions::luaZoneGetByName(lua_State* L) {
 	// Zone.getByName(name)
-	auto name = getString(L, 2);
+	auto name = getString(L, 1);
 	auto zone = Zone::getZone(name);
 	if (!zone) {
 		lua_pushnil(L);
@@ -269,7 +269,6 @@ int ZoneFunctions::luaZoneGetAll(lua_State* L) {
 	// Zone.getAll()
 	const auto &zones = Zone::getZones();
 	lua_createtable(L, static_cast<int>(zones.size()), 0);
-
 	int index = 0;
 	for (auto zone : zones) {
 		index++;

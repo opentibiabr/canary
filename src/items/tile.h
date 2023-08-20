@@ -170,7 +170,7 @@ class Tile : public Cylinder {
 			this->flags &= ~flag;
 		}
 
-		const phmap::btree_set<std::shared_ptr<Zone>> getZones();
+		const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones();
 
 		ZoneType_t getZoneType() const {
 			if (hasFlag(TILESTATE_PROTECTIONZONE)) {

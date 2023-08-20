@@ -87,10 +87,6 @@ class Zone {
 		Zone(const Zone &) = delete;
 		Zone &operator=(const Zone &) = delete;
 
-		std::vector<Area> getAreas() const {
-			return areas;
-		}
-
 		const std::string &getName() const {
 			return name;
 		}
@@ -98,38 +94,38 @@ class Zone {
 		bool isPositionInZone(const Position &position) const;
 
 		const phmap::btree_set<Position> &getPositions() const;
-		const phmap::btree_set<Tile*> &getTiles() const;
-		const phmap::btree_set<Creature*> &getCreatures() const;
-		const phmap::btree_set<Player*> &getPlayers() const;
-		const phmap::btree_set<Monster*> &getMonsters() const;
-		const phmap::btree_set<Npc*> &getNpcs() const;
-		const phmap::btree_set<Item*> &getItems() const;
+		const phmap::parallel_flat_hash_set<Tile*> &getTiles() const;
+		const phmap::parallel_flat_hash_set<Creature*> &getCreatures() const;
+		const phmap::parallel_flat_hash_set<Player*> &getPlayers() const;
+		const phmap::parallel_flat_hash_set<Monster*> &getMonsters() const;
+		const phmap::parallel_flat_hash_set<Npc*> &getNpcs() const;
+		const phmap::parallel_flat_hash_set<Item*> &getItems() const;
 
 		void creatureAdded(Creature* creature);
 		void creatureRemoved(Creature* creature);
 		void itemAdded(Item* item);
 		void itemRemoved(Item* item);
 
-		const void removeMonsters();
-		const void removeNpcs();
+		void removeMonsters() const;
+		void removeNpcs() const;
 
 		const static std::shared_ptr<Zone> &addZone(const std::string &name);
 		const static std::shared_ptr<Zone> &getZone(const std::string &name);
-		const static phmap::btree_set<std::shared_ptr<Zone>> getZones(const Position &position);
-		const static phmap::btree_set<std::shared_ptr<Zone>> &getZones();
+		static phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones(const Position &position);
+		const static phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &getZones();
 		static void clearZones();
 
 	private:
 		std::string name;
-		std::vector<Area> areas;
 		phmap::btree_set<Position> positions;
-		phmap::btree_set<Tile*> tiles;
-		phmap::btree_set<Item*> items;
-		phmap::btree_set<Creature*> creatures;
-		phmap::btree_set<Monster*> monsters;
-		phmap::btree_set<Npc*> npcs;
-		phmap::btree_set<Player*> players;
+		phmap::parallel_flat_hash_set<Tile*> tiles;
+		phmap::parallel_flat_hash_set<Item*> items;
+		phmap::parallel_flat_hash_set<Creature*> creatures;
+		phmap::parallel_flat_hash_set<Monster*> monsters;
+		phmap::parallel_flat_hash_set<Npc*> npcs;
+		phmap::parallel_flat_hash_set<Player*> players;
 
+		static std::mutex zonesMutex;
 		static phmap::btree_map<std::string, std::shared_ptr<Zone>> zones;
 };
 

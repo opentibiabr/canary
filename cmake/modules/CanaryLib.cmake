@@ -1,5 +1,10 @@
 # Define and setup CanaryLib main library target
-add_library(${PROJECT_NAME}_lib "")
+if(BUILD_STATIC_LIBRARY)
+    add_library(${PROJECT_NAME}_lib STATIC)
+else()
+    add_library(${PROJECT_NAME}_lib SHARED)
+endif()
+
 setup_target(${PROJECT_NAME}_lib)
 
 # Include sources cmake file to add source files to lib

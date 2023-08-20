@@ -1723,16 +1723,10 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout) {
 
 		closeShopWindow();
 
-		bool saved = false;
 		for (uint32_t tries = 0; tries < 3; ++tries) {
 			if (IOLoginData::savePlayer(this)) {
-				saved = true;
 				break;
 			}
-		}
-
-		if (!saved) {
-			g_logger().warn("Error while saving player: {}", getName());
 		}
 	}
 
@@ -6300,7 +6294,7 @@ void Player::openPlayerContainers() {
 void Player::initializePrey() {
 	if (preys.empty()) {
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			auto slot = new PreySlot(static_cast<PreySlot_t>(slotId));
+			auto slot = std::make_unique<PreySlot>(static_cast<PreySlot_t>(slotId));
 			if (!g_configManager().getBoolean(PREY_ENABLED)) {
 				slot->state = PreyDataState_Inactive;
 			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(PREY_FREE_THIRD_SLOT)) {
@@ -6312,8 +6306,8 @@ void Player::initializePrey() {
 				slot->reloadMonsterGrid(getPreyBlackList(), getLevel());
 			}
 
-			if (!setPreySlotClass(slot)) {
-				delete slot;
+			if (!setPreySlotClass(std::move(slot))) {
+				slot.reset();
 			}
 		}
 	}
@@ -6334,7 +6328,7 @@ void Player::removePreySlotById(PreySlot_t slotid) {
 void Player::initializeTaskHunting() {
 	if (taskHunting.empty()) {
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			auto slot = new TaskHuntingSlot(static_cast<PreySlot_t>(slotId));
+			auto slot = std::make_unique<TaskHuntingSlot>(static_cast<PreySlot_t>(slotId));
 			if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 				slot->state = PreyTaskDataState_Inactive;
 			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(TASK_HUNTING_FREE_THIRD_SLOT)) {
@@ -6346,8 +6340,8 @@ void Player::initializeTaskHunting() {
 				slot->reloadMonsterGrid(getTaskHuntingBlackList(), getLevel());
 			}
 
-			if (!setTaskHuntingSlotClass(slot)) {
-				delete slot;
+			if (!setTaskHuntingSlotClass(std::move(slot))) {
+				slot.reset();
 			}
 		}
 	}

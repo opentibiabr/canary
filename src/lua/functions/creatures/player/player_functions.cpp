@@ -2221,7 +2221,7 @@ int PlayerFunctions::luaPlayerAddMount(lua_State* L) {
 	if (isNumber(L, 2)) {
 		mountId = getNumber<uint8_t>(L, 2);
 	} else {
-		Mount* mount = g_game().mounts.getMountByName(getString(L, 2));
+		const std::shared_ptr<Mount> &mount = g_game().mounts.getMountByName(getString(L, 2));
 		if (!mount) {
 			lua_pushnil(L);
 			return 1;
@@ -2244,7 +2244,7 @@ int PlayerFunctions::luaPlayerRemoveMount(lua_State* L) {
 	if (isNumber(L, 2)) {
 		mountId = getNumber<uint8_t>(L, 2);
 	} else {
-		Mount* mount = g_game().mounts.getMountByName(getString(L, 2));
+		const std::shared_ptr<Mount> &mount = g_game().mounts.getMountByName(getString(L, 2));
 		if (!mount) {
 			lua_pushnil(L);
 			return 1;
@@ -2263,7 +2263,7 @@ int PlayerFunctions::luaPlayerHasMount(lua_State* L) {
 		return 1;
 	}
 
-	Mount* mount = nullptr;
+	std::shared_ptr<Mount> mount = nullptr;
 	if (isNumber(L, 2)) {
 		mount = g_game().mounts.getMountByID(getNumber<uint8_t>(L, 2));
 	} else {

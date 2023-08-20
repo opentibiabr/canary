@@ -19,7 +19,7 @@
 class MoveEvent;
 
 struct MoveEventList {
-		std::list<MoveEvent> moveEvent[MOVE_EVENT_LAST];
+		std::list<std::shared_ptr<MoveEvent>> moveEvent[MOVE_EVENT_LAST];
 };
 
 using VocEquipMap = phmap::btree_map<uint16_t, bool>;
@@ -106,24 +106,24 @@ class MoveEvents final : public Scripts {
 			actionIdMap.try_emplace(actionId, moveEventList);
 		}
 
-		MoveEvent* getEvent(Item &item, MoveEvent_t eventType);
+		std::shared_ptr<MoveEvent> getEvent(Item &item, MoveEvent_t eventType);
 
-		bool registerLuaItemEvent(MoveEvent &moveEvent);
-		bool registerLuaActionEvent(MoveEvent &moveEvent);
-		bool registerLuaUniqueEvent(MoveEvent &moveEvent);
-		bool registerLuaPositionEvent(MoveEvent &moveEvent);
-		bool registerLuaEvent(MoveEvent &event);
+		bool registerLuaItemEvent(const std::shared_ptr<MoveEvent> &moveEvent);
+		bool registerLuaActionEvent(const std::shared_ptr<MoveEvent> &moveEvent);
+		bool registerLuaUniqueEvent(const std::shared_ptr<MoveEvent> &moveEvent);
+		bool registerLuaPositionEvent(const std::shared_ptr<MoveEvent> &moveEvent);
+		bool registerLuaEvent(const std::shared_ptr<MoveEvent> &event);
 		void clear();
 
 	private:
 		void clearMap(phmap::btree_map<int32_t, MoveEventList> &map) const;
 		void clearPosMap(phmap::btree_map<Position, MoveEventList> &map);
 
-		bool registerEvent(MoveEvent &moveEvent, int32_t id, phmap::btree_map<int32_t, MoveEventList> &moveListMap) const;
-		bool registerEvent(MoveEvent &moveEvent, const Position &position, phmap::btree_map<Position, MoveEventList> &moveListMap) const;
-		MoveEvent* getEvent(Tile &tile, MoveEvent_t eventType);
+		bool registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, int32_t id, phmap::btree_map<int32_t, MoveEventList> &moveListMap) const;
+		bool registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, const Position &position, phmap::btree_map<Position, MoveEventList> &moveListMap) const;
+		std::shared_ptr<MoveEvent> getEvent(Tile &tile, MoveEvent_t eventType);
 
-		MoveEvent* getEvent(Item &item, MoveEvent_t eventType, Slots_t slot);
+		std::shared_ptr<MoveEvent> getEvent(Item &item, MoveEvent_t eventType, Slots_t slot);
 
 		phmap::btree_map<int32_t, MoveEventList> uniqueIdMap;
 		phmap::btree_map<int32_t, MoveEventList> actionIdMap;
@@ -133,7 +133,7 @@ class MoveEvents final : public Scripts {
 
 constexpr auto g_moveEvents = MoveEvents::getInstance;
 
-class MoveEvent final : public Script {
+class MoveEvent final : public Script, public SharedObject {
 	public:
 		explicit MoveEvent(LuaScriptInterface* interface);
 
@@ -249,8 +249,8 @@ class MoveEvent final : public Script {
 		static uint32_t AddItemField(Item* item, Item* tileItem, const Position &pos);
 		static uint32_t RemoveItemField(Item* item, Item* tileItem, const Position &pos);
 
-		static uint32_t EquipItem(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
-		static uint32_t DeEquipItem(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
+		static uint32_t EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
+		static uint32_t DeEquipItem(const std::shared_ptr<MoveEvent> &moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
 
 	private:
 		std::string getScriptTypeName() const override;
@@ -274,7 +274,7 @@ class MoveEvent final : public Script {
 			moveFunction;
 		// equipFunction
 		std::function<uint32_t(
-			MoveEvent* moveEvent,
+			std::shared_ptr<MoveEvent> moveEvent,
 			Player* player,
 			Item* item,
 			Slots_t slot,

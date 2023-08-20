@@ -15,7 +15,7 @@
 class MoveEventFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-			registerClass(L, "MoveEvent", "", MoveEventFunctions::luaCreateMoveEvent);
+			registerSharedClass(L, "MoveEvent", "", MoveEventFunctions::luaCreateMoveEvent);
 			registerMethod(L, "MoveEvent", "type", MoveEventFunctions::luaMoveEventType);
 			registerMethod(L, "MoveEvent", "register", MoveEventFunctions::luaMoveEventRegister);
 			registerMethod(L, "MoveEvent", "level", MoveEventFunctions::luaMoveEventLevel);

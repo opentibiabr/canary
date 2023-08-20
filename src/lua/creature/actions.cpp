@@ -390,12 +390,7 @@ bool Actions::useItem(Player* player, const Position &pos, uint8_t index, Item* 
 			player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 			return false;
 		}
-
-		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
-	} else {
-		player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
 	}
-
 	if (isHotkey) {
 		uint16_t subType = item->getSubType();
 		showUseHotkeyMessage(player, item, player->getItemTypeCount(item->getID(), subType != item->getItemCount() ? subType : -1));
@@ -405,6 +400,12 @@ bool Actions::useItem(Player* player, const Position &pos, uint8_t index, Item* 
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 		return false;
+	}
+
+	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
+	} else {
+		player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
 	}
 
 	// only send cooldown icon if it's an multi use item
@@ -421,9 +422,6 @@ bool Actions::useItemEx(Player* player, const Position &fromPos, const Position 
 			player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 			return false;
 		}
-		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL));
-	} else {
-		player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL));
 	}
 
 	const std::shared_ptr<Action> &action = getAction(item);
@@ -455,6 +453,12 @@ bool Actions::useItemEx(Player* player, const Position &fromPos, const Position 
 			player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
 		}
 		return false;
+	}
+
+	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+		player->setNextPotionAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL));
+	} else {
+		player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL));
 	}
 
 	if (it.isMultiUse()) {

@@ -200,6 +200,7 @@ struct LuaVariant {
 
 struct LuaTimerEventDesc {
 		int32_t scriptId = -1;
+		std::string scriptName;
 		int32_t function = -1;
 		std::list<int32_t> parameters;
 		uint32_t eventId = 0;

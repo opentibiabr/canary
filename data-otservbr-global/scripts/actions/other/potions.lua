@@ -267,12 +267,16 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 		target:say("Aaaah...", MESSAGE_POTION)
 		if fromPosition.x == CONTAINER_POSITION and not container == store_inbox then
 			local container = Container(item:getParent().uid)
-			container:addItem(potion.flask, 1)
+			if player:getStorageValueByName("talkaction.potions.flask") ~= 1 then
+				container:addItem(potion.flask, 1)
+			end
 		else
-			player:addItem(potion.flask, 1)
+			if player:getStorageValueByName("talkaction.potions.flask") ~= 1 then
+				player:addItem(potion.flask, 1)
+			end
 		end
 		player:addCondition(exhaust)
-		player:setStorageValue(38412, player:getStorageValue(38412)+1)
+		player:setStorageValue(38412, player:getStorageValue(38412) + 1)
 	end
 
 	player:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ITEM_USE_POTION, player:isInGhostMode() and nil or player)

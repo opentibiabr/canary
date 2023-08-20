@@ -290,7 +290,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			return guildWarVector;
 		}
 
-		const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>>& getCyclopediaMonsterTrackerSet(bool isBoss) const {
+		const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) const {
 			return isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
 		}
 

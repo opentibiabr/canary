@@ -266,7 +266,7 @@ class ProtocolGame final : public Protocol {
 		void parseSendBosstiary();
 		void parseSendBosstiarySlots();
 		void parseBosstiarySlot(NetworkMessage &msg);
-		void sendPodiumDetails(NetworkMessage &msg, const phmap::parallel_flat_hash_set<uint16_t> &toSendMonsters, bool isBoss);
+		void sendPodiumDetails(NetworkMessage &msg, const phmap::parallel_flat_hash_set<uint16_t> &toSendMonsters, bool isBoss) const;
 		void sendMonsterPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos);
 		void parseSetMonsterPodium(NetworkMessage &msg) const;
 		void sendBosstiaryCooldownTimer();

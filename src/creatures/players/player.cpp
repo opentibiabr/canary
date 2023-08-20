@@ -516,13 +516,7 @@ bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monste
 	if (!monsterType) {
 		return false;
 	}
-
-	auto it = std::find(m_bosstiaryMonsterTracker.begin(), m_bosstiaryMonsterTracker.end(), monsterType);
-	if (it == m_bosstiaryMonsterTracker.end()) {
-		return false;
-	}
-
-	return true;
+	return m_bosstiaryMonsterTracker.contains(monsterType);
 }
 
 void Player::updateInventoryWeight() {

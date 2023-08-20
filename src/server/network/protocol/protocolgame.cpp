@@ -2328,10 +2328,8 @@ void ProtocolGame::parseCyclopediaMonsterTracker(NetworkMessage &msg) {
 
 	// Bosstiary tracker logic
 	if (const auto &monsterType = g_ioBosstiary().getMonsterTypeByBossRaceId(monsterRaceId)) {
-		bool isUnlockedMonster = false;
 		auto bosstiaryMonsters = g_ioBosstiary().getBosstiaryFinished(player);
-		auto it = bosstiaryMonsters.find(monsterRaceId);
-		if (it != bosstiaryMonsters.end()) {
+		if (bosstiaryMonsters.contains(monsterRaceId)) {
 			if (trackerButtonType == 1) {
 				player->addMonsterToCyclopediaTrackerList(monsterType, true, true);
 			} else {
@@ -8280,7 +8278,7 @@ void ProtocolGame::parseBosstiarySlot(NetworkMessage &msg) {
 	addGameTask(&Game::playerBosstiarySlot, player->getID(), slotBossId, selectedBossId);
 }
 
-void ProtocolGame::sendPodiumDetails(NetworkMessage &msg, const phmap::parallel_flat_hash_set<uint16_t> &toSendMonsters, bool isBoss) {
+void ProtocolGame::sendPodiumDetails(NetworkMessage &msg, const phmap::parallel_flat_hash_set<uint16_t> &toSendMonsters, bool isBoss) const {
 	auto toSendMonstersSize = static_cast<uint16_t>(toSendMonsters.size());
 	msg.add<uint16_t>(toSendMonstersSize);
 	for (const auto &raceId : toSendMonsters) {

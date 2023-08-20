@@ -746,7 +746,7 @@ bool IOLoginDataSave::savePlayerBosstiary(const Player* player) {
 		  << player->getSlotBossId(1) << ','
 		  << player->getSlotBossId(2) << ','
 		  << std::to_string(player->getRemoveTimes()) << ','
-		  << Database::getInstance().escapeBlob(chars, size);
+		  << Database::getInstance().escapeBlob(chars, static_cast<uint32_t>(size));
 
 	if (!insertQuery.addRow(query)) {
 		return false;

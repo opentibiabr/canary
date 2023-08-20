@@ -296,7 +296,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 
 		void addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> &mtype, bool isBoss, bool reloadClient = false) {
 			if (client) {
-				auto raceId = mtype ? mtype->info.raceid : 0;
+				uint16_t raceId = mtype ? mtype->info.raceid : 0;
 				// Bostiary tracker logic
 				if (isBoss) {
 					m_bosstiaryMonsterTracker.insert(mtype);
@@ -318,7 +318,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 
 		void removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient = false) {
 			if (client) {
-				auto raceId = mtype ? mtype->info.raceid : 0;
+				uint16_t raceId = mtype ? mtype->info.raceid : 0;
 				// Bostiary tracker logic
 				if (isBoss) {
 					m_bosstiaryMonsterTracker.erase(mtype);
@@ -344,7 +344,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			}
 		}
 
-		void refreshBestiaryMonsterTracker() {
+		void refreshBestiaryMonsterTracker() const {
 			refreshCyclopediaMonsterTracker(getCyclopediaMonsterTrackerSet(false), false);
 		}
 

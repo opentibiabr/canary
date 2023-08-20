@@ -7,8 +7,22 @@ endif()
 
 setup_target(${PROJECT_NAME}_lib)
 
-# Include sources cmake file to add source files to lib
-include(Sources)
+# Add subdirectories
+add_subdirectory(config)
+add_subdirectory(creatures)
+add_subdirectory(database)
+add_subdirectory(game)
+add_subdirectory(io)
+add_subdirectory(items)
+add_subdirectory(lib)
+add_subdirectory(lua)
+add_subdirectory(map)
+add_subdirectory(security)
+add_subdirectory(server)
+add_subdirectory(utils)
+
+# Add more global sources - please add preferably in the sub_directory CMakeLists.
+target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp protobuf/appearances.pb.cc)
 
 # Add public pre compiler header to lib, to pass down to related targets
 target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)

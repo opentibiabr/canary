@@ -3855,7 +3855,7 @@ void ProtocolGame::sendBasicData() {
 
 	// Filter only valid ids
 	std::list<uint16_t> spellsList = g_spells().getSpellsByVocation(player->getVocationId());
-	std::vector<InstantSpell*> validSpells;
+	std::vector<std::shared_ptr<InstantSpell>> validSpells;
 	for (uint16_t sid : spellsList) {
 		auto spell = g_spells().getInstantSpellById(sid);
 		if (spell && spell->getId() > 0) {

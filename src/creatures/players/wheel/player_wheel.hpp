@@ -276,7 +276,7 @@ class PlayerWheel {
 
 		void setPointsBySlotType(uint8_t slotType, uint16_t points);
 
-		Spell* getCombatDataSpell(CombatDamage &damage);
+		std::shared_ptr<Spell> getCombatDataSpell(CombatDamage &damage);
 
 		const PlayerWheelMethodsBonusData &getBonusData() const;
 

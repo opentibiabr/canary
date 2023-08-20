@@ -28,13 +28,13 @@
  */
 
 void EventCallbackFunctions::init(lua_State* luaState) {
-	registerClass(luaState, "EventCallback", "", EventCallbackFunctions::luaEventCallbackCreate);
+	registerSharedClass(luaState, "EventCallback", "", EventCallbackFunctions::luaEventCallbackCreate);
 	registerMethod(luaState, "EventCallback", "type", EventCallbackFunctions::luaEventCallbackType);
 	registerMethod(luaState, "EventCallback", "register", EventCallbackFunctions::luaEventCallbackRegister);
 }
 
 int EventCallbackFunctions::luaEventCallbackCreate(lua_State* luaState) {
-	auto eventCallback = new EventCallback(getScriptEnv()->getScriptInterface());
+	const auto &eventCallback = std::make_shared<EventCallback>(getScriptEnv()->getScriptInterface());
 	if (!eventCallback) {
 		reportErrorFunc("EventCallback is nil");
 		return 0;
@@ -46,7 +46,7 @@ int EventCallbackFunctions::luaEventCallbackCreate(lua_State* luaState) {
 }
 
 int EventCallbackFunctions::luaEventCallbackType(lua_State* luaState) {
-	auto callback = getUserdata<EventCallback>(luaState, 1);
+	auto callback = getUserdataShared<EventCallback>(luaState, 1);
 	if (!callback) {
 		reportErrorFunc("EventCallback is nil");
 		return 0;
@@ -77,7 +77,7 @@ int EventCallbackFunctions::luaEventCallbackType(lua_State* luaState) {
 }
 
 int EventCallbackFunctions::luaEventCallbackRegister(lua_State* luaState) {
-	auto callback = getUserdata<EventCallback>(luaState, 1);
+	auto callback = getUserdataShared<EventCallback>(luaState, 1);
 	if (!callback) {
 		reportErrorFunc("EventCallback is nil, failed to register script");
 		return 0;
@@ -94,7 +94,7 @@ int EventCallbackFunctions::luaEventCallbackRegister(lua_State* luaState) {
 
 // Callback functions
 int EventCallbackFunctions::luaEventCallbackLoad(lua_State* luaState) {
-	auto callback = getUserdata<EventCallback>(luaState, 1);
+	auto callback = getUserdataShared<EventCallback>(luaState, 1);
 	if (!callback) {
 		reportErrorFunc("EventCallback is nil");
 		return 1;

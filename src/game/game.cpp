@@ -7323,7 +7323,7 @@ void Game::checkLight() {
 	if (currentLightState != lightState) {
 		currentLightState = lightState;
 		for (const auto &[eventName, globalEvent] : g_globalEvents().getEventMap(GLOBALEVENT_PERIODCHANGE)) {
-			globalEvent.executePeriodChange(lightState, lightInfo);
+			globalEvent->executePeriodChange(lightState, lightInfo);
 		}
 	}
 }
@@ -7562,7 +7562,7 @@ void Game::checkPlayersRecord() {
 		playersRecord = playersOnline;
 
 		for (auto &[key, it] : g_globalEvents().getEventMap(GLOBALEVENT_RECORD)) {
-			it.executeRecord(playersRecord, previousRecord);
+			it->executeRecord(playersRecord, previousRecord);
 		}
 		updatePlayersRecord();
 	}

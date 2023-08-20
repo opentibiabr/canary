@@ -38,17 +38,17 @@ class Outfits {
 			return inject<Outfits>();
 		}
 
-		const Outfit* getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType);
+		std::shared_ptr<Outfit> getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType);
 
 		bool loadFromXml();
 
-		const Outfit* getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;
-		const std::vector<Outfit> &getOutfits(PlayerSex_t sex) const {
+		[[nodiscard]] std::shared_ptr<Outfit> getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;
+		[[nodiscard]] const std::vector<std::shared_ptr<Outfit>> &getOutfits(PlayerSex_t sex) const {
 			return outfits[sex];
 		}
 
 	private:
-		std::vector<Outfit> outfits[PLAYERSEX_LAST + 1];
+		std::vector<std::shared_ptr<Outfit>> outfits[PLAYERSEX_LAST + 1];
 };
 
 #endif // SRC_CREATURES_APPEARANCE_OUTFIT_OUTFIT_H_

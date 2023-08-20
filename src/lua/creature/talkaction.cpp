@@ -20,7 +20,7 @@ void TalkActions::clear() {
 	talkActions.clear();
 }
 
-bool TalkActions::registerLuaEvent(TalkAction_ptr talkAction) {
+bool TalkActions::registerLuaEvent(const TalkAction_ptr &talkAction) {
 	auto [iterator, inserted] = talkActions.try_emplace(talkAction->getWords(), talkAction);
 	return inserted;
 }

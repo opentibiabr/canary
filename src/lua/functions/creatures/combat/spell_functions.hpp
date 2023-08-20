@@ -15,7 +15,7 @@
 class SpellFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-			registerClass(L, "Spell", "", SpellFunctions::luaSpellCreate);
+			registerSharedClass(L, "Spell", "", SpellFunctions::luaSpellCreate);
 			registerMetaMethod(L, "Spell", "__eq", SpellFunctions::luaUserdataCompare);
 
 			registerMethod(L, "Spell", "onCastSpell", SpellFunctions::luaSpellOnCastSpell);

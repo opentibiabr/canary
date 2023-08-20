@@ -19,7 +19,7 @@
 #include "items/tile.h"
 
 using ConditionList = std::list<Condition*>;
-using CreatureEventList = std::list<CreatureEvent*>;
+using CreatureEventList = std::list<std::shared_ptr<CreatureEvent>>;
 
 class Map;
 class Thing;

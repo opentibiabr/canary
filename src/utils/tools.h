@@ -52,7 +52,11 @@ bool boolean_random(double probability = 0.5);
 BedItemPart_t getBedPart(const std::string_view string);
 Direction getDirection(const std::string &string);
 Position getNextPosition(Direction direction, Position pos);
-Direction getDirectionTo(const Position &from, const Position &to);
+
+/**
+ * @param exactDiagonalOnly - defines if diagonals are calculated only for dy = dx (true) or any dx != 0 and dy != 0 (false).
+ */
+Direction getDirectionTo(const Position &from, const Position &to, bool exactDiagonalOnly = true);
 
 std::string getFirstLine(const std::string &str);
 

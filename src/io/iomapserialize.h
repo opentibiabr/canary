@@ -15,13 +15,13 @@
 class IOMapSerialize {
 	public:
 		static void loadHouseItems(Map* map);
-		static bool SaveHouseItemsGuard();
 		static bool saveHouseItems();
 		static bool loadHouseInfo();
-		static bool SaveHouseInfoGuard();
 		static bool saveHouseInfo();
 
 	private:
+		static bool SaveHouseInfoGuard();
+		static bool SaveHouseItemsGuard();
 		static void saveItem(PropWriteStream &stream, const Item* item);
 		static void saveTile(PropWriteStream &stream, const Tile* tile);
 

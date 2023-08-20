@@ -51,6 +51,7 @@ class PlayerWheel {
 		 * @details If maximum number of points allowed for the slot, an error message is sent to the player and the function returns.
 		 */
 		void saveSlotPointsOnPressSaveButton(NetworkMessage &msg);
+		void addPromotionScrolls(NetworkMessage &msg) const;
 		void sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const;
 		void sendGiftOfLifeCooldown() const;
 

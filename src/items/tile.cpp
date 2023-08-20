@@ -387,7 +387,6 @@ void Tile::onAddTileItem(Item* item) {
 			if (!topItem || !topItem->canReceiveAutoCarpet()) {
 				continue;
 			}
-
 			// Check if tile is part of the same house
 			if (auto tileHouse = tile->getHouse(); !tileHouse || house != house) {
 				continue;
@@ -491,7 +490,11 @@ void Tile::onRemoveTileItem(const SpectatorHashSet &spectators, const std::vecto
 	}
 
 	if (item->isCarpet() && !item->isMoveable()) {
-		if (getTopTopItem() && getTopTopItem()->isBlocking() && getTopTopItem()->isAlwaysOnTop()) {
+		if (getTopTopItem() && getTopTopItem()->canReceiveAutoCarpet()) {
+			return;
+		}
+		auto house = getHouse();
+		if (!house) {
 			return;
 		}
 
@@ -500,7 +503,11 @@ void Tile::onRemoveTileItem(const SpectatorHashSet &spectators, const std::vecto
 				continue;
 			}
 			auto topItem = tile->getTopTopItem();
-			if (!topItem || !topItem->isBlocking() || !topItem->isAlwaysOnTop()) {
+			if (!topItem || !topItem->canReceiveAutoCarpet()) {
+				continue;
+			}
+			// Check if tile is part of the same house
+			if (auto tileHouse = tile->getHouse(); !tileHouse || house != house) {
 				continue;
 			}
 

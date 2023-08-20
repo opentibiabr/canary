@@ -3801,8 +3801,10 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 	}
 
 	auto topItem = tile->getTopTopItem();
-	bool canUnwrap = !topItem || !topItem->canReceiveAutoCarpet();
-	if ((item->getHoldingPlayer() && item->getID() == ITEM_DECORATION_KIT) || (!canUnwrap && !item->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID))) {
+	bool unwrappable = item->getHoldingPlayer() && item->getID() == ITEM_DECORATION_KIT;
+	bool blockedUnwrap = topItem && topItem->canReceiveAutoCarpet() && !item->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID);
+
+	if (unwrappable || blockedUnwrap) {
 		player->sendCancelMessage("You can only wrap/unwrap on the floor.");
 		return;
 	}

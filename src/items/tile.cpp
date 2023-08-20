@@ -383,7 +383,11 @@ void Tile::onAddTileItem(Item* item) {
 			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y, cylinderMapPos.z),
 			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y, cylinderMapPos.z),
 			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y - 1, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y + 1, cylinderMapPos.z)
+			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y + 1, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y - 1, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y + 1, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y - 1, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y + 1, cylinderMapPos.z)
 		};
 
 		for (const auto &tile : surroundings) {
@@ -506,7 +510,11 @@ void Tile::onRemoveTileItem(const SpectatorHashSet &spectators, const std::vecto
 			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y, cylinderMapPos.z),
 			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y, cylinderMapPos.z),
 			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y - 1, cylinderMapPos.z),
-			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y + 1, cylinderMapPos.z)
+			g_game().map.getTile(cylinderMapPos.x, cylinderMapPos.y + 1, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y - 1, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y + 1, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x + 1, cylinderMapPos.y - 1, cylinderMapPos.z),
+			g_game().map.getTile(cylinderMapPos.x - 1, cylinderMapPos.y + 1, cylinderMapPos.z)
 		};
 
 		for (const auto &tile : surroundings) {

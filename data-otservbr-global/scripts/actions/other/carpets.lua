@@ -96,7 +96,7 @@ function carpets.onUse(player, item, fp, target, toPosition, isHotkey)
 	elseif tile:getItemCountById(item.itemid) == 1 then
 		local topItem = tile:getTopTopItem()
 		if topItem and topItem:canReceiveAutoCarpet() then
-			player:sendCancelMessage(Game.getReturnMessage(RETURNVALUE_NOTPOSSIBLE))
+			item:remove()
 			return true
 		end
 		for k,v in pairs(carpetItems) do

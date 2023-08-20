@@ -512,6 +512,19 @@ uint32_t Player::getClientIcons() const {
 	return icon_bitset.to_ulong();
 }
 
+bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const {
+	if (!monsterType) {
+		return false;
+	}
+
+	auto it = std::find(m_bosstiaryMonsterTracker.begin(), m_bosstiaryMonsterTracker.end(), monsterType);
+	if (it == m_bosstiaryMonsterTracker.end()) {
+		return false;
+	}
+
+	return true;
+}
+
 void Player::updateInventoryWeight() {
 	if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 		return;
@@ -1604,7 +1617,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 		}
 
 		// Reload bestiary tracker
-		refreshBestiaryTracker(getBestiaryTrackerList());
+		refreshBestiaryMonsterTracker();
 
 		g_game().checkPlayersRecord();
 		IOLoginData::updateOnlineStatus(guid, true);

@@ -72,7 +72,7 @@ class IOBestiary {
 		bool hasCharmUnlockedRuneBit(const std::shared_ptr<Charm> &charm, int32_t input) const;
 
 		std::list<charmRune_t> getCharmUsedRuneBitAll(Player* player);
-		std::vector<uint16_t> getBestiaryFinished(Player* player) const;
+		phmap::parallel_flat_hash_set<uint16_t> getBestiaryFinished(Player* player) const;
 
 		charmRune_t getCharmFromTarget(Player* player, const std::shared_ptr<MonsterType> &mtype);
 

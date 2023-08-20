@@ -1,6 +1,5 @@
 #include <boost/ut.hpp>
 #include "pch.hpp"
-#include "lib/thread/thread_pool.hpp"
 
 using namespace boost::ut;
 

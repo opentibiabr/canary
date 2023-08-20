@@ -533,41 +533,40 @@ Position getNextPosition(Direction direction, Position pos) {
 	return pos;
 }
 
-Direction getDirectionTo(const Position &from, const Position &to) {
-	Direction dir;
+Direction getDirectionTo(const Position &from, const Position &to, bool exactDiagonalOnly /* =true*/) {
+	int32_t dx = Position::getOffsetX(from, to);
+	int32_t dy = Position::getOffsetY(from, to);
 
-	int32_t x_offset = Position::getOffsetX(from, to);
-	if (x_offset < 0) {
-		dir = DIRECTION_EAST;
-		x_offset = std::abs(x_offset);
-	} else {
-		dir = DIRECTION_WEST;
+	if (exactDiagonalOnly) {
+		int32_t absDx = std::abs(dx);
+		int32_t absDy = std::abs(dy);
+
+		/*
+		 * Only consider diagonal if dx and dy are equal (exact diagonal).
+		 */
+		if (absDx > absDy)
+			return dx < 0 ? DIRECTION_EAST : DIRECTION_WEST;
+		if (absDx < absDy)
+			return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
 	}
 
-	int32_t y_offset = Position::getOffsetY(from, to);
-	if (y_offset >= 0) {
-		if (y_offset > x_offset) {
-			dir = DIRECTION_NORTH;
-		} else if (y_offset == x_offset) {
-			if (dir == DIRECTION_EAST) {
-				dir = DIRECTION_NORTHEAST;
-			} else {
-				dir = DIRECTION_NORTHWEST;
-			}
-		}
-	} else {
-		y_offset = std::abs(y_offset);
-		if (y_offset > x_offset) {
-			dir = DIRECTION_SOUTH;
-		} else if (y_offset == x_offset) {
-			if (dir == DIRECTION_EAST) {
-				dir = DIRECTION_SOUTHEAST;
-			} else {
-				dir = DIRECTION_SOUTHWEST;
-			}
-		}
+	if (dx < 0) {
+		if (dy < 0)
+			return DIRECTION_SOUTHEAST;
+		if (dy > 0)
+			return DIRECTION_NORTHEAST;
+		return DIRECTION_EAST;
 	}
-	return dir;
+
+	if (dx > 0) {
+		if (dy < 0)
+			return DIRECTION_SOUTHWEST;
+		if (dy > 0)
+			return DIRECTION_NORTHWEST;
+		return DIRECTION_WEST;
+	}
+
+	return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
 }
 
 using MagicEffectNames = phmap::flat_hash_map<std::string, MagicEffectClasses>;

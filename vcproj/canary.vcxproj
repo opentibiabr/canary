@@ -60,6 +60,7 @@
     <ClInclude Include="..\src\game\scheduling\dispatcher.h" />
     <ClInclude Include="..\src\game\scheduling\task.hpp" />
     <ClInclude Include="..\src\io\fileloader.h" />
+    <ClInclude Include="..\src\io\filestream.hpp" />
     <ClInclude Include="..\src\io\functions\iologindata_load_player.hpp" />
     <ClInclude Include="..\src\io\functions\iologindata_save_player.hpp" />
     <ClInclude Include="..\src\io\io_wheel.hpp" />
@@ -247,6 +248,7 @@
     <ClCompile Include="..\src\game\scheduling\scheduler.cpp" />
     <ClCompile Include="..\src\game\scheduling\dispatcher.cpp" />
     <ClCompile Include="..\src\io\fileloader.cpp" />
+    <ClCompile Include="..\src\io\filestream.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_load_player.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_save_player.cpp" />
     <ClCompile Include="..\src\io\io_wheel.cpp" />

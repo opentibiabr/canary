@@ -1,11 +1,11 @@
-local function chargerSpawnFix(pos)
+local function chargerSpawn(pos)
 	Game.createMonster("charger", pos, false, true)
 	spawningCharge = false
 	return true
 end
 
-local chargerSpawn = CreatureEvent("ChargerSpawn")
-function chargerSpawn.onDeath(creature)
+local creatureEvent = CreatureEvent("ChargerSpawn")
+function creatureEvent.onDeath(creature)
 	local positions = {
 		{x = 32151, y = 31356, z = 14},
 		{x = 32154, y = 31353, z = 14},
@@ -20,9 +20,9 @@ function chargerSpawn.onDeath(creature)
 	}
 
 	local pos = positions[math.random(1, #positions)]
-	addEvent(chargerSpawnFix, 6000, pos)
+	addEvent(chargerSpawn, 6000, pos)
 	spawningCharge = true
 	return true
 end
 
-chargerSpawn:register()
+creatureEvent:register()

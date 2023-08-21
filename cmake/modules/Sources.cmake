@@ -52,6 +52,7 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
 
 target_sources(${PROJECT_NAME}_lib PRIVATE
     io/fileloader.cpp
+    io/filestream.cpp
     io/io_wheel.cpp
     io/iobestiary.cpp
     io/io_bosstiary.cpp

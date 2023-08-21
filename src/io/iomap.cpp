@@ -11,6 +11,7 @@
 #include "io/iomap.h"
 #include "game/movement/teleport.h"
 #include "game/game.h"
+#include "io/filestream.hpp"
 
 /*
 	OTBM_ROOTV1
@@ -177,15 +178,17 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 			}
 
 			while (stream.startNode()) {
-				if (stream.getU8() != OTBM_ITEM)
+				if (stream.getU8() != OTBM_ITEM) {
 					throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not read item node.", x, y, z));
+				}
 
 				const uint16_t id = stream.getU16();
 
 				const auto &iType = Item::items[id];
 
-				if (iType.blockSolid)
+				if (iType.blockSolid) {
 					tileIsStatic = true;
+				}
 
 				const auto &item = std::make_shared<BasicItem>();
 				item->id = id;
@@ -206,18 +209,21 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 					tile->items.emplace_back(map.tryReplaceItemFromCache(item));
 				}
 
-				if (!stream.endNode())
+				if (!stream.endNode()) {
 					throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
-			};
+				}
+			}
 
-			if (!stream.endNode())
+			if (!stream.endNode()) {
 				throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
+			}
 
 			map.setBasicTile(x, y, z, tile);
 		}
 
-		if (!stream.endNode())
+		if (!stream.endNode()) {
 			throw IOMapException("Could not end node.");
+		}
 	}
 }
 

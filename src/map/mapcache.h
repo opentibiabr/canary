@@ -10,7 +10,6 @@
 #pragma once
 
 #include "items/items_definitions.hpp"
-#include "io/fileloader.h"
 #include "utils/qtreenode.h"
 
 class Map;
@@ -19,6 +18,7 @@ class BasicItem;
 class BasicTile;
 class Item;
 class Position;
+class FileStream;
 
 using TilePtr = std::unique_ptr<Tile>;
 using BasicItemPtr = std::shared_ptr<BasicItem>;

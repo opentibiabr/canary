@@ -18,6 +18,7 @@
 #include "game/game.h"
 #include "map/map.h"
 #include "utils/hash.h"
+#include "io/filestream.hpp"
 
 #include "io/iomap.h"
 
@@ -202,10 +203,10 @@ bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, 
 		if (stream.getU8() != OTBM_ITEM)
 			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not read item node.", x, y, z));
 
-		const uint16_t id = stream.getU16();
+		const uint16_t streamId = stream.getU16();
 
 		const auto &item = std::make_shared<BasicItem>();
-		item->id = id;
+		item->id = streamId;
 
 		if (!item->unserializeItemNode(stream, x, y, z))
 			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Failed to load item.", x, y, z));

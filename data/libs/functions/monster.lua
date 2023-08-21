@@ -147,6 +147,6 @@ function Monster.setFiendish(self, position, player)
 		player:sendCancelMessage("This monster is not forgeable, fiendish not added.")
 	end
 
-	Spdlog.info(string.format("Player %s %s with name %s and id %d on position [x = %d, y = %d, z = %d]", player:getName(), success, self:getName(), self:getId(), self:getPosition().x, self:getPosition().y, self:getPosition().z))
+	logger.info("Player {} {} with name {} and id {} on position {}", player:getName(), success, self:getName(), self:getId(), self:getPosition():toString())
 	return true
 end

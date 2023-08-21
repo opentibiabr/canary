@@ -642,8 +642,7 @@ function isAchievementSecret(ach)
 		achievement = getAchievementInfoByName(ach)
 	end
 	if not achievement then
-				return Spdlog.error(string.format("[isAchievementSecret] - Invalid achievement '%s'",
-					ach)) and false
+		return logger.error("[isAchievementSecret] - Invalid achievement '{}'", ach) and false
 	end
 
 	return achievement.secret
@@ -657,7 +656,7 @@ function Player.hasAchievement(self, ach)
 		achievement = getAchievementInfoByName(ach)
 	end
 	if not achievement then
-		return Spdlog.error("[Player.hasAchievement] - Invalid achievement \"" .. ach .. "\".") and false
+		return logger.error("[Player.hasAchievement] - Invalid achievement '{}'.", ach) and false
 	end
 
 	return self:getStorageValue(ACHIEVEMENTS_BASE + achievement.id) > 0
@@ -681,7 +680,7 @@ function Player.addAchievement(self, ach, denyMsg)
 		achievement = getAchievementInfoByName(ach)
 	end
 	if not achievement then
-		return Spdlog.error("[Player.addAchievement] - Invalid achievement \"" .. ach .. "\".") and false
+		return logger.error("[Player.addAchievement] - Invalid achievement '{}'.", ach) and false
 	end
 
 	if not self:hasAchievement(achievement.id) then
@@ -701,7 +700,7 @@ function Player.removeAchievement(self, ach)
 		achievement = getAchievementInfoByName(ach)
 	end
 	if not achievement then
-		return Spdlog.error("[Player.removeAchievement] - Invalid achievement \"" .. ach .. "\".") and false
+		return logger.error("[Player.removeAchievement] - Invalid achievement '{}'.", ach) and false
 	end
 
 	if self:hasAchievement(achievement.id) then
@@ -763,7 +762,7 @@ end
 function Player.addAchievementProgress(self, ach, value)
 	local achievement = isNumber(ach) and getAchievementInfoById(ach) or getAchievementInfoByName(ach)
 	if not achievement then
-		Spdlog.error('[Player.addAchievementProgress] - Invalid achievement "' .. ach .. '".')
+		logger.error("[Player.addAchievementProgress] - Invalid achievement '{}'.", ach)
 		return true
 	end
 

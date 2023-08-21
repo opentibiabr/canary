@@ -10,7 +10,7 @@ function addMoney.onSay(player, words, param)
 	if param == "" then
 		player:sendCancelMessage("Player name param required")
 		-- Distro log
-		Spdlog.error("[addMoney.onSay] - Player name param not found")
+		logger.error("[addMoney.onSay] - Player name param not found")
 		return true
 	end
 
@@ -37,7 +37,7 @@ function addMoney.onSay(player, words, param)
 	if not Bank.credit(name, amount) then
 		player:sendCancelMessage("Failed to add money to " .. name .. ".")
 		-- Distro log
-		Spdlog.error("[addMoney.onSay] - Failed to add money to player")
+		logger.error("[addMoney.onSay] - Failed to add money to player")
 		return false
 	end
 
@@ -47,7 +47,7 @@ function addMoney.onSay(player, words, param)
 		targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added ".. amount .." gold coins to your character.")
 	end
 	-- Distro log
-	Spdlog.info("".. player:getName() .." added ".. amount .." gold coins to ".. name .." player")
+	logger.info("{} added {} gold coins to {} player", player:getName(), amount, name)
 	return true
 end
 

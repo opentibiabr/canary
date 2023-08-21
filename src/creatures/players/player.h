@@ -290,21 +290,13 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			return guildWarVector;
 		}
 
-		std::list<std::shared_ptr<MonsterType>> getBestiaryTrackerList() const {
-			return BestiaryTracker;
+		const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) const {
+			return isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
 		}
 
-		void addBestiaryTrackerList(const std::shared_ptr<MonsterType> &mtype) {
-			if (client) {
-				auto it = std::find(BestiaryTracker.begin(), BestiaryTracker.end(), mtype);
-				if (it == BestiaryTracker.end()) {
-					BestiaryTracker.push_front(mtype);
-				} else {
-					BestiaryTracker.remove(mtype);
-				}
-				client->refreshBestiaryTracker(BestiaryTracker);
-			}
-		}
+		void addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> &mtype, bool isBoss, bool reloadClient = false);
+
+		void removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient = false);
 
 		void sendBestiaryEntryChanged(uint16_t raceid) {
 			if (client) {
@@ -312,11 +304,17 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			}
 		}
 
-		void refreshBestiaryTracker(std::list<std::shared_ptr<MonsterType>> trackerList) {
+		void refreshBestiaryMonsterTracker() const {
+			refreshCyclopediaMonsterTracker(getCyclopediaMonsterTrackerSet(false), false);
+		}
+
+		void refreshCyclopediaMonsterTracker(const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
 			if (client) {
-				client->refreshBestiaryTracker(trackerList);
+				client->refreshCyclopediaMonsterTracker(trackerList, isBoss);
 			}
 		}
+
+		bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const;
 
 		Vocation* getVocation() const {
 			return vocation;
@@ -2579,7 +2577,8 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
 		std::forward_list<Condition*> storedConditionList;
 
-		std::list<std::shared_ptr<MonsterType>> BestiaryTracker;
+		phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
+		phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
 
 		std::string name;
 		std::string guildNick;

@@ -925,7 +925,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			addGameTask(&Game::playerReceivePing, player->getID());
 			break;
 		case 0x2a:
-			addBestiaryTrackerList(msg);
+			parseCyclopediaMonsterTracker(msg);
 			break;
 		case 0x2B:
 			parsePartyAnalyzerAction(msg);
@@ -2320,14 +2320,39 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	writeToOutputBuffer(newmsg);
 }
 
-void ProtocolGame::addBestiaryTrackerList(NetworkMessage &msg) {
-	uint16_t thisrace = msg.get<uint16_t>();
-	phmap::btree_map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
-	auto it = mtype_list.find(thisrace);
-	if (it != mtype_list.end()) {
+void ProtocolGame::parseCyclopediaMonsterTracker(NetworkMessage &msg) {
+	uint16_t monsterRaceId = msg.get<uint16_t>();
+	// Bosstiary tracker: 0 = disabled, 1 = enabled
+	// Bestiary tracker: 1 = enabled
+	auto trackerButtonType = msg.getByte();
+
+	// Bosstiary tracker logic
+	if (const auto &monsterType = g_ioBosstiary().getMonsterTypeByBossRaceId(monsterRaceId)) {
+		auto bosstiaryMonsters = g_ioBosstiary().getBosstiaryFinished(player);
+		if (bosstiaryMonsters.contains(monsterRaceId)) {
+			if (trackerButtonType == 1) {
+				player->addMonsterToCyclopediaTrackerList(monsterType, true, true);
+			} else {
+				player->removeMonsterFromCyclopediaTrackerList(monsterType, true, true);
+			}
+		}
+		return;
+	}
+
+	// Bestiary tracker logic
+	const auto &bestiaryMonsters = g_game().getBestiaryList();
+	auto it = bestiaryMonsters.find(monsterRaceId);
+	if (it != bestiaryMonsters.end()) {
 		const auto &mtype = g_monsters().getMonsterType(it->second);
-		if (mtype) {
-			player->addBestiaryTrackerList(mtype);
+		if (!mtype) {
+			g_logger().error("[{}] player {} have wrong boss with race {}", __FUNCTION__, player->getName(), monsterRaceId);
+			return;
+		}
+
+		if (trackerButtonType == 1) {
+			player->addMonsterToCyclopediaTrackerList(mtype, false, true);
+		} else {
+			player->removeMonsterFromCyclopediaTrackerList(mtype, false, true);
 		}
 	}
 }
@@ -2698,29 +2723,42 @@ void ProtocolGame::parseSendBuyCharmRune(NetworkMessage &msg) {
 	g_iobestiary().sendBuyCharmRune(player, runeID, action, raceid);
 }
 
-void ProtocolGame::refreshBestiaryTracker(const std::list<std::shared_ptr<MonsterType>> &trackerList) {
+void ProtocolGame::refreshCyclopediaMonsterTracker(const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &trackerSet, bool isBoss) {
 	if (!player || oldProtocol) {
 		return;
 	}
 
 	NetworkMessage msg;
 	msg.addByte(0xB9);
-	msg.addByte(0x00); // Bestiary ENUM
-	msg.addByte(trackerList.size());
-	for (const auto &mtype : trackerList) {
-		uint32_t killAmount = player->getBestiaryKillCount(mtype->info.raceid);
-		msg.add<uint16_t>(mtype->info.raceid);
-		msg.add<uint32_t>(killAmount);
-		msg.add<uint16_t>(mtype->info.bestiaryFirstUnlock);
-		msg.add<uint16_t>(mtype->info.bestiarySecondUnlock);
-		msg.add<uint16_t>(mtype->info.bestiaryToUnlock);
+	msg.addByte(isBoss ? 0x01 : 0x00);
+	msg.addByte(trackerSet.size());
+	for (const auto &mtype : trackerSet) {
+		auto raceId = mtype->info.raceid;
+		const auto &stages = g_ioBosstiary().getBossRaceKillStages(mtype->info.bosstiaryRace);
+		if (isBoss && (stages.empty() || stages.size() != 3)) {
+			return;
+		}
 
-		if (g_iobestiary().getKillStatus(mtype, killAmount) == 4) {
+		uint32_t killAmount = player->getBestiaryKillCount(raceId);
+		msg.add<uint16_t>(raceId);
+		msg.add<uint32_t>(killAmount);
+		if (isBoss) {
+			for (const auto &stage : stages) {
+				msg.add<uint16_t>(stage.kills);
+			}
+		} else {
+			msg.add<uint16_t>(mtype->info.bestiaryFirstUnlock);
+			msg.add<uint16_t>(mtype->info.bestiarySecondUnlock);
+			msg.add<uint16_t>(mtype->info.bestiaryToUnlock);
+		}
+
+		if (g_iobestiary().getKillStatus(mtype, killAmount) == 4 || g_ioBosstiary().getBossCurrentLevel(player, raceId) == 3) {
 			msg.addByte(4);
 		} else {
 			msg.addByte(0);
 		}
 	}
+
 	writeToOutputBuffer(msg);
 }
 
@@ -2762,17 +2800,17 @@ void ProtocolGame::BestiarysendCharms() {
 	}
 	msg.addByte(4); // Unknown
 
-	auto finishedMonstersVector = g_iobestiary().getBestiaryFinished(player);
+	auto finishedMonstersSet = g_iobestiary().getBestiaryFinished(player);
 	std::list<charmRune_t> usedRunes = g_iobestiary().getCharmUsedRuneBitAll(player);
 
 	for (charmRune_t charmRune : usedRunes) {
 		const auto &tmpCharm = g_iobestiary().getBestiaryCharm(charmRune);
 		uint16_t tmp_raceid = player->parseRacebyCharm(tmpCharm->id, false, 0);
-		std::erase_if(finishedMonstersVector, [tmp_raceid](uint16_t val) { return val == tmp_raceid; });
+		finishedMonstersSet.erase(tmp_raceid);
 	}
 
-	msg.add<uint16_t>(static_cast<uint16_t>(finishedMonstersVector.size()));
-	for (uint16_t raceid_tmp : finishedMonstersVector) {
+	msg.add<uint16_t>(finishedMonstersSet.size());
+	for (uint16_t raceid_tmp : finishedMonstersSet) {
 		msg.add<uint16_t>(raceid_tmp);
 	}
 
@@ -8089,7 +8127,7 @@ void ProtocolGame::parseSendBosstiary() {
 		msg.addByte(static_cast<uint8_t>(bossRace));
 		msg.add<uint32_t>(killCount);
 		msg.addByte(0);
-		msg.addByte(0x00); // Tracker
+		msg.addByte(player->isBossOnBosstiaryTracker(mType) ? 0x01 : 0x00);
 		++bossesCount;
 	}
 
@@ -8240,7 +8278,7 @@ void ProtocolGame::parseBosstiarySlot(NetworkMessage &msg) {
 	addGameTask(&Game::playerBosstiarySlot, player->getID(), slotBossId, selectedBossId);
 }
 
-void ProtocolGame::sendPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss) {
+void ProtocolGame::sendPodiumDetails(NetworkMessage &msg, const phmap::parallel_flat_hash_set<uint16_t> &toSendMonsters, bool isBoss) const {
 	auto toSendMonstersSize = static_cast<uint16_t>(toSendMonsters.size());
 	msg.add<uint16_t>(toSendMonstersSize);
 	for (const auto &raceId : toSendMonsters) {

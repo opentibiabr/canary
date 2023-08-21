@@ -217,8 +217,8 @@ uint32_t IOBosstiary::calculateBossPoints(uint16_t lootBonus) const {
 	return static_cast<uint32_t>((2.5 * lootBonus * lootBonus) - (477.5 * lootBonus) + 24000);
 }
 
-std::vector<uint16_t> IOBosstiary::getBosstiaryFinished(const Player* player, uint8_t level /* = 1*/) const {
-	std::vector<uint16_t> unlockedMonsters;
+phmap::parallel_flat_hash_set<uint16_t> IOBosstiary::getBosstiaryFinished(const Player* player, uint8_t level /* = 1*/) const {
+	phmap::parallel_flat_hash_set<uint16_t> unlockedMonsters;
 	if (!player) {
 		return unlockedMonsters;
 	}
@@ -241,7 +241,7 @@ std::vector<uint16_t> IOBosstiary::getBosstiaryFinished(const Player* player, ui
 			const std::vector<LevelInfo> &infoForCurrentRace = it->second;
 			auto levelKills = infoForCurrentRace.at(level - 1).kills;
 			if (bossKills >= levelKills) {
-				unlockedMonsters.push_back(bossId);
+				unlockedMonsters.insert(bossId);
 			}
 		} else {
 			g_logger().warn("[{}] boss with id {} and name {} not found in bossRace", __FUNCTION__, bossId, bossName);
@@ -311,4 +311,14 @@ std::vector<uint16_t> IOBosstiary::getBosstiaryCooldownRaceId(const Player* play
 	}
 
 	return bossesCooldownRaceId;
+}
+
+const std::vector<LevelInfo> &IOBosstiary::getBossRaceKillStages(BosstiaryRarity_t race) const {
+	auto it = levelInfos.find(race);
+	if (it != levelInfos.end()) {
+		return it->second;
+	}
+
+	static std::vector<LevelInfo> emptyVector;
+	return emptyVector;
 }

@@ -512,6 +512,57 @@ uint32_t Player::getClientIcons() const {
 	return icon_bitset.to_ulong();
 }
 
+void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> &mtype, bool isBoss, bool reloadClient /* = false */) {
+	if (client) {
+		uint16_t raceId = mtype ? mtype->info.raceid : 0;
+		// Bostiary tracker logic
+		if (isBoss) {
+			m_bosstiaryMonsterTracker.insert(mtype);
+			if (reloadClient && raceId != 0) {
+				client->parseSendBosstiary();
+			}
+			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker, true);
+			return;
+		}
+
+		// Bestiary tracker logic
+		m_bestiaryMonsterTracker.insert(mtype);
+		if (reloadClient && raceId != 0) {
+			client->sendBestiaryEntryChanged(raceId);
+		}
+		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker, false);
+	}
+}
+
+void Player::removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient /* = false */) {
+	if (client) {
+		uint16_t raceId = mtype ? mtype->info.raceid : 0;
+		// Bostiary tracker logic
+		if (isBoss) {
+			m_bosstiaryMonsterTracker.erase(mtype);
+			if (reloadClient && raceId != 0) {
+				client->parseSendBosstiary();
+			}
+			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker, true);
+			return;
+		}
+
+		// Bestiary tracker logic
+		m_bestiaryMonsterTracker.erase(mtype);
+		if (reloadClient && raceId != 0) {
+			client->sendBestiaryEntryChanged(raceId);
+		}
+		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker, false);
+	}
+}
+
+bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const {
+	if (!monsterType) {
+		return false;
+	}
+	return m_bosstiaryMonsterTracker.contains(monsterType);
+}
+
 void Player::updateInventoryWeight() {
 	if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 		return;
@@ -1604,7 +1655,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 		}
 
 		// Reload bestiary tracker
-		refreshBestiaryTracker(getBestiaryTrackerList());
+		refreshBestiaryMonsterTracker();
 
 		g_game().checkPlayersRecord();
 		IOLoginData::updateOnlineStatus(guid, true);

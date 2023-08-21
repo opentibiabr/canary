@@ -29,9 +29,9 @@ function eradicatorTransform.onThink(creature)
 
 			creature:remove()
 
-			local monster = Game.createMonster("Eradicator1", pos, false, true)
+			local monster = Game.createMonster("Eradicator", pos, false, true)
 			if not monster then
-				Spdlog.error("Cannot create Eradicator1")
+				Spdlog.error("Cannot create Eradicator")
 				return false
 			end
 			monster:addHealth(-monster:getHealth() + health, COMBAT_PHYSICALDAMAGE)

@@ -63,6 +63,9 @@ enum class EventCallback_t : uint16_t {
 	monsterOnSpawn,
 	// Npc
 	npcOnSpawn,
+	// Zone
+	zoneOnCreatureEnter,
+	zoneOnCreatureLeave,
 };
 
 #endif // SRC_LUA_CALLBACKS_CALLBACKS_DEFINITIONS_HPP_

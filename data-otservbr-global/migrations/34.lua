@@ -1,3 +1,5 @@
 function onUpdateDatabase()
-	return false -- true = There are others migrations file | false = this is the last migration file
+	Spdlog.info("Updating database to version 35 (bosstiary tracker)")
+	db.query("ALTER TABLE `player_bosstiary` ADD `tracker` blob NOT NULL;")
+	return true
 end

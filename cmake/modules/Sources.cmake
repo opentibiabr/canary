@@ -42,6 +42,7 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     game/functions/game_reload.cpp
     game/game.cpp
     game/bank/bank.cpp
+    game/zones/zone.cpp
     game/movement/position.cpp
     game/movement/teleport.cpp
     game/scheduling/scheduler.cpp
@@ -108,6 +109,7 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     lua/functions/core/game/config_functions.cpp
     lua/functions/core/game/game_functions.cpp
     lua/functions/core/game/bank_functions.cpp
+    lua/functions/core/game/zone_functions.cpp
     lua/functions/core/game/global_functions.cpp
     lua/functions/core/game/lua_enums.cpp
     lua/functions/core/game/modal_window_functions.cpp

@@ -22,6 +22,7 @@ class Tile;
 class Party;
 class ItemType;
 class Monster;
+class Zone;
 
 /**
  * @class EventCallback
@@ -100,7 +101,6 @@ class EventCallback : public Script {
 		bool playerOnMoveItem(Player* player, Item* item, uint16_t count, const Position &fromPosition, const Position &toPosition, Cylinder* fromCylinder, Cylinder* toCylinder) const;
 		void playerOnItemMoved(Player* player, Item* item, uint16_t count, const Position &fromPosition, const Position &toPosition, Cylinder* fromCylinder, Cylinder* toCylinder) const;
 		void playerOnChangeZone(Player* player, ZoneType_t zone) const;
-		void playerOnChangeHazard(Player* player, bool isHazard) const;
 		bool playerOnMoveCreature(Player* player, Creature* creature, const Position &fromPosition, const Position &toPosition) const;
 		void playerOnReportRuleViolation(Player* player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation) const;
 		void playerOnReportBug(Player* player, const std::string &message, const Position &position, uint8_t category) const;
@@ -125,6 +125,10 @@ class EventCallback : public Script {
 
 		// Npc
 		void npcOnSpawn(Npc* npc, const Position &position) const;
+
+		// Zone
+		bool zoneOnCreatureEnter(std::shared_ptr<Zone> zone, Creature* creature) const;
+		bool zoneOnCreatureLeave(std::shared_ptr<Zone> zone, Creature* creature) const;
 
 		/**
 		 * @note here end the lua binder functions }

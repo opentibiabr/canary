@@ -13,6 +13,7 @@
 #include "creatures/creature.h"
 #include "creatures/combat/combat.h"
 #include "game/game.h"
+#include "game/zones/zone.hpp"
 #include "items/containers/mailbox/mailbox.h"
 #include "creatures/monsters/monster.h"
 #include "lua/creature/movement.h"
@@ -346,6 +347,10 @@ void Tile::onAddTileItem(Item* item) {
 
 	setTileFlags(item);
 
+	for (const auto zone : getZones()) {
+		zone->itemAdded(item);
+	}
+
 	const Position &cylinderMapPos = getPosition();
 
 	SpectatorHashSet spectators;
@@ -414,6 +419,10 @@ void Tile::onRemoveTileItem(const SpectatorHashSet &spectators, const std::vecto
 		if (it != g_game().browseFields.end()) {
 			it->second->removeThing(item, item->getItemCount());
 		}
+	}
+
+	for (const auto zone : getZones()) {
+		zone->itemRemoved(item);
 	}
 
 	resetTileFlags(item);
@@ -1655,4 +1664,8 @@ Item* Tile::getDoorItem() const {
 	}
 
 	return nullptr;
+}
+
+const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Tile::getZones() {
+	return Zone::getZones(getPosition());
 }

@@ -429,7 +429,7 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const Player* player) {
 	query << "`UnlockedRunesBit` = " << player->UnlockedRunesBit << ",";
 
 	PropWriteStream propBestiaryStream;
-	for (const auto &trackedType : player->getBestiaryTrackerList()) {
+	for (const auto &trackedType : player->getCyclopediaMonsterTrackerSet(false)) {
 		propBestiaryStream.write<uint16_t>(trackedType->info.raceid);
 	}
 	size_t trackerSize;
@@ -728,12 +728,25 @@ bool IOLoginDataSave::savePlayerBosstiary(const Player* player) {
 	}
 
 	query.str("");
-	DBInsert insertQuery("INSERT INTO `player_bosstiary` (`player_id`, `bossIdSlotOne`, `bossIdSlotTwo`, `removeTimes`) VALUES");
+	DBInsert insertQuery("INSERT INTO `player_bosstiary` (`player_id`, `bossIdSlotOne`, `bossIdSlotTwo`, `removeTimes`, `tracker`) VALUES");
+
+	// Bosstiary tracker
+	PropWriteStream stream;
+	for (const auto &monsterType : player->getCyclopediaMonsterTrackerSet(true)) {
+		if (!monsterType) {
+			continue;
+		}
+
+		stream.write<uint16_t>(monsterType->info.raceid);
+	}
+	size_t size;
+	const char* chars = stream.getStream(size);
 	// Append query informations
 	query << player->getGUID() << ','
 		  << player->getSlotBossId(1) << ','
 		  << player->getSlotBossId(2) << ','
-		  << std::to_string(player->getRemoveTimes());
+		  << std::to_string(player->getRemoveTimes()) << ','
+		  << Database::getInstance().escapeBlob(chars, static_cast<uint32_t>(size));
 
 	if (!insertQuery.addRow(query)) {
 		return false;

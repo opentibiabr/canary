@@ -186,12 +186,8 @@ uint64_t FileStream::getU64() {
 std::string FileStream::getString() {
 	std::string str;
 	if (const uint16_t len = getU16(); len > 0 && len < 8192) {
-		char buffer[8192];
-
-		if (m_pos + len > m_data.size()) {
+		if (m_pos + len > m_data.size())
 			throw std::runtime_error("[FileStream::getString] - Read failed");
-			return {};
-		}
 
 		str = { (char*)&m_data[m_pos], len };
 		m_pos += len;

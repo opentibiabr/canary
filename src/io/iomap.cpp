@@ -54,7 +54,7 @@ void IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, 
 	map->width = stream.getU16();
 	map->height = stream.getU16();
 	uint32_t majorVersionItems = stream.getU32();
-	uint32_t minorVersionItems = stream.getU32();
+	stream.getU32(); // minorVersionItems
 
 	if (version > 2)
 		throw IOMapException("Unknown OTBM version detected.");
@@ -110,10 +110,6 @@ void IOMap::parseMapDataAttributes(FileStream &stream, Map* map, const std::stri
 }
 
 void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
-	uint16_t last_x = 0;
-	uint16_t last_y = 0;
-	uint8_t last_z = 0;
-
 	while (stream.startNode(OTBM_TILE_AREA)) {
 		const uint16_t base_x = stream.getU16();
 		const uint16_t base_y = stream.getU16();
@@ -213,10 +209,6 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				if (!stream.endNode())
 					throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
 			};
-
-			last_x = x;
-			last_y = y;
-			last_z = z;
 
 			if (!stream.endNode())
 				throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));

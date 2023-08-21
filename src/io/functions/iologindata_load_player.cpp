@@ -419,11 +419,11 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(Player* player, DBResult_ptr resu
 		PropStream propBestStream;
 		propBestStream.init(Bestattr, attrBestSize);
 
-		uint16_t raceid_t;
-		while (propBestStream.read<uint16_t>(raceid_t)) {
-			auto tmp_tt = g_monsters().getMonsterTypeByRaceId(raceid_t);
-			if (tmp_tt) {
-				player->addBestiaryTrackerList(tmp_tt);
+		uint16_t monsterRaceId;
+		while (propBestStream.read<uint16_t>(monsterRaceId)) {
+			const auto monsterType = g_monsters().getMonsterTypeByRaceId(monsterRaceId);
+			if (monsterType) {
+				player->addMonsterToCyclopediaTrackerList(monsterType, false, false);
 			}
 		}
 	} else {
@@ -796,6 +796,21 @@ void IOLoginDataLoad::loadPlayerBosstiary(Player* player, DBResult_ptr result) {
 			player->setSlotBossId(1, result->getNumber<uint16_t>("bossIdSlotOne"));
 			player->setSlotBossId(2, result->getNumber<uint16_t>("bossIdSlotTwo"));
 			player->setRemoveBossTime(result->getU8FromString(result->getString("removeTimes"), __FUNCTION__));
+
+			// Tracker
+			unsigned long size;
+			const char* chars = result->getStream("tracker", size);
+			PropStream stream;
+			stream.init(chars, size);
+			uint16_t bossid;
+			while (stream.read<uint16_t>(bossid)) {
+				const auto monsterType = g_monsters().getMonsterTypeByRaceId(bossid, true);
+				if (!monsterType) {
+					continue;
+				}
+
+				player->addMonsterToCyclopediaTrackerList(monsterType, true, false);
+			}
 		} while (result->next());
 	}
 }

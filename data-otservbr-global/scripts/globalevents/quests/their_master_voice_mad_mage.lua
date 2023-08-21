@@ -15,7 +15,7 @@ function mad.onThink(interval, lastExecution)
 	monster:setReward(true)
 
 	if not monster then
-		Spdlog.error("[mad.onThink] - Failed to spawn ".. rand.bossName)
+		logger.error("[mad.onThink] - Failed to spawn ", rand.bossName)
 		return true
 	end
 	return true

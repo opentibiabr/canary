@@ -11,7 +11,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 	-- Make sure it is a boss
 	if monsterType and monsterType:isRewardBoss() then
 		if not corpse:isContainer() then
-			Spdlog.warn("[bossDeath.onDeath] Corpse (id: " .. corpse:getId() .. ") for reward boss " .. creature:getName() .. " is not a container.")
+			logger.warn("[bossDeath.onDeath] Corpse (id: {}) for reward boss {} is not a container.", corpse:getId(), creature:getName())
 		end
 		corpse:registerReward()
 		local bossId = creature:getId()

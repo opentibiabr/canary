@@ -63,10 +63,11 @@ class IOBosstiary {
 		void addBosstiaryKill(Player* player, const std::shared_ptr<MonsterType> &mtype, uint32_t amount = 1) const;
 		uint16_t calculateLootBonus(uint32_t bossPoints) const;
 		uint32_t calculateBossPoints(uint16_t lootBonus) const;
-		std::vector<uint16_t> getBosstiaryFinished(const Player* player, uint8_t level = 1) const;
+		phmap::parallel_flat_hash_set<uint16_t> getBosstiaryFinished(const Player* player, uint8_t level = 1) const;
 		uint8_t getBossCurrentLevel(const Player* player, uint16_t bossId) const;
 		uint32_t calculteRemoveBoss(uint8_t removeTimes) const;
 		std::vector<uint16_t> getBosstiaryCooldownRaceId(const Player* player) const;
+		const std::vector<LevelInfo> &getBossRaceKillStages(BosstiaryRarity_t race) const;
 
 	private:
 		phmap::btree_map<uint16_t, std::string> bosstiaryMap;

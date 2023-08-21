@@ -51,6 +51,7 @@
     <ClInclude Include="..\src\game\functions\game_reload.hpp" />
     <ClInclude Include="..\src\game\game.h" />
     <ClInclude Include="..\src\game\bank\bank.hpp" />
+    <ClInclude Include="..\src\game\zones\zone.hpp" />
     <ClInclude Include="..\src\game\game_definitions.hpp" />
     <ClInclude Include="..\src\game\movement\position.h" />
     <ClInclude Include="..\src\game\movement\teleport.h" />
@@ -59,6 +60,7 @@
     <ClInclude Include="..\src\game\scheduling\dispatcher.h" />
     <ClInclude Include="..\src\game\scheduling\task.hpp" />
     <ClInclude Include="..\src\io\fileloader.h" />
+    <ClInclude Include="..\src\io\filestream.hpp" />
     <ClInclude Include="..\src\io\functions\iologindata_load_player.hpp" />
     <ClInclude Include="..\src\io\functions\iologindata_save_player.hpp" />
     <ClInclude Include="..\src\io\io_wheel.hpp" />
@@ -93,6 +95,7 @@
     <ClInclude Include="..\src\items\trashholder.h" />
     <ClInclude Include="..\src\items\weapons\weapons.h" />
     <ClInclude Include="..\src\lib\di\container.hpp" />
+    <ClInclude Include="..\src\lib\di\soft_singleton.hpp" />
     <ClInclude Include="..\src\lib\logging\logger.hpp" />
     <ClInclude Include="..\src\lib\logging\log_with_spd_log.hpp" />
     <ClInclude Include="..\src\lib\thread\thread_pool.hpp" />
@@ -114,13 +117,14 @@
     <ClInclude Include="..\src\lua\functions\core\game\game_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\global_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\bank_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\core\game\zone_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\lua_enums.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\modal_window_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\bit_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\core_libs_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\db_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\result_functions.hpp" />
-    <ClInclude Include="..\src\lua\functions\core\libs\spdlog_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\core\libs\logger_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\network\core_network_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\network\network_message_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\network\webhook_functions.hpp" />
@@ -237,12 +241,14 @@
     <ClCompile Include="..\src\game\functions\game_reload.cpp" />
     <ClCompile Include="..\src\game\game.cpp" />
     <ClCompile Include="..\src\game\bank\bank.cpp" />
+    <ClCompile Include="..\src\game\zones\zone.cpp" />
     <ClCompile Include="..\src\game\movement\position.cpp" />
     <ClCompile Include="..\src\game\movement\teleport.cpp" />
     <ClCompile Include="..\src\game\scheduling\events_scheduler.cpp" />
     <ClCompile Include="..\src\game\scheduling\scheduler.cpp" />
     <ClCompile Include="..\src\game\scheduling\dispatcher.cpp" />
     <ClCompile Include="..\src\io\fileloader.cpp" />
+    <ClCompile Include="..\src\io\filestream.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_load_player.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_save_player.cpp" />
     <ClCompile Include="..\src\io\io_wheel.cpp" />
@@ -273,6 +279,7 @@
     <ClCompile Include="..\src\items\tile.cpp" />
     <ClCompile Include="..\src\items\trashholder.cpp" />
     <ClCompile Include="..\src\items\weapons\weapons.cpp" />
+    <ClCompile Include="..\src\lib\di\soft_singleton.cpp" />
     <ClCompile Include="..\src\lib\logging\log_with_spd_log.cpp" />
     <ClCompile Include="..\src\lib\thread\thread_pool.cpp" />
     <ClCompile Include="..\src\lua\callbacks\creaturecallback.cpp" />
@@ -288,12 +295,13 @@
     <ClCompile Include="..\src\lua\functions\core\game\game_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\global_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\bank_functions.cpp" />
+    <ClCompile Include="..\src\lua\functions\core\game\zone_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\lua_enums.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\modal_window_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\bit_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\db_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\result_functions.cpp" />
-    <ClCompile Include="..\src\lua\functions\core\libs\spdlog_functions.cpp" />
+    <ClCompile Include="..\src\lua\functions\core\libs\logger_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\network\network_message_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\network\webhook_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\creatures\combat\combat_functions.cpp" />

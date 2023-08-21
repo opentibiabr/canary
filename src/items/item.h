@@ -481,6 +481,12 @@ class Item : virtual public Thing, public ItemProperties {
 		bool isDummy() const {
 			return items[id].isDummy();
 		}
+		bool isCarpet() const {
+			return items[id].isCarpet();
+		}
+		bool canReceiveAutoCarpet() const {
+			return isBlocking() && isAlwaysOnTop() && !items[id].hasHeight;
+		}
 
 		const std::string &getName() const {
 			if (hasAttribute(ItemAttribute_t::NAME)) {

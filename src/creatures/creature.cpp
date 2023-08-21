@@ -15,6 +15,7 @@
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "game/scheduling/scheduler.h"
+#include "game/zones/zone.hpp"
 
 double Creature::speedA = 857.36;
 double Creature::speedB = 261.29;
@@ -409,8 +410,6 @@ void Creature::onChangeZone(ZoneType_t zone) {
 	}
 }
 
-void Creature::onChangeHazard(bool isHazard) { }
-
 void Creature::onAttackedCreatureChangeZone(ZoneType_t zone) {
 	if (zone == ZONE_PROTECTION) {
 		onCreatureDisappear(attackedCreature, false);
@@ -491,12 +490,8 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 			}
 		}
 
-		if (newTile->getZone() != oldTile->getZone()) {
-			onChangeZone(getZone());
-		}
-
-		if (newTile->isHazard() != oldTile->isHazard()) {
-			onChangeHazard(newTile->isHazard());
+		if (newTile->getZoneType() != oldTile->getZoneType()) {
+			onChangeZone(getZoneType());
 		}
 
 		// update map cache
@@ -615,8 +610,8 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 				g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
 			}
 
-			if (newTile->getZone() != oldTile->getZone()) {
-				onAttackedCreatureChangeZone(attackedCreature->getZone());
+			if (newTile->getZoneType() != oldTile->getZoneType()) {
+				onAttackedCreatureChangeZone(attackedCreature->getZoneType());
 			}
 		}
 	}
@@ -1778,4 +1773,8 @@ void Creature::setIncreasePercent(CombatType_t combat, int32_t value) {
 	} catch (const std::out_of_range &e) {
 		g_logger().error("Index is out of range in setIncreasePercent: {}", e.what());
 	}
+}
+
+const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Creature::getZones() {
+	return Zone::getZones(getPosition());
 }

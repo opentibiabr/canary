@@ -11,6 +11,7 @@
 #define SRC_IO_IOBESTIARY_H_
 
 #include "declarations.hpp"
+#include "lib/di/soft_singleton.hpp"
 #include "lua/scripts/luascript.h"
 #include "creatures/players/player.h"
 
@@ -72,13 +73,17 @@ class IOBestiary {
 		bool hasCharmUnlockedRuneBit(const std::shared_ptr<Charm> &charm, int32_t input) const;
 
 		std::list<charmRune_t> getCharmUsedRuneBitAll(Player* player);
-		std::vector<uint16_t> getBestiaryFinished(Player* player) const;
+		phmap::parallel_flat_hash_set<uint16_t> getBestiaryFinished(Player* player) const;
 
 		charmRune_t getCharmFromTarget(Player* player, const std::shared_ptr<MonsterType> &mtype);
 
 		phmap::btree_map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(Player* player, phmap::btree_map<uint16_t, std::string> mtype_list) const;
 		phmap::btree_map<uint8_t, int16_t> getMonsterElements(const std::shared_ptr<MonsterType> &mtype) const;
 		phmap::btree_map<uint16_t, std::string> findRaceByName(const std::string &race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
+
+	private:
+		static SoftSingleton instanceTracker;
+		SoftSingletonGuard guard { instanceTracker };
 };
 
 constexpr auto g_iobestiary = IOBestiary::getInstance;

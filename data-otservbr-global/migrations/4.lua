@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-    Spdlog.info("Updating database to version 5 (boosted creature)")
+    logger.info("Updating database to version 5 (boosted creature)")
     db.query([[CREATE TABLE IF NOT EXISTS `boosted_creature` (
         `boostname` TEXT,
         `date` varchar(250) NOT NULL DEFAULT '',

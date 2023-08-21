@@ -128,7 +128,7 @@ function Player.talkactionSetFlag(self, param, flagType)
 
 	targetPlayer:setGroupFlag(flagValue)
 	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Flag " .. getFlagNameByType(flagValue) .. " set for player " .. playerName .. ".")
-	Spdlog.info("[Player.talkactionSetFlag] Added flag " .. getFlagNameByType(flagValue) .. " to " .. targetPlayer:getName() .. " character by " .. self:getName() .. ".")
+	logger.info("[Player.talkactionSetFlag] Added flag {} to {} character by {}.", getFlagNameByType(flagValue), targetPlayer:getName(), self:getName())
 	return true
 end
 
@@ -159,7 +159,7 @@ function Player.talkactionRemoveFlag(self, param, flagType)
 
 	targetPlayer:removeGroupFlag(flagValue)
 	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Flag " .. getFlagNameByType(flagValue) .. " removed from player " .. playerName .. ".")
-	Spdlog.info("[Player.talkactionRemoveFlag] Removed flag " .. getFlagNameByType(flagValue) .. " from " .. targetPlayer:getName() .. " character by " .. self:getName() .. ".")
+	logger.info("[Player.talkactionRemoveFlag] Removed flag {} to {} character by {}.", getFlagNameByType(flagValue), targetPlayer:getName(), self:getName())
 	return true
 end
 

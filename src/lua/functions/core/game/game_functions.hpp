@@ -77,8 +77,6 @@ class GameFunctions final : LuaScriptInterface {
 			registerMethod(L, "Game", "getFiendishMonsters", GameFunctions::luaGameGetFiendishMonsters);
 			registerMethod(L, "Game", "getBoostedBoss", GameFunctions::luaGameGetBoostedBoss);
 
-			registerMethod(L, "Game", "createHazardArea", GameFunctions::luaGameCreateHazardArea);
-
 			registerMethod(L, "Game", "getLadderIds", GameFunctions::luaGameGetLadderIds);
 			registerMethod(L, "Game", "getDummies", GameFunctions::luaGameGetDummies);
 
@@ -147,8 +145,6 @@ class GameFunctions final : LuaScriptInterface {
 		static int luaGameGetFiendishMonsters(lua_State* L);
 
 		static int luaGameGetBoostedBoss(lua_State* L);
-
-		static int luaGameCreateHazardArea(lua_State* L);
 
 		static int luaGameGetLadderIds(lua_State* L);
 		static int luaGameGetDummies(lua_State* L);

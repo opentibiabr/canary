@@ -53,7 +53,6 @@ namespace OTB {
 			bool getProps(const Node &node, PropStream &props);
 			const Node &parseTree();
 	};
-
 } // namespace OTB
 
 class PropStream {

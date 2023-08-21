@@ -23,7 +23,7 @@ int NpcFunctions::luaNpcCreate(lua_State* L) {
 		} else if (isString(L, 2)) {
 			npc = g_game().getNpcByName(getString(L, 2));
 		} else if (isUserdata(L, 2)) {
-			if (getUserdataType(L, 2) != LuaData_Npc) {
+			if (getUserdataType(L, 2) != LuaData_t::Npc) {
 				lua_pushnil(L);
 				return 1;
 			}

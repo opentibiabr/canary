@@ -104,7 +104,7 @@ function heartDestructionEradicator.onUse(player, item, fromPosition, itemEx, to
 					Game.createMonster("Spark of Destruction", {x = 32305, y = 31287, z = 14}, false, true)
 					Game.createMonster("Spark of Destruction", {x = 32312, y = 31287, z = 14}, false, true)
 					Game.createMonster("Spark of Destruction", {x = 32314, y = 31282, z = 14}, false, true)
-					Game.createMonster("Eradicator1", {x = 32309, y = 31283, z = 14}, false, true)
+					Game.createMonster("Eradicator", {x = 32309, y = 31283, z = 14}, false, true)
 
 					local vortex = Tile({x = 32318, y = 31284, z = 14}):getItemById(23482)
 					if vortex then

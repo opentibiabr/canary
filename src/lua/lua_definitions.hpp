@@ -18,17 +18,45 @@ enum {
 	EVENT_ID_USER = 1000,
 };
 
-enum LuaDataType {
-	LuaData_Unknown,
+enum class LuaData_t : uint8_t {
+	Unknown,
 
-	LuaData_Item,
-	LuaData_Container,
-	LuaData_Teleport,
-	LuaData_Player,
-	LuaData_Monster,
-	LuaData_Npc,
-	LuaData_Tile,
-	LuaData_Guild,
+	Item,
+	Container,
+	Teleport,
+	Player,
+	Monster,
+	MonsterType,
+	Npc,
+	NpcType,
+	Tile,
+	Variant,
+	Position,
+	Spdlog,
+	NetworkMessage,
+	ModalWindow,
+	Guild,
+	Group,
+	Vocation,
+	Town,
+	House,
+	ItemType,
+	Combat,
+	Condition,
+	Charm,
+	Loot,
+	MonsterSpell,
+	Spell,
+	Party,
+	Action,
+	TalkAction,
+	CreatureEvent,
+	MoveEvent,
+	GlobalEvent,
+	Weapon,
+	Imbuement,
+	Mount,
+	ItemClassification,
 };
 
 enum CreatureEventType_t {
@@ -118,6 +146,7 @@ enum ErrorCode_t {
 	LUA_ERROR_SPELL_NOT_FOUND,
 	LUA_ERROR_ACTION_NOT_FOUND,
 	LUA_ERROR_TALK_ACTION_NOT_FOUND,
+	LUA_ERROR_ZONE_NOT_FOUND,
 };
 
 enum TargetSearchType_t {

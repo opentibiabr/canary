@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	Spdlog.info("Updating database to version 1 (sample players)")
+	logger.info("Updating database to version 1 (sample players)")
 	-- Rook Sample
 	db.query("UPDATE `players` SET `level` = 2, `vocation` = 0, `health` = 155, `healthmax` = 155, `experience` = 100, `soul` = 100, `lookbody` = 113, `lookfeet` = 115, `lookhead` = 95, `looklegs` = 39, `looktype` = 129, `mana` = 60, `manamax` = 60, `town_id` = 1, `cap` = 410 WHERE `id` = 1;")
 	-- Sorcerer Sample

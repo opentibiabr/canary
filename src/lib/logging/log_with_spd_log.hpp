@@ -14,10 +14,6 @@ class LogWithSpdLog final : public Logger {
 		LogWithSpdLog();
 		~LogWithSpdLog() override = default;
 
-		// Ensures that we don't accidentally copy it
-		LogWithSpdLog(const LogWithSpdLog &) = delete;
-		LogWithSpdLog &operator=(const LogWithSpdLog &) = delete;
-
 		static LogWithSpdLog &getInstance();
 
 		void setLevel(const std::string &name) override;

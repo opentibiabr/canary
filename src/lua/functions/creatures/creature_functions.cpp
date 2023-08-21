@@ -980,3 +980,48 @@ int CreatureFunctions::luaCreatureGetZones(lua_State* L) {
 	}
 	return 1;
 }
+
+int CreatureFunctions::luaCreatureSetIcon(lua_State* L) {
+	// creature:setIcon(category, icon[, number])
+	Creature* creature = getUserdata<Creature>(L, 1);
+	if (!creature) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+	auto category = getNumber<CreatureIconCategory_t>(L, 2);
+	auto count = getNumber<uint16_t>(L, 4, 0);
+	auto creatureIcon = CreatureIcon();
+	if (category == CreatureIconCategory_t::Modifications) {
+		auto icon = getNumber<CreatureIconModifications_t>(L, 3);
+		creatureIcon = CreatureIcon(icon, count);
+	} else {
+		auto icon = getNumber<CreatureIconQuests_t>(L, 3);
+		creatureIcon = CreatureIcon(icon, count);
+	}
+
+	creature->setIcon(creatureIcon);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureGetIcon(lua_State* L) {
+	// creature:getIcon()
+	Creature* creature = getUserdata<Creature>(L, 1);
+	if (!creature) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	auto creatureIcon = creature->getIcon();
+	if (creatureIcon.isNone()) {
+		lua_pushnil(L);
+		return 1;
+	}
+	lua_createtable(L, 0, 3);
+	setField(L, "category", static_cast<uint8_t>(creatureIcon.category));
+	setField(L, "icon", creatureIcon.serialize());
+	setField(L, "count", creatureIcon.count);
+	return 1;
+}

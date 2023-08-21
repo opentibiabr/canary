@@ -1081,7 +1081,7 @@ public:
 		}
 	}
 	void sendCreatureIcon(const Creature* creature) {
-		if (client) {
+		if (client && !client->oldProtocol) {
 			client->sendCreatureIcon(creature);
 		}
 	}
@@ -2428,7 +2428,6 @@ public:
 		return static_cast<uint16_t>(std::max<int32_t>(0, std::min<int32_t>(0xFFFF, points)));
 	}
 
-	void reloadHazardSystemIcon();
 	/*******************************************************************************/
 
 	// Concoction system

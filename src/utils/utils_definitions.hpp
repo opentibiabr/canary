@@ -48,30 +48,83 @@ enum WieldInfo_t {
 	WIELDINFO_PREMIUM = 1 << 3,
 };
 
-enum CreatureIcon_t {
-	CREATUREICON_NONE = 0,
-	CREATUREICON_HIGHERRECEIVEDDAMAGE = 1,
-	CREATUREICON_LOWERDEALTDAMAGE = 2,
-	CREATUREICON_TURNEDMELEE = 3,
-	CREATUREICON_GREENBALL = 4,
-	CREATUREICON_REDBALL = 5,
-	CREATUREICON_GREENSHIELD = 6,
-	CREATUREICON_YELLOWSHIELD = 7,
-	CREATUREICON_BLUESHIELD = 8,
-	CREATUREICON_PURPLESHIELD = 9,
-	CREATUREICON_REDSHIELD = 10,
-	CREATUREICON_PIGEON = 11,
-	CREATUREICON_PURPLESTAR = 12,
-	CREATUREICON_POISONDROP = 13,
-	CREATUREICON_WATERDROP = 14,
-	CREATUREICON_FIREDROP = 15,
-	CREATUREICON_ICEFLOWER = 16,
-	CREATUREICON_ARROWUP = 17,
-	CREATUREICON_ARROWDOWN = 18,
-	CREATUREICON_EXCLAMATIONMARK = 19,
-	CREATUREICON_QUESTIONMARK = 20,
-	CREATUREICON_CANCELMARK = 21
+enum class CreatureIconCategory_t {
+	Quests,
+	Modifications,
 };
+
+enum class CreatureIconModifications_t {
+	None,
+	HigherDamageReceived,
+	LowerDamageDealt,
+	TurnedMelee,
+	Influenced,
+	Fiendish,
+	ReducedHealth,
+};
+
+enum class CreatureIconQuests_t {
+	None,
+	WhiteCross,
+	RedCross,
+	RedBall,
+	GreenBall,
+	RedGreenBall,
+	GreenShield,
+	YellowShield,
+	BlueShield,
+	PurpleShield,
+	RedShield,
+	Dove,
+	Energy,
+	Earth,
+	Water,
+	Fire,
+	Ice,
+	ArrowUp,
+	ArrowDown,
+	ExclamationMark,
+	QuestionMark,
+	CancelMark,
+	Hazard,
+	BrownSkull,
+	BloodDrop,
+};
+
+struct CreatureIcon {
+		constexpr CreatureIcon() = default;
+
+		constexpr CreatureIcon(CreatureIconModifications_t modification, uint16_t count = 0) :
+			category(CreatureIconCategory_t::Modifications), modification(modification), count(count) { }
+
+		constexpr CreatureIcon(CreatureIconQuests_t quest, uint16_t count = 0) :
+			category(CreatureIconCategory_t::Quests), quest(quest), count(count) { }
+
+		CreatureIconCategory_t category;
+		CreatureIconModifications_t modification = CreatureIconModifications_t::None;
+		CreatureIconQuests_t quest = CreatureIconQuests_t::None;
+		uint16_t count = 0;
+
+		bool operator==(const CreatureIcon &other) const = default;
+
+		bool isNone() const {
+			return modification == CreatureIconModifications_t::None && quest == CreatureIconQuests_t::None;
+		}
+
+		bool isSet() const {
+			return !isNone();
+		}
+
+		uint8_t serialize() const {
+			if (category == CreatureIconCategory_t::Modifications) {
+				return static_cast<uint8_t>(modification);
+			} else if (category == CreatureIconCategory_t::Quests) {
+				return static_cast<uint8_t>(quest);
+			}
+			return 0;
+		}
+};
+
 enum SpawnType_t {
 	RESPAWN_IN_ALL = 0,
 	RESPAWN_IN_DAY = 1,

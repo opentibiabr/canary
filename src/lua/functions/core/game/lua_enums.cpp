@@ -92,6 +92,7 @@ void LuaEnums::init(lua_State* L) {
 	initFluidEnums(L);
 	initItemIdEnums(L);
 	initPlayerFlagEnums(L);
+	initCreatureIconEnums(L);
 	initReportReasonEnums(L);
 	initSkillEnums(L);
 	initSkullEnums(L);
@@ -877,6 +878,21 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 void LuaEnums::initPlayerFlagEnums(lua_State* L) {
 	for (auto value : magic_enum::enum_values<PlayerFlags_t>()) {
 		registerEnumClass(L, value);
+	}
+}
+
+void LuaEnums::initCreatureIconEnums(lua_State* L) {
+	std::string luaNamespace = "CreatureIconCategory_";
+	for (auto value : magic_enum::enum_values<CreatureIconCategory_t>()) {
+		registerEnumClassNamespace(L, luaNamespace, value);
+	}
+	luaNamespace = "CreatureIconModifications_";
+	for (auto value : magic_enum::enum_values<CreatureIconModifications_t>()) {
+		registerEnumClassNamespace(L, luaNamespace, value);
+	}
+	luaNamespace = "CreatureIconQuests_";
+	for (auto value : magic_enum::enum_values<CreatureIconQuests_t>()) {
+		registerEnumClassNamespace(L, luaNamespace, value);
 	}
 }
 

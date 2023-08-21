@@ -3127,35 +3127,34 @@ void ProtocolGame::sendCreatureLight(const Creature* creature) {
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::addCreatureIcon(NetworkMessage &msg, const Creature* creature) {
+	if (!creature || !player || oldProtocol) {
+		return;
+	}
+
+	const auto icon = creature->getIcon();
+	// 0 = no icon, 1 = we'll send an icon
+	if (icon.isNone()) {
+		msg.addByte(0);
+	} else {
+		msg.addByte(1);
+		msg.addByte(icon.serialize());
+		msg.addByte(static_cast<uint8_t>(icon.category));
+		msg.add<uint16_t>(icon.count);
+	}
+}
+
 void ProtocolGame::sendCreatureIcon(const Creature* creature) {
 	if (!creature || !player || oldProtocol) {
 		return;
 	}
 
-	CreatureIcon_t icon = creature->getIcon();
 	NetworkMessage msg;
 	msg.addByte(0x8B);
 	msg.add<uint32_t>(creature->getID());
 	// Type 14 for this
 	msg.addByte(14);
-	// 0 = no icon, 1 = we'll send an icon
-	auto creaturePlayer = creature->getPlayer();
-	auto useHazard = g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM);
-	if (icon != CREATUREICON_NONE) {
-		msg.addByte(icon != CREATUREICON_NONE); // Has icon
-		msg.addByte(icon);
-		// Creature update
-		msg.addByte(1);
-		// Used for the life in the new quest
-		msg.add<uint16_t>(0);
-	} else if (useHazard && !oldProtocol && creaturePlayer && creaturePlayer->getHazardSystemPoints() > 0) {
-		msg.addByte(0x01); // Has icon
-		msg.addByte(22); // Hazard icon
-		msg.addByte(0);
-		msg.add<uint16_t>(creaturePlayer->getHazardSystemPoints());
-	} else {
-		msg.addByte(0x00); // Has icon
-	}
+	addCreatureIcon(msg, creature);
 	writeToOutputBuffer(msg);
 }
 
@@ -6950,60 +6949,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature* creature, bo
 
 	msg.add<uint16_t>(creature->getStepSpeed());
 
-	CreatureIcon_t icon;
-	auto sendIcon = false;
-	auto useHazard = g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM);
-	if (!oldProtocol) {
-		if (otherPlayer) {
-			icon = creature->getIcon();
-			sendIcon = icon != CREATUREICON_NONE;
-			bool hasHazard = otherPlayer->getHazardSystemPoints() > 0;
-
-			if (!hasHazard) {
-				msg.addByte(sendIcon); // Icons
-			}
-
-			if (sendIcon) {
-				msg.addByte(icon);
-				msg.addByte(1);
-				msg.add<uint16_t>(0);
-			} else if (useHazard && hasHazard) {
-				msg.addByte(0x01); // Has icon
-				msg.addByte(22); // Hazard icon
-				msg.addByte(0);
-				msg.add<uint16_t>(otherPlayer->getHazardSystemPoints());
-			}
-		} else {
-			if (auto monster = creature->getMonster();
-				monster) {
-				icon = monster->getIcon();
-				sendIcon = icon != CREATUREICON_NONE;
-				msg.addByte(sendIcon); // Send Icons true/false
-				if (sendIcon) {
-					// Icones with stack (Fiendishs e Influenceds)
-					if (monster->getForgeStack() > 0) {
-						msg.addByte(icon);
-						msg.addByte(1);
-						msg.add<uint16_t>(icon != 5 ? monster->getForgeStack() : 0); // Stack
-					} else {
-						// Icons without number on the side
-						msg.addByte(icon);
-						msg.addByte(1);
-						msg.add<uint16_t>(0);
-					}
-				}
-			} else {
-				icon = creature->getIcon();
-				sendIcon = icon != CREATUREICON_NONE;
-				msg.addByte(sendIcon); // Send Icons true/false
-				if (sendIcon) {
-					msg.addByte(icon);
-					msg.addByte(1);
-					msg.add<uint16_t>(0);
-				}
-			}
-		}
-	}
+	addCreatureIcon(msg, creature);
 
 	msg.addByte(player->getSkullClient(creature));
 	msg.addByte(player->getPartyShield(otherPlayer));
@@ -8473,25 +8419,6 @@ void ProtocolGame::sendDoubleSoundEffect(
 	msg.add<uint16_t>(static_cast<uint16_t>(secondarySoundId)); // Sound id
 
 	msg.addByte(0x00); // Breaking the effects loop
-	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::reloadHazardSystemIcon() {
-	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM)) {
-		return;
-	}
-	auto hazardLevel = player->getHazardSystemPoints();
-
-	NetworkMessage msg;
-	msg.addByte(0x8B);
-	msg.add<uint32_t>(player->getID());
-	msg.addByte(14);
-	msg.addByte(hazardLevel > 0 ? 0x01 : 0x00);
-	if (hazardLevel > 0) {
-		msg.addByte(22); // Icon ID
-		msg.addByte(0);
-		msg.add<uint16_t>(hazardLevel);
-	}
 	writeToOutputBuffer(msg);
 }
 

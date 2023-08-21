@@ -204,3 +204,8 @@ function Creature:addEventStamina(target)
 		end
 	end
 end
+
+
+function Creature:clearIcon()
+	self:setIcon(0, 0)
+end

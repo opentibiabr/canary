@@ -112,7 +112,7 @@ uint32_t FileStream::tell() const {
 
 void FileStream::seek(uint32_t pos) {
 	if (pos > m_data.size())
-		throw std::exception("seek failed");
+		throw std::runtime_error("seek failed");
 	m_pos = pos;
 }
 
@@ -129,7 +129,7 @@ bool FileStream::read(T &ret, bool escape) {
 	const auto size = sizeof(T);
 
 	if (m_pos + size > m_data.size())
-		throw std::exception("read failed");
+		throw std::runtime_error("read failed");
 
 	if (escape) {
 		uint8_t arr[size];
@@ -154,7 +154,7 @@ uint8_t FileStream::getU8() {
 	uint8_t v = 0;
 
 	if (m_pos + 1 > m_data.size())
-		throw std::exception("read failed");
+		throw std::runtime_error("read failed");
 
 	// Fast Escape Val
 	if (m_nodes > 0 && m_data[m_pos] == OTB::Node::ESCAPE)
@@ -189,14 +189,14 @@ std::string FileStream::getString() {
 		char buffer[8192];
 
 		if (m_pos + len > m_data.size()) {
-			throw std::exception("[FileStream::getString] - Read failed");
+			throw std::runtime_error("[FileStream::getString] - Read failed");
 			return {};
 		}
 
 		str = { (char*)&m_data[m_pos], len };
 		m_pos += len;
 	} else if (len != 0)
-		throw std::exception("[FileStream::getString] - Read failed because string is too big");
+		throw std::runtime_error("[FileStream::getString] - Read failed because string is too big");
 	return str;
 }
 

@@ -21,7 +21,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 
 	local wealthDuplex = Concoction.find(Concoction.Ids.WealthDuplex)
 	if not wealthDuplex then
-		Spdlog.warn("[Monster:onDropLoot] - Could not find WealthDuplex concoction.")
+		logger.warn("[Monster:onDropLoot] - Could not find WealthDuplex concoction.")
 		return
 	end
 	local chance = 0

@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	Spdlog.info("Updating database to version 34 (add primary keys)")
+	logger.info("Updating database to version 34 (add primary keys)")
 	db.query([[
 		ALTER TABLE `player_prey`
 		ADD PRIMARY KEY (`player_id`, `slot`);

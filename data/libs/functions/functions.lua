@@ -112,8 +112,8 @@ debug.sethook(function(event, line)
 	linecount = linecount + 1
 	if systemTime() - start >= 1 then
 		if linecount >= 30000 then
-			Spdlog.warn(string.format("[debug.sethook] - Possible infinite loop in file [%s] near line [%d]",
-				debug.getinfo(2).source, line))
+			logger.warn("[debug.sethook] - Possible infinite loop in file [{}] near line [{}]",
+				debug.getinfo(2).source, line)
 			debug.sethook()
 		end
 		linecount = 0
@@ -774,7 +774,7 @@ function indexToStr(i, v, buffer)
 	local tp = type(v)
 	local itp = type(i)
 	if itp ~= "number" and itp ~= "string" then
-		Spdlog.warn("[indexToStr] - Invalid index to serialize: " .. type(i))
+		logger.warn("[indexToStr] - Invalid index to serialize: {}", type(i))
 	else
 		if tp == "table" then
 			insertIndex(i, buffer)
@@ -794,7 +794,7 @@ function indexToStr(i, v, buffer)
 			table.insert(buffer, v == true and "true" or "false")
 			table.insert(buffer, ",")
 		else
-			Spdlog.warn("[indexToStr] - Invalid type to serialize: " .. tp .. ", index: " .. i)
+			logger.warn("[indexToStr] - Invalid type to serialize: {}, index: {}", tp, i)
 		end
 	end
 end
@@ -831,7 +831,7 @@ function unserializeTable(str, out)
 	if tmp then
 		tmp = tmp()
 	else
-		Spdlog.warn("[unserializeTable] - Unserialization error: " .. str)
+		logger.warn("[unserializeTable] - Unserialization error: {}", str)
 		return false
 	end
 	return table.copy(tmp, out)

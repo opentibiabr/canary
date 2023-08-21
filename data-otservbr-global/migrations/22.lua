@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	Spdlog.info("Updating database to version 23 (fix offline training skill size)")
+	logger.info("Updating database to version 23 (fix offline training skill size)")
 	db.query(
 		[[
 			ALTER TABLE `players`

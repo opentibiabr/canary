@@ -17,7 +17,7 @@ function update.onStartup()
 				io.output(updateFile)
 				io.write(afterUpdate)
 				io.close(updateFile)
-				Spdlog.warn("All players sent to temple. Check if ".. fileToUpdate.. "'/update.lua' contains 'updated = false'.")
+				logger.warn("All players sent to temple. Check if {}'/update.lua' contains 'updated = false'.", fileToUpdate)
 			end
 		end
 	end

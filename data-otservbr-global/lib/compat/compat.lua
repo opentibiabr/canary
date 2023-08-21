@@ -79,12 +79,12 @@ setCombatFormula = Combat.setFormula
 setCombatParam = Combat.setParameter
 
 Combat.setCondition = function(...)
-	Spdlog.warn("[Combat.setCondition] - Function was renamed to Combat.addCondition and will be removed in the future")
+	logger.warn("[Combat.setCondition] - Function was renamed to Combat.addCondition and will be removed in the future")
 	Combat.addCondition(...)
 end
 
 setCombatCondition = function(...)
-	Spdlog.warn("[setCombatCondition] - Function was renamed to addCombatCondition and will be removed in the future")
+	logger.warn("[setCombatCondition] - Function was renamed to addCombatCondition and will be removed in the future")
 	Combat.addCondition(...)
 end
 
@@ -941,7 +941,7 @@ end
 
 function broadcastMessage(message, messageType)
 	Game.broadcastMessage(message, messageType)
-	Spdlog.info("Broadcasted message: \"" .. message .. "\"")
+	logger.info("Broadcasted message: {}", message)
 end
 
 function Guild.addMember(self, player)

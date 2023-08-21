@@ -25,8 +25,8 @@ function hirelingLamp.onUse(player, item, fromPosition, target, toPosition, isHo
 	local hireling = getHirelingById(hireling_id)
 	if not hireling then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There was an error creating the hireling and it has been deleted, please, contact server admin.")
-		Spdlog.error(string.format("[hirelingLamp.onUse] Player '%s' is using hireling not exist in the database", player:getName(), hireling_id))
-		Spdlog.error("Deleted the lamp")
+		logger.warn("[hirelingLamp.onUse] Player {} is using hireling with id {} not exist in the database", player:getName(), hireling_id)
+		logger.error("Deleted the lamp")
 		item:remove(1)
 		return true
 	end

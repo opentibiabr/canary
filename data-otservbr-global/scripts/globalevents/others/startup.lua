@@ -1,11 +1,11 @@
 local serverstartup = GlobalEvent("serverstartup")
 function serverstartup.onStartup()
-	Spdlog.info("Loading map attributes")
-	Spdlog.info("Loaded " .. Game.getNpcCount() .. " npcs and spawned " .. Game.getMonsterCount() .. " monsters")
-	Spdlog.info("Loaded " .. #Game.getTowns() .. " towns with " .. #Game.getHouses() .. " houses in total")
+	logger.debug("Loading map attributes")
+	logger.debug("Loaded {} npcs and spawned {} monsters", Game.getNpcCount(), Game.getMonsterCount())
+	logger.debug("Loaded {} towns with {} houses in total", #Game.getTowns(), #Game.getHouses())
 	-- Sign table
 	loadLuaMapSign(SignTable)
-	Spdlog.info("Loaded " .. (#SignTable) .. " signs in the map")
+	logger.debug("Loaded {} signs in the map", #SignTable)
 	-- Book/Document table
 	loadLuaMapBookDocument(BookDocumentTable)
 
@@ -49,8 +49,8 @@ function serverstartup.onStartup()
 	-- Update old quest storage keys
 	updateKeysStorage(QuestKeysUpdate)
 
-	Spdlog.info("Loaded all actions in the map")
-	Spdlog.info("Loaded all uniques in the map")
+	logger.debug("Loaded all actions in the map")
+	logger.debug("Loaded all uniques in the map")
 
 	for i = 1, #startupGlobalStorages do
 		Game.setStorageValue(startupGlobalStorages[i], 0)
@@ -163,7 +163,8 @@ function serverstartup.onStartup()
 		end
 
 		if expRate ~= 100 or lootRate ~= 100 or spawnRate ~= 100 or skillRate ~= 100 then
-			Spdlog.info("Events: " .. "Exp: " .. expRate .. "%, " .. "loot: " .. lootRate .. "%, " .. "Spawn: " .. spawnRate .. "%, " .. "Skill: " .. skillRate .. "%")
+			logger.info("[Events] Exp: {}%, loot: {}%, Spawn: {}%, Skill: {}%", expRate, lootRate, spawnRate, skillRate)
+
 		end
 	end
 

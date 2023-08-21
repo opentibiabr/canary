@@ -4,7 +4,7 @@
 
 using namespace boost::ut;
 
-suite<"tools"> replaceStringTest = [] {
+suite<"utils"> replaceStringTest = [] {
 	struct ReplaceStringTestCase {
 			std::string subject, search, replace, expected;
 

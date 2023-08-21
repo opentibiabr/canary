@@ -146,7 +146,7 @@ class ProtocolGame final : public Protocol {
 		void parseBestiarysendCreatures(NetworkMessage &msg);
 		void BestiarysendCharms();
 		void sendBestiaryEntryChanged(uint16_t raceid);
-		void refreshBestiaryTracker(const std::list<std::shared_ptr<MonsterType>> &trackerList);
+		void refreshCyclopediaMonsterTracker(const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &trackerSet, bool isBoss);
 		void sendTeamFinderList();
 		void sendLeaderTeamFinder(bool reset);
 		void createLeaderTeamFinder(NetworkMessage &msg);
@@ -155,7 +155,7 @@ class ProtocolGame final : public Protocol {
 		void parseMemberFinderWindow(NetworkMessage &msg);
 		void parseSendBuyCharmRune(NetworkMessage &msg);
 		void parseBestiarysendMonsterData(NetworkMessage &msg);
-		void addBestiaryTrackerList(NetworkMessage &msg);
+		void parseCyclopediaMonsterTracker(NetworkMessage &msg);
 		void parseObjectInfo(NetworkMessage &msg);
 
 		void parseTeleport(NetworkMessage &msg);
@@ -266,7 +266,7 @@ class ProtocolGame final : public Protocol {
 		void parseSendBosstiary();
 		void parseSendBosstiarySlots();
 		void parseBosstiarySlot(NetworkMessage &msg);
-		void sendPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss);
+		void sendPodiumDetails(NetworkMessage &msg, const phmap::parallel_flat_hash_set<uint16_t> &toSendMonsters, bool isBoss) const;
 		void sendMonsterPodiumWindow(const Item* podium, const Position &position, uint16_t itemId, uint8_t stackPos);
 		void parseSetMonsterPodium(NetworkMessage &msg) const;
 		void sendBosstiaryCooldownTimer();

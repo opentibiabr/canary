@@ -189,6 +189,10 @@ function BossLever:onUse(player)
 	return true
 end
 
+local function toKey(str)
+	return str:lower():gsub(" ", "-"):gsub("%s+", "")
+end
+
 ---@param self BossLever
 ---@return boolean
 function BossLever:register()
@@ -205,6 +209,11 @@ function BossLever:register()
 		Spdlog.error("BossLever:register() - missing parameters for boss " .. name .. ": " .. table.concat(missingParams, ", "))
 		return false
 	end
+
+	local zone = Zone("bosslever." .. toKey(self.name))
+
+	zone:addArea(self.area.from, self.area.to)
+	zone:blockFamiliars()
 
 	local action = Action()
 	action.onUse = function(player) self:onUse(player) end

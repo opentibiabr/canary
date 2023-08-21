@@ -24,6 +24,7 @@ class Item;
 class Player;
 class Thing;
 class Guild;
+class Zone;
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 

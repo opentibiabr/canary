@@ -16,7 +16,7 @@ function bestiaryOnKill.onKill(player, creature, lastHit)
 
 	local bestiaryBetterment = Concoction.find(Concoction.Ids.BestiaryBetterment)
 	if not bestiaryBetterment then
-		Spdlog.warn("[BestiaryOnKill] - Could not find BestiaryBetterment concoction.")
+		logger.warn("[BestiaryOnKill] - Could not find BestiaryBetterment concoction.")
 	end
 	for cid, damage in pairs(creature:getDamageMap()) do
 		local participant = Player(cid)

@@ -11,7 +11,7 @@ local config = {
 		},
 		fromPosition = Position(33099, 32875, 7),
 		toPosition = Position(33106, 32893, 7),
-		mapName = 'ankrahmun',
+		mapName = "Ankrahmun",
 		yasirPosition = Position(33102, 32884, 6)
 	},
 	-- Carlin
@@ -23,7 +23,7 @@ local config = {
 		},
 		fromPosition = Position(32397, 31806, 7),
 		toPosition = Position(32403, 31824, 7),
-		mapName = 'carlin',
+		mapName = "Carlin",
 		yasirPosition = Position(32400, 31815, 6)
 	},
 	-- Liberty Bay
@@ -40,7 +40,7 @@ local config = {
 		},
 		fromPosition = Position(32311, 32884, 1),
 		toPosition = Position(32318, 32904, 7),
-		mapName = 'libertybay',
+		mapName = "LibertyBay",
 		yasirPosition = Position(32314, 32895, 6)
 	}
 }
@@ -50,12 +50,13 @@ local function yasirwebhook(message) -- New local function that runs on delay to
 end
 
 local yasirEnabled = true
-local yasirChance = 33
+local yasirChance = 100
+local randTown = config[math.random(#config)]
 
-local function spawnYasir(position)
-	local npc = Game.createNpc('yasir', position)
+local function spawnYasir()
+	local npc = Game.createNpc('yasir', randTown.yasirPosition)
 	if npc then
-		npc:setMasterPos(position)
+		npc:setMasterPos(randTown.yasirPosition)
 	end
 end
 
@@ -64,8 +65,7 @@ local yasir = GlobalEvent("yasir")
 function yasir.onStartup()
 	if yasirEnabled then
 		if math.random(100) <= yasirChance then
-			local randTown = config[math.random(#config)]
-			Spdlog.info(string.format("[WorldChanges] Yasir: %s", randTown.mapName))
+			logger.info("[WorldChanges] Yasir: {}", randTown.mapName)
 			local message = string.format("Yasir is in %s today.", randTown.mapName) -- Declaring the message to send to webhook.
 			iterateArea(
 			function(position)
@@ -102,11 +102,11 @@ function yasir.onStartup()
 			end
 
 			Game.loadMap(DATA_DIRECTORY.. '/world/world_changes/oriental_trader/' .. randTown.mapName .. '.otbm')
-			addEvent(spawnYasir, 5000, randTown.yasirPosition)
+			addEvent(spawnYasir, 5000)
 			addEvent(yasirwebhook, 60000, message) -- Event with 1 minute delay to send webhook message after server starts.
 			setGlobalStorageValue(GlobalStorage.Yasir, 1)
 		else
-			Spdlog.info("Yasir: not this time")
+			logger.info("Yasir: not this time")
 			local message = "Yasir: not spawned today" -- Declaring the message to send to webhook.
 			addEvent(yasirwebhook, 60000, message) -- Event with 1 minute delay to send webhook message after server starts.
 			setGlobalStorageValue(GlobalStorage.Yasir, 0)

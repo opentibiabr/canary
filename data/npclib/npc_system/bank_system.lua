@@ -610,11 +610,11 @@ function Npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
 			}
 			local amount = tonumber(count[playerId])
 			if Bank.transferToGuild(guild, transfer[playerId], amount) then
-				Spdlog.info(string.format("Guild %s transferred %d gold to guild %s.", guild:getName(), amount, transfer[playerId]))
+				logger.info("Guild {} transferred {} gold to guild {}.", guild:getName(), amount, transfer[playerId])
 				info.success = true
 				info.message = "We are happy to inform you that your transfer request was successfully carried out."
 			else
-				Spdlog.info(string.format("Guild %s failed to transfer %d gold to guild %s.", guild:getName(), amount, transfer[playerId]))
+				logger.info("Guild {} failed to transfer {} gold to guild {}.", guild:getName(), amount, transfer[playerId])
 				info.message = "We are sorry to inform you that we could not fulfill your request, due to a lack of the required sum on your guild account."
 				info.success = false
 			end

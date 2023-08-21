@@ -24,8 +24,7 @@ local NightmareIsle = GlobalEvent("NightmareIsle")
 function NightmareIsle.onStartup(interval)
 	local select = config[math.random(#config)]
 	Game.loadMap(DATA_DIRECTORY.. '/world/world_changes/nightmare_isle/' .. select.mapName .. '.otbm')
-	Spdlog.info(string.format("[WorldChanges] Nightmare Isle will be active %s today",
-	select.displayName))
+	logger.info("[WorldChanges] Nightmare Isle will be active {} today", select.displayName)
 	local message = string.format("Nightmare Isle will be active %s today",
 	select.displayName)	-- Declaring the message to send to webhook.
 	addEvent(Nightmarewebhook, 60000, message) -- Event with 1 minute delay to send webhook message after server starts.

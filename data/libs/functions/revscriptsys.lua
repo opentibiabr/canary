@@ -104,11 +104,11 @@ do
 	local function EventCallbackNewIndex(self, key, value)
 		local func = eventCallbacks[key]
 		if func and type(func) == "function" then
-			Spdlog.debug("[Registering EventCallback: " .. key)
+			logger.debug("[Registering EventCallback: {}", key)
 			func(self, value)
 			self:type(key)
 		else
-			reportError("Invalid EventCallback with name: ".. tostring(key))
+			reportError("Invalid EventCallback with name: {}", tostring(key))
 		end
 	end
 	rawgetmetatable("EventCallback").__newindex = EventCallbackNewIndex

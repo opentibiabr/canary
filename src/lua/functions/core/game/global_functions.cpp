@@ -594,15 +594,15 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 	}
 
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) || g_configManager().getBoolean(CONVERT_UNSAFE_SCRIPTS)) {
-		std::vector<std::pair<int32_t, LuaDataType>> indexes;
+		std::vector<std::pair<int32_t, LuaData_t>> indexes;
 		for (int i = 3; i <= parameters; ++i) {
 			if (lua_getmetatable(globalState, i) == 0) {
 				continue;
 			}
 			lua_rawgeti(L, -1, 't');
 
-			LuaDataType type = getNumber<LuaDataType>(L, -1);
-			if (type != LuaData_Unknown && type != LuaData_Tile) {
+			LuaData_t type = getNumber<LuaData_t>(L, -1);
+			if (type != LuaData_t::Unknown && type != LuaData_t::Tile) {
 				indexes.push_back({ i, type });
 			}
 			lua_pop(globalState, 2);
@@ -641,16 +641,16 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 			if (g_configManager().getBoolean(CONVERT_UNSAFE_SCRIPTS)) {
 				for (const auto &entry : indexes) {
 					switch (entry.second) {
-						case LuaData_Item:
-						case LuaData_Container:
-						case LuaData_Teleport: {
+						case LuaData_t::Item:
+						case LuaData_t::Container:
+						case LuaData_t::Teleport: {
 							lua_getglobal(globalState, "Item");
 							lua_getfield(globalState, -1, "getUniqueId");
 							break;
 						}
-						case LuaData_Player:
-						case LuaData_Monster:
-						case LuaData_Npc: {
+						case LuaData_t::Player:
+						case LuaData_t::Monster:
+						case LuaData_t::Npc: {
 							lua_getglobal(globalState, "Creature");
 							lua_getfield(globalState, -1, "getId");
 							break;

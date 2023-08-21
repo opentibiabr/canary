@@ -122,7 +122,7 @@
     <ClInclude Include="..\src\lua\functions\core\libs\core_libs_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\db_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\result_functions.hpp" />
-    <ClInclude Include="..\src\lua\functions\core\libs\spdlog_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\core\libs\logger_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\network\core_network_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\network\network_message_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\network\webhook_functions.hpp" />
@@ -297,7 +297,7 @@
     <ClCompile Include="..\src\lua\functions\core\libs\bit_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\db_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\result_functions.cpp" />
-    <ClCompile Include="..\src\lua\functions\core\libs\spdlog_functions.cpp" />
+    <ClCompile Include="..\src\lua\functions\core\libs\logger_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\network\network_message_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\network\webhook_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\creatures\combat\combat_functions.cpp" />

@@ -3,8 +3,14 @@ function bosstiaryOnKill.onKill(player, creature, lastHit)
 	if not player:isPlayer() or not creature:isMonster() or creature:hasBeenSummoned() or creature:isPlayer() then
 		return true
 	end
+
 	local mType = MonsterType(creature:getName())
-	if not mType or not mType:bossRace() then
+	if not mType then
+		logger.error("[bosstiaryOnKill.onKill] monster with name {} have wrong MonsterType", creature:getName())
+		return true
+	end
+
+	if mType:bossRace() == nil or mType:bossRace() == "" then
 		return true
 	end
 

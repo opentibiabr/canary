@@ -25,4 +25,23 @@ suite<"lib"> softSingletonTest = [] {
 		expect(eq(std::string{"warning"}, logger.logs[0].level) and eq(std::string{"2 instances created for Test. This is a soft singleton, you probably want to use g_test instead."}, logger.logs[0].message));
 		expect(eq(std::string{"warning"}, logger.logs[1].level) and eq(std::string{"3 instances created for Test. This is a soft singleton, you probably want to use g_test instead."}, logger.logs[1].message));
 	};
+
+	test("SoftSingleton doesn't warn if instance was released") = [] {
+		InMemoryLogger logger{};
+		SoftSingleton softSingleton{logger, "Test"};
+
+		[&softSingleton] { SoftSingletonGuard guard{softSingleton}; }();
+
+		// Lambda scope, guard was destructed.
+		[&softSingleton] { SoftSingletonGuard guard{softSingleton}; }();
+
+		// Lambda scope, guard2 was destructed.
+		softSingleton.increment();
+		softSingleton.decrement();
+
+		// Decrement resets the counter;
+		softSingleton.increment();
+
+		expect(eq(0, logger.logCount()));
+	};
 };

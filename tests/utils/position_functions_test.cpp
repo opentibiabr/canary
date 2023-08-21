@@ -4,7 +4,7 @@
 
 using namespace boost::ut;
 
-suite<"tools"> getDirectionToTest = [] {
+suite<"utils"> getDirectionToTest = [] {
 	struct GetDirectionToTestCase {
 			Position from, to;
 			Direction expected, expectedForExactDiagonal;

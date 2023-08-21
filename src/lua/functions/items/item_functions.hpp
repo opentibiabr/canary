@@ -81,6 +81,8 @@ class ItemFunctions final : LuaScriptInterface {
 			registerMethod(L, "Item", "setTier", ItemFunctions::luaItemSetTier);
 			registerMethod(L, "Item", "getClassification", ItemFunctions::luaItemGetClassification);
 
+			registerMethod(L, "Item", "canReceiveAutoCarpet", ItemFunctions::luaItemCanReceiveAutoCarpet);
+
 			ContainerFunctions::init(L);
 			ImbuementFunctions::init(L);
 			ItemTypeFunctions::init(L);
@@ -148,6 +150,8 @@ class ItemFunctions final : LuaScriptInterface {
 		static int luaItemGetTier(lua_State* L);
 		static int luaItemSetTier(lua_State* L);
 		static int luaItemGetClassification(lua_State* L);
+
+		static int luaItemCanReceiveAutoCarpet(lua_State* L);
 };
 
 #endif // SRC_LUA_FUNCTIONS_ITEMS_ITEM_FUNCTIONS_HPP_

@@ -887,3 +887,16 @@ int ItemFunctions::luaItemGetClassification(lua_State* L) {
 	lua_pushnumber(L, item->getClassification());
 	return 1;
 }
+
+int ItemFunctions::luaItemCanReceiveAutoCarpet(lua_State* L) {
+	// item:canReceiveAutoCarpet()
+	const Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushBoolean(L, item->canReceiveAutoCarpet());
+	return 1;
+}

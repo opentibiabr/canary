@@ -2328,8 +2328,7 @@ void ProtocolGame::parseCyclopediaMonsterTracker(NetworkMessage &msg) {
 
 	// Bosstiary tracker logic
 	if (const auto &monsterType = g_ioBosstiary().getMonsterTypeByBossRaceId(monsterRaceId)) {
-		auto bosstiaryMonsters = g_ioBosstiary().getBosstiaryFinished(player);
-		if (bosstiaryMonsters.contains(monsterRaceId)) {
+		if (player->getBestiaryKillCount(monsterRaceId)) {
 			if (trackerButtonType == 1) {
 				player->addMonsterToCyclopediaTrackerList(monsterType, true, true);
 			} else {
@@ -2742,17 +2741,20 @@ void ProtocolGame::refreshCyclopediaMonsterTracker(const phmap::parallel_flat_ha
 		uint32_t killAmount = player->getBestiaryKillCount(raceId);
 		msg.add<uint16_t>(raceId);
 		msg.add<uint32_t>(killAmount);
+		bool completed = false;
 		if (isBoss) {
 			for (const auto &stage : stages) {
-				msg.add<uint16_t>(stage.kills);
+				msg.add<uint16_t>(static_cast<uint16_t>(stage.kills));
 			}
+			completed = g_ioBosstiary().getBossCurrentLevel(player, raceId) == 3;
 		} else {
 			msg.add<uint16_t>(mtype->info.bestiaryFirstUnlock);
 			msg.add<uint16_t>(mtype->info.bestiarySecondUnlock);
 			msg.add<uint16_t>(mtype->info.bestiaryToUnlock);
+			completed = g_iobestiary().getKillStatus(mtype, killAmount) == 4;
 		}
 
-		if (g_iobestiary().getKillStatus(mtype, killAmount) == 4 || g_ioBosstiary().getBossCurrentLevel(player, raceId) == 3) {
+		if (completed) {
 			msg.addByte(4);
 		} else {
 			msg.addByte(0);

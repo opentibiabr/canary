@@ -270,9 +270,6 @@ void IOMap::parseTileArea(OTB::Loader &loader, const OTB::Node &tileAreaNode, Ma
 			}
 		}
 
-		if (tile->isEmpty())
-			continue;
-
 		map.setBasicTile(x, y, z, tile);
 	}
 }

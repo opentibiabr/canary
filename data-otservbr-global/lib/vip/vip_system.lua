@@ -48,7 +48,7 @@ function Player.onAddVip(self, days)
 	self:setStorageValue(Storage.VipSystem.IsVip, 1)
 end
 
-function checkPremiumAndPrint(player, msgType)
+function CheckPremiumAndPrint(player, msgType)
 	if player:getVipDays() == 0xFFFF then
 		player:sendTextMessage(msgType, 'You have infinite amount of VIP days left.')
 		return true

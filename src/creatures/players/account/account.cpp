@@ -11,6 +11,7 @@
 
 #include "creatures/players/account/account.hpp"
 #include "database/databasetasks.hpp"
+#include "utils/tools.hpp"
 
 namespace account {
 
@@ -373,7 +374,7 @@ namespace account {
 			uint32_t timeLeft = static_cast<int>((lastDay - currentTime) % 86400);
 			if (daysLeft > 0) {
 				SetPremiumRemainingDays(daysLeft);
-			} else if (daysLeft == 0 && timeLeft > 0) {
+			} else if (timeLeft > 0) {
 				SetPremiumRemainingDays(1);
 			} else {
 				if (SetPremiumRemainingDays(0) != ERROR_NO || SetPremiumLastDay(0) != ERROR_NO) {

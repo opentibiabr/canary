@@ -6,7 +6,7 @@ function vip.onSay(player, words, param)
 		player:sendCancelMessage(msg)
 		player:sendTextMessage(MESSAGE_STATUS, msg)
 	else
-		checkPremiumAndPrint(player, MESSAGE_STATUS)
+		CheckPremiumAndPrint(player, MESSAGE_STATUS)
 	end
 	return true
 end

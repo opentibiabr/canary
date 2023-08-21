@@ -7,7 +7,7 @@ function playerLogin.onLogin(player)
 		if not wasVip and player:isVip() then player:onAddVip(player:getVipDays()) end
 
 		if player:isVip() then
-			checkPremiumAndPrint(player, MESSAGE_LOGIN)
+			CheckPremiumAndPrint(player, MESSAGE_LOGIN)
 		end
 	end
 	return true

@@ -11,6 +11,8 @@
 
 #include "io/filestream.hpp"
 
+#include "io/fileloader.h"
+
 uint32_t FileStream::tell() const {
 	return m_pos;
 }

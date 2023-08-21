@@ -5,7 +5,6 @@ if NpcHandler == nil then
 	TALKDELAY_NONE = 0 -- No talkdelay. Npc will reply immedeatly.
 	TALKDELAY_ONTHINK = 1 -- Talkdelay handled through the onThink callback function. (Default)
 	TALKDELAY_EVENT = 2 -- Not yet implemented
-
 	-- Currently applied talkdelay behavior. TALKDELAY_ONTHINK is default.
 	NPCHANDLER_TALKDELAY = TALKDELAY_ONTHINK
 
@@ -26,14 +25,13 @@ if NpcHandler == nil then
 	MESSAGE_NEEDMORESPACE = 14 -- When the player has some space to buy an item, but not enough space
 	-- EMPTY = 15
 	MESSAGE_WALKAWAY = 16 -- When the player walks out of the talkRadius of the npc.
-	MESSAGE_DECLINE	 = 17 -- When the player says no to something.
+	MESSAGE_DECLINE = 17 -- When the player says no to something.
 	MESSAGE_SENDTRADE = 18 -- When the npc sends the trade window to the player
 	MESSAGE_NOSHOP = 19 -- When the npc's shop is requested but he doesn't have any
 	MESSAGE_ONCLOSESHOP = 20 -- When the player closes the npc's shop window
 	MESSAGE_ALREADYFOCUSED = 21 -- When the player already has the player of this npc.
 	MESSAGE_WALKAWAY_MALE = 22 -- When a male player walks out of the talkRadius of the npc.
 	MESSAGE_WALKAWAY_FEMALE = 23 -- When a female player walks out of the talkRadius of the npc.
-
 	-- Constant indexes for callback functions. These are also used for module callback ids.
 	CALLBACK_ON_APPEAR = 1
 	CALLBACK_ON_DISAPPEAR = 2
@@ -268,15 +266,15 @@ if NpcHandler == nil then
 			self.modules[#self.modules + 1] = module
 			self.npcName = initNpcName
 			if greetCallback == nil then
-				Spdlog.warn("[NpcHandler:addModule] - Greet callback is missing for npc with name: ".. initNpcName ..", setting to true")
+				Spdlog.warn("[NpcHandler:addModule] - Greet callback is missing for npc with name: " .. initNpcName .. ", setting to true")
 				greetCallback = true
 			end
 			if farewellCallback == nil then
-				Spdlog.warn("[NpcHandler:addModule] - Farewell callback is missing for npc with name: ".. initNpcName ..", setting to true")
+				Spdlog.warn("[NpcHandler:addModule] - Farewell callback is missing for npc with name: " .. initNpcName .. ", setting to true")
 				farewellCallback = true
 			end
 			if tradeCallback == nil then
-				Spdlog.warn("[NpcHandler:addModule] - Trade callback is missing for npc with name: ".. initNpcName ..", setting to true")
+				Spdlog.warn("[NpcHandler:addModule] - Trade callback is missing for npc with name: " .. initNpcName .. ", setting to true")
 				tradeCallback = true
 			end
 			module:init(self, greetCallback, farewellCallback, tradeCallback)
@@ -347,7 +345,7 @@ if NpcHandler == nil then
 	-- Translates all message tags found in msg using parseInfo
 	function NpcHandler:parseMessage(msg, parseInfo)
 		local ret = msg
-		if type(ret) == 'string' then
+		if type(ret) == "string" then
 			for search, replace in pairs(parseInfo) do
 				ret = string.gsub(ret, search, replace)
 			end
@@ -383,9 +381,7 @@ if NpcHandler == nil then
 
 	-- Greets the player, thus initiating the direct interaction between the npc and the player
 	function NpcHandler:greet(npc, player, message)
-		if self:checkInteraction(npc, player) then
-			return
-		end
+		if self:checkInteraction(npc, player) then return end
 
 		local callback = self:getCallback(CALLBACK_GREET)
 		if callback == nil or callback(npc, player, message) then
@@ -431,9 +427,7 @@ if NpcHandler == nil then
 				end
 
 				if self.keywordHandler ~= nil then
-					if self:checkInteraction(npc, player)
-					and msgtype == TALKTYPE_PRIVATE_PN
-					or not self:checkInteraction(npc, player) then
+					if self:checkInteraction(npc, player) and msgtype == TALKTYPE_PRIVATE_PN or not self:checkInteraction(npc, player) then
 						local ret = self.keywordHandler:processMessage(npc, player, msg)
 						if not ret then
 							callback = self:getCallback(CALLBACK_MESSAGE_DEFAULT)
@@ -608,11 +602,10 @@ if NpcHandler == nil then
 				self.talkDelay = delay
 			end
 			-- The "self.talkDelayTimeForOutgoingMessages * 1000" = Interval for sending subsequent messages from the first
-			npc:sayWithDelay(npcUniqueId, msgs[messagesTable], TALKTYPE_PRIVATE_NP, ((messagesTable-1) * self.talkDelay + self.talkDelayTimeForOutgoingMessages * 1000),
-                             self.eventDelayedSay[playerId][messagesTable], playerUniqueId)
+			npc:sayWithDelay(npcUniqueId, msgs[messagesTable], TALKTYPE_PRIVATE_NP, ((messagesTable - 1) * self.talkDelay + self.talkDelayTimeForOutgoingMessages * 1000), self.eventDelayedSay[playerId][messagesTable], playerUniqueId)
 			ret[#ret + 1] = self.eventDelayedSay[playerId][messagesTable]
 		end
-		return(ret)
+		return ret
 	end
 
 	-- Makes the npc represented by this instance of NpcHandler say something.

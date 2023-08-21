@@ -375,8 +375,7 @@ function Player.updateStorage(self, key, value, oldValue, currentFrameTime)
 end
 
 local function sendPrint(questId, index)
-	Spdlog.warn(string.format("[sendPrint] - Quest id:[%d] mission:[%d]",
-		questId, index))
+	Spdlog.warn(string.format("[sendPrint] - Quest id:[%d] mission:[%d]", questId, index))
 end
 
 for questId = 1, #Quests do

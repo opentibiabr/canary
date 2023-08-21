@@ -19,14 +19,12 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Hey there, up for a chat?'}
+	{ text = "Hey there, up for a chat?" }
 }
 
 local keywordHandler = KeywordHandler:new()

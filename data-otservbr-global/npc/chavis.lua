@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 2
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -61,11 +59,16 @@ local function creatureSayCallback(npc, creature, type, message)
 	-- START TASK
 	if MsgContains(message, "food") then
 		if player:getStorageValue(Storage.Oramond.MissionToTakeRoots) <= 0 then
-			npcHandler:say({
-				"Hey there, just to let you know - I am not a man of many words. I prefer 'deeds', you see? The poor of this city will not feed themselves. ...",
-				"So in case you've got nothing better to do - and it sure looks that way judging by how long you\'re already loitering around in front of my nose - please help us. ...",
-				"If you can find some of the nutritious, juicy {roots} in the outskirts of Rathleton, bring them here. We will gladly take bundles of five roots each, and hey - helping us, helps you in the long term, trust me."
-			}, npc, creature, 10)
+			npcHandler:say(
+				{
+					"Hey there, just to let you know - I am not a man of many words. I prefer 'deeds', you see? The poor of this city will not feed themselves. ...",
+					"So in case you've got nothing better to do - and it sure looks that way judging by how long you're already loitering around in front of my nose - please help us. ...",
+					"If you can find some of the nutritious, juicy {roots} in the outskirts of Rathleton, bring them here. We will gladly take bundles of five roots each, and hey - helping us, helps you in the long term, trust me."
+				},
+				npc,
+				creature,
+				10
+			)
 			if player:getStorageValue(Storage.Oramond.QuestLine) <= 0 then
 				player:setStorageValue(Storage.Oramond.QuestLine, 1)
 			end
@@ -82,11 +85,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say("Spend it wisely, though, put in a word for the poor, will ye? Sure you will.", npc, creature)
-		player:setStorageValue(Storage.Oramond.VotingPoints,
-			player:getStorageValue(Storage.Oramond.VotingPoints) + 1)
+		player:setStorageValue(Storage.Oramond.VotingPoints, player:getStorageValue(Storage.Oramond.VotingPoints) + 1)
 
-		player:setStorageValue(Storage.Oramond.HarvestedRootCount,
-			player:getStorageValue(Storage.Oramond.HarvestedRootCount) - 5)
+		player:setStorageValue(Storage.Oramond.HarvestedRootCount, player:getStorageValue(Storage.Oramond.HarvestedRootCount) - 5)
 		player:removeItem(21291, 5)
 
 		player:setStorageValue(Storage.Oramond.MissionToTakeRoots, 0)
@@ -98,17 +99,22 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "magistrate") then
 		npcHandler:say("They act so important but it is us common people who keep things going. There is a lot you can do in this city to earn a right to vote in the magistrate, though. So keep an eye out for everyone who needs help.", npc, creature)
 	elseif MsgContains(message, "rathleton") then
-		npcHandler:say({
-			"Don't be fooled, we have here masters and servants like everywhere else. The whole system is a scam to subdue the masses, to fool them about what is really happening. ...",
-			"The system only ensures that the rich have a better control and the labourers are only used."
-		}, npc, creature, 10)
+		npcHandler:say(
+			{
+				"Don't be fooled, we have here masters and servants like everywhere else. The whole system is a scam to subdue the masses, to fool them about what is really happening. ...",
+				"The system only ensures that the rich have a better control and the labourers are only used."
+			},
+			npc,
+			creature,
+			10
+		)
 		npcHandler:setTopic(playerId, 0)
 	end
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_GREET, 'Hey there! You don\'t happen to have some {food} on you, you\'re willing to share? Well, where are my manners, a warm welcome for now.')
-npcHandler:setMessage(MESSAGE_FAREWELL, 'Take care out there!')
+npcHandler:setMessage(MESSAGE_GREET, "Hey there! You don't happen to have some {food} on you, you're willing to share? Well, where are my manners, a warm welcome for now.")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Take care out there!")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 

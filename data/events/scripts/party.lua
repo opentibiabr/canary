@@ -2,13 +2,9 @@ function Party:onJoin(player)
 	local playerId = player:getId()
 	addEvent(function()
 		player = Player(playerId)
-		if not player then
-			return
-		end
+		if not player then return end
 		local party = player:getParty()
-		if not party then
-			return
-		end
+		if not party then return end
 		party:refreshHazard()
 	end, 100)
 	return true

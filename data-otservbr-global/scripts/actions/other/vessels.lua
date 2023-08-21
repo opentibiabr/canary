@@ -3,7 +3,7 @@ local config = {
 	[37573] = CONST_ME_FERUMBRAS_1, -- vessel of Ferumbras
 	[37574] = CONST_ME_MAD_MAGE, -- vessel of the Mad Mage
 	[37575] = CONST_ME_HORESTIS, -- vessel of Horestis
-	[37576] = CONST_ME_DEVOVORGA, -- vessel of Devovorga
+	[37576] = CONST_ME_DEVOVORGA -- vessel of Devovorga
 }
 
 local vessels = Action()

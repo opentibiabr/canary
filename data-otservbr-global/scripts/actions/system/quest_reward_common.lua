@@ -3,8 +3,7 @@
 -- This script will pull everything from there
 
 local AttributeTable = {
-	[6013] = {
-		text = [[
+	[6013] = { text = [[
 Hardek *
 Bozo *
 Sam ****
@@ -16,8 +15,7 @@ Harsky ***
 Stutch *
 Ferumbras *
 Frodo **
-Noodles ****]]
-	}
+Noodles ****]] }
 }
 
 local achievementTable = {
@@ -45,9 +43,9 @@ local function playerAddItem(params, item)
 			keyItem = player:addItem(params.itemid, params.count)
 			keyItem:setActionId(params.storage)
 		end
+		-- If the item is writeable, just put its unique and the text in the "AttributeTable"
 	else
 		addItem = player:addItem(params.itemid, params.count)
-		-- If the item is writeable, just put its unique and the text in the "AttributeTable"
 		local attribute = AttributeTable[item.uid]
 		if attribute then
 			addItem:setAttribute(ITEM_ATTRIBUTE_TEXT, attribute.text)
@@ -113,19 +111,18 @@ function questReward.onUse(player, item, fromPosition, itemEx, toPosition)
 			return true
 		end
 		if (player:getFreeCapacity() / 100) < setting.weight then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			message .. ". Weighing " .. setting.weight .. " oz, it is too heavy for you to carry.")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message .. ". Weighing " .. setting.weight .. " oz, it is too heavy for you to carry.")
 			return true
 		end
 	end
 
 	if setting.timerStorage then
 		if player:getStorageValue(setting.timerStorage) > os.time() then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The ".. getItemName(setting.itemId) .. " is empty.")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. getItemName(setting.itemId) .. " is empty.")
 			return true
 		end
 	elseif player:getStorageValue(setting.storage) >= 0 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The ".. getItemName(setting.itemId) .. " is empty.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. getItemName(setting.itemId) .. " is empty.")
 		return true
 	end
 	if setting.randomReward then
@@ -152,11 +149,11 @@ function questReward.onUse(player, item, fromPosition, itemEx, toPosition)
 				storage = setting.storage,
 				key = setting.isKey,
 				timer = setting.timerStorage,
-				time = setting.time,
+				time = setting.time
 			}
 
 			if count > 1 and ItemType(itemid):isStackable() then
-				if (itemDescriptions.plural) then
+				if itemDescriptions.plural then
 					itemName = itemDescriptions.plural
 				end
 				addItemParams.message = "You have found " .. count .. " " .. itemName

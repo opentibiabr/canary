@@ -2,22 +2,9 @@ local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_FIREDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HITBYFIRE)
 
-combat:setArea(createCombatArea({
-{0, 1, 1, 1, 0},
-{1, 1, 1, 1, 1},
-{1, 1, 3, 1, 1},
-{1, 1, 1, 1, 1},
-{0, 1, 1, 1, 0},
-}))
+combat:setArea(createCombatArea({ { 0, 1, 1, 1, 0 }, { 1, 1, 1, 1, 1 }, { 1, 1, 3, 1, 1 }, { 1, 1, 1, 1, 1 }, { 0, 1, 1, 1, 0 } }))
 
-local monsters = {
-	"the baron from below",
-	"the hungry baron from below",
-	"the duke of the depths",
-	"the fire empowered duke",
-	"fiery heart",
-	"aggressive lava",
-}
+local monsters = { "the baron from below", "the hungry baron from below", "the duke of the depths", "the fire empowered duke", "fiery heart", "aggressive lava" }
 
 function onTargetTile(cid, pos)
 	local tile = Tile(pos)

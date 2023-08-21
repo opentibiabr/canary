@@ -1,11 +1,32 @@
 local changes = {
-	[1] = {centerPos = Position(33552, 32049, 15), nextPos = Position(33552, 32082, 15)},
-	[2] = {centerPos = Position(33552, 32082, 15), nextPos = Position(33552, 32115, 15)},
-	[3] = {centerPos = Position(33552, 32115, 15), nextPos = Position(33552, 32148, 15)},
-	[4] = {centerPos = Position(33552, 32148, 15), nextPos = Position(33584, 32148, 15)},
-	[5] = {centerPos = Position(33584, 32148, 15), nextPos = Position(33616, 32148, 15)},
-	[6] = {centerPos = Position(33616, 32148, 15), nextPos = Position(33648, 32148, 15)},
-	[7] = {centerPos = Position(33648, 32148, 15), nextPos = Position(33611, 32055, 15)}
+	[1] = {
+		centerPos = Position(33552, 32049, 15),
+		nextPos = Position(33552, 32082, 15)
+	},
+	[2] = {
+		centerPos = Position(33552, 32082, 15),
+		nextPos = Position(33552, 32115, 15)
+	},
+	[3] = {
+		centerPos = Position(33552, 32115, 15),
+		nextPos = Position(33552, 32148, 15)
+	},
+	[4] = {
+		centerPos = Position(33552, 32148, 15),
+		nextPos = Position(33584, 32148, 15)
+	},
+	[5] = {
+		centerPos = Position(33584, 32148, 15),
+		nextPos = Position(33616, 32148, 15)
+	},
+	[6] = {
+		centerPos = Position(33616, 32148, 15),
+		nextPos = Position(33648, 32148, 15)
+	},
+	[7] = {
+		centerPos = Position(33648, 32148, 15),
+		nextPos = Position(33611, 32055, 15)
+	}
 }
 
 local function checkCounter()
@@ -55,8 +76,7 @@ local function checkCounter()
 			addEvent(Game.createMonster, 15 * 1000, "raging fire", changes[storage].nextPos, true, true)
 		end
 	end
-	Game.setStorageValue(GlobalStorage.HeroRathleton.LavaChange,
-	Game.getStorageValue(GlobalStorage.HeroRathleton.LavaChange) + 1)
+	Game.setStorageValue(GlobalStorage.HeroRathleton.LavaChange, Game.getStorageValue(GlobalStorage.HeroRathleton.LavaChange) + 1)
 	Game.setStorageValue(GlobalStorage.HeroRathleton.LavaCounter, 0)
 	return true
 end

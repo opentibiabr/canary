@@ -27,17 +27,27 @@ npcConfig.voices = {
 	{ text = "Welcome to the Canary Server!" }
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 -- Npc shop
-npcConfig.shop = {
-	{ clientId = 123, buy = 32000, sell = 16000, count = 1 },
-	{ clientId = 130, buy = 100, count = 1 },
-	{ clientId = 135, buy = 5000, count = 1 },
-	{ clientId = 138, buy = 600, count = 1 }
-}
+npcConfig.shop = { {
+	clientId = 123,
+	buy = 32000,
+	sell = 16000,
+	count = 1
+}, {
+	clientId = 130,
+	buy = 100,
+	count = 1
+}, {
+	clientId = 135,
+	buy = 5000,
+	count = 1
+}, {
+	clientId = 138,
+	buy = 600,
+	count = 1
+} }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -47,8 +57,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 -- Create keywordHandler and npcHandler
 local keywordHandler = KeywordHandler:new()
@@ -100,12 +109,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "canary") then
-		npcHandler:say({
-			"The goal is for Canary to be an 'engine', that is, it will be \z
+		npcHandler:say(
+			{ "The goal is for Canary to be an 'engine', that is, it will be \z
 				a server with a 'clean' datapack, with as few things as possible, \z
-				thus facilitating development and testing.",
-			"See more on our {discord group}."
-		}, npc, creature, 3000)
+				thus facilitating development and testing.", "See more on our {discord group}." },
+			npc,
+			creature,
+			3000
+		)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "discord group") then
 		if npcHandler:getTopic(playerId) == 1 then
@@ -130,4 +141,3 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- Register npc
 npcType:register(npcConfig)
-

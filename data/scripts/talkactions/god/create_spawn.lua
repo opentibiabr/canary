@@ -11,14 +11,12 @@ function createMonster.onSay(player, words, param)
 
 	local spawn = Spawn()
 	local parameter = param:split(",")
-	local config = {
-		{
-			spawntime = tonumber(parameter[2]) or 60,
-			monster = parameter[1],
-			pos = player:getPosition(),
-			status = true
-		}
-	}
+	local config = { {
+		spawntime = tonumber(parameter[2]) or 60,
+		monster = parameter[1],
+		pos = player:getPosition(),
+		status = true
+	} }
 	spawn:setPositions(config)
 	spawn:executeSpawn()
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)

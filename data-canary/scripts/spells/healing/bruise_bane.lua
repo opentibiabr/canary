@@ -4,7 +4,11 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_BLUE)
 combat:setParameter(COMBAT_PARAM_DISPEL, CONDITION_PARALYZE)
 combat:setParameter(COMBAT_PARAM_AGGRESSIVE, false)
 
-function onGetFormulaValues(_player, level, magicLevel) -- already compared to the official tibia | compared date: 08/03/21(m/d/y) (need more chars test accuracy)
+function onGetFormulaValues(
+_player,
+	level,
+	magicLevel -- already compared to the official tibia | compared date: 08/03/21(m/d/y) (need more chars test accuracy)
+)
 	local min = (level * 0.2 + magicLevel * 1.795)
 	local max = (level * 0.2 + magicLevel * 1.795) + 5
 	return min, max

@@ -1,21 +1,16 @@
-local wildGrowth = {2130, 10182} -- wild growth destroyable by machete
-local jungleGrass = { -- grass destroyable by machete
+local wildGrowth = { 2130, 10182 } -- wild growth destroyable by machete
+local jungleGrass = {
+	-- grass destroyable by machete
 	[3696] = 3695,
 	[3702] = 3701,
 	[17153] = 17151
 }
 local holeId = { -- usable rope holes, for rope spots see global.lua
-	294, 369, 370, 383, 392, 408, 409, 410, 427, 428, 429, 430, 462, 469, 470, 482,
-	484, 485, 489, 924, 1369, 3135, 3136, 4835, 4837, 7933, 7938, 8170, 8249, 8250,
-	8251, 8252, 8254, 8255, 8256, 8276, 8277, 8279, 8281, 8284, 8285, 8286, 8323,
-	8567, 8585, 8595, 8596, 8972, 9606, 9625, 13190, 14461, 19519, 21536, 23713,
-	26020
-}
-local groundIds = {354, 355} -- pick usable grounds
-local holes = {593, 606, 608, 867, 21341} -- holes opened by shovel
-local sandIds = {231, 9059} -- desert sand
-local fruits = {2673, 2674, 2675, 2676, 2677, 2678, 2679, 2680, 2681, 2682, 2684, 2685, 5097, 8839, 8840, 8841} -- fruits to make decorated cake with knife
-
+294, 369, 370, 383, 392, 408, 409, 410, 427, 428, 429, 430, 462, 469, 470, 482, 484, 485, 489, 924, 1369, 3135, 3136, 4835, 4837, 7933, 7938, 8170, 8249, 8250, 8251, 8252, 8254, 8255, 8256, 8276, 8277, 8279, 8281, 8284, 8285, 8286, 8323, 8567, 8585, 8595, 8596, 8972, 9606, 9625, 13190, 14461, 19519, 21536, 23713, 26020 }
+local groundIds = { 354, 355 } -- pick usable grounds
+local holes = { 593, 606, 608, 867, 21341 } -- holes opened by shovel
+local sandIds = { 231, 9059 } -- desert sand
+local fruits = { 2673, 2674, 2675, 2676, 2677, 2678, 2679, 2680, 2681, 2682, 2684, 2685, 5097, 8839, 8840, 8841 } -- fruits to make decorated cake with knife
 ActionsLib = {}
 
 ActionsLib.destroyItem = function(player, target, toPosition)
@@ -85,13 +80,14 @@ ActionsLib.usePick = function(player, item, fromPosition, target, toPosition, is
 	if target.itemid == 11227 then -- shiny stone refining
 		local chance = math.random(1, 100)
 		if chance == 1 then
-			player:addItem(ITEM_CRYSTAL_COIN) -- 1% chance of getting crystal coin
+			player:addItem(ITEM_CRYSTAL_COIN) -- 49% chance of getting small diamond
+		-- 1% chance of getting crystal coin
 		elseif chance <= 6 then
 			player:addItem(ITEM_GOLD_COIN) -- 5% chance of getting gold coin
 		elseif chance <= 51 then
 			player:addItem(ITEM_PLATINUM_COIN) -- 45% chance of getting platinum coin
 		else
-			player:addItem(2145) -- 49% chance of getting small diamond
+			player:addItem(2145)
 		end
 		target:getPosition():sendMagicEffect(CONST_ME_BLOCKHIT)
 		target:remove(1)
@@ -124,7 +120,7 @@ ActionsLib.useRope = function(player, item, fromPosition, target, toPosition, is
 		return false
 	end
 
-	local RopeSpots = {386, 421, 12935, 12936, 14238, 17238, 21501, 21965, 21966, 21967, 21968, 23363}
+	local RopeSpots = { 386, 421, 12935, 12936, 14238, 17238, 21501, 21965, 21966, 21967, 21968, 23363 }
 	if table.contains(ropeSpots, tile:getGround():getId()) or tile:getItemById(14435) then
 		if Tile(toPosition:moveUpstairs()):hasFlag(TILESTATE_PROTECTIONZONE) and player:isPzLocked() then
 			player:sendCancelMessage(RETURNVALUE_PLAYERISPZLOCKED)
@@ -195,7 +191,7 @@ ActionsLib.useShovel = function(player, item, fromPosition, target, toPosition, 
 end
 
 ActionsLib.useScythe = function(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({9594, 9598}, item.itemid) then
+	if table.contains({ 9594, 9598 }, item.itemid) then
 		return false
 	end
 
@@ -209,7 +205,7 @@ ActionsLib.useScythe = function(player, item, fromPosition, target, toPosition, 
 end
 
 ActionsLib.useCrowbar = function(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({10511, 10513}, item.itemid) then
+	if table.contains({ 10511, 10513 }, item.itemid) then
 		return false
 	end
 
@@ -217,7 +213,7 @@ ActionsLib.useCrowbar = function(player, item, fromPosition, target, toPosition,
 end
 
 ActionsLib.useSpoon = function(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({10515, 10513}, item.itemid) then
+	if table.contains({ 10515, 10513 }, item.itemid) then
 		return false
 	end
 
@@ -225,7 +221,7 @@ ActionsLib.useSpoon = function(player, item, fromPosition, target, toPosition, i
 end
 
 ActionsLib.useSickle = function(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({10511, 10515}, item.itemid) then
+	if table.contains({ 10511, 10515 }, item.itemid) then
 		return false
 	end
 

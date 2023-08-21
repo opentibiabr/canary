@@ -19,14 +19,12 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'The passage to the afterlife is filled with obstacles, but I can help you with my wares.'}
+	{ text = "The passage to the afterlife is filled with obstacles, but I can help you with my wares." }
 }
 
 local keywordHandler = KeywordHandler:new()

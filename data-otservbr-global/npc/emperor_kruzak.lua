@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -58,13 +56,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if(MsgContains(message, "outfit")) or (MsgContains(message, "addon")) then
+	if MsgContains(message, "outfit") or MsgContains(message, "addon") then
 		npcHandler:say("In exchange for a truly generous donation, I will offer a special outfit. Do you want to make a donation?", npc, creature)
-		npcHandler:setTopic(playerId, 1)
-	elseif(MsgContains(message, "yes")) then
+		npcHandler:setTopic(playerId, 1) -- alterando o tópico para que no próximo YES ele faça o helmet -- alterando o tópico para que no próximo YES ele faça a boots
+	elseif MsgContains(message, "yes") then
 		-- vamos tratar todas condições para YES aqui
 		if npcHandler:getTopic(playerId) == 1 then
-			-- para o primeiro Yes, o npc deve explicar como obter o outfit
 			npcHandler:say(
 				{
 					"Excellent! Now, let me explain. If you donate 1.000.000.000 gold pieces, you will be entitled to wear a unique outfit. ...",
@@ -75,6 +72,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				creature
 			)
 			npcHandler:setTopic(playerId, 2)
+			-- Fim do helmet
+			-- Inicio da boots
+			-- Fim da boots
+		-- para o primeiro Yes, o npc deve explicar como obter o outfit
 		-- O NPC só vai oferecer os addons se o player já tiver escolhido.
 		elseif npcHandler:getTopic(playerId) == 2 then
 			-- caso o player repita o yes, resetamos o tópico para começar de novo?
@@ -88,17 +89,17 @@ local function creatureSayCallback(npc, creature, type, message)
 					if inbox and inbox:getEmptySlots() > 0 then
 						local decoKit = inbox:addItem(23398, 1)
 						local decoItemName = ItemType(31510):getName()
-							decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a " .. decoItemName .. ".")
-							decoKit:setActionId(36345)
-							npcHandler:say("Take this armor as a token of great gratitude. Let us forever remember this day, my friend!", npc, creature)
-							player:removeMoneyBank(500000000)
-							player:addOutfit(1211)
-							player:addOutfit(1210)
-							player:getPosition():sendMagicEffect(171)
-							player:setStorageValue(Storage.OutfitQuest.GoldenOutfit, 1)
+						decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a " .. decoItemName .. ".")
+						decoKit:setActionId(36345)
+						npcHandler:say("Take this armor as a token of great gratitude. Let us forever remember this day, my friend!", npc, creature)
+						player:removeMoneyBank(500000000)
+						player:addOutfit(1211)
+						player:addOutfit(1210)
+						player:getPosition():sendMagicEffect(171)
+						player:setStorageValue(Storage.OutfitQuest.GoldenOutfit, 1)
 					else
 						npcHandler:say("Please make sure you have free slots in your store inbox.", npc, creature)
-					end				
+					end
 				else
 					npcHandler:say("You do not have enough money to donate that amount.", npc, creature)
 				end
@@ -132,8 +133,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 2)
 			end
 			npcHandler:setTopic(playerId, 2)
-		-- Fim do helmet
-		-- Inicio da boots
 		elseif npcHandler:getTopic(playerId) == 5 then
 			if player:getStorageValue(Storage.OutfitQuest.GoldenOutfit) == 2 then
 				if player:getStorageValue(Storage.OutfitQuest.GoldenOutfit) < 3 then
@@ -157,34 +156,59 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You need to donate {helmet} addon first.", npc, creature)
 				npcHandler:setTopic(playerId, 2)
 			end
-			-- Fim da boots
 			npcHandler:setTopic(playerId, 2)
-	end
+		end
 	--inicio das opções armor/helmet/boots
 	-- caso o player não diga YES, dirá alguma das seguintes palavras:
-	elseif(MsgContains(message, "armor")) and npcHandler:getTopic(playerId) == 2 then
+	elseif MsgContains(message, "armor") and npcHandler:getTopic(playerId) == 2 then
 		npcHandler:say("So you wold like to donate 500.000.000 gold pieces which in return will entitle you to wear a unique armor?", npc, creature)
 		npcHandler:setTopic(playerId, 3) -- alterando o tópico para que no próximo YES ele faça o outfit
-	elseif(MsgContains(message, "helmet")) and npcHandler:getTopic(playerId) == 2 then
+	elseif MsgContains(message, "helmet") and npcHandler:getTopic(playerId) == 2 then
 		npcHandler:say("So you would like to donate 250.000.000 gold pieces which in return will entitle you to wear unique helmet?", npc, creature)
-		npcHandler:setTopic(playerId, 4) -- alterando o tópico para que no próximo YES ele faça o helmet
-	elseif(MsgContains(message, "boots")) and npcHandler:getTopic(playerId) == 2 then
+		npcHandler:setTopic(playerId, 4)
+	elseif MsgContains(message, "boots") and npcHandler:getTopic(playerId) == 2 then
 		npcHandler:say("So you would like to donate 250.000.000 gold pieces which in return will entitle you to wear a unique boots?", npc, creature)
-		npcHandler:setTopic(playerId, 5) -- alterando o tópico para que no próximo YES ele faça a boots
+		npcHandler:setTopic(playerId, 5)
 	end
 	-- fim das opções armor/helmet/boots
 end
 
 -- Promotion
-local node1 = keywordHandler:addKeyword({'promot'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'I can promote you for 20000 gold coins. Do you want me to promote you?'})
-	node1:addChildKeyword({'yes'}, StdModule.promotePlayer, {npcHandler = npcHandler, cost = 20000, level = 20, text = 'Congratulations! You are now promoted.'})
-	node1:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'Alright then, come back when you are ready.', reset = true})
-	
--- Greeting message
-keywordHandler:addGreetKeyword({"hail emperor"}, {npcHandler = npcHandler, text = "Hiho, may fire and earth bless you, my child. Are you looking for a promotion?"})
-keywordHandler:addGreetKeyword({"salutations emperor"}, {npcHandler = npcHandler, text = "Hiho, may fire and earth bless you, my child. Are you looking for a promotion?"})
+local node1 = keywordHandler:addKeyword({ "promot" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "I can promote you for 20000 gold coins. Do you want me to promote you?"
+})
+node1:addChildKeyword({ "yes" }, StdModule.promotePlayer, {
+	npcHandler = npcHandler,
+	cost = 20000,
+	level = 20,
+	text = "Congratulations! You are now promoted."
+})
+node1:addChildKeyword({ "no" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Alright then, come back when you are ready.",
+	reset = true
+})
 
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Farewell, |PLAYERNAME|, my child!')
+-- Greeting message
+keywordHandler:addGreetKeyword(
+	{ "hail emperor" },
+	{
+		npcHandler = npcHandler,
+		text = "Hiho, may fire and earth bless you, my child. Are you looking for a promotion?"
+	}
+)
+keywordHandler:addGreetKeyword(
+	{ "salutations emperor" },
+	{
+		npcHandler = npcHandler,
+		text = "Hiho, may fire and earth bless you, my child. Are you looking for a promotion?"
+	}
+)
+
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Farewell, |PLAYERNAME|, my child!")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)

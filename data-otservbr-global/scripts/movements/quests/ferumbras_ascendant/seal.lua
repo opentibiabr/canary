@@ -3,7 +3,6 @@ local config = {
 		toPosition = Position(33419, 32841, 11),
 		backPosition = Position(33484, 32775, 12),
 		timer = Storage.FerumbrasAscension.TarbazTimer
-
 	},
 	[24840] = {
 		toPosition = Position(33452, 32356, 13),
@@ -63,14 +62,14 @@ function seal.onStepIn(creature, item, position, fromPosition)
 			else
 				player:teleportTo(Position(33675, 32690, 13))
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				player:say('You have to wait to challenge this enemy again!', TALKTYPE_MONSTER_SAY)
+				player:say("You have to wait to challenge this enemy again!", TALKTYPE_MONSTER_SAY)
 				return true
 			end
 		else
 			local pos = position
 			pos.y = pos.y + 2
 			player:teleportTo(pos)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You not proven your worth. There is no escape for you here.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You not proven your worth. There is no escape for you here.")
 			item:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			return true
 		end
@@ -83,14 +82,14 @@ function seal.onStepIn(creature, item, position, fromPosition)
 			else
 				player:teleportTo(Position(33477, 32701, 14))
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				player:say('You have to wait to challenge this enemy again!', TALKTYPE_MONSTER_SAY)
+				player:say("You have to wait to challenge this enemy again!", TALKTYPE_MONSTER_SAY)
 				return true
 			end
 		else
 			local pos = position
 			pos.y = pos.y + 2
 			player:teleportTo(pos)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You not proven your worth. There is no escape for you here.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You not proven your worth. There is no escape for you here.")
 			item:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			return true
 		end
@@ -101,10 +100,9 @@ function seal.onStepIn(creature, item, position, fromPosition)
 	elseif player:getStorageValue(setting.timer) >= os.time() then
 		player:teleportTo(setting.backPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-		player:say('You have to wait to challenge this enemy again!', TALKTYPE_MONSTER_SAY)
+		player:say("You have to wait to challenge this enemy again!", TALKTYPE_MONSTER_SAY)
 	elseif item.actionid == 24846 and player:getStorageValue(setting.timer) >= os.time() then
-		player:say('You cannot enter, you must wait fourteen days after preventing the ascension of Ferumbras.',
-		TALKTYPE_MONSTER_SAY)
+		player:say("You cannot enter, you must wait fourteen days after preventing the ascension of Ferumbras.", TALKTYPE_MONSTER_SAY)
 	end
 	return true
 end

@@ -45,9 +45,7 @@ CREATE TABLE IF NOT EXISTS `blessings_history` (
 --]=====]
 
 Blessings.DebugPrint = function(content, pre, pos)
-	if not Blessings.Config.Debug then
-		return
-	end
+	if not Blessings.Config.Debug then return end
 	if pre == nil then
 		pre = ""
 	else
@@ -63,14 +61,11 @@ Blessings.DebugPrint = function(content, pre, pos)
 		Spdlog.debug(content)
 		Spdlog.debug(string.format("[Blessings] END BOOL - %s", pos))
 	else
-		Spdlog.debug(string.format("[Blessings] pre:[%s], content[%s], pos[%s]",
-			pre, content, pos))
+		Spdlog.debug(string.format("[Blessings] pre:[%s], content[%s], pos[%s]", pre, content, pos))
 	end
 end
 
-Blessings.C_Packet = {
-	OpenWindow = 0xCF
-}
+Blessings.C_Packet = { OpenWindow = 0xCF }
 
 Blessings.S_Packet = {
 	BlessDialog = 0x9B,
@@ -91,7 +86,9 @@ Blessings.sendBlessStatus = function(player, curBless)
 	-- why not using ProtocolGame::sendBlessStatus ?
 	local msg = NetworkMessage()
 	msg:addByte(Blessings.S_Packet.BlessStatus)
-	callback = function(k) return true end
+	callback = function(k)
+		return true
+	end
 	if curBless == nil then
 		curBless = player:getBlessings(callback) -- ex: {1, 2, 5, 7}
 	end
@@ -114,7 +111,6 @@ Blessings.sendBlessStatus = function(player, curBless)
 
 	msg:addU16(bitWiseCurrentBless)
 	msg:addByte(blessCount >= 7 and 3 or (blessCount > 0 and 2 or 1)) -- Bless dialog button colour 1 = Disabled | 2 = normal | 3 = green
-
 	-- if #curBless >= 5 then
 	-- 	msg:addU16(1) -- TODO ?
 	-- else
@@ -129,7 +125,9 @@ Blessings.sendBlessDialog = function(player)
 	local msg = NetworkMessage()
 	msg:addByte(Blessings.S_Packet.BlessDialog)
 
-	callback = function(k) return true end
+	callback = function(k)
+		return true
+	end
 	local curBless = player:getBlessings()
 
 	msg:addByte(Blessings.Config.HasToF and #Blessings.All or (#Blessings.All - 1)) -- total blessings
@@ -170,10 +168,8 @@ Blessings.sendBlessDialog = function(player)
 	msg:addByte(PvEXPLoss) -- XP/Skill pve death
 	msg:addByte(equipLoss) -- Equip container lose pvp death
 	msg:addByte(equipLoss) -- Equip container pve death
-
 	msg:addByte(haveSkull and 1 or 0) -- is red/black skull
 	msg:addByte(hasAol and 1 or 0)
-
 
 	-- History
 	local historyAmount = 1
@@ -230,12 +226,12 @@ Blessings.useCharm = function(player, item)
 			end
 
 			if player:hasBlessing(value.id) then
-				player:say('You already possess this blessing.', TALKTYPE_MONSTER_SAY)
+				player:say("You already possess this blessing.", TALKTYPE_MONSTER_SAY)
 				return true
 			end
 
 			player:addBlessing(value.id, 1)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, value.name .. ' protects you.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, value.name .. " protects you.")
 			player:getPosition():sendMagicEffect(CONST_ME_LOSEENERGY)
 			item:remove(1)
 			return true
@@ -244,11 +240,11 @@ Blessings.useCharm = function(player, item)
 end
 
 Blessings.checkBless = function(player)
-	local result, bless = 'Received blessings:'
+	local result, bless = "Received blessings:"
 	for k, v in pairs(Blessings.All) do
-		result = player:hasBlessing(k) and result .. '\n' .. v.name or result
+		result = player:hasBlessing(k) and result .. "\n" .. v.name or result
 	end
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 20 > result:len() and 'No blessings received.' or result)
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 20 > result:len() and "No blessings received." or result)
 	return true
 end
 
@@ -258,15 +254,19 @@ Blessings.doAdventurerBlessing = function(player)
 	end
 	player:addMissingBless(true, true)
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You received adventurers blessings for you being level lower than ' .. Blessings.Config.AdventurerBlessingLevel .. '!')
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received adventurers blessings for you being level lower than " .. Blessings.Config.AdventurerBlessingLevel .. "!")
 	player:getPosition():sendMagicEffect(CONST_ME_HOLYDAMAGE)
 	return true
 end
 
 Blessings.getInquisitionPrice = function(player)
 	-- Find how many missing bless we have and give out the price
-	inquifilter = function(b) return b.inquisition end
-	donthavefilter = function(p, b) return not p:hasBlessing(b) end
+	inquifilter = function(b)
+		return b.inquisition
+	end
+	donthavefilter = function(p, b)
+		return not p:hasBlessing(b)
+	end
 	local missing = #player:getBlessings(inquifilter, donthavefilter)
 	local totalBlessPrice = Blessings.getBlessingsCost(player:getLevel(), false) * missing * Blessings.Config.InquisitonBlessPriceMultiplier
 	return missing, totalBlessPrice
@@ -322,7 +322,6 @@ Blessings.ClearBless = function(player, killer, currentBless)
 		return
 	end
 	for i = 1, #currentBless do
-
 		Blessings.DebugPrint(i, "ClearBless curBless i", " | " .. currentBless[i].name)
 		player:removeBlessing(currentBless[i].id, 1)
 	end
@@ -339,8 +338,10 @@ Blessings.BuyAllBlesses = function(player)
 	local blessCost = Blessings.getBlessingsCost(player:getLevel(), true)
 	local PvPBlessCost = Blessings.getPvpBlessingCost(player:getLevel(), true)
 	local hasToF = Blessings.Config.HasToF and player:hasBlessing(1) or true
-	donthavefilter = function(p, b) return not p:hasBlessing(b) end
-	local missingBless = player:getBlessings(nil,donthavefilter)
+	donthavefilter = function(p, b)
+		return not p:hasBlessing(b)
+	end
+	local missingBless = player:getBlessings(nil, donthavefilter)
 	local missingBlessAmt = #missingBless + (hasToF and 0 or 1)
 	local totalCost = blessCost * #missingBless
 
@@ -373,8 +374,9 @@ Blessings.PlayerDeath = function(player, corpse, killer)
 	local haveSkull = table.contains({ SKULL_RED, SKULL_BLACK }, player:getSkull())
 	local curBless = player:getBlessings()
 
-	if haveSkull then  -- lose all bless + drop all items
+	if haveSkull then
 		Blessings.DropLoot(player, corpse, 100, true)
+	-- lose all bless + drop all items
 	elseif #curBless < 5 and not hasAol then -- lose all items
 		local equipLoss = Blessings.LossPercent[#curBless].item
 		Blessings.DropLoot(player, corpse, equipLoss)
@@ -382,7 +384,6 @@ Blessings.PlayerDeath = function(player, corpse, killer)
 		player:removeItem(ITEM_AMULETOFLOSS, 1, -1, false)
 	end
 	--Blessings.ClearBless(player, killer, curBless) IMPLEMENTED IN SOURCE BECAUSE THIS WAS HAPPENING BEFORE SKILL/EXP CALCULATIONS
-
 
 	if not player:getSlotItem(CONST_SLOT_BACKPACK) then
 		player:addItem(ITEM_BAG, 1, false, CONST_SLOT_BACKPACK)
@@ -394,11 +395,15 @@ end
 function Player.getBlessings(self, filter, hasblessingFilter)
 	local blessings = {}
 	if filter == nil then
-		filter = function(b) return b.losscount end
+		filter = function(b)
+			return b.losscount
+		end
 	end
 
 	if hasblessingFilter == nil then
-		hasblessingFilter = function(p, b) return p:hasBlessing(b) end
+		hasblessingFilter = function(p, b)
+			return p:hasBlessing(b)
+		end
 	end
 	for k, v in pairs(Blessings.All) do
 		if filter(v) and hasblessingFilter(self, k) then

@@ -1,5 +1,5 @@
 local configQuest = {
-	["fire"] = {
+	fire = {
 		itemId = 1857,
 		beginPos = Position(32748, 31488, 8),
 		fromPos = Position(32737, 31489, 8),
@@ -19,10 +19,10 @@ local configQuest = {
 			"Your body reacts to this strange green substance as you reach out to touch it. \z
 			You feel an urge for more of this energy.", -- step in the second tile
 			"The tar covering you has cooled down and tell off for the most part. \z
-			Your body is not heated up anymore.", -- there's no time to step
+			Your body is not heated up anymore." -- there's no time to step
 		}
 	},
-	["acid"] = {
+	acid = {
 		itemId = 4406,
 		beginPos = Position(32693, 31478, 8),
 		fromPos = Position(32647, 31479, 8),
@@ -41,9 +41,9 @@ local configQuest = {
 			"You are now ready to prove your worth. \z
 			Take heart and cross the threshold of sulphur.", -- step in the second tile
 			"The acid covering you has cooled down and tell off for the most part. \z
-			Your body is not heated up anymore.", --  there's no time to step
+			Your body is not heated up anymore." --  there's no time to step
 		}
-	},
+	}
 }
 
 function sendConditionCults(playerid, _type, fromPos, toPos, tempo)
@@ -94,7 +94,7 @@ function tar.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	for index, value in pairs(configQuest)do
+	for index, value in pairs(configQuest) do
 		if item:getId() == value.itemId and fromPosition:compare(value.beginPos) then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, value.msgs[1])
 			sendConditionCults(player:getId(), index, value.fromPos, value.toPos, 0)
@@ -109,8 +109,7 @@ function tar.onStepIn(creature, item, position, fromPosition)
 		elseif position:compare(value.secondSqm) then
 			if player:getStorageValue(value.storageBarkless) == 2 then
 				player:setStorageValue(value.storageBarkless, 3)
-				if player:getStorageValue(Storage.CultsOfTibia.Barkless.sulphur) == 3 and
-				player:getStorageValue(Storage.CultsOfTibia.Barkless.Tar) == 3 then
+				if player:getStorageValue(Storage.CultsOfTibia.Barkless.sulphur) == 3 and player:getStorageValue(Storage.CultsOfTibia.Barkless.Tar) == 3 then
 					player:setStorageValue(Storage.CultsOfTibia.Barkless.Mission, 2)
 				end
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, value.msgs[5])

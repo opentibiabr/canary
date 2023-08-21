@@ -1,21 +1,13 @@
 local config = {
-	lionPosition = {
-		Position(32444, 32512, 7),
-		Position(32449, 32516, 7),
-		Position(32444, 32520, 7),
-	},
-	usurperPosition = {
-		Position(32450, 32520, 7),
-		Position(32444, 32516, 7),
-		Position(32448, 32512, 7)
-	},
+	lionPosition = { Position(32444, 32512, 7), Position(32449, 32516, 7), Position(32444, 32520, 7) },
+	usurperPosition = { Position(32450, 32520, 7), Position(32444, 32516, 7), Position(32448, 32512, 7) },
 	firstPlayerPosition = Position(32457, 32508, 6),
-    centerPosition = Position(32439, 32523, 7), -- Center Room
+	centerPosition = Position(32439, 32523, 7), -- Center Room
 	exitPosition = Position(32453, 32503, 7), -- Exit Position
 	newPosition = Position(32453, 32510, 7),
 	rangeX = 22,
 	rangeY = 16,
-	timeToKill = 15, -- time in minutes to remove the player
+	timeToKill = 15 -- time in minutes to remove the player
 }
 
 local currentEvent = nil
@@ -29,10 +21,8 @@ local function RoomIsOccupied(centerPosition, rangeX, rangeY)
 	return false
 end
 
-
 local function clearRoomDrume(centerPosition, rangeX, rangeY, resetGlobalStorage)
-	local spectators,
-	spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
+	local spectators, spectator = Game.getSpectators(centerPosition, false, false, rangeX, rangeX, rangeY, rangeY)
 	for i = 1, #spectators do
 		spectator = spectators[i]
 		if spectator:isMonster() then
@@ -51,7 +41,9 @@ end
 
 local drumeAction = Action()
 function drumeAction.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:getPosition() ~= config.firstPlayerPosition then return false end
+	if player:getPosition() ~= config.firstPlayerPosition then
+		return false
+	end
 	if RoomIsOccupied(config.centerPosition, config.rangeX, config.rangeY) then
 		player:sendCancelMessage("There's someone already in the skirmish.")
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
@@ -69,7 +61,9 @@ function drumeAction.onUse(player, item, fromPosition, target, toPosition, isHot
 			end
 		end
 	end
-	if #players == 0 then return false end
+	if #players == 0 then
+		return false
+	end
 	for _, pi in pairs(players) do
 		if pi:getStorageValue(Storage.TheOrderOfTheLion.Drume.Timer) > os.time() then
 			player:sendCancelMessage("Someone of your team has already fought in the skirmish in the last 20h.")
@@ -105,10 +99,9 @@ function drumeAction.onUse(player, item, fromPosition, target, toPosition, isHot
 		totalUsurper = totalUsurper + 1
 	end
 	for _, pi in pairs(players) do
-		pi:setStorageValue(Storage.TheOrderOfTheLion.Drume.Timer, os.time() + (configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN)))
+		pi:setStorageValue(Storage.TheOrderOfTheLion.Drume.Timer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
 		pi:teleportTo(config.newPosition)
-		pi:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have " ..config.timeToKill.." minutes to defeat Drume.")
-
+		pi:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have " .. config.timeToKill .. " minutes to defeat Drume.")
 	end
 	if currentEvent then
 		stopEvent(currentEvent)

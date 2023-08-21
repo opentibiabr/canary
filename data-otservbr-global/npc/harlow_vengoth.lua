@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -50,9 +48,22 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local travelNode = keywordHandler:addKeyword({'yalahar'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you seek a passage to Yalahar for |TRAVELCOST|?', cost = 0})
-	travelNode:addChildKeyword({'yes'}, StdModule.travel, {npcHandler = npcHandler, premium = false, cost = 0, destination = Position(32837, 31366, 7) })
-	travelNode:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, reset = true, text = 'Oh well.'})
+local travelNode = keywordHandler:addKeyword({ "yalahar" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Do you seek a passage to Yalahar for |TRAVELCOST|?",
+	cost = 0
+})
+travelNode:addChildKeyword({ "yes" }, StdModule.travel, {
+	npcHandler = npcHandler,
+	premium = false,
+	cost = 0,
+	destination = Position(32837, 31366, 7)
+})
+travelNode:addChildKeyword({ "no" }, StdModule.say, {
+	npcHandler = npcHandler,
+	reset = true,
+	text = "Oh well."
+})
 
 npcHandler:setMessage(MESSAGE_GREET, "Want to go back to {Yalahar} for 50 gold? Just ask me.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")

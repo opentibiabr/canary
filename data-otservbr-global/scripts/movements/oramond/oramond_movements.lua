@@ -35,7 +35,7 @@ local positions = {
 	[13515] = Position(32114, 31327, 12), -- no respawn
 	[13516] = Position(32111, 31372, 14), -- reward
 	[13517] = Position(32102, 31400, 13), -- out reward
-	[13518] = Position(32114, 31353, 13),  -- init
+	[13518] = Position(32114, 31353, 13), -- init
 	[13519] = Position(32090, 31320, 13),
 	[13520] = Position(32272, 31382, 14), -- first boss for the second lever
 	[13521] = Position(32113, 31353, 13), -- exit boss
@@ -47,7 +47,7 @@ local positions = {
 	[13527] = Position(32112, 31390, 11), -- svarground entrance
 	[13528] = Position(33185, 31643, 8), -- from the quest for edron
 	[13529] = Position(32113, 31358, 13), -- from edron for the quest
-	[13531] = Position(32113, 31358, 13), -- from farmine for the quest
+	[13531] = Position(32113, 31358, 13) -- from farmine for the quest
 }
 
 local oramondMovements = MoveEvent()

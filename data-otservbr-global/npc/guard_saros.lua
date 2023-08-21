@@ -19,14 +19,12 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Praised be Suon, the Benevolent King!'}
+	{ text = "Praised be Suon, the Benevolent King!" }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -111,7 +109,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, 2)
 		price[playerId] = 5
 	elseif MsgContains(message, "job") or MsgContains(message, "issavi") then
-		npcHandler:say("Issavi is the capital of {Kilmaresh}, also called the Golden City. This city has a motto: An open gate for those of peace. This means, anyone is welcome here as long as they respect our laws, be it humans, elves, minotaurs or even a medusa.", npc, creature)
+		npcHandler:say(
+			"Issavi is the capital of {Kilmaresh}, also called the Golden City. This city has a motto: An open gate for those of peace. This means, anyone is welcome here as long as they respect our laws, be it humans, elves, minotaurs or even a medusa.",
+			npc,
+			creature
+		)
 		npcHandler:setTopic(playerId, 2)
 		price[playerId] = 5
 	elseif MsgContains(message, "name") then

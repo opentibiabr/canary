@@ -27,7 +27,7 @@ monster.Bestiary = {
 	Locations = "Banuta, Carlin Surroundings, Feyrist Meadows, Grimvale, Liberty Bay City, \z
 		Liberty Bay Surroundings, Meriana, Plains of Havoc, Port Hope Surroundings, \z
 		Yalahar Arena Quarter, Yalahar Centre, Yalahar Magician Quarter."
-	}
+}
 
 monster.health = 2
 monster.maxHealth = 2
@@ -43,7 +43,7 @@ monster.changeTarget = {
 
 monster.strategiesTarget = {
 	nearest = 60,
-	random = 40,
+	random = 40
 }
 
 monster.flags = {
@@ -73,35 +73,60 @@ monster.light = {
 
 monster.voices = {
 	interval = 5000,
-	chance = 10,
+	chance = 10
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.defenses = {
 	defense = 5,
 	armor = 10
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

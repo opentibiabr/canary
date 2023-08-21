@@ -1,11 +1,11 @@
 local goldenOutfitDisplay = Action()
 
 function goldenOutfitDisplay.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-		
 	if player:getStorageValue(Storage.OutfitQuest.GoldenOutfit) == 3 then
-		if (item:getId() == 31509) then --direita
+		if (item:getId() == 31509) then
 			item:transform(31500)
 			item:getPosition():sendMagicEffect(171)
+		--direita
 		elseif (item:getId() == 31500) then
 			item:transform(31505)
 			item:getPosition():sendMagicEffect(171)
@@ -52,7 +52,7 @@ function goldenOutfitDisplay.onUse(player, item, fromPosition, target, toPositio
 			item:transform(31512)
 			item:getPosition():sendMagicEffect(171)
 		end
-	else 
+	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need Full Golden Outfit to use it.")
 		item:getPosition():sendMagicEffect(CONST_ME_POFF)
 	end

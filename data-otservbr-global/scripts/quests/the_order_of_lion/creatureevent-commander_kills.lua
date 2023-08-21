@@ -1,10 +1,10 @@
 local config = {
 	firstPlayerPosition = Position(32457, 32508, 6),
-    centerPosition = Position(32439, 32523, 7), -- Center Room  
+	centerPosition = Position(32439, 32523, 7), -- Center Room
 	exitPosition = Position(32453, 32503, 7), -- Exit Position
 	newPosition = Position(32453, 32510, 7),
 	rangeX = 22,
-	rangeY = 16,
+	rangeY = 16
 }
 
 local lionCommanderDeath = CreatureEvent("lionCommanderDeath")
@@ -24,7 +24,7 @@ function lionCommanderDeath.onPrepareDeath(creature)
 		end
 		config.exitPosition:sendMagicEffect(CONST_ME_TELEPORT)
 	end
-    return true
+	return true
 end
 lionCommanderDeath:register()
 
@@ -36,6 +36,6 @@ function usurperCommanderDeath.onPrepareDeath(creature)
 		Game.createMonster("Kesar", Position(32444, 32515, 7), false, true)
 		Game.createMonster("Drume", Position(32444, 32516, 7), false, true)
 	end
-    return true
+	return true
 end
 usurperCommanderDeath:register()

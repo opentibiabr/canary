@@ -4,13 +4,20 @@ function addPlayerEvent(callable, delay, playerId, ...)
 		return false
 	end
 
-	addEvent(function(callable, playerId, ...)
-		local player = Player(playerId)
-		if player then
-			pcall(callable, player, ...)
-		end
-	end, delay, callable, player.uid, ...)
+	addEvent(
+		function(callable, playerId, ...)
+			local player = Player(playerId)
+			if player then
+				pcall(callable, player, ...)
+			end
+		end,
+		delay,
+		callable,
+		player.uid,
+		...
+	)
 end
+
 
 --[[
 function Player.updateFightModes(self)

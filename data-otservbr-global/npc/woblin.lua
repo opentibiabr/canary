@@ -10,13 +10,9 @@ npcConfig.maxHealth = npcConfig.health
 npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
-npcConfig.outfit = {
-	lookType = 297
-}
+npcConfig.outfit = { lookType = 297 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -86,25 +82,19 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
-keywordHandler:addKeyword({"goblins"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "No part of clan. Me prefer company of precious. Or mirror image. Always nice to see pretty me!"
-	}
-)
-keywordHandler:addKeyword({"quest"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "What you on quest for? Go leave Woblin alone with {precious}"
-	}
-)
-keywordHandler:addKeyword({"precious"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Me not give {key}! Key my precious now! By old goblin law all that one has in his pockets for two days \z
+keywordHandler:addKeyword({ "goblins" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "No part of clan. Me prefer company of precious. Or mirror image. Always nice to see pretty me!"
+})
+keywordHandler:addKeyword({ "quest" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "What you on quest for? Go leave Woblin alone with {precious}"
+})
+keywordHandler:addKeyword({ "precious" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Me not give {key}! Key my precious now! By old goblin law all that one has in his pockets for two days \z
 			is family heirloom! Me no part with my precious ... hm unless you provide Woblin with some {reward}!"
-	}
-)
+})
 
 npcHandler:setMessage(MESSAGE_GREET, "Hi there human!")
 

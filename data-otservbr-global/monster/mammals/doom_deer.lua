@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 1,
 	Locations = "Isle of Evil."
-	}
+}
 
 monster.health = 405
 monster.maxHealth = 405
@@ -38,9 +38,7 @@ monster.changeTarget = {
 	chance = 20
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = false,
@@ -70,42 +68,95 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "I bet it was you who killed my mom!", yell = false}
+	{
+		text = "I bet it was you who killed my mom!",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{name = "gold coin", chance = 50000, maxCount = 100}
-}
+monster.loot = { {
+	name = "gold coin",
+	chance = 50000,
+	maxCount = 100
+} }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100},
-	{name ="combat", interval = 4000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -35, maxDamage = -55, length = 5, spread = 3, effect = CONST_ME_BIGCLOUDS, target = false}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -100
+}, {
+	name = "combat",
+	interval = 4000,
+	chance = 30,
+	type = COMBAT_ENERGYDAMAGE,
+	minDamage = -35,
+	maxDamage = -55,
+	length = 5,
+	spread = 3,
+	effect = CONST_ME_BIGCLOUDS,
+	target = false
+} }
 
 monster.defenses = {
 	defense = 35,
 	armor = 30,
-	{name ="speed", interval = 3000, chance = 30, speedChange = 400, effect = CONST_ME_MAGIC_RED, target = false, duration = 8000}
+	{
+		name = "speed",
+		interval = 3000,
+		chance = 30,
+		speedChange = 400,
+		effect = CONST_ME_MAGIC_RED,
+		target = false,
+		duration = 8000
+	}
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 100},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 100
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

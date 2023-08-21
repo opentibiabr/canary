@@ -4,7 +4,7 @@ local config = {
 	[42627] = Position(33491, 31985, 7), --Oramond
 	[42630] = Position(33636, 31891, 6), --City
 	[42631] = Position(33486, 31982, 7), --City
-	[50389] = Position(33651, 31942, 7), --Glooth
+	[50389] = Position(33651, 31942, 7) --Glooth
 }
 
 local oramondTeleport = MoveEvent()

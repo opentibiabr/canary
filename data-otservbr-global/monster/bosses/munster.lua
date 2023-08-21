@@ -29,7 +29,7 @@ monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,
 	damage = 10,
-	random = 10,
+	random = 10
 }
 
 monster.flags = {
@@ -59,58 +59,110 @@ monster.light = {
 
 monster.summon = {
 	maxSummons = 2,
-	summons = {
-		{name = "Rat", chance = 20, interval = 2000, count = 2}
-	}
+	summons = { {
+		name = "Rat",
+		chance = 20,
+		interval = 2000,
+		count = 2
+	} }
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Meep!", yell = false},
-	{text = "Meeeeep!", yell = false}
+	{
+		text = "Meep!",
+		yell = false
+	},
+	{
+		text = "Meeeeep!",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{id = 3337, chance = 87000}, -- bone club
-	{id = 3031, chance = 71000, maxCount = 22}, -- gold coin
-	{id = 3607, chance = 56000}, -- cheese
-	{id = 3492, chance = 51000, maxCount = 4}, -- worm
-	{id = 3598, chance = 2500, maxCount = 2}, -- cookie
-	{id = 5792, chance = 250} -- die
-}
+monster.loot = { {
+	id = 3337,
+	chance = 87000
+}, { -- bone club
+	id = 3031,
+	chance = 71000,
+	maxCount = 22
+}, { -- gold coin
+	id = 3607,
+	chance = 56000
+}, { -- cheese
+	id = 3492,
+	chance = 51000,
+	maxCount = 4
+}, { -- worm
+	id = 3598,
+	chance = 2500,
+	maxCount = 2
+}, { -- cookie
+	id = 5792,
+	chance = 250
+} } -- die
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -15}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -15
+} }
 
 monster.defenses = {
 	defense = 4,
 	armor = 2
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -118,13 +170,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

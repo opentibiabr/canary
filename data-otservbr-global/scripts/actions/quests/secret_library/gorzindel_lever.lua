@@ -4,14 +4,27 @@ local config = {
 		position = Position(32687, 32715, 10)
 	},
 	requiredLevel = 250,
-
-	playerPositions = {
-		{pos = Position(32747, 32749, 10), teleport = Position(32686, 32721, 10), effect = CONST_ME_TELEPORT},
-		{pos = Position(32748, 32749, 10), teleport = Position(32686, 32721, 10), effect = CONST_ME_TELEPORT},
-		{pos = Position(32749, 32749, 10), teleport = Position(32686, 32721, 10), effect = CONST_ME_TELEPORT},
-		{pos = Position(32747, 32750, 10), teleport = Position(32686, 32721, 10), effect = CONST_ME_TELEPORT},
-		{pos = Position(32747, 32751, 10), teleport = Position(32686, 32721, 10), effect = CONST_ME_TELEPORT}
-	},
+	playerPositions = { {
+		pos = Position(32747, 32749, 10),
+		teleport = Position(32686, 32721, 10),
+		effect = CONST_ME_TELEPORT
+	}, {
+		pos = Position(32748, 32749, 10),
+		teleport = Position(32686, 32721, 10),
+		effect = CONST_ME_TELEPORT
+	}, {
+		pos = Position(32749, 32749, 10),
+		teleport = Position(32686, 32721, 10),
+		effect = CONST_ME_TELEPORT
+	}, {
+		pos = Position(32747, 32750, 10),
+		teleport = Position(32686, 32721, 10),
+		effect = CONST_ME_TELEPORT
+	}, {
+		pos = Position(32747, 32751, 10),
+		teleport = Position(32686, 32721, 10),
+		effect = CONST_ME_TELEPORT
+	} },
 	specPos = {
 		from = Position(32680, 32711, 10),
 		to = Position(32695, 32726, 10)
@@ -21,5 +34,9 @@ local config = {
 }
 
 local lever = BossLever(config)
-lever:position({x = 32746, y = 32749, z = 10})
+lever:position({
+	x = 32746,
+	y = 32749,
+	z = 10
+})
 lever:register()

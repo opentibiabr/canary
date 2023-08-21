@@ -19,16 +19,14 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "What a beautiful palace. The Kilmareshians are highly skilful architects."},
-	{text = "The new treaty of amity and commerce with Kilmaresh is of utmost importance."},
-	{text = "The pending freight from the saffron coasts is overdue."}
+	{ text = "What a beautiful palace. The Kilmareshians are highly skilful architects." },
+	{ text = "The new treaty of amity and commerce with Kilmaresh is of utmost importance." },
+	{ text = "The pending freight from the saffron coasts is overdue." }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -59,10 +57,16 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 keywordHandler:addKeyword(
-	{"present"}, StdModule.say, { npcHandler = npcHandler,
-	text = "This is a very beautiful ring. Thank you for this generous present!"},
-	function (player) return player:getStorageValue(Storage.Kilmaresh.Third.Recovering) == 2 and player:getItemById(31263, true) end,
-	function (player) 
+	{ "present" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "This is a very beautiful ring. Thank you for this generous present!"
+	},
+	function(player)
+		return player:getStorageValue(Storage.Kilmaresh.Third.Recovering) == 2 and player:getItemById(31263, true)
+	end,
+	function(player)
 		player:removeItem(31263, 1)
 		player:setStorageValue(Storage.Kilmaresh.Fourth.Moe, 1)
 		player:setStorageValue(Storage.Kilmaresh.Third.Recovering, 3)
@@ -70,12 +74,18 @@ keywordHandler:addKeyword(
 )
 
 keywordHandler:addKeyword(
-	{"present"}, StdModule.say, { npcHandler = npcHandler,
-	text = "Didn't you bring my gift?"},
-	function (player) return player:getStorageValue(Storage.Kilmaresh.Third.Recovering) == 2 end
+	{ "present" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "Didn't you bring my gift?"
+	},
+	function(player)
+		return player:getStorageValue(Storage.Kilmaresh.Third.Recovering) == 2
+	end
 )
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, friend.")
-npcHandler:setMessage(MESSAGE_WALKAWAY, 'Well, bye then.')
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)

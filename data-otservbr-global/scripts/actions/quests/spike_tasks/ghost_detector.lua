@@ -60,14 +60,14 @@ local function getSearchString(fromPos, toPos)
 		[7] = "south-west"
 	}
 
-	return ((type(text[distance]) == "table") and text[distance][level] or text[distance]) .. ((distance ~= 0) and dirs[direction] or '')
+	return ((type(text[distance]) == "table") and text[distance][level] or text[distance]) .. ((distance ~= 0) and dirs[direction] or "")
 end
 
 local spikeTasksGhost = Action()
 function spikeTasksGhost.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local stat = player:getStorageValue(SPIKE_UPPER_TRACK_MAIN)
 
-	if table.contains({-1, 3}, stat) then
+	if table.contains({ -1, 3 }, stat) then
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 	end
 
@@ -86,11 +86,11 @@ function spikeTasksGhost.onUse(player, item, fromPosition, target, toPosition, i
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You found a malignant presence, the glowing detector signals that it does not need any further data.")
 		else
 			GHOST_DETECTOR_MAP[player:getGuid()] = getFreeSand()
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You found a malignant presence, the glowing detector signals another presence nearby.')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You found a malignant presence, the glowing detector signals another presence nearby.")
 		end
-		player:setStorageValue(SPIKE_UPPER_TRACK_MAIN, stat+1)
+		player:setStorageValue(SPIKE_UPPER_TRACK_MAIN, stat + 1)
 	else
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The detector points ' .. getSearchString(player:getPosition(), current) .. '.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The detector points " .. getSearchString(player:getPosition(), current) .. ".")
 	end
 	return true
 end

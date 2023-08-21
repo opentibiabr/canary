@@ -10,18 +10,14 @@ npcConfig.maxHealth = npcConfig.health
 npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
-npcConfig.outfit = {
-	lookType = 304
-}
+npcConfig.outfit = { lookType = 304 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'What .. happened?'}
+	{ text = "What .. happened?" }
 }
 
 local keywordHandler = KeywordHandler:new()

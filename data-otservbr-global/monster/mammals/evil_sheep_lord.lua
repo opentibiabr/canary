@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 1,
 	Locations = "Isle of Evil."
-	}
+}
 
 monster.health = 400
 monster.maxHealth = 400
@@ -38,9 +38,7 @@ monster.changeTarget = {
 	chance = 20
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = false,
@@ -69,53 +67,122 @@ monster.light = {
 
 monster.summon = {
 	maxSummons = 3,
-	summons = {
-		{name = "Evil Sheep", chance = 30, interval = 2000, count = X}
-	}
+	summons = { {
+		name = "Evil Sheep",
+		chance = 30,
+		interval = 2000,
+		count = X
+	} }
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "You can COUNT on us!", yell = false},
-	{text = "Maeh!", yell = false},
-	{text = "I feel you're getting sleepy! Maeh!", yell = false}
+	{
+		text = "You can COUNT on us!",
+		yell = false
+	},
+	{
+		text = "Maeh!",
+		yell = false
+	},
+	{
+		text = "I feel you're getting sleepy! Maeh!",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{name = "gold coin", chance = 75000, maxCount = 60}
-}
+monster.loot = { {
+	name = "gold coin",
+	chance = 75000,
+	maxCount = 60
+} }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -118},
-	{name ="outfit", interval = 3000, chance = 20, range = 7, effect = CONST_ME_MAGIC_BLUE, target = true, duration = 4000, outfitMonster = "Sheep"}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -118
+}, {
+	name = "outfit",
+	interval = 3000,
+	chance = 20,
+	range = 7,
+	effect = CONST_ME_MAGIC_BLUE,
+	target = true,
+	duration = 4000,
+	outfitMonster = "Sheep"
+} }
 
 monster.defenses = {
 	defense = 35,
 	armor = 30,
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 50, maxDamage = 100, effect = CONST_ME_MAGIC_BLUE, target = false},
-	{name ="outfit", interval = 1500, chance = 50, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 3000, outfitMonster = "Werewolf"}
+	{
+		name = "combat",
+		interval = 2000,
+		chance = 20,
+		type = COMBAT_HEALING,
+		minDamage = 50,
+		maxDamage = 100,
+		effect = CONST_ME_MAGIC_BLUE,
+		target = false
+	},
+	{
+		name = "outfit",
+		interval = 1500,
+		chance = 50,
+		effect = CONST_ME_MAGIC_BLUE,
+		target = false,
+		duration = 3000,
+		outfitMonster = "Werewolf"
+	}
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = -5},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = -5
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

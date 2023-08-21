@@ -23,8 +23,7 @@ local function startWaves()
 		end
 		Game.createMonster("professor maxxen", Position(33711, 32046, 15), true, true)
 	end
-	Game.setStorageValue(GlobalStorage.HeroRathleton.GloothWave,
-		Game.getStorageValue(GlobalStorage.HeroRathleton.GloothWave) + 1)
+	Game.setStorageValue(GlobalStorage.HeroRathleton.GloothWave, Game.getStorageValue(GlobalStorage.HeroRathleton.GloothWave) + 1)
 	if Game.getStorageValue(GlobalStorage.HeroRathleton.GloothWave) > 8 then
 		return true
 	end
@@ -62,8 +61,7 @@ function professorMaxxen.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 	if Game.getStorageValue(GlobalStorage.HeroRathleton.MaxxenRunning) == 1 then
-		player:say("Has someone fighting against Professor Maxxen.\nTry again later.",
-			TALKTYPE_MONSTER_SAY, false, nil, position)
+		player:say("Has someone fighting against Professor Maxxen.\nTry again later.", TALKTYPE_MONSTER_SAY, false, nil, position)
 		player:teleportTo(Position(33661, 32058, 15))
 		position:sendMagicEffect(CONST_ME_TELEPORT)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

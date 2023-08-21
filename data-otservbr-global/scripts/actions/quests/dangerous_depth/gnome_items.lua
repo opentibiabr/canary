@@ -7,9 +7,9 @@ function dangerousDepthItems.onUse(player, item)
 			player:setStorageValue(Storage.DangerousDepths.Gnomes.GnomeChartPaper, 2)
 		elseif player:getStorageValue(Storage.DangerousDepths.Gnomes.GnomeChartPaper) == 2 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You can not use this item again.")
-		end
+		end -- Permissão para usar o baú == 1 then
 	elseif item:getUniqueId() == 57236 then
-		if player:getStorageValue(Storage.DangerousDepths.Gnomes.GnomeChartChest) == 1 then -- Permissão para usar o baú == 1 then
+		if player:getStorageValue(Storage.DangerousDepths.Gnomes.GnomeChartChest) == 1 then
 			player:addItem(31930, 1)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a gnome trignometre.")
 			player:setStorageValue(Storage.DangerousDepths.Gnomes.GnomeChartChest, 2)
@@ -20,5 +20,5 @@ function dangerousDepthItems.onUse(player, item)
 	return true
 end
 
-dangerousDepthItems:uid(57235,57236)
+dangerousDepthItems:uid(57235, 57236)
 dangerousDepthItems:register()

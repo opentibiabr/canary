@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 1,
 	Locations = "Old Beregar mines."
-	}
+}
 
 monster.health = 245
 monster.maxHealth = 245
@@ -38,9 +38,7 @@ monster.changeTarget = {
 	chance = 5
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = false,
@@ -69,52 +67,99 @@ monster.light = {
 
 monster.summon = {
 	maxSummons = 2,
-	summons = {
-		{name = "Mechanical Fighter", chance = 90, interval = 2000, count = 2}
-	}
+	summons = { {
+		name = "Mechanical Fighter",
+		chance = 90,
+		interval = 2000,
+		count = 2
+	} }
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Slice! Slice!", yell = false},
-	{text = "DIE!!!", yell = false}
+	{
+		text = "Slice! Slice!",
+		yell = false
+	},
+	{
+		text = "DIE!!!",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{name = "gold coin", chance = 93000, maxCount = 146},
-	{name = "platinum coin", chance = 6000},
-	{name = "war hammer", chance = 750},
-	{name = "bunch of troll hair", chance = 4400}
-}
+monster.loot = { {
+	name = "gold coin",
+	chance = 93000,
+	maxCount = 146
+}, {
+	name = "platinum coin",
+	chance = 6000
+}, {
+	name = "war hammer",
+	chance = 750
+}, {
+	name = "bunch of troll hair",
+	chance = 4400
+} }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -100
+} }
 
 monster.defenses = {
 	defense = 15,
 	armor = 15
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

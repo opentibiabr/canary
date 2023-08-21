@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 1,
 	Occurrence = 0,
 	Locations = "A lot of places on the Ice Islands and one on Rookgaard (unreachable)."
-	}
+}
 
 monster.health = 15
 monster.maxHealth = 15
@@ -38,9 +38,7 @@ monster.changeTarget = {
 	chance = 0
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = true,
@@ -69,38 +67,70 @@ monster.light = {
 
 monster.voices = {
 	interval = 5000,
-	chance = 10,
+	chance = 10
 }
 
-monster.loot = {
-	{name = "meat", chance = 86170, maxCount = 2},
-	{id = 3595, chance = 11150}, -- carrot
-	{name = "silky fur", chance = 28670}
-}
+monster.loot = { {
+	name = "meat",
+	chance = 86170,
+	maxCount = 2
+}, {
+	id = 3595,
+	chance = 11150
+}, { -- carrot
+	name = "silky fur",
+	chance = 28670
+} }
 
 monster.defenses = {
 	defense = 5,
 	armor = 5
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

@@ -1,10 +1,10 @@
 math.randomseed(os.time())
 
 dofile(DATA_DIRECTORY .. "/lib/lib.lua")
-local startupFile=io.open(DATA_DIRECTORY.. "/startup/startup.lua", "r")
+local startupFile = io.open(DATA_DIRECTORY .. "/startup/startup.lua", "r")
 if startupFile ~= nil then
 	io.close(startupFile)
-	dofile(DATA_DIRECTORY.. "/startup/startup.lua")
+	dofile(DATA_DIRECTORY .. "/startup/startup.lua")
 end
 
 function IsRunningGlobalDatapack()
@@ -31,16 +31,7 @@ SOUTHEAST = DIRECTION_SOUTHEAST
 NORTHWEST = DIRECTION_NORTHWEST
 NORTHEAST = DIRECTION_NORTHEAST
 
-DIRECTIONS_TABLE = {
-	DIRECTION_NORTH,
-	DIRECTION_EAST,
-	DIRECTION_SOUTH,
-	DIRECTION_WEST,
-	DIRECTION_SOUTHWEST,
-	DIRECTION_SOUTHEAST,
-	DIRECTION_NORTHWEST,
-	DIRECTION_NORTHEAST
-}
+DIRECTIONS_TABLE = { DIRECTION_NORTH, DIRECTION_EAST, DIRECTION_SOUTH, DIRECTION_WEST, DIRECTION_SOUTHWEST, DIRECTION_SOUTHEAST, DIRECTION_NORTHWEST, DIRECTION_NORTHEAST }
 
 STORAGEVALUE_PROMOTION = 30018
 
@@ -52,7 +43,6 @@ AUTH_TYPE = configManager.getString(configKeys.AUTH_TYPE)
 -- Bestiary charm
 GLOBAL_CHARM_GUT = 120 -- 20% more chance to get creature products from looting
 GLOBAL_CHARM_SCAVENGE = 125 -- 25% more chance to get creature products from skinning
-
 --WEATHER
 weatherConfig = {
 	groundEffect = CONST_ME_LOSEENERGY,
@@ -80,7 +70,7 @@ ITEM_ENGRAVED_WEDDING_RING = 9585
 SCARLETT_MAY_TRANSFORM = 0
 SCARLETT_MAY_DIE = 0
 
-ropeSpots = {386, 421, 386, 7762, 12202, 12936, 14238, 17238, 23363, 21965, 21966, 21967, 21968}
+ropeSpots = { 386, 421, 386, 7762, 12202, 12936, 14238, 17238, 23363, 21965, 21966, 21967, 21968 }
 specialRopeSpots = { 12935 }
 
 -- Impact Analyser
@@ -150,19 +140,14 @@ end
 
 -- Increase Stamina when Attacking Trainer
 staminaBonus = {
-	target = 'Training Machine',
+	target = "Training Machine",
 	period = configManager.getNumber(configKeys.STAMINA_TRAINER_DELAY) * 60 * 1000, -- time on miliseconds trainers
 	bonus = configManager.getNumber(configKeys.STAMINA_TRAINER_GAIN), -- gain stamina trainers
 	eventsTrainer = {}, -- stamina in trainers
 	eventsPz = {} -- stamina in Pz
 }
 
-FAMILIARSNAME = {
-	"sorcerer familiar",
-	"knight familiar",
-	"druid familiar",
-	"paladin familiar"
-}
+FAMILIARSNAME = { "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar" }
 
 function addStamina(playerId, ...)
 	-- Creature:onTargetCombat
@@ -177,9 +162,7 @@ function addStamina(playerId, ...)
 					staminaBonus.eventsTrainer[playerId] = nil
 				else
 					player:setStamina(player:getStamina() + staminaBonus.bonus)
-					player:sendTextMessage(MESSAGE_STATUS,
-																string.format("%i of stamina has been refilled.",
-																configManager.getNumber(configKeys.STAMINA_TRAINER_GAIN)))
+					player:sendTextMessage(MESSAGE_STATUS, string.format("%i of stamina has been refilled.", configManager.getNumber(configKeys.STAMINA_TRAINER_GAIN)))
 					staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
 				end
 			end
@@ -191,7 +174,9 @@ function addStamina(playerId, ...)
 	local localPlayerId, delay = ...
 
 	if localPlayerId and delay then
-		if not staminaBonus.eventsPz[localPlayerId] then return false end
+		if not staminaBonus.eventsPz[localPlayerId] then
+			return false
+		end
 		stopEvent(staminaBonus.eventsPz[localPlayerId])
 
 		local player = Player(localPlayerId)
@@ -212,11 +197,7 @@ function addStamina(playerId, ...)
 		end
 
 		player:setStamina(player:getStamina() + configManager.getNumber(configKeys.STAMINA_PZ_GAIN))
-		player:sendTextMessage(MESSAGE_STATUS,
-                               string.format("%i of stamina has been refilled.",
-                                             configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
-                               )
-        )
+		player:sendTextMessage(MESSAGE_STATUS, string.format("%i of stamina has been refilled.", configManager.getNumber(configKeys.STAMINA_PZ_GAIN)))
 		staminaBonus.eventsPz[localPlayerId] = addEvent(addStamina, delay, nil, localPlayerId, delay)
 		return true
 	end

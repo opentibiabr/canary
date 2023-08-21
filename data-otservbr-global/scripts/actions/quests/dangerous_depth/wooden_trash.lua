@@ -12,17 +12,21 @@ function dangerousDepthWooden.onUse(creature, item)
 			local prisoner = Game.createMonster("Captured Dwarf", item:getPosition())
 			item:getPosition():sendMagicEffect(CONST_ME_POFF)
 			item:remove()
-			addEvent(function(pid)
-				local prisoner = Monster(pid)
-				if prisoner then
-					prisoner:getPosition():sendMagicEffect(CONST_ME_POFF)
-					prisoner:remove()
-				end
-			end,  5 * 60 * 1000, creatureid)
+			addEvent(
+				function(pid)
+					local prisoner = Monster(pid)
+					if prisoner then
+						prisoner:getPosition():sendMagicEffect(CONST_ME_POFF)
+						prisoner:remove()
+					end
+				end,
+				5 * 60 * 1000,
+				creatureid
+			)
 		else
-		creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You find nothing of interest beneath the rubble.")
-		item:getPosition():sendMagicEffect(CONST_ME_POFF)
-		item:remove()
+			creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You find nothing of interest beneath the rubble.")
+			item:getPosition():sendMagicEffect(CONST_ME_POFF)
+			item:remove()
 		end
 	end
 	return true

@@ -24,12 +24,7 @@ npcConfig.outfit = {
 npcConfig.sounds = {
 	ticks = 5000,
 	chance = 25,
-	ids = {
-		SOUND_EFFECT_TYPE_ACTION_HITING_FORGE,
-		SOUND_EFFECT_TYPE_ACTION_WOOD_HIT,
-		SOUND_EFFECT_TYPE_ACTION_CRATE_BREAK_MAGIC_DUST,
-		SOUND_EFFECT_TYPE_ACTION_SWORD_DRAWN
-	}
+	ids = { SOUND_EFFECT_TYPE_ACTION_HITING_FORGE, SOUND_EFFECT_TYPE_ACTION_WOOD_HIT, SOUND_EFFECT_TYPE_ACTION_CRATE_BREAK_MAGIC_DUST, SOUND_EFFECT_TYPE_ACTION_SWORD_DRAWN }
 }
 
 npcConfig.voices = {
@@ -38,43 +33,141 @@ npcConfig.voices = {
 	{ text = "Welcome to the Canary Server!" }
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 -- Npc shop
-npcConfig.shop = {
-	{ itemName = "basket", clientId = 2855, buy = 6 },
-	{ itemName = "bottle", clientId = 2875, buy = 3 },
-	{ itemName = "bucket", clientId = 2873, buy = 4 },
-	{ itemName = "candelabrum", clientId = 2911, buy = 8 },
-	{ itemName = "candlestick", clientId = 2917, buy = 2 },
-	{ itemName = "closed trap", clientId = 3481, buy = 280, sell = 75 },
-	{ itemName = "crowbar", clientId = 3304, buy = 260, sell = 50 },
-	{ itemName = "cup", clientId = 2881, buy = 2 },
-	{ itemName = "document", clientId = 2818, buy = 12 },
-	{ itemName = "fishing rod", clientId = 3483, buy = 150, sell = 40 },
-	{ itemName = "green backpack", clientId = 2865, buy = 20 },
-	{ itemName = "green bag", clientId = 2857, buy = 4 },
-	{ itemName = "hand auger", clientId = 31334, buy = 25 },
-	{ itemName = "machete", clientId = 3308, buy = 35, sell = 6 },
-	{ itemName = "net", clientId = 31489, buy = 50 },
-	{ itemName = "parchment", clientId = 2817, buy = 8 },
-	{ itemName = "pick", clientId = 3456, buy = 50, sell = 15 },
-	{ itemName = "plate", clientId = 2905, buy = 6 },
-	{ itemName = "present", clientId = 2856, buy = 10 },
-	{ itemName = "rope", clientId = 3003, buy = 50, sell = 15 },
-	{ itemName = "scroll", clientId = 2815, buy = 5 },
-	{ itemName = "scythe", clientId = 3453, buy = 50, sell = 10 },
-	{ itemName = "shovel", clientId = 3457, buy = 50, sell = 8 },
-	{ itemName = "torch", clientId = 2920, buy = 2 },
-	{ itemName = "vial", clientId = 2874, sell = 5 },
-	{ itemName = "vial of oil", clientId = 2874, buy = 20, count = 11 },
-	{ itemName = "watch", clientId = 2906, buy = 20, sell = 6 },
-	{ itemName = "waterskin of water", clientId = 2901, buy = 10, count = 1 },
-	{ itemName = "wooden hammer", clientId = 3459, sell = 15 },
-	{ itemName = "worm", clientId = 3492, buy = 1 }
-}
+npcConfig.shop = { {
+	itemName = "basket",
+	clientId = 2855,
+	buy = 6
+}, {
+	itemName = "bottle",
+	clientId = 2875,
+	buy = 3
+}, {
+	itemName = "bucket",
+	clientId = 2873,
+	buy = 4
+}, {
+	itemName = "candelabrum",
+	clientId = 2911,
+	buy = 8
+}, {
+	itemName = "candlestick",
+	clientId = 2917,
+	buy = 2
+}, {
+	itemName = "closed trap",
+	clientId = 3481,
+	buy = 280,
+	sell = 75
+}, {
+	itemName = "crowbar",
+	clientId = 3304,
+	buy = 260,
+	sell = 50
+}, {
+	itemName = "cup",
+	clientId = 2881,
+	buy = 2
+}, {
+	itemName = "document",
+	clientId = 2818,
+	buy = 12
+}, {
+	itemName = "fishing rod",
+	clientId = 3483,
+	buy = 150,
+	sell = 40
+}, {
+	itemName = "green backpack",
+	clientId = 2865,
+	buy = 20
+}, {
+	itemName = "green bag",
+	clientId = 2857,
+	buy = 4
+}, {
+	itemName = "hand auger",
+	clientId = 31334,
+	buy = 25
+}, {
+	itemName = "machete",
+	clientId = 3308,
+	buy = 35,
+	sell = 6
+}, {
+	itemName = "net",
+	clientId = 31489,
+	buy = 50
+}, {
+	itemName = "parchment",
+	clientId = 2817,
+	buy = 8
+}, {
+	itemName = "pick",
+	clientId = 3456,
+	buy = 50,
+	sell = 15
+}, {
+	itemName = "plate",
+	clientId = 2905,
+	buy = 6
+}, {
+	itemName = "present",
+	clientId = 2856,
+	buy = 10
+}, {
+	itemName = "rope",
+	clientId = 3003,
+	buy = 50,
+	sell = 15
+}, {
+	itemName = "scroll",
+	clientId = 2815,
+	buy = 5
+}, {
+	itemName = "scythe",
+	clientId = 3453,
+	buy = 50,
+	sell = 10
+}, {
+	itemName = "shovel",
+	clientId = 3457,
+	buy = 50,
+	sell = 8
+}, {
+	itemName = "torch",
+	clientId = 2920,
+	buy = 2
+}, {
+	itemName = "vial",
+	clientId = 2874,
+	sell = 5
+}, {
+	itemName = "vial of oil",
+	clientId = 2874,
+	buy = 20,
+	count = 11
+}, {
+	itemName = "watch",
+	clientId = 2906,
+	buy = 20,
+	sell = 6
+}, {
+	itemName = "waterskin of water",
+	clientId = 2901,
+	buy = 10,
+	count = 1
+}, {
+	itemName = "wooden hammer",
+	clientId = 3459,
+	sell = 15
+}, {
+	itemName = "worm",
+	clientId = 3492,
+	buy = 1
+} }
 
 -- Create keywordHandler and npcHandler
 local keywordHandler = KeywordHandler:new()
@@ -121,8 +214,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 end
 
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 -- Function called by the callback "npcHandler:setCallback(CALLBACK_GREET, greetCallback)" in end of file
 local function greetCallback(npc, player)
@@ -139,12 +231,14 @@ local function creatureSayCallback(npc, player, type, msg)
 
 	if MsgContains(msg, "canary") then
 		if npcHandler:getTopic(playerId) == 0 then
-			npcHandler:say({
-				"The goal is for Canary to be an 'engine', that is, it will be \z
+			npcHandler:say(
+				{ "The goal is for Canary to be an 'engine', that is, it will be \z
 					a server with a 'clean' datapack, with as few things as possible, \z
-					thus facilitating development and testing.",
-				"See more on our {discord group}."
-			}, npc, player, 3000)
+					thus facilitating development and testing.", "See more on our {discord group}." },
+				npc,
+				player,
+				3000
+			)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(msg, "discord group") then

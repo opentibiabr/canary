@@ -1,12 +1,10 @@
 local config = {
-	activationMessage = 'You have received %s VIP days.',
+	activationMessage = "You have received %s VIP days.",
 	activationMessageType = MESSAGE_EVENT_ADVANCE,
-
-	expirationMessage = 'Your VIP days ran out.',
+	expirationMessage = "Your VIP days ran out.",
 	expirationMessageType = MESSAGE_STATUS_WARNING,
-
 	outfits = {},
-	mounts = {},
+	mounts = {}
 }
 
 function Player.onRemoveVip(self)
@@ -47,4 +45,3 @@ function Player.onAddVip(self, days)
 
 	self:setStorageValue(Storage.VipSystem.IsVip, 1)
 end
-

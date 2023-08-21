@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -60,9 +58,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		else
 			npcHandler:say("It'd be better for you to leave now.", npc, creature)
-		end
+		end -- garlic cookie
 	elseif message == "yes" then
-		if npcHandler:getTopic(playerId) == 1 and player:removeItem(8199, 1) then -- garlic cookie
+		if npcHandler:getTopic(playerId) == 1 and player:removeItem(8199, 1) then
 			npcHandler:say("Let's try that stuff first - ARRRRRRHH! <coughs> That must have been the worst cookie I've ever eaten. Get off my ship.", npc, creature)
 			player:setStorageValue(BloodBrothers.Cookies.Maris, 1)
 			npcHandler:setTopic(playerId, 0)
@@ -71,20 +69,49 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 -- Travel
 local function addTravelKeyword(keyword, cost, destination)
-	local travelKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want go to the ' .. keyword:titleCase() .. ' for |TRAVELCOST|?', cost = cost})
-		travelKeyword:addChildKeyword({'yes'}, StdModule.travel, {npcHandler = npcHandler, premium = false, cost = cost, destination = destination})
-		travelKeyword:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, text = 'Alright then!', reset = true})
+	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, {
+		npcHandler = npcHandler,
+		text = "Do you want go to the " .. keyword:titleCase() .. " for |TRAVELCOST|?",
+		cost = cost
+	})
+	travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, {
+		npcHandler = npcHandler,
+		premium = false,
+		cost = cost,
+		destination = destination
+	})
+	travelKeyword:addChildKeyword({ "no" }, StdModule.say, {
+		npcHandler = npcHandler,
+		text = "Alright then!",
+		reset = true
+	})
 end
 
-addTravelKeyword('fenrock', 100, Position(32563, 31313, 7))
-addTravelKeyword('mistrock', 100, Position(32640, 31439, 7))
+addTravelKeyword("fenrock", 100, Position(32563, 31313, 7))
+addTravelKeyword("mistrock", 100, Position(32640, 31439, 7))
 
 -- Basic
-keywordHandler:addKeyword({'offer'}, StdModule.say, {npcHandler = npcHandler, text = 'I can take you to {Fenrock} and {Mistrock}!'})
-keywordHandler:addAliasKeyword({"passage"})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I am Maris, Captain of this ship.'})
-keywordHandler:addAliasKeyword({"captain"})
-keywordHandler:addKeyword({"alori mort"}, StdModule.say, {npcHandler = npcHandler, text = "Stop mumbling and don't bug me."}, function(player) return player:getStorageValue(BloodBrothers.Mission03) == 1 end)
+keywordHandler:addKeyword({ "offer" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "I can take you to {Fenrock} and {Mistrock}!"
+})
+keywordHandler:addAliasKeyword({ "passage" })
+keywordHandler:addKeyword({ "job" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "I am Maris, Captain of this ship."
+})
+keywordHandler:addAliasKeyword({ "captain" })
+keywordHandler:addKeyword(
+	{ "alori mort" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "Stop mumbling and don't bug me."
+	},
+	function(player)
+		return player:getStorageValue(BloodBrothers.Mission03) == 1
+	end
+)
 
 npcHandler:setMessage(MESSAGE_GREET, "I hope you have a good reason to step near my {ship}, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Yeah, bye or whatever.")

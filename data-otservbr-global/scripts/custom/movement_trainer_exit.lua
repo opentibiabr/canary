@@ -24,10 +24,15 @@ function trainerExit.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 
-local positions = {
-	{x = 991, y = 1031, z = 7},
-	{x = 1057, y = 1023, z = 7}
-}
+local positions = { {
+	x = 991,
+	y = 1031,
+	z = 7
+}, {
+	x = 1057,
+	y = 1023,
+	z = 7
+} }
 for index, position in pairs(positions) do
 	trainerExit:position(position)
 end

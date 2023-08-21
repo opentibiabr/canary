@@ -36,7 +36,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 				guid = guid,
 				damageOut = damageOut,
 				damageIn = damageIn,
-				healing = healing,
+				healing = healing
 			})
 		end
 
@@ -49,7 +49,9 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 				participants = participants + 1
 			end
 		end
-		table.sort(scores, function(a, b) return a.score > b.score end)
+		table.sort(scores, function(a, b)
+			return a.score > b.score
+		end)
 
 		local expectedScore = 1 / participants
 

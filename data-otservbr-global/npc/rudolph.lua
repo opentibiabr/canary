@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -57,17 +55,44 @@ npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just browse through my ware
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop = {
-	{ itemName = "belted cape", clientId = 8044, buy = 1300, sell = 500 },
-	{ itemName = "cape", clientId = 3565, buy = 9 },
-	{ itemName = "green tunic", clientId = 3563, buy = 25 },
-	{ itemName = "jacket", clientId = 3561, buy = 12 },
-	{ itemName = "leather boots", clientId = 3552, buy = 2 },
-	{ itemName = "leather legs", clientId = 3559, buy = 10 },
-	{ itemName = "rangers cloak", clientId = 3571, buy = 550 },
-	{ itemName = "sandals", clientId = 3551, buy = 2 },
-	{ itemName = "scarf", clientId = 3572, buy = 15 }
-}
+npcConfig.shop = { {
+	itemName = "belted cape",
+	clientId = 8044,
+	buy = 1300,
+	sell = 500
+}, {
+	itemName = "cape",
+	clientId = 3565,
+	buy = 9
+}, {
+	itemName = "green tunic",
+	clientId = 3563,
+	buy = 25
+}, {
+	itemName = "jacket",
+	clientId = 3561,
+	buy = 12
+}, {
+	itemName = "leather boots",
+	clientId = 3552,
+	buy = 2
+}, {
+	itemName = "leather legs",
+	clientId = 3559,
+	buy = 10
+}, {
+	itemName = "rangers cloak",
+	clientId = 3571,
+	buy = 550
+}, {
+	itemName = "sandals",
+	clientId = 3551,
+	buy = 2
+}, {
+	itemName = "scarf",
+	clientId = 3572,
+	buy = 15
+} }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -77,7 +102,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

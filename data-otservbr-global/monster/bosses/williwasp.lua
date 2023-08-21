@@ -34,7 +34,7 @@ monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,
 	damage = 10,
-	random = 10,
+	random = 10
 }
 
 monster.flags = {
@@ -64,48 +64,93 @@ monster.light = {
 
 monster.voices = {
 	interval = 5000,
-	chance = 10,
+	chance = 10
 }
 
-monster.loot = {
-	{id = 3031, chance = 100000, maxCount = 20}, -- gold coin
-	{id = 5902, chance = 100000, maxCount = 3}, -- honeycomb
-	{id = 3054, chance = 17650}, -- silver amulet
-	{id = 3032, chance = 5880}, -- small emerald
-	{id = 19083, chance = 5000} -- silver raid token
-}
+monster.loot = { {
+	id = 3031,
+	chance = 100000,
+	maxCount = 20
+}, { -- gold coin
+	id = 5902,
+	chance = 100000,
+	maxCount = 3
+}, { -- honeycomb
+	id = 3054,
+	chance = 17650
+}, { -- silver amulet
+	id = 3032,
+	chance = 5880
+}, { -- small emerald
+	id = 19083,
+	chance = 5000
+} } -- silver raid token
 
-monster.attacks = {
-	{name ="melee", interval = 1500, chance = 100, skill = 30, attack = 30, condition = {type = CONDITION_POISON, totalDamage = 25, interval = 4000}}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 1500,
+	chance = 100,
+	skill = 30,
+	attack = 30,
+	condition = {
+		type = CONDITION_POISON,
+		totalDamage = 25,
+		interval = 4000
+	}
+} }
 
 monster.defenses = {
 	defense = 10,
 	armor = 10
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = -10
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -113,13 +158,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

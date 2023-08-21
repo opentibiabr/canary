@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -52,14 +50,36 @@ end
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop = {
-	{ itemName = "coat", clientId = 3562, buy = 8, sell = 1 },
-	{ itemName = "doublet", clientId = 3379, buy = 16, sell = 3 },
-	{ itemName = "jacket", clientId = 3561, buy = 12, sell = 1 },
-	{ itemName = "leather armor", clientId = 3361, buy = 35, sell = 12 },
-	{ itemName = "studded armor", clientId = 3378, buy = 90, sell = 25 },
-	{ itemName = "wedding outfit box", clientId = 9586, buy = 5000 }
-}
+npcConfig.shop = { {
+	itemName = "coat",
+	clientId = 3562,
+	buy = 8,
+	sell = 1
+}, {
+	itemName = "doublet",
+	clientId = 3379,
+	buy = 16,
+	sell = 3
+}, {
+	itemName = "jacket",
+	clientId = 3561,
+	buy = 12,
+	sell = 1
+}, {
+	itemName = "leather armor",
+	clientId = 3361,
+	buy = 35,
+	sell = 12
+}, {
+	itemName = "studded armor",
+	clientId = 3378,
+	buy = 90,
+	sell = 25
+}, {
+	itemName = "wedding outfit box",
+	clientId = 9586,
+	buy = 5000
+} }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -69,7 +89,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

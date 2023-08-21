@@ -1,7 +1,7 @@
 local config = {
 	centerPosition = Position(33805, 31504, 14),
 	rangeX = 11,
-	rangeY = 11,
+	rangeY = 11
 }
 
 local event = CreatureEvent("paleWormDeath")

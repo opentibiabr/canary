@@ -21,7 +21,7 @@ function addMoney.onSay(player, words, param)
 		amount = tonumber(split[2])
 	end
 
-  -- Check if the coins is valid
+	-- Check if the coins is valid
 	if amount <= 0 or amount == nil then
 		player:sendCancelMessage("Invalid amount.")
 		return false
@@ -41,13 +41,13 @@ function addMoney.onSay(player, words, param)
 		return false
 	end
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull added ".. amount .." gold coins to ".. name ..".")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull added " .. amount .. " gold coins to " .. name .. ".")
 	local targetPlayer = Player(name)
 	if targetPlayer then
-		targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added ".. amount .." gold coins to your character.")
+		targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "" .. player:getName() .. " added " .. amount .. " gold coins to your character.")
 	end
 	-- Distro log
-	Spdlog.info("".. player:getName() .." added ".. amount .." gold coins to ".. name .." player")
+	Spdlog.info("" .. player:getName() .. " added " .. amount .. " gold coins to " .. name .. " player")
 	return true
 end
 

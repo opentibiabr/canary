@@ -23,14 +23,10 @@ combatGrenade:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 
 local explodeGrenade = function(position, playerId)
 	local tile = Tile(position)
-	if not tile then
-		return
-	end
+	if not tile then return end
 
 	local player = Player(playerId)
-	if not player then
-		return
-	end
+	if not player then return end
 
 	local var = {}
 	var.instantName = "Divine Grenade Explode"

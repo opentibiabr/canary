@@ -3,9 +3,7 @@ local monster = {}
 
 monster.description = "cosmic energy prism B"
 monster.experience = 840
-monster.outfit = {
-	lookTypeEx = 2187
-}
+monster.outfit = { lookTypeEx = 2187 }
 
 monster.health = 1000
 monster.maxHealth = 1000
@@ -19,9 +17,7 @@ monster.changeTarget = {
 	chance = 0
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = false,
@@ -43,9 +39,7 @@ monster.flags = {
 	canWalkOnPoison = true
 }
 
-monster.events = {
-	"EnergyPrism"
-}
+monster.events = { "EnergyPrism" }
 
 monster.light = {
 	level = 0,
@@ -55,35 +49,63 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "*Zap!*", yell = false}
+	{
+		text = "*Zap!*",
+		yell = false
+	}
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.defenses = {
 	defense = 50,
 	armor = 50
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 50},
-	{type = COMBAT_ENERGYDAMAGE, percent = 50},
-	{type = COMBAT_EARTHDAMAGE, percent = 50},
-	{type = COMBAT_FIREDAMAGE, percent = 50},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 50},
-	{type = COMBAT_HOLYDAMAGE , percent = 50},
-	{type = COMBAT_DEATHDAMAGE , percent = 50}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 50
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 50
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 50
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 50
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 50
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 50
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 50
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = true
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

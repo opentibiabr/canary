@@ -1,9 +1,20 @@
-local positions = {
-	{x = 32106, y = 31903, z = 7},
-	{x = 32106, y = 31904, z = 7},
-	{x = 32105, y = 31903, z = 7},
-	{x = 32105, y = 31904, z = 7}
-}
+local positions = { {
+	x = 32106,
+	y = 31903,
+	z = 7
+}, {
+	x = 32106,
+	y = 31904,
+	z = 7
+}, {
+	x = 32105,
+	y = 31903,
+	z = 7
+}, {
+	x = 32105,
+	y = 31904,
+	z = 7
+} }
 
 local lever = Action()
 
@@ -20,18 +31,26 @@ function lever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				createBridge:transform(5769)
 			end
 		end
-		player:say("<squeaak>", TALKTYPE_MONSTER_SAY, false, player, {x = 32107, y = 31904, z = 7})
+		player:say("<squeaak>", TALKTYPE_MONSTER_SAY, false, player, {
+			x = 32107,
+			y = 31904,
+			z = 7
+		})
 		player:setStorageValue(Storage.Dawnport.Lever, 2)
 		item:transform(21290)
-		addEvent(function(pos)
-			local tile = Tile(pos)
-			if tile then
-				local item = tile:getItemById(21290)
-				if item then
-					item:transform(9125)
+		addEvent(
+			function(pos)
+				local tile = Tile(pos)
+				if tile then
+					local item = tile:getItemById(21290)
+					if item then
+						item:transform(9125)
+					end
 				end
-			end
-		end, 8 * 1000, item:getPosition())
+			end,
+			8 * 1000,
+			item:getPosition()
+		)
 	elseif item.itemid == 9125 and player:getStorageValue(Storage.Dawnport.Lever) == 2 then
 		for i = 1, #positions do
 			local tile = Tile(positions[i])
@@ -63,18 +82,26 @@ function lever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				end
 			end
 		end
-		player:say("<crrk>", TALKTYPE_MONSTER_SAY, false, player, {x = 32107, y = 31904, z = 7})
+		player:say("<crrk>", TALKTYPE_MONSTER_SAY, false, player, {
+			x = 32107,
+			y = 31904,
+			z = 7
+		})
 		player:setStorageValue(Storage.Dawnport.Lever, 1)
 		item:transform(21290)
-		addEvent(function(pos)
-			local tile = Tile(pos)
-			if tile then
-				local item = tile:getItemById(21290)
-				if item then
-					item:transform(9125)
+		addEvent(
+			function(pos)
+				local tile = Tile(pos)
+				if tile then
+					local item = tile:getItemById(21290)
+					if item then
+						item:transform(9125)
+					end
 				end
-			end
-		end, 8 * 1000, item:getPosition())
+			end,
+			8 * 1000,
+			item:getPosition()
+		)
 	end
 	return true
 end

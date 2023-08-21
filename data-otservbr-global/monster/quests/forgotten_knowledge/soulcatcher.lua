@@ -3,9 +3,7 @@ local monster = {}
 
 monster.description = "a soulcatcher"
 monster.experience = 320
-monster.outfit = {
-	lookTypeEx = 11053
-}
+monster.outfit = { lookTypeEx = 11053 }
 
 monster.health = 50000
 monster.maxHealth = 50000
@@ -19,9 +17,7 @@ monster.changeTarget = {
 	chance = 8
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = false,
@@ -43,9 +39,7 @@ monster.flags = {
 	canWalkOnPoison = true
 }
 
-monster.events = {
-	"SoulcatcherSummon"
-}
+monster.events = { "SoulcatcherSummon" }
 
 monster.light = {
 	level = 0,
@@ -54,41 +48,88 @@ monster.light = {
 
 monster.voices = {
 	interval = 5000,
-	chance = 10,
+	chance = 10
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
-monster.attacks = {
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -400, radius = 3, effect = CONST_ME_MAGIC_RED, target = false}
-}
+monster.attacks = { {
+	name = "combat",
+	interval = 2000,
+	chance = 25,
+	type = COMBAT_LIFEDRAIN,
+	minDamage = -300,
+	maxDamage = -400,
+	radius = 3,
+	effect = CONST_ME_MAGIC_RED,
+	target = false
+} }
 
 monster.defenses = {
 	defense = 50,
 	armor = 50,
-	{name ="soulcatcher summon", interval = 2000, chance = 10, target = false},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 100, maxDamage = 145, effect = CONST_ME_HITBYFIRE, target = false}
+	{
+		name = "soulcatcher summon",
+		interval = 2000,
+		chance = 10,
+		target = false
+	},
+	{
+		name = "combat",
+		interval = 2000,
+		chance = 25,
+		type = COMBAT_HEALING,
+		minDamage = 100,
+		maxDamage = 145,
+		effect = CONST_ME_HITBYFIRE,
+		target = false
+	}
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 90},
-	{type = COMBAT_ENERGYDAMAGE, percent = 90},
-	{type = COMBAT_EARTHDAMAGE, percent = 90},
-	{type = COMBAT_FIREDAMAGE, percent = 90},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 90},
-	{type = COMBAT_HOLYDAMAGE , percent = 90},
-	{type = COMBAT_DEATHDAMAGE , percent = 90}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 90
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 90
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 90
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 90
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 90
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 90
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 90
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

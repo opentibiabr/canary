@@ -1,6 +1,4 @@
-local transformid = {
-	[27500] = 27502,
-}
+local transformid = { [27500] = 27502 }
 
 local dangerousDepthPump = Action()
 function dangerousDepthPump.onUse(player, item)
@@ -67,5 +65,5 @@ function dangerousDepthPump.onUse(player, item)
 	return true
 end
 
-dangerousDepthPump:aid(57300,57301,57302)
+dangerousDepthPump:aid(57300, 57301, 57302)
 dangerousDepthPump:register()

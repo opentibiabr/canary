@@ -1,14 +1,13 @@
 local hazard = Hazard.new({
 	name = "hazard:gnomprona-gardens",
-	from = Position(33502, 32740,13),
+	from = Position(33502, 32740, 13),
 	to = Position(33796, 32996, 15),
 	maxLevel = 12,
 	storageMax = Storage.Quest.U12_90.PrimalOrdeal.Hazard.Max,
 	storageCurrent = Storage.Quest.U12_90.PrimalOrdeal.Hazard.Current,
-
 	crit = true,
 	dodge = true,
-	damageBoost = true,
+	damageBoost = true
 })
 
 hazard:register()
@@ -22,9 +21,7 @@ function primalPod.onStepIn(creature, item, position, fromPosition)
 	end
 
 	local player = creature:getPlayer()
-	if not player then
-		return
-	end
+	if not player then return end
 
 	local timer = item:getCustomAttribute("HazardSystem_PodTimer")
 	if timer then

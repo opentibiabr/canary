@@ -6,9 +6,12 @@ HirelingModule.Credits = {
 	Date = "30/04/2020 "
 }
 
-HirelingModule.S_Packets= { SendOutfitWindow = 0xC8 }
+HirelingModule.S_Packets = { SendOutfitWindow = 0xC8 }
 
-HirelingModule.C_Packets = { RequestChangeOutfit = 0xD2, ConfirmOutfitChange = 0xD3  }
+HirelingModule.C_Packets = {
+	RequestChangeOutfit = 0xD2,
+	ConfirmOutfitChange = 0xD3
+}
 
 local function getOutfit(msg)
 	local outfitType = 0
@@ -23,15 +26,15 @@ local function getOutfit(msg)
 	outfit.lookAddons = msg:getByte()
 
 	if outfitType == 0 then
-		outfit.lookMount = msg:getU16()
+		outfit.lookMount = msg:getU16() --discard this for some reason maybe it's the hireling id
 	else
 		outfit.lookMount = 0x00
-		msg:getU32() --discard this for some reason maybe it's the hireling id
+		msg:getU32()
 	end
 	return outfit
 end
 
-local function parseChangeOutfit(player,msg)
+local function parseChangeOutfit(player, msg)
 	local hireling = player:getHirelingChangingOutfit()
 	local outfit
 	if not hireling then
@@ -48,9 +51,7 @@ end
 
 function onRecvbyte(player, msg, byte)
 	if (byte == HirelingModule.C_Packets.ConfirmOutfitChange) then
-		if not player:isChangingHirelingOutfit() then
-			return
-		end
+		if not player:isChangingHirelingOutfit() then return end
 		parseChangeOutfit(player, msg)
 	end
 end

@@ -1,10 +1,4 @@
-local words = {
-	"YOU ARE DREAMING!",
-	"WAKE UP!",
-	"TIC TAC",
-	"TAC",
-	"TIC"
-}
+local words = { "YOU ARE DREAMING!", "WAKE UP!", "TIC TAC", "TAC", "TIC" }
 
 local clockTile = MoveEvent()
 

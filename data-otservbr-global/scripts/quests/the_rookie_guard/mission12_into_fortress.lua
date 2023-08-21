@@ -1,99 +1,97 @@
 -- The Rookie Guard Quest - Mission 12: Into The Fortress
 
 local missionTiles = {
-	[50354] = {
-		{
-			states = {1},
-			extra = {
-				storage = Storage.TheRookieGuard.AcademyChest,
-				state = -1
-			},
-			message = "This chest should contain everything you need to infiltrate the fortress.",
-			arrowPosition = {x = 32109, y = 32187, z = 8}
+	[50354] = { {
+		states = { 1 },
+		extra = {
+			storage = Storage.TheRookieGuard.AcademyChest,
+			state = -1
 		},
-		{
-			states = {1},
-			extra = {
-				storage = Storage.TheRookieGuard.AcademyChest,
-				state = 1
-			},
-			message = "Those items should be what you need to infiltrate the fortress. Go back near the wasps' nest and walk south from there.",
-			newState = 2
+		message = "This chest should contain everything you need to infiltrate the fortress.",
+		arrowPosition = {
+			x = 32109,
+			y = 32187,
+			z = 8
 		}
-	},
-	[50355] = {
-		{
-			states = {2},
-			message = "This orc has turned his back to you and is obviously taking a break. Use the rolling pin on him to knock him out!"
-		}
-	},
-	[50356] = {
-		{
-			states = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-			condition = function(player)
-				return player:getOutfit().lookType ~= 5
-			end,
-			message = "This guard will definitely not let you pass. Sneak around the fortress to find a way to disguise yourself.",
-			walkTo = {x = 1, y = 0, z = 0}
+	}, {
+		states = { 1 },
+		extra = {
+			storage = Storage.TheRookieGuard.AcademyChest,
+			state = 1
 		},
-		{
-			states = {4},
-			condition = function(player)
-				return player:getOutfit().lookType == 5
-			end,
-			message = "You sneaked into the orc fortress. Careful now, don't go outside again.",
-			newState = 5,
-			walkTo = {x = -1, y = 0, z = 0}
+		message = "Those items should be what you need to infiltrate the fortress. Go back near the wasps' nest and walk south from there.",
+		newState = 2
+	} },
+	[50355] = { {
+		states = { 2 },
+		message = "This orc has turned his back to you and is obviously taking a break. Use the rolling pin on him to knock him out!"
+	} },
+	[50356] = { {
+		states = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
+		condition = function(player)
+			return player:getOutfit().lookType ~= 5
+		end,
+		message = "This guard will definitely not let you pass. Sneak around the fortress to find a way to disguise yourself.",
+		walkTo = {
+			x = 1,
+			y = 0,
+			z = 0
 		}
-	},
-	[50357] = {
-		{
-			states = {5},
-			message = "You cannot hope to sneak past this guard. Maybe some distraction would help? You could try using the fleshy bone on him..."
+	}, {
+		states = { 4 },
+		condition = function(player)
+			return player:getOutfit().lookType == 5
+		end,
+		message = "You sneaked into the orc fortress. Careful now, don't go outside again.",
+		newState = 5,
+		walkTo = {
+			x = -1,
+			y = 0,
+			z = 0
 		}
-	},
-	[50358] = {
-		{
-			states = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
-			condition = function(player)
-				return Tile(Position(31977, 32150, 7)):getItemById(12792) ~= nil
-			end,
-			message = "You cannot hope to sneak past this guard. Maybe some distraction would help? You could try using the fleshy bone on him...",
-			teleportTo = {x = 31977, y = 32155, z = 7}
+	} },
+	[50357] = { {
+		states = { 5 },
+		message = "You cannot hope to sneak past this guard. Maybe some distraction would help? You could try using the fleshy bone on him..."
+	} },
+	[50358] = { {
+		states = { 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 },
+		condition = function(player)
+			return Tile(Position(31977, 32150, 7)):getItemById(12792) ~= nil
+		end,
+		message = "You cannot hope to sneak past this guard. Maybe some distraction would help? You could try using the fleshy bone on him...",
+		teleportTo = {
+			x = 31977,
+			y = 32155,
+			z = 7
 		}
-	},
-	[50359] = {
-		{
-			states = {6},
-			newState = 7,
-			message = "You've managed to reach the interior of the orc fortress. Be prepared for a fight - and look for the soup cauldron."
+	} },
+	[50359] = { {
+		states = { 6 },
+		newState = 7,
+		message = "You've managed to reach the interior of the orc fortress. Be prepared for a fight - and look for the soup cauldron."
+	} },
+	[50360] = { {
+		states = { 7 },
+		message = "You're apperently in the kitchen. If you find a big cauldron, use the flask of wasp poison on it."
+	} },
+	[50361] = { {
+		states = { 7 },
+		message = "You haven't used the poison on Kraknaknork's soup yet. Don't try to fight him before that - or he will definitely kill you.",
+		walkTo = {
+			x = 0,
+			y = -1,
+			z = 0
 		}
-	},
-	[50360] = {
-		{
-			states = {7},
-			message = "You're apperently in the kitchen. If you find a big cauldron, use the flask of wasp poison on it."
-		}
-	},
-	[50361] = {
-		{
-			states = {7},
-			message = "You haven't used the poison on Kraknaknork's soup yet. Don't try to fight him before that - or he will definitely kill you.",
-			walkTo = {x = 0, y = -1, z = 0}
-		}
-	},
-	[50362] = {
-		{
-			states = {8},
-			message = "Got your tarantula trap ready? You might need to use it soon..."
-		}
-	},
-	[50363] = {
-		{
-			states = {11},
-			message = "Beware... you're approaching Kraknaknork's room. Once you enter, you have only 5 minutes to kill him before he throws you out."
-		}
-	}
+	} },
+	[50362] = { {
+		states = { 8 },
+		message = "Got your tarantula trap ready? You might need to use it soon..."
+	} },
+	[50363] = { {
+		states = { 11 },
+		message = "Beware... you're approaching Kraknaknork's room. Once you enter, you have only 5 minutes to kill him before he throws you out."
+	} }
 }
 
 -- Mission tutorial tiles
@@ -151,12 +149,7 @@ missionGuide:register()
 
 local reward = {
 	containerId = 2853,
-	itemIds = {
-		12788,
-		12789,
-		12784,
-		12674
-	}
+	itemIds = { 12788, 12789, 12784, 12674 }
 }
 
 local treasureChest = Action()
@@ -235,7 +228,7 @@ function unconsciousOrc.onUse(player, item, frompos, itemEx, topos)
 		end
 		local conditionOutfit = Condition(CONDITION_OUTFIT)
 		conditionOutfit:setTicks(300000)
-		conditionOutfit:setOutfit({lookType = 5})
+		conditionOutfit:setOutfit({ lookType = 5 })
 		player:addCondition(conditionOutfit)
 	end
 	return true
@@ -246,10 +239,13 @@ unconsciousOrc:register()
 
 -- Fleshy bone (Distract elite orc guard)
 
-local monstersList = {
-	{name = "Running Elite Orc Guard", amount = 1},
-	{name = "Wild Dog", amount = 8}
-}
+local monstersList = { {
+	name = "Running Elite Orc Guard",
+	amount = 1
+}, {
+	name = "Wild Dog",
+	amount = 8
+} }
 local monsters = {}
 
 local function eliteOrcGuardRecovery(position)
@@ -385,29 +381,77 @@ bossLairTeleport:register()
 
 local energyBarriers = {
 	[40058] = {
-		position = {x = 31974, y = 32174, z = 10},
-		teleportTo = {x = 31977, y = 32174, z = 10},
+		position = {
+			x = 31974,
+			y = 32174,
+			z = 10
+		},
+		teleportTo = {
+			x = 31977,
+			y = 32174,
+			z = 10
+		},
 		message = "Kraknaknork maintains strong energy barriers. There is only one way to disable them."
 	},
 	[40059] = {
-		position = {x = 31962, y = 32174, z = 10},
-		teleportTo = {x = 31964, y = 32174, z = 10}
+		position = {
+			x = 31962,
+			y = 32174,
+			z = 10
+		},
+		teleportTo = {
+			x = 31964,
+			y = 32174,
+			z = 10
+		}
 	},
 	[40060] = {
-		position = {x = 31960, y = 32184, z = 10},
-		teleportTo = {x = 31958, y = 32184, z = 10}
+		position = {
+			x = 31960,
+			y = 32184,
+			z = 10
+		},
+		teleportTo = {
+			x = 31958,
+			y = 32184,
+			z = 10
+		}
 	},
 	[40061] = {
-		position = {x = 31953, y = 32187, z = 10},
-		teleportTo = {x = 31955, y = 32187, z = 10}
+		position = {
+			x = 31953,
+			y = 32187,
+			z = 10
+		},
+		teleportTo = {
+			x = 31955,
+			y = 32187,
+			z = 10
+		}
 	},
 	[40062] = {
-		position = {x = 31972, y = 32183, z = 10},
-		teleportTo = {x = 31970, y = 32183, z = 10}
+		position = {
+			x = 31972,
+			y = 32183,
+			z = 10
+		},
+		teleportTo = {
+			x = 31970,
+			y = 32183,
+			z = 10
+		}
 	},
 	[40063] = {
-		position = {x = 31952, y = 32174, z = 10},
-		teleportTo = {x = 31954, y = 32174, z = 10}
+		position = {
+			x = 31952,
+			y = 32174,
+			z = 10
+		},
+		teleportTo = {
+			x = 31954,
+			y = 32174,
+			z = 10
+		}
 	}
 }
 
@@ -441,18 +485,10 @@ local levers = {
 		barrier = 40058,
 		message = "The energy barrier to the south temporarily disappeared."
 	},
-	[40065] = {
-		barrier = 40059
-	},
-	[40066] = {
-		barrier = 40060
-	},
-	[40067] = {
-		barrier = 40061
-	},
-	[40068] = {
-		barrier = 40062
-	},
+	[40065] = { barrier = 40059 },
+	[40066] = { barrier = 40060 },
+	[40067] = { barrier = 40061 },
+	[40068] = { barrier = 40062 },
 	[40069] = {
 		barrier = 40063,
 		newState = 11
@@ -503,7 +539,11 @@ missionLevers:register()
 local boss = {
 	uid = nil,
 	fight = nil,
-	roomCenter = {x = 31937, y = 32170, z = 10}
+	roomCenter = {
+		x = 31937,
+		y = 32170,
+		z = 10
+	}
 }
 
 local function finishBossFight(playerUid, bossUid)
@@ -567,7 +607,7 @@ function enterBossRoomTeleport.onStepIn(creature, item, position, fromPosition)
 		position:sendMagicEffect(CONST_ME_TELEPORT)
 		roomPosition:sendMagicEffect(CONST_ME_TELEPORT)
 		-- Start boss fight timer
-		boss.fight = addEvent(finishBossFight, 5*60*1000, player.uid, bossCreature.uid)
+		boss.fight = addEvent(finishBossFight, 5 * 60 * 1000, player.uid, bossCreature.uid)
 	end
 	return true
 end

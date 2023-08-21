@@ -4,8 +4,7 @@ local transformTo = {
 }
 
 local area = { --area where to teleport
-	Position(32152, 32502, 11), Position(32365, 32725, 12)
-}
+Position(32152, 32502, 11), Position(32365, 32725, 12) }
 
 local spikeTasksStone = Action()
 function spikeTasksStone.onUse(player, item, fromPosition, target, toPosition, isHotkey)
@@ -22,7 +21,7 @@ function spikeTasksStone.onUse(player, item, fromPosition, target, toPosition, i
 	if item:getId() == 19218 then
 		player:setStorageValue(SPIKE_MIDDLE_CHARGE_MAIN, 1)
 		player:getPosition():sendMagicEffect(12)
-		player:say('Your tinkering caused some kind of magnetic storm that caused you to get disorientated.', TALKTYPE_MONSTER_SAY)
+		player:say("Your tinkering caused some kind of magnetic storm that caused you to get disorientated.", TALKTYPE_MONSTER_SAY)
 		item:remove()
 	else
 		item:transform(transformTo[item:getId()])

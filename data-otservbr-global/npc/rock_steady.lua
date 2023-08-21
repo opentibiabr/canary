@@ -10,13 +10,9 @@ npcConfig.maxHealth = npcConfig.health
 npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
-npcConfig.outfit = {
-	lookTypeEx = 13424
-}
+npcConfig.outfit = { lookTypeEx = 13424 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -52,7 +48,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	if not npcHandler:checkInteraction(npc, creature) then
 		return false
 	end
-
 
 	if MsgContains(message, "addon") or MsgContains(message, "help") then
 		if player:getStorageValue(72326) < 1 then
@@ -106,7 +101,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Great! Let me see. Amazing! I will take this, thank you!", npc, creature)
 			player:setStorageValue(72326, 4)
 			npcHandler:setTopic(playerId, 0)
-			else npcHandler:say("You dont have the required items!", npc, creature)
+		else
+			npcHandler:say("You dont have the required items!", npc, creature)
 		end
 	end
 	return true

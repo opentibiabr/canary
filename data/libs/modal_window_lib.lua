@@ -22,11 +22,9 @@ function ModalWindow.new(self, ...)
 	return setmetatable(self, ModalWindow)
 end
 
-setmetatable(ModalWindow, {
-	__call = function (self, ...)
-		return ModalWindow.new(...)
-	end
-})
+setmetatable(ModalWindow, { __call = function(self, ...)
+	return ModalWindow.new(...)
+end })
 
 function ModalWindow:setTitle(title)
 	self.title = tostring(title)
@@ -50,7 +48,11 @@ function ModalWindow:addButton(name, callback)
 	end
 
 	local id = #self.buttons + 1
-	local button = { id = id, name = name, callback = callback }
+	local button = {
+		id = id,
+		name = name,
+		callback = callback
+	}
 	self.buttons[id] = button
 	self.buttons[name] = button
 	return true
@@ -119,7 +121,11 @@ function ModalWindow:addChoice(text, callback)
 	end
 
 	local id = #self.choices + 1
-	local choice = { id = id, text = text, callback = callback }
+	local choice = {
+		id = id,
+		text = text,
+		callback = callback
+	}
 	self.choices[id] = choice
 	self.choices[text] = choice
 	return true
@@ -148,7 +154,7 @@ function ModalWindow:callChoice(text, player, button, choice)
 		text = tostring(text)
 	end
 
-	local newChoice= self.choices[text]
+	local newChoice = self.choices[text]
 	if not newChoice then
 		io.write("ModalWindow: Choice with text '" .. text .. "' does not exist.")
 		return false

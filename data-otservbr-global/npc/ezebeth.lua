@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 1
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -73,7 +71,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "strange") then
 		if npcHandler:getTopic(playerId) == 2 then
-			npcHandler:say("They usually know better than to show up in the streets and harass our citizens, but lately they've grown more bold or desperate or whatever. I ask you to investigate what they are up to. If necessary, you may scare them away a bit.", npc, creature)
+			npcHandler:say(
+				"They usually know better than to show up in the streets and harass our citizens, but lately they've grown more bold or desperate or whatever. I ask you to investigate what they are up to. If necessary, you may scare them away a bit.",
+				npc,
+				creature
+			)
 			player:setStorageValue(Storage.DarkTrails.Mission01, 1) -- Mission 1 start
 			npcHandler:setTopic(playerId, 0)
 		end
@@ -84,7 +86,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			doPlayerAddOutfit(610, 1)
 			doPlayerAddOutfit(618, 1)
 			npcHandler:setTopic(playerId, 0)
-	elseif player:getStorageValue(Storage.DarkTrails.Outfit) == 1 then
+		elseif player:getStorageValue(Storage.DarkTrails.Outfit) == 1 then
 			npcHandler:say("You already have the outfit.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

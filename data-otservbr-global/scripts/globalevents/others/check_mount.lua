@@ -1,4 +1,4 @@
-local mountIds = {22, 25, 26}
+local mountIds = { 22, 25, 26 }
 
 local rentedMounts = GlobalEvent("rentedmounts")
 function rentedMounts.onThink(interval)
@@ -25,7 +25,7 @@ function rentedMounts.onThink(interval)
 		end
 
 		player:setStorageValue(Storage.RentedHorseTimer, -1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Your contract with your horse expired and it returned back to the horse station.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your contract with your horse expired and it returned back to the horse station.")
 	end
 	return true
 end

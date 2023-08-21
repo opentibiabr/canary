@@ -29,7 +29,7 @@ monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,
 	damage = 10,
-	random = 10,
+	random = 10
 }
 
 monster.flags = {
@@ -59,39 +59,70 @@ monster.light = {
 
 monster.voices = {
 	interval = 5000,
-	chance = 10,
+	chance = 10
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
-monster.attacks = {
-}
+monster.attacks = {}
 
 monster.defenses = {
 	defense = 0,
 	armor = 0,
-	{name ="effect", interval = 100, chance = 100, radius = 1, effect = CONST_ME_MAGIC_GREEN, target = false}
+	{
+		name = "effect",
+		interval = 100,
+		chance = 100,
+		radius = 1,
+		effect = CONST_ME_MAGIC_GREEN,
+		target = false
+	}
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 100},
-	{type = COMBAT_ENERGYDAMAGE, percent = 100},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 100},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 100},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 100
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 100
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 100
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

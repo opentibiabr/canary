@@ -13,20 +13,68 @@ ExerciseWeaponsTable = {
 	[35281] = { skill = SKILL_CLUB },
 	[35287] = { skill = SKILL_CLUB },
 	-- ROD
-	[28544] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_SMALLICE, allowFarUse = true },
-	[28556] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_SMALLICE, allowFarUse = true },
-	[35283] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_SMALLICE, allowFarUse = true },
-	[35289] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_SMALLICE, allowFarUse = true },
+	[28544] = {
+		skill = SKILL_MAGLEVEL,
+		effect = CONST_ANI_SMALLICE,
+		allowFarUse = true
+	},
+	[28556] = {
+		skill = SKILL_MAGLEVEL,
+		effect = CONST_ANI_SMALLICE,
+		allowFarUse = true
+	},
+	[35283] = {
+		skill = SKILL_MAGLEVEL,
+		effect = CONST_ANI_SMALLICE,
+		allowFarUse = true
+	},
+	[35289] = {
+		skill = SKILL_MAGLEVEL,
+		effect = CONST_ANI_SMALLICE,
+		allowFarUse = true
+	},
 	-- RANGE
-	[28543] = { skill = SKILL_DISTANCE, effect = CONST_ANI_SIMPLEARROW, allowFarUse = true },
-	[28555] = { skill = SKILL_DISTANCE, effect = CONST_ANI_SIMPLEARROW, allowFarUse = true },
-	[35282] = { skill = SKILL_DISTANCE, effect = CONST_ANI_SIMPLEARROW, allowFarUse = true },
-	[35288] = { skill = SKILL_DISTANCE, effect = CONST_ANI_SIMPLEARROW, allowFarUse = true },
+	[28543] = {
+		skill = SKILL_DISTANCE,
+		effect = CONST_ANI_SIMPLEARROW,
+		allowFarUse = true
+	},
+	[28555] = {
+		skill = SKILL_DISTANCE,
+		effect = CONST_ANI_SIMPLEARROW,
+		allowFarUse = true
+	},
+	[35282] = {
+		skill = SKILL_DISTANCE,
+		effect = CONST_ANI_SIMPLEARROW,
+		allowFarUse = true
+	},
+	[35288] = {
+		skill = SKILL_DISTANCE,
+		effect = CONST_ANI_SIMPLEARROW,
+		allowFarUse = true
+	},
 	-- WAND
-	[28545] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_FIRE, allowFarUse = true },
-	[28557] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_FIRE, allowFarUse = true },
-	[35284] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_FIRE, allowFarUse = true },
-	[35290] = { skill = SKILL_MAGLEVEL, effect = CONST_ANI_FIRE, allowFarUse = true }
+	[28545] = {
+		skill = SKILL_MAGLEVEL,
+		effect = CONST_ANI_FIRE,
+		allowFarUse = true
+	},
+	[28557] = {
+		skill = SKILL_MAGLEVEL,
+		effect = CONST_ANI_FIRE,
+		allowFarUse = true
+	},
+	[35284] = {
+		skill = SKILL_MAGLEVEL,
+		effect = CONST_ANI_FIRE,
+		allowFarUse = true
+	},
+	[35290] = {
+		skill = SKILL_MAGLEVEL,
+		effect = CONST_ANI_FIRE,
+		allowFarUse = true
+	}
 }
 
 local dummies = Game.getDummies()
@@ -89,7 +137,9 @@ function ExerciseEvent(playerId, tilePosition, weaponId, dummyId)
 	end
 
 	local isMagic = ExerciseWeaponsTable[weaponId].skill == SKILL_MAGLEVEL
-	if not dummies[dummyId] then return false end
+	if not dummies[dummyId] then
+		return false
+	end
 	local rate = dummies[dummyId] / 100
 
 	if isMagic then

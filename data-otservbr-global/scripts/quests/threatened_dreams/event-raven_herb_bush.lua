@@ -7,7 +7,8 @@ local periods = {
 }
 local config = {
 	-- createByType day / night
-	[1] = { -- create in night
+	[1] = {
+		-- create in night
 		bushId = 25783,
 		createItem = LIGHT_STATE_NIGHT,
 		removeItem = LIGHT_STATE_SUNRISE,
@@ -24,8 +25,7 @@ function createRavenHerb.onPeriodChange(period, light)
 	local time = getWorldTime()
 
 	if configManager.getBoolean(configKeys.ALL_CONSOLE_LOG) then
-		Spdlog.info(string.format("Starting %s Current light is %s and it's %s Tibian Time",
-			periods[period], light, getFormattedWorldTime(time)))
+		Spdlog.info(string.format("Starting %s Current light is %s and it's %s Tibian Time", periods[period], light, getFormattedWorldTime(time)))
 	end
 	for index, item in pairs(config) do
 		if item.createItem == period then -- Adding
@@ -33,8 +33,8 @@ function createRavenHerb.onPeriodChange(period, light)
 			createItem:setActionId(item.storage)
 			if createItem then
 				item.pos:sendMagicEffect(CONST_ME_BIGPLANTS)
-			end
-		elseif item.removeItem == period then -- Removing
+			end -- Removing
+		elseif item.removeItem == period then
 			local target = Tile(item.pos):getItemById(item.bushId)
 			if target then
 				item.pos:removeItem(item.bushId, CONST_ME_BIGPLANTS)
@@ -47,7 +47,6 @@ end
 
 createRavenHerb:register()
 
-
 local ravenHerb = Action()
 function ravenHerb.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local herbConfig = config[1]
@@ -59,8 +58,7 @@ function ravenHerb.onUse(player, item, fromPosition, target, toPosition, isHotke
 		return true
 	end
 	if (player:getFreeCapacity() / 100) < herbConfig.herbWeight then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-		message .. ". Weighing " .. herbConfig.herbWeight .. " oz, it is too heavy for you to carry.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message .. ". Weighing " .. herbConfig.herbWeight .. " oz, it is too heavy for you to carry.")
 		return true
 	end
 

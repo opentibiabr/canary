@@ -11,7 +11,7 @@ local vortex = {
 	[14348] = Position(32218, 31375, 14), -- Eradicator Exit (Main Room)
 	[14350] = Position(32208, 31372, 14), -- Outburst Exit (Main Room)
 	[14352] = Position(32214, 31376, 14), -- World Devourer Exit (Main Room)
-	[14354] = Position(32112, 31375, 14), -- World Devourer (Reward Room)
+	[14354] = Position(32112, 31375, 14) -- World Devourer (Reward Room)
 }
 
 local accessVortex = {
@@ -32,7 +32,7 @@ local accessVortex = {
 		position = Position(32181, 31240, 14),
 		storage = 14324,
 		storageTime = 14325
-	},
+	}
 }
 
 local finalBosses = {
@@ -66,7 +66,7 @@ function teleportHeart.onStepIn(creature, item, position, fromPosition)
 	local bossVortex = accessVortex[item.actionid]
 	local uBosses = finalBosses[item.actionid]
 	if normalVortex then
-		player:teleportTo(normalVortex)
+		player:teleportTo(normalVortex) -- Remove storages from mini bosses
 	elseif bossVortex then
 		if player:getStorageValue(bossVortex.storage) >= 1 then
 			if player:getStorageValue(bossVortex.storageTime) < os.time() then
@@ -80,9 +80,7 @@ function teleportHeart.onStepIn(creature, item, position, fromPosition)
 			player:sendTextMessage(19, "You don't have access to this portal.")
 		end
 	elseif uBosses then
-		if player:getStorageValue(uBosses.storage1) >= 1
-		and player:getStorageValue(uBosses.storage2) >= 1
-		and player:getStorageValue(uBosses.storage3) >= 1 then
+		if player:getStorageValue(uBosses.storage1) >= 1 and player:getStorageValue(uBosses.storage2) >= 1 and player:getStorageValue(uBosses.storage3) >= 1 then
 			if player:getStorageValue(uBosses.storageTime) < os.time() then
 				player:teleportTo(uBosses.position)
 			else
@@ -94,8 +92,7 @@ function teleportHeart.onStepIn(creature, item, position, fromPosition)
 			player:sendTextMessage(19, "You don't have access to this portal.")
 		end
 	elseif item.actionid == 14351 then
-		if player:getStorageValue(14330) >= 1
-		and player:getStorageValue(14332) >= 1 then
+		if player:getStorageValue(14330) >= 1 and player:getStorageValue(14332) >= 1 then
 			if player:getStorageValue(14333) < os.time() then
 				player:teleportTo(Position(32272, 31384, 14))
 			else
@@ -106,7 +103,7 @@ function teleportHeart.onStepIn(creature, item, position, fromPosition)
 			player:teleportTo(fromPosition)
 			player:sendTextMessage(19, "You don't have access to this portal.")
 		end
-	elseif item.actionid == 14353 then -- Remove storages from mini bosses
+	elseif item.actionid == 14353 then
 		player:teleportTo(Position(32214, 31376, 14))
 		player:setStorageValue(14334, -1)
 		player:setStorageValue(14335, -1)

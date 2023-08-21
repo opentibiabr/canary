@@ -1,7 +1,14 @@
-local config = {
-	{gatePosX = Position(32569, 31421, 9), gatePosY = Position(32569, 31422, 9), tileIdX = 501, tileIdY = 502},
-	{gatePosX = Position(32600, 31421, 9), gatePosY = Position(32600, 31422, 9), tileIdX = 502, tileIdY = 501}
-}
+local config = { {
+	gatePosX = Position(32569, 31421, 9),
+	gatePosY = Position(32569, 31422, 9),
+	tileIdX = 501,
+	tileIdY = 502
+}, {
+	gatePosX = Position(32600, 31421, 9),
+	gatePosY = Position(32600, 31422, 9),
+	tileIdX = 502,
+	tileIdY = 501
+} }
 
 local function wall(i)
 	if Tile(config[i].gatePosX):getItemById(1613) then
@@ -19,9 +26,9 @@ end
 
 local theHiddenBeregar = Action()
 function theHiddenBeregar.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({32568, 32570}, item:getPosition().x) and player:getPosition().x ~= 32569 then
+	if table.contains({ 32568, 32570 }, item:getPosition().x) and player:getPosition().x ~= 32569 then
 		wall(1)
-	elseif table.contains({32599, 32601}, item:getPosition().x) and player:getPosition().x ~= 32600 then
+	elseif table.contains({ 32599, 32601 }, item:getPosition().x) and player:getPosition().x ~= 32600 then
 		wall(2)
 	end
 	return item:transform(item.itemid == 2772 and 2773 or 2772)

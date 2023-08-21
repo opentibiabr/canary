@@ -1,6 +1,6 @@
 local setting = {
 	arenaPosition = Position(33154, 31415, 7),
-	successPosition = Position(33145, 31419, 7),
+	successPosition = Position(33145, 31419, 7)
 }
 local TheNewFrontier = Storage.Quest.U8_54.TheNewFrontier
 

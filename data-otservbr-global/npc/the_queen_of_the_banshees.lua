@@ -10,18 +10,14 @@ npcConfig.maxHealth = npcConfig.health
 npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
-npcConfig.outfit = {
-	lookType = 78
-}
+npcConfig.outfit = { lookType = 78 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Uhhhhhh....'}
+	{ text = "Uhhhhhh...." }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -139,9 +135,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		elseif npcHandler:getTopic(playerId) == 6 then
 			if player:getStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.SixthSeal) == 1 then
-				npcHandler:say("The Queen of the Banshee: I see! You have mastered the seal of logic. \z
+				npcHandler:say(
+					"The Queen of the Banshee: I see! You have mastered the seal of logic. \z
 						You have made the sacrifice, you have seen the unseen, you possess fortitude, \z
-						you have filled yourself with power and found your path. You may ask me for my {kiss} now.", npc, creature)
+						you have filled yourself with power and found your path. You may ask me for my {kiss} now.",
+					npc,
+					creature
+				)
 				npcHandler:setTopic(playerId, 7)
 			else
 				npcHandler:say("You have not found your true path yet. Return to meh when you are better prepared.", npc, creature)
@@ -151,7 +151,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			if not player:isPzLocked() then
 				npcHandler:say("So be it! Hmmmmmm...", npc, creature)
 				npcHandler:setTopic(playerId, 0)
-				player:teleportTo({x = 32202, y = 31812, z = 8})
+				player:teleportTo({
+					x = 32202,
+					y = 31812,
+					z = 8
+				})
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				player:setStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.LastSeal, 1)
 				player:setStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.LastSealDoor, 1)
@@ -162,12 +166,16 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 9 then
-			npcHandler:say({
-				"Listen... there are no blooming flowers down here and the only smell present is that of death and decay. ...",
-				"I wish that I could breathe the lovely smell of beautiful flowers just one more time, \z
+			npcHandler:say(
+				{
+					"Listen... there are no blooming flowers down here and the only smell present is that of death and decay. ...",
+					"I wish that I could breathe the lovely smell of beautiful flowers just one more time, \z
 						especially those which elves cultivate. ...",
-				"Could you please bring me 50 holy orchids?"
-			}, npc, creature)
+					"Could you please bring me 50 holy orchids?"
+				},
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 10)
 		elseif npcHandler:getTopic(playerId) == 10 then
 			npcHandler:say("Thank you. I will wait for your return.", npc, creature)
@@ -179,7 +187,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.OutfitQuest.WizardAddon, 7)
 				player:addOutfitAddon(145, 1)
 				player:addOutfitAddon(149, 1)
-				player:addAchievement('Warlock')
+				player:addAchievement("Warlock")
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("You need 50 holy orchid.", npc, creature)
@@ -196,62 +204,46 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'stay'}, StdModule.say, 
-	{
-		npcHandler = npcHandler,
-		text = "It's my curse to be the eternal {guardian} of this ancient {place}."
-	}
-)
-keywordHandler:addKeyword({'guardian'}, StdModule.say, 
-	{
-		npcHandler = npcHandler,
-		text = "I'm the {guardian} of the {SEVENTH} and final seal. The seal to open the last door before ... \z
+keywordHandler:addKeyword({ "stay" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "It's my curse to be the eternal {guardian} of this ancient {place}."
+})
+keywordHandler:addKeyword({ "guardian" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "I'm the {guardian} of the {SEVENTH} and final seal. The seal to open the last door before ... \z
 			but perhaps it's better to see it with your own eyes."
-	}
-)
-keywordHandler:addKeyword({'place'}, StdModule.say, 
-	{
-		npcHandler = npcHandler,
-		text = "It served as a temple, a source of power and ... \z
+})
+keywordHandler:addKeyword({ "place" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "It served as a temple, a source of power and ... \z
 			as a sender for an ancient {race} which lived a long time ago and has long been forgotten."
-	}
-)
-keywordHandler:addKeyword({'race'}, StdModule.say, 
-	{
-		npcHandler = npcHandler,
-		text = "The race that built this edifice came to this place from the stars. \z
+})
+keywordHandler:addKeyword({ "race" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "The race that built this edifice came to this place from the stars. \z
 			They ran from an enemy even more horrible than themselves. \z
 			But they carried the {seed} of their own destruction in them."
-	}
-)
-keywordHandler:addKeyword({'seed'}, StdModule.say, 
-	{
-		npcHandler = npcHandler,
-		text = "This ancient race was annihilated by its own doings, that's all I know. \z
+})
+keywordHandler:addKeyword({ "seed" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "This ancient race was annihilated by its own doings, that's all I know. \z
 			Aeons have passed since then, but the sheer presence of this {complex} is still defiling and desecrating this area."
-	}
-)
-keywordHandler:addKeyword({'complex'}, StdModule.say, 
-	{
-		npcHandler = npcHandler,
-		text = "Its constructors were too strange for you or even me to understand. \z
+})
+keywordHandler:addKeyword({ "complex" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Its constructors were too strange for you or even me to understand. \z
 			We don't know what this ... thing they built was supposed to be good for. \z
 			I feel a constant twisting and binding of souls, though, that is probably only a side-effect."
-	}
-)
-keywordHandler:addKeyword({'ghostlands'}, StdModule.say, 
-	{
-		npcHandler = npcHandler,
-		text = "The place you know as the Ghostlands had a different name once ... \z
+})
+keywordHandler:addKeyword({ "ghostlands" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "The place you know as the Ghostlands had a different name once ... \z
 			and many names after. Too many to remember them all."
-	}
-)
-keywordHandler:addKeyword({'banshee'}, StdModule.say, 
-	{
-		npcHandler = npcHandler,
-		text = "They are my maidens. They give me comfort in my eternal watch over the last seal."
-	}
-)
+})
+keywordHandler:addKeyword({ "banshee" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "They are my maidens. They give me comfort in my eternal watch over the last seal."
+})
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 

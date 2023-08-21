@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -58,20 +56,20 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'yes') then
+	if MsgContains(message, "yes") then
 		local player = Player(creature)
 		if not player:removeMoneyBank(50) then
-			npcHandler:say('The exhibition is not for free. You have to pay 50 Gold to get in. Next please!', npc, creature)
+			npcHandler:say("The exhibition is not for free. You have to pay 50 Gold to get in. Next please!", npc, creature)
 			return true
 		end
 
-		npcHandler:say('And here we go!', npc, creature)
+		npcHandler:say("And here we go!", npc, creature)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		local exhibitionPosition = Position(32390, 32195, 8)
 		player:teleportTo(exhibitionPosition)
 		exhibitionPosition:sendMagicEffect(CONST_ME_TELEPORT)
 	else
-		npcHandler:say('Then not.', npc, creature)
+		npcHandler:say("Then not.", npc, creature)
 	end
 	npcHandler:removeInteraction(npc, creature)
 	npcHandler:resetNpc(creature)

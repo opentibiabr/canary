@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 2
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -55,7 +53,7 @@ local function greetCallback(npc, creature)
 	local playerId = player:getId()
 
 	if player:getStorageValue(Storage.ThievesGuild.Mission04) ~= 6 or player:getOutfit().lookType ~= 66 then
-		npcHandler:say('Excuse me, but I\'m waiting for someone important!', npc, creature)
+		npcHandler:say("Excuse me, but I'm waiting for someone important!", npc, creature)
 		return false
 	end
 
@@ -70,31 +68,32 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'dwarven bridge') then
-		npcHandler:say('Wait a minute! Do I get that right? You\'re the owner of the dwarven bridge and you are willing to sell it to me??', npc, creature)
+	if MsgContains(message, "dwarven bridge") then
+		npcHandler:say("Wait a minute! Do I get that right? You're the owner of the dwarven bridge and you are willing to sell it to me??", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif MsgContains(message, 'yes') then
+	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say({
-				'That\'s just incredible! I\'ve dreamed about acquiring the dwarven bridge since I was a child! Now my dream will finally become true. ...',
-				'And you are sure you want to sell it? I mean really, really sure?'
-			}, npc, creature)
+			npcHandler:say({ "That's just incredible! I've dreamed about acquiring the dwarven bridge since I was a child! Now my dream will finally become true. ...", "And you are sure you want to sell it? I mean really, really sure?" }, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 2 then
-			npcHandler:say('How splendid! Do you have the necessary documents with you?', npc, creature)
+			npcHandler:say("How splendid! Do you have the necessary documents with you?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif npcHandler:getTopic(playerId) == 3 then
-			npcHandler:say('Oh my, oh my. I\'m so excited! So let\'s seal this deal as fast as possible so I can visit my very own dwarven bridge. Are you ready for the transaction?', npc, creature)
+			npcHandler:say("Oh my, oh my. I'm so excited! So let's seal this deal as fast as possible so I can visit my very own dwarven bridge. Are you ready for the transaction?", npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			local player = Player(creature)
 			if player:removeItem(7866, 1) then
 				player:addItem(7871, 1)
 				player:setStorageValue(Storage.ThievesGuild.Mission04, 7)
-				npcHandler:say({
-					'Excellent! Here is the painting you requested. It\'s quite precious to my father, but imagine his joy when I tell him about my clever deal! ...',
-					'Now leave me alone please. I have to prepare for my departure. Now my family will not call me a squandering fool anymore!'
-				}, npc, creature)
+				npcHandler:say(
+					{
+						"Excellent! Here is the painting you requested. It's quite precious to my father, but imagine his joy when I tell him about my clever deal! ...",
+						"Now leave me alone please. I have to prepare for my departure. Now my family will not call me a squandering fool anymore!"
+					},
+					npc,
+					creature
+				)
 				npcHandler:removeInteraction(npc, creature)
 				npcHandler:resetNpc(creature)
 			end
@@ -103,7 +102,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_GREET, 'It\'s .. It\'s YOU! At last!! So what\'s this special proposal you would like to make, my friend?')
+npcHandler:setMessage(MESSAGE_GREET, "It's .. It's YOU! At last!! So what's this special proposal you would like to make, my friend?")
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

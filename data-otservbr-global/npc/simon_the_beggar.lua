@@ -19,12 +19,12 @@ npcConfig.outfit = {
 	lookAddons = 3
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
-npcConfig.shop = {
-	{ itemName = "shovel", clientId = 3457, count = 1 }
-}
+npcConfig.flags = { floorchange = false }
+npcConfig.shop = { {
+	itemName = "shovel",
+	clientId = 3457,
+	count = 1
+} }
 
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -35,8 +35,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcConfig.voices = {
 	interval = 15000,
@@ -130,8 +129,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "cookie") then
-		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31
-				and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.SimonTheBeggar) ~= 1 then
+		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31 and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.SimonTheBeggar) ~= 1 then
 			npcHandler:say("Have you brought a cookie for the poor?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -152,9 +150,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 
 			npc:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
-			npcHandler:say("Well, it's the least you can do for those who live in dire poverty. \z
+			npcHandler:say(
+				"Well, it's the least you can do for those who live in dire poverty. \z
 						A single cookie is a bit less than I'd expected, but better than ... WHA ... WHAT?? \z
-						MY BEARD! MY PRECIOUS BEARD! IT WILL TAKE AGES TO CLEAR IT OF THIS CONFETTI!", npc, creature)
+						MY BEARD! MY PRECIOUS BEARD! IT WILL TAKE AGES TO CLEAR IT OF THIS CONFETTI!",
+				npc,
+				creature
+			)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		elseif npcHandler:getTopic(playerId) == 2 then
@@ -206,71 +208,55 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Node 1
-local node1 = keywordHandler:addKeyword({"addon"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "For the small fee of 20000 gold pieces I will help you mix this potion. \z
+local node1 = keywordHandler:addKeyword({ "addon" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "For the small fee of 20000 gold pieces I will help you mix this potion. \z
 					Just bring me 100 pieces of ape fur, which are necessary to create this potion. ... Do we have a deal?"
-	}
-)
-node1:addChildKeyword({"yes"}, BeggarSecond, {})
-node1:addChildKeyword({"no"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Alright then. Come back when you got all neccessary items.",
-		reset = true
-	}
-)
+})
+node1:addChildKeyword({ "yes" }, BeggarSecond, {})
+node1:addChildKeyword({ "no" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Alright then. Come back when you got all neccessary items.",
+	reset = true
+})
 
 -- Node 2
-local node2 = keywordHandler:addKeyword({"dress"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "For the small fee of 20000 gold pieces I will help you mix this potion. \z
+local node2 = keywordHandler:addKeyword({ "dress" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "For the small fee of 20000 gold pieces I will help you mix this potion. \z
 					Just bring me 100 pieces of ape fur, which are necessary to create this potion. ...Do we have a deal?"
-	}
-)
-node2:addChildKeyword({"yes"}, BeggarFirst, {})
-node2:addChildKeyword({"no"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Alright then. Come back when you got all neccessary items.",
-		reset = true
-	}
-)
+})
+node2:addChildKeyword({ "yes" }, BeggarFirst, {})
+node2:addChildKeyword({ "no" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Alright then. Come back when you got all neccessary items.",
+	reset = true
+})
 
 -- Node 3
-local node3 = keywordHandler:addKeyword({"staff"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "To get beggar staff you need to give me simon the beggar's staff. Do you have it with you?"
-	}
-)
-node3:addChildKeyword({"yes"}, BeggarSecond, {})
-node3:addChildKeyword({"no"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Alright then. Come back when you got all neccessary items.",
-		reset = true
-	}
-)
+local node3 = keywordHandler:addKeyword({ "staff" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "To get beggar staff you need to give me simon the beggar's staff. Do you have it with you?"
+})
+node3:addChildKeyword({ "yes" }, BeggarSecond, {})
+node3:addChildKeyword({ "no" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Alright then. Come back when you got all neccessary items.",
+	reset = true
+})
 
 -- Node 4
-local node4 = keywordHandler:addKeyword({"outfit"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "For the small fee of 20000 gold pieces I will help you mix this potion. \z
+local node4 = keywordHandler:addKeyword({ "outfit" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "For the small fee of 20000 gold pieces I will help you mix this potion. \z
 					Just bring me 100 pieces of ape fur, which are necessary to create this potion. ...Do we have a deal?"
-	}
-)
-node4:addChildKeyword({"yes"}, BeggarFirst, {})
-node4:addChildKeyword({"no"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Alright then. Come back when you got all neccessary items.",
-		reset = true
-	}
-)
+})
+node4:addChildKeyword({ "yes" }, BeggarFirst, {})
+node4:addChildKeyword({ "no" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Alright then. Come back when you got all neccessary items.",
+	reset = true
+})
 
 npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|. I am a poor man. Please help me.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Have a nice day.")

@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 0,
 	Occurrence = 1,
 	Locations = "South of Stonehome, deep under Telas's house."
-	}
+}
 
 monster.health = 1500
 monster.maxHealth = 1500
@@ -38,9 +38,7 @@ monster.changeTarget = {
 	chance = 20
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = false,
@@ -69,35 +67,60 @@ monster.light = {
 
 monster.voices = {
 	interval = 5000,
-	chance = 10,
+	chance = 10
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.defenses = {
 	defense = 5,
 	armor = 10
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 90},
-	{type = COMBAT_ENERGYDAMAGE, percent = 90},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 90},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 90},
-	{type = COMBAT_HOLYDAMAGE , percent = 100},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 90
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 90
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 90
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 90
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 100
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -65,12 +63,14 @@ local config = {
 		[1] = {
 			name = "Falconer",
 			looktype = {
-				male = 1282, female = 1283
+				male = 1282,
+				female = 1283
 			},
 			points = {
 				base = 100000,
 				addons = {
-					first = 35000, second = 35000
+					first = 35000,
+					second = 35000
 				}
 			}
 		}
@@ -134,13 +134,13 @@ local config = {
 			name = "falcon pet",
 			id = 36750,
 			points = 135000
-		},
+		}
 	}
 }
 
 local function getOfferIndex(name, offer, topic)
 	for index, offerTable in ipairs(offer) do
-		if name:lower() == (offerTable.name):lower() then
+		if name:lower() == offerTable.name:lower() then
 			return index + topic
 		end
 	end
@@ -178,31 +178,34 @@ local function getOfferByName(name, offer, topic)
 	end
 
 	for index, offerTable in ipairs(offer) do
-		if name:lower() == (offerTable.name):lower() then
+		if name:lower() == offerTable.name:lower() then
 			if topic == config.topics.outfit then
-				return {	offerId = index,
-						name = offerTable.name,
-						offerTopic = topic,
-						base = offerTable.points.base,
-						firstAddon = offerTable.points.addons.first,
-						secondAddon = offerTable.points.addons.second,
-						male = offerTable.looktype.male,
-						female = offerTable.looktype.female
-					}
+				return {
+					offerId = index,
+					name = offerTable.name,
+					offerTopic = topic,
+					base = offerTable.points.base,
+					firstAddon = offerTable.points.addons.first,
+					secondAddon = offerTable.points.addons.second,
+					male = offerTable.looktype.male,
+					female = offerTable.looktype.female
+				}
 			elseif topic == config.topics.mount then
-				return {	offerId = index,
-						name = offerTable.name,
-						offerTopic = topic,
-						value = offerTable.points,
-						mountId = offerTable.id
-					}
+				return {
+					offerId = index,
+					name = offerTable.name,
+					offerTopic = topic,
+					value = offerTable.points,
+					mountId = offerTable.id
+				}
 			elseif topic == config.topics.trophy or topic == config.topics.furniture then
-				return {	offerId = index,
-						name = offerTable.name,
-						offerTopic = topic,
-						value = offerTable.points,
-						itemId = offerTable.id
-					}
+				return {
+					offerId = index,
+					name = offerTable.name,
+					offerTopic = topic,
+					value = offerTable.points,
+					itemId = offerTable.id
+				}
 			end
 		end
 	end
@@ -218,29 +221,32 @@ local function getOfferByIndex(offerIndex, offer, topic)
 	for index, offerTable in ipairs(offer) do
 		if index == offerIndex then
 			if topic == config.topics.outfit then
-				return {	offerId = index,
-						name = offerTable.name,
-						offerTopic = topic,
-						base = offerTable.points.base,
-						firstAddon = offerTable.points.addons.first,
-						secondAddon = offerTable.points.addons.second,
-						male = offerTable.looktype.male,
-						female = offerTable.looktype.female
-					}
+				return {
+					offerId = index,
+					name = offerTable.name,
+					offerTopic = topic,
+					base = offerTable.points.base,
+					firstAddon = offerTable.points.addons.first,
+					secondAddon = offerTable.points.addons.second,
+					male = offerTable.looktype.male,
+					female = offerTable.looktype.female
+				}
 			elseif topic == config.topics.mount then
-				return {	offerId = index,
-						name = offerTable.name,
-						offerTopic = topic,
-						value = offerTable.points,
-						mountId = offerTable.id
-					}
+				return {
+					offerId = index,
+					name = offerTable.name,
+					offerTopic = topic,
+					value = offerTable.points,
+					mountId = offerTable.id
+				}
 			elseif topic == config.topics.trophy or topic == config.topics.furniture then
-				return {	offerId = index,
-						name = offerTable.name,
-						offerTopic = topic,
-						value = offerTable.points,
-						itemId = offerTable.id
-					}
+				return {
+					offerId = index,
+					name = offerTable.name,
+					offerTopic = topic,
+					value = offerTable.points,
+					itemId = offerTable.id
+				}
 			end
 		end
 	end
@@ -269,7 +275,7 @@ local function getOfferString(name, offer, topic)
 end
 
 local function processItemInboxPurchase(player, name, id)
-	if not(player) then
+	if not player then
 		return false
 	end
 
@@ -294,20 +300,28 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 	if MsgContains(message, "rewards") then
-		npcHandler:say({
-			"Finishing prey hunting tasks will give you hunting task points (HTP). These can be exchanged for items of the following categories: {outfit}, {mount}, {trophies} and {furniture}. ...",
-			"Please note, that all items will be put into your Store inbox!"
-		}, npc, creature, 100)
+		npcHandler:say(
+			{
+				"Finishing prey hunting tasks will give you hunting task points (HTP). These can be exchanged for items of the following categories: {outfit}, {mount}, {trophies} and {furniture}. ...",
+				"Please note, that all items will be put into your Store inbox!"
+			},
+			npc,
+			creature,
+			100
+		)
 		npcHandler:setTopic(playerId, 1)
 
+		-- Offer topics
+		-- Add task hunting points history here.
+		-- Add task hunting points history here.
+		-- Add task hunting points history here.
+		-- Add task hunting points history here.
 	elseif MsgContains(message, "tasks") then
 		npcHandler:say("Prey hunting tasks should reduce the number of certain monsters. And if you fulfil them successfully I will show my appreciation and give you some {rewards} in exchange of hunting task points.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
-
 	elseif MsgContains(message, "have") then
 		npcHandler:say("Right now you have " .. player:getTaskHuntingPoints() .. " HTP.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
-
 	-- Add task hunting points history here.
 	--elseif MsgContains(message, "spent") then
 	--	npcHandler:say("You have already spent " .. nil .. " HTP.", npc, creature)
@@ -315,27 +329,27 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	-- Rewards topic
 	elseif npcHandler:getTopic(playerId) == 1 then
-		if not(config.enable) then
+		if not config.enable then
 			npcHandler:say("Sorry, i have no offer to make for you today.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif MsgContains(message, "outfit") then
-			if config == nil or config.outifts == nil or #(config.outifts) == 0 then
+			if config == nil or config.outifts == nil or #config.outifts == 0 then
 				npcHandler:say("I have no outfit offer to make.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say("I offer you the " .. getOffersString(config.outifts, false) .. " outfit" .. (#(config.outifts) >= 1 and "s." or "."), npc, creature)
+				npcHandler:say("I offer you the " .. getOffersString(config.outifts, false) .. " outfit" .. (#config.outifts >= 1 and "s." or "."), npc, creature)
 				npcHandler:setTopic(playerId, config.topics.outfit)
 			end
 		elseif MsgContains(message, "mount") then
-			if config == nil or config.mounts == nil or #(config.mounts) == 0 then
+			if config == nil or config.mounts == nil or #config.mounts == 0 then
 				npcHandler:say("I have no mount offer to make.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			else
-				npcHandler:say("I offer you the " .. getOffersString(config.mounts, false) .. " mount" .. (#(config.mounts) >= 1 and "s." or "."), npc, creature)
+				npcHandler:say("I offer you the " .. getOffersString(config.mounts, false) .. " mount" .. (#config.mounts >= 1 and "s." or "."), npc, creature)
 				npcHandler:setTopic(playerId, config.topics.mount)
 			end
 		elseif MsgContains(message, "trophies") then
-			if config == nil or config.trophies == nil or #(config.trophies) == 0 then
+			if config == nil or config.trophies == nil or #config.trophies == 0 then
 				npcHandler:say("I have no trophie offer to make.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			else
@@ -343,7 +357,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, config.topics.trophy)
 			end
 		elseif MsgContains(message, "furniture") then
-			if config == nil or config.furniture == nil or #(config.furniture) == 0 then
+			if config == nil or config.furniture == nil or #config.furniture == 0 then
 				npcHandler:say("I have no furniture offer to make.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			else
@@ -351,21 +365,19 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, config.topics.furniture)
 			end
 		end
-
-	-- Offer topics
 	elseif npcHandler:getTopic(playerId) > 1 then
 		if npcHandler:getTopic(playerId) == config.topics.outfit then
-			if config ~= nil and config.outifts ~= nil and #(config.outifts) > 0 then
+			if config ~= nil and config.outifts ~= nil and #config.outifts > 0 then
 				npcHandler:say(getOfferString(message, config.outifts, npcHandler:getTopic(playerId)), npc, creature)
 				npcHandler:setTopic(playerId, getOfferIndex(message, config.outifts, npcHandler:getTopic(playerId)))
 			end
 		elseif npcHandler:getTopic(playerId) == config.topics.mount then
-			if config ~= nil and config.mounts ~= nil and #(config.mounts) > 0 then
+			if config ~= nil and config.mounts ~= nil and #config.mounts > 0 then
 				npcHandler:say(getOfferString(message, config.mounts, npcHandler:getTopic(playerId)), npc, creature)
 				npcHandler:setTopic(playerId, getOfferIndex(message, config.mounts, npcHandler:getTopic(playerId)))
 			end
 		elseif npcHandler:getTopic(playerId) == config.topics.trophy then
-			if config ~= nil and config.trophies ~= nil and #(config.trophies) > 0 then
+			if config ~= nil and config.trophies ~= nil and #config.trophies > 0 then
 				local offerTable = getOfferByName(message, config.trophies, npcHandler:getTopic(playerId))
 				if offerTable ~= nil then
 					if player:getTaskHuntingPoints() >= offerTable.value then
@@ -383,7 +395,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == config.topics.furniture then
-			if config ~= nil and config.furniture ~= nil and #(config.furniture) > 0 then
+			if config ~= nil and config.furniture ~= nil and #config.furniture > 0 then
 				local offerTable = getOfferByName(message, config.furniture, npcHandler:getTopic(playerId))
 				if offerTable ~= nil then
 					if player:getTaskHuntingPoints() >= offerTable.value then
@@ -401,7 +413,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) > config.topics.outfit and npcHandler:getTopic(playerId) < config.topics.mount then
-			if config ~= nil and config.outifts ~= nil and #(config.outifts) > 0 then
+			if config ~= nil and config.outifts ~= nil and #config.outifts > 0 then
 				local offerTable = getOfferByIndex(npcHandler:getTopic(playerId) - config.topics.outfit, config.outifts, config.topics.outfit)
 				if offerTable ~= nil then
 					if MsgContains(message, "base") then
@@ -409,19 +421,17 @@ local function creatureSayCallback(npc, creature, type, message)
 						if player:hasOutfit(offerTable.male) or player:hasOutfit(offerTable.female) then
 							npcHandler:say("You already have this outfit.", npc, creature)
 						elseif player:removeTaskHuntingPoints(points) then
-							-- Add task hunting points history here.
 							player:addOutfit(offerTable.male)
 							player:addOutfit(offerTable.female)
 							npcHandler:say("Here you have it.", npc, creature)
 						end
 					elseif MsgContains(message, "first") then
 						local points = offerTable.firstAddon
-						if not(player:hasOutfit(offerTable.male)) or not(player:hasOutfit(offerTable.female)) then
+						if not player:hasOutfit(offerTable.male) or not player:hasOutfit(offerTable.female) then
 							npcHandler:say("First you need to buy the base addon to unlock this addon.", npc, creature)
 						elseif player:hasOutfit(offerTable.male, 1) or player:hasOutfit(offerTable.female, 1) then
 							npcHandler:say("You already have this addon.", npc, creature)
 						elseif player:removeTaskHuntingPoints(points) then
-							-- Add task hunting points history here.
 							player:addOutfitAddon(offerTable.male, 1)
 							player:addOutfitAddon(offerTable.female, 1)
 							npcHandler:say("Here you have it.", npc, creature)
@@ -430,12 +440,11 @@ local function creatureSayCallback(npc, creature, type, message)
 						end
 					elseif MsgContains(message, "second") then
 						local points = offerTable.secondAddon
-						if not(player:hasOutfit(offerTable.male)) or not(player:hasOutfit(offerTable.female)) then
+						if not player:hasOutfit(offerTable.male) or not player:hasOutfit(offerTable.female) then
 							npcHandler:say("First you need to buy the base addon to unlock this addon.", npc, creature)
 						elseif player:hasOutfit(offerTable.male, 2) or player:hasOutfit(offerTable.female, 2) then
 							npcHandler:say("You already have this addon.", npc, creature)
 						elseif player:removeTaskHuntingPoints(points) then
-							-- Add task hunting points history here.
 							player:addOutfitAddon(offerTable.male, 2)
 							player:addOutfitAddon(offerTable.female, 2)
 							npcHandler:say("Here you have it.", npc, creature)
@@ -451,14 +460,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) > config.topics.mount and npcHandler:getTopic(playerId) < config.topics.trophy then
-			if config ~= nil and config.mounts ~= nil and #(config.mounts) > 0 then
+			if config ~= nil and config.mounts ~= nil and #config.mounts > 0 then
 				local offerTable = getOfferByIndex(npcHandler:getTopic(playerId) - config.topics.mount, config.mounts, config.topics.mount)
 				if offerTable ~= nil then
 					local points = offerTable.value
 					if player:hasMount(offerTable.mountId) then
 						npcHandler:say("You already have this mount.", npc, creature)
 					elseif player:removeTaskHuntingPoints(points) then
-						-- Add task hunting points history here.
 						player:addMount(offerTable.mountId)
 						npcHandler:say("Here you have it.", npc, creature)
 					end

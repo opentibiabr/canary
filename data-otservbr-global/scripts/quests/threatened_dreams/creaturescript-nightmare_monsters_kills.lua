@@ -1,8 +1,4 @@
-local nightmareMonsters = {
-	"enfeebled silencer",
-	"weakened frazzlemaw",
-	"kroazur"
-}
+local nightmareMonsters = { "enfeebled silencer", "weakened frazzlemaw", "kroazur" }
 local ThreatenedDreams = Storage.Quest.U11_40.ThreatenedDreams
 
 local threatenedDreamsNightmareMonstersKills = CreatureEvent("ThreatenedDreamsNightmareMonstersKills")

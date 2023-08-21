@@ -12,9 +12,7 @@ local charms = {
 		messageServerLog = "[Wound charm]",
 		effect = CONST_ME_HITAREA,
 		points = 600,
-		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
-		}
+		sounds = { castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE }
 	},
 	-- Enflame charm
 	[2] = {
@@ -29,9 +27,7 @@ local charms = {
 		messageServerLog = "[Enflame charm]",
 		effect = CONST_ME_HITBYFIRE,
 		points = 1000,
-		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_FLAME_STRIKE
-		}
+		sounds = { castSound = SOUND_EFFECT_TYPE_SPELL_FLAME_STRIKE }
 	},
 	-- Poison charm
 	[3] = {
@@ -46,9 +42,7 @@ local charms = {
 		messageServerLog = "[Poison charm]",
 		effect = CONST_ME_GREEN_RINGS,
 		points = 600,
-		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_TERRA_STRIKE
-		}
+		sounds = { castSound = SOUND_EFFECT_TYPE_SPELL_TERRA_STRIKE }
 	},
 	-- Freeze charm
 	[4] = {
@@ -63,9 +57,7 @@ local charms = {
 		messageServerLog = "[Freeze charm]",
 		effect = CONST_ME_ICEATTACK,
 		points = 800,
-		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_ICE_STRIKE
-		}
+		sounds = { castSound = SOUND_EFFECT_TYPE_SPELL_ICE_STRIKE }
 	},
 	--Zap charm
 	[5] = {
@@ -80,9 +72,7 @@ local charms = {
 		messageServerLog = "[Zap charm]",
 		effect = CONST_ME_ENERGYHIT,
 		points = 800,
-		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_ENERGY_STRIKE
-		}
+		sounds = { castSound = SOUND_EFFECT_TYPE_SPELL_ENERGY_STRIKE }
 	},
 	--Curse charm
 	[6] = {
@@ -97,9 +87,7 @@ local charms = {
 		messageServerLog = "[Curse charm]",
 		effect = CONST_ME_SMALLCLOUDS,
 		points = 900,
-		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_DEATH_STRIKE
-		}
+		sounds = { castSound = SOUND_EFFECT_TYPE_SPELL_DEATH_STRIKE }
 	},
 	-- Cripple charm
 	[7] = {
@@ -169,9 +157,7 @@ local charms = {
 		percent = 10,
 		chance = 100,
 		points = 800,
-		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
-		}
+		sounds = { castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE }
 	},
 	-- Scavenge charm
 	[14] = {
@@ -180,9 +166,7 @@ local charms = {
 		type = CHARM_PASSIVE,
 		percent = 25,
 		points = 800,
-		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
-		}
+		sounds = { castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE }
 	},
 	-- Gut charm
 	[15] = {
@@ -191,7 +175,7 @@ local charms = {
 		type = CHARM_PASSIVE,
 		percent = 20,
 		chance = 100,
-		points = 800,
+		points = 800
 	},
 	-- Low blow charm
 	[16] = {
@@ -201,9 +185,7 @@ local charms = {
 		percent = 8,
 		chance = 100,
 		points = 2000,
-		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
-		}
+		sounds = { castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE }
 	},
 	-- Divine wrath charm
 	[17] = {
@@ -218,9 +200,7 @@ local charms = {
 		messageServerLog = "[Divine charm]",
 		effect = CONST_ME_HOLYDAMAGE,
 		points = 1500,
-		sounds = {
-			castSound = SOUND_EFFECT_TYPE_SPELL_HOLY_FLASH
-		}
+		sounds = { castSound = SOUND_EFFECT_TYPE_SPELL_HOLY_FLASH }
 	},
 	-- Vampiric embrace charm
 	[18] = {

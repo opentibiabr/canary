@@ -1,7 +1,7 @@
 local config = {
 	centerPosition = Position(33443, 31545, 13),
 	rangeX = 11,
-	rangeY = 11,
+	rangeY = 11
 }
 
 local KingzelosDeath = CreatureEvent("zelosDeath")

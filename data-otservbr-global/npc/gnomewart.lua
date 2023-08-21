@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -60,11 +58,15 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "endurance") then
 		if player:getStorageValue(Storage.BigfootBurden.QuestLine) == 15 then
-			npcHandler:say({
-				"Ah, the test is a piece of mushroomcake! Just take the teleporter over there in the south and follow the hallway. ...",
-				"You'll need to run quite a bit. It is important that you don't give up! Just keep running and running and running and ... I guess you got the idea. ...",
-				"At the end of the hallway you'll find a teleporter. Step on it and you are done! I'm sure you'll do a true gnomerun! Afterwards talk to me."
-			}, npc, creature)
+			npcHandler:say(
+				{
+					"Ah, the test is a piece of mushroomcake! Just take the teleporter over there in the south and follow the hallway. ...",
+					"You'll need to run quite a bit. It is important that you don't give up! Just keep running and running and running and ... I guess you got the idea. ...",
+					"At the end of the hallway you'll find a teleporter. Step on it and you are done! I'm sure you'll do a true gnomerun! Afterwards talk to me."
+				},
+				npc,
+				creature
+			)
 			player:setStorageValue(Storage.BigfootBurden.QuestLine, 17)
 		elseif player:getStorageValue(Storage.BigfootBurden.QuestLine) == 17 then
 			npcHandler:say("Just take the teleporter over there to the south and follow the hallway. At the end of the hallway you'll find a teleporter. Step on it and you are done!", npc, creature)
@@ -80,7 +82,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_GREET, 'Oh! Hi there! I guess you are here for the {endurance} test!')
+npcHandler:setMessage(MESSAGE_GREET, "Oh! Hi there! I guess you are here for the {endurance} test!")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

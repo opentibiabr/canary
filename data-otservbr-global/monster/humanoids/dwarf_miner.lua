@@ -29,7 +29,7 @@ monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,
 	damage = 10,
-	random = 10,
+	random = 10
 }
 
 monster.flags = {
@@ -60,49 +60,104 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Work, work!", yell = false},
-	{text = "Intruders in the mines!", yell = false},
-	{text = "Mine, all mine!", yell = false}
+	{
+		text = "Work, work!",
+		yell = false
+	},
+	{
+		text = "Intruders in the mines!",
+		yell = false
+	},
+	{
+		text = "Mine, all mine!",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{name = "gold coin", chance = 33333, maxCount = 10},
-	{id = 3097, chance = 793}, -- dwarven ring
-	{name = "axe", chance = 14285},
-	{name = "studded armor", chance = 6666},
-	{id = 3456, chance = 11111}, -- pick
-	{name = "leather legs", chance = 9090},
-	{name = "meat", chance = 3846},
-	{name = "iron ore", chance = 793}
-}
+monster.loot = { {
+	name = "gold coin",
+	chance = 33333,
+	maxCount = 10
+}, {
+	id = 3097,
+	chance = 793
+}, { -- dwarven ring
+	name = "axe",
+	chance = 14285
+}, {
+	name = "studded armor",
+	chance = 6666
+}, {
+	id = 3456,
+	chance = 11111
+}, { -- pick
+	name = "leather legs",
+	chance = 9090
+}, {
+	name = "meat",
+	chance = 3846
+}, {
+	name = "iron ore",
+	chance = 793
+} }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -26}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -26
+} }
 
 monster.defenses = {
 	defense = 10,
 	armor = 7
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

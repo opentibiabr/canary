@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -56,7 +54,7 @@ local function greetCallback(npc, creature)
 
 	if player:getStorageValue(Storage.OutfitQuest.MageSummoner.AddonWand) < 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "The gods must be praised that I am finally saved. I do not have many worldly possessions, but please accept a small reward, do you?")
-	elseif	player:getStorageValue(Storage.OutfitQuest.MageSummoner.AddonWand) >= 1 then
+	elseif player:getStorageValue(Storage.OutfitQuest.MageSummoner.AddonWand) >= 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Thanks for saving my life! Should I teleport you out of the Dark Cathedral?")
 	end
 	return true

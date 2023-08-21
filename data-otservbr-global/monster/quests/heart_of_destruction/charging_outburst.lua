@@ -29,7 +29,7 @@ monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,
 	damage = 10,
-	random = 10,
+	random = 10
 }
 
 monster.flags = {
@@ -52,9 +52,7 @@ monster.flags = {
 	canWalkOnPoison = false
 }
 
-monster.events = {
-	"ChargingOutDeath"
-}
+monster.events = { "ChargingOutDeath" }
 
 monster.light = {
 	level = 0,
@@ -63,48 +61,114 @@ monster.light = {
 
 monster.voices = {
 	interval = 5000,
-	chance = 10,
+	chance = 10
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -300, maxDamage = -1800},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = -300, maxDamage = -500, radius = 3, effect = CONST_ME_ENERGYHIT, target = false},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = -450, maxDamage = -900, radius = 8, effect = CONST_ME_BLOCKHIT, target = false},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = -600, maxDamage = -1000, length = 8, spread = 3, effect = CONST_ME_BLOCKHIT, target = false},
-	{name ="anomaly break", interval = 2000, chance = 40, target = false},
-	{name ="outburst explode", interval = 10000, chance = 100, minDamage = -1500, maxDamage = -2000, target = false}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = -300,
+	maxDamage = -1800
+}, {
+	name = "combat",
+	interval = 2000,
+	chance = 25,
+	type = COMBAT_DEATHDAMAGE,
+	minDamage = -300,
+	maxDamage = -500,
+	radius = 3,
+	effect = CONST_ME_ENERGYHIT,
+	target = false
+}, {
+	name = "combat",
+	interval = 2000,
+	chance = 25,
+	type = COMBAT_PHYSICALDAMAGE,
+	minDamage = -450,
+	maxDamage = -900,
+	radius = 8,
+	effect = CONST_ME_BLOCKHIT,
+	target = false
+}, {
+	name = "combat",
+	interval = 2000,
+	chance = 25,
+	type = COMBAT_PHYSICALDAMAGE,
+	minDamage = -600,
+	maxDamage = -1000,
+	length = 8,
+	spread = 3,
+	effect = CONST_ME_BLOCKHIT,
+	target = false
+}, {
+	name = "anomaly break",
+	interval = 2000,
+	chance = 40,
+	target = false
+}, {
+	name = "outburst explode",
+	interval = 10000,
+	chance = 100,
+	minDamage = -1500,
+	maxDamage = -2000,
+	target = false
+} }
 
 monster.defenses = {
 	defense = 100,
 	armor = 100
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -50},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = -50
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = true
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
-mType.onThink = function(monster, interval)
-end
+mType.onThink = function(monster, interval) end
 
 mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
@@ -112,13 +176,10 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature)
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onMove = function(monster, creature, fromPosition, toPosition)
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
-mType.onSay = function(monster, creature, type, message)
-end
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

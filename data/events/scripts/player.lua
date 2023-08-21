@@ -1,68 +1,61 @@
 CONTAINER_WEIGHT_CHECK = true -- true = enable / false = disable
 CONTAINER_WEIGHT_MAX = 1000000 -- 1000000 = 10k = 10000.00 oz
-
-local storeItemID = {
-	-- registered item ids here are not tradable with players
-	-- these items can be set to moveable at items.xml
-	-- 500 charges exercise weapons
-	28552, -- exercise sword
-	28553, -- exercise axe
-	28554, -- exercise club
-	28555, -- exercise bow
-	28556, -- exercise rod
-	28557, -- exercise wand
-
-	-- 50 charges exercise weapons
-	28540, -- training sword
-	28541, -- training axe
-	28542, -- training club
-	28543, -- training bow
-	28544, -- training wand
-	28545, -- training club
-
-	-- magic gold and magic converter (activated/deactivated)
-	28525, -- magic gold converter
-	28526, -- magic gold converter
-	23722, -- gold converter
-	25719, -- gold converter
-
-	-- foods
-	29408, -- roasted wyvern wings
-	29409, -- carrot pie
-	29410, -- tropical marinated tiger
-	29411, -- delicatessen salad
-	29412, -- chilli con carniphila
-	29413, -- svargrond salmon filet
-	29414, -- carrion casserole
-	29415, -- consecrated beef
-	29416, -- overcooked noodles
-}
+local storeItemID = { -- registered item ids here are not tradable with players
+-- these items can be set to moveable at items.xml
+-- 500 charges exercise weapons
+28552, 28553, 28554, 28555, 28556, 28557, -- 50 charges exercise weapons -- exercise sword -- exercise axe -- exercise club -- exercise bow -- exercise rod -- exercise wand
+28540, 28541, 28542, 28543, 28544, 28545, -- magic gold and magic converter (activated/deactivated) -- training sword -- training axe -- training club -- training bow -- training wand -- training club
+28525, 28526, 23722, 25719, -- foods -- magic gold converter -- magic gold converter -- gold converter -- gold converter
+29408, 29409, 29410, 29411, 29412, 29413, 29414, 29415, 29416 } -- roasted wyvern wings -- carrot pie -- tropical marinated tiger -- delicatessen salad -- chilli con carniphila -- svargrond salmon filet -- carrion casserole -- consecrated beef -- overcooked noodles
 
 -- Players cannot throw items on teleports if set to true
 local blockTeleportTrashing = true
 
-local titles = {
-	{ storageID = 14960, title = " Scout" },
-	{ storageID = 14961, title = " Sentinel" },
-	{ storageID = 14962, title = " Steward" },
-	{ storageID = 14963, title = " Warden" },
-	{ storageID = 14964, title = " Squire" },
-	{ storageID = 14965, title = " Warrior" },
-	{ storageID = 14966, title = " Keeper" },
-	{ storageID = 14967, title = " Guardian" },
-	{ storageID = 14968, title = " Sage" },
-	{ storageID = 14969, title = " Tutor" },
-	{ storageID = 14970, title = " Senior Tutor" },
-	{ storageID = 14971, title = " King" },
-}
+local titles = { {
+	storageID = 14960,
+	title = " Scout"
+}, {
+	storageID = 14961,
+	title = " Sentinel"
+}, {
+	storageID = 14962,
+	title = " Steward"
+}, {
+	storageID = 14963,
+	title = " Warden"
+}, {
+	storageID = 14964,
+	title = " Squire"
+}, {
+	storageID = 14965,
+	title = " Warrior"
+}, {
+	storageID = 14966,
+	title = " Keeper"
+}, {
+	storageID = 14967,
+	title = " Guardian"
+}, {
+	storageID = 14968,
+	title = " Sage"
+}, {
+	storageID = 14969,
+	title = " Tutor"
+}, {
+	storageID = 14970,
+	title = " Senior Tutor"
+}, {
+	storageID = 14971,
+	title = " King"
+} }
 
 local config = {
 	maxItemsPerSeconds = 1,
-	exhaustTime = 2000,
+	exhaustTime = 2000
 }
 
 if not pushDelay then
-	pushDelay = { }
+	pushDelay = {}
 end
 
 local function antiPush(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
@@ -78,7 +71,10 @@ local function antiPush(self, item, count, fromPosition, toPosition, fromCylinde
 
 	local cid = self:getId()
 	if not pushDelay[cid] then
-		pushDelay[cid] = { items = 0, time = 0 }
+		pushDelay[cid] = {
+			items = 0,
+			time = 0
+		}
 	end
 
 	pushDelay[cid].items = pushDelay[cid].items + 1
@@ -115,9 +111,7 @@ local function useStamina(player)
 	end
 
 	local staminaMinutes = player:getStamina()
-	if staminaMinutes == 0 then
-		return
-	end
+	if staminaMinutes == 0 then return end
 
 	local playerId = player:getId()
 	if not playerId or not nextUseStaminaTime[playerId] then
@@ -126,9 +120,7 @@ local function useStamina(player)
 
 	local currentTime = os.time()
 	local timePassed = currentTime - nextUseStaminaTime[playerId]
-	if timePassed <= 0 then
-		return
-	end
+	if timePassed <= 0 then return end
 
 	if timePassed > 60 then
 		if staminaMinutes > 2 then
@@ -152,9 +144,7 @@ local function useStaminaXpBoost(player)
 	end
 
 	local staminaMinutes = player:getExpBoostStamina() / 60
-	if staminaMinutes == 0 then
-		return
-	end
+	if staminaMinutes == 0 then return end
 
 	local playerId = player:getId()
 	if not playerId then
@@ -163,9 +153,7 @@ local function useStaminaXpBoost(player)
 
 	local currentTime = os.time()
 	local timePassed = currentTime - nextUseXpStamina[playerId]
-	if timePassed <= 0 then
-		return
-	end
+	if timePassed <= 0 then return end
 
 	if timePassed > 60 then
 		if staminaMinutes > 2 then
@@ -211,10 +199,10 @@ function Player:onLookInBattleList(creature, distance)
 	local description = "You see " .. creature:getDescription(distance)
 	if creature:isMonster() then
 		local master = creature:getMaster()
-		local summons = {'sorcerer familiar','knight familiar','druid familiar','paladin familiar'}
+		local summons = { "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar" }
 		if master and table.contains(summons, creature:getName():lower()) then
-			description = description..' (Master: ' .. master:getName() .. '). \z
-				It will disappear in ' .. getTimeInWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
+			description = description .. " (Master: " .. master:getName() .. "). \z
+				It will disappear in " .. getTimeInWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
 		end
 	end
 	if self:getGroup():getAccess() then
@@ -225,11 +213,7 @@ function Player:onLookInBattleList(creature, distance)
 		description = string.format(str, description, creature:getHealth(), creature:getMaxHealth()) .. "."
 
 		local position = creature:getPosition()
-		description = string.format(
-		"%s\nPosition: %d, %d, %d",
-		description, position.x, position.y, position.z
-
-		)
+		description = string.format("%s\nPosition: %d, %d, %d", description, position.x, position.y, position.z)
 
 		if creature:isPlayer() then
 			description = string.format("%s\nIP: %s", description, Game.convertIpToString(creature:getIp()))
@@ -252,8 +236,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	end
 
 	-- No move parcel very heavy
-	if CONTAINER_WEIGHT_CHECK and ItemType(item:getId()):isContainer()
-		and item:getWeight() > CONTAINER_WEIGHT_MAX then
+	if CONTAINER_WEIGHT_CHECK and ItemType(item:getId()):isContainer() and item:getWeight() > CONTAINER_WEIGHT_MAX then
 		self:sendCancelMessage("Your cannot move this item too heavy.")
 		return false
 	end
@@ -269,18 +252,21 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	end
 
 	-- SSA exhaust
-	local exhaust = { }
-	if toPosition.x == CONTAINER_POSITION and toPosition.y == CONST_SLOT_NECKLACE
-		and item:getId() == ITEM_STONE_SKIN_AMULET then
+	local exhaust = {}
+	if toPosition.x == CONTAINER_POSITION and toPosition.y == CONST_SLOT_NECKLACE and item:getId() == ITEM_STONE_SKIN_AMULET then
 		local pid = self:getId()
 		if exhaust[pid] then
 			self:sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED)
 			return false
 		else
 			exhaust[pid] = true
-			addEvent(function()
-				exhaust[pid] = false
-			end, 2000, pid)
+			addEvent(
+				function()
+					exhaust[pid] = false
+				end,
+				2000,
+				pid
+			)
 			return true
 		end
 	end
@@ -340,7 +326,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 
 		-- The player also shouldn't be able to insert items into the boss corpse
 		local tileCorpse = Tile(container:getPosition())
-		for index, value in ipairs(tileCorpse:getItems() or { }) do
+		for index, value in ipairs(tileCorpse:getItems() or {}) do
 			if value:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 and value:getName() == container:getName() then
 				self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 				return false
@@ -385,21 +371,21 @@ function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder,
 		if self:getPosition():isInRange(frompos, topos) and item:getId() == 23729 then
 			local tileBoss = Tile(toPosition)
 			if tileBoss and tileBoss:getTopCreature() and tileBoss:getTopCreature():isMonster() then
-				if tileBoss:getTopCreature():getName():lower() == 'the remorseless corruptor' then
+				if tileBoss:getTopCreature():getName():lower() == "the remorseless corruptor" then
 					tileBoss:getTopCreature():addHealth(-17000)
 					tileBoss:getTopCreature():remove()
-					local monster = Game.createMonster('The Corruptor of Souls', toPosition)
+					local monster = Game.createMonster("The Corruptor of Souls", toPosition)
 					if not monster then
 						return false
 					end
 					removeItem = true
-					monster:registerEvent('CheckTile')
-					if Game.getStorageValue('healthSoul') > 0 then
-						monster:addHealth(-(monster:getHealth() - Game.getStorageValue('healthSoul')))
+					monster:registerEvent("CheckTile")
+					if Game.getStorageValue("healthSoul") > 0 then
+						monster:addHealth(-(monster:getHealth() - Game.getStorageValue("healthSoul")))
 					end
-					Game.setStorageValue('CheckTile', os.time() + 30)
-				elseif tileBoss:getTopCreature():getName():lower() == 'the corruptor of souls' then
-					Game.setStorageValue('CheckTile', os.time() + 30)
+					Game.setStorageValue("CheckTile", os.time() + 30)
+				elseif tileBoss:getTopCreature():getName():lower() == "the corruptor of souls" then
+					Game.setStorageValue("CheckTile", os.time() + 30)
 					removeItem = true
 				end
 			end
@@ -440,8 +426,7 @@ function Player:onReportRuleViolation(targetName, reportType, reportReason, comm
 
 	local file = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "a")
 	if not file then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			"There was an error when processing your report, please contact a gamemaster.")
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There was an error when processing your report, please contact a gamemaster.")
 		return
 	end
 
@@ -471,8 +456,7 @@ function Player:onReportBug(message, position, category)
 	local file = io.open(string.format("%s/reports/bugs/%s/report.txt", CORE_DIRECTORY, name), "a")
 
 	if not file then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			"There was an error when processing your report, please contact a gamemaster.")
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There was an error when processing your report, please contact a gamemaster.")
 		return true
 	end
 
@@ -487,8 +471,7 @@ function Player:onReportBug(message, position, category)
 	io.write("Comment: " .. message .. "\n")
 	io.close(file)
 
-	self:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-		"Your report has been sent to " .. configManager.getString(configKeys.SERVER_NAME) .. ".")
+	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your report has been sent to " .. configManager.getString(configKeys.SERVER_NAME) .. ".")
 	return true
 end
 
@@ -528,7 +511,6 @@ function Player:onGainExperience(target, exp, rawExp)
 
 	-- Store Bonus
 	useStaminaXpBoost(self) -- Use store boost stamina
-
 	local Boost = self:getExpBoostStamina()
 	local stillHasBoost = Boost > 0
 	local storeXpBoostAmount = stillHasBoost and self:getStoreXpBoost() or 0
@@ -547,7 +529,7 @@ function Player:onGainExperience(target, exp, rawExp)
 	useConcoctionTime(self)
 
 	-- Boosted creature
-	if target:getName():lower() == (Game.getBoostedCreature()):lower() then
+	if target:getName():lower() == Game.getBoostedCreature():lower() then
 		exp = exp * 2
 	end
 
@@ -652,9 +634,7 @@ function Player:onChangeZone(zone)
 							delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY)
 						end
 
-						local message = string.format("In protection zone. Every %i minutes, gain %i stamina.",
-							delay, configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
-						)
+						local message = string.format("In protection zone. Every %i minutes, gain %i stamina.", delay, configManager.getNumber(configKeys.STAMINA_PZ_GAIN))
 						self:sendTextMessage(MESSAGE_STATUS, message)
 						staminaBonus.eventsPz[self:getId()] = addEvent(addStamina, delay * 60 * 1000, nil, self:getId(), delay * 60 * 1000)
 					end

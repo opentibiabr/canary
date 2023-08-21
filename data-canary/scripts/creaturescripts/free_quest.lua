@@ -1,14 +1,13 @@
 local stage = configManager.getNumber(configKeys.FREE_QUEST_STAGE)
 
-local questTable = {
-	{storage = storage, storageValue = value}
-}
+local questTable = { {
+	storage = storage,
+	storageValue = value
+} }
 
 local function playerFreeQuestStart(playerId, index)
 	local player = Player(playerId)
-	if not player then
-		return
-	end
+	if not player then return end
 
 	for i = 1, 5 do
 		index = index + 1
@@ -29,8 +28,7 @@ end
 local freeQuests = CreatureEvent("FreeQuests")
 
 function freeQuests.onLogin(player)
-	if not configManager.getBoolean(configKeys.TOGGLE_FREE_QUEST) or
-	player:getStorageValue(Storage.FreeQuests) == stage then
+	if not configManager.getBoolean(configKeys.TOGGLE_FREE_QUEST) or player:getStorageValue(Storage.FreeQuests) == stage then
 		return true
 	end
 

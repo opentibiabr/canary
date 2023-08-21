@@ -6,16 +6,14 @@ condition:setParameter(CONDITION_PARAM_HEALTHTICKS, 10 * 1000)
 
 local function changeSpeeds(cid, var)
 	local creature = Creature(cid)
-	if not creature then
-		return
-	end
+	if not creature then return end
 	creature:changeSpeed(creature:getBaseSpeed())
 end
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-    local nextPosition = creature:getPosition()
+	local nextPosition = creature:getPosition()
 	local speed = creature:getSpeed()
 	local tile = Tile(nextPosition.x, nextPosition.y - 1, nextPosition.z)
 	local topCreature = tile:getTopCreature()
@@ -24,15 +22,13 @@ function spell.onCastSpell(creature, var)
 		creature:teleportTo(Position(nextPosition.x, nextPosition.y - 1, nextPosition.z), true)
 		creature:changeSpeed(-speed)
 		addEvent(changeSpeeds, 11 * 1000, creature:getId(), var)
-		if not topCreature then
-			return
-		end
+		if not topCreature then return end
 		if topCreature:isPlayer() then
 			topCreature:teleportTo(Position(nextPosition.x, nextPosition.y - 3, nextPosition.z), true)
 		else
 		end
 	end
-    return true
+	return true
 end
 
 spell:name("glooth bomb walkthrough")

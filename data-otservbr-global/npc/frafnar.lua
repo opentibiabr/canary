@@ -18,9 +18,7 @@ npcConfig.outfit = {
 	lookFeet = 114
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -59,7 +57,11 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.HiddenCityOfBeregar.SweetAsChocolateCake) < 1 then
-			npcHandler:say("There is indeed something you could do for me. You must know, I'm in love with Bolfana. I'm sure she'd have a beer with me if I got her a chocolate cake. Problem is that I can't leave this door as I'm on duty. Would you be so kind and help me?", npc, creature)
+			npcHandler:say(
+				"There is indeed something you could do for me. You must know, I'm in love with Bolfana. I'm sure she'd have a beer with me if I got her a chocolate cake. Problem is that I can't leave this door as I'm on duty. Would you be so kind and help me?",
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(Storage.HiddenCityOfBeregar.SweetAsChocolateCake) == 2 then
 			npcHandler:say("So did you tell her that the cake came from me?", npc, creature)
@@ -74,7 +76,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			player:setStorageValue(Storage.HiddenCityOfBeregar.SweetAsChocolateCake, 3)
 			player:setStorageValue(Storage.HiddenCityOfBeregar.DoorWestMine, 1)
-		npcHandler:say("Great! That's my breakthrough. Now she can't refuse to go out with me. I grant you access to the western part of the mine.", npc, creature)
+			npcHandler:say("Great! That's my breakthrough. Now she can't refuse to go out with me. I grant you access to the western part of the mine.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end

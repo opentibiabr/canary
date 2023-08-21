@@ -10,13 +10,9 @@ npcConfig.maxHealth = npcConfig.health
 npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
-npcConfig.outfit = {
-	lookType = 65
-}
+npcConfig.outfit = { lookType = 65 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -47,22 +43,63 @@ end
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop = {
-	{ itemName = "black hood", clientId = 9645, sell = 190 },
-	{ itemName = "book of necromantic rituals", clientId = 10320, sell = 180 },
-	{ itemName = "book of prayers", clientId = 9646, sell = 120 },
-	{ itemName = "broken key ring", clientId = 11652, sell = 8000 },
-	{ itemName = "broken ring of ending", clientId = 12737, sell = 4000 },
-	{ itemName = "cultish mask", clientId = 9638, sell = 280 },
-	{ itemName = "cultish robe", clientId = 9639, sell = 150 },
-	{ itemName = "cultish symbol", clientId = 11455, sell = 500 },
-	{ itemName = "dark rosary", clientId = 10303, sell = 48 },
-	{ itemName = "elvish talisman", clientId = 9635, sell = 45 },
-	{ itemName = "flask of embalming fluid", clientId = 11466, sell = 30 },
-	{ itemName = "strange symbol", clientId = 3058, sell = 200 },
-	{ itemName = "unholy bone", clientId = 10316, sell = 480 },
-	{ itemName = "witch broom", clientId = 9652, sell = 60 }
-}
+npcConfig.shop = { {
+	itemName = "black hood",
+	clientId = 9645,
+	sell = 190
+}, {
+	itemName = "book of necromantic rituals",
+	clientId = 10320,
+	sell = 180
+}, {
+	itemName = "book of prayers",
+	clientId = 9646,
+	sell = 120
+}, {
+	itemName = "broken key ring",
+	clientId = 11652,
+	sell = 8000
+}, {
+	itemName = "broken ring of ending",
+	clientId = 12737,
+	sell = 4000
+}, {
+	itemName = "cultish mask",
+	clientId = 9638,
+	sell = 280
+}, {
+	itemName = "cultish robe",
+	clientId = 9639,
+	sell = 150
+}, {
+	itemName = "cultish symbol",
+	clientId = 11455,
+	sell = 500
+}, {
+	itemName = "dark rosary",
+	clientId = 10303,
+	sell = 48
+}, {
+	itemName = "elvish talisman",
+	clientId = 9635,
+	sell = 45
+}, {
+	itemName = "flask of embalming fluid",
+	clientId = 11466,
+	sell = 30
+}, {
+	itemName = "strange symbol",
+	clientId = 3058,
+	sell = 200
+}, {
+	itemName = "unholy bone",
+	clientId = 10316,
+	sell = 480
+}, {
+	itemName = "witch broom",
+	clientId = 9652,
+	sell = 60
+} }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -72,7 +109,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

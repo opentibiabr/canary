@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -55,14 +53,12 @@ local function greetCallback(npc, creature, message)
 	local player = Player(creature)
 
 	if player:getStorageValue(HiddenThreats.CorymRescued01) < 0 then
-		npcHandler:setMessage(MESSAGE_GREET, {
-			'My hero! A friend of mine sent you to liberate me? A true friend! I am poor but nevertheless I give you this as little reward.'
-		})
-		player:setStorageValue(HiddenThreats.CorymRescueMission, player:getStorageValue(HiddenThreats.CorymRescueMission) +1 )
-		player:setStorageValue(HiddenThreats.CorymRescued01, 1 )
+		npcHandler:setMessage(MESSAGE_GREET, { "My hero! A friend of mine sent you to liberate me? A true friend! I am poor but nevertheless I give you this as little reward." })
+		player:setStorageValue(HiddenThreats.CorymRescueMission, player:getStorageValue(HiddenThreats.CorymRescueMission) + 1)
+		player:setStorageValue(HiddenThreats.CorymRescued01, 1)
 		player:addItem(3030, 1)
 	else
-		npcHandler:setMessage(MESSAGE_GREET, 'My hero! A friend of mine sent you to liberate me? A true friend!')
+		npcHandler:setMessage(MESSAGE_GREET, "My hero! A friend of mine sent you to liberate me? A true friend!")
 	end
 	return true
 end
@@ -77,7 +73,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Greeting message
-npcHandler:setMessage(MESSAGE_FAREWELL, 'Good bye, |PLAYERNAME|.')
+npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye, |PLAYERNAME|.")
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

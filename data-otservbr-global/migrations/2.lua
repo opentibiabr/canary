@@ -94,7 +94,8 @@ function onUpdateDatabase()
 		UNLOCK TABLES;
 	]])
 
-	db.query([[
+	db.query(
+		[[
 		CREATE TABLE IF NOT EXISTS `coins_transactions` (
 				`id`          int(11)       UNSIGNED NOT NULL AUTO_INCREMENT,
 				`account_id`  int(11)       UNSIGNED NOT NULL,
@@ -108,7 +109,8 @@ function onUpdateDatabase()
 					FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
 						ON DELETE CASCADE
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-	]])
+	]]
+	)
 
 	return true
 end

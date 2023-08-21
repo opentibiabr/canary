@@ -1,7 +1,12 @@
-local positions = {
-	{x = 32478, y = 31903, z = 3},
-	{x = 32479, y = 31903, z = 3}
-}
+local positions = { {
+	x = 32478,
+	y = 31903,
+	z = 3
+}, {
+	x = 32479,
+	y = 31903,
+	z = 3
+} }
 
 local fifthFloorLever = Action()
 
@@ -11,7 +16,11 @@ function fifthFloorLever.onUse(creature, item, position, fromPosition)
 		return true
 	end
 
-	local stairPosition = {x = 32479, y = 31904, z = 3}
+	local stairPosition = {
+		x = 32479,
+		y = 31904,
+		z = 3
+	}
 	local stairId = 1948
 
 	if item.itemid == 2772 then
@@ -23,12 +32,12 @@ function fifthFloorLever.onUse(creature, item, position, fromPosition)
 			-- Create ladder
 			Position(stairPosition):createItem(stairId)
 			item:transform(2773)
-		-- If not have all items, then send poff effect
+			-- If not have all items, then send poff effect
 		else
 			item:getPosition():sendMagicEffect(CONST_ME_POFF)
 		end
-	elseif item.itemid == 2773 then
 		-- Remove ladder
+	elseif item.itemid == 2773 then
 		if Position(stairPosition):hasItem(stairId) then
 			Position(stairPosition):removeItem(stairId)
 		end

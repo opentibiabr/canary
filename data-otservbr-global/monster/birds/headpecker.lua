@@ -39,9 +39,7 @@ monster.changeTarget = {
 	chance = 70
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = false,
@@ -68,50 +66,124 @@ monster.light = {
 	color = 0
 }
 
-monster.loot = {
-	{name = "Crystal Coin", chance = 35160},
-	{name = "Headpecker Beak", chance = 11360},
-	{name = "Headpecker Feather", chance = 7620, minCount = 1, maxCount = 5},
-	{name = "Furry Club", chance = 5560},
-	{id = 3595, chance = 4950, minCount = 1, maxCount = 3}, -- Carrot
-	{name = "Knife", chance = 4260},
-	{name = "Spike Sword", chance = 4040},
-	{name = "War Hammer", chance = 2290},
-	{name = "Titan Axe", chance = 1720},
-	{name = "Blue Gem", chance = 1560},
-	{name = "Wand of Starstorm", chance = 980},
-	{name = "Gold Ingot", chance = 910},
-}
+monster.loot = { {
+	name = "Crystal Coin",
+	chance = 35160
+}, {
+	name = "Headpecker Beak",
+	chance = 11360
+}, {
+	name = "Headpecker Feather",
+	chance = 7620,
+	minCount = 1,
+	maxCount = 5
+}, {
+	name = "Furry Club",
+	chance = 5560
+}, {
+	id = 3595,
+	chance = 4950,
+	minCount = 1,
+	maxCount = 3
+}, { -- Carrot
+	name = "Knife",
+	chance = 4260
+}, {
+	name = "Spike Sword",
+	chance = 4040
+}, {
+	name = "War Hammer",
+	chance = 2290
+}, {
+	name = "Titan Axe",
+	chance = 1720
+}, {
+	name = "Blue Gem",
+	chance = 1560
+}, {
+	name = "Wand of Starstorm",
+	chance = 980
+}, {
+	name = "Gold Ingot",
+	chance = 910
+} }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 300, maxDamage = -801},
-	{name ="combat", interval = 2000, chance = 47, type = COMBAT_PHYSICALDAMAGE, minDamage = -800, maxDamage = -1500, effect = CONST_ME_YELLOWSMOKE, target = true},
-	{name ="combat", interval = 2000, chance = 31, type = COMBAT_LIFEDRAIN, minDamage = -800, maxDamage = -1500, radius = 4, effect = CONST_ME_DRAWBLOOD, target = false},
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 300,
+	maxDamage = -801
+}, {
+	name = "combat",
+	interval = 2000,
+	chance = 47,
+	type = COMBAT_PHYSICALDAMAGE,
+	minDamage = -800,
+	maxDamage = -1500,
+	effect = CONST_ME_YELLOWSMOKE,
+	target = true
+}, {
+	name = "combat",
+	interval = 2000,
+	chance = 31,
+	type = COMBAT_LIFEDRAIN,
+	minDamage = -800,
+	maxDamage = -1500,
+	radius = 4,
+	effect = CONST_ME_DRAWBLOOD,
+	target = false
+} }
 
 monster.defenses = {
 	defense = 100,
-	armor = 68,
+	armor = 68
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -10},
-	{type = COMBAT_ENERGYDAMAGE, percent = 10},
-	{type = COMBAT_EARTHDAMAGE, percent = 10},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -10},
-	{type = COMBAT_HOLYDAMAGE , percent = 100},
-	{type = COMBAT_DEATHDAMAGE , percent = -10}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = -10
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 10
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 10
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = -10
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = -10
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = -10
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

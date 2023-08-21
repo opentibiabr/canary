@@ -43,15 +43,15 @@ local config = {
 	storage = Storage.Quest.U12_00.TheDreamCourts.FacelessBaneTime
 }
 ]]
-setmetatable(BossLever, {
-	---@param self BossLever
-	---@param config table
-	__call = function(self, config)
-		local boss = config.boss
-		if not boss then
-			error("BossLever: boss is required")
-		end
-		return setmetatable({
+setmetatable(BossLever, { ---@param self BossLever
+---@param config table
+__call = function(self, config)
+	local boss = config.boss
+	if not boss then
+		error("BossLever: boss is required")
+	end
+	return setmetatable(
+		{
 			name = boss.name,
 			bossPosition = boss.position,
 			timeToFightAgain = config.timeToFightAgain or configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN),
@@ -66,10 +66,11 @@ setmetatable(BossLever, {
 			monsters = config.monsters or {},
 			_position = nil,
 			_uid = nil,
-			_aid = nil,
-		}, { __index = BossLever })
-	end
-})
+			_aid = nil
+		},
+		{ __index = BossLever }
+	)
+end })
 
 ---@param self BossLever
 ---@param position Position
@@ -101,7 +102,7 @@ function BossLever:onUse(player)
 	local isParticipant = false
 	for _, v in ipairs(self.playerPositions) do
 		if v.pos == player:getPosition() then
-			isParticipant	= true
+			isParticipant = true
 		end
 	end
 	if not isParticipant then
@@ -136,7 +137,7 @@ function BossLever:onUse(player)
 			for _, v in pairs(info) do
 				local newPlayer = v.creature
 				if newPlayer then
-					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " ..  self.timeToFightAgain / 60 / 60 .. " hours to face " .. self.name .. " again!")
+					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. self.timeToFightAgain / 60 / 60 .. " hours to face " .. self.name .. " again!")
 					if newPlayer:getStorageValue(self.storage) > os.time() then
 						newPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
 					end
@@ -197,13 +198,27 @@ end
 ---@return boolean
 function BossLever:register()
 	local missingParams = {}
-	if not self.name then table.insert(missingParams, "boss.name") end
-	if not self.bossPosition and not self.createBoss then table.insert(missingParams, "boss.position") end
-	if not self.storage then table.insert(missingParams, "storage") end
-	if not self.playerPositions then table.insert(missingParams, "playerPositions") end
-	if not self.area then table.insert(missingParams, "specPos") end
-	if not self.exit then table.insert(missingParams, "exit") end
-	if not self._position and not self._uid and not self._aid then table.insert(missingParams, "position or uid or aid") end
+	if not self.name then
+		table.insert(missingParams, "boss.name")
+	end
+	if not self.bossPosition and not self.createBoss then
+		table.insert(missingParams, "boss.position")
+	end
+	if not self.storage then
+		table.insert(missingParams, "storage")
+	end
+	if not self.playerPositions then
+		table.insert(missingParams, "playerPositions")
+	end
+	if not self.area then
+		table.insert(missingParams, "specPos")
+	end
+	if not self.exit then
+		table.insert(missingParams, "exit")
+	end
+	if not self._position and not self._uid and not self._aid then
+		table.insert(missingParams, "position or uid or aid")
+	end
 	if #missingParams > 0 then
 		local name = self.name or "unknown"
 		Spdlog.error("BossLever:register() - missing parameters for boss " .. name .. ": " .. table.concat(missingParams, ", "))
@@ -216,7 +231,9 @@ function BossLever:register()
 	zone:blockFamiliars()
 
 	local action = Action()
-	action.onUse = function(player) self:onUse(player) end
+	action.onUse = function(player)
+		self:onUse(player)
+	end
 	if self._position then
 		action:position(self._position)
 	end

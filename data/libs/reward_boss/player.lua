@@ -35,15 +35,15 @@ function Player:executeRewardEvents(item, toPosition)
 
 		-- The player also shouldn't be able to insert items into the boss corpse
 		local tileCorpse = Tile(container:getPosition())
-		for index, value in ipairs(tileCorpse:getItems() or { }) do
-			if value:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2^31 - 1 and value:getName() == container:getName() then
+		for index, value in ipairs(tileCorpse:getItems() or {}) do
+			if value:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 and value:getName() == container:getName() then
 				self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 				return false
 			end
 		end
 	end
 	-- Do not let the player move the boss corpse.
-	if item:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2^31 - 1 then
+	if item:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end

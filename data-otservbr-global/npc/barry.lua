@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -58,23 +56,24 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, 'report') then
+	if MsgContains(message, "report") then
 		local player = Player(creature)
-		if table.contains({9, 11}, player:getStorageValue(Storage.InServiceofYalahar.Questline)) then
-			npcHandler:say('Oh my, where to begin with .. <tells about the troubles he and his men have recently encountered>.', npc, creature)
+		if table.contains({ 9, 11 }, player:getStorageValue(Storage.InServiceofYalahar.Questline)) then
+			npcHandler:say("Oh my, where to begin with .. <tells about the troubles he and his men have recently encountered>.", npc, creature)
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, player:getStorageValue(Storage.InServiceofYalahar.Questline) + 1)
-			player:setStorageValue(Storage.InServiceofYalahar.Mission02, player:getStorageValue(Storage.InServiceofYalahar.Mission02) + 1) -- StorageValue for Questlog 'Mission 02: Watching the Watchmen'
+			player:setStorageValue(Storage.InServiceofYalahar.Mission02, player:getStorageValue(Storage.InServiceofYalahar.Mission02) + 1)
 		end
-	elseif MsgContains(message, 'pass') then
-		npcHandler:say('You can {pass} either to the {Magician Quarter} or {Sunken Quarter}. Which one will it be?', npc, creature)
+	-- StorageValue for Questlog 'Mission 02: Watching the Watchmen'
+	elseif MsgContains(message, "pass") then
+		npcHandler:say("You can {pass} either to the {Magician Quarter} or {Sunken Quarter}. Which one will it be?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif npcHandler:getTopic(playerId) == 1 then
-		if MsgContains(message, 'magician') then
+		if MsgContains(message, "magician") then
 			local destination = Position(32885, 31157, 7)
 			Player(creature):teleportTo(destination)
 			destination:sendMagicEffect(CONST_ME_TELEPORT)
 			npcHandler:setTopic(playerId, 0)
-		elseif MsgContains(message, 'sunken') then
+		elseif MsgContains(message, "sunken") then
 			local destination = Position(32884, 31162, 7)
 			Player(creature):teleportTo(destination)
 			destination:sendMagicEffect(CONST_ME_TELEPORT)

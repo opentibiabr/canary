@@ -8,7 +8,7 @@ local items = {
 	glooth_sandwiches = 21143,
 	glooth_soup = 21144,
 	glooth_steaks = 21146,
-	control_unit = 21186,
+	control_unit = 21186
 }
 
 local gloothBag = Action()

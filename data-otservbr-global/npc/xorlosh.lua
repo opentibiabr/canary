@@ -18,9 +18,7 @@ npcConfig.outfit = {
 	lookFeet = 95
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -57,7 +55,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	if MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.HiddenCityOfBeregar.GoingDown) < 1 then
 			npcHandler:say("Hmmmm, you could indeed help me. See this mechanism? Some son of a rotworm put WAY too much stuff on this elevator and now it's broken. I need 3 gear wheels to fix it. You think you could get them for me?", npc, creature)
@@ -75,10 +72,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "tunnel") then
 		if player:getStorageValue(Storage.HiddenCityOfBeregar.RoyalRescue) == 1 then
-			npcHandler:say({
-				"There should be a book in our library about tunnelling. I don't have that much time to talk to you about that. ...",
-				"The book about tunnelling is in the library which is located in the north eastern wing of Beregar city."
-			}, npc, creature)
+			npcHandler:say(
+				{ "There should be a book in our library about tunnelling. I don't have that much time to talk to you about that. ...", "The book about tunnelling is in the library which is located in the north eastern wing of Beregar city." },
+				npc,
+				creature
+			)
 		end
 	end
 	return true

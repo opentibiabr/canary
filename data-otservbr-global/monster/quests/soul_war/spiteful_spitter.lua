@@ -28,7 +28,7 @@ monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,
 	damage = 10,
-	random = 10,
+	random = 10
 }
 
 monster.flags = {
@@ -59,42 +59,121 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Power up!", yell = false},
-	{text = "Shocked to meet you.", yell = false},
-	{text = "You should be more positive!", yell = false}
+	{
+		text = "Power up!",
+		yell = false
+	},
+	{
+		text = "Shocked to meet you.",
+		yell = false
+	},
+	{
+		text = "You should be more positive!",
+		yell = false
+	}
 }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -800},
-	{name ="combat", interval = 4000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -800, maxDamage = -1300, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = true},
-	{name ="combat", interval = 3000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -750, radius = 4, effect = CONST_ME_ENERGYHIT, target = false},
-	{name ="combat", interval = 2000, chance = 14, type = COMBAT_HOLYDAMAGE, minDamage = -600, maxDamage = -1000, range = 7, shootEffect = CONST_ANI_SPECTRALBOLT, effect = CONST_ME_HOLYDAMAGE, target = true},
-	{name ="combat", interval = 2000, chance = 24, type = COMBAT_HOLYDAMAGE, minDamage = -600, maxDamage = -1000, range = 7, radius = 3, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_GROUNDSHAKER, target = true}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -800
+}, {
+	name = "combat",
+	interval = 4000,
+	chance = 15,
+	type = COMBAT_ENERGYDAMAGE,
+	minDamage = -800,
+	maxDamage = -1300,
+	range = 7,
+	shootEffect = CONST_ANI_ENERGY,
+	effect = CONST_ME_ENERGYHIT,
+	target = true
+}, {
+	name = "combat",
+	interval = 3000,
+	chance = 20,
+	type = COMBAT_ENERGYDAMAGE,
+	minDamage = -400,
+	maxDamage = -750,
+	radius = 4,
+	effect = CONST_ME_ENERGYHIT,
+	target = false
+}, {
+	name = "combat",
+	interval = 2000,
+	chance = 14,
+	type = COMBAT_HOLYDAMAGE,
+	minDamage = -600,
+	maxDamage = -1000,
+	range = 7,
+	shootEffect = CONST_ANI_SPECTRALBOLT,
+	effect = CONST_ME_HOLYDAMAGE,
+	target = true
+}, {
+	name = "combat",
+	interval = 2000,
+	chance = 24,
+	type = COMBAT_HOLYDAMAGE,
+	minDamage = -600,
+	maxDamage = -1000,
+	range = 7,
+	radius = 3,
+	shootEffect = CONST_ANI_SMALLHOLY,
+	effect = CONST_ME_GROUNDSHAKER,
+	target = true
+} }
 
 monster.defenses = {
 	defense = 90,
 	armor = 107
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 60},
-	{type = COMBAT_EARTHDAMAGE, percent = -5},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 40},
-	{type = COMBAT_DEATHDAMAGE , percent = -20}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 60
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = -5
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 40
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = -20
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = true},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = true
+}, {
+	type = "outfit",
+	condition = true
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

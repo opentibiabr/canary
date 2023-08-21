@@ -9,11 +9,7 @@ for i = 65, 85 do
 	condition:setParameter(CONDITION_PARAM_SKILL_MELEEPERCENT, i)
 	condition:setParameter(CONDITION_PARAM_SKILL_FISTPERCENT, i)
 
-	arr = {
-		{0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0},
-		{0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0},
-		{0, 0, 0, 0, 1, 3, 1, 0, 0, 0, 0}
-	}
+	arr = { { 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0 }, { 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0 }, { 0, 0, 0, 0, 1, 3, 1, 0, 0, 0, 0 } }
 
 	local area = createCombatArea(arr)
 	combat[i]:setArea(area)

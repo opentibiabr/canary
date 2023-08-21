@@ -1,8 +1,4 @@
-local altars = {
-	Position(32777, 31982, 9),
-	Position(32779, 31977, 9),
-	Position(32781, 31982, 9)
-}
+local altars = { Position(32777, 31982, 9), Position(32779, 31977, 9), Position(32781, 31982, 9) }
 
 local inquisitionVampire = Action()
 function inquisitionVampire.onUse(player, item, fromPosition, target, toPosition, isHotkey)

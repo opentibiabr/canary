@@ -1,16 +1,18 @@
 ---@author @Glatharth
 Lever = {}
-setmetatable(Lever, {
-	__call = function(self)
-		local lever_data = {
-			positions = {},
-			info_positions = nil,
-			condition = function() return true end,
-			teleport_player_func = function() return true end,
-		}
-		return setmetatable(lever_data, { __index = Lever })
-	end
-})
+setmetatable(Lever, { __call = function(self)
+	local lever_data = {
+		positions = {},
+		info_positions = nil,
+		condition = function()
+			return true
+		end,
+		teleport_player_func = function()
+			return true
+		end
+	}
+	return setmetatable(lever_data, { __index = Lever })
+end })
 
 ---@return table
 function Lever.getPositions(self)
@@ -34,7 +36,10 @@ end
 ]]
 ---@param positions table
 ---@return nil
-function Lever.setPositions(self, positions) -- Sets the positions of players to be teleported when activating the lever
+function Lever.setPositions(
+self,
+	positions -- Sets the positions of players to be teleported when activating the lever
+)
 	if type(positions) ~= "table" then
 		positions = { positions }
 	end
@@ -58,7 +63,10 @@ end
 ]]
 ---@param func function
 ---@return nil
-function Lever.setCondition(self, func) -- A condition will be set for all players, if any player does not meet this condition, none of the players will be teleported
+function Lever.setCondition(
+self,
+	func -- A condition will be set for all players, if any player does not meet this condition, none of the players will be teleported
+)
 	self.condition = func
 end
 
@@ -79,7 +87,10 @@ end
 ]]
 ---@param func function
 ---@return nil
-function Lever.setTeleportPlayerFunc(self, func) -- After players are teleported, this function will be executed.
+function Lever.setTeleportPlayerFunc(
+self,
+	func -- After players are teleported, this function will be executed.
+)
 	self.teleport_player_func = func
 end
 
@@ -113,7 +124,7 @@ function Lever:checkPositions()
 			item = item,
 			ground = ground,
 			actionID = actionID,
-			uniqueID = uniqueID,
+			uniqueID = uniqueID
 		})
 	end
 	self.info_positions = array
@@ -121,7 +132,9 @@ function Lever:checkPositions()
 end
 
 ---@return boolean
-function Lever.checkConditions(self) -- It will check the conditions defined in setCondition()
+function Lever.checkConditions(
+self -- It will check the conditions defined in setCondition()
+)
 	local info = self:getInfoPositions()
 	if not info then
 		error("Necessary informations from positions")
@@ -137,7 +150,9 @@ function Lever.checkConditions(self) -- It will check the conditions defined in 
 end
 
 ---@return nil
-function Lever.teleportPlayers(self) -- It will teleport all players to the positions defined in setPositions()
+function Lever.teleportPlayers(
+self -- It will teleport all players to the positions defined in setPositions()
+)
 	local info = self:getInfoPositions()
 	if not info then
 		return false
@@ -167,7 +182,11 @@ end
 ---@param key Storage
 ---@param value number
 ---@return nil
-function Lever.setStorageAllPlayers(self, key, value) -- Will set storage on all players
+function Lever.setStorageAllPlayers(
+self,
+	key,
+	value -- Will set storage on all players
+)
 	local info = self:getInfoPositions()
 	if not info then
 		error("Necessary information from players")

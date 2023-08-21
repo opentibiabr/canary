@@ -18,7 +18,8 @@ function onUpdateDatabase()
 		DROP TABLE `prey_slots`;
 	]])
 
-	db.query([[
+	db.query(
+		[[
 		CREATE TABLE IF NOT EXISTS `player_taskhunt` (
 			`player_id` int(11) NOT NULL,
 			`slot` tinyint(1) NOT NULL,
@@ -31,9 +32,11 @@ function onUpdateDatabase()
 			`free_reroll` bigint(20) NOT NULL,
 			`monster_list` BLOB NULL
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-	]])
+	]]
+	)
 
-	db.query([[
+	db.query(
+		[[
 		CREATE TABLE IF NOT EXISTS `player_prey` (
 			`player_id` int(11) NOT NULL,
 			`slot` tinyint(1) NOT NULL,
@@ -47,7 +50,8 @@ function onUpdateDatabase()
 			`free_reroll` bigint(20) NOT NULL,
 			`monster_list` BLOB NULL
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-	]])
+	]]
+	)
 
 	return true
 end

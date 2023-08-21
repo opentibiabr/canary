@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 2,
 	Locations = "Horestis Tomb."
-	}
+}
 
 monster.health = 400
 monster.maxHealth = 400
@@ -38,9 +38,7 @@ monster.changeTarget = {
 	chance = 0
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = false,
@@ -70,48 +68,113 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Grawrrr!!", yell = false},
-	{text = "Hoouu!", yell = false}
+	{
+		text = "Grawrrr!!",
+		yell = false
+	},
+	{
+		text = "Hoouu!",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{name = "small ruby", chance = 2700, maxCount = 2},
-	{name = "gold coin", chance = 89000, maxCount = 40},
-	{name = "meat", chance = 51060, maxCount = 3},
-	{name = "worm", chance = 65000, maxCount = 7},
-	{name = "health potion", chance = 19840}
-}
+monster.loot = { {
+	name = "small ruby",
+	chance = 2700,
+	maxCount = 2
+}, {
+	name = "gold coin",
+	chance = 89000,
+	maxCount = 40
+}, {
+	name = "meat",
+	chance = 51060,
+	maxCount = 3
+}, {
+	name = "worm",
+	chance = 65000,
+	maxCount = 7
+}, {
+	name = "health potion",
+	chance = 19840
+} }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -112, condition = {type = CONDITION_POISON, totalDamage = 10, interval = 4000}},
-	-- poison
-	{name ="ghoulish hyaena wave", interval = 2000, chance = 15, target = false}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -112,
+	condition = {
+		type = CONDITION_POISON,
+		totalDamage = 10,
+		interval = 4000
+	}
+}, -- poison
+{
+	name = "ghoulish hyaena wave",
+	interval = 2000,
+	chance = 15,
+	target = false
+} }
 
 monster.defenses = {
 	defense = 20,
 	armor = 20,
-	{name ="speed", interval = 2000, chance = 15, speedChange = 3000, target = false, duration = 2000}
+	{
+		name = "speed",
+		interval = 2000,
+		chance = 15,
+		speedChange = 3000,
+		target = false,
+		duration = 2000
+	}
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -5},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 60},
-	{type = COMBAT_FIREDAMAGE, percent = -15},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = -10},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = -5
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 60
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = -15
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = -10
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 100
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

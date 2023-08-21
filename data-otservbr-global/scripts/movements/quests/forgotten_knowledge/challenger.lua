@@ -35,14 +35,10 @@ local challenger = MoveEvent()
 
 function challenger.onStepIn(creature, item, position, fromPosition)
 	local player = creature:getPlayer()
-	if not player then
-		return
-	end
+	if not player then return end
 
 	local teleport = destination[item.uid]
-	if not teleport then
-		return
-	end
+	if not teleport then return end
 	if player:getStorageValue(teleport.storage) <= os.time() then
 		if item.uid == 24882 then
 			if player:getStorageValue(Storage.ForgottenKnowledge.BabyDragon) < 1 then

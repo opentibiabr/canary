@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -52,23 +50,69 @@ end
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop = {
-	{ itemName = "black book", clientId = 2838, buy = 15 },
-	{ itemName = "blue book", clientId = 2844, sell = 20 },
-	{ itemName = "brown book", clientId = 2837, buy = 15 },
-	{ itemName = "document", clientId = 2818, buy = 12 },
-	{ itemName = "gemmed book", clientId = 2842, sell = 100 },
-	{ itemName = "green book", clientId = 2846, sell = 15 },
-	{ itemName = "greeting card", clientId = 6386, buy = 30 },
-	{ itemName = "grey small book", clientId = 2839, buy = 15 },
-	{ itemName = "inkwell", clientId = 3509, buy = 10, sell = 8 },
-	{ itemName = "orange book", clientId = 2843, sell = 30 },
-	{ itemName = "parchment", clientId = 2814, buy = 8, sell = 5 },
-	{ itemName = "parchment", clientId = 2817, buy = 8 },
-	{ itemName = "scroll", clientId = 2815, buy = 5 },
-	{ itemName = "spellbook", clientId = 3059, buy = 150 },
-	{ itemName = "valentines card", clientId = 6538, buy = 30 }
-}
+npcConfig.shop = { {
+	itemName = "black book",
+	clientId = 2838,
+	buy = 15
+}, {
+	itemName = "blue book",
+	clientId = 2844,
+	sell = 20
+}, {
+	itemName = "brown book",
+	clientId = 2837,
+	buy = 15
+}, {
+	itemName = "document",
+	clientId = 2818,
+	buy = 12
+}, {
+	itemName = "gemmed book",
+	clientId = 2842,
+	sell = 100
+}, {
+	itemName = "green book",
+	clientId = 2846,
+	sell = 15
+}, {
+	itemName = "greeting card",
+	clientId = 6386,
+	buy = 30
+}, {
+	itemName = "grey small book",
+	clientId = 2839,
+	buy = 15
+}, {
+	itemName = "inkwell",
+	clientId = 3509,
+	buy = 10,
+	sell = 8
+}, {
+	itemName = "orange book",
+	clientId = 2843,
+	sell = 30
+}, {
+	itemName = "parchment",
+	clientId = 2814,
+	buy = 8,
+	sell = 5
+}, {
+	itemName = "parchment",
+	clientId = 2817,
+	buy = 8
+}, {
+	itemName = "scroll",
+	clientId = 2815,
+	buy = 5
+}, {
+	itemName = "spellbook",
+	clientId = 3059,
+	buy = 150
+}, {
+	itemName = "valentines card",
+	clientId = 6538,
+	buy = 30
+} }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -78,7 +122,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

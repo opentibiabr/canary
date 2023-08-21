@@ -1,6 +1,15 @@
-local config = {
-	{position = {x = 34015, y = 31892, z = 8}, destination = {x = 32728, y = 32880, z = 7}}
-}
+local config = { {
+	position = {
+		x = 34015,
+		y = 31892,
+		z = 8
+	},
+	destination = {
+		x = 32728,
+		y = 32880,
+		z = 7
+	}
+} }
 
 local exit = MoveEvent()
 function exit.onStepIn(creature, item, position, fromPosition)

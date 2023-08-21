@@ -10,7 +10,7 @@ local config = {
 	[37570] = 37555, -- yellow present kit
 	[37571] = 37556, -- another yellow present kit
 	[37717] = 37557, -- dragon pinata kit
-	[39695] = 39694, -- lucky dragon kit
+	[39695] = 39694 -- lucky dragon kit
 }
 
 local decorationKits = Action()

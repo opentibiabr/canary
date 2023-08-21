@@ -1,6 +1,15 @@
-local config = {
-	{position = {x = 32728, y = 32878, z = 7}, destination = {x = 34015, y = 31890, z = 8}}
-}
+local config = { {
+	position = {
+		x = 32728,
+		y = 32878,
+		z = 7
+	},
+	destination = {
+		x = 34015,
+		y = 31890,
+		z = 8
+	}
+} }
 
 local entrance = Action()
 function entrance.onUse(creature, item, position, fromPosition)

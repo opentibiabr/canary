@@ -1,41 +1,42 @@
 function Player.sendFakeDeathWindow(self)
 	-- consider migrating to ProtocolGame::sendDeath
-	local msg = NetworkMessage();
-	msg:addByte(0x28);
-	msg:addByte(0x01);
-	msg:addByte(2);
-	msg:addByte(0x00); -- Use death redemption
-	msg:sendToPlayer(self, false);
+	local msg = NetworkMessage()
+	msg:addByte(0x28)
+	msg:addByte(0x01)
+	msg:addByte(2)
+	msg:addByte(0x00) -- Use death redemption
+	msg:sendToPlayer(self, false)
 	return true
 end
 
 local condition = Condition(CONDITION_OUTFIT)
 condition:setTicks(-1)
 
-local conditions = {
-	CONDITION_POISON,
-	CONDITION_FIRE,
-	CONDITION_ENERGY,
-	CONDITION_BLEEDING,
-	CONDITION_HASTE,
-	CONDITION_PARALYZE,
-	CONDITION_INVISIBLE,
-	CONDITION_LIGHT,
-	CONDITION_MANASHIELD,
-	CONDITION_INFIGHT,
-	CONDITION_DRUNK,
-	CONDITION_SOUL,
-	CONDITION_DROWN,
-	CONDITION_YELLTICKS,
-	CONDITION_ATTRIBUTES,
-	CONDITION_FREEZING,
-	CONDITION_DAZZLED,
-	CONDITION_CURSED,
-	CONDITION_EXHAUST_COMBAT,
-	CONDITION_EXHAUST_HEAL,
-	CONDITION_SPELLCOOLDOWN,
-	CONDITION_SPELLGROUPCOOLDOWN
-}
+local conditions =
+	{
+		CONDITION_POISON,
+		CONDITION_FIRE,
+		CONDITION_ENERGY,
+		CONDITION_BLEEDING,
+		CONDITION_HASTE,
+		CONDITION_PARALYZE,
+		CONDITION_INVISIBLE,
+		CONDITION_LIGHT,
+		CONDITION_MANASHIELD,
+		CONDITION_INFIGHT,
+		CONDITION_DRUNK,
+		CONDITION_SOUL,
+		CONDITION_DROWN,
+		CONDITION_YELLTICKS,
+		CONDITION_ATTRIBUTES,
+		CONDITION_FREEZING,
+		CONDITION_DAZZLED,
+		CONDITION_CURSED,
+		CONDITION_EXHAUST_COMBAT,
+		CONDITION_EXHAUST_HEAL,
+		CONDITION_SPELLCOOLDOWN,
+		CONDITION_SPELLGROUPCOOLDOWN
+	}
 
 local iceDeath = MoveEvent()
 
@@ -61,8 +62,7 @@ function iceDeath.onStepIn(creature, item, position, fromPosition)
 		player:addHealth((-player:getHealth() + 1))
 		player:sendTextMessage(MESSAGE_BEYOND_LAST, "You were killed by something evil and others.")
 		-- TODO parse active blessings and show that you didn't lose any blessings
-		player:sendTextMessage(MESSAGE_BEYOND_LAST, 
-		"You are still blessed with Wisdom of Solitude, Spark of the Phoenix,Fire of the Suns, \z
+		player:sendTextMessage(MESSAGE_BEYOND_LAST, "You are still blessed with Wisdom of Solitude, Spark of the Phoenix,Fire of the Suns, \z
 		Spiritual Shielding, Embrace of Tibia, Heart of the Mountani, Blood of the Montain and Twist of Fate.")
 		player:sendTextMessage(MESSAGE_BEYOND_LAST, "You lost 0 experience and 0.00% of all of your skills.")
 		player:sendTextMessage(MESSAGE_BEYOND_LAST, "You did not lose any items.")

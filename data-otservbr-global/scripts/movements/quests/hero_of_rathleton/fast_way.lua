@@ -1,21 +1,17 @@
 local destination = {
-	[24869] = {position = Position(33740, 31940, 15)},
-	[24870] = {position = Position(33534, 31955, 15)},
-	[24871] = {position = Position(33611, 32055, 15)}
+	[24869] = { position = Position(33740, 31940, 15) },
+	[24870] = { position = Position(33534, 31955, 15) },
+	[24871] = { position = Position(33611, 32055, 15) }
 }
 
 local fastWay = MoveEvent()
 
 function fastWay.onStepIn(creature, item, position, fromPosition)
 	local player = creature:getPlayer()
-	if not player then
-		return
-	end
+	if not player then return end
 
 	local teleport = destination[item.actionid]
-	if not teleport then
-		return
-	end
+	if not teleport then return end
 
 	if player:getStorageValue(24867) >= 1 then
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

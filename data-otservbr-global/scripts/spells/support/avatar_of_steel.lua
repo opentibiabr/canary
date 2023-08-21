@@ -1,6 +1,5 @@
 local condition = Condition(CONDITION_OUTFIT)
-condition:setOutfit({lookType = 1593}) -- Avatar of Steel lookType
-
+condition:setOutfit({ lookType = 1593 }) -- Avatar of Steel lookType
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, variant)

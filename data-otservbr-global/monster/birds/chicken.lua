@@ -26,7 +26,7 @@ monster.Bestiary = {
 	Locations = "Sabrehaven, Rookgaard, The McRonalds Farm in Thais, Northport, \z
 		Fibula, Carlin (killable but unreachable), Greenshore, Krimhorn, Orc Fortress, \z
 		Factory Quarter, also theres one in the farm near Edron."
-	}
+}
 
 monster.health = 15
 monster.maxHealth = 15
@@ -40,9 +40,7 @@ monster.changeTarget = {
 	chance = 0
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = true,
@@ -72,40 +70,81 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Gokgoooook", yell = false},
-	{text = "Cluck Cluck", yell = false}
+	{
+		text = "Gokgoooook",
+		yell = false
+	},
+	{
+		text = "Cluck Cluck",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{name = "meat", chance = 2120, maxCount = 2},
-	{id = 3606, chance = 950}, -- egg
-	{name = "worm", chance = 10000, maxCount = 3},
-	{name = "chicken feather", chance = 20000}
-}
+monster.loot = { {
+	name = "meat",
+	chance = 2120,
+	maxCount = 2
+}, {
+	id = 3606,
+	chance = 950
+}, { -- egg
+	name = "worm",
+	chance = 10000,
+	maxCount = 3
+}, {
+	name = "chicken feather",
+	chance = 20000
+} }
 
 monster.defenses = {
 	defense = 5,
 	armor = 1
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

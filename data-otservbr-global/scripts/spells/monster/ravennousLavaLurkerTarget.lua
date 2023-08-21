@@ -2,22 +2,11 @@ local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_FIREDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_FIREATTACK)
 
-combat:setArea(createCombatArea({
-{0, 0, 0, 0, 0, 0, 0},
-{0, 0, 1, 1, 1, 0, 0},
-{0, 1, 1, 1, 1, 1, 0},
-{1, 1, 1, 1, 1, 1, 1},
-{1, 1, 1, 3, 1, 1, 1},
-{1, 1, 1, 1, 1, 1, 1},
-{0, 1, 1, 1, 1, 1, 0},
-{0, 0, 1, 1, 1, 0, 0},
-{0, 0, 0, 0, 0, 0, 0},
-}))
+combat:setArea(
+	createCombatArea({ { 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 1, 1, 1, 0, 0 }, { 0, 1, 1, 1, 1, 1, 0 }, { 1, 1, 1, 1, 1, 1, 1 }, { 1, 1, 1, 3, 1, 1, 1 }, { 1, 1, 1, 1, 1, 1, 1 }, { 0, 1, 1, 1, 1, 1, 0 }, { 0, 0, 1, 1, 1, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0 } })
+)
 
-local monsters = {
-	"lost gnome",
-	"gnome pack crawler"
-}
+local monsters = { "lost gnome", "gnome pack crawler" }
 
 function onTargetTile(cid, pos)
 	local tile = Tile(pos)
@@ -25,7 +14,7 @@ function onTargetTile(cid, pos)
 		local target = tile:getTopCreature()
 		if target and target:isMonster() then
 			if table.contains(monsters, target:getName():lower()) then
-				target:addHealth(-(math.random(0, 1000)))
+				target:addHealth(-math.random(0, 1000))
 			end
 		end
 	end

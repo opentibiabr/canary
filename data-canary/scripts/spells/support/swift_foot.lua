@@ -24,7 +24,7 @@ local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
 	local summons = creature:getSummons()
-	if summons and type(summons) == 'table' and #summons > 0 then
+	if summons and type(summons) == "table" and #summons > 0 then
 		for i = 1, #summons do
 			local summon = summons[i]
 			local summon_t = summon:getType()

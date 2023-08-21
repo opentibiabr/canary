@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -60,14 +58,14 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "trouble") and player:getStorageValue(Storage.TheInquisition.GrofGuard) < 1 and player:getStorageValue(Storage.TheInquisition.Mission01) ~= -1 then
 		npcHandler:say("I think it'll rain soon and I left some laundry out for drying.", npc, creature)
-		npcHandler:setTopic(playerId, 1)
+		npcHandler:setTopic(playerId, 1) -- The Inquisition Questlog- "Mission 1: Interrogation"
 	elseif MsgContains(message, "authorities") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("Yes I'm pretty sure they have failed to send the laundry police to take care of it, you fool.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			if player:getStorageValue(Storage.TheInquisition.GrofGuard) < 1 then
 				player:setStorageValue(Storage.TheInquisition.GrofGuard, 1)
-				player:setStorageValue(Storage.TheInquisition.Mission01, player:getStorageValue(Storage.TheInquisition.Mission01) + 1) -- The Inquisition Questlog- "Mission 1: Interrogation"
+				player:setStorageValue(Storage.TheInquisition.Mission01, player:getStorageValue(Storage.TheInquisition.Mission01) + 1)
 				player:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 			end
 		end
@@ -75,7 +73,10 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "It's my duty to protect the city."})
+keywordHandler:addKeyword({ "job" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "It's my duty to protect the city."
+})
 
 npcHandler:setMessage(MESSAGE_GREET, "LONG LIVE THE KING!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "LONG LIVE THE KING!")

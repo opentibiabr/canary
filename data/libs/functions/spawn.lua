@@ -4,41 +4,35 @@
 MonsterStorage = {
 	Spawn = {
 		info = 550000,
-		monster_spawn_object = 550001,
+		monster_spawn_object = 550001
 	}
 }
 Spawn = {}
 SpawnMetatables = {}
-setmetatable(Spawn, {
-	__call = function(self)
-		local spawn_data = {
-			storage = {
-				info = MonsterStorage.Spawn.info,
-				object = MonsterStorage.Spawn.monster_spawn_object,
-			},
-			monsters = {},
-			positions = {},
-			functions = {
-				["onSpawn"] = {
-					["MonsterDeath"] = function(s, monster)
-						monster:setStorageValue(s.storage.object, s)
-						monster:registerEvent('monsterDeath')
-					end
-				},
-				["onDeath"] = {
-					["Respawn"] = function(s, monster)
-						if monster:getStorageValue(s.storage.info) > 0 then
-							s:spawnMonsterIndex(monster:getStorageValue(s.storage.info))
-						end
-					end
-				}
-			}
+setmetatable(Spawn, { __call = function(self)
+	local spawn_data = {
+		storage = {
+			info = MonsterStorage.Spawn.info,
+			object = MonsterStorage.Spawn.monster_spawn_object
+		},
+		monsters = {},
+		positions = {},
+		functions = {
+			onSpawn = { MonsterDeath = function(s, monster)
+				monster:setStorageValue(s.storage.object, s)
+				monster:registerEvent("monsterDeath")
+			end },
+			onDeath = { Respawn = function(s, monster)
+				if monster:getStorageValue(s.storage.info) > 0 then
+					s:spawnMonsterIndex(monster:getStorageValue(s.storage.info))
+				end
+			end }
 		}
-		local mt = setmetatable(spawn_data, { __index = Spawn })
-		table.insert(SpawnMetatables, mt)
-		return mt
-	end
-})
+	}
+	local mt = setmetatable(spawn_data, { __index = Spawn })
+	table.insert(SpawnMetatables, mt)
+	return mt
+end })
 
 -- positions - {monster = "Rat" ,pos = Position(x, y, z), spawntime = 60, status = true}
 function Spawn.getPositions(self)
@@ -176,7 +170,7 @@ end
 function Spawn.executeSpawn(self)
 	local pos = self:getPositions()
 	if not pos then
-		error('Not set pos')
+		error("Not set pos")
 		return false
 	end
 	for i, v in pairs(pos) do
@@ -187,7 +181,7 @@ end
 function Spawn.removeSpawn(self)
 	local pos = self:getPositions()
 	if not pos then
-		error('Not set pos')
+		error("Not set pos")
 		return false
 	end
 	for i, v in pairs(pos) do

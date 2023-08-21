@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -61,14 +59,22 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "mission") then
 		if player:getStorageValue(ThreatenedDreams.Mission01[1]) == 4 then
-			npcHandler:say({
-				"One of my sisters, in the disguise of a nightingale, told me that Alkestios would send you. There is a problem which is not concerning me but a wolf mother on the small island Cormaya. ...",
-				"As we, the fae, consider ourselves guardians and protectors of plants and animals, it is important for me to help this wolf. Unfortunately, I can't do it myself because at the moment I'm bound to this vessel, this snake. ...",
-				"Thus I can't cross the ocean to reach Cormaya. Will you help me?"
-			}, npc, creature)
+			npcHandler:say(
+				{
+					"One of my sisters, in the disguise of a nightingale, told me that Alkestios would send you. There is a problem which is not concerning me but a wolf mother on the small island Cormaya. ...",
+					"As we, the fae, consider ourselves guardians and protectors of plants and animals, it is important for me to help this wolf. Unfortunately, I can't do it myself because at the moment I'm bound to this vessel, this snake. ...",
+					"Thus I can't cross the ocean to reach Cormaya. Will you help me?"
+				},
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(ThreatenedDreams.Mission01[1]) == 10 then
-			npcHandler:say("The wolf's ghost has found peace. Thank you, human being. However, there is someone else who needs help: A sister of mine who's bereft of something very precious. You'll find her in the guise of a swan at a small river south-east of here.", npc, creature)
+			npcHandler:say(
+				"The wolf's ghost has found peace. Thank you, human being. However, there is someone else who needs help: A sister of mine who's bereft of something very precious. You'll find her in the guise of a swan at a small river south-east of here.",
+				npc,
+				creature
+			)
 			player:setStorageValue(ThreatenedDreams.Mission01[1], 11)
 			npcHandler:setTopic(playerId, 0)
 		else
@@ -77,10 +83,14 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say({
-				"Nature's blessings! You may find the desperate wolf mother in the south of Cormaya. You will know the place because there is a big stone that looks like a grumpy face. ...",
-				"At night it will weep bloody tears and only at night you will meet the ghost there. Take this talisman so you may be able to talk with animals and even plants and stones. Just don't expect that all of them will answer you."
-			}, npc, creature)
+			npcHandler:say(
+				{
+					"Nature's blessings! You may find the desperate wolf mother in the south of Cormaya. You will know the place because there is a big stone that looks like a grumpy face. ...",
+					"At night it will weep bloody tears and only at night you will meet the ghost there. Take this talisman so you may be able to talk with animals and even plants and stones. Just don't expect that all of them will answer you."
+				},
+				npc,
+				creature
+			)
 			player:setStorageValue(ThreatenedDreams.Mission01[1], 5)
 			npcHandler:setTopic(playerId, 0)
 		end

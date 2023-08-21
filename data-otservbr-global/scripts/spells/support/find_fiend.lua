@@ -63,43 +63,39 @@ function spell.onCastSpell(creature, variant)
 		if math.abs(positionTangent) < 0.4142 then
 			direction = positionDifference.x > 0 and DIRECTION_WEST or DIRECTION_EAST
 		elseif math.abs(positionTangent) < 2.4142 then
-			direction = positionTangent > 0 and
-							(positionDifference.y > 0 and DIRECTION_NORTHWEST or DIRECTION_SOUTHEAST) or
-							positionDifference.x > 0 and DIRECTION_SOUTHWEST or DIRECTION_NORTHEAST
+			direction = positionTangent > 0 and (positionDifference.y > 0 and DIRECTION_NORTHWEST or DIRECTION_SOUTHEAST) or positionDifference.x > 0 and DIRECTION_SOUTHWEST or DIRECTION_NORTHEAST
 		else
 			direction = positionDifference.y > 0 and DIRECTION_NORTH or DIRECTION_SOUTH
 		end
 	end
 
 	local level = positionDifference.z > 0 and LEVEL_HIGHER or positionDifference.z < 0 and LEVEL_LOWER or LEVEL_SAME
-	local distance = maxPositionDifference < 5 and DISTANCE_BESIDE or maxPositionDifference < 101 and DISTANCE_CLOSE or
-						 maxPositionDifference < 275 and DISTANCE_FAR or DISTANCE_VERYFAR
+	local distance = maxPositionDifference < 5 and DISTANCE_BESIDE or maxPositionDifference < 101 and DISTANCE_CLOSE or maxPositionDifference < 275 and DISTANCE_FAR or DISTANCE_VERYFAR
 	local message = messages[distance][level] or messages[distance]
 	if distance ~= DISTANCE_BESIDE then
 		message = message .. " " .. directions[direction]
 	end
 
 	local monsterType = target:getType()
-	local stringLevel = 'Unknown'
+	local stringLevel = "Unknown"
 	if monsterType and creature:isMonsterBestiaryUnlocked(monsterType:raceId()) then
 		local bestiaryKillsAmount = monsterType:BestiarytoKill()
 		if bestiaryKillsAmount >= 5 and bestiaryKillsAmount <= 25 then
-			stringLevel = 'Harmless'
+			stringLevel = "Harmless"
 		elseif bestiaryKillsAmount <= 250 then
-			stringLevel = 'Trivial'
+			stringLevel = "Trivial"
 		elseif bestiaryKillsAmount <= 500 then
-			stringLevel = 'Easy'
+			stringLevel = "Easy"
 		elseif bestiaryKillsAmount <= 1000 then
-			stringLevel = 'Medium'
+			stringLevel = "Medium"
 		elseif bestiaryKillsAmount <= 2500 then
-			stringLevel = 'Hard'
+			stringLevel = "Hard"
 		elseif bestiaryKillsAmount <= 5000 then
-			stringLevel = 'Challenging'
+			stringLevel = "Challenging"
 		end
 	end
 
-	message = string.format("The monster " .. message .. ". Be prepared to find a creature of difficulty level \"" ..
-								stringLevel .. "\".")
+	message = string.format("The monster " .. message .. '. Be prepared to find a creature of difficulty level "' .. stringLevel .. '".')
 	local timeLeft = math.floor((target:getTimeToChangeFiendish() - os.time()) / 60)
 	if (timeLeft < 15) then
 		message = string.format(message .. " " .. ForgeMonster:getTimeLeftToChangeMonster(target))
@@ -113,8 +109,7 @@ end
 spell:name("Find Fiend")
 spell:words("exiva moe res")
 spell:group("support")
-spell:vocation("druid;true", "elder druid;true", "knight;true", "elite knight;true", "paladin;true",
-	"royal paladin;true", "sorcerer;true", "master sorcerer;true")
+spell:vocation("druid;true", "elder druid;true", "knight;true", "elite knight;true", "paladin;true", "royal paladin;true", "sorcerer;true", "master sorcerer;true")
 spell:id(20)
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)

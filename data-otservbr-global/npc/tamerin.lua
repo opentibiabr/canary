@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 3
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -74,15 +72,19 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.InServiceofYalahar.Questline) == 29 then
-			npcHandler:say({
-				"Why should I do something for another human being? I have been on my own for all those years. Hmm, but actually there is something I could need some assistance with. ... ",
-				"If you help me to solve my problems, I will help you with your mission. Do you accept?"
-			}, npc, creature)
+			npcHandler:say(
+				{
+					"Why should I do something for another human being? I have been on my own for all those years. Hmm, but actually there is something I could need some assistance with. ... ",
+					"If you help me to solve my problems, I will help you with your mission. Do you accept?"
+				},
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(Storage.InServiceofYalahar.Questline) == 32 then
 			npcHandler:say("You have kept your promise. Now, it's time to fulfil my part of the bargain. What kind of animals shall I raise? {Warbeasts} or {cattle}?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
-		end
+		end -- StorageValue for Questlog "Mission 05: Food or Fight"
 	elseif MsgContains(message, "animal cure") then
 		if player:getStorageValue(Storage.InServiceofYalahar.Questline) == 30 and player:removeItem(8819, 1) then
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 31)
@@ -119,7 +121,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			player:setStorageValue(Storage.InServiceofYalahar.Questline, 30)
-			player:setStorageValue(Storage.InServiceofYalahar.Mission05, 3) -- StorageValue for Questlog "Mission 05: Food or Fight"
+			player:setStorageValue(Storage.InServiceofYalahar.Mission05, 3)
 			npcHandler:say("I ask you for two things! For one thing, I need an animal cure and for another thing, I ask you to get rid of the gladiator Morik for me.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

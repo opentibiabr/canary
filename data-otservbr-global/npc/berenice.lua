@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -81,16 +79,20 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 2 then
-			npcHandler:say({
-				"Since you have already proved to be a valuable member of our society, I will happily entrust you with this mission, but there are a few things which you need to know, so listen carefully. ...",
-				"Calassa is an underwater settlement, so you are in severe danger of drowning unless you are well-prepared. ...",
-				"We have developed a new device called 'Helmet of the Deep' which will enable you to breathe even in the depths of the ocean. ...",
-				"I will instruct Captain Max to bring you to Calassa and to lend one of these helmets to you. These helmets are very valuable, so there is a deposit of 5000 gold pieces on it. ...",
-				"While in Calassa, do not take the helmet off under any circumstances. If you have any questions, don't hesitate to ask Captain Max. ...",
-				"Your mission there, apart from observing the Quara, is to retrieve a special logbook from one of the shipwrecks buried there. ...",
-				"One of our last expeditions there failed horribly and the ship sank, but we still do not know the exact reason. ...",
-				"If you could retrieve the logbook, we'd finally know what happened. Have you understood your task and are willing to take this risk?"
-			}, npc, creature)
+			npcHandler:say(
+				{
+					"Since you have already proved to be a valuable member of our society, I will happily entrust you with this mission, but there are a few things which you need to know, so listen carefully. ...",
+					"Calassa is an underwater settlement, so you are in severe danger of drowning unless you are well-prepared. ...",
+					"We have developed a new device called 'Helmet of the Deep' which will enable you to breathe even in the depths of the ocean. ...",
+					"I will instruct Captain Max to bring you to Calassa and to lend one of these helmets to you. These helmets are very valuable, so there is a deposit of 5000 gold pieces on it. ...",
+					"While in Calassa, do not take the helmet off under any circumstances. If you have any questions, don't hesitate to ask Captain Max. ...",
+					"Your mission there, apart from observing the Quara, is to retrieve a special logbook from one of the shipwrecks buried there. ...",
+					"One of our last expeditions there failed horribly and the ship sank, but we still do not know the exact reason. ...",
+					"If you could retrieve the logbook, we'd finally know what happened. Have you understood your task and are willing to take this risk?"
+				},
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 3)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say("Excellent! I will immediately inform Captain Max to bring you to {Calassa} whenever you are ready. Don't forget to make thorough preparations!", npc, creature)
@@ -110,14 +112,31 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop = {
-	{ itemName = "atlas", clientId = 6108, buy = 150 },
-	{ itemName = "first verse of the hymn", clientId = 6087, sell = 100 },
-	{ itemName = "fourth verse of the hymn", clientId = 6090, sell = 800 },
-	{ itemName = "orichalcum pearl", clientId = 5021, buy = 80 },
-	{ itemName = "second verse of the hymn", clientId = 6088, sell = 250 },
-	{ itemName = "third verse of the hymn", clientId = 6089, sell = 400 }
-}
+npcConfig.shop = { {
+	itemName = "atlas",
+	clientId = 6108,
+	buy = 150
+}, {
+	itemName = "first verse of the hymn",
+	clientId = 6087,
+	sell = 100
+}, {
+	itemName = "fourth verse of the hymn",
+	clientId = 6090,
+	sell = 800
+}, {
+	itemName = "orichalcum pearl",
+	clientId = 5021,
+	buy = 80
+}, {
+	itemName = "second verse of the hymn",
+	clientId = 6088,
+	sell = 250
+}, {
+	itemName = "third verse of the hymn",
+	clientId = 6089,
+	sell = 400
+} }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -127,7 +146,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

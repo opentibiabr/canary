@@ -25,9 +25,7 @@ monster.changeTarget = {
 	chance = 0
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = false,
@@ -56,46 +54,101 @@ monster.light = {
 
 monster.voices = {
 	interval = 5000,
-	chance = 10,
+	chance = 10
 }
 
-monster.loot = {
-	{id = 9689, chance = 1050}, -- bunch of troll hair
-	{id = 3031, chance = 65300, maxCount = 12}, -- gold coin
-	{id = 3577, chance = 15200}, -- meat
-	{id = 3003, chance = 7960}, -- rope
-	{id = 3277, chance = 12970, maxCount = 3} -- spear
-}
+monster.loot = { {
+	id = 9689,
+	chance = 1050
+}, { -- bunch of troll hair
+	id = 3031,
+	chance = 65300,
+	maxCount = 12
+}, { -- gold coin
+	id = 3577,
+	chance = 15200
+}, { -- meat
+	id = 3003,
+	chance = 7960
+}, { -- rope
+	id = 3277,
+	chance = 12970,
+	maxCount = 3
+} } -- spear
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, skill = 10, attack = 25}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	skill = 10,
+	attack = 25
+} }
 
 monster.defenses = {
 	defense = 13,
 	armor = 8,
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 10, maxDamage = 25, effect = CONST_ME_MAGIC_GREEN, target = false},
-	{name ="salamander trainer summon", interval = 2000, chance = 30, target = false}
+	{
+		name = "combat",
+		interval = 2000,
+		chance = 25,
+		type = COMBAT_HEALING,
+		minDamage = 10,
+		maxDamage = 25,
+		effect = CONST_ME_MAGIC_GREEN,
+		target = false
+	},
+	{
+		name = "salamander trainer summon",
+		interval = 2000,
+		chance = 30,
+		target = false
+	}
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 50},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 50
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

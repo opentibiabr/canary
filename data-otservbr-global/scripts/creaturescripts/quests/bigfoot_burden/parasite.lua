@@ -1,9 +1,20 @@
-local positionsWall = {
-	{x = 33098, y = 31979, z = 11},
-	{x = 33098, y = 31978, z = 11},
-	{x = 33098, y = 31977, z = 11},
-	{x = 33098, y = 31976, z = 11}
-}
+local positionsWall = { {
+	x = 33098,
+	y = 31979,
+	z = 11
+}, {
+	x = 33098,
+	y = 31978,
+	z = 11
+}, {
+	x = 33098,
+	y = 31977,
+	z = 11
+}, {
+	x = 33098,
+	y = 31976,
+	z = 11
+} }
 
 local function recreateCrystals(c)
 	for i = 1, #positionsWall do
@@ -33,7 +44,7 @@ function parasiteWarzone.onKill(player, target)
 	end
 
 	local targetName = targetMonster:getName():lower()
-	if targetName ~= 'parasite' then
+	if targetName ~= "parasite" then
 		return false
 	end
 
@@ -47,7 +58,7 @@ function parasiteWarzone.onKill(player, target)
 		return false
 	end
 
-	local config = warzoneConfig.findByName('Gnomevil')
+	local config = warzoneConfig.findByName("Gnomevil")
 	if config.locked then
 		targetMonster:say("It seems that someone has already destroyed the walls in the last 30 minutes.", TALKTYPE_MONSTER_SAY)
 		return false
@@ -58,7 +69,7 @@ function parasiteWarzone.onKill(player, target)
 			local crystal = Tile(positionsWall[i]):getItemById(config.wall)
 			if crystal then
 				Tile(positionsWall[i]):getItemById(config.wall):remove()
-				Game.createItem(config.wall+1, 1, positionsWall[i])
+				Game.createItem(config.wall + 1, 1, positionsWall[i])
 			end
 		end
 		config.wall = config.wall + 1

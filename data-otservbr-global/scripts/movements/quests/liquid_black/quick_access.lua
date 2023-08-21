@@ -1,4 +1,8 @@
-local enterPosition = {x = 33446, y = 31288, z = 14}
+local enterPosition = {
+	x = 33446,
+	y = 31288,
+	z = 14
+}
 
 local quickAccess = MoveEvent()
 

@@ -10,13 +10,9 @@ npcConfig.maxHealth = npcConfig.health
 npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
-npcConfig.outfit = {
-	lookTypeEx = 13418
-}
+npcConfig.outfit = { lookTypeEx = 13418 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -53,7 +49,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
---[[
+	--[[
 	if MsgContains(message, "fight") then
 		npcHandler:say("You can help in the fight against the hive. There are several missions available to destabilise the hive. Just ask for them if you want to learn more. After completing many missions you might be worthy to get a reward.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
@@ -74,14 +70,31 @@ end
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop = {
-	{ itemName = "blob bomb", clientId = 13976, buy = 150 },
-	{ itemName = "flask of chitin dissolver", clientId = 14052, buy = 150 },
-	{ itemName = "gooey substance", clientId = 14051, buy = 150 },
-	{ itemName = "reagent flask", clientId = 14054, buy = 200 },
-	{ itemName = "strange powder", clientId = 13974, buy = 150 },
-	{ itemName = "swarmer drum", clientId = 14255, buy = 200 }
-}
+npcConfig.shop = { {
+	itemName = "blob bomb",
+	clientId = 13976,
+	buy = 150
+}, {
+	itemName = "flask of chitin dissolver",
+	clientId = 14052,
+	buy = 150
+}, {
+	itemName = "gooey substance",
+	clientId = 14051,
+	buy = 150
+}, {
+	itemName = "reagent flask",
+	clientId = 14054,
+	buy = 200
+}, {
+	itemName = "strange powder",
+	clientId = 13974,
+	buy = 150
+}, {
+	itemName = "swarmer drum",
+	clientId = 14255,
+	buy = 200
+} }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -91,7 +104,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

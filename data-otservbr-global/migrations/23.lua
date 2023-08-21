@@ -1,6 +1,7 @@
 function onUpdateDatabase()
 	Spdlog.info("Updating database to version 24 (forge history)")
-	db.query([[
+	db.query(
+		[[
 		CREATE TABLE IF NOT EXISTS `forge_history` (
 			`id` int NOT NULL AUTO_INCREMENT,
 			`player_id` int NOT NULL,
@@ -15,6 +16,7 @@ function onUpdateDatabase()
 			CONSTRAINT `forge_history_pk` PRIMARY KEY (`id`),
 			FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-	]])
+	]]
+	)
 	return true
 end

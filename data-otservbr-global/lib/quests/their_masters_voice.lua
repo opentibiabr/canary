@@ -6,47 +6,125 @@ local config = {
 	max_waves = 25 -- max waves, last one will be mad mage
 }
 
-local mage_positions = {
-	{x = 33328, y = 31859, z = 9},
-	{x = 33367, y = 31873, z = 9},
-	{x = 33349, y = 31899, z = 9}
-}
+local mage_positions = { {
+	x = 33328,
+	y = 31859,
+	z = 9
+}, {
+	x = 33367,
+	y = 31873,
+	z = 9
+}, {
+	x = 33349,
+	y = 31899,
+	z = 9
+} }
 
-local servant_positions = {
-	{x = 33313, y = 31852, z = 9},
-	{x = 33313, y = 31881, z = 9},
-	{x = 33328, y = 31860, z = 9},
-	{x = 33328, y = 31873, z = 9},
-	{x = 33328, y = 31885, z = 9},
-	{x = 33308, y = 31873, z = 9},
-	{x = 33320, y = 31873, z = 9},
-	{x = 33335, y = 31873, z = 9},
-	{x = 33360, y = 31873, z = 9},
-	{x = 33336, y = 31914, z = 9},
-	{x = 33343, y = 31914, z = 9},
-	{x = 33353, y = 31914, z = 9},
-	{x = 33361, y = 31914, z = 9},
-	{x = 33345, y = 31900, z = 9},
-	{x = 33352, y = 31900, z = 9},
-	{x = 33355, y = 31854, z = 9},
-	{x = 33355, y = 31885, z = 9},
-	{x = 33345, y = 31864, z = 9},
-	{x = 33345, y = 31881, z = 9},
-	{x = 33309, y = 31867, z = 9},
-	{x = 33317, y = 31879, z = 9},
-	{x = 33311, y = 31854, z = 9},
-	{x = 33334, y = 31889, z = 9},
-	{x = 33340, y = 31890, z = 9},
-	{x = 33347, y = 31889, z = 9}
-}
+local servant_positions = { {
+	x = 33313,
+	y = 31852,
+	z = 9
+}, {
+	x = 33313,
+	y = 31881,
+	z = 9
+}, {
+	x = 33328,
+	y = 31860,
+	z = 9
+}, {
+	x = 33328,
+	y = 31873,
+	z = 9
+}, {
+	x = 33328,
+	y = 31885,
+	z = 9
+}, {
+	x = 33308,
+	y = 31873,
+	z = 9
+}, {
+	x = 33320,
+	y = 31873,
+	z = 9
+}, {
+	x = 33335,
+	y = 31873,
+	z = 9
+}, {
+	x = 33360,
+	y = 31873,
+	z = 9
+}, {
+	x = 33336,
+	y = 31914,
+	z = 9
+}, {
+	x = 33343,
+	y = 31914,
+	z = 9
+}, {
+	x = 33353,
+	y = 31914,
+	z = 9
+}, {
+	x = 33361,
+	y = 31914,
+	z = 9
+}, {
+	x = 33345,
+	y = 31900,
+	z = 9
+}, {
+	x = 33352,
+	y = 31900,
+	z = 9
+}, {
+	x = 33355,
+	y = 31854,
+	z = 9
+}, {
+	x = 33355,
+	y = 31885,
+	z = 9
+}, {
+	x = 33345,
+	y = 31864,
+	z = 9
+}, {
+	x = 33345,
+	y = 31881,
+	z = 9
+}, {
+	x = 33309,
+	y = 31867,
+	z = 9
+}, {
+	x = 33317,
+	y = 31879,
+	z = 9
+}, {
+	x = 33311,
+	y = 31854,
+	z = 9
+}, {
+	x = 33334,
+	y = 31889,
+	z = 9
+}, {
+	x = 33340,
+	y = 31890,
+	z = 9
+}, {
+	x = 33347,
+	y = 31889,
+	z = 9
+} }
 
-local slime_ids = {12059, 12060, 12061, 12062, 12063}
+local slime_ids = { 12059, 12060, 12061, 12062, 12063 }
 
-local servants = {
-	{10, "diamond servant"},
-	{40, "golden servant"},
-	{100, "iron servant"}
-}
+local servants = { { 10, "diamond servant" }, { 40, "golden servant" }, { 100, "iron servant" } }
 
 slime_exhaust = slime_exhaust or {}
 slimes_removed = slimes_removed or {}
@@ -121,7 +199,11 @@ function Gobbler_onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	slime_exhaust[player.uid] = time + config.slime_exhaust
 	player:say("The slime gobbler gobbles large chunks of the slime fungus with great satisfaction.", TALKTYPE_MONSTER_SAY)
 	player:addExperience(20, true, true)
-	slimes_removed[#slimes_removed + 1] = {cid = player.uid, id = target.itemid, pos = toPosition}
+	slimes_removed[#slimes_removed + 1] = {
+		cid = player.uid,
+		id = target.itemid,
+		pos = toPosition
+	}
 	target:transform(12065)
 
 	if not table.contains(valid_participants, player.uid) then

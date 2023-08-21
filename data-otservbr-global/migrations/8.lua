@@ -1,6 +1,7 @@
 function onUpdateDatabase()
-  Spdlog.info("Updating database to version 9 (Bestiary cpp)")
-  db.query([[CREATE TABLE IF NOT EXISTS `player_charms` (
+	Spdlog.info("Updating database to version 9 (Bestiary cpp)")
+	db.query(
+		[[CREATE TABLE IF NOT EXISTS `player_charms` (
 `player_guid` INT(250) NOT NULL , 
 `charm_points` VARCHAR(250) NULL , 
 `charm_expansion` BOOLEAN NULL , 
@@ -25,6 +26,7 @@ function onUpdateDatabase()
 `rune_void` INT(250) NULL ,
 `UsedRunesBit` VARCHAR(250) NULL ,
 `UnlockedRunesBit` VARCHAR(250) NULL,
-`tracker list` BLOB NULL ) ENGINE = InnoDB DEFAULT CHARSET=utf8;]])  
-    return true -- true = There are others migrations file | false = this is the last migration file
+`tracker list` BLOB NULL ) ENGINE = InnoDB DEFAULT CHARSET=utf8;]]
+	)
+	return true -- true = There are others migrations file | false = this is the last migration file
 end

@@ -40,13 +40,13 @@ monster.changeTarget = {
 }
 
 monster.faction = FACTION_DEEPLING
-monster.enemyFactions = {FACTION_DEATHLING, FACTION_PLAYER}
+monster.enemyFactions = { FACTION_DEATHLING, FACTION_PLAYER }
 
 monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,
 	damage = 10,
-	random = 10,
+	random = 10
 }
 
 monster.flags = {
@@ -77,58 +77,157 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "QJELL NETA NA!!", yell = false}
+	{
+		text = "QJELL NETA NA!!",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{name = "gold coin", chance = 100000, maxCount = 90},
-	{name = "gold coin", chance = 100000, maxCount = 90},
-	{name = "platinum coin", chance = 70000, maxCount = 2},
-	{name = "great mana potion", chance = 14285, maxCount = 3},
-	{name = "great health potion", chance = 14285, maxCount = 3},
-	{name = "deepling breaktime snack", chance = 16666},
-	{name = "deepling guard belt buckle", chance = 12500},
-	{name = "eye of a deepling", chance = 10000},
-	{name = "deepling claw", chance = 9090},
-	{name = "small sapphire", chance = 2890, maxCount = 3},
-	{name = "heavy trident", chance = 1694},
-	{name = "guardian axe", chance = 925},
-	{name = "deepling squelcher", chance = 751},
-	{name = "deepling backpack", chance = 333},
-	{name = "ornate crossbow", chance = 362},
-	{name = "foxtail", chance = 10}
-}
+monster.loot = { {
+	name = "gold coin",
+	chance = 100000,
+	maxCount = 90
+}, {
+	name = "gold coin",
+	chance = 100000,
+	maxCount = 90
+}, {
+	name = "platinum coin",
+	chance = 70000,
+	maxCount = 2
+}, {
+	name = "great mana potion",
+	chance = 14285,
+	maxCount = 3
+}, {
+	name = "great health potion",
+	chance = 14285,
+	maxCount = 3
+}, {
+	name = "deepling breaktime snack",
+	chance = 16666
+}, {
+	name = "deepling guard belt buckle",
+	chance = 12500
+}, {
+	name = "eye of a deepling",
+	chance = 10000
+}, {
+	name = "deepling claw",
+	chance = 9090
+}, {
+	name = "small sapphire",
+	chance = 2890,
+	maxCount = 3
+}, {
+	name = "heavy trident",
+	chance = 1694
+}, {
+	name = "guardian axe",
+	chance = 925
+}, {
+	name = "deepling squelcher",
+	chance = 751
+}, {
+	name = "deepling backpack",
+	chance = 333
+}, {
+	name = "ornate crossbow",
+	chance = 362
+}, {
+	name = "foxtail",
+	chance = 10
+} }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400, effect = CONST_ME_DRAWBLOOD},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -200, range = 7, shootEffect = CONST_ANI_WHIRLWINDSWORD, target = true},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_DROWNDAMAGE, minDamage = -100, maxDamage = -150, range = 7, shootEffect = CONST_ANI_SPEAR, effect = CONST_ME_LOSEENERGY, target = true}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -400,
+	effect = CONST_ME_DRAWBLOOD
+}, {
+	name = "combat",
+	interval = 2000,
+	chance = 20,
+	type = COMBAT_PHYSICALDAMAGE,
+	minDamage = 0,
+	maxDamage = -200,
+	range = 7,
+	shootEffect = CONST_ANI_WHIRLWINDSWORD,
+	target = true
+}, {
+	name = "combat",
+	interval = 2000,
+	chance = 15,
+	type = COMBAT_DROWNDAMAGE,
+	minDamage = -100,
+	maxDamage = -150,
+	range = 7,
+	shootEffect = CONST_ANI_SPEAR,
+	effect = CONST_ME_LOSEENERGY,
+	target = true
+} }
 
 monster.defenses = {
 	defense = 35,
 	armor = 35,
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 100, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false}
+	{
+		name = "combat",
+		interval = 2000,
+		chance = 10,
+		type = COMBAT_HEALING,
+		minDamage = 100,
+		maxDamage = 200,
+		effect = CONST_ME_MAGIC_BLUE,
+		target = false
+	}
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = -10},
-	{type = COMBAT_EARTHDAMAGE, percent = -10},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 10}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = -10
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = -10
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 10
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = true
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

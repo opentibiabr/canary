@@ -2,19 +2,15 @@ local config = {
 	enabled = false,
 	storage = Storage.VipSystem.OnlineTokensGain,
 	checkDuplicateIps = false,
-
 	tokenItemId = 14112, -- bar of gold
-
 	interval = 60 * 1000,
-
 	-- per hour | system will calculate how many tokens will be given and when
 	-- put 0 in tokensPerHour.free to disable free from receiving tokens
 	tokensPerHour = {
 		free = 5,
-		vip = 10,
+		vip = 10
 	},
-
-	awardOn = 5,
+	awardOn = 5
 }
 
 local onlineTokensEvent = GlobalEvent("GainTokenInterval")
@@ -52,7 +48,7 @@ function onlineTokensEvent.onThink(interval)
 			end
 		end
 
-		:: continue ::
+		::continue::
 	end
 	return true
 end

@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Kazordoon Dwarf Mines, Dwarf Bridge, deep Elvenbane, Tiquanda Dwarf Cave, Cormaya Dwarf Cave, \z
 		Island of Destiny (Knights area), Beregar."
-	}
+}
 
 monster.health = 90
 monster.maxHealth = 90
@@ -39,9 +39,7 @@ monster.changeTarget = {
 	chance = 0
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = true,
@@ -71,50 +69,105 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Hail Durin!", yell = false}
+	{
+		text = "Hail Durin!",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{name = "gold coin", chance = 35000, maxCount = 8},
-	{id = 3097, chance = 100}, -- dwarven ring
-	{name = "axe", chance = 15000},
-	{name = "hatchet", chance = 25000},
-	{name = "studded armor", chance = 8000},
-	{name = "copper shield", chance = 10000},
-	{id = 3456, chance = 10000}, -- pick
-	{id = 3505, chance = 8000}, -- letter
-	{name = "leather legs", chance = 10000},
-	{name = "white mushroom", chance = 50000},
-	{name = "iron ore", chance = 700}
-}
+monster.loot = { {
+	name = "gold coin",
+	chance = 35000,
+	maxCount = 8
+}, {
+	id = 3097,
+	chance = 100
+}, { -- dwarven ring
+	name = "axe",
+	chance = 15000
+}, {
+	name = "hatchet",
+	chance = 25000
+}, {
+	name = "studded armor",
+	chance = 8000
+}, {
+	name = "copper shield",
+	chance = 10000
+}, {
+	id = 3456,
+	chance = 10000
+}, { -- pick
+	id = 3505,
+	chance = 8000
+}, { -- letter
+	name = "leather legs",
+	chance = 10000
+}, {
+	name = "white mushroom",
+	chance = 50000
+}, {
+	name = "iron ore",
+	chance = 700
+} }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -30
+} }
 
 monster.defenses = {
 	defense = 10,
 	armor = 10
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 10},
-	{type = COMBAT_FIREDAMAGE, percent = -5},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 10
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = -5
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = -5
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

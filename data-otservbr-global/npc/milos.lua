@@ -19,14 +19,12 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'What a fascinating idea!'}
+	{ text = "What a fascinating idea!" }
 }
 
 local keywordHandler = KeywordHandler:new()

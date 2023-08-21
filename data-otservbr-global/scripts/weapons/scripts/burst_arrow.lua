@@ -1,8 +1,4 @@
-local area = createCombatArea({
-	{1, 1, 1},
-	{1, 3, 1},
-	{1, 1, 1}
-})
+local area = createCombatArea({ { 1, 1, 1 }, { 1, 3, 1 }, { 1, 1, 1 } })
 
 local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)

@@ -7,7 +7,7 @@ function inServiceYalaharCharm.onUse(player, item, fromPosition, target, toPosit
 			toPosition:sendMagicEffect(CONST_ME_CARNIPHILA)
 			local monster
 			for i = 1, 2 do
-				monster = Game.createMonster('Tormented Ghost', player:getPosition())
+				monster = Game.createMonster("Tormented Ghost", player:getPosition())
 				if monster then
 					monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end

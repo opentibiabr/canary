@@ -10,23 +10,25 @@ npcConfig.maxHealth = npcConfig.health
 npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
-npcConfig.outfit = {
-	lookType = 274
-}
+npcConfig.outfit = { lookType = 274 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Chchch'}
+	{ text = "Chchch" }
 }
-npcConfig.shop = {	-- Sellable items
-	{ itemName = "acorn", clientId = 10296, sell = 10 },
-	{ itemName = "walnut", clientId = 836, sell = 80 }
-}
+npcConfig.shop = { -- Sellable items
+{
+	itemName = "acorn",
+	clientId = 10296,
+	sell = 10
+}, {
+	itemName = "walnut",
+	clientId = 836,
+	sell = 80
+} }
 
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
@@ -37,8 +39,7 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -67,7 +68,10 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({'acorn'}, StdModule.say, {npcHandler = npcHandler, text = "Chh? Chhh?? <though you don't understand squirrelish, that one seems really excited>"})
+keywordHandler:addKeyword({ "acorn" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Chh? Chhh?? <though you don't understand squirrelish, that one seems really excited>"
+})
 
 npcHandler:setMessage(MESSAGE_GREET, "Chhchh?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Chh...")

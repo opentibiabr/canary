@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -50,12 +48,31 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local travelNode = keywordHandler:addKeyword({'tibia'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you seek a passage back to Tibia?'})
-	travelNode:addChildKeyword({'yes'}, StdModule.travel, {npcHandler = npcHandler, premium = false, level = 0, cost = 0, destination = Position(32204, 31756, 6) })
-	travelNode:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, reset = true, text = 'We would like to serve you some time.'})
+local travelNode = keywordHandler:addKeyword({ "tibia" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Do you seek a passage back to Tibia?"
+})
+travelNode:addChildKeyword({ "yes" }, StdModule.travel, {
+	npcHandler = npcHandler,
+	premium = false,
+	level = 0,
+	cost = 0,
+	destination = Position(32204, 31756, 6)
+})
+travelNode:addChildKeyword({ "no" }, StdModule.say, {
+	npcHandler = npcHandler,
+	reset = true,
+	text = "We would like to serve you some time."
+})
 
-	keywordHandler:addKeyword({'passage'}, StdModule.say, {npcHandler = npcHandler, text = 'I can travel you to {Tibia}.'})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I can travel you to {Tibia}.'})
+keywordHandler:addKeyword({ "passage" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "I can travel you to {Tibia}."
+})
+keywordHandler:addKeyword({ "job" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "I can travel you to {Tibia}."
+})
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

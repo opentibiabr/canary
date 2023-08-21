@@ -1,4 +1,3 @@
-
 local elevatorBounacAction = Action()
 function elevatorBounacAction.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if player:getPosition() ~= Position(32371, 32496, 7) then

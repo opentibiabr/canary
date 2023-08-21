@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -52,21 +50,62 @@ end
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop = {
-	{ itemName = "banana", clientId = 3587, buy = 7 },
-	{ itemName = "brown bread", clientId = 3602, buy = 6 },
-	{ itemName = "empty honey glass", clientId = 31331, sell = 270 },
-	{ itemName = "fish", clientId = 3578, buy = 10 },
-	{ itemName = "jar of honey", clientId = 31332, sell = 300 },
-	{ itemName = "lemon", clientId = 8013, buy = 5 },
-	{ itemName = "mango", clientId = 5096, buy = 12 },
-	{ itemName = "melon", clientId = 3593, buy = 14 },
-	{ itemName = "mug of wine", clientId = 2880, buy = 15, count = 2 },
-	{ itemName = "orange", clientId = 3586, buy = 12 },
-	{ itemName = "peas", clientId = 11683, buy = 5 },
-	{ itemName = "vial of fruit juice", clientId = 2874, buy = 10, count = 14 },
-	{ itemName = "vial of water", clientId = 2874, buy = 2, count = 1 }
-}
+npcConfig.shop = { {
+	itemName = "banana",
+	clientId = 3587,
+	buy = 7
+}, {
+	itemName = "brown bread",
+	clientId = 3602,
+	buy = 6
+}, {
+	itemName = "empty honey glass",
+	clientId = 31331,
+	sell = 270
+}, {
+	itemName = "fish",
+	clientId = 3578,
+	buy = 10
+}, {
+	itemName = "jar of honey",
+	clientId = 31332,
+	sell = 300
+}, {
+	itemName = "lemon",
+	clientId = 8013,
+	buy = 5
+}, {
+	itemName = "mango",
+	clientId = 5096,
+	buy = 12
+}, {
+	itemName = "melon",
+	clientId = 3593,
+	buy = 14
+}, {
+	itemName = "mug of wine",
+	clientId = 2880,
+	buy = 15,
+	count = 2
+}, {
+	itemName = "orange",
+	clientId = 3586,
+	buy = 12
+}, {
+	itemName = "peas",
+	clientId = 11683,
+	buy = 5
+}, {
+	itemName = "vial of fruit juice",
+	clientId = 2874,
+	buy = 10,
+	count = 14
+}, {
+	itemName = "vial of water",
+	clientId = 2874,
+	buy = 2,
+	count = 1
+} }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -76,7 +115,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

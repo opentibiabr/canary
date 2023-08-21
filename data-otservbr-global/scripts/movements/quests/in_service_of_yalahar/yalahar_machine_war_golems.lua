@@ -7,12 +7,8 @@ local setting = {
 		storage = GlobalStorage.InServiceOfYalahar.WarGolemsMachine1,
 		destination = Position(32881, 31312, 11)
 	},
-	[23702] = {
-		destination = Position(32876, 31321, 10)
-	},
-	[23703] = {
-		destination = Position(32875, 31321, 10)
-	}
+	[23702] = { destination = Position(32876, 31321, 10) },
+	[23703] = { destination = Position(32875, 31321, 10) }
 }
 
 local yalaharMachineWarGolems = MoveEvent()

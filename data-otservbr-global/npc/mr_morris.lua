@@ -19,22 +19,20 @@ npcConfig.outfit = {
 	lookAddons = 2
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "I have a quest that needs doing. Interested?"},
-	{text = "Hmmm. Interesting. If only someone could help investigate this."},
-	{text = "There's a task for an intrepid adventurer open! Any volunteers?"},
-	{text = "Hey, you. Yes, you. I could use your help."},
-	{text = "<sigh> The Adventurers' Guild really should have equipped me with more man power. \z
+	{ text = "I have a quest that needs doing. Interested?" },
+	{ text = "Hmmm. Interesting. If only someone could help investigate this." },
+	{ text = "There's a task for an intrepid adventurer open! Any volunteers?" },
+	{ text = "Hey, you. Yes, you. I could use your help." },
+	{ text = "<sigh> The Adventurers' Guild really should have equipped me with more man power. \z
 		Who's to keep all those monsters in check?" },
-	{text = "So much to investigate, so little time..."},
-	{text = "Buying all sorts of creature products!"},
-	{text = "You're looking thoughtful. Maybe I can help you?"}
+	{ text = "So much to investigate, so little time..." },
+	{ text = "Buying all sorts of creature products!" },
+	{ text = "You're looking thoughtful. Maybe I can help you?" }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -74,22 +72,14 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "amulet") then
 		if player:getStorageValue(Storage.Quest.U10_55.Dawnport.TheLostAmulet) < 1 then
-			npcHandler:say(
-				{
-					"One of our ...less fortunate members lost an ancient amulet somewhere on the island, \z
+			npcHandler:say({ "One of our ...less fortunate members lost an ancient amulet somewhere on the island, \z
 					along with his life. If you could retrieve the amulet at least, there's a little reward. \z
-					Would you go on that errand?"
-				},
-			npc, creature, 10)
+					Would you go on that errand?" }, npc, creature, 10)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(Storage.Quest.U10_55.Dawnport.TheLostAmulet) == 2 and player:getItemCount(21379) == 1 then
-			npcHandler:say(
-				{
-					"Ah, you found the amulet! Ah. Really? Poor Dormovo. \z
+			npcHandler:say({ "Ah, you found the amulet! Ah. Really? Poor Dormovo. \z
 					Always a bit hasty. Forgot his rope, or food, or potions - \z
-					it was to be expected he would meet an early end. Oh, well. ..."
-				},
-			npc, creature, 0)
+					it was to be expected he would meet an early end. Oh, well. ..." }, npc, creature, 0)
 			player:removeItem(21379, 1)
 			player:addItem(3031, 50)
 			player:setStorageValue(Storage.Quest.U10_55.Dawnport.TheLostAmulet, 3)
@@ -101,9 +91,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				One wonders what for, as they can hardly read! Anyway, we need it back. \z
 				Would you go looking for it?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
-		elseif player:getStorageValue(Storage.Quest.U10_55.Dawnport.TornLogBook) == 1
-		and player:getStorageValue(Storage.Quest.U10_55.Dawnport.TheStolenLogBook) == 1
-		and player:getItemCount(21378) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U10_55.Dawnport.TornLogBook) == 1 and player:getStorageValue(Storage.Quest.U10_55.Dawnport.TheStolenLogBook) == 1 and player:getItemCount(21378) == 1 then
 			npcHandler:say("Ah, yes, that's it! Torn and gnawed, but, ah well, the information is still retrievable. \z
 				Thank you. Here's your reward.", npc, creature)
 			player:removeItem(21378, 1)
@@ -155,7 +143,10 @@ local function creatureSayCallback(npc, creature, type, message)
 						light grey-brown sand, and is usually surrounded by fireflies. \z
 						Use the herb to pluck off the fresh flower buds, and return to me."
 				},
-			npc, creature, 10)
+				npc,
+				creature,
+				10
+			)
 			player:setStorageValue(Storage.Quest.U10_55.Dawnport.TheRareHerb, 1)
 			player:setStorageValue(Storage.Quest.U10_55.Dawnport.HerbFlower, 1)
 			npcHandler:setTopic(playerId, 0)
@@ -188,8 +179,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U10_55.Dawnport.MorrisMinosCount, 0)
 			npcHandler:setTopic(playerId, 0)
 		end
-		--End mission
-		--Start Task
+	--End mission
+	--Start Task
 	elseif MsgContains(message, "trolls") then
 		if player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorriskTroll) < 1 then
 			npcHandler:say(
@@ -198,7 +189,10 @@ local function creatureSayCallback(npc, creature, type, message)
 						Lately, they have raided our ship and made off with most of the Captain's rum stock!",
 					"I will reward you if you kill 20 mountain trolls. Would you do that?"
 				},
-			npc, creature, 10)
+				npc,
+				creature,
+				10
+			)
 			npcHandler:setTopic(playerId, 6)
 		elseif player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorriskTroll) == 1 then
 			if player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorrisTrollCount) >= 20 then
@@ -218,7 +212,10 @@ local function creatureSayCallback(npc, creature, type, message)
 						Lately, they have raided our ship and made off with most of the Captain's rum stock!",
 					"I will reward you if you kill 20 muglex clan footmen. Would you do that?"
 				},
-			npc, creature, 10)
+				npc,
+				creature,
+				10
+			)
 			npcHandler:setTopic(playerId, 7)
 		elseif player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorrisGoblin) == 1 then
 			if player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorrisGoblinCount) >= 20 then
@@ -238,7 +235,10 @@ local function creatureSayCallback(npc, creature, type, message)
 						Lately, they have raided our ship and made off with most of the Captain's rum stock!",
 					"I will reward you if you kill 20 minotaur bruisers. Would you do that?"
 				},
-			npc, creature, 10)
+				npc,
+				creature,
+				10
+			)
 			npcHandler:setTopic(playerId, 8)
 		elseif player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorrisMinos) == 1 then
 			if player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorrisMinosCount) >= 20 then
@@ -257,154 +257,112 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({"quest"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Hm. Well, you look like you want to take a look at the unknown yourself. \z
+keywordHandler:addKeyword({ "quest" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Hm. Well, you look like you want to take a look at the unknown yourself. \z
 			I might have a job for you. Choose what you would like to do - {fetch} some things, or {kill} some monsters."
-	}
-)
-keywordHandler:addKeyword({"mission"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Hm. Well, you look like you want to take a look at the unknown yourself. \z
+})
+keywordHandler:addKeyword({ "mission" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Hm. Well, you look like you want to take a look at the unknown yourself. \z
 			I might have a job for you. Choose what you would like to do - {fetch} some things, or {kill} some monsters."
-	}
-)
-keywordHandler:addKeyword({"fetch"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "There's three things that need to be found. You can look for an {amulet}, \z
+})
+keywordHandler:addKeyword({ "fetch" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "There's three things that need to be found. You can look for an {amulet}, \z
 			a {log book} or pick some rare {herbs}. Take your pick."
-	}
-)
-keywordHandler:addKeyword({"kill"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Well, those monsters have grown very uppity lately. There's a choice of three - mountain {trolls}, \z
+})
+keywordHandler:addKeyword({ "kill" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Well, those monsters have grown very uppity lately. There's a choice of three - mountain {trolls}, \z
 			muglex clan {goblins} or, if you are up to it or together with some friends, \z
 			there's a need to weed out some risky {minotaur} bruisers. Choose your target."
-	}
-)
-keywordHandler:addKeyword({"name"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Mr Morris will do."
-	}
-)
-keywordHandler:addKeyword({"job"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "There's always someone who needs to be at the front, to take the first step into the unknown. \z
+})
+keywordHandler:addKeyword({ "name" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Mr Morris will do."
+})
+keywordHandler:addKeyword({ "job" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "There's always someone who needs to be at the front, to take the first step into the unknown. \z
 			My whole life has been full of such steps."
-	}
-)
-keywordHandler:addKeyword({"dawnport"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Ah, that old story of how it was named? I spread it around. \z
+})
+keywordHandler:addKeyword({ "dawnport" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Ah, that old story of how it was named? I spread it around. \z
 			Can't remember really what its origins are. Interesting archeological findings here, though."
-	}
-)
-keywordHandler:addKeyword({"secrets of dawnport"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Ah yes. Well, the magic that led us here seems to be most potent at a certain time, close before sunrise. \z
+})
+keywordHandler:addKeyword({ "secrets of dawnport" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Ah yes. Well, the magic that led us here seems to be most potent at a certain time, close before sunrise. \z
 			Perhaps like a giant pulse, or beacon. Maybe the gods set it here, or a mad sorcerer, \z
 			we don't know for sure yet... The portal deep down in the caves, resonating with magical energy where you came \z
 			through, can maybe bring something else into this world as well. \z
 			So it must be carefully guarded while we investigate the island for more clues... \z
 			There are some very interesting archeological findings here on the island throughout. \z
 			Seems the island has drawn some cults here, but why they are gone now, no one knows."
-	}
-)
-keywordHandler:addKeyword({"archeological"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "It seems that throughout its history, this island was inhabited by very different species. \z
+})
+keywordHandler:addKeyword({ "archeological" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "It seems that throughout its history, this island was inhabited by very different species. \z
 			I like to study their remains."
-	}
-)
-keywordHandler:addKeyword({"rookgaard"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Yeah. Long time I haven't been to that place. How's old Vascalir? Still hanging around in the academy? \z
+})
+keywordHandler:addKeyword({ "rookgaard" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Yeah. Long time I haven't been to that place. How's old Vascalir? Still hanging around in the academy? \z
 			And Kraknaknork? Hah, I remember our brawl after that last card game. Fun times."
-	}
-)
-keywordHandler:addKeyword({"coltrayne"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "What about him? Is he in one of his dark moods again? That's his normal mood, I mean. \z
+})
+keywordHandler:addKeyword({ "coltrayne" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "What about him? Is he in one of his dark moods again? That's his normal mood, I mean. \z
 			Just buy your armor, weaponry and ammunition there and don't worry."
-	}
-)
-keywordHandler:addKeyword({"garamond"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Tired of the academy, maybe, but not of teaching. If you need druid or sorcerer spells, go to him."
-	}
-)
-keywordHandler:addKeyword({"hamish"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Ah, good old Hamish. A real wizard with potions. \z
+})
+keywordHandler:addKeyword({ "garamond" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Tired of the academy, maybe, but not of teaching. If you need druid or sorcerer spells, go to him."
+})
+keywordHandler:addKeyword({ "hamish" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Ah, good old Hamish. A real wizard with potions. \z
 			Will supply you with very useful magic equipment for hunting."
-	}
-)
-keywordHandler:addKeyword({"mr morris"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Exactly. Has a nice ring to it."
-	}
-)
-keywordHandler:addKeyword({"oressa"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "She's a good listener if you should still hesitate as to the choice of your definite vocation."
-	}
-)
-keywordHandler:addKeyword({"plunderpurse"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Well, for him it's always been just a question of ''Your gold or your life'' - gold it is nowadays. \z
+})
+keywordHandler:addKeyword({ "mr morris" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Exactly. Has a nice ring to it."
+})
+keywordHandler:addKeyword({ "oressa" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "She's a good listener if you should still hesitate as to the choice of your definite vocation."
+})
+keywordHandler:addKeyword({ "plunderpurse" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Well, for him it's always been just a question of ''Your gold or your life'' - gold it is nowadays. \z
 			You can stash your loose change at ol' Abram, but make sure to withdraw it once you leave Dawnport!"
-	}
-)
-keywordHandler:addKeyword({"inigo"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Ran across Inigo a few times on some remote islands, years and years ago. \z
+})
+keywordHandler:addKeyword({ "inigo" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Ran across Inigo a few times on some remote islands, years and years ago. \z
 			Talked him into coming along here, and he seems to enjoy helping newcomers find their way. \z
 			Passing his knowledge on to the next generation."
-	}
-)
-keywordHandler:addKeyword({"richard"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "We found him here half-dead and fixed him up, now he fixes us dinner and roof beams. \z
+})
+keywordHandler:addKeyword({ "richard" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "We found him here half-dead and fixed him up, now he fixes us dinner and roof beams. \z
 			Definitely someone you should check out for food, a rope and a shovel."
-	}
-)
-keywordHandler:addKeyword({"ser tybald"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Been together through many a desperate situation. A romantic underneath it all. \z
+})
+keywordHandler:addKeyword({ "ser tybald" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Been together through many a desperate situation. A romantic underneath it all. \z
 			Found the time to specialise on spells for paladins and knights somewhere along the way."
-	}
-)
-keywordHandler:addKeyword({"wentworth"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Be careful that he doesn't bore you to death with accountants of, well, your bank account history."
-	}
-)
-keywordHandler:addKeyword({"woblin"}, StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Ah, the goblin who sneaks around here now and then? Lives in a cave to the west, somewhere."
-	}
-)
+})
+keywordHandler:addKeyword({ "wentworth" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Be careful that he doesn't bore you to death with accountants of, well, your bank account history."
+})
+keywordHandler:addKeyword({ "woblin" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Ah, the goblin who sneaks around here now and then? Lives in a cave to the west, somewhere."
+})
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome, young adventurer. \z
 If you seek to help me with some things, I might have a little {quest} or {mission} for you.")

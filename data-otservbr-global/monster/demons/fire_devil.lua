@@ -39,9 +39,7 @@ monster.changeTarget = {
 	chance = 10
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = true,
@@ -71,52 +69,130 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Hot, eh?", yell = false},
-	{text = "Hell, oh, hell!", yell = false}
+	{
+		text = "Hot, eh?",
+		yell = false
+	},
+	{
+		text = "Hell, oh, hell!",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{id = 2920, chance = 10000}, -- torch
-	{id = 2920, chance = 1420, maxCount = 2}, -- torch
-	{name = "small amethyst", chance = 300},
-	{name = "necrotic rod", chance = 460},
-	{name = "blank rune", chance = 10950},
-	{name = "double axe", chance = 1500},
-	{id = 3307, chance = 3000}, -- scimitar
-	{name = "guardian shield", chance = 210},
-	{name = "cleaver", chance = 1100},
-	{name = "small pitchfork", chance = 19770}
-}
+monster.loot = { {
+	id = 2920,
+	chance = 10000
+}, { -- torch
+	id = 2920,
+	chance = 1420,
+	maxCount = 2
+}, { -- torch
+	name = "small amethyst",
+	chance = 300
+}, {
+	name = "necrotic rod",
+	chance = 460
+}, {
+	name = "blank rune",
+	chance = 10950
+}, {
+	name = "double axe",
+	chance = 1500
+}, {
+	id = 3307,
+	chance = 3000
+}, { -- scimitar
+	name = "guardian shield",
+	chance = 210
+}, {
+	name = "cleaver",
+	chance = 1100
+}, {
+	name = "small pitchfork",
+	chance = 19770
+} }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -60, maxDamage = -90, range = 7, radius = 4, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -20, maxDamage = -50, range = 7, radius = 2, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -35
+}, {
+	name = "combat",
+	interval = 2000,
+	chance = 20,
+	type = COMBAT_FIREDAMAGE,
+	minDamage = -60,
+	maxDamage = -90,
+	range = 7,
+	radius = 4,
+	shootEffect = CONST_ANI_FIRE,
+	effect = CONST_ME_FIREAREA,
+	target = true
+}, {
+	name = "combat",
+	interval = 2000,
+	chance = 15,
+	type = COMBAT_FIREDAMAGE,
+	minDamage = -20,
+	maxDamage = -50,
+	range = 7,
+	radius = 2,
+	shootEffect = CONST_ANI_FIRE,
+	effect = CONST_ME_FIREAREA,
+	target = true
+} }
 
 monster.defenses = {
 	defense = 10,
 	armor = 10
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 10},
-	{type = COMBAT_ENERGYDAMAGE, percent = 30},
-	{type = COMBAT_EARTHDAMAGE, percent = 20},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -20},
-	{type = COMBAT_HOLYDAMAGE , percent = -10},
-	{type = COMBAT_DEATHDAMAGE , percent = 20}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 10
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 30
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 20
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = -20
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = -10
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 20
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = true
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

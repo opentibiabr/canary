@@ -1,7 +1,7 @@
 local ragingMage2 = CreatureEvent("RagingMage2")
 function ragingMage2.onDeath(creature, corpse, killer, mostDamageKiller, unjustified, mostDamageUnjustified)
 	local targetMonster = creature:getMonster()
-	if not creature or not targetMonster or targetMonster:getName():lower() ~= 'raging mage' then
+	if not creature or not targetMonster or targetMonster:getName():lower() ~= "raging mage" then
 		return true
 	end
 

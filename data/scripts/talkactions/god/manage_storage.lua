@@ -85,8 +85,8 @@ function Player.setStorageValueTalkaction(self, param)
 			self:setStorageValueByName(split[1], value)
 			self:save()
 		end
-	else
 		-- The key is a number, so call setStorageValue as before
+	else
 		if split[3] then
 			local targetPlayer = Player(string.trim(split[3]))
 			if not targetPlayer then
@@ -118,4 +118,3 @@ end
 talkaction:separator(" ")
 talkaction:groupType("god")
 talkaction:register()
-

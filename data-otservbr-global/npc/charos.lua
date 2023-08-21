@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -52,16 +50,16 @@ end
 
 local config = {
 	towns = {
-		["venore"] = TOWNS_LIST.VENORE,
-		["thais"] = TOWNS_LIST.THAIS,
-		["kazordoon"] = TOWNS_LIST.KAZORDOON,
-		["carlin"] = TOWNS_LIST.CARLAIN,
+		venore = TOWNS_LIST.VENORE,
+		thais = TOWNS_LIST.THAIS,
+		kazordoon = TOWNS_LIST.KAZORDOON,
+		carlin = TOWNS_LIST.CARLAIN,
 		["ab'dendriel"] = TOWNS_LIST.AB_DENDRIEL,
 		["liberty bay"] = TOWNS_LIST.LIBERTY_BAY,
 		["port hope"] = TOWNS_LIST.PORT_HOPE,
-		["ankrahmun"] = TOWNS_LIST.ANKRAHMUN,
-		["darashia"] = TOWNS_LIST.DARASHIA,
-		["edron"] = TOWNS_LIST.EDRON
+		ankrahmun = TOWNS_LIST.ANKRAHMUN,
+		darashia = TOWNS_LIST.DARASHIA,
+		edron = TOWNS_LIST.EDRON
 	}
 }
 
@@ -91,16 +89,21 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if npcHandler:getTopic(playerId) == 0 then
 		if MsgContains(message, "yes") then
-			npcHandler:say("Fine. You have ".. -player:getStorageValue(Storage.AdventurersGuild.CharosTrav)+7 .." \z
+			npcHandler:say(
+				"Fine. You have " .. -player:getStorageValue(
+					Storage.AdventurersGuild.CharosTrav
+				) + 7 .. " \z
 			attunements left. What is the new city of your choice? Thais, Carlin, Ab'Dendriel, Kazordoon, Venore, \z
-			Ankrahmun, Edron, Darashia, Liberty Bay or Port Hope?", npc, creature)
+			Ankrahmun, Edron, Darashia, Liberty Bay or Port Hope?",
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif npcHandler:getTopic(playerId) == 1 then
 		local cityTable = config.towns[message:lower()]
 		if cityTable then
-			player:setStorageValue(Storage.AdventurersGuild.CharosTrav,
-			player:getStorageValue(Storage.AdventurersGuild.CharosTrav)+1)
+			player:setStorageValue(Storage.AdventurersGuild.CharosTrav, player:getStorageValue(Storage.AdventurersGuild.CharosTrav) + 1)
 			player:setStorageValue(Storage.AdventurersGuild.Stone, cityTable)
 			npcHandler:say("Goodbye traveler!", npc, creature)
 		else

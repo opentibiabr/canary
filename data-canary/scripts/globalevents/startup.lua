@@ -10,15 +10,20 @@ function startup.onStartup()
 	db.asyncQuery("DELETE FROM `market_history` WHERE `inserted` <= " .. (os.time() - configManager.getNumber(configKeys.MARKET_OFFER_DURATION)))
 
 	-- reset familiars message storage
-	db.query('DELETE FROM `player_storage` WHERE `key` = '..Global.Storage.FamiliarSummonEvent10)
-	db.query('DELETE FROM `player_storage` WHERE `key` = '..Global.Storage.FamiliarSummonEvent60)
+	db.query("DELETE FROM `player_storage` WHERE `key` = " .. Global.Storage.FamiliarSummonEvent10)
+	db.query("DELETE FROM `player_storage` WHERE `key` = " .. Global.Storage.FamiliarSummonEvent60)
 
 	-- Move expired bans to ban history
 	local resultId = db.storeQuery("SELECT * FROM `account_bans` WHERE `expires_at` != 0 AND `expires_at` <= " .. os.time())
 	if resultId ~= false then
 		repeat
 			local accountId = Result.getNumber(resultId, "account_id")
-			db.asyncQuery("INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES (" .. accountId .. ", " .. db.escapeString(Result.getString(resultId, "reason")) .. ", " .. Result.getNumber(resultId, "banned_at") .. ", " .. Result.getNumber(resultId, "expires_at") .. ", " .. Result.getNumber(resultId, "banned_by") .. ")")
+			db.asyncQuery(
+				"INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES (" .. accountId .. ", " .. db.escapeString(Result.getString(resultId, "reason")) .. ", " .. Result.getNumber(
+					resultId,
+					"banned_at"
+				) .. ", " .. Result.getNumber(resultId, "expires_at") .. ", " .. Result.getNumber(resultId, "banned_by") .. ")"
+			)
 			db.asyncQuery("DELETE FROM `account_bans` WHERE `account_id` = " .. accountId)
 		until not Result.next(resultId)
 		Result.free(resultId)
@@ -50,7 +55,8 @@ function startup.onStartup()
 		db.query("INSERT INTO `towns` (`id`, `name`, `posx`, `posy`, `posz`) VALUES (" .. town:getId() .. ", " .. db.escapeString(town:getName()) .. ", " .. position.x .. ", " .. position.y .. ", " .. position.z .. ")")
 	end
 
-	do -- Event Schedule rates
+	do
+		-- Event Schedule rates
 		local lootRate = EventsScheduler.getEventSLoot()
 		if lootRate ~= 100 then
 			SCHEDULE_LOOT_RATE = lootRate
@@ -72,7 +78,7 @@ function startup.onStartup()
 		end
 
 		if expRate ~= 100 or lootRate ~= 100 or spawnRate ~= 100 or skillRate ~= 100 then
-		Spdlog.info("Events: " .. "Exp: " .. expRate .. "%, " .. "loot: " .. lootRate .. "%, " .. "Spawn: " .. spawnRate .. "%, " .. "Skill: ".. skillRate .."%")
+			Spdlog.info("Events: " .. "Exp: " .. expRate .. "%, " .. "loot: " .. lootRate .. "%, " .. "Spawn: " .. spawnRate .. "%, " .. "Skill: " .. skillRate .. "%")
 		end
 	end
 end

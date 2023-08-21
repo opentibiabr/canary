@@ -24,9 +24,7 @@ npcConfig.respawnType = {
 	underground = false
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -66,10 +64,14 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "mission") then
 		if player:getStorageValue(ThreatenedDreams.Mission01[1]) == 5 then
-			npcHandler:say({
-				"I'm heartbroken, traveler. Some months ago, I was taking care of my three newborn whelps. They just opened their eyes and started exploring the wilderness as a hunter came by. ...",
-				"He shot me and took my three puppies with him. I have no idea where he brought them or whether they are still alive. This uncertainty harrows me and thus I'm unable to find peace. Will you help me?"
-			}, npc, creature)
+			npcHandler:say(
+				{
+					"I'm heartbroken, traveler. Some months ago, I was taking care of my three newborn whelps. They just opened their eyes and started exploring the wilderness as a hunter came by. ...",
+					"He shot me and took my three puppies with him. I have no idea where he brought them or whether they are still alive. This uncertainty harrows me and thus I'm unable to find peace. Will you help me?"
+				},
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(ThreatenedDreams.Mission01[1]) == 9 then
 			npcHandler:say("I guess I will stick around for a time to watch over the grave. After this final watch I will find peace, I can feel this. Thank you, human being. You redeemed me.", npc, creature)
@@ -82,13 +84,16 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("You are not on that mission.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say({
-				"I didn't dare hope for it! The man told something about selling my babies to the orcs so they could train them as war wolves. ...",
-				"I guess he mentioned Ulderek's Rock. Please search for them and - be they alive or not - return and tell me what happened to them."
-			}, npc, creature)
+			npcHandler:say(
+				{
+					"I didn't dare hope for it! The man told something about selling my babies to the orcs so they could train them as war wolves. ...",
+					"I guess he mentioned Ulderek's Rock. Please search for them and - be they alive or not - return and tell me what happened to them."
+				},
+				npc,
+				creature
+			)
 			player:setStorageValue(ThreatenedDreams.Mission01[1], 6)
 			npcHandler:setTopic(playerId, 0)
 		end

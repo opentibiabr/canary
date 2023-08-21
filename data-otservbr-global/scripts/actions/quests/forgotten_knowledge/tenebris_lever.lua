@@ -2,13 +2,27 @@ local config = {
 	bossName = "Lady Tenebris",
 	timeToFightAgain = 20, -- In hour
 	timeToDefeat = 15, -- In minutes
-	playerPositions = {
-		{ pos = Position(32902, 31623, 14), teleport = Position(32911, 31603, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(32902, 31624, 14), teleport = Position(32911, 31603, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(32902, 31625, 14), teleport = Position(32911, 31603, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(32902, 31626, 14), teleport = Position(32911, 31603, 14), effect = CONST_ME_TELEPORT },
-		{ pos = Position(32902, 31627, 14), teleport = Position(32911, 31603, 14), effect = CONST_ME_TELEPORT }
-	},
+	playerPositions = { {
+		pos = Position(32902, 31623, 14),
+		teleport = Position(32911, 31603, 14),
+		effect = CONST_ME_TELEPORT
+	}, {
+		pos = Position(32902, 31624, 14),
+		teleport = Position(32911, 31603, 14),
+		effect = CONST_ME_TELEPORT
+	}, {
+		pos = Position(32902, 31625, 14),
+		teleport = Position(32911, 31603, 14),
+		effect = CONST_ME_TELEPORT
+	}, {
+		pos = Position(32902, 31626, 14),
+		teleport = Position(32911, 31603, 14),
+		effect = CONST_ME_TELEPORT
+	}, {
+		pos = Position(32902, 31627, 14),
+		teleport = Position(32911, 31603, 14),
+		effect = CONST_ME_TELEPORT
+	} },
 	bossPosition = Position(32912, 31599, 14),
 	specPos = {
 		from = Position(32895, 31585, 14),
@@ -62,7 +76,7 @@ function forgottenKnowledgeTenebris.onUse(player, item, fromPosition, target, to
 	if lever:checkConditions() then
 		spec:removeMonsters()
 		for d = 1, 6 do
-			Game.createMonster('shadow tentacle', Position(math.random(32909, 32914), math.random(31596, 31601), 14), true, true)
+			Game.createMonster("shadow tentacle", Position(math.random(32909, 32914), math.random(31596, 31601), 14), true, true)
 		end
 		local monster = Game.createMonster(config.bossName, config.bossPosition, true, true)
 		if not monster then

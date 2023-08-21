@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Laguna Islands, Fenrock, Port Hope and also can be found behind a wall below the \z
 		center of Liberty Bay. These cannot be reached."
-	}
+}
 
 monster.health = 185
 monster.maxHealth = 185
@@ -39,9 +39,7 @@ monster.changeTarget = {
 	chance = 0
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = false,
@@ -70,46 +68,91 @@ monster.light = {
 
 monster.voices = {
 	interval = 5000,
-	chance = 10,
+	chance = 10
 }
 
-monster.loot = {
-	{name = "gold coin", chance = 59000, maxCount = 30},
-	{name = "battle hammer", chance = 730},
-	{name = "plate shield", chance = 2850},
-	{id = 3578, chance = 4600}, -- fish
-	{name = "tortoise egg", chance = 770, maxCount = 2},
-	{id = 5899, chance = 1300}, -- turtle shell
-	{name = "tortoise shield", chance = 200}
-}
+monster.loot = { {
+	name = "gold coin",
+	chance = 59000,
+	maxCount = 30
+}, {
+	name = "battle hammer",
+	chance = 730
+}, {
+	name = "plate shield",
+	chance = 2850
+}, {
+	id = 3578,
+	chance = 4600
+}, { -- fish
+	name = "tortoise egg",
+	chance = 770,
+	maxCount = 2
+}, {
+	id = 5899,
+	chance = 1300
+}, { -- turtle shell
+	name = "tortoise shield",
+	chance = 200
+} }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -50
+} }
 
 monster.defenses = {
 	defense = 30,
 	armor = 22
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 20},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 20},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 20
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 20
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = -10
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 20
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

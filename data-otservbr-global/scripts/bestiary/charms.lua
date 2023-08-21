@@ -168,7 +168,7 @@ local charms = {
 		type = CHARM_PASSIVE,
 		percent = 20,
 		chance = 100,
-		points = 800,
+		points = 800
 	},
 	-- Low blow charm
 	[16] = {

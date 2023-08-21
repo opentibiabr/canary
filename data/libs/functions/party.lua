@@ -23,8 +23,8 @@ function Party:refreshHazard()
 				if memberHazard then
 					if not hazard then
 						hazard = memberHazard
-					elseif hazard.name ~= memberHazard.name then
 						-- Party members are in different hazard areas so we can't calculate the level
+					elseif hazard.name ~= memberHazard.name then
 						level = 0
 						break
 					end

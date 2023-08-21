@@ -16,20 +16,26 @@ local gates = {
 		city = "Carlin",
 		mapName = "carlin",
 		exitPosition = Position(32263, 31848, 7),
-		burntItems = {
-			{position = Position(32266, 31842, 7), itemId = 6217},
-			{position = Position(32258, 31843, 7), itemId = 6218},
-			{position = Position(32264, 31843, 7), itemId = 3917}
-		}
+		burntItems = { {
+			position = Position(32266, 31842, 7),
+			itemId = 6217
+		}, {
+			position = Position(32258, 31843, 7),
+			itemId = 6218
+		}, {
+			position = Position(32264, 31843, 7),
+			itemId = 3917
+		} }
 	},
 	-- Darashia
 	[4] = {
 		city = "Darashia",
 		mapName = "darashia",
 		exitPosition = Position(33304, 32371, 7),
-		burntItems = {
-			{position = Position(33300, 32366, 7), itemId = 6217}
-		}
+		burntItems = { {
+			position = Position(33300, 32366, 7),
+			itemId = 6217
+		} }
 	},
 	-- Edron
 	[5] = {
@@ -42,13 +48,22 @@ local gates = {
 		city = "Kazordoon",
 		mapName = "kazordoon",
 		exitPosition = Position(32575, 31981, 7),
-		burntItems = {
-			{position = Position(32571, 31976, 7), itemId = 6218},
-			{position = Position(32573, 31977, 7), itemId = 6218},
-			{position = Position(32569, 31984, 7), itemId = 6217},
-			{position = Position(32572, 31984, 7), itemId = 6217},
-			{position = Position(32572, 31985, 7), itemId = 6218}
-		}
+		burntItems = { {
+			position = Position(32571, 31976, 7),
+			itemId = 6218
+		}, {
+			position = Position(32573, 31977, 7),
+			itemId = 6218
+		}, {
+			position = Position(32569, 31984, 7),
+			itemId = 6217
+		}, {
+			position = Position(32572, 31984, 7),
+			itemId = 6217
+		}, {
+			position = Position(32572, 31985, 7),
+			itemId = 6218
+		} }
 	},
 	-- Liberty Bay
 	[7] = {
@@ -61,47 +76,82 @@ local gates = {
 		city = "Port Hope",
 		mapName = "porthope",
 		exitPosition = Position(32530, 32712, 7),
-		burntItems = {
-			{position = Position(32532, 32719, 7), itemId = 3696}
-		}
+		burntItems = { {
+			position = Position(32532, 32719, 7),
+			itemId = 3696
+		} }
 	},
 	-- Thais
 	[9] = {
 		city = "Thais",
 		mapName = "thais",
 		exitPosition = Position(32265, 32164, 7),
-		burntItems = {
-			{position = Position(32269, 32157, 7), itemId = 6218},
-			{position = Position(32274, 32165, 7), itemId = 6218}
-		}
+		burntItems = { {
+			position = Position(32269, 32157, 7),
+			itemId = 6218
+		}, {
+			position = Position(32274, 32165, 7),
+			itemId = 6218
+		} }
 	},
 	-- Venore
 	[10] = {
 		city = "Venore",
 		mapName = "venore",
 		exitPosition = Position(32834, 32082, 7),
-		burntItems = {
-			{position = Position(32836, 32079, 7), itemId = 6217},
-			{position = Position(32835, 32080, 7), itemId = 3693},
-			{position = Position(32837, 32080, 7), itemId = 6218},
-			{position = Position(32828, 32081, 7), itemId = 6217},
-			{position = Position(32836, 32081, 7), itemId = 3686},
-			{position = Position(32837, 32081, 7), itemId = 6217},
-			{position = Position(32827, 32082, 7), itemId = 6218},
-			{position = Position(32836, 32082, 7), itemId = 6218},
-			{position = Position(32834, 32084, 7), itemId = 3693},
-			{position = Position(32830, 32086, 7), itemId = 3694},
-			{position = Position(32836, 32086, 7), itemId = 3683},
-			{position = Position(32836, 32087, 7), itemId = 3686},
-			{position = Position(32838, 32087, 7), itemId = 3696},
-			{position = Position(32835, 32089, 7), itemId = 6217},
-			{position = Position(32836, 32091, 7), itemId = 3689}
-		}
+		burntItems = { {
+			position = Position(32836, 32079, 7),
+			itemId = 6217
+		}, {
+			position = Position(32835, 32080, 7),
+			itemId = 3693
+		}, {
+			position = Position(32837, 32080, 7),
+			itemId = 6218
+		}, {
+			position = Position(32828, 32081, 7),
+			itemId = 6217
+		}, {
+			position = Position(32836, 32081, 7),
+			itemId = 3686
+		}, {
+			position = Position(32837, 32081, 7),
+			itemId = 6217
+		}, {
+			position = Position(32827, 32082, 7),
+			itemId = 6218
+		}, {
+			position = Position(32836, 32082, 7),
+			itemId = 6218
+		}, {
+			position = Position(32834, 32084, 7),
+			itemId = 3693
+		}, {
+			position = Position(32830, 32086, 7),
+			itemId = 3694
+		}, {
+			position = Position(32836, 32086, 7),
+			itemId = 3683
+		}, {
+			position = Position(32836, 32087, 7),
+			itemId = 3686
+		}, {
+			position = Position(32838, 32087, 7),
+			itemId = 3696
+		}, {
+			position = Position(32835, 32089, 7),
+			itemId = 6217
+		}, {
+			position = Position(32836, 32091, 7),
+			itemId = 3689
+		} }
 	}
 }
 
-local function Furywebhook(message)	-- New local function that runs on delay to send webhook message.
-	Webhook.sendMessage("[Fury Gates] ", message, WEBHOOK_COLOR_ONLINE)	--Sends webhook message
+local function Furywebhook(
+message -- New local function that runs on delay to send webhook message.
+)
+	Webhook.sendMessage("[Fury Gates] ", message, WEBHOOK_COLOR_ONLINE) --Sends webhook message
 end
 
 -- FURY GATES MAP LOAD
@@ -125,16 +175,13 @@ function furygates.onStartup(interval)
 		end
 	end
 
-	Game.loadMap(DATA_DIRECTORY.. '/world/world_changes/fury_gates/' .. gates[gateId].mapName .. '.otbm')
+	Game.loadMap(DATA_DIRECTORY .. "/world/world_changes/fury_gates/" .. gates[gateId].mapName .. ".otbm")
 
 	setGlobalStorageValue(GlobalStorage.FuryGates, gateId)
 
-	Spdlog.info(string.format("Fury Gate will be active in %s today",
-		gates[gateId].city))
-	local message = (string.format("Fury Gate will be active in %s today",
-		gates[gateId].city))	-- Declaring the message to send to webhook.
-	addEvent(Furywebhook, 60000, message)	-- Event with 1 minute delay to send webhook message after server starts.
-
+	Spdlog.info(string.format("Fury Gate will be active in %s today", gates[gateId].city))
+	local message = string.format("Fury Gate will be active in %s today", gates[gateId].city) -- Declaring the message to send to webhook.
+	addEvent(Furywebhook, 60000, message) -- Event with 1 minute delay to send webhook message after server starts.
 	return true
 end
 
@@ -170,7 +217,7 @@ function teleport.onStepIn(creature, item, position, fromPosition)
 		local destination = Position(33290, 31786, 13)
 		player:teleportTo(destination)
 		destination:sendMagicEffect(CONST_ME_TELEPORT)
-	-- Exit gate
+		-- Exit gate
 	elseif item.actionid == 9715 then
 		player:teleportTo(gates[gateId].exitPosition)
 		gates[gateId].exitPosition:sendMagicEffect(CONST_ME_TELEPORT)

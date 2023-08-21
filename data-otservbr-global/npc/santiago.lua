@@ -19,17 +19,15 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Evil little beasts... I hope someone helps me fight them.' },
-	{ text = 'Nasty creepy crawlies!' },
-	{ text = 'Hey! You over there, could you help me with a little quest? Just say \'hi\' or \'hello\' to talk to me!' },
-	{ text = 'Don\'t be shy, can\'t hurt to greet me with \'hello\' or \'hi\'!' }
+	{ text = "Evil little beasts... I hope someone helps me fight them." },
+	{ text = "Nasty creepy crawlies!" },
+	{ text = "Hey! You over there, could you help me with a little quest? Just say 'hi' or 'hello' to talk to me!" },
+	{ text = "Don't be shy, can't hurt to greet me with 'hello' or 'hi'!" }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,7 +56,6 @@ end
 npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
-
 
 local storeTalkCid = {}
 local function greetCallback(npc, creature)
@@ -130,7 +127,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if table.contains({"yes", "right", "ok"}, message) then
+	if table.contains({ "yes", "right", "ok" }, message) then
 		if storeTalkCid[playerId] == 0 then
 			npcHandler:say("Great, please go to my house, just a few steps south of here. Upstairs in my room, you'll find a chest. You can keep what you find inside of it! Come back after you got it and greet me to talk to me again. {Yes}?", npc, creature)
 			Position(32033, 32277, 6):sendMagicEffect(CONST_ME_TUTORIALARROW)
@@ -173,7 +170,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.SantiagoQuestLog, 6)
 			storeTalkCid[playerId] = 5
 		elseif storeTalkCid[playerId] == 5 then
-			npcHandler:say("Really? You look fine to me, must have been just a scratch. Well, there are much more dangerous monsters than cockroaches out there. Take a look at your status bar. You have 155 Health right now. I'll show you something, {yes}?", npc, creature)
+			npcHandler:say(
+				"Really? You look fine to me, must have been just a scratch. Well, there are much more dangerous monsters than cockroaches out there. Take a look at your status bar. You have 155 Health right now. I'll show you something, {yes}?",
+				npc,
+				creature
+			)
 			player:sendTutorial(19)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.SantiagoNpcGreetStorage, 9)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.SantiagoQuestLog, 7)
@@ -188,10 +189,14 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:sendTutorial(19)
 			storeTalkCid[playerId] = 7
 		elseif storeTalkCid[playerId] == 7 then
-			npcHandler:say({
-				"Here, take this fish which I've caught myself. Find it in your inventory, then 'Use' it to eat it. This will slowly refill your health. ...",
-				"By the way: If your hitpoints are below 150, you will regenerate back to 150 hitpoints after few seconds as long as you are not hungry, outside a protection zone and do not have a battle sign. {Easy}, yes?"
-			}, npc, creature)
+			npcHandler:say(
+				{
+					"Here, take this fish which I've caught myself. Find it in your inventory, then 'Use' it to eat it. This will slowly refill your health. ...",
+					"By the way: If your hitpoints are below 150, you will regenerate back to 150 hitpoints after few seconds as long as you are not hungry, outside a protection zone and do not have a battle sign. {Easy}, yes?"
+				},
+				npc,
+				creature
+			)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.SantiagoQuestLog, 9)
 			player:addItem(3578, 1)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.SantiagoNpcGreetStorage, 11)

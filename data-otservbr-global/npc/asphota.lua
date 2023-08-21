@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 1
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -52,29 +50,100 @@ end
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop = {
-	{ itemName = "basket", clientId = 2855, buy = 6 },
-	{ itemName = "bottle", clientId = 2875, buy = 3 },
-	{ itemName = "bucket", clientId = 2873, buy = 4 },
-	{ itemName = "candelabrum", clientId = 2911, buy = 8 },
-	{ itemName = "candlestick", clientId = 2917, buy = 2 },
-	{ itemName = "closed trap", clientId = 3481, buy = 280, sell = 75 },
-	{ itemName = "crowbar", clientId = 3304, buy = 260, sell = 50 },
-	{ itemName = "fishing rod", clientId = 3483, buy = 150, sell = 40 },
-	{ itemName = "hand auger", clientId = 31334, buy = 25 },
-	{ itemName = "inkwell", clientId = 3509, sell = 8 },
-	{ itemName = "machete", clientId = 3308, buy = 35, sell = 6 },
-	{ itemName = "pick", clientId = 3456, buy = 50, sell = 15 },
-	{ itemName = "rope", clientId = 3003, buy = 50, sell = 15 },
-	{ itemName = "scroll", clientId = 2815, buy = 5 },
-	{ itemName = "scythe", clientId = 3453, buy = 50, sell = 10 },
-	{ itemName = "shovel", clientId = 3457, buy = 50, sell = 8 },
-	{ itemName = "telescope kit", clientId = 2799, buy = 70 },
-	{ itemName = "torch", clientId = 2920, buy = 2 },
-	{ itemName = "watch", clientId = 2906, buy = 20, sell = 6 },
-	{ itemName = "wooden hammer", clientId = 3459, sell = 15 },
-	{ itemName = "worm", clientId = 3492, buy = 1 }
-}
+npcConfig.shop = { {
+	itemName = "basket",
+	clientId = 2855,
+	buy = 6
+}, {
+	itemName = "bottle",
+	clientId = 2875,
+	buy = 3
+}, {
+	itemName = "bucket",
+	clientId = 2873,
+	buy = 4
+}, {
+	itemName = "candelabrum",
+	clientId = 2911,
+	buy = 8
+}, {
+	itemName = "candlestick",
+	clientId = 2917,
+	buy = 2
+}, {
+	itemName = "closed trap",
+	clientId = 3481,
+	buy = 280,
+	sell = 75
+}, {
+	itemName = "crowbar",
+	clientId = 3304,
+	buy = 260,
+	sell = 50
+}, {
+	itemName = "fishing rod",
+	clientId = 3483,
+	buy = 150,
+	sell = 40
+}, {
+	itemName = "hand auger",
+	clientId = 31334,
+	buy = 25
+}, {
+	itemName = "inkwell",
+	clientId = 3509,
+	sell = 8
+}, {
+	itemName = "machete",
+	clientId = 3308,
+	buy = 35,
+	sell = 6
+}, {
+	itemName = "pick",
+	clientId = 3456,
+	buy = 50,
+	sell = 15
+}, {
+	itemName = "rope",
+	clientId = 3003,
+	buy = 50,
+	sell = 15
+}, {
+	itemName = "scroll",
+	clientId = 2815,
+	buy = 5
+}, {
+	itemName = "scythe",
+	clientId = 3453,
+	buy = 50,
+	sell = 10
+}, {
+	itemName = "shovel",
+	clientId = 3457,
+	buy = 50,
+	sell = 8
+}, {
+	itemName = "telescope kit",
+	clientId = 2799,
+	buy = 70
+}, {
+	itemName = "torch",
+	clientId = 2920,
+	buy = 2
+}, {
+	itemName = "watch",
+	clientId = 2906,
+	buy = 20,
+	sell = 6
+}, {
+	itemName = "wooden hammer",
+	clientId = 3459,
+	sell = 15
+}, {
+	itemName = "worm",
+	clientId = 3492,
+	buy = 1
+} }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -84,7 +153,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

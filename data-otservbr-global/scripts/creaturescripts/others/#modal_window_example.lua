@@ -1,24 +1,24 @@
 --[[
 	ModalWindowHelper Example
-]]--
+]] --
 
 local moveDirectionTest = {
-	["Right"] = function(player)
+	Right = function(player)
 		local pos = player:getPosition()
 		pos:getNextPosition(DIRECTION_EAST)
 		player:teleportTo(pos, true)
 	end,
-	["Left"] = function(player)
+	Left = function(player)
 		local pos = player:getPosition()
 		pos:getNextPosition(DIRECTION_WEST)
 		player:teleportTo(pos, true)
 	end,
-	["Up"] = function(player)
+	Up = function(player)
 		local pos = player:getPosition()
 		pos:getNextPosition(DIRECTION_NORTH)
 		player:teleportTo(pos, true)
 	end,
-	["Down"] = function(player)
+	Down = function(player)
 		local pos = player:getPosition()
 		pos:getNextPosition(DIRECTION_SOUTH)
 		player:teleportTo(pos, true)

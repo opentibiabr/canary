@@ -1,4 +1,4 @@
-local lotteryTicket= Action()
+local lotteryTicket = Action()
 
 function lotteryTicket.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if math.random(98) == 1 then

@@ -18,9 +18,7 @@ npcConfig.outfit = {
 	lookFeet = 76
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -79,9 +77,21 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addGreetKeyword({"ashari"}, {npcHandler = npcHandler, text = "Greetings, |PLAYERNAME|."})
+keywordHandler:addGreetKeyword(
+	{ "ashari" },
+	{
+		npcHandler = npcHandler,
+		text = "Greetings, |PLAYERNAME|."
+	}
+)
 --Farewell message
-keywordHandler:addFarewellKeyword({"asgha thrazi"}, {npcHandler = npcHandler, text = "Good bye!."})
+keywordHandler:addFarewellKeyword(
+	{ "asgha thrazi" },
+	{
+		npcHandler = npcHandler,
+		text = "Good bye!."
+	}
+)
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setMessage(MESSAGE_GREET, "Ashari |PLAYERNAME|.")

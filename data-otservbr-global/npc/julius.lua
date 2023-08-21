@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 3
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -65,7 +63,7 @@ end
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
-	if table.contains({"mission", "note", "vampire"}, message:lower()) then
+	if table.contains({ "mission", "note", "vampire" }, message:lower()) then
 		if player:getStorageValue(BloodBrothers.QuestLine) < 0 then
 			npcHandler:say("Our nightly blood-sucking visitors put the inhabitants of Yalahar in constant danger. The worst thing is that anyone in this city could be a vampire. Maybe an outsider like you could help us. Would you try?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
@@ -92,19 +90,29 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Are you back with confirmed names of possible vampires?", npc, creature)
 			npcHandler:setTopic(playerId, 7)
 		elseif player:getStorageValue(BloodBrothers.Mission02) == 2 and player:getStorageValue(BloodBrothers.Mission03) < 0 then
-			npcHandler:say({
-				"Listen, I thought of something. If we could somehow figure out who among those five is their leader and manage to defeat him,the others might give up too. ...",
-				"Without their leader they will at least be much weaker. Before I explain my plan, do you think you could do that?"}, npc, creature)
+			npcHandler:say(
+				{
+					"Listen, I thought of something. If we could somehow figure out who among those five is their leader and manage to defeat him,the others might give up too. ...",
+					"Without their leader they will at least be much weaker. Before I explain my plan, do you think you could do that?"
+				},
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 9)
 		elseif player:getStorageValue(BloodBrothers.Mission03) == 2 then
 			npcHandler:say("Oh! You look horrible - I mean, rather weary. What happened? Who is the master vampire?", npc, creature)
 			npcHandler:setTopic(playerId, 11)
 		elseif player:getStorageValue(BloodBrothers.Mission03) == 3 and player:getStorageValue(BloodBrothers.Mission04) < 0 then
-			npcHandler:say({
-				"You know, I came to think that the spell didn't work because there is another, greater power behind all of this. I fear that if we don't find the source of the vampire threat we can't defeat them. ...",
-				"I heard that there is an island not far from here. Unholy and fearsome things are said to happen there, and maybe that means vampires are not far away. ...",
-				"I want you to try and convince someone with a boat to bring you to this island, Vengoth. I'll give you an empty map. Please map the area for me and pay special attention to unusual spots. ...",
-				"Mark them on my map and come back once you have found at least five remarkable places on Vengoth. Can you do that for me?"}, npc, creature)
+			npcHandler:say(
+				{
+					"You know, I came to think that the spell didn't work because there is another, greater power behind all of this. I fear that if we don't find the source of the vampire threat we can't defeat them. ...",
+					"I heard that there is an island not far from here. Unholy and fearsome things are said to happen there, and maybe that means vampires are not far away. ...",
+					"I want you to try and convince someone with a boat to bring you to this island, Vengoth. I'll give you an empty map. Please map the area for me and pay special attention to unusual spots. ...",
+					"Mark them on my map and come back once you have found at least five remarkable places on Vengoth. Can you do that for me?"
+				},
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 12)
 		end
 	elseif message == "yes" then
@@ -117,11 +125,16 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Fine then. Talk to me again about your mission once you have the garlic bread. You can get holy water from a member of the inquisition.", npc, creature)
 			player:setStorageValue(BloodBrothers.Mission01, 3)
 		elseif npcHandler:getTopic(playerId) == 5 and player:getStorageValue(BloodBrothers.Mission01) == 4 then
-		npcHandler:say({
-			"As I already told you, anyone in this city could really be a vampire, even the most unsuspicious citizen. I want you to find that brood. ...",
-			"You can possibly identify the vampires by using a trick with hidden garlic, but better put it into something unsuspicious, like... cookies maybe! ...",
-			"Just bake a few by using holy water on flour, then use that holy water dough on garlic, use the garlic dough on a baking tray and finally place the tray on an oven. Then just play little girl scout and distribute some cookies to the citizens. ...",
-			"Watch their reaction! If it's suspicious, write down the name and let me know. Then we'll work something out against them. Agreed?"}, npc, creature)
+			npcHandler:say(
+				{
+					"As I already told you, anyone in this city could really be a vampire, even the most unsuspicious citizen. I want you to find that brood. ...",
+					"You can possibly identify the vampires by using a trick with hidden garlic, but better put it into something unsuspicious, like... cookies maybe! ...",
+					"Just bake a few by using holy water on flour, then use that holy water dough on garlic, use the garlic dough on a baking tray and finally place the tray on an oven. Then just play little girl scout and distribute some cookies to the citizens. ...",
+					"Watch their reaction! If it's suspicious, write down the name and let me know. Then we'll work something out against them. Agreed?"
+				},
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 6)
 		elseif npcHandler:getTopic(playerId) == 6 then
 			npcHandler:say("Fine. Good luck! Talk to me again about your mission once you have confirmed the names of five suspects.", npc, creature)
@@ -130,15 +143,25 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Alright, wait a moment. Tell me one name at a time so I can note them down carefully. Who is a suspect?", npc, creature)
 			npcHandler:setTopic(playerId, 8)
 		elseif npcHandler:getTopic(playerId) == 9 then
-			npcHandler:say({
-				"Great, now here's my plan. As I said, my strength lies not on the battlefield, but it's theory and knowledge. While you were distributing cookies I developed a spell. ...",
-				"This spell is designed to reveal the identity of the master vampire and force him to show his true face. It is even likely that it instantly defeats him. ...",
-				"I want you to go to the five vampires you detected and try out the magic formula on them. One of them - the oldest and most powerful - will react to it, I'm sure of it. The words are: '{Alori Mort}'. Please repeat them."}, npc, creature)
+			npcHandler:say(
+				{
+					"Great, now here's my plan. As I said, my strength lies not on the battlefield, but it's theory and knowledge. While you were distributing cookies I developed a spell. ...",
+					"This spell is designed to reveal the identity of the master vampire and force him to show his true face. It is even likely that it instantly defeats him. ...",
+					"I want you to go to the five vampires you detected and try out the magic formula on them. One of them - the oldest and most powerful - will react to it, I'm sure of it. The words are: '{Alori Mort}'. Please repeat them."
+				},
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 10)
 		elseif npcHandler:getTopic(playerId) == 12 then
-			npcHandler:say({
-				"Here is the map. When you are standing near a remarkable spot, use it to mark that spot on the map. Don't forget, come back with at least five marks! ...",
-				"Also, they say there is a castle on this island. That mark HAS to be included, it's far too important to leave it out. Good luck!"}, npc, creature)
+			npcHandler:say(
+				{
+					"Here is the map. When you are standing near a remarkable spot, use it to mark that spot on the map. Don't forget, come back with at least five marks! ...",
+					"Also, they say there is a castle on this island. That mark HAS to be included, it's far too important to leave it out. Good luck!"
+				},
+				npc,
+				creature
+			)
 			player:addItem(8200)
 			player:setStorageValue(BloodBrothers.Mission04, 1)
 			player:setStorageValue(BloodBrothers.VengothAccess, 1)
@@ -149,7 +172,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Well, you need to mix flour with holy water and use that dough on garlic to create a special dough. Bake it like normal bread, but I guarantee that no vampire can eat that. Are you following me?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif npcHandler:getTopic(playerId) == 8 then
-			if player:getStorageValue(BloodBrothers.Cookies.Serafin) == 2 and player:getStorageValue(BloodBrothers.Cookies.Lisander) == 2 and player:getStorageValue(BloodBrothers.Cookies.Ortheus) == 2 and player:getStorageValue(BloodBrothers.Cookies.Maris) == 2 and player:getStorageValue(BloodBrothers.Cookies.Armenius) == 2 then
+			if player:getStorageValue(BloodBrothers.Cookies.Serafin) == 2 and player:getStorageValue(BloodBrothers.Cookies.Lisander) == 2 and player:getStorageValue(BloodBrothers.Cookies.Ortheus) == 2 and player:getStorageValue(
+				BloodBrothers.Cookies.Maris
+			) == 2 and player:getStorageValue(BloodBrothers.Cookies.Armenius) == 2 then
 				npcHandler:say("I guess Armenius, Lisander, Maris, Ortheus and Serafin are all the names we can get for now. Let me think for a moment what we are going to do, talk to me about your mission again later.", npc, creature)
 				player:setStorageValue(BloodBrothers.Mission02, 2)
 				npcHandler:setTopic(playerId, 0)
@@ -166,7 +191,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("No, no, you didn't eat it! Vampire Brood! Say '{aaah}' once you have eaten the bread or get out of her instantly!", npc, creature)
 		end
-	elseif table.contains({"maris", "ortheus", "serafin", "lisander", "armenius"}, message:lower()) and npcHandler:getTopic(playerId) == 8 then
+	elseif table.contains({ "maris", "ortheus", "serafin", "lisander", "armenius" }, message:lower()) and npcHandler:getTopic(playerId) == 8 then
 		if MsgContains(message, "maris") then
 			if player:getStorageValue(BloodBrothers.Cookies.Maris) == 1 then
 				npcHandler:say("He really doesn't look like the man of the sea he pretends to be, does he? Noted down! Any other name?", npc, creature)
@@ -232,14 +257,35 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 end
 --Basic
-keywordHandler:addKeyword({"distracted"}, StdModule.say, {npcHandler = npcHandler, text = "I come from a family of {vampire} hunters, but to be honest, I'm more into the theoretic part and strategic planning."})
-keywordHandler:addAliasKeyword({"job"})
-keywordHandler:addKeyword({"yalahar"}, StdModule.say, {npcHandler = npcHandler, text = "A better name would be Gomorrah, if you ask me."})
-keywordHandler:addKeyword({"name"}, StdModule.say, {npcHandler = npcHandler, text = "My name is Julius."})
-keywordHandler:addKeyword({"storkus"}, StdModule.say, {npcHandler = npcHandler, text = "Storkus? Oh yes, I know him. A long time ago we used to hunt together... sometimes."})
-keywordHandler:addKeyword({"time"}, StdModule.say, {npcHandler = npcHandler, text = "It's about time you showed the vampires that they should never bother the citizens again."})
-keywordHandler:addKeyword({"news"}, StdModule.say, {npcHandler = npcHandler, text = "Another vampire raid last night. But then again, that's nothing new."})
-keywordHandler:addKeyword({"thank"}, StdModule.say, {npcHandler = npcHandler, text = "Well, I should be the one to thank you I guess."})
+keywordHandler:addKeyword({ "distracted" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "I come from a family of {vampire} hunters, but to be honest, I'm more into the theoretic part and strategic planning."
+})
+keywordHandler:addAliasKeyword({ "job" })
+keywordHandler:addKeyword({ "yalahar" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "A better name would be Gomorrah, if you ask me."
+})
+keywordHandler:addKeyword({ "name" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "My name is Julius."
+})
+keywordHandler:addKeyword({ "storkus" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Storkus? Oh yes, I know him. A long time ago we used to hunt together... sometimes."
+})
+keywordHandler:addKeyword({ "time" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "It's about time you showed the vampires that they should never bother the citizens again."
+})
+keywordHandler:addKeyword({ "news" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Another vampire raid last night. But then again, that's nothing new."
+})
+keywordHandler:addKeyword({ "thank" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Well, I should be the one to thank you I guess."
+})
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye, |PLAYERNAME|. Never trust anyone.")
 npcHandler:setMessage(MESSAGE_SENDTRADE, "I'll reward you for every pair of vampire teeth you bring me.")
@@ -247,10 +293,15 @@ npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop = {
-	{ itemName = "blood preservation", clientId = 11449, sell = 320 },
-	{ itemName = "vampire teeth", clientId = 9685, sell = 275 }
-}
+npcConfig.shop = { {
+	itemName = "blood preservation",
+	clientId = 11449,
+	sell = 320
+}, {
+	itemName = "vampire teeth",
+	clientId = 9685,
+	sell = 275
+} }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -260,7 +311,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

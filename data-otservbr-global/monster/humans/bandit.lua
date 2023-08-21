@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Dark Cathedral, Tiquanda Bandit Caves, Outlaw Camp, mountain pass west of Ankrahmun, \z
 		Tyrsung, Thais Bandit Cave, Formorgar Mines. Also summoned by Gamel."
-	}
+}
 
 monster.health = 245
 monster.maxHealth = 245
@@ -39,9 +39,7 @@ monster.changeTarget = {
 	chance = 0
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = true,
@@ -71,49 +69,104 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Your money or your life!", yell = false},
-	{text = "Hand me your purse!", yell = false}
+	{
+		text = "Your money or your life!",
+		yell = false
+	},
+	{
+		text = "Hand me your purse!",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{name = "gold coin", chance = 49000, maxCount = 30},
-	{name = "axe", chance = 29900},
-	{name = "mace", chance = 10100},
-	{name = "chain helmet", chance = 5000},
-	{name = "iron helmet", chance = 520},
-	{name = "brass armor", chance = 2500},
-	{name = "brass shield", chance = 16800},
-	{name = "leather legs", chance = 15500},
-	{name = "tomato", chance = 7630, maxCount = 2}
-}
+monster.loot = { {
+	name = "gold coin",
+	chance = 49000,
+	maxCount = 30
+}, {
+	name = "axe",
+	chance = 29900
+}, {
+	name = "mace",
+	chance = 10100
+}, {
+	name = "chain helmet",
+	chance = 5000
+}, {
+	name = "iron helmet",
+	chance = 520
+}, {
+	name = "brass armor",
+	chance = 2500
+}, {
+	name = "brass shield",
+	chance = 16800
+}, {
+	name = "leather legs",
+	chance = 15500
+}, {
+	name = "tomato",
+	chance = 7630,
+	maxCount = 2
+} }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -45
+} }
 
 monster.defenses = {
 	defense = 15,
 	armor = 15
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -10},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = -10
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = -5
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

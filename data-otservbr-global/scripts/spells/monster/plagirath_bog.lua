@@ -3,22 +3,22 @@ combat2:setParameter(COMBAT_PARAM_TYPE, COMBAT_EARTHDAMAGE)
 combat2:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_POISON)
 combat2:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_POISON)
 
-
-arr = {
-{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-{0, 0, 1, 1, 1, 1, 3, 1, 1, 1, 1, 0, 0},
-{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-{0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-}
+arr =
+	{
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+		{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+		{ 0, 0, 1, 1, 1, 1, 3, 1, 1, 1, 1, 0, 0 },
+		{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+		{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+	}
 
 local area = createCombatArea(arr)
 combat2:setArea(area)
@@ -34,9 +34,7 @@ combat2:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 local function spellDamage(cid, target, var)
 	local creature = Creature(cid)
 	local target = Creature(target)
-	if not creature or not target then
-		return
-	end
+	if not creature or not target then return end
 	if creature:getHealth() >= 1 and creature:getPosition():getDistance(target:getPosition()) < 20 then
 		return combat2:execute(creature, var)
 	end
@@ -48,7 +46,7 @@ combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_POISON)
 
 local condition = Condition(CONDITION_OUTFIT)
 condition:setParameter(CONDITION_PARAM_TICKS, 10000)
-condition:setOutfit({lookType = 299})
+condition:setOutfit({ lookType = 299 })
 combat:addCondition(condition)
 
 local spell = Spell("instant")

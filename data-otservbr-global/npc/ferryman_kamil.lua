@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 3
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -51,9 +49,22 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Don't forget npcHandler = npcHandler in the parameters. It is required for all StdModule functions!
-local travelNode = keywordHandler:addKeyword({'meluna'}, StdModule.say, {npcHandler = npcHandler, text = 'You want me to transport you and your spouse to Honeymoon Island {Meluna}?'})
-	travelNode:addChildKeyword({'yes'}, StdModule.travel, {npcHandler = npcHandler, premium = false, level = 0, cost = 0, destination = Position(32088, 32470, 7) })
-	travelNode:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, reset = true, text = 'You shouldn\'t miss the experience.'})
+local travelNode = keywordHandler:addKeyword({ "meluna" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "You want me to transport you and your spouse to Honeymoon Island {Meluna}?"
+})
+travelNode:addChildKeyword({ "yes" }, StdModule.travel, {
+	npcHandler = npcHandler,
+	premium = false,
+	level = 0,
+	cost = 0,
+	destination = Position(32088, 32470, 7)
+})
+travelNode:addChildKeyword({ "no" }, StdModule.say, {
+	npcHandler = npcHandler,
+	reset = true,
+	text = "You shouldn't miss the experience."
+})
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

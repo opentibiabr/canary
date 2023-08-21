@@ -1,7 +1,8 @@
 function onUpdateDatabase()
-    Spdlog.info("Updating database to version 2 (hireling)")
+	Spdlog.info("Updating database to version 2 (hireling)")
 
-    db.query([[
+	db.query(
+		[[
 		CREATE TABLE IF NOT EXISTS `player_hirelings` (
             `id` INT NOT NULL PRIMARY KEY auto_increment,
             `player_id` INT NOT NULL,
@@ -20,7 +21,8 @@ function onUpdateDatabase()
             FOREIGN KEY(`player_id`) REFERENCES `players`(`id`)
                 ON DELETE CASCADE
 		)
-	]])
+	]]
+	)
 
-    return true
+	return true
 end

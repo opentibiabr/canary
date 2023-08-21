@@ -55,7 +55,13 @@ function callback.monsterOnDropLoot(monster, corpse)
 
 	local lootTable = {}
 	for _ = 1, rolls do
-		lootTable = mType:generateLootRoll({ factor = factor, gut = false, }, lootTable)
+		lootTable = mType:generateLootRoll(
+			{
+				factor = factor,
+				gut = false
+			},
+			lootTable
+		)
 	end
 	corpse:addLoot(lootTable)
 

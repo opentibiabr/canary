@@ -6,7 +6,7 @@ local destination = {
 	[64011] = Position(33201, 31765, 1), --Falcon
 	[64012] = Position(33327, 31351, 7), --Falcon
 	[64013] = Position(32958, 32324, 8), --Deep desert
-	[64014] = Position(33110, 32386, 7), --Deep desert
+	[64014] = Position(33110, 32386, 7) --Deep desert
 }
 
 local teleport = MoveEvent()

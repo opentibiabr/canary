@@ -20,15 +20,9 @@ bait:id(939)
 bait:register()
 
 local words = {
-	phase = {
-		"dot",
-		"a dot",
-		"a shadow",
-		"a huge shadow"},
-	direction = {
-		" straight ahead of you",
-		". It is to the starboard side",
-		". It is on the larboard side"}}
+	phase = { "dot", "a dot", "a shadow", "a huge shadow" },
+	direction = { " straight ahead of you", ". It is to the starboard side", ". It is on the larboard side" }
+}
 local telescope = Action()
 
 function telescope.onUse(player, item, fromPosition, target, toPosition, isHotkey)
@@ -36,9 +30,9 @@ function telescope.onUse(player, item, fromPosition, target, toPosition, isHotke
 		local randBait, randAppear, randPhase, randDirection, phase, direction
 		randBait = math.random(2) -- 50% bait loss ratio
 		if player:getStorageValue(TheHuntForTheSeaSerpent.SuccessSwitch) == 1 then
-			randAppear = math.random(10) -- 90%/10% nothing/success ratio
+			randAppear = math.random(10) -- 90%/10% nothing/success ratio -- always nothing
 		else
-			randAppear = math.random(9) -- always nothing
+			randAppear = math.random(9)
 		end
 		if player:getStorageValue(TheHuntForTheSeaSerpent.Bait) < 1 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You should set a new bait first.")
@@ -49,7 +43,7 @@ function telescope.onUse(player, item, fromPosition, target, toPosition, isHotke
 		elseif randAppear <= 4 then -- 40% nothing
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You see water as far as the eye can reach. No sea serpent in sight.")
 		else
-			if randAppear >= 5 and randAppear <= 8 then -- 40% nothing
+			if randAppear >= 5 and randAppear <= 8 then
 				randPhase = math.random(#words.phase)
 				randDirection = math.random(#words.direction)
 				phase = words.phase[randPhase]
@@ -59,6 +53,7 @@ function telescope.onUse(player, item, fromPosition, target, toPosition, isHotke
 				if randBait == 2 then
 					player:setStorageValue(TheHuntForTheSeaSerpent.Bait, 0)
 				end
+			-- 40% nothing
 			elseif randAppear == 9 then -- 10% nothing
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "It's getting away! You should tell the captain to gain speed!")
 				player:setStorageValue(TheHuntForTheSeaSerpent.Direction, 4)

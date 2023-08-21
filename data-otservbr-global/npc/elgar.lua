@@ -19,20 +19,29 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = "Don't forget to deposit your money here in the Global Bank before you head out for adventure.", yell = false }
+	{
+		text = "Don't forget to deposit your money here in the Global Bank before you head out for adventure.",
+		yell = false
+	}
 }
-npcConfig.shop = {
-	{ itemName = "label", clientId = 3507, buy = 1 },
-	{ itemName = "letter", clientId = 3505, buy = 8 },
-	{ itemName = "parcel", clientId = 3503, buy = 15 }
-}
+npcConfig.shop = { {
+	itemName = "label",
+	clientId = 3507,
+	buy = 1
+}, {
+	itemName = "letter",
+	clientId = 3505,
+	buy = 8
+}, {
+	itemName = "parcel",
+	clientId = 3503,
+	buy = 15
+} }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)

@@ -1,12 +1,4 @@
-local foods = {
-	3577, -- meat
-	3582, -- ham
-	3592, -- grape
-	3585, -- apple
-	3600, -- bread
-	3601, -- roll
-	3607  -- cheese
-}
+local foods = { 3577, 3582, 3592, 3585, 3600, 3601, 3607 } -- meat -- ham -- grape -- apple -- bread -- roll -- cheese
 
 local spell = Spell("instant")
 

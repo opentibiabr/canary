@@ -56,7 +56,7 @@ local UniqueTable = {
 		storageMission = Storage.ExplorerSociety.TheLizardUrn,
 		storageMissionValue = 28,
 		storageQuestlineValue = 27
-	},
+	}
 }
 
 local explorerSocietyFindings = Action()
@@ -66,7 +66,7 @@ function explorerSocietyFindings.onUse(player, item, fromPosition, target, toPos
 		return true
 	end
 	if player:getStorageValue(item.uid) >= 1 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The ' .. getItemName(uniqueItem.itemId) .. ' is empty.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. getItemName(uniqueItem.itemId) .. " is empty.")
 		return true
 	end
 	if player:getStorageValue(uniqueItem.storageMission) ~= uniqueItem.storageMissionValue then
@@ -74,7 +74,7 @@ function explorerSocietyFindings.onUse(player, item, fromPosition, target, toPos
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a " .. getItemName(uniqueItem.rewardItemId) .. ".")
 		player:setStorageValue(item.uid, 1)
 		player:setStorageValue(uniqueItem.storageMission, uniqueItem.storageMissionValue)
-		if(uniqueItem.storageQuestlineValue > 0) then
+		if (uniqueItem.storageQuestlineValue > 0) then
 			player:setStorageValue(Storage.ExplorerSociety.QuestLine, uniqueItem.storageQuestlineValue)
 		end
 		return true

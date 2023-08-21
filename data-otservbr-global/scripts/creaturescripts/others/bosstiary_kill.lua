@@ -13,7 +13,7 @@ function bosstiaryOnKill.onKill(player, creature, lastHit)
 	for cid, damage in pairs(creature:getDamageMap()) do
 		local participant = Player(cid)
 		if participant and participant:isPlayer() then
-			if creature:getName():lower() == (Game.getBoostedBoss()):lower() then
+			if creature:getName():lower() == Game.getBoostedBoss():lower() then
 				participant:addBosstiaryKill(creature:getName(), bosstiaryMultiplier * killBonus)
 			else
 				participant:addBosstiaryKill(creature:getName(), bosstiaryMultiplier)

@@ -1,8 +1,4 @@
-local burstArea = createCombatArea({
-	{1, 1, 1},
-	{1, 3, 1},
-	{1, 1, 1}
-})
+local burstArea = createCombatArea({ { 1, 1, 1 }, { 1, 3, 1 }, { 1, 1, 1 } })
 
 local burstCombat = Combat()
 burstCombat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)
@@ -19,7 +15,7 @@ burstarrow.onUseWeapon = function(player, variant)
 	if player:getSkull() == SKULL_BLACK then
 		return false
 	end
-	
+
 	return burstCombat:execute(player, variant)
 end
 
@@ -38,7 +34,7 @@ poisonarrow.onUseWeapon = function(player, variant)
 	if not poisonCombat:execute(player, variant) then
 		return false
 	end
-	
+
 	player:addDamageCondition(Creature(variant:getNumber()), CONDITION_POISON, DAMAGELIST_LOGARITHMIC_DAMAGE, 3)
 	return true
 end
@@ -53,16 +49,16 @@ viperCombat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_GREENSTAR)
 viperCombat:setParameter(COMBAT_PARAM_BLOCKARMOR, true)
 viperCombat:setFormula(COMBAT_FORMULA_SKILL, 0, 0, 1, 0)
 
-local viperstar= Weapon(WEAPON_DISTANCE)
+local viperstar = Weapon(WEAPON_DISTANCE)
 viperstar.onUseWeapon = function(player, variant)
 	if not viperCombat:execute(player, variant) then
 		return false
 	end
-	
+
 	if math.random(1, 100) <= 90 then
 		return false
 	end
-	
+
 	player:addDamageCondition(Creature(variant:getNumber()), CONDITION_POISON, DAMAGELIST_LOGARITHMIC_DAMAGE, 2)
 	return true
 end
@@ -71,13 +67,7 @@ viperstar:id(7366)
 viperstar:breakChance(9)
 viperstar:register()
 
-local diamondArea = createCombatArea({
-	{0, 1, 1, 1, 0},
-	{1, 1, 1, 1, 1},
-	{1, 1, 3, 1, 1},
-	{1, 1, 1, 1, 1},
-	{0, 1, 1, 1, 0},
-})
+local diamondArea = createCombatArea({ { 0, 1, 1, 1, 0 }, { 1, 1, 1, 1, 1 }, { 1, 1, 3, 1, 1 }, { 1, 1, 1, 1, 1 }, { 0, 1, 1, 1, 0 } })
 
 local diamondCombat = Combat()
 diamondCombat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)

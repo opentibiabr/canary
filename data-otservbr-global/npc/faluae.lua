@@ -10,13 +10,9 @@ npcConfig.maxHealth = npcConfig.health
 npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
-npcConfig.outfit = {
-	lookType = 62
-}
+npcConfig.outfit = { lookType = 62 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -46,9 +42,21 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Greeting message
-keywordHandler:addGreetKeyword({"ashari"}, {npcHandler = npcHandler, text = "Greetings, |PLAYERNAME|."})
+keywordHandler:addGreetKeyword(
+	{ "ashari" },
+	{
+		npcHandler = npcHandler,
+		text = "Greetings, |PLAYERNAME|."
+	}
+)
 --Farewell message
-keywordHandler:addFarewellKeyword({"asgha thrazi"}, {npcHandler = npcHandler, text = "Goodbye, |PLAYERNAME|."})
+keywordHandler:addFarewellKeyword(
+	{ "asgha thrazi" },
+	{
+		npcHandler = npcHandler,
+		text = "Goodbye, |PLAYERNAME|."
+	}
+)
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye!")
 

@@ -7,7 +7,7 @@ local function doCreateDummy(cid, position, storv)
 	local tile = Tile(position)
 	if tile then
 		local thing = tile:getTopVisibleThing()
-		if thing and table.contains({15710, 15711}, thing.itemid) then
+		if thing and table.contains({ 15710, 15711 }, thing.itemid) then
 			thing:remove()
 		end
 	end
@@ -21,11 +21,19 @@ local function doCreateDummy(cid, position, storv)
 	addEvent(doCreateDummy, 4 * 1000, cid, position, storv)
 end
 
-local shootingPos = {
-	{x = 32751, y = 31789, z = 10},
-	{x = 32753, y = 31789, z = 10},
-	{x = 32755, y = 31789, z = 10}
-}
+local shootingPos = { {
+	x = 32751,
+	y = 31789,
+	z = 10
+}, {
+	x = 32753,
+	y = 31789,
+	z = 10
+}, {
+	x = 32755,
+	y = 31789,
+	z = 10
+} }
 
 local taskShooting = MoveEvent()
 function taskShooting.onStepIn(creature, item, position, fromPosition)
@@ -43,7 +51,7 @@ function taskShooting.onStepIn(creature, item, position, fromPosition)
 	local tile = Tile(thingpos)
 	if tile then
 		local thing = tile:getTopVisibleThing()
-		if thing and table.contains({15710, 15711}, thing.itemid) then
+		if thing and table.contains({ 15710, 15711 }, thing.itemid) then
 			thing:remove()
 		end
 	end
@@ -69,7 +77,7 @@ function taskShooting.onStepOut(creature, item, position, fromPosition)
 	local tile = Tile(thingpos)
 	if tile then
 		local thing = tile:getTopVisibleThing()
-		if thing and table.contains({15710, 15711}, thing.itemid) then
+		if thing and table.contains({ 15710, 15711 }, thing.itemid) then
 			thing:remove()
 		end
 	end

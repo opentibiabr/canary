@@ -3,10 +3,11 @@
 -- Leave empty if you wish to disable.
 
 announcementChannels = {
-	["serverAnnouncements"] = "", -- Used for an announcement channel on your discord
-	["raids"] = "", -- Used to isolate raids on your discord
-	["player-kills"] = "", -- Self-explaining
+	serverAnnouncements = "", -- Used for an announcement channel on your discord
+	raids = "", -- Used to isolate raids on your discord
+	["player-kills"] = "" -- Self-explaining
 }
+
 
 --[[
 	Example of notification (After you do the config):

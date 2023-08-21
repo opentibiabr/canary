@@ -86,7 +86,7 @@ if not Quests then
 						[1] = "Oldrak told you that the fearsome Hugo was accidentally created by the mage Yenny the Gentle. Try to find out more about this.",
 						[2] = "Zoltan told you about Crunor's Caress, a druid order originating from Carlin. Try to find out more about this.",
 						[3] = "Padreia told you that Crunor's Caress founded the inn Crunor's Cottage south of Mt. Sternum. Try to find out more about this.",
-						[4] = "Lubo told you about a magical experiment that went wrong and created a demonbunny. Someone might be interested in this...",
+						[4] = "Lubo told you about a magical experiment that went wrong and created a demonbunny. Someone might be interested in this..."
 					}
 				},
 				[2] = {
@@ -125,10 +125,7 @@ if not Quests then
 					startValue = 0,
 					endValue = 100,
 					description = function(player)
-						return string.format(
-							"You have %d points of task. You need 100 points to take Cave Explorer outfit.",
-							(math.max(player:getStorageValue(Storage.SpikeTaskQuest.Gnomilly), 0))
-						)
+						return string.format("You have %d points of task. You need 100 points to take Cave Explorer outfit.", math.max(player:getStorageValue(Storage.SpikeTaskQuest.Gnomilly), 0))
 					end
 				},
 				[2] = {
@@ -138,10 +135,7 @@ if not Quests then
 					startValue = 0,
 					endValue = 100,
 					description = function(player)
-						return string.format(
-							"You have %d points of task. You need 100 points to take first addon.",
-							(math.max(player:getStorageValue(Storage.SpikeTaskQuest.Gnombold.Points), 0))
-						)
+						return string.format("You have %d points of task. You need 100 points to take first addon.", math.max(player:getStorageValue(Storage.SpikeTaskQuest.Gnombold.Points), 0))
 					end
 				},
 				[3] = {
@@ -151,16 +145,13 @@ if not Quests then
 					startValue = 0,
 					endValue = 100,
 					description = function(player)
-						return string.format(
-							"You have %d points of task. You need 100 points to take second addon.",
-							(math.max(player:getStorageValue(Storage.SpikeTaskQuest.Gnomargery.Points), 0))
-						)
+						return string.format("You have %d points of task. You need 100 points to take second addon.", math.max(player:getStorageValue(Storage.SpikeTaskQuest.Gnomargery.Points), 0))
 					end
 				}
 			}
 		},
 		[4] = {
-			name = "A Father\'s Burden",
+			name = "A Father's Burden",
 			startStorageId = Storage.FathersBurden.QuestLog,
 			startStorageValue = 1,
 			missions = {
@@ -184,7 +175,7 @@ if not Quests then
 					endValue = 2,
 					states = {
 						[1] = "Find the wyvern Heoni in the Edron mountains and take his sinew to Tereban.",
-						[2] = "You delivered Heoni\'s sinew to Tereban."
+						[2] = "You delivered Heoni's sinew to Tereban."
 					}
 				},
 				[3] = {
@@ -270,7 +261,7 @@ if not Quests then
 			}
 		},
 		[5] = {
-			name = "Bigfoot\'s Burden",
+			name = "Bigfoot's Burden",
 			startStorageId = Storage.BigfootBurden.QuestLine,
 			startStorageValue = 1,
 			missions = {
@@ -299,7 +290,7 @@ if not Quests then
 					startValue = 5,
 					endValue = 7,
 					states = {
-						[5] = "Pass Gnomerik\'s test by answering his questions. \z
+						[5] = "Pass Gnomerik's test by answering his questions. \z
 							If you fail to get a high enough score drink a mushroom beer and start again.",
 						[6] = "You have passed the gnomish psychology test and can proceed to the medical exam. \z
 							Talk to Gnomespector about your next examination."
@@ -333,11 +324,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 5,
 					description = function(player)
-						return string.format(
-							"Hit five targets in a row. \z
-						Don't hit an innocent target as it will reset your hit counter. %d / 5",
-							(math.max(player:getStorageValue(Storage.BigfootBurden.Shooting), 0))
-						)
+						return string.format("Hit five targets in a row. \z
+						Don't hit an innocent target as it will reset your hit counter. %d / 5", math.max(player:getStorageValue(Storage.BigfootBurden.Shooting), 0))
 					end
 				},
 				[7] = {
@@ -390,9 +378,9 @@ if not Quests then
 						return string.format(
 							"Your reputation in the eyes of gnomekind is %d.\nYour standing rises at: \z
 						\nReputation   30 - I \nReputation  120 - II \nReputation  480 - III \nReputation 1440 - IV \n",
-							(math.max(player:getStorageValue(Storage.BigfootBurden.Rank), 0))
+							math.max(player:getStorageValue(Storage.BigfootBurden.Rank), 0)
 						)
-						end
+					end
 				},
 				[12] = {
 					name = "Daily Minor: Crystal Keeper",
@@ -401,11 +389,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 5,
 					description = function(player)
-						return string.format(
-							"Use the repair crystal to repair five damaged blue crystals in the crystal caves. \z
-						Damaged crystals will not glow.\n%d / 5",
-							(math.max(player:getStorageValue(Storage.BigfootBurden.RepairedCrystalCount), 0))
-						)
+						return string.format("Use the repair crystal to repair five damaged blue crystals in the crystal caves. \z
+						Damaged crystals will not glow.\n%d / 5", math.max(player:getStorageValue(Storage.BigfootBurden.RepairedCrystalCount), 0))
 					end
 				},
 				[13] = {
@@ -415,11 +400,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 7,
 					description = function(player)
-						return string.format(
-							"Kill crystal crushers and use the discharger item on the corpse to collect their charges. \z
-						Gather 7 charges and report back. %d / 7",
-							(math.max(player:getStorageValue(Storage.BigfootBurden.ExtractedCount), 0))
-						)
+						return string.format("Kill crystal crushers and use the discharger item on the corpse to collect their charges. \z
+						Gather 7 charges and report back. %d / 7", math.max(player:getStorageValue(Storage.BigfootBurden.ExtractedCount), 0))
 					end
 				},
 				[14] = {
@@ -429,10 +411,7 @@ if not Quests then
 					startValue = 0,
 					endValue = 10,
 					description = function(player)
-						return string.format(
-							"Kill 10 of the wigglers for the gnomes. Then report back. %d / 10",
-							(math.max(player:getStorageValue(Storage.BigfootBurden.ExterminatedCount), 0))
-						)
+						return string.format("Kill 10 of the wigglers for the gnomes. Then report back. %d / 10", math.max(player:getStorageValue(Storage.BigfootBurden.ExterminatedCount), 0))
 					end
 				},
 				[15] = {
@@ -446,7 +425,7 @@ if not Quests then
 							"Find a truffle sniffing pig and lure it around. \z
 						Occasionally it will unearth some truffles. Use the baby pig on the truffles to feed it 3 times. \z
 						Then report back to the gnomes. %d / 3",
-							(math.max(player:getStorageValue(Storage.BigfootBurden.MushroomCount), 0))
+							math.max(player:getStorageValue(Storage.BigfootBurden.MushroomCount), 0)
 						)
 					end
 				},
@@ -463,7 +442,7 @@ if not Quests then
 					}
 				},
 				[17] = {
-					name = "Daily Major: The Tinker\'s Bell",
+					name = "Daily Major: The Tinker's Bell",
 					storageId = Storage.BigfootBurden.GolemCount,
 					missionId = 1049,
 					startValue = 0,
@@ -472,7 +451,7 @@ if not Quests then
 						return string.format(
 							"Use the harmonic bell on the mad golems in the golem workshop so that they will \z
 						automatically be teleported to the gnomish workshops. Then report back to the gnomes. %d / 4",
-							(math.max(player:getStorageValue(Storage.BigfootBurden.GolemCount), 0))
+							math.max(player:getStorageValue(Storage.BigfootBurden.GolemCount), 0)
 						)
 					end
 				},
@@ -500,7 +479,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Deliver the Deathstrike\'s snippet to gnomission to enter the first warzone for free.",
+						[1] = "Deliver the Deathstrike's snippet to gnomission to enter the first warzone for free.",
 						[2] = "You may enter the first warzone without using a mission crystal."
 					}
 				},
@@ -511,7 +490,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Deliver the Gnomevil\'s hat to gnomission to enter the second warzone for free.",
+						[1] = "Deliver the Gnomevil's hat to gnomission to enter the second warzone for free.",
 						[2] = "You may enter the second warzone without using a mission crystal."
 					}
 				},
@@ -522,7 +501,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Deliver the Abyssador\'s lash to gnomission to enter the third warzone for free.",
+						[1] = "Deliver the Abyssador's lash to gnomission to enter the third warzone for free.",
 						[2] = "You may enter the third warzone without using a mission crystal."
 					}
 				}
@@ -552,7 +531,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "Go to the Temple of Equilibrium (it\'s marked on your map) and find out what happened there.",
+						[1] = "Go to the Temple of Equilibrium (it's marked on your map) and find out what happened there.",
 						[2] = "The temple has been corrupted and is lost. Zalamon should be informed about this as soon as possible.",
 						[3] = "You already reported Zalamon about the Temple! Ask him for new mission!"
 					}
@@ -579,9 +558,9 @@ if not Quests then
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "Get the poison from Zalamon\'s storage room. Then go to the teleporter to the Muggy Plains and head \z
+						[1] = "Get the poison from Zalamon's storage room. Then go to the teleporter to the Muggy Plains and head \z
 							east from there to the rice fields. Go to the very top rice field and use the poison anywhere on the water.",
-						[2] = "The rice has been poisoned. This will weaken the Emperor\'s army significantly. \z
+						[2] = "The rice has been poisoned. This will weaken the Emperor's army significantly. \z
 							Return and tell Zalamon about your success.",
 						[3] = "You already reported Zalamon about your success! Ask him for new mission!"
 					}
@@ -596,7 +575,7 @@ if not Quests then
 						[1] = "Your mission is to find a way to enter the north of the valley and find a \z
 						passage to the great gate itself. Search any temples or settlements you come across for hidden passages.",
 						[2] = "Report Zalamon about the strange symbols that you found.",
-						[3] = "Get the greasy oil from Zalamon\'s storage room and put them on the levers that you found.",
+						[3] = "Get the greasy oil from Zalamon's storage room and put them on the levers that you found.",
 						[4] = "Due to being extra greasy, the leavers can now be moved.",
 						[5] = "You found the right combination for the puzzle in the mountains and triggered some kind of mechanism. \z
 							You should head back to Zalamon to report your success.",
@@ -709,7 +688,7 @@ if not Quests then
 						[8] = 'You received Kasmir\'s prayer: "Let there be honor and humility". Now, bring your stake to Rahkem in Ankrahmun for the next line of the prayer.',
 						[9] = 'You received Rahkem\'s prayer: "Let there be power and compassion". Now, bring your stake to Brewster in Port Hope for the next line of the prayer.',
 						[10] = 'You received Brewster\'s prayer: "Your hand shall be guided - your feet shall walk in harmony". Now, bring your stake to Tyrias in Liberty Bay for the next line of the prayer.',
-						[11] = 'You received Tyrias\' prayer: "Your mind shall be a vessel for joy, light and wisdom". He wasn\'t exactly happy though and said that if you need some mumbo jumbo again, you should rather go to Chondur.',
+						[11] = "You received Tyrias' prayer: \"Your mind shall be a vessel for joy, light and wisdom\". He wasn't exactly happy though and said that if you need some mumbo jumbo again, you should rather go to Chondur.",
 						[12] = "Chondur was surprised to hear that you had to travel through all of Tibia to have your wooden stake blessed. He offered you help with the blessing if you should need one again in the future."
 					}
 				}
@@ -748,7 +727,7 @@ if not Quests then
 						[10] = "You have completed the ninth dish, the tenth dish he will teach you to prepare is Carrot Cake. \z
 							Bring him the ingredients he told you.",
 						[11] = "You have completed the tenth dish. You are now able to obtain the cookbook from \z
-							Jean Pierre\'s room upstairs.",
+							Jean Pierre's room upstairs.",
 						[12] = "The eleventh dish he will teach you to prepare is Coconut Shrimp Bake. \z
 							Bring him the ingredients he told you.",
 						[13] = "You have completed the eleventh dish, the twelfth dish he will teach you to prepare is Blackjack. \z
@@ -914,8 +893,8 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "You now need to decide between supporting Palimuth or the Yalahari\'s goal. \z
-							To choose Palimuth\'s good side go to him, and simply ask him for a mission mission. \z
+						[1] = "You now need to decide between supporting Palimuth or the Yalahari's goal. \z
+							To choose Palimuth's good side go to him, and simply ask him for a mission mission. \z
 							Likewise, to join the Yalahari (Azerus) (bad side) go to him and say the same.",
 						[2] = "you already decided!"
 					}
@@ -953,8 +932,8 @@ if not Quests then
 					description = function(player)
 						return string.format(
 							"You joined the 'Paw and Fur - Hunting Elite'. Ask Grizzly Adams for some hunting tasks. You already gained %d points. You currently have %d boss points.",
-							(math.max(player:getStorageValue(POINTSSTORAGE), 0)),
-							(math.max(player:getStorageValue(Storage.KillingInTheNameOf.BossPoints), 0))
+							math.max(player:getStorageValue(POINTSSTORAGE), 0),
+							math.max(player:getStorageValue(Storage.KillingInTheNameOf.BossPoints), 0)
 						)
 					end
 				},
@@ -998,17 +977,16 @@ if not Quests then
 					endValue = 8,
 					description = "You have been promoted to the rank of a 'Elite Hunter' in the 'Paw and Fur - Hunting Elite'."
 				},
-				[7] = { -- Grizzly Adams
+				[7] = {
+					-- Grizzly Adams
 					name = "Paw and Fur: Crocodiles",
 					storageId = 65001,
 					missionId = 1087,
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 crocodiles.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.CrocodileCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 crocodiles.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.CrocodileCount))
 						end,
 						[1] = "You successfully hunted 300 crocodiles. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 crocodiles."
@@ -1021,10 +999,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 badgers.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BadgerCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 badgers.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BadgerCount))
 						end,
 						[1] = "You successfully hunted 300 badgers. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 badgers."
@@ -1037,10 +1013,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 tarantulas.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.TarantulaCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 tarantulas.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.TarantulaCount))
 						end,
 						[1] = "You successfully hunted 300 tarantulas. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 tarantulas."
@@ -1053,10 +1027,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/150 carniphilas.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.CarniphilasCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/150 carniphilas.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.CarniphilasCount))
 						end,
 						[1] = "You successfully hunted 150 carniphilas. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 150 carniphilas."
@@ -1069,10 +1041,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/200 stone golems.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.StoneGolemCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/200 stone golems.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.StoneGolemCount))
 						end,
 						[1] = "You successfully hunted 200 stone golems. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 200 stone golems."
@@ -1085,10 +1055,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 mammoths.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MammothCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 mammoths.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MammothCount))
 						end,
 						[1] = "You successfully hunted 300 mammoths. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 mammoths."
@@ -1101,10 +1069,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 gnarlhounds.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GnarlhoundCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 gnarlhounds.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GnarlhoundCount))
 						end,
 						[1] = "You successfully hunted 300 gnarlhounds. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 gnarlhounds."
@@ -1117,10 +1083,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 terramites.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.TerramiteCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 terramites.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.TerramiteCount))
 						end,
 						[1] = "You successfully hunted 300 terramites. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 terramites."
@@ -1133,12 +1097,13 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d kongras, %d merlkins and %d sibangs. You are supposed to kill 300 apes in total.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.KongraCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MerlkinCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.SibangCount))
+						[0] = function(player)
+							return string.format(
+								"You already hunted %d kongras, %d merlkins and %d sibangs. You are supposed to kill 300 apes in total.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.KongraCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MerlkinCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.SibangCount)
+							)
 						end,
 						[1] = "You successfully hunted 300 apes. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 apes."
@@ -1151,10 +1116,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 thornback tortoises.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.ThornbackTortoiseCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 thornback tortoises.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.ThornbackTortoiseCount))
 						end,
 						[1] = "You successfully hunted 300 thornback tortoises. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 thornback tortoises."
@@ -1167,10 +1130,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 gargoyles.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GargoyleCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 gargoyles.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GargoyleCount))
 						end,
 						[1] = "You successfully hunted 300 gargoyles. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 gargoyles."
@@ -1183,10 +1144,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 ice golems.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.IceGolemCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 ice golems.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.IceGolemCount))
 						end,
 						[1] = "You successfully hunted 300 ice golems. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 ice golems."
@@ -1199,14 +1158,15 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already killed %d constrictor scouts, %d hydromancer scouts, %d mantassin scouts, %d pincher scouts and %d predator scouts. You are supposed to kill 400 in total.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraConstrictorScoutCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraHydromancerScoutCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaramMntassinScoutCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraPincherScoutCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraPredatorScoutCount))
+						[0] = function(player)
+							return string.format(
+								"You already killed %d constrictor scouts, %d hydromancer scouts, %d mantassin scouts, %d pincher scouts and %d predator scouts. You are supposed to kill 400 in total.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraConstrictorScoutCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraHydromancerScoutCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaramMntassinScoutCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraPincherScoutCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraPredatorScoutCount)
+							)
 						end,
 						[1] = "You successfully hunted 400 quara scouts. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 400 quara scouts."
@@ -1219,10 +1179,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/400 mutated rats.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MutatedRatCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/400 mutated rats.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MutatedRatCount))
 						end,
 						[1] = "You successfully hunted 400 mutated rats. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 400 mutated rats."
@@ -1235,10 +1193,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/250 ancient scarabs.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.AncientScarabCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/250 ancient scarabs.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.AncientScarabCount))
 						end,
 						[1] = "You successfully hunted 250 ancient scarabs. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 250 ancient scarabs."
@@ -1251,10 +1207,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 wyverns.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.WyvernCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 wyverns.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.WyvernCount))
 						end,
 						[1] = "You successfully hunted 300 wyverns. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 wyverns."
@@ -1267,10 +1221,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 lancer beetles.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.LancerBeetleCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 lancer beetles.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.LancerBeetleCount))
 						end,
 						[1] = "You successfully hunted 300 lancer beetles. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 lancer beetles."
@@ -1283,10 +1235,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/400 wailing widows.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.WailingWidowCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/400 wailing widows.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.WailingWidowCount))
 						end,
 						[1] = "You successfully hunted 400 wailing widows. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 400 wailing widows."
@@ -1299,10 +1249,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/250 killer caimans.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.KillerCaimanCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/250 killer caimans.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.KillerCaimanCount))
 						end,
 						[1] = "You successfully hunted 250 killer caimans. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 250 killer caimans."
@@ -1315,10 +1263,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 bonebeasts.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BonebeastCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 bonebeasts.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BonebeastCount))
 						end,
 						[1] = "You successfully hunted 300 bonebeasts. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 bonebeasts."
@@ -1331,10 +1277,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 crystal spiders.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.CrystalSpiderCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 crystal spiders.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.CrystalSpiderCount))
 						end,
 						[1] = "You successfully hunted 300 crystal spiders. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 crystal spiders."
@@ -1347,10 +1291,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 mutated tigers.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MutatedTigerCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 mutated tigers.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MutatedTigerCount))
 						end,
 						[1] = "You successfully hunted 300 mutated tigers. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 mutated tigers."
@@ -1363,14 +1305,15 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already killed %d constrictors, %d hydromancers, %d mantassins, %d pinchers and %d predators. You are supposed to kill 600 in total.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraConstrictorCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraHydromancerCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraMantassinCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraPincherCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraPredatorCount))
+						[0] = function(player)
+							return string.format(
+								"You already killed %d constrictors, %d hydromancers, %d mantassins, %d pinchers and %d predators. You are supposed to kill 600 in total.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraConstrictorCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraHydromancerCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraMantassinCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraPincherCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraPredatorCount)
+							)
 						end,
 						[1] = "You successfully hunted 600 underwater quara. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 600 underwater quara."
@@ -1383,10 +1326,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/500 giant spiders.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GiantSpiderCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/500 giant spiders.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GiantSpiderCount))
 						end,
 						[1] = "You successfully hunted 500 giant spiders. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 500 giant spiders."
@@ -1399,10 +1340,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/300 werewolves.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.WerewolveCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/300 werewolves.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.WerewolveCount))
 						end,
 						[1] = "You successfully hunted 300 werewolves. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 300 werewolves."
@@ -1415,11 +1354,12 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d nightmares and %d nightmare scions. You are supposed to kill 400 in total.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NightmareCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NightmareScionCount))
+						[0] = function(player)
+							return string.format(
+								"You already hunted %d nightmares and %d nightmare scions. You are supposed to kill 400 in total.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NightmareCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NightmareScionCount)
+							)
 						end,
 						[1] = "You successfully hunted 400 nightmares. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 400 nightmares."
@@ -1432,10 +1372,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/600 hellspawns.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.HellspawnCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/600 hellspawns.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.HellspawnCount))
 						end,
 						[1] = "You successfully hunted 600 hellspawns. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 600 hellspawns."
@@ -1448,14 +1386,15 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d Chosen, %d Dragon Priest, %d High Guard, %d Legionnaire and %d Zaogun. You are supposed to kill 800 high class lizards in total.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.LizardChosenCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.LizardDragonPriestCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.LizardHighGuardCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.LizardLegionnaireCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.LizardZaogunCount))
+						[0] = function(player)
+							return string.format(
+								"You already hunted %d Chosen, %d Dragon Priest, %d High Guard, %d Legionnaire and %d Zaogun. You are supposed to kill 800 high class lizards in total.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.LizardChosenCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.LizardDragonPriestCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.LizardHighGuardCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.LizardLegionnaireCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.LizardZaogunCount)
+							)
 						end,
 						[1] = "You successfully hunted 800 high class lizards. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 800 high class lizards."
@@ -1468,10 +1407,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/600 stampors.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.StamporCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/600 stampors.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.StamporCount))
 						end,
 						[1] = "You successfully hunted 600 stampors. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 600 stampors."
@@ -1484,10 +1421,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/500 brimstone bugs.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BrimstoneBugCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/500 brimstone bugs.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BrimstoneBugCount))
 						end,
 						[1] = "You successfully hunted 500 brimstone bugs. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 500 brimstone bugs."
@@ -1500,10 +1435,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/400 mutated bats.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MutatedBatCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/400 mutated bats.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MutatedBatCount))
 						end,
 						[1] = "You successfully hunted 400 mutated bats. If you want to you may complete this task again.",
 						[2] = "You succesfully hunted 400 mutated bats."
@@ -1516,10 +1449,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/650 hydras.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.HydraCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/650 hydras.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.HydraCount))
 						end,
 						[1] = "You successfully hunted 650 hydras. If you want to you may complete this task again."
 					}
@@ -1531,10 +1462,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/800 serpent spawns.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.SerpentSpawnCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/800 serpent spawns.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.SerpentSpawnCount))
 						end,
 						[1] = "You successfully hunted 800 serpent spawns. If you want to you may complete this task again."
 					}
@@ -1546,10 +1475,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/500 medusae.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MedusaCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/500 medusae.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MedusaCount))
 						end,
 						[1] = "You successfully hunted 500 medusae. If you want to you may complete this task again."
 					}
@@ -1561,10 +1488,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/700 behemoths.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BehemothCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/700 behemoths.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BehemothCount))
 						end,
 						[1] = "You successfully hunted 700 behemoths. If you want to you may complete this task again."
 					}
@@ -1576,11 +1501,12 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d sea serpents and %d young sea serpents. You are supposed to kill 900 in total.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.SeaSerpentCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.YoungSeaSerpentCount))
+						[0] = function(player)
+							return string.format(
+								"You already hunted %d sea serpents and %d young sea serpents. You are supposed to kill 900 in total.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.SeaSerpentCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.YoungSeaSerpentCount)
+							)
 						end,
 						[1] = "You successfully hunted 900 sea serpents. If you want to you may complete this task again."
 					}
@@ -1592,10 +1518,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/250 hellhounds.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.HellhoundCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/250 hellhounds.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.HellhoundCount))
 						end,
 						[1] = "You successfully hunted 250 hellhounds. If you want to you may complete this task again."
 					}
@@ -1607,10 +1531,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/500 ghastly dragons.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GhastlyDragonCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/500 ghastly dragons.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GhastlyDragonCount))
 						end,
 						[1] = "You successfully hunted 500 ghastly dragons. If you want to you may complete this task again."
 					}
@@ -1622,13 +1544,14 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d draken abomination, %d draken elite, %d draken spellweaver and %d draken warmaster. You are supposed to kill 900 drakens in total.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.DrakenAbominationCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.DrakenEliteCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.DrakenSpellweaverCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.DrakenWarmasterCount))
+						[0] = function(player)
+							return string.format(
+								"You already hunted %d draken abomination, %d draken elite, %d draken spellweaver and %d draken warmaster. You are supposed to kill 900 drakens in total.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.DrakenAbominationCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.DrakenEliteCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.DrakenSpellweaverCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.DrakenWarmasterCount)
+							)
 						end,
 						[1] = "You successfully hunted 900 drakens. If you want to you may complete this task again."
 					}
@@ -1640,10 +1563,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/650 destroyers.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.DestroyerCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/650 destroyers.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.DestroyerCount))
 						end,
 						[1] = "You successfully hunted 650 destroyers. If you want to you may complete this task again."
 					}
@@ -1655,10 +1576,8 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/400 undead dragons.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.UndeadDragonCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/400 undead dragons.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.UndeadDragonCount))
 						end,
 						[1] = "You successfully hunted 400 undead dragons. If you want to you may complete this task again."
 					}
@@ -1670,15 +1589,14 @@ if not Quests then
 					startValue = 0,
 					endValue = 1,
 					states = {
-						[0] =
-						function(player)
-							return string.format("You already hunted %d/6666 demons.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.DemonCount))
+						[0] = function(player)
+							return string.format("You already hunted %d/6666 demons.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.DemonCount))
 						end,
 						[1] = "You successfully hunted 6666 demons."
 					}
 				},
-				[49] = { -- Grizzly Adams Boss
+				[49] = {
+					-- Grizzly Adams Boss
 					name = "Paw and Fur: The Snapper",
 					storageId = 34100,
 					missionId = 10129,
@@ -2038,18 +1956,20 @@ if not Quests then
 						[3] = "You found the hideout of Demodras and managed to kill it."
 					}
 				},
-				[79] = { -- Others
+				[79] = {
+					-- Others
 					name = "The Marid: Green Djinns",
 					storageId = Storage.KillingInTheNameOf.GreenDjinnTask,
 					missionId = 10159,
 					startValue = 0,
 					endValue = 3,
 					states = {
-						[0] =
-						function(player)
-							return string.format("Gabel sent you to kill 500 green djinns or Efreet. You have killed %d green djinns and %d Efreet so far.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GreenDjinnCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.EfreetCount))
+						[0] = function(player)
+							return string.format(
+								"Gabel sent you to kill 500 green djinns or Efreet. You have killed %d green djinns and %d Efreet so far.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GreenDjinnCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.EfreetCount)
+							)
 						end,
 						[1] = "If you dare, you can try finding and fighting Merikh the Slaughterer.",
 						[2] = "You faced Merikh the Slaughterer. Go back to Gabel.",
@@ -2063,11 +1983,12 @@ if not Quests then
 					startValue = 0,
 					endValue = 3,
 					states = {
-						[0] =
-						function(player)
-							return string.format("Malor sent you to kill 500 blue djinns or Marid. You have killed %d blue djinns and %d Marid so far.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BlueDjinnCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MaridCount))
+						[0] = function(player)
+							return string.format(
+								"Malor sent you to kill 500 blue djinns or Marid. You have killed %d blue djinns and %d Marid so far.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BlueDjinnCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MaridCount)
+							)
 						end,
 						[1] = "If you dare, you can try finding and fighting Fahim the wise.",
 						[2] = "You faced Fahim the wise. Go back to Malor.",
@@ -2081,13 +2002,14 @@ if not Quests then
 					startValue = 0,
 					endValue = 3,
 					states = {
-						[0] =
-						function(player)
-							return string.format("Kill 3000 pirates in total to help the rebels on Meriana. So far, you have killed %d Marauders, %d Cutthroats, %d Buccaneers and %d Corsairs.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PirateMarauderCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PirateCutthroadCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PirateBuccaneerCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PirateCorsairCount))
+						[0] = function(player)
+							return string.format(
+								"Kill 3000 pirates in total to help the rebels on Meriana. So far, you have killed %d Marauders, %d Cutthroats, %d Buccaneers and %d Corsairs.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PirateMarauderCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PirateCutthroadCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PirateBuccaneerCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PirateCorsairCount)
+							)
 						end,
 						[1] = "You succesfully killed 3000 pirates. Striker sent you to find the secret hideout of the pirate leaders on Nargor and vanquish whoever you find inside.",
 						[2] = "You discovered the secret hideout of a pirate leader. Talk to Ray Striker if you like.",
@@ -2101,13 +2023,14 @@ if not Quests then
 					startValue = 0,
 					endValue = 2,
 					states = {
-						[0] =
-						function(player)
-							return string.format("Budrik asked you to kill 5000 minotaurs for him. You already killed %d minotaurs, %d minotaur guards, %d minotaur mages and %d minotaur archers.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurGuardCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurMageCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurArcherCount))
+						[0] = function(player)
+							return string.format(
+								"Budrik asked you to kill 5000 minotaurs for him. You already killed %d minotaurs, %d minotaur guards, %d minotaur mages and %d minotaur archers.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurGuardCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurMageCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurArcherCount)
+							)
 						end,
 						[1] = "Budrik found the hideout of The Horned Fox! You have a single chance of bringing him down. Go for it.",
 						[2] = "You have slain 5000 minotaurs and fought The Horned Fox for Budrik and the whole dwarven kind."
@@ -2120,25 +2043,27 @@ if not Quests then
 					startValue = 0,
 					endValue = 4,
 					states = {
-						[0] =
-						function(player)
-							return string.format("Lugri sent you to kill 4000 necromancers, though he said 'no reward'. So far you killed %d Necromancers, %d Priestesses, %d Blood Priests, %d Blood Hands and %d Shadow Pupils.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NecromancerCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PriestessCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BloodPriestCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BloodHandCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.ShadowPupilCount))
+						[0] = function(player)
+							return string.format(
+								"Lugri sent you to kill 4000 necromancers, though he said 'no reward'. So far you killed %d Necromancers, %d Priestesses, %d Blood Priests, %d Blood Hands and %d Shadow Pupils.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NecromancerCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PriestessCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BloodPriestCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BloodHandCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.ShadowPupilCount)
+							)
 						end,
 						[1] = "If you dare, you can try finding and fighting Necropharus in his Halls of Sacrifice, deep under Drefia. Note that this will be the only time you're allowed to enter his room, so be well prepared.",
 						[2] = "You faced Necropharus. Go back to Lugri if you like.",
-						[3] =
-						function(player)
-							return string.format("Lugri sent you to kill 1000 necromancers. So far you killed %d Necromancers, %d Priestesses, %d Blood Priests, %d Blood Hands and %d Shadow Pupils.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NecromancerCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PriestessCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BloodPriestCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BloodHandCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.ShadowPupilCount))
+						[3] = function(player)
+							return string.format(
+								"Lugri sent you to kill 1000 necromancers. So far you killed %d Necromancers, %d Priestesses, %d Blood Priests, %d Blood Hands and %d Shadow Pupils.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NecromancerCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PriestessCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BloodPriestCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BloodHandCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.ShadowPupilCount)
+							)
 						end,
 						[4] = "You've finished this task - for now. If you want to kill the different necromancers and priestesses again for an experience and money bonus, talk to Lugri about this task."
 					}
@@ -2150,11 +2075,12 @@ if not Quests then
 					startValue = 0,
 					endValue = 1,
 					states = {
-						[0] =
-						function(player)
-							return string.format("Daniel Steelsoul sent you to kill 100 trolls, preferably west of Edron city. You have killed %d trolls and %d troll champions so far.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.TrollCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.TrollChampionCount))
+						[0] = function(player)
+							return string.format(
+								"Daniel Steelsoul sent you to kill 100 trolls, preferably west of Edron city. You have killed %d trolls and %d troll champions so far.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.TrollCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.TrollChampionCount)
+							)
 						end,
 						[1] = "You succesfully killed 100 trolls. As long as you are level 20 or lower, you may repeat this task by talking to Daniel Steelsoul about it."
 					}
@@ -2166,12 +2092,13 @@ if not Quests then
 					startValue = 0,
 					endValue = 1,
 					states = {
-						[0] =
-						function(player)
-							return string.format("Daniel Steelsoul sent you to kill 150 goblins, preferably west of Edron city. You have killed %d goblins so far, %d goblin scavengers and %d goblin assassins.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GoblinCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GoblinScavengerCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GoblinAssassinCount))
+						[0] = function(player)
+							return string.format(
+								"Daniel Steelsoul sent you to kill 150 goblins, preferably west of Edron city. You have killed %d goblins so far, %d goblin scavengers and %d goblin assassins.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GoblinCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GoblinScavengerCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GoblinAssassinCount)
+							)
 						end,
 						[1] = "You succesfully killed 150 goblins. As long as you are level 20 or lower, you may repeat this task by talking to Daniel Steelsoul about it."
 					}
@@ -2183,11 +2110,12 @@ if not Quests then
 					startValue = 0,
 					endValue = 1,
 					states = {
-						[0] =
-						function(player)
-							return string.format("Daniel Steelsoul sent you to kill 300 rotworms, preferably in their tunnels south of Edron city. You have killed %d rotworms and %d carrion worms so far.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.RotwormCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.CarrionWormnCount))
+						[0] = function(player)
+							return string.format(
+								"Daniel Steelsoul sent you to kill 300 rotworms, preferably in their tunnels south of Edron city. You have killed %d rotworms and %d carrion worms so far.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.RotwormCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.CarrionWormnCount)
+							)
 						end,
 						[1] = "You succesfully killed 300 rotworms. As long as you are level 40 or lower, you may repeat this task by talking to Daniel Steelsoul about it."
 					}
@@ -2199,16 +2127,17 @@ if not Quests then
 					startValue = 0,
 					endValue = 1,
 					states = {
-						[0] =
-						function(player)
-							return string.format("Daniel Steelsoul sent you to kill 500 cyclops, preferably in Cyclopolis north of Edron city. You have killed %d cyclops, %d drones and %d smiths so far.",
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.CyclopsCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.CyclopsDroneCount),
-							player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.CyclopsSmithCount))
+						[0] = function(player)
+							return string.format(
+								"Daniel Steelsoul sent you to kill 500 cyclops, preferably in Cyclopolis north of Edron city. You have killed %d cyclops, %d drones and %d smiths so far.",
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.CyclopsCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.CyclopsDroneCount),
+								player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.CyclopsSmithCount)
+							)
 						end,
 						[1] = "You succesfully killed 500 cyclops. As long as you are level 60 or lower, you may repeat this task by talking to Daniel Steelsoul about it."
 					}
-				},
+				}
 			}
 		},
 		[12] = {
@@ -2247,10 +2176,8 @@ if not Quests then
 					missionId = 10170,
 					startValue = 1,
 					endValue = 2,
-					states = {
-						[1] = "Collect a legion helmet, 100 chicken feathers and 50 honeycombs and bring them to either \z
-							Hanna or Norma to have them make a feather hat addon for you."
-					}
+					states = { [1] = "Collect a legion helmet, 100 chicken feathers and 50 honeycombs and bring them to either \z
+							Hanna or Norma to have them make a feather hat addon for you." }
 				},
 				[4] = {
 					name = "Barbarian Outfit Quest",
@@ -2273,7 +2200,7 @@ if not Quests then
 						[7] = "In order to make a shirt as a present for Ajax, Bron wants you to bring him 50 Pieces of \z
 							Red Cloth and 50 Pieces of Green Cloth.",
 						[8] = "Bron wants you to bring him 10 Spider Silk Yarn.",
-						[9] = "Bron wants you to bring him the Warrior\'s Sweat.",
+						[9] = "Bron wants you to bring him the Warrior's Sweat.",
 						[10] = "You brought him all required items! accept it!",
 						[11] = "You got the Barbarian Wig Addon! Bring now the present from Bron to Ajax!",
 						[12] = "Bring Ajax in Northport 100 Iron Ore.",
@@ -2296,7 +2223,7 @@ if not Quests then
 							If you don't know how to get leather, you should ask Kalvin.",
 						[3] = "Your current task is to bring 10 bat wings to Hugo.",
 						[4] = "Your current task is to bring 30 heaven blossoms to Hugo. Elves are said to cultivate these flowers.",
-						[5] = "You brought all items required for the &quot;poor man\'s look&quot; to Hugo. \z
+						[5] = "You brought all items required for the &quot;poor man's look&quot; to Hugo. \z
 							He told you to come back to him after a whole day has passed, then the outfit should be finished.",
 						[6] = "You got the outfit!"
 					}
@@ -2316,9 +2243,9 @@ if not Quests then
 						[4] = "Ask Ceiron for task.",
 						[5] = "Bring Ceiron 100 ounces of demon dust.",
 						[6] = "Ask Ceiron for task.",
-						[7] = "The last mission is to find and retrieve Ceiron\'s Wolf Tooth Chain lost inside the Orc Fortress.",
+						[7] = "The last mission is to find and retrieve Ceiron's Wolf Tooth Chain lost inside the Orc Fortress.",
 						[8] = "Ask Ceiron for Faolan.",
-						[9] = "Head over to Cormaya, find A Majestic Warwolf\'s Cave and ask her about an addon.",
+						[9] = "Head over to Cormaya, find A Majestic Warwolf's Cave and ask her about an addon.",
 						[10] = "You got the Outfit!"
 					}
 				},
@@ -2346,7 +2273,7 @@ if not Quests then
 						[1] = "Your current task is to bring 100 perfect behemoth fangs to Gregor in Thais.",
 						[2] = "Your current task is to retrieve the helmet of Ramsay the Reckless from Banuta. \z
 							These pesky apes steal everything they can get their dirty hands on.",
-						[3] = "Your current task is to obtain a flask of warrior\'s sweat, which can be magicially extracted \z
+						[3] = "Your current task is to obtain a flask of warrior's sweat, which can be magicially extracted \z
 							from headgear worn by a true warrior, but only in small amounts. Djinns are said to be good at this.",
 						[4] = "Your current task is to bring royal steel to Gregor in Thais. \z
 							Royal steel can only be refined by very skilled smiths.",
@@ -2481,7 +2408,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Your current task is to find a mermaid\'s comb. \z
+						[1] = "Your current task is to find a mermaid's comb. \z
 							If you have ever encountered a mermaid, you should ask her. \z
 							Bring the comb to Habdel if you are male or to Ishina if you are female.",
 						[2] = "You have received the first oriental addon."
@@ -2510,10 +2437,8 @@ if not Quests then
 					missionId = 10185,
 					startValue = 1,
 					endValue = 2,
-					states = {
-						[1] = "Try to find a monster which sometimes lurks in the Tiquandian jungle as the revenge of the jungle \z
-							against mankind. Bring the rare root it carries to Chondur as well as 5 voodoo dolls."
-					}
+					states = { [1] = "Try to find a monster which sometimes lurks in the Tiquandian jungle as the revenge of the jungle \z
+							against mankind. Bring the rare root it carries to Chondur as well as 5 voodoo dolls." }
 				},
 				[19] = {
 					name = "Shaman Addon: Mask",
@@ -2521,15 +2446,13 @@ if not Quests then
 					missionId = 10186,
 					startValue = 1,
 					endValue = 2,
-					states = {
-						[1] = "Your current task is to collect 5 tribal masks from the dworcs and 5 banana staves from the apes. \z
-							Bring them to Chondur to earn your shamanic mask."
-					}
+					states = { [1] = "Your current task is to collect 5 tribal masks from the dworcs and 5 banana staves from the apes. \z
+							Bring them to Chondur to earn your shamanic mask." }
 				}
 			}
 		},
 		[13] = {
-			name = "Sam\'s Old Backpack",
+			name = "Sam's Old Backpack",
 			startStorageId = Storage.SamsOldBackpack,
 			startStorageValue = 1,
 			missions = {
@@ -2594,9 +2517,9 @@ if not Quests then
 					startValue = 1,
 					endValue = 4,
 					states = {
-						[1] = "In order to access the lair of the Collector, you will need to find the creature\'s well on \z
-							an ice isle near Carlin. To donate the rare crystal overcome your greed and use it at the well\'s pedestal.",
-						[2] = "You offered the rare crystal to the creature and can now enter the Collector\'s lair. \z
+						[1] = "In order to access the lair of the Collector, you will need to find the creature's well on \z
+							an ice isle near Carlin. To donate the rare crystal overcome your greed and use it at the well's pedestal.",
+						[2] = "You offered the rare crystal to the creature and can now enter the Collector's lair. \z
 							Its crystal chamber cannot be accessed by outsiders. You need to find a way to snatch the Mirror Crystal.",
 						[3] = "The Collector has been defeated. \z
 							You packed the fragile Mirror Crystal into the device Spectulus gave you. \z
@@ -2634,7 +2557,7 @@ if not Quests then
 					states = {
 						[1] = "Your first task is to deliver a letter to Gamel in thais, If he is a bit reluctant, be persuasive.",
 						[2] = "Gamel sent his thugs on you, defeat them and deliver the letter to Gamel!",
-						[3] = "After defeating Gamel\'s thugs, he found you to be persuasive enough to accept the letter. \z
+						[3] = "After defeating Gamel's thugs, he found you to be persuasive enough to accept the letter. \z
 							Report back to Uncle!",
 						[4] = "You have reported back that you have completed your task. Ask Uncle for a new mission!"
 					}
@@ -2659,7 +2582,7 @@ if not Quests then
 					states = {
 						[1] = "Your next mission is to find some information about one of \z
 							their missing agents in The Green Claw Swamp.",
-						[2] = "You have delivered the Black Knight\'s notes to Chester, ask him for a new mission!"
+						[2] = "You have delivered the Black Knight's notes to Chester, ask him for a new mission!"
 					}
 				},
 				[5] = {
@@ -2742,7 +2665,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "Your next task is to travel to the Black Knight\'s Villa and kill the Black Knight!",
+						[1] = "Your next task is to travel to the Black Knight's Villa and kill the Black Knight!",
 						[2] = "You have killed the Black Knight, report back to Uncle!",
 						[3] = "You have reported back that you have completed your task, ask Uncle for a new mission!"
 					}
@@ -2800,7 +2723,7 @@ if not Quests then
 					endValue = 3,
 					states = {
 						[1] = "Your next mission is to disguise yourself as an amazon and destroy a \z
-							beer casket in the north-east corner in the cellar of Svargrond\'s Tavern.",
+							beer casket in the north-east corner in the cellar of Svargrond's Tavern.",
 						[2] = "You have succesfully destroyed the beer casket disguised as an amazon, report back to Chester!",
 						[3] = "You have reported back that you have completed your mission, ask Chester for a new mission!"
 					}
@@ -2848,7 +2771,7 @@ if not Quests then
 			startStorageValue = 1,
 			missions = {
 				[1] = {
-					name = "Omruc\'s Treasure",
+					name = "Omruc's Treasure",
 					storageId = Storage.TheAncientTombs.OmrucsTreasure,
 					missionId = 10210,
 					startValue = 1,
@@ -2864,7 +2787,7 @@ if not Quests then
 					description = "You defeated Thalas and received a Gem Holder"
 				},
 				[3] = {
-					name = "Diphtrah\'s Treasure",
+					name = "Diphtrah's Treasure",
 					storageId = Storage.TheAncientTombs.DiphtrahsTreasure,
 					missionId = 10212,
 					startValue = 1,
@@ -2880,12 +2803,12 @@ if not Quests then
 					description = "You defeated Mahrdis and received a Helmet Ornament"
 				},
 				[5] = {
-					name = "Vashresamun\'s Treasure",
+					name = "Vashresamun's Treasure",
 					storageId = Storage.TheAncientTombs.VashresamunsTreasure,
 					missionId = 10214,
 					startValue = 1,
 					endValue = 1,
-					description = "You solved the musical riddles of Vashresamun\'s Tomb and received a left horn."
+					description = "You solved the musical riddles of Vashresamun's Tomb and received a left horn."
 				},
 				[6] = {
 					name = "Morguthis' Treasure",
@@ -2975,7 +2898,7 @@ if not Quests then
 							Maybe you should talk to him again to find out more.",
 						[2] = "Santiago asked you to go into his house. Upstairs you will find a chest. \z
 							You can keep what you find inside of it. Once you got that, talk to Santiago again.",
-						[3] = "You have found Santiago\'s Coat and reported back to him. \z
+						[3] = "You have found Santiago's Coat and reported back to him. \z
 							Your quest is not done yet, you should talk to him a bit more.",
 						[4] = "Santiago gave you a weapon. After equipping it, go to the cellar of his house to find out \z
 							about the cockroach plague.",
@@ -3033,7 +2956,7 @@ if not Quests then
 						[7] = "You sucessfully learnt how to change your outfit and how to trade with NPCs. \z
 							Time to head over the bridge to Rookgaard!",
 						[8] = "You have passed the bridge to Rookgaard and have sucessfully completed the Tutorial. \z
-							If you want to skip the tutorial in the future with a new character, simply say \'skip tutorial' to Santiago."
+							If you want to skip the tutorial in the future with a new character, simply say 'skip tutorial' to Santiago."
 					}
 				}
 			}
@@ -3067,7 +2990,7 @@ if not Quests then
 						[1] = "Sneak into Ashta'daramai and steal a &quot;Tear of Daraman&quot;. \z
 							For more information about these gems visit the Efreet library.",
 						[2] = "You have successfully managed to steal a Tear of Daraman from Ashta'daramai. Bring it to Alesar.",
-						[3] = "You have delivered Daraman\'s Tear. \z
+						[3] = "You have delivered Daraman's Tear. \z
 							Alesar seemed very satisfied and told you that Malor himself might have another mission for you."
 					}
 				},
@@ -3078,8 +3001,8 @@ if not Quests then
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "Malor asked you to find Fa'hradin\'s sleeping lamp in the orc fortress at Ulderek\'s Rock. \z
-							Then, sneak into Ashta'daramai and exchange Gabel\'s sleeping lamp with Fa'hradin\'s lamp.",
+						[1] = "Malor asked you to find Fa'hradin's sleeping lamp in the orc fortress at Ulderek's Rock. \z
+							Then, sneak into Ashta'daramai and exchange Gabel's sleeping lamp with Fa'hradin's lamp.",
 						[2] = "You successfully exchanged the lamps. Malor will be happy to hear about this.",
 						[3] = "The Efreet are very satisfied with your help. King Malor allowed you to trade with Yaman and Alesar."
 					}
@@ -3124,7 +3047,7 @@ if not Quests then
 					endValue = 2,
 					states = {
 						[1] = "You have promised Rata'Mari cheese. Once you deliver some to him, he will hand over his spyreport.",
-						[2] = "You got Rata'Mari\'s spyreport. He seems to be quite happy with the cheese you brought him."
+						[2] = "You got Rata'Mari's spyreport. He seems to be quite happy with the cheese you brought him."
 					}
 				},
 				[4] = {
@@ -3134,8 +3057,8 @@ if not Quests then
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "Gabel asked you to find Fa'hradin\'s sleeping lamp in the orc fortress at Ulderek\'s Rock. \z
-							Then, sneak into Mal'ouqhah and exchange Malor\'s sleeping lamp with Fa'hradin\'s lamp.",
+						[1] = "Gabel asked you to find Fa'hradin's sleeping lamp in the orc fortress at Ulderek's Rock. \z
+							Then, sneak into Mal'ouqhah and exchange Malor's sleeping lamp with Fa'hradin's lamp.",
 						[2] = "You successfully exchanged the lamps. Gabel will be happy to hear about this.",
 						[3] = "The Marid deeply appreciate your help. King Gabel allowed you to trade with Haroun and Nah'bob."
 					}
@@ -3171,7 +3094,7 @@ if not Quests then
 							Furthermore you should try to find that ring which belongs to Rerun.",
 						[2] = "You should talking to Grombur about Nokmir.",
 						[3] = "You should try to find that ring which belongs to Rerun everywhere in the mine.",
-						[4] = "You have found Rerun\'s ring. Bring the ring to the emperor Rehal and talk to him about Nokmir.",
+						[4] = "You have found Rerun's ring. Bring the ring to the emperor Rehal and talk to him about Nokmir.",
 						[5] = "You informed emperor Rehal about your recent discoveries and he acquitted Nokmir of being a thief.",
 						[6] = "You told Nokmir about his acquittal and he granted you access to the northern mine."
 					}
@@ -3182,10 +3105,8 @@ if not Quests then
 					missionId = 10230,
 					startValue = 1,
 					endValue = 1,
-					states = {
-						[1] = "You won the battle against the malicious undead dragon Pythius the Rotten. \z
-							He granted you firewalker boots as a reward."
-					}
+					states = { [1] = "You won the battle against the malicious undead dragon Pythius the Rotten. \z
+							He granted you firewalker boots as a reward." }
 				},
 				[4] = {
 					name = "Sweet as Chocolate Cake",
@@ -3338,7 +3259,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 4,
 					states = {
-						[1] = "Get out of Nibelor and go to the Svargrond Explorer\'s Society. Ask Lurik for the mission.",
+						[1] = "Get out of Nibelor and go to the Svargrond Explorer's Society. Ask Lurik for the mission.",
 						[2] = "Get to the raider camp, then follow to the extreme south where you find lots of barbarians. \z
 						Near the southern most coastline, try looking for the NPC Nor. Ask him about Memory Crystal.",
 						[3] = "Go back to Lurik and deliver him the memory crystal.",
@@ -3439,9 +3360,7 @@ if not Quests then
 					missionId = 10099,
 					startValue = 8,
 					endValue = 8,
-					states = {
-						[8] = "You are now a honorary barbarian and can become a citizen of Svargrond. If you haven't done so yet, you should look for a barbarian in need of help in the north of the town."
-					}
+					states = { [8] = "You are now a honorary barbarian and can become a citizen of Svargrond. If you haven't done so yet, you should look for a barbarian in need of help in the north of the town." }
 				}
 			}
 		},
@@ -3490,7 +3409,7 @@ if not Quests then
 					endValue = 6,
 					states = {
 						[1] = "Henricus wants you to find the Dwarfish Vampire Hunter, Storkus, located west of the Dwarf Bridge. \z
-						It\'s good idea bring your 20 Vampire Dusts with you to save some time.",
+						It's good idea bring your 20 Vampire Dusts with you to save some time.",
 						[2] = "Go Back to Storkus the Dwarf and ask for Mission.",
 						[3] = "Now Storkus wants you to kill a vampire lord, The Count in the Green Claw Swamp, \z
 						The Count is located near to the Blood Herb Quest. To summon The Count, \z
@@ -3594,7 +3513,7 @@ if not Quests then
 					endValue = 3,
 					states = {
 						[1] = "Kevin wants you to deliver a bill to the stage magician David Brassacres. \z
-						He\'s hiding from his creditors somewhere in Venore.",
+						He's hiding from his creditors somewhere in Venore.",
 						[2] = "You have delivered the bill to the stage magician David Brassacres, report back to Kevin!",
 						[3] = "You have reported back that you have completed the mission."
 					}
@@ -3735,7 +3654,7 @@ if not Quests then
 						[3] = "Ocelus told you to get a poem for him, if you didn't buy one already, \z
 						head to Ab'Dendriel and buy a Love Poem from Elvith.",
 						[4] = "You need to go recite the poem to Marina and impress her \z
-						with the Djinn\'s romantic and poetic abilities.",
+						with the Djinn's romantic and poetic abilities.",
 						[5] = "After reciting the poem to Marina, she decided to date Ocelus and release Ray Striker from her spell."
 					}
 				},
@@ -3769,7 +3688,7 @@ if not Quests then
 					missionId = 10266,
 					startValue = 1,
 					endValue = 1,
-					description = "After arranging a date for Marina and Ocelus, you are allowed to use Marina\'s sea turtles. \z
+					description = "After arranging a date for Marina and Ocelus, you are allowed to use Marina's sea turtles. \z
 						They will bring you to the idyllic Laguna Islands."
 				},
 				[5] = {
@@ -3778,7 +3697,7 @@ if not Quests then
 					missionId = 10267,
 					startValue = 1,
 					endValue = 1,
-					description = "After earning the trust of the governor\'s daughter Eleonore, \z
+					description = "After earning the trust of the governor's daughter Eleonore, \z
 						Captain Waverider in Liberty Bay will bring you to Meriana if you tell him the secret codeword 'peg leg'."
 				},
 				[6] = {
@@ -3791,7 +3710,7 @@ if not Quests then
 					Sebastian will sail you to Nargor."
 				},
 				[7] = {
-					name = "Ray\'s Mission 1: Fafnar\'s Fire",
+					name = "Ray's Mission 1: Fafnar's Fire",
 					storageId = Storage.TheShatteredIsles.RaysMission1,
 					missionId = 10269,
 					startValue = 1,
@@ -3801,12 +3720,12 @@ if not Quests then
 						whom the other pirates sent to get the fire. When she asks for a payment, tell her \z
 						'Your continued existence is payment enough'.",
 						[2] = "Sandra will be enraged and will cut any deals with pirates. Report back to Raymond Striker.",
-						[3] = "Ray Striker was pleased to hear about Sandra\'s rage. If you haven't done so yet, \z
+						[3] = "Ray Striker was pleased to hear about Sandra's rage. If you haven't done so yet, \z
 						ask him for other missions."
 					}
 				},
 				[8] = {
-					name = "Ray\'s Mission 2: Sabotage",
+					name = "Ray's Mission 2: Sabotage",
 					storageId = Storage.TheShatteredIsles.RaysMission2,
 					missionId = 10270,
 					startValue = 1,
@@ -3814,27 +3733,27 @@ if not Quests then
 					states = {
 						[1] = "Buy a fire bug at Liberty Bay and infiltrate Nargor. \z
 						Find the pirates' harbor and use the fire bug to sabotage their catapult there.",
-						[2] = "You were able to sabotage the catapult in the pirate\'s harbor. \z
+						[2] = "You were able to sabotage the catapult in the pirate's harbor. \z
 						Report back to Ray Striker to tell him about mission.",
 						[3] = "Ray Striker was pleased to hear about successful sabotage. \z
 						If you haven't done so yet, ask him for other missions."
 					}
 				},
 				[9] = {
-					name = "Ray\'s Mission 3: Spy Mission",
+					name = "Ray's Mission 3: Spy Mission",
 					storageId = Storage.TheShatteredIsles.RaysMission3,
 					missionId = 10271,
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Travel to Nargor and try to enter de pirate\'s tavern by deceiving the guard in front of it. \z
+						[1] = "Travel to Nargor and try to enter de pirate's tavern by deceiving the guard in front of it. \z
 						Read all the plans which you can find in the tavern and report back to Striker.",
-						[2] = "You studied all of the pirate\'s plans in their tavern which will give insight about their next strikes. \z
+						[2] = "You studied all of the pirate's plans in their tavern which will give insight about their next strikes. \z
 						If you haven't done so yet, ask Ray for another mission."
 					}
 				},
 				[10] = {
-					name = "Ray\'s Mission 4: Proof of Death",
+					name = "Ray's Mission 4: Proof of Death",
 					storageId = Storage.TheShatteredIsles.RaysMission4,
 					missionId = 10272,
 					startValue = 1,
@@ -3924,11 +3843,11 @@ if not Quests then
 					startValue = 1,
 					endValue = 4,
 					states = {
-						[1] = "You have begun Chondur\'s ritual. Bring him a fresh dead chicken so that he can begin to \z
+						[1] = "You have begun Chondur's ritual. Bring him a fresh dead chicken so that he can begin to \z
 						create a counterspell which will allow you to pass the magical barrier on Goroma.",
-						[2] = "You have begun Chondur\'s ritual. Bring him a fresh dead rat so that he can continue \z
+						[2] = "You have begun Chondur's ritual. Bring him a fresh dead rat so that he can continue \z
 						creating a counterspell which will allow you to pass the magical barrier on Goroma.",
-						[3] = "You have begun Chondur\'s ritual. Bring him a fresh dead black sheep so that he can \z
+						[3] = "You have begun Chondur's ritual. Bring him a fresh dead black sheep so that he can \z
 						complete his counterspell which will allow you to pass the magical barrier on Goroma.",
 						[4] = "You may pass the energy barrier on Goroma. The counterspell Chondur created for you \z
 						with his ritual will allow you to withstand the evil magic of the cultist."
@@ -3947,13 +3866,13 @@ if not Quests then
 					}
 				},
 				[17] = {
-					name = "The Governor\'s Daughter",
+					name = "The Governor's Daughter",
 					storageId = Storage.TheShatteredIsles.TheGovernorDaughter,
 					missionId = 10279,
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "You promised to find Eleonore\'s lost ring. She told you that a parrot stole it from her \z
+						[1] = "You promised to find Eleonore's lost ring. She told you that a parrot stole it from her \z
 						dressing table and flew to the nearby mountains. You might need a rake to retrieve the ring.",
 						[2] = "You found the ring. Return it to Eleonore.",
 						[3] = "You returned the ring to Eleonore."
@@ -3984,7 +3903,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "Dorian wants you to steal a vase from Sarina, the owner of Carlin\'s general store.",
+						[1] = "Dorian wants you to steal a vase from Sarina, the owner of Carlin's general store.",
 						[2] = "You have stolen the vase, report back to Dorian!",
 						[3] = "You have delivered the stolen vase to Dorian, ask him for a new mission!"
 					}
@@ -3996,8 +3915,8 @@ if not Quests then
 					startValue = 1,
 					endValue = 3,
 					states = {
-						[1] = "Your task is to somehow convince Oswald to hand you an invitation to the king\'s ball.",
-						[2] = "You have received the invitation to the King\'s ball, report back to Dorian!",
+						[1] = "Your task is to somehow convince Oswald to hand you an invitation to the king's ball.",
+						[2] = "You have received the invitation to the King's ball, report back to Dorian!",
 						[3] = "You have delivered the invitation to Dorian, ask him for a new mission!"
 					}
 				},
@@ -4160,10 +4079,8 @@ if not Quests then
 					missionId = 10294,
 					startValue = 1,
 					endValue = 1,
-					states = {
-						[1] = "Rashid has declare you as one of his recognized traders, \z
-						and now you are able to trade with him anytime.."
-					}
+					states = { [1] = "Rashid has declare you as one of his recognized traders, \z
+						and now you are able to trade with him anytime.." }
 				}
 			}
 		},
@@ -4229,13 +4146,13 @@ if not Quests then
 					startValue = 18,
 					endValue = 26,
 					states = {
-						[18] = "Take botanist\'s container. Use it on a jungle bells plant to collect a sample.",
+						[18] = "Take botanist's container. Use it on a jungle bells plant to collect a sample.",
 						[19] = "Report about your plant collection to Explorer Society representative.",
 						[20] = "Ask for plant collection when you are ready to continue.",
-						[21] = "Use botanist\'s container on a witches cauldron to collect a sample.",
+						[21] = "Use botanist's container on a witches cauldron to collect a sample.",
 						[22] = "Report about your plant collection to Explorer Society representative.",
 						[23] = "Ask for plant collection when you are ready to continue.",
-						[24] = "Use this botanist\'s container on a giant jungle rose to obtain a sample.",
+						[24] = "Use this botanist's container on a giant jungle rose to obtain a sample.",
 						[25] = "Report about your plant collection to Explorer Society representative.",
 						[26] = "You have completed The Plant Collection."
 					}
@@ -4363,10 +4280,8 @@ if not Quests then
 					missionId = 10308,
 					startValue = 56,
 					endValue = 56,
-					states = {
-						[56] = "Both carvings are now charged and harmonised. You are able to travel in zero time from \z
-							one base to the other, but you need to have an orichalcum pearl in your possession to use it as power source."
-					}
+					states = { [56] = "Both carvings are now charged and harmonised. You are able to travel in zero time from \z
+							one base to the other, but you need to have an orichalcum pearl in your possession to use it as power source." }
 				},
 				[15] = {
 					name = "The Island of Dragons",
@@ -4455,14 +4370,12 @@ if not Quests then
 			missions = {
 				[1] = {
 					name = "Access to the Isle of Kings",
-                    storageId = Storage.WhiteRavenMonastery.Passage,
-                    missionId = 10315,
+					storageId = Storage.WhiteRavenMonastery.Passage,
+					missionId = 10315,
 					startValue = 1,
 					endValue = 2,
-					states = {
-						[1] = "You are a friend of Dalbrect. \z
-						Since you returned his family brooch he will sail you to the Isle of Kings unless you do something stupid."
-					}
+					states = { [1] = "You are a friend of Dalbrect. \z
+						Since you returned his family brooch he will sail you to the Isle of Kings unless you do something stupid." }
 				},
 				[2] = {
 					name = "The Investigation",
@@ -4472,7 +4385,7 @@ if not Quests then
 					endValue = 2,
 					states = {
 						[1] = "Investigate the catacombs. Abbot Costello should be interested in information about brother Fugio.",
-						[2] = "You returned Fugio\'s Diary. \z
+						[2] = "You returned Fugio's Diary. \z
 						Costello was very thankful about your help and gave you a blessed ankh as reward."
 					}
 				}
@@ -4485,14 +4398,14 @@ if not Quests then
 			missions = {
 				[1] = {
 					name = "To Appease the Mighty",
-                    storageId = Storage.TibiaTales.ToAppeaseTheMightyQuest,
-                    missionId = 10317,
+					storageId = Storage.TibiaTales.ToAppeaseTheMightyQuest,
+					missionId = 10317,
 					startValue = 0,
 					endValue = 4,
 					states = {
 						[1] = "Kazzan sent you to talk with Ubaid and Umar to offer an appeasement treaty to the Djinn races. \z
 						Talk to Umar first.",
-						[2] = "Umar said he won't be part of Kazzan\'s plans. Now you need to try with Ubaid.",
+						[2] = "Umar said he won't be part of Kazzan's plans. Now you need to try with Ubaid.",
 						[3] = "Umar and Ubaid said they won't be part of those plans. Return to Kazzan and collect your reward.",
 						[4] = "You have completed the quest!"
 					}
@@ -4517,24 +4430,27 @@ if not Quests then
 					endValue = 11,
 					states = {
 						[1] = function(player)
-							return string.format("You have discovered the Lion's Rock. If you pass the following tests you may enter the inner sanctum.\n\nThe Lion's Strength %d/1\nThe Lion's Beauty %d/1\nThe Lion's Tears %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsStrength), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsBeauty), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsTears), 0))
+							return string.format(
+								"You have discovered the Lion's Rock. If you pass the following tests you may enter the inner sanctum.\n\nThe Lion's Strength %d/1\nThe Lion's Beauty %d/1\nThe Lion's Tears %d/1",
+								math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsStrength), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsBeauty), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsTears), 0)
 							)
 						end,
 						[2] = function(player)
-							return string.format("You have discovered the Lion's Rock. If you pass the following tests you may enter the inner sanctum.\n\nThe Lion's Strength %d/1\nThe Lion's Beauty %d/1\nThe Lion's Tears %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsStrength), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsBeauty), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsTears), 0))
+							return string.format(
+								"You have discovered the Lion's Rock. If you pass the following tests you may enter the inner sanctum.\n\nThe Lion's Strength %d/1\nThe Lion's Beauty %d/1\nThe Lion's Tears %d/1",
+								math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsStrength), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsBeauty), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsTears), 0)
 							)
 						end,
 						[3] = function(player)
-							return string.format("You have discovered the Lion's Rock. If you pass the following tests you may enter the inner sanctum.\n\nThe Lion's Strength %d/1\nThe Lion's Beauty %d/1\nThe Lion's Tears %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsStrength), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsBeauty), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsTears), 0))
+							return string.format(
+								"You have discovered the Lion's Rock. If you pass the following tests you may enter the inner sanctum.\n\nThe Lion's Strength %d/1\nThe Lion's Beauty %d/1\nThe Lion's Tears %d/1",
+								math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsStrength), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsBeauty), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsTears), 0)
 							)
 						end,
 						[4] = "You have passed the three tests of Lion's Rock and thus lit the three mystical pyramids. You may enter the inner sanctum now. - What other secrets could be hidden down there?",
@@ -4542,28 +4458,28 @@ if not Quests then
 						[6] = function(player)
 							return string.format(
 								"lions' enemies in this area of the temple. What could be the resolution?\n\nblood %d/1\negg %d/1\neye %d/1\npoison %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.SnakeSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.LizardSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.ScorpionSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.HyenaSign), 0))
+								math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.SnakeSign), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.LizardSign), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.ScorpionSign), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.HyenaSign), 0)
 							)
 						end,
 						[7] = function(player)
 							return string.format(
 								"lions' enemies in this area of the temple. What could be the resolution?\n\nblood %d/1\negg %d/1\neye %d/1\npoison %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.SnakeSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.LizardSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.ScorpionSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.HyenaSign), 0))
+								math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.SnakeSign), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.LizardSign), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.ScorpionSign), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.HyenaSign), 0)
 							)
 						end,
 						[8] = function(player)
 							return string.format(
 								"lions' enemies in this area of the temple. What could be the resolution?\n\nblood %d/1\negg %d/1\neye %d/1\npoison %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.SnakeSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.LizardSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.ScorpionSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.HyenaSign), 0))
+								math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.SnakeSign), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.LizardSign), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.ScorpionSign), 0),
+								math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.HyenaSign), 0)
 							)
 						end,
 						[9] = 'In the north-west area of the Inner Sanctum, find the southern rectangular room to the south-west. In this room you will find 4 "sun" floor inscriptions as well as a rock in the center. The sun inscriptions represent gem slots.',
@@ -4608,10 +4524,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 15,
 					description = function(player)
-						return string.format(
-							"You sanctified %d of 15 graves.",
-							(math.max(player:getStorageValue(Storage.TibiaTales.RestInHallowedGround.HolyWater), 0))
-						)
+						return string.format("You sanctified %d of 15 graves.", math.max(player:getStorageValue(Storage.TibiaTales.RestInHallowedGround.HolyWater), 0))
 					end
 				},
 				[7] = {
@@ -4677,22 +4590,22 @@ if not Quests then
 					endValue = 11,
 					states = {
 						[1] = "Spectulus told you about a failed experiment he once did, involving an intern \z
-						named Jack, and asked you to help him rescue Jack. Go to Jack\'s house and talk to him \z
+						named Jack, and asked you to help him rescue Jack. Go to Jack's house and talk to him \z
 						about Spectulus.",
 						[2] = "You have talked to Jack and found out that he is not remembering the time \z
 						accident or Spectulus. Return to Spectulus in the Edron Academy to tell him about \z
 						your findings.",
-						[3] = "Spectulus wants you to trigger Jack\'s memory. Jack used to like his red cushioned \z
+						[3] = "Spectulus wants you to trigger Jack's memory. Jack used to like his red cushioned \z
 						chair, an old globe, a telescope, a large amphora and a rocking horse. Place those in his \z
 						room and ask him about it.",
 						[4] = "You have talked to Jack about the furniture you placed in his house. Report it back \z
 						to Spectulus in the Edron Academy.",
 						[5] = "Spectulus sent you once again to his former intern Jack. Explain the incident to the \z
-						people close to him. Talk to Jack\'s mother and sister and return to Spectulus to report their reaction.",
-						[6] = "You have talked with Jack\'s mother and sister. Report it back to Spectulus.",
+						people close to him. Talk to Jack's mother and sister and return to Spectulus to report their reaction.",
+						[6] = "You have talked with Jack's mother and sister. Report it back to Spectulus.",
 						[7] = "Spectulus suggested asking Jack abouthis hobbies. Make Jack leave his hobby be by whateber \z
 						means it takes. Only by doing this he will be separated from what distracts him from his former self.",
-						[8] = "You found out and destroyed Jack\'s hobby. Jack is now finally ready and beginning to change. \z
+						[8] = "You found out and destroyed Jack's hobby. Jack is now finally ready and beginning to change. \z
 						He event seems to start remembering Spectulus and the Academy.",
 						[9] = "Jack is finally remembering Spectulus and the Academy. Report back your mission.",
 						[10] = "Spectulus found out that you were convincing the wrong Jack. His real intern was transported \z
@@ -4778,15 +4691,15 @@ if not Quests then
 					}
 				}
 				-- [17] = {
-					-- name = "Nomads Land",
-					-- storageId = PLACEHOLDER,
-					-- missionId = PLACEHOLDER,
-					-- startValue = 1,
-					-- endValue = 2,
-					-- states = {
-						-- [1] = "",
-						-- [2] = ""
-					-- }
+				-- name = "Nomads Land",
+				-- storageId = PLACEHOLDER,
+				-- missionId = PLACEHOLDER,
+				-- startValue = 1,
+				-- endValue = 2,
+				-- states = {
+				-- [1] = "",
+				-- [2] = ""
+				-- }
 				-- }
 			}
 		},
@@ -4942,7 +4855,7 @@ if not Quests then
 					endValue = 3,
 					states = {
 						[1] = "Get 18 vials of wine for Bozo. Then report to Bozo about your mission.",
-						[2] = "Exchange the crates in front of Xodet\'s house and return to Bozo with the swapped crate.",
+						[2] = "Exchange the crates in front of Xodet's house and return to Bozo with the swapped crate.",
 						[3] = "You have finished your fourth mission and should ask Bozo for the next mission."
 					}
 				},
@@ -4970,7 +4883,7 @@ if not Quests then
 						[1] = "Get Bozo 4 pieces of minotaur leather.",
 						[2] = "Get Bozo a piece of giant spider silk.",
 						[3] = "Ask Bozo about your mission, he might be finished with the whoopee cushion by now.",
-						[4] = "Place the whoopee cushion on the queen\'s throne in Carlin by using the cushion with the throne.",
+						[4] = "Place the whoopee cushion on the queen's throne in Carlin by using the cushion with the throne.",
 						[5] = "You have finished your sixth mission and should ask Bozo for the next mission."
 					}
 				},
@@ -4981,7 +4894,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Get the toy mouse of Queen Eloise\'s cat and show it to Carina, the jeweler in Venore, to scare her.",
+						[1] = "Get the toy mouse of Queen Eloise's cat and show it to Carina, the jeweler in Venore, to scare her.",
 						[2] = "You have finished your seventh mission and should ask Bozo for the next mission."
 					}
 				},
@@ -5000,7 +4913,7 @@ if not Quests then
 					}
 				},
 				[9] = {
-					name = "What a foolish Quest - A fool\'s bargain",
+					name = "What a foolish Quest - A fool's bargain",
 					storageId = Storage.WhatAFoolish.Mission9,
 					missionId = 10344,
 					startValue = 1,
@@ -5039,7 +4952,7 @@ if not Quests then
 						cloth an old and worn look. Some ancient altar should suit your needs best - use the white cloth on it.",
 						[3] = "Use your mummy disguise to scare the caliph Kazzan in Darashia. \z
 						DON'T use the disguise too early or you will fail the quest.",
-						[4] = "You have finished all of Bozo\'s missions and you are a complete fool now. Yay!"
+						[4] = "You have finished all of Bozo's missions and you are a complete fool now. Yay!"
 					}
 				},
 				[12] = {
@@ -5048,9 +4961,7 @@ if not Quests then
 					missionId = 10347,
 					startValue = 4,
 					endValue = 4,
-					states = {
-						[4] = "Now that you have a basic outfit, you should talk to Bozo about your missions to gain further rewards."
-					}
+					states = { [4] = "Now that you have a basic outfit, you should talk to Bozo about your missions to gain further rewards." }
 				}
 			}
 		},
@@ -5136,10 +5047,7 @@ if not Quests then
 					startValue = 0,
 					endValue = 4,
 					description = function(player)
-						return string.format(
-							"Kill four Magistrati in the office building. Then report back to Zlak. You have killed %d magistrati so far.",
-							(math.max(player:getStorageValue(Storage.WrathoftheEmperor.Mission06), 0))
-						)
+						return string.format("Kill four Magistrati in the office building. Then report back to Zlak. You have killed %d magistrati so far.", math.max(player:getStorageValue(Storage.WrathoftheEmperor.Mission06), 0))
 					end
 				},
 				[7] = {
@@ -5149,10 +5057,7 @@ if not Quests then
 					startValue = 0,
 					endValue = 6,
 					description = function(player)
-						return string.format(
-							"Kill six nobles in the city and report back to Zlak. You have killed %d nobles so far.",
-							(math.max(player:getStorageValue(Storage.WrathoftheEmperor.Mission07), 0))
-						)
+						return string.format("Kill six nobles in the city and report back to Zlak. You have killed %d nobles so far.", math.max(player:getStorageValue(Storage.WrathoftheEmperor.Mission07), 0))
 					end
 				},
 				[8] = {
@@ -5189,15 +5094,15 @@ if not Quests then
 						Report back to Zizzle.",
 						[2] = "You possess the key to enter the inner realms of the emperor. \z
 						Start with the one in the north-west and work your way clockwise trough the room and kill those manifestation. \z
-						Then use your sceptre on the remain to destroy the emperor\'s influence over the crystal.",
+						Then use your sceptre on the remain to destroy the emperor's influence over the crystal.",
 						[3] = "You possess the key to enter the inner realms of the emperor. \z
-						You destroyed 1 of 4 emperor\'s influences.",
+						You destroyed 1 of 4 emperor's influences.",
 						[4] = "You possess the key to enter the inner realms of the emperor. \z
-						You destroyed 2 of 4 emperor\'s influences.",
+						You destroyed 2 of 4 emperor's influences.",
 						[5] = "You possess the key to enter the inner realms of the emperor. \z
-						You destroyed 3 of 4 emperor\'s influences.",
+						You destroyed 3 of 4 emperor's influences.",
 						[6] = "You possess the key to enter the inner realms of the emperor. \z
-						You destroyed all emperor\'s influences."
+						You destroyed all emperor's influences."
 					}
 				},
 				[11] = {
@@ -5252,9 +5157,7 @@ if not Quests then
 					missionId = 10361,
 					startValue = 0,
 					endValue = 1522018605,
-					states = {
-						[1] = "You defeated the rogue Lady Tenebris."
-					}
+					states = { [1] = "You defeated the rogue Lady Tenebris." }
 				},
 				[2] = {
 					name = "Bane of the Cosmic Force",
@@ -5262,10 +5165,8 @@ if not Quests then
 					missionId = 10362,
 					startValue = 0,
 					endValue = 1522018605,
-					states = {
-						[1] = "You calmed poor, misguided Lloyd. All he wanted was protection from the outside world. \z
-						Luckily he seems to have learned his lesson... or has he?"
-					}
+					states = { [1] = "You calmed poor, misguided Lloyd. All he wanted was protection from the outside world. \z
+						Luckily he seems to have learned his lesson... or has he?" }
 				},
 				[3] = {
 					name = "The Desecrated Glade",
@@ -5273,10 +5174,8 @@ if not Quests then
 					missionId = 10363,
 					startValue = 0,
 					endValue = 1522018605,
-					states = {
-						[1] = "You defeated the Thorn Knight and shattered the root of evil with all your might. \z
-						The honor of being a guardian of the glade indeed comes with pride as well as responsibility."
-					}
+					states = { [1] = "You defeated the Thorn Knight and shattered the root of evil with all your might. \z
+						The honor of being a guardian of the glade indeed comes with pride as well as responsibility." }
 				},
 				[4] = {
 					name = "The Unwary Mage",
@@ -5284,10 +5183,8 @@ if not Quests then
 					missionId = 10364,
 					startValue = 0,
 					endValue = 1522018605,
-					states = {
-						[1] = "With help of Ivalisse from the temple of the Astral Shapers in Thais and her father, \z
-						you averted the Dragon King\'s menace deep in the Zao Muggy Plains."
-					}
+					states = { [1] = "With help of Ivalisse from the temple of the Astral Shapers in Thais and her father, \z
+						you averted the Dragon King's menace deep in the Zao Muggy Plains." }
 				},
 				[5] = {
 					name = "Dragon in Distress",
@@ -5295,9 +5192,7 @@ if not Quests then
 					missionId = 10365,
 					startValue = 0,
 					endValue = 1522018605,
-					states = {
-						[1] = "You saved the Dragon Mother\'s egg and she melted the ice wall that blocked your way."
-					}
+					states = { [1] = "You saved the Dragon Mother's egg and she melted the ice wall that blocked your way." }
 				},
 				[6] = {
 					name = "Time is a Window",
@@ -5305,10 +5200,8 @@ if not Quests then
 					missionId = 10366,
 					startValue = 0,
 					endValue = 1522018605,
-					states = {
-						[1] = "You defeated the Time Guardian and are free to return to your own time. \z
-						For some creatures in this world, it seems neither past nor future are an obstacle."
-					}
+					states = { [1] = "You defeated the Time Guardian and are free to return to your own time. \z
+						For some creatures in this world, it seems neither past nor future are an obstacle." }
 				},
 				[7] = {
 					name = "Final Fight",
@@ -5316,9 +5209,7 @@ if not Quests then
 					missionId = 10367,
 					startValue = 0,
 					endValue = 1522018605,
-					states = {
-						[1] = "Description Fault."
-					}
+					states = { [1] = "Description Fault." }
 				}
 			}
 		},
@@ -5344,7 +5235,7 @@ if not Quests then
 					startValue = 0,
 					endValue = 20,
 					description = "Treasure is the favorite of the dragon lords. \z
-					Find and take Kalyassa\'s treasures spread across the world."
+					Find and take Kalyassa's treasures spread across the world."
 				},
 				[3] = {
 					name = "Knowledge",
@@ -5352,8 +5243,8 @@ if not Quests then
 					missionId = 10370,
 					startValue = 0,
 					endValue = 1,
-					description = "You learned that frost dragon\'s incitement is the thirst for knowledge, \z
-					perhaps if you bring some to Gelidrazah\'s you'll meet him."
+					description = "You learned that frost dragon's incitement is the thirst for knowledge, \z
+					perhaps if you bring some to Gelidrazah's you'll meet him."
 				},
 				[4] = {
 					name = "Life",
@@ -5379,9 +5270,7 @@ if not Quests then
 					endValue = 50,
 					description = function(player)
 						return ("James asked you to enter the cave for hunting 50 empowered minotaurs. \z
-						Then he will be able to continue his research.\nMinotaurs killed: %d/50"):format(
-							player:getStorageValue(Storage.CultsOfTibia.Minotaurs.JamesfrancisTask)
-						)
+						Then he will be able to continue his research.\nMinotaurs killed: %d/50"):format(player:getStorageValue(Storage.CultsOfTibia.Minotaurs.JamesfrancisTask))
 					end
 				},
 				[2] = {
@@ -5408,7 +5297,7 @@ if not Quests then
 					endValue = 15,
 					states = {
 						[1] = "The Druid of Cronor gave you the hint that the Thais exhibition has expanded. \z
-						The new section is called MOTA (Museum of Tibian Arts). It\'s really worth a visit.",
+						The new section is called MOTA (Museum of Tibian Arts). It's really worth a visit.",
 						[2] = "Gareth told you how to become a patron of the arts. To fulfil your duty you have to manage some tasks. \z
 						First you have to investigate the crime scene of a theft in the museum.",
 						[3] = "You found a ransom note, wich requests you to pay some money for \z
@@ -5420,7 +5309,7 @@ if not Quests then
 						[6] = "You have to go to Angelo and get a magnifier to investigate all small \z
 						pictures in the entrance hall of the MOTA. One of them should be a fake.",
 						[7] = "Angelo allowed you to take a magnifier from a crate next to the cave entrance.",
-						[8] = "You've fetched the magnifier from Angelo\'s crate. You're ready for your job in the museum.",
+						[8] = "You've fetched the magnifier from Angelo's crate. You're ready for your job in the museum.",
 						[9] = "Indeed! One of the investigated small pictures is fake. Report to Gareth!",
 						[10] = "After you told Gareth about the fake painting, he asked you to go to Angelo to get a new picture.",
 						[11] = "Angelo was not willing to give you a new picture. \z
@@ -5447,7 +5336,9 @@ if not Quests then
 						The hardest part, however, is yet to come. Give your life to the ice... to become true and purified.",
 						[3] = function(player)
 							return ("You survived the Trial. Barkless now have the right to see the cult leader but a \z
-							powerful relic is sealing the path. Barkless markings broken to reverse the power of the cult object: \z %d of 10"):format(math.max(player:getStorageValue(Storage.CultsOfTibia.Barkless.Objects), 0))
+							powerful relic is sealing the path. Barkless markings broken to reverse the power of the cult object: \z %d of 10"):format(
+								math.max(player:getStorageValue(Storage.CultsOfTibia.Barkless.Objects), 0)
+							)
 						end,
 						[4] = "You broke enough Barkless markings to now reverse the seal \z
 						held up by the cult object in the ritual chamber. \z
@@ -5473,7 +5364,9 @@ if not Quests then
 						hinted at something weird going on in a cave. He seemed too confused to decide whether to stop you.",
 						[3] = function(player)
 							return ("While rubbish, the amulet you equipe emits a strange aura of splendour. \z
-							You feel an urge to fulfill the amulets hunger for especific deaths... Exorcisms: %d/5 "):format(math.max(player:getStorageValue(Storage.CultsOfTibia.Misguided.Exorcisms), 0))
+							You feel an urge to fulfill the amulets hunger for especific deaths... Exorcisms: %d/5 "):format(
+								math.max(player:getStorageValue(Storage.CultsOfTibia.Misguided.Exorcisms), 0)
+							)
 						end,
 						[4] = "You defeated the cult leader of Misguided by uncovering the true master to pull his strings \z
 						and freeing this world from its malicious existance. Return to Gerimor to tell him about the victory.",
@@ -5686,14 +5579,15 @@ if not Quests then
 				}
 			}
 		},
-		[40] = { -- FREE SLOT FOR A SIMPLE QUEST
+		[40] = {
+			-- FREE SLOT FOR A SIMPLE QUEST
 			name = "XXXXXXXXXXXX",
 			startStorageId = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "XXXXXXXXXXXX",
-					storageId =  Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton,
+					storageId = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton,
 					missionId = 10387,
 					startValue = 1,
 					endValue = 2,
@@ -5780,7 +5674,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 5,
 					states = {
-						[1] = "The key to the adventurer\'s dormitory has disappeared. Maybe you can find it. Ask around to find out who was the last to have seen it.",
+						[1] = "The key to the adventurer's dormitory has disappeared. Maybe you can find it. Ask around to find out who was the last to have seen it.",
 						[2] = "use the fishing rod in the nearby lake to fish old nasty",
 						[3] = "Come back to Woblin with Old Nasty",
 						[4] = "Come back to Mr Morris with key 0010",
@@ -5793,10 +5687,8 @@ if not Quests then
 					missionId = 10394,
 					startValue = 0,
 					endValue = 20,
-					description =
-					function(player)
-						return string.format("You already hunted %d/20 Mountain Trolls.",
-						(math.max(player:getStorageValue(65062), 0)))
+					description = function(player)
+						return string.format("You already hunted %d/20 Mountain Trolls.", math.max(player:getStorageValue(65062), 0))
 					end
 				},
 				[7] = {
@@ -5805,10 +5697,8 @@ if not Quests then
 					missionId = 10395,
 					startValue = 0,
 					endValue = 20,
-					description =
-					function(player)
-						return string.format("You already hunted %d/20 Muglex Clan Footman.",
-						(math.max(player:getStorageValue(65061), 0)))
+					description = function(player)
+						return string.format("You already hunted %d/20 Muglex Clan Footman.", math.max(player:getStorageValue(65061), 0))
 					end
 				},
 				[8] = {
@@ -5817,12 +5707,10 @@ if not Quests then
 					missionId = 10396,
 					startValue = 0,
 					endValue = 20,
-					description =
-					function(player)
-						return string.format("You already hunted %d/20 Minotaurs Bruisers.",
-						(math.max(player:getStorageValue(65060), 0)))
+					description = function(player)
+						return string.format("You already hunted %d/20 Minotaurs Bruisers.", math.max(player:getStorageValue(65060), 0))
 					end
-				},
+				}
 			}
 		},
 		[43] = {
@@ -5836,9 +5724,7 @@ if not Quests then
 					missionId = 10397,
 					startValue = 1,
 					endValue = 1,
-					states = {
-						[1] = ""
-					}
+					states = { [1] = "" }
 				},
 				[2] = {
 					name = "Mission 02: Defence!",
@@ -5862,10 +5748,7 @@ if not Quests then
 					endValue = 2,
 					states = {
 						[1] = function(player)
-							return string.format(
-								"Vascalir sent you to the Rookgaard sewers to kill 5 rats. You have already killed %d/5. Return to Vascalir once you're done.",
-								player:getStorageValue(Storage.TheRookieGuard.RatKills)
-							)
+							return string.format("Vascalir sent you to the Rookgaard sewers to kill 5 rats. You have already killed %d/5. Return to Vascalir once you're done.", player:getStorageValue(Storage.TheRookieGuard.RatKills))
 						end,
 						[2] = "Vascalir was pleased with your hunting efforts. You've proven that you are a skilled hunter, ready for the task at hand."
 					}
@@ -6074,9 +5957,9 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Try getting the support of the people mentioned. Talk to them about \"farmine\", then \z
-							choose the \"flatter\", \"threaten\", \"impress\", \"bluff\", \"reason\" or \"plea\" and report \z
-							any progress to Ongulf.",
+						[1] = 'Try getting the support of the people mentioned. Talk to them about "farmine", then \z
+							choose the "flatter", "threaten", "impress", "bluff", "reason" or "plea" and report \z
+							any progress to Ongulf.',
 						[2] = "You have gained the necessary support for Farmine."
 					}
 				},
@@ -6354,10 +6237,10 @@ if not Quests then
 							return string.format(
 								"The fae queen asked for your help: Feyrist is threatened by intruders from Roshamuul. Kill 200 nightmare \z
 								monsters and Kroazur. - You killed %d weakened frazzlemaws and %d efeebled silencers.",
-								(math.max(player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.FrazzlemawsCount), 0)),
-								(math.max(player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.EnfeebledCount), 0))
-								)
-							end,
+								math.max(player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.FrazzlemawsCount), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.EnfeebledCount), 0)
+							)
+						end,
 						[2] = "You killed 200 of the nightmare monsters that are invading Feyrist. Maelyrra was very happy but it seems \z
 						she still has other problems. She may need your help once more.",
 						[3] = "Maelyrra asked you to retrieve an artefact for her: the moon mirror. It was stolen by the tainted fae \z
@@ -6400,7 +6283,7 @@ if not Quests then
 			missions = {
 				[1] = {
 					name = "Mission 01: Gaining Trust",
-					storageId =  Storage.Quest.U8_4.BloodBrothers.Mission01,
+					storageId = Storage.Quest.U8_4.BloodBrothers.Mission01,
 					missionId = 10433,
 					startValue = 1,
 					endValue = 4,
@@ -6440,9 +6323,7 @@ if not Quests then
 					missionId = 10436,
 					startValue = 1,
 					endValue = 1,
-					states = {
-						[1] = "Your task is to find someone to bring you to Vengoth. Explore the island and use Julius' map whenever you find an unusual spot to mark it. Mark at least 5 spots including the castle and report back."
-					}
+					states = { [1] = "Your task is to find someone to bring you to Vengoth. Explore the island and use Julius' map whenever you find an unusual spot to mark it. Mark at least 5 spots including the castle and report back." }
 				}
 			}
 		},
@@ -6453,26 +6334,22 @@ if not Quests then
 			missions = {
 				[1] = {
 					name = "* Grave Danger - The Lich Knights",
-					storageId =  Storage.Quest.U12_20.GraveDanger.QuestLine,
+					storageId = Storage.Quest.U12_20.GraveDanger.QuestLine,
 					missionId = 10437,
 					startValue = 1,
 					endValue = 2,
-					states = {
-						[1] = function(player) return string.format("Prevent the raising of twelve lich knights. Sanctify the graves yet untouched and destroy any lich knights that might have been raised. Graves exlored: %d/12",
-							player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Edron) +
-							player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.DarkCathedral) +
-							player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Ghostlands) +
-							player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Cormaya) +
-							player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.FemorHills) +
-							player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Ankrahmun) +
-							player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Kilmaresh) +
-							player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Vengoth) +
-							player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Darashia) +
-							player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Thais) +
-							player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Orclands) +
-							player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.IceIslands) - 12)
-						end
-					}
+					states = { [1] = function(player)
+						return string.format(
+							"Prevent the raising of twelve lich knights. Sanctify the graves yet untouched and destroy any lich knights that might have been raised. Graves exlored: %d/12",
+							player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Edron) + player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.DarkCathedral) + player:getStorageValue(
+								Storage.Quest.U12_20.GraveDanger.Graves.Ghostlands
+							) + player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Cormaya) + player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.FemorHills) + player:getStorageValue(
+								Storage.Quest.U12_20.GraveDanger.Graves.Ankrahmun
+							) + player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Kilmaresh) + player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Vengoth) + player:getStorageValue(
+								Storage.Quest.U12_20.GraveDanger.Graves.Darashia
+							) + player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Thais) + player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Orclands) + player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.IceIslands) - 12
+						)
+					end }
 				},
 				[2] = {
 					name = "01 The grave in Edron",
@@ -6558,7 +6435,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Find the grave in Vengoth.",--
+						[1] = "Find the grave in Vengoth.", --
 						[2] = "The grave in Vengoth was visited."
 					}
 				},
@@ -6569,7 +6446,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Find the grave in Darashia.",--
+						[1] = "Find the grave in Darashia.", --
 						[2] = "The grave in Darashia was visited."
 					}
 				},
@@ -6580,7 +6457,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Find the grave in the old Thais temple.",--
+						[1] = "Find the grave in the old Thais temple.", --
 						[2] = "The grave in the old temple of Thais has been visited."
 					}
 				},
@@ -6591,7 +6468,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Find the grave at the orclands entrance.",--
+						[1] = "Find the grave at the orclands entrance.", --
 						[2] = "The grave at the orcland entrance was visited."
 					}
 				},
@@ -6602,7 +6479,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Find the grave on the southern ice islands.",--
+						[1] = "Find the grave on the southern ice islands.", --
 						[2] = "The grave on the southern ice islands was visited."
 					}
 				},
@@ -6613,7 +6490,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "",--
+						[1] = "", --
 						[2] = "Scarlett Etzel once stood proud and righteous. The assassins she rallied around her under the Order of the Cobra, however, where of ill repute and had to be vanquished. And so did she, you prevailed."
 					}
 				}

@@ -26,7 +26,6 @@ monster.Bestiary = {
 	Locations = "Temple of the Moon Goddess."
 }
 
-
 monster.health = 5290
 monster.maxHealth = 5290
 monster.race = "blood"
@@ -35,15 +34,12 @@ monster.speed = 180
 monster.manaCost = 0
 monster.maxSummons = 0
 
-
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = false,
@@ -73,57 +69,149 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "The Moon Goddess is ashamed of you!", yell = false},
+	{
+		text = "The Moon Goddess is ashamed of you!",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{name = "platinum coin", chance = 100000, maxCount = 12},
-	{name = "dagger", chance = 38810},
-	{name = "strong health potion", chance = 14930, maxCount = 2},
-	{name = "naga warrior scales", chance = 10600, maxCount = 4},
-	{name = "naga earring", chance = 6420, maxCount = 2},
-	{id = 3307, chance = 5520}, -- scimitar
-	{name = "naga armring", chance = 3730},
-	{name = "plate armor", chance = 2990},
-	{name = "spiky club", chance = 2090},
-	{name = "serpent sword", chance = 1940},
-	{name = "violet crystal shard", chance = 1640},
-	{name = "katana", chance = 1490},
-	{name = "relic sword", chance = 1190},
-	{name = "knight armor", chance = 450},
-  {id = 7441, chance = 300}, -- ice cube
-}
+monster.loot = { {
+	name = "platinum coin",
+	chance = 100000,
+	maxCount = 12
+}, {
+	name = "dagger",
+	chance = 38810
+}, {
+	name = "strong health potion",
+	chance = 14930,
+	maxCount = 2
+}, {
+	name = "naga warrior scales",
+	chance = 10600,
+	maxCount = 4
+}, {
+	name = "naga earring",
+	chance = 6420,
+	maxCount = 2
+}, {
+	id = 3307,
+	chance = 5520
+}, { -- scimitar
+	name = "naga armring",
+	chance = 3730
+}, {
+	name = "plate armor",
+	chance = 2990
+}, {
+	name = "spiky club",
+	chance = 2090
+}, {
+	name = "serpent sword",
+	chance = 1940
+}, {
+	name = "violet crystal shard",
+	chance = 1640
+}, {
+	name = "katana",
+	chance = 1490
+}, {
+	name = "relic sword",
+	chance = 1190
+}, {
+	name = "knight armor",
+	chance = 450
+}, {
+	id = 7441,
+	chance = 300
+} } -- ice cube
 
-monster.attacks = {
-	{name = "combat", interval = 2000, chance = 100, type = COMBAT_PHYSICALDAMAGE, minDamage = -120, maxDamage = -340, target = true},	-- basic_attack
-	{name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = -320, maxDamage = -430,effect = CONST_ME_YELLOWSMOKE, range = 3, target = true},	-- eruption_strike
-	{name = "nagadeathattack", interval = 2000, chance = 25, minDamage = -360, maxDamage = -415, target = true},	-- death_strike
-	{name ="combat", interval = 4000, chance = 31, type = COMBAT_LIFEDRAIN, minDamage = -360, maxDamage = -386, radius = 4, effect = CONST_ME_DRAWBLOOD, target = false},	-- great_blood_ball
-}
+monster.attacks = { {
+	name = "combat",
+	interval = 2000,
+	chance = 100,
+	type = COMBAT_PHYSICALDAMAGE,
+	minDamage = -120,
+	maxDamage = -340,
+	target = true
+}, { -- basic_attack
+	name = "combat",
+	interval = 2000,
+	chance = 25,
+	type = COMBAT_PHYSICALDAMAGE,
+	minDamage = -320,
+	maxDamage = -430,
+	effect = CONST_ME_YELLOWSMOKE,
+	range = 3,
+	target = true
+}, { -- eruption_strike
+	name = "nagadeathattack",
+	interval = 2000,
+	chance = 25,
+	minDamage = -360,
+	maxDamage = -415,
+	target = true
+}, { -- death_strike
+	name = "combat",
+	interval = 4000,
+	chance = 31,
+	type = COMBAT_LIFEDRAIN,
+	minDamage = -360,
+	maxDamage = -386,
+	radius = 4,
+	effect = CONST_ME_DRAWBLOOD,
+	target = false
+} } -- great_blood_ball
 
 monster.defenses = {
 	defense = 110,
-	armor = 120,
+	armor = 120
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = -5},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = -20},
-	{type = COMBAT_DEATHDAMAGE , percent = 10}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 20
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = -5
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = -5
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 10
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 10
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = -20
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 10
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

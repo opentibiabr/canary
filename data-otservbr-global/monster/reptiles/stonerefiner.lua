@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Corym Mines."
-	}
+}
 
 monster.health = 800
 monster.maxHealth = 800
@@ -42,7 +42,7 @@ monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,
 	damage = 10,
-	random = 10,
+	random = 10
 }
 
 monster.flags = {
@@ -73,49 +73,116 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "knak knak knak", yell = false},
-	{text = "nomnomnom", yell = false}
+	{
+		text = "knak knak knak",
+		yell = false
+	},
+	{
+		text = "nomnomnom",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{name = "platinum coin", chance = 50930, maxCount = 4},
-	{name = "rare earth", chance = 39750, maxCount = 2},
-	{id = 12600, chance = 27980, maxCount = 5}, -- coal
-	{name = "glob of acid slime", chance = 23680},
-	{name = "stonerefiner's skull", chance = 20110},
-	{name = "poisonous slime", chance = 20040, maxCount = 3},
-	{name = "half-digested stones", chance = 15210, maxCount = 5}
-}
+monster.loot = { {
+	name = "platinum coin",
+	chance = 50930,
+	maxCount = 4
+}, {
+	name = "rare earth",
+	chance = 39750,
+	maxCount = 2
+}, {
+	id = 12600,
+	chance = 27980,
+	maxCount = 5
+}, { -- coal
+	name = "glob of acid slime",
+	chance = 23680
+}, {
+	name = "stonerefiner's skull",
+	chance = 20110
+}, {
+	name = "poisonous slime",
+	chance = 20040,
+	maxCount = 3
+}, {
+	name = "half-digested stones",
+	chance = 15210,
+	maxCount = 5
+} }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100},
-	{name ="berserk", interval = 2000, chance = 15, minDamage = 0, maxDamage = -70, target = false},
-	{name ="stone shower rune", interval = 2000, chance = 10, minDamage = -40, maxDamage = -80, range = 7, target = false}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -100
+}, {
+	name = "berserk",
+	interval = 2000,
+	chance = 15,
+	minDamage = 0,
+	maxDamage = -70,
+	target = false
+}, {
+	name = "stone shower rune",
+	interval = 2000,
+	chance = 10,
+	minDamage = -40,
+	maxDamage = -80,
+	range = 7,
+	target = false
+} }
 
 monster.defenses = {
 	defense = 45,
 	armor = 20
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -20},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 20},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -20},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = -20
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 20
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = -10
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = -20
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = true
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

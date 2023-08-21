@@ -25,9 +25,7 @@ monster.changeTarget = {
 	chance = 10
 }
 
-monster.strategiesTarget = {
-	nearest = 100,
-}
+monster.strategiesTarget = { nearest = 100 }
 
 monster.flags = {
 	summonable = false,
@@ -57,44 +55,107 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "The Moon Goddess is ashamed of you!", yell = false},
+	{
+		text = "The Moon Goddess is ashamed of you!",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{name = "Platinum Coin", chance = 85600, minCount = 1, maxCount = 12},
-	{name = "Rogue Naga Scales", chance = 15450},
-	{name = "Green Crystal Shard", chance = 14400, minCount = 1, maxCount = 2},
-}
+monster.loot = { {
+	name = "Platinum Coin",
+	chance = 85600,
+	minCount = 1,
+	maxCount = 12
+}, {
+	name = "Rogue Naga Scales",
+	chance = 15450
+}, {
+	name = "Green Crystal Shard",
+	chance = 14400,
+	minCount = 1,
+	maxCount = 2
+} }
 
-monster.attacks = {
-    {name ="combat", interval = 2000, chance = 100, minDamage = -300, maxDamage = -600, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_PURPLEENERGY, target = true},
-	{name ="combat", interval = 2000, chance = 47, type = COMBAT_PHYSICALDAMAGE, minDamage = -350, maxDamage = -400, effect = CONST_ME_BIG_SCRATCH, target = true},
-	{name ="combat", interval = 1000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = -380, maxDamage = -470, length = 5, spread = 3, effect = CONST_ME_GROUNDSHAKER, target = false},
-}
+monster.attacks = { {
+	name = "combat",
+	interval = 2000,
+	chance = 100,
+	minDamage = -300,
+	maxDamage = -600,
+	shootEffect = CONST_ANI_EXPLOSION,
+	effect = CONST_ME_PURPLEENERGY,
+	target = true
+}, {
+	name = "combat",
+	interval = 2000,
+	chance = 47,
+	type = COMBAT_PHYSICALDAMAGE,
+	minDamage = -350,
+	maxDamage = -400,
+	effect = CONST_ME_BIG_SCRATCH,
+	target = true
+}, {
+	name = "combat",
+	interval = 1000,
+	chance = 10,
+	type = COMBAT_PHYSICALDAMAGE,
+	minDamage = -380,
+	maxDamage = -470,
+	length = 5,
+	spread = 3,
+	effect = CONST_ME_GROUNDSHAKER,
+	target = false
+} }
 
 monster.defenses = {
 	defense = 110,
-	armor = 120,
+	armor = 120
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 30},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 30
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 10
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

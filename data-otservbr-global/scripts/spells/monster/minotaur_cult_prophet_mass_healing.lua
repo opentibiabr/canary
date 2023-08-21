@@ -1,11 +1,7 @@
 local combat = Combat()
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_GREEN)
 
-local monsters = {
-	"minotaur cult prophet",
-	"minotaur cult follower",
-	"minotaur cult zealot",
-}
+local monsters = { "minotaur cult prophet", "minotaur cult follower", "minotaur cult zealot" }
 
 local healingValue = math.random(200, 350)
 

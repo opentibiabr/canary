@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -60,9 +58,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		else
 			npcHandler:say("Whatever you have there, I think I don't want it.", npc, creature)
-		end
+		end -- garlic cookie
 	elseif message == "yes" then
-		if npcHandler:getTopic(playerId) == 1 and player:removeItem(8199, 1) then -- garlic cookie
+		if npcHandler:getTopic(playerId) == 1 and player:removeItem(8199, 1) then
 			npcHandler:say("Errrkss - coughcough - what the - heck did you put in there? Get out of my sight!", npc, creature)
 			player:setStorageValue(BloodBrothers.Cookies.Lisander, 1)
 			npcHandler:setTopic(playerId, 0)
@@ -70,7 +68,17 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 end
 --Basic
-keywordHandler:addKeyword({"alori mort"}, StdModule.say, {npcHandler = npcHandler, text = "Hold your tongue."}, function(player) return player:getStorageValue(BloodBrothers.Mission03) == 1 end)
+keywordHandler:addKeyword(
+	{ "alori mort" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "Hold your tongue."
+	},
+	function(player)
+		return player:getStorageValue(BloodBrothers.Mission03) == 1
+	end
+)
 
 npcHandler:setMessage(MESSAGE_GREET, "I'd rather be left in {peace}. Keep it short.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

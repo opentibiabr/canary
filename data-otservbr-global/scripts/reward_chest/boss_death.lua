@@ -40,7 +40,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 				guid = guid,
 				damageOut = damageOut,
 				damageIn = damageIn,
-				healing = healing,
+				healing = healing
 			})
 		end
 
@@ -53,7 +53,9 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 				participants = participants + 1
 			end
 		end
-		table.sort(scores, function(a, b) return a.score > b.score end)
+		table.sort(scores, function(a, b)
+			return a.score > b.score
+		end)
 
 		local expectedScore = 1 / participants
 
@@ -62,7 +64,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 			if con.score ~= 0 then
 				local reward, stamina, player
 				if con.player then
-					player = con.player;
+					player = con.player
 				else
 					player = Game.getOfflinePlayer(con.guid)
 				end
@@ -76,7 +78,7 @@ function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUn
 				lootFactor = lootFactor * (1 + lootFactor) ^ (con.score / expectedScore)
 				-- Bosstiary Loot Bonus
 				local rolls = 1
-				local isBoostedBoss = creature:getName():lower() == (Game.getBoostedBoss()):lower()
+				local isBoostedBoss = creature:getName():lower() == Game.getBoostedBoss():lower()
 				local bossRaceIds = { player:getSlotBossId(1), player:getSlotBossId(2) }
 				local isBoss = table.contains(bossRaceIds, monsterType:bossRaceId()) or isBoostedBoss
 				if isBoss and monsterType:bossRaceId() ~= 0 then

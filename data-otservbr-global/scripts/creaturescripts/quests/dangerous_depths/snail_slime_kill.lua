@@ -5,9 +5,7 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_EXPLOSIONHIT)
 local area = createCombatArea(AREA_CIRCLE2X2)
 combat:setArea(area)
 
-local monsters = {
-	"the count of the core",
-}
+local monsters = { "the count of the core" }
 
 function onTargetTile(cid, pos)
 	local tile = Tile(pos)
@@ -50,7 +48,7 @@ function snailSlimeThink.onThink(creature)
 		return true
 	end
 	if creature:getName():lower() == "the count of the core" then
-		local percHealth = (creature:getHealth()/creature:getMaxHealth())*100
+		local percHealth = (creature:getHealth() / creature:getMaxHealth()) * 100
 		if percHealth <= 50 then
 			summonSlimes(creature)
 		end
@@ -63,22 +61,23 @@ snailSlimeThink:register()
 local snailSlimeKill = CreatureEvent("SnailSlimeKill")
 function snailSlimeKill.onKill(player, creature)
 	if not player:isPlayer() then
-			return true
-		end
+		return true
+	end
 	if not creature:isMonster() or creature:getMaster() then
 		return true
 	end
 
 	local monsterName = creature:getName():lower()
 	if monsterName == "snail slime" then
-		if not creature then
-			return
-		end
+		if not creature then return end
 		creature:say("!!", TALKTYPE_ORANGE_2)
-		local var = {type = 1, number = creature:getId()}
+		local var = {
+			type = 1,
+			number = creature:getId()
+		}
 		combat:execute(creature, var)
 	end
-return true
+	return true
 end
 
 snailSlimeKill:register()

@@ -10,13 +10,9 @@ npcConfig.maxHealth = npcConfig.health
 npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
-npcConfig.outfit = {
-	lookType = 48
-}
+npcConfig.outfit = { lookType = 48 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -69,11 +65,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "story") then
 		local player = Player(creature)
 		if player:getStorageValue(Storage.TheIceIslands.Questline) == 37 then
-			npcHandler:say({
-				"I was captured and tortured to death by the cultists here. They worship a being that they call Ghazbaran ...",
-				"In his name they have claimed the mines and started to melt the ice to free an army of vile demons that have been frozen here for ages ...",
-				"Their plan is to create a new demon army for their master to conquer the world. Hjaern and the other shamans must learn about it! Hurry before its too late."
-			}, npc, creature)
+			npcHandler:say(
+				{
+					"I was captured and tortured to death by the cultists here. They worship a being that they call Ghazbaran ...",
+					"In his name they have claimed the mines and started to melt the ice to free an army of vile demons that have been frozen here for ages ...",
+					"Their plan is to create a new demon army for their master to conquer the world. Hjaern and the other shamans must learn about it! Hurry before its too late."
+				},
+				npc,
+				creature
+			)
 			player:setStorageValue(Storage.TheIceIslands.Questline, 38)
 			player:setStorageValue(Storage.TheIceIslands.Mission10, 2) -- Questlog The Ice Islands Quest, Formorgar Mines 2: Ghostwhisperer
 			player:setStorageValue(Storage.TheIceIslands.Mission11, 1) -- Questlog The Ice Islands Quest, Formorgar Mines 3: The Secret

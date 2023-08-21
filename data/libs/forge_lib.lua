@@ -2,16 +2,16 @@ if not ForgeMonster then
 	ForgeMonster = {
 		timeLeftToChangeMonsters = {},
 		names = {
-			[FORGE_NORMAL_MONSTER] = 'normal',
-			[FORGE_INFLUENCED_MONSTER] = 'influenced',
-			[FORGE_FIENDISH_MONSTER] = 'fiendish'
+			[FORGE_NORMAL_MONSTER] = "normal",
+			[FORGE_INFLUENCED_MONSTER] = "influenced",
+			[FORGE_FIENDISH_MONSTER] = "fiendish"
 		},
 		chanceToAppear = {
 			fiendish = 80,
 			influenced = 20
 		},
 		maxFiendish = 3,
-		eventName = 'ForgeMonster'
+		eventName = "ForgeMonster"
 	}
 end
 
@@ -59,7 +59,7 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 		end
 
 		if party and party:isSharedExperienceEnabled() then
-			local killers = {party:getLeader()}
+			local killers = { party:getLeader() }
 			local partyMembers = party:getMembers()
 
 			for i = 1, #partyMembers do
@@ -90,17 +90,14 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 						end
 
 						local actualTotalDusts = playerKiller:getForgeDusts()
-						playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-							"You received " .. amount .. " dust" ..
-								" for the Exaltation Forge. You now have " .. actualTotalDusts .. " out of a maximum of " ..
-								limitDusts .. " dusts.")
+						playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received " .. amount .. " dust" .. " for the Exaltation Forge. You now have " .. actualTotalDusts .. " out of a maximum of " .. limitDusts .. " dusts.")
 					else
-						playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-							"You did not receive " .. amount .. " dust" ..
-								" for the Exaltation Forge because you have already reached the maximum of " .. limitDusts .. " dust.")
+						playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You did not receive " .. amount .. " dust" .. " for the Exaltation Forge because you have already reached the maximum of " .. limitDusts .. " dust.")
 					end
 				end
 			end
+			-- Each stack can multiplied from 1x to 3x
+			-- Example monster with 5 stack and system randomize multiplier 3x, players will receive 15x dusts
 		else
 			local playerKiller = nil
 
@@ -113,9 +110,6 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 			end
 
 			if playerKiller then
-				-- Each stack can multiplied from 1x to 3x
-				-- Example monster with 5 stack and system randomize multiplier 3x, players will receive 15x dusts
-
 				local amount = math.random(stack, forgeAmountMultiplier * stack)
 
 				local totalDusts = playerKiller:getForgeDusts()
@@ -129,14 +123,9 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 					end
 
 					local actualTotalDusts = playerKiller:getForgeDusts()
-					playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-						"You received " .. amount .. " dust" ..
-							" for the Exaltation Forge. You now have " .. actualTotalDusts .. " out of a maximum of " ..
-							limitDusts .. " dusts.")
+					playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received " .. amount .. " dust" .. " for the Exaltation Forge. You now have " .. actualTotalDusts .. " out of a maximum of " .. limitDusts .. " dusts.")
 				else
-					playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-						"You did not receive " .. amount .. " dust" ..
-							" for the Exaltation Forge because you have already reached the maximum of " .. limitDusts .. " dust.")
+					playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You did not receive " .. amount .. " dust" .. " for the Exaltation Forge because you have already reached the maximum of " .. limitDusts .. " dust.")
 				end
 			end
 		end
@@ -192,8 +181,11 @@ function ForgeMonster:pickClosestFiendish(creature)
 
 	local playerPosition = player:getPosition()
 	for _, cid in pairs(Game.getFiendishMonsters()) do
-		if (Monster(cid)) then
-			creatures[#creatures + 1] = { cid = cid, distance = Monster(cid):getPosition():getDistance(playerPosition) }
+		if Monster(cid) then
+			creatures[#creatures + 1] = {
+				cid = cid,
+				distance = Monster(cid):getPosition():getDistance(playerPosition)
+			}
 		end
 	end
 

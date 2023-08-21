@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -52,18 +50,47 @@ end
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop = {
-	{ itemName = "camouflage backpack", clientId = 2872, buy = 30 },
-	{ itemName = "camouflage bag", clientId = 2864, buy = 10 },
-	{ itemName = "fishing rod", clientId = 3483, buy = 300 },
-	{ itemName = "pick", clientId = 3456, buy = 100 },
-	{ itemName = "rope", clientId = 3003, buy = 100 },
-	{ itemName = "shovel", clientId = 3457, buy = 100 },
-	{ itemName = "torch", clientId = 2920, buy = 5 },
-	{ itemName = "treasure map", clientId = 5090, buy = 1000 },
-	{ itemName = "very noble-looking watch", clientId = 6092, buy = 500 },
-	{ itemName = "worm", clientId = 3492, buy = 2 }
-}
+npcConfig.shop = { {
+	itemName = "camouflage backpack",
+	clientId = 2872,
+	buy = 30
+}, {
+	itemName = "camouflage bag",
+	clientId = 2864,
+	buy = 10
+}, {
+	itemName = "fishing rod",
+	clientId = 3483,
+	buy = 300
+}, {
+	itemName = "pick",
+	clientId = 3456,
+	buy = 100
+}, {
+	itemName = "rope",
+	clientId = 3003,
+	buy = 100
+}, {
+	itemName = "shovel",
+	clientId = 3457,
+	buy = 100
+}, {
+	itemName = "torch",
+	clientId = 2920,
+	buy = 5
+}, {
+	itemName = "treasure map",
+	clientId = 5090,
+	buy = 1000
+}, {
+	itemName = "very noble-looking watch",
+	clientId = 6092,
+	buy = 500
+}, {
+	itemName = "worm",
+	clientId = 3492,
+	buy = 2
+} }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -73,7 +100,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

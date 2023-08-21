@@ -1,12 +1,5 @@
 local config = {
-	bridgePositions = {
-		Position(32410, 32232, 10),
-		Position(32411, 32232, 10),
-		Position(32412, 32232, 10),
-		Position(32410, 32231, 10),
-		Position(32411, 32231, 10),
-		Position(32412, 32231, 10)
-	},
+	bridgePositions = { Position(32410, 32232, 10), Position(32411, 32232, 10), Position(32412, 32232, 10), Position(32410, 32231, 10), Position(32411, 32231, 10), Position(32412, 32231, 10) },
 	removeCreaturePosition = Position(32409, 32231, 10),
 	bridgeID = 5770,
 	waterID = 4610

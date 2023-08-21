@@ -10,18 +10,14 @@ npcConfig.maxHealth = npcConfig.health
 npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
-npcConfig.outfit = {
-	lookType = 9
-}
+npcConfig.outfit = { lookType = 9 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Utevo vis lux!'}
+	{ text = "Utevo vis lux!" }
 }
 
 local keywordHandler = KeywordHandler:new()

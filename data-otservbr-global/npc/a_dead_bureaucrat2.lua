@@ -10,19 +10,15 @@ npcConfig.maxHealth = npcConfig.health
 npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
-npcConfig.outfit = {
-	lookType = 33
-}
+npcConfig.outfit = { lookType = 33 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'Now where did I put that form?' },
-	{ text = 'Hail Pumin. Yes, hail.' }
+	{ text = "Now where did I put that form?" },
+	{ text = "Hail Pumin. Yes, hail." }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -54,7 +50,10 @@ end
 
 local function greetCallback(npc, creature)
 	local playerId = creature:getId()
-	npcHandler:setMessage(MESSAGE_GREET, "Hello " .. (Player(creature):getSex() == PLAYERSEX_FEMALE and "beautiful lady" or "handsome gentleman") .. ", welcome to the atrium of Pumin's Domain. We require some information from you before we can let you pass. Where do you want to go?")
+	npcHandler:setMessage(
+		MESSAGE_GREET,
+		"Hello " .. (Player(creature):getSex() == PLAYERSEX_FEMALE and "beautiful lady" or "handsome gentleman") .. ", welcome to the atrium of Pumin's Domain. We require some information from you before we can let you pass. Where do you want to go?"
+	)
 	return true
 end
 

@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 1
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -77,6 +75,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("YOURS? WHAT IS YOURS! NOTHING IS YOURS! IS MINE! GO AWAY, YES?!", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
+		-- OUTFIT -- 1 hour -- 2 hours
 	elseif MsgContains(message, "no") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("YOU STUPID! STUBBORN! I KILL YOU! WILL LEAVE NOW?!", npc, creature)
@@ -137,11 +136,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addOutfitAddon(147, 1)
 			player:addOutfitAddon(143, 1)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			player:addAchievement('Brutal Politeness')
+			player:addAchievement("Brutal Politeness")
 		else
 			npcHandler:say("Axe is not done yet!", npc, creature)
 		end
-	-- OUTFIT
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 5 then
 			npcHandler:say("Oh. Easy. Okay. Please is good. Now don't say anything. Head aches. ", npc, creature)
@@ -150,15 +148,19 @@ local function creatureSayCallback(npc, creature, type, message)
 			condition:addDamage(10, 2000, -10)
 			player:addCondition(condition)
 			player:setStorageValue(Storage.OutfitQuest.BarbarianAddon, 2)
-			player:setStorageValue(Storage.OutfitQuest.BarbarianAddonWaitTimer, os.time() + 60 * 60) -- 1 hour
+			player:setStorageValue(Storage.OutfitQuest.BarbarianAddonWaitTimer, os.time() + 60 * 60)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		elseif npcHandler:getTopic(playerId) == 6 then
-			npcHandler:say({
-				"Good! Me make shiny weapon. If you help me, I make one for you too. Like axe I wear. I need stuff. Listen. ...",
-				"Me need 100 iron ore. Then need crude iron. Then after that 50 behemoth fangs. And 50 lizard leather. You understand?",
-				"Help me yes or no?"
-			}, npc, creature)
+			npcHandler:say(
+				{
+					"Good! Me make shiny weapon. If you help me, I make one for you too. Like axe I wear. I need stuff. Listen. ...",
+					"Me need 100 iron ore. Then need crude iron. Then after that 50 behemoth fangs. And 50 lizard leather. You understand?",
+					"Help me yes or no?"
+				},
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 7)
 		elseif npcHandler:getTopic(playerId) == 7 then
 			npcHandler:say("Good. You get 100 iron ore first. Come back.", npc, creature)
@@ -186,7 +188,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:removeItem(5876, 50) then
 				npcHandler:say("Ah! All stuff there. I will start making axes now. Come later and ask me for axe.", npc, creature)
 				player:setStorageValue(Storage.OutfitQuest.BarbarianAddon, 16)
-				player:setStorageValue(Storage.OutfitQuest.BarbarianAddonWaitTimer, os.time() + 2 * 60 * 60) -- 2 hours
+				player:setStorageValue(Storage.OutfitQuest.BarbarianAddonWaitTimer, os.time() + 2 * 60 * 60)
 				npcHandler:setTopic(playerId, 0)
 			end
 		end

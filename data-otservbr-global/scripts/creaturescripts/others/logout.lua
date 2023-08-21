@@ -28,7 +28,7 @@ function playerLogout.onLogout(player)
 		player:setTraining(false)
 	end
 
-	player:setStorageValue(17101,0)
+	player:setStorageValue(17101, 0)
 	return true
 end
 playerLogout:register()

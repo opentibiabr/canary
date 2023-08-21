@@ -10,8 +10,7 @@ function onTargetCreature(creature, target)
 	local max = 300
 
 	local master = target:getMaster()
-	if target:isPlayer() and not master
-			or master and master:isPlayer() then
+	if target:isPlayer() and not master or master and master:isPlayer() then
 		return true
 	end
 

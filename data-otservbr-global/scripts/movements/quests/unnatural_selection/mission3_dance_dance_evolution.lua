@@ -1,13 +1,13 @@
 local config = {
-	[1] =  Position(32991, 31497, 1),
-	[2] =  Position(32990, 31498, 1),
-	[3] =  Position(32991, 31497, 1),
-	[4] =  Position(32992, 31498, 1),
-	[5] =  Position(32991, 31497, 1),
-	[6] =  Position(32991, 31498, 1),
-	[7] =  Position(32990, 31497, 1),
-	[8] =  Position(32991, 31496, 1),
-	[9] =  Position(32992, 31497, 1),
+	[1] = Position(32991, 31497, 1),
+	[2] = Position(32990, 31498, 1),
+	[3] = Position(32991, 31497, 1),
+	[4] = Position(32992, 31498, 1),
+	[5] = Position(32991, 31497, 1),
+	[6] = Position(32991, 31498, 1),
+	[7] = Position(32990, 31497, 1),
+	[8] = Position(32991, 31496, 1),
+	[9] = Position(32992, 31497, 1),
 	[10] = Position(32991, 31496, 1),
 	[11] = Position(32991, 31497, 1),
 	[12] = Position(32990, 31496, 1),
@@ -45,7 +45,7 @@ function mission3DanceDanceEvolution.onStepIn(creature, item, position, fromPosi
 	end
 
 	--Questlog, Unnatural Selection Quest "Mission 2: All Around the World"
-	player:setStorageValue(Storage.UnnaturalSelection.DanceStatus,  danceStatus + 1)
+	player:setStorageValue(Storage.UnnaturalSelection.DanceStatus, danceStatus + 1)
 
 	local nextpos = config[player:getStorageValue(Storage.UnnaturalSelection.DanceStatus)]
 	if nextpos then

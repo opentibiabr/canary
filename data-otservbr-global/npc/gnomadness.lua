@@ -19,16 +19,14 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = " I'll have to write that idea down."},
+	{ text = " I'll have to write that idea down." },
 	{ text = "So many ideas, so little time" },
-	{ text = "Muhahaha!" },
+	{ text = "Muhahaha!" }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -91,10 +89,16 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addGreetKeyword({'hi'}, {npcHandler = npcHandler, text = "Hello and welcome in the Gnomprona Gardens. If you want to change your {hazard} level, I 'm who you're looking for."})
-keywordHandler:addAliasKeyword({'hello'})
+keywordHandler:addGreetKeyword(
+	{ "hi" },
+	{
+		npcHandler = npcHandler,
+		text = "Hello and welcome in the Gnomprona Gardens. If you want to change your {hazard} level, I 'm who you're looking for."
+	}
+)
+keywordHandler:addAliasKeyword({ "hello" })
 
-npcHandler:setMessage(MESSAGE_GREET, 'Hello and welcome in the Gnomprona Gardens')
+npcHandler:setMessage(MESSAGE_GREET, "Hello and welcome in the Gnomprona Gardens")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

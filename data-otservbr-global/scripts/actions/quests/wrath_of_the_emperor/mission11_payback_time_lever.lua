@@ -1,23 +1,16 @@
 local config = {
 	firstboss = "snake god essence",
 	bossPosition = Position(33365, 31407, 10),
-
 	trap = "plaguethrower",
-	trapPositions = {
-		Position(33355, 31403, 10),
-		Position(33364, 31403, 10),
-		Position(33355, 31410, 10),
-		Position(33364, 31410, 10)
-	},
+	trapPositions = { Position(33355, 31403, 10), Position(33364, 31403, 10), Position(33355, 31410, 10), Position(33364, 31410, 10) },
 	startAreaPosition = Position(33357, 31404, 9),
 	arenaPosition = Position(33359, 31406, 10)
 }
 
 local wrathEmperorMiss11Payback = Action()
 function wrathEmperorMiss11Payback.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-
 	if Game.getStorageValue(Storage.WrathoftheEmperor.Mission11) == 1 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The arena is already in use.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The arena is already in use.")
 		return true
 	end
 

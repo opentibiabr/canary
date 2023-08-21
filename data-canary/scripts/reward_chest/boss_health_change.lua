@@ -25,8 +25,8 @@ function bossParticipation.onHealthChange(creature, attacker, primaryDamage, pri
 		-- Update player id
 		healerStats.playerId = attackerId
 		healerStats.healing = healerStats.healing + primaryDamage
-	elseif stats.bossId == attackerId then
 		-- Account for damage taken from the boss
+	elseif stats.bossId == attackerId then
 		stats.damageIn = stats.damageIn + primaryDamage
 	end
 	return primaryDamage, primaryType, secondaryDamage, secondaryType

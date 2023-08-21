@@ -23,21 +23,7 @@ end
 
 local function isEquipment(itemType)
 	local t = itemType:getType()
-	local equipmentTypes = {
-		ITEM_TYPE_ARMOR,
-		ITEM_TYPE_AMULET,
-		ITEM_TYPE_BOOTS,
-		ITEM_TYPE_HELMET,
-		ITEM_TYPE_LEGS,
-		ITEM_TYPE_RING,
-		ITEM_TYPE_SHIELD,
-		ITEM_TYPE_AXE,
-		ITEM_TYPE_CLUB,
-		ITEM_TYPE_DISTANCE,
-		ITEM_TYPE_SWORD,
-		ITEM_TYPE_WAND,
-		ITEM_TYPE_QUIVER,
-	}
+	local equipmentTypes = { ITEM_TYPE_ARMOR, ITEM_TYPE_AMULET, ITEM_TYPE_BOOTS, ITEM_TYPE_HELMET, ITEM_TYPE_LEGS, ITEM_TYPE_RING, ITEM_TYPE_SHIELD, ITEM_TYPE_AXE, ITEM_TYPE_CLUB, ITEM_TYPE_DISTANCE, ITEM_TYPE_SWORD, ITEM_TYPE_WAND, ITEM_TYPE_QUIVER }
 	return table.contains(equipmentTypes, t)
 end
 
@@ -46,17 +32,20 @@ function MonsterType.getBossReward(self, lootFactor, topScore, equipmentOnly, lo
 		return lootTable or {}
 	end
 
-	return self:generateLootRoll({
-		factor = lootFactor,
-		gut = false,
-		filter = function(itemType, unique)
-			if unique and not topScore then
-				return false
+	return self:generateLootRoll(
+		{
+			factor = lootFactor,
+			gut = false,
+			filter = function(itemType, unique)
+				if unique and not topScore then
+					return false
+				end
+				if equipmentOnly then
+					return not unique and isEquipment(itemType)
+				end
+				return true
 			end
-			if equipmentOnly then
-				return not unique and isEquipment(itemType)
-			end
-			return true
-		end
-	}, lootTable)
+		},
+		lootTable
+	)
 end

@@ -1,5 +1,4 @@
 local crystalDuration = 5 * 60 -- 5 minutes
-
 local crystals = {
 	-- Warzone IV
 	[57350] = Storage.DangerousDepths.Crystals.WarzoneVI.MediumCrystal1,
@@ -8,7 +7,6 @@ local crystals = {
 	[57353] = Storage.DangerousDepths.Crystals.WarzoneVI.MediumCrystal2,
 	[57354] = Storage.DangerousDepths.Crystals.WarzoneVI.SmallCrystal1,
 	[57355] = Storage.DangerousDepths.Crystals.WarzoneVI.SmallCrystal2,
-
 	-- Warzone V
 	[57356] = Storage.DangerousDepths.Crystals.WarzoneV.BigCrystal1,
 	[57357] = Storage.DangerousDepths.Crystals.WarzoneIV.MediumCrystal1,
@@ -16,21 +14,20 @@ local crystals = {
 	[57359] = Storage.DangerousDepths.Crystals.WarzoneIV.MediumCrystal2,
 	[57360] = Storage.DangerousDepths.Crystals.WarzoneV.SmallCrystal1,
 	[57361] = Storage.DangerousDepths.Crystals.WarzoneV.SmallCrystal2,
-
 	-- Warzone IV
 	[57362] = Storage.DangerousDepths.Crystals.WarzoneIV.BigCrystal1,
 	[57363] = Storage.DangerousDepths.Crystals.WarzoneIV.MediumCrystal1,
 	[57364] = Storage.DangerousDepths.Crystals.WarzoneIV.BigCrystal2,
 	[57365] = Storage.DangerousDepths.Crystals.WarzoneIV.MediumCrystal2,
 	[57366] = Storage.DangerousDepths.Crystals.WarzoneIV.SmallCrystal1,
-	[57367] = Storage.DangerousDepths.Crystals.WarzoneIV.SmallCrystal2,
+	[57367] = Storage.DangerousDepths.Crystals.WarzoneIV.SmallCrystal2
 }
 
 local crystalsChance = {
 	[27503] = 1, -- Large Crystal
 	[27505] = 5, -- Medium Crystal
 	[14831] = 5, -- Medium Crystal
-	[28705] = 7, -- Small Crystal
+	[28705] = 7 -- Small Crystal
 }
 
 local function createCrystal(crystalId, player)

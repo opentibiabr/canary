@@ -19,16 +19,14 @@ npcConfig.outfit = {
 	lookAddons = 2
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = 'I wish someone could spare a minute and help me...' },
-	{ text = 'This is too hard for an old woman like me.' },
-	{ text = 'Hello, young adventurer, you look strong enough to help me!' }
+	{ text = "I wish someone could spare a minute and help me..." },
+	{ text = "This is too hard for an old woman like me." },
+	{ text = "Hello, young adventurer, you look strong enough to help me!" }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -57,7 +55,6 @@ end
 npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
-
 
 local storeTalkCid = {}
 local function greetCallback(npc, creature)
@@ -102,7 +99,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if table.contains({"yes", "quest", "ok"}, message) then
+	if table.contains({ "yes", "quest", "ok" }, message) then
 		if storeTalkCid[playerId] == 0 then
 			npcHandler:say("By the way, 'quest' is a keyword that many NPCs react to, especially those which have tasks for you. So darling, about that {quest}... are you listening?", npc, creature)
 			storeTalkCid[playerId] = 1
@@ -132,23 +129,31 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.ZirellaNpcGreetStorage, 5)
 			storeTalkCid[playerId] = 6
 		elseif storeTalkCid[playerId] == 6 then
-			npcHandler:say({
-				"Thank you darling! My cart is right beside me. It's a little complicated: I need some firewood, but it's very difficult for my slightly advanced age. ...",
-				"Please go into the the forest southeast of here. You will find fine old rotten brown trees. Please RIGHT-CLICK in the lower right corner of that tree and choose 'USE'. That way, a branch should appear on the map. ...",
-				"Don't put it in your inventory like before, but instead DRAG it over the map by LEFT-CLICKING the loose branch, HOLDING the LEFT MOUSE BUTTON and moving it over the map. ...",
-				"When you are close to my cart, USE the branch WITH the cart: RIGHT-CLICK the branch on the floor and select 'USE WITH', Then LEFT-CLICK on the cart. Don't worry, you will see what I mean on the way. Thanks and {bye} for now!"
-			}, npc, creature)
+			npcHandler:say(
+				{
+					"Thank you darling! My cart is right beside me. It's a little complicated: I need some firewood, but it's very difficult for my slightly advanced age. ...",
+					"Please go into the the forest southeast of here. You will find fine old rotten brown trees. Please RIGHT-CLICK in the lower right corner of that tree and choose 'USE'. That way, a branch should appear on the map. ...",
+					"Don't put it in your inventory like before, but instead DRAG it over the map by LEFT-CLICKING the loose branch, HOLDING the LEFT MOUSE BUTTON and moving it over the map. ...",
+					"When you are close to my cart, USE the branch WITH the cart: RIGHT-CLICK the branch on the floor and select 'USE WITH', Then LEFT-CLICK on the cart. Don't worry, you will see what I mean on the way. Thanks and {bye} for now!"
+				},
+				npc,
+				creature
+			)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.ZirellaQuestLog, 6)
 			player:setStorageValue(Storage.RookgaardTutorialIsland.ZirellaNpcGreetStorage, 6)
 			Position(32064, 32273, 7):sendMagicEffect(CONST_ME_TUTORIALARROW)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		elseif storeTalkCid[playerId] == 7 then
-			npcHandler:say({
-				"Well, you know that old women like me like to talk a lot. If you see three dots at the end of a sentence, I have still something to say and you should not interrupt, like now ...",
-				"Patience is a virtue, young adventurer! So, the quest was to go into the forest south of here and to find a dead tree. Wait, let me continue! ...",
-				"'Use' a tree to break a dry branch from it. Afterwards, drag and drop the branch back to my cart and select 'Use with', then left-click on my cart. Thanks again for offering your help!"
-			}, npc, creature)
+			npcHandler:say(
+				{
+					"Well, you know that old women like me like to talk a lot. If you see three dots at the end of a sentence, I have still something to say and you should not interrupt, like now ...",
+					"Patience is a virtue, young adventurer! So, the quest was to go into the forest south of here and to find a dead tree. Wait, let me continue! ...",
+					"'Use' a tree to break a dry branch from it. Afterwards, drag and drop the branch back to my cart and select 'Use with', then left-click on my cart. Thanks again for offering your help!"
+				},
+				npc,
+				creature
+			)
 			storeTalkCid[playerId] = nil
 		elseif storeTalkCid[playerId] == 8 then
 			npcHandler:say("Oh, you deserve it. You really have earned some experience! Also, you may enter my little house now and take what's in that chest beside my bed. Good {bye} for now!", npc, creature)

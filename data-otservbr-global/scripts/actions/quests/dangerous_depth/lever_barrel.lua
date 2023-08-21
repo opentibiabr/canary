@@ -5,20 +5,40 @@ local transformid = {
 
 local config = {
 	first = {
-	[1] = {fromPosition = Position(33877, 32060, 14), toPosition = Position(33888, 32068, 14), stgRoom = Storage.DangerousDepths.Scouts.FirstBarrel},
+		[1] = {
+			fromPosition = Position(33877, 32060, 14),
+			toPosition = Position(33888, 32068, 14),
+			stgRoom = Storage.DangerousDepths.Scouts.FirstBarrel
+		}
 	},
 	second = {
-	[1] = {fromPosition = Position(33906, 32026, 14), toPosition = Position(33916, 32037, 14), stgRoom = Storage.DangerousDepths.Scouts.SecondBarrel},
+		[1] = {
+			fromPosition = Position(33906, 32026, 14),
+			toPosition = Position(33916, 32037, 14),
+			stgRoom = Storage.DangerousDepths.Scouts.SecondBarrel
+		}
 	},
 	third = {
-	[1] = {fromPosition = Position(33865, 32009, 14), toPosition = Position(33874, 32020, 14), stgRoom = Storage.DangerousDepths.Scouts.ThirdBarrel},
+		[1] = {
+			fromPosition = Position(33865, 32009, 14),
+			toPosition = Position(33874, 32020, 14),
+			stgRoom = Storage.DangerousDepths.Scouts.ThirdBarrel
+		}
 	},
 	fourth = {
-	[1] = {fromPosition = Position(33837, 31984, 14), toPosition = Position(33852, 31991, 14), stgRoom = Storage.DangerousDepths.Scouts.FourthBarrel},
+		[1] = {
+			fromPosition = Position(33837, 31984, 14),
+			toPosition = Position(33852, 31991, 14),
+			stgRoom = Storage.DangerousDepths.Scouts.FourthBarrel
+		}
 	},
 	fifth = {
-	[1] = {fromPosition = Position(33923, 31982, 14), toPosition = Position(33942, 31998, 14), stgRoom = Storage.DangerousDepths.Scouts.FifthBarrel},
-	},
+		[1] = {
+			fromPosition = Position(33923, 31982, 14),
+			toPosition = Position(33942, 31998, 14),
+			stgRoom = Storage.DangerousDepths.Scouts.FifthBarrel
+		}
+	}
 }
 
 local function checarPos(item)
@@ -29,8 +49,8 @@ local function checarPos(item)
 			local player = Player(stgbarrel)
 			if player then
 				if player:getStorageValue(stgRoom) < 1 then
-				player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.DangerousDepths.Scouts.BarrelCount) + 1)
-				player:setStorageValue(stgRoom, 1)
+					player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.DangerousDepths.Scouts.BarrelCount) + 1)
+					player:setStorageValue(stgRoom, 1)
 				end
 			end
 		end
@@ -42,8 +62,8 @@ local function checarPos(item)
 			local player = Player(stgbarrel)
 			if player then
 				if player:getStorageValue(stgRoom) < 1 then
-				player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.DangerousDepths.Scouts.BarrelCount) + 1)
-				player:setStorageValue(stgRoom, 1)
+					player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.DangerousDepths.Scouts.BarrelCount) + 1)
+					player:setStorageValue(stgRoom, 1)
 				end
 			end
 		end
@@ -55,8 +75,8 @@ local function checarPos(item)
 			local player = Player(stgbarrel)
 			if player then
 				if player:getStorageValue(stgRoom) < 1 then
-				player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.DangerousDepths.Scouts.BarrelCount) + 1)
-				player:setStorageValue(stgRoom, 1)
+					player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.DangerousDepths.Scouts.BarrelCount) + 1)
+					player:setStorageValue(stgRoom, 1)
 				end
 			end
 		end
@@ -68,8 +88,8 @@ local function checarPos(item)
 			local player = Player(stgbarrel)
 			if player then
 				if player:getStorageValue(stgRoom) < 1 then
-				player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.DangerousDepths.Scouts.BarrelCount) + 1)
-				player:setStorageValue(stgRoom, 1)
+					player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.DangerousDepths.Scouts.BarrelCount) + 1)
+					player:setStorageValue(stgRoom, 1)
 				end
 			end
 		end
@@ -81,8 +101,8 @@ local function checarPos(item)
 			local player = Player(stgbarrel)
 			if player then
 				if player:getStorageValue(stgRoom) < 1 then
-				player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.DangerousDepths.Scouts.BarrelCount) + 1)
-				player:setStorageValue(stgRoom, 1)
+					player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelCount, player:getStorageValue(Storage.DangerousDepths.Scouts.BarrelCount) + 1)
+					player:setStorageValue(stgRoom, 1)
 				end
 			end
 		end
@@ -128,19 +148,24 @@ function dangerousDepthLever.onUse(player, item)
 			end
 			barrel:setCustomAttribute(Storage.DangerousDepths.Scouts.Barrel, player:getId())
 
-			addEvent(function(pos, pid)
-				local tile = Tile(pos)
-				if tile then
-					local barrel = tile:getItemById(27492)
-					if barrel then
-						explode(barrel)
+			addEvent(
+				function(pos, pid)
+					local tile = Tile(pos)
+					if tile then
+						local barrel = tile:getItemById(27492)
+						if barrel then
+							explode(barrel)
+						end
 					end
-				end
-				local player = Player(pid)
-				if player then
-					player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelTimer, 0)
-				end
-			end, 2 * 60 * 1000, posBarrel, player:getId())
+					local player = Player(pid)
+					if player then
+						player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelTimer, 0)
+					end
+				end,
+				2 * 60 * 1000,
+				posBarrel,
+				player:getId()
+			)
 
 			--Time is set to 0 when barrel explodes
 			player:setStorageValue(Storage.DangerousDepths.Scouts.BarrelTimer, os.time() + 2 * 60)

@@ -2,18 +2,9 @@ local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_FIREDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_EXPLOSIONHIT)
 
-combat:setArea(createCombatArea({
-{1},
-{1},
-{1},
-{1},
-{1},
-{3},
-}))
+combat:setArea(createCombatArea({ { 1 }, { 1 }, { 1 }, { 1 }, { 1 }, { 3 } }))
 
-local monsters = {
-	"the count of the core",
-}
+local monsters = { "the count of the core" }
 
 function onTargetTile(cid, pos)
 	local tile = Tile(pos)

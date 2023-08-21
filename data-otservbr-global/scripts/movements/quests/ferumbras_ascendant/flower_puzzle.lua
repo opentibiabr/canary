@@ -33,7 +33,8 @@ local positions = {
 		squarePos = Position(33467, 32721, 14),
 		flowerOne = Position(33460, 32685, 14),
 		flowerTwo = Position(33460, 32691, 14),
-		flowerThree = Position(33460, 32707, 14)}, -- done
+		flowerThree = Position(33460, 32707, 14)
+	}, -- done
 	[7] = {
 		squarePos = Position(33452, 32724, 14),
 		flowerOne = Position(33455, 32686, 14),
@@ -68,7 +69,8 @@ local positions = {
 		squarePos = Position(33467, 32724, 14),
 		flowerOne = Position(33460, 32686, 14),
 		flowerTwo = Position(33460, 32692, 14),
-		flowerThree = Position(33460, 32708, 14)}, -- done
+		flowerThree = Position(33460, 32708, 14)
+	}, -- done
 	[13] = {
 		squarePos = Position(33452, 32727, 14),
 		flowerOne = Position(33455, 32687, 14),
@@ -103,8 +105,8 @@ local positions = {
 		squarePos = Position(33467, 32727, 14),
 		flowerOne = Position(33460, 32687, 14),
 		flowerTwo = Position(33460, 32693, 14),
-		flowerThree = Position(33460, 32709, 14)}
-
+		flowerThree = Position(33460, 32709, 14)
+	}
 }
 
 local flowerPuzzle = MoveEvent()
@@ -115,15 +117,9 @@ function flowerPuzzle.onStepIn(creature, item, position, fromPosition)
 		if position == itempos.squarePos then
 			if item.itemid == 22538 then
 				item:transform(22539)
-				local flowerOne = Tile(itempos.flowerOne):getItemById(3676)
-				or Tile(itempos.flowerOne):getItemById(3678)
-				or Tile(itempos.flowerOne):getItemById(3677)
-				local flowerTwo = Tile(itempos.flowerTwo):getItemById(3676)
-				or Tile(itempos.flowerTwo):getItemById(3678)
-				or Tile(itempos.flowerTwo):getItemById(3677)
-				local flowerThree = Tile(itempos.flowerThree):getItemById(3676)
-				or Tile(itempos.flowerThree):getItemById(3678)
-				or Tile(itempos.flowerThree):getItemById(3677)
+				local flowerOne = Tile(itempos.flowerOne):getItemById(3676) or Tile(itempos.flowerOne):getItemById(3678) or Tile(itempos.flowerOne):getItemById(3677)
+				local flowerTwo = Tile(itempos.flowerTwo):getItemById(3676) or Tile(itempos.flowerTwo):getItemById(3678) or Tile(itempos.flowerTwo):getItemById(3677)
+				local flowerThree = Tile(itempos.flowerThree):getItemById(3676) or Tile(itempos.flowerThree):getItemById(3678) or Tile(itempos.flowerThree):getItemById(3677)
 				if not flowerOne then
 					flowerOne = Game.createItem(3677, 1, itempos.flowerOne)
 				end
@@ -138,15 +134,9 @@ function flowerPuzzle.onStepIn(creature, item, position, fromPosition)
 				flowerThree:transform(3677)
 			elseif item.itemid == 22539 then
 				item:transform(22540)
-				local flowerOne = Tile(itempos.flowerOne):getItemById(3676)
-				or Tile(itempos.flowerOne):getItemById(3678)
-				or Tile(itempos.flowerOne):getItemById(3677)
-				local flowerTwo = Tile(itempos.flowerTwo):getItemById(3676)
-				or Tile(itempos.flowerTwo):getItemById(3678)
-				or Tile(itempos.flowerTwo):getItemById(3677)
-				local flowerThree = Tile(itempos.flowerThree):getItemById(3676)
-				or Tile(itempos.flowerThree):getItemById(3678)
-				or Tile(itempos.flowerThree):getItemById(3677)
+				local flowerOne = Tile(itempos.flowerOne):getItemById(3676) or Tile(itempos.flowerOne):getItemById(3678) or Tile(itempos.flowerOne):getItemById(3677)
+				local flowerTwo = Tile(itempos.flowerTwo):getItemById(3676) or Tile(itempos.flowerTwo):getItemById(3678) or Tile(itempos.flowerTwo):getItemById(3677)
+				local flowerThree = Tile(itempos.flowerThree):getItemById(3676) or Tile(itempos.flowerThree):getItemById(3678) or Tile(itempos.flowerThree):getItemById(3677)
 				if not flowerOne then
 					flowerOne = Game.createItem(3678, 1, itempos.flowerOne)
 				end
@@ -161,15 +151,9 @@ function flowerPuzzle.onStepIn(creature, item, position, fromPosition)
 				flowerThree:transform(3678)
 			elseif item.itemid == 22540 then
 				item:transform(22541)
-				local flowerOne = Tile(itempos.flowerOne):getItemById(3676)
-				or Tile(itempos.flowerOne):getItemById(3678)
-				or Tile(itempos.flowerOne):getItemById(3677)
-				local flowerTwo = Tile(itempos.flowerTwo):getItemById(3676)
-				or Tile(itempos.flowerTwo):getItemById(3678)
-				or Tile(itempos.flowerTwo):getItemById(3677)
-				local flowerThree = Tile(itempos.flowerThree):getItemById(3676)
-				or Tile(itempos.flowerThree):getItemById(3678)
-				or Tile(itempos.flowerThree):getItemById(3677)
+				local flowerOne = Tile(itempos.flowerOne):getItemById(3676) or Tile(itempos.flowerOne):getItemById(3678) or Tile(itempos.flowerOne):getItemById(3677)
+				local flowerTwo = Tile(itempos.flowerTwo):getItemById(3676) or Tile(itempos.flowerTwo):getItemById(3678) or Tile(itempos.flowerTwo):getItemById(3677)
+				local flowerThree = Tile(itempos.flowerThree):getItemById(3676) or Tile(itempos.flowerThree):getItemById(3678) or Tile(itempos.flowerThree):getItemById(3677)
 				if not flowerOne then
 					flowerOne = Game.createItem(3676, 1, itempos.flowerOne)
 				end
@@ -184,15 +168,9 @@ function flowerPuzzle.onStepIn(creature, item, position, fromPosition)
 				flowerThree:transform(3676)
 			elseif item.itemid == 22541 then
 				item:transform(22538)
-				local flowerOne = Tile(itempos.flowerOne):getItemById(3676)
-				or Tile(itempos.flowerOne):getItemById(3678)
-				or Tile(itempos.flowerOne):getItemById(3677)
-				local flowerTwo = Tile(itempos.flowerTwo):getItemById(3676)
-				or Tile(itempos.flowerTwo):getItemById(3678)
-				or Tile(itempos.flowerTwo):getItemById(3677)
-				local flowerThree = Tile(itempos.flowerThree):getItemById(3676)
-				or Tile(itempos.flowerThree):getItemById(3678)
-				or Tile(itempos.flowerThree):getItemById(3677)
+				local flowerOne = Tile(itempos.flowerOne):getItemById(3676) or Tile(itempos.flowerOne):getItemById(3678) or Tile(itempos.flowerOne):getItemById(3677)
+				local flowerTwo = Tile(itempos.flowerTwo):getItemById(3676) or Tile(itempos.flowerTwo):getItemById(3678) or Tile(itempos.flowerTwo):getItemById(3677)
+				local flowerThree = Tile(itempos.flowerThree):getItemById(3676) or Tile(itempos.flowerThree):getItemById(3678) or Tile(itempos.flowerThree):getItemById(3677)
 				if flowerOne then
 					flowerOne:remove()
 				end

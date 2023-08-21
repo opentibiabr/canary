@@ -12,23 +12,38 @@ local periods = {
 
 local spawns = {
 	-- spawnByType day / night
-	[1] = { -- spawn in night
+	[1] = {
+		-- spawn in night
 		name = "Ghostly Wolf",
 		spawn = LIGHT_STATE_SUNSET,
 		despawn = LIGHT_STATE_SUNRISE,
-		position = { x = 33332, y = 32052, z = 7 }
+		position = {
+			x = 33332,
+			y = 32052,
+			z = 7
+		}
 	},
-	[2] = { -- spawn in night
+	[2] = {
+		-- spawn in night
 		name = "Talila",
 		spawn = LIGHT_STATE_SUNSET,
 		despawn = LIGHT_STATE_SUNRISE,
-		position = { x=33504 , y=32222 , z=7 }
+		position = {
+			x = 33504,
+			y = 32222,
+			z = 7
+		}
 	},
-	[3] = { -- spawn in day
+	[3] = {
+		-- spawn in day
 		name = "Valindara",
 		spawn = LIGHT_STATE_SUNRISE,
 		despawn = LIGHT_STATE_SUNSET,
-		position = { x=33504 , y=32222 , z=7 }
+		position = {
+			x = 33504,
+			y = 32222,
+			z = 7
+		}
 	}
 }
 
@@ -37,8 +52,7 @@ function spawnsByTime.onPeriodChange(period, light)
 	local time = getWorldTime()
 
 	if configManager.getBoolean(configKeys.ALL_CONSOLE_LOG) then
-		Spdlog.info(string.format("Starting %s Current light is %s and it's %s Tibian Time",
-			periods[period], light, getFormattedWorldTime(time)))
+		Spdlog.info(string.format("Starting %s Current light is %s and it's %s Tibian Time", periods[period], light, getFormattedWorldTime(time)))
 	end
 	for index, value in pairs(spawns) do
 		if value.spawn == period then
@@ -51,8 +65,8 @@ function spawnsByTime.onPeriodChange(period, light)
 				spawn:setMasterPos(value.position)
 				spawn:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			end
-		elseif value.despawn == period then
 			-- Removing
+		elseif value.despawn == period then
 			local target = Npc(value.name)
 			if target then
 				if configManager.getBoolean(configKeys.ALL_CONSOLE_LOG) then

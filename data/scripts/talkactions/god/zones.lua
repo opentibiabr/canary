@@ -91,7 +91,7 @@ function zones.onSay(player, words, param)
 		size = function(zone)
 			local positions = zone:getPositions()
 			player:sendTextMessage(MESSAGE_HEALED, "Zone " .. zone:getName() .. " size: " .. #positions .. ".")
-		end,
+		end
 	}
 
 	local command = commands[cmd]
@@ -100,7 +100,9 @@ function zones.onSay(player, words, param)
 		return false
 	end
 	local zone = zoneFromParam()
-	if not zone then return false end
+	if not zone then
+		return false
+	end
 	return command(zone)
 end
 

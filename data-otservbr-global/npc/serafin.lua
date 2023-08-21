@@ -19,9 +19,7 @@ npcConfig.outfit = {
 	lookAddons = 0
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -60,9 +58,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		else
 			npcHandler:say("It'd be better for you to leave now.", npc, creature)
-		end
+		end -- garlic cookie
 	elseif message == "yes" then
-		if npcHandler:getTopic(playerId) == 1 and player:removeItem(8199, 1) then -- garlic cookie
+		if npcHandler:getTopic(playerId) == 1 and player:removeItem(8199, 1) then
 			npcHandler:say("COUGH?! What kind of a mean trick is that? Get out of my shop!", npc, creature)
 			player:setStorageValue(BloodBrothers.Cookies.Serafin, 1)
 			npcHandler:setTopic(playerId, 0)
@@ -70,30 +68,87 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 end
 --Basic
-keywordHandler:addKeyword({"alori mort"}, StdModule.say, {npcHandler = npcHandler, text = "There's something about these words which makes me feel awkward. Or maybe it's you who causes that feeling. You better get lost."}, function(player) return player:getStorageValue(BloodBrothers.Mission03) == 1 end)
+keywordHandler:addKeyword(
+	{ "alori mort" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "There's something about these words which makes me feel awkward. Or maybe it's you who causes that feeling. You better get lost."
+	},
+	function(player)
+		return player:getStorageValue(BloodBrothers.Mission03) == 1
+	end
+)
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to my fruit and vegetable store, |PLAYERNAME|! Ask me for a {trade} if you'd like to see my wares.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-npcConfig.shop = {
-	{ itemName = "aubergine", clientId = 11460, buy = 8 },
-	{ itemName = "banana", clientId = 3587, buy = 5 },
-	{ itemName = "blueberry", clientId = 3588, buy = 1 },
-	{ itemName = "carrot", clientId = 3595, buy = 3 },
-	{ itemName = "cherry", clientId = 3590, buy = 1 },
-	{ itemName = "corncob", clientId = 3597, buy = 3 },
-	{ itemName = "grapes", clientId = 3592, buy = 3 },
-	{ itemName = "juice squeezer", clientId = 5865, buy = 100 },
-	{ itemName = "lemon", clientId = 8013, buy = 3 },
-	{ itemName = "mango", clientId = 5096, buy = 10 },
-	{ itemName = "melon", clientId = 3593, buy = 10 },
-	{ itemName = "orange", clientId = 3586, buy = 10 },
-	{ itemName = "potato", clientId = 8010, buy = 4 },
-	{ itemName = "pumpkin", clientId = 3594, buy = 10 },
-	{ itemName = "strawberry", clientId = 3591, buy = 2 },
-	{ itemName = "white mushroom", clientId = 3723, buy = 10 }
-}
+npcConfig.shop = { {
+	itemName = "aubergine",
+	clientId = 11460,
+	buy = 8
+}, {
+	itemName = "banana",
+	clientId = 3587,
+	buy = 5
+}, {
+	itemName = "blueberry",
+	clientId = 3588,
+	buy = 1
+}, {
+	itemName = "carrot",
+	clientId = 3595,
+	buy = 3
+}, {
+	itemName = "cherry",
+	clientId = 3590,
+	buy = 1
+}, {
+	itemName = "corncob",
+	clientId = 3597,
+	buy = 3
+}, {
+	itemName = "grapes",
+	clientId = 3592,
+	buy = 3
+}, {
+	itemName = "juice squeezer",
+	clientId = 5865,
+	buy = 100
+}, {
+	itemName = "lemon",
+	clientId = 8013,
+	buy = 3
+}, {
+	itemName = "mango",
+	clientId = 5096,
+	buy = 10
+}, {
+	itemName = "melon",
+	clientId = 3593,
+	buy = 10
+}, {
+	itemName = "orange",
+	clientId = 3586,
+	buy = 10
+}, {
+	itemName = "potato",
+	clientId = 8010,
+	buy = 4
+}, {
+	itemName = "pumpkin",
+	clientId = 3594,
+	buy = 10
+}, {
+	itemName = "strawberry",
+	clientId = 3591,
+	buy = 2
+}, {
+	itemName = "white mushroom",
+	clientId = 3723,
+	buy = 10
+} }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -103,7 +158,6 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
-npcType.onCheckItem = function(npc, player, clientId, subType)
-end
+npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 npcType:register(npcConfig)

@@ -1,41 +1,12 @@
-local setting = { -- [christmas bundle item id] = {{reward item id, count}, ...}
-		[6506] = { -- red bundle
-			{6569, 15}, -- candy
-			{3585, 5}, -- red apple
-			{3586, 10}, -- orange
-			{3598, 20}, -- cookie
-			{3599, 10}, -- candy cane
-			6500, -- gingerbreadman
-			6501, -- christmas wreath
-			6489, -- christmas branch
-			6503, -- red christmas garland
-			6387 -- christmas card
-		},
-		[6507] = { -- blue bundle
-			{6569, 15}, -- candy
-			{3585, 5}, -- red apple
-			{3586, 10}, -- orange
-			{3598, 20}, -- cookie
-			{3599, 10}, -- candy cane
-			6500, -- gingerbreadman
-			6501, -- christmas wreath
-			6489, -- christmas branch
-			6505, -- blue christmas garland
-			6387 -- christmas card
-		},
-		[6508] = { -- green bundle
-			{6569, 15}, -- candy
-			{3585, 5}, -- red apple
-			{3586, 10}, -- orange
-			{3598, 20}, -- cookie
-			{3599, 10}, -- candy cane
-			6500, -- gingerbreadman
-			6501, -- christmas wreath
-			6489, -- christmas branch
-			6502, -- christmas garland
-			6387 -- christmas card
-		}
-	}
+local setting = {
+	-- [christmas bundle item id] = {{reward item id, count}, ...}
+	[6506] = { -- red bundle
+	{ 6569, 15 }, { 3585, 5 }, { 3586, 10 }, { 3598, 20 }, { 3599, 10 }, 6500, 6501, 6489, 6503, 6387 }, -- candy -- red apple -- orange -- cookie -- candy cane -- gingerbreadman -- christmas wreath -- christmas branch -- red christmas garland -- christmas card
+	[6507] = { -- blue bundle
+	{ 6569, 15 }, { 3585, 5 }, { 3586, 10 }, { 3598, 20 }, { 3599, 10 }, 6500, 6501, 6489, 6505, 6387 }, -- candy -- red apple -- orange -- cookie -- candy cane -- gingerbreadman -- christmas wreath -- christmas branch -- blue christmas garland -- christmas card
+	[6508] = { -- green bundle
+	{ 6569, 15 }, { 3585, 5 }, { 3586, 10 }, { 3598, 20 }, { 3599, 10 }, 6500, 6501, 6489, 6502, 6387 } -- candy -- red apple -- orange -- cookie -- candy cane -- gingerbreadman -- christmas wreath -- christmas branch -- christmas garland -- christmas card
+}
 
 local christmasBundle = Action()
 
@@ -53,7 +24,7 @@ function christmasBundle.onUse(player, item, fromPosition, target, toPosition, i
 		if type(gift) == "table" then
 			gift, count = unpack(gift)
 		end
-		rewards[#rewards + 1] = {gift, count}
+		rewards[#rewards + 1] = { gift, count }
 		table.remove(targetItem, rand)
 	end
 

@@ -34,7 +34,7 @@ monster.speed = 65
 monster.manaCost = 0
 
 monster.faction = FACTION_DEEPLING
-monster.enemyFactions = {FACTION_DEATHLING, FACTION_PLAYER}
+monster.enemyFactions = { FACTION_DEATHLING, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
@@ -45,7 +45,7 @@ monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,
 	damage = 10,
-	random = 10,
+	random = 10
 }
 
 monster.flags = {
@@ -76,46 +76,96 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Qjell afar gou jey!", yell = false}
+	{
+		text = "Qjell afar gou jey!",
+		yell = false
+	}
 }
 
-monster.loot = {
-	{name = "gold coin", chance = 75000, maxCount = 25},
-	{id = 3578, chance = 12020, maxCount = 3}, -- fish
-	{name = "deepling scales", chance = 6950},
-	{name = "heavy trident", chance = 510},
-	{name = "fish fin", chance = 350},
-	{name = "eye of a deepling", chance = 283},
-	{name = "small emerald", chance = 110, maxCount = 1}
-}
+monster.loot = { {
+	name = "gold coin",
+	chance = 75000,
+	maxCount = 25
+}, {
+	id = 3578,
+	chance = 12020,
+	maxCount = 3
+}, { -- fish
+	name = "deepling scales",
+	chance = 6950
+}, {
+	name = "heavy trident",
+	chance = 510
+}, {
+	name = "fish fin",
+	chance = 350
+}, {
+	name = "eye of a deepling",
+	chance = 283
+}, {
+	name = "small emerald",
+	chance = 110,
+	maxCount = 1
+} }
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -80, effect = CONST_ME_DRAWBLOOD}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -80,
+	effect = CONST_ME_DRAWBLOOD
+} }
 
 monster.defenses = {
 	defense = 10,
 	armor = 10
 }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = -10},
-	{type = COMBAT_EARTHDAMAGE, percent = -10},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = -10
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = -10
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 0
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 0
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 0
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 0
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = true
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = true
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

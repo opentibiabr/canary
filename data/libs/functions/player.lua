@@ -103,12 +103,20 @@ function Player.getCookiesDelivered(self)
 		return true
 	end
 
-	local storage, amount = {
-		Storage.WhatAFoolish.CookieDelivery.SimonTheBeggar, Storage.WhatAFoolish.CookieDelivery.Markwin, Storage.WhatAFoolish.CookieDelivery.Ariella,
-		Storage.WhatAFoolish.CookieDelivery.Hairycles, Storage.WhatAFoolish.CookieDelivery.Djinn, Storage.WhatAFoolish.CookieDelivery.AvarTar,
-		Storage.WhatAFoolish.CookieDelivery.OrcKing, Storage.WhatAFoolish.CookieDelivery.Lorbas, Storage.WhatAFoolish.CookieDelivery.Wyda,
-		Storage.WhatAFoolish.CookieDelivery.Hjaern
-	}, 0
+	local storage, amount =
+		{
+			Storage.WhatAFoolish.CookieDelivery.SimonTheBeggar,
+			Storage.WhatAFoolish.CookieDelivery.Markwin,
+			Storage.WhatAFoolish.CookieDelivery.Ariella,
+			Storage.WhatAFoolish.CookieDelivery.Hairycles,
+			Storage.WhatAFoolish.CookieDelivery.Djinn,
+			Storage.WhatAFoolish.CookieDelivery.AvarTar,
+			Storage.WhatAFoolish.CookieDelivery.OrcKing,
+			Storage.WhatAFoolish.CookieDelivery.Lorbas,
+			Storage.WhatAFoolish.CookieDelivery.Wyda,
+			Storage.WhatAFoolish.CookieDelivery.Hjaern
+		},
+		0
 	for i = 1, #storage do
 		if self:getStorageValue(storage[i]) == 1 then
 			amount = amount + 1
@@ -132,31 +140,31 @@ function Player.checkGnomeRank(self)
 		if questProgress <= 25 then
 			self:setStorageValue(Storage.BigfootBurden.QuestLine, 26)
 			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			self:addAchievement('Gnome Little Helper')
+			self:addAchievement("Gnome Little Helper")
 		end
 	elseif points >= 120 and points < 480 then
 		if questProgress <= 26 then
 			self:setStorageValue(Storage.BigfootBurden.QuestLine, 27)
 			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			self:addAchievement('Gnome Little Helper')
-			self:addAchievement('Gnome Friend')
+			self:addAchievement("Gnome Little Helper")
+			self:addAchievement("Gnome Friend")
 		end
 	elseif points >= 480 and points < 1440 then
 		if questProgress <= 27 then
 			self:setStorageValue(Storage.BigfootBurden.QuestLine, 28)
 			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			self:addAchievement('Gnome Little Helper')
-			self:addAchievement('Gnome Friend')
-			self:addAchievement('Gnomelike')
+			self:addAchievement("Gnome Little Helper")
+			self:addAchievement("Gnome Friend")
+			self:addAchievement("Gnomelike")
 		end
 	elseif points >= 1440 then
 		if questProgress <= 29 then
 			self:setStorageValue(Storage.BigfootBurden.QuestLine, 30)
 			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			self:addAchievement('Gnome Little Helper')
-			self:addAchievement('Gnome Friend')
-			self:addAchievement('Gnomelike')
-			self:addAchievement('Honorary Gnome')
+			self:addAchievement("Gnome Little Helper")
+			self:addAchievement("Gnome Friend")
+			self:addAchievement("Gnomelike")
+			self:addAchievement("Honorary Gnome")
 		end
 	end
 	return true
@@ -197,7 +205,7 @@ end
 
 -- player:removeMoneyBank(money)
 function Player:removeMoneyBank(amount)
-	if type(amount) == 'string' then
+	if type(amount) == "string" then
 		amount = tonumber(amount)
 	end
 
@@ -213,14 +221,15 @@ function Player:removeMoneyBank(amount)
 		return true
 
 		-- The player doens't have all the money with him
-	elseif amount <= (moneyCount + bankCount) then
 		-- Check if the player has some money
+		-- Removes player inventory money
+
+		-- Removes player bank money
+	elseif amount <= (moneyCount + bankCount) then
 		if moneyCount ~= 0 then
-			-- Removes player inventory money
 			self:removeMoney(moneyCount)
 			local remains = amount - moneyCount
 
-			-- Removes player bank money
 			Bank.debit(self, remains)
 
 			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d from inventory and %d gold from bank account. Your account balance is now %d gold."):format(moneyCount, amount - moneyCount, self:getBankBalance()))
@@ -240,11 +249,7 @@ end
 
 function Player.hasRookgaardShield(self)
 	-- Wooden Shield, Studded Shield, Brass Shield, Plate Shield, Copper Shield
-	return self:getItemCount(3412) > 0
-			or self:getItemCount(3426) > 0
-			or self:getItemCount(3411) > 0
-			or self:getItemCount(3410) > 0
-			or self:getItemCount(3430) > 0
+	return self:getItemCount(3412) > 0 or self:getItemCount(3426) > 0 or self:getItemCount(3411) > 0 or self:getItemCount(3410) > 0 or self:getItemCount(3430) > 0
 end
 
 function Player.isSorcerer(self)
@@ -264,8 +269,7 @@ function Player.isPaladin(self)
 end
 
 function Player.isMage(self)
-	return table.contains({ VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER, VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID },
-		self:getVocation():getId())
+	return table.contains({ VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER, VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID }, self:getVocation():getId())
 end
 
 local ACCOUNT_STORAGES = {}
@@ -296,7 +300,7 @@ function Player.getMarriageDescription(thing)
 		else
 			descr = descr .. " He is "
 		end
-		descr = descr .. "married to " .. getPlayerNameById(playerSpouse) .. '.'
+		descr = descr .. "married to " .. getPlayerNameById(playerSpouse) .. "."
 	end
 	return descr
 end
@@ -383,7 +387,7 @@ function Player:CreateFamiliarSpell(spellId)
 		self:setStorageValue(
 			FAMILIAR_TIMER[sendMessage].storage,
 			addEvent(
-			-- Calling function
+				-- Calling function
 				SendMessageFunction,
 				-- Time for execute event
 				(summonDuration * 60 - FAMILIAR_TIMER[sendMessage].countdown) * 1000,
@@ -401,7 +405,7 @@ function Player:CreateFamiliarSpell(spellId)
 		reduction = (reduction > summonDuration and summonDuration) or reduction
 		cooldown = cooldown - reduction
 	end
-	condition:setTicks((cooldown) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+	condition:setTicks(cooldown / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 	self:addCondition(condition)
 
 	return true
@@ -469,7 +473,6 @@ function Player.updateHazard(self)
 	end
 	return true
 end
-
 
 ---@param monster Monster
 ---@return {factor: number, msgSuffix: string}

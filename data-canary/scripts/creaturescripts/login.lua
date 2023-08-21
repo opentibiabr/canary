@@ -10,7 +10,7 @@ function login.onLogin(player)
 			player:sendTextMessage(MESSAGE_LOGIN, loginStr)
 		end
 
-		player:sendTextMessage(MESSAGE_LOGIN, string.format("Your last visit in ".. SERVER_NAME ..": %s.", os.date("%d. %b %Y %X", player:getLastLoginSaved())))
+		player:sendTextMessage(MESSAGE_LOGIN, string.format("Your last visit in " .. SERVER_NAME .. ": %s.", os.date("%d. %b %Y %X", player:getLastLoginSaved())))
 	end
 
 	-- Stamina
@@ -34,7 +34,6 @@ function login.onLogin(player)
 	player:registerEvent("PlayerDeath")
 	player:registerEvent("DropLoot")
 	player:registerEvent("BossParticipation")
-
 
 	if onExerciseTraining[player:getId()] then -- onLogin & onLogout
 		stopEvent(onExerciseTraining[player:getId()].event)

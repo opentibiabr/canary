@@ -10,13 +10,9 @@ npcConfig.maxHealth = npcConfig.health
 npcConfig.walkInterval = 0
 npcConfig.walkRadius = 2
 
-npcConfig.outfit = {
-	lookType = 114
-}
+npcConfig.outfit = { lookType = 114 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -75,8 +71,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Zzoftzzkinzz zzo full of fear.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif MsgContains(message, 'hurry') or MsgContains(message, 'job')  then
-		npcHandler:say('Me zzimple ferryman. I arrange {trip} to Zzao.', npc, creature)
+	elseif MsgContains(message, "hurry") or MsgContains(message, "job") then
+		npcHandler:say("Me zzimple ferryman. I arrange {trip} to Zzao.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end
 	return true

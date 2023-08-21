@@ -13,7 +13,7 @@ function inServiceYalaharGhost.onUse(player, item, fromPosition, target, toPosit
 	end
 
 	for i = 1, 2 do
-		Game.createMonster('Tormented Ghost', fromPosition)
+		Game.createMonster("Tormented Ghost", fromPosition)
 	end
 
 	local charmItem = Tile(Position(32776, 31062, 7)):getItemById(target.itemid)
@@ -23,7 +23,7 @@ function inServiceYalaharGhost.onUse(player, item, fromPosition, target, toPosit
 
 	toPosition:sendMagicEffect(CONST_ME_ENERGYHIT)
 	item:remove()
-	player:say('The ghost charm is charging.', TALKTYPE_MONSTER_SAY)
+	player:say("The ghost charm is charging.", TALKTYPE_MONSTER_SAY)
 
 	if target.itemid == 8859 then
 		player:setStorageValue(Storage.InServiceofYalahar.Questline, 37)

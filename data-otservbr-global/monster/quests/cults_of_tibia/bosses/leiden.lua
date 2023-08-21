@@ -29,7 +29,7 @@ monster.strategiesTarget = {
 	nearest = 70,
 	health = 10,
 	damage = 10,
-	random = 10,
+	random = 10
 }
 
 monster.flags = {
@@ -52,9 +52,7 @@ monster.flags = {
 	canWalkOnPoison = false
 }
 
-monster.events = {
-	"LeidenHeal"
-}
+monster.events = { "LeidenHeal" }
 
 monster.light = {
 	level = 0,
@@ -63,61 +61,119 @@ monster.light = {
 
 monster.summon = {
 	maxSummons = 2,
-	summons = {
-		{name = "Barkless Fanatic", chance = 20, interval = 2000, count = 1},
-		{name = "Barkless Fanatic", chance = 30, interval = 2000, count = 1}
-	}
+	summons = { {
+		name = "Barkless Fanatic",
+		chance = 20,
+		interval = 2000,
+		count = 1
+	}, {
+		name = "Barkless Fanatic",
+		chance = 30,
+		interval = 2000,
+		count = 1
+	} }
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Bring me the pain! Make me suffer!", yell = false}
+	{
+		text = "Bring me the pain! Make me suffer!",
+		yell = false
+	}
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
-monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400}
-}
+monster.attacks = { {
+	name = "melee",
+	interval = 2000,
+	chance = 100,
+	minDamage = 0,
+	maxDamage = -400
+} }
 
 monster.defenses = {
 	defense = 50,
 	armor = 35
 }
 
-monster.reflects = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 100},
-	{type = COMBAT_ENERGYDAMAGE, percent = 100},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 100},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 100},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
-}
+monster.reflects = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 100
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 100
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 100
+} }
 
-monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 100},
-	{type = COMBAT_ENERGYDAMAGE, percent = 100},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 100},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 100},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
-}
+monster.elements = { {
+	type = COMBAT_PHYSICALDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_ENERGYDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_EARTHDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_FIREDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_LIFEDRAIN,
+	percent = 100
+}, {
+	type = COMBAT_MANADRAIN,
+	percent = 100
+}, {
+	type = COMBAT_DROWNDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_ICEDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_HOLYDAMAGE,
+	percent = 100
+}, {
+	type = COMBAT_DEATHDAMAGE,
+	percent = 100
+} }
 
-monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
-}
+monster.immunities = { {
+	type = "paralyze",
+	condition = false
+}, {
+	type = "outfit",
+	condition = false
+}, {
+	type = "invisible",
+	condition = false
+}, {
+	type = "bleed",
+	condition = false
+} }
 
 mType:register(monster)

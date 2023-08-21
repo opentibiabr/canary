@@ -18,9 +18,7 @@ npcConfig.outfit = {
 	lookFeet = 114
 }
 
-npcConfig.flags = {
-	floorchange = false
-}
+npcConfig.flags = { floorchange = false }
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -57,7 +55,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	if MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.HiddenCityOfBeregar.JusticeForAll) < 1 then
 			npcHandler:say("I don't see how you could help me. I'm in deep, deep trouble. I'm accused of having stolen a {ring} from Rerun, but I haven't.", npc, creature)
@@ -65,14 +62,22 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.HiddenCityOfBeregar.JusticeForAll) == 5 then
 			player:setStorageValue(Storage.HiddenCityOfBeregar.JusticeForAll, 6)
 			player:setStorageValue(Storage.HiddenCityOfBeregar.DoorNorthMine, 1)
-			npcHandler:say("WHAT?! I can't believe it. You saved my life... well, at least one week of it 'cause that would have been the time I had to spend in jail. If you want to, you can pass the door now and take a look at the northern mines. Have fun!", npc, creature)
+			npcHandler:say(
+				"WHAT?! I can't believe it. You saved my life... well, at least one week of it 'cause that would have been the time I had to spend in jail. If you want to, you can pass the door now and take a look at the northern mines. Have fun!",
+				npc,
+				creature
+			)
 		end
 	elseif MsgContains(message, "ring") then
 		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say({
-				"He said he still had it after work. On that evening, {Grombur}, {Rerun} and me opened a cask of beer in one of the mine tunnels. We had a fun evening there. ...",
-				"On the next day, the guards brought me to emperor {Rehal}, and Rerun was there, too. He said I had stolen his ring. I'd never steal, you have to believe me."
-			}, npc, creature)
+			npcHandler:say(
+				{
+					"He said he still had it after work. On that evening, {Grombur}, {Rerun} and me opened a cask of beer in one of the mine tunnels. We had a fun evening there. ...",
+					"On the next day, the guards brought me to emperor {Rehal}, and Rerun was there, too. He said I had stolen his ring. I'd never steal, you have to believe me."
+				},
+				npc,
+				creature
+			)
 			npcHandler:setTopic(playerId, 2)
 		end
 	elseif MsgContains(message, "grombur") then

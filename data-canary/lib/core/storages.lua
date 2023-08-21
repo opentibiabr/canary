@@ -23,24 +23,19 @@ Reserved player action storage key ranges (const.hpp)
 
 Storage = {
 	Quest = {
-		Key = {
-			ID1000 = 103
-		},
+		Key = { ID1000 = 103 },
 		ExampleQuest = {
 			Example = 9000,
 			Door = 9001
 		}
 	},
-
 	DelayLargeSeaShell = 30002,
 	Promotion = 30003,
 	Imbuement = 30004
 }
 
 GlobalStorage = {
-	ExampleQuest = {
-		Example = 60000
-	}
+	ExampleQuest = { Example = 60000 }
 }
 
 -- Values extraction function
@@ -63,9 +58,8 @@ table.sort(extraction) -- Sort the table
 -- Scroll through the extracted table for duplicates
 if #extraction > 1 then
 	for i = 1, #extraction - 1 do
-		if extraction[i] == extraction[i+1] then
-			Spdlog.warn(string.format("Duplicate storage value found: %d",
-				extraction[i]))
+		if extraction[i] == extraction[i + 1] then
+			Spdlog.warn(string.format("Duplicate storage value found: %d", extraction[i]))
 		end
 	end
 end

@@ -3,15 +3,13 @@ local teleportPosition = Position(33075, 31878, 12)
 local function transformTeleport(open)
 	local id = (open and 16172 or 1949)
 	local teleportItem = Tile(teleportPosition):getItemById(id)
-	if not teleportItem then
-		return
-	end
+	if not teleportItem then return end
 
 	teleportPosition:sendMagicEffect(CONST_ME_POFF)
 	if open then
-		teleportItem:transform(16173) -- can pass and summon versperoth
+		teleportItem:transform(16173) -- can pass and summon versperoth -- cannot summon versperoth
 	else
-		teleportItem:transform(16172) -- cannot summon versperoth
+		teleportItem:transform(16172)
 	end
 end
 
@@ -23,7 +21,7 @@ function versperothKill.onKill(creature, target)
 		return true
 	end
 
-	if targetMonster:getName():lower() ~= 'versperoth' then
+	if targetMonster:getName():lower() ~= "versperoth" then
 		return true
 	end
 

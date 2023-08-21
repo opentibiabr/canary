@@ -6,9 +6,7 @@ function spell.onCastSpell(creature, var)
 	if #summoncount < 4 then
 		for i = 1, maxsummons - #summoncount do
 			local mid = Game.createMonster("Disgusting Ooze", Position(math.random(33163, 33180), math.random(31497, 31506), 13), true, true)
-			if not mid then
-				return
-			end
+			if not mid then return end
 			mid:setMaster(creature)
 		end
 	end

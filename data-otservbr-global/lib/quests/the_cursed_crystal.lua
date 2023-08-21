@@ -14,4 +14,5 @@ TCC_PILLARPETRIFIED = Position(31942, 32936, 10) -- Pillar position.
 TCC_SKELETON_PAPER_POS = Position(31974, 32907, 8)
 TCC_SKELETON_BELL_POS = Position(32031, 32914, 8)
 TCC_MEDUSAMSG_ONEMAP = Position(32017, 32917, 10) -- Second teleport exit that the player will get teleported after water vortex.
-TCC_MEDUSAMSG_TWOMAP = Position(32017, 32918, 10) -- Second teleport exit that the player will get teleported after water vortex.
+TCC_MEDUSAMSG_TWOMAP = Position(32017, 32918, 10)
+ -- Second teleport exit that the player will get teleported after water vortex.

@@ -62,22 +62,22 @@ function killingInTheNameOfKill.onKill(player, target)
 						if tasks.GrizzlyAdams[taskId].raceName == "Apes" then
 							local apes = Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.KongraCount + a - 1
 							player:setStorageValue(apes, player:getStorageValue(apes) + 1)
-						elseif	tasks.GrizzlyAdams[taskId].raceName == "Quara Scouts" then
+						elseif tasks.GrizzlyAdams[taskId].raceName == "Quara Scouts" then
 							local scouts = Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraConstrictorScoutCount + a - 1
 							player:setStorageValue(scouts, player:getStorageValue(scouts) + 1)
-						elseif	tasks.GrizzlyAdams[taskId].raceName == "Underwater Quara" then
+						elseif tasks.GrizzlyAdams[taskId].raceName == "Underwater Quara" then
 							local underwater = Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.QuaraConstrictorCount + a - 1
 							player:setStorageValue(underwater, player:getStorageValue(underwater) + 1)
-						elseif	tasks.GrizzlyAdams[taskId].raceName == "Nightmares" then
+						elseif tasks.GrizzlyAdams[taskId].raceName == "Nightmares" then
 							local nightmares = Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NightmareCount + a - 1
 							player:setStorageValue(nightmares, player:getStorageValue(nightmares) + 1)
-						elseif	tasks.GrizzlyAdams[taskId].raceName == "High Class Lizards" then
+						elseif tasks.GrizzlyAdams[taskId].raceName == "High Class Lizards" then
 							local lizards = Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.LizardChosenCount + a - 1
 							player:setStorageValue(lizards, player:getStorageValue(lizards) + 1)
-						elseif	tasks.GrizzlyAdams[taskId].raceName == "Sea Serpents" then
+						elseif tasks.GrizzlyAdams[taskId].raceName == "Sea Serpents" then
 							local serpents = Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.SeaSerpentCount + a - 1
 							player:setStorageValue(serpents, player:getStorageValue(serpents) + 1)
-						elseif	tasks.GrizzlyAdams[taskId].raceName == "Drakens" then
+						elseif tasks.GrizzlyAdams[taskId].raceName == "Drakens" then
 							local drakens = Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.DrakenAbominationCount + a - 1
 							player:setStorageValue(drakens, player:getStorageValue(drakens) + 1)
 						end
@@ -96,24 +96,24 @@ function killingInTheNameOfKill.onKill(player, target)
 			end
 		end
 	end
--- Minotaurs
+	-- Minotaurs
 	killCheck(player, targetName, Storage.KillingInTheNameOf.BudrikMinos, 0, tasks.Budrik[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MinotaurCount)
--- Necromancers and Priestesses
+	-- Necromancers and Priestesses
 	killCheck(player, targetName, Storage.KillingInTheNameOf.LugriNecromancers, 0, tasks.Lugri[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NecromancerCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount)
 	killCheck(player, targetName, Storage.KillingInTheNameOf.LugriNecromancers, 3, tasks.Lugri[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NecromancerCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount)
--- Green Djinns or Efreets
+	-- Green Djinns or Efreets
 	killCheck(player, targetName, Storage.KillingInTheNameOf.GreenDjinnTask, 0, tasks.Gabel[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GreenDjinnCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GreenDjinnCount)
--- Blue Djinns or Marids
+	-- Blue Djinns or Marids
 	killCheck(player, targetName, Storage.KillingInTheNameOf.BlueDjinnTask, 0, tasks.Malor[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.BlueDjinnCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BlueDjinnCount)
--- Pirates
+	-- Pirates
 	killCheck(player, targetName, Storage.KillingInTheNameOf.PirateTask, 0, tasks.RaymondStriker[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PirateMarauderCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.PirateCount)
--- Trolls
+	-- Trolls
 	killCheck(player, targetName, Storage.KillingInTheNameOf.TrollTask, 0, tasks.DanielSteelsoul[1].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.TrollCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.TrollCount)
--- Goblins
+	-- Goblins
 	killCheck(player, targetName, Storage.KillingInTheNameOf.GoblinTask, 0, tasks.DanielSteelsoul[2].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.GoblinCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GoblinCount)
--- Rotworms
+	-- Rotworms
 	killCheck(player, targetName, Storage.KillingInTheNameOf.RotwormTask, 0, tasks.DanielSteelsoul[3].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.RotwormCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.RotwormCount)
--- Cyclops
+	-- Cyclops
 	killCheck(player, targetName, Storage.KillingInTheNameOf.CyclopsTask, 0, tasks.DanielSteelsoul[4].creatures, Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.CyclopsCount, Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.CyclopsCount)
 	return true
 end

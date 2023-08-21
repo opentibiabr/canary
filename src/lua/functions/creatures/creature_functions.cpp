@@ -21,8 +21,8 @@ int CreatureFunctions::luaCreatureCreate(lua_State* L) {
 	} else if (isString(L, 2)) {
 		creature = g_game().getCreatureByName(getString(L, 2));
 	} else if (isUserdata(L, 2)) {
-		LuaDataType type = getUserdataType(L, 2);
-		if (type != LuaData_Player && type != LuaData_Monster && type != LuaData_Npc) {
+		LuaData_t type = getUserdataType(L, 2);
+		if (type != LuaData_t::Player && type != LuaData_t::Monster && type != LuaData_t::Npc) {
 			lua_pushnil(L);
 			return 1;
 		}

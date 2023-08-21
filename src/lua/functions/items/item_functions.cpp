@@ -589,15 +589,15 @@ int ItemFunctions::luaItemMoveTo(lua_State* L) {
 
 	Cylinder* toCylinder;
 	if (isUserdata(L, 2)) {
-		const LuaDataType type = getUserdataType(L, 2);
+		const LuaData_t type = getUserdataType(L, 2);
 		switch (type) {
-			case LuaData_Container:
+			case LuaData_t::Container:
 				toCylinder = getUserdata<Container>(L, 2);
 				break;
-			case LuaData_Player:
+			case LuaData_t::Player:
 				toCylinder = getUserdata<Player>(L, 2);
 				break;
-			case LuaData_Tile:
+			case LuaData_t::Tile:
 				toCylinder = getUserdata<Tile>(L, 2);
 				break;
 			default:

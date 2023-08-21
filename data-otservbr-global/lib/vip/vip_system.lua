@@ -49,13 +49,13 @@ function Player.onAddVip(self, days)
 end
 
 function checkPremiumAndPrint(player, msgType)
-	if (player:getVipDays() == 0xFFFF) then
+	if player:getVipDays() == 0xFFFF then
 		player:sendTextMessage(msgType, 'You have infinite amount of VIP days left.')
 		return true
 	end
 
 	local playerVipTime = player:getVipTime()
-	if (playerVipTime < os.time()) then
+	if playerVipTime < os.time() then
 		local msg = 'You do not have VIP on your account.'
 		player:sendTextMessage(msgType, msg)
 		return true

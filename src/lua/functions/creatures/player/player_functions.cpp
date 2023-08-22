@@ -2361,7 +2361,7 @@ int PlayerFunctions::luaPlayerAddPremiumDays(lua_State* L) {
 		int32_t addDays = std::min<int32_t>(0xFFFE - player->premiumDays, days);
 		if (addDays > 0) {
 			player->setPremiumDays(player->premiumDays + addDays);
-			IOLoginData::addPremiumDays(player->getAccount(), addDays);
+			IOLoginData::addPremiumDays(player, addDays);
 		}
 	}
 	pushBoolean(L, true);
@@ -2381,7 +2381,7 @@ int PlayerFunctions::luaPlayerRemovePremiumDays(lua_State* L) {
 		int32_t removeDays = std::min<int32_t>(player->premiumDays, days);
 		if (removeDays > 0) {
 			player->setPremiumDays(player->premiumDays - removeDays);
-			IOLoginData::removePremiumDays(player->getAccount(), removeDays);
+			IOLoginData::removePremiumDays(player, removeDays);
 		}
 	}
 	pushBoolean(L, true);
@@ -3908,6 +3908,19 @@ int PlayerFunctions::luaPlayerGetVipDays(lua_State* L) {
 		return 1;
 	}
 
-	lua_pushnumber(L, player->getVipDays());
+	lua_pushnumber(L, player->getPremiumDays());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetVipTime(lua_State* L) {
+	// player:getVipTime()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushinteger(L, player->getPremiumLastDay());
 	return 1;
 }

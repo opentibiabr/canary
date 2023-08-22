@@ -45,11 +45,6 @@ function playerLogin.onLogin(player)
 	else
 		player:sendTextMessage(MESSAGE_STATUS, SERVER_MOTD)
 		player:sendTextMessage(MESSAGE_LOGIN, string.format("Your last visit in " .. SERVER_NAME .. ": %s.", os.date("%d. %b %Y %X", player:getLastLoginSaved())))
-		-- Vip system
-		if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and player:isVip()) then
-			local days = player:getVipDays()
-			player:sendTextMessage(MESSAGE_LOGIN, string.format('You have %s vip day%s left.', (days == 0xFFFF and 'infinite amount of' or days), (days == 1 and '' or 's')))
-		end
 	end
 
 	-- Reset bosstiary time

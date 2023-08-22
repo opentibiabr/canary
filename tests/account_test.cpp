@@ -30,7 +30,7 @@ TEST_CASE("Default Constructor", "[UnitTest]") {
 
 	SECTION("Default Premium Remaining Days") {
     uint32_t days;
-    normal.GetPremiumRemaningDays(&days);
+    normal.GetPremiumRemainingDays(&days);
     CHECK(days == 0);
   }
 
@@ -168,11 +168,11 @@ TEST_CASE("Get Password - Nullptr", "[UnitTest]") {
 TEST_CASE("Set/Get Premium Days Remaining", "[UnitTest]") {
 	account::Account account;
   error_t result;
-  result = account.SetPremiumRemaningDays(20);
+  result = account.SetPremiumRemainingDays(20);
   REQUIRE(result == account::ERROR_NO);
 
   uint32_t new_days;
-  result = account.GetPremiumRemaningDays(&new_days);
+  result = account.GetPremiumRemainingDays(&new_days);
   REQUIRE(result == account::ERROR_NO);
   REQUIRE(new_days == 20);
 }
@@ -180,14 +180,14 @@ TEST_CASE("Set/Get Premium Days Remaining", "[UnitTest]") {
 TEST_CASE("Get Premium Days Remaining - Nullptr", "[UnitTest]") {
 	account::Account account;
   error_t result;
-  result = account.GetPremiumRemaningDays(nullptr);
+  result = account.GetPremiumRemainingDays(nullptr);
   REQUIRE(result == account::ERROR_NULLPTR);
 }
 
 TEST_CASE("Set/Get Premium Last Day", "[UnitTest]") {
 	account::Account account;
   error_t result;
-  time_t last_day = time(nullptr);
+  time_t last_day = getTimeNow();
   result = account.SetPremiumLastDay(last_day);
   REQUIRE(result == account::ERROR_NO);
 
@@ -517,7 +517,7 @@ TEST_CASE("Load Account Using ID From Constructor", "[IntegrationTest]") {
   CHECK(password == "21298df8a3277357ee55b01df9530b535cf08ec1");
 
   uint32_t premium_remaining_days;
-  result = account.GetPremiumRemaningDays(&premium_remaining_days);
+  result = account.GetPremiumRemainingDays(&premium_remaining_days);
   CHECK(result == account::ERROR_NO);
   CHECK(premium_remaining_days == 0);
 
@@ -569,7 +569,7 @@ TEST_CASE("Load Account Using Email From Constructor", "[IntegrationTest]") {
   CHECK(password == "21298df8a3277357ee55b01df9530b535cf08ec1");
 
   uint32_t premium_remaining_days;
-  result = account.GetPremiumRemaningDays(&premium_remaining_days);
+  result = account.GetPremiumRemainingDays(&premium_remaining_days);
   CHECK(result == account::ERROR_NO);
   CHECK(premium_remaining_days == 0);
 
@@ -621,7 +621,7 @@ TEST_CASE("Load Account Using ID", "[IntegrationTest]") {
   CHECK(password == "21298df8a3277357ee55b01df9530b535cf08ec1");
 
   uint32_t premium_remaining_days;
-  result = account.GetPremiumRemaningDays(&premium_remaining_days);
+  result = account.GetPremiumRemainingDays(&premium_remaining_days);
   CHECK(result == account::ERROR_NO);
   CHECK(premium_remaining_days == 0);
 
@@ -673,7 +673,7 @@ TEST_CASE("Load Account Using Email", "[IntegrationTest]") {
   CHECK(password == "21298df8a3277357ee55b01df9530b535cf08ec1");
 
   uint32_t premium_remaining_days;
-  result = account.GetPremiumRemaningDays(&premium_remaining_days);
+  result = account.GetPremiumRemainingDays(&premium_remaining_days);
   CHECK(result == account::ERROR_NO);
   CHECK(premium_remaining_days == 0);
 
@@ -729,7 +729,7 @@ TEST_CASE("Save Account", "[IntegrationTest]") {
   CHECK(password == "21298df8a3277357ee55b01df9530b535cf08ec1");
 
   uint32_t premium_remaining_days;
-  result = account.GetPremiumRemaningDays(&premium_remaining_days);
+  result = account.GetPremiumRemainingDays(&premium_remaining_days);
   CHECK(result == account::ERROR_NO);
   CHECK(premium_remaining_days == 0);
 
@@ -754,10 +754,10 @@ TEST_CASE("Save Account", "[IntegrationTest]") {
   CHECK(result == account::ERROR_NO);
 
   uint32_t new_premium_remaining_days = 10;
-  result = account.SetPremiumRemaningDays(new_premium_remaining_days);
+  result = account.SetPremiumRemainingDays(new_premium_remaining_days);
   CHECK(result == account::ERROR_NO);
 
-  time_t new_premium_last_day = time(nullptr);
+  time_t new_premium_last_day = getTimeNow();
   result = account.SetPremiumLastDay(new_premium_last_day);
   CHECK(result == account::ERROR_NO);
 
@@ -787,7 +787,7 @@ TEST_CASE("Save Account", "[IntegrationTest]") {
   CHECK(result == account::ERROR_NO);
   CHECK(password == new_password);
 
-  result = changed_account.GetPremiumRemaningDays(&premium_remaining_days);
+  result = changed_account.GetPremiumRemainingDays(&premium_remaining_days);
   CHECK(result == account::ERROR_NO);
   CHECK(premium_remaining_days == new_premium_remaining_days);
 

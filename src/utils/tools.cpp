@@ -1635,3 +1635,32 @@ std::vector<std::string> split(const std::string &str) {
 	}
 	return tokens;
 }
+
+std::string getFormattedTimeRemaining(uint32_t time) {
+	time_t timeRemaining = time - getTimeNow();
+
+	int days = static_cast<int>(std::floor(timeRemaining / 86400));
+
+	std::stringstream output;
+	if (days > 1) {
+		output << days << " days";
+		return output.str();
+	}
+
+	int hours = static_cast<int>(std::floor((timeRemaining % 86400) / 3600));
+	int minutes = static_cast<int>(std::floor((timeRemaining % 3600) / 60));
+	int seconds = static_cast<int>(timeRemaining % 60);
+
+	if (hours == 0 && minutes == 0 && seconds > 0) {
+		output << " less than 1 minute";
+	} else {
+		if (hours > 0) {
+			output << hours << " hour" << (hours != 1 ? "s" : "");
+		}
+		if (minutes > 0) {
+			output << (hours > 0 ? " and " : "") << minutes << " minute" << (minutes != 1 ? "s" : "");
+		}
+	}
+
+	return output.str();
+}

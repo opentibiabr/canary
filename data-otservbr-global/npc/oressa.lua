@@ -149,6 +149,13 @@ local topicTable = {
 	[8] = VOCATION.ID.SORCERER
 }
 
+local vocationRoomPositions = {
+	[5] = { x = 32068, y = 31884, z = 6 },
+	[6] = { x = 32059, y = 31884, z = 6 },
+	[7] = { x = 32073, y = 31884, z = 6 },
+	[8] = { x = 32054, y = 31884, z = 6 }
+}
+
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -369,6 +376,11 @@ local function creatureSayCallback(npc, creature, type, message)
 						-- Change to new vocation, convert magic level and skills and set proper stats
 						player:changeVocation(value)
 						player:setStorageValue(Storage.Dawnport.DoorVocation, value)
+						if configManager.getBoolean(configKeys.TELEPORT_PLAYER_TO_VOCATION_ROOM) then
+							local position = vocationRoomPositions[index]
+							player:teleportTo(Position(position.x, position.y, position.z))
+							player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+						end
 					else
 						npcHandler:setTopic(playerId, 0)
 						return true

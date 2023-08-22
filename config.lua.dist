@@ -185,6 +185,7 @@ onlyPremiumAccount = false
 -- NOTE: toggleTravelsFree will make all travels from boat free
 -- NOTE: buyAolCommandFee will add fee when player buy aol by command (!aol), active changing value more than 0 (fee value. ex: 1 = 1gp  aol will be 50001)
 -- NOTE: buyBlessCommandFee will add fee when player buy bless by command (!bless), active changing value between 1 and 100 (fee percent. ex: 3 = 3%, 30 = 30%)
+-- NOTE: teleportPlayerToVocationRoom will enable oressa to teleport player to his/her room vocation
 weatherRain = false
 thunderEffect = false
 allConsoleLog = false
@@ -198,6 +199,7 @@ toggleServerIsRetroPVP = false
 toggleTravelsFree = false
 buyAolCommandFee = 0
 buyBlessCommandFee = 0
+teleportPlayerToVocationRoom = true
 
 -- Teleport summon
 -- Set to true will never remove the summon

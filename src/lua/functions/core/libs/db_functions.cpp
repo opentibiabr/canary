@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "database/databasemanager.h"
-#include "database/databasetasks.h"
+#include "database/databasemanager.hpp"
+#include "database/databasetasks.hpp"
 #include "lua/functions/core/libs/db_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 

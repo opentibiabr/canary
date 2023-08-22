@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "game/movement/position.h"
-#include "utils/tools.h"
+#include "game/movement/position.hpp"
+#include "utils/tools.hpp"
 
 Direction Position::getRandomDirection() {
 	static std::vector<Direction> dirList {

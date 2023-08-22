@@ -8,9 +8,9 @@
  */
 
 #include "pch.hpp"
-#include "io/iomap.h"
-#include "game/movement/teleport.h"
-#include "game/game.h"
+#include "io/iomap.hpp"
+#include "game/movement/teleport.hpp"
+#include "game/game.hpp"
 #include "io/filestream.hpp"
 
 /*

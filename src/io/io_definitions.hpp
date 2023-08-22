@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_IO_IO_DEFINITIONS_HPP_
-#define SRC_IO_IO_DEFINITIONS_HPP_
+#pragma once
 
 // Enums
 enum FILELOADER_ERRORS {
@@ -77,17 +76,15 @@ enum OTBM_TileFlag_t : uint32_t {
 
 // Structs
 struct MarketStatistics {
-		MarketStatistics() {
-			numTransactions = 0;
-			highestPrice = 0;
-			totalPrice = 0;
-			lowestPrice = 0;
-		}
+	MarketStatistics() {
+		numTransactions = 0;
+		highestPrice = 0;
+		totalPrice = 0;
+		lowestPrice = 0;
+	}
 
-		uint32_t numTransactions;
-		uint64_t highestPrice;
-		uint64_t totalPrice;
-		uint64_t lowestPrice;
+	uint32_t numTransactions;
+	uint64_t highestPrice;
+	uint64_t totalPrice;
+	uint64_t lowestPrice;
 };
-
-#endif // SRC_IO_IO_DEFINITIONS_HPP_

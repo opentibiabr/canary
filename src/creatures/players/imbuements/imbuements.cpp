@@ -8,9 +8,9 @@
  */
 
 #include "pch.hpp"
-#include "creatures/players/imbuements/imbuements.h"
-#include "lua/creature/events.h"
-#include "utils/pugicast.h"
+#include "creatures/players/imbuements/imbuements.hpp"
+#include "lua/creature/events.hpp"
+#include "utils/pugicast.hpp"
 
 Imbuement* Imbuements::getImbuement(uint16_t id) {
 	if (id == 0) {

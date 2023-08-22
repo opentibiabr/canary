@@ -9,12 +9,12 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
+#include "game/game.hpp"
 #include "io/io_bosstiary.hpp"
-#include "creatures/combat/spells.h"
-#include "creatures/monsters/monsters.h"
+#include "creatures/combat/spells.hpp"
+#include "creatures/monsters/monsters.hpp"
 #include "lua/functions/creatures/monster/monster_type_functions.hpp"
-#include "lua/scripts/scripts.h"
+#include "lua/scripts/scripts.hpp"
 
 void MonsterTypeFunctions::createMonsterTypeLootLuaTable(lua_State* L, const std::vector<LootBlock> &lootList) {
 	lua_createtable(L, lootList.size(), 0);

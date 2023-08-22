@@ -9,18 +9,18 @@
 
 #include "pch.hpp"
 
-#include "items/tile.h"
-#include "creatures/creature.h"
-#include "creatures/combat/combat.h"
-#include "game/game.h"
+#include "items/tile.hpp"
+#include "creatures/creature.hpp"
+#include "creatures/combat/combat.hpp"
+#include "game/game.hpp"
 #include "game/zones/zone.hpp"
-#include "items/containers/mailbox/mailbox.h"
-#include "creatures/monsters/monster.h"
-#include "lua/creature/movement.h"
-#include "game/movement/teleport.h"
-#include "items/trashholder.h"
-#include "map/house/housetile.h"
-#include "io/iomap.h"
+#include "items/containers/mailbox/mailbox.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "lua/creature/movement.hpp"
+#include "game/movement/teleport.hpp"
+#include "items/trashholder.hpp"
+#include "map/house/housetile.hpp"
+#include "io/iomap.hpp"
 
 StaticTile real_nullptr_tile(0xFFFF, 0xFFFF, 0xFF);
 Tile &Tile::nullptr_tile = real_nullptr_tile;

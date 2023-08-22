@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "server/network/protocol/protocol.h"
-#include "server/network/message/outputmessage.h"
-#include "security/rsa.h"
+#include "server/network/protocol/protocol.hpp"
+#include "server/network/message/outputmessage.hpp"
+#include "security/rsa.hpp"
 #include "game/scheduling/dispatcher.hpp"
 
 Protocol::~Protocol() = default;

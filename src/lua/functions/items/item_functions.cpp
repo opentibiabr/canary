@@ -11,9 +11,9 @@
 
 #include "lua/functions/items/item_functions.hpp"
 
-#include "game/game.h"
-#include "items/item.h"
-#include "items/decay/decay.h"
+#include "game/game.hpp"
+#include "items/item.hpp"
+#include "items/decay/decay.hpp"
 
 class Imbuement;
 

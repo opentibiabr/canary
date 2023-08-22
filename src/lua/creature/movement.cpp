@@ -9,11 +9,11 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
-#include "lua/creature/events.h"
+#include "game/game.hpp"
+#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
-#include "lua/creature/movement.h"
+#include "lua/creature/movement.hpp"
 
 void MoveEvents::clear() {
 	uniqueIdMap.clear();

@@ -9,32 +9,32 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/management/ban.h"
+#include "creatures/players/management/ban.hpp"
 #include "core.hpp"
 #include "declarations.hpp"
-#include "game/game.h"
-#include "creatures/players/imbuements/imbuements.h"
+#include "game/game.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
 #include "io/functions/iologindata_load_player.hpp"
-#include "io/iobestiary.h"
+#include "io/iobestiary.hpp"
 #include "io/io_bosstiary.hpp"
-#include "io/iologindata.h"
-#include "io/iomarket.h"
-#include "lua/modules/modules.h"
-#include "creatures/monsters/monster.h"
-#include "creatures/monsters/monsters.h"
-#include "server/network/message/outputmessage.h"
-#include "creatures/players/player.h"
+#include "io/iologindata.hpp"
+#include "io/iomarket.hpp"
+#include "lua/modules/modules.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/monsters/monsters.hpp"
+#include "server/network/message/outputmessage.hpp"
+#include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "creatures/players/grouping/familiars.h"
-#include "server/network/protocol/protocolgame.h"
+#include "creatures/players/grouping/familiars.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "game/scheduling/scheduler.h"
-#include "creatures/combat/spells.h"
-#include "creatures/players/management/waitlist.h"
-#include "items/weapons/weapons.h"
+#include "game/scheduling/scheduler.hpp"
+#include "creatures/combat/spells.hpp"
+#include "creatures/players/management/waitlist.hpp"
+#include "items/weapons/weapons.hpp"
 
 /*
- * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.h" file
+ * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.hpp" file
  * Do not use functions only in the .cpp scope without having a namespace, it may conflict with functions in other files of the same name
  */
 

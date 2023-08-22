@@ -7,15 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_PCH_HPP_
-#define SRC_PCH_HPP_
+#pragma once
 
 // --------------------
 // Internal Includes
 // --------------------
 
 // Utils
-#include "utils/definitions.h"
+#include "utils/definitions.hpp"
 #include "utils/simd.hpp"
 
 // --------------------
@@ -51,7 +50,7 @@
 #endif
 
 #ifdef OS_WINDOWS
-	#include "conio.h"
+	#include <conio.h>
 #endif
 
 // --------------------
@@ -146,5 +145,3 @@
 #include "lib/di/container.hpp"
 
 #include "lua/global/shared_object.hpp"
-
-#endif // SRC_PCH_HPP_

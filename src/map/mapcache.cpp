@@ -9,18 +9,18 @@
 
 #include "pch.hpp"
 
-#include "mapcache.h"
+#include "mapcache.hpp"
 
-#include "game/movement/teleport.h"
-#include "items/bed.h"
-#include "io/iologindata.h"
-#include "items/item.h"
-#include "game/game.h"
-#include "map/map.h"
-#include "utils/hash.h"
+#include "game/movement/teleport.hpp"
+#include "items/bed.hpp"
+#include "io/iologindata.hpp"
+#include "items/item.hpp"
+#include "game/game.hpp"
+#include "map/map.hpp"
+#include "utils/hash.hpp"
 #include "io/filestream.hpp"
 
-#include "io/iomap.h"
+#include "io/iomap.hpp"
 
 static phmap::flat_hash_map<size_t, BasicItemPtr> items;
 static phmap::flat_hash_map<size_t, BasicTilePtr> tiles;

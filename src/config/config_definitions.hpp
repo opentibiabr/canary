@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_CONFIG_CONFIG_DEFINITIONS_HPP_
-#define SRC_CONFIG_CONFIG_DEFINITIONS_HPP_
+#pragma once
 
 // Enum
 enum booleanConfig_t {
@@ -285,5 +284,3 @@ enum floatingConfig_t {
 
 	LAST_FLOATING_CONFIG
 };
-
-#endif // SRC_CONFIG_CONFIG_DEFINITIONS_HPP_

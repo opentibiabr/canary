@@ -15,35 +15,35 @@
 namespace di = boost::di;
 
 class DI final {
-	private:
-		inline static auto &container() {
-			static auto injector = di::make_injector(
-				di::bind<Logger>().to<LogWithSpdLog>().in(di::singleton)
-			);
+private:
+	inline static auto &container() {
+		static auto injector = di::make_injector(
+			di::bind<Logger>().to<LogWithSpdLog>().in(di::singleton)
+		);
 
-			return injector;
-		}
+		return injector;
+	}
 
-	public:
-		/**
-		 * Get returns you a reference of a instance that the DI contains.
-		 * It will always return the same instance, it's used for singletons shared instances.
-		 * Instances acquired with get are managed by the DI and can be merely references.
-		 */
-		template <class T>
-		inline static T &get() {
-			return DI::container().create<T &>();
-		}
+public:
+	/**
+	 * Get returns you a reference of a instance that the DI contains.
+	 * It will always return the same instance, it's used for singletons shared instances.
+	 * Instances acquired with get are managed by the DI and can be merely references.
+	 */
+	template <class T>
+	inline static T &get() {
+		return DI::container().create<T &>();
+	}
 
-		/**
-		 * Create will always return a new instance, it's used for unique instances or non-shared
-		 * states. This can only be used by classes that allow being copied, cloned and moved.
-		 * Instances acquired with create need to be managed by the caller using smart pointers.
-		 */
-		template <class T>
-		inline static T create() {
-			return DI::container().create<T>();
-		}
+	/**
+	 * Create will always return a new instance, it's used for unique instances or non-shared
+	 * states. This can only be used by classes that allow being copied, cloned and moved.
+	 * Instances acquired with create need to be managed by the caller using smart pointers.
+	 */
+	template <class T>
+	inline static T create() {
+		return DI::container().create<T>();
+	}
 };
 
 /**

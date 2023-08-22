@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
-#include "creatures/creature.h"
-#include "creatures/monsters/monster.h"
-#include "creatures/monsters/monsters.h"
+#include "game/game.hpp"
+#include "creatures/creature.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/monsters/monsters.hpp"
 #include "lua/functions/creatures/monster/monster_functions.hpp"
 
 int MonsterFunctions::luaMonsterCreate(lua_State* L) {

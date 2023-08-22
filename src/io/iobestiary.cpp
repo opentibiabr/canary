@@ -10,10 +10,10 @@
 #include "pch.hpp"
 
 #include "declarations.hpp"
-#include "game/game.h"
-#include "io/iobestiary.h"
-#include "creatures/monsters/monsters.h"
-#include "creatures/players/player.h"
+#include "game/game.hpp"
+#include "io/iobestiary.hpp"
+#include "creatures/monsters/monsters.hpp"
+#include "creatures/players/player.hpp"
 
 SoftSingleton IOBestiary::instanceTracker(g_logger(), "IOBestiary");
 

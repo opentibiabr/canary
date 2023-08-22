@@ -9,11 +9,11 @@
 
 #include "pch.hpp"
 
-#include "io/iomarket.h"
-#include "database/databasetasks.h"
-#include "io/iologindata.h"
-#include "game/game.h"
-#include "game/scheduling/scheduler.h"
+#include "io/iomarket.hpp"
+#include "database/databasetasks.hpp"
+#include "io/iologindata.hpp"
+#include "game/game.hpp"
+#include "game/scheduling/scheduler.hpp"
 
 uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
 	auto tier = static_cast<uint8_t>(std::atoi(string.c_str()));

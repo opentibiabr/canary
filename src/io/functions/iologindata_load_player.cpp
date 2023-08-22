@@ -11,7 +11,7 @@
 
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "io/functions/iologindata_load_player.hpp"
-#include "game/game.h"
+#include "game/game.hpp"
 
 bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
 	Database &db = Database::getInstance();

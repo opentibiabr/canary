@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/player.h"
+#include "creatures/players/player.hpp"
 #include "lua/functions/core/game/modal_window_functions.hpp"
 
 // ModalWindow

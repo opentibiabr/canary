@@ -9,12 +9,12 @@
 
 #include "pch.hpp"
 
-#include "creatures/monsters/monster.h"
-#include "creatures/combat/spells.h"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/combat/spells.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "game/game.h"
+#include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "lua/creature/events.h"
+#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 

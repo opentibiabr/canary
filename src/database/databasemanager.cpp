@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "config/configmanager.h"
-#include "database/databasemanager.h"
+#include "config/configmanager.hpp"
+#include "database/databasemanager.hpp"
 #include "lua/functions/core/libs/core_libs_functions.hpp"
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 bool DatabaseManager::optimizeTables() {
 	Database &db = Database::getInstance();

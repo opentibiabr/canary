@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/grouping/party.h"
-#include "game/game.h"
-#include "lua/creature/events.h"
+#include "creatures/players/grouping/party.hpp"
+#include "game/game.hpp"
+#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 

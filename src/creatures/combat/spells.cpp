@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/combat/combat.h"
-#include "creatures/combat/spells.h"
-#include "creatures/monsters/monster.h"
-#include "game/game.h"
+#include "creatures/combat/combat.hpp"
+#include "creatures/combat/spells.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "game/game.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 

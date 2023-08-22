@@ -10,7 +10,7 @@
 #include "pch.hpp"
 
 #include "creatures/players/account/account.hpp"
-#include "lua/creature/talkaction.h"
+#include "lua/creature/talkaction.hpp"
 #include "lua/functions/events/talk_action_functions.hpp"
 
 int TalkActionFunctions::luaCreateTalkAction(lua_State* L) {

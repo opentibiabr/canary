@@ -9,15 +9,15 @@
 
 #include "pch.hpp"
 
-#include "creatures/combat/spells.h"
-#include "creatures/creature.h"
-#include "creatures/interactions/chat.h"
-#include "creatures/players/player.h"
+#include "creatures/combat/spells.hpp"
+#include "creatures/creature.hpp"
+#include "creatures/interactions/chat.hpp"
+#include "creatures/players/player.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "game/game.h"
-#include "io/iologindata.h"
-#include "io/ioprey.h"
-#include "items/item.h"
+#include "game/game.hpp"
+#include "io/iologindata.hpp"
+#include "io/ioprey.hpp"
+#include "items/item.hpp"
 #include "lua/functions/creatures/player/player_functions.hpp"
 
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {

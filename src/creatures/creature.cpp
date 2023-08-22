@@ -9,12 +9,12 @@
 
 #include "pch.hpp"
 
-#include "creatures/creature.h"
+#include "creatures/creature.hpp"
 #include "declarations.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "game/game.h"
-#include "creatures/monsters/monster.h"
-#include "game/scheduling/scheduler.h"
+#include "game/game.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "game/scheduling/scheduler.hpp"
 #include "game/zones/zone.hpp"
 
 double Creature::speedA = 857.36;

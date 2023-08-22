@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "items/decay/decay.h"
-#include "game/game.h"
-#include "game/scheduling/scheduler.h"
+#include "items/decay/decay.hpp"
+#include "game/game.hpp"
+#include "game/scheduling/scheduler.hpp"
 
 void Decay::startDecay(Item* item) {
 	if (!item || item->getLoadedFromMap()) {

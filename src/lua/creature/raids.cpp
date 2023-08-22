@@ -9,12 +9,12 @@
 
 #include "pch.hpp"
 
-#include "lua/creature/raids.h"
-#include "utils/pugicast.h"
-#include "game/game.h"
-#include "game/scheduling/scheduler.h"
-#include "creatures/monsters/monster.h"
-#include "server/network/webhook/webhook.h"
+#include "lua/creature/raids.hpp"
+#include "utils/pugicast.hpp"
+#include "game/game.hpp"
+#include "game/scheduling/scheduler.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "server/network/webhook/webhook.hpp"
 
 Raids::Raids() {
 	scriptInterface.initState();

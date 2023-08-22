@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/management/ban.h"
-#include "database/database.h"
-#include "database/databasetasks.h"
-#include "utils/tools.h"
+#include "creatures/players/management/ban.hpp"
+#include "database/database.hpp"
+#include "database/databasetasks.hpp"
+#include "utils/tools.hpp"
 
 bool Ban::acceptConnection(uint32_t clientIP) {
 	std::lock_guard<std::recursive_mutex> lockClass(lock);

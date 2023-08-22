@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
-#include "game/movement/teleport.h"
+#include "game/game.hpp"
+#include "game/movement/teleport.hpp"
 
 Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	if (attr == ATTR_TELE_DEST) {

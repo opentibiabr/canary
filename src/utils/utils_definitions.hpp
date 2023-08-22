@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_UTILS_UTILS_DEFINITIONS_HPP_
-#define SRC_UTILS_UTILS_DEFINITIONS_HPP_
+#pragma once
 
 // Enums
 enum Icons_t {
@@ -766,5 +765,3 @@ enum BedItemPart_t : uint8_t {
 	BED_PILLOW_PART,
 	BED_BLANKET_PART,
 };
-
-#endif // SRC_UTILS_UTILS_DEFINITIONS_HPP_

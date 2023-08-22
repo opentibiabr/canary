@@ -14,7 +14,7 @@
 
 template <typename T>
 struct Message {
-		T type;
+	T type;
 };
 
 template <typename T>
@@ -22,9 +22,9 @@ using MessageHandler = void(const Message<T> &);
 
 template <typename T>
 struct MessagePolicy {
-		static T getEvent(const Message<T> &msg) {
-			return msg.type;
-		}
+	static T getEvent(const Message<T> &msg) {
+		return msg.type;
+	}
 };
 
 template <typename T>
@@ -35,9 +35,9 @@ using MessageRemover = eventpp::ScopedRemover<MessageDispatcher<T>>;
 
 template <typename T>
 class IMessageListener {
-	public:
-		virtual ~IMessageListener() = default;
-		virtual void setupListeners(MessageDispatcher<T> &dispatcher) = 0;
+public:
+	virtual ~IMessageListener() = default;
+	virtual void setupListeners(MessageDispatcher<T> &dispatcher) = 0;
 };
 
 template <typename T>

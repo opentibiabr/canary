@@ -9,15 +9,15 @@
 
 #include "pch.hpp"
 
-#include "creatures/monsters/spawns/spawn_monster.h"
-#include "game/game.h"
-#include "creatures/monsters/monster.h"
-#include "game/scheduling/scheduler.h"
+#include "creatures/monsters/spawns/spawn_monster.hpp"
+#include "game/game.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "game/scheduling/scheduler.hpp"
 #include "game/scheduling/events_scheduler.hpp"
-#include "lua/creature/events.h"
+#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
-#include "utils/pugicast.h"
+#include "utils/pugicast.hpp"
 
 static constexpr int32_t MONSTER_MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MONSTER_MAXSPAWN_INTERVAL = 86400000; // 1 day

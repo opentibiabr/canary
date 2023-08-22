@@ -15,7 +15,7 @@
 #include "creatures/npcs/npc.h"
 #include "creatures/players/player.h"
 
-phmap::btree_map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
+std::map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
 std::mutex Zone::zonesMutex = {};
 const static std::shared_ptr<Zone> nullZone = nullptr;
 
@@ -52,7 +52,7 @@ const std::shared_ptr<Zone> &Zone::getZone(const std::string &name) {
 	return zones[name];
 }
 
-const phmap::btree_set<Position> &Zone::getPositions() const {
+const std::set<Position> &Zone::getPositions() const {
 	return positions;
 }
 

@@ -49,7 +49,7 @@ void IOBosstiary::loadBoostedBoss() {
 	}
 
 	// Filter only archfoe bosses
-	phmap::btree_map<uint16_t, std::string> bossInfo;
+	std::map<uint16_t, std::string> bossInfo;
 	for (auto [infoBossRaceId, infoBossName] : bossMap) {
 		const auto &mType = getMonsterTypeByBossRaceId(infoBossRaceId);
 		if (!mType || mType->info.bosstiaryRace != BosstiaryRarity_t::RARITY_ARCHFOE) {
@@ -116,7 +116,7 @@ void IOBosstiary::addBosstiaryMonster(uint16_t raceId, const std::string &name) 
 	bosstiaryMap.insert(boss);
 }
 
-const phmap::btree_map<uint16_t, std::string> &IOBosstiary::getBosstiaryMap() const {
+const std::map<uint16_t, std::string> &IOBosstiary::getBosstiaryMap() const {
 	return bosstiaryMap;
 }
 
@@ -223,7 +223,7 @@ phmap::parallel_flat_hash_set<uint16_t> IOBosstiary::getBosstiaryFinished(const 
 		return unlockedMonsters;
 	}
 
-	for (phmap::btree_map<uint16_t, std::string> bossesMap = getBosstiaryMap();
+	for (std::map<uint16_t, std::string> bossesMap = getBosstiaryMap();
 		 const auto &[bossId, bossName] : bossesMap) {
 		uint32_t bossKills = player->getBestiaryKillCount(bossId);
 		if (bossKills == 0) {
@@ -291,7 +291,7 @@ std::vector<uint16_t> IOBosstiary::getBosstiaryCooldownRaceId(const Player* play
 		return bossesCooldownRaceId;
 	}
 
-	for (phmap::btree_map<uint16_t, std::string> bossesMap = getBosstiaryMap();
+	for (std::map<uint16_t, std::string> bossesMap = getBosstiaryMap();
 		 const auto &[bossId, bossName] : bossesMap) {
 		uint32_t bossKills = player->getBestiaryKillCount(bossId);
 

@@ -16,8 +16,8 @@
 class Party;
 class Player;
 
-using UsersMap = phmap::btree_map<uint32_t, Player*>;
-using InvitedMap = phmap::btree_map<uint32_t, const Player*>;
+using UsersMap = std::map<uint32_t, Player*>;
+using InvitedMap = std::map<uint32_t, const Player*>;
 
 class ChatChannel {
 	public:
@@ -144,10 +144,10 @@ class Chat {
 		}
 
 	private:
-		phmap::btree_map<uint16_t, ChatChannel> normalChannels;
-		phmap::btree_map<uint16_t, PrivateChatChannel> privateChannels;
-		phmap::btree_map<Party*, ChatChannel> partyChannels;
-		phmap::btree_map<uint32_t, ChatChannel> guildChannels;
+		std::map<uint16_t, ChatChannel> normalChannels;
+		std::map<uint16_t, PrivateChatChannel> privateChannels;
+		std::map<Party*, ChatChannel> partyChannels;
+		std::map<uint32_t, ChatChannel> guildChannels;
 
 		LuaScriptInterface scriptInterface;
 

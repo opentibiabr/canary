@@ -122,7 +122,7 @@ bool MoveEvents::registerLuaEvent(const std::shared_ptr<MoveEvent> &moveEvent) {
 	}
 }
 
-bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, int32_t id, phmap::btree_map<int32_t, MoveEventList> &moveListMap) const {
+bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, int32_t id, std::map<int32_t, MoveEventList> &moveListMap) const {
 	auto it = moveListMap.find(id);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
@@ -186,7 +186,7 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(Item &item, MoveEvent_t eventTyp
 	}
 
 	if (item.hasAttribute(ItemAttribute_t::ACTIONID)) {
-		phmap::btree_map<int32_t, MoveEventList>::iterator it = actionIdMap.find(item.getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
+		std::map<int32_t, MoveEventList>::iterator it = actionIdMap.find(item.getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
 		if (it != actionIdMap.end()) {
 			std::list<std::shared_ptr<MoveEvent>> moveEventList = it->second.moveEvent[eventType];
 			for (const auto &moveEvent : moveEventList) {
@@ -210,7 +210,7 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(Item &item, MoveEvent_t eventTyp
 }
 
 std::shared_ptr<MoveEvent> MoveEvents::getEvent(Item &item, MoveEvent_t eventType) {
-	phmap::btree_map<int32_t, MoveEventList>::iterator it;
+	std::map<int32_t, MoveEventList>::iterator it;
 	if (item.hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		it = uniqueIdMap.find(item.getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID));
 		if (it != uniqueIdMap.end()) {
@@ -241,7 +241,7 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(Item &item, MoveEvent_t eventTyp
 	return nullptr;
 }
 
-bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, const Position &position, phmap::btree_map<Position, MoveEventList> &moveListMap) const {
+bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, const Position &position, std::map<Position, MoveEventList> &moveListMap) const {
 	auto it = moveListMap.find(position);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
@@ -491,7 +491,7 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, Playe
 			return 0;
 		}
 
-		const phmap::btree_map<uint16_t, bool> &vocEquipMap = moveEvent->getVocEquipMap();
+		const std::map<uint16_t, bool> &vocEquipMap = moveEvent->getVocEquipMap();
 		if (!vocEquipMap.empty() && !vocEquipMap.contains(player->getVocationId())) {
 			return 0;
 		}

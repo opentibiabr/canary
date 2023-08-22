@@ -113,9 +113,9 @@ std::shared_ptr<Charm> IOBestiary::getBestiaryCharm(charmRune_t activeCharm, boo
 	return nullptr;
 }
 
-phmap::btree_map<uint16_t, std::string> IOBestiary::findRaceByName(const std::string &race, bool Onlystring /*= true*/, BestiaryType_t raceNumber /*= BESTY_RACE_NONE*/) const {
-	phmap::btree_map<uint16_t, std::string> best_list = g_game().getBestiaryList();
-	phmap::btree_map<uint16_t, std::string> race_list;
+std::map<uint16_t, std::string> IOBestiary::findRaceByName(const std::string &race, bool Onlystring /*= true*/, BestiaryType_t raceNumber /*= BESTY_RACE_NONE*/) const {
+	std::map<uint16_t, std::string> best_list = g_game().getBestiaryList();
+	std::map<uint16_t, std::string> race_list;
 
 	if (Onlystring) {
 		for (const auto &it : best_list) {
@@ -188,7 +188,7 @@ uint16_t IOBestiary::getBestiaryRaceUnlocked(Player* player, BestiaryType_t race
 	}
 
 	uint16_t count = 0;
-	phmap::btree_map<uint16_t, std::string> besty_l = g_game().getBestiaryList();
+	std::map<uint16_t, std::string> besty_l = g_game().getBestiaryList();
 
 	for (auto it : besty_l) {
 		const auto &mtype = g_monsters().getMonsterType(it.second);
@@ -349,8 +349,8 @@ void IOBestiary::sendBuyCharmRune(Player* player, charmRune_t runeID, uint8_t ac
 	return;
 }
 
-phmap::btree_map<uint8_t, int16_t> IOBestiary::getMonsterElements(const std::shared_ptr<MonsterType> &mtype) const {
-	phmap::btree_map<uint8_t, int16_t> defaultMap = {};
+std::map<uint8_t, int16_t> IOBestiary::getMonsterElements(const std::shared_ptr<MonsterType> &mtype) const {
+	std::map<uint8_t, int16_t> defaultMap = {};
 	for (uint8_t i = 0; i <= 7; i++) {
 		defaultMap[i] = 100;
 	}
@@ -387,8 +387,8 @@ phmap::btree_map<uint8_t, int16_t> IOBestiary::getMonsterElements(const std::sha
 	return defaultMap;
 }
 
-phmap::btree_map<uint16_t, uint32_t> IOBestiary::getBestiaryKillCountByMonsterIDs(Player* player, phmap::btree_map<uint16_t, std::string> mtype_list) const {
-	phmap::btree_map<uint16_t, uint32_t> raceMonsters = {};
+std::map<uint16_t, uint32_t> IOBestiary::getBestiaryKillCountByMonsterIDs(Player* player, std::map<uint16_t, std::string> mtype_list) const {
+	std::map<uint16_t, uint32_t> raceMonsters = {};
 	for (const auto &it : mtype_list) {
 		uint16_t raceid = it.first;
 		uint32_t thisKilled = player->getBestiaryKillCount(raceid);

@@ -21,7 +21,7 @@ class InstantSpell;
 class RuneSpell;
 class Spell;
 
-using VocSpellMap = phmap::btree_map<uint16_t, bool>;
+using VocSpellMap = std::map<uint16_t, bool>;
 
 class Spells final : public Scripts {
 	public:

@@ -93,7 +93,7 @@ class Zone {
 		void addArea(Area area);
 		bool isPositionInZone(const Position &position) const;
 
-		const phmap::btree_set<Position> &getPositions() const;
+		const std::set<Position> &getPositions() const;
 		const phmap::parallel_flat_hash_set<Tile*> &getTiles() const;
 		const phmap::parallel_flat_hash_set<Creature*> &getCreatures() const;
 		const phmap::parallel_flat_hash_set<Player*> &getPlayers() const;
@@ -117,7 +117,7 @@ class Zone {
 
 	private:
 		std::string name;
-		phmap::btree_set<Position> positions;
+		std::set<Position> positions;
 		phmap::parallel_flat_hash_set<Tile*> tiles;
 		phmap::parallel_flat_hash_set<Item*> items;
 		phmap::parallel_flat_hash_set<Creature*> creatures;
@@ -126,7 +126,7 @@ class Zone {
 		phmap::parallel_flat_hash_set<Player*> players;
 
 		static std::mutex zonesMutex;
-		static phmap::btree_map<std::string, std::shared_ptr<Zone>> zones;
+		static std::map<std::string, std::shared_ptr<Zone>> zones;
 };
 
 #endif // SRC_GAME_ZONE_ZONE_HPP_

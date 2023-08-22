@@ -86,7 +86,7 @@ struct OpenContainer {
 		uint16_t index;
 };
 
-using MuteCountMap = phmap::btree_map<uint32_t, uint32_t>;
+using MuteCountMap = std::map<uint32_t, uint32_t>;
 
 static constexpr int32_t PLAYER_MAX_SPEED = 65535;
 static constexpr int32_t PLAYER_MIN_SPEED = 10;
@@ -1374,7 +1374,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 				client->sendShop(npc);
 			}
 		}
-		void sendSaleItemList(const phmap::btree_map<uint16_t, uint16_t> &inventoryMap) const {
+		void sendSaleItemList(const std::map<uint16_t, uint16_t> &inventoryMap) const {
 			if (client && shopOwner) {
 				client->sendSaleItemList(shopOwner->getShopItemVector(), inventoryMap);
 			}
@@ -1699,7 +1699,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			lastWalking = OTSYS_TIME() + value;
 		}
 
-		const phmap::btree_map<uint8_t, OpenContainer> &getOpenContainers() const {
+		const std::map<uint8_t, OpenContainer> &getOpenContainers() const {
 			return openContainers;
 		}
 
@@ -2240,7 +2240,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		void openContainerFromDepotSearch(const Position &pos);
 		Item* getItemFromDepotSearch(uint16_t itemId, const Position &pos);
 
-		std::pair<std::vector<Item*>, phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint32_t>>> requestLockerItems(DepotLocker* depotLocker, bool sendToClient = false, uint8_t tier = 0) const;
+		std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> requestLockerItems(DepotLocker* depotLocker, bool sendToClient = false, uint8_t tier = 0) const;
 
 		/**
 		This function returns a pair of an array of items and a 16-bit integer from a DepotLocker instance, a 8-bit byte and a 16-bit integer.
@@ -2405,7 +2405,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			}
 		}
 
-		void sendInventoryImbuements(const phmap::btree_map<Slots_t, Item*> items) const {
+		void sendInventoryImbuements(const std::map<Slots_t, Item*> items) const {
 			if (client) {
 				client->sendInventoryImbuements(items);
 			}
@@ -2440,7 +2440,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 				activeConcoctions[itemId] = timeLeft;
 			}
 		}
-		phmap::btree_map<uint16_t, uint16_t> getActiveConcoctions() const {
+		std::map<uint16_t, uint16_t> getActiveConcoctions() const {
 			return activeConcoctions;
 		}
 
@@ -2529,10 +2529,10 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		ItemsTierCountList getInventoryItemsId() const;
 
 		// This function is a override function of base class
-		phmap::btree_map<uint32_t, uint32_t> &getAllItemTypeCount(phmap::btree_map<uint32_t, uint32_t> &countMap) const override;
+		std::map<uint32_t, uint32_t> &getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const override;
 		// Function from player class with correct type sizes (uint16_t)
-		phmap::btree_map<uint16_t, uint16_t> &getAllSaleItemIdAndCount(phmap::btree_map<uint16_t, uint16_t> &countMap) const;
-		void getAllItemTypeCountAndSubtype(phmap::btree_map<uint32_t, uint32_t> &countMap) const;
+		std::map<uint16_t, uint16_t> &getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const;
+		void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t> &countMap) const;
 		Item* getForgeItemFromId(uint16_t itemId, uint8_t tier);
 		Thing* getThing(size_t index) const override;
 
@@ -2543,22 +2543,22 @@ class Player final : public Creature, public Cylinder, public Bankable {
 
 		phmap::flat_hash_set<uint32_t> VIPList;
 
-		phmap::btree_map<uint8_t, OpenContainer> openContainers;
-		phmap::btree_map<uint32_t, DepotLocker*> depotLockerMap;
-		phmap::btree_map<uint32_t, DepotChest*> depotChests;
-		phmap::btree_map<uint8_t, int64_t> moduleDelayMap;
-		phmap::btree_map<uint32_t, int32_t> storageMap;
-		phmap::btree_map<uint16_t, uint64_t> itemPriceMap;
+		std::map<uint8_t, OpenContainer> openContainers;
+		std::map<uint32_t, DepotLocker*> depotLockerMap;
+		std::map<uint32_t, DepotChest*> depotChests;
+		std::map<uint8_t, int64_t> moduleDelayMap;
+		std::map<uint32_t, int32_t> storageMap;
+		std::map<uint16_t, uint64_t> itemPriceMap;
 
-		phmap::btree_map<uint8_t, uint16_t> maxValuePerSkill = {
+		std::map<uint8_t, uint16_t> maxValuePerSkill = {
 			{ SKILL_LIFE_LEECH_CHANCE, 100 },
 			{ SKILL_MANA_LEECH_CHANCE, 100 },
 			{ SKILL_CRITICAL_HIT_CHANCE, g_configManager().getNumber(CRITICALCHANCE) }
 		};
 
-		phmap::btree_map<uint64_t, Reward*> rewardMap;
+		std::map<uint64_t, Reward*> rewardMap;
 
-		phmap::btree_map<ObjectCategory_t, Container*> quickLootContainers;
+		std::map<ObjectCategory_t, Container*> quickLootContainers;
 		std::vector<ForgeHistory> forgeHistoryVector;
 
 		std::vector<uint16_t> quickLootListItemIds;
@@ -2766,11 +2766,11 @@ class Player final : public Creature, public Cylinder, public Bankable {
 
 		// Concoctions
 		// [ConcoctionID] = time
-		phmap::btree_map<uint16_t, uint16_t> activeConcoctions;
+		std::map<uint16_t, uint16_t> activeConcoctions;
 
 		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
 		int32_t cleavePercent = 0;
-		phmap::btree_map<uint8_t, int32_t> perfectShot;
+		std::map<uint8_t, int32_t> perfectShot;
 		int32_t magicShieldCapacityFlat = 0;
 		int32_t magicShieldCapacityPercent = 0;
 

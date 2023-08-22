@@ -14,6 +14,12 @@ jobs:
   cppcheck:
     runs-on: ubuntu-latest
     steps:
+      - name: Cancel Previous Runs
+        if: github.ref != 'refs/heads/main'
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          concurrent_skipping: 'same_content'
+          cancel_others: true
 
       - name: Check out code.
         uses: actions/checkout@main

@@ -29,6 +29,13 @@ jobs:
             packages: >
               sccache
     steps:
+      - name: Cancel Previous Runs
+        if: github.ref != 'refs/heads/main'
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          concurrent_skipping: 'same_content'
+          cancel_others: true
+
       - name: Checkout repository
         uses: actions/checkout@main
 

@@ -54,6 +54,9 @@ void TrashHolder::addThing(int32_t, Thing* thing) {
 		}
 	}
 
+	if (item->isCarpet() || item->getID() == ITEM_DECORATION_KIT) {
+		return;
+	}
 	g_game().internalRemoveItem(item);
 
 	if (it.magicEffect != CONST_ME_NONE) {

@@ -99,3 +99,7 @@ end
 string.formatNamed = function(str, args)
 	return (str:gsub('($%b{})', function(w) return args[w:sub(3, -2)] or w end))
 end
+
+string.capitalize = function (str)
+	return str:gsub("%f[%a].", string.upper)
+end

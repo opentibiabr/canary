@@ -512,6 +512,57 @@ uint32_t Player::getClientIcons() const {
 	return icon_bitset.to_ulong();
 }
 
+void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> &mtype, bool isBoss, bool reloadClient /* = false */) {
+	if (client) {
+		uint16_t raceId = mtype ? mtype->info.raceid : 0;
+		// Bostiary tracker logic
+		if (isBoss) {
+			m_bosstiaryMonsterTracker.insert(mtype);
+			if (reloadClient && raceId != 0) {
+				client->parseSendBosstiary();
+			}
+			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker, true);
+			return;
+		}
+
+		// Bestiary tracker logic
+		m_bestiaryMonsterTracker.insert(mtype);
+		if (reloadClient && raceId != 0) {
+			client->sendBestiaryEntryChanged(raceId);
+		}
+		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker, false);
+	}
+}
+
+void Player::removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient /* = false */) {
+	if (client) {
+		uint16_t raceId = mtype ? mtype->info.raceid : 0;
+		// Bostiary tracker logic
+		if (isBoss) {
+			m_bosstiaryMonsterTracker.erase(mtype);
+			if (reloadClient && raceId != 0) {
+				client->parseSendBosstiary();
+			}
+			client->refreshCyclopediaMonsterTracker(m_bosstiaryMonsterTracker, true);
+			return;
+		}
+
+		// Bestiary tracker logic
+		m_bestiaryMonsterTracker.erase(mtype);
+		if (reloadClient && raceId != 0) {
+			client->sendBestiaryEntryChanged(raceId);
+		}
+		client->refreshCyclopediaMonsterTracker(m_bestiaryMonsterTracker, false);
+	}
+}
+
+bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const {
+	if (!monsterType) {
+		return false;
+	}
+	return m_bosstiaryMonsterTracker.contains(monsterType);
+}
+
 void Player::updateInventoryWeight() {
 	if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 		return;
@@ -1604,7 +1655,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 		}
 
 		// Reload bestiary tracker
-		refreshBestiaryTracker(getBestiaryTrackerList());
+		refreshBestiaryMonsterTracker();
 
 		g_game().checkPlayersRecord();
 		IOLoginData::updateOnlineStatus(guid, true);
@@ -1664,12 +1715,6 @@ void Player::onChangeZone(ZoneType_t zone) {
 	g_callbacks().executeCallback(EventCallback_t::playerOnChangeZone, &EventCallback::playerOnChangeZone, this, zone);
 }
 
-void Player::onChangeHazard(bool isHazard) {
-	g_events().eventPlayerOnChangeHazard(this, isHazard);
-	g_callbacks().executeCallback(EventCallback_t::playerOnChangeHazard, &EventCallback::playerOnChangeHazard, this, isHazard);
-	sendIcons();
-}
-
 void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
 	if (zone == ZONE_PROTECTION) {
 		if (!hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
@@ -1723,16 +1768,10 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout) {
 
 		closeShopWindow();
 
-		bool saved = false;
 		for (uint32_t tries = 0; tries < 3; ++tries) {
 			if (IOLoginData::savePlayer(this)) {
-				saved = true;
 				break;
 			}
-		}
-
-		if (!saved) {
-			g_logger().warn("Error while saving player: {}", getName());
 		}
 	}
 
@@ -2832,7 +2871,7 @@ void Player::despawn() {
 }
 
 bool Player::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified) {
-	if (getZone() != ZONE_PVP || !Player::lastHitIsPlayer(lastHitCreature)) {
+	if (getZoneType() != ZONE_PVP || !Player::lastHitIsPlayer(lastHitCreature)) {
 		return Creature::dropCorpse(lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
 	}
 
@@ -4428,7 +4467,7 @@ void Player::onCombatRemoveCondition(Condition* condition) {
 void Player::onAttackedCreature(Creature* target) {
 	Creature::onAttackedCreature(target);
 
-	if (target->getZone() == ZONE_PVP) {
+	if (target->getZoneType() == ZONE_PVP) {
 		return;
 	}
 
@@ -4539,7 +4578,7 @@ bool Player::onKilledCreature(Creature* target, bool lastHit /* = true*/) {
 	Creature::onKilledCreature(target, lastHit);
 
 	if (Player* targetPlayer = target->getPlayer()) {
-		if (targetPlayer && targetPlayer->getZone() == ZONE_PVP) {
+		if (targetPlayer && targetPlayer->getZoneType() == ZONE_PVP) {
 			targetPlayer->setDropLoot(false);
 			targetPlayer->setSkillLoss(false);
 		} else if (!hasFlag(PlayerFlags_t::NotGainInFight) && !isPartner(targetPlayer)) {
@@ -4692,7 +4731,7 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 		return true;
 	}
 
-	const Outfit* outfit = Outfits::getInstance().getOutfitByLookType(sex, lookType);
+	const auto &outfit = Outfits::getInstance().getOutfitByLookType(sex, lookType);
 	if (!outfit) {
 		return false;
 	}
@@ -4779,18 +4818,18 @@ bool Player::removeOutfitAddon(uint16_t lookType, uint8_t addons) {
 	return false;
 }
 
-bool Player::getOutfitAddons(const Outfit &outfit, uint8_t &addons) const {
+bool Player::getOutfitAddons(const std::shared_ptr<Outfit> &outfit, uint8_t &addons) const {
 	if (group->access) {
 		addons = 3;
 		return true;
 	}
 
-	if (outfit.premium && !isPremium()) {
+	if (outfit->premium && !isPremium()) {
 		return false;
 	}
 
 	for (const OutfitEntry &outfitEntry : outfits) {
-		if (outfitEntry.lookType != outfit.lookType) {
+		if (outfitEntry.lookType != outfit->lookType) {
 			continue;
 		}
 
@@ -4798,7 +4837,7 @@ bool Player::getOutfitAddons(const Outfit &outfit, uint8_t &addons) const {
 		return true;
 	}
 
-	if (!outfit.unlocked) {
+	if (!outfit->unlocked) {
 		return false;
 	}
 
@@ -5536,8 +5575,8 @@ void Player::setCurrentMount(uint8_t mount) {
 
 bool Player::hasAnyMount() const {
 	for (const auto &mounts = g_game().mounts.getMounts();
-		 const Mount &mount : mounts) {
-		if (hasMount(&mount)) {
+		 const auto &mount : mounts) {
+		if (hasMount(mount)) {
 			return true;
 		}
 	}
@@ -5548,9 +5587,9 @@ uint8_t Player::getRandomMountId() const {
 	std::vector<uint8_t> playerMounts;
 
 	for (const auto &mounts = g_game().mounts.getMounts();
-		 const Mount &mount : mounts) {
-		if (hasMount(&mount)) {
-			playerMounts.push_back(mount.id);
+		 const auto &mount : mounts) {
+		if (hasMount(mount)) {
+			playerMounts.push_back(mount->id);
 		}
 	}
 
@@ -5575,7 +5614,7 @@ bool Player::toggleMount(bool mount) {
 			return false;
 		}
 
-		const Outfit* playerOutfit = Outfits::getInstance().getOutfitByLookType(getSex(), defaultOutfit.lookType);
+		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(getSex(), defaultOutfit.lookType);
 		if (!playerOutfit) {
 			return false;
 		}
@@ -5590,7 +5629,7 @@ bool Player::toggleMount(bool mount) {
 			currentMountId = getRandomMountId();
 		}
 
-		const Mount* currentMount = g_game().mounts.getMountByID(currentMountId);
+		const auto &currentMount = g_game().mounts.getMountByID(currentMountId);
 		if (!currentMount) {
 			return false;
 		}
@@ -5677,7 +5716,7 @@ bool Player::untameMount(uint8_t mountId) {
 	return true;
 }
 
-bool Player::hasMount(const Mount* mount) const {
+bool Player::hasMount(const std::shared_ptr<Mount> &mount) const {
 	if (isAccessPlayer()) {
 		return true;
 	}
@@ -5697,7 +5736,7 @@ bool Player::hasMount(const Mount* mount) const {
 }
 
 void Player::dismount() {
-	const Mount* mount = g_game().mounts.getMountByID(getCurrentMount());
+	const auto &mount = g_game().mounts.getMountByID(getCurrentMount());
 	if (mount && mount->speed > 0) {
 		g_game().changeSpeed(this, -mount->speed);
 	}
@@ -6300,7 +6339,7 @@ void Player::openPlayerContainers() {
 void Player::initializePrey() {
 	if (preys.empty()) {
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			auto slot = new PreySlot(static_cast<PreySlot_t>(slotId));
+			auto slot = std::make_unique<PreySlot>(static_cast<PreySlot_t>(slotId));
 			if (!g_configManager().getBoolean(PREY_ENABLED)) {
 				slot->state = PreyDataState_Inactive;
 			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(PREY_FREE_THIRD_SLOT)) {
@@ -6312,8 +6351,8 @@ void Player::initializePrey() {
 				slot->reloadMonsterGrid(getPreyBlackList(), getLevel());
 			}
 
-			if (!setPreySlotClass(slot)) {
-				delete slot;
+			if (!setPreySlotClass(std::move(slot))) {
+				slot.reset();
 			}
 		}
 	}
@@ -6334,7 +6373,7 @@ void Player::removePreySlotById(PreySlot_t slotid) {
 void Player::initializeTaskHunting() {
 	if (taskHunting.empty()) {
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			auto slot = new TaskHuntingSlot(static_cast<PreySlot_t>(slotId));
+			auto slot = std::make_unique<TaskHuntingSlot>(static_cast<PreySlot_t>(slotId));
 			if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 				slot->state = PreyTaskDataState_Inactive;
 			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(TASK_HUNTING_FREE_THIRD_SLOT)) {
@@ -6346,8 +6385,8 @@ void Player::initializeTaskHunting() {
 				slot->reloadMonsterGrid(getTaskHuntingBlackList(), getLevel());
 			}
 
-			if (!setTaskHuntingSlotClass(slot)) {
-				delete slot;
+			if (!setTaskHuntingSlotClass(std::move(slot))) {
+				slot.reset();
 			}
 		}
 	}
@@ -6405,7 +6444,7 @@ void Player::triggerMomentum() {
 
 	double_t chance = item->getMomentumChance();
 	double_t randomChance = uniform_random(0, 10000) / 100;
-	if (getZone() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME() / 1000) % 2) == 0 && chance > 0 && randomChance < chance) {
+	if (getZoneType() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME() / 1000) % 2) == 0 && chance > 0 && randomChance < chance) {
 		bool triggered = false;
 		auto it = conditions.begin();
 		while (it != conditions.end()) {

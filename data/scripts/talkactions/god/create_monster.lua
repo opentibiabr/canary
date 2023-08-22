@@ -8,7 +8,7 @@ function createMonster.onSay(player, words, param)
 	-- Usage: "/m monstername, [1-5]" for create a influenced monster with specific level (/m rat, 2)
 	if param == "" then
 		player:sendCancelMessage("Monster name param required.")
-		Spdlog.error("[createMonster.onSay] - Monster name param not found.")
+		logger.error("[createMonster.onSay] - Monster name param not found.")
 		return true
 	end
 

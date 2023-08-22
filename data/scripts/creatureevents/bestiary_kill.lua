@@ -3,14 +3,20 @@ function bestiaryOnKill.onKill(player, creature, lastHit)
 	if not player:isPlayer() or not creature:isMonster() or creature:hasBeenSummoned() or creature:isPlayer() then
 		return true
 	end
+
 	local mType = MonsterType(creature:getName())
-	if not mType or mType:bossRace() then
+	if not mType then
+		logger.error("[bestiaryOnKill.onKill] monster with name {} have wrong MonsterType", creature:getName())
+		return true
+	end
+
+	if mType:Bestiaryrace() == 0 then
 		return true
 	end
 
 	local bestiaryBetterment = Concoction.find(Concoction.Ids.BestiaryBetterment)
 	if not bestiaryBetterment then
-		Spdlog.warn("[BestiaryOnKill] - Could not find BestiaryBetterment concoction.")
+		logger.warn("[BestiaryOnKill] - Could not find BestiaryBetterment concoction.")
 	end
 	for cid, damage in pairs(creature:getDamageMap()) do
 		local participant = Player(cid)

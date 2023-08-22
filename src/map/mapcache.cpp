@@ -18,6 +18,9 @@
 #include "game/game.h"
 #include "map/map.h"
 #include "utils/hash.h"
+#include "io/filestream.hpp"
+
+#include "io/iomap.h"
 
 static phmap::flat_hash_map<size_t, BasicItemPtr> items;
 static phmap::flat_hash_map<size_t, BasicTilePtr> tiles;
@@ -188,154 +191,86 @@ void BasicItem::hash(size_t &h) const {
 	}
 }
 
-bool BasicItem::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream) {
-	uint8_t attr_type;
-	while (propStream.read<uint8_t>(attr_type) && attr_type != 0) {
-		const Attr_ReadValue ret = readAttr(static_cast<AttrTypes_t>(attr_type), propStream);
-		if (ret == ATTR_READ_ERROR) {
-			return false;
-		} else if (ret == ATTR_READ_END) {
-			return true;
-		}
+bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, uint8_t z) {
+	if (stream.isProp(OTB::Node::END)) {
+		stream.back();
+		return true;
 	}
 
-	for (auto &itemNode : node.children) {
-		// load container items
-		if (itemNode.type != OTBM_ITEM) {
-			// unknown type
-			return false;
-		}
+	readAttr(stream);
 
-		PropStream itemPropStream;
-		if (!loader.getProps(itemNode, itemPropStream)) {
-			return false;
-		}
+	while (stream.startNode()) {
+		if (stream.getU8() != OTBM_ITEM)
+			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not read item node.", x, y, z));
 
-		uint16_t id;
-		if (!itemPropStream.read<uint16_t>(id)) {
-			return false;
-		}
+		const uint16_t streamId = stream.getU16();
 
 		const auto &item = std::make_shared<BasicItem>();
-		item->id = id;
+		item->id = streamId;
 
-		if (!item->unserializeItemNode(loader, itemNode, itemPropStream)) {
-			continue;
-		}
+		if (!item->unserializeItemNode(stream, x, y, z))
+			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Failed to load item.", x, y, z));
 
 		items.emplace_back(static_tryGetItemFromCache(item));
+
+		if (!stream.endNode())
+			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
 	}
 
 	return true;
 }
 
-Attr_ReadValue BasicItem::readAttr(AttrTypes_t attr, PropStream &propStream) {
-	switch (attr) {
-		case ATTR_COUNT:
-		case ATTR_RUNE_CHARGES: {
-			uint8_t charges;
-			if (!propStream.read<uint8_t>(charges)) {
-				return ATTR_READ_ERROR;
-			}
-			this->charges = charges;
-			break;
+void BasicItem::readAttr(FileStream &stream) {
+	bool end = false;
+	while (!end) {
+		const uint8_t attr = stream.getU8();
+		switch (attr) {
+			case ATTR_DEPOT_ID: {
+				doorOrDepotId = stream.getU16();
+			} break;
+
+			case ATTR_HOUSEDOORID: {
+				doorOrDepotId = stream.getU8();
+			} break;
+
+			case ATTR_TELE_DEST: {
+				destX = stream.getU16();
+				destY = stream.getU16();
+				destZ = stream.getU8();
+			} break;
+
+			case ATTR_COUNT: {
+				charges = stream.getU8();
+			} break;
+
+			case ATTR_CHARGES: {
+				charges = stream.getU16();
+			} break;
+
+			case ATTR_ACTION_ID: {
+				actionId = stream.getU16();
+			} break;
+
+			case ATTR_UNIQUE_ID: {
+				uniqueId = stream.getU16();
+			} break;
+
+			case ATTR_TEXT: {
+				const auto &str = stream.getString();
+				if (!str.empty())
+					text = str;
+			} break;
+
+			case ATTR_DESC: {
+				const auto &str = stream.getString();
+				// if (!str.empty())
+				//	text = str;
+			} break;
+
+			default:
+				stream.back();
+				end = true;
+				break;
 		}
-
-		case ATTR_ACTION_ID: {
-			if (!propStream.read<uint16_t>(actionId))
-				return ATTR_READ_ERROR;
-			break;
-		}
-
-		case ATTR_UNIQUE_ID: {
-			if (!propStream.read<uint16_t>(uniqueId))
-				return ATTR_READ_ERROR;
-			break;
-		}
-
-		case ATTR_TEXT: {
-			std::string str;
-			if (!propStream.readString(str))
-				return ATTR_READ_ERROR;
-
-			if (!str.empty()) {
-				text = str;
-			}
-
-			break;
-		}
-
-		case ATTR_DESC: {
-			std::string str;
-			if (!propStream.readString(str)) {
-				return ATTR_READ_ERROR;
-			}
-
-			if (!str.empty()) {
-				/* stdext::hash<std::string> h;
-				size_t hash = h(str);
-				description = hash;
-				STRING_CACHE.emplace(hash, std::move(str));*/
-			}
-
-			break;
-		}
-
-		case ATTR_CHARGES: {
-			if (!propStream.read<uint16_t>(charges))
-				return ATTR_READ_ERROR;
-			break;
-		}
-
-		// Depot class
-		case ATTR_DEPOT_ID: {
-			if (!propStream.read<uint16_t>(doorOrDepotId))
-				return ATTR_READ_ERROR;
-			break;
-		}
-
-		// Door class
-		case ATTR_HOUSEDOORID: {
-			uint8_t v;
-			if (!propStream.read<uint8_t>(v))
-				return ATTR_READ_ERROR;
-
-			doorOrDepotId = v;
-
-			break;
-		}
-
-		// Teleport class
-		case ATTR_TELE_DEST: {
-			if (!propStream.read<uint16_t>(destX))
-				return ATTR_READ_ERROR;
-
-			if (!propStream.read<uint16_t>(destY))
-				return ATTR_READ_ERROR;
-
-			if (!propStream.read<uint8_t>(destZ))
-				return ATTR_READ_ERROR;
-
-			break;
-		}
-
-		case ATTR_SLEEPERGUID: {
-			if (!propStream.read<uint32_t>(guid))
-				return ATTR_READ_ERROR;
-
-			break;
-		}
-
-		case ATTR_SLEEPSTART: {
-			if (!propStream.read<uint32_t>(sleepStart))
-				return ATTR_READ_ERROR;
-
-			break;
-		}
-
-		default:
-			return ATTR_READ_ERROR;
 	}
-
-	return ATTR_READ_CONTINUE;
 }

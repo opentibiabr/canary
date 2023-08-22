@@ -15,6 +15,7 @@
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "game/scheduling/scheduler.h"
+#include "game/zones/zone.hpp"
 
 double Creature::speedA = 857.36;
 double Creature::speedB = 261.29;
@@ -141,7 +142,7 @@ void Creature::onThink(uint32_t interval) {
 
 	// scripting event - onThink
 	const CreatureEventList &thinkEvents = getCreatureEvents(CREATURE_EVENT_THINK);
-	for (CreatureEvent* thinkEvent : thinkEvents) {
+	for (const auto &thinkEvent : thinkEvents) {
 		thinkEvent->executeOnThink(this, interval);
 	}
 }
@@ -409,8 +410,6 @@ void Creature::onChangeZone(ZoneType_t zone) {
 	}
 }
 
-void Creature::onChangeHazard(bool isHazard) { }
-
 void Creature::onAttackedCreatureChangeZone(ZoneType_t zone) {
 	if (zone == ZONE_PROTECTION) {
 		onCreatureDisappear(attackedCreature, false);
@@ -491,12 +490,8 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 			}
 		}
 
-		if (newTile->getZone() != oldTile->getZone()) {
-			onChangeZone(getZone());
-		}
-
-		if (newTile->isHazard() != oldTile->isHazard()) {
-			onChangeHazard(newTile->isHazard());
+		if (newTile->getZoneType() != oldTile->getZoneType()) {
+			onChangeZone(getZoneType());
 		}
 
 		// update map cache
@@ -615,8 +610,8 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 				g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
 			}
 
-			if (newTile->getZone() != oldTile->getZone()) {
-				onAttackedCreatureChangeZone(attackedCreature->getZone());
+			if (newTile->getZoneType() != oldTile->getZoneType()) {
+				onAttackedCreatureChangeZone(attackedCreature->getZoneType());
 			}
 		}
 	}
@@ -700,7 +695,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 		if (master) {
 			// Scripting event onDeath
 			const CreatureEventList &deathEvents = getCreatureEvents(CREATURE_EVENT_DEATH);
-			for (CreatureEvent* deathEvent : deathEvents) {
+			for (const auto &deathEvent : deathEvents) {
 				deathEvent->executeOnDeath(this, nullptr, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
 			}
 		}
@@ -756,7 +751,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 		}
 
 		// Scripting event onDeath
-		for (CreatureEvent* deathEvent : getCreatureEvents(CREATURE_EVENT_DEATH)) {
+		for (const auto &deathEvent : getCreatureEvents(CREATURE_EVENT_DEATH)) {
 			if (deathEvent) {
 				deathEvent->executeOnDeath(this, corpse, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
 			}
@@ -1168,7 +1163,7 @@ bool Creature::onKilledCreature(Creature* target, bool lastHit) {
 
 	// scripting event - onKill
 	const CreatureEventList &killEvents = getCreatureEvents(CREATURE_EVENT_KILL);
-	for (CreatureEvent* killEvent : killEvents) {
+	for (const auto &killEvent : killEvents) {
 		killEvent->executeOnKill(this, target, lastHit);
 	}
 	return false;
@@ -1484,14 +1479,14 @@ void Creature::setNormalCreatureLight() {
 }
 
 bool Creature::registerCreatureEvent(const std::string &name) {
-	CreatureEvent* event = g_creatureEvents().getEventByName(name);
+	const auto &event = g_creatureEvents().getEventByName(name);
 	if (!event) {
 		return false;
 	}
 
 	CreatureEventType_t type = event->getEventType();
 	if (hasEventRegistered(type)) {
-		for (CreatureEvent* creatureEvent : eventsList) {
+		for (const auto &creatureEvent : eventsList) {
 			if (creatureEvent == event) {
 				return false;
 			}
@@ -1505,7 +1500,7 @@ bool Creature::registerCreatureEvent(const std::string &name) {
 }
 
 bool Creature::unregisterCreatureEvent(const std::string &name) {
-	const CreatureEvent* event = g_creatureEvents().getEventByName(name);
+	const auto &event = g_creatureEvents().getEventByName(name);
 	if (!event) {
 		return false;
 	}
@@ -1519,7 +1514,7 @@ bool Creature::unregisterCreatureEvent(const std::string &name) {
 
 	auto it = eventsList.begin(), end = eventsList.end();
 	while (it != end) {
-		CreatureEvent* curEvent = *it;
+		const auto &curEvent = *it;
 		if (curEvent == event) {
 			it = eventsList.erase(it);
 			continue;
@@ -1544,7 +1539,7 @@ CreatureEventList Creature::getCreatureEvents(CreatureEventType_t type) {
 		return tmpEventList;
 	}
 
-	for (CreatureEvent* creatureEvent : eventsList) {
+	for (const auto &creatureEvent : eventsList) {
 		if (creatureEvent->getEventType() == type) {
 			tmpEventList.push_back(creatureEvent);
 		}
@@ -1778,4 +1773,8 @@ void Creature::setIncreasePercent(CombatType_t combat, int32_t value) {
 	} catch (const std::out_of_range &e) {
 		g_logger().error("Index is out of range in setIncreasePercent: {}", e.what());
 	}
+}
+
+const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Creature::getZones() {
+	return Zone::getZones(getPosition());
 }

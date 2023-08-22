@@ -70,6 +70,20 @@ namespace {
 		return 0;
 	}
 
+	struct PromotionScroll {
+			uint16_t itemId;
+			std::string storageKey;
+			uint8_t extraPoints;
+	};
+
+	std::vector<PromotionScroll> WheelOfDestinyPromotionScrolls = {
+		{ 43946, "wheel.scroll.abridged", 3 },
+		{ 43947, "wheel.scroll.basic", 5 },
+		{ 43948, "wheel.scroll.revised", 9 },
+		{ 43949, "wheel.scroll.extended", 13 },
+		{ 43950, "wheel.scroll.advanced", 20 },
+	};
+
 } // namespace
 
 PlayerWheel::PlayerWheel(Player &initPlayer) :
@@ -672,6 +686,24 @@ int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const 
 	return 0;
 }
 
+void PlayerWheel::addPromotionScrolls(NetworkMessage &msg) const {
+	uint16_t count = 0;
+	std::vector<uint16_t> unlockedScrolls;
+
+	for (const auto &scroll : WheelOfDestinyPromotionScrolls) {
+		auto storageValue = m_player.getStorageValueByName(scroll.storageKey);
+		if (storageValue > 0) {
+			count++;
+			unlockedScrolls.push_back(scroll.itemId);
+		}
+	}
+
+	msg.add<uint16_t>(count);
+	for (const auto &itemId : unlockedScrolls) {
+		msg.add<uint16_t>(itemId);
+	}
+}
+
 void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const {
 	if (m_player.client && m_player.client->oldProtocol) {
 		return;
@@ -693,7 +725,7 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) con
 	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
 		msg.add<uint16_t>(getPointsBySlotType(i));
 	}
-	msg.add<uint16_t>(0x00); // List size (U16)
+	addPromotionScrolls(msg);
 }
 
 void PlayerWheel::sendGiftOfLifeCooldown() const {
@@ -708,7 +740,7 @@ void PlayerWheel::sendGiftOfLifeCooldown() const {
 	msg.add<uint32_t>(getGiftOfCooldown());
 	msg.add<uint32_t>(getGiftOfLifeTotalCooldown());
 	// Checking if the cooldown if decreasing or it's stopped
-	if (m_player.getZone() != ZONE_PROTECTION && m_player.hasCondition(CONDITION_INFIGHT)) {
+	if (m_player.getZoneType() != ZONE_PROTECTION && m_player.hasCondition(CONDITION_INFIGHT)) {
 		msg.addByte(0x01);
 	} else {
 		msg.addByte(0x00);
@@ -893,19 +925,11 @@ uint16_t PlayerWheel::getExtraPoints() const {
 		return 0;
 	}
 
-	phmap::btree_map<std::string, uint16_t> availableScrolls = {
-		{ "wheel.scroll.abridged", 3 },
-		{ "wheel.scroll.basic", 5 },
-		{ "wheel.scroll.revised", 9 },
-		{ "wheel.scroll.extended", 13 },
-		{ "wheel.scroll.advanced", 20 },
-	};
-
 	uint16_t totalBonus = 0;
-	for (const auto &[storageName, points] : availableScrolls) {
-		auto storageValue = m_player.getStorageValueByName(storageName);
+	for (const auto &scroll : WheelOfDestinyPromotionScrolls) {
+		auto storageValue = m_player.getStorageValueByName(scroll.storageKey);
 		if (storageValue > 0) {
-			totalBonus += points;
+			totalBonus += scroll.extraPoints;
 		}
 	}
 
@@ -957,7 +981,7 @@ uint8_t PlayerWheel::getOptions(uint32_t ownerId) const {
 	}
 
 	// Check if is in the temple range (we assume the temple is within the range of 10 sqms)
-	if (m_player.getZone() == ZONE_PROTECTION) {
+	if (m_player.getZoneType() == ZONE_PROTECTION) {
 		for (auto [townid, town] : g_game().map.towns.getTowns()) {
 			if (Position::areInRange<1, 10>(town->getTemplePosition(), m_player.getPosition())) {
 				return 1;
@@ -1973,7 +1997,7 @@ int32_t PlayerWheel::checkElementSensitiveReduction(CombatType_t type) const {
 void PlayerWheel::onThink(bool force /* = false*/) {
 	bool updateClient = false;
 	m_creaturesNearby = 0;
-	if (!m_player.hasCondition(CONDITION_INFIGHT) || m_player.getZone() == ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tatics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
+	if (!m_player.hasCondition(CONDITION_INFIGHT) || m_player.getZoneType() == ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tatics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
 		bool mustReset = false;
 		for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
 			if (getMajorStat(static_cast<WheelMajor_t>(i)) != 0) {
@@ -2076,8 +2100,8 @@ void PlayerWheel::downgradeSpell(const std::string &name) {
 	}
 }
 
-Spell* PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
-	Spell* spell = nullptr;
+std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
+	std::shared_ptr<Spell> spell = nullptr;
 	damage.damageMultiplier += getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
 	WheelSpellGrade_t spellGrade = WheelSpellGrade_t::NONE;
 	if (!(damage.instantSpellName).empty()) {

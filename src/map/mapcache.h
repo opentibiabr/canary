@@ -10,7 +10,6 @@
 #pragma once
 
 #include "items/items_definitions.hpp"
-#include "io/fileloader.h"
 #include "utils/qtreenode.h"
 
 class Map;
@@ -19,6 +18,7 @@ class BasicItem;
 class BasicTile;
 class Item;
 class Position;
+class FileStream;
 
 using TilePtr = std::unique_ptr<Tile>;
 using BasicItemPtr = std::shared_ptr<BasicItem>;
@@ -44,8 +44,8 @@ struct BasicItem {
 
 		std::vector<BasicItemPtr> items;
 
-		bool unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &propStream);
-		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream);
+		bool unserializeItemNode(FileStream &propStream, uint16_t x, uint16_t y, uint8_t z);
+		void readAttr(FileStream &propStream);
 
 		size_t hash() const {
 			size_t h = 0;

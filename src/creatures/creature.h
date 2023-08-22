@@ -19,7 +19,7 @@
 #include "items/tile.h"
 
 using ConditionList = std::list<Condition*>;
-using CreatureEventList = std::list<CreatureEvent*>;
+using CreatureEventList = std::list<std::shared_ptr<CreatureEvent>>;
 
 class Map;
 class Thing;
@@ -29,6 +29,7 @@ class Monster;
 class Npc;
 class Item;
 class Tile;
+class Zone;
 
 static constexpr int32_t EVENT_CREATURECOUNT = 10;
 static constexpr int32_t EVENT_CREATURE_THINK_INTERVAL = 1000;
@@ -236,13 +237,15 @@ class Creature : virtual public Thing {
 			return defaultOutfit;
 		}
 		bool isInvisible() const;
-		ZoneType_t getZone() const {
+		ZoneType_t getZoneType() const {
 			if (getTile()) {
-				return tile->getZone();
+				return tile->getZoneType();
 			}
 
 			return ZONE_NORMAL;
 		}
+
+		const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones();
 
 		// walk functions
 		void startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions = false);
@@ -398,7 +401,6 @@ class Creature : virtual public Thing {
 		virtual void onChangeZone(ZoneType_t zone);
 		virtual void onAttackedCreatureChangeZone(ZoneType_t zone);
 		virtual void onIdleStatus();
-		virtual void onChangeHazard(bool isHazard);
 
 		virtual LightInfo getCreatureLight() const;
 		virtual void setNormalCreatureLight();

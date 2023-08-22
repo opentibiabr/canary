@@ -125,7 +125,7 @@ int PlayerFunctions::luaPlayerCreate(lua_State* L) {
 			return 2;
 		}
 	} else if (isUserdata(L, 2)) {
-		if (getUserdataType(L, 2) != LuaData_Player) {
+		if (getUserdataType(L, 2) != LuaData_t::Player) {
 			lua_pushnil(L);
 			return 1;
 		}
@@ -1955,7 +1955,7 @@ int PlayerFunctions::luaPlayerShowTextDialog(lua_State* L) {
 	} else if (isString(L, 2)) {
 		item = Item::CreateItem(Item::items.getItemIdByName(getString(L, 2)));
 	} else if (isUserdata(L, 2)) {
-		if (getUserdataType(L, 2) != LuaData_Item) {
+		if (getUserdataType(L, 2) != LuaData_t::Item) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -2221,7 +2221,7 @@ int PlayerFunctions::luaPlayerAddMount(lua_State* L) {
 	if (isNumber(L, 2)) {
 		mountId = getNumber<uint8_t>(L, 2);
 	} else {
-		Mount* mount = g_game().mounts.getMountByName(getString(L, 2));
+		const std::shared_ptr<Mount> &mount = g_game().mounts.getMountByName(getString(L, 2));
 		if (!mount) {
 			lua_pushnil(L);
 			return 1;
@@ -2244,7 +2244,7 @@ int PlayerFunctions::luaPlayerRemoveMount(lua_State* L) {
 	if (isNumber(L, 2)) {
 		mountId = getNumber<uint8_t>(L, 2);
 	} else {
-		Mount* mount = g_game().mounts.getMountByName(getString(L, 2));
+		const std::shared_ptr<Mount> &mount = g_game().mounts.getMountByName(getString(L, 2));
 		if (!mount) {
 			lua_pushnil(L);
 			return 1;
@@ -2263,7 +2263,7 @@ int PlayerFunctions::luaPlayerHasMount(lua_State* L) {
 		return 1;
 	}
 
-	Mount* mount = nullptr;
+	std::shared_ptr<Mount> mount = nullptr;
 	if (isNumber(L, 2)) {
 		mount = g_game().mounts.getMountByID(getNumber<uint8_t>(L, 2));
 	} else {
@@ -2581,7 +2581,7 @@ int PlayerFunctions::luaPlayerCanLearnSpell(lua_State* L) {
 	}
 
 	const std::string &spellName = getString(L, 2);
-	const InstantSpell* spell = g_spells().getInstantSpellByName(spellName);
+	const auto &spell = g_spells().getInstantSpellByName(spellName);
 	if (!spell) {
 		reportErrorFunc("Spell \"" + spellName + "\" not found");
 		pushBoolean(L, false);
@@ -2924,10 +2924,10 @@ int PlayerFunctions::luaPlayerGetInstantSpells(lua_State* L) {
 		return 1;
 	}
 
-	std::vector<const InstantSpell*> spells;
+	std::vector<std::shared_ptr<InstantSpell>> spells;
 	for (auto &[key, spell] : g_spells().getInstantSpells()) {
-		if (spell.canCast(player)) {
-			spells.push_back(&spell);
+		if (spell->canCast(player)) {
+			spells.push_back(spell);
 		}
 	}
 
@@ -2944,7 +2944,7 @@ int PlayerFunctions::luaPlayerGetInstantSpells(lua_State* L) {
 int PlayerFunctions::luaPlayerCanCast(lua_State* L) {
 	// player:canCast(spell)
 	Player* player = getUserdata<Player>(L, 1);
-	InstantSpell* spell = getUserdata<InstantSpell>(L, 2);
+	const auto &spell = getUserdataShared<InstantSpell>(L, 2);
 	if (player && spell) {
 		pushBoolean(L, spell->canCast(player));
 	} else {

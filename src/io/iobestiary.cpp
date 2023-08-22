@@ -15,6 +15,8 @@
 #include "creatures/monsters/monsters.h"
 #include "creatures/players/player.h"
 
+SoftSingleton IOBestiary::instanceTracker(g_logger(), "IOBestiary");
+
 bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> &charm, Player* player, Creature* target, int32_t realDamage, bool dueToPotion, bool checkArmor) {
 	if (!charm || !player || !target) {
 		return false;
@@ -234,10 +236,10 @@ void IOBestiary::addBestiaryKill(Player* player, const std::shared_ptr<MonsterTy
 			addCharmPoints(player, mtype->info.bestiaryCharmsPoints);
 	}
 
-	std::list<std::shared_ptr<MonsterType>> trackerList = player->getBestiaryTrackerList();
-	for (const auto &mType : trackerList) {
+	const auto &trackerUnorderedSet = player->getCyclopediaMonsterTrackerSet(false);
+	for (const auto &mType : trackerUnorderedSet) {
 		if (raceid == mType->info.raceid) {
-			player->refreshBestiaryTracker(trackerList);
+			player->refreshCyclopediaMonsterTracker(trackerUnorderedSet, false);
 		}
 	}
 }
@@ -397,16 +399,15 @@ phmap::btree_map<uint16_t, uint32_t> IOBestiary::getBestiaryKillCountByMonsterID
 	return raceMonsters;
 }
 
-std::vector<uint16_t> IOBestiary::getBestiaryFinished(Player* player) const {
-	std::vector<uint16_t> finishedMonsters = {};
-	phmap::btree_map<uint16_t, std::string> besty_l = g_game().getBestiaryList();
+phmap::parallel_flat_hash_set<uint16_t> IOBestiary::getBestiaryFinished(Player* player) const {
+	phmap::parallel_flat_hash_set<uint16_t> finishedMonsters;
+	auto bestiaryMap = g_game().getBestiaryList();
 
-	for (auto nt : besty_l) {
-		uint16_t raceid = nt.first;
-		uint32_t thisKilled = player->getBestiaryKillCount(raceid);
-		const auto &mtype = g_monsters().getMonsterType(nt.second);
-		if (mtype && thisKilled >= mtype->info.bestiaryToUnlock) {
-			finishedMonsters.push_back(raceid);
+	for (const auto &[monsterTypeRaceId, monsterTypeName] : bestiaryMap) {
+		uint32_t thisKilled = player->getBestiaryKillCount(monsterTypeRaceId);
+		auto mtype = g_monsters().getMonsterType(monsterTypeName);
+		if (mtype && thisKilled >= mtype->info.bestiaryFirstUnlock) {
+			finishedMonsters.insert(monsterTypeRaceId);
 		}
 	}
 	return finishedMonsters;

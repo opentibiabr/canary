@@ -15,7 +15,7 @@
 class CreatureEventFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-			registerClass(L, "CreatureEvent", "", CreatureEventFunctions::luaCreateCreatureEvent);
+			registerSharedClass(L, "CreatureEvent", "", CreatureEventFunctions::luaCreateCreatureEvent);
 			registerMethod(L, "CreatureEvent", "type", CreatureEventFunctions::luaCreatureEventType);
 			registerMethod(L, "CreatureEvent", "register", CreatureEventFunctions::luaCreatureEventRegister);
 			registerMethod(L, "CreatureEvent", "onLogin", CreatureEventFunctions::luaCreatureEventOnCallback);

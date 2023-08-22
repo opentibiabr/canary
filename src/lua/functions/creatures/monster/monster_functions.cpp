@@ -21,7 +21,7 @@ int MonsterFunctions::luaMonsterCreate(lua_State* L) {
 	if (isNumber(L, 2)) {
 		monster = g_game().getMonsterByID(getNumber<uint32_t>(L, 2));
 	} else if (isUserdata(L, 2)) {
-		if (getUserdataType(L, 2) != LuaData_Monster) {
+		if (getUserdataType(L, 2) != LuaData_t::Monster) {
 			lua_pushnil(L);
 			return 1;
 		}

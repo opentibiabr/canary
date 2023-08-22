@@ -50,20 +50,20 @@ class EventsCallbacks {
 		 * @brief Adds a new event callback to the list.
 		 * @param callback Pointer to the EventCallback object to add.
 		 */
-		void addCallback(EventCallback* callback);
+		void addCallback(const std::shared_ptr<EventCallback> &callback);
 
 		/**
 		 * @brief Gets all registered event callbacks.
 		 * @return Vector of pointers to EventCallback objects.
 		 */
-		std::vector<EventCallback*> getCallbacks() const;
+		std::vector<std::shared_ptr<EventCallback>> getCallbacks() const;
 
 		/**
 		 * @brief Gets event callbacks by their type.
 		 * @param type The type of callbacks to retrieve.
 		 * @return Vector of pointers to EventCallback objects of the specified type.
 		 */
-		std::vector<EventCallback*> getCallbacksByType(EventCallback_t type) const;
+		std::vector<std::shared_ptr<EventCallback>> getCallbacksByType(EventCallback_t type) const;
 
 		/**
 		 * @brief Clears all registered event callbacks.
@@ -78,9 +78,9 @@ class EventsCallbacks {
 		 */
 		template <typename CallbackFunc, typename... Args>
 		void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
-			for (auto callback : getCallbacksByType(eventType)) {
-				if (callback->isLoadedCallback()) {
-					(callback->*callbackFunc)(std::forward<Args>(args)...);
+			for (const auto &callback : getCallbacksByType(eventType)) {
+				if (callback && callback->isLoadedCallback()) {
+					((*callback).*callbackFunc)(std::forward<Args>(args)...);
 				}
 			}
 		}
@@ -96,9 +96,9 @@ class EventsCallbacks {
 		bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 			bool allCallbacksSucceeded = true;
 
-			for (auto callback : getCallbacksByType(eventType)) {
-				if (callback->isLoadedCallback()) {
-					bool callbackResult = (callback->*callbackFunc)(std::forward<Args>(args)...);
+			for (const auto &callback : getCallbacksByType(eventType)) {
+				if (callback && callback->isLoadedCallback()) { // Verifique se o callback é não nulo
+					bool callbackResult = ((*callback).*callbackFunc)(std::forward<Args>(args)...);
 					allCallbacksSucceeded = allCallbacksSucceeded && callbackResult;
 				}
 			}
@@ -107,7 +107,7 @@ class EventsCallbacks {
 
 	private:
 		// Container for storing registered event callbacks.
-		std::vector<EventCallback*> m_callbacks;
+		std::vector<std::shared_ptr<EventCallback>> m_callbacks;
 };
 
 constexpr auto g_callbacks = EventsCallbacks::getInstance;

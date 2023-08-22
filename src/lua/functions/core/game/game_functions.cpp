@@ -535,7 +535,7 @@ int GameFunctions::luaGameStartRaid(lua_State* L) {
 	// Game.startRaid(raidName)
 	const std::string &raidName = getString(L, 1);
 
-	Raid* raid = g_game().raids.getRaidByName(raidName);
+	const auto &raid = g_game().raids.getRaidByName(raidName);
 	if (!raid || !raid->isLoaded()) {
 		lua_pushnumber(L, RETURNVALUE_NOSUCHRAIDEXISTS);
 		return 1;
@@ -740,15 +740,6 @@ int GameFunctions::luaGameGetFiendishMonsters(lua_State* L) {
 int GameFunctions::luaGameGetBoostedBoss(lua_State* L) {
 	// Game.getBoostedBoss()
 	pushString(L, g_ioBosstiary().getBoostedBossName());
-	return 1;
-}
-
-int GameFunctions::luaGameCreateHazardArea(lua_State* L) {
-	// Game.createHazardArea(positionFrom, positionTo)
-	const Position &positionFrom = getPosition(L, 1);
-	const Position &positionTo = getPosition(L, 2);
-
-	pushBoolean(L, g_game().createHazardArea(positionFrom, positionTo));
 	return 1;
 }
 

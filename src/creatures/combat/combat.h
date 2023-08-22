@@ -211,33 +211,7 @@ class AreaCombat {
 		void copyArea(const MatrixArea* input, MatrixArea* output, MatrixOperation_t op) const;
 
 		MatrixArea* getArea(const Position &centerPos, const Position &targetPos) const {
-			int32_t dx = Position::getOffsetX(targetPos, centerPos);
-			int32_t dy = Position::getOffsetY(targetPos, centerPos);
-
-			Direction dir;
-			if (dx < 0) {
-				dir = DIRECTION_WEST;
-			} else if (dx > 0) {
-				dir = DIRECTION_EAST;
-			} else if (dy < 0) {
-				dir = DIRECTION_NORTH;
-			} else {
-				dir = DIRECTION_SOUTH;
-			}
-
-			if (hasExtArea) {
-				if (dx < 0 && dy < 0) {
-					dir = DIRECTION_NORTHWEST;
-				} else if (dx > 0 && dy < 0) {
-					dir = DIRECTION_NORTHEAST;
-				} else if (dx < 0 && dy > 0) {
-					dir = DIRECTION_SOUTHWEST;
-				} else if (dx > 0 && dy > 0) {
-					dir = DIRECTION_SOUTHEAST;
-				}
-			}
-
-			auto it = areas.find(dir);
+			auto it = areas.find(getDirectionTo(centerPos, targetPos, false));
 			if (it == areas.end()) {
 				return nullptr;
 			}
@@ -366,7 +340,7 @@ class Combat {
 		 * @param damage The combat damage.
 		 * @return The calculated level formula.
 		 */
-		int32_t getLevelFormula(const Player* player, const Spell* wheelSpell, const CombatDamage &damage) const;
+		int32_t getLevelFormula(const Player* player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const;
 		CombatDamage getCombatDamage(Creature* creature, Creature* target) const;
 
 		bool doCombatChain(Creature* caster, Creature* target, bool aggressive) const;

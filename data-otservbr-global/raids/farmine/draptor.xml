@@ -1,7 +1,6 @@
 <raid>
 	<!-- Announcements -->
-	<announce delay="1000" type="event" message="The dragons of the Dragonblaze Mountains have 
-		descended to Zao to protect the lizardkin!" />
+	<announce delay="1000" type="event" message="The dragons of the Dragonblaze Mountains have  descended to Zao to protect the lizardkin!" />
 	<!-- Single Spawns -->
 	<singlespawn delay="120000" name="Draptor" x="33206" y="31247" z="7"/>
 	<singlespawn delay="120000" name="Draptor" x="33256" y="31235" z="7"/>

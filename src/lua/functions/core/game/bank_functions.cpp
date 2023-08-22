@@ -144,7 +144,7 @@ int BankFunctions::luaBankDeposit(lua_State* L) {
 }
 
 std::shared_ptr<Bank> BankFunctions::getBank(lua_State* L, int32_t arg, bool isGuild /*= false*/) {
-	if (getUserdataType(L, arg) == LuaData_Guild) {
+	if (getUserdataType(L, arg) == LuaData_t::Guild) {
 		return std::make_shared<Bank>(getGuild(L, arg));
 	}
 	if (isGuild) {

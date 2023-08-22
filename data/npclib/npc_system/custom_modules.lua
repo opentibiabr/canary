@@ -26,7 +26,7 @@ end
 function StdModule.kick(npc, player, message, keywords, parameters, node)
 	local npcHandler = parameters.npcHandler
 	if npcHandler == nil then
-		Spdlog.error("StdModule.travel called without any npcHandler instance.")
+		logger.error("StdModule.travel called without any npcHandler instance.")
 	end
 
 	if not npcHandler:checkInteraction(npc, player) then

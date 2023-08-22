@@ -17,8 +17,6 @@
 class Action;
 class Position;
 
-using Action_ptr = std::unique_ptr<Action>;
-
 class Action : public Script {
 	public:
 		explicit Action(LuaScriptInterface* interface);
@@ -153,11 +151,11 @@ class Actions final : public Scripts {
 		ReturnValue canUse(const Player* player, const Position &pos, const Item* item);
 		ReturnValue canUseFar(const Creature* creature, const Position &toPos, bool checkLineOfSight, bool checkFloor);
 
-		bool registerLuaItemEvent(Action* action);
-		bool registerLuaUniqueEvent(Action* action);
-		bool registerLuaActionEvent(Action* action);
-		bool registerLuaPositionEvent(Action* action);
-		bool registerLuaEvent(Action* event);
+		bool registerLuaItemEvent(const std::shared_ptr<Action> &action);
+		bool registerLuaUniqueEvent(const std::shared_ptr<Action> &action);
+		bool registerLuaActionEvent(const std::shared_ptr<Action> &action);
+		bool registerLuaPositionEvent(const std::shared_ptr<Action> &action);
+		bool registerLuaEvent(const std::shared_ptr<Action> &action);
 		// Clear maps for reloading
 		void clear();
 
@@ -170,11 +168,11 @@ class Actions final : public Scripts {
 			return false;
 		}
 
-		phmap::btree_map<Position, Action> getPositionsMap() const {
+		[[nodiscard]] phmap::btree_map<Position, std::shared_ptr<Action>> getPositionsMap() const {
 			return actionPositionMap;
 		}
 
-		void setPosition(Position position, Action action) {
+		void setPosition(Position position, std::shared_ptr<Action> action) {
 			actionPositionMap.try_emplace(position, action);
 		}
 
@@ -186,7 +184,7 @@ class Actions final : public Scripts {
 			return false;
 		}
 
-		void setItemId(uint16_t itemId, Action action) {
+		void setItemId(uint16_t itemId, const std::shared_ptr<Action> &action) {
 			useItemMap.try_emplace(itemId, action);
 		}
 
@@ -198,7 +196,7 @@ class Actions final : public Scripts {
 			return false;
 		}
 
-		void setUniqueId(uint16_t uniqueId, Action action) {
+		void setUniqueId(uint16_t uniqueId, const std::shared_ptr<Action> &action) {
 			uniqueItemMap.try_emplace(uniqueId, action);
 		}
 
@@ -210,20 +208,20 @@ class Actions final : public Scripts {
 			return false;
 		}
 
-		void setActionId(uint16_t actionId, Action action) {
+		void setActionId(uint16_t actionId, const std::shared_ptr<Action> &action) {
 			actionItemMap.try_emplace(actionId, action);
 		}
 
 		ReturnValue internalUseItem(Player* player, const Position &pos, uint8_t index, Item* item, bool isHotkey);
 		static void showUseHotkeyMessage(Player* player, const Item* item, uint32_t count);
 
-		using ActionUseMap = phmap::btree_map<uint16_t, Action>;
+		using ActionUseMap = std::map<uint16_t, std::shared_ptr<Action>>;
 		ActionUseMap useItemMap;
 		ActionUseMap uniqueItemMap;
 		ActionUseMap actionItemMap;
-		phmap::btree_map<Position, Action> actionPositionMap;
+		phmap::btree_map<Position, std::shared_ptr<Action>> actionPositionMap;
 
-		Action* getAction(const Item* item);
+		std::shared_ptr<Action> getAction(const Item* item);
 };
 
 constexpr auto g_actions = Actions::getInstance;

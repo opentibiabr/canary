@@ -1647,12 +1647,6 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 		return output.str();
 	}
 
-	//	int hours = static_cast<int>(std::floor((timeRemaining % (24 * 60 * 60)) / (60 * 60)));
-	//	int minutes = static_cast<int>(std::floor((timeRemaining % (60 * 60)) / 60));
-	//	int seconds = static_cast<int>(timeRemaining % 60);
-	//	output << hours << " hours, " << minutes << " minutes and " << seconds << " seconds";
-	//	return output.str();
-
 	int hours = static_cast<int>(std::floor((timeRemaining % 86400) / 3600));
 	int minutes = static_cast<int>(std::floor((timeRemaining % 3600) / 60));
 	int seconds = static_cast<int>(timeRemaining % 60);

@@ -42,7 +42,7 @@ QTreeLeafNode* QTreeNode::createLeaf(uint32_t x, uint32_t y, uint32_t level) {
 
 QTreeLeafNode* QTreeNode::getBestLeaf(uint32_t x, uint32_t y, uint32_t level) {
 	QTreeLeafNode::newLeaf = false;
-	auto leaf = createLeaf(x, y, 15);
+	auto leaf = createLeaf(x, y, level);
 
 	if (QTreeLeafNode::newLeaf) {
 		// update north

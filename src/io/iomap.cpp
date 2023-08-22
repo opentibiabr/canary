@@ -153,7 +153,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 
 			if (stream.isProp(OTBM_ATTR_ITEM)) {
 				const uint16_t id = stream.getU16();
-				const ItemType &iType = Item::items[id];
+				const auto &iType = Item::items[id];
 
 				if (!tile->isHouse() || !iType.isBed()) {
 					if (iType.blockSolid)

@@ -150,7 +150,11 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePt
 		return;
 	}
 
-	root.getBestLeaf(x, y, 15)->createFloor(z)->setTileCache(x, y, static_tryGetTileFromCache(newTile));
+	const auto &tile = static_tryGetTileFromCache(newTile);
+	if (const auto leaf = QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y))
+		leaf->createFloor(z)->setTileCache(x, y, tile);
+	else
+		root.getBestLeaf(x, y, 15)->createFloor(z)->setTileCache(x, y, tile);
 }
 
 BasicItemPtr MapCache::tryReplaceItemFromCache(const BasicItemPtr &ref) {

@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.org/
  */
 
-#ifndef SRC_CREATURES_PLAYERS_WHEEL_PLAYER_WHEEL_HPP_
-#define SRC_CREATURES_PLAYERS_WHEEL_PLAYER_WHEEL_HPP_
+#pragma once
 
 #include "io/io_wheel.hpp"
 
@@ -336,5 +335,3 @@ private:
 	phmap::btree_map<std::string, WheelSpellGrade_t> m_spellsSelected;
 	std::vector<std::string> m_learnedSpellsSelected;
 };
-
-#endif // SRC_CREATURES_PLAYERS_WHEEL_PLAYER_WHEEL_HPP_

@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "items/item.h"
-#include "items/items.h"
+#include "items/item.hpp"
+#include "items/items.hpp"
 #include "lua/functions/items/item_type_functions.hpp"
 
 int ItemTypeFunctions::luaItemTypeCreate(lua_State* L) {

@@ -9,12 +9,12 @@
 
 #include "pch.hpp"
 
-#include "creatures/monsters/monsters.h"
+#include "creatures/monsters/monsters.hpp"
 
-#include "creatures/combat/spells.h"
-#include "creatures/combat/combat.h"
-#include "game/game.h"
-#include "items/weapons/weapons.h"
+#include "creatures/combat/spells.hpp"
+#include "creatures/combat/combat.hpp"
+#include "game/game.hpp"
+#include "items/weapons/weapons.hpp"
 
 void MonsterType::loadLoot(const std::shared_ptr<MonsterType> &monsterType, LootBlock lootBlock) {
 	if (lootBlock.childLoot.empty()) {

@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_GAME_BANK_BANK_HPP_
-#define SRC_GAME_BANK_BANK_HPP_
+#pragma once
 
 class Player;
 class Guild;
@@ -51,5 +50,3 @@ public:
 private:
 	std::shared_ptr<Bankable> bankable;
 };
-
-#endif // SRC_GAME_BANK_BANK_HPP_

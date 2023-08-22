@@ -13,9 +13,9 @@
 
 #include "io/io_wheel.hpp"
 
-#include "game/game.h"
-#include "creatures/players/player.h"
-#include "creatures/combat/spells.h"
+#include "game/game.hpp"
+#include "creatures/players/player.hpp"
+#include "creatures/combat/spells.hpp"
 
 // To avoid conflict in other files that might use a function with the same name
 // Here are built-in helper functions

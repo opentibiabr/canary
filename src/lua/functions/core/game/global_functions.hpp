@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CORE_GAME_GLOBAL_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CORE_GAME_GLOBAL_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class GlobalFunctions final : LuaScriptInterface {
 public:
@@ -92,5 +91,3 @@ private:
 
 	static bool getArea(lua_State* L, std::list<uint32_t> &list, uint32_t &rows);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CORE_GAME_GLOBAL_FUNCTIONS_HPP_

@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CORE_LIBS_LOGGER_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CORE_LIBS_LOGGER_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class LoggerFunctions final : public LuaScriptInterface {
 public:
@@ -27,5 +26,3 @@ private:
 	static int luaLoggerInfo(lua_State* L);
 	static int luaLoggerWarn(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CORE_LIBS_LOGGER_FUNCTIONS_HPP_

@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/combat/combat.h"
-#include "game/game.h"
-#include "lua/creature/events.h"
-#include "items/weapons/weapons.h"
+#include "creatures/combat/combat.hpp"
+#include "game/game.hpp"
+#include "lua/creature/events.hpp"
+#include "items/weapons/weapons.hpp"
 
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;

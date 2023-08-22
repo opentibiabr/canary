@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CORE_LIBS_CORE_LIBS_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CORE_LIBS_CORE_LIBS_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 #include "lua/functions/core/libs/bit_functions.hpp"
 #include "lua/functions/core/libs/db_functions.hpp"
 #include "lua/functions/core/libs/result_functions.hpp"
@@ -27,5 +26,3 @@ public:
 
 private:
 };
-
-#endif // SRC_LUA_FUNCTIONS_CORE_LIBS_CORE_LIBS_FUNCTIONS_HPP_

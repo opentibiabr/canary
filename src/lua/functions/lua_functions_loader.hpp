@@ -7,12 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_LUA_FUNCTIONS_LOADER_HPP_
-#define SRC_LUA_FUNCTIONS_LUA_FUNCTIONS_LOADER_HPP_
+#pragma once
 
 #include "declarations.hpp"
 #include "lua/scripts/luajit_sync.hpp"
-#include "game/movement/position.h"
+#include "game/movement/position.hpp"
 #include "lua/scripts/script_environment.hpp"
 
 class Combat;
@@ -222,5 +221,3 @@ protected:
 private:
 	static int luaGarbageCollection(lua_State* L);
 };
-
-#endif

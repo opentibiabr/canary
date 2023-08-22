@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_GAME_GAME_DEFINITIONS_HPP_
-#define SRC_GAME_GAME_DEFINITIONS_HPP_
+#pragma once
 
-#include "movement/position.h"
+#include "movement/position.hpp"
 
 // Enums
 enum StackPosType_t {
@@ -127,5 +126,3 @@ struct ModalWindow {
 		defaultEscapeButton(0xFF),
 		priority(false) { }
 };
-
-#endif // SRC_GAME_GAME_DEFINITIONS_HPP_

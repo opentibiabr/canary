@@ -9,13 +9,13 @@
 
 #include "pch.hpp"
 
-#include "server/network/protocol/protocollogin.h"
-#include "server/network/message/outputmessage.h"
+#include "server/network/protocol/protocollogin.hpp"
+#include "server/network/message/outputmessage.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/account/account.hpp"
-#include "io/iologindata.h"
-#include "creatures/players/management/ban.h"
-#include "game/game.h"
+#include "io/iologindata.hpp"
+#include "creatures/players/management/ban.hpp"
+#include "game/game.hpp"
 #include "core.hpp"
 
 void ProtocolLogin::disconnectClient(const std::string &message) {

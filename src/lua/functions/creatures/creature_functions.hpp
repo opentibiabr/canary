@@ -7,14 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CREATURES_CREATURE_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CREATURES_CREATURE_FUNCTIONS_HPP_
+#pragma once
 
 #include "lua/functions/creatures/combat/combat_functions.hpp"
 #include "lua/functions/creatures/monster/monster_functions.hpp"
 #include "lua/functions/creatures/npc/npc_functions.hpp"
 #include "lua/functions/creatures/player/player_functions.hpp"
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class CreatureFunctions final : LuaScriptInterface {
 public:
@@ -176,5 +175,3 @@ private:
 
 	static int luaCreatureGetZones(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CREATURES_CREATURE_FUNCTIONS_HPP_

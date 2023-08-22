@@ -9,13 +9,13 @@
 
 #include "pch.hpp"
 
-#include "creatures/interactions/chat.h"
-#include "game/game.h"
-#include "game/scheduling/scheduler.h"
+#include "creatures/interactions/chat.hpp"
+#include "game/game.hpp"
+#include "game/scheduling/scheduler.hpp"
 #include "lua/functions/core/game/global_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/script_environment.hpp"
-#include "server/network/protocol/protocolstatus.h"
+#include "server/network/protocol/protocolstatus.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 
 class Creature;

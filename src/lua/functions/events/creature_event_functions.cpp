@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "lua/creature/creatureevent.h"
+#include "lua/creature/creatureevent.hpp"
 #include "lua/functions/events/creature_event_functions.hpp"
-#include "utils/tools.h"
+#include "utils/tools.hpp"
 
 int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 	// CreatureEvent(eventName)

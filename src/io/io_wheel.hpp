@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.org/
  */
 
-#ifndef SRC_IO_IO_WHEEL_HPP_
-#define SRC_IO_IO_WHEEL_HPP_
+#pragma once
 
 // Definitions of wheel of destiny enums
 #include "creatures/players/wheel/wheel_definitions.hpp"
@@ -376,5 +375,3 @@ private:
 	void slotPurpleBottom150(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) const;
 	void slotPurple200(Player &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) const;
 };
-
-#endif // SRC_IO_IO_WHEEL_HPP_

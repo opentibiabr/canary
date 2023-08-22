@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "lua/creature/events.h"
-#include "utils/tools.h"
-#include "items/item.h"
-#include "creatures/players/player.h"
+#include "lua/creature/events.hpp"
+#include "utils/tools.hpp"
+#include "items/item.hpp"
+#include "creatures/players/player.hpp"
 
 Events::Events() :
 	scriptInterface("Event Interface") {

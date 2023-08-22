@@ -9,12 +9,12 @@
 
 #include "pch.hpp"
 
-#include "lua/creature/actions.h"
-#include "items/bed.h"
-#include "items/containers/container.h"
-#include "game/game.h"
-#include "creatures/combat/spells.h"
-#include "items/containers/rewards/rewardchest.h"
+#include "lua/creature/actions.hpp"
+#include "items/bed.hpp"
+#include "items/containers/container.hpp"
+#include "game/game.hpp"
+#include "creatures/combat/spells.hpp"
+#include "items/containers/rewards/rewardchest.hpp"
 
 Actions::Actions() = default;
 Actions::~Actions() = default;

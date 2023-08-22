@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "server/network/webhook/webhook.h"
-#include "config/configmanager.h"
-#include "game/scheduling/scheduler.h"
-#include "utils/tools.h"
+#include "server/network/webhook/webhook.hpp"
+#include "config/configmanager.hpp"
+#include "game/scheduling/scheduler.hpp"
+#include "utils/tools.hpp"
 
 Webhook::Webhook(ThreadPool &threadPool) :
 	threadPool(threadPool) {

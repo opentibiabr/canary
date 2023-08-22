@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "items/cylinder.h"
+#include "items/cylinder.hpp"
 #include "lua/functions/creatures/combat/variant_functions.hpp"
 
 int VariantFunctions::luaVariantCreate(lua_State* L) {

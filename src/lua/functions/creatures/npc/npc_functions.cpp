@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
-#include "creatures/creature.h"
-#include "creatures/npcs/npc.h"
+#include "game/game.hpp"
+#include "creatures/creature.hpp"
+#include "creatures/npcs/npc.hpp"
 #include "lua/functions/creatures/npc/npc_functions.hpp"
 
 int NpcFunctions::luaNpcCreate(lua_State* L) {

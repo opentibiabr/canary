@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
-#define SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
+#pragma once
 
 // Enum
 
@@ -1643,5 +1642,3 @@ struct PartyAnalyzer {
 	phmap::btree_map<uint16_t, uint64_t> lootMap; // [itemID] = amount
 	phmap::btree_map<uint16_t, uint64_t> supplyMap; // [itemID] = amount
 };
-
-#endif // SRC_CREATURES_CREATURES_DEFINITIONS_HPP_

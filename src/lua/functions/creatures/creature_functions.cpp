@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
-#include "creatures/creature.h"
+#include "game/game.hpp"
+#include "creatures/creature.hpp"
 #include "lua/functions/creatures/creature_functions.hpp"
 
 int CreatureFunctions::luaCreatureCreate(lua_State* L) {

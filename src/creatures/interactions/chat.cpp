@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/interactions/chat.h"
-#include "game/game.h"
-#include "utils/pugicast.h"
-#include "game/scheduling/scheduler.h"
+#include "creatures/interactions/chat.hpp"
+#include "game/game.hpp"
+#include "utils/pugicast.hpp"
+#include "game/scheduling/scheduler.hpp"
 
 bool PrivateChatChannel::isInvited(uint32_t guid) const {
 	if (guid == getOwner()) {

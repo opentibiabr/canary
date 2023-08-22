@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "items/containers/container.h"
-#include "items/decay/decay.h"
-#include "io/iomap.h"
-#include "game/game.h"
+#include "items/containers/container.hpp"
+#include "items/decay/decay.hpp"
+#include "io/iomap.hpp"
+#include "game/game.hpp"
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {

@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 #include "lib/thread/thread_pool.hpp"
-#include "utils/tools.h"
+#include "utils/tools.hpp"
 
 ThreadPool::ThreadPool(Logger &logger) :
 	logger(logger) {

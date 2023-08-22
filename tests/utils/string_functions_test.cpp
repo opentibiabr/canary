@@ -1,6 +1,6 @@
 #include <boost/ut.hpp>
 #include "pch.hpp"
-#include "utils/tools.h"
+#include "utils/tools.hpp"
 
 using namespace boost::ut;
 

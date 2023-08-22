@@ -9,20 +9,20 @@
 
 #include "pch.hpp"
 
-#include "items/item.h"
+#include "items/item.hpp"
 #include "items/functions/item/item_parse.hpp"
-#include "items/containers/container.h"
-#include "items/decay/decay.h"
-#include "game/movement/teleport.h"
-#include "items/trashholder.h"
-#include "items/containers/mailbox/mailbox.h"
-#include "map/house/house.h"
-#include "game/game.h"
-#include "items/bed.h"
-#include "containers/rewards/rewardchest.h"
-#include "creatures/players/imbuements/imbuements.h"
-#include "lua/creature/actions.h"
-#include "creatures/combat/spells.h"
+#include "items/containers/container.hpp"
+#include "items/decay/decay.hpp"
+#include "game/movement/teleport.hpp"
+#include "items/trashholder.hpp"
+#include "items/containers/mailbox/mailbox.hpp"
+#include "map/house/house.hpp"
+#include "game/game.hpp"
+#include "items/bed.hpp"
+#include "containers/rewards/rewardchest.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
+#include "lua/creature/actions.hpp"
+#include "creatures/combat/spells.hpp"
 
 #define ITEM_IMBUEMENT_SLOT 500
 

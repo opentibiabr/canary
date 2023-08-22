@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "creatures/creature.h"
-#include "map/mapcache.h"
-#include "qtreenode.h"
+#include "creatures/creature.hpp"
+#include "map/mapcache.hpp"
+#include "qtreenode.hpp"
 
 bool QTreeLeafNode::newLeaf = false;
 

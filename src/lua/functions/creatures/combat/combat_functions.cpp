@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "creatures/combat/combat.h"
-#include "game/game.h"
+#include "creatures/combat/combat.hpp"
+#include "game/game.hpp"
 #include "lua/functions/creatures/combat/combat_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 

@@ -1,7 +1,7 @@
 #include "pch.hpp"
 #include "lua/functions/core/game/bank_functions.hpp"
 #include "game/bank/bank.hpp"
-#include "game/game.h"
+#include "game/game.hpp"
 
 int BankFunctions::luaBankCredit(lua_State* L) {
 	// Bank.credit(playerOrGuild, amount)

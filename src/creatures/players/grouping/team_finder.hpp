@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_CREATURES_PLAYERS_GROUPING_TEAM_FINDER_HPP_
-#define SRC_CREATURES_PLAYERS_GROUPING_TEAM_FINDER_HPP_
+#pragma once
 
 /**
  * Team assemble finder.
@@ -52,5 +51,3 @@ public:
 	// list: player:getGuid(), player status
 	phmap::btree_map<uint32_t, uint8_t> membersMap = {};
 };
-
-#endif // SRC_CREATURES_PLAYERS_GROUPING_TEAM_FINDER_HPP_

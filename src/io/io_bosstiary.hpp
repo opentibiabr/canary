@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_IO_IO_BOSSTIARY_HPP_
-#define SRC_IO_IO_BOSSTIARY_HPP_
+#pragma once
 
 #include <map>
 #include <string>
@@ -76,5 +75,3 @@ private:
 };
 
 constexpr auto g_ioBosstiary = IOBosstiary::getInstance;
-
-#endif // SRC_IO_IO_BOSSTIARY_HPP_

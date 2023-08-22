@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_IO_FUNCTIONS_IOLOGINDATALOAD_HPP_
-#define SRC_IO_FUNCTIONS_IOLOGINDATALOAD_HPP_
+#pragma once
 
-#include "io/iologindata.h"
+#include "io/iologindata.hpp"
 
 class IOLoginDataLoad : public IOLoginData {
 public:
@@ -88,5 +87,3 @@ private:
 		}
 	}
 };
-
-#endif // SRC_IO_FUNCTIONS_IOLOGINDATALOAD_HPP_

@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.org/
  */
 
-#ifndef SRC_CREATURES_PLAYERS_STORAGES_STORAGES_HPP_
-#define SRC_CREATURES_PLAYERS_STORAGES_STORAGES_HPP_
+#pragma once
 
 class Storages {
 public:
@@ -31,5 +30,3 @@ private:
 };
 
 constexpr auto g_storages = Storages::getInstance;
-
-#endif // SRC_CREATURES_PLAYERS_STORAGES_STORAGES_HPP_

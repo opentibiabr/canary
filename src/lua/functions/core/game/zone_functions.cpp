@@ -1,7 +1,7 @@
 #include "pch.hpp"
 #include "lua/functions/core/game/zone_functions.hpp"
 #include "game/zones/zone.hpp"
-#include "game/game.h"
+#include "game/game.hpp"
 
 // Zone
 int ZoneFunctions::luaZoneCreate(lua_State* L) {

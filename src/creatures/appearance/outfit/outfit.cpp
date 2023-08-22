@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/appearance/outfit/outfit.h"
-#include "utils/pugicast.h"
-#include "utils/tools.h"
-#include "game/game.h"
+#include "creatures/appearance/outfit/outfit.hpp"
+#include "utils/pugicast.hpp"
+#include "utils/tools.hpp"
+#include "game/game.hpp"
 
 bool Outfits::loadFromXml() {
 	pugi::xml_document doc;

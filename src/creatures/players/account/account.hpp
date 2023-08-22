@@ -7,12 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_CREATURES_PLAYERS_ACCOUNT_ACCOUNT_HPP_
-#define SRC_CREATURES_PLAYERS_ACCOUNT_ACCOUNT_HPP_
+#pragma once
 
-#include "database/database.h"
-#include "database/databasetasks.h"
-#include "utils/definitions.h"
+#include "database/database.hpp"
+#include "database/databasetasks.hpp"
+#include "utils/definitions.hpp"
 
 namespace account {
 
@@ -258,5 +257,3 @@ namespace account {
 	};
 
 } // namespace account
-
-#endif // SRC_CREATURES_PLAYERS_ACCOUNT_ACCOUNT_HPP_

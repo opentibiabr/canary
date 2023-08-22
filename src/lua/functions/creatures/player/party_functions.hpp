@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CREATURES_PLAYER_PARTY_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CREATURES_PLAYER_PARTY_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class PartyFunctions final : LuaScriptInterface {
 public:
@@ -52,5 +51,3 @@ private:
 	static int luaPartyShareExperience(lua_State* L);
 	static int luaPartySetSharedExperience(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CREATURES_PLAYER_PARTY_FUNCTIONS_HPP_

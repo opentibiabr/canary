@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_ENUMS_HPP
-#define SRC_ENUMS_HPP
+#pragma once
 
 enum ItemAttribute_t : uint64_t {
 	NONE = 0,
@@ -59,5 +58,3 @@ enum ItemAnimation_t : uint8_t {
 	ANIMATION_RANDOM = 1,
 	ANIMATION_DESYNC = 2,
 };
-
-#endif // SRC_ENUMS_HPP

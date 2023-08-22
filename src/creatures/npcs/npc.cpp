@@ -9,13 +9,13 @@
 
 #include "pch.hpp"
 
-#include "creatures/npcs/npc.h"
-#include "creatures/npcs/npcs.h"
+#include "creatures/npcs/npc.hpp"
+#include "creatures/npcs/npcs.hpp"
 #include "declarations.hpp"
-#include "game/game.h"
-#include "lua/callbacks/creaturecallback.h"
+#include "game/game.hpp"
+#include "lua/callbacks/creaturecallback.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "game/scheduling/scheduler.h"
+#include "game/scheduling/scheduler.hpp"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;

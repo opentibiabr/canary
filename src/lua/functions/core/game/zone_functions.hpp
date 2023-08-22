@@ -1,7 +1,6 @@
-#ifndef SRC_LUA_FUNCTIONS_CORE_GAME_ZONE_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CORE_GAME_ZONE_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class Zone;
 
@@ -51,5 +50,3 @@ private:
 	static int luaZoneGetByName(lua_State* L);
 	static int luaZoneGetAll(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CORE_GAME_ZONE_FUNCTIONS_HPP_

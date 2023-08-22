@@ -7,14 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CORE_GAME_LUA_ENUMS_HPP_
-#define SRC_LUA_FUNCTIONS_CORE_GAME_LUA_ENUMS_HPP_
+#pragma once
 
 #include "pch.hpp"
 
 #include "creatures/players/account/account.hpp"
 #include "declarations.hpp"
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class LuaEnums final : LuaScriptInterface {
 public:
@@ -68,5 +67,3 @@ private:
 	static void initSoundEnums(lua_State* L);
 	static void initWheelEnums(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CORE_GAME_LUA_ENUMS_HPP_

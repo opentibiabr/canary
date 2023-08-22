@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
-#include "creatures/players/grouping/guild.h"
+#include "game/game.hpp"
+#include "creatures/players/grouping/guild.hpp"
 #include "lua/functions/creatures/player/guild_functions.hpp"
 
 int GuildFunctions::luaGuildCreate(lua_State* L) {

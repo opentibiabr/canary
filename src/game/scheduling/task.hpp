@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_GAME_TASK_H_
-#define SRC_GAME_TASK_H_
+#pragma once
 
 class Task {
 public:
@@ -38,5 +37,3 @@ private:
 	uint64_t eventId = 0;
 	std::function<void(void)> func {};
 };
-
-#endif // SRC_GAME_TASK_H_

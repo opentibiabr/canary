@@ -7,12 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_CALLBACKS_EVENTS_CALLBACKS_HPP_
-#define SRC_LUA_CALLBACKS_EVENTS_CALLBACKS_HPP_
+#pragma once
 
 #include "lua/callbacks/callbacks_definitions.hpp"
 #include "lua/callbacks/event_callback.hpp"
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class EventCallback;
 
@@ -111,5 +110,3 @@ private:
 };
 
 constexpr auto g_callbacks = EventsCallbacks::getInstance;
-
-#endif // SRC_LUA_CALLBACKS_EVENTS_CALLBACKS_HPP_

@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_LUA_DEFINITIONS_HPP_
-#define SRC_LUA_LUA_DEFINITIONS_HPP_
+#pragma once
 
-#include "game/movement/position.h"
+#include "game/movement/position.hpp"
 
 // Enums
 enum {
@@ -236,5 +235,3 @@ struct LuaTimerEventDesc {
 	LuaTimerEventDesc() = default;
 	LuaTimerEventDesc(LuaTimerEventDesc &&other) = default;
 };
-
-#endif // SRC_LUA_LUA_DEFINITIONS_HPP_

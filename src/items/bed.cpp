@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "items/bed.h"
-#include "game/game.h"
-#include "io/iologindata.h"
-#include "game/scheduling/scheduler.h"
+#include "items/bed.hpp"
+#include "game/game.hpp"
+#include "io/iologindata.hpp"
+#include "game/scheduling/scheduler.hpp"
 
 BedItem::BedItem(uint16_t id) :
 	Item(id) {

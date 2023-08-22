@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "database/databasetasks.h"
+#include "database/databasetasks.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "lib/thread/thread_pool.hpp"
 

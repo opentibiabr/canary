@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 #include "lua/scripts/lua_environment.hpp"
 
 ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;

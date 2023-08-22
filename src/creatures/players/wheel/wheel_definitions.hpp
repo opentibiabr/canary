@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.org/
  */
 
-#ifndef SRC_CREATURES_PLAYERS_WHEEL_PLAYER_WHEEL_DEFINITIONS_HPP_
-#define SRC_CREATURES_PLAYERS_WHEEL_PLAYER_WHEEL_DEFINITIONS_HPP_
+#pragma once
 
 #include "creatures/creatures_definitions.hpp"
 
@@ -263,5 +262,3 @@ struct SlotInfo {
 	uint8_t slot; ///< The slot index.
 	uint16_t points; ///< The points for the slot.
 };
-
-#endif // SRC_CREATURES_PLAYERS_WHEEL_PLAYER_WHEEL_DEFINITIONS_HPP_

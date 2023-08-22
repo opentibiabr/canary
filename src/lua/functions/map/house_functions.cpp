@@ -9,12 +9,12 @@
 
 #include "pch.hpp"
 
-#include "items/bed.h"
-#include "game/game.h"
-#include "game/movement/position.h"
-#include "io/iologindata.h"
+#include "items/bed.hpp"
+#include "game/game.hpp"
+#include "game/movement/position.hpp"
+#include "io/iologindata.hpp"
 #include "lua/functions/map/house_functions.hpp"
-#include "map/house/house.h"
+#include "map/house/house.hpp"
 
 int HouseFunctions::luaHouseCreate(lua_State* L) {
 	// House(id)

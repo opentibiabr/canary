@@ -11,10 +11,10 @@
 
 #include "core.hpp"
 
-#include "server/network/protocol/protocolstatus.h"
-#include "game/game.h"
+#include "server/network/protocol/protocolstatus.hpp"
+#include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "server/network/message/outputmessage.h"
+#include "server/network/message/outputmessage.hpp"
 
 phmap::btree_map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME();

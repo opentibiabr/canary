@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
+#include "game/game.hpp"
 #include "lua/functions/map/tile_functions.hpp"
 
 int TileFunctions::luaTileCreate(lua_State* L) {

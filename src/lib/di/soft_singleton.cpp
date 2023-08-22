@@ -8,7 +8,7 @@
  */
 #include "pch.hpp"
 #include "lib/di/soft_singleton.hpp"
-#include "utils/tools.h"
+#include "utils/tools.hpp"
 
 SoftSingleton::SoftSingleton(Logger &logger, std::string id) :
 	logger(logger), id(std::move(id)) { }

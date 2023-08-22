@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CORE_NETWORK_NETWORK_MESSAGE_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CORE_NETWORK_NETWORK_MESSAGE_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class NetworkMessageFunctions final : LuaScriptInterface {
 public:
@@ -73,5 +72,3 @@ private:
 	static int luaNetworkMessageSkipBytes(lua_State* L);
 	static int luaNetworkMessageSendToPlayer(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CORE_NETWORK_NETWORK_MESSAGE_FUNCTIONS_HPP_

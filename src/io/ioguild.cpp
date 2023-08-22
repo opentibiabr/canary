@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "database/database.h"
-#include "creatures/players/grouping/guild.h"
-#include "io/ioguild.h"
+#include "database/database.hpp"
+#include "creatures/players/grouping/guild.hpp"
+#include "io/ioguild.hpp"
 
 std::shared_ptr<Guild> IOGuild::loadGuild(uint32_t guildId) {
 	Database &db = Database::getInstance();

@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_ITEMS_CONTAINER_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_ITEMS_CONTAINER_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class ContainerFunctions final : LuaScriptInterface {
 public:
@@ -56,5 +55,3 @@ private:
 
 	friend class ItemFunctions;
 };
-
-#endif // SRC_LUA_FUNCTIONS_ITEMS_CONTAINER_FUNCTIONS_HPP_

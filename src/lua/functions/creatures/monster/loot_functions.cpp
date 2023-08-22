@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "creatures/monsters/monsters.h"
+#include "creatures/monsters/monsters.hpp"
 #include "lua/functions/creatures/monster/loot_functions.hpp"
 
 int LootFunctions::luaCreateLoot(lua_State* L) {

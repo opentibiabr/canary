@@ -61,20 +61,6 @@ void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
 		item->getContainer()->getDepotLocker()->setDepotId(BasicItem->doorOrDepotId);
 	}
 
-	if (item->getBed()) {
-		if (BasicItem->guid > 0) {
-			const auto &name = IOLoginData::getNameByGuid(BasicItem->guid);
-			if (!name.empty()) {
-				item->setAttribute(ItemAttribute_t::DESCRIPTION, name + " is sleeping there.");
-				g_game().setBedSleeper(item->getBed(), BasicItem->guid);
-				item->getBed()->sleeperGUID = BasicItem->guid;
-			}
-		}
-
-		if (BasicItem->sleepStart > 0)
-			item->getBed()->sleepStart = static_cast<uint64_t>(BasicItem->sleepStart);
-	}
-
 	if (!BasicItem->text.empty())
 		item->setAttribute(ItemAttribute_t::TEXT, BasicItem->text);
 

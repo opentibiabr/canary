@@ -29,9 +29,6 @@ struct BasicItem {
 	std::string text;
 	// size_t description { 0 };
 
-	uint32_t guid { 0 };
-	uint32_t sleepStart { 0 };
-
 	uint16_t id { 0 };
 
 	uint16_t charges { 0 }; // Runecharges and Count Too

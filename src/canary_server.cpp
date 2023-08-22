@@ -62,7 +62,9 @@ int CanaryServer::run() {
 			initializeDatabase();
 			loadModules();
 			setWorldType();
-			loadMaps();
+
+			std::unique_lock lock(mapLoaderLock);
+			mapSignal.wait(lock, [this] { return loaderMapDone; });
 
 			logger.info("Initializing gamestate...");
 			g_game().setGameState(GAME_STATE_INIT);
@@ -324,6 +326,12 @@ void CanaryServer::loadModules() {
 	// Load items dependencies
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
 	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
+
+	inject<ThreadPool>().addLoad([this] {
+		loadMaps();
+		loaderMapDone = true;
+		mapSignal.notify_one();
+	});
 
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	logger.debug("Loading core scripts on folder: {}/", coreFolder);

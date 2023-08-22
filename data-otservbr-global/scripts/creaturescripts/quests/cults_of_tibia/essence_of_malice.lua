@@ -11,7 +11,7 @@ function essenceOfMalice.onKill(creature, target)
 				if tile then
 					local monster = Monster(tile:getTopCreature())
 					if monster then
-						if isInArray(boss, monster:getName():lower()) then
+						if table.contains(boss, monster:getName():lower()) then
 							newBoss = newBoss + 1
 						end
 					end
@@ -19,7 +19,7 @@ function essenceOfMalice.onKill(creature, target)
 			end
 		end
 	end
-	if isInArray(boss, target:getName():lower()) and newBoss == 1 then
+	if table.contains(boss, target:getName():lower()) and newBoss == 1 then
 		Game.createMonster("Essence Of Malice", Position(33098, 31920, 15))
 	end
 	return true

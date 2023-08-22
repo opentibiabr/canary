@@ -35,7 +35,7 @@ class RaidEvent;
 class Raids {
 	public:
 		Raids();
-		~Raids();
+		~Raids() = default;
 
 		// non-copyable
 		Raids(const Raids &) = delete;
@@ -54,14 +54,14 @@ class Raids {
 			return started;
 		}
 
-		Raid* getRunning() {
+		std::shared_ptr<Raid> getRunning() {
 			return running;
 		}
-		void setRunning(Raid* newRunning) {
+		void setRunning(const std::shared_ptr<Raid> &newRunning) {
 			running = newRunning;
 		}
 
-		Raid* getRaidByName(const std::string &name);
+		std::shared_ptr<Raid> getRaidByName(const std::string &name);
 
 		uint64_t getLastRaidEnd() const {
 			return lastRaidEnd;
@@ -79,8 +79,8 @@ class Raids {
 	private:
 		LuaScriptInterface scriptInterface { "Raid Interface" };
 
-		std::list<Raid*> raidList;
-		Raid* running = nullptr;
+		std::list<std::shared_ptr<Raid>> raidList;
+		std::shared_ptr<Raid> running = nullptr;
 		uint64_t lastRaidEnd = 0;
 		uint32_t checkRaidsEvent = 0;
 		bool loaded = false;
@@ -91,7 +91,7 @@ class Raid {
 	public:
 		Raid(std::string initName, uint32_t initInterval, uint32_t initMarginTime, bool initRepeat) :
 			name(std::move(initName)), interval(initInterval), margin(initMarginTime), repeat(initRepeat) { }
-		~Raid();
+		~Raid() = default;
 
 		// non-copyable
 		Raid(const Raid &) = delete;
@@ -101,10 +101,10 @@ class Raid {
 
 		void startRaid();
 
-		void executeRaidEvent(RaidEvent* raidEvent);
+		void executeRaidEvent(const std::shared_ptr<RaidEvent> &raidEvent);
 		void resetRaid();
 
-		RaidEvent* getNextRaidEvent();
+		std::shared_ptr<RaidEvent> getNextRaidEvent();
 		void setState(RaidState_t newState) {
 			state = newState;
 		}
@@ -128,7 +128,7 @@ class Raid {
 		void stopEvents();
 
 	private:
-		std::vector<RaidEvent*> raidEvents;
+		std::vector<std::shared_ptr<RaidEvent>> raidEvents;
 		std::string name;
 		uint32_t interval;
 		uint32_t nextEvent = 0;

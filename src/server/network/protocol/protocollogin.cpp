@@ -11,7 +11,7 @@
 
 #include "server/network/protocol/protocollogin.h"
 #include "server/network/message/outputmessage.h"
-#include "game/scheduling/tasks.h"
+#include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/account/account.hpp"
 #include "io/iologindata.h"
 #include "creatures/players/management/ban.h"
@@ -90,15 +90,10 @@ void ProtocolLogin::getCharacterList(const std::string &accountIdentifier, const
 
 	// Add premium days
 	output->addByte(0);
-	if (g_configManager().getBoolean(FREE_PREMIUM)) {
-		output->addByte(1);
-		output->add<uint32_t>(0);
-	} else {
-		uint32_t days;
-		account.GetPremiumRemaningDays(&days);
-		output->addByte(0);
-		output->add<uint32_t>(time(nullptr) + (days * 86400));
-	}
+	uint32_t days;
+	account.GetPremiumRemaningDays(&days);
+	output->addByte(0);
+	output->add<uint32_t>(time(nullptr) + (days * 86400));
 
 	send(output);
 
@@ -127,7 +122,7 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	 */
 
 	if (!Protocol::RSA_decrypt(msg)) {
-		SPDLOG_WARN("[ProtocolLogin::onRecvFirstMessage] - RSA Decrypt Failed");
+		g_logger().warn("[ProtocolLogin::onRecvFirstMessage] - RSA Decrypt Failed");
 		disconnect();
 		return;
 	}
@@ -181,5 +176,5 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-	g_dispatcher().addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, accountIdentifier, password)));
+	g_dispatcher().addTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, accountIdentifier, password));
 }

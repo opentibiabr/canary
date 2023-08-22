@@ -18,7 +18,7 @@ function onTargetCreature(creature, target)
 		return false
 	end
 
-	local grade = creature:upgradeSpellsWORD("Executioner's Throw")
+	local grade = creature:upgradeSpellsWOD("Executioner's Throw")
 	if grade == WHEEL_GRADE_NONE then
 		return false
 	end
@@ -84,7 +84,7 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	local grade = creature:upgradeSpellsWORD("Executioner's Throw")
+	local grade = creature:upgradeSpellsWOD("Executioner's Throw")
 	if grade == WHEEL_GRADE_NONE then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)

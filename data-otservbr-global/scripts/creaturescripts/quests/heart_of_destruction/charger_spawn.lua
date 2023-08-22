@@ -4,8 +4,8 @@ local function chargerSpawn(pos)
 	return true
 end
 
-local chargerSpawn = CreatureEvent("ChargerSpawn")
-function chargerSpawn.onDeath(creature)
+local creatureEvent = CreatureEvent("ChargerSpawn")
+function creatureEvent.onDeath(creature)
 	local positions = {
 		{x = 32151, y = 31356, z = 14},
 		{x = 32154, y = 31353, z = 14},
@@ -25,4 +25,4 @@ function chargerSpawn.onDeath(creature)
 	return true
 end
 
-chargerSpawn:register()
+creatureEvent:register()

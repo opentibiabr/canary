@@ -16,13 +16,7 @@
 #include "game/game.h"
 #include "items/weapons/weapons.h"
 
-spellBlock_t::~spellBlock_t() {
-	if (combatSpell) {
-		delete spell;
-	}
-}
-
-void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock) {
+void MonsterType::loadLoot(const std::shared_ptr<MonsterType> &monsterType, LootBlock lootBlock) {
 	if (lootBlock.childLoot.empty()) {
 		bool isContainer = Item::items[lootBlock.id].isContainer();
 		if (isContainer) {
@@ -58,7 +52,7 @@ ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType, int
 	return condition;
 }
 
-bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std::string &description) {
+bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spellBlock_t &sb, const std::string &description) {
 	if (!spell->scriptName.empty()) {
 		spell->isScripted = true;
 	} else if (!spell->name.empty()) {
@@ -69,7 +63,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 
 	sb.speed = spell->interval;
 	sb.chance = std::min((int)spell->chance, 100);
-	sb.range = std::min((int)spell->range, Map::maxViewportX * 2);
+	sb.range = std::min((int)spell->range, MAP_MAX_VIEW_PORT_X * 2);
 	sb.minCombatValue = std::min(spell->minCombatValue, spell->maxCombatValue);
 	sb.maxCombatValue = std::max(spell->minCombatValue, spell->maxCombatValue);
 	sb.soundCastEffect = spell->soundCastEffect;
@@ -80,9 +74,9 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 		return true;
 	}
 
-	CombatSpell* combatSpell = nullptr;
+	std::shared_ptr<CombatSpell> combatSpell = nullptr;
 
-	auto combatPtr = std::make_unique<Combat>();
+	auto combatPtr = std::make_shared<Combat>();
 
 	sb.combatSpell = true;
 
@@ -168,9 +162,9 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 			outfit.lookTypeEx = spell->outfitItem;
 			condition->setOutfit(outfit);
 		} else {
-			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-						 "Missing outfit monster or item in outfit spell for: {}",
-						 description);
+			g_logger().error("[Monsters::deserializeSpell] - "
+							 "Missing outfit monster or item in outfit spell for: {}",
+							 description);
 			return false;
 		}
 
@@ -212,18 +206,18 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 		combatPtr->setParam(COMBAT_PARAM_CREATEITEM, ITEM_ENERGYFIELD_PVP);
 	} else if (spellName == "condition") {
 		if (spell->conditionType == CONDITION_NONE) {
-			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-						 "{} condition is not set for: {}",
-						 description, spell->name);
+			g_logger().error("[Monsters::deserializeSpell] - "
+							 "{} condition is not set for: {}",
+							 description, spell->name);
 		}
 	} else if (spellName == "strength") {
 		//
 	} else if (spellName == "effect") {
 		//
 	} else {
-		SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-					 "{} unknown or missing parameter on spell with name: {}",
-					 description, spell->name);
+		g_logger().error("[Monsters::deserializeSpell] - "
+						 "{} unknown or missing parameter on spell with name: {}",
+						 description, spell->name);
 	}
 
 	if (spell->shoot != CONST_ANI_NONE) {
@@ -258,7 +252,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 	}
 
 	combatPtr->setPlayerCombatValues(COMBAT_FORMULA_DAMAGE, sb.minCombatValue, 0, sb.maxCombatValue, 0);
-	combatSpell = new CombatSpell(combatPtr.release(), spell->needTarget, spell->needDirection);
+	combatSpell = std::make_shared<CombatSpell>(combatPtr, spell->needTarget, spell->needDirection);
 	// Sanity check
 	if (!combatSpell) {
 		return false;
@@ -278,7 +272,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std
 bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	int32_t id = scriptInterface->getEvent();
 	if (id == -1) {
-		SPDLOG_WARN("[MonsterType::loadCallback] - Event not found");
+		g_logger().warn("[MonsterType::loadCallback] - Event not found");
 		return false;
 	}
 
@@ -297,7 +291,7 @@ bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	return true;
 }
 
-MonsterType* Monsters::getMonsterType(const std::string &name) {
+std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name) {
 	std::string lowerCaseName = asLowerCaseString(name);
 	if (auto it = monsters.find(lowerCaseName);
 		it != monsters.end()
@@ -305,21 +299,32 @@ MonsterType* Monsters::getMonsterType(const std::string &name) {
 		&& it->first.find(lowerCaseName) != it->first.npos) {
 		return it->second;
 	}
-	SPDLOG_ERROR("[Monsters::getMonsterType] - Monster with name {} not exist", lowerCaseName);
+	g_logger().error("[Monsters::getMonsterType] - Monster with name {} not exist", lowerCaseName);
 	return nullptr;
 }
 
-MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t thisrace) {
-	std::map<uint16_t, std::string> raceid_list = g_game().getBestiaryList();
-	auto it = raceid_list.find(thisrace);
-	if (it == raceid_list.end()) {
+std::shared_ptr<MonsterType> Monsters::getMonsterTypeByRaceId(uint16_t raceId, bool isBoss /* = false*/) const {
+	const auto &bossType = g_ioBosstiary().getMonsterTypeByBossRaceId(raceId);
+	if (isBoss && bossType) {
+		return bossType;
+	}
+
+	auto monster_race_map = g_game().getBestiaryList();
+	auto it = monster_race_map.find(raceId);
+	if (it == monster_race_map.end()) {
 		return nullptr;
 	}
-	MonsterType* mtype = g_monsters().getMonsterType(it->second);
-	return (mtype ? mtype : nullptr);
+
+	return g_monsters().getMonsterType(it->second);
 }
 
-void Monsters::addMonsterType(const std::string &name, MonsterType* mType) {
+bool Monsters::tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> &mType) {
 	std::string lowerName = asLowerCaseString(name);
+	if (monsters.find(lowerName) != monsters.end()) {
+		g_logger().debug("[{}] the monster with name '{}' already exist", __FUNCTION__, name);
+		return false;
+	}
+
 	monsters[lowerName] = mType;
+	return true;
 }

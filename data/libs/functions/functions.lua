@@ -1,4 +1,28 @@
--- From here down are the functions of TFS
+function PrettyString(tbl, indent)
+	if not indent then indent = 0 end
+	local toprint = string.rep(" ", indent) .. "{\n"
+	indent = indent + 2
+	for k, v in pairs(tbl) do
+		toprint = toprint .. string.rep(" ", indent)
+		if (type(k) == "number") then
+			toprint = toprint .. "[" .. k .. "] = "
+		elseif (type(k) == "string") then
+			toprint = toprint .. k .. "= "
+		end
+		if (type(v) == "number") then
+			toprint = toprint .. v .. ",\n"
+		elseif (type(v) == "string") then
+			toprint = toprint .. "\"" .. v .. "\",\n"
+		elseif (type(v) == "table") then
+			toprint = toprint .. PrettyString(v, indent + 2) .. ",\n"
+		else
+			toprint = toprint .. "\"" .. tostring(v) .. "\",\n"
+		end
+	end
+	toprint = toprint .. string.rep(" ", indent - 2) .. "}"
+	return toprint
+end
+
 function getTibiaTimerDayOrNight()
 	local light = getWorldLight()
 	if (light == 40) then
@@ -19,6 +43,64 @@ function getFormattedWorldTime()
 	return hours .. ':' .. minutes
 end
 
+
+function getTitle(uid)
+	local player = Player(uid)
+	if not player then return false end
+
+	for i = #titles, 1, -1 do
+		if player:getStorageValue(titles[i].storageID) == 1 then
+			return titles[i].title
+		end
+	end
+
+	return false
+end
+
+function getHours(seconds)
+	return math.floor((seconds/60)/60)
+end
+
+function getMinutes(seconds)
+	return math.floor(seconds/60)
+end
+
+function getSeconds(seconds)
+	return seconds%60
+end
+
+function getTime(seconds)
+	local hours, minutes = getHours(seconds), getMinutes(seconds)
+	if (minutes > 59) then
+		minutes = minutes-hours*60
+	end
+
+	if (minutes < 10) then
+		minutes = "0" ..minutes
+	end
+
+	return hours..":"..minutes.. "h"
+end
+
+function getTimeInWords(secs)
+	local hours, minutes, seconds = getHours(secs), getMinutes(secs), getSeconds(secs)
+	if (minutes > 59) then
+		minutes = minutes-hours*60
+	end
+
+	local timeStr = ''
+
+	if hours > 1 then
+		timeStr = hours .. ' hours '
+	elseif hours == 1 then
+		timeStr = hours .. ' hour '
+	end
+
+	timeStr = timeStr .. minutes .. ' minutes and '.. seconds .. ' seconds.'
+
+	return timeStr
+end
+
 function getLootRandom(modifier)
 	local multi = (configManager.getNumber(configKeys.RATE_LOOT) * SCHEDULE_LOOT_RATE) * (modifier or 1)
 	return math.random(0, MAX_LOOTCHANCE) * 100 / math.max(1, multi)
@@ -30,8 +112,8 @@ debug.sethook(function(event, line)
 	linecount = linecount + 1
 	if systemTime() - start >= 1 then
 		if linecount >= 30000 then
-			Spdlog.warn(string.format("[debug.sethook] - Possible infinite loop in file [%s] near line [%d]",
-				debug.getinfo(2).source, line))
+			logger.warn("[debug.sethook] - Possible infinite loop in file [{}] near line [{}]",
+				debug.getinfo(2).source, line)
 			debug.sethook()
 		end
 		linecount = 0
@@ -140,7 +222,7 @@ end
 function getPlayerSpouse(id)
 	local resultQuery = db.storeQuery("SELECT `marriage_spouse` FROM `players` WHERE `id` = " .. db.escapeString(id))
 	if resultQuery ~= false then
-		local ret = Result.getDataInt(resultQuery, "marriage_spouse")
+		local ret = Result.getNumber(resultQuery, "marriage_spouse")
 		Result.free(resultQuery)
 		return ret
 	end
@@ -150,7 +232,7 @@ end
 function getPlayerMarriageStatus(id)
 	local resultQuery = db.storeQuery("SELECT `marriage_status` FROM `players` WHERE `id` = " .. db.escapeString(id))
 	if resultQuery ~= false then
-		local ret = Result.getDataInt(resultQuery, "marriage_status")
+		local ret = Result.getNumber(resultQuery, "marriage_status")
 		Result.free(resultQuery)
 		return ret
 	end
@@ -159,7 +241,7 @@ end
 
 function getPlayerNameById(id)
 	local resultName = db.storeQuery("SELECT `name` FROM `players` WHERE `id` = " .. db.escapeString(id))
-	local name = Result.getDataString(resultName, "name")
+	local name = Result.getString(resultName, "name")
 	if resultName ~= false then
 		Result.free(resultName)
 		return name
@@ -247,15 +329,6 @@ function iterateArea(func, from, to)
 			end
 		end
 	end
-end
-
-function playerExists(name)
-	local resultId = db.storeQuery("SELECT `name` FROM `players` WHERE `name` = " .. db.escapeString(name))
-	if resultId then
-		Result.free(resultId)
-		return true
-	end
-	return false
 end
 
 function resetFerumbrasAscendantHabitats()
@@ -701,7 +774,7 @@ function indexToStr(i, v, buffer)
 	local tp = type(v)
 	local itp = type(i)
 	if itp ~= "number" and itp ~= "string" then
-		Spdlog.warn("[indexToStr] - Invalid index to serialize: " .. type(i))
+		logger.warn("[indexToStr] - Invalid index to serialize: {}", type(i))
 	else
 		if tp == "table" then
 			insertIndex(i, buffer)
@@ -721,7 +794,7 @@ function indexToStr(i, v, buffer)
 			table.insert(buffer, v == true and "true" or "false")
 			table.insert(buffer, ",")
 		else
-			Spdlog.warn("[indexToStr] - Invalid type to serialize: " .. tp .. ", index: " .. i)
+			logger.warn("[indexToStr] - Invalid type to serialize: {}, index: {}", tp, i)
 		end
 	end
 end
@@ -758,7 +831,7 @@ function unserializeTable(str, out)
 	if tmp then
 		tmp = tmp()
 	else
-		Spdlog.warn("[unserializeTable] - Unserialization error: " .. str)
+		logger.warn("[unserializeTable] - Unserialization error: {}", str)
 		return false
 	end
 	return table.copy(tmp, out)
@@ -910,30 +983,6 @@ function SetInfluenced(monsterType, monster, player, influencedLevel)
 	monster:setForgeStack(influencedLevel)
 end
 
-
-function durationString(duration)
-	local durationHours = math.floor(duration / 3600)
-	duration = duration % 3600
-	local durationMinutes = math.floor(duration / 60)
-	local durationSeconds = duration % 60
-	local s = ""
-	if durationHours > 0 then
-		s = s .. durationHours .. " hours"
-	end
-	if durationMinutes > 0 then
-		if durationHours > 0 and durationSeconds > 0 then
-			s = s .. ", "
-		elseif durationHours > 0 then
-			s = s .. " and "
-		end
-		s = s .. durationMinutes .. " minutes"
-	end
-	if durationSeconds > 0 then
-		s = s .. " and " .. durationSeconds .. " seconds"
-	end
-	return s
-end
-
 function ReloadDataEvent(cid)
 	local player = Player(cid)
 	if not player then
@@ -941,4 +990,25 @@ function ReloadDataEvent(cid)
 	end
 
 	player:reloadData()
+end
+
+function HasValidTalkActionParams(player, param, usage)
+	if not param or param == "" then
+		player:sendCancelMessage("Command param required. Usage: ".. usage)
+		return false
+	end
+
+	local split = param:split(",")
+	if not split[2] then
+		player:sendCancelMessage("Insufficient parameters. Usage: ".. usage)
+		return false
+	end
+
+	return true
+end
+
+function FormatNumber(number)
+  local _, _, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
+  int = int:reverse():gsub("(%d%d%d)", "%1,")
+  return minus .. int:reverse():gsub("^,", "") .. fraction
 end

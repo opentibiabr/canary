@@ -14,6 +14,8 @@
 #include "declarations.hpp"
 #include "game/game.h"
 #include "lua/callbacks/creaturecallback.h"
+#include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/scheduler.h"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -44,7 +46,7 @@ Npc::Npc(NpcType* npcType) :
 	// register creature events
 	for (const std::string &scriptName : npcType->info.scripts) {
 		if (!registerCreatureEvent(scriptName)) {
-			SPDLOG_WARN("Unknown event name: {}", scriptName);
+			g_logger().warn("Unknown event name: {}", scriptName);
 		}
 	}
 }
@@ -60,11 +62,11 @@ void Npc::removeList() {
 	g_game().removeNpc(this);
 }
 
-bool Npc::canInteract(const Position &pos) const {
+bool Npc::canInteract(const Position &pos, uint32_t range /* = 4 */) const {
 	if (pos.z != getPosition().z) {
 		return false;
 	}
-	return Creature::canSee(getPosition(), pos, 4, 4);
+	return Creature::canSee(getPosition(), pos, range, range);
 }
 
 void Npc::onCreatureAppear(Creature* creature, bool isLogin) {
@@ -231,7 +233,7 @@ void Npc::onThink(uint32_t interval) {
 
 void Npc::onPlayerBuyItem(Player* player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, bool inBackpacks) {
 	if (player == nullptr) {
-		SPDLOG_ERROR("[Npc::onPlayerBuyItem] - Player is nullptr");
+		g_logger().error("[Npc::onPlayerBuyItem] - Player is nullptr");
 		return;
 	}
 
@@ -275,12 +277,12 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId, uint8_t subType, uint
 	}
 
 	if (getCurrency() == ITEM_GOLD_COIN && (player->getMoney() + player->getBankBalance()) < totalCost) {
-		SPDLOG_ERROR("[Npc::onPlayerBuyItem (getMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
-		SPDLOG_DEBUG("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
+		g_logger().error("[Npc::onPlayerBuyItem (getMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+		g_logger().debug("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
 		return;
 	} else if (getCurrency() != ITEM_GOLD_COIN && (player->getItemTypeCount(getCurrency()) < totalCost || ((player->getMoney() + player->getBankBalance()) < bagsCost))) {
-		SPDLOG_ERROR("[Npc::onPlayerBuyItem (getItemTypeCount)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
-		SPDLOG_DEBUG("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
+		g_logger().error("[Npc::onPlayerBuyItem (getItemTypeCount)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+		g_logger().debug("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
 		return;
 	}
 
@@ -303,7 +305,66 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId, uint8_t subType, uint
 }
 
 void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore) {
+	uint64_t totalPrice = 0;
+	onPlayerSellItem(player, itemId, subType, amount, ignore, totalPrice);
+}
+
+void Npc::onPlayerSellAllLoot(uint32_t playerId, uint16_t itemId, bool ignore, uint64_t totalPrice) {
+	Player* player = g_game().getPlayerByID(playerId);
 	if (!player) {
+		return;
+	}
+	if (itemId == ITEM_GOLD_POUCH) {
+		auto container = player->getLootPouch();
+		if (!container) {
+			return;
+		}
+		bool hasMore = false;
+		uint64_t toSellCount = 0;
+		phmap::flat_hash_map<uint16_t, uint16_t> toSell;
+		int64_t start = OTSYS_TIME();
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			if (toSellCount >= 500) {
+				hasMore = true;
+				break;
+			}
+			auto item = *it;
+			if (!item) {
+				continue;
+			}
+			toSell[item->getID()] += item->getItemAmount();
+			if (item->isStackable()) {
+				toSellCount++;
+			} else {
+				toSellCount += item->getItemAmount();
+			}
+		}
+		for (auto &[itemId, amount] : toSell) {
+			onPlayerSellItem(player, itemId, 0, amount, ignore, totalPrice);
+		}
+		auto ss = std::stringstream();
+		if (totalPrice == 0) {
+			ss << "You have no items in your loot pouch.";
+			player->sendTextMessage(MESSAGE_TRANSACTION, ss.str());
+			return;
+		}
+		if (hasMore) {
+			g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, totalPrice));
+			return;
+		}
+		ss << "You sold all of the items from your loot pouch for ";
+		ss << totalPrice << " gold.";
+		player->sendTextMessage(MESSAGE_TRANSACTION, ss.str());
+		player->openPlayerContainers();
+	}
+}
+
+void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, uint64_t &totalPrice) {
+	if (!player) {
+		return;
+	}
+	if (itemId == ITEM_GOLD_POUCH) {
+		g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&Npc::onPlayerSellAllLoot, this, player->getID(), itemId, ignore, 0));
 		return;
 	}
 
@@ -315,6 +376,9 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 			sellPrice = shopBlock.itemSellPrice;
 		}
 	}
+	if (sellPrice == 0) {
+		return;
+	}
 
 	auto toRemove = amount;
 	for (auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore); auto item : inventoryItems) {
@@ -325,7 +389,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 		auto removeCount = std::min<uint16_t>(toRemove, item->getItemCount());
 
 		if (g_game().internalRemoveItem(item, removeCount) != RETURNVALUE_NOERROR) {
-			SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
+			g_logger().error("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
 			continue;
 		}
 
@@ -336,13 +400,18 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId, uint8_t subType, uin
 	}
 
 	if (toRemove != 0) {
-		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Problem while removing items from player {} amount {} of items with id {} on shop for npc {}, the payment will be made based on amount of removed items.", player->getName(), toRemove, itemId, getName());
+		g_logger().error("[Npc::onPlayerSellItem] - Problem while removing items from player {} amount {} of items with id {} on shop for npc {}, the payment will be made based on amount of removed items.", player->getName(), toRemove, itemId, getName());
 	}
 
 	auto totalRemoved = amount - toRemove;
 	auto totalCost = static_cast<uint64_t>(sellPrice * totalRemoved);
 	if (getCurrency() == ITEM_GOLD_COIN) {
-		g_game().addMoney(player, totalCost);
+		totalPrice += totalCost;
+		if (g_configManager().getBoolean(AUTOBANK)) {
+			player->setBankBalance(player->getBankBalance() + totalCost);
+		} else {
+			g_game().addMoney(player, totalCost);
+		}
 	} else {
 		Item* newItem = Item::CreateItem(getCurrency(), totalCost);
 		if (newItem) {

@@ -33,10 +33,7 @@ class Npc final : public Creature {
 		void operator=(const Npc &) = delete;
 
 		static Npc &getInstance() {
-			// Guaranteed to be destroyed
-			static Npc instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Npc>();
 		}
 
 		Npc* getNpc() override {
@@ -110,7 +107,7 @@ class Npc final : public Creature {
 			return false;
 		}
 
-		bool canInteract(const Position &pos) const;
+		bool canInteract(const Position &pos, uint32_t range = 4) const;
 		bool canSeeInvisibility() const override {
 			return true;
 		}
@@ -146,7 +143,9 @@ class Npc final : public Creature {
 		void onCreatureSay(Creature* creature, SpeakClasses type, const std::string &text) override;
 		void onThink(uint32_t interval) override;
 		void onPlayerBuyItem(Player* player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, bool inBackpacks);
+		void onPlayerSellAllLoot(uint32_t playerId, uint16_t itemid, bool ignore, uint64_t totalPrice);
 		void onPlayerSellItem(Player* player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore);
+		void onPlayerSellItem(Player* player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, uint64_t &totalPrice);
 		void onPlayerCheckItem(Player* player, uint16_t itemid, uint8_t count);
 		void onPlayerCloseChannel(Creature* creature);
 		void onPlacedCreature() override;
@@ -176,9 +175,9 @@ class Npc final : public Creature {
 
 		std::string strDescription;
 
-		std::map<uint32_t, uint16_t> playerInteractions;
+		phmap::btree_map<uint32_t, uint16_t> playerInteractions;
 
-		std::set<Player*> shopPlayerSet;
+		phmap::btree_set<Player*> shopPlayerSet;
 
 		NpcType* npcType;
 		SpawnNpc* spawnNpc = nullptr;
@@ -204,6 +203,6 @@ class Npc final : public Creature {
 		void loadPlayerSpectators();
 };
 
-constexpr auto g_npc = &Npc::getInstance;
+constexpr auto g_npc = Npc::getInstance;
 
 #endif // SRC_CREATURES_NPCS_NPC_H_

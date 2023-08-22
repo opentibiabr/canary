@@ -54,10 +54,7 @@ class Game {
 		Game &operator=(const Game &) = delete;
 
 		static Game &getInstance() {
-			// Guaranteed to be destroyed
-			static Game instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Game>();
 		}
 
 		void resetMonsters() const;
@@ -93,7 +90,7 @@ class Game {
 			return worldType;
 		}
 
-		std::map<uint32_t, TeamFinder*> getTeamFinderList() const {
+		phmap::btree_map<uint32_t, TeamFinder*> getTeamFinderList() const {
 			return teamFinderMap;
 		}
 		void registerTeamFinderAssemble(uint32_t leaderGuid, TeamFinder* teamFinder) {
@@ -103,8 +100,8 @@ class Game {
 			teamFinderMap.erase(leaderGuid);
 		}
 
-		Cylinder* internalGetCylinder(Player* player, const Position &pos) const;
-		Thing* internalGetThing(Player* player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type) const;
+		Cylinder* internalGetCylinder(Player* player, const Position &pos);
+		Thing* internalGetThing(Player* player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type);
 		static void internalGetPosition(Item* item, Position &pos, uint8_t &stackpos);
 
 		static std::string getTradeErrorDescription(ReturnValue ret, Item* item);
@@ -115,13 +112,13 @@ class Game {
 
 		Npc* getNpcByID(uint32_t id);
 
-		Player* getPlayerByID(uint32_t id);
-
 		Creature* getCreatureByName(const std::string &s);
 
 		Npc* getNpcByName(const std::string &s);
 
-		Player* getPlayerByName(const std::string &s);
+		Player* getPlayerByID(uint32_t id, bool allowOffline = false);
+
+		Player* getPlayerByName(const std::string &s, bool allowOffline = false);
 
 		Player* getPlayerByGUID(const uint32_t &guid);
 
@@ -186,7 +183,7 @@ class Game {
 
 		ReturnValue internalAddItem(Cylinder* toCylinder, Item* item, int32_t index = INDEX_WHEREEVER, uint32_t flags = 0, bool test = false);
 		ReturnValue internalAddItem(Cylinder* toCylinder, Item* item, int32_t index, uint32_t flags, bool test, uint32_t &remainderCount);
-		ReturnValue internalRemoveItem(Item* item, int32_t count = -1, bool test = false, uint32_t flags = 0);
+		ReturnValue internalRemoveItem(Item* item, int32_t count = -1, bool test = false, uint32_t flags = 0, bool force = false);
 
 		ReturnValue internalPlayerAddItem(Player* player, Item* item, bool dropOnMap = true, Slots_t slot = CONST_SLOT_WHEREEVER);
 
@@ -206,13 +203,9 @@ class Game {
 
 		bool internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, SpectatorHashSet* spectatorsPtr = nullptr, const Position* pos = nullptr);
 
-		void internalQuickLootCorpse(Player* player, Container* corpse);
-
-		ReturnValue internalQuickLootItem(Player* player, Item* item, ObjectCategory_t category = OBJECTCATEGORY_DEFAULT);
-
 		ObjectCategory_t getObjectCategory(const Item* item);
 
-		uint64_t getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, bool buyPrice) const;
+		uint64_t getItemMarketPrice(const phmap::btree_map<uint16_t, uint64_t> &itemMap, bool buyPrice) const;
 
 		void loadPlayersRecord();
 		void checkPlayersRecord();
@@ -245,7 +238,7 @@ class Game {
 		void playerBrowseForgeHistory(uint32_t playerId, uint8_t page);
 
 		void playerBosstiarySlot(uint32_t playerId, uint8_t slotId, uint32_t selectedBossId);
-		void playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, uint8_t podiumVisible, uint8_t bossVisible);
+		void playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, const Position &pos, uint8_t stackPos, const uint16_t itemId, uint8_t direction, const std::pair<uint8_t, uint8_t> &podiumAndMonsterVisible);
 		void playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t stackPos, const uint16_t itemId);
 
 		void playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpen);
@@ -377,21 +370,21 @@ class Game {
 		void ReleaseCreature(Creature* creature);
 		void ReleaseItem(Item* item);
 		void addBestiaryList(uint16_t raceid, std::string name);
-		const std::map<uint16_t, std::string> &getBestiaryList() const {
+		const phmap::btree_map<uint16_t, std::string> &getBestiaryList() const {
 			return BestiaryList;
 		}
 
 		void setBoostedName(std::string name) {
 			boostedCreature = name;
-			SPDLOG_INFO("Boosted creature: {}", name);
+			g_logger().info("Boosted creature: {}", name);
 		}
 
 		std::string getBoostedMonsterName() const {
 			return boostedCreature;
 		}
 
-		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
-		bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor) const;
+		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
+		bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor);
 
 		void changeSpeed(Creature* creature, int32_t varSpeedDelta);
 		void setCreatureSpeed(Creature* creature, int32_t speed); // setCreatureSpeed
@@ -475,16 +468,16 @@ class Game {
 
 		void sendOfflineTrainingDialog(Player* player);
 
-		const std::map<uint16_t, std::map<uint8_t, uint64_t>> &getItemsPrice() const {
+		const phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint64_t>> &getItemsPrice() const {
 			return itemsPriceMap;
 		}
 		const phmap::flat_hash_map<uint32_t, Player*> &getPlayers() const {
 			return players;
 		}
-		const std::map<uint32_t, Monster*> &getMonsters() const {
+		const phmap::btree_map<uint32_t, Monster*> &getMonsters() const {
 			return monsters;
 		}
-		const std::map<uint32_t, Npc*> &getNpcs() const {
+		const phmap::btree_map<uint32_t, Npc*> &getNpcs() const {
 			return npcs;
 		}
 
@@ -501,8 +494,9 @@ class Game {
 		void addMonster(Monster* npc);
 		void removeMonster(Monster* npc);
 
-		Guild* getGuild(uint32_t id) const;
-		void addGuild(Guild* guild);
+		std::shared_ptr<Guild> getGuild(uint32_t id, bool allowOffline = false) const;
+		std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;
+		void addGuild(const std::shared_ptr<Guild> &guild);
 		void removeGuild(uint32_t guildId);
 		void decreaseBrowseFieldRef(const Position &pos);
 
@@ -543,12 +537,12 @@ class Game {
 		void playerInspectItem(Player* player, const Position &pos);
 		void playerInspectItem(Player* player, uint16_t itemId, uint8_t itemCount, bool cyclopedia);
 
-		void addCharmRune(Charm* charm) {
+		void addCharmRune(const std::shared_ptr<Charm> &charm) {
 			CharmList.push_back(charm);
 			CharmList.shrink_to_fit();
 		}
 
-		std::vector<Charm*> getCharmList() {
+		std::vector<std::shared_ptr<Charm>> &getCharmList() {
 			return CharmList;
 		}
 
@@ -569,11 +563,11 @@ class Game {
 			mapLuaItemsStored[position] = itemId;
 		}
 
-		std::set<uint32_t> getFiendishMonsters() const {
+		phmap::btree_set<uint32_t> getFiendishMonsters() const {
 			return fiendishMonsters;
 		}
 
-		std::set<uint32_t> getInfluencedMonsters() const {
+		phmap::btree_set<uint32_t> getInfluencedMonsters() const {
 			return influencedMonsters;
 		}
 
@@ -590,7 +584,7 @@ class Game {
 
 		bool addInfluencedMonster(Monster* monster);
 		void sendUpdateCreature(const Creature* creature);
-		Item* wrapItem(Item* item);
+		Item* wrapItem(Item* item, House* house);
 
 		/**
 		 * @brief Adds a player to the unique login map.
@@ -632,46 +626,132 @@ class Game {
 		void playerCheckActivity(const std::string &playerName, int interval);
 
 		/**
-		 * @brief Registers a hazard area.
-		 * @details The function registers a hazard area to be used by the hazard system.
+		 * @brief Attemtps to retrieve an item from the stash.
 		 *
-		 * @param positionFrom The top-left position of the hazard area at its lowest floor.
-		 * @param positionTo The bottom-right position of the hazard area at its highest floor.
-		 * @return bool
+		 * @details This function leverages the internalCollectLootItems function with the OBJECTCATEGORY_STASHRETRIEVE category
+		 * to determine if the player is capable of retrieving the stash items.
+		 *
+		 * @param player Pointer to the player object.
+		 * @param item Pointer to the item to be checked.
+		 * @return True if stash items can be retrieved, false otherwise.
 		 */
-		bool createHazardArea(const Position &positionFrom, const Position &positionTo);
+		bool tryRetrieveStashItems(Player* player, Item* item);
 
 		std::unique_ptr<IOWheel> &getIOWheel();
 		const std::unique_ptr<IOWheel> &getIOWheel() const;
 
 	private:
-		std::map<uint32_t, int32_t> forgeMonsterEventIds;
-		std::set<uint32_t> fiendishMonsters;
-		std::set<uint32_t> influencedMonsters;
+		phmap::btree_map<uint32_t, int32_t> forgeMonsterEventIds;
+		phmap::btree_set<uint32_t> fiendishMonsters;
+		phmap::btree_set<uint32_t> influencedMonsters;
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string &text);
 		void playerWhisper(Player* player, const std::string &text);
 		bool playerYell(Player* player, const std::string &text);
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
 		void playerSpeakToNpc(Player* player, const std::string &text);
+		std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f);
+
+		/**
+		 * Player wants to loot a corpse
+		 * \param player Player pointer
+		 * \param corpse Container pointer to be looted
+		 */
+		void internalQuickLootCorpse(Player* player, Container* corpse);
+
+		/**
+		 * @brief Finds the container for loot based on the given parameters.
+		 *
+		 * @param player Pointer to the player object.
+		 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
+		 * @param category The category of the object.
+		 *
+		 * @note If it's enabled in config.lua to use the gold pouch to store any item, then the system will check whether the player has a loot pouch.
+		 * @note If the player does have one, the loot pouch will be used instead of the loot containers.
+		 *
+		 * @return Pointer to the loot container or nullptr if not found.
+		 */
+		Container* findLootContainer(Player* player, bool &fallbackConsumed, ObjectCategory_t category);
+
+		/**
+		 * @brief Finds the next available sub-container within a container.
+		 *
+		 * @param containerIterator Iterator for the current container.
+		 * @param lastSubContainer Reference to the last sub-container found.
+		 * @param lootContainer Reference to the loot container being used.
+		 * @return Pointer to the next available container or nullptr if not found.
+		 */
+		Container* findNextAvailableContainer(ContainerIterator &containerIterator, Container*&lastSubContainer, Container*&lootContainer);
+
+		/**
+		 * @brief Handles the fallback logic for loot containers.
+		 *
+		 * @param player Pointer to the player object.
+		 * @param lootContainer Reference to the loot container.
+		 * @param containerIterator Iterator for the current container.
+		 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
+		 * @return True if fallback logic was handled, false otherwise.
+		 */
+		bool handleFallbackLogic(const Player* player, Container*&lootContainer, ContainerIterator &containerIterator, const bool &fallbackConsumed);
+
+		/**
+		 * @brief Processes the movement or addition of an item to a loot container.
+		 *
+		 * @param item Pointer to the item to be moved or added.
+		 * @param lootContainer Pointer to the loot container.
+		 * @param remainderCount Reference to the remaining count of the item.
+		 * @param player Pointer to the player object.
+		 * @return Return value indicating success or error.
+		 */
+		ReturnValue processMoveOrAddItemToLootContainer(Item* item, Container* lootContainer, uint32_t &remainderCount, Player* player);
+
+		/**
+		 * @brief Processes loot items and places them into the appropriate containers.
+		 *
+		 * @param player Pointer to the player object.
+		 * @param lootContainer Pointer to the loot container.
+		 * @param item Pointer to the item being looted.
+		 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
+		 * @return Return value indicating success or error.
+		 */
+		ReturnValue processLootItems(Player* player, Container* lootContainer, Item* item, bool &fallbackConsumed);
+
+		/**
+		 * @brief Internally collects loot items from a given item and places them into the loot container.
+		 *
+		 * @param player Pointer to the player object.
+		 * @param item Pointer to the item being looted.
+		 * @param category Category of the item (default is OBJECTCATEGORY_DEFAULT).
+		 * @return Return value indicating success or error.
+		 */
+		ReturnValue internalCollectLootItems(Player* player, Item* item, ObjectCategory_t category = OBJECTCATEGORY_DEFAULT);
+
+		/**
+		 * @brief Collects items from the reward chest.
+		 *
+		 * @param player Pointer to the player object.
+		 * @param maxMoveItems Maximum number of items to move (default is 0, which means no limit).
+		 * @return Return value indicating success or error.
+		 */
+		ReturnValue collectRewardChestItems(Player* player, uint32_t maxMoveItems = 0);
 
 		phmap::flat_hash_map<std::string, Player*> m_uniqueLoginPlayerNames;
 		phmap::flat_hash_map<uint32_t, Player*> players;
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
-		phmap::flat_hash_map<uint32_t, Guild*> guilds;
+		phmap::flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
 		phmap::flat_hash_map<uint16_t, Item*> uniqueItems;
-		std::map<uint32_t, uint32_t> stages;
+		phmap::btree_map<uint32_t, uint32_t> stages;
 
 		/* Items stored from the lua scripts positions
 		 * For example: ActionFunctions::luaActionPosition
 		 * This basically works so that the item is created after the map is loaded, because the scripts are loaded before the map is loaded, we will use this table to create items that don't exist in the map natively through each script
 		 */
-		std::map<Position, uint16_t> mapLuaItemsStored;
+		phmap::btree_map<Position, uint16_t> mapLuaItemsStored;
 
-		std::map<uint16_t, std::string> BestiaryList;
+		phmap::btree_map<uint16_t, std::string> BestiaryList;
 		std::string boostedCreature = "";
 
-		std::vector<Charm*> CharmList;
+		std::vector<std::shared_ptr<Charm>> CharmList;
 		std::vector<Creature*> ToReleaseCreatures;
 		std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 		std::vector<Item*> ToReleaseItems;
@@ -685,16 +765,16 @@ class Game {
 
 		WildcardTreeNode wildcardTree { false };
 
-		std::map<uint32_t, Npc*> npcs;
-		std::map<uint32_t, Monster*> monsters;
+		phmap::btree_map<uint32_t, Npc*> npcs;
+		phmap::btree_map<uint32_t, Monster*> monsters;
 		std::vector<uint32_t> forgeableMonsters;
 
-		std::map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
+		phmap::btree_map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
 
 		// list of items that are in trading state, mapped to the player
-		std::map<Item*, uint32_t> tradeItems;
+		phmap::btree_map<Item*, uint32_t> tradeItems;
 
-		std::map<uint32_t, BedItem*> bedSleepersMap;
+		phmap::btree_map<uint32_t, BedItem*> bedSleepersMap;
 
 		phmap::flat_hash_set<Tile*> tilesToClean;
 
@@ -728,7 +808,7 @@ class Game {
 		std::string motdHash;
 		uint32_t motdNum = 0;
 
-		std::map<uint16_t, std::map<uint8_t, uint64_t>> itemsPriceMap;
+		phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, uint64_t>> itemsPriceMap;
 		uint16_t itemsSaleCount;
 
 		std::vector<ItemClassification*> itemsClassifications;
@@ -773,12 +853,14 @@ class Game {
 			const std::string &damageString, std::string &spectatorMessage
 		) const;
 
-		void unwrapItem(Item* item, uint16_t unWrapId);
+		void unwrapItem(Item* item, uint16_t unWrapId, House* house, Player* player);
+
+		ReturnValue onCreatureZoneChange(Creature* creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones);
 
 		// Variable members (m_)
 		std::unique_ptr<IOWheel> m_IOWheel;
 };
 
-constexpr auto g_game = &Game::getInstance;
+constexpr auto g_game = Game::getInstance;
 
 #endif // SRC_GAME_GAME_H_

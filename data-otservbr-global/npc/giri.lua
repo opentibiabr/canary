@@ -86,7 +86,7 @@ npcConfig.shop = {
 	{ itemName = "prismatic quartz", clientId = 24962, sell = 450 },
 	{ itemName = "rainbow quartz", clientId = 25737, sell = 800 },
 	{ itemName = "red crystal fragment", clientId = 16126, sell = 800 },
-	{ itemName = "royal almandine", clientId = 16126, sell = 39038 },
+	{ itemName = "royal almandine", clientId = 39038, sell = 460000 },
 	{ itemName = "ruby necklace", clientId = 3016, buy = 3560 },
 	{ itemName = "silver goblet", clientId = 5806, buy = 3000 },
 	{ itemName = "skull coin", clientId = 32583, sell = 12000 },

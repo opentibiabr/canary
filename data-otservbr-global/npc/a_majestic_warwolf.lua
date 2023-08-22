@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if isInArray({'addon', 'outfit'}, message) then
+	if table.contains({'addon', 'outfit'}, message) then
 		if player:getStorageValue(Storage.OutfitQuest.DruidHatAddon) == 9 then
 			npcHandler:say('I can see in your eyes that you are a honest and friendly person, |PLAYERNAME|. You were patient enough to learn our language and I will grant you a special gift. Will you accept it?', npc, creature)
 			npcHandler:setTopic(playerId, 1)

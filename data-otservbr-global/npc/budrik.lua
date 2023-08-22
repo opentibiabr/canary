@@ -58,7 +58,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 
-	if isInArray({"mission", "quest"}, message:lower()) then
+	if table.contains({"mission", "quest"}, message:lower()) then
 		if player:getStorageValue(Storage.ToOutfoxAFoxQuest) < 1 then
 			npcHandler:say({
 				"Funny that you are asking me for a mission! There is indeed something you can do for me. Ever heard about The Horned Fox? Anyway, yesterday his gang has stolen my mining helmet during a raid. ...",

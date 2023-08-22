@@ -21,7 +21,21 @@ LuaEnvironment::~LuaEnvironment() {
 	if (!testInterface) {
 		delete testInterface;
 	}
+
+	shuttingDown = true;
 	closeState();
+}
+
+lua_State* LuaEnvironment::getLuaState() {
+	if (shuttingDown) {
+		return luaState;
+	}
+
+	if (luaState == nullptr) {
+		initState();
+	}
+
+	return luaState;
 }
 
 bool LuaEnvironment::initState() {
@@ -156,9 +170,9 @@ void LuaEnvironment::executeTimerEvent(uint32_t eventIndex) {
 		env->setScriptId(timerEventDesc.scriptId, this);
 		callFunction(timerEventDesc.parameters.size());
 	} else {
-		SPDLOG_ERROR("[LuaEnvironment::executeTimerEvent - Lua file {}] "
-					 "Call stack overflow. Too many lua script calls being nested",
-					 getLoadingFile());
+		g_logger().error("[LuaEnvironment::executeTimerEvent - Lua file {}] "
+						 "Call stack overflow. Too many lua script calls being nested",
+						 getLoadingFile());
 	}
 
 	// free resources

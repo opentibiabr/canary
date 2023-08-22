@@ -53,20 +53,33 @@ end
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
-	{ itemName = "blue bed kit", clientId = 834, buy = 80 },
-	{ itemName = "canopy bed kit", clientId = 17972, buy = 200 },
-	{ itemName = "green bed kit", clientId = 831, buy = 80 },
+	{ itemName = "blue footboard", clientId = 32482, buy = 40 },
+	{ itemName = "blue headboard", clientId = 32473, buy = 40 },
+	{ itemName = "canopy footboard", clientId = 32490, buy = 40 },
+	{ itemName = "canopy headboard", clientId = 32481, buy = 40 },
+	{ itemName = "cot footboard", clientId = 32486, buy = 40 },
+	{ itemName = "cot headboard", clientId = 32477, buy = 40 },
 	{ itemName = "green cushioned chair kit", clientId = 2776, buy = 40 },
-	{ itemName = "red bed kit", clientId = 833, buy = 80 },
+	{ itemName = "green footboard", clientId = 32483, buy = 40 },
+	{ itemName = "green headboard", clientId = 32474, buy = 40 },
+	{ itemName = "hammock foot section", clientId = 32487, buy = 40 },
+	{ itemName = "hammock head section", clientId = 32478, buy = 40 },
 	{ itemName = "red cushioned chair kit", clientId = 2775, buy = 40 },
+	{ itemName = "red footboard", clientId = 32484, buy = 40 },
+	{ itemName = "red headboard", clientId = 32475, buy = 40 },
 	{ itemName = "rocking chair kit", clientId = 2778, buy = 25 },
+	{ itemName = "simple footboard", clientId = 32488, buy = 40 },
+	{ itemName = "simple headboard", clientId = 32479, buy = 40 },
 	{ itemName = "sofa chair kit", clientId = 2779, buy = 55 },
+	{ itemName = "straw mat foot section", clientId = 32489, buy = 40 },
+	{ itemName = "straw mat head section", clientId = 32480, buy = 40 },
 	{ itemName = "treasure chest", clientId = 2478, buy = 1000 },
 	{ itemName = "venorean cabinet kit", clientId = 17974, buy = 90 },
 	{ itemName = "venorean drawer kit", clientId = 17977, buy = 40 },
 	{ itemName = "venorean wardrobe kit", clientId = 17975, buy = 50 },
 	{ itemName = "wooden chair kit", clientId = 2777, buy = 15 },
-	{ itemName = "yellow bed kit", clientId = 832, buy = 80 }
+	{ itemName = "yellow footboard", clientId = 32485, buy = 40 },
+	{ itemName = "yellow headboard", clientId = 32476, buy = 40 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

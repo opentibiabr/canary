@@ -30,7 +30,7 @@ class ItemClassification {
 		}
 
 		uint8_t id;
-		std::map<uint8_t, TierInfo> tiers;
+		phmap::btree_map<uint8_t, TierInfo> tiers;
 };
 
 #endif // SRC_ITEMS_ITEMS_CLASSIFICATION_HPP_

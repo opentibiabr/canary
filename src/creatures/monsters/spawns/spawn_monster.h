@@ -18,7 +18,7 @@ class MonsterType;
 
 struct spawnBlock_t {
 		Position pos;
-		MonsterType* monsterType;
+		std::shared_ptr<MonsterType> monsterType;
 		int64_t lastSpawn;
 		uint32_t interval;
 		Direction direction;
@@ -55,7 +55,7 @@ class SpawnMonster {
 		SpawnedMap spawnedMonsterMap;
 
 		// map of creatures in the spawn
-		std::map<uint32_t, spawnBlock_t> spawnMonsterMap;
+		phmap::btree_map<uint32_t, spawnBlock_t> spawnMonsterMap;
 
 		Position centerPos;
 		int32_t radius;
@@ -64,7 +64,7 @@ class SpawnMonster {
 		uint32_t checkSpawnMonsterEvent = 0;
 
 		static bool findPlayer(const Position &pos);
-		bool spawnMonster(uint32_t spawnMonsterId, MonsterType* monsterType, const Position &pos, Direction dir, bool startup = false);
+		bool spawnMonster(uint32_t spawnMonsterId, const std::shared_ptr<MonsterType> &monsterType, const Position &pos, Direction dir, bool startup = false);
 		void checkSpawnMonster();
 		void scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, uint16_t interval);
 };

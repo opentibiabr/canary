@@ -1,7 +1,7 @@
 local config = {
 	bossName = "The Last Lore Keeper",
 	timeToFightAgain = 14 * 24, -- In hour
-	timeToDefeatBoss = 17, -- In minutes
+	timeToDefeat = 17, -- In minutes
 	playerPositions = {
 		{ pos = Position(32018, 32844, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32019, 32844, 14), teleport = Position(31984, 32851, 14), effect = CONST_ME_TELEPORT },
@@ -112,7 +112,7 @@ function forgottenKnowledgeLastLore.onUse(player, item, fromPosition, target, to
 				end
 			end
 			spec:removePlayers(player_remove)
-		end, config.timeToDefeatBoss * 60 * 1000)
+		end, config.timeToDefeat * 60 * 1000)
 	end
 end
 

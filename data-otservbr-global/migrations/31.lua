@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	Spdlog.info("Updating database to version 32 (account_sessions)")
+	logger.info("Updating database to version 32 (account_sessions)")
 	db.query([[
 		CREATE TABLE IF NOT EXISTS `account_sessions` (
 			`id` VARCHAR(191) NOT NULL,

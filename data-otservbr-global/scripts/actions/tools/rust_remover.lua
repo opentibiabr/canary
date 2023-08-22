@@ -89,7 +89,7 @@ function rustRemover.onUse(player, item, fromPosition, target, toPosition, isHot
 				target:transform(targetItem[i][2])
 				toPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
 			else
-				player:say((isInArray({8894, 8895, 8896}, target.itemid) and "The item was already damaged so badly that it broke when you tried to clean it." or "The item were already damaged so badly that they broke when you tried to clean them."),TALKTYPE_MONSTER_SAY)
+				player:say((table.contains({8894, 8895, 8896}, target.itemid) and "The item was already damaged so badly that it broke when you tried to clean it." or "The item were already damaged so badly that they broke when you tried to clean them."),TALKTYPE_MONSTER_SAY)
 				target:remove()
 				toPosition:sendMagicEffect(CONST_ME_BLOCKHIT)
 			end

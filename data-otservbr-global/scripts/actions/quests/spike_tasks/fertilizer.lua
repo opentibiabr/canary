@@ -4,7 +4,7 @@ end
 
 local spikeTasksFertilizer = Action()
 function spikeTasksFertilizer.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if isInArray({-1, 4}, player:getStorageValue(SPIKE_MIDDLE_MUSHROOM_MAIN)) then
+	if table.contains({-1, 4}, player:getStorageValue(SPIKE_MIDDLE_MUSHROOM_MAIN)) then
 		return false
 	end
 
@@ -17,7 +17,7 @@ function spikeTasksFertilizer.onUse(player, item, fromPosition, target, toPositi
 	end
 
 	local mushPos = Position(toPosition.x, toPosition.y, toPosition.z)
-	if isInArray(FERTILIZED_MUSHROOMS[player:getGuid()], mushPos) then
+	if table.contains(FERTILIZED_MUSHROOMS[player:getGuid()], mushPos) then
 		return player:sendCancelMessage("You have already fertilised this mushroom.")
 	end
 

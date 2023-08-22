@@ -4,8 +4,7 @@ local config = {
 		position = Position(33443, 31545, 13)
 	},
 	requiredLevel = 250,
-	timeToFightAgain = 20 * 60 * 60,
-	timeToDefeatBoss = 20 * 60,
+
 	playerPositions = {
 		{pos = Position(33485, 31546, 13), teleport = Position(33443, 31554, 13), effect = CONST_ME_TELEPORT},
 		{pos = Position(33485, 31547, 13), teleport = Position(33443, 31554, 13), effect = CONST_ME_TELEPORT},
@@ -26,10 +25,6 @@ local config = {
 	storage = Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosTimer
 }
 
-local kingZelosLever = Action()
-function kingZelosLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	return CreateDefaultLeverBoss(player, config)
-end
-
-kingZelosLever:position({x = 33484, y = 31546, z = 13})
-kingZelosLever:register()
+local lever = BossLever(config)
+lever:position({x = 33484, y = 31546, z = 13})
+lever:register()

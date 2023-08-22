@@ -573,7 +573,8 @@ achievements =
 
 	--Custom
 	[477] = {name = "Waypoint Explorer", grade = 1, points = 1, description = "You've explored all the towns of Tibia and discovered each town's waypoint."},
-	[478] = {name = "Up the Molehill", grade = 1, points = 3, description = "Putting this candle stump on your new mount was kind of a waiting game. You're even tempted to call it whack-a-mole. But in the end you found a loyal companion for your journeys into the depths."}
+	[478] = {name = "Up the Molehill", grade = 1, points = 3, description = "Putting this candle stump on your new mount was kind of a waiting game. You're even tempted to call it whack-a-mole. But in the end you found a loyal companion for your journeys into the depths."},
+	[479] = {name = "Inquisitions Arm", grade = 1, points = 2, description = "Your special outfit, bestowed exclusively on a dedicated hand of the Inquisition, is now complete."}
 }
 
 ACHIEVEMENT_FIRST = 1
@@ -641,8 +642,7 @@ function isAchievementSecret(ach)
 		achievement = getAchievementInfoByName(ach)
 	end
 	if not achievement then
-				return Spdlog.error(string.format("[isAchievementSecret] - Invalid achievement '%s'",
-					ach)) and false
+		return logger.error("[isAchievementSecret] - Invalid achievement '{}'", ach) and false
 	end
 
 	return achievement.secret
@@ -656,7 +656,7 @@ function Player.hasAchievement(self, ach)
 		achievement = getAchievementInfoByName(ach)
 	end
 	if not achievement then
-		return Spdlog.error("[Player.hasAchievement] - Invalid achievement \"" .. ach .. "\".") and false
+		return logger.error("[Player.hasAchievement] - Invalid achievement '{}'.", ach) and false
 	end
 
 	return self:getStorageValue(ACHIEVEMENTS_BASE + achievement.id) > 0
@@ -680,7 +680,7 @@ function Player.addAchievement(self, ach, denyMsg)
 		achievement = getAchievementInfoByName(ach)
 	end
 	if not achievement then
-		return Spdlog.error("[Player.addAchievement] - Invalid achievement \"" .. ach .. "\".") and false
+		return logger.error("[Player.addAchievement] - Invalid achievement '{}'.", ach) and false
 	end
 
 	if not self:hasAchievement(achievement.id) then
@@ -700,7 +700,7 @@ function Player.removeAchievement(self, ach)
 		achievement = getAchievementInfoByName(ach)
 	end
 	if not achievement then
-		return Spdlog.error("[Player.removeAchievement] - Invalid achievement \"" .. ach .. "\".") and false
+		return logger.error("[Player.removeAchievement] - Invalid achievement '{}'.", ach) and false
 	end
 
 	if self:hasAchievement(achievement.id) then
@@ -762,7 +762,7 @@ end
 function Player.addAchievementProgress(self, ach, value)
 	local achievement = isNumber(ach) and getAchievementInfoById(ach) or getAchievementInfoByName(ach)
 	if not achievement then
-		Spdlog.error('[Player.addAchievementProgress] - Invalid achievement "' .. ach .. '".')
+		logger.error("[Player.addAchievementProgress] - Invalid achievement '{}'.", ach)
 		return true
 	end
 

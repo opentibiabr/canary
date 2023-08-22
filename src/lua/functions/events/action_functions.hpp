@@ -15,7 +15,7 @@
 class ActionFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-			registerClass(L, "Action", "", ActionFunctions::luaCreateAction);
+			registerSharedClass(L, "Action", "", ActionFunctions::luaCreateAction);
 			registerMethod(L, "Action", "onUse", ActionFunctions::luaActionOnUse);
 			registerMethod(L, "Action", "register", ActionFunctions::luaActionRegister);
 			registerMethod(L, "Action", "id", ActionFunctions::luaActionItemId);

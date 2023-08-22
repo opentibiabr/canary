@@ -24,12 +24,9 @@ class IOLoginData {
 		static account::AccountType getAccountType(uint32_t accountId);
 		static void setAccountType(uint32_t accountId, account::AccountType accountType);
 		static void updateOnlineStatus(uint32_t guid, bool login);
-		static bool preloadPlayer(Player* player, const std::string &name);
-
-		// The boolean "disable" will desactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
 		static bool loadPlayerById(Player* player, uint32_t id, bool disable = true);
 		static bool loadPlayerByName(Player* player, const std::string &name, bool disable = true);
-		static bool loadPlayer(Player* player, DBResult_ptr result, bool disable = false);
+		static bool loadPlayer(Player* player, DBResult_ptr result, bool disable = true);
 		static bool savePlayer(Player* player);
 		static uint32_t getGuidByName(const std::string &name);
 		static bool getGuidByNameEx(uint32_t &guid, bool &specialVip, std::string &name);
@@ -46,10 +43,8 @@ class IOLoginData {
 		static void addPremiumDays(uint32_t accountId, int32_t addDays);
 		static void removePremiumDays(uint32_t accountId, int32_t removeDays);
 
-	protected:
-		using ItemMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;
-		static void loadItems(ItemMap &itemMap, DBResult_ptr result, Player &player);
-		static bool saveItems(const Player* player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &stream);
+	private:
+		static bool savePlayerGuard(Player* player);
 };
 
 #endif // SRC_IO_IOLOGINDATA_H_

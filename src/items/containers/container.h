@@ -151,7 +151,7 @@ class Container : public Item, public Cylinder {
 		size_t getFirstIndex() const override final;
 		size_t getLastIndex() const override final;
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override final;
-		std::map<uint32_t, uint32_t> &getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const override final;
+		phmap::btree_map<uint32_t, uint32_t> &getAllItemTypeCount(phmap::btree_map<uint32_t, uint32_t> &countMap) const override final;
 		Thing* getThing(size_t index) const override final;
 
 		ItemVector getItems(bool recursive = false) const;
@@ -163,11 +163,6 @@ class Container : public Item, public Cylinder {
 		void internalAddThing(uint32_t index, Thing* thing) override final;
 		void startDecaying() override;
 		void stopDecaying() override;
-
-		bool isAnyKindOfRewardChest() const;
-		bool isAnyKindOfRewardContainer() const;
-		bool isBrowseFieldAndHoldsRewardChest() const;
-		bool isInsideContainerWithId(const uint16_t id) const;
 
 		virtual void removeItem(Thing* thing, bool sendUpdateToClient = false);
 
@@ -181,6 +176,8 @@ class Container : public Item, public Cylinder {
 
 		bool unlocked;
 		bool pagination;
+
+		friend class MapCache;
 
 	private:
 		void onAddContainerItem(Item* item);

@@ -120,6 +120,31 @@ int PositionFunctions::luaPositionIsSightClear(lua_State* L) {
 	return 1;
 }
 
+int PositionFunctions::luaPositionGetTile(lua_State* L) {
+	// position:getTile()
+	const Position &position = getPosition(L, 1);
+	pushUserdata(L, g_game().map.getTile(position));
+	return 1;
+}
+
+int PositionFunctions::luaPositionGetZones(lua_State* L) {
+	// position:getZones()
+	const Position &position = getPosition(L, 1);
+	auto tile = g_game().map.getTile(position);
+	if (tile == nullptr) {
+		lua_pushnil(L);
+		return 1;
+	}
+	int index = 0;
+	for (auto zone : tile->getZones()) {
+		index++;
+		pushUserdata<Zone>(L, zone);
+		setMetatable(L, -1, "Zone");
+		lua_rawseti(L, -2, index);
+	}
+	return 1;
+}
+
 int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	// position:sendMagicEffect(magicEffect[, player = nullptr])
 	SpectatorHashSet spectators;
@@ -132,7 +157,7 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 
 	MagicEffectClasses magicEffect = getNumber<MagicEffectClasses>(L, 2);
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !g_game().isMagicEffectRegistered(magicEffect)) {
-		SPDLOG_WARN("[PositionFunctions::luaPositionSendMagicEffect] An unregistered magic effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(magicEffect));
+		g_logger().warn("[PositionFunctions::luaPositionSendMagicEffect] An unregistered magic effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(magicEffect));
 		pushBoolean(L, false);
 		return 1;
 	}
@@ -160,7 +185,7 @@ int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
 
 	MagicEffectClasses magicEffect = getNumber<MagicEffectClasses>(L, 2);
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !g_game().isMagicEffectRegistered(magicEffect)) {
-		SPDLOG_WARN("[PositionFunctions::luaPositionRemoveMagicEffect] An unregistered magic effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(magicEffect));
+		g_logger().warn("[PositionFunctions::luaPositionRemoveMagicEffect] An unregistered magic effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(magicEffect));
 		pushBoolean(L, false);
 		return 1;
 	}
@@ -190,7 +215,7 @@ int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	const Position &positionEx = getPosition(L, 2);
 	const Position &position = getPosition(L, 1);
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !g_game().isDistanceEffectRegistered(distanceEffect)) {
-		SPDLOG_WARN("[PositionFunctions::luaPositionSendDistanceEffect] An unregistered distance effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(distanceEffect));
+		g_logger().warn("[PositionFunctions::luaPositionSendDistanceEffect] An unregistered distance effect type with id '{}' was blocked to prevent client crash.", fmt::underlying(distanceEffect));
 		return 1;
 	}
 
@@ -224,5 +249,12 @@ int PositionFunctions::luaPositionSendDoubleSoundEffect(lua_State* L) {
 
 	g_game().sendDoubleSoundEffect(position, mainSoundEffect, secondarySoundEffect, actor);
 	pushBoolean(L, true);
+	return 1;
+}
+
+int PositionFunctions::luaPositionToString(lua_State* L) {
+	// position:toString()
+	const Position &position = getPosition(L, 1);
+	pushString(L, position.toString());
 	return 1;
 }

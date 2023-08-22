@@ -13,6 +13,7 @@
 #include "lua/scripts/luascript.h"
 #include "lua/functions/core/game/config_functions.hpp"
 #include "lua/functions/core/game/game_functions.hpp"
+#include "lua/functions/core/game/bank_functions.hpp"
 #include "lua/functions/core/game/global_functions.hpp"
 #include "lua/functions/core/game/lua_enums.hpp"
 #include "lua/functions/core/game/modal_window_functions.hpp"
@@ -22,6 +23,7 @@ class CoreGameFunctions final : LuaScriptInterface {
 		static void init(lua_State* L) {
 			ConfigFunctions::init(L);
 			GameFunctions::init(L);
+			BankFunctions::init(L);
 			GlobalFunctions::init(L);
 			LuaEnums::init(L);
 			ModalWindowFunctions::init(L);

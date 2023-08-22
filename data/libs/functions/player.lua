@@ -77,7 +77,7 @@ end
 APPLY_SKILL_MULTIPLIER = true
 local addSkillTriesFunc = Player.addSkillTries
 function Player.addSkillTries(...)
-	local arg = {...}
+	local arg = { ... }
 	local param4 = arg[4]
 	local applySkill = not param4
 	APPLY_SKILL_MULTIPLIER = applySkill
@@ -88,7 +88,7 @@ end
 
 local addManaSpentFunc = Player.addManaSpent
 function Player.addManaSpent(...)
-	local arg = {...}
+	local arg = { ... }
 	local param3 = arg[3]
 	local applySkill = not param3
 	APPLY_SKILL_MULTIPLIER = applySkill
@@ -181,68 +181,22 @@ function Player.removeFamePoints(self, amount)
 end
 
 function Player.depositMoney(self, amount)
-	if not self:removeMoney(amount) then
-		return false
-	end
-
-	self:setBankBalance(self:getBankBalance() + amount)
-	return true
+	return Bank.deposit(self, amount)
 end
 
 function Player.transferMoneyTo(self, target, amount)
 	if not target then
 		return false
 	end
-
-	-- See if you can afford this transfer
-	local balance = self:getBankBalance()
-	if amount > balance then
-		return false
-	end
-
-	-- See if player is online
-	local targetPlayer = Player(target)
-	if targetPlayer then
-		local town = targetPlayer:getTown()
-		if town and town:getId() ~= TOWNS_LIST.DAWNPORT or town:getId() ~= TOWNS_LIST.DAWNPORT_TUTORIAL then -- Blocking transfer to Dawnport
-			targetPlayer:setBankBalance(targetPlayer:getBankBalance() + amount)
-		end
-	else
-		if not playerExists(target) then
-			return false
-		end
-
-		local query_town = db.storeQuery('SELECT `town_id` FROM `players` WHERE `name` = ' .. db.escapeString(target) ..' LIMIT 1;')
-		if query_town ~= false then
-			local town = Result.getDataInt(query_town, "town_id")
-			if town then
-				local town_id = Town(town) and Town(town):getId()
-				if town_id and town_id  == TOWNS_LIST.DAWNPORT or town_id == TOWNS_LIST.DAWNPORT_TUTORIAL then -- Blocking transfer to Dawnport
-					return false
-				end
-			end
-			Result.free(consulta)
-			db.query("UPDATE `players` SET `balance` = `balance` + '" .. amount .. "' WHERE `name` = " .. db.escapeString(target))
-		end
-	end
-
-	self:setBankBalance(self:getBankBalance() - amount)
-	return true
+	return Bank.transfer(self, target, amount)
 end
 
 function Player.withdrawMoney(self, amount)
-	local balance = self:getBankBalance()
-	if amount > balance or not self:addMoney(amount) then
-		return false
-	end
-
-	self:setBankBalance(balance - amount)
-	return true
+	return Bank.withdraw(self, amount)
 end
 
 -- player:removeMoneyBank(money)
 function Player:removeMoneyBank(amount)
-
 	if type(amount) == 'string' then
 		amount = tonumber(amount)
 	end
@@ -258,9 +212,8 @@ function Player:removeMoneyBank(amount)
 		self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from inventory."):format(amount))
 		return true
 
-	-- The player doens't have all the money with him
+		-- The player doens't have all the money with him
 	elseif amount <= (moneyCount + bankCount) then
-
 		-- Check if the player has some money
 		if moneyCount ~= 0 then
 			-- Removes player inventory money
@@ -268,11 +221,10 @@ function Player:removeMoneyBank(amount)
 			local remains = amount - moneyCount
 
 			-- Removes player bank money
-			self:setBankBalance(bankCount - remains)
+			Bank.debit(self, remains)
 
 			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d from inventory and %d gold from bank account. Your account balance is now %d gold."):format(moneyCount, amount - moneyCount, self:getBankBalance()))
 			return true
-
 		else
 			self:setBankBalance(bankCount - amount)
 			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from bank account. Your account balance is now %d gold."):format(amount, self:getBankBalance()))
@@ -289,31 +241,30 @@ end
 function Player.hasRookgaardShield(self)
 	-- Wooden Shield, Studded Shield, Brass Shield, Plate Shield, Copper Shield
 	return self:getItemCount(3412) > 0
-		or self:getItemCount(3426) > 0
-		or self:getItemCount(3411) > 0
-		or self:getItemCount(3410) > 0
-		or self:getItemCount(3430) > 0
+			or self:getItemCount(3426) > 0
+			or self:getItemCount(3411) > 0
+			or self:getItemCount(3410) > 0
+			or self:getItemCount(3430) > 0
 end
 
-
 function Player.isSorcerer(self)
-	return table.contains({VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER}, self:getVocation():getId())
+	return table.contains({ VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER }, self:getVocation():getId())
 end
 
 function Player.isDruid(self)
-	return table.contains({VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID}, self:getVocation():getId())
+	return table.contains({ VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID }, self:getVocation():getId())
 end
 
 function Player.isKnight(self)
-	return table.contains({VOCATION.ID.KNIGHT, VOCATION.ID.ELITE_KNIGHT}, self:getVocation():getId())
+	return table.contains({ VOCATION.ID.KNIGHT, VOCATION.ID.ELITE_KNIGHT }, self:getVocation():getId())
 end
 
 function Player.isPaladin(self)
-	return table.contains({VOCATION.ID.PALADIN, VOCATION.ID.ROYAL_PALADIN}, self:getVocation():getId())
+	return table.contains({ VOCATION.ID.PALADIN, VOCATION.ID.ROYAL_PALADIN }, self:getVocation():getId())
 end
 
 function Player.isMage(self)
-	return table.contains({VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER, VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID},
+	return table.contains({ VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER, VOCATION.ID.DRUID, VOCATION.ID.ELDER_DRUID },
 		self:getVocation():getId())
 end
 
@@ -324,9 +275,9 @@ function Player.getAccountStorage(self, accountId, key, forceUpdate)
 		return ACCOUNT_STORAGES[accountId]
 	end
 
-	local query = db.storeQuery("SELECT `key`, MAX(`value`) as value FROM `player_storage` WHERE `player_id` IN (SELECT `id` FROM `players` WHERE `account_id` = ".. accountId ..") AND `key` = ".. key .." GROUP BY `key` LIMIT 1;")
+	local query = db.storeQuery("SELECT `key`, MAX(`value`) as value FROM `player_storage` WHERE `player_id` IN (SELECT `id` FROM `players` WHERE `account_id` = " .. accountId .. ") AND `key` = " .. key .. " GROUP BY `key` LIMIT 1;")
 	if query ~= false then
-		local value = Result.getDataInt(query, "value")
+		local value = Result.getNumber(query, "value")
 		ACCOUNT_STORAGES[accountId] = value
 		Result.free(query)
 		return value
@@ -351,40 +302,41 @@ function Player.getMarriageDescription(thing)
 end
 
 function Player.sendWeatherEffect(self, groundEffect, fallEffect, thunderEffect)
-    local position, random = self:getPosition(), math.random
-    position.x = position.x + random(-7, 7)
-      position.y = position.y + random(-5, 5)
-    local fromPosition = Position(position.x + 1, position.y, position.z)
-       fromPosition.x = position.x - 7
-       fromPosition.y = position.y - 5
-    local tile, getGround
-    for Z = 1, 7 do
-        fromPosition.z = Z
-        position.z = Z
-        tile = Tile(position)
-        if tile then -- If there is a tile, stop checking floors
-            fromPosition:sendDistanceEffect(position, fallEffect)
+	local position, random = self:getPosition(), math.random
+	position.x = position.x + random(-7, 7)
+	position.y = position.y + random(-5, 5)
+	local fromPosition = Position(position.x + 1, position.y, position.z)
+	fromPosition.x = position.x - 7
+	fromPosition.y = position.y - 5
+	local tile, getGround
+	for Z = 1, 7 do
+		fromPosition.z = Z
+		position.z = Z
+		tile = Tile(position)
+		if tile then
+			-- If there is a tile, stop checking floors
+			fromPosition:sendDistanceEffect(position, fallEffect)
 			position:sendMagicEffect(groundEffect, self)
 			getGround = tile:getGround()
-            if getGround and ItemType(getGround:getId()):getFluidSource() == 1 then
-                position:sendMagicEffect(CONST_ME_LOSEENERGY, self)
-            end
-            break
-        end
-    end
-    if thunderEffect and tile and not tile:hasFlag(TILESTATE_PROTECTIONZONE) then
-        if random(2) == 1 then
-            local topCreature = tile:getTopCreature()
-            if topCreature and topCreature:isPlayer() and topCreature:getAccountType() < ACCOUNT_TYPE_SENIORTUTOR then
-                position:sendMagicEffect(CONST_ME_BIGCLOUDS, self)
-                doTargetCombatHealth(0, self, COMBAT_ENERGYDAMAGE, -weatherConfig.minDMG, -weatherConfig.maxDMG, CONST_ME_NONE)
-                --self:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "You were hit by lightning and lost some health.")
-            end
-        end
-    end
+			if getGround and ItemType(getGround:getId()):getFluidSource() == 1 then
+				position:sendMagicEffect(CONST_ME_LOSEENERGY, self)
+			end
+			break
+		end
+	end
+	if thunderEffect and tile and not tile:hasFlag(TILESTATE_PROTECTIONZONE) then
+		if random(2) == 1 then
+			local topCreature = tile:getTopCreature()
+			if topCreature and topCreature:isPlayer() and topCreature:getAccountType() < ACCOUNT_TYPE_SENIORTUTOR then
+				position:sendMagicEffect(CONST_ME_BIGCLOUDS, self)
+				doTargetCombatHealth(0, self, COMBAT_ENERGYDAMAGE, -weatherConfig.minDMG, -weatherConfig.maxDMG, CONST_ME_NONE)
+				--self:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "You were hit by lightning and lost some health.")
+			end
+		end
+	end
 end
 
-function Player:CreateFamiliarSpell()
+function Player:CreateFamiliarSpell(spellId)
 	local playerPosition = self:getPosition()
 	if not self:isPremium() then
 		playerPosition:sendMagicEffect(CONST_ME_POFF)
@@ -418,7 +370,7 @@ function Player:CreateFamiliarSpell()
 		return false
 	end
 
-	myFamiliar:setOutfit({lookType = self:getFamiliarLooktype()})
+	myFamiliar:setOutfit({ lookType = self:getFamiliarLooktype() })
 	myFamiliar:registerEvent("FamiliarDeath")
 	myFamiliar:changeSpeed(math.max(self:getSpeed() - myFamiliar:getBaseSpeed(), 0))
 	playerPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
@@ -431,7 +383,7 @@ function Player:CreateFamiliarSpell()
 		self:setStorageValue(
 			FAMILIAR_TIMER[sendMessage].storage,
 			addEvent(
-				-- Calling function
+			-- Calling function
 				SendMessageFunction,
 				-- Time for execute event
 				(summonDuration * 60 - FAMILIAR_TIMER[sendMessage].countdown) * 1000,
@@ -442,6 +394,16 @@ function Player:CreateFamiliarSpell()
 			)
 		)
 	end
+	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, spellId)
+	local cooldown = summonDuration * 60 * 1000
+	if self:isVip() then
+		local reduction = configManager.getNumber(configKeys.VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION)
+		reduction = (reduction > summonDuration and summonDuration) or reduction
+		cooldown = cooldown - reduction
+	end
+	condition:setTicks((cooldown) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+	self:addCondition(condition)
+
 	return true
 end
 
@@ -485,16 +447,90 @@ function Player.getFinalLowLevelBonus(self)
 end
 
 function Player.updateHazard(self)
-	local area = self:getPosition():getHazardArea()
-	if not area then
+	local zones = self:getZones()
+	if not zones or #zones == 0 then
 		self:setHazardSystemPoints(0)
 		return true
 	end
 
-	if self:getParty() then
-		self:getParty():refreshHazard()
-	else
-		area:refresh(self)
+	for _, zone in pairs(zones) do
+		local hazard = Hazard.getByName(zone:getName())
+		if not hazard then
+			self:setHazardSystemPoints(0)
+			return true
+		end
+
+		if self:getParty() then
+			self:getParty():refreshHazard()
+		else
+			self:setHazardSystemPoints(hazard:getPlayerCurrentLevel(self))
+		end
+		return true
 	end
 	return true
+end
+
+
+---@param monster Monster
+---@return {factor: number, msgSuffix: string}
+function Player:calculateLootFactor(monster)
+	if self:getStamina() <= 840 then
+		return {
+			factor = 0.0,
+			msgSuffix = " (due to low stamina)"
+		}
+	end
+
+	local participants = { self }
+	local factor = 1
+	if configManager.getBoolean(PARTY_SHARE_LOOT_BOOSTS) then
+		local party = self:getParty()
+		if party and party:isSharedExperienceEnabled() then
+			participants = party:getMembers()
+			table.insert(participants, party:getLeader())
+		end
+	end
+
+	local vipActivators = 0
+	local vipBoost = 0
+	local suffix = ""
+
+	for _, participant in ipairs(participants) do
+		if participant:isVip() then
+			local boost = configManager.getNumber(configKeys.VIP_BONUS_LOOT)
+			boost = ((boost > 100 and 100) or boost) / 100
+			vipBoost = vipBoost + boost
+			vipActivators = vipActivators + 1
+		end
+	end
+	if vipActivators > 0 then
+		vipBoost = vipBoost / (vipActivators ^ configManager.getFloat(configKeys.PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR))
+		factor = factor * (1 + vipBoost)
+	end
+	if vipBoost > 0 then
+		suffix = suffix .. (" (vip bonus: %d%%)"):format(math.floor(vipBoost * 100 + 0.5))
+	end
+
+	return {
+		factor = factor,
+		msgSuffix = suffix
+	}
+end
+
+function Player.setFiendish(self)
+	local position = self:getPosition()
+	position:getNextPosition(self:getDirection())
+
+	local tile = Tile(position)
+	local thing = tile:getTopVisibleThing(self)
+	if not tile or thing and not thing:isMonster() then
+		self:sendCancelMessage("Monster not found.")
+		return false
+	end
+
+	local monster = thing:getMonster()
+	if monster then
+		monster:setFiendish(position, self)
+	end
+	return false
 end

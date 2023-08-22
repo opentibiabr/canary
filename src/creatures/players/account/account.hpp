@@ -41,6 +41,7 @@ namespace account {
 	};
 
 	enum GroupType : uint8_t {
+		GROUP_TYPE_NONE = 0,
 		GROUP_TYPE_NORMAL = 1,
 		GROUP_TYPE_TUTOR = 2,
 		GROUP_TYPE_SENIORTUTOR = 3,

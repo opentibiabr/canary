@@ -221,9 +221,9 @@ DailyReward.retrieveHistoryEntries = function(playerId)
 	if resultId ~= false then
 		repeat
 			local entry = {
-				description = Result.getDataString(resultId, "description"),
-				timestamp = Result.getDataInt(resultId, "timestamp"),
-				daystreak = Result.getDataInt(resultId, "daystreak"),
+				description = Result.getString(resultId, "description"),
+				timestamp = Result.getNumber(resultId, "timestamp"),
+				daystreak = Result.getNumber(resultId, "daystreak"),
 			}
 			table.insert(entries, entry)
 		until not Result.next(resultId)
@@ -465,7 +465,7 @@ function Player.selectDailyReward(self, msg)
 			return false
 		end
 		if totalCounter ~= orderedCounter then
-			Spdlog.error(string.format("Player with name %s is trying to get wrong daily reward", self:getName()))
+			logger.error("Player with name {} is trying to get wrong daily reward", self:getName())
 			return false
 		end
 

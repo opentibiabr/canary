@@ -79,12 +79,12 @@ setCombatFormula = Combat.setFormula
 setCombatParam = Combat.setParameter
 
 Combat.setCondition = function(...)
-	Spdlog.warn("[Combat.setCondition] - Function was renamed to Combat.addCondition and will be removed in the future")
+	logger.warn("[Combat.setCondition] - Function was renamed to Combat.addCondition and will be removed in the future")
 	Combat.addCondition(...)
 end
 
 setCombatCondition = function(...)
-	Spdlog.warn("[setCombatCondition] - Function was renamed to addCombatCondition and will be removed in the future")
+	logger.warn("[setCombatCondition] - Function was renamed to addCombatCondition and will be removed in the future")
 	Combat.addCondition(...)
 end
 
@@ -279,8 +279,8 @@ function getPlayerLearnedInstantSpell(cid, name) local p = Player(cid) return p 
 function isPlayerGhost(cid) local p = Player(cid) return p ~= nil and p:isInGhostMode() or false end
 function isPlayerPzLocked(cid) local p = Player(cid) return p ~= nil and p:isPzLocked() or false end
 function isPremium(cid) local p = Player(cid) return p ~= nil and p:isPremium() or false end
-function getBlessingsCost(level) return Blessings.getBlessingsCost(level) end
-function getPvpBlessingCost(level) return Blessings.getPvpBlessingCost(level) end
+function getBlessingsCost(level, byCommand) return Blessings.getBlessingsCost(level, byCommand) end
+function getPvpBlessingCost(level, byCommand) return Blessings.getPvpBlessingCost(level, byCommand) end
 function getPlayersByIPAddress(ip, mask)
 	if mask == nil then mask = 0xFFFFFFFF end
 	local masked = bit.band(ip, mask)
@@ -316,7 +316,7 @@ function getPlayerGUIDByName(name)
 
 	local resultId = db.storeQuery("SELECT `id` FROM `players` WHERE `name` = " .. db.escapeString(name))
 	if resultId ~= false then
-		local guid = result.getDataInt(resultId, "id")
+		local guid = Result.getNumber(resultId, "id")
 		result.free(resultId)
 		return guid
 	end
@@ -330,7 +330,7 @@ function getAccountNumberByPlayerName(name)
 
 	local resultId = db.storeQuery("SELECT `account_id` FROM `players` WHERE `name` = " .. db.escapeString(name))
 	if resultId ~= false then
-		local accountId = result.getDataInt(resultId, "account_id")
+		local accountId = Result.getNumber(resultId, "account_id")
 		result.free(resultId)
 		return accountId
 	end
@@ -584,7 +584,7 @@ function getGuildId(guildName)
 		return false
 	end
 
-	local guildId = result.getDataInt(resultId, "id")
+	local guildId = Result.getNumber(resultId, "id")
 	result.free(resultId)
 	return guildId
 end
@@ -941,7 +941,7 @@ end
 
 function broadcastMessage(message, messageType)
 	Game.broadcastMessage(message, messageType)
-	Spdlog.info("Broadcasted message: \"" .. message .. "\"")
+	logger.info("Broadcasted message: {}", message)
 end
 
 function Guild.addMember(self, player)

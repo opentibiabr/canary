@@ -17,6 +17,7 @@
 #include "lua/functions/events/global_event_functions.hpp"
 #include "lua/functions/events/move_event_functions.hpp"
 #include "lua/functions/events/talk_action_functions.hpp"
+#include "lua/functions/events/event_callback_functions.hpp"
 
 class EventFunctions final : LuaScriptInterface {
 	public:
@@ -27,6 +28,7 @@ class EventFunctions final : LuaScriptInterface {
 			GlobalEventFunctions::init(L);
 			MoveEventFunctions::init(L);
 			TalkActionFunctions::init(L);
+			EventCallbackFunctions::init(L);
 			/* Move, Creature, Talk, Global events goes all here */
 		}
 

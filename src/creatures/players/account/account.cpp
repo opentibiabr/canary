@@ -110,7 +110,7 @@ namespace account {
 		query << "UPDATE `accounts` SET `coins_transferable` = " << (current_coins + amount)
 			  << " WHERE `id` = " << id_;
 
-		db_tasks_->addTask(query.str());
+		db_tasks_->execute(query.str());
 		return ERROR_NO;
 	}
 
@@ -135,7 +135,7 @@ namespace account {
 		query << "UPDATE `accounts` SET `coins_transferable` = " << (current_coins - amount)
 			  << " WHERE `id` = " << id_;
 
-		db_tasks_->addTask(query.str());
+		db_tasks_->execute(query.str());
 
 		return ERROR_NO;
 	}
@@ -177,7 +177,7 @@ namespace account {
 		query << "UPDATE `accounts` SET `coins` = " << (current_coins + amount)
 			  << " WHERE `id` = " << id_;
 
-		db_tasks_->addTask(query.str());
+		db_tasks_->execute(query.str());
 		return ERROR_NO;
 	}
 
@@ -202,7 +202,7 @@ namespace account {
 		query << "UPDATE `accounts` SET `coins` = " << (current_coins - amount)
 			  << " WHERE `id` = " << id_;
 
-		db_tasks_->addTask(query.str());
+		db_tasks_->execute(query.str());
 
 		return ERROR_NO;
 	}
@@ -333,9 +333,7 @@ namespace account {
 			query << "`email` = " << db_->escapeString(accountIdentifier_) << " , ";
 		}
 
-		query << "`type` = " << account_type_ << " , "
-			  << "`password` = " << db_->escapeString(password_) << " , "
-			  << "`premdays` = " << premium_remaining_days_ << " , "
+		query << "`premdays` = " << premium_remaining_days_ << " , "
 			  << "`lastday` = " << premium_last_day_;
 
 		if (id_ != 0) {

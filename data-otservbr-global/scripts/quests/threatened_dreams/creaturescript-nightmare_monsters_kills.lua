@@ -11,7 +11,7 @@ function threatenedDreamsNightmareMonstersKills.onKill(player, target)
 		return true
 	end
 
-	if not isInArray(nightmareMonsters, target:getName():lower()) then
+	if not table.contains(nightmareMonsters, target:getName():lower()) then
 		return true
 	end
 

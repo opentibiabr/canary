@@ -36,18 +36,18 @@ end
 
 local secretBrokul = Action()
 function secretBrokul.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-   
+
     if item.itemid == 2773 then
         local bossConfig = bossConfig[item:getActionId()]
         if not bossConfig then
             return false
         end
- 
+
         if (getGlobalStorageValue(bossConfig.bossGlobalStorage) > 0) then
             player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There is already a team inside. Please wait.")
             return true
         end
- 
+
         local errorMsg
         local rPlayers = {}
         for index, ipos in pairs(bossConfig.playerPositions) do
@@ -66,7 +66,7 @@ function secretBrokul.onUse(player, item, fromPosition, target, toPosition, isHo
                 end
             end
         end
- 
+
         if (#rPlayers >= bossConfig.minPlayersRequired) then
             for _, pid in pairs(rPlayers) do
                 local rplayer = Player(pid)
@@ -74,7 +74,7 @@ function secretBrokul.onUse(player, item, fromPosition, target, toPosition, isHo
                     rplayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, ('You have %o minutes before you get kicked out.'):format(bossConfig.time))
                     bossConfig.playerPositions[_]:sendMagicEffect(CONST_ME_POFF)
                     rplayer:teleportTo(bossConfig.teleportPosition)
-                    rplayer:setStorageValue(bossConfig.playerStorage, os.time() + (20 * 60 * 60))
+                    rplayer:setStorageValue(bossConfig.playerStorage, os.time() + (configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN)))
                     bossConfig.teleportPosition:sendMagicEffect(CONST_ME_ENERGYAREA)
                     rplayer:setDirection(DIRECTION_NORTH)
                 end
@@ -91,10 +91,10 @@ function secretBrokul.onUse(player, item, fromPosition, target, toPosition, isHo
             end
             return true
         end
- 
+
     end
     item:transform(item.itemid == 2773 and 2772 or 2773)
- 
+
     return true
 end
 

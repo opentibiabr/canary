@@ -83,6 +83,14 @@ bool BedItem::canUse(Player* player) {
 		return false;
 	}
 
+	if (getNextBedItem() == nullptr) {
+		return false;
+	}
+
+	if (Item::items[id].bedPart != BED_PILLOW_PART) {
+		return false;
+	}
+
 	if (sleeperGUID == 0) {
 		return true;
 	}
@@ -145,7 +153,7 @@ bool BedItem::sleep(Player* player) {
 	g_game().addMagicEffect(player->getPosition(), CONST_ME_SLEEP);
 
 	// logout player after he sees himself walk onto the bed and it change id
-	g_scheduler().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&ProtocolGame::logout, player->client, false, false)));
+	g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&ProtocolGame::logout, player->client, false, false));
 
 	// change self and partner's appearance
 	updateAppearance(player);
@@ -159,6 +167,9 @@ bool BedItem::sleep(Player* player) {
 
 void BedItem::wakeUp(Player* player) {
 	if (house == nullptr) {
+		return;
+	}
+	if (sleeperGUID == 0) {
 		return;
 	}
 

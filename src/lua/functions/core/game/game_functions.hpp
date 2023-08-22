@@ -66,6 +66,8 @@ class GameFunctions final : LuaScriptInterface {
 			registerMethod(L, "Game", "hasDistanceEffect", GameFunctions::luaGameHasDistanceEffect);
 			registerMethod(L, "Game", "hasEffect", GameFunctions::luaGameHasEffect);
 			registerMethod(L, "Game", "getOfflinePlayer", GameFunctions::luaGameGetOfflinePlayer);
+			registerMethod(L, "Game", "getNormalizedPlayerName", GameFunctions::luaGameGetNormalizedPlayerName);
+			registerMethod(L, "Game", "getNormalizedGuildName", GameFunctions::luaGameGetNormalizedGuildName);
 
 			registerMethod(L, "Game", "addInfluencedMonster", GameFunctions::luaGameAddInfluencedMonster);
 			registerMethod(L, "Game", "removeInfluencedMonster", GameFunctions::luaGameRemoveInfluencedMonster);
@@ -75,7 +77,11 @@ class GameFunctions final : LuaScriptInterface {
 			registerMethod(L, "Game", "getFiendishMonsters", GameFunctions::luaGameGetFiendishMonsters);
 			registerMethod(L, "Game", "getBoostedBoss", GameFunctions::luaGameGetBoostedBoss);
 
-			registerMethod(L, "Game", "createHazardArea", GameFunctions::luaGameCreateHazardArea);
+			registerMethod(L, "Game", "getLadderIds", GameFunctions::luaGameGetLadderIds);
+			registerMethod(L, "Game", "getDummies", GameFunctions::luaGameGetDummies);
+
+			registerMethod(L, "Game", "getTalkActions", GameFunctions::luaGameGetTalkActions);
+			registerMethod(L, "Game", "getEventCallbacks", GameFunctions::luaGameGetEventCallbacks);
 		}
 
 	private:
@@ -126,6 +132,8 @@ class GameFunctions final : LuaScriptInterface {
 		static int luaGameReload(lua_State* L);
 
 		static int luaGameGetOfflinePlayer(lua_State* L);
+		static int luaGameGetNormalizedPlayerName(lua_State* L);
+		static int luaGameGetNormalizedGuildName(lua_State* L);
 		static int luaGameHasEffect(lua_State* L);
 		static int luaGameHasDistanceEffect(lua_State* L);
 
@@ -138,7 +146,11 @@ class GameFunctions final : LuaScriptInterface {
 
 		static int luaGameGetBoostedBoss(lua_State* L);
 
-		static int luaGameCreateHazardArea(lua_State* L);
+		static int luaGameGetLadderIds(lua_State* L);
+		static int luaGameGetDummies(lua_State* L);
+
+		static int luaGameGetTalkActions(lua_State* L);
+		static int luaGameGetEventCallbacks(lua_State* L);
 };
 
 #endif // SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_

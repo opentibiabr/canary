@@ -2773,6 +2773,7 @@ Storage = {
 					KingZelosDoor = 46875,
 					KingZelosTimer = 46876,
 					KingZelosKilled = 46877,
+					InquisitionOutfitReceived = 46878,
 				},
 				Cobra = 46864
 			},
@@ -2798,7 +2799,9 @@ Storage = {
 				PaleWormTimer = 47018,
 				PaleWormKilled = 47019,
 			},
-			PoltergeistOutfits = {}
+			PoltergeistOutfits = {
+				Received = 47020,
+			}
 		},
 		U12_40 = { -- update 12.40 - Reserved Storages 47201 - 47500
 			RevenantOutfits = {},
@@ -2842,7 +2845,9 @@ Storage = {
 			},
 			CitizenOfIssaviOutfits = {},
 			RoyalBounaceanAdvisorOutfits = {},
-			TooHotToHandle = {}
+			TooHotToHandle = {
+				BrainstealerTimer = 47611,
+			}
 		},
 		U12_80 = { -- update 12.80 - Reserved Storages 47801 - 47850
 			RoyalCostumeOutfits = {}
@@ -2861,6 +2866,9 @@ Storage = {
 					ThePrimalMenaceKilled = 47855,
 				},
 			},
+			WithinTheTides = {
+				TimiraTimer = 47858,
+			}
 		},
 		U13_10 = { -- update 13.10 - Reserved Storages 47901 - 47951
 			CradleOfMonsters = {
@@ -2988,6 +2996,12 @@ Storage = {
 			TimeLeft = 64038,
 			LastActivatedAt = 64039,
 		},
+	},
+
+	VipSystem = {
+		IsVip = 150001,
+		OnlineCoinsGain = 150002,
+		OnlineTokensGain = 150003,
 	},
 }
 
@@ -3192,8 +3206,8 @@ table.sort(extraction) -- Sort the table
 if #extraction > 1 then
 	for i = 1, #extraction - 1 do
 		if extraction[i] == extraction[i + 1] then
-			Spdlog.warn(string.format("Duplicate storage value found: %d",
-				extraction[i]))
+			logger.warn("Duplicate storage value found: {}",
+				extraction[i])
 		end
 	end
 end

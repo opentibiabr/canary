@@ -146,7 +146,7 @@ class MatrixArea {
 			if (row < rows && col < cols) {
 				data_[row][col] = value;
 			} else {
-				SPDLOG_ERROR("[{}] Access exceeds the upper limit of memory block");
+				g_logger().error("[{}] Access exceeds the upper limit of memory block");
 				throw std::out_of_range("Access exceeds the upper limit of memory block");
 			}
 		}
@@ -211,40 +211,14 @@ class AreaCombat {
 		void copyArea(const MatrixArea* input, MatrixArea* output, MatrixOperation_t op) const;
 
 		MatrixArea* getArea(const Position &centerPos, const Position &targetPos) const {
-			int32_t dx = Position::getOffsetX(targetPos, centerPos);
-			int32_t dy = Position::getOffsetY(targetPos, centerPos);
-
-			Direction dir;
-			if (dx < 0) {
-				dir = DIRECTION_WEST;
-			} else if (dx > 0) {
-				dir = DIRECTION_EAST;
-			} else if (dy < 0) {
-				dir = DIRECTION_NORTH;
-			} else {
-				dir = DIRECTION_SOUTH;
-			}
-
-			if (hasExtArea) {
-				if (dx < 0 && dy < 0) {
-					dir = DIRECTION_NORTHWEST;
-				} else if (dx > 0 && dy < 0) {
-					dir = DIRECTION_NORTHEAST;
-				} else if (dx < 0 && dy > 0) {
-					dir = DIRECTION_SOUTHWEST;
-				} else if (dx > 0 && dy > 0) {
-					dir = DIRECTION_SOUTHEAST;
-				}
-			}
-
-			auto it = areas.find(dir);
+			auto it = areas.find(getDirectionTo(centerPos, targetPos, false));
 			if (it == areas.end()) {
 				return nullptr;
 			}
 			return it->second;
 		}
 
-		std::map<Direction, MatrixArea*> areas;
+		phmap::btree_map<Direction, MatrixArea*> areas;
 		bool hasExtArea = false;
 };
 
@@ -277,7 +251,7 @@ class Combat {
 		static ConditionType_t DamageToConditionType(CombatType_t type);
 		static ReturnValue canTargetCreature(Player* attacker, Creature* target);
 		static ReturnValue canDoCombat(Creature* caster, Tile* tile, bool aggressive);
-		static ReturnValue canDoCombat(Creature* attacker, Creature* target);
+		static ReturnValue canDoCombat(Creature* attacker, Creature* target, bool aggressive);
 		static void postCombatEffects(Creature* caster, const Position &origin, const Position &pos, const CombatParams &params);
 
 		static void addDistanceEffect(Creature* caster, const Position &fromPos, const Position &toPos, uint16_t effect);
@@ -324,7 +298,7 @@ class Combat {
 
 	private:
 		static void doChainEffect(const Position &origin, const Position &pos, uint8_t effect);
-		static void pickChainTargets(Creature* caster, std::vector<Creature*> &targets, std::set<uint32_t> &targetSet, std::set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking);
+		static void pickChainTargets(Creature* caster, std::vector<Creature*> &targets, phmap::btree_set<uint32_t> &targetSet, phmap::btree_set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive);
 
 		static void doCombatDefault(Creature* caster, Creature* target, const CombatParams &params);
 
@@ -366,10 +340,10 @@ class Combat {
 		 * @param damage The combat damage.
 		 * @return The calculated level formula.
 		 */
-		int32_t getLevelFormula(const Player* player, const Spell* wheelSpell, const CombatDamage &damage) const;
+		int32_t getLevelFormula(const Player* player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const;
 		CombatDamage getCombatDamage(Creature* creature, Creature* target) const;
 
-		bool doCombatChain(Creature* caster, Creature* target) const;
+		bool doCombatChain(Creature* caster, Creature* target, bool aggressive) const;
 
 		// configureable
 		CombatParams params;

@@ -30,6 +30,11 @@ void toLowerCaseString(std::string &source);
 std::string asLowerCaseString(std::string source);
 std::string asUpperCaseString(std::string source);
 
+std::string toCamelCase(const std::string &str);
+std::string toPascalCase(const std::string &str);
+std::string toSnakeCase(const std::string &str);
+std::string toKebabCase(const std::string &str);
+
 using StringVector = std::vector<std::string>;
 using IntegerVector = std::vector<int32_t>;
 
@@ -44,14 +49,20 @@ int32_t uniform_random(int32_t minNumber, int32_t maxNumber);
 int32_t normal_random(int32_t minNumber, int32_t maxNumber);
 bool boolean_random(double probability = 0.5);
 
+BedItemPart_t getBedPart(const std::string_view string);
 Direction getDirection(const std::string &string);
 Position getNextPosition(Direction direction, Position pos);
-Direction getDirectionTo(const Position &from, const Position &to);
+
+/**
+ * @param exactDiagonalOnly - defines if diagonals are calculated only for dy = dx (true) or any dx != 0 and dy != 0 (false).
+ */
+Direction getDirectionTo(const Position &from, const Position &to, bool exactDiagonalOnly = true);
 
 std::string getFirstLine(const std::string &str);
 
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);
+std::string formatTime(time_t time);
 /**
  * @brief Format the enum name by replacing underscores with spaces and converting to lowercase.
  * @param name The enum name to format.
@@ -113,6 +124,7 @@ const char* getReturnMessage(ReturnValue value);
 
 void capitalizeWords(std::string &source);
 void consoleHandlerExit();
+std::string validateNameHouse(const std::string &name);
 NameEval_t validateName(const std::string &name);
 
 bool isCaskItem(uint16_t itemId);
@@ -126,6 +138,11 @@ SpellGroup_t stringToSpellGroup(const std::string &value);
 uint8_t forgeBonus(int32_t number);
 
 std::string formatPrice(std::string price, bool space /* = false*/);
+std::vector<std::string> split(const std::string &str);
+
+static inline unsigned int getNumberOfCores() {
+	return std::thread::hardware_concurrency();
+}
 
 static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	switch (combatType) {

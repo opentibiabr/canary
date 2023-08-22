@@ -27,16 +27,16 @@ class Mounts {
 	public:
 		bool reload();
 		bool loadFromXml();
-		Mount* getMountByID(uint8_t id);
-		Mount* getMountByName(const std::string &name);
-		Mount* getMountByClientID(uint16_t clientId);
+		std::shared_ptr<Mount> getMountByID(uint8_t id);
+		std::shared_ptr<Mount> getMountByName(const std::string &name);
+		std::shared_ptr<Mount> getMountByClientID(uint16_t clientId);
 
-		const std::vector<Mount> &getMounts() const {
+		[[nodiscard]] const std::vector<std::shared_ptr<Mount>> &getMounts() const {
 			return mounts;
 		}
 
 	private:
-		std::vector<Mount> mounts;
+		std::vector<std::shared_ptr<Mount>> mounts;
 };
 
 #endif // SRC_CREATURES_APPEARANCE_MOUNTS_MOUNTS_H_

@@ -73,13 +73,6 @@ enum CreatureIcon_t {
 	CREATUREICON_QUESTIONMARK = 20,
 	CREATUREICON_CANCELMARK = 21
 };
-
-enum ThreadState {
-	THREAD_STATE_RUNNING,
-	THREAD_STATE_CLOSING,
-	THREAD_STATE_TERMINATED,
-};
-
 enum SpawnType_t {
 	RESPAWN_IN_ALL = 0,
 	RESPAWN_IN_DAY = 1,
@@ -677,6 +670,8 @@ enum ItemID_t : uint16_t {
 	ITEM_FORGE_SLIVER = 37109,
 	ITEM_FORGE_CORE = 37110,
 	ITEM_EXALTATION_CHEST = 37561,
+	ITEM_PODIUM_OF_RENOWN1 = 35973,
+	ITEM_PODIUM_OF_RENOWN2 = 35974,
 	ITEM_PODIUM_OF_VIGOUR = 38707,
 	ITEM_PRIMAL_POD = 39176,
 	ITEM_DIVINE_EMPOWERMENT = 40450,
@@ -764,6 +759,12 @@ const phmap::flat_hash_map<Blessings_t, std::string> BlessingNames = {
 	{ EMBRACE_OF_TIBIA, "The Embrace of Tibia" },
 	{ BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain" },
 	{ HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain" },
+};
+
+enum BedItemPart_t : uint8_t {
+	BED_NONE_PART,
+	BED_PILLOW_PART,
+	BED_BLANKET_PART,
 };
 
 #endif // SRC_UTILS_UTILS_DEFINITIONS_HPP_

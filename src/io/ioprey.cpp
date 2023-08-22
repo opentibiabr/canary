@@ -63,7 +63,7 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 	// Disabling prey system if the server have less then 36 registered monsters on bestiary because:
 	// - Impossible to generate random lists without duplications on slots.
 	// - Stress the server with unnecessary loops.
-	std::map<uint16_t, std::string> bestiary = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> bestiary = g_game().getBestiaryList();
 	if (bestiary.size() < 36) {
 		return;
 	}
@@ -106,7 +106,7 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 		}
 
 		blackList.push_back(raceId);
-		const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId);
+		const auto &mtype = g_monsters().getMonsterTypeByRaceId(raceId);
 		if (!mtype || mtype->info.experience == 0) {
 			continue;
 		} else if (stageOne != 0 && mtype->info.bestiaryStars <= 1) {
@@ -144,7 +144,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 	// Disabling task hunting system if the server have less then 36 registered monsters on bestiary because:
 	// - Impossible to generate random lists without duplications on slots.
 	// - Stress the server with unnecessary loops.
-	std::map<uint16_t, std::string> bestiary = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> bestiary = g_game().getBestiaryList();
 	if (bestiary.size() < 36) {
 		return;
 	}
@@ -187,7 +187,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 		}
 
 		blackList.push_back(raceId);
-		const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId);
+		const auto &mtype = g_monsters().getMonsterTypeByRaceId(raceId);
 		if (!mtype || mtype->info.experience == 0) {
 			continue;
 		} else if (stageOne != 0 && mtype->info.bestiaryStars <= 1) {
@@ -382,7 +382,7 @@ void IOPrey::ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t act
 
 		slot->option = option;
 	} else {
-		SPDLOG_WARN("[IOPrey::ParsePreyAction] - Unknown prey action: {}", fmt::underlying(action));
+		g_logger().warn("[IOPrey::ParsePreyAction] - Unknown prey action: {}", fmt::underlying(action));
 		return;
 	}
 
@@ -453,7 +453,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 			return;
 		}
 
-		if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {
+		if (const auto &mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {
 			slot->currentKills = 0;
 			slot->selectedRaceId = raceId;
 			slot->removeMonsterType(raceId);
@@ -516,7 +516,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 			slot->disabledUntilTimeStamp = OTSYS_TIME() + g_configManager().getNumber(TASK_HUNTING_LIMIT_EXHAUST) * 1000;
 		}
 	} else {
-		SPDLOG_WARN("[IOPrey::ParseTaskHuntingAction] - Unknown task action: {}", fmt::underlying(action));
+		g_logger().warn("[IOPrey::ParseTaskHuntingAction] - Unknown task action: {}", fmt::underlying(action));
 		return;
 	}
 	player->reloadTaskSlot(slotId);
@@ -559,10 +559,10 @@ void IOPrey::InitializeTaskHuntOptions() {
 	}
 
 	msg.addByte(0xBA);
-	std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
+	phmap::btree_map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 	msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 	std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto &mType) {
-		const MonsterType* mtype = g_monsters().getMonsterType(mType.second);
+		const auto &mtype = g_monsters().getMonsterType(mType.second);
 		if (!mtype) {
 			return;
 		}
@@ -594,7 +594,7 @@ TaskHuntingOption* IOPrey::GetTaskRewardOption(const TaskHuntingSlot* slot) cons
 		return nullptr;
 	}
 
-	const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId);
+	const auto &mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId);
 	if (!mtype) {
 		return nullptr;
 	}

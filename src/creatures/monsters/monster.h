@@ -27,7 +27,7 @@ class Monster final : public Creature {
 		static int32_t despawnRange;
 		static int32_t despawnRadius;
 
-		explicit Monster(MonsterType* mType);
+		explicit Monster(const std::shared_ptr<MonsterType> &mType);
 		~Monster();
 
 		// non-copyable
@@ -152,7 +152,7 @@ class Monster final : public Creature {
 
 		void onThink(uint32_t interval) override;
 
-		bool challengeCreature(Creature* creature) override;
+		bool challengeCreature(Creature* creature, int targetChangeCooldown) override;
 
 		bool changeTargetDistance(int32_t distance, uint32_t duration = 12000);
 
@@ -307,7 +307,7 @@ class Monster final : public Creature {
 			return mType->info.isForgeCreature;
 		}
 
-		void setForgeMonster(bool forge) {
+		void setForgeMonster(bool forge) const {
 			mType->info.isForgeCreature = forge;
 		}
 
@@ -335,12 +335,15 @@ class Monster final : public Creature {
 			return timeToChangeFiendish;
 		}
 
-		MonsterType* getMonsterType() const {
+		const std::shared_ptr<MonsterType> &getMonsterType() const {
 			return mType;
 		}
 
 		void clearFiendishStatus();
 		bool canDropLoot() const;
+
+		bool isImmune(ConditionType_t conditionType) const override;
+		bool isImmune(CombatType_t combatType) const override;
 
 	private:
 		CreatureHashSet friendList;
@@ -357,7 +360,7 @@ class Monster final : public Creature {
 
 		std::string strDescription;
 
-		MonsterType* mType;
+		std::shared_ptr<MonsterType> mType;
 		SpawnMonster* spawnMonster = nullptr;
 
 		int64_t lastMeleeAttack = 0;
@@ -371,7 +374,7 @@ class Monster final : public Creature {
 
 		int32_t minCombatValue = 0;
 		int32_t maxCombatValue = 0;
-		int32_t targetChangeCooldown = 0;
+		int32_t m_targetChangeCooldown = 0;
 		int32_t challengeFocusDuration = 0;
 		int32_t stepDuration = 0;
 		int32_t targetDistance = 1;
@@ -441,12 +444,6 @@ class Monster final : public Creature {
 			return mType->info.lookcorpse;
 		}
 		void dropLoot(Container* corpse, Creature* lastHitCreature) override;
-		const std::array<CombatType_t, CombatType_t::COMBAT_COUNT> &getDamageImmunities() const override {
-			return mType->info.damageImmunities;
-		}
-		const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionImmunities() const override {
-			return mType->info.conditionImmunities;
-		}
 		void getPathSearchParams(const Creature* creature, FindPathParams &fpp) const override;
 		bool useCacheMap() const override {
 			return !randomStepping;

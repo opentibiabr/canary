@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		message = message:lower()
 	end
 
-	if isInArray({"sail", "passage", "wreck", "liberty bay", "ship"}, message) then
+	if table.contains({"sail", "passage", "wreck", "liberty bay", "ship"}, message) then
 		if player:getStorageValue(Storage.TheShatteredIsles.AccessToGoroma) ~= 1 then
 			if player:getStorageValue(Storage.TheShatteredIsles.Shipwrecked) < 1 then
 				npcHandler:say('I\'d love to bring you back to Liberty Bay, but as you can see, my ship is ruined. I also hurt my leg and can barely move. Can you help me?', npc, creature)

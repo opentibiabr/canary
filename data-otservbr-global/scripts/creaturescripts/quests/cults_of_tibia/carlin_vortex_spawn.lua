@@ -8,7 +8,7 @@ function vortexCarlin.onKill(creature, target, item)
 		return true
 	end
 
-	if isInArray({'cult enforcer', 'cult believer', 'cult scholar'}, target:getName():lower()) then
+	if table.contains({'cult enforcer', 'cult believer', 'cult scholar'}, target:getName():lower()) then
 		local corpsePosition = target:getPosition()
 		local rand = math.random(32414, 32415)
 		Game.createItem(rand, 1, corpsePosition):setActionId(5580)

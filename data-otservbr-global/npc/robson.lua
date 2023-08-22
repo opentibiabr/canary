@@ -90,7 +90,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, 'no') then
-		if isInArray({1, 2}, npcHandler:getTopic(playerId)) then
+		if table.contains({1, 2}, npcHandler:getTopic(playerId)) then
 			npcHandler:say('I knew I would be stuck with that stuff.', npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

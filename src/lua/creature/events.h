@@ -78,10 +78,7 @@ class Events {
 		void operator=(const Events &) = delete;
 
 		static Events &getInstance() {
-			// Guaranteed to be destroyed
-			static Events instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Events>();
 		}
 
 		// Creature
@@ -106,7 +103,6 @@ class Events {
 		bool eventPlayerOnMoveItem(Player* player, Item* item, uint16_t count, const Position &fromPosition, const Position &toPosition, Cylinder* fromCylinder, Cylinder* toCylinder);
 		void eventPlayerOnItemMoved(Player* player, Item* item, uint16_t count, const Position &fromPosition, const Position &toPosition, Cylinder* fromCylinder, Cylinder* toCylinder);
 		void eventPlayerOnChangeZone(Player* player, ZoneType_t zone);
-		void eventPlayerOnChangeHazard(Player* player, bool isHazard);
 		bool eventPlayerOnMoveCreature(Player* player, Creature* creature, const Position &fromPosition, const Position &toPosition);
 		void eventPlayerOnReportRuleViolation(Player* player, const std::string &targetName, uint8_t reportType, uint8_t reportReason, const std::string &comment, const std::string &translation);
 		bool eventPlayerOnReportBug(Player* player, const std::string &message, const Position &position, uint8_t category);
@@ -135,6 +131,6 @@ class Events {
 		EventsInfo info;
 };
 
-constexpr auto g_events = &Events::getInstance;
+constexpr auto g_events = Events::getInstance;
 
 #endif // SRC_LUA_CREATURE_EVENTS_H_

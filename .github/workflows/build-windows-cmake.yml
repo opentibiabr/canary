@@ -4,7 +4,11 @@ on:
   workflow_dispatch:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - 'src/**'
   push:
+    paths:
+      - 'src/**'
     branches:
       - main
 env:

@@ -92,37 +92,37 @@ enum class CreatureIconQuests_t {
 };
 
 struct CreatureIcon {
-		constexpr CreatureIcon() = default;
+	constexpr CreatureIcon() = default;
 
-		constexpr CreatureIcon(CreatureIconModifications_t modification, uint16_t count = 0) :
-			category(CreatureIconCategory_t::Modifications), modification(modification), count(count) { }
+	constexpr CreatureIcon(CreatureIconModifications_t modification, uint16_t count = 0) :
+		category(CreatureIconCategory_t::Modifications), modification(modification), count(count) { }
 
-		constexpr CreatureIcon(CreatureIconQuests_t quest, uint16_t count = 0) :
-			category(CreatureIconCategory_t::Quests), quest(quest), count(count) { }
+	constexpr CreatureIcon(CreatureIconQuests_t quest, uint16_t count = 0) :
+		category(CreatureIconCategory_t::Quests), quest(quest), count(count) { }
 
-		CreatureIconCategory_t category;
-		CreatureIconModifications_t modification = CreatureIconModifications_t::None;
-		CreatureIconQuests_t quest = CreatureIconQuests_t::None;
-		uint16_t count = 0;
+	CreatureIconCategory_t category;
+	CreatureIconModifications_t modification = CreatureIconModifications_t::None;
+	CreatureIconQuests_t quest = CreatureIconQuests_t::None;
+	uint16_t count = 0;
 
-		bool operator==(const CreatureIcon &other) const = default;
+	bool operator==(const CreatureIcon &other) const = default;
 
-		bool isNone() const {
-			return modification == CreatureIconModifications_t::None && quest == CreatureIconQuests_t::None;
+	bool isNone() const {
+		return modification == CreatureIconModifications_t::None && quest == CreatureIconQuests_t::None;
+	}
+
+	bool isSet() const {
+		return !isNone();
+	}
+
+	uint8_t serialize() const {
+		if (category == CreatureIconCategory_t::Modifications) {
+			return static_cast<uint8_t>(modification);
+		} else if (category == CreatureIconCategory_t::Quests) {
+			return static_cast<uint8_t>(quest);
 		}
-
-		bool isSet() const {
-			return !isNone();
-		}
-
-		uint8_t serialize() const {
-			if (category == CreatureIconCategory_t::Modifications) {
-				return static_cast<uint8_t>(modification);
-			} else if (category == CreatureIconCategory_t::Quests) {
-				return static_cast<uint8_t>(quest);
-			}
-			return 0;
-		}
+		return 0;
+	}
 };
 
 enum SpawnType_t {

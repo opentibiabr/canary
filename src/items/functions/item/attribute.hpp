@@ -132,7 +132,7 @@ public:
 	ItemAttribute() = default;
 
 	// CustomAttribute map methods
-	const phmap::btree_map<std::string, CustomAttribute, std::less<>> &getCustomAttributeMap() const;
+	const std::map<std::string, CustomAttribute, std::less<>> &getCustomAttributeMap() const;
 	// CustomAttribute object methods
 	const CustomAttribute* getCustomAttribute(const std::string &attributeName) const;
 
@@ -169,6 +169,6 @@ public:
 	Attributes &getAttributesByType(ItemAttribute_t type);
 
 private:
-	phmap::btree_map<std::string, CustomAttribute, std::less<>> customAttributeMap;
+	std::map<std::string, CustomAttribute, std::less<>> customAttributeMap;
 	std::vector<Attributes> attributeVector;
 };

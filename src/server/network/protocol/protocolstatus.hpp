@@ -33,5 +33,5 @@ public:
 	static const uint64_t start;
 
 private:
-	static phmap::btree_map<uint32_t, int64_t> ipConnectMap;
+	static std::map<uint32_t, int64_t> ipConnectMap;
 };

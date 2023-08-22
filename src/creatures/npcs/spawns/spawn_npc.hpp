@@ -54,7 +54,7 @@ private:
 	SpawnedNpcMap spawnedNpcMap;
 
 	// map of npcs in the spawn
-	phmap::btree_map<uint32_t, spawnBlockNpc_t> spawnNpcMap;
+	std::map<uint32_t, spawnBlockNpc_t> spawnNpcMap;
 
 	Position centerPos;
 	int32_t radius;

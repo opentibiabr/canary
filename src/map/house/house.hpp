@@ -241,7 +241,7 @@ private:
 	void handleWrapableItem(ItemList &moveItemList, Item* item, Player* player, HouseTile* houseTile) const;
 };
 
-using HouseMap = phmap::btree_map<uint32_t, House*>;
+using HouseMap = std::map<uint32_t, House*>;
 
 class Houses {
 public:

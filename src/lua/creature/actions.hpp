@@ -167,7 +167,7 @@ private:
 		return false;
 	}
 
-	[[nodiscard]] phmap::btree_map<Position, std::shared_ptr<Action>> getPositionsMap() const {
+	[[nodiscard]] std::map<Position, std::shared_ptr<Action>> getPositionsMap() const {
 		return actionPositionMap;
 	}
 
@@ -218,7 +218,7 @@ private:
 	ActionUseMap useItemMap;
 	ActionUseMap uniqueItemMap;
 	ActionUseMap actionItemMap;
-	phmap::btree_map<Position, std::shared_ptr<Action>> actionPositionMap;
+	std::map<Position, std::shared_ptr<Action>> actionPositionMap;
 
 	std::shared_ptr<Action> getAction(const Item* item);
 };

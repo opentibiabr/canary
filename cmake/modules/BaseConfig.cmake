@@ -134,8 +134,6 @@ endfunction()
 
 ## Setup shared target basic configurations
 function(setup_target TARGET_NAME)
-    set_output_directory(${TARGET_NAME})
-
     if (MSVC AND BUILD_STATIC_LIBRARY)
         set_property(TARGET ${TARGET_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     endif()

@@ -59,9 +59,9 @@ class MonsterType {
 	struct MonsterInfo {
 		LuaScriptInterface* scriptInterface;
 
-		phmap::btree_map<CombatType_t, int32_t> elementMap;
-		phmap::btree_map<CombatType_t, int32_t> reflectMap;
-		phmap::btree_map<CombatType_t, int32_t> healingMap;
+		std::map<CombatType_t, int32_t> elementMap;
+		std::map<CombatType_t, int32_t> reflectMap;
+		std::map<CombatType_t, int32_t> healingMap;
 
 		std::vector<voiceBlock_t> voiceVector;
 
@@ -265,7 +265,7 @@ public:
 	bool deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spellBlock_t &sb, const std::string &description = "");
 
 	std::unique_ptr<LuaScriptInterface> scriptInterface;
-	phmap::btree_map<std::string, std::shared_ptr<MonsterType>> monsters;
+	std::map<std::string, std::shared_ptr<MonsterType>> monsters;
 
 private:
 	ConditionDamage* getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);

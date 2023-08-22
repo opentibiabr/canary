@@ -13,7 +13,7 @@
 #include "declarations.hpp"
 
 class IOMarket {
-	using StatisticsMap = phmap::btree_map<uint16_t, phmap::btree_map<uint8_t, MarketStatistics>>;
+	using StatisticsMap = std::map<uint16_t, std::map<uint8_t, MarketStatistics>>;
 
 public:
 	IOMarket() = default;

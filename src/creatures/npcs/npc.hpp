@@ -174,9 +174,9 @@ private:
 
 	std::string strDescription;
 
-	phmap::btree_map<uint32_t, uint16_t> playerInteractions;
+	std::map<uint32_t, uint16_t> playerInteractions;
 
-	phmap::btree_set<Player*> shopPlayerSet;
+	std::set<Player*> shopPlayerSet;
 
 	NpcType* npcType;
 	SpawnNpc* spawnNpc = nullptr;

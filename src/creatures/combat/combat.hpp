@@ -210,14 +210,41 @@ private:
 	void copyArea(const MatrixArea* input, MatrixArea* output, MatrixOperation_t op) const;
 
 	MatrixArea* getArea(const Position &centerPos, const Position &targetPos) const {
-		auto it = areas.find(getDirectionTo(centerPos, targetPos, false));
+		int32_t dx = Position::getOffsetX(targetPos, centerPos);
+		int32_t dy = Position::getOffsetY(targetPos, centerPos);
+
+		Direction dir;
+		if (dx < 0) {
+			dir = DIRECTION_WEST;
+		} else if (dx > 0) {
+			dir = DIRECTION_EAST;
+		} else if (dy < 0) {
+			dir = DIRECTION_NORTH;
+		} else {
+			dir = DIRECTION_SOUTH;
+		}
+
+		if (hasExtArea) {
+			if (dx < 0 && dy < 0) {
+				dir = DIRECTION_NORTHWEST;
+			} else if (dx > 0 && dy < 0) {
+				dir = DIRECTION_NORTHEAST;
+			} else if (dx < 0 && dy > 0) {
+				dir = DIRECTION_SOUTHWEST;
+			} else if (dx > 0 && dy > 0) {
+				dir = DIRECTION_SOUTHEAST;
+			}
+		}
+
+		auto it = areas.find(dir);
 		if (it == areas.end()) {
 			return nullptr;
 		}
+
 		return it->second;
 	}
 
-	phmap::btree_map<Direction, MatrixArea*> areas;
+	std::map<Direction, MatrixArea*> areas;
 	bool hasExtArea = false;
 };
 
@@ -297,7 +324,7 @@ public:
 
 private:
 	static void doChainEffect(const Position &origin, const Position &pos, uint8_t effect);
-	static void pickChainTargets(Creature* caster, std::vector<Creature*> &targets, phmap::btree_set<uint32_t> &targetSet, phmap::btree_set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive);
+	static void pickChainTargets(Creature* caster, std::vector<Creature*> &targets, std::set<uint32_t> &targetSet, std::set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive);
 
 	static void doCombatDefault(Creature* caster, Creature* target, const CombatParams &params);
 

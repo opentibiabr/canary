@@ -110,7 +110,7 @@ public:
 
 private:
 	std::unique_ptr<LuaScriptInterface> scriptInterface;
-	phmap::btree_map<std::string, NpcType*> npcs;
+	std::map<std::string, NpcType*> npcs;
 };
 
 constexpr auto g_npcs = Npcs::getInstance;

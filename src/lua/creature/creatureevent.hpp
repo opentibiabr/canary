@@ -89,7 +89,7 @@ public:
 
 private:
 	// creature events
-	using CreatureEventMap = phmap::btree_map<std::string, std::shared_ptr<CreatureEvent>>;
+	using CreatureEventMap = std::map<std::string, std::shared_ptr<CreatureEvent>>;
 	CreatureEventMap creatureEvents;
 };
 

@@ -102,7 +102,7 @@ bool ItemAttribute::removeAttribute(ItemAttribute_t type) {
 * CustomAttribute map methods
 =============================
 */
-const phmap::btree_map<std::string, CustomAttribute, std::less<>> &ItemAttribute::getCustomAttributeMap() const {
+const std::map<std::string, CustomAttribute, std::less<>> &ItemAttribute::getCustomAttributeMap() const {
 	return customAttributeMap;
 }
 

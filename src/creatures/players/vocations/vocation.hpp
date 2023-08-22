@@ -109,10 +109,10 @@ public:
 private:
 	friend class Vocations;
 
-	phmap::btree_map<uint32_t, uint64_t> cacheMana;
-	phmap::btree_map<uint32_t, absl::uint128> cacheManaTotal;
-	phmap::btree_map<uint32_t, uint32_t> cacheSkill[SKILL_LAST + 1];
-	phmap::btree_map<uint32_t, absl::uint128> cacheSkillTotal[SKILL_LAST + 1];
+	std::map<uint32_t, uint64_t> cacheMana;
+	std::map<uint32_t, absl::uint128> cacheManaTotal;
+	std::map<uint32_t, uint32_t> cacheSkill[SKILL_LAST + 1];
+	std::map<uint32_t, absl::uint128> cacheSkillTotal[SKILL_LAST + 1];
 
 	std::string name = "none";
 	std::string description;
@@ -158,14 +158,14 @@ public:
 	bool loadFromXml();
 
 	Vocation* getVocation(uint16_t id);
-	const phmap::btree_map<uint16_t, Vocation> &getVocations() const {
+	const std::map<uint16_t, Vocation> &getVocations() const {
 		return vocationsMap;
 	}
 	uint16_t getVocationId(const std::string &name) const;
 	uint16_t getPromotedVocation(uint16_t vocationId) const;
 
 private:
-	phmap::btree_map<uint16_t, Vocation> vocationsMap;
+	std::map<uint16_t, Vocation> vocationsMap;
 };
 
 constexpr auto g_vocations = Vocations::getInstance;

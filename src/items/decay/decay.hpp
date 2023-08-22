@@ -30,7 +30,7 @@ private:
 	void internalDecayItem(Item* item);
 
 	uint32_t eventId { 0 };
-	phmap::btree_map<int64_t, std::vector<Item*>> decayMap;
+	std::map<int64_t, std::vector<Item*>> decayMap;
 };
 
 constexpr auto g_decay = Decay::getInstance;

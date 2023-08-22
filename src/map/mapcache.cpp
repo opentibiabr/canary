@@ -201,7 +201,7 @@ bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, 
 
 	while (stream.startNode()) {
 		if (stream.getU8() != OTBM_ITEM)
-			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not read item node.", x, y, z));
+			throw std::runtime_error(fmt::format("[x:{}, y:{}, z:{}] Could not read item node.", x, y, z));
 
 		const uint16_t streamId = stream.getU16();
 
@@ -209,12 +209,12 @@ bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, 
 		item->id = streamId;
 
 		if (!item->unserializeItemNode(stream, x, y, z))
-			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Failed to load item.", x, y, z));
+			throw std::runtime_error(fmt::format("[x:{}, y:{}, z:{}] Failed to load item.", x, y, z));
 
 		items.emplace_back(static_tryGetItemFromCache(item));
 
 		if (!stream.endNode())
-			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
+			throw std::runtime_error(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
 	}
 
 	return true;

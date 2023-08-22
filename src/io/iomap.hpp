@@ -18,22 +18,9 @@
 #include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "creatures/npcs/spawns/spawn_npc.hpp"
 
-class IOMapException : public std::exception {
-public:
-	IOMapException(const std::string &msg) :
-		message(msg) { }
-
-	const char* what() const noexcept override {
-		return message.c_str();
-	}
-
-private:
-	std::string message;
-};
-
 class IOMap {
 public:
-	static void loadMap(Map* map, const std::string &identifier, const Position &pos = Position(), bool unload = false);
+	static void loadMap(Map* map, const Position &pos = Position());
 
 	/**
 	 * Load main map monsters
@@ -130,7 +117,7 @@ public:
 	}
 
 private:
-	static void parseMapDataAttributes(FileStream &stream, Map* map, const std::string &fileName);
+	static void parseMapDataAttributes(FileStream &stream, Map* map);
 	static void parseWaypoints(FileStream &stream, Map &map);
 	static void parseTowns(FileStream &stream, Map &map);
 	static void parseTileArea(FileStream &stream, Map &map, const Position &pos);

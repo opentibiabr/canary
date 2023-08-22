@@ -166,7 +166,6 @@ namespace InternalGame {
 
 		return static_cast<T>(value);
 	}
-
 } // Namespace InternalGame
 
 Game::Game() {
@@ -437,24 +436,20 @@ bool Game::loadItemsPrice() {
 	return true;
 }
 
-bool Game::loadMainMap(const std::string &filename) {
+void Game::loadMainMap(const std::string &filename) {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
-	return map.loadMap(g_configManager().getString(DATA_DIRECTORY) + "/world/" + filename + ".otbm", true, true, true, true);
+	map.loadMap(g_configManager().getString(DATA_DIRECTORY) + "/world/" + filename + ".otbm", true, true, true, true);
 }
 
-bool Game::loadCustomMaps(const std::string &customMapPath) {
+void Game::loadCustomMaps(const std::string &customMapPath) {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
 
 	namespace fs = std::filesystem;
 
-	if (!fs::exists(customMapPath)) {
-		if (!fs::create_directory(customMapPath)) {
-			g_logger().error("Failed to create custom map directory {}", customMapPath);
-			return false;
-		}
-	}
+	if (!fs::exists(customMapPath) && !fs::create_directory(customMapPath))
+		throw std::runtime_error(fmt::format("Failed to create custom map directory {}", customMapPath));
 
 	int customMapIndex = 0;
 	for (const auto &entry : fs::directory_iterator(customMapPath)) {
@@ -484,22 +479,17 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 			continue;
 		}
 
-		g_logger().info("Loading custom map {}", filename);
-		if (!map.loadMapCustom(filename, true, true, true, customMapIndex)) {
-			g_logger().error("Failed to load custom map {}", filename);
-			return false;
-		}
+		map.loadMapCustom(filename, true, true, true, customMapIndex);
+
 		customMapIndex++;
 	}
 
 	// Must be done after all maps have been loaded
 	map.loadHouseInfo();
-
-	return true;
 }
 
-void Game::loadMap(const std::string &path, const Position &pos, bool unload) {
-	map.loadMap(path, false, false, false, false, pos, unload);
+void Game::loadMap(const std::string &path, const Position &pos) {
+	map.loadMap(path, false, false, false, false, pos);
 }
 
 Cylinder* Game::internalGetCylinder(Player* player, const Position &pos) {

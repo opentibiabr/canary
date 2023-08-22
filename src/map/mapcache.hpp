@@ -68,8 +68,8 @@ struct BasicTile {
 
 	bool isStatic { false };
 
-	bool isEmpty() const {
-		return flags == 0 && ground == nullptr && items.empty();
+	bool isEmpty(bool ignoreFlag = false) const {
+		return (ignoreFlag || flags == 0) && ground == nullptr && items.empty();
 	}
 
 	bool isHouse() const {

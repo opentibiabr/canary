@@ -171,7 +171,7 @@ const std::vector<std::string> &IOWheel::getFocusSpells() const {
 }
 
 using VocationBonusFunction = std::function<void(Player &, uint16_t, uint8_t, PlayerWheelMethodsBonusData &)>;
-using VocationBonusMap = phmap::btree_map<WheelSlots_t, VocationBonusFunction>;
+using VocationBonusMap = std::map<WheelSlots_t, VocationBonusFunction>;
 const VocationBonusMap &IOWheel::getWheelMapFunctions() const {
 	return m_vocationBonusMap;
 }

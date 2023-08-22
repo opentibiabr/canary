@@ -45,9 +45,9 @@ public:
 	void loadBoostedBoss();
 
 	void addBosstiaryMonster(uint16_t raceId, const std::string &name);
-	const phmap::btree_map<uint16_t, std::string> &getBosstiaryMap() const;
+	const std::map<uint16_t, std::string> &getBosstiaryMap() const;
 
-	const phmap::btree_map<BosstiaryRarity_t, std::vector<LevelInfo>> levelInfos = {
+	const std::map<BosstiaryRarity_t, std::vector<LevelInfo>> levelInfos = {
 		{ BosstiaryRarity_t::RARITY_BANE, { { 25, 5 }, { 100, 15 }, { 300, 30 } } },
 		{ BosstiaryRarity_t::RARITY_ARCHFOE, { { 5, 10 }, { 20, 30 }, { 60, 60 } } },
 		{ BosstiaryRarity_t::RARITY_NEMESIS, { { 1, 10 }, { 3, 30 }, { 5, 60 } } }
@@ -69,7 +69,7 @@ public:
 	const std::vector<LevelInfo> &getBossRaceKillStages(BosstiaryRarity_t race) const;
 
 private:
-	phmap::btree_map<uint16_t, std::string> bosstiaryMap;
+	std::map<uint16_t, std::string> bosstiaryMap;
 	std::string boostedBoss;
 	uint16_t boostedBossId = 0;
 };

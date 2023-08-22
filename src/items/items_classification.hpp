@@ -29,5 +29,5 @@ public:
 	}
 
 	uint8_t id;
-	phmap::btree_map<uint8_t, TierInfo> tiers;
+	std::map<uint8_t, TierInfo> tiers;
 };

@@ -909,8 +909,8 @@ void Combat::doChainEffect(const Position &origin, const Position &dest, uint8_t
 
 bool Combat::doCombatChain(Creature* caster, Creature* target, bool aggressive) const {
 	auto targets = std::vector<Creature*>();
-	auto targetSet = phmap::btree_set<uint32_t>();
-	auto visitedChain = phmap::btree_set<uint32_t>();
+	auto targetSet = std::set<uint32_t>();
+	auto visitedChain = std::set<uint32_t>();
 	if (target != nullptr) {
 		targets.push_back(target);
 		targetSet.insert(target->getID());
@@ -1372,7 +1372,7 @@ void Combat::setRuneSpellName(const std::string &value) {
 	runeSpellName = value;
 }
 
-void Combat::pickChainTargets(Creature* caster, std::vector<Creature*> &targets, phmap::btree_set<uint32_t> &targetSet, phmap::btree_set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive) {
+void Combat::pickChainTargets(Creature* caster, std::vector<Creature*> &targets, std::set<uint32_t> &targetSet, std::set<uint32_t> &visited, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive) {
 	if (maxTargets == 0 || targets.size() > maxTargets) {
 		return;
 	}

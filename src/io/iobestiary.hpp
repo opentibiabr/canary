@@ -76,9 +76,9 @@ public:
 
 	charmRune_t getCharmFromTarget(Player* player, const std::shared_ptr<MonsterType> &mtype);
 
-	phmap::btree_map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(Player* player, phmap::btree_map<uint16_t, std::string> mtype_list) const;
-	phmap::btree_map<uint8_t, int16_t> getMonsterElements(const std::shared_ptr<MonsterType> &mtype) const;
-	phmap::btree_map<uint16_t, std::string> findRaceByName(const std::string &race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
+	std::map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(Player* player, std::map<uint16_t, std::string> mtype_list) const;
+	std::map<uint8_t, int16_t> getMonsterElements(const std::shared_ptr<MonsterType> &mtype) const;
+	std::map<uint16_t, std::string> findRaceByName(const std::string &race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
 
 private:
 	static SoftSingleton instanceTracker;

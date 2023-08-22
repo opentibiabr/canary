@@ -23,7 +23,7 @@ class Map;
 
 struct FindPathParams;
 
-using SpectatorCache = phmap::btree_map<Position, SpectatorHashSet>;
+using SpectatorCache = std::map<Position, SpectatorHashSet>;
 
 class FrozenPathingConditionCall;
 
@@ -124,7 +124,7 @@ public:
 
 	bool getPathMatching(const Position &startPos, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 
-	phmap::btree_map<std::string, Position> waypoints;
+	std::map<std::string, Position> waypoints;
 
 	QTreeLeafNode* getQTNode(uint16_t x, uint16_t y) {
 		return QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y);

@@ -54,7 +54,7 @@ private:
 	SpawnedMap spawnedMonsterMap;
 
 	// map of creatures in the spawn
-	phmap::btree_map<uint32_t, spawnBlock_t> spawnMonsterMap;
+	std::map<uint32_t, spawnBlock_t> spawnMonsterMap;
 
 	Position centerPos;
 	int32_t radius;

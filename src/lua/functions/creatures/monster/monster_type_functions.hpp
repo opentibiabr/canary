@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_TYPE_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_TYPE_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class MonsterTypeFunctions final : LuaScriptInterface {
 public:
@@ -268,5 +267,3 @@ private:
 	static int luaMonsterTypeHazardSystemSpawnPod(lua_State* L);
 	static int luaMonsterTypeHazardSystemDamageBoost(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_TYPE_FUNCTIONS_HPP_

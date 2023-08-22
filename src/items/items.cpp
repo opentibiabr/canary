@@ -10,10 +10,10 @@
 #include "pch.hpp"
 
 #include "items/functions/item/item_parse.hpp"
-#include "items/items.h"
-#include "items/weapons/weapons.h"
-#include "game/game.h"
-#include "utils/pugicast.h"
+#include "items/items.hpp"
+#include "items/weapons/weapons.hpp"
+#include "game/game.hpp"
+#include "utils/pugicast.hpp"
 
 Items::Items() = default;
 

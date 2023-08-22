@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CREATURES_COMBAT_COMBAT_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CREATURES_COMBAT_COMBAT_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 #include "lua/functions/creatures/combat/condition_functions.hpp"
 #include "lua/functions/creatures/combat/spell_functions.hpp"
 #include "lua/functions/creatures/combat/variant_functions.hpp"
@@ -49,5 +48,3 @@ private:
 
 	static int luaCombatExecute(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CREATURES_COMBAT_COMBAT_FUNCTIONS_HPP_

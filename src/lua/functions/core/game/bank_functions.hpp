@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CORE_GAME_BANK_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CORE_GAME_BANK_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class Bank;
 
@@ -40,5 +39,3 @@ private:
 
 	static std::shared_ptr<Bank> getBank(lua_State* L, int32_t arg, bool isGuild = false);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CORE_GAME_BANK_FUNCTIONS_HPP_

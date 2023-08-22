@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "creatures/combat/spells.h"
-#include "creatures/players/vocations/vocation.h"
+#include "creatures/combat/spells.hpp"
+#include "creatures/players/vocations/vocation.hpp"
 #include "lua/functions/creatures/combat/spell_functions.hpp"
 
 int SpellFunctions::luaSpellCreate(lua_State* L) {

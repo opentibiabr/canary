@@ -7,14 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_CALLBACKS_EVENT_CALLBACK__HPP_
-#define SRC_LUA_CALLBACKS_EVENT_CALLBACK__HPP_
+#pragma once
 
 #include "lua/callbacks/callbacks_definitions.hpp"
 #include "creatures/creatures_definitions.hpp"
 #include "items/items_definitions.hpp"
 #include "utils/utils_definitions.hpp"
-#include "lua/scripts/scripts.h"
+#include "lua/scripts/scripts.hpp"
 
 class Creature;
 class Player;
@@ -134,5 +133,3 @@ public:
 	 * @note here end the lua binder functions }
 	 */
 };
-
-#endif // SRC_LUA_CALLBACKS_EVENT_CALLBACK__HPP_

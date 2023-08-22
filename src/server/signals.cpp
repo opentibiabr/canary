@@ -9,12 +9,12 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
+#include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "lib/thread/thread_pool.hpp"
-#include "lua/creature/events.h"
+#include "lua/creature/events.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "server/signals.h"
+#include "server/signals.hpp"
 
 Signals::Signals(asio::io_service &service) :
 	set(service) {

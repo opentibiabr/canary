@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_GLOBAL_SHARED_OBJECT_PTR_
-#define SRC_LUA_GLOBAL_SHARED_OBJECT_PTR_
+#pragma once
 
 class SharedObject;
 using SharedObjectPtr = std::shared_ptr<SharedObject>;
@@ -43,5 +42,3 @@ public:
 		return std::dynamic_pointer_cast<TargetType>(source);
 	}
 };
-
-#endif // SRC_LUA_GLOBAL_SHARED_OBJECT_PTR_

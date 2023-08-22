@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CORE_LIBS_BIT_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CORE_LIBS_BIT_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class BitFunctions final : LuaScriptInterface {
 public:
@@ -36,5 +35,3 @@ private:
 	static int luaBitXor(lua_State* L);
 #endif
 };
-
-#endif // SRC_LUA_FUNCTIONS_CORE_LIBS_BIT_FUNCTIONS_HPP_

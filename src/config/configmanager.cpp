@@ -9,11 +9,11 @@
 
 #include "pch.hpp"
 
-#include "config/configmanager.h"
+#include "config/configmanager.hpp"
 #include "declarations.hpp"
-#include "game/game.h"
+#include "game/game.hpp"
 #include "lua/scripts/luajit_sync.hpp"
-#include "server/network/webhook/webhook.h"
+#include "server/network/webhook/webhook.hpp"
 
 #if LUA_VERSION_NUM >= 502
 	#undef lua_strlen

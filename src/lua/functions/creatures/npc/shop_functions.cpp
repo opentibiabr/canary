@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "creatures/npcs/npcs.h"
+#include "creatures/npcs/npcs.hpp"
 #include "lua/functions/creatures/npc/shop_functions.hpp"
 
 int ShopFunctions::luaCreateShop(lua_State* L) {

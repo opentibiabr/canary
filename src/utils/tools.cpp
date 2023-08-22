@@ -10,8 +10,8 @@
 #include "pch.hpp"
 
 #include "core.hpp"
-#include "items/item.h"
-#include "utils/tools.h"
+#include "items/item.hpp"
+#include "utils/tools.hpp"
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
 	g_logger().error("[{}] Failed to load {}: {}", where, fileName, result.description());

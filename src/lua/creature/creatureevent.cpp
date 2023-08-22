@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "lua/creature/creatureevent.h"
-#include "utils/tools.h"
-#include "creatures/players/player.h"
+#include "lua/creature/creatureevent.hpp"
+#include "utils/tools.hpp"
+#include "creatures/players/player.hpp"
 
 void CreatureEvents::clear() {
 	for (auto &[name, event] : creatureEvents) {

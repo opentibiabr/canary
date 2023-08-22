@@ -10,9 +10,9 @@
 #include "pch.hpp"
 
 #include "bank.hpp"
-#include "game/game.h"
-#include "creatures/players/player.h"
-#include "io/iologindata.h"
+#include "game/game.hpp"
+#include "creatures/players/player.hpp"
+#include "io/iologindata.hpp"
 
 Bank::Bank(const std::shared_ptr<Bankable> &bankable) :
 	bankable(bankable) {

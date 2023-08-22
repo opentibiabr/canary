@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_IO_IO_FILESTREAM_HPP_
-#define SRC_IO_IO_FILESTREAM_HPP_
+#pragma once
 
 class FileStream {
 public:
@@ -44,5 +43,3 @@ private:
 
 	std::vector<uint8_t> m_data;
 };
-
-#endif // SRC_IO_IO_FILESTREAM_HPP_

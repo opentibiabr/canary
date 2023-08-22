@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_GAME_DISPATCHER_H_
-#define SRC_GAME_DISPATCHER_H_
+#pragma once
 
 #include "lib/thread/thread_pool.hpp"
 
@@ -45,5 +44,3 @@ private:
 };
 
 constexpr auto g_dispatcher = Dispatcher::getInstance;
-
-#endif // SRC_GAME_DISPATCHER_H_

@@ -11,11 +11,11 @@
 
 #include "lua/functions/items/weapon_functions.hpp"
 
-#include "game/game.h"
-#include "items/item.h"
+#include "game/game.hpp"
+#include "items/item.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "lua/scripts/scripts.h"
-#include "utils/tools.h"
+#include "lua/scripts/scripts.hpp"
+#include "utils/tools.hpp"
 
 int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 	// Weapon(type)

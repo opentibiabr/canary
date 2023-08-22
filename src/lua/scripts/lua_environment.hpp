@@ -7,13 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_
-#define SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_
+#pragma once
 
-#include "creatures/combat/combat.h"
+#include "creatures/combat/combat.hpp"
 #include "declarations.hpp"
-#include "lua/scripts/luascript.h"
-#include "items/weapons/weapons.h"
+#include "lua/scripts/luascript.hpp"
+#include "items/weapons/weapons.hpp"
 
 class AreaCombat;
 class Combat;
@@ -106,5 +105,3 @@ private:
 };
 
 constexpr auto g_luaEnvironment = LuaEnvironment::getInstance;
-
-#endif // SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_

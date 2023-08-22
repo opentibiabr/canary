@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "security/rsa.h"
+#include "security/rsa.hpp"
 
 RSA::RSA(Logger &logger) :
 	logger(logger) {

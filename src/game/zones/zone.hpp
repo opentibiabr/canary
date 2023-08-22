@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_GAME_ZONE_ZONE_HPP_
-#define SRC_GAME_ZONE_ZONE_HPP_
+#pragma once
 
-#include "game/movement/position.h"
+#include "game/movement/position.hpp"
 
 class Tile;
 class Creature;
@@ -128,5 +127,3 @@ private:
 	static std::mutex zonesMutex;
 	static phmap::btree_map<std::string, std::shared_ptr<Zone>> zones;
 };
-
-#endif // SRC_GAME_ZONE_ZONE_HPP_

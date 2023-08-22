@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "creatures/creature.h"
-#include "lua/creature/movement.h"
+#include "creatures/creature.hpp"
+#include "lua/creature/movement.hpp"
 #include "lua/functions/events/move_event_functions.hpp"
 
 int MoveEventFunctions::luaCreateMoveEvent(lua_State* L) {

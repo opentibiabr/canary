@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_MAP_TOWN_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_MAP_TOWN_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class TownFunctions final : LuaScriptInterface {
 public:
@@ -30,5 +29,3 @@ private:
 	static int luaTownGetName(lua_State* L);
 	static int luaTownGetTemplePosition(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_MAP_TOWN_FUNCTIONS_HPP_

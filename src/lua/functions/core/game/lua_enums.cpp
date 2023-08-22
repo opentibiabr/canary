@@ -14,12 +14,12 @@
 #include "creatures/players/account/account.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"
 #include "io/io_bosstiary.hpp"
-#include "config/configmanager.h"
-#include "creatures/creature.h"
-#include "lua/creature/creatureevent.h"
+#include "config/configmanager.hpp"
+#include "creatures/creature.hpp"
+#include "lua/creature/creatureevent.hpp"
 #include "declarations.hpp"
 #include "game/functions/game_reload.hpp"
-#include "game/game.h"
+#include "game/game.hpp"
 
 #define registerEnumClass(luaState, enumClassType)               \
 	{                                                            \

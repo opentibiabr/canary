@@ -10,14 +10,14 @@
 #include "pch.hpp"
 
 #include "declarations.hpp"
-#include "creatures/combat/combat.h"
-#include "lua/creature/events.h"
+#include "creatures/combat/combat.hpp"
+#include "lua/creature/events.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "game/game.h"
-#include "io/iobestiary.h"
-#include "creatures/monsters/monster.h"
-#include "creatures/monsters/monsters.h"
-#include "items/weapons/weapons.h"
+#include "game/game.hpp"
+#include "io/iobestiary.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/monsters/monsters.hpp"
+#include "items/weapons/weapons.hpp"
 
 int32_t Combat::getLevelFormula(const Player* player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const {
 	if (!player) {

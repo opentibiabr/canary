@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "items/trashholder.h"
-#include "game/game.h"
+#include "items/trashholder.hpp"
+#include "game/game.hpp"
 
 ReturnValue TrashHolder::queryAdd(int32_t, const Thing &, uint32_t, uint32_t, Creature*) const {
 	return RETURNVALUE_NOERROR;

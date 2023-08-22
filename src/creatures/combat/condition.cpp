@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/combat/condition.h"
-#include "game/game.h"
+#include "creatures/combat/condition.hpp"
+#include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "io/fileloader.h"
+#include "io/fileloader.hpp"
 
 /**
  *  Condition

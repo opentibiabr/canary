@@ -9,12 +9,12 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/imbuements/imbuements.h"
-#include "lua/global/globalevent.h"
-#include "items/weapons/weapons.h"
-#include "lua/creature/movement.h"
-#include "lua/scripts/scripts.h"
-#include "creatures/combat/spells.h"
+#include "creatures/players/imbuements/imbuements.hpp"
+#include "lua/global/globalevent.hpp"
+#include "items/weapons/weapons.hpp"
+#include "lua/creature/movement.hpp"
+#include "lua/scripts/scripts.hpp"
+#include "creatures/combat/spells.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 
 Scripts::Scripts() :

@@ -9,11 +9,11 @@
 
 #include "pch.hpp"
 
-#include "server/network/message/outputmessage.h"
-#include "server/server.h"
-#include "config/configmanager.h"
-#include "game/scheduling/scheduler.h"
-#include "creatures/players/management/ban.h"
+#include "server/network/message/outputmessage.hpp"
+#include "server/server.hpp"
+#include "config/configmanager.hpp"
+#include "game/scheduling/scheduler.hpp"
+#include "creatures/players/management/ban.hpp"
 
 ServiceManager::~ServiceManager() {
 	try {

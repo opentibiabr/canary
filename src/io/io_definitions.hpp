@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_IO_IO_DEFINITIONS_HPP_
-#define SRC_IO_IO_DEFINITIONS_HPP_
+#pragma once
 
 // Enums
 enum FILELOADER_ERRORS {
@@ -89,5 +88,3 @@ struct MarketStatistics {
 	uint64_t totalPrice;
 	uint64_t lowestPrice;
 };
-
-#endif // SRC_IO_IO_DEFINITIONS_HPP_

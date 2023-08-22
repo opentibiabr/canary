@@ -7,11 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CORE_GAME_CONFIG_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CORE_GAME_CONFIG_FUNCTIONS_HPP_
+#pragma once
 
 #include "declarations.hpp"
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class ConfigFunctions final : LuaScriptInterface {
 public:
@@ -23,5 +22,3 @@ private:
 	static int luaConfigManagerGetNumber(lua_State* L);
 	static int luaConfigManagerGetString(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CORE_GAME_CONFIG_FUNCTIONS_HPP_

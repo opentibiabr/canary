@@ -11,12 +11,12 @@
 
 #include "game/functions/game_reload.hpp"
 
-#include "config/configmanager.h"
-#include "lua/creature/events.h"
-#include "creatures/players/imbuements/imbuements.h"
+#include "config/configmanager.hpp"
+#include "lua/creature/events.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "lua/modules/modules.h"
-#include "lua/scripts/scripts.h"
+#include "lua/modules/modules.hpp"
+#include "lua/scripts/scripts.hpp"
 #include "game/zones/zone.hpp"
 
 GameReload::GameReload() = default;

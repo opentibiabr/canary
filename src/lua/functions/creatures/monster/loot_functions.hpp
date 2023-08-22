@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CREATURES_MONSTER_LOOT_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CREATURES_MONSTER_LOOT_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class LootFunctions final : LuaScriptInterface {
 public:
@@ -59,5 +58,3 @@ private:
 	static int luaLootSetUnique(lua_State* L);
 	static int luaLootAddChildLoot(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CREATURES_MONSTER_LOOT_FUNCTIONS_HPP_

@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "lua/global/globalevent.h"
-#include "utils/tools.h"
-#include "game/game.h"
-#include "game/scheduling/scheduler.h"
+#include "lua/global/globalevent.hpp"
+#include "utils/tools.hpp"
+#include "game/game.hpp"
+#include "game/scheduling/scheduler.hpp"
 
 GlobalEvents::GlobalEvents() = default;
 GlobalEvents::~GlobalEvents() = default;

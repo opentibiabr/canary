@@ -7,14 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_ITEMS_ITEM_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_ITEMS_ITEM_FUNCTIONS_HPP_
+#pragma once
 
 #include "lua/functions/items/container_functions.hpp"
 #include "lua/functions/items/imbuement_functions.hpp"
 #include "lua/functions/items/item_type_functions.hpp"
 #include "lua/functions/items/weapon_functions.hpp"
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class ItemFunctions final : LuaScriptInterface {
 public:
@@ -153,5 +152,3 @@ private:
 
 	static int luaItemCanReceiveAutoCarpet(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_ITEMS_ITEM_FUNCTIONS_HPP_

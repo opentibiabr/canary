@@ -9,13 +9,13 @@
 
 #include "pch.hpp"
 
-#include "map.h"
-#include "utils/astarnodes.h"
+#include "map.hpp"
+#include "utils/astarnodes.hpp"
 
-#include "creatures/monsters/monster.h"
-#include "game/game.h"
-#include "io/iomap.h"
-#include "io/iomapserialize.h"
+#include "creatures/monsters/monster.hpp"
+#include "game/game.hpp"
+#include "io/iomap.hpp"
+#include "io/iomapserialize.hpp"
 
 bool Map::load(const std::string &identifier, const Position &pos, bool unload) {
 	try {

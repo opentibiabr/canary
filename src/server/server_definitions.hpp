@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_SERVER_SERVER_DEFINITIONS_HPP_
-#define SRC_SERVER_SERVER_DEFINITIONS_HPP_
+#pragma once
 
 // Enums
 // Connection and networkmessage.
@@ -136,5 +135,3 @@ struct HighscoreCharacter {
 	uint16_t level;
 	uint8_t vocation;
 };
-
-#endif // SRC_SERVER_SERVER_DEFINITIONS_HPP_

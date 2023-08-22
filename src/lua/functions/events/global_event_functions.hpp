@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_EVENTS_GLOBAL_EVENT_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_EVENTS_GLOBAL_EVENT_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class GlobalEventFunctions final : LuaScriptInterface {
 public:
@@ -36,5 +35,3 @@ private:
 	static int luaGlobalEventTime(lua_State* L);
 	static int luaGlobalEventInterval(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_EVENTS_GLOBAL_EVENT_FUNCTIONS_HPP_

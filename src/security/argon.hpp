@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_SECURITY_ARGON_HPP_
-#define SRC_SECURITY_ARGON_HPP_
+#pragma once
 
 class Argon2 {
 public:
@@ -35,5 +34,3 @@ private:
 	uint32_t t_cost;
 	uint32_t parallelism;
 };
-
-#endif // SRC_SECURITY_ARGON_HPP_

@@ -9,11 +9,11 @@
 
 #include "pch.hpp"
 
-#include "utils/pugicast.h"
-#include "map/house/house.h"
-#include "io/iologindata.h"
-#include "game/game.h"
-#include "items/bed.h"
+#include "utils/pugicast.hpp"
+#include "map/house/house.hpp"
+#include "io/iologindata.hpp"
+#include "game/game.hpp"
+#include "items/bed.hpp"
 
 House::House(uint32_t houseId) :
 	id(houseId) { }

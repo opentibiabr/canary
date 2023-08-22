@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/appearance/mounts/mounts.h"
-#include "game/game.h"
-#include "utils/pugicast.h"
-#include "utils/tools.h"
+#include "creatures/appearance/mounts/mounts.hpp"
+#include "game/game.hpp"
+#include "utils/pugicast.hpp"
+#include "utils/tools.hpp"
 
 bool Mounts::reload() {
 	mounts.clear();

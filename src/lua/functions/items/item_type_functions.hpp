@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_ITEMS_ITEM_TYPE_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_ITEMS_ITEM_TYPE_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 #include "lua/functions/items/item_classification_functions.hpp"
 
 class ItemTypeFunctions final : LuaScriptInterface {
@@ -142,5 +141,3 @@ private:
 
 	static int luaItemTypeHasSubType(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_ITEMS_ITEM_TYPE_FUNCTIONS_HPP_

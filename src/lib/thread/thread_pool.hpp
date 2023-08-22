@@ -6,8 +6,7 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#ifndef SRC_UTILS_THREAD_POOL_H_
-#define SRC_UTILS_THREAD_POOL_H_
+#pragma once
 
 class ThreadPool {
 public:
@@ -28,5 +27,3 @@ private:
 	std::vector<std::jthread> threads;
 	asio::io_context::work work { ioService };
 };
-
-#endif // SRC_UTILS_THREAD_POOL_H_

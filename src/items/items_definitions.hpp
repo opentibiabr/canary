@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
-#define SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
+#pragma once
 
 class Imbuement;
 
@@ -472,5 +471,3 @@ struct ImbuementInfo {
 	Imbuement* imbuement;
 	uint32_t duration = 0;
 };
-
-#endif // SRC_ITEMS_ITEMS_DEFINITIONS_HPP_

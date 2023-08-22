@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "config/configmanager.h"
-#include "database/database.h"
+#include "config/configmanager.hpp"
+#include "database/database.hpp"
 
 Database::~Database() {
 	if (handle != nullptr) {

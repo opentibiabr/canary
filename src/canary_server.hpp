@@ -7,11 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_CANARY_SERVER_HPP_
-#define SRC_CANARY_SERVER_HPP_
+#pragma once
 
-#include "security/rsa.h"
-#include "server/server.h"
+#include "security/rsa.hpp"
+#include "server/server.hpp"
 
 class Logger;
 
@@ -68,5 +67,3 @@ private:
 	void setupHousesRent();
 	void modulesLoadHelper(bool loaded, std::string moduleName);
 };
-
-#endif // SRC_CANARY_SERVER_HPP_

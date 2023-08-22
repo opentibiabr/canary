@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/player.h"
-#include "lua/scripts/scripts.h"
-#include "lua/creature/talkaction.h"
+#include "creatures/players/player.hpp"
+#include "lua/scripts/scripts.hpp"
+#include "lua/creature/talkaction.hpp"
 
 TalkActions::TalkActions() = default;
 TalkActions::~TalkActions() = default;

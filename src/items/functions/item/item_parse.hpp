@@ -7,13 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_ITEMS_FUNCTIONS_ITEM_ITEM_PARSE_HPP_
-#define SRC_ITEMS_FUNCTIONS_ITEM_ITEM_PARSE_HPP_
+#pragma once
 
-#include "creatures/combat/condition.h"
+#include "creatures/combat/condition.hpp"
 #include "declarations.hpp"
-#include "items/item.h"
-#include "items/items.h"
+#include "items/item.hpp"
+#include "items/items.hpp"
 
 class ConditionDamage;
 
@@ -316,5 +315,3 @@ private:
 	static CombatType_t parseFieldCombatType(std::string string, pugi::xml_attribute valueAttribute);
 	static void parseFieldCombatDamage(ConditionDamage* conditionDamage, std::string stringValue, pugi::xml_node attributeNode);
 };
-
-#endif // SRC_ITEMS_FUNCTIONS_ITEM_PARSE_HPP_

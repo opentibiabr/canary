@@ -10,11 +10,11 @@
 #include "pch.hpp"
 
 #include "declarations.hpp"
-#include "creatures/monsters/monster.h"
-#include "creatures/players/player.h"
-#include "config/configmanager.h"
-#include "game/game.h"
-#include "io/ioprey.h"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/players/player.hpp"
+#include "config/configmanager.hpp"
+#include "game/game.hpp"
+#include "io/ioprey.hpp"
 
 // Prey class
 PreySlot::PreySlot(PreySlot_t id) :

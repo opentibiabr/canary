@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "items/thing.h"
-#include "items/tile.h"
+#include "items/thing.hpp"
+#include "items/tile.hpp"
 
 const Position &Thing::getPosition() const {
 	const Tile* tile = getTile();

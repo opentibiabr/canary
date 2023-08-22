@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class GameFunctions final : LuaScriptInterface {
 public:
@@ -152,5 +151,3 @@ private:
 	static int luaGameGetTalkActions(lua_State* L);
 	static int luaGameGetEventCallbacks(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_

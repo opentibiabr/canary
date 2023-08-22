@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_GAME_FUNCTIONS_GAME_RELOAD_HPP_
-#define SRC_GAME_FUNCTIONS_GAME_RELOAD_HPP_
+#pragma once
 
-#include "game/game.h"
+#include "game/game.hpp"
 
 class Game;
 
@@ -70,5 +69,3 @@ private:
 };
 
 constexpr auto g_gameReload = GameReload::getInstance;
-
-#endif // SRC_GAME_FUNCTIONS_GAME_RELOAD_HPP_

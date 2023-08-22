@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
-#include "game/movement/position.h"
+#include "game/game.hpp"
+#include "game/movement/position.hpp"
 #include "lua/functions/map/position_functions.hpp"
 
 int PositionFunctions::luaPositionCreate(lua_State* L) {

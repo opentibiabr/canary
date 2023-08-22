@@ -10,10 +10,10 @@
 #include "pch.hpp"
 
 #include "zone.hpp"
-#include "game/game.h"
-#include "creatures/monsters/monster.h"
-#include "creatures/npcs/npc.h"
-#include "creatures/players/player.h"
+#include "game/game.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/npcs/npc.hpp"
+#include "creatures/players/player.hpp"
 
 phmap::btree_map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
 std::mutex Zone::zonesMutex = {};

@@ -11,7 +11,7 @@
 
 #include "creatures/players/storages/storages.hpp"
 
-#include "config/configmanager.h"
+#include "config/configmanager.hpp"
 
 bool Storages::loadFromXML() {
 	pugi::xml_document doc;

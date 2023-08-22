@@ -165,7 +165,7 @@ void BasicTile::hash(size_t &h) const {
 }
 
 void BasicItem::hash(size_t &h) const {
-	const uint32_t arr[] = { id, guid, sleepStart, charges, actionId, uniqueId, destX, destY, destZ, doorOrDepotId };
+	const uint32_t arr[] = { id, charges, actionId, uniqueId, destX, destY, destZ, doorOrDepotId };
 	for (const auto v : arr) {
 		if (v > 0)
 			stdext::hash_combine(h, v);

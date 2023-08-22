@@ -578,17 +578,17 @@ public:
 		return group->id <= account::GROUP_TYPE_SENIORTUTOR;
 	}
 	bool isPremium() const;
-	uint32_t getPremiumDays() const {
-		return premiumDays;
-	}
-	void setPremiumDays(uint32_t v);
-	time_t getPremiumLastDay() const {
-		return premiumLastDay;
-	}
+    uint32_t getPremiumDays() const {
+        return premiumDays;
+    }
+    void setPremiumDays(uint32_t v);
+    time_t getPremiumLastDay() const {
+        return premiumLastDay;
+    }
 
-	bool isVip() const {
-		return g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && getPremiumDays() > 0;
-	}
+    bool isVip() const {
+        return g_configManager().getBoolean(VIP_SYSTEM_ENABLED) && getPremiumDays() > 0;
+    }
 
 	void setTibiaCoins(int32_t v);
 	void setTransferableTibiaCoins(int32_t v);

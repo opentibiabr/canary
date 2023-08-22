@@ -39,8 +39,8 @@ public:
 	static void editVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify);
 	static void removeVIPEntry(uint32_t accountId, uint32_t guid);
 
-	static void addPremiumDays(uint32_t accountId, int32_t addDays);
-	static void removePremiumDays(uint32_t accountId, int32_t removeDays);
+	static void addPremiumDays(Player* player, uint32_t addDays);
+	static void removePremiumDays(Player* player, uint32_t removeDays);
 
 private:
 	static bool savePlayerGuard(Player* player);

@@ -334,6 +334,7 @@ bool ConfigManager::load() {
 	boolean[TOGGLE_TRAVELS_FREE] = getGlobalBoolean(L, "toggleTravelsFree", false);
 	integer[BUY_AOL_COMMAND_FEE] = getGlobalNumber(L, "buyAolCommandFee", 0);
 	integer[BUY_BLESS_COMMAND_FEE] = getGlobalNumber(L, "buyBlessCommandFee", 0);
+	boolean[TELEPORT_PLAYER_TO_VOCATION_ROOM] = getGlobalBoolean(L, "teleportPlayerToVocationRoom", true);
 
 	boolean[TOGGLE_HAZARDSYSTEM] = getGlobalBoolean(L, "toogleHazardSystem", true);
 	integer[HAZARD_CRITICAL_INTERVAL] = getGlobalNumber(L, "hazardCriticalInterval", 2000);

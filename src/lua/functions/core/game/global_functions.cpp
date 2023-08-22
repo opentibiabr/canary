@@ -847,10 +847,10 @@ int GlobalFunctions::luaSystemTime(lua_State* L) {
 }
 
 int GlobalFunctions::luaGetFormattedTimeRemaining(lua_State* L) {
-    // getFormattedTimeRemaining(time)
-    time_t time = getNumber<uint32_t>(L, 1);
-    lua_pushstring(L, getFormattedTimeRemaining(time).c_str());
-    return 1;
+	// getFormattedTimeRemaining(time)
+	time_t time = getNumber<uint32_t>(L, 1);
+	lua_pushstring(L, getFormattedTimeRemaining(time).c_str());
+	return 1;
 }
 
 int GlobalFunctions::luaReportError(lua_State* L) {

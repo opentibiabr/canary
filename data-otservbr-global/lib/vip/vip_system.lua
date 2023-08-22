@@ -61,16 +61,6 @@ function CheckPremiumAndPrint(player, msgType)
 		return true
 	end
 
-	local timeRemaining = playerVipTime - os.time()
-	local days = math.floor(timeRemaining / 86400)
-	if days > 1 then
-		player:sendTextMessage(msgType, string.format("You have %d VIP days left.", days))
-		return true
-	end
-
-	local hours = math.floor((timeRemaining % 86400) / 3600)
-	local minutes = math.floor((timeRemaining % 3600) / 60)
-	local seconds = timeRemaining % 60
-	player:sendTextMessage(msgType, string.format("You have %d hours, %d minutes and %d seconds VIP days left.", hours, minutes, seconds))
+	player:sendTextMessage(msgType, string.format("You have %s of VIP time left.", getFormattedTimeRemaining(playerVipTime)))
 end
 

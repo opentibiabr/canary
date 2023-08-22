@@ -138,7 +138,7 @@ uint8_t forgeBonus(int32_t number);
 
 std::string formatPrice(std::string price, bool space /* = false*/);
 std::vector<std::string> split(const std::string &str);
-std::string getFormattedTime(uint32_t time);
+std::string getFormattedTimeRemaining(uint32_t time);
 
 static inline unsigned int getNumberOfCores() {
 	return std::thread::hardware_concurrency();

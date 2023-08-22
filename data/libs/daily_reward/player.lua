@@ -116,6 +116,6 @@ function Player.loadDailyRewardBonuses(self)
 			DailyRewardBonus.Soul[self:getId()] = addEvent(RegenSoul, delay, self:getId(), delay)
 		end
 	end
-	Spdlog.debug(string.format("Player: %s, streak level: %d, active bonuses: %s",
-		self:getName(), streakLevel, self:getActiveDailyRewardBonusesName()))
+	logger.debug("Player: {}, streak level: {}, active bonuses: {}",
+		self:getName(), streakLevel, self:getActiveDailyRewardBonusesName())
 end

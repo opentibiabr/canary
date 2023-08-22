@@ -40,7 +40,7 @@ class NetworkMessage;
 class Weapon;
 class ProtocolGame;
 class Party;
-class SchedulerTask;
+class Task;
 class Bed;
 class Guild;
 class Imbuement;
@@ -108,6 +108,8 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			return this;
 		}
 
+		static std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f);
+
 		void setID() override;
 
 		void setOnline(bool value) override {
@@ -148,7 +150,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		bool toggleMount(bool mount);
 		bool tameMount(uint8_t mountId);
 		bool untameMount(uint8_t mountId);
-		bool hasMount(const Mount* mount) const;
+		bool hasMount(const std::shared_ptr<Mount> &mount) const;
 		bool hasAnyMount() const;
 		uint8_t getRandomMountId() const;
 		void dismount();
@@ -247,12 +249,12 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			bankBalance = balance;
 		}
 
-		Guild* getGuild() const {
+		[[nodiscard]] std::shared_ptr<Guild> getGuild() const {
 			return guild;
 		}
-		void setGuild(Guild* guild);
+		void setGuild(const std::shared_ptr<Guild> &guild);
 
-		GuildRank_ptr getGuildRank() const {
+		[[nodiscard]] GuildRank_ptr getGuildRank() const {
 			return guildRank;
 		}
 		void setGuildRank(GuildRank_ptr newGuildRank) {
@@ -261,7 +263,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 
 		bool isGuildMate(const Player* player) const;
 
-		const std::string &getGuildNick() const {
+		[[nodiscard]] const std::string &getGuildNick() const {
 			return guildNick;
 		}
 		void setGuildNick(std::string nick) {
@@ -288,21 +290,13 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			return guildWarVector;
 		}
 
-		std::list<MonsterType*> getBestiaryTrackerList() const {
-			return BestiaryTracker;
+		const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &getCyclopediaMonsterTrackerSet(bool isBoss) const {
+			return isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
 		}
 
-		void addBestiaryTrackerList(MonsterType* mtype) {
-			if (client) {
-				auto it = std::find(BestiaryTracker.begin(), BestiaryTracker.end(), mtype);
-				if (it == BestiaryTracker.end()) {
-					BestiaryTracker.push_front(mtype);
-				} else {
-					BestiaryTracker.remove(mtype);
-				}
-				client->refreshBestiaryTracker(BestiaryTracker);
-			}
-		}
+		void addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> &mtype, bool isBoss, bool reloadClient = false);
+
+		void removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient = false);
 
 		void sendBestiaryEntryChanged(uint16_t raceid) {
 			if (client) {
@@ -310,11 +304,17 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			}
 		}
 
-		void refreshBestiaryTracker(std::list<MonsterType*> trackerList) {
+		void refreshBestiaryMonsterTracker() const {
+			refreshCyclopediaMonsterTracker(getCyclopediaMonsterTrackerSet(false), false);
+		}
+
+		void refreshCyclopediaMonsterTracker(const phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> &trackerList, bool isBoss) const {
 			if (client) {
-				client->refreshBestiaryTracker(trackerList);
+				client->refreshCyclopediaMonsterTracker(trackerList, isBoss);
 			}
 		}
+
+		bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const;
 
 		Vocation* getVocation() const {
 			return vocation;
@@ -895,7 +895,6 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		void onAttackedCreatureChangeZone(ZoneType_t zone) override;
 		void onIdleStatus() override;
 		void onPlacedCreature() override;
-		void onChangeHazard(bool isHazard) override;
 
 		LightInfo getCreatureLight() const override;
 
@@ -929,7 +928,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		void addOutfit(uint16_t lookType, uint8_t addons);
 		bool removeOutfit(uint16_t lookType);
 		bool removeOutfitAddon(uint16_t lookType, uint8_t addons);
-		bool getOutfitAddons(const Outfit &outfit, uint8_t &addons) const;
+		bool getOutfitAddons(const std::shared_ptr<Outfit> &outfit, uint8_t &addons) const;
 
 		bool canFamiliar(uint16_t lookType) const;
 		void addFamiliar(uint16_t lookType);
@@ -2049,12 +2048,12 @@ class Player final : public Creature, public Cylinder, public Bankable {
 			return nullptr;
 		}
 
-		bool setPreySlotClass(PreySlot* slot) {
+		bool setPreySlotClass(std::unique_ptr<PreySlot> slot) {
 			if (getPreySlotById(slot->id)) {
 				return false;
 			}
 
-			preys.push_back(slot);
+			preys.emplace_back(slot.release());
 			return true;
 		}
 
@@ -2118,14 +2117,14 @@ class Player final : public Creature, public Cylinder, public Bankable {
 
 		// Task hunting system
 		void initializeTaskHunting();
-		bool isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const;
+		bool isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> &mtype) const;
 
-		bool setTaskHuntingSlotClass(TaskHuntingSlot* slot) {
+		bool setTaskHuntingSlotClass(std::unique_ptr<TaskHuntingSlot> slot) {
 			if (getTaskHuntingSlotById(slot->id)) {
 				return false;
 			}
 
-			taskHunting.push_back(slot);
+			taskHunting.emplace_back(slot.release());
 			return true;
 		}
 
@@ -2496,11 +2495,11 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		 */
 		void updateInventoryImbuement();
 
-		void setNextWalkActionTask(SchedulerTask* task);
-		void setNextWalkTask(SchedulerTask* task);
-		void setNextActionTask(SchedulerTask* task, bool resetIdleTime = true);
-		void setNextActionPushTask(SchedulerTask* task);
-		void setNextPotionActionTask(SchedulerTask* task);
+		void setNextWalkActionTask(std::shared_ptr<Task> task);
+		void setNextWalkTask(std::shared_ptr<Task> task);
+		void setNextActionTask(std::shared_ptr<Task> task, bool resetIdleTime = true);
+		void setNextActionPushTask(std::shared_ptr<Task> task);
+		void setNextPotionActionTask(std::shared_ptr<Task> task);
 
 		void death(Creature* lastHitCreature) override;
 		bool spawn();
@@ -2578,7 +2577,8 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
 		std::forward_list<Condition*> storedConditionList;
 
-		std::list<MonsterType*> BestiaryTracker;
+		phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
+		phmap::parallel_flat_hash_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
 
 		std::string name;
 		std::string guildNick;
@@ -2621,7 +2621,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		std::vector<Kill> unjustifiedKills;
 
 		BedItem* bedItem = nullptr;
-		Guild* guild = nullptr;
+		std::shared_ptr<Guild> guild = nullptr;
 		GuildRank_ptr guildRank;
 		Group* group = nullptr;
 		Inbox* inbox;
@@ -2634,7 +2634,7 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		Party* party = nullptr;
 		Player* tradePartner = nullptr;
 		ProtocolGame_ptr client;
-		SchedulerTask* walkTask = nullptr;
+		std::shared_ptr<Task> walkTask;
 		Town* town = nullptr;
 		Vocation* vocation = nullptr;
 		RewardChest* rewardChest = nullptr;
@@ -2642,9 +2642,9 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		uint32_t inventoryWeight = 0;
 		uint32_t capacity = 40000;
 		uint32_t bonusCapacity = 0;
-		uint32_t damageImmunities = 0;
-		std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionImmunities = {};
-		std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionSuppressions = {};
+		std::bitset<CombatType_t::COMBAT_COUNT> m_damageImmunities;
+		std::bitset<ConditionType_t::CONDITION_COUNT> m_conditionImmunities;
+		std::bitset<ConditionType_t::CONDITION_COUNT> m_conditionSuppressions;
 		uint32_t level = 1;
 		uint32_t magLevel = 0;
 		uint32_t actionTaskEvent = 0;
@@ -2814,15 +2814,8 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		uint64_t getLostExperience() const override {
 			return skillLoss ? static_cast<uint64_t>(experience * getLostPercent()) : 0;
 		}
-		uint32_t getDamageImmunities() const override {
-			return damageImmunities;
-		}
-		const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionImmunities() const override {
-			return conditionImmunities;
-		}
-		const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionSuppressions() const override {
-			return conditionSuppressions;
-		}
+		bool isSuppress(ConditionType_t conditionType) const override;
+		void addConditionSuppression(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addConditions);
 		uint16_t getLookCorpse() const override;
 		void getPathSearchParams(const Creature* creature, FindPathParams &fpp) const override;
 
@@ -2847,8 +2840,12 @@ class Player final : public Creature, public Cylinder, public Bankable {
 		friend class MoveEvent;
 		friend class BedItem;
 		friend class PlayerWheel;
+		friend class IOLoginDataLoad;
+		friend class IOLoginDataSave;
 
 		std::unique_ptr<PlayerWheel> m_wheelPlayer;
+
+		std::mutex quickLootMutex;
 
 		account::Account* account_;
 		bool online = true;

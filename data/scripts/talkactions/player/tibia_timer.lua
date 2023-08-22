@@ -1,10 +1,8 @@
 local statusTime = TalkAction("!time")
 function statusTime.onSay(player, words, param)
-	local time = getWorldTime()
-	local light = getWorldLight()
-	local dayOrNight = getTibiaTimerDayOrNight(getFormattedWorldTime(time))
-
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Now is " .. dayOrNight .. " in Tibia Time, time now is " .. getFormattedWorldTime(time) .. ".")
+	local formattedTime = getFormattedWorldTime(getWorldTime())
+	local dayOrNight = getTibiaTimerDayOrNight(formattedTime)
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Now is %s in Tibia Time, time now is %s.", dayOrNight, formattedTime))
 	return true
 end
 

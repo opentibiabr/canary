@@ -1,6 +1,7 @@
-local mType = Game.createMonsterType("Phantasm")
+local mType = Game.createMonsterType("Phantasm Summon")
 local monster = {}
 
+monster.name = "Phantasm"
 monster.description = "a phantasm"
 monster.experience = 4400
 monster.outfit = {

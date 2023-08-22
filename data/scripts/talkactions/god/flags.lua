@@ -79,16 +79,16 @@ function Player.talkactionHasFlag(self, param, flagType)
 
 	local split = param:split(",")
 	local playerName = split[1]:trimSpace()
+	local targetPlayer = Player(playerName)
+	if not targetPlayer then
+		self:sendCancelMessage("Player " .. playerName .. " not found.")
+		return true
+	end
+
 	local flag = split[2]:trimSpace()
 	local flagValue = getFlagNumberOrName(flag)
 	if not flagValue then
 		sendValidKeys(self)
-		return true
-	end
-
-	local targetPlayer = Player(playerName)
-	if not targetPlayer then
-		self:sendCancelMessage("Player " .. playerName .. " not found.")
 		return true
 	end
 
@@ -108,16 +108,16 @@ function Player.talkactionSetFlag(self, param, flagType)
 
 	local split = param:split(",")
 	local playerName = split[1]:trimSpace()
+	local targetPlayer = Player(playerName)
+	if not targetPlayer then
+		self:sendCancelMessage("Player " .. playerName .. " not found.")
+		return true
+	end
+
 	local flag = split[2]:trimSpace()
 	local flagValue = getFlagNumberOrName(flag)
 	if not flagValue then
 		sendValidKeys(self)
-		return true
-	end
-
-	local targetPlayer = Player(playerName)
-	if not targetPlayer then
-		self:sendCancelMessage("Player " .. playerName .. " not found.")
 		return true
 	end
 
@@ -128,7 +128,7 @@ function Player.talkactionSetFlag(self, param, flagType)
 
 	targetPlayer:setGroupFlag(flagValue)
 	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Flag " .. getFlagNameByType(flagValue) .. " set for player " .. playerName .. ".")
-	Spdlog.info("[Player.talkactionSetFlag] Added flag " .. getFlagNameByType(flagValue) .. " to " .. targetPlayer:getName() .. " character by " .. self:getName() .. ".")
+	logger.info("[Player.talkactionSetFlag] Added flag {} to {} character by {}.", getFlagNameByType(flagValue), targetPlayer:getName(), self:getName())
 	return true
 end
 
@@ -139,16 +139,16 @@ function Player.talkactionRemoveFlag(self, param, flagType)
 
 	local split = param:split(",")
 	local playerName = split[1]:trimSpace()
+	local targetPlayer = Player(playerName)
+	if not targetPlayer then
+		self:sendCancelMessage("Player " .. playerName .. " not found.")
+		return true
+	end
+
 	local flag = split[2]:trimSpace()
 	local flagValue = getFlagNumberOrName(flag)
 	if not flagValue then
 		sendValidKeys(self)
-		return true
-	end
-
-	local targetPlayer = Player(playerName)
-	if not targetPlayer then
-		self:sendCancelMessage("Player " .. playerName .. " not found.")
 		return true
 	end
 
@@ -159,7 +159,7 @@ function Player.talkactionRemoveFlag(self, param, flagType)
 
 	targetPlayer:removeGroupFlag(flagValue)
 	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Flag " .. getFlagNameByType(flagValue) .. " removed from player " .. playerName .. ".")
-	Spdlog.info("[Player.talkactionRemoveFlag] Removed flag " .. getFlagNameByType(flagValue) .. " from " .. targetPlayer:getName() .. " character by " .. self:getName() .. ".")
+	logger.info("[Player.talkactionRemoveFlag] Removed flag {} to {} character by {}.", getFlagNameByType(flagValue), targetPlayer:getName(), self:getName())
 	return true
 end
 

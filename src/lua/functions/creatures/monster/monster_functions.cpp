@@ -21,7 +21,7 @@ int MonsterFunctions::luaMonsterCreate(lua_State* L) {
 	if (isNumber(L, 2)) {
 		monster = g_game().getMonsterByID(getNumber<uint32_t>(L, 2));
 	} else if (isUserdata(L, 2)) {
-		if (getUserdataType(L, 2) != LuaData_Monster) {
+		if (getUserdataType(L, 2) != LuaData_t::Monster) {
 			lua_pushnil(L);
 			return 1;
 		}
@@ -61,7 +61,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 	// monster:setType(name or raceid)
 	Monster* monster = getUserdata<Monster>(L, 1);
 	if (monster) {
-		MonsterType* mType = nullptr;
+		std::shared_ptr<MonsterType> mType = nullptr;
 		if (isNumber(L, 2)) {
 			mType = g_monsters().getMonsterTypeByRaceId(getNumber<uint16_t>(L, 2));
 		} else {
@@ -70,7 +70,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		// Unregister creature events (current MonsterType)
 		for (const std::string &scriptName : monster->mType->info.scripts) {
 			if (!monster->unregisterCreatureEvent(scriptName)) {
-				SPDLOG_WARN("[Warning - MonsterFunctions::luaMonsterSetType] Unknown event name: {}", scriptName);
+				g_logger().warn("[Warning - MonsterFunctions::luaMonsterSetType] Unknown event name: {}", scriptName);
 			}
 		}
 		// Assign new MonsterType
@@ -88,7 +88,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		// Register creature events (new MonsterType)
 		for (const std::string &scriptName : mType->info.scripts) {
 			if (!monster->registerCreatureEvent(scriptName)) {
-				SPDLOG_WARN("[Warning - MonsterFunctions::luaMonsterSetType] Unknown event name: {}", scriptName);
+				g_logger().warn("[Warning - MonsterFunctions::luaMonsterSetType] Unknown event name: {}", scriptName);
 			}
 		}
 		// Reload creature on spectators

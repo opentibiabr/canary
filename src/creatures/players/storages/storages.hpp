@@ -12,15 +12,14 @@
 
 class Storages {
 	public:
+		Storages() = default;
+
 		// Singleton - ensures we don't accidentally copy it
 		Storages(const Storages &) = delete;
 		void operator=(const Storages &) = delete;
 
 		static Storages &getInstance() {
-			// Guaranteed to be destroyed
-			static Storages instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Storages>();
 		}
 
 		bool loadFromXML();
@@ -28,11 +27,9 @@ class Storages {
 		const phmap::btree_map<std::string, uint32_t> &getStorageMap() const;
 
 	private:
-		Storages() = default;
-
 		phmap::btree_map<std::string, uint32_t> m_storageMap;
 };
 
-constexpr auto g_storages = &Storages::getInstance;
+constexpr auto g_storages = Storages::getInstance;
 
 #endif // SRC_CREATURES_PLAYERS_STORAGES_STORAGES_HPP_

@@ -79,9 +79,9 @@ bool ChatChannel::addUser(Player &player) {
 
 	// TODO: Move to script when guild channels can be scripted
 	if (id == CHANNEL_GUILD) {
-		Guild* guild = player.getGuild();
+		const auto &guild = player.getGuild();
 		if (guild && !guild->getMotd().empty()) {
-			g_scheduler().addEvent(createSchedulerTask(150, std::bind(&Game::sendGuildMotd, &g_game(), player.getID())));
+			g_scheduler().addEvent(150, std::bind(&Game::sendGuildMotd, &g_game(), player.getID()));
 		}
 	}
 
@@ -142,9 +142,9 @@ bool ChatChannel::executeCanJoinEvent(const Player &player) {
 	// canJoin(player)
 	LuaScriptInterface* scriptInterface = g_chat().getScriptInterface();
 	if (!scriptInterface->reserveScriptEnv()) {
-		SPDLOG_ERROR("[CanJoinChannelEvent::execute - Player {}, on channel {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 player.getName(), getName());
+		g_logger().error("[CanJoinChannelEvent::execute - Player {}, on channel {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 player.getName(), getName());
 		return false;
 	}
 
@@ -168,9 +168,9 @@ bool ChatChannel::executeOnJoinEvent(const Player &player) {
 	// onJoin(player)
 	LuaScriptInterface* scriptInterface = g_chat().getScriptInterface();
 	if (!scriptInterface->reserveScriptEnv()) {
-		SPDLOG_ERROR("[OnJoinChannelEvent::execute - Player {}, on channel {}] "
-					 "Call stack overflow. Too many lua script calls being nested",
-					 player.getName(), getName());
+		g_logger().error("[OnJoinChannelEvent::execute - Player {}, on channel {}] "
+						 "Call stack overflow. Too many lua script calls being nested",
+						 player.getName(), getName());
 		return false;
 	}
 
@@ -194,9 +194,9 @@ bool ChatChannel::executeOnLeaveEvent(const Player &player) {
 	// onLeave(player)
 	LuaScriptInterface* scriptInterface = g_chat().getScriptInterface();
 	if (!scriptInterface->reserveScriptEnv()) {
-		SPDLOG_ERROR("[OnLeaveChannelEvent::execute - Player {}, on channel {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 player.getName(), getName());
+		g_logger().error("[OnLeaveChannelEvent::execute - Player {}, on channel {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 player.getName(), getName());
 		return false;
 	}
 
@@ -220,9 +220,9 @@ bool ChatChannel::executeOnSpeakEvent(const Player &player, SpeakClasses &type, 
 	// onSpeak(player, type, message)
 	LuaScriptInterface* scriptInterface = g_chat().getScriptInterface();
 	if (!scriptInterface->reserveScriptEnv()) {
-		SPDLOG_ERROR("[OnSpeakChannelEvent::execute - Player {}, type {}] "
-					 "Call stack overflow. Too many lua script calls being nested.",
-					 player.getName(), fmt::underlying(type));
+		g_logger().error("[OnSpeakChannelEvent::execute - Player {}, type {}] "
+						 "Call stack overflow. Too many lua script calls being nested.",
+						 player.getName(), fmt::underlying(type));
 		return false;
 	}
 
@@ -295,7 +295,7 @@ bool Chat::load() {
 					channel.onJoinEvent = scriptInterface.getEvent("onJoin");
 					channel.onLeaveEvent = scriptInterface.getEvent("onLeave");
 				} else {
-					SPDLOG_WARN("[Chat::load] - Can not load script: {}", scriptAttribute.as_string());
+					g_logger().warn("[Chat::load] - Can not load script: {}", scriptAttribute.as_string());
 				}
 			}
 
@@ -316,7 +316,7 @@ bool Chat::load() {
 				channel.onJoinEvent = scriptInterface.getEvent("onJoin");
 				channel.onLeaveEvent = scriptInterface.getEvent("onLeave");
 			} else {
-				SPDLOG_WARN("[Chat::load] Can not load script: {}", scriptAttribute.as_string());
+				g_logger().warn("[Chat::load] Can not load script: {}", scriptAttribute.as_string());
 			}
 		}
 
@@ -332,7 +332,7 @@ ChatChannel* Chat::createChannel(const Player &player, uint16_t channelId) {
 
 	switch (channelId) {
 		case CHANNEL_GUILD: {
-			Guild* guild = player.getGuild();
+			const auto &guild = player.getGuild();
 			if (guild != nullptr) {
 				auto ret = guildChannels.emplace(std::make_pair(guild->getId(), ChatChannel(channelId, guild->getName())));
 				return &ret.first->second;
@@ -376,7 +376,7 @@ ChatChannel* Chat::createChannel(const Player &player, uint16_t channelId) {
 bool Chat::deleteChannel(const Player &player, uint16_t channelId) {
 	switch (channelId) {
 		case CHANNEL_GUILD: {
-			Guild* guild = player.getGuild();
+			const auto &guild = player.getGuild();
 			if (guild == nullptr) {
 				return false;
 			}
@@ -547,7 +547,7 @@ ChannelList Chat::getChannelList(const Player &player) {
 ChatChannel* Chat::getChannel(const Player &player, uint16_t channelId) {
 	switch (channelId) {
 		case CHANNEL_GUILD: {
-			Guild* guild = player.getGuild();
+			const auto &guild = player.getGuild();
 			if (guild != nullptr) {
 				auto it = guildChannels.find(guild->getId());
 				if (it != guildChannels.end()) {

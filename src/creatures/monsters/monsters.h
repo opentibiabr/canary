@@ -28,7 +28,7 @@ class Loot {
 class BaseSpell;
 struct spellBlock_t {
 		constexpr spellBlock_t() = default;
-		~spellBlock_t();
+		~spellBlock_t() = default;
 		spellBlock_t(const spellBlock_t &other) = delete;
 		spellBlock_t &operator=(const spellBlock_t &other) = delete;
 		spellBlock_t(spellBlock_t &&other) :
@@ -43,7 +43,7 @@ struct spellBlock_t {
 			other.spell = nullptr;
 		}
 
-		BaseSpell* spell = nullptr;
+		std::shared_ptr<BaseSpell> spell = nullptr;
 		uint32_t chance = 100;
 		uint32_t speed = 2000;
 		uint32_t range = 0;
@@ -89,8 +89,9 @@ class MonsterType {
 				uint32_t staticAttackChance = 95;
 				uint32_t maxSummons = 0;
 				uint32_t changeTargetSpeed = 0;
-				std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionImmunities = {};
-				uint32_t damageImmunities = 0;
+
+				std::bitset<ConditionType_t::CONDITION_COUNT> m_conditionImmunities;
+				std::bitset<CombatType_t::COMBAT_COUNT> m_damageImmunities;
 
 				// Bestiary
 				uint8_t bestiaryOccurrence = 0;
@@ -106,7 +107,7 @@ class MonsterType {
 
 				// Bosstiary
 				uint32_t bossStorageCooldown = 0;
-				BosstiaryRarity_t bosstiaryRace;
+				BosstiaryRarity_t bosstiaryRace = BosstiaryRarity_t::BOSS_INVALID;
 				std::string bosstiaryClass;
 
 				float mitigation = 0;
@@ -195,7 +196,7 @@ class MonsterType {
 			return info.bosstiaryClass.empty() ? g_configManager().getFloat(RATE_MONSTER_DEFENSE) : g_configManager().getFloat(RATE_BOSS_DEFENSE);
 		}
 
-		void loadLoot(MonsterType* monsterType, LootBlock lootblock);
+		void loadLoot(const std::shared_ptr<MonsterType> &monsterType, LootBlock lootblock);
 
 		bool canSpawn(const Position &pos);
 };
@@ -256,26 +257,21 @@ class Monsters {
 		Monsters &operator=(const Monsters &) = delete;
 
 		static Monsters &getInstance() {
-			// Guaranteed to be destroyed
-			static Monsters instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Monsters>();
 		}
 
-		MonsterType* getMonsterType(const std::string &name);
-		MonsterType* getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false);
-		void addMonsterType(const std::string &name, MonsterType* mType);
-		bool deserializeSpell(MonsterSpell* spell, spellBlock_t &sb, const std::string &description = "");
+		std::shared_ptr<MonsterType> getMonsterType(const std::string &name);
+		std::shared_ptr<MonsterType> getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false) const;
+		bool tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> &mType);
+		bool deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spellBlock_t &sb, const std::string &description = "");
 
 		std::unique_ptr<LuaScriptInterface> scriptInterface;
-		phmap::btree_map<std::string, MonsterType*> monsters;
+		phmap::btree_map<std::string, std::shared_ptr<MonsterType>> monsters;
 
 	private:
 		ConditionDamage* getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);
-
-		MonsterType* loadMonster(const std::string &file, const std::string &monsterName, bool reloading = false);
 };
 
-constexpr auto g_monsters = &Monsters::getInstance;
+constexpr auto g_monsters = Monsters::getInstance;
 
 #endif // SRC_CREATURES_MONSTERS_MONSTERS_H_

@@ -261,7 +261,7 @@ void House::handleWrapableItem(ItemList &moveItemList, Item* item, Player* playe
 
 	Item* newItem = g_game().wrapItem(item, houseTile->getHouse());
 	if (newItem->isRemoved() && !newItem->getParent()) {
-		SPDLOG_WARN("[{}] item removed during wrapping - check ground type - player name: {} item id: {} position: {}", __FUNCTION__, player->getName(), item->getID(), houseTile->getPosition().toString());
+		g_logger().warn("[{}] item removed during wrapping - check ground type - player name: {} item id: {} position: {}", __FUNCTION__, player->getName(), item->getID(), houseTile->getPosition().toString());
 		return;
 	}
 
@@ -465,13 +465,13 @@ void AccessList::addPlayer(const std::string &name) {
 
 namespace {
 
-	const Guild* getGuildByName(const std::string &name) {
+	std::shared_ptr<Guild> getGuildByName(const std::string &name) {
 		uint32_t guildId = IOGuild::getGuildIdByName(name);
 		if (guildId == 0) {
 			return nullptr;
 		}
 
-		const Guild* guild = g_game().getGuild(guildId);
+		const auto &guild = g_game().getGuild(guildId);
 		if (guild) {
 			return guild;
 		}
@@ -482,7 +482,7 @@ namespace {
 }
 
 void AccessList::addGuild(const std::string &name) {
-	const Guild* guild = getGuildByName(name);
+	const auto &guild = getGuildByName(name);
 	if (guild) {
 		for (const auto &rank : guild->getRanks()) {
 			guildRankList.insert(rank->id);
@@ -491,7 +491,7 @@ void AccessList::addGuild(const std::string &name) {
 }
 
 void AccessList::addGuildRank(const std::string &name, const std::string &guildName) {
-	const Guild* guild = getGuildByName(guildName);
+	const auto &guild = getGuildByName(guildName);
 	if (guild) {
 		const GuildRank_ptr rank = guild->getRankByName(name);
 		if (rank) {
@@ -610,7 +610,7 @@ bool Houses::loadHousesXML(const std::string &filename) {
 
 		House* house = getHouse(houseId);
 		if (!house) {
-			SPDLOG_ERROR("[Houses::loadHousesXML] - Unknown house, id: {}", houseId);
+			g_logger().error("[Houses::loadHousesXML] - Unknown house, id: {}", houseId);
 			return false;
 		}
 
@@ -622,9 +622,9 @@ bool Houses::loadHousesXML(const std::string &filename) {
 			pugi::cast<uint16_t>(houseNode.attribute("entryz").value())
 		);
 		if (entryPos.x == 0 && entryPos.y == 0 && entryPos.z == 0) {
-			SPDLOG_WARN("[Houses::loadHousesXML] - Entry not set for house "
-						"name: {} with id: {}",
-						house->getName(), houseId);
+			g_logger().warn("[Houses::loadHousesXML] - Entry not set for house "
+							"name: {} with id: {}",
+							house->getName(), houseId);
 		}
 		house->setEntryPos(entryPos);
 

@@ -20,7 +20,7 @@ void TalkActions::clear() {
 	talkActions.clear();
 }
 
-bool TalkActions::registerLuaEvent(TalkAction_ptr talkAction) {
+bool TalkActions::registerLuaEvent(const TalkAction_ptr &talkAction) {
 	auto [iterator, inserted] = talkActions.try_emplace(talkAction->getWords(), talkAction);
 	return inserted;
 }
@@ -82,9 +82,9 @@ TalkActionResult_t TalkActions::checkPlayerCanSayTalkAction(Player* player, Spea
 bool TalkAction::executeSay(Player* player, const std::string &words, const std::string &param, SpeakClasses type) const {
 	// onSay(player, words, param, type)
 	if (!getScriptInterface()->reserveScriptEnv()) {
-		SPDLOG_ERROR("[TalkAction::executeSay - Player {} words {}] "
-					 "Call stack overflow. Too many lua script calls being nested. Script name {}",
-					 player->getName(), getWords(), getScriptInterface()->getLoadingScriptName());
+		g_logger().error("[TalkAction::executeSay - Player {} words {}] "
+						 "Call stack overflow. Too many lua script calls being nested. Script name {}",
+						 player->getName(), getWords(), getScriptInterface()->getLoadingScriptName());
 		return false;
 	}
 

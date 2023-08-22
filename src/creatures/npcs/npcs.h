@@ -100,10 +100,7 @@ class Npcs {
 		Npcs &operator=(const Npcs &) = delete;
 
 		static Npcs &getInstance() {
-			// Guaranteed to be destroyed
-			static Npcs instance;
-			// Instantiated on first use
-			return instance;
+			return inject<Npcs>();
 		}
 
 		NpcType* getNpcType(const std::string &name, bool create = false);
@@ -117,6 +114,6 @@ class Npcs {
 		phmap::btree_map<std::string, NpcType*> npcs;
 };
 
-constexpr auto g_npcs = &Npcs::getInstance;
+constexpr auto g_npcs = Npcs::getInstance;
 
 #endif // SRC_CREATURES_NPCS_NPCS_H_

@@ -19,7 +19,7 @@
 #include "items/tile.h"
 
 using ConditionList = std::list<Condition*>;
-using CreatureEventList = std::list<CreatureEvent*>;
+using CreatureEventList = std::list<std::shared_ptr<CreatureEvent>>;
 
 class Map;
 class Thing;
@@ -29,6 +29,7 @@ class Monster;
 class Npc;
 class Item;
 class Tile;
+class Zone;
 
 static constexpr int32_t EVENT_CREATURECOUNT = 10;
 static constexpr int32_t EVENT_CREATURE_THINK_INTERVAL = 1000;
@@ -236,13 +237,15 @@ class Creature : virtual public Thing {
 			return defaultOutfit;
 		}
 		bool isInvisible() const;
-		ZoneType_t getZone() const {
+		ZoneType_t getZoneType() const {
 			if (getTile()) {
-				return tile->getZone();
+				return tile->getZoneType();
 			}
 
 			return ZONE_NORMAL;
 		}
+
+		const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones();
 
 		// walk functions
 		void startAutoWalk(const std::forward_list<Direction> &listDir, bool ignoreConditions = false);
@@ -346,21 +349,17 @@ class Creature : virtual public Thing {
 		std::vector<Condition*> getConditionsByType(ConditionType_t type) const;
 		void executeConditions(uint32_t interval);
 		bool hasCondition(ConditionType_t type, uint32_t subId = 0) const;
-		virtual bool isImmune(ConditionType_t type) const;
-		virtual bool isImmune(CombatType_t type) const;
-		virtual bool isSuppress(ConditionType_t type) const;
-		virtual uint32_t getDamageImmunities() const {
-			return 0;
-		}
-		virtual const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionImmunities() const {
-			const static std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> array = {};
-			return array;
-		}
 
-		virtual const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &getConditionSuppressions() const {
-			const static std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> array = {};
-			return array;
+		virtual bool isImmune(CombatType_t type) const {
+			return false;
 		}
+		virtual bool isImmune(ConditionType_t type) const {
+			return false;
+		}
+		virtual bool isSuppress(ConditionType_t type) const {
+			return false;
+		};
+
 		virtual bool isAttackable() const {
 			return true;
 		}
@@ -402,7 +401,6 @@ class Creature : virtual public Thing {
 		virtual void onChangeZone(ZoneType_t zone);
 		virtual void onAttackedCreatureChangeZone(ZoneType_t zone);
 		virtual void onIdleStatus();
-		virtual void onChangeHazard(bool isHazard);
 
 		virtual LightInfo getCreatureLight() const;
 		virtual void setNormalCreatureLight();
@@ -638,8 +636,8 @@ class Creature : virtual public Thing {
 			return false;
 		}
 
-		static constexpr int32_t mapWalkWidth = Map::maxViewportX * 2 + 1;
-		static constexpr int32_t mapWalkHeight = Map::maxViewportY * 2 + 1;
+		static constexpr int32_t mapWalkWidth = MAP_MAX_VIEW_PORT_X * 2 + 1;
+		static constexpr int32_t mapWalkHeight = MAP_MAX_VIEW_PORT_Y * 2 + 1;
 		static constexpr int32_t maxWalkCacheWidth = (mapWalkWidth - 1) / 2;
 		static constexpr int32_t maxWalkCacheHeight = (mapWalkHeight - 1) / 2;
 

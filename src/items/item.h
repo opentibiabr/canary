@@ -46,7 +46,7 @@ class ItemProperties {
 					std::numeric_limits<T>::max()
 				);
 			}
-			SPDLOG_ERROR("Failed to convert attribute for type {}", fmt::underlying(type));
+			g_logger().error("Failed to convert attribute for type {}", fmt::underlying(type));
 			return {};
 		}
 
@@ -481,6 +481,12 @@ class Item : virtual public Thing, public ItemProperties {
 		bool isDummy() const {
 			return items[id].isDummy();
 		}
+		bool isCarpet() const {
+			return items[id].isCarpet();
+		}
+		bool canReceiveAutoCarpet() const {
+			return isBlocking() && isAlwaysOnTop() && !items[id].hasHeight;
+		}
 
 		const std::string &getName() const {
 			if (hasAttribute(ItemAttribute_t::NAME)) {
@@ -668,7 +674,7 @@ class Item : virtual public Thing, public ItemProperties {
 
 			auto tier = getAttribute<uint8_t>(ItemAttribute_t::TIER);
 			if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
-				SPDLOG_ERROR("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
+				g_logger().error("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
 				return 0;
 			}
 
@@ -677,7 +683,7 @@ class Item : virtual public Thing, public ItemProperties {
 		void setTier(uint8_t tier) {
 			auto configTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);
 			if (tier > configTier) {
-				SPDLOG_ERROR("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
+				g_logger().error("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
 				return;
 			}
 

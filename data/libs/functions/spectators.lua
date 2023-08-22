@@ -1,6 +1,4 @@
 ---@author @Glatharth
----@version 1.2
----@since 1.0
 Spectators = {}
 setmetatable(Spectators, {
 	__call = function(self)

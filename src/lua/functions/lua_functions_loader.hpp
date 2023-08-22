@@ -24,6 +24,7 @@ class Item;
 class Player;
 class Thing;
 class Guild;
+class Zone;
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 
@@ -98,6 +99,7 @@ class LuaFunctionsLoader {
 			return lua_toboolean(L, arg) != 0;
 		}
 
+		static std::string getFormatedLoggerMessage(lua_State* L);
 		static std::string getString(lua_State* L, int32_t arg);
 		static CombatDamage getCombatDamage(lua_State* L);
 		static Position getPosition(lua_State* L, int32_t arg, int32_t &stackpos);
@@ -108,7 +110,7 @@ class LuaFunctionsLoader {
 		static Thing* getThing(lua_State* L, int32_t arg);
 		static Creature* getCreature(lua_State* L, int32_t arg);
 		static Player* getPlayer(lua_State* L, int32_t arg, bool allowOffline = false);
-		static Guild* getGuild(lua_State* L, int32_t arg, bool allowOffline = false);
+		static std::shared_ptr<Guild> getGuild(lua_State* L, int32_t arg, bool allowOffline = false);
 
 		template <typename T>
 		static T getField(lua_State* L, int32_t arg, const std::string &key) {
@@ -118,7 +120,8 @@ class LuaFunctionsLoader {
 
 		static std::string getFieldString(lua_State* L, int32_t arg, const std::string &key);
 
-		static LuaDataType getUserdataType(lua_State* L, int32_t arg);
+		static LuaData_t getUserdataType(lua_State* L, int32_t arg);
+		static std::string getUserdataTypeName(LuaData_t userType);
 
 		static bool isNumber(lua_State* L, int32_t arg) {
 			return lua_type(L, arg) == LUA_TNUMBER;
@@ -134,6 +137,9 @@ class LuaFunctionsLoader {
 		}
 		static bool isFunction(lua_State* L, int32_t arg) {
 			return lua_isfunction(L, arg);
+		}
+		static bool isNil(lua_State* L, int32_t arg) {
+			return lua_isnil(L, arg);
 		}
 		static bool isUserdata(lua_State* L, int32_t arg) {
 			return lua_isuserdata(L, arg) != 0;
@@ -197,10 +203,7 @@ class LuaFunctionsLoader {
 
 	protected:
 		static void registerClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
-		static void registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr) {
-			registerClass(L, className, baseClass, newFunction);
-			registerMetaMethod(L, className, "__gc", luaGarbageCollection);
-		}
+		static void registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
 		static void registerMethod(lua_State* L, const std::string &globalName, const std::string &methodName, lua_CFunction func);
 		static void registerMetaMethod(lua_State* L, const std::string &className, const std::string &methodName, lua_CFunction func);
 		static void registerTable(lua_State* L, const std::string &tableName);

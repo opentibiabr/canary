@@ -24,8 +24,8 @@ function createRavenHerb.onPeriodChange(period, light)
 	local time = getWorldTime()
 
 	if configManager.getBoolean(configKeys.ALL_CONSOLE_LOG) then
-		Spdlog.info(string.format("Starting %s Current light is %s and it's %s Tibian Time",
-			periods[period], light, getFormattedWorldTime(time)))
+		logger.info("Starting {} Current light is {} and it's {} Tibian Time",
+			periods[period], light, getFormattedWorldTime(time))
 	end
 	for index, item in pairs(config) do
 		if item.createItem == period then -- Adding

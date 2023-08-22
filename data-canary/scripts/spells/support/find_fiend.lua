@@ -105,7 +105,7 @@ function spell.onCastSpell(creature, variant)
         message = string.format(message .. " " .. ForgeMonster:getTimeLeftToChangeMonster(target))
     end
 
-    creature:sendTextMessage(MESSAGE_INFO_DESCR, message)
+    creature:sendTextMessage(MESSAGE_LOOK, message)
     creaturePosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
     return true
 end

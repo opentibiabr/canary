@@ -5,7 +5,11 @@ on:
   workflow_dispatch:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - 'src/**'
   push:
+    paths:
+      - 'src/**'
     branches:
       - main
 
@@ -21,13 +25,20 @@ jobs:
     strategy:
       matrix:
         os: [windows-2022]
-        buildtype: [Release]
+        buildtype: [Debug]
         include:
           - os: windows-2022
             triplet: x64-windows
             packages: >
               sccache
     steps:
+      - name: Cancel Previous Runs
+        if: github.ref != 'refs/heads/main'
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          concurrent_skipping: 'same_content'
+          cancel_others: true
+
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v1.1
 
@@ -42,7 +53,7 @@ jobs:
           ./vcpkg integrate install
 
       - name: Build project
-        run: msbuild.exe /p:VcpkgEnableManifest=true /p:Configuration=Release /p:Platform=x64 /p:VcpkgRoot=$env:GITHUB_WORKSPACE/vcpkg vcproj/canary.sln
+        run: msbuild.exe /p:VcpkgEnableManifest=true /p:Configuration=Debug /p:Platform=x64 /p:VcpkgRoot=$env:GITHUB_WORKSPACE/vcpkg vcproj/canary.sln
 
       - name: Upload artifacts
         uses: actions/upload-artifact@main

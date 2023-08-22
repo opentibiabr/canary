@@ -17,7 +17,10 @@
 enum class BosstiaryRarity_t : uint8_t {
 	RARITY_BANE = 0,
 	RARITY_ARCHFOE = 1,
-	RARITY_NEMESIS = 2
+	RARITY_NEMESIS = 2,
+
+	// Only for server reading, not send to the client
+	BOSS_INVALID = 10,
 };
 
 struct LevelInfo {
@@ -30,15 +33,14 @@ class Player;
 
 class IOBosstiary {
 	public:
+		IOBosstiary() = default;
+
 		// Non copyable
 		IOBosstiary(const IOBosstiary &) = delete;
 		void operator=(const IOBosstiary &) = delete;
 
 		static IOBosstiary &getInstance() {
-			// Guaranteed to be destroyed
-			static IOBosstiary instance;
-			// Instantiated on first use
-			return instance;
+			return inject<IOBosstiary>();
 		}
 
 		void loadBoostedBoss();
@@ -56,25 +58,23 @@ class IOBosstiary {
 		std::string getBoostedBossName() const;
 		void setBossBoostedId(uint16_t raceId);
 		uint16_t getBoostedBossId() const;
-		MonsterType* getMonsterTypeByBossRaceId(uint16_t raceId) const;
+		std::shared_ptr<MonsterType> getMonsterTypeByBossRaceId(uint16_t raceId) const;
 
-		void addBosstiaryKill(Player* player, const MonsterType* mtype, uint32_t amount = 1) const;
+		void addBosstiaryKill(Player* player, const std::shared_ptr<MonsterType> &mtype, uint32_t amount = 1) const;
 		uint16_t calculateLootBonus(uint32_t bossPoints) const;
 		uint32_t calculateBossPoints(uint16_t lootBonus) const;
-		std::vector<uint16_t> getBosstiaryFinished(const Player* player, uint8_t level = 1) const;
+		phmap::parallel_flat_hash_set<uint16_t> getBosstiaryFinished(const Player* player, uint8_t level = 1) const;
 		uint8_t getBossCurrentLevel(const Player* player, uint16_t bossId) const;
 		uint32_t calculteRemoveBoss(uint8_t removeTimes) const;
 		std::vector<uint16_t> getBosstiaryCooldownRaceId(const Player* player) const;
+		const std::vector<LevelInfo> &getBossRaceKillStages(BosstiaryRarity_t race) const;
 
 	private:
-		IOBosstiary() = default;
-		~IOBosstiary() = default;
-
 		phmap::btree_map<uint16_t, std::string> bosstiaryMap;
 		std::string boostedBoss;
 		uint16_t boostedBossId = 0;
 };
 
-constexpr auto g_ioBosstiary = &IOBosstiary::getInstance;
+constexpr auto g_ioBosstiary = IOBosstiary::getInstance;
 
 #endif // SRC_IO_IO_BOSSTIARY_HPP_

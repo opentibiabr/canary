@@ -51,13 +51,13 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 		}
 
 		if (!eventScript.empty() && loadedScripts.contains(eventScript)) {
-			SPDLOG_WARN("{} - Script declaration '{}' in duplicate 'data/XML/events.xml'.", __FUNCTION__, eventScript);
+			g_logger().warn("{} - Script declaration '{}' in duplicate 'data/XML/events.xml'.", __FUNCTION__, eventScript);
 			continue;
 		}
 
 		loadedScripts.insert(eventScript);
 		if (!eventScript.empty() && !g_scripts().loadEventSchedulerScripts(eventScript)) {
-			SPDLOG_WARN("{} - Can not load the file '{}' on '/events/scripts/scheduler/'", __FUNCTION__, eventScript);
+			g_logger().warn("{} - Can not load the file '{}' on '/events/scripts/scheduler/'", __FUNCTION__, eventScript);
 			return false;
 		}
 
@@ -106,7 +106,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 
 			if (!modifiedRates.empty()) {
 				std::string ratesString = join(modifiedRates, ", ");
-				SPDLOG_WARN("{} - Events '{}' and '{}' have the same rates [{}] on the same day.", __FUNCTION__, eventNode.attribute("name").as_string(), eventName.c_str(), ratesString);
+				g_logger().warn("{} - Events '{}' and '{}' have the same rates [{}] on the same day.", __FUNCTION__, eventNode.attribute("name").as_string(), eventName.c_str(), ratesString);
 			}
 		}
 
@@ -116,7 +116,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 
 	for (const auto &event : eventScheduler) {
 		if (daysMath >= event.startDays && daysMath <= event.endDays) {
-			SPDLOG_INFO("Active EventScheduler: {}", event.name);
+			g_logger().info("Active EventScheduler: {}", event.name);
 		}
 	}
 	return true;

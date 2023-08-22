@@ -20,8 +20,9 @@ class Teleport;
 class TrashHolder;
 class Mailbox;
 class MagicField;
-class QTreeLeafNode;
 class BedItem;
+class House;
+class Zone;
 
 using CreatureVector = std::vector<Creature*>;
 using ItemVector = std::vector<Item*>;
@@ -120,6 +121,9 @@ class Tile : public Cylinder {
 		virtual CreatureVector* getCreatures() = 0;
 		virtual const CreatureVector* getCreatures() const = 0;
 		virtual CreatureVector* makeCreatures() = 0;
+		virtual House* getHouse() {
+			return nullptr;
+		}
 
 		int32_t getThrowRange() const override final {
 			return 0;
@@ -170,18 +174,9 @@ class Tile : public Cylinder {
 			this->flags &= ~flag;
 		}
 
-		void setHazard(bool hazard) {
-			if (hazard) {
-				setFlag(TILESTATE_HAZARD);
-			} else {
-				resetFlag(TILESTATE_HAZARD);
-			}
-		}
-		bool isHazard() const {
-			return hasFlag(TILESTATE_HAZARD);
-		}
+		const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> getZones();
 
-		ZoneType_t getZone() const {
+		ZoneType_t getZoneType() const {
 			if (hasFlag(TILESTATE_PROTECTIONZONE)) {
 				return ZONE_PROTECTION;
 			} else if (hasFlag(TILESTATE_NOPVPZONE)) {
@@ -208,6 +203,8 @@ class Tile : public Cylinder {
 		ReturnValue queryMaxCount(int32_t index, const Thing &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) const override final;
 		ReturnValue queryRemove(const Thing &thing, uint32_t count, uint32_t tileFlags, Creature* actor = nullptr) const override;
 		Tile* queryDestination(int32_t &index, const Thing &thing, Item** destItem, uint32_t &flags) override;
+
+		std::vector<Tile*> getSurroundingTiles() const;
 
 		void addThing(Thing* thing) override final;
 		void addThing(int32_t index, Thing* thing) override;
@@ -265,6 +262,7 @@ class Tile : public Cylinder {
 		Item* ground = nullptr;
 		Position tilePos;
 		uint32_t flags = 0;
+		std::shared_ptr<Zone> zone;
 };
 
 // Used for walkable tiles, where there is high likeliness of

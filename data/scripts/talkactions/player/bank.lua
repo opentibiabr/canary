@@ -1,6 +1,6 @@
 local config = {
 	enabled = true,
-	messageStyle = MESSAGE_INFO_DESCR
+	messageStyle = MESSAGE_LOOK
 }
 
 if not config.enabled then
@@ -94,5 +94,5 @@ function transfer.onSay(player, words, param)
 end
 
 transfer:separator(" ")
-transfer:grouptype("normal")
+transfer:groupType("normal")
 transfer:register()

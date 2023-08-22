@@ -9,8 +9,8 @@
 #ifndef CANARY_CONTAINER_HPP
 #define CANARY_CONTAINER_HPP
 
-#include "lib/logging/Logger.hpp"
-#include "lib/logging/LogWithSpdLog.hpp"
+#include "lib/logging/logger.hpp"
+#include "lib/logging/log_with_spd_log.hpp"
 
 namespace di = boost::di;
 
@@ -31,7 +31,7 @@ class DI final {
 		 * Instances acquired with get are managed by the DI and can be merely references.
 		 */
 		template <class T>
-		inline static auto &get() {
+		inline static T &get() {
 			return DI::container().create<T &>();
 		}
 
@@ -41,7 +41,7 @@ class DI final {
 		 * Instances acquired with create need to be managed by the caller using smart pointers.
 		 */
 		template <class T>
-		inline static auto create() {
+		inline static T create() {
 			return DI::container().create<T>();
 		}
 };

@@ -51,6 +51,7 @@ class PlayerWheel {
 		 * @details If maximum number of points allowed for the slot, an error message is sent to the player and the function returns.
 		 */
 		void saveSlotPointsOnPressSaveButton(NetworkMessage &msg);
+		void addPromotionScrolls(NetworkMessage &msg) const;
 		void sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const;
 		void sendGiftOfLifeCooldown() const;
 
@@ -249,6 +250,7 @@ class PlayerWheel {
 		// Wheel of destiny - Header get:
 		bool getInstant(WheelInstant_t type) const;
 		bool getHealingLinkUpgrade(const std::string &spell) const;
+		uint8_t getStage(const std::string name) const;
 		uint8_t getStage(WheelStage_t type) const;
 		WheelSpellGrade_t getSpellUpgrade(const std::string &name) const;
 		int32_t getMajorStat(WheelMajor_t type) const;
@@ -274,7 +276,7 @@ class PlayerWheel {
 
 		void setPointsBySlotType(uint8_t slotType, uint16_t points);
 
-		Spell* getCombatDataSpell(CombatDamage &damage);
+		std::shared_ptr<Spell> getCombatDataSpell(CombatDamage &damage);
 
 		const PlayerWheelMethodsBonusData &getBonusData() const;
 

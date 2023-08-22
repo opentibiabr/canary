@@ -1070,7 +1070,7 @@ size_t combatTypeToIndex(CombatType_t combatType) {
 	if (enum_index_opt.has_value() && enum_index_opt.value() < COMBAT_COUNT) {
 		return enum_index_opt.value();
 	} else {
-		spdlog::error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
+		g_logger().error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
 		// Uncomment for catch the function call with debug
 		// throw std::out_of_range("Combat is out of range");
 	}
@@ -1083,7 +1083,7 @@ std::string combatTypeToName(CombatType_t combatType) {
 	if (!name.empty() && combatType < COMBAT_COUNT) {
 		return formatEnumName(name);
 	} else {
-		spdlog::error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
+		g_logger().error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
 		// Uncomment for catch the function call with debug
 		// throw std::out_of_range("Index is out of range");
 	}

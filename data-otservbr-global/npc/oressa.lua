@@ -26,14 +26,14 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "You can't take it all with you - sell your Dawnport things before \z
-		you receive the gear of your definite vocation!"},
-	{text = "Leave all Dawnport things behind you and choose your destiny!"},
-	{text = "Come to me if you need healing!"},
-	{text = "Choose your vocation and explore the mainland!"},
-	{text = "Talk to me to choose your definite vocation! Become a knight, paladin, druid or sorcerer!"},
-	{text = "World needs brave adventurers like you. Choose your vocation and sail to the mainland!"},
-	{text = "Poisoned? Bleeding? Wounded? I can help!"}
+	{ text = "You can't take it all with you - sell your Dawnport things before \z
+		you receive the gear of your definite vocation!" },
+	{ text = "Leave all Dawnport things behind you and choose your destiny!" },
+	{ text = "Come to me if you need healing!" },
+	{ text = "Choose your vocation and explore the mainland!" },
+	{ text = "Talk to me to choose your definite vocation! Become a knight, paladin, druid or sorcerer!" },
+	{ text = "World needs brave adventurers like you. Choose your vocation and sail to the mainland!" },
+	{ text = "Poisoned? Bleeding? Wounded? I can help!" }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -64,25 +64,25 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Basic keywords
-keywordHandler:addKeyword({"name"}, StdModule.say,
+keywordHandler:addKeyword({ "name" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "I am Oressa Fourwinds, the {healer}. "
 	}
 )
-keywordHandler:addKeyword({"healer"}, StdModule.say,
+keywordHandler:addKeyword({ "healer" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "If you are hurt my child, I will {heal} your wounds."
 	}
 )
-keywordHandler:addKeyword({"job"}, StdModule.say,
+keywordHandler:addKeyword({ "job" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "I can {heal} you if you are hurt. I can also help you choose your {vocation}. "
 	}
 )
-keywordHandler:addKeyword({"doors"}, StdModule.say,
+keywordHandler:addKeyword({ "doors" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Behind each of those doors, the equipment and skills of one vocation lies - \z
@@ -93,38 +93,38 @@ keywordHandler:addKeyword({"doors"}, StdModule.say,
 		So choose well!"
 	}
 )
-keywordHandler:addKeyword({"inigo"}, StdModule.say,
+keywordHandler:addKeyword({ "inigo" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "He has seen much, and likes to help the younger ones. If you have questions about what to do, \z
 			or whom to ask for anything, go to Inigo."
 	}
 )
-keywordHandler:addKeyword({"richard"}, StdModule.say,
+keywordHandler:addKeyword({ "richard" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Found a new way of living and took to it like a fish to water."
 	}
 )
-keywordHandler:addKeyword({"coltrayne"}, StdModule.say,
+keywordHandler:addKeyword({ "coltrayne" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Ah. Some wounds never heal. <sighs> Shipwrecked in body and mind. Nowhere to go, so he doesn't leave."
 	}
 )
-keywordHandler:addKeyword({"morris"}, StdModule.say,
+keywordHandler:addKeyword({ "morris" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "He broods over problems he won't share. But maybe you can help him with a little quest or two."
 	}
 )
-keywordHandler:addKeyword({"hamish"}, StdModule.say,
+keywordHandler:addKeyword({ "hamish" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "He lives only for his experiments and potions"
 	}
 )
-keywordHandler:addKeyword({"dawnport"}, StdModule.say,
+keywordHandler:addKeyword({ "dawnport" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -134,7 +134,7 @@ keywordHandler:addKeyword({"dawnport"}, StdModule.say,
 		}
 	}
 )
-keywordHandler:addKeyword({"rookgaard"}, StdModule.say,
+keywordHandler:addKeyword({ "rookgaard" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "I have heard of it, yes."
@@ -206,11 +206,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("You are hurt, my child. I will heal your wounds.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	-- Vocation dialog
+		-- Vocation dialog
 	elseif npcHandler:getTopic(playerId) == 0 and MsgContains(message, "vocation") then
-		npcHandler:say(vocationDefaultMessages,	npc, creature, 10)
+		npcHandler:say(vocationDefaultMessages, npc, creature, 10)
 		npcHandler:setTopic(playerId, 0)
-	-- Choosing dialog start
+		-- Choosing dialog start
 	elseif MsgContains(message, "choosing") or MsgContains(message, "choose") and npcHandler:getTopic(playerId) == 0 then
 		if player:getLevel() >= 8 then
 			npcHandler:say("I'll help you decide. \z
@@ -223,7 +223,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "distance") and npcHandler:getTopic(playerId) == 2 then
 		npcHandler:say("Tell me: Do you prefer to fight with {bow} and {spear}, or do you want to cast {magic}?", npc, creature)
 		npcHandler:setTopic(playerId, 3)
-	-- knight
+		-- knight
 	elseif MsgContains(message, "close") and npcHandler:getTopic(playerId) == 2 then
 		npcHandler:say(
 			{
@@ -234,9 +234,9 @@ local function creatureSayCallback(npc, creature, type, message)
 					monster's attention to them. ...",
 				"So tell me: DO YOU WISH TO BECOME A VALIANT KNIGHT? Answer with a proud {YES} if that is your choice!"
 			},
-		npc, creature, 10)
+			npc, creature, 10)
 		npcHandler:setTopic(playerId, 5)
-	-- Paladin
+		-- Paladin
 	elseif MsgContains(message, "bow") or MsgContains(message, "spear") and npcHandler:getTopic(playerId) == 3 then
 		npcHandler:say(
 			{
@@ -249,14 +249,14 @@ local function creatureSayCallback(npc, creature, type, message)
 				"They can also use holy magic to slay the unholy and undead in particular. ...",
 				"DO YOU WISH TO BECOME A DARING PALADIN? Answer with a proud {YES} if that is your choice!"
 			},
-		npc, creature, 10)
+			npc, creature, 10)
 		npcHandler:setTopic(playerId, 6)
-	-- Mage
+		-- Mage
 	elseif MsgContains(message, "magic") and npcHandler:getTopic(playerId) == 3 then
 		npcHandler:say("Tell me: Do you prefer to {heal} and cast the power of nature and ice, or do you want to rain \z
 			fire and {death} on your foes?", npc, creature)
 		npcHandler:setTopic(playerId, 4)
-	-- Druid
+		-- Druid
 	elseif MsgContains(message, "heal") and npcHandler:getTopic(playerId) == 4 then
 		npcHandler:say(
 			{
@@ -267,9 +267,9 @@ local function creatureSayCallback(npc, creature, type, message)
 					much more damage than paladins or knights. ...",
 				"So tell me: DO YOU WISH TO BECOME A SAGACIOUS DRUID? Answer with a proud {YES} if that is your choice!"
 			},
-		npc, creature, 10)
+			npc, creature, 10)
 		npcHandler:setTopic(playerId, 7)
-	-- Sorcerer
+		-- Sorcerer
 	elseif MsgContains(message, "death") and npcHandler:getTopic(playerId) == 4 then
 		npcHandler:say(
 			{
@@ -280,12 +280,12 @@ local function creatureSayCallback(npc, creature, type, message)
 					but they deal much more damage than paladins or knights. ...",
 				"So tell me: DO YOU WISH TO BECOME A POWERFUL SORCERER? Answer with a proud {YES} if that is your choice!"
 			},
-		npc, creature, 10)
+			npc, creature, 10)
 		npcHandler:setTopic(playerId, 8)
-	-- Choosing dialog start
+		-- Choosing dialog start
 	elseif MsgContains(message, "decided") and npcHandler:getTopic(playerId) == 0 then
 		npcHandler:say("So tell me, which {vocation} do you want to choose: {knight}, {sorcerer}, {paladin} or {druid}?", npc, creature)
-	-- Say vocations name
+		-- Say vocations name
 	elseif MsgContains(message, "sorcerer") and npcHandler:getTopic(playerId) == 0 then
 		local message = {
 			"Sorcerers are powerful casters of death, energy and fire magic. \z
@@ -297,8 +297,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		}
 
 		if player:getLevel() >= 8 then
-			table.insert(message, "So tell me: DO YOU WISH TO BECOME A POWERFUL SORCERER?"..
-									" Answer with a proud {YES} if that is your choice!")
+			table.insert(message, "So tell me: DO YOU WISH TO BECOME A POWERFUL SORCERER?" ..
+				" Answer with a proud {YES} if that is your choice!")
 			npcHandler:setTopic(playerId, 8)
 		else
 			npcHandler:setTopic(playerId, 0)
@@ -316,8 +316,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		}
 
 		if player:getLevel() >= 8 then
-			table.insert(message, "So tell me: DO YOU WISH TO BECOME A SAGACIOUS DRUID?"..
-									" Answer with a proud {YES} if that is your choice!")
+			table.insert(message, "So tell me: DO YOU WISH TO BECOME A SAGACIOUS DRUID?" ..
+				" Answer with a proud {YES} if that is your choice!")
 			npcHandler:setTopic(playerId, 7)
 		else
 			npcHandler:setTopic(playerId, 0)
@@ -335,8 +335,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		}
 
 		if player:getLevel() >= 8 then
-			table.insert(message, "So tell me: DO YOU WISH TO BECOME A DARING PALADIN?"..
-									" Answer with a proud {YES} if that is your choice!")
+			table.insert(message, "So tell me: DO YOU WISH TO BECOME A DARING PALADIN?" ..
+				" Answer with a proud {YES} if that is your choice!")
 			npcHandler:setTopic(playerId, 6)
 		else
 			npcHandler:setTopic(playerId, 0)
@@ -379,12 +379,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			removeMainlandSmugglingItems(player)
 			npcHandler:say(
 				{
-					"SO BE IT. CAST OFF YOUR TRAINING GEAR AND RISE, NOBLE ".. player:getVocation():getName():upper() .. "! ...",
+					"SO BE IT. CAST OFF YOUR TRAINING GEAR AND RISE, NOBLE " .. player:getVocation():getName():upper() .. "! ...",
 					"Go through the second door from the right. Open the chest and take the equipment inside \z
 						before you leave to the north. ...",
 					"Take the ship to reach the Mainland. Farewell, friend and good luck in all you undertake!"
 				},
-			npc, creature, 10)
+				npc, creature, 10)
 			npcHandler:setTopic(playerId, 0)
 		elseif MsgContains(message, "no") then
 			local vocationMessage = {
@@ -395,11 +395,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			}
 			npcHandler:say(
 				{
-					"As you wish. If you wish to learn something about the "..
-					vocationMessage[npcHandler:getTopic(playerId)]..
-					" vocation, tell me.",
+					"As you wish. If you wish to learn something about the " ..
+						vocationMessage[npcHandler:getTopic(playerId)] ..
+						" vocation, tell me.",
 				},
-			npc, creature, 10)
+				npc, creature, 10)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end

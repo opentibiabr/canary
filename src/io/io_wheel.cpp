@@ -155,9 +155,9 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 
 	// Register enum with default values for each vocation
 	if (!reload) {
-		g_logger().info("Loading wheel of destiny... [Success]");
+		g_logger().debug("Loading wheel of destiny... [Success]");
 	} else {
-		g_logger().info("Reloading wheel of destiny... [Success]");
+		g_logger().debug("Reloading wheel of destiny... [Success]");
 	}
 	return true;
 }

@@ -25,12 +25,12 @@ function rashid.onStartup()
 			rashid:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		end
 
-		Spdlog.info(string.format("Rashid arrived at %s", config.city))
+		logger.info("Rashid arrived at {}", config.city)
 		local message = string.format("Rashid arrived at %s today.", config.city) -- Declaring the message to send to webhook.
 		addEvent(rashidwebhook, 60000, message) -- Event with 1 minute delay to send webhook message after server starts.
 	else
-		Spdlog.warn(string.format("[rashid.onStartup] - Cannot create Rashid. Day: %s",
-			os.date("%A")))
+		logger.warn("[rashid.onStartup] - Cannot create Rashid. Day: {}",
+			os.date("%A"))
 	end
 
 	return true
@@ -47,8 +47,8 @@ function rashidSpawnOnTime.onTime(interval)
 	local config = positionByDay[today]
 
 	if rashidTarget then
-		Spdlog.info("Rashid is traveling to " .. os.date("%A") .. "s location.")
-		local message = ("Rashid is traveling to " .. os.date("%A") .. "s location.")
+		logger.info("Rashid is traveling to {}s location.", config.city)
+		local message = ("Rashid is traveling to " .. config.city .. "s location.")
 		rashidTarget:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		rashidTarget:teleportTo(config.position)
 		rashidTarget:setMasterPos(config.position)

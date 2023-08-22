@@ -11,11 +11,11 @@
 #define SRC_CREATURES_COMBAT_CONDITION_H_
 
 #include "declarations.hpp"
-#include "io/fileloader.h"
 
 class Creature;
 class Player;
 class PropStream;
+class PropWriteStream;
 
 class Condition {
 	public:

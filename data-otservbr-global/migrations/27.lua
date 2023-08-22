@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	Spdlog.info("Updating database to version 28 (bosstiary system)")
+	logger.info("Updating database to version 28 (bosstiary system)")
 	db.query("ALTER TABLE `players` ADD `boss_points` int NOT NULL DEFAULT '0';")
 	db.query([[
 	CREATE TABLE IF NOT EXISTS `boosted_boss` (

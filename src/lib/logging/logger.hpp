@@ -24,9 +24,11 @@
 
 class Logger {
 	public:
+		Logger() = default;
 		virtual ~Logger() = default;
 
 		// Ensures that we don't accidentally copy it
+		Logger(const Logger &) = delete;
 		virtual Logger &operator=(const Logger &) = delete;
 
 		virtual void setLevel(const std::string &name) = 0;

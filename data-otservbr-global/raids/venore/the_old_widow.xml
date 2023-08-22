@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <raid>
 	<!--Announcements-->
-	<announce delay="1000" type="Event" message="The mating season of the giant spiders is at hand.
-    Leave the plains of havoc as fast as you can." />
-	<announce delay="180000" type="Event" message="Giant spiders have gathered on the plains of havoc
-    for their mating season. Beware!" />
+	<announce delay="1000" type="Event" message="The mating season of the giant spiders is at hand. Leave the plains of havoc as fast as you can." />
+	<announce delay="180000" type="Event" message="Giant spiders have gathered on the plains of havoc for their mating season. Beware!" />
 	<!--Single Spawns-->
 	<singlespawn delay="180000" name="The Old Widow" x="32776" y="32296" z="7" />
 	<!--Area Spawns-->

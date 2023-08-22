@@ -125,7 +125,7 @@ int PlayerFunctions::luaPlayerCreate(lua_State* L) {
 			return 2;
 		}
 	} else if (isUserdata(L, 2)) {
-		if (getUserdataType(L, 2) != LuaData_Player) {
+		if (getUserdataType(L, 2) != LuaData_t::Player) {
 			lua_pushnil(L);
 			return 1;
 		}
@@ -1955,7 +1955,7 @@ int PlayerFunctions::luaPlayerShowTextDialog(lua_State* L) {
 	} else if (isString(L, 2)) {
 		item = Item::CreateItem(Item::items.getItemIdByName(getString(L, 2)));
 	} else if (isUserdata(L, 2)) {
-		if (getUserdataType(L, 2) != LuaData_Item) {
+		if (getUserdataType(L, 2) != LuaData_t::Item) {
 			pushBoolean(L, false);
 			return 1;
 		}

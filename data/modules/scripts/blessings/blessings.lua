@@ -59,12 +59,12 @@ Blessings.DebugPrint = function(content, pre, pos)
 		pos = " " .. pos
 	end
 	if type(content) == "boolean" then
-		Spdlog.debug(string.format("[Blessings] START BOOL - %s", pre))
-		Spdlog.debug(content)
-		Spdlog.debug(string.format("[Blessings] END BOOL - %s", pos))
+		logger.debug("[Blessings] START BOOL - {}", pre)
+		logger.debug(content)
+		logger.debug("[Blessings] END BOOL - {}", pos)
 	else
-		Spdlog.debug(string.format("[Blessings] pre:[%s], content[%s], pos[%s]",
-			pre, content, pos))
+		logger.debug("[Blessings] pre:[{}], content[{}], pos[{}]",
+			pre, content, pos)
 	end
 end
 

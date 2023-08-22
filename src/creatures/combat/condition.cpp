@@ -12,6 +12,7 @@
 #include "creatures/combat/condition.h"
 #include "game/game.h"
 #include "game/scheduling/dispatcher.hpp"
+#include "io/fileloader.h"
 
 /**
  *  Condition

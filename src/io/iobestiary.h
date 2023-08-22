@@ -11,6 +11,7 @@
 #define SRC_IO_IOBESTIARY_H_
 
 #include "declarations.hpp"
+#include "lib/di/soft_singleton.hpp"
 #include "lua/scripts/luascript.h"
 #include "creatures/players/player.h"
 
@@ -79,6 +80,10 @@ class IOBestiary {
 		phmap::btree_map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(Player* player, phmap::btree_map<uint16_t, std::string> mtype_list) const;
 		phmap::btree_map<uint8_t, int16_t> getMonsterElements(const std::shared_ptr<MonsterType> &mtype) const;
 		phmap::btree_map<uint16_t, std::string> findRaceByName(const std::string &race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
+
+	private:
+		static SoftSingleton instanceTracker;
+		SoftSingletonGuard guard { instanceTracker };
 };
 
 constexpr auto g_iobestiary = IOBestiary::getInstance;

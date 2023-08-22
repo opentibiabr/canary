@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	Spdlog.info("Updating database to version 16 (Rook sample and GOD player values)")
+	logger.info("Updating database to version 16 (Rook sample and GOD player values)")
     -- Rook Sample
 	db.query("UPDATE `players` SET `maglevel` = 2, `manaspent` = 5936, `skill_club` = 12, `skill_club_tries` = 155, `skill_sword` = 12, `skill_sword_tries` = 155, `skill_axe` = 12, `skill_axe_tries` = 155, `skill_dist` = 12, `skill_dist_tries` = 93 WHERE `id` = 1;")
     -- GOD

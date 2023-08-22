@@ -21,6 +21,7 @@ class TrashHolder;
 class Mailbox;
 class MagicField;
 class BedItem;
+class House;
 class Zone;
 
 using CreatureVector = std::vector<Creature*>;
@@ -120,6 +121,9 @@ class Tile : public Cylinder {
 		virtual CreatureVector* getCreatures() = 0;
 		virtual const CreatureVector* getCreatures() const = 0;
 		virtual CreatureVector* makeCreatures() = 0;
+		virtual House* getHouse() {
+			return nullptr;
+		}
 
 		int32_t getThrowRange() const override final {
 			return 0;
@@ -199,6 +203,8 @@ class Tile : public Cylinder {
 		ReturnValue queryMaxCount(int32_t index, const Thing &thing, uint32_t count, uint32_t &maxQueryCount, uint32_t flags) const override final;
 		ReturnValue queryRemove(const Thing &thing, uint32_t count, uint32_t tileFlags, Creature* actor = nullptr) const override;
 		Tile* queryDestination(int32_t &index, const Thing &thing, Item** destItem, uint32_t &flags) override;
+
+		std::vector<Tile*> getSurroundingTiles() const;
 
 		void addThing(Thing* thing) override final;
 		void addThing(int32_t index, Thing* thing) override;

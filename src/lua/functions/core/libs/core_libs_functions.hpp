@@ -14,7 +14,7 @@
 #include "lua/functions/core/libs/bit_functions.hpp"
 #include "lua/functions/core/libs/db_functions.hpp"
 #include "lua/functions/core/libs/result_functions.hpp"
-#include "lua/functions/core/libs/spdlog_functions.hpp"
+#include "lua/functions/core/libs/logger_functions.hpp"
 
 class CoreLibsFunctions final : LuaScriptInterface {
 	public:
@@ -22,7 +22,7 @@ class CoreLibsFunctions final : LuaScriptInterface {
 			BitFunctions::init(L);
 			DBFunctions::init(L);
 			ResultFunctions::init(L);
-			SpdlogFunctions::init(L);
+			LoggerFunctions::init(L);
 		}
 
 	private:

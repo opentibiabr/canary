@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	Spdlog.info("Updating database to version 24 (forge history)")
+	logger.info("Updating database to version 24 (forge history)")
 	db.query([[
 		CREATE TABLE IF NOT EXISTS `forge_history` (
 			`id` int NOT NULL AUTO_INCREMENT,

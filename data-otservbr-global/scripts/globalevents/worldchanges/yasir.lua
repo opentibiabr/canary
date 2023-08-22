@@ -50,13 +50,12 @@ local function yasirwebhook(message) -- New local function that runs on delay to
 end
 
 local yasirEnabled = true
-local yasirChance = 100
-local randTown = config[math.random(#config)]
+local yasirChance = 33
 
-local function spawnYasir()
-	local npc = Game.createNpc('yasir', randTown.yasirPosition)
+local function spawnYasir(position)
+	local npc = Game.createNpc('yasir', position)
 	if npc then
-		npc:setMasterPos(randTown.yasirPosition)
+		npc:setMasterPos(position)
 	end
 end
 
@@ -65,6 +64,7 @@ local yasir = GlobalEvent("yasir")
 function yasir.onStartup()
 	if yasirEnabled then
 		if math.random(100) <= yasirChance then
+			local randTown = config[3]
 			logger.info("[WorldChanges] Yasir: {}", randTown.mapName)
 			local message = string.format("Yasir is in %s today.", randTown.mapName) -- Declaring the message to send to webhook.
 			iterateArea(
@@ -102,7 +102,7 @@ function yasir.onStartup()
 			end
 
 			Game.loadMap(DATA_DIRECTORY.. '/world/world_changes/oriental_trader/' .. randTown.mapName .. '.otbm')
-			addEvent(spawnYasir, 5000)
+			addEvent(spawnYasir, 60000, randTown.yasirPosition)
 			addEvent(yasirwebhook, 60000, message) -- Event with 1 minute delay to send webhook message after server starts.
 			setGlobalStorageValue(GlobalStorage.Yasir, 1)
 		else

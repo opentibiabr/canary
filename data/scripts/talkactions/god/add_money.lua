@@ -16,16 +16,6 @@ function addMoney.onSay(player, words, param)
 
 	local split = param:split(",")
 	local name = split[1]:trim()
-	local amount = nil
-	if split[2] then
-		amount = tonumber(split[2])
-	end
-
-  -- Check if the coins is valid
-	if amount <= 0 or amount == nil then
-		player:sendCancelMessage("Invalid amount.")
-		return false
-	end
 
 	local normalizedName = Game.getNormalizedPlayerName(name)
 	if not normalizedName then
@@ -33,6 +23,17 @@ function addMoney.onSay(player, words, param)
 		return false
 	end
 	name = normalizedName
+
+	local amount = nil
+	if split[2] then
+		amount = tonumber(split[2])
+	end
+
+	-- Check if the coins is valid
+	if amount <= 0 or amount == nil then
+		player:sendCancelMessage("Invalid amount.")
+		return false
+	end
 
 	if not Bank.credit(name, amount) then
 		player:sendCancelMessage("Failed to add money to " .. name .. ".")

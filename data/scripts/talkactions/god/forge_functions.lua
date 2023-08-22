@@ -13,10 +13,6 @@ function addDusts.onSay(player, words, param)
 
 	local split = param:split(",")
 	local name = split[1]
-	local dustAmount = nil
-	if split[2] then
-		dustAmount = tonumber(split[2])
-	end
 
 	-- Check if player is online
 	local targetPlayer = Player(name)
@@ -25,6 +21,11 @@ function addDusts.onSay(player, words, param)
 		-- Distro log
 		logger.error("[addDusts.onSay] - Player {} is not online.", string.titleCase(name))
 		return true
+	end
+
+	local dustAmount = nil
+	if split[2] then
+		dustAmount = tonumber(split[2])
 	end
 
 	-- Check if the dustAmount is valid
@@ -68,10 +69,6 @@ function removeDusts.onSay(player, words, param)
 
 	local split = param:split(",")
 	local name = split[1]
-	local dustAmount = nil
-	if split[2] then
-		dustAmount = tonumber(split[2])
-	end
 
 	-- Check if player is online
 	local targetPlayer = Player(name)
@@ -80,6 +77,11 @@ function removeDusts.onSay(player, words, param)
 		-- Distro log
 		logger.error("[removeDusts.onSay] - Player {} is not online.", string.titleCase(name))
 		return true
+	end
+
+	local dustAmount = nil
+	if split[2] then
+		dustAmount = tonumber(split[2])
 	end
 
 	-- Check if the dustAmount is valid
@@ -160,10 +162,6 @@ function setDusts.onSay(player, words, param)
 
 	local split = param:split(",")
 	local name = split[1]
-	local dustAmount = nil
-	if split[2] then
-		dustAmount = tonumber(split[2])
-	end
 
 	-- Check if player is online
 	local targetPlayer = Player(name)
@@ -172,6 +170,11 @@ function setDusts.onSay(player, words, param)
 		-- Distro log
 		logger.error("[setDusts.onSay] - Player {} is not online.", string.titleCase(name))
 		return true
+	end
+
+	local dustAmount = nil
+	if split[2] then
+		dustAmount = tonumber(split[2])
 	end
 
 	-- Check if the dustAmount is valid

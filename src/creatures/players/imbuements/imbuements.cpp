@@ -251,7 +251,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							continue;
 						}
 
-						CombatType_t combatType = getCombatType(attr.as_string());
+						CombatType_t combatType = getCombatTypeByName(attr.as_string());
 						if (combatType == COMBAT_NONE) {
 							g_logger().warn("Unknown combat type for element {}", attr.as_string());
 							continue;
@@ -272,7 +272,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							continue;
 						}
 
-						CombatType_t combatType = getCombatType(attr.as_string());
+						CombatType_t combatType = getCombatTypeByName(attr.as_string());
 						if (combatType == COMBAT_NONE) {
 							g_logger().warn("Unknown combat type for element {}", attr.as_string());
 							continue;

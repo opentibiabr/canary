@@ -63,6 +63,12 @@ std::string getFirstLine(const std::string &str);
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);
 std::string formatTime(time_t time);
+/**
+ * @brief Format the enum name by replacing underscores with spaces and converting to lowercase.
+ * @param name The enum name to format.
+ * @return A string with the formatted enum name.
+ */
+std::string formatEnumName(std::string_view name);
 std::time_t getTimeNow();
 std::time_t getTimeMsNow();
 std::string convertIPToString(uint32_t ip);
@@ -75,13 +81,11 @@ Ammo_t getAmmoType(const std::string &strValue);
 WeaponAction_t getWeaponAction(const std::string &strValue);
 Skulls_t getSkullType(const std::string &strValue);
 ImbuementTypes_t getImbuementType(const std::string &strValue);
-std::string getCombatName(CombatType_t combatType);
 /**
  * @Deprecated
  * It will be dropped with monsters. Use RespawnPeriod_t instead.
  */
 SpawnType_t getSpawnType(const std::string &strValue);
-CombatType_t getCombatType(const std::string &combatname);
 
 std::string getSkillName(uint8_t skillid);
 
@@ -93,8 +97,25 @@ bool booleanString(const std::string &str);
 
 std::string getWeaponName(WeaponType_t weaponType);
 
+std::string getCombatName(CombatType_t combatType);
+CombatType_t getCombatTypeByName(const std::string &combatname);
+
+/**
+ * @brief Convert the CombatType_t enumeration to its corresponding index.
+ * @param combatType The CombatType_t enumeration to convert.
+ * @return The corresponding index of the CombatType_t enumeration.
+ * If the CombatType_t is out of range, this function will log an error and return an empty size_t.
+ */
 size_t combatTypeToIndex(CombatType_t combatType);
+
+/**
+ * @brief Convert the CombatType_t enumeration to its corresponding string representation.
+ * @param combatType The CombatType_t enumeration to convert.
+ * @return The corresponding string representation of the CombatType_t enumeration.
+ * If the CombatType_t is out of range, this function will log an error and return an empty string.
+ */
 std::string combatTypeToName(CombatType_t combatType);
+
 CombatType_t indexToCombatType(size_t v);
 
 ItemAttribute_t stringToItemAttribute(const std::string &str);
@@ -147,6 +168,8 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 			return CIPBIA_ELEMENTAL_DEATH;
 		case COMBAT_MANADRAIN:
 			return CIPBIA_ELEMENTAL_MANADRAIN;
+		case COMBAT_NEUTRALDAMAGE:
+			return CIPBIA_ELEMENTAL_NEUTRAL;
 		default:
 			return CIPBIA_ELEMENTAL_UNDEFINED;
 	}

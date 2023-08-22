@@ -205,6 +205,12 @@ namespace account {
 		 */
 		error_t SaveAccountDB();
 
+		/**
+		 * @brief Calculate and update remaining days and last day of premium account
+		 *
+		 */
+		void UpdatePremium();
+
 		/***************************************************************************
 		 * Setters and Getters
 		 **************************************************************************/
@@ -217,11 +223,11 @@ namespace account {
 		error_t SetPassword(std::string password);
 		error_t GetPassword(std::string* password);
 
-		error_t SetPremiumRemaningDays(uint32_t days);
-		error_t GetPremiumRemaningDays(uint32_t* days);
+		error_t SetPremiumRemainingDays(uint32_t days);
+		error_t GetPremiumRemainingDays(uint32_t* days) const;
 
 		error_t SetPremiumLastDay(time_t last_day);
-		error_t GetPremiumLastDay(time_t* last_day);
+		error_t GetPremiumLastDay(time_t* last_day) const;
 
 		error_t SetAccountType(AccountType account_type);
 		error_t GetAccountType(AccountType* account_type);

@@ -5,9 +5,9 @@ function playerLogin.onLogin(player)
 		local wasVip = player:getStorageValue(Storage.VipSystem.IsVip) == 1
 		if wasVip and not player:isVip() then player:onRemoveVip() end
 		if not wasVip and player:isVip() then player:onAddVip(player:getVipDays()) end
+
 		if player:isVip() then
-			local days = player:getVipDays()
-			player:sendTextMessage(MESSAGE_LOGIN, string.format('You have %s VIP day%s left.', (days == 0xFFFF and 'infinite amount of' or days), (days == 1 and '' or 's')))
+			CheckPremiumAndPrint(player, MESSAGE_LOGIN)
 		end
 	end
 	return true

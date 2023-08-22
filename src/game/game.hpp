@@ -360,7 +360,6 @@ public:
 	void playerOpenWheel(uint32_t playerId, uint32_t ownerId);
 	void playerSaveWheel(uint32_t playerId, NetworkMessage &msg);
 
-	static void updatePremium(account::Account &account);
 	void updatePlayerHelpers(Player* player);
 
 	void cleanup();

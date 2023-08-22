@@ -22,9 +22,9 @@ bool Map::load(const std::string &identifier, const Position &pos, bool unload) 
 		IOMap::loadMap(this, identifier, pos, unload);
 		return true;
 	} catch (const IOMapException &e) {
-		g_logger().error("[Map::load] - {}", e.what());
+		IOMap::addLog(LOG_LEVEL_ERROR, fmt::format("[Map::load] - {}", e.what()));
 	} catch (const std::exception &) {
-		g_logger().error("[Map::load] - The map in folder {} is missing or corrupted", identifier);
+		IOMap::addLog(LOG_LEVEL_ERROR, fmt::format("[Map::load] - The map in folder {} is missing or corrupted", identifier));
 	}
 	return false;
 }
@@ -34,11 +34,11 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !std::filesystem::exists(identifier)) {
 		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
 		if (mapDownloadUrl.empty()) {
-			g_logger().warn("Map download URL in config.lua is empty, download disabled");
+			IOMap::addLog(LOG_LEVEL_WARNING, "Map download URL in config.lua is empty, download disabled");
 		}
 
 		if (CURL* curl = curl_easy_init(); curl && !mapDownloadUrl.empty()) {
-			g_logger().info("Downloading " + g_configManager().getString(MAP_NAME) + ".otbm to world folder");
+			IOMap::addLog(LOG_LEVEL_INFO, "Downloading " + g_configManager().getString(MAP_NAME) + ".otbm to world folder");
 			FILE* otbm = fopen(identifier.c_str(), "wb");
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 			curl_easy_setopt(curl, CURLOPT_URL, mapDownloadUrl.c_str());
@@ -62,11 +62,11 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 	}
 
 	if (loadMonsters && !IOMap::loadMonsters(this))
-		g_logger().warn("Failed to load spawn data");
+		IOMap::addLog(LOG_LEVEL_WARNING, "Failed to load spawn data");
 
 	if (loadHouses) {
 		if (!IOMap::loadHouses(this))
-			g_logger().warn("Failed to load house data");
+			IOMap::addLog(LOG_LEVEL_WARNING, "Failed to load house data");
 
 		/**
 		 * Only load houses items if map custom load is disabled
@@ -74,13 +74,12 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 		 * NOTE: This will ensure that the information is not duplicated
 		 */
 		if (!g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
-			IOMapSerialize::loadHouseInfo();
-			IOMapSerialize::loadHouseItems(this);
+			loadHouseInfo();
 		}
 	}
 
 	if (loadNpcs && !IOMap::loadNpcs(this))
-		g_logger().warn("Failed to load npc spawn data");
+		IOMap::addLog(LOG_LEVEL_WARNING, "Failed to load npc spawn data");
 
 	// Files need to be cleaned up if custom map is enabled to open, or will try to load main map files
 	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
@@ -98,13 +97,13 @@ bool Map::loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMo
 	load(path);
 
 	if (loadMonsters && !IOMap::loadMonstersCustom(this, mapName, customMapIndex))
-		g_logger().warn("Failed to load monster custom data");
+		IOMap::addLog(LOG_LEVEL_WARNING, "Failed to load monster custom data");
 
 	if (loadHouses && !IOMap::loadHousesCustom(this, mapName, customMapIndex))
-		g_logger().warn("Failed to load house custom data");
+		IOMap::addLog(LOG_LEVEL_WARNING, "Failed to load house custom data");
 
 	if (loadNpcs && !IOMap::loadNpcsCustom(this, mapName, customMapIndex))
-		g_logger().warn("Failed to load npc custom spawn data");
+		IOMap::addLog(LOG_LEVEL_WARNING, "Failed to load npc custom spawn data");
 
 	// Files need to be cleaned up or will try to load previous map files again
 	monsterfile.clear();

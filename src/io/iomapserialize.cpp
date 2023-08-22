@@ -12,6 +12,7 @@
 #include "io/iomapserialize.h"
 #include "game/game.h"
 #include "items/bed.h"
+#include "iomap.h"
 
 void IOMapSerialize::loadHouseItems(Map* map) {
 	int64_t start = OTSYS_TIME();
@@ -48,7 +49,8 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 			loadItem(propStream, tile, true);
 		}
 	} while (result->next());
-	g_logger().info("Loaded house items in {} seconds", (OTSYS_TIME() - start) / (1000.));
+
+	IOMap::addLog(LOG_LEVEL_INFO, fmt::format("Loaded house items in {} seconds", (OTSYS_TIME() - start) / (1000.)));
 }
 bool IOMapSerialize::saveHouseItems() {
 	bool success = DBTransaction::executeWithinTransaction([]() {

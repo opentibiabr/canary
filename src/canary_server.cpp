@@ -28,8 +28,11 @@
 #include "server/network/webhook/webhook.h"
 #include "io/ioprey.h"
 #include "io/io_bosstiary.hpp"
+#include "io/iomap.h"
 
 #include "core.hpp"
+
+static std::thread mapThread;
 
 CanaryServer::CanaryServer(
 	Logger &logger,
@@ -62,8 +65,11 @@ int CanaryServer::run() {
 			initializeDatabase();
 			loadModules();
 			setWorldType();
-			loadMaps();
 
+			logger.info("Loading main map...");
+			const auto start = OTSYS_TIME();
+			mapThread.join();
+			IOMap::showLog(start);
 			logger.info("Initializing gamestate...");
 			g_game().setGameState(GAME_STATE_INIT);
 
@@ -140,14 +146,12 @@ void CanaryServer::setWorldType() {
 }
 
 void CanaryServer::loadMaps() {
-	logger.info("Loading main map...");
 	if (!g_game().loadMainMap(g_configManager().getString(MAP_NAME))) {
 		throw FailedToInitializeCanary("Failed to load main map");
 	}
 
 	// If "mapCustomEnabled" is true on config.lua, then load the custom map
 	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
-		logger.debug("Loading custom maps...");
 		std::string customMapPath = g_configManager().getString(DATA_DIRECTORY) + "/world/custom/";
 		if (!g_game().loadCustomMaps(customMapPath)) {
 			throw FailedToInitializeCanary("Failed to load custom maps");
@@ -324,6 +328,8 @@ void CanaryServer::loadModules() {
 	// Load items dependencies
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
 	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
+
+	mapThread = std::thread([this] { loadMaps(); });
 
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	logger.debug("Loading core scripts on folder: {}/", coreFolder);

@@ -37,9 +37,33 @@
 	|--- OTBM_ITEM_DEF (not implemented)
 */
 
-void IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, bool unload) {
-	int64_t start = OTSYS_TIME();
+struct LOG {
+		std::string logLevel;
+		std::string msg;
+		uint64_t time;
+};
 
+static std::vector<LOG> LOG_MAP;
+
+void IOMap::addLog(const std::string &logLevel, const std::string &msg) {
+	LOG_MAP.emplace_back(logLevel, msg);
+}
+
+void IOMap::showLog(uint64_t start) {
+	for (auto log : LOG_MAP) {
+		if (log.time < start)
+			log.time = start = 0;
+
+		char buffer[6];
+		memset(buffer, 0, sizeof(buffer));
+		snprintf(buffer, sizeof(buffer), "%g", (log.time - start) / (1000.f));
+
+		replaceString(log.msg, "{}", buffer);
+		g_logger().log(log.logLevel, log.msg);
+	}
+}
+
+void IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, bool unload) {
 	const auto &fileByte = mio::mmap_source(fileName);
 
 	const auto begin = fileByte.begin() + sizeof(OTB::Identifier { { 'O', 'T', 'B', 'M' } });
@@ -63,8 +87,6 @@ void IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, 
 	if (majorVersionItems < 3)
 		throw IOMapException("This map need to be upgraded by using the latest map editor version to be able to load correctly.");
 
-	g_logger().info("Map size: {}x{}", map->width, map->height);
-
 	if (stream.startNode(OTBM_MAP_DATA)) {
 		parseMapDataAttributes(stream, map, fileName);
 		parseTileArea(stream, *map, pos);
@@ -76,7 +98,9 @@ void IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, 
 
 	map->flush();
 
-	g_logger().info("Map loading time: {} seconds", (OTSYS_TIME() - start) / (1000.));
+	const auto &path = fileName.substr(g_configManager().getString(DATA_DIRECTORY).size() + 1);
+	const auto &msg = fmt::format("Loading Map({}x{}) {} | time: {{}} seconds", map->width, map->height, path);
+	LOG_MAP.emplace_back(LOG_LEVEL_INFO, msg, OTSYS_TIME());
 }
 
 void IOMap::parseMapDataAttributes(FileStream &stream, Map* map, const std::string &fileName) {

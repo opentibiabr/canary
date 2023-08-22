@@ -130,6 +130,9 @@ class IOMap {
 			return map->housesCustomMaps[customMapIndex].loadHousesXML(map->housefile);
 		}
 
+		static void showLog(uint64_t startTime);
+		static void addLog(const std::string &logLevel, const std::string &msg); 
+
 	private:
 		static void parseMapDataAttributes(FileStream &stream, Map* map, const std::string &fileName);
 		static void parseWaypoints(FileStream &stream, Map &map);

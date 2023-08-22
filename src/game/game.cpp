@@ -484,7 +484,6 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 			continue;
 		}
 
-		g_logger().info("Loading custom map {}", filename);
 		if (!map.loadMapCustom(filename, true, true, true, customMapIndex)) {
 			g_logger().error("Failed to load custom map {}", filename);
 			return false;

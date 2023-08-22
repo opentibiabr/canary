@@ -66,7 +66,7 @@ int CanaryServer::run() {
 			loadModules();
 			setWorldType();
 
-			logger.info("Loading main map...");
+			logger.info("Loading map(s)...");
 			const auto start = OTSYS_TIME();
 			mapThread.join();
 			IOMap::showLog(start);

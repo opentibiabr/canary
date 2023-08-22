@@ -98,8 +98,9 @@ void IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, 
 
 	map->flush();
 
-	const auto &path = fileName.substr(g_configManager().getString(DATA_DIRECTORY).size() + 1);
-	const auto &msg = fmt::format("Loading Map({}x{}) {} | time: {{}} seconds", map->width, map->height, path);
+	auto path = fileName.substr(g_configManager().getString(DATA_DIRECTORY).size() + 7);
+	replaceString(path, ".otbm", "");
+	const auto &msg = fmt::format("Loading Map {} ({}x{}) | time: {{}} seconds", path, map->width, map->height);
 	LOG_MAP.emplace_back(LOG_LEVEL_INFO, msg, OTSYS_TIME());
 }
 

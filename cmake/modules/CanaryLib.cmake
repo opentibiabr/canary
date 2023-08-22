@@ -1,10 +1,5 @@
 # Define and setup CanaryLib main library target
-if(BUILD_STATIC_LIBRARY)
-    add_library(${PROJECT_NAME}_lib STATIC)
-else()
-    add_library(${PROJECT_NAME}_lib SHARED)
-endif()
-
+add_library(${PROJECT_NAME}_lib)
 setup_target(${PROJECT_NAME}_lib)
 
 # Add subdirectories

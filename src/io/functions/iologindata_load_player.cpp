@@ -19,6 +19,7 @@ bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
 	std::ostringstream query;
 	query << "SELECT `id`, `account_id`, `group_id`, `deletion`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
 	query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
+	query << ", (SELECT `lastday` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_last_day`";
 	query << ", (SELECT `premdays_purchased` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days_purchased`";
 	query << ", (SELECT `creation` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `creation_timestamp`";
 	query << " FROM `players` WHERE `name` = " << db.escapeString(name);
@@ -41,6 +42,7 @@ bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
 	player->accountNumber = result->getNumber<uint32_t>("account_id");
 	player->accountType = static_cast<account::AccountType>(result->getNumber<uint16_t>("account_type"));
 	player->premiumDays = result->getNumber<uint16_t>("premium_days");
+	player->premiumLastDay = result->getNumber<uint32_t>("premium_last_day");
 
 	/*
 	  Loyalty system:
@@ -90,9 +92,10 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 	player->name = result->getString("name");
 	acc.GetID(&(player->accountNumber));
 	acc.GetAccountType(&(player->accountType));
+	acc.GetPremiumRemainingDays(&(player->premiumDays));
+	acc.GetPremiumLastDay(&(player->premiumLastDay));
 	acc.GetCoins(&(player->coinBalance));
 	acc.GetTransferableCoins(&(player->coinTransferableBalance));
-	player->premiumDays = std::numeric_limits<uint16_t>::max();
 
 	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
 	if (!group) {

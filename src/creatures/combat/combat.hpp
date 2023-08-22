@@ -210,10 +210,37 @@ private:
 	void copyArea(const MatrixArea* input, MatrixArea* output, MatrixOperation_t op) const;
 
 	MatrixArea* getArea(const Position &centerPos, const Position &targetPos) const {
-		auto it = areas.find(getDirectionTo(centerPos, targetPos, false));
+		int32_t dx = Position::getOffsetX(targetPos, centerPos);
+		int32_t dy = Position::getOffsetY(targetPos, centerPos);
+
+		Direction dir;
+		if (dx < 0) {
+			dir = DIRECTION_WEST;
+		} else if (dx > 0) {
+			dir = DIRECTION_EAST;
+		} else if (dy < 0) {
+			dir = DIRECTION_NORTH;
+		} else {
+			dir = DIRECTION_SOUTH;
+		}
+
+		if (hasExtArea) {
+			if (dx < 0 && dy < 0) {
+				dir = DIRECTION_NORTHWEST;
+			} else if (dx > 0 && dy < 0) {
+				dir = DIRECTION_NORTHEAST;
+			} else if (dx < 0 && dy > 0) {
+				dir = DIRECTION_SOUTHWEST;
+			} else if (dx > 0 && dy > 0) {
+				dir = DIRECTION_SOUTHEAST;
+			}
+		}
+
+		auto it = areas.find(dir);
 		if (it == areas.end()) {
 			return nullptr;
 		}
+
 		return it->second;
 	}
 

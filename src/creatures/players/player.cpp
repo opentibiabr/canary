@@ -5232,10 +5232,10 @@ bool Player::isPremium() const {
 		return true;
 	}
 
-	return premiumDays > 0;
+	return premiumDays > 0 || premiumLastDay > getTimeNow();
 }
 
-void Player::setPremiumDays(int32_t v) {
+void Player::setPremiumDays(uint32_t v) {
 	premiumDays = v;
 	sendBasicData();
 }

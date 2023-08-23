@@ -1177,10 +1177,10 @@ void PlayerWheel::registerPlayerBonusData() {
 
 	if (m_playerBonusData.stages.executionersThrow > 0) {
 		for (int i = 0; i < m_playerBonusData.stages.executionersThrow; ++i) {
-			setSpellInstant("Executioner's Thow", true);
+			setSpellInstant("Executioner's Throw", true);
 		}
 	} else {
-		setSpellInstant("Executioner's Thow", false);
+		setSpellInstant("Executioner's Throw", false);
 	}
 
 	// Avatar
@@ -2262,7 +2262,7 @@ void PlayerWheel::setSpellInstant(const std::string &name, bool value) {
 		} else {
 			setStage(WheelStage_t::TWIN_BURST, 0);
 		}
-	} else if (name == "Executioner's Thow") {
+	} else if (name == "Executioner's Throw") {
 		if (value) {
 			setStage(WheelStage_t::EXECUTIONERS_THROW, getStage(WheelStage_t::EXECUTIONERS_THROW) + 1);
 		} else {
@@ -2341,7 +2341,7 @@ uint8_t PlayerWheel::getStage(const std::string name) const {
 		return PlayerWheel::getStage(WheelStage_t::DIVINE_EMPOWERMENT);
 	} else if (name == "Twin Burst") {
 		return PlayerWheel::getStage(WheelStage_t::TWIN_BURST);
-	} else if (name == "Executioner's Thow") {
+	} else if (name == "Executioner's Throw") {
 		return PlayerWheel::getStage(WheelStage_t::EXECUTIONERS_THROW);
 	} else if (name == "Avatar of Light") {
 		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_LIGHT);
@@ -2463,7 +2463,7 @@ bool PlayerWheel::getInstant(const std::string name) const {
 		return PlayerWheel::getStage(WheelStage_t::DIVINE_EMPOWERMENT);
 	} else if (name == "Twin Burst") {
 		return PlayerWheel::getStage(WheelStage_t::TWIN_BURST);
-	} else if (name == "Executioner's Thow") {
+	} else if (name == "Executioner's Throw") {
 		return PlayerWheel::getStage(WheelStage_t::EXECUTIONERS_THROW);
 	} else if (name == "Avatar of Light") {
 		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_LIGHT);

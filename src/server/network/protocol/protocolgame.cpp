@@ -145,7 +145,7 @@ namespace {
 	 * @param[in] player The pointer to the player whose equipped items are considered.
 	 */
 	void calculateAbsorbValues(Player* player, NetworkMessage &msg, uint8_t &combats) {
-		alignas(16) uint16_t damageReduction[COMBAT_COUNT] = { 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100 };
+		alignas(16) uint16_t damageReduction[COMBAT_COUNT] = { 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100 };
 
 		for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
 			if (!player->isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
@@ -7420,6 +7420,11 @@ void ProtocolGame::sendUpdateImpactTracker(CombatType_t type, int32_t amount) {
 		return;
 	}
 
+	auto clientElement = getCipbiaElement(type);
+	if (clientElement == CIPBIA_ELEMENTAL_UNDEFINED) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xCC);
 	if (type == COMBAT_HEALING) {
@@ -7428,7 +7433,7 @@ void ProtocolGame::sendUpdateImpactTracker(CombatType_t type, int32_t amount) {
 	} else {
 		msg.addByte(ANALYZER_DAMAGE_DEALT);
 		msg.add<uint32_t>(amount);
-		msg.addByte(getCipbiaElement(type));
+		msg.addByte(clientElement);
 	}
 	writeToOutputBuffer(msg);
 }
@@ -7438,11 +7443,16 @@ void ProtocolGame::sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, st
 		return;
 	}
 
+	auto clientElement = getCipbiaElement(type);
+	if (clientElement == CIPBIA_ELEMENTAL_UNDEFINED) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xCC);
 	msg.addByte(ANALYZER_DAMAGE_RECEIVED);
 	msg.add<uint32_t>(amount);
-	msg.addByte(getCipbiaElement(type));
+	msg.addByte(clientElement);
 	msg.addString(target);
 	writeToOutputBuffer(msg);
 }

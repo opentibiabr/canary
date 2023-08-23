@@ -6728,13 +6728,17 @@ void ProtocolGame::sendPreyTimeLeft(const PreySlot* slot) {
 }
 
 void ProtocolGame::sendPreyData(const PreySlot* slot) {
+	if (!player) {
+		return;
+	}
+
 	std::vector<uint16_t> validRaceIds;
 	for (auto raceId : slot->raceIdList) {
 		if (g_monsters().getMonsterTypeByRaceId(raceId)) {
 			validRaceIds.push_back(raceId);
 		} else {
-			g_logger().debug("[ProtocolGame::sendPreyData] - Unknown monster type raceid: {}, removing prey slot from player {}", raceId, player->getName());
-			player->removePreySlotById(slot->id);
+			g_logger().error("[ProtocolGame::sendPreyData] - Unknown monster type raceid: {}, removing prey slot from player {}", raceId, player->getName());
+			g_logger().warn("[ProtocolGame::sendPreyData] - Remove the prey monster from player");
 			return;
 		}
 	}

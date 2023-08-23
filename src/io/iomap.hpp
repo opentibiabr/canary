@@ -128,7 +128,7 @@ public:
 	explicit IOMapException(const std::string &message) :
 		message(message) { }
 
-	virtual const char* what() const throw() {
+	const char* what() const override {
 		return message.c_str();
 	}
 

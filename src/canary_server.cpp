@@ -326,7 +326,7 @@ void CanaryServer::loadModules() {
 	inject<ThreadPool>().addLoad([this] {
 		try {
 			loadMaps();
-		} catch (const std::ios_base::failure &err) {
+		} catch (const std::exception &err) {
 			threadFailMsg = err.what();
 		}
 		loaderMapDone = true;

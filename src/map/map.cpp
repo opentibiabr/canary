@@ -22,7 +22,7 @@ void Map::load(const std::string &identifier, const Position &pos) {
 		path = identifier;
 		IOMap::loadMap(this, pos);
 	} catch (const std::exception &e) {
-		throw std::ios_base::failure(fmt::format(
+		throw IOMapException(fmt::format(
 			"\n[Map::load] - The map in folder {} is missing or corrupted"
 			"\n            - {}",
 			identifier, e.what()

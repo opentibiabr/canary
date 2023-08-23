@@ -10,6 +10,7 @@
 #include "pch.hpp"
 
 #include "items/functions/item/item_parse.hpp"
+#include "lua/creature/movement.hpp"
 #include "utils/pugicast.hpp"
 
 void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
@@ -73,6 +74,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseCleavePercent(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseTransformOnUse(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseUnscriptedItems(tmpStrValue, attributeNode, valueAttribute, itemType);
 }
 
 void ItemParse::parseDummyRate(pugi::xml_node attributeNode, ItemType &itemType) {
@@ -938,5 +940,129 @@ void ItemParse::parseReflectDamage(const std::string &tmpStrValue, pugi::xml_att
 void ItemParse::parseTransformOnUse(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (tmpStrValue == "transformonuse") {
 		itemType.m_transformOnUse = pugi::cast<uint16_t>(valueAttribute.value());
+	}
+}
+
+void ItemParse::createAndRegisterMoveEvent(MoveEvent_t eventType, const ItemType &itemType, pugi::xml_node attributeNode) {
+	auto moveevent = std::make_shared<MoveEvent>(nullptr);
+	moveevent->setItemId(itemType.id);
+	moveevent->setEventType(eventType);
+	if (eventType == MOVE_EVENT_EQUIP) {
+		moveevent->equipFunction = moveevent->EquipItem;
+	} else if (eventType == MOVE_EVENT_DEEQUIP) {
+		moveevent->equipFunction = moveevent->DeEquipItem;
+	}
+
+	for (auto subAttributeNode : attributeNode.children()) {
+		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
+		if (!subKeyAttribute) {
+			continue;
+		}
+
+		pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
+		if (!subValueAttribute) {
+			continue;
+		}
+
+		auto stringKey = asLowerCaseString(subKeyAttribute.as_string());
+		if (stringKey == "slot") {
+			if (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP) {
+				auto slotName = asLowerCaseString(subValueAttribute.as_string());
+				if (slotName == "head") {
+					moveevent->setSlot(SLOTP_HEAD);
+				} else if (slotName == "necklace") {
+					moveevent->setSlot(SLOTP_NECKLACE);
+				} else if (slotName == "backpack") {
+					moveevent->setSlot(SLOTP_BACKPACK);
+				} else if (slotName == "armor" || slotName == "body") {
+					moveevent->setSlot(SLOTP_ARMOR);
+				} else if (slotName == "right-hand") {
+					moveevent->setSlot(SLOTP_RIGHT);
+				} else if (slotName == "left-hand") {
+					moveevent->setSlot(SLOTP_LEFT);
+				} else if (slotName == "hand" || slotName == "shield") {
+					moveevent->setSlot(SLOTP_RIGHT | SLOTP_LEFT);
+				} else if (slotName == "legs") {
+					moveevent->setSlot(SLOTP_LEGS);
+				} else if (slotName == "feet") {
+					moveevent->setSlot(SLOTP_FEET);
+				} else if (slotName == "ring") {
+					moveevent->setSlot(SLOTP_RING);
+				} else if (slotName == "ammo") {
+					moveevent->setSlot(SLOTP_AMMO);
+				} else {
+					g_logger().warn("[{}] unknown slot type: {}", __FUNCTION__, slotName);
+				}
+			}
+		} else if (stringKey == "level") {
+			auto numberValue = subValueAttribute.as_uint();
+			moveevent->setRequiredLevel(numberValue);
+			moveevent->setWieldInfo(WIELDINFO_LEVEL);
+		} else if (stringKey == "vocation") {
+			auto vocations = subValueAttribute.as_string();
+			std::string tmp;
+			std::stringstream ss(vocations);
+			std::string token;
+
+			while (std::getline(ss, token, ',')) {
+				token.erase(token.begin(), std::find_if(token.begin(), token.end(), [](unsigned char ch) {
+								return !std::isspace(ch);
+							}));
+				token.erase(std::find_if(token.rbegin(), token.rend(), [](unsigned char ch) {
+								return !std::isspace(ch);
+							}).base(),
+							token.end());
+
+				std::string v1;
+				bool showInDescription = false;
+
+				std::stringstream inner_ss(token);
+				std::getline(inner_ss, v1, ';');
+				std::string showInDescriptionStr;
+				std::getline(inner_ss, showInDescriptionStr, ';');
+				showInDescription = showInDescriptionStr == "true";
+
+				moveevent->addVocEquipMap(v1);
+				moveevent->setWieldInfo(WIELDINFO_VOCREQ);
+
+				if (showInDescription) {
+					if (moveevent->getVocationString().empty()) {
+						tmp = asLowerCaseString(v1);
+						tmp += "s";
+						moveevent->setVocationString(tmp);
+					} else {
+						tmp += ", ";
+						tmp += asLowerCaseString(v1);
+						tmp += "s";
+					}
+				}
+			}
+
+			size_t lastComma = tmp.rfind(',');
+			if (lastComma != std::string::npos) {
+				tmp.replace(lastComma, 1, " and");
+				moveevent->setVocationString(tmp);
+			}
+		}
+	}
+
+	if (!g_moveEvents().registerLuaItemEvent(moveevent)) {
+		g_logger().error("[{}] failed to register moveevent from item name {}", __FUNCTION__, itemType.name);
+	}
+}
+
+void ItemParse::parseUnscriptedItems(const std::string_view &tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	if (tmpStrValue == "script") {
+		std::string scriptName = valueAttribute.as_string();
+		auto tokens = split(scriptName.data(), ';');
+		std::vector<std::shared_ptr<MoveEvent>> events;
+		for (const auto &token : tokens) {
+			if (token == "moveevent") {
+				createAndRegisterMoveEvent(MOVE_EVENT_EQUIP, itemType, attributeNode);
+				createAndRegisterMoveEvent(MOVE_EVENT_DEEQUIP, itemType, attributeNode);
+			} else if ((token == "weapon")) {
+				// TODO: add weapon logic
+			}
+		}
 	}
 }

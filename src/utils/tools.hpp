@@ -137,7 +137,7 @@ SpellGroup_t stringToSpellGroup(const std::string &value);
 uint8_t forgeBonus(int32_t number);
 
 std::string formatPrice(std::string price, bool space /* = false*/);
-std::vector<std::string> split(const std::string &str);
+std::vector<std::string> split(const std::string &str, char delimiter = ',');
 std::string getFormattedTimeRemaining(uint32_t time);
 
 static inline unsigned int getNumberOfCores() {

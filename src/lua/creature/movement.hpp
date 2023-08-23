@@ -179,7 +179,7 @@ public:
 		return vocEquipMap;
 	}
 	void addVocEquipMap(std::string vocName) {
-		int32_t vocationId = g_vocations().getVocationId(vocName);
+		uint16_t vocationId = g_vocations().getVocationId(vocName);
 		if (vocationId != -1) {
 			vocEquipMap[vocationId] = true;
 		}
@@ -251,6 +251,10 @@ public:
 	static uint32_t EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
 	static uint32_t DeEquipItem(const std::shared_ptr<MoveEvent> &moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
 
+	void setFromLua(bool newFromLua) {
+		m_fromLua = newFromLua;
+	}
+
 private:
 	std::string getScriptTypeName() const override;
 
@@ -290,10 +294,13 @@ private:
 	std::map<uint16_t, bool> vocEquipMap;
 	bool tileItem = false;
 
+	bool m_fromLua = true;
+
 	std::vector<uint32_t> itemIdVector;
 	std::vector<uint32_t> actionIdVector;
 	std::vector<uint32_t> uniqueIdVector;
 	std::vector<Position> positionVector;
 
 	friend class MoveEventFunctions;
+	friend class ItemParse;
 };

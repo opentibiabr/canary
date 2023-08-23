@@ -59248,6 +59248,11 @@
 		<attribute key="skillsword" value="4"/>
 		<attribute key="armor" value="12"/>
 		<attribute key="weight" value="3800"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="legs"/>
+			<attribute key="level" value="500"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
 	</item>
 	<item id="43877" article="a" name="sanguine bow">
 		<attribute key="weaponType" value="distance"/>

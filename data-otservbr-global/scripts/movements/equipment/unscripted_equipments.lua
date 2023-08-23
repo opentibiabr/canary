@@ -242,28 +242,6 @@ local items = {
 		}
 	},
 	{
-		-- sanguine legs
-		itemid = 43876,
-		type = "equip",
-		slot = "legs",
-		level = 500,
-		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
-	},
-	{
-		-- sanguine legs
-		itemid = 43876,
-		type = "deequip",
-		slot = "legs",
-		level = 500,
-		vocation = {
-			{"Knight", true},
-			{"Elite Knight"}
-		}
-	},
-	{
 		-- grand sanguine battleaxe
 		itemid = 43875,
 		type = "equip",

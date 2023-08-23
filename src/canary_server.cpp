@@ -323,6 +323,13 @@ void CanaryServer::loadModules() {
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	// Load items dependencies
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
+	// Load XML core first (dependencies that can be used on items.xml loading)
+	modulesLoadHelper(g_vocations().loadFromXml(), "XML/vocations.xml");
+	modulesLoadHelper(Outfits::getInstance().loadFromXml(), "XML/outfits.xml");
+	modulesLoadHelper(Familiars::getInstance().loadFromXml(), "XML/familiars.xml");
+	modulesLoadHelper(g_storages().loadFromXML(), "XML/storages.xml");
+	modulesLoadHelper(g_imbuements().loadFromXml(), "XML/imbuements.xml");
+
 	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
 
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
@@ -332,12 +339,7 @@ void CanaryServer::loadModules() {
 	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts", false, false), "/data/scripts");
 
 	// Second XML scripts
-	modulesLoadHelper(g_vocations().loadFromXml(), "XML/vocations.xml");
 	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(), "XML/events.xml");
-	modulesLoadHelper(Outfits::getInstance().loadFromXml(), "XML/outfits.xml");
-	modulesLoadHelper(Familiars::getInstance().loadFromXml(), "XML/familiars.xml");
-	modulesLoadHelper(g_imbuements().loadFromXml(), "XML/imbuements.xml");
-	modulesLoadHelper(g_storages().loadFromXML(), "XML/storages.xml");
 	modulesLoadHelper(g_modules().loadFromXml(), "modules/modules.xml");
 	modulesLoadHelper(g_events().loadFromXml(), "events/events.xml");
 	modulesLoadHelper((g_npcs().load(true, false)), "npclib");

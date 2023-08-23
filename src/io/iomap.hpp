@@ -125,10 +125,10 @@ private:
 
 class IOMapException : public std::exception {
 public:
-	explicit IOMapException(const std::string &message) :
-		message(message) { }
+	explicit IOMapException(const std::string &msg) :
+		message(msg) { }
 
-	const char* what() const override {
+	const char* what() const noexcept override {
 		return message.c_str();
 	}
 

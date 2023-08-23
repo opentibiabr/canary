@@ -75,7 +75,7 @@ public:
 	 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
 	 * \returns true if the custom map was loaded successfully
 	 */
-	void loadCustomMaps(const std::string &customMapPath);
+	void loadCustomMaps(const std::filesystem::path &customMapPath);
 	void loadMap(const std::string &path, const Position &pos = Position());
 
 	void getMapDimensions(uint32_t &width, uint32_t &height) const {

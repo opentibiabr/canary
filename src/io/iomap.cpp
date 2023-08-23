@@ -47,7 +47,7 @@ void IOMap::loadMap(Map* map, const Position &pos) {
 	FileStream stream { begin, fileByte.end() };
 
 	if (!stream.startNode())
-		throw std::runtime_error("Could not read map node.");
+		throw std::ios_base::failure("Could not read map node.");
 
 	stream.skip(1); // Type Node
 
@@ -58,10 +58,10 @@ void IOMap::loadMap(Map* map, const Position &pos) {
 	stream.getU32(); // minorVersionItems
 
 	if (version > 2)
-		throw std::runtime_error("Unknown OTBM version detected.");
+		throw std::ios_base::failure("Unknown OTBM version detected.");
 
 	if (majorVersionItems < 3)
-		throw std::runtime_error("This map need to be upgraded by using the latest map editor version to be able to load correctly.");
+		throw std::ios_base::failure("This map need to be upgraded by using the latest map editor version to be able to load correctly.");
 
 	if (stream.startNode(OTBM_MAP_DATA)) {
 		parseMapDataAttributes(stream, map);
@@ -74,7 +74,7 @@ void IOMap::loadMap(Map* map, const Position &pos) {
 
 	map->flush();
 
-	g_logger().info("Map Loaded {} ({}x{}) in {} seconds", map->path.filename().string(), map->width, map->height, (OTSYS_TIME() - start) / (1000.));
+	g_logger().info("Map Loaded {} ({}x{}) in {} seconds", map->path.filename().string(), map->width, map->height, (OTSYS_TIME() - start) / 1000.);
 }
 
 void IOMap::parseMapDataAttributes(FileStream &stream, Map* map) {
@@ -119,7 +119,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 		while (stream.startNode()) {
 			const uint8_t tileType = stream.getU8();
 			if (tileType != OTBM_HOUSETILE && tileType != OTBM_TILE)
-				throw std::runtime_error("Could not read tile type node.");
+				throw std::ios_base::failure("Could not read tile type node.");
 
 			const auto &tile = std::make_shared<BasicTile>();
 
@@ -133,7 +133,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 			if (tileType == OTBM_HOUSETILE) {
 				tile->houseId = stream.getU32();
 				if (!map.houses.addHouse(tile->houseId))
-					throw std::runtime_error(fmt::format("[x:{}, y:{}, z:{}] Could not create house id: {}", x, y, z, tile->houseId));
+					throw std::ios_base::failure(fmt::format("[x:{}, y:{}, z:{}] Could not create house id: {}", x, y, z, tile->houseId));
 			}
 
 			if (stream.isProp(OTBM_ATTR_TILE_FLAGS)) {
@@ -177,7 +177,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 
 			while (stream.startNode()) {
 				if (stream.getU8() != OTBM_ITEM) {
-					throw std::runtime_error(fmt::format("[x:{}, y:{}, z:{}] Could not read item node.", x, y, z));
+					throw std::ios_base::failure(fmt::format("[x:{}, y:{}, z:{}] Could not read item node.", x, y, z));
 				}
 
 				const uint16_t id = stream.getU16();
@@ -192,7 +192,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				item->id = id;
 
 				if (!item->unserializeItemNode(stream, x, y, z))
-					throw std::runtime_error(fmt::format("[x:{}, y:{}, z:{}] Failed to load item {}, Node Type.", x, y, z, id));
+					throw std::ios_base::failure(fmt::format("[x:{}, y:{}, z:{}] Failed to load item {}, Node Type.", x, y, z, id));
 
 				if (tile->isHouse() && iType.isBed()) {
 					// nothing
@@ -208,12 +208,12 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				}
 
 				if (!stream.endNode()) {
-					throw std::runtime_error(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
+					throw std::ios_base::failure(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
 				}
 			}
 
 			if (!stream.endNode()) {
-				throw std::runtime_error(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
+				throw std::ios_base::failure(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
 			}
 
 			if (tile->isEmpty(true))
@@ -223,14 +223,14 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 		}
 
 		if (!stream.endNode()) {
-			throw std::runtime_error("Could not end node.");
+			throw std::ios_base::failure("Could not end node.");
 		}
 	}
 }
 
 void IOMap::parseTowns(FileStream &stream, Map &map) {
 	if (!stream.startNode(OTBM_TOWNS))
-		throw std::runtime_error("Could not read towns node.");
+		throw std::ios_base::failure("Could not read towns node.");
 
 	while (stream.startNode(OTBM_TOWN)) {
 		const uint32_t townId = stream.getU32();
@@ -244,16 +244,16 @@ void IOMap::parseTowns(FileStream &stream, Map &map) {
 		town->setTemplePos(Position(x, y, z));
 
 		if (!stream.endNode())
-			throw std::runtime_error("Could not end node.");
+			throw std::ios_base::failure("Could not end node.");
 	}
 
 	if (!stream.endNode())
-		throw std::runtime_error("Could not end node.");
+		throw std::ios_base::failure("Could not end node.");
 }
 
 void IOMap::parseWaypoints(FileStream &stream, Map &map) {
 	if (!stream.startNode(OTBM_WAYPOINTS))
-		throw std::runtime_error("Could not read waypoints node.");
+		throw std::ios_base::failure("Could not read waypoints node.");
 
 	while (stream.startNode(OTBM_WAYPOINT)) {
 		const auto &name = stream.getString();
@@ -264,9 +264,9 @@ void IOMap::parseWaypoints(FileStream &stream, Map &map) {
 		map.waypoints[name] = Position(x, y, z);
 
 		if (!stream.endNode())
-			throw std::runtime_error("Could not end node.");
+			throw std::ios_base::failure("Could not end node.");
 	}
 
 	if (!stream.endNode())
-		throw std::runtime_error("Could not end node.");
+		throw std::ios_base::failure("Could not end node.");
 }

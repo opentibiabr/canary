@@ -148,7 +148,7 @@ BasicItemPtr MapCache::tryReplaceItemFromCache(const BasicItemPtr &ref) {
 }
 
 void BasicTile::hash(size_t &h) const {
-	const uint32_t arr[] = { flags, houseId, type, isStatic };
+	std::array<uint32_t, 4> arr = { flags, houseId, type, isStatic };
 	for (const auto v : arr) {
 		if (v > 0)
 			stdext::hash_combine(h, v);
@@ -165,7 +165,7 @@ void BasicTile::hash(size_t &h) const {
 }
 
 void BasicItem::hash(size_t &h) const {
-	const uint32_t arr[] = { id, charges, actionId, uniqueId, destX, destY, destZ, doorOrDepotId };
+	const std::array<uint32_t, 8> arr = { id, charges, actionId, uniqueId, destX, destY, destZ, doorOrDepotId };
 	for (const auto v : arr) {
 		if (v > 0)
 			stdext::hash_combine(h, v);
@@ -191,7 +191,7 @@ bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, 
 
 	while (stream.startNode()) {
 		if (stream.getU8() != OTBM_ITEM)
-			throw std::runtime_error(fmt::format("[x:{}, y:{}, z:{}] Could not read item node.", x, y, z));
+			throw std::ios_base::failure(fmt::format("[x:{}, y:{}, z:{}] Could not read item node.", x, y, z));
 
 		const uint16_t streamId = stream.getU16();
 
@@ -199,12 +199,12 @@ bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, 
 		item->id = streamId;
 
 		if (!item->unserializeItemNode(stream, x, y, z))
-			throw std::runtime_error(fmt::format("[x:{}, y:{}, z:{}] Failed to load item.", x, y, z));
+			throw std::ios_base::failure(fmt::format("[x:{}, y:{}, z:{}] Failed to load item.", x, y, z));
 
 		items.emplace_back(static_tryGetItemFromCache(item));
 
 		if (!stream.endNode())
-			throw std::runtime_error(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
+			throw std::ios_base::failure(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
 	}
 
 	return true;

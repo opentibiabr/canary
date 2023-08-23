@@ -74,7 +74,7 @@ void IOMap::loadMap(Map* map, const Position &pos) {
 
 	map->flush();
 
-	g_logger().info("Map Loaded {} ({}x{}) in {} seconds", map->path.filename().string(), map->width, map->height, static_cast<double>(OTSYS_TIME() - start) / (1000.f));
+	g_logger().info("Map Loaded {} ({}x{}) in {} seconds", map->path.filename().string(), map->width, map->height, static_cast<double>(OTSYS_TIME() - start) / 1000.f);
 }
 
 void IOMap::parseMapDataAttributes(FileStream &stream, Map* map) {

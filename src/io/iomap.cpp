@@ -38,7 +38,7 @@
 */
 
 void IOMap::loadMap(Map* map, const Position &pos) {
-	int64_t start = OTSYS_TIME();
+	const int64_t start = OTSYS_TIME();
 
 	const auto &fileByte = mio::mmap_source(map->path.string());
 
@@ -74,7 +74,7 @@ void IOMap::loadMap(Map* map, const Position &pos) {
 
 	map->flush();
 
-	g_logger().info("Map Loaded {} ({}x{}) in {} seconds", map->path.filename().string(), map->width, map->height, (OTSYS_TIME() - start) / 1000.);
+	g_logger().info("Map Loaded {} ({}x{}) in {} seconds", map->path.filename().string(), map->width, map->height, static_cast<double>(OTSYS_TIME() - start) / (1000.f));
 }
 
 void IOMap::parseMapDataAttributes(FileStream &stream, Map* map) {

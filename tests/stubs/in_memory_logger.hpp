@@ -25,6 +25,10 @@ class InMemoryLogger : public Logger {
 	public:
 		mutable std::vector<LogEntry> logs;
 
+		static void install(di::extension::injector<> &injector) {
+			injector.install(di::bind<Logger>.to<InMemoryLogger>().in(di::singleton));
+        }
+
 		bool hasLogEntry(const std::string& lvl, const std::string& expectedMsg) const {
 			for (const auto& entry : logs) {
 				if (entry.level == lvl && entry.message == expectedMsg) {

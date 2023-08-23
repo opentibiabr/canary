@@ -173,7 +173,7 @@ mType.onAppear = function(monster, creature)
 end
 
 local function getHazardPoints(monster)
-	local hazard = Hazard.getByName("Gnomprona Gardens")
+	local hazard = Hazard.getByName("hazard:gnomprona-gardens")
 
 	local _, hazardPoints = hazard:getHazardPlayerAndPoints(monster:getDamageMap())
 	return hazardPoints

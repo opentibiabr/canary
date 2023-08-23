@@ -22,10 +22,6 @@ Scripts::Scripts() :
 	scriptInterface.initState();
 }
 
-Scripts::~Scripts() {
-	scriptInterface.reInitState();
-}
-
 void Scripts::clearAllScripts() const {
 	g_actions().clear();
 	g_creatureEvents().clear();

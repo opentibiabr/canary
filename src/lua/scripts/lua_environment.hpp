@@ -22,6 +22,8 @@ class GlobalFunctions;
 
 class LuaEnvironment : public LuaScriptInterface {
 public:
+	static bool shuttingDown;
+
 	LuaEnvironment();
 	~LuaEnvironment();
 
@@ -76,6 +78,9 @@ public:
 	AreaCombat* getAreaObject(uint32_t id) const;
 	uint32_t createAreaObject(LuaScriptInterface* interface);
 	void clearAreaObjects(LuaScriptInterface* interface);
+	static bool isShuttingDown() {
+		return shuttingDown;
+	}
 
 private:
 	void executeTimerEvent(uint32_t eventIndex);
@@ -100,8 +105,6 @@ private:
 	friend class LuaScriptInterface;
 	friend class GlobalFunctions;
 	friend class CombatSpell;
-
-	bool shuttingDown = false;
 };
 
 constexpr auto g_luaEnvironment = LuaEnvironment::getInstance;

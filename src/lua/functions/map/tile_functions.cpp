@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
+#include "game/game.hpp"
 #include "lua/functions/map/tile_functions.hpp"
 
 int TileFunctions::luaTileCreate(lua_State* L) {
@@ -650,18 +650,6 @@ int TileFunctions::luaTileGetHouse(lua_State* L) {
 	if (HouseTile* houseTile = dynamic_cast<HouseTile*>(tile)) {
 		pushUserdata<House>(L, houseTile->getHouse());
 		setMetatable(L, -1, "House");
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int TileFunctions::luaTileIsHazard(lua_State* L) {
-	// tile:isHazard()
-	Tile* tile = getUserdata<Tile>(L, 1);
-	if (tile) {
-		TileFlags_t flag = getNumber<TileFlags_t>(L, 2);
-		pushBoolean(L, tile->isHazard());
 	} else {
 		lua_pushnil(L);
 	}

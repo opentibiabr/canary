@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
-#define SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
+#pragma once
 
 class Imbuement;
 
@@ -306,7 +305,6 @@ enum TileFlags_t : uint32_t {
 	TILESTATE_IMMOVABLENOFIELDBLOCKPATH = 1 << 21,
 	TILESTATE_NOFIELDBLOCKPATH = 1 << 22,
 	TILESTATE_SUPPORTS_HANGABLE = 1 << 23,
-	TILESTATE_HAZARD = 1 << 24,
 
 	TILESTATE_FLOORCHANGE = TILESTATE_FLOORCHANGE_DOWN | TILESTATE_FLOORCHANGE_NORTH | TILESTATE_FLOORCHANGE_SOUTH | TILESTATE_FLOORCHANGE_EAST | TILESTATE_FLOORCHANGE_WEST | TILESTATE_FLOORCHANGE_SOUTH_ALT | TILESTATE_FLOORCHANGE_EAST_ALT,
 };
@@ -470,8 +468,6 @@ enum ItemParseAttributes_t {
 };
 
 struct ImbuementInfo {
-		Imbuement* imbuement;
-		uint32_t duration = 0;
+	Imbuement* imbuement;
+	uint32_t duration = 0;
 };
-
-#endif // SRC_ITEMS_ITEMS_DEFINITIONS_HPP_

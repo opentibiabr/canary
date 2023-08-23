@@ -1,9 +1,7 @@
 #include "pch.hpp"
 #include "lua/functions/core/game/bank_functions.hpp"
 #include "game/bank/bank.hpp"
-#include "game/game.h"
-
-using defer = std::shared_ptr<void>;
+#include "game/game.hpp"
 
 int BankFunctions::luaBankCredit(lua_State* L) {
 	// Bank.credit(playerOrGuild, amount)
@@ -96,7 +94,13 @@ int BankFunctions::luaBankWithdraw(lua_State* L) {
 	auto player = getPlayer(L, 1);
 	uint64_t amount = getNumber<uint64_t>(L, 2);
 	if (lua_gettop(L) == 2) {
-		auto bank = std::make_unique<Bank>(player);
+		if (!player) {
+			return 1;
+		}
+
+		// TODO: When Player is also shared_ptr, we won't need to verride the deleter
+		const auto &bankablePlayer = std::shared_ptr<Bankable>(player, [](Bankable*) {});
+		const auto &bank = std::make_shared<Bank>(bankablePlayer);
 		pushBoolean(L, bank->withdraw(player, amount));
 		return 1;
 	}
@@ -112,7 +116,13 @@ int BankFunctions::luaBankWithdraw(lua_State* L) {
 int BankFunctions::luaBankDeposit(lua_State* L) {
 	// Bank.deposit(player, amount[, destination = player])
 	auto player = getPlayer(L, 1);
-	auto bank = std::make_unique<Bank>(player);
+	if (!player) {
+		return 1;
+	}
+	// TODO: When Player is also shared_ptr, we won't need to verride the deleter
+	const auto &bankablePlayer = std::shared_ptr<Bankable>(player, [](Bankable*) {});
+	const auto &bank = std::make_shared<Bank>(bankablePlayer);
+
 	uint64_t amount = 0;
 	if (lua_isnumber(L, 2)) {
 		amount = getNumber<uint64_t>(L, 2);
@@ -133,20 +143,22 @@ int BankFunctions::luaBankDeposit(lua_State* L) {
 	return 1;
 }
 
-std::unique_ptr<Bank> BankFunctions::getBank(lua_State* L, int32_t arg, bool isGuild /*= false*/) {
-	if (getUserdataType(L, arg) == LuaData_Guild) {
-		return std::make_unique<Bank>(getGuild(L, arg));
+std::shared_ptr<Bank> BankFunctions::getBank(lua_State* L, int32_t arg, bool isGuild /*= false*/) {
+	if (getUserdataType(L, arg) == LuaData_t::Guild) {
+		return std::make_shared<Bank>(getGuild(L, arg));
 	}
 	if (isGuild) {
-		Guild* guild = getGuild(L, arg, true);
+		const auto &guild = getGuild(L, arg, true);
 		if (!guild) {
 			return nullptr;
 		}
-		return std::make_unique<Bank>(guild);
+		return std::make_shared<Bank>(guild);
 	}
 	Player* player = getPlayer(L, arg, true);
 	if (!player) {
 		return nullptr;
 	}
-	return std::make_unique<Bank>(player);
+	// TODO: When Player is also shared_ptr, we won't need to verride the deleter
+	const auto &bankablePlayer = std::shared_ptr<Bankable>(player, [](Bankable*) {});
+	return std::make_shared<Bank>(bankablePlayer);
 }

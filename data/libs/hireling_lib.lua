@@ -13,7 +13,7 @@ HIRELING_OUTFIT_CHANGING = {}
 
 function DebugPrint(str)
 	if DEBUG == true then
-		Spdlog.debug(str)
+		logger.debug(str)
 	end
 end
 
@@ -24,7 +24,7 @@ function printTable(t)
 			str = str .. string.format( "\n %s = %s",tostring(k), tostring(v))
 		end
 	str = str.. '\n}'
-	Spdlog.debug(str)
+	logger.debug(str)
 end
 
 -- [[ Constants and ENUMS ]]
@@ -107,7 +107,7 @@ local function checkHouseAccess(hireling)
 	if house:getOwnerGuid() == hireling:getOwnerId() then return true end
 
 	-- player is not invited anymore, return to lamp
-	Spdlog.info("Returning Hireling:" .. hireling:getName() .. " to owner Inbox")
+	logger.info("Returning Hireling: {} to owner Inbox", hireling:getName())
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 	-- Using FLAG_NOLIMIT to avoid losing the hireling after being kicked out of the house and having no slots available in the store inbox
 	local lamp = inbox:addItem(HIRELING_LAMP, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
@@ -121,7 +121,7 @@ local function checkHouseAccess(hireling)
 end
 
 local function spawnNPCs()
-	Spdlog.info("Spawning Hirelings")
+	logger.info("Spawning Hirelings")
 	local hireling
 	for i=1,#HIRELINGS do
 		hireling = HIRELINGS[i]
@@ -369,7 +369,7 @@ function Hireling:returnToLamp(player_id)
 	addEvent(function(npcId, ownerGuid, hirelingId)
 		local npc = Npc(npcId)
 		if not npc then
-			return Spdlog.error("[Hireling:returnToLamp] - Npc not found or is nil.")
+			return logger.error("[Hireling:returnToLamp] - Npc not found or is nil.")
 		end
 
 		local owner = Player(ownerGuid)
@@ -391,7 +391,7 @@ function Hireling:returnToLamp(player_id)
 
 		local hireling = getHirelingById(hirelingId)
 		if not hireling then
-			return Spdlog.error("[Hireling:returnToLamp] - Hireling not found or is nil.")
+			return logger.error("[Hireling:returnToLamp] - Hireling not found or is nil for hireling name for player {}.", owner:getName())
 		end
 
 		npc:say("As you wish!",	TALKTYPE_PRIVATE_NP, false, owner, npc:getPosition())

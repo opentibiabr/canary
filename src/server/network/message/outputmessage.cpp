@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "outputmessage.h"
-#include "server/network/protocol/protocol.h"
-#include "game/scheduling/scheduler.h"
+#include "outputmessage.hpp"
+#include "server/network/protocol/protocol.hpp"
+#include "game/scheduling/scheduler.hpp"
 
 const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
 

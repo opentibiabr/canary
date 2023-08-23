@@ -1,6 +1,6 @@
 local config = {
 	enabled = true,
-	messageStyle = MESSAGE_INFO_DESCR
+	messageStyle = MESSAGE_LOOK
 }
 
 if not config.enabled then

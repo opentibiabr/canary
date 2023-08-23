@@ -10,7 +10,7 @@
 #include "pch.hpp"
 
 #include "lua/functions/core/game/config_functions.hpp"
-#include "config/configmanager.h"
+#include "config/configmanager.hpp"
 
 void ConfigFunctions::init(lua_State* L) {
 	registerTable(L, "configManager");
@@ -199,6 +199,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", TOGGLE_TRAVELS_FREE);
 	registerEnumIn(L, "configKeys", BUY_AOL_COMMAND_FEE);
 	registerEnumIn(L, "configKeys", BUY_BLESS_COMMAND_FEE);
+	registerEnumIn(L, "configKeys", TELEPORT_PLAYER_TO_VOCATION_ROOM);
 
 	registerEnumIn(L, "configKeys", HAZARD_SPAWN_PLUNDER_MULTIPLIER);
 	registerEnumIn(L, "configKeys", HAZARD_CRITICAL_INTERVAL);

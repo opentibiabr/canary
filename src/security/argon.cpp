@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "config/configmanager.h"
-#include "database/database.h"
+#include "config/configmanager.hpp"
+#include "database/database.hpp"
 #include "security/argon.hpp"
 
 const std::regex Argon2::re("\\$([A-Za-z0-9+/]+)\\$([A-Za-z0-9+/]+)");

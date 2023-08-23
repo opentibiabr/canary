@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "items/containers/container.h"
-#include "items/decay/decay.h"
-#include "io/iomap.h"
-#include "game/game.h"
+#include "items/containers/container.hpp"
+#include "items/decay/decay.hpp"
+#include "io/iomap.hpp"
+#include "game/game.hpp"
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
@@ -696,7 +696,7 @@ uint32_t Container::getItemTypeCount(uint16_t itemId, int32_t subType /* = -1*/)
 	return count;
 }
 
-phmap::btree_map<uint32_t, uint32_t> &Container::getAllItemTypeCount(phmap::btree_map<uint32_t, uint32_t> &countMap) const {
+std::map<uint32_t, uint32_t> &Container::getAllItemTypeCount(std::map<uint32_t, uint32_t> &countMap) const {
 	for (Item* item : itemlist) {
 		countMap[item->getID()] += item->getItemCount();
 	}

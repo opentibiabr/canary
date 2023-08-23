@@ -3,7 +3,6 @@ local serverInfo = TalkAction("!serverinfo")
 function serverInfo.onSay(player, words, param)
 	local text
 	local useStages = configManager.getBoolean(configKeys.RATE_USE_STAGES)
-	local configRateSkill = configManager.getNumber(configKeys.RATE_SKILL)
 	if not useStages then
 		text = "Server Info Rates: \n"
 			.. "\nExp rate: " .. configManager.getNumber(configKeys.RATE_EXPERIENCE) .. "x"
@@ -12,6 +11,7 @@ function serverInfo.onSay(player, words, param)
 			.. "\nLoot rate: " .. configManager.getNumber(configKeys.RATE_LOOT) .. "x"
 			.. "\nSpawns rate: " .. configManager.getNumber(configKeys.RATE_SPAWN) .. "x"
 	else
+		local configRateSkill = configManager.getNumber(configKeys.RATE_SKILL)
 		text = "Server Info Stages Rates: \n"
 			.. "\nExp rate stages: " .. getRateFromTable(experienceStages, player:getLevel(), expstagesrate) .. "x"
 			.. "\nSword Skill Stages rate: " .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_SWORD), configRateSkill) .. "x"

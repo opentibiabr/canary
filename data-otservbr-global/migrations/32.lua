@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	Spdlog.info("Updating database to version 33 (wheel of destiny)")
+	logger.info("Updating database to version 33 (wheel of destiny)")
 	db.query([[
 	CREATE TABLE IF NOT EXISTS `player_wheeldata` (
 		`player_id` int(11) NOT NULL,

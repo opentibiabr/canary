@@ -10,8 +10,8 @@
 #include "pch.hpp"
 
 #include "declarations.hpp"
-#include "game/game.h"
-#include "lua/scripts/luascript.h"
+#include "game/game.hpp"
+#include "lua/scripts/luascript.hpp"
 #include "lua/scripts/script_environment.hpp"
 
 ScriptEnvironment::ScriptEnvironment() {

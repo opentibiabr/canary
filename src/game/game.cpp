@@ -9,41 +9,42 @@
 
 #include "pch.hpp"
 
-#include "lua/creature/actions.h"
-#include "items/bed.h"
-#include "creatures/creature.h"
-#include "lua/creature/creatureevent.h"
-#include "database/databasetasks.h"
-#include "lua/creature/events.h"
+#include "lua/creature/actions.hpp"
+#include "items/bed.hpp"
+#include "creatures/creature.hpp"
+#include "lua/creature/creatureevent.hpp"
+#include "database/databasetasks.hpp"
+#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
-#include "game/game.h"
+#include "game/game.hpp"
 #include "game/functions/game_reload.hpp"
-#include "lua/global/globalevent.h"
-#include "io/iologindata.h"
+#include "game/zones/zone.hpp"
+#include "lua/global/globalevent.hpp"
+#include "io/iologindata.hpp"
 #include "io/io_wheel.hpp"
-#include "io/iomarket.h"
-#include "items/items.h"
+#include "io/iomarket.hpp"
+#include "items/items.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "creatures/monsters/monster.h"
-#include "lua/creature/movement.h"
+#include "creatures/monsters/monster.hpp"
+#include "lua/creature/movement.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "game/scheduling/scheduler.h"
-#include "server/server.h"
-#include "creatures/combat/spells.h"
-#include "lua/creature/talkaction.h"
-#include "items/weapons/weapons.h"
-#include "lua/scripts/scripts.h"
-#include "lua/modules/modules.h"
-#include "creatures/players/imbuements/imbuements.h"
+#include "game/scheduling/scheduler.hpp"
+#include "server/server.hpp"
+#include "creatures/combat/spells.hpp"
+#include "lua/creature/talkaction.hpp"
+#include "items/weapons/weapons.hpp"
+#include "lua/scripts/scripts.hpp"
+#include "lua/modules/modules.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/account/account.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "creatures/npcs/npc.h"
-#include "creatures/npcs/npcs.h"
-#include "server/network/webhook/webhook.h"
-#include "protobuf/appearances.pb.h"
-#include "server/network/protocol/protocollogin.h"
-#include "server/network/protocol/protocolstatus.h"
+#include "creatures/npcs/npc.hpp"
+#include "creatures/npcs/npcs.hpp"
+#include "server/network/webhook/webhook.hpp"
+#include "protobuf/appearances.pb.hpp"
+#include "server/network/protocol/protocollogin.hpp"
+#include "server/network/protocol/protocolstatus.hpp"
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, Creature* source) {
@@ -184,15 +185,7 @@ Game::Game() {
 	m_IOWheel = std::make_unique<IOWheel>();
 }
 
-Game::~Game() {
-	for (const auto &it : guilds) {
-		delete it.second;
-	}
-
-	for (const auto &it : CharmList) {
-		delete it;
-	}
-}
+Game::~Game() = default;
 
 void Game::resetMonsters() const {
 	for (const auto &[monsterId, monster] : getMonsters()) {
@@ -231,8 +224,8 @@ void Game::loadBoostedCreature() {
 	const auto &monsterlist = getBestiaryList();
 
 	struct MonsterRace {
-			uint16_t raceId { 0 };
-			std::string name;
+		uint16_t raceId { 0 };
+		std::string name;
 	};
 
 	MonsterRace selectedMonster;
@@ -432,7 +425,7 @@ bool Game::loadItemsPrice() {
 		marketQuery << "SELECT `price`, `tier` FROM `market_offers` WHERE `itemtype` = " << itemId << " ORDER BY `price` DESC LIMIT 1";
 		DBResult_ptr marketOffersResult = db.storeQuery(marketQuery.str());
 		if (marketOffersResult) {
-			phmap::btree_map<uint8_t, uint64_t> tierAndCount;
+			std::map<uint8_t, uint64_t> tierAndCount;
 			auto tier = marketOffersResult->getNumber<uint8_t>("tier");
 			auto price = marketOffersResult->getNumber<uint64_t>("price");
 			tierAndCount[tier] = price;
@@ -851,6 +844,12 @@ bool Game::internalPlaceCreature(Creature* creature, const Position &pos, bool e
 		return false;
 	}
 
+	auto fromZones = creature->getZones();
+	auto toZones = Zone::getZones(pos);
+	if (auto ret = onCreatureZoneChange(creature, fromZones, toZones); ret != RETURNVALUE_NOERROR) {
+		return false;
+	}
+
 	if (!map.placeCreature(pos, creature, extendedPos, forced)) {
 		return false;
 	}
@@ -931,6 +930,9 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/) {
 	}
 
 	creature->getParent()->postRemoveNotification(creature, nullptr, 0);
+	for (const auto zone : creature->getZones()) {
+		zone->creatureRemoved(creature);
+	}
 
 	creature->removeList();
 	creature->setRemoved();
@@ -1173,7 +1175,7 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 		if (toTile->hasFlag(TILESTATE_BLOCKPATH)) {
 			player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 			return;
-		} else if ((movingCreature->getZone() == ZONE_PROTECTION && !toTile->hasFlag(TILESTATE_PROTECTIONZONE)) || (movingCreature->getZone() == ZONE_NOPVP && !toTile->hasFlag(TILESTATE_NOPVPZONE))) {
+		} else if ((movingCreature->getZoneType() == ZONE_PROTECTION && !toTile->hasFlag(TILESTATE_PROTECTIONZONE)) || (movingCreature->getZoneType() == ZONE_NOPVP && !toTile->hasFlag(TILESTATE_NOPVPZONE))) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return;
 		} else {
@@ -1281,6 +1283,12 @@ ReturnValue Game::internalMoveCreature(Creature &creature, Tile &toTile, uint32_
 		if (field && !field->isBlocking() && field->getDamage() != 0) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
+	}
+
+	auto fromZones = creature.getZones();
+	auto toZones = toTile.getZones();
+	if (auto ret = onCreatureZoneChange(&creature, fromZones, toZones); ret != RETURNVALUE_NOERROR) {
+		return ret;
 	}
 
 	map.moveCreature(creature, toTile);
@@ -2392,6 +2400,12 @@ ReturnValue Game::internalTeleport(Thing* thing, const Position &newPos, bool pu
 	}
 
 	if (Creature* creature = thing->getCreature()) {
+		auto fromZones = creature->getZones();
+		auto toZones = toTile->getZones();
+		if (auto ret = onCreatureZoneChange(creature, fromZones, toZones); ret != RETURNVALUE_NOERROR) {
+			return ret;
+		}
+
 		ReturnValue ret = toTile->queryAdd(0, *creature, 1, FLAG_NOLIMIT);
 		if (ret != RETURNVALUE_NOERROR) {
 			return ret;
@@ -2623,8 +2637,9 @@ ReturnValue Game::processLootItems(Player* player, Container* lootContainer, Ite
 	uint32_t remainderCount = item->getItemCount();
 	ContainerIterator containerIterator = lootContainer->iterator();
 
+	ReturnValue ret;
 	do {
-		ReturnValue ret = processMoveOrAddItemToLootContainer(item, lootContainer, remainderCount, player);
+		ret = processMoveOrAddItemToLootContainer(item, lootContainer, remainderCount, player);
 		if (ret != RETURNVALUE_CONTAINERNOTENOUGHROOM) {
 			return ret;
 		}
@@ -2633,10 +2648,10 @@ ReturnValue Game::processLootItems(Player* player, Container* lootContainer, Ite
 		if (!nextContainer && !handleFallbackLogic(player, lootContainer, containerIterator, fallbackConsumed)) {
 			break;
 		}
-		fallbackConsumed = (nextContainer == nullptr);
+		fallbackConsumed = fallbackConsumed || (nextContainer == nullptr);
 	} while (remainderCount != 0);
 
-	return RETURNVALUE_NOERROR;
+	return ret;
 }
 
 ReturnValue Game::internalCollectLootItems(Player* player, Item* item, ObjectCategory_t category /* = OBJECTCATEGORY_DEFAULT*/) {
@@ -2655,7 +2670,13 @@ ReturnValue Game::internalCollectLootItems(Player* player, Item* item, ObjectCat
 			} else {
 				money = item->getItemCount();
 			}
-			internalRemoveItem(item, item->getItemCount());
+			auto parent = item->getParent();
+			if (parent) {
+				parent->removeThing(item, item->getItemCount());
+			} else {
+				g_logger().debug("Item has no parent");
+				return RETURNVALUE_NOTPOSSIBLE;
+			}
 			player->setBankBalance(player->getBankBalance() + money);
 			return RETURNVALUE_NOERROR;
 		}
@@ -2782,7 +2803,7 @@ ObjectCategory_t Game::getObjectCategory(const Item* item) {
 	return category;
 }
 
-uint64_t Game::getItemMarketPrice(const phmap::btree_map<uint16_t, uint64_t> &itemMap, bool buyPrice) const {
+uint64_t Game::getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, bool buyPrice) const {
 	uint64_t total = 0;
 	for (const auto &it : itemMap) {
 		if (it.first == ITEM_GOLD_COIN) {
@@ -3648,14 +3669,6 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		return;
 	}
 
-	if (outfit.lookType != 0) {
-		item->setCustomAttribute("PastLookType", static_cast<int64_t>(outfit.lookType));
-	}
-
-	if (outfit.lookMount != 0) {
-		item->setCustomAttribute("PastLookMount", static_cast<int64_t>(outfit.lookMount));
-	}
-
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		std::forward_list<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
@@ -3668,12 +3681,25 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		return;
 	}
 
+	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS) && !InternalGame::playerCanUseItemOnHouseTile(player, item)) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	if (outfit.lookType != 0) {
+		item->setCustomAttribute("PastLookType", static_cast<int64_t>(outfit.lookType));
+	}
+
+	if (outfit.lookMount != 0) {
+		item->setCustomAttribute("PastLookMount", static_cast<int64_t>(outfit.lookMount));
+	}
+
 	if (!player->canWear(outfit.lookType, outfit.lookAddons)) {
 		outfit.lookType = 0;
 		outfit.lookAddons = 0;
 	}
 
-	Mount* mount = mounts.getMountByClientID(outfit.lookMount);
+	const auto &mount = mounts.getMountByClientID(outfit.lookMount);
 	if (!mount || !player->hasMount(mount)) {
 		outfit.lookMount = 0;
 	}
@@ -3712,7 +3738,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		name << item->getName() << " displaying the ";
 		bool outfited = false;
 		if (outfit.lookType != 0) {
-			const Outfit* outfitInfo = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
+			const auto &outfitInfo = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
 			if (!outfitInfo) {
 				return;
 			}
@@ -3796,8 +3822,12 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 		return;
 	}
 
-	if ((item->getHoldingPlayer() && item->getID() == ITEM_DECORATION_KIT) || (tile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID) && !item->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID))) {
-		player->sendCancelMessage("You can only wrap/unwrap in the floor.");
+	auto topItem = tile->getTopTopItem();
+	bool unwrappable = item->getHoldingPlayer() && item->getID() == ITEM_DECORATION_KIT;
+	bool blockedUnwrap = topItem && topItem->canReceiveAutoCarpet() && !item->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID);
+
+	if (unwrappable || blockedUnwrap) {
+		player->sendCancelMessage("You can only wrap/unwrap on the floor.");
 		return;
 	}
 
@@ -4732,7 +4762,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 		return;
 	}
 
-	if (!player->canDoAction()) {
+	if (!autoLoot && !player->canDoAction()) {
 		uint32_t delay = player->getNextActionTime();
 		std::shared_ptr<Task> task = createPlayerTask(delay, std::bind(&Game::playerQuickLoot, this, player->getID(), pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot));
 		player->setNextActionTask(task);
@@ -4758,7 +4788,10 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 		return;
 	}
 
-	player->setNextActionTask(nullptr);
+	std::lock_guard<std::mutex> lock(player->quickLootMutex);
+	if (!autoLoot) {
+		player->setNextActionTask(nullptr);
+	}
 
 	Item* item = nullptr;
 	if (!defaultItem) {
@@ -5301,13 +5334,13 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 		outfit.lookMount = randomMount->clientId;
 	}
 
-	const Outfit* playerOutfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
+	const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
 	if (!playerOutfit) {
 		outfit.lookMount = 0;
 	}
 
 	if (outfit.lookMount != 0) {
-		Mount* mount = mounts.getMountByClientID(outfit.lookMount);
+		const auto &mount = mounts.getMountByClientID(outfit.lookMount);
 		if (!mount) {
 			return;
 		}
@@ -5327,7 +5360,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 
 		auto deltaSpeedChange = mount->speed;
 		if (player->isMounted()) {
-			Mount* prevMount = mounts.getMountByID(player->getCurrentMount());
+			const auto &prevMount = mounts.getMountByID(player->getCurrentMount());
 			if (prevMount) {
 				deltaSpeedChange -= prevMount->speed;
 			}
@@ -5877,7 +5910,7 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 		return true;
 	}
 
-	if (damage.primary.value > 0) {
+	if (damage.primary.value > 0 || damage.primary.type == COMBAT_AGONYDAMAGE) {
 		return false;
 	}
 
@@ -5914,11 +5947,11 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 		if (!damage.extension && attacker) {
 			if (targetPlayer && attacker->getMonster() && damage.primary.type != COMBAT_HEALING) {
 				// Charm rune (target as player)
-				MonsterType* mType = g_monsters().getMonsterType(attacker->getName());
+				const auto &mType = g_monsters().getMonsterType(attacker->getName());
 				if (mType) {
 					charmRune_t activeCharm = g_iobestiary().getCharmFromTarget(targetPlayer, mType);
 					if (activeCharm == CHARM_PARRY) {
-						Charm* charm = g_iobestiary().getBestiaryCharm(activeCharm);
+						const auto &charm = g_iobestiary().getBestiaryCharm(activeCharm);
 						if (charm && charm->type == CHARM_DEFENSIVE && (charm->chance > normal_random(0, 100))) {
 							g_iobestiary().parseCharmCombat(charm, targetPlayer, attacker, (damage.primary.value + damage.secondary.value));
 						}
@@ -6139,6 +6172,11 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 			effect = CONST_ME_MAGIC_RED;
 			break;
 		}
+		case COMBAT_AGONYDAMAGE: {
+			color = TEXTCOLOR_DARKBROWN;
+			effect = CONST_ME_AGONY;
+			break;
+		}
 		case COMBAT_NEUTRALDAMAGE: {
 			color = TEXTCOLOR_NEUTRALDAMAGE;
 			effect = CONST_ME_REDSMOKE;
@@ -6296,7 +6334,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		if (damage.origin != ORIGIN_NONE) {
 			const auto &events = target->getCreatureEvents(CREATURE_EVENT_HEALTHCHANGE);
 			if (!events.empty()) {
-				for (CreatureEvent* creatureEvent : events) {
+				for (const auto &creatureEvent : events) {
 					creatureEvent->executeHealthChange(target, attacker, damage);
 				}
 				damage.origin = ORIGIN_NONE;
@@ -6496,7 +6534,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			// Charm rune (target as player)
 			if (charmRune_t activeCharm = g_iobestiary().getCharmFromTarget(targetPlayer, g_monsters().getMonsterTypeByRaceId(attackerMonster->getRaceId()));
 				activeCharm != CHARM_NONE && activeCharm != CHARM_CLEANSE) {
-				if (Charm* charm = g_iobestiary().getBestiaryCharm(activeCharm);
+				if (const auto &charm = g_iobestiary().getBestiaryCharm(activeCharm);
 					charm->type == CHARM_DEFENSIVE && charm->chance > normal_random(0, 100) && g_iobestiary().parseCharmCombat(charm, targetPlayer, attacker, (damage.primary.value + damage.secondary.value))) {
 					return false; // Dodge charm
 				}
@@ -6525,7 +6563,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				if (damage.origin != ORIGIN_NONE) {
 					const auto &events = target->getCreatureEvents(CREATURE_EVENT_MANACHANGE);
 					if (!events.empty()) {
-						for (CreatureEvent* creatureEvent : events) {
+						for (const auto &creatureEvent : events) {
 							creatureEvent->executeManaChange(target, attacker, damage);
 						}
 						healthChange = damage.primary.value + damage.secondary.value;
@@ -6624,7 +6662,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		if (damage.origin != ORIGIN_NONE) {
 			const auto &events = target->getCreatureEvents(CREATURE_EVENT_HEALTHCHANGE);
 			if (!events.empty()) {
-				for (CreatureEvent* creatureEvent : events) {
+				for (const auto &creatureEvent : events) {
 					creatureEvent->executeHealthChange(target, attacker, damage);
 				}
 				damage.origin = ORIGIN_NONE;
@@ -6644,7 +6682,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		if (realDamage == 0) {
 			return true;
 		} else if (realDamage >= targetHealth) {
-			for (CreatureEvent* creatureEvent : target->getCreatureEvents(CREATURE_EVENT_PREPAREDEATH)) {
+			for (const auto &creatureEvent : target->getCreatureEvents(CREATURE_EVENT_PREPAREDEATH)) {
 				if (!creatureEvent->executeOnPrepareDeath(target, attacker)) {
 					return false;
 				}
@@ -6872,7 +6910,7 @@ void Game::applyCharmRune(
 	}
 	if (charmRune_t activeCharm = g_iobestiary().getCharmFromTarget(attackerPlayer, g_monsters().getMonsterTypeByRaceId(targetMonster->getRaceId()));
 		activeCharm != CHARM_NONE) {
-		Charm* charm = g_iobestiary().getBestiaryCharm(activeCharm);
+		const auto &charm = g_iobestiary().getBestiaryCharm(activeCharm);
 		int8_t chance = charm->id == CHARM_CRIPPLE ? charm->chance : charm->chance + attackerPlayer->getCharmChanceModifier();
 		g_logger().debug("charm chance: {}, base: {}, bonus: {}", chance, charm->chance, attackerPlayer->getCharmChanceModifier());
 		if (charm->type == CHARM_OFFENSIVE && (chance >= normal_random(0, 100))) {
@@ -6898,7 +6936,7 @@ void Game::applyManaLeech(
 	if (targetMonster) {
 		if (uint16_t playerCharmRaceidVoid = attackerPlayer->parseRacebyCharm(CHARM_VOID, false, 0);
 			playerCharmRaceidVoid != 0 && playerCharmRaceidVoid == targetMonster->getRace()) {
-			if (const Charm* voidc = g_iobestiary().getBestiaryCharm(CHARM_VOID)) {
+			if (const auto &voidc = g_iobestiary().getBestiaryCharm(CHARM_VOID)) {
 				manaSkill += voidc->percent;
 			}
 		}
@@ -6929,7 +6967,7 @@ void Game::applyLifeLeech(
 	if (targetMonster) {
 		if (uint16_t playerCharmRaceidVamp = attackerPlayer->parseRacebyCharm(CHARM_VAMP, false, 0);
 			playerCharmRaceidVamp != 0 && playerCharmRaceidVamp == targetMonster->getRaceId()) {
-			if (const Charm* lifec = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
+			if (const auto &lifec = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
 				lifeSkill += lifec->percent;
 			}
 		}
@@ -6969,7 +7007,7 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage &
 		if (damage.origin != ORIGIN_NONE) {
 			const auto &events = target->getCreatureEvents(CREATURE_EVENT_MANACHANGE);
 			if (!events.empty()) {
-				for (CreatureEvent* creatureEvent : events) {
+				for (const auto &creatureEvent : events) {
 					creatureEvent->executeManaChange(target, attacker, damage);
 				}
 				damage.origin = ORIGIN_NONE;
@@ -7066,7 +7104,7 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage &
 		if (damage.origin != ORIGIN_NONE) {
 			const auto &events = target->getCreatureEvents(CREATURE_EVENT_MANACHANGE);
 			if (!events.empty()) {
-				for (CreatureEvent* creatureEvent : events) {
+				for (const auto &creatureEvent : events) {
 					creatureEvent->executeManaChange(target, attacker, damage);
 				}
 				damage.origin = ORIGIN_NONE;
@@ -7076,11 +7114,11 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage &
 
 		if (targetPlayer && attacker && attacker->getMonster()) {
 			// Charm rune (target as player)
-			MonsterType* mType = g_monsters().getMonsterType(attacker->getName());
+			const auto &mType = g_monsters().getMonsterType(attacker->getName());
 			if (mType) {
 				charmRune_t activeCharm = g_iobestiary().getCharmFromTarget(targetPlayer, mType);
 				if (activeCharm != CHARM_NONE && activeCharm != CHARM_CLEANSE) {
-					Charm* charm = g_iobestiary().getBestiaryCharm(activeCharm);
+					const auto &charm = g_iobestiary().getBestiaryCharm(activeCharm);
 					if (charm && charm->type == CHARM_DEFENSIVE && (charm->chance > normal_random(0, 100))) {
 						if (g_iobestiary().parseCharmCombat(charm, targetPlayer, attacker, manaChange)) {
 							sendDoubleSoundEffect(targetPlayer->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, targetPlayer);
@@ -7316,7 +7354,7 @@ void Game::checkLight() {
 	if (currentLightState != lightState) {
 		currentLightState = lightState;
 		for (const auto &[eventName, globalEvent] : g_globalEvents().getEventMap(GLOBALEVENT_PERIODCHANGE)) {
-			globalEvent.executePeriodChange(lightState, lightInfo);
+			globalEvent->executePeriodChange(lightState, lightInfo);
 		}
 	}
 }
@@ -7341,8 +7379,7 @@ void Game::dieSafely(std::string errorMsg /* = "" */) {
 }
 
 void Game::shutdown() {
-	std::string url = g_configManager().getString(DISCORD_WEBHOOK_URL);
-	webhook_send_message("Server is shutting down", "Shutting down...", WEBHOOK_COLOR_OFFLINE, url);
+	g_webhook().sendMessage("Server is shutting down", "Shutting down...", WEBHOOK_COLOR_OFFLINE);
 
 	g_logger().info("Shutting down...");
 	map.spawnsMonster.clear();
@@ -7476,46 +7513,6 @@ void Game::updateCreatureType(Creature* creature) {
 	}
 }
 
-void Game::updatePremium(account::Account &account) {
-	bool save = false;
-	time_t timeNow = time(nullptr);
-	uint32_t rem_days = 0;
-	time_t last_day;
-	account.GetPremiumRemaningDays(&rem_days);
-	account.GetPremiumLastDay(&last_day);
-	std::string accountIdentifier;
-	if (rem_days != 0) {
-		if (last_day == 0) {
-			account.SetPremiumLastDay(timeNow);
-			save = true;
-		} else {
-			uint32_t days = (timeNow - last_day) / 86400;
-			if (days > 0) {
-				if (days >= rem_days) {
-					if (!account.SetPremiumRemaningDays(0) || !account.SetPremiumLastDay(0)) {
-						account.GetAccountIdentifier(&accountIdentifier);
-						g_logger().error("Failed to set account premium days, account {}: {}", account.getProtocolCompat() ? "name" : " email", accountIdentifier);
-					}
-				} else {
-					account.SetPremiumRemaningDays((rem_days - days));
-					time_t remainder = (timeNow - last_day) % 86400;
-					account.SetPremiumLastDay(timeNow - remainder);
-				}
-
-				save = true;
-			}
-		}
-	} else if (last_day != 0) {
-		account.SetPremiumLastDay(0);
-		save = true;
-	}
-
-	if (save && account.SaveAccountDB() != 0) {
-		account.GetAccountIdentifier(&accountIdentifier);
-		g_logger().error("Failed to save account: {}", accountIdentifier);
-	}
-}
-
 void Game::loadMotdNum() {
 	Database &db = Database::getInstance();
 
@@ -7556,7 +7553,7 @@ void Game::checkPlayersRecord() {
 		playersRecord = playersOnline;
 
 		for (auto &[key, it] : g_globalEvents().getEventMap(GLOBALEVENT_RECORD)) {
-			it.executeRecord(playersRecord, previousRecord);
+			it->executeRecord(playersRecord, previousRecord);
 		}
 		updatePlayersRecord();
 	}
@@ -7729,7 +7726,7 @@ void Game::sendGuildMotd(uint32_t playerId) {
 		return;
 	}
 
-	Guild* guild = player->getGuild();
+	const auto &guild = player->getGuild();
 	if (guild) {
 		player->sendChannelMessage("Message of the Day", guild->getMotd(), TALKTYPE_CHANNEL_R1, CHANNEL_GUILD);
 	}
@@ -7820,7 +7817,7 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 				} while (result->next());
 				player->sendCyclopediaCharacterRecentDeaths(page, static_cast<uint16_t>(pages), entries);
 			};
-			g_databaseTasks().addTask(query.str(), callback, true);
+			g_databaseTasks().store(query.str(), callback);
 			player->addAsyncOngoingTask(PlayerAsyncTask_RecentDeaths);
 			break;
 		}
@@ -7873,7 +7870,7 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 				} while (result->next());
 				player->sendCyclopediaCharacterRecentPvPKills(page, static_cast<uint16_t>(pages), entries);
 			};
-			g_databaseTasks().addTask(query.str(), callback, true);
+			g_databaseTasks().store(query.str(), callback);
 			player->addAsyncOngoingTask(PlayerAsyncTask_RecentPvPKills);
 			break;
 		}
@@ -8018,7 +8015,7 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 		} while (result->next());
 		player->sendHighscores(characters, category, vocation, page, static_cast<uint16_t>(pages));
 	};
-	g_databaseTasks().addTask(query.str(), callback, true);
+	g_databaseTasks().store(query.str(), callback);
 	player->addAsyncOngoingTask(PlayerAsyncTask_Highscore);
 }
 
@@ -8370,7 +8367,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	IOMarket::createOffer(player->getGUID(), static_cast<MarketAction_t>(type), it.id, amount, price, tier, anonymous);
 
 	// uint8_t = tier, uint64_t price
-	phmap::btree_map<uint8_t, uint64_t> tierAndPriceMap;
+	std::map<uint8_t, uint64_t> tierAndPriceMap;
 	tierAndPriceMap[tier] = price;
 	auto ColorItem = itemsPriceMap.find(it.id);
 	if (ColorItem == itemsPriceMap.end()) {
@@ -8754,7 +8751,7 @@ void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const st
 		return;
 	}
 
-	for (const CreatureEvent* creatureEvent : player->getCreatureEvents(CREATURE_EVENT_EXTENDED_OPCODE)) {
+	for (const auto &creatureEvent : player->getCreatureEvents(CREATURE_EVENT_EXTENDED_OPCODE)) {
 		creatureEvent->executeExtendedOpcode(player, opcode, buffer);
 	}
 }
@@ -8919,19 +8916,6 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 		return;
 	}
 
-	if (monsterRaceId != 0) {
-		item->setCustomAttribute("PodiumMonsterRaceId", static_cast<int64_t>(monsterRaceId));
-	} else if (auto podiumMonsterRace = item->getCustomAttribute("PodiumMonsterRaceId")) {
-		monsterRaceId = static_cast<uint32_t>(podiumMonsterRace->getInteger());
-	}
-
-	const MonsterType* mType = g_monsters().getMonsterTypeByRaceId(monsterRaceId, itemId == ITEM_PODIUM_OF_VIGOUR);
-	if (!mType) {
-		player->sendCancelMessage(RETURNVALUE_CONTACTADMINISTRATOR);
-		g_logger().error("[{}] player {} is trying to add invalid monster to podium {}", __FUNCTION__, player->getName(), item->getName());
-		return;
-	}
-
 	const auto tile = item->getParent() ? item->getParent()->getTile() : nullptr;
 	if (!tile) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
@@ -8950,9 +8934,33 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 		return;
 	}
 
+	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS) && !InternalGame::playerCanUseItemOnHouseTile(player, item)) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	if (monsterRaceId != 0) {
+		item->setCustomAttribute("PodiumMonsterRaceId", static_cast<int64_t>(monsterRaceId));
+	} else if (auto podiumMonsterRace = item->getCustomAttribute("PodiumMonsterRaceId")) {
+		monsterRaceId = static_cast<uint32_t>(podiumMonsterRace->getInteger());
+	}
+
+	const auto &mType = g_monsters().getMonsterTypeByRaceId(static_cast<uint16_t>(monsterRaceId), itemId == ITEM_PODIUM_OF_VIGOUR);
+	if (!mType) {
+		player->sendCancelMessage(RETURNVALUE_CONTACTADMINISTRATOR);
+		g_logger().error("[{}] player {} is trying to add invalid monster to podium {}", __FUNCTION__, player->getName(), item->getName());
+		return;
+	}
+
 	const auto &[podiumVisible, monsterVisible] = podiumAndMonsterVisible;
+	bool changeTentuglyName = false;
 	if (auto monsterOutfit = mType->info.outfit;
-		monsterOutfit.lookType != 0 && monsterVisible) {
+		(monsterOutfit.lookType != 0 || monsterOutfit.lookTypeEx != 0) && monsterVisible) {
+		// "Tantugly's Head" boss have to send other looktype to the podium
+		if (monsterOutfit.lookTypeEx == 35105) {
+			monsterOutfit.lookTypeEx = 39003;
+			changeTentuglyName = true;
+		}
 		item->setCustomAttribute("LookTypeEx", static_cast<int64_t>(monsterOutfit.lookTypeEx));
 		item->setCustomAttribute("LookType", static_cast<int64_t>(monsterOutfit.lookType));
 		item->setCustomAttribute("LookHead", static_cast<int64_t>(monsterOutfit.lookHead));
@@ -8971,7 +8979,13 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 	// Change Podium name
 	if (monsterVisible) {
 		std::ostringstream name;
-		name << item->getName() << " displaying " << mType->name;
+		item->removeAttribute(ItemAttribute_t::NAME);
+		name << item->getName() << " displaying ";
+		if (changeTentuglyName) {
+			name << "Tentugly";
+		} else {
+			name << mType->name;
+		}
 		item->setAttribute(ItemAttribute_t::NAME, name.str());
 	} else {
 		item->removeAttribute(ItemAttribute_t::NAME);
@@ -9018,6 +9032,11 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 		return;
 	}
 
+	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS) && !InternalGame::playerCanUseItemOnHouseTile(player, item)) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
 	auto podiumRaceIdAttribute = item->getCustomAttribute("PodiumMonsterRaceId");
 	auto lookDirection = item->getCustomAttribute("LookDirection");
 	auto podiumVisible = item->getCustomAttribute("PodiumVisible");
@@ -9036,7 +9055,8 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 	// Rotate monster podium (bestiary or bosstiary) to the new direction
 	bool isPodiumOfRenown = itemId == ITEM_PODIUM_OF_RENOWN1 || itemId == ITEM_PODIUM_OF_RENOWN2;
 	if (!isPodiumOfRenown) {
-		if (!isMonsterVisible || podiumRaceId == 0) {
+		auto lookTypeExAttribute = item->getCustomAttribute("LookTypeEx");
+		if (!isMonsterVisible || podiumRaceId == 0 || lookTypeExAttribute && lookTypeExAttribute->getInteger() == 39003) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return;
 		}
@@ -9045,7 +9065,7 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 		return;
 	}
 
-	// We retrieve the outfit information to be able to rotate in the new direction
+	// We retrieve the outfit information to be able to rotate the podium of renown in the new direction
 	Outfit_t newOutfit;
 	newOutfit.lookType = InternalGame::getCustomAttributeValue<uint16_t>(item, "LookType");
 	newOutfit.lookHead = InternalGame::getCustomAttributeValue<uint8_t>(item, "LookHead");
@@ -9058,6 +9078,11 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 	newOutfit.lookMountBody = InternalGame::getCustomAttributeValue<uint8_t>(item, "LookMountBody");
 	newOutfit.lookMountLegs = InternalGame::getCustomAttributeValue<uint8_t>(item, "LookMountLegs");
 	newOutfit.lookMountFeet = InternalGame::getCustomAttributeValue<uint8_t>(item, "LookMountFeet");
+	if (newOutfit.lookType == 0 && newOutfit.lookMount == 0) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
 	playerSetShowOffSocket(player->getID(), newOutfit, pos, stackPos, itemId, isPodiumVisible, directionValue);
 }
 
@@ -9072,7 +9097,7 @@ void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpe
 		return;
 	}
 
-	phmap::btree_map<Slots_t, Item*> itemsWithImbueSlotMap;
+	std::map<Slots_t, Item*> itemsWithImbueSlotMap;
 	for (uint8_t inventorySlot = CONST_SLOT_FIRST; inventorySlot <= CONST_SLOT_LAST; ++inventorySlot) {
 		auto item = player->getInventoryItem(static_cast<Slots_t>(inventorySlot));
 		if (!item) {
@@ -9137,7 +9162,7 @@ void Game::updatePlayerSaleItems(uint32_t playerId) {
 		return;
 	}
 
-	phmap::btree_map<uint16_t, uint16_t> inventoryMap;
+	std::map<uint16_t, uint16_t> inventoryMap;
 	player->sendSaleItemList(player->getAllSaleItemIdAndCount(inventoryMap));
 	player->setScheduledSaleUpdate(false);
 }
@@ -9172,7 +9197,7 @@ void Game::removeMonster(Monster* monster) {
 	monsters.erase(monster->getID());
 }
 
-Guild* Game::getGuild(uint32_t id, bool allowOffline /* = flase */) const {
+std::shared_ptr<Guild> Game::getGuild(uint32_t id, bool allowOffline /* = flase */) const {
 	auto it = guilds.find(id);
 	if (it == guilds.end()) {
 		if (allowOffline) {
@@ -9183,7 +9208,7 @@ Guild* Game::getGuild(uint32_t id, bool allowOffline /* = flase */) const {
 	return it->second;
 }
 
-Guild* Game::getGuildByName(const std::string &name, bool allowOffline /* = flase */) const {
+std::shared_ptr<Guild> Game::getGuildByName(const std::string &name, bool allowOffline /* = flase */) const {
 	auto id = IOGuild::getGuildIdByName(name);
 	auto it = guilds.find(id);
 	if (it == guilds.end()) {
@@ -9195,7 +9220,7 @@ Guild* Game::getGuildByName(const std::string &name, bool allowOffline /* = flas
 	return it->second;
 }
 
-void Game::addGuild(Guild* guild) {
+void Game::addGuild(const std::shared_ptr<Guild> &guild) {
 	if (!guild) {
 		return;
 	}
@@ -9772,24 +9797,12 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 		return;
 	}
 
+	std::lock_guard<std::mutex> lock(player->quickLootMutex);
+
 	ReturnValue returnValue = collectRewardChestItems(player, maxMoveItems);
 	if (returnValue != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(returnValue);
 	}
-}
-
-bool Game::createHazardArea(const Position &positionFrom, const Position &positionTo) {
-	for (int32_t x = positionFrom.x; x <= positionTo.x; ++x) {
-		for (int32_t y = positionFrom.y; y <= positionTo.y; ++y) {
-			for (int32_t z = positionFrom.z; z <= positionTo.z; ++z) {
-				Tile* tile = map.getTile(Position(x, y, z));
-				if (tile) {
-					tile->setHazard(true);
-				}
-			}
-		}
-	}
-	return true;
 }
 
 bool Game::tryRetrieveStashItems(Player* player, Item* item) {
@@ -9802,4 +9815,62 @@ std::unique_ptr<IOWheel> &Game::getIOWheel() {
 
 const std::unique_ptr<IOWheel> &Game::getIOWheel() const {
 	return m_IOWheel;
+}
+
+template <typename T>
+phmap::parallel_flat_hash_set<T> setDifference(const phmap::parallel_flat_hash_set<T> &setA, const phmap::parallel_flat_hash_set<T> &setB) {
+	phmap::parallel_flat_hash_set<T> setResult;
+	for (const auto &elem : setA) {
+		if (setB.find(elem) == setB.end()) {
+			setResult.insert(elem);
+		}
+	}
+	return setResult;
+}
+
+ReturnValue Game::onCreatureZoneChange(Creature* creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones) {
+	if (!creature) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	// fromZones - toZones = zones that creature left
+	auto zonesLeft = setDifference(fromZones, toZones);
+	// toZones - fromZones = zones that creature entered
+	auto zonesEntered = setDifference(toZones, fromZones);
+	// intersection of fromZones and toZones = zones that creature is still in
+	auto zonesStillIn = setDifference(fromZones, zonesLeft);
+
+	for (const auto &zone : zonesStillIn) {
+		// creatureAdded is idempotent, so we can just call it. This is useful for
+		// when a creature is added to a zone since the from is going to be the same
+		// as the to.
+		if (zone) {
+			zone->creatureAdded(creature);
+		}
+	}
+
+	if (zonesLeft.empty() && zonesEntered.empty()) {
+		return RETURNVALUE_NOERROR;
+	}
+
+	for (const auto &zone : zonesLeft) {
+		bool allowed = g_callbacks().checkCallback(EventCallback_t::zoneOnCreatureLeave, &EventCallback::zoneOnCreatureLeave, zone, creature);
+		if (!allowed) {
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+	}
+	for (const auto &zone : zonesLeft) {
+		zone->creatureRemoved(creature);
+	}
+
+	for (const auto &zone : zonesEntered) {
+		bool allowed = g_callbacks().checkCallback(EventCallback_t::zoneOnCreatureEnter, &EventCallback::zoneOnCreatureEnter, zone, creature);
+		if (!allowed) {
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+	}
+	for (const auto &zone : zonesEntered) {
+		zone->creatureAdded(creature);
+	}
+	return RETURNVALUE_NOERROR;
 }

@@ -7,24 +7,25 @@ function addDusts.onSay(player, words, param)
 	if param == "" then
 		player:sendCancelMessage("Player name param required.")
 		-- Distro log
-		Spdlog.error("[addDusts.onSay] - Player name param not found.")
+		logger.error("[addDusts.onSay] - Player name param not found.")
 		return true
 	end
 
 	local split = param:split(",")
 	local name = split[1]
-	local dustAmount = nil
-	if split[2] then
-		dustAmount = tonumber(split[2])
-	end
 
 	-- Check if player is online
 	local targetPlayer = Player(name)
 	if not targetPlayer then
 		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
-		Spdlog.error("[addDusts.onSay] - Player " .. string.titleCase(name) .. " is not online.")
+		logger.error("[addDusts.onSay] - Player {} is not online.", string.titleCase(name))
 		return true
+	end
+
+	local dustAmount = nil
+	if split[2] then
+		dustAmount = tonumber(split[2])
 	end
 
 	-- Check if the dustAmount is valid
@@ -43,7 +44,7 @@ function addDusts.onSay(player, words, param)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Successful added %d dusts for the %s player.", dustAmount, targetPlayer:getName()))
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s added %d dusts to your character.", player:getName(), dustAmount))
 	-- Distro log
-	Spdlog.info("" .. player:getName() .. " added " .. dustAmount .. " dusts to " .. targetPlayer:getName() .. " player.")
+	logger.info("{} added {} dusts to {} player.", player:getName(), dustAmount, targetPlayer:getName())
 	return true
 end
 
@@ -62,24 +63,25 @@ function removeDusts.onSay(player, words, param)
 	if param == "" then
 		player:sendCancelMessage("Player name param required.")
 		-- Distro log
-		Spdlog.error("[removeDusts.onSay] - Player name param not found.")
+		logger.error("[removeDusts.onSay] - Player name param not found.")
 		return true
 	end
 
 	local split = param:split(",")
 	local name = split[1]
-	local dustAmount = nil
-	if split[2] then
-		dustAmount = tonumber(split[2])
-	end
 
 	-- Check if player is online
 	local targetPlayer = Player(name)
 	if not targetPlayer then
 		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
-		Spdlog.error("[removeDusts.onSay] - Player " .. string.titleCase(name) .. " is not online.")
+		logger.error("[removeDusts.onSay] - Player {} is not online.", string.titleCase(name))
 		return true
+	end
+
+	local dustAmount = nil
+	if split[2] then
+		dustAmount = tonumber(split[2])
 	end
 
 	-- Check if the dustAmount is valid
@@ -98,7 +100,7 @@ function removeDusts.onSay(player, words, param)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Successful removed %d dusts for the %s player.", dustAmount, targetPlayer:getName()))
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s removed %d dusts to your character.", player:getName(), dustAmount))
 	-- Distro log
-	Spdlog.info("" .. player:getName() .. " removed " .. dustAmount .. " dusts to " .. targetPlayer:getName() .. " player.")
+	logger.info("{} removed {} dusts to {} player.", player:getName(), dustAmount, targetPlayer:getName())
 	return true
 end
 
@@ -117,7 +119,7 @@ function getDusts.onSay(player, words, param)
 	if param == "" then
 		player:sendCancelMessage("Player name param required.")
 		-- Distro log
-		Spdlog.error("[getDusts.onSay] - Player name param not found.")
+		logger.error("[getDusts.onSay] - Player name param not found.")
 		return true
 	end
 
@@ -128,14 +130,14 @@ function getDusts.onSay(player, words, param)
 	if not targetPlayer then
 		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
-		Spdlog.error("[getDusts.onSay] - Player " .. string.titleCase(name) .. " is not online.")
+		logger.error("[getDusts.onSay] - Player {} is not online.", string.titleCase(name))
 		return true
 	end
 
 	local dustAmount = targetPlayer:getForgeDusts()
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "" .. targetPlayer:getName() .. " has " .. dustAmount .. " dusts.")
 	-- Distro log
-	Spdlog.info("" .. targetPlayer:getName() .. " has " .. dustAmount .. " dusts.")
+	logger.info("{} has {} dusts.", targetPlayer:getName(), dustAmount)
 	return true
 end
 
@@ -154,24 +156,25 @@ function setDusts.onSay(player, words, param)
 	if param == "" then
 		player:sendCancelMessage("Player name param required.")
 		-- Distro log
-		Spdlog.error("[setDusts.onSay] - Player name param not found.")
+		logger.error("[setDusts.onSay] - Player name param not found.")
 		return true
 	end
 
 	local split = param:split(",")
 	local name = split[1]
-	local dustAmount = nil
-	if split[2] then
-		dustAmount = tonumber(split[2])
-	end
 
 	-- Check if player is online
 	local targetPlayer = Player(name)
 	if not targetPlayer then
 		player:sendCancelMessage("Player " .. string.titleCase(name) .. " is not online.")
 		-- Distro log
-		Spdlog.error("[setDusts.onSay] - Player " .. string.titleCase(name) .. " is not online.")
+		logger.error("[setDusts.onSay] - Player {} is not online.", string.titleCase(name))
 		return true
+	end
+
+	local dustAmount = nil
+	if split[2] then
+		dustAmount = tonumber(split[2])
 	end
 
 	-- Check if the dustAmount is valid
@@ -189,7 +192,7 @@ function setDusts.onSay(player, words, param)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Successful set %d dusts for the %s player.", dustAmount, targetPlayer:getName()))
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s set %d dusts to your character.", player:getName(), dustAmount))
 	-- Distro log
-	Spdlog.info("" .. player:getName() .. " set " .. dustAmount .. " dusts to " .. targetPlayer:getName() .. " player.")
+	logger.info("{} set {} dusts to {} player.", player:getName(), dustAmount, targetPlayer:getName())
 	return true
 end
 

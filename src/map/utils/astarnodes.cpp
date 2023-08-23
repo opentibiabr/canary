@@ -7,9 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "astarnodes.h"
-#include <creatures/monsters/monster.h>
-#include <creatures/combat/combat.h>
+#include "pch.hpp"
+
+#include "astarnodes.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/combat/combat.hpp"
 
 AStarNodes::AStarNodes(uint32_t x, uint32_t y) :
 	nodes(), openNodes() {

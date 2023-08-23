@@ -23,75 +23,77 @@
 	std::string { "critical" }
 
 class Logger {
-	public:
-		virtual ~Logger() = default;
+public:
+	Logger() = default;
+	virtual ~Logger() = default;
 
-		// Ensures that we don't accidentally copy it
-		virtual Logger &operator=(const Logger &) = delete;
+	// Ensures that we don't accidentally copy it
+	Logger(const Logger &) = delete;
+	virtual Logger &operator=(const Logger &) = delete;
 
-		virtual void setLevel(const std::string &name) = 0;
-		[[nodiscard]] virtual std::string getLevel() const = 0;
-		virtual void log(std::string lvl, fmt::basic_string_view<char> msg) const = 0;
+	virtual void setLevel(const std::string &name) = 0;
+	[[nodiscard]] virtual std::string getLevel() const = 0;
+	virtual void log(std::string lvl, fmt::basic_string_view<char> msg) const = 0;
 
-		template <typename... Args>
-		void trace(const fmt::format_string<Args...> &fmt, Args &&... args) {
-			trace(fmt::format(fmt, std::forward<Args>(args)...));
-		}
+	template <typename... Args>
+	void trace(const fmt::format_string<Args...> &fmt, Args &&... args) {
+		trace(fmt::format(fmt, std::forward<Args>(args)...));
+	}
 
-		template <typename... Args>
-		void debug(const fmt::format_string<Args...> &fmt, Args &&... args) {
-			debug(fmt::format(fmt, std::forward<Args>(args)...));
-		}
+	template <typename... Args>
+	void debug(const fmt::format_string<Args...> &fmt, Args &&... args) {
+		debug(fmt::format(fmt, std::forward<Args>(args)...));
+	}
 
-		template <typename... Args>
-		void info(fmt::format_string<Args...> fmt, Args &&... args) {
-			info(fmt::format(fmt, std::forward<Args>(args)...));
-		}
+	template <typename... Args>
+	void info(fmt::format_string<Args...> fmt, Args &&... args) {
+		info(fmt::format(fmt, std::forward<Args>(args)...));
+	}
 
-		template <typename... Args>
-		void warn(const fmt::format_string<Args...> &fmt, Args &&... args) {
-			warn(fmt::format(fmt, std::forward<Args>(args)...));
-		}
+	template <typename... Args>
+	void warn(const fmt::format_string<Args...> &fmt, Args &&... args) {
+		warn(fmt::format(fmt, std::forward<Args>(args)...));
+	}
 
-		template <typename... Args>
-		void error(const fmt::format_string<Args...> fmt, Args &&... args) {
-			error(fmt::format(fmt, std::forward<Args>(args)...));
-		}
+	template <typename... Args>
+	void error(const fmt::format_string<Args...> fmt, Args &&... args) {
+		error(fmt::format(fmt, std::forward<Args>(args)...));
+	}
 
-		template <typename... Args>
-		void critical(const fmt::format_string<Args...> fmt, Args &&... args) {
-			critical(fmt::format(fmt, std::forward<Args>(args)...));
-		}
+	template <typename... Args>
+	void critical(const fmt::format_string<Args...> fmt, Args &&... args) {
+		critical(fmt::format(fmt, std::forward<Args>(args)...));
+	}
 
-		template <typename T>
-		void trace(const T &msg) {
-			log(LOG_LEVEL_TRACE, msg);
-		}
+	template <typename T>
+	void trace(const T &msg) {
+		log(LOG_LEVEL_TRACE, msg);
+	}
 
-		template <typename T>
-		void debug(const T &msg) {
-			log(LOG_LEVEL_DEBUG, msg);
-		}
+	template <typename T>
+	void debug(const T &msg) {
+		log(LOG_LEVEL_DEBUG, msg);
+	}
 
-		template <typename T>
-		void info(const T &msg) {
-			log(LOG_LEVEL_INFO, msg);
-		}
+	template <typename T>
+	void info(const T &msg) {
+		log(LOG_LEVEL_INFO, msg);
+	}
 
-		template <typename T>
-		void warn(const T &msg) {
-			log(LOG_LEVEL_WARNING, msg);
-		}
+	template <typename T>
+	void warn(const T &msg) {
+		log(LOG_LEVEL_WARNING, msg);
+	}
 
-		template <typename T>
-		void error(const T &msg) {
-			log(LOG_LEVEL_ERROR, msg);
-		}
+	template <typename T>
+	void error(const T &msg) {
+		log(LOG_LEVEL_ERROR, msg);
+	}
 
-		template <typename T>
-		void critical(const T &msg) {
-			log(LOG_LEVEL_CRITICAL, msg);
-		}
+	template <typename T>
+	void critical(const T &msg) {
+		log(LOG_LEVEL_CRITICAL, msg);
+	}
 };
 
 #endif // CANARY_LOGGER_HPP

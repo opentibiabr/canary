@@ -9,11 +9,11 @@
 
 #include "pch.hpp"
 
-#include "items/tile.h"
-#include "creatures/monsters/monster.h"
-#include "map/house/housetile.h"
-#include "map/house/house.h"
-#include "game/game.h"
+#include "items/tile.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "map/house/housetile.hpp"
+#include "map/house/house.hpp"
+#include "game/game.hpp"
 
 HouseTile::HouseTile(int32_t initX, int32_t initY, int32_t initZ, House* initHouse) :
 	DynamicTile(initX, initY, initZ), house(initHouse) { }

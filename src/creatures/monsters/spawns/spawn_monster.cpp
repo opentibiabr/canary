@@ -9,15 +9,15 @@
 
 #include "pch.hpp"
 
-#include "creatures/monsters/spawns/spawn_monster.h"
-#include "game/game.h"
-#include "creatures/monsters/monster.h"
-#include "game/scheduling/scheduler.h"
+#include "creatures/monsters/spawns/spawn_monster.hpp"
+#include "game/game.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "game/scheduling/scheduler.hpp"
 #include "game/scheduling/events_scheduler.hpp"
-#include "lua/creature/events.h"
+#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
-#include "utils/pugicast.h"
+#include "utils/pugicast.hpp"
 
 static constexpr int32_t MONSTER_MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MONSTER_MAXSPAWN_INTERVAL = 86400000; // 1 day
@@ -170,7 +170,7 @@ bool SpawnMonster::isInSpawnMonsterZone(const Position &pos) {
 	return SpawnsMonster::isInZone(centerPos, radius, pos);
 }
 
-bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, MonsterType* monsterType, const Position &pos, Direction dir, bool startup /*= false*/) {
+bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, const std::shared_ptr<MonsterType> &monsterType, const Position &pos, Direction dir, bool startup /*= false*/) {
 	std::unique_ptr<Monster> monster_ptr(new Monster(monsterType));
 	if (startup) {
 		// No need to send out events to the surrounding since there is no one out there to listen!
@@ -271,7 +271,7 @@ void SpawnMonster::cleanup() {
 }
 
 bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t scheduleInterval) {
-	MonsterType* monsterType = g_monsters().getMonsterType(name);
+	const auto &monsterType = g_monsters().getMonsterType(name);
 	if (!monsterType) {
 		g_logger().error("Can not find {}", name);
 		return false;

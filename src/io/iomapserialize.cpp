@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "io/iomapserialize.h"
-#include "game/game.h"
-#include "items/bed.h"
+#include "io/iomapserialize.hpp"
+#include "game/game.hpp"
+#include "items/bed.hpp"
 
 void IOMapSerialize::loadHouseItems(Map* map) {
 	int64_t start = OTSYS_TIME();

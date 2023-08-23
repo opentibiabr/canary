@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "items/item.h"
-#include "items/weapons/weapons.h"
-#include "creatures/players/imbuements/imbuements.h"
+#include "items/item.hpp"
+#include "items/weapons/weapons.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/functions/items/imbuement_functions.hpp"
 
 int ImbuementFunctions::luaCreateImbuement(lua_State* L) {

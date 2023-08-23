@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_DATABASE_DATABASE_DEFINITIONS_HPP_
-#define SRC_DATABASE_DATABASE_DEFINITIONS_HPP_
+#pragma once
 
 // Enum
 enum TransactionStates_t {
@@ -16,5 +15,3 @@ enum TransactionStates_t {
 	STATE_START,
 	STATE_COMMIT,
 };
-
-#endif // SRC_DATABASE_DATABASE_DEFINITIONS_HPP_

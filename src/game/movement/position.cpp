@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "game/movement/position.h"
-#include "utils/tools.h"
+#include "game/movement/position.hpp"
+#include "utils/tools.hpp"
 
 Direction Position::getRandomDirection() {
 	static std::vector<Direction> dirList {
@@ -25,46 +25,24 @@ Direction Position::getRandomDirection() {
 }
 
 std::ostream &operator<<(std::ostream &os, const Position &pos) {
-	os << pos.toString();
-	return os;
+	return os << pos.toString();
 }
 
 std::ostream &operator<<(std::ostream &os, const Direction &dir) {
-	switch (dir) {
-		case DIRECTION_NORTH:
-			os << "North";
-			break;
+	static const std::map<Direction, std::string> directionStrings = {
+		{ DIRECTION_NORTH, "North" },
+		{ DIRECTION_EAST, "East" },
+		{ DIRECTION_WEST, "West" },
+		{ DIRECTION_SOUTH, "South" },
+		{ DIRECTION_SOUTHWEST, "South-West" },
+		{ DIRECTION_SOUTHEAST, "South-East" },
+		{ DIRECTION_NORTHWEST, "North-West" },
+		{ DIRECTION_NORTHEAST, "North-East" }
+	};
 
-		case DIRECTION_EAST:
-			os << "East";
-			break;
-
-		case DIRECTION_WEST:
-			os << "West";
-			break;
-
-		case DIRECTION_SOUTH:
-			os << "South";
-			break;
-
-		case DIRECTION_SOUTHWEST:
-			os << "South-West";
-			break;
-
-		case DIRECTION_SOUTHEAST:
-			os << "South-East";
-			break;
-
-		case DIRECTION_NORTHWEST:
-			os << "North-West";
-			break;
-
-		case DIRECTION_NORTHEAST:
-			os << "North-East";
-			break;
-
-		default:
-			break;
+	auto it = directionStrings.find(dir);
+	if (it != directionStrings.end()) {
+		return os << it->second;
 	}
 
 	return os;

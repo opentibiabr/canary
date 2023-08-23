@@ -465,9 +465,9 @@ if Modules == nil then
 				elseif i == 6 then
 					premium = temp == "true"
 				else
-					Spdlog.warn(string.format("[TravelModule:parseDestinations] - Npc: %s] \z
-                                Unknown parameter found in travel destination parameter. temp[%d], destination[%s]",
-                                npc:getName(), temp, destination))
+					logger.warn("[TravelModule:parseDestinations] - Npc: {}] \z
+                                Unknown parameter found in travel destination parameter. temp[{}], destination[{}]",
+                                npc:getName(), temp, destination)
 				end
 				i = i + 1
 			end
@@ -475,8 +475,8 @@ if Modules == nil then
 			if name and x and y and z and cost then
 				self:addDestination(name, {x=x, y=y, z=z}, cost, premium)
 			else
-				Spdlog.warn("[TravelModule:parseDestinations] - Npc: %S] Parameter(s) missing for travel destination:",
-                            npc:getName(), name, x, y, z, cost, premium)
+				logger.warn("[TravelModule:parseDestinations] - Npc: {}] Parameter(s) missing for travel destination: x = {}, y = {}, z = {}",
+                            npc:getName(), x, y, z)
 			end
 		end
 	end

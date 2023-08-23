@@ -66,7 +66,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local hazard = Hazard.getByName("Gnomprona Gardens")
+	local hazard = Hazard.getByName("hazard:gnomprona-gardens")
 	local current = hazard:getPlayerCurrentLevel(player)
 	local maximum = hazard:getPlayerMaxLevel(player)
 

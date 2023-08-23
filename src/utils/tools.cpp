@@ -10,8 +10,8 @@
 #include "pch.hpp"
 
 #include "core.hpp"
-#include "items/item.h"
-#include "utils/tools.h"
+#include "items/item.hpp"
+#include "utils/tools.hpp"
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
 	g_logger().error("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -240,14 +240,12 @@ std::string generateToken(const std::string &key, uint32_t ticks) {
 }
 
 void replaceString(std::string &str, const std::string &sought, const std::string &replacement) {
-	size_t pos = 0;
-	size_t start = 0;
-	size_t soughtLen = sought.length();
-	size_t replaceLen = replacement.length();
+	if (str.empty()) {
+		return;
+	}
 
-	while ((pos = str.find(sought, start)) != std::string::npos) {
-		str = str.substr(0, pos) + replacement + str.substr(pos + soughtLen);
-		start = pos + replaceLen;
+	for (size_t startPos = 0; (startPos = str.find(sought, startPos)) != std::string::npos; startPos += replacement.length()) {
+		str.replace(startPos, sought.length(), replacement);
 	}
 }
 
@@ -437,6 +435,22 @@ std::string formatDateShort(time_t time) {
 	return {};
 }
 
+std::string formatTime(time_t time) {
+	try {
+		return fmt::format("{:%H:%M:%S}", fmt::localtime(time));
+	} catch (const std::out_of_range &exception) {
+		g_logger().error("Failed to format time with error code {}", exception.what());
+	}
+	return {};
+}
+
+std::string formatEnumName(std::string_view name) {
+	std::string result { name.begin(), name.end() };
+	std::replace(result.begin(), result.end(), '_', ' ');
+	std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) { return std::tolower(c); });
+	return result;
+}
+
 std::time_t getTimeNow() {
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
@@ -524,41 +538,40 @@ Position getNextPosition(Direction direction, Position pos) {
 	return pos;
 }
 
-Direction getDirectionTo(const Position &from, const Position &to) {
-	Direction dir;
+Direction getDirectionTo(const Position &from, const Position &to, bool exactDiagonalOnly /* =true*/) {
+	int_fast32_t dx = Position::getOffsetX(from, to);
+	int_fast32_t dy = Position::getOffsetY(from, to);
 
-	int32_t x_offset = Position::getOffsetX(from, to);
-	if (x_offset < 0) {
-		dir = DIRECTION_EAST;
-		x_offset = std::abs(x_offset);
-	} else {
-		dir = DIRECTION_WEST;
+	if (exactDiagonalOnly) {
+		int_fast32_t absDx = std::abs(dx);
+		int_fast32_t absDy = std::abs(dy);
+
+		/*
+		 * Only consider diagonal if dx and dy are equal (exact diagonal).
+		 */
+		if (absDx > absDy)
+			return dx < 0 ? DIRECTION_EAST : DIRECTION_WEST;
+		if (absDx < absDy)
+			return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
 	}
 
-	int32_t y_offset = Position::getOffsetY(from, to);
-	if (y_offset >= 0) {
-		if (y_offset > x_offset) {
-			dir = DIRECTION_NORTH;
-		} else if (y_offset == x_offset) {
-			if (dir == DIRECTION_EAST) {
-				dir = DIRECTION_NORTHEAST;
-			} else {
-				dir = DIRECTION_NORTHWEST;
-			}
-		}
-	} else {
-		y_offset = std::abs(y_offset);
-		if (y_offset > x_offset) {
-			dir = DIRECTION_SOUTH;
-		} else if (y_offset == x_offset) {
-			if (dir == DIRECTION_EAST) {
-				dir = DIRECTION_SOUTHEAST;
-			} else {
-				dir = DIRECTION_SOUTHWEST;
-			}
-		}
+	if (dx < 0) {
+		if (dy < 0)
+			return DIRECTION_SOUTHEAST;
+		if (dy > 0)
+			return DIRECTION_NORTHEAST;
+		return DIRECTION_EAST;
 	}
-	return dir;
+
+	if (dx > 0) {
+		if (dy < 0)
+			return DIRECTION_SOUTHWEST;
+		if (dy > 0)
+			return DIRECTION_NORTHWEST;
+		return DIRECTION_WEST;
+	}
+
+	return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
 }
 
 using MagicEffectNames = phmap::flat_hash_map<std::string, MagicEffectClasses>;
@@ -762,6 +775,8 @@ CombatTypeNames combatTypeNames = {
 	{ COMBAT_LIFEDRAIN, "lifedrain" },
 	{ COMBAT_MANADRAIN, "manadrain" },
 	{ COMBAT_PHYSICALDAMAGE, "physical" },
+	{ COMBAT_AGONYDAMAGE, "agony" },
+	{ COMBAT_NEUTRALDAMAGE, "neutral" },
 };
 
 AmmoTypeNames ammoTypeNames = {
@@ -856,22 +871,6 @@ ShootType_t getShootType(const std::string &strValue) {
 		return shootType->second;
 	}
 	return CONST_ANI_NONE;
-}
-
-std::string getCombatName(CombatType_t combatType) {
-	auto combatName = combatTypeNames.find(combatType);
-	if (combatName != combatTypeNames.end()) {
-		return combatName->second;
-	}
-	return "unknown";
-}
-
-CombatType_t getCombatType(const std::string &combatname) {
-	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](const std::pair<CombatType_t, std::string> &pair) {
-		return pair.second == combatname;
-	});
-
-	return it != combatTypeNames.end() ? it->first : COMBAT_NONE;
 }
 
 Ammo_t getAmmoType(const std::string &strValue) {
@@ -1051,73 +1050,43 @@ std::string getWeaponName(WeaponType_t weaponType) {
 	}
 }
 
+std::string getCombatName(CombatType_t combatType) {
+	auto combatName = combatTypeNames.find(combatType);
+	if (combatName != combatTypeNames.end()) {
+		return combatName->second;
+	}
+	return "unknown";
+}
+
+CombatType_t getCombatTypeByName(const std::string &combatname) {
+	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](const std::pair<CombatType_t, std::string> &pair) {
+		return pair.second == combatname;
+	});
+
+	return it != combatTypeNames.end() ? it->first : COMBAT_NONE;
+}
+
 size_t combatTypeToIndex(CombatType_t combatType) {
-	switch (combatType) {
-		case COMBAT_PHYSICALDAMAGE:
-			return 0;
-		case COMBAT_ENERGYDAMAGE:
-			return 1;
-		case COMBAT_EARTHDAMAGE:
-			return 2;
-		case COMBAT_FIREDAMAGE:
-			return 3;
-		case COMBAT_UNDEFINEDDAMAGE:
-			return 4;
-		case COMBAT_LIFEDRAIN:
-			return 5;
-		case COMBAT_MANADRAIN:
-			return 6;
-		case COMBAT_HEALING:
-			return 7;
-		case COMBAT_DROWNDAMAGE:
-			return 8;
-		case COMBAT_ICEDAMAGE:
-			return 9;
-		case COMBAT_HOLYDAMAGE:
-			return 10;
-		case COMBAT_DEATHDAMAGE:
-			return 11;
-		case COMBAT_NEUTRALDAMAGE:
-			return 12;
-		default:
-			g_logger().error("Combat type {} is out of range", fmt::underlying(combatType));
-			// Uncomment for catch the function call with debug
-			// throw std::out_of_range("Combat is out of range");
+	auto enum_index_opt = magic_enum::enum_index(combatType);
+	if (enum_index_opt.has_value() && enum_index_opt.value() < COMBAT_COUNT) {
+		return enum_index_opt.value();
+	} else {
+		g_logger().error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
+		// Uncomment for catch the function call with debug
+		// throw std::out_of_range("Combat is out of range");
 	}
 
-	return {};
+	return COMBAT_NONE;
 }
 
 std::string combatTypeToName(CombatType_t combatType) {
-	switch (combatType) {
-		case COMBAT_PHYSICALDAMAGE:
-			return "physical";
-		case COMBAT_ENERGYDAMAGE:
-			return "energy";
-		case COMBAT_EARTHDAMAGE:
-			return "earth";
-		case COMBAT_FIREDAMAGE:
-			return "fire";
-		case COMBAT_UNDEFINEDDAMAGE:
-			return "undefined";
-		case COMBAT_LIFEDRAIN:
-			return "life drain";
-		case COMBAT_MANADRAIN:
-			return "mana drain";
-		case COMBAT_HEALING:
-			return "healing";
-		case COMBAT_DROWNDAMAGE:
-			return "drown";
-		case COMBAT_ICEDAMAGE:
-			return "ice";
-		case COMBAT_HOLYDAMAGE:
-			return "holy";
-		case COMBAT_DEATHDAMAGE:
-			return "death";
-		default:
-			g_logger().error("Combat type {} is out of range", fmt::underlying(combatType));
-			// Uncomment for catch the function call with debug
-			// throw std::out_of_range("Combat is out of range");
+	std::string_view name = magic_enum::enum_name(combatType);
+	if (!name.empty() && combatType < COMBAT_COUNT) {
+		return formatEnumName(name);
+	} else {
+		g_logger().error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
+		// Uncomment for catch the function call with debug
+		// throw std::out_of_range("Index is out of range");
 	}
 
 	return {};
@@ -1666,4 +1635,33 @@ std::vector<std::string> split(const std::string &str) {
 		tokens.push_back(trimedToken);
 	}
 	return tokens;
+}
+
+std::string getFormattedTimeRemaining(uint32_t time) {
+	time_t timeRemaining = time - getTimeNow();
+
+	int days = static_cast<int>(std::floor(timeRemaining / 86400));
+
+	std::stringstream output;
+	if (days > 1) {
+		output << days << " days";
+		return output.str();
+	}
+
+	int hours = static_cast<int>(std::floor((timeRemaining % 86400) / 3600));
+	int minutes = static_cast<int>(std::floor((timeRemaining % 3600) / 60));
+	int seconds = static_cast<int>(timeRemaining % 60);
+
+	if (hours == 0 && minutes == 0 && seconds > 0) {
+		output << " less than 1 minute";
+	} else {
+		if (hours > 0) {
+			output << hours << " hour" << (hours != 1 ? "s" : "");
+		}
+		if (minutes > 0) {
+			output << (hours > 0 ? " and " : "") << minutes << " minute" << (minutes != 1 ? "s" : "");
+		}
+	}
+
+	return output.str();
 }

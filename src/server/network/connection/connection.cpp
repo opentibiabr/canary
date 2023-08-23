@@ -9,13 +9,13 @@
 
 #include "pch.hpp"
 
-#include "server/network/connection/connection.h"
-#include "server/network/message/outputmessage.h"
-#include "server/network/protocol/protocol.h"
-#include "server/network/protocol/protocolgame.h"
-#include "game/scheduling/scheduler.h"
+#include "server/network/connection/connection.hpp"
+#include "server/network/message/outputmessage.hpp"
+#include "server/network/protocol/protocol.hpp"
+#include "server/network/protocol/protocolgame.hpp"
+#include "game/scheduling/scheduler.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "server/server.h"
+#include "server/server.hpp"
 
 Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort) {
 	std::lock_guard<std::mutex> lockClass(connectionManagerLock);

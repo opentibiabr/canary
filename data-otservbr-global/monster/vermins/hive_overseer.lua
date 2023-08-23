@@ -73,7 +73,7 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{name = "Spidris Elite", chance = 40, interval = 2000, count = 2}
+		{name = "Spidris Elite Summon", chance = 40, interval = 2000, count = 2}
 	}
 }
 

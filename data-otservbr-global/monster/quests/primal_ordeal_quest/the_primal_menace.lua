@@ -104,8 +104,6 @@ monster.light = {
 	color = 0
 }
 
-monster.summon = {}
-
 monster.voices = {
 	interval = 5000,
 	chance = 10,
@@ -151,7 +149,7 @@ monster.immunities = {
 }
 
 local function initialize(monster)
-	if (monster:getStorageValue(thePrimalMenaceConfig.Storage.Initialized) == true) then
+	if monster:getStorageValue(thePrimalMenaceConfig.Storage.Initialized) == true then
 		return
 	end
 
@@ -216,7 +214,7 @@ local function getSpawnPosition(monster)
 	local radius = thePrimalMenaceConfig.SpawnRadius
 	local centerPos = monster:getStorageValue(thePrimalMenaceConfig.Storage.SpawnPos)
 
-	while (not spawnPosition and attempt < attempts) do
+	while not spawnPosition and attempt < attempts do
 
 		local centerX = centerPos.x
 		local centerY = centerPos.y
@@ -227,7 +225,7 @@ local function getSpawnPosition(monster)
 
 		local positionAttempt = Position(xCoord, yCoord, centerPos.z)
 		local spawnTile = Tile(positionAttempt)
-		if (spawnTile and spawnTile:getCreatureCount() == 0 and not spawnTile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID)) then
+		if spawnTile and spawnTile:getCreatureCount() == 0 and not spawnTile:hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) then
 			spawnPosition = positionAttempt
 		end
 		attempt = attempt + 1
@@ -241,7 +239,7 @@ local function getSpawnPosition(monster)
 	return spawnPosition
 end
 
-local function spawnTimer(monster, spawnPosition, spawnCallback)
+local function spawnTimer(monsterId, spawnPosition, spawnCallback)
 	local time_to_spawn = 3
 	for i = 1, time_to_spawn do
 		addEvent(function()
@@ -249,11 +247,11 @@ local function spawnTimer(monster, spawnPosition, spawnCallback)
 		end, i * 1000)
 	end
 	addEvent(function()
-		spawnCallback(monster, spawnPosition)
+		spawnCallback(monsterId, spawnPosition)
 	end, time_to_spawn * 1000)
 end
 
-local function spawnPod(monster, position)
+local function spawnPod(monsterId, position)
 	createPrimalPod(position)
 end
 
@@ -261,20 +259,25 @@ local function spawnPods(monster, hazardPoints)
 	local count = spawnCount(thePrimalMenaceConfig.PodConfig, hazardPoints)
 	for i = 1, count do
 		local spawnPosition = getSpawnPosition(monster)
-		spawnTimer(monster, spawnPosition, spawnPod)
+		spawnTimer(monster:getId(), spawnPosition, spawnPod)
 	end
 end
 
 local function handlePodSpawn(monster, hazardPoints)
 	local nextSpawn = monster:getStorageValue(thePrimalMenaceConfig.Storage.NextPodSpawn)
-	if (nextSpawn - os.time() < 0) then
+	if nextSpawn - os.time() < 0 then
 		spawnPods(monster, hazardPoints)
 
 		setNextTimeToSpawn(monster, thePrimalMenaceConfig.Storage.NextPodSpawn, thePrimalMenaceConfig.PodConfig, hazardPoints)
 	end
 end
 
-local function spawnMonster(monster, spawnPosition)
+local function spawnMonster(monsterId, spawnPosition)
+	local monster = Monster(monsterId)
+	if not monster then
+		return
+	end
+
 	local randomMonsterIndex = math.random(#thePrimalMenaceConfig.MonsterConfig.MonsterPool)
 	local primalBeastEntry = {
 		Monster = Game.createMonster(thePrimalMenaceConfig.MonsterConfig.MonsterPool[randomMonsterIndex], spawnPosition),
@@ -292,13 +295,13 @@ local function spawnMonsters(monster, hazardPoints)
 	local count = spawnCount(thePrimalMenaceConfig.MonsterConfig, hazardPoints)
 	for i = 1, count do
 		local spawnPosition = getSpawnPosition(monster)
-		spawnTimer(monster, spawnPosition, spawnMonster)
+		spawnTimer(monster:getId(), spawnPosition, spawnMonster)
 	end
 end
 
 local function handleMonsterSpawn(monster, hazardPoints)
 	local nextSpawn = monster:getStorageValue(thePrimalMenaceConfig.Storage.NextMonsterSpawn)
-	if (nextSpawn - os.time() < 0) then
+	if nextSpawn - os.time() < 0 then
 		spawnMonsters(monster, hazardPoints)
 
 		setNextTimeToSpawn(monster, thePrimalMenaceConfig.Storage.NextMonsterSpawn, thePrimalMenaceConfig.MonsterConfig, hazardPoints)
@@ -314,7 +317,7 @@ local function handlePrimalBeasts(monster)
 		local created = beastData.Created
 		if not monster:getHealth() or monster:getHealth() == 0 then
 			table.insert(indexesToRemove, index)
-		elseif (os.time() - created > 20 and monster:getHealth() > 0) then
+		elseif os.time() - created > 20 and monster:getHealth() > 0 then
 			local position = monster:getPosition()
 			monster:remove()
 			table.insert(indexesToRemove, index)
@@ -333,7 +336,7 @@ local function handlePrimalBeasts(monster)
 end
 
 mType.onThink = function(monster, interval)
-	if (monster:getStorageValue(thePrimalMenaceConfig.Storage.Initialized) == -1) then
+	if monster:getStorageValue(thePrimalMenaceConfig.Storage.Initialized) == -1 then
 		initialize(monster)
 	end
 

@@ -78,8 +78,6 @@ void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
 	if (!BasicItem->text.empty())
 		item->setAttribute(ItemAttribute_t::TEXT, BasicItem->text);
 
-	/* if (BasicItem.description != 0)
-		item->setAttribute(ItemAttribute_t::DESCRIPTION, STRING_CACHE[BasicItem.description]);*/
 }
 
 Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {

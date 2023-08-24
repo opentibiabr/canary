@@ -37,10 +37,10 @@
 	|--- OTBM_ITEM_DEF (not implemented)
 */
 
-void IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, bool unload) {
-	int64_t start = OTSYS_TIME();
+void IOMap::loadMap(Map* map, const Position &pos) {
+	const int64_t start = OTSYS_TIME();
 
-	const auto &fileByte = mio::mmap_source(fileName);
+	const auto &fileByte = mio::mmap_source(map->path.string());
 
 	const auto begin = fileByte.begin() + sizeof(OTB::Identifier { { 'O', 'T', 'B', 'M' } });
 
@@ -66,10 +66,8 @@ void IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, 
 		throw IOMapException("This map need to be upgraded by using the latest map editor version to be able to load correctly.");
 	}
 
-	g_logger().info("Map size: {}x{}", map->width, map->height);
-
 	if (stream.startNode(OTBM_MAP_DATA)) {
-		parseMapDataAttributes(stream, map, fileName);
+		parseMapDataAttributes(stream, map);
 		parseTileArea(stream, *map, pos);
 		stream.endNode();
 	}
@@ -79,10 +77,10 @@ void IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, 
 
 	map->flush();
 
-	g_logger().info("Map loading time: {} seconds", (OTSYS_TIME() - start) / (1000.));
+	g_logger().info("Map Loaded {} ({}x{}) in {} seconds", map->path.filename().string(), map->width, map->height, static_cast<double>(OTSYS_TIME() - start) / 1000.f);
 }
 
-void IOMap::parseMapDataAttributes(FileStream &stream, Map* map, const std::string &fileName) {
+void IOMap::parseMapDataAttributes(FileStream &stream, Map* map) {
 	bool end = false;
 	while (!end) {
 		const uint8_t attr = stream.getU8();
@@ -92,16 +90,16 @@ void IOMap::parseMapDataAttributes(FileStream &stream, Map* map, const std::stri
 			} break;
 
 			case OTBM_ATTR_EXT_SPAWN_MONSTER_FILE: {
-				map->monsterfile = fileName.substr(0, fileName.rfind('/') + 1);
+				map->monsterfile = map->path.string().substr(0, map->path.string().rfind('/') + 1);
 				map->monsterfile += stream.getString();
 			} break;
 
 			case OTBM_ATTR_EXT_SPAWN_NPC_FILE: {
-				map->npcfile = fileName.substr(0, fileName.rfind('/') + 1);
+				map->npcfile = map->path.string().substr(0, map->path.string().rfind('/') + 1);
 				map->npcfile += stream.getString();
 			} break;
 			case OTBM_ATTR_EXT_HOUSE_FILE: {
-				map->housefile = fileName.substr(0, fileName.rfind('/') + 1);
+				map->housefile = map->path.string().substr(0, map->path.string().rfind('/') + 1);
 				map->housefile += stream.getString();
 			} break;
 
@@ -122,7 +120,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 		bool tileIsStatic = false;
 
 		while (stream.startNode()) {
-			uint8_t tileType = stream.getU8();
+			const uint8_t tileType = stream.getU8();
 			if (tileType != OTBM_HOUSETILE && tileType != OTBM_TILE) {
 				throw IOMapException("Could not read tile type node.");
 			}
@@ -160,7 +158,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 
 			if (stream.isProp(OTBM_ATTR_ITEM)) {
 				const uint16_t id = stream.getU16();
-				const ItemType &iType = Item::items[id];
+				const auto &iType = Item::items[id];
 
 				if (!tile->isHouse() || !iType.isBed()) {
 					if (iType.blockSolid) {
@@ -223,6 +221,10 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 
 			if (!stream.endNode()) {
 				throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
+			}
+
+			if (tile->isEmpty(true)) {
+				continue;
 			}
 
 			map.setBasicTile(x, y, z, tile);

@@ -79,7 +79,7 @@ namespace {
 bool ConfigManager::load() {
 	lua_State* L = luaL_newstate();
 	if (!L) {
-		throw std::runtime_error("Failed to allocate memory");
+		throw std::ios_base::failure("Failed to allocate memory");
 	}
 
 	luaL_openlibs(L);

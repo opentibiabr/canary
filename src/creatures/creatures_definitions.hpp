@@ -1365,12 +1365,12 @@ enum class CreatureIconQuests_t {
 };
 
 struct CreatureIcon {
-	constexpr CreatureIcon() = default;
+	CreatureIcon() = default;
 
-	constexpr CreatureIcon(CreatureIconModifications_t modification, uint16_t count = 0) :
+	explicit constexpr CreatureIcon(CreatureIconModifications_t modification, uint16_t count = 0) :
 		category(CreatureIconCategory_t::Modifications), modification(modification), count(count) { }
 
-	constexpr CreatureIcon(CreatureIconQuests_t quest, uint16_t count = 0) :
+	explicit constexpr CreatureIcon(CreatureIconQuests_t quest, uint16_t count = 0) :
 		category(CreatureIconCategory_t::Quests), quest(quest), count(count) { }
 
 	CreatureIconCategory_t category;

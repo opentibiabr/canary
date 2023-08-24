@@ -755,7 +755,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetAttackList(lua_State* L) {
 		setField(L, "maxCombatValue", spellBlock.maxCombatValue);
 		setField(L, "range", spellBlock.range);
 		setField(L, "speed", spellBlock.speed);
-		const auto &combatSpell = std::static_pointer_cast<CombatSpell>(spellBlock.spell);
+		const auto combatSpell = std::static_pointer_cast<CombatSpell>(spellBlock.spell);
 		pushUserdata<CombatSpell>(L, combatSpell);
 		lua_setfield(L, -2, "spell");
 
@@ -806,7 +806,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetDefenseList(lua_State* L) {
 		setField(L, "maxCombatValue", spellBlock.maxCombatValue);
 		setField(L, "range", spellBlock.range);
 		setField(L, "speed", spellBlock.speed);
-		const auto &combatSpell = std::static_pointer_cast<CombatSpell>(spellBlock.spell);
+		const auto combatSpell = std::static_pointer_cast<CombatSpell>(spellBlock.spell);
 		pushUserdata<CombatSpell>(L, combatSpell);
 		lua_setfield(L, -2, "spell");
 

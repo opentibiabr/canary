@@ -44,17 +44,17 @@ QTreeLeafNode* QTreeNode::createLeaf(uint32_t x, uint32_t y, uint32_t level) {
 
 QTreeLeafNode* QTreeNode::getBestLeaf(uint32_t x, uint32_t y, uint32_t level) {
 	QTreeLeafNode::newLeaf = false;
-	auto leaf = createLeaf(x, y, level);
+	auto tempLeaf = createLeaf(x, y, level);
 
 	if (QTreeLeafNode::newLeaf) {
 		// update north
 		if (const auto northLeaf = getLeaf(x, y - FLOOR_SIZE)) {
-			northLeaf->leafS = leaf;
+			northLeaf->leafS = tempLeaf;
 		}
 
 		// update west leaf
 		if (const auto westLeaf = getLeaf(x - FLOOR_SIZE, y)) {
-			westLeaf->leafE = leaf;
+			westLeaf->leafE = tempLeaf;
 		}
 
 		// update south
@@ -68,7 +68,7 @@ QTreeLeafNode* QTreeNode::getBestLeaf(uint32_t x, uint32_t y, uint32_t level) {
 		}
 	}
 
-	return leaf;
+	return tempLeaf;
 }
 
 void QTreeLeafNode::addCreature(Creature* c) {

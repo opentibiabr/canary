@@ -121,6 +121,8 @@ bool GameReload::reloadModules() const {
 }
 
 bool GameReload::reloadMonsters() const {
+	// Clear registered MonsterType vector
+	g_monsters().clear();
 	// Resets monster spells to prevent the spell from being incorrectly cleared from memory
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	if (!g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false)) {
@@ -146,19 +148,19 @@ bool GameReload::reloadRaids() const {
 }
 
 bool GameReload::reloadScripts() const {
-	// Resets monster spells to prevent the spell from being incorrectly cleared from memory
-	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
-	if (!g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false)) {
-		return false;
-	}
 	g_scripts().clearAllScripts();
 	Zone::clearZones();
-
+	// Reset scripts lib to prevent the objects from being incorrectly cleared from memory
+	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+	g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false);
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-	if (g_scripts().loadScripts(datapackFolder + "/scripts", false, true) && g_scripts().loadScripts(coreFolder + "/scripts", false, true)) {
-		return true;
-	}
-	return false;
+	g_scripts().loadScripts(datapackFolder + "/scripts", false, true);
+	g_scripts().loadScripts(coreFolder + "/scripts", false, true);
+
+	// It should come last, after everything else has been cleaned up.
+	reloadMonsters();
+	reloadNpcs();
+	return true;
 }
 
 bool GameReload::reloadGroups() const {

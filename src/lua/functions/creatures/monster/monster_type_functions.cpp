@@ -660,6 +660,8 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 		combatType = COMBAT_LIFEDRAIN;
 	} else if (immunity == "manadrain") {
 		combatType = COMBAT_MANADRAIN;
+	} else if (immunity == "agony") {
+		combatType = COMBAT_AGONYDAMAGE;
 	} else if (immunity == "neutral") {
 		combatType = COMBAT_NEUTRALDAMAGE;
 	} else {

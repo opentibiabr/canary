@@ -101,7 +101,7 @@ function yasir.onStartup()
 				end
 			end
 
-			local mapName = string.removeAllSpaces(randTown.mapName)
+			local mapName = string.removeAllSpaces(randTown.mapName):lower()
 			Game.loadMap(DATA_DIRECTORY.. '/world/world_changes/oriental_trader/' .. mapName .. '.otbm')
 			addEvent(spawnYasir, 60000, randTown.yasirPosition)
 			addEvent(yasirwebhook, 60000, message) -- Event with 1 minute delay to send webhook message after server starts.

@@ -59,12 +59,12 @@ QTreeLeafNode* QTreeNode::getBestLeaf(uint32_t x, uint32_t y, uint32_t level) {
 
 		// update south
 		if (const auto southLeaf = getLeaf(x, y + FLOOR_SIZE)) {
-			leaf->leafS = southLeaf;
+			tempLeaf->leafS = southLeaf;
 		}
 
 		// update east
 		if (const auto eastLeaf = getLeaf(x + FLOOR_SIZE, y)) {
-			leaf->leafE = eastLeaf;
+			tempLeaf->leafE = eastLeaf;
 		}
 	}
 

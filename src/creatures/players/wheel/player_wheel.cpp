@@ -872,7 +872,7 @@ void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
 		uint16_t points;
 		if (propStream.read<uint8_t>(slot) && propStream.read<uint16_t>(points)) {
 			setPointsBySlotType(slot, points);
-			g_logger().info("Player: {}, loaded points {} to slot {}", m_player.getName(), points, slot);
+			g_logger().debug("Player: {}, loaded points {} to slot {}", m_player.getName(), points, slot);
 		}
 	}
 }

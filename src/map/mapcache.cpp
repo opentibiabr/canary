@@ -48,7 +48,7 @@ void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
 	}
 
 	if (BasicItem->uniqueId > 0) {
-		item->setAttribute(ItemAttribute_t::UNIQUEID, BasicItem->uniqueId);
+		item->addUniqueId(BasicItem->uniqueId);
 	}
 
 	if (item->getTeleport() && (BasicItem->destX != 0 || BasicItem->destY != 0 || BasicItem->destZ != 0)) {

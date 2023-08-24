@@ -96,5 +96,6 @@ jobs:
 
       - name: Unit tests
         run: |
-          chmod +x ${{ github.workspace }}/build/${{ matrix.buildtype }}/tests/canary_ut
-          ${{ github.workspace }}/build/${{ matrix.buildtype }}/tests/canary_ut
+          cd ${{ github.workspace }}/build/${{ matrix.buildtype }}/tests
+          chmod +x canary_ut
+          ./canary_ut

@@ -116,8 +116,9 @@ const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &Zone::getZones() {
 	static phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> zonesSet;
 	zonesSet.clear();
 	for (const auto &[_, zone] : zones) {
-		if (zone)
+		if (zone) {
 			zonesSet.insert(zone);
+		}
 	}
 	return zonesSet;
 }

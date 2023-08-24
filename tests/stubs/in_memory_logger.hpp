@@ -6,8 +6,7 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#ifndef CANARY_IN_MEMORY_LOGGER_HPP
-#define CANARY_IN_MEMORY_LOGGER_HPP
+#pragma once
 
 #include <vector>
 #include <string>
@@ -24,6 +23,10 @@ class InMemoryLogger : public Logger {
 
 	public:
 		mutable std::vector<LogEntry> logs;
+
+		static void install(di::extension::injector<> &injector) {
+			injector.install(di::bind<Logger>.to<InMemoryLogger>().in(di::singleton));
+        }
 
 		bool hasLogEntry(const std::string& lvl, const std::string& expectedMsg) const {
 			for (const auto& entry : logs) {
@@ -65,5 +68,3 @@ class InMemoryLogger : public Logger {
 			logs.clear();
 		}
 };
-
-#endif // CANARY_IN_MEMORY_LOGGER_HPP

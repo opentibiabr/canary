@@ -138,6 +138,7 @@ uint8_t forgeBonus(int32_t number);
 
 std::string formatPrice(std::string price, bool space /* = false*/);
 std::vector<std::string> split(const std::string &str);
+std::string getFormattedTimeRemaining(uint32_t time);
 
 static inline unsigned int getNumberOfCores() {
 	return std::thread::hardware_concurrency();
@@ -167,8 +168,10 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 			return CIPBIA_ELEMENTAL_DEATH;
 		case COMBAT_MANADRAIN:
 			return CIPBIA_ELEMENTAL_MANADRAIN;
+		case COMBAT_AGONYDAMAGE:
+			return CIPBIA_ELEMENTAL_AGONY;
 		case COMBAT_NEUTRALDAMAGE:
-			return CIPBIA_ELEMENTAL_NEUTRAL;
+			return CIPBIA_ELEMENTAL_AGONY;
 		default:
 			return CIPBIA_ELEMENTAL_UNDEFINED;
 	}

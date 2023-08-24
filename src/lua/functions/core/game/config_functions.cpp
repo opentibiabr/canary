@@ -199,6 +199,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", TOGGLE_TRAVELS_FREE);
 	registerEnumIn(L, "configKeys", BUY_AOL_COMMAND_FEE);
 	registerEnumIn(L, "configKeys", BUY_BLESS_COMMAND_FEE);
+	registerEnumIn(L, "configKeys", TELEPORT_PLAYER_TO_VOCATION_ROOM);
 
 	registerEnumIn(L, "configKeys", HAZARD_SPAWN_PLUNDER_MULTIPLIER);
 	registerEnumIn(L, "configKeys", HAZARD_CRITICAL_INTERVAL);

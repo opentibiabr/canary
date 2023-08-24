@@ -14,4 +14,5 @@ if(MSVC)
 endif()
 
 setup_target(${PROJECT_NAME})
+set_output_directory(${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_lib)

@@ -14,7 +14,6 @@
 class Scripts {
 public:
 	Scripts();
-	~Scripts();
 
 	// non-copyable
 	Scripts(const Scripts &) = delete;

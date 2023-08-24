@@ -827,8 +827,7 @@ void Creature::drainMana(Creature* attacker, int32_t manaLoss) {
 
 // Wheel of destiny - mitigation system for creature
 void Creature::mitigateDamage(const CombatType_t &combatType, BlockType_t &blockType, int32_t &damage) const {
-	if (combatType != COMBAT_MANADRAIN && combatType != COMBAT_LIFEDRAIN) { // Add agony check if the server does have agony combat type
-		// Increase mitigate damage
+	if (combatType != COMBAT_MANADRAIN && combatType != COMBAT_LIFEDRAIN && combatType != COMBAT_AGONYDAMAGE) { // Increase mitigate damage
 		auto originalDamage = damage;
 		damage -= (damage * getMitigation()) / 100.;
 		g_logger().debug("[mitigation] creature: {}, original damage: {}, mitigation damage: {}", getName(), originalDamage, damage);

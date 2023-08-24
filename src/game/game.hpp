@@ -69,15 +69,14 @@ public:
 	 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
 	 * \returns true if the custom map was loaded successfully
 	 */
-	bool loadMainMap(const std::string &filename);
+	void loadMainMap(const std::string &filename);
 	/**
 	 * Load the custom map
 	 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
 	 * \returns true if the custom map was loaded successfully
 	 */
-	bool loadCustomMaps(const std::string &customMapPath);
-	bool loadCustomMap(const std::string &filename);
-	void loadMap(const std::string &path, const Position &pos = Position(), bool unload = false);
+	void loadCustomMaps(const std::filesystem::path &customMapPath);
+	void loadMap(const std::string &path, const Position &pos = Position());
 
 	void getMapDimensions(uint32_t &width, uint32_t &height) const {
 		width = map.width;
@@ -360,7 +359,6 @@ public:
 	void playerOpenWheel(uint32_t playerId, uint32_t ownerId);
 	void playerSaveWheel(uint32_t playerId, NetworkMessage &msg);
 
-	static void updatePremium(account::Account &account);
 	void updatePlayerHelpers(Player* player);
 
 	void cleanup();

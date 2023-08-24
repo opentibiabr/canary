@@ -240,8 +240,9 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						} else if (usenormalskill == 3) {
 							imbuement.skills[skillId] = bonus;
 							int32_t chance = 100;
-							if ((attr = childNode.attribute("chance")))
+							if ((attr = childNode.attribute("chance"))) {
 								chance = std::min<uint32_t>(100, pugi::cast<int32_t>(attr.value()));
+							}
 
 							imbuement.skills[skillId - 1] = chance;
 						}

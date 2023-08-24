@@ -341,6 +341,7 @@ private:
 
 		registerMethod(L, "Player", "isVip", PlayerFunctions::luaPlayerIsVip);
 		registerMethod(L, "Player", "getVipDays", PlayerFunctions::luaPlayerGetVipDays);
+		registerMethod(L, "Player", "getVipTime", PlayerFunctions::luaPlayerGetVipTime);
 
 		GroupFunctions::init(L);
 		GuildFunctions::init(L);
@@ -677,6 +678,7 @@ private:
 
 	static int luaPlayerIsVip(lua_State* L);
 	static int luaPlayerGetVipDays(lua_State* L);
+	static int luaPlayerGetVipTime(lua_State* L);
 
 	friend class CreatureFunctions;
 };

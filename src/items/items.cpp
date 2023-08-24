@@ -321,8 +321,9 @@ const ItemType &Items::getItemType(size_t id) const {
 uint16_t Items::getItemIdByName(const std::string &name) {
 	auto result = nameToItems.find(asLowerCaseString(name));
 
-	if (result == nameToItems.end())
+	if (result == nameToItems.end()) {
 		return 0;
+	}
 
 	return result->second;
 }

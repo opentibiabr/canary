@@ -13,12 +13,49 @@
 #include "io/functions/iologindata_load_player.hpp"
 #include "game/game.hpp"
 
+void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, DBResult_ptr result, Player &player) {
+	try {
+		do {
+			uint32_t sid = result->getNumber<uint32_t>("sid");
+			uint32_t pid = result->getNumber<uint32_t>("pid");
+			uint16_t type = result->getNumber<uint16_t>("itemtype");
+			uint16_t count = result->getNumber<uint16_t>("count");
+			unsigned long attrSize;
+			const char* attr = result->getStream("attributes", attrSize);
+			PropStream propStream;
+			propStream.init(attr, attrSize);
+
+			try {
+				Item* item = Item::CreateItem(type, count);
+				if (item) {
+					if (!item->unserializeAttr(propStream)) {
+						g_logger().warn("[{}] - Failed to deserialize item attributes {}, from player {}, from account id {}", __FUNCTION__, item->getID(), player.getName(), player.getAccount());
+						savePlayer(&player);
+						g_logger().info("[{}] - Deleting wrong item: {}", __FUNCTION__, item->getID());
+						delete item;
+						continue;
+					}
+					itemsMap[sid] = std::make_pair(item, pid);
+				} else {
+					g_logger().warn("[{}] - Failed to create item of type {} for player {}, from account id {}", __FUNCTION__, type, player.getName(), player.getAccount());
+				}
+			} catch (const std::exception &e) {
+				g_logger().warn("[{}] - Exception during the creation or deserialization of the item: {}", __FUNCTION__, e.what());
+				continue;
+			}
+		} while (result->next());
+	} catch (const std::exception &e) {
+		g_logger().error("[{}] - General exception during item loading: {}", __FUNCTION__, e.what());
+	}
+}
+
 bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
 	Database &db = Database::getInstance();
 
 	std::ostringstream query;
 	query << "SELECT `id`, `account_id`, `group_id`, `deletion`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
 	query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
+	query << ", (SELECT `lastday` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_last_day`";
 	query << ", (SELECT `premdays_purchased` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days_purchased`";
 	query << ", (SELECT `creation` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `creation_timestamp`";
 	query << " FROM `players` WHERE `name` = " << db.escapeString(name);
@@ -41,6 +78,7 @@ bool IOLoginDataLoad::preLoadPlayer(Player* player, const std::string &name) {
 	player->accountNumber = result->getNumber<uint32_t>("account_id");
 	player->accountType = static_cast<account::AccountType>(result->getNumber<uint16_t>("account_type"));
 	player->premiumDays = result->getNumber<uint16_t>("premium_days");
+	player->premiumLastDay = result->getNumber<uint32_t>("premium_last_day");
 
 	/*
 	  Loyalty system:
@@ -90,9 +128,10 @@ bool IOLoginDataLoad::loadPlayerFirst(Player* player, DBResult_ptr result) {
 	player->name = result->getString("name");
 	acc.GetID(&(player->accountNumber));
 	acc.GetAccountType(&(player->accountType));
+	acc.GetPremiumRemainingDays(&(player->premiumDays));
+	acc.GetPremiumLastDay(&(player->premiumLastDay));
 	acc.GetCoins(&(player->coinBalance));
 	acc.GetTransferableCoins(&(player->coinTransferableBalance));
-	player->premiumDays = std::numeric_limits<uint16_t>::max();
 
 	Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
 	if (!group) {
@@ -460,14 +499,14 @@ void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr resu
 	std::ostringstream query;
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_items` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
 
-	InventoryItemsMap inventoryItems;
+	ItemsMap inventoryItems;
 	std::vector<std::pair<uint8_t, Container*>> openContainersList;
 
 	try {
 		if ((result = db.storeQuery(query.str()))) {
 			loadItems(inventoryItems, result, *player);
 
-			for (InventoryItemsMap::const_reverse_iterator it = inventoryItems.rbegin(), end = inventoryItems.rend(); it != end; ++it) {
+			for (ItemsMap::const_reverse_iterator it = inventoryItems.rbegin(), end = inventoryItems.rend(); it != end; ++it) {
 				const std::pair<Item*, int32_t> &pair = it->second;
 				Item* item = pair.first;
 				if (!item) {
@@ -480,7 +519,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(Player* player, DBResult_ptr resu
 					player->internalAddThing(pid, item);
 					item->startDecaying();
 				} else {
-					InventoryItemsMap::const_iterator it2 = inventoryItems.find(pid);
+					ItemsMap::const_iterator it2 = inventoryItems.find(pid);
 					if (it2 == inventoryItems.end()) {
 						continue;
 					}
@@ -544,7 +583,7 @@ void IOLoginDataLoad::loadRewardItems(Player* player) {
 		return;
 	}
 
-	RewardItemsMap rewardItems;
+	ItemsMap rewardItems;
 	std::ostringstream query;
 	query.str(std::string());
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_rewards` WHERE `player_id` = "
@@ -563,13 +602,13 @@ void IOLoginDataLoad::loadPlayerDepotItems(Player* player, DBResult_ptr result) 
 	}
 
 	Database &db = Database::getInstance();
-	DepotItemsMap depotItems;
+	ItemsMap depotItems;
 	std::ostringstream query;
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_depotitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
 	if ((result = db.storeQuery(query.str()))) {
 
 		loadItems(depotItems, result, *player);
-		for (DepotItemsMap::const_reverse_iterator it = depotItems.rbegin(), end = depotItems.rend(); it != end; ++it) {
+		for (ItemsMap::const_reverse_iterator it = depotItems.rbegin(), end = depotItems.rend(); it != end; ++it) {
 			const std::pair<Item*, int32_t> &pair = it->second;
 			Item* item = pair.first;
 
@@ -581,7 +620,7 @@ void IOLoginDataLoad::loadPlayerDepotItems(Player* player, DBResult_ptr result) 
 					item->startDecaying();
 				}
 			} else {
-				DepotItemsMap::const_iterator it2 = depotItems.find(pid);
+				ItemsMap::const_iterator it2 = depotItems.find(pid);
 				if (it2 == depotItems.end()) {
 					continue;
 				}
@@ -607,10 +646,10 @@ void IOLoginDataLoad::loadPlayerInboxItems(Player* player, DBResult_ptr result) 
 	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_inboxitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
 	if ((result = db.storeQuery(query.str()))) {
 
-		InboxItemsMap inboxItems;
+		ItemsMap inboxItems;
 		loadItems(inboxItems, result, *player);
 
-		for (InboxItemsMap::const_reverse_iterator it = inboxItems.rbegin(), end = inboxItems.rend(); it != end; ++it) {
+		for (ItemsMap::const_reverse_iterator it = inboxItems.rbegin(), end = inboxItems.rend(); it != end; ++it) {
 			const std::pair<Item*, int32_t> &pair = it->second;
 			Item* item = pair.first;
 			int32_t pid = pair.second;
@@ -618,7 +657,7 @@ void IOLoginDataLoad::loadPlayerInboxItems(Player* player, DBResult_ptr result) 
 				player->getInbox()->internalAddThing(item);
 				item->startDecaying();
 			} else {
-				InboxItemsMap::const_iterator it2 = inboxItems.find(pid);
+				ItemsMap::const_iterator it2 = inboxItems.find(pid);
 				if (it2 == inboxItems.end()) {
 					continue;
 				}
@@ -815,7 +854,7 @@ void IOLoginDataLoad::loadPlayerBosstiary(Player* player, DBResult_ptr result) {
 	}
 }
 
-void IOLoginDataLoad::bindRewardBag(Player* player, RewardItemsMap &rewardItemsMap) {
+void IOLoginDataLoad::bindRewardBag(Player* player, ItemsMap &rewardItemsMap) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::loadPlayer] - Player nullptr: {}", __FUNCTION__);
 		return;
@@ -834,7 +873,7 @@ void IOLoginDataLoad::bindRewardBag(Player* player, RewardItemsMap &rewardItemsM
 	}
 }
 
-void IOLoginDataLoad::insertItemsIntoRewardBag(const RewardItemsMap &rewardItemsMap) {
+void IOLoginDataLoad::insertItemsIntoRewardBag(const ItemsMap &rewardItemsMap) {
 	for (const auto &it : std::views::reverse(rewardItemsMap)) {
 		const std::pair<Item*, int32_t> &pair = it.second;
 		Item* item = pair.first;
@@ -843,7 +882,7 @@ void IOLoginDataLoad::insertItemsIntoRewardBag(const RewardItemsMap &rewardItems
 			break;
 		}
 
-		RewardItemsMap::const_iterator it2 = rewardItemsMap.find(pid);
+		ItemsMap::const_iterator it2 = rewardItemsMap.find(pid);
 		if (it2 == rewardItemsMap.end()) {
 			continue;
 		}

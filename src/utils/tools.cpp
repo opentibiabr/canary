@@ -549,25 +549,31 @@ Direction getDirectionTo(const Position &from, const Position &to, bool exactDia
 		/*
 		 * Only consider diagonal if dx and dy are equal (exact diagonal).
 		 */
-		if (absDx > absDy)
+		if (absDx > absDy) {
 			return dx < 0 ? DIRECTION_EAST : DIRECTION_WEST;
-		if (absDx < absDy)
+		}
+		if (absDx < absDy) {
 			return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
+		}
 	}
 
 	if (dx < 0) {
-		if (dy < 0)
+		if (dy < 0) {
 			return DIRECTION_SOUTHEAST;
-		if (dy > 0)
+		}
+		if (dy > 0) {
 			return DIRECTION_NORTHEAST;
+		}
 		return DIRECTION_EAST;
 	}
 
 	if (dx > 0) {
-		if (dy < 0)
+		if (dy < 0) {
 			return DIRECTION_SOUTHWEST;
-		if (dy > 0)
+		}
+		if (dy > 0) {
 			return DIRECTION_NORTHWEST;
+		}
 		return DIRECTION_WEST;
 	}
 
@@ -775,6 +781,7 @@ CombatTypeNames combatTypeNames = {
 	{ COMBAT_LIFEDRAIN, "lifedrain" },
 	{ COMBAT_MANADRAIN, "manadrain" },
 	{ COMBAT_PHYSICALDAMAGE, "physical" },
+	{ COMBAT_AGONYDAMAGE, "agony" },
 	{ COMBAT_NEUTRALDAMAGE, "neutral" },
 };
 
@@ -1509,9 +1516,9 @@ NameEval_t validateName(const std::string &name) {
 	}
 
 	for (std::string str : toks) {
-		if (str.length() < 2)
+		if (str.length() < 2) {
 			return INVALID_TOKEN_LENGTH;
-		else if (std::find(prohibitedWords.begin(), prohibitedWords.end(), str) != prohibitedWords.end()) { // searching for prohibited words
+		} else if (std::find(prohibitedWords.begin(), prohibitedWords.end(), str) != prohibitedWords.end()) { // searching for prohibited words
 			return INVALID_FORBIDDEN;
 		}
 	}
@@ -1586,29 +1593,37 @@ std::string getObjectCategoryName(ObjectCategory_t category) {
 
 uint8_t forgeBonus(int32_t number) {
 	// None
-	if (number < 7400)
+	if (number < 7400) {
 		return 0;
+	}
 	// Dust not consumed
-	else if (number >= 7400 && number < 9000)
+	else if (number >= 7400 && number < 9000) {
 		return 1;
+	}
 	// Cores not consumed
-	else if (number >= 9000 && number < 9500)
+	else if (number >= 9000 && number < 9500) {
 		return 2;
+	}
 	// Gold not consumed
-	else if (number >= 9500 && number < 9525)
+	else if (number >= 9500 && number < 9525) {
 		return 3;
+	}
 	// Second item retained with decreased tier
-	else if (number >= 9525 && number < 9550)
+	else if (number >= 9525 && number < 9550) {
 		return 4;
+	}
 	// Second item retained with unchanged tier
-	else if (number >= 9550 && number < 9950)
+	else if (number >= 9550 && number < 9950) {
 		return 5;
+	}
 	// Second item retained with increased tier
-	else if (number >= 9950 && number < 9975)
+	else if (number >= 9950 && number < 9975) {
 		return 6;
+	}
 	// Gain two tiers
-	else if (number >= 9975)
+	else if (number >= 9975) {
 		return 7;
+	}
 
 	return 0;
 }
@@ -1634,4 +1649,33 @@ std::vector<std::string> split(const std::string &str) {
 		tokens.push_back(trimedToken);
 	}
 	return tokens;
+}
+
+std::string getFormattedTimeRemaining(uint32_t time) {
+	time_t timeRemaining = time - getTimeNow();
+
+	int days = static_cast<int>(std::floor(timeRemaining / 86400));
+
+	std::stringstream output;
+	if (days > 1) {
+		output << days << " days";
+		return output.str();
+	}
+
+	int hours = static_cast<int>(std::floor((timeRemaining % 86400) / 3600));
+	int minutes = static_cast<int>(std::floor((timeRemaining % 3600) / 60));
+	int seconds = static_cast<int>(timeRemaining % 60);
+
+	if (hours == 0 && minutes == 0 && seconds > 0) {
+		output << " less than 1 minute";
+	} else {
+		if (hours > 0) {
+			output << hours << " hour" << (hours != 1 ? "s" : "");
+		}
+		if (minutes > 0) {
+			output << (hours > 0 ? " and " : "") << minutes << " minute" << (minutes != 1 ? "s" : "");
+		}
+	}
+
+	return output.str();
 }

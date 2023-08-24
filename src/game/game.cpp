@@ -166,7 +166,6 @@ namespace InternalGame {
 
 		return static_cast<T>(value);
 	}
-
 } // Namespace InternalGame
 
 Game::Game() {
@@ -232,12 +231,14 @@ void Game::loadBoostedCreature() {
 	if (!monsterlist.empty()) {
 		std::vector<MonsterRace> monsters;
 		for (const auto &[raceId, _name] : BestiaryList) {
-			if (raceId != oldRace)
+			if (raceId != oldRace) {
 				monsters.emplace_back(raceId, _name);
+			}
 		}
 
-		if (!monsters.empty())
+		if (!monsters.empty()) {
 			selectedMonster = monsters[normal_random(0, monsters.size() - 1)];
+		}
 	}
 
 	if (selectedMonster.raceId == 0) {
@@ -437,23 +438,20 @@ bool Game::loadItemsPrice() {
 	return true;
 }
 
-bool Game::loadMainMap(const std::string &filename) {
+void Game::loadMainMap(const std::string &filename) {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
-	return map.loadMap(g_configManager().getString(DATA_DIRECTORY) + "/world/" + filename + ".otbm", true, true, true, true);
+	map.loadMap(g_configManager().getString(DATA_DIRECTORY) + "/world/" + filename + ".otbm", true, true, true, true);
 }
 
-bool Game::loadCustomMaps(const std::string &customMapPath) {
+void Game::loadCustomMaps(const std::filesystem::path &customMapPath) {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
 
 	namespace fs = std::filesystem;
 
-	if (!fs::exists(customMapPath)) {
-		if (!fs::create_directory(customMapPath)) {
-			g_logger().error("Failed to create custom map directory {}", customMapPath);
-			return false;
-		}
+	if (!fs::exists(customMapPath) && !fs::create_directory(customMapPath)) {
+		throw std::ios_base::failure(fmt::format("Failed to create custom map directory {}", customMapPath.string()));
 	}
 
 	int customMapIndex = 0;
@@ -484,22 +482,17 @@ bool Game::loadCustomMaps(const std::string &customMapPath) {
 			continue;
 		}
 
-		g_logger().info("Loading custom map {}", filename);
-		if (!map.loadMapCustom(filename, true, true, true, customMapIndex)) {
-			g_logger().error("Failed to load custom map {}", filename);
-			return false;
-		}
+		map.loadMapCustom(filename, true, true, true, customMapIndex);
+
 		customMapIndex++;
 	}
 
 	// Must be done after all maps have been loaded
 	map.loadHouseInfo();
-
-	return true;
 }
 
-void Game::loadMap(const std::string &path, const Position &pos, bool unload) {
-	map.loadMap(path, false, false, false, false, pos, unload);
+void Game::loadMap(const std::string &path, const Position &pos) {
+	map.loadMap(path, false, false, false, false, pos);
 }
 
 Cylinder* Game::internalGetCylinder(Player* player, const Position &pos) {
@@ -2609,8 +2602,9 @@ bool Game::handleFallbackLogic(const Player* player, Container*&lootContainer, C
 	}
 
 	Item* fallbackItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
-	if (!fallbackItem || !fallbackItem->getContainer())
+	if (!fallbackItem || !fallbackItem->getContainer()) {
 		return false;
+	}
 
 	lootContainer = fallbackItem->getContainer();
 	containerIterator = lootContainer->iterator();
@@ -4032,8 +4026,9 @@ void Game::playerStowItem(uint32_t playerId, const Position &pos, uint16_t itemI
 	}
 
 	Thing* thing = internalGetThing(player, pos, stackpos, itemId, STACKPOS_TOPDOWN_ITEM);
-	if (!thing)
+	if (!thing) {
 		return;
+	}
 
 	Item* item = thing->getItem();
 	if (!item || item->getID() != itemId || item->getItemCount() < count || item->isStoreItem()) {
@@ -5910,7 +5905,7 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 		return true;
 	}
 
-	if (damage.primary.value > 0) {
+	if (damage.primary.value > 0 || damage.primary.type == COMBAT_AGONYDAMAGE) {
 		return false;
 	}
 
@@ -5965,10 +5960,11 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				int32_t distanceY = Position::getDistanceY(target->getPosition(), attacker->getPosition());
 				if (target->getMonster() || damage.primary.type != COMBAT_PHYSICALDAMAGE || primaryReflectPercent > 0 || std::max(distanceX, distanceY) < 2) {
 					damageReflected.primary.value = std::ceil(damage.primary.value * primaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.primary.value, -(static_cast<int32_t>(primaryReflectFlat))));
-					if (targetPlayer)
+					if (targetPlayer) {
 						damageReflected.primary.type = COMBAT_NEUTRALDAMAGE;
-					else
+					} else {
 						damageReflected.primary.type = damage.primary.type;
+					}
 					if (!damageReflected.exString.empty()) {
 						damageReflected.exString += ", ";
 					}
@@ -5990,10 +5986,12 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 					canHeal = true;
 				}
 			}
-			if (targetPlayer && attacker->getAbsorbPercent(damage.primary.type) != 0)
+			if (targetPlayer && attacker->getAbsorbPercent(damage.primary.type) != 0) {
 				damageAbsorbMessage = true;
-			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.primary.type) != 0)
+			}
+			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.primary.type) != 0) {
 				damageIncreaseMessage = true;
+			}
 			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
 		}
 		damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
@@ -6038,10 +6036,12 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 				damageHeal.primary.value += std::ceil((damage.secondary.value) * (secondaryHealing / 100.));
 				canHeal = true;
 			}
-			if (targetPlayer && attacker->getAbsorbPercent(damage.secondary.type) != 0)
+			if (targetPlayer && attacker->getAbsorbPercent(damage.secondary.type) != 0) {
 				damageAbsorbMessage = true;
-			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.secondary.type) != 0)
+			}
+			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.secondary.type) != 0) {
 				damageIncreaseMessage = true;
+			}
 			damage.secondary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
 		}
 		damage.secondary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
@@ -6054,8 +6054,9 @@ bool Game::combatBlockHit(CombatDamage &damage, Creature* attacker, Creature* ta
 		secondaryBlockType = BLOCK_NONE;
 	}
 
-	if (damage.primary.type == COMBAT_HEALING)
+	if (damage.primary.type == COMBAT_HEALING) {
 		damage.primary.value *= target->getBuff(BUFF_HEALINGRECEIVED) / 100.;
+	}
 
 	if (damageAbsorbMessage) {
 		if (!damage.exString.empty()) {
@@ -6170,6 +6171,11 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 		case COMBAT_LIFEDRAIN: {
 			color = TEXTCOLOR_RED;
 			effect = CONST_ME_MAGIC_RED;
+			break;
+		}
+		case COMBAT_AGONYDAMAGE: {
+			color = TEXTCOLOR_DARKBROWN;
+			effect = CONST_ME_AGONY;
 			break;
 		}
 		case COMBAT_NEUTRALDAMAGE: {
@@ -6474,8 +6480,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				}
 				if (damageX != 0 || damageY != 0) {
 					int32_t totalDamage = damageX;
-					if (distanceX != distanceY)
+					if (distanceX != distanceY) {
 						totalDamage += damageY;
+					}
 					damage.primary.value += totalDamage;
 					if (!damage.exString.empty()) {
 						damage.exString += ", ";
@@ -7505,46 +7512,6 @@ void Game::updateCreatureType(Creature* creature) {
 				player->sendCreatureType(creature, creatureType);
 			}
 		}
-	}
-}
-
-void Game::updatePremium(account::Account &account) {
-	bool save = false;
-	time_t timeNow = time(nullptr);
-	uint32_t rem_days = 0;
-	time_t last_day;
-	account.GetPremiumRemaningDays(&rem_days);
-	account.GetPremiumLastDay(&last_day);
-	std::string accountIdentifier;
-	if (rem_days != 0) {
-		if (last_day == 0) {
-			account.SetPremiumLastDay(timeNow);
-			save = true;
-		} else {
-			uint32_t days = (timeNow - last_day) / 86400;
-			if (days > 0) {
-				if (days >= rem_days) {
-					if (!account.SetPremiumRemaningDays(0) || !account.SetPremiumLastDay(0)) {
-						account.GetAccountIdentifier(&accountIdentifier);
-						g_logger().error("Failed to set account premium days, account {}: {}", account.getProtocolCompat() ? "name" : " email", accountIdentifier);
-					}
-				} else {
-					account.SetPremiumRemaningDays((rem_days - days));
-					time_t remainder = (timeNow - last_day) % 86400;
-					account.SetPremiumLastDay(timeNow - remainder);
-				}
-
-				save = true;
-			}
-		}
-	} else if (last_day != 0) {
-		account.SetPremiumLastDay(0);
-		save = true;
-	}
-
-	if (save && account.SaveAccountDB() != 0) {
-		account.GetAccountIdentifier(&accountIdentifier);
-		g_logger().error("Failed to save account: {}", accountIdentifier);
 	}
 }
 
@@ -9410,8 +9377,9 @@ uint32_t Game::makeInfluencedMonster() {
 		return 0;
 	}
 
-	if (forgeableMonsters.empty())
+	if (forgeableMonsters.empty()) {
 		return 0;
+	}
 
 	auto maxTries = forgeableMonsters.size();
 	uint16_t tries = 0;
@@ -9578,10 +9546,11 @@ void Game::updateFiendishMonsterStatus(uint32_t monsterId, const std::string &mo
 }
 
 bool Game::removeForgeMonster(uint32_t id, ForgeClassifications_t monsterForgeClassification, bool create) {
-	if (monsterForgeClassification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER)
+	if (monsterForgeClassification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
 		removeFiendishMonster(id, create);
-	else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER)
+	} else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER) {
 		removeInfluencedMonster(id, create);
+	}
 
 	return true;
 }
@@ -9627,8 +9596,9 @@ void Game::updateForgeableMonsters() {
 			continue;
 		}
 
-		if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT))
+		if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
 			forgeableMonsters.push_back(monster->getID());
+		}
 	}
 
 	for (const auto monsterId : getFiendishMonsters()) {
@@ -9638,8 +9608,9 @@ void Game::updateForgeableMonsters() {
 	}
 
 	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
-	if (fiendishMonsters.size() < fiendishLimit)
+	if (fiendishMonsters.size() < fiendishLimit) {
 		createFiendishMonsters();
+	}
 }
 
 void Game::createFiendishMonsters() {

@@ -315,8 +315,9 @@ void Monster::addTarget(Creature* creature, bool pushFront /* = false*/) {
 		} else {
 			targetList.push_back(creature);
 		}
-		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer())
+		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen++;
+		}
 	}
 }
 

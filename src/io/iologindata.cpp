@@ -415,19 +415,24 @@ void IOLoginData::removeVIPEntry(uint32_t accountId, uint32_t guid) {
 	Database::getInstance().executeQuery(query.str());
 }
 
-void IOLoginData::addPremiumDays(uint32_t accountId, int32_t addDays) {
+void IOLoginData::addPremiumDays(Player* player, uint32_t addDays) {
 	std::ostringstream query;
+	time_t lastDay = player->getPremiumLastDay();
 	query << "UPDATE `accounts` SET"
 		  << "`premdays` = `premdays` + " << addDays
 		  << ", `premdays_purchased` = `premdays_purchased` + " << addDays
-		  << ", `lastday` = " << getTimeNow()
-		  << " WHERE `id` = " << accountId;
+		  << ", `lastday` = " << (((lastDay == 0 || lastDay < getTimeNow()) ? getTimeNow() : lastDay) + (addDays * 86400))
+		  << " WHERE `id` = " << player->getAccount();
 
 	Database::getInstance().executeQuery(query.str());
 }
 
-void IOLoginData::removePremiumDays(uint32_t accountId, int32_t removeDays) {
+void IOLoginData::removePremiumDays(Player* player, uint32_t removeDays) {
 	std::ostringstream query;
-	query << "UPDATE `accounts` SET `premdays` = `premdays` - " << removeDays << " WHERE `id` = " << accountId;
+	uint32_t days = removeDays > player->premiumDays ? player->premiumDays : removeDays;
+	query << "UPDATE `accounts` SET"
+		  << "`premdays` = `premdays` - " << days
+		  << ", `lastday` = " << (player->getPremiumLastDay() - (days * 86400))
+		  << " WHERE `id` = " << player->getAccount();
 	Database::getInstance().executeQuery(query.str());
 }

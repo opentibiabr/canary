@@ -6,8 +6,7 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#ifndef CANARY_EVENT_HPP
-#define CANARY_EVENT_HPP
+#pragma once
 
 enum class EventType {
 };
@@ -25,5 +24,3 @@ inline IEvent event(EventType type) {
 }
 #define eventCallback(block) [this](const IEvent &) block
 #define appendEventListener(type, block) dispatcher.appendListener(type, eventCallback(block))
-
-#endif // CANARY_EVENT_HPP

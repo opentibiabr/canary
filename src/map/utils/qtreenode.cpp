@@ -16,16 +16,18 @@
 bool QTreeLeafNode::newLeaf = false;
 
 QTreeLeafNode* QTreeNode::getLeaf(uint32_t x, uint32_t y) {
-	if (leaf)
+	if (leaf) {
 		return static_cast<QTreeLeafNode*>(this);
+	}
 
 	const auto node = child[((x & 0x8000) >> 15) | ((y & 0x8000) >> 14)];
 	return node ? node->getLeaf(x << 1, y << 1) : nullptr;
 }
 
 QTreeLeafNode* QTreeNode::createLeaf(uint32_t x, uint32_t y, uint32_t level) {
-	if (isLeaf())
+	if (isLeaf()) {
 		return static_cast<QTreeLeafNode*>(this);
+	}
 
 	const uint32_t index = ((x & 0x8000) >> 15) | ((y & 0x8000) >> 14);
 	if (!child[index]) {

@@ -61,12 +61,14 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 		g_game().createLuaItemsOnMap();
 	}
 
-	if (loadMonsters && !IOMap::loadMonsters(this))
+	if (loadMonsters && !IOMap::loadMonsters(this)) {
 		g_logger().warn("Failed to load spawn data");
+	}
 
 	if (loadHouses) {
-		if (!IOMap::loadHouses(this))
+		if (!IOMap::loadHouses(this)) {
 			g_logger().warn("Failed to load house data");
+		}
 
 		/**
 		 * Only load houses items if map custom load is disabled
@@ -79,8 +81,9 @@ bool Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 		}
 	}
 
-	if (loadNpcs && !IOMap::loadNpcs(this))
+	if (loadNpcs && !IOMap::loadNpcs(this)) {
 		g_logger().warn("Failed to load npc spawn data");
+	}
 
 	// Files need to be cleaned up if custom map is enabled to open, or will try to load main map files
 	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
@@ -97,14 +100,17 @@ bool Map::loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMo
 	load(path, Position(0, 0, 0), true);
 	load(path);
 
-	if (loadMonsters && !IOMap::loadMonstersCustom(this, mapName, customMapIndex))
+	if (loadMonsters && !IOMap::loadMonstersCustom(this, mapName, customMapIndex)) {
 		g_logger().warn("Failed to load monster custom data");
+	}
 
-	if (loadHouses && !IOMap::loadHousesCustom(this, mapName, customMapIndex))
+	if (loadHouses && !IOMap::loadHousesCustom(this, mapName, customMapIndex)) {
 		g_logger().warn("Failed to load house custom data");
+	}
 
-	if (loadNpcs && !IOMap::loadNpcsCustom(this, mapName, customMapIndex))
+	if (loadNpcs && !IOMap::loadNpcsCustom(this, mapName, customMapIndex)) {
 		g_logger().warn("Failed to load npc custom spawn data");
+	}
 
 	// Files need to be cleaned up or will try to load previous map files again
 	monsterfile.clear();
@@ -134,10 +140,11 @@ bool Map::save() {
 Tile* Map::getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic) {
 	auto tile = getTile(x, y, z);
 	if (!tile) {
-		if (isDynamic)
+		if (isDynamic) {
 			tile = new DynamicTile(x, y, z);
-		else
+		} else {
 			tile = new StaticTile(x, y, z);
+		}
 
 		setTile(x, y, z, tile);
 	}
@@ -146,16 +153,19 @@ Tile* Map::getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic) {
 }
 
 Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
-	if (z >= MAP_MAX_LAYERS)
+	if (z >= MAP_MAX_LAYERS) {
 		return nullptr;
+	}
 
 	const auto leaf = getQTNode(x, y);
-	if (!leaf)
+	if (!leaf) {
 		return nullptr;
+	}
 
 	const auto &floor = leaf->getFloor(z);
-	if (!floor)
+	if (!floor) {
 		return nullptr;
+	}
 
 	const auto tile = floor->getTile(x, y);
 	return tile ? tile : getOrCreateTileFromCache(floor, x, y);

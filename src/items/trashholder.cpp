@@ -34,8 +34,9 @@ void TrashHolder::addThing(Thing* thing) {
 }
 
 void TrashHolder::addThing(int32_t, Thing* thing) {
-	if (!thing)
+	if (!thing) {
 		return;
+	}
 
 	Item* item = thing->getItem();
 	if (!item) {

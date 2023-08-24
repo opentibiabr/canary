@@ -39,14 +39,17 @@ void MapCache::flush() {
 }
 
 void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
-	if (BasicItem->charges > 0)
+	if (BasicItem->charges > 0) {
 		item->setSubType(BasicItem->charges);
+	}
 
-	if (BasicItem->actionId > 0)
+	if (BasicItem->actionId > 0) {
 		item->setAttribute(ItemAttribute_t::ACTIONID, BasicItem->actionId);
+	}
 
-	if (BasicItem->uniqueId > 0)
+	if (BasicItem->uniqueId > 0) {
 		item->addUniqueId(BasicItem->uniqueId);
+	}
 
 	if (item->getTeleport() && (BasicItem->destX != 0 || BasicItem->destY != 0 || BasicItem->destZ != 0)) {
 		auto dest = Position(BasicItem->destX, BasicItem->destY, BasicItem->destZ);
@@ -71,21 +74,21 @@ void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
 			}
 		}
 
-		if (BasicItem->sleepStart > 0)
+		if (BasicItem->sleepStart > 0) {
 			item->getBed()->sleepStart = static_cast<uint64_t>(BasicItem->sleepStart);
+		}
 	}
 
-	if (!BasicItem->text.empty())
+	if (!BasicItem->text.empty()) {
 		item->setAttribute(ItemAttribute_t::TEXT, BasicItem->text);
-
-	/* if (BasicItem.description != 0)
-		item->setAttribute(ItemAttribute_t::DESCRIPTION, STRING_CACHE[BasicItem.description]);*/
+	}
 }
 
 Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
 	auto item = Item::CreateItem(BasicItem->id, position);
-	if (!item)
+	if (!item) {
 		return nullptr;
+	}
 
 	parseItemAttr(BasicItem, item);
 
@@ -98,8 +101,9 @@ Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
 		}
 	}
 
-	if (item->getItemCount() == 0)
+	if (item->getItemCount() == 0) {
 		item->setItemCount(1);
+	}
 
 	item->startDecaying();
 	item->setLoadedFromMap(true);
@@ -109,8 +113,9 @@ Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
 
 Tile* MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y) {
 	const auto &cachedTile = floor->getTileCache(x, y);
-	if (!cachedTile)
+	if (!cachedTile) {
 		return floor->getTile(x, y);
+	}
 
 	const uint8_t z = floor->getZ();
 
@@ -123,16 +128,19 @@ Tile* MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, ui
 		house->addTile(static_cast<HouseTile*>(tile));
 	} else if (cachedTile->isStatic) {
 		tile = new StaticTile(x, y, z);
-	} else
+	} else {
 		tile = new DynamicTile(x, y, z);
+	}
 
 	auto pos = Position(x, y, z);
 
-	if (cachedTile->ground != nullptr)
+	if (cachedTile->ground != nullptr) {
 		tile->internalAddThing(createItem(cachedTile->ground, pos));
+	}
 
-	for (const auto &BasicItemd : cachedTile->items)
+	for (const auto &BasicItemd : cachedTile->items) {
 		tile->internalAddThing(createItem(BasicItemd, pos));
+	}
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
 
@@ -160,34 +168,40 @@ BasicItemPtr MapCache::tryReplaceItemFromCache(const BasicItemPtr &ref) {
 void BasicTile::hash(size_t &h) const {
 	const uint32_t arr[] = { flags, houseId, type, isStatic };
 	for (const auto v : arr) {
-		if (v > 0)
+		if (v > 0) {
 			stdext::hash_combine(h, v);
+		}
 	}
 
-	if (ground != nullptr)
+	if (ground != nullptr) {
 		ground->hash(h);
+	}
 
 	if (!items.empty()) {
 		stdext::hash_combine(h, items.size());
-		for (const auto &item : items)
+		for (const auto &item : items) {
 			item->hash(h);
+		}
 	}
 }
 
 void BasicItem::hash(size_t &h) const {
 	const uint32_t arr[] = { id, guid, sleepStart, charges, actionId, uniqueId, destX, destY, destZ, doorOrDepotId };
 	for (const auto v : arr) {
-		if (v > 0)
+		if (v > 0) {
 			stdext::hash_combine(h, v);
+		}
 	}
 
-	if (!text.empty())
+	if (!text.empty()) {
 		stdext::hash_combine(h, text);
+	}
 
 	if (!items.empty()) {
 		stdext::hash_combine(h, items.size());
-		for (const auto &item : items)
+		for (const auto &item : items) {
 			item->hash(h);
+		}
 	}
 }
 
@@ -200,21 +214,24 @@ bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, 
 	readAttr(stream);
 
 	while (stream.startNode()) {
-		if (stream.getU8() != OTBM_ITEM)
+		if (stream.getU8() != OTBM_ITEM) {
 			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not read item node.", x, y, z));
+		}
 
 		const uint16_t streamId = stream.getU16();
 
 		const auto &item = std::make_shared<BasicItem>();
 		item->id = streamId;
 
-		if (!item->unserializeItemNode(stream, x, y, z))
+		if (!item->unserializeItemNode(stream, x, y, z)) {
 			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Failed to load item.", x, y, z));
+		}
 
 		items.emplace_back(static_tryGetItemFromCache(item));
 
-		if (!stream.endNode())
+		if (!stream.endNode()) {
 			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
+		}
 	}
 
 	return true;
@@ -257,8 +274,9 @@ void BasicItem::readAttr(FileStream &stream) {
 
 			case ATTR_TEXT: {
 				const auto &str = stream.getString();
-				if (!str.empty())
+				if (!str.empty()) {
 					text = str;
+				}
 			} break;
 
 			case ATTR_DESC: {

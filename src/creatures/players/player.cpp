@@ -3110,10 +3110,11 @@ ReturnValue Player::queryAdd(int32_t index, const Thing &thing, uint32_t count, 
 					const Item* leftItem = inventory[CONST_SLOT_LEFT];
 					if (leftItem) {
 						if ((leftItem->getSlotPosition() | slotPosition) & SLOTP_TWO_HAND) {
-							if (item->isQuiver() && leftItem->getWeaponType() == WEAPON_DISTANCE)
+							if (item->isQuiver() && leftItem->getWeaponType() == WEAPON_DISTANCE) {
 								ret = RETURNVALUE_NOERROR;
-							else
+							} else {
 								ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
+							}
 						} else {
 							ret = RETURNVALUE_NOERROR;
 						}
@@ -3472,8 +3473,9 @@ Cylinder* Player::queryDestination(int32_t &index, const Thing &thing, Item** de
 }
 
 void Player::addThing(int32_t index, Thing* thing) {
-	if (!thing)
+	if (!thing) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
+	}
 
 	if (index < CONST_SLOT_FIRST || index > CONST_SLOT_LAST) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
@@ -4123,8 +4125,9 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 // i will keep this function so it can be reviewed
 bool Player::updateSaleShopList(const Item* item) {
 	uint16_t itemId = item->getID();
-	if (!itemId || !item)
+	if (!itemId || !item) {
 		return true;
+	}
 
 	g_dispatcher().addTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID()));
 	scheduledSaleUpdate = true;
@@ -4148,8 +4151,9 @@ void Player::internalAddThing(Thing* thing) {
 }
 
 void Player::internalAddThing(uint32_t index, Thing* thing) {
-	if (!thing)
+	if (!thing) {
 		return;
+	}
 
 	Item* item = thing->getItem();
 	if (!item) {

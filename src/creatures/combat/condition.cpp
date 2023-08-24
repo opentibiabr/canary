@@ -1334,10 +1334,11 @@ bool ConditionManaShield::setParam(ConditionParam_t param, int32_t value) {
 
 uint32_t ConditionManaShield::getIcons() const {
 	uint32_t icons = Condition::getIcons();
-	if (manaShield != 0)
+	if (manaShield != 0) {
 		icons |= ICON_NEWMANASHIELD;
-	else
+	} else {
 		icons |= ICON_MANASHIELD;
+	}
 	return icons;
 }
 

@@ -24,15 +24,17 @@ DatabaseTasks &DatabaseTasks::getInstance() {
 void DatabaseTasks::execute(const std::string &query, std::function<void(DBResult_ptr, bool)> callback /* nullptr */) {
 	threadPool.addLoad([this, query, callback]() {
 		bool success = db.executeQuery(query);
-		if (callback != nullptr)
+		if (callback != nullptr) {
 			g_dispatcher().addTask([callback, success]() { callback(nullptr, success); });
+		}
 	});
 }
 
 void DatabaseTasks::store(const std::string &query, std::function<void(DBResult_ptr, bool)> callback /* nullptr */) {
 	threadPool.addLoad([this, query, callback]() {
 		DBResult_ptr result = db.storeQuery(query);
-		if (callback != nullptr)
+		if (callback != nullptr) {
 			g_dispatcher().addTask([callback, result]() { callback(result, true); });
+		}
 	});
 }

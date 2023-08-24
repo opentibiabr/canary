@@ -872,7 +872,7 @@ void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
 		uint16_t points;
 		if (propStream.read<uint8_t>(slot) && propStream.read<uint16_t>(points)) {
 			setPointsBySlotType(slot, points);
-			g_logger().info("Player: {}, loaded points {} to slot {}", m_player.getName(), points, slot);
+			g_logger().debug("Player: {}, loaded points {} to slot {}", m_player.getName(), points, slot);
 		}
 	}
 }
@@ -1252,16 +1252,21 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 	g_logger().debug("Initializing print of WhelPlayerBonusData informations for player {}", m_player.getName());
 
 	g_logger().debug("Stats:");
-	if (bonusData.stats.health > 0)
+	if (bonusData.stats.health > 0) {
 		g_logger().debug("  health: {}", bonusData.stats.health);
-	if (bonusData.stats.mana > 0)
+	}
+	if (bonusData.stats.mana > 0) {
 		g_logger().debug("  mana: {}", bonusData.stats.mana);
-	if (bonusData.stats.capacity > 0)
+	}
+	if (bonusData.stats.capacity > 0) {
 		g_logger().debug("  capacity: {}", bonusData.stats.capacity);
-	if (bonusData.stats.damage > 0)
+	}
+	if (bonusData.stats.damage > 0) {
 		g_logger().debug("  damage: {}", bonusData.stats.damage);
-	if (bonusData.stats.healing > 0)
+	}
+	if (bonusData.stats.healing > 0) {
 		g_logger().debug("  healing: {}", bonusData.stats.healing);
+	}
 
 	g_logger().debug("Resistance:");
 	for (size_t i = 0; i < bonusData.resistance.size(); ++i) {
@@ -1278,65 +1283,90 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 	}
 
 	g_logger().debug("Skills:");
-	if (bonusData.skills.melee > 0)
+	if (bonusData.skills.melee > 0) {
 		g_logger().debug("  melee: {}", bonusData.skills.melee);
-	if (bonusData.skills.distance > 0)
+	}
+	if (bonusData.skills.distance > 0) {
 		g_logger().debug("  distance: {}", bonusData.skills.distance);
-	if (bonusData.skills.magic > 0)
+	}
+	if (bonusData.skills.magic > 0) {
 		g_logger().debug("  magic: {}", bonusData.skills.magic);
+	}
 
 	g_logger().debug("Leech:");
-	if (bonusData.leech.manaLeech > 0)
+	if (bonusData.leech.manaLeech > 0) {
 		g_logger().debug("  manaLeech: {}", bonusData.leech.manaLeech);
-	if (bonusData.leech.lifeLeech > 0)
+	}
+	if (bonusData.leech.lifeLeech > 0) {
 		g_logger().debug("  lifeLeech: {}", bonusData.leech.lifeLeech);
+	}
 
 	g_logger().debug("Instant:");
-	if (bonusData.instant.battleInstinct)
+	if (bonusData.instant.battleInstinct) {
 		g_logger().debug("  battleInstinct: {}", bonusData.instant.battleInstinct);
-	if (bonusData.instant.battleHealing)
+	}
+	if (bonusData.instant.battleHealing) {
 		g_logger().debug("  battleHealing: {}", bonusData.instant.battleHealing);
-	if (bonusData.instant.positionalTatics)
+	}
+	if (bonusData.instant.positionalTatics) {
 		g_logger().debug("  positionalTatics: {}", bonusData.instant.positionalTatics);
-	if (bonusData.instant.ballisticMastery)
+	}
+	if (bonusData.instant.ballisticMastery) {
 		g_logger().debug("  ballisticMastery: {}", bonusData.instant.ballisticMastery);
-	if (bonusData.instant.healingLink)
+	}
+	if (bonusData.instant.healingLink) {
 		g_logger().debug("  healingLink: {}", bonusData.instant.healingLink);
-	if (bonusData.instant.runicMastery)
+	}
+	if (bonusData.instant.runicMastery) {
 		g_logger().debug("  runicMastery: {}", bonusData.instant.runicMastery);
-	if (bonusData.instant.focusMastery)
+	}
+	if (bonusData.instant.focusMastery) {
 		g_logger().debug("  focusMastery: {}", bonusData.instant.focusMastery);
+	}
 
 	g_logger().debug("Stages:");
-	if (bonusData.stages.combatMastery > 0)
+	if (bonusData.stages.combatMastery > 0) {
 		g_logger().debug("  combatMastery: {}", bonusData.stages.combatMastery);
-	if (bonusData.stages.giftOfLife > 0)
+	}
+	if (bonusData.stages.giftOfLife > 0) {
 		g_logger().debug("  giftOfLife: {}", bonusData.stages.giftOfLife);
-	if (bonusData.stages.divineEmpowerment > 0)
+	}
+	if (bonusData.stages.divineEmpowerment > 0) {
 		g_logger().debug("  divineEmpowerment: {}", bonusData.stages.divineEmpowerment);
-	if (bonusData.stages.blessingOfTheGrove > 0)
+	}
+	if (bonusData.stages.blessingOfTheGrove > 0) {
 		g_logger().debug("  blessingOfTheGrove: {}", bonusData.stages.blessingOfTheGrove);
-	if (bonusData.stages.drainBody > 0)
+	}
+	if (bonusData.stages.drainBody > 0) {
 		g_logger().debug("  drainBody: {}", bonusData.stages.drainBody);
-	if (bonusData.stages.beamMastery > 0)
+	}
+	if (bonusData.stages.beamMastery > 0) {
 		g_logger().debug("  beamMastery: {}", bonusData.stages.beamMastery);
-	if (bonusData.stages.twinBurst > 0)
+	}
+	if (bonusData.stages.twinBurst > 0) {
 		g_logger().debug("  twinBurst: {}", bonusData.stages.twinBurst);
-	if (bonusData.stages.executionersThrow > 0)
+	}
+	if (bonusData.stages.executionersThrow > 0) {
 		g_logger().debug("  executionersThrow: {}", bonusData.stages.executionersThrow);
+	}
 
 	g_logger().debug("Avatar:");
-	if (bonusData.avatar.light > 0)
+	if (bonusData.avatar.light > 0) {
 		g_logger().debug("  light: {}", bonusData.avatar.light);
-	if (bonusData.avatar.nature > 0)
+	}
+	if (bonusData.avatar.nature > 0) {
 		g_logger().debug("  nature: {}", bonusData.avatar.nature);
-	if (bonusData.avatar.steel > 0)
+	}
+	if (bonusData.avatar.steel > 0) {
 		g_logger().debug("  steel: {}", bonusData.avatar.steel);
-	if (bonusData.avatar.storm > 0)
+	}
+	if (bonusData.avatar.storm > 0) {
 		g_logger().debug("  storm: {}", bonusData.avatar.storm);
+	}
 
-	if (bonusData.mitigation > 0)
+	if (bonusData.mitigation > 0) {
 		g_logger().debug("mitigation: {}", bonusData.mitigation);
+	}
 
 	auto &spellsVector = bonusData.spells;
 	if (!spellsVector.empty()) {

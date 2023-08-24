@@ -95,10 +95,11 @@ AStarNode* AStarNodes::getNodeByPosition(uint32_t x, uint32_t y) {
 int_fast32_t AStarNodes::getMapWalkCost(AStarNode* node, const Position &neighborPos, bool preferDiagonal) {
 	if (std::abs(node->x - neighborPos.x) == std::abs(node->y - neighborPos.y)) {
 		// diagonal movement extra cost
-		if (preferDiagonal)
+		if (preferDiagonal) {
 			return MAP_PREFERDIAGONALWALKCOST;
-		else
+		} else {
 			return MAP_DIAGONALWALKCOST;
+		}
 	}
 	return MAP_NORMALWALKCOST;
 }

@@ -9,21 +9,31 @@
 #include <boost/ut.hpp>
 #include "pch.hpp"
 #include "lib/di/soft_singleton.hpp"
+#include "lib/di/injector.hpp"
 #include "stubs/in_memory_logger.hpp"
 
 using namespace boost::ut;
 
 suite<"lib"> softSingletonTest = [] {
 	test("SoftSingleton warns about multiple instances") = [] {
-		InMemoryLogger logger{};
+		di::extension::injector<> injector{};
+		InMemoryLogger::install(injector);
+
+		auto &logger = injector.create<InMemoryLogger &>();
 		SoftSingleton softSingleton{logger, "Test"};
 		SoftSingletonGuard guard{softSingleton};
 		SoftSingletonGuard guard2{softSingleton};
 		softSingleton.increment();
 
-		expect(eq(2, logger.logCount()));
-		expect(eq(std::string{"warning"}, logger.logs[0].level) and eq(std::string{"2 instances created for Test. This is a soft singleton, you probably want to use g_test instead."}, logger.logs[0].message));
-		expect(eq(std::string{"warning"}, logger.logs[1].level) and eq(std::string{"3 instances created for Test. This is a soft singleton, you probably want to use g_test instead."}, logger.logs[1].message));
+		expect(eq(2, logger.logCount()) >> fatal);
+		expect(
+			eq(std::string{"warning"}, logger.logs[0].level) and
+			eq(std::string{"2 instances created for Test. This is a soft singleton, you probably want to use g_test instead."}, logger.logs[0].message)
+        );
+		expect(
+			eq(std::string{"warning"}, logger.logs[1].level) and
+			eq(std::string{"3 instances created for Test. This is a soft singleton, you probably want to use g_test instead."}, logger.logs[1].message)
+        );
 	};
 
 	test("SoftSingleton doesn't warn if instance was released") = [] {

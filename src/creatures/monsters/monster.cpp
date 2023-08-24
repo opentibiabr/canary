@@ -31,7 +31,7 @@ Monster* Monster::createMonster(const std::string &name) {
 	return new Monster(mType);
 }
 
-Monster::Monster(const std::shared_ptr<MonsterType> &mType) :
+Monster::Monster(const std::shared_ptr<MonsterType> mType) :
 	Creature(),
 	strDescription(asLowerCaseString(mType->nameDescription)),
 	mType(mType) {

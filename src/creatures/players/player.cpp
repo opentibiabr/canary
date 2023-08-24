@@ -512,7 +512,7 @@ uint32_t Player::getClientIcons() const {
 	return icon_bitset.to_ulong();
 }
 
-void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> &mtype, bool isBoss, bool reloadClient /* = false */) {
+void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient /* = false */) {
 	if (client) {
 		uint16_t raceId = mtype ? mtype->info.raceid : 0;
 		// Bostiary tracker logic
@@ -556,7 +556,7 @@ void Player::removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType>
 	}
 }
 
-bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const {
+bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> monsterType) const {
 	if (!monsterType) {
 		return false;
 	}
@@ -4818,7 +4818,7 @@ bool Player::removeOutfitAddon(uint16_t lookType, uint8_t addons) {
 	return false;
 }
 
-bool Player::getOutfitAddons(const std::shared_ptr<Outfit> &outfit, uint8_t &addons) const {
+bool Player::getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addons) const {
 	if (group->access) {
 		addons = 3;
 		return true;
@@ -5716,7 +5716,7 @@ bool Player::untameMount(uint8_t mountId) {
 	return true;
 }
 
-bool Player::hasMount(const std::shared_ptr<Mount> &mount) const {
+bool Player::hasMount(const std::shared_ptr<Mount> mount) const {
 	if (isAccessPlayer()) {
 		return true;
 	}
@@ -6043,7 +6043,7 @@ std::forward_list<Condition*> Player::getMuteConditions() const {
 	return muteConditions;
 }
 
-void Player::setGuild(const std::shared_ptr<Guild> &newGuild) {
+void Player::setGuild(const std::shared_ptr<Guild> newGuild) {
 	if (newGuild == guild) {
 		return;
 	}
@@ -6428,7 +6428,7 @@ std::string Player::getBlessingsName() const {
 	return os.str();
 }
 
-bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> &mtype) const {
+bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> mtype) const {
 	if (!mtype) {
 		return false;
 	}

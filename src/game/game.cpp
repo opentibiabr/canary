@@ -9220,7 +9220,7 @@ std::shared_ptr<Guild> Game::getGuildByName(const std::string &name, bool allowO
 	return it->second;
 }
 
-void Game::addGuild(const std::shared_ptr<Guild> &guild) {
+void Game::addGuild(const std::shared_ptr<Guild> guild) {
 	if (!guild) {
 		return;
 	}

@@ -152,7 +152,7 @@ std::shared_ptr<MonsterType> IOBosstiary::getMonsterTypeByBossRaceId(uint16_t ra
 	return nullptr;
 }
 
-void IOBosstiary::addBosstiaryKill(Player* player, const std::shared_ptr<MonsterType> &mtype, uint32_t amount /*= 1*/) const {
+void IOBosstiary::addBosstiaryKill(Player* player, const std::shared_ptr<MonsterType> mtype, uint32_t amount /*= 1*/) const {
 	if (!player || !mtype) {
 		return;
 	}

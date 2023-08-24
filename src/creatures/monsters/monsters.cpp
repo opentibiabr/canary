@@ -16,7 +16,7 @@
 #include "game/game.hpp"
 #include "items/weapons/weapons.hpp"
 
-void MonsterType::loadLoot(const std::shared_ptr<MonsterType> &monsterType, LootBlock lootBlock) {
+void MonsterType::loadLoot(const std::shared_ptr<MonsterType> monsterType, LootBlock lootBlock) {
 	if (lootBlock.childLoot.empty()) {
 		bool isContainer = Item::items[lootBlock.id].isContainer();
 		if (isContainer) {
@@ -52,7 +52,7 @@ ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType, int
 	return condition;
 }
 
-bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spellBlock_t &sb, const std::string &description) {
+bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spellBlock_t &sb, const std::string &description) {
 	if (!spell->scriptName.empty()) {
 		spell->isScripted = true;
 	} else if (!spell->name.empty()) {
@@ -318,7 +318,7 @@ std::shared_ptr<MonsterType> Monsters::getMonsterTypeByRaceId(uint16_t raceId, b
 	return g_monsters().getMonsterType(it->second);
 }
 
-bool Monsters::tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> &mType) {
+bool Monsters::tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> mType) {
 	std::string lowerName = asLowerCaseString(name);
 	if (monsters.find(lowerName) != monsters.end()) {
 		g_logger().debug("[{}] the monster with name '{}' already exist", __FUNCTION__, name);

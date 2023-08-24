@@ -17,7 +17,7 @@
 
 SoftSingleton IOBestiary::instanceTracker(g_logger(), "IOBestiary");
 
-bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> &charm, Player* player, Creature* target, int32_t realDamage, bool dueToPotion, bool checkArmor) {
+bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> charm, Player* player, Creature* target, int32_t realDamage, bool dueToPotion, bool checkArmor) {
 	if (!charm || !player || !target) {
 		return false;
 	}
@@ -135,7 +135,7 @@ std::map<uint16_t, std::string> IOBestiary::findRaceByName(const std::string &ra
 	return race_list;
 }
 
-uint8_t IOBestiary::getKillStatus(const std::shared_ptr<MonsterType> &mtype, uint32_t killAmount) const {
+uint8_t IOBestiary::getKillStatus(const std::shared_ptr<MonsterType> mtype, uint32_t killAmount) const {
 	if (killAmount < mtype->info.bestiaryFirstUnlock) {
 		return 1;
 	} else if (killAmount < mtype->info.bestiarySecondUnlock) {
@@ -146,7 +146,7 @@ uint8_t IOBestiary::getKillStatus(const std::shared_ptr<MonsterType> &mtype, uin
 	return 4;
 }
 
-void IOBestiary::resetCharmRuneCreature(Player* player, const std::shared_ptr<Charm> &charm) {
+void IOBestiary::resetCharmRuneCreature(Player* player, const std::shared_ptr<Charm> charm) {
 	if (!player || !charm) {
 		return;
 	}
@@ -156,7 +156,7 @@ void IOBestiary::resetCharmRuneCreature(Player* player, const std::shared_ptr<Ch
 	player->parseRacebyCharm(charm->id, true, 0);
 }
 
-void IOBestiary::setCharmRuneCreature(Player* player, const std::shared_ptr<Charm> &charm, uint16_t raceid) {
+void IOBestiary::setCharmRuneCreature(Player* player, const std::shared_ptr<Charm> charm, uint16_t raceid) {
 	if (!player || !charm) {
 		return;
 	}
@@ -213,7 +213,7 @@ void IOBestiary::addCharmPoints(Player* player, uint16_t amount, bool negative /
 	player->setCharmPoints(myCharms);
 }
 
-void IOBestiary::addBestiaryKill(Player* player, const std::shared_ptr<MonsterType> &mtype, uint32_t amount /*= 1*/) {
+void IOBestiary::addBestiaryKill(Player* player, const std::shared_ptr<MonsterType> mtype, uint32_t amount /*= 1*/) {
 	uint16_t raceid = mtype->info.raceid;
 	if (raceid == 0 || !player || !mtype) {
 		return;
@@ -244,7 +244,7 @@ void IOBestiary::addBestiaryKill(Player* player, const std::shared_ptr<MonsterTy
 	}
 }
 
-charmRune_t IOBestiary::getCharmFromTarget(Player* player, const std::shared_ptr<MonsterType> &mtype) {
+charmRune_t IOBestiary::getCharmFromTarget(Player* player, const std::shared_ptr<MonsterType> mtype) {
 	if (!player || !mtype) {
 		return CHARM_NONE;
 	}
@@ -261,7 +261,7 @@ charmRune_t IOBestiary::getCharmFromTarget(Player* player, const std::shared_ptr
 	return CHARM_NONE;
 }
 
-bool IOBestiary::hasCharmUnlockedRuneBit(const std::shared_ptr<Charm> &charm, int32_t input) const {
+bool IOBestiary::hasCharmUnlockedRuneBit(const std::shared_ptr<Charm> charm, int32_t input) const {
 	if (!charm) {
 		return false;
 	}
@@ -269,7 +269,7 @@ bool IOBestiary::hasCharmUnlockedRuneBit(const std::shared_ptr<Charm> &charm, in
 	return ((input & charm->binary) != 0);
 }
 
-int32_t IOBestiary::bitToggle(int32_t input, const std::shared_ptr<Charm> &charm, bool on) const {
+int32_t IOBestiary::bitToggle(int32_t input, const std::shared_ptr<Charm> charm, bool on) const {
 	if (!charm) {
 		return CHARM_NONE;
 	}
@@ -349,7 +349,7 @@ void IOBestiary::sendBuyCharmRune(Player* player, charmRune_t runeID, uint8_t ac
 	return;
 }
 
-std::map<uint8_t, int16_t> IOBestiary::getMonsterElements(const std::shared_ptr<MonsterType> &mtype) const {
+std::map<uint8_t, int16_t> IOBestiary::getMonsterElements(const std::shared_ptr<MonsterType> mtype) const {
 	std::map<uint8_t, int16_t> defaultMap = {};
 	for (uint8_t i = 0; i <= 7; i++) {
 		defaultMap[i] = 100;

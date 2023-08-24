@@ -31,7 +31,7 @@ public:
 	static Dispatcher &getInstance();
 
 	void addTask(std::function<void(void)> f, uint32_t expiresAfterMs = 0);
-	void addTask(const std::shared_ptr<Task> &task, uint32_t expiresAfterMs = 0);
+	void addTask(const std::shared_ptr<Task> task, uint32_t expiresAfterMs = 0);
 
 	[[nodiscard]] uint64_t getDispatcherCycle() const {
 		return dispatcherCycle;

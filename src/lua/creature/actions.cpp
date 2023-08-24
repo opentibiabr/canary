@@ -26,7 +26,7 @@ void Actions::clear() {
 	actionPositionMap.clear();
 }
 
-bool Actions::registerLuaItemEvent(const std::shared_ptr<Action> &action) {
+bool Actions::registerLuaItemEvent(const std::shared_ptr<Action> action) {
 	auto itemIdVector = action->getItemIdsVector();
 	if (itemIdVector.empty()) {
 		return false;
@@ -59,7 +59,7 @@ bool Actions::registerLuaItemEvent(const std::shared_ptr<Action> &action) {
 	return !itemIdVector.empty();
 }
 
-bool Actions::registerLuaUniqueEvent(const std::shared_ptr<Action> &action) {
+bool Actions::registerLuaUniqueEvent(const std::shared_ptr<Action> action) {
 	auto uniqueIdVector = action->getUniqueIdsVector();
 	if (uniqueIdVector.empty()) {
 		return false;
@@ -90,7 +90,7 @@ bool Actions::registerLuaUniqueEvent(const std::shared_ptr<Action> &action) {
 	return !uniqueIdVector.empty();
 }
 
-bool Actions::registerLuaActionEvent(const std::shared_ptr<Action> &action) {
+bool Actions::registerLuaActionEvent(const std::shared_ptr<Action> action) {
 	auto actionIdVector = action->getActionIdsVector();
 	if (actionIdVector.empty()) {
 		return false;
@@ -121,7 +121,7 @@ bool Actions::registerLuaActionEvent(const std::shared_ptr<Action> &action) {
 	return !actionIdVector.empty();
 }
 
-bool Actions::registerLuaPositionEvent(const std::shared_ptr<Action> &action) {
+bool Actions::registerLuaPositionEvent(const std::shared_ptr<Action> action) {
 	auto positionVector = action->getPositionsVector();
 	if (positionVector.empty()) {
 		return false;
@@ -150,7 +150,7 @@ bool Actions::registerLuaPositionEvent(const std::shared_ptr<Action> &action) {
 	return !positionVector.empty();
 }
 
-bool Actions::registerLuaEvent(const std::shared_ptr<Action> &action) {
+bool Actions::registerLuaEvent(const std::shared_ptr<Action> action) {
 	// Call all register lua events
 	if (registerLuaItemEvent(action) || registerLuaUniqueEvent(action) || registerLuaActionEvent(action) || registerLuaPositionEvent(action)) {
 		return true;
@@ -181,7 +181,7 @@ ReturnValue Actions::canUse(const Player* player, const Position &pos) {
 }
 
 ReturnValue Actions::canUse(const Player* player, const Position &pos, const Item* item) {
-	const std::shared_ptr<Action> &action = getAction(item);
+	const std::shared_ptr<Action> action = getAction(item);
 	if (action != nullptr) {
 		return action->canExecuteAction(player, pos);
 	}
@@ -257,7 +257,7 @@ ReturnValue Actions::internalUseItem(Player* player, const Position &pos, uint8_
 	auto itemId = item->getID();
 	const ItemType &itemType = Item::items[itemId];
 	auto transformTo = itemType.m_transformOnUse;
-	const std::shared_ptr<Action> &action = getAction(item);
+	const std::shared_ptr<Action> action = getAction(item);
 	if (!action && transformTo > 0 && itemId != transformTo) {
 		if (g_game().transformItem(item, transformTo) == nullptr) {
 			g_logger().warn("[{}] item with id {} failed to transform to item {}", __FUNCTION__, itemId, transformTo);
@@ -424,7 +424,7 @@ bool Actions::useItemEx(Player* player, const Position &fromPos, const Position 
 		}
 	}
 
-	const std::shared_ptr<Action> &action = getAction(item);
+	const std::shared_ptr<Action> action = getAction(item);
 	if (action == nullptr) {
 		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
 		return false;

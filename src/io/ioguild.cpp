@@ -33,7 +33,7 @@ std::shared_ptr<Guild> IOGuild::loadGuild(uint32_t guildId) {
 	return nullptr;
 }
 
-void IOGuild::saveGuild(const std::shared_ptr<Guild> &guild) {
+void IOGuild::saveGuild(const std::shared_ptr<Guild> guild) {
 	if (!guild)
 		return;
 	Database &db = Database::getInstance();

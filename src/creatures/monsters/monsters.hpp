@@ -195,7 +195,7 @@ public:
 		return info.bosstiaryClass.empty() ? g_configManager().getFloat(RATE_MONSTER_DEFENSE) : g_configManager().getFloat(RATE_BOSS_DEFENSE);
 	}
 
-	void loadLoot(const std::shared_ptr<MonsterType> &monsterType, LootBlock lootblock);
+	void loadLoot(const std::shared_ptr<MonsterType> monsterType, LootBlock lootblock);
 
 	bool canSpawn(const Position &pos);
 };
@@ -261,8 +261,8 @@ public:
 
 	std::shared_ptr<MonsterType> getMonsterType(const std::string &name);
 	std::shared_ptr<MonsterType> getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false) const;
-	bool tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> &mType);
-	bool deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spellBlock_t &sb, const std::string &description = "");
+	bool tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> mType);
+	bool deserializeSpell(const std::shared_ptr<MonsterSpell> spell, spellBlock_t &sb, const std::string &description = "");
 
 	std::unique_ptr<LuaScriptInterface> scriptInterface;
 	std::map<std::string, std::shared_ptr<MonsterType>> monsters;

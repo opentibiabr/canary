@@ -19,7 +19,7 @@ std::map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
 std::mutex Zone::zonesMutex = {};
 const static std::shared_ptr<Zone> nullZone = nullptr;
 
-const std::shared_ptr<Zone> &Zone::addZone(const std::string &name) {
+const std::shared_ptr<Zone> Zone::addZone(const std::string &name) {
 	std::lock_guard lock(zonesMutex);
 	if (name == "default") {
 		g_logger().error("Zone name {} is reserved", name);
@@ -47,7 +47,7 @@ bool Zone::isPositionInZone(const Position &pos) const {
 	return positions.contains(pos);
 }
 
-const std::shared_ptr<Zone> &Zone::getZone(const std::string &name) {
+const std::shared_ptr<Zone> Zone::getZone(const std::string &name) {
 	std::lock_guard lock(zonesMutex);
 	return zones[name];
 }

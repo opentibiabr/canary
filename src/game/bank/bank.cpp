@@ -14,7 +14,7 @@
 #include "creatures/players/player.hpp"
 #include "io/iologindata.hpp"
 
-Bank::Bank(const std::shared_ptr<Bankable> &bankable) :
+Bank::Bank(const std::shared_ptr<Bankable> bankable) :
 	bankable(bankable) {
 }
 
@@ -77,7 +77,7 @@ const std::set<std::string> deniedNames = {
 
 const uint32_t minTownId = 3;
 
-bool Bank::transferTo(const std::shared_ptr<Bank> &destination, uint64_t amount) {
+bool Bank::transferTo(const std::shared_ptr<Bank> destination, uint64_t amount) {
 	if (destination == nullptr) {
 		return false;
 	}
@@ -108,7 +108,7 @@ bool Bank::withdraw(Player* player, uint64_t amount) {
 	return true;
 }
 
-bool Bank::deposit(const std::shared_ptr<Bank> &destination) {
+bool Bank::deposit(const std::shared_ptr<Bank> destination) {
 	if (bankable->getPlayer() == nullptr) {
 		return false;
 	}
@@ -116,7 +116,7 @@ bool Bank::deposit(const std::shared_ptr<Bank> &destination) {
 	return deposit(destination, amount);
 }
 
-bool Bank::deposit(const std::shared_ptr<Bank> &destination, uint64_t amount) {
+bool Bank::deposit(const std::shared_ptr<Bank> destination, uint64_t amount) {
 	if (destination == nullptr) {
 		return false;
 	}

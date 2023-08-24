@@ -6,9 +6,7 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-
-#ifndef CANARY_SOFT_SINGLETON_H
-#define CANARY_SOFT_SINGLETON_H
+#pragma once
 
 #include <iostream>
 
@@ -46,5 +44,3 @@ public:
 private:
 	SoftSingleton &tracker;
 };
-
-#endif // CANARY_SOFT_SINGLETON_H

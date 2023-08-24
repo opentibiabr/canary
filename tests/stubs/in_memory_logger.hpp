@@ -6,8 +6,7 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#ifndef CANARY_IN_MEMORY_LOGGER_HPP
-#define CANARY_IN_MEMORY_LOGGER_HPP
+#pragma once
 
 #include <vector>
 #include <string>
@@ -69,5 +68,3 @@ class InMemoryLogger : public Logger {
 			logs.clear();
 		}
 };
-
-#endif // CANARY_IN_MEMORY_LOGGER_HPP

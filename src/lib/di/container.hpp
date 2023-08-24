@@ -6,10 +6,7 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#ifndef CANARY_CONTAINER_HPP
-#define CANARY_CONTAINER_HPP
-
-#include <utility>
+#pragma once
 
 #include "lib/di/injector.hpp"
 #include "lib/logging/logger.hpp"
@@ -59,5 +56,3 @@ template <typename Type>
 inline Type &inject() {
 	return DI::get<Type>();
 }
-
-#endif // CANARY_CONTAINER_HPP

@@ -6,8 +6,7 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#ifndef CANARY_LOGGER_HPP
-#define CANARY_LOGGER_HPP
+#pragma once
 
 #define LOG_LEVEL_TRACE \
 	std::string {       \
@@ -107,5 +106,3 @@ public:
 		log(LOG_LEVEL_CRITICAL, msg);
 	}
 };
-
-#endif // CANARY_LOGGER_HPP

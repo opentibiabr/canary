@@ -101,7 +101,7 @@ local gates = {
 }
 
 local function Furywebhook(message)	-- New local function that runs on delay to send webhook message.
-	Webhook.send("[Fury Gates] ", message, WEBHOOK_COLOR_ONLINE)	--Sends webhook message
+	Webhook.sendMessage("[Fury Gates] ", message, WEBHOOK_COLOR_ONLINE)	--Sends webhook message
 end
 
 -- FURY GATES MAP LOAD
@@ -129,8 +129,7 @@ function furygates.onStartup(interval)
 
 	setGlobalStorageValue(GlobalStorage.FuryGates, gateId)
 
-	Spdlog.info(string.format("Fury Gate will be active in %s today",
-		gates[gateId].city))
+	logger.info("Fury Gate will be active in {} today", gates[gateId].city)
 	local message = (string.format("Fury Gate will be active in %s today",
 		gates[gateId].city))	-- Declaring the message to send to webhook.
 	addEvent(Furywebhook, 60000, message)	-- Event with 1 minute delay to send webhook message after server starts.

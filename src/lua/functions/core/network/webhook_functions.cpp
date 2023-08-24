@@ -10,16 +10,16 @@
 #include "pch.hpp"
 
 #include "lua/functions/core/network/webhook_functions.hpp"
-#include "server/network/webhook/webhook.h"
+#include "server/network/webhook/webhook.hpp"
 
-int WebhookFunctions::webhookSend(lua_State* L) {
-	// Webhook.send(title, message, color, url)
+int WebhookFunctions::luaWebhookSendMessage(lua_State* L) {
+	// Webhook.sendMessage(title, message, color, url = "WEBHOOK_DISCORD_URL")
 	std::string title = getString(L, 1);
 	std::string message = getString(L, 2);
-	std::string url = getString(L, 4);
 	uint32_t color = getNumber<uint32_t>(L, 3, 0);
+	std::string url = getString(L, 4);
 
-	webhook_send_message(title, message, color, url);
+	g_webhook().sendMessage(title, message, color, url);
 	lua_pushnil(L);
 
 	return 1;

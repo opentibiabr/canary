@@ -7,15 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_PCH_HPP_
-#define SRC_PCH_HPP_
+#pragma once
 
 // --------------------
 // Internal Includes
 // --------------------
 
 // Utils
-#include "utils/definitions.h"
+#include "utils/definitions.hpp"
 #include "utils/simd.hpp"
 
 // --------------------
@@ -34,6 +33,7 @@
 #include <ranges>
 #include <regex>
 #include <set>
+#include <thread>
 #include <vector>
 #include <variant>
 
@@ -50,7 +50,7 @@
 #endif
 
 #ifdef OS_WINDOWS
-	#include "conio.h"
+	#include <conio.h>
 #endif
 
 // --------------------
@@ -72,6 +72,8 @@
 // FMT
 #include <fmt/chrono.h>
 #include <fmt/core.h>
+#include <fmt/format.h>
+#include <fmt/args.h>
 
 // GMP
 #include <gmp.h>
@@ -85,6 +87,8 @@
 #else
 	#include <lua.hpp>
 #endif
+
+#include "lua/global/shared_object.hpp"
 
 // Magic Enum
 #include <magic_enum.hpp>
@@ -107,9 +111,6 @@
 
 // PugiXML
 #include <pugixml.hpp>
-
-// SPDLog
-#include <spdlog/spdlog.h>
 
 // Zlib
 #include <zlib.h>
@@ -143,4 +144,4 @@
 
 #include "lib/di/container.hpp"
 
-#endif // SRC_PCH_HPP_
+#include "lua/global/shared_object.hpp"

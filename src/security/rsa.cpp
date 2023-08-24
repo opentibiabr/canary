@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "security/rsa.h"
+#include "security/rsa.hpp"
 
 RSA::RSA(Logger &logger) :
 	logger(logger) {
@@ -17,7 +17,10 @@ RSA::RSA(Logger &logger) :
 	mpz_init2(d, 1024);
 }
 
-RSA::~RSA() = default;
+RSA::~RSA() {
+	mpz_clear(n);
+	mpz_clear(d);
+}
 
 void RSA::start() {
 	const char* p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
@@ -153,7 +156,7 @@ enum {
 };
 
 uint16_t RSA::decodeLength(char*&pos) const {
-	std::string buffer;
+	uint8_t buffer[4] = { 0 };
 	auto length = static_cast<uint16_t>(static_cast<uint8_t>(*pos++));
 	if (length & 0x80) {
 		length &= 0x7F;
@@ -161,7 +164,6 @@ uint16_t RSA::decodeLength(char*&pos) const {
 			g_logger().error("[RSA::loadPEM] - Invalid 'length'");
 			return 0;
 		}
-		buffer[0] = buffer[1] = buffer[2] = buffer[3] = 0;
 		switch (length) {
 			case 4:
 				buffer[3] = static_cast<uint8_t>(*pos++);
@@ -174,7 +176,7 @@ uint16_t RSA::decodeLength(char*&pos) const {
 			default:
 				break;
 		}
-		std::memcpy(&length, buffer.data(), sizeof(length));
+		std::memcpy(&length, buffer, sizeof(length));
 	}
 	return length;
 }

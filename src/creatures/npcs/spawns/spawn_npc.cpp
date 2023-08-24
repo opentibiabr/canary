@@ -9,14 +9,14 @@
 
 #include "pch.hpp"
 
-#include "creatures/npcs/spawns/spawn_npc.h"
-#include "creatures/npcs/npc.h"
-#include "game/game.h"
-#include "game/scheduling/scheduler.h"
-#include "lua/creature/events.h"
+#include "creatures/npcs/spawns/spawn_npc.hpp"
+#include "creatures/npcs/npc.hpp"
+#include "game/game.hpp"
+#include "game/scheduling/scheduler.hpp"
+#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
-#include "utils/pugicast.h"
+#include "utils/pugicast.hpp"
 
 static constexpr int32_t MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MAXSPAWN_INTERVAL = 86400000; // 1 day

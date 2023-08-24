@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "items/containers/rewards/reward.h"
+#include "items/containers/rewards/reward.hpp"
 
 Reward::Reward() :
 	Container(ITEM_REWARD_CONTAINER) {

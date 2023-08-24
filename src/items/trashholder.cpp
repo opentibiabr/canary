@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "items/trashholder.h"
-#include "game/game.h"
+#include "items/trashholder.hpp"
+#include "game/game.hpp"
 
 ReturnValue TrashHolder::queryAdd(int32_t, const Thing &, uint32_t, uint32_t, Creature*) const {
 	return RETURNVALUE_NOERROR;
@@ -34,8 +34,9 @@ void TrashHolder::addThing(Thing* thing) {
 }
 
 void TrashHolder::addThing(int32_t, Thing* thing) {
-	if (!thing)
+	if (!thing) {
 		return;
+	}
 
 	Item* item = thing->getItem();
 	if (!item) {
@@ -54,6 +55,9 @@ void TrashHolder::addThing(int32_t, Thing* thing) {
 		}
 	}
 
+	if (item->isCarpet() || item->getID() == ITEM_DECORATION_KIT) {
+		return;
+	}
 	g_game().internalRemoveItem(item);
 
 	if (it.magicEffect != CONST_ME_NONE) {

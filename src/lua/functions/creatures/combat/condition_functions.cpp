@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "creatures/combat/condition.h"
-#include "game/game.h"
+#include "creatures/combat/condition.hpp"
+#include "game/game.hpp"
 #include "lua/functions/creatures/combat/condition_functions.hpp"
 
 int ConditionFunctions::luaConditionCreate(lua_State* L) {

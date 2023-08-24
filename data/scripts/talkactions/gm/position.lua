@@ -5,7 +5,6 @@ function position.onSay(player, words, param)
 	logCommand(player, words, param)
 
 	local param = string.gsub(param, "%s+", "")
-	local position = player:getPosition()
 	local tile = load("return " .. param)()
 	local split = param:split(",")
 	if type(tile) == "table" and tile.x and tile.y and tile.z then
@@ -13,8 +12,9 @@ function position.onSay(player, words, param)
 	elseif split and param ~= "" then
 		player:teleportTo(Position(split[1], split[2], split[3]))
 	elseif param == "" then
+		local playerPosition = player:getPosition()
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your current position is: \z
-		" .. position.x .. ", " .. position.y .. ", " .. position.z .. ".")
+		" .. playerPosition.x .. ", " .. playerPosition.y .. ", " .. playerPosition.z .. ".")
 	end
 	return true
 end

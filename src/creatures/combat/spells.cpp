@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/combat/combat.h"
-#include "creatures/combat/spells.h"
-#include "creatures/monsters/monster.h"
-#include "game/game.h"
+#include "creatures/combat/combat.hpp"
+#include "creatures/combat/spells.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "game/game.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 
@@ -30,7 +30,7 @@ TalkActionResult_t Spells::playerSaySpell(Player* player, std::string &words) {
 	// strip trailing spaces
 	trimString(str_words);
 
-	InstantSpell* instantSpell = getInstantSpell(str_words);
+	const std::shared_ptr<InstantSpell> &instantSpell = getInstantSpell(str_words);
 	if (!instantSpell) {
 		return TALKACTION_CONTINUE;
 	}
@@ -90,8 +90,7 @@ bool Spells::hasInstantSpell(const std::string &word) const {
 	return false;
 }
 
-bool Spells::registerInstantLuaEvent(InstantSpell* event) {
-	InstantSpell_ptr instant { event };
+bool Spells::registerInstantLuaEvent(const std::shared_ptr<InstantSpell> &instant) {
 	if (instant) {
 		// If the spell not have the "spell:words()" return a error message
 		const std::string &instantName = instant->getName();
@@ -109,23 +108,22 @@ bool Spells::registerInstantLuaEvent(InstantSpell* event) {
 			return false;
 		}
 		// Register spell word in the map
-		setInstantSpell(words, *instant);
+		setInstantSpell(words, instant);
 	}
 
 	return false;
 }
 
-bool Spells::registerRuneLuaEvent(RuneSpell* event) {
-	RuneSpell_ptr rune { event };
+bool Spells::registerRuneLuaEvent(const std::shared_ptr<RuneSpell> &rune) {
 	if (rune) {
 		uint16_t id = rune->getRuneItemId();
-		auto result = runes.emplace(rune->getRuneItemId(), std::move(*rune));
+		auto result = runes.emplace(rune->getRuneItemId(), rune);
 		if (!result.second) {
 			g_logger().warn(
 				"[{}] duplicate registered rune with id: {}, for script: {}",
 				__FUNCTION__,
 				id,
-				event->getScriptInterface()->getLoadingScriptName()
+				rune->getScriptInterface()->getLoadingScriptName()
 			);
 		}
 		return result.second;
@@ -137,60 +135,60 @@ bool Spells::registerRuneLuaEvent(RuneSpell* event) {
 std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId) {
 	std::list<uint16_t> spellsList;
 	VocSpellMap vocSpells;
-	phmap::btree_map<uint16_t, bool>::const_iterator vocSpellsIt;
+	std::map<uint16_t, bool>::const_iterator vocSpellsIt;
 
 	for (const auto &it : instants) {
-		vocSpells = it.second.getVocMap();
+		vocSpells = it.second->getVocMap();
 		vocSpellsIt = vocSpells.find(vocationId);
 
 		if (vocSpellsIt != vocSpells.end()
 			&& vocSpellsIt->second) {
-			spellsList.push_back(it.second.getId());
+			spellsList.push_back(it.second->getId());
 		}
 	}
 
 	return spellsList;
 }
 
-Spell* Spells::getSpellByName(const std::string &name) {
-	Spell* spell = getRuneSpellByName(name);
+std::shared_ptr<Spell> Spells::getSpellByName(const std::string &name) {
+	std::shared_ptr<Spell> spell = getRuneSpellByName(name);
 	if (!spell) {
 		spell = getInstantSpellByName(name);
 	}
 	return spell;
 }
 
-RuneSpell* Spells::getRuneSpell(uint16_t id) {
+std::shared_ptr<RuneSpell> Spells::getRuneSpell(uint16_t id) {
 	auto it = runes.find(id);
 	if (it == runes.end()) {
 		for (auto &rune : runes) {
-			if (rune.second.getId() == id) {
-				return &rune.second;
+			if (rune.second->getId() == id) {
+				return rune.second;
 			}
 		}
 		return nullptr;
 	}
-	return &it->second;
+	return it->second;
 }
 
-RuneSpell* Spells::getRuneSpellByName(const std::string &name) {
+std::shared_ptr<RuneSpell> Spells::getRuneSpellByName(const std::string &name) {
 	for (auto &it : runes) {
-		if (strcasecmp(it.second.getName().c_str(), name.c_str()) == 0) {
-			return &it.second;
+		if (strcasecmp(it.second->getName().c_str(), name.c_str()) == 0) {
+			return it.second;
 		}
 	}
 	return nullptr;
 }
 
-InstantSpell* Spells::getInstantSpell(const std::string &words) {
-	InstantSpell* result = nullptr;
+std::shared_ptr<InstantSpell> Spells::getInstantSpell(const std::string &words) {
+	std::shared_ptr<InstantSpell> result = nullptr;
 
 	for (auto &it : instants) {
-		const std::string &instantSpellWords = it.second.getWords();
+		const std::string &instantSpellWords = it.second->getWords();
 		size_t spellLen = instantSpellWords.length();
 		if (strncasecmp(instantSpellWords.c_str(), words.c_str(), spellLen) == 0) {
 			if (!result || spellLen > result->getWords().length()) {
-				result = &it.second;
+				result = it.second;
 				if (words.length() == spellLen) {
 					break;
 				}
@@ -216,19 +214,19 @@ InstantSpell* Spells::getInstantSpell(const std::string &words) {
 	return nullptr;
 }
 
-InstantSpell* Spells::getInstantSpellById(uint16_t spellId) {
+std::shared_ptr<InstantSpell> Spells::getInstantSpellById(uint16_t spellId) {
 	for (auto &it : instants) {
-		if (it.second.getId() == spellId) {
-			return &it.second;
+		if (it.second->getId() == spellId) {
+			return it.second;
 		}
 	}
 	return nullptr;
 }
 
-InstantSpell* Spells::getInstantSpellByName(const std::string &name) {
+std::shared_ptr<InstantSpell> Spells::getInstantSpellByName(const std::string &name) {
 	for (auto &it : instants) {
-		if (strcasecmp(it.second.getName().c_str(), name.c_str()) == 0) {
-			return &it.second;
+		if (strcasecmp(it.second->getName().c_str(), name.c_str()) == 0) {
+			return it.second;
 		}
 	}
 	return nullptr;
@@ -238,7 +236,7 @@ Position Spells::getCasterPosition(Creature* creature, Direction dir) {
 	return getNextPosition(dir, creature->getPosition());
 }
 
-CombatSpell::CombatSpell(Combat* newCombat, bool newNeedTarget, bool newNeedDirection) :
+CombatSpell::CombatSpell(const std::shared_ptr<Combat> &newCombat, bool newNeedTarget, bool newNeedDirection) :
 	Script(&g_spells().getScriptInterface()),
 	combat(newCombat),
 	needDirection(newNeedDirection),
@@ -247,7 +245,7 @@ CombatSpell::CombatSpell(Combat* newCombat, bool newNeedTarget, bool newNeedDire
 }
 
 bool CombatSpell::loadScriptCombat() {
-	combat = g_luaEnvironment().getCombatObject(g_luaEnvironment().lastCombatId).get();
+	combat = g_luaEnvironment().getCombatObject(g_luaEnvironment().lastCombatId);
 	return combat != nullptr;
 }
 
@@ -379,7 +377,7 @@ bool Spell::playerSpellCheck(Player* player) const {
 		return false;
 	}
 
-	if (aggressive && !player->hasFlag(PlayerFlags_t::IgnoreProtectionZone) && player->getZone() == ZONE_PROTECTION) {
+	if (aggressive && !player->hasFlag(PlayerFlags_t::IgnoreProtectionZone) && player->getZoneType() == ZONE_PROTECTION) {
 		player->sendCancelMessage(RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE);
 		return false;
 	}
@@ -454,7 +452,7 @@ bool Spell::playerSpellCheck(Player* player) const {
 	return true;
 }
 
-bool Spell::playerInstantSpellCheck(Player* player, const Position &toPos) {
+bool Spell::playerInstantSpellCheck(Player* player, const Position &toPos) const {
 	if (toPos.x == 0xFFFF) {
 		return true;
 	}
@@ -470,11 +468,7 @@ bool Spell::playerInstantSpellCheck(Player* player, const Position &toPos) {
 		return false;
 	}
 
-	Tile* tile = g_game().map.getTile(toPos);
-	if (!tile) {
-		tile = new StaticTile(toPos.x, toPos.y, toPos.z);
-		g_game().map.setTile(toPos, tile);
-	}
+	const auto tile = g_game().map.getOrCreateTile(toPos);
 
 	ReturnValue ret = Combat::canDoCombat(player, tile, aggressive);
 	if (ret != RETURNVALUE_NOERROR) {

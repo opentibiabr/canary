@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "lua/global/baseevents.h"
+#include "lua/global/baseevents.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "utils/tools.h"
+#include "utils/tools.hpp"
 
 bool BaseEvents::loadFromXml() {
 	if (loaded) {

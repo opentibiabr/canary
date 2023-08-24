@@ -9,13 +9,13 @@
 
 #include "pch.hpp"
 
-#include "creatures/interactions/chat.h"
-#include "game/game.h"
-#include "game/scheduling/scheduler.h"
+#include "creatures/interactions/chat.hpp"
+#include "game/game.hpp"
+#include "game/scheduling/scheduler.hpp"
 #include "lua/functions/core/game/global_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/script_environment.hpp"
-#include "server/network/protocol/protocolstatus.h"
+#include "server/network/protocol/protocolstatus.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 
 class Creature;
@@ -594,15 +594,15 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 	}
 
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) || g_configManager().getBoolean(CONVERT_UNSAFE_SCRIPTS)) {
-		std::vector<std::pair<int32_t, LuaDataType>> indexes;
+		std::vector<std::pair<int32_t, LuaData_t>> indexes;
 		for (int i = 3; i <= parameters; ++i) {
 			if (lua_getmetatable(globalState, i) == 0) {
 				continue;
 			}
 			lua_rawgeti(L, -1, 't');
 
-			LuaDataType type = getNumber<LuaDataType>(L, -1);
-			if (type != LuaData_Unknown && type != LuaData_Tile) {
+			LuaData_t type = getNumber<LuaData_t>(L, -1);
+			if (type != LuaData_t::Unknown && type <= LuaData_t::Npc) {
 				indexes.push_back({ i, type });
 			}
 			lua_pop(globalState, 2);
@@ -641,16 +641,16 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 			if (g_configManager().getBoolean(CONVERT_UNSAFE_SCRIPTS)) {
 				for (const auto &entry : indexes) {
 					switch (entry.second) {
-						case LuaData_Item:
-						case LuaData_Container:
-						case LuaData_Teleport: {
+						case LuaData_t::Item:
+						case LuaData_t::Container:
+						case LuaData_t::Teleport: {
 							lua_getglobal(globalState, "Item");
 							lua_getfield(globalState, -1, "getUniqueId");
 							break;
 						}
-						case LuaData_Player:
-						case LuaData_Monster:
-						case LuaData_Npc: {
+						case LuaData_t::Player:
+						case LuaData_t::Monster:
+						case LuaData_t::Npc: {
 							lua_getglobal(globalState, "Creature");
 							lua_getfield(globalState, -1, "getId");
 							break;
@@ -677,6 +677,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 
 	eventDesc.function = luaL_ref(globalState, LUA_REGISTRYINDEX);
 	eventDesc.scriptId = getScriptEnv()->getScriptId();
+	eventDesc.scriptName = getScriptEnv()->getScriptInterface()->getLoadingScriptName();
 
 	auto &lastTimerEventId = g_luaEnvironment().lastEventTimerId;
 	eventDesc.eventId = g_scheduler().addEvent(
@@ -727,7 +728,7 @@ int GlobalFunctions::luaSaveServer(lua_State* L) {
 }
 
 int GlobalFunctions::luaCleanMap(lua_State* L) {
-	lua_pushnumber(L, g_game().map.clean());
+	lua_pushnumber(L, Map::clean());
 	return 1;
 }
 
@@ -842,6 +843,13 @@ int GlobalFunctions::luaCreateTable(lua_State* L) {
 int GlobalFunctions::luaSystemTime(lua_State* L) {
 	// systemTime()
 	lua_pushnumber(L, OTSYS_TIME());
+	return 1;
+}
+
+int GlobalFunctions::luaGetFormattedTimeRemaining(lua_State* L) {
+	// getFormattedTimeRemaining(time)
+	time_t time = getNumber<uint32_t>(L, 1);
+	lua_pushstring(L, getFormattedTimeRemaining(time).c_str());
 	return 1;
 }
 

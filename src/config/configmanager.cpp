@@ -9,10 +9,11 @@
 
 #include "pch.hpp"
 
-#include "config/configmanager.h"
+#include "config/configmanager.hpp"
 #include "declarations.hpp"
-#include "game/game.h"
+#include "game/game.hpp"
 #include "lua/scripts/luajit_sync.hpp"
+#include "server/network/webhook/webhook.hpp"
 
 #if LUA_VERSION_NUM >= 502
 	#undef lua_strlen
@@ -78,7 +79,7 @@ namespace {
 bool ConfigManager::load() {
 	lua_State* L = luaL_newstate();
 	if (!L) {
-		throw std::runtime_error("Failed to allocate memory");
+		throw std::ios_base::failure("Failed to allocate memory");
 	}
 
 	luaL_openlibs(L);
@@ -276,6 +277,7 @@ bool ConfigManager::load() {
 	integer[FORGE_MAX_SLIVERS] = getGlobalNumber(L, "forgeMaxSlivers", 7);
 	integer[FORGE_INFLUENCED_CREATURES_LIMIT] = getGlobalNumber(L, "forgeInfluencedLimit", 300);
 	integer[FORGE_FIENDISH_CREATURES_LIMIT] = getGlobalNumber(L, "forgeFiendishLimit", 3);
+	integer[DISCORD_WEBHOOK_DELAY_MS] = getGlobalNumber(L, "discordWebhookDelayMs", Webhook::DEFAULT_DELAY_MS);
 
 	floating[BESTIARY_RATE_CHARM_SHOP_PRICE] = getGlobalFloat(L, "bestiaryRateCharmShopPrice", 1.0);
 	floating[RATE_HEALTH_REGEN] = getGlobalFloat(L, "rateHealthRegen", 1.0);
@@ -295,6 +297,8 @@ bool ConfigManager::load() {
 	floating[RATE_BOSS_HEALTH] = getGlobalFloat(L, "rateBossHealth", 1.0);
 	floating[RATE_BOSS_ATTACK] = getGlobalFloat(L, "rateBossAttack", 1.0);
 	floating[RATE_BOSS_DEFENSE] = getGlobalFloat(L, "rateBossDefense", 1.0);
+	integer[BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN] = getGlobalNumber(L, "bossDefaultTimeToFightAgain", 20 * 60 * 60);
+	integer[BOSS_DEFAULT_TIME_TO_DEFEAT] = getGlobalNumber(L, "bossDefaultTimeToDefeat", 20 * 60);
 
 	floating[RATE_NPC_HEALTH] = getGlobalFloat(L, "rateNpcHealth", 1.0);
 	floating[RATE_NPC_ATTACK] = getGlobalFloat(L, "rateNpcAttack", 1.0);
@@ -330,6 +334,7 @@ bool ConfigManager::load() {
 	boolean[TOGGLE_TRAVELS_FREE] = getGlobalBoolean(L, "toggleTravelsFree", false);
 	integer[BUY_AOL_COMMAND_FEE] = getGlobalNumber(L, "buyAolCommandFee", 0);
 	integer[BUY_BLESS_COMMAND_FEE] = getGlobalNumber(L, "buyBlessCommandFee", 0);
+	boolean[TELEPORT_PLAYER_TO_VOCATION_ROOM] = getGlobalBoolean(L, "teleportPlayerToVocationRoom", true);
 
 	boolean[TOGGLE_HAZARDSYSTEM] = getGlobalBoolean(L, "toogleHazardSystem", true);
 	integer[HAZARD_CRITICAL_INTERVAL] = getGlobalNumber(L, "hazardCriticalInterval", 2000);

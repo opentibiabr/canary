@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
-#include "creatures/creature.h"
-#include "creatures/monsters/monster.h"
-#include "creatures/monsters/monsters.h"
+#include "game/game.hpp"
+#include "creatures/creature.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/monsters/monsters.hpp"
 #include "lua/functions/creatures/monster/monster_functions.hpp"
 
 int MonsterFunctions::luaMonsterCreate(lua_State* L) {
@@ -21,7 +21,7 @@ int MonsterFunctions::luaMonsterCreate(lua_State* L) {
 	if (isNumber(L, 2)) {
 		monster = g_game().getMonsterByID(getNumber<uint32_t>(L, 2));
 	} else if (isUserdata(L, 2)) {
-		if (getUserdataType(L, 2) != LuaData_Monster) {
+		if (getUserdataType(L, 2) != LuaData_t::Monster) {
 			lua_pushnil(L);
 			return 1;
 		}
@@ -61,7 +61,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 	// monster:setType(name or raceid)
 	Monster* monster = getUserdata<Monster>(L, 1);
 	if (monster) {
-		MonsterType* mType = nullptr;
+		std::shared_ptr<MonsterType> mType = nullptr;
 		if (isNumber(L, 2)) {
 			mType = g_monsters().getMonsterTypeByRaceId(getNumber<uint16_t>(L, 2));
 		} else {

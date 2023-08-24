@@ -1,10 +1,20 @@
+/**
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
+ */
+
+#include "pch.hpp"
+
 #include "bank.hpp"
+#include "game/game.hpp"
+#include "creatures/players/player.hpp"
+#include "io/iologindata.hpp"
 
-#include "game/game.h"
-#include "creatures/players/player.h"
-#include "io/iologindata.h"
-
-Bank::Bank(Bankable* bankable) :
+Bank::Bank(const std::shared_ptr<Bankable> &bankable) :
 	bankable(bankable) {
 }
 
@@ -19,10 +29,9 @@ Bank::~Bank() {
 		return;
 	}
 	if (bankable->isGuild()) {
-		Guild* guild = static_cast<Guild*>(bankable);
+		const auto &guild = static_self_cast<Guild>(bankable);
 		if (guild && !guild->isOnline()) {
 			IOGuild::saveGuild(guild);
-			delete guild;
 		}
 	}
 }
@@ -38,7 +47,7 @@ bool Bank::debit(uint64_t amount) {
 	return balance(balance() - amount);
 }
 
-bool Bank::balance(uint64_t amount) {
+bool Bank::balance(uint64_t amount) const {
 	if (bankable == nullptr) {
 		return 0;
 	}
@@ -68,7 +77,7 @@ const std::set<std::string> deniedNames = {
 
 const uint32_t minTownId = 3;
 
-bool Bank::transferTo(std::shared_ptr<Bank> &destination, uint64_t amount) {
+bool Bank::transferTo(const std::shared_ptr<Bank> &destination, uint64_t amount) {
 	if (destination == nullptr) {
 		return false;
 	}
@@ -99,7 +108,7 @@ bool Bank::withdraw(Player* player, uint64_t amount) {
 	return true;
 }
 
-bool Bank::deposit(std::shared_ptr<Bank> &destination) {
+bool Bank::deposit(const std::shared_ptr<Bank> &destination) {
 	if (bankable->getPlayer() == nullptr) {
 		return false;
 	}
@@ -107,7 +116,7 @@ bool Bank::deposit(std::shared_ptr<Bank> &destination) {
 	return deposit(destination, amount);
 }
 
-bool Bank::deposit(std::shared_ptr<Bank> &destination, uint64_t amount) {
+bool Bank::deposit(const std::shared_ptr<Bank> &destination, uint64_t amount) {
 	if (destination == nullptr) {
 		return false;
 	}

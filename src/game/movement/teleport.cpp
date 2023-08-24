@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
-#include "game/movement/teleport.h"
+#include "game/game.hpp"
+#include "game/movement/teleport.hpp"
 
 Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	if (attr == ATTR_TELE_DEST) {
@@ -67,8 +67,9 @@ void Teleport::addThing(Thing* thing) {
 }
 
 void Teleport::addThing(int32_t, Thing* thing) {
-	if (!thing)
+	if (!thing) {
 		return;
+	}
 
 	Tile* destTile = g_game().map.getTile(destPos);
 	if (!destTile) {

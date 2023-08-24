@@ -9,9 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/combat/condition.h"
-#include "game/game.h"
+#include "creatures/combat/condition.hpp"
+#include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "io/fileloader.hpp"
 
 /**
  *  Condition
@@ -1167,12 +1168,12 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 	if (player) {
 		PlayerdailyStreak = player->getStorageValue(STORAGEVALUE_DAILYREWARD);
 	}
-	if (creature->getZone() != ZONE_PROTECTION || PlayerdailyStreak >= DAILY_REWARD_HP_REGENERATION) {
+	if (creature->getZoneType() != ZONE_PROTECTION || PlayerdailyStreak >= DAILY_REWARD_HP_REGENERATION) {
 		if (internalHealthTicks >= getHealthTicks(creature)) {
 			internalHealthTicks = 0;
 
 			int32_t realHealthGain = creature->getHealth();
-			if (creature->getZone() == ZONE_PROTECTION && PlayerdailyStreak >= DAILY_REWARD_DOUBLE_HP_REGENERATION) {
+			if (creature->getZoneType() == ZONE_PROTECTION && PlayerdailyStreak >= DAILY_REWARD_DOUBLE_HP_REGENERATION) {
 				creature->changeHealth(healthGain * 2); // Double regen from daily reward
 			} else {
 				creature->changeHealth(healthGain);
@@ -1204,10 +1205,10 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 		}
 	}
 
-	if (creature->getZone() != ZONE_PROTECTION || PlayerdailyStreak >= DAILY_REWARD_MP_REGENERATION) {
+	if (creature->getZoneType() != ZONE_PROTECTION || PlayerdailyStreak >= DAILY_REWARD_MP_REGENERATION) {
 		if (internalManaTicks >= getManaTicks(creature)) {
 			internalManaTicks = 0;
-			if (creature->getZone() == ZONE_PROTECTION && PlayerdailyStreak >= DAILY_REWARD_DOUBLE_MP_REGENERATION) {
+			if (creature->getZoneType() == ZONE_PROTECTION && PlayerdailyStreak >= DAILY_REWARD_DOUBLE_MP_REGENERATION) {
 				creature->changeMana(manaGain * 2); // Double regen from daily reward
 			} else {
 				creature->changeMana(manaGain);
@@ -1333,10 +1334,11 @@ bool ConditionManaShield::setParam(ConditionParam_t param, int32_t value) {
 
 uint32_t ConditionManaShield::getIcons() const {
 	uint32_t icons = Condition::getIcons();
-	if (manaShield != 0)
+	if (manaShield != 0) {
 		icons |= ICON_NEWMANASHIELD;
-	else
+	} else {
 		icons |= ICON_MANASHIELD;
+	}
 	return icons;
 }
 
@@ -1378,7 +1380,7 @@ bool ConditionSoul::executeCondition(Creature* creature, int32_t interval) {
 	internalSoulTicks += interval;
 
 	if (Player* player = creature->getPlayer()) {
-		if (player->getZone() != ZONE_PROTECTION) {
+		if (player->getZoneType() != ZONE_PROTECTION) {
 			if (internalSoulTicks >= soulTicks) {
 				internalSoulTicks = 0;
 				player->changeSoul(soulGain);
@@ -1810,7 +1812,6 @@ bool ConditionFeared::isStuck(Creature* creature, Position pos) const {
 }
 
 bool ConditionFeared::getRandomDirection(Creature* creature, Position pos) {
-
 	static std::vector<Direction> directions {
 		DIRECTION_NORTH,
 		DIRECTION_NORTHEAST,
@@ -2262,7 +2263,7 @@ bool ConditionOutfit::startCondition(Creature* creature) {
 	}
 
 	if ((outfit.lookType == 0 && outfit.lookTypeEx == 0) && !monsterName.empty()) {
-		const MonsterType* monsterType = g_monsters().getMonsterType(monsterName);
+		const auto &monsterType = g_monsters().getMonsterType(monsterName);
 		if (monsterType) {
 			setOutfit(monsterType->info.outfit);
 		} else {
@@ -2298,7 +2299,7 @@ void ConditionOutfit::addCondition(Creature* creature, const Condition* addCondi
 
 		const ConditionOutfit &conditionOutfit = static_cast<const ConditionOutfit &>(*addCondition);
 		if (!conditionOutfit.monsterName.empty() && conditionOutfit.monsterName.compare(monsterName) != 0) {
-			const MonsterType* monsterType = g_monsters().getMonsterType(conditionOutfit.monsterName);
+			const auto &monsterType = g_monsters().getMonsterType(conditionOutfit.monsterName);
 			if (monsterType) {
 				setOutfit(monsterType->info.outfit);
 			} else {

@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
+#include "game/game.hpp"
 #include "lua/functions/map/town_functions.hpp"
-#include "map/town.h"
+#include "map/town.hpp"
 
 int TownFunctions::luaTownCreate(lua_State* L) {
 	// Town(id or name)

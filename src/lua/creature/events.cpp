@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "lua/creature/events.h"
-#include "utils/tools.h"
-#include "items/item.h"
-#include "creatures/players/player.h"
+#include "lua/creature/events.hpp"
+#include "utils/tools.hpp"
+#include "items/item.hpp"
+#include "creatures/players/player.hpp"
 
 Events::Events() :
 	scriptInterface("Event Interface") {
@@ -30,7 +30,7 @@ bool Events::loadFromXml() {
 
 	info = {};
 
-	phmap::btree_set<std::string> classes;
+	std::set<std::string> classes;
 	for (auto eventNode : doc.child("events").children()) {
 		if (!eventNode.attribute("enabled").as_bool()) {
 			continue;
@@ -825,33 +825,6 @@ void Events::eventPlayerOnChangeZone(Player* player, ZoneType_t zone) {
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
 	lua_pushnumber(L, zone);
-	scriptInterface.callVoidFunction(2);
-}
-
-void Events::eventPlayerOnChangeHazard(Player* player, bool isHazard) {
-	// Player:onChangeHazard(isHazard)
-	if (info.playerOnChangeHazard == -1) {
-		return;
-	}
-
-	if (!scriptInterface.reserveScriptEnv()) {
-		g_logger().error("[Events::eventPlayerOnChangeHazard - "
-						 "Player {}] "
-						 "Call stack overflow. Too many lua script calls being nested.",
-						 player->getName());
-		return;
-	}
-
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
-	env->setScriptId(info.playerOnChangeHazard, &scriptInterface);
-
-	lua_State* L = scriptInterface.getLuaState();
-	scriptInterface.pushFunction(info.playerOnChangeHazard);
-
-	LuaScriptInterface::pushUserdata<Player>(L, player);
-	LuaScriptInterface::setMetatable(L, -1, "Player");
-
-	lua_pushnumber(L, isHazard);
 	scriptInterface.callVoidFunction(2);
 }
 

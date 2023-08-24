@@ -9,37 +9,32 @@
 
 #include "pch.hpp"
 
-#include "database/databasetasks.h"
+#include "database/databasetasks.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "lib/thread/thread_pool.hpp"
 
-DatabaseTasks::DatabaseTasks() {
-	db_ = &Database::getInstance();
+DatabaseTasks::DatabaseTasks(ThreadPool &threadPool, Database &db) :
+	db(db), threadPool(threadPool) {
 }
 
 DatabaseTasks &DatabaseTasks::getInstance() {
 	return inject<DatabaseTasks>();
 }
 
-void DatabaseTasks::addTask(std::string query, std::function<void(DBResult_ptr, bool)> callback /* = nullptr*/, bool store /* = false*/) {
-	addLoad([this, query, callback, store]() {
-		if (db_ == nullptr) {
-			return;
+void DatabaseTasks::execute(const std::string &query, std::function<void(DBResult_ptr, bool)> callback /* nullptr */) {
+	threadPool.addLoad([this, query, callback]() {
+		bool success = db.executeQuery(query);
+		if (callback != nullptr) {
+			g_dispatcher().addTask([callback, success]() { callback(nullptr, success); });
 		}
+	});
+}
 
-		bool success;
-		DBResult_ptr result;
-		if (store) {
-			result = db_->storeQuery(query);
-			success = true;
-		} else {
-			result = nullptr;
-			success = db_->executeQuery(query);
-		}
-
-		if (callback) {
-			g_dispatcher().addTask(
-				[callback, result, success]() { callback(result, success); }
-			);
+void DatabaseTasks::store(const std::string &query, std::function<void(DBResult_ptr, bool)> callback /* nullptr */) {
+	threadPool.addLoad([this, query, callback]() {
+		DBResult_ptr result = db.storeQuery(query);
+		if (callback != nullptr) {
+			g_dispatcher().addTask([callback, result]() { callback(result, true); });
 		}
 	});
 }

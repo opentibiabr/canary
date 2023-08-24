@@ -7,29 +7,26 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "canary_server.hpp"
 #include "pch.hpp"
 
+#include "canary_server.hpp"
+
 #include "declarations.hpp"
-#include "creatures/players/grouping/familiars.h"
+#include "creatures/players/grouping/familiars.hpp"
 #include "creatures/players/storages/storages.hpp"
-#include "database/databasemanager.h"
-#include "database/databasetasks.h"
-#include "game/game.h"
+#include "database/databasemanager.hpp"
+#include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "game/scheduling/scheduler.h"
 #include "game/scheduling/events_scheduler.hpp"
-#include "io/iomarket.h"
-#include "lua/creature/events.h"
-#include "lua/modules/modules.h"
+#include "io/iomarket.hpp"
+#include "lib/thread/thread_pool.hpp"
+#include "lua/creature/events.hpp"
+#include "lua/modules/modules.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "lua/scripts/scripts.h"
-#include "security/rsa.h"
-#include "server/network/protocol/protocollogin.h"
-#include "server/network/protocol/protocolstatus.h"
-#include "server/network/webhook/webhook.h"
-#include "server/server.h"
-#include "io/ioprey.h"
+#include "lua/scripts/scripts.hpp"
+#include "server/network/protocol/protocollogin.hpp"
+#include "server/network/webhook/webhook.hpp"
+#include "io/ioprey.hpp"
 #include "io/io_bosstiary.hpp"
 
 #include "core.hpp"
@@ -42,7 +39,7 @@ CanaryServer::CanaryServer(
 	logger(logger),
 	rsa(rsa),
 	serviceManager(serviceManager),
-	g_loaderUniqueLock(g_loaderLock) {
+	loaderUniqueLock(loaderLock) {
 	logInfos();
 	toggleForceCloseButton();
 	g_game().setGameState(GAME_STATE_STARTUP);
@@ -55,57 +52,69 @@ CanaryServer::CanaryServer(
 }
 
 int CanaryServer::run() {
-	g_dispatcher().start();
-	g_scheduler().start();
-
 	g_dispatcher().addTask([this] {
-		loadConfigLua();
+		try {
+			loadConfigLua();
 
-		logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");
+			logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");
 
-		rsa.start();
-		initializeDatabase();
-		loadModules();
-		setWorldType();
-		loadMaps();
+			rsa.start();
+			initializeDatabase();
+			loadModules();
+			setWorldType();
 
-		logger.info("Initializing gamestate...");
-		g_game().setGameState(GAME_STATE_INIT);
+			std::unique_lock lock(mapLoaderLock);
+			mapSignal.wait(lock, [this] { return loaderMapDone; });
 
-		setupHousesRent();
+			if (!threadFailMsg.empty()) {
+				throw FailedToInitializeCanary(threadFailMsg);
+			}
 
-		IOMarket::checkExpiredOffers();
-		IOMarket::getInstance().updateStatistics();
+			logger.info("Initializing gamestate...");
+			g_game().setGameState(GAME_STATE_INIT);
 
-		logger.info("Loaded all modules, server starting up...");
+			setupHousesRent();
+
+			IOMarket::checkExpiredOffers();
+			IOMarket::getInstance().updateStatistics();
+
+			logger.info("Loaded all modules, server starting up...");
 
 #ifndef _WIN32
-		if (getuid() == 0 || geteuid() == 0) {
-			logger.warn("{} has been executed as root user, "
-						"please consider running it as a normal user",
-						STATUS_SERVER_NAME);
-		}
+			if (getuid() == 0 || geteuid() == 0) {
+				logger.warn("{} has been executed as root user, "
+							"please consider running it as a normal user",
+							STATUS_SERVER_NAME);
+			}
 #endif
 
-		g_game().start(&serviceManager);
-		g_game().setGameState(GAME_STATE_NORMAL);
+			g_game().start(&serviceManager);
+			g_game().setGameState(GAME_STATE_NORMAL);
 
-		webhook_init();
+			g_webhook().sendMessage("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE);
 
-		std::string url = g_configManager().getString(DISCORD_WEBHOOK_URL);
-		webhook_send_message("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE, url);
+			loaderDone = true;
+			loaderSignal.notify_all();
+		} catch (FailedToInitializeCanary &err) {
+			loadFailed = true;
+			logger.error(err.what());
 
-		g_loaderDone = true;
+			logger.error("The program will close after pressing the enter key...");
 
-		g_loaderSignal.notify_all();
+			if (isatty(STDIN_FILENO)) {
+				getchar();
+			}
+
+			loaderSignal.notify_all();
+		}
 	});
 
-	g_loaderSignal.wait(g_loaderUniqueLock, [this] { return g_loaderDone; });
+	loaderSignal.wait(loaderUniqueLock, [this] { return loaderDone || loadFailed; });
 
-	if (!serviceManager.is_running()) {
+	if (loadFailed || !serviceManager.is_running()) {
 		logger.error("No services running. The server is NOT online!");
 		shutdown();
-		exit(-1);
+		return EXIT_FAILURE;
 	}
 
 	logger.info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
@@ -113,7 +122,7 @@ int CanaryServer::run() {
 	serviceManager.run();
 
 	shutdown();
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 void CanaryServer::setWorldType() {
@@ -125,30 +134,23 @@ void CanaryServer::setWorldType() {
 	} else if (worldType == "pvp-enforced") {
 		g_game().setWorldType(WORLD_TYPE_PVP_ENFORCED);
 	} else {
-		logger.error("Unknown world type: {}, valid world types are: pvp, no-pvp "
-					 "and pvp-enforced",
-					 g_configManager().getString(WORLD_TYPE));
-		startupErrorMessage();
+		throw FailedToInitializeCanary(
+			fmt::format(
+				"Unknown world type: {}, valid world types are: pvp, no-pvp and pvp-enforced",
+				g_configManager().getString(WORLD_TYPE)
+			)
+		);
 	}
 
-	logger.info("World type set as {}", asUpperCaseString(worldType));
+	logger.debug("World type set as {}", asUpperCaseString(worldType));
 }
 
-void CanaryServer::loadMaps() {
-	logger.info("Loading main map...");
-	if (!g_game().loadMainMap(g_configManager().getString(MAP_NAME))) {
-		logger.error("Failed to load main map");
-		startupErrorMessage();
-	}
+void CanaryServer::loadMaps() const {
+	g_game().loadMainMap(g_configManager().getString(MAP_NAME));
 
 	// If "mapCustomEnabled" is true on config.lua, then load the custom map
 	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
-		logger.info("Loading custom maps...");
-		std::string customMapPath = g_configManager().getString(DATA_DIRECTORY) + "/world/custom/";
-		if (!g_game().loadCustomMaps(customMapPath)) {
-			logger.error("Failed to load custom maps");
-			startupErrorMessage();
-		}
+		g_game().loadCustomMaps(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/");
 	}
 }
 
@@ -173,18 +175,18 @@ void CanaryServer::setupHousesRent() {
 
 void CanaryServer::logInfos() {
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
-	logger.info("{} - Version [{}] dated [{}]", STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);
+	logger.debug("{} - Version [{}] dated [{}]", STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);
 	#if GIT_IS_DIRTY
-	logger.warn("DIRTY - NOT OFFICIAL RELEASE");
+	logger.debug("DIRTY - NOT OFFICIAL RELEASE");
 	#endif
 #else
 	logger.info("{} - Version {}", STATUS_SERVER_NAME, STATUS_SERVER_VERSION);
 #endif
 
-	logger.info("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, getPlatform());
+	logger.debug("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, getPlatform());
 
 #if defined(LUAJIT_VERSION)
-	logger.info("Linked with {} for Lua support", LUAJIT_VERSION);
+	logger.debug("Linked with {} for Lua support", LUAJIT_VERSION);
 #endif
 
 	logger.info("A server developed by: {}", STATUS_SERVER_DEVELOPERS);
@@ -279,25 +281,23 @@ void CanaryServer::loadConfigLua() {
 void CanaryServer::initializeDatabase() {
 	logger.info("Establishing database connection... ");
 	if (!Database::getInstance().connect()) {
-		logger.error("Failed to connect to database!");
-		startupErrorMessage();
+		throw FailedToInitializeCanary("Failed to connect to database!");
 	}
-	logger.info("MySQL Version: {}", Database::getClientVersion());
+	logger.debug("MySQL Version: {}", Database::getClientVersion());
 
-	logger.info("Running database manager...");
+	logger.debug("Running database manager...");
 	if (!DatabaseManager::isDatabaseSetup()) {
-		logger.error("The database you have specified in {} is empty, "
-					 "please import the schema.sql to your database.",
-					 g_configManager().getConfigFileLua());
-		startupErrorMessage();
+		throw FailedToInitializeCanary(fmt::format(
+			"The database you have specified in {} is empty, please import the schema.sql to your database.",
+			g_configManager().getConfigFileLua()
+		));
 	}
 
-	g_databaseTasks().start();
 	DatabaseManager::updateDatabase();
 
 	if (g_configManager().getBoolean(OPTIMIZE_DATABASE)
 		&& !DatabaseManager::optimizeTables()) {
-		logger.info("No tables were optimized");
+		logger.debug("No tables were optimized");
 	}
 }
 
@@ -306,12 +306,15 @@ void CanaryServer::loadModules() {
 	auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER);
 	auto datapackName = g_configManager().getString(DATA_DIRECTORY);
 	if (!useAnyDatapack && (datapackName != "data-canary" && datapackName != "data-otservbr-global" || datapackName != "data-otservbr-global" && datapackName != "data-canary")) {
-		logger.error("The datapack folder name '{}' is wrong, please select valid datapack name 'data-canary' or 'data-otservbr-global", datapackName);
-		logger.error("Or enable in config.lua to use any datapack folder", datapackName);
-		startupErrorMessage();
+		throw FailedToInitializeCanary(fmt::format(
+			"The datapack folder name '{}' is wrong, please select valid "
+			"datapack name 'data-canary' or 'data-otservbr-global "
+			"or enable in config.lua to use any datapack folder",
+			datapackName
+		));
 	}
 
-	logger.info("Initializing lua environment...");
+	logger.debug("Initializing lua environment...");
 	if (!g_luaEnvironment().getLuaState()) {
 		g_luaEnvironment().initState();
 	}
@@ -321,8 +324,18 @@ void CanaryServer::loadModules() {
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
 	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
 
+	inject<ThreadPool>().addLoad([this] {
+		try {
+			loadMaps();
+		} catch (const std::exception &err) {
+			threadFailMsg = err.what();
+		}
+		loaderMapDone = true;
+		mapSignal.notify_one();
+	});
+
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
-	logger.info("Loading core scripts on folder: {}/", coreFolder);
+	logger.debug("Loading core scripts on folder: {}/", coreFolder);
 	// Load first core Lua libs
 	modulesLoadHelper((g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0), "core.lua");
 	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts", false, false), "/data/scripts");
@@ -338,7 +351,7 @@ void CanaryServer::loadModules() {
 	modulesLoadHelper(g_events().loadFromXml(), "events/events.xml");
 	modulesLoadHelper((g_npcs().load(true, false)), "npclib");
 
-	logger.info("Loading datapack scripts on folder: {}/", datapackName);
+	logger.debug("Loading datapack scripts on folder: {}/", datapackName);
 	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false), datapackFolder + "/scripts/libs");
 	// Load scripts
 	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts", false, false), datapackFolder + "/scripts");
@@ -352,28 +365,12 @@ void CanaryServer::loadModules() {
 }
 
 void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {
-	logger.info("Loading {}", moduleName);
+	logger.debug("Loading {}", moduleName);
 	if (!loaded) {
-		logger.error("Cannot load: {}", moduleName);
-		startupErrorMessage();
+		throw FailedToInitializeCanary(fmt::format("Cannot load: {}", moduleName));
 	}
-}
-
-void CanaryServer::startupErrorMessage() {
-	logger.error("The program will close after pressing the enter key...");
-
-	if (isatty(STDIN_FILENO)) {
-		getchar();
-	}
-
-	g_loaderSignal.notify_all();
-
-	shutdown();
-	exit(-1);
 }
 
 void CanaryServer::shutdown() {
-	g_scheduler().shutdown();
-	g_databaseTasks().shutdown();
-	g_dispatcher().shutdown();
+	inject<ThreadPool>().shutdown();
 }

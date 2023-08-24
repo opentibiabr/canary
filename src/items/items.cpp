@@ -10,10 +10,10 @@
 #include "pch.hpp"
 
 #include "items/functions/item/item_parse.hpp"
-#include "items/items.h"
-#include "items/weapons/weapons.h"
-#include "game/game.h"
-#include "utils/pugicast.h"
+#include "items/items.hpp"
+#include "items/weapons/weapons.hpp"
+#include "game/game.hpp"
+#include "utils/pugicast.hpp"
 
 Items::Items() = default;
 
@@ -321,8 +321,9 @@ const ItemType &Items::getItemType(size_t id) const {
 uint16_t Items::getItemIdByName(const std::string &name) {
 	auto result = nameToItems.find(asLowerCaseString(name));
 
-	if (result == nameToItems.end())
+	if (result == nameToItems.end()) {
 		return 0;
+	}
 
 	return result->second;
 }

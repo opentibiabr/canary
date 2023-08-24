@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
-#include "creatures/creature.h"
-#include "creatures/npcs/npc.h"
+#include "game/game.hpp"
+#include "creatures/creature.hpp"
+#include "creatures/npcs/npc.hpp"
 #include "lua/functions/creatures/npc/npc_functions.hpp"
 
 int NpcFunctions::luaNpcCreate(lua_State* L) {
@@ -23,7 +23,7 @@ int NpcFunctions::luaNpcCreate(lua_State* L) {
 		} else if (isString(L, 2)) {
 			npc = g_game().getNpcByName(getString(L, 2));
 		} else if (isUserdata(L, 2)) {
-			if (getUserdataType(L, 2) != LuaData_Npc) {
+			if (getUserdataType(L, 2) != LuaData_t::Npc) {
 				lua_pushnil(L);
 				return 1;
 			}

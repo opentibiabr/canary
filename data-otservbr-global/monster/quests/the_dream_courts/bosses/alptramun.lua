@@ -102,8 +102,7 @@ monster.loot = {
 	{name = "soul stone", chance = 820},
 	{id = 23529, chance = 10590}, -- ring of blue plasma
 	{name = "pomegranate", chance = 880},
-	{name = "dream shroud", chance = 980},
-	{id = 23530, chance = 10590} -- ring of blue plasma
+	{name = "dream shroud", chance = 980}
 }
 
 monster.attacks = {

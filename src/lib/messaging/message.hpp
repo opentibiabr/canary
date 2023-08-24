@@ -6,8 +6,7 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#ifndef CANARY_MESSAGE_HPP
-#define CANARY_MESSAGE_HPP
+#pragma once
 
 #include <eventpp/utilities/scopedremover.h>
 #include <eventpp/eventdispatcher.h>
@@ -42,5 +41,3 @@ public:
 
 template <typename T>
 using MessageListeners = std::vector<std::shared_ptr<IMessageListener<T>>>;
-
-#endif // CANARY_MESSAGE_HPP

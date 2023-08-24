@@ -6,8 +6,7 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#ifndef CANARY_COMMAND_HPP
-#define CANARY_COMMAND_HPP
+#pragma once
 
 enum class CommandType {
 	start,
@@ -29,5 +28,3 @@ inline ICommand command(CommandType type) {
 }
 #define commandCallback(block) [this](const ICommand &) block
 #define appendCommandListener(type, block) dispatcher.appendListener(type, commandCallback(block))
-
-#endif // CANARY_COMMAND_HPP

@@ -48,7 +48,7 @@ void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
 	}
 
 	if (BasicItem->uniqueId > 0) {
-		item->addUniqueId(BasicItem->uniqueId);
+		item->setAttribute(ItemAttribute_t::UNIQUEID, BasicItem->uniqueId);
 	}
 
 	if (item->getTeleport() && (BasicItem->destX != 0 || BasicItem->destY != 0 || BasicItem->destZ != 0)) {
@@ -64,24 +64,12 @@ void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
 		item->getContainer()->getDepotLocker()->setDepotId(BasicItem->doorOrDepotId);
 	}
 
-	if (item->getBed()) {
-		if (BasicItem->guid > 0) {
-			const auto &name = IOLoginData::getNameByGuid(BasicItem->guid);
-			if (!name.empty()) {
-				item->setAttribute(ItemAttribute_t::DESCRIPTION, name + " is sleeping there.");
-				g_game().setBedSleeper(item->getBed(), BasicItem->guid);
-				item->getBed()->sleeperGUID = BasicItem->guid;
-			}
-		}
-
-		if (BasicItem->sleepStart > 0) {
-			item->getBed()->sleepStart = static_cast<uint64_t>(BasicItem->sleepStart);
-		}
-	}
-
 	if (!BasicItem->text.empty()) {
 		item->setAttribute(ItemAttribute_t::TEXT, BasicItem->text);
 	}
+
+	/* if (BasicItem.description != 0)
+		item->setAttribute(ItemAttribute_t::DESCRIPTION, STRING_CACHE[BasicItem.description]);*/
 }
 
 Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
@@ -158,7 +146,12 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePt
 		return;
 	}
 
-	root.getBestLeaf(x, y, 15)->createFloor(z)->setTileCache(x, y, static_tryGetTileFromCache(newTile));
+	const auto &tile = static_tryGetTileFromCache(newTile);
+	if (const auto leaf = QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y)) {
+		leaf->createFloor(z)->setTileCache(x, y, tile);
+	} else {
+		root.getBestLeaf(x, y, 15)->createFloor(z)->setTileCache(x, y, tile);
+	}
 }
 
 BasicItemPtr MapCache::tryReplaceItemFromCache(const BasicItemPtr &ref) {
@@ -166,7 +159,7 @@ BasicItemPtr MapCache::tryReplaceItemFromCache(const BasicItemPtr &ref) {
 }
 
 void BasicTile::hash(size_t &h) const {
-	const uint32_t arr[] = { flags, houseId, type, isStatic };
+	std::array<uint32_t, 4> arr = { flags, houseId, type, isStatic };
 	for (const auto v : arr) {
 		if (v > 0) {
 			stdext::hash_combine(h, v);
@@ -186,7 +179,7 @@ void BasicTile::hash(size_t &h) const {
 }
 
 void BasicItem::hash(size_t &h) const {
-	const uint32_t arr[] = { id, guid, sleepStart, charges, actionId, uniqueId, destX, destY, destZ, doorOrDepotId };
+	const std::array<uint32_t, 8> arr = { id, charges, actionId, uniqueId, destX, destY, destZ, doorOrDepotId };
 	for (const auto v : arr) {
 		if (v > 0) {
 			stdext::hash_combine(h, v);

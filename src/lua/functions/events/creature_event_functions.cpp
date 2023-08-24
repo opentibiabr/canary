@@ -15,10 +15,10 @@
 
 int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 	// CreatureEvent(eventName)
-	auto creature = std::make_shared<CreatureEvent>(getScriptEnv()->getScriptInterface());
-	if (creature) {
-		creature->setName(getString(L, 2));
-		pushUserdata<CreatureEvent>(L, creature);
+	auto creatureEvent = std::make_shared<CreatureEvent>(getScriptEnv()->getScriptInterface());
+	if (creatureEvent) {
+		creatureEvent->setName(getString(L, 2));
+		pushUserdata<CreatureEvent>(L, creatureEvent);
 		setMetatable(L, -1, "CreatureEvent");
 	} else {
 		lua_pushnil(L);
@@ -28,41 +28,41 @@ int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 
 int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 	// creatureevent:type(callback)
-	const auto &creature = getUserdataShared<CreatureEvent>(L, 1);
-	if (creature) {
+	const auto &creatureEvent = getUserdataShared<CreatureEvent>(L, 1);
+	if (creatureEvent) {
 		std::string typeName = getString(L, 2);
 		std::string tmpStr = asLowerCaseString(typeName);
 		if (tmpStr == "login") {
-			creature->setEventType(CREATURE_EVENT_LOGIN);
+			creatureEvent->setEventType(CREATURE_EVENT_LOGIN);
 		} else if (tmpStr == "logout") {
-			creature->setEventType(CREATURE_EVENT_LOGOUT);
+			creatureEvent->setEventType(CREATURE_EVENT_LOGOUT);
 		} else if (tmpStr == "think") {
-			creature->setEventType(CREATURE_EVENT_THINK);
+			creatureEvent->setEventType(CREATURE_EVENT_THINK);
 		} else if (tmpStr == "preparedeath") {
-			creature->setEventType(CREATURE_EVENT_PREPAREDEATH);
+			creatureEvent->setEventType(CREATURE_EVENT_PREPAREDEATH);
 		} else if (tmpStr == "death") {
-			creature->setEventType(CREATURE_EVENT_DEATH);
+			creatureEvent->setEventType(CREATURE_EVENT_DEATH);
 		} else if (tmpStr == "kill") {
-			creature->setEventType(CREATURE_EVENT_KILL);
+			creatureEvent->setEventType(CREATURE_EVENT_KILL);
 		} else if (tmpStr == "advance") {
-			creature->setEventType(CREATURE_EVENT_ADVANCE);
+			creatureEvent->setEventType(CREATURE_EVENT_ADVANCE);
 		} else if (tmpStr == "modalwindow") {
-			creature->setEventType(CREATURE_EVENT_MODALWINDOW);
+			creatureEvent->setEventType(CREATURE_EVENT_MODALWINDOW);
 		} else if (tmpStr == "textedit") {
-			creature->setEventType(CREATURE_EVENT_TEXTEDIT);
+			creatureEvent->setEventType(CREATURE_EVENT_TEXTEDIT);
 		} else if (tmpStr == "healthchange") {
-			creature->setEventType(CREATURE_EVENT_HEALTHCHANGE);
+			creatureEvent->setEventType(CREATURE_EVENT_HEALTHCHANGE);
 		} else if (tmpStr == "manachange") {
-			creature->setEventType(CREATURE_EVENT_MANACHANGE);
+			creatureEvent->setEventType(CREATURE_EVENT_MANACHANGE);
 		} else if (tmpStr == "extendedopcode") {
-			creature->setEventType(CREATURE_EVENT_EXTENDED_OPCODE);
+			creatureEvent->setEventType(CREATURE_EVENT_EXTENDED_OPCODE);
 		} else {
 			g_logger().error("[CreatureEventFunctions::luaCreatureEventType] - "
 							 "Invalid type for creature event: {}",
 							 typeName);
 			pushBoolean(L, false);
 		}
-		creature->setLoaded(true);
+		creatureEvent->setLoaded(true);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -72,13 +72,13 @@ int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 
 int CreatureEventFunctions::luaCreatureEventRegister(lua_State* L) {
 	// creatureevent:register()
-	const auto &creature = getUserdataShared<CreatureEvent>(L, 1);
-	if (creature) {
-		if (!creature->isLoadedCallback()) {
+	const auto creatureEvent = getUserdataShared<CreatureEvent>(L, 1);
+	if (creatureEvent) {
+		if (!creatureEvent->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}
-		pushBoolean(L, g_creatureEvents().registerLuaEvent(creature));
+		pushBoolean(L, g_creatureEvents().registerLuaEvent(creatureEvent));
 	} else {
 		lua_pushnil(L);
 	}
@@ -87,9 +87,9 @@ int CreatureEventFunctions::luaCreatureEventRegister(lua_State* L) {
 
 int CreatureEventFunctions::luaCreatureEventOnCallback(lua_State* L) {
 	// creatureevent:onLogin / logout / etc. (callback)
-	const auto &creature = getUserdataShared<CreatureEvent>(L, 1);
-	if (creature) {
-		if (!creature->loadCallback()) {
+	const auto creatureEvent = getUserdataShared<CreatureEvent>(L, 1);
+	if (creatureEvent) {
+		if (!creatureEvent->loadCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}

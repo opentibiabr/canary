@@ -121,7 +121,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 
 		while (stream.startNode()) {
 			const uint8_t tileType = stream.getU8();
-			if (tileType != OTBM_HOUSETILE && tileType != OTBM_TILE)
+			if (tileType != OTBM_HOUSETILE && tileType != OTBM_TILE) {
 				throw IOMapException("Could not read tile type node.");
 			}
 
@@ -223,8 +223,9 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
 			}
 
-			if (tile->isEmpty(true))
+			if (tile->isEmpty(true)) {
 				continue;
+			}
 
 			map.setBasicTile(x, y, z, tile);
 		}

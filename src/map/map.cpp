@@ -62,8 +62,9 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 		g_game().createLuaItemsOnMap();
 	}
 
-	if (loadMonsters)
+	if (loadMonsters) {
 		IOMap::loadMonsters(this);
+	}
 
 	if (loadHouses) {
 		IOMap::loadHouses(this);
@@ -79,8 +80,9 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 		}
 	}
 
-	if (loadNpcs)
+	if (loadNpcs) {
 		IOMap::loadNpcs(this);
+	}
 
 	// Files need to be cleaned up if custom map is enabled to open, or will try to load main map files
 	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
@@ -94,14 +96,17 @@ void Map::loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMo
 	// Load the map
 	load(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/" + mapName + ".otbm");
 
-	if (loadMonsters && !IOMap::loadMonstersCustom(this, mapName, customMapIndex))
+	if (loadMonsters && !IOMap::loadMonstersCustom(this, mapName, customMapIndex)) {
 		g_logger().warn("Failed to load monster custom data");
+	}
 
-	if (loadHouses && !IOMap::loadHousesCustom(this, mapName, customMapIndex))
+	if (loadHouses && !IOMap::loadHousesCustom(this, mapName, customMapIndex)) {
 		g_logger().warn("Failed to load house custom data");
+	}
 
-	if (loadNpcs && !IOMap::loadNpcsCustom(this, mapName, customMapIndex))
+	if (loadNpcs && !IOMap::loadNpcsCustom(this, mapName, customMapIndex)) {
 		g_logger().warn("Failed to load npc custom spawn data");
+	}
 
 	// Files need to be cleaned up or will try to load previous map files again
 	monsterfile.clear();
@@ -130,10 +135,11 @@ bool Map::save() {
 Tile* Map::getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic) {
 	auto tile = getTile(x, y, z);
 	if (!tile) {
-		if (isDynamic)
+		if (isDynamic) {
 			tile = new DynamicTile(x, y, z);
-		else
+		} else {
 			tile = new StaticTile(x, y, z);
+		}
 
 		setTile(x, y, z, tile);
 	}
@@ -142,16 +148,19 @@ Tile* Map::getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic) {
 }
 
 Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
-	if (z >= MAP_MAX_LAYERS)
+	if (z >= MAP_MAX_LAYERS) {
 		return nullptr;
+	}
 
 	const auto leaf = getQTNode(x, y);
-	if (!leaf)
+	if (!leaf) {
 		return nullptr;
+	}
 
 	const auto &floor = leaf->getFloor(z);
-	if (!floor)
+	if (!floor) {
 		return nullptr;
+	}
 
 	const auto tile = floor->getTile(x, y);
 	return tile ? tile : getOrCreateTileFromCache(floor, x, y);
@@ -163,10 +172,11 @@ void Map::setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile) {
 		return;
 	}
 
-	if (const auto leaf = getQTNode(x, y))
+	if (const auto leaf = getQTNode(x, y)) {
 		leaf->createFloor(z)->setTile(x, y, newTile);
-	else
+	} else {
 		root.getBestLeaf(x, y, 15)->createFloor(z)->setTile(x, y, newTile);
+	}
 }
 
 bool Map::placeCreature(const Position &centerPos, Creature* creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {

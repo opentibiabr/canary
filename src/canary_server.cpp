@@ -66,8 +66,9 @@ int CanaryServer::run() {
 			std::unique_lock lock(mapLoaderLock);
 			mapSignal.wait(lock, [this] { return loaderMapDone; });
 
-			if (!threadFailMsg.empty())
+			if (!threadFailMsg.empty()) {
 				throw FailedToInitializeCanary(threadFailMsg);
+			}
 
 			logger.info("Initializing gamestate...");
 			g_game().setGameState(GAME_STATE_INIT);

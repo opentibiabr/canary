@@ -450,8 +450,9 @@ void Game::loadCustomMaps(const std::filesystem::path &customMapPath) {
 
 	namespace fs = std::filesystem;
 
-	if (!fs::exists(customMapPath) && !fs::create_directory(customMapPath))
+	if (!fs::exists(customMapPath) && !fs::create_directory(customMapPath)) {
 		throw std::ios_base::failure(fmt::format("Failed to create custom map directory {}", customMapPath.string()));
+	}
 
 	int customMapIndex = 0;
 	for (const auto &entry : fs::directory_iterator(customMapPath)) {

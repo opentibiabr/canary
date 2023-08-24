@@ -29,7 +29,7 @@ Bank::~Bank() {
 		return;
 	}
 	if (bankable->isGuild()) {
-		const auto &guild = static_self_cast<Guild>(bankable);
+		const auto guild = static_self_cast<Guild>(bankable);
 		if (guild && !guild->isOnline()) {
 			IOGuild::saveGuild(guild);
 		}

@@ -271,7 +271,7 @@ void SpawnMonster::cleanup() {
 }
 
 bool SpawnMonster::addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t scheduleInterval) {
-	const auto &monsterType = g_monsters().getMonsterType(name);
+	const auto monsterType = g_monsters().getMonsterType(name);
 	if (!monsterType) {
 		g_logger().error("Can not find {}", name);
 		return false;

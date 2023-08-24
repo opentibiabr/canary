@@ -51,7 +51,7 @@ void IOBosstiary::loadBoostedBoss() {
 	// Filter only archfoe bosses
 	std::map<uint16_t, std::string> bossInfo;
 	for (auto [infoBossRaceId, infoBossName] : bossMap) {
-		const auto &mType = getMonsterTypeByBossRaceId(infoBossRaceId);
+		const auto mType = getMonsterTypeByBossRaceId(infoBossRaceId);
 		if (!mType || mType->info.bosstiaryRace != BosstiaryRarity_t::RARITY_ARCHFOE) {
 			continue;
 		}
@@ -83,7 +83,7 @@ void IOBosstiary::loadBoostedBoss() {
 	query << "UPDATE `boosted_boss` SET ";
 	query << "`date` = '" << today << "',";
 	query << "`boostname` = " << database.escapeString(bossName) << ",";
-	if (const auto &bossType = getMonsterTypeByBossRaceId(bossId);
+	if (const auto bossType = getMonsterTypeByBossRaceId(bossId);
 		bossType) {
 		query << "`looktypeEx` = " << static_cast<int>(bossType->info.outfit.lookTypeEx) << ",";
 		query << "`looktype` = " << static_cast<int>(bossType->info.outfit.lookType) << ",";
@@ -139,7 +139,7 @@ uint16_t IOBosstiary::getBoostedBossId() const {
 std::shared_ptr<MonsterType> IOBosstiary::getMonsterTypeByBossRaceId(uint16_t raceId) const {
 	for ([[maybe_unused]] const auto &[bossRaceId, bossName] : getBosstiaryMap()) {
 		if (bossRaceId == raceId) {
-			const auto &monsterType = g_monsters().getMonsterType(bossName);
+			const auto monsterType = g_monsters().getMonsterType(bossName);
 			if (!monsterType) {
 				g_logger().error("[{}] Boss with id {} not found in boss map", __FUNCTION__, raceId);
 				continue;
@@ -230,7 +230,7 @@ phmap::parallel_flat_hash_set<uint16_t> IOBosstiary::getBosstiaryFinished(const 
 			continue;
 		}
 
-		const auto &mType = g_monsters().getMonsterType(bossName);
+		const auto mType = g_monsters().getMonsterType(bossName);
 		if (!mType) {
 			continue;
 		}
@@ -295,7 +295,7 @@ std::vector<uint16_t> IOBosstiary::getBosstiaryCooldownRaceId(const Player* play
 		 const auto &[bossId, bossName] : bossesMap) {
 		uint32_t bossKills = player->getBestiaryKillCount(bossId);
 
-		const auto &mType = g_monsters().getMonsterType(bossName);
+		const auto mType = g_monsters().getMonsterType(bossName);
 		if (!mType) {
 			continue;
 		}

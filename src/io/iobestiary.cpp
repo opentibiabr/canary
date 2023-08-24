@@ -95,8 +95,8 @@ bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> charm, Player* pl
 }
 
 std::shared_ptr<Charm> IOBestiary::getBestiaryCharm(charmRune_t activeCharm, bool force /*= false*/) const {
-	const auto &charmInternal = g_game().getCharmList();
-	for (const auto &tmpCharm : charmInternal) {
+	const auto charmInternal = g_game().getCharmList();
+	for (const auto tmpCharm : charmInternal) {
 		if (tmpCharm->id == activeCharm) {
 			return tmpCharm;
 		}
@@ -119,14 +119,14 @@ std::map<uint16_t, std::string> IOBestiary::findRaceByName(const std::string &ra
 
 	if (Onlystring) {
 		for (const auto &it : best_list) {
-			const auto &tmpType = g_monsters().getMonsterType(it.second);
+			const auto tmpType = g_monsters().getMonsterType(it.second);
 			if (tmpType && tmpType->info.bestiaryClass == race) {
 				race_list.insert({ it.first, it.second });
 			}
 		}
 	} else {
 		for (const auto &itn : best_list) {
-			const auto &tmpType = g_monsters().getMonsterType(itn.second);
+			const auto tmpType = g_monsters().getMonsterType(itn.second);
 			if (tmpType && tmpType->info.bestiaryRace == raceNumber) {
 				race_list.insert({ itn.first, itn.second });
 			}
@@ -191,7 +191,7 @@ uint16_t IOBestiary::getBestiaryRaceUnlocked(Player* player, BestiaryType_t race
 	std::map<uint16_t, std::string> besty_l = g_game().getBestiaryList();
 
 	for (auto it : besty_l) {
-		const auto &mtype = g_monsters().getMonsterType(it.second);
+		const auto mtype = g_monsters().getMonsterType(it.second);
 		if (mtype && mtype->info.bestiaryRace == race && player->getBestiaryKillCount(mtype->info.raceid) > 0) {
 			count++;
 		}
@@ -237,7 +237,7 @@ void IOBestiary::addBestiaryKill(Player* player, const std::shared_ptr<MonsterTy
 	}
 
 	const auto &trackerUnorderedSet = player->getCyclopediaMonsterTrackerSet(false);
-	for (const auto &mType : trackerUnorderedSet) {
+	for (const auto mType : trackerUnorderedSet) {
 		if (raceid == mType->info.raceid) {
 			player->refreshCyclopediaMonsterTracker(trackerUnorderedSet, false);
 		}
@@ -253,7 +253,7 @@ charmRune_t IOBestiary::getCharmFromTarget(Player* player, const std::shared_ptr
 	std::list<charmRune_t> usedRunes = getCharmUsedRuneBitAll(player);
 
 	for (charmRune_t it : usedRunes) {
-		const auto &charm = getBestiaryCharm(it);
+		const auto charm = getBestiaryCharm(it);
 		if (bestiaryEntry == player->parseRacebyCharm(charm->id, false, 0)) {
 			return charm->id;
 		}
@@ -287,7 +287,7 @@ int32_t IOBestiary::bitToggle(int32_t input, const std::shared_ptr<Charm> charm,
 }
 
 void IOBestiary::sendBuyCharmRune(Player* player, charmRune_t runeID, uint8_t action, uint16_t raceid) {
-	const auto &charm = getBestiaryCharm(runeID);
+	const auto charm = getBestiaryCharm(runeID);
 	if (!player || !charm) {
 		return;
 	}

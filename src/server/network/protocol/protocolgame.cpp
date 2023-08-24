@@ -2167,7 +2167,7 @@ void ProtocolGame::parseBestiarysendRaces() {
 		std::string BestClass = "";
 		uint16_t count = 0;
 		for (auto rit : mtype_list) {
-			const auto &mtype = g_monsters().getMonsterType(rit.second);
+			const auto mtype = g_monsters().getMonsterType(rit.second);
 			if (!mtype) {
 				return;
 			}
@@ -2327,7 +2327,7 @@ void ProtocolGame::parseCyclopediaMonsterTracker(NetworkMessage &msg) {
 	auto trackerButtonType = msg.getByte();
 
 	// Bosstiary tracker logic
-	if (const auto &monsterType = g_ioBosstiary().getMonsterTypeByBossRaceId(monsterRaceId)) {
+	if (const auto monsterType = g_ioBosstiary().getMonsterTypeByBossRaceId(monsterRaceId)) {
 		if (player->getBestiaryKillCount(monsterRaceId)) {
 			if (trackerButtonType == 1) {
 				player->addMonsterToCyclopediaTrackerList(monsterType, true, true);
@@ -2342,7 +2342,7 @@ void ProtocolGame::parseCyclopediaMonsterTracker(NetworkMessage &msg) {
 	const auto &bestiaryMonsters = g_game().getBestiaryList();
 	auto it = bestiaryMonsters.find(monsterRaceId);
 	if (it != bestiaryMonsters.end()) {
-		const auto &mtype = g_monsters().getMonsterType(it->second);
+		const auto mtype = g_monsters().getMonsterType(it->second);
 		if (!mtype) {
 			g_logger().error("[{}] player {} have wrong boss with race {}", __FUNCTION__, player->getName(), monsterRaceId);
 			return;
@@ -2731,7 +2731,7 @@ void ProtocolGame::refreshCyclopediaMonsterTracker(const phmap::parallel_flat_ha
 	msg.addByte(0xB9);
 	msg.addByte(isBoss ? 0x01 : 0x00);
 	msg.addByte(trackerSet.size());
-	for (const auto &mtype : trackerSet) {
+	for (const auto mtype : trackerSet) {
 		auto raceId = mtype->info.raceid;
 		const auto &stages = g_ioBosstiary().getBossRaceKillStages(mtype->info.bosstiaryRace);
 		if (isBoss && (stages.empty() || stages.size() != 3)) {
@@ -2777,7 +2777,7 @@ void ProtocolGame::BestiarysendCharms() {
 	msg.addByte(0xd8);
 	msg.add<uint32_t>(player->getCharmPoints());
 
-	const auto &charmList = g_game().getCharmList();
+	const auto charmList = g_game().getCharmList();
 	msg.addByte(charmList.size());
 	for (const auto &c_type : charmList) {
 		msg.addByte(c_type->id);
@@ -2806,7 +2806,7 @@ void ProtocolGame::BestiarysendCharms() {
 	std::list<charmRune_t> usedRunes = g_iobestiary().getCharmUsedRuneBitAll(player);
 
 	for (charmRune_t charmRune : usedRunes) {
-		const auto &tmpCharm = g_iobestiary().getBestiaryCharm(charmRune);
+		const auto tmpCharm = g_iobestiary().getBestiaryCharm(charmRune);
 		uint16_t tmp_raceid = player->parseRacebyCharm(tmpCharm->id, false, 0);
 		finishedMonstersSet.erase(tmp_raceid);
 	}
@@ -2866,7 +2866,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 		uint8_t progress = 0;
 		for (const auto &_it : creaturesKilled) {
 			if (_it.first == raceid_) {
-				const auto &tmpType = g_monsters().getMonsterType(it_.second);
+				const auto tmpType = g_monsters().getMonsterType(it_.second);
 				if (!tmpType) {
 					return;
 				}
@@ -6753,7 +6753,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot) {
 	} else if (slot->state == PreyDataState_Inactive) {
 		// Empty
 	} else if (slot->state == PreyDataState_Active) {
-		if (const auto &mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId)) {
+		if (const auto mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId)) {
 			msg.addString(mtype->name);
 			const Outfit_t outfit = mtype->info.outfit;
 			msg.add<uint16_t>(outfit.lookType);
@@ -6775,7 +6775,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot) {
 	} else if (slot->state == PreyDataState_Selection) {
 		msg.addByte(static_cast<uint8_t>(validRaceIds.size()));
 		for (uint16_t raceId : validRaceIds) {
-			const auto &mtype = g_monsters().getMonsterTypeByRaceId(raceId);
+			const auto mtype = g_monsters().getMonsterTypeByRaceId(raceId);
 			if (!mtype) {
 				continue;
 			}
@@ -6800,7 +6800,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot) {
 		msg.addByte(slot->bonusRarity);
 		msg.addByte(static_cast<uint8_t>(validRaceIds.size()));
 		for (uint16_t raceId : validRaceIds) {
-			const auto &mtype = g_monsters().getMonsterTypeByRaceId(raceId);
+			const auto mtype = g_monsters().getMonsterTypeByRaceId(raceId);
 			if (!mtype) {
 				continue;
 			}
@@ -6822,7 +6822,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot) {
 	} else if (slot->state == PreyDataState_ListSelection) {
 		const std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
-		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto &mType) {
+		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto mType) {
 			msg.add<uint16_t>(mType.first);
 		});
 	} else {
@@ -7481,7 +7481,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot) {
 		const Player* user = player;
 		const std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
-		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg, user](auto &mType) {
+		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg, user](auto mType) {
 			msg.add<uint16_t>(mType.first);
 			msg.addByte(user->isCreatureUnlockedOnTaskHunting(g_monsters().getMonsterType(mType.second)) ? 0x01 : 0x00);
 		});
@@ -8126,7 +8126,7 @@ void ProtocolGame::parseSendBosstiary() {
 	msg.skipBytes(2);
 
 	for (const auto &[bossid, name] : mtype_map) {
-		const auto &mType = g_monsters().getMonsterType(name);
+		const auto mType = g_monsters().getMonsterType(name);
 		if (!mType) {
 			continue;
 		}
@@ -8163,7 +8163,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 
 	// Sanity checks
 	std::string boostedBossName = g_ioBosstiary().getBoostedBossName();
-	const auto &mTypeBoosted = g_monsters().getMonsterType(boostedBossName);
+	const auto mTypeBoosted = g_monsters().getMonsterType(boostedBossName);
 	auto boostedBossRace = mTypeBoosted ? mTypeBoosted->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBoostedBoss = boostedBossId == 0 || boostedBossRace >= BosstiaryRarity_t::RARITY_BANE && boostedBossRace <= BosstiaryRarity_t::RARITY_NEMESIS;
 	if (!isValidBoostedBoss) {
@@ -8171,7 +8171,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		return;
 	}
 
-	const auto &mTypeSlotOne = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
+	const auto mTypeSlotOne = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotOne);
 	auto bossRaceSlotOne = mTypeSlotOne ? mTypeSlotOne->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBossSlotOne = bossIdSlotOne == 0 || bossRaceSlotOne >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotOne <= BosstiaryRarity_t::RARITY_NEMESIS;
 	if (!isValidBossSlotOne) {
@@ -8179,7 +8179,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		return;
 	}
 
-	const auto &mTypeSlotTwo = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
+	const auto mTypeSlotTwo = g_ioBosstiary().getMonsterTypeByBossRaceId((uint16_t)bossIdSlotTwo);
 	auto bossRaceSlotTwo = mTypeSlotTwo ? mTypeSlotTwo->info.bosstiaryRace : BosstiaryRarity_t::BOSS_INVALID;
 	auto isValidBossSlotTwo = bossIdSlotTwo == 0 || bossRaceSlotTwo >= BosstiaryRarity_t::RARITY_BANE && bossRaceSlotTwo <= BosstiaryRarity_t::RARITY_NEMESIS;
 	if (!isValidBossSlotTwo) {
@@ -8258,7 +8258,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 			if (bossId == bossIdSlotOne || bossId == bossIdSlotTwo)
 				continue;
 
-			const auto &mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossId);
+			const auto mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossId);
 			if (!mType) {
 				g_logger().error("[{}] monster {} not found", __FUNCTION__, bossId);
 				continue;
@@ -8297,7 +8297,7 @@ void ProtocolGame::sendPodiumDetails(NetworkMessage &msg, const phmap::parallel_
 	auto toSendMonstersSize = static_cast<uint16_t>(toSendMonsters.size());
 	msg.add<uint16_t>(toSendMonstersSize);
 	for (const auto &raceId : toSendMonsters) {
-		const auto &mType = g_monsters().getMonsterTypeByRaceId(raceId, isBoss);
+		const auto mType = g_monsters().getMonsterTypeByRaceId(raceId, isBoss);
 		if (!mType) {
 			continue;
 		}
@@ -8419,7 +8419,7 @@ void ProtocolGame::sendBosstiaryCooldownTimer() {
 	auto bossesOnTrackerSize = static_cast<uint16_t>(bossesOnTracker.size());
 	msg.add<uint16_t>(bossesOnTrackerSize); // Number of bosses on timer
 	for (const auto &bossRaceId : bossesOnTracker) {
-		const auto &mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossRaceId);
+		const auto mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossRaceId);
 		if (!mType) {
 			continue;
 		}

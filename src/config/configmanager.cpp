@@ -110,6 +110,8 @@ bool ConfigManager::load() {
 		string[MAP_CUSTOM_AUTHOR] = getGlobalString(L, "mapCustomAuthor", "OTServBR");
 
 		string[HOUSE_RENT_PERIOD] = getGlobalString(L, "houseRentPeriod", "never");
+		floating[HOUSE_PRICE_RENT_MULTIPLIER] = getGlobalFloat(L, "housePriceRentMultiplier", 1.0);
+		floating[HOUSE_RENT_RATE] = getGlobalFloat(L, "houseRentRate", 1.0);
 		string[MYSQL_HOST] = getGlobalString(L, "mysqlHost", "127.0.0.1");
 		string[MYSQL_USER] = getGlobalString(L, "mysqlUser", "root");
 		string[MYSQL_PASS] = getGlobalString(L, "mysqlPass", "");
@@ -217,7 +219,7 @@ bool ConfigManager::load() {
 	integer[RATE_MAGIC] = getGlobalNumber(L, "rateMagic", 1);
 	integer[RATE_SPAWN] = getGlobalNumber(L, "rateSpawn", 1);
 	integer[RATE_KILLING_IN_THE_NAME_OF_POINTS] = getGlobalNumber(L, "rateKillingInTheNameOfPoints", 1);
-	integer[HOUSE_PRICE] = getGlobalNumber(L, "housePriceEachSQM", 1000);
+	integer[HOUSE_PRICE_PER_SQM] = getGlobalNumber(L, "housePriceEachSQM", 1000);
 	integer[HOUSE_BUY_LEVEL] = getGlobalNumber(L, "houseBuyLevel", 0);
 	integer[ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenActions", 200);
 	integer[EX_ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenExActions", 1000);

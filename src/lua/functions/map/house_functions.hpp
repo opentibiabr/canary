@@ -22,6 +22,7 @@ public:
 		registerMethod(L, "House", "getTown", HouseFunctions::luaHouseGetTown);
 		registerMethod(L, "House", "getExitPosition", HouseFunctions::luaHouseGetExitPosition);
 		registerMethod(L, "House", "getRent", HouseFunctions::luaHouseGetRent);
+		registerMethod(L, "House", "getPrice", HouseFunctions::luaHouseGetPrice);
 
 		registerMethod(L, "House", "getOwnerGuid", HouseFunctions::luaHouseGetOwnerGuid);
 		registerMethod(L, "House", "setOwnerGuid", HouseFunctions::luaHouseSetOwnerGuid);
@@ -54,6 +55,7 @@ private:
 	static int luaHouseGetTown(lua_State* L);
 	static int luaHouseGetExitPosition(lua_State* L);
 	static int luaHouseGetRent(lua_State* L);
+	static int luaHouseGetPrice(lua_State* L);
 
 	static int luaHouseGetOwnerGuid(lua_State* L);
 	static int luaHouseSetOwnerGuid(lua_State* L);

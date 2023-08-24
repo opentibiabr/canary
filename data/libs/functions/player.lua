@@ -223,11 +223,11 @@ function Player:removeMoneyBank(amount)
 			-- Removes player bank money
 			Bank.debit(self, remains)
 
-			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d from inventory and %d gold from bank account. Your account balance is now %d gold."):format(moneyCount, amount - moneyCount, self:getBankBalance()))
+			self:sendTextMessage(MESSAGE_TRADE, ("Paid %s from inventory and %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(moneyCount), FormatNumber(amount - moneyCount), FormatNumber(self:getBankBalance())))
 			return true
 		else
 			self:setBankBalance(bankCount - amount)
-			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from bank account. Your account balance is now %d gold."):format(amount, self:getBankBalance()))
+			self:sendTextMessage(MESSAGE_TRADE, ("Paid %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(amount), FormatNumber(self:getBankBalance())))
 			return true
 		end
 	end

@@ -90,6 +90,17 @@ int HouseFunctions::luaHouseGetRent(lua_State* L) {
 	return 1;
 }
 
+int HouseFunctions::luaHouseGetPrice(lua_State* L) {
+	// house:getPrice()
+	House* house = getUserdata<House>(L, 1);
+	if (house) {
+		lua_pushnumber(L, house->getPrice());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int HouseFunctions::luaHouseGetOwnerGuid(lua_State* L) {
 	// house:getOwnerGuid()
 	House* house = getUserdata<House>(L, 1);

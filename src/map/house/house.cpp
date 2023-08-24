@@ -21,6 +21,7 @@ House::House(uint32_t houseId) :
 void House::addTile(HouseTile* tile) {
 	tile->setFlag(TILESTATE_PROTECTIONZONE);
 	houseTiles.push_back(tile);
+	updateDoorDescription();
 }
 
 void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, Player* player /* = nullptr*/) {
@@ -91,7 +92,6 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, Player* pla
 	rentWarnings = 0;
 
 	if (guid != 0) {
-
 		Database &db = Database::getInstance();
 		std::ostringstream query;
 		query << "SELECT `name`, `account_id` FROM `players` WHERE `id` = " << guid;
@@ -117,10 +117,13 @@ void House::updateDoorDescription() const {
 		ss << "It belongs to house '" << houseName << "'. " << ownerName << " owns this house.";
 	} else {
 		ss << "It belongs to house '" << houseName << "'. Nobody owns this house.";
+		ss << " It is " << houseTiles.size() << " square meters.";
 
-		const int32_t housePrice = g_configManager().getNumber(HOUSE_PRICE);
+		const int32_t housePrice = getPrice();
 		if (housePrice != -1) {
-			ss << " It costs " << (houseTiles.size() * housePrice) << " gold coins.";
+			ss << " It costs " << formatNumber(getPrice()) << " gold coins.";
+			std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
+			ss << " The rent cost is " << formatNumber(getRent()) << " gold coins and it is billed " << strRentPeriod << ".";
 		}
 	}
 
@@ -734,4 +737,15 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 
 		IOLoginData::savePlayer(&player);
 	}
+}
+
+uint32_t House::getRent() const {
+	return g_configManager().getFloat(HOUSE_RENT_RATE) * rent;
+}
+
+int32_t House::getPrice() const {
+	auto sqmPrice = g_configManager().getNumber(HOUSE_PRICE_PER_SQM) * getSize();
+	auto rentPrice = getRent() * g_configManager().getFloat(HOUSE_PRICE_RENT_MULTIPLIER);
+	auto total = sqmPrice + rentPrice;
+	return total;
 }

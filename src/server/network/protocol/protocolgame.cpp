@@ -2368,12 +2368,14 @@ void ProtocolGame::sendTeamFinderList() {
 	msg.add<uint16_t>(teamFinder.size());
 	for (auto it : teamFinder) {
 		const Player* leader = g_game().getPlayerByGUID(it.first);
-		if (!leader)
+		if (!leader) {
 			return;
+		}
 
 		TeamFinder* teamAssemble = it.second;
-		if (!teamAssemble)
+		if (!teamAssemble) {
 			return;
+		}
 
 		uint8_t status = 0;
 		uint16_t membersSize = 0;
@@ -2386,11 +2388,13 @@ void ProtocolGame::sendTeamFinderList() {
 		for (auto itt : teamAssemble->membersMap) {
 			const Player* member = g_game().getPlayerByGUID(it.first);
 			if (member) {
-				if (itt.first == player->getGUID())
+				if (itt.first == player->getGUID()) {
 					status = itt.second;
+				}
 
-				if (itt.second == 3)
+				if (itt.second == 3) {
 					membersSize += 1;
+				}
 			}
 		}
 		msg.add<uint16_t>(std::max<uint16_t>((teamAssemble->teamSlots - teamAssemble->freeSlots), membersSize));
@@ -2434,8 +2438,9 @@ void ProtocolGame::sendLeaderTeamFinder(bool reset) {
 		teamAssemble = it->second;
 	}
 
-	if (!teamAssemble)
+	if (!teamAssemble) {
 		return;
+	}
 
 	NetworkMessage msg;
 	msg.addByte(0x2C);
@@ -2481,8 +2486,9 @@ void ProtocolGame::sendLeaderTeamFinder(bool reset) {
 
 	msg.add<uint16_t>(membersSize);
 	const Player* leader = g_game().getPlayerByGUID(teamAssemble->leaderGuid);
-	if (!leader)
+	if (!leader) {
 		return;
+	}
 
 	msg.add<uint32_t>(leader->getGUID());
 	msg.addString(leader->getName());
@@ -2519,8 +2525,9 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg) {
 		teamAssemble = it->second;
 	}
 
-	if (!teamAssemble)
+	if (!teamAssemble) {
 		teamAssemble = new TeamFinder();
+	}
 
 	teamAssemble->minLevel = msg.get<uint16_t>();
 	teamAssemble->maxLevel = msg.get<uint16_t>();
@@ -2621,8 +2628,9 @@ void ProtocolGame::parseLeaderFinderWindow(NetworkMessage &msg) {
 		case 2: {
 			uint32_t memberID = msg.get<uint32_t>();
 			const Player* member = g_game().getPlayerByGUID(memberID);
-			if (!member)
+			if (!member) {
 				return;
+			}
 
 			std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 			TeamFinder* teamAssemble = nullptr;
@@ -2631,8 +2639,9 @@ void ProtocolGame::parseLeaderFinderWindow(NetworkMessage &msg) {
 				teamAssemble = it->second;
 			}
 
-			if (!teamAssemble)
+			if (!teamAssemble) {
 				return;
+			}
 
 			uint8_t memberStatus = msg.getByte();
 			for (auto &memberPair : teamAssemble->membersMap) {
@@ -2683,8 +2692,9 @@ void ProtocolGame::parseMemberFinderWindow(NetworkMessage &msg) {
 	} else {
 		uint32_t leaderID = msg.get<uint32_t>();
 		const Player* leader = g_game().getPlayerByGUID(leaderID);
-		if (!leader)
+		if (!leader) {
 			return;
+		}
 
 		std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 		TeamFinder* teamAssemble = nullptr;
@@ -2693,8 +2703,9 @@ void ProtocolGame::parseMemberFinderWindow(NetworkMessage &msg) {
 			teamAssemble = it->second;
 		}
 
-		if (!teamAssemble)
+		if (!teamAssemble) {
 			return;
+		}
 
 		if (action == 1) {
 			leader->sendTextMessage(MESSAGE_STATUS, "There is a new request to join your team.");
@@ -3646,12 +3657,13 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 		msg.add<uint16_t>(outfit->lookType);
 		msg.addString(outfit->name);
 		msg.addByte(addons);
-		if (from == "store")
+		if (from == "store") {
 			msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITTYPE_STORE);
-		else if (from == "quest")
+		} else if (from == "quest") {
 			msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITTYPE_QUEST);
-		else
+		} else {
 			msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITTYPE_NONE);
+		}
 		if (outfit->lookType == currentOutfit.lookType) {
 			msg.add<uint32_t>(1000);
 		} else {
@@ -3675,12 +3687,13 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name);
-			if (type == "store")
+			if (type == "store") {
 				msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITTYPE_STORE);
-			else if (type == "quest")
+			} else if (type == "quest") {
 				msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITTYPE_QUEST);
-			else
+			} else {
 				msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITTYPE_NONE);
+			}
 			msg.add<uint32_t>(1000);
 		}
 	}
@@ -3703,10 +3716,11 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 		++familiarsSize;
 		msg.add<uint16_t>(familiar.lookType);
 		msg.addString(familiar.name);
-		if (type == "quest")
+		if (type == "quest") {
 			msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITTYPE_QUEST);
-		else
+		} else {
 			msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITTYPE_NONE);
+		}
 		msg.add<uint32_t>(0);
 	}
 
@@ -3939,8 +3953,9 @@ void ProtocolGame::sendBasicData() {
 }
 
 void ProtocolGame::sendBlessStatus() {
-	if (!player)
+	if (!player) {
 		return;
+	}
 
 	NetworkMessage msg;
 	// uint8_t maxClientBlessings = (player->operatingSystem == CLIENTOS_NEW_WINDOWS) ? 8 : 6; (compartability for the client 10)
@@ -6008,8 +6023,9 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 
 		if (isLogin) {
 			if (const Player* creaturePlayer = creature->getPlayer()) {
-				if (!creaturePlayer->isAccessPlayer() || creaturePlayer->getAccountType() == account::ACCOUNT_TYPE_NORMAL)
+				if (!creaturePlayer->isAccessPlayer() || creaturePlayer->getAccountType() == account::ACCOUNT_TYPE_NORMAL) {
 					sendMagicEffect(pos, CONST_ME_TELEPORT);
+				}
 			} else {
 				sendMagicEffect(pos, CONST_ME_TELEPORT);
 			}
@@ -7780,8 +7796,9 @@ void ProtocolGame::sendItemsPrice() {
 }
 
 void ProtocolGame::reloadCreature(const Creature* creature) {
-	if (!creature || !canSee(creature))
+	if (!creature || !canSee(creature)) {
 		return;
+	}
 
 	auto tile = creature->getTile();
 	if (!tile) {
@@ -7790,8 +7807,9 @@ void ProtocolGame::reloadCreature(const Creature* creature) {
 
 	uint32_t stackpos = tile->getClientIndexOfCreature(player, creature);
 
-	if (stackpos >= 10)
+	if (stackpos >= 10) {
 		return;
+	}
 
 	NetworkMessage msg;
 
@@ -8020,8 +8038,9 @@ void ProtocolGame::sendUpdateCreature(const Creature* creature) {
 		return;
 	}
 
-	if (!canSee(creature))
+	if (!canSee(creature)) {
 		return;
+	}
 
 	int32_t stackPos = tile->getClientIndexOfCreature(player, creature);
 	if (stackPos == -1 || stackPos >= 10) {
@@ -8255,8 +8274,9 @@ void ProtocolGame::parseSendBosstiarySlots() {
 		uint16_t bossesCount = 0;
 		msg.skipBytes(2);
 		for (const auto &bossId : bossesUnlockedList) {
-			if (bossId == bossIdSlotOne || bossId == bossIdSlotTwo)
+			if (bossId == bossIdSlotOne || bossId == bossIdSlotTwo) {
 				continue;
+			}
 
 			const auto &mType = g_ioBosstiary().getMonsterTypeByBossRaceId(bossId);
 			if (!mType) {

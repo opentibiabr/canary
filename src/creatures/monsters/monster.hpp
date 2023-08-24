@@ -88,14 +88,16 @@ public:
 	}
 
 	Faction_t getFaction() const override {
-		if (master)
+		if (master) {
 			return master->getFaction();
+		}
 		return mType->info.faction;
 	}
 
 	bool isEnemyFaction(Faction_t faction) const {
-		if (master && master->getMonster())
+		if (master && master->getMonster()) {
 			return master->getMonster()->isEnemyFaction(faction);
+		}
 		return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.find(faction) != mType->info.enemyFactions.end();
 	}
 

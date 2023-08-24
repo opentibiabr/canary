@@ -3,16 +3,103 @@ CONST_FIREWORK_ITEMID_DISASSEMBLE, CONST_FIREWORK_ITEMID_NOT_DISASSEMBLE = 30329
 local maxCooldown = 5
 
 local fireworks = {
-	[30209] = {
-		area = AREA_CIRCLE3X3,
-		effect = CONST_ME_FIREWORK_YELLOW,
+	-- Explosive Fireworks
+	[37448] = {
+		area = AREA_CIRCLE5X5V2,
+		effect = CONST_ME_EXPLOSIONAREA,
 		type = CONST_FIREWORK_TYPE_RANDOM,
 		disassemble = true,
 	},
-	-- [30210] = {},
-	-- [30211] = {},
-	-- [30212] = {},
-	-- [30213] = {}
+
+	-- Splashing Fireworks
+	[37453] = {
+		area = AREA_CIRCLE5X5V2,
+		effect = CONST_ME_WATERSPLASH,
+		type = CONST_FIREWORK_TYPE_IMPLOSION,
+		disassemble = true,
+	},
+
+	-- Snapping Fireworks
+	[37450] = {
+		area = AREA_CIRCLE5X5V2,
+		effect = CONST_ME_GHOSTLY_BITE,
+		type = CONST_FIREWORK_TYPE_IMPLOSION,
+		disassemble = true,
+	},
+
+	--Dazzling Fireworks
+	[37459] = {
+		area = AREA_CIRCLE5X5V2,
+		effect = CONST_ME_DAZZLING,
+		type = CONST_FIREWORK_TYPE_RANDOM,
+		disassemble = true,
+	},
+
+	-- Godly Fireworks
+	[37456] = {
+		area = AREA_CIRCLE5X5V2,
+		effect = CONST_ME_THUNDER,
+		type = CONST_FIREWORK_TYPE_RANDOM,
+		disassemble = true,
+	},
+
+	-- Electric Fireworks
+	[37452] = {
+		area = AREA_CIRCLE6X6,
+		effect = CONST_ME_YELLOW_ENERGY_SPARK,
+		type = CONST_FIREWORK_TYPE_IMPLOSION,
+		disassemble = true,
+	},
+
+	-- Lovely Fireworks
+	[37454] = {
+		area = {
+			{0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0},
+			{0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0},
+			{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+			{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+			{0, 0, 1, 1, 1, 1, 3, 1, 1, 1, 1, 0, 0},
+			{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
+			{0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0}
+		},
+		effect = CONST_ME_HEARTS,
+		type = CONST_FIREWORK_TYPE_INSTANT,
+		disassemble = true,
+	},
+
+	-- Sparkling Fireworks
+	[37458] = {
+		area = AREA_CIRCLE5X5V2,
+		effect = CONST_ME_SPARKLING,
+		type = CONST_FIREWORK_TYPE_RANDOM,
+		disassemble = true,
+	},
+
+	-- Ghostly Fireworks
+	[37455] = {
+		area = AREA_CIRCLE3X3,
+		effect = CONST_ME_GHOST_SMOKE,
+		type = CONST_FIREWORK_TYPE_IMPLOSION,
+		disassemble = true,
+	},
+
+	-- Fiery Fireworks
+	[37460] = {
+		area = AREA_CIRCLE6X6,
+		effect = CONST_ME_FIREATTACK,
+		type = CONST_FIREWORK_TYPE_RANDOM,
+		disassemble = true,
+	},
+
+	-- Magical Fireworks
+	[37451] = {
+		area = AREA_CIRCLE6X6,
+		effect = CONST_ME_PIXIE_EXPLOSION,
+		type = CONST_FIREWORK_TYPE_RANDOM,
+		disassemble = true,
+	}
 }
 
 local function cleanMatrix(matrix)
@@ -75,7 +162,7 @@ function fireworksRocket.onUse(player, item, fromPosition, target, toPosition, i
 				end
 			end
 		end
-	end, 5*1000)
+	end, 10*1000)
 	if firework.disassemble then
 		item:transform(CONST_FIREWORK_ITEMID_DISASSEMBLE)
 		item:setCustomAttribute("id", itemID)

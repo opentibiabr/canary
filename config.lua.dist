@@ -249,7 +249,6 @@ freeQuestStage = 1
 -- no skill/experience loss, set it to 0.
 deathLosePercent = -1
 
-
 -- Houses
 -- NOTE: set housePriceEachSQM to -1 to disable the ingame buy house functionality
 -- NOTE: set houseBuyLevel to 0 to disable the min level purchase functionality.

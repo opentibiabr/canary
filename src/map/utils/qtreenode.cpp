@@ -16,16 +16,18 @@
 bool QTreeLeafNode::newLeaf = false;
 
 QTreeLeafNode* QTreeNode::getLeaf(uint32_t x, uint32_t y) {
-	if (leaf)
+	if (leaf) {
 		return static_cast<QTreeLeafNode*>(this);
+	}
 
 	const auto node = child[((x & 0x8000) >> 15) | ((y & 0x8000) >> 14)];
 	return node ? node->getLeaf(x << 1, y << 1) : nullptr;
 }
 
 QTreeLeafNode* QTreeNode::createLeaf(uint32_t x, uint32_t y, uint32_t level) {
-	if (isLeaf())
+	if (isLeaf()) {
 		return static_cast<QTreeLeafNode*>(this);
+	}
 
 	const uint32_t index = ((x & 0x8000) >> 15) | ((y & 0x8000) >> 14);
 	if (!child[index]) {
@@ -42,31 +44,31 @@ QTreeLeafNode* QTreeNode::createLeaf(uint32_t x, uint32_t y, uint32_t level) {
 
 QTreeLeafNode* QTreeNode::getBestLeaf(uint32_t x, uint32_t y, uint32_t level) {
 	QTreeLeafNode::newLeaf = false;
-	auto leaf = createLeaf(x, y, 15);
+	auto tempLeaf = createLeaf(x, y, level);
 
 	if (QTreeLeafNode::newLeaf) {
 		// update north
 		if (const auto northLeaf = getLeaf(x, y - FLOOR_SIZE)) {
-			northLeaf->leafS = leaf;
+			northLeaf->leafS = tempLeaf;
 		}
 
 		// update west leaf
 		if (const auto westLeaf = getLeaf(x - FLOOR_SIZE, y)) {
-			westLeaf->leafE = leaf;
+			westLeaf->leafE = tempLeaf;
 		}
 
 		// update south
 		if (const auto southLeaf = getLeaf(x, y + FLOOR_SIZE)) {
-			leaf->leafS = southLeaf;
+			tempLeaf->leafS = southLeaf;
 		}
 
 		// update east
 		if (const auto eastLeaf = getLeaf(x + FLOOR_SIZE, y)) {
-			leaf->leafE = eastLeaf;
+			tempLeaf->leafE = eastLeaf;
 		}
 	}
 
-	return leaf;
+	return tempLeaf;
 }
 
 void QTreeLeafNode::addCreature(Creature* c) {

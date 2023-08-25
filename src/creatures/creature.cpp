@@ -1777,3 +1777,23 @@ void Creature::setIncreasePercent(CombatType_t combat, int32_t value) {
 const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> Creature::getZones() {
 	return Zone::getZones(getPosition());
 }
+
+void Creature::setIcon(CreatureIcon icon) {
+	creatureIcon = icon;
+	if (!tile) {
+		return;
+	}
+
+	SpectatorHashSet spectators;
+	g_game().map.getSpectators(spectators, tile->getPosition(), true);
+	for (Creature* spectator : spectators) {
+		if (!spectator) {
+			continue;
+		}
+
+		Player* player = spectator->getPlayer();
+		if (player) {
+			player->sendCreatureIcon(this);
+		}
+	}
+}

@@ -3110,10 +3110,11 @@ ReturnValue Player::queryAdd(int32_t index, const Thing &thing, uint32_t count, 
 					const Item* leftItem = inventory[CONST_SLOT_LEFT];
 					if (leftItem) {
 						if ((leftItem->getSlotPosition() | slotPosition) & SLOTP_TWO_HAND) {
-							if (item->isQuiver() && leftItem->getWeaponType() == WEAPON_DISTANCE)
+							if (item->isQuiver() && leftItem->getWeaponType() == WEAPON_DISTANCE) {
 								ret = RETURNVALUE_NOERROR;
-							else
+							} else {
 								ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
+							}
 						} else {
 							ret = RETURNVALUE_NOERROR;
 						}
@@ -3472,8 +3473,9 @@ Cylinder* Player::queryDestination(int32_t &index, const Thing &thing, Item** de
 }
 
 void Player::addThing(int32_t index, Thing* thing) {
-	if (!thing)
+	if (!thing) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
+	}
 
 	if (index < CONST_SLOT_FIRST || index > CONST_SLOT_LAST) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
@@ -4123,8 +4125,9 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 // i will keep this function so it can be reviewed
 bool Player::updateSaleShopList(const Item* item) {
 	uint16_t itemId = item->getID();
-	if (!itemId || !item)
+	if (!itemId || !item) {
 		return true;
+	}
 
 	g_dispatcher().addTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID()));
 	scheduledSaleUpdate = true;
@@ -4148,8 +4151,9 @@ void Player::internalAddThing(Thing* thing) {
 }
 
 void Player::internalAddThing(uint32_t index, Thing* thing) {
-	if (!thing)
+	if (!thing) {
 		return;
+	}
 
 	Item* item = thing->getItem();
 	if (!item) {
@@ -7541,27 +7545,15 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
  ******************************************************************************/
 
 void Player::setHazardSystemPoints(int32_t count) {
-	addStorageValue(STORAGEVALUE_HAZARDCOUNT, std::max<int32_t>(0, std::min<int32_t>(0xFFFF, count)), true);
-	reloadHazardSystemPointsCounter = true;
-	const auto tile = getTile();
-	if (!tile) {
+	if (!g_configManager().getBoolean(TOGGLE_HAZARDSYSTEM)) {
 		return;
 	}
-
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, tile->getPosition(), true);
-	for (Creature* spectator : spectators) {
-		if (!spectator || spectator == this) {
-			continue;
-		}
-
-		Player* player = spectator->getPlayer();
-		if (client && player && !client->oldProtocol) {
-			player->sendCreatureIcon(this);
-		}
-	}
-	if (client && !client->oldProtocol) {
-		client->reloadHazardSystemIcon();
+	addStorageValue(STORAGEVALUE_HAZARDCOUNT, std::max<int32_t>(0, std::min<int32_t>(0xFFFF, count)), true);
+	reloadHazardSystemPointsCounter = true;
+	if (count > 0) {
+		setIcon(CreatureIcon(CreatureIconQuests_t::Hazard, count));
+	} else {
+		clearIcon();
 	}
 }
 
@@ -7663,34 +7655,6 @@ void Player::parseAttackDealtHazardSystem(CombatDamage &damage, const Monster* m
 			damage.primary.value = 0;
 			damage.secondary.value = 0;
 			return;
-		}
-	}
-}
-
-void Player::reloadHazardSystemIcon() {
-	if (reloadHazardSystemPointsCounter) {
-		reloadHazardSystemPointsCounter = false;
-		if (getHazardSystemPoints() > 0) {
-			const auto tile = getTile();
-			if (!tile) {
-				return;
-			}
-
-			SpectatorHashSet spectators;
-			g_game().map.getSpectators(spectators, tile->getPosition(), true);
-			for (Creature* spectator : spectators) {
-				if (!spectator || spectator == this) {
-					continue;
-				}
-
-				Player* player = spectator->getPlayer();
-				if (client && player && !client->oldProtocol) {
-					player->sendCreatureIcon(this);
-				}
-			}
-		}
-		if (client && !client->oldProtocol) {
-			client->reloadHazardSystemIcon();
 		}
 	}
 }

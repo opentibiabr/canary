@@ -1322,6 +1322,83 @@ enum class SourceEffect_t : uint8_t {
 	CREATURES = 3
 };
 
+enum class CreatureIconCategory_t {
+	Quests,
+	Modifications,
+};
+
+enum class CreatureIconModifications_t {
+	None,
+	HigherDamageReceived,
+	LowerDamageDealt,
+	TurnedMelee,
+	Influenced,
+	Fiendish,
+	ReducedHealth,
+};
+
+enum class CreatureIconQuests_t {
+	None,
+	WhiteCross,
+	RedCross,
+	RedBall,
+	GreenBall,
+	RedGreenBall,
+	GreenShield,
+	YellowShield,
+	BlueShield,
+	PurpleShield,
+	RedShield,
+	Dove,
+	Energy,
+	Earth,
+	Water,
+	Fire,
+	Ice,
+	ArrowUp,
+	ArrowDown,
+	ExclamationMark,
+	QuestionMark,
+	CancelMark,
+	Hazard,
+	BrownSkull,
+	BloodDrop,
+};
+
+struct CreatureIcon {
+	CreatureIcon() = default;
+
+	explicit constexpr CreatureIcon(CreatureIconModifications_t modification, uint16_t count = 0) :
+		category(CreatureIconCategory_t::Modifications), modification(modification), count(count) { }
+
+	explicit constexpr CreatureIcon(CreatureIconQuests_t quest, uint16_t count = 0) :
+		category(CreatureIconCategory_t::Quests), quest(quest), count(count) { }
+
+	CreatureIconCategory_t category;
+	CreatureIconModifications_t modification = CreatureIconModifications_t::None;
+	CreatureIconQuests_t quest = CreatureIconQuests_t::None;
+	uint16_t count = 0;
+
+	bool operator==(const CreatureIcon &other) const = default;
+
+	bool isNone() const {
+		return modification == CreatureIconModifications_t::None && quest == CreatureIconQuests_t::None;
+	}
+
+	bool isSet() const {
+		return !isNone();
+	}
+
+	uint8_t serialize() const {
+		if (category == CreatureIconCategory_t::Modifications) {
+			return static_cast<uint8_t>(modification);
+		} else if (category == CreatureIconCategory_t::Quests) {
+			return static_cast<uint8_t>(quest);
+		}
+		return 0;
+	}
+};
+
 // Structs
 struct Position;
 

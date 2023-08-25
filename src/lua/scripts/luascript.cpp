@@ -208,7 +208,11 @@ bool LuaScriptInterface::initState() {
 }
 
 bool LuaScriptInterface::closeState() {
-	if (!g_luaEnvironment().getLuaState() || !luaState) {
+	if (LuaEnvironment::isShuttingDown()) {
+		luaState = nullptr;
+	}
+
+	if (!luaState || !g_luaEnvironment().getLuaState()) {
 		return false;
 	}
 

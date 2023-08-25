@@ -24,7 +24,7 @@ function zones.onSay(player, words, param)
 		for _, zone in ipairs(Zone.getAll()) do
 			table.insert(list, zone:getName())
 		end
-		player:sendTextMessage(MESSAGE_HEALED, "Zones: " .. table.concat(list, ", "))
+		player:sendTextMessage(MESSAGE_HEALED, "Zones:\n" .. table.concat(list, "\n "))
 		return true
 	end
 

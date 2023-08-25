@@ -22,10 +22,6 @@ Scripts::Scripts() :
 	scriptInterface.initState();
 }
 
-Scripts::~Scripts() {
-	scriptInterface.reInitState();
-}
-
 void Scripts::clearAllScripts() const {
 	g_actions().clear();
 	g_creatureEvents().clear();
@@ -35,6 +31,7 @@ void Scripts::clearAllScripts() const {
 	g_moveEvents().clear();
 	g_weapons().clear();
 	g_callbacks().clear();
+	g_monsters().clear();
 }
 
 bool Scripts::loadEventSchedulerScripts(const std::string &fileName) {

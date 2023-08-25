@@ -67,24 +67,12 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 
 	if (spellType == SPELL_INSTANT) {
 		auto spell = std::make_shared<InstantSpell>(getScriptEnv()->getScriptInterface());
-		if (!spell) {
-			reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
-			pushBoolean(L, false);
-			return 1;
-		}
-
 		pushUserdata<Spell>(L, spell);
 		setMetatable(L, -1, "Spell");
 		spell->spellType = SPELL_INSTANT;
 		return 1;
 	} else if (spellType == SPELL_RUNE) {
 		auto runeSpell = std::make_shared<RuneSpell>(getScriptEnv()->getScriptInterface());
-		if (!runeSpell) {
-			reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
-			pushBoolean(L, false);
-			return 1;
-		}
-
 		pushUserdata<Spell>(L, runeSpell);
 		setMetatable(L, -1, "Spell");
 		runeSpell->spellType = SPELL_RUNE;

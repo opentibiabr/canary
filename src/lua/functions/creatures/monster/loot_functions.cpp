@@ -15,12 +15,8 @@
 int LootFunctions::luaCreateLoot(lua_State* L) {
 	// Loot() will create a new loot item
 	const auto loot = std::make_shared<Loot>();
-	if (loot) {
-		pushUserdata<Loot>(L, loot);
-		setMetatable(L, -1, "Loot");
-	} else {
-		lua_pushnil(L);
-	}
+	pushUserdata<Loot>(L, loot);
+	setMetatable(L, -1, "Loot");
 	return 1;
 }
 

@@ -14,12 +14,8 @@
 
 int MonsterSpellFunctions::luaCreateMonsterSpell(lua_State* L) {
 	const auto spell = std::make_shared<MonsterSpell>();
-	if (spell) {
-		pushUserdata<MonsterSpell>(L, spell);
-		setMetatable(L, -1, "MonsterSpell");
-	} else {
-		lua_pushnil(L);
-	}
+	pushUserdata<MonsterSpell>(L, spell);
+	setMetatable(L, -1, "MonsterSpell");
 	return 1;
 }
 

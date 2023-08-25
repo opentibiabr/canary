@@ -16,13 +16,9 @@
 int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 	// CreatureEvent(eventName)
 	auto creatureEvent = std::make_shared<CreatureEvent>(getScriptEnv()->getScriptInterface());
-	if (creatureEvent) {
-		creatureEvent->setName(getString(L, 2));
-		pushUserdata<CreatureEvent>(L, creatureEvent);
-		setMetatable(L, -1, "CreatureEvent");
-	} else {
-		lua_pushnil(L);
-	}
+	creatureEvent->setName(getString(L, 2));
+	pushUserdata<CreatureEvent>(L, creatureEvent);
+	setMetatable(L, -1, "CreatureEvent");
 	return 1;
 }
 

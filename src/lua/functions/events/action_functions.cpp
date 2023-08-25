@@ -16,14 +16,9 @@
 
 int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()
-	std::shared_ptr<Action> action = std::make_shared<Action>(getScriptEnv()->getScriptInterface());
-	if (action) {
-		pushUserdata<Action>(L, action);
-		setMetatable(L, -1, "Action");
-	} else {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
-	}
+	auto action = std::make_shared<Action>(getScriptEnv()->getScriptInterface());
+	pushUserdata<Action>(L, action);
+	setMetatable(L, -1, "Action");
 	return 1;
 }
 

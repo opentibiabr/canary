@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_CONFIG_CONFIG_DEFINITIONS_HPP_
-#define SRC_CONFIG_CONFIG_DEFINITIONS_HPP_
+#pragma once
 
 // Enum
 enum booleanConfig_t {
@@ -72,6 +71,7 @@ enum booleanConfig_t {
 	TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY,
 	TOGGLE_SERVER_IS_RETRO,
 	TOGGLE_TRAVELS_FREE,
+	TELEPORT_PLAYER_TO_VOCATION_ROOM,
 	OLD_PROTOCOL,
 	TOGGLE_HAZARDSYSTEM,
 	LOYALTY_ENABLED,
@@ -285,5 +285,3 @@ enum floatingConfig_t {
 
 	LAST_FLOATING_CONFIG
 };
-
-#endif // SRC_CONFIG_CONFIG_DEFINITIONS_HPP_

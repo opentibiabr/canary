@@ -465,7 +465,7 @@ function Player.selectDailyReward(self, msg)
 			return false
 		end
 		if totalCounter ~= orderedCounter then
-			Spdlog.error(string.format("Player with name %s is trying to get wrong daily reward", self:getName()))
+			logger.error("Player with name {} is trying to get wrong daily reward", self:getName())
 			return false
 		end
 

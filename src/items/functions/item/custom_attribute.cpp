@@ -11,7 +11,7 @@
 
 #include "items/functions/item/custom_attribute.hpp"
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 CustomAttribute::CustomAttribute() = default;
 CustomAttribute::~CustomAttribute() = default;

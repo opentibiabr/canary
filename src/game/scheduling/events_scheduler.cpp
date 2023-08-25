@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "config/configmanager.h"
+#include "config/configmanager.hpp"
 #include "game/scheduling/events_scheduler.hpp"
-#include "lua/scripts/scripts.h"
-#include "utils/pugicast.h"
+#include "lua/scripts/scripts.hpp"
+#include "utils/pugicast.hpp"
 
 bool EventsScheduler::loadScheduleEventFromXml() {
 	pugi::xml_document doc;
@@ -29,8 +29,8 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 
 	// Keep track of loaded scripts to check for duplicates
 	int count = 0;
-	phmap::btree_set<std::string_view, std::less<>> loadedScripts;
-	phmap::btree_map<std::string, EventRates> eventsOnSameDay;
+	std::set<std::string_view, std::less<>> loadedScripts;
+	std::map<std::string, EventRates> eventsOnSameDay;
 	for (const auto &eventNode : doc.child("events").children()) {
 		std::string eventScript = eventNode.attribute("script").as_string();
 		std::string eventName = eventNode.attribute("name").as_string();

@@ -7,12 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_CREATURES_PLAYERS_ACCOUNT_ACCOUNT_HPP_
-#define SRC_CREATURES_PLAYERS_ACCOUNT_ACCOUNT_HPP_
+#pragma once
 
-#include "database/database.h"
-#include "database/databasetasks.h"
-#include "utils/definitions.h"
+#include "database/database.hpp"
+#include "database/databasetasks.hpp"
+#include "utils/definitions.hpp"
 
 namespace account {
 
@@ -56,8 +55,8 @@ namespace account {
 	};
 
 	typedef struct {
-			std::string name;
-			uint64_t deletion;
+		std::string name;
+		uint64_t deletion;
 	} Player;
 
 	/**
@@ -65,198 +64,202 @@ namespace account {
 	 *
 	 */
 	class Account {
-		public:
-			/**
-			 * @brief Construct a new Account object
-			 *
-			 */
-			Account();
+	public:
+		/**
+		 * @brief Construct a new Account object
+		 *
+		 */
+		Account();
 
-			/**
-			 * @brief Construct a new Account object
-			 *
-			 * @param id Set Account ID to be used by LoadAccountDB
-			 */
-			explicit Account(uint32_t id);
+		/**
+		 * @brief Construct a new Account object
+		 *
+		 * @param id Set Account ID to be used by LoadAccountDB
+		 */
+		explicit Account(uint32_t id);
 
-			/**
-			 * @brief Construct a new Account object
-			 *
-			 * @param name Set Account Name or Email to be used by LoadAccountDB
-			 */
-			explicit Account(const std::string &name);
+		/**
+		 * @brief Construct a new Account object
+		 *
+		 * @param name Set Account Name or Email to be used by LoadAccountDB
+		 */
+		explicit Account(const std::string &name);
 
-			/***************************************************************************
-			 * Interfaces
-			 **************************************************************************/
+		/***************************************************************************
+		 * Interfaces
+		 **************************************************************************/
 
-			/**
-			 * @brief Set the Database Interface used to get and set information from
-			 * the database
-			 *
-			 * @param database Database Interface pointer to be used
-			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
-			 */
-			error_t SetDatabaseInterface(Database* database);
+		/**
+		 * @brief Set the Database Interface used to get and set information from
+		 * the database
+		 *
+		 * @param database Database Interface pointer to be used
+		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+		 */
+		error_t SetDatabaseInterface(Database* database);
 
-			/**
-			 * @brief Set the Database Tasks Interface used to schedule db update
-			 *
-			 * @param database Database Interface pointer to be used
-			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
-			 */
-			error_t SetDatabaseTasksInterface(DatabaseTasks* db_tasks);
+		/**
+		 * @brief Set the Database Tasks Interface used to schedule db update
+		 *
+		 * @param database Database Interface pointer to be used
+		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+		 */
+		error_t SetDatabaseTasksInterface(DatabaseTasks* db_tasks);
 
-			/***************************************************************************
-			 * Coins Methods
-			 **************************************************************************/
+		/***************************************************************************
+		 * Coins Methods
+		 **************************************************************************/
 
-			/**
-			 * @brief Get the amount of transfer coins that the account has from database.
-			 *
-			 * @param accountId Account ID to get the transfer coins.
-			 * @param coins Pointer to return the number of transfer coins
-			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
-			 */
-			error_t GetTransferableCoins(uint32_t* coins);
+		/**
+		 * @brief Get the amount of transfer coins that the account has from database.
+		 *
+		 * @param accountId Account ID to get the transfer coins.
+		 * @param coins Pointer to return the number of transfer coins
+		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+		 */
+		error_t GetTransferableCoins(uint32_t* coins);
 
-			/**
-			 * @brief Add transfer coins to the account and update database.
-			 *
-			 * @param amount Amount of transfer coins to be added
-			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
-			 */
-			error_t AddTransferableCoins(uint32_t amount);
+		/**
+		 * @brief Add transfer coins to the account and update database.
+		 *
+		 * @param amount Amount of transfer coins to be added
+		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+		 */
+		error_t AddTransferableCoins(uint32_t amount);
 
-			/**
-			 * @brief Removes transfer coins from the account and update database.
-			 *
-			 * @param amount Amount of transfer coins to be removed
-			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
-			 */
-			error_t RemoveTransferableCoins(uint32_t amount);
+		/**
+		 * @brief Removes transfer coins from the account and update database.
+		 *
+		 * @param amount Amount of transfer coins to be removed
+		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+		 */
+		error_t RemoveTransferableCoins(uint32_t amount);
 
-			/**
-			 * @brief Get the amount of coins that the account has from database.
-			 *
-			 * @param accountId Account ID to get the coins.
-			 * @param coins Pointer to return the number of coins
-			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
-			 */
-			error_t GetCoins(uint32_t* coins);
+		/**
+		 * @brief Get the amount of coins that the account has from database.
+		 *
+		 * @param accountId Account ID to get the coins.
+		 * @param coins Pointer to return the number of coins
+		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+		 */
+		error_t GetCoins(uint32_t* coins);
 
-			/**
-			 * @brief Add coins to the account and update database.
-			 *
-			 * @param amount Amount of coins to be added
-			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
-			 */
-			error_t AddCoins(uint32_t amount);
+		/**
+		 * @brief Add coins to the account and update database.
+		 *
+		 * @param amount Amount of coins to be added
+		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+		 */
+		error_t AddCoins(uint32_t amount);
 
-			/**
-			 * @brief Removes coins from the account and update database.
-			 *
-			 * @param amount Amount of coins to be removed
-			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
-			 */
-			error_t RemoveCoins(uint32_t amount);
+		/**
+		 * @brief Removes coins from the account and update database.
+		 *
+		 * @param amount Amount of coins to be removed
+		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+		 */
+		error_t RemoveCoins(uint32_t amount);
 
-			/**
-			 * @brief Register account coins transactions in database.
-			 *
-			 * @param type Type of the transaction(Add/Remove).
-			 * @param coins Amount of coins
-			 * @param description Description of the transaction
-			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
-			 */
-			error_t RegisterCoinsTransaction(CoinTransactionType type, uint32_t coins, const std::string &description);
+		/**
+		 * @brief Register account coins transactions in database.
+		 *
+		 * @param type Type of the transaction(Add/Remove).
+		 * @param coins Amount of coins
+		 * @param description Description of the transaction
+		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+		 */
+		error_t RegisterCoinsTransaction(CoinTransactionType type, uint32_t coins, const std::string &description);
 
-			/***************************************************************************
-			 * Database
-			 **************************************************************************/
+		/***************************************************************************
+		 * Database
+		 **************************************************************************/
 
-			/**
-			 * @brief Try to load account from DB using Account ID or Name if they were
-			 * initialized.
-			 *
-			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
-			 */
-			error_t LoadAccountDB();
+		/**
+		 * @brief Try to load account from DB using Account ID or Name if they were
+		 * initialized.
+		 *
+		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+		 */
+		error_t LoadAccountDB();
 
-			/**
-			 * @brief Try to
-			 *
-			 * @param accountIdentifier
-			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
-			 */
-			error_t LoadAccountDB(std::string accountIdentifier);
+		/**
+		 * @brief Try to
+		 *
+		 * @param accountIdentifier
+		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+		 */
+		error_t LoadAccountDB(std::string accountIdentifier);
 
-			/**
-			 * @brief
-			 *
-			 * @param id
-			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
-			 */
-			error_t LoadAccountDB(uint32_t id);
+		/**
+		 * @brief
+		 *
+		 * @param id
+		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+		 */
+		error_t LoadAccountDB(uint32_t id);
 
-			/**
-			 * @brief
-			 *
-			 * @return error_t ERROR_NO(0) Success, otherwise Fail.
-			 */
-			error_t SaveAccountDB();
+		/**
+		 * @brief
+		 *
+		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
+		 */
+		error_t SaveAccountDB();
 
-			/***************************************************************************
-			 * Setters and Getters
-			 **************************************************************************/
+		/**
+		 * @brief Calculate and update remaining days and last day of premium account
+		 *
+		 */
+		void UpdatePremium();
 
-			error_t GetID(uint32_t* id);
+		/***************************************************************************
+		 * Setters and Getters
+		 **************************************************************************/
 
-			error_t SetAccountIdentifier(std::string accountIdentifier);
-			error_t GetAccountIdentifier(std::string* accountIdentifier);
+		error_t GetID(uint32_t* id);
 
-			error_t SetPassword(std::string password);
-			error_t GetPassword(std::string* password);
+		error_t SetAccountIdentifier(std::string accountIdentifier);
+		error_t GetAccountIdentifier(std::string* accountIdentifier);
 
-			error_t SetPremiumRemaningDays(uint32_t days);
-			error_t GetPremiumRemaningDays(uint32_t* days);
+		error_t SetPassword(std::string password);
+		error_t GetPassword(std::string* password);
 
-			error_t SetPremiumLastDay(time_t last_day);
-			error_t GetPremiumLastDay(time_t* last_day);
+		error_t SetPremiumRemainingDays(uint32_t days);
+		error_t GetPremiumRemainingDays(uint32_t* days) const;
 
-			error_t SetAccountType(AccountType account_type);
-			error_t GetAccountType(AccountType* account_type);
+		error_t SetPremiumLastDay(time_t last_day);
+		error_t GetPremiumLastDay(time_t* last_day) const;
 
-			error_t GetAccountPlayer(Player* player, std::string &characterName);
-			error_t GetAccountPlayers(std::vector<Player>* players);
+		error_t SetAccountType(AccountType account_type);
+		error_t GetAccountType(AccountType* account_type);
 
-			// Old protocol compat
-			void setProtocolCompat(bool toggle) {
-				oldProtocol_ = toggle;
-			}
-			bool getProtocolCompat() const {
-				return oldProtocol_;
-			}
+		error_t GetAccountPlayer(Player* player, std::string &characterName);
+		error_t GetAccountPlayers(std::vector<Player>* players);
 
-		private:
-			error_t SetID(uint32_t id);
-			error_t LoadAccountDB(std::ostringstream &query);
-			error_t LoadAccountPlayersDB(std::vector<Player>* players);
-			error_t LoadAccountPlayerDB(Player* player, std::string &characterName);
+		// Old protocol compat
+		void setProtocolCompat(bool toggle) {
+			oldProtocol_ = toggle;
+		}
+		bool getProtocolCompat() const {
+			return oldProtocol_;
+		}
 
-			Database* db_;
-			DatabaseTasks* db_tasks_;
+	private:
+		error_t SetID(uint32_t id);
+		error_t LoadAccountDB(std::ostringstream &query);
+		error_t LoadAccountPlayersDB(std::vector<Player>* players);
+		error_t LoadAccountPlayerDB(Player* player, std::string &characterName);
 
-			uint32_t id_;
-			std::string accountIdentifier_;
-			std::string password_;
-			uint32_t premium_remaining_days_;
-			time_t premium_last_day_;
-			AccountType account_type_;
+		Database* db_;
+		DatabaseTasks* db_tasks_;
 
-			bool oldProtocol_;
+		uint32_t id_;
+		std::string accountIdentifier_;
+		std::string password_;
+		uint32_t premium_remaining_days_;
+		time_t premium_last_day_;
+		AccountType account_type_;
+
+		bool oldProtocol_;
 	};
 
 } // namespace account
-
-#endif // SRC_CREATURES_PLAYERS_ACCOUNT_ACCOUNT_HPP_

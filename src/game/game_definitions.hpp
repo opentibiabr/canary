@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_GAME_GAME_DEFINITIONS_HPP_
-#define SRC_GAME_GAME_DEFINITIONS_HPP_
+#pragma once
 
-#include "movement/position.h"
+#include "movement/position.hpp"
 
 // Enums
 enum StackPosType_t {
@@ -113,19 +112,17 @@ enum Webhook_Colors_t : uint32_t {
 
 // Structs
 struct ModalWindow {
-		std::list<std::pair<std::string, uint8_t>> buttons, choices;
-		std::string title, message;
-		uint32_t id;
-		uint8_t defaultEnterButton, defaultEscapeButton;
-		bool priority;
+	std::list<std::pair<std::string, uint8_t>> buttons, choices;
+	std::string title, message;
+	uint32_t id;
+	uint8_t defaultEnterButton, defaultEscapeButton;
+	bool priority;
 
-		ModalWindow(uint32_t newId, std::string newTitle, std::string newMessage) :
-			title(std::move(newTitle)),
-			message(std::move(newMessage)),
-			id(newId),
-			defaultEnterButton(0xFF),
-			defaultEscapeButton(0xFF),
-			priority(false) { }
+	ModalWindow(uint32_t newId, std::string newTitle, std::string newMessage) :
+		title(std::move(newTitle)),
+		message(std::move(newMessage)),
+		id(newId),
+		defaultEnterButton(0xFF),
+		defaultEscapeButton(0xFF),
+		priority(false) { }
 };
-
-#endif // SRC_GAME_GAME_DEFINITIONS_HPP_

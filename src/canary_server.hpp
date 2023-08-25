@@ -7,76 +7,67 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_CANARY_SERVER_HPP_
-#define SRC_CANARY_SERVER_HPP_
+#pragma once
 
-#include "security/rsa.h"
-#include "server/server.h"
+#include "security/rsa.hpp"
+#include "server/server.hpp"
 
 class Logger;
 
 class FailedToInitializeCanary : public std::exception {
-	private:
-		std::string message;
+private:
+	std::string message;
 
-	public:
-		// Constructor accepts a specific message
-		explicit FailedToInitializeCanary(const std::string &msg) :
-			message("Canary load couldn't be completed. " + msg) { }
+public:
+	// Constructor accepts a specific message
+	explicit FailedToInitializeCanary(const std::string &msg) :
+		message("Canary load couldn't be completed. " + msg) { }
 
-		// Override the what() method from std::exception
-		const char* what() const noexcept override {
-			return message.c_str();
-		}
+	// Override the what() method from std::exception
+	const char* what() const noexcept override {
+		return message.c_str();
+	}
 };
 
 class CanaryServer {
-	public:
-		explicit CanaryServer(
-			Logger &logger,
-			RSA &rsa,
-			ServiceManager &serviceManager
-		);
+public:
+	explicit CanaryServer(
+		Logger &logger,
+		RSA &rsa,
+		ServiceManager &serviceManager
+	);
 
-		int run();
+	int run();
 
-	private:
-		RSA &rsa;
-		Logger &logger;
-		ServiceManager &serviceManager;
+private:
+	RSA &rsa;
+	Logger &logger;
+	ServiceManager &serviceManager;
 
-		std::mutex loaderLock;
-		std::condition_variable loaderSignal;
-		std::unique_lock<std::mutex> loaderUniqueLock;
+	std::mutex loaderLock;
+	std::mutex mapLoaderLock;
+	std::condition_variable loaderSignal;
+	std::condition_variable mapSignal;
+	std::unique_lock<std::mutex> loaderUniqueLock;
+	std::string threadFailMsg;
 
-		bool loaderDone = false;
-		bool loadFailed = false;
+	bool loaderMapDone = false;
+	bool loaderDone = false;
+	bool loadFailed = false;
 
-		void logInfos();
+	void logInfos();
+	static void toggleForceCloseButton();
+	static void badAllocationHandler();
+	static void shutdown();
 
-		static void toggleForceCloseButton();
+	static std::string getCompiler();
+	static std::string getPlatform();
 
-		static void badAllocationHandler();
-
-		static void shutdown();
-
-		static std::string getCompiler();
-
-		static std::string getPlatform();
-
-		void loadConfigLua();
-
-		void initializeDatabase();
-
-		void loadModules();
-
-		void setWorldType();
-
-		void loadMaps();
-
-		void setupHousesRent();
-
-		void modulesLoadHelper(bool loaded, std::string moduleName);
+	void loadConfigLua();
+	void initializeDatabase();
+	void loadModules();
+	void setWorldType();
+	void loadMaps() const;
+	void setupHousesRent();
+	void modulesLoadHelper(bool loaded, std::string moduleName);
 };
-
-#endif // SRC_CANARY_SERVER_HPP_

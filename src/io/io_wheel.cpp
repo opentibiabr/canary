@@ -12,10 +12,10 @@
 #include "io/io_wheel.hpp"
 
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "creatures/players/player.h"
-#include "creatures/combat/spells.h"
+#include "creatures/players/player.hpp"
+#include "creatures/combat/spells.hpp"
 
-#include "utils/tools.h"
+#include "utils/tools.hpp"
 
 /**
  * @brief This namespace groups together variables, functions, and class definitions within a specific scope.
@@ -155,9 +155,9 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 
 	// Register enum with default values for each vocation
 	if (!reload) {
-		g_logger().info("Loading wheel of destiny... [Success]");
+		g_logger().debug("Loading wheel of destiny... [Success]");
 	} else {
-		g_logger().info("Reloading wheel of destiny... [Success]");
+		g_logger().debug("Reloading wheel of destiny... [Success]");
 	}
 	return true;
 }
@@ -171,7 +171,7 @@ const std::vector<std::string> &IOWheel::getFocusSpells() const {
 }
 
 using VocationBonusFunction = std::function<void(Player &, uint16_t, uint8_t, PlayerWheelMethodsBonusData &)>;
-using VocationBonusMap = phmap::btree_map<WheelSlots_t, VocationBonusFunction>;
+using VocationBonusMap = std::map<WheelSlots_t, VocationBonusFunction>;
 const VocationBonusMap &IOWheel::getWheelMapFunctions() const {
 	return m_vocationBonusMap;
 }

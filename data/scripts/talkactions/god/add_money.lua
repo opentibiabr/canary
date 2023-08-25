@@ -10,22 +10,12 @@ function addMoney.onSay(player, words, param)
 	if param == "" then
 		player:sendCancelMessage("Player name param required")
 		-- Distro log
-		Spdlog.error("[addMoney.onSay] - Player name param not found")
+		logger.error("[addMoney.onSay] - Player name param not found")
 		return true
 	end
 
 	local split = param:split(",")
 	local name = split[1]:trim()
-	local amount = nil
-	if split[2] then
-		amount = tonumber(split[2])
-	end
-
-  -- Check if the coins is valid
-	if amount <= 0 or amount == nil then
-		player:sendCancelMessage("Invalid amount.")
-		return false
-	end
 
 	local normalizedName = Game.getNormalizedPlayerName(name)
 	if not normalizedName then
@@ -34,10 +24,21 @@ function addMoney.onSay(player, words, param)
 	end
 	name = normalizedName
 
+	local amount = nil
+	if split[2] then
+		amount = tonumber(split[2])
+	end
+
+	-- Check if the coins is valid
+	if amount <= 0 or amount == nil then
+		player:sendCancelMessage("Invalid amount.")
+		return false
+	end
+
 	if not Bank.credit(name, amount) then
 		player:sendCancelMessage("Failed to add money to " .. name .. ".")
 		-- Distro log
-		Spdlog.error("[addMoney.onSay] - Failed to add money to player")
+		logger.error("[addMoney.onSay] - Failed to add money to player")
 		return false
 	end
 
@@ -47,7 +48,7 @@ function addMoney.onSay(player, words, param)
 		targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added ".. amount .." gold coins to your character.")
 	end
 	-- Distro log
-	Spdlog.info("".. player:getName() .." added ".. amount .." gold coins to ".. name .." player")
+	logger.info("{} added {} gold coins to {} player", player:getName(), amount, name)
 	return true
 end
 

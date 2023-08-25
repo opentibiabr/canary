@@ -11,7 +11,7 @@
 
 #include "lib/thread/thread_pool.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "game/scheduling/scheduler.h"
+#include "game/scheduling/scheduler.hpp"
 #include "game/scheduling/task.hpp"
 
 Scheduler::Scheduler(ThreadPool &threadPool) :

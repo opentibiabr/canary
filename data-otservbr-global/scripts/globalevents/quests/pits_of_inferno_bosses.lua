@@ -14,8 +14,8 @@ function pitsOfInfernoBosses.onThink(interval, lastExecution)
 	local monster = Game.createMonster(spawn.monster, spawn.position, true, true)
 
 	if not monster then
-		Spdlog.error(string.format("[PitsOfInfernoBosses] - Failed to spawn %s",
-			rand.bossName))
+		logger.error("[PitsOfInfernoBosses] - Failed to spawn {}",
+			rand.bossName)
 		return true
 	end
 	return true

@@ -10,7 +10,7 @@
 #include "pch.hpp"
 
 #include "lua/functions/core/network/webhook_functions.hpp"
-#include "server/network/webhook/webhook.h"
+#include "server/network/webhook/webhook.hpp"
 
 int WebhookFunctions::luaWebhookSendMessage(lua_State* L) {
 	// Webhook.sendMessage(title, message, color, url = "WEBHOOK_DISCORD_URL")

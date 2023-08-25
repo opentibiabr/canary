@@ -29,7 +29,7 @@ function addons.onSay(player, words, param)
 	if param == '' then
 		target = player:getTarget()
 		if not target then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Gives players the ability to wear all addons. Usage: /addons <player name>')
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Gives players the ability to wear all addons. Usage: /addaddons <player name>')
 			return true
 		end
 	else

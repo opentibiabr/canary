@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/vocations/vocation.h"
+#include "creatures/players/vocations/vocation.hpp"
 
-#include "utils/pugicast.h"
-#include "utils/tools.h"
+#include "utils/pugicast.hpp"
+#include "utils/tools.hpp"
 
 bool Vocations::loadFromXml() {
 	pugi::xml_document doc;

@@ -10,7 +10,7 @@ function broadcast.onSay(player, words, param)
 	end
 
 	local text = player:getName() .. " broadcasted: " .. param
-	Spdlog.info(text)
+	logger.info(text)
 	Webhook.sendMessage("Broadcast", text, WEBHOOK_COLOR_WARNING, announcementChannels["serverAnnouncements"])
 	for _, targetPlayer in ipairs(Game.getPlayers()) do
 		targetPlayer:sendPrivateMessage(player, param, TALKTYPE_BROADCAST)

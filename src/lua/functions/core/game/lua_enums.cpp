@@ -14,12 +14,12 @@
 #include "creatures/players/account/account.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"
 #include "io/io_bosstiary.hpp"
-#include "config/configmanager.h"
-#include "creatures/creature.h"
-#include "lua/creature/creatureevent.h"
+#include "config/configmanager.hpp"
+#include "creatures/creature.hpp"
+#include "lua/creature/creatureevent.hpp"
 #include "declarations.hpp"
 #include "game/functions/game_reload.hpp"
-#include "game/game.h"
+#include "game/game.hpp"
 
 #define registerEnumClass(luaState, enumClassType)               \
 	{                                                            \
@@ -264,6 +264,7 @@ void LuaEnums::initCombatEnums(lua_State* L) {
 	registerEnum(L, COMBAT_ICEDAMAGE);
 	registerEnum(L, COMBAT_HOLYDAMAGE);
 	registerEnum(L, COMBAT_DEATHDAMAGE);
+	registerEnum(L, COMBAT_AGONYDAMAGE);
 	registerEnum(L, COMBAT_NEUTRALDAMAGE);
 }
 
@@ -577,6 +578,7 @@ void LuaEnums::initConstMeEnums(lua_State* L) {
 	registerEnum(L, CONST_ME_DIVINE_GRENADE);
 	registerEnum(L, CONST_ME_DIVINE_EMPOWERMENT);
 	registerEnum(L, CONST_ME_WATER_FLOATING_THRASH);
+	registerEnum(L, CONST_ME_AGONY);
 }
 
 void LuaEnums::initConstAniEnums(lua_State* L) {
@@ -982,6 +984,7 @@ void LuaEnums::initTextColorEnums(lua_State* L) {
 	registerEnum(L, TEXTCOLOR_BLUE);
 	registerEnum(L, TEXTCOLOR_LIGHTGREEN);
 	registerEnum(L, TEXTCOLOR_LIGHTBLUE);
+	registerEnum(L, TEXTCOLOR_DARKBROWN);
 	registerEnum(L, TEXTCOLOR_MAYABLUE);
 	registerEnum(L, TEXTCOLOR_DARKRED);
 	registerEnum(L, TEXTCOLOR_LIGHTGREY);

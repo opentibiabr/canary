@@ -9,12 +9,12 @@
 
 #include "pch.hpp"
 
-#include "creatures/monsters/monster.h"
-#include "creatures/combat/spells.h"
+#include "creatures/monsters/monster.hpp"
+#include "creatures/combat/spells.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "game/game.h"
+#include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "lua/creature/events.h"
+#include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 
@@ -24,14 +24,14 @@ int32_t Monster::despawnRadius;
 uint32_t Monster::monsterAutoID = 0x50000001;
 
 Monster* Monster::createMonster(const std::string &name) {
-	MonsterType* mType = g_monsters().getMonsterType(name);
+	const auto &mType = g_monsters().getMonsterType(name);
 	if (!mType) {
 		return nullptr;
 	}
 	return new Monster(mType);
 }
 
-Monster::Monster(MonsterType* mType) :
+Monster::Monster(const std::shared_ptr<MonsterType> &mType) :
 	Creature(),
 	strDescription(asLowerCaseString(mType->nameDescription)),
 	mType(mType) {
@@ -315,8 +315,9 @@ void Monster::addTarget(Creature* creature, bool pushFront /* = false*/) {
 		} else {
 			targetList.push_back(creature);
 		}
-		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer())
+		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen++;
+		}
 	}
 }
 
@@ -648,7 +649,7 @@ BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int32
 }
 
 bool Monster::isTarget(const Creature* creature) const {
-	if (creature->isRemoved() || !creature->isAttackable() || creature->getZone() == ZONE_PROTECTION || !canSeeCreature(creature)) {
+	if (creature->isRemoved() || !creature->isAttackable() || creature->getZoneType() == ZONE_PROTECTION || !canSeeCreature(creature)) {
 		return false;
 	}
 

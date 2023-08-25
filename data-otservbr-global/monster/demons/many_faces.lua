@@ -89,7 +89,7 @@ monster.loot = {
 	{name = "sacred tree amulet", chance = 5560},
 	{name = "violet gem", chance = 5100},
 	{name = "blue gem", chance = 5020},
-	{id = 23534, chance = 4870}, -- ring of red plasma
+	{id = 23533, chance = 4870}, -- ring of red plasma
 	{id = 33932, chance = 3500}, -- head many faces
 	{name = "glacier shoes", chance = 2510},
 	{name = "glacier robe", chance = 2130},

@@ -58,5 +58,5 @@ function addons.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	return true
 end
 
-addons:id(16252, 16253, 16254, 16255, 16256, 16257, 27655, 27656, 27657)
+addons:id(16252, 16253, 16254, 16255, 16256, 16257, 27655, 27656, 27657, 31738, 31737, 32630, 32631)
 addons:register()

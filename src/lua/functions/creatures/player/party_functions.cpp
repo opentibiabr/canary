@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/grouping/party.h"
-#include "creatures/players/player.h"
-#include "game/game.h"
+#include "creatures/players/grouping/party.hpp"
+#include "creatures/players/player.hpp"
+#include "game/game.hpp"
 #include "lua/functions/creatures/player/party_functions.hpp"
 
 int32_t PartyFunctions::luaPartyCreate(lua_State* L) {

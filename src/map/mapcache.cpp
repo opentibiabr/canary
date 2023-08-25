@@ -9,15 +9,18 @@
 
 #include "pch.hpp"
 
-#include "mapcache.h"
+#include "mapcache.hpp"
 
-#include "game/movement/teleport.h"
-#include "items/bed.h"
-#include "io/iologindata.h"
-#include "items/item.h"
-#include "game/game.h"
-#include "map/map.h"
-#include "utils/hash.h"
+#include "game/movement/teleport.hpp"
+#include "items/bed.hpp"
+#include "io/iologindata.hpp"
+#include "items/item.hpp"
+#include "game/game.hpp"
+#include "map/map.hpp"
+#include "utils/hash.hpp"
+#include "io/filestream.hpp"
+
+#include "io/iomap.hpp"
 
 static phmap::flat_hash_map<size_t, BasicItemPtr> items;
 static phmap::flat_hash_map<size_t, BasicTilePtr> tiles;
@@ -36,14 +39,17 @@ void MapCache::flush() {
 }
 
 void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
-	if (BasicItem->charges > 0)
+	if (BasicItem->charges > 0) {
 		item->setSubType(BasicItem->charges);
+	}
 
-	if (BasicItem->actionId > 0)
+	if (BasicItem->actionId > 0) {
 		item->setAttribute(ItemAttribute_t::ACTIONID, BasicItem->actionId);
+	}
 
-	if (BasicItem->uniqueId > 0)
-		item->setAttribute(ItemAttribute_t::UNIQUEID, BasicItem->actionId);
+	if (BasicItem->uniqueId > 0) {
+		item->setAttribute(ItemAttribute_t::UNIQUEID, BasicItem->uniqueId);
+	}
 
 	if (item->getTeleport() && (BasicItem->destX != 0 || BasicItem->destY != 0 || BasicItem->destZ != 0)) {
 		auto dest = Position(BasicItem->destX, BasicItem->destY, BasicItem->destZ);
@@ -58,22 +64,9 @@ void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
 		item->getContainer()->getDepotLocker()->setDepotId(BasicItem->doorOrDepotId);
 	}
 
-	if (item->getBed()) {
-		if (BasicItem->guid > 0) {
-			const auto &name = IOLoginData::getNameByGuid(BasicItem->guid);
-			if (!name.empty()) {
-				item->setAttribute(ItemAttribute_t::DESCRIPTION, name + " is sleeping there.");
-				g_game().setBedSleeper(item->getBed(), BasicItem->guid);
-				item->getBed()->sleeperGUID = BasicItem->guid;
-			}
-		}
-
-		if (BasicItem->sleepStart > 0)
-			item->getBed()->sleepStart = static_cast<uint64_t>(BasicItem->sleepStart);
-	}
-
-	if (!BasicItem->text.empty())
+	if (!BasicItem->text.empty()) {
 		item->setAttribute(ItemAttribute_t::TEXT, BasicItem->text);
+	}
 
 	/* if (BasicItem.description != 0)
 		item->setAttribute(ItemAttribute_t::DESCRIPTION, STRING_CACHE[BasicItem.description]);*/
@@ -81,8 +74,9 @@ void MapCache::parseItemAttr(const BasicItemPtr &BasicItem, Item* item) {
 
 Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
 	auto item = Item::CreateItem(BasicItem->id, position);
-	if (!item)
+	if (!item) {
 		return nullptr;
+	}
 
 	parseItemAttr(BasicItem, item);
 
@@ -95,8 +89,9 @@ Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
 		}
 	}
 
-	if (item->getItemCount() == 0)
+	if (item->getItemCount() == 0) {
 		item->setItemCount(1);
+	}
 
 	item->startDecaying();
 	item->setLoadedFromMap(true);
@@ -106,8 +101,9 @@ Item* MapCache::createItem(const BasicItemPtr &BasicItem, Position position) {
 
 Tile* MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, uint16_t x, uint16_t y) {
 	const auto &cachedTile = floor->getTileCache(x, y);
-	if (!cachedTile)
+	if (!cachedTile) {
 		return floor->getTile(x, y);
+	}
 
 	const uint8_t z = floor->getZ();
 
@@ -120,16 +116,19 @@ Tile* MapCache::getOrCreateTileFromCache(const std::unique_ptr<Floor> &floor, ui
 		house->addTile(static_cast<HouseTile*>(tile));
 	} else if (cachedTile->isStatic) {
 		tile = new StaticTile(x, y, z);
-	} else
+	} else {
 		tile = new DynamicTile(x, y, z);
+	}
 
 	auto pos = Position(x, y, z);
 
-	if (cachedTile->ground != nullptr)
+	if (cachedTile->ground != nullptr) {
 		tile->internalAddThing(createItem(cachedTile->ground, pos));
+	}
 
-	for (const auto &BasicItemd : cachedTile->items)
+	for (const auto &BasicItemd : cachedTile->items) {
 		tile->internalAddThing(createItem(BasicItemd, pos));
+	}
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
 
@@ -147,7 +146,12 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTilePt
 		return;
 	}
 
-	root.getBestLeaf(x, y, 15)->createFloor(z)->setTileCache(x, y, static_tryGetTileFromCache(newTile));
+	const auto &tile = static_tryGetTileFromCache(newTile);
+	if (const auto leaf = QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y)) {
+		leaf->createFloor(z)->setTileCache(x, y, tile);
+	} else {
+		root.getBestLeaf(x, y, 15)->createFloor(z)->setTileCache(x, y, tile);
+	}
 }
 
 BasicItemPtr MapCache::tryReplaceItemFromCache(const BasicItemPtr &ref) {
@@ -155,180 +159,129 @@ BasicItemPtr MapCache::tryReplaceItemFromCache(const BasicItemPtr &ref) {
 }
 
 void BasicTile::hash(size_t &h) const {
-	const uint32_t arr[] = { flags, houseId, type, isStatic };
+	std::array<uint32_t, 4> arr = { flags, houseId, type, isStatic };
 	for (const auto v : arr) {
-		if (v > 0)
+		if (v > 0) {
 			stdext::hash_combine(h, v);
+		}
 	}
 
-	if (ground != nullptr)
+	if (ground != nullptr) {
 		ground->hash(h);
+	}
 
 	if (!items.empty()) {
 		stdext::hash_combine(h, items.size());
-		for (const auto &item : items)
+		for (const auto &item : items) {
 			item->hash(h);
+		}
 	}
 }
 
 void BasicItem::hash(size_t &h) const {
-	const uint32_t arr[] = { id, guid, sleepStart, charges, actionId, uniqueId, destX, destY, destZ, doorOrDepotId };
+	const std::array<uint32_t, 8> arr = { id, charges, actionId, uniqueId, destX, destY, destZ, doorOrDepotId };
 	for (const auto v : arr) {
-		if (v > 0)
+		if (v > 0) {
 			stdext::hash_combine(h, v);
+		}
 	}
 
-	if (!text.empty())
+	if (!text.empty()) {
 		stdext::hash_combine(h, text);
+	}
 
 	if (!items.empty()) {
 		stdext::hash_combine(h, items.size());
-		for (const auto &item : items)
+		for (const auto &item : items) {
 			item->hash(h);
+		}
 	}
 }
 
-bool BasicItem::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream) {
-	uint8_t attr_type;
-	while (propStream.read<uint8_t>(attr_type) && attr_type != 0) {
-		const Attr_ReadValue ret = readAttr(static_cast<AttrTypes_t>(attr_type), propStream);
-		if (ret == ATTR_READ_ERROR) {
-			return false;
-		} else if (ret == ATTR_READ_END) {
-			return true;
-		}
+bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, uint8_t z) {
+	if (stream.isProp(OTB::Node::END)) {
+		stream.back();
+		return true;
 	}
 
-	for (auto &itemNode : node.children) {
-		// load container items
-		if (itemNode.type != OTBM_ITEM) {
-			// unknown type
-			return false;
+	readAttr(stream);
+
+	while (stream.startNode()) {
+		if (stream.getU8() != OTBM_ITEM) {
+			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not read item node.", x, y, z));
 		}
 
-		PropStream itemPropStream;
-		if (!loader.getProps(itemNode, itemPropStream)) {
-			return false;
-		}
-
-		uint16_t id;
-		if (!itemPropStream.read<uint16_t>(id)) {
-			return false;
-		}
+		const uint16_t streamId = stream.getU16();
 
 		const auto &item = std::make_shared<BasicItem>();
-		item->id = id;
+		item->id = streamId;
 
-		if (!item->unserializeItemNode(loader, itemNode, itemPropStream)) {
-			continue;
+		if (!item->unserializeItemNode(stream, x, y, z)) {
+			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Failed to load item.", x, y, z));
 		}
 
 		items.emplace_back(static_tryGetItemFromCache(item));
+
+		if (!stream.endNode()) {
+			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
+		}
 	}
 
 	return true;
 }
 
-Attr_ReadValue BasicItem::readAttr(AttrTypes_t attr, PropStream &propStream) {
-	switch (attr) {
-		case ATTR_COUNT:
-		case ATTR_RUNE_CHARGES: {
-			uint8_t charges;
-			if (!propStream.read<uint8_t>(charges)) {
-				return ATTR_READ_ERROR;
-			}
-			this->charges = charges;
-			break;
+void BasicItem::readAttr(FileStream &stream) {
+	bool end = false;
+	while (!end) {
+		const uint8_t attr = stream.getU8();
+		switch (attr) {
+			case ATTR_DEPOT_ID: {
+				doorOrDepotId = stream.getU16();
+			} break;
+
+			case ATTR_HOUSEDOORID: {
+				doorOrDepotId = stream.getU8();
+			} break;
+
+			case ATTR_TELE_DEST: {
+				destX = stream.getU16();
+				destY = stream.getU16();
+				destZ = stream.getU8();
+			} break;
+
+			case ATTR_COUNT: {
+				charges = stream.getU8();
+			} break;
+
+			case ATTR_CHARGES: {
+				charges = stream.getU16();
+			} break;
+
+			case ATTR_ACTION_ID: {
+				actionId = stream.getU16();
+			} break;
+
+			case ATTR_UNIQUE_ID: {
+				uniqueId = stream.getU16();
+			} break;
+
+			case ATTR_TEXT: {
+				const auto &str = stream.getString();
+				if (!str.empty()) {
+					text = str;
+				}
+			} break;
+
+			case ATTR_DESC: {
+				const auto &str = stream.getString();
+				// if (!str.empty())
+				//	text = str;
+			} break;
+
+			default:
+				stream.back();
+				end = true;
+				break;
 		}
-
-		case ATTR_ACTION_ID: {
-			if (!propStream.read<uint16_t>(actionId))
-				return ATTR_READ_ERROR;
-			break;
-		}
-
-		case ATTR_UNIQUE_ID: {
-			if (!propStream.read<uint16_t>(uniqueId))
-				return ATTR_READ_ERROR;
-			break;
-		}
-
-		case ATTR_TEXT: {
-			std::string str;
-			if (!propStream.readString(str))
-				return ATTR_READ_ERROR;
-
-			if (!str.empty()) {
-				text = str;
-			}
-
-			break;
-		}
-
-		case ATTR_DESC: {
-			std::string str;
-			if (!propStream.readString(str)) {
-				return ATTR_READ_ERROR;
-			}
-
-			if (!str.empty()) {
-				/* stdext::hash<std::string> h;
-				size_t hash = h(str);
-				description = hash;
-				STRING_CACHE.emplace(hash, std::move(str));*/
-			}
-
-			break;
-		}
-
-		case ATTR_CHARGES: {
-			if (!propStream.read<uint16_t>(charges))
-				return ATTR_READ_ERROR;
-			break;
-		}
-
-		// Depot class
-		case ATTR_DEPOT_ID: {
-			if (!propStream.read<uint16_t>(doorOrDepotId))
-				return ATTR_READ_ERROR;
-			break;
-		}
-
-		// Door class
-		case ATTR_HOUSEDOORID: {
-			uint8_t v;
-			if (!propStream.read<uint8_t>(v))
-				return ATTR_READ_ERROR;
-
-			doorOrDepotId = v;
-
-			break;
-		}
-
-		// Teleport class
-		case ATTR_TELE_DEST: {
-			if (!propStream.read<uint16_t>(destX) || !propStream.read<uint16_t>(destY) || !propStream.read<uint8_t>(destZ))
-				return ATTR_READ_ERROR;
-			break;
-		}
-
-		case ATTR_SLEEPERGUID: {
-			if (!propStream.read<uint32_t>(guid))
-				return ATTR_READ_ERROR;
-
-			break;
-		}
-
-		case ATTR_SLEEPSTART: {
-			if (!propStream.read<uint32_t>(sleepStart))
-				return ATTR_READ_ERROR;
-
-			break;
-		}
-
-		default:
-			return ATTR_READ_ERROR;
 	}
-
-	return ATTR_READ_CONTINUE;
 }

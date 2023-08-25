@@ -11,12 +11,13 @@
 
 #include "game/functions/game_reload.hpp"
 
-#include "config/configmanager.h"
-#include "lua/creature/events.h"
-#include "creatures/players/imbuements/imbuements.h"
+#include "config/configmanager.hpp"
+#include "lua/creature/events.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "lua/modules/modules.h"
-#include "lua/scripts/scripts.h"
+#include "lua/modules/modules.hpp"
+#include "lua/scripts/scripts.hpp"
+#include "game/zones/zone.hpp"
 
 GameReload::GameReload() = default;
 GameReload::~GameReload() = default;
@@ -151,6 +152,7 @@ bool GameReload::reloadScripts() const {
 		return false;
 	}
 	g_scripts().clearAllScripts();
+	Zone::clearZones();
 
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	if (g_scripts().loadScripts(datapackFolder + "/scripts", false, true) && g_scripts().loadScripts(coreFolder + "/scripts", false, true)) {

@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/grouping/guild.h"
-#include "game/game.h"
+#include "creatures/players/grouping/guild.hpp"
+#include "game/game.hpp"
 
 void Guild::addMember(Player* player) {
 	membersOnline.push_back(player);
@@ -28,7 +28,6 @@ void Guild::removeMember(Player* player) {
 	g_game().updatePlayerHelpers(player);
 	if (membersOnline.empty()) {
 		g_game().removeGuild(id);
-		delete this;
 	}
 }
 

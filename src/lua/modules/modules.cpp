@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "lua/modules/modules.h"
-#include "creatures/players/player.h"
-#include "game/game.h"
+#include "lua/modules/modules.hpp"
+#include "creatures/players/player.hpp"
+#include "game/game.hpp"
 
 Modules::Modules() :
 	scriptInterface("Modules Interface") {

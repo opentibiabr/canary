@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_MAP_MAP_DEFINITIONS_HPP_
-#define SRC_MAP_MAP_DEFINITIONS_HPP_
+#pragma once
 
 // Enums
 enum AccessList_t {
@@ -30,5 +29,3 @@ enum RentPeriod_t {
 	RENTPERIOD_YEARLY,
 	RENTPERIOD_NEVER,
 };
-
-#endif // SRC_MAP_MAP_DEFINITIONS_HPP_

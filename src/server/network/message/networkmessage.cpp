@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "server/network/message/networkmessage.h"
-#include "items/containers/container.h"
-#include "creatures/creature.h"
+#include "server/network/message/networkmessage.hpp"
+#include "items/containers/container.hpp"
+#include "creatures/creature.hpp"
 
 int32_t NetworkMessage::decodeHeader() {
 	int32_t newSize = buffer[0] | buffer[1] << 8;

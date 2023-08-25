@@ -9,11 +9,11 @@
 
 #include "pch.hpp"
 
-#include "config/configmanager.h"
+#include "config/configmanager.hpp"
 #include "declarations.hpp"
-#include "game/game.h"
+#include "game/game.hpp"
 #include "lua/scripts/luajit_sync.hpp"
-#include "server/network/webhook/webhook.h"
+#include "server/network/webhook/webhook.hpp"
 
 #if LUA_VERSION_NUM >= 502
 	#undef lua_strlen
@@ -79,7 +79,7 @@ namespace {
 bool ConfigManager::load() {
 	lua_State* L = luaL_newstate();
 	if (!L) {
-		throw std::runtime_error("Failed to allocate memory");
+		throw std::ios_base::failure("Failed to allocate memory");
 	}
 
 	luaL_openlibs(L);
@@ -334,6 +334,7 @@ bool ConfigManager::load() {
 	boolean[TOGGLE_TRAVELS_FREE] = getGlobalBoolean(L, "toggleTravelsFree", false);
 	integer[BUY_AOL_COMMAND_FEE] = getGlobalNumber(L, "buyAolCommandFee", 0);
 	integer[BUY_BLESS_COMMAND_FEE] = getGlobalNumber(L, "buyBlessCommandFee", 0);
+	boolean[TELEPORT_PLAYER_TO_VOCATION_ROOM] = getGlobalBoolean(L, "teleportPlayerToVocationRoom", true);
 
 	boolean[TOGGLE_HAZARDSYSTEM] = getGlobalBoolean(L, "toogleHazardSystem", true);
 	integer[HAZARD_CRITICAL_INTERVAL] = getGlobalNumber(L, "hazardCriticalInterval", 2000);

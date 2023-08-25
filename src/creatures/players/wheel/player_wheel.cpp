@@ -13,9 +13,9 @@
 
 #include "io/io_wheel.hpp"
 
-#include "game/game.h"
-#include "creatures/players/player.h"
-#include "creatures/combat/spells.h"
+#include "game/game.hpp"
+#include "creatures/players/player.hpp"
+#include "creatures/combat/spells.hpp"
 
 // To avoid conflict in other files that might use a function with the same name
 // Here are built-in helper functions
@@ -69,6 +69,20 @@ namespace {
 
 		return 0;
 	}
+
+	struct PromotionScroll {
+		uint16_t itemId;
+		std::string storageKey;
+		uint8_t extraPoints;
+	};
+
+	std::vector<PromotionScroll> WheelOfDestinyPromotionScrolls = {
+		{ 43946, "wheel.scroll.abridged", 3 },
+		{ 43947, "wheel.scroll.basic", 5 },
+		{ 43948, "wheel.scroll.revised", 9 },
+		{ 43949, "wheel.scroll.extended", 13 },
+		{ 43950, "wheel.scroll.advanced", 20 },
+	};
 
 } // namespace
 
@@ -672,6 +686,24 @@ int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const 
 	return 0;
 }
 
+void PlayerWheel::addPromotionScrolls(NetworkMessage &msg) const {
+	uint16_t count = 0;
+	std::vector<uint16_t> unlockedScrolls;
+
+	for (const auto &scroll : WheelOfDestinyPromotionScrolls) {
+		auto storageValue = m_player.getStorageValueByName(scroll.storageKey);
+		if (storageValue > 0) {
+			count++;
+			unlockedScrolls.push_back(scroll.itemId);
+		}
+	}
+
+	msg.add<uint16_t>(count);
+	for (const auto &itemId : unlockedScrolls) {
+		msg.add<uint16_t>(itemId);
+	}
+}
+
 void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const {
 	if (m_player.client && m_player.client->oldProtocol) {
 		return;
@@ -693,7 +725,7 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) con
 	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
 		msg.add<uint16_t>(getPointsBySlotType(i));
 	}
-	msg.add<uint16_t>(0x00); // List size (U16)
+	addPromotionScrolls(msg);
 }
 
 void PlayerWheel::sendGiftOfLifeCooldown() const {
@@ -708,7 +740,7 @@ void PlayerWheel::sendGiftOfLifeCooldown() const {
 	msg.add<uint32_t>(getGiftOfCooldown());
 	msg.add<uint32_t>(getGiftOfLifeTotalCooldown());
 	// Checking if the cooldown if decreasing or it's stopped
-	if (m_player.getZone() != ZONE_PROTECTION && m_player.hasCondition(CONDITION_INFIGHT)) {
+	if (m_player.getZoneType() != ZONE_PROTECTION && m_player.hasCondition(CONDITION_INFIGHT)) {
 		msg.addByte(0x01);
 	} else {
 		msg.addByte(0x00);
@@ -840,7 +872,7 @@ void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
 		uint16_t points;
 		if (propStream.read<uint8_t>(slot) && propStream.read<uint16_t>(points)) {
 			setPointsBySlotType(slot, points);
-			g_logger().info("Player: {}, loaded points {} to slot {}", m_player.getName(), points, slot);
+			g_logger().debug("Player: {}, loaded points {} to slot {}", m_player.getName(), points, slot);
 		}
 	}
 }
@@ -855,6 +887,7 @@ bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 	query.str(std::string());
 
 	DBInsert insertWheelData("INSERT INTO `player_wheeldata` (`player_id`, `slot`) VALUES ");
+	insertWheelData.upsert({ "slot" });
 	PropWriteStream stream;
 	const auto &wheelSlots = getSlots();
 	for (uint8_t i = 1; i < wheelSlots.size(); ++i) {
@@ -892,19 +925,11 @@ uint16_t PlayerWheel::getExtraPoints() const {
 		return 0;
 	}
 
-	phmap::btree_map<std::string, uint16_t> availableScrolls = {
-		{ "wheel.scroll.abridged", 3 },
-		{ "wheel.scroll.basic", 5 },
-		{ "wheel.scroll.revised", 9 },
-		{ "wheel.scroll.extended", 13 },
-		{ "wheel.scroll.advanced", 20 },
-	};
-
 	uint16_t totalBonus = 0;
-	for (const auto &[storageName, points] : availableScrolls) {
-		auto storageValue = m_player.getStorageValueByName(storageName);
+	for (const auto &scroll : WheelOfDestinyPromotionScrolls) {
+		auto storageValue = m_player.getStorageValueByName(scroll.storageKey);
 		if (storageValue > 0) {
-			totalBonus += points;
+			totalBonus += scroll.extraPoints;
 		}
 	}
 
@@ -956,7 +981,7 @@ uint8_t PlayerWheel::getOptions(uint32_t ownerId) const {
 	}
 
 	// Check if is in the temple range (we assume the temple is within the range of 10 sqms)
-	if (m_player.getZone() == ZONE_PROTECTION) {
+	if (m_player.getZoneType() == ZONE_PROTECTION) {
 		for (auto [townid, town] : g_game().map.towns.getTowns()) {
 			if (Position::areInRange<1, 10>(town->getTemplePosition(), m_player.getPosition())) {
 				return 1;
@@ -1152,10 +1177,10 @@ void PlayerWheel::registerPlayerBonusData() {
 
 	if (m_playerBonusData.stages.executionersThrow > 0) {
 		for (int i = 0; i < m_playerBonusData.stages.executionersThrow; ++i) {
-			setSpellInstant("Executioner's Thow", true);
+			setSpellInstant("Executioner's Throw", true);
 		}
 	} else {
-		setSpellInstant("Executioner's Thow", false);
+		setSpellInstant("Executioner's Throw", false);
 	}
 
 	// Avatar
@@ -1227,16 +1252,21 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 	g_logger().debug("Initializing print of WhelPlayerBonusData informations for player {}", m_player.getName());
 
 	g_logger().debug("Stats:");
-	if (bonusData.stats.health > 0)
+	if (bonusData.stats.health > 0) {
 		g_logger().debug("  health: {}", bonusData.stats.health);
-	if (bonusData.stats.mana > 0)
+	}
+	if (bonusData.stats.mana > 0) {
 		g_logger().debug("  mana: {}", bonusData.stats.mana);
-	if (bonusData.stats.capacity > 0)
+	}
+	if (bonusData.stats.capacity > 0) {
 		g_logger().debug("  capacity: {}", bonusData.stats.capacity);
-	if (bonusData.stats.damage > 0)
+	}
+	if (bonusData.stats.damage > 0) {
 		g_logger().debug("  damage: {}", bonusData.stats.damage);
-	if (bonusData.stats.healing > 0)
+	}
+	if (bonusData.stats.healing > 0) {
 		g_logger().debug("  healing: {}", bonusData.stats.healing);
+	}
 
 	g_logger().debug("Resistance:");
 	for (size_t i = 0; i < bonusData.resistance.size(); ++i) {
@@ -1253,65 +1283,90 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 	}
 
 	g_logger().debug("Skills:");
-	if (bonusData.skills.melee > 0)
+	if (bonusData.skills.melee > 0) {
 		g_logger().debug("  melee: {}", bonusData.skills.melee);
-	if (bonusData.skills.distance > 0)
+	}
+	if (bonusData.skills.distance > 0) {
 		g_logger().debug("  distance: {}", bonusData.skills.distance);
-	if (bonusData.skills.magic > 0)
+	}
+	if (bonusData.skills.magic > 0) {
 		g_logger().debug("  magic: {}", bonusData.skills.magic);
+	}
 
 	g_logger().debug("Leech:");
-	if (bonusData.leech.manaLeech > 0)
+	if (bonusData.leech.manaLeech > 0) {
 		g_logger().debug("  manaLeech: {}", bonusData.leech.manaLeech);
-	if (bonusData.leech.lifeLeech > 0)
+	}
+	if (bonusData.leech.lifeLeech > 0) {
 		g_logger().debug("  lifeLeech: {}", bonusData.leech.lifeLeech);
+	}
 
 	g_logger().debug("Instant:");
-	if (bonusData.instant.battleInstinct)
+	if (bonusData.instant.battleInstinct) {
 		g_logger().debug("  battleInstinct: {}", bonusData.instant.battleInstinct);
-	if (bonusData.instant.battleHealing)
+	}
+	if (bonusData.instant.battleHealing) {
 		g_logger().debug("  battleHealing: {}", bonusData.instant.battleHealing);
-	if (bonusData.instant.positionalTatics)
+	}
+	if (bonusData.instant.positionalTatics) {
 		g_logger().debug("  positionalTatics: {}", bonusData.instant.positionalTatics);
-	if (bonusData.instant.ballisticMastery)
+	}
+	if (bonusData.instant.ballisticMastery) {
 		g_logger().debug("  ballisticMastery: {}", bonusData.instant.ballisticMastery);
-	if (bonusData.instant.healingLink)
+	}
+	if (bonusData.instant.healingLink) {
 		g_logger().debug("  healingLink: {}", bonusData.instant.healingLink);
-	if (bonusData.instant.runicMastery)
+	}
+	if (bonusData.instant.runicMastery) {
 		g_logger().debug("  runicMastery: {}", bonusData.instant.runicMastery);
-	if (bonusData.instant.focusMastery)
+	}
+	if (bonusData.instant.focusMastery) {
 		g_logger().debug("  focusMastery: {}", bonusData.instant.focusMastery);
+	}
 
 	g_logger().debug("Stages:");
-	if (bonusData.stages.combatMastery > 0)
+	if (bonusData.stages.combatMastery > 0) {
 		g_logger().debug("  combatMastery: {}", bonusData.stages.combatMastery);
-	if (bonusData.stages.giftOfLife > 0)
+	}
+	if (bonusData.stages.giftOfLife > 0) {
 		g_logger().debug("  giftOfLife: {}", bonusData.stages.giftOfLife);
-	if (bonusData.stages.divineEmpowerment > 0)
+	}
+	if (bonusData.stages.divineEmpowerment > 0) {
 		g_logger().debug("  divineEmpowerment: {}", bonusData.stages.divineEmpowerment);
-	if (bonusData.stages.blessingOfTheGrove > 0)
+	}
+	if (bonusData.stages.blessingOfTheGrove > 0) {
 		g_logger().debug("  blessingOfTheGrove: {}", bonusData.stages.blessingOfTheGrove);
-	if (bonusData.stages.drainBody > 0)
+	}
+	if (bonusData.stages.drainBody > 0) {
 		g_logger().debug("  drainBody: {}", bonusData.stages.drainBody);
-	if (bonusData.stages.beamMastery > 0)
+	}
+	if (bonusData.stages.beamMastery > 0) {
 		g_logger().debug("  beamMastery: {}", bonusData.stages.beamMastery);
-	if (bonusData.stages.twinBurst > 0)
+	}
+	if (bonusData.stages.twinBurst > 0) {
 		g_logger().debug("  twinBurst: {}", bonusData.stages.twinBurst);
-	if (bonusData.stages.executionersThrow > 0)
+	}
+	if (bonusData.stages.executionersThrow > 0) {
 		g_logger().debug("  executionersThrow: {}", bonusData.stages.executionersThrow);
+	}
 
 	g_logger().debug("Avatar:");
-	if (bonusData.avatar.light > 0)
+	if (bonusData.avatar.light > 0) {
 		g_logger().debug("  light: {}", bonusData.avatar.light);
-	if (bonusData.avatar.nature > 0)
+	}
+	if (bonusData.avatar.nature > 0) {
 		g_logger().debug("  nature: {}", bonusData.avatar.nature);
-	if (bonusData.avatar.steel > 0)
+	}
+	if (bonusData.avatar.steel > 0) {
 		g_logger().debug("  steel: {}", bonusData.avatar.steel);
-	if (bonusData.avatar.storm > 0)
+	}
+	if (bonusData.avatar.storm > 0) {
 		g_logger().debug("  storm: {}", bonusData.avatar.storm);
+	}
 
-	if (bonusData.mitigation > 0)
+	if (bonusData.mitigation > 0) {
 		g_logger().debug("mitigation: {}", bonusData.mitigation);
+	}
 
 	auto &spellsVector = bonusData.spells;
 	if (!spellsVector.empty()) {
@@ -1972,7 +2027,7 @@ int32_t PlayerWheel::checkElementSensitiveReduction(CombatType_t type) const {
 void PlayerWheel::onThink(bool force /* = false*/) {
 	bool updateClient = false;
 	m_creaturesNearby = 0;
-	if (!m_player.hasCondition(CONDITION_INFIGHT) || m_player.getZone() == ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tatics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
+	if (!m_player.hasCondition(CONDITION_INFIGHT) || m_player.getZoneType() == ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tatics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
 		bool mustReset = false;
 		for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
 			if (getMajorStat(static_cast<WheelMajor_t>(i)) != 0) {
@@ -2075,8 +2130,8 @@ void PlayerWheel::downgradeSpell(const std::string &name) {
 	}
 }
 
-Spell* PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
-	Spell* spell = nullptr;
+std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
+	std::shared_ptr<Spell> spell = nullptr;
 	damage.damageMultiplier += getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
 	WheelSpellGrade_t spellGrade = WheelSpellGrade_t::NONE;
 	if (!(damage.instantSpellName).empty()) {
@@ -2237,7 +2292,7 @@ void PlayerWheel::setSpellInstant(const std::string &name, bool value) {
 		} else {
 			setStage(WheelStage_t::TWIN_BURST, 0);
 		}
-	} else if (name == "Executioner's Thow") {
+	} else if (name == "Executioner's Throw") {
 		if (value) {
 			setStage(WheelStage_t::EXECUTIONERS_THROW, getStage(WheelStage_t::EXECUTIONERS_THROW) + 1);
 		} else {
@@ -2316,7 +2371,7 @@ uint8_t PlayerWheel::getStage(const std::string name) const {
 		return PlayerWheel::getStage(WheelStage_t::DIVINE_EMPOWERMENT);
 	} else if (name == "Twin Burst") {
 		return PlayerWheel::getStage(WheelStage_t::TWIN_BURST);
-	} else if (name == "Executioner's Thow") {
+	} else if (name == "Executioner's Throw") {
 		return PlayerWheel::getStage(WheelStage_t::EXECUTIONERS_THROW);
 	} else if (name == "Avatar of Light") {
 		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_LIGHT);
@@ -2438,7 +2493,7 @@ bool PlayerWheel::getInstant(const std::string name) const {
 		return PlayerWheel::getStage(WheelStage_t::DIVINE_EMPOWERMENT);
 	} else if (name == "Twin Burst") {
 		return PlayerWheel::getStage(WheelStage_t::TWIN_BURST);
-	} else if (name == "Executioner's Thow") {
+	} else if (name == "Executioner's Throw") {
 		return PlayerWheel::getStage(WheelStage_t::EXECUTIONERS_THROW);
 	} else if (name == "Avatar of Light") {
 		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_LIGHT);

@@ -10,7 +10,8 @@
 #include "pch.hpp"
 
 #include "creatures/players/account/account.hpp"
-#include "database/databasetasks.h"
+#include "database/databasetasks.hpp"
+#include "utils/tools.hpp"
 
 namespace account {
 
@@ -110,7 +111,7 @@ namespace account {
 		query << "UPDATE `accounts` SET `coins_transferable` = " << (current_coins + amount)
 			  << " WHERE `id` = " << id_;
 
-		db_tasks_->addTask(query.str());
+		db_tasks_->execute(query.str());
 		return ERROR_NO;
 	}
 
@@ -135,7 +136,7 @@ namespace account {
 		query << "UPDATE `accounts` SET `coins_transferable` = " << (current_coins - amount)
 			  << " WHERE `id` = " << id_;
 
-		db_tasks_->addTask(query.str());
+		db_tasks_->execute(query.str());
 
 		return ERROR_NO;
 	}
@@ -177,7 +178,7 @@ namespace account {
 		query << "UPDATE `accounts` SET `coins` = " << (current_coins + amount)
 			  << " WHERE `id` = " << id_;
 
-		db_tasks_->addTask(query.str());
+		db_tasks_->execute(query.str());
 		return ERROR_NO;
 	}
 
@@ -202,7 +203,7 @@ namespace account {
 		query << "UPDATE `accounts` SET `coins` = " << (current_coins - amount)
 			  << " WHERE `id` = " << id_;
 
-		db_tasks_->addTask(query.str());
+		db_tasks_->execute(query.str());
 
 		return ERROR_NO;
 	}
@@ -272,7 +273,7 @@ namespace account {
 		this->SetAccountIdentifier(oldProtocol_ ? result->getString("name") : result->getString("email"));
 		this->SetAccountType(static_cast<AccountType>(result->getNumber<int32_t>("type")));
 		this->SetPassword(result->getString("password"));
-		this->SetPremiumRemaningDays(result->getNumber<uint16_t>("premdays"));
+		this->SetPremiumRemainingDays(result->getNumber<uint32_t>("premdays"));
 		this->SetPremiumLastDay(result->getNumber<time_t>("lastday"));
 
 		return ERROR_NO;
@@ -353,6 +354,41 @@ namespace account {
 		return ERROR_NO;
 	}
 
+	void Account::UpdatePremium() {
+		uint32_t remainingDays = 0;
+		time_t lastDay;
+		std::string accountIdentifier;
+		GetPremiumRemainingDays(&remainingDays);
+		GetPremiumLastDay(&lastDay);
+		GetAccountIdentifier(&accountIdentifier);
+		time_t currentTime = getTimeNow();
+
+		if (lastDay < currentTime) {
+			if (SetPremiumRemainingDays(0) != ERROR_NO || SetPremiumLastDay(0) != ERROR_NO) {
+				g_logger().error("Failed to reset premium from account {}: {}", getProtocolCompat() ? "name" : "email", accountIdentifier);
+			}
+		} else if (lastDay == 0) {
+			SetPremiumRemainingDays(0);
+		} else {
+			uint32_t daysLeft = static_cast<int>((lastDay - currentTime) / 86400);
+			uint32_t timeLeft = static_cast<int>((lastDay - currentTime) % 86400);
+			if (daysLeft > 0) {
+				SetPremiumRemainingDays(daysLeft);
+			} else if (timeLeft > 0) {
+				SetPremiumRemainingDays(1);
+			} else {
+				if (SetPremiumRemainingDays(0) != ERROR_NO || SetPremiumLastDay(0) != ERROR_NO) {
+					g_logger().error("Failed to remove premium from account {}: {}", getProtocolCompat() ? "name" : "email", accountIdentifier);
+				}
+			}
+		}
+
+		if (SaveAccountDB() != ERROR_NO) {
+			GetAccountIdentifier(&accountIdentifier);
+			g_logger().error("Failed to save account: {}", accountIdentifier);
+		}
+	}
+
 	/*******************************************************************************
 	 * Setters and Getters
 	 ******************************************************************************/
@@ -408,12 +444,12 @@ namespace account {
 		return ERROR_NO;
 	}
 
-	error_t Account::SetPremiumRemaningDays(uint32_t days) {
+	error_t Account::SetPremiumRemainingDays(uint32_t days) {
 		premium_remaining_days_ = days;
 		return ERROR_NO;
 	}
 
-	error_t Account::GetPremiumRemaningDays(uint32_t* days) {
+	error_t Account::GetPremiumRemainingDays(uint32_t* days) const {
 		if (days == nullptr) {
 			return ERROR_NULLPTR;
 		}
@@ -430,7 +466,7 @@ namespace account {
 		return ERROR_NO;
 	}
 
-	error_t Account::GetPremiumLastDay(time_t* last_day) {
+	error_t Account::GetPremiumLastDay(time_t* last_day) const {
 		if (last_day == nullptr) {
 			return ERROR_NULLPTR;
 		}

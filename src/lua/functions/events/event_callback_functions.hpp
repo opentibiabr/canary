@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_EVENTS_EVENT_CALLBACK_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_EVENTS_EVENT_CALLBACK_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 /**
  * @class EventCallbackFunctions
@@ -20,59 +19,57 @@
  * allowing for interaction between the C++ codebase and Lua scripts.
  */
 class EventCallbackFunctions : public LuaScriptInterface {
-	public:
-		/**
-		 * @brief Initializes the Lua state with the event callback functions.
-		 *
-		 * This function registers the event callback-related functions with the given Lua state,
-		 * making them accessible to Lua scripts.
-		 *
-		 * @param luaState The Lua state to initialize.
-		 */
-		static void init(lua_State* luaState);
+public:
+	/**
+	 * @brief Initializes the Lua state with the event callback functions.
+	 *
+	 * This function registers the event callback-related functions with the given Lua state,
+	 * making them accessible to Lua scripts.
+	 *
+	 * @param luaState The Lua state to initialize.
+	 */
+	static void init(lua_State* luaState);
 
-		/**
-		 * @brief Send the load of callbacks to lua
-		 * @param luaState The Lua state to initialize.
-		 */
-		static int luaEventCallbackLoad(lua_State* luaState);
+	/**
+	 * @brief Send the load of callbacks to lua
+	 * @param luaState The Lua state to initialize.
+	 */
+	static int luaEventCallbackLoad(lua_State* luaState);
 
-	private:
-		/**
-		 * @brief Creates a new EventCallback object in Lua.
-		 *
-		 * This function is called from Lua to create a new EventCallback object,
-		 * which can then be used to register various event handlers.
-		 *
-		 * @param luaState The Lua state.
-		 * @return Number of return values on the Lua stack.
-		 */
-		static int luaEventCallbackCreate(lua_State* luaState);
+private:
+	/**
+	 * @brief Creates a new EventCallback object in Lua.
+	 *
+	 * This function is called from Lua to create a new EventCallback object,
+	 * which can then be used to register various event handlers.
+	 *
+	 * @param luaState The Lua state.
+	 * @return Number of return values on the Lua stack.
+	 */
+	static int luaEventCallbackCreate(lua_State* luaState);
 
-		/**
-		 * @brief Sets or gets the type of an EventCallback object in Lua.
-		 *
-		 * This function is called from Lua to set or get the type of an EventCallback object.
-		 *
-		 * @param luaState The Lua state.
-		 * @return Number of return values on the Lua stack.
-		 */
-		static int luaEventCallbackType(lua_State* luaState);
+	/**
+	 * @brief Sets or gets the type of an EventCallback object in Lua.
+	 *
+	 * This function is called from Lua to set or get the type of an EventCallback object.
+	 *
+	 * @param luaState The Lua state.
+	 * @return Number of return values on the Lua stack.
+	 */
+	static int luaEventCallbackType(lua_State* luaState);
 
-		/**
-		 * @brief Registers an EventCallback object in Lua.
-		 *
-		 * This function is called from Lua to register an EventCallback object,
-		 * allowing it to be triggered by specific events in the game.
-		 *
-		 * @param luaState The Lua state.
-		 * @return Number of return values on the Lua stack.
-		 */
-		static int luaEventCallbackRegister(lua_State* luaState);
+	/**
+	 * @brief Registers an EventCallback object in Lua.
+	 *
+	 * This function is called from Lua to register an EventCallback object,
+	 * allowing it to be triggered by specific events in the game.
+	 *
+	 * @param luaState The Lua state.
+	 * @return Number of return values on the Lua stack.
+	 */
+	static int luaEventCallbackRegister(lua_State* luaState);
 
-		/**
-		 * @note here end the lua binder functions }
-		 */
+	/**
+	 * @note here end the lua binder functions }
+	 */
 };
-
-#endif // SRC_LUA_FUNCTIONS_EVENTS_EVENT_CALLBACK_FUNCTIONS_HPP_

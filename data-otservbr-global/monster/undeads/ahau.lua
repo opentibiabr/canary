@@ -71,7 +71,7 @@ monster.loot = {
 	{name = "the living idol of tukh", chance = 100000},
 	{name = "rotten feather", chance = 15000},
 	{name = "ritual tooth", chance = 15000},
-	{id = 23534, chance = 15000},
+	{id = 23533, chance = 15000},
 	{id = 23542, chance = 15000},
 	{name = "Diamond", chance = 15000},
 	{name = "Amber with a Bug", chance = 15000},
@@ -79,7 +79,7 @@ monster.loot = {
 	{id = 23527, chance = 15000},
 	{name = "Broken Iks Headpiece", chance = 15000},
 	{name = "Great Health Potion", chance = 15000},
-	{id = 23532, chance = 15000},
+	{id = 23531, chance = 15000},
 	{id = 23528, chance = 15000},
 	{name = "Broken Iks Faulds", chance = 15000},
 

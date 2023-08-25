@@ -1,5 +1,5 @@
 local hazard = Hazard.new({
-	name = "Gnomprona Gardens",
+	name = "hazard:gnomprona-gardens",
 	from = Position(33502, 32740,13),
 	to = Position(33796, 32996, 15),
 	maxLevel = 12,
@@ -10,6 +10,8 @@ local hazard = Hazard.new({
 	dodge = true,
 	damageBoost = true,
 })
+
+hazard:register()
 
 local primalPod = MoveEvent()
 
@@ -69,7 +71,7 @@ function primalKill.onKill(_player, creature)
 	end
 
 	local monster = creature:getMonster()
-	if not creature or not monster or not monster:hazard() or not monster:getPosition():isInArea(hazard) then
+	if not creature or not monster or not monster:hazard() or not hazard:isInZone(monster:getPosition()) then
 		return true
 	end
 

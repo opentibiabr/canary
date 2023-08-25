@@ -28,7 +28,6 @@ public:
 private:
 	Database &db;
 	ThreadPool &threadPool;
-	std::mutex threadSafetyMutex;
 };
 
 constexpr auto g_databaseTasks = DatabaseTasks::getInstance;

@@ -10,6 +10,7 @@
 #pragma once
 
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 
 class DBResult;
 using DBResult_ptr = std::shared_ptr<DBResult>;

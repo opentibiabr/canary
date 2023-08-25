@@ -142,6 +142,4 @@
 #include <eventpp/utilities/scopedremover.h>
 #include <eventpp/eventdispatcher.h>
 
-#include "lib/di/container.hpp"
-
 #include "lua/global/shared_object.hpp"

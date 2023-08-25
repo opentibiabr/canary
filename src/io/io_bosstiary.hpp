@@ -12,6 +12,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "lib/di/container.hpp"
 
 enum class BosstiaryRarity_t : uint8_t {
 	RARITY_BANE = 0,

@@ -20,9 +20,7 @@ public:
 	RSA(RSA const &) = delete;
 	void operator=(RSA const &) = delete;
 
-	static RSA &getInstance() {
-		return inject<RSA>();
-	}
+	static RSA &getInstance();
 
 	void start();
 

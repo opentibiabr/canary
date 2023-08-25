@@ -10,6 +10,7 @@
 #pragma once
 
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 #include "lua/scripts/luascript.hpp"
 #include "lua/scripts/scripts.hpp"
 

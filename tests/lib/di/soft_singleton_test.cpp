@@ -8,8 +8,8 @@
 */
 #include <boost/ut.hpp>
 #include "pch.hpp"
+#include "lib/di/container.hpp"
 #include "lib/di/soft_singleton.hpp"
-#include "lib/di/injector.hpp"
 #include "stubs/in_memory_logger.hpp"
 
 using namespace boost::ut;
@@ -17,14 +17,14 @@ using namespace boost::ut;
 suite<"lib"> softSingletonTest = [] {
 	test("SoftSingleton warns about multiple instances") = [] {
 		di::extension::injector<> injector{};
-		InMemoryLogger::install(injector);
+		DI::setTestContainer(&InMemoryLogger::install(injector));
 
-		auto &logger = injector.create<InMemoryLogger &>();
-		SoftSingleton softSingleton{logger, "Test"};
+		SoftSingleton softSingleton{"Test"};
 		SoftSingletonGuard guard{softSingleton};
 		SoftSingletonGuard guard2{softSingleton};
 		softSingleton.increment();
 
+		auto &logger = dynamic_cast<InMemoryLogger &>(injector.create<Logger &>());
 		expect(eq(2, logger.logCount()) >> fatal);
 		expect(
 			eq(std::string{"warning"}, logger.logs[0].level) and
@@ -37,8 +37,9 @@ suite<"lib"> softSingletonTest = [] {
 	};
 
 	test("SoftSingleton doesn't warn if instance was released") = [] {
-		InMemoryLogger logger{};
-		SoftSingleton softSingleton{logger, "Test"};
+		di::extension::injector<> injector{};
+		DI::setTestContainer(&InMemoryLogger::install(injector));
+		SoftSingleton softSingleton{"Test"};
 
 		[&softSingleton] { SoftSingletonGuard guard{softSingleton}; }();
 
@@ -52,6 +53,7 @@ suite<"lib"> softSingletonTest = [] {
 		// Decrement resets the counter;
 		softSingleton.increment();
 
+		auto &logger = dynamic_cast<InMemoryLogger &>(injector.create<Logger &>());
 		expect(eq(0, logger.logCount()));
 	};
 };

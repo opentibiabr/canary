@@ -132,7 +132,7 @@ namespace {
 		}
 		if (!imbueDmg) {
 			msg.addByte(0);
-			msg.addByte(CIPBIA_ELEMENTAL_UNDEFINED);
+			msg.addByte(CIPBIA_ELEMENTAL_AGONY);
 		}
 	}
 
@@ -3461,7 +3461,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 			msg.add<uint16_t>(it.maxHitChance);
 			msg.addByte(getCipbiaElement(it.combatType));
 			msg.addByte(0);
-			msg.addByte(CIPBIA_ELEMENTAL_UNDEFINED);
+			msg.addByte(CIPBIA_ELEMENTAL_AGONY);
 		} else if (it.weaponType == WEAPON_DISTANCE || it.weaponType == WEAPON_AMMO || it.weaponType == WEAPON_MISSILE) {
 			int32_t attackValue = weapon->getAttack();
 			if (it.weaponType == WEAPON_AMMO) {
@@ -3511,7 +3511,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 		msg.add<uint16_t>(maxDamage >> 1);
 		msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL);
 		msg.addByte(0);
-		msg.addByte(CIPBIA_ELEMENTAL_UNDEFINED);
+		msg.addByte(CIPBIA_ELEMENTAL_AGONY);
 	}
 
 	msg.add<uint16_t>(player->getArmor());

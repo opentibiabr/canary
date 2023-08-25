@@ -10,6 +10,8 @@
 #pragma once
 
 namespace pugi {
+	void logError(const std::string &str);
+
 	template <typename T>
 	// NOTE: std::clamp returns the minimum value if the value is less than the specified minimum value, the maximum value if the value is greater than the specified maximum value, or the value itself if it falls within the range
 	T cast(const pugi::char_t* str) {
@@ -36,13 +38,13 @@ namespace pugi {
 		// If the string could not be parsed as the specified type
 		if (errorCode == std::errc::invalid_argument) {
 			// Throw an exception indicating that the argument is invalid
-			g_logger().error("Invalid argument {}", str);
+			logError(fmt::format("Invalid argument {}", str));
 			throw std::invalid_argument("Invalid argument: " + std::string(str));
 		}
 		// If the parsed value is out of range for the specified type
 		else if (errorCode == std::errc::result_out_of_range) {
 			// Throw an exception indicating that the result is out of range
-			g_logger().error("Result out of range: {}", str);
+			logError(fmt::format("Result out of range: {}", str));
 			throw std::out_of_range("Result out of range: " + std::string(str));
 		}
 

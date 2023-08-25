@@ -9,6 +9,7 @@
 
 #include "pch.hpp"
 
+#include "lib/di/container.hpp"
 #include "security/rsa.hpp"
 
 RSA::RSA(Logger &logger) :
@@ -20,6 +21,10 @@ RSA::RSA(Logger &logger) :
 RSA::~RSA() {
 	mpz_clear(n);
 	mpz_clear(d);
+}
+
+RSA &RSA::getInstance() {
+	return inject<RSA>();
 }
 
 void RSA::start() {

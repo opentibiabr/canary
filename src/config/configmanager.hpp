@@ -10,6 +10,7 @@
 #pragma once
 
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 
 class ConfigManager {
 public:

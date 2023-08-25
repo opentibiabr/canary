@@ -9,6 +9,7 @@
 
 #include "pch.hpp"
 
+#include "lib/di/container.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/scheduler.hpp"

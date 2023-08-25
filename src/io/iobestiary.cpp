@@ -15,7 +15,7 @@
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 
-SoftSingleton IOBestiary::instanceTracker(g_logger(), "IOBestiary");
+SoftSingleton IOBestiary::instanceTracker("IOBestiary");
 
 bool IOBestiary::parseCharmCombat(const std::shared_ptr<Charm> charm, Player* player, Creature* target, int32_t realDamage, bool dueToPotion, bool checkArmor) {
 	if (!charm || !player || !target) {

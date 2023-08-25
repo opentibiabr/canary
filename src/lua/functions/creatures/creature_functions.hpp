@@ -80,6 +80,8 @@ public:
 		registerMethod(L, "Creature", "move", CreatureFunctions::luaCreatureMove);
 		registerMethod(L, "Creature", "getZoneType", CreatureFunctions::luaCreatureGetZoneType);
 		registerMethod(L, "Creature", "getZones", CreatureFunctions::luaCreatureGetZones);
+		registerMethod(L, "Creature", "setIcon", CreatureFunctions::luaCreatureSetIcon);
+		registerMethod(L, "Creature", "getIcon", CreatureFunctions::luaCreatureGetIcon);
 
 		CombatFunctions::init(L);
 		MonsterFunctions::init(L);
@@ -174,4 +176,7 @@ private:
 	static int luaCreatureGetZoneType(lua_State* L);
 
 	static int luaCreatureGetZones(lua_State* L);
+
+	static int luaCreatureSetIcon(lua_State* L);
+	static int luaCreatureGetIcon(lua_State* L);
 };

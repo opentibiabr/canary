@@ -362,6 +362,8 @@ void CanaryServer::loadModules() {
 	g_game().loadBoostedCreature();
 	g_ioBosstiary().loadBoostedBoss();
 	g_ioprey().InitializeTaskHuntOptions();
+	// Spawn monsters and npcs
+	g_game().map.spawnCreatures();
 }
 
 void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {

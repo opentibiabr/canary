@@ -259,6 +259,10 @@ public:
 		return inject<Monsters>();
 	}
 
+	void clear() {
+		monsters.clear();
+	}
+
 	std::shared_ptr<MonsterType> getMonsterType(const std::string &name);
 	std::shared_ptr<MonsterType> getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false) const;
 	bool tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> mType);

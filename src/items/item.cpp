@@ -3066,17 +3066,19 @@ uint32_t Item::getWorth() const {
 }
 
 uint32_t Item::getForgeSlivers() const {
-	if (getID() == ITEM_FORGE_SLIVER)
+	if (getID() == ITEM_FORGE_SLIVER) {
 		return getItemCount();
-	else
+	} else {
 		return 0;
+	}
 }
 
 uint32_t Item::getForgeCores() const {
-	if (getID() == ITEM_FORGE_CORE)
+	if (getID() == ITEM_FORGE_CORE) {
 		return getItemCount();
-	else
+	} else {
 		return 0;
+	}
 }
 
 LightInfo Item::getLightInfo() const {

@@ -232,8 +232,9 @@ void IOBestiary::addBestiaryKill(Player* player, const std::shared_ptr<MonsterTy
 		player->sendTextMessage(MESSAGE_STATUS, ss.str());
 		player->sendBestiaryEntryChanged(raceid);
 
-		if ((curCount + amount) >= mtype->info.bestiaryToUnlock)
+		if ((curCount + amount) >= mtype->info.bestiaryToUnlock) {
 			addCharmPoints(player, mtype->info.bestiaryCharmsPoints);
+		}
 	}
 
 	const auto &trackerUnorderedSet = player->getCyclopediaMonsterTrackerSet(false);

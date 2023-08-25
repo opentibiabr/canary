@@ -6,22 +6,19 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#ifndef CANARY_LOG_WITH_SPD_LOG_HPP
-#define CANARY_LOG_WITH_SPD_LOG_HPP
+#pragma once
 
 class LogWithSpdLog final : public Logger {
 public:
 	LogWithSpdLog();
 	~LogWithSpdLog() override = default;
 
-	static LogWithSpdLog &getInstance();
+	static Logger &getInstance();
 
 	void setLevel(const std::string &name) override;
-	[[nodiscard]] virtual std::string getLevel() const override;
+	[[nodiscard]] std::string getLevel() const override;
 
 	void log(std::string lvl, fmt::basic_string_view<char> msg) const override;
 };
 
 constexpr auto g_logger = LogWithSpdLog::getInstance;
-
-#endif // CANARY_LOG_WITH_SPD_LOG_HPP

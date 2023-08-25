@@ -357,10 +357,11 @@ public:
 		int32_t actualDamage = getPerfectShotDamage(range);
 		bool aboveZero = (actualDamage != 0);
 		actualDamage += damage;
-		if (actualDamage == 0 && aboveZero)
+		if (actualDamage == 0 && aboveZero) {
 			perfectShot.erase(range);
-		else
+		} else {
 			perfectShot[range] = actualDamage;
+		}
 	}
 
 	int32_t getSpecializedMagicLevel(CombatType_t combat, bool useCharges = false) const;
@@ -1081,7 +1082,7 @@ public:
 		}
 	}
 	void sendCreatureIcon(const Creature* creature) {
-		if (client) {
+		if (client && !client->oldProtocol) {
 			client->sendCreatureIcon(creature);
 		}
 	}
@@ -2367,19 +2368,21 @@ public:
 	}
 
 	void setSlotBossId(uint8_t slotId, uint32_t bossId) {
-		if (slotId == 1)
+		if (slotId == 1) {
 			bossIdSlotOne = bossId;
-		else
+		} else {
 			bossIdSlotTwo = bossId;
+		}
 		if (client) {
 			client->parseSendBosstiarySlots();
 		}
 	}
 	uint32_t getSlotBossId(uint8_t slotId) const {
-		if (slotId == 1)
+		if (slotId == 1) {
 			return bossIdSlotOne;
-		else
+		} else {
 			return bossIdSlotTwo;
+		}
 	}
 
 	void addRemoveTime() {
@@ -2428,7 +2431,6 @@ public:
 		return static_cast<uint16_t>(std::max<int32_t>(0, std::min<int32_t>(0xFFFF, points)));
 	}
 
-	void reloadHazardSystemIcon();
 	/*******************************************************************************/
 
 	// Concoction system

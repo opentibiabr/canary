@@ -206,8 +206,9 @@ uint16_t IOBosstiary::calculateLootBonus(uint32_t bossPoints) const {
 
 uint32_t IOBosstiary::calculateBossPoints(uint16_t lootBonus) const {
 	// Calculate Boss Points based on Bonus
-	if (lootBonus <= 25)
+	if (lootBonus <= 25) {
 		return 0;
+	}
 
 	if (lootBonus <= 50) {
 		return 10 * lootBonus - 250;
@@ -280,8 +281,9 @@ uint8_t IOBosstiary::getBossCurrentLevel(const Player* player, uint16_t bossId) 
 }
 
 uint32_t IOBosstiary::calculteRemoveBoss(uint8_t removeTimes) const {
-	if (removeTimes < 2)
+	if (removeTimes < 2) {
 		return 0;
+	}
 	return 300000 * removeTimes - 500000;
 }
 

@@ -40,7 +40,7 @@ local config = {
 		},
 		fromPosition = Position(32311, 32884, 1),
 		toPosition = Position(32318, 32904, 7),
-		mapName = "LibertyBay",
+		mapName = "Liberty Bay",
 		yasirPosition = Position(32314, 32895, 6)
 	}
 }
@@ -64,7 +64,7 @@ local yasir = GlobalEvent("yasir")
 function yasir.onStartup()
 	if yasirEnabled then
 		if math.random(100) <= yasirChance then
-			local randTown = config[3]
+			local randTown = config[math.random(#config)]
 			logger.info("[WorldChanges] Yasir: {}", randTown.mapName)
 			local message = string.format("Yasir is in %s today.", randTown.mapName) -- Declaring the message to send to webhook.
 			iterateArea(
@@ -101,7 +101,8 @@ function yasir.onStartup()
 				end
 			end
 
-			Game.loadMap(DATA_DIRECTORY.. '/world/world_changes/oriental_trader/' .. randTown.mapName .. '.otbm')
+			local mapName = string.removeAllSpaces(randTown.mapName):lower()
+			Game.loadMap(DATA_DIRECTORY.. '/world/world_changes/oriental_trader/' .. mapName .. '.otbm')
 			addEvent(spawnYasir, 60000, randTown.yasirPosition)
 			addEvent(yasirwebhook, 60000, message) -- Event with 1 minute delay to send webhook message after server starts.
 			setGlobalStorageValue(GlobalStorage.Yasir, 1)

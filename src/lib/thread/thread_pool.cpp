@@ -11,6 +11,10 @@
 #include "lib/thread/thread_pool.hpp"
 #include "utils/tools.hpp"
 
+#ifndef DEFAULT_NUMBER_OF_THREADS
+	#define DEFAULT_NUMBER_OF_THREADS 4
+#endif
+
 ThreadPool::ThreadPool(Logger &logger) :
 	logger(logger) {
 	start();
@@ -25,7 +29,7 @@ void ThreadPool::start() {
 	 * will make processing non-blocking in some way and that would allow
 	 * single core computers to process things concurrently, but not in parallel.
 	 */
-	int nThreads = std::max<int>(static_cast<int>(getNumberOfCores()), 4);
+	int nThreads = std::max<int>(static_cast<int>(getNumberOfCores()), DEFAULT_NUMBER_OF_THREADS);
 
 	for (std::size_t i = 0; i < nThreads; ++i) {
 		threads.emplace_back([this] { ioService.run(); });

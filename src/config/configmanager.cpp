@@ -185,6 +185,7 @@ bool ConfigManager::load() {
 	boolean[ONLY_PREMIUM_ACCOUNT] = getGlobalBoolean(L, "onlyPremiumAccount", false);
 	boolean[RATE_USE_STAGES] = getGlobalBoolean(L, "rateUseStages", false);
 	boolean[TOGGLE_IMBUEMENT_SHRINE_STORAGE] = getGlobalBoolean(L, "toggleImbuementShrineStorage", true);
+	boolean[TOGGLE_NON_AGGRESSIVE_FIGHT_ONLY] = getGlobalBoolean(L, "toggleNonAggressiveFightOnly", false);
 
 	boolean[TOGGLE_DOWNLOAD_MAP] = getGlobalBoolean(L, "toggleDownloadMap", false);
 	boolean[USE_ANY_DATAPACK_FOLDER] = getGlobalBoolean(L, "useAnyDatapackFolder", false);

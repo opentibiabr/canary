@@ -105,7 +105,7 @@ int HouseFunctions::luaHouseGetPrice(lua_State* L) {
 
 int HouseFunctions::luaHouseGetOwnerGuid(lua_State* L) {
 	// house:getOwnerGuid()
-	House* house = getUserdata<House>(L, 1);
+	const House* house = getUserdata<House>(L, 1);
 	if (house) {
 		lua_pushnumber(L, house->getOwner());
 	} else {

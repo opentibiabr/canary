@@ -517,7 +517,19 @@ function Player:calculateLootFactor(monster)
 	}
 end
 
-function Player.setFiendish(self)
+function Player:setExhaustion(key, seconds)
+	return self:setStorageValue(key, os.time() + seconds)
+end
+
+function Player:getExhaustion(key)
+	return math.max(self:getStorageValue(key) - os.time(), 0)
+end
+
+function Player:hasExhaustion(key)
+	return self:getExhaustion(key) > 0 and true or false
+end
+
+function Player:setFiendish()
 	local position = self:getPosition()
 	position:getNextPosition(self:getDirection())
 

@@ -566,6 +566,8 @@ void LuaEnums::initConstMeEnums(lua_State* L) {
 	registerEnum(L, CONST_ME_FATAL);
 	registerEnum(L, CONST_ME_DODGE);
 	registerEnum(L, CONST_ME_HOURGLASS);
+	registerEnum(L, CONST_ME_DAZZLING);
+	registerEnum(L, CONST_ME_SPARKLING);
 	registerEnum(L, CONST_ME_FERUMBRAS_1);
 	registerEnum(L, CONST_ME_GAZHARAGOTH);
 	registerEnum(L, CONST_ME_MAD_MAGE);

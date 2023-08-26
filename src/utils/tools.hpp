@@ -176,3 +176,5 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 			return CIPBIA_ELEMENTAL_UNDEFINED;
 	}
 }
+
+std::string formatNumber(uint64_t number);

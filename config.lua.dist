@@ -253,8 +253,11 @@ deathLosePercent = -1
 -- NOTE: set housePriceEachSQM to -1 to disable the ingame buy house functionality
 -- NOTE: set houseBuyLevel to 0 to disable the min level purchase functionality.
 -- Periods: daily/weekly/monthly/yearly/never
+-- Base: sqm,rent,sqm+rent
+housePriceRentMultiplier = 0.0
 housePriceEachSQM = 1000
 houseRentPeriod = "never"
+houseRentRate = 1.0
 houseOwnedByAccount = false
 houseBuyLevel = 100
 

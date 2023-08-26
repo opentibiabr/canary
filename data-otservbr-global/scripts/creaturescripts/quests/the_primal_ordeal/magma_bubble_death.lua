@@ -10,9 +10,6 @@ function magmaBubbleDeath.onDeath(creature, corpse, killer, mostDamage, unjustif
 		local player = Player(key)
 		if player and player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Bosses.MagmaBubbleKilled) < 1 then
 			player:setStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Bosses.MagmaBubbleKilled, 1) -- Access to The primal menace boss fight
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Congratulations you received the Fire-Fighter Outfit.")
-			player:addOutfit(1568, 0)
-			player:addOutfit(1569, 0)
 		end
 	end
 end

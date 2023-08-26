@@ -584,7 +584,7 @@ void Player::updateInventoryImbuement() {
 	bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
 	// Check if the player is in fight mode
 	bool isInFightMode = hasCondition(CONDITION_INFIGHT);
-	bool nonAggressiveFightOnly = g_configManager().getBoolean(TOGGLE_NON_AGGRESSIVE_FIGHT_ONLY);
+	bool nonAggressiveFightOnly = g_configManager().getBoolean(TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY);
 
 	// Iterate through all items in the player's inventory
 	for (auto item : getAllInventoryItems()) {

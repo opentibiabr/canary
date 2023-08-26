@@ -89,7 +89,6 @@ function primalKill.onKill(_player, creature)
 		return true
 	end
 
-
 	local player, points = hazard:getHazardPlayerAndPoints(monster:getDamageMap())
 	if points < 1 then
 		return true

@@ -74,10 +74,12 @@ Assertions are done using the `expect()` function:
 ```cpp
 suite<"foo"> test_foo = [] {
     "test 1"_test = [] {
-        expect(1_i == 1_i);
+        expect(eq(1_i, 1_i));
     };
 };
 ```
+
+It's always preferable to use comparison operators (eq, neq, etc.), as they provide better error messages.
 
 #### Testing against injected dependencies
 

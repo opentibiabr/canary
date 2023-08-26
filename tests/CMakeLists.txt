@@ -4,6 +4,7 @@ set(CMAKE_CXX_FLAGS "-pipe -O0 -g -std=c++11 -lstdc++ -lpthread -ldl")
 
 add_executable(canary_ut main.cpp)
 
+add_subdirectory(account)
 add_subdirectory(lib)
 add_subdirectory(security)
 add_subdirectory(utils)

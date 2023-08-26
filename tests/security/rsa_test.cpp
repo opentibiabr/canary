@@ -6,9 +6,11 @@
 * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
 * Website: https://docs.opentibiabr.com/
 */
-#include <boost/ut.hpp>
 #include "pch.hpp"
-#include "stubs/in_memory_logger.hpp"
+
+#include <boost/ut.hpp>
+
+#include "lib/logging/in_memory_logger.hpp"
 #include "security/rsa.hpp"
 
 using namespace boost::ut;

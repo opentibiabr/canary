@@ -201,7 +201,7 @@ bool Raid::loadFromXml(const std::string &filename) {
 	}
 
 	// sort by delay time
-	std::sort(raidEvents.begin(), raidEvents.end(), [](const std::shared_ptr<RaidEvent> &lhs, const std::shared_ptr<RaidEvent> &rhs) {
+	std::sort(raidEvents.begin(), raidEvents.end(), [](const std::shared_ptr<RaidEvent> lhs, const std::shared_ptr<RaidEvent> rhs) {
 		return lhs->getDelay() < rhs->getDelay();
 	});
 
@@ -220,7 +220,7 @@ void Raid::startRaid() {
 	}
 }
 
-void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> &raidEvent) {
+void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> raidEvent) {
 	if (raidEvent->executeEvent()) {
 		nextEvent++;
 		const auto &newRaidEvent = getNextRaidEvent();

@@ -125,7 +125,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				throw IOMapException("Could not read tile type node.");
 			}
 
-			const auto &tile = std::make_shared<BasicTile>();
+			const auto tile = std::make_shared<BasicTile>();
 
 			const uint8_t tileCoordsX = stream.getU8();
 			const uint8_t tileCoordsY = stream.getU8();
@@ -165,7 +165,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 						tileIsStatic = true;
 					}
 
-					const auto &item = std::make_shared<BasicItem>();
+					const auto item = std::make_shared<BasicItem>();
 					item->id = id;
 
 					if (tile->isHouse() && iType.moveable) {
@@ -194,7 +194,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 					tileIsStatic = true;
 				}
 
-				const auto &item = std::make_shared<BasicItem>();
+				const auto item = std::make_shared<BasicItem>();
 				item->id = id;
 
 				if (!item->unserializeItemNode(stream, x, y, z)) {

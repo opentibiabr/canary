@@ -15,13 +15,12 @@ using namespace boost::ut;
 
 suite<"security"> rsaTest = [] {
 	test("RSA::start logs error for missing .pem file") = [] {
-		di::extension::injector<> injector{di::bind<Logger>.to<InMemoryLogger>().in(di::singleton)};
-		InMemoryLogger::install(injector);
-		DI::setTestContainer(&injector);
+		di::extension::injector<> injector{};
+		DI::setTestContainer(&InMemoryLogger::install(injector));
 
 		DI::create<RSA &>().start();
 
-		auto &logger = dynamic_cast<InMemoryLogger &>(DI::get<Logger &>());
+		auto &logger = dynamic_cast<InMemoryLogger &>(injector.create<Logger &>());
 
         expect(eq(1, logger.logs.size()) >> fatal);
 		expect(

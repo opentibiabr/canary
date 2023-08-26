@@ -9,8 +9,9 @@
 
 #pragma once
 
-#include "lua/global/baseevents.hpp"
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
+#include "lua/global/baseevents.hpp"
 #include "lua/scripts/luascript.hpp"
 #include "server/network/message/networkmessage.hpp"
 

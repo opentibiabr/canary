@@ -9,6 +9,7 @@
 
 #include "pch.hpp"
 
+#include "lib/di/container.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/task.hpp"
@@ -24,7 +25,7 @@ void Dispatcher::addTask(std::function<void(void)> f, uint32_t expiresAfterMs /*
 	addTask(std::make_shared<Task>(std::move(f)), expiresAfterMs);
 }
 
-void Dispatcher::addTask(const std::shared_ptr<Task> &task, uint32_t expiresAfterMs /* = 0*/) {
+void Dispatcher::addTask(const std::shared_ptr<Task> task, uint32_t expiresAfterMs /* = 0*/) {
 	if (expiresAfterMs == 0) {
 		threadPool.addLoad([this, task]() {
 			std::lock_guard lockClass(threadSafetyMutex);

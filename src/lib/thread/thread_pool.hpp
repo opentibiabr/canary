@@ -8,6 +8,8 @@
  */
 #pragma once
 
+#include "lib/logging/logger.hpp"
+
 class ThreadPool {
 public:
 	explicit ThreadPool(Logger &logger);

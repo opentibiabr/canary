@@ -24,14 +24,14 @@ int32_t Monster::despawnRadius;
 uint32_t Monster::monsterAutoID = 0x50000001;
 
 Monster* Monster::createMonster(const std::string &name) {
-	const auto &mType = g_monsters().getMonsterType(name);
+	const auto mType = g_monsters().getMonsterType(name);
 	if (!mType) {
 		return nullptr;
 	}
 	return new Monster(mType);
 }
 
-Monster::Monster(const std::shared_ptr<MonsterType> &mType) :
+Monster::Monster(const std::shared_ptr<MonsterType> mType) :
 	Creature(),
 	strDescription(asLowerCaseString(mType->nameDescription)),
 	mType(mType) {
@@ -2120,21 +2120,14 @@ void Monster::configureForgeSystem() {
 		return;
 	}
 
-	// Avoid double forge
 	if (monsterForgeClassification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
-		// Set stack
 		setForgeStack(15);
-		// Set icon
-		setMonsterIcon(15, 5);
-		// Update
+		setIcon(CreatureIcon(CreatureIconModifications_t::Fiendish, 0 /* don't show stacks on fiends */));
 		g_game().updateCreatureIcon(this);
 	} else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER) {
-		// Set stack
 		auto stack = static_cast<uint16_t>(normal_random(1, 5));
 		setForgeStack(stack);
-		// Set icon
-		setMonsterIcon(stack, 4);
-		// Update
+		setIcon(CreatureIcon(CreatureIconModifications_t::Influenced, stack));
 		g_game().updateCreatureIcon(this);
 	}
 
@@ -2160,16 +2153,9 @@ void Monster::clearFiendishStatus() {
 	health = mType->info.health * mType->getHealthMultiplier();
 	healthMax = mType->info.healthMax * mType->getHealthMultiplier();
 
-	// Set icon
-	setMonsterIcon(0, CREATUREICON_NONE);
+	clearIcon();
 	g_game().updateCreatureIcon(this);
-
 	g_game().sendUpdateCreature(this);
-}
-
-void Monster::setMonsterIcon(uint16_t iconcount, uint16_t iconnumber) {
-	iconCount = iconcount;
-	iconNumber = iconnumber;
 }
 
 bool Monster::canDropLoot() const {

@@ -30,7 +30,7 @@ public:
 	static Scheduler &getInstance();
 
 	uint64_t addEvent(uint32_t delay, std::function<void(void)> f);
-	uint64_t addEvent(const std::shared_ptr<Task> &task);
+	uint64_t addEvent(const std::shared_ptr<Task> task);
 	void stopEvent(uint64_t eventId);
 
 private:

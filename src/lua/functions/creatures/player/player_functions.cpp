@@ -166,7 +166,7 @@ int PlayerFunctions::luaPlayerUnlockAllCharmRunes(lua_State* L) {
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
 		for (int8_t i = CHARM_WOUND; i <= CHARM_LAST; i++) {
-			const auto &charm = g_iobestiary().getBestiaryCharm(static_cast<charmRune_t>(i));
+			const auto charm = g_iobestiary().getBestiaryCharm(static_cast<charmRune_t>(i));
 			if (charm) {
 				int32_t value = g_iobestiary().bitToggle(player->getUnlockedRunesBit(), charm, true);
 				player->setUnlockedRunesBit(value);
@@ -286,7 +286,7 @@ int PlayerFunctions::luaPlayerAddBestiaryKill(lua_State* L) {
 	// player:addBestiaryKill(name[, amount = 1])
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		const auto &mtype = g_monsters().getMonsterType(getString(L, 2));
+		const auto mtype = g_monsters().getMonsterType(getString(L, 2));
 		if (mtype) {
 			g_iobestiary().addBestiaryKill(player, mtype, getNumber<uint32_t>(L, 3, 1));
 			pushBoolean(L, true);
@@ -334,7 +334,7 @@ int PlayerFunctions::luaPlayergetCharmMonsterType(lua_State* L) {
 		charmRune_t charmid = getNumber<charmRune_t>(L, 2);
 		uint16_t raceid = player->parseRacebyCharm(charmid, false, 0);
 		if (raceid > 0) {
-			const auto &mtype = g_monsters().getMonsterTypeByRaceId(raceid);
+			const auto mtype = g_monsters().getMonsterTypeByRaceId(raceid);
 			if (mtype) {
 				pushUserdata<MonsterType>(L, mtype);
 				setMetatable(L, -1, "MonsterType");
@@ -1414,7 +1414,7 @@ int PlayerFunctions::luaPlayerGetGuild(lua_State* L) {
 		return 1;
 	}
 
-	const auto &guild = player->getGuild();
+	const auto guild = player->getGuild();
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;
@@ -1433,7 +1433,7 @@ int PlayerFunctions::luaPlayerSetGuild(lua_State* L) {
 		return 1;
 	}
 
-	const auto &guild = getUserdataShared<Guild>(L, 2);
+	const auto guild = getUserdataShared<Guild>(L, 2);
 	player->setGuild(guild);
 
 	pushBoolean(L, true);
@@ -2221,7 +2221,7 @@ int PlayerFunctions::luaPlayerAddMount(lua_State* L) {
 	if (isNumber(L, 2)) {
 		mountId = getNumber<uint8_t>(L, 2);
 	} else {
-		const std::shared_ptr<Mount> &mount = g_game().mounts.getMountByName(getString(L, 2));
+		const std::shared_ptr<Mount> mount = g_game().mounts.getMountByName(getString(L, 2));
 		if (!mount) {
 			lua_pushnil(L);
 			return 1;
@@ -2244,7 +2244,7 @@ int PlayerFunctions::luaPlayerRemoveMount(lua_State* L) {
 	if (isNumber(L, 2)) {
 		mountId = getNumber<uint8_t>(L, 2);
 	} else {
-		const std::shared_ptr<Mount> &mount = g_game().mounts.getMountByName(getString(L, 2));
+		const std::shared_ptr<Mount> mount = g_game().mounts.getMountByName(getString(L, 2));
 		if (!mount) {
 			lua_pushnil(L);
 			return 1;
@@ -2581,7 +2581,7 @@ int PlayerFunctions::luaPlayerCanLearnSpell(lua_State* L) {
 	}
 
 	const std::string &spellName = getString(L, 2);
-	const auto &spell = g_spells().getInstantSpellByName(spellName);
+	const auto spell = g_spells().getInstantSpellByName(spellName);
 	if (!spell) {
 		reportErrorFunc("Spell \"" + spellName + "\" not found");
 		pushBoolean(L, false);
@@ -2944,7 +2944,7 @@ int PlayerFunctions::luaPlayerGetInstantSpells(lua_State* L) {
 int PlayerFunctions::luaPlayerCanCast(lua_State* L) {
 	// player:canCast(spell)
 	Player* player = getUserdata<Player>(L, 1);
-	const auto &spell = getUserdataShared<InstantSpell>(L, 2);
+	const auto spell = getUserdataShared<InstantSpell>(L, 2);
 	if (player && spell) {
 		pushBoolean(L, spell->canCast(player));
 	} else {
@@ -3405,7 +3405,7 @@ int PlayerFunctions::luaPlayerAddBosstiaryKill(lua_State* L) {
 	// player:addBosstiaryKill(name[, amount = 1])
 	if (Player* player = getUserdata<Player>(L, 1);
 		player) {
-		const auto &mtype = g_monsters().getMonsterType(getString(L, 2));
+		const auto mtype = g_monsters().getMonsterType(getString(L, 2));
 		if (mtype) {
 			g_ioBosstiary().addBosstiaryKill(player, mtype, getNumber<uint32_t>(L, 3, 1));
 			pushBoolean(L, true);

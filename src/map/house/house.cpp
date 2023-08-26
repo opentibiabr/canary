@@ -471,7 +471,7 @@ namespace {
 			return nullptr;
 		}
 
-		const auto &guild = g_game().getGuild(guildId);
+		const auto guild = g_game().getGuild(guildId);
 		if (guild) {
 			return guild;
 		}
@@ -482,16 +482,16 @@ namespace {
 }
 
 void AccessList::addGuild(const std::string &name) {
-	const auto &guild = getGuildByName(name);
+	const auto guild = getGuildByName(name);
 	if (guild) {
-		for (const auto &rank : guild->getRanks()) {
+		for (const auto rank : guild->getRanks()) {
 			guildRankList.insert(rank->id);
 		}
 	}
 }
 
 void AccessList::addGuildRank(const std::string &name, const std::string &guildName) {
-	const auto &guild = getGuildByName(guildName);
+	const auto guild = getGuildByName(guildName);
 	if (guild) {
 		const GuildRank_ptr rank = guild->getRankByName(name);
 		if (rank) {

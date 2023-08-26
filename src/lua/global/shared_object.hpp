@@ -33,12 +33,12 @@ public:
 	}
 
 	template <typename TargetType, typename SourceType>
-	std::shared_ptr<TargetType> static_self_cast(std::shared_ptr<SourceType> &source) {
+	std::shared_ptr<TargetType> static_self_cast(std::shared_ptr<SourceType> source) {
 		return std::static_pointer_cast<TargetType>(source);
 	}
 
 	template <typename TargetType, typename SourceType>
-	std::shared_ptr<TargetType> dynamic_self_cast(std::shared_ptr<SourceType> &source) {
+	std::shared_ptr<TargetType> dynamic_self_cast(std::shared_ptr<SourceType> source) {
 		return std::dynamic_pointer_cast<TargetType>(source);
 	}
 };

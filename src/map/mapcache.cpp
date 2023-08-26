@@ -213,7 +213,7 @@ bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, 
 
 		const uint16_t streamId = stream.getU16();
 
-		const auto &item = std::make_shared<BasicItem>();
+		const auto item = std::make_shared<BasicItem>();
 		item->id = streamId;
 
 		if (!item->unserializeItemNode(stream, x, y, z)) {

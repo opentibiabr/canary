@@ -28,7 +28,7 @@ EventsCallbacks &EventsCallbacks::getInstance() {
 	return inject<EventsCallbacks>();
 }
 
-void EventsCallbacks::addCallback(const std::shared_ptr<EventCallback> &callback) {
+void EventsCallbacks::addCallback(const std::shared_ptr<EventCallback> callback) {
 	m_callbacks.push_back(callback);
 }
 

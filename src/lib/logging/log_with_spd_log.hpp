@@ -8,15 +8,17 @@
  */
 #pragma once
 
+#include "lib/logging/logger.hpp"
+
 class LogWithSpdLog final : public Logger {
 public:
 	LogWithSpdLog();
 	~LogWithSpdLog() override = default;
 
-	static LogWithSpdLog &getInstance();
+	static Logger &getInstance();
 
 	void setLevel(const std::string &name) override;
-	[[nodiscard]] virtual std::string getLevel() const override;
+	[[nodiscard]] std::string getLevel() const override;
 
 	void log(std::string lvl, fmt::basic_string_view<char> msg) const override;
 };

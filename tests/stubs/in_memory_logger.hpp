@@ -12,7 +12,9 @@
 #include <string>
 #include <utility>
 
-#include "lib/logging/logger.hpp"
+#include "lib/di/container.hpp"
+
+namespace di = boost::di;
 
 class InMemoryLogger : public Logger {
 	private:
@@ -24,8 +26,9 @@ class InMemoryLogger : public Logger {
 	public:
 		mutable std::vector<LogEntry> logs;
 
-		static void install(di::extension::injector<> &injector) {
+		static di::extension::injector<> &install(di::extension::injector<> &injector) {
 			injector.install(di::bind<Logger>.to<InMemoryLogger>().in(di::singleton));
+			return injector;
         }
 
 		bool hasLogEntry(const std::string& lvl, const std::string& expectedMsg) const {

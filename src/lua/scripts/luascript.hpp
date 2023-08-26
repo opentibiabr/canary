@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "lib/logging/log_with_spd_log.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/scripts/script_environment.hpp"
 

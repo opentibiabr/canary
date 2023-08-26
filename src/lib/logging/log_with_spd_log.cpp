@@ -9,6 +9,7 @@
 #include <spdlog/spdlog.h>
 
 #include "pch.hpp"
+#include "lib/di/container.hpp"
 
 LogWithSpdLog::LogWithSpdLog() {
 	setLevel("debug");
@@ -19,8 +20,8 @@ LogWithSpdLog::LogWithSpdLog() {
 #endif
 }
 
-LogWithSpdLog &LogWithSpdLog::getInstance() {
-	return inject<LogWithSpdLog>();
+Logger &LogWithSpdLog::getInstance() {
+	return inject<Logger>();
 }
 
 void LogWithSpdLog::setLevel(const std::string &name) {

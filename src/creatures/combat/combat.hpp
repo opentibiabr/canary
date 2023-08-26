@@ -366,7 +366,7 @@ private:
 	 * @param damage The combat damage.
 	 * @return The calculated level formula.
 	 */
-	int32_t getLevelFormula(const Player* player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const;
+	int32_t getLevelFormula(const Player* player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const;
 	CombatDamage getCombatDamage(Creature* creature, Creature* target) const;
 
 	bool doCombatChain(Creature* caster, Creature* target, bool aggressive) const;

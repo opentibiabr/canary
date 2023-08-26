@@ -37654,6 +37654,7 @@
 		<attribute key="showduration" value="1"/>
 		<attribute key="maxhitchance" value="100"/>
 		<attribute key="duration" value="3600"/>
+		<attribute key="attack" value="78"/>
 		<attribute key="weight" value="90"/>
 	</item>
 	<item id="25759" article="a" name="royal star">

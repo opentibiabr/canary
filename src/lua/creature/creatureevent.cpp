@@ -19,7 +19,7 @@ void CreatureEvents::clear() {
 	}
 }
 
-bool CreatureEvents::registerLuaEvent(const std::shared_ptr<CreatureEvent> &creatureEvent) {
+bool CreatureEvents::registerLuaEvent(const std::shared_ptr<CreatureEvent> creatureEvent) {
 	if (creatureEvent->getEventType() == CREATURE_EVENT_NONE) {
 		g_logger().error(
 			"[{}] - Trying to register event without type for script: {}",
@@ -29,7 +29,7 @@ bool CreatureEvents::registerLuaEvent(const std::shared_ptr<CreatureEvent> &crea
 		return false;
 	}
 
-	const std::shared_ptr<CreatureEvent> &oldEvent = getEventByName(creatureEvent->getName(), false);
+	const std::shared_ptr<CreatureEvent> oldEvent = getEventByName(creatureEvent->getName(), false);
 	if (oldEvent) {
 		// if there was an event with the same that is not loaded
 		//(happens when realoading), it is reused
@@ -157,7 +157,7 @@ std::string CreatureEvent::getScriptTypeName() const {
 	}
 }
 
-void CreatureEvent::copyEvent(const std::shared_ptr<CreatureEvent> &creatureEvent) {
+void CreatureEvent::copyEvent(const std::shared_ptr<CreatureEvent> creatureEvent) {
 	setScriptId(creatureEvent->getScriptId());
 	setScriptInterface(creatureEvent->getScriptInterface());
 	setLoadedCallback(creatureEvent->isLoadedCallback());

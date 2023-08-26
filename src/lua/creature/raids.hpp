@@ -56,7 +56,7 @@ public:
 	std::shared_ptr<Raid> getRunning() {
 		return running;
 	}
-	void setRunning(const std::shared_ptr<Raid> &newRunning) {
+	void setRunning(const std::shared_ptr<Raid> newRunning) {
 		running = newRunning;
 	}
 
@@ -100,7 +100,7 @@ public:
 
 	void startRaid();
 
-	void executeRaidEvent(const std::shared_ptr<RaidEvent> &raidEvent);
+	void executeRaidEvent(const std::shared_ptr<RaidEvent> raidEvent);
 	void resetRaid();
 
 	std::shared_ptr<RaidEvent> getNextRaidEvent();

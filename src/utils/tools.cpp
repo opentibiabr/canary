@@ -703,6 +703,8 @@ MagicEffectNames magicEffectNames = {
 	{ "fatal", CONST_ME_FATAL },
 	{ "dodge", CONST_ME_DODGE },
 	{ "hourglass", CONST_ME_HOURGLASS },
+	{ "dazzling", CONST_ME_DAZZLING },
+	{ "sparkling", CONST_ME_SPARKLING },
 	{ "ferumbras1", CONST_ME_FERUMBRAS_1 },
 	{ "gazharagoth", CONST_ME_GAZHARAGOTH },
 	{ "madmage", CONST_ME_MAD_MAGE },

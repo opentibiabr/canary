@@ -124,7 +124,9 @@ void House::updateDoorDescription() const {
 	if (housePrice != -1) {
 		ss << " It costs " << formatNumber(getPrice()) << " gold coins.";
 		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
-		ss << " The rent cost is " << formatNumber(getRent()) << " gold coins and it is billed " << strRentPeriod << ".";
+		if (strRentPeriod != "never") {
+			ss << " The rent cost is " << formatNumber(getRent()) << " gold coins and it is billed " << strRentPeriod << ".";
+		}
 	}
 
 	for (const auto &it : doorList) {

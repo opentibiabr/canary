@@ -1,5 +1,7 @@
-#include <boost/ut.hpp>
 #include "pch.hpp"
+
+#include <boost/ut.hpp>
+
 #include "utils/tools.hpp"
 
 using namespace boost::ut;

@@ -17,7 +17,7 @@ namespace di = boost::di;
 class DI final {
 private:
 	inline static di::extension::injector<>* testContainer;
-	const inline static auto defaultInjector = di::make_injector(
+	const inline static auto defaultContainer = di::make_injector(
 		di::bind<Logger>().to<LogWithSpdLog>().in(di::singleton)
 	);
 
@@ -33,7 +33,7 @@ public:
 	 */
 	template <class T>
 	inline static T create() {
-		return testContainer ? testContainer->create<T>() : defaultInjector.create<T>();
+		return testContainer ? testContainer->create<T>() : defaultContainer.create<T>();
 	}
 
 	/**

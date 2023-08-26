@@ -1,5 +1,5 @@
 local hazard = Hazard.new({
-	name = "hazard:gnomprona-gardens",
+	name = "hazard.gnomprona-gardens",
 	from = Position(33502, 32740,13),
 	to = Position(33796, 32996, 15),
 	maxLevel = 12,
@@ -64,6 +64,16 @@ local spawnFungosaurus = function(position)
 	end
 end
 
+-- Used by the primal menace
+function createPrimalPod(position)
+	local primalPod = Game.createItem(ITEM_PRIMAL_POD, 1, position)
+	if primalPod then
+		primalPod:setCustomAttribute("HazardSystem_PodTimer", os.time() * 1000)
+		local podPos = primalPod:getPosition()
+		addEvent(spawnFungosaurus, configManager.getNumber(configKeys.HAZARD_PODS_TIME_TO_SPAWN), podPos)
+	end
+end
+
 local primalKill = CreatureEvent("PrimalHazardKill")
 function primalKill.onKill(_player, creature)
 	if not configManager.getBoolean(configKeys.TOGGLE_HAZARDSYSTEM) then
@@ -74,55 +84,29 @@ function primalKill.onKill(_player, creature)
 	if not creature or not monster or not monster:hazard() or not hazard:isInZone(monster:getPosition()) then
 		return true
 	end
-
-	local player = nil
-	local points = -1
-
-	for key, value in pairs(monster:getDamageMap()) do
-		local killer = Player(key)
-		if killer then
-			local killerPoints = killer:getHazardSystemPoints()
-			if points > killerPoints or points == -1 then
-				player = killer
-				points = killerPoints
-			end
-		end
-	end
-	for key, value in pairs(monster:getDamageMap()) do
-		local killer = Player(key)
-		if killer then
-			local killerPoints = killer:getHazardSystemPoints()
-			if monster:getName():lower() == "the primal menace" and killerPoints == points then
-				hazard:levelUp(killer)
-			end
-		end
-	end
-
 	-- don't spawn pods or plunder if the monster is a reward boss
 	if monster:getType():isRewardBoss() then
 		return true
 	end
 
+	local player, points = hazard:getHazardPlayerAndPoints(monster:getDamageMap())
 	if points < 1 then
 		return true
 	end
 
+	-- Pod
 	local chanceTo = math.random(1, 10000)
 	if chanceTo <= (points * configManager.getNumber(configKeys.HAZARD_PODS_DROP_MULTIPLIER)) then
-		local closesestPosition = player:getClosestFreePosition(monster:getPosition(), 4, true)
-		local primalPod = Game.createItem(ITEM_PRIMAL_POD, 1, closesestPosition.x == 0 and monster:getPosition() or closesestPosition)
-		if primalPod then
-			primalPod:setCustomAttribute("HazardSystem_PodTimer", os.time() * 1000)
-			local podPos = primalPod:getPosition()
-			addEvent(spawnFungosaurus, configManager.getNumber(configKeys.HAZARD_PODS_TIME_TO_SPAWN), podPos)
-		end
+		local closestFreePosition = player:getClosestFreePosition(monster:getPosition(), 4, true)
+		createPrimalPod(closestFreePosition)
 		return true
 	end
 
+	-- Plunder patriarch
 	chanceTo = math.random(1, 10000)
 	if chanceTo <= (points * configManager.getNumber(configKeys.HAZARD_SPAWN_PLUNDER_MULTIPLIER)) then
-		local closesestPosition = player:getClosestFreePosition(monster:getPosition(), 4, true)
-		local monster = Game.createMonster("Plunder Patriarch", closesestPosition.x == 0 and monster:getPosition() or closesestPosition, false, true)
+		local closestFreePosition = player:getClosestFreePosition(monster:getPosition(), 4, true)
+		local monster = Game.createMonster("Plunder Patriarch", closestFreePosition.x == 0 and monster:getPosition() or closestFreePosition, false, true)
 		if monster then
 			monster:say("The Plunder Patriarch rises from the ashes.")
 		end

@@ -555,14 +555,14 @@ function Player:calculateLootFactor(monster)
 	}
 end
 
-function Player.setExhaustion(self, key, seconds)
+function Player:setExhaustion(key, seconds)
 	return self:setStorageValue(key, os.time() + seconds)
 end
 
-function Player.getExhaustion(self, key)
+function Player:getExhaustion(key)
 	return math.max(self:getStorageValue(key) - os.time(), 0)
 end
 
-function Player.hasExhaustion(self, key)
+function Player:hasExhaustion(key)
 	return self:getExhaustion(key) > 0 and true or false
 end

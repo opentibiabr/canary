@@ -15,47 +15,35 @@
 
 namespace account {
 	bool AccountRepositoryDB::loadByID(const uint32_t &id, AccountInfo &acc) {
-		auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday` FROM `accounts` WHERE `id` = {}", id);
+		auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `id` = {}", id);
 		return load(query, acc);
 	};
 
 	bool AccountRepositoryDB::loadByEmail(const std::string &email, AccountInfo &acc) {
-		auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday` FROM `accounts` WHERE `email` = {}", db.escapeString(email));
+		auto query = fmt::format("SELECT `id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, 0 AS `expires` FROM `accounts` WHERE `email` = {}", db.escapeString(email));
 		return load(query, acc);
 	};
 
-	bool AccountRepositoryDB::authenticateFromSession(const std::string &sessionId) {
-		auto query = fmt::format("SELECT `account_id`, `expires` FROM `account_sessions` WHERE `id` = ", db.escapeString(transformToSHA1(sessionId)));
-		auto result = db.storeQuery(query);
-
-		if (!result) {
-			logger.error("Failed to validate session!");
-			return false;
-		}
-
-		if (result->getNumber<uint64_t>("expires") < getTimeNow()) {
-			logger.error("Session expired!");
-			return false;
-		}
-
-		auto accountId = result->getNumber<uint32_t>("account_id");
-
-		AccountInfo info;
-		if (!loadByID(accountId, info)) {
-			logger.error("Session found but id {} doesn't match any account!", accountId);
-			return false;
-		}
-
-		return true;
+	bool AccountRepositoryDB::loadBySession(const std::string &sessionKey, AccountInfo &acc) {
+		auto query = fmt::format(
+			"SELECT `accounts`.`id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, `account_sessions`.`expires` "
+			"FROM `accounts` "
+			"INNER JOIN `account_sessions` ON `account_sessions`.`account_id` = `accounts`.`id` "
+			"WHERE `account_sessions`.`id` = {}",
+			db.escapeString(transformToSHA1(sessionKey))
+		);
+		return load(query, acc);
 	};
 
 	bool AccountRepositoryDB::save(const AccountInfo &accInfo) {
 		bool successful = db.executeQuery(
 			fmt::format(
-				"UPDATE `accounts` SET `type` = {}, `premdays` = {}, `lastday` = {} WHERE `id` = {}",
+				"UPDATE `accounts` SET `type` = {}, `premdays` = {}, `lastday` = {}, `creation` = {}, `premdays_purchased` = {} WHERE `id` = {}",
 				static_cast<uint8_t>(accInfo.accountType),
 				accInfo.premiumRemainingDays,
 				accInfo.premiumLastDay,
+				accInfo.creationTime,
+				accInfo.premiumDaysPurchased,
 				accInfo.id
 			)
 		);
@@ -118,7 +106,7 @@ namespace account {
 	) {
 		bool successful = db.executeQuery(
 			fmt::format(
-				"INSERT INTO `coins_transactions` (`account_id`, `transaction_type`, `coin_type`, `coins`, `description`) VALUES ({}, {}, {}, {}, {})",
+				"INSERT INTO `coins_transactions` (`account_id`, `type`, `coin_type`, `amount`, `description`) VALUES ({}, {}, {}, {}, {})",
 				id,
 				static_cast<uint16_t>(type),
 				static_cast<uint8_t>(coinType),
@@ -129,7 +117,7 @@ namespace account {
 
 		if (!successful) {
 			logger.error(
-				"Error registering coin transaction! account_id:[{}], transaction_type:[{}], coin_type:[{}], coins:[{}], description:[{}]",
+				"Error registering coin transaction! account_id:[{}], type:[{}], coin_type:[{}], coins:[{}], description:[{}]",
 				id,
 				static_cast<uint16_t>(type),
 				static_cast<uint8_t>(coinType),
@@ -171,10 +159,31 @@ namespace account {
 
 		acc.id = result->getNumber<uint32_t>("id");
 		acc.accountType = static_cast<AccountType>(result->getNumber<int32_t>("type"));
-		acc.premiumRemainingDays = result->getNumber<uint16_t>("premdays");
+		acc.premiumRemainingDays = result->getNumber<uint32_t>("premdays");
 		acc.premiumLastDay = result->getNumber<time_t>("lastday");
+		acc.sessionExpires = result->getNumber<time_t>("expires");
+		acc.premiumDaysPurchased = result->getNumber<uint32_t>("expires");
+		acc.creationTime = result->getNumber<time_t>("creation");
+
+		setupLoyaltyInfo(acc);
 
 		return loadAccountPlayers(acc);
+	}
+
+	void AccountRepositoryDB::setupLoyaltyInfo(account::AccountInfo &acc) {
+		if (acc.premiumDaysPurchased >= acc.premiumRemainingDays && acc.creationTime != 0) {
+			return;
+		}
+
+		if (acc.premiumDaysPurchased < acc.premiumRemainingDays) {
+			acc.premiumDaysPurchased = acc.premiumRemainingDays;
+		}
+
+		if (acc.creationTime == 0) {
+			acc.creationTime = getTimeNow();
+		}
+
+		save(acc);
 	}
 
 } // namespace account

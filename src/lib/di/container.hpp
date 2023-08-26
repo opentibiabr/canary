@@ -8,6 +8,7 @@
  */
 #pragma once
 
+#include "account/account_repository_db.hpp"
 #include "lib/di/injector.hpp"
 #include "lib/logging/logger.hpp"
 #include "lib/logging/log_with_spd_log.hpp"
@@ -18,6 +19,7 @@ class DI final {
 private:
 	inline static di::extension::injector<>* testContainer;
 	const inline static auto defaultContainer = di::make_injector(
+		di::bind<account::AccountRepository>().to<account::AccountRepositoryDB>().in(di::singleton),
 		di::bind<Logger>().to<LogWithSpdLog>().in(di::singleton)
 	);
 

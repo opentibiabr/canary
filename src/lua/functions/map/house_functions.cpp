@@ -100,8 +100,7 @@ int HouseFunctions::luaHouseGetPrice(lua_State* L) {
 	}
 
 	lua_pushnumber(L, house->getPrice());
-}
-return 1;
+	return 1;
 }
 
 int HouseFunctions::luaHouseGetOwnerGuid(lua_State* L) {

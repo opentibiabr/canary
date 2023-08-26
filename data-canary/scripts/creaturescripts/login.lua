@@ -100,7 +100,7 @@ function login.onLogin(player)
 		baseRate = baseRate * 100
 		if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
 			local vipBonusExp = configManager.getNumber(configKeys.VIP_BONUS_EXP)
-			if (vipBonusExp > 0 and player:isVip()) then
+			if vipBonusExp > 0 and player:isVip() then
 				vipBonusExp = (vipBonusExp > 100 and 100) or vipBonusExp
 				baseRate = baseRate * (1 + (vipBonusExp / 100))
 				player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Normal base xp is: " .. baseRate .. "%, because you are VIP, bonus of " ..vipBonusExp .."%")

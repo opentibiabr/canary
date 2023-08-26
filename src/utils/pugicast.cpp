@@ -6,11 +6,11 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-
 #include "pch.hpp"
-#include "canary_server.hpp"
-#include "lib/di/container.hpp"
+#include "lib/logging/log_with_spd_log.hpp"
 
-int main() {
-	return inject<CanaryServer>().run();
+namespace pugi {
+	void logError(const std::string &str) {
+		g_logger().error(str);
+	}
 }

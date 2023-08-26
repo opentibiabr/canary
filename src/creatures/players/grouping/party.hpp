@@ -11,6 +11,7 @@
 
 #include "creatures/players/player.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "lib/di/container.hpp"
 
 enum SharedExpStatus_t : uint8_t {
 	SHAREDEXP_OK,

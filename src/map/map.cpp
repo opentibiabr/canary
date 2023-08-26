@@ -119,6 +119,11 @@ void Map::loadHouseInfo() {
 	IOMapSerialize::loadHouseItems(this);
 }
 
+void Map::spawnCreatures() {
+	IOMap::loadNpcs(this);
+	IOMap::loadMonsters(this);
+}
+
 bool Map::save() {
 	bool saved = false;
 	for (uint32_t tries = 0; tries < 6; tries++) {

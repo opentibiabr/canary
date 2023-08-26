@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "lib/di/container.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 
 enum PreySlot_t : uint8_t {

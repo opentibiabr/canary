@@ -142,8 +142,8 @@ void Creature::onThink(uint32_t interval) {
 
 	// scripting event - onThink
 	const CreatureEventList &thinkEvents = getCreatureEvents(CREATURE_EVENT_THINK);
-	for (const auto &thinkEvent : thinkEvents) {
-		thinkEvent->executeOnThink(this, interval);
+	for (const auto creatureEventPtr : thinkEvents) {
+		creatureEventPtr->executeOnThink(this, interval);
 	}
 }
 
@@ -695,8 +695,8 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 		if (master) {
 			// Scripting event onDeath
 			const CreatureEventList &deathEvents = getCreatureEvents(CREATURE_EVENT_DEATH);
-			for (const auto &deathEvent : deathEvents) {
-				deathEvent->executeOnDeath(this, nullptr, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
+			for (const auto deathEventPtr : deathEvents) {
+				deathEventPtr->executeOnDeath(this, nullptr, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
 			}
 		}
 
@@ -751,9 +751,9 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 		}
 
 		// Scripting event onDeath
-		for (const auto &deathEvent : getCreatureEvents(CREATURE_EVENT_DEATH)) {
-			if (deathEvent) {
-				deathEvent->executeOnDeath(this, corpse, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
+		for (const auto deathEventPtr : getCreatureEvents(CREATURE_EVENT_DEATH)) {
+			if (deathEventPtr) {
+				deathEventPtr->executeOnDeath(this, corpse, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
 			}
 		}
 	}
@@ -1162,8 +1162,8 @@ bool Creature::onKilledCreature(Creature* target, bool lastHit) {
 
 	// scripting event - onKill
 	const CreatureEventList &killEvents = getCreatureEvents(CREATURE_EVENT_KILL);
-	for (const auto &killEvent : killEvents) {
-		killEvent->executeOnKill(this, target, lastHit);
+	for (const auto killEventPtr : killEvents) {
+		killEventPtr->executeOnKill(this, target, lastHit);
 	}
 	return false;
 }
@@ -1478,15 +1478,15 @@ void Creature::setNormalCreatureLight() {
 }
 
 bool Creature::registerCreatureEvent(const std::string &name) {
-	const auto &event = g_creatureEvents().getEventByName(name);
+	const auto event = g_creatureEvents().getEventByName(name);
 	if (!event) {
 		return false;
 	}
 
 	CreatureEventType_t type = event->getEventType();
 	if (hasEventRegistered(type)) {
-		for (const auto &creatureEvent : eventsList) {
-			if (creatureEvent == event) {
+		for (const auto creatureEventPtr : eventsList) {
+			if (creatureEventPtr == event) {
 				return false;
 			}
 		}
@@ -1499,7 +1499,7 @@ bool Creature::registerCreatureEvent(const std::string &name) {
 }
 
 bool Creature::unregisterCreatureEvent(const std::string &name) {
-	const auto &event = g_creatureEvents().getEventByName(name);
+	const auto event = g_creatureEvents().getEventByName(name);
 	if (!event) {
 		return false;
 	}
@@ -1513,7 +1513,7 @@ bool Creature::unregisterCreatureEvent(const std::string &name) {
 
 	auto it = eventsList.begin(), end = eventsList.end();
 	while (it != end) {
-		const auto &curEvent = *it;
+		const auto curEvent = *it;
 		if (curEvent == event) {
 			it = eventsList.erase(it);
 			continue;
@@ -1538,9 +1538,9 @@ CreatureEventList Creature::getCreatureEvents(CreatureEventType_t type) {
 		return tmpEventList;
 	}
 
-	for (const auto &creatureEvent : eventsList) {
-		if (creatureEvent->getEventType() == type) {
-			tmpEventList.push_back(creatureEvent);
+	for (const auto creatureEventPtr : eventsList) {
+		if (creatureEventPtr->getEventType() == type) {
+			tmpEventList.push_back(creatureEventPtr);
 		}
 	}
 

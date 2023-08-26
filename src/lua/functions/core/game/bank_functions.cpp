@@ -99,8 +99,8 @@ int BankFunctions::luaBankWithdraw(lua_State* L) {
 		}
 
 		// TODO: When Player is also shared_ptr, we won't need to verride the deleter
-		const auto &bankablePlayer = std::shared_ptr<Bankable>(player, [](Bankable*) {});
-		const auto &bank = std::make_shared<Bank>(bankablePlayer);
+		const auto bankablePlayer = std::shared_ptr<Bankable>(player, [](Bankable*) {});
+		const auto bank = std::make_shared<Bank>(bankablePlayer);
 		pushBoolean(L, bank->withdraw(player, amount));
 		return 1;
 	}
@@ -120,8 +120,8 @@ int BankFunctions::luaBankDeposit(lua_State* L) {
 		return 1;
 	}
 	// TODO: When Player is also shared_ptr, we won't need to verride the deleter
-	const auto &bankablePlayer = std::shared_ptr<Bankable>(player, [](Bankable*) {});
-	const auto &bank = std::make_shared<Bank>(bankablePlayer);
+	const auto bankablePlayer = std::shared_ptr<Bankable>(player, [](Bankable*) {});
+	const auto bank = std::make_shared<Bank>(bankablePlayer);
 
 	uint64_t amount = 0;
 	if (lua_isnumber(L, 2)) {
@@ -148,7 +148,7 @@ std::shared_ptr<Bank> BankFunctions::getBank(lua_State* L, int32_t arg, bool isG
 		return std::make_shared<Bank>(getGuild(L, arg));
 	}
 	if (isGuild) {
-		const auto &guild = getGuild(L, arg, true);
+		const auto guild = getGuild(L, arg, true);
 		if (!guild) {
 			return nullptr;
 		}
@@ -159,6 +159,6 @@ std::shared_ptr<Bank> BankFunctions::getBank(lua_State* L, int32_t arg, bool isG
 		return nullptr;
 	}
 	// TODO: When Player is also shared_ptr, we won't need to verride the deleter
-	const auto &bankablePlayer = std::shared_ptr<Bankable>(player, [](Bankable*) {});
+	const auto bankablePlayer = std::shared_ptr<Bankable>(player, [](Bankable*) {});
 	return std::make_shared<Bank>(bankablePlayer);
 }

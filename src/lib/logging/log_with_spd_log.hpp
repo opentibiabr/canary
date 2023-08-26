@@ -8,6 +8,8 @@
  */
 #pragma once
 
+#include "lib/logging/logger.hpp"
+
 class LogWithSpdLog final : public Logger {
 public:
 	LogWithSpdLog();

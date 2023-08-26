@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "lib/logging/logger.hpp"
 #include "server/network/connection/connection.hpp"
 #include "server/signals.hpp"
 

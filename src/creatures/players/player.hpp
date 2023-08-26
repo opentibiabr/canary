@@ -149,7 +149,7 @@ public:
 	bool toggleMount(bool mount);
 	bool tameMount(uint8_t mountId);
 	bool untameMount(uint8_t mountId);
-	bool hasMount(const std::shared_ptr<Mount> &mount) const;
+	bool hasMount(const std::shared_ptr<Mount> mount) const;
 	bool hasAnyMount() const;
 	uint8_t getRandomMountId() const;
 	void dismount();
@@ -251,7 +251,7 @@ public:
 	[[nodiscard]] std::shared_ptr<Guild> getGuild() const {
 		return guild;
 	}
-	void setGuild(const std::shared_ptr<Guild> &guild);
+	void setGuild(const std::shared_ptr<Guild> guild);
 
 	[[nodiscard]] GuildRank_ptr getGuildRank() const {
 		return guildRank;
@@ -293,7 +293,7 @@ public:
 		return isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
 	}
 
-	void addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> &mtype, bool isBoss, bool reloadClient = false);
+	void addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient = false);
 
 	void removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient = false);
 
@@ -313,7 +313,7 @@ public:
 		}
 	}
 
-	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const;
+	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> monsterType) const;
 
 	Vocation* getVocation() const {
 		return vocation;
@@ -928,7 +928,7 @@ public:
 	void addOutfit(uint16_t lookType, uint8_t addons);
 	bool removeOutfit(uint16_t lookType);
 	bool removeOutfitAddon(uint16_t lookType, uint8_t addons);
-	bool getOutfitAddons(const std::shared_ptr<Outfit> &outfit, uint8_t &addons) const;
+	bool getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addons) const;
 
 	bool canFamiliar(uint16_t lookType) const;
 	void addFamiliar(uint16_t lookType);
@@ -2117,7 +2117,7 @@ public:
 
 	// Task hunting system
 	void initializeTaskHunting();
-	bool isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> &mtype) const;
+	bool isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> mtype) const;
 
 	bool setTaskHuntingSlotClass(std::unique_ptr<TaskHuntingSlot> slot) {
 		if (getTaskHuntingSlotById(slot->id)) {

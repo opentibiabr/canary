@@ -10,6 +10,7 @@
 #pragma once
 
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 #include "lua/scripts/luascript.hpp"
 #include "lua/scripts/scripts.hpp"
 
@@ -39,7 +40,7 @@ public:
 	}
 
 	void clearEvent();
-	void copyEvent(const std::shared_ptr<CreatureEvent> &creatureEvent);
+	void copyEvent(const std::shared_ptr<CreatureEvent> creatureEvent);
 
 	// scripting
 	bool executeOnLogin(Player* player) const;
@@ -83,7 +84,7 @@ public:
 
 	std::shared_ptr<CreatureEvent> getEventByName(const std::string &name, bool forceLoaded = true);
 
-	bool registerLuaEvent(const std::shared_ptr<CreatureEvent> &event);
+	bool registerLuaEvent(const std::shared_ptr<CreatureEvent> event);
 	void removeInvalidEvents();
 	void clear();
 

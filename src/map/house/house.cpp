@@ -117,14 +117,14 @@ void House::updateDoorDescription() const {
 		ss << "It belongs to house '" << houseName << "'. " << ownerName << " owns this house.";
 	} else {
 		ss << "It belongs to house '" << houseName << "'. Nobody owns this house.";
-		ss << " It is " << houseTiles.size() << " square meters.";
+	}
 
-		const int32_t housePrice = getPrice();
-		if (housePrice != -1) {
-			ss << " It costs " << formatNumber(getPrice()) << " gold coins.";
-			std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
-			ss << " The rent cost is " << formatNumber(getRent()) << " gold coins and it is billed " << strRentPeriod << ".";
-		}
+	ss << " It is " << houseTiles.size() << " square meters.";
+	const int32_t housePrice = getPrice();
+	if (housePrice != -1) {
+		ss << " It costs " << formatNumber(getPrice()) << " gold coins.";
+		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
+		ss << " The rent cost is " << formatNumber(getRent()) << " gold coins and it is billed " << strRentPeriod << ".";
 	}
 
 	for (const auto &it : doorList) {

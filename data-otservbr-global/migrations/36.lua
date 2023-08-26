@@ -1,3 +1,5 @@
 function onUpdateDatabase()
-	return false -- true = There are others migrations file | false = this is the last migration file
+	logger.info("Updating database to version 36 (add coin_type to accounts)")
+	db.query("ALTER TABLE `coins_transactions` ADD `coin_type` tinyint(1) UNSIGNED NOT NULL DEFAULT '1';")
+	return true
 end

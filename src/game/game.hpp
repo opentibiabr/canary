@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "creatures/players/account/account.hpp"
+#include "account/account.hpp"
 #include "creatures/combat/combat.hpp"
 #include "items/containers/container.hpp"
 #include "creatures/players/grouping/groups.hpp"

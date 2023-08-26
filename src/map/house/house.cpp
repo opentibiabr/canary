@@ -140,7 +140,7 @@ AccessHouseLevel_t House::getHouseAccessLevel(const Player* player) {
 	}
 
 	if (g_configManager().getBoolean(HOUSE_OWNED_BY_ACCOUNT)) {
-		if (ownerAccountId == player->getAccount()) {
+		if (ownerAccountId == player->getAccountId()) {
 			return HOUSE_OWNER;
 		}
 	}

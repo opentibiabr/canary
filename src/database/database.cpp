@@ -18,6 +18,10 @@ Database::~Database() {
 	}
 }
 
+Database &Database::getInstance() {
+	return inject<Database>();
+}
+
 bool Database::connect() {
 	return connect(&g_configManager().getString(MYSQL_HOST), &g_configManager().getString(MYSQL_USER), &g_configManager().getString(MYSQL_PASS), &g_configManager().getString(MYSQL_DB), g_configManager().getNumber(SQL_PORT), &g_configManager().getString(MYSQL_SOCK));
 }

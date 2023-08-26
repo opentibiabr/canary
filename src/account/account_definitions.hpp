@@ -57,5 +57,8 @@ namespace account {
 		AccountType accountType = ACCOUNT_TYPE_NORMAL;
 		phmap::flat_hash_map<std::string, uint64_t> players;
 		bool oldProtocol = false;
+		time_t sessionExpires = 0;
+		uint32_t premiumDaysPurchased = 0;
+		uint32_t creationTime = 0;
 	};
 } // namespace account

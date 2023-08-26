@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "creatures/players/account/account.hpp"
+#include "account/account.hpp"
 #include "lua/global/baseevents.hpp"
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"

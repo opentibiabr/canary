@@ -201,7 +201,6 @@ function onRecvbyte(player, msg, byte)
 	end
 end
 
-
 -- Core functions
 DailyReward.insertHistory = function(playerId, dayStreak, description)
 	return db.query(string.format("INSERT INTO `daily_reward_history`(`player_id`, `daystreak`, `timestamp`, \z
@@ -209,7 +208,6 @@ DailyReward.insertHistory = function(playerId, dayStreak, description)
 end
 
 DailyReward.retrieveHistoryEntries = function(playerId)
-
 	local player = Player(playerId)
 	if not player then
 		return false
@@ -218,7 +216,7 @@ DailyReward.retrieveHistoryEntries = function(playerId)
 	local entries = {}
 	local resultId = db.storeQuery("SELECT * FROM `daily_reward_history` WHERE `player_id` = \z
 		" .. player:getGuid() .. " ORDER BY `timestamp` DESC LIMIT 15;")
-	if resultId ~= false then
+	if resultId then
 		repeat
 			local entry = {
 				description = Result.getString(resultId, "description"),
@@ -237,10 +235,10 @@ DailyReward.loadDailyReward = function(playerId, target)
 	if not player then
 		return false
 	end
+
+	target = REWARD_FROM_PANEL
 	if target ~= 0 then
 		target = REWARD_FROM_SHRINE
-	else
-		target = REWARD_FROM_PANEL
 	end
 
 	player:sendCollectionResource(ClientPackets.JokerResource, player:getJokerTokens())
@@ -253,7 +251,6 @@ end
 
 DailyReward.pickedReward = function(playerId)
 	local player = Player(playerId)
-
 	if not player then
 		return false
 	end
@@ -276,24 +273,8 @@ end
 DailyReward.isShrine = function(target)
 	if target ~= 0 then
 		return false
-	else
-		return true
 	end
-end
-
-function Player.iterateTest(self)
-	local dailyTable = DailyReward.rewards[5]
-	local reward = DailyRewardItems[self:getVocation():getBaseId()]
-
-	if not(reward) then
-		reward = {}
-	end
-
-	for i = 1, #reward.things do
-		for j = 1, #reward.things[i].storages do
-			self:setStorageValue(reward.things[i].storages[j].storageId, reward.things[i].storages[j].value)
-		end
-	end
+	return true
 end
 
 DailyReward.isRewardTaken = function(playerId)
@@ -428,8 +409,15 @@ function Player.selectDailyReward(self, msg)
 		return false
 	end
 
+	local rewardCount = dailyTable.freeAccount
+	if self:isPremium() then
+		rewardCount = dailyTable.premiumAccount
+	end
+
+	local dailyRewardMessage = false
+
 	-- Items as reward
-	if (dailyTable.type == DAILY_REWARD_TYPE_ITEM) then
+	if dailyTable.type == DAILY_REWARD_TYPE_ITEM then
 
 		local items = {}
 		local possibleItems = DailyRewardItems[self:getVocation():getBaseId()];
@@ -454,13 +442,7 @@ function Player.selectDailyReward(self, msg)
 			end
 		end
 
-		if self:isPremium() then
-			count = dailyTable.premiumAccount
-		else
-			count = dailyTable.freeAccount
-		end
-
-		if totalCounter > count then
+		if totalCounter > rewardCount then
 			self:sendError("Something went wrong here, please restart this dialog.")
 			return false
 		end
@@ -480,10 +462,16 @@ function Player.selectDailyReward(self, msg)
 		for k, v in ipairs(items) do
 			if dailyTable.itemCharges then
 				for i = 1, v.count do
-					inbox:addItem(v.itemId, dailyTable.itemCharges) -- adding charges for each item
+					local inboxItem = inbox:addItem(v.itemId, dailyTable.itemCharges) -- adding charges for each item
+					if inboxItem then
+						inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+					end
 				end
 			else
-				inbox:addItem(v.itemId, v.count) -- adding single item w/o charges
+				local inboxItem = inbox:addItem(v.itemId, v.count) -- adding single item w/o charges
+				if inboxItem then
+					inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+				end
 			end
 			if k ~= columnsPicked then
 				description = description .. "" .. v.count .. "x " .. ItemType(v.itemId):getName() .. ", "
@@ -492,20 +480,9 @@ function Player.selectDailyReward(self, msg)
 			end
 		end
 
-		-- Registering history
-		DailyReward.insertHistory(self:getGuid(), self:getDayStreak(), "Claimed reward no. \z
-			" .. self:getDayStreak() + 1 .. ". Picked items: " .. description)
-		DailyReward.processReward(playerId, target)
-	end
+		dailyRewardMessage = "Picked items: " .. description
 
-	local reward = nil
-	if self:isPremium() then
-		reward = dailyTable.premiumAccount
-	else
-		reward = dailyTable.freeAccount
-	end
-
-	-- if (dailyTable.type == DAILY_REWARD_TYPE_STORAGE) then
+	-- elseif dailyTable.type == DAILY_REWARD_TYPE_STORAGE then
 		-- local description = ""
 		-- for i = 1, #reward.things do
 			-- for j = 1, #reward.things[i].storages do
@@ -517,23 +494,23 @@ function Player.selectDailyReward(self, msg)
 				-- description = description .. reward.things[i].name .. "."
 			-- end
 		-- end
-		-- DailyReward.insertHistory(self:getGuid(), self:getDayStreak(), "Claimed reward no. \z
-			-- " .. self:getDayStreak() + 1 .. ". Picked reward: " .. description)
-		-- DailyReward.processReward(playerId, target)
+		-- dailyRewardMessage = "Picked reward: " .. description)
 	-- end
 
-	if (dailyTable.type == DAILY_REWARD_TYPE_XP_BOOST) then
-		self:setExpBoostStamina(self:getExpBoostStamina() + (reward * 60))
+	elseif dailyTable.type == DAILY_REWARD_TYPE_XP_BOOST then
+		self:setExpBoostStamina(self:getExpBoostStamina() + (rewardCount * 60))
 		self:setStoreXpBoost(50)
-		DailyReward.insertHistory(self:getGuid(), self:getDayStreak(), "Claimed reward no. \z
-			" .. self:getDayStreak() + 1 .. ". Picked reward: XP Bonus for " .. reward .. " minutes.")
-		DailyReward.processReward(playerId, target)
+		dailyRewardMessage = "Picked reward: XP Bonus for " .. rewardCount .. " minutes."
+
+	elseif dailyTable.type == DAILY_REWARD_TYPE_PREY_REROLL then
+		self:addPreyCards(rewardCount)
+		dailyRewardMessage = "Picked reward: " .. rewardCount .. "x Prey bonus reroll(s)."
 	end
 
-	if (dailyTable.type == DAILY_REWARD_TYPE_PREY_REROLL) then
-		self:addPreyCards(reward)
+	if dailyRewardMessage then
+		-- Registering history
 		DailyReward.insertHistory(self:getGuid(), self:getDayStreak(), "Claimed reward no. \z
-			" .. self:getDayStreak() + 1 .. ". Picked reward: " .. reward .. "x Prey bonus reroll(s)")
+			" .. self:getDayStreak() + 1 .. ". " .. dailyRewardMessage)
 		DailyReward.processReward(playerId, target)
 	end
 
@@ -587,38 +564,21 @@ function Player.readDailyReward(self, msg, currentDay, state)
 	local dailyTable = DailyReward.rewards[currentDay]
 	local type, systemType = dailyTable.type, dailyTable.systemType
 	local rewards = nil
-	local itemsToPick = 0
-	if currentDay == 3 or (currentDay >= 5 and currentDay <= 7) then
-		rewards = dailyTable.items
-		if (state == DAILY_REWARD_STATUS_FREE) then
-			itemsToPick = dailyTable.freeAccount
-		else
-			itemsToPick = dailyTable.premiumAccount
-		end
-	else
-		if systemType == 1 then
-			if (state == DAILY_REWARD_STATUS_FREE) then
-				rewards = DailyRewardItems[self:getVocation():getBaseId()]
-				itemsToPick = dailyTable.freeAccount
-			else
-				rewards = DailyRewardItems[self:getVocation():getBaseId()]
-				itemsToPick = dailyTable.premiumAccount
-			end
+	local itemsToPick = dailyTable.freeAccount
+	if state == DAILY_REWARD_STATUS_PREMIUM then
+		itemsToPick = dailyTable.premiumAccount
+	end
 
-			if not(rewards) then
-				rewards = {}
-			end
-		else
-			if (state == DAILY_REWARD_STATUS_FREE) then
-				rewards = dailyTable.freeAccount
-			else
-				rewards = dailyTable.premiumAccount
-			end
+	if systemType == DAILY_REWARD_SYSTEM_TYPE_ONE then
+		rewards = DailyRewardItems[self:getVocation():getBaseId()]
+		if dailyTable.items then
+			rewards = dailyTable.items
 		end
 	end
+
 	msg:addByte(systemType)
-	if (systemType == 1) then
-		if (type == DAILY_REWARD_TYPE_ITEM) then
+	if systemType == DAILY_REWARD_SYSTEM_TYPE_ONE then
+		if type == DAILY_REWARD_TYPE_ITEM then
 			msg:addByte(itemsToPick)
 			msg:addByte(#rewards)
 			for i = 1, #rewards do
@@ -631,8 +591,8 @@ function Player.readDailyReward(self, msg, currentDay, state)
 				msg:addU32(itemWeight)
 			end
 		end
-	elseif (systemType == 2) then
-		if (type == DAILY_REWARD_TYPE_STORAGE) then
+	elseif systemType == DAILY_REWARD_SYSTEM_TYPE_TWO then
+		if type == DAILY_REWARD_TYPE_STORAGE then
 			-- msg:addByte(#rewards.things)
 			-- for i = 1, #rewards.things do
 				-- msg:addByte(DAILY_REWARD_SYSTEM_TYPE_OTHER) -- type
@@ -640,11 +600,11 @@ function Player.readDailyReward(self, msg, currentDay, state)
 				-- msg:addString(rewards.things[i].name)
 				-- msg:addByte(rewards.things[i].quantity)
 			-- end
-		elseif (type == DAILY_REWARD_TYPE_PREY_REROLL) then
+		elseif type == DAILY_REWARD_TYPE_PREY_REROLL then
 			msg:addByte(DAILY_REWARD_SYSTEM_SKIP)
 			msg:addByte(DAILY_REWARD_SYSTEM_TYPE_PREY_REROLL)
 			msg:addByte(itemsToPick)
-		elseif (type == DAILY_REWARD_TYPE_XP_BOOST) then
+		elseif type == DAILY_REWARD_TYPE_XP_BOOST then
 			msg:addByte(DAILY_REWARD_SYSTEM_SKIP)
 			msg:addByte(DAILY_REWARD_SYSTEM_TYPE_XP_BOOST)
 			msg:addU16(itemsToPick)

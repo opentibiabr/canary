@@ -23,14 +23,13 @@ function Hazard.new(prototype)
 	return instance
 end
 
-function Hazard.getHazardPlayerAndPoints(damageMap)
-	-- Placed here to allow getHazardPoints from player based on which hazard
+function Hazard:getHazardPlayerAndPoints(damageMap)
 	local hazardPlayer = nil
 	local hazardPoints = -1
-	for key, value in pairs(damageMap) do
+	for key, _ in pairs(damageMap) do
 		local player = Player(key)
 		if player then
-			local playerHazardPoints = player:getHazardSystemPoints()
+			local playerHazardPoints = self:getPlayerCurrentLevel()
 
 			if playerHazardPoints < hazardPoints or hazardPoints == -1 then
 				hazardPlayer = player
@@ -40,11 +39,11 @@ function Hazard.getHazardPlayerAndPoints(damageMap)
 	end
 
 	if hazardPoints == -1 then
-		hazardPoints = 0
+		hazardPoints = 1
 	end
 
 	return hazardPlayer, hazardPoints
-	end
+end
 
 function Hazard:getPlayerCurrentLevel(player)
 	return player:getStorageValue(self.storageCurrent) < 0 and 0 or player:getStorageValue(self.storageCurrent)

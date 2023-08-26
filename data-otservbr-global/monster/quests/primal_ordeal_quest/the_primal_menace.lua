@@ -124,8 +124,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 80,
-	armor = 100
-}
+	armor = 100,
+	mitigation = 3.72,
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
@@ -173,7 +173,8 @@ mType.onAppear = function(monster, creature)
 end
 
 local function getHazardPoints(monster)
-	local hazard = Hazard.getByName("hazard:gnomprona-gardens")
+	local hazard = Hazard.getByName("hazard.gnomprona-gardens")
+	if not hazard then return 0 end
 
 	local _, hazardPoints = hazard:getHazardPlayerAndPoints(monster:getDamageMap())
 	return hazardPoints
@@ -215,7 +216,6 @@ local function getSpawnPosition(monster)
 	local centerPos = monster:getStorageValue(thePrimalMenaceConfig.Storage.SpawnPos)
 
 	while not spawnPosition and attempt < attempts do
-
 		local centerX = centerPos.x
 		local centerY = centerPos.y
 
@@ -309,8 +309,8 @@ local function handleMonsterSpawn(monster, hazardPoints)
 end
 
 local function handlePrimalBeasts(monster)
-	primalBeasts = monster:getStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts)
-	indexesToRemove = {}
+	local primalBeasts = monster:getStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts)
+	local indexesToRemove = {}
 
 	for index, beastData in pairs(primalBeasts) do
 		local monster = beastData.Monster

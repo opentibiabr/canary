@@ -504,7 +504,7 @@ function questSystem2.onUse(player, item, fromPosition, target, toPosition, isHo
 		for i = 1, size do
 			local tmp = Game.createItem(items[i].itemId, items[i].count or 1)
 			if reward:addItemEx(tmp) ~= RETURNVALUE_NOERROR then
-				Spdlog.warn("[questSystem2.onUse] - Could not add quest reward to container")
+				logger.warn("[questSystem2.onUse] - Could not add quest reward to container")
 			else
 				if items[i].actionId then
 					tmp:setActionId(items[i].actionId)

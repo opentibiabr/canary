@@ -9,9 +9,9 @@
 
 #include "pch.hpp"
 
-#include "items/containers/mailbox/mailbox.h"
-#include "game/game.h"
-#include "io/iologindata.h"
+#include "items/containers/mailbox/mailbox.hpp"
+#include "game/game.hpp"
+#include "io/iologindata.hpp"
 
 ReturnValue Mailbox::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t, Creature*) const {
 	const Item* item = thing.getItem();
@@ -39,8 +39,9 @@ void Mailbox::addThing(Thing* thing) {
 }
 
 void Mailbox::addThing(int32_t, Thing* thing) {
-	if (!thing)
+	if (!thing) {
 		return;
+	}
 
 	Item* item = thing->getItem();
 	if (item && Mailbox::canSend(item)) {
@@ -79,7 +80,7 @@ bool Mailbox::sendItem(Item* item) const {
 		return false;
 	}
 
-	const Player* player = g_game().getPlayerByName(receiver);
+	Player* player = g_game().getPlayerByName(receiver, true);
 	std::string writer;
 	time_t date = time(0);
 	std::string text;
@@ -96,23 +97,12 @@ bool Mailbox::sendItem(Item* item) const {
 				newItem->setAttribute(ItemAttribute_t::DATE, date);
 				newItem->setAttribute(ItemAttribute_t::TEXT, text);
 			}
-			player->onReceiveMail();
-			return true;
-		}
-	} else {
-		Player tmpPlayer(nullptr);
-		if (!IOLoginData::loadPlayerByName(&tmpPlayer, receiver)) {
-			return false;
-		}
-
-		if (item && g_game().internalMoveItem(item->getParent(), tmpPlayer.getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
-			Item* newItem = g_game().transformItem(item, item->getID() + 1);
-			if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && writer != "") {
-				newItem->setAttribute(ItemAttribute_t::WRITER, writer);
-				newItem->setAttribute(ItemAttribute_t::DATE, date);
-				newItem->setAttribute(ItemAttribute_t::TEXT, text);
+			if (player->isOnline()) {
+				player->onReceiveMail();
+			} else {
+				IOLoginData::savePlayer(player);
+				delete player;
 			}
-			IOLoginData::savePlayer(&tmpPlayer);
 			return true;
 		}
 	}

@@ -54,8 +54,8 @@ table.sort(extraction) -- Sort the table
 if #extraction > 1 then
 	for i = 1, #extraction - 1 do
 		if extraction[i] == extraction[i + 1] then
-			Spdlog.warn(string.format("Duplicate global storage value found: %d",
-				extraction[i]))
+			logger.warn("Duplicate global storage value found: {}",
+				extraction[i])
 		end
 	end
 end

@@ -9,8 +9,8 @@
 
 #include "pch.hpp"
 
-#include "game/game.h"
-#include "items/item.h"
+#include "game/game.hpp"
+#include "items/item.hpp"
 #include "lua/functions/items/container_functions.hpp"
 
 int ContainerFunctions::luaContainerCreate(lua_State* L) {

@@ -1,3 +1,28 @@
+function PrettyString(tbl, indent)
+	if not indent then indent = 0 end
+	local toprint = string.rep(" ", indent) .. "{\n"
+	indent = indent + 2
+	for k, v in pairs(tbl) do
+		toprint = toprint .. string.rep(" ", indent)
+		if (type(k) == "number") then
+			toprint = toprint .. "[" .. k .. "] = "
+		elseif (type(k) == "string") then
+			toprint = toprint .. k .. "= "
+		end
+		if (type(v) == "number") then
+			toprint = toprint .. v .. ",\n"
+		elseif (type(v) == "string") then
+			toprint = toprint .. "\"" .. v .. "\",\n"
+		elseif (type(v) == "table") then
+			toprint = toprint .. PrettyString(v, indent + 2) .. ",\n"
+		else
+			toprint = toprint .. "\"" .. tostring(v) .. "\",\n"
+		end
+	end
+	toprint = toprint .. string.rep(" ", indent - 2) .. "}"
+	return toprint
+end
+
 function getTibiaTimerDayOrNight()
 	local light = getWorldLight()
 	if (light == 40) then
@@ -87,8 +112,8 @@ debug.sethook(function(event, line)
 	linecount = linecount + 1
 	if systemTime() - start >= 1 then
 		if linecount >= 30000 then
-			Spdlog.warn(string.format("[debug.sethook] - Possible infinite loop in file [%s] near line [%d]",
-				debug.getinfo(2).source, line))
+			logger.warn("[debug.sethook] - Possible infinite loop in file [{}] near line [{}]",
+				debug.getinfo(2).source, line)
 			debug.sethook()
 		end
 		linecount = 0
@@ -151,7 +176,7 @@ function getBankMoney(cid, amount)
 	local player = Player(cid)
 	if player:getBankBalance() >= amount then
 		player:setBankBalance(player:getBankBalance() - amount)
-		player:sendTextMessage(MESSAGE_TRADE, "Paid " .. amount .. " gold from bank account. Your account balance is now " .. player:getBankBalance() .. " gold.")
+		player:sendTextMessage(MESSAGE_TRADE, "Paid " .. FormatNumber(amount) .. " gold from bank account. Your account balance is now " .. FormatNumber(player:getBankBalance()) .. " gold.")
 		return true
 	end
 	return false
@@ -304,15 +329,6 @@ function iterateArea(func, from, to)
 			end
 		end
 	end
-end
-
-function playerExists(name)
-	local resultId = db.storeQuery("SELECT `name` FROM `players` WHERE `name` = " .. db.escapeString(name))
-	if resultId then
-		Result.free(resultId)
-		return true
-	end
-	return false
 end
 
 function resetFerumbrasAscendantHabitats()
@@ -758,7 +774,7 @@ function indexToStr(i, v, buffer)
 	local tp = type(v)
 	local itp = type(i)
 	if itp ~= "number" and itp ~= "string" then
-		Spdlog.warn("[indexToStr] - Invalid index to serialize: " .. type(i))
+		logger.warn("[indexToStr] - Invalid index to serialize: {}", type(i))
 	else
 		if tp == "table" then
 			insertIndex(i, buffer)
@@ -778,7 +794,7 @@ function indexToStr(i, v, buffer)
 			table.insert(buffer, v == true and "true" or "false")
 			table.insert(buffer, ",")
 		else
-			Spdlog.warn("[indexToStr] - Invalid type to serialize: " .. tp .. ", index: " .. i)
+			logger.warn("[indexToStr] - Invalid type to serialize: {}, index: {}", tp, i)
 		end
 	end
 end
@@ -815,7 +831,7 @@ function unserializeTable(str, out)
 	if tmp then
 		tmp = tmp()
 	else
-		Spdlog.warn("[unserializeTable] - Unserialization error: " .. str)
+		logger.warn("[unserializeTable] - Unserialization error: {}", str)
 		return false
 	end
 	return table.copy(tmp, out)
@@ -974,4 +990,25 @@ function ReloadDataEvent(cid)
 	end
 
 	player:reloadData()
+end
+
+function HasValidTalkActionParams(player, param, usage)
+	if not param or param == "" then
+		player:sendCancelMessage("Command param required. Usage: ".. usage)
+		return false
+	end
+
+	local split = param:split(",")
+	if not split[2] then
+		player:sendCancelMessage("Insufficient parameters. Usage: ".. usage)
+		return false
+	end
+
+	return true
+end
+
+function FormatNumber(number)
+  local _, _, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
+  int = int:reverse():gsub("(%d%d%d)", "%1,")
+  return minus .. int:reverse():gsub("^,", "") .. fraction
 end

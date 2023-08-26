@@ -8,7 +8,7 @@ if not warzoneConfig then
 			teleportTo = Position(33096, 31955, 10),
 			locked = false,
 			storage = Storage.BigfootBurden.BossWarzone1,
-			interval = 20 * 60 * 60,-- 20 hours
+			interval = configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN),
 			exit = Position(33001, 31900, 9)
 		},
 		[45701] = {
@@ -19,7 +19,7 @@ if not warzoneConfig then
 			teleportTo = Position(33106, 31955, 11),
 			locked = false,
 			storage = Storage.BigfootBurden.BossWarzone2,
-			interval = 20 * 60 * 60,-- 20 hours
+			interval = configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN),
 			exit = Position(33001, 31900, 9),
 			wall = 16169 --Id of current crystais in warzone 2 (open killing parasite)
 		},
@@ -31,7 +31,7 @@ if not warzoneConfig then
 			teleportTo = Position(33083, 31904, 12), --Place where the player will be teleported inside the room
 			locked = false,
 			storage = Storage.BigfootBurden.BossWarzone3,
-			interval = 20 * 60 * 60,-- 20 hours
+			interval = configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN),
 			exit = Position(33001, 31900, 9)
 		}
 	}

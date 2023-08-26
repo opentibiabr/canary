@@ -11,10 +11,10 @@
 
 #include "core.hpp"
 
-#include "server/network/protocol/protocolstatus.h"
-#include "game/game.h"
-#include "game/scheduling/tasks.h"
-#include "server/network/message/outputmessage.h"
+#include "server/network/protocol/protocolstatus.hpp"
+#include "game/game.hpp"
+#include "game/scheduling/dispatcher.hpp"
+#include "server/network/message/outputmessage.hpp"
 
 std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME();
@@ -38,11 +38,11 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 		// XML info protocol
 		case 0xFF: {
 			if (msg.getString(4) == "info") {
-				g_dispatcher().addTask(createTask(std::bind(
+				g_dispatcher().addTask(std::bind(
 					&ProtocolStatus::sendStatusString,
 					std::static_pointer_cast<
 						ProtocolStatus>(shared_from_this())
-				)));
+				));
 				return;
 			}
 			break;
@@ -55,7 +55,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 			if (requestedInfo & REQUEST_PLAYER_STATUS_INFO) {
 				characterName = msg.getString();
 			}
-			g_dispatcher().addTask(createTask(std::bind(&ProtocolStatus::sendInfo, std::static_pointer_cast<ProtocolStatus>(shared_from_this()), requestedInfo, characterName)));
+			g_dispatcher().addTask(std::bind(&ProtocolStatus::sendInfo, std::static_pointer_cast<ProtocolStatus>(shared_from_this()), requestedInfo, characterName));
 			return;
 		}
 

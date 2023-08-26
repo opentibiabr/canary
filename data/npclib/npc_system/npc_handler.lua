@@ -221,7 +221,7 @@ if NpcHandler == nil then
 	function NpcHandler:removeInteraction(npc, player)
 		local playerId = player:getId()
 		if Player(player) == nil then
-			return Spdlog.error("[NpcHandler:removeInteraction] - Player is missing or nil")
+			return logger.error("[NpcHandler:removeInteraction] - Player is missing or nil")
 		end
 
 		if self:getEventDelayedSay(playerId) then
@@ -268,15 +268,15 @@ if NpcHandler == nil then
 			self.modules[#self.modules + 1] = module
 			self.npcName = initNpcName
 			if greetCallback == nil then
-				Spdlog.warn("[NpcHandler:addModule] - Greet callback is missing for npc with name: ".. initNpcName ..", setting to true")
+				logger.warn("[NpcHandler:addModule] - Greet callback is missing for npc with name: {}, setting to true", initNpcName)
 				greetCallback = true
 			end
 			if farewellCallback == nil then
-				Spdlog.warn("[NpcHandler:addModule] - Farewell callback is missing for npc with name: ".. initNpcName ..", setting to true")
+				logger.warn("[NpcHandler:addModule] - Farewell callback is missing for npc with name: {}, setting to true", initNpcName)
 				farewellCallback = true
 			end
 			if tradeCallback == nil then
-				Spdlog.warn("[NpcHandler:addModule] - Trade callback is missing for npc with name: ".. initNpcName ..", setting to true")
+				logger.warn("[NpcHandler:addModule] - Trade callback is missing for npc with name: {}, setting to true", initNpcName)
 				tradeCallback = true
 			end
 			module:init(self, greetCallback, farewellCallback, tradeCallback)
@@ -592,12 +592,12 @@ if NpcHandler == nil then
 
 		local playerUniqueId = player.uid
 		if not playerUniqueId then
-			return Spdlog.error("[NpcHandler:doNPCTalkALot] - playerUniqueId is wrong or unsafe.")
+			return logger.error("[NpcHandler:doNPCTalkALot] - playerUniqueId is wrong or unsafe.")
 		end
 
 		local npcUniqueId = npc.uid
 		if not npcUniqueId then
-			return Spdlog.error("[NpcHandler:doNPCTalkALot] - npcUniqueId is wrong or unsafe.")
+			return logger.error("[NpcHandler:doNPCTalkALot] - npcUniqueId is wrong or unsafe.")
 		end
 
 		self.eventDelayedSay[playerId] = {}

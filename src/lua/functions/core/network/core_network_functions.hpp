@@ -7,21 +7,18 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CORE_NETWORK_CORE_NETWORK_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CORE_NETWORK_CORE_NETWORK_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 #include "lua/functions/core/network/network_message_functions.hpp"
 #include "lua/functions/core/network/webhook_functions.hpp"
 
 class CoreNetworkFunctions final : LuaScriptInterface {
-	public:
-		static void init(lua_State* L) {
-			NetworkMessageFunctions::init(L);
-			WebhookFunctions::init(L);
-		}
+public:
+	static void init(lua_State* L) {
+		NetworkMessageFunctions::init(L);
+		WebhookFunctions::init(L);
+	}
 
-	private:
+private:
 };
-
-#endif // SRC_LUA_FUNCTIONS_CORE_NETWORK_CORE_NETWORK_FUNCTIONS_HPP_

@@ -6,9 +6,11 @@ useAnyDatapackFolder = false
 dataPackDirectory = "data-otservbr-global"
 -- Don't change this unless you know what you're doing
 coreDirectory = "data"
--- Enable/disable development mode
--- NOTE: In development mode, additional logs will be enabled, for deputation and testing purposes.
-developmentMode = false
+
+-- Set log level
+-- It can be trace, debug, info, warning, error, critical, off (default: info).
+-- NOTE: Will only display logs with level higher or equal the one set.
+logLevel = "debug"
 
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
@@ -181,6 +183,9 @@ onlyPremiumAccount = false
 -- NOTE: toggleGoldPouchQuickLootOnly will ONLY allow quickloot to move items to gold pouch
 -- NOTE: toggleServerIsRetroPVP will make this server as retro, setting PARTY_PROTECTION and ADVANCED_SECURE_MODE to 0
 -- NOTE: toggleTravelsFree will make all travels from boat free
+-- NOTE: buyAolCommandFee will add fee when player buy aol by command (!aol), active changing value more than 0 (fee value. ex: 1 = 1gp  aol will be 50001)
+-- NOTE: buyBlessCommandFee will add fee when player buy bless by command (!bless), active changing value between 1 and 100 (fee percent. ex: 3 = 3%, 30 = 30%)
+-- NOTE: teleportPlayerToVocationRoom will enable oressa to teleport player to his/her room vocation
 weatherRain = false
 thunderEffect = false
 allConsoleLog = false
@@ -192,6 +197,9 @@ toggleGoldPouchAllowAnything = false
 toggleGoldPouchQuickLootOnly = false
 toggleServerIsRetroPVP = false
 toggleTravelsFree = false
+buyAolCommandFee = 0
+buyBlessCommandFee = 0
+teleportPlayerToVocationRoom = true
 
 -- Teleport summon
 -- Set to true will never remove the summon
@@ -245,8 +253,11 @@ deathLosePercent = -1
 -- NOTE: set housePriceEachSQM to -1 to disable the ingame buy house functionality
 -- NOTE: set houseBuyLevel to 0 to disable the min level purchase functionality.
 -- Periods: daily/weekly/monthly/yearly/never
+-- Base: sqm,rent,sqm+rent
+housePriceRentMultiplier = 0.0
 housePriceEachSQM = 1000
 houseRentPeriod = "never"
+houseRentRate = 1.0
 houseOwnedByAccount = false
 houseBuyLevel = 100
 
@@ -388,6 +399,9 @@ rateMonsterDefense = 1.0
 rateBossHealth = 1.0
 rateBossAttack = 1.0
 rateBossDefense = 1.0
+
+bossDefaultTimeToFightAgain = 20 * 60 * 60 -- 20 hours
+bossDefaultTimeToDefeat = 20 * 60 -- 20 minutes
 
 -- Monsters
 deSpawnRange = 2

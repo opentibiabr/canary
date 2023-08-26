@@ -9,13 +9,13 @@
 
 #include "pch.hpp"
 
-#include "server/network/protocol/protocollogin.h"
-#include "server/network/message/outputmessage.h"
-#include "game/scheduling/tasks.h"
+#include "server/network/protocol/protocollogin.hpp"
+#include "server/network/message/outputmessage.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/account/account.hpp"
-#include "io/iologindata.h"
-#include "creatures/players/management/ban.h"
-#include "game/game.h"
+#include "io/iologindata.hpp"
+#include "creatures/players/management/ban.hpp"
+#include "game/game.hpp"
 #include "core.hpp"
 
 void ProtocolLogin::disconnectClient(const std::string &message) {
@@ -48,7 +48,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountIdentifier, const
 	}
 
 	// Update premium days
-	Game::updatePremium(account);
+	account.UpdatePremium();
 
 	auto output = OutputMessagePool::getOutputMessage();
 	const std::string &motd = g_configManager().getString(SERVER_MOTD);
@@ -91,9 +91,11 @@ void ProtocolLogin::getCharacterList(const std::string &accountIdentifier, const
 	// Add premium days
 	output->addByte(0);
 	uint32_t days;
-	account.GetPremiumRemaningDays(&days);
+	time_t lastDay;
+	account.GetPremiumRemainingDays(&days);
+	account.GetPremiumLastDay(&lastDay);
 	output->addByte(0);
-	output->add<uint32_t>(time(nullptr) + (days * 86400));
+	output->add<uint32_t>(lastDay);
 
 	send(output);
 
@@ -122,7 +124,7 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	 */
 
 	if (!Protocol::RSA_decrypt(msg)) {
-		SPDLOG_WARN("[ProtocolLogin::onRecvFirstMessage] - RSA Decrypt Failed");
+		g_logger().warn("[ProtocolLogin::onRecvFirstMessage] - RSA Decrypt Failed");
 		disconnect();
 		return;
 	}
@@ -176,5 +178,5 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-	g_dispatcher().addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, accountIdentifier, password)));
+	g_dispatcher().addTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, accountIdentifier, password));
 }

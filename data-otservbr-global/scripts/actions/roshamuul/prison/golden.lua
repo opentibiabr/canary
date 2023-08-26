@@ -1,5 +1,5 @@
 local setting = {
-	timeToFightAgain = 20,
+	timeToFightAgain = 10,
 	clearRoomTime = 60, -- In hour
 	centerRoom = {x = 33528, y = 32334, z = 12},
 	range = 10,

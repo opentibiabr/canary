@@ -10,8 +10,8 @@
 #include "pch.hpp"
 
 #include "declarations.hpp"
-#include "game/game.h"
-#include "lua/scripts/luascript.h"
+#include "game/game.hpp"
+#include "lua/scripts/luascript.hpp"
 #include "lua/scripts/script_environment.hpp"
 
 ScriptEnvironment::ScriptEnvironment() {
@@ -90,7 +90,7 @@ uint32_t ScriptEnvironment::addThing(Thing* thing) {
 void ScriptEnvironment::insertItem(uint32_t uid, Item* item) {
 	auto result = localMap.emplace(uid, item);
 	if (!result.second) {
-		SPDLOG_ERROR("Thing uid already taken: {}", uid);
+		g_logger().error("Thing uid already taken: {}", uid);
 	}
 }
 

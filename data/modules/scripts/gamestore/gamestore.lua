@@ -44,6 +44,13 @@ if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
 	premiumDescription = premiumDescription .. "\n{usablebyallicon} valid for all characters on this account\n{activated}"
 end
 
+-- GameStore.SearchCategory = {
+-- 	icons = {},
+-- 	name = "Search Results",
+-- 	rookgaard = true,
+-- 	state = GameStore.States.STATE_NONE,
+-- }
+
 GameStore.Categories = {
 	-- Premium Time
 	{
@@ -1395,7 +1402,7 @@ GameStore.Categories = {
 				icons = { "Festive_Mammoth.png" },
 				name = "Festive Mammoth",
 				price = 750,
-				id = 1381,
+				id = 178,
 				description = "{character}\n{speedboost}\n\n<i>The Festive Mammoth, Holiday Mammoth and Merry Mammoth are gentle giants with a massive appearance and impressive tusks, whose mission it is to deliver gifts all across Tibia. They are good-natured beings, spreading joy wherever they go, but you best not cross them - a mammoth never forgets.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
@@ -1547,7 +1554,7 @@ GameStore.Categories = {
 				icons = { "Holiday_Mammoth.png" },
 				name = "Holiday Mammoth",
 				price = 750,
-				id = 1380,
+				id = 177,
 				description = "{character}\n{speedboost}\n\n<i>The Festive Mammoth, Holiday Mammoth and Merry Mammoth are gentle giants with a massive appearance and impressive tusks, whose mission it is to deliver gifts all across Tibia. They are good-natured beings, spreading joy wherever they go, but you best not cross them - a mammoth never forgets.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
@@ -1675,7 +1682,7 @@ GameStore.Categories = {
 				icons = { "Merry_Mammoth.png" },
 				name = "Merry Mammoth",
 				price = 750,
-				id = 1379,
+				id = 176,
 				description = "{character}\n{speedboost}\n\n<i>The Festive Mammoth, Holiday Mammoth and Merry Mammoth are gentle giants with a massive appearance and impressive tusks, whose mission it is to deliver gifts all across Tibia. They are good-natured beings, spreading joy wherever they go, but you best not cross them - a mammoth never forgets.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},

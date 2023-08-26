@@ -7,8 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_SCRIPTS_LUAJIT_SYNC_HPP_
-#define SRC_LUA_SCRIPTS_LUAJIT_SYNC_HPP_
+#pragma once
 
 #if LUA_VERSION_NUM >= 502
 	#ifndef LUA_COMPAT_ALL
@@ -20,5 +19,3 @@
 		#define lua_equal(L, i1, i2) lua_compare(L, (i1), (i2), LUA_OPEQ)
 	#endif
 #endif
-
-#endif // SRC_LUA_SCRIPTS_LUAJIT_SYNC_HPP_

@@ -181,65 +181,18 @@ function Player.removeFamePoints(self, amount)
 end
 
 function Player.depositMoney(self, amount)
-	if not self:removeMoney(amount) then
-		return false
-	end
-
-	self:setBankBalance(self:getBankBalance() + amount)
-	return true
+	return Bank.deposit(self, amount)
 end
 
 function Player.transferMoneyTo(self, target, amount)
 	if not target then
 		return false
 	end
-
-	-- See if you can afford this transfer
-	local balance = self:getBankBalance()
-	if amount > balance then
-		return false
-	end
-
-	-- See if player is online
-	local targetPlayer = Player(target)
-	if targetPlayer then
-		local town = targetPlayer:getTown()
-		if town and town:getId() ~= TOWNS_LIST.DAWNPORT or town:getId() ~= TOWNS_LIST.DAWNPORT_TUTORIAL then
-			-- Blocking transfer to Dawnport
-			targetPlayer:setBankBalance(targetPlayer:getBankBalance() + amount)
-		end
-	else
-		if not playerExists(target) then
-			return false
-		end
-
-		local query_town = db.storeQuery('SELECT `town_id` FROM `players` WHERE `name` = ' .. db.escapeString(target) .. ' LIMIT 1;')
-		if query_town ~= false then
-			local town = Result.getNumber(query_town, "town_id")
-			Result.free(query_town)
-			if town then
-				local town_id = Town(town) and Town(town):getId()
-				if town_id and town_id == TOWNS_LIST.DAWNPORT or town_id == TOWNS_LIST.DAWNPORT_TUTORIAL then
-					-- Blocking transfer to Dawnport
-					return false
-				end
-			end
-			db.query("UPDATE `players` SET `balance` = `balance` + '" .. amount .. "' WHERE `name` = " .. db.escapeString(target))
-		end
-	end
-
-	self:setBankBalance(self:getBankBalance() - amount)
-	return true
+	return Bank.transfer(self, target, amount)
 end
 
 function Player.withdrawMoney(self, amount)
-	local balance = self:getBankBalance()
-	if amount > balance or not self:addMoney(amount) then
-		return false
-	end
-
-	self:setBankBalance(balance - amount)
-	return true
+	return Bank.withdraw(self, amount)
 end
 
 -- player:removeMoneyBank(money)
@@ -268,13 +221,13 @@ function Player:removeMoneyBank(amount)
 			local remains = amount - moneyCount
 
 			-- Removes player bank money
-			self:setBankBalance(bankCount - remains)
+			Bank.debit(self, remains)
 
-			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d from inventory and %d gold from bank account. Your account balance is now %d gold."):format(moneyCount, amount - moneyCount, self:getBankBalance()))
+			self:sendTextMessage(MESSAGE_TRADE, ("Paid %s from inventory and %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(moneyCount), FormatNumber(amount - moneyCount), FormatNumber(self:getBankBalance())))
 			return true
 		else
 			self:setBankBalance(bankCount - amount)
-			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from bank account. Your account balance is now %d gold."):format(amount, self:getBankBalance()))
+			self:sendTextMessage(MESSAGE_TRADE, ("Paid %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(amount), FormatNumber(self:getBankBalance())))
 			return true
 		end
 	end
@@ -494,16 +447,25 @@ function Player.getFinalLowLevelBonus(self)
 end
 
 function Player.updateHazard(self)
-	local area = self:getPosition():getHazardArea()
-	if not area then
+	local zones = self:getZones()
+	if not zones or #zones == 0 then
 		self:setHazardSystemPoints(0)
 		return true
 	end
 
-	if self:getParty() then
-		self:getParty():refreshHazard()
-	else
-		area:refresh(self)
+	for _, zone in pairs(zones) do
+		local hazard = Hazard.getByName(zone:getName())
+		if not hazard then
+			self:setHazardSystemPoints(0)
+			return true
+		end
+
+		if self:getParty() then
+			self:getParty():refreshHazard()
+		else
+			self:setHazardSystemPoints(hazard:getPlayerCurrentLevel(self))
+		end
+		return true
 	end
 	return true
 end
@@ -565,4 +527,22 @@ end
 
 function Player:hasExhaustion(key)
 	return self:getExhaustion(key) > 0 and true or false
+end
+
+function Player:setFiendish()
+	local position = self:getPosition()
+	position:getNextPosition(self:getDirection())
+
+	local tile = Tile(position)
+	local thing = tile:getTopVisibleThing(self)
+	if not tile or thing and not thing:isMonster() then
+		self:sendCancelMessage("Monster not found.")
+		return false
+	end
+
+	local monster = thing:getMonster()
+	if monster then
+		monster:setFiendish(position, self)
+	end
+	return false
 end

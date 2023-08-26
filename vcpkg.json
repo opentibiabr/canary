@@ -4,6 +4,9 @@
   "dependencies": [
     "argon2",
     "asio",
+    "bext-di",
+    "bext-ut",
+    "eventpp",
     "pugixml",
     "spdlog",
     "curl",
@@ -28,5 +31,5 @@
       "platform": "windows"
     }
   ],
-  "builtin-baseline": "861c33057553ee836e7061ffbdabc25ea343145d"
+  "builtin-baseline": "c9fa965c2a1b1334469b4539063f3ce95383653c"
 }

@@ -42,7 +42,7 @@ for _, class in ipairs(classes) do
 		-- Only register if callback has already been defined, otherwise defining afterwards will not work
 		if def.register then
 			if not hasCallback then
-				Spdlog.warn("[HelperConstructors] - Event not registered due to there being no callback")
+				logger.warn("[HelperConstructors] - Event not registered due to there being no callback")
 			else
 				obj:register()
 			end

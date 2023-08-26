@@ -67,6 +67,30 @@ registerMonsterType.Bestiary = function(mtype, mask)
 		end
 	end
 end
+registerMonsterType.bosstiary = function(mtype, mask)
+	local bossClass = nil
+	if mask.bosstiary then
+		if mask.bosstiary.bossRaceId then
+			mtype:bossRaceId(mask.bosstiary.bossRaceId)
+		end
+		if mask.bosstiary.bossRace then
+			if mask.bosstiary.bossRace == RARITY_BANE then
+				bossClass = "Bane"
+			elseif mask.bosstiary.bossRace == RARITY_ARCHFOE then
+				bossClass = "Archfoe"
+			elseif mask.bosstiary.bossRace == RARITY_NEMESIS then
+				bossClass = "Nemesis"
+			end
+			if bossClass ~= nil then
+				mtype:bossRace(mask.bosstiary.bossRace, bossClass)
+			end
+			local storage = mask.bosstiary.storageCooldown
+			if storage ~= nil then
+				mtype:bossStorageCooldown(storage)
+			end
+		end
+	end
+end
 registerMonsterType.skull = function(mtype, mask)
 	if mask.skull then
 		mtype:skull(mask.skull)
@@ -166,8 +190,8 @@ registerMonsterType.flags = function(mtype, mask)
 			mtype:familiar(mask.flags.familiar)
 		end
 		if mask.flags.respawntype or mask.flags.respawnType then
-			Spdlog.warn(string.format("[registerMonsterType.flags] - Monster: %s. Deprecated flag 'respawnType', use instead table 'respawnType = { period = RespawnPeriod_t, underground = boolean}'",
-				mtype:name()))
+			logger.warn("[registerMonsterType.flags] - Monster: {}. Deprecated flag 'respawnType', use instead table 'respawnType = { period = RespawnPeriod_t, underground = boolean}'",
+				mtype:name())
 		end
 		if mask.flags.canPushCreatures ~= nil then
 			mtype:canPushCreatures(mask.flags.canPushCreatures)
@@ -439,7 +463,7 @@ registerMonsterType.loot = function(mtype, mask)
 			mtype:addLoot(parent)
 		end
 		if lootError then
-			Spdlog.warn("[registerMonsterType.loot] - Monster: ".. mtype:name() .. " loot could not correctly be load")
+			logger.warn("[registerMonsterType.loot] - Monster: {} loot could not correctly be load", mtype:name())
 		end
 	end
 end
@@ -502,23 +526,6 @@ registerMonsterType.defenses = function(mtype, mask)
 			if type(defense) == "table" then
 				mtype:addDefense(readSpell(defense, mtype))
 			end
-		end
-	end
-end
-
-registerMonsterType.hazard = function(mtype, mask)
-	if mask.hazard ~= nil then
-		if mask.hazard.criticalChance ~= nil then
-			mtype:hazardSystemCrit(mask.hazard.criticalChance)
-		end
-		if mask.hazard.canDodge ~= nil then
-			mtype:hazardSystemDodge(mask.hazard.canDodge)
-		end
-		if mask.hazard.canSpawnPod ~= nil then
-			mtype:hazardSystemSpawnPod(mask.hazard.canSpawnPod)
-		end
-		if mask.hazard.canDealMoreDamage ~= nil then
-			mtype:hazardSystemDamageBoost(mask.hazard.canDealMoreDamage)
 		end
 	end
 end
@@ -855,7 +862,7 @@ function readSpell(incomingLua, mtype)
 				elseif incomingLua.name == "condition" then
 					spell:setConditionType(incomingLua.type)
 				else
-					Spdlog.warn("[readSpell] - Monster ".. mtype:name() .. ": Loading spell ".. incomingLua.name .. ". Parameter type applies only for condition and combat.")
+					logger.warn("[readSpell] - Monster {}: Loading spell {}. Parameter type applies only for condition and combat.", mtype:name(), incomingLua.name)
 				end
 			end
 			if incomingLua.interval then

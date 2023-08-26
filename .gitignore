@@ -31,7 +31,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 build/
-vcxproj/
+vcproj/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -371,6 +371,7 @@ tasks.json
 config.lua
 config_canary.lua
 client_assertions.txt
+.env
 # Extensions
 *.ini
 *.otb

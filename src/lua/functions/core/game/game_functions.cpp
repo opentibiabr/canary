@@ -179,13 +179,13 @@ int GameFunctions::luaGameGetNpcCount(lua_State* L) {
 
 int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 	// Game.getMonsterTypes()
-	const auto &type = g_monsters().monsters;
+	const auto type = g_monsters().monsters;
 	lua_createtable(L, type.size(), 0);
 
-	for (const auto &mType : type) {
-		pushUserdata<MonsterType>(L, mType.second);
+	for (const auto [typeName, mType] : type) {
+		pushUserdata<MonsterType>(L, mType);
 		setMetatable(L, -1, "MonsterType");
-		lua_setfield(L, -2, mType.first.c_str());
+		lua_setfield(L, -2, typeName.c_str());
 	}
 	return 1;
 }
@@ -499,8 +499,8 @@ int GameFunctions::luaGameGetBestiaryCharm(lua_State* L) {
 	lua_createtable(L, c_list.size(), 0);
 
 	int index = 0;
-	for (const auto &it : c_list) {
-		pushUserdata<Charm>(L, it.get());
+	for (const auto charmPtr : c_list) {
+		pushUserdata<Charm>(L, charmPtr);
 		setMetatable(L, -1, "Charm");
 		lua_rawseti(L, -2, ++index);
 	}
@@ -509,7 +509,7 @@ int GameFunctions::luaGameGetBestiaryCharm(lua_State* L) {
 
 int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 	// Game.createBestiaryCharm(id)
-	if (const std::shared_ptr<Charm> &charm = g_iobestiary().getBestiaryCharm(static_cast<charmRune_t>(getNumber<int8_t>(L, 1, 0)), true)) {
+	if (const std::shared_ptr<Charm> charm = g_iobestiary().getBestiaryCharm(static_cast<charmRune_t>(getNumber<int8_t>(L, 1, 0)), true)) {
 		pushUserdata<Charm>(L, charm);
 		setMetatable(L, -1, "Charm");
 	} else {
@@ -628,7 +628,7 @@ int GameFunctions::luaGameGetNormalizedPlayerName(lua_State* L) {
 int GameFunctions::luaGameGetNormalizedGuildName(lua_State* L) {
 	// Game.getNormalizedGuildName(name)
 	auto name = getString(L, 1);
-	const auto &guild = g_game().getGuildByName(name, true);
+	const auto guild = g_game().getGuildByName(name, true);
 	if (guild) {
 		pushString(L, guild->getName());
 	} else {

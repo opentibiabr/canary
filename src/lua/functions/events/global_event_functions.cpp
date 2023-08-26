@@ -16,15 +16,11 @@
 #include "utils/tools.hpp"
 
 int GlobalEventFunctions::luaCreateGlobalEvent(lua_State* L) {
-	const auto &global = std::make_shared<GlobalEvent>(getScriptEnv()->getScriptInterface());
-	if (global) {
-		global->setName(getString(L, 2));
-		global->setEventType(GLOBALEVENT_NONE);
-		pushUserdata<GlobalEvent>(L, global);
-		setMetatable(L, -1, "GlobalEvent");
-	} else {
-		lua_pushnil(L);
-	}
+	const auto global = std::make_shared<GlobalEvent>(getScriptEnv()->getScriptInterface());
+	global->setName(getString(L, 2));
+	global->setEventType(GLOBALEVENT_NONE);
+	pushUserdata<GlobalEvent>(L, global);
+	setMetatable(L, -1, "GlobalEvent");
 	return 1;
 }
 

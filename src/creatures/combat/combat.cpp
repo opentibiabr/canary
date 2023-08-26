@@ -19,7 +19,7 @@
 #include "creatures/monsters/monsters.hpp"
 #include "items/weapons/weapons.hpp"
 
-int32_t Combat::getLevelFormula(const Player* player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const {
+int32_t Combat::getLevelFormula(const Player* player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
 		return 0;
 	}
@@ -708,9 +708,9 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 			} else if (caster && caster->getMonster()) {
 				uint16_t playerCharmRaceid = player->parseRacebyCharm(CHARM_CLEANSE, false, 0);
 				if (playerCharmRaceid != 0) {
-					const auto &mType = g_monsters().getMonsterType(caster->getName());
+					const auto mType = g_monsters().getMonsterType(caster->getName());
 					if (mType && playerCharmRaceid == mType->info.raceid) {
-						const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_CLEANSE);
+						const auto charm = g_iobestiary().getBestiaryCharm(CHARM_CLEANSE);
 						if (charm && (charm->chance > normal_random(0, 100))) {
 							if (player->hasCondition(condition->getType())) {
 								player->removeCondition(condition->getType());
@@ -1143,9 +1143,9 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, const Position &
 		if (target && target->getMonster() && damage.primary.type != COMBAT_HEALING) {
 			uint16_t playerCharmRaceid = caster->getPlayer()->parseRacebyCharm(CHARM_LOW, false, 0);
 			if (playerCharmRaceid != 0) {
-				const auto &mType = g_monsters().getMonsterType(target->getName());
+				const auto mType = g_monsters().getMonsterType(target->getName());
 				if (mType && playerCharmRaceid == mType->info.raceid) {
-					const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
+					const auto charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 					if (charm) {
 						chance += charm->percent;
 						g_game().sendDoubleSoundEffect(target->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, caster);
@@ -1433,9 +1433,9 @@ uint32_t ValueCallback::getMagicLevelSkill(const Player* player, const CombatDam
 	uint32_t magicLevelSkill = player->getMagicLevel();
 	// Wheel of destiny
 	if (player && player->wheel()->getInstant("Runic Mastery") && damage.instantSpellName.empty()) {
-		const std::shared_ptr<Spell> &spell = g_spells().getRuneSpellByName(damage.runeSpellName);
+		const std::shared_ptr<Spell> spell = g_spells().getRuneSpellByName(damage.runeSpellName);
 		// Rune conjuring spell have the same name as the rune item spell.
-		const std::shared_ptr<InstantSpell> &conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
+		const std::shared_ptr<InstantSpell> conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
 		if (spell && conjuringSpell && conjuringSpell != spell && normal_random(0, 100) <= 25) {
 			uint32_t castResult = conjuringSpell->canCast(player) ? 20 : 10;
 			magicLevelSkill += magicLevelSkill * castResult / 100;

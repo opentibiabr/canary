@@ -512,7 +512,7 @@ uint32_t Player::getClientIcons() const {
 	return icon_bitset.to_ulong();
 }
 
-void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> &mtype, bool isBoss, bool reloadClient /* = false */) {
+void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType> mtype, bool isBoss, bool reloadClient /* = false */) {
 	if (client) {
 		uint16_t raceId = mtype ? mtype->info.raceid : 0;
 		// Bostiary tracker logic
@@ -556,7 +556,7 @@ void Player::removeMonsterFromCyclopediaTrackerList(std::shared_ptr<MonsterType>
 	}
 }
 
-bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const {
+bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> monsterType) const {
 	if (!monsterType) {
 		return false;
 	}
@@ -2611,7 +2611,7 @@ void Player::death(Creature* lastHitCreature) {
 		// Charm bless bestiary
 		if (lastHitCreature && lastHitCreature->getMonster()) {
 			if (charmRuneBless != 0) {
-				const auto &mType = g_monsters().getMonsterType(lastHitCreature->getName());
+				const auto mType = g_monsters().getMonsterType(lastHitCreature->getName());
 				if (mType && mType->info.raceid == charmRuneBless) {
 					deathLossPercent = (deathLossPercent * 90) / 100;
 				}
@@ -4822,7 +4822,7 @@ bool Player::removeOutfitAddon(uint16_t lookType, uint8_t addons) {
 	return false;
 }
 
-bool Player::getOutfitAddons(const std::shared_ptr<Outfit> &outfit, uint8_t &addons) const {
+bool Player::getOutfitAddons(const std::shared_ptr<Outfit> outfit, uint8_t &addons) const {
 	if (group->access) {
 		addons = 3;
 		return true;
@@ -5128,7 +5128,7 @@ bool Player::isInWar(const Player* player) const {
 		return false;
 	}
 
-	const auto &playerGuild = player->getGuild();
+	const auto playerGuild = player->getGuild();
 	if (!playerGuild) {
 		return false;
 	}
@@ -5509,7 +5509,7 @@ GuildEmblems_t Player::getGuildEmblem(const Player* player) const {
 		return GUILDEMBLEM_NONE;
 	}
 
-	const auto &playerGuild = player->getGuild();
+	const auto playerGuild = player->getGuild();
 	if (!playerGuild) {
 		return GUILDEMBLEM_NONE;
 	}
@@ -5578,8 +5578,8 @@ void Player::setCurrentMount(uint8_t mount) {
 }
 
 bool Player::hasAnyMount() const {
-	for (const auto &mounts = g_game().mounts.getMounts();
-		 const auto &mount : mounts) {
+	const auto mounts = g_game().mounts.getMounts();
+	for (const auto mount : mounts) {
 		if (hasMount(mount)) {
 			return true;
 		}
@@ -5589,9 +5589,8 @@ bool Player::hasAnyMount() const {
 
 uint8_t Player::getRandomMountId() const {
 	std::vector<uint8_t> playerMounts;
-
-	for (const auto &mounts = g_game().mounts.getMounts();
-		 const auto &mount : mounts) {
+	const auto mounts = g_game().mounts.getMounts();
+	for (const auto mount : mounts) {
 		if (hasMount(mount)) {
 			playerMounts.push_back(mount->id);
 		}
@@ -5633,7 +5632,7 @@ bool Player::toggleMount(bool mount) {
 			currentMountId = getRandomMountId();
 		}
 
-		const auto &currentMount = g_game().mounts.getMountByID(currentMountId);
+		const auto currentMount = g_game().mounts.getMountByID(currentMountId);
 		if (!currentMount) {
 			return false;
 		}
@@ -5720,7 +5719,7 @@ bool Player::untameMount(uint8_t mountId) {
 	return true;
 }
 
-bool Player::hasMount(const std::shared_ptr<Mount> &mount) const {
+bool Player::hasMount(const std::shared_ptr<Mount> mount) const {
 	if (isAccessPlayer()) {
 		return true;
 	}
@@ -5740,7 +5739,7 @@ bool Player::hasMount(const std::shared_ptr<Mount> &mount) const {
 }
 
 void Player::dismount() {
-	const auto &mount = g_game().mounts.getMountByID(getCurrentMount());
+	const auto mount = g_game().mounts.getMountByID(getCurrentMount());
 	if (mount && mount->speed > 0) {
 		g_game().changeSpeed(this, -mount->speed);
 	}
@@ -5918,7 +5917,7 @@ uint16_t Player::getHelpers() const {
 	if (guild && party) {
 		phmap::flat_hash_set<Player*> helperSet;
 
-		const auto &guildMembers = guild->getMembersOnline();
+		const auto guildMembers = guild->getMembersOnline();
 		helperSet.insert(guildMembers.begin(), guildMembers.end());
 
 		const auto &partyMembers = party->getMembers();
@@ -6047,7 +6046,7 @@ std::forward_list<Condition*> Player::getMuteConditions() const {
 	return muteConditions;
 }
 
-void Player::setGuild(const std::shared_ptr<Guild> &newGuild) {
+void Player::setGuild(const std::shared_ptr<Guild> newGuild) {
 	if (newGuild == guild) {
 		return;
 	}
@@ -6061,7 +6060,7 @@ void Player::setGuild(const std::shared_ptr<Guild> &newGuild) {
 	guildRank = nullptr;
 
 	if (newGuild) {
-		const auto &rank = newGuild->getRankByLevel(1);
+		const auto rank = newGuild->getRankByLevel(1);
 		if (!rank) {
 			return;
 		}
@@ -6432,7 +6431,7 @@ std::string Player::getBlessingsName() const {
 	return os.str();
 }
 
-bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> &mtype) const {
+bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> mtype) const {
 	if (!mtype) {
 		return false;
 	}

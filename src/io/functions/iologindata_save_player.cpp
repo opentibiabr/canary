@@ -432,7 +432,7 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const Player* player) {
 	query << "`UnlockedRunesBit` = " << player->UnlockedRunesBit << ",";
 
 	PropWriteStream propBestiaryStream;
-	for (const auto &trackedType : player->getCyclopediaMonsterTrackerSet(false)) {
+	for (const auto trackedType : player->getCyclopediaMonsterTrackerSet(false)) {
 		propBestiaryStream.write<uint16_t>(trackedType->info.raceid);
 	}
 	size_t trackerSize;
@@ -735,7 +735,7 @@ bool IOLoginDataSave::savePlayerBosstiary(const Player* player) {
 
 	// Bosstiary tracker
 	PropWriteStream stream;
-	for (const auto &monsterType : player->getCyclopediaMonsterTrackerSet(true)) {
+	for (const auto monsterType : player->getCyclopediaMonsterTrackerSet(true)) {
 		if (!monsterType) {
 			continue;
 		}

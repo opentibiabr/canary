@@ -64,8 +64,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
 		if player:getItemCount(10328) > 0 then
-			npcHandler:say(string.format("Here you go. %d rice balls. Hope you buy a beer with them at least.", player:getItemCount(10328)*10), npc, creature)
-			player:addItem(10329, player:getItemCount(10328)*10)
+			npcHandler:say(string.format("Here you go. %d rice balls. Hope you buy a beer with them at least.", player:getItemCount(10328) * 10), npc, creature)
+			player:addItem(10329, player:getItemCount(10328) * 10)
 			player:removeItem(10328, player:getItemCount(10328))
 		else
 			npcHandler:say("You don't have a ripe rice plant. Thank fire and earth I was spared.", npc, creature)
@@ -99,16 +99,16 @@ end
 npcType.onCheckItem = function(npc, player, clientId, subType)
 end
 -- Basic
-keywordHandler:addKeyword({"job"}, StdModule.say, {npcHandler = npcHandler, text = "Well, you see me standing behind a bar. Selling drinks. Food. And stuff. Now try figuring out what I could be making a living of down here."})
-keywordHandler:addKeyword({"food"}, StdModule.say, {npcHandler = npcHandler, text = "I can offer you bread, cheese, ham, or meat. And as drinks we serve beer and water. If you'd like to see what we have to offer, just ask me for a trade."})
-keywordHandler:addAliasKeyword({"offer"})
-keywordHandler:addAliasKeyword({"drinks"})
-keywordHandler:addAliasKeyword({"buy"})
-keywordHandler:addAliasKeyword({"sell"})
-keywordHandler:addAliasKeyword({"equipment"})
-keywordHandler:addAliasKeyword({"goods"})
-keywordHandler:addAliasKeyword({"stuff"})
-keywordHandler:addAliasKeyword({"ware"})
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "Well, you see me standing behind a bar. Selling drinks. Food. And stuff. Now try figuring out what I could be making a living of down here." })
+keywordHandler:addKeyword({ "food" }, StdModule.say, { npcHandler = npcHandler, text = "I can offer you bread, cheese, ham, or meat. And as drinks we serve beer and water. If you'd like to see what we have to offer, just ask me for a trade." })
+keywordHandler:addAliasKeyword({ "offer" })
+keywordHandler:addAliasKeyword({ "drinks" })
+keywordHandler:addAliasKeyword({ "buy" })
+keywordHandler:addAliasKeyword({ "sell" })
+keywordHandler:addAliasKeyword({ "equipment" })
+keywordHandler:addAliasKeyword({ "goods" })
+keywordHandler:addAliasKeyword({ "stuff" })
+keywordHandler:addAliasKeyword({ "ware" })
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Take a look, but not a sip before you've paid. And I hope it stays like this and you don't get any strange ideas about {rice}.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 

@@ -60,18 +60,18 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "I am like the merciless northwind.", yell = false},
-	{text = "Snow will be your death shroud.", yell = false},
-	{text = "Feel the wrath of father chyll!", yell = false}
+	{ text = "I am like the merciless northwind.", yell = false },
+	{ text = "Snow will be your death shroud.", yell = false },
+	{ text = "Feel the wrath of father chyll!", yell = false }
 }
 
 monster.loot = {
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -455},
-	{name ="melee", interval = 3000, chance = 50, minDamage = -500, maxDamage = -800},
-	{name ="combat", interval = 1000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -170, maxDamage = -200, range = 7, shootEffect = CONST_ANI_SNOWBALL, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -455 },
+	{ name = "melee", interval = 3000, chance = 50, minDamage = -500, maxDamage = -800 },
+	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -170, maxDamage = -200, range = 7, shootEffect = CONST_ANI_SNOWBALL, target = false }
 }
 
 monster.defenses = {
@@ -80,23 +80,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -1},
-	{type = COMBAT_ENERGYDAMAGE, percent = -10},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 1},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -1 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 1 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

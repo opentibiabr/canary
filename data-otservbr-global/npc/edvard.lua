@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Have you moved to a new home? I\'m the specialist for equipping it.'}
+	{ text = 'Have you moved to a new home? I\'m the specialist for equipping it.' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,7 +56,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({'furniture'}, StdModule.say, {npcHandler = npcHandler, text = "Well, as you can see, I sell furniture. Ask me for a {trade} if you're interested to see my wares."})
+keywordHandler:addKeyword({ 'furniture' }, StdModule.say, { npcHandler = npcHandler, text = "Well, as you can see, I sell furniture. Ask me for a {trade} if you're interested to see my wares." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to Edron Furniture Store, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Have a look. Most furniture comes in handy kits. Just use them in your house to assemble the furniture. Do you want to see only a certain {type} of furniture?")

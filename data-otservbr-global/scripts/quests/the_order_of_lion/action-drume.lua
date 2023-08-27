@@ -10,7 +10,7 @@ local config = {
 		Position(32448, 32512, 7)
 	},
 	firstPlayerPosition = Position(32457, 32508, 6),
-    centerPosition = Position(32439, 32523, 7), -- Center Room
+	centerPosition = Position(32439, 32523, 7), -- Center Room
 	exitPosition = Position(32453, 32503, 7), -- Exit Position
 	newPosition = Position(32453, 32510, 7),
 	rangeX = 22,
@@ -107,8 +107,7 @@ function drumeAction.onUse(player, item, fromPosition, target, toPosition, isHot
 	for _, pi in pairs(players) do
 		pi:setStorageValue(Storage.TheOrderOfTheLion.Drume.Timer, os.time() + (configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN)))
 		pi:teleportTo(config.newPosition)
-		pi:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have " ..config.timeToKill.." minutes to defeat Drume.")
-
+		pi:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have " .. config.timeToKill .. " minutes to defeat Drume.")
 	end
 	if currentEvent then
 		stopEvent(currentEvent)
@@ -120,5 +119,6 @@ function drumeAction.onUse(player, item, fromPosition, target, toPosition, isHot
 	Game.setStorageValue(Storage.TheOrderOfTheLion.Drume.TotalUsurperCommanders, totalUsurper)
 	return true
 end
+
 drumeAction:aid(59601)
 drumeAction:register()

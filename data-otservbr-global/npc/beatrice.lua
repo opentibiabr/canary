@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Selling general goods and paperware! Come to my shop!'}
+	{ text = 'Selling general goods and paperware! Come to my shop!' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -77,7 +77,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			else
 				npcHandler:say("You don't have enough money.", npc, creature)
 			end
-		npcHandler:setTopic(playerId, 0)
+			npcHandler:setTopic(playerId, 0)
 		end
 	end
 	return true

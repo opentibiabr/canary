@@ -26,8 +26,8 @@ function addCharm.onSay(player, words, param)
 	target:sendCancelMessage("Received " .. split[2] .. " charm points!")
 	target:addCharmPoints(tonumber(split[2]))
 	target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
-
 end
+
 addCharm:separator(" ")
 addCharm:groupType("god")
 addCharm:register()
@@ -52,7 +52,6 @@ function resetCharm.onSay(player, words, param)
 	target:sendCancelMessage("Reseted your charm points!")
 	target:resetCharmsBestiary()
 	target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
-
 end
 
 resetCharm:separator(" ")
@@ -79,7 +78,6 @@ function charmExpansion.onSay(player, words, param)
 	target:sendCancelMessage("Received charm expansion!")
 	target:charmExpansion(true)
 	target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
-
 end
 
 charmExpansion:separator(" ")
@@ -106,7 +104,6 @@ function charmRune.onSay(player, words, param)
 	target:sendCancelMessage("Received all charm runes!")
 	target:unlockAllCharmRunes()
 	target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
-
 end
 
 charmRune:separator(" ")

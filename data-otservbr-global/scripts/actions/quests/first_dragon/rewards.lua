@@ -1,20 +1,20 @@
 local bpItems = {
-	{name = 'ancient coin', count = 1},
-	{name = 'draken sulphur', count = 1},
-	{name = 'seacrest hair', count = 2},
-	{name = 'mystical hourglass', count = 2},
-	{name = 'gold token', count = 3},
-	{name = 'blue gem', count = 1},
-	{name = 'yellow gem', count = 1},
-	{name = 'red gem', count = 1},
-	{name = 'demon horn', count = 2},
-	{name = 'slime heart', count = 2},
-	{name = 'energy vein', count = 2},
-	{name = 'petrified scream', count = 2},
-	{name = 'brimstone shell', count = 2},
-	{name = 'deepling wart', count = 2},
-	{name = 'wyrm scale', count = 2},
-	{name = 'hellspawn tail', count = 2}
+	{ name = 'ancient coin', count = 1 },
+	{ name = 'draken sulphur', count = 1 },
+	{ name = 'seacrest hair', count = 2 },
+	{ name = 'mystical hourglass', count = 2 },
+	{ name = 'gold token', count = 3 },
+	{ name = 'blue gem', count = 1 },
+	{ name = 'yellow gem', count = 1 },
+	{ name = 'red gem', count = 1 },
+	{ name = 'demon horn', count = 2 },
+	{ name = 'slime heart', count = 2 },
+	{ name = 'energy vein', count = 2 },
+	{ name = 'petrified scream', count = 2 },
+	{ name = 'brimstone shell', count = 2 },
+	{ name = 'deepling wart', count = 2 },
+	{ name = 'wyrm scale', count = 2 },
+	{ name = 'hellspawn tail', count = 2 }
 }
 
 local chests = {
@@ -41,7 +41,7 @@ function finalReward.onUse(player, item, fromPosition, target, toPosition, isHot
 	if item.uid == 14021 and player:getStorageValue(Storage.FirstDragon.RewardFeather) < os.time() then
 		player:addItem(setting.name, setting.count, true)
 		player:setStorageValue(Storage.FirstDragon.RewardFeather, os.time() + 24 * 3600)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You found ' ..setting.count.. ' ' ..setting.name..'.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You found ' .. setting.count .. ' ' .. setting.name .. '.')
 	elseif item.uid == 14022 and player:getStorageValue(Storage.FirstDragon.RewardBackpack) < os.time() then
 		local bp = Game.createItem('Backpack', 1)
 		if bp then
@@ -55,9 +55,9 @@ function finalReward.onUse(player, item, fromPosition, target, toPosition, isHot
 	elseif item.uid == 14023 and player:getStorageValue(Storage.FirstDragon.RewardMask) < os.time() then
 		player:addItem(setting.name, setting.count, true)
 		player:setStorageValue(Storage.FirstDragon.RewardMask, os.time() + 60 * 60 * 5 * 24)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You found ' ..setting.count.. ' ' ..setting.name..'.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You found ' .. setting.count .. ' ' .. setting.name .. '.')
 	else
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The ' ..getItemName(setting.itemId).. ' is empty.')
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'The ' .. getItemName(setting.itemId) .. ' is empty.')
 	end
 	return true
 end

@@ -12,7 +12,7 @@ function distortedSource.onThink(creature)
 				health = spec:getHealth()
 				difference = glyph:getHealth() - health
 				spec:teleportTo(Position(31989, 32823, 15))
-				glyph:addHealth( - difference)
+				glyph:addHealth(-difference)
 				glyph:teleportTo(pos2)
 				glyph:say('Drawing upon the power of the source, the Glyph becomes shielded again!', TALKTYPE_MONSTER_SAY)
 				return true
@@ -29,7 +29,7 @@ function distortedSource.onThink(creature)
 				health = spec2:getHealth()
 				difference = glyph:getHealth() - health
 				spec2:teleportTo(Position(31989, 32823, 15))
-				glyph:addHealth( - difference)
+				glyph:addHealth(-difference)
 				glyph:teleportTo(pos3)
 				glyph:say('Without the power of the source the Glyph loses its protection!', TALKTYPE_MONSTER_SAY)
 				return true
@@ -37,4 +37,5 @@ function distortedSource.onThink(creature)
 		end
 	end
 end
+
 distortedSource:register()

@@ -13,24 +13,24 @@ local rewards = {
 local tests = {
 	{
 		storage = Storage.LionsRock.OuterSanctum.LionsStrength,
-		itemPosition = {x = 33137, y = 32291, z = 8},
-		pagodaPosition = { x = 33134, y = 32289, z = 8},
+		itemPosition = { x = 33137, y = 32291, z = 8 },
+		pagodaPosition = { x = 33134, y = 32289, z = 8 },
 		item = 9634,
 		message = "You have sacrificed a cobra tongue at an ancient statue. The light in the small pyramid nearby begins to shine.",
 		effect = CONST_ME_BLOCKHIT
 	},
 	{
 		storage = Storage.LionsRock.OuterSanctum.LionsBeauty,
-		itemPosition = {x = 33138, y = 32369, z = 8},
-		pagodaPosition = { x = 33136, y = 32369, z = 8},
+		itemPosition = { x = 33138, y = 32369, z = 8 },
+		pagodaPosition = { x = 33136, y = 32369, z = 8 },
 		item = 21389,
 		message = "You burnt a lion's mane flower. The light in the small pyramid nearby begins to shine.",
 		effect = CONST_ME_REDSMOKE
 	},
 	{
 		storage = Storage.LionsRock.OuterSanctum.LionsTears,
-		itemPosition = {x = 33154, y = 32279, z = 8},
-		pagodaPosition = { x = 33156, y = 32279, z = 8},
+		itemPosition = { x = 33154, y = 32279, z = 8 },
+		pagodaPosition = { x = 33156, y = 32279, z = 8 },
 		item = 21466,
 		message = "You have purified a sacret pedestal with holy water. You have now passed the last test\z
 		to enter thge inner sanctum.",
@@ -104,7 +104,7 @@ function lionsGetHolyWater.onUse(player, item, fromPosition, target, toPosition,
 	return true
 end
 
-lionsGetHolyWater:position({x = 33137, y = 32351, z = 6})
+lionsGetHolyWater:position({ x = 33137, y = 32351, z = 6 })
 lionsGetHolyWater:register()
 
 -- Lions rock fountain
@@ -130,7 +130,7 @@ function lionsRockFountain.onUse(player, item, fromPosition, target, toPosition,
 		player:setStorageValue(Storage.LionsRock.Questline, 11)
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-		'At the moment there is neither a treasure nor anything else in the fountain. Perhaps you might return later.')
+			'At the moment there is neither a treasure nor anything else in the fountain. Perhaps you might return later.')
 	end
 	return true
 end

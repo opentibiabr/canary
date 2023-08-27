@@ -24,4 +24,5 @@ function regenerateStamina.onLogin(player)
 	player:setStamina(staminaMinutes)
 	return true
 end
+
 regenerateStamina:register()

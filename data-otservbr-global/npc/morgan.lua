@@ -67,7 +67,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				'Ahh. So Duncan sent you, eh? You must have done something really impressive. \
 				Okay, take this fine sabre from me, mate.',
-			creature)
+				creature)
 		end
 	elseif MsgContains(message, 'mission') then
 		if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 3 then
@@ -81,7 +81,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					"Of course it's a long journey but you asked for it. \
 					You will have to prove us your worth. Are you up to that?"
 				},
-			creature)
+				creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 5 then
 			npcHandler:say('Thank you for delivering my letter to Eremo. I have no more missions for you.', npc, creature)
@@ -152,7 +152,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 keywordHandler:addKeyword(
-	{'addon'},
+	{ 'addon' },
 	StdModule.say,
 	{
 		npcHandler = npcHandler,
@@ -161,7 +161,7 @@ keywordHandler:addKeyword(
 	}
 )
 keywordHandler:addKeyword(
-	{'weapons'},
+	{ 'weapons' },
 	StdModule.say,
 	{
 		npcHandler = npcHandler,

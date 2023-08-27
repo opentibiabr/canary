@@ -14,7 +14,7 @@ function teleport.onStepIn(creature, item, position, fromPosition)
 	end
 
 	local completedSacrifice = true
-	for sacrificeItemId, sacrificeTile in pairs (sacrifices) do
+	for sacrificeItemId, sacrificeTile in pairs(sacrifices) do
 		if sacrificeTile:getThing(1).itemId ~= sacrificeItemId then
 			completedSacrifice = false
 			break

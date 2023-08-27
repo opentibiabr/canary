@@ -71,39 +71,39 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -600, maxDamage = -1000},
-	{name ="combat", interval = 2000, chance = 12, type = COMBAT_LIFEDRAIN, minDamage = -400, maxDamage = -700, length = 4, spread = 3, effect = CONST_ME_POFF, target = false},
-	{name ="combat", interval = 2000, chance = 12, type = COMBAT_MANADRAIN, minDamage = -1400, maxDamage = -1700, length = 9, spread = 3, effect = CONST_ME_CARNIPHILA, target = false},
-	{name ="combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -700, length = 9, spread = 3, effect = CONST_ME_MORTAREA, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -250, radius = 10, effect = CONST_ME_BLOCKHIT, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -600, maxDamage = -1000 },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_LIFEDRAIN, minDamage = -400, maxDamage = -700, length = 4, spread = 3, effect = CONST_ME_POFF, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_MANADRAIN, minDamage = -1400, maxDamage = -1700, length = 9, spread = 3, effect = CONST_ME_CARNIPHILA, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -700, length = 9, spread = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -250, radius = 10, effect = CONST_ME_BLOCKHIT, target = false }
 }
 
 monster.defenses = {
 	defense = 60,
 	armor = 60,
-	{name ="thorn summon", interval = 2000, chance = 20, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 1550, maxDamage = 2550, effect = CONST_ME_MAGIC_BLUE, target = false},
-	{name ="speed", interval = 1000, chance = 12, speedChange = 620, effect = CONST_ME_MAGIC_RED, target = false, duration = 4000}
+	{ name = "thorn summon", interval = 2000, chance = 20, target = false },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 1550, maxDamage = 2550, effect = CONST_ME_MAGIC_BLUE, target = false },
+	{ name = "speed", interval = 1000, chance = 12, speedChange = 620, effect = CONST_ME_MAGIC_RED, target = false, duration = 4000 }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 80},
-	{type = COMBAT_ENERGYDAMAGE, percent = 80},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 80},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 80},
-	{type = COMBAT_HOLYDAMAGE , percent = 80},
-	{type = COMBAT_DEATHDAMAGE , percent = 80}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 80 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 80 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 80 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 80 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 80 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 80 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

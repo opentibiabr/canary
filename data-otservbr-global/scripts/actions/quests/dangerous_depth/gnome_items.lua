@@ -20,5 +20,5 @@ function dangerousDepthItems.onUse(player, item)
 	return true
 end
 
-dangerousDepthItems:uid(57235,57236)
+dangerousDepthItems:uid(57235, 57236)
 dangerousDepthItems:register()

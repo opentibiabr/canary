@@ -75,7 +75,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Zzoftzzkinzz zzo full of fear.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif MsgContains(message, 'hurry') or MsgContains(message, 'job')  then
+	elseif MsgContains(message, 'hurry') or MsgContains(message, 'job') then
 		npcHandler:say('Me zzimple ferryman. I arrange {trip} to Zzao.', npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end

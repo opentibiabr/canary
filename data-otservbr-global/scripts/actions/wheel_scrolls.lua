@@ -1,9 +1,9 @@
 local promotionScrolls = {
-	[43946] = {storageName = "wheel.scroll.abridged", points = 3, name = "abridged promotion scroll"},
-	[43947] = {storageName = "wheel.scroll.basic", points = 5, name = "basic promotion scroll"},
-	[43948] = {storageName = "wheel.scroll.revised", points = 9, name = "revised promotion scroll"},
-	[43949] = {storageName = "wheel.scroll.extended", points = 13, name = "extended promotion scroll"},
-	[43950] = {storageName = "wheel.scroll.advanced", points = 20, name = "advanced promotion scroll"},
+	[43946] = { storageName = "wheel.scroll.abridged", points = 3, name = "abridged promotion scroll" },
+	[43947] = { storageName = "wheel.scroll.basic", points = 5, name = "basic promotion scroll" },
+	[43948] = { storageName = "wheel.scroll.revised", points = 9, name = "revised promotion scroll" },
+	[43949] = { storageName = "wheel.scroll.extended", points = 13, name = "extended promotion scroll" },
+	[43950] = { storageName = "wheel.scroll.advanced", points = 20, name = "advanced promotion scroll" },
 }
 
 local scroll = Action()

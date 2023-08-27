@@ -1,6 +1,6 @@
 local condition = Condition(CONDITION_OUTFIT)
 condition:setTicks(10000)
-condition:setOutfit({lookType = 65})
+condition:setOutfit({ lookType = 65 })
 
 local whatFoolishDisguise = Action()
 function whatFoolishDisguise.onUse(player, item, fromPosition, target, toPosition, isHotkey)

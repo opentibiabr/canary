@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Inukaya, Chyllfroest, Chakoya Iceberg, Nibelor (during a quest)."
-	}
+}
 
 monster.health = 68
 monster.maxHealth = 68
@@ -70,26 +70,26 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Quisavu tukavi!", yell = false},
-	{text = "Si siyoqua jamjam!", yell = false},
-	{text = "Achuq! jinuma!", yell = false},
-	{text = "Si ji jusipa!", yell = false}
+	{ text = "Quisavu tukavi!", yell = false },
+	{ text = "Si siyoqua jamjam!", yell = false },
+	{ text = "Achuq! jinuma!", yell = false },
+	{ text = "Si ji jusipa!", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 79590, maxCount = 20},
-	{name = "short sword", chance = 4810},
-	{name = "bone shield", chance = 1030},
-	{id = 3578, chance = 19370}, -- fish
-	{name = "northern pike", chance = 60},
-	{name = "rainbow trout", chance = 50},
-	{name = "green perch", chance = 100},
-	{name = "mammoth whopper", chance = 130},
-	{name = "fireproof horn", chance = 350}
+	{ name = "gold coin", chance = 79590, maxCount = 20 },
+	{ name = "short sword", chance = 4810 },
+	{ name = "bone shield", chance = 1030 },
+	{ id = 3578, chance = 19370 }, -- fish
+	{ name = "northern pike", chance = 60 },
+	{ name = "rainbow trout", chance = 50 },
+	{ name = "green perch", chance = 100 },
+	{ name = "mammoth whopper", chance = 130 },
+	{ name = "fireproof horn", chance = 350 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30 }
 }
 
 monster.defenses = {
@@ -98,23 +98,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = -15},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 25},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 10},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -15 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 25 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

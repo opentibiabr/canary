@@ -6,11 +6,11 @@ local config = {
 	requiredLevel = 250,
 
 	playerPositions = {
-		{pos = Position(33854, 31854, 6), teleport = Position(33856, 31872, 7), effect = CONST_ME_TELEPORT},
-		{pos = Position(33855, 31854, 6), teleport = Position(33856, 31872, 7), effect = CONST_ME_TELEPORT},
-		{pos = Position(33856, 31854, 6), teleport = Position(33856, 31872, 7), effect = CONST_ME_TELEPORT},
-		{pos = Position(33857, 31854, 6), teleport = Position(33856, 31872, 7), effect = CONST_ME_TELEPORT},
-		{pos = Position(33858, 31854, 6), teleport = Position(33856, 31872, 7), effect = CONST_ME_TELEPORT}
+		{ pos = Position(33854, 31854, 6), teleport = Position(33856, 31872, 7), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33855, 31854, 6), teleport = Position(33856, 31872, 7), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33856, 31854, 6), teleport = Position(33856, 31872, 7), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33857, 31854, 6), teleport = Position(33856, 31872, 7), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33858, 31854, 6), teleport = Position(33856, 31872, 7), effect = CONST_ME_TELEPORT }
 	},
 	specPos = {
 		from = Position(33847, 31858, 7),
@@ -21,5 +21,5 @@ local config = {
 }
 
 local lever = BossLever(config)
-lever:position({x = 33853, y = 31854, z = 6})
+lever:position({ x = 33853, y = 31854, z = 6 })
 lever:register()

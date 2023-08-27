@@ -25,7 +25,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Come and take a look at the finest gems in the lands of Tibia.'}
+	{ text = 'Come and take a look at the finest gems in the lands of Tibia.' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -91,9 +91,9 @@ end
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 
 -- Greeting message
-keywordHandler:addGreetKeyword({"ashari"}, {npcHandler = npcHandler, text = "Greetings, |PLAYERNAME|."})
+keywordHandler:addGreetKeyword({ "ashari" }, { npcHandler = npcHandler, text = "Greetings, |PLAYERNAME|." })
 --Farewell message
-keywordHandler:addFarewellKeyword({"asgha thrazi"}, {npcHandler = npcHandler, text = "Good bye, |PLAYERNAME|."})
+keywordHandler:addFarewellKeyword({ "asgha thrazi" }, { npcHandler = npcHandler, text = "Good bye, |PLAYERNAME|." })
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 npcConfig.shop = {

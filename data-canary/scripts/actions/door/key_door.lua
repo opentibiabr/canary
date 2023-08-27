@@ -30,7 +30,7 @@ local keyDoor = Action()
 
 function keyDoor.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	-- It is locked msg
-	if table.contains(keyLockedDoor, item.itemid) or (table.contains(keyUnlockedDoor, item.itemid) and table.contains({1001, 101}, item.actionid)) then
+	if table.contains(keyLockedDoor, item.itemid) or (table.contains(keyUnlockedDoor, item.itemid) and table.contains({ 1001, 101 }, item.actionid)) then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "It is locked.")
 		return true
 	end
@@ -63,7 +63,7 @@ function keyDoor.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				if value.lockedDoor == target.itemid then
 					target:transform(value.openDoor)
 					return true
-				elseif table.contains({value.openDoor, value.closedDoor}, target.itemid) then
+				elseif table.contains({ value.openDoor, value.closedDoor }, target.itemid) then
 					target:transform(value.lockedDoor)
 					return true
 				end

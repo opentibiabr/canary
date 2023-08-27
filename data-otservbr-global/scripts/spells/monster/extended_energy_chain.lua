@@ -6,6 +6,7 @@ combat:setParameter(COMBAT_PARAM_CHAIN_EFFECT, CONST_ME_PINK_ENERGY_SPARK)
 function getChainValue(creature)
 	return 4, 7, false
 end
+
 combat:setCallback(CALLBACK_PARAM_CHAINVALUE, "getChainValue")
 
 local spell = Spell("instant")

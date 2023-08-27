@@ -71,25 +71,25 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "SMAASH!", yell = false},
+	{ text = "SMAASH!", yell = false },
 }
 
 monster.loot = {
-	{name = "Crystal Coin", chance = 28240},
-	{name = "Prehemoth Horns", chance = 19870},
-	{name = "Prehemoth Claw", chance = 16149, minCount = 1, maxCount = 2},
-	{name = "Ultimate Health Potion", chance = 16120},
-	{name = "Furry Club", chance = 7050},
-	{name = "War Hammer", chance = 4660},
-	{name = "War Axe", chance = 3040},
-	{name = "Doublet", chance = 2880},
-	{name = "Silver Brooch", chance = 1160},
-	{name = "Emerald Bangle", chance = 780},
+	{ name = "Crystal Coin", chance = 28240 },
+	{ name = "Prehemoth Horns", chance = 19870 },
+	{ name = "Prehemoth Claw", chance = 16149, minCount = 1, maxCount = 2 },
+	{ name = "Ultimate Health Potion", chance = 16120 },
+	{ name = "Furry Club", chance = 7050 },
+	{ name = "War Hammer", chance = 4660 },
+	{ name = "War Axe", chance = 3040 },
+	{ name = "Doublet", chance = 2880 },
+	{ name = "Silver Brooch", chance = 1160 },
+	{ name = "Emerald Bangle", chance = 780 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -455},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 300, maxDamage = -400, range = 7, shootEffect = CONST_ANI_LARGEROCK, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -455 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 300, maxDamage = -400, range = 7, shootEffect = CONST_ANI_LARGEROCK, target = false }
 }
 
 monster.defenses = {
@@ -98,23 +98,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 5},
-	{type = COMBAT_ENERGYDAMAGE, percent = 30},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 40},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -30},
-	{type = COMBAT_HOLYDAMAGE , percent = -30},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 30 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 40 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -30 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -30 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

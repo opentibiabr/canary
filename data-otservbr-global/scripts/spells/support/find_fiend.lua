@@ -64,8 +64,8 @@ function spell.onCastSpell(creature, variant)
 			direction = positionDifference.x > 0 and DIRECTION_WEST or DIRECTION_EAST
 		elseif math.abs(positionTangent) < 2.4142 then
 			direction = positionTangent > 0 and
-							(positionDifference.y > 0 and DIRECTION_NORTHWEST or DIRECTION_SOUTHEAST) or
-							positionDifference.x > 0 and DIRECTION_SOUTHWEST or DIRECTION_NORTHEAST
+					(positionDifference.y > 0 and DIRECTION_NORTHWEST or DIRECTION_SOUTHEAST) or
+					positionDifference.x > 0 and DIRECTION_SOUTHWEST or DIRECTION_NORTHEAST
 		else
 			direction = positionDifference.y > 0 and DIRECTION_NORTH or DIRECTION_SOUTH
 		end
@@ -73,7 +73,7 @@ function spell.onCastSpell(creature, variant)
 
 	local level = positionDifference.z > 0 and LEVEL_HIGHER or positionDifference.z < 0 and LEVEL_LOWER or LEVEL_SAME
 	local distance = maxPositionDifference < 5 and DISTANCE_BESIDE or maxPositionDifference < 101 and DISTANCE_CLOSE or
-						 maxPositionDifference < 275 and DISTANCE_FAR or DISTANCE_VERYFAR
+			maxPositionDifference < 275 and DISTANCE_FAR or DISTANCE_VERYFAR
 	local message = messages[distance][level] or messages[distance]
 	if distance ~= DISTANCE_BESIDE then
 		message = message .. " " .. directions[direction]
@@ -99,7 +99,7 @@ function spell.onCastSpell(creature, variant)
 	end
 
 	message = string.format("The monster " .. message .. ". Be prepared to find a creature of difficulty level \"" ..
-								stringLevel .. "\".")
+		stringLevel .. "\".")
 	local timeLeft = math.floor((target:getTimeToChangeFiendish() - os.time()) / 60)
 	if (timeLeft < 15) then
 		message = string.format(message .. " " .. ForgeMonster:getTimeLeftToChangeMonster(target))

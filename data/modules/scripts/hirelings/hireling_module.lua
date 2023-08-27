@@ -6,9 +6,9 @@ HirelingModule.Credits = {
 	Date = "30/04/2020 "
 }
 
-HirelingModule.S_Packets= { SendOutfitWindow = 0xC8 }
+HirelingModule.S_Packets = { SendOutfitWindow = 0xC8 }
 
-HirelingModule.C_Packets = { RequestChangeOutfit = 0xD2, ConfirmOutfitChange = 0xD3  }
+HirelingModule.C_Packets = { RequestChangeOutfit = 0xD2, ConfirmOutfitChange = 0xD3 }
 
 local function getOutfit(msg)
 	local outfitType = 0
@@ -31,7 +31,7 @@ local function getOutfit(msg)
 	return outfit
 end
 
-local function parseChangeOutfit(player,msg)
+local function parseChangeOutfit(player, msg)
 	local hireling = player:getHirelingChangingOutfit()
 	local outfit
 	if not hireling then

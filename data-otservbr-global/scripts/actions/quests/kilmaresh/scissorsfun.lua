@@ -272,8 +272,8 @@ function scissorsfun.onUse(player, item, fromPosition, target, toPosition, isHot
 	local key = config[target.itemid]
 	if key then
 		if player:getStorageValue(key.storage) == key.getValue then
-			if table.contains({key.itemId
-			}, target.itemid) then
+			if table.contains({ key.itemId
+					}, target.itemid) then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, key.msg)
 				player:addItem(key.addItemId, 1)
 			end

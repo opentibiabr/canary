@@ -4,18 +4,18 @@ local missionTiles = {
 	[50342] = {
 		state = 1,
 		message = "This is not the way to the troll caves. Go back down the stairs and walk north to find them.",
-		arrowPosition = {x = 32089, y = 32147, z = 6}
+		arrowPosition = { x = 32089, y = 32147, z = 6 }
 	},
 	[50343] = {
 		state = 1,
 		message = "This is not the way to the troll caves. Go back down the stairs and walk north to find them.",
-		arrowPosition = {x = 32094, y = 32137, z = 7}
+		arrowPosition = { x = 32094, y = 32137, z = 7 }
 	},
 	[50344] = {
 		state = 1,
 		newState = 2,
 		message = "You've reached the newly dug troll tunnel. Take what you find in this chest and use it to bring down all support beams!",
-		arrowPosition = {x = 32059, y = 32132, z = 10}
+		arrowPosition = { x = 32059, y = 32132, z = 10 }
 	},
 	[50345] = {
 		state = 7,
@@ -155,7 +155,7 @@ function onUsePickAtTunnelPillar(player, item, fromPosition, itemEx, toPosition)
 		local hasDamagedPillar = testFlag(pillarsState, pillarId)
 		if not hasDamagedPillar then
 			local newMissionState = missionState + 1
-			if table.find({3, 4, 5, 6}, newMissionState) then
+			if table.find({ 3, 4, 5, 6 }, newMissionState) then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "That should weaken the beam enough to make it collapse soon.")
 			elseif newMissionState == 7 then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This was the last beam. Now, get out of here before the cave collapses!")
@@ -163,7 +163,7 @@ function onUsePickAtTunnelPillar(player, item, fromPosition, itemEx, toPosition)
 			end
 			player:say("<crack>", TALKTYPE_MONSTER_SAY, false, player, toPosition)
 			toPosition:sendMagicEffect(CONST_ME_HITAREA)
-			player:setStorageValue(Storage.TheRookieGuard.Mission09, newMissionState)			
+			player:setStorageValue(Storage.TheRookieGuard.Mission09, newMissionState)
 			player:setStorageValue(Storage.TheRookieGuard.TunnelPillars, pillarsState + pillarId)
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You've already weakened this beam. Better leave it alone now so it won't collapse before you are out of here.")

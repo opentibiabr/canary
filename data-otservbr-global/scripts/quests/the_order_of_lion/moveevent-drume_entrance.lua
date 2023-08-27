@@ -1,4 +1,3 @@
-
 local drumeEntrance = MoveEvent()
 function drumeEntrance.onStepIn(creature, item, position, fromPosition)
 	if creature:isPlayer() and creature:getStorageValue(Storage.TheOrderOfTheLion.Drume.Timer) > os.time() then
@@ -7,5 +6,6 @@ function drumeEntrance.onStepIn(creature, item, position, fromPosition)
 	end
 	return true
 end
+
 drumeEntrance:aid(59601)
 drumeEntrance:register()

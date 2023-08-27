@@ -72,12 +72,12 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "help") then
 		npcHandler:say("You mean you want help us?", npc, creature)
 		npcHandler:setTopic(playerId, 11)
-	elseif MsgContains(message, "mission") and npcHandler:getTopic(playerId) == 12 and player:getStorageValue(Storage.UnnaturalSelection.Questline) < 1 
-	and player:getStorageValue(TheNewFrontier.Mission03) == 3 then
+	elseif MsgContains(message, "mission") and npcHandler:getTopic(playerId) == 12 and player:getStorageValue(Storage.UnnaturalSelection.Questline) < 1
+			and player:getStorageValue(TheNewFrontier.Mission03) == 3 then
 		npcHandler:say({
-				"Big problem we have! Skull of first leader gone. He ancestor of whole tribe but died long ago in war. We have keep his skull on our sacred place. ...",
-				"Then one night, green men came with wolves... and one of wolves took skull and ran off chewing on it! We need back - many wisdom and power is in skull. Maybe they took to north fortress. But can be hard getting in. You try get our holy skull back?"
-			}, npc, creature)
+			"Big problem we have! Skull of first leader gone. He ancestor of whole tribe but died long ago in war. We have keep his skull on our sacred place. ...",
+			"Then one night, green men came with wolves... and one of wolves took skull and ran off chewing on it! We need back - many wisdom and power is in skull. Maybe they took to north fortress. But can be hard getting in. You try get our holy skull back?"
+		}, npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "mission") and player:getStorageValue(Storage.UnnaturalSelection.Questline) >= 1 then
 		if player:getStorageValue(Storage.UnnaturalSelection.Questline) == 1 then

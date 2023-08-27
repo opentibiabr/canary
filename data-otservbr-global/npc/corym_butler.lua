@@ -71,14 +71,14 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if(MsgContains(message, "repression")) then
-			npcHandler:say({
-				"We have to dig up valuable resources, but don't get enough to eat. The situation is terrible."
-			}, npc, creature)
-			if player:getStorageValue(HiddenThreats.CorymRescued05) < 0 then
-				player:setStorageValue(HiddenThreats.CorymRescueMission, player:getStorageValue(HiddenThreats.CorymRescueMission) +1 )
-				player:setStorageValue(HiddenThreats.CorymRescued05, 1 )
-			end
+	if (MsgContains(message, "repression")) then
+		npcHandler:say({
+			"We have to dig up valuable resources, but don't get enough to eat. The situation is terrible."
+		}, npc, creature)
+		if player:getStorageValue(HiddenThreats.CorymRescued05) < 0 then
+			player:setStorageValue(HiddenThreats.CorymRescueMission, player:getStorageValue(HiddenThreats.CorymRescueMission) + 1)
+			player:setStorageValue(HiddenThreats.CorymRescued05, 1)
+		end
 	end
 	return true
 end

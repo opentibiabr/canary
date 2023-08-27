@@ -67,19 +67,19 @@ local randomMessages = {
 		"STRAIGHT AHED!! WHY DOES THIS TAKE SO LONG?!? HURRY UP!",
 		"LOOKOUT REPORTS SEA SERPENT ON SIGHT!! STRAIGHT AHEAD!!",
 		"GO GO GO, SEA SERPENT STRAIGHT AHEAD!!",
-		"SET FULL SAILS! SEA SERPENT RIGHT IN FRONT OF US!!"},
+		"SET FULL SAILS! SEA SERPENT RIGHT IN FRONT OF US!!" },
 	starboard = {
 		"SET FULL SAILS! SEA SERPENT ON THE STARBOARD SIDE!!",
 		"LOOKOUT REPORTS SEA SERPENT ON SIGHT!! SEA SERPENT ON THE STARBOARD SIEDE!!",
 		"COME ON YOU LAZY FOOLS!! SEA SERPENT ON THE STARBOARD SIDE!!",
 		"GO GO GO, SEA SERPENT ON THE STARBOARD SIDE!!",
-		"CHANGE COURSE TO STARBOARD!! WHY DOES THIS TAKE SO LONG?!? HURRY UP!"},
+		"CHANGE COURSE TO STARBOARD!! WHY DOES THIS TAKE SO LONG?!? HURRY UP!" },
 	larboard = {
 		"SET FULL SAILS! SEA SERPENT ON THE LARBOARD SIDE!!",
 		"SEA SERPENT AHEAD!! LARBOARD SIDE!!",
 		"SEA SERPENT ON SIGHT!! TO THE LARBOARD SIDE, FAST!",
 		"LARBOARD!! THY DOES THIS TAKE SO LONG?!? LET'S GET IT ON!",
-		"LET'S GO YOU LAZY FOOLS. WE GOT A SEA SERPENT TO CATCH! TO LARBOARD SIDE, GO, GO, GO!"}
+		"LET'S GO YOU LAZY FOOLS. WE GOT A SEA SERPENT TO CATCH! TO LARBOARD SIDE, GO, GO, GO!" }
 }
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
@@ -94,7 +94,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say({
 			"A'right, first of all you need a bait which isn't for free, though. I sell them for 50 gold each. Use the bait on the crane over there when you see something in the telescope. ...",
 			"Then go up to the lookout and check the telescope for a sight of the sea serpent. ...",
-			"If you see it in front of ya, get down at once. And what d'ya gonna say to me?"}, npc, creature)
+			"If you see it in front of ya, get down at once. And what d'ya gonna say to me?" }, npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif npcHandler:getTopic(playerId) == 1 and message:lower() ~= "straight" then
 		npcHandler:say("Harharhar, landlubber, no no!! The correct command would be STRAIGHT. Remember that! Next, what you gonna say when you see something to left?", npc, creature)
@@ -105,7 +105,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif npcHandler:getTopic(playerId) == 1 and message:lower() ~= "starboard" then
 		npcHandler:say({
 			"Ya gotta learn a lot! The correct command would be STARBOARD side. ...",
-			"After you told me about the direction, put a bait on the crane again and go up to the lookout! That would be all sailor, let's go hunt down the sea serpent!!"}, npc, creature)
+			"After you told me about the direction, put a bait on the crane again and go up to the lookout! That would be all sailor, let's go hunt down the sea serpent!!" }, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message:lower(), "straight") then
 		randomMessagesResult = randomMessages.straight[math.random(#randomMessages.straight)]
@@ -146,8 +146,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(TheHuntForTheSeaSerpent.SuccessSwitch, 0)
 			player:setStorageValue(TheHuntForTheSeaSerpent.Direction, 0)
 		end
-	elseif table.contains({"god", "svargrond", "back", "hunt", "passage", "trip"}, message:lower()) then
-		if table.contains({"god", "svargrond", "back", "hunt"}, message:lower()) then
+	elseif table.contains({ "god", "svargrond", "back", "hunt", "passage", "trip" }, message:lower()) then
+		if table.contains({ "god", "svargrond", "back", "hunt" }, message:lower()) then
 			npcHandler:say("Already got enough, huh? I kind o' expected that, landlubber! Let's head for Svargrond! Ready?", npc, creature)
 		else
 			npcHandler:say("Y' already wanna give up?? I should've known. I bring ya back to Svargrond, 'kay?", npc, creature)
@@ -162,11 +162,11 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 --Basic
-keywordHandler:addKeyword({"caves"}, StdModule.say, {npcHandler = npcHandler, text = "I'd go by myself and tear that beast's heart out if I were younger. I hope ya can do that for me. Now go and good luck to ya!"})
-keywordHandler:addKeyword({"wares"}, StdModule.say, {npcHandler = npcHandler, text = "Ya're a coward, aren't ya? Prove that I'm wrong and get your lazy bones up to the lookout!!"})
-keywordHandler:addAliasKeyword({"go"})
-keywordHandler:addKeyword({"bait"}, StdModule.say, {npcHandler = npcHandler, text = "Just ask me for a trade if you need a bait."})
-keywordHandler:addKeyword({"test"}, StdModule.say, {npcHandler = npcHandler, text = "I can give ya a challenge to test if ya have the guts to be a real sailor. Go up to the lookout and remain there for 24 hours during a storm! Harharhar!"})
+keywordHandler:addKeyword({ "caves" }, StdModule.say, { npcHandler = npcHandler, text = "I'd go by myself and tear that beast's heart out if I were younger. I hope ya can do that for me. Now go and good luck to ya!" })
+keywordHandler:addKeyword({ "wares" }, StdModule.say, { npcHandler = npcHandler, text = "Ya're a coward, aren't ya? Prove that I'm wrong and get your lazy bones up to the lookout!!" })
+keywordHandler:addAliasKeyword({ "go" })
+keywordHandler:addKeyword({ "bait" }, StdModule.say, { npcHandler = npcHandler, text = "Just ask me for a trade if you need a bait." })
+keywordHandler:addKeyword({ "test" }, StdModule.say, { npcHandler = npcHandler, text = "I can give ya a challenge to test if ya have the guts to be a real sailor. Go up to the lookout and remain there for 24 hours during a storm! Harharhar!" })
 
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Here ya go! Use it on the crane when you see the monster. Then refill it every time you use the telescope.")
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)

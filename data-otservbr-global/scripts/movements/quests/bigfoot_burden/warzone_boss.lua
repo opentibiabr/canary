@@ -43,7 +43,7 @@ function warzoneBoss.onStepIn(creature, item, pos, fromPosition)
 
 	creature:teleportTo(warzone.teleportTo)
 	creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have half an hour to heroically defeat the \z
-	" .. warzone.boss .. ". Otherwise you'll be teleported out by the gnomish emergency device." )
+	" .. warzone.boss .. ". Otherwise you'll be teleported out by the gnomish emergency device.")
 	return true
 end
 

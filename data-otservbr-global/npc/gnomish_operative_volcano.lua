@@ -50,8 +50,8 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addGreetKeyword({'hi'}, {npcHandler = npcHandler, text = 'Hello and welcome in the Gnomprona Gardens'})
-keywordHandler:addAliasKeyword({'hello'})
+keywordHandler:addGreetKeyword({ 'hi' }, { npcHandler = npcHandler, text = 'Hello and welcome in the Gnomprona Gardens' })
+keywordHandler:addAliasKeyword({ 'hello' })
 
 npcHandler:setMessage(MESSAGE_GREET, 'Hello and welcome in the Gnomprona Gardens')
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

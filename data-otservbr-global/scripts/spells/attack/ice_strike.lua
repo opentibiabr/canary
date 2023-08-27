@@ -9,7 +9,6 @@ function onGetFormulaValues(player, level, maglevel)
 	return -min, -max
 end
 
-
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 
 local spell = Spell("instant")

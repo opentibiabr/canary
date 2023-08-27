@@ -11,4 +11,5 @@ function lowerRoshamuul.onKill(creature, target)
 	end
 	return true
 end
+
 lowerRoshamuul:register()

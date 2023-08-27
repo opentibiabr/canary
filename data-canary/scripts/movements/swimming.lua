@@ -1,5 +1,5 @@
 local condition = Condition(CONDITION_OUTFIT)
-condition:setOutfit({lookType = 267})
+condition:setOutfit({ lookType = 267 })
 condition:setTicks(-1)
 
 local swimming = MoveEvent()

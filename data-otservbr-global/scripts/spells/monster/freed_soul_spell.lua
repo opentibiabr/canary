@@ -3,13 +3,13 @@ combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_ENERGYDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_PURPLEENERGY)
 
 combat:setArea(createCombatArea({
-	{0, 0, 1, 1, 1, 0, 0},
-	{0, 1, 1, 1, 1, 1, 0},
-	{1, 1, 1, 1, 1, 1, 1},
-	{1, 1, 1, 3, 1, 1, 1},
-	{1, 1, 1, 1, 1, 1, 1},
-	{0, 1, 1, 1, 1, 1, 0},
-	{0, 0, 1, 1, 1, 0, 0}
+	{ 0, 0, 1, 1, 1, 0, 0 },
+	{ 0, 1, 1, 1, 1, 1, 0 },
+	{ 1, 1, 1, 1, 1, 1, 1 },
+	{ 1, 1, 1, 3, 1, 1, 1 },
+	{ 1, 1, 1, 1, 1, 1, 1 },
+	{ 0, 1, 1, 1, 1, 1, 0 },
+	{ 0, 0, 1, 1, 1, 0, 0 }
 }))
 
 function spellCallback(param)
@@ -17,7 +17,7 @@ function spellCallback(param)
 	if tile then
 		if tile:getTopCreature() and tile:getTopCreature():isMonster() then
 			if tile:getTopCreature():getName():lower() == "the souldespoiler" then
-				tile:getTopCreature():addHealth( - math.random(500, 2000))
+				tile:getTopCreature():addHealth(-math.random(500, 2000))
 			end
 		end
 	end

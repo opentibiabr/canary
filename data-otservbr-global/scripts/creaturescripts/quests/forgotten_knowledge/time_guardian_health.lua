@@ -6,4 +6,5 @@ function timeGuardianHealth.onPrepareDeath(creature, lastHitKiller, mostDamageKi
 	creature:addHealth(1, false)
 	return true
 end
+
 timeGuardianHealth:register()

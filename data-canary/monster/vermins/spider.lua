@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Almost everywhere, in grass areas, sewers like Carlin sewers, \z
 		caves like as Ancient Temple, Rookgaard and the Tiquanda Tarantula Caves."
-	}
+}
 
 monster.health = 20
 monster.maxHealth = 20
@@ -75,12 +75,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3031, chance = 65150, maxCount = 5}, -- gold coin
-	{id = 8031, chance = 960} -- spider fangs
+	{ id = 3031, chance = 65150, maxCount = 5 }, -- gold coin
+	{ id = 8031, chance = 960 } -- spider fangs
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -9}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -9 }
 }
 
 monster.defenses = {
@@ -89,23 +89,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = -20},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = -20 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

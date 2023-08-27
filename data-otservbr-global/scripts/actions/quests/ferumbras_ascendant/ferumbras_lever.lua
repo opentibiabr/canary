@@ -87,7 +87,7 @@ function ferumbrasAscendantLever.onUse(player, item, fromPosition, target, toPos
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have 30 minutes to kill and loot this boss. Otherwise you will lose that chance and will be kicked out.")
 					addEvent(clearFerumbrasRoom, 60 * config.time * 1000, player:getId(), config.centerRoom, config.range, config.range, config.exitPosition)
 
-					for b = 1,10 do
+					for b = 1, 10 do
 						local xrand = math.random(-10, 10)
 						local yrand = math.random(-10, 10)
 						local position = Position(33392 + xrand, 31473 + yrand, 14)

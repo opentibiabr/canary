@@ -62,14 +62,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.TheIceIslands.Questline) == 3 then
 			if player:getStorageValue(Storage.TheIceIslands.Mission02) < 1 then
-			npcHandler:say({
-				"We could indeed need some help. These are very cold times. The ice is growing and becoming thicker everywhere ...",
-				"The problem is that the chakoyas may use the ice for a passage to the west and attack Svargrond ...",
-				"We need you to get a pick and to destroy the ice at certain places to the east. You will quickly recognise those spots by their unstable look ...",
-				"Use the pickaxe on at least three of these places and the chakoyas probably won't be able to pass the ice. Once you are done, return here and report about your mission."
-			}, npc, creature)
-			player:setStorageValue(Storage.TheIceIslands.Mission02, 1) -- Questlog The Ice Islands Quest, Nibelor 1: Breaking the Ice
-			npcHandler:setTopic(playerId, 0)
+				npcHandler:say({
+					"We could indeed need some help. These are very cold times. The ice is growing and becoming thicker everywhere ...",
+					"The problem is that the chakoyas may use the ice for a passage to the west and attack Svargrond ...",
+					"We need you to get a pick and to destroy the ice at certain places to the east. You will quickly recognise those spots by their unstable look ...",
+					"Use the pickaxe on at least three of these places and the chakoyas probably won't be able to pass the ice. Once you are done, return here and report about your mission."
+				}, npc, creature)
+				player:setStorageValue(Storage.TheIceIslands.Mission02, 1) -- Questlog The Ice Islands Quest, Nibelor 1: Breaking the Ice
+				npcHandler:setTopic(playerId, 0)
 			end
 		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 4 then
 			npcHandler:say("The spirits are at peace now. The threat of the chakoyas is averted for now. I thank you for your help. Perhaps you should ask Silfind if you can help her in some matters. ", npc, creature)
@@ -128,8 +128,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 0)
 		else
-		npcHandler:say("I have now no mission for you.", npc, creature)
-		npcHandler:setTopic(playerId, 0)
+			npcHandler:say("I have now no mission for you.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "shard") then
 		if player:getStorageValue(Storage.TheIceIslands.Questline) == 40 then

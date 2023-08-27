@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Selling all sorts of magic equipment. Come and have a look'}
+	{ text = 'Selling all sorts of magic equipment. Come and have a look' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -95,7 +95,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'magic'}, StdModule.say, {npcHandler = npcHandler, text = "I'm selling runes, life rings, wands, rods and crystal balls. I also buy powerful spellbooks. If you like to see my offers, ask me for a {trade}."})
+keywordHandler:addKeyword({ 'magic' }, StdModule.say, { npcHandler = npcHandler, text = "I'm selling runes, life rings, wands, rods and crystal balls. I also buy powerful spellbooks. If you like to see my offers, ask me for a {trade}." })
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setMessage(MESSAGE_GREET, "Hi there |PLAYERNAME|, and welcome to the {magic} store.")

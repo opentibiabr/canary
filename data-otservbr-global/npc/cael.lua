@@ -21,9 +21,9 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "I wish I could learn more about this strange world."},
-	{text = "Those different cultures are amazing."},
-	{text = "What an interesting continent."}
+	{ text = "I wish I could learn more about this strange world." },
+	{ text = "Those different cultures are amazing." },
+	{ text = "What an interesting continent." }
 }
 
 local tomes = Storage.Quest.U8_54.TheNewFrontier.TomeofKnowledge
@@ -88,12 +88,12 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 1)
 			elseif player:getStorageValue(TheNewFrontier.TomeofKnowledge) >= 1 and player:getStorageValue(TheNewFrontier.TomeofKnowledge) <= 5 then --tome2 - tome6
 				npcHandler:say("Oh! That sounds fascinating. Have you found a new Tome of Knowledge for me to read?", npc, creature)
-				npcHandler:setTopic(playerId, player:getStorageValue(TheNewFrontier.TomeofKnowledge) +1)
+				npcHandler:setTopic(playerId, player:getStorageValue(TheNewFrontier.TomeofKnowledge) + 1)
 			elseif player:getStorageValue(TheNewFrontier.TomeofKnowledge) >= 6 and player:getStorageValue(TheNewFrontier.TomeofKnowledge) <= 11 then --tome7 - tome12
 				--The New Frontier Quest completed to trade more Tomes of Knowledge with NPC Cael.
 				if player:getStorageValue(TheNewFrontier.Mission10[1]) == 2 then
 					npcHandler:say("Oh! That sounds fascinating. Have you found a new Tome of Knowledge for me to read?", npc, creature)
-					npcHandler:setTopic(playerId, player:getStorageValue(TheNewFrontier.TomeofKnowledge) +1)
+					npcHandler:setTopic(playerId, player:getStorageValue(TheNewFrontier.TomeofKnowledge) + 1)
 				else
 					npcHandler:say("I'm sorry I'm busy. Speak with Ongulf to get some missions!", npc, creature)
 				end
@@ -106,7 +106,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) >= 1 and npcHandler:getTopic(playerId) <= 13 then
 		if player:removeItem(10217, 1) then --remove tome
-			if npcHandler:getTopic(playerId) == 1 then	--tome1
+			if npcHandler:getTopic(playerId) == 1 then --tome1
 				npcHandler:say("Thank you! I look forward to reading this interesting discovery of yours and learn a few things about {Zao}.", npc, creature)
 				player:setStorageValue(TheNewFrontier.TomeofKnowledge, 1)
 				npcHandler:setTopic(playerId, 21)
@@ -120,7 +120,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				elseif player:getStorageValue(TheNewFrontier.TomeofKnowledge) == 8 then
 					player:setStorageValue(TheNewFrontier.CorruptionHole, 1)
 				end
-				npcHandler:setTopic(playerId, player:getStorageValue(TheNewFrontier.TomeofKnowledge) +20)
+				npcHandler:setTopic(playerId, player:getStorageValue(TheNewFrontier.TomeofKnowledge) + 20)
 			elseif npcHandler:getTopic(playerId) == 13 then -- more then 12 tomes
 				player:addExperience(5000, true)
 				npcHandler:say("Thank you! I look forward to reading this interesting discovery of yours and learn a few things about {Zao}. Let me share some experience with you.", npc, creature)
@@ -130,48 +130,48 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("You dont have one!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "zao")) then
-		if npcHandler:getTopic(playerId) == 21 then	--tome1
+	elseif (MsgContains(message, "zao")) then
+		if npcHandler:getTopic(playerId) == 21 then --tome1
 			npcHandler:say("I've learnt more about the {lizard} culture. It's really fascinating.", npc, creature)
 			npcHandler:setTopic(playerId, 40)
-		elseif npcHandler:getTopic(playerId) == 22 then	--tome2
+		elseif npcHandler:getTopic(playerId) == 22 then --tome2
 			npcHandler:say("I've learnt more about the {minotaur} culture. It's really fascinating.", npc, creature)
 			npcHandler:setTopic(playerId, 41)
-		elseif npcHandler:getTopic(playerId) == 23 then	--tome3
+		elseif npcHandler:getTopic(playerId) == 23 then --tome3
 			npcHandler:say("I've learnt more about the {Draken} culture by now. It's really fascinating.", npc, creature)
 			npcHandler:setTopic(playerId, 42)
-		elseif npcHandler:getTopic(playerId) == 24 then	--tome4
+		elseif npcHandler:getTopic(playerId) == 24 then --tome4
 			npcHandler:say("I've learnt something interesting about a certain {food} that the lizardmen apparently prepare.", npc, creature)
 			npcHandler:setTopic(playerId, 43)
-		elseif npcHandler:getTopic(playerId) == 25 then	--tome5
+		elseif npcHandler:getTopic(playerId) == 25 then --tome5
 			npcHandler:say("I've learnt something interesting about a city called {Zzaion}.", npc, creature)
 			npcHandler:setTopic(playerId, 44)
-		elseif npcHandler:getTopic(playerId) == 26 then	--tome6
+		elseif npcHandler:getTopic(playerId) == 26 then --tome6
 			npcHandler:say("I've learnt a few things about the primitive {human} culture on this continent.", npc, creature)
 			npcHandler:setTopic(playerId, 45)
-		elseif npcHandler:getTopic(playerId) == 27 then	--tome7
+		elseif npcHandler:getTopic(playerId) == 27 then --tome7
 			npcHandler:say("I've learnt something interesting about the Zao {steppe}.", npc, creature)
 			npcHandler:setTopic(playerId, 46)
-		elseif npcHandler:getTopic(playerId) == 28 then	--tome8
+		elseif npcHandler:getTopic(playerId) == 28 then --tome8
 			npcHandler:say("I've learnt a few things about an illness, or how I prefer to call it, {corruption} of this land.", npc, creature)
 			npcHandler:setTopic(playerId, 47)
-		elseif npcHandler:getTopic(playerId) == 29 then	--tome9
+		elseif npcHandler:getTopic(playerId) == 29 then --tome9
 			npcHandler:say("I've learnt something interesting about the Draken {origin}.", npc, creature)
 			npcHandler:setTopic(playerId, 48)
-		elseif npcHandler:getTopic(playerId) == 30 then	--tome10
+		elseif npcHandler:getTopic(playerId) == 30 then --tome10
 			npcHandler:say("This book actually IS about Zao. Not about the continent, but about the mythical {founder} of the lizard dynasty.", npc, creature)
 			npcHandler:setTopic(playerId, 49)
-		elseif npcHandler:getTopic(playerId) == 31 then	--tome11
+		elseif npcHandler:getTopic(playerId) == 31 then --tome11
 			npcHandler:say("I've learnt something interesting about {dragons} and their symbolism.", npc, creature)
 			npcHandler:setTopic(playerId, 50)
-		elseif npcHandler:getTopic(playerId) == 32 then	--tome12
+		elseif npcHandler:getTopic(playerId) == 32 then --tome12
 			npcHandler:say("The last tome contained a lot of information about status symbols and insignia - such as {thrones} - and reveals some of the power structures in Zao.", npc, creature)
 			npcHandler:setTopic(playerId, 51)
-		elseif npcHandler:getTopic(playerId) == 33 then	--more than tome12
+		elseif npcHandler:getTopic(playerId) == 33 then --more than tome12
 			npcHandler:say("I've learnt many things from your books. Still, I guess that's just a fragment of what I could still discover about this interesting continent.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "lizard")) then --tome1
+	elseif (MsgContains(message, "lizard")) then --tome1
 		if npcHandler:getTopic(playerId) == 40 then
 			npcHandler:say({
 				"Did you know that the lizardmen were among the first races roaming this continent? They were waging war against the orcs, minotaurs and humans on Zao and for a long time it seemed that the forces were even. ...",
@@ -181,7 +181,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "minotaur")) then --tome2
+	elseif (MsgContains(message, "minotaur")) then --tome2
 		if npcHandler:getTopic(playerId) == 41 then
 			npcHandler:say({
 				"Did you know that most of the minotaurs you might have met by now do not originally come from Zao? The original minotaur race stood no chance against the united force of dragons and lizards. ...",
@@ -192,7 +192,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "draken")) then --tome3
+	elseif (MsgContains(message, "draken")) then --tome3
 		if npcHandler:getTopic(playerId) == 42 then
 			npcHandler:say({
 				"According to what I've read in that tome, the Draken seem to be a crossbreed between lizards and dragons, combining the dragons' strength with the lizards' swiftness. They seem to be the main figures in the dragons' internal quarrels. ...",
@@ -201,7 +201,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "food")) then --tome4
+	elseif (MsgContains(message, "food")) then --tome4
 		if npcHandler:getTopic(playerId) == 43 then
 			npcHandler:say({
 				"I discovered an interesting recipe in this Tome of Knowledge. Maybe you've seen the large rice terraces in Muggy Plains - that is how the lizardmen apparently call that region. ...",
@@ -210,7 +210,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "zzaion")) then --tome5
+	elseif (MsgContains(message, "zzaion")) then --tome5
 		if npcHandler:getTopic(playerId) == 44 then
 			npcHandler:say({
 				"Have you ever seen the towers of the large lizard city south-east of Zao? It's the last one south of the mountains and who knows how long they are able to hold it. ...",
@@ -219,7 +219,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "human")) then --tome6
+	elseif (MsgContains(message, "human")) then --tome6
 		if npcHandler:getTopic(playerId) == 45 then
 			npcHandler:say({
 				"Well, to be honest it doesn't say much about humans in this book. However, it seems that the humans on this continent used to live in the steppe. ...",
@@ -229,7 +229,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "steppe")) then --tome7
+	elseif (MsgContains(message, "steppe")) then --tome7
 		if npcHandler:getTopic(playerId) == 46 then
 			npcHandler:say({
 				"Maybe you don't know that the great steppe was once a fertile ground. Well, to be precise - in the distant past it probably did not look any different from what it looks today. ...",
@@ -241,7 +241,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "corruption")) then --tome8
+	elseif (MsgContains(message, "corruption")) then --tome8
 		if npcHandler:getTopic(playerId) == 47 then
 			npcHandler:say({
 				"You know, while all this talk about growing and preparing rice might sound boring, there are actually some bits of vital information hidden in all those lists. ...",
@@ -256,7 +256,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "origin")) then --tome9
+	elseif (MsgContains(message, "origin")) then --tome9
 		if npcHandler:getTopic(playerId) == 48 then
 			npcHandler:say({
 				"I think the origin of the Draken sheds some new light on certain aspects of the lizard society. It is obvious from the books that the Draken appeared only after the dragon kings revealed themselves to the lizards. ...",
@@ -271,7 +271,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "founder")) then --tome10
+	elseif (MsgContains(message, "founder")) then --tome10
 		if npcHandler:getTopic(playerId) == 49 then
 			npcHandler:say({
 				"It seems that some parts of the tome are just copies from other sources and rather unrelated to each other. As far as I could piece them together, there was a mythical founder of the lizard civilisation. ...",
@@ -284,7 +284,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "dragons")) then --tome11
+	elseif (MsgContains(message, "dragons")) then --tome11
 		if npcHandler:getTopic(playerId) == 50 then
 			npcHandler:say({
 				"Dragons are of great symbolism for this land. Even before the dragons came here and took control over Zao, the lizards worshipped the dragons as strong mythical beasts. ...",
@@ -297,7 +297,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, "thrones")) then --tome12
+	elseif (MsgContains(message, "thrones")) then --tome12
 		if npcHandler:getTopic(playerId) == 51 then
 			npcHandler:say({
 				"In the modern lizard culture thrones seem to be only a reminiscent of the past. Whereas in the past the rulers of the lizardmen used thrones and other insignia to show their status, in our days they are ruled by dragon kings. ...",
@@ -311,12 +311,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "lantern") then
 		if player:getStorageValue(TheNewFrontier.TomeofKnowledge) >= 11 then
-		 	npcHandler:say("Have you brought me a red lantern for a dragon statue?", npc, creature)
+			npcHandler:say("Have you brought me a red lantern for a dragon statue?", npc, creature)
 			npcHandler:setTopic(playerId, 65)
 		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 65 then
 		if player:removeItem(10289, 1) then
-			player:addItem(10216,1)
+			player:addItem(10216, 1)
 			npcHandler:say("Let's put this little lantern here.. there you go. I wrap it up for you, just unwrap it in your house again!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		else
@@ -325,12 +325,12 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "cloth") then
 		if player:getStorageValue(TheNewFrontier.TomeofKnowledge) >= 12 then
-		 	npcHandler:say("Have you brought me a piece of red cloth? I can make that throne for you if you want. But remember, I won't do that all the time - so try and don't destroy it, okay?", npc, creature)
+			npcHandler:say("Have you brought me a piece of red cloth? I can make that throne for you if you want. But remember, I won't do that all the time - so try and don't destroy it, okay?", npc, creature)
 			npcHandler:setTopic(playerId, 66)
 		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 66 then
 		if player:removeItem(5911, 1) then
-			player:addItem(10288,1)
+			player:addItem(10288, 1)
 			npcHandler:say("Let's put this cloth over the seat.. there you go. I wrap it up for you, just unwrap it in your house again!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		else
@@ -339,7 +339,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "crest") then
 		if player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and 336 or 335) and player:getItemCount(10199) > 0 then
-		 	npcHandler:say("Oh, wow! Now THAT is an interesting relic! Can I have that serpent crest?", npc, creature)
+			npcHandler:say("Oh, wow! Now THAT is an interesting relic! Can I have that serpent crest?", npc, creature)
 			npcHandler:setTopic(playerId, 60)
 		elseif player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and 336 or 335) and player:getItemCount(10198) > 0 then
 			npcHandler:say("Oh, wow! Now THAT is an interesting relic! Can I have that tribal crest?", npc, creature)

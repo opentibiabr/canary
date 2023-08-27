@@ -21,7 +21,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Let me mourn in peace.'}
+	{ text = 'Let me mourn in peace.' }
 }
 
 local keywordHandler = KeywordHandler:new()

@@ -13,7 +13,6 @@ end
 local windows = Action()
 
 function windows.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-
 	local tile = Tile(fromPosition)
 	local house = tile and tile:getHouse()
 	if not house then

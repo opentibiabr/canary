@@ -126,7 +126,7 @@ function Player.getMissionsData(self, storage)
 							missionName = self:getMissionName(questId, missionId),
 							missionDesc = self:getMissionDescription(questId, missionId)
 						}
-						missions[#missions + 1] = data
+						missions[#missions+1] = data
 					end
 				end
 			end

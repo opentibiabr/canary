@@ -65,7 +65,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say('I\'m sorry but I sell only one copy to each customer. Otherwise they would have been sold out a long time ago.', npc, creature)
 		end
-
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, 'yes') then
 			if not player:removeMoneyBank(150) then
@@ -84,7 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Greeting message
-keywordHandler:addGreetKeyword({"maryza"}, {npcHandler = npcHandler, text = "Welcome to the Jolly Axeman, |PLAYERNAME|. Have a good time and eat some food!"})
+keywordHandler:addGreetKeyword({ "maryza" }, { npcHandler = npcHandler, text = "Welcome to the Jolly Axeman, |PLAYERNAME|. Have a good time and eat some food!" })
 
 npcHandler:setMessage(MESSAGE_GREET, 'Welcome to the Jolly Axeman, |PLAYERNAME|. Have a good time and eat some food!')
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye!")

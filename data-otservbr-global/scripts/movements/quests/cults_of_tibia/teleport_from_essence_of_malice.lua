@@ -10,5 +10,5 @@ function Teleport.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 
-Teleport:position({x = 33085, y = 31963, z = 15})
+Teleport:position({ x = 33085, y = 31963, z = 15 })
 Teleport:register()

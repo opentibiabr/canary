@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 1,
 	Locations = "Fury Dungeon and Goroma volcano (surface floor, inner volcano) only during the \z
 		Fire from the Earth Mini World Change."
-	}
+}
 
 monster.health = 2600
 monster.maxHealth = 2600
@@ -74,53 +74,53 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "FCHHHHH", yell = false},
-	{text = "SQUAWK!", yell = false},
-	{text = "FIYAH", yell = false},
-	{text = "FI?", yell = false}
+	{ text = "FCHHHHH", yell = false },
+	{ text = "SQUAWK!", yell = false },
+	{ text = "FIYAH", yell = false },
+	{ text = "FI?", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 37500, maxCount = 100},
-	{name = "gold coin", chance = 37500, maxCount = 100},
-	{name = "gold coin", chance = 37500, maxCount = 27},
-	{name = "strong health potion", chance = 24480, maxCount = 2},
-	{name = "strong mana potion", chance = 16900, maxCount = 2},
-	{name = "blazing bone", chance = 12410}
+	{ name = "gold coin", chance = 37500, maxCount = 100 },
+	{ name = "gold coin", chance = 37500, maxCount = 100 },
+	{ name = "gold coin", chance = 37500, maxCount = 27 },
+	{ name = "strong health potion", chance = 24480, maxCount = 2 },
+	{ name = "strong mana potion", chance = 16900, maxCount = 2 },
+	{ name = "blazing bone", chance = 12410 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -210},
-	{name ="dragonling wave", interval = 2000, chance = 10, minDamage = -120, maxDamage = -250, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -115, maxDamage = -180, radius = 3, effect = CONST_ME_PURPLEENERGY, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -95, maxDamage = -150, radius = 3, effect = CONST_ME_EXPLOSIONHIT, target = false},
-	{name ="speed", interval = 2000, chance = 15, speedChange = -700, radius = 1, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_STUN, target = true, duration = 16000}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -210 },
+	{ name = "dragonling wave", interval = 2000, chance = 10, minDamage = -120, maxDamage = -250, target = false },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -115, maxDamage = -180, radius = 3, effect = CONST_ME_PURPLEENERGY, target = false },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -95, maxDamage = -150, radius = 3, effect = CONST_ME_EXPLOSIONHIT, target = false },
+	{ name = "speed", interval = 2000, chance = 15, speedChange = -700, radius = 1, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_STUN, target = true, duration = 16000 }
 }
 
 monster.defenses = {
 	defense = 25,
 	armor = 25,
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 100, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false}
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 100, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -5},
-	{type = COMBAT_ENERGYDAMAGE, percent = 5},
-	{type = COMBAT_EARTHDAMAGE, percent = -20},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 5},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 5 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -20 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 5 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

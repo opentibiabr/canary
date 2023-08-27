@@ -6,7 +6,7 @@ function forgeKill.onDeath(creature, corpse, killer, mostDamageKiller, unjustifi
 		return true
 	end
 
-	return ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjustified, mostDamageUnjustified) 
+	return ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjustified, mostDamageUnjustified)
 end
 
 forgeKill:register()

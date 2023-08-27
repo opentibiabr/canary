@@ -25,7 +25,7 @@ local function spawnStolenSoul(t_time)
 		if not isPlayerInArea(a1, a2) then
 			return true
 		end
-		local newArea = Position(math.random(a1.x, a2.x), math.random(a1.y, a2.y), math.random(a1.z, a2.z) )
+		local newArea = Position(math.random(a1.x, a2.x), math.random(a1.y, a2.y), math.random(a1.z, a2.z))
 		Game.createMonster(math.random(1, 2) == 1 and 'Stolen Soul' or 'Soul Reaper', newArea)
 		t_time = 31
 	end
@@ -54,21 +54,21 @@ local function spawnDarkSoul(area, t_time)
 			esperandoPlayer = true
 		else
 			local monster = {}
-			for _x= sA1.x, sA2.x, 1 do
-				for _y= sA1.y, sA2.y, 1 do
+			for _x = sA1.x, sA2.x, 1 do
+				for _y = sA1.y, sA2.y, 1 do
 					local tileMonster = Tile(Position(_x, _y, sA1.z)):getTopCreature()
 					if tileMonster and tileMonster:isMonster() and tileMonster:getName() == 'Dark Soul' then
-						monster[#monster + 1] = tileMonster
+						monster[#monster+1] = tileMonster
 					end
 				end
 			end
 			if #monster >= 4 then
-				for _, pid in pairs(monster)do
+				for _, pid in pairs(monster) do
 					pid:remove()
 				end
 			end
 			-- spawn
-			local newPos = Position(math.random(sA1.x, sA2.x), math.random(sA1.y, sA2.y), math.random(sA1.z, sA2.z) )
+			local newPos = Position(math.random(sA1.x, sA2.x), math.random(sA1.y, sA2.y), math.random(sA1.z, sA2.z))
 			Game.createMonster('Dark Soul', newPos)
 		end
 		addEvent(spawnDarkSoul, 1000, area, (esperandoPlayer and 1 or 30))
@@ -78,12 +78,12 @@ local function spawnDarkSoul(area, t_time)
 end
 
 local function transformMonster(itid, action, monster, frompos, topos, _temp)
--- minotaur idol
+	-- minotaur idol
 	if action == 1 then
 		local tempo = _temp
 		for _x = frompos.x, topos.x, 1 do
 			local tile = Tile(Position(_x, frompos.y, frompos.z))
-			if(_x % 2 == 0) then
+			if (_x % 2 == 0) then
 				tempo = tempo + 1
 				if tile then
 					if tile:getItemCountById(itid) < 1 then
@@ -102,7 +102,7 @@ local function transformMonster(itid, action, monster, frompos, topos, _temp)
 	elseif action == 3 then
 		local pos = Position(33158, 31912, 15)
 		local pos2 = Position(33169, 31919, 15)
-		Game.createMonster(monster, {x = math.random(pos.x, pos2.x), y = math.random(pos.y, pos2.y), z = pos2.z})
+		Game.createMonster(monster, { x = math.random(pos.x, pos2.x), y = math.random(pos.y, pos2.y), z = pos2.z })
 		if _temp < itid then
 			_temp = _temp + 1
 			addEvent(transformMonster, 15000, itid, 3, "Sphere Of Wrath", {}, {}, _temp)
@@ -115,7 +115,7 @@ local function ativarGeyser(player)
 	local topos = Position(33142, 31936, 15) -- Checagem
 	if isPlayerInArea(frompos, topos) then
 		addEvent(function()
-			local rand = math.random(1,12)
+			local rand = math.random(1, 12)
 			local geyserPos = Position(geyser[rand])
 			local checar1 = Tile(Position(geyserPos)):getItemById(25509)
 			if checar1 then
@@ -126,7 +126,7 @@ local function ativarGeyser(player)
 					addEvent(function()
 						local checar2 = Tile(Position(geyserPos)):getItemById(25510)
 						if checar2 then
-						checar2:remove()
+							checar2:remove()
 						end
 					end, 9 * 1000)
 				end, 5 * 1000)
@@ -134,7 +134,8 @@ local function ativarGeyser(player)
 				return false
 			end
 			addEvent(function()
-			ativarGeyser() end, 1 * 1000)
+				ativarGeyser()
+			end, 1 * 1000)
 		end, 8 * 1000)
 	end
 	return true
@@ -144,7 +145,7 @@ local cultsOfTibiaLevers = Action()
 function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition)
 	local players = {}
 	local ittable = {}
-	local blockmonsters = {"Leiden", "Wine Cask", "Liquor Spirit", "Ravenous Hunger"}
+	local blockmonsters = { "Leiden", "Wine Cask", "Liquor Spirit", "Ravenous Hunger" }
 	local convertTable = {}
 	item:transform(transformid[item:getId()])
 
@@ -162,14 +163,14 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 			local frompos = Position(33151, 31942, 15) -- Checagem
 			local topos = Position(33176, 31966, 15) -- Checagem
 
-			if(isPlayerInArea(frompos, topos)) then
+			if (isPlayerInArea(frompos, topos)) then
 				player:sendCancelMessage('The room is full.')
 				return true
 			end
 
-			for _x= frompos.x, topos.x, 1 do
-				for _y= frompos.y, topos.y, 1 do
-					for _z= frompos.z, topos.z, 1 do
+			for _x = frompos.x, topos.x, 1 do
+				for _y = frompos.y, topos.y, 1 do
+					for _z = frompos.z, topos.z, 1 do
 						local tile = Tile(Position(_x, _y, _z))
 						if tile and tile:getTopCreature() and tile:getTopCreature():isMonster() then
 							tile:getTopCreature():remove()
@@ -183,16 +184,16 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				local nplayer = Tile(newpos):getTopCreature()
 				if nplayer and nplayer:isPlayer() then
 					nplayer:setStorageValue(Storage.CultsOfTibia.Barkless.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
-					nplayer:teleportTo(Position(33161, 31959, 15),true)
+					nplayer:teleportTo(Position(33161, 31959, 15), true)
 					nplayer:sendBosstiaryCooldownTimer()
-					convertTable[#convertTable + 1] = nplayer:getId()
+					convertTable[#convertTable+1] = nplayer:getId()
 					nplayer:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end
 			end
-		Game.createMonster("Wine Cask", Position(33162, 31945, 15))
-		local leiden = Game.createMonster("Leiden", Position(33162, 31950, 15))
-		leiden:setHealth(leiden:getHealth() / 2)
-		kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33121, 31951, 15), "You were kicked for exceeding the time limit within the boss room.", '', 60, true, ittable, blockmonsters)
+			Game.createMonster("Wine Cask", Position(33162, 31945, 15))
+			local leiden = Game.createMonster("Leiden", Position(33162, 31950, 15))
+			leiden:setHealth(leiden:getHealth() / 2)
+			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33121, 31951, 15), "You were kicked for exceeding the time limit within the boss room.", '', 60, true, ittable, blockmonsters)
 		end
 	end
 	if item:getActionId() == 5502 and item:getId() == 8912 then -- The False God
@@ -209,14 +210,14 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 			local frompos = Position(33152, 31908, 15) -- Checagem
 			local topos = Position(33175, 31923, 15) -- Checagem
 
-			if(isPlayerInArea(frompos, topos)) then
+			if (isPlayerInArea(frompos, topos)) then
 				player:sendCancelMessage('The room is full.')
 				return true
 			end
 
-			for _x= frompos.x, topos.x, 1 do
-				for _y= frompos.y, topos.y, 1 do
-					for _z= frompos.z, topos.z, 1 do
+			for _x = frompos.x, topos.x, 1 do
+				for _y = frompos.y, topos.y, 1 do
+					for _z = frompos.z, topos.z, 1 do
 						local tile = Tile(Position(_x, _y, _z))
 						if tile and tile:getTopCreature() and tile:getTopCreature():isMonster() then
 							tile:getTopCreature():remove()
@@ -230,17 +231,17 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				local nplayer = Tile(newpos):getTopCreature()
 				if nplayer and nplayer:isPlayer() then
 					nplayer:setStorageValue(Storage.CultsOfTibia.Minotaurs.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
-					nplayer:teleportTo(Position(33169, 31915, 15),true)
-					convertTable[#convertTable + 1] = nplayer:getId()
+					nplayer:teleportTo(Position(33169, 31915, 15), true)
+					convertTable[#convertTable+1] = nplayer:getId()
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end
 			end
 			transformMonster(25300, 1, "minotaur idol", Position(33157, 31910, 15), Position(33168, 31910, 15), 0)
 			transformMonster(25300, 1, "minotaur idol", Position(33158, 31921, 15), Position(33168, 31921, 15), 6)
-			addEvent(transformMonster, 13*15000, 3, 3, "Sphere Of Wrath", {}, {}, 0)
-		Game.createMonster("The False God", Position(33159, 31914, 15))
-		-- funçao
-		kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33181, 31894, 15), "You were kicked for exceeding the time limit within the boss room.", '', 60, true, ittable, blockmonsters)
+			addEvent(transformMonster, 13 * 15000, 3, 3, "Sphere Of Wrath", {}, {}, 0)
+			Game.createMonster("The False God", Position(33159, 31914, 15))
+			-- funçao
+			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33181, 31894, 15), "You were kicked for exceeding the time limit within the boss room.", '', 60, true, ittable, blockmonsters)
 		end
 	end
 
@@ -258,14 +259,14 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 			local frompos = Position(33084, 31907, 15) -- Checagem
 			local topos = Position(33114, 31933, 15) -- Checagem
 
-			if(isPlayerInArea(frompos, topos)) then
+			if (isPlayerInArea(frompos, topos)) then
 				player:sendCancelMessage('It looks like there is someone inside.')
 				return true
 			end
 
-			for _x= frompos.x, topos.x, 1 do
-				for _y= frompos.y, topos.y, 1 do
-					for _z= frompos.z, topos.z, 1 do
+			for _x = frompos.x, topos.x, 1 do
+				for _y = frompos.y, topos.y, 1 do
+					for _z = frompos.z, topos.z, 1 do
 						local tile = Tile(Position(_x, _y, _z))
 						if tile and tile:getTopCreature() and tile:getTopCreature():isMonster() then
 							tile:getTopCreature():remove()
@@ -279,22 +280,22 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				local nplayer = Tile(newpos):getTopCreature()
 				if nplayer and nplayer:isPlayer() then
 					nplayer:setStorageValue(Storage.CultsOfTibia.Humans.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
-					nplayer:teleportTo(Position(33098, 31921, 15),true)
-					convertTable[#convertTable + 1] = nplayer:getId()
+					nplayer:teleportTo(Position(33098, 31921, 15), true)
+					convertTable[#convertTable+1] = nplayer:getId()
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end
 			end
-		kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33091, 31963, 15), "You were kicked for exceeding the time limit within the boss room.", '', 60, true, ittable, blockmonsters)
-		Game.createMonster("Pillar of Summoning", Position(33093, 31919, 15))
-		Game.createMonster("Pillar of Death", Position(33098, 31915, 15))
-		Game.createMonster("Pillar of Protection", Position(33103, 31919, 15))
-		Game.createMonster("Pillar of Healing", Position(33101, 31925, 15))
-		Game.createMonster("Pillar of Draining", Position(33095, 31925, 15))
-		Game.createMonster("Dorokoll The Mystic STOP", Position(33095, 31924, 15)):registerEvent("HealthPillar")
-		Game.createMonster("Eshtaba The Conjurer STOP", Position(33094, 31919, 15)):registerEvent("HealthPillar")
-		Game.createMonster("Eliz The Unyielding STOP", Position(33102, 31919, 15)):registerEvent("HealthPillar")
-		Game.createMonster("Mezlon The Defiler STOP", Position(33101, 31924, 15)):registerEvent("HealthPillar")
-		Game.createMonster("Malkhar Deathbringer STOP", Position(33098, 31916, 15)):registerEvent("HealthPillar")
+			kickerPlayerRoomAfferMin(convertTable, frompos, topos, Position(33091, 31963, 15), "You were kicked for exceeding the time limit within the boss room.", '', 60, true, ittable, blockmonsters)
+			Game.createMonster("Pillar of Summoning", Position(33093, 31919, 15))
+			Game.createMonster("Pillar of Death", Position(33098, 31915, 15))
+			Game.createMonster("Pillar of Protection", Position(33103, 31919, 15))
+			Game.createMonster("Pillar of Healing", Position(33101, 31925, 15))
+			Game.createMonster("Pillar of Draining", Position(33095, 31925, 15))
+			Game.createMonster("Dorokoll The Mystic STOP", Position(33095, 31924, 15)):registerEvent("HealthPillar")
+			Game.createMonster("Eshtaba The Conjurer STOP", Position(33094, 31919, 15)):registerEvent("HealthPillar")
+			Game.createMonster("Eliz The Unyielding STOP", Position(33102, 31919, 15)):registerEvent("HealthPillar")
+			Game.createMonster("Mezlon The Defiler STOP", Position(33101, 31924, 15)):registerEvent("HealthPillar")
+			Game.createMonster("Malkhar Deathbringer STOP", Position(33098, 31916, 15)):registerEvent("HealthPillar")
 		end
 	end
 
@@ -317,9 +318,9 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				return true
 			end
 
-			for _x= frompos.x, topos.x, 1 do
-				for _y= frompos.y, topos.y, 1 do
-					for _z= frompos.z, topos.z, 1 do
+			for _x = frompos.x, topos.x, 1 do
+				for _y = frompos.y, topos.y, 1 do
+					for _z = frompos.z, topos.z, 1 do
 						local tile = Tile(Position(_x, _y, _z))
 						if tile and tile:getTopCreature() and tile:getTopCreature():isMonster() then
 							tile:getTopCreature():remove()
@@ -333,8 +334,8 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				local nplayer = Tile(newpos):getTopCreature()
 				if nplayer and nplayer:isPlayer() then
 					nplayer:setStorageValue(Storage.CultsOfTibia.Misguided.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
-					nplayer:teleportTo(Position(33130, 31919, 15),true)
-					convertTable[#convertTable + 1] = nplayer:getId()
+					nplayer:teleportTo(Position(33130, 31919, 15), true)
+					convertTable[#convertTable+1] = nplayer:getId()
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end
 			end
@@ -358,14 +359,14 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 			local frompos = Position(33123, 31846, 15) -- Checagem
 			local topos = Position(33149, 31871, 15) -- Checagem
 
-			if(isPlayerInArea(frompos, topos)) then
+			if (isPlayerInArea(frompos, topos)) then
 				player:sendCancelMessage('It looks like there is someone inside.')
 				return true
 			end
 
-			for _x= frompos.x, topos.x, 1 do
-				for _y= frompos.y, topos.y, 1 do
-					for _z= frompos.z, topos.z, 1 do
+			for _x = frompos.x, topos.x, 1 do
+				for _y = frompos.y, topos.y, 1 do
+					for _z = frompos.z, topos.z, 1 do
 						local tile = Tile(Position(_x, _y, _z))
 						if tile and tile:getTopCreature() and tile:getTopCreature():isMonster() then
 							tile:getTopCreature():remove()
@@ -379,8 +380,8 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				local nplayer = Tile(newpos):getTopCreature()
 				if nplayer and nplayer:isPlayer() then
 					nplayer:setStorageValue(Storage.CultsOfTibia.Orcs.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
-					nplayer:teleportTo(Position(33137, 31867, 15),true)
-					convertTable[#convertTable + 1] = nplayer:getId()
+					nplayer:teleportTo(Position(33137, 31867, 15), true)
+					convertTable[#convertTable+1] = nplayer:getId()
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end
 			end
@@ -401,7 +402,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 					end
 				end
 			end
-			local itensToMonster = {--8633
+			local itensToMonster = { --8633
 				Position(33133, 31856, 15),
 				Position(33140, 31856, 15),
 				Position(33140, 31863, 15),
@@ -445,14 +446,14 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 			local frompos = Position(33087, 31848, 15) -- Checagem
 			local topos = Position(33109, 31871, 15) -- Checagem
 
-			if(isPlayerInArea(frompos, topos)) then
+			if (isPlayerInArea(frompos, topos)) then
 				player:sendCancelMessage('It looks like there is someone inside.')
 				return true
 			end
 
-			for _x= frompos.x, topos.x, 1 do
-				for _y= frompos.y, topos.y, 1 do
-					for _z= frompos.z, topos.z, 1 do
+			for _x = frompos.x, topos.x, 1 do
+				for _y = frompos.y, topos.y, 1 do
+					for _z = frompos.z, topos.z, 1 do
 						local tile = Tile(Position(_x, _y, _z))
 						if tile and tile:getTopCreature() and tile:getTopCreature():isMonster() then
 							tile:getTopCreature():remove()
@@ -472,12 +473,12 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 			end
 
 			for _y = 32228, 32232, 1 do
-				local newpos = Position(33507,_y, 10)
+				local newpos = Position(33507, _y, 10)
 				local nplayer = Tile(newpos):getTopCreature()
 				if nplayer and nplayer:isPlayer() then
 					nplayer:setStorageValue(Storage.CultsOfTibia.Life.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
-					nplayer:teleportTo(Position(33099, 31864, 15),true)
-					convertTable[#convertTable + 1] = nplayer:getId()
+					nplayer:teleportTo(Position(33099, 31864, 15), true)
+					convertTable[#convertTable+1] = nplayer:getId()
 					player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end
 			end
@@ -492,12 +493,12 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 	if item:getActionId() == 5506 then
 		if player:getPosition() == Position(33074, 31884, 15) and item:getId() == 8912 then
 			local convertTable = {}
-			convertTable[#convertTable + 1] = player:getId()
+			convertTable[#convertTable+1] = player:getId()
 
 			local frompos = Position(33023, 31904, 14) -- Checagem
 			local topos = Position(33052, 31932, 15) -- Checagem
 
-			if(isPlayerInArea(frompos, topos)) then
+			if (isPlayerInArea(frompos, topos)) then
 				player:sendCancelMessage('It looks like there is someone inside.')
 				return true
 			end
@@ -509,7 +510,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 					for _z = pt1.z, pt2.z, 1 do
 						local nplayer = Tile(Position(_x, _y, _z)):getTopCreature()
 						if nplayer and nplayer:isPlayer() then
-							convertTable[#convertTable + 1] = nplayer:getId()
+							convertTable[#convertTable+1] = nplayer:getId()
 						end
 					end
 				end
@@ -518,7 +519,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				local nplayer = Player(pid)
 				if nplayer then
 					nplayer:setStorageValue(Storage.CultsOfTibia.FinalBoss.BossTimer, os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
-					nplayer:teleportTo(Position(33039, 31925, 15),true)
+					nplayer:teleportTo(Position(33039, 31925, 15), true)
 					nplayer:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				end
 			end
@@ -536,5 +537,5 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 	return true
 end
 
-cultsOfTibiaLevers:aid(5500,5501,5502,5503,5504,5505,5506)
+cultsOfTibiaLevers:aid(5500, 5501, 5502, 5503, 5504, 5505, 5506)
 cultsOfTibiaLevers:register()

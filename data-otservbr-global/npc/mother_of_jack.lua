@@ -26,10 +26,10 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "JAAAAACK? EVERYTHING ALRIGHT DOWN THERE?"},
-	{text = "Oh dear, I can't find anything in here!"},
-	{text = "There is still some dust on the drawer over there. What where you thinking, Jane?"},
-	{text = "Jane!"}
+	{ text = "JAAAAACK? EVERYTHING ALRIGHT DOWN THERE?" },
+	{ text = "Oh dear, I can't find anything in here!" },
+	{ text = "There is still some dust on the drawer over there. What where you thinking, Jane?" },
+	{ text = "Jane!" }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -73,7 +73,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say(
 					"What about him? He's downstairs as he always has been. He never went away from home \z
 					any further than into the forest nearby. He rarely ever took a walk to Edron, did he?",
-				npc, creature)
+					npc, creature)
 				npcHandler:setTopic(playerId, 1)
 			end
 		end
@@ -82,7 +82,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				"Thought so. Of course he wouldn't do anything wrong. And he went where? Edron. Hm. I can \z
 					see nothing wrong with that. But... he wasn't there often, was he?",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
 	elseif MsgContains(message, "yes") then
@@ -98,7 +98,7 @@ local function creatureSayCallback(npc, creature, type, message)
 						me what he is actually doing in his FREE TIME. ...",
 					"JAAAAACK!"
 				},
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.Mother, 1)
 		end

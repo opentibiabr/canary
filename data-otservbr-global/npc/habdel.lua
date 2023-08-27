@@ -108,7 +108,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'weapons'}, StdModule.say, {npcHandler = npcHandler, text = 'I sell the finest weapons in town. If you\'d like to see my offers, ask me for a {trade}.'})
+keywordHandler:addKeyword({ 'weapons' }, StdModule.say, { npcHandler = npcHandler, text = 'I sell the finest weapons in town. If you\'d like to see my offers, ask me for a {trade}.' })
 
 npcHandler:setMessage(MESSAGE_GREET, 'Welcome |PLAYERNAME|! See the fine {weapons} I sell.')
 npcHandler:setMessage(MESSAGE_FAREWELL, 'Good bye. Come back soon.')

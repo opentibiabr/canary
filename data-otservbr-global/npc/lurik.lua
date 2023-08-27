@@ -130,7 +130,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.ExplorerSociety.TheIslandofDragons, 57)
 			player:setStorageValue(Storage.ExplorerSociety.QuestLine, 57)
-		-- ISLAND OF DRAGONS
+			-- ISLAND OF DRAGONS
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Excellent. Just report about your mission when you got the memory crystal.", npc, creature)
 			player:setStorageValue(Storage.TheIceIslands.Questline, 33)

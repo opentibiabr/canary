@@ -65,7 +65,7 @@ local function greetCallback(npc, creature)
 					See what you can find while hunting. Or buy food in a city shop. \z
 					Here, have some of my rations, I'll take my dagger. Tell me when you're {ready}."
 			},
-		npc, creature, 10)
+			npc, creature, 10)
 		player:addItem(3577, 1)
 		player:setStorageValue(Storage.Dawnport.Tutorial, 1)
 	end
@@ -88,7 +88,7 @@ local function creatureSayCallback(npc, creature, type, message)
 						You'll need a rope for the ropestot that comes after the ladder - here, take my spare equipment. ...",
 					"And remember: Tibia is a world with many dangers and mysteries, so be careful! Farewell, friend."
 				},
-			npc, creature, 10)
+				npc, creature, 10)
 			player:setStorageValue(Storage.Dawnport.Tutorial, 2)
 			npcHandler:setTopic(playerId, 0)
 		end

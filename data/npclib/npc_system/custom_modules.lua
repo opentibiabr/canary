@@ -1,6 +1,6 @@
 -- Custom Modules, created to help us in this datapack
 local travelDiscounts = {
-	["postman"] = {price = 10, storage = Storage.Quest.ExampleQuest, value = 1}
+	["postman"] = { price = 10, storage = Storage.Quest.ExampleQuest, value = 1 }
 }
 
 function StdModule.travelDiscount(npc, player, discounts)
@@ -95,7 +95,7 @@ function KeywordHandler:addSpellKeyword(keys, parameters)
 	localKeys.callback = FocusModule.messageMatcherDefault
 
 	local npcHandler, spellName, price, vocationId = parameters.npcHandler,
-          parameters.spellName, parameters.price, parameters.vocation
+			parameters.spellName, parameters.price, parameters.vocation
 
 	local spellKeyword = self:addKeyword(
 		localKeys,
@@ -103,7 +103,7 @@ function KeywordHandler:addSpellKeyword(keys, parameters)
 		{
 			npcHandler = npcHandler,
 			text = string.format("Do you want to learn the spell '%s' for %s?\z ",
-                                spellName, price > 0 and price .. ' gold' or 'free')
+				spellName, price > 0 and price .. ' gold' or 'free')
 		},
 		function(player)
 			-- This will register for all client id vocations
@@ -117,7 +117,7 @@ function KeywordHandler:addSpellKeyword(keys, parameters)
 	)
 
 	spellKeyword:addChildKeyword(
-		{"yes"},
+		{ "yes" },
 		StdModule.learnSpell,
 		{
 			npcHandler = npcHandler,
@@ -127,7 +127,7 @@ function KeywordHandler:addSpellKeyword(keys, parameters)
 		}
 	)
 	spellKeyword:addChildKeyword(
-		{"no"},
+		{ "no" },
 		StdModule.say,
 		{
 			npcHandler = npcHandler,
@@ -158,9 +158,9 @@ local hints = {
 	[9] = "There are many ways to gather food. Many creatures drop food but you can also pick blueberries or bake \z
                 your own bread. If you have a fishing rod and worms in your inventory, you can also try to catch a fish.",
 	[10] = {
-				"Baking bread is rather complex. First of all you need a scythe to harvest wheat. \z
+		"Baking bread is rather complex. First of all you need a scythe to harvest wheat. \z
                     Then you use the wheat with a millstone to get flour. ...",
-				"This can be be used on water to get dough, which can be used on an oven to bake bread. \z
+		"This can be be used on water to get dough, which can be used on an oven to bake bread. \z
                     Use milk instead of water to get cake dough."
 	},
 	[11] = "Dying hurts! Better run away than risk your life. \z

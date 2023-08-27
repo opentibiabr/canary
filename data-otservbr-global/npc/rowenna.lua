@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Selling and buying fine weapons!'}
+	{ text = 'Selling and buying fine weapons!' }
 }
 
 local keywordHandler = KeywordHandler:new()

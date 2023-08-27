@@ -59,8 +59,8 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local configMarks = {
-	{mark = "depot", position = Position(32681, 31686, 7), markId = MAPMARK_LOCK, description = "Depot and Shops"},
-	{mark = "temple", position = Position(32732, 31634, 7), markId = MAPMARK_TEMPLE, description = "Temple"}
+	{ mark = "depot", position = Position(32681, 31686, 7), markId = MAPMARK_LOCK, description = "Depot and Shops" },
+	{ mark = "temple", position = Position(32732, 31634, 7), markId = MAPMARK_TEMPLE, description = "Temple" }
 }
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -71,7 +71,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if table.contains({"map", "marks"}, message) then
+	if table.contains({ "map", "marks" }, message) then
 		npcHandler:say("Would you like me to mark locations like - for example - the depot, bank and shops on your map?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
@@ -89,12 +89,12 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'information'}, StdModule.say, {npcHandler = npcHandler, text = 'Currently, I can tell you all about the town, its temple, the bank, shops, spell trainers and the depot, as well as about the world status.'})
-keywordHandler:addKeyword({'temple'}, StdModule.say, {npcHandler = npcHandler, text = 'The temple is built around the elves\' holy tree. You can find it north of this harbour.'})
-keywordHandler:addKeyword({'bank'}, StdModule.say, {npcHandler = npcHandler, text = 'Finarfin is in charge of the bank. You can find him on the lowest floor of the depot.'})
-keywordHandler:addKeyword({'shops'}, StdModule.say, {npcHandler = npcHandler, text = 'You can buy weapons, armor, tools, gems, magical equipment, instruments, furniture, spells and food here.'})
-keywordHandler:addKeyword({'depot'}, StdModule.say, {npcHandler = npcHandler, text = 'The depot is a place where you can safely store your belongings. You are also protected against attacks there. I escort newcomers there.'})
-keywordHandler:addKeyword({'town'}, StdModule.say, {npcHandler = npcHandler, text = 'The elves have constructed Ab\'Dendriel mainly in and on trees. There is also a large underground cave system with shops, a prison and troll caves.'})
+keywordHandler:addKeyword({ 'information' }, StdModule.say, { npcHandler = npcHandler, text = 'Currently, I can tell you all about the town, its temple, the bank, shops, spell trainers and the depot, as well as about the world status.' })
+keywordHandler:addKeyword({ 'temple' }, StdModule.say, { npcHandler = npcHandler, text = 'The temple is built around the elves\' holy tree. You can find it north of this harbour.' })
+keywordHandler:addKeyword({ 'bank' }, StdModule.say, { npcHandler = npcHandler, text = 'Finarfin is in charge of the bank. You can find him on the lowest floor of the depot.' })
+keywordHandler:addKeyword({ 'shops' }, StdModule.say, { npcHandler = npcHandler, text = 'You can buy weapons, armor, tools, gems, magical equipment, instruments, furniture, spells and food here.' })
+keywordHandler:addKeyword({ 'depot' }, StdModule.say, { npcHandler = npcHandler, text = 'The depot is a place where you can safely store your belongings. You are also protected against attacks there. I escort newcomers there.' })
+keywordHandler:addKeyword({ 'town' }, StdModule.say, { npcHandler = npcHandler, text = 'The elves have constructed Ab\'Dendriel mainly in and on trees. There is also a large underground cave system with shops, a prison and troll caves.' })
 
 npcHandler:setMessage(MESSAGE_GREET, "Hello there, |PLAYERNAME| and welcome to Ab'Dendriel! Would you like some information and a map guide?")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")

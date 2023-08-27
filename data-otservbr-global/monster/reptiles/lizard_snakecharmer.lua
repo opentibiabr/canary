@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Chor."
-	}
+}
 
 monster.health = 325
 monster.maxHealth = 325
@@ -70,64 +70,64 @@ monster.light = {
 monster.summon = {
 	maxSummons = 6,
 	summons = {
-		{name = "cobra", chance = 20, interval = 2000, count = 6}
+		{ name = "cobra", chance = 20, interval = 2000, count = 6 }
 	}
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "I smeeeel warm blood!", yell = false},
-	{text = "Shhhhhhh", yell = false}
+	{ text = "I smeeeel warm blood!", yell = false },
+	{ text = "Shhhhhhh", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 83740, maxCount = 55},
-	{name = "small amethyst", chance = 520},
-	{name = "yellow gem", chance = 150},
-	{id = 3052, chance = 340}, -- life ring
-	{name = "life crystal", chance = 1430},
-	{name = "terra rod", chance = 920},
-	{name = "snakebite rod", chance = 230},
-	{name = "cape", chance = 8640},
-	{name = "charmer's tiara", chance = 230},
-	{name = "lizard leather", chance = 1320},
-	{name = "lizard scale", chance = 860},
-	{name = "mana potion", chance = 860}
+	{ name = "gold coin", chance = 83740, maxCount = 55 },
+	{ name = "small amethyst", chance = 520 },
+	{ name = "yellow gem", chance = 150 },
+	{ id = 3052, chance = 340 }, -- life ring
+	{ name = "life crystal", chance = 1430 },
+	{ name = "terra rod", chance = 920 },
+	{ name = "snakebite rod", chance = 230 },
+	{ name = "cape", chance = 8640 },
+	{ name = "charmer's tiara", chance = 230 },
+	{ name = "lizard leather", chance = 1320 },
+	{ name = "lizard scale", chance = 860 },
+	{ name = "mana potion", chance = 860 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -30 },
 	-- poison
-	{name ="condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -100, maxDamage = -200, range = 7, shootEffect = CONST_ANI_POISON, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -50, maxDamage = -110, range = 7, radius = 1, shootEffect = CONST_ANI_POISON, effect = CONST_ME_GREEN_RINGS, target = true}
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -100, maxDamage = -200, range = 7, shootEffect = CONST_ANI_POISON, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -50, maxDamage = -110, range = 7, radius = 1, shootEffect = CONST_ANI_POISON, effect = CONST_ME_GREEN_RINGS, target = true }
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 15,
-	{name ="combat", interval = 2000, chance = 50, type = COMBAT_HEALING, minDamage = 50, maxDamage = 100, effect = CONST_ME_MAGIC_BLUE, target = false},
-	{name ="invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE}
+	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_HEALING, minDamage = 50, maxDamage = 100, effect = CONST_ME_MAGIC_BLUE, target = false },
+	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -10},
-	{type = COMBAT_ENERGYDAMAGE, percent = 20},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 20},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -10 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 20 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = -10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 20 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

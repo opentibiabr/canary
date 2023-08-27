@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Throughout the Foreigner, Factory, and Trade Quarters in Yalahar."
-	}
+}
 
 monster.health = 295
 monster.maxHealth = 295
@@ -70,22 +70,22 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "This is our territory!", yell = false},
-	{text = "Help me guys!", yell = false},
-	{text = "I don't like the way you look!", yell = false},
-	{text = "You're wearing the wrong colours!", yell = false},
-	{text = "Don't mess with us!", yell = false}
+	{ text = "This is our territory!", yell = false },
+	{ text = "Help me guys!", yell = false },
+	{ text = "I don't like the way you look!", yell = false },
+	{ text = "You're wearing the wrong colours!", yell = false },
+	{ text = "Don't mess with us!", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 50110, maxCount = 30},
-	{id = 3093, chance = 740}, -- club ring
-	{name = "studded legs", chance = 5220},
-	{name = "leather legs", chance = 15330}
+	{ name = "gold coin", chance = 50110, maxCount = 30 },
+	{ id = 3093, chance = 740 }, -- club ring
+	{ name = "studded legs", chance = 5220 },
+	{ name = "leather legs", chance = 15330 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 }
 }
 
 monster.defenses = {
@@ -94,23 +94,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

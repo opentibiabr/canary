@@ -52,13 +52,13 @@ function redGem.onStepIn(creature, item, position, fromPosition)
 	end
 	if item.itemid == 8646 then
 		local leverFirst = Tile(Position(33651, 32661, 13)):getItemById(9110)
-		or Tile(Position(33651, 32661, 13)):getItemById(9111) -- lever red
+				or Tile(Position(33651, 32661, 13)):getItemById(9111) -- lever red
 		local leverSecond = Tile(Position(33671, 32638, 13)):getItemById(9110)
-		or Tile(Position(33671, 32638, 13)):getItemById(9111) -- lever blue
+				or Tile(Position(33671, 32638, 13)):getItemById(9111) -- lever blue
 		local leverThird = Tile(Position(33613, 32691, 13)):getItemById(9110)
-		or Tile(Position(33613, 32691, 13)):getItemById(9111) -- lever green
+				or Tile(Position(33613, 32691, 13)):getItemById(9111) -- lever green
 		local leverFour = Tile(Position(33671, 32688, 13)):getItemById(9110)
-		or Tile(Position(33671, 32688, 13)):getItemById(9111) -- lever green
+				or Tile(Position(33671, 32688, 13)):getItemById(9111) -- lever green
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Elements.First, 1) -- red
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Elements.Second, 3) -- blue
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Elements.Third, 2) -- green
@@ -78,7 +78,7 @@ function redGem.onStepIn(creature, item, position, fromPosition)
 	addEvent(activeBasin, 1 * 1000, position)
 	addEvent(revertBasin, 60 * 60 * 1000, position)
 	addEvent(revertStorages, 60 * 60 * 1000)
-	addEvent(revertItem, 60 * 60 * 1000,  position, 8648, item.itemid)
+	addEvent(revertItem, 60 * 60 * 1000, position, 8648, item.itemid)
 	return true
 end
 

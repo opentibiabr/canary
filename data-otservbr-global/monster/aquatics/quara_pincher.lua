@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Calassa, Frozen Trench, Yalahar (Sunken Quarter)."
-	}
+}
 
 monster.health = 1800
 monster.maxHealth = 1800
@@ -70,30 +70,30 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Clank! Clank!", yell = false},
-	{text = "Clap!", yell = false},
-	{text = "Crrrk! Crrrk!", yell = false}
+	{ text = "Clank! Clank!", yell = false },
+	{ text = "Clap!", yell = false },
+	{ text = "Crrrk! Crrrk!", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 50000, maxCount = 100},
-	{name = "gold coin", chance = 50000, maxCount = 50},
-	{name = "platinum coin", chance = 40000},
-	{name = "quara pincers", chance = 14285},
-	{name = "great health potion", chance = 10630},
-	{name = "small ruby", chance = 7761, maxCount = 2},
-	{name = "halberd", chance = 6861},
-	{name = "shrimp", chance = 5245, maxCount = 5},
-	{name = "fish fin", chance = 1600},
-	{name = "warrior helmet", chance = 1460},
-	{name = "crown armor", chance = 280},
-	{name = "glacier robe", chance = 120},
-	{name = "giant shrimp", chance = 40}
+	{ name = "gold coin", chance = 50000, maxCount = 100 },
+	{ name = "gold coin", chance = 50000, maxCount = 50 },
+	{ name = "platinum coin", chance = 40000 },
+	{ name = "quara pincers", chance = 14285 },
+	{ name = "great health potion", chance = 10630 },
+	{ name = "small ruby", chance = 7761, maxCount = 2 },
+	{ name = "halberd", chance = 6861 },
+	{ name = "shrimp", chance = 5245, maxCount = 5 },
+	{ name = "fish fin", chance = 1600 },
+	{ name = "warrior helmet", chance = 1460 },
+	{ name = "crown armor", chance = 280 },
+	{ name = "glacier robe", chance = 120 },
+	{ name = "giant shrimp", chance = 40 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -342, effect = CONST_ME_DRAWBLOOD},
-	{name ="speed", interval = 2000, chance = 20, speedChange = -600, range = 1, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -342, effect = CONST_ME_DRAWBLOOD },
+	{ name = "speed", interval = 2000, chance = 20, speedChange = -600, range = 1, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000 }
 }
 
 monster.defenses = {
@@ -102,23 +102,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = -25},
-	{type = COMBAT_EARTHDAMAGE, percent = -10},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -25 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -10 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

@@ -21,9 +21,9 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Chchch'}
+	{ text = 'Chchch' }
 }
-npcConfig.shop = {	-- Sellable items
+npcConfig.shop = { -- Sellable items
 	{ itemName = "acorn", clientId = 10296, sell = 10 },
 	{ itemName = "walnut", clientId = 836, sell = 80 }
 }
@@ -67,7 +67,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({'acorn'}, StdModule.say, {npcHandler = npcHandler, text = "Chh? Chhh?? <though you don't understand squirrelish, that one seems really excited>"})
+keywordHandler:addKeyword({ 'acorn' }, StdModule.say, { npcHandler = npcHandler, text = "Chh? Chhh?? <though you don't understand squirrelish, that one seems really excited>" })
 
 npcHandler:setMessage(MESSAGE_GREET, "Chhchh?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Chh...")

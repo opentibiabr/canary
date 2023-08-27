@@ -114,18 +114,18 @@ function questReward.onUse(player, item, fromPosition, itemEx, toPosition)
 		end
 		if (player:getFreeCapacity() / 100) < setting.weight then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			message .. ". Weighing " .. setting.weight .. " oz, it is too heavy for you to carry.")
+				message .. ". Weighing " .. setting.weight .. " oz, it is too heavy for you to carry.")
 			return true
 		end
 	end
 
 	if setting.timerStorage then
 		if player:getStorageValue(setting.timerStorage) > os.time() then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The ".. getItemName(setting.itemId) .. " is empty.")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. getItemName(setting.itemId) .. " is empty.")
 			return true
 		end
 	elseif player:getStorageValue(setting.storage) >= 0 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The ".. getItemName(setting.itemId) .. " is empty.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. getItemName(setting.itemId) .. " is empty.")
 		return true
 	end
 	if setting.randomReward then

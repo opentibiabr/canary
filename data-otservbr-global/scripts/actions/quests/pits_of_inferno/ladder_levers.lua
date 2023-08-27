@@ -30,5 +30,5 @@ function pitsOfInfernoLadderLevers.onUse(player, item, fromPosition, target, toP
 	return true
 end
 
-pitsOfInfernoLadderLevers:uid(3301,3302)
+pitsOfInfernoLadderLevers:uid(3301, 3302)
 pitsOfInfernoLadderLevers:register()

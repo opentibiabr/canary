@@ -94,7 +94,7 @@ function tar.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	for index, value in pairs(configQuest)do
+	for index, value in pairs(configQuest) do
 		if item:getId() == value.itemId and fromPosition:compare(value.beginPos) then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, value.msgs[1])
 			sendConditionCults(player:getId(), index, value.fromPos, value.toPos, 0)
@@ -110,7 +110,7 @@ function tar.onStepIn(creature, item, position, fromPosition)
 			if player:getStorageValue(value.storageBarkless) == 2 then
 				player:setStorageValue(value.storageBarkless, 3)
 				if player:getStorageValue(Storage.CultsOfTibia.Barkless.sulphur) == 3 and
-				player:getStorageValue(Storage.CultsOfTibia.Barkless.Tar) == 3 then
+						player:getStorageValue(Storage.CultsOfTibia.Barkless.Tar) == 3 then
 					player:setStorageValue(Storage.CultsOfTibia.Barkless.Mission, 2)
 				end
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, value.msgs[5])

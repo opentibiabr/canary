@@ -62,22 +62,22 @@ npcType.onThink = function(npc, interval)
 	npcHandler:onThink(npc, interval)
 end
 
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = "I am Albinius, a worshipper of the {Astral Shapers}."})
-keywordHandler:addKeyword({'time'}, StdModule.say, {npcHandler = npcHandler, text = "Precisely time."})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "I find ways to unveil the secrets of the stars. Judging by this question, I doubt you follow my weekly publications concerning this research."})
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = "I am Albinius, a worshipper of the {Astral Shapers}." })
+keywordHandler:addKeyword({ 'time' }, StdModule.say, { npcHandler = npcHandler, text = "Precisely time." })
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I find ways to unveil the secrets of the stars. Judging by this question, I doubt you follow my weekly publications concerning this research." })
 
 local runes = {
-	{runeid = 24954},
-	{runeid = 24955},
-	{runeid = 24956},
-	{runeid = 24957},
-	{runeid = 24958},
-	{runeid = 24959}
+	{ runeid = 24954 },
+	{ runeid = 24955 },
+	{ runeid = 24956 },
+	{ runeid = 24957 },
+	{ runeid = 24958 },
+	{ runeid = 24959 }
 }
 
 local function getTable()
 	local itemsList = {
-		{name = "heavy old tome", id = 23986, sell = 30}
+		{ name = "heavy old tome", id = 23986, sell = 30 }
 	}
 	return itemsList
 end
@@ -116,7 +116,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say('You need 5 heavy old tome.', npc, creature)
 			end
 		end
-	elseif  MsgContains(message, "no") and npcHandler:getTopic(playerId) == 1 then
+	elseif MsgContains(message, "no") and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say('I understand. Return to me if you change your mind, my child.', npc, creature)
 		npcHandler:removeInteraction(npc, creature)
 	end

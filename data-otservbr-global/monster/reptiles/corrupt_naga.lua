@@ -57,19 +57,19 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "The Moon Goddess is ashamed of you!", yell = false},
+	{ text = "The Moon Goddess is ashamed of you!", yell = false },
 }
 
 monster.loot = {
-	{name = "Platinum Coin", chance = 75420, minCount = 1, maxCount = 8},
-	{name = "Violet Crystal Shard", chance = 24580, minCount = 1, maxCount = 2},
-	{name = "Corrupt Naga Scales", chance = 17720},
+	{ name = "Platinum Coin", chance = 75420, minCount = 1, maxCount = 8 },
+	{ name = "Violet Crystal Shard", chance = 24580, minCount = 1, maxCount = 2 },
+	{ name = "Corrupt Naga Scales", chance = 17720 },
 }
 
 monster.attacks = {
-    {name ="combat", interval = 2000, chance = 100, minDamage = -300, maxDamage = -600, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_PURPLEENERGY, target = true},
-    {name ="nagadeath", interval = 6000, chance = 39, target = false, minDamage = -1000, maxDamage = -2200},
-    {name ="nagadeathattack", interval = 3000, chance = 68, target = true, minDamage = -400, maxDamage = -600},
+	{ name = "combat", interval = 2000, chance = 100, minDamage = -300, maxDamage = -600, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_PURPLEENERGY, target = true },
+	{ name = "nagadeath", interval = 6000, chance = 39, target = false, minDamage = -1000, maxDamage = -2200 },
+	{ name = "nagadeathattack", interval = 3000, chance = 68, target = true, minDamage = -400, maxDamage = -600 },
 }
 
 monster.defenses = {
@@ -78,23 +78,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 10},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 25},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 25 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

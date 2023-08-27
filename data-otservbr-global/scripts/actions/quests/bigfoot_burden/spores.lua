@@ -32,5 +32,5 @@ function bigfootSpores.onUse(player, item, fromPosition, target, toPosition, isH
 	return true
 end
 
-bigfootSpores:id(15817,15818,15819,15820)
+bigfootSpores:id(15817, 15818, 15819, 15820)
 bigfootSpores:register()

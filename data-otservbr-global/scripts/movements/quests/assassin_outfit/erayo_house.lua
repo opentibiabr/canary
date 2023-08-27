@@ -14,5 +14,5 @@ function erayoHouse.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 
-erayoHouse:position({x = 32517, y = 32909, z = 7})
+erayoHouse:position({ x = 32517, y = 32909, z = 7 })
 erayoHouse:register()

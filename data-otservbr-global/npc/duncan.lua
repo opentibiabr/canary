@@ -60,27 +60,27 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	local storage = Storage.OutfitQuest.PirateSabreAddon
 
-	if table.contains({'outfit', 'addon'}, message) and player:getStorageValue(Storage.OutfitQuest.PirateBaseOutfit) == 1 then
+	if table.contains({ 'outfit', 'addon' }, message) and player:getStorageValue(Storage.OutfitQuest.PirateBaseOutfit) == 1 then
 		npcHandler:say(
 			"You're talking about my sabre? Well, even though you earned our trust, \
 			you'd have to fulfill a task first before you are granted to wear such a sabre.",
-		creature)
+			creature)
 	elseif MsgContains(message, 'mission') then
 		if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 6 then
 			npcHandler:say(
 				'I need a new quality atlas for our captains. Only one of the best will do it. \
 				I heard the explorers society sells the best, but only to members of a certain rank. \
 				You will have to get this rank or ask a high ranking member to buy it for you.',
-			creature)
+				creature)
 			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 7)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 7 then
 			npcHandler:say('Did you get an atlas of the explorers society as I requested?', npc, creature)
 			npcHandler:setTopic(playerId, 6)
 		elseif
-			player:getStorageValue(Storage.TheShatteredIsles.RaysMission2) > 0 and
+				player:getStorageValue(Storage.TheShatteredIsles.RaysMission2) > 0 and
 				player:getStorageValue(Storage.TheShatteredIsles.TortoiseEggNargorDoor) < 0
-		 then
+		then
 			npcHandler:say(
 				'You did some impressive things. I think people here start considering you as one of us. \
 				But these are dire times and everyone of us is expected to give his best and even exceed himself. \
@@ -150,7 +150,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(storage, 4)
 				npcHandler:say(
 					"I see, I see. Well done. Go to Morgan and tell him this codeword: 'firebird'. He'll know what to do.",
-				creature)
+					creature)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("You don't have it...", npc, creature)
@@ -179,7 +179,7 @@ local function creatureSayCallback(npc, creature, type, message)
 						'I will ask Sebastian to bring you there. \
 						Travel to Nargor, find their tortoise eggs and bring me at least one of them.'
 					},
-				creature)
+					creature)
 				player:setStorageValue(Storage.TheShatteredIsles.TortoiseEggNargorDoor, 1)
 				npcHandler:setTopic(playerId, 0)
 			end

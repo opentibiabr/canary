@@ -180,29 +180,32 @@ local function getOfferByName(name, offer, topic)
 	for index, offerTable in ipairs(offer) do
 		if name:lower() == (offerTable.name):lower() then
 			if topic == config.topics.outfit then
-				return {	offerId = index,
-						name = offerTable.name,
-						offerTopic = topic,
-						base = offerTable.points.base,
-						firstAddon = offerTable.points.addons.first,
-						secondAddon = offerTable.points.addons.second,
-						male = offerTable.looktype.male,
-						female = offerTable.looktype.female
-					}
+				return {
+					offerId = index,
+					name = offerTable.name,
+					offerTopic = topic,
+					base = offerTable.points.base,
+					firstAddon = offerTable.points.addons.first,
+					secondAddon = offerTable.points.addons.second,
+					male = offerTable.looktype.male,
+					female = offerTable.looktype.female
+				}
 			elseif topic == config.topics.mount then
-				return {	offerId = index,
-						name = offerTable.name,
-						offerTopic = topic,
-						value = offerTable.points,
-						mountId = offerTable.id
-					}
+				return {
+					offerId = index,
+					name = offerTable.name,
+					offerTopic = topic,
+					value = offerTable.points,
+					mountId = offerTable.id
+				}
 			elseif topic == config.topics.trophy or topic == config.topics.furniture then
-				return {	offerId = index,
-						name = offerTable.name,
-						offerTopic = topic,
-						value = offerTable.points,
-						itemId = offerTable.id
-					}
+				return {
+					offerId = index,
+					name = offerTable.name,
+					offerTopic = topic,
+					value = offerTable.points,
+					itemId = offerTable.id
+				}
 			end
 		end
 	end
@@ -218,29 +221,32 @@ local function getOfferByIndex(offerIndex, offer, topic)
 	for index, offerTable in ipairs(offer) do
 		if index == offerIndex then
 			if topic == config.topics.outfit then
-				return {	offerId = index,
-						name = offerTable.name,
-						offerTopic = topic,
-						base = offerTable.points.base,
-						firstAddon = offerTable.points.addons.first,
-						secondAddon = offerTable.points.addons.second,
-						male = offerTable.looktype.male,
-						female = offerTable.looktype.female
-					}
+				return {
+					offerId = index,
+					name = offerTable.name,
+					offerTopic = topic,
+					base = offerTable.points.base,
+					firstAddon = offerTable.points.addons.first,
+					secondAddon = offerTable.points.addons.second,
+					male = offerTable.looktype.male,
+					female = offerTable.looktype.female
+				}
 			elseif topic == config.topics.mount then
-				return {	offerId = index,
-						name = offerTable.name,
-						offerTopic = topic,
-						value = offerTable.points,
-						mountId = offerTable.id
-					}
+				return {
+					offerId = index,
+					name = offerTable.name,
+					offerTopic = topic,
+					value = offerTable.points,
+					mountId = offerTable.id
+				}
 			elseif topic == config.topics.trophy or topic == config.topics.furniture then
-				return {	offerId = index,
-						name = offerTable.name,
-						offerTopic = topic,
-						value = offerTable.points,
-						itemId = offerTable.id
-					}
+				return {
+					offerId = index,
+					name = offerTable.name,
+					offerTopic = topic,
+					value = offerTable.points,
+					itemId = offerTable.id
+				}
 			end
 		end
 	end
@@ -269,7 +275,7 @@ local function getOfferString(name, offer, topic)
 end
 
 local function processItemInboxPurchase(player, name, id)
-	if not(player) then
+	if not (player) then
 		return false
 	end
 
@@ -299,23 +305,21 @@ local function creatureSayCallback(npc, creature, type, message)
 			"Please note, that all items will be put into your Store inbox!"
 		}, npc, creature, 100)
 		npcHandler:setTopic(playerId, 1)
-
 	elseif MsgContains(message, "tasks") then
 		npcHandler:say("Prey hunting tasks should reduce the number of certain monsters. And if you fulfil them successfully I will show my appreciation and give you some {rewards} in exchange of hunting task points.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
-
 	elseif MsgContains(message, "have") then
 		npcHandler:say("Right now you have " .. player:getTaskHuntingPoints() .. " HTP.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 
-	-- Add task hunting points history here.
-	--elseif MsgContains(message, "spent") then
-	--	npcHandler:say("You have already spent " .. nil .. " HTP.", npc, creature)
-	--	npcHandler:setTopic(playerId, 0)
+		-- Add task hunting points history here.
+		--elseif MsgContains(message, "spent") then
+		--	npcHandler:say("You have already spent " .. nil .. " HTP.", npc, creature)
+		--	npcHandler:setTopic(playerId, 0)
 
-	-- Rewards topic
+		-- Rewards topic
 	elseif npcHandler:getTopic(playerId) == 1 then
-		if not(config.enable) then
+		if not (config.enable) then
 			npcHandler:say("Sorry, i have no offer to make for you today.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif MsgContains(message, "outfit") then
@@ -352,7 +356,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 
-	-- Offer topics
+		-- Offer topics
 	elseif npcHandler:getTopic(playerId) > 1 then
 		if npcHandler:getTopic(playerId) == config.topics.outfit then
 			if config ~= nil and config.outifts ~= nil and #(config.outifts) > 0 then
@@ -416,7 +420,7 @@ local function creatureSayCallback(npc, creature, type, message)
 						end
 					elseif MsgContains(message, "first") then
 						local points = offerTable.firstAddon
-						if not(player:hasOutfit(offerTable.male)) or not(player:hasOutfit(offerTable.female)) then
+						if not (player:hasOutfit(offerTable.male)) or not (player:hasOutfit(offerTable.female)) then
 							npcHandler:say("First you need to buy the base addon to unlock this addon.", npc, creature)
 						elseif player:hasOutfit(offerTable.male, 1) or player:hasOutfit(offerTable.female, 1) then
 							npcHandler:say("You already have this addon.", npc, creature)
@@ -430,7 +434,7 @@ local function creatureSayCallback(npc, creature, type, message)
 						end
 					elseif MsgContains(message, "second") then
 						local points = offerTable.secondAddon
-						if not(player:hasOutfit(offerTable.male)) or not(player:hasOutfit(offerTable.female)) then
+						if not (player:hasOutfit(offerTable.male)) or not (player:hasOutfit(offerTable.female)) then
 							npcHandler:say("First you need to buy the base addon to unlock this addon.", npc, creature)
 						elseif player:hasOutfit(offerTable.male, 2) or player:hasOutfit(offerTable.female, 2) then
 							npcHandler:say("You already have this addon.", npc, creature)

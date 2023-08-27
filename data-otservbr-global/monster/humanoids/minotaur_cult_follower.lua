@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Minotaurs Cult Cave."
-	}
+}
 
 monster.health = 1600
 monster.maxHealth = 1600
@@ -73,65 +73,65 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Kaplar!", yell = false},
-	{text = "Hurr!", yell = false}
+	{ text = "Kaplar!", yell = false },
+	{ text = "Hurr!", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 100000, maxCount = 150},
-	{name = "cowbell", chance = 22480},
-	{name = "cultish robe", chance = 14720},
-	{name = "plate shield", chance = 20020},
-	{name = "great health potion", chance = 11840},
-	{name = "small ruby", chance = 3690, maxCount = 2},
-	{name = "small topaz", chance = 3170, maxCount = 2},
-	{name = "yellow gem", chance = 280},
-	{name = "platinum coin", chance = 65250, maxCount = 3},
-	{name = "plate shield", chance = 20710},
-	{name = "small emerald", chance = 3410, maxCount = 2},
-	{name = "small amethyst", chance = 2950, maxCount = 2},
-	{name = "red piece of cloth", chance = 810},
-	{name = "ham", chance = 59410},
-	{name = "bronze amulet", chance = 15140},
-	{name = "mino shield", chance = 12670},
-	{id = 3098, chance = 3190}, -- ring of healing
-	{name = "mino lance", chance = 1810},
-	{name = "warrior helmet", chance = 570},
-	{id= 3039, chance = 170}, -- red gem
-	{name = "meat", chance = 8020},
-	{name = "minotaur leather", chance = 11530},
-	{name = "minotaur horn", chance = 14550, maxCount = 2}
+	{ name = "gold coin", chance = 100000, maxCount = 150 },
+	{ name = "cowbell", chance = 22480 },
+	{ name = "cultish robe", chance = 14720 },
+	{ name = "plate shield", chance = 20020 },
+	{ name = "great health potion", chance = 11840 },
+	{ name = "small ruby", chance = 3690, maxCount = 2 },
+	{ name = "small topaz", chance = 3170, maxCount = 2 },
+	{ name = "yellow gem", chance = 280 },
+	{ name = "platinum coin", chance = 65250, maxCount = 3 },
+	{ name = "plate shield", chance = 20710 },
+	{ name = "small emerald", chance = 3410, maxCount = 2 },
+	{ name = "small amethyst", chance = 2950, maxCount = 2 },
+	{ name = "red piece of cloth", chance = 810 },
+	{ name = "ham", chance = 59410 },
+	{ name = "bronze amulet", chance = 15140 },
+	{ name = "mino shield", chance = 12670 },
+	{ id = 3098, chance = 3190 }, -- ring of healing
+	{ name = "mino lance", chance = 1810 },
+	{ name = "warrior helmet", chance = 570 },
+	{ id = 3039, chance = 170 }, -- red gem
+	{ name = "meat", chance = 8020 },
+	{ name = "minotaur leather", chance = 11530 },
+	{ name = "minotaur horn", chance = 14550, maxCount = 2 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -240},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -110, maxDamage = -210, radius = 3, effect = CONST_ME_GROUNDSHAKER, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -240 },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -110, maxDamage = -210, radius = 3, effect = CONST_ME_GROUNDSHAKER, target = false }
 }
 
 monster.defenses = {
 	defense = 25,
 	armor = 25,
-	{name ="combat", interval = 1000, chance = 20, type = COMBAT_HEALING, minDamage = 100, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false}
+	{ name = "combat", interval = 1000, chance = 20, type = COMBAT_HEALING, minDamage = 100, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 20},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -10},
-	{type = COMBAT_HOLYDAMAGE , percent = 10},
-	{type = COMBAT_DEATHDAMAGE , percent = -10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 20 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

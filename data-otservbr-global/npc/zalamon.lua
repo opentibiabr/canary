@@ -47,14 +47,14 @@ end
 
 local marks = {
 	ChildrenOfTheRevolution = {
-		{position = Position(33235, 31177, 7), type = 4, description = 'entrance of the camp'},
-		{position = Position(33257, 31172, 7), type = 3, description = 'building 1 which you have to spy'},
-		{position = Position(33227, 31163, 7), type = 3, description = 'building 2 which you have to spy'},
-		{position = Position(33230, 31156, 7), type = 3, description = 'building 3 which you have to spy'}
+		{ position = Position(33235, 31177, 7), type = 4, description = 'entrance of the camp' },
+		{ position = Position(33257, 31172, 7), type = 3, description = 'building 1 which you have to spy' },
+		{ position = Position(33227, 31163, 7), type = 3, description = 'building 2 which you have to spy' },
+		{ position = Position(33230, 31156, 7), type = 3, description = 'building 3 which you have to spy' }
 	},
 	WrathOfTheEmperor = {
-		{position = Position(33356, 31180, 7), description = 'tunnel to hideout'},
-		{position = Position(33173, 31076, 7), description = 'the rebel hideout'}
+		{ position = Position(33356, 31180, 7), description = 'tunnel to hideout' },
+		{ position = Position(33173, 31076, 7), description = 'the rebel hideout' }
 	}
 }
 
@@ -160,9 +160,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addItem(10199, 1)
 			player:addExperience(10000, true)
 			npcHandler:setTopic(playerId, 0)
-		-- CHILDREN OF REVOLUTION QUEST
+			-- CHILDREN OF REVOLUTION QUEST
 
-		-- WRATH OF THE EMPEROR QUEST
+			-- WRATH OF THE EMPEROR QUEST
 		elseif player:getStorageValue(Storage.ChildrenoftheRevolution.Questline) == 21 and player:getStorageValue(Storage.WrathoftheEmperor.Questline) < 1 then
 			npcHandler:say({
 				"Zze attackzz have weakened our enemy zzignificantly. Yet, your quezzt continuezz. Bezzidezz zzome tazzkzz you could take, zze zzreat of zze emperor izz zztill hanging over our headzz like a rain cloud. ... ",
@@ -215,18 +215,18 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.WrathoftheEmperor.Questline, 13)
 			player:setStorageValue(Storage.WrathoftheEmperor.Mission05, 1) --Questlog, Wrath of the Emperor "Mission 05: New in Town"
 			npcHandler:setTopic(playerId, 0)
-		-- WRATH OF THE EMPEROR QUEST
+			-- WRATH OF THE EMPEROR QUEST
 		end
 
-	-- WRATH OF THE EMPEROR QUEST
+		-- WRATH OF THE EMPEROR QUEST
 	elseif MsgContains(message, "crate") then
 		if npcHandler:getTopic(playerId) == 17 then
 			npcHandler:say("Ah I zzee. You are ready for your mizzion and waiting for me to create and mark zze crate? ", npc, creature)
 			npcHandler:setTopic(playerId, 18)
 		end
-	-- WRATH OF THE EMPEROR QUEST
+		-- WRATH OF THE EMPEROR QUEST
 
-	-- CHILDREN OF REVOLUTION QUEST
+		-- CHILDREN OF REVOLUTION QUEST
 	elseif MsgContains(message, "symbols") then
 		if player:getStorageValue(Storage.ChildrenoftheRevolution.StrangeSymbols) == 1 then
 			npcHandler:say({
@@ -235,13 +235,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 11)
 		end
-	-- CHILDREN OF REVOLUTION QUEST
+		-- CHILDREN OF REVOLUTION QUEST
 	elseif MsgContains(message, "poison") or MsgContains(message, "poizzon") then
 		if player:getStorageValue(Storage.ChildrenoftheRevolution.Questline) == 9 then
 			npcHandler:say("Zze emperor of zze dragonzz hazz tranzzformed himzzelf into an undead creature to lazzt for all eternity, to cheat deazz. Hizz corruption flowzz to zzozze he bound, and from zzem to zzozze zzey bound, and from zzem into zze land.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	-- CHILDREN OF REVOLUTION QUEST
+		-- CHILDREN OF REVOLUTION QUEST
 	elseif MsgContains(message, "yes") then
 		-- CHILDREN OF REVOLUTION QUEST
 		if npcHandler:getTopic(playerId) == 1 then
@@ -336,15 +336,15 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 13 then
 			npcHandler:say({
-			"You did well on your quezzt zzo far. I hope you will reach zze great gate in time. If we are lucky, it will zztill be open. ...",
-			"If not, it will already be overrun by enemy zzoldierzz. Direct confrontation will be inevitable in zzat cazze, palezzkin. Now clear your mind and approach zze portal."}, npc, creature)
+				"You did well on your quezzt zzo far. I hope you will reach zze great gate in time. If we are lucky, it will zztill be open. ...",
+				"If not, it will already be overrun by enemy zzoldierzz. Direct confrontation will be inevitable in zzat cazze, palezzkin. Now clear your mind and approach zze portal." }, npc, creature)
 			player:setStorageValue(Storage.ChildrenoftheRevolution.teleportAccess, 1)
 			player:setStorageValue(Storage.ChildrenoftheRevolution.Questline, 19)
 			player:setStorageValue(Storage.ChildrenoftheRevolution.Mission05, 1) --Questlog, Children of the Revolution "Mission 5: Phantom Army"
 			npcHandler:setTopic(playerId, 0)
-		-- CHILDREN OF REVOLUTION QUEST
+			-- CHILDREN OF REVOLUTION QUEST
 
-		-- WRATH OF THE EMPEROR QUEST
+			-- WRATH OF THE EMPEROR QUEST
 		elseif npcHandler:getTopic(playerId) == 14 then
 			npcHandler:say({
 				"You continue to imprezz, zzoftzzkin. ... ",
@@ -404,7 +404,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.WrathoftheEmperor.Mission03, 3) --Questlog, Wrath of the Emperor "Mission 03: The Keeper"
 				npcHandler:setTopic(playerId, 0)
 			end
-
 		elseif npcHandler:getTopic(playerId) == 21 then
 			if player:removeItem(11371, 1) then
 				player:setStorageValue(Storage.WrathoftheEmperor.Questline, 12)
@@ -412,7 +411,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("Finally. At lazzt. Zze zzeptre izz - ourzz. Ourzz of courzze. A weapon we should uzze wizzely for our cauzze. I need a zzecond or two. Do you leave me already? ", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
-		-- WRATH OF THE EMPEROR QUEST
+			-- WRATH OF THE EMPEROR QUEST
 		end
 	end
 	return true

@@ -3,16 +3,16 @@ local function startWaves()
 	if Game.getStorageValue(GlobalStorage.HeroRathleton.TentacleWave) < 9 then
 		for i = 1, 7 do
 			Game.createMonster("glooth anemone", Position(math.random(33736, 33746),
-			math.random(31948, 31957), 14), true, true)
+				math.random(31948, 31957), 14), true, true)
 		end
 	elseif Game.getStorageValue(GlobalStorage.HeroRathleton.TentacleWave) == 9 then
 		for i = 1, 4 do
 			Game.createMonster("tentacle of the deep terror", Position(math.random(33736, 33746),
-			math.random(31948, 31957), 14), true, true)
+				math.random(31948, 31957), 14), true, true)
 		end
 	end
 	Game.setStorageValue(GlobalStorage.HeroRathleton.TentacleWave,
-	Game.getStorageValue(GlobalStorage.HeroRathleton.TentacleWave) + 1)
+		Game.getStorageValue(GlobalStorage.HeroRathleton.TentacleWave) + 1)
 	if Game.getStorageValue(GlobalStorage.HeroRathleton.TentacleWave) > 9 then
 		return true
 	end

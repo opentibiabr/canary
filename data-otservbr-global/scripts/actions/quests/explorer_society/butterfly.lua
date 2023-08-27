@@ -1,6 +1,6 @@
 local explorerSocietyButterfly = Action()
 function explorerSocietyButterfly.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if target.itemid == 4992 and player:getStorageValue(Storage.ExplorerSociety.TheButterflyHunt) == 9  and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 9 then
+	if target.itemid == 4992 and player:getStorageValue(Storage.ExplorerSociety.TheButterflyHunt) == 9 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 9 then
 		player:setStorageValue(Storage.ExplorerSociety.TheButterflyHunt, 10)
 		player:setStorageValue(Storage.ExplorerSociety.QuestLine, 10)
 		toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)

@@ -1,6 +1,6 @@
 local config = {
-	[23734] = {transformId = 23738},
-	[23738] = {transformId = 23734}
+	[23734] = { transformId = 23738 },
+	[23738] = { transformId = 23734 }
 }
 
 local forgottenKnowledgeLantern = Action()

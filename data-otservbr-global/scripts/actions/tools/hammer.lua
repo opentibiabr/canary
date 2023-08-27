@@ -59,7 +59,7 @@ function hammer.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			Game.createItem(5770, 1, position):setActionId(40021)
 		end
 		return true
-	-- Lay down the rails
+		-- Lay down the rails
 	elseif targetActionId == 40021 and tile:getItemById(5770) then
 		if player:getItemCount(9114) >= 1 and player:getItemCount(9115) >= 2 and player:getItemCount(953) >= 3 then
 			player:removeItem(9114, 1)
@@ -83,7 +83,7 @@ function hammer.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				addEvent(createWooden, 2 * 60 * 1000, setting.position, setting.removeItem, setting.createItem, setting)
 			end
 
-			player:setStorageValue(Storage.RottinWoodAndMaried.RottinStart, player:getStorageValue(Storage.RottinWoodAndMaried.RottinStart) +1)
+			player:setStorageValue(Storage.RottinWoodAndMaried.RottinStart, player:getStorageValue(Storage.RottinWoodAndMaried.RottinStart) + 1)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You fixed this broken wall.")
 			return true
 		end

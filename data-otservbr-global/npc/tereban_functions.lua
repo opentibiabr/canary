@@ -24,7 +24,7 @@ TerebanConfig = {
 		messages = {
 			deliever = 'Could you find the wood we were talking about?',
 			success = 'Thank you. I feel somewhat embarrassed to put you into such a danger for some birthday present but I am sure you can handle it.',
-			failure = {'Sorry, you must be wrong. The wood that I need should be in one of the barbarian camps. ...', 'It seems logical to search the most northern camp first, it is closest to the place where the tree was cut. Please hurry, there is still so much to do before the birthday.'},
+			failure = { 'Sorry, you must be wrong. The wood that I need should be in one of the barbarian camps. ...', 'It seems logical to search the most northern camp first, it is closest to the place where the tree was cut. Please hurry, there is still so much to do before the birthday.' },
 			no = 'The wood that I need should be in one of the barbarian camps. It seems logical to search the most northern camp first, it is closest to the place where the tree was cut. Please hurry, there is still so much to do before the birthday.',
 			done = 'The wood you have found is just what we needed.'
 		},
@@ -57,8 +57,8 @@ TerebanConfig = {
 		messages = {
 			deliever = 'Did you find the required crystal?',
 			success = 'Oh look at the colours and sparkles. This crystal is truly remarkable, thank you.',
-			failure = {'Sorry, you must be wrong. It is probably not easy to find the crystal that we need in such a huge desert which may contain several tombs, but please don\'t give up. ...', 'According to my sources the tomb we are looking for is east of Ankrahmun. You probably need a shovel to enter it. We still have some time and I am convinced you will find it.'},
-			no = {'It is probably not easy to find the crystal that we need in such a huge desert which may contain several tombs, but please don\'t give up. ...', 'According to my sources the tomb we are looking for is east of Ankrahmun. You probably need a shovel to enter it. We still have some time and I am convinced you will find it.'},
+			failure = { 'Sorry, you must be wrong. It is probably not easy to find the crystal that we need in such a huge desert which may contain several tombs, but please don\'t give up. ...', 'According to my sources the tomb we are looking for is east of Ankrahmun. You probably need a shovel to enter it. We still have some time and I am convinced you will find it.' },
+			no = { 'It is probably not easy to find the crystal that we need in such a huge desert which may contain several tombs, but please don\'t give up. ...', 'According to my sources the tomb we are looking for is east of Ankrahmun. You probably need a shovel to enter it. We still have some time and I am convinced you will find it.' },
 			done = 'The crystal you have found is absolutely flawless. You did a great job indeed.'
 		},
 		itemId = 10596 -- Magical crystal
@@ -120,7 +120,7 @@ function ParseTerebanSay(npc, creature, message, npcHandler)
 						"When I reached Darashia there was no cloak just a handful of feathers. *sighs* I'm not sure whether it makes sense to search for these feathers. There was a small wind gust when we were still above Edron. ...",
 						"But the actual storm began when we were in the air above the Darama. The feathers are now scattered all over the desert I guess. Rather futile to look out for them but if you really want to try: ...",
 						"The magic carpet made a beeline from Edron to Darashia. You should search along this line on the ground. Good luck!"
-				}, npc, creature)
+					}, npc, creature)
 				player:setStorageValue(ThreatenedDreams.Mission01[1], 13)
 				player:setStorageValue(ThreatenedDreams.Mission01.FeathersCount, 0) -- Start Mission 'Tattered Swan Feathers'
 			else

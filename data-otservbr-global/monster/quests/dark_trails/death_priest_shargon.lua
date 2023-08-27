@@ -69,9 +69,9 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{name = "Lesser Death Minion", chance = 30, interval = 2000, count = 2},
-		{name = "Superior Death Minion", chance = 30, interval = 2000, count = 2},
-		{name = "Greater Death Minion", chance = 30, interval = 2000, count = 2}
+		{ name = "Lesser Death Minion", chance = 30, interval = 2000, count = 2 },
+		{ name = "Superior Death Minion", chance = 30, interval = 2000, count = 2 },
+		{ name = "Greater Death Minion", chance = 30, interval = 2000, count = 2 }
 	}
 }
 
@@ -81,46 +81,46 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3031, chance = 100000, maxCount = 99}, -- gold coin
-	{id = 239, chance = 100000, maxCount = 3}, -- great health potion
-	{id = 3069, chance = 100000}, -- necrotic rod
-	{id = 3035, chance = 100000, maxCount = 13}, -- platinum coin
-	{id = 238, chance = 10000, maxCount = 4}, -- great mana potion
-	{id = 9058, chance = 25000}, -- gold ingot
-	{id = 9056, chance = 9090}, -- black skull
-	{id = 8531, chance = 9090} -- blood goblet
+	{ id = 3031, chance = 100000, maxCount = 99 }, -- gold coin
+	{ id = 239, chance = 100000, maxCount = 3 }, -- great health potion
+	{ id = 3069, chance = 100000 }, -- necrotic rod
+	{ id = 3035, chance = 100000, maxCount = 13 }, -- platinum coin
+	{ id = 238, chance = 10000, maxCount = 4 }, -- great mana potion
+	{ id = 9058, chance = 25000 }, -- gold ingot
+	{ id = 9056, chance = 9090 }, -- black skull
+	{ id = 8531, chance = 9090 } -- blood goblet
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, skill = 200, attack = 150},
-	{name ="combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -660, range = 7, radius = 6, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_MORTAREA, target = false},
-	{name ="combat", interval = 2000, chance = 18, type = COMBAT_HOLYDAMAGE, minDamage = -350, maxDamage = -1000, length = 6, spread = 2, effect = CONST_ME_PURPLEENERGY, target = false}
+	{ name = "melee", interval = 2000, chance = 100, skill = 200, attack = 150 },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -660, range = 7, radius = 6, shootEffect = CONST_ANI_DEATH, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_HOLYDAMAGE, minDamage = -350, maxDamage = -1000, length = 6, spread = 2, effect = CONST_ME_PURPLEENERGY, target = false }
 }
 
 monster.defenses = {
 	defense = 30,
 	armor = 25,
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 0, maxDamage = 699, effect = CONST_ME_MAGIC_BLUE, target = false}
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 0, maxDamage = 699, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

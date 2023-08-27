@@ -85,7 +85,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	elseif MsgContains(message, "like") then
-		if npcHandler:getTopic(playerId) == 1  then
+		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("Woof!", npc, creature)
 			player:setStorageValue(Storage.Postman.Mission06, 8)
 			npcHandler:setTopic(playerId, 0)

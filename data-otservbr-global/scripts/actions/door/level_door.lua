@@ -12,7 +12,7 @@ end
 local levelDoor = Action()
 function levelDoor.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	for index, value in ipairs(LevelDoorTable) do
-		 if value.closedDoor == item.itemid then
+		if value.closedDoor == item.itemid then
 			if item.actionid > 0 and player:getLevel() >= item.actionid - 1000 then
 				item:transform(value.openDoor)
 				player:teleportTo(toPosition, true)

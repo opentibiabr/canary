@@ -82,7 +82,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("You are not on that mission.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say({

@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "South of Elvenbane and Ab'Dendriel, Ferngrims Gate, Northeast of Carlin, \z
 		Edron Hunter Camps, Yalahar - Trade Quarter and Foreigner Quarter."
-	}
+}
 
 monster.health = 90
 monster.maxHealth = 90
@@ -71,25 +71,25 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "You will not live to tell anyone!", yell = false},
-	{text = "You are my game today!", yell = false},
-	{text = "Look what has stepped into my trap!", yell = false}
+	{ text = "You will not live to tell anyone!", yell = false },
+	{ text = "You are my game today!", yell = false },
+	{ text = "Look what has stepped into my trap!", yell = false }
 }
 
 monster.loot = {
-	{id = 2920, chance = 4180}, -- torch
-	{name = "bow", chance = 14930},
-	{name = "leather helmet", chance = 30600},
-	{name = "arrow", chance = 49500, maxCount = 17},
-	{name = "poison arrow", chance = 2930, maxCount = 3},
-	{id = 3481, chance = 710}, -- closed trap
-	{name = "leather legs", chance = 26740},
-	{name = "roll", chance = 11110, maxCount = 2}
+	{ id = 2920, chance = 4180 }, -- torch
+	{ name = "bow", chance = 14930 },
+	{ name = "leather helmet", chance = 30600 },
+	{ name = "arrow", chance = 49500, maxCount = 17 },
+	{ name = "poison arrow", chance = 2930, maxCount = 3 },
+	{ id = 3481, chance = 710 }, -- closed trap
+	{ name = "leather legs", chance = 26740 },
+	{ name = "roll", chance = 11110, maxCount = 2 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -35, range = 7, shootEffect = CONST_ANI_ARROW, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -35, range = 7, shootEffect = CONST_ANI_ARROW, target = false }
 }
 
 monster.defenses = {
@@ -98,23 +98,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

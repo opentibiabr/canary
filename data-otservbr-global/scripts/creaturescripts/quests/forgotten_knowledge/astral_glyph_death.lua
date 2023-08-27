@@ -10,4 +10,5 @@ function astralGlyphDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 	end
 	return true
 end
+
 astralGlyphDeath:register()

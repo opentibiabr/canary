@@ -1,9 +1,9 @@
 -- objeto a ser criado
-local BIT ={}
+local BIT = {}
 
 -- criando a metatable
 function BIT:new(number)
-	return setmetatable({number = number}, { __index = self })
+	return setmetatable({ number = number }, { __index = self })
 end
 
 -- Simplificando a criacao da metatable
@@ -12,7 +12,7 @@ function NewBit(number)
 end
 
 -- checa se a flag tem o valor
-function hasBitSet( flag,  flags)
+function hasBitSet(flag, flags)
 	return bit.band(flags, flag) ~= 0;
 end
 
@@ -23,7 +23,7 @@ end
 
 -- checa se tem a flag
 function BIT:hasFlag(flag)
-	return hasBitSet( flag,  self.number)
+	return hasBitSet(flag, self.number)
 end
 
 -- adiciona uma nova flag

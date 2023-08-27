@@ -14,10 +14,9 @@ end
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-
 	if hungerSummonDelay == false then
 		if hungerSummon < 3 then
-			Game.createMonster("Greed", {x=creature:getPosition().x+math.random(-1, 1), y=creature:getPosition().y+math.random(-1, 1), z=creature:getPosition().z}, false, true)
+			Game.createMonster("Greed", { x = creature:getPosition().x + math.random(-1, 1), y = creature:getPosition().y + math.random(-1, 1), z = creature:getPosition().z }, false, true)
 			hungerSummon = hungerSummon + 1
 
 			hungerSummonDelay = true

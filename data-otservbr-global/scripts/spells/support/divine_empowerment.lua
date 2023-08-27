@@ -21,7 +21,7 @@ function spell.onCastSpell(creature, var)
 		cooldown = 32
 	end
 	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 268)
-	condition:setTicks((cooldown * 1000)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+	condition:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 	creature:addCondition(condition)
 
 	local position = creature:getPosition()

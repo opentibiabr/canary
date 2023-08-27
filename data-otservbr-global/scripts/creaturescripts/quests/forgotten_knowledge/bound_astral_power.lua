@@ -1,8 +1,8 @@
 local positions = {
-	[1] = {pos = Position(31975, 32856, 15), nextPos = Position(31975, 32839, 15)},
-	[2] = {pos = Position(31975, 32839, 15), nextPos = Position(31995, 32839, 15)},
-	[3] = {pos = Position(31995, 32839, 15), nextPos = Position(31995, 32856, 15)},
-	[4] = {pos = Position(31995, 32856, 15), nextPos = Position(31975, 32856, 15)}
+	[1] = { pos = Position(31975, 32856, 15), nextPos = Position(31975, 32839, 15) },
+	[2] = { pos = Position(31975, 32839, 15), nextPos = Position(31995, 32839, 15) },
+	[3] = { pos = Position(31995, 32839, 15), nextPos = Position(31995, 32856, 15) },
+	[4] = { pos = Position(31995, 32856, 15), nextPos = Position(31975, 32856, 15) }
 }
 
 local astralPower = CreatureEvent("AstralPower")
@@ -22,7 +22,7 @@ function astralPower.onKill(creature, target)
 		return true
 	end
 	Game.setStorageValue(GlobalStorage.ForgottenKnowledge.AstralPowerCounter,
-	Game.getStorageValue(GlobalStorage.ForgottenKnowledge.AstralPowerCounter) + 1)
+		Game.getStorageValue(GlobalStorage.ForgottenKnowledge.AstralPowerCounter) + 1)
 	if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.AstralPowerCounter) >= 4 then
 		Game.setStorageValue(GlobalStorage.ForgottenKnowledge.AstralPowerCounter, 1)
 	end
@@ -38,4 +38,5 @@ function astralPower.onKill(creature, target)
 	end
 	return true
 end
+
 astralPower:register()

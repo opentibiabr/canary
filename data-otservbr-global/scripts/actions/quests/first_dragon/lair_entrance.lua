@@ -7,11 +7,11 @@ function lairEntrance.onUse(player, item, fromPosition, target, toPosition, isHo
 	end
 
 	if item:getPosition() == Position(33047, 32712, 3) then
-		player:teleportTo({x = 31994, y = 32391, z = 9})
+		player:teleportTo({ x = 31994, y = 32391, z = 9 })
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		return true
 	elseif item:getPosition() == Position(31994, 32390, 9) then
-		player:teleportTo({x = 33047, y = 32713, z = 3})
+		player:teleportTo({ x = 33047, y = 32713, z = 3 })
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		return true
 	end

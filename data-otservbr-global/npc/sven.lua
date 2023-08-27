@@ -52,7 +52,7 @@ end
 
 local function greetCallback(npc, player)
 	if player:getStorageValue(Storage.TheIceIslands.HuskyKillStatus) == 1 then
-		npcHandler:setMessage(MESSAGE_GREET, "Iskan told me that you killed huskies here in Svargrond. I will be lenient towards you and won't ban you from Svargrond. But you have to pay me a compensation of 1500 gold for each husky you have killed. Are you willing to pay "..player:getStorageValue(Storage.TheIceIslands.HuskyKill) * 1500 .."?")
+		npcHandler:setMessage(MESSAGE_GREET, "Iskan told me that you killed huskies here in Svargrond. I will be lenient towards you and won't ban you from Svargrond. But you have to pay me a compensation of 1500 gold for each husky you have killed. Are you willing to pay " .. player:getStorageValue(Storage.TheIceIslands.HuskyKill) * 1500 .. "?")
 	else
 		npcHandler:setMessage(MESSAGE_GREET, "Be greeted, |PLAYERNAME|! What brings you {here}?")
 	end
@@ -152,7 +152,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "no") then
 		if player:getStorageValue(Storage.TheIceIslands.HuskyKillStatus) == 1 and npcHandler:getTopic(playerId) == 0 then
-			npcHandler:say("I don't know if you realise the consequences. You won't be a member of our community anymore. I ask you for the last time: Are you willing to pay "..player:getStorageValue(Storage.TheIceIslands.HuskyKill) * 1500 .." gold as a compensation?", npc, creature)
+			npcHandler:say("I don't know if you realise the consequences. You won't be a member of our community anymore. I ask you for the last time: Are you willing to pay " .. player:getStorageValue(Storage.TheIceIslands.HuskyKill) * 1500 .. " gold as a compensation?", npc, creature)
 			npcHandler:setTopic(playerId, 10)
 		elseif npcHandler:getTopic(playerId) == 10 then
 			npcHandler:say("Alright, it's your choice. If you regret your decision and want to be a barbarian again, talk to me about the {barbarian} test.", npc, creature)

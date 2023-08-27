@@ -4,11 +4,11 @@ local config = {
 	timeToFightAgain = 20, -- In hour
 	timeToDefeatBoss = 20, -- In minutes
 	playerPositions = {
-		{pos = Position(33893, 31388, 15), teleport = Position(33904, 31356, 14), effect = CONST_ME_TELEPORT},
-		{pos = Position(33894, 31388, 15), teleport = Position(33904, 31356, 14), effect = CONST_ME_TELEPORT},
-		{pos = Position(33895, 31388, 15), teleport = Position(33904, 31356, 14), effect = CONST_ME_TELEPORT},
-		{pos = Position(33896, 31388, 15), teleport = Position(33904, 31356, 14), effect = CONST_ME_TELEPORT},
-		{pos = Position(33897, 31388, 15), teleport = Position(33904, 31356, 14), effect = CONST_ME_TELEPORT}
+		{ pos = Position(33893, 31388, 15), teleport = Position(33904, 31356, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33894, 31388, 15), teleport = Position(33904, 31356, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33895, 31388, 15), teleport = Position(33904, 31356, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33896, 31388, 15), teleport = Position(33904, 31356, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33897, 31388, 15), teleport = Position(33904, 31356, 14), effect = CONST_ME_TELEPORT }
 	},
 	bossPosition = Position(33904, 31351, 14),
 	specPos = {

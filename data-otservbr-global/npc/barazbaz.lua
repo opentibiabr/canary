@@ -74,13 +74,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			"Today, we have advanced far more and could have the ruins investigated in a far more efficient way. And that is what I would just recommend you to do: get a necrometer from magistrate Jondrin upstairs and investigate the ruins thoroughly."
 		}, npc, creature, 10)
 		player:setStorageValue(Storage.DarkTrails.Mission09, 1)
-	elseif(MsgContains(message, "notebook")) and (player:getStorageValue(Storage.DarkTrails.Mission11) == 1 and getPlayerItemCount(creature, 11450) == 1) then
+	elseif (MsgContains(message, "notebook")) and (player:getStorageValue(Storage.DarkTrails.Mission11) == 1 and getPlayerItemCount(creature, 11450) == 1) then
 		npcHandler:say({
 			" I know that handwriting you describe! It belongs to a traveller from far away. Magistrate Sholley introduced him 	to me and she was quite excited to learn more about our city's past. ...",
 			"I should have thought of him right in the beginning when I heard the stuff you mentioned. But I haven't seen him for a while. You should ask Sholley about her friend to learn about his whereabouts."
 		}, npc, creature, 10)
 		player:setStorageValue(Storage.DarkTrails.Mission12, 1)
-		doPlayerRemoveItem(creature,11450, 1)
+		doPlayerRemoveItem(creature, 11450, 1)
 	else
 		npcHandler:say("You need to kill the {The Ravager}, click on statue and then come here say {ritual}, {abandoned sewers}, {notebook} and after this find Roswitha and talk with she.", npc, creature)
 	end

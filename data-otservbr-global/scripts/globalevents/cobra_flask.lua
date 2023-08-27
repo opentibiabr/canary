@@ -10,5 +10,5 @@ function cobraEmptyFlask.onThink(interval)
 	return true
 end
 
-cobraEmptyFlask:interval(1000 * 60 * 60 *8) -- 8 hours
+cobraEmptyFlask:interval(1000 * 60 * 60 * 8) -- 8 hours
 cobraEmptyFlask:register()

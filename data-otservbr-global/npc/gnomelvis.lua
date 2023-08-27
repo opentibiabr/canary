@@ -63,7 +63,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.BigfootBurden.QuestLine) >= 19 or player:getStorageValue(Storage.BigfootBurden.QuestLine) <= 22 then
 			npcHandler:say("I'm the gnomish {musical} supervisor!", npc, creature)
 		end
-
 	elseif MsgContains(message, "musical") then
 		if player:getStorageValue(Storage.BigfootBurden.QuestLine) == 19 then
 			npcHandler:say({
@@ -90,7 +89,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.BigfootBurden.QuestLineComplete, 2)
 			player:setStorageValue(Storage.BigfootBurden.Rank)
 			player:addAchievement('Becoming a Bigfoot')
-
 		elseif player:getStorageValue(Storage.BigfootBurden.QuestLine) == 25 then
 			npcHandler:say("Congratulations on finding your soul melody.", npc, creature)
 		end

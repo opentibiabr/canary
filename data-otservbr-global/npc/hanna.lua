@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Gems and jewellery! Best prices in town!'}
+	{ text = 'Gems and jewellery! Best prices in town!' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -88,7 +88,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say('Aw, I guess you don\'t like feather hats. No big deal.', npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
-
 	elseif npcHandler:getTopic(playerId) == 2 then
 		if MsgContains(message, 'yes') then
 			if player:getItemCount(3374) < 1 then
@@ -121,8 +120,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I am a jeweler. Maybe you want to have a look at my wonderful offers.'})
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = 'I am Hanna.'})
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'I am a jeweler. Maybe you want to have a look at my wonderful offers.' })
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = 'I am Hanna.' })
 
 npcHandler:setMessage(MESSAGE_GREET, 'Oh, please come in, |PLAYERNAME|. What do you need? Have a look at my wonderful {offers} in gems and jewellery.')
 npcHandler:setMessage(MESSAGE_FAREWELL, 'Good bye.')

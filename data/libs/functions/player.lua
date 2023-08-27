@@ -470,7 +470,6 @@ function Player.updateHazard(self)
 	return true
 end
 
-
 ---@param monster Monster
 ---@return {factor: number, msgSuffix: string}
 function Player:calculateLootFactor(monster)

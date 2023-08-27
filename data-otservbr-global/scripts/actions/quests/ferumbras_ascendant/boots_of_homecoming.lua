@@ -1,6 +1,5 @@
 local ferumbrasAscendantHomeComing = Action()
 function ferumbrasAscendantHomeComing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-
 	local boots = player:getSlotItem(CONST_SLOT_FEET)
 	if boots ~= item or boots ~= item then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You need to equip the boot to try use it.')
@@ -24,5 +23,5 @@ function ferumbrasAscendantHomeComing.onUse(player, item, fromPosition, target, 
 	return true
 end
 
-ferumbrasAscendantHomeComing:id(22773,22774)
+ferumbrasAscendantHomeComing:id(22773, 22774)
 ferumbrasAscendantHomeComing:register()

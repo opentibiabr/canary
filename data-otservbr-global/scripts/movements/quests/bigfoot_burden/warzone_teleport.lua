@@ -1,7 +1,7 @@
 local teleports = {
-	{teleportPosition = {x = 33013, y = 31880, z = 9}, teleportDestination = Position(32996, 31922, 10), storage = Storage.BigfootBurden.Warzone1Access, value = 1},
-	{teleportPosition = {x = 33019, y = 31886, z = 9}, teleportDestination = Position(33011, 31943, 11), storage = Storage.BigfootBurden.Warzone2Access, value = 2},
-	{teleportPosition = {x = 33022, y = 31902, z = 9}, teleportDestination = Position(32989, 31909, 12), storage = Storage.BigfootBurden.Warzone3Access, value = 3},
+	{ teleportPosition = { x = 33013, y = 31880, z = 9 }, teleportDestination = Position(32996, 31922, 10), storage = Storage.BigfootBurden.Warzone1Access, value = 1 },
+	{ teleportPosition = { x = 33019, y = 31886, z = 9 }, teleportDestination = Position(33011, 31943, 11), storage = Storage.BigfootBurden.Warzone2Access, value = 2 },
+	{ teleportPosition = { x = 33022, y = 31902, z = 9 }, teleportDestination = Position(32989, 31909, 12), storage = Storage.BigfootBurden.Warzone3Access, value = 3 },
 }
 
 local warzoneTeleport = MoveEvent()

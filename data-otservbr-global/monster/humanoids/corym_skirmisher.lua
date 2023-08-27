@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Venore Corym Cave, Tiquanda Corym Cave, Corym Black Market, \z
 		Carlin Corym Cave/Dwarf Mines Diggers Depths Mine, Upper Spike."
-	}
+}
 
 monster.health = 450
 monster.maxHealth = 450
@@ -74,29 +74,29 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Squeak! Squeak!", yell = false},
-	{text = "<sniff> <sniff> <sniff>", yell = false}
+	{ text = "Squeak! Squeak!", yell = false },
+	{ text = "<sniff> <sniff> <sniff>", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 50000, maxCount = 45},
-	{id = 3607, chance = 20000}, -- cheese
-	{name = "bola", chance = 7692},
-	{name = "spike shield", chance = 645},
-	{name = "ratana", chance = 2702},
-	{name = "life preserver", chance = 2941},
-	{name = "cheese cutter", chance = 8333},
-	{name = "cheesy figurine", chance = 854},
-	{name = "earflap", chance = 9090},
-	{name = "soft cheese", chance = 14285},
-	{name = "rat cheese", chance = 16666},
-	{name = "rat god doll", chance = 12},
-	{name = "leather harness", chance = 561}
+	{ name = "gold coin", chance = 50000, maxCount = 45 },
+	{ id = 3607, chance = 20000 }, -- cheese
+	{ name = "bola", chance = 7692 },
+	{ name = "spike shield", chance = 645 },
+	{ name = "ratana", chance = 2702 },
+	{ name = "life preserver", chance = 2941 },
+	{ name = "cheese cutter", chance = 8333 },
+	{ name = "cheesy figurine", chance = 854 },
+	{ name = "earflap", chance = 9090 },
+	{ name = "soft cheese", chance = 14285 },
+	{ name = "rat cheese", chance = 16666 },
+	{ name = "rat god doll", chance = 12 },
+	{ name = "leather harness", chance = 561 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -90, range = 7, shootEffect = CONST_ANI_WHIRLWINDCLUB, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110 },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -90, range = 7, shootEffect = CONST_ANI_WHIRLWINDCLUB, target = false }
 }
 
 monster.defenses = {
@@ -105,23 +105,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 15},
-	{type = COMBAT_EARTHDAMAGE, percent = 25},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = -5},
-	{type = COMBAT_DEATHDAMAGE , percent = 20}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 15 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 25 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

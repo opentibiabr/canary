@@ -31,7 +31,7 @@ function spellbook.onUse(player, item, fromPosition, target, toPosition, isHotke
 		end
 		text = text .. line .. "  " .. spell.words .. " - " .. spell.name .. " : " .. spell.mana .. "\n"
 	end
-	text = text.."\n"
+	text = text .. "\n"
 	table.sort(tml, function(a, b) return a.mlevel < b.mlevel end)
 	local prevmLevel = -1
 	for i, spell in ipairs(tml) do
@@ -50,7 +50,6 @@ function spellbook.onUse(player, item, fromPosition, target, toPosition, isHotke
 	player:showTextDialog(item:getId(), text)
 	return true
 end
-
 
 spellbook:id(3059, 6120, 8072, 8073, 8074, 8075, 8076, 8090, 11691, 14769, 16107, 20088, 21400, 22755, 25699, 29431, 20089, 20090, 34153)
 spellbook:register()

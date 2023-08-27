@@ -130,4 +130,3 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- Register npc
 npcType:register(npcConfig)
-

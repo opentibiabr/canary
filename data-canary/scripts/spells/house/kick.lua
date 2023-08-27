@@ -3,7 +3,7 @@ local spell = Spell("instant")
 function spell.onCastSpell(player, variant)
 	local targetPlayer = Player(variant:getString()) or player
 	local guest = targetPlayer:getTile():getHouse()
-	local owner =  player:getTile():getHouse()
+	local owner = player:getTile():getHouse()
 	if targetPlayer ~= player then
 		if not owner:canEditAccessList(GUEST_LIST, player) then
 			player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)

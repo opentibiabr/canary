@@ -12,7 +12,7 @@ function ladder.onStepIn(creature, item, position, fromPosition)
 		Game.createItem(5542, 1, ladderPosition)
 		player:say("You hear a rumbling from far away.", TALKTYPE_MONSTER_SAY, false, player)
 	end
-	return item:transform(item.itemid -1)
+	return item:transform(item.itemid - 1)
 end
 
 ladder:type("stepin")
@@ -32,7 +32,7 @@ function ladder.onStepOut(creature, item, position, fromPosition)
 		ladderItem:remove()
 		player:say("You hear a rumbling from far away.", TALKTYPE_MONSTER_SAY, false, player)
 	end
-	return item:transform(item.itemid +1)
+	return item:transform(item.itemid + 1)
 end
 
 ladder:type("stepout")

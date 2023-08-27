@@ -4,8 +4,8 @@ function pitsOfInfernoWrongLevers.onUse(player, item, fromPosition, target, toPo
 		player:teleportTo(Position(32806, 32328, 15))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		item:transform(2773)
- 	end
- 	return true
+	end
+	return true
 end
 
 for value = 50095, 50104 do

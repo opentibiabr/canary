@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "Check out my good and sturdy weapons!"}
+	{ text = "Check out my good and sturdy weapons!" }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -104,19 +104,19 @@ npcConfig.shop = {
 	{ itemName = "war hammer", clientId = 3279, buy = 10000, sell = 470 }
 }
 -- Basic
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = "I am Romella and I will be serving you today."})
-keywordHandler:addAliasKeyword({'job'})
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = "I am Romella and I will be serving you today." })
+keywordHandler:addAliasKeyword({ 'job' })
 
-keywordHandler:addKeyword({'weapons'}, StdModule.say, {npcHandler = npcHandler, text = "I have many weapons to offer. If you'd like to see my offers, ask me for a {trade}."})
-keywordHandler:addKeyword({'offers'}, StdModule.say, {npcHandler = npcHandler, text = "I sell and buy weapons. If you'd like to see my offers, ask me for a {trade}."})
-keywordHandler:addAliasKeyword({'ware'})
+keywordHandler:addKeyword({ 'weapons' }, StdModule.say, { npcHandler = npcHandler, text = "I have many weapons to offer. If you'd like to see my offers, ask me for a {trade}." })
+keywordHandler:addKeyword({ 'offers' }, StdModule.say, { npcHandler = npcHandler, text = "I sell and buy weapons. If you'd like to see my offers, ask me for a {trade}." })
+keywordHandler:addAliasKeyword({ 'ware' })
 
-keywordHandler:addKeyword({'army'}, StdModule.say, {npcHandler = npcHandler, text = "Our warehouse is the main supplier of the local garrison."})
-keywordHandler:addKeyword({'news'}, StdModule.say, {npcHandler = npcHandler, text = "It says the amazons are looking for a certain magical weapon in this area."})
-keywordHandler:addKeyword({'amazons'}, StdModule.say, {npcHandler = npcHandler, text = "I wonder how they finance themselves. I bet they are secretly trading in some strange stuff."})
-keywordHandler:addKeyword({'ferumbras'}, StdModule.say, {npcHandler = npcHandler, text = "Make sure to buy some extra weapons before facing that one."})
-keywordHandler:addKeyword({'excalibug'}, StdModule.say, {npcHandler = npcHandler, text = "I heard the amazons are after it."})
-keywordHandler:addKeyword({'swamps'}, StdModule.say, {npcHandler = npcHandler, text = "Don't go exploring without weapons. Especially you'll need a machete."})
+keywordHandler:addKeyword({ 'army' }, StdModule.say, { npcHandler = npcHandler, text = "Our warehouse is the main supplier of the local garrison." })
+keywordHandler:addKeyword({ 'news' }, StdModule.say, { npcHandler = npcHandler, text = "It says the amazons are looking for a certain magical weapon in this area." })
+keywordHandler:addKeyword({ 'amazons' }, StdModule.say, { npcHandler = npcHandler, text = "I wonder how they finance themselves. I bet they are secretly trading in some strange stuff." })
+keywordHandler:addKeyword({ 'ferumbras' }, StdModule.say, { npcHandler = npcHandler, text = "Make sure to buy some extra weapons before facing that one." })
+keywordHandler:addKeyword({ 'excalibug' }, StdModule.say, { npcHandler = npcHandler, text = "I heard the amazons are after it." })
+keywordHandler:addKeyword({ 'swamps' }, StdModule.say, { npcHandler = npcHandler, text = "Don't go exploring without weapons. Especially you'll need a machete." })
 npcHandler:setMessage(MESSAGE_GREET, "I welcome thee, |PLAYERNAME|! I suppose you are looking for a trade in fine weapons!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Goodbye and please bring more gold next time <chuckles>. I mean, it would be nice to see you again.")
 -- On buy npc shop message

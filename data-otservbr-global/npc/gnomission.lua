@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 
-	if(MsgContains(message, "warzones")) then
+	if (MsgContains(message, "warzones")) then
 		npcHandler:say({
 			"There are three warzones. In each warzone you will find fearsome foes. At the end you'll find their mean master. The masters is well protected though. ...",
 			"Make sure to talk to our gnomish agent in there for specifics of its' protection. ...",
@@ -67,10 +67,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			"And you can enter each one only once every twenty hours. Your normal teleport crystals won't work on these teleporters. You will have to get {mission} crystals from Gnomally."
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif(MsgContains(message, "job")) then
+	elseif (MsgContains(message, "job")) then
 		npcHandler:say("I am responsible for our war {missions}, to {trade} with seasoned soldiers and rewarding war {heroes}. You have to be rank 4 to enter the {warzones}.", npc, creature)
 		npcHandler:setTopic(playerId, 2)
-	elseif(MsgContains(message, "heroes")) then
+	elseif (MsgContains(message, "heroes")) then
 		if npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say({
 				"You can trade special spoils of war to get a permission to use the war teleporters to the area of the corresponding boss without need of mission crystals. ...",
@@ -78,7 +78,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
-	elseif(MsgContains(message, "snippet")) then
+	elseif (MsgContains(message, "snippet")) then
 		if npcHandler:getTopic(playerId) == 3 then
 			if player:getStorageValue(Storage.BigfootBurden.Rank) < 1440 then
 				npcHandler:say("It seems you did not even set one big foot into the warzone, I am sorry.")
@@ -96,7 +96,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				end
 			end
 		end
-	elseif(MsgContains(message, "lash")) then
+	elseif (MsgContains(message, "lash")) then
 		if npcHandler:getTopic(playerId) == 3 then
 			if player:getStorageValue(Storage.BigfootBurden.Rank) < 1440 then
 				npcHandler:say("It seems you did not even set one big foot into the warzone, I am sorry.")
@@ -118,7 +118,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				end
 			end
 		end
-	elseif(MsgContains(message, "hat")) then
+	elseif (MsgContains(message, "hat")) then
 		if npcHandler:getTopic(playerId) == 3 then
 			if player:getStorageValue(Storage.BigfootBurden.Rank) < 1440 then
 				npcHandler:say("It seems you did not even set one big foot into the warzone, I am sorry.")
@@ -140,7 +140,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				end
 			end
 		end
-	elseif(MsgContains(message, "mission")) then
+	elseif (MsgContains(message, "mission")) then
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:getStorageValue(Storage.BigfootBurden.Rank) >= 1440 then
 				if player:getStorageValue(Storage.BigfootBurden.WarzoneStatus) < 1 then

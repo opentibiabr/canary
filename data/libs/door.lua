@@ -1,7 +1,7 @@
 -- Be careful, do not add quest door inside the level door table, this will lock the doors.
 
 -- ID of the keys. (Id 21392 is used only for dawnport quest)
-keysID = {2967, 2968, 2969, 2970, 2971, 2972, 2973, 21392}
+keysID = { 2967, 2968, 2969, 2970, 2971, 2972, 2973, 21392 }
 
 -- The lockedDoor is the doors with the description "It is locked". Use this (with no action) to keep a door permanently isoled.
 -- The closedDoor is the doors that are unlocked, when using them open normally.

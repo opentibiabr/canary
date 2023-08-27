@@ -1,4 +1,4 @@
-local ladderPosition = {x = 32478, y = 31904, z = 5}
+local ladderPosition = { x = 32478, y = 31904, z = 5 }
 
 local thirdFloorGhoul = MoveEvent()
 

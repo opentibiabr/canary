@@ -12,12 +12,12 @@ function thirdFloorLever.onUse(creature, item, position, fromPosition)
 		-- Checks if all levers glass are in the correct positions
 		addEvent(
 			function()
-				Game.createMonster("ghoul", {x = 32479, y = 31900, z = 5})
+				Game.createMonster("ghoul", { x = 32479, y = 31900, z = 5 })
 			end, 2000)
-			item:transform(9126)
+		item:transform(9126)
 		addEvent(
 			function()
-				Position.hasCreatureInArea({x= 32476, y = 31900, z = 5}, {x= 32481, y = 31901, z = 5}, true, false)
+				Position.hasCreatureInArea({ x = 32476, y = 31900, z = 5 }, { x = 32481, y = 31901, z = 5 }, true, false)
 				item:transform(9125)
 			end, 100000)
 	elseif item.itemid == 9126 then

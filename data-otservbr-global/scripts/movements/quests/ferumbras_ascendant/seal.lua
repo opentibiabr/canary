@@ -104,7 +104,7 @@ function seal.onStepIn(creature, item, position, fromPosition)
 		player:say('You have to wait to challenge this enemy again!', TALKTYPE_MONSTER_SAY)
 	elseif item.actionid == 24846 and player:getStorageValue(setting.timer) >= os.time() then
 		player:say('You cannot enter, you must wait fourteen days after preventing the ascension of Ferumbras.',
-		TALKTYPE_MONSTER_SAY)
+			TALKTYPE_MONSTER_SAY)
 	end
 	return true
 end

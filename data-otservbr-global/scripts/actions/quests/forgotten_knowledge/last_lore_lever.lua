@@ -21,13 +21,13 @@ local config = {
 	},
 	bossPosition = Position(31987, 32839, 14),
 	monsters = {
-		{pos = Position(31973, 32840, 15), monster = 'bound astral power'},
-		{pos = Position(31973, 32856, 15), monster = 'bound astral power'},
-		{pos = Position(31989, 32856, 15), monster = 'bound astral power'},
-		{pos = Position(31989, 32840, 15), monster = 'bound astral power'},
-		{pos = Position(31986, 32840, 14), monster = 'a shielded astral glyph'},
-		{pos = Position(31986, 32823, 15), monster = 'the distorted astral source'},
-		{pos = Position(31989, 32823, 15), monster = 'an astral glyph'}
+		{ pos = Position(31973, 32840, 15), monster = 'bound astral power' },
+		{ pos = Position(31973, 32856, 15), monster = 'bound astral power' },
+		{ pos = Position(31989, 32856, 15), monster = 'bound astral power' },
+		{ pos = Position(31989, 32840, 15), monster = 'bound astral power' },
+		{ pos = Position(31986, 32840, 14), monster = 'a shielded astral glyph' },
+		{ pos = Position(31986, 32823, 15), monster = 'the distorted astral source' },
+		{ pos = Position(31989, 32823, 15), monster = 'an astral glyph' }
 	},
 	specPos = {
 		from = Position(31968, 32821, 14),
@@ -68,7 +68,7 @@ function forgottenKnowledgeLastLore.onUse(player, item, fromPosition, target, to
 			for _, v in pairs(info) do
 				local newPlayer = v.creature
 				if newPlayer then
-					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. config.timeToFightAgain/24 .. " days to face " .. config.bossName .. " again!")
+					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. config.timeToFightAgain / 24 .. " days to face " .. config.bossName .. " again!")
 					if newPlayer:getStorageValue(config.storage) > os.time() then
 						newPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
 					end

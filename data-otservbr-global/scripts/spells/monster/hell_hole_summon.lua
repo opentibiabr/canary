@@ -10,9 +10,9 @@ function spell.onCastSpell(creature, var)
 	local summoncount = creature:getSummons()
 	if #summoncount < 4 then
 		mid = Game.createMonster("Deathspawn", creature:getPosition())
-			if not mid then
-				return
-			end
+		if not mid then
+			return
+		end
 		mid:setMaster(creature)
 	end
 	return combat:execute(creature, var)

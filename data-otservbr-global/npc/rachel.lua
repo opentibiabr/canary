@@ -50,7 +50,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({"magic"}, StdModule.say,
+keywordHandler:addKeyword({ "magic" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Okay, then just browse through all of my wares."

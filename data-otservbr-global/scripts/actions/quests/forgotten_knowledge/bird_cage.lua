@@ -24,5 +24,5 @@ function forgottenKnowledgeBird.onUse(player, item, fromPosition, target, toPosi
 	return true
 end
 
-forgottenKnowledgeBird:id(23812,23813)
+forgottenKnowledgeBird:id(23812, 23813)
 forgottenKnowledgeBird:register()

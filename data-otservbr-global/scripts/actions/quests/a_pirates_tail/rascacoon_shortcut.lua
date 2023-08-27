@@ -1,6 +1,6 @@
 local config = {
-	{position = {x = 32941, y = 32030, z = 7}, destination = {x = 33774, y = 31347, z = 7}},
-	{position = {x = 33774, y = 31348, z = 7}, destination = {x = 32941, y = 32031, z = 7}},
+	{ position = { x = 32941, y = 32030, z = 7 }, destination = { x = 33774, y = 31347, z = 7 } },
+	{ position = { x = 33774, y = 31348, z = 7 }, destination = { x = 32941, y = 32031, z = 7 } },
 }
 
 local rascacoonShortcut = Action()

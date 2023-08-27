@@ -26,7 +26,7 @@ monster.Bestiary = {
 	Locations = "Ab'Dendriel Underground, Cyclopolis, Femor Hills, Kazordoon Prison, Kazordoon Surroundings, \z
 		Maze of the Lost Souls, Mistrock, Mount Sternum, Outlaw Camp, Plains of Havoc, Shadowthorn, \z
 		Thais Northern Dungeon, Thais Surroundings, Thais Underground, Ulderek's Rock, Yalahar Foreigner Quarter."
-	}
+}
 
 monster.health = 260
 monster.maxHealth = 260
@@ -73,31 +73,31 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Il lorstok human!", yell = false},
-	{text = "Toks utat.", yell = false},
-	{text = "Human, uh whil dyh!", yell = false},
-	{text = "Youh ah trak!", yell = false},
-	{text = "Let da mashing begin!", yell = false}
+	{ text = "Il lorstok human!", yell = false },
+	{ text = "Toks utat.", yell = false },
+	{ text = "Human, uh whil dyh!", yell = false },
+	{ text = "Youh ah trak!", yell = false },
+	{ text = "Let da mashing begin!", yell = false }
 }
 
 monster.loot = {
-	{id = 3012, chance = 190}, -- wolf tooth chain
-	{name = "gold coin", chance = 82000, maxCount = 47},
-	{id = 3093, chance = 90}, -- club ring
-	{name = "halberd", chance = 1003},
-	{name = "short sword", chance = 8000},
-	{name = "dark helmet", chance = 220},
-	{name = "plate shield", chance = 2500},
-	{name = "battle shield", chance = 1400},
-	{name = "meat", chance = 30070},
-	{id = 7398, chance = 80}, -- cyclops trophy
-	{name = "health potion", chance = 210},
-	{name = "cyclops toe", chance = 4930},
-	{id = 23986, chance = 1000} -- heavy old tome
+	{ id = 3012, chance = 190 }, -- wolf tooth chain
+	{ name = "gold coin", chance = 82000, maxCount = 47 },
+	{ id = 3093, chance = 90 }, -- club ring
+	{ name = "halberd", chance = 1003 },
+	{ name = "short sword", chance = 8000 },
+	{ name = "dark helmet", chance = 220 },
+	{ name = "plate shield", chance = 2500 },
+	{ name = "battle shield", chance = 1400 },
+	{ name = "meat", chance = 30070 },
+	{ id = 7398, chance = 80 }, -- cyclops trophy
+	{ name = "health potion", chance = 210 },
+	{ name = "cyclops toe", chance = 4930 },
+	{ id = 23986, chance = 1000 } -- heavy old tome
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -105}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -105 }
 }
 
 monster.defenses = {
@@ -106,23 +106,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 25},
-	{type = COMBAT_EARTHDAMAGE, percent = -10},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 20},
-	{type = COMBAT_DEATHDAMAGE , percent = -10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 25 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -10 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

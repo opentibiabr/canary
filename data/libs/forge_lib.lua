@@ -59,7 +59,7 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 		end
 
 		if party and party:isSharedExperienceEnabled() then
-			local killers = {party:getLeader()}
+			local killers = { party:getLeader() }
 			local partyMembers = party:getMembers()
 
 			for i = 1, #partyMembers do
@@ -92,12 +92,12 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 						local actualTotalDusts = playerKiller:getForgeDusts()
 						playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE,
 							"You received " .. amount .. " dust" ..
-								" for the Exaltation Forge. You now have " .. actualTotalDusts .. " out of a maximum of " ..
-								limitDusts .. " dusts.")
+							" for the Exaltation Forge. You now have " .. actualTotalDusts .. " out of a maximum of " ..
+							limitDusts .. " dusts.")
 					else
 						playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE,
 							"You did not receive " .. amount .. " dust" ..
-								" for the Exaltation Forge because you have already reached the maximum of " .. limitDusts .. " dust.")
+							" for the Exaltation Forge because you have already reached the maximum of " .. limitDusts .. " dust.")
 					end
 				end
 			end
@@ -131,12 +131,12 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 					local actualTotalDusts = playerKiller:getForgeDusts()
 					playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE,
 						"You received " .. amount .. " dust" ..
-							" for the Exaltation Forge. You now have " .. actualTotalDusts .. " out of a maximum of " ..
-							limitDusts .. " dusts.")
+						" for the Exaltation Forge. You now have " .. actualTotalDusts .. " out of a maximum of " ..
+						limitDusts .. " dusts.")
 				else
 					playerKiller:sendTextMessage(MESSAGE_EVENT_ADVANCE,
 						"You did not receive " .. amount .. " dust" ..
-							" for the Exaltation Forge because you have already reached the maximum of " .. limitDusts .. " dust.")
+						" for the Exaltation Forge because you have already reached the maximum of " .. limitDusts .. " dust.")
 				end
 			end
 		end
@@ -193,7 +193,7 @@ function ForgeMonster:pickClosestFiendish(creature)
 	local playerPosition = player:getPosition()
 	for _, cid in pairs(Game.getFiendishMonsters()) do
 		if (Monster(cid)) then
-			creatures[#creatures + 1] = { cid = cid, distance = Monster(cid):getPosition():getDistance(playerPosition) }
+			creatures[#creatures+1] = { cid = cid, distance = Monster(cid):getPosition():getDistance(playerPosition) }
 		end
 	end
 

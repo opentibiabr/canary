@@ -1,5 +1,5 @@
 local condition = Condition(CONDITION_OUTFIT)
-condition:setOutfit({lookTypeEx = 11328})
+condition:setOutfit({ lookTypeEx = 11328 })
 condition:setTicks(-1)
 
 local wrathEmperorMiss1Crate = Action()

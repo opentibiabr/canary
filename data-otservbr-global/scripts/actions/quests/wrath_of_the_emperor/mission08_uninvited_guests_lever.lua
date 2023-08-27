@@ -28,5 +28,5 @@ function wrathEmperorMiss8Uninvited.onUse(player, item, fromPosition, target, to
 	return true
 end
 
-wrathEmperorMiss8Uninvited:uid(3184,3185)
+wrathEmperorMiss8Uninvited:uid(3184, 3185)
 wrathEmperorMiss8Uninvited:register()

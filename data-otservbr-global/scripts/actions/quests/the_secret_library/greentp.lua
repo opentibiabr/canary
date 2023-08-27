@@ -2,7 +2,7 @@ local greenTp = Action()
 
 function greenTp.onUse(player, item, frompos, item2, topos)
 	if player:getStorageValue(Storage.TheSecretLibrary.GreenTel) == -1 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,"You see silver chimes dangling on the dragon statue in this room.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You see silver chimes dangling on the dragon statue in this room.")
 		player:addItem(28494, 1)
 		player:setStorageValue(Storage.TheSecretLibrary.GreenTel, 1)
 		return true

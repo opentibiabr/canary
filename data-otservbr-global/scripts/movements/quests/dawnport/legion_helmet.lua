@@ -7,7 +7,7 @@ function sacrificeTeleport.onStepIn(creature, item, position, fromPosition)
 	end
 
 	if player:getStorageValue(Storage.Quest.U10_55.SanctuaryOfTheLizardGod.LizardGodTeleport) == 1 then
-		player:teleportTo({x = 32124, y = 31938, z = 8})
+		player:teleportTo({ x = 32124, y = 31938, z = 8 })
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	else
 		player:teleportTo(fromPosition, true)

@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 4,
 	Occurrence = 0,
 	Locations = "Court of Winter, Dream Labyrinth."
-	}
+}
 
 monster.health = 5200
 monster.maxHealth = 5200
@@ -76,32 +76,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 86000, maxCount = 5},
-	{name = "red crystal fragment", chance = 2000},
-	{id= 3039, chance = 330}, -- red gem
-	{name = "ice rapier", chance = 17200},
-	{name = "ultimate health potion", chance = 16850},
-	{name = "great spirit potion", chance = 15780},
-	{id = 30058, chance = 9000, maxCount = 2}, -- ice flower
-	{name = "life crystal", chance = 7900},
-	{name = "dream essence egg", chance = 8750},
-	{name = "elven astral observer", chance = 7600},
-	{name = "glacier mask", chance = 6000},
-	{name = "moonlight rod", chance = 5400},
-	{name = "small enchanted sapphire", chance = 4700, maxCount = 7},
-	{name = "northwind rod", chance = 2360},
-	{name = "glacier amulet", chance = 2930},
-	{name = "hailstorm rod", chance = 2660},
-	{name = "glacier robe", chance = 1930},
-	{name = "cyan crystal fragment", chance = 2100},
-	{name = "elven amulet", chance = 1260},
-	{name = "blue gem", chance = 330}
+	{ name = "platinum coin", chance = 86000, maxCount = 5 },
+	{ name = "red crystal fragment", chance = 2000 },
+	{ id = 3039, chance = 330 }, -- red gem
+	{ name = "ice rapier", chance = 17200 },
+	{ name = "ultimate health potion", chance = 16850 },
+	{ name = "great spirit potion", chance = 15780 },
+	{ id = 30058, chance = 9000, maxCount = 2 }, -- ice flower
+	{ name = "life crystal", chance = 7900 },
+	{ name = "dream essence egg", chance = 8750 },
+	{ name = "elven astral observer", chance = 7600 },
+	{ name = "glacier mask", chance = 6000 },
+	{ name = "moonlight rod", chance = 5400 },
+	{ name = "small enchanted sapphire", chance = 4700, maxCount = 7 },
+	{ name = "northwind rod", chance = 2360 },
+	{ name = "glacier amulet", chance = 2930 },
+	{ name = "hailstorm rod", chance = 2660 },
+	{ name = "glacier robe", chance = 1930 },
+	{ name = "cyan crystal fragment", chance = 2100 },
+	{ name = "elven amulet", chance = 1260 },
+	{ name = "blue gem", chance = 330 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -110, maxDamage = -400},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -200, maxDamage = -300, radius = 3, effect = CONST_ME_ICEAREA, target = true},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -250, maxDamage = -300, range = 7, shootEffect = CONST_ANI_ICE, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -110, maxDamage = -400 },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -200, maxDamage = -300, radius = 3, effect = CONST_ME_ICEAREA, target = true },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -250, maxDamage = -300, range = 7, shootEffect = CONST_ANI_ICE, target = false }
 }
 
 monster.defenses = {
@@ -110,27 +110,27 @@ monster.defenses = {
 }
 
 monster.reflects = {
-	{type = COMBAT_ICEDAMAGE, percent = 70}
+	{ type = COMBAT_ICEDAMAGE, percent = 70 }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = -15},
-	{type = COMBAT_EARTHDAMAGE, percent = -20},
-	{type = COMBAT_FIREDAMAGE, percent = -20},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 40},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 20}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -15 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -20 },
+	{ type = COMBAT_FIREDAMAGE, percent = -20 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 40 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = true},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = true },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

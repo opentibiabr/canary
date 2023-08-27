@@ -10,4 +10,5 @@ function soulcatcherSummon.onHealthChange(creature, attacker, primaryDamage, pri
 	end
 	return primaryDamage, primaryType, secondaryDamage, secondaryType
 end
+
 soulcatcherSummon:register()

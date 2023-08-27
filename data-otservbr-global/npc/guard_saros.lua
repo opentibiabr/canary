@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Praised be Suon, the Benevolent King!'}
+	{ text = 'Praised be Suon, the Benevolent King!' }
 }
 
 local keywordHandler = KeywordHandler:new()

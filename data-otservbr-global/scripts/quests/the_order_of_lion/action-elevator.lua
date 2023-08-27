@@ -1,4 +1,3 @@
-
 local elevatorBounacAction = Action()
 function elevatorBounacAction.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if player:getPosition() ~= Position(32371, 32496, 7) then
@@ -9,6 +8,7 @@ function elevatorBounacAction.onUse(player, item, fromPosition, target, toPositi
 	end
 	return true
 end
+
 elevatorBounacAction:aid(59604)
 elevatorBounacAction:register()
 
@@ -20,5 +20,6 @@ function elevatorBounacMoveEvent.onStepIn(creature, item, position, fromPosition
 	end
 	return true
 end
+
 elevatorBounacMoveEvent:aid(59605)
 elevatorBounacMoveEvent:register()

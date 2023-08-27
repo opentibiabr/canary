@@ -16,7 +16,7 @@ function inquisitionVampire.onUse(player, item, fromPosition, target, toPosition
 				Game.createMonster("The Count", toPosition)
 				return true
 			else
-				k[#k + 1] = tmp
+				k[#k+1] = tmp
 			end
 		end
 		for i = 1, #k do

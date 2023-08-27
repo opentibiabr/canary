@@ -2,7 +2,7 @@ local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_NONE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_GROUNDSHAKER)
 
-arr = {
+local arr = {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0 },

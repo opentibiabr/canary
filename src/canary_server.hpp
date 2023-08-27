@@ -50,7 +50,6 @@ private:
 	std::unique_lock<std::mutex> loaderUniqueLock;
 	std::string threadFailMsg;
 
-	bool loaderMapDone = false;
 	bool loaderDone = false;
 	bool loadFailed = false;
 

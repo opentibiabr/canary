@@ -55,6 +55,7 @@ bool Argon2::verifyPassword(const std::string &password, const std::string &phas
 	std::vector<uint8_t> computed_hash(hash.size());
 	if (argon2id_hash_raw(t_cost, m_cost, parallelism, password.c_str(), password.length(), salt.data(), salt.size(), computed_hash.data(), computed_hash.size()) != ARGON2_OK) {
 		g_logger().warn("Error hashing password");
+		return false;
 	}
 
 	// Compare

@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 2,
 	Locations = "Replica Dungeon."
-	}
+}
 
 monster.health = 2000
 monster.maxHealth = 2000
@@ -73,50 +73,50 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3732, chance = 1450}, -- green mushroom
-	{id = 8775, chance = 940}, -- gear wheel
-	{id = 3031, chance = 85180, maxCount = 140}, -- gold coin
-	{id = 266, chance = 4930}, -- health potion
-	{id = 268, chance = 4950}, -- mana potion
-	{id = 3269, chance = 3030}, -- halberd
-	{id = 8072, chance = 520}, -- spellbook of enlightenment
-	{id = 3049, chance = 450}, -- stealth ring
-	{id = 12601, chance = 340}, -- slime mould
-	{id = 12801, chance = 36}, -- golden can of oil
-	{id = 3360, chance = 13}, -- golden armor
-	{id = 3063, chance = 8} -- gold ring
+	{ id = 3732, chance = 1450 }, -- green mushroom
+	{ id = 8775, chance = 940 }, -- gear wheel
+	{ id = 3031, chance = 85180, maxCount = 140 }, -- gold coin
+	{ id = 266, chance = 4930 }, -- health potion
+	{ id = 268, chance = 4950 }, -- mana potion
+	{ id = 3269, chance = 3030 }, -- halberd
+	{ id = 8072, chance = 520 }, -- spellbook of enlightenment
+	{ id = 3049, chance = 450 }, -- stealth ring
+	{ id = 12601, chance = 340 }, -- slime mould
+	{ id = 12801, chance = 36 }, -- golden can of oil
+	{ id = 3360, chance = 13 }, -- golden armor
+	{ id = 3063, chance = 8 } -- gold ring
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, skill = 40, attack = 40},
-	{name ="combat", interval = 2000, chance = 11, type = COMBAT_FIREDAMAGE, minDamage = -80, maxDamage = -110, length = 5, spread = 1, effect = CONST_ME_YELLOWENERGY, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -70, maxDamage = -110, range = 7, radius = 4, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_PURPLEENERGY, target = true}
+	{ name = "melee", interval = 2000, chance = 100, skill = 40, attack = 40 },
+	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_FIREDAMAGE, minDamage = -80, maxDamage = -110, length = 5, spread = 1, effect = CONST_ME_YELLOWENERGY, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ENERGYDAMAGE, minDamage = -70, maxDamage = -110, range = 7, radius = 4, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_PURPLEENERGY, target = true }
 }
 
 monster.defenses = {
 	defense = 45,
 	armor = 40,
-	{name ="combat", interval = 2000, chance = 13, type = COMBAT_HEALING, minDamage = 40, maxDamage = 70, effect = CONST_ME_MAGIC_BLUE, target = false}
+	{ name = "combat", interval = 2000, chance = 13, type = COMBAT_HEALING, minDamage = 40, maxDamage = 70, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 25},
-	{type = COMBAT_EARTHDAMAGE, percent = 80},
-	{type = COMBAT_FIREDAMAGE, percent = 15},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -5},
-	{type = COMBAT_HOLYDAMAGE , percent = 100},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 25 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 80 },
+	{ type = COMBAT_FIREDAMAGE, percent = 15 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -5 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

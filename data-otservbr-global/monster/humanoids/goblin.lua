@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Femor Hills, north east of Carlin, Edron Goblin Cave, Rookgaard (Premium Area), \z
 		Maze of Lost Souls and Fenrock."
-	}
+}
 
 monster.health = 50
 monster.maxHealth = 50
@@ -71,31 +71,31 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Me have him!", yell = false},
-	{text = "Zig Zag! Gobo attack!", yell = false},
-	{text = "Help! Goblinkiller!", yell = false},
-	{text = "Bugga! Bugga!", yell = false},
-	{text = "Me green, me mean!", yell = false}
+	{ text = "Me have him!", yell = false },
+	{ text = "Zig Zag! Gobo attack!", yell = false },
+	{ text = "Help! Goblinkiller!", yell = false },
+	{ text = "Bugga! Bugga!", yell = false },
+	{ text = "Me green, me mean!", yell = false }
 }
 
 monster.loot = {
-	{name = "small stone", chance = 15290, maxCount = 3},
-	{name = "gold coin", chance = 50320, maxCount = 9},
-	{id = 3115, chance = 1130}, -- bone
-	{name = "mouldy cheese", chance = 1000},
-	{name = "dagger", chance = 1800},
-	{name = "short sword", chance = 8870},
-	{name = "bone club", chance = 4900},
-	{name = "leather helmet", chance = 1940},
-	{name = "leather armor", chance = 2510},
-	{name = "small axe", chance = 9700},
-	{id = 3578, chance = 12750}, -- fish
-	{name = "goblin ear", chance = 910}
+	{ name = "small stone", chance = 15290, maxCount = 3 },
+	{ name = "gold coin", chance = 50320, maxCount = 9 },
+	{ id = 3115, chance = 1130 }, -- bone
+	{ name = "mouldy cheese", chance = 1000 },
+	{ name = "dagger", chance = 1800 },
+	{ name = "short sword", chance = 8870 },
+	{ name = "bone club", chance = 4900 },
+	{ name = "leather helmet", chance = 1940 },
+	{ name = "leather armor", chance = 2510 },
+	{ name = "small axe", chance = 9700 },
+	{ id = 3578, chance = 12750 }, -- fish
+	{ name = "goblin ear", chance = 910 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -25, range = 7, shootEffect = CONST_ANI_SMALLSTONE, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -10 },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -25, range = 7, shootEffect = CONST_ANI_SMALLSTONE, target = false }
 }
 
 monster.defenses = {
@@ -104,23 +104,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 20},
-	{type = COMBAT_EARTHDAMAGE, percent = -10},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 20},
-	{type = COMBAT_DEATHDAMAGE , percent = -10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 20 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -10 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

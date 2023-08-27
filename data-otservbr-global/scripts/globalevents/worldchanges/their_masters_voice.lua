@@ -23,8 +23,9 @@ function theirmastersvoice.onStartup()
 
 	if eventEnabled then
 		if math.random(100) <= eventChance then
-			fillFungus({x = 33306, y = 31847}, {x = 33369, y = 31919})
+			fillFungus({ x = 33306, y = 31847 }, { x = 33369, y = 31919 })
 		end
 	end
 end
+
 theirmastersvoice:register()

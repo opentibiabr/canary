@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Kazordoon Dwarf Mines, Cyclopolis, Dwacatra, Ferngrims Gate, Dwarf Bridge, \z
 		Mount Sternum Undead Cave, Beregar, Tiquanda Dwarf Cave, Cormaya Dwarf Cave."
-	}
+}
 
 monster.health = 135
 monster.maxHealth = 135
@@ -71,27 +71,27 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Hail Durin!", yell = false}
+	{ text = "Hail Durin!", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 28000, maxCount = 12},
-	{id = 3092, chance = 120}, -- axe ring
-	{name = "battle axe", chance = 2500},
-	{name = "crossbow", chance = 3000},
-	{name = "chain armor", chance = 8000},
-	{name = "soldier helmet", chance = 12000},
-	{name = "dwarven shield", chance = 3000},
-	{name = "bolt", chance = 40000, maxCount = 7},
-	{id = 3457, chance = 10000}, -- shovel
-	{name = "white mushroom", chance = 40000, maxCount = 3},
-	{name = "iron ore", chance = 300},
-	{name = "piercing bolt", chance = 4000, maxCount = 3}
+	{ name = "gold coin", chance = 28000, maxCount = 12 },
+	{ id = 3092, chance = 120 }, -- axe ring
+	{ name = "battle axe", chance = 2500 },
+	{ name = "crossbow", chance = 3000 },
+	{ name = "chain armor", chance = 8000 },
+	{ name = "soldier helmet", chance = 12000 },
+	{ name = "dwarven shield", chance = 3000 },
+	{ name = "bolt", chance = 40000, maxCount = 7 },
+	{ id = 3457, chance = 10000 }, -- shovel
+	{ name = "white mushroom", chance = 40000, maxCount = 3 },
+	{ name = "iron ore", chance = 300 },
+	{ name = "piercing bolt", chance = 4000, maxCount = 3 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -60, range = 7, shootEffect = CONST_ANI_BOLT, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -60, range = 7, shootEffect = CONST_ANI_BOLT, target = false }
 }
 
 monster.defenses = {
@@ -100,23 +100,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 10},
-	{type = COMBAT_FIREDAMAGE, percent = -5},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 10 },
+	{ type = COMBAT_FIREDAMAGE, percent = -5 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

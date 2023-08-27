@@ -27,7 +27,7 @@ local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 
 local talkState = {}
-local levels = {25, 49}
+local levels = { 25, 49 }
 npcType.onAppear = function(npc, creature)
 	npcHandler:onAppear(npc, creature)
 end
@@ -146,15 +146,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	/////////////////////]]
 	if MsgContains(message, 'pacifiers') then
 		if player:getStorageValue(SPIKE_UPPER_PACIFIER_DAILY) >= os.time() then
-			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_UPPER_PACIFIER_DAILY)-os.time()) .. ' before this task gets available again.', npc, creature)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_UPPER_PACIFIER_DAILY) - os.time()) .. ' before this task gets available again.', npc, creature)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
-			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', npc, creature)
+			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] .. '-' .. levels[2] .. '].', npc, creature)
 		end
 
 		if player:getStorageValue(SPIKE_UPPER_PACIFIER_MAIN) == -1 then
-			npcHandler:say({'We need you to recharge our ghost pacifiers. They are placed at several strategic points in the caves around us and should be easy to find. Your mission would be to charge seven of them.', 'If you are interested, I can give you some more {information} about it. Are you willing to accept this mission?'}, npc, creature)
+			npcHandler:say({ 'We need you to recharge our ghost pacifiers. They are placed at several strategic points in the caves around us and should be easy to find. Your mission would be to charge seven of them.', 'If you are interested, I can give you some more {information} about it. Are you willing to accept this mission?' }, npc, creature)
 			talkState[playerId] = 'pacifiers'
 		else
 			npcHandler:say('You have already started that mission.', npc, creature)
@@ -178,11 +178,11 @@ local function creatureSayCallback(npc, creature, type, message)
 	/////////////////////]]
 	if MsgContains(message, 'release') then
 		if player:getStorageValue(SPIKE_UPPER_MOUND_DAILY) >= os.time() then
-			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_UPPER_MOUND_DAILY)-os.time()) .. ' before this task gets available again.', npc, creature)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_UPPER_MOUND_DAILY) - os.time()) .. ' before this task gets available again.', npc, creature)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
-			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', npc, creature)
+			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] .. '-' .. levels[2] .. '].', npc, creature)
 		end
 
 		if player:getStorageValue(SPIKE_UPPER_MOUND_MAIN) == -1 then
@@ -210,15 +210,17 @@ local function creatureSayCallback(npc, creature, type, message)
 	///////////////////]]
 	if MsgContains(message, 'track') then
 		if player:getStorageValue(SPIKE_UPPER_TRACK_DAILY) >= os.time() then
-			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_UPPER_TRACK_DAILY)-os.time()) .. ' before this task gets available again.', npc, creature)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_UPPER_TRACK_DAILY) - os.time()) .. ' before this task gets available again.', npc, creature)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
-			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', npc, creature)
+			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] .. '-' .. levels[2] .. '].', npc, creature)
 		end
 
 		if player:getStorageValue(SPIKE_UPPER_TRACK_MAIN) == -1 then
-			npcHandler:say({'You\'d be given the highly important task to track down an enormously malevolent spiritual presence in the cave system. Use your tracking device to find out how close you are to the presence.','Use that information to find the residual energy and use the tracker there. If you are interested, I can give you some more information about it. Are you willing to accept this mission?'}, npc, creature)
+			npcHandler:say(
+			{ 'You\'d be given the highly important task to track down an enormously malevolent spiritual presence in the cave system. Use your tracking device to find out how close you are to the presence.', 'Use that information to find the residual energy and use the tracker there. If you are interested, I can give you some more information about it. Are you willing to accept this mission?' }, npc,
+				creature)
 			talkState[playerId] = 'track'
 		else
 			npcHandler:say('You have already started that mission.', npc, creature)
@@ -243,11 +245,11 @@ local function creatureSayCallback(npc, creature, type, message)
 	///////////]]
 	if MsgContains(message, 'kill') then
 		if player:getStorageValue(SPIKE_UPPER_KILL_DAILY) >= os.time() then
-			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_UPPER_KILL_DAILY)-os.time()) .. ' before this task gets available again.', npc, creature)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_UPPER_KILL_DAILY) - os.time()) .. ' before this task gets available again.', npc, creature)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
-			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', npc, creature)
+			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] .. '-' .. levels[2] .. '].', npc, creature)
 		end
 
 		if player:getStorageValue(SPIKE_UPPER_KILL_MAIN) == -1 then

@@ -27,7 +27,7 @@ npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
 	{ text = 'Hello, is this your first visit to Darashia? I can show you around a little.' },
-	{ text = 'I\'m well informed about the status of the world despite all the recent changes.'},
+	{ text = 'I\'m well informed about the status of the world despite all the recent changes.' },
 	{ text = 'Need some help finding your way through Darashia? Let me assist you.' },
 	{ text = 'Free escort to the depot for newcomers!' }
 }
@@ -60,8 +60,8 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local configMarks = {
-	{mark = "shops", position = Position(33223, 32422, 7), markId = MAPMARK_BAG, description = "Shops"},
-	{mark = "depottp", position = Position(33214, 32453, 7), markId = MAPMARK_LOCK, description = "Depot and Temple"}
+	{ mark = "shops", position = Position(33223, 32422, 7), markId = MAPMARK_BAG, description = "Shops" },
+	{ mark = "depottp", position = Position(33214, 32453, 7), markId = MAPMARK_LOCK, description = "Depot and Temple" }
 }
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -72,7 +72,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if table.contains({"map", "marks"}, message) then
+	if table.contains({ "map", "marks" }, message) then
 		npcHandler:say("Would you like me to mark locations like - for example - the depot, bank and shops on your map?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
@@ -90,14 +90,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'information'}, StdModule.say, {npcHandler = npcHandler, text = 'Currently, I can tell you all about the town, its temple, the bank, shops, spell trainers and the depot, as well as about the world status.'})
-keywordHandler:addKeyword({'temple'}, StdModule.say, {npcHandler = npcHandler, text = 'The temple is a few floors over the depot. Just walk up the numerous stairs there.'})
-keywordHandler:addKeyword({'bank'}, StdModule.say, {npcHandler = npcHandler, text = 'Muzir takes care of our bank business. His office is in the north-western part of the caliph\'s palace.'})
-keywordHandler:addKeyword({'shops'}, StdModule.say, {npcHandler = npcHandler, text = 'You can buy weapons, armor, tools, gems, magical equipment, furniture, spells and food here.'})
-keywordHandler:addKeyword({'depot'}, StdModule.say, {npcHandler = npcHandler, text = 'The depot is a place where you can safely store your belongings. You are also protected against attacks there. I escort newcomers there.'})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I\'ll show you around Darashia if you like. I can mark important locations on your map and give you some information about the town and the world status.'})
-keywordHandler:addKeyword({'town'}, StdModule.say, {npcHandler = npcHandler, text = 'Darashia is an oriental settlement ruled by Caliph Kazzan Ibn Gadral. We have a lot of shops, carpet travel and a rotworm plague, that sums it about up.'})
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = 'My name is Behil. Glad to be your guide.'})
+keywordHandler:addKeyword({ 'information' }, StdModule.say, { npcHandler = npcHandler, text = 'Currently, I can tell you all about the town, its temple, the bank, shops, spell trainers and the depot, as well as about the world status.' })
+keywordHandler:addKeyword({ 'temple' }, StdModule.say, { npcHandler = npcHandler, text = 'The temple is a few floors over the depot. Just walk up the numerous stairs there.' })
+keywordHandler:addKeyword({ 'bank' }, StdModule.say, { npcHandler = npcHandler, text = 'Muzir takes care of our bank business. His office is in the north-western part of the caliph\'s palace.' })
+keywordHandler:addKeyword({ 'shops' }, StdModule.say, { npcHandler = npcHandler, text = 'You can buy weapons, armor, tools, gems, magical equipment, furniture, spells and food here.' })
+keywordHandler:addKeyword({ 'depot' }, StdModule.say, { npcHandler = npcHandler, text = 'The depot is a place where you can safely store your belongings. You are also protected against attacks there. I escort newcomers there.' })
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'I\'ll show you around Darashia if you like. I can mark important locations on your map and give you some information about the town and the world status.' })
+keywordHandler:addKeyword({ 'town' }, StdModule.say, { npcHandler = npcHandler, text = 'Darashia is an oriental settlement ruled by Caliph Kazzan Ibn Gadral. We have a lot of shops, carpet travel and a rotworm plague, that sums it about up.' })
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = 'My name is Behil. Glad to be your guide.' })
 
 npcHandler:setMessage(MESSAGE_GREET, "Daraman's blessings, Black Sabbatth, welcome to Darashia! Would you like some information and a map guide?")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")

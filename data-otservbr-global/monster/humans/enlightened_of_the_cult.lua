@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Goroma, Formorgar Mines, Magician Quarter, Forbidden Temple."
-	}
+}
 
 monster.health = 700
 monster.maxHealth = 700
@@ -73,73 +73,73 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{name = "Crypt Shambler", chance = 10, interval = 2000, count = 1},
-		{name = "Ghost", chance = 10, interval = 2000, count = 1}
+		{ name = "Crypt Shambler", chance = 10, interval = 2000, count = 1 },
+		{ name = "Ghost", chance = 10, interval = 2000, count = 1 }
 	}
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Praise to my master Urgith!", yell = false},
-	{text = "You will rise as my servant!", yell = false},
-	{text = "Praise to my masters! Long live the triangle!", yell = false},
-	{text = "You will die in the name of the triangle!", yell = false}
+	{ text = "Praise to my master Urgith!", yell = false },
+	{ text = "You will rise as my servant!", yell = false },
+	{ text = "Praise to my masters! Long live the triangle!", yell = false },
+	{ text = "You will die in the name of the triangle!", yell = false }
 }
 
 monster.loot = {
-	{id = 2828, chance = 910}, -- book
-	{name = "piggy bank", chance = 130},
-	{name = "small sapphire", chance = 550},
-	{name = "gold coin", chance = 64550, maxCount = 70},
-	{id = 3051, chance = 450}, -- energy ring
-	{name = "platinum amulet", chance = 200},
-	{name = "wand of inferno", chance = 180},
-	{name = "protection amulet", chance = 790},
-	{name = "skull staff", chance = 350},
-	{name = "blue robe", chance = 40},
-	{name = "jewelled backpack", chance = 100},
-	{name = "pirate voodoo doll", chance = 430},
-	{id = 6090, chance = 490}, -- music sheet
-	{name = "amber staff", chance = 100},
-	{name = "strong mana potion", chance = 740},
-	{name = "cultish mask", chance = 10250},
-	{name = "cultish symbol", chance = 890},
-	{name = "broken key ring", chance = 100}
+	{ id = 2828, chance = 910 }, -- book
+	{ name = "piggy bank", chance = 130 },
+	{ name = "small sapphire", chance = 550 },
+	{ name = "gold coin", chance = 64550, maxCount = 70 },
+	{ id = 3051, chance = 450 }, -- energy ring
+	{ name = "platinum amulet", chance = 200 },
+	{ name = "wand of inferno", chance = 180 },
+	{ name = "protection amulet", chance = 790 },
+	{ name = "skull staff", chance = 350 },
+	{ name = "blue robe", chance = 40 },
+	{ name = "jewelled backpack", chance = 100 },
+	{ name = "pirate voodoo doll", chance = 430 },
+	{ id = 6090, chance = 490 }, -- music sheet
+	{ name = "amber staff", chance = 100 },
+	{ name = "strong mana potion", chance = 740 },
+	{ name = "cultish mask", chance = 10250 },
+	{ name = "cultish symbol", chance = 890 },
+	{ name = "broken key ring", chance = 100 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100, condition = {type = CONDITION_POISON, totalDamage = 4, interval = 4000}},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_LIFEDRAIN, minDamage = -70, maxDamage = -185, range = 1, radius = 1, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYAREA, target = true},
-	{name ="drunk", interval = 2000, chance = 10, range = 7, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true, duration = 5000},
-	{name ="speed", interval = 2000, chance = 10, speedChange = -360, range = 7, effect = CONST_ME_MAGIC_RED, target = true, duration = 6000}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -100, condition = { type = CONDITION_POISON, totalDamage = 4, interval = 4000 } },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_LIFEDRAIN, minDamage = -70, maxDamage = -185, range = 1, radius = 1, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYAREA, target = true },
+	{ name = "drunk", interval = 2000, chance = 10, range = 7, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYDAMAGE, target = true, duration = 5000 },
+	{ name = "speed", interval = 2000, chance = 10, speedChange = -360, range = 7, effect = CONST_ME_MAGIC_RED, target = true, duration = 6000 }
 }
 
 monster.defenses = {
 	defense = 25,
 	armor = 25,
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 60, maxDamage = 90, effect = CONST_ME_MAGIC_BLUE, target = false},
-	{name ="invisible", interval = 2000, chance = 15, effect = CONST_ME_YELLOW_RINGS}
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 60, maxDamage = 90, effect = CONST_ME_MAGIC_BLUE, target = false },
+	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_YELLOW_RINGS }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -5},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 20},
-	{type = COMBAT_HOLYDAMAGE , percent = 20},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -5 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 20 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

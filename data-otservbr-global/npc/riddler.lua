@@ -56,8 +56,8 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	local storage = Storage.Quest.U7_24.TheParadoxTower
 	if MsgContains(message, "test") then
-			npcHandler:say("Death awaits those who fail the test of the three seals! Do you really want me to test you?", npc, creature)
-			npcHandler:setTopic(playerId, 1)
+		npcHandler:say("Death awaits those who fail the test of the three seals! Do you really want me to test you?", npc, creature)
+		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say("FOOL! Now you're doomed! But well ... \z
 			So be it! Let's start out with the Seal of Knowledge and the first question: \z
@@ -117,36 +117,36 @@ local function creatureSayCallback(npc, creature, type, message)
 					player:setStorageValue(storage.FavoriteColour, 2)
 				end
 
-				player:teleportTo({x = 32478, y = 31905, z = 1})
+				player:teleportTo({ x = 32478, y = 31905, z = 1 })
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				npcHandler:say("DAMN YOUUUUUUUUUUUUUUUUUUUUUU!", npc, creature)
 			else
 				npcHandler:say("WRONG!", npc, creature)
-				player:teleportTo({x = 32725, y = 31589, z = 12})
+				player:teleportTo({ x = 32725, y = 31589, z = 12 })
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			end
 		end
 	elseif npcHandler:getTopic(playerId) == 5 then
 		npcHandler:say("WRONG! Next time get your own answers. To hell with thee, cheater Sischfried!", npc, creature)
-		player:teleportTo({x = 32725, y = 31589, z = 12})
+		player:teleportTo({ x = 32725, y = 31589, z = 12 })
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	else
 		npcHandler:say("WRONG!", npc, creature)
-		player:teleportTo({x = 32725, y = 31589, z = 12})
+		player:teleportTo({ x = 32725, y = 31589, z = 12 })
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	end
 	return true
 end
 
-keywordHandler:addKeyword({"paradox"}, StdModule.say, {npcHandler = npcHandler, text = "This tower, of course, silly one. It holds my {master'}s {treasure}."})
-keywordHandler:addAliasKeyword({"tower"})
+keywordHandler:addKeyword({ "paradox" }, StdModule.say, { npcHandler = npcHandler, text = "This tower, of course, silly one. It holds my {master'}s {treasure}." })
+keywordHandler:addAliasKeyword({ "tower" })
 
-keywordHandler:addKeyword({"master"}, StdModule.say, {npcHandler = npcHandler, text = "His name is none of your business"})
-keywordHandler:addKeyword({"treasure"}, StdModule.say, {npcHandler = npcHandler, text = "I am guarding the treasures of the tower. Only those who pass the {test} of the three sigils may pass."})
-keywordHandler:addKeyword({"name"}, StdModule.say, {npcHandler = npcHandler, text = "I am known as the riddler. That is all you need to know."})
-keywordHandler:addKeyword({"job"}, StdModule.say, {npcHandler = npcHandler, text = "I am the guardian of the paradox tower."})
-keywordHandler:addKeyword({"key"}, StdModule.say, {npcHandler = npcHandler, text = "The key of this tower! You will never find it! A malicious plant spirit is guarding it!."})
-keywordHandler:addAliasKeyword({"door"})
+keywordHandler:addKeyword({ "master" }, StdModule.say, { npcHandler = npcHandler, text = "His name is none of your business" })
+keywordHandler:addKeyword({ "treasure" }, StdModule.say, { npcHandler = npcHandler, text = "I am guarding the treasures of the tower. Only those who pass the {test} of the three sigils may pass." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I am known as the riddler. That is all you need to know." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am the guardian of the paradox tower." })
+keywordHandler:addKeyword({ "key" }, StdModule.say, { npcHandler = npcHandler, text = "The key of this tower! You will never find it! A malicious plant spirit is guarding it!." })
+keywordHandler:addAliasKeyword({ "door" })
 
 npcHandler:setMessage(MESSAGE_GREET, "|PLAYERNAME| HEHEHEHE! Another fool visits the {tower}! Excellent!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "HEHEHE! I knew you don't have the stomach.")

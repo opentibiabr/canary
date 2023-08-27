@@ -68,49 +68,49 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3031, chance = 33000, maxCount = 100}, -- gold coin
-	{id = 3031, chance = 32000, maxCount = 100}, -- gold coin
-	{id = 3031, chance = 32000, maxCount = 36}, -- gold coin
-	{id = 10409, chance = 5800}, -- corrupted flag
-	{id = 3035, chance = 2920, maxCount = 5}, -- platinum coin
-	{id = 10410, chance = 3800}, -- cursed shoulder spikes
-	{id = 9058, chance = 3800}, -- gold ingot
-	{id = 10408, chance = 3800}, -- spiked iron ball
-	{id = 10386, chance = 3800} -- zaoan shoes
+	{ id = 3031, chance = 33000, maxCount = 100 }, -- gold coin
+	{ id = 3031, chance = 32000, maxCount = 100 }, -- gold coin
+	{ id = 3031, chance = 32000, maxCount = 36 }, -- gold coin
+	{ id = 10409, chance = 5800 }, -- corrupted flag
+	{ id = 3035, chance = 2920, maxCount = 5 }, -- platinum coin
+	{ id = 10410, chance = 3800 }, -- cursed shoulder spikes
+	{ id = 9058, chance = 3800 }, -- gold ingot
+	{ id = 10408, chance = 3800 }, -- spiked iron ball
+	{ id = 10386, chance = 3800 } -- zaoan shoes
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, skill = 80, attack = 100},
+	{ name = "melee", interval = 2000, chance = 100, skill = 80, attack = 100 },
 	-- poison
-	{name ="condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -440, maxDamage = -820, length = 3, spread = 2, effect = CONST_ME_POISONAREA, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -290, maxDamage = -540, radius = 3, effect = CONST_ME_HITBYPOISON, target = false},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -190, maxDamage = -480, length = 8, spread = 3, effect = CONST_ME_GREEN_RINGS, target = false}
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -440, maxDamage = -820, length = 3, spread = 2, effect = CONST_ME_POISONAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -290, maxDamage = -540, radius = 3, effect = CONST_ME_HITBYPOISON, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -190, maxDamage = -480, length = 8, spread = 3, effect = CONST_ME_GREEN_RINGS, target = false }
 }
 
 monster.defenses = {
 	defense = 45,
 	armor = 45,
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 475, maxDamage = 625, effect = CONST_ME_MAGIC_GREEN, target = false}
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 475, maxDamage = 625, effect = CONST_ME_MAGIC_GREEN, target = false }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 20},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 20 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

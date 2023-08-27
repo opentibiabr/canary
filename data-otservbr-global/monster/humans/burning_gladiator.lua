@@ -34,7 +34,7 @@ monster.speed = 145
 monster.manaCost = 0
 
 monster.faction = FACTION_FAFNAR
-monster.enemyFactions = {FACTION_ANUMA, FACTION_PLAYER}
+monster.enemyFactions = { FACTION_ANUMA, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
@@ -73,38 +73,38 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Burn, infidel!", yell = false},
-	{text = "Only the Wild Sun shall shine down on this world!", yell = false},
-	{text = "Praised be Fafnar, the Smiter!", yell = false}
+	{ text = "Burn, infidel!", yell = false },
+	{ text = "Only the Wild Sun shall shine down on this world!", yell = false },
+	{ text = "Praised be Fafnar, the Smiter!", yell = false }
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 100000, maxCount = 3},
-	{name = "fafnar symbol", chance = 6600},
-	{id = 31433, chance = 5600}, -- secret instruction
-	{id = 31435, chance = 5600}, -- secret instruction
-	{id = 31436, chance = 5600}, -- secret instruction
-	{name = "dragon necklace", chance = 4700},
-	{name = "lightning pendant", chance = 4100},
-	{name = "magma amulet", chance = 3700},
-	{name = "strange talisman", chance = 3000},
-	{name = "magma boots", chance = 2700},
-	{id = 31331, chance = 2400}, -- empty honey glass
-	{name = "elven amulet", chance = 2100},
-	{name = "lightning legs", chance = 2000},
-	{name = "lightning headband", chance = 1700},
-	{name = "lightning boots", chance = 1400},
-	{name = "spellweaver's robe", chance = 850},
-	{id = 31369, chance = 570}, -- gryphon mask
-	{name = "sea horse figurine", chance = 140}
+	{ name = "platinum coin", chance = 100000, maxCount = 3 },
+	{ name = "fafnar symbol", chance = 6600 },
+	{ id = 31433, chance = 5600 }, -- secret instruction
+	{ id = 31435, chance = 5600 }, -- secret instruction
+	{ id = 31436, chance = 5600 }, -- secret instruction
+	{ name = "dragon necklace", chance = 4700 },
+	{ name = "lightning pendant", chance = 4100 },
+	{ name = "magma amulet", chance = 3700 },
+	{ name = "strange talisman", chance = 3000 },
+	{ name = "magma boots", chance = 2700 },
+	{ id = 31331, chance = 2400 }, -- empty honey glass
+	{ name = "elven amulet", chance = 2100 },
+	{ name = "lightning legs", chance = 2000 },
+	{ name = "lightning headband", chance = 1700 },
+	{ name = "lightning boots", chance = 1400 },
+	{ name = "spellweaver's robe", chance = 850 },
+	{ id = 31369, chance = 570 }, -- gryphon mask
+	{ name = "sea horse figurine", chance = 140 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -550},
-	{name ="firering", interval = 2000, chance = 10, minDamage = -300, maxDamage = -500, target = false},
-	{name ="firex", interval = 2000, chance = 15, minDamage = -300, maxDamage = -500, target = false},
-	{name ="combat", interval = 2000, chance = 17, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -500, radius = 2, effect = CONST_ME_FIREATTACK, target = false},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -500, length = 3, spread = 0, effect = CONST_ME_ENERGYHIT, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -550 },
+	{ name = "firering", interval = 2000, chance = 10, minDamage = -300, maxDamage = -500, target = false },
+	{ name = "firex", interval = 2000, chance = 15, minDamage = -300, maxDamage = -500, target = false },
+	{ name = "combat", interval = 2000, chance = 17, type = COMBAT_FIREDAMAGE, minDamage = -300, maxDamage = -500, radius = 2, effect = CONST_ME_FIREATTACK, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -500, length = 3, spread = 0, effect = CONST_ME_ENERGYHIT, target = false }
 }
 
 monster.defenses = {
@@ -113,23 +113,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = 20},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 30},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -20},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 20 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 20 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 30 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -20 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

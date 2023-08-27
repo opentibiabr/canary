@@ -62,7 +62,7 @@ function othersDesert.onUse(player, item, fromPosition, target, toPosition, isHo
 			return true
 		end
 
-		players[#players + 1] = creature
+		players[#players+1] = creature
 	end
 
 	for i = 1, #players do

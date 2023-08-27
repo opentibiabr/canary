@@ -25,7 +25,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Welcome to Ab\'Dendriel\'s store for general goods.'}
+	{ text = 'Welcome to Ab\'Dendriel\'s store for general goods.' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -56,9 +56,9 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Greeting message
-keywordHandler:addGreetKeyword({"ashari"}, {npcHandler = npcHandler, text = "Greetings, |PLAYERNAME|."})
+keywordHandler:addGreetKeyword({ "ashari" }, { npcHandler = npcHandler, text = "Greetings, |PLAYERNAME|." })
 --Farewell message
-keywordHandler:addFarewellKeyword({"asgha thrazi"}, {npcHandler = npcHandler, text = "Good bye, |PLAYERNAME|."})
+keywordHandler:addFarewellKeyword({ "asgha thrazi" }, { npcHandler = npcHandler, text = "Good bye, |PLAYERNAME|." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good Bye, |PLAYERNAME|.")

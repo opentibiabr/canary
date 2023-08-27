@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Amazon Camp (Venore), Amazon Camp (Carlin), Amazonia, \z
 		single respawn to the north west of Thais, Foreigner Quarter in Yalahar."
-	}
+}
 
 monster.health = 190
 monster.maxHealth = 190
@@ -71,33 +71,33 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Another head for me!", yell = false},
-	{text = "Head off!", yell = false},
-	{text = "Your head will be mine!", yell = false},
-	{text = "Stand still!", yell = false},
-	{text = "One more head for me!", yell = false}
+	{ text = "Another head for me!", yell = false },
+	{ text = "Head off!", yell = false },
+	{ text = "Your head will be mine!", yell = false },
+	{ text = "Stand still!", yell = false },
+	{ text = "One more head for me!", yell = false }
 }
 
 monster.loot = {
-	{name = "spear", chance = 55000, maxCount = 3},
-	{name = "gold coin", chance = 32000, maxCount = 12},
-	{name = "meat", chance = 30000},
-	{name = "chain armor", chance = 10000},
-	{name = "red apple", chance = 7500, maxCount = 2},
-	{name = "girlish hair decoration", chance = 5900},
-	{name = "hunting spear", chance = 5155},
-	{name = "protective charm", chance = 3200},
-	{name = "protection amulet", chance = 1100},
-	{name = "plate armor", chance = 830},
-	{id = 3114, chance = 760}, -- skull
-	{name = "health potion", chance = 500},
-	{name = "double axe", chance = 430},
-	{name = "small diamond", chance = 130}
+	{ name = "spear", chance = 55000, maxCount = 3 },
+	{ name = "gold coin", chance = 32000, maxCount = 12 },
+	{ name = "meat", chance = 30000 },
+	{ name = "chain armor", chance = 10000 },
+	{ name = "red apple", chance = 7500, maxCount = 2 },
+	{ name = "girlish hair decoration", chance = 5900 },
+	{ name = "hunting spear", chance = 5155 },
+	{ name = "protective charm", chance = 3200 },
+	{ name = "protection amulet", chance = 1100 },
+	{ name = "plate armor", chance = 830 },
+	{ id = 3114, chance = 760 }, -- skull
+	{ name = "health potion", chance = 500 },
+	{ name = "double axe", chance = 430 },
+	{ name = "small diamond", chance = 130 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -50, range = 5, shootEffect = CONST_ANI_SPEAR, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -50, range = 5, shootEffect = CONST_ANI_SPEAR, target = false }
 }
 
 monster.defenses = {
@@ -106,23 +106,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -10},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = 5},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -10 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 5 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

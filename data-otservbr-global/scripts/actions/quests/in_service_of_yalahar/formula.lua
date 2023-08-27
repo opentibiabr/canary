@@ -1,6 +1,6 @@
 local inServiceYalaharFormula = Action()
 function inServiceYalaharFormula.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not table.contains({2535, 2536, 2537, 2538, 2539, 2540, 2541, 2542, 8997}, target.itemid) then
+	if not table.contains({ 2535, 2536, 2537, 2538, 2539, 2540, 2541, 2542, 8997 }, target.itemid) then
 		return false
 	end
 	player:setStorageValue(Storage.InServiceofYalahar.GoodSide, 0)

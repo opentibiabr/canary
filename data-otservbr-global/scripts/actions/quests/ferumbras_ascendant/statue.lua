@@ -1,8 +1,8 @@
 local fount = {
-	[1] = {transformid = 22166, pos = Position(33421, 32383, 12), revert = 2094},
-	[2] = {transformid = 22167, pos = Position(33422, 32383, 12), revert = 2095},
-	[3] = {transformid = 22168, pos = Position(33421, 32384, 12), revert = 2096},
-	[4] = {transformid = 22169, pos = Position(33422, 32384, 12), revert = 2097}
+	[1] = { transformid = 22166, pos = Position(33421, 32383, 12), revert = 2094 },
+	[2] = { transformid = 22167, pos = Position(33422, 32383, 12), revert = 2095 },
+	[3] = { transformid = 22168, pos = Position(33421, 32384, 12), revert = 2096 },
+	[4] = { transformid = 22169, pos = Position(33422, 32384, 12), revert = 2097 }
 }
 
 local ferumbrasAscendantStatue = Action()

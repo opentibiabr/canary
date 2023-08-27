@@ -62,7 +62,7 @@ function Creature:onTargetCombat(target)
 	end
 
 	if ((target:isMonster() and self:isPlayer() and target:getMaster() == self)
-	or (self:isMonster() and target:isPlayer() and self:getMaster() == target)) then
+				or (self:isMonster() and target:isPlayer() and self:getMaster() == target)) then
 		return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE
 	end
 
@@ -96,9 +96,9 @@ function Creature:onChangeOutfit(outfit)
 		if familiarLookType ~= 0 then
 			for _, summon in pairs(self:getSummons()) do
 				if summon:getType():familiar() then
-						if summon:getOutfit().lookType ~= familiarLookType then
-							summon:setOutfit({lookType = familiarLookType})
-						end
+					if summon:getOutfit().lookType ~= familiarLookType then
+						summon:setOutfit({ lookType = familiarLookType })
+					end
 					break
 				end
 			end
@@ -108,7 +108,7 @@ function Creature:onChangeOutfit(outfit)
 end
 
 function Creature:onDrainHealth(attacker, typePrimary, damagePrimary,
-				typeSecondary, damageSecondary, colorPrimary, colorSecondary)
+	typeSecondary, damageSecondary, colorPrimary, colorSecondary)
 	if (not self) then
 		return typePrimary, damagePrimary, typeSecondary, damageSecondary, colorPrimary, colorSecondary
 	end

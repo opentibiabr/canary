@@ -53,19 +53,19 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if table.contains({"enchanted chicken wing", "boots of haste", "Enchanted Chicken Wing", "Boots of Haste"}, message) then
+	if table.contains({ "enchanted chicken wing", "boots of haste", "Enchanted Chicken Wing", "Boots of Haste" }, message) then
 		npcHandler:say('Do you want to trade Boots of haste for Enchanted Chicken Wing?', npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif table.contains({"warrior sweat", "warrior helmet", "Warrior Sweat", "Warrior Helmet"}, message) then
+	elseif table.contains({ "warrior sweat", "warrior helmet", "Warrior Sweat", "Warrior Helmet" }, message) then
 		npcHandler:say('Do you want to trade 4 Warrior Helmet for Warrior Sweat?', npc, creature)
 		npcHandler:setTopic(playerId, 2)
-	elseif table.contains({"fighting spirit", "royal helmet", "Fighting Spirit", "Royal Helmet"}, message) then
+	elseif table.contains({ "fighting spirit", "royal helmet", "Fighting Spirit", "Royal Helmet" }, message) then
 		npcHandler:say('Do you want to trade 2 Royal Helmet for Fighting Spirit', npc, creature)
 		npcHandler:setTopic(playerId, 3)
-	elseif table.contains({"magic sulphur", "fire sword", "Magic Sulphur", "Fire Sword"}, message) then
+	elseif table.contains({ "magic sulphur", "fire sword", "Magic Sulphur", "Fire Sword" }, message) then
 		npcHandler:say('Do you want to trade 3 Fire Sword for Magic Sulphur', npc, creature)
 		npcHandler:setTopic(playerId, 4)
-	elseif table.contains({"job", "items", "Items", "Job"}, message) then
+	elseif table.contains({ "job", "items", "Items", "Job" }, message) then
 		npcHandler:say('I trade Enchanted Chicken Wing for Boots of Haste, Warrior Sweat for 4 Warrior Helmets, Fighting Spirit for 2 Royal Helmet Magic Sulphur for 3 Fire Swords', npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, 'cookie') then
@@ -74,13 +74,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say('You brought cookies! How nice of you! Can I have one?', npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		end
-	elseif MsgContains(message,'yes') then
+	elseif MsgContains(message, 'yes') then
 		if npcHandler:getTopic(playerId) >= 1 and npcHandler:getTopic(playerId) <= 4 then
 			local trade = {
-					{ NeedItem = 3079, Ncount = 1, GiveItem = 5891, Gcount = 1}, -- Enchanted Chicken Wing
-					{ NeedItem = 3369, Ncount = 4, GiveItem = 5885, Gcount = 1}, -- Flask of Warrior's Sweat
-					{ NeedItem = 3392, Ncount = 2, GiveItem = 5884, Gcount = 1}, -- Spirit Container
-					{ NeedItem = 3280, Ncount = 3, GiveItem = 5904, Gcount = 1}  -- Magic Sulphur
+				{ NeedItem = 3079, Ncount = 1, GiveItem = 5891, Gcount = 1 }, -- Enchanted Chicken Wing
+				{ NeedItem = 3369, Ncount = 4, GiveItem = 5885, Gcount = 1 }, -- Flask of Warrior's Sweat
+				{ NeedItem = 3392, Ncount = 2, GiveItem = 5884, Gcount = 1 }, -- Spirit Container
+				{ NeedItem = 3280, Ncount = 3, GiveItem = 5904, Gcount = 1 } -- Magic Sulphur
 			}
 			if player:getItemCount(trade[npcHandler:getTopic(playerId)].NeedItem) >= trade[npcHandler:getTopic(playerId)].Ncount then
 				player:removeItem(trade[npcHandler:getTopic(playerId)].NeedItem, trade[npcHandler:getTopic(playerId)].Ncount)
@@ -106,7 +106,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		end
-	elseif MsgContains(message,'no') then
+	elseif MsgContains(message, 'no') then
 		if npcHandler:getTopic(playerId) >= 1 and npcHandler:getTopic(playerId) <= 4 then
 			npcHandler:say('Ok then.', npc, creature)
 			npcHandler:setTopic(playerId, 0)

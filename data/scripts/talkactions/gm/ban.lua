@@ -3,7 +3,6 @@ local banDays = 7
 local ban = TalkAction("/ban")
 
 function ban.onSay(player, words, param)
-
 	-- create log
 	logCommand(player, words, param)
 

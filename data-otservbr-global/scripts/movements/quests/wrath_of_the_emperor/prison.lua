@@ -23,5 +23,5 @@ function prison.onStepIn(creature, item, position, fromPosition)
 end
 
 prison:type("stepin")
-prison:position({x = 33362, y = 31202, z = 8})
+prison:position({ x = 33362, y = 31202, z = 8 })
 prison:register()

@@ -27,7 +27,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Hello adventurer, looking for Imbuement items? Just ask me!'}
+	{ text = 'Hello adventurer, looking for Imbuement items? Just ask me!' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -59,7 +59,7 @@ end
 
 -- Basic
 
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "Currently I have been working selling items for imbuement."})
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "Currently I have been working selling items for imbuement." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to Imbuement's shop!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye and come again.")

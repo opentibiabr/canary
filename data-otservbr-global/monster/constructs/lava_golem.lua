@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 4,
 	Occurrence = 1,
 	Locations = "Warzone 2."
-	}
+}
 
 monster.health = 9000
 monster.maxHealth = 9000
@@ -71,49 +71,49 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Grrrrunt", yell = false}
+	{ text = "Grrrrunt", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 100000, maxCount = 199},
-	{name = "platinum coin", chance = 100000, maxCount = 11},
-	{name = "yellow gem", chance = 6480},
-	{id= 3039, chance = 1180}, -- red gem
-	{name = "wand of inferno", chance = 2950},
-	{name = "fire sword", chance = 1710},
-	{name = "fire axe", chance = 1560},
-	{name = "crown shield", chance = 1180},
-	{name = "iron ore", chance = 11570},
-	{name = "white piece of cloth", chance = 4810},
-	{name = "red piece of cloth", chance = 3530},
-	{name = "yellow piece of cloth", chance = 7230},
-	{name = "strong health potion", chance = 18830, maxCount = 2},
-	{name = "strong mana potion", chance = 18150, maxCount = 2},
-	{name = "great mana potion", chance = 16030, maxCount = 2},
-	{name = "mana potion", chance = 20720, maxCount = 2},
-	{name = "magma amulet", chance = 2900},
-	{name = "magma boots", chance = 2650},
-	{name = "magma coat", chance = 430},
-	{name = "ultimate health potion", chance = 15390},
-	{name = "spellbook of mind control", chance = 450},
-	{name = "fiery heart", chance = 13510},
-	{name = "wand of everblazing", chance = 1390},
-	{name = "violet crystal shard", chance = 6200},
-	{name = "green crystal splinter", chance = 13990, maxCount = 2},
-	{name = "red crystal fragment", chance = 10990},
-	{name = "magma clump", chance = 15370, maxCount = 2},
-	{name = "blazing bone", chance = 15200},
-	{name = "prismatic bolt", chance = 12580, maxCount = 5}
+	{ name = "gold coin", chance = 100000, maxCount = 199 },
+	{ name = "platinum coin", chance = 100000, maxCount = 11 },
+	{ name = "yellow gem", chance = 6480 },
+	{ id = 3039, chance = 1180 }, -- red gem
+	{ name = "wand of inferno", chance = 2950 },
+	{ name = "fire sword", chance = 1710 },
+	{ name = "fire axe", chance = 1560 },
+	{ name = "crown shield", chance = 1180 },
+	{ name = "iron ore", chance = 11570 },
+	{ name = "white piece of cloth", chance = 4810 },
+	{ name = "red piece of cloth", chance = 3530 },
+	{ name = "yellow piece of cloth", chance = 7230 },
+	{ name = "strong health potion", chance = 18830, maxCount = 2 },
+	{ name = "strong mana potion", chance = 18150, maxCount = 2 },
+	{ name = "great mana potion", chance = 16030, maxCount = 2 },
+	{ name = "mana potion", chance = 20720, maxCount = 2 },
+	{ name = "magma amulet", chance = 2900 },
+	{ name = "magma boots", chance = 2650 },
+	{ name = "magma coat", chance = 430 },
+	{ name = "ultimate health potion", chance = 15390 },
+	{ name = "spellbook of mind control", chance = 450 },
+	{ name = "fiery heart", chance = 13510 },
+	{ name = "wand of everblazing", chance = 1390 },
+	{ name = "violet crystal shard", chance = 6200 },
+	{ name = "green crystal splinter", chance = 13990, maxCount = 2 },
+	{ name = "red crystal fragment", chance = 10990 },
+	{ name = "magma clump", chance = 15370, maxCount = 2 },
+	{ name = "blazing bone", chance = 15200 },
+	{ name = "prismatic bolt", chance = 12580, maxCount = 5 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -350, maxDamage = -700, length = 8, spread = 3, effect = CONST_ME_FIREATTACK, target = false},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -600, maxDamage = -1300, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = false},
-	{name ="lava golem soulfire", interval = 2000, chance = 15, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -220, maxDamage = -350, radius = 4, effect = CONST_ME_FIREAREA, target = true},
-	{name ="speed", interval = 2000, chance = 10, speedChange = -800, length = 5, spread = 3, effect = CONST_ME_BLOCKHIT, target = false, duration = 30000},
-	{name ="combat", interval = 2000, chance = 30, type = COMBAT_FIREDAMAGE, minDamage = -280, maxDamage = -350, radius = 3, effect = CONST_ME_HITBYFIRE, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -350, maxDamage = -700, length = 8, spread = 3, effect = CONST_ME_FIREATTACK, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -600, maxDamage = -1300, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "lava golem soulfire", interval = 2000, chance = 15, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -220, maxDamage = -350, radius = 4, effect = CONST_ME_FIREAREA, target = true },
+	{ name = "speed", interval = 2000, chance = 10, speedChange = -800, length = 5, spread = 3, effect = CONST_ME_BLOCKHIT, target = false, duration = 30000 },
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_FIREDAMAGE, minDamage = -280, maxDamage = -350, radius = 3, effect = CONST_ME_HITBYFIRE, target = false }
 }
 
 monster.defenses = {
@@ -122,23 +122,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 30},
-	{type = COMBAT_ENERGYDAMAGE, percent = 30},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -5},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 35}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 30 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 30 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -5 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 35 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

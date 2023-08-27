@@ -1,12 +1,12 @@
 local config = {
 	bosses = {
-		{'Baron Brute', 'The Axeorcist'},
-		{'Menace', 'Fatality'},
-		{'Incineron', 'Coldheart'},
-		{'Dreadwing', 'Doomhowl'},
-		{'Haunter', 'The Dreadorian'},
-		{'Rocko', 'Tremorak'},
-		{'Tirecz'}
+		{ 'Baron Brute', 'The Axeorcist' },
+		{ 'Menace', 'Fatality' },
+		{ 'Incineron', 'Coldheart' },
+		{ 'Dreadwing', 'Doomhowl' },
+		{ 'Haunter', 'The Dreadorian' },
+		{ 'Rocko', 'Tremorak' },
+		{ 'Tirecz' }
 	},
 
 	playerPos = {

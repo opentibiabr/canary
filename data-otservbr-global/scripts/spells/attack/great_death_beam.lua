@@ -33,11 +33,11 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	local cooldown = {10, 8, 6}
+	local cooldown = { 10, 8, 6 }
 	var.runeName = "Beam Mastery"
 	local executed = false
 
-	local combat = {combat1, combat2, combat3}
+	local combat = { combat1, combat2, combat3 }
 
 	executed = combat[grade]:execute(creature, var)
 

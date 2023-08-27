@@ -35,7 +35,7 @@ function leverboss.onUse(player, item, fromPosition, target, toPosition, isHotke
 				-- Check participant level
 				if participant:getLevel() < config.requiredLevel then
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-						"All the players need to be level ".. config.requiredLevel .." or higher.")
+						"All the players need to be level " .. config.requiredLevel .. " or higher.")
 					return true
 				end
 
@@ -46,7 +46,7 @@ function leverboss.onUse(player, item, fromPosition, target, toPosition, isHotke
 					return true
 				end
 
-				team[#team + 1] = participant
+				team[#team+1] = participant
 			end
 		end
 

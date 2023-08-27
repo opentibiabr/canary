@@ -1,9 +1,9 @@
 local config = {
-	{position = Position(32873, 32263, 14), itemId = 2773, transformId = 2772},
-	{position = Position(32874, 32263, 14), itemId = 2098, transformId = 2094},
-	{position = Position(32875, 32263, 14), itemId = 2099, transformId = 2095},
-	{position = Position(32874, 32264, 14), itemId = 2100, transformId = 2096},
-	{position = Position(32875, 32264, 14), itemId = 2101, transformId = 2097}
+	{ position = Position(32873, 32263, 14), itemId = 2773, transformId = 2772 },
+	{ position = Position(32874, 32263, 14), itemId = 2098, transformId = 2094 },
+	{ position = Position(32875, 32263, 14), itemId = 2099, transformId = 2095 },
+	{ position = Position(32874, 32264, 14), itemId = 2100, transformId = 2096 },
+	{ position = Position(32875, 32264, 14), itemId = 2101, transformId = 2097 }
 }
 
 stoneTeleport = MoveEvent()

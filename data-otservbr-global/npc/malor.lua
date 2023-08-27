@@ -72,11 +72,9 @@ local function creatureSayCallback(npc, creature, type, message)
 					'But think carefully, human, for this mission will bring you close to certain death. Are you prepared to embark on this mission?'
 				}, npc, creature)
 				npcHandler:setTopic(playerId, 1)
-
 			elseif missionProgress == 1 then
 				npcHandler:say('You haven\'t finished your final mission yet. Shall I explain it again to you?', npc, creature)
 				npcHandler:setTopic(playerId, 1)
-
 			elseif missionProgress == 2 then
 				npcHandler:say('Have you found Fa\'hradin\'s lamp and placed it in Malor\'s personal chambers?', npc, creature)
 				npcHandler:setTopic(playerId, 2)
@@ -89,7 +87,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				'You show true courage, human, but I will not accept your offer at this point of time.'
 			}, npc, creature)
 		end
-
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, 'yes') then
 			npcHandler:say({
@@ -100,12 +97,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				'If you succeed, the war could be over one night later!'
 			}, npc, creature)
 			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission03, 1)
-
 		elseif MsgContains(message, 'no') then
 			npcHandler:say('Your choice.', npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-
 	elseif npcHandler:getTopic(playerId) == 2 then
 		if MsgContains(message, 'yes') then
 			npcHandler:say({
@@ -135,7 +130,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say({
 					"Well well, human. Not bad. I'm not surprised, since you have done acceptably well in the past. So I suppose I can ask you for another thing. ...",
 					"Seek out Fahim the Wise. A name which is utter mockery, since he's one of the stupidest Marid I've ever seen. He hides somewhere in Yalahar, probably afraid to come anywhere near Mal'ouquah. ...",
-					"I suggest you teach that joke of a djinn a lesson he won't forget."}, npc, creature)
+					"I suggest you teach that joke of a djinn a lesson he won't forget." }, npc, creature)
 				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.FahimCount, 0)
 				player:setStorageValue(Storage.KillingInTheNameOf.BlueDjinnTask, 1)
 			else
@@ -144,7 +139,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.BlueDjinnTask) == 2 then
 			npcHandler:say({
 				"You've met Fahim the Wise? That's good. I'm pretty sure it was easy to give him a nice beating. ...",
-				"If you should feel like killing blue djinns in our service again, just talk to me about that task."}, npc, creature)
+				"If you should feel like killing blue djinns in our service again, just talk to me about that task." }, npc, creature)
 			player:setStorageValue(Storage.KillingInTheNameOf.BlueDjinnTask, 3)
 			player:addExperience(10000, true)
 			player:addMoney(5000)
@@ -161,7 +156,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Greeting
-keywordHandler:addGreetKeyword({"djanni'hah"}, {npcHandler = npcHandler, text = "Greetings, human |PLAYERNAME|. My patience with your kind is limited, so speak quickly and choose your words well."})
+keywordHandler:addGreetKeyword({ "djanni'hah" }, { npcHandler = npcHandler, text = "Greetings, human |PLAYERNAME|. My patience with your kind is limited, so speak quickly and choose your words well." })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell, human. When I have taken my rightful place I shall remember those who served me well. Even if they are only humans.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, 'Farewell, human.')

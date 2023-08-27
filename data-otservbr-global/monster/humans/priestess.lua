@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Hero Cave, Drefia ruins, Lich Hell, Tombs, Magician Quarter in Yalahar, Vengoth Castle."
-	}
+}
 
 monster.health = 390
 monster.maxHealth = 390
@@ -70,72 +70,72 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{name = "ghoul", chance = 10, interval = 2000, count = 2}
+		{ name = "ghoul", chance = 10, interval = 2000, count = 2 }
 	}
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Your energy is mine.", yell = false},
-	{text = "Now your life is come to the end, hahahaha!", yell = false},
-	{text = "Throw the soul on the altar!", yell = false}
+	{ text = "Your energy is mine.", yell = false },
+	{ text = "Now your life is come to the end, hahahaha!", yell = false },
+	{ text = "Throw the soul on the altar!", yell = false }
 }
 
 monster.loot = {
-	{id = 2828, chance = 890}, -- book
-	{id = 2948, chance = 1410}, -- wooden flute
-	{name = "piggy bank", chance = 90},
-	{name = "crystal necklace", chance = 640},
-	{name = "talon", chance = 750},
-	{name = "hailstorm rod", chance = 1100},
-	{id = 3076, chance = 1250}, -- crystal ball
-	{id = 2948, chance = 1400}, -- wooden flute
-	{name = "clerical mace", chance = 1500},
-	{name = "black shield", chance = 210},
-	{name = "red apple", chance = 7500, maxCount = 2},
-	{name = "goat grass", chance = 11720},
-	{name = "wood mushroom", chance = 3240},
-	{name = "sling herb", chance = 13200},
-	{name = "powder herb", chance = 5900},
-	{name = "mana potion", chance = 850},
-	{name = "cultish robe", chance = 1800},
-	{name = "black hood", chance = 5230},
-	{name = "dark rosary", chance = 9840}
+	{ id = 2828, chance = 890 }, -- book
+	{ id = 2948, chance = 1410 }, -- wooden flute
+	{ name = "piggy bank", chance = 90 },
+	{ name = "crystal necklace", chance = 640 },
+	{ name = "talon", chance = 750 },
+	{ name = "hailstorm rod", chance = 1100 },
+	{ id = 3076, chance = 1250 }, -- crystal ball
+	{ id = 2948, chance = 1400 }, -- wooden flute
+	{ name = "clerical mace", chance = 1500 },
+	{ name = "black shield", chance = 210 },
+	{ name = "red apple", chance = 7500, maxCount = 2 },
+	{ name = "goat grass", chance = 11720 },
+	{ name = "wood mushroom", chance = 3240 },
+	{ name = "sling herb", chance = 13200 },
+	{ name = "powder herb", chance = 5900 },
+	{ name = "mana potion", chance = 850 },
+	{ name = "cultish robe", chance = 1800 },
+	{ name = "black hood", chance = 5230 },
+	{ name = "dark rosary", chance = 9840 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -75},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -55, maxDamage = -120, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_MANADRAIN, minDamage = -2, maxDamage = -170, range = 7, target = false},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -75 },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_DEATHDAMAGE, minDamage = -55, maxDamage = -120, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_MANADRAIN, minDamage = -2, maxDamage = -170, range = 7, target = false },
 	-- poison
-	{name ="condition", type = CONDITION_POISON, interval = 2000, chance = 15, range = 7, shootEffect = CONST_ANI_POISON, target = false}
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, range = 7, shootEffect = CONST_ANI_POISON, target = false }
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 15,
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false}
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 50, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -10},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 70},
-	{type = COMBAT_FIREDAMAGE, percent = 40},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = -10},
-	{type = COMBAT_DEATHDAMAGE , percent = 10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -10 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 70 },
+	{ type = COMBAT_FIREDAMAGE, percent = 40 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -10 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

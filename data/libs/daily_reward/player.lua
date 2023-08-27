@@ -99,7 +99,7 @@ function Player.loadDailyRewardBonuses(self)
 	local streakLevel = self:getStreakLevel()
 	-- Stamina regeneration
 	if streakLevel >= DAILY_REWARD_STAMINA_REGENERATION then
-	local staminaEvent = DailyRewardBonus.Stamina[self:getId()]
+		local staminaEvent = DailyRewardBonus.Stamina[self:getId()]
 		if not staminaEvent then
 			local delay = 3
 			if self:getStamina() > 2340 and self:getStamina() <= 2520 then

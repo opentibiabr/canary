@@ -46,8 +46,8 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Don't forget npcHandler = npcHandler in the parameters. It is required for all StdModule functions!
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = "'Alice the chalice'... Hmpf, of course I won't TELL you my name, I am UNDERCOVER! Now be quiet or they will hear you."})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "Well, I am drinking most of the time. Er, no I mean - trying to hold my fluids... ah, wait that came out wrong: I am doing research. Let's just keep it at that."})
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = "'Alice the chalice'... Hmpf, of course I won't TELL you my name, I am UNDERCOVER! Now be quiet or they will hear you." })
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "Well, I am drinking most of the time. Er, no I mean - trying to hold my fluids... ah, wait that came out wrong: I am doing research. Let's just keep it at that." })
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)

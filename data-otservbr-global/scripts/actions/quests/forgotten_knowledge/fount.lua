@@ -9,5 +9,5 @@ function forgottenKnowledgeFount.onUse(player, item, fromPosition, target, toPos
 	return true
 end
 
-forgottenKnowledgeFount:id(25135,25136,25137,25138)
+forgottenKnowledgeFount:id(25135, 25136, 25137, 25138)
 forgottenKnowledgeFount:register()

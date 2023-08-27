@@ -68,7 +68,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(ThreatenedDreams.Mission03[1]) >= 2
-		and player:getStorageValue(ThreatenedDreams.Mission03[1]) <= 3 then
+				and player:getStorageValue(ThreatenedDreams.Mission03[1]) <= 3 then
 			npcHandler:say({
 				"The spell works! I already took a walk on the beach last night in the moonlight. Please talk to Taegen now, he may have another request."
 			}, npc, creature)

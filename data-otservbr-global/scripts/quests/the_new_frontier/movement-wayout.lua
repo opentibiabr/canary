@@ -16,5 +16,5 @@ function wayOut.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 
-wayOut:position(Position(33082, 31532, 7),Position(33082, 31533, 7))
+wayOut:position(Position(33082, 31532, 7), Position(33082, 31533, 7))
 wayOut:register()

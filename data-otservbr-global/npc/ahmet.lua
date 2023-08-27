@@ -22,7 +22,7 @@ npcConfig.outfit = {
 npcConfig.flags = {
 	floorchange = false
 }
-npcConfig.shop = {	-- Sellable items
+npcConfig.shop = { -- Sellable items
 	{ itemName = "basket", clientId = 2855, buy = 6 },
 	{ itemName = "bottle", clientId = 2875, buy = 3 },
 	{ itemName = "bucket", clientId = 2873, buy = 4 },
@@ -158,7 +158,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		elseif npcHandler:getTopic(playerId) == 5 then
 			if player:getStorageValue(ThreatenedDreams.Mission01[1]) == 1
-			and player:getStorageValue(ThreatenedDreams.Mission01.PoacherChest) == 1 then
+					and player:getStorageValue(ThreatenedDreams.Mission01.PoacherChest) == 1 then
 				if player:getItemCount(25235) >= 1 and player:getMoney() >= 5000 then
 					player:removeMoney(5000)
 					npcHandler:say({

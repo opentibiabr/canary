@@ -33,22 +33,22 @@ npcConfig.voices = {
 
 local worldChanges = {
 	{
-		storage = GlobalStorage.FuryGates, 
+		storage = GlobalStorage.FuryGates,
 		text = "Hear ye! Hear ye! A fiery gate has opened, threatening a city! Guard the people frightened, their death would be a pity!"
 	},
 	{
-		storage = GlobalStorage.Yasir, 
+		storage = GlobalStorage.Yasir,
 		text = "Hear ye! Hear ye! What a lucky and beautiful day! Visit Carlin, Ankrahmun, or Liberty Bay. Yasir, the oriental trader might be there. Gather your creature products, for this chance is rare."
 	},
 	{
-		storage = GlobalStorage.NightmareIsle, 
+		storage = GlobalStorage.NightmareIsle,
 		text = "Hear me! Hear me! A river is flooding, south of the outlaw base. Explore a new isle, an unknown place. Don\'t be afraid, but ready your blade."
 	}
 }
 
 for i = 1, #worldChanges do
 	if getGlobalStorageValue(worldChanges[i].storage) > 0 then
-		table.insert(npcConfig.voices, {text = worldChanges[i].text})
+		table.insert(npcConfig.voices, { text = worldChanges[i].text })
 	end
 end
 

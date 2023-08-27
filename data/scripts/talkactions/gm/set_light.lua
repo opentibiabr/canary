@@ -20,7 +20,7 @@ function set_light.onSay(player, words, param)
 		player:sendCancelMessage("You need to specify the light color.")
 		return true
 	end
-	local intensity = tonumber(split[2]) or 4--32
+	local intensity = tonumber(split[2]) or 4 --32
 
 	if tonumber(color) and tonumber(color) <= 1500 and intensity >= 0 and intensity < 33 then
 		--player:setLight(tonumber(color) >= 0 and luz[tonumber(color)] or 0, intensity)

@@ -1,6 +1,6 @@
 local config = {
 	[1] = {
-		teleportPosition = {x = 33123, y = 32239, z = 12},
+		teleportPosition = { x = 33123, y = 32239, z = 12 },
 		bossName = "Yirkas Blue Scales",
 		requiredLevel = 250,
 		timeToFightAgain = 10, -- In hour
@@ -15,7 +15,7 @@ local config = {
 		storage = Storage.Quest.U10_80.Grimvale.YirkasTimer
 	},
 	[2] = {
-		teleportPosition = {x = 33131, y = 32252, z = 12},
+		teleportPosition = { x = 33131, y = 32252, z = 12 },
 		bossName = "Srezz Yellow Eyes",
 		requiredLevel = 250,
 		timeToFightAgain = 10, -- In hour
@@ -30,7 +30,7 @@ local config = {
 		storage = Storage.Quest.U10_80.Grimvale.SrezzTimer
 	},
 	[3] = {
-		teleportPosition = {x = 33123, y = 32265, z = 12},
+		teleportPosition = { x = 33123, y = 32265, z = 12 },
 		bossName = "Utua Stone Sting",
 		requiredLevel = 250,
 		timeToFightAgain = 10, -- In hour
@@ -45,7 +45,7 @@ local config = {
 		storage = Storage.Quest.U10_80.Grimvale.UtuaTimer
 	},
 	[4] = {
-		teleportPosition = {x = 33114, y = 32252, z = 12},
+		teleportPosition = { x = 33114, y = 32252, z = 12 },
 		bossName = "Katex Blood Tongue",
 		requiredLevel = 250,
 		timeToFightAgain = 10, -- In hour
@@ -60,19 +60,19 @@ local config = {
 		storage = Storage.Quest.U10_80.Grimvale.KatexTimer
 	},
 	[5] = {
-		teleportPosition = {x = 33154, y = 32245, z = 12},
+		teleportPosition = { x = 33154, y = 32245, z = 12 },
 		exitPosition = Position(33123, 32240, 12)
 	},
 	[6] = {
-		teleportPosition = {x = 33119, y = 32278, z = 12},
+		teleportPosition = { x = 33119, y = 32278, z = 12 },
 		exitPosition = Position(33130, 32252, 12)
 	},
 	[7] = {
-		teleportPosition = {x = 33087, y = 32239, z = 12},
+		teleportPosition = { x = 33087, y = 32239, z = 12 },
 		exitPosition = Position(33123, 32264, 12)
 	},
 	[8] = {
-		teleportPosition = {x = 33148, y = 32283, z = 12},
+		teleportPosition = { x = 33148, y = 32283, z = 12 },
 		exitPosition = Position(33115, 32252, 12)
 	},
 }
@@ -109,7 +109,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 			if creature:getStorageValue(value.storage) > os.time() then
 				creature:teleportTo(fromPosition, true)
 				creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. value.timeToFightAgain .. " hours to face ".. value.bossName .. " again!")
+				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. value.timeToFightAgain .. " hours to face " .. value.bossName .. " again!")
 				return true
 			end
 			spec:removeMonsters()

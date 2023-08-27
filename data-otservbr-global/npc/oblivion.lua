@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if(MsgContains(message, 'scroll') or MsgContains(message, 'mission')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission44) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission45) < 1 then
+	if (MsgContains(message, 'scroll') or MsgContains(message, 'mission')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission44) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission45) < 1 then
 		npcHandler:say("Lost. Hidden. The keys are shadow names. Find them, they will talk to me and reveal what is hidden. Will you go on that quest?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, 'yes') and npcHandler:getTopic(playerId) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission44) == 1 then
@@ -74,19 +74,19 @@ local function creatureSayCallback(npc, creature, type, message)
 		}, npc, creature)
 		player:setStorageValue(Storage.GravediggerOfDrefia.Mission45, 1)
 		npcHandler:setTopic(playerId, 0)
-	elseif(MsgContains(message, 'scroll') or MsgContains(message, 'mission')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission48) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission49) < 1 then
+	elseif (MsgContains(message, 'scroll') or MsgContains(message, 'mission')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission48) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission49) < 1 then
 		npcHandler:say("Yes. Have you gone there and found what you sought?", npc, creature)
 		npcHandler:setTopic(playerId, 2)
-	elseif(MsgContains(message, 'yes')) and npcHandler:getTopic(playerId) == 2 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission48) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission49) < 1 then
+	elseif (MsgContains(message, 'yes')) and npcHandler:getTopic(playerId) == 2 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission48) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission49) < 1 then
 		npcHandler:say("Tell me. Begin with the colour.", npc, creature)
 		npcHandler:setTopic(playerId, 3)
-	elseif(MsgContains(message, 'bronze')) and npcHandler:getTopic(playerId) == 3 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission48) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission49) < 1 then
+	elseif (MsgContains(message, 'bronze')) and npcHandler:getTopic(playerId) == 3 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission48) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission49) < 1 then
 		npcHandler:say("Yes. The shadows say this is true. The beauty of House Dunesea, name it.", npc, creature)
 		npcHandler:setTopic(playerId, 4)
-	elseif(MsgContains(message, 'floating')) and npcHandler:getTopic(playerId) == 4 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission48) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission49) < 1 then
+	elseif (MsgContains(message, 'floating')) and npcHandler:getTopic(playerId) == 4 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission48) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission49) < 1 then
 		npcHandler:say("The floating gardens. Too beautiful to lie asleep in the memory of men. Yes. The name that is no more in Darkstone?", npc, creature)
 		npcHandler:setTopic(playerId, 5)
-	elseif(MsgContains(message, 'Takesha Antishu')) and npcHandler:getTopic(playerId) == 5 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission48) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission49) < 1 then
+	elseif (MsgContains(message, 'Takesha Antishu')) and npcHandler:getTopic(playerId) == 5 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission48) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission49) < 1 then
 		npcHandler:say({
 			"Ah, the Lady of Darkstone. You have done well to remember her name. ...",
 			"Now, the shadows say the thing you seek lies next to Akab, the Quarrelsome. ...",

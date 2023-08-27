@@ -4,7 +4,7 @@ local missionTiles = {
 	[50329] = {
 		state = 2,
 		message = "Follow the north-eastern path into the forest. Beware of wolves!",
-		arrowPosition = {x = 32109, y = 32166, z = 7}
+		arrowPosition = { x = 32109, y = 32166, z = 7 }
 	},
 	[50330] = {
 		state = 2,
@@ -17,7 +17,7 @@ local missionTiles = {
 	[50332] = {
 		state = 2,
 		message = "This hole leads into the wolves' den. Only enter if you have full health and food - this might be dangerous.",
-		arrowPosition = {x = 32138, y = 32132, z = 7}
+		arrowPosition = { x = 32138, y = 32132, z = 7 }
 	},
 	[50333] = {
 		state = 3,
@@ -82,13 +82,13 @@ local specialMissionTiles = {
 	[25025] = {
 		state = 2,
 		message = "Well.. that seems to be the poacher. Dead. Check his body - maybe he still has something that you can use.",
-		arrowPosition = {x = 32135, y = 32133, z = 8},
+		arrowPosition = { x = 32135, y = 32133, z = 8 },
 		newState = 3
 	},
 	[25026] = {
 		state = 3,
 		message = "There is a dead war wolf! Use the knife, and then use it on its body to get some leather - but quickly!",
-		arrowPosition = {x = 32108, y = 32132, z = 11}
+		arrowPosition = { x = 32108, y = 32132, z = 11 }
 	},
 	[25027] = {
 		state = 5,
@@ -139,7 +139,7 @@ local function teleportBack(uid)
 	if player and player:getStorageValue(Storage.TheRookieGuard.Mission06) == 5 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Oh no... you were too slow and the wolves caught up with you. You may try again.")
 		player:setStorageValue(Storage.TheRookieGuard.Mission06, 4)
-		player:teleportTo({x = 32109, y = 32131, z = 11})
+		player:teleportTo({ x = 32109, y = 32131, z = 11 })
 	end
 end
 

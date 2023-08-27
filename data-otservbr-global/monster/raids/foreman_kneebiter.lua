@@ -65,17 +65,17 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "By Durin's beard!", yell = true}
+	{ text = "By Durin's beard!", yell = true }
 }
 
 monster.loot = {
-	{id = 5880, chance = 2500, maxCount = 2}, -- iron ore
-	{id = 3031, chance = 90000, maxCount = 100}, -- gold coin
-	{id = 3413, chance = 6666} -- battle shield
+	{ id = 5880, chance = 2500, maxCount = 2 }, -- iron ore
+	{ id = 3031, chance = 90000, maxCount = 100 }, -- gold coin
+	{ id = 3413, chance = 6666 } -- battle shield
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -60, maxDamage = -200}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -60, maxDamage = -200 }
 }
 
 monster.defenses = {
@@ -84,23 +84,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 20},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 90},
-	{type = COMBAT_FIREDAMAGE, percent = -5},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 20 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 90 },
+	{ type = COMBAT_FIREDAMAGE, percent = -5 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

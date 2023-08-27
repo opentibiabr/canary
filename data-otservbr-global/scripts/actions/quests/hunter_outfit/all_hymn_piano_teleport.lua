@@ -1,4 +1,4 @@
-local portpos = Position({x = 32402, y = 32794, z = 9})
+local portpos = Position({ x = 32402, y = 32794, z = 9 })
 
 local hunterAll = Action()
 function hunterAll.onUse(player, item, fromPosition, target, toPosition, isHotkey)

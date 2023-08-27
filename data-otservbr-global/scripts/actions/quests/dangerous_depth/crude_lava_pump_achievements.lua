@@ -31,7 +31,7 @@ function dangerousDepthAchievements.onUse(player, item)
 	local WarzoneV = Position(33679, 32310, 15)
 	local WarzoneVI = Position(33685, 32304, 15)
 
-	if positionItem  == WarzoneIV then -- Warzone VI
+	if positionItem == WarzoneIV then -- Warzone VI
 		if player:getStorageValue(Storage.DangerousDepths.Bosses.TheBaronFromBelowAchiev) < 1 then
 			player:addAchievement('Buried the Baron')
 			player:setStorageValue(Storage.DangerousDepths.Bosses.TheBaronFromBelowAchiev, 1)
@@ -53,8 +53,8 @@ function dangerousDepthAchievements.onUse(player, item)
 	end
 
 	if player:getStorageValue(Storage.DangerousDepths.Bosses.LastAchievement) < 1 then
-		if player:getStorageValue(Storage.DangerousDepths.Bosses.TheDukeOfTheDepthsAchiev) == 1 and  player:getStorageValue(Storage.DangerousDepths.Bosses.TheBaronFromBelowAchiev) == 1
-			and player:getStorageValue(Storage.DangerousDepths.Bosses.TheCountOfTheCoreAchiev) == 1 then
+		if player:getStorageValue(Storage.DangerousDepths.Bosses.TheDukeOfTheDepthsAchiev) == 1 and player:getStorageValue(Storage.DangerousDepths.Bosses.TheBaronFromBelowAchiev) == 1
+				and player:getStorageValue(Storage.DangerousDepths.Bosses.TheCountOfTheCoreAchiev) == 1 then
 			player:addAchievement('Death in the Depths')
 			player:setStorageValue(Storage.DangerousDepths.Bosses.LastAchievement, 1)
 		end

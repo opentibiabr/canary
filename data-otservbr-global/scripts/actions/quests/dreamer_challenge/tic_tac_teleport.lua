@@ -1,13 +1,13 @@
 local config = {
-	{position = Position(32845, 32264, 14), itemId = 3548},
-	{position = Position(32843, 32266, 14), itemId = 3548},
-	{position = Position(32843, 32268, 14), itemId = 3548},
-	{position = Position(32845, 32268, 14), itemId = 3548},
-	{position = Position(32844, 32267, 14), itemId = 3548},
-	{position = Position(32840, 32269, 14), itemId = 3548},
-	{position = Position(32841, 32269, 14), itemId = 3547},
-	{position = Position(32840, 32268, 14), itemId = 3547},
-	{position = Position(32842, 32267, 14), itemId = 3547}
+	{ position = Position(32845, 32264, 14), itemId = 3548 },
+	{ position = Position(32843, 32266, 14), itemId = 3548 },
+	{ position = Position(32843, 32268, 14), itemId = 3548 },
+	{ position = Position(32845, 32268, 14), itemId = 3548 },
+	{ position = Position(32844, 32267, 14), itemId = 3548 },
+	{ position = Position(32840, 32269, 14), itemId = 3548 },
+	{ position = Position(32841, 32269, 14), itemId = 3547 },
+	{ position = Position(32840, 32268, 14), itemId = 3547 },
+	{ position = Position(32842, 32267, 14), itemId = 3547 }
 }
 
 local dreamerTicTacTeleport = Action()
@@ -51,9 +51,7 @@ function dreamerTicTacTeleport.onUse(player, item, fromPosition, target, toPosit
 				teleport:setActionId(9032)
 			end
 		end
-
 	else
-
 		local teleport = Tile(position):getItemById(1949)
 		if teleport then
 			teleport:remove()

@@ -26,8 +26,8 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "Health potions! Mana potions! Buy them here!"},
-	{text = "All kinds of potions available here!"}
+	{ text = "Health potions! Mana potions! Buy them here!" },
+	{ text = "All kinds of potions available here!" }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,26 +58,32 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local potionTalk = keywordHandler:addKeyword(
-	{"ring"}, StdModule.say, { npcHandler = npcHandler,
-	text = "So, the Librarian sent you. Well, yes, I have a vial of the hallucinogen you need. I'll give it to you for 1000 gold. Do you agree?"},
-	function (player) return player:getStorageValue(Storage.Kilmaresh.Fifth.Memories) == 1 end
+	{ "ring" }, StdModule.say, {
+		npcHandler = npcHandler,
+		text = "So, the Librarian sent you. Well, yes, I have a vial of the hallucinogen you need. I'll give it to you for 1000 gold. Do you agree?"
+	},
+	function(player) return player:getStorageValue(Storage.Kilmaresh.Fifth.Memories) == 1 end
 )
 
-	potionTalk:addChildKeyword(
-		{"yes"}, StdModule.say, { npcHandler = npcHandler,
-		text = "Great. Here, take it."},
-		function (player) return player:getMoney() + player:getBankBalance() >= 1000 end,
-		function (player)
-			player:removeMoneyBank(1000)
-			player:addItem(31350, 1) -- flask of hallucinogen
-		end
-	)
+potionTalk:addChildKeyword(
+	{ "yes" }, StdModule.say, {
+		npcHandler = npcHandler,
+		text = "Great. Here, take it."
+	},
+	function(player) return player:getMoney() + player:getBankBalance() >= 1000 end,
+	function(player)
+		player:removeMoneyBank(1000)
+		player:addItem(31350, 1) -- flask of hallucinogen
+	end
+)
 
-	potionTalk:addChildKeyword(
-		{"yes"}, StdModule.say, { npcHandler = npcHandler,
-		text = "You do not have enough money."},
-		function (player) return player:getMoney() + player:getBankBalance() < 1000 end
-	)
+potionTalk:addChildKeyword(
+	{ "yes" }, StdModule.say, {
+		npcHandler = npcHandler,
+		text = "You do not have enough money."
+	},
+	function(player) return player:getMoney() + player:getBankBalance() < 1000 end
+)
 
 npcHandler:setMessage(MESSAGE_GREET, 'Greetings, dear guest and welcome to my {potion} shop.')
 npcHandler:setMessage(MESSAGE_WALKAWAY, 'Well, bye then.')

@@ -7,14 +7,14 @@ function firstSealCloseMw.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	local magicWallPosition = {x = 32259, y = 31890, z = 10}
+	local magicWallPosition = { x = 32259, y = 31890, z = 10 }
 	if Position(magicWallPosition):createItem(2129) then
 		stopEvent(Position.revertItem)
 	end
 	return true
 end
 
-firstSealCloseMw:position({x = 32257, y = 31887, z = 10})
+firstSealCloseMw:position({ x = 32257, y = 31887, z = 10 })
 firstSealCloseMw:register()
 
 -- Second magic wall (second lever)
@@ -26,14 +26,14 @@ function firstSealCloseMw.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	local magicWallPosition = {x = 32259, y = 31891, z = 10}
+	local magicWallPosition = { x = 32259, y = 31891, z = 10 }
 	if Position(magicWallPosition):createItem(2129) then
 		stopEvent(Position.revertItem)
 	end
 	return true
 end
 
-firstSealCloseMw:position({x = 32258, y = 31887, z = 10})
+firstSealCloseMw:position({ x = 32258, y = 31887, z = 10 })
 firstSealCloseMw:register()
 
 -- Third magic wall (third lever)
@@ -45,13 +45,13 @@ function firstSealCloseMw.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	local magicWallPosition = {x = 32266, y = 31860, z = 11}
+	local magicWallPosition = { x = 32266, y = 31860, z = 11 }
 	Position(magicWallPosition):removeItem(369)
 
-	local leverPosition = {x = 32266, y = 31861, z = 11}
+	local leverPosition = { x = 32266, y = 31861, z = 11 }
 	Position.revertItem(magicWallPosition, 2129, leverPosition, 2773, 27260)
 	return true
 end
 
-firstSealCloseMw:position({x = 32266, y = 31860, z = 12})
+firstSealCloseMw:position({ x = 32266, y = 31860, z = 12 })
 firstSealCloseMw:register()

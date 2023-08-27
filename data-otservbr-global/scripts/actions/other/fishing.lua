@@ -1,21 +1,21 @@
-local waterIds = {622, 4597, 4598, 4599, 4600, 12561, 12563, 4601, 4602, 4609, 4610, 4611, 4612, 4613, 4614, 629, 630, 631, 632, 633, 634, 7236, 9582, 13988, 13989, 12560, 21414}
-local lootTrash = {3119, 3123, 3264, 3409, 3578}
-local lootCommon = {3035, 3051, 3052, 3580, 236, 237}
-local lootRare = {3026, 3029, 3032, 7158, 7159}
-local lootVeryRare = {281, 282, 9303}
-local lootVeryRare1 = {281, 12557}
-local lootRare1 = {3026, 12557}
-local lootCommon1 = {3035, 237, 12557}
+local waterIds = { 622, 4597, 4598, 4599, 4600, 12561, 12563, 4601, 4602, 4609, 4610, 4611, 4612, 4613, 4614, 629, 630, 631, 632, 633, 634, 7236, 9582, 13988, 13989, 12560, 21414 }
+local lootTrash = { 3119, 3123, 3264, 3409, 3578 }
+local lootCommon = { 3035, 3051, 3052, 3580, 236, 237 }
+local lootRare = { 3026, 3029, 3032, 7158, 7159 }
+local lootVeryRare = { 281, 282, 9303 }
+local lootVeryRare1 = { 281, 12557 }
+local lootRare1 = { 3026, 12557 }
+local lootCommon1 = { 3035, 237, 12557 }
 
 local elementals = {
-		chances = {
-			{from = 0, to = 500, itemId = 3026}, -- white pearl
-			{from = 501, to = 801, itemId = 3029}, -- small sapphire
-			{from = 802, to = 1002, itemId = 3032}, -- small emerald
-			{from = 1003, to = 1053, itemId = 281}, -- giant shimmering pearl (green)
-			{from = 1054, to = 1104, itemId = 282}, -- giant shimmering pearl (brown)
-			{from = 1105, to = 1115, itemId = 9303} -- leviathan's amulet
-		}
+	chances = {
+		{ from = 0, to = 500, itemId = 3026 }, -- white pearl
+		{ from = 501, to = 801, itemId = 3029 }, -- small sapphire
+		{ from = 802, to = 1002, itemId = 3032 }, -- small emerald
+		{ from = 1003, to = 1053, itemId = 281 }, -- giant shimmering pearl (green)
+		{ from = 1054, to = 1104, itemId = 282 }, -- giant shimmering pearl (brown)
+		{ from = 1105, to = 1115, itemId = 9303 } -- leviathan's amulet
+	}
 }
 
 local useWorms = true
@@ -44,7 +44,7 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 
 		toPosition:sendMagicEffect(CONST_ME_WATERSPLASH)
 		target:transform(target.itemid + 1)
-		
+
 		local chance = math.random(10000)
 		for i = 1, #elementals.chances do
 			local randomItem = elementals.chances[i]
@@ -63,7 +63,7 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		local rareChance = math.random(100)
 		if rareChance == 1 then
 			player:addItem(lootVeryRare1[math.random(#lootVeryRare1)], 1)
-	    elseif rareChance <= 3 then
+		elseif rareChance <= 3 then
 			player:addItem(lootRare1[math.random(#lootRare1)], 1)
 		elseif rareChance <= 10 then
 			player:addItem(lootCommon1[math.random(#lootCommon1)], 1)
@@ -97,7 +97,7 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if player:getItemCount(3492) > 0 then
 		player:addSkillTries(SKILL_FISHING, 1, true)
 	end
-	
+
 	if math.random(100) <= math.min(math.max(10 + (player:getEffectiveSkillLevel(SKILL_FISHING) - 10) * 0.597, 10), 50) then
 		if useWorms and not player:removeItem("worm", 1) then
 			return true

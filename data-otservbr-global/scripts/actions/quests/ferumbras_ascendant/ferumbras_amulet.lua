@@ -1,6 +1,5 @@
 local ferumbrasAscendantAmulet = Action()
 function ferumbrasAscendantAmulet.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-
 	local amulet = player:getSlotItem(CONST_SLOT_NECKLACE)
 	if amulet ~= item or amulet ~= item then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You need to equip the amulet to try use it.')
@@ -24,5 +23,5 @@ function ferumbrasAscendantAmulet.onUse(player, item, fromPosition, target, toPo
 	return true
 end
 
-ferumbrasAscendantAmulet:id(22767,22768)
+ferumbrasAscendantAmulet:id(22767, 22768)
 ferumbrasAscendantAmulet:register()

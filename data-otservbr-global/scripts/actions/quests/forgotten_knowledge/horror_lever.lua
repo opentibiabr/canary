@@ -2,7 +2,7 @@ local eggPos = Position(32269, 31084, 14)
 local config = {
 	boss = {
 		name = "Frozen Horror",
-		createFunction= function()
+		createFunction = function()
 			Tile(eggPos):getTopCreature():setHealth(1)
 			return Game.createMonster("solid frozen horror", Position(32269, 31091, 14), true, true)
 		end,

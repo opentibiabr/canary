@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 1,
 	Locations = "Isle of Evil."
-	}
+}
 
 monster.health = 360
 monster.maxHealth = 360
@@ -70,22 +70,22 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "ISHH THAT THE BESHHT YOU HAVE TO OFFERRR, TIBIANSHH?", yell = false},
-	{text = "YOU ARRRRRE DOOMED!", yell = false},
-	{text = "I SHHMELL FEEAARRR!", yell = false},
-	{text = "MY SHHEED IS FEARRR AND MY HARRRVEST ISHH YOURRR SHHOUL!", yell = false},
-	{text = "Your shhoooul will be mineee!", yell = false}
+	{ text = "ISHH THAT THE BESHHT YOU HAVE TO OFFERRR, TIBIANSHH?", yell = false },
+	{ text = "YOU ARRRRRE DOOMED!", yell = false },
+	{ text = "I SHHMELL FEEAARRR!", yell = false },
+	{ text = "MY SHHEED IS FEARRR AND MY HARRRVEST ISHH YOURRR SHHOUL!", yell = false },
+	{ text = "Your shhoooul will be mineee!", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 81630, maxCount = 99}
+	{ name = "gold coin", chance = 81630, maxCount = 99 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 1200, chance = 100, minDamage = 0, maxDamage = -100},
-	{name ="drunk", interval = 1000, chance = 30, length = 5, spread = 3, effect = CONST_ME_SOUND_RED, target = false},
-	{name ="combat", interval = 1000, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -25, maxDamage = -45, range = 5, shootEffect = CONST_ANI_SUDDENDEATH, target = false},
-	{name ="combat", interval = 1000, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -15, maxDamage = -45, range = 1, target = false}
+	{ name = "melee", interval = 1200, chance = 100, minDamage = 0, maxDamage = -100 },
+	{ name = "drunk", interval = 1000, chance = 30, length = 5, spread = 3, effect = CONST_ME_SOUND_RED, target = false },
+	{ name = "combat", interval = 1000, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -25, maxDamage = -45, range = 5, shootEffect = CONST_ANI_SUDDENDEATH, target = false },
+	{ name = "combat", interval = 1000, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -15, maxDamage = -45, range = 1, target = false }
 }
 
 monster.defenses = {
@@ -94,23 +94,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

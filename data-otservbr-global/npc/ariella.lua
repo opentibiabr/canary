@@ -25,7 +25,9 @@ npcConfig.flags = {
 
 npcConfig.voices = {
 	interval = 15000,
-	chance = 50,{text = "Have a drink in Meriana's only tavern!"}}
+	chance = 50,
+	{ text = "Have a drink in Meriana's only tavern!" }
+}
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -65,35 +67,35 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "cookie") then
 		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31 and
-		player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.Ariella) ~= 1 then
+				player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.Ariella) ~= 1 then
 			npcHandler:say("So you brought a cookie to a pirate?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "addon") and player:getStorageValue(Storage.OutfitQuest.PirateBaseOutfit) == 1 then
 		npcHandler:say(
-		"To get pirate hat you need give me Brutus Bloodbeard's Hat, \
+			"To get pirate hat you need give me Brutus Bloodbeard's Hat, \
 		Lethal Lissy's Shirt, Ron the Ripper's Sabre and Deadeye Devious' Eye Patch. Do you have them with you?",
-		npc, creature)
+			npc, creature)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 1 then
 			npcHandler:say(
-			"You know, we have plenty of rum here but we lack some basic food. \
+				"You know, we have plenty of rum here but we lack some basic food. \
 			Especially food that easily becomes mouldy is a problem. Bring me 100 breads and you will help me a lot.",
-			npc, creature)
+				npc, creature)
 			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 2)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 2 then
 			npcHandler:say("Are you here to bring me the 100 pieces of bread that I requested?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 10 then
 			npcHandler:say(
-			{
-				"The sailors always tell tales about the famous beer of Carlin. \
+				{
+					"The sailors always tell tales about the famous beer of Carlin. \
 				You must know, alcohol is forbidden in that city. ...",
-				"The beer is served in a secret whisper bar anyway. \
+					"The beer is served in a secret whisper bar anyway. \
 				Bring me a sample of the whisper beer, NOT the usual beer but whisper beer. I hope you are listening."
-			},
-			npc, creature)
+				},
+				npc, creature)
 			player:setStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven, 11)
 		elseif player:getStorageValue(Storage.TheShatteredIsles.ReputationInSabrehaven) == 12 then
 			npcHandler:say("Did you get a sample of the whisper beer from Carlin?", npc, creature)
@@ -114,18 +116,18 @@ local function creatureSayCallback(npc, creature, type, message)
 
 			npc:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
 			npcHandler:say(
-			"How sweet of you ... Uhh ... OH NO ... Bozo did it again. Tell this prankster I'll pay him back.",
-			npc, creature)
+				"How sweet of you ... Uhh ... OH NO ... Bozo did it again. Tell this prankster I'll pay him back.",
+				npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 			npcHandler:resetNpc(creature)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			if player:getStorageValue(Storage.OutfitQuest.PirateHatAddon) == -1 then
 				if player:getItemCount(6101) > 0 and player:getItemCount(6102) > 0 and player:getItemCount(6100) > 0 and
-				player:getItemCount(6099) > 0
+						player:getItemCount(6099) > 0
 				then
 					if
-					player:removeItem(6101, 1) and player:removeItem(6102, 1) and player:removeItem(6100, 1) and
-					player:removeItem(6099, 1)
+							player:removeItem(6101, 1) and player:removeItem(6102, 1) and player:removeItem(6100, 1) and
+							player:removeItem(6099, 1)
 					then
 						npcHandler:say("Ah, right! The pirate hat! Here you go.", npc, creature)
 						player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)

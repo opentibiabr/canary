@@ -101,7 +101,7 @@ function BossLever:onUse(player)
 	local isParticipant = false
 	for _, v in ipairs(self.playerPositions) do
 		if v.pos == player:getPosition() then
-			isParticipant	= true
+			isParticipant = true
 		end
 	end
 	if not isParticipant then
@@ -136,7 +136,7 @@ function BossLever:onUse(player)
 			for _, v in pairs(info) do
 				local newPlayer = v.creature
 				if newPlayer then
-					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " ..  self.timeToFightAgain / 60 / 60 .. " hours to face " .. self.name .. " again!")
+					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. self.timeToFightAgain / 60 / 60 .. " hours to face " .. self.name .. " again!")
 					if newPlayer:getStorageValue(self.storage) > os.time() then
 						newPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
 					end

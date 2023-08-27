@@ -26,10 +26,10 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "Where did I put my broom? Mother?"},
-	{text = "Mother?! Oh no, now I have to do this all over again"},
-	{text = "Mhmhmhmhm."},
-	{text = "Lalala..."}
+	{ text = "Where did I put my broom? Mother?" },
+	{ text = "Mother?! Oh no, now I have to do this all over again" },
+	{ text = "Mhmhmhmhm." },
+	{ text = "Lalala..." }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -70,9 +70,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "jack") then
 		if (player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 5) then
 			if
-				(player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Mother == 1) and
-					(player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Sister)) < 1)
-			 then
+					(player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Mother == 1) and
+						(player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Sister)) < 1)
+			then
 				npcHandler:say("Why are you asking, he didn't get himself into something again did he?", npc, creature)
 				npcHandler:setTopic(playerId, 1)
 			end
@@ -82,7 +82,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				"Spelltolust?! That sounds awfully nasty! What was he doing there - are you telling \z
 				me he lived an alternate life and he didn't even tell {mother}?",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		end
 	elseif MsgContains(message, "yes") then
@@ -94,7 +94,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					"What did he do? Since you look like a guy from the city, I bet he went to Edron in \z
 						secrecy or something like that, didn't he? And you are here because of that?"
 				},
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif (npcHandler:getTopic(playerId) == 2) then
 			npcHandler:say("What?! And what did he do there? Who did he visit there?", npc, creature)
@@ -106,7 +106,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					Ha! He won't get away this time! What did he do there? I see... interesting! ...",
 					"Wait till mother hears that! Oh he will be in for a surprise, I can tell you that. Ma!! Maaaaa!!"
 				},
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.Sister, 1)
 			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 6)

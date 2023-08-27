@@ -13,8 +13,8 @@ function spell.onCastSpell(creature, var)
 	local summoncount = creature:getSummons()
 	if #summoncount < 6 then
 		for i = 1, maxsummons - #summoncount do
-		local mid = Game.createMonster("Son of Verminor", { x=creature:getPosition().x+math.random(-2, 2), y=creature:getPosition().y+math.random(-2, 2), z=creature:getPosition().z })
-    		if not mid then
+			local mid = Game.createMonster("Son of Verminor", { x = creature:getPosition().x + math.random(-2, 2), y = creature:getPosition().y + math.random(-2, 2), z = creature:getPosition().z })
+			if not mid then
 				return
 			end
 			mid:setMaster(creature)

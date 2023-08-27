@@ -66,12 +66,12 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -150, maxDamage = -500},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = 0, maxDamage = -500, length = 9, spread = 3, effect = CONST_ME_LOSEENERGY, target = false},
-	{name ="remorseless wave", interval = 2000, chance = 25, target = false},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -500, radius = 7, effect = CONST_ME_HITAREA, target = false},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -500, length = 9, spread = 3, effect = CONST_ME_STUN, target = false},
-	{name ="combat", interval = 2000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -500, length = 9, spread = 3, effect = CONST_ME_MORTAREA, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -150, maxDamage = -500 },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = 0, maxDamage = -500, length = 9, spread = 3, effect = CONST_ME_LOSEENERGY, target = false },
+	{ name = "remorseless wave", interval = 2000, chance = 25, target = false },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -500, radius = 7, effect = CONST_ME_HITAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -500, length = 9, spread = 3, effect = CONST_ME_STUN, target = false },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = 0, maxDamage = -500, length = 9, spread = 3, effect = CONST_ME_MORTAREA, target = false }
 }
 
 monster.defenses = {
@@ -80,23 +80,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 99},
-	{type = COMBAT_ENERGYDAMAGE, percent = 99},
-	{type = COMBAT_EARTHDAMAGE, percent = 99},
-	{type = COMBAT_FIREDAMAGE, percent = 99},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 99},
-	{type = COMBAT_HOLYDAMAGE , percent = 99},
-	{type = COMBAT_DEATHDAMAGE , percent = 99}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 99 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 99 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 99 },
+	{ type = COMBAT_FIREDAMAGE, percent = 99 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 99 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 99 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 99 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

@@ -46,20 +46,20 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local ingredients = {
-	[1] = {{3577, 2}, {8010, 20}, {8015, 1}, {8197, 1}, {3603, 5}, {2874, 2, 3}},
-	[2] = {{7250, 2}, {3596, 2}, {8014, 1}, {3606, 2}, {3741, 1}, {2874, 1, 15}},
-	[3] = {{4363, 1}, {8016, 3}, {3602, 5}, {3606, 2}, {3739, 1}, {3724, 5}},
-	[4] = {{4330, 1}, {8013, 2}, {3586, 2}, {5096, 2}, {2874, 2, 14}, {3735, 1}},
-	[5] = {{6574, 1}, {904, 1}, {3587, 2}, {2874, 2, 6}, {3738, 1}, {3736, 1}},
-	[6] = {{3595, 2}, {3596, 2}, {3597, 2}, {8014, 2}, {8015, 1}, {8197, 1}, {3607, 1}, {3723, 20}, {3725, 5}},
-	[7] = {{8016, 10}, {3607, 2}, {3741, 1}, {3740, 1}, {2874, 1, 43}, {3606, 2}},
-	[8] = {{3582, 1}, {8011, 5}, {8015, 1}, {8017, 2}, {3594, 1}, {8016, 2}},
-	[9] = {{3580, 1}, {7158, 1}, {7159, 1}, {3581, 5}, {3601, 2}, {3737, 1}},
-	[10] = {{3595, 5}, {2874, 1, 6}, {8013, 1}, {3603, 10}, {3606, 2}, {3598, 10}, {841, 2}},
-	[11] = {{2874, 5, 14}, {3725, 5}, {3724, 5}, {10329, 10}, {3581, 10}},
-	[12] = {{10456, 5}, {2874, 2, 1}, {3595, 20}, {8010, 10}, {8016, 3}},
-	[13] = {{6569, 3}, {3599, 3}, {6574, 2}, {6500, 15}, {6558, 1}},
-	[14] = {{3606, 40}, {5096, 20}, {5902, 10}, {8758, 1}, {5942, 1}}
+	[1] = { { 3577, 2 }, { 8010, 20 }, { 8015, 1 }, { 8197, 1 }, { 3603, 5 }, { 2874, 2, 3 } },
+	[2] = { { 7250, 2 }, { 3596, 2 }, { 8014, 1 }, { 3606, 2 }, { 3741, 1 }, { 2874, 1, 15 } },
+	[3] = { { 4363, 1 }, { 8016, 3 }, { 3602, 5 }, { 3606, 2 }, { 3739, 1 }, { 3724, 5 } },
+	[4] = { { 4330, 1 }, { 8013, 2 }, { 3586, 2 }, { 5096, 2 }, { 2874, 2, 14 }, { 3735, 1 } },
+	[5] = { { 6574, 1 }, { 904, 1 }, { 3587, 2 }, { 2874, 2, 6 }, { 3738, 1 }, { 3736, 1 } },
+	[6] = { { 3595, 2 }, { 3596, 2 }, { 3597, 2 }, { 8014, 2 }, { 8015, 1 }, { 8197, 1 }, { 3607, 1 }, { 3723, 20 }, { 3725, 5 } },
+	[7] = { { 8016, 10 }, { 3607, 2 }, { 3741, 1 }, { 3740, 1 }, { 2874, 1, 43 }, { 3606, 2 } },
+	[8] = { { 3582, 1 }, { 8011, 5 }, { 8015, 1 }, { 8017, 2 }, { 3594, 1 }, { 8016, 2 } },
+	[9] = { { 3580, 1 }, { 7158, 1 }, { 7159, 1 }, { 3581, 5 }, { 3601, 2 }, { 3737, 1 } },
+	[10] = { { 3595, 5 }, { 2874, 1, 6 }, { 8013, 1 }, { 3603, 10 }, { 3606, 2 }, { 3598, 10 }, { 841, 2 } },
+	[11] = { { 2874, 5, 14 }, { 3725, 5 }, { 3724, 5 }, { 10329, 10 }, { 3581, 10 } },
+	[12] = { { 10456, 5 }, { 2874, 2, 1 }, { 3595, 20 }, { 8010, 10 }, { 8016, 3 } },
+	[13] = { { 6569, 3 }, { 3599, 3 }, { 6574, 2 }, { 6500, 15 }, { 6558, 1 } },
+	[14] = { { 3606, 40 }, { 5096, 20 }, { 5902, 10 }, { 8758, 1 }, { 5942, 1 } }
 }
 
 local function playerHasIngredients(creature)
@@ -460,7 +460,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 0)
 			end
 		end
-	--Dishes first time
+		--Dishes first time
 	elseif MsgContains(message, "rotworm stew") then
 		if npcHandler:getTopic(playerId) == 4 or player:getStorageValue(Storage.HotCuisineQuest.QuestStart) == 2 then
 			npcHandler:say("Did you gather all necessary ingredients to cook Rotworm Stew with me?", npc, creature)
@@ -539,8 +539,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.HotCuisineQuest.CurrentDish, 13)
 			npcHandler:setTopic(playerId, 29)
 		end
-	--elseif MsgContains(message, "sweet mangonaise elixir") then
-	--	if npcHandler:getTopic(playerId) == 30 or player:getStorageValue(Storage.HotCuisineQuest.QuestStart) == 2 then
+		--elseif MsgContains(message, "sweet mangonaise elixir") then
+		--	if npcHandler:getTopic(playerId) == 30 or player:getStorageValue(Storage.HotCuisineQuest.QuestStart) == 2 then
 		--	npcHandler:say("Did you gather all necessary ingredients to mix Sweet Mangonaise Elixir with me?", npc, creature)
 		--	player:setStorageValue(Storage.HotCuisineQuest.CurrentDish, 14)
 		--	npcHandler:setTopic(playerId, 31)

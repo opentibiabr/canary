@@ -60,7 +60,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, 'key') then
 		if player:getStorageValue(Storage.ThievesGuild.Mission06) == 1
-		and player:getSex() == PLAYERSEX_FEMALE then
+				and player:getSex() == PLAYERSEX_FEMALE then
 			local headItem = player:getSlotItem(CONST_SLOT_HEAD)
 			if headItem and headItem.itemid == 3576 and player:getStorageValue(Storage.Postman.Rank) == 5 then
 				player:addItem(7934, 1)

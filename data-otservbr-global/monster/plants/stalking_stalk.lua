@@ -71,28 +71,28 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Sizzzle...", yell = false},
+	{ text = "Sizzzle...", yell = false },
 }
 
 monster.loot = {
-	{name = "Stalking Seeds", chance = 21520},
-	{name = "Crystal Coin", chance = 16570, minCount = 1, maxCount = 3},
-	{name = "Small Diamond", chance = 7140, minCount = 1, maxCount = 3},
-	{name = "Green Crystal Fragment", chance = 5030},
-	{name = "Dragon Necklace", chance = 4540},
-	{name = "Opal", chance = 3960, minCount = 1, maxCount = 2},
-	{name = "Magma Coat", chance = 2160},
-	{name = "Bow", chance = 2000},
-	{name = "Green Gem", chance = 1780},
-	{name = "Warrior's Axe", chance = 1700},
-	{name = "Muck Rod", chance = 1310},
+	{ name = "Stalking Seeds", chance = 21520 },
+	{ name = "Crystal Coin", chance = 16570, minCount = 1, maxCount = 3 },
+	{ name = "Small Diamond", chance = 7140, minCount = 1, maxCount = 3 },
+	{ name = "Green Crystal Fragment", chance = 5030 },
+	{ name = "Dragon Necklace", chance = 4540 },
+	{ name = "Opal", chance = 3960, minCount = 1, maxCount = 2 },
+	{ name = "Magma Coat", chance = 2160 },
+	{ name = "Bow", chance = 2000 },
+	{ name = "Green Gem", chance = 1780 },
+	{ name = "Warrior's Axe", chance = 1700 },
+	{ name = "Muck Rod", chance = 1310 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 300, maxDamage = -400, effect = CONST_ME_CARNIPHILA},
-	{name ="combat", interval = 2500, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 1012, maxDamage = -1049, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_HITBYFIRE, target = true},
-	{name ="combat", interval = 1900, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 1020, maxDamage = -1090, range = 5, radius = 4,  shootEffect = CONST_ANI_FIRE, effect = CONST_ME_PLANTATTACK, target = true},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -800, length = 7, spread = 0, effect = CONST_ME_PINK_ENERGY_SPARK, target = false},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 300, maxDamage = -400, effect = CONST_ME_CARNIPHILA },
+	{ name = "combat", interval = 2500, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 1012, maxDamage = -1049, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_HITBYFIRE, target = true },
+	{ name = "combat", interval = 1900, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 1020, maxDamage = -1090, range = 5, radius = 4, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_PLANTATTACK, target = true },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -800, length = 7, spread = 0, effect = CONST_ME_PINK_ENERGY_SPARK, target = false },
 }
 
 monster.defenses = {
@@ -101,23 +101,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -25},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 25},
-	{type = COMBAT_FIREDAMAGE, percent = 25},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -10},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -25 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 25 },
+	{ type = COMBAT_FIREDAMAGE, percent = 25 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

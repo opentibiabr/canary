@@ -49,7 +49,7 @@ local function doChangeAzerus()
 end
 
 local function summonMonster(name, position)
-Game.createMonster(name, position, false, true)
+	Game.createMonster(name, position, false, true)
 	--Game.createMonster(name, position)
 	position:sendMagicEffect(CONST_ME_TELEPORT)
 end

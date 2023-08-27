@@ -3,41 +3,41 @@ local rewards = {
 		storage = Storage.BigfootBurden.Warzone1Reward,
 		bossName = 'Deathstrike',
 		items = {
-			{rand = true, itemId = {16102, 16233, 16234, 16235}},
-			{itemId = 16108, count = 750},
-			{itemId = 16102},
-			{itemId = 3043, count = 3},
-			{itemId = 16121, count = 7},
-			{itemId = 16129, count = 2}
+			{ rand = true, itemId = { 16102, 16233, 16234, 16235 } },
+			{ itemId = 16108, count = 750 },
+			{ itemId = 16102 },
+			{ itemId = 3043, count = 3 },
+			{ itemId = 16121, count = 7 },
+			{ itemId = 16129, count = 2 }
 		},
-		achievement = {'Final Strike', 'Death on Strike'}
+		achievement = { 'Final Strike', 'Death on Strike' }
 	},
 	[3149] = {
 		storage = Storage.BigfootBurden.Warzone2Reward,
 		bossName = 'Gnomevil',
 		items = {
-			{rand = true, itemId = {16237, 16238, 16239}},
-			{itemId = 16113, count = 750},
-			{itemId = 16102},
-			{itemId = 3043, count = 4},
-			{itemId = 16119, count = 10},
-			{itemId = 16129, count = 2}
+			{ rand = true, itemId = { 16237, 16238, 16239 } },
+			{ itemId = 16113, count = 750 },
+			{ itemId = 16102 },
+			{ itemId = 3043, count = 4 },
+			{ itemId = 16119, count = 10 },
+			{ itemId = 16129, count = 2 }
 		},
 		miniatureHouse = true,
-		achievement = {'Gnomebane\'s Bane', 'Fall of the Fallen'}
+		achievement = { 'Gnomebane\'s Bane', 'Fall of the Fallen' }
 	},
 	[3150] = {
 		storage = Storage.BigfootBurden.Warzone3Reward,
 		bossName = 'Abyssador',
 		items = {
-			{rand = true, itemId = {16229, 16230, 16231}},
-			{itemId = 16114},
-			{itemId = 16102},
-			{itemId = 3043, count = 5},
-			{itemId = 16120, count = 12},
-			{itemId = 16129, count = 2}
+			{ rand = true, itemId = { 16229, 16230, 16231 } },
+			{ itemId = 16114 },
+			{ itemId = 16102 },
+			{ itemId = 3043, count = 5 },
+			{ itemId = 16120, count = 12 },
+			{ itemId = 16129, count = 2 }
 		},
-		achievement = {'Death from Below', 'Diplomatic Immunity'}
+		achievement = { 'Death from Below', 'Diplomatic Immunity' }
 	}
 }
 
@@ -93,5 +93,5 @@ function bigfootRewards.onUse(player, item, fromPosition, target, toPosition, is
 	return true
 end
 
-bigfootRewards:uid(3147,3148,3149,3150)
+bigfootRewards:uid(3147, 3148, 3149, 3150)
 bigfootRewards:register()

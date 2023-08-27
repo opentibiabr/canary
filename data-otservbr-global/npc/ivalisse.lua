@@ -51,14 +51,14 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Don't forget npcHandler = npcHandler in the parameters. It is required for all StdModule functions!
-keywordHandler:addKeyword({'silus'}, StdModule.say, {npcHandler = npcHandler, text = "My {father}, can you tell me if he's alright?"})
-keywordHandler:addKeyword({'thais'}, StdModule.say, {npcHandler = npcHandler, text = "Alright then, you are very welcome to explore the temple!"})
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = "My name is Ivalisse."})
-keywordHandler:addKeyword({'time'}, StdModule.say, {npcHandler = npcHandler, text = "There is always time to make a change."})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "Besides my various {duties} in the temple, I also take care of visitors. Well, I would but right now I can't get my mind of how my {father}'s doing. I am sorry."})
-keywordHandler:addKeyword({'duties'}, StdModule.say, {npcHandler = npcHandler, text = " I help linking the portals of this temple to other ancient sites of the {Astral Shapers}."})
-keywordHandler:addKeyword({'duties'}, StdModule.say, {npcHandler = npcHandler, text = " I help linking the portals of this temple to other ancient sites of the {Astral Shapers}."})
-keywordHandler:addKeyword({'mission'}, StdModule.say, {npcHandler = npcHandler, text = "Besides my various {duties} in the temple, I also take care of visitors. Well, I would but right now I can't get my mind of how my {father}'s doing. I am sorry."})
+keywordHandler:addKeyword({ 'silus' }, StdModule.say, { npcHandler = npcHandler, text = "My {father}, can you tell me if he's alright?" })
+keywordHandler:addKeyword({ 'thais' }, StdModule.say, { npcHandler = npcHandler, text = "Alright then, you are very welcome to explore the temple!" })
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = "My name is Ivalisse." })
+keywordHandler:addKeyword({ 'time' }, StdModule.say, { npcHandler = npcHandler, text = "There is always time to make a change." })
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "Besides my various {duties} in the temple, I also take care of visitors. Well, I would but right now I can't get my mind of how my {father}'s doing. I am sorry." })
+keywordHandler:addKeyword({ 'duties' }, StdModule.say, { npcHandler = npcHandler, text = " I help linking the portals of this temple to other ancient sites of the {Astral Shapers}." })
+keywordHandler:addKeyword({ 'duties' }, StdModule.say, { npcHandler = npcHandler, text = " I help linking the portals of this temple to other ancient sites of the {Astral Shapers}." })
+keywordHandler:addKeyword({ 'mission' }, StdModule.say, { npcHandler = npcHandler, text = "Besides my various {duties} in the temple, I also take care of visitors. Well, I would but right now I can't get my mind of how my {father}'s doing. I am sorry." })
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)

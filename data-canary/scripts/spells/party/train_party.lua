@@ -25,7 +25,7 @@ function spell.onCastSpell(creature, var)
 	end
 
 	local membersList = party:getMembers()
-	membersList[#membersList + 1] = party:getLeader()
+	membersList[#membersList+1] = party:getLeader()
 	if membersList == nil or type(membersList) ~= 'table' or #membersList <= 1 then
 		creature:sendCancelMessage("No party members in range.")
 		position:sendMagicEffect(CONST_ME_POFF)
@@ -35,7 +35,7 @@ function spell.onCastSpell(creature, var)
 	local affectedList = {}
 	for _, targetPlayer in ipairs(membersList) do
 		if targetPlayer:getPosition():getDistance(position) <= 36 then
-			affectedList[#affectedList + 1] = targetPlayer
+			affectedList[#affectedList+1] = targetPlayer
 		end
 	end
 

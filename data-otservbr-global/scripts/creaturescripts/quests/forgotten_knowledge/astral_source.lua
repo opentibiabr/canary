@@ -18,7 +18,7 @@ function astralSource.onThink(creature)
 				difference = glyph:getHealth() - health
 				local pos = spec:getPosition()
 				spec:teleportTo(Position(31989, 32823, 15))
-				glyph:addHealth( - difference)
+				glyph:addHealth(-difference)
 				glyph:teleportTo(pos)
 				glyph:say('Without the power of the source the Glyph loses its protection!', TALKTYPE_MONSTER_SAY)
 			end
@@ -27,4 +27,5 @@ function astralSource.onThink(creature)
 		creature:addHealth(10000, false)
 	end
 end
+
 astralSource:register()

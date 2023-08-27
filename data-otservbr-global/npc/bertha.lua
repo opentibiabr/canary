@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Hey there, need some general goods or paperware?'}
+	{ text = 'Hey there, need some general goods or paperware?' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -83,7 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'equipment'}, StdModule.say, {npcHandler = npcHandler, text = "I sell equipment for your adventure! Just ask me for a {trade} to see my wares."})
+keywordHandler:addKeyword({ 'equipment' }, StdModule.say, { npcHandler = npcHandler, text = "I sell equipment for your adventure! Just ask me for a {trade} to see my wares." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Oh, please come in, |PLAYERNAME|. What can I do for you? If you need adventure equipment, ask me for a {trade}.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye, |PLAYERNAME|.")

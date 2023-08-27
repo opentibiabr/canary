@@ -1,7 +1,7 @@
 local function cleanMMap(frompos, topos)
-	for _x= frompos.x, topos.x, 1 do
-		for _y= frompos.y, topos.y, 1 do
-			for _z= frompos.z, topos.z, 1 do
+	for _x = frompos.x, topos.x, 1 do
+		for _y = frompos.y, topos.y, 1 do
+			for _z = frompos.z, topos.z, 1 do
 				local newpos = Position(_x, _y, _z)
 				local tile = Tile(newpos)
 				if tile and tile:getItemCount() > 0 then
@@ -25,15 +25,15 @@ local function changeMap(mapName)
 		return true
 	end
 	local frompos = Position(32523, 32323, 10)
-	local topos = Position( 32573, 32477, 10)
+	local topos = Position(32573, 32477, 10)
 	cleanMMap(frompos, topos)
 	cleanMMap(Position(32512, 32364, 10), Position(32526, 32474, 10))
 	if mapName:lower() == "illusion" then
 		Game.setStorageValue("cultsMisguidedMap", "illusion")
-		Game.loadMap(DATA_DIRECTORY.. '/world/quest/cults_of_tibia/misguided/illusion.otbm')
+		Game.loadMap(DATA_DIRECTORY .. '/world/quest/cults_of_tibia/misguided/illusion.otbm')
 	else
 		Game.setStorageValue("cultsMisguidedMap", "reality")
-		Game.loadMap(DATA_DIRECTORY.. '/world/quest/cults_of_tibia/misguided/reality.otbm')
+		Game.loadMap(DATA_DIRECTORY .. '/world/quest/cults_of_tibia/misguided/reality.otbm')
 		addEvent(changeMap, 15000, "illusion")
 	end
 end

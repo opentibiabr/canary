@@ -14,7 +14,7 @@ function arenaEnter.onStepIn(creature, item, position, fromPosition)
 	end
 
 	local arenaId = player:getStorageValue(Storage.SvargrondArena.Arena)
-	if not(PITS[pitId] and ARENA[arenaId]) then
+	if not (PITS[pitId] and ARENA[arenaId]) then
 		player:teleportTo(fromPosition, true)
 		return true
 	end
@@ -23,7 +23,7 @@ function arenaEnter.onStepIn(creature, item, position, fromPosition)
 	if occupant then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, occupant:getName() ..
 			" is currently in the next arena pit. Please wait until " .. (occupant:getSex() == PLAYERSEX_FEMALE
-			and "s" or "") .. "he is done fighting.")
+				and "s" or "") .. "he is done fighting.")
 		player:teleportTo(fromPosition, true)
 		return true
 	end

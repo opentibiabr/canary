@@ -1,4 +1,4 @@
-local stairPosition = {x = 32225, y = 32282, z = 9}
+local stairPosition = { x = 32225, y = 32282, z = 9 }
 
 local stair = MoveEvent()
 stair:type("stepin")

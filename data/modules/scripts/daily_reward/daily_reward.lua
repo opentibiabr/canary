@@ -27,12 +27,14 @@ local ClientPackets = {
 Please do not edit any of the next constants:
 	]]
 
---[[ Overall ]]--
+--[[ Overall ]]
+--
 local DAILY_REWARD_COUNT = 7
 local REWARD_FROM_SHRINE = 0
 local REWARD_FROM_PANEL = 1
 
---[[ Bonuses ]] --
+--[[ Bonuses ]]
+--
 local DAILY_REWARD_NONE = 1
 local DAILY_REWARD_HP_REGENERATION = 2
 local DAILY_REWARD_MP_REGENERATION = 3
@@ -41,7 +43,8 @@ local DAILY_REWARD_DOUBLE_HP_REGENERATION = 5
 local DAILY_REWARD_DOUBLE_MP_REGENERATION = 6
 local DAILY_REWARD_SOUL_REGENERATION = 7
 
---[[ Reward Types ]] --
+--[[ Reward Types ]]
+--
 
 -- Server Types
 local DAILY_REWARD_TYPE_ITEM = 1
@@ -57,16 +60,17 @@ local DAILY_REWARD_SYSTEM_TYPE_OTHER = 1
 local DAILY_REWARD_SYSTEM_TYPE_PREY_REROLL = 2
 local DAILY_REWARD_SYSTEM_TYPE_XP_BOOST = 3
 
---[[ Account Status ]] --
+--[[ Account Status ]]
+--
 local DAILY_REWARD_STATUS_FREE = 0
 local DAILY_REWARD_STATUS_PREMIUM = 1
 
 local DailyRewardItems = {
-	[0] = {266, 268}, -- God/no vocation character
-	[VOCATION.BASE_ID.PALADIN] = {266, 236, 268, 237, 7642, 23374, 3203, 3161, 3178, 3153, 3197, 3149, 3164, 3200, 3192, 3188, 3190, 3189, 3191, 3158, 3152, 3180, 3173, 3176, 3195, 3175, 3155, 3202},
-	[VOCATION.BASE_ID.DRUID] = {266, 268, 237, 238, 23373, 3203, 3161, 3178, 3153, 3197, 3149, 3164, 3200, 3192, 3188, 3190, 3189, 3156, 3191, 3158, 3152, 3180, 3173, 3176, 3195, 3175, 3155, 3202},
-	[VOCATION.BASE_ID.SORCERER] = {266, 268, 237, 238, 23373, 3203, 3161, 3178, 3153, 3197, 3149, 3164, 3200, 3192, 3188, 3190, 3189, 3191, 3158, 3152, 3180, 3173, 3176, 3195, 3175, 3155, 3202},
-	[VOCATION.BASE_ID.KNIGHT] = {266, 236, 239, 7643, 23375, 268, 3203, 3161, 3178, 3153, 3197, 3149, 3164, 3200, 3192, 3188, 3190, 3189, 3191, 3158, 3152, 3180, 3173, 3176, 3195, 3175, 3155, 3202},
+	[0] = { 266, 268 }, -- God/no vocation character
+	[VOCATION.BASE_ID.PALADIN] = { 266, 236, 268, 237, 7642, 23374, 3203, 3161, 3178, 3153, 3197, 3149, 3164, 3200, 3192, 3188, 3190, 3189, 3191, 3158, 3152, 3180, 3173, 3176, 3195, 3175, 3155, 3202 },
+	[VOCATION.BASE_ID.DRUID] = { 266, 268, 237, 238, 23373, 3203, 3161, 3178, 3153, 3197, 3149, 3164, 3200, 3192, 3188, 3190, 3189, 3156, 3191, 3158, 3152, 3180, 3173, 3176, 3195, 3175, 3155, 3202 },
+	[VOCATION.BASE_ID.SORCERER] = { 266, 268, 237, 238, 23373, 3203, 3161, 3178, 3153, 3197, 3149, 3164, 3200, 3192, 3188, 3190, 3189, 3191, 3158, 3152, 3180, 3173, 3176, 3195, 3175, 3155, 3202 },
+	[VOCATION.BASE_ID.KNIGHT] = { 266, 236, 239, 7643, 23375, 268, 3203, 3161, 3178, 3153, 3197, 3149, 3164, 3200, 3192, 3188, 3190, 3189, 3191, 3158, 3152, 3180, 3173, 3176, 3195, 3175, 3155, 3202 },
 }
 
 DailyReward = {
@@ -90,13 +94,13 @@ DailyReward = {
 
 	strikeBonuses = {
 		-- day
-		[1] = {text = "No bonus for first day"},
-		[2] = {text = "Allow Hit Point Regeneration"},
-		[3] = {text = "Allow Mana Regeneration"},
-		[4] = {text = "Stamina Regeneration"},
-		[5] = {text = "Double Hit Point Regeneration"},
-		[6] = {text = "Double Mana Regeneration"},
-		[7] = {text = "Soul Points Regeneration"}
+		[1] = { text = "No bonus for first day" },
+		[2] = { text = "Allow Hit Point Regeneration" },
+		[3] = { text = "Allow Mana Regeneration" },
+		[4] = { text = "Stamina Regeneration" },
+		[5] = { text = "Double Hit Point Regeneration" },
+		[6] = { text = "Double Mana Regeneration" },
+		[7] = { text = "Soul Points Regeneration" }
 	},
 
 	rewards = {
@@ -134,7 +138,7 @@ DailyReward = {
 		[6] = {
 			type = DAILY_REWARD_TYPE_ITEM,
 			systemType = DAILY_REWARD_SYSTEM_TYPE_ONE,
-			items = {28540, 28541, 28542, 28543, 28544, 28545},
+			items = { 28540, 28541, 28542, 28543, 28544, 28545 },
 			freeAccount = 1,
 			premiumAccount = 2,
 			itemCharges = 50
@@ -305,7 +309,7 @@ DailyReward.init = function(playerId)
 	if player:getNextRewardTime() < GetDailyRewardLastServerSave() then
 		if player:getStorageValue(DailyReward.storages.notifyReset) ~= GetDailyRewardLastServerSave() then
 			player:setStorageValue(DailyReward.storages.notifyReset, GetDailyRewardLastServerSave())
-			timeMath = math.ceil(timeMath/(DailyReward.serverTimeThreshold))
+			timeMath = math.ceil(timeMath / (DailyReward.serverTimeThreshold))
 			if player:getJokerTokens() >= timeMath then
 				player:setJokerTokens(player:getJokerTokens() - timeMath)
 				player:sendTextMessage(MESSAGE_LOGIN, "You lost " .. timeMath .. " joker tokens to prevent loosing your streak.")
@@ -348,7 +352,7 @@ function Player.sendOpenRewardWall(self, shrine)
 	local msg = NetworkMessage()
 	msg:addByte(ServerPackets.OpenRewardWall) -- initial packet
 	msg:addByte(shrine) -- isPlayer taking bonus from reward shrine (1) - taking it from a instant bonus reward (0)
-	if DailyReward.testMode or not(DailyReward.isRewardTaken(self:getId())) then
+	if DailyReward.testMode or not (DailyReward.isRewardTaken(self:getId())) then
 		msg:addU32(0)
 	else
 		msg:addU32(GetDailyRewardLastServerSave() + DailyReward.serverTimeThreshold)
@@ -418,7 +422,6 @@ function Player.selectDailyReward(self, msg)
 
 	-- Items as reward
 	if dailyTable.type == DAILY_REWARD_TYPE_ITEM then
-
 		local items = {}
 		local possibleItems = DailyRewardItems[self:getVocation():getBaseId()];
 		if dailyTable.items then
@@ -435,7 +438,7 @@ function Player.selectDailyReward(self, msg)
 			orderedCounter = orderedCounter + count;
 			for index, val in ipairs(possibleItems) do
 				if val == itemId then
-					items[i] = {itemId = itemId, count = count}
+					items[i] = { itemId = itemId, count = count }
 					totalCounter = totalCounter + count;
 					break;
 				end
@@ -482,26 +485,24 @@ function Player.selectDailyReward(self, msg)
 
 		dailyRewardMessage = "Picked items: " .. description
 
-	-- elseif dailyTable.type == DAILY_REWARD_TYPE_STORAGE then
+		-- elseif dailyTable.type == DAILY_REWARD_TYPE_STORAGE then
 		-- local description = ""
 		-- for i = 1, #reward.things do
-			-- for j = 1, #reward.things[i].storages do
-				-- self:setStorageValue(reward.things[i].storages[j].storageId, reward.things[i].storages[j].value)
-			-- end
-			-- if i ~= #reward.things then
-				-- description = description .. reward.things[i].name .. ", "
-			-- else
-				-- description = description .. reward.things[i].name .. "."
-			-- end
+		-- for j = 1, #reward.things[i].storages do
+		-- self:setStorageValue(reward.things[i].storages[j].storageId, reward.things[i].storages[j].value)
+		-- end
+		-- if i ~= #reward.things then
+		-- description = description .. reward.things[i].name .. ", "
+		-- else
+		-- description = description .. reward.things[i].name .. "."
+		-- end
 		-- end
 		-- dailyRewardMessage = "Picked reward: " .. description)
-	-- end
-
+		-- end
 	elseif dailyTable.type == DAILY_REWARD_TYPE_XP_BOOST then
 		self:setExpBoostStamina(self:getExpBoostStamina() + (rewardCount * 60))
 		self:setStoreXpBoost(50)
 		dailyRewardMessage = "Picked reward: XP Bonus for " .. rewardCount .. " minutes."
-
 	elseif dailyTable.type == DAILY_REWARD_TYPE_PREY_REROLL then
 		self:addPreyCards(rewardCount)
 		dailyRewardMessage = "Picked reward: " .. rewardCount .. "x Prey bonus reroll(s)."
@@ -595,10 +596,10 @@ function Player.readDailyReward(self, msg, currentDay, state)
 		if type == DAILY_REWARD_TYPE_STORAGE then
 			-- msg:addByte(#rewards.things)
 			-- for i = 1, #rewards.things do
-				-- msg:addByte(DAILY_REWARD_SYSTEM_TYPE_OTHER) -- type
-				-- msg:addU16(rewards.things[i].id * 100)
-				-- msg:addString(rewards.things[i].name)
-				-- msg:addByte(rewards.things[i].quantity)
+			-- msg:addByte(DAILY_REWARD_SYSTEM_TYPE_OTHER) -- type
+			-- msg:addU16(rewards.things[i].id * 100)
+			-- msg:addString(rewards.things[i].name)
+			-- msg:addByte(rewards.things[i].quantity)
 			-- end
 		elseif type == DAILY_REWARD_TYPE_PREY_REROLL then
 			msg:addByte(DAILY_REWARD_SYSTEM_SKIP)

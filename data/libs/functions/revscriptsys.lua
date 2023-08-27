@@ -1,6 +1,6 @@
 -- Create functions revscriptsys
 function createFunctions(class)
-	local exclude = {[2] = {"is"}, [3] = {"get", "set", "add", "can"}, [4] = {"need"}}
+	local exclude = { [2] = { "is" }, [3] = { "get", "set", "add", "can" }, [4] = { "need" } }
 	local temp = {}
 	for name, func in pairs(class) do
 		local add = true
@@ -16,7 +16,7 @@ function createFunctions(class)
 			local get = "get" .. str
 			local set = "set" .. str
 			if not (rawget(class, get) and rawget(class, set)) then
-				table.insert(temp, {set, setFunc, get, getFunc})
+				table.insert(temp, { set, setFunc, get, getFunc })
 			end
 		end
 	end

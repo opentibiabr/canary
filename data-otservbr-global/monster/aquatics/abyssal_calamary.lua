@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Seacrest Grounds."
-	}
+}
 
 monster.health = 300
 monster.maxHealth = 300
@@ -73,17 +73,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3581, chance = 9680}, -- shrimp
-	{id = 3578, chance = 10770}, -- fish
-	{name = "black pearl", chance = 1500, maxCount = 1},
-	{name = "white pearl", chance = 830, maxCount = 1},
-	{name = "small sapphire", chance = 250, maxCount = 3},
-	{name = "small ruby", chance = 500, maxCount = 3},
-	{name = "small amethyst", chance = 750, maxCount = 3}
+	{ id = 3581, chance = 9680 }, -- shrimp
+	{ id = 3578, chance = 10770 }, -- fish
+	{ name = "black pearl", chance = 1500, maxCount = 1 },
+	{ name = "white pearl", chance = 830, maxCount = 1 },
+	{ name = "small sapphire", chance = 250, maxCount = 3 },
+	{ name = "small ruby", chance = 500, maxCount = 3 },
+	{ name = "small amethyst", chance = 750, maxCount = 3 }
 }
 
 monster.attacks = {
-	{name ="drunk", interval = 2000, chance = 10, range = 2, target = false, duration = 5000}
+	{ name = "drunk", interval = 2000, chance = 10, range = 2, target = false, duration = 5000 }
 }
 
 monster.defenses = {
@@ -92,23 +92,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -5},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -5 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

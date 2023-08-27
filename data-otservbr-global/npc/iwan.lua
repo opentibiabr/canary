@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Gems of all kinds! Precious jewellery!'}
+	{ text = 'Gems of all kinds! Precious jewellery!' }
 }
 
 local keywordHandler = KeywordHandler:new()

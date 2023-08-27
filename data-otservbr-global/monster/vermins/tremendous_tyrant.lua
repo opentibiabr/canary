@@ -73,37 +73,37 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "naps naps naps!", yell = false}
+	{ text = "naps naps naps!", yell = false }
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 70000, maxCount = 24},
-	{name = "gold ingot", chance = 11820, maxCount = 2},
-	{id = 3039, chance = 14550, maxCount = 1}, -- red gem
-	{name = "violet crystal shard", chance = 6360, maxCount = 3},
-	{name = "green crystal shard", chance = 5450},
-	{name = "blue crystal shard", chance = 5450},
-	{name = "tremendous tyrant shell", chance = 4550},
-	{name = "yellow gem", chance = 9090, maxCount = 1},
-	{name = "spellbook of warding", chance = 8180},
-	{name = "wand of starstorm", chance = 910},
-	{name = "ice rapier", chance = 1820},
-	{name = "hailstorm rod", chance = 2730},
-	{name = "knight axe", chance = 4550},
-	{name = "dragonbone staff", chance = 3640},
-	{name = "tremendous tyrant head", chance = 8180},
-	{name = "wand of cosmic energy", chance = 2730},
-	{name = "warrior's shield", chance = 1820},
-	{name = "elven amulet", chance = 2730},
-	{name = "focus cape", chance = 1820},
-	{name = "glacier robe", chance = 4555}
+	{ name = "platinum coin", chance = 70000, maxCount = 24 },
+	{ name = "gold ingot", chance = 11820, maxCount = 2 },
+	{ id = 3039, chance = 14550, maxCount = 1 }, -- red gem
+	{ name = "violet crystal shard", chance = 6360, maxCount = 3 },
+	{ name = "green crystal shard", chance = 5450 },
+	{ name = "blue crystal shard", chance = 5450 },
+	{ name = "tremendous tyrant shell", chance = 4550 },
+	{ name = "yellow gem", chance = 9090, maxCount = 1 },
+	{ name = "spellbook of warding", chance = 8180 },
+	{ name = "wand of starstorm", chance = 910 },
+	{ name = "ice rapier", chance = 1820 },
+	{ name = "hailstorm rod", chance = 2730 },
+	{ name = "knight axe", chance = 4550 },
+	{ name = "dragonbone staff", chance = 3640 },
+	{ name = "tremendous tyrant head", chance = 8180 },
+	{ name = "wand of cosmic energy", chance = 2730 },
+	{ name = "warrior's shield", chance = 1820 },
+	{ name = "elven amulet", chance = 2730 },
+	{ name = "focus cape", chance = 1820 },
+	{ name = "glacier robe", chance = 4555 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400},
-	{name ="combat", interval = 2000, chance = 40, type = COMBAT_ICEDAMAGE, minDamage = -600, maxDamage = -650, length = 5, spread = 0, effect = CONST_ME_ICEATTACK, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -600, maxDamage = -700, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEAREA, target = false}, -- avalanche
-	{name ="combat", interval = 2000, chance = 30, type = COMBAT_HOLYDAMAGE, minDamage = -750, maxDamage = -950, range = 5, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYAREA, target = true},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },
+	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_ICEDAMAGE, minDamage = -600, maxDamage = -650, length = 5, spread = 0, effect = CONST_ME_ICEATTACK, target = false },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ICEDAMAGE, minDamage = -600, maxDamage = -700, radius = 4, shootEffect = CONST_ANI_ICE, effect = CONST_ME_ICEAREA, target = false }, -- avalanche
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HOLYDAMAGE, minDamage = -750, maxDamage = -950, range = 5, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_HOLYAREA, target = true },
 }
 
 monster.defenses = {
@@ -112,23 +112,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 20},
-	{type = COMBAT_EARTHDAMAGE, percent = -20},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 100},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 15},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 20 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -20 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 100 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 15 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

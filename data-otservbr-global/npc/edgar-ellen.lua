@@ -75,11 +75,11 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({'tibia'}, StdModule.say, {npcHandler = npcHandler, text = "Our world, our home, our very own plane of existence. We have to protect it, mind you. Underneath all the battles, challenges and monsters there still resides a majestic, yet vulnerable being. A mother to us all."})
-keywordHandler:addKeyword({'king'}, StdModule.say, {npcHandler = npcHandler, text = "A king and a beggar know more than a king alone... ahem, except for King Tibianus. He most certainly would. All hail King Tibianus etc. etc."})
-keywordHandler:addKeyword({'mission'}, StdModule.say, {npcHandler = npcHandler, text = "So, you're on a mission. Aren't we all? A quest to savour the important moments, the valuable memories? To fight for love and happiness, heroically and against all odds? Yes, we are indeed."})
-keywordHandler:addKeyword({'quest'}, StdModule.say, {npcHandler = npcHandler, text = "So, you're on a mission. Aren't we all? A quest to savour the important moments, the valuable memories? To fight for love and happiness, heroically and against all odds? Yes, we are indeed."})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "Rather a calling. The weight of words is something not easily lifted by some, yet it can be a mighty weapon to others. ..."}) -- Need to add the rest in a second delayed message --It is my duty to see to it that the words of mighty poets all over Tibia are spread and carried with the heart and prowess they deserve.
+keywordHandler:addKeyword({ 'tibia' }, StdModule.say, { npcHandler = npcHandler, text = "Our world, our home, our very own plane of existence. We have to protect it, mind you. Underneath all the battles, challenges and monsters there still resides a majestic, yet vulnerable being. A mother to us all." })
+keywordHandler:addKeyword({ 'king' }, StdModule.say, { npcHandler = npcHandler, text = "A king and a beggar know more than a king alone... ahem, except for King Tibianus. He most certainly would. All hail King Tibianus etc. etc." })
+keywordHandler:addKeyword({ 'mission' }, StdModule.say, { npcHandler = npcHandler, text = "So, you're on a mission. Aren't we all? A quest to savour the important moments, the valuable memories? To fight for love and happiness, heroically and against all odds? Yes, we are indeed." })
+keywordHandler:addKeyword({ 'quest' }, StdModule.say, { npcHandler = npcHandler, text = "So, you're on a mission. Aren't we all? A quest to savour the important moments, the valuable memories? To fight for love and happiness, heroically and against all odds? Yes, we are indeed." })
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "Rather a calling. The weight of words is something not easily lifted by some, yet it can be a mighty weapon to others. ..." }) -- Need to add the rest in a second delayed message --It is my duty to see to it that the words of mighty poets all over Tibia are spread and carried with the heart and prowess they deserve.
 
 npcHandler:setMessage(MESSAGE_GREET, "This world is nothing without poetry, don't you think? It gives us hope, it envokes love. It's inciting and invigorating all the same.")
 npcHandler:setMessage(MESSAGE_FAREWELL, " Goodbye and farewell, my friend.")

@@ -1,12 +1,12 @@
 local items = {
-	{itemid = 22731, count = 1},
-	{itemid = 22731, count = 1},
-	{itemid = 22731, count = 1},
-	{itemid = 22731, count = 1},
-	{itemid = 22737, count = 4},
-	{itemid = 22775, count = 1},
-	{itemid = 3043, count = 10},
-	{itemid = 22516, count = 5}
+	{ itemid = 22731, count = 1 },
+	{ itemid = 22731, count = 1 },
+	{ itemid = 22731, count = 1 },
+	{ itemid = 22731, count = 1 },
+	{ itemid = 22737, count = 4 },
+	{ itemid = 22775, count = 1 },
+	{ itemid = 3043, count = 10 },
+	{ itemid = 22516, count = 5 }
 }
 
 local ferumbrasAscendantReward = Action()

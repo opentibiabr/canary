@@ -1,6 +1,6 @@
 local config = {
 	[1] = {
-		teleportPosition = {x = 33886, y = 31477, z = 6},
+		teleportPosition = { x = 33886, y = 31477, z = 6 },
 		bossName = "Neferi The Spy",
 		requiredLevel = 250,
 		timeToFightAgain = 10, -- In hour
@@ -15,7 +15,7 @@ local config = {
 		storage = Storage.Kilmaresh.NeferiTheSpyTimer
 	},
 	[2] = {
-		teleportPosition = {x = 33883, y = 31467, z = 9},
+		teleportPosition = { x = 33883, y = 31467, z = 9 },
 		bossName = "Sister Hetai",
 		requiredLevel = 250,
 		timeToFightAgain = 10, -- In hour
@@ -30,7 +30,7 @@ local config = {
 		storage = Storage.Kilmaresh.SisterHetaiTimer
 	},
 	[3] = {
-		teleportPosition = {x = 33819, y = 31773, z = 10},
+		teleportPosition = { x = 33819, y = 31773, z = 10 },
 		bossName = "Amenef the Burning",
 		requiredLevel = 250,
 		timeToFightAgain = 10, -- In hour
@@ -45,17 +45,17 @@ local config = {
 		storage = Storage.Kilmaresh.AmenefTimer
 	},
 	[4] = {
-		teleportPosition = {x = 33871, y = 31546, z = 8},
+		teleportPosition = { x = 33871, y = 31546, z = 8 },
 		exitPosition = Position(33886, 31478, 6)
-		},
+	},
 	[5] = {
-		teleportPosition = {x = 33833, y = 31489, z = 9},
+		teleportPosition = { x = 33833, y = 31489, z = 9 },
 		exitPosition = Position(33883, 31468, 9)
-		},
+	},
 	[6] = {
-		teleportPosition = {x = 33849, y = 31781, z = 10},
+		teleportPosition = { x = 33849, y = 31781, z = 10 },
 		exitPosition = Position(33819, 31774, 10)
-		},
+	},
 }
 
 local teleportBoss = MoveEvent()
@@ -90,7 +90,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 			if creature:getStorageValue(value.storage) > os.time() then
 				creature:teleportTo(fromPosition, true)
 				creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. value.timeToFightAgain .. " hours to face ".. value.bossName .. " again!")
+				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. value.timeToFightAgain .. " hours to face " .. value.bossName .. " again!")
 				return true
 			end
 			spec:removeMonsters()

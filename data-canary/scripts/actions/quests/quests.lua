@@ -12,7 +12,7 @@ function quests.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 
 	local itemWeight = itemType:getWeight()
 	local playerCap = player:getFreeCapacity()
-	if table.contains({1990, 2400, 2431, 2494}, item.uid) then
+	if table.contains({ 1990, 2400, 2431, 2494 }, item.uid) then
 		if player:getStorageValue(Storage.Quest.ExampleQuest.Example) == -1 then
 			if playerCap >= itemWeight then
 				if item.uid == 1990 then

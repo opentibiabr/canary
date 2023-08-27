@@ -1,8 +1,8 @@
 local generator = {
-	[1] = {pos = Position(33708, 32042, 15)},
-	[2] = {pos = Position(33714, 32042, 15)},
-	[3] = {pos = Position(33708, 32051, 15)},
-	[4] = {pos = Position(33714, 32051, 15)}
+	[1] = { pos = Position(33708, 32042, 15) },
+	[2] = { pos = Position(33714, 32042, 15) },
+	[3] = { pos = Position(33708, 32051, 15) },
+	[4] = { pos = Position(33714, 32051, 15) }
 }
 local spell = Spell("instant")
 

@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Edron Troll-Goblin Peninsula, Ab'dendriel Shadow Caves, Thais South-East Troll Caves, \z
 		Dusalk's Troll Clan Cave, Island of Destiny in Paladin's guild."
-	}
+}
 
 monster.health = 75
 monster.maxHealth = 75
@@ -71,28 +71,28 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Meee maity!", yell = false},
-	{text = "Grrrr", yell = false},
-	{text = "Whaaaz up!?", yell = false},
-	{text = "Gruntz!", yell = false},
-	{text = "Groar", yell = false}
+	{ text = "Meee maity!", yell = false },
+	{ text = "Grrrr", yell = false },
+	{ text = "Whaaaz up!?", yell = false },
+	{ text = "Gruntz!", yell = false },
+	{ text = "Groar", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 64000, maxCount = 12},
-	{name = "silver amulet", chance = 230},
-	{name = "spear", chance = 25000},
-	{name = "studded club", chance = 5450},
-	{id = 3412, chance = 6000}, -- wooden shield
-	{name = "arrow", chance = 5450, maxCount = 5},
-	{name = "leather boots", chance = 9000},
-	{name = "meat", chance = 9650},
-	{name = "bunch of troll hair", chance = 3000},
-	{name = "trollroot", chance = 750}
+	{ name = "gold coin", chance = 64000, maxCount = 12 },
+	{ name = "silver amulet", chance = 230 },
+	{ name = "spear", chance = 25000 },
+	{ name = "studded club", chance = 5450 },
+	{ id = 3412, chance = 6000 }, -- wooden shield
+	{ name = "arrow", chance = 5450, maxCount = 5 },
+	{ name = "leather boots", chance = 9000 },
+	{ name = "meat", chance = 9650 },
+	{ name = "bunch of troll hair", chance = 3000 },
+	{ name = "trollroot", chance = 750 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 }
 }
 
 monster.defenses = {
@@ -101,23 +101,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 20},
-	{type = COMBAT_EARTHDAMAGE, percent = -10},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 10},
-	{type = COMBAT_DEATHDAMAGE , percent = -10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 20 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -10 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

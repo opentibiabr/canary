@@ -56,11 +56,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if(MsgContains(message, "mission")) then
-		if(player:getStorageValue(TheNewFrontier.Questline) == 16) then
+	if (MsgContains(message, "mission")) then
+		if (player:getStorageValue(TheNewFrontier.Questline) == 16) then
 			npcHandler:say("You come here to ask us to spare your people? This land has no tolerance for the weak, we have it neither. If you want us to consider you as useful for us, you'll have to prove it in a {test} of strength and courage. ", npc, creature)
 			npcHandler:setTopic(playerId, 1)
-		elseif(player:getStorageValue(TheNewFrontier.Questline) == 18) then
+		elseif (player:getStorageValue(TheNewFrontier.Questline) == 18) then
 			npcHandler:say({
 				"We have seen that you can fight and survive. Yet, it will also need cleverness and courage to survive in these lands. We might see later if you've got what it takes. ...",
 				"However, I stand to my word - our hordes will spare your insignificant piece of rock for now. Time will tell if you are worthy living next to us. ...",
@@ -81,8 +81,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			player:setStorageValue(AnUneasyAlliance.Questline, 1)
 			player:setStorageValue(AnUneasyAlliance.QuestDoor, 0)
-		elseif  player:getStorageValue(AnUneasyAlliance.Questline) == 1 and player:getStorageValue(AnUneasyAlliance.QuestDoor) == 1 then
-			npcHandler:say({"With the death of their leader, the rebels return to our camps one by one, deeply humiliated. It might be a wise decision to let a useful tool like you continue to exist."}, npc, creature)
+		elseif player:getStorageValue(AnUneasyAlliance.Questline) == 1 and player:getStorageValue(AnUneasyAlliance.QuestDoor) == 1 then
+			npcHandler:say({ "With the death of their leader, the rebels return to our camps one by one, deeply humiliated. It might be a wise decision to let a useful tool like you continue to exist." }, npc, creature)
 			player:setStorageValue(AnUneasyAlliance.Questline, 2)
 		elseif player:getStorageValue(AnUneasyAlliance.Questline) == 2 then
 			npcHandler:say({
@@ -101,8 +101,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(AnUneasyAlliance.Questline, 5)
 			player:addItem(10217)
 		end
-	elseif(MsgContains(message, "test")) then
-		if(npcHandler:getTopic(playerId) == 1) then
+	elseif (MsgContains(message, "test")) then
+		if (npcHandler:getTopic(playerId) == 1) then
 			npcHandler:say({
 				"First we will test your strength and endurance. You'll have to face one of the most experienced Mooh'Tah masters. As you don't stand a chance to beat such an opponent, your test will be simply to survive. ...",
 				"Face him in a battle and survive for two minutes. If you do, we will be willing to assume that your are prepared for the life in these lands. Enter the ring of battle, close to my quarter. Return to me after you have passed this test."

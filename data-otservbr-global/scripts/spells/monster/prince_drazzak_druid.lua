@@ -1,19 +1,19 @@
 local storage = 674531
 
 local area = {
-	{0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-	{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-	{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
-	{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-	{0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+	{ 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
+	{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
 }
 
 local createArea = createCombatArea(area)
@@ -23,9 +23,9 @@ combat:setArea(createArea)
 
 function onTargetTile(creature, pos)
 	local creatureTable = {}
-	local n, i = Tile({x=pos.x, y=pos.y, z=pos.z}).creatures, 1
+	local n, i = Tile({ x = pos.x, y = pos.y, z = pos.z }).creatures, 1
 	if n ~= 0 then
-		local v = getThingfromPos({x=pos.x, y=pos.y, z=pos.z, stackpos=i}).uid
+		local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 		while v ~= 0 do
 			if isCreature(v) == true then
 				table.insert(creatureTable, v)
@@ -34,7 +34,7 @@ function onTargetTile(creature, pos)
 				end
 			end
 			i = i + 1
-			v = getThingfromPos({x=pos.x, y=pos.y, z=pos.z, stackpos=i}).uid
+			v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 		end
 	end
 	if #creatureTable ~= nil and #creatureTable > 0 then
@@ -44,8 +44,8 @@ function onTargetTile(creature, pos)
 				local max = 8000
 				local player = Player(creatureTable[r])
 
-                if isPlayer(creatureTable[r]) == true
-                and table.contains({VOCATION.BASE_ID.DRUID}, player:getVocation():getBaseId()) then
+				if isPlayer(creatureTable[r]) == true
+						and table.contains({ VOCATION.BASE_ID.DRUID }, player:getVocation():getBaseId()) then
 					doTargetCombatHealth(creature, creatureTable[r], COMBAT_EARTHDAMAGE, -min, -max, CONST_ME_NONE)
 				elseif isMonster(creatureTable[r]) == true then
 					doTargetCombatHealth(creature, creatureTable[r], COMBAT_EARTHDAMAGE, -min, -max, CONST_ME_NONE)
@@ -72,7 +72,7 @@ local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
 	local value = Game.getStorageValue(storage)
-	if(os.time()-value >= 4) then
+	if (os.time() - value >= 4) then
 		creature:say("All DRUIDS must DIE!", TALKTYPE_ORANGE_1)
 		addEvent(delayedCastSpell, 4000, creature:getId(), var)
 		Game.setStorageValue(storage, os.time())

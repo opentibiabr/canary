@@ -1,6 +1,6 @@
 local config = {
-	[11589] = {itemId = 11550, storage = Storage.FathersBurden.Corpse.Scale, text = 'Glitterscale\'s scale.'},
-	[11590] = {itemId = 11548, storage = Storage.FathersBurden.Corpse.Sinew, text = 'Heoni\'s sinew'}
+	[11589] = { itemId = 11550, storage = Storage.FathersBurden.Corpse.Scale, text = 'Glitterscale\'s scale.' },
+	[11590] = { itemId = 11548, storage = Storage.FathersBurden.Corpse.Sinew, text = 'Heoni\'s sinew' }
 }
 
 local fatherCorpse = Action()
@@ -19,7 +19,6 @@ function fatherCorpse.onUse(player, item, fromPosition, target, toPosition, isHo
 	player:say('You acquired ' .. corpse.text, TALKTYPE_MONSTER_SAY)
 	return true
 end
-
 
 for itemId, itemInfo in pairs(config) do
 	fatherCorpse:id(itemId)

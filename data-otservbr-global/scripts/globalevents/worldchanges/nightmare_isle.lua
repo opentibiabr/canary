@@ -16,21 +16,22 @@ local config = {
 	}
 }
 
-local function Nightmarewebhook(message)	-- New local function that runs on delay to send webhook message.
-	Webhook.sendMessage("[Nightmare Isle] ", message, WEBHOOK_COLOR_ONLINE)	--Sends webhook message
+local function Nightmarewebhook(message) -- New local function that runs on delay to send webhook message.
+	Webhook.sendMessage("[Nightmare Isle] ", message, WEBHOOK_COLOR_ONLINE) --Sends webhook message
 end
 
 local NightmareIsle = GlobalEvent("NightmareIsle")
 function NightmareIsle.onStartup(interval)
 	local select = config[math.random(#config)]
-	Game.loadMap(DATA_DIRECTORY.. '/world/world_changes/nightmare_isle/' .. select.mapName .. '.otbm')
+	Game.loadMap(DATA_DIRECTORY .. '/world/world_changes/nightmare_isle/' .. select.mapName .. '.otbm')
 	logger.info("[WorldChanges] Nightmare Isle will be active {} today", select.displayName)
 	local message = string.format("Nightmare Isle will be active %s today",
-	select.displayName)	-- Declaring the message to send to webhook.
+		select.displayName) -- Declaring the message to send to webhook.
 	addEvent(Nightmarewebhook, 60000, message) -- Event with 1 minute delay to send webhook message after server starts.
 
 	setGlobalStorageValue(GlobalStorage.NightmareIsle, 1)
 
 	return true
 end
+
 NightmareIsle:register()

@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Barkless Cult Trial Zone (below Ab'Dendriel)."
-	}
+}
 
 monster.health = 2800
 monster.maxHealth = 2800
@@ -73,22 +73,22 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Prepare yourself!", yell = false},
-	{text = "You are not loved by this world!", yell = false},
-	{text = "Pain and suffering!", yell = false}
+	{ text = "Prepare yourself!", yell = false },
+	{ text = "You are not loved by this world!", yell = false },
+	{ text = "Pain and suffering!", yell = false }
 }
 
 monster.loot = {
-	{id = 3031, chance = 48000, maxCount = 199}, -- gold coin
-	{id = 25743, chance = 1540}, -- bed of nails
-	{id = 25742, chance = 4050}, -- fig leaf
-	{id = 25744, chance = 970} -- torn shirt
+	{ id = 3031, chance = 48000, maxCount = 199 }, -- gold coin
+	{ id = 25743, chance = 1540 }, -- bed of nails
+	{ id = 25742, chance = 4050 }, -- fig leaf
+	{ id = 25744, chance = 970 } -- torn shirt
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -150},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -250, maxDamage = -420, range = 7, radius = 4, shootEffect = CONST_ANI_SPEAR, effect = CONST_ME_GREEN_RINGS, target = true},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = 0, maxDamage = -150, radius = 6, effect = CONST_ME_GREEN_RINGS, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -150 },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -250, maxDamage = -420, range = 7, radius = 4, shootEffect = CONST_ANI_SPEAR, effect = CONST_ME_GREEN_RINGS, target = true },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = 0, maxDamage = -150, radius = 6, effect = CONST_ME_GREEN_RINGS, target = false }
 }
 
 monster.defenses = {
@@ -97,23 +97,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 17},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 15},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 15}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 17 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 15 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

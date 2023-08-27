@@ -63,17 +63,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3031, chance = 71770, maxCount = 17}, -- gold coin
-	{id = 3492, chance = 3010, maxCount = 3}, -- worm
-	{id = 3577, chance = 19940}, -- meat
-	{id = 9692, chance = 9990}, -- lump of dirt
-	{id = 3582, chance = 20130}, -- ham
-	{id = 3264, chance = 3110}, -- sword
-	{id = 3286, chance = 4540} -- mace
+	{ id = 3031, chance = 71770, maxCount = 17 }, -- gold coin
+	{ id = 3492, chance = 3010, maxCount = 3 }, -- worm
+	{ id = 3577, chance = 19940 }, -- meat
+	{ id = 9692, chance = 9990 }, -- lump of dirt
+	{ id = 3582, chance = 20130 }, -- ham
+	{ id = 3264, chance = 3110 }, -- sword
+	{ id = 3286, chance = 4540 } -- mace
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, skill = 30, attack = 20}
+	{ name = "melee", interval = 2000, chance = 100, skill = 30, attack = 20 }
 }
 
 monster.defenses = {
@@ -82,23 +82,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 100},
-	{type = COMBAT_ENERGYDAMAGE, percent = 100},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 100},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 100},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 100 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 100 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 100 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

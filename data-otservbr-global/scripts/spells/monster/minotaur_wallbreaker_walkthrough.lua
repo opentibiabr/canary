@@ -15,7 +15,7 @@ end
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-    local nextPosition = creature:getPosition()
+	local nextPosition = creature:getPosition()
 	local speed = creature:getSpeed()
 	local tile = Tile(nextPosition.x - 1, nextPosition.y, nextPosition.z)
 	local topCreature = tile:getTopCreature()
@@ -32,7 +32,7 @@ function spell.onCastSpell(creature, var)
 		else
 		end
 	end
-    return true
+	return true
 end
 
 spell:name("minotaur wallbreaker walkthrough")

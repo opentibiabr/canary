@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 2,
 	Locations = "Horestis Tomb (third floor and lower)."
-	}
+}
 
 monster.health = 550
 monster.maxHealth = 550
@@ -75,17 +75,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 89790, maxCount = 100},
-	{name = "gold coin", chance = 89790, maxCount = 19},
-	{name = "scarab coin", chance = 6710, maxCount = 4},
-	{name = "plate armor", chance = 5050},
-	{name = "spider fangs", chance = 25380},
-	{name = "gold ingot", chance = 60}
+	{ name = "gold coin", chance = 89790, maxCount = 100 },
+	{ name = "gold coin", chance = 89790, maxCount = 19 },
+	{ name = "scarab coin", chance = 6710, maxCount = 4 },
+	{ name = "plate armor", chance = 5050 },
+	{ name = "spider fangs", chance = 25380 },
+	{ name = "gold ingot", chance = 60 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -160, condition = {type = CONDITION_POISON, totalDamage = 80, interval = 4000}},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -50, maxDamage = -80, range = 7, shootEffect = CONST_ANI_POISON, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -160, condition = { type = CONDITION_POISON, totalDamage = 80, interval = 4000 } },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -50, maxDamage = -80, range = 7, shootEffect = CONST_ANI_POISON, target = false }
 }
 
 monster.defenses = {
@@ -94,23 +94,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = -5},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = -5 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

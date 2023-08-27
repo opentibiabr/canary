@@ -34,7 +34,7 @@ monster.speed = 160
 monster.manaCost = 0
 
 monster.faction = FACTION_ANUMA
-monster.enemyFactions = {FACTION_FAFNAR, FACTION_PLAYER}
+monster.enemyFactions = { FACTION_FAFNAR, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
@@ -76,24 +76,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 100000},
-	{name = "lamassu horn", chance = 13400, maxCount = 5},
-	{name = "red crystal fragment", chance = 10500},
-	{name = "terra amulet", chance = 10000},
-	{name = "lamassu hoof", chance = 7700},
-	{name = "violet crystal shard", chance = 6800},
-	{name = "blue crystal shard", chance = 6500},
-	{id= 3039, chance = 6200}, -- red gem
-	{name = "terra hood", chance = 5900},
-	{name = "sacred tree amulet", chance = 2300},
-	{name = "elven amulet", chance = 2000},
-	{name = "violet gem", chance = 1700}
+	{ name = "platinum coin", chance = 100000 },
+	{ name = "lamassu horn", chance = 13400, maxCount = 5 },
+	{ name = "red crystal fragment", chance = 10500 },
+	{ name = "terra amulet", chance = 10000 },
+	{ name = "lamassu hoof", chance = 7700 },
+	{ name = "violet crystal shard", chance = 6800 },
+	{ name = "blue crystal shard", chance = 6500 },
+	{ id = 3039, chance = 6200 }, -- red gem
+	{ name = "terra hood", chance = 5900 },
+	{ name = "sacred tree amulet", chance = 2300 },
+	{ name = "elven amulet", chance = 2000 },
+	{ name = "violet gem", chance = 1700 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -550},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -350, maxDamage = -490, radius = 3, effect = CONST_ME_HOLYAREA, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -330, maxDamage = -410, range = 5, radius = 3, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_SMALLPLANTS, target = true}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -550 },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -350, maxDamage = -490, radius = 3, effect = CONST_ME_HOLYAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -330, maxDamage = -410, range = 5, radius = 3, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_SMALLPLANTS, target = true }
 }
 
 monster.defenses = {
@@ -102,23 +102,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 20},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 20},
-	{type = COMBAT_DEATHDAMAGE , percent = -30}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 20 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -30 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

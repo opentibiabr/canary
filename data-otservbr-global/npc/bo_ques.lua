@@ -21,7 +21,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Now, where was I...'}
+	{ text = 'Now, where was I...' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -70,7 +70,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say('I already told you about the recipes I am missing, now please try to find a cookbook of the dwarven kitchen.', npc, creature)
 		end
-
 	elseif MsgContains(message, 'cookbook') then
 		if missionProgress == -1 then
 			npcHandler:say({
@@ -83,7 +82,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say('Thanks again, for bringing me that book!', npc, creature)
 		end
-
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, 'yes') then
 			npcHandler:say({
@@ -92,12 +90,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			player:setStorageValue(Storage.DjinnWar.MaridFaction.Start, 1)
 			player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission01, 1)
-
 		elseif MsgContains(message, 'no') then
 			npcHandler:say('Well, too bad.', npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
-
 	elseif npcHandler:getTopic(playerId) == 2 then
 		if MsgContains(message, 'yes') then
 			if not player:removeItem(3234, 1) then
@@ -112,7 +108,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission01, 2)
 			player:addItem(3029, 3)
-
 		elseif MsgContains(message, 'no') then
 			npcHandler:say('Too bad. I must have this book.', npc, creature)
 		end
@@ -122,7 +117,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Greeting
-keywordHandler:addGreetKeyword({"djanni'hah"}, {npcHandler = npcHandler, text = "Hey! A human! What are you doing in my kitchen, |PLAYERNAME|?"})
+keywordHandler:addGreetKeyword({ "djanni'hah" }, { npcHandler = npcHandler, text = "Hey! A human! What are you doing in my kitchen, |PLAYERNAME|?" })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, 'Goodbye. I am sure you will come back for more. They all do.')
 npcHandler:setMessage(MESSAGE_WALKAWAY, 'Goodbye. I am sure you will come back for more. They all do.')

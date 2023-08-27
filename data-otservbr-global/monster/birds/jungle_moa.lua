@@ -71,26 +71,26 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Kreeee. Kreeeee.", yell = false},
+	{ text = "Kreeee. Kreeeee.", yell = false },
 }
 
 monster.loot = {
-	{name = "Gold Coin", chance = 100000, minCount = 1, maxCount = 227},
-	{name = "Jungle Moa Claw", chance = 21100},
-	{name = "Meat", chance = 20140},
-	{name = "Cyan Crystal Fragment", chance = 11410},
-	{name = "Jungle Moa Feather", chance = 10480, minCount = 1, maxCount = 2},
-	{name = "Strong Mana Potion", chance = 9860, minCount = 1, maxCount = 2},
-	{name = "Jungle Moa Egg", chance = 8350},
-	{name = "Doublet", chance = 4540},
-	{name = "Spellbook of Enlightenment", chance = 1790},
+	{ name = "Gold Coin", chance = 100000, minCount = 1, maxCount = 227 },
+	{ name = "Jungle Moa Claw", chance = 21100 },
+	{ name = "Meat", chance = 20140 },
+	{ name = "Cyan Crystal Fragment", chance = 11410 },
+	{ name = "Jungle Moa Feather", chance = 10480, minCount = 1, maxCount = 2 },
+	{ name = "Strong Mana Potion", chance = 9860, minCount = 1, maxCount = 2 },
+	{ name = "Jungle Moa Egg", chance = 8350 },
+	{ name = "Doublet", chance = 4540 },
+	{ name = "Spellbook of Enlightenment", chance = 1790 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -216},
-	{name ="combat", interval = 2000, chance = 40, type = COMBAT_ENERGYDAMAGE, minDamage = -80, maxDamage = -100, range = 5, shootEffect = CONST_ANI_ENERGY, target = true},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -60, maxDamage = -140, range = 7, radius = 4, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = true},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -130, maxDamage = -170, length = 8, spread = 3, effect = CONST_ME_PURPLEENERGY, target = false},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -216 },
+	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_ENERGYDAMAGE, minDamage = -80, maxDamage = -100, range = 5, shootEffect = CONST_ANI_ENERGY, target = true },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -60, maxDamage = -140, range = 7, radius = 4, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = true },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -130, maxDamage = -170, length = 8, spread = 3, effect = CONST_ME_PURPLEENERGY, target = false },
 }
 
 monster.defenses = {
@@ -99,23 +99,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 10},
-	{type = COMBAT_ENERGYDAMAGE, percent = 10},
-	{type = COMBAT_EARTHDAMAGE, percent = -5},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = -10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 10 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -5 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

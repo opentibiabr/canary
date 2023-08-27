@@ -1,7 +1,7 @@
 local offlineTraining = CreatureEvent("Offline Training")
 
 function offlineTraining.onLogin(player)
-local lastLogout = player:getLastLogout()
+	local lastLogout = player:getLastLogout()
 	local offlineTime = lastLogout ~= 0 and math.min(os.time() - lastLogout, 86400 * 21) or 0
 	local offlineTrainingSkill = player:getOfflineTrainingSkill()
 	if offlineTrainingSkill == SKILL_NONE then
@@ -57,7 +57,7 @@ local lastLogout = player:getLastLogout()
 	local topVocation = not promotion and vocation or promotion
 
 	local updateSkills = false
-	if table.contains({SKILL_CLUB, SKILL_SWORD, SKILL_AXE, SKILL_DISTANCE}, offlineTrainingSkill) then
+	if table.contains({ SKILL_CLUB, SKILL_SWORD, SKILL_AXE, SKILL_DISTANCE }, offlineTrainingSkill) then
 		local modifier = topVocation:getBaseAttackSpeed() / 1000
 		updateSkills = player:addOfflineTrainingTries(offlineTrainingSkill, (trainingTime / modifier) / (offlineTrainingSkill == SKILL_DISTANCE and 4 or 2))
 	elseif offlineTrainingSkill == SKILL_MAGLEVEL then

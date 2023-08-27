@@ -60,7 +60,7 @@ function ravenHerb.onUse(player, item, fromPosition, target, toPosition, isHotke
 	end
 	if (player:getFreeCapacity() / 100) < herbConfig.herbWeight then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-		message .. ". Weighing " .. herbConfig.herbWeight .. " oz, it is too heavy for you to carry.")
+			message .. ". Weighing " .. herbConfig.herbWeight .. " oz, it is too heavy for you to carry.")
 		return true
 	end
 

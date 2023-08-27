@@ -1,6 +1,6 @@
-local liquidContainers = {133, 2524, 2873, 2874, 2875, 2876, 2877, 2879, 2880, 2881, 2882, 2885, 2893, 2901, 2902, 2903}
-local millstones = {1943, 1944, 1945, 1946}
-local oven = {2535, 2537, 2539, 2541}
+local liquidContainers = { 133, 2524, 2873, 2874, 2875, 2876, 2877, 2879, 2880, 2881, 2882, 2885, 2893, 2901, 2902, 2903 }
+local millstones = { 1943, 1944, 1945, 1946 }
+local oven = { 2535, 2537, 2539, 2541 }
 
 local baking = Action()
 
@@ -33,7 +33,7 @@ function baking.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		item:transform(item.itemid, item.type - 1)
 		target:transform(8198) -- baking tray with garlic cookie dough on it
 	elseif table.contains(oven, target.itemid) then
-		if table.contains({6276, 8018}, item.itemid) then
+		if table.contains({ 6276, 8018 }, item.itemid) then
 			player:addItem(item.itemid + 1, 1) -- cake / chocolate cake
 			item:transform(item.itemid, item.type - 1)
 		elseif item.itemid == 8196 then -- lump of garlic dough

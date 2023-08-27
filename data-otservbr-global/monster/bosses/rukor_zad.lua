@@ -65,52 +65,52 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "I can kill a man in a thousand ways. And that`s only with a spoon!", yell = false},
-	{text = "You shouldn`t have come here!", yell = false},
-	{text = "Haiiii!", yell = false}
+	{ text = "I can kill a man in a thousand ways. And that`s only with a spoon!", yell = false },
+	{ text = "You shouldn`t have come here!", yell = false },
+	{ text = "Haiiii!", yell = false }
 }
 
 monster.loot = {
-	{id = 3031, chance = 93210, maxCount = 50}, -- gold coin
-	{id = 3287, chance = 9210, maxCount = 14}, -- throwing star
-	{id = 7366, chance = 6200, maxCount = 7}, -- viper star
-	{id = 3351, chance = 4190}, -- steel helmet
-	{id = 3409, chance = 1940} -- steel shield
+	{ id = 3031, chance = 93210, maxCount = 50 }, -- gold coin
+	{ id = 3287, chance = 9210, maxCount = 14 }, -- throwing star
+	{ id = 7366, chance = 6200, maxCount = 7 }, -- viper star
+	{ id = 3351, chance = 4190 }, -- steel helmet
+	{ id = 3409, chance = 1940 } -- steel shield
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -170},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -100, range = 7, shootEffect = CONST_ANI_THROWINGSTAR, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -100, range = 7, shootEffect = CONST_ANI_POISONARROW, target = false},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -170 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -100, range = 7, shootEffect = CONST_ANI_THROWINGSTAR, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -100, range = 7, shootEffect = CONST_ANI_POISONARROW, target = false },
 	-- poison
-	{name ="condition", type = CONDITION_POISON, interval = 2000, chance = 10, minDamage = -8, maxDamage = -8, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = false},
-	{name ="drunk", interval = 3000, chance = 34, range = 7, target = false, duration = 5000}
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 10, minDamage = -8, maxDamage = -8, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_POISONAREA, target = false },
+	{ name = "drunk", interval = 3000, chance = 34, range = 7, target = false, duration = 5000 }
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 15,
-	{name ="invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE}
+	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -5},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType.onThink = function(monster, interval)

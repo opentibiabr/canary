@@ -1,13 +1,13 @@
 registerNpcType = {}
 setmetatable(registerNpcType,
-{
-	__call =
-	function(self, npcType, mask)
-		for _,parse in pairs(self) do
-			parse(npcType, mask)
-		end
-	end
-})
+	{
+		__call =
+				function(self, npcType, mask)
+					for _, parse in pairs(self) do
+						parse(npcType, mask)
+					end
+				end
+	})
 
 NpcType.register = function(self, mask)
 	return registerNpcType(self, mask)

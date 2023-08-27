@@ -26,9 +26,9 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "I really have to find this scroll. Where did I put it?"},
-	{text = "Too much dust here. I should tidy up on occasion."},
-	{text = "Someone opened the Grimoire of Flames without permission. Egregious!"}
+	{ text = "I really have to find this scroll. Where did I put it?" },
+	{ text = "Too much dust here. I should tidy up on occasion." },
+	{ text = "Someone opened the Grimoire of Flames without permission. Egregious!" }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -59,13 +59,15 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 keywordHandler:addKeyword(
-	{"ring"}, StdModule.say, { npcHandler = npcHandler,
-	text = {
-		"To extract memories from the ring, you have to enter a trance-like state with the help of a hallucinogen. Like this you can see all memories that are stored in the ring. Ask {Faloriel} for a respective potion. ...",
-		"Drink it while wearing the ring in the Temple of {Bastesh} and say: \'Sa Katesa Tarsani na\'. If the legends are true you will be able to take memories with you in the form of memory shards."
-	}},
-	function (player) return player:getStorageValue(Storage.Kilmaresh.Fourth.Moe) == 4 end,
-	function (player)
+	{ "ring" }, StdModule.say, {
+		npcHandler = npcHandler,
+		text = {
+			"To extract memories from the ring, you have to enter a trance-like state with the help of a hallucinogen. Like this you can see all memories that are stored in the ring. Ask {Faloriel} for a respective potion. ...",
+			"Drink it while wearing the ring in the Temple of {Bastesh} and say: \'Sa Katesa Tarsani na\'. If the legends are true you will be able to take memories with you in the form of memory shards."
+		}
+	},
+	function(player) return player:getStorageValue(Storage.Kilmaresh.Fourth.Moe) == 4 end,
+	function(player)
 		player:setStorageValue(Storage.Kilmaresh.Fifth.Memories, 1)
 		player:setStorageValue(Storage.Kilmaresh.Fifth.MemoriesShards, 0)
 		player:setStorageValue(Storage.Kilmaresh.Fourth.Moe, 5)

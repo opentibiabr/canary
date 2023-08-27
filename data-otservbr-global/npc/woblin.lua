@@ -86,19 +86,19 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
-keywordHandler:addKeyword({"goblins"}, StdModule.say,
+keywordHandler:addKeyword({ "goblins" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "No part of clan. Me prefer company of precious. Or mirror image. Always nice to see pretty me!"
 	}
 )
-keywordHandler:addKeyword({"quest"}, StdModule.say,
+keywordHandler:addKeyword({ "quest" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "What you on quest for? Go leave Woblin alone with {precious}"
 	}
 )
-keywordHandler:addKeyword({"precious"}, StdModule.say,
+keywordHandler:addKeyword({ "precious" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Me not give {key}! Key my precious now! By old goblin law all that one has in his pockets for two days \z

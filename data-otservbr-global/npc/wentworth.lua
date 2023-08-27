@@ -26,9 +26,9 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "Waste not, want not!"},
-	{text = "Don't burden yourself with too much cash - store it here!"},
-	{text = "Don't take the money and run - deposit it and walk instead!"}
+	{ text = "Waste not, want not!" },
+	{ text = "Don't burden yourself with too much cash - store it here!" },
+	{ text = "Don't take the money and run - deposit it and walk instead!" }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -83,10 +83,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Would you like to know more about the {basic} functions of your bank account, the {advanced} functions, \z
 					or are you already bored, perhaps?"
 			},
-		npc, creature, 10)
+			npc, creature, 10)
 		npcHandler:setTopic(playerId, 0)
 		return true
-	--Balance
+		--Balance
 	elseif MsgContains(message, "balance") then
 		npcHandler:setTopic(playerId, 0)
 		if player:getBankBalance() >= 100000000 then
@@ -109,7 +109,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Your account balance is " .. player:getBankBalance() .. " gold.", npc, creature)
 			return true
 		end
-	--Deposit
+		--Deposit
 	elseif MsgContains(message, "deposit") then
 		count[playerId] = player:getMoney()
 		if count[playerId] < 1 then
@@ -127,7 +127,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 2)
 			return true
 		else
-			if string.match(message,"%d+") then
+			if string.match(message, "%d+") then
 				count[playerId] = getMoneyCount(message)
 				if count[playerId] < 1 then
 					npcHandler:say("You do not have enough gold.", npc, creature)
@@ -180,9 +180,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 		npcHandler:setTopic(playerId, 0)
 		return true
-	--Withdraw
+		--Withdraw
 	elseif MsgContains(message, "withdraw") then
-		if string.match(message,"%d+") then
+		if string.match(message, "%d+") then
 			count[playerId] = getMoneyCount(message)
 			if isValidMoney(count[playerId]) then
 				npcHandler:say("Are you sure you wish to withdraw " .. count[playerId] .. " gold from your bank account?", npc, creature)
@@ -226,7 +226,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		end
 		return true
-	--Money exchange
+		--Money exchange
 	elseif MsgContains(message, "change gold") then
 		npcHandler:say("How many platinum coins would you like to get?", npc, creature)
 		npcHandler:setTopic(playerId, 14)
@@ -325,7 +325,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif npcHandler:getTopic(playerId) == 22 then
 		if MsgContains(message, "yes") then
-			if player:removeItem(3043, count[playerId])  then
+			if player:removeItem(3043, count[playerId]) then
 				player:addItem(3035, count[playerId] * 100)
 				npcHandler:say("Here you are.", npc, creature)
 			else
@@ -339,13 +339,13 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({"money"}, StdModule.say,
+keywordHandler:addKeyword({ "money" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "We can {change} money for you. You can also access your {bank account}."
 	}
 )
-keywordHandler:addKeyword({"change"}, StdModule.say,
+keywordHandler:addKeyword({ "change" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "There are three different coin types in Tibia: 100 gold coins equal 1 platinum coin, \z
@@ -353,47 +353,47 @@ keywordHandler:addKeyword({"change"}, StdModule.say,
 			So if you'd like to change 100 gold into 1 platinum, simply say '{change gold}' and then '1 platinum'."
 	}
 )
-keywordHandler:addKeyword({"bank"}, StdModule.say,
+keywordHandler:addKeyword({ "bank" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "We can {change} money for you. You can also access your {bank account}."
 	}
 )
-keywordHandler:addKeyword({"advanced"}, StdModule.say,
+keywordHandler:addKeyword({ "advanced" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Your bank account will be used automatically when you want to {rent} a house or place an offer \z
 			on an item on the {market}. Let me know if you want to know about how either one works."
 	}
 )
-keywordHandler:addKeyword({"help"}, StdModule.say,
+keywordHandler:addKeyword({ "help" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "You can check the {balance} of your bank account, {deposit} money or {withdraw} it. \z
 			You can also {transfer} money to other characters, provided that they have a vocation."
 	}
 )
-keywordHandler:addKeyword({"functions"}, StdModule.say,
+keywordHandler:addKeyword({ "functions" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "You can check the {balance} of your bank account, {deposit} money or {withdraw} it. \z
 			You can also {transfer} money to other characters, provided that they have a vocation."
 	}
 )
-keywordHandler:addKeyword({"basic"}, StdModule.say,
+keywordHandler:addKeyword({ "basic" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "You can check the {balance} of your bank account, {deposit} money or {withdraw} it. \z
 			You can also {transfer} money to other characters, provided that they have a vocation."
 	}
 )
-keywordHandler:addKeyword({"job"}, StdModule.say,
+keywordHandler:addKeyword({ "job" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "I work in this bank. I can change money for you and help you with your bank account."
 	}
 )
-keywordHandler:addKeyword({"transfer"}, StdModule.say,
+keywordHandler:addKeyword({ "transfer" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "I'm afraid this service is not available to you until you reach the World mainland."

@@ -21,7 +21,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Passage to Cormaya! Unforgettable steamboat ride!'}
+	{ text = 'Passage to Cormaya! Unforgettable steamboat ride!' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -91,45 +91,47 @@ end
 -- Travel
 local function addTravelKeyword(keyword, text, cost, discount, destination, condition, action)
 	if condition then
-		keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = {'Well, you might be just the hero they need there. To tell you the truth, some our most reliable ore mines have started to run low. ...',
-		'This is why we developed new steamship technologies to be able to further explore and cartograph the great subterraneous rivers. Our brothers have established a base on a continent far, far away. ...',
-		'We call that the far, far away base. But since it will hopefully become a flourishing mine one day, most of us started to call it {Farmine}. The dwarfs there could really use some help right now.'
-		}
-	}, condition, action)
+		keywordHandler:addKeyword({ keyword }, StdModule.say, {
+			npcHandler = npcHandler,
+			text = { 'Well, you might be just the hero they need there. To tell you the truth, some our most reliable ore mines have started to run low. ...',
+				'This is why we developed new steamship technologies to be able to further explore and cartograph the great subterraneous rivers. Our brothers have established a base on a continent far, far away. ...',
+				'We call that the far, far away base. But since it will hopefully become a flourishing mine one day, most of us started to call it {Farmine}. The dwarfs there could really use some help right now.'
+			}
+		}, condition, action)
 	end
 
-	local travelKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = {text[1]}, cost = cost, discount = discount})
-		travelKeyword:addChildKeyword({'yes'}, StdModule.travel, {npcHandler = npcHandler, premium = false, text = text[2], cost = cost, discount = discount, destination = destination})
-		travelKeyword:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, text = text[3], reset = true})
+	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = { text[1] }, cost = cost, discount = discount })
+	travelKeyword:addChildKeyword({ 'yes' }, StdModule.travel, { npcHandler = npcHandler, premium = false, text = text[2], cost = cost, discount = discount, destination = destination })
+	travelKeyword:addChildKeyword({ 'no' }, StdModule.say, { npcHandler = npcHandler, text = text[3], reset = true })
 end
 
-addTravelKeyword('farmine',{'Do you seek a ride to Farmine for |TRAVELCOST|?', 'Full steam ahead!', 'We would like to serve you some time.'}, 210, {'postman', 'new frontier'},
-function(player)
-	local destination = Position(33025, 31553, 14)
-	if player:getStorageValue(TheNewFrontier.Mission05[1]) == 2 then --if The New Frontier Quest 'Mission 05: Getting Things Busy' complete then Stage 3
-		destination.z = 10
-	elseif player:getStorageValue(TheNewFrontier.Mission03) >= 2 then --if The New Frontier Quest 'Mission 03: Strangers in the Night' complete then Stage 2
-		destination.z = 12
+addTravelKeyword('farmine', { 'Do you seek a ride to Farmine for |TRAVELCOST|?', 'Full steam ahead!', 'We would like to serve you some time.' }, 210, { 'postman', 'new frontier' },
+	function(player)
+		local destination = Position(33025, 31553, 14)
+		if player:getStorageValue(TheNewFrontier.Mission05[1]) == 2 then --if The New Frontier Quest 'Mission 05: Getting Things Busy' complete then Stage 3
+			destination.z = 10
+		elseif player:getStorageValue(TheNewFrontier.Mission03) >= 2 then --if The New Frontier Quest 'Mission 03: Strangers in the Night' complete then Stage 2
+			destination.z = 12
+		end
+		return destination
+	end, function(player) return player:getStorageValue(TheNewFrontier.FarmineFirstTravel) < 1 end,
+	function(player)
+		if player:getStorageValue(TheNewFrontier.FarmineFirstTravel) < 1 then
+			player:setStorageValue(TheNewFrontier.FarmineFirstTravel, 1)
+		end
 	end
-	return destination
-end, function(player) return player:getStorageValue(TheNewFrontier.FarmineFirstTravel) < 1 end,
-function(player)
-	if player:getStorageValue(TheNewFrontier.FarmineFirstTravel) < 1 then
-		player:setStorageValue(TheNewFrontier.FarmineFirstTravel, 1)
-	end
-end
 )
 
-addTravelKeyword('cormaya',{'Do you seek a ride to Cormaya for |TRAVELCOST|?', 'Full steam ahead!', 'We would like to serve you some time.'}, 160, {'postman'}, Position(33311, 31989, 15),
-function(player)
-	if player:getStorageValue(Storage.Postman.Mission01) == 4 then
-		player:setStorageValue(Storage.Postman.Mission01, 5)
+addTravelKeyword('cormaya', { 'Do you seek a ride to Cormaya for |TRAVELCOST|?', 'Full steam ahead!', 'We would like to serve you some time.' }, 160, { 'postman' }, Position(33311, 31989, 15),
+	function(player)
+		if player:getStorageValue(Storage.Postman.Mission01) == 4 then
+			player:setStorageValue(Storage.Postman.Mission01, 5)
+		end
 	end
-end
 )
 
-addTravelKeyword('gnomprona', {'Would you like to travel to Gnomprona for |TRAVELCOST|?', 'Full steam ahead!', 'Then not.'}, 200, 'postman', Position(33516, 32856, 14))
-keywordHandler:addKeyword({'passage'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want me take you to {Cormaya}, {Farmine} or to {Gnomprona}?'})
+addTravelKeyword('gnomprona', { 'Would you like to travel to Gnomprona for |TRAVELCOST|?', 'Full steam ahead!', 'Then not.' }, 200, 'postman', Position(33516, 32856, 14))
+keywordHandler:addKeyword({ 'passage' }, StdModule.say, { npcHandler = npcHandler, text = 'Do you want me take you to {Cormaya}, {Farmine} or to {Gnomprona}?' })
 
 npcHandler:setMessage(MESSAGE_GREET, 'Welcome, |PLAYERNAME|! May earth protect you on the rocky grounds. If you need a {passage}, I can help you.')
 npcHandler:setMessage(MESSAGE_FAREWELL, 'Good bye.')

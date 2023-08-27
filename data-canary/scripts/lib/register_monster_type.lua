@@ -3,14 +3,14 @@ local superDrunkDuration = 4000
 
 registerMonsterType = {}
 setmetatable(registerMonsterType,
-{
-	__call =
-	function(self, mtype, mask)
-		for _,parse in pairs(self) do
-			parse(mtype, mask)
-		end
-	end
-})
+	{
+		__call =
+				function(self, mtype, mask)
+					for _, parse in pairs(self) do
+						parse(mtype, mask)
+					end
+				end
+	})
 
 MonsterType.register = function(self, mask)
 	return registerMonsterType(self, mask)
@@ -352,9 +352,9 @@ registerMonsterType.loot = function(mtype, mask)
 			if loot.subType or loot.charges then
 				parent:setSubType(loot.subType or loot.charges)
 			else
-    			local lType = ItemType(loot.name and loot.name or loot.id)
+				local lType = ItemType(loot.name and loot.name or loot.id)
 				if lType and lType:getCharges() > 1 then
-        			parent:setSubType(lType:getCharges())
+					parent:setSubType(lType:getCharges())
 				end
 			end
 			if loot.chance then
@@ -413,9 +413,9 @@ registerMonsterType.loot = function(mtype, mask)
 					if children.subType or children.charges then
 						child:setSubType(children.subType or children.charges)
 					else
-    					local cType = ItemType(children.name and children.name or children.id)
+						local cType = ItemType(children.name and children.name or children.id)
 						if cType and cType:getCharges() > 1 then
-        					child:setSubType(cType:getCharges())
+							child:setSubType(cType:getCharges())
 						end
 					end
 					if children.chance then
@@ -550,10 +550,10 @@ local function loadcastSound(effect, incomingLua, mtype)
 			effect == CONST_ANI_GLOOTHSPEAR or
 			effect == CONST_ANI_LEAFSTAR or
 			effect == CONST_ANI_ROYALSTAR
-			then
+	then
 		return SOUND_EFFECT_TYPE_DIST_ATK_THROW
 
-	-- Crossbow shoottype
+		-- Crossbow shoottype
 	elseif effect == CONST_ANI_BOLT or
 			effect == CONST_ANI_POWERBOLT or
 			effect == CONST_ANI_INFERNALBOLT or
@@ -562,10 +562,10 @@ local function loadcastSound(effect, incomingLua, mtype)
 			effect == CONST_ANI_PRISMATICBOLT or
 			effect == CONST_ANI_DRILLBOLT or
 			effect == CONST_ANI_SPECTRALBOLT
-			then
+	then
 		return SOUND_EFFECT_TYPE_DIST_ATK_CROSSBOW
 
-	-- Bow shoottype
+		-- Bow shoottype
 	elseif effect == CONST_ANI_POISONARROW or
 			effect == CONST_ANI_BURSTARROW or
 			effect == CONST_ANI_SNIPERARROW or
@@ -579,10 +579,10 @@ local function loadcastSound(effect, incomingLua, mtype)
 			effect == CONST_ANI_ENVENOMEDARROW or
 			effect == CONST_ANI_SIMPLEARROW or
 			effect == CONST_ANI_DIAMONDARROW
-			then
+	then
 		return SOUND_EFFECT_TYPE_DIST_ATK_BOW
 
-	-- Magical shoottype
+		-- Magical shoottype
 	elseif effect == CONST_ANI_FIRE or
 			effect == CONST_ANI_ENERGY or
 			effect == CONST_ANI_DEATH or
@@ -597,7 +597,7 @@ local function loadcastSound(effect, incomingLua, mtype)
 			effect == CONST_ANI_SMALLHOLY or
 			effect == CONST_ANI_SMALLEARTH or
 			effect == CONST_ANI_EXPLOSION
-			then
+	then
 		return SOUND_EFFECT_TYPE_MAGICAL_RANGE_ATK
 	end
 
@@ -624,7 +624,6 @@ local function loadImpactSound(incomingLua, mtype)
 			}
 		end
 		return meleeSoundTable[math.random(1, #meleeSoundTable)]
-
 	elseif incomingLua.name == "combat" then
 		if incomingLua.type == COMBAT_PHYSICALDAMAGE then
 			nameType = "physical"
@@ -651,31 +650,23 @@ local function loadImpactSound(incomingLua, mtype)
 		elseif incomingLua.type == COMBAT_DEATHDAMAGE then
 			nameType = "death"
 		end
-
 	elseif incomingLua.name == "drunk" then
 		if incomingLua.duration and incomingLua.duration > superDrunkDuration then
 			return SOUND_EFFECT_TYPE_MONSTER_SPELL_SUPER_DRUNKEN
 		end
 		return SOUND_EFFECT_TYPE_MONSTER_SPELL_DRUNKEN
-
 	elseif incomingLua.name == "speed" then
 		return SOUND_EFFECT_TYPE_MONSTER_SPELL_SPEED
-
 	elseif incomingLua.name == "outfit" then
 		return SOUND_EFFECT_TYPE_MONSTER_SPELL_OUTFIT
-
 	elseif incomingLua.name == "strength" then
 		return SOUND_EFFECT_TYPE_MONSTER_SPELL_STRENGTH
-
 	elseif incomingLua.name == "firefield" then
 		return SOUND_EFFECT_TYPE_SPELL_FIRE_FIELD_RUNE
-
 	elseif incomingLua.name == "energyfield" then
 		return SOUND_EFFECT_TYPE_SPELL_ENERGY_FIELD_RUNE
-
 	elseif incomingLua.name == "earthfield" or incomingLua.name == "poisonfield" then
 		return SOUND_EFFECT_TYPE_SPELL_POISON_FIELD_RUNE
-
 	elseif incomingLua.name == "condition" then
 		-- To-Do
 	end
@@ -708,7 +699,7 @@ local function loadImpactSound(incomingLua, mtype)
 			return SOUND_EFFECT_TYPE_MONSTER_SPELL_WAVE_HIT
 		end
 
-	-- Bombs area (not field)
+		-- Bombs area (not field)
 	elseif incomingLua.radius then
 		if nameType == "bleeding" then
 			if incomingLua.radius <= smallAreaRadius then
@@ -784,7 +775,7 @@ local function loadImpactSound(incomingLua, mtype)
 			end
 		end
 
-	-- Since all failed, im assuming its a single target spell
+		-- Since all failed, im assuming its a single target spell
 	else
 		if nameType == "bleeding" then
 			return SOUND_EFFECT_TYPE_MONSTER_SPELL_SINGLE_TARGET_BLEEDING
@@ -825,7 +816,7 @@ local function loadSpellSoundType(incomingLua, mtype)
 	end
 
 	impactSound = loadImpactSound(incomingLua, mtype)
-	return {cast = castSound, impact = impactSound}
+	return { cast = castSound, impact = impactSound }
 end
 
 function readSpell(incomingLua, mtype)
@@ -964,12 +955,12 @@ function readSpell(incomingLua, mtype)
 		end
 	end
 
-	if not(hasImpactSound) or not(hasCastSound) then
+	if not (hasImpactSound) or not (hasCastSound) then
 		local sounds = loadSpellSoundType(incomingLua, mtype)
-		if (not(hasCastSound) and sounds.cast ~= SOUND_EFFECT_TYPE_SILENCE) then
+		if (not (hasCastSound) and sounds.cast ~= SOUND_EFFECT_TYPE_SILENCE) then
 			spell:castSound(sounds.cast)
 		end
-		if (not(hasImpactSound) and sounds.impact ~= SOUND_EFFECT_TYPE_SILENCE) then
+		if (not (hasImpactSound) and sounds.impact ~= SOUND_EFFECT_TYPE_SILENCE) then
 			spell:castSound(sounds.impact)
 		end
 	end

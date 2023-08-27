@@ -1,6 +1,6 @@
 local splash = CreatureEvent("Splash")
 function splash.onThink(creature)
-	local hp = (creature:getHealth()/creature:getMaxHealth())*100
+	local hp = (creature:getHealth() / creature:getMaxHealth()) * 100
 	if hp < 85.0 then
 		addEvent(function(cid)
 			local monsterPos = Position(33160, 31945, 15)

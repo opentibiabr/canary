@@ -61,7 +61,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				'That is a noble resolution you have made there, human, but I\'m afraid I cannot accept your generous offer at this point of time. ...',
 				'Do not get me wrong, but I am not the kind of guy to send an inexperienced soldier into certain death! So you might ask around here for a more suitable mission.'
 			}, npc, creature)
-
 		elseif missionProgress < 1 then
 			npcHandler:say({
 				'Sooo. Fa\'hradin has told me about your extraordinary exploit, and I must say I am impressed. ...',
@@ -70,18 +69,15 @@ local function creatureSayCallback(npc, creature, type, message)
 				'Think carefully, human, for this mission will bring you into real danger. Are you prepared to do us that final favour?'
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
-
 		elseif missionProgress == 1 then
 			npcHandler:say('You haven\'t finished your final mission yet. Shall I explain it again to you?', npc, creature)
 			npcHandler:setTopic(playerId, 1)
-
 		elseif missionProgress == 2 then
 			npcHandler:say('Have you found Fa\'hradin\'s lamp and placed it in Malor\'s personal chambers?', npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		else
 			npcHandler:say('There\'s no mission left for you, friend of the Marid. However, I have a task for you.', npc, creature)
 		end
-
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, 'yes') then
 			npcHandler:say({
@@ -93,12 +89,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				'If you succeed, the war could be over one night later! I and all djinn will be in your debt forever! May Daraman watch over you!'
 			}, npc, creature)
 			player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission03, 1)
-
 		elseif MsgContains(message, 'no') then
 			npcHandler:say('As you wish.', npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
-
 	elseif npcHandler:getTopic(playerId) == 2 then
 		if MsgContains(message, 'yes') then
 			npcHandler:say({
@@ -108,7 +102,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission03, 3)
 			player:setStorageValue(Storage.DjinnWar.MaridFaction.DoorToEfreetTerritory, 1)
 			player:addAchievement('Marid Ally')
-
 		elseif MsgContains(message, 'no') then
 			npcHandler:say('Don\'t give up! May Daraman watch over you!', npc, creature)
 		end
@@ -117,13 +110,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.KillingInTheNameOf.GreenDjinnTask) < 0 or player:getStorageValue(Storage.KillingInTheNameOf.GreenDjinnTask) == 3 then
 			npcHandler:say({
 				"You've proven to be an experienced soldier, human. Though I still hope the war to be over soon, the Efreet are still threatening our tower. ...",
-				"Thus we need your help in killing the green ones. If you kill 500 green djinns or Efreet for us, I'll reward you with bonus experience and some extra gold pieces. Do you agree?"}, npc, creature)
+				"Thus we need your help in killing the green ones. If you kill 500 green djinns or Efreet for us, I'll reward you with bonus experience and some extra gold pieces. Do you agree?" }, npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.GreenDjinnTask) == 0 then
 			if player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GreenDjinnCount) >= 500 then
 				npcHandler:say({
 					"You've done it, human! Daraman be praised! Take this for your efforts. ...",
-					"What's left to do now is seek out Merikh the Slaughterer, an especially cruel Efreet. He hides somewhere in Yalahar. I don't know if you can kill him, but you should at least try."}, npc, creature)
+					"What's left to do now is seek out Merikh the Slaughterer, an especially cruel Efreet. He hides somewhere in Yalahar. I don't know if you can kill him, but you should at least try." }, npc, creature)
 				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossKillCount.MerikhCount, 0)
 				player:setStorageValue(Storage.KillingInTheNameOf.GreenDjinnTask, 1)
 			else
@@ -132,7 +125,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.KillingInTheNameOf.GreenDjinnTask) == 2 then
 			npcHandler:say({
 				"So you've been there and faced Merikh the Slaughterer! Whether you killed him or not, I hope your presence at least scared him. He is so mighty that we can only hope to truly defeat him one day. ...",
-				"When you've recovered from your fight and would like to kill green djinns in our service again, just talk to me about that task."}, npc, creature)
+				"When you've recovered from your fight and would like to kill green djinns in our service again, just talk to me about that task." }, npc, creature)
 			player:setStorageValue(Storage.KillingInTheNameOf.GreenDjinnTask, 3)
 			player:addExperience(10000, true)
 			player:addMoney(5000)
@@ -149,7 +142,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Greeting
-keywordHandler:addGreetKeyword({"djanni'hah"}, {npcHandler = npcHandler, text = "Welcome, human |PLAYERNAME|, to our humble abode."})
+keywordHandler:addGreetKeyword({ "djanni'hah" }, { npcHandler = npcHandler, text = "Welcome, human |PLAYERNAME|, to our humble abode." })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell, stranger. May Uman open your minds and your hearts to Daraman's wisdom!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Farewell, stranger. May Uman open your minds and your hearts to Daraman's wisdom!")

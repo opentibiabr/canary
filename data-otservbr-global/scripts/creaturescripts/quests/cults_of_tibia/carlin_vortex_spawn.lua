@@ -8,7 +8,7 @@ function vortexCarlin.onKill(creature, target, item)
 		return true
 	end
 
-	if table.contains({'cult enforcer', 'cult believer', 'cult scholar'}, target:getName():lower()) then
+	if table.contains({ 'cult enforcer', 'cult believer', 'cult scholar' }, target:getName():lower()) then
 		local corpsePosition = target:getPosition()
 		local rand = math.random(32414, 32415)
 		Game.createItem(rand, 1, corpsePosition):setActionId(5580)
@@ -17,7 +17,7 @@ function vortexCarlin.onKill(creature, target, item)
 			if teleport1 then
 				teleport1:remove(1)
 			end
-		end, (1*60*1000), rand, 1, corpsePosition)
+		end, (1 * 60 * 1000), rand, 1, corpsePosition)
 	end
 	return true
 end

@@ -1,8 +1,8 @@
 local config = {
-	[31077] = {requireSoil = false, toPosition = Position(32908, 31081, 7), effect = CONST_ME_ENERGYHIT},
-	[31080] = {requireSoil = true, pushbackPosition = Position(32908, 31081, 7), toPosition = Position(32908, 31076, 7), effect = CONST_ME_ENERGYHIT},
-	[31081] = {requireSoil = true, pushbackPosition = Position(32906, 31080, 7), toPosition = Position(32908, 31085, 7), effect = CONST_ME_HITBYFIRE},
-	[31084] = {requireSoil = false, toPosition = Position(32906, 31080, 7), effect = CONST_ME_HITBYFIRE}
+	[31077] = { requireSoil = false, toPosition = Position(32908, 31081, 7), effect = CONST_ME_ENERGYHIT },
+	[31080] = { requireSoil = true, pushbackPosition = Position(32908, 31081, 7), toPosition = Position(32908, 31076, 7), effect = CONST_ME_ENERGYHIT },
+	[31081] = { requireSoil = true, pushbackPosition = Position(32906, 31080, 7), toPosition = Position(32908, 31085, 7), effect = CONST_ME_HITBYFIRE },
+	[31084] = { requireSoil = false, toPosition = Position(32906, 31080, 7), effect = CONST_ME_HITBYFIRE }
 }
 
 local magicianQuarter = MoveEvent()

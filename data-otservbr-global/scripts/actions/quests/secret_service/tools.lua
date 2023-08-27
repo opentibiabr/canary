@@ -18,7 +18,6 @@ function secretServiceTools.onUse(player, item, fromPosition, target, toPosition
 	return true
 end
 
-
 for itemId, info in pairs(config) do
 	secretServiceTools:id(itemId)
 end

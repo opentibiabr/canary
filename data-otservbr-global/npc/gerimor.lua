@@ -57,19 +57,19 @@ local function greetCallback(npc, creature)
 	if player then
 		npcHandler:setMessage(MESSAGE_GREET, "Greeting, |PLAYERNAME|! I welcome you to this sacred {place}. \z
 			If you are interested in {missions} just ask.")
-		end
+	end
 	return true
 end
 
 -- Keywords
-keywordHandler:addKeyword({"place"}, StdModule.say,
+keywordHandler:addKeyword({ "place" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "This place is a sanctuary of Crunor and provides me with a opportunity of spiritual contemplation."
 	}
 )
 
-keywordHandler:addKeyword({"me"}, StdModule.say,
+keywordHandler:addKeyword({ "me" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -82,14 +82,14 @@ keywordHandler:addKeyword({"me"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"circle"}, StdModule.say,
+keywordHandler:addKeyword({ "circle" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "We focus our interest on this we see as threatening for live and the laws of nature itself."
 	}
 )
 
-keywordHandler:addKeyword({"persons"}, StdModule.say,
+keywordHandler:addKeyword({ "persons" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -100,7 +100,7 @@ keywordHandler:addKeyword({"persons"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"approaches"}, StdModule.say,
+keywordHandler:addKeyword({ "approaches" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "We might not be many but we are diverse. \z
@@ -108,7 +108,7 @@ keywordHandler:addKeyword({"approaches"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"dawn"}, StdModule.say,
+keywordHandler:addKeyword({ "dawn" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -121,7 +121,7 @@ keywordHandler:addKeyword({"dawn"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"guidance"}, StdModule.say,
+keywordHandler:addKeyword({ "guidance" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -133,7 +133,7 @@ keywordHandler:addKeyword({"guidance"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"direct"}, StdModule.say,
+keywordHandler:addKeyword({ "direct" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -144,7 +144,7 @@ keywordHandler:addKeyword({"direct"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"interfere"}, StdModule.say,
+keywordHandler:addKeyword({ "interfere" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Interference comes in different forms. \z
@@ -152,7 +152,7 @@ keywordHandler:addKeyword({"interfere"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"feyrist"}, StdModule.say,
+keywordHandler:addKeyword({ "feyrist" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "The fae granted me permission to enter their hidden realm. \z
@@ -161,7 +161,7 @@ keywordHandler:addKeyword({"feyrist"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"fae"}, StdModule.say,
+keywordHandler:addKeyword({ "fae" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -175,7 +175,7 @@ keywordHandler:addKeyword({"fae"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"fauns"}, StdModule.say,
+keywordHandler:addKeyword({ "fauns" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -190,7 +190,7 @@ keywordHandler:addKeyword({"fauns"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"pixies"}, StdModule.say,
+keywordHandler:addKeyword({ "pixies" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -205,7 +205,7 @@ keywordHandler:addKeyword({"pixies"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"pookas"}, StdModule.say,
+keywordHandler:addKeyword({ "pookas" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -220,7 +220,7 @@ keywordHandler:addKeyword({"pookas"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"swan maidens"}, StdModule.say,
+keywordHandler:addKeyword({ "swan maidens" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -234,7 +234,7 @@ keywordHandler:addKeyword({"swan maidens"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"nymphs"}, StdModule.say,
+keywordHandler:addKeyword({ "nymphs" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -247,7 +247,7 @@ keywordHandler:addKeyword({"nymphs"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"boogies"}, StdModule.say,
+keywordHandler:addKeyword({ "boogies" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -259,7 +259,7 @@ keywordHandler:addKeyword({"boogies"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"maelyrra"}, StdModule.say,
+keywordHandler:addKeyword({ "maelyrra" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -270,7 +270,7 @@ keywordHandler:addKeyword({"maelyrra"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"fae court"}, StdModule.say,
+keywordHandler:addKeyword({ "fae court" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -284,7 +284,7 @@ keywordHandler:addKeyword({"fae court"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"cults"}, StdModule.say,
+keywordHandler:addKeyword({ "cults" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -298,7 +298,7 @@ keywordHandler:addKeyword({"cults"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"worst"}, StdModule.say,
+keywordHandler:addKeyword({ "worst" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -310,21 +310,21 @@ keywordHandler:addKeyword({"worst"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"investigate"}, StdModule.say,
+keywordHandler:addKeyword({ "investigate" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Those cults have to be stopped by any means possible. \z
 			These are desperate times and they demand desperate actions."
 	}
 )
-keywordHandler:addKeyword({"actions"}, StdModule.say,
+keywordHandler:addKeyword({ "actions" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Spare lives where you see it fit but the cults may not be allowed to exist and disrupt \z
 			the fabric of the world even more."
 	}
 )
-keywordHandler:addKeyword({"fabric"}, StdModule.say,
+keywordHandler:addKeyword({ "fabric" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "The weakened fabric of our reality still repels the unnatural intruder. The cults provide the \z
@@ -332,7 +332,7 @@ keywordHandler:addKeyword({"fabric"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"works"}, StdModule.say,
+keywordHandler:addKeyword({ "works" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = {
@@ -349,7 +349,7 @@ keywordHandler:addKeyword({"works"}, StdModule.say,
 	}
 )
 
-keywordHandler:addKeyword({"ties"}, StdModule.say,
+keywordHandler:addKeyword({ "ties" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "I have several missions available that deal with servering the ties of the corrupting influence on our world."
@@ -359,7 +359,7 @@ keywordHandler:addKeyword({"ties"}, StdModule.say,
 local config = {
 	missions = {
 		["minotaurs"] = {
-			text =  {
+			text = {
 				"This is an animal-like cult. Only minotaurs can be found there, \z
 					but no idea what there are expecting and what they are worshipping. ...",
 				"Maybe they are a bit different to the creatures you already know. Would you like to dinf out more for me?"
@@ -373,7 +373,7 @@ local config = {
 
 		},
 		["prosperity"] = {
-			text =  {
+			text = {
 				"The alleged incentive to follow this cult is infinite prosperity. \z
 					Therefore most of the worshippers are already very rich citizens of Tibia. ...",
 				"This cult is abandoned in the recently opened new museum in Thais. \z
@@ -387,7 +387,7 @@ local config = {
 			rewardExp = 50000,
 		},
 		["barkless"] = {
-			text =  {
+			text = {
 				"However, recently they became more prominent as their leader seems to hava taken a turn for the worse. \z
 					Rumors of violent acts and disappearing people are linked to this cult. ...",
 				"Someone... Should look into that, don't you think?"
@@ -400,7 +400,7 @@ local config = {
 			rewardExp = 50000,
 		},
 		["orcs"] = {
-			text =  {
+			text = {
 				"Several Edron orcs have taken to a dangerous idol it seems. \z
 					It may not be too late to stop them if you act quickly. \z
 					A powerful cult of orcs with a broad following could prove unsurmountable in the end. ..."
@@ -414,7 +414,7 @@ local config = {
 			rewardExp = 25000,
 		},
 		["life"] = {
-			text =  {
+			text = {
 				"Its worshippers wish for eternal, life free of pain and sorrow. \z
 				The entrance to this cult can be found in the dark pyramid. Would you life to investigate it for me?"
 			},
@@ -427,7 +427,7 @@ local config = {
 
 		},
 		["misguided"] = {
-			text =  {
+			text = {
 				"There's a camp of outlaws to the east of Thais. \z
 					Rumour has it that people are going missing but it's not linked to the bandits. ...",
 				"Lights have been seen at night in the abandoned ruin in the vicinity of the camp, \z
@@ -441,7 +441,7 @@ local config = {
 			rewardExp = 50000,
 		},
 		["humans"] = {
-			text =  {
+			text = {
 				"It's a forbidden and abandoned place but... There is an ancient temple of Zathroth beneath Carlin. \z
 					Some say it's not that abandoned anymore. ...",
 				"Voices, flickering lights in the dead of night, and even a strange gate like sphere wich leads to \z
@@ -477,13 +477,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			I have nothing more for you to do. Fare you well!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.CultsOfTibia.Minotaurs.Mission) == 6
-		and player:getStorageValue(Storage.CultsOfTibia.Life.Mission) == 10
-		and player:getStorageValue(Storage.CultsOfTibia.MotA.Mission) == 15
-		and player:getStorageValue(Storage.CultsOfTibia.Barkless.Mission) == 7
-		and player:getStorageValue(Storage.CultsOfTibia.Misguided.Mission) == 5
-		and player:getStorageValue(Storage.CultsOfTibia.Orcs.Mission) == 3
-		and player:getStorageValue(Storage.CultsOfTibia.Humans.Mission) == 3
-		and player:getStorageValue(Storage.CultsOfTibia.FinalBoss.Mission) < 2 then
+				and player:getStorageValue(Storage.CultsOfTibia.Life.Mission) == 10
+				and player:getStorageValue(Storage.CultsOfTibia.MotA.Mission) == 15
+				and player:getStorageValue(Storage.CultsOfTibia.Barkless.Mission) == 7
+				and player:getStorageValue(Storage.CultsOfTibia.Misguided.Mission) == 5
+				and player:getStorageValue(Storage.CultsOfTibia.Orcs.Mission) == 3
+				and player:getStorageValue(Storage.CultsOfTibia.Humans.Mission) == 3
+				and player:getStorageValue(Storage.CultsOfTibia.FinalBoss.Mission) < 2 then
 			npcHandler:say("It seems to me that you have done all the missions I gave you. \z
 				All the cults have been revealed and now you can kill their leader, the final boss, \z
 				to save the world from a possible catastrophe.", npc, creature)
@@ -524,7 +524,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				Cult of {Orcs} or Cult of the {Humans}?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
-	-- General
+		-- General
 	elseif npcHandler:getTopic(playerId) == 2 then
 		local missionsTable = config.missions[message:lower()]
 		if missionsTable then
@@ -537,16 +537,15 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addExperience(rewardExperience[playerId])
 				player:sendTextMessage(MESSAGE_EXPERIENCE, "You gained " .. rewardExperience[playerId] .. " experience points.")
 				npcHandler:setTopic(playerId, 0)
-
 			elseif player:getStorageValue(storage[playerId]) > 0 and player:getStorageValue(storage[playerId]) > value[playerId] then
-				npcHandler:say({"You already done this mission."}, npc, creature)
+				npcHandler:say({ "You already done this mission." }, npc, creature)
 				npcHandler:setTopic(playerId, 2)
 			else
 				npcHandler:say(missionsTable.text, npc, creature)
 				npcHandler:setTopic(playerId, 3)
 			end
 		end
-	-- Accept mission
+		-- Accept mission
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 3 then
 		if player:getStorageValue(storage[playerId]) < 1 then
 			npcHandler:say("Very nice! Come back if you have found what's going on in this cult.", npc, creature)
@@ -559,7 +558,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("You have not finished your work yet. Come back when you're done.", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
-	-- Recuse mission
+		-- Recuse mission
 	elseif MsgContains(message, "no") and npcHandler:getTopic(playerId) == 3 then
 		npcHandler:say("What a pitty! You can come back, when ever you want, if you have changed your opinion.", npc, creature)
 		npcHandler:setTopic(playerId, 0)

@@ -8,6 +8,7 @@ function onGetFormulaValues(player, level, maglevel)
 	local max = (level / 5) + (maglevel * 7.395) + 46
 	return -min, -max
 end
+
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 
 local rune = Spell("rune")

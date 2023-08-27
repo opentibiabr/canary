@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 2,
 	Locations = "Seacrest Grounds during a world change."
-	}
+}
 
 monster.health = 2800
 monster.maxHealth = 2800
@@ -76,30 +76,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 80000, maxCount = 5},
-	{name = "quara pincers", chance = 18800, maxCount = 1},
-	{name = "great mana potion", chance = 9720, maxCount = 2},
-	{name = "great health potion", chance = 9010, maxCount = 2},
-	{name = "small ruby", chance = 9010, maxCount = 2},
-	{name = "small diamond", chance = 7060, maxCount = 2},
-	{name = "mind stone", chance = 6140},
-	{id= 3039, chance = 5120}, -- red gem
-	{name = "shrimp", chance = 4810, maxCount = 5},
-	{name = "vortex bolt", chance = 3790, maxCount = 5},
-	{id = 281, chance = 1430}, -- giant shimmering pearl (green)
-	{name = "warrior helmet", chance = 1430},
-	{name = "fish fin", chance = 920},
-	{name = "crown armor", chance = 611},
-	{id = 3053, chance = 410}, -- time ring
-	{name = "talon", chance = 310},
-	{name = "glacier robe", chance = 200},
-	{name = "giant shrimp", chance = 100},
-	{name = "twiceslicer", chance = 100}
+	{ name = "platinum coin", chance = 80000, maxCount = 5 },
+	{ name = "quara pincers", chance = 18800, maxCount = 1 },
+	{ name = "great mana potion", chance = 9720, maxCount = 2 },
+	{ name = "great health potion", chance = 9010, maxCount = 2 },
+	{ name = "small ruby", chance = 9010, maxCount = 2 },
+	{ name = "small diamond", chance = 7060, maxCount = 2 },
+	{ name = "mind stone", chance = 6140 },
+	{ id = 3039, chance = 5120 }, -- red gem
+	{ name = "shrimp", chance = 4810, maxCount = 5 },
+	{ name = "vortex bolt", chance = 3790, maxCount = 5 },
+	{ id = 281, chance = 1430 }, -- giant shimmering pearl (green)
+	{ name = "warrior helmet", chance = 1430 },
+	{ name = "fish fin", chance = 920 },
+	{ name = "crown armor", chance = 611 },
+	{ id = 3053, chance = 410 }, -- time ring
+	{ name = "talon", chance = 310 },
+	{ name = "glacier robe", chance = 200 },
+	{ name = "giant shrimp", chance = 100 },
+	{ name = "twiceslicer", chance = 100 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, skill = 90, attack = 60, effect = CONST_ME_DRAWBLOOD},
-	{name ="speed", interval = 2000, chance = 20, speedChange = -300, range = 1, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000}
+	{ name = "melee", interval = 2000, chance = 100, skill = 90, attack = 60, effect = CONST_ME_DRAWBLOOD },
+	{ name = "speed", interval = 2000, chance = 20, speedChange = -300, range = 1, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000 }
 }
 
 monster.defenses = {
@@ -108,23 +108,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = -25},
-	{type = COMBAT_EARTHDAMAGE, percent = -10},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -25 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -10 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

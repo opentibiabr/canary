@@ -64,7 +64,7 @@ function dawnportPoisonCondition(player)
 		end
 
 		if maxValue < minRoundsDamage then
-			value = math.floor( math.sqrt(maxValue) )
+			value = math.floor(math.sqrt(maxValue))
 		end
 
 		local poisonMod = Condition(CONDITION_POISON)
@@ -76,7 +76,7 @@ function dawnportPoisonCondition(player)
 		poisonMod:setParameter(CONDITION_PARAM_FORCEUPDATE, true)
 
 		player:addCondition(poisonMod)
-	-- Common poison
+		-- Common poison
 	elseif health >= (minHealth + maxPoisonDamage) then
 		player:addCondition(poison)
 	end
@@ -101,7 +101,6 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if target.itemid == 26076 then
 		if item.type == 0 then
 			player:sendTextMessage(MESSAGE_FAILURE, 'It is empty.')
-
 		elseif item.type == 1 then
 			toPosition:sendMagicEffect(CONST_ME_WATER_SPLASH)
 			target:transform(target.itemid + 1)
@@ -115,11 +114,9 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if target.itemid == 1 then
 		if item.type == 0 then
 			player:sendTextMessage(MESSAGE_FAILURE, 'It is empty.')
-
 		elseif target.uid == player.uid then
-			if table.contains({2, 3, 16}, item.type) then
+			if table.contains({ 2, 3, 16 }, item.type) then
 				player:addCondition(drunk)
-
 			elseif item.type == 6 then
 				local town = player:getTown()
 				if town and town:getId() == TOWNS_LIST.DAWNPORT then
@@ -147,16 +144,12 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			end
 			item:transform(item.itemid, 0)
 		end
-
 	else
-
 		local fluidSource = targetType:getFluidSource()
 		if fluidSource ~= 0 then
 			item:transform(item.itemid, fluidSource)
-
 		elseif item.type == 0 then
 			player:sendTextMessage(MESSAGE_FAILURE, 'It is empty.')
-
 		else
 			if item.type == 5 and target.actionid == 2023 then
 				toPosition.y = toPosition.y + 1
@@ -172,7 +165,6 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 						end
 					end
 				end
-
 			else
 				if toPosition.x == CONTAINER_POSITION then
 					toPosition = player:getPosition()
@@ -181,9 +173,9 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				local pool = Game.createItem(2886, item.type, toPosition)
 				if pool then
 					pool:decay()
-    				if item.type == 1 then
-    					checkWallArito(pool, toPosition)
-    				end
+					if item.type == 1 then
+						checkWallArito(pool, toPosition)
+					end
 				end
 			end
 			item:transform(item.itemid, 0)
@@ -195,4 +187,3 @@ end
 
 fluid:id(2524, 2873, 2874, 2875, 2876, 2877, 2879, 2880, 2881, 2882, 2885, 2893, 2901, 2902, 2903, 2904, 3465, 3477, 3478, 3479, 3480)
 fluid:register()
-

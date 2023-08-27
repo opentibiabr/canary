@@ -38,11 +38,11 @@ function spell.onCastSpell(creature, var)
 	if combat:execute(creature, var) then
 		-- Ice cooldown
 		local condition1 = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 262)
-		condition1:setTicks((cooldown * 1000)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+		condition1:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 		creature:addCondition(condition1)
 		-- Earth cooldown
 		local condition2 = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 263)
-		condition2:setTicks((cooldown * 1000)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+		condition2:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 		creature:addCondition(condition2)
 		return true
 	end

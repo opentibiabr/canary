@@ -1,16 +1,16 @@
 local config = {
 	[768] = {
-		[1] = {female = 269, male = 268, msg = 'nightmare'},
-		[2] = {female = 279, male = 278, msg = 'brotherhood'}
+		[1] = { female = 269, male = 268, msg = 'nightmare' },
+		[2] = { female = 279, male = 278, msg = 'brotherhood' }
 	},
 	[769] = {
-		[1] = {female = 269, male = 268, addon = 1, msg = 'first nightmare'},
-		[2] = {female = 279, male = 278, addon = 1, msg = 'first brotherhood'},
+		[1] = { female = 269, male = 268, addon = 1, msg = 'first nightmare' },
+		[2] = { female = 279, male = 278, addon = 1, msg = 'first brotherhood' },
 		storageValue = 2
 	},
 	[770] = {
-		[1] = {female = 269, male = 268, addon = 2, msg = 'second nightmare'},
-		[2] = {female = 279, male = 278, addon = 2, msg = 'second brotherhood'},
+		[1] = { female = 269, male = 268, addon = 2, msg = 'second nightmare' },
+		[2] = { female = 279, male = 278, addon = 2, msg = 'second brotherhood' },
 		storageValue = 3
 	}
 }
@@ -63,5 +63,5 @@ function dreamerDocuments.onUse(player, item, fromPosition, target, toPosition, 
 	return true
 end
 
-dreamerDocuments:id(768,769,770)
+dreamerDocuments:id(768, 769, 770)
 dreamerDocuments:register()

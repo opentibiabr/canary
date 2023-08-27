@@ -53,7 +53,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
---[[
+	--[[
 	if MsgContains(message, "fight") then
 		npcHandler:say("You can help in the fight against the hive. There are several missions available to destabilise the hive. Just ask for them if you want to learn more. After completing many missions you might be worthy to get a reward.", npc, creature)
 		npcHandler:setTopic(playerId, 0)

@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Fiehonja, Seacrest Grounds, Krailos Steppe underwater cave."
-	}
+}
 
 monster.health = 1200
 monster.maxHealth = 1200
@@ -70,22 +70,22 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Rarr chomp chomp!", yell = false}
+	{ text = "Rarr chomp chomp!", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 50000, maxCount = 100},
-	{name = "gold coin", chance = 41000, maxCount = 38},
-	{id = 3578, chance = 25430, maxCount = 4}, -- fish
-	{name = "deepling scales", chance = 9620},
-	{name = "eye of a deepling", chance = 1200},
-	{name = "small sapphire", chance = 1090},
-	{id = 281, chance = 390}, -- giant shimmering pearl (green)
-	{name = "fish fin", chance = 161}
+	{ name = "gold coin", chance = 50000, maxCount = 100 },
+	{ name = "gold coin", chance = 41000, maxCount = 38 },
+	{ id = 3578, chance = 25430, maxCount = 4 }, -- fish
+	{ name = "deepling scales", chance = 9620 },
+	{ name = "eye of a deepling", chance = 1200 },
+	{ name = "small sapphire", chance = 1090 },
+	{ id = 281, chance = 390 }, -- giant shimmering pearl (green)
+	{ name = "fish fin", chance = 161 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -175, effect = CONST_ME_DRAWBLOOD}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -175, effect = CONST_ME_DRAWBLOOD }
 }
 
 monster.defenses = {
@@ -94,23 +94,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 5},
-	{type = COMBAT_ENERGYDAMAGE, percent = -5},
-	{type = COMBAT_EARTHDAMAGE, percent = 20},
-	{type = COMBAT_FIREDAMAGE, percent = 55},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -5 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 20 },
+	{ type = COMBAT_FIREDAMAGE, percent = 55 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

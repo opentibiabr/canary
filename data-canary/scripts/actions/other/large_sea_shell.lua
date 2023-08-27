@@ -8,7 +8,7 @@ function largeSeaShell.onUse(player, item, fromPosition, target, toPosition, isH
 			doTargetCombatHealth(0, player, COMBAT_PHYSICALDAMAGE, -200, -200, CONST_ME_NONE)
 			msg = "Ouch! You squeezed your fingers."
 		elseif chance > 16 and chance <= 64 then
-			Game.createItem(math.random(281,282), 1, player:getPosition())
+			Game.createItem(math.random(281, 282), 1, player:getPosition())
 			msg = "You found a beautiful pearl."
 		else
 			msg = "Nothing is inside."

@@ -21,16 +21,15 @@ function dangerousDepthPesticide.onUse(player, item, fromPosition, target, toPos
 			if r <= 50 then
 				posTarget:sendMagicEffect(CONST_ME_POISONAREA)
 				local diremaw = Game.createMonster("Diremaw", target:getPosition())
-				player:setStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount, player:getStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount) +1)
+				player:setStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount, player:getStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount) + 1)
 				target:transform(30730)
-
 			else
 				posTarget:sendMagicEffect(CONST_ME_POISONAREA)
-				player:setStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount, player:getStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount) +1)
+				player:setStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount, player:getStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount) + 1)
 				target:transform(30730)
 			end
 		end
-	elseif (table.contains({27495, 27496, 27497}, target:getId())) then
+	elseif (table.contains({ 27495, 27496, 27497 }, target:getId())) then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Only half-decayed diremaw corpses can be neutralised with these pesticides.")
 		return true
 	end

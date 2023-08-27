@@ -26,7 +26,7 @@ if NpcHandler == nil then
 	MESSAGE_NEEDMORESPACE = 14 -- When the player has some space to buy an item, but not enough space
 	-- EMPTY = 15
 	MESSAGE_WALKAWAY = 16 -- When the player walks out of the talkRadius of the npc.
-	MESSAGE_DECLINE	 = 17 -- When the player says no to something.
+	MESSAGE_DECLINE = 17 -- When the player says no to something.
 	MESSAGE_SENDTRADE = 18 -- When the npc sends the trade window to the player
 	MESSAGE_NOSHOP = 19 -- When the npc's shop is requested but he doesn't have any
 	MESSAGE_ONCLOSESHOP = 20 -- When the player closes the npc's shop window
@@ -265,7 +265,7 @@ if NpcHandler == nil then
 	-- Variables "greetCallback, farewellCallback and tradeCallback" are boolean value, true by default
 	function NpcHandler:addModule(module, initNpcName, greetCallback, farewellCallback, tradeCallback)
 		if self.modules ~= nil then
-			self.modules[#self.modules + 1] = module
+			self.modules[#self.modules+1] = module
 			self.npcName = initNpcName
 			if greetCallback == nil then
 				logger.warn("[NpcHandler:addModule] - Greet callback is missing for npc with name: {}, setting to true", initNpcName)
@@ -432,8 +432,8 @@ if NpcHandler == nil then
 
 				if self.keywordHandler ~= nil then
 					if self:checkInteraction(npc, player)
-					and msgtype == TALKTYPE_PRIVATE_PN
-					or not self:checkInteraction(npc, player) then
+							and msgtype == TALKTYPE_PRIVATE_PN
+							or not self:checkInteraction(npc, player) then
 						local ret = self.keywordHandler:processMessage(npc, player, msg)
 						if not ret then
 							callback = self:getCallback(CALLBACK_MESSAGE_DEFAULT)
@@ -608,11 +608,11 @@ if NpcHandler == nil then
 				self.talkDelay = delay
 			end
 			-- The "self.talkDelayTimeForOutgoingMessages * 1000" = Interval for sending subsequent messages from the first
-			npc:sayWithDelay(npcUniqueId, msgs[messagesTable], TALKTYPE_PRIVATE_NP, ((messagesTable-1) * self.talkDelay + self.talkDelayTimeForOutgoingMessages * 1000),
-                             self.eventDelayedSay[playerId][messagesTable], playerUniqueId)
-			ret[#ret + 1] = self.eventDelayedSay[playerId][messagesTable]
+			npc:sayWithDelay(npcUniqueId, msgs[messagesTable], TALKTYPE_PRIVATE_NP, ((messagesTable - 1) * self.talkDelay + self.talkDelayTimeForOutgoingMessages * 1000),
+				self.eventDelayedSay[playerId][messagesTable], playerUniqueId)
+			ret[#ret+1] = self.eventDelayedSay[playerId][messagesTable]
 		end
-		return(ret)
+		return (ret)
 	end
 
 	-- Makes the npc represented by this instance of NpcHandler say something.

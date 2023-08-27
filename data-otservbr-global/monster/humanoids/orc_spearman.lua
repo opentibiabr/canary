@@ -27,7 +27,7 @@ monster.Bestiary = {
 		Venore Orc Cave, below the Point of No Return in Outlaw Camp, Plains of Havoc, \z
 		North of Thais in the Orc Peninsula, Elvenbane and Orc Camp in Foreigner Quarter. \z
 		Also found in Rookgaard West plains, Zao Orc Land."
-	}
+}
 
 monster.health = 105
 monster.maxHealth = 105
@@ -73,24 +73,24 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Ugaar!", yell = false}
+	{ text = "Ugaar!", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 25050, maxCount = 11},
-	{name = "spear", chance = 17440},
-	{name = "machete", chance = 3000},
-	{name = "studded legs", chance = 10000},
-	{name = "studded helmet", chance = 9000},
-	{name = "meat", chance = 30200},
-	{name = "orc tooth", chance = 150},
-	{name = "orc leather", chance = 2300},
-	{id = 23986, chance = 1000} -- heavy old tome
+	{ name = "gold coin", chance = 25050, maxCount = 11 },
+	{ name = "spear", chance = 17440 },
+	{ name = "machete", chance = 3000 },
+	{ name = "studded legs", chance = 10000 },
+	{ name = "studded helmet", chance = 9000 },
+	{ name = "meat", chance = 30200 },
+	{ name = "orc tooth", chance = 150 },
+	{ name = "orc leather", chance = 2300 },
+	{ id = 23986, chance = 1000 } -- heavy old tome
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -25},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -30, range = 7, shootEffect = CONST_ANI_SPEAR, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -25 },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -30, range = 7, shootEffect = CONST_ANI_SPEAR, target = false }
 }
 
 monster.defenses = {
@@ -99,23 +99,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 20},
-	{type = COMBAT_EARTHDAMAGE, percent = -10},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 20},
-	{type = COMBAT_DEATHDAMAGE , percent = -10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 20 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -10 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

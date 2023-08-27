@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "South of Port Hope (Trapwood) on ground level and underground and on Foreigner Quarter of Yalahar."
-	}
+}
 
 monster.health = 80
 monster.maxHealth = 80
@@ -70,28 +70,28 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Brak brrretz!", yell = false},
-	{text = "Grow truk grrrrr.", yell = false},
-	{text = "Prek tars, dekklep zurk.", yell = false}
+	{ text = "Brak brrretz!", yell = false },
+	{ text = "Grow truk grrrrr.", yell = false },
+	{ text = "Prek tars, dekklep zurk.", yell = false }
 }
 
 monster.loot = {
-	{id = 2920, chance = 6000}, -- torch
-	{name = "gold coin", chance = 75000, maxCount = 13},
-	{name = "bronze amulet", chance = 110},
-	{id = 3114, chance = 1000, maxCount = 2}, -- skull
-	{name = "poison dagger", chance = 1500},
-	{name = "leather armor", chance = 10000},
-	{name = "poison arrow", chance = 5000, maxCount = 3},
-	{name = "tribal mask", chance = 510},
-	{name = "bast skirt", chance = 100},
-	{name = "seeds", chance = 200}
+	{ id = 2920, chance = 6000 }, -- torch
+	{ name = "gold coin", chance = 75000, maxCount = 13 },
+	{ name = "bronze amulet", chance = 110 },
+	{ id = 3114, chance = 1000, maxCount = 2 }, -- skull
+	{ name = "poison dagger", chance = 1500 },
+	{ name = "leather armor", chance = 10000 },
+	{ name = "poison arrow", chance = 5000, maxCount = 3 },
+	{ name = "tribal mask", chance = 510 },
+	{ name = "bast skirt", chance = 100 },
+	{ name = "seeds", chance = 200 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -15},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -15 },
 	-- poison
-	{name ="condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -20, maxDamage = -40, range = 5, shootEffect = CONST_ANI_POISON, target = false}
+	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 15, minDamage = -20, maxDamage = -40, range = 5, shootEffect = CONST_ANI_POISON, target = false }
 }
 
 monster.defenses = {
@@ -100,23 +100,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = -13},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -13},
-	{type = COMBAT_HOLYDAMAGE , percent = 15},
-	{type = COMBAT_DEATHDAMAGE , percent = -8}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = -13 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -13 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 15 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -8 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Nargor Undead Cave, Goroma, Treasure Island, Drefia, The Cave, Chyllfroest."
-	}
+}
 
 monster.health = 190
 monster.maxHealth = 190
@@ -73,18 +73,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 48000, maxCount = 25},
-	{id = 3114, chance = 4460}, -- skull
-	{id = 3115, chance = 4250}, -- bone
-	{id = 3116, chance = 5140}, -- big bone
-	{id = 3264, chance = 550}, -- sword
-	{name = "short sword", chance = 1003},
-	{name = "bone club", chance = 960},
-	{name = "spooky blue eye", chance = 4730}
+	{ name = "gold coin", chance = 48000, maxCount = 25 },
+	{ id = 3114, chance = 4460 }, -- skull
+	{ id = 3115, chance = 4250 }, -- bone
+	{ id = 3116, chance = 5140 }, -- big bone
+	{ id = 3264, chance = 550 }, -- sword
+	{ name = "short sword", chance = 1003 },
+	{ name = "bone club", chance = 960 },
+	{ name = "spooky blue eye", chance = 4730 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 }
 }
 
 monster.defenses = {
@@ -93,23 +93,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = -25},
-	{type = COMBAT_DEATHDAMAGE , percent = 100}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -25 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

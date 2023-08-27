@@ -2,22 +2,22 @@ local vocationDoors = {
 	-- Sorcerer
 	[22001] = {
 		vocation = VOCATION.ID.SORCERER,
-		destination = {x = 32054, y = 31883, z = 6}
+		destination = { x = 32054, y = 31883, z = 6 }
 	},
 	-- Druid
 	[22002] = {
 		vocation = VOCATION.ID.DRUID,
-		destination = {x = 32073, y = 31883, z = 6}
+		destination = { x = 32073, y = 31883, z = 6 }
 	},
 	-- Paladin
 	[22003] = {
 		vocation = VOCATION.ID.PALADIN,
-		destination = {x = 32059, y = 31883, z = 6}
+		destination = { x = 32059, y = 31883, z = 6 }
 	},
 	-- Knight
 	[22004] = {
 		vocation = VOCATION.ID.KNIGHT,
-		destination = {x = 32068, y = 31883, z = 6}
+		destination = { x = 32068, y = 31883, z = 6 }
 	},
 }
 

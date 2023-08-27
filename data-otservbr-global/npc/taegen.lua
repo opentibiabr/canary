@@ -26,7 +26,9 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Id like to take a walk with Aurita.'},{text = 'I miss Aurita golden hair.*sigh*'},{text = 'Pas in boldly tyll thow com to an hall the feyrist undir sky ... *sings*'}
+	{ text = 'Id like to take a walk with Aurita.' },
+	{ text = 'I miss Aurita golden hair.*sigh*' },
+	{ text = 'Pas in boldly tyll thow com to an hall the feyrist undir sky ... *sings*' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -119,7 +121,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(ThreatenedDreams.Mission03[1]) == 2
-		and player:getItemCount(25782) >= 1 then
+				and player:getItemCount(25782) >= 1 then
 			npcHandler:say({
 				"We are so happy. Now Aurita can take a walk on the beach. But I still can't visit her secret underwater grotto. To achieve this, we need something else: a very rare plant called raven herb. ...",
 				"If eaten it allows an air breathing creature to breathe underwater for a while. Please find this plant for me. But know that you'll only find it at night. It resembles a common fern but its leaves are of a lighter green."
@@ -157,7 +159,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(ThreatenedDreams.Mission03.UnlikelyCouple, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
-			if player:getItemCount(5953) > 0  then
+			if player:getItemCount(5953) > 0 then
 				npcHandler:say({
 					"Thank you, friend! Now I can visit Aurita in her underwater grotto!"
 				}, npc, creature)
@@ -176,10 +178,10 @@ local function creatureSayCallback(npc, creature, type, message)
 					"I already crafted one sun catcher for you."
 				}, npc, creature)
 			elseif player:getItemCount(675) >= 2
-			and player:getItemCount(676) >= 2
-			and player:getItemCount(677) >= 2
-			and player:getItemCount(678) >= 2
-			and player:getStorageValue(ThreatenedDreams.Mission03.DarkSunCatcher) < 1 then
+					and player:getItemCount(676) >= 2
+					and player:getItemCount(677) >= 2
+					and player:getItemCount(678) >= 2
+					and player:getStorageValue(ThreatenedDreams.Mission03.DarkSunCatcher) < 1 then
 				npcHandler:say({
 					"Alright, I will craft a sun catcher for you."
 				}, npc, creature)
@@ -214,4 +216,3 @@ npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table
 npcType:register(npcConfig)
-

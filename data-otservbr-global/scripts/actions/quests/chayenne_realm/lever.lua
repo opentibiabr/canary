@@ -12,13 +12,13 @@ function chayenneLever.onUse(player, item, fromPosition, itemEx, toPosition)
 			return true
 		end
 
-		local tile = Tile({x = 33075, y = 32591, z = 3})
+		local tile = Tile({ x = 33075, y = 32591, z = 3 })
 		local item = tile:getItemById(2129)
 		if item then
 			item:remove(1)
 		end
 		Game.setStorageValue(Storage.ChayenneKeyTime, os.time() + 5 * 60)
-		addEvent(Game.createItem, 60 * 1000, 2129, {x = 33075, y = 32591, z = 3})
+		addEvent(Game.createItem, 60 * 1000, 2129, { x = 33075, y = 32591, z = 3 })
 		item:transform(2773)
 	elseif item.itemid == 2773 then
 		item:transform(2772)

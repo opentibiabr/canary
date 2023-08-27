@@ -29,7 +29,7 @@ function closingDoor.onStepIn(creature, item, position, fromPosition)
 			else
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The door seems to be sealed against unwanted intruders.")
 				player:teleportTo(fromPosition, true)
-			return false
+				return false
 			end
 		end
 	end
@@ -40,7 +40,7 @@ function closingDoor.onStepIn(creature, item, position, fromPosition)
 			else
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Only the worthy may pass.")
 				player:teleportTo(fromPosition, true)
-			return false
+				return false
 			end
 		end
 	end
@@ -83,7 +83,7 @@ function closingDoor.onStepOut(creature, item, position, fromPosition)
 		return true
 	end
 
-	local newPosition = {x = position.x + 1, y = position.y, z = position.z}
+	local newPosition = { x = position.x + 1, y = position.y, z = position.z }
 	local query = Tile(newPosition):queryAdd(creature)
 	if query ~= RETURNVALUE_NOERROR or query == RETURNVALUE_NOTENOUGHROOM then
 		newPosition.x = newPosition.x - 1

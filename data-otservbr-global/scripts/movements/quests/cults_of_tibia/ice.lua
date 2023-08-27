@@ -4,7 +4,7 @@ function sendConditionCults(playerid, info, fromPos, toPos, fromPos2, toPos2, ti
 		return false
 	end
 
-	if ( not player:getPosition():isInRange(fromPos2, toPos2) ) then
+	if (not player:getPosition():isInRange(fromPos2, toPos2)) then
 		if (not player:getPosition():isInRange(fromPos, toPos)) then
 			return true
 		end
@@ -19,7 +19,7 @@ function sendConditionCults(playerid, info, fromPos, toPos, fromPos2, toPos2, ti
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, info.msgs[2])
 	elseif time >= 120 then
 		local storage = player:getStorageValue(info.storageBarkless) < 0 and 0 or
-		player:getStorageValue(info.storageBarkless)
+				player:getStorageValue(info.storageBarkless)
 		if storage < 3 and storage ~= 1 and storage ~= 2 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, info.msgs[3])
 			player:setStorageValue(info.storageBarkless, 1)
@@ -35,7 +35,7 @@ local function floorPassage(playerid, info, time)
 		return true
 	end
 	local storage = player:getStorageValue(info.storageBarkless) < 0 and 0 or
-	player:getStorageValue(info.storageBarkless)
+			player:getStorageValue(info.storageBarkless)
 	if time == 0 and storage < 3 then
 		player:setStorageValue(info.storageBarkless, 0)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, info.msgs[6])
@@ -75,7 +75,7 @@ function ice.onStepIn(creature, item, position, fromPosition)
 	if fromPosition.y == 31441 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, setting.msgs[1])
 		sendConditionCults(player:getId(), setting, setting.fromPos,
-		setting.toPos, setting.fromPos2, setting.toPos2, 0)
+			setting.toPos, setting.fromPos2, setting.toPos2, 0)
 		return true
 	end
 

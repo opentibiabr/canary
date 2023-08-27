@@ -15,14 +15,14 @@ function spell.onCastSpell(creature, var)
 		for i = 1, maxsummons - #summoncount do
 			creature:addHealth(500)
 			creature:getPosition():sendMagicEffect(12)
-			local mid = Game.createMonster("Chest Guard", { x=creature:getPosition().x+math.random(-2, 2), y=creature:getPosition().y+math.random(-2, 2), z=creature:getPosition().z })
-    		if not mid then
+			local mid = Game.createMonster("Chest Guard", { x = creature:getPosition().x + math.random(-2, 2), y = creature:getPosition().y + math.random(-2, 2), z = creature:getPosition().z })
+			if not mid then
 				return
 			end
 			mid:say("FREEZE! LET ME SEE YOUR HANDS UP!", TALKTYPE_ORANGE_2)
 		end
 	end
-return combat:execute(creature, var)
+	return combat:execute(creature, var)
 end
 
 spell:name("jewelry chest summon")

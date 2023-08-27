@@ -17,4 +17,5 @@ function whitePaleHeal.onPrepareDeath(creature, lastHitKiller, mostDamageKiller)
 	end
 	return true
 end
+
 whitePaleHeal:register()

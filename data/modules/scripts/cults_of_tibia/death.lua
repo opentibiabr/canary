@@ -1,5 +1,5 @@
 function onRecvbyte(player, msg, byte)
-	if  IsRunningGlobalDatapack() and player then
+	if IsRunningGlobalDatapack() and player then
 		local storageDeathFake = player:getStorageValue(Storage.CultsOfTibia.Barkless.Death)
 		if storageDeathFake == 1 then
 			player:setStorageValue(Storage.CultsOfTibia.Barkless.Death, 0)

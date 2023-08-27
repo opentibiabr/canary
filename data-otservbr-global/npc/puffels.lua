@@ -45,7 +45,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addSpellKeyword({"find", "person"},
+keywordHandler:addSpellKeyword({ "find", "person" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Find Person",
@@ -54,7 +54,7 @@ keywordHandler:addSpellKeyword({"find", "person"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"great", "light"},
+keywordHandler:addSpellKeyword({ "great", "light" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Great Light",
@@ -63,7 +63,7 @@ keywordHandler:addSpellKeyword({"great", "light"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"light"},
+keywordHandler:addSpellKeyword({ "light" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Light",
@@ -72,7 +72,7 @@ keywordHandler:addSpellKeyword({"light"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"magic", "rope"},
+keywordHandler:addSpellKeyword({ "magic", "rope" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Magic Rope",
@@ -81,7 +81,7 @@ keywordHandler:addSpellKeyword({"magic", "rope"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"cure", "poison"},
+keywordHandler:addSpellKeyword({ "cure", "poison" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Cure Poison",
@@ -90,7 +90,7 @@ keywordHandler:addSpellKeyword({"cure", "poison"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"intense", "wound", "cleansing"},
+keywordHandler:addSpellKeyword({ "intense", "wound", "cleansing" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Intense Wound Cleansing",
@@ -99,7 +99,7 @@ keywordHandler:addSpellKeyword({"intense", "wound", "cleansing"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"wound", "cleansing"},
+keywordHandler:addSpellKeyword({ "wound", "cleansing" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Wound Cleansing",
@@ -108,7 +108,7 @@ keywordHandler:addSpellKeyword({"wound", "cleansing"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"levitate"},
+keywordHandler:addSpellKeyword({ "levitate" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Levitate",
@@ -117,7 +117,7 @@ keywordHandler:addSpellKeyword({"levitate"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"haste"},
+keywordHandler:addSpellKeyword({ "haste" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Haste",
@@ -126,7 +126,7 @@ keywordHandler:addSpellKeyword({"haste"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"brutal", "strike"},
+keywordHandler:addSpellKeyword({ "brutal", "strike" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Brutal Strike",
@@ -135,7 +135,7 @@ keywordHandler:addSpellKeyword({"brutal", "strike"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"charge"},
+keywordHandler:addSpellKeyword({ "charge" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Charge",
@@ -144,7 +144,7 @@ keywordHandler:addSpellKeyword({"charge"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"whirlwind", "throw"},
+keywordHandler:addSpellKeyword({ "whirlwind", "throw" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Whirlwind Throw",
@@ -153,7 +153,7 @@ keywordHandler:addSpellKeyword({"whirlwind", "throw"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"groundshaker"},
+keywordHandler:addSpellKeyword({ "groundshaker" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Groundshaker",
@@ -162,7 +162,7 @@ keywordHandler:addSpellKeyword({"groundshaker"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"fierce", "berserk"},
+keywordHandler:addSpellKeyword({ "fierce", "berserk" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Fierce Berserk",
@@ -171,7 +171,7 @@ keywordHandler:addSpellKeyword({"fierce", "berserk"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"berserk"},
+keywordHandler:addSpellKeyword({ "berserk" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Berserk",
@@ -180,7 +180,7 @@ keywordHandler:addSpellKeyword({"berserk"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"inflict", "wound"},
+keywordHandler:addSpellKeyword({ "inflict", "wound" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Inflict Wound",
@@ -189,7 +189,7 @@ keywordHandler:addSpellKeyword({"inflict", "wound"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"cure", "bleeding"},
+keywordHandler:addSpellKeyword({ "cure", "bleeding" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Cure Bleeding",
@@ -198,7 +198,7 @@ keywordHandler:addSpellKeyword({"cure", "bleeding"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"intense", "recovery"},
+keywordHandler:addSpellKeyword({ "intense", "recovery" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Intense Recovery",
@@ -207,7 +207,7 @@ keywordHandler:addSpellKeyword({"intense", "recovery"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"recovery"},
+keywordHandler:addSpellKeyword({ "recovery" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Recovery",
@@ -216,7 +216,7 @@ keywordHandler:addSpellKeyword({"recovery"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"front", "sweep"},
+keywordHandler:addSpellKeyword({ "front", "sweep" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Front Sweep",
@@ -225,7 +225,7 @@ keywordHandler:addSpellKeyword({"front", "sweep"},
 		vocation = VOCATION.BASE_ID.KNIGHT
 	}
 )
-keywordHandler:addSpellKeyword({"annihilation"},
+keywordHandler:addSpellKeyword({ "annihilation" },
 	{
 		npcHandler = npcHandler,
 		spellName = "Annihilation",
@@ -235,28 +235,28 @@ keywordHandler:addSpellKeyword({"annihilation"},
 	}
 )
 
-keywordHandler:addKeyword({"healing", "spells"}, StdModule.say,
+keywordHandler:addKeyword({ "healing", "spells" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "In this category I have '{Bruise Bane}', '{Cure Bleeding}', '{Wound Cleansing}', \z
 		'{Cure Poison}'', '{Intense Wound Cleansing}'', '{Recovery}'' and '{Intense Recovery}''."
 	}
 )
-keywordHandler:addKeyword({"attack", "spells"}, StdModule.say,
+keywordHandler:addKeyword({ "attack", "spells" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
-		text = {"In this category I have '{Whirlwind Throw}', '{Groundshaker}', '{Berserk}' and \z
-		'{Fierce Berserk}' as well as ...', ''{Brutal Strike}', '{Front Sweep}', '{Inflict Wound}' and '{Annihilation}'"}
+		text = { "In this category I have '{Whirlwind Throw}', '{Groundshaker}', '{Berserk}' and \z
+		'{Fierce Berserk}' as well as ...', ''{Brutal Strike}', '{Front Sweep}', '{Inflict Wound}' and '{Annihilation}'" }
 	}
 )
-keywordHandler:addKeyword({"support", "spells"}, StdModule.say,
+keywordHandler:addKeyword({ "support", "spells" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "In this category I have '{Light}', '{Find Person}', '{Magic Rope}', '{Levitate}', \z
 		'{Haste}', '{Charge}' and '{Great Light}'."
 	}
 )
-keywordHandler:addKeyword({"spells"}, StdModule.say,
+keywordHandler:addKeyword({ "spells" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "I can teach you {healing spells}, {attack spells} and {support spells}. \z

@@ -65,7 +65,7 @@ monster.light = {
 monster.summon = {
 	maxSummons = 5,
 	summons = {
-		{name = "Troll Champion", chance = 30, interval = 2000, count =5}
+		{ name = "Troll Champion", chance = 30, interval = 2000, count = 5 }
 	}
 }
 
@@ -75,17 +75,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 100000, maxCount = 64},
-	{name = "meat", chance = 25000},
-	{name = "hand axe", chance = 9650},
-	{name = "leather boots", chance = 9000},
-	{name = "silver amulet", chance = 5450},
-	{name = "studded club", chance = 5450},
-	{name = "spear", chance = 100000}
+	{ name = "gold coin", chance = 100000, maxCount = 64 },
+	{ name = "meat", chance = 25000 },
+	{ name = "hand axe", chance = 9650 },
+	{ name = "leather boots", chance = 9000 },
+	{ name = "silver amulet", chance = 5450 },
+	{ name = "studded club", chance = 5450 },
+	{ name = "spear", chance = 100000 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 }
 }
 
 monster.defenses = {
@@ -94,23 +94,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType.onThink = function(monster, interval)

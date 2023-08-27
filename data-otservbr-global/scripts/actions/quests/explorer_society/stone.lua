@@ -13,7 +13,7 @@ function explorerSocietyStone.onUse(player, item, fromPosition, target, toPositi
 		player:setStorageValue(Storage.ExplorerSociety.TheSpectralStone, 54)
 		player:setStorageValue(Storage.ExplorerSociety.QuestLine, 54)
 		toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
-	elseif target.uid == 25018 and player:getStorageValue(Storage.ExplorerSociety.TheSpectralStone) == 54 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 54  and player:getStorageValue(Storage.ExplorerSociety.SpectralStone) == 2 then -- mission taken from Mortimer
+	elseif target.uid == 25018 and player:getStorageValue(Storage.ExplorerSociety.TheSpectralStone) == 54 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 54 and player:getStorageValue(Storage.ExplorerSociety.SpectralStone) == 2 then -- mission taken from Mortimer
 		player:setStorageValue(Storage.ExplorerSociety.TheSpectralStone, 55)
 		player:setStorageValue(Storage.ExplorerSociety.QuestLine, 55)
 		player:removeItem(4840, 1)

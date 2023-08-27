@@ -6,7 +6,7 @@ local function bossTransformBack(creatureid, itemid)
 
 	local position = creature:getPosition()
 	if Tile(position):getItemCountById(itemid) > 0 then
-		addEvent(bossTransformBack, 4*1000, creature:getId(), itemid)
+		addEvent(bossTransformBack, 4 * 1000, creature:getId(), itemid)
 		return false
 	end
 
@@ -38,7 +38,7 @@ function geyser.onStepIn(creature, item, position, fromPosition)
 			local subtract = bossTransform:getHealth() - currentLife
 			bossTransform:addHealth(-subtract)
 			bossTransform:registerEvent("SpawnBoss")
-			addEvent(bossTransformBack, 4*1000, bossTransform:getId(), item:getId())
+			addEvent(bossTransformBack, 4 * 1000, bossTransform:getId(), item:getId())
 			return true
 		end
 	end

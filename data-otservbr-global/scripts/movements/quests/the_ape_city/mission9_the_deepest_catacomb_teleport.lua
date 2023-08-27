@@ -18,7 +18,7 @@ function mission9TheDeepestCatacombTeleport.onStepIn(creature, item, position, f
 			player:teleportTo(fromPosition)
 			position:sendMagicEffect(CONST_ME_TELEPORT)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE,"There are 4 large amphoras that must be broken in order to open the teleporter.")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There are 4 large amphoras that must be broken in order to open the teleporter.")
 			return true
 		end
 	else

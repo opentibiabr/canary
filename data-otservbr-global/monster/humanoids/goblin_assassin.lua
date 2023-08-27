@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Femor Hills, Edron Goblin Cave and Fenrock."
-	}
+}
 
 monster.health = 75
 monster.maxHealth = 75
@@ -70,58 +70,58 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Goblin Powahhh!", yell = false},
-	{text = "Me kill you!", yell = false},
-	{text = "Me green menace!", yell = false},
-	{text = "Gobabunga!", yell = false},
-	{text = "Gooobliiiins!", yell = false}
+	{ text = "Goblin Powahhh!", yell = false },
+	{ text = "Me kill you!", yell = false },
+	{ text = "Me green menace!", yell = false },
+	{ text = "Gobabunga!", yell = false },
+	{ text = "Gooobliiiins!", yell = false }
 }
 
 monster.loot = {
-	{name = "small stone", chance = 9900, maxCount = 3},
-	{name = "gold coin", chance = 50000, maxCount = 9},
-	{id = 3115, chance = 13000}, -- bone
-	{name = "mouldy cheese", chance = 6610},
-	{name = "dagger", chance = 17000},
-	{name = "short sword", chance = 8820},
-	{name = "bone club", chance = 4770},
-	{name = "leather helmet", chance = 13000},
-	{name = "leather armor", chance = 7240},
-	{name = "small axe", chance = 9800},
-	{id = 3578, chance = 12400} -- fish
+	{ name = "small stone", chance = 9900, maxCount = 3 },
+	{ name = "gold coin", chance = 50000, maxCount = 9 },
+	{ id = 3115, chance = 13000 }, -- bone
+	{ name = "mouldy cheese", chance = 6610 },
+	{ name = "dagger", chance = 17000 },
+	{ name = "short sword", chance = 8820 },
+	{ name = "bone club", chance = 4770 },
+	{ name = "leather helmet", chance = 13000 },
+	{ name = "leather armor", chance = 7240 },
+	{ name = "small axe", chance = 9800 },
+	{ id = 3578, chance = 12400 } -- fish
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -15},
-	{name ="drunk", interval = 2000, chance = 10, shootEffect = CONST_ANI_POISON, target = false, duration = 10000},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -35, range = 6, shootEffect = CONST_ANI_THROWINGKNIFE, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -15 },
+	{ name = "drunk", interval = 2000, chance = 10, shootEffect = CONST_ANI_POISON, target = false, duration = 10000 },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -35, range = 6, shootEffect = CONST_ANI_THROWINGKNIFE, target = false }
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 15,
-	{name ="invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE},
-	{name ="speed", interval = 2000, chance = 15, speedChange = 100, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000}
+	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_MAGIC_BLUE },
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 100, effect = CONST_ME_MAGIC_RED, target = false, duration = 3000 }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 20},
-	{type = COMBAT_EARTHDAMAGE, percent = -10},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 20},
-	{type = COMBAT_DEATHDAMAGE , percent = -10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 20 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -10 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

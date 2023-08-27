@@ -9,7 +9,7 @@ function spell.onCastSpell(creature, var)
 	else
 		return
 	end
-    return true
+	return true
 end
 
 spell:name("soulcatcher summon")

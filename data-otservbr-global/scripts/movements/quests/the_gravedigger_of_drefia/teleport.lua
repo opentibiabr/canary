@@ -23,7 +23,7 @@ function teleport.onStepIn(creature, item, position, fromPosition)
 
 	local teleport = setting[item.actionid]
 	if teleport and player:getStorageValue(teleport.firstStorage) == 1
-	and player:getStorageValue(teleport.secondStorage) < 1 then
+			and player:getStorageValue(teleport.secondStorage) < 1 then
 		player:teleportTo(teleport.firstDestination)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	else

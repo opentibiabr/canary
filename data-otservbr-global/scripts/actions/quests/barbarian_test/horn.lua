@@ -46,5 +46,5 @@ function barbarianHorn.onUse(player, item, fromPosition, target, toPosition, isH
 	return true
 end
 
-barbarianHorn:id(7140,7141,7174,7175,7176)
+barbarianHorn:id(7140, 7141, 7174, 7175, 7176)
 barbarianHorn:register()

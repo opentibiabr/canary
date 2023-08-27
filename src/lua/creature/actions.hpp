@@ -150,11 +150,11 @@ public:
 	ReturnValue canUse(const Player* player, const Position &pos, const Item* item);
 	ReturnValue canUseFar(const Creature* creature, const Position &toPos, bool checkLineOfSight, bool checkFloor);
 
-	bool registerLuaItemEvent(const std::shared_ptr<Action> &action);
-	bool registerLuaUniqueEvent(const std::shared_ptr<Action> &action);
-	bool registerLuaActionEvent(const std::shared_ptr<Action> &action);
-	bool registerLuaPositionEvent(const std::shared_ptr<Action> &action);
-	bool registerLuaEvent(const std::shared_ptr<Action> &action);
+	bool registerLuaItemEvent(const std::shared_ptr<Action> action);
+	bool registerLuaUniqueEvent(const std::shared_ptr<Action> action);
+	bool registerLuaActionEvent(const std::shared_ptr<Action> action);
+	bool registerLuaPositionEvent(const std::shared_ptr<Action> action);
+	bool registerLuaEvent(const std::shared_ptr<Action> action);
 	// Clear maps for reloading
 	void clear();
 
@@ -183,7 +183,7 @@ private:
 		return false;
 	}
 
-	void setItemId(uint16_t itemId, const std::shared_ptr<Action> &action) {
+	void setItemId(uint16_t itemId, const std::shared_ptr<Action> action) {
 		useItemMap.try_emplace(itemId, action);
 	}
 
@@ -195,7 +195,7 @@ private:
 		return false;
 	}
 
-	void setUniqueId(uint16_t uniqueId, const std::shared_ptr<Action> &action) {
+	void setUniqueId(uint16_t uniqueId, const std::shared_ptr<Action> action) {
 		uniqueItemMap.try_emplace(uniqueId, action);
 	}
 
@@ -207,7 +207,7 @@ private:
 		return false;
 	}
 
-	void setActionId(uint16_t actionId, const std::shared_ptr<Action> &action) {
+	void setActionId(uint16_t actionId, const std::shared_ptr<Action> action) {
 		actionItemMap.try_emplace(actionId, action);
 	}
 

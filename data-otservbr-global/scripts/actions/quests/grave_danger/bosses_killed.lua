@@ -1,10 +1,10 @@
 local bosses = {
-	["sir baeloc"] = {storage = Storage.Quest.U12_20.GraveDanger.Bosses.BaelocNictrosKilled},
-	["count vlarkorth"] = {storage = Storage.Quest.U12_20.GraveDanger.Bosses.CountVlarkorthKilled},
-	["duke krule"] = {storage = Storage.Quest.U12_20.GraveDanger.Bosses.DukeKruleKilled},
-	["earl osam"] = {storage = Storage.Quest.U12_20.GraveDanger.Bosses.EarlOsamKilled},
-	["lord azaram"] = {storage = Storage.Quest.U12_20.GraveDanger.Bosses.LordAzaramKilled},
-	["king zelos"] = {storage = Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosKilled},
+	["sir baeloc"] = { storage = Storage.Quest.U12_20.GraveDanger.Bosses.BaelocNictrosKilled },
+	["count vlarkorth"] = { storage = Storage.Quest.U12_20.GraveDanger.Bosses.CountVlarkorthKilled },
+	["duke krule"] = { storage = Storage.Quest.U12_20.GraveDanger.Bosses.DukeKruleKilled },
+	["earl osam"] = { storage = Storage.Quest.U12_20.GraveDanger.Bosses.EarlOsamKilled },
+	["lord azaram"] = { storage = Storage.Quest.U12_20.GraveDanger.Bosses.LordAzaramKilled },
+	["king zelos"] = { storage = Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosKilled },
 }
 
 local bossesGraveDanger = CreatureEvent("GraveDangerKill")
@@ -36,4 +36,5 @@ function bossesGraveDanger.onKill(creature, target)
 	end
 	return true
 end
+
 bossesGraveDanger:register()

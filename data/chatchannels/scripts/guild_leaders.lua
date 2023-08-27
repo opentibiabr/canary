@@ -9,7 +9,7 @@ function onSpeak(player, type, message)
 	type = TALKTYPE_CHANNEL_Y
 	if staff then
 		if guild then
-			info =  info .. "][" .. guild:getName()
+			info = info .. "][" .. guild:getName()
 		end
 		type = TALKTYPE_CHANNEL_O
 	else

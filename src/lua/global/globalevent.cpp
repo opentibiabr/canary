@@ -30,7 +30,7 @@ void GlobalEvents::clear() {
 	timerMap.clear();
 }
 
-bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEvent) {
+bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> globalEvent) {
 	if (globalEvent->getEventType() == GLOBALEVENT_TIMER) {
 		auto result = timerMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {

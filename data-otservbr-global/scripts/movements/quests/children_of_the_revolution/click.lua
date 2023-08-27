@@ -1,9 +1,9 @@
 local config = {
 	positions = {
-		({x = 33258, y = 31080, z = 8}),
-		({x = 33266, y = 31084, z = 8}),
-		({x = 33259, y = 31089, z = 8}),
-		({x = 33263, y = 31093, z = 8})
+		({ x = 33258, y = 31080, z = 8 }),
+		({ x = 33266, y = 31084, z = 8 }),
+		({ x = 33259, y = 31089, z = 8 }),
+		({ x = 33263, y = 31093, z = 8 })
 	},
 	stairPosition = Position(33265, 31116, 8),
 	areaCenter = Position(33268, 31119, 7),
@@ -14,10 +14,10 @@ local config = {
 		to = Position(33288, 31134, 7)
 	},
 	waves = {
-		{monster = 'eternal guardian', size = 20},
-		{monster = 'eternal guardian', size = 20},
-		{monster = 'eternal guardian', size = 20},
-		{monster = 'lizard chosen', size = 20}
+		{ monster = 'eternal guardian', size = 20 },
+		{ monster = 'eternal guardian', size = 20 },
+		{ monster = 'eternal guardian', size = 20 },
+		{ monster = 'lizard chosen', size = 20 }
 	}
 }
 
@@ -67,7 +67,7 @@ function click.onStepIn(creature, item, position, fromPosition)
 	end
 
 	if player:getStorageValue(Storage.ChildrenoftheRevolution.Questline) ~= 19
-	or Game.getStorageValue(Storage.ChildrenoftheRevolution.Mission05) == 1 then
+			or Game.getStorageValue(Storage.ChildrenoftheRevolution.Mission05) == 1 then
 		return true
 	end
 
@@ -75,7 +75,7 @@ function click.onStepIn(creature, item, position, fromPosition)
 	for i = 1, #config.positions do
 		local creature = Tile(Position(config.positions[i])):getTopCreature()
 		if creature and creature:isPlayer() then
-			players[#players + 1] = creature
+			players[#players+1] = creature
 		end
 	end
 

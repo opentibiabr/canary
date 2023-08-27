@@ -27,16 +27,16 @@ exhaust:setParameter(CONDITION_PARAM_TICKS, (configManager.getNumber(configKeys.
 -- 1000 - 100 due to exact condition timing. -100 doesn't hurt us, and players don't have reminding ~50ms exhaustion.
 
 local function magicshield(player)
-local condition = Condition(CONDITION_MANASHIELD)
-condition:setParameter(CONDITION_PARAM_TICKS, 60000)
-condition:setParameter(CONDITION_PARAM_MANASHIELD, math.min(player:getMaxMana(), 300 + 7.6 * player:getLevel() + 7 * player:getMagicLevel()))
-player:addCondition(condition)
+	local condition = Condition(CONDITION_MANASHIELD)
+	condition:setParameter(CONDITION_PARAM_TICKS, 60000)
+	condition:setParameter(CONDITION_PARAM_MANASHIELD, math.min(player:getMaxMana(), 300 + 7.6 * player:getLevel() + 7 * player:getMagicLevel()))
+	player:addCondition(condition)
 end
 
 local potions = {
 	[6558] = {
 		transform = {
-			id = {236, 237}
+			id = { 236, 237 }
 		},
 		effect = CONST_ME_DRAWBLOOD
 	},
@@ -157,7 +157,7 @@ local potions = {
 		description = "Only paladins of level 80 or above may drink this fluid."
 	},
 	[7643] = {
-		health = {650, 850},
+		health = { 650, 850 },
 		vocations = {
 			VOCATION.BASE_ID.KNIGHT
 		},
@@ -282,7 +282,7 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 	player:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ITEM_USE_POTION, player:isInGhostMode() and nil or player)
 	-- Delay potion
 	playerDelayPotion[player:getId()] = systemTime() + 500
-	
+
 	if potion.func then
 		potion.func(player)
 		player:say("Aaaah...", MESSAGE_POTION)

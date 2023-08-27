@@ -51,11 +51,11 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Don't forget npcHandler = npcHandler in the parameters. It is required for all StdModule functions!
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = ' My name is now known only to the wind and it shall remain like this until I will return to my kin.'})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I was a guardian of this glade. I am the last one... everyone had to leave.'})
-keywordHandler:addKeyword({'time'}, StdModule.say, {npcHandler = npcHandler, text = "This glade's time is growing short if nothing will be done soon."})
-keywordHandler:addKeyword({'forest fury'}, StdModule.say, {npcHandler = npcHandler, text = "Take care, guardian."})
-keywordHandler:addKeyword({'orclops'}, StdModule.say, {npcHandler = npcHandler, text = "Cruel beings. Large and monstrous, with a single eye, staring at their prey. "})
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = ' My name is now known only to the wind and it shall remain like this until I will return to my kin.' })
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'I was a guardian of this glade. I am the last one... everyone had to leave.' })
+keywordHandler:addKeyword({ 'time' }, StdModule.say, { npcHandler = npcHandler, text = "This glade's time is growing short if nothing will be done soon." })
+keywordHandler:addKeyword({ 'forest fury' }, StdModule.say, { npcHandler = npcHandler, text = "Take care, guardian." })
+keywordHandler:addKeyword({ 'orclops' }, StdModule.say, { npcHandler = npcHandler, text = "Cruel beings. Large and monstrous, with a single eye, staring at their prey. " })
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
@@ -78,28 +78,28 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say({
-			"Indeed, you will. Take one of these cages, which have been crafted generations ago to rob a creature of its freedom for that it may earn it again truthfully. Return the birds back to their home in the glade. ...",
-			"You will find {phials} for water near this sacred well which will take you safely to the glade. No seeds are left, they are in the hands of the intruders now. Have faith in yourself, guardian."
+				"Indeed, you will. Take one of these cages, which have been crafted generations ago to rob a creature of its freedom for that it may earn it again truthfully. Return the birds back to their home in the glade. ...",
+				"You will find {phials} for water near this sacred well which will take you safely to the glade. No seeds are left, they are in the hands of the intruders now. Have faith in yourself, guardian."
 			}, npc, creature)
 			player:setStorageValue(Storage.ForgottenKnowledge.BirdCage, 1)
 			player:addItem(23812, 1)
 		end
 	elseif MsgContains(message, "seeds") then
-			if npcHandler:getTopic(playerId) == 1 then
+		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say({
-			"Seeds to give life to strong trees, blooming and proud. The {intruders} robbed us from them."
+				"Seeds to give life to strong trees, blooming and proud. The {intruders} robbed us from them."
 			}, npc, creature)
 		end
 	elseif MsgContains(message, "intruders") then
-			if npcHandler:getTopic(playerId) == 1 then
+		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say({
-			"The intruders appeared in the blink of an eye. Out of thin air, as if they came from nowhere. They overrun the glade within ours and drove away what was remaining from us within the day."
+				"The intruders appeared in the blink of an eye. Out of thin air, as if they came from nowhere. They overrun the glade within ours and drove away what was remaining from us within the day."
 			}, npc, creature)
 		end
 	elseif MsgContains(message, "water") then
-			if npcHandler:getTopic(playerId) == 1 then
+		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say({
-			"The purest water flows through this well. For centuries we concealed it, for other beings to not lay their eyes on it."
+				"The purest water flows through this well. For centuries we concealed it, for other beings to not lay their eyes on it."
 			}, npc, creature)
 		end
 	elseif MsgContains(message, "birds") then

@@ -42,4 +42,5 @@ function replicaServant.onKill(creature, target)
 	player:setStorageValue(bossConfig.playerStorage, player:getStorageValue(bossConfig.playerStorage) + 1)
 	return true
 end
+
 replicaServant:register()

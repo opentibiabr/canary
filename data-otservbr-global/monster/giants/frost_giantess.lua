@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Tyrsung (in the Jotunar mountain), Formorgar Glacier (single spawn), \z
 		Mammoth Shearing Factory, Chyllfroest."
-	}
+}
 
 monster.health = 275
 monster.maxHealth = 275
@@ -72,57 +72,57 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Ymirs Mjalle!", yell = false},
-	{text = "No run so much, must stay fat!", yell = false},
-	{text = "Hï¿½rre Sjan Flan!", yell = false},
-	{text = "Damned fast food.", yell = false},
-	{text = "Come kiss the cook!", yell = false}
+	{ text = "Ymirs Mjalle!", yell = false },
+	{ text = "No run so much, must stay fat!", yell = false },
+	{ text = "Hï¿½rre Sjan Flan!", yell = false },
+	{ text = "Damned fast food.", yell = false },
+	{ text = "Come kiss the cook!", yell = false }
 }
 
 monster.loot = {
-	{name = "small stone", chance = 10360, maxCount = 3},
-	{name = "gold coin", chance = 80000, maxCount = 40},
-	{id = 3093, chance = 70}, -- club ring
-	{name = "short sword", chance = 7960},
-	{name = "dark helmet", chance = 170},
-	{name = "battle shield", chance = 1490},
-	{name = "ham", chance = 20990, maxCount = 2},
-	{name = "shard", chance = 100},
-	{id = 7441, chance = 2008}, -- ice cube
-	{name = "norse shield", chance = 320},
-	{name = "mana potion", chance = 950},
-	{name = "frost giant pelt", chance = 4800}
+	{ name = "small stone", chance = 10360, maxCount = 3 },
+	{ name = "gold coin", chance = 80000, maxCount = 40 },
+	{ id = 3093, chance = 70 }, -- club ring
+	{ name = "short sword", chance = 7960 },
+	{ name = "dark helmet", chance = 170 },
+	{ name = "battle shield", chance = 1490 },
+	{ name = "ham", chance = 20990, maxCount = 2 },
+	{ name = "shard", chance = 100 },
+	{ id = 7441, chance = 2008 }, -- ice cube
+	{ name = "norse shield", chance = 320 },
+	{ name = "mana potion", chance = 950 },
+	{ name = "frost giant pelt", chance = 4800 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -60},
-	{name ="combat", interval = 2000, chance = 30, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -90, range = 7, shootEffect = CONST_ANI_LARGEROCK, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -60 },
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -90, range = 7, shootEffect = CONST_ANI_LARGEROCK, target = false }
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 15,
-	{name ="speed", interval = 2000, chance = 15, speedChange = 300, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000}
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 300, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = -10},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 20},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 10},
-	{type = COMBAT_DEATHDAMAGE , percent = -3}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 20 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -3 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

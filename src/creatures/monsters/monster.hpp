@@ -26,7 +26,7 @@ public:
 	static int32_t despawnRange;
 	static int32_t despawnRadius;
 
-	explicit Monster(const std::shared_ptr<MonsterType> &mType);
+	explicit Monster(const std::shared_ptr<MonsterType> mType);
 	~Monster();
 
 	// non-copyable
@@ -290,7 +290,7 @@ public:
 		return timeToChangeFiendish;
 	}
 
-	const std::shared_ptr<MonsterType> &getMonsterType() const {
+	const std::shared_ptr<MonsterType> getMonsterType() const {
 		return mType;
 	}
 

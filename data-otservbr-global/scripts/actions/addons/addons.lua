@@ -1,22 +1,22 @@
 local config = {
 	-- soil guardian
-	[16252] = {female = 514, male = 516, effect = CONST_ME_GREEN_RINGS},
-	[16253] = {female = 514, male = 516, addon = 1, effect = CONST_ME_GREEN_RINGS, achievement = 'Funghitastic'},
-	[16254] = {female = 514, male = 516, addon = 2, effect = CONST_ME_GREEN_RINGS, achievement = 'Funghitastic'},
+	[16252] = { female = 514, male = 516, effect = CONST_ME_GREEN_RINGS },
+	[16253] = { female = 514, male = 516, addon = 1, effect = CONST_ME_GREEN_RINGS, achievement = 'Funghitastic' },
+	[16254] = { female = 514, male = 516, addon = 2, effect = CONST_ME_GREEN_RINGS, achievement = 'Funghitastic' },
 	-- crystal warlord
-	[16255] = {female = 513, male = 512, effect = CONST_ME_GIANTICE},
-	[16256] = {female = 513, male = 512, addon = 1, effect = CONST_ME_GIANTICE, achievement = 'Crystal Clear'},
-	[16257] = {female = 513, male = 512, addon = 2, effect = CONST_ME_GIANTICE, achievement = 'Crystal Clear'},
+	[16255] = { female = 513, male = 512, effect = CONST_ME_GIANTICE },
+	[16256] = { female = 513, male = 512, addon = 1, effect = CONST_ME_GIANTICE, achievement = 'Crystal Clear' },
+	[16257] = { female = 513, male = 512, addon = 2, effect = CONST_ME_GIANTICE, achievement = 'Crystal Clear' },
 	-- makeshift warrior
-	[27655] = {female = 1043, male = 1042},
-	[27657] = {female = 1043, male = 1042, addon = 1, achievement = 'Cobbled and Patched'},
-	[27656] = {female = 1043, male = 1042, addon = 2, achievement = 'Cobbled and Patched'},
+	[27655] = { female = 1043, male = 1042 },
+	[27657] = { female = 1043, male = 1042, addon = 1, achievement = 'Cobbled and Patched' },
+	[27656] = { female = 1043, male = 1042, addon = 2, achievement = 'Cobbled and Patched' },
 	-- hand of the inquisition
-	[31738] = {female = 1244, male = 1243, addon = 1, effect = CONST_ME_HOLYAREA, achievement = "Inquisition's Arm"},
-	[31737] = {female = 1244, male = 1243, addon = 2, effect = CONST_ME_HOLYAREA, achievement = "Inquisition's Arm"},
+	[31738] = { female = 1244, male = 1243, addon = 1, effect = CONST_ME_HOLYAREA, achievement = "Inquisition's Arm" },
+	[31737] = { female = 1244, male = 1243, addon = 2, effect = CONST_ME_HOLYAREA, achievement = "Inquisition's Arm" },
 	-- poltergeist
-	[32630] = {female = 1271, male = 1270, addon = 1, effect = CONST_ME_BLUE_GHOST, achievement = "Mainstreet Nightmare"},
-	[32631] = {female = 1271, male = 1270, addon = 2, effect = CONST_ME_BLUE_GHOST, achievement = "Mainstreet Nightmare"},
+	[32630] = { female = 1271, male = 1270, addon = 1, effect = CONST_ME_BLUE_GHOST, achievement = "Mainstreet Nightmare" },
+	[32631] = { female = 1271, male = 1270, addon = 2, effect = CONST_ME_BLUE_GHOST, achievement = "Mainstreet Nightmare" },
 }
 
 local addons = Action()

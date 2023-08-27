@@ -2,19 +2,19 @@ local config = {
 	[23700] = {
 		storage = GlobalStorage.InServiceOfYalahar.WarGolemsMachine1,
 		machines = {
-			{x = 32882, y = 31323, z = 10},
-			{x = 32882, y = 31320, z = 10},
-			{x = 32882, y = 31318, z = 10},
-			{x = 32882, y = 31316, z = 10}
+			{ x = 32882, y = 31323, z = 10 },
+			{ x = 32882, y = 31320, z = 10 },
+			{ x = 32882, y = 31318, z = 10 },
+			{ x = 32882, y = 31316, z = 10 }
 		}
 	},
 	[23701] = {
 		storage = GlobalStorage.InServiceOfYalahar.WarGolemsMachine2,
 		machines = {
-			{x = 32869, y = 31322, z = 10},
-			{x = 32869, y = 31320, z = 10},
-			{x = 32869, y = 31318, z = 10},
-			{x = 32869, y = 31316, z = 10}
+			{ x = 32869, y = 31322, z = 10 },
+			{ x = 32869, y = 31320, z = 10 },
+			{ x = 32869, y = 31318, z = 10 },
+			{ x = 32869, y = 31316, z = 10 }
 		}
 	}
 }
@@ -50,5 +50,5 @@ function inServiceYalaharWarGolem.onUse(player, item, fromPosition, target, toPo
 	return true
 end
 
-inServiceYalaharWarGolem:aid(23700,23701)
+inServiceYalaharWarGolem:aid(23700, 23701)
 inServiceYalaharWarGolem:register()

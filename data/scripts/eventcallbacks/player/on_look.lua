@@ -8,9 +8,9 @@ function callback.playerOnLook(player, thing, position, distance)
 		elseif thing.actionid == 5641 then
 			description = description .. "a banana palm."
 		elseif thing.itemid >= ITEM_HEALTH_CASK_START and thing.itemid <= ITEM_HEALTH_CASK_END
-		or thing.itemid >= ITEM_MANA_CASK_START and thing.itemid <= ITEM_MANA_CASK_END
-		or thing.itemid >= ITEM_SPIRIT_CASK_START and thing.itemid <= ITEM_SPIRIT_CASK_END
-		or thing.itemid >= ITEM_KEG_START and thing.itemid <= ITEM_KEG_END then
+				or thing.itemid >= ITEM_MANA_CASK_START and thing.itemid <= ITEM_MANA_CASK_END
+				or thing.itemid >= ITEM_SPIRIT_CASK_START and thing.itemid <= ITEM_SPIRIT_CASK_END
+				or thing.itemid >= ITEM_KEG_START and thing.itemid <= ITEM_KEG_END then
 			description = description .. thing:getDescription(distance)
 			local charges = thing:getCharges()
 			if charges then
@@ -24,7 +24,7 @@ function callback.playerOnLook(player, thing, position, distance)
 		if thing:isMonster() then
 			local master = thing:getMaster()
 			if master and table.contains({ 'sorcerer familiar', 'knight familiar', 'druid familiar', 'paladin familiar' },
-				thing:getName():lower()) then
+						thing:getName():lower()) then
 				description = string.format('%s (Master: %s). \z It will disappear in %s',
 					description, master:getName(), getTimeInWords(master:getStorageValue(Global.Storage.FamiliarSummon) - os.time())
 				)
@@ -60,7 +60,6 @@ function callback.playerOnLook(player, thing, position, distance)
 			if decayId ~= -1 then
 				description = string.format("%s\nDecays to: %d", description, decayId)
 			end
-
 		elseif thing:isCreature() then
 			local str = "%s\nHealth: %d / %d"
 			if thing:isPlayer() and thing:getMaxMana() > 0 then
@@ -70,8 +69,8 @@ function callback.playerOnLook(player, thing, position, distance)
 		end
 
 		description = string.format(
-		"%s\nPosition: %d, %d, %d",
-		description, position.x, position.y, position.z
+			"%s\nPosition: %d, %d, %d",
+			description, position.x, position.y, position.z
 		)
 
 		if thing:isCreature() then

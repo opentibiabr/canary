@@ -85,14 +85,12 @@ local function creatureSayCallback(npc, creature, type, message)
 				'Since you are no djinn, there is something you could help us with. Are you interested, human?'
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 1)
-
-		elseif table.contains({1, 2}, missionProgress) then
+		elseif table.contains({ 1, 2 }, missionProgress) then
 			npcHandler:say('Did you find the thief of our supplies?', npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		else
 			npcHandler:say('Did you already talk to Alesar? He has another mission for you!', npc, creature)
 		end
-
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, 'yes') then
 			npcHandler:say({
@@ -105,22 +103,18 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Start, 1)
 			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission01, 1)
-
 		elseif MsgContains(message, 'no') then
 			npcHandler:say('After all, you\'re just a human.', npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
-
 	elseif npcHandler:getTopic(playerId) == 2 then
 		if MsgContains(message, 'yes') then
 			npcHandler:say('Finally! What is his name then?', npc, creature)
 			npcHandler:setTopic(playerId, 3)
-
 		elseif MsgContains(message, 'no') then
 			npcHandler:say('Then go to Carlin and search for him! Look for something that might give you a clue!', npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-
 	elseif npcHandler:getTopic(playerId) == 3 then
 		if MsgContains(message, 'partos') then
 			if missionProgress ~= 2 then
@@ -134,7 +128,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addMoney(600)
 				player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission01, 3)
 			end
-
 		else
 			npcHandler:say('Hmmm... I don\'t think so. Return to Thais and continue your search!', npc, creature)
 		end
@@ -144,7 +137,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Greeting message
-keywordHandler:addGreetKeyword({"djanni'hah"}, {npcHandler = npcHandler, text = "What do you want from me, |PLAYERNAME|?"})
+keywordHandler:addGreetKeyword({ "djanni'hah" }, { npcHandler = npcHandler, text = "What do you want from me, |PLAYERNAME|?" })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, 'Stand down, soldier!')
 

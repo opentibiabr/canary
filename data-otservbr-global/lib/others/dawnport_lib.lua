@@ -101,11 +101,11 @@ function Player.changeVocation(self, newVocationId)
 			local baseVocation = Vocation(VOCATION.ID.NONE)
 			local level = self:getLevel() - 8
 			stats.health = stats.health
-				+ (baseLevel * baseVocation:getHealthGain()) + (level * self:getVocation():getHealthGain())
+					+ (baseLevel * baseVocation:getHealthGain()) + (level * self:getVocation():getHealthGain())
 			stats.mana = stats.mana
-				+ (baseLevel * baseVocation:getManaGain()) + (level * self:getVocation():getManaGain())
+					+ (baseLevel * baseVocation:getManaGain()) + (level * self:getVocation():getManaGain())
 			stats.capacity = stats.capacity
-				+ (baseLevel * baseVocation:getCapacityGain()) + (level * self:getVocation():getCapacityGain())
+					+ (baseLevel * baseVocation:getCapacityGain()) + (level * self:getVocation():getCapacityGain())
 		end
 		self:setMaxHealth(stats.health)
 		self:addHealth(stats.health)
@@ -161,7 +161,7 @@ function removeMainlandSmugglingItems(player)
 		268, -- Mana potion
 		7876, -- Small health potion
 		21352, -- Lightest missile rune
-		21351  -- Light stone shower rune
+		21351 -- Light stone shower rune
 	}
 	for i = 1, #smugglingItemIds do
 		local smugglingItemAmount = player:getItemCount(smugglingItemIds[i])

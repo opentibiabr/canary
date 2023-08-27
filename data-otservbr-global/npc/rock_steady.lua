@@ -106,7 +106,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Great! Let me see. Amazing! I will take this, thank you!", npc, creature)
 			player:setStorageValue(72326, 4)
 			npcHandler:setTopic(playerId, 0)
-			else npcHandler:say("You dont have the required items!", npc, creature)
+		else
+			npcHandler:say("You dont have the required items!", npc, creature)
 		end
 	end
 	return true

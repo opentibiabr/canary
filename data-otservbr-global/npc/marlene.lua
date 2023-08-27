@@ -50,11 +50,11 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = "My name is Marlene."})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "I'm Bruno's wife. Besides: Have you already heard the latest news about the seamonster, Aneus, or the rumours in this area?"})
-keywordHandler:addKeyword({'bruno'}, StdModule.say, {npcHandler = npcHandler, text = "Bruno is a wonderful husband. But he is seldom at home. *looks a little bit sad*"})
-keywordHandler:addKeyword({'graubart'}, StdModule.say, {npcHandler = npcHandler, text = "Ah, old Graubart. A very nice person. But he is strange. He always is busy when I want to talk to him. *lost in thoughts*"})
-keywordHandler:addKeyword({'thank you'}, StdModule.say, {npcHandler = npcHandler, text = "My pleasure, I always enjoy sharing interesting stories."})
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = "My name is Marlene." })
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I'm Bruno's wife. Besides: Have you already heard the latest news about the seamonster, Aneus, or the rumours in this area?" })
+keywordHandler:addKeyword({ 'bruno' }, StdModule.say, { npcHandler = npcHandler, text = "Bruno is a wonderful husband. But he is seldom at home. *looks a little bit sad*" })
+keywordHandler:addKeyword({ 'graubart' }, StdModule.say, { npcHandler = npcHandler, text = "Ah, old Graubart. A very nice person. But he is strange. He always is busy when I want to talk to him. *lost in thoughts*" })
+keywordHandler:addKeyword({ 'thank you' }, StdModule.say, { npcHandler = npcHandler, text = "My pleasure, I always enjoy sharing interesting stories." })
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)

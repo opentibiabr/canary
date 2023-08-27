@@ -65,47 +65,47 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 90000, maxCount = 53},
-	{name = "crystal coin", chance = 90000, maxCount = 12},
-	{name = "great spirit potion", chance = 90000, maxCount = 8},
-	{name = "supreme health potion", chance = 90000, maxCount = 8},
-	{name = "ultimate mana potion", chance = 90000, maxCount = 10},
-	{name = "ultimate spirit potion", chance = 90000, maxCount = 8},
-	{name = "silver token", chance = 90000, maxCount = 6},
-	{name = "bullseye potion", chance = 90000},
-	{name = "demon horn", chance = 90000},
-	{name = "magic sulphur", chance = 90000},
-	{id= 3039, chance = 90000}, -- red gem
-	{name = "stone skin amulet", chance = 90000},
-	{name = "yellow gem", chance = 90000},
-	{name = "wand of voodoo", chance = 90000},
-	{name = "mastermind potion", chance = 30000, maxCount = 2},
-	{name = "onyx chip", chance = 30000, maxCount = 12},
-	{name = "small diamond", chance = 30000, maxCount = 12},
-	{name = "small emerald", chance = 30000, maxCount = 12},
-	{name = "small ruby", chance = 30000, maxCount = 12},
-	{name = "small topaz", chance = 30000, maxCount = 12},
-	{name = "blue gem", chance = 30000},
-	{name = "solid rage", chance = 30000},
-	{name = "gold token", chance = 1000},
-	{name = "butcher's axe", chance = 1000},
-	{name = "dreaded cleaver", chance = 1000},
-	{name = "mercenary sword", chance = 1000},
-	{id = 28341, chance = 1000}, -- tessellated wall
-	{id = 8900, chance = 1000}, -- heavily rusted shield
-	{id = 8906, chance = 1000}, -- heavily rusted helmet
-	{name = "epaulette", chance = 500},
-	{name = "giant emerald", chance = 500},
-	{name = "unliving demonbone", chance = 500}
+	{ name = "platinum coin", chance = 90000, maxCount = 53 },
+	{ name = "crystal coin", chance = 90000, maxCount = 12 },
+	{ name = "great spirit potion", chance = 90000, maxCount = 8 },
+	{ name = "supreme health potion", chance = 90000, maxCount = 8 },
+	{ name = "ultimate mana potion", chance = 90000, maxCount = 10 },
+	{ name = "ultimate spirit potion", chance = 90000, maxCount = 8 },
+	{ name = "silver token", chance = 90000, maxCount = 6 },
+	{ name = "bullseye potion", chance = 90000 },
+	{ name = "demon horn", chance = 90000 },
+	{ name = "magic sulphur", chance = 90000 },
+	{ id = 3039, chance = 90000 }, -- red gem
+	{ name = "stone skin amulet", chance = 90000 },
+	{ name = "yellow gem", chance = 90000 },
+	{ name = "wand of voodoo", chance = 90000 },
+	{ name = "mastermind potion", chance = 30000, maxCount = 2 },
+	{ name = "onyx chip", chance = 30000, maxCount = 12 },
+	{ name = "small diamond", chance = 30000, maxCount = 12 },
+	{ name = "small emerald", chance = 30000, maxCount = 12 },
+	{ name = "small ruby", chance = 30000, maxCount = 12 },
+	{ name = "small topaz", chance = 30000, maxCount = 12 },
+	{ name = "blue gem", chance = 30000 },
+	{ name = "solid rage", chance = 30000 },
+	{ name = "gold token", chance = 1000 },
+	{ name = "butcher's axe", chance = 1000 },
+	{ name = "dreaded cleaver", chance = 1000 },
+	{ name = "mercenary sword", chance = 1000 },
+	{ id = 28341, chance = 1000 }, -- tessellated wall
+	{ id = 8900, chance = 1000 }, -- heavily rusted shield
+	{ id = 8906, chance = 1000 }, -- heavily rusted helmet
+	{ name = "epaulette", chance = 500 },
+	{ name = "giant emerald", chance = 500 },
+	{ name = "unliving demonbone", chance = 500 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 1000, chance = 100, skill = 150, attack = 280},
-	{name ="combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -900, maxDamage = -1500, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = false},
-	{name ="combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -210, maxDamage = -600, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = false},
-	{name ="combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -210, maxDamage = -600, range = 7, radius = 3, effect = CONST_ME_MORTAREA, target = false},
-	{name ="melee", interval = 2000, chance = 100, skill = 90, attack = 250},
-	{name ="combat", interval = 2000, chance = 12, type = COMBAT_LIFEDRAIN, minDamage = -1500, maxDamage = -2000, range = 7, radius = 3, target = false}
+	{ name = "melee", interval = 1000, chance = 100, skill = 150, attack = 280 },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -900, maxDamage = -1500, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -210, maxDamage = -600, length = 8, spread = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -210, maxDamage = -600, range = 7, radius = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "melee", interval = 2000, chance = 100, skill = 90, attack = 250 },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_LIFEDRAIN, minDamage = -1500, maxDamage = -2000, range = 7, radius = 3, target = false }
 }
 
 monster.defenses = {
@@ -114,23 +114,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 1},
-	{type = COMBAT_ENERGYDAMAGE, percent = 10},
-	{type = COMBAT_EARTHDAMAGE, percent = 20},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 15}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 1 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 20 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType.onThink = function(monster, interval)

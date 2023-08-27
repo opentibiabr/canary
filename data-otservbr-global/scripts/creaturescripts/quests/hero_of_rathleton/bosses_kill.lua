@@ -2,15 +2,15 @@ local bosses = {
 	['deep terror'] = {
 		teleportPos = Position(33749, 31952, 14),
 		nextpos = Position(33740, 31940, 15),
-		globaltimer = GlobalStorage.HeroRathleton.DeepRunning},
+		globaltimer = GlobalStorage.HeroRathleton.DeepRunning },
 	['empowered glooth horror'] = {
 		teleportPos = Position(33545, 31955, 15),
 		nextpos = Position(33534, 31955, 15),
-		globaltimer = GlobalStorage.HeroRathleton.HorrorRunning},
+		globaltimer = GlobalStorage.HeroRathleton.HorrorRunning },
 	['professor maxxen'] = {
 		teleportPos = Position(33718, 32047, 15),
 		nextpos = Position(33707, 32107, 15),
-		globaltimer = GlobalStorage.HeroRathleton.MaxxenRunning}
+		globaltimer = GlobalStorage.HeroRathleton.MaxxenRunning }
 }
 
 local function checkHorror()

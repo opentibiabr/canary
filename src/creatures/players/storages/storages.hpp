@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "lib/di/container.hpp"
+
 class Storages {
 public:
 	Storages() = default;

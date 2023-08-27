@@ -19,7 +19,7 @@ local config = {
 	},
 	-- red
 	[1087] =
-	{itemId = 27869,
+	{ itemId = 27869,
 		msg = "Success",
 		storage = Storage.TheSecretLibrary.Mota,
 		getValue = 6,
@@ -32,15 +32,15 @@ local energyBasin = Action()
 
 function energyBasin.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local setting = config[item.uid]
-		if setting then
-			if player:getStorageValue(setting.storage) == setting.getValue then
-				player:removeItem(setting.itemId, 1)
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, setting.msg)
-				player:setStorageValue(setting.storage, setting.setValue)
-			else
-				player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-			end
+	if setting then
+		if player:getStorageValue(setting.storage) == setting.getValue then
+			player:removeItem(setting.itemId, 1)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, setting.msg)
+			player:setStorageValue(setting.storage, setting.setValue)
+		else
+			player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		end
+	end
 	return true
 end
 

@@ -65,40 +65,40 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "RAAAARGH! I'M MASHING YE TO DUST BOOM!", yell = false},
-	{text = "BOOOM!", yell = false},
-	{text = "BOOOOM!!!", yell = false},
-	{text = "BOOOOOM!!!", yell = false}
+	{ text = "RAAAARGH! I'M MASHING YE TO DUST BOOM!", yell = false },
+	{ text = "BOOOM!", yell = false },
+	{ text = "BOOOOM!!!", yell = false },
+	{ text = "BOOOOOM!!!", yell = false }
 }
 
 monster.loot = {
-	{name = "ultimate spirit potion", chance = 50000, maxCount = 6},
-	{name = "crystal coin", chance = 50000},
-	{name = "ultimate mana potion", chance = 50000, maxCount = 14},
-	{name = "supreme health potion", chance = 50000, maxCount = 6},
-	{name = "gold token", chance = 50000, maxCount = 2},
-	{name = "silver token", chance = 100000, maxCount = 2},
-	{id = 281, chance = 100000}, -- giant shimmering pearl (green)
-	{name = "green gem", chance = 100000},
-	{id= 3039, chance = 50000}, -- red gem
-	{name = "blue gem", chance = 100000},
-	{id = 23529, chance = 50000}, -- ring of blue plasma
-	{name = "platinum coin", chance = 50000, maxCount = 5},
-	{name = "bullseye potion", chance = 50000, maxCount = 10},
-	{name = "piggy bank", chance = 100000},
-	{name = "mysterious remains", chance = 100000},
-	{name = "energy bar", chance = 100000},
-	{id = 23543, chance = 50000}, -- collar of green plasma
-	{name = "ring of the sky", chance = 100000},
-	{name = "crunor idol", chance = 100000},
-	{name = "resizer", chance = 100000},
-	{name = "shoulder plate", chance = 100000},
-	{name = "malofur's lunchbox", chance = 100000},
-	{name = "pomegranate", chance = 50000}
+	{ name = "ultimate spirit potion", chance = 50000, maxCount = 6 },
+	{ name = "crystal coin", chance = 50000 },
+	{ name = "ultimate mana potion", chance = 50000, maxCount = 14 },
+	{ name = "supreme health potion", chance = 50000, maxCount = 6 },
+	{ name = "gold token", chance = 50000, maxCount = 2 },
+	{ name = "silver token", chance = 100000, maxCount = 2 },
+	{ id = 281, chance = 100000 }, -- giant shimmering pearl (green)
+	{ name = "green gem", chance = 100000 },
+	{ id = 3039, chance = 50000 }, -- red gem
+	{ name = "blue gem", chance = 100000 },
+	{ id = 23529, chance = 50000 }, -- ring of blue plasma
+	{ name = "platinum coin", chance = 50000, maxCount = 5 },
+	{ name = "bullseye potion", chance = 50000, maxCount = 10 },
+	{ name = "piggy bank", chance = 100000 },
+	{ name = "mysterious remains", chance = 100000 },
+	{ name = "energy bar", chance = 100000 },
+	{ id = 23543, chance = 50000 }, -- collar of green plasma
+	{ name = "ring of the sky", chance = 100000 },
+	{ name = "crunor idol", chance = 100000 },
+	{ name = "resizer", chance = 100000 },
+	{ name = "shoulder plate", chance = 100000 },
+	{ name = "malofur's lunchbox", chance = 100000 },
+	{ name = "pomegranate", chance = 50000 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5 }
 }
 
 monster.defenses = {
@@ -107,23 +107,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 20},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 20 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType.onThink = function(monster, interval)

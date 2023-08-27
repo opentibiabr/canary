@@ -27,20 +27,20 @@ function energyFence.onStepIn(creature, item, position, fromPosition)
 	end
 
 	if position == firstCheck or position == Position(firstCheck.x + 1, firstCheck.y, firstCheck.z) or
-	position == Position(firstCheck.x + 2, firstCheck.y, firstCheck.z) then
+			position == Position(firstCheck.x + 2, firstCheck.y, firstCheck.z) then
 		if player:getStorageValue(Storage.CultsOfTibia.Humans.Vaporized) == 10 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			"With you being the vessel binding the power of whitered souls, you step through the magic barrier.")
+				"With you being the vessel binding the power of whitered souls, you step through the magic barrier.")
 			player:getPosition():sendMagicEffect(CONST_ME_ENERGYHIT)
 		else
 			player:teleportTo(fromPosition, true)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE,"The combined powers of decaying souls \z
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The combined powers of decaying souls \z
 			roaming these halls may help breach this barrier, it needs but a vessel to bind them.")
 		end
 	elseif position == secondCheck or position == Position(secondCheck.x + 1, secondCheck.y, secondCheck.z) then
 		if player:getStorageValue(Storage.CultsOfTibia.Humans.Decaying) == 10 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-			"With you being the vessel binding the power of whitered souls, you step through the magic barrier.")
+				"With you being the vessel binding the power of whitered souls, you step through the magic barrier.")
 			player:getPosition():sendMagicEffect(CONST_ME_ENERGYHIT)
 		else
 			player:teleportTo(fromPosition, true)

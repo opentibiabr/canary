@@ -1,6 +1,6 @@
 local config = {
 	[1] = {
-		teleportPosition = {x = 33491, y = 31398, z = 8},
+		teleportPosition = { x = 33491, y = 31398, z = 8 },
 		bossName = "Irgix the Flimsy",
 		requiredLevel = 250,
 		timeToFightAgain = 20, -- In hour
@@ -15,7 +15,7 @@ local config = {
 		storage = Storage.Quest.U12_30.FeasterOfSouls.IrgixTimer
 	},
 	[2] = {
-		teleportPosition = {x = 33566, y = 31475, z = 8},
+		teleportPosition = { x = 33566, y = 31475, z = 8 },
 		bossName = "Unaz the Mean",
 		requiredLevel = 250,
 		timeToFightAgain = 20, -- In hour
@@ -30,7 +30,7 @@ local config = {
 		storage = Storage.Quest.U12_30.FeasterOfSouls.UnazTimer
 	},
 	[3] = {
-		teleportPosition = {x = 33509, y = 31450, z = 9},
+		teleportPosition = { x = 33509, y = 31450, z = 9 },
 		bossName = "Vok The Freakish",
 		requiredLevel = 250,
 		timeToFightAgain = 20, -- In hour
@@ -45,17 +45,17 @@ local config = {
 		storage = Storage.Quest.U12_30.FeasterOfSouls.VokTimer
 	},
 	[4] = {
-		teleportPosition = {x = 33467, y = 31396, z = 8},
+		teleportPosition = { x = 33467, y = 31396, z = 8 },
 		exitPosition = Position(33493, 31400, 8)
-		},
+	},
 	[5] = {
-		teleportPosition = {x = 33562, y = 31492, z = 8},
+		teleportPosition = { x = 33562, y = 31492, z = 8 },
 		exitPosition = Position(33563, 31477, 8)
-		},
+	},
 	[6] = {
-		teleportPosition = {x = 33505, y = 31485, z = 9},
+		teleportPosition = { x = 33505, y = 31485, z = 9 },
 		exitPosition = Position(33509, 31451, 9)
-		},
+	},
 }
 
 local teleportBoss = MoveEvent()
@@ -90,7 +90,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 			if creature:getStorageValue(value.storage) > os.time() then
 				creature:teleportTo(fromPosition, true)
 				creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. value.timeToFightAgain .. " hours to face ".. value.bossName .. " again!")
+				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. value.timeToFightAgain .. " hours to face " .. value.bossName .. " again!")
 				return true
 			end
 			spec:removeMonsters()
@@ -111,6 +111,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 		end
 	end
 end
+
 for index, value in pairs(config) do
 	teleportBoss:position(value.teleportPosition)
 end

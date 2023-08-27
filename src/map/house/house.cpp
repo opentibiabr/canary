@@ -21,6 +21,7 @@ House::House(uint32_t houseId) :
 void House::addTile(HouseTile* tile) {
 	tile->setFlag(TILESTATE_PROTECTIONZONE);
 	houseTiles.push_back(tile);
+	updateDoorDescription();
 }
 
 void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, Player* player /* = nullptr*/) {
@@ -91,7 +92,6 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, Player* pla
 	rentWarnings = 0;
 
 	if (guid != 0) {
-
 		Database &db = Database::getInstance();
 		std::ostringstream query;
 		query << "SELECT `name`, `account_id` FROM `players` WHERE `id` = " << guid;
@@ -117,10 +117,15 @@ void House::updateDoorDescription() const {
 		ss << "It belongs to house '" << houseName << "'. " << ownerName << " owns this house.";
 	} else {
 		ss << "It belongs to house '" << houseName << "'. Nobody owns this house.";
+	}
 
-		const int32_t housePrice = g_configManager().getNumber(HOUSE_PRICE);
-		if (housePrice != -1) {
-			ss << " It costs " << (houseTiles.size() * housePrice) << " gold coins.";
+	ss << " It is " << houseTiles.size() << " square meters.";
+	const int32_t housePrice = getPrice();
+	if (housePrice != -1) {
+		ss << " It costs " << formatNumber(getPrice()) << " gold coins.";
+		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
+		if (strRentPeriod != "never") {
+			ss << " The rent cost is " << formatNumber(getRent()) << " gold coins and it is billed " << strRentPeriod << ".";
 		}
 	}
 
@@ -471,7 +476,7 @@ namespace {
 			return nullptr;
 		}
 
-		const auto &guild = g_game().getGuild(guildId);
+		const auto guild = g_game().getGuild(guildId);
 		if (guild) {
 			return guild;
 		}
@@ -482,16 +487,16 @@ namespace {
 }
 
 void AccessList::addGuild(const std::string &name) {
-	const auto &guild = getGuildByName(name);
+	const auto guild = getGuildByName(name);
 	if (guild) {
-		for (const auto &rank : guild->getRanks()) {
+		for (const auto rank : guild->getRanks()) {
 			guildRankList.insert(rank->id);
 		}
 	}
 }
 
 void AccessList::addGuildRank(const std::string &name, const std::string &guildName) {
-	const auto &guild = getGuildByName(guildName);
+	const auto guild = getGuildByName(guildName);
 	if (guild) {
 		const GuildRank_ptr rank = guild->getRankByName(name);
 		if (rank) {
@@ -734,4 +739,14 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 
 		IOLoginData::savePlayer(&player);
 	}
+}
+
+uint32_t House::getRent() const {
+	return static_cast<uint32_t>(g_configManager().getFloat(HOUSE_RENT_RATE) * static_cast<float>(rent));
+}
+
+uint32_t House::getPrice() const {
+	uint32_t sqmPrice = static_cast<uint32_t>(g_configManager().getNumber(HOUSE_PRICE_PER_SQM)) * getSize();
+	uint32_t rentPrice = static_cast<uint32_t>(static_cast<float>(getRent()) * g_configManager().getFloat(HOUSE_PRICE_RENT_MULTIPLIER));
+	return sqmPrice + rentPrice;
 }

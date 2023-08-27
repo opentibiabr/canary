@@ -86,14 +86,14 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if(MsgContains(message, "decreasing resources")) then
-			npcHandler:say({
-				"You have to know, that our work is very hard and the conditions we have are terrible. The wanted amount is abolutely unrealistic. Beyond that the food we get is never enough. ...",
-				"Our workers should give their best while starving. This is not possible. That's the point to {defy} the authority."
-			}, npc, creature)
-			npcHandler:setTopic(playerId, 1)
-	elseif(MsgContains(message, "defy")) then
-		if(npcHandler:getTopic(playerId) == 1) then
+	if (MsgContains(message, "decreasing resources")) then
+		npcHandler:say({
+			"You have to know, that our work is very hard and the conditions we have are terrible. The wanted amount is abolutely unrealistic. Beyond that the food we get is never enough. ...",
+			"Our workers should give their best while starving. This is not possible. That's the point to {defy} the authority."
+		}, npc, creature)
+		npcHandler:setTopic(playerId, 1)
+	elseif (MsgContains(message, "defy")) then
+		if (npcHandler:getTopic(playerId) == 1) then
 			if player:getStorageValue(HiddenThreats.QuestLine) == 1 then
 				player:setStorageValue(HiddenThreats.QuestLine, 2)
 				player:setStorageValue(HiddenThreats.ServantDoor, 1)
@@ -105,7 +105,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
-	elseif(MsgContains(message, "yes")) and player:getStorageValue(HiddenThreats.QuestLine) == 4 then
+	elseif (MsgContains(message, "yes")) and player:getStorageValue(HiddenThreats.QuestLine) == 4 then
 		if player:removeItem(27301, 20) then
 			npcHandler:say({
 				"Thank you very much! Our smiths are now able to craft heat-resistent weapons and armor. A little reward for you is this. ...",

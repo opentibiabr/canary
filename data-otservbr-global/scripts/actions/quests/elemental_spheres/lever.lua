@@ -56,7 +56,7 @@ function elementalSpheresLever.onUse(player, item, fromPosition, target, toPosit
 			return true
 		end
 
-		players[#players + 1] = creature
+		players[#players+1] = creature
 	end
 
 	for i = 1, #players do

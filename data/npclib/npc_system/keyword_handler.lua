@@ -1,7 +1,6 @@
 -- Advanced NPC System by Jiddo
 
 if KeywordHandler == nil then
-
 	KeywordNode = {
 		keywords = nil,
 		callback = nil,
@@ -62,7 +61,7 @@ if KeywordHandler == nil then
 					return false
 				end
 				if keyword:sub(1, 1) == '%' then
-					data[#data + 1] = tonumber(message:sub(a, b)) or nil
+					data[#data+1] = tonumber(message:sub(a, b)) or nil
 				end
 				last = a
 			end
@@ -114,7 +113,7 @@ if KeywordHandler == nil then
 
 	-- Adds a pre-created childNode to this node. Should be used for example if several nodes should have a common child.
 	function KeywordNode:addChildKeywordNode(childNode)
-		self.children[#self.children + 1] = childNode
+		self.children[#self.children+1] = childNode
 		childNode.parent = self
 		return childNode
 	end

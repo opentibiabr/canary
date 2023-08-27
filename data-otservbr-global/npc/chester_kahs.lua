@@ -102,9 +102,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say('Then I welcome you to the TBI. This is a great moment for you, remember it well. Talk to me about your missions whenever you feel ready.', npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 6 then
-				player:setStorageValue(Storage.SecretService.TBIMission01, 3)
-				player:setStorageValue(Storage.SecretService.Quest, 3)
-				npcHandler:say('I think they understood the warning the way it was meant. If not, you will have to visit Venore soon again. But for now it\'s settled.', npc, creature)
+			player:setStorageValue(Storage.SecretService.TBIMission01, 3)
+			player:setStorageValue(Storage.SecretService.Quest, 3)
+			npcHandler:say('I think they understood the warning the way it was meant. If not, you will have to visit Venore soon again. But for now it\'s settled.', npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 7 then
 			if player:removeItem(5956, 1) then

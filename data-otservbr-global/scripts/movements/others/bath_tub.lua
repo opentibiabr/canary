@@ -8,7 +8,7 @@ function bathtubEnter.onStepIn(creature, item, position, fromPosition)
 	end
 
 	local condition = Condition(CONDITION_OUTFIT)
-	condition:setOutfit({lookTypeEx = playerBathTub})
+	condition:setOutfit({ lookTypeEx = playerBathTub })
 	condition:setTicks(-1)
 
 	position:sendMagicEffect(CONST_ME_WATERSPLASH)

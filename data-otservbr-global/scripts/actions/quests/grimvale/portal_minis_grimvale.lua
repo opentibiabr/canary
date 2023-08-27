@@ -1,6 +1,6 @@
 local config = {
 	[1] = {
-		teleportPosition = {x = 33167, y = 31977, z = 8},
+		teleportPosition = { x = 33167, y = 31977, z = 8 },
 		bossName = "Bloodback",
 		timeToFightAgain = 10, -- In hour
 		timeToDefeat = 10, -- In minutes
@@ -14,7 +14,7 @@ local config = {
 		storage = Storage.Quest.U10_80.Grimvale.BloodbackTimer
 	},
 	[2] = {
-		teleportPosition = {x = 33055, y = 31910, z = 9},
+		teleportPosition = { x = 33055, y = 31910, z = 9 },
 		bossName = "Darkfang",
 		timeToFightAgain = 10, -- In hour
 		timeToDefeat = 10, -- In minutes
@@ -28,7 +28,7 @@ local config = {
 		storage = Storage.Quest.U10_80.Grimvale.DarkfangTimer
 	},
 	[3] = {
-		teleportPosition = {x = 33128, y = 31971, z = 9},
+		teleportPosition = { x = 33128, y = 31971, z = 9 },
 		bossName = "Sharpclaw",
 		timeToFightAgain = 10, -- In hour
 		timeToDefeat = 10, -- In minutes
@@ -42,7 +42,7 @@ local config = {
 		storage = Storage.Quest.U10_80.Grimvale.SharpclawTimer
 	},
 	[4] = {
-		teleportPosition = {x = 33402, y = 32097, z = 9},
+		teleportPosition = { x = 33402, y = 32097, z = 9 },
 		bossName = "Shadowpelt",
 		timeToFightAgain = 10, -- In hour
 		timeToDefeat = 10, -- In minutes
@@ -56,7 +56,7 @@ local config = {
 		storage = Storage.Quest.U10_80.Grimvale.ShadowpeltTimer
 	},
 	[5] = {
-		teleportPosition = {x = 33442, y = 32051, z = 9},
+		teleportPosition = { x = 33442, y = 32051, z = 9 },
 		bossName = "Black Vixen",
 		timeToFightAgain = 10, -- In hour
 		timeToDefeat = 10, -- In minutes
@@ -70,23 +70,23 @@ local config = {
 		storage = Storage.Quest.U10_80.Grimvale.BlackVixenTimer
 	},
 	[6] = {
-		teleportPosition = {x = 33180, y = 32011, z = 8},
+		teleportPosition = { x = 33180, y = 32011, z = 8 },
 		exitPosition = Position(33167, 31978, 8)
 	},
 	[7] = {
-		teleportPosition = {x = 33055, y = 31888, z = 9},
+		teleportPosition = { x = 33055, y = 31888, z = 9 },
 		exitPosition = Position(33055, 31911, 9)
 	},
 	[8] = {
-		teleportPosition = {x = 33120, y = 31996, z = 9},
+		teleportPosition = { x = 33120, y = 31996, z = 9 },
 		exitPosition = Position(33128, 31972, 9)
 	},
 	[9] = {
-		teleportPosition = {x = 33395, y = 32111, z = 9},
+		teleportPosition = { x = 33395, y = 32111, z = 9 },
 		exitPosition = Position(33403, 32097, 9)
 	},
 	[10] = {
-		teleportPosition = {x = 33446, y = 32040, z = 9},
+		teleportPosition = { x = 33446, y = 32040, z = 9 },
 		exitPosition = Position(33442, 32052, 9)
 	}
 }
@@ -117,7 +117,7 @@ function teleportBoss.onStepIn(creature, item, position, fromPosition)
 			if creature:getStorageValue(value.storage) > os.time() then
 				creature:teleportTo(fromPosition, true)
 				creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. value.timeToFightAgain .. " hours to face ".. value.bossName .. " again!")
+				creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. value.timeToFightAgain .. " hours to face " .. value.bossName .. " again!")
 				return true
 			end
 			spec:removeMonsters()

@@ -16,7 +16,7 @@ function fafnar.onKill(creature, target)
 		creature:say('You slayed ' .. target:getName() .. '.', TALKTYPE_MONSTER_SAY)
 	else
 		kills = kills + 1
-		creature:say('You have slayed ' .. target:getName() .. ' '.. kills ..' times!', TALKTYPE_MONSTER_SAY)
+		creature:say('You have slayed ' .. target:getName() .. ' ' .. kills .. ' times!', TALKTYPE_MONSTER_SAY)
 		creature:setStorageValue(storage, kills)
 	end
 	return true

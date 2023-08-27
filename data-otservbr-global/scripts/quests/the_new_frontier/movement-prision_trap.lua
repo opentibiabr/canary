@@ -10,8 +10,8 @@ function lizardsTrap.onStepIn(creature, item, position, fromPosition)
 	end
 
 	if player:getStorageValue(TheNewFrontier.Questline) == 21
-	and player:getStorageValue(TheNewFrontier.Mission07[1]) == 1
-	and player:getStorageValue(TheNewFrontier.Mission08) < 1 then
+			and player:getStorageValue(TheNewFrontier.Mission07[1]) == 1
+			and player:getStorageValue(TheNewFrontier.Mission08) < 1 then
 		player:setStorageValue(TheNewFrontier.Mission07[1], 2) -- Questlog, "Mission 07: Messengers Of Peace"
 		player:setStorageValue(TheNewFrontier.Mission08, 1) -- Questlog, "Mission 08: An Offer You Can't Refuse"
 		player:setStorageValue(TheNewFrontier.Questline, 22)
@@ -23,5 +23,5 @@ function lizardsTrap.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 
-lizardsTrap:position(Position(33169, 31253, 10),Position(33170, 31253, 10),Position(33171, 31253, 10))
+lizardsTrap:position(Position(33169, 31253, 10), Position(33170, 31253, 10), Position(33171, 31253, 10))
 lizardsTrap:register()

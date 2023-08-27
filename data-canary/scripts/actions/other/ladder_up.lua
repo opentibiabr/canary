@@ -1,4 +1,4 @@
-local setting = {1948, 1968, 5542, 20474, 20475, 28656, 31262}
+local setting = { 1948, 1968, 5542, 20474, 20475, 28656, 31262 }
 
 local ladder = Action()
 
@@ -19,7 +19,7 @@ function ladder.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 end
 
 for index, value in ipairs(setting) do
-    ladder:id(value)
+	ladder:id(value)
 end
 
 ladder:register()

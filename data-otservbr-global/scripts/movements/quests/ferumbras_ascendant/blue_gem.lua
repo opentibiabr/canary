@@ -51,13 +51,13 @@ function blueGem.onStepIn(creature, item, position, fromPosition)
 	end
 	if item.itemid == 8647 then
 		local leverFirst = Tile(Position(33671, 32638, 13)):getItemById(9110)
-		or Tile(Position(33671, 32638, 13)):getItemById(9111) -- lever blue
+				or Tile(Position(33671, 32638, 13)):getItemById(9111) -- lever blue
 		local leverSecond = Tile(Position(33613, 32691, 13)):getItemById(9110)
-		or Tile(Position(33613, 32691, 13)):getItemById(9111) -- lever green
+				or Tile(Position(33613, 32691, 13)):getItemById(9111) -- lever green
 		local leverThird = Tile(Position(33651, 32661, 13)):getItemById(9110)
-		or Tile(Position(33651, 32661, 13)):getItemById(9111) -- lever red
+				or Tile(Position(33651, 32661, 13)):getItemById(9111) -- lever red
 		local leverFour = Tile(Position(33672, 32688, 13)):getItemById(9110)
-		or Tile(Position(33672, 32688, 13)):getItemById(9111) -- lever green
+				or Tile(Position(33672, 32688, 13)):getItemById(9111) -- lever green
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Elements.First, 3) -- blue
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Elements.Second, 2) -- green
 		Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Elements.Third, 1) -- red

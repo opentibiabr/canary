@@ -27,7 +27,7 @@ function yalaharDemon.onStepIn(creature, item, position, fromPosition)
 	end
 
 	local sacrificeId, sacrifice = Tile(flame.sacrificePosition):getThing(1).itemid, true
-	if not table.contains({940, 941, 944, 945}, sacrificeId) then
+	if not table.contains({ 940, 941, 944, 945 }, sacrificeId) then
 		sacrifice = false
 	end
 

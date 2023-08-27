@@ -55,13 +55,13 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, 'enter') then
 		if player:getStorageValue(Storage.TheShatteredIsles.RaysMission3) == 1
-		and player:getStorageValue(Storage.TheShatteredIsles.YavernDoor) < 0 then
+				and player:getStorageValue(Storage.TheShatteredIsles.YavernDoor) < 0 then
 			local headItem = player:getSlotItem(CONST_SLOT_HEAD)
 			local armorItem = player:getSlotItem(CONST_SLOT_ARMOR)
 			local legsItem = player:getSlotItem(CONST_SLOT_LEGS)
 			local feetItem = player:getSlotItem(CONST_SLOT_FEET)
 			if headItem and headItem.itemid == 6096 and armorItem and armorItem.itemid == 6095
-			and legsItem and legsItem.itemid == 5918 and feetItem and feetItem.itemid == 5461 then
+					and legsItem and legsItem.itemid == 5918 and feetItem and feetItem.itemid == 5461 then
 				npcHandler:say('Hey, I rarely see a dashing pirate like you! Get in, matey!', npc, creature)
 				player:setStorageValue(Storage.TheShatteredIsles.YavernDoor, 1)
 			else

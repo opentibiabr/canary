@@ -1,6 +1,6 @@
 local monsters = {
-	[1] = {pos = Position(32980, 31664, 13)},
-	[2] = {pos = Position(32975, 31664, 13)}
+	[1] = { pos = Position(32980, 31664, 13) },
+	[2] = { pos = Position(32975, 31664, 13) }
 }
 
 local function functionBack(position, oldpos)
@@ -27,7 +27,7 @@ local function functionBack(position, oldpos)
 			diference = guardian:getHealth() - health
 		end
 	end
-	guardian:addHealth( - diference)
+	guardian:addHealth(-diference)
 	guardian:teleportTo(oldpos)
 end
 
@@ -45,7 +45,7 @@ function spell.onCastSpell(creature, var)
 	local diference, health = 0, 0
 	health = creature:getHealth()
 	diference = form:getHealth() - health
-	form:addHealth( - diference)
+	form:addHealth(-diference)
 	form:teleportTo(monsterPos)
 	addEvent(functionBack, 30 * 1000, position, monsterPos)
 	return true

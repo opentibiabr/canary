@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "lib/di/container.hpp"
 #include "utils/tools.hpp"
 
 struct EventScheduler {

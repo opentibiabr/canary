@@ -9,6 +9,7 @@
 
 #include "pch.hpp"
 #include "canary_server.hpp"
+#include "lib/di/container.hpp"
 
 int main() {
 	return inject<CanaryServer>().run();

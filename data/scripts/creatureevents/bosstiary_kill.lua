@@ -29,4 +29,5 @@ function bosstiaryOnKill.onKill(player, creature, lastHit)
 
 	return true
 end
+
 bosstiaryOnKill:register()

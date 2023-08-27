@@ -27,7 +27,7 @@ monster.Bestiary = {
 		Mintwallin, Folda, Minotaur Pyramid, Outlaw Camp, Kazordoon minotaur cave, Plains of Havoc, Elven Bane, \z
 		Deeper Fibula Dungeon (level 50+ to open the door), Ancient Temple, Maze of Lost Souls, \z
 		Thais Minotaur Camp, Foreigner Quarter."
-	}
+}
 
 monster.health = 100
 monster.maxHealth = 100
@@ -73,27 +73,27 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Kaplar!", yell = false},
-	{text = "Hurr", yell = false}
+	{ text = "Kaplar!", yell = false },
+	{ text = "Hurr", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 67500, maxCount = 25},
-	{name = "bronze amulet", chance = 110},
-	{id = 3264, chance = 5000}, -- sword
-	{name = "axe", chance = 4000},
-	{name = "mace", chance = 12840},
-	{name = "brass helmet", chance = 7700},
-	{name = "chain armor", chance = 10000},
-	{name = "plate shield", chance = 20020},
-	{id = 3457, chance = 310}, -- shovel
-	{name = "meat", chance = 5000},
-	{name = "minotaur leather", chance = 990},
-	{name = "minotaur horn", chance = 2090, maxCount = 2}
+	{ name = "gold coin", chance = 67500, maxCount = 25 },
+	{ name = "bronze amulet", chance = 110 },
+	{ id = 3264, chance = 5000 }, -- sword
+	{ name = "axe", chance = 4000 },
+	{ name = "mace", chance = 12840 },
+	{ name = "brass helmet", chance = 7700 },
+	{ name = "chain armor", chance = 10000 },
+	{ name = "plate shield", chance = 20020 },
+	{ id = 3457, chance = 310 }, -- shovel
+	{ name = "meat", chance = 5000 },
+	{ name = "minotaur leather", chance = 990 },
+	{ name = "minotaur horn", chance = 2090, maxCount = 2 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 }
 }
 
 monster.defenses = {
@@ -102,23 +102,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 20},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -10},
-	{type = COMBAT_HOLYDAMAGE , percent = 10},
-	{type = COMBAT_DEATHDAMAGE , percent = -10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 20 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

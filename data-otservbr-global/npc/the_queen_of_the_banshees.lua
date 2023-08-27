@@ -21,7 +21,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Uhhhhhh....'}
+	{ text = 'Uhhhhhh....' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -151,7 +151,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if not player:isPzLocked() then
 				npcHandler:say("So be it! Hmmmmmm...", npc, creature)
 				npcHandler:setTopic(playerId, 0)
-				player:teleportTo({x = 32202, y = 31812, z = 8})
+				player:teleportTo({ x = 32202, y = 31812, z = 8 })
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				player:setStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.LastSeal, 1)
 				player:setStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.LastSealDoor, 1)
@@ -196,27 +196,27 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'stay'}, StdModule.say, 
+keywordHandler:addKeyword({ 'stay' }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "It's my curse to be the eternal {guardian} of this ancient {place}."
 	}
 )
-keywordHandler:addKeyword({'guardian'}, StdModule.say, 
+keywordHandler:addKeyword({ 'guardian' }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "I'm the {guardian} of the {SEVENTH} and final seal. The seal to open the last door before ... \z
 			but perhaps it's better to see it with your own eyes."
 	}
 )
-keywordHandler:addKeyword({'place'}, StdModule.say, 
+keywordHandler:addKeyword({ 'place' }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "It served as a temple, a source of power and ... \z
 			as a sender for an ancient {race} which lived a long time ago and has long been forgotten."
 	}
 )
-keywordHandler:addKeyword({'race'}, StdModule.say, 
+keywordHandler:addKeyword({ 'race' }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "The race that built this edifice came to this place from the stars. \z
@@ -224,14 +224,14 @@ keywordHandler:addKeyword({'race'}, StdModule.say,
 			But they carried the {seed} of their own destruction in them."
 	}
 )
-keywordHandler:addKeyword({'seed'}, StdModule.say, 
+keywordHandler:addKeyword({ 'seed' }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "This ancient race was annihilated by its own doings, that's all I know. \z
 			Aeons have passed since then, but the sheer presence of this {complex} is still defiling and desecrating this area."
 	}
 )
-keywordHandler:addKeyword({'complex'}, StdModule.say, 
+keywordHandler:addKeyword({ 'complex' }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "Its constructors were too strange for you or even me to understand. \z
@@ -239,14 +239,14 @@ keywordHandler:addKeyword({'complex'}, StdModule.say,
 			I feel a constant twisting and binding of souls, though, that is probably only a side-effect."
 	}
 )
-keywordHandler:addKeyword({'ghostlands'}, StdModule.say, 
+keywordHandler:addKeyword({ 'ghostlands' }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "The place you know as the Ghostlands had a different name once ... \z
 			and many names after. Too many to remember them all."
 	}
 )
-keywordHandler:addKeyword({'banshee'}, StdModule.say, 
+keywordHandler:addKeyword({ 'banshee' }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "They are my maidens. They give me comfort in my eternal watch over the last seal."

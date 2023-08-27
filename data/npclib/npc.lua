@@ -26,8 +26,8 @@ function MsgFind(message, keyword)
 	end
 
 	return string.find(lowerMessage, lowerKeyword)
-		and string.find(lowerMessage, lowerKeyword.. '(%w+)')
-		and string.find(lowerMessage, '(%w+)' .. lowerKeyword)
+			and string.find(lowerMessage, lowerKeyword .. '(%w+)')
+			and string.find(lowerMessage, '(%w+)' .. lowerKeyword)
 end
 
 -- Npc talk
@@ -71,7 +71,7 @@ function SayEvent(npcId, playerId, messageDelayed, npcHandler, textType)
 		[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel(), false)
 	}
 	npc:say(npcHandler:parseMessage(messageDelayed, parseInfo),
-			textType or TALKTYPE_PRIVATE_NP, false, player, npc:getPosition())
+		textType or TALKTYPE_PRIVATE_NP, false, player, npc:getPosition())
 end
 
 function GetCount(string)

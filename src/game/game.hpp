@@ -493,7 +493,7 @@ public:
 
 	std::shared_ptr<Guild> getGuild(uint32_t id, bool allowOffline = false) const;
 	std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;
-	void addGuild(const std::shared_ptr<Guild> &guild);
+	void addGuild(const std::shared_ptr<Guild> guild);
 	void removeGuild(uint32_t guildId);
 	void decreaseBrowseFieldRef(const Position &pos);
 
@@ -534,7 +534,7 @@ public:
 	void playerInspectItem(Player* player, const Position &pos);
 	void playerInspectItem(Player* player, uint16_t itemId, uint8_t itemCount, bool cyclopedia);
 
-	void addCharmRune(const std::shared_ptr<Charm> &charm) {
+	void addCharmRune(const std::shared_ptr<Charm> charm) {
 		CharmList.push_back(charm);
 		CharmList.shrink_to_fit();
 	}

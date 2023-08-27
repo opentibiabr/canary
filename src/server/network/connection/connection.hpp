@@ -10,6 +10,7 @@
 #pragma once
 
 #include "declarations.hpp"
+#include "lib/di/container.hpp"
 #include "server/network/message/networkmessage.hpp"
 
 static constexpr int32_t CONNECTION_WRITE_TIMEOUT = 30;

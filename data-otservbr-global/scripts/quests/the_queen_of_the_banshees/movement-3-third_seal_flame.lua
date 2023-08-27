@@ -25,7 +25,7 @@ function thirdSealFlame.onStepIn(creature, item, position, fromPosition)
 	player:setStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.ThirdSeal, 1)
 	player:setStorageValue(Storage.Quest.U7_2.TheQueenOfTheBanshees.ThirdSealDoor, 1)
 	Game.setStorageValue('switchNum', 1)
-	player:teleportTo({x = 32271, y = 31857, z = 15})
+	player:teleportTo({ x = 32271, y = 31857, z = 15 })
 	player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	return true
 end

@@ -110,8 +110,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Do you have the green dragon scale I requested?", npc, creature)
 			npcHandler:setTopic(playerId, 9)
 		else
-		npcHandler:say("I have now no mission for you.", npc, creature)
-		npcHandler:setTopic(playerId, 0)
+			npcHandler:say("I have now no mission for you.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "jug") then
 		npcHandler:say("Do you want to buy a jug for 1000 gold?", npc, creature)

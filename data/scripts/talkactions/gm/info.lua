@@ -39,7 +39,7 @@ function info.onSay(player, words, param)
 	local players = {}
 	for _, targetPlayer in ipairs(Game.getPlayers()) do
 		if targetPlayer:getIp() == targetIp and targetPlayer ~= target then
-			players[#players + 1] = targetPlayer:getName() .. " [" .. targetPlayer:getLevel() .. "]"
+			players[#players+1] = targetPlayer:getName() .. " [" .. targetPlayer:getLevel() .. "]"
 		end
 	end
 

@@ -15,5 +15,5 @@ function forgottenKnowledgeSecret.onUse(player, item, fromPosition, target, toPo
 	return true
 end
 
-forgottenKnowledgeSecret:aid(24876,24877)
+forgottenKnowledgeSecret:aid(24876, 24877)
 forgottenKnowledgeSecret:register()

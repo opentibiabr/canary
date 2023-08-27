@@ -36,7 +36,7 @@ public:
 
 	GlobalEventMap getEventMap(GlobalEvent_t type);
 
-	bool registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEvent);
+	bool registerLuaEvent(const std::shared_ptr<GlobalEvent> globalEvent);
 	void clear();
 
 private:

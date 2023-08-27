@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Amazon Camp (Venore), Amazon Camp (Carlin), Amazonia, \z
 		single respawn to the north west of Thais, Foreigner Quarter in Yalahar."
-	}
+}
 
 monster.health = 190
 monster.maxHealth = 190
@@ -72,33 +72,33 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Another head for me!", yell = false},
-	{text = "Head off!", yell = false},
-	{text = "Your head will be mine!", yell = false},
-	{text = "Stand still!", yell = false},
-	{text = "One more head for me!", yell = false}
+	{ text = "Another head for me!", yell = false },
+	{ text = "Head off!", yell = false },
+	{ text = "Your head will be mine!", yell = false },
+	{ text = "Stand still!", yell = false },
+	{ text = "One more head for me!", yell = false }
 }
 
 monster.loot = {
-	{id = 3277, chance = 55000, maxCount = 3}, -- spear
-	{id = 3031, chance = 32000, maxCount = 12}, -- gold coin
-	{id = 3577, chance = 30000}, -- meat
-	{id = 3358, chance = 10000}, -- chain armor
-	{id = 3585, chance = 7500, maxCount = 2}, -- red apple
-	{id = 11443, chance = 5900}, -- girlish hair decoration
-	{id = 3347, chance = 5155}, -- hunting spear
-	{id = 11444, chance = 3200}, -- protective charm
-	{id = 3084, chance = 1100}, -- protection amulet
-	{id = 3357, chance = 830}, -- plate armor
-	{id = 3114, chance = 760}, -- skull
-	{id = 266, chance = 500}, -- health potion
-	{id = 3275, chance = 430}, -- double axe
-	{id = 3028, chance = 130} -- small diamond
+	{ id = 3277, chance = 55000, maxCount = 3 }, -- spear
+	{ id = 3031, chance = 32000, maxCount = 12 }, -- gold coin
+	{ id = 3577, chance = 30000 }, -- meat
+	{ id = 3358, chance = 10000 }, -- chain armor
+	{ id = 3585, chance = 7500, maxCount = 2 }, -- red apple
+	{ id = 11443, chance = 5900 }, -- girlish hair decoration
+	{ id = 3347, chance = 5155 }, -- hunting spear
+	{ id = 11444, chance = 3200 }, -- protective charm
+	{ id = 3084, chance = 1100 }, -- protection amulet
+	{ id = 3357, chance = 830 }, -- plate armor
+	{ id = 3114, chance = 760 }, -- skull
+	{ id = 266, chance = 500 }, -- health potion
+	{ id = 3275, chance = 430 }, -- double axe
+	{ id = 3028, chance = 130 } -- small diamond
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -50, range = 5, shootEffect = CONST_ANI_SPEAR, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -50, range = 5, shootEffect = CONST_ANI_SPEAR, target = false }
 }
 
 monster.defenses = {
@@ -107,23 +107,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -10},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 10},
-	{type = COMBAT_HOLYDAMAGE , percent = 5},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -10 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 5 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

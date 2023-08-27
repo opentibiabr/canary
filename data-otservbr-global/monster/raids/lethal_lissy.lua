@@ -60,7 +60,7 @@ monster.light = {
 monster.summon = {
 	maxSummons = 4,
 	summons = {
-		{name = "Pirate Cutthroat", chance = 50, interval = 2000, count = 4}
+		{ name = "Pirate Cutthroat", chance = 50, interval = 2000, count = 4 }
 	}
 }
 
@@ -70,46 +70,46 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "small diamond", chance = 12500},
-	{name = "meat", chance = 18750, maxCount = 3},
-	{name = "gold coin", chance = 50000, maxCount = 60},
-	{name = "gold coin", chance = 50000, maxCount = 61},
-	{id = 3114, chance = 81250, maxCount = 2}, -- skull
-	{name = "pirate backpack", chance = 6250},
-	{name = "plate armor", chance = 56250},
-	{name = "knight armor", chance = 12500},
-	{name = "very old piece of paper", chance = 25000},
-	{id = 6100, chance = 100000} -- lethal lissy's shirt
+	{ name = "small diamond", chance = 12500 },
+	{ name = "meat", chance = 18750, maxCount = 3 },
+	{ name = "gold coin", chance = 50000, maxCount = 60 },
+	{ name = "gold coin", chance = 50000, maxCount = 61 },
+	{ id = 3114, chance = 81250, maxCount = 2 }, -- skull
+	{ name = "pirate backpack", chance = 6250 },
+	{ name = "plate armor", chance = 56250 },
+	{ name = "knight armor", chance = 12500 },
+	{ name = "very old piece of paper", chance = 25000 },
+	{ id = 6100, chance = 100000 } -- lethal lissy's shirt
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -250}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -250 }
 }
 
 monster.defenses = {
 	defense = 50,
 	armor = 35,
-	{name ="combat", interval = 6000, chance = 65, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false}
+	{ name = "combat", interval = 6000, chance = 65, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

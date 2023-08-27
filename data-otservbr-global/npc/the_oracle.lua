@@ -82,7 +82,7 @@ local function greetCallback(npc, creature)
 		npcHandler:resetNpc(creature)
 		return false
 	elseif level > 10 then
-		npcHandler:say(player:getName() ..", I CAN'T LET YOU LEAVE - YOU ARE TOO STRONG ALREADY! \z
+		npcHandler:say(player:getName() .. ", I CAN'T LET YOU LEAVE - YOU ARE TOO STRONG ALREADY! \z
 		YOU CAN ONLY LEAVE WITH LEVEL 9 OR LOWER.", npc, creature)
 		npcHandler:resetNpc(creature)
 		return false
@@ -91,7 +91,7 @@ local function greetCallback(npc, creature)
 		npcHandler:resetNpc(creature)
 		return false
 	else
-		npcHandler:setMessage(MESSAGE_GREET, player:getName() ..", ARE YOU PREPARED TO FACE YOUR DESTINY?")
+		npcHandler:setMessage(MESSAGE_GREET, player:getName() .. ", ARE YOU PREPARED TO FACE YOUR DESTINY?")
 	end
 	return true
 end
@@ -113,7 +113,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		local cityTable = config.towns[message:lower()]
 		if cityTable then
 			town[playerId] = cityTable
-			npcHandler:say("IN ".. string.upper(message) .."! AND WHAT PROFESSION HAVE YOU CHOSEN: \z
+			npcHandler:say("IN " .. string.upper(message) .. "! AND WHAT PROFESSION HAVE YOU CHOSEN: \z
 			{KNIGHT}, {PALADIN}, {SORCERER}, OR {DRUID}?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		else

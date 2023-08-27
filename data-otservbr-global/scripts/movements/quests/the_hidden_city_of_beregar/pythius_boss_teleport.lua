@@ -25,14 +25,14 @@ function pythiusBossTeleport.onStepIn(creature, item, position, fromPosition)
 
 		local steamPosition = Position(32551, 31379, 15)
 		iterateArea(
-		function(position)
-			local groundItem = Tile(position):getGround()
-			if groundItem and groundItem.itemid == 5815 then
-				groundItem:transform(21477)
-			end
-		end,
-		Position(32550, 31373, 15),
-		steamPosition
+			function(position)
+				local groundItem = Tile(position):getGround()
+				if groundItem and groundItem.itemid == 5815 then
+					groundItem:transform(21477)
+				end
+			end,
+			Position(32550, 31373, 15),
+			steamPosition
 		)
 
 		Game.createItem(1791, 1, steamPosition)
@@ -50,9 +50,7 @@ function pythiusBossTeleport.onStepIn(creature, item, position, fromPosition)
 		if monster then
 			monster:say("WHO IS SNEAKING AROUND BEHIND MY TREASURE?", TALKTYPE_MONSTER_YELL, false, player)
 		end
-
 	else
-
 		local spectators, spectator = Game.getSpectators(Position(32566, 31406, 15), false, false, 7, 7)
 		for i = 1, #spectators do
 			spectator = spectators[i]

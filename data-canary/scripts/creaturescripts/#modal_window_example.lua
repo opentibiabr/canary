@@ -1,6 +1,7 @@
 --[[
 	ModalWindowHelper Example
-]]--
+]]
+--
 
 local moveDirectionTest = {
 	["Right"] = function(player)
@@ -28,7 +29,7 @@ local moveDirectionTest = {
 local talkAction = TalkAction("!modalTest")
 
 function talkAction.onSay(player, words, param, type)
-	local modalWindow = ModalWindow{
+	local modalWindow = ModalWindow {
 		title = "Modal Window Helper Example",
 		message = "This is an example of ModalWindowHelper."
 	}

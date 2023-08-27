@@ -118,4 +118,3 @@ end
 talkaction:separator(" ")
 talkaction:groupType("god")
 talkaction:register()
-

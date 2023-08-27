@@ -53,12 +53,12 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = "I AM THE... I mean... I am - what is a mage, if he is not {mad}? If he isn't... raging? I am... I am just sane. A sane mage."})
-keywordHandler:addKeyword({'mad'}, StdModule.say, {npcHandler = npcHandler, text = "I am not mad... I- YES, that's the whole problem, isn't it? What's going on, what's happening to me? I don't even know anymore."})
-keywordHandler:addKeyword({'vacation'}, StdModule.say, {npcHandler = npcHandler, text = "Yes, well... I'm taking a break. It will take some time. I don't know how long I just... I want to get away from all this for some time, that's it."})
-keywordHandler:addKeyword({'mission'}, StdModule.say, {npcHandler = npcHandler, text = "Slime is my mission. Is there anything more important? There isn't. To me. Right now at least."})
-keywordHandler:addKeyword({'quest'}, StdModule.say, {npcHandler = npcHandler, text = "Slime is my mission. Is there anything more important? There isn't. To me. Right now at least."})
-keywordHandler:addKeyword({'help'}, StdModule.say, {npcHandler = npcHandler, text = "You want to help me? HELP me? You? Who... who are you anyway? Ah nevermind."})
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = "I AM THE... I mean... I am - what is a mage, if he is not {mad}? If he isn't... raging? I am... I am just sane. A sane mage." })
+keywordHandler:addKeyword({ 'mad' }, StdModule.say, { npcHandler = npcHandler, text = "I am not mad... I- YES, that's the whole problem, isn't it? What's going on, what's happening to me? I don't even know anymore." })
+keywordHandler:addKeyword({ 'vacation' }, StdModule.say, { npcHandler = npcHandler, text = "Yes, well... I'm taking a break. It will take some time. I don't know how long I just... I want to get away from all this for some time, that's it." })
+keywordHandler:addKeyword({ 'mission' }, StdModule.say, { npcHandler = npcHandler, text = "Slime is my mission. Is there anything more important? There isn't. To me. Right now at least." })
+keywordHandler:addKeyword({ 'quest' }, StdModule.say, { npcHandler = npcHandler, text = "Slime is my mission. Is there anything more important? There isn't. To me. Right now at least." })
+keywordHandler:addKeyword({ 'help' }, StdModule.say, { npcHandler = npcHandler, text = "You want to help me? HELP me? You? Who... who are you anyway? Ah nevermind." })
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
@@ -77,7 +77,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			'However, sometimes people come and just... DESTROY them! Destroy my work!! Why? Do those people help me removing the slime instead? NO! Not at all.',
 			'All they do is ruining my experiments, my perfect testing conditions. It makes me just FURIOUS! And boy do I get FURIOUS, I tell you.'
 		}, npc, creature)
-	elseif table.contains({"slime", "fungus"}, message) then
+	elseif table.contains({ "slime", "fungus" }, message) then
 		npcHandler:say({
 			'My experiments, my work - not at the moment, however. I\'m on vacation. Trying to get away from it... it\'s all not right. Why... why am I doing this anyway.',
 			'NO! I should not talk like that, I just... I shouldn\'t. That\'s not even ME. I... I used to be MAD. A MAD SCIENTIST! THE BEST! THE... the... WORST! A SUPERLATIVE! Ah, nevermind.'

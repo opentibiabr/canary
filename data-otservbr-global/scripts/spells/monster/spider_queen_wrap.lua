@@ -9,12 +9,12 @@ combat:addCondition(conditionParalize)
 
 local conditionOutfit = Condition(CONDITION_OUTFIT)
 conditionOutfit:setTicks(30000)
-conditionOutfit:setOutfit({lookType = 422})
+conditionOutfit:setOutfit({ lookType = 422 })
 
 local function moveToSpiderNest(uid)
 	local player = Player(uid)
 	if player then
-		player:teleportTo({x = 32013, y = 32087, z = 10})
+		player:teleportTo({ x = 32013, y = 32087, z = 10 })
 	end
 end
 

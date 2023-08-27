@@ -13,7 +13,7 @@ function foundPoacherBody.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 
-foundPoacherBody:position({x = 32949, y = 31811, z = 7})
-foundPoacherBody:position({x = 32950, y = 31811, z = 7})
-foundPoacherBody:position({x = 32951, y = 31811, z = 7})
+foundPoacherBody:position({ x = 32949, y = 31811, z = 7 })
+foundPoacherBody:position({ x = 32950, y = 31811, z = 7 })
+foundPoacherBody:position({ x = 32951, y = 31811, z = 7 })
 foundPoacherBody:register()

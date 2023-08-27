@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if(MsgContains(message, 'scroll') or MsgContains(message, 'mission')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission35) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission36) < 1 then
+	if (MsgContains(message, 'scroll') or MsgContains(message, 'mission')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission35) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission36) < 1 then
 		npcHandler:say({
 			"So someone sent you after a scroll, eh? A stroll for a scroll! <chuckles> Sounds like an old-fashioned necromancer thing. ...",
 			"Well, this piece here is a rather fascinating thing - see those strange blood stains? - ...",
@@ -80,7 +80,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		player:setStorageValue(Storage.GravediggerOfDrefia.Mission36, 1)
 		player:addItem(19100, 2)
 		npcHandler:setTopic(playerId, 0)
-	elseif(MsgContains(message, 'scroll') or MsgContains(message, 'mission') or MsgContains(message, 'blood')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission37) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission38) < 1 then
+	elseif (MsgContains(message, 'scroll') or MsgContains(message, 'mission') or MsgContains(message, 'blood')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission37) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission38) < 1 then
 		npcHandler:say("Hello hello! Did you bring those blood samples?", npc, creature)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, 'yes') and npcHandler:getTopic(playerId) == 2 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission37) == 1 then
@@ -99,7 +99,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("You haven't got any blood.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif(MsgContains(message, 'scroll') or MsgContains(message, 'mission')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission40) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission41) < 1 then
+	elseif (MsgContains(message, 'scroll') or MsgContains(message, 'mission')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission40) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission41) < 1 then
 		npcHandler:say("Hello hello! Did Hello hello! Well now, painted all those blood pagodas properly?", npc, creature)
 		npcHandler:setTopic(playerId, 3)
 	elseif MsgContains(message, 'yes') and npcHandler:getTopic(playerId) == 3 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission40) == 1 then
@@ -111,7 +111,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		}, npc, creature)
 		player:setStorageValue(Storage.GravediggerOfDrefia.Mission41, 1)
 		npcHandler:setTopic(playerId, 0)
-	elseif(MsgContains(message, 'scroll') or MsgContains(message, 'mission')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission41) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission42) < 1 then
+	elseif (MsgContains(message, 'scroll') or MsgContains(message, 'mission')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission41) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission42) < 1 then
 		npcHandler:say("Hello hell- oh, you've come for the scroll, haven't you?", npc, creature)
 		npcHandler:setTopic(playerId, 4)
 	elseif MsgContains(message, 'yes') and npcHandler:getTopic(playerId) == 4 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission41) == 1 then

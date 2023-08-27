@@ -25,7 +25,7 @@ local function functionBack()
 			diference = dragonking:getHealth() - health
 		end
 	end
-	dragonking:addHealth( - diference)
+	dragonking:addHealth(-diference)
 	dragonking:teleportTo(Position(33358, 31183, 10))
 end
 

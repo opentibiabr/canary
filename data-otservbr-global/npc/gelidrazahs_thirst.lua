@@ -56,11 +56,11 @@ local function creatureSayCallback(npc, creature, type, message)
 
 
 	if MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 0 then
-			npcHandler:say({
-				"There are three questions. First: What is the name of the princess who fell in love with a Thaian nobleman during the regency of pharaoh Uthemath? Second: Who is the author of the book ,The Language of the Wolves'? ...",
-				"Third: Which ancient Tibian race reportedly travelled the sky in cloud ships? Can you answer these questions?"
-			}, npc, creature)
-			npcHandler:setTopic(playerId, 1)
+		npcHandler:say({
+			"There are three questions. First: What is the name of the princess who fell in love with a Thaian nobleman during the regency of pharaoh Uthemath? Second: Who is the author of the book ,The Language of the Wolves'? ...",
+			"Third: Which ancient Tibian race reportedly travelled the sky in cloud ships? Can you answer these questions?"
+		}, npc, creature)
+		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say("So I ask you: What is the name of the princess who fell in love with a Thaian nobleman during the regency of pharaoh Uthemath?", npc, creature)
 		npcHandler:setTopic(playerId, 2)
@@ -70,7 +70,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "Ishara") and npcHandler:getTopic(playerId) == 3 then
 		npcHandler:say("That's right. Listen to the third question: Which ancient Tibian race reportedly travelled the sky in cloud ships?", npc, creature)
 		npcHandler:setTopic(playerId, 4)
-	 elseif MsgContains(message, "Svir") and npcHandler:getTopic(playerId) == 4 then
+	elseif MsgContains(message, "Svir") and npcHandler:getTopic(playerId) == 4 then
 		npcHandler:say("That is correct. You satisfactorily answered all questions. You may pass and enter Gelidrazah's lair.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 		player:setStorageValue(Storage.FirstDragon.GelidrazahAccess, 1)

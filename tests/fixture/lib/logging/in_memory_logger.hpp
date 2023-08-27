@@ -12,7 +12,7 @@
 #include <string>
 #include <utility>
 
-#include "fixtures/test_injection.hpp"
+#include "test_injection.hpp"
 #include "lib/di/container.hpp"
 
 namespace di = boost::di;

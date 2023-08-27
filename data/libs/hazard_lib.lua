@@ -29,7 +29,7 @@ function Hazard:getHazardPlayerAndPoints(damageMap)
 	for key, _ in pairs(damageMap) do
 		local player = Player(key)
 		if player then
-			local playerHazardPoints = self:getPlayerCurrentLevel()
+			local playerHazardPoints = self:getPlayerCurrentLevel(player)
 
 			if playerHazardPoints < hazardPoints or hazardPoints == -1 then
 				hazardPlayer = player

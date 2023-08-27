@@ -12,7 +12,7 @@
 
 #include "account/account.hpp"
 #include "utils/tools.hpp"
-#include "fixtures/injection_fixture.hpp"
+#include "injection_fixture.hpp"
 
 suite<"account"> accountTest = [] {
 	InjectionFixture injectionFixture {};

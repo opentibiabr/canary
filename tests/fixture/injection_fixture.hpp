@@ -7,7 +7,7 @@
 #include <boost/ut.hpp>
 
 #include "account/in_memory_account_repository.hpp"
-#include "fixtures/test_injection.hpp"
+#include "test_injection.hpp"
 #include "lib/logging/in_memory_logger.hpp"
 
 using namespace account;

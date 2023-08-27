@@ -58,9 +58,11 @@ keywordHandler:addKeyword({ 'elves' }, StdModule.say, { npcHandler = npcHandler,
 keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'Me job merchant is. Me trade with all kinds of things. Me not good trader though, so you get everything incredibly cheap! You might think me mad, but please don\'t rip off poor goblin too much. Me has four or five wives and dozens of kids to feed!' })
 keywordHandler:addKeyword({ 'venore' }, StdModule.say, { npcHandler = npcHandler, text = 'Humans so clever. Much, much smarter than poor, stupid goblin. They have big rich town. Goblin lives here poor and hungry. Me so impressed by you strong and smart humans. So much to learn from you. Poor goblin only sees pretty city from afar. Poor goblin too afraid to go there.' })
 keywordHandler:addKeyword({ 'gold' }, StdModule.say,
-	{ npcHandler = npcHandler,
+	{
+		npcHandler = npcHandler,
 		text =
-		'Me have seen a gold coin once or twice. So bright and shiny it hurt me poor eyes. You surely are incredibly rich human who has even three or four coins at once! Perhaps you want to exchange them for some things me offer? Just don\'t rob me too much, me little stupid goblin, have no idea what stuff is worth... you look honest, you surely pay fair price like I ask and tell if it\'s too cheap.' })
+		'Me have seen a gold coin once or twice. So bright and shiny it hurt me poor eyes. You surely are incredibly rich human who has even three or four coins at once! Perhaps you want to exchange them for some things me offer? Just don\'t rob me too much, me little stupid goblin, have no idea what stuff is worth... you look honest, you surely pay fair price like I ask and tell if it\'s too cheap.'
+	})
 keywordHandler:addKeyword({ 'ratmen' }, StdModule.say,
 	{ npcHandler = npcHandler, text = 'Furry guys are strange fellows. Always collecting things and stuff. Not easy to make them share, oh there is noooo profit for little, poor me to be made. They build underground dens that can stretch quite far. Rumour has it the corym have strange tunnels that connect their different networks all over the world.' })
 

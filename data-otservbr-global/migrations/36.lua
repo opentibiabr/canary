@@ -1,3 +1,6 @@
 function onUpdateDatabase()
-	return false -- true = There are others migrations file | false = this is the last migration file
+	logger.info("Updating database to version 36 (myacc phone)")
+	db.query("ALTER TABLE `accounts` ADD `phone` VARCHAR(15) NULL AFTER `rlname`;")
+	return true
+	
 end

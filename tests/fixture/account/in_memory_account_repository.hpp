@@ -13,7 +13,7 @@
 #include <utility>
 
 #include "account/account_definitions.hpp"
-#include "fixtures/test_injection.hpp"
+#include "test_injection.hpp"
 #include "lib/di/container.hpp"
 
 namespace di = boost::di;

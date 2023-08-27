@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Behave yourself as long as you are in Carlin, commoner!'}
+	{ text = 'Behave yourself as long as you are in Carlin, commoner!' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -68,7 +68,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if table.contains({"fuck", "idiot", "asshole", "ass", "fag", "stupid", "tyrant", "shit", "lunatic"}, message) then
+	if table.contains({ "fuck", "idiot", "asshole", "ass", "fag", "stupid", "tyrant", "shit", "lunatic" }, message) then
 		npcHandler:say("Take this!", npc, creature)
 		local player = Player(creature)
 		player:getPosition():sendMagicEffect(CONST_ME_EXPLOSIONAREA)

@@ -11,7 +11,7 @@
 
 #include "items/functions/item/custom_attribute.hpp"
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 CustomAttribute::CustomAttribute() = default;
 CustomAttribute::~CustomAttribute() = default;
@@ -111,7 +111,7 @@ void CustomAttribute::serialize(PropWriteStream &propWriteStream) const {
 bool CustomAttribute::unserialize(PropStream &propStream, const std::string &function) {
 	uint8_t type;
 	if (!propStream.read<uint8_t>(type)) {
-		SPDLOG_ERROR("[{}] Failed to read type", function);
+		g_logger().error("[{}] Failed to read type", function);
 		return false;
 	}
 
@@ -119,7 +119,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 		case 1: {
 			std::string readString;
 			if (!propStream.readString(readString)) {
-				SPDLOG_ERROR("[{}] failed to read string, call function: {}", __FUNCTION__, function);
+				g_logger().error("[{}] failed to read string, call function: {}", __FUNCTION__, function);
 				return false;
 			}
 			setValue(readString);
@@ -128,7 +128,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 		case 2: {
 			int64_t readInt;
 			if (!propStream.read<int64_t>(readInt)) {
-				SPDLOG_ERROR("[{}] failed to read int64, call function: {}", __FUNCTION__, function);
+				g_logger().error("[{}] failed to read int64, call function: {}", __FUNCTION__, function);
 				return false;
 			}
 			setValue(readInt);
@@ -137,7 +137,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 		case 3: {
 			double readDouble;
 			if (!propStream.read<double>(readDouble)) {
-				SPDLOG_ERROR("[{}] failed to read double, call function: {}", __FUNCTION__, function);
+				g_logger().error("[{}] failed to read double, call function: {}", __FUNCTION__, function);
 				return false;
 			}
 			setValue(readDouble);
@@ -146,7 +146,7 @@ bool CustomAttribute::unserialize(PropStream &propStream, const std::string &fun
 		case 4: {
 			bool readBoolean;
 			if (!propStream.read<bool>(readBoolean)) {
-				SPDLOG_ERROR("[{}] failed to read boolean, call function: {}", __FUNCTION__, function);
+				g_logger().error("[{}] failed to read boolean, call function: {}", __FUNCTION__, function);
 				return false;
 			}
 			setValue(readBoolean);

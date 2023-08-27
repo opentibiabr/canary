@@ -1,6 +1,6 @@
 local essenceOfMalice = CreatureEvent("EssenceOfMalice")
 function essenceOfMalice.onKill(creature, target)
-	local boss = {"eshtaba the conjurer", "mezlon the defiler", "eliz the unyielding", "malkhar deathbringer", "dorokoll the mystic"}
+	local boss = { "eshtaba the conjurer", "mezlon the defiler", "eliz the unyielding", "malkhar deathbringer", "dorokoll the mystic" }
 	local newBoss = 0
 	local fromPos = Position(33087, 31909, 15)
 	local toPos = Position(33112, 31932, 15)

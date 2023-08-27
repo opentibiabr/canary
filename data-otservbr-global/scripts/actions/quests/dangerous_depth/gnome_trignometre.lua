@@ -1,9 +1,9 @@
 local config = {
-	locationA = {fromPosition = Position(33921, 32141, 14), toPosition = Position(33926, 32146, 14)},
-	locationB = {fromPosition = Position(33965, 32139, 14), toPosition = Position(33975, 32149, 14)},
-	locationC = {fromPosition = Position(33911, 32176, 14), toPosition = Position(33914, 32180, 14)},
-	locationD = {fromPosition = Position(33947, 32206, 14), toPosition = Position(33952, 32209, 14)},
-	locationE = {fromPosition = Position(33877, 32173, 14), toPosition = Position(33881, 32179, 14)},
+	locationA = { fromPosition = Position(33921, 32141, 14), toPosition = Position(33926, 32146, 14) },
+	locationB = { fromPosition = Position(33965, 32139, 14), toPosition = Position(33975, 32149, 14) },
+	locationC = { fromPosition = Position(33911, 32176, 14), toPosition = Position(33914, 32180, 14) },
+	locationD = { fromPosition = Position(33947, 32206, 14), toPosition = Position(33952, 32209, 14) },
+	locationE = { fromPosition = Position(33877, 32173, 14), toPosition = Position(33881, 32179, 14) },
 }
 
 local dangerousDepthTrignometre = Action()

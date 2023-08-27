@@ -65,22 +65,22 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "I sjaw the eyes of the djeep!", yell = false},
-	{text = "I mjake sjure yjou wjill njot sjufer the sjame fjate Ij djid!", yell = false},
-	{text = "Yjou, intrjuder!!", yell = false}
+	{ text = "I sjaw the eyes of the djeep!", yell = false },
+	{ text = "I mjake sjure yjou wjill njot sjufer the sjame fjate Ij djid!", yell = false },
+	{ text = "Yjou, intrjuder!!", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 100000, maxCount = 50},
-	{name = "hunting spear", chance = 31250, maxCount = 4},
-	{id = 3052, chance = 25000}, -- life ring
-	{name = "rusted armor", chance = 6250},
-	{name = "fish fin", chance = 1500}
+	{ name = "gold coin", chance = 100000, maxCount = 50 },
+	{ name = "hunting spear", chance = 31250, maxCount = 4 },
+	{ id = 3052, chance = 25000 }, -- life ring
+	{ name = "rusted armor", chance = 6250 },
+	{ name = "fish fin", chance = 1500 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, skill = 34, attack = 45},
-	{name ="combat", interval = 1000, chance = 11, type = COMBAT_DROWNDAMAGE, minDamage = -15, maxDamage = -100, range = 5, shootEffect = CONST_ANI_SPEAR, effect = CONST_ME_LOSEENERGY, target = true}
+	{ name = "melee", interval = 2000, chance = 100, skill = 34, attack = 45 },
+	{ name = "combat", interval = 1000, chance = 11, type = COMBAT_DROWNDAMAGE, minDamage = -15, maxDamage = -100, range = 5, shootEffect = CONST_ANI_SPEAR, effect = CONST_ME_LOSEENERGY, target = true }
 }
 
 monster.defenses = {
@@ -89,23 +89,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -20},
-	{type = COMBAT_ENERGYDAMAGE, percent = -20},
-	{type = COMBAT_EARTHDAMAGE, percent = -20},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = -20}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -20 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -20 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -20 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -20 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType.onThink = function(monster, interval)

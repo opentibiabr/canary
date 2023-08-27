@@ -9,12 +9,12 @@
 
 #include "pch.hpp"
 
-#include "items/bed.h"
-#include "game/game.h"
-#include "game/movement/position.h"
-#include "io/iologindata.h"
+#include "items/bed.hpp"
+#include "game/game.hpp"
+#include "game/movement/position.hpp"
+#include "io/iologindata.hpp"
 #include "lua/functions/map/house_functions.hpp"
-#include "map/house/house.h"
+#include "map/house/house.hpp"
 
 int HouseFunctions::luaHouseCreate(lua_State* L) {
 	// House(id)
@@ -90,9 +90,22 @@ int HouseFunctions::luaHouseGetRent(lua_State* L) {
 	return 1;
 }
 
+int HouseFunctions::luaHouseGetPrice(lua_State* L) {
+	// house:getPrice()
+	House* house = getUserdata<House>(L, 1);
+	if (!house) {
+		reportErrorFunc("House not found");
+		lua_pushnumber(L, 0);
+		return 1;
+	}
+
+	lua_pushnumber(L, house->getPrice());
+	return 1;
+}
+
 int HouseFunctions::luaHouseGetOwnerGuid(lua_State* L) {
 	// house:getOwnerGuid()
-	House* house = getUserdata<House>(L, 1);
+	const House* house = getUserdata<House>(L, 1);
 	if (house) {
 		lua_pushnumber(L, house->getOwner());
 	} else {

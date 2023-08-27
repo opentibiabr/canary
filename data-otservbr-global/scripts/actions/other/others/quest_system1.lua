@@ -70,7 +70,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 	if size == 0 then
 		reward = Game.createItem(item.itemid, item.type)
 		if not reward then
-			Spdlog.error("[questSystem1.onUse] failed to create reward item")
+			logger.error("[questSystem1.onUse] failed to create reward item")
 			return false
 		end
 
@@ -88,7 +88,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 			local originalItem = container:getItem(i)
 			local newItem = Game.createItem(originalItem.itemid, originalItem.type)
 			if not newItem then
-				Spdlog.error("[questSystem1.onUse] failed to create new item")
+				logger.error("[questSystem1.onUse] failed to create new item")
 				return false
 			end
 			local newActionId = originalItem:getActionId()
@@ -103,7 +103,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 			if originalItem:isContainer() then
 				copyContainerItem(Container(originalItem.uid), Container(newItem.uid))
 			end
-			items[#items + 1] = newItem
+			items[#items+1] = newItem
 		end
 
 		if size == 1 then
@@ -135,7 +135,7 @@ function questSystem1.onUse(player, item, fromPosition, target, toPosition, isHo
 		for i = 1, size do
 			local tmp = items[i]
 			if reward:addItemEx(tmp) ~= RETURNVALUE_NOERROR then
-				Spdlog.warn("[questSystem1.onUse] - Could not add quest reward to container")
+				logger.warn("[questSystem1.onUse] - Could not add quest reward to container")
 			end
 		end
 		local ret = ItemType(reward.itemid)

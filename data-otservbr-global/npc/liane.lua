@@ -68,7 +68,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "measurements") then
-		if player:getStorageValue(Storage.Postman.Mission07) >= 1 and	player:getStorageValue(Storage.Postman.MeasurementsLiane) ~= 1 then
+		if player:getStorageValue(Storage.Postman.Mission07) >= 1 and player:getStorageValue(Storage.Postman.MeasurementsLiane) ~= 1 then
 			npcHandler:say("I have more urgent problem to attend then that. Those hawks are hunting my carrier pigeons. Bring me 12 arrows and I'll see if I have the time for this nonsense. Do you have 12 arrows with you? ", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		else

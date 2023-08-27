@@ -1,5 +1,5 @@
 local setting = {
-	centerRoom = {x = 33487, y = 32079, z = 8},
+	centerRoom = { x = 33487, y = 32079, z = 8 },
 	range = 10,
 	playerPositions = {
 		Position(33417, 32102, 10),
@@ -36,14 +36,13 @@ function leverTheRavager.onUse(player, item, fromPosition, target, toPosition, i
 				player:sendCancelMessage("You need 4 of players to fight with The Ravager.")
 				return true
 			end
-			storePlayers[#storePlayers + 1] = playerTile
+			storePlayers[#storePlayers+1] = playerTile
 		end
 
 		for i = 1, #setting.canopicJarPositions do
 			Game.createMonster("greater canopic jar", setting.canopicJarPositions[i])
-
 		end
-		Game.createMonster("the ravager", {x = 33487, y = 32108, z = 9})
+		Game.createMonster("the ravager", { x = 33487, y = 32108, z = 9 })
 
 		local players
 		for i = 1, #storePlayers do

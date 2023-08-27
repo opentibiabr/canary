@@ -10,12 +10,12 @@ function spell.onCastSpell(creature, var)
 	local summoncount = creature:getSummons()
 	if #summoncount < 2 then
 		mid = Game.createMonster("Massive Water Elemental", creature:getPosition())
-    	if not mid then
+		if not mid then
 			return
 		end
 		mid:setMaster(creature)
 	end
-return combat:execute(creature, var)
+	return combat:execute(creature, var)
 end
 
 spell:name("thul summon")

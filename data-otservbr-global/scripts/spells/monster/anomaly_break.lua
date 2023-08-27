@@ -1,11 +1,11 @@
 local function anomalyBreak(pos)
-	local upConer = {x = pos.x - 1, y = pos.y - 1, z = pos.z} -- upLeftCorner
-	local downConer = {x = pos.x + 1, y = pos.y + 1, z = pos.z} -- downRightCorner
+	local upConer = { x = pos.x - 1, y = pos.y - 1, z = pos.z } -- upLeftCorner
+	local downConer = { x = pos.x + 1, y = pos.y + 1, z = pos.z } -- downRightCorner
 
-	for i=upConer.x, downConer.x do
-		for j=upConer.y, downConer.y do
-			for k= upConer.z, downConer.z do
-				local room = {x=i, y=j, z=k}
+	for i = upConer.x, downConer.x do
+		for j = upConer.y, downConer.y do
+			for k = upConer.z, downConer.z do
+				local room = { x = i, y = j, z = k }
 				local tile = Tile(room)
 				if tile then
 					if tile:getItemById(2130) then

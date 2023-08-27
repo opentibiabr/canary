@@ -9,20 +9,20 @@
 
 #include "pch.hpp"
 
-#include "items/item.h"
+#include "items/item.hpp"
 #include "items/functions/item/item_parse.hpp"
-#include "items/containers/container.h"
-#include "items/decay/decay.h"
-#include "game/movement/teleport.h"
-#include "items/trashholder.h"
-#include "items/containers/mailbox/mailbox.h"
-#include "map/house/house.h"
-#include "game/game.h"
-#include "items/bed.h"
-#include "containers/rewards/rewardchest.h"
-#include "creatures/players/imbuements/imbuements.h"
-#include "lua/creature/actions.h"
-#include "creatures/combat/spells.h"
+#include "items/containers/container.hpp"
+#include "items/decay/decay.hpp"
+#include "game/movement/teleport.hpp"
+#include "items/trashholder.hpp"
+#include "items/containers/mailbox/mailbox.hpp"
+#include "map/house/house.hpp"
+#include "game/game.hpp"
+#include "items/bed.hpp"
+#include "containers/rewards/rewardchest.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
+#include "lua/creature/actions.hpp"
+#include "creatures/combat/spells.hpp"
 
 #define ITEM_IMBUEMENT_SLOT 500
 
@@ -67,9 +67,9 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/, Position* it
 		newItem->incrementReferenceCounter();
 	} else if (type > 0 && itemPosition) {
 		auto position = *itemPosition;
-		SPDLOG_WARN("[Item::CreateItem] Item with id '{}', in position '{}' not exists in the appearances.dat and cannot be created.", type, position.toString());
+		g_logger().warn("[Item::CreateItem] Item with id '{}', in position '{}' not exists in the appearances.dat and cannot be created.", type, position.toString());
 	} else {
-		SPDLOG_WARN("[Item::CreateItem] Item with id '{}' is not registered and cannot be created.", type);
+		g_logger().warn("[Item::CreateItem] Item with id '{}' is not registered and cannot be created.", type);
 	}
 
 	return newItem;
@@ -108,7 +108,7 @@ void Item::addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 
 	// Checks if the item already has the imbuement category id
 	if (hasImbuementCategoryId(categoryImbuement->id)) {
-		SPDLOG_ERROR("[Item::setImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement of the same type: {}", player->getName(), imbuement->getName());
+		g_logger().error("[Item::setImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement of the same type: {}", player->getName(), imbuement->getName());
 		player->sendImbuementResult("An error ocurred, please reopen imbuement window.");
 		return;
 	}
@@ -120,7 +120,6 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 	for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 		ImbuementInfo imbuementInfo;
 		if (getImbuementInfo(slotid, &imbuementInfo)) {
-
 			if (const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
 				categoryImbuement->id == categoryId) {
 				return true;
@@ -218,7 +217,7 @@ Item::Item(const Item &i) :
 Item* Item::clone() const {
 	Item* item = Item::CreateItem(id, count);
 	if (item == nullptr) {
-		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
+		g_logger().error("[{}] item is nullptr", __FUNCTION__);
 		return nullptr;
 	}
 
@@ -750,7 +749,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 		case ATTR_TIER: {
 			uint8_t tier;
 			if (!propStream.read<uint8_t>(tier)) {
-				SPDLOG_ERROR("[{}] failed to read tier", __FUNCTION__);
+				g_logger().error("[{}] failed to read tier", __FUNCTION__);
 				return ATTR_READ_ERROR;
 			}
 
@@ -761,7 +760,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 		case ATTR_AMOUNT: {
 			uint16_t amount;
 			if (!propStream.read<uint16_t>(amount)) {
-				SPDLOG_ERROR("[{}] failed to read amount", __FUNCTION__);
+				g_logger().error("[{}] failed to read amount", __FUNCTION__);
 				return ATTR_READ_ERROR;
 			}
 
@@ -772,7 +771,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 		case ATTR_CUSTOM: {
 			uint64_t size;
 			if (!propStream.read<uint64_t>(size)) {
-				SPDLOG_ERROR("[{}] failed to read size", __FUNCTION__);
+				g_logger().error("[{}] failed to read size", __FUNCTION__);
 				return ATTR_READ_ERROR;
 			}
 
@@ -780,13 +779,13 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 				// Unserialize custom attribute key type
 				std::string key;
 				if (!propStream.readString(key)) {
-					SPDLOG_ERROR("[{}] failed to read custom type", __FUNCTION__);
+					g_logger().error("[{}] failed to read custom type", __FUNCTION__);
 					return ATTR_READ_ERROR;
 				};
 
 				CustomAttribute customAttribute;
 				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
-					SPDLOG_ERROR("[{}] failed to read custom value", __FUNCTION__);
+					g_logger().error("[{}] failed to read custom value", __FUNCTION__);
 					return ATTR_READ_ERROR;
 				}
 
@@ -2217,7 +2216,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 
 	if (it.isRune()) {
 		if (it.runeLevel > 0 || it.runeMagLevel > 0) {
-			if (const RuneSpell* rune = g_spells().getRuneSpell(it.id)) {
+			if (const auto rune = g_spells().getRuneSpell(it.id)) {
 				int32_t tmpSubType = subType;
 				if (item) {
 					tmpSubType = item->getSubType();
@@ -3067,17 +3066,19 @@ uint32_t Item::getWorth() const {
 }
 
 uint32_t Item::getForgeSlivers() const {
-	if (getID() == ITEM_FORGE_SLIVER)
+	if (getID() == ITEM_FORGE_SLIVER) {
 		return getItemCount();
-	else
+	} else {
 		return 0;
+	}
 }
 
 uint32_t Item::getForgeCores() const {
-	if (getID() == ITEM_FORGE_CORE)
+	if (getID() == ITEM_FORGE_CORE) {
 		return getItemCount();
-	else
+	} else {
 		return 0;
+	}
 }
 
 LightInfo Item::getLightInfo() const {
@@ -3096,7 +3097,7 @@ void Item::stopDecaying() {
 Item* Item::transform(uint16_t itemId, uint16_t itemCount /*= -1*/) {
 	Cylinder* cylinder = getParent();
 	if (cylinder == nullptr) {
-		SPDLOG_INFO("[{}] failed to transform item {}, cylinder is nullptr", __FUNCTION__, getID());
+		g_logger().info("[{}] failed to transform item {}, cylinder is nullptr", __FUNCTION__, getID());
 		return nullptr;
 	}
 

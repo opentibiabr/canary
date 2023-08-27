@@ -27,7 +27,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Come into my tavern and share some stories!'}
+	{ text = 'Come into my tavern and share some stories!' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -59,7 +59,7 @@ end
 
 -- Basic
 
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "I am the owner of this saloon. I call it Archery's Hut. I am also {selling} ammunitions."})
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I am the owner of this saloon. I call it Archery's Hut. I am also {selling} ammunitions." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to Archery's shop!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Please come back from time to time.")
@@ -73,7 +73,7 @@ npcConfig.shop = {
 	{ itemName = "blue quiver", clientId = 35848, buy = 400 },
 	{ itemName = "bolt", clientId = 3446, buy = 4 },
 	{ itemName = "bow", clientId = 3350, buy = 400 },
-	{ itemName = "burst arrow", clientId = 3449, buy = 300000 },
+	{ itemName = "burst arrow", clientId = 3449, buy = 15 },
 	{ itemName = "crossbow", clientId = 3349, buy = 500 },
 	{ itemName = "crystalline arrow", clientId = 15793, buy = 20 },
 	{ itemName = "diamond arrow", clientId = 35901, buy = 100 },
@@ -82,7 +82,7 @@ npcConfig.shop = {
 	{ itemName = "envenomed arrow", clientId = 16143, buy = 12 },
 	{ itemName = "flaming arrow", clientId = 763, buy = 5 },
 	{ itemName = "flash arrow", clientId = 761, buy = 5 },
-	{ itemName = "infernal bolt", clientId = 6528, buy = 300000 },
+	{ itemName = "infernal bolt", clientId = 6528, buy = 13 },
 	{ itemName = "onyx arrow", clientId = 7365, buy = 7 },
 	{ itemName = "piercing bolt", clientId = 7363, buy = 5 },
 	{ itemName = "power bolt", clientId = 3450, buy = 7 },

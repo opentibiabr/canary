@@ -61,8 +61,8 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local configMarks = {
-	{mark = "depot", position = Position(32631, 32742, 7), markId = MAPMARK_LOCK, description = "Depot"},
-	{mark = "temple", position = Position(32594, 32745, 7), markId = MAPMARK_TEMPLE, description = "Temple"}
+	{ mark = "depot", position = Position(32631, 32742, 7), markId = MAPMARK_LOCK, description = "Depot" },
+	{ mark = "temple", position = Position(32594, 32745, 7), markId = MAPMARK_TEMPLE, description = "Temple" }
 }
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -73,7 +73,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if table.contains({"map", "marks"}, message) then
+	if table.contains({ "map", "marks" }, message) then
 		npcHandler:say("Would you like me to mark locations like - for example - the depot, bank and shops on your map?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
@@ -91,14 +91,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'information'}, StdModule.say, {npcHandler = npcHandler, text = 'Currently, I can tell you all about the town, its temple, the bank, shops, spell trainers and the depot, as well as about the world status.'})
-keywordHandler:addKeyword({'temple'}, StdModule.say, {npcHandler = npcHandler, text = 'The temple is in the north-eastern part of town, left of the depot. The priest there has a little alcohol problem, though. It\'s sad.'})
-keywordHandler:addKeyword({'bank'}, StdModule.say, {npcHandler = npcHandler, text = 'Our bank can be found one floor above the depot. Just talk to Ferks.'})
-keywordHandler:addKeyword({'shops'}, StdModule.say, {npcHandler = npcHandler, text = 'The shops here are very close to one another. I can mark them for you if you\'d like.'})
-keywordHandler:addKeyword({'depot'}, StdModule.say, {npcHandler = npcHandler, text = 'The depot is a place where you can safely store your belongings. You are also protected against attacks there. I escort newcomers there.'})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I\'ll help you not to get lost in Port Hope. I can mark important locations on your map and give you some information about the town and the world status.'})
-keywordHandler:addKeyword({'town'}, StdModule.say, {npcHandler = npcHandler, text = 'The inhabitants of Port Hope are bravely facing the constant threat from the jungle. The town is built on pile dwellings and most shops are close to each other.'})
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = 'I\'m Tiko and your guide today. Have a good day!'})
+keywordHandler:addKeyword({ 'information' }, StdModule.say, { npcHandler = npcHandler, text = 'Currently, I can tell you all about the town, its temple, the bank, shops, spell trainers and the depot, as well as about the world status.' })
+keywordHandler:addKeyword({ 'temple' }, StdModule.say, { npcHandler = npcHandler, text = 'The temple is in the north-eastern part of town, left of the depot. The priest there has a little alcohol problem, though. It\'s sad.' })
+keywordHandler:addKeyword({ 'bank' }, StdModule.say, { npcHandler = npcHandler, text = 'Our bank can be found one floor above the depot. Just talk to Ferks.' })
+keywordHandler:addKeyword({ 'shops' }, StdModule.say, { npcHandler = npcHandler, text = 'The shops here are very close to one another. I can mark them for you if you\'d like.' })
+keywordHandler:addKeyword({ 'depot' }, StdModule.say, { npcHandler = npcHandler, text = 'The depot is a place where you can safely store your belongings. You are also protected against attacks there. I escort newcomers there.' })
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'I\'ll help you not to get lost in Port Hope. I can mark important locations on your map and give you some information about the town and the world status.' })
+keywordHandler:addKeyword({ 'town' }, StdModule.say, { npcHandler = npcHandler, text = 'The inhabitants of Port Hope are bravely facing the constant threat from the jungle. The town is built on pile dwellings and most shops are close to each other.' })
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = 'I\'m Tiko and your guide today. Have a good day!' })
 
 npcHandler:setMessage(MESSAGE_GREET, "Hello there, and welcome to Port Hope! Would you like some information and a map guide?")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")

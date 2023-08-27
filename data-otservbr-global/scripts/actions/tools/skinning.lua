@@ -103,7 +103,12 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	local skin = config[item.itemid][target.itemid]
 
 	if item.itemid == 5908 then
-		if target.itemid == 33778 then
+		if target:getId() == CONST_FIREWORK_ITEMID_DISASSEMBLE then
+			stopEvent(target:getCustomAttribute("event"))
+			player:addItem(target:getCustomAttribute("id"), 1)
+			target:remove()
+			return true
+		elseif target.itemid == 33778 then
 			local chance = math.random(1, 10000)
 			target:getPosition():sendMagicEffect(CONST_ME_HITAREA)
 			target:remove(1)

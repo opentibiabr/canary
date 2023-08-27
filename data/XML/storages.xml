@@ -1,0 +1,34 @@
+<!--
+This is the XML configuration file for storage values in our system. It is organized in ranges to avoid key conflicts.
+
+Each range contains multiple storage values. A range is defined by a "start" and "end" attribute, which set the limits for the keys of the storages in that range.
+
+Within each range, you can define multiple storages. Each storage has a "name" and a "key". The "name" is a string that describes the storage in a human-readable way, and should be written in snake case (lowercase letters separated by dots). The "key" is an integer that represents the unique identifier of the storage within its range. The actual key used in the code will be the sum of the "start" of the range and the "key" of the storage.
+
+Here is an example of a range with five storages:
+
+<storages>
+	<range start="30000000" end="40000000">
+		<storage name="custom.name1" key="1" />
+		<storage name="custom.name2" key="2" />
+		<storage name="custom.name2" key="3" />
+		<storage name="custom.name3" key="4" />
+		<storage name="custom.name4" key="5" />
+	</range>
+</storages>
+
+In this example, the keys used in the code will be 30000001 for "custom.name1", 30000002 for "custom.name2", and so on. The keys will always be within the range of 30000000 to 40000000.
+
+When adding a new range or storage, make sure that the ranges do not overlap, and that the keys of the storages are within their range.
+-->
+
+<storages>
+	<range start="1000000" end="2000000">
+		<storage name="wheel.scroll.abridged" key="1" />
+		<storage name="wheel.scroll.basic" key="2" />
+		<storage name="wheel.scroll.revised" key="3" />
+		<storage name="wheel.scroll.extended" key="4" />
+		<storage name="wheel.scroll.advanced" key="5" />
+		<storage name="talkaction.potions.flask" key="6" />
+	</range>
+</storages>

@@ -99,7 +99,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	-- The paradox tower quest
 	if MsgContains(message, "math") then
-		if  player:getStorageValue(Storage.Quest.U7_24.TheParadoxTower.Mathemagics) < 1 then
+		if player:getStorageValue(Storage.Quest.U7_24.TheParadoxTower.Mathemagics) < 1 then
 			npcHandler:say("My surreal numbers are based on astonishing facts. \z
 				Are you interested in learning the secret of mathemagics?", npc, creature)
 			npcHandler:setTopic(playerId, 6)

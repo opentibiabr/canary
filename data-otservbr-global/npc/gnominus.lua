@@ -66,10 +66,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, 'tavern') then
-			npcHandler:say('I provide the population with some fresh alcohol-free mushroom {beer}!', npc, creature)
+		npcHandler:say('I provide the population with some fresh alcohol-free mushroom {beer}!', npc, creature)
 	elseif MsgContains(message, 'beer') then
-			npcHandler:say('Do you want some mushroom beer for 10 gold?', npc, creature)
-			npcHandler:setTopic(playerId, 2)
+		npcHandler:say('Do you want some mushroom beer for 10 gold?', npc, creature)
+		npcHandler:setTopic(playerId, 2)
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, 'apparatus') then
 			npcHandler:say('Don\'t be afraid. It won\'t hurt! Just step in!', npc, creature)

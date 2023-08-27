@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_GAME_FUNCTIONS_GAME_RELOAD_HPP_
-#define SRC_GAME_FUNCTIONS_GAME_RELOAD_HPP_
+#pragma once
 
-#include "game/game.h"
+#include "game/game.hpp"
 
 class Game;
 
@@ -29,7 +28,6 @@ enum class Reload_t : uint8_t {
 	RELOAD_TYPE_NPCS,
 	RELOAD_TYPE_RAIDS,
 	RELOAD_TYPE_SCRIPTS,
-	RELOAD_TYPE_TALKACTION,
 	RELOAD_TYPE_GROUPS,
 
 	// Every is last
@@ -37,35 +35,37 @@ enum class Reload_t : uint8_t {
 };
 
 class GameReload : public Game {
-	public:
-		GameReload();
-		~GameReload();
+public:
+	GameReload();
+	~GameReload();
 
-		// non-copyable
-		GameReload(const GameReload &) = delete;
-		GameReload &operator=(const GameReload &) = delete;
+	// non-copyable
+	GameReload(const GameReload &) = delete;
+	GameReload &operator=(const GameReload &) = delete;
 
-		bool init(Reload_t reloadType) const;
-		uint8_t getReloadNumber(Reload_t reloadTypes) const;
+	static GameReload &getInstance() {
+		return inject<GameReload>();
+	}
 
-	private:
-		bool reloadAll() const;
-		bool reloadChat() const;
-		bool reloadConfig() const;
-		bool reloadEvents() const;
-		bool reloadCore() const;
-		bool reloadImbuements() const;
-		bool reloadItems() const;
-		bool reloadModules() const;
-		bool reloadMonsters() const;
-		bool reloadMounts() const;
-		bool reloadNpcs() const;
-		bool reloadRaids() const;
-		bool reloadScripts() const;
-		bool reloadTalkaction() const;
-		bool reloadGroups() const;
+	bool init(Reload_t reloadType) const;
+	uint8_t getReloadNumber(Reload_t reloadTypes) const;
+
+private:
+	bool reloadAll() const;
+	bool reloadChat() const;
+	bool reloadConfig() const;
+	bool reloadEvents() const;
+	bool reloadCore() const;
+	bool reloadImbuements() const;
+	bool reloadItems() const;
+	bool reloadModules() const;
+	bool reloadMonsters() const;
+	bool reloadMounts() const;
+	bool reloadNpcs() const;
+	bool reloadRaids() const;
+	bool reloadScripts() const;
+	bool reloadTalkaction() const;
+	bool reloadGroups() const;
 };
 
-const inline GameReload g_gameReload;
-
-#endif // SRC_GAME_FUNCTIONS_GAME_RELOAD_HPP_
+constexpr auto g_gameReload = GameReload::getInstance;

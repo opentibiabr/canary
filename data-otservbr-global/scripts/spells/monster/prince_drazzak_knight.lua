@@ -7,9 +7,9 @@ combat:setArea(area)
 
 function onTargetTile(creature, pos)
     local creatureTable = {}
-    local n, i = Tile({x=pos.x, y=pos.y, z=pos.z}).creatures, 1
+    local n, i = Tile({ x = pos.x, y = pos.y, z = pos.z }).creatures, 1
     if n ~= 0 then
-        local v = getThingfromPos({x=pos.x, y=pos.y, z=pos.z, stackpos=i}).uid
+        local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
         while v ~= 0 do
 			local creatureFromPos = Creature(v)
 			if creatureFromPos then
@@ -19,7 +19,7 @@ function onTargetTile(creature, pos)
                 end
             end
             i = i + 1
-            v = getThingfromPos({x=pos.x, y=pos.y, z=pos.z, stackpos=i}).uid
+            v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i}).uid
         end
     end
     if #creatureTable ~= nil and #creatureTable > 0 then
@@ -29,21 +29,21 @@ function onTargetTile(creature, pos)
                 local max = 8000
 				local creatureTarget = Creature(creatureTable[r])
 				if creatureTarget then
-					if (creatureTarget:isPlayer() and table.contains({VOCATION.BASE_ID.KNIGHT}, creatureTarget:getVocation():getBaseId())) or creatureTarget:isMonster() then
+					if (creatureTarget:isPlayer() and table.contains({ VOCATION.BASE_ID.KNIGHT }, creatureTarget:getVocation():getBaseId())) or creatureTarget:isMonster() then
 						doTargetCombatHealth(creature, creatureTarget, COMBAT_FIREDAMAGE, -min, -max, CONST_ME_NONE)
 					end
 				end
-            end
-        end
-    end
-    pos:sendMagicEffect(CONST_ME_HITBYFIRE)
-    return true
+			end
+		end
+	end
+	pos:sendMagicEffect(CONST_ME_HITBYFIRE)
+	return true
 end
 
 combat:setCallback(CALLBACK_PARAM_TARGETTILE, "onTargetTile")
 
 local function delayedCastSpell(cid, var)
-    local creature = Creature(cid)
+	local creature = Creature(cid)
 	if not creature then
 		return
 	end
@@ -54,13 +54,13 @@ end
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-local value = Game.getStorageValue(storage)
-	if(os.time()-value >= 4) then
+	local value = Game.getStorageValue(storage)
+	if (os.time() - value >= 4) then
 		creature:say("All KNIGHTS must DIE!", TALKTYPE_ORANGE_1)
 		addEvent(delayedCastSpell, 4000, creature:getId(), var)
 		Game.setStorageValue(storage, os.time())
 	end
-    return true
+	return true
 end
 
 spell:name("prince drazzak knight")

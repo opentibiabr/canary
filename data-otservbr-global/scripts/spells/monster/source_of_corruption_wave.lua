@@ -3,9 +3,9 @@ combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_ENERGYDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_PURPLEENERGY)
 
 combat:setArea(createCombatArea({
-	{0, 0, 0, 0, 0},
-	{0, 1, 3, 1, 0},
-	{0, 0, 0, 0, 0}
+	{ 0, 0, 0, 0, 0 },
+	{ 0, 1, 3, 1, 0 },
+	{ 0, 0, 0, 0, 0 }
 }))
 
 function spellCallback(param)
@@ -14,9 +14,9 @@ function spellCallback(param)
 		local creatureTop = tile:getTopCreature()
 		if creatureTop then
 			if creatureTop:isPlayer() then
-				creatureTop:addHealth( - math.random(0, 600))
+				creatureTop:addHealth(- math.random(0, 600))
 			elseif creatureTop:isMonster() and creatureTop:getName():lower() == "stolen soul" then
-				creatureTop:addHealth( - math.random(700, 1500))
+				creatureTop:addHealth(- math.random(700, 1500))
 			end
 		end
 	end

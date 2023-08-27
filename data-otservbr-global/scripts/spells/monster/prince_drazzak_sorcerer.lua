@@ -1,20 +1,20 @@
 local storage = 674531
 
 local area = {
-	{0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-	{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-	{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
-	{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-	{0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-	}
+	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+	{ 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
+	{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+}
 
 local createArea = createCombatArea(area)
 
@@ -23,9 +23,9 @@ combat:setArea(createArea)
 
 function onTargetTile(creature, pos)
 	local creatureTable = {}
-	local n, i = Tile({x=pos.x, y=pos.y, z=pos.z}).creatures, 1
+	local n, i = Tile({ x = pos.x, y = pos.y, z = pos.z }).creatures, 1
 	if n ~= 0 then
-		local v = getThingfromPos({x=pos.x, y=pos.y, z=pos.z, stackpos=i}).uid
+		local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 		while v ~= 0 do
 			local creatureFromPos = Creature(v)
 			if creatureFromPos then
@@ -35,7 +35,7 @@ function onTargetTile(creature, pos)
 				end
 			end
 			i = i + 1
-			v = getThingfromPos({x=pos.x, y=pos.y, z=pos.z, stackpos=i}).uid
+			v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 		end
 	end
 	if #creatureTable ~= nil and #creatureTable > 0 then
@@ -45,7 +45,7 @@ function onTargetTile(creature, pos)
 				local max = 8000
 				local creatureTarget = Creature(creatureTable[r])
 				if creatureTarget then
-					if (creatureTarget:isPlayer() and table.contains({VOCATION.BASE_ID.SORCERER}, creatureTarget:getVocation():getBaseId())) or creatureTarget:isMonster() then
+					if (creatureTarget:isPlayer() and table.contains({ VOCATION.BASE_ID.SORCERER }, creatureTarget:getVocation():getBaseId())) or creatureTarget:isMonster() then
 						doTargetCombatHealth(creature, creatureTarget, COMBAT_DEATHDAMAGE, -min, -max, CONST_ME_NONE)
 					end
 				end
@@ -70,8 +70,8 @@ end
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-local value = Game.getStorageValue(storage)
-	if(os.time()-value >= 4) then
+	local value = Game.getStorageValue(storage)
+	if (os.time() - value >= 4) then
 		creature:say("All SORCERERS must DIE!", TALKTYPE_ORANGE_1)
 		addEvent(delayedCastSpell, 4000, creature:getId(), var)
 		Game.setStorageValue(storage, os.time())

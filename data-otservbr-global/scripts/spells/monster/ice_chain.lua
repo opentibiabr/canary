@@ -6,6 +6,7 @@ combat:setParameter(COMBAT_PARAM_CHAIN_EFFECT, CONST_ME_ICEAREA)
 function getChainValue(creature)
 	return 3, 6, false
 end
+
 combat:setCallback(CALLBACK_PARAM_CHAINVALUE, "getChainValue")
 
 local spell = Spell("instant")

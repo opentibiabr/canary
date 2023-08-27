@@ -63,9 +63,9 @@ table.sort(extraction) -- Sort the table
 -- Scroll through the extracted table for duplicates
 if #extraction > 1 then
 	for i = 1, #extraction - 1 do
-		if extraction[i] == extraction[i+1] then
-			Spdlog.warn(string.format("Duplicate storage value found: %d",
-				extraction[i]))
+		if extraction[i] == extraction[i + 1] then
+			logger.warn("Duplicate storage value found: {}",
+				extraction[i])
 		end
 	end
 end

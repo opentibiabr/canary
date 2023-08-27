@@ -37654,6 +37654,7 @@
 		<attribute key="showduration" value="1"/>
 		<attribute key="maxhitchance" value="100"/>
 		<attribute key="duration" value="3600"/>
+		<attribute key="attack" value="78"/>
 		<attribute key="weight" value="90"/>
 	</item>
 	<item id="25759" article="a" name="royal star">
@@ -47253,7 +47254,7 @@
 		<attribute key="bedpartof" value="32492"/>
 		<attribute key="partnerdirection" value="west"/>
 		<attribute key="maletransformto" value="32501"/>
-		<attribute key="femaletransformto" value="32527"/>
+		<attribute key="femaletransformto" value="32501"/>
 		<attribute key="rotateTo" value="32483"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
@@ -47263,7 +47264,7 @@
 		<attribute key="bedpartof" value="32493"/>
 		<attribute key="partnerdirection" value="west"/>
 		<attribute key="maletransformto" value="32502"/>
-		<attribute key="femaletransformto" value="32527"/>
+		<attribute key="femaletransformto" value="32502"/>
 		<attribute key="rotateTo" value="32484"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
@@ -47273,7 +47274,7 @@
 		<attribute key="bedpartof" value="32494"/>
 		<attribute key="partnerdirection" value="west"/>
 		<attribute key="maletransformto" value="32503"/>
-		<attribute key="femaletransformto" value="32527"/>
+		<attribute key="femaletransformto" value="32503"/>
 		<attribute key="rotateTo" value="32485"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
@@ -47283,7 +47284,7 @@
 		<attribute key="bedpartof" value="32495"/>
 		<attribute key="partnerdirection" value="west"/>
 		<attribute key="maletransformto" value="32504"/>
-		<attribute key="femaletransformto" value="32527"/>
+		<attribute key="femaletransformto" value="32504"/>
 		<attribute key="rotateTo" value="32486"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
@@ -47293,7 +47294,7 @@
 		<attribute key="bedpartof" value="32496"/>
 		<attribute key="partnerdirection" value="west"/>
 		<attribute key="maletransformto" value="32505"/>
-		<attribute key="femaletransformto" value="32527"/>
+		<attribute key="femaletransformto" value="32505"/>
 		<attribute key="rotateTo" value="32487"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
@@ -47303,7 +47304,7 @@
 		<attribute key="bedpartof" value="32497"/>
 		<attribute key="partnerdirection" value="west"/>
 		<attribute key="maletransformto" value="32506"/>
-		<attribute key="femaletransformto" value="32527"/>
+		<attribute key="femaletransformto" value="32506"/>
 		<attribute key="rotateTo" value="32488"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
@@ -47313,7 +47314,7 @@
 		<attribute key="bedpartof" value="32498"/>
 		<attribute key="partnerdirection" value="west"/>
 		<attribute key="maletransformto" value="32507"/>
-		<attribute key="femaletransformto" value="32527"/>
+		<attribute key="femaletransformto" value="32507"/>
 		<attribute key="rotateTo" value="32489"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
@@ -47323,7 +47324,7 @@
 		<attribute key="bedpartof" value="32499"/>
 		<attribute key="partnerdirection" value="west"/>
 		<attribute key="maletransformto" value="32508"/>
-		<attribute key="femaletransformto" value="32527"/>
+		<attribute key="femaletransformto" value="32508"/>
 		<attribute key="rotateTo" value="32490"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
@@ -52605,9 +52606,11 @@
 		<attribute key="decayTo" value="35969"/>
 	</item>
 	<item id="35973" article="a" name="podium of renown">
+		<attribute key="transformOnUse" value="35974" />
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="35974" article="a" name="podium of renown">
+		<attribute key="transformOnUse" value="35973" />
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item fromid="35977" toid="35978" name="sarcophagus"/>
@@ -53706,17 +53709,17 @@
 	</item>
 	<item id="36841" article="a" name="dead the brainstealer">
 		<attribute key="containerSize" value="25" />
-		<attribute key="decayTo" value="36844" />
+		<attribute key="decayTo" value="36840" />
 		<attribute key="duration" value="300" />
 	</item>
 	<item id="36842" article="a" name="dead the brainstealer">
 		<attribute key="containerSize" value="25" />
-		<attribute key="decayTo" value="36845" />
+		<attribute key="decayTo" value="36841" />
 		<attribute key="duration" value="300" />
 	</item>
 	<item id="36843" article="a" name="dead the brainstealer">
 		<attribute key="containerSize" value="25" />
-		<attribute key="decayTo" value="36846" />
+		<attribute key="decayTo" value="36842" />
 		<attribute key="duration" value="10" />
 	</item>
 	<item id="36844" article="a" name="dead the mega magmaoid">
@@ -57617,19 +57620,19 @@
 	<item id="39537" article="a" name="lazyfairy"/>
 	<item id="39538" article="a" name="dead plunder patriarch">
 		<attribute key="containerSize" value="30" />
-		<attribute key="decayTo" value="36539" />
-		<attribute key="duration" value="10" />
+		<attribute key="decayTo" value="39539" />
+		<attribute key="duration" value="300" />
 		<attribute key="fluidSource" value="blood" />
 	</item>
 	<item id="39539" article="a" name="dead plunder patriarch">
 		<attribute key="containerSize" value="30" />
-		<attribute key="decayTo" value="36540" />
+		<attribute key="decayTo" value="39540" />
 		<attribute key="duration" value="300" />
 		<attribute key="fluidSource" value="blood" />
 	</item>
 	<item id="39540" article="a" name="dead plunder patriarch">
 		<attribute key="containerSize" value="15" />
-		<attribute key="decayTo" value="36541" />
+		<attribute key="decayTo" value="39541" />
 		<attribute key="duration" value="300" />
 	</item>
 	<item id="39541" article="a" name="dead plunder patriarch">
@@ -59051,9 +59054,11 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42367" name="podium of tenacity">
+		<attribute key="transformOnUse" value="42368" />
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42368" name="podium of tenacity">
+		<attribute key="transformOnUse" value="42367" />
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="43510" name="tibiora's box replica">
@@ -59076,10 +59081,11 @@
 		<attribute key="defense" value="32"/>
 		<attribute key="skillsword" value="5"/>
 		<attribute key="weight" value="6100"/>
-		<attribute key="imbuementslot" value="2">
-			<attribute key="life leech" value="6"/>
+		<attribute key="imbuementslot" value="3">
+			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
-			<attribute key="skillboost sword" value="5"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 	</item>
 	<item id="43865" article="a" name="grand sanguine blade">
@@ -59090,10 +59096,11 @@
 		<attribute key="defense" value="32"/>
 		<attribute key="skillsword" value="5"/>
 		<attribute key="weight" value="6000"/>
-		<attribute key="imbuementslot" value="2">
-			<attribute key="life leech" value="6"/>
+		<attribute key="imbuementslot" value="3">
+			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
-			<attribute key="skillboost sword" value="5"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 	</item>
 	<item id="43866" article="a" name="sanguine cudgel">
@@ -59104,10 +59111,11 @@
 		<attribute key="defense" value="32"/>
 		<attribute key="skillclub" value="5"/>
 		<attribute key="weight" value="6900"/>
-		<attribute key="imbuementslot" value="2">
-			<attribute key="life leech" value="6"/>
+		<attribute key="imbuementslot" value="3">
+			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
-			<attribute key="skillboost club" value="5"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost club" value="3"/>
 		</attribute>
 	</item>
 	<item id="43867" article="a" name="grand sanguine cudgel">
@@ -59118,10 +59126,11 @@
 		<attribute key="defense" value="32"/>
 		<attribute key="skillclub" value="5"/>
 		<attribute key="weight" value="6800"/>
-		<attribute key="imbuementslot" value="2">
-			<attribute key="life leech" value="6"/>
+		<attribute key="imbuementslot" value="3">
+			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
-			<attribute key="skillboost club" value="5"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost club" value="3"/>
 		</attribute>
 	</item>
 	<item id="43868" article="a" name="sanguine hatchet">
@@ -59132,10 +59141,11 @@
 		<attribute key="defense" value="32"/>
 		<attribute key="skillaxe" value="5"/>
 		<attribute key="weight" value="7200"/>
-		<attribute key="imbuementslot" value="2">
-			<attribute key="life leech" value="6"/>
+		<attribute key="imbuementslot" value="3">
+			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
-			<attribute key="skillboost axe" value="5"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 	</item>
 	<item id="43869" article="a" name="grand sanguine hatchet">
@@ -59146,10 +59156,11 @@
 		<attribute key="defense" value="32"/>
 		<attribute key="skillaxe" value="5"/>
 		<attribute key="weight" value="7200"/>
-		<attribute key="imbuementslot" value="2">
-			<attribute key="life leech" value="6"/>
+		<attribute key="imbuementslot" value="3">
+			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
-			<attribute key="skillboost axe" value="5"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 	</item>
 	<item id="43870" article="a" name="sanguine razor">
@@ -59163,7 +59174,10 @@
 		<attribute key="skillsword" value="5"/>
 		<attribute key="weight" value="8100"/>
 		<attribute key="imbuementslot" value="3">
-			<attribute key="skillboost sword" value="5"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 	</item>
 	<item id="43871" article="a" name="grand sanguine razor">
@@ -59177,7 +59191,10 @@
 		<attribute key="skillsword" value="5"/>
 		<attribute key="weight" value="7900"/>
 		<attribute key="imbuementslot" value="3">
-			<attribute key="skillboost sword" value="5"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 	</item>
 	<item id="43872" article="a" name="sanguine bludgeon">
@@ -59191,7 +59208,10 @@
 		<attribute key="skillclub" value="5"/>
 		<attribute key="weight" value="9300"/>
 		<attribute key="imbuementslot" value="3">
-			<attribute key="skillboost club" value="5"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost club" value="3"/>
 		</attribute>
 	</item>
 	<item id="43873" article="a" name="grand sanguine bludgeon">
@@ -59205,7 +59225,10 @@
 		<attribute key="skillclub" value="5"/>
 		<attribute key="weight" value="9100"/>
 		<attribute key="imbuementslot" value="3">
-			<attribute key="skillboost club" value="5"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost club" value="3"/>
 		</attribute>
 	</item>
 	<item id="43874" article="a" name="sanguine battleaxe">
@@ -59219,7 +59242,10 @@
 		<attribute key="skillaxe" value="5"/>
 		<attribute key="weight" value="8500"/>
 		<attribute key="imbuementslot" value="3">
-			<attribute key="skillboost axe" value="5"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 	</item>
 	<item id="43875" article="a" name="grand sanguine battleaxe">
@@ -59233,7 +59259,10 @@
 		<attribute key="skillaxe" value="5"/>
 		<attribute key="weight" value="8300"/>
 		<attribute key="imbuementslot" value="3">
-			<attribute key="skillboost axe" value="5"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 	</item>
 	<item id="43876" article="a" name="sanguine legs">
@@ -59258,7 +59287,11 @@
 		<attribute key="attack" value="9"/>
 		<attribute key="weight" value="4700"/>
 		<attribute key="imbuementslot" value="3">
-			<attribute key="skillboost distance" value="4"/>
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 	</item>
 	<item id="43878" article="a" name="grand sanguine bow">
@@ -59274,7 +59307,11 @@
 		<attribute key="attack" value="9"/>
 		<attribute key="weight" value="4700"/>
 		<attribute key="imbuementslot" value="3">
-			<attribute key="skillboost distance" value="4"/>
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 	</item>
 	<item id="43879" article="a" name="sanguine crossbow">
@@ -59290,7 +59327,11 @@
 		<attribute key="attack" value="10"/>
 		<attribute key="weight" value="4700"/>
 		<attribute key="imbuementslot" value="3">
-			<attribute key="skillboost distance" value="4"/>
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 	</item>
 	<item id="43880" article="a" name="grand sanguine crossbow">
@@ -59306,7 +59347,11 @@
 		<attribute key="attack" value="10"/>
 		<attribute key="weight" value="4700"/>
 		<attribute key="imbuementslot" value="3">
-			<attribute key="skillboost distance" value="4"/>
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 	</item>
 	<item id="43881" article="a" name="sanguine greaves">
@@ -59328,9 +59373,9 @@
 		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="weight" value="2200"/>
 		<attribute key="imbuementslot" value="2">
-			<attribute key="mana leech" value="1"/>
-			<attribute key="life leech" value="2"/>
-			<attribute key="skillboost magic level" value="5"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 	</item>
 	<item id="43883" article="a" name="grand sanguine coil">
@@ -59344,9 +59389,9 @@
 		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="weight" value="2100"/>
 		<attribute key="imbuementslot" value="2">
-			<attribute key="mana leech" value="1"/>
-			<attribute key="life leech" value="2"/>
-			<attribute key="skillboost magic level" value="5"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 	</item>
 	<item id="43884" name="sanguine boots">
@@ -59373,8 +59418,8 @@
 		<attribute key="weight" value="2500"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
-			<attribute key="life leech" value="6"/>
-			<attribute key="skillboost magic level" value="5"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 	</item>
 	<item id="43886" article="a" name="grand sanguine rod">
@@ -59389,8 +59434,8 @@
 		<attribute key="weight" value="2400"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
-			<attribute key="life leech" value="6"/>
-			<attribute key="skillboost magic level" value="5"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 	</item>
 	<item id="43887" article="a" name="sanguine galoshes">

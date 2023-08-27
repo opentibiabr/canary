@@ -1,5 +1,5 @@
 local dolls = {
-	[5080] = {"Hug me."},
+	[5080] = { "Hug me." },
 	[5668] = {
 		"It's not winning that matters, but winning in style.",
 		"Today's your lucky day. Probably.",
@@ -19,7 +19,7 @@ local dolls = {
 		"Aaa... CHOO!",
 		"You... will.... burn!!"
 	},
-	[6387] = {"Merry Christmas |PLAYERNAME|."},
+	[6387] = { "Merry Christmas |PLAYERNAME|." },
 	[6511] = {
 		"Ho ho ho",
 		"Jingle bells, jingle bells...",
@@ -28,7 +28,7 @@ local dolls = {
 		"Merry Christmas!",
 		"Can you stop squeezing me now... I'm starting to feel a little sick."
 	},
-	[8146] = {"ARE YOU PREPARED TO FACE YOUR DESTINY?"},
+	[8146] = { "ARE YOU PREPARED TO FACE YOUR DESTINY?" },
 	[8149] = {
 		"Weirdo, you're a weirdo! Actually all of you are!",
 		"Pie for breakfast, pie for lunch and pie for dinner!",
@@ -55,7 +55,7 @@ local dolls = {
 		"I can say 469 and more...",
 		"My dark magic lies on tibialatina.wikia.com"
 	},
-	[21962] = {"Hail Tibia Brasileiros! (União&Força)"}
+	[21962] = { "Hail Tibia Brasileiros! (União&Força)" }
 }
 
 local doll = Action()

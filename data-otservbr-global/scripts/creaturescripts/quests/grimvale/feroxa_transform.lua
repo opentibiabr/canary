@@ -14,8 +14,8 @@ function feroxaTransform.onThink(creature)
 		if creature:getHealth() <= 25000 then
 			creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 			local feroxas = {
-				[1] = {name = 'feroxa3'},
-				[2] = {name = 'feroxa4'}
+				[1] = { name = 'feroxa3' },
+				[2] = { name = 'feroxa4' }
 			}
 			Game.createMonster(feroxas[math.random(#feroxas)].name, creature:getPosition(), true, true)
 			creature:remove()

@@ -26,10 +26,10 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "Precisely."},
-	{text = "So my initial calculations had been correct!"},
-	{text = "Looks like I have to find another way then."},
-	{text = "Hm, I need to recapitulate my equipment..."}
+	{ text = "Precisely." },
+	{ text = "So my initial calculations had been correct!" },
+	{ text = "Looks like I have to find another way then." },
+	{ text = "Hm, I need to recapitulate my equipment..." }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -146,7 +146,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				"You should find the beggar somewhere in Edron. Stay persistent, \z
 				I'm sure he knows more than he wants to tell us.",
-			npc, creature)
+				npc, creature)
 		elseif player:getStorageValue(Storage.SeaOfLight.Questline) == 2 then
 			if not player:removeItem(9696, 1) then
 				npcHandler:say(
@@ -213,7 +213,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				"Well, the only thing left to do would be to offer the crystal at the well of the collector. There \z
 				must be a pedestal near the well, where you need to put your donation. Ha, do you think you could do that?",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		elseif player:getStorageValue(Storage.SeaOfLight.Questline) == 7 then
 			npcHandler:say(
@@ -225,24 +225,24 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				"So have you found the well and entered the lair? I hope you can find the {mirror crystal}\z
 			in there. It is the only way to finish the {Lightboat}.",
-			npc, creature)
+				npc, creature)
 		elseif player:getStorageValue(Storage.SeaOfLight.Questline) == 9 then
 			if player:getItemCount(9699) == 0 then
 				npcHandler:say(
 					"Put the mirror crystal into the special carrying device \z
 					I gave you and bring it directly to me.",
-				npc, creature)
+					npc, creature)
 				return true
 			end
 			npcHandler:say(
 				"Do you have the mirror crystal? Unbelievable! Alright I will extract the crystal from the device \z
 				myself, would you please give me the device with the crystal and step back?",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 7)
 		elseif
-			(player:getStorageValue(Storage.SeaOfLight.Questline) == 10) and
+				(player:getStorageValue(Storage.SeaOfLight.Questline) == 10) and
 				(player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) < 1)
-		 then
+		then
 			npcHandler:say(
 				"After the debacle with the crystal, I started focussing on other things. There are also some {tasks} \z
 				that still need to be done. If you can spare the time to continue helping me, it shall not be to your \z
@@ -256,7 +256,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				"You're back from {Jack}! Mh, by the looks of your face I doubt our little redecoration \z
 				project yielded any success. But I had an even better idea while you were gone - ready to give it another try?",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 32)
 		elseif player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 6 then
 			npcHandler:say("So, did you talk to his family? Were you able to convince them?", npc, creature)
@@ -265,7 +265,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				"Did you find out what hobby {Jack} has? Did you separate him from this activity? \z
 				Only if he has a free mind, he can truly get back to his former self! Now all you need to do is talk to him again!",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 9 then
 			npcHandler:say(
@@ -287,7 +287,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					that whole affair... yes, we should just leave everything as it is now, indeed we should. ...",
 					"Anyway you did a great job and I thank you for... putting your hands into my fire Player... once again."
 				},
-			npc, creature)
+				npc, creature)
 			player:addExperience(6000, true)
 			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 10)
 			npcHandler:setTopic(playerId, 0)
@@ -312,14 +312,14 @@ local function creatureSayCallback(npc, creature, type, message)
 				"The device needs a special crystal. It's called {mirror crystal}. The inventor somehow damaged it \z
 				- with fatal results. He had to give up, as no second crystal was left to try. I, however, know of \z
 				another one... but are you up to the task?",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say(
 				"One remaining mirror crystal is in the hands of a creature called the collector which collects all \z
 				kinds of crystals. The only way to get access to its lair is to donate a very rare crystal to a secret \z
 				well. I need you to get one, will you help me?",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 4)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			player:setStorageValue(Storage.SeaOfLight.Questline, 4)
@@ -341,7 +341,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Good, because if you wouldn't do it... listen, this well is on one of the isles near Carlin. \z
 				There you offer the crystal. Once you get access to its lair, find the collector and... convince it to give \z
 				you the mirror crystal. Understood?",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 6)
 		elseif npcHandler:getTopic(playerId) == 6 then
 			player:setStorageValue(Storage.SeaOfLight.Questline, 7)
@@ -351,7 +351,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"To collect the unbelievably rare, practically unique mirror crystal, you will need to use this \z
 				special carrying device I developed. If you find the crystal, use it to store it and transport it \z
 				safely to me. There is no second one.",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 7 then
 			if not player:removeItem(9699, 1) then
@@ -381,13 +381,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				"Of course you are. And here we go. I have to ask some questions first. One: You aint \z
 				afraid of no ghost, right?",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 13)
 		elseif npcHandler:getTopic(playerId) == 13 then
 			npcHandler:say(
 				"Good. Two: You know that ghosts exist and/or have found and/or defeated \z
 				one or more of them?",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 14)
 		elseif npcHandler:getTopic(playerId) == 14 then
 			npcHandler:say(
@@ -416,7 +416,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				"Good. Take this wand - we call it a spirit meter - and go to the graveyard I have \z
 				marked on your map and take a few measurements on the graves.",
-			npc, creature)
+				npc, creature)
 			player:setStorageValue(Storage.SpiritHunters.Mission01, 1)
 			player:addItem(4049, 1)
 			npcHandler:setTopic(playerId, 0)
@@ -425,7 +425,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Let me see the spirit meter. Hmmm... those are grave news you bring - uhm, you \z
 				know what I mean. But this is awesome! Now I know for sure that the calibration is \z
 				only some short bursts of magically enhanced energy away.",
-			npc, creature)
+				npc, creature)
 			player:addExperience(500, true)
 			player:addItem(3035, 5)
 			addEvent(function()
@@ -494,7 +494,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				"Yes? And he didn't remember anything? Not even me? That's not good. Then we will have to \z
 				do everything ourselves. Are you ready to continue?",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 31)
 		elseif npcHandler:getTopic(playerId) == 31 then
 			npcHandler:say(
@@ -554,7 +554,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					out of whatever mess I am currently in'. I... don't really know how this was meant but I \z
 					guess this is directed at... you!"
 				},
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "collective apparitions") then
@@ -564,7 +564,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say(
 					"Ah well, let's forget about the scientific details - you will do just fine as \z
 					long as you do exactly what I say. Ready for me to go on with your task?",
-				npc, creature)
+					npc, creature)
 				npcHandler:setTopic(playerId, 16)
 			end
 		end
@@ -573,12 +573,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				"Yes, maybe it was the right decision. Astronomical research is \z
 				nothing for the faint-hearted.",
-			npc, creature)
+				npc, creature)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say(
 				"Well, the... what? You... mean you're no longer interested? I see, well \z
 				maybe I overestimated your spirit after all.",
-			npc, creature)
+				npc, creature)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say("Alright, alright. You'll never find out the true secrets of life with such attitude, hm.", npc, creature)
 		elseif npcHandler:getTopic(playerId) == 4 then
@@ -610,9 +610,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npc, creature)
 		npcHandler:setTopic(playerId, 21)
 	elseif
-		MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 21 and
+			MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 21 and
 			player:getStorageValue(Storage.LiquidBlackQuest.Visitor) == 3
-	 then
+	then
 		if player:getStorageValue(Storage.LiquidBlackQuest.Visitor) == 3 then
 			npcHandler:say(
 				{
@@ -633,9 +633,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 22)
 		end
 	elseif
-		MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 22 and
+			MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 22 and
 			player:getStorageValue(Storage.LiquidBlackQuest.Visitor) == 3
-	 then
+	then
 		if player:getStorageValue(Storage.LiquidBlackQuest.Visitor) == 3 then
 			npcHandler:say(
 				{
@@ -656,9 +656,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 23)
 		end
 	elseif
-		MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 23 and
+			MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 23 and
 			player:getStorageValue(Storage.LiquidBlackQuest.Visitor) == 3
-	 then
+	then
 		if player:getStorageValue(Storage.LiquidBlackQuest.Visitor) == 3 then
 			npcHandler:say(
 				{
@@ -703,7 +703,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 keywordHandler:addKeyword(
-	{"jack"},
+	{ "jack" },
 	StdModule.say,
 	{
 		npcHandler = npcHandler,
@@ -713,7 +713,7 @@ keywordHandler:addKeyword(
 	}
 )
 keywordHandler:addKeyword(
-	{"device"},
+	{ "device" },
 	StdModule.say,
 	{
 		npcHandler = npcHandler,
@@ -723,7 +723,7 @@ keywordHandler:addKeyword(
 	}
 )
 keywordHandler:addKeyword(
-	{"lightboat"},
+	{ "lightboat" },
 	StdModule.say,
 	{
 		npcHandler = npcHandler,
@@ -733,7 +733,7 @@ keywordHandler:addKeyword(
 	}
 )
 keywordHandler:addKeyword(
-	{"magic device"},
+	{ "magic device" },
 	StdModule.say,
 	{
 		npcHandler = npcHandler,
@@ -743,7 +743,7 @@ keywordHandler:addKeyword(
 	}
 )
 keywordHandler:addKeyword(
-	{"sea of light"},
+	{ "sea of light" },
 	StdModule.say,
 	{
 		npcHandler = npcHandler,
@@ -752,7 +752,7 @@ keywordHandler:addKeyword(
 	}
 )
 keywordHandler:addKeyword(
-	{"mirror crystal"},
+	{ "mirror crystal" },
 	StdModule.say,
 	{
 		npcHandler = npcHandler,
@@ -762,7 +762,7 @@ keywordHandler:addKeyword(
 	}
 )
 keywordHandler:addKeyword(
-	{"lost mines"},
+	{ "lost mines" },
 	StdModule.say,
 	{
 		npcHandler = npcHandler,
@@ -772,7 +772,7 @@ keywordHandler:addKeyword(
 	}
 )
 keywordHandler:addKeyword(
-	{"collector"},
+	{ "collector" },
 	StdModule.say,
 	{
 		npcHandler = npcHandler,

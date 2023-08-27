@@ -71,7 +71,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "blessing") or MsgContains(message, "bless") then
 		if player:getStorageValue(Storage.TheInquisition.Questline) == 25 then --if quest is done
-			npcHandler:say("Do you want to receive the blessing of the inquisition - which means ".. (missing == 5 and "all five available" or missing ) .." blessings - for " .. totalBlessPrice .. " gold?", npc, creature)
+			npcHandler:say("Do you want to receive the blessing of the inquisition - which means " .. (missing == 5 and "all five available" or missing) .. " blessings - for " .. totalBlessPrice .. " gold?", npc, creature)
 			npcHandler:setTopic(playerId, 7)
 		else
 			npcHandler:say("You cannot get this blessing unless you have completed The Inquisition Quest.", npc, creature)
@@ -79,8 +79,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "flask") or MsgContains(message, "special flask") then
 		if player:getStorageValue(Storage.TheInquisition.Questline) >= 12 then -- give player the ability to purchase the flask.
-		npcHandler:say("Do you want to buy the special flask of holy water for " .. flaskCost .. " gold?" , npc, creature)
-		npcHandler:setTopic(playerId, 8)
+			npcHandler:say("Do you want to buy the special flask of holy water for " .. flaskCost .. " gold?", npc, creature)
+			npcHandler:setTopic(playerId, 8)
 		else
 			npcHandler:say("You do not need this flask right now.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
@@ -241,11 +241,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 8 then
 			if player:removeMoneyBank(flaskCost) then
-			npcHandler:say("Here is your new flask!, |PLAYERNAME|.", npc, creature)
-			player:addItem(133, 1)
+				npcHandler:say("Here is your new flask!, |PLAYERNAME|.", npc, creature)
+				player:addItem(133, 1)
 			else
-			npcHandler:say("Come back when you have enough money.", npc, creature)
-		end
+				npcHandler:say("Come back when you have enough money.", npc, creature)
+			end
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 7 then
 			if missing == 0 then
@@ -341,27 +341,27 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'paladin'}, StdModule.say, {npcHandler = npcHandler, text = 'It\'s a shame that only a few paladins still use their abilities to further the cause of the gods of good. Too many paladins have become selfish and greedy.'})
-keywordHandler:addKeyword({'knight'}, StdModule.say, {npcHandler = npcHandler, text = 'Nowadays, most knights seem to have forgotten the noble cause to which all knights were bound in the past. Only a few have remained pious, serve the gods and follow their teachings.'})
-keywordHandler:addKeyword({'sorcerer'}, StdModule.say, {npcHandler = npcHandler, text = 'Those who wield great power have to resist great temptations. We have the burden to eliminate all those who give in to the temptations.'})
-keywordHandler:addKeyword({'druid'}, StdModule.say, {npcHandler = npcHandler, text = 'The druids here still follow the old rules. Sadly, the druids of Carlin have left the right path in the last years.'})
-keywordHandler:addKeyword({'dwarf'}, StdModule.say, {npcHandler = npcHandler, text = 'The dwarfs are allied with Thais but follow their own obscure religion. Although dwarfs keep mostly to themselves, we have to observe this alliance closely.'})
-keywordHandler:addKeyword({'kazordoon'}, StdModule.say, {npcHandler = npcHandler, text = 'The dwarfs are allied with Thais but follow their own obscure religion. Although dwarfs keep mostly to themselves, we have to observe this alliance closely.'})
-keywordHandler:addKeyword({'elves'}, StdModule.say, {npcHandler = npcHandler, text = 'Those elves are hardly any more civilised than orcs. They can become a threat to mankind at any time.'})
-keywordHandler:addKeyword({'ab\'dendriel'}, StdModule.say, {npcHandler = npcHandler, text = 'Those elves are hardly any more civilised than orcs. They can become a threat to mankind at any time.'})
-keywordHandler:addKeyword({'venore'}, StdModule.say, {npcHandler = npcHandler, text = 'Venore is somewhat difficult to handle. The merchants have a close eye on our activities in their city and our authority is limited there. However, we will use all of our influence to prevent a second Carlin.'})
-keywordHandler:addKeyword({'drefia'}, StdModule.say, {npcHandler = npcHandler, text = 'Drefia used to be a city of sin and heresy, just like Carlin nowadays. One day, the gods decided to destroy this town and to erase all evil there.'})
-keywordHandler:addKeyword({'darashia'}, StdModule.say, {npcHandler = npcHandler, text = 'Darashia is a godless town full of mislead fools. One day, it will surely share the fate of its sister town Drefia.'})
-keywordHandler:addKeyword({'demon'}, StdModule.say, {npcHandler = npcHandler, text = 'Demons exist in many different shapes and levels of power. In general, they are servants of the dark gods and command great powers of destruction.'})
-keywordHandler:addKeyword({'carlin'}, StdModule.say, {npcHandler = npcHandler, text = 'Carlin is a city of sin and heresy. After the reunion of Carlin with the kingdom, the inquisition will have much work to purify the city and its inhabitants.'})
-keywordHandler:addKeyword({'zathroth'}, StdModule.say, {npcHandler = npcHandler, text = 'We can see his evil influence almost everywhere. Keep your eyes open or the dark one will lead you on the wrong way and destroy you.'})
-keywordHandler:addKeyword({'crunor'}, StdModule.say, {npcHandler = npcHandler, text = 'The church of Crunor works closely together with the druid guild. This makes a cooperation sometimes difficult.'})
-keywordHandler:addKeyword({'gods'}, StdModule.say, {npcHandler = npcHandler, text = 'We owe to the gods of good our creation and continuing existence. If it weren\'t for them, we would surely fall prey to the minions of the vile and dark gods.'})
-keywordHandler:addKeyword({'church'}, StdModule.say, {npcHandler = npcHandler, text = 'The churches of the gods united to fight heresy and dark magic. They are the shield of the true believers, while the inquisition is the sword that fights all enemies of virtuousness.'})
-keywordHandler:addKeyword({'inquisitor'}, StdModule.say, {npcHandler = npcHandler, text = 'The churches of the gods entrusted me with the enormous and responsible task to lead the inquisition. I leave the field work to inquisitors who I recruit from fitting people that cross my way.'})
-keywordHandler:addKeyword({'believer'}, StdModule.say, {npcHandler = npcHandler, text = 'Belive on the gods and they will show you the path.'})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'By edict of the churches I\'m the Lord Inquisitor.'})
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = 'I\'m Henricus, the Lord Inquisitor.'})
+keywordHandler:addKeyword({ 'paladin' }, StdModule.say, { npcHandler = npcHandler, text = 'It\'s a shame that only a few paladins still use their abilities to further the cause of the gods of good. Too many paladins have become selfish and greedy.' })
+keywordHandler:addKeyword({ 'knight' }, StdModule.say, { npcHandler = npcHandler, text = 'Nowadays, most knights seem to have forgotten the noble cause to which all knights were bound in the past. Only a few have remained pious, serve the gods and follow their teachings.' })
+keywordHandler:addKeyword({ 'sorcerer' }, StdModule.say, { npcHandler = npcHandler, text = 'Those who wield great power have to resist great temptations. We have the burden to eliminate all those who give in to the temptations.' })
+keywordHandler:addKeyword({ 'druid' }, StdModule.say, { npcHandler = npcHandler, text = 'The druids here still follow the old rules. Sadly, the druids of Carlin have left the right path in the last years.' })
+keywordHandler:addKeyword({ 'dwarf' }, StdModule.say, { npcHandler = npcHandler, text = 'The dwarfs are allied with Thais but follow their own obscure religion. Although dwarfs keep mostly to themselves, we have to observe this alliance closely.' })
+keywordHandler:addKeyword({ 'kazordoon' }, StdModule.say, { npcHandler = npcHandler, text = 'The dwarfs are allied with Thais but follow their own obscure religion. Although dwarfs keep mostly to themselves, we have to observe this alliance closely.' })
+keywordHandler:addKeyword({ 'elves' }, StdModule.say, { npcHandler = npcHandler, text = 'Those elves are hardly any more civilised than orcs. They can become a threat to mankind at any time.' })
+keywordHandler:addKeyword({ 'ab\'dendriel' }, StdModule.say, { npcHandler = npcHandler, text = 'Those elves are hardly any more civilised than orcs. They can become a threat to mankind at any time.' })
+keywordHandler:addKeyword({ 'venore' }, StdModule.say, { npcHandler = npcHandler, text = 'Venore is somewhat difficult to handle. The merchants have a close eye on our activities in their city and our authority is limited there. However, we will use all of our influence to prevent a second Carlin.' })
+keywordHandler:addKeyword({ 'drefia' }, StdModule.say, { npcHandler = npcHandler, text = 'Drefia used to be a city of sin and heresy, just like Carlin nowadays. One day, the gods decided to destroy this town and to erase all evil there.' })
+keywordHandler:addKeyword({ 'darashia' }, StdModule.say, { npcHandler = npcHandler, text = 'Darashia is a godless town full of mislead fools. One day, it will surely share the fate of its sister town Drefia.' })
+keywordHandler:addKeyword({ 'demon' }, StdModule.say, { npcHandler = npcHandler, text = 'Demons exist in many different shapes and levels of power. In general, they are servants of the dark gods and command great powers of destruction.' })
+keywordHandler:addKeyword({ 'carlin' }, StdModule.say, { npcHandler = npcHandler, text = 'Carlin is a city of sin and heresy. After the reunion of Carlin with the kingdom, the inquisition will have much work to purify the city and its inhabitants.' })
+keywordHandler:addKeyword({ 'zathroth' }, StdModule.say, { npcHandler = npcHandler, text = 'We can see his evil influence almost everywhere. Keep your eyes open or the dark one will lead you on the wrong way and destroy you.' })
+keywordHandler:addKeyword({ 'crunor' }, StdModule.say, { npcHandler = npcHandler, text = 'The church of Crunor works closely together with the druid guild. This makes a cooperation sometimes difficult.' })
+keywordHandler:addKeyword({ 'gods' }, StdModule.say, { npcHandler = npcHandler, text = 'We owe to the gods of good our creation and continuing existence. If it weren\'t for them, we would surely fall prey to the minions of the vile and dark gods.' })
+keywordHandler:addKeyword({ 'church' }, StdModule.say, { npcHandler = npcHandler, text = 'The churches of the gods united to fight heresy and dark magic. They are the shield of the true believers, while the inquisition is the sword that fights all enemies of virtuousness.' })
+keywordHandler:addKeyword({ 'inquisitor' }, StdModule.say, { npcHandler = npcHandler, text = 'The churches of the gods entrusted me with the enormous and responsible task to lead the inquisition. I leave the field work to inquisitors who I recruit from fitting people that cross my way.' })
+keywordHandler:addKeyword({ 'believer' }, StdModule.say, { npcHandler = npcHandler, text = 'Belive on the gods and they will show you the path.' })
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = 'By edict of the churches I\'m the Lord Inquisitor.' })
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = 'I\'m Henricus, the Lord Inquisitor.' })
 
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, fellow {believer} |PLAYERNAME|!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Always be on guard, |PLAYERNAME|!")

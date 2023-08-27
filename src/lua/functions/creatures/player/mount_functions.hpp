@@ -7,29 +7,26 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#ifndef SRC_LUA_FUNCTIONS_CREATURES_PLAYER_MOUNT_FUNCTIONS_HPP_
-#define SRC_LUA_FUNCTIONS_CREATURES_PLAYER_MOUNT_FUNCTIONS_HPP_
+#pragma once
 
-#include "lua/scripts/luascript.h"
+#include "lua/scripts/luascript.hpp"
 
 class MountFunctions final : LuaScriptInterface {
-	public:
-		static void init(lua_State* L) {
-			registerClass(L, "Mount", "", MountFunctions::luaCreateMount);
-			registerMetaMethod(L, "Mount", "__eq", MountFunctions::luaUserdataCompare);
+public:
+	static void init(lua_State* L) {
+		registerSharedClass(L, "Mount", "", MountFunctions::luaCreateMount);
+		registerMetaMethod(L, "Mount", "__eq", MountFunctions::luaUserdataCompare);
 
-			registerMethod(L, "Mount", "getName", MountFunctions::luaMountGetName);
-			registerMethod(L, "Mount", "getId", MountFunctions::luaMountGetId);
-			registerMethod(L, "Mount", "getClientId", MountFunctions::luaMountGetClientId);
-			registerMethod(L, "Mount", "getSpeed", MountFunctions::luaMountGetSpeed);
-		}
+		registerMethod(L, "Mount", "getName", MountFunctions::luaMountGetName);
+		registerMethod(L, "Mount", "getId", MountFunctions::luaMountGetId);
+		registerMethod(L, "Mount", "getClientId", MountFunctions::luaMountGetClientId);
+		registerMethod(L, "Mount", "getSpeed", MountFunctions::luaMountGetSpeed);
+	}
 
-	private:
-		static int luaCreateMount(lua_State* L);
-		static int luaMountGetName(lua_State* L);
-		static int luaMountGetId(lua_State* L);
-		static int luaMountGetClientId(lua_State* L);
-		static int luaMountGetSpeed(lua_State* L);
+private:
+	static int luaCreateMount(lua_State* L);
+	static int luaMountGetName(lua_State* L);
+	static int luaMountGetId(lua_State* L);
+	static int luaMountGetClientId(lua_State* L);
+	static int luaMountGetSpeed(lua_State* L);
 };
-
-#endif // SRC_LUA_FUNCTIONS_CREATURES_PLAYER_MOUNT_FUNCTIONS_HPP_

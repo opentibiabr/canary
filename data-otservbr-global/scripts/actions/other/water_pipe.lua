@@ -5,5 +5,5 @@ function waterPipe.onUse(player, item, fromPosition, target, toPosition, isHotke
 	return true
 end
 
-waterPipe:id(2974,2980,21323)
+waterPipe:id(2974, 2980, 21323)
 waterPipe:register()

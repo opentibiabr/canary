@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "Runes, wands, rods, health and mana potions! Have a look!"}
+	{ text = "Runes, wands, rods, health and mana potions! Have a look!" }
 }
 
 local keywordHandler = KeywordHandler:new()

@@ -9,17 +9,17 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/grouping/familiars.h"
-#include "config/configmanager.h"
-#include "utils/pugicast.h"
-#include "utils/tools.h"
+#include "creatures/players/grouping/familiars.hpp"
+#include "config/configmanager.hpp"
+#include "utils/pugicast.hpp"
+#include "utils/tools.hpp"
 
 bool Familiars::loadFromXml() {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/familiars.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		SPDLOG_ERROR("Failed to load Familiars");
+		g_logger().error("Failed to load Familiars");
 		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
@@ -31,19 +31,19 @@ bool Familiars::loadFromXml() {
 		}
 
 		if (!(attr = familiarsNode.attribute("vocation"))) {
-			SPDLOG_WARN("[Familiars::loadFromXml] - Missing familiar vocation.");
+			g_logger().warn("[Familiars::loadFromXml] - Missing familiar vocation.");
 			continue;
 		}
 
 		uint16_t vocation = pugi::cast<uint16_t>(attr.value());
 		if (vocation > VOCATION_LAST) {
-			SPDLOG_WARN("[Familiars::loadFromXml] - Invalid familiar vocation {}", vocation);
+			g_logger().warn("[Familiars::loadFromXml] - Invalid familiar vocation {}", vocation);
 			continue;
 		}
 
 		pugi::xml_attribute lookTypeAttribute = familiarsNode.attribute("lookType");
 		if (!lookTypeAttribute) {
-			SPDLOG_WARN("[Familiars::loadFromXml] - Missing looktype on familiar.");
+			g_logger().warn("[Familiars::loadFromXml] - Missing looktype on familiar.");
 			continue;
 		}
 

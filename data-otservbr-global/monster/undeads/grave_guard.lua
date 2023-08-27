@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 2,
 	Locations = "Horestis Tomb."
-	}
+}
 
 monster.health = 720
 monster.maxHealth = 720
@@ -76,19 +76,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 50000, maxCount = 100},
-	{name = "gold coin", chance = 50000, maxCount = 30},
-	{name = "scarab coin", chance = 4166},
-	{name = "daramian waraxe", chance = 1170},
-	{name = "grave flower", chance = 70000},
-	{id = 6299, chance = 1754}, -- death ring
-	{name = "health potion", chance = 20000},
-	{name = "mana potion", chance = 20000}
+	{ name = "gold coin", chance = 50000, maxCount = 100 },
+	{ name = "gold coin", chance = 50000, maxCount = 30 },
+	{ name = "scarab coin", chance = 4166 },
+	{ name = "daramian waraxe", chance = 1170 },
+	{ name = "grave flower", chance = 70000 },
+	{ id = 6299, chance = 1754 }, -- death ring
+	{ name = "health potion", chance = 20000 },
+	{ name = "mana potion", chance = 20000 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -147},
-	{name ="combat", interval = 2000, chance = 5, type = COMBAT_PHYSICALDAMAGE, radius = 1, effect = CONST_ME_SOUND_BLUE, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -147 },
+	{ name = "combat", interval = 2000, chance = 5, type = COMBAT_PHYSICALDAMAGE, radius = 1, effect = CONST_ME_SOUND_BLUE, target = false }
 }
 
 monster.defenses = {
@@ -97,23 +97,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 30},
-	{type = COMBAT_EARTHDAMAGE, percent = 90},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -10},
-	{type = COMBAT_HOLYDAMAGE , percent = -10},
-	{type = COMBAT_DEATHDAMAGE , percent = 10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 30 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 90 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -10 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

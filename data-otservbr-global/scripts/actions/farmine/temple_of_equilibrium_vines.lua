@@ -14,6 +14,5 @@ function templeOfEquilibriumVines.onUse(player, item, fromPosition, target, toPo
 	return true
 end
 
-
 templeOfEquilibriumVines:aid(12141, 12142)
 templeOfEquilibriumVines:register()

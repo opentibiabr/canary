@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Love is beautiful, we are loved.'}
+	{ text = 'Love is beautiful, we are loved.' }
 }
 
 npcConfig.shop = {
@@ -79,7 +79,7 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Basic
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "I am known as the saleswoman of love, as a cupid."})
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I am known as the saleswoman of love, as a cupid." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to Valentine's Store. Let's {trade} something?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Please come back from time to time.")

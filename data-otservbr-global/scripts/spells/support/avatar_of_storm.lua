@@ -1,5 +1,5 @@
 local condition = Condition(CONDITION_OUTFIT)
-condition:setOutfit({lookType = 1595}) -- Avatar of Storm lookType
+condition:setOutfit({ lookType = 1595 }) -- Avatar of Storm lookType
 
 local spell = Spell("instant")
 
@@ -8,25 +8,25 @@ function spell.onCastSpell(creature, variant)
 		return false
 	end
 
-	local grade = creature:upgradeSpellsWOD("Avatar of Storm")
-	if grade == WHEEL_GRADE_NONE then
+	local grade = creature:revelationStageWOD("Avatar of Storm")
+	if grade == 0 then
 		creature:sendCancelMessage("You cannot cast this spell")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
 
 	local cooldown = 0
-	if grade >= WHEEL_GRADE_MAX then
+	if grade >= 3 then
 		cooldown = 60
-	elseif grade >= WHEEL_GRADE_UPGRADED then
+	elseif grade >= 2 then
 		cooldown = 90
-	elseif grade >= WHEEL_GRADE_REGULAR then
+	elseif grade >= 1 then
 		cooldown = 120
 	end
 	local duration = 15000
 	condition:setTicks(duration)
 	local conditionCooldown = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 266)
-	conditionCooldown:setTicks((cooldown * 1000 * 60)/configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+	conditionCooldown:setTicks((cooldown * 1000 * 60) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 	-- creature:getPosition():sendMagicEffect(CONST_ME_AVATAR_APPEAR)
 	creature:addCondition(conditionCooldown)
 	creature:addCondition(condition)

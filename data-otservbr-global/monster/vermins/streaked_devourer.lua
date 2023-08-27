@@ -73,34 +73,34 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "tzzzz tzzzz tzzzz!", yell = false},
-	{text = "sloap sloap sloap!", yell = false}
+	{ text = "tzzzz tzzzz tzzzz!", yell = false },
+	{ text = "sloap sloap sloap!", yell = false }
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 70000, maxCount = 28},
-	{name = "gold ingot", chance = 16920, maxCount = 3},
-	{name = "streaked devourer maw", chance = 13850, maxCount = 2},
-	{name = "streaked devourer eyes", chance = 9230, maxCount = 2},
-	{id = 3039, chance = 4620, maxCount = 1}, -- red gem
-	{name = "streaked devourer legs", chance = 1540},
-	{name = "yellow gem", chance = 1540},
-	{name = "crystal mace", chance = 1540},
-	{name = "mercenary sword", chance = 1540},
-	{name = "noble axe", chance = 1280},
-	{name = "ornate crossbow", chance = 1100},
-	{name = "relic sword", chance = 1010},
-	{name = "guardian halberd", chance = 3080},
-	{name = "warrior's axe", chance = 1540},
-	{name = "giant sword", chance = 830},
-	{name = "war axe", chance = 4620}
+	{ name = "platinum coin", chance = 70000, maxCount = 28 },
+	{ name = "gold ingot", chance = 16920, maxCount = 3 },
+	{ name = "streaked devourer maw", chance = 13850, maxCount = 2 },
+	{ name = "streaked devourer eyes", chance = 9230, maxCount = 2 },
+	{ id = 3039, chance = 4620, maxCount = 1 }, -- red gem
+	{ name = "streaked devourer legs", chance = 1540 },
+	{ name = "yellow gem", chance = 1540 },
+	{ name = "crystal mace", chance = 1540 },
+	{ name = "mercenary sword", chance = 1540 },
+	{ name = "noble axe", chance = 1280 },
+	{ name = "ornate crossbow", chance = 1100 },
+	{ name = "relic sword", chance = 1010 },
+	{ name = "guardian halberd", chance = 3080 },
+	{ name = "warrior's axe", chance = 1540 },
+	{ name = "giant sword", chance = 830 },
+	{ name = "war axe", chance = 4620 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -550},
-	{name ="combat", interval = 2000, chance = 30, type = COMBAT_FIREDAMAGE, minDamage = -800, maxDamage = -900, radius = 3, effect = CONST_ME_EXPLOSIONHIT, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -580, maxDamage = -620, range = 5, radius = 3, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = true},
-	{name ="devourer death wave", interval = 2000, chance = 40, minDamage = -730, maxDamage = -770},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -550 },
+	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_FIREDAMAGE, minDamage = -800, maxDamage = -900, radius = 3, effect = CONST_ME_EXPLOSIONHIT, target = false },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -580, maxDamage = -620, range = 5, radius = 3, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREATTACK, target = true },
+	{ name = "devourer death wave", interval = 2000, chance = 40, minDamage = -730, maxDamage = -770 },
 }
 
 monster.defenses = {
@@ -109,23 +109,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -15},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -15 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

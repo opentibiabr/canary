@@ -1,4 +1,3 @@
-
 local mType = Game.createMonsterType("Sulphur Spouter")
 local monster = {}
 
@@ -72,28 +71,28 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Gruugl...", yell = false},
+	{ text = "Gruugl...", yell = false },
 }
 
 monster.loot = {
-	{name = "Sulphur Powder", chance = 39440},
-	{name = "Crystal Coin", chance = 22310, minCount = 1, maxCount = 2},
-	{name = "Ultimate Mana Potion", chance = 12890, minCount = 1, maxCount = 2},
-	{name = "Yellow Gem", chance = 2820},
-	{id = 282, chance = 2450}, -- Giant Shimmering Pearl (Green)
-	{name = "Slightly Rusted Legs", chance = 2420},
-	{name = "Knight Legs", chance = 2360},
-	{id = 3039, chance = 2190}, -- Red Gem
-	{name = "Warrior's Shield", chance = 1760},
-	{id = 23533, chance = 1110}, -- Ring of Red Plasma
-	{name = "Fire Sword", chance = 770},
-	{name = "Crystal Crossbow", chance = 510},
+	{ name = "Sulphur Powder", chance = 39440 },
+	{ name = "Crystal Coin", chance = 22310, minCount = 1, maxCount = 2 },
+	{ name = "Ultimate Mana Potion", chance = 12890, minCount = 1, maxCount = 2 },
+	{ name = "Yellow Gem", chance = 2820 },
+	{ id = 282, chance = 2450 }, -- Giant Shimmering Pearl (Green)
+	{ name = "Slightly Rusted Legs", chance = 2420 },
+	{ name = "Knight Legs", chance = 2360 },
+	{ id = 3039, chance = 2190 }, -- Red Gem
+	{ name = "Warrior's Shield", chance = 1760 },
+	{ id = 23533, chance = 1110 }, -- Ring of Red Plasma
+	{ name = "Fire Sword", chance = 770 },
+	{ name = "Crystal Crossbow", chance = 510 },
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -300, maxDamage = -801},
-	{name ="combat", interval = 3000, chance = 47, type = COMBAT_PHYSICALDAMAGE, minDamage = -800, maxDamage = -1500, range = 4, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_YELLOW_RINGS, target = true},
-	{name ="combat", interval = 1000, chance = 31, type = COMBAT_LIFEDRAIN, minDamage = -800, maxDamage = -1500, radius = 4, effect = CONST_ME_YELLOWSMOKE, target = true},
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -300, maxDamage = -801 },
+	{ name = "combat", interval = 3000, chance = 47, type = COMBAT_PHYSICALDAMAGE, minDamage = -800, maxDamage = -1500, range = 4, shootEffect = CONST_ANI_HOLY, effect = CONST_ME_YELLOW_RINGS, target = true },
+	{ name = "combat", interval = 1000, chance = 31, type = COMBAT_LIFEDRAIN, minDamage = -800, maxDamage = -1500, radius = 4, effect = CONST_ME_YELLOWSMOKE, target = true },
 }
 
 monster.defenses = {
@@ -102,23 +101,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = -20},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -20 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

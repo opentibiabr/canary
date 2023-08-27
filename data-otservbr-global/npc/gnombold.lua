@@ -27,7 +27,7 @@ local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 
 local talkState = {}
-local levels = {50, 79}
+local levels = { 50, 79 }
 npcType.onAppear = function(npc, creature)
 	npcHandler:onAppear(npc, creature)
 end
@@ -147,15 +147,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	///////////////////////]]
 	if MsgContains(message, 'charges') then
 		if player:getStorageValue(SPIKE_MIDDLE_CHARGE_DAILY) >= os.time() then
-			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_MIDDLE_CHARGE_DAILY)-os.time()) .. ' before this task gets available again.', npc, creature)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_MIDDLE_CHARGE_DAILY) - os.time()) .. ' before this task gets available again.', npc, creature)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
-			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', npc, creature)
+			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] .. '-' .. levels[2] .. '].', npc, creature)
 		end
 
 		if player:getStorageValue(SPIKE_MIDDLE_CHARGE_MAIN) == -1 then
-			npcHandler:say({'Our mission for you is to use a magnet on three different monoliths in the cave system here. After the magnet evaporates on the last charge, enter the magnetic extractor here to deliver your charge.', 'If you are interested, I can give you some more {information} about it. Are you willing to accept this mission?'}, npc, creature)
+			npcHandler:say({ 'Our mission for you is to use a magnet on three different monoliths in the cave system here. After the magnet evaporates on the last charge, enter the magnetic extractor here to deliver your charge.', 'If you are interested, I can give you some more {information} about it. Are you willing to accept this mission?' }, npc, creature)
 			talkState[playerId] = 'charges'
 		else
 			npcHandler:say('You have already started that mission.', npc, creature)
@@ -166,7 +166,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		if MsgContains(message, 'yes') then
 			player:addItem(19207, 1)
 			player:setStorageValue(SPIKE_MIDDLE_CHARGE_MAIN, 0)
-			npcHandler:say({'Gnometastic! Charge this magnet at three monoliths in the cave system. With three charges, the magnet will disintegrate and charge you with its gathered energies. Step on the magnetic extractor here to deliver the charge to us, then report to me.','If you lose the magnet you\'ll have to bring your own. Gnomux sells all the equipment that is required for our missions.'}, npc, creature)
+			npcHandler:say({ 'Gnometastic! Charge this magnet at three monoliths in the cave system. With three charges, the magnet will disintegrate and charge you with its gathered energies. Step on the magnetic extractor here to deliver the charge to us, then report to me.', 'If you lose the magnet you\'ll have to bring your own. Gnomux sells all the equipment that is required for our missions.' },
+				npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, 'no') then
 			npcHandler:say('Ok then.', npc, creature)
@@ -179,11 +180,11 @@ local function creatureSayCallback(npc, creature, type, message)
 	///////////////]]
 	if MsgContains(message, 'fertilise') then
 		if player:getStorageValue(SPIKE_MIDDLE_MUSHROOM_DAILY) >= os.time() then
-			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_MIDDLE_MUSHROOM_DAILY)-os.time()) .. ' before this task gets available again.', npc, creature)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_MIDDLE_MUSHROOM_DAILY) - os.time()) .. ' before this task gets available again.', npc, creature)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
-			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', npc, creature)
+			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] .. '-' .. levels[2] .. '].', npc, creature)
 		end
 
 		if player:getStorageValue(SPIKE_MIDDLE_MUSHROOM_MAIN) == -1 then
@@ -211,11 +212,11 @@ local function creatureSayCallback(npc, creature, type, message)
 	////////////////////]]
 	if MsgContains(message, 'nests') then
 		if player:getStorageValue(SPIKE_MIDDLE_NEST_DAILY) >= os.time() then
-			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_MIDDLE_NEST_DAILY)-os.time()) .. ' before this task gets available again.', npc, creature)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_MIDDLE_NEST_DAILY) - os.time()) .. ' before this task gets available again.', npc, creature)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
-			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', npc, creature)
+			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] .. '-' .. levels[2] .. '].', npc, creature)
 		end
 
 		if player:getStorageValue(SPIKE_MIDDLE_NEST_MAIN) == -1 then
@@ -242,11 +243,11 @@ local function creatureSayCallback(npc, creature, type, message)
 	///////////]]
 	if MsgContains(message, 'kill') then
 		if player:getStorageValue(SPIKE_MIDDLE_KILL_DAILY) >= os.time() then
-			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_MIDDLE_KILL_DAILY)-os.time()) .. ' before this task gets available again.', npc, creature)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_MIDDLE_KILL_DAILY) - os.time()) .. ' before this task gets available again.', npc, creature)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
-			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', npc, creature)
+			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] .. '-' .. levels[2] .. '].', npc, creature)
 		end
 
 		if player:getStorageValue(SPIKE_MIDDLE_KILL_MAIN) == -1 then

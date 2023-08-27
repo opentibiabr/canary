@@ -34,7 +34,7 @@ monster.speed = 145
 monster.manaCost = 0
 
 monster.faction = FACTION_ANUMA
-monster.enemyFactions = {FACTION_FAFNAR, FACTION_PLAYER}
+monster.enemyFactions = { FACTION_FAFNAR, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
@@ -76,24 +76,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 100000, maxCount = 3},
-	{name = "sphinx feather", chance = 9300},
-	{name = "magma amulet", chance = 7000},
-	{id = 31438, chance = 5500}, -- sphinx tiara
-	{name = "magma boots", chance = 3600},
-	{name = "lightning pendant", chance = 3500},
-	{name = "lightning headband", chance = 3100},
-	{name = "wand of starstorm", chance = 2900},
-	{name = "wand of defiance", chance = 1800},
-	{name = "magma monocle", chance = 1400},
-	{name = "magma legs", chance = 1300}
+	{ name = "platinum coin", chance = 100000, maxCount = 3 },
+	{ name = "sphinx feather", chance = 9300 },
+	{ name = "magma amulet", chance = 7000 },
+	{ id = 31438, chance = 5500 }, -- sphinx tiara
+	{ name = "magma boots", chance = 3600 },
+	{ name = "lightning pendant", chance = 3500 },
+	{ name = "lightning headband", chance = 3100 },
+	{ name = "wand of starstorm", chance = 2900 },
+	{ name = "wand of defiance", chance = 1800 },
+	{ name = "magma monocle", chance = 1400 },
+	{ name = "magma legs", chance = 1300 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -200, maxDamage = -500, length = 6, spread = 3, effect = CONST_ME_FIREAREA, target = false},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -100, maxDamage = -350, range = 5, radius = 3, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYAREA, target = true},
-	{name ="combat", interval = 2000, chance = 18, type = COMBAT_ENERGYDAMAGE, minDamage = -200, maxDamage = -400, radius = 3, effect = CONST_ME_ENERGYAREA, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -200, maxDamage = -500, length = 6, spread = 3, effect = CONST_ME_FIREAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HOLYDAMAGE, minDamage = -100, maxDamage = -350, range = 5, radius = 3, shootEffect = CONST_ANI_SMALLHOLY, effect = CONST_ME_HOLYAREA, target = true },
+	{ name = "combat", interval = 2000, chance = 18, type = COMBAT_ENERGYDAMAGE, minDamage = -200, maxDamage = -400, radius = 3, effect = CONST_ME_ENERGYAREA, target = false }
 }
 
 monster.defenses = {
@@ -102,23 +102,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -15},
-	{type = COMBAT_HOLYDAMAGE , percent = 15},
-	{type = COMBAT_DEATHDAMAGE , percent = -20}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -15 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 15 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -20 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

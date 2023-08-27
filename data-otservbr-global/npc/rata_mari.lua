@@ -72,14 +72,12 @@ local function creatureSayCallback(npc, creature, type, message)
 				'And I will not give the report to you until you get me some! Meep!'
 			}, npc, creature)
 			player:setStorageValue(Storage.DjinnWar.MaridFaction.RataMari, 1)
-
 		elseif reportProgress == 1 then
 			npcHandler:say('Ok, have you brought me the cheese, I\'ve asked for?', npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		else
 			npcHandler:say('I already gave you the report. I\'m not going to write another one!', npc, creature)
 		end
-
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, 'yes') then
 			if not player:removeItem(3607, 1) then
@@ -97,10 +95,10 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'rat'}, StdModule.say, {npcHandler = npcHandler, text = 'Your power of observation is stunning. Yes, I\'m a rat.'})
+keywordHandler:addKeyword({ 'rat' }, StdModule.say, { npcHandler = npcHandler, text = 'Your power of observation is stunning. Yes, I\'m a rat.' })
 
 -- Greeting message
-keywordHandler:addGreetKeyword({"piedpiper"}, {npcHandler = npcHandler, text = "Meep? I mean - hello! Sorry, |PLAYERNAME|... Being a {rat} has kind of grown on me."})
+keywordHandler:addGreetKeyword({ "piedpiper" }, { npcHandler = npcHandler, text = "Meep? I mean - hello! Sorry, |PLAYERNAME|... Being a {rat} has kind of grown on me." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Meep? I mean - hello! Sorry, |PLAYERNAME|... Being a {rat} has kind of grown on me.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Meep!")

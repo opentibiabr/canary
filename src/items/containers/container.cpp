@@ -9,10 +9,10 @@
 
 #include "pch.hpp"
 
-#include "items/containers/container.h"
-#include "items/decay/decay.h"
-#include "io/iomap.h"
-#include "game/game.h"
+#include "items/containers/container.hpp"
+#include "items/decay/decay.hpp"
+#include "io/iomap.hpp"
+#include "game/game.hpp"
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
@@ -454,23 +454,23 @@ ReturnValue Container::queryMaxCount(int32_t index, const Thing &thing, uint32_t
 ReturnValue Container::queryRemove(const Thing &thing, uint32_t count, uint32_t flags, Creature* actor /*= nullptr */) const {
 	int32_t index = getThingIndex(&thing);
 	if (index == -1) {
-		SPDLOG_DEBUG("{} - Failed to get thing index", __FUNCTION__);
+		g_logger().debug("{} - Failed to get thing index", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	const Item* item = thing.getItem();
 	if (item == nullptr) {
-		SPDLOG_DEBUG("{} - Item is nullptr", __FUNCTION__);
+		g_logger().debug("{} - Item is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	if (count == 0 || (item->isStackable() && count > item->getItemCount())) {
-		SPDLOG_DEBUG("{} - Failed to get item count", __FUNCTION__);
+		g_logger().debug("{} - Failed to get item count", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	if (!item->isMoveable() && !hasBitSet(FLAG_IGNORENOTMOVEABLE, flags)) {
-		SPDLOG_DEBUG("{} - Item is not moveable", __FUNCTION__);
+		g_logger().debug("{} - Item is not moveable", __FUNCTION__);
 		return RETURNVALUE_NOTMOVEABLE;
 	}
 	const HouseTile* houseTile = dynamic_cast<const HouseTile*>(getTopParent());
@@ -556,8 +556,9 @@ void Container::addThing(Thing* thing) {
 }
 
 void Container::addThing(int32_t index, Thing* thing) {
-	if (!thing)
+	if (!thing) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
+	}
 
 	if (index >= static_cast<int32_t>(capacity())) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
@@ -754,8 +755,9 @@ void Container::internalAddThing(Thing* thing) {
 }
 
 void Container::internalAddThing(uint32_t, Thing* thing) {
-	if (!thing)
+	if (!thing) {
 		return;
+	}
 
 	Item* item = thing->getItem();
 	if (item == nullptr) {

@@ -23,5 +23,5 @@ function jailExit.onStepIn(creature, item, position, fromPosition)
 	return false
 end
 
-jailExit:position({x = 33163, y = 31227, z= 11})
+jailExit:position({ x = 33163, y = 31227, z = 11 })
 jailExit:register()

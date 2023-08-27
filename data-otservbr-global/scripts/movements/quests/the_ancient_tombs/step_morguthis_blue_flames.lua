@@ -1,8 +1,8 @@
 local setting = {
 	[50139] = Storage.TheAncientTombs.MorguthisBlueFlameStorage1,
 	[50140] = Storage.TheAncientTombs.MorguthisBlueFlameStorage2,
-	[50141]	= Storage.TheAncientTombs.MorguthisBlueFlameStorage3,
-	[50142]	= Storage.TheAncientTombs.MorguthisBlueFlameStorage4,
+	[50141] = Storage.TheAncientTombs.MorguthisBlueFlameStorage3,
+	[50142] = Storage.TheAncientTombs.MorguthisBlueFlameStorage4,
 	[50143] = Storage.TheAncientTombs.MorguthisBlueFlameStorage5,
 	[50144] = Storage.TheAncientTombs.MorguthisBlueFlameStorage6,
 	[50145] = Storage.TheAncientTombs.MorguthisBlueFlameStorage7
@@ -26,7 +26,7 @@ function stepMorguthisBlueFlames.onStepIn(creature, item, position, fromPosition
 	else
 		local missingStorage = false
 		for i = Storage.TheAncientTombs.MorguthisBlueFlameStorage1,
-			Storage.TheAncientTombs.MorguthisBlueFlameStorage7 do
+		Storage.TheAncientTombs.MorguthisBlueFlameStorage7 do
 			if player:getStorageValue(i) ~= 1 then
 				missingStorage = true
 				break

@@ -6,20 +6,20 @@ local vocation = {
 }
 
 local area = {
-	{0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-	{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-	{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-	{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
-	{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-	{0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-	}
+	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+	{ 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+	{ 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
+	{ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+}
 
 local createArea = createCombatArea(area)
 
@@ -28,9 +28,9 @@ combat:setArea(createArea)
 
 function onTargetTile(creature, pos)
 	local creatureTable = {}
-	local n, i = Tile({x=pos.x, y=pos.y, z=pos.z}).creatures, 1
+	local n, i = Tile({ x = pos.x, y = pos.y, z = pos.z }).creatures, 1
 	if n ~= 0 then
-		local v = getThingfromPos({x=pos.x, y=pos.y, z=pos.z, stackpos=i}).uid
+		local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 		while v ~= 0 do
 			local creatureFromPos = Creature(v)
 			if creatureFromPos then
@@ -40,7 +40,7 @@ function onTargetTile(creature, pos)
 				end
 			end
 			i = i + 1
-			v = getThingfromPos({x=pos.x, y=pos.y, z=pos.z, stackpos=i}).uid
+			v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 		end
 	end
 	if #creatureTable ~= nil and #creatureTable > 0 then

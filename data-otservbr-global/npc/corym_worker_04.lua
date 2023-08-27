@@ -58,8 +58,8 @@ local function greetCallback(npc, creature, message)
 		npcHandler:setMessage(MESSAGE_GREET, {
 			'Every man is the architect of his own fortune. I want to see the daylight again! Just smell fresh air.'
 		})
-		player:setStorageValue(HiddenThreats.CorymRescueMission, player:getStorageValue(HiddenThreats.CorymRescueMission) +1 )
-		player:setStorageValue(HiddenThreats.CorymRescued06, 1 )
+		player:setStorageValue(HiddenThreats.CorymRescueMission, player:getStorageValue(HiddenThreats.CorymRescueMission) + 1)
+		player:setStorageValue(HiddenThreats.CorymRescued06, 1)
 	else
 		npcHandler:setMessage(MESSAGE_GREET, 'Every man is the architect of his own fortune. I want to see the daylight again! Just smell fresh air.')
 	end

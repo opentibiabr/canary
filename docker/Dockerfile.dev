@@ -1,0 +1,38 @@
+# Stage 1: Download all dependencies
+FROM ubuntu:23.04 AS dependencies
+
+RUN --mount=type=cache,target=/var/cache/apt \
+	apt-get update && apt-get install -y --no-install-recommends cmake git \
+	unzip build-essential ca-certificates curl zip unzip tar \
+	pkg-config ninja-build autoconf automake libtool \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt
+COPY vcpkg.json /opt
+RUN vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ') \
+	&& echo "vcpkg commit ID: $vcpkgCommitId" \
+	&& git clone https://github.com/Microsoft/vcpkg.git \
+	&& cd vcpkg \
+	&& git checkout "$vcpkgCommitId" \
+	&& ./bootstrap-vcpkg.sh
+
+WORKDIR /opt/vcpkg
+COPY vcpkg.json /opt/vcpkg/
+RUN --mount=type=cache,target=/var/cache/vcpkg \
+	/opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
+
+# Stage 2: create build
+FROM dependencies AS build
+WORKDIR /srv/build
+COPY src ./src
+COPY cmake ./cmake
+COPY recompile.sh CMakeLists.txt CMakePresets.json vcpkg.json ./
+RUN ./recompile.sh "/opt"
+
+# Stage 3: execute
+FROM ubuntu:23.04 AS prod
+COPY --from=build /srv/build/build/linux-release/bin/canary /bin/canary
+WORKDIR /srv/canary
+ENTRYPOINT ["/srv/canary/start.sh", "canary"]
+

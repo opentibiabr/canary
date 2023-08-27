@@ -1,10 +1,10 @@
 local positions = {
-	{x = 32497, y = 31889, z = 7},
-	{x = 32497, y = 31890, z = 7},
-	{x = 32498, y = 31890, z = 7},
-	{x = 32499, y = 31890, z = 7},
-	{x = 32502, y = 31890, z = 7},
-	{x = 32494, y = 31888, z = 7}
+	{ x = 32497, y = 31889, z = 7 },
+	{ x = 32497, y = 31890, z = 7 },
+	{ x = 32498, y = 31890, z = 7 },
+	{ x = 32499, y = 31890, z = 7 },
+	{ x = 32502, y = 31890, z = 7 },
+	{ x = 32494, y = 31888, z = 7 }
 }
 
 local poison = MoveEvent()
@@ -15,7 +15,7 @@ function poison.onStepOut(creature, item, position, fromPosition)
 		return true
 	end
 
-	local removeHealth = Tile({x = 32497, y = 31889, z = 7}):getFieldItem()
+	local removeHealth = Tile({ x = 32497, y = 31889, z = 7 }):getFieldItem()
 	if not removeHealth then
 		player:addHealth(-200, COMBAT_EARTHDAMAGE)
 		for i = 1, #positions do

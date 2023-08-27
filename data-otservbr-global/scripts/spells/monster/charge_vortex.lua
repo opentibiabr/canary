@@ -4,17 +4,17 @@ local positions = {}
 
 local function createVortex()
 	local storedPositions = {
-		{x = 32264, y = 31253, z = 14},
-		{x = 32269, y = 31258, z = 14},
-		{x = 32275, y = 31255, z = 14},
-		{x = 32280, y = 31253, z = 14},
-		{x = 32271, y = 31248, z = 14},
-		{x = 32264, y = 31245, z = 14},
-		{x = 32270, y = 31240, z = 14},
-		{x = 32269, y = 31253, z = 14},
-		{x = 32275, y = 31245, z = 14},
-		{x = 32276, y = 31250, z = 14},
-		{x = 32266, y = 31249, z = 14},
+		{ x = 32264, y = 31253, z = 14 },
+		{ x = 32269, y = 31258, z = 14 },
+		{ x = 32275, y = 31255, z = 14 },
+		{ x = 32280, y = 31253, z = 14 },
+		{ x = 32271, y = 31248, z = 14 },
+		{ x = 32264, y = 31245, z = 14 },
+		{ x = 32270, y = 31240, z = 14 },
+		{ x = 32269, y = 31253, z = 14 },
+		{ x = 32275, y = 31245, z = 14 },
+		{ x = 32276, y = 31250, z = 14 },
+		{ x = 32266, y = 31249, z = 14 },
 	}
 
 	if mathCount == 0 then
@@ -35,9 +35,9 @@ local function createVortex()
 					local ground = tile:getGround()
 					if ground then
 						ground:transform(23049)
-					end	
+					end
 				end
-			end, 10*1000, tile:getPosition()) -- 10*1000 = 10 SECONDS
+			end, 10 * 1000, tile:getPosition()) -- 10*1000 = 10 SECONDS
 			mathCount = mathCount + 1
 			table.remove(positions, r1)
 		end

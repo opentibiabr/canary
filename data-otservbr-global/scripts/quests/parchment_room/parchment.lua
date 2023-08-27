@@ -1,8 +1,8 @@
 local demonPositions = {
-	{x = 33060, y = 31623, z= 15},
-	{x = 33066, y = 31623, z= 15},
-	{x = 33060, y = 31627, z= 15},
-	{x = 33066, y = 31627, z= 15}
+	{ x = 33060, y = 31623, z = 15 },
+	{ x = 33066, y = 31623, z = 15 },
+	{ x = 33060, y = 31627, z = 15 },
+	{ x = 33066, y = 31627, z = 15 }
 }
 
 local function recreateParchment(position)

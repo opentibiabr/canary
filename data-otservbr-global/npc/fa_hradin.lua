@@ -57,7 +57,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, 'spy report') or MsgContains(message, 'mission') then
 		if player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission01) ~= 2 then
 			npcHandler:say('Looking for work, are you? Well, it\'s very tempting, you know, but I\'m afraid we do not really employ beginners. Perhaps our cook could need a helping hand in the kitchen.', npc, creature)
-
 		elseif missionProgress < 1 then
 			npcHandler:say({
 				'I have heard some good things about you from Bo\'ques. But I don\'t know. ...',
@@ -71,14 +70,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission02, 1)
 			player:setStorageValue(Storage.DjinnWar.MaridFaction.DoorToEfreetTerritory, 1)
-
 		elseif missionProgress == 1 then
 			npcHandler:say('Did you already retrieve the spyreport?', npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		else
 			npcHandler:say('Did you already talk to Gabel about the report? I think he will have further instructions for you.', npc, creature)
 		end
-
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, 'yes') then
 			if player:getStorageValue(Storage.DjinnWar.MaridFaction.RataMari) ~= 2 or not player:removeItem(3232, 1) then
@@ -94,7 +91,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				}, npc, creature)
 				player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission02, 2)
 			end
-
 		elseif MsgContains(message, 'no') then
 			npcHandler:say({
 				'Don\'t waste any more time. We need the spyreport of our man in Mal\'ouquah as soon as possible! ...',
@@ -106,7 +102,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Greeting
-keywordHandler:addGreetKeyword({"djanni'hah"}, {npcHandler = npcHandler, text = "Aaaah... what have we here. A human - interesting. And such an ugly specimen, too... All right, human |PLAYERNAME|. How can I help you?"})
+keywordHandler:addGreetKeyword({ "djanni'hah" }, { npcHandler = npcHandler, text = "Aaaah... what have we here. A human - interesting. And such an ugly specimen, too... All right, human |PLAYERNAME|. How can I help you?" })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, 'Farewell, human. I will always remember you. Unless I forget you, of course.')
 npcHandler:setMessage(MESSAGE_WALKAWAY, 'Farewell, human. I will always remember you. Unless I forget you, of course.')

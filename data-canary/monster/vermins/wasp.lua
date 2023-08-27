@@ -26,7 +26,7 @@ monster.Bestiary = {
 	Locations = "South of Thais, west of Ab'Dendriel, northeastern Cormaya, \z
 		Green Claw Swamp between Kazordoon and Venore, Wasp Tower in Rookgaard, \z
 		Wasp Towers in Darashia, all over Tiquanda, and all over Vandura."
-	}
+}
 
 monster.health = 35
 monster.maxHealth = 35
@@ -74,15 +74,15 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Bssssss", yell = false}
+	{ text = "Bssssss", yell = false }
 }
 
 monster.loot = {
-	{id = 5902, chance = 3000} -- honeycomb
+	{ id = 5902, chance = 3000 } -- honeycomb
 }
 
 monster.attacks = {
-	{name ="melee", interval = 1500, chance = 100, minDamage = 0, maxDamage = -20, condition = {type = CONDITION_POISON, totalDamage = 20, interval = 4000}}
+	{ name = "melee", interval = 1500, chance = 100, minDamage = 0, maxDamage = -20, condition = { type = CONDITION_POISON, totalDamage = 20, interval = 4000 } }
 }
 
 monster.defenses = {
@@ -91,23 +91,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = -10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

@@ -10,10 +10,10 @@ function spell.onCastSpell(creature, var)
 	if creature:getHealth() < creature:getMaxHealth() * 0.2 and not creature:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT, 88888) then
 		creature:addCondition(condition)
 		creature:addHealth(10000)
-        else
+	else
 		return
 	end
-    return true
+	return true
 end
 
 spell:name("furyosa heal")

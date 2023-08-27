@@ -95,7 +95,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "waterskin") then
 		npcHandler:say("Do you want to buy a waterskin for 25 gold?", npc, creature)
 		npcHandler:setTopic(playerId, 2)
-
 	elseif MsgContains(message, "cactus") then
 		if player:getStorageValue(Storage.TheIceIslands.Questline) == 21 then
 			npcHandler:say("You will find this kind of cactus at places that are called deserts. Only an ordinary kitchen knife will be precise enough to produce the ingredient weneed. Do you have a part of that cactus with you?", npc, creature)
@@ -134,7 +133,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("The giant glimmercap mushroom exists in caves and other preferably warm and humid places. Use an ordinary kitchen spoon on a mushroom to collectits spores. Do you have the glimmercap spores?", npc, creature)
 			npcHandler:setTopic(playerId, 9)
 		end
-
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say({
@@ -154,7 +152,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You don't have enough money.", npc, creature)
 			end
 			npcHandler:setTopic(playerId, 0)
-
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeItem(7245, 1) then
 				npcHandler:say("Thank you for this ingredient. Now bring me Geyser {Water} in a Waterskin. ", npc, creature)

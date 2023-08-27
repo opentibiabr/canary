@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "utils/wildcardtree.h"
+#include "utils/wildcardtree.hpp"
 
 WildcardTreeNode* WildcardTreeNode::getChild(char ch) {
 	auto it = children.find(ch);

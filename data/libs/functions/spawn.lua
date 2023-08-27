@@ -141,7 +141,7 @@ function Spawn.spawnMonsterTimer(self, config, func)
 		addEvent(function()
 			local monster = Game.createMonster(config.monster, config.pos, false, false)
 			if not monster then
-				Spdlog.error("[Spawn] Error on spawn monster: " .. config.monster)
+				logger.error("[Spawn] Error on spawn monster: {}", config.monster)
 				return false
 			end
 
@@ -169,7 +169,7 @@ function Spawn.spawnMonsterIndex(self, index)
 		self:addFunctionMonster("onSpawn", func, "MonsterIndex")
 		self:spawnMonsterTimer(config)
 	else
-		Spdlog.error("[Spawn.spawnMonsterIndex] - Table is nil")
+		logger.error("[Spawn.spawnMonsterIndex] - Table is nil")
 	end
 end
 

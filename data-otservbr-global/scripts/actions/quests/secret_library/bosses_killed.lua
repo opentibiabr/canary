@@ -1,9 +1,9 @@
 local bosses = {
-	["ghulosh"] = {storage = Storage.Quest.U11_80.TheSecretLibrary.GhuloshKilled},
-	["gorzindel"] = {storage = Storage.Quest.U11_80.TheSecretLibrary.GorzindelKilled},
-	["lokathmor"] = {storage = Storage.Quest.U11_80.TheSecretLibrary.LokathmorKilled},
-	["mazzinor"] = {storage = Storage.Quest.U11_80.TheSecretLibrary.MazzinorKilled},
-	["scourge of oblivion"] = {storage = Storage.Quest.U11_80.TheSecretLibrary.ScourgeOfOblivionKilled},
+	["ghulosh"] = { storage = Storage.Quest.U11_80.TheSecretLibrary.GhuloshKilled },
+	["gorzindel"] = { storage = Storage.Quest.U11_80.TheSecretLibrary.GorzindelKilled },
+	["lokathmor"] = { storage = Storage.Quest.U11_80.TheSecretLibrary.LokathmorKilled },
+	["mazzinor"] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MazzinorKilled },
+	["scourge of oblivion"] = { storage = Storage.Quest.U11_80.TheSecretLibrary.ScourgeOfOblivionKilled },
 }
 
 local bossesSecretLibrary = CreatureEvent("SecretLibraryKill")
@@ -35,4 +35,5 @@ function bossesSecretLibrary.onKill(player, target)
 	end
 	return true
 end
+
 bossesSecretLibrary:register()

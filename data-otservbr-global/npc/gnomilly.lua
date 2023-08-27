@@ -219,7 +219,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 		if player:getStorageValue(SPIKE_UPPER_TRACK_MAIN) == -1 then
 			npcHandler:say(
-			{ 'You\'d be given the highly important task to track down an enormously malevolent spiritual presence in the cave system. Use your tracking device to find out how close you are to the presence.', 'Use that information to find the residual energy and use the tracker there. If you are interested, I can give you some more information about it. Are you willing to accept this mission?' }, npc,
+				{ 'You\'d be given the highly important task to track down an enormously malevolent spiritual presence in the cave system. Use your tracking device to find out how close you are to the presence.', 'Use that information to find the residual energy and use the tracker there. If you are interested, I can give you some more information about it. Are you willing to accept this mission?' }, npc,
 				creature)
 			talkState[playerId] = 'track'
 		else

@@ -1,23 +1,20 @@
 local addCharm = TalkAction("/addcharms")
 
 function addCharm.onSay(player, words, param)
-	-- create log
-	logCommand(player, words, param)
-
 	local usage = "/addcharms PLAYER NAME,AMOUNT"
 	if param == "" then
 		player:sendCancelMessage("Command param required. Usage: " .. usage)
-		return true
+		return false
 	end
 	local split = param:split(",")
 	if not split[2] then
 		player:sendCancelMessage("Insufficient parameters. Usage: " .. usage)
-		return true
+		return false
 	end
 	local target = Player(split[1])
 	if not target then
 		player:sendCancelMessage("A player with that name is not online.")
-		return true
+		return false
 	end
 	--trim left
 	split[2] = split[2]:gsub("^%s*(.-)$", "%1")

@@ -169,6 +169,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", SAVE_INTERVAL_TIME);
 	registerEnumIn(L, "configKeys", RATE_USE_STAGES);
 	registerEnumIn(L, "configKeys", TOGGLE_IMBUEMENT_SHRINE_STORAGE);
+	registerEnumIn(L, "configKeys", TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY);
 	registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_TIME);
 	registerEnumIn(L, "configKeys", DATA_DIRECTORY);
 	registerEnumIn(L, "configKeys", CORE_DIRECTORY);

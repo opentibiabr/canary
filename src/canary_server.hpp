@@ -45,13 +45,11 @@ private:
 	ServiceManager &serviceManager;
 
 	std::mutex loaderLock;
-	std::mutex mapLoaderLock;
 	std::condition_variable loaderSignal;
 	std::condition_variable mapSignal;
 	std::unique_lock<std::mutex> loaderUniqueLock;
 	std::string threadFailMsg;
 
-	bool loaderMapDone = false;
 	bool loaderDone = false;
 	bool loadFailed = false;
 

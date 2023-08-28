@@ -126,7 +126,6 @@ npcConfig.shop = {
 	{ itemName = "stone skin amulet", clientId = 3081, buy = 5000, sell = 500, count = 5 },
 	{ itemName = "sword ring", clientId = 3091, buy = 500, sell = 100 },
 	{ itemName = "wand of cosmic energy", clientId = 3073, sell = 2000 },
-	{ itemName = "wand of cosmic energy", clientId = 3073, sell = 2000 },
 	{ itemName = "wand of decay", clientId = 3072, sell = 1000 },
 	{ itemName = "wand of defiance", clientId = 16096, sell = 6500 },
 	{ itemName = "wand of draconia", clientId = 8093, sell = 1500 },

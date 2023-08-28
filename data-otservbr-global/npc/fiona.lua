@@ -89,7 +89,7 @@ npcConfig.shop = {
 	{ itemName = "demon horn", clientId = 5954, sell = 1000 },
 	{ itemName = "demonic skeletal hand", clientId = 9647, sell = 80 },
 	{ itemName = "dragon priests wandtip", clientId = 10444, sell = 175 },
-	{ itemName = "dragons tail", clientId = 11457, sell = 100 },
+	{ itemName = "dragon's tail", clientId = 11457, sell = 100 },
 	{ itemName = "draken sulphur", clientId = 11658, sell = 550 },
 	{ itemName = "elder bonelord tentacle", clientId = 10276, sell = 150 },
 	{ itemName = "elven astral observer", clientId = 11465, sell = 90 },

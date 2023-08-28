@@ -58873,21 +58873,27 @@
 		<attribute key="rotateTo" value="42334"/>
 	</item>
 	<item id="42336" name="opulent wood floor planks">
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42337" name="opulent wood floor">
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42338" name="loose opulent floor intarsia">
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42339" name="opulent floor intarsia">
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42340" name="rolled-up opulent carpet">
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42341" name="opulent carpet">
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42342" name="pile of riches">

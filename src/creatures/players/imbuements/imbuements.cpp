@@ -52,7 +52,6 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				pugi::cast<uint32_t>(baseNode.attribute("removecost").value()),
 				pugi::cast<uint32_t>(baseNode.attribute("duration").value()),
 				pugi::cast<uint16_t>(baseNode.attribute("percent").value())
-
 			);
 
 			// Category/Group

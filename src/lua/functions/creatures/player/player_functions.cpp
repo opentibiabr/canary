@@ -1387,6 +1387,30 @@ int PlayerFunctions::luaPlayerSetSex(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetPronoun(lua_State* L) {
+	// player:getPronoun()
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		lua_pushnumber(L, player->getPronoun());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetPronoun(lua_State* L) {
+	// player:setPronoun(newPronoun)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		PlayerPronoun_t newPronoun = getNumber<PlayerPronoun_t>(L, 2);
+		player->setPronoun(newPronoun);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetTown(lua_State* L) {
 	// player:getTown()
 	Player* player = getUserdata<Player>(L, 1);

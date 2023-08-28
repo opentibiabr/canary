@@ -32,7 +32,7 @@ void PrivateChatChannel::invitePlayer(const Player &player, Player &invitePlayer
 	}
 
 	std::ostringstream ss;
-	ss << player.getName() << " invites you to " << (player.getSex() == PLAYERSEX_FEMALE ? "her" : "his") << " private chat channel.";
+	ss << player.getName() << " invites you to " << player.getPossessivePronoun() << " private chat channel.";
 	invitePlayer.sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 
 	ss.str(std::string());

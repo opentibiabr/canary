@@ -18,6 +18,9 @@
 Party::Party(Player* initLeader) :
 	leader(initLeader) {
 	leader->setParty(this);
+	if (g_configManager().getBoolean(PARTY_AUTO_SHARE_EXPERIENCE)) {
+		setSharedExperience(initLeader, true);
+	}
 }
 
 void Party::disband() {
@@ -277,7 +280,7 @@ bool Party::invitePlayer(Player &player) {
 	}
 
 	std::ostringstream ss;
-	ss << player.getName() << " has been invited.";
+	ss << player.getName() << " has been invited to join the party (Share range: " << getMinLevel() << "-" << getMaxLevel() << ").";
 
 	if (empty()) {
 		ss << " Open the party channel to communicate with your members.";
@@ -363,7 +366,7 @@ const char* Party::getSharedExpReturnMessage(SharedExpStatus_t value) {
 	}
 }
 
-bool Party::setSharedExperience(Player* player, bool newSharedExpActive) {
+bool Party::setSharedExperience(Player* player, bool newSharedExpActive, bool silent /*= false*/) {
 	if (!player || leader != player) {
 		return false;
 	}
@@ -377,9 +380,13 @@ bool Party::setSharedExperience(Player* player, bool newSharedExpActive) {
 	if (newSharedExpActive) {
 		SharedExpStatus_t sharedExpStatus = getSharedExperienceStatus();
 		this->sharedExpEnabled = sharedExpStatus == SHAREDEXP_OK;
-		leader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, getSharedExpReturnMessage(sharedExpStatus));
+		if (!silent) {
+			leader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, getSharedExpReturnMessage(sharedExpStatus));
+		}
 	} else {
-		leader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Shared Experience has been deactivated.");
+		if (!silent) {
+			leader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Shared Experience has been deactivated.");
+		}
 	}
 
 	updateAllPartyIcons();
@@ -406,14 +413,8 @@ SharedExpStatus_t Party::getMemberSharedExperienceStatus(const Player* player) c
 		return SHAREDEXP_EMPTYPARTY;
 	}
 
-	uint32_t highestLevel = leader->getLevel();
-	for (Player* member : memberList) {
-		if (member->getLevel() > highestLevel) {
-			highestLevel = member->getLevel();
-		}
-	}
-
-	uint32_t minLevel = static_cast<uint32_t>(std::ceil((static_cast<float>(highestLevel) * 2) / 3));
+	uint32_t highestLevel = getHighestLevel();
+	uint32_t minLevel = getMinLevel();
 	if (player->getLevel() < minLevel) {
 		return SHAREDEXP_LEVELDIFFTOOLARGE;
 	}
@@ -423,18 +424,49 @@ SharedExpStatus_t Party::getMemberSharedExperienceStatus(const Player* player) c
 	}
 
 	if (!player->hasFlag(PlayerFlags_t::NotGainInFight)) {
-		// check if the player has healed/attacked anything recently
-		auto it = ticksMap.find(player->getID());
-		if (it == ticksMap.end()) {
-			return SHAREDEXP_MEMBERINACTIVE;
-		}
-
-		uint64_t timeDiff = OTSYS_TIME() - it->second;
-		if (timeDiff > static_cast<uint64_t>(g_configManager().getNumber(PZ_LOCKED))) {
+		if (!isPlayerActive(player)) {
 			return SHAREDEXP_MEMBERINACTIVE;
 		}
 	}
 	return SHAREDEXP_OK;
+}
+
+uint32_t Party::getHighestLevel() const {
+	uint32_t highestLevel = leader->getLevel();
+	for (Player* member : memberList) {
+		if (member->getLevel() > highestLevel) {
+			highestLevel = member->getLevel();
+		}
+	}
+	return highestLevel;
+}
+
+uint32_t Party::getMinLevel() const {
+	return static_cast<uint32_t>(std::ceil((static_cast<float>(getHighestLevel()) * 2) / 3));
+}
+
+uint32_t Party::getLowestLevel() const {
+	uint32_t lowestLevel = leader->getLevel();
+	for (Player* member : memberList) {
+		if (member->getLevel() < lowestLevel) {
+			lowestLevel = member->getLevel();
+		}
+	}
+	return lowestLevel;
+}
+
+uint32_t Party::getMaxLevel() const {
+	return static_cast<uint32_t>(std::floor((static_cast<float>(getLowestLevel()) * 3) / 2));
+}
+
+bool Party::isPlayerActive(const Player* player) const {
+	auto it = ticksMap.find(player->getID());
+	if (it == ticksMap.end()) {
+		return false;
+	}
+
+	uint64_t timeDiff = OTSYS_TIME() - it->second;
+	return timeDiff <= 2 * 60 * 1000;
 }
 
 SharedExpStatus_t Party::getSharedExperienceStatus() {

@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Ankrahmun Tombs, the sand around Ankrahmun (use a shovel), deep in Larva caves, \z
 		the path leading to Chor, beneath Fenrock, Lion's Rock."
-	}
+}
 
 monster.health = 320
 monster.maxHealth = 320
@@ -74,45 +74,45 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 86800, maxCount = 52},
-	{name = "small emerald", chance = 413},
-	{name = "small amethyst", chance = 540},
-	{name = "scarab coin", chance = 1098},
-	{name = "daramian mace", chance = 245},
-	{name = "meat", chance = 40000, maxCount = 2},
-	{name = "piece of scarab shell", chance = 4950}
+	{ name = "gold coin", chance = 86800, maxCount = 52 },
+	{ name = "small emerald", chance = 413 },
+	{ name = "small amethyst", chance = 540 },
+	{ name = "scarab coin", chance = 1098 },
+	{ name = "daramian mace", chance = 245 },
+	{ name = "meat", chance = 40000, maxCount = 2 },
+	{ name = "piece of scarab shell", chance = 4950 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -75},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = 0, maxDamage = -35, range = 1, shootEffect = CONST_ANI_POISON, target = false},
-	{name ="poisonfield", interval = 2000, chance = 10, radius = 1, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -75 },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = 0, maxDamage = -35, range = 1, shootEffect = CONST_ANI_POISON, target = false },
+	{ name = "poisonfield", interval = 2000, chance = 10, radius = 1, target = false }
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 15,
-	{name ="speed", interval = 2000, chance = 15, speedChange = 200, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000}
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 200, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 5},
-	{type = COMBAT_ENERGYDAMAGE, percent = 10},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = -18},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 20},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = -18 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 20 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

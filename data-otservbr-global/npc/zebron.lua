@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Hey mate, up for a game of dice?'}
+	{ text = 'Hey mate, up for a game of dice?' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -79,7 +79,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			local realRoll = math.random(30)
 			local roll = math.random(5)
 			if realRoll < 30 then
-				npcHandler:say('Ok, here we go ... '.. roll ..'! You have lost. Bad luck. One more game?', npc, creature)
+				npcHandler:say('Ok, here we go ... ' .. roll .. '! You have lost. Bad luck. One more game?', npc, creature)
 			else
 				npcHandler:say('Ok, here we go ... 6! You have won a dice, congratulations. One more game?', npc, creature)
 				player:addItem(5792, 1)
@@ -118,9 +118,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		npc:getPosition():sendMagicEffect(CONST_ME_CRAPS)
 		local roll = math.random(6)
 		if roll < 6 then
-			npcHandler:say('Ok, here we go ... '.. roll ..'! You have lost. Bad luck. One more game?', npc, creature)
+			npcHandler:say('Ok, here we go ... ' .. roll .. '! You have lost. Bad luck. One more game?', npc, creature)
 		else
-			npcHandler:say('Ok, here we go ... 6! You have won '.. amount * 5 ..', congratulations. One more game?', npc, creature)
+			npcHandler:say('Ok, here we go ... 6! You have won ' .. amount * 5 .. ', congratulations. One more game?', npc, creature)
 			player:addMoney(amount * 5)
 		end
 		npcHandler:setTopic(playerId, 0)

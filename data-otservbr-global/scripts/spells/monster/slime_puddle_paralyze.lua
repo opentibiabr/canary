@@ -8,8 +8,8 @@ combat:addCondition(condition)
 
 
 local area = createCombatArea(AREA_SQUARE1X1)
-	combat:setArea(area)
-	combat:addCondition(condition)
+combat:setArea(area)
+combat:addCondition(condition)
 
 
 local spell = Spell("instant")

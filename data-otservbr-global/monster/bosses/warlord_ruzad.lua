@@ -65,7 +65,7 @@ monster.light = {
 monster.summon = {
 	maxSummons = 2,
 	summons = {
-		{name = "Orc Berserker", chance = 30, interval = 2000, count = 2}
+		{ name = "Orc Berserker", chance = 30, interval = 2000, count = 2 }
 	}
 }
 
@@ -75,23 +75,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 11479, chance = 25000}, -- orc leather
-	{id = 3031, chance = 18500, maxCount = 45}, -- gold coin
-	{id = 3287, chance = 14500, maxCount = 18}, -- throwing star
-	{id = 3578, chance = 11300, maxCount = 2}, -- fish
-	{id = 3316, chance = 5700}, -- orcish axe
-	{id = 3347, chance = 5700}, -- hunting spear
-	{id = 3357, chance = 5610}, -- plate armor
-	{id = 3557, chance = 4680}, -- plate legs
-	{id = 3307, chance = 4050}, -- scimitar
-	{id = 3084, chance = 2690}, -- protection amulet
-	{id = 3265, chance = 2200}, -- two handed sword
-	{id = 3384, chance = 1900}, -- dark helmet
-	{id = 818, chance = 750} -- magma boots
+	{ id = 11479, chance = 25000 }, -- orc leather
+	{ id = 3031, chance = 18500, maxCount = 45 }, -- gold coin
+	{ id = 3287, chance = 14500, maxCount = 18 }, -- throwing star
+	{ id = 3578, chance = 11300, maxCount = 2 }, -- fish
+	{ id = 3316, chance = 5700 }, -- orcish axe
+	{ id = 3347, chance = 5700 }, -- hunting spear
+	{ id = 3357, chance = 5610 }, -- plate armor
+	{ id = 3557, chance = 4680 }, -- plate legs
+	{ id = 3307, chance = 4050 }, -- scimitar
+	{ id = 3084, chance = 2690 }, -- protection amulet
+	{ id = 3265, chance = 2200 }, -- two handed sword
+	{ id = 3384, chance = 1900 }, -- dark helmet
+	{ id = 818, chance = 750 } -- magma boots
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300 }
 }
 
 monster.defenses = {
@@ -100,23 +100,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 2},
-	{type = COMBAT_EARTHDAMAGE, percent = -10},
-	{type = COMBAT_FIREDAMAGE, percent = 80},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 10},
-	{type = COMBAT_DEATHDAMAGE , percent = -10}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 2 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -10 },
+	{ type = COMBAT_FIREDAMAGE, percent = 80 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType.onThink = function(monster, interval)

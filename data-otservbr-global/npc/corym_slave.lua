@@ -71,14 +71,14 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if(MsgContains(message, "pay back")) then
-			npcHandler:say({
-				"The repression has taken too long. With our new weapons the respective people will get their just punishment."
-			}, npc, creature)
-			if player:getStorageValue(HiddenThreats.CorymRescued02) < 0 then
-				player:setStorageValue(HiddenThreats.CorymRescueMission, player:getStorageValue(HiddenThreats.CorymRescueMission) +1 )
-				player:setStorageValue(HiddenThreats.CorymRescued02, 1 )
-			end
+	if (MsgContains(message, "pay back")) then
+		npcHandler:say({
+			"The repression has taken too long. With our new weapons the respective people will get their just punishment."
+		}, npc, creature)
+		if player:getStorageValue(HiddenThreats.CorymRescued02) < 0 then
+			player:setStorageValue(HiddenThreats.CorymRescueMission, player:getStorageValue(HiddenThreats.CorymRescueMission) + 1)
+			player:setStorageValue(HiddenThreats.CorymRescued02, 1)
+		end
 	end
 	return true
 end

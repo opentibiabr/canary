@@ -30,7 +30,6 @@ function familiarOnLogin.onLogin(player)
 		local position = player:getPosition()
 		local familiarMonster = Game.createMonster(familiarName, position, true, false, player)
 		if familiarMonster then
-
 			familiarMonster:setOutfit({ lookType = player:getFamiliarLooktype() })
 			familiarMonster:registerEvent("FamiliarDeath")
 			position:sendMagicEffect(CONST_ME_MAGIC_BLUE)

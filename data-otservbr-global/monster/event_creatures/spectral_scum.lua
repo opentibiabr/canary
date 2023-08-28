@@ -60,21 +60,21 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Booze! More booze!", yell = false},
-	{text = "Harrr! Harrr!", yell = false},
-	{text = "<Burp>", yell = false},
-	{text = "<Fart>", yell = false},
-	{text = "Nothing better than plundering and getting plastered!", yell = false},
-	{text = "Yarrr!", yell = false},
-	{text = "A pirate's unlife for me!", yell = false}
+	{ text = "Booze! More booze!", yell = false },
+	{ text = "Harrr! Harrr!", yell = false },
+	{ text = "<Burp>", yell = false },
+	{ text = "<Fart>", yell = false },
+	{ text = "Nothing better than plundering and getting plastered!", yell = false },
+	{ text = "Yarrr!", yell = false },
+	{ text = "A pirate's unlife for me!", yell = false }
 }
 
 monster.loot = {
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = 0},
-	{name ="drunk", interval = 5000, chance = 10, range = 2, effect = CONST_ME_POFF, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = 0 },
+	{ name = "drunk", interval = 5000, chance = 10, range = 2, effect = CONST_ME_POFF, target = false }
 }
 
 monster.defenses = {
@@ -83,23 +83,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

@@ -11,7 +11,7 @@ function geomanticCharges.onStepIn(creature, item, position, fromPosition)
 	end
 
 	local tasksLoaded = {}
-	if not table.contains({-1, 8}, player:getStorageValue(SPIKE_MIDDLE_NEST_MAIN)) then
+	if not table.contains({ -1, 8 }, player:getStorageValue(SPIKE_MIDDLE_NEST_MAIN)) then
 		tasksLoaded["NEST"] = true
 	end
 	if player:getStorageValue(SPIKE_MIDDLE_CHARGE_MAIN) == 1 then

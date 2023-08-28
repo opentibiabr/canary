@@ -20,15 +20,15 @@ for i = 60, 75 do
 	condition3:setParameter(CONDITION_PARAM_SKILL_SHIELDPERCENT, i)
 
 	arr = {
-		{0, 0, 0, 1, 1, 1, 0, 0, 0},
-		{0, 0, 1, 1, 1, 1, 1, 0, 0},
-		{0, 1, 1, 1, 1, 1, 1, 1, 0},
-		{1, 1, 1, 1, 1, 1, 1, 1, 1},
-		{1, 1, 1, 1, 3, 1, 1, 1, 1},
-		{1, 1, 1, 1, 1, 1, 1, 1, 1},
-		{0, 1, 1, 1, 1, 1, 1, 1, 0},
-		{0, 0, 1, 1, 1, 1, 1, 0, 0},
-		{0, 0, 0, 1, 1, 1, 0, 0, 0}
+		{ 0, 0, 0, 1, 1, 1, 0, 0, 0 },
+		{ 0, 0, 1, 1, 1, 1, 1, 0, 0 },
+		{ 0, 1, 1, 1, 1, 1, 1, 1, 0 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		{ 1, 1, 1, 1, 3, 1, 1, 1, 1 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		{ 0, 1, 1, 1, 1, 1, 1, 1, 0 },
+		{ 0, 0, 1, 1, 1, 1, 1, 0, 0 },
+		{ 0, 0, 0, 1, 1, 1, 0, 0, 0 }
 	}
 
 	local area = createCombatArea(arr)
@@ -37,9 +37,9 @@ for i = 60, 75 do
 
 	function onTargetTile(creature, pos)
 		local creatureTable = {}
-		local n, i = Tile({x=pos.x, y=pos.y, z=pos.z}).creatures, 1
+		local n, i = Tile({ x = pos.x, y = pos.y, z = pos.z }).creatures, 1
 		if n ~= 0 then
-			local v = getThingfromPos({x=pos.x, y=pos.y, z=pos.z, stackpos=i}).uid
+			local v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 			while v ~= 0 do
 				if isCreature(v) == true then
 					table.insert(creatureTable, v)
@@ -48,7 +48,7 @@ for i = 60, 75 do
 					end
 				end
 				i = i + 1
-				v = getThingfromPos({x=pos.x, y=pos.y, z=pos.z, stackpos=i}).uid
+				v = getThingfromPos({ x = pos.x, y = pos.y, z = pos.z, stackpos = i }).uid
 			end
 		end
 		if #creatureTable ~= nil and #creatureTable > 0 then
@@ -58,13 +58,13 @@ for i = 60, 75 do
 					local vocationClientId = player:getVocation():getBaseId()
 
 					if isPlayer(creatureTable[r]) == true
-					and table.contains({VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID}, vocationClientId) then
+							and table.contains({ VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID }, vocationClientId) then
 						player:addCondition(condition2)
 					elseif isPlayer(creatureTable[r]) == true
-					and table.contains({VOCATION.BASE_ID.PALADIN}, vocationClientId) then
+							and table.contains({ VOCATION.BASE_ID.PALADIN }, vocationClientId) then
 						player:addCondition(condition3)
 					elseif isPlayer(creatureTable[r]) == true
-					and table.contains({VOCATION.BASE_ID.KNIGHT}, vocationClientId) then
+							and table.contains({ VOCATION.BASE_ID.KNIGHT }, vocationClientId) then
 						player:addCondition(condition1)
 					elseif isMonster(creatureTable[r]) == true then
 					end
@@ -76,7 +76,6 @@ for i = 60, 75 do
 	end
 
 	combat[i]:setCallback(CALLBACK_PARAM_TARGETTILE, "onTargetTile")
-
 end
 
 local spell = Spell("instant")
@@ -84,6 +83,7 @@ local spell = Spell("instant")
 function spell.onCastSpell(creature, var)
 	return combat[math.random(60, 75)]:execute(creature, var)
 end
+
 spell:name("lisa skill reducer")
 spell:words("###385")
 spell:isAggressive(true)

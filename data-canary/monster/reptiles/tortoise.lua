@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Laguna Islands, Fenrock, Port Hope and also can be found behind a wall below the \z
 		center of Liberty Bay. These cannot be reached."
-	}
+}
 
 monster.health = 185
 monster.maxHealth = 185
@@ -75,17 +75,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{id = 3031, chance = 59000, maxCount = 30}, -- gold coin
-	{id = 3305, chance = 730}, -- battle hammer
-	{id = 3410, chance = 2850}, -- plate shield
-	{id = 3578, chance = 4600}, -- fish
-	{id = 5678, chance = 770, maxCount = 2}, -- tortoise egg
-	{id = 5899, chance = 1300}, -- turtle shell
-	{id = 6131, chance = 200} -- tortoise shield
+	{ id = 3031, chance = 59000, maxCount = 30 }, -- gold coin
+	{ id = 3305, chance = 730 }, -- battle hammer
+	{ id = 3410, chance = 2850 }, -- plate shield
+	{ id = 3578, chance = 4600 }, -- fish
+	{ id = 5678, chance = 770, maxCount = 2 }, -- tortoise egg
+	{ id = 5899, chance = 1300 }, -- turtle shell
+	{ id = 6131, chance = 200 } -- tortoise shield
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -50 }
 }
 
 monster.defenses = {
@@ -94,23 +94,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 35},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 20},
-	{type = COMBAT_FIREDAMAGE, percent = -10},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 20},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 35 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 20 },
+	{ type = COMBAT_FIREDAMAGE, percent = -10 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 20 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

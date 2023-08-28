@@ -9,7 +9,8 @@ function gravediggerSacrifice.onUse(player, item, fromPosition, target, toPositi
 			player:setStorageValue(Storage.GravediggerOfDrefia.Mission74, 1)
 			Game.createMonster("Chicken", Position(33015, 32418, 11))
 		end
-		else player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Teste')
+	else
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'Teste')
 	end
 	return true
 end

@@ -4,7 +4,7 @@ local missionTiles = {
 	[50350] = {
 		state = 1,
 		message = "Cross the bridge to the west and go south to reach the wasps' nest.",
-		arrowPosition = {x = 32090, y = 32147, z = 7}
+		arrowPosition = { x = 32090, y = 32147, z = 7 }
 	},
 	[50353] = {
 		state = 1,

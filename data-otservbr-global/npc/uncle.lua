@@ -108,8 +108,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addAchievement("Top AVIN Agent")
 				player:addItem(899, 1)
 				npcHandler:say({
-				'You have proven yourself as very efficient. The future may hold great things for you in store ...',
-				'Take this token of gratitude. I hope you can use well what you will find inside!'
+					'You have proven yourself as very efficient. The future may hold great things for you in store ...',
+					'Take this token of gratitude. I hope you can use well what you will find inside!'
 				}, npc, creature)
 			else
 				npcHandler:say('Please bring me proof of the mad technomancers defeat!', npc, creature)

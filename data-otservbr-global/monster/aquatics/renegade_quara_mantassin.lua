@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 2,
 	Locations = "Seacrest Grounds during a world change."
-	}
+}
 
 monster.health = 1200
 monster.maxHealth = 1200
@@ -76,48 +76,48 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "mantassin tail", chance = 14490},
-	{name = "mind stone", chance = 10370},
-	{name = "shrimp", chance = 3950, maxCount = 3},
-	{name = "small sapphire", chance = 3540, maxCount = 3},
-	{id = 3049, chance = 3290}, -- stealth ring
-	{name = "ice rapier", chance = 2060},
-	{name = "blue crystal shard", chance = 1890},
-	{name = "strange helmet", chance = 1320},
-	{name = "two handed sword", chance = 820},
-	{name = "fish fin", chance = 740},
-	{name = "blue robe", chance = 660},
-	{id = 3051, chance = 580} -- energy ring
+	{ name = "mantassin tail", chance = 14490 },
+	{ name = "mind stone", chance = 10370 },
+	{ name = "shrimp", chance = 3950, maxCount = 3 },
+	{ name = "small sapphire", chance = 3540, maxCount = 3 },
+	{ id = 3049, chance = 3290 }, -- stealth ring
+	{ name = "ice rapier", chance = 2060 },
+	{ name = "blue crystal shard", chance = 1890 },
+	{ name = "strange helmet", chance = 1320 },
+	{ name = "two handed sword", chance = 820 },
+	{ name = "fish fin", chance = 740 },
+	{ name = "blue robe", chance = 660 },
+	{ id = 3051, chance = 580 } -- energy ring
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, skill = 40, attack = 55, effect = CONST_ME_DRAWBLOOD}
+	{ name = "melee", interval = 2000, chance = 100, skill = 40, attack = 55, effect = CONST_ME_DRAWBLOOD }
 }
 
 monster.defenses = {
 	defense = 15,
 	armor = 16,
-	{name ="invisible", interval = 2000, chance = 20, effect = CONST_ME_MAGIC_BLUE}
+	{ name = "invisible", interval = 2000, chance = 20, effect = CONST_ME_MAGIC_BLUE }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = -25},
-	{type = COMBAT_EARTHDAMAGE, percent = -10},
-	{type = COMBAT_FIREDAMAGE, percent = 100},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 100},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -25 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -10 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

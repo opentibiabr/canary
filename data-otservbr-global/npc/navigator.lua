@@ -51,18 +51,18 @@ local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if(MsgContains(message, "flou")) then
-		if(getPlayerStorageValue(creature, Storage.Navigator) < 1) then
+	if (MsgContains(message, "flou")) then
+		if (getPlayerStorageValue(creature, Storage.Navigator) < 1) then
 			npcHandler:say("Lhnjei gouthn naumpi! I know why you are here. I can {explain} everything.", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif(MsgContains(message, "explain")) then
-		if(npcHandler:getTopic(playerId) == 1) then
+	elseif (MsgContains(message, "explain")) then
+		if (npcHandler:getTopic(playerId) == 1) then
 			npcHandler:say("By entering this place, you have earned the right to learn what this is all about. This is a long story. Are you sure you want to hear this, {yes}?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
-	elseif(MsgContains(message, "helmet")) then
-		if(npcHandler:getTopic(playerId) == 7) then
+	elseif (MsgContains(message, "helmet")) then
+		if (npcHandler:getTopic(playerId) == 7) then
 			npcHandler:say(
 				{
 					"NAAAAARGH. If you promise to leave me alone and NOT TO TELL MY SECRET to anyone - you can have one. ...",
@@ -75,8 +75,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			)
 			npcHandler:setTopic(playerId, 8)
 		end
-	elseif(MsgContains(message, "no")) then
-		if(npcHandler:getTopic(playerId) == 3) then
+	elseif (MsgContains(message, "no")) then
+		if (npcHandler:getTopic(playerId) == 3) then
 			npcHandler:say(
 				{
 					"When none of my men returned, I forced myself to make a decision. Either dying on this dead ship or plunging into the liquid black beneath. ...",
@@ -90,8 +90,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			)
 			npcHandler:setTopic(playerId, 4)
 		end
-	elseif(MsgContains(message, "yes")) then
-		if(npcHandler:getTopic(playerId) == 2) then
+	elseif (MsgContains(message, "yes")) then
+		if (npcHandler:getTopic(playerId) == 2) then
 			npcHandler:say(
 				{
 					"I was once captain of a ship, the Skyflare. We were traders for King Tibianus and on our way home when we got into a storm. We fought hard to escape the cold grip of the sea. ...",
@@ -106,7 +106,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			)
 			npcHandler:say("Do you have enough, can I stop?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
-		elseif(npcHandler:getTopic(playerId) == 4) then
+		elseif (npcHandler:getTopic(playerId) == 4) then
 			npcHandler:say(
 				{
 					"Hmpf. The armor was working. After some time I was surrounded by darkness and could only see as far as my shimmer glower would me allow to. But I didn't feel the cold - I could even breathe through that helmet. ...",
@@ -118,7 +118,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				creature
 			)
 			npcHandler:setTopic(playerId, 5)
-		elseif(npcHandler:getTopic(playerId) == 5) then
+		elseif (npcHandler:getTopic(playerId) == 5) then
 			npcHandler:say(
 				{
 					"Of course you do. And they did, too. They obeyed me. They adored me. They followed me. ...",
@@ -130,7 +130,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				creature
 			)
 			npcHandler:setTopic(playerId, 6)
-		elseif(npcHandler:getTopic(playerId) == 6) then
+		elseif (npcHandler:getTopic(playerId) == 6) then
 			npcHandler:say(
 				{
 					"I control EVERYTHING from this room, navigating the fate of this land for more than a century now. Can you see all these funnels? My voice travels through them and throughout everything down here! ...",
@@ -141,7 +141,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				creature
 			)
 			npcHandler:setTopic(playerId, 7)
-		elseif(npcHandler:getTopic(playerId) == 8) then
+		elseif (npcHandler:getTopic(playerId) == 8) then
 			npcHandler:say("Then take this one. And remember: DO NOT TELL ANYONE ABOUT ME OR ANYTHING YOU HAVE HEARD HERE TODAY.", npc, creature)
 			player:addOutfitAddon(464, 2)
 			player:addOutfitAddon(463, 2)

@@ -73,7 +73,8 @@ local function creatureSayCallback(npc, creature, type, message)
 
 			--npcHandler:say("Right now I am sort of {recruiting} people.", npc, creature)
 			npcHandler:setTopic(playerId, 1)
-			else npcHandler:say("You already talked with me.", npc, creature)
+		else
+			npcHandler:say("You already talked with me.", npc, creature)
 		end
 	elseif MsgContains(message, "recruiting") then
 		if npcHandler:getTopic(playerId) == 1 then
@@ -116,7 +117,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addItem(16167, 4)
 			npcHandler:setTopic(playerId, 0)
 		end
-
 	end
 	return true
 end

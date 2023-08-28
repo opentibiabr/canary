@@ -63,7 +63,7 @@ function graveScarlettUid.onUse(player, item, fromPosition, target, toPosition, 
 				scarlett:setStorageValue(Storage.GraveDanger.CobraBastion.Questline, 1)
 			end
 			SCARLETT_MAY_TRANSFORM = 0
-			addEvent(kickPlayersAfterTime, 30*60*1000, playersTable, info.fromPos, info.toPos, info.exitPos)
+			addEvent(kickPlayersAfterTime, 30 * 60 * 1000, playersTable, info.fromPos, info.toPos, info.exitPos)
 		end
 	end
 	return true
@@ -76,7 +76,7 @@ graveScarlettUid:register()
 local mirror = {
 	fromPos = Position(33389, 32641, 6),
 	toPos = Position(33403, 32655, 6),
-	mirrors = {31474, 31475, 31476, 31477}
+	mirrors = { 31474, 31475, 31476, 31477 }
 }
 
 local function backMirror()
@@ -109,8 +109,8 @@ function graveScarlettAid.onUse(player, item, fromPosition, target, toPosition, 
 			item:getPosition():sendMagicEffect(CONST_ME_THUNDER)
 			item:remove(1)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You hold the old chestplate of Galthein in front of you. It does not fit and far too old to withstand any attack.")
-			addEvent(createArmor, 20*1000, info.armorId, 1, info.armorPos)
-			addEvent(backMirror, 10*1000)
+			addEvent(createArmor, 20 * 1000, info.armorId, 1, info.armorPos)
+			addEvent(backMirror, 10 * 1000)
 			SCARLETT_MAY_TRANSFORM = 1
 			addEvent(function()
 				SCARLETT_MAY_TRANSFORM = 0

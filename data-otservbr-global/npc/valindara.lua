@@ -31,7 +31,9 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Im eager for a bath in the lake.'},{text = 'Im interested in shiny precious things, if you have some.'},{text = 'No, you cant have this cloak.'}
+	{ text = 'Im eager for a bath in the lake.' },
+	{ text = 'Im interested in shiny precious things, if you have some.' },
+	{ text = 'No, you cant have this cloak.' }
 }
 
 local keywordHandler = KeywordHandler:new()

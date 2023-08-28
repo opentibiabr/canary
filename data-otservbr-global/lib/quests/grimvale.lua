@@ -1,7 +1,7 @@
 local oldpos = {}
 
 local config = {
-	position = {fromPosition = Position(33415, 31522, 11), toPosition = Position(33445, 31554, 11)}
+	position = { fromPosition = Position(33415, 31522, 11), toPosition = Position(33445, 31554, 11) }
 }
 
 local function teleportPlayer(playerId, pos)
@@ -12,7 +12,7 @@ local function teleportPlayer(playerId, pos)
 end
 
 local function loadMap()
-	Game.loadMap(DATA_DIRECTORY.. '/world/world_changes/full_moon/final.otbm')
+	Game.loadMap(DATA_DIRECTORY .. '/world/world_changes/full_moon/final.otbm')
 end
 
 local function removeFeroxa(feroxa)

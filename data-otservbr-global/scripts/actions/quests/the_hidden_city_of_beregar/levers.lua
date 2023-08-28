@@ -1,19 +1,19 @@
 local config = {
-	{railPos = Position(32696, 31453, 13), leverpos = Position(32697, 31454, 13)}, -- 11
-	{railPos = Position(32692, 31453, 13), leverpos = Position(32691, 31452, 13)}, -- 10
-	{railPos = Position(32687, 31452, 13), leverpos = Position(32686, 31452, 13)}, -- 9
-	{railPos = Position(32682, 31455, 13), leverpos = Position(32683, 31455, 13)}, -- 8
-	{railPos = Position(32688, 31456, 13), leverpos = Position(32687, 31457, 13)}, -- 7
-	{railPos = Position(32692, 31459, 13), leverpos = Position(32693, 31458, 13)}, -- 6
-	{railPos = Position(32696, 31461, 13), leverpos = Position(32696, 31462, 13)}, -- 5
-	{railPos = Position(32695, 31464, 13), leverpos = Position(32696, 31465, 13)}, -- 4
-	{railPos = Position(32690, 31465, 13), leverpos = Position(32691, 31464, 13)}, -- 3
-	{railPos = Position(32684, 31464, 13), leverpos = Position(32685, 31465, 13)}, -- 2
-	{railPos = Position(32688, 31469, 13), leverpos = Position(32689, 31470, 13)}, -- 1
-	{railPos = Position(32696, 31495, 11), leverpos = Position(32697, 31495, 11)}, -- station 4
-	{railPos = Position(32694, 31495, 11), leverpos = Position(32695, 31495, 11)}, -- station 3
-	{railPos = Position(32692, 31495, 11), leverpos = Position(32693, 31495, 11)}, -- station 2
-	{railPos = Position(32690, 31495, 11), leverpos = Position(32691, 31495, 11)}, -- station 1
+	{ railPos = Position(32696, 31453, 13), leverpos = Position(32697, 31454, 13) }, -- 11
+	{ railPos = Position(32692, 31453, 13), leverpos = Position(32691, 31452, 13) }, -- 10
+	{ railPos = Position(32687, 31452, 13), leverpos = Position(32686, 31452, 13) }, -- 9
+	{ railPos = Position(32682, 31455, 13), leverpos = Position(32683, 31455, 13) }, -- 8
+	{ railPos = Position(32688, 31456, 13), leverpos = Position(32687, 31457, 13) }, -- 7
+	{ railPos = Position(32692, 31459, 13), leverpos = Position(32693, 31458, 13) }, -- 6
+	{ railPos = Position(32696, 31461, 13), leverpos = Position(32696, 31462, 13) }, -- 5
+	{ railPos = Position(32695, 31464, 13), leverpos = Position(32696, 31465, 13) }, -- 4
+	{ railPos = Position(32690, 31465, 13), leverpos = Position(32691, 31464, 13) }, -- 3
+	{ railPos = Position(32684, 31464, 13), leverpos = Position(32685, 31465, 13) }, -- 2
+	{ railPos = Position(32688, 31469, 13), leverpos = Position(32689, 31470, 13) }, -- 1
+	{ railPos = Position(32696, 31495, 11), leverpos = Position(32697, 31495, 11) }, -- station 4
+	{ railPos = Position(32694, 31495, 11), leverpos = Position(32695, 31495, 11) }, -- station 3
+	{ railPos = Position(32692, 31495, 11), leverpos = Position(32693, 31495, 11) }, -- station 2
+	{ railPos = Position(32690, 31495, 11), leverpos = Position(32691, 31495, 11) }, -- station 1
 }
 
 local theHiddenWagonLevers = Action()

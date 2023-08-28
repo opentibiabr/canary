@@ -1,9 +1,9 @@
 local storagesTable = {
-	{storage = Storage.Quest.U12_40.SoulWar.GoshnarMaliceKilled, bossName = "Goshnar's Malice"},
-	{storage = Storage.Quest.U12_40.SoulWar.GoshnarHatredKilled, bossName = "Goshnar's Hatred"},
-	{storage = Storage.Quest.U12_40.SoulWar.GoshnarSpiteKilled, bossName = "Goshnar's Spite"},
-	{storage = Storage.Quest.U12_40.SoulWar.GoshnarCrueltyKilled, bossName = "Goshnar's Cruelty"},
-	{storage = Storage.Quest.U12_40.SoulWar.GoshnarGreedKilled, bossName = "Goshnar's Greed"},
+	{ storage = Storage.Quest.U12_40.SoulWar.GoshnarMaliceKilled, bossName = "Goshnar's Malice" },
+	{ storage = Storage.Quest.U12_40.SoulWar.GoshnarHatredKilled, bossName = "Goshnar's Hatred" },
+	{ storage = Storage.Quest.U12_40.SoulWar.GoshnarSpiteKilled, bossName = "Goshnar's Spite" },
+	{ storage = Storage.Quest.U12_40.SoulWar.GoshnarCrueltyKilled, bossName = "Goshnar's Cruelty" },
+	{ storage = Storage.Quest.U12_40.SoulWar.GoshnarGreedKilled, bossName = "Goshnar's Greed" },
 }
 
 local portalMegalomania = MoveEvent()
@@ -34,5 +34,5 @@ function portalMegalomania.onStepIn(creature, item, position, fromPosition)
 end
 
 portalMegalomania:type("stepin")
-portalMegalomania:position({x = 33611, y = 31430, z = 10})
+portalMegalomania:position({ x = 33611, y = 31430, z = 10 })
 portalMegalomania:register()

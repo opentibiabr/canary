@@ -16,5 +16,5 @@ function gravediggerInscriptions.onUse(player, item, fromPosition, target, toPos
 	return true
 end
 
-gravediggerInscriptions:aid(4651,4652,4653)
+gravediggerInscriptions:aid(4651, 4652, 4653)
 gravediggerInscriptions:register()

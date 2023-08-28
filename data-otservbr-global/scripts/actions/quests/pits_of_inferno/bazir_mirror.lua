@@ -30,5 +30,5 @@ function pitsOfInfernoBlackMirror.onUse(player, item, fromPosition, target, toPo
 	return true
 end
 
-pitsOfInfernoBlackMirror:aid(39511,39512)
+pitsOfInfernoBlackMirror:aid(39511, 39512)
 pitsOfInfernoBlackMirror:register()

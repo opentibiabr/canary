@@ -21,11 +21,11 @@ function cultsOfTibiaCounter.onUse(player, item, fromPosition, target, toPositio
 	end
 
 	if not target:isItem() then
-	return false
+		return false
 	end
 
 	if target:isCreature() then
-	return false
+		return false
 	end
 
 	if player:getStorageValue(Storage.CultsOfTibia.Life.Mission) == 6 then

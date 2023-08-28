@@ -1681,3 +1681,18 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 
 	return output.str();
 }
+
+/**
+ * @brief Formats a number to a string with commas
+ * @param number The number to format
+ * @return The formatted number
+ */
+std::string formatNumber(uint64_t number) {
+	std::string formattedNumber = std::to_string(number);
+	int pos = formattedNumber.length() - 3;
+	while (pos > 0) {
+		formattedNumber.insert(pos, ",");
+		pos -= 3;
+	}
+	return formattedNumber;
+}

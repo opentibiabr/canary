@@ -1,7 +1,7 @@
 local config = {
-	[1] = {uid = 3041, position = Position(32836, 32221, 14), itemId = 7844, storageOutfit = 2},
-	[2] = {uid = 3042, position = Position(32837, 32229, 14), itemId = 7846, storageOutfit = 3},
-	[3] = {uid = 3043, position = Position(32833, 32225, 14), itemId = 7845, storageOutfit = 4}
+	[1] = { uid = 3041, position = Position(32836, 32221, 14), itemId = 7844, storageOutfit = 2 },
+	[2] = { uid = 3042, position = Position(32837, 32229, 14), itemId = 7846, storageOutfit = 3 },
+	[3] = { uid = 3043, position = Position(32833, 32225, 14), itemId = 7845, storageOutfit = 4 }
 }
 
 local function revertLever(position)
@@ -73,5 +73,5 @@ function dreamerNightmareLever.onUse(player, item, fromPosition, target, toPosit
 	end
 end
 
-dreamerNightmareLever:uid(3041,3042,3043)
+dreamerNightmareLever:uid(3041, 3042, 3043)
 dreamerNightmareLever:register()

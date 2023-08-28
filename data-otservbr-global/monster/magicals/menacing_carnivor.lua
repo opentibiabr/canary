@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 4,
 	Occurrence = 0,
 	Locations = "Carnivora's Rocks."
-	}
+}
 
 monster.health = 3500
 monster.maxHealth = 3500
@@ -76,65 +76,65 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 100000, maxCount = 6},
-	{name = "morning star", chance = 100000},
-	{name = "terra rod", chance = 15550},
-	{name = "small ruby", chance = 15000},
-	{name = "crystal sword", chance = 25000},
-	{name = "ultimate mana potion", chance = 50000},
-	{name = "wand of dragonbreath", chance = 15000},
-	{name = "machete", chance = 30000},
-	{name = "iron helmet", chance = 20000},
-	{name = "serpent sword", chance = 18000},
-	{name = "heavy machete", chance = 17000},
-	{name = "terra legs", chance = 6000},
-	{name = "knight legs", chance = 4500},
-	{name = "wand of starstorm", chance = 8000},
-	{name = "wand of voodoo", chance = 7100},
-	{name = "violet glass plate", chance = 6200},
-	{name = "small enchanted ruby", chance = 1400},
-	{name = "green crystal fragment", chance = 1600},
-	{name = "onyx chip", chance = 9800},
-	{name = "opal", chance = 2000},
-	{name = "tiger eye", chance = 3000},
-	{name = "wand of decay", chance = 8700}
+	{ name = "platinum coin", chance = 100000, maxCount = 6 },
+	{ name = "morning star", chance = 100000 },
+	{ name = "terra rod", chance = 15550 },
+	{ name = "small ruby", chance = 15000 },
+	{ name = "crystal sword", chance = 25000 },
+	{ name = "ultimate mana potion", chance = 50000 },
+	{ name = "wand of dragonbreath", chance = 15000 },
+	{ name = "machete", chance = 30000 },
+	{ name = "iron helmet", chance = 20000 },
+	{ name = "serpent sword", chance = 18000 },
+	{ name = "heavy machete", chance = 17000 },
+	{ name = "terra legs", chance = 6000 },
+	{ name = "knight legs", chance = 4500 },
+	{ name = "wand of starstorm", chance = 8000 },
+	{ name = "wand of voodoo", chance = 7100 },
+	{ name = "violet glass plate", chance = 6200 },
+	{ name = "small enchanted ruby", chance = 1400 },
+	{ name = "green crystal fragment", chance = 1600 },
+	{ name = "onyx chip", chance = 9800 },
+	{ name = "opal", chance = 2000 },
+	{ name = "tiger eye", chance = 3000 },
+	{ name = "wand of decay", chance = 8700 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -300, maxDamage = -450},
-	{name ="combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -180, length = 4, spread = 3, effect = CONST_ME_SMOKE, target = false},
-	{name ="combat", interval = 2000, chance = 14, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -200, length = 4, spread = 3, effect = CONST_ME_POISONAREA, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -150, maxDamage = -330, radius = 4, effect = CONST_ME_GROUNDSHAKER, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -300, maxDamage = -450 },
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -180, length = 4, spread = 3, effect = CONST_ME_SMOKE, target = false },
+	{ name = "combat", interval = 2000, chance = 14, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -200, length = 4, spread = 3, effect = CONST_ME_POISONAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -150, maxDamage = -330, radius = 4, effect = CONST_ME_GROUNDSHAKER, target = false }
 }
 
 monster.defenses = {
 	defense = 0,
 	armor = 68,
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 150, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false}
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 150, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.reflects = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 100}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 100 }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 50},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -20},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 50 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -20 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

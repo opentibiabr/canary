@@ -15,4 +15,5 @@ function theWelterEgg.onThink(creature)
 		return true
 	end, 10000, creature:getId())
 end
+
 theWelterEgg:register()

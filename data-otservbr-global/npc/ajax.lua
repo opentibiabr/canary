@@ -93,7 +93,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Please? What you mean please? Like I say please you say bye? Please?", npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		end
-	-- OUTFIT
+		-- OUTFIT
 	elseif MsgContains(message, "gelagos") then
 		if player:getStorageValue(Storage.OutfitQuest.BarbarianAddon) == 4 then
 			npcHandler:say("Annoying kid. Bro hates him, but talking no help. Bro needs {fighting spirit}!", npc, creature)
@@ -141,7 +141,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("Axe is not done yet!", npc, creature)
 		end
-	-- OUTFIT
+		-- OUTFIT
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 5 then
 			npcHandler:say("Oh. Easy. Okay. Please is good. Now don't say anything. Head aches. ", npc, creature)

@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 4,
 	Occurrence = 0,
 	Locations = "Secret Library."
-	}
+}
 
 monster.health = 16500
 monster.maxHealth = 16500
@@ -73,29 +73,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{name = "platinum coin", chance = 11000, maxCount = 57},
-	{name = "glowing rune", chance = 800, maxCount = 4},
-	{name = "small sapphire", chance = 900, maxCount = 4},
-	{name = "frosty heart", chance = 11000, maxCount = 4},
-	{id = 7441, chance = 20000}, -- ice cube
-	{id = 28568, chance = 20000}, -- inkwell
-	{name = "ultimate health potion", chance = 10003, maxCount = 4},
-	{name = "ultimate mana potion", chance = 10003, maxCount = 4},
-	{name = "ice rapier", chance = 500},
-	{name = "glacier mask", chance = 400},
-	{name = "piece of dead brain", chance = 10001, maxCount = 4},
-	{name = "crystal sword", chance = 300},
-	{name = "glacier robe", chance = 150},
-	{name = "glacier kilt", chance = 150},
-	{name = "slime heart", chance = 10002, maxCount = 4}
+	{ name = "platinum coin", chance = 11000, maxCount = 57 },
+	{ name = "glowing rune", chance = 800, maxCount = 4 },
+	{ name = "small sapphire", chance = 900, maxCount = 4 },
+	{ name = "frosty heart", chance = 11000, maxCount = 4 },
+	{ id = 7441, chance = 20000 }, -- ice cube
+	{ id = 28568, chance = 20000 }, -- inkwell
+	{ name = "ultimate health potion", chance = 10003, maxCount = 4 },
+	{ name = "ultimate mana potion", chance = 10003, maxCount = 4 },
+	{ name = "ice rapier", chance = 500 },
+	{ name = "glacier mask", chance = 400 },
+	{ name = "piece of dead brain", chance = 10001, maxCount = 4 },
+	{ name = "crystal sword", chance = 300 },
+	{ name = "glacier robe", chance = 150 },
+	{ name = "glacier kilt", chance = 150 },
+	{ name = "slime heart", chance = 10002, maxCount = 4 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -300},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -100, maxDamage = -200, range = 7, shootEffect = CONST_ANI_ICE, target = false},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -200, maxDamage = -680, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = false},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -200, maxDamage = -375, length = 3, spread = 2, effect = CONST_ME_ICEATTACK, target = false},
-	{name ="combat", interval = 2000, chance = 12, type = COMBAT_ICEDAMAGE, minDamage = -230, maxDamage = -480, range = 7, radius = 3, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICETORNADO, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -300 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -100, maxDamage = -200, range = 7, shootEffect = CONST_ANI_ICE, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -200, maxDamage = -680, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -200, maxDamage = -375, length = 3, spread = 2, effect = CONST_ME_ICEATTACK, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_ICEDAMAGE, minDamage = -230, maxDamage = -480, range = 7, radius = 3, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICETORNADO, target = false }
 }
 
 monster.defenses = {
@@ -104,23 +104,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = -15},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 100},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = -15 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

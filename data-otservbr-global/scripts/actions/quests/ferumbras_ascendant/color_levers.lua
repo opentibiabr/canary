@@ -40,5 +40,5 @@ function ferumbrasAscendantColorLevers.onUse(player, item, fromPosition, target,
 	return true
 end
 
-ferumbrasAscendantColorLevers:aid(54381,54382,54383,54384,54385)
+ferumbrasAscendantColorLevers:aid(54381, 54382, 54383, 54384, 54385)
 ferumbrasAscendantColorLevers:register()

@@ -71,15 +71,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif message:lower() == "alori mort" and player:getStorageValue(BloodBrothers.Mission03) == 1 then
 		if npcHandler:getTopic(playerId) == 2 then
 			local rand = math.random(2)
-			local randMessage = {"Oh, the nerve. Go to the rats which raised you.", "Oh, the nerve. Sod off."}
+			local randMessage = { "Oh, the nerve. Go to the rats which raised you.", "Oh, the nerve. Sod off." }
 			npcHandler:setMessage(MESSAGE_WALKAWAY, randMessage[rand])
 			player:teleportTo(Position(32759, 31241, 9))
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			player:setStorageValue(BloodBrothers.Mission03, 2)
 		else
 			npcHandler:say({
-			"...... ...... ....",
-			"HAHAHAHAHA! What the... HAHAHAHA! Come on, say it again, just because it's so funny - and then I'll get rid of you, little mouse!"}, npc, creature)
+				"...... ...... ....",
+				"HAHAHAHAHA! What the... HAHAHAHA! Come on, say it again, just because it's so funny - and then I'll get rid of you, little mouse!" }, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
 	end

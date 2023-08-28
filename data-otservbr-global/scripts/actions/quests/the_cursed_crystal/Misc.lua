@@ -4,24 +4,24 @@ function theCursedMiscItem.onUse(cid, item, frompos, item2, topos)
 	if (item.itemid == 5902) then
 		if ((item2.itemid == 2535) or (item2.itemid == 2537) or (item2.itemid == 2539) or (item2.itemid == 2541)) then
 			item:remove(1)
-			doPlayerAddItem(cid,9106,1)
+			doPlayerAddItem(cid, 9106, 1)
 		end
 		return
 	elseif (item.itemid == 21554) then
 		if (((user1:getPosition().x - TCC_VORTEX_POSITION.x) < 4) and ((user1:getPosition().x - TCC_VORTEX_POSITION.x) > -4)) and
-		(((user1:getPosition().y - TCC_VORTEX_POSITION.y) < 4) and ((user1:getPosition().y - TCC_VORTEX_POSITION.y) > -4)) then
+				(((user1:getPosition().y - TCC_VORTEX_POSITION.y) < 4) and ((user1:getPosition().y - TCC_VORTEX_POSITION.y) > -4)) then
 			Game.createItem(7804, 1, TCC_VORTEX_POSITION)
 			Tile(TCC_VORTEX_POSITION):getItemById(7804):setActionId(35001)
 			doSendMagicEffect(user1:getPosition(), CONST_ME_SOUND_WHITE)
 			user1:sendTextMessage(MESSAGE_EVENT_ADVANCE, "As you use the small bell an unearthly sound rings out sweetly. At the same moment, the lake's waters begin to whirl.")
-				addEvent(function() 
-					Tile(TCC_VORTEX_POSITION):getItemById(7804):remove() 
-				end, 10000)
+			addEvent(function()
+				Tile(TCC_VORTEX_POSITION):getItemById(7804):remove()
+			end, 10000)
 		end
 	end
 end
 
-theCursedMiscItem:id(5902,21554,21572)
+theCursedMiscItem:id(5902, 21554, 21572)
 theCursedMiscItem:register()
 
 local theCursedMiscAction = Action()
@@ -30,7 +30,8 @@ function theCursedMiscAction.onUse(cid, item, frompos, item2, topos)
 		if (user1:getStorageValue(Storage.TibiaTales.TheCursedCrystal.Oneeyedjoe) < 1) then
 			user1:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a sheet of paper.")
 			local paperCursedCrystal = doPlayerAddItem(cid, 2820, 1)
-			Item(paperCursedCrystal):setAttribute(ITEM_ATTRIBUTE_TEXT, "I did it! I reached the crystal gardens! What beauty and splendor I have seen down there. Even more: I discovered a small subterranean lake - but Harry was there before me. And he did something strange: He ringed a small, transparent looking bell and immediatly a big whirl appeared in the water. I suppose this is the mysterious way deeper into the caves we sought after for so long. But Harry, the coward, didn't dare to dive into the water. Instead he left the caverns and heeded back to the surface. I have to go after him tomorrow. I must have this bell!")
+			Item(paperCursedCrystal):setAttribute(ITEM_ATTRIBUTE_TEXT,
+				"I did it! I reached the crystal gardens! What beauty and splendor I have seen down there. Even more: I discovered a small subterranean lake - but Harry was there before me. And he did something strange: He ringed a small, transparent looking bell and immediatly a big whirl appeared in the water. I suppose this is the mysterious way deeper into the caves we sought after for so long. But Harry, the coward, didn't dare to dive into the water. Instead he left the caverns and heeded back to the surface. I have to go after him tomorrow. I must have this bell!")
 		else
 			user1:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The pile of bones empty.")
 		end

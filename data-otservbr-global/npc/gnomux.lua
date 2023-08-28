@@ -80,7 +80,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, 'spike') then
-		npcHandler:say({"I came here as a crystal farmer and know the Spike all the way back to when it was a little baby crystal. I admit I feel a little fatherly pride in how big and healthy it has become.","When most other crystal experts left for new assignments, I decided to stay and help here a bit."}, npc, creature)
+		npcHandler:say({ "I came here as a crystal farmer and know the Spike all the way back to when it was a little baby crystal. I admit I feel a little fatherly pride in how big and healthy it has become.", "When most other crystal experts left for new assignments, I decided to stay and help here a bit." }, npc, creature)
 	end
 	return true
 end

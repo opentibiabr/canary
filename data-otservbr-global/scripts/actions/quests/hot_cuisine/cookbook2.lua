@@ -9,7 +9,7 @@ local hotCuisineCook2 = Action()
 function hotCuisineCook2.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local text = {}
 	for i = 1, 4 do
-		text[#text + 1] = config[i]
+		text[#text+1] = config[i]
 	end
 	player:showTextDialog(item.itemid, table.concat(text))
 	return true

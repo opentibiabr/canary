@@ -52,28 +52,28 @@ end
 
 local storeTable = {}
 local itemsTable = {
-	["gingerbreadman"] = {itemId = 6500, count = 1},
-	["christmas cookie tray"] = {itemId = 20310, count = 1},
-	["gingerbread recipe"] = {itemId = 174, count = 10},
-	["jewel case"] = {itemId = 7527, count = 25},
-	["santa hat"] = {itemId = 6531, count = 50},
-	["santa backpack"] = {itemId = 10346, count = 75},
-	["snow flake tapestry"] = {itemId = 20315, count = 75},
-	["santa doll"] = {itemId = 6511, count = 100},
-	["snowman doll"] = {itemId = 10339, count = 150},
-	["snow globe"] = {itemId = 20311, count = 150},
-	["frazzlemaw santa"] = {itemId = 20308, count = 250},
-	["leaf golem santa"] = {itemId = 20309, count = 250},
-	["santa music box"] = {itemId = 20313, count = 250},
-	["santa teddy"] = {itemId = 10338, count = 500},
-	["maxxen santa"] = {itemId = 21952, count = 250},
-	["present bag"] = {itemId = 6496, count = 1},
-	["ferumbras' teddy santa"] = {itemId = 22879, count = 250},
-	["nightmare beast santa"] = {itemId = 29947, count = 250},
-	["orclops santa"] = {itemId = 24394, count = 250},
-	["raccoon santa"] = {itemId = 35692, count = 250},
-	["santa fox"] = {itemId = 27591, count = 250},
-	["santa leech"] = {itemId = 32746, count = 250}
+	["gingerbreadman"] = { itemId = 6500, count = 1 },
+	["christmas cookie tray"] = { itemId = 20310, count = 1 },
+	["gingerbread recipe"] = { itemId = 174, count = 10 },
+	["jewel case"] = { itemId = 7527, count = 25 },
+	["santa hat"] = { itemId = 6531, count = 50 },
+	["santa backpack"] = { itemId = 10346, count = 75 },
+	["snow flake tapestry"] = { itemId = 20315, count = 75 },
+	["santa doll"] = { itemId = 6511, count = 100 },
+	["snowman doll"] = { itemId = 10339, count = 150 },
+	["snow globe"] = { itemId = 20311, count = 150 },
+	["frazzlemaw santa"] = { itemId = 20308, count = 250 },
+	["leaf golem santa"] = { itemId = 20309, count = 250 },
+	["santa music box"] = { itemId = 20313, count = 250 },
+	["santa teddy"] = { itemId = 10338, count = 500 },
+	["maxxen santa"] = { itemId = 21952, count = 250 },
+	["present bag"] = { itemId = 6496, count = 1 },
+	["ferumbras' teddy santa"] = { itemId = 22879, count = 250 },
+	["nightmare beast santa"] = { itemId = 29947, count = 250 },
+	["orclops santa"] = { itemId = 24394, count = 250 },
+	["raccoon santa"] = { itemId = 35692, count = 250 },
+	["santa fox"] = { itemId = 27591, count = 250 },
+	["santa leech"] = { itemId = 32746, count = 250 }
 }
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -88,7 +88,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	if (MsgContains(message, "offers")) then
 		local text = "I have these offers: "
 		for i, v in pairs(itemsTable) do
-			text = text.. "{" ..i.. "}, "
+			text = text .. "{" .. i .. "}, "
 		end
 		npcHandler:say(text, npc, creature)
 	end
@@ -97,11 +97,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		local table = itemsTable[message]
 		if table then
 			if (table.itemId ~= 6496) then
-				npcHandler:say("So you want to exchange "..message..", for ".. table.count .." christmas tokens?", npc, creature)
+				npcHandler:say("So you want to exchange " .. message .. ", for " .. table.count .. " christmas tokens?", npc, creature)
 				storeTable[playerId] = message
 				npcHandler:setTopic(playerId, 1)
 			else
-				npcHandler:say("So you want to exchange ".. message .." to "..table.count.." christmas token(s)?", npc, creature)
+				npcHandler:say("So you want to exchange " .. message .. " to " .. table.count .. " christmas token(s)?", npc, creature)
 				storeTable[playerId] = 6526
 				npcHandler:setTopic(playerId, 1)
 			end
@@ -120,7 +120,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				return false
 			end
 			if player:removeItem(6526, itemsTable[storeTable[playerId]].count) then
-				npcHandler:say("Thank you, here is your "..storeTable[playerId]..".", npc, creature)
+				npcHandler:say("Thank you, here is your " .. storeTable[playerId] .. ".", npc, creature)
 				player:addItem(itemsTable[storeTable[playerId]].itemId, 1)
 				npcHandler:setTopic(playerId, 0)
 			else

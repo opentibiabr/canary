@@ -1,6 +1,6 @@
 local config = {
-	[26663] = {storage = GlobalStorage.ForgottenKnowledge.MechanismDiamond, counter = GlobalStorage.ForgottenKnowledge.DiamondServant, msg = "5 diamond entities are consuming too much raw energy for the cosmic chamber to awaken, it will be put to rest again in 10 minutes."},
-	[26664] = {storage = GlobalStorage.ForgottenKnowledge.MechanismGolden, counter = GlobalStorage.ForgottenKnowledge.GoldenServant, msg = "5 golden entities are consuming too much raw energy for the cosmic chamber to awaken, it will be put to rest again in 10 minutes."}
+	[26663] = { storage = GlobalStorage.ForgottenKnowledge.MechanismDiamond, counter = GlobalStorage.ForgottenKnowledge.DiamondServant, msg = "5 diamond entities are consuming too much raw energy for the cosmic chamber to awaken, it will be put to rest again in 10 minutes." },
+	[26664] = { storage = GlobalStorage.ForgottenKnowledge.MechanismGolden, counter = GlobalStorage.ForgottenKnowledge.GoldenServant, msg = "5 golden entities are consuming too much raw energy for the cosmic chamber to awaken, it will be put to rest again in 10 minutes." }
 }
 
 local function clearGolems()

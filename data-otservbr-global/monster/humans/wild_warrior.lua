@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Dark Cathedral, Outlaw Camp, North of Thais, Cyclopolis, in Edron Hero Cave and around it, \z
 		the small camp near Femor Hills, in Ghostlands disguised as a statue."
-	}
+}
 
 monster.health = 135
 monster.maxHealth = 135
@@ -71,51 +71,51 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "An enemy!", yell = false},
-	{text = "Gimme your money!", yell = false}
+	{ text = "An enemy!", yell = false },
+	{ text = "Gimme your money!", yell = false }
 }
 
 monster.loot = {
-	{id = 2991, chance = 520}, -- doll
-	{name = "gold coin", chance = 49070, maxCount = 30},
-	{name = "axe", chance = 30710},
-	{name = "mace", chance = 9800},
-	{name = "chain helmet", chance = 5250},
-	{name = "iron helmet", chance = 580},
-	{name = "brass armor", chance = 2540},
-	{name = "steel shield", chance = 910},
-	{name = "brass shield", chance = 17000},
-	{id = 3606, chance = 9730, maxCount = 2} -- egg
+	{ id = 2991, chance = 520 }, -- doll
+	{ name = "gold coin", chance = 49070, maxCount = 30 },
+	{ name = "axe", chance = 30710 },
+	{ name = "mace", chance = 9800 },
+	{ name = "chain helmet", chance = 5250 },
+	{ name = "iron helmet", chance = 580 },
+	{ name = "brass armor", chance = 2540 },
+	{ name = "steel shield", chance = 910 },
+	{ name = "brass shield", chance = 17000 },
+	{ id = 3606, chance = 9730, maxCount = 2 } -- egg
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 }
 }
 
 monster.defenses = {
 	defense = 20,
 	armor = 20,
-	{name ="speed", interval = 2000, chance = 15, speedChange = 200, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000}
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 200, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = -5},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 10},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

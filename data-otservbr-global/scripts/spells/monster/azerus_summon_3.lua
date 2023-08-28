@@ -14,9 +14,9 @@ function spell.onCastSpell(creature, var)
 	if #summoncount < 4 then
 		for i = 1, maxsummons - #summoncount do
 			local mid = Game.createMonster("Rift Scythe", creature:getPosition())
-    			if not mid then
-					return
-				end
+			if not mid then
+				return
+			end
 			mid:setMaster(creature)
 		end
 	end

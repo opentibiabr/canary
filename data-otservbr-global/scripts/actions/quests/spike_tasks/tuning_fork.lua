@@ -1,6 +1,6 @@
 local spikeTasksFork = Action()
 function spikeTasksFork.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({-1, 7}, player:getStorageValue(SPIKE_UPPER_PACIFIER_MAIN)) then
+	if table.contains({ -1, 7 }, player:getStorageValue(SPIKE_UPPER_PACIFIER_MAIN)) then
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 	end
 

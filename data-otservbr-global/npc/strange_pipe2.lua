@@ -52,10 +52,10 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Don't forget npcHandler = npcHandler in the parameters. It is required for all StdModule functions!
-keywordHandler:addKeyword({'importance'}, StdModule.say, {npcHandler = npcHandler, text = 'I can\'t reveal much to you right now as time is of the essence. I can tell you though that the glooth plant and the whole town are in danger and we have to act to stop a {madman} and his schemes.'})
-keywordHandler:addKeyword({'laboratory'}, StdModule.say, {npcHandler = npcHandler, text = 'I defeated him there in the past. It has been abandoned for many {years}, but I suspected him to return from the dead eventually, as he has done so often before.'})
-keywordHandler:addKeyword({'plan'}, StdModule.say, {npcHandler = npcHandler, text = 'The creature is powerful but not very clever. It seems it can be easily {enraged} and then it would likely let slip all caution and would relentlessly attack without regard for its safety.'})
-keywordHandler:addKeyword({'years'}, StdModule.say, {npcHandler = npcHandler, text = 'I used the time to prepare. You\'ll find my talking tubes all the {way} to his lair, and I can provide you with vital information about the things ahead.'})
+keywordHandler:addKeyword({ 'importance' }, StdModule.say, { npcHandler = npcHandler, text = 'I can\'t reveal much to you right now as time is of the essence. I can tell you though that the glooth plant and the whole town are in danger and we have to act to stop a {madman} and his schemes.' })
+keywordHandler:addKeyword({ 'laboratory' }, StdModule.say, { npcHandler = npcHandler, text = 'I defeated him there in the past. It has been abandoned for many {years}, but I suspected him to return from the dead eventually, as he has done so often before.' })
+keywordHandler:addKeyword({ 'plan' }, StdModule.say, { npcHandler = npcHandler, text = 'The creature is powerful but not very clever. It seems it can be easily {enraged} and then it would likely let slip all caution and would relentlessly attack without regard for its safety.' })
+keywordHandler:addKeyword({ 'years' }, StdModule.say, { npcHandler = npcHandler, text = 'I used the time to prepare. You\'ll find my talking tubes all the {way} to his lair, and I can provide you with vital information about the things ahead.' })
 
 local function greetCallback(npc, creature)
 	local playerId = creature:getId()

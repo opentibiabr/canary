@@ -36,7 +36,7 @@ if not warzoneConfig then
 		}
 	}
 
-	warzoneConfig.spawnBoss = function (name, pos)
+	warzoneConfig.spawnBoss = function(name, pos)
 		local boss = Game.createMonster(name, pos, false, true)
 		if boss then
 			local c = warzoneConfig.findByName(name)
@@ -60,7 +60,7 @@ if not warzoneConfig then
 		end
 
 		local spectators = Game.getSpectators(roomwarzone.center, false, false,
-		roomwarzone.minRangeX, roomwarzone.maxRangeX, roomwarzone.minRangeY, roomwarzone.maxRangeY)
+			roomwarzone.minRangeX, roomwarzone.maxRangeX, roomwarzone.minRangeY, roomwarzone.maxRangeY)
 		for i = 1, #spectators do
 			if spectators[i]:isPlayer() then
 				spectators[i]:teleportTo(roomwarzone.exit)

@@ -1,5 +1,5 @@
 local chests = {
-	[19910] = {itemid = 235},
+	[19910] = { itemid = 235 },
 }
 
 local othersSteal = Action()

@@ -1,15 +1,15 @@
 local chestRooms = {
 	entrances = {
-		[25010] = {destination = {x = 32054, y = 31883, z = 6}},
-		[25011] = {destination = {x = 32073, y = 31883, z = 6}},
-		[25012] = {destination = {x = 32059, y = 31883, z = 6}},
-		[25013] = {destination = {x = 32068, y = 31883, z = 6}}
+		[25010] = { destination = { x = 32054, y = 31883, z = 6 } },
+		[25011] = { destination = { x = 32073, y = 31883, z = 6 } },
+		[25012] = { destination = { x = 32059, y = 31883, z = 6 } },
+		[25013] = { destination = { x = 32068, y = 31883, z = 6 } }
 	},
 	exits = {
-		[25014] = {vocation = VOCATION.ID.SORCERER, destination = {x = 32054, y = 31879, z = 6}},
-		[25015] = {vocation = VOCATION.ID.DRUID, destination = {x = 32073, y = 31879, z = 6}},
-		[25016] = {vocation = VOCATION.ID.PALADIN, destination = {x = 32059, y = 31879, z = 6}},
-		[25017] = {vocation = VOCATION.ID.KNIGHT, destination = {x = 32068, y = 31879, z = 6}}
+		[25014] = { vocation = VOCATION.ID.SORCERER, destination = { x = 32054, y = 31879, z = 6 } },
+		[25015] = { vocation = VOCATION.ID.DRUID, destination = { x = 32073, y = 31879, z = 6 } },
+		[25016] = { vocation = VOCATION.ID.PALADIN, destination = { x = 32059, y = 31879, z = 6 } },
+		[25017] = { vocation = VOCATION.ID.KNIGHT, destination = { x = 32068, y = 31879, z = 6 } }
 	}
 }
 
@@ -83,7 +83,7 @@ function templeStairs.onStepIn(creature, item, position, fromPosition)
 			MESSAGE_EVENT_ADVANCE,
 			"You cannot go upstairs. You have chosen a vocation and must now leave for the Mainlands."
 		)
-		player:teleportTo({x = 32063, y = 31891, z = 6}, true)
+		player:teleportTo({ x = 32063, y = 31891, z = 6 }, true)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	elseif player:getLevel() >= 20 then
 		player:teleportTo(fromPosition, true)
@@ -108,14 +108,14 @@ function tutorialTile.onStepIn(creature, item, position, fromPosition)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Use these stairs to enter the Adventurer's Outpost on Dawnport.")
 		player:sendTutorial(1)
 		for i = 1, #effects do
-			Position({x = 32075, y = 31900, z = 6}):sendMagicEffect(effects[i])
+			Position({ x = 32075, y = 31900, z = 6 }):sendMagicEffect(effects[i])
 		end
 	end
-	
+
 	return true
 end
 
-tutorialTile:position({x = 32069, y = 31901, z = 6})
+tutorialTile:position({ x = 32069, y = 31901, z = 6 })
 tutorialTile:register()
 
 -- Before up stair on the first dawnport town
@@ -142,7 +142,7 @@ function tutorialTile1.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 
-tutorialTile1:position({x = 32075, y = 31898, z = 5})
+tutorialTile1:position({ x = 32075, y = 31898, z = 5 })
 tutorialTile1:register()
 
 -- Tutorial tile for not back to dawnport first town
@@ -154,9 +154,9 @@ function tutorialTile2.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 	if item.itemid == 20344 then
-		player:teleportTo({x = 32070, y = 31900, z = 6}, true)
+		player:teleportTo({ x = 32070, y = 31900, z = 6 }, true)
 	elseif item.itemid == 21374 then
-		player:teleportTo({x = 32075, y = 31899, z = 5}, true)
+		player:teleportTo({ x = 32075, y = 31899, z = 5 }, true)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "<krrk> <krrrrrk> You move away hurriedly.")
 	end
 	return true
@@ -185,11 +185,11 @@ function tutorialTile3.onStepIn(creature, item, position, fromPosition)
 end
 
 local positions = {
-	{x = 32075, y = 31896, z = 5},
-	{x = 32074, y = 31896, z = 5},
-	{x = 32073, y = 31896, z = 5},
-	{x = 32072, y = 31896, z = 5},
-	{x = 32072, y = 31895, z = 5}
+	{ x = 32075, y = 31896, z = 5 },
+	{ x = 32074, y = 31896, z = 5 },
+	{ x = 32073, y = 31896, z = 5 },
+	{ x = 32072, y = 31896, z = 5 },
+	{ x = 32072, y = 31895, z = 5 }
 }
 
 for i = 1, #positions do
@@ -215,23 +215,23 @@ function tutorialTile4.onStepIn(creature, item, position, fromPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:setStorageValue(Storage.Dawnport.MessageStair, 1)
 	end
-	
+
 	return true
 end
 
 local positions = {
-	{x = 32063, y = 31906, z = 6},
-	{x = 32064, y = 31906, z = 6},
-	{x = 32065, y = 31906, z = 6},
-	{x = 32049, y = 31890, z = 6},
-	{x = 32049, y = 31891, z = 6},
-	{x = 32049, y = 31892, z = 6},
-	{x = 32079, y = 31890, z = 6},
-	{x = 32079, y = 31891, z = 6},
-	{x = 32079, y = 31892, z = 6},
-	{x = 32063, y = 31875, z = 6},
-	{x = 32064, y = 31875, z = 6},
-	{x = 32065, y = 31875, z = 6}
+	{ x = 32063, y = 31906, z = 6 },
+	{ x = 32064, y = 31906, z = 6 },
+	{ x = 32065, y = 31906, z = 6 },
+	{ x = 32049, y = 31890, z = 6 },
+	{ x = 32049, y = 31891, z = 6 },
+	{ x = 32049, y = 31892, z = 6 },
+	{ x = 32079, y = 31890, z = 6 },
+	{ x = 32079, y = 31891, z = 6 },
+	{ x = 32079, y = 31892, z = 6 },
+	{ x = 32063, y = 31875, z = 6 },
+	{ x = 32064, y = 31875, z = 6 },
+	{ x = 32065, y = 31875, z = 6 }
 }
 
 for i = 1, #positions do

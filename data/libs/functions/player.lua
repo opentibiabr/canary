@@ -223,11 +223,11 @@ function Player:removeMoneyBank(amount)
 			-- Removes player bank money
 			Bank.debit(self, remains)
 
-			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d from inventory and %d gold from bank account. Your account balance is now %d gold."):format(moneyCount, amount - moneyCount, self:getBankBalance()))
+			self:sendTextMessage(MESSAGE_TRADE, ("Paid %s from inventory and %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(moneyCount), FormatNumber(amount - moneyCount), FormatNumber(self:getBankBalance())))
 			return true
 		else
 			self:setBankBalance(bankCount - amount)
-			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from bank account. Your account balance is now %d gold."):format(amount, self:getBankBalance()))
+			self:sendTextMessage(MESSAGE_TRADE, ("Paid %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(amount), FormatNumber(self:getBankBalance())))
 			return true
 		end
 	end
@@ -470,7 +470,6 @@ function Player.updateHazard(self)
 	return true
 end
 
-
 ---@param monster Monster
 ---@return {factor: number, msgSuffix: string}
 function Player:calculateLootFactor(monster)
@@ -517,7 +516,19 @@ function Player:calculateLootFactor(monster)
 	}
 end
 
-function Player.setFiendish(self)
+function Player:setExhaustion(key, seconds)
+	return self:setStorageValue(key, os.time() + seconds)
+end
+
+function Player:getExhaustion(key)
+	return math.max(self:getStorageValue(key) - os.time(), 0)
+end
+
+function Player:hasExhaustion(key)
+	return self:getExhaustion(key) > 0 and true or false
+end
+
+function Player:setFiendish()
 	local position = self:getPosition()
 	position:getNextPosition(self:getDirection())
 

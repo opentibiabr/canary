@@ -34,7 +34,7 @@ monster.speed = 110
 monster.manaCost = 0
 
 monster.faction = FACTION_MARID
-monster.enemyFactions = {FACTION_EFREET, FACTION_PLAYER}
+monster.enemyFactions = { FACTION_EFREET, FACTION_PLAYER }
 
 monster.changeTarget = {
 	interval = 4000,
@@ -73,35 +73,35 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Simsalabim", yell = false},
-	{text = "Feel the power of my magic, tiny mortal!", yell = false},
-	{text = "Be careful what you wish for.", yell = false},
-	{text = "Wishes can come true", yell = false}
+	{ text = "Simsalabim", yell = false },
+	{ text = "Feel the power of my magic, tiny mortal!", yell = false },
+	{ text = "Be careful what you wish for.", yell = false },
+	{ text = "Wishes can come true", yell = false }
 }
 
 monster.loot = {
-	{id = 2829, chance = 2350}, -- book
-	{name = "small oil lamp", chance = 690},
-	{name = "small sapphire", chance = 2560, maxCount = 4},
-	{name = "gold coin", chance = 60000, maxCount = 70},
-	{name = "gold coin", chance = 70000, maxCount = 45},
-	{name = "mystic turban", chance = 70},
-	{id = 3595, chance = 23480}, -- carrot
-	{name = "blue rose", chance = 440},
-	{name = "blue piece of cloth", chance = 1920},
-	{name = "royal spear", chance = 4500, maxCount = 2},
-	{name = "mana potion", chance = 860},
-	{name = "dirty turban", chance = 1890}
+	{ id = 2829, chance = 2350 }, -- book
+	{ name = "small oil lamp", chance = 690 },
+	{ name = "small sapphire", chance = 2560, maxCount = 4 },
+	{ name = "gold coin", chance = 60000, maxCount = 70 },
+	{ name = "gold coin", chance = 70000, maxCount = 45 },
+	{ name = "mystic turban", chance = 70 },
+	{ id = 3595, chance = 23480 }, -- carrot
+	{ name = "blue rose", chance = 440 },
+	{ name = "blue piece of cloth", chance = 1920 },
+	{ name = "royal spear", chance = 4500, maxCount = 2 },
+	{ name = "mana potion", chance = 860 },
+	{ name = "dirty turban", chance = 1890 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -45, maxDamage = -80, range = 7, shootEffect = CONST_ANI_FIRE, target = false},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -60, maxDamage = -105, range = 7, radius = 1, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_SMALLCLOUDS, target = true},
-	{name ="drunk", interval = 2000, chance = 10, range = 7, shootEffect = CONST_ANI_ENERGY, target = false, duration = 5000},
-	{name ="outfit", interval = 2000, chance = 1, range = 7, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 4000, outfitMonster = "rabbit"},
-	{name ="djinn electrify", interval = 2000, chance = 15, range = 5, target = false},
-	{name ="djinn cancel invisibility", interval = 2000, chance = 10, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -110 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -45, maxDamage = -80, range = 7, shootEffect = CONST_ANI_FIRE, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_DEATHDAMAGE, minDamage = -60, maxDamage = -105, range = 7, radius = 1, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_SMALLCLOUDS, target = true },
+	{ name = "drunk", interval = 2000, chance = 10, range = 7, shootEffect = CONST_ANI_ENERGY, target = false, duration = 5000 },
+	{ name = "outfit", interval = 2000, chance = 1, range = 7, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 4000, outfitMonster = "rabbit" },
+	{ name = "djinn electrify", interval = 2000, chance = 15, range = 5, target = false },
+	{ name = "djinn cancel invisibility", interval = 2000, chance = 10, target = false }
 }
 
 monster.defenses = {
@@ -110,23 +110,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 50},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 80},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -10},
-	{type = COMBAT_HOLYDAMAGE , percent = 20},
-	{type = COMBAT_DEATHDAMAGE , percent = -13}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 50 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 80 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -10 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -13 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

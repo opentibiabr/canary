@@ -79,19 +79,19 @@ local function creatureSayCallback(npc, creature, type, message)
 						tell him he is WRONG. I always lived here with my mother and sister, I'm happy here and I \z
 						certainly don't want to go to that academy of yours."
 					},
-				npc, creature, 1000)
+					npc, creature, 1000)
 				player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 4)
 			end
 		end
 	elseif MsgContains(message, "furniture") then
 		if (player:getStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine) == 3) then
 			if
-				(player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Furniture01) == 1) and
+					(player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Furniture01) == 1) and
 					(player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Furniture02) == 1) and
 					(player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Furniture03) == 1) and
 					(player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Furniture04) == 1) and
 					(player:getStorageValue(Storage.TibiaTales.JackFutureQuest.Furniture05) == 1)
-			 then
+			then
 				npcHandler:say(
 					"What have you done? What are all these pieces of furniture doing here? Those are ugly at \z
 					best and - hey! Stop! Leave the wallpaper alone! Alright, alright! Just tell me, why are you \z
@@ -114,7 +114,7 @@ local function creatureSayCallback(npc, creature, type, message)
 						excuse but it's a start. Now let me return to my work, I need to fix this statue and then \z
 							the rest of this... mess."
 					},
-				npc, creature)
+					npc, creature)
 				player:addAchievement("Truth Be Told")
 				player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 11)
 				player:setStorageValue(Storage.TibiaTales.JackFutureQuest.LastMissionState, 1)
@@ -131,7 +131,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					"And he does what? Hm. Here in Edron? I see. And I was - what? No way. Where? What! \z
 					Why? And you say you are telling the truth?"
 				},
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif (npcHandler:getTopic(playerId) == 2) then
 			npcHandler:say(
@@ -141,7 +141,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					"What? 'Dimensional fold?' Well, thanks for the information and please close the door \z
 					behind you when you leave my house. Now."
 				},
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 2)
 		end
@@ -154,7 +154,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say(
 					"Yeah, yeah... so what are you still doing here? I guess I... will have to seek out this \z
 					Spectulus now, see what he has to say. There is nothing left for me in this place.",
-				npc, creature)
+					npc, creature)
 				player:addAchievement("You Don't Know Jack")
 				player:setStorageValue(Storage.TibiaTales.JackFutureQuest.QuestLine, 11)
 				player:setStorageValue(Storage.TibiaTales.JackFutureQuest.LastMissionState, 2)
@@ -186,7 +186,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				"I... was... sculpting sulky sculptures. For all my life. Until you came in here and DESTROYED \z
 				MY MASTERPIECE. Go away. I don't like you.",
-			npc, creature)
+				npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end
@@ -196,10 +196,10 @@ end
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "Now I need to clean up everything again."},
-	{text = "So much to do, so little time, they say..."},
-	{text = "Could it be...? No. No way."},
-	{text = "Mh..."}
+	{ text = "Now I need to clean up everything again." },
+	{ text = "So much to do, so little time, they say..." },
+	{ text = "Could it be...? No. No way." },
+	{ text = "Mh..." }
 }
 
 local keywordHandler = KeywordHandler:new()

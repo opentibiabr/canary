@@ -10,6 +10,7 @@ function onGetFormulaValues(player, level, maglevel)
 	local max = (level / 5) + (maglevel * 4.4) + 28 -- TODO: Formulas (TibiaWiki says ~Strong Flame Strike but we need more acurracy)
 	return -min, -max
 end
+
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 
 local spell = Spell("instant")

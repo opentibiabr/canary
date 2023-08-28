@@ -50,10 +50,10 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({'soldiers'}, StdModule.say, {npcHandler = npcHandler, text = "It was the elite of the whole army. They were called the Red Legion (also known as the bloody legion)."})
-keywordHandler:addKeyword({'orcs'}, StdModule.say, {npcHandler = npcHandler, text = "The orcs attacked the workers from time to time and so they disturbed the WORKS on the city."})
-keywordHandler:addKeyword({'cruelty'}, StdModule.say, {npcHandler = npcHandler, text = "The soldiers treated the workers like slaves."})
-keywordHandler:addKeyword({'island'}, StdModule.say, {npcHandler = npcHandler, text = "The General of the Red Legion became very angry about these attacks and after some months he STROKE back!"})
+keywordHandler:addKeyword({ 'soldiers' }, StdModule.say, { npcHandler = npcHandler, text = "It was the elite of the whole army. They were called the Red Legion (also known as the bloody legion)." })
+keywordHandler:addKeyword({ 'orcs' }, StdModule.say, { npcHandler = npcHandler, text = "The orcs attacked the workers from time to time and so they disturbed the WORKS on the city." })
+keywordHandler:addKeyword({ 'cruelty' }, StdModule.say, { npcHandler = npcHandler, text = "The soldiers treated the workers like slaves." })
+keywordHandler:addKeyword({ 'island' }, StdModule.say, { npcHandler = npcHandler, text = "The General of the Red Legion became very angry about these attacks and after some months he STROKE back!" })
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)

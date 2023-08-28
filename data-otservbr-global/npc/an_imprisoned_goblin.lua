@@ -18,23 +18,23 @@ npcConfig.flags = {
 	floorchange = false
 }
 
-  local keywordHandler = KeywordHandler:new()
+local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 
 npcType.onAppear = function(npc, creature)
-  npcHandler:onAppear(npc, creature)
+	npcHandler:onAppear(npc, creature)
 end
 
 npcType.onDisappear = function(npc, creature)
-  npcHandler:onDisappear(npc, creature)
+	npcHandler:onDisappear(npc, creature)
 end
 
 npcType.onSay = function(npc, creature, type, message)
-  npcHandler:onSay(npc, creature, type, message)
+	npcHandler:onSay(npc, creature, type, message)
 end
 
 npcType.onThink = function(npc, interval)
-  npcHandler:onThink(npc, interval)
+	npcHandler:onThink(npc, interval)
 end
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

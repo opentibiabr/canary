@@ -144,7 +144,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getItemCount(player:isSorcerer() and 946 or player:isDruid() and 947 or player:isPaladin() and 942 or player:isKnight() and 948) > 0 then
 				player:setStorageValue(Storage.ElementalSphere.QuestLine, 2)
 				npcHandler:say({
-					"Impressive!! Let me take a look.......Ahh, " .. (player:isSorcerer() and "an ETERNAL FLAME! Now you need to find a knight, a druid, and a paladin who also completed this first task. ..." or player:isDruid() and "MOTHER SOIL! Now you need to find a knight, a paladin, and a sorcerer who also completed this first task. ..." or player:isPaladin() and "a FLAWLESS ICE CRYSTAL! Now you need to find a knight, a druid, and a sorcerer who also completed this first task. ..." or player:isKnight() and "PURE ENERGY! Now you need to find a druid, a paladin, and a sorcerer who also completed this first task. ..."),
+					"Impressive!! Let me take a look.......Ahh, " ..
+					(player:isSorcerer() and "an ETERNAL FLAME! Now you need to find a knight, a druid, and a paladin who also completed this first task. ..." or player:isDruid() and "MOTHER SOIL! Now you need to find a knight, a paladin, and a sorcerer who also completed this first task. ..." or player:isPaladin() and "a FLAWLESS ICE CRYSTAL! Now you need to find a knight, a druid, and a sorcerer who also completed this first task. ..." or player:isKnight() and "PURE ENERGY! Now you need to find a druid, a paladin, and a sorcerer who also completed this first task. ..."),
 					"Go down in the cellar again. I prepared a room under the academy where it should be safe. Your task is to charge the machines with the elemental substances and summon the LORD OF THE ELEMENTS. ...",
 					"When you use an obsidian knife on it's corpse you hopefully get some of the precious neutral matter. It's the only way to revive my dear friend Alverus!!"
 				}, npc, creature)
@@ -167,12 +168,12 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "How dare you asking me this?!? I'm Arkulius - Master of Elements, the HEADMASTER of this academy!!"})
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = "I'm Arkulius - Master of Elements, the headmaster of this academy."})
-keywordHandler:addKeyword({'help'}, StdModule.say, {npcHandler = npcHandler, text = "I have better things to do than helping you. See that ice statue over there? My dear friend Alverus needs to be revived!"})
-keywordHandler:addKeyword({'time'}, StdModule.say, {npcHandler = npcHandler, text = "Time is an illusion and completely irrelevant to me."})
-keywordHandler:addKeyword({'weapon'}, StdModule.say, {npcHandler = npcHandler, text = "Weapons are for those people who aren't able to use their heads or better what's INSIDE their heads. No offence <coughs>."}) -- < Knight; FIXME !!!
-keywordHandler:addKeyword({'pits of inferno'}, StdModule.say, {npcHandler = npcHandler, text = "Yeye, I believe you almost feel like home among all those brainless creatures!"})
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "How dare you asking me this?!? I'm Arkulius - Master of Elements, the HEADMASTER of this academy!!" })
+keywordHandler:addKeyword({ 'name' }, StdModule.say, { npcHandler = npcHandler, text = "I'm Arkulius - Master of Elements, the headmaster of this academy." })
+keywordHandler:addKeyword({ 'help' }, StdModule.say, { npcHandler = npcHandler, text = "I have better things to do than helping you. See that ice statue over there? My dear friend Alverus needs to be revived!" })
+keywordHandler:addKeyword({ 'time' }, StdModule.say, { npcHandler = npcHandler, text = "Time is an illusion and completely irrelevant to me." })
+keywordHandler:addKeyword({ 'weapon' }, StdModule.say, { npcHandler = npcHandler, text = "Weapons are for those people who aren't able to use their heads or better what's INSIDE their heads. No offence <coughs>." }) -- < Knight; FIXME !!!
+keywordHandler:addKeyword({ 'pits of inferno' }, StdModule.say, { npcHandler = npcHandler, text = "Yeye, I believe you almost feel like home among all those brainless creatures!" })
 
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye and please stay away, okay?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "At last! Good things come to those who wait.")

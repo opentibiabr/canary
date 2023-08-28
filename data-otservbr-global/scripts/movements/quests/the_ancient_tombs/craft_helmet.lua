@@ -1,4 +1,4 @@
-local helmetIds = {3222, 3223, 3224, 3225, 3226, 3227, 3228}
+local helmetIds = { 3222, 3223, 3224, 3225, 3226, 3227, 3228 }
 
 local craftHelmet = MoveEvent()
 
@@ -28,7 +28,7 @@ function craftHelmet.onAddItem(moveitem, tileitem, position)
 			return true
 		end
 
-		helmetItems[#helmetItems + 1] = helmetItem
+		helmetItems[#helmetItems+1] = helmetItem
 	end
 
 	for i = 1, #helmetItems do

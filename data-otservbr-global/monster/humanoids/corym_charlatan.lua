@@ -25,7 +25,7 @@ monster.Bestiary = {
 	Occurrence = 0,
 	Locations = "Venore Corym Cave, Tiquanda Corym Cave, Corym Black Market, \z
 		Carlin Corym Cave/Dwarf Mines Diggers Depths Mine, Upper Spike."
-	}
+}
 
 monster.health = 250
 monster.maxHealth = 250
@@ -74,27 +74,27 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Mehehe!", yell = false},
-	{text = "Beware! Me hexing you!", yell = false}
+	{ text = "Mehehe!", yell = false },
+	{ text = "Beware! Me hexing you!", yell = false }
 }
 
 monster.loot = {
-	{name = "gold coin", chance = 50000, maxCount = 35},
-	{id = 3607, chance = 10000}, -- cheese
-	{name = "bola", chance = 7692},
-	{name = "spike shield", chance = 492},
-	{name = "ratana", chance = 909},
-	{name = "life preserver", chance = 854},
-	{name = "cheese cutter", chance = 5882},
-	{name = "cheesy figurine", chance = 518},
-	{name = "earflap", chance = 7142},
-	{name = "soft cheese", chance = 12500},
-	{name = "rat cheese", chance = 14285},
-	{name = "leather harness", chance = 537}
+	{ name = "gold coin", chance = 50000, maxCount = 35 },
+	{ id = 3607, chance = 10000 }, -- cheese
+	{ name = "bola", chance = 7692 },
+	{ name = "spike shield", chance = 492 },
+	{ name = "ratana", chance = 909 },
+	{ name = "life preserver", chance = 854 },
+	{ name = "cheese cutter", chance = 5882 },
+	{ name = "cheesy figurine", chance = 518 },
+	{ name = "earflap", chance = 7142 },
+	{ name = "soft cheese", chance = 12500 },
+	{ name = "rat cheese", chance = 14285 },
+	{ name = "leather harness", chance = 537 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -105}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -105 }
 }
 
 monster.defenses = {
@@ -103,23 +103,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 25},
-	{type = COMBAT_EARTHDAMAGE, percent = 25},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = -5},
-	{type = COMBAT_DEATHDAMAGE , percent = 15}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 25 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 25 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = false},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = false },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

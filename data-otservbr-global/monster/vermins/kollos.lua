@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 2,
 	Locations = "Hive, Hive Outpost."
-	}
+}
 
 monster.health = 3800
 monster.maxHealth = 3800
@@ -70,33 +70,33 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{text = "Kropp!", yell = false},
-	{text = "Flzlzlzlzlzlzlz!", yell = false}
+	{ text = "Kropp!", yell = false },
+	{ text = "Flzlzlzlzlzlzlz!", yell = false }
 }
 
 monster.loot = {
-	{name = "small ruby", chance = 8180, maxCount = 2},
-	{name = "gold coin", chance = 49000, maxCount = 100},
-	{name = "gold coin", chance = 50000, maxCount = 97},
-	{name = "platinum coin", chance = 66000, maxCount = 3},
-	{id = 3098, chance = 3270}, -- ring of healing
-	{name = "steel boots", chance = 130},
-	{name = "great mana potion", chance = 8950, maxCount = 4},
-	{id = 281, chance = 2600}, -- giant shimmering pearl (green)
-	{name = "ultimate health potion", chance = 4000, maxCount = 3},
-	{name = "gold ingot", chance = 5160},
-	{name = "kollos shell", chance = 15390},
-	{name = "compound eye", chance = 15720},
-	{name = "calopteryx cape", chance = 360},
-	{name = "carapace shield", chance = 310},
-	{name = "hive scythe", chance = 700},
-	{name = "buggy backpack", chance = 460},
-	{name = "tarsal arrow", chance = 10210, maxCount = 5}
+	{ name = "small ruby", chance = 8180, maxCount = 2 },
+	{ name = "gold coin", chance = 49000, maxCount = 100 },
+	{ name = "gold coin", chance = 50000, maxCount = 97 },
+	{ name = "platinum coin", chance = 66000, maxCount = 3 },
+	{ id = 3098, chance = 3270 }, -- ring of healing
+	{ name = "steel boots", chance = 130 },
+	{ name = "great mana potion", chance = 8950, maxCount = 4 },
+	{ id = 281, chance = 2600 }, -- giant shimmering pearl (green)
+	{ name = "ultimate health potion", chance = 4000, maxCount = 3 },
+	{ name = "gold ingot", chance = 5160 },
+	{ name = "kollos shell", chance = 15390 },
+	{ name = "compound eye", chance = 15720 },
+	{ name = "calopteryx cape", chance = 360 },
+	{ name = "carapace shield", chance = 310 },
+	{ name = "hive scythe", chance = 700 },
+	{ name = "buggy backpack", chance = 460 },
+	{ name = "tarsal arrow", chance = 10210, maxCount = 5 }
 }
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -315},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -500, range = 7, radius = 3, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_EXPLOSIONHIT, target = true}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -315 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -500, range = 7, radius = 3, shootEffect = CONST_ANI_EXPLOSION, effect = CONST_ME_EXPLOSIONHIT, target = true }
 }
 
 monster.defenses = {
@@ -105,23 +105,23 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 10},
-	{type = COMBAT_EARTHDAMAGE, percent = 100},
-	{type = COMBAT_FIREDAMAGE, percent = 30},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = -7},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = -5}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 10 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 30 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = -7 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = false},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = false },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false }
 }
 
 mType:register(monster)

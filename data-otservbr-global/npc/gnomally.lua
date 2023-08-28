@@ -74,26 +74,26 @@ local topic = {}
 local renown = {}
 
 local config = {
-	['supply'] = {itemid = 15698, token = {type = 'minor', id = 16128, count = 2}},
-	['muck'] = {itemid = 16101, token = {type = 'minor', id = 16128, count = 8}},
-	['mission'] = {itemid = 16242, token = {type = 'minor', id = 16128, count = 10}},
-	['lamp'] = {itemid = 16094, token = {type = 'minor', id = 16128, count = 15}},
-	['backpack'] = {itemid = 16099, token = {type = 'minor', id = 16128, count = 15}},
-	['addition to the soil guardian outfit'] = {itemid = 16253, token = {type = 'minor', id = 16128, count = 70}},
-	['addition to the crystal warlord armor outfit'] = {itemid = 16256, token = {type = 'minor', id = 16128, count = 70}},
-	['gill gugel'] = {itemid = 16104, token = {type = 'major', id = 16129, count = 10}},
-	['gill coat'] = {itemid = 16105, token = {type = 'major', id = 16129, count = 10}},
-	['gill legs'] = {itemid = 16106, token = {type = 'major', id = 16129, count = 10}},
-	['spellbook'] = {itemid = 16107, token = {type = 'major', id = 16129, count = 10}},
-	['prismatic helmet'] = {itemid = 16109, token = {type = 'major', id = 16129, count = 10}},
-	['prismatic armor'] = {itemid = 16110, token = {type = 'major', id = 16129, count = 10}},
-	['prismatic legs'] = {itemid = 16111, token = {type = 'major', id = 16129, count = 10}},
-	['prismatic boots'] = {itemid = 16112, token = {type = 'major', id = 16129, count = 10}},
-	['prismatic shield'] = {itemid = 16116, token = {type = 'major', id = 16129, count = 10}},
-	['basic soil guardian outfit'] = {itemid = 16252, token = {type = 'major', id = 16129, count = 20}},
-	['basic crystal warlord outfit'] = {itemid = 16255, token = {type = 'major', id = 16129, count = 20}},
-	['iron loadstone'] = {itemid = 16153, token = {type = 'major', id = 16129, count = 20}},
-	['glow wine'] = {itemid = 16154, token = {type = 'major', id = 16129, count = 20}}
+	['supply'] = { itemid = 15698, token = { type = 'minor', id = 16128, count = 2 } },
+	['muck'] = { itemid = 16101, token = { type = 'minor', id = 16128, count = 8 } },
+	['mission'] = { itemid = 16242, token = { type = 'minor', id = 16128, count = 10 } },
+	['lamp'] = { itemid = 16094, token = { type = 'minor', id = 16128, count = 15 } },
+	['backpack'] = { itemid = 16099, token = { type = 'minor', id = 16128, count = 15 } },
+	['addition to the soil guardian outfit'] = { itemid = 16253, token = { type = 'minor', id = 16128, count = 70 } },
+	['addition to the crystal warlord armor outfit'] = { itemid = 16256, token = { type = 'minor', id = 16128, count = 70 } },
+	['gill gugel'] = { itemid = 16104, token = { type = 'major', id = 16129, count = 10 } },
+	['gill coat'] = { itemid = 16105, token = { type = 'major', id = 16129, count = 10 } },
+	['gill legs'] = { itemid = 16106, token = { type = 'major', id = 16129, count = 10 } },
+	['spellbook'] = { itemid = 16107, token = { type = 'major', id = 16129, count = 10 } },
+	['prismatic helmet'] = { itemid = 16109, token = { type = 'major', id = 16129, count = 10 } },
+	['prismatic armor'] = { itemid = 16110, token = { type = 'major', id = 16129, count = 10 } },
+	['prismatic legs'] = { itemid = 16111, token = { type = 'major', id = 16129, count = 10 } },
+	['prismatic boots'] = { itemid = 16112, token = { type = 'major', id = 16129, count = 10 } },
+	['prismatic shield'] = { itemid = 16116, token = { type = 'major', id = 16129, count = 10 } },
+	['basic soil guardian outfit'] = { itemid = 16252, token = { type = 'major', id = 16129, count = 20 } },
+	['basic crystal warlord outfit'] = { itemid = 16255, token = { type = 'major', id = 16129, count = 20 } },
+	['iron loadstone'] = { itemid = 16153, token = { type = 'major', id = 16129, count = 20 } },
+	['glow wine'] = { itemid = 16154, token = { type = 'major', id = 16129, count = 20 } }
 }
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -187,7 +187,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say('Let us see if I have what you need.', npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-	elseif MsgContains(message, 'no') and table.contains({1, 3, 4, 5}, npcHandler:getTopic(playerId)) then
+	elseif MsgContains(message, 'no') and table.contains({ 1, 3, 4, 5 }, npcHandler:getTopic(playerId)) then
 		npcHandler:say('As you like.', npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end

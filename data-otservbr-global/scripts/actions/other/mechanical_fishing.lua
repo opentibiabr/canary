@@ -1,8 +1,8 @@
-local waterIds = {622, 4597, 4598, 4599, 4600, 4601, 4602, 4609, 4610, 4611, 4612, 4613, 4614, 629, 630, 631, 632, 633, 634, 7236, 9582, 13988, 13989}
-local lootTrash = {3119, 3123, 3264, 3409, 3578}
-local lootCommon = {3035, 3051, 3052, 3580, 236, 237}
-local lootRare = {3026, 3029, 3032, 7158, 7159}
-local lootVeryRare = {281, 282, 9303}
+local waterIds = { 622, 4597, 4598, 4599, 4600, 4601, 4602, 4609, 4610, 4611, 4612, 4613, 4614, 629, 630, 631, 632, 633, 634, 7236, 9582, 13988, 13989 }
+local lootTrash = { 3119, 3123, 3264, 3409, 3578 }
+local lootCommon = { 3035, 3051, 3052, 3580, 236, 237 }
+local lootRare = { 3026, 3029, 3032, 7158, 7159 }
+local lootVeryRare = { 281, 282, 9303 }
 local useWorms = true
 
 local mechanicalFishing = Action()
@@ -82,4 +82,3 @@ end
 mechanicalFishing:id(9306)
 mechanicalFishing:allowFarUse(true)
 mechanicalFishing:register()
-

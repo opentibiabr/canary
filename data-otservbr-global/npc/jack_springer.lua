@@ -26,8 +26,8 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = "Always be on guard."},
-	{text = "Hmm."}
+	{ text = "Always be on guard." },
+	{ text = "Hmm." }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -76,7 +76,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(GraveDanger.QuestLine) < 1 then
 			npcHandler:say({
 				"While you travel and fight the threat where it arises, we will put all our resources into researching the ultimate plans of the legion. Perhaps I can tell you more when you {report} back. ...",
-				"Don't forget that you'll need very potent holy water for your task. If you need some, just ask me for a {trade}."}, npc, creature)
+				"Don't forget that you'll need very potent holy water for your task. If you need some, just ask me for a {trade}." }, npc, creature)
 			player:setStorageValue(GraveDanger.QuestLine, 1)
 			player:setStorageValue(GraveDanger.Graves.Edron, 1)
 			player:setStorageValue(GraveDanger.Graves.DarkCathedral, 1)

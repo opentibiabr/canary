@@ -26,7 +26,7 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{text = 'Come into my tavern and share some stories!'}
+	{ text = 'Come into my tavern and share some stories!' }
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -58,7 +58,7 @@ end
 
 -- Basic
 
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "I am the owner of this saloon. I call it Archery's Hut. I am also {selling} ammunitions."})
+keywordHandler:addKeyword({ 'job' }, StdModule.say, { npcHandler = npcHandler, text = "I am the owner of this saloon. I call it Archery's Hut. I am also {selling} ammunitions." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to Archery's Rook shop.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Please come back from time to time.")

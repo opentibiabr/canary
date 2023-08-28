@@ -7,7 +7,7 @@ local vocationTrials = {
 	-- Sorcerer trial
 	[25005] = {
 		tutorialId = 5,
-		effectPosition = {x = 32050, y = 31891, z = 5},
+		effectPosition = { x = 32050, y = 31891, z = 5 },
 		storage = Storage.Dawnport.Sorcerer,
 		message = "As a sorcerer, you can use the following spells: Magic Patch, Buzz, Scorch.",
 		vocation = {
@@ -25,19 +25,19 @@ local vocationTrials = {
 			}
 		},
 		items = {
-			{id = 21348, amount = 1, slot = CONST_SLOT_LEFT}, -- The scorcher
-			{id = 21400, amount = 1, slot = CONST_SLOT_RIGHT}, -- Spellbook of the novice
-			{id = 7876, amount = 2, storage = Storage.Dawnport.SorcererHealthPotion, limit = 1}, -- Health potion
-			{id = 268, amount = 10, storage = Storage.Dawnport.SorcererManaPotion, limit = 1}, -- Mana potion
-			{id = 21352, amount = 2, storage = Storage.Dawnport.SorcererLightestMissile, limit = 1}, -- Lightest missile runes
-			{id = 21351, amount = 2, storage = Storage.Dawnport.SorcererLightStoneShower, limit = 1}, -- Light stone shower runes
-			{id = 3577, amount = 1, storage = Storage.Dawnport.SorcererMeat, limit = 1} -- Meat
+			{ id = 21348, amount = 1, slot = CONST_SLOT_LEFT }, -- The scorcher
+			{ id = 21400, amount = 1, slot = CONST_SLOT_RIGHT }, -- Spellbook of the novice
+			{ id = 7876, amount = 2, storage = Storage.Dawnport.SorcererHealthPotion, limit = 1 }, -- Health potion
+			{ id = 268, amount = 10, storage = Storage.Dawnport.SorcererManaPotion, limit = 1 }, -- Mana potion
+			{ id = 21352, amount = 2, storage = Storage.Dawnport.SorcererLightestMissile, limit = 1 }, -- Lightest missile runes
+			{ id = 21351, amount = 2, storage = Storage.Dawnport.SorcererLightStoneShower, limit = 1 }, -- Light stone shower runes
+			{ id = 3577, amount = 1, storage = Storage.Dawnport.SorcererMeat, limit = 1 } -- Meat
 		}
 	},
 	-- Druid trial
 	[25006] = {
 		tutorialId = 6,
-		effectPosition = {x = 32064, y = 31905, z = 5},
+		effectPosition = { x = 32064, y = 31905, z = 5 },
 		storage = Storage.Dawnport.Druid,
 		message = "As a druid, you can use these spells: Mud Attack, Chill Out, Magic Patch.",
 		vocation = {
@@ -55,19 +55,19 @@ local vocationTrials = {
 			}
 		},
 		items = {
-			{id = 21350, amount = 1, slot = CONST_SLOT_LEFT}, -- The chiller
-			{id = 21400, amount = 1, slot = CONST_SLOT_RIGHT}, -- Spellbook of the novice
-			{id = 7876, amount = 2, storage = Storage.Dawnport.DruidHealthPotion, limit = 1}, -- Health potion
-			{id = 268, amount = 10, storage = Storage.Dawnport.DruidManaPotion, limit = 1}, -- Mana potion
-			{id = 21352, amount = 2, storage = Storage.Dawnport.DruidLightestMissile, limit = 1}, -- Lightest missile runes
-			{id = 21351, amount = 2, storage = Storage.Dawnport.DruidLightStoneShower, limit = 1}, -- Light stone shower runes
-			{id = 3577, amount = 1, storage = Storage.Dawnport.DruidMeat, limit = 1} -- Meat
+			{ id = 21350, amount = 1, slot = CONST_SLOT_LEFT }, -- The chiller
+			{ id = 21400, amount = 1, slot = CONST_SLOT_RIGHT }, -- Spellbook of the novice
+			{ id = 7876, amount = 2, storage = Storage.Dawnport.DruidHealthPotion, limit = 1 }, -- Health potion
+			{ id = 268, amount = 10, storage = Storage.Dawnport.DruidManaPotion, limit = 1 }, -- Mana potion
+			{ id = 21352, amount = 2, storage = Storage.Dawnport.DruidLightestMissile, limit = 1 }, -- Lightest missile runes
+			{ id = 21351, amount = 2, storage = Storage.Dawnport.DruidLightStoneShower, limit = 1 }, -- Light stone shower runes
+			{ id = 3577, amount = 1, storage = Storage.Dawnport.DruidMeat, limit = 1 } -- Meat
 		}
 	},
 	-- Paladin trial
 	[25007] = {
 		tutorialId = 4,
-		effectPosition = {x = 32078, y = 31891, z = 5},
+		effectPosition = { x = 32078, y = 31891, z = 5 },
 		storage = Storage.Dawnport.Paladin,
 		message = "As a paladin, you can use the following spells: Magic Patch, Arrow Call.",
 		vocation = {
@@ -85,20 +85,20 @@ local vocationTrials = {
 			}
 		},
 		items = {
-			{id = 3350, amount = 1, slot = CONST_SLOT_LEFT}, -- Bow
-			{id = 35562, amount = 1, slot = CONST_SLOT_RIGHT}, -- Quiver
-			{id = 21470, amount = 100}, -- Simple arrow
-			{id = 7876, amount = 7, storage = Storage.Dawnport.PaladinHealthPotion, limit = 1}, -- Health potion
-			{id = 268, amount = 5, storage = Storage.Dawnport.PaladinManaPotion, limit = 1}, -- Mana potion
-			{id = 21352, amount = 1, storage = Storage.Dawnport.PaladinLightestMissile, limit = 1}, -- Lightest missile rune
-			{id = 21351, amount = 1, storage = Storage.Dawnport.PaladinLightStoneShower, limit = 1}, -- Light stone shower rune
-			{id = 3577, amount = 1, storage = Storage.Dawnport.PaladinMeat, limit = 1} -- Meat
+			{ id = 3350, amount = 1, slot = CONST_SLOT_LEFT }, -- Bow
+			{ id = 35562, amount = 1, slot = CONST_SLOT_RIGHT }, -- Quiver
+			{ id = 21470, amount = 100 }, -- Simple arrow
+			{ id = 7876, amount = 7, storage = Storage.Dawnport.PaladinHealthPotion, limit = 1 }, -- Health potion
+			{ id = 268, amount = 5, storage = Storage.Dawnport.PaladinManaPotion, limit = 1 }, -- Mana potion
+			{ id = 21352, amount = 1, storage = Storage.Dawnport.PaladinLightestMissile, limit = 1 }, -- Lightest missile rune
+			{ id = 21351, amount = 1, storage = Storage.Dawnport.PaladinLightStoneShower, limit = 1 }, -- Light stone shower rune
+			{ id = 3577, amount = 1, storage = Storage.Dawnport.PaladinMeat, limit = 1 } -- Meat
 		}
 	},
 	-- Knight trial
 	[25008] = {
 		tutorialId = 3,
-		effectPosition = {x = 32064, y = 31876, z = 5},
+		effectPosition = { x = 32064, y = 31876, z = 5 },
 		storage = Storage.Dawnport.Knight,
 		message = "As a knight, you can use the following spells: Bruise Bane.",
 		vocation = {
@@ -116,11 +116,11 @@ local vocationTrials = {
 			}
 		},
 		items = {
-			{id = 3267, amount = 1, slot = CONST_SLOT_LEFT}, -- Dagger
-			{id = 3412, amount = 1, slot = CONST_SLOT_RIGHT}, -- Wooden shield
-			{id = 7876, amount = 10, storage = Storage.Dawnport.KnightHealthPotion, limit = 1}, -- Health potion
-			{id = 268, amount = 2, storage = Storage.Dawnport.KnightManaPotion, limit = 1}, -- Mana potion
-			{id = 3577, amount = 1, storage = Storage.Dawnport.KnightMeat, limit = 1} -- Meat
+			{ id = 3267, amount = 1, slot = CONST_SLOT_LEFT }, -- Dagger
+			{ id = 3412, amount = 1, slot = CONST_SLOT_RIGHT }, -- Wooden shield
+			{ id = 7876, amount = 10, storage = Storage.Dawnport.KnightHealthPotion, limit = 1 }, -- Health potion
+			{ id = 268, amount = 2, storage = Storage.Dawnport.KnightManaPotion, limit = 1 }, -- Mana potion
+			{ id = 3577, amount = 1, storage = Storage.Dawnport.KnightMeat, limit = 1 } -- Meat
 		}
 	}
 }
@@ -153,18 +153,18 @@ local function tileStep(player, trial)
 		end
 		player:sendTutorial(trial.tutorialId)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE,
-		"As this is the first time you try out a vocation, the Guild has kitted you out. " .. trial.message)
+			"As this is the first time you try out a vocation, the Guild has kitted you out. " .. trial.message)
 		addFirstItems(player)
-	-- Second step
+		-- Second step
 	elseif player:getStorageValue(trial.storage) == -1 and vocationId ~= VOCATION.ID.NONE then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("As this is your first time as a \z
-		".. trial.vocation.name ..', you received a few extra items. ' .. trial.message))
+		" .. trial.vocation.name .. ', you received a few extra items. ' .. trial.message))
 		player:setStorageValue(trial.storage, 1)
 		player:sendTutorial(trial.tutorialId)
-	-- Other steps
+		-- Other steps
 	elseif player:getStorageValue(trial.storage) == 1 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have received the weapons of a \z
-		".. trial.vocation.name ..'. ' .. trial.message))
+		" .. trial.vocation.name .. '. ' .. trial.message))
 	end
 	return true
 end
@@ -213,7 +213,7 @@ local function addItems(player, items)
 		if giveItem then
 			if extra then
 				local itemType = ItemType(items[i].id)
-				if itemType:getWeaponType() == WEAPON_AMMO and table.contains({AMMO_ARROW, AMMO_BOLT}, itemType:getAmmoType()) then
+				if itemType:getWeaponType() == WEAPON_AMMO and table.contains({ AMMO_ARROW, AMMO_BOLT }, itemType:getAmmoType()) then
 					local equipment = player:getSlotItem(CONST_SLOT_RIGHT)
 					local equipmentType = ItemType(equipment.itemid)
 					if equipment and equipmentType:isQuiver() then

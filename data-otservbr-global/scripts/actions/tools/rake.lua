@@ -5,7 +5,7 @@ function rake.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if target.itemid == 11366 then
 		player:addItem(11329, 1)
 		player:say("You dig out a handful of ordinary clay.", TALKTYPE_MONSTER_SAY)
-	-- The Shattered Isles Parrot ring
+		-- The Shattered Isles Parrot ring
 	elseif target.itemid == 6094 then
 		if player:getStorageValue(Storage.TheShatteredIsles.TheGovernorDaughter) == 1 then
 			toPosition:sendMagicEffect(CONST_ME_POFF)
@@ -19,4 +19,3 @@ end
 
 rake:id(3452)
 rake:register()
-

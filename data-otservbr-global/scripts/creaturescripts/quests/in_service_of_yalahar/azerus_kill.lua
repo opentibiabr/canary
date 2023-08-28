@@ -1,4 +1,3 @@
-
 local function removeTeleport(position)
 	local teleportItem = Tile(position):getItemById(1949)
 	if teleportItem then
@@ -22,7 +21,7 @@ function azerus.onKill(creature, target)
 		item:setDestination(teleportToPosition)
 	end
 	targetMonster:say("Azerus ran into teleporter! It will disappear in 2 minutes. Enter it!",
-	TALKTYPE_MONSTER_SAY, 0, 0, position)
+		TALKTYPE_MONSTER_SAY, 0, 0, position)
 	--remove portal after 2 min
 	addEvent(removeTeleport, 2 * 60 * 1000, position)
 

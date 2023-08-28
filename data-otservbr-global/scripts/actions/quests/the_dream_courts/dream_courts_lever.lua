@@ -10,12 +10,13 @@ local config = {
 	},
 	requiredLevel = 250,
 	timeToFightAgain = 10, -- In hour
+	timeToDefeat = 30, -- In minutes
 	playerPositions = {
-		{pos = Position(32208, 32021, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT},
-		{pos = Position(32208, 32022, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT},
-		{pos = Position(32208, 32023, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT},
-		{pos = Position(32208, 32024, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT},
-		{pos = Position(32208, 32025, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT}
+		{ pos = Position(32208, 32021, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32208, 32022, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32208, 32023, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32208, 32024, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT },
+		{ pos = Position(32208, 32025, 13), teleport = Position(32207, 32041, 14), effect = CONST_ME_TELEPORT }
 	},
 	bossPosition = Position(32207, 32051, 14),
 	specPos = {
@@ -55,7 +56,7 @@ function dreamCourtsLever.onUse(player, item, fromPosition, target, toPosition, 
 			for _, v in pairs(info) do
 				local newPlayer = v.creature
 				if newPlayer then
-					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. config.timeToFightAgain .. " hours to face ".. config.bossName[os.date("%A")] .. " again!")
+					newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. config.timeToFightAgain .. " hours to face " .. config.bossName[os.date("%A")] .. " again!")
 					if newPlayer:getStorageValue(config.storage) > os.time() then
 						newPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
 					end
@@ -96,5 +97,5 @@ function dreamCourtsLever.onUse(player, item, fromPosition, target, toPosition, 
 	end
 end
 
-dreamCourtsLever:position({x = 32208, y = 32020, z = 13})
+dreamCourtsLever:position({ x = 32208, y = 32020, z = 13 })
 dreamCourtsLever:register()

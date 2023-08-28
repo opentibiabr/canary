@@ -6,9 +6,9 @@ function escape.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	local sacrificeItem = Tile({x = 32816, y = 31601, z = 9}):getItemById(3206)
+	local sacrificeItem = Tile({ x = 32816, y = 31601, z = 9 }):getItemById(3206)
 	if not sacrificeItem then
-		player:teleportTo({x = 32818, y = 31599, z = 9})
+		player:teleportTo({ x = 32818, y = 31599, z = 9 })
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		return true
 	end
@@ -16,7 +16,7 @@ function escape.onStepIn(creature, item, position, fromPosition)
 	if player:getStorageValue(Storage.Dragonfetish) == 1 then
 		player:setStorageValue(Storage.Dragonfetish, 0)
 	end
-	player:teleportTo({x = 32701, y = 31639, z = 6})
+	player:teleportTo({ x = 32701, y = 31639, z = 6 })
 	player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	sacrificeItem:remove()
 	return true

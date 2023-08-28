@@ -61,21 +61,21 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if(MsgContains(message, 'scroll') or MsgContains(message, 'mission')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission60) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission61) < 1 then
+	if (MsgContains(message, 'scroll') or MsgContains(message, 'mission')) and player:getStorageValue(Storage.GravediggerOfDrefia.Mission60) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission61) < 1 then
 		npcHandler:say("Hello, brother. You come with a question to me, I believe?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, 'yes') and npcHandler:getTopic(playerId) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission60) == 1 then
 		npcHandler:say("And what is it you want? Do you bring news from the undead, or do you seek a dark {artefact}?", npc, creature)
 		player:setStorageValue(Storage.GravediggerOfDrefia.Mission45, 1)
 		npcHandler:setTopic(playerId, 2)
-	elseif(MsgContains(message, 'artefact') or MsgContains(message, 'yes')) and npcHandler:getTopic(playerId) == 2 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission60) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission61) < 1 then
+	elseif (MsgContains(message, 'artefact') or MsgContains(message, 'yes')) and npcHandler:getTopic(playerId) == 2 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission60) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission61) < 1 then
 		npcHandler:say({
 			"The scroll piece there? The symbols look promising, but it is incomplete. ...",
 			"It is of little use to us. But it seems to be of interest to you ...",
 			"In exchange for the scroll piece, you must assist me with something. {Agreed}?"
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 3)
-	elseif(MsgContains(message, 'agreed') or MsgContains(message, 'yes')) and npcHandler:getTopic(playerId) == 3 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission60) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission61) < 1 then
+	elseif (MsgContains(message, 'agreed') or MsgContains(message, 'yes')) and npcHandler:getTopic(playerId) == 3 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission60) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission61) < 1 then
 		npcHandler:say({
 			"I would have to sing to the Dark Shrines, but I cannot. ...",
 			"I... cannot bear Urgith's breed. Everywhere, I hear them - scrabbling, squeaking ...",
@@ -88,7 +88,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, 'mission') and player:getStorageValue(Storage.GravediggerOfDrefia.Mission66) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission67) < 1 then
 		npcHandler:say("Hello, brother. You have finished the dance?", npc, creature)
 		npcHandler:setTopic(playerId, 4)
-	elseif(MsgContains(message, 'yes')) and npcHandler:getTopic(playerId) == 4 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission66) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission67) < 1 then
+	elseif (MsgContains(message, 'yes')) and npcHandler:getTopic(playerId) == 4 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission66) == 1 and player:getStorageValue(Storage.GravediggerOfDrefia.Mission67) < 1 then
 		npcHandler:say({
 			"You have indeed. The shrines have sung back to you. Well done, brother. Not many men take such an interest in our art. ...",
 			"I will take the flute back. Our bargain stands. You may take the scroll."
@@ -96,7 +96,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		player:removeItem(18932, 1)
 		player:setStorageValue(Storage.GravediggerOfDrefia.Mission67, 1)
 		npcHandler:setTopic(playerId, 0)
-		else npcHandler:say({"Time is money, hurry."}, npc, creature)
+	else
+		npcHandler:say({ "Time is money, hurry." }, npc, creature)
 	end
 	return true
 end

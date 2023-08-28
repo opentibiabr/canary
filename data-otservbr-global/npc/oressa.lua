@@ -26,8 +26,10 @@ npcConfig.flags = {
 npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
-	{ text = "You can't take it all with you - sell your Dawnport things before \z
-		you receive the gear of your definite vocation!" },
+	{
+		text = "You can't take it all with you - sell your Dawnport things before \z
+		you receive the gear of your definite vocation!"
+	},
 	{ text = "Leave all Dawnport things behind you and choose your destiny!" },
 	{ text = "Come to me if you need healing!" },
 	{ text = "Choose your vocation and explore the mainland!" },
@@ -408,8 +410,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say(
 				{
 					"As you wish. If you wish to learn something about the " ..
-						vocationMessage[npcHandler:getTopic(playerId)] ..
-						" vocation, tell me.",
+					vocationMessage[npcHandler:getTopic(playerId)] ..
+					" vocation, tell me.",
 				},
 				npc, creature, 10)
 			npcHandler:setTopic(playerId, 0)

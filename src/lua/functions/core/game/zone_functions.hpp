@@ -12,6 +12,9 @@ public:
 
 		registerMethod(L, "Zone", "getName", ZoneFunctions::luaZoneGetName);
 		registerMethod(L, "Zone", "addArea", ZoneFunctions::luaZoneAddArea);
+		registerMethod(L, "Zone", "subtractArea", ZoneFunctions::luaZoneSubtractArea);
+		registerMethod(L, "Zone", "getRemoveDestination", ZoneFunctions::luaZoneGetRemoveDestination);
+		registerMethod(L, "Zone", "setRemoveDestination", ZoneFunctions::luaZoneSetRemoveDestination);
 		registerMethod(L, "Zone", "getPositions", ZoneFunctions::luaZoneGetPositions);
 		registerMethod(L, "Zone", "getTiles", ZoneFunctions::luaZoneGetTiles);
 		registerMethod(L, "Zone", "getCreatures", ZoneFunctions::luaZoneGetCreatures);
@@ -20,6 +23,7 @@ public:
 		registerMethod(L, "Zone", "getNpcs", ZoneFunctions::luaZoneGetNpcs);
 		registerMethod(L, "Zone", "getItems", ZoneFunctions::luaZoneGetItems);
 
+		registerMethod(L, "Zone", "removePlayers", ZoneFunctions::luaZoneRemovePlayers);
 		registerMethod(L, "Zone", "removeMonsters", ZoneFunctions::luaZoneRemoveMonsters);
 		registerMethod(L, "Zone", "removeNpcs", ZoneFunctions::luaZoneRemoveNpcs);
 
@@ -35,6 +39,10 @@ private:
 
 	static int luaZoneGetName(lua_State* L);
 	static int luaZoneAddArea(lua_State* L);
+	static int luaZoneSubtractArea(lua_State* L);
+	static int luaZoneGetRemoveDestination(lua_State* L);
+	static int luaZoneSetRemoveDestination(lua_State* L);
+	static int luaZoneRefresh(lua_State* L);
 	static int luaZoneGetPositions(lua_State* L);
 	static int luaZoneGetTiles(lua_State* L);
 	static int luaZoneGetCreatures(lua_State* L);
@@ -43,6 +51,7 @@ private:
 	static int luaZoneGetNpcs(lua_State* L);
 	static int luaZoneGetItems(lua_State* L);
 
+	static int luaZoneRemovePlayers(lua_State* L);
 	static int luaZoneRemoveMonsters(lua_State* L);
 	static int luaZoneRemoveNpcs(lua_State* L);
 

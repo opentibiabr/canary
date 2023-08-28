@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -71,8 +71,8 @@ monster.attacks = {
 monster.defenses = {
 	defense = 35,
 	armor = 35,
-	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_HEALING, minDamage = 200, maxDamage = 500, radius = 7, effect = CONST_ME_MAGIC_GREEN, target = false },
-	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_HEALING, minDamage = 200, maxDamage = 700, radius = 5, effect = CONST_ME_MAGIC_GREEN, target = false }
+	--	mitigation = ???,
+	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_HEALING, minDamage = 1000, maxDamage = 1500, radius = 5, effect = CONST_ME_MAGIC_GREEN, target = false },
 }
 
 monster.elements = {
@@ -85,11 +85,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

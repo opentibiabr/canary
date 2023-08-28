@@ -1,7 +1,7 @@
-local mType = Game.createMonsterType("Yaga The Crone")
+local mType = Game.createMonsterType("Yaga the Crone")
 local monster = {}
 
-monster.description = "Yaga The Crone"
+monster.description = "Yaga the Crone"
 monster.experience = 375
 monster.outfit = {
 	lookType = 54,
@@ -11,6 +11,11 @@ monster.outfit = {
 	lookFeet = 0,
 	lookAddons = 0,
 	lookMount = 0
+}
+
+monster.bosstiary = {
+	bossRaceId = 427,
+	bossRace = RARITY_NEMESIS,
 }
 
 monster.health = 620
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8
-}
-
-monster.bosstiary = {
-	bossRaceId = 427,
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -52,14 +52,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
+	canWalkOnEnergy = true,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -67,7 +67,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Where did I park my hut?", yell = false },
 	{ text = "You will taste so sweet!", yell = false },
-	{ text = "Hexipooh, bewitched are you!", yell = false }
+	{ text = "Hexipooh, bewitched are you!", yell = false },
 }
 
 monster.loot = {
@@ -95,6 +95,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 20,
 	armor = 15,
+	--	mitigation = ???,
 	{ name = "invisible", interval = 2000, chance = 18, effect = CONST_ME_MAGIC_RED },
 	{ name = "outfit", interval = 4000, chance = 9, effect = CONST_ME_MAGIC_RED, target = false, duration = 4000, outfitMonster = "green frog" }
 }
@@ -109,11 +110,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

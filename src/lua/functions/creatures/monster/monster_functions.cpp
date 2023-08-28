@@ -317,6 +317,17 @@ int MonsterFunctions::luaMonsterChangeTargetDistance(lua_State* L) {
 	return 1;
 }
 
+int MonsterFunctions::luaMonsterIsChallenged(lua_State* L) {
+	// monster:isChallenged()
+	Monster* monster = getUserdata<Monster>(L, 1);
+	if (monster) {
+		pushBoolean(L, monster->isChallenged());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int MonsterFunctions::luaMonsterSelectTarget(lua_State* L) {
 	// monster:selectTarget(creature)
 	Monster* monster = getUserdata<Monster>(L, 1);

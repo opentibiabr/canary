@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -68,10 +68,10 @@ monster.summon = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "If you think I am to old to fight then you're wrong!", yell = false },
-	{ text = "I've forgotten more things then you have ever learned!", yell = false },
+	{ text = "If you think I am too old to fight then you're wrong.", yell = false },
+	{ text = "I've forgotten more things than you have ever learned!", yell = false },
 	{ text = "Let me teach you a few things youngster!", yell = false },
-	{ text = "I'll teach you respect for the old!", yell = false }
+	{ text = "I'll teach you respect for the old!", yell = false },
 }
 
 monster.loot = {
@@ -86,6 +86,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 25,
 	armor = 24,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 35, type = COMBAT_HEALING, minDamage = 95, maxDamage = 155, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "invisible", interval = 3000, chance = 50, effect = CONST_ME_MAGIC_BLUE }
 }
@@ -100,11 +101,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

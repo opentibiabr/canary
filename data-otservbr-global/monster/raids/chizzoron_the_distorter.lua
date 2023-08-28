@@ -1,7 +1,7 @@
-local mType = Game.createMonsterType("Chizzoron The Distorter")
+local mType = Game.createMonsterType("Chizzoron the Distorter")
 local monster = {}
 
-monster.description = "Chizzoron The Distorter"
+monster.description = "Chizzoron the Distorter"
 monster.experience = 4000
 monster.outfit = {
 	lookType = 340,
@@ -11,6 +11,11 @@ monster.outfit = {
 	lookFeet = 0,
 	lookAddons = 0,
 	lookMount = 0
+}
+
+monster.bosstiary = {
+	bossRaceId = 629,
+	bossRace = RARITY_NEMESIS,
 }
 
 monster.health = 16000
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 2000,
 	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 629,
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -54,12 +54,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -74,7 +74,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Humanzzz! Leave Zzaion at onzzzze!", yell = false },
 	{ text = "I pray to my mazzterzz, the mighty dragonzzz!", yell = false },
-	{ text = "You are not worzzy to touch zzizz zzacred ground!", yell = false }
+	{ text = "You are not worzzy to touch zzizz zzacred ground!", yell = false },
 }
 
 monster.loot = {
@@ -99,7 +99,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 85,
-	armor = 70
+	armor = 70,
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -112,11 +113,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 30 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 30 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

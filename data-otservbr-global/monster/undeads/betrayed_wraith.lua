@@ -17,13 +17,13 @@ monster.raceId = 284
 monster.Bestiary = {
 	class = "Undead",
 	race = BESTY_RACE_UNDEAD,
-	toKill = 2500,
-	FirstUnlock = 100,
-	SecondUnlock = 1000,
-	CharmsPoints = 50,
-	Stars = 4,
+	toKill = 1000,
+	FirstUnlock = 50,
+	SecondUnlock = 500,
+	CharmsPoints = 25,
+	Stars = 3,
 	Occurrence = 0,
-	Locations = "Pits of Inferno, Helheim, The Inquisition Quest, Roshamuul Prison."
+	Locations = "Pits of Inferno, Helheim, The Inquisition Quest, Roshamuul Prison, Oramond Fury Dungeon"
 }
 
 monster.health = 4200
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -72,7 +72,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Rrrah!", yell = false },
 	{ text = "Gnarr!", yell = false },
-	{ text = "Tcharrr!", yell = false }
+	{ text = "Tcharrr!", yell = false },
 }
 
 monster.loot = {
@@ -103,7 +103,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 55,
-	armor = 55,
+	armor = 42,
+	mitigation = 1.46,
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HEALING, minDamage = 350, maxDamage = 600, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "invisible", interval = 2000, chance = 10 },
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 460, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
@@ -119,7 +120,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 50 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

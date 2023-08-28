@@ -47,14 +47,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
+	canWalkOnEnergy = true,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -70,7 +70,7 @@ monster.voices = {
 	{ text = "YOU'LL NEVER GET MY TREASURE!", yell = true },
 	{ text = "MINIONS, MEET YOUR NEW BROTHER!", yell = true },
 	{ text = "YOU WILL REGRET THAT YOU ARE BORN!", yell = true },
-	{ text = "YOU MADE A HUGE WASTE!", yell = true }
+	{ text = "YOU MADE A HUGE WASTE!", yell = true },
 }
 
 monster.loot = {
@@ -89,7 +89,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 45,
-	armor = 40
+	armor = 40,
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -101,8 +102,8 @@ monster.elements = {
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

@@ -1,7 +1,7 @@
-local mType = Game.createMonsterType("Robby The Reckless")
+local mType = Game.createMonsterType("Robby the Reckless")
 local monster = {}
 
-monster.description = "Robby The Reckless"
+monster.description = "Robby the Reckless"
 monster.experience = 110
 monster.outfit = {
 	lookType = 129,
@@ -11,6 +11,11 @@ monster.outfit = {
 	lookFeet = 114,
 	lookAddons = 1,
 	lookMount = 0
+}
+
+monster.bosstiary = {
+	bossRaceId = 764,
+	bossRace = RARITY_NEMESIS,
 }
 
 monster.health = 155
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 4000,
 	chance = 5
-}
-
-monster.bosstiary = {
-	bossRaceId = 764,
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -52,19 +52,23 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Banks are meant to be robbed. It's my job!", yell = false },
+	{ text = "That bank chick was trembling in fear. I love it!", yell = false },
+	{ text = "You won't get this gold!", yell = false },
+	{ text = "This is MY gold now!", yell = false },
 }
 
 monster.loot = {
@@ -78,7 +82,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 25,
-	armor = 25
+	armor = 25,
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -91,13 +96,13 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = false },
+	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }
 }
 

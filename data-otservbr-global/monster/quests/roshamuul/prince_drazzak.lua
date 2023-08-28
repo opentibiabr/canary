@@ -47,31 +47,28 @@ monster.flags = {
 	runHealth = 2000,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "EVEN WITH ALL THAT TIME IN THE PRISON THAT WEAKENED ME, YOU ARE NO MATCH TO ME!", yell = true },
 	{ text = "DIE!", yell = true },
-	{ text = "SORCERERS MUST DIE!", yell = true },
-	{ text = "DRUIDS MUST DIE!", yell = true },
-	{ text = "PALADINS MUST DIE!", yell = true },
-	{ text = "KNIGHTS MUST DIE!", yell = true },
+	{ text = "All VOCATIONS must DIE!", yell = false },
 	{ text = "GET OVER HERE!", yell = true },
 	{ text = "CRUSH THEM ALL!", yell = true },
 	{ text = "VARIPHOR WILL RULE!", yell = true },
-	{ text = "THEY WILL ALL PAY!", yell = true },
+	{ text = "They used you fools to escape and they left ME behind!!??", yell = false },
 	{ text = "NOT EVEN AEONS OF IMPRISONMENT WILL STOP ME!", yell = true },
-	{ text = "They used you fools to escape and they left ME behind!!??", yell = false }
+	{ text = "EVEN WITH ALL THAT TIME IN THE PRISON THAT WEAKENED ME, YOU ARE NO MATCH TO ME!", yell = true },
+	{ text = "THEY WILL ALL PAY!", yell = true },
 }
 
 monster.loot = {
@@ -105,20 +102,21 @@ monster.attacks = {
 monster.defenses = {
 	defense = 65,
 	armor = 55,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 1500, maxDamage = 3000, effect = CONST_ME_MAGIC_RED, target = false }
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 30 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 30 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 30 },
-	{ type = COMBAT_FIREDAMAGE, percent = 30 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 35 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 35 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 35 },
+	{ type = COMBAT_FIREDAMAGE, percent = 35 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 30 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 30 }
+	{ type = COMBAT_ICEDAMAGE, percent = 35 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 35 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 35 },
 }
 
 monster.immunities = {

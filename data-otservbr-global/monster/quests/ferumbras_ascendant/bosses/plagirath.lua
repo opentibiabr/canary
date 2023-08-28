@@ -1,8 +1,8 @@
 local mType = Game.createMonsterType("Plagirath")
 local monster = {}
 
-monster.description = "plagirath"
-monster.experience = 58000
+monster.description = "Plagirath"
+monster.experience = 50000
 monster.outfit = {
 	lookType = 862,
 	lookHead = 84,
@@ -11,6 +11,12 @@ monster.outfit = {
 	lookFeet = 79,
 	lookAddons = 1,
 	lookMount = 0
+}
+
+monster.bosstiary = {
+	bossRaceId = 1199,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.FerumbrasAscension.PlagirathTimer,
 }
 
 monster.health = 290000
@@ -23,12 +29,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8
-}
-
-monster.bosstiary = {
-	bossRaceId = 1199,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.FerumbrasAscension.PlagirathTimer
 }
 
 monster.strategiesTarget = {
@@ -55,21 +55,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "BOOOOOOOMMM!!!!!", yell = false },
+	{ text = "I CAN SENSE YOUR BODY ROTTING!", yell = true },
 	{ text = "WITHER AND DIE!", yell = true },
+	{ text = "COME AND RECEIVE MY GIFTS!!", yell = true },
 	{ text = "DEATH AND DECAY!", yell = true },
-	{ text = "I CAN SENSE YOUR BODIES ROOTING!", yell = true }
 }
 
 monster.loot = {
@@ -109,8 +109,9 @@ monster.attacks = {
 }
 
 monster.defenses = {
-	defense = 55,
-	armor = 55,
+	defense = 125,
+	armor = 125,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 3000, maxDamage = 4000, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 30, speedChange = 440, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
 	{ name = "plagirath summon", interval = 2000, chance = 15, target = false },
@@ -118,16 +119,16 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 10 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 100 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -10 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
-	{ type = COMBAT_FIREDAMAGE, percent = -20 },
+	{ type = COMBAT_FIREDAMAGE, percent = -25 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

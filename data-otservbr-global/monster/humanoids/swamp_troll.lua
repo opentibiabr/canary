@@ -60,20 +60,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Grrrr", yell = false },
+	{ text = "Me strong! Me ate spinach!", yell = false },
 	{ text = "Groar!", yell = false },
-	{ text = "Me strong! Me ate spinach!", yell = false }
+	{ text = "Grrrr", yell = false },
 }
 
 monster.loot = {
@@ -96,7 +96,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 6,
+	mitigation = 0.25,
 }
 
 monster.elements = {
@@ -109,7 +110,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

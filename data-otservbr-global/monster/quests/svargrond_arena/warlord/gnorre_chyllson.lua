@@ -48,13 +48,13 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnFire = true,
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -62,7 +62,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "I am like the merciless northwind.", yell = false },
 	{ text = "Snow will be your death shroud.", yell = false },
-	{ text = "Feel the wrath of father chyll!", yell = false }
+	{ text = "Feel the wrath of father chyll!", yell = false },
 }
 
 monster.loot = {
@@ -77,6 +77,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 52,
 	armor = 51
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -89,7 +90,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 1 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

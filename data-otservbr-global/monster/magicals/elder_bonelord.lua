@@ -64,12 +64,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -83,10 +83,10 @@ monster.summon = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Let me take a look at you!", yell = false },
 	{ text = "Inferior creatures, bow before my power!", yell = false },
+	{ text = "Let me take a look at you!", yell = false },
 	{ text = "659978 54764!", yell = false },
-	{ text = "653768764!", yell = false }
+	{ text = "653768764!", yell = false },
 }
 
 monster.loot = {
@@ -100,7 +100,8 @@ monster.loot = {
 	{ name = "strong mana potion", chance = 830 },
 	{ name = "giant eye", chance = 460 },
 	{ name = "bonelord shield", chance = 90 },
-	{ name = "bonelord helmet", chance = 90 }
+	{ name = "bonelord helmet", chance = 90 },
+	{ name = "bonelord eye", chance = 1920 },
 }
 
 monster.attacks = {
@@ -116,7 +117,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 13,
-	armor = 13
+	armor = 13,
+	mitigation = 0.67,
 }
 
 monster.elements = {
@@ -124,12 +126,12 @@ monster.elements = {
 	{ type = COMBAT_ENERGYDAMAGE, percent = 20 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
 	{ type = COMBAT_FIREDAMAGE, percent = -10 },
-	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 30 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 30 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 30 },
 }
 
 monster.immunities = {

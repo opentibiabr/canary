@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 201,
+	bossRace = RARITY_NEMESIS,
+}
+
 monster.health = 22500
 monster.maxHealth = 22500
 monster.race = "fire"
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 2000,
 	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 201,
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -52,14 +52,14 @@ monster.flags = {
 	runHealth = 2500,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -72,11 +72,11 @@ monster.summon = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "PRAISED BE MY MASTERS, THE RUTHLESS SEVEN!", yell = false },
-	{ text = "YOU ARE DOOMED!", yell = false },
-	{ text = "ORSHABAAL IS BACK!", yell = false },
+	{ text = "PRAISED BE MY MASTERS, THE RUTHLESS SEVEN!", yell = true },
+	{ text = "YOU ARE DOOMED!", yell = true },
+	{ text = "ORSHABAAL IS BACK!", yell = true },
 	{ text = "Be prepared for the day my masters will come for you!", yell = false },
-	{ text = "SOULS FOR ORSHABAAL!", yell = false }
+	{ text = "SOULS FOR ORSHABAAL!", yell = true },
 }
 
 monster.loot = {
@@ -141,14 +141,15 @@ monster.attacks = {
 monster.defenses = {
 	defense = 111,
 	armor = 90,
+	--	mitigation = ???,
 	{ name = "combat", interval = 1000, chance = 9, type = COMBAT_HEALING, minDamage = 1500, maxDamage = 2500, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "combat", interval = 1000, chance = 17, type = COMBAT_HEALING, minDamage = 600, maxDamage = 1000, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 1000, chance = 5, speedChange = 1901, effect = CONST_ME_MAGIC_RED, target = false, duration = 7000 }
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 20 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 80 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
 	{ type = COMBAT_FIREDAMAGE, percent = 100 },
 	{ type = COMBAT_LIFEDRAIN, percent = 100 },
@@ -156,7 +157,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -1 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -1 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 50 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
 monster.immunities = {

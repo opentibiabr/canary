@@ -3,7 +3,7 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_BLUE)
 combat:setArea(createCombatArea(AREA_CIRCLE2X2))
 
 function onTargetCreature(creature, target)
-	return doChallengeCreature(creature, target)
+	return doChallengeCreature(creature, target, 8000)
 end
 
 combat:setCallback(CALLBACK_PARAM_TARGETCREATURE, "onTargetCreature")

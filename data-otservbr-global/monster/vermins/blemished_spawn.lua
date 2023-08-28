@@ -22,8 +22,8 @@ monster.Bestiary = {
 	SecondUnlock = 1000,
 	CharmsPoints = 50,
 	Stars = 4,
-	Occurrence = 1,
-	Locations = "Antrum of the Fallen"
+	Occurrence = 0,
+	Locations = "Antrum of the Fallen."
 }
 
 monster.health = 9000
@@ -62,18 +62,17 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 3,
+	color = 66,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Pik Pik Pik!", yell = false }
 }
 
 monster.loot = {
@@ -111,6 +110,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 61,
 	armor = 61,
+	mitigation = 1.60,
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 225, maxDamage = 380, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
@@ -124,7 +124,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {

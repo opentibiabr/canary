@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Frost Servant")
 local monster = {}
 
 monster.description = "a frost servant"
-monster.experience = 295
+monster.experience = 0
 monster.outfit = {
 	lookType = 261,
 	lookHead = 0,
@@ -45,21 +45,21 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Gnarr.", yell = false },
+	{ text = "Chrrr.", yell = false },
 	{ text = "Crrrrk.", yell = false },
-	{ text = "Chrrr.", yell = false }
+	{ text = "Gnarr.", yell = false },
 }
 
 monster.loot = {
@@ -72,6 +72,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 25,
 	armor = 25,
+	mitigation = 0.70,
 	{ name = "hirintror summon", interval = 2000, chance = 18, target = false }
 }
 
@@ -83,9 +84,9 @@ monster.elements = {
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

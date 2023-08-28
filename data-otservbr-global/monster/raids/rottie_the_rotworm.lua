@@ -1,7 +1,7 @@
-local mType = Game.createMonsterType("Rottie The Rotworm")
+local mType = Game.createMonsterType("Rottie the Rotworm")
 local monster = {}
 
-monster.description = "Rottie The Rotworm"
+monster.description = "Rottie the Rotworm"
 monster.experience = 40
 monster.outfit = {
 	lookType = 26,
@@ -38,7 +38,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = false,
 	canPushCreatures = false,
@@ -47,14 +47,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -80,7 +80,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 11,
-	armor = 8
+	armor = 8,
+	mitigation = 0.38,
 }
 
 monster.elements = {
@@ -93,7 +94,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

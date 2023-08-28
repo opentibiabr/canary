@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Nargor, Tyrsung (on the ship), Yalahar (Foreign Quarter), Krailos Steppe."
+	Locations = "Nargor, Tyrsung on the ship, Yalahar Foreign Quarter, Krailos Steppe and The Cave."
 }
 
 monster.health = 425
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -72,7 +72,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Give up!", yell = false },
 	{ text = "Hiyaa", yell = false },
-	{ text = "Plundeeeeer!", yell = false }
+	{ text = "Plundeeeeer!", yell = false },
 }
 
 monster.loot = {
@@ -102,7 +102,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 30,
-	armor = 30
+	armor = 16,
+	mitigation = 1.04,
 }
 
 monster.elements = {
@@ -115,7 +116,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {

@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Phantasm")
 local monster = {}
 
-monster.description = "a phantasm"
+monster.description = "a Phantasm"
 monster.experience = 4400
 monster.outfit = {
 	lookType = 241,
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = false,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 3,
+	color = 203,
 }
 
 monster.summon = {
@@ -81,7 +81,7 @@ monster.voices = {
 	{ text = "Weeheeheeheehee!", yell = false },
 	{ text = "Its nothing but a dream.", yell = false },
 	{ text = "Dream a little dream with me!", yell = false },
-	{ text = "Give in.", yell = false }
+	{ text = "Give in.", yell = false },
 }
 
 monster.loot = {
@@ -115,7 +115,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 0,
-	armor = 0,
+	armor = 80,
+	mitigation = 1.10,
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HEALING, minDamage = 228, maxDamage = 449, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 10, speedChange = 500, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 },
 	{ name = "invisible", interval = 2000, chance = 25, effect = CONST_ME_MAGIC_BLUE }
@@ -131,7 +132,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

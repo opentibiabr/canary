@@ -1,8 +1,8 @@
 local mType = Game.createMonsterType("Ferumbras Mortal Shell")
 local monster = {}
 
-monster.description = "ferumbras mortal shell"
-monster.experience = 42000
+monster.description = "Ferumbras Mortal Shell"
+monster.experience = 100000
 monster.outfit = {
 	lookType = 229,
 	lookHead = 0,
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 500000
-monster.maxHealth = 500000
+monster.health = 300000
+monster.maxHealth = 300000
 monster.race = "venom"
 monster.corpse = 6078
 monster.speed = 195
@@ -55,12 +55,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -74,8 +74,10 @@ monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "INSECTS!", yell = true },
+	{ text = "If you strike me down, I shall become more powerful than you could possibly imagine!", yell = false },
 	{ text = "I' STILL POWERFUL ENOUGH TO CRUSH YOU!", yell = true },
-	{ text = "If you strike me down, I shall become more powerful than you could possibly imagine!", yell = false }
+	{ text = "I WILL MAKE ALL OF YOU SUFFER!", yell = true },
+	{ text = "THE POWER WAS MINE!", yell = true },
 }
 
 monster.loot = {
@@ -154,6 +156,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 120,
 	armor = 100,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 23, type = COMBAT_HEALING, minDamage = 600, maxDamage = 2490, effect = CONST_ME_MAGIC_GREEN, target = false },
 	{ name = "combat", interval = 2000, chance = 3, type = COMBAT_HEALING, minDamage = 20000, maxDamage = 35000, effect = CONST_ME_MAGIC_GREEN, target = false },
 	{ name = "speed", interval = 2000, chance = 14, speedChange = 700, effect = CONST_ME_MAGIC_BLUE, target = false, duration = 7000 },
@@ -161,16 +164,16 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = -50 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
-	{ type = COMBAT_FIREDAMAGE, percent = 90 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
-	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 65 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 65 },
+	{ type = COMBAT_FIREDAMAGE, percent = 65 },
+	{ type = COMBAT_LIFEDRAIN, percent = 65 },
+	{ type = COMBAT_MANADRAIN, percent = 65 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = -20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_ICEDAMAGE, percent = 65 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 65 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 65 },
 }
 
 monster.immunities = {

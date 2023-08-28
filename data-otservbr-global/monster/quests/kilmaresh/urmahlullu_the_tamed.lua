@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Urmahlullu the Tamed")
 local monster = {}
 
-monster.description = "urmahlullu the tamed"
+monster.description = "Urmahlullu the Tamed"
 monster.experience = 0
 monster.outfit = {
 	lookType = 1197,
@@ -44,7 +44,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -55,7 +55,7 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.events = {
@@ -64,12 +64,13 @@ monster.events = {
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Not worth to be here!", yell = false },
 }
 
 monster.loot = {
@@ -86,6 +87,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 84,
 	armor = 84
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -98,7 +100,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

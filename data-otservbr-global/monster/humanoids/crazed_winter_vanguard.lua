@@ -62,17 +62,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Nobody will ever escape from this place, muwahaha!!!", yell = false },
+	{ text = "These voices… they never stop!", yell = false },
+	{ text = " I am getting crazy here...Wa wa wahhh!!!", yell = false },
 }
 
 monster.loot = {
@@ -100,7 +103,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 20,
-	armor = 70
+	armor = 77,
+	mitigation = 2.16,
 }
 
 monster.reflects = {
@@ -112,12 +116,12 @@ monster.elements = {
 	{ type = COMBAT_ENERGYDAMAGE, percent = -20 },
 	{ type = COMBAT_EARTHDAMAGE, percent = -15 },
 	{ type = COMBAT_FIREDAMAGE, percent = -30 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 50 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 },
 }
 
 monster.immunities = {

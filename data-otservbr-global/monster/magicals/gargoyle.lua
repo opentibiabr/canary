@@ -61,22 +61,22 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Harrrr harrrr!", yell = false },
-	{ text = "Stone sweet stone.", yell = false },
 	{ text = "Feel my claws, softskin.", yell = false },
+	{ text = "There is a stone in your shoe!", yell = false },
+	{ text = "Stone sweet stone.", yell = false },
+	{ text = "Harrrr harrrr!", yell = false },
 	{ text = "Chhhhhrrrrk!", yell = false },
-	{ text = "There is a stone in your shoe!", yell = false }
 }
 
 monster.loot = {
@@ -100,7 +100,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 25,
-	armor = 25,
+	armor = 26,
+	mitigation = 0.78,
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 5, maxDamage = 15, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -114,7 +115,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 40 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 40 },
 }
 
 monster.immunities = {

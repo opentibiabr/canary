@@ -629,11 +629,11 @@ void Player::updateInventoryImbuement() {
 
 			if (duration == 0) {
 				removeItemImbuementStats(imbuement);
+				updateImbuementTrackerStats();
 				continue;
 			}
 		}
 	}
-	updateImbuementTrackerStats();
 }
 
 void Player::setTraining(bool value) {
@@ -2912,6 +2912,8 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 		pzLocked = true;
 		sendIcons();
 	}
+
+	updateImbuementTrackerStats();
 
 	Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0);
 	addCondition(condition);

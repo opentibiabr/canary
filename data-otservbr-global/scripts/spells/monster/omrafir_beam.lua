@@ -81,7 +81,7 @@ combat4:setParameter(COMBAT_PARAM_TYPE, COMBAT_FIREDAMAGE)
 combat4:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_FIREAREA)
 combat4:setFormula(COMBAT_FORMULA_DAMAGE, -7000, 0, -10000, 0)
 
-local  = {
+local arr4 = {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },

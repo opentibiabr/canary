@@ -280,12 +280,13 @@ local function spawnMonster(monsterId, spawnPosition)
 	end
 
 	local randomMonsterIndex = math.random(#thePrimalMenaceConfig.MonsterConfig.MonsterPool)
+	local primalMonster = Game.createMonster(thePrimalMenaceConfig.MonsterConfig.MonsterPool[randomMonsterIndex], spawnPosition)
 	local primalBeastEntry = {
-		Monster = Game.createMonster(thePrimalMenaceConfig.MonsterConfig.MonsterPool[randomMonsterIndex], spawnPosition),
+		MonsterId = primalMonster:getId(),
 		Created = os.time()
 	}
-	local monsterMaxHealth = primalBeastEntry.Monster:getMaxHealth()
-	primalBeastEntry.Monster:setHealth(monsterMaxHealth * thePrimalMenaceConfig.MonsterConfig.HpRateOnSpawn)
+	local monsterMaxHealth = primalMonster:getMaxHealth()
+	primalMonster:setHealth(monsterMaxHealth * thePrimalMenaceConfig.MonsterConfig.HpRateOnSpawn)
 
 	local primalBeasts = monster:getStorageValue(thePrimalMenaceConfig.Storage.PrimalBeasts)
 	table.insert(primalBeasts, primalBeastEntry)
@@ -314,13 +315,13 @@ local function handlePrimalBeasts(monster)
 	local indexesToRemove = {}
 
 	for index, beastData in pairs(primalBeasts) do
-		local monster = beastData.Monster
+		local primalMonster = Monster(beastData.MonsterId)
 		local created = beastData.Created
-		if not monster:getHealth() or monster:getHealth() == 0 then
+		if not primalMonster or not primalMonster:getHealth() or primalMonster:getHealth() == 0 then
 			table.insert(indexesToRemove, index)
-		elseif os.time() - created > 20 and monster:getHealth() > 0 then
-			local position = monster:getPosition()
-			monster:remove()
+		elseif os.time() - created > 20 and primalMonster:getHealth() > 0 then
+			local position = primalMonster:getPosition()
+			primalMonster:remove()
 			table.insert(indexesToRemove, index)
 			if position then
 				Game.createMonster("Fungosaurus", position)

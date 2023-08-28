@@ -334,6 +334,8 @@ public:
 	bool isCorpse = false;
 	bool loaded = false;
 	bool spellbook = false;
+
+	bool isWrapKit = false;
 };
 
 class Items {

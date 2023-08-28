@@ -277,6 +277,10 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint
 		msg.add<uint32_t>(it.charges);
 		msg.addByte(0x01); // Brand-new
 	}
+
+	if (it.isWrapKit) {
+		msg.add<uint16_t>(0x00);
+	}
 }
 
 void ProtocolGame::AddItem(NetworkMessage &msg, const Item* item) {
@@ -402,6 +406,15 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item* item) {
 		} else {
 			msg.add<uint32_t>(static_cast<uint32_t>(item->getSubType()));
 			msg.addByte(item->getSubType() == it.charges ? 0x01 : 0x00); // Brand-new
+		}
+	}
+
+	if (it.isWrapKit) {
+		uint16_t unWrapId = item->getCustomAttribute("unWrapId") ? static_cast<uint16_t>(item->getCustomAttribute("unWrapId")->getInteger()) : 0;
+		if (unWrapId != 0) {
+			msg.add<uint16_t>(unWrapId);
+		} else {
+			msg.add<uint16_t>(0x00);
 		}
 	}
 }
@@ -1284,7 +1297,8 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 			// case 0xDF, 0xE0, 0xE1, 0xFB, 0xFC, 0xFD, 0xFE Premium Shop.
 
 		default:
-			g_logger().debug("Player: {} sent an unknown packet header: x0{}", player->getName(), static_cast<uint16_t>(recvbyte));
+			std::string hexString = fmt::format("0x{:02x}", recvbyte);
+			g_logger().debug("Player '{}' sent unknown packet header: hex[{}], decimal[{}]", player->getName(), asUpperCaseString(hexString), recvbyte);
 			break;
 	}
 }
@@ -4242,6 +4256,9 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 		for (ItemDeque::const_iterator it = itemList.begin() + firstIndex, end = itemList.end(); i < maxItemsToSend && it != end; ++it, ++i) {
 			AddItem(msg, *it);
 		}
+
+		msg.addByte(0x00);
+		msg.addByte(0x00);
 	}
 	writeToOutputBuffer(msg);
 }

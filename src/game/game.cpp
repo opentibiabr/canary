@@ -42,7 +42,7 @@
 #include "creatures/npcs/npc.hpp"
 #include "creatures/npcs/npcs.hpp"
 #include "server/network/webhook/webhook.hpp"
-#include "protobuf/appearances.pb.hpp"
+#include "protobuf/appearances.pb.h"
 #include "server/network/protocol/protocollogin.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 

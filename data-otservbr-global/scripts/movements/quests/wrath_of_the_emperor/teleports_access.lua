@@ -43,19 +43,19 @@ local config =
 
 local function tpX(i, player, position)
 	if player:getStorageValue(config[i].Access) == 1 then
-		if player:getPosition() == config[i].teleportPos then
+		if position == config[i].teleportPos then
 			return config[i].destinationA
 		else
 			return config[i].destinationB
 		end
 	elseif player:getStorageValue(config[i].Access) == 2 then
-		if player:getPosition() == config[i].teleportPos then
+		if position == config[i].teleportPos then
 			return config[i].destinationC
 		else
 			return config[i].destinationB
 		end
 	elseif player:getStorageValue(config[i].Access) == 3 then
-		if player:getPosition() == config[i].teleportPos then
+		if position == config[i].teleportPos then
 			if Tile(config[i].itemPos):getItemById(11673) then
 				config[i].itemPos:removeItem(11673, 1)
 				return config[i].destinationA
@@ -66,8 +66,6 @@ local function tpX(i, player, position)
 		else
 			return config[i].destinationB
 		end
-	else
-		return false
 	end
 	return false
 end
@@ -76,31 +74,31 @@ local function getDestinationByPos(player, position)
 	local pos
 	for j = 1, #positions do
 		if j <= 2 then
-			if player:getPosition() == Position(positions[j]) then
+			if position == Position(positions[j]) then
 				pos = tpX(1, player, position)
 			end
 		elseif j > 2 and j <= 5 then
-			if player:getPosition() == Position(positions[j]) then
+			if position == Position(positions[j]) then
 				pos = tpX(2, player, position)
 			end
 		elseif j > 5 and j <= 7 then
-			if player:getPosition() == Position(positions[j]) then
+			if position == Position(positions[j]) then
 				pos = tpX(3, player, position)
 			end
 		elseif j > 7 and j <= 9 then
-			if player:getPosition() == Position(positions[j]) then
+			if position == Position(positions[j]) then
 				pos = tpX(4, player, position)
 			end
 		elseif j > 9 and j <= 12 then
-			if player:getPosition() == Position(positions[j]) then
+			if position == Position(positions[j]) then
 				pos = tpX(5, player, position)
 			end
 		elseif j > 12 and j <= 14 then
-			if player:getPosition() == Position(positions[j]) then
+			if position == Position(positions[j]) then
 				pos = tpX(6, player, position)
 			end
 		elseif j > 14 and j <= 22 then
-			if player:getPosition() == Position(positions[j]) then
+			if position == Position(positions[j]) then
 				pos = tpX(7, player, position)
 			end
 		end

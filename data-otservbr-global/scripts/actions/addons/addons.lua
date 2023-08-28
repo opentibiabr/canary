@@ -41,7 +41,9 @@ function addons.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		player:addOutfitAddon(useItem.male, useItem.addon)
 		player:getPosition():sendMagicEffect(useItem.effect or CONST_ME_GIFT_WRAPS)
 		if player:hasOutfit(looktype, 3) then
-			player:addAchievement(useItem.achievement)
+			if useItem.achievement then
+				player:addAchievement(useItem.achievement)
+			end
 		end
 		item:remove()
 	else
@@ -58,5 +60,10 @@ function addons.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	return true
 end
 
-addons:id(16252, 16253, 16254, 16255, 16256, 16257, 27655, 27656, 27657, 31738, 31737, 32630, 32631)
+local ids = {}
+for value in pairs(config) do
+	table.insert(ids, value)
+end
+
+addons:id(unpack(ids))
 addons:register()

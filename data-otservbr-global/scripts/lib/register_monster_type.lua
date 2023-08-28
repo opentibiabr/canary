@@ -70,9 +70,6 @@ end
 registerMonsterType.bosstiary = function(mtype, mask)
 	local bossClass = nil
 	if mask.bosstiary then
-		if mask.bosstiary.bossRaceId then
-			mtype:bossRaceId(mask.bosstiary.bossRaceId)
-		end
 		if mask.bosstiary.bossRace then
 			if mask.bosstiary.bossRace == RARITY_BANE then
 				bossClass = "Bane"
@@ -81,13 +78,22 @@ registerMonsterType.bosstiary = function(mtype, mask)
 			elseif mask.bosstiary.bossRace == RARITY_NEMESIS then
 				bossClass = "Nemesis"
 			end
-			if bossClass ~= nil then
-				mtype:bossRace(mask.bosstiary.bossRace, bossClass)
-			end
-			local storage = mask.bosstiary.storageCooldown
-			if storage ~= nil then
-				mtype:bossStorageCooldown(storage)
-			end
+		end
+		if bossClass == nil then
+			Spdlog.error(string.format("Attempting to register a bosstiary boss without a race. Boss name: %s", mtype:name()))
+			return
+		end
+		if mask.bosstiary.bossRaceId then
+			mtype:bossRaceId(mask.bosstiary.bossRaceId)
+		else
+			Spdlog.error(string.format("Attempting to register a bosstiary boss without a raceId. Boss name: %s", mtype:name()))
+		end
+		mtype:bossRace(mask.bosstiary.bossRace, bossClass)
+		local storage = mask.bosstiary.storageCooldown
+		if storage == nil then
+			Spdlog.warn(string.format("Bosstiary boss '%s has no cooldown defined.", mtype:name()))
+		elseif storage ~= false then
+			mtype:bossStorageCooldown(storage)
 		end
 	end
 end

@@ -1,5 +1,5 @@
 local gravediggerBook = Action()
-function gravediggerBook.onUse(item, fromPosition, itemEx, toPosition)
+function gravediggerBook.onUse(player, item, fromPosition, itemEx, toPosition)
 	if player:getStorageValue(Storage.GravediggerOfDrefia.Bookcase) < 1 then
 		player:setStorageValue(Storage.GravediggerOfDrefia.Bookcase, 1)
 		player:addItem(19158, 1)

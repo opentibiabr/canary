@@ -62,13 +62,7 @@ int CanaryServer::run() {
 			initializeDatabase();
 			loadModules();
 			setWorldType();
-
-			std::unique_lock lock(mapLoaderLock);
-			mapSignal.wait(lock, [this] { return loaderMapDone; });
-
-			if (!threadFailMsg.empty()) {
-				throw FailedToInitializeCanary(threadFailMsg);
-			}
+			loadMaps();
 
 			logger.info("Initializing gamestate...");
 			g_game().setGameState(GAME_STATE_INIT);
@@ -146,11 +140,15 @@ void CanaryServer::setWorldType() {
 }
 
 void CanaryServer::loadMaps() const {
-	g_game().loadMainMap(g_configManager().getString(MAP_NAME));
+	try {
+		g_game().loadMainMap(g_configManager().getString(MAP_NAME));
 
-	// If "mapCustomEnabled" is true on config.lua, then load the custom map
-	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
-		g_game().loadCustomMaps(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/");
+		// If "mapCustomEnabled" is true on config.lua, then load the custom map
+		if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
+			g_game().loadCustomMaps(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/");
+		}
+	} catch (const std::exception &err) {
+		throw FailedToInitializeCanary(err.what());
 	}
 }
 
@@ -324,16 +322,6 @@ void CanaryServer::loadModules() {
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
 	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
 
-	inject<ThreadPool>().addLoad([this] {
-		try {
-			loadMaps();
-		} catch (const std::exception &err) {
-			threadFailMsg = err.what();
-		}
-		loaderMapDone = true;
-		mapSignal.notify_one();
-	});
-
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	logger.debug("Loading core scripts on folder: {}/", coreFolder);
 	// Load first core Lua libs
@@ -362,8 +350,6 @@ void CanaryServer::loadModules() {
 	g_game().loadBoostedCreature();
 	g_ioBosstiary().loadBoostedBoss();
 	g_ioprey().InitializeTaskHuntOptions();
-	// Spawn monsters and npcs
-	g_game().map.spawnCreatures();
 }
 
 void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {

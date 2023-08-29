@@ -37971,18 +37971,21 @@
 	<item id="25879" article="a" name="health cask">
 		<attribute key="description" value="This cask can be used to refill health potions"/>
 		<attribute key="charges" value="1000"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="200000"/>
 	</item>
 	<item id="25880" article="a" name="strong health cask">
 		<attribute key="description" value="This cask can be used to refill strong health potions"/>
 		<attribute key="charges" value="1000"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="200000"/>
 	</item>
 	<item id="25881" article="a" name="great health cask">
 		<attribute key="description" value="This cask can be used to refill great health potions"/>
 		<attribute key="charges" value="1000"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="200000"/>
 	</item>
@@ -37995,6 +37998,7 @@
 	<item id="25883" article="a" name="supreme health cask">
 		<attribute key="description" value="This cask can be used to refill supreme health potions"/>
 		<attribute key="charges" value="1000"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="200000"/>
 	</item>
@@ -38002,12 +38006,14 @@
 	<item id="25889" article="a" name="mana cask">
 		<attribute key="description" value="This cask can be used to refill mana potions"/>
 		<attribute key="charges" value="1000"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="200000"/>
 	</item>
 	<item id="25890" article="a" name="strong mana cask">
 		<attribute key="description" value="This cask can be used to refill strong mana potions"/>
 		<attribute key="charges" value="1000"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="200000"/>
 	</item>
@@ -38020,96 +38026,112 @@
 	<item id="25892" article="an" name="ultimate mana cask">
 		<attribute key="description" value="This cask can be used to refill ultimate mana potions"/>
 		<attribute key="charges" value="1000"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="200000"/>
 	</item>
 	<item id="25893" article="a" name="supreme mana cask">
 		<attribute key="description" value="This cask can be used to refill supreme mana potions"/>
 		<attribute key="charges" value="1000"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="200000"/>
 	</item>
 	<item id="25899" article="a" name="great spirit cask">
 		<attribute key="description" value="This cask can be used to refill great spirit potions"/>
 		<attribute key="charges" value="1000"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="200000"/>
 	</item>
 	<item id="25900" article="a" name="ultimate spirit cask">
 		<attribute key="description" value="This cask can be used to refill ultimate spirit potions"/>
 		<attribute key="charges" value="1000"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="200000"/>
 	</item>
 	<item id="25903" article="a" name="health keg">
 		<attribute key="description" value="This keg can be used to refill health potions"/>
 		<attribute key="charges" value="500"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="67500"/>
 	</item>
 	<item id="25904" article="a" name="strong health keg">
 		<attribute key="description" value="This keg can be used to refill strong health potions"/>
 		<attribute key="charges" value="500"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="72500"/>
 	</item>
 	<item id="25905" article="a" name="great health keg">
 		<attribute key="description" value="This keg can be used to refill great health potions"/>
 		<attribute key="charges" value="500"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="77500"/>
 	</item>
 	<item id="25906" article="an" name="ultimate health keg">
 		<attribute key="description" value="This keg can be used to refill ultimate health potions"/>
 		<attribute key="charges" value="500"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="77500"/>
 	</item>
 	<item id="25907" article="a" name="supreme health keg">
 		<attribute key="description" value="This keg can be used to refill supreme health potions"/>
 		<attribute key="charges" value="500"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="87500"/>
 	</item>
 	<item id="25908" article="a" name="mana keg">
 		<attribute key="description" value="This keg can be used to refill mana potions"/>
 		<attribute key="charges" value="500"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="67500"/>
 	</item>
 	<item id="25909" article="a" name="strong mana keg">
 		<attribute key="description" value="This keg can be used to refill strong mana potions"/>
 		<attribute key="charges" value="500"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="72500"/>
 	</item>
 	<item id="25910" article="a" name="great mana keg">
 		<attribute key="description" value="This keg can be used to refill great mana potions"/>
 		<attribute key="charges" value="500"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="77500"/>
 	</item>
 	<item id="25911" article="an" name="ultimate mana keg">
 		<attribute key="description" value="This keg can be used to refill ultimate mana potions"/>
 		<attribute key="charges" value="500"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="77500"/>
 	</item>
 	<item id="25912" article="a" name="supreme mana keg">
 		<attribute key="description" value="This keg can be used to refill supreme mana potions"/>
 		<attribute key="charges" value="500"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="12500"/>
 	</item>
 	<item id="25913" article="a" name="great spririt keg">
 		<attribute key="description" value="This keg can be used to refill great spririt potions"/>
 		<attribute key="charges" value="500"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="12500"/>
 	</item>
 	<item id="25914" article="an" name="ultimate spirit keg">
 		<attribute key="description" value="This keg can be used to refill ultimate spririt potions"/>
 		<attribute key="charges" value="500"/>
+		<attribute key="primarytype" value="consumable"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="weight" value="77500"/>
 	</item>
@@ -40302,10 +40324,12 @@
 	<item id="27661" article="an" name="alchemistic chair">
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="27662"/>
+		<attribute key="primarytype" value="furniture"/>
 	</item>
 	<item id="27662" article="an" name="alchemistic chair">
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="27661"/>
+		<attribute key="primarytype" value="furniture"/>
 	</item>
 	<item id="27663" article="an" name="alchemistic cabinet">
 		<attribute key="containersize" value="8"/>

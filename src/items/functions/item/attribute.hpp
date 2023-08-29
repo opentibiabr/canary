@@ -57,6 +57,7 @@ public:
 			case ItemAttribute_t::PLURALNAME:
 			case ItemAttribute_t::SPECIAL:
 			case ItemAttribute_t::LOOTMESSAGE_SUFFIX:
+			case ItemAttribute_t::STORE_INBOX_CATEGORY:
 				return true;
 			default:
 				return false;

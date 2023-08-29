@@ -16,8 +16,11 @@
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
-	if (getID() == ITEM_GOLD_POUCH) {
+	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM));
+	if (getID() == ITEM_GOLD_POUCH || getID() == ITEM_STORE_INBOX) {
 		pagination = true;
+		m_maxItems = 2000;
+		maxSize = 32;
 	}
 }
 
@@ -371,22 +374,21 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing &addThing, uint32_
 	}
 
 	if (const Container* topParentContainer = getTopParentContainer()) {
-		uint32_t maxItem = static_cast<uint32_t>(g_configManager().getNumber(MAX_ITEM));
 		if (const Container* addContainer = item->getContainer()) {
 			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
 			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER));
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
-				return RETURNVALUE_NOTPOSSIBLE;
+				return RETURNVALUE_CONTAINERISFULL;
 			}
 
 			uint32_t addItemCount = addContainer->getItemHoldingCount() + 1;
-			if (addItemCount + topParentContainer->getItemHoldingCount() > maxItem) {
-				return RETURNVALUE_NOTPOSSIBLE;
+			if (addItemCount + topParentContainer->getItemHoldingCount() > m_maxItems) {
+				return RETURNVALUE_CONTAINERISFULL;
 			}
 		}
 
-		if (topParentContainer->getItemHoldingCount() + 1 > maxItem) {
-			return RETURNVALUE_NOTPOSSIBLE;
+		if (topParentContainer->getItemHoldingCount() + 1 > m_maxItems) {
+			return RETURNVALUE_CONTAINERISFULL;
 		}
 	}
 

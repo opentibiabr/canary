@@ -35,7 +35,7 @@ class Item;
 class ItemProperties {
 public:
 	template <typename T>
-	T getAttribute(ItemAttribute_t type) const {
+	const T &getAttribute(ItemAttribute_t type) const {
 		if constexpr (std::is_same_v<T, std::string>) {
 			return getString(type);
 		} else {
@@ -46,7 +46,9 @@ public:
 			);
 		}
 		g_logger().error("Failed to convert attribute for type {}", fmt::underlying(type));
-		return {};
+
+		static T defaultType;
+		return defaultType;
 	}
 
 	bool hasAttribute(ItemAttribute_t type) const {

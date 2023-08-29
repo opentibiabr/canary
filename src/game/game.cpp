@@ -4108,7 +4108,7 @@ void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t coun
 	}
 }
 
-void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index) {
+void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index, uint8_t containerCategory) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -4117,6 +4117,12 @@ void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_
 	Container* container = player->getContainerByID(containerId);
 	if (!container || !container->hasPagination()) {
 		return;
+	}
+
+	if (container->getID() == ITEM_STORE_INBOX) {
+		auto enumName = magic_enum::enum_name(static_cast<StoreInboxCategory_t>(containerCategory)).data();
+		container->setAttribute(ItemAttribute_t::STORE_INBOX_CATEGORY, enumName);
+		g_logger().debug("Setting new container with store inbox category name {}", enumName);
 	}
 
 	if ((index % container->capacity()) != 0 || index >= container->size()) {

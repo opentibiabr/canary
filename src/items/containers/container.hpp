@@ -168,6 +168,7 @@ public:
 protected:
 	std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol) const;
 
+	uint32_t m_maxItems;
 	uint32_t maxSize;
 	uint32_t totalWeight = 0;
 	ItemDeque itemlist;

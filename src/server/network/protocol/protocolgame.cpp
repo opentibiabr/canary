@@ -207,6 +207,33 @@ namespace {
 			}
 		}
 	}
+
+	/**
+	 * @brief Sends the container category to the network message.
+	 *
+	 * @note The default value is "all", which is the first enum (0). The message must always start with "All".
+	 *
+	 * @details for example of enum see the StoreInboxCategory_t
+	 *
+	 * @param msg The network message to send the category to.
+	 */
+	template <typename T>
+	void sendContainerCategory(NetworkMessage &msg, uint8_t categoryType = 0) {
+		msg.addByte(categoryType);
+
+		const uint8_t enumCount = magic_enum::enum_count<T>();
+		msg.addByte(enumCount - 1);
+
+		for (auto value : magic_enum::enum_values<T>()) {
+			if (value == T::All) {
+				continue;
+			}
+
+			msg.addByte(static_cast<uint8_t>(value));
+			msg.addString(magic_enum::enum_name(value).data());
+		}
+	}
+
 } // namespace
 
 ProtocolGame::ProtocolGame(Connection_ptr initConnection) :
@@ -278,7 +305,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint
 		msg.addByte(0x01); // Brand-new
 	}
 
-	if (it.isWrapKit) {
+	if (it.isWrapKit && !oldProtocol) {
 		msg.add<uint16_t>(0x00);
 	}
 }
@@ -409,7 +436,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item* item) {
 		}
 	}
 
-	if (it.isWrapKit) {
+	if (it.isWrapKit && !oldProtocol) {
 		uint16_t unWrapId = item->getCustomAttribute("unWrapId") ? static_cast<uint16_t>(item->getCustomAttribute("unWrapId")->getInteger()) : 0;
 		if (unWrapId != 0) {
 			msg.add<uint16_t>(unWrapId);
@@ -3092,7 +3119,8 @@ void ProtocolGame::parseBrowseField(NetworkMessage &msg) {
 void ProtocolGame::parseSeekInContainer(NetworkMessage &msg) {
 	uint8_t containerId = msg.getByte();
 	uint16_t index = msg.get<uint16_t>();
-	addGameTask(&Game::playerSeekInContainer, player->getID(), containerId, index);
+	auto primaryType = msg.getByte();
+	addGameTask(&Game::playerSeekInContainer, player->getID(), containerId, index, primaryType);
 }
 
 // Send methods
@@ -4209,6 +4237,10 @@ void ProtocolGame::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8
 }
 
 void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool hasParent, uint16_t firstIndex) {
+	if (!player) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0x6E);
 
@@ -4220,6 +4252,22 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 	} else {
 		AddItem(msg, container);
 		msg.addString(container->getName());
+	}
+
+	const auto &enumName = container->getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
+	uint32_t totalCountToSend = 0;
+	std::vector<Item*> itemsStoreInboxToSend;
+	if (container->getID() == ITEM_STORE_INBOX && enumName != "All") {
+		for (Item* item : container->getItemList()) {
+			uint16_t unWrapId = item->getCustomAttribute("unWrapId") ? static_cast<uint16_t>(item->getCustomAttribute("unWrapId")->getInteger()) : 0;
+			if (unWrapId != 0) {
+				const auto &itemType = Item::items.getItemType(unWrapId);
+				if (itemType.m_primaryType == asLowerCaseString(enumName)) {
+					itemsStoreInboxToSend.push_back(item);
+					totalCountToSend++;
+				}
+			}
+		}
 	}
 
 	msg.addByte(container->capacity());
@@ -4235,6 +4283,9 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 	msg.addByte(container->hasPagination() ? 0x01 : 0x00); // Pagination
 
 	uint32_t containerSize = container->size();
+	if (totalCountToSend != 0) {
+		containerSize = totalCountToSend;
+	}
 	msg.add<uint16_t>(containerSize);
 	msg.add<uint16_t>(firstIndex);
 
@@ -4248,6 +4299,11 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 
 	if (firstIndex >= containerSize) {
 		msg.addByte(0x00);
+	} else if (container->getID() == ITEM_STORE_INBOX && !itemsStoreInboxToSend.empty()) {
+		msg.addByte(std::min<uint32_t>(maxItemsToSend, containerSize));
+		for (const auto item : itemsStoreInboxToSend) {
+			AddItem(msg, item);
+		}
 	} else {
 		msg.addByte(std::min<uint32_t>(maxItemsToSend, containerSize));
 
@@ -4256,9 +4312,20 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 		for (ItemDeque::const_iterator it = itemList.begin() + firstIndex, end = itemList.end(); i < maxItemsToSend && it != end; ++it, ++i) {
 			AddItem(msg, *it);
 		}
+	}
 
-		msg.addByte(0x00);
-		msg.addByte(0x00);
+	if (!oldProtocol) {
+		if (container->getID() == ITEM_STORE_INBOX) {
+			auto category = magic_enum::enum_cast<StoreInboxCategory_t>(enumName);
+			if (category.has_value()) {
+				sendContainerCategory<StoreInboxCategory_t>(msg, static_cast<uint8_t>(category.value()));
+			} else {
+				sendContainerCategory<StoreInboxCategory_t>(msg);
+			}
+		} else {
+			msg.addByte(0x00);
+			msg.addByte(0x00);
+		}
 	}
 	writeToOutputBuffer(msg);
 }

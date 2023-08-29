@@ -9819,7 +9819,7 @@ phmap::parallel_flat_hash_set<T> setDifference(const phmap::parallel_flat_hash_s
 	return setResult;
 }
 
-ReturnValue Game::beforeCreatureZoneChange(Creature* creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones, bool force /* = false*/) {
+ReturnValue Game::beforeCreatureZoneChange(Creature* creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones, bool force /* = false*/) const {
 	if (!creature) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -9849,7 +9849,7 @@ ReturnValue Game::beforeCreatureZoneChange(Creature* creature, const phmap::para
 	return RETURNVALUE_NOERROR;
 }
 
-void Game::afterCreatureZoneChange(Creature* creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones) {
+void Game::afterCreatureZoneChange(Creature* creature, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &fromZones, const phmap::parallel_flat_hash_set<std::shared_ptr<Zone>> &toZones) const {
 	if (!creature) {
 		return;
 	}

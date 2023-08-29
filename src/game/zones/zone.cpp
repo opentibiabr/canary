@@ -232,20 +232,14 @@ void Zone::creatureRemoved(Creature* creature) {
 		return;
 	}
 	creaturesCache.erase(creature->getID());
-	if (creature->getPlayer()) {
-		if (playersCache.erase(creature->getID())) {
-			g_logger().trace("Player {} (ID: {}) removed from zone {}", creature->getName(), creature->getID(), name);
-		}
+	if (creature->getPlayer() && playersCache.erase(creature->getID())) {
+		g_logger().trace("Player {} (ID: {}) removed from zone {}", creature->getName(), creature->getID(), name);
 	}
-	if (creature->getMonster()) {
-		if (monstersCache.erase(creature->getID())) {
-			g_logger().trace("Monster {} (ID: {}) removed from zone {}", creature->getName(), creature->getID(), name);
-		}
+	if (creature->getMonster() && monstersCache.erase(creature->getID())) {
+		g_logger().trace("Monster {} (ID: {}) removed from zone {}", creature->getName(), creature->getID(), name);
 	}
-	if (creature->getNpc()) {
-		if (npcsCache.erase(creature->getID())) {
-			g_logger().trace("Npc {} (ID: {}) removed from zone {}", creature->getName(), creature->getID(), name);
-		}
+	if (creature->getNpc() && npcsCache.erase(creature->getID())) {
+		g_logger().trace("Npc {} (ID: {}) removed from zone {}", creature->getName(), creature->getID(), name);
 	}
 }
 

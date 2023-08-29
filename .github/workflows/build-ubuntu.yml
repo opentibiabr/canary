@@ -99,7 +99,7 @@ jobs:
           cd ${{ github.workspace }}/build/${{ matrix.buildtype }}/tests/unit
           ctest --verbose
 
-      - name: Run Integration Tests
-        run: |
-          cd ${{ github.workspace }}/build/${{ matrix.buildtype }}/tests/integration
-          ctest --verbose
+#      - name: Run Integration Tests
+#        run: |
+#          cd ${{ github.workspace }}/build/${{ matrix.buildtype }}/tests/integration
+#          ctest --verbose

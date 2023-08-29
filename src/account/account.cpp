@@ -82,7 +82,7 @@ namespace account {
 		return { coins, ERROR_NO };
 	}
 
-	error_t Account::addCoins(const CoinType &type, const uint32_t &amount, const std::string& detail) {
+	error_t Account::addCoins(const CoinType &type, const uint32_t &amount, const std::string &detail) {
 		if (!m_accLoaded) {
 			return ERROR_NOT_INITIALIZED;
 		}
@@ -112,7 +112,7 @@ namespace account {
 		return ERROR_NO;
 	}
 
-	error_t Account::removeCoins(const CoinType &type, const uint32_t &amount, const std::string& detail) {
+	error_t Account::removeCoins(const CoinType &type, const uint32_t &amount, const std::string &detail) {
 		if (!m_accLoaded) {
 			return ERROR_NOT_INITIALIZED;
 		}

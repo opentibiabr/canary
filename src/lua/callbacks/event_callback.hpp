@@ -126,8 +126,10 @@ public:
 	void npcOnSpawn(Npc* npc, const Position &position) const;
 
 	// Zone
-	bool zoneOnCreatureEnter(std::shared_ptr<Zone> zone, Creature* creature) const;
-	bool zoneOnCreatureLeave(std::shared_ptr<Zone> zone, Creature* creature) const;
+	bool zoneBeforeCreatureEnter(std::shared_ptr<Zone> zone, Creature* creature) const;
+	bool zoneBeforeCreatureLeave(std::shared_ptr<Zone> zone, Creature* creature) const;
+	void zoneAfterCreatureEnter(std::shared_ptr<Zone> zone, Creature* creature) const;
+	void zoneAfterCreatureLeave(std::shared_ptr<Zone> zone, Creature* creature) const;
 
 	/**
 	 * @note here end the lua binder functions }

@@ -1,10 +1,10 @@
-local mType = Game.createMonsterType("Unchained Fire")
+local mType = Game.createMonsterType("Lava Creature")
 local monster = {}
 
-monster.description = "a unchained fire"
+monster.description = "a lava creature"
 monster.experience = 0
 monster.outfit = {
-	lookType = 242,
+	lookType = 1414,
 	lookHead = 0,
 	lookBody = 0,
 	lookLegs = 0,
@@ -13,26 +13,28 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 1200
-monster.maxHealth = 1200
+monster.health = 9000
+monster.maxHealth = 9000
 monster.race = "fire"
-monster.corpse = 0
-monster.speed = 238
+monster.corpse = 39230 -- charged flame
+monster.speed = 110
 monster.manaCost = 0
 
 monster.changeTarget = {
-	interval = 4000,
-	chance = 10
+	interval = 2000,
+	chance = 20
 }
 
 monster.strategiesTarget = {
-	nearest = 80,
-	random = 20,
+	nearest = 70,
+	health = 10,
+	damage = 10,
+	random = 10,
 }
 
 monster.flags = {
 	summonable = false,
-	attackable = false,
+	attackable = true,
 	hostile = true,
 	convinceable = false,
 	pushable = false,
@@ -40,19 +42,19 @@ monster.flags = {
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
-	staticAttackChance = 90,
+	staticAttackChance = 98,
 	targetDistance = 1,
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 5,
-	color = 0
+	level = 0,
+	color = 0,
 }
 
 monster.voices = {
@@ -60,18 +62,20 @@ monster.voices = {
 	chance = 10,
 }
 
+monster.loot = {}
+
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1031 },
-	{ name = "firefield", interval = 2000, chance = 10, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, target = false },
-	{ name = "firefield", interval = 2000, chance = 10, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -200, maxDamage = -700, length = 7, spread = 3, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -60, maxDamage = -250, radius = 3, effect = CONST_ME_EXPLOSIONHIT, target = false },
-	{ name = "massive fire elemental soulfire", interval = 2000, chance = 15, target = false }
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1400 },
+	{ name = "combat", interval = 3500, chance = 40, type = COMBAT_FIREDAMAGE, minDamage = -600, maxDamage = -900, length = 5, effect = CONST_ME_SMOKE, target = false },
+	{ name = "combat", interval = 4100, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -350, maxDamage = -475, radius = 3, effect = CONST_ME_MAGIC_RED, target = false },
 }
 
 monster.defenses = {
-	defense = 30,
-	armor = 30
+	defense = 65,
+	armor = 0,
+	mitigation = 2.0,
+	{ name = "combat", interval = 3000, chance = 35, type = COMBAT_HEALING, minDamage = 400, maxDamage = 500, effect = CONST_ME_MAGIC_BLUE, target = false },
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 320, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
 }
 
 monster.elements = {
@@ -84,12 +88,12 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = true },
-	{ type = "outfit", condition = false },
+	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }
 }

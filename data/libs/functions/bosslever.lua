@@ -55,6 +55,7 @@ setmetatable(BossLever, {
 		end
 		return setmetatable({
 			name = boss.name,
+			encounter = config.encounter,
 			bossPosition = boss.position,
 			timeToFightAgain = config.timeToFightAgain or configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN),
 			timeToDefeat = config.timeToDefeat or configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_DEFEAT),
@@ -148,6 +149,10 @@ function BossLever:onUse(player)
 			return false
 		end
 		self.onUseExtra(creature)
+		if self.encounter then
+			local encounter = Encounter(self.encounter)
+			encounter:start()
+		end
 		return true
 	end)
 

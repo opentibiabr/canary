@@ -37,7 +37,7 @@ namespace account {
 		 * @param amount Amount of coins to be added
 		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
 		 */
-		error_t addCoins(const CoinType &type, const uint32_t &amount, const std::string& detail = "ADD Coins");
+		error_t addCoins(const CoinType &type, const uint32_t &amount, const std::string &detail = "ADD Coins");
 
 		/**
 		 * @brief Removes coins from the account.
@@ -46,7 +46,7 @@ namespace account {
 		 * @param amount Amount of coins to be removed
 		 * @return error_t ERROR_NO(0) Success, otherwise Fail.
 		 */
-		error_t removeCoins(const CoinType &type, const uint32_t &amount, const std::string& detail = "REMOVE Coins");
+		error_t removeCoins(const CoinType &type, const uint32_t &amount, const std::string &detail = "REMOVE Coins");
 
 		/***************************************************************************
 		 * Account Load/Save

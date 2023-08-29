@@ -430,7 +430,7 @@ keywordHandler:addAliasKeyword({ "passage" })
 keywordHandler:addAliasKeyword({ "travel" })
 -- Donate topic nodes
 local donateNode = keywordHandler:addKeyword({ "donate" }, donationHandler, {},
-	function(player) return player:getMoney() > 500 end
+	function(player) return player:getMoney() > npcConfig.moneyToNeedDonation end
 )
 donateNode:addChildKeywordNode(KeywordNode:new({ "yes" }, donationHandler, { confirm = true }))
 donateNode:addChildKeywordNode(KeywordNode:new({ "no" }, donationHandler, { decline = true }))

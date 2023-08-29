@@ -53703,40 +53703,40 @@
 		<attribute key="weight" value="1100"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
-	<item id="36840" article="a" name="dead the brainstealer">
+	<item id="36840" article="a" name="dead brainstealer">
 		<attribute key="decayTo" value="0" />
 		<attribute key="duration" value="60" />
 	</item>
-	<item id="36841" article="a" name="dead the brainstealer">
+	<item id="36841" article="a" name="dead brainstealer">
 		<attribute key="containerSize" value="25" />
 		<attribute key="decayTo" value="36840" />
 		<attribute key="duration" value="300" />
 	</item>
-	<item id="36842" article="a" name="dead the brainstealer">
+	<item id="36842" article="a" name="dead brainstealer">
 		<attribute key="containerSize" value="25" />
 		<attribute key="decayTo" value="36841" />
 		<attribute key="duration" value="300" />
 	</item>
-	<item id="36843" article="a" name="dead the brainstealer">
+	<item id="36843" article="a" name="dead brainstealer">
 		<attribute key="containerSize" value="25" />
 		<attribute key="decayTo" value="36842" />
 		<attribute key="duration" value="10" />
 	</item>
-	<item id="36844" article="a" name="dead the mega magmaoid">
+	<item id="36844" article="a" name="dead magma bubble">
 		<attribute key="decayTo" value="0" />
 		<attribute key="duration" value="60" />
 	</item>
-	<item id="36845" article="a" name="dead the mega magmaoid">
+	<item id="36845" article="a" name="dead magma bubble">
 		<attribute key="containerSize" value="25" />
 		<attribute key="decayTo" value="36844" />
 		<attribute key="duration" value="300" />
 	</item>
-	<item id="36846" article="a" name="dead the mega magmaoid">
+	<item id="36846" article="a" name="dead magma bubble">
 		<attribute key="containerSize" value="25" />
 		<attribute key="decayTo" value="36845" />
 		<attribute key="duration" value="300" />
 	</item>
-	<item id="36847" article="a" name="dead the mega magmaoid">
+	<item id="36847" article="a" name="dead magma bubble">
 		<attribute key="containerSize" value="25" />
 		<attribute key="decayTo" value="36846" />
 		<attribute key="duration" value="10" />
@@ -56459,6 +56459,8 @@
 		<attribute key="armor" value="8"/>
 		<attribute key="weight" value="3100"/>
 	</item>
+	<item id="39168" article="a" name="heated crystal" />
+	<item id="39169" article="a" name="cooled crystal" />
 	<item fromid="39173" toid="39175" article="a" name="blessed pound"/>
 	<item id="39177" article="a" name="charged spiritthorn ring">
 		<attribute key="transformEquipTo" value="39178" />
@@ -56742,6 +56744,12 @@
 	<item id="39230" article="a" name="charged flame">
 		<attribute key="description" value="You should follow gnomish advice and use it on green crystals" />
 		<attribute key="weight" value="85"/>
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="10" />
+	</item>
+	<item id="39232" article="a" name="charged flame">
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="10" />
 	</item>
 	<item id="39233" article="an" name="enchanted turtle amulet">
 		<attribute key="weight" value="480"/>

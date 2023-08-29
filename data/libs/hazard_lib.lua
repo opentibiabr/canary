@@ -29,7 +29,7 @@ function Hazard:getHazardPlayerAndPoints(damageMap)
 	for key, _ in pairs(damageMap) do
 		local player = Player(key)
 		if player then
-			local playerHazardPoints = self:getPlayerCurrentLevel()
+			local playerHazardPoints = self:getPlayerCurrentLevel(player)
 
 			if playerHazardPoints < hazardPoints or hazardPoints == -1 then
 				hazardPlayer = player
@@ -108,18 +108,16 @@ function Hazard:register()
 
 	local event = ZoneEvent(self.zone)
 
-	function event.onEnter(zone, creature)
+	function event.afterEnter(zone, creature)
 		local player = creature:getPlayer()
-		if not player then return true end
+		if not player then return end
 		player:setHazardSystemPoints(self:getPlayerCurrentLevel(player))
-		return true
 	end
 
-	function event.onLeave(zone, creature)
+	function event.afterLeave(zone, creature)
 		local player = creature:getPlayer()
-		if not player then return true end
+		if not player then return end
 		player:setHazardSystemPoints(0)
-		return true
 	end
 
 	Hazard.areas[self.name] = self

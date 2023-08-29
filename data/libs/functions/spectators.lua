@@ -1,4 +1,5 @@
 ---@author @Glatharth
+---@deprecated Use Zone instead
 Spectators = {}
 setmetatable(Spectators, {
 	__call = function(self)

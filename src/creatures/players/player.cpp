@@ -584,6 +584,7 @@ void Player::updateInventoryImbuement() {
 	bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
 	// Check if the player is in fight mode
 	bool isInFightMode = hasCondition(CONDITION_INFIGHT);
+	bool nonAggressiveFightOnly = g_configManager().getBoolean(TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY);
 
 	// Iterate through all items in the player's inventory
 	for (auto item : getAllInventoryItems()) {
@@ -605,7 +606,7 @@ void Player::updateInventoryImbuement() {
 			auto parent = item->getParent();
 			bool isInBackpack = parent && parent->getContainer();
 			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
-			if (categoryImbuement && categoryImbuement->agressive && (isInProtectionZone || !isInFightMode || isInBackpack)) {
+			if (categoryImbuement && (categoryImbuement->agressive || nonAggressiveFightOnly) && (isInProtectionZone || !isInFightMode || isInBackpack)) {
 				continue;
 			}
 			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
@@ -622,9 +623,15 @@ void Player::updateInventoryImbuement() {
 
 			g_logger().debug("Decaying imbuement {} from item {} of player {}", imbuement->getName(), item->getName(), getName());
 			// Calculate the new duration of the imbuement, making sure it doesn't go below 0
-			uint64_t duration = std::max<uint64_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
+			uint32_t duration = std::max<uint32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
 			// Update the imbuement's duration in the item
 			item->decayImbuementTime(slotid, imbuement->getID(), duration);
+
+			if (duration == 0) {
+				removeItemImbuementStats(imbuement);
+				updateImbuementTrackerStats();
+				continue;
+			}
 		}
 	}
 }
@@ -2905,6 +2912,8 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 		pzLocked = true;
 		sendIcons();
 	}
+
+	updateImbuementTrackerStats();
 
 	Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0);
 	addCondition(condition);

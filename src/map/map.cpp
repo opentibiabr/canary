@@ -14,6 +14,7 @@
 
 #include "creatures/monsters/monster.hpp"
 #include "game/game.hpp"
+#include "game/zones/zone.hpp"
 #include "io/iomap.hpp"
 #include "io/iomapserialize.hpp"
 
@@ -117,11 +118,6 @@ void Map::loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMo
 void Map::loadHouseInfo() {
 	IOMapSerialize::loadHouseInfo();
 	IOMapSerialize::loadHouseItems(this);
-}
-
-void Map::spawnCreatures() {
-	IOMap::loadNpcs(this);
-	IOMap::loadMonsters(this);
 }
 
 bool Map::save() {
@@ -287,6 +283,12 @@ void Map::moveCreature(Creature &creature, Tile &newTile, bool forceTeleport /* 
 	Position oldPos = oldTile.getPosition();
 	Position newPos = newTile.getPosition();
 
+	auto fromZones = oldTile.getZones();
+	auto toZones = newTile.getZones();
+	if (auto ret = g_game().beforeCreatureZoneChange(&creature, fromZones, toZones); ret != RETURNVALUE_NOERROR) {
+		return;
+	}
+
 	bool teleport = forceTeleport || !newTile.getGround() || !Position::areInRange<1, 1, 0>(oldPos, newPos);
 
 	SpectatorHashSet spectators;
@@ -352,6 +354,7 @@ void Map::moveCreature(Creature &creature, Tile &newTile, bool forceTeleport /* 
 
 	oldTile.postRemoveNotification(&creature, &newTile, 0);
 	newTile.postAddNotification(&creature, &oldTile, 0);
+	g_game().afterCreatureZoneChange(&creature, fromZones, toZones);
 }
 
 void Map::getSpectatorsInternal(SpectatorHashSet &spectators, const Position &centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const {

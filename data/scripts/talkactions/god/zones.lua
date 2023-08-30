@@ -1,16 +1,5 @@
 local zones = TalkAction("/zones")
 
-local function randomZonePosition(zone)
-	local positions = zone:getPositions()
-	local destination = positions[math.random(1, #positions)]
-	local tile = destination:getTile()
-	while not tile or not tile:isWalkable(false, false, false, false, true) do
-		destination = positions[math.random(1, #positions)]
-		tile = destination:getTile()
-	end
-	return destination
-end
-
 function zones.onSay(player, words, param)
 	local params = string.split(param, ",")
 	local cmd = params[1]
@@ -44,7 +33,7 @@ function zones.onSay(player, words, param)
 
 	local commands = {
 		["goto"] = function(zone)
-			local pos = randomZonePosition(zone)
+			local pos = zone:randomPosition()
 			if not pos then
 				player:sendTextMessage(MESSAGE_HEALED, "No position found.")
 				return false

@@ -9,7 +9,7 @@ combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_FIREDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_FIREAREA)
 combat:setFormula(COMBAT_FORMULA_DAMAGE, -7000, 0, -10000, 0)
 
-arr1 = {
+local arr1 = {
 	{ 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
@@ -33,7 +33,7 @@ combat2:setParameter(COMBAT_PARAM_TYPE, COMBAT_FIREDAMAGE)
 combat2:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_FIREAREA)
 combat2:setFormula(COMBAT_FORMULA_DAMAGE, -7000, 0, -10000, 0)
 
-arr2 = {
+local arr2 = {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -57,7 +57,7 @@ combat3:setParameter(COMBAT_PARAM_TYPE, COMBAT_FIREDAMAGE)
 combat3:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_FIREAREA)
 combat3:setFormula(COMBAT_FORMULA_DAMAGE, -7000, 0, -10000, 0)
 
-arr3 = {
+local arr3 = {
 	{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
@@ -81,7 +81,7 @@ combat4:setParameter(COMBAT_PARAM_TYPE, COMBAT_FIREDAMAGE)
 combat4:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_FIREAREA)
 combat4:setFormula(COMBAT_FORMULA_DAMAGE, -7000, 0, -10000, 0)
 
-arr4 = {
+local arr4 = {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },

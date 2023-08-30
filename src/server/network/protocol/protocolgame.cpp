@@ -218,17 +218,16 @@ namespace {
 	 * @param msg The network message to send the category to.
 	 */
 	template <typename T>
-	void sendContainerCategory(NetworkMessage &msg, uint8_t categoryType = 0) {
+	void sendContainerCategory(NetworkMessage &msg, std::deque<T> categories = {}, uint8_t categoryType = 0) {
 		msg.addByte(categoryType);
-
-		const uint8_t enumCount = magic_enum::enum_count<T>();
-		msg.addByte(enumCount - 1);
-
-		for (auto value : magic_enum::enum_values<T>()) {
+		g_logger().debug("Sendding category type '{}', categories total size '{}'", categoryType, categories.size());
+		msg.addByte(categories.size());
+		for (auto value : categories) {
 			if (value == T::All) {
 				continue;
 			}
 
+			g_logger().debug("Sendding category number '{}', category name '{}'", static_cast<uint8_t>(value), magic_enum::enum_name(value).data());
 			msg.addByte(static_cast<uint8_t>(value));
 			msg.addString(magic_enum::enum_name(value).data());
 		}
@@ -4254,21 +4253,7 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 		msg.addString(container->getName());
 	}
 
-	const auto &enumName = container->getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
-	uint32_t totalCountToSend = 0;
-	std::vector<Item*> itemsStoreInboxToSend;
-	if (container->getID() == ITEM_STORE_INBOX && enumName != "All") {
-		for (Item* item : container->getItemList()) {
-			uint16_t unWrapId = item->getCustomAttribute("unWrapId") ? static_cast<uint16_t>(item->getCustomAttribute("unWrapId")->getInteger()) : 0;
-			if (unWrapId != 0) {
-				const auto &itemType = Item::items.getItemType(unWrapId);
-				if (itemType.m_primaryType == asLowerCaseString(enumName)) {
-					itemsStoreInboxToSend.push_back(item);
-					totalCountToSend++;
-				}
-			}
-		}
-	}
+	const auto itemsStoreInboxToSend = container->getStoreInboxFilteredItems();
 
 	msg.addByte(container->capacity());
 
@@ -4283,8 +4268,8 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 	msg.addByte(container->hasPagination() ? 0x01 : 0x00); // Pagination
 
 	uint32_t containerSize = container->size();
-	if (totalCountToSend != 0) {
-		containerSize = totalCountToSend;
+	if (!itemsStoreInboxToSend.empty()) {
+		containerSize = itemsStoreInboxToSend.size();
 	}
 	msg.add<uint16_t>(containerSize);
 	msg.add<uint16_t>(firstIndex);
@@ -4316,9 +4301,25 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 
 	if (!oldProtocol) {
 		if (container->getID() == ITEM_STORE_INBOX) {
+			std::deque<StoreInboxCategory_t> validCategories;
+			for (const auto item : container->getItemList()) {
+				auto attribute = item->getCustomAttribute("unWrapId");
+				uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
+				if (unWrapId != 0) {
+					const auto &itemType = Item::items.getItemType(unWrapId);
+					auto category = magic_enum::enum_cast<StoreInboxCategory_t>(toPascalCase(itemType.m_primaryType));
+					g_logger().debug("Store unwrap item '{}', primary type {}", unWrapId, toPascalCase(itemType.m_primaryType));
+					if (category.has_value()) {
+						g_logger().debug("Adding valid category {}", static_cast<uint8_t>(category.value()));
+						validCategories.push_back(category.value());
+					}
+				}
+			}
+
+			const auto enumName = container->getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
 			auto category = magic_enum::enum_cast<StoreInboxCategory_t>(enumName);
 			if (category.has_value()) {
-				sendContainerCategory<StoreInboxCategory_t>(msg, static_cast<uint8_t>(category.value()));
+				sendContainerCategory<StoreInboxCategory_t>(msg, validCategories, static_cast<uint8_t>(category.value()));
 			} else {
 				sendContainerCategory<StoreInboxCategory_t>(msg);
 			}

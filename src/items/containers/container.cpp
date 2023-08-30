@@ -17,7 +17,7 @@
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
 	m_maxItems = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER_ITEM));
-	if (getID() == ITEM_GOLD_POUCH || getID() == ITEM_STORE_INBOX) {
+	if (getID() == ITEM_GOLD_POUCH || isStoreInbox()) {
 		pagination = true;
 		m_maxItems = 2000;
 		maxSize = 32;
@@ -232,10 +232,39 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os, boo
 	return os;
 }
 
+std::deque<Item*> Container::getStoreInboxFilteredItems() const {
+	const auto enumName = getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
+	ItemDeque storeInboxFilteredList;
+	if (isStoreInboxFiltered()) {
+		for (Item* item : getItemList()) {
+			auto attribute = item->getCustomAttribute("unWrapId");
+			uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
+			if (unWrapId != 0) {
+				const auto &itemType = Item::items.getItemType(unWrapId);
+				if (itemType.m_primaryType == asLowerCaseString(enumName)) {
+					storeInboxFilteredList.push_back(item);
+				}
+			}
+		}
+	}
+
+	return storeInboxFilteredList;
+}
+
+Item* Container::getFilteredItemByIndex(size_t index) const {
+	const auto &filteredItems = getStoreInboxFilteredItems();
+	if (index >= filteredItems.size()) {
+		return nullptr;
+	}
+
+	return filteredItems[index];
+}
+
 Item* Container::getItemByIndex(size_t index) const {
 	if (index >= size()) {
 		return nullptr;
 	}
+
 	return itemlist[index];
 }
 

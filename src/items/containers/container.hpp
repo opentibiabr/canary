@@ -115,6 +115,8 @@ public:
 	bool hasParent() const;
 	void addItem(Item* item);
 	StashContainerList getStowableItems() const;
+	std::deque<Item*> getStoreInboxFilteredItems() const;
+	Item* getFilteredItemByIndex(size_t index) const;
 	Item* getItemByIndex(size_t index) const;
 	bool isHoldingItem(const Item* item) const;
 	bool isHoldingItemWithId(const uint16_t id) const;
@@ -129,6 +131,19 @@ public:
 	}
 	bool hasPagination() const {
 		return pagination;
+	}
+
+	bool isStoreInbox() const {
+		return getID() == ITEM_STORE_INBOX;
+	}
+
+	bool isStoreInboxFiltered() const {
+		auto attribute = getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
+		if (isStoreInbox() && !attribute.empty() && attribute != "All") {
+			return true;
+		}
+
+		return false;
 	}
 
 	// cylinder implementations

@@ -612,7 +612,12 @@ Thing* Game::internalGetThing(Player* player, const Position &pos, int32_t index
 		}
 
 		uint8_t slot = pos.z;
-		return parentContainer->getItemByIndex(player->getContainerIndex(fromCid) + slot);
+		auto containerIndex = player->getContainerIndex(fromCid) + slot;
+		if (parentContainer->isStoreInboxFiltered()) {
+			return parentContainer->getFilteredItemByIndex(containerIndex);
+		}
+
+		return parentContainer->getItemByIndex(containerIndex);
 	} else if (pos.y == 0x20 || pos.y == 0x21) {
 		// '0x20' -> From depot.
 		// '0x21' -> From inbox.
@@ -1853,7 +1858,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		return retMaxCount;
 	}
 
-	// looting analyser from this point forward
+	// Actor related actions
 	if (fromCylinder && actor && toCylinder) {
 		if (!fromCylinder->getContainer() || !actor->getPlayer() || !toCylinder->getContainer()) {
 			return ret;
@@ -1870,9 +1875,13 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 				return ret;
 			}
 
+			// Looting analyser
 			if (it.isCorpse && toCylinder->getContainer()->getTopParent() == player && item->getIsLootTrackeable()) {
 				player->sendLootStats(item, static_cast<uint8_t>(item->getItemCount()));
 			}
+
+			player->onSendContainer(toCylinder->getContainer());
+			player->onSendContainer(fromCylinder->getContainer());
 		}
 	}
 

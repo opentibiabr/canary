@@ -1935,7 +1935,7 @@ void Player::onCloseContainer(const Container* container) {
 }
 
 void Player::onSendContainer(const Container* container) {
-	if (!client) {
+	if (!client || !container) {
 		return;
 	}
 

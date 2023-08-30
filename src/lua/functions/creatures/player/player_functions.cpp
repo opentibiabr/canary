@@ -1902,7 +1902,7 @@ int PlayerFunctions::luaPlayerSendUpdateContainer(lua_State* L) {
 		return 1;
 	}
 
-	Container* container = getUserdata<Container>(L, 2);
+	const auto container = getUserdata<Container>(L, 2);
 	if (!container) {
 		reportErrorFunc("Container is nullptr");
 		return 1;

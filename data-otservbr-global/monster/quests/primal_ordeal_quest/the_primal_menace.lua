@@ -281,6 +281,10 @@ local function spawnMonster(monsterId, spawnPosition)
 
 	local randomMonsterIndex = math.random(#thePrimalMenaceConfig.MonsterConfig.MonsterPool)
 	local primalMonster = Game.createMonster(thePrimalMenaceConfig.MonsterConfig.MonsterPool[randomMonsterIndex], spawnPosition)
+	if not monster then
+		logger.error("Cannot create primal monster {}", thePrimalMenaceConfig.MonsterConfig.MonsterPool[randomMonsterIndex])
+		return
+	end
 	local primalBeastEntry = {
 		MonsterId = primalMonster:getId(),
 		Created = os.time()

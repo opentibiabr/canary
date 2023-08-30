@@ -76,7 +76,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	else
 		if npcHandler:getTopic(playerId) == 1 then
 			local desiredLevel = getMoneyCount(message)
-			if desiredLevel == -1 then
+			if desiredLevel <= 0 then
 				npcHandler:say("I'm sorry, I don't understand. What hazard level would you like to set?", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true

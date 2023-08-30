@@ -46,7 +46,8 @@ function Hazard:getHazardPlayerAndPoints(damageMap)
 end
 
 function Hazard:getPlayerCurrentLevel(player)
-	return player:getStorageValue(self.storageCurrent) < 0 and 0 or player:getStorageValue(self.storageCurrent)
+	local fromStorage = player:getStorageValue(self.storageCurrent)
+	return fromStorage <= 0 and 1 or fromStorage
 end
 
 function Hazard:setPlayerCurrentLevel(player, level)
@@ -71,7 +72,8 @@ function Hazard:setPlayerCurrentLevel(player, level)
 end
 
 function Hazard:getPlayerMaxLevel(player)
-	return player:getStorageValue(self.storageMax) < 0 and 0 or player:getStorageValue(self.storageMax)
+	local fromStorage = player:getStorageValue(self.storageMax)
+	return fromStorage <= 0 and 1 or fromStorage
 end
 
 function Hazard:levelUp(player)

@@ -61,25 +61,9 @@ monster.voices = {
 }
 
 monster.attacks = {
-<<<<<<< HEAD:data-otservbr-global/monster/elementals/unchained_fire.lua
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1031 },
-	{ name = "firefield", interval = 2000, chance = 10, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, target = false },
-	{ name = "firefield", interval = 2000, chance = 10, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -200, maxDamage = -700, length = 7, spread = 3, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -60, maxDamage = -250, radius = 3, effect = CONST_ME_EXPLOSIONHIT, target = false },
-	{ name = "massive fire elemental soulfire", interval = 2000, chance = 15, target = false }
-||||||| parent of 349f58bd4 (feat: magma bubble):data-otservbr-global/monster/elementals/unchained_fire.lua
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1031},
-	{name ="firefield", interval = 2000, chance = 10, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, target = false},
-	{name ="firefield", interval = 2000, chance = 10, range = 7, radius = 3, shootEffect = CONST_ANI_FIRE, target = true},
-	{name ="combat", interval = 2000, chance = 10, type = COMBAT_FIREDAMAGE, minDamage = -200, maxDamage = -700, length = 7, spread = 3, target = false},
-	{name ="combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -60, maxDamage = -250, radius = 3, effect = CONST_ME_EXPLOSIONHIT, target = false},
-	{name ="massive fire elemental soulfire", interval = 2000, chance = 15, target = false}
-=======
-	{name ="melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1700},
-	{name ="unchained fire beam", interval = 3700, chance = 38, minDamage = -775, maxDamage = -1300},
-	{name ="unchained fire explosion", interval = 5100, chance = 35, minDamage = -900, maxDamage = -1400},
->>>>>>> 349f58bd4 (feat: magma bubble):data-otservbr-global/monster/quests/primal_ordeal_quest/unchained_fire.lua
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1700 },
+	{ name = "unchained fire beam", interval = 3700, chance = 38, minDamage = -775, maxDamage = -1300 },
+	{ name = "unchained fire explosion", interval = 5100, chance = 35, minDamage = -900, maxDamage = -1400 },
 }
 
 monster.defenses = {

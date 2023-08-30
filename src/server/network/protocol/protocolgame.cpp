@@ -4321,7 +4321,7 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 			if (category.has_value()) {
 				sendContainerCategory<StoreInboxCategory_t>(msg, validCategories, static_cast<uint8_t>(category.value()));
 			} else {
-				sendContainerCategory<StoreInboxCategory_t>(msg);
+				sendContainerCategory<StoreInboxCategory_t>(msg, validCategories);
 			}
 		} else {
 			msg.addByte(0x00);

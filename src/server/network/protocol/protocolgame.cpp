@@ -218,7 +218,7 @@ namespace {
 	 * @param msg The network message to send the category to.
 	 */
 	template <typename T>
-	void sendContainerCategory(NetworkMessage &msg, std::deque<T> categories = {}, uint8_t categoryType = 0) {
+	void sendContainerCategory(NetworkMessage &msg, phmap::flat_hash_set<T> categories = {}, uint8_t categoryType = 0) {
 		msg.addByte(categoryType);
 		g_logger().debug("Sendding category type '{}', categories total size '{}'", categoryType, categories.size());
 		msg.addByte(categories.size());
@@ -4282,6 +4282,7 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 		maxItemsToSend = container->capacity();
 	}
 
+	const ItemDeque &itemList = container->getItemList();
 	if (firstIndex >= containerSize) {
 		msg.addByte(0x00);
 	} else if (container->getID() == ITEM_STORE_INBOX && !itemsStoreInboxToSend.empty()) {
@@ -4293,41 +4294,46 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 		msg.addByte(std::min<uint32_t>(maxItemsToSend, containerSize));
 
 		uint32_t i = 0;
-		const ItemDeque &itemList = container->getItemList();
 		for (ItemDeque::const_iterator it = itemList.begin() + firstIndex, end = itemList.end(); i < maxItemsToSend && it != end; ++it, ++i) {
 			AddItem(msg, *it);
 		}
 	}
 
-	if (!oldProtocol) {
-		if (container->getID() == ITEM_STORE_INBOX) {
-			std::deque<StoreInboxCategory_t> validCategories;
-			for (const auto item : container->getItemList()) {
-				auto attribute = item->getCustomAttribute("unWrapId");
-				uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
-				if (unWrapId != 0) {
-					const auto &itemType = Item::items.getItemType(unWrapId);
-					auto category = magic_enum::enum_cast<StoreInboxCategory_t>(toPascalCase(itemType.m_primaryType));
-					g_logger().debug("Store unwrap item '{}', primary type {}", unWrapId, toPascalCase(itemType.m_primaryType));
-					if (category.has_value()) {
-						g_logger().debug("Adding valid category {}", static_cast<uint8_t>(category.value()));
-						validCategories.push_back(category.value());
-					}
+	// From here on down is for version 13.21+
+	if (oldProtocol) {
+		writeToOutputBuffer(msg);
+		return;
+	}
+
+	if (container->isStoreInbox()) {
+		auto categories = container->getStoreInboxValidCategories();
+		const auto enumName = container->getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
+		auto category = magic_enum::enum_cast<StoreInboxCategory_t>(enumName);
+		if (category.has_value()) {
+			bool toSendCategory = false;
+			// Check if category exist in the deque
+			for (const auto& tempCategory : categories) {
+				if (tempCategory == category.value()) {
+					toSendCategory = true;
+					g_logger().debug("found category {}", toSendCategory);
 				}
 			}
 
-			const auto enumName = container->getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
-			auto category = magic_enum::enum_cast<StoreInboxCategory_t>(enumName);
-			if (category.has_value()) {
-				sendContainerCategory<StoreInboxCategory_t>(msg, validCategories, static_cast<uint8_t>(category.value()));
-			} else {
-				sendContainerCategory<StoreInboxCategory_t>(msg, validCategories);
+			if (!toSendCategory) {
+				Container* container = player->getContainerByID(cid);
+				if (container) {
+					container->removeAttribute(ItemAttribute_t::STORE_INBOX_CATEGORY);
+				}
 			}
+			sendContainerCategory<StoreInboxCategory_t>(msg, categories, static_cast<uint8_t>(category.value()));
 		} else {
-			msg.addByte(0x00);
-			msg.addByte(0x00);
+			sendContainerCategory<StoreInboxCategory_t>(msg, categories);
 		}
+	} else {
+		msg.addByte(0x00);
+		msg.addByte(0x00);
 	}
+
 	writeToOutputBuffer(msg);
 }
 

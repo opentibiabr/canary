@@ -251,13 +251,39 @@ std::deque<Item*> Container::getStoreInboxFilteredItems() const {
 	return storeInboxFilteredList;
 }
 
+phmap::flat_hash_set<StoreInboxCategory_t> Container::getStoreInboxValidCategories() const {
+	phmap::flat_hash_set<StoreInboxCategory_t> validCategories;
+	for (const auto& item : itemlist) {
+		auto attribute = item->getCustomAttribute("unWrapId");
+		uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
+		if (unWrapId != 0) {
+			const auto &itemType = Item::items.getItemType(unWrapId);
+			auto category = magic_enum::enum_cast<StoreInboxCategory_t>(toPascalCase(itemType.m_primaryType));
+			g_logger().debug("Store unwrap item '{}', primary type {}", unWrapId, toPascalCase(itemType.m_primaryType));
+			if (category.has_value()) {
+				g_logger().debug("Adding valid category {}", static_cast<uint8_t>(category.value()));
+				validCategories.insert(category.value());
+			}
+		}
+	}
+
+	return validCategories;
+}
+
 Item* Container::getFilteredItemByIndex(size_t index) const {
 	const auto &filteredItems = getStoreInboxFilteredItems();
 	if (index >= filteredItems.size()) {
 		return nullptr;
 	}
 
-	return filteredItems[index];
+	auto item = filteredItems[index];
+
+	auto it = std::find(itemlist.begin(), itemlist.end(), item);
+	if (it == itemlist.end()) {
+		return nullptr;
+	}
+
+	return *it;
 }
 
 Item* Container::getItemByIndex(size_t index) const {

@@ -116,6 +116,7 @@ public:
 	void addItem(Item* item);
 	StashContainerList getStowableItems() const;
 	std::deque<Item*> getStoreInboxFilteredItems() const;
+	phmap::flat_hash_set<StoreInboxCategory_t> getStoreInboxValidCategories() const;
 	Item* getFilteredItemByIndex(size_t index) const;
 	Item* getItemByIndex(size_t index) const;
 	bool isHoldingItem(const Item* item) const;

@@ -1590,8 +1590,9 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 		}
 
 		const Container* topParentContainer = toCylinderContainer->getRootContainer();
-
-		if (!item->isStoreItem() && (containerID == ITEM_STORE_INBOX || topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
+		const auto parentContainer = topParentContainer->getParent() ? topParentContainer->getParent()->getContainer() : nullptr;
+		auto isStoreInbox = parentContainer && parentContainer->isStoreInbox();
+		if (!item->isStoreItem() && (containerID == ITEM_STORE_INBOX || isStoreInbox)) {
 			return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 		}
 
@@ -1605,7 +1606,7 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 				isValidMoveItem = true;
 			}
 
-			if (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && (topParentContainer->getParent()->getContainer()->isDepotChest() || topParentContainer->getParent()->getContainer()->getID() == ITEM_STORE_INBOX)) {
+			if (parentContainer && (parentContainer->isDepotChest() || isStoreInbox)) {
 				isValidMoveItem = true;
 			}
 
@@ -1860,7 +1861,9 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 
 	// Actor related actions
 	if (fromCylinder && actor && toCylinder) {
-		if (!fromCylinder->getContainer() || !actor->getPlayer() || !toCylinder->getContainer()) {
+		auto fromContainer = fromCylinder->getContainer();
+		auto toContainer = toCylinder->getContainer();
+		if (!fromContainer || !actor->getPlayer() || !toContainer) {
 			return ret;
 		}
 
@@ -1876,12 +1879,17 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 			}
 
 			// Looting analyser
-			if (it.isCorpse && toCylinder->getContainer()->getTopParent() == player && item->getIsLootTrackeable()) {
+			if (it.isCorpse && toContainer->getTopParent() == player && item->getIsLootTrackeable()) {
 				player->sendLootStats(item, static_cast<uint8_t>(item->getItemCount()));
 			}
 
-			player->onSendContainer(toCylinder->getContainer());
-			player->onSendContainer(fromCylinder->getContainer());
+			// StoreInbox update containers
+			if (toContainer->isStoreInbox()) {
+				player->onSendContainer(toContainer);
+			}
+			if (fromContainer->isStoreInbox()) {
+				player->onSendContainer(fromContainer);
+			}
 		}
 	}
 
@@ -4128,7 +4136,7 @@ void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_
 		return;
 	}
 
-	if (container->getID() == ITEM_STORE_INBOX) {
+	if (container->isStoreInbox()) {
 		auto enumName = magic_enum::enum_name(static_cast<StoreInboxCategory_t>(containerCategory)).data();
 		container->setAttribute(ItemAttribute_t::STORE_INBOX_CATEGORY, enumName);
 		g_logger().debug("Setting new container with store inbox category name {}", enumName);

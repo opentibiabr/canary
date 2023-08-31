@@ -381,7 +381,7 @@ function Hireling:returnToLamp(player_id)
 		end
 
 		local inbox = owner:getSlotItem(CONST_SLOT_STORE_INBOX)
-		if not inbox or inbox:getEmptySlots() < 1 then
+		if not inbox then
 			owner:getPosition():sendMagicEffect(CONST_ME_POFF)
 			return owner:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
 		end
@@ -526,7 +526,7 @@ function Player:addNewHireling(name, sex)
 	end
 
 	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if not inbox or inbox:getEmptySlots() < 1 then
+	if not inbox then
 		self:getPosition():sendMagicEffect(CONST_ME_POFF)
 		self:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
 		return false

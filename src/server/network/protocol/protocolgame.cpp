@@ -4312,7 +4312,7 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 		if (category.has_value()) {
 			bool toSendCategory = false;
 			// Check if category exist in the deque
-			for (const auto& tempCategory : categories) {
+			for (const auto &tempCategory : categories) {
 				if (tempCategory == category.value()) {
 					toSendCategory = true;
 					g_logger().debug("found category {}", toSendCategory);

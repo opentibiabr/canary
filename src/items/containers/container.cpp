@@ -253,7 +253,7 @@ std::deque<Item*> Container::getStoreInboxFilteredItems() const {
 
 phmap::flat_hash_set<StoreInboxCategory_t> Container::getStoreInboxValidCategories() const {
 	phmap::flat_hash_set<StoreInboxCategory_t> validCategories;
-	for (const auto& item : itemlist) {
+	for (const auto &item : itemlist) {
 		auto attribute = item->getCustomAttribute("unWrapId");
 		uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
 		if (unWrapId != 0) {

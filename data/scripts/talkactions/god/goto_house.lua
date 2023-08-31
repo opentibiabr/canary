@@ -10,7 +10,6 @@ function sellHouse.onSay(player, words, param)
 		end
 
 		targetPlayer:teleportTo(targetHouse:getExitPosition())
-		return true
 	else
 		local house = player:getHouse()
 		if not house then
@@ -19,7 +18,6 @@ function sellHouse.onSay(player, words, param)
 		end
 
 		player:teleportTo(house:getExitPosition())
-		return true
 	end
 
 	return false

@@ -46,7 +46,6 @@ public:
 			);
 		}
 		g_logger().error("Failed to convert attribute for type {}", fmt::underlying(type));
-
 		return {};
 	}
 

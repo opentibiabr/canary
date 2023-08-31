@@ -232,6 +232,19 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os, boo
 	return os;
 }
 
+bool Container::isStoreInbox() const {
+	return getID() == ITEM_STORE_INBOX;
+}
+
+bool Container::isStoreInboxFiltered() const {
+	auto attribute = getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
+	if (isStoreInbox() && !attribute.empty() && attribute != "All") {
+		return true;
+	}
+
+	return false;
+}
+
 std::deque<Item*> Container::getStoreInboxFilteredItems() const {
 	const auto enumName = getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
 	ItemDeque storeInboxFilteredList;

@@ -60,7 +60,6 @@ private:
 		return error == CR_SERVER_LOST || error == CR_SERVER_GONE_ERROR || error == CR_CONN_HOST_ERROR || error == 1053 /*ER_SERVER_SHUTDOWN*/ || error == CR_CONNECTION_ERROR;
 	}
 
-private:
 	MYSQL* handle = nullptr;
 	std::recursive_mutex databaseLock;
 	uint64_t maxPacketSize = 1048576;

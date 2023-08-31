@@ -11,6 +11,7 @@ add_subdirectory(game)
 add_subdirectory(io)
 add_subdirectory(items)
 add_subdirectory(lib)
+add_subdirectory(kv)
 add_subdirectory(lua)
 add_subdirectory(map)
 add_subdirectory(security)
@@ -18,7 +19,19 @@ add_subdirectory(server)
 add_subdirectory(utils)
 
 # Add more global sources - please add preferably in the sub_directory CMakeLists.
-target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp protobuf/appearances.pb.cc)
+set(ProtobufFiles
+	protobuf/appearances.pb.cc
+	protobuf/kv.pb.cc
+)
+
+# Add more global sources - please add preferably in the sub_directory CMakeLists.
+target_sources(${PROJECT_NAME}_lib PRIVATE canary_server.cpp ${ProtobufFiles})
+
+# Skip unity build inclusion for protobuf files
+set_source_files_properties(
+    ${ProtobufFiles} PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON
+)
+
 
 # Add public pre compiler header to lib, to pass down to related targets
 target_precompile_headers(${PROJECT_NAME}_lib PUBLIC pch.hpp)

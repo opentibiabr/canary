@@ -241,7 +241,7 @@ DailyReward.loadDailyReward = function(playerId, target)
 	end
 
 	target = REWARD_FROM_PANEL
-	if target ~= 0 then
+	if target == 0 then
 		target = REWARD_FROM_SHRINE
 	end
 

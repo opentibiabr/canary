@@ -10,11 +10,11 @@
 #pragma once
 
 #include "pch.hpp"
-#include <concepts>
-#include <utility>
 
 class Creature;
 class Player;
+class Monster;
+class Npc;
 struct Position;
 
 // #define SPECTATORS_USE_HASHSET

@@ -8019,8 +8019,8 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
 	auto spectators = Spectators().find<Player>(player->getPosition(), true);
 	spectators.insert(npc);
 	internalCreatureSay(player, TALKTYPE_SAY, "hi", false, &spectators);
+	spectators = spectators.filter<Npc>();
 
-	spectators.filter<Npc>();
 	if (npc->getSpeechBubble() == SPEECHBUBBLE_TRADE) {
 		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "trade", false, &spectators);
 	} else {

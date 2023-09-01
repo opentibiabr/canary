@@ -9,6 +9,9 @@
 
 #include "spectators.hpp"
 #include "game/game.hpp"
+#include <creatures/creature.hpp>
+#include <creatures/npcs/npc.hpp>
+#include <creatures/monsters/monster.hpp>
 
 phmap::flat_hash_map<Position, std::pair<SpectatorList, SpectatorList>> spectatorCache;
 phmap::flat_hash_map<Position, std::pair<SpectatorList, SpectatorList>> playersSpectatorCache;

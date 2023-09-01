@@ -1643,7 +1643,7 @@ ReturnValue Game::checkMoveItemToCylinder(Player* player, Cylinder* fromCylinder
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index, Item* item, uint32_t count, Item** internalMoveItem, uint32_t flags /*= 0*/, Creature* actor /*=nullptr*/, Item* tradeItem /* = nullptr*/) {
+ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index, Item* item, uint32_t count, Item** movedItem, uint32_t flags /*= 0*/, Creature* actor /*=nullptr*/, Item* tradeItem /* = nullptr*/, bool checkTile /* = true*/) {
 	if (fromCylinder == nullptr) {
 		g_logger().error("[{}] fromCylinder is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -1653,11 +1653,12 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	Tile* fromTile = fromCylinder->getTile();
-	if (fromTile) {
-		auto it = browseFields.find(fromTile);
-		if (it != browseFields.end() && it->second == fromCylinder) {
-			fromCylinder = fromTile;
+	if (checkTile) {
+		if (Tile* fromTile = fromCylinder->getTile()) {
+			auto it = browseFields.find(fromTile);
+			if (it != browseFields.end() && it->second == fromCylinder) {
+				fromCylinder = fromTile;
+			}
 		}
 	}
 
@@ -1817,11 +1818,11 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		updateItem->startDecaying();
 	}
 
-	if (internalMoveItem) {
+	if (movedItem) {
 		if (moveItem) {
-			*internalMoveItem = moveItem;
+			*movedItem = moveItem;
 		} else {
-			*internalMoveItem = item;
+			*movedItem = item;
 		}
 	}
 
@@ -2601,7 +2602,7 @@ ReturnValue Game::processMoveOrAddItemToLootContainer(Item* item, Container* loo
 	Item* moveItem = nullptr;
 	ReturnValue ret;
 	if (item->getParent()) {
-		ret = internalMoveItem(item->getParent(), lootContainer, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, 0, player);
+		ret = internalMoveItem(item->getParent(), lootContainer, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, 0, player, nullptr, false);
 	} else {
 		ret = internalAddItem(lootContainer, item, INDEX_WHEREEVER);
 	}

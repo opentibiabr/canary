@@ -240,9 +240,8 @@ DailyReward.loadDailyReward = function(playerId, target)
 		return false
 	end
 
-	target = REWARD_FROM_PANEL
 	if target ~= 0 then
-		target = REWARD_FROM_SHRINE
+		target = REWARD_FROM_PANEL
 	end
 
 	player:sendCollectionResource(ClientPackets.JokerResource, player:getJokerTokens())

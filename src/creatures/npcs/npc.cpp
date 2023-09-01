@@ -537,7 +537,7 @@ void Npc::onPlacedCreature() {
 void Npc::loadPlayerSpectators() {
 	auto spec = Spectators().find<Player>(position, true);
 	for (auto creature : spec) {
-		if (creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
+		if (!creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
 			playerSpectators.insert(creature);
 		}
 	}

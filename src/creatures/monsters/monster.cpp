@@ -17,6 +17,7 @@
 #include "lua/creature/events.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "map/spectators.hpp"
 
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
@@ -360,8 +361,7 @@ void Monster::updateTargetList() {
 		}
 	}
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, position, true);
+	auto spectators = Spectators().find<Creature>(position, true);
 	spectators.erase(this);
 	for (Creature* spectator : spectators) {
 		if (canSee(spectator->getPosition())) {

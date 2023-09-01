@@ -13,6 +13,7 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "io/fileloader.hpp"
+#include "map/spectators.hpp"
 
 /**
  *  Condition
@@ -1190,8 +1191,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 					message.primary.color = TEXTCOLOR_PASTELRED;
 					player->sendTextMessage(message);
 
-					SpectatorHashSet spectators;
-					g_game().map.getSpectators(spectators, player->getPosition(), false, true);
+					auto spectators = Spectators().find<Player>(player->getPosition(), false);
 					spectators.erase(player);
 					if (!spectators.empty()) {
 						message.type = MESSAGE_HEALED_OTHERS;

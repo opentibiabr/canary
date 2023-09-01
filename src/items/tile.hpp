@@ -22,10 +22,10 @@ class MagicField;
 class BedItem;
 class House;
 class Zone;
+class Spectators;
 
 using CreatureVector = std::vector<Creature*>;
 using ItemVector = std::vector<Item*>;
-using SpectatorHashSet = phmap::flat_hash_set<Creature*>;
 
 class TileItemVector : private ItemVector {
 public:
@@ -249,8 +249,8 @@ public:
 private:
 	void onAddTileItem(Item* item);
 	void onUpdateTileItem(Item* oldItem, const ItemType &oldType, Item* newItem, const ItemType &newType);
-	void onRemoveTileItem(const SpectatorHashSet &spectators, const std::vector<int32_t> &oldStackPosVector, Item* item);
-	void onUpdateTile(const SpectatorHashSet &spectators);
+	void onRemoveTileItem(Spectators &spectators, const std::vector<int32_t> &oldStackPosVector, Item* item);
+	void onUpdateTile(Spectators &spectators);
 
 	void setTileFlags(const Item* item);
 	void resetTileFlags(const Item* item);

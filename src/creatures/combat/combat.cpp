@@ -18,6 +18,7 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "items/weapons/weapons.hpp"
+#include "map/spectators.hpp"
 
 int32_t Combat::getLevelFormula(const Player* player, const std::shared_ptr<Spell> wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
@@ -754,7 +755,7 @@ void Combat::CombatNullFunc(Creature* caster, Creature* target, const CombatPara
 	CombatDispelFunc(caster, target, params, nullptr);
 }
 
-void Combat::combatTileEffects(const SpectatorHashSet &spectators, Creature* caster, Tile* tile, const CombatParams &params) {
+void Combat::combatTileEffects(Spectators &spectators, Creature* caster, Tile* tile, const CombatParams &params) {
 	if (params.itemId != 0) {
 		uint16_t itemId = params.itemId;
 		switch (itemId) {
@@ -995,7 +996,6 @@ void Combat::CombatFunc(Creature* caster, const Position &origin, const Position
 		getCombatArea(pos, pos, area, tileList);
 	}
 
-	SpectatorHashSet spectators;
 	uint32_t maxX = 0;
 	uint32_t maxY = 0;
 
@@ -1016,7 +1016,8 @@ void Combat::CombatFunc(Creature* caster, const Position &origin, const Position
 
 	const int32_t rangeX = maxX + MAP_MAX_VIEW_PORT_X;
 	const int32_t rangeY = maxY + MAP_MAX_VIEW_PORT_Y;
-	g_game().map.getSpectators(spectators, pos, true, true, rangeX, rangeX, rangeY, rangeY);
+
+	auto spectators = Spectators().find<Player>(pos, true, rangeX, rangeX, rangeY, rangeY);
 
 	int affected = 0;
 	for (Tile* tile : tileList) {
@@ -1336,8 +1337,7 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatPar
 
 void Combat::doCombatDefault(Creature* caster, Creature* target, const Position &origin, const CombatParams &params) {
 	if (!params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR)) {
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, target->getPosition(), true, true);
+		auto spectators = Spectators().find<Player>(target->getPosition(), true);
 
 		CombatNullFunc(caster, target, params, nullptr);
 		combatTileEffects(spectators, caster, target->getTile(), params);
@@ -1382,8 +1382,7 @@ void Combat::pickChainTargets(Creature* caster, std::vector<Creature*> &targets,
 	}
 
 	auto currentTarget = targets.back();
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, currentTarget->getPosition(), false, false, chainDistance, chainDistance, chainDistance, chainDistance);
+	auto spectators = Spectators().find<Creature>(currentTarget->getPosition(), false, chainDistance, chainDistance, chainDistance, chainDistance);
 	g_logger().debug("Combat::pickChainTargets: currentTarget: {}, spectators: {}", currentTarget->getName(), spectators.size());
 	auto maxBacktrackingAttempts = 10;
 	for (auto attempts = 0; targets.size() <= maxTargets && attempts < maxBacktrackingAttempts; ++attempts) {

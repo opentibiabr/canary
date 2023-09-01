@@ -47,6 +47,7 @@ class PreySlot;
 class TaskHuntingSlot;
 class Spell;
 class PlayerWheel;
+class Spectators;
 
 enum class ForgeConversion_t : uint8_t {
 	FORGE_ACTION_FUSION = 0,
@@ -490,7 +491,6 @@ public:
 		return inMarket;
 	}
 	void setSpecialMenuAvailable(bool supplyStashBool, bool marketMenuBool, bool depotSearchBool) {
-
 		// Closing depot search when player have special container disabled and it's still open.
 		if (isDepotSearchOpen() && !depotSearchBool && depotSearch) {
 			depotSearchOnItem = { 0, 0 };
@@ -2260,7 +2260,7 @@ public:
 		SpeakClasses type,
 		const std::string &text,
 		bool ghostMode,
-		SpectatorHashSet* spectatorsPtr = nullptr,
+		Spectators* spectatorsPtr = nullptr,
 		const Position* pos = nullptr
 	);
 

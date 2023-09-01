@@ -21,6 +21,7 @@
 #include "items/trashholder.hpp"
 #include "map/house/housetile.hpp"
 #include "io/iomap.hpp"
+#include "map/spectators.hpp"
 
 StaticTile real_nullptr_tile(0xFFFF, 0xFFFF, 0xFF);
 Tile &Tile::nullptr_tile = real_nullptr_tile;
@@ -349,8 +350,7 @@ void Tile::onAddTileItem(Item* item) {
 
 	const Position &cylinderMapPos = getPosition();
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, cylinderMapPos, true);
+	auto spectators = Spectators().find<Creature>(cylinderMapPos, true);
 
 	// send to client
 	for (Creature* spectator : spectators) {
@@ -428,8 +428,8 @@ void Tile::onUpdateTileItem(Item* oldItem, const ItemType &oldType, Item* newIte
 
 	const Position &cylinderMapPos = getPosition();
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, cylinderMapPos, true);
+	auto spectators = Spectators().find<Creature>(cylinderMapPos, true);
+	;
 
 	// send to client
 	for (Creature* spectator : spectators) {
@@ -444,7 +444,7 @@ void Tile::onUpdateTileItem(Item* oldItem, const ItemType &oldType, Item* newIte
 	}
 }
 
-void Tile::onRemoveTileItem(const SpectatorHashSet &spectators, const std::vector<int32_t> &oldStackPosVector, Item* item) {
+void Tile::onRemoveTileItem(Spectators &spectators, const std::vector<int32_t> &oldStackPosVector, Item* item) {
 	if ((item->hasProperty(CONST_PROP_MOVEABLE) || item->getContainer()) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVEABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) {
 		auto it = g_game().browseFields.find(this);
 		if (it != g_game().browseFields.end()) {
@@ -524,7 +524,7 @@ void Tile::onRemoveTileItem(const SpectatorHashSet &spectators, const std::vecto
 	}
 }
 
-void Tile::onUpdateTile(const SpectatorHashSet &spectators) {
+void Tile::onUpdateTile(Spectators &spectators) {
 	const Position &cylinderMapPos = getPosition();
 
 	// send to clients
@@ -539,7 +539,6 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 	}
 
 	if (const Creature* creature = thing.getCreature()) {
-
 		if (creature->getNpc()) {
 			ReturnValue returnValue = checkNpcCanWalkIntoTile();
 			if (returnValue != RETURNVALUE_NOERROR) {
@@ -932,7 +931,7 @@ void Tile::addThing(int32_t, Thing* thing) {
 
 	Creature* creature = thing->getCreature();
 	if (creature) {
-		g_game().map.clearSpectatorCache();
+		Spectators::clearCache();
 		creature->setParent(this);
 		CreatureVector* creatures = makeCreatures();
 		creatures->insert(creatures->begin(), creature);
@@ -1134,7 +1133,7 @@ void Tile::removeThing(Thing* thing, uint32_t count) {
 		if (creatures) {
 			auto it = std::find(creatures->begin(), creatures->end(), thing);
 			if (it != creatures->end()) {
-				g_game().map.clearSpectatorCache();
+				Spectators::clearCache();
 				creatures->erase(it);
 			}
 		}
@@ -1155,8 +1154,7 @@ void Tile::removeThing(Thing* thing, uint32_t count) {
 		ground->setParent(nullptr);
 		ground = nullptr;
 
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, getPosition(), true);
+		auto spectators = Spectators().find<Creature>(getPosition(), true);
 		onRemoveTileItem(spectators, std::vector<int32_t>(spectators.size(), 0), item);
 		return;
 	}
@@ -1174,8 +1172,7 @@ void Tile::removeThing(Thing* thing, uint32_t count) {
 
 		std::vector<int32_t> oldStackPosVector;
 
-		SpectatorHashSet spectators;
-		g_game().map.getSpectators(spectators, getPosition(), true);
+		auto spectators = Spectators().find<Creature>(getPosition(), true);
 		for (Creature* spectator : spectators) {
 			if (Player* tmpPlayer = spectator->getPlayer()) {
 				oldStackPosVector.push_back(getStackposOfItem(tmpPlayer, item));
@@ -1199,12 +1196,9 @@ void Tile::removeThing(Thing* thing, uint32_t count) {
 		} else {
 			std::vector<int32_t> oldStackPosVector;
 
-			SpectatorHashSet spectators;
-			g_game().map.getSpectators(spectators, getPosition(), true);
+			auto spectators = Spectators().find<Player>(getPosition(), true);
 			for (Creature* spectator : spectators) {
-				if (Player* tmpPlayer = spectator->getPlayer()) {
-					oldStackPosVector.push_back(getStackposOfItem(tmpPlayer, item));
-				}
+				oldStackPosVector.push_back(getStackposOfItem(spectator->getPlayer(), item));
 			}
 
 			item->setParent(nullptr);
@@ -1432,8 +1426,7 @@ Thing* Tile::getThing(size_t index) const {
 }
 
 void Tile::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t link /*= LINK_OWNER*/) {
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, getPosition(), true, true);
+	auto spectators = Spectators().find<Player>(getPosition(), true);
 	for (Creature* spectator : spectators) {
 		spectator->getPlayer()->postAddNotification(thing, oldParent, index, LINK_NEAR);
 	}
@@ -1486,9 +1479,7 @@ void Tile::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t 
 }
 
 void Tile::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t) {
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, getPosition(), true, true);
-
+	auto spectators = Spectators().find<Player>(getPosition(), true);
 	if (getThingCount() > 8) {
 		onUpdateTile(spectators);
 	}
@@ -1541,7 +1532,7 @@ void Tile::internalAddThing(uint32_t, Thing* thing) {
 
 	Creature* creature = thing->getCreature();
 	if (creature) {
-		g_game().map.clearSpectatorCache();
+		Spectators::clearCache();
 		CreatureVector* creatures = makeCreatures();
 		creatures->insert(creatures->begin(), creature);
 	} else {

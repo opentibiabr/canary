@@ -12,6 +12,7 @@
 #include "game/game.hpp"
 #include "game/movement/position.hpp"
 #include "lua/functions/map/position_functions.hpp"
+#include "map/spectators.hpp"
 
 int PositionFunctions::luaPositionCreate(lua_State* L) {
 	// Position([x = 0[, y = 0[, z = 0[, stackpos = 0]]]])
@@ -147,7 +148,7 @@ int PositionFunctions::luaPositionGetZones(lua_State* L) {
 
 int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	// position:sendMagicEffect(magicEffect[, player = nullptr])
-	SpectatorHashSet spectators;
+	Spectators spectators;
 	if (lua_gettop(L) >= 3) {
 		Player* player = getPlayer(L, 3);
 		if (player) {
@@ -175,7 +176,7 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 
 int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
 	// position:removeMagicEffect(magicEffect[, player = nullptr])
-	SpectatorHashSet spectators;
+	Spectators spectators;
 	if (lua_gettop(L) >= 3) {
 		Player* player = getPlayer(L, 3);
 		if (player) {
@@ -203,7 +204,7 @@ int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
 
 int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	// position:sendDistanceEffect(positionEx, distanceEffect[, player = nullptr])
-	SpectatorHashSet spectators;
+	Spectators spectators;
 	if (lua_gettop(L) >= 4) {
 		Player* player = getPlayer(L, 4);
 		if (player) {

@@ -89,6 +89,8 @@ private:
 	std::vector<Creature*> creature_list;
 	std::vector<Creature*> player_list;
 
+	friend class Spectators;
+
 	friend class Map;
 	friend class MapCache;
 	friend class QTreeNode;

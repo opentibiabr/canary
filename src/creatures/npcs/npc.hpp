@@ -13,6 +13,7 @@
 #include "declarations.hpp"
 #include "items/tile.hpp"
 #include "lib/di/container.hpp"
+#include "map/spectators.hpp"
 
 class Creature;
 class Game;
@@ -190,7 +191,7 @@ private:
 
 	bool ignoreHeight;
 
-	SpectatorHashSet playerSpectators;
+	Spectators playerSpectators;
 	Position masterPos;
 
 	friend class LuaScriptInterface;

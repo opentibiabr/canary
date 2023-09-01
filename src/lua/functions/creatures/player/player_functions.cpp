@@ -19,6 +19,7 @@
 #include "io/ioprey.hpp"
 #include "items/item.hpp"
 #include "lua/functions/creatures/player/player_functions.hpp"
+#include "map/spectators.hpp"
 
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 	// player:sendInventory()
@@ -2836,8 +2837,7 @@ int PlayerFunctions::luaPlayerSetGhostMode(lua_State* L) {
 	Tile* tile = player->getTile();
 	const Position &position = player->getPosition();
 
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, position, true, true);
+	auto spectators = Spectators().find<Player>(position, true);
 	for (Creature* spectator : spectators) {
 		Player* tmpPlayer = spectator->getPlayer();
 		if (tmpPlayer != player && !tmpPlayer->isAccessPlayer()) {

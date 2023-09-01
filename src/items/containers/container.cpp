@@ -13,6 +13,7 @@
 #include "items/decay/decay.hpp"
 #include "io/iomap.hpp"
 #include "game/game.hpp"
+#include "map/spectators.hpp"
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
@@ -274,8 +275,7 @@ bool Container::isHoldingItemWithId(const uint16_t id) const {
 }
 
 void Container::onAddContainerItem(Item* item) {
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send to client
 	for (Creature* spectator : spectators) {
@@ -289,8 +289,7 @@ void Container::onAddContainerItem(Item* item) {
 }
 
 void Container::onUpdateContainerItem(uint32_t index, Item* oldItem, Item* newItem) {
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send to client
 	for (Creature* spectator : spectators) {
@@ -304,8 +303,7 @@ void Container::onUpdateContainerItem(uint32_t index, Item* oldItem, Item* newIt
 }
 
 void Container::onRemoveContainerItem(uint32_t index, Item* item) {
-	SpectatorHashSet spectators;
-	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send change to client
 	for (Creature* spectator : spectators) {

@@ -13,6 +13,7 @@
 #include "creatures/creature.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "lua/functions/creatures/npc/npc_functions.hpp"
+#include "map/spectators.hpp"
 
 int NpcFunctions::luaNpcCreate(lua_State* L) {
 	// Npc([id or name or userdata])
@@ -190,7 +191,7 @@ int NpcFunctions::luaNpcSay(lua_State* L) {
 		return 1;
 	}
 
-	SpectatorHashSet spectators;
+	Spectators spectators;
 	if (target) {
 		spectators.insert(target);
 	}

@@ -19,6 +19,7 @@ class Creature;
 class Item;
 class Spell;
 class Player;
+class Spectators;
 
 // for luascript callback
 class ValueCallback final : public CallBack {
@@ -356,7 +357,7 @@ private:
 	static void CombatDispelFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data);
 	static void CombatNullFunc(Creature* caster, Creature* target, const CombatParams &params, CombatDamage* data);
 
-	static void combatTileEffects(const SpectatorHashSet &spectators, Creature* caster, Tile* tile, const CombatParams &params);
+	static void combatTileEffects(Spectators &spectators, Creature* caster, Tile* tile, const CombatParams &params);
 
 	/**
 	 * @brief Calculate the level formula for combat.

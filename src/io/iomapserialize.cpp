@@ -161,6 +161,9 @@ bool IOMapSerialize::loadItem(PropStream &propStream, Cylinder* parent, bool isH
 				if (findItem->getID() == id) {
 					item = findItem;
 					break;
+				} else if (iType.m_transformOnUse && findItem->getID() == iType.m_transformOnUse) {
+					item = findItem;
+					break;
 				} else if (iType.isDoor() && findItem->getDoor()) {
 					item = findItem;
 					break;
@@ -232,10 +235,7 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, const Tile* tile) {
 	std::forward_list<Item*> items;
 	uint16_t count = 0;
 	for (Item* item : *tileItems) {
-		const ItemType &it = Item::items[item->getID()];
-
-		// Note that these are NEGATED, ie. these are the items that will be saved.
-		if (!(it.moveable || it.isCarpet() || item->getDoor() || (item->getContainer() && !item->getContainer()->empty()) || it.canWriteText || item->getBed())) {
+		if (!item->isSavedToHouses()) {
 			continue;
 		}
 

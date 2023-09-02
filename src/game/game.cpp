@@ -1859,11 +1859,18 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		return retMaxCount;
 	}
 
+	auto fromContainer = fromCylinder ? fromCylinder->getContainer() : nullptr;
+	auto toContainer = toCylinder ? toCylinder->getContainer() : nullptr;
+	auto player = actor ? actor->getPlayer() : nullptr;
+	if (player) {
+		// Update containers
+		player->onSendContainer(toContainer);
+		player->onSendContainer(fromContainer);
+	}
+
 	// Actor related actions
 	if (fromCylinder && actor && toCylinder) {
-		auto fromContainer = fromCylinder->getContainer();
-		auto toContainer = toCylinder->getContainer();
-		if (!fromContainer || !actor->getPlayer() || !toContainer) {
+		if (!fromContainer || !toContainer || !player) {
 			return ret;
 		}
 
@@ -1881,14 +1888,6 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 			// Looting analyser
 			if (it.isCorpse && toContainer->getTopParent() == player && item->getIsLootTrackeable()) {
 				player->sendLootStats(item, static_cast<uint8_t>(item->getItemCount()));
-			}
-
-			// StoreInbox update containers
-			if (toContainer->isStoreInbox()) {
-				player->onSendContainer(toContainer);
-			}
-			if (fromContainer->isStoreInbox()) {
-				player->onSendContainer(fromContainer);
 			}
 		}
 	}
@@ -4137,7 +4136,7 @@ void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_
 	}
 
 	if (container->isStoreInbox()) {
-		auto enumName = magic_enum::enum_name(static_cast<StoreInboxCategory_t>(containerCategory)).data();
+		auto enumName = magic_enum::enum_name(static_cast<ContainerCategory_t>(containerCategory)).data();
 		container->setAttribute(ItemAttribute_t::STORE_INBOX_CATEGORY, enumName);
 		g_logger().debug("Setting new container with store inbox category name {}", enumName);
 	}

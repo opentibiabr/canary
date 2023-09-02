@@ -2489,11 +2489,11 @@
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="895" article="a" name="jester staff">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="725"/>
 	</item>
 	<item id="896" name="Firlefanz">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="897" article="a" name="mysterious package">
@@ -2509,7 +2509,7 @@
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="900" article="a" name="yellow pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1600"/>
 	</item>
 	<item id="901" article="a" name="marlin" plural="marlins">
@@ -3493,11 +3493,11 @@
 		<attribute key="primarytype" value="statues"/>
 	</item>
 	<item id="2029" article="a" name="minotaur statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="2045"/>
 	</item>
 	<item id="2030" article="a" name="goblin statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="2048"/>
 	</item>
 	<item id="2031" article="an" name="angel statue">
@@ -3517,27 +3517,27 @@
 		<attribute key="primarytype" value="tables"/>
 	</item>
 	<item id="2043" article="a" name="minotaur statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="2044"/>
 	</item>
 	<item id="2044" article="a" name="minotaur statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="2029"/>
 	</item>
 	<item id="2045" article="a" name="minotaur statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="2043"/>
 	</item>
 	<item id="2046" article="a" name="goblin statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="2047"/>
 	</item>
 	<item id="2047" article="a" name="goblin statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="2030"/>
 	</item>
 	<item id="2048" article="a" name="goblin statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="2046"/>
 	</item>
 	<item id="2049" article="a" name="pedestal">
@@ -4120,67 +4120,67 @@
 		<attribute key="rotateto" value="2383"/>
 	</item>
 	<item id="2386" article="a" name="small purple pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="2387" article="a" name="small green pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="2388" article="a" name="small red pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="2389" article="a" name="small blue pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="2390" article="a" name="small orange pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="2391" article="a" name="small turquoise pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="2392" article="a" name="small white pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="2393" article="a" name="heart pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1700"/>
 	</item>
 	<item id="2394" article="a" name="blue pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1600"/>
 	</item>
 	<item id="2395" article="a" name="red pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1600"/>
 	</item>
 	<item id="2396" article="a" name="green pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1600"/>
 	</item>
 	<item id="2397" article="a" name="yellow pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1600"/>
 	</item>
 	<item id="2398" article="a" name="round blue pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1550"/>
 	</item>
 	<item id="2399" article="a" name="round red pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1550"/>
 	</item>
 	<item id="2400" article="a" name="round purple pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1550"/>
 	</item>
 	<item id="2401" article="a" name="round turquoise pillow">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1550"/>
 	</item>
 	<item fromid="2402" toid="2409" article="a" name="couch">
@@ -4305,11 +4305,11 @@
 		<attribute key="rotateto" value="2450"/>
 	</item>
 	<item id="2453" article="a" name="standing mirror">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="2454"/>
 	</item>
 	<item id="2454" article="a" name="standing mirror">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="2453"/>
 	</item>
 	<item fromid="2455" toid="2458" article="a" name="bamboo wardrobe">
@@ -4749,91 +4749,91 @@
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="2642" toid="2643" article="a" name="purple tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="2644" article="a" name="purple tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="2645" toid="2646" article="a" name="green tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="2647" article="a" name="green tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="2648" toid="2649" article="a" name="yellow tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="2650" article="a" name="yellow tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="2651" toid="2652" article="an" name="orange tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="2653" article="an" name="orange tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="2654" toid="2655" article="a" name="red tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="2656" article="a" name="red tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="2657" toid="2658" article="a" name="blue tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="2659" article="a" name="blue tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="2660" article="a" name="cuckoo clock">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="duration" value="54"/>
 		<attribute key="decayTo" value="2661"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item id="2661" article="a" name="cuckoo clock">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="duration" value="6"/>
 		<attribute key="decayTo" value="2660"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item id="2662" article="a" name="cuckoo clock">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="duration" value="54"/>
 		<attribute key="decayTo" value="2663"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item id="2663" article="a" name="cuckoo clock">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="duration" value="6"/>
 		<attribute key="decayTo" value="2662"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item id="2664" article="a" name="cuckoo clock">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item fromid="2665" toid="2666" article="a" name="white tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="2667" article="a" name="white tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="2668" article="a" name="cuckoo clock">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item fromid="2669" toid="2670" article="a" name="demon trophy">
@@ -5636,7 +5636,7 @@
 		<attribute key="primarytype" value="wall hangings"/>
 	</item>
 	<item id="2932" article="an" name="oil lamp">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1400"/>
 	</item>
 	<item id="2933" article="a" name="small oil lamp">
@@ -5644,7 +5644,7 @@
 		<attribute key="weight" value="900"/>
 	</item>
 	<item id="2934" article="a" name="table lamp">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="2935" article="a" name="lit table lamp"/>
 	<item id="2936" article="a" name="wall lamp"/>
@@ -5780,32 +5780,32 @@
 		<attribute key="weight" value="100"/>
 	</item>
 	<item id="2974" article="a" name="water pipe">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="6500"/>
 	</item>
 	<item id="2975" article="a" name="birdcage">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="The poor bird seems to have died from a heart attack."/>
 		<attribute key="weight" value="9200"/>
 	</item>
 	<item id="2976" article="a" name="birdcage">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="You see a little bird inside."/>
 		<attribute key="weight" value="9200"/>
 	</item>
 	<item id="2977" article="a" name="pumpkinhead">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="950"/>
 	</item>
 	<item id="2978" article="a" name="pumpkinhead">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="950"/>
 	</item>
 	<item id="2979" article="a" name="globe">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="2980" article="a" name="water pipe">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="6500"/>
 	</item>
 	<item id="2981" name="god flowers">
@@ -5828,7 +5828,7 @@
 		<attribute key="weight" value="2300"/>
 	</item>
 	<item id="2986" article="a" name="christmas tree">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="-100"/>
 	</item>
 	<item id="2987" article="a" name="potted flower">
@@ -5862,11 +5862,11 @@
 		<attribute key="weight" value="590"/>
 	</item>
 	<item id="2994" article="a" name="model ship">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1300"/>
 	</item>
 	<item id="2995" article="a" name="piggy bank">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="750"/>
 	</item>
 	<item id="2996" article="a" name="broken piggy bank">
@@ -5906,7 +5906,7 @@
 		<attribute key="weight" value="40"/>
 	</item>
 	<item id="3005" article="an" name="elven brooch">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="90"/>
 	</item>
 	<item id="3006" article="a" name="ring of the sky">
@@ -5966,7 +5966,7 @@
 		<attribute key="weight" value="690"/>
 	</item>
 	<item id="3020" name="some golden fruits">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1070"/>
 	</item>
 	<item id="3021" article="a" name="sapphire amulet">
@@ -9155,19 +9155,19 @@
 		<attribute key="weight" value="850"/>
 	</item>
 	<item id="3484" article="a" name="telescope">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="3487"/>
 	</item>
 	<item id="3485" article="a" name="telescope">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="3486"/>
 	</item>
 	<item id="3486" article="a" name="telescope">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="3484"/>
 	</item>
 	<item id="3487" article="a" name="telescope">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="3485"/>
 	</item>
 	<item id="3488" article="a" name="ship's telescope">
@@ -10377,7 +10377,7 @@
 		<attribute key="weight" value="700"/>
 	</item>
 	<item id="4051" article="a" name="telescope">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="4052" article="a" name="dead minotaur">
 		<attribute key="fluidsource" value="blood"/>
@@ -10397,7 +10397,7 @@
 		<attribute key="primarytype" value="fluid containers"/>
 	</item>
 	<item id="4056" article="a" name="globe">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="4057" article="a" name="dead minotaur">
 		<attribute key="fluidsource" value="blood"/>
@@ -13401,7 +13401,7 @@
 		<attribute key="primarytype" value="flags"/>
 	</item>
 	<item id="5615" article="a" name="pirate tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="5616" toid="5617" article="a" name="pirate flag">
@@ -13737,7 +13737,7 @@
 		<attribute key="containersize" value="10"/>
 	</item>
 	<item id="5799" article="a" name="golden figurine">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="writeable" value="1"/>
 		<attribute key="maxtextlen" value="99"/>
 		<attribute key="weight" value="1500"/>
@@ -13774,19 +13774,19 @@
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="5805" article="a" name="golden goblet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="writeable" value="1"/>
 		<attribute key="maxtextlen" value="99"/>
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="5806" article="a" name="silver goblet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="writeable" value="1"/>
 		<attribute key="maxtextlen" value="99"/>
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="5807" article="a" name="bronze goblet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="writeable" value="1"/>
 		<attribute key="maxtextlen" value="99"/>
 		<attribute key="weight" value="1500"/>
@@ -14084,11 +14084,11 @@
 		<attribute key="weight" value="800"/>
 	</item>
 	<item id="5928" article="an" name="empty goldfish bowl">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="3200"/>
 	</item>
 	<item id="5929" article="a" name="goldfish bowl">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="3200"/>
 	</item>
 	<item id="5930" article="a" name="behemoth claw" plural="behemoth claws">
@@ -15310,7 +15310,7 @@
 	</item>
 	<item id="6266" name="metal trash"/>
 	<item fromid="6267" toid="6269" name="tendrils">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item fromid="6270" toid="6273" name="some leaves">
 		<attribute key="primarytype" value="rubbish"/>
@@ -15808,7 +15808,7 @@
 		</attribute>
 	</item>
 	<item id="6433" article="a" name="blue tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="6434" article="a" name="demon trophy">
@@ -15896,7 +15896,7 @@
 		<attribute key="primarytype" value="rocks"/>
 	</item>
 	<item fromid="6488" toid="6489" article="a" name="christmas branch">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1800"/>
 	</item>
 	<item id="6490" article="a" name="firefly">
@@ -15904,11 +15904,11 @@
 		<attribute key="decayTo" value="6493"/>
 	</item>
 	<item id="6491" article="a" name="bat decoration">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="200"/>
 	</item>
 	<item id="6492" article="a" name="bat decoration">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="200"/>
 	</item>
 	<item id="6493" article="a" name="firefly">
@@ -15920,7 +15920,7 @@
 		<attribute key="decayTo" value="6497"/>
 	</item>
 	<item id="6495" article="a" name="bat decoration">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="200"/>
 	</item>
 	<item id="6496" article="a" name="christmas present bag">
@@ -15944,19 +15944,19 @@
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="6501" article="a" name="christmas wreath">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="6502" article="a" name="christmas garland">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="6503" article="a" name="red christmas garland">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="6504" article="a" name="blue christmas garland">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="6505" article="a" name="christmas present">
@@ -15964,17 +15964,17 @@
 		<attribute key="weight" value="600"/>
 	</item>
 	<item id="6506" article="a" name="red christmas bundle">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It contains random christmas decoration"/>
 		<attribute key="weight" value="2500"/>
 	</item>
 	<item id="6507" article="a" name="blue christmas bundle">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It contains random christmas decoration"/>
 		<attribute key="weight" value="2500"/>
 	</item>
 	<item id="6508" article="a" name="green christmas bundle">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It contains random christmas decoration"/>
 		<attribute key="weight" value="2500"/>
 	</item>
@@ -15987,11 +15987,11 @@
 		<attribute key="weight" value="750"/>
 	</item>
 	<item id="6512" article="a" name="christmas wreath">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="6513" toid="6514" article="a" name="christmas garland">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="6515" article="a" name="dead plaguesmith">
@@ -16001,11 +16001,11 @@
 		<attribute key="containersize" value="32"/>
 	</item>
 	<item id="6516" article="a" name="christmas wreath">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="6517" toid="6518" article="a" name="christmas garland">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="6519" article="a" name="dead plaguesmith">
@@ -16032,7 +16032,7 @@
 		<attribute key="primarytype" value="skeletons"/>
 	</item>
 	<item id="6525" article="a" name="skeleton decoration">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="6526" article="a" name="christmas token">
@@ -16807,7 +16807,7 @@
 		<attribute key="decayTo" value="7176"/>
 	</item>
 	<item id="7178" article="a" name="baby seal">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="7180" name="broken pottery">
 		<attribute key="primarytype" value="rubbish"/>
@@ -16904,7 +16904,7 @@
 		<attribute key="weight" value="1"/>
 	</item>
 	<item id="7252" article="a" name="baby seal">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It is covered with paint."/>
 	</item>
 	<item id="7253" article="a" name="flask with paint">
@@ -17288,17 +17288,17 @@
 		<attribute key="weight" value="200"/>
 	</item>
 	<item id="7369" article="a" name="golden goblet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It is given to the courageous victor of the barbarian arena in warlord difficulty"/>
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="7370" article="a" name="silver goblet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It is given to the courageous victor of the barbarian arena in scrapper difficulty"/>
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="7371" article="a" name="bronze goblet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It is given to the courageous victor of the barbarian arena in greenhorn difficulty"/>
 		<attribute key="weight" value="1500"/>
 	</item>
@@ -18043,11 +18043,11 @@
 		<attribute key="weight" value="290"/>
 	</item>
 	<item id="7441" article="an" name="ice cube">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="2000"/>
 	</item>
 	<item id="7442" article="an" name="ice cube">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="There is a rough shape of a head"/>
 		<attribute key="weight" value="2000"/>
 	</item>
@@ -18057,17 +18057,17 @@
 		<attribute key="weight" value="200"/>
 	</item>
 	<item id="7444" article="an" name="ice cube">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="There is a rough shape of a head with tusks"/>
 		<attribute key="weight" value="2000"/>
 	</item>
 	<item id="7445" article="an" name="ice cube">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="There is a rough shape of a mammoth"/>
 		<attribute key="weight" value="2000"/>
 	</item>
 	<item id="7446" article="an" name="ice mammoth">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This small statue has been carefully shaped from an ice cube"/>
 		<attribute key="weight" value="2000"/>
 	</item>
@@ -18516,7 +18516,7 @@
 	</item>
 	<item id="7740" name="ice"/>
 	<item id="7741" article="an" name="ice cube">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="2000"/>
 	</item>
 	<item id="7742" article="a" name="dead man's saddle"/>
@@ -18755,7 +18755,7 @@
 		<attribute key="weight" value="265"/>
 	</item>
 	<item fromid="7877" toid="7878" name="balloons">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="7879" name="your student book">
 		<attribute key="primarytype" value="books"/>
@@ -18892,7 +18892,7 @@
 		<attribute key="weight" value="3200"/>
 	</item>
 	<item id="7938" article="a" name="goldfish bowl">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="3200"/>
 	</item>
 	<item id="7939" article="a" name="precious necklace">
@@ -19150,7 +19150,7 @@
 		<attribute key="weight" value="50"/>
 	</item>
 	<item id="8032" name="spiderwebs">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="You can hang these on your walls"/>
 		<attribute key="weight" value="5"/>
 	</item>
@@ -19890,17 +19890,17 @@
 		<attribute key="primarytype" value="constructions"/>
 	</item>
 	<item id="8146" article="an" name="oracle figurine">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item id="8147" article="an" name="oracle figurine">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="duration" value="3"/>
 		<attribute key="decayTo" value="8146"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item id="8148" article="a" name="golden falcon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It is a token of honour granted only by TibiaBR"/>
 		<attribute key="weight" value="2000"/>
 	</item>
@@ -19965,7 +19965,7 @@
 		<attribute key="weight" value="1337"/>
 	</item>
 	<item id="8175" article="a" name="golden falcon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It is a token of honour granted only by TibiaBR"/>
 		<attribute key="weight" value="2000"/>
 	</item>
@@ -20354,7 +20354,7 @@
 		<attribute key="weight" value="490"/>
 	</item>
 	<item id="8532" article="a" name="blood skull">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="490"/>
 	</item>
 	<item fromid="8533" toid="8543" article="a" name="tapestry"/>
@@ -20912,11 +20912,11 @@
 	</item>
 	<item fromid="8919" toid="8920" article="an" name="old carpet"/>
 	<item fromid="8921" toid="8922" article="a" name="velvet tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="8923" article="a" name="velvet tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="8924" toid="8931" article="a" name="wall lamp"/>
@@ -21204,7 +21204,7 @@
 		<attribute key="primarytype" value="walls"/>
 	</item>
 	<item id="9034" article="a" name="dracoyle statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This rare treasure is said to protect its owner from misery and curses"/>
 		<attribute key="duration" value="604800"/>
 		<attribute key="decayTo" value="9035"/>
@@ -21212,7 +21212,7 @@
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="9035" article="a" name="dracoyle statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This rare treasure can be charged with an enchanted emerald"/>
 		<attribute key="rotateto" value="9040"/>
 		<attribute key="weight" value="1500"/>
@@ -21221,7 +21221,7 @@
 		<attribute key="primarytype" value="walls"/>
 	</item>
 	<item id="9039" article="a" name="dracoyle statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This rare treasure is said to protect its owner from misery and curses"/>
 		<attribute key="duration" value="604800"/>
 		<attribute key="decayTo" value="9040"/>
@@ -21229,7 +21229,7 @@
 		<attribute key="weight" value="1500"/>
 	</item>
 	<item id="9040" article="a" name="dracoyle statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This rare treasure can be charged with an enchanted emerald"/>
 		<attribute key="rotateto" value="9034"/>
 		<attribute key="weight" value="1500"/>
@@ -21252,11 +21252,11 @@
 	<item id="9043" article="a" name="yalahar coal basin"/>
 	<item id="9044" name="RESERVED SPRITE"/>
 	<item id="9045" article="a" name="royal tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="9046" article="a" name="silky tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="9047" article="a" name="slain death blob">
@@ -21350,7 +21350,7 @@
 		<attribute key="weight" value="850"/>
 	</item>
 	<item id="9068" article="a" name="yalahari figurine">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item id="9069" article="a" name="flower pot">
@@ -22911,7 +22911,7 @@
 		<attribute key="weight" value="900"/>
 	</item>
 	<item fromid="9628" toid="9629" article="a" name="telescope">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="9630" article="an" name="energy field"/>
 	<item id="9631" article="a" name="scarab pincers" plural="scarab pincers">
@@ -24014,7 +24014,7 @@
 		</attribute>
 	</item>
 	<item id="10347" article="a" name="dragon tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="10348" toid="10351" name="withered plants"/>
@@ -24358,20 +24358,20 @@
 		<attribute key="weight" value="700"/>
 	</item>
 	<item id="10422" article="a" name="clay lump">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="You could use it and try to form a statue out of it"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="10423" article="a" name="rough clay statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="10424" article="a" name="clay statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="10425" article="a" name="pretty clay statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="10426" article="a" name="piece of marble rock">
@@ -24379,15 +24379,15 @@
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="10427" article="a" name="rough marble statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="10428" article="a" name="marble statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="10429" article="a" name="beautiful marble statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="10430" article="a" name="dead terramite">
@@ -26559,7 +26559,7 @@
 		<attribute key="primarytype" value="shrines and altars"/>
 	</item>
 	<item id="12246" article="a" name="verocious bat">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="0"/>
 	</item>
 	<item fromid="12247" toid="12248" name="stone"/>
@@ -26883,11 +26883,11 @@
 		<attribute key="weight" value="3000"/>
 	</item>
 	<item fromid="12435" toid="12436" article="a" name="hieroglyph banner">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="12437" toid="12438" article="a" name="pharaoh banner">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="12439" toid="12440" article="a" name="golden ornament">
@@ -26946,11 +26946,11 @@
 		<attribute key="primarytype" value="quest objects"/>
 	</item>
 	<item id="12482" article="a" name="hieroglyph banner">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="12483" article="a" name="pharaoh banner">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="12485" toid="12486" article="a" name="rocky archway"/>
@@ -32334,7 +32334,7 @@
 		<attribute key="primarytype" value="tools"/>
 	</item>
 	<item fromid="17723" toid="17724" article="a" name="filigree statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item fromid="17725" toid="17800" article="a" name="sign">
 		<attribute key="primarytype" value="signs"/>
@@ -37084,19 +37084,19 @@
 		<attribute key="weight" value="3400"/>
 	</item>
 	<item id="20277" article="a" name="psychedelic tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="20278" article="a" name="demonic tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="20279" article="an" name="eye pod">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="500"/>
 	</item>
 	<item fromid="20280" toid="20281" article="a" name="nightmare beacon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="20282" article="a" name="nightmare hook">
@@ -37153,7 +37153,7 @@
 		<attribute key="weight" value="750"/>
 	</item>
 	<item id="20315" article="a" name="snow flake tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="20316" toid="20319" article="a" name="stony pond">
@@ -37224,7 +37224,7 @@
 	</item>
 	<item fromid="20348" toid="20349" name="RESERVED SPRITE"/>
 	<item id="20350" article="a" name="cake tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="20351" toid="20353" name="unknown corpse"/>
@@ -40940,11 +40940,11 @@
 	<attribute key="weight" value="850"/>
 	</item>
 	<item id="22731" article="a" name="rift tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item fromid="22732" toid="22733" article="a" name="rift tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="22734" article="a" name="rift lamp">
@@ -41350,7 +41350,7 @@
 		</attribute>
 	</item>
 	<item id="22868" article="a" name="golden goblet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It is given for reaching level 999"/>
 		<attribute key="weight" value="1500"/>
 	</item>
@@ -41845,12 +41845,12 @@
 		<attribute key="rotateto" value="23440"/>
 	</item>
 	<item id="23442" article="a" name="baby dragon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This baby dragon is looking at you very attentively"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="23443" article="a" name="baby dragon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="The baby dragon seems to hide from you"/>
 		<attribute key="duration" value="8"/>
 		<attribute key="decayTo" value="23442"/>
@@ -41865,17 +41865,17 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="23448" article="a" name="lordly tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="A tapestry of lordly caliber"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="23449" article="a" name="menacing tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="The dark side is vigilant"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="23450" article="an" name="all-seeing tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Following your every move"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -42479,7 +42479,7 @@
 		<attribute key="rotateto" value="23693"/>
 	</item>
 	<item id="23697" article="a" name="dog house">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This dog is waiting quite eagerly for attention"/>
 		<attribute key="duration" value="4"/>
 		<attribute key="decayTo" value="23703"/>
@@ -42514,7 +42514,7 @@
 		<attribute key="rotateto" value="23704"/>
 	</item>
 	<item id="23703" article="a" name="dog house">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This dog is lying down satisfied in his kennel"/>
 		<attribute key="duration" value="2"/>
 		<attribute key="decayTo" value="23708"/>
@@ -42544,12 +42544,12 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="23708" article="a" name="dog house">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This dog is lying down satisfied in his kennel"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="23709" article="a" name="dog house">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This dog is waiting qutite eagerly for attention"/>
 		<attribute key="duration" value="2"/>
 		<attribute key="decayTo" value="23697"/>
@@ -42624,15 +42624,15 @@
 		<attribute key="weight" value="1800"/>
 	</item>
 	<item id="23723" article="a" name="golden dragon tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="23724" article="a" name="sword tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="23725" article="a" name="brocade tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item fromid="23726" toid="23728" article="a" name="vortex"/>
@@ -43389,12 +43389,12 @@
 		<attribute key="weight" value="100"/>
 	</item>
 	<item id="24950" article="a" name="framed birthday card">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It displays a large letter T and was awarded during the festivities of Tibia's 20th anniversary"/>
 		<attribute key="weight" value="3800"/>
 	</item>
 	<item id="24951" article="a" name="gilded birthday cup">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It displays the number 20 and was awarded during the festivities of Tibia's 20th anniversary"/>
 		<attribute key="weight" value="3800"/>
 	</item>
@@ -43416,7 +43416,7 @@
 		<attribute key="weight" value="120"/>
 	</item>
 	<item id="24963" article="a" name="wasted time">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="10"/>
 	</item>
 	<item id="24964" article="an" name="imbuing crystal">
@@ -43844,27 +43844,27 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="25216" article="a" name="blooming cactus">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="A beautiful cactus in full bloom"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="25217" article="a" name="bitter-smack leaf">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="A full grown bitter-smack leaf"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="25218" article="a" name="pink roses">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="The characteristic scent of these roses instantly lifts your spirits"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="25219" article="a" name="red roses">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="The characteristic scent of these roses instantly lifts your spirits"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="25220" article="a" name="yellow roses">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="The characteristic scent of these roses instantly lifts your spirits"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -43999,7 +43999,7 @@
 		<attribute key="primarytype" value="quest objects"/>
 	</item>
 	<item fromid="25300" toid="25301" name="minotaur statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="25302" article="a" name="present">
 		<attribute key="primarytype" value="containers"/>
@@ -44355,13 +44355,13 @@
 		<attribute key="rotateto" value="25720"/>
 	</item>
 	<item id="25722" article="a" name="shiny reward shrine">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25723"/>
 	</item>
 	<item id="25723" article="a" name="shiny reward shrine">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It depicts the two suns of Tibia, symbolising the course of a day"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="25722"/>
@@ -44800,7 +44800,7 @@
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item fromid="25871" toid="25874" article="a" name="minotaur statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item fromid="25875" toid="25878" article="an" name="small glowing fruits"/>
 	<item id="25879" article="a" name="health cask">
@@ -46025,7 +46025,7 @@
 	</item>
 	<item id="26075" article="a" name="unknown corpse"/>
 	<item fromid="26076" toid="26077" article="a" name="bath tub">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="A very inviting bath tub filled with water"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -46073,7 +46073,7 @@
 		<attribute key="weight" value="6659"/>
 	</item>
 	<item id="26087" article="a" name="bath tub">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="26088" article="a" name="verdant bed">
 		<attribute key="type" value="bed"/>
@@ -46182,7 +46182,7 @@
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26100" article="a" name="bath tub">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="A very inviting bath tub filled with water"/>
 	</item>
 	<item id="26101" article="a" name="verdant chair">
@@ -46405,19 +46405,19 @@
 		<attribute key="rotateto" value="26166"/>
 	</item>
 	<item id="26169" article="a" name="terrarium">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="A little snake is wiggling in the terrarium"/>
 		<attribute key="duration" value="2"/>
 		<attribute key="decayTo" value="26172"/>
 	</item>
 	<item id="26170" article="a" name="terrarium">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="A little snake is wiggling in the terrarium"/>
 		<attribute key="duration" value="2"/>
 		<attribute key="decayTo" value="26171"/>
 	</item>
 	<item fromid="26171" toid="26172" article="a" name="terrarium">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="A little snake is wiggling in the terrarium"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -47537,41 +47537,41 @@
 	</item>
 	<item fromid="27676" toid="27678" name="RESERVED SPRITE"/>
 	<item id="27679" article="an" name="alchemistic bookstand">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="27680"/>
 	</item>
 	<item id="27680" article="an" name="alchemistic bookstand">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="27679"/>
 	</item>
 	<item id="27681" article="an" name="alchemistic bookstand">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="27682"/>
 	</item>
 	<item id="27682" article="an" name="alchemistic bookstand">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="27681"/>
 	</item>
 	<item id="27683" name="alchemistic scales">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="27684" name="alchemistic scales">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="27685" name="alchemistic scales">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="duration" value="2"/>
 		<attribute key="decayto" value="27684"/>
 	</item>
 	<item id="27686" name="alchemistic scales">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="duration" value="2"/>
 		<attribute key="decayto" value="27683"/>
@@ -48803,13 +48803,13 @@
 		<attribute key="rotateto" value="28686"/>
 	</item>
 	<item id="28688" article="a" name="carnivorous plant">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Beware of the biting plant"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28689"/>
 	</item>
 	<item id="28689" article="a" name="carnivorous plant">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Beware of the biting plant"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28688"/>
@@ -48838,32 +48838,32 @@
 		<attribute key="weight" value="45"/>
 	</item>
 	<item id="28694" article="a" name="fennec">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Contrary to popular belief the fennec does not use his ears, which are the largest amongst foxes, to fly, soar or stabilise his balance. They mainly serve to dissipate heat"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="28695" article="a" name="fennec">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Contrary to popular belief the fennec does not use his ears, which are the largest amongst foxes, to fly, soar or stabilise his balance. They mainly serve to dissipate heat."/>
 		<attribute key="duration" value="4"/>
 		<attribute key="decayTo" value="28694"/>
 	</item>
 	<item id="28696" article="a" name="telescope">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="28697" article="a" name="bellflower">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Let the flower ring"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="28698" article="a" name="forget-me-not">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Legends say that displanting forget-me-nots causes rain the next day"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="28699" article="a" name="red geranium">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="No lovely balcony would be complete without this plant"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -48871,7 +48871,7 @@
 		<attribute key="primarytype" value="artificial tiles"/>
 	</item>
 	<item id="28701" article="a" name="fennec">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Contrary to popular belief the fennec does not use his ears, which are the largest amongst foxes, to fly, soar or stabilise his balance. They mainly serve to dissipate heat"/>
 	</item>
 	<item id="28702" article="the" name="True Book of Death">
@@ -49672,7 +49672,7 @@
 		<attribute key="weight" value="1900"/>
 	</item>
 	<item id="28896" article="a" name="golden falcon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Souvenir from Thais Museum"/>
 		<attribute key="weight" value="2000"/>
 	</item>
@@ -49702,7 +49702,7 @@
 	<item fromid="28909" toid="28910" name="RESERVED SPRITE"/>
 	<item id="28912" article="a" name="message in a bottle"/>
 	<item fromid="28913" toid="28914" article="a" name="fennec">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Contrary to popular belief the fennec does not use his ears, which are the largest amongst foxes, to fly, soar or stabilise his balance. They mainly serve to dissipate heat"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -49738,22 +49738,22 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="28928" article="a" name="stuffed bear display">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28929"/>
 	</item>
 	<item id="28929" article="a" name="stuffed bear display">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28928"/>
 	</item>
 	<item id="28930" article="a" name="stuffed teddy display">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28931"/>
 	</item>
 	<item id="28931" article="a" name="stuffed teddy display">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="28930"/>
 	</item>
@@ -49824,7 +49824,7 @@
 		<attribute key="rotateto" value="28942"/>
 	</item>
 	<item id="28944" name="incomprehensible riches">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="28945" article="a" name="chest of abundance">
@@ -51226,11 +51226,11 @@
 	</item>
 	<item id="30199" name="RESERVED SPRITE"/>
 	<item id="30200" article="a" name="birthday card">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="100"/>
 	</item>
 	<item id="30201" article="a" name="birthday cup">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="3800"/>
 	</item>
 	<item id="30202" article="a" name="winterberry liquor">
@@ -51317,12 +51317,12 @@
 		<attribute key="weight" value="100000"/>
 	</item>
 	<item id="30227" article="a" name="festive filled shoes">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30228"/>
 	</item>
 	<item id="30228" article="a" name="festive filled shoes">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30227"/>
 	</item>
@@ -51343,60 +51343,60 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="30233" article="a" name="festive fireplace">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30235"/>
 	</item>
 	<item id="30234" article="a" name="festive fireplace">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30236"/>
 	</item>
 	<item id="30235" article="a" name="festive fireplace">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30233"/>
 	</item>
 	<item id="30236" article="a" name="festive fireplace">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30234"/>
 	</item>
 	<item id="30237" article="a" name="festive tree">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="30238" article="a" name="festive tree">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="30239" article="a" name="festive rocking chair">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30240"/>
 	</item>
 	<item id="30240" article="a" name="festive rocking chair">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30241"/>
 	</item>
 	<item id="30241" article="a" name="festive rocking chair">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30242"/>
 	</item>
 	<item id="30242" article="a" name="festive rocking chair">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30239"/>
 	</item>
 	<item id="30243" article="a" name="festive sleigh">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30244"/>
 	</item>
 	<item id="30244" article="a" name="festive sleigh">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30243"/>
 	</item>
@@ -51412,11 +51412,11 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="30248" article="a" name="festive pyramide">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="30249" article="a" name="festive pyramide">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item fromid="30250" toid="30251" article="a" name="warm bonfire">
@@ -51630,7 +51630,7 @@
 	<item fromid="30309" toid="30312" name="unknown item"/>
 	<item fromid="30313" toid="30314" name="RESERVED SPRITE"/>
 	<item id="30315" article="a" name="pinata">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="3000"/>
 	</item>
 	<item id="30316" article="a" name="surprise bag">
@@ -52389,7 +52389,7 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31209" article="a" name="golden minotaur skull">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31223"/>
 	</item>
@@ -52400,12 +52400,12 @@
 		<attribute key="weight" value="2500"/>
 	</item>
 	<item id="31211" article="a" name="golden demon skull">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31225"/>
 	</item>
 	<item id="31212" article="a" name="demon skull">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31226"/>
 	</item>
@@ -52428,31 +52428,31 @@
 		<attribute key="rotateto" value="31213"/>
 	</item>
 	<item id="31217" article="a" name="violet square cushion">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31218" article="a" name="green square cushion">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31219" article="a" name="blue square cushion">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31220" article="a" name="violet round cushion">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31221" article="a" name="green round cushion">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31222" article="a" name="blue round cushion">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31223" article="a" name="golden minotaur skull">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31209"/>
 	</item>
@@ -52463,12 +52463,12 @@
 		<attribute key="weight" value="2500"/>
 	</item>
 	<item id="31225" article="a" name="golden demon skull">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31211"/>
 	</item>
 	<item id="31226" article="a" name="demon skull">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31212"/>
 	</item>
@@ -52852,7 +52852,7 @@
 		<attribute key="weight" value="100"/>
 	</item>
 	<item id="31382" article="a" name="incomprehensible riches">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31383" article="a" name="dead sphinx">
@@ -53147,23 +53147,23 @@
 		<attribute key="primarytype" value="natural tiles"/>
 	</item>
 	<item id="31462" article="a" name="jousting eagle baby">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Juding by the pinching of his beak, this one seems to be born to joust"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31463" article="a" name="jousting eagle baby">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Juding by the pinching of his beak, this one seems to be born to joust"/>
 		<attribute key="duration" value="200"/>
 		<attribute key="decayTo" value="31462"/>
 	</item>
 	<item id="31464" article="a" name="cerberus champion puppy">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="A true champion in the making"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31465" article="a" name="cerberus champion puppy">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="A true champion in the making"/>
 		<attribute key="duration" value="200"/>
 		<attribute key="decayTo" value="31464"/>
@@ -53187,10 +53187,10 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item fromid="31470" toid="31471" article="a" name="tournament accolade">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item fromid="31472" toid="31473" article="a" name="sublime tournament accolade">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item fromid="31474" toid="31477" article="a" name="pillar">
 		<attribute key="primarytype" value="traps"/>
@@ -53990,26 +53990,26 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31680" article="a" name="baby hedgehog">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This baby hedgehog loves hurling into a tiny ball"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="duration" value="4"/>
 		<attribute key="decayto" value="31681"/>
 	</item>
 	<item id="31681" article="a" name="baby hedgehog">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This baby hedgehog loves hurling into a tiny ball"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31682" article="a" name="baby hedgehog">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This baby hedgehog loves hurling into a tiny ball"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="duration" value="6"/>
 		<attribute key="decayto" value="31680"/>
 	</item>
 	<item fromid="31683" toid="31684" article="an" name="exalted sarcophagus">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	<attribute key="description" value="Something inside this hungers to be set free"/>
 	<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -54073,12 +54073,12 @@
 	</item>
 	<item fromid="31699" toid="31702" name="RESERVED SPRITE"/>
 	<item id="31703" article="a" name="baby unicorn">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="The purest eyes are blinking back at you"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31704" article="a" name="baby unicorn">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="The purest eyes are blinking back at you"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="duration" value="2"/>
@@ -54219,22 +54219,22 @@
 	<item id="31929" name="unknown"/>
 	<item id="31930" name="reserved sprite"/>
 	<item id="31931" article="a" name="pirate ship ballista">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31932"/>
 	</item>
 	<item id="31932" article="a" name="pirate ship ballista">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31933"/>
 	</item>
 	<item id="31933" article="a" name="pirate ship ballista">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31934"/>
 	</item>
 	<item id="31934" article="a" name="pirate ship ballista">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31931"/>
 	</item>
@@ -54300,28 +54300,28 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="31949" article="a" name="mermaid figure head">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31950"/>
 	</item>
 	<item id="31950" article="a" name="mermaid figure head">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31949"/>
 	</item>
 	<item id="31951" article="a" name="white shark trophy">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item fromid="31952" toid="31954" name="reserved sprite"/>
 	<item id="31955" article="a" name="monkey">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It is cheerfully swinging back and forth"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31956"/>
 	</item>
 	<item id="31956" article="a" name="monkey">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It is cheerfully swinging back and forth"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="31955"/>
@@ -54800,17 +54800,17 @@
 	</item>
 	<item fromid="32167" toid="32169" name="reserved sprite"/>
 	<item id="32170" article="a" name="inscribed red heart">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="showCount" value="1"/>
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="32171" article="a" name="inscribed green heart">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="showCount" value="1"/>
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="32172" article="a" name="inscribed blue heart">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="showCount" value="1"/>
 		<attribute key="weight" value="500"/>
 	</item>
@@ -56583,36 +56583,36 @@
 		<attribute key="rotateto" value="32786"/>
 	</item>
 	<item id="32788" article="a" name="baby seal">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Nobody can ever resist this cute little furball"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32789" article="a" name="baby seal">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Nobody can ever resist this cute little furball"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="duration" value="5"/>
 		<attribute key="decayTo" value="32788"/>
 	</item>
 	<item id="32790" article="a" name="baby polar bear">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It looks very soft and cuddly"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32791" article="a" name="baby polar bear">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It looks very soft and cuddly"/>
 		<attribute key="duration" value="1"/>
 		<attribute key="decayTo" value="32792"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32792" article="a" name="baby polar bear">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It looks very soft and cuddly"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32793" article="a" name="baby polar bear">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It looks very soft and cuddly"/>
 		<attribute key="duration" value="1"/>
 		<attribute key="decayTo" value="32790"/>
@@ -56729,34 +56729,34 @@
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="32907" article="a" name="Guzzlemaw Grub">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It rolls over and bares its teeth"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32908" article="a" name="Baby Vulcongra">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It looks so cute devouring mushrooms and crystals"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32909" article="a" name="Baby Brain Squid">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It splashes around happily"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32910" article="a" name="Guzzlemaw Grub">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="duration" value="6"/>
 		<attribute key="decayTo" value="32907"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32911" article="a" name="Baby Vulcongra">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="duration" value="2"/>
 		<attribute key="decayTo" value="32908"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32912" article="a" name="Baby Brain Squid">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="duration" value="2"/>
 		<attribute key="decayTo" value="32909"/>
 		<attribute key="wrapableto" value="23398"/>
@@ -56775,7 +56775,7 @@
 		<attribute key="primarytype" value="tournament rewards"/>
 	</item>
 	<item id="32918" article="a" name="Demon Doll">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32919" name="bronze cup">
@@ -56793,15 +56793,15 @@
 		<attribute key="weight" value="2000"/>
 	</item>
 	<item id="32943" article="a" name="Vexclaw Doll">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32944" article="a" name="Ogre Rowdy Doll">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32945" article="a" name="Retching Horror Doll">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="32946" article="a" name="cozy couch">
@@ -58028,23 +58028,23 @@
 	<attribute key="weight" value="210"/>
 	</item>
 	<item id="34026" name="baby bonelord">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It seems to sleep"/>
 	</item>
 	<item id="34027" name="baby bonelord">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="duration" value="2"/>
 		<attribute key="decayto" value="34028"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34028" name="baby bonelord">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="duration" value="2"/>
 		<attribute key="decayto" value="34029"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34029" name="baby bonelord">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="duration" value="3"/>
 		<attribute key="decayto" value="34026"/>
 		<attribute key="wrapableto" value="23398"/>
@@ -58110,22 +58110,22 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34044" name="sculptor shelf">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="34046"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34045" name="sculptor shelf">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="34047"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34046" name="sculptor shelf">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="34044"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34047" name="sculptor shelf">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="34045"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -58174,32 +58174,32 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34058" name="demon statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="34058"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34059" name="demon statue">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="34058"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34060" name="sabretooth skull">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="34061"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34061" name="sabretooth skull">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="34060"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34062" name="drawing board">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="34063"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34063" name="drawing board">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="34062"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -58945,7 +58945,7 @@
 		<attribute key="floorchange" value="down"/>
 	</item>
 	<item id="34170" article="a" name="morbid tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="290"/>
 	</item>
 	<item fromid="34171" toid="34172" article="a" name="lion flags">
@@ -59312,7 +59312,7 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34282" name="kitchen shelf">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34284" name="kitchen table">
@@ -59401,12 +59401,12 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34302" name="vegetable basket">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="34303"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34303" name="vegetable basket">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="34302"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -59415,7 +59415,7 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34309" name="kitchen clock">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="34312" name="homely bed">
@@ -59571,7 +59571,7 @@
 		<attribute key="weight" value="4300"/>
 	</item>
 	<item id="34332" article="a" name="gilded crown">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This is a gilded replica of the famous crown"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -59579,12 +59579,12 @@
 	<item id="35095" article="a" name="buttress"/>
 	<item fromid="35096" toid="35103" article="a" name="wall"/>
 	<item id="35153" name="baby elephant">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It looks at you curiously"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="35154" name="baby elephant">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It looks at you curiously"/>
 		<attribute key="duration" value="2"/>
 		<attribute key="decayTo" value="35153"/>
@@ -60221,19 +60221,19 @@
 	<attribute key="weight" value="620"/>
 	</item>
 	<item id="35589" article="a" name="snowbash figurine">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="650"/>
 	</item>
 	<item id="35590" article="a" name="sandscourge figurine">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="650"/>
 	</item>
 	<item id="35591" article="a" name="mossmasher figurine">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="650"/>
 	</item>
 	<item id="35592" article="a" name="bladespark figurine">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="650"/>
 	</item>
 	<item id="35595" article="a" name="soap" plural="soaps">
@@ -60956,7 +60956,7 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="35940" name="grandiose painting">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="35941" article="a" name="grandiose carpet">
 		<attribute key="primarytype" value="floor decorations"/>
@@ -60973,7 +60973,7 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="35949" article="a" name="portable aqueduct">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This little fellow just keeps on swimming"/>
 		<attribute key="duration" value="200"/>
 		<attribute key="decayTo" value="35950"/>
@@ -60981,20 +60981,20 @@
 		<attribute key="rotateto" value="35969"/>
 	</item>
 	<item id="35950" article="a" name="portable aqueduct">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This little fellow just keeps on swimming"/>
 		<attribute key="duration" value="1"/>
 		<attribute key="decayTo" value="35951"/>
 	</item>
 	<item id="35951" article="a" name="portable aqueduct">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This little fellow just keeps on swimming"/>
 		<attribute key="duration" value="200"/>
 		<attribute key="decayTo" value="35952"/>
 		<attribute key="rotateto" value="35971"/>
 	</item>
 	<item id="35952" article="a" name="portable aqueduct">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This little fellow just keeps on swimming"/>
 		<attribute key="duration" value="1"/>
 		<attribute key="decayTo" value="35949"/>
@@ -61044,7 +61044,7 @@
 		<attribute key="rotateto" value="35927"/>
 	</item>
 	<item id="35969" article="a" name="portable aqueduct">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This little fellow just keeps on swimming"/>
 		<attribute key="duration" value="200"/>
 		<attribute key="decayTo" value="35970"/>
@@ -61052,20 +61052,20 @@
 		<attribute key="rotateto" value="35949"/>
 	</item>
 	<item id="35970" article="a" name="portable aqueduct">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This little fellow just keeps on swimming"/>
 		<attribute key="duration" value="1"/>
 		<attribute key="decayTo" value="35971"/>
 	</item>
 	<item id="35971" article="a" name="portable aqueduct">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This little fellow just keeps on swimming"/>
 		<attribute key="duration" value="200"/>
 		<attribute key="decayTo" value="35972"/>
 		<attribute key="rotateto" value="35951"/>
 	</item>
 	<item id="35972" article="a" name="portable aqueduct">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This little fellow just keeps on swimming"/>
 		<attribute key="duration" value="1"/>
 		<attribute key="decayTo" value="35969"/>
@@ -61998,33 +61998,33 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="36750" article="a" name="falcon pet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="36751" article="a" name="falcon pet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="duration" value="4"/>
 		<attribute key="decayTo" value="36756"/>
 	</item>
 	<item id="36752" article="a" name="falcon pet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="duration" value="4"/>
 		<attribute key="decayTo" value="36750"/>
 	</item>
 	<item id="36753" article="a" name="falcon pet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="duration" value="4"/>
 		<attribute key="decayTo" value="36754"/>
 	</item>
 	<item id="36754" article="a" name="falcon pet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="36756" article="a" name="falcon pet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="36761" article="a" name="dead lavafungus">
@@ -62307,7 +62307,7 @@
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="36838" article="a" name="folded eldritch carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="weight" value="1100"/>
 		<attribute key="wrapableto" value="23473"/>
@@ -62678,12 +62678,12 @@
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item fromid="36958" toid="36959" article="a" name="megasylvan plant">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This extraordinary plant sprang from a very rare megasylvan sapling. The beautiful blossom is not its only vivid attribute, however, as strangely... certain fruit in its vicinity will just disappear."/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="36960" article="a" name="megasylvan plant">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This extraordinary plant sprang from a very rare megasylvan sapling. The beautiful blossom is not its only vivid attribute, however, as strangely... certain fruit in its vicinity will just disappear."/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="duration" value="4"/>
@@ -62808,7 +62808,7 @@
 		<attribute key="weight" value="6800"/>
 	</item>
 	<item id="36995" article="a" name="gilded magic longsword">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This is a gilded replica of the famous magic longsword"/>
 		<attribute key="weight" value="200"/>
 		<attribute key="wrapableto" value="23398"/>
@@ -62854,61 +62854,61 @@
 		<attribute key="weight" value="100"/>
 	</item>
 	<item id="37004" article="a" name="leaf chair">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37005"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37005" article="a" name="leaf chair">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37006"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37006" article="a" name="leaf chair">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37007"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37007" article="a" name="leaf chair">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37004"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37008" article="a" name="stump table">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37009" article="a" name="shroom cupboard">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="8"/>
 		<attribute key="rotateto" value="37010"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37010" article="a" name="shroom cupboard">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="8"/>
 		<attribute key="rotateto" value="37009"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37011" article="a" name="log chest">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="18"/>
 		<attribute key="rotateto" value="37012"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37012" article="a" name="log chest">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="18"/>
 		<attribute key="rotateto" value="37013"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37013" article="a" name="log chest">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="18"/>
 		<attribute key="rotateto" value="37014"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37014" article="a" name="log chest">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="18"/>
 		<attribute key="rotateto" value="37011"/>
 		<attribute key="wrapableto" value="23398"/>
@@ -62924,12 +62924,12 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37021" article="a" name="dragon plant">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Now and then it roars hungrily"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37022" article="a" name="dragon plant">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Now and then it roars hungrily"/>
 		<attribute key="duration" value="2"/>
 		<attribute key="decayto" value="37021"/>
@@ -63175,7 +63175,7 @@
 	<attribute key="weight" value="5100"/>
 	</item>
 	<item id="37165" article="a" name="gilded blessed shield">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This is a gilded replica of the famous blessed shield"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -63196,61 +63196,61 @@
 		<attribute key="weight" value="6450"/>
 	</item>
 	<item id="37174" article="a" name="kraken chair">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37175"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37175" article="a" name="kraken chair">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37176"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37176" article="a" name="kraken chair">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37177"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37177" article="a" name="kraken chair">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37174"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37178" article="a" name="kraken table">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37179" article="a" name="kraken cabinet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="8"/>
 		<attribute key="rotateto" value="37180"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37180" article="a" name="kraken cabinet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="8"/>
 		<attribute key="rotateto" value="37179"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37181" article="a" name="kraken chest">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="18"/>
 		<attribute key="rotateto" value="37182"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37182" article="a" name="kraken chest">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="18"/>
 		<attribute key="rotateto" value="37183"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37183" article="a" name="kraken chest">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="18"/>
 		<attribute key="rotateto" value="37184"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37184" article="a" name="kraken chest">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="18"/>
 		<attribute key="rotateto" value="37181"/>
 		<attribute key="wrapableto" value="23398"/>
@@ -63265,22 +63265,22 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37189" article="an" name="empty kraken shelf">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37190"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37190" article="an" name="empty kraken shelf">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37189"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37191" article="a" name="filled kraken shelf">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37192"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37192" article="a" name="filled kraken shelf">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37191"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -63431,68 +63431,68 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37211" article="an" name="octoputz">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Juding by the pinching of his beak, this one seems to be born to joust"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37212" article="an" name="octoputz">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Juding by the pinching of his beak, this one seems to be born to joust"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37213" article="a" name="blue balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37214" article="a" name="green balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37215" article="an" name="orange balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37216" article="a" name="pink balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37217" article="a" name="purple balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37218" article="a" name="red balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37219" article="a" name="teal balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37220" article="a" name="yellow balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37221" article="a" name="colourful balloons">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37222" article="a" name="bonelord balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37223" article="a" name="cyclops balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37224" article="a" name="cyclops head balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37225" article="a" name="dwarf balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37226" article="a" name="hydra balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37227" article="an" name="orc balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37228" article="an" name="orc head balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37229" article="a" name="Tibianus balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37230" article="an" name="Eloise balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item fromid="37232" toid="37233" article="a" name="flautist"/>
 	<item fromid="37234" toid="37235" article="a" name="harpist"/>
@@ -63510,10 +63510,10 @@
 	<item fromid="37273" toid="37274" name="confetti"/>
 	<item id="37275" article="a" name="festive structure"/>
 	<item id="37276" article="a" name="rotworm balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37277" article="a" name="rotworm head balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37278" article="a" name="dragon carpet">
 		<attribute key="primarytype" value="floor decorations"/>
@@ -63664,22 +63664,22 @@
 		<attribute key="weight" value="350"/>
 	</item>
 	<item id="37347" article="a" name="yellow 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37348" article="a" name="red 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37349" article="a" name="teal 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37350" article="a" name="green 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37351" article="a" name="orange 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37352" article="a" name="pink 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="37353" article="a" name="dragon lord carpet">
 		<attribute key="primarytype" value="floor decorations"/>
@@ -63687,7 +63687,7 @@
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37354" article="a" name="folded dragon lord carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
@@ -63702,12 +63702,12 @@
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37357" article="a" name="folded dragon carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37358" article="a" name="folded elemental carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
@@ -63717,7 +63717,7 @@
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37360" article="a" name="folded Morgaroth carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
@@ -63727,7 +63727,7 @@
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37362" article="a" name="folded Ghazbaran carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
@@ -63737,7 +63737,7 @@
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37364" article="a" name="folded Orshabaal carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
@@ -63747,7 +63747,7 @@
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37366" article="a" name="folded red cake carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
@@ -63787,37 +63787,37 @@
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37374" article="a" name="folded orange cake carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37375" article="a" name="folded yellow cake carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37376" article="a" name="folded green cake carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37377" article="a" name="folded sky cake carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37378" article="a" name="folded blue cake carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37379" article="a" name="folded purple cake carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37380" article="a" name="folded pink cake carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
@@ -63827,7 +63827,7 @@
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37382" article="a" name="folded red Tibia carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
@@ -63867,37 +63867,37 @@
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37390" article="a" name="folded orange Tibia carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37391" article="a" name="folded yellow Tibia carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37392" article="a" name="folded green Tibia carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37393" article="a" name="folded sky Tibia carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37394" article="a" name="folded blue Tibia carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37395" article="a" name="folded purple Tibia carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37396" article="a" name="folded pink Tibia carpet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
@@ -63923,107 +63923,107 @@
 	</item>
 	<item id="37410" article="a" name="commemorative platinum coin"/>
 	<item id="37414" article="a" name="blue balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37416" article="a" name="green balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37417" article="an" name="orange balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37418" article="a" name="pink balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37419" article="a" name="purple balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37420" article="a" name="red balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37421" article="a" name="teal balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37422" article="a" name="yellow balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37423" name="colourful balloons">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37424" article="a" name="bonelord balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37425" article="a" name="cyclops balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37426" article="a" name="cyclops head balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37427" article="a" name="dwarf balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37428" article="a" name="hydra balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37429" article="an" name="orc balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37430" article="an" name="orc head balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37431" article="a" name="Tibianus balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37432" article="an" name="Eloise balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37433" article="a" name="rotworm balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37434" article="a" name="rotworm head balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37435" article="a" name="yellow 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37436" article="a" name="red 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37437" article="a" name="teal 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37438" article="a" name="green 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37439" article="an" name="orange 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37440" article="a" name="pink 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="37448" article="an" name="explosive fireworks rocket">
@@ -64051,7 +64051,7 @@
 		<attribute key="weight" value="20"/>
 	</item>
 	<item id="37457" article="a" name="supernatural box">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="37458" article="a" name="sparkling fireworks rocket">
@@ -64064,163 +64064,163 @@
 		<attribute key="weight" value="100"/>
 	</item>
 	<item id="37461" article="a" name="balloon box">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="20"/>
 	</item>
 	<item id="37462" article="a" name="special carpet box">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="910"/>
 	</item>
 	<item id="37463" article="a" name="luminous box">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1250"/>
 	</item>
 	<item id="37465" article="a" name="box full of presents">
 		<attribute key="weight" value="2550"/>
 	</item>
 	<item id="37466" article="an" name="embroidered box">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="820"/>
 	</item>
 	<item id="37467" article="a" name="carpet box">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="910"/>
 	</item>
 	<item id="37468" article="a" name="special fx box">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="200"/>
 	</item>
 	<item id="37469" article="a" name="special balloon box">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="20"/>
 	</item>
 	<item id="37471" article="a" name="blue balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37472" article="a" name="green balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37491" article="an" name="orange balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37496" article="a" name="pink balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37497" article="a" name="purple balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37498" article="a" name="red balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37499" article="a" name="teal balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37500" article="a" name="yellow balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37501" name="colourful balloons">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37502" article="a" name="bonelord balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37503" article="a" name="cyclops balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37504" article="a" name="cyclops head balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37505" article="a" name="dwarf balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37506" article="a" name="hydra balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37507" article="an" name="orc balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37508" article="an" name="orc head balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37509" article="a" name="Tibianus balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37510" article="an" name="Eloise balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37511" article="a" name="rotworm balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37512" article="a" name="rotworm head balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37513" article="a" name="yellow 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37514" article="a" name="red 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37515" article="a" name="teal 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37516" article="a" name="green 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37517" article="an" name="orange 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="37518" article="a" name="pink 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 		<attribute key="weight" value="15"/>
 	</item>
@@ -64268,15 +64268,15 @@
 		<attribute key="weight" value="3800"/>
 	</item>
 	<item id="37540" article="a" name="blue wallpaper">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item id="37541" article="a" name="green wallpaper">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item id="37542" article="a" name="golden wallpaper">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item fromid="37543" toid="37545" article="a" name="string of fairy lights">
@@ -64328,27 +64328,27 @@
 		<attribute key="weight" value="2500"/>
 	</item>
 	<item id="37567" article="a" name="blue present kit">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Use it in your house to place a blue present"/>
 		<attribute key="weight" value="2500"/>
 	</item>
 	<item id="37568" article="a" name="red present kit">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Use it in your house to place a red present"/>
 		<attribute key="weight" value="2500"/>
 	</item>
 	<item id="37569" article="a" name="small blue present kit">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Use it in your house to place a small blue present"/>
 		<attribute key="weight" value="2500"/>
 	</item>
 	<item id="37570" article="a" name="yellow present kit">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Use it in your house to place a yellow present"/>
 		<attribute key="weight" value="2500"/>
 	</item>
 	<item id="37571" article="an" name="another yellow present kit">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Use it in your house to place another yellow present"/>
 		<attribute key="weight" value="2500"/>
 	</item>
@@ -64551,7 +64551,7 @@
 		<attribute key="primarytype" value="quest items"/>
 	</item>
 	<item id="37717" article="a" name="dragon pinata kit">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Use it in your house to place a dragon pinata"/>
 		<attribute key="weight" value="2500"/>
 	</item>
@@ -64589,56 +64589,56 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37775" article="a" name="Zaoan panel base">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37776" article="a" name="Zaoan panel">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37777" article="a" name="blank Zaoan panel">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37778" article="a" name="Zaoan hassock">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37779"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37779" article="a" name="Zaoan hassock">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37780"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37780" article="a" name="Zaoan hassock">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37781"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37781" article="a" name="Zaoan hassock">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37778"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37782" article="a" name="Zaoan cabinet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="8"/>
 		<attribute key="rotateto" value="37883"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37783" article="a" name="Zaoan cabinet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="containersize" value="8"/>
 		<attribute key="rotateto" value="37782"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37784" article="a" name="Zaoan paravent">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37785"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37785" article="a" name="Zaoan paravent">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37784"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -64772,49 +64772,49 @@
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="37798" article="a" name="Zaoan bonsai">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="It looks and feels like a miniature tree"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37799" article="a" name="Zaoan pot bamboo">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Bamboo from the Zaoan plains"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37800" article="a" name="Zaoan drawing">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37801" name="wooden sandals">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37802"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37802" name="wooden sandals">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37801"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37803" article="a" name="Zaoan side table">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37804" article="a" name="katana display">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37805"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37805" article="a" name="katana display">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37804"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item fromid="37806" toid="37807" article="a" name="Zaoan wall lamp">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item fromid="37808" toid="37809" name="Zaoan wall lamps">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37810" name="Morshabaal's extract"/>
@@ -64835,12 +64835,12 @@
 		<attribute key="decayto" value="37811"/>
 	</item>
 	<item id="37815" article="a" name="Zaoan divider">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37816"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="37816" article="a" name="Zaoan divider">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="rotateto" value="37815"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -65010,7 +65010,7 @@
 		<attribute key="primarytype" value="tournament rewards"/>
 	</item>
 	<item id="38640" article="a" name="gilded horned helmet">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This is a gilded replica of the famous horned helmet"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -65056,7 +65056,7 @@
 		<attribute key="decayto" value="38677"/>
 	</item>
 	<item id="38706" article="a" name="observer tapestry">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item id="38707" article="a" name="podium of vigour">
@@ -66881,7 +66881,7 @@
 		<attribute key="weight" value="36"/>
 	</item>
 	<item id="39572" article="a" name="birdcage">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 	</item>
 	<item id="39573" article="a" name="gemmed lotus brooch">
 		<attribute key="weight" value="100"/>
@@ -66925,99 +66925,99 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="39669" article="a" name="purple 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="39670" article="a" name="blue 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="39671" article="a" name="balloon no.0">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="39672" article="a" name="balloon no.1">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="39673" article="a" name="balloon no.2">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="39674" article="a" name="balloon no.3">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="39675" article="a" name="balloon no.4">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="39676" article="a" name="balloon no.5">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="39677" article="a" name="balloon no.6">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="39678" article="a" name="balloon no.7">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="39679" article="a" name="balloon no.8">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="39680" article="a" name="balloon no.9">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="15"/>
 	</item>
 	<item id="39681" article="a" name="purple 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="39682" article="a" name="blue 25 years balloon">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="39683" article="a" name="balloon no.0">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="39684" article="a" name="balloon no.1">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="39685" article="a" name="balloon no.2">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="39686" article="a" name="balloon no.3">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="39687" article="a" name="balloon no.4">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="39688" article="a" name="balloon no.5">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="39689" article="a" name="balloon no.6">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="39690" article="a" name="balloon no.7">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="39691" article="a" name="balloon no.8">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="39692" article="a" name="balloon no.9">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="39693" article="a" name="25 years backpack">
@@ -67034,7 +67034,7 @@
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="39695" article="a" name="lucky dragon kit">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="Use it in your house to place a lucky dragon"/>
 		<attribute key="weight" value="2500"/>
 	</item>
@@ -67084,7 +67084,7 @@
 		<attribute key="weight" value="350"/>
 	</item>
 	<item id="39704" article="a" name="small reward box">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="3090"/>
 		<attribute key="description" value="It could be exchanged for Theons after the festivities of Tibia's 25th anniversary"/>
 	</item>
@@ -67102,7 +67102,7 @@
 		<attribute key="description" value="It emanates a divine aura."/>
 	</item>
 	<item id="39710" article="a" name="big reward box">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="15610"/>
 		<attribute key="description" value="It could be exchanged for Theons after the festivities of Tibia's 25th anniversary"/>
 	</item>
@@ -67141,7 +67141,7 @@
 		</attribute>
 	</item>
 	<item id="39755" article="a" name="naga basin">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="39756" article="a" name="naga boat"/>
@@ -67180,7 +67180,7 @@
 		<attribute key="primarytype" value="traps"/>
 	</item>
 	<item id="39767" article="a" name="gilded warlord sword">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="description" value="This is a gilded replica of the famous warlord sword"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
@@ -67388,29 +67388,29 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="39799" article="a" name="wall flowers">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="description" value="The small blossoms are of a deep purple hue"/>
 	</item>
 	<item id="39800" article="a" name="wall fern">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="description" value="Its leaves are fresh and lush"/>
 	</item>
 	<item id="39801" name="wall leaves">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="39802" name="flowering wall leaves">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="39803" name="tendrils">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="39804" name="blooming tendrils">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="39805" name="water nymph">
@@ -68160,15 +68160,15 @@
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42303" name="ship bell">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42304" name="fish hook board">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42305" name="life buoy">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item fromid="42306" toid="42308" article="a" name="captain crab">
@@ -68314,7 +68314,7 @@
 		<attribute key="rotateTo" value="42347"/>
 	</item>
 	<item id="42350" name="opulent item stand">
-		<attribute key="primarytype" value="decorations"/>
+		<attribute key="primarytype" value="decoration"/>
 		<attribute key="wrapableto" value="23398"/>
 	</item>
 	<item id="42351" name="opulent kline">

@@ -343,6 +343,22 @@ std::string toKebabCase(const std::string &str) {
 	return result;
 }
 
+std::string toStartCaseWithSpace(const std::string &str) {
+	std::string result;
+	for (size_t i = 0; i < str.length(); ++i) {
+		char ch = str[i];
+		if (i == 0 || std::isupper(ch)) {
+			if (i > 0) {
+				result += ' ';
+			}
+			result += std::toupper(ch);
+		} else {
+			result += std::tolower(ch);
+		}
+	}
+	return result;
+}
+
 StringVector explodeString(const std::string &inString, const std::string &separator, int32_t limit /* = -1*/) {
 	StringVector returnVector;
 	std::string::size_type start = 0, end = 0;

@@ -213,7 +213,7 @@ namespace {
 	 *
 	 * @note The default value is "all", which is the first enum (0). The message must always start with "All".
 	 *
-	 * @details for example of enum see the StoreInboxCategory_t
+	 * @details for example of enum see the ContainerCategory_t
 	 *
 	 * @param msg The network message to send the category to.
 	 */
@@ -229,7 +229,7 @@ namespace {
 
 			g_logger().debug("Sendding category number '{}', category name '{}'", static_cast<uint8_t>(value), magic_enum::enum_name(value).data());
 			msg.addByte(static_cast<uint8_t>(value));
-			msg.addString(magic_enum::enum_name(value).data());
+			msg.addString(toStartCaseWithSpace(magic_enum::enum_name(value).data()));
 		}
 	}
 
@@ -4308,7 +4308,7 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 	if (container->isStoreInbox()) {
 		auto categories = container->getStoreInboxValidCategories();
 		const auto enumName = container->getAttribute<std::string>(ItemAttribute_t::STORE_INBOX_CATEGORY);
-		auto category = magic_enum::enum_cast<StoreInboxCategory_t>(enumName);
+		auto category = magic_enum::enum_cast<ContainerCategory_t>(enumName);
 		if (category.has_value()) {
 			bool toSendCategory = false;
 			// Check if category exist in the deque
@@ -4325,9 +4325,9 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 					container->removeAttribute(ItemAttribute_t::STORE_INBOX_CATEGORY);
 				}
 			}
-			sendContainerCategory<StoreInboxCategory_t>(msg, categories, static_cast<uint8_t>(category.value()));
+			sendContainerCategory<ContainerCategory_t>(msg, categories, static_cast<uint8_t>(category.value()));
 		} else {
-			sendContainerCategory<StoreInboxCategory_t>(msg, categories);
+			sendContainerCategory<ContainerCategory_t>(msg, categories);
 		}
 	} else {
 		msg.addByte(0x00);

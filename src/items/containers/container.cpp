@@ -254,7 +254,10 @@ std::deque<Item*> Container::getStoreInboxFilteredItems() const {
 			uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
 			if (unWrapId != 0) {
 				const auto &itemType = Item::items.getItemType(unWrapId);
-				if (itemType.m_primaryType == asLowerCaseString(enumName)) {
+				auto primaryType = toPascalCase(itemType.m_primaryType);
+				auto name = toPascalCase(enumName);
+				g_logger().debug("Get filtered items, primaty type {}, enum name {}", primaryType, name);
+				if (primaryType == name) {
 					storeInboxFilteredList.push_back(item);
 				}
 			}
@@ -264,15 +267,16 @@ std::deque<Item*> Container::getStoreInboxFilteredItems() const {
 	return storeInboxFilteredList;
 }
 
-phmap::flat_hash_set<StoreInboxCategory_t> Container::getStoreInboxValidCategories() const {
-	phmap::flat_hash_set<StoreInboxCategory_t> validCategories;
+phmap::flat_hash_set<ContainerCategory_t> Container::getStoreInboxValidCategories() const {
+	phmap::flat_hash_set<ContainerCategory_t> validCategories;
 	for (const auto &item : itemlist) {
 		auto attribute = item->getCustomAttribute("unWrapId");
 		uint16_t unWrapId = attribute ? static_cast<uint16_t>(attribute->getInteger()) : 0;
 		if (unWrapId != 0) {
 			const auto &itemType = Item::items.getItemType(unWrapId);
-			auto category = magic_enum::enum_cast<StoreInboxCategory_t>(toPascalCase(itemType.m_primaryType));
-			g_logger().debug("Store unwrap item '{}', primary type {}", unWrapId, toPascalCase(itemType.m_primaryType));
+			auto convertedString = toPascalCase(itemType.m_primaryType);
+			auto category = magic_enum::enum_cast<ContainerCategory_t>(convertedString);
+			g_logger().debug("Store unwrap item '{}', primary type {}", unWrapId, convertedString);
 			if (category.has_value()) {
 				g_logger().debug("Adding valid category {}", static_cast<uint8_t>(category.value()));
 				validCategories.insert(category.value());

@@ -93,8 +93,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 			}
 		}
 		// Reload creature on spectators
-		auto spectators = Spectators().find<Player>(monster->getPosition(), true);
-		for (Creature* spectator : spectators) {
+		for (const auto spectator : Spectators().find<Player>(monster->getPosition(), true)) {
 			spectator->getPlayer()->sendCreatureReload(monster);
 		}
 		pushBoolean(L, true);

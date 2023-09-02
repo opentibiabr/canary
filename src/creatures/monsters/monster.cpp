@@ -361,10 +361,8 @@ void Monster::updateTargetList() {
 		}
 	}
 
-	auto spectators = Spectators().find<Creature>(position, true);
-	spectators.erase(this);
-	for (Creature* spectator : spectators) {
-		if (canSee(spectator->getPosition())) {
+	for (const auto spectator : Spectators().find<Creature>(position, true)) {
+		if (spectator != this && canSee(spectator->getPosition())) {
 			onCreatureFound(spectator);
 		}
 	}

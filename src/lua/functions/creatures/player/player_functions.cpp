@@ -2837,9 +2837,8 @@ int PlayerFunctions::luaPlayerSetGhostMode(lua_State* L) {
 	Tile* tile = player->getTile();
 	const Position &position = player->getPosition();
 
-	auto spectators = Spectators().find<Player>(position, true);
-	for (Creature* spectator : spectators) {
-		Player* tmpPlayer = spectator->getPlayer();
+	for (const auto spectator : Spectators().find<Player>(position, true)) {
+		const auto tmpPlayer = spectator->getPlayer();
 		if (tmpPlayer != player && !tmpPlayer->isAccessPlayer()) {
 			if (enabled) {
 				tmpPlayer->sendRemoveTileThing(position, tile->getStackposOfCreature(tmpPlayer, player));

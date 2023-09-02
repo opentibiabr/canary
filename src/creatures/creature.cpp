@@ -1784,12 +1784,7 @@ void Creature::setIcon(CreatureIcon icon) {
 		return;
 	}
 
-	auto spectators = Spectators().find<Player>(tile->getPosition(), true);
-	for (Creature* spectator : spectators) {
-		if (!spectator) {
-			continue;
-		}
-
+	for (const auto spectator : Spectators().find<Player>(tile->getPosition(), true)) {
 		spectator->getPlayer()->sendCreatureIcon(this);
 	}
 }

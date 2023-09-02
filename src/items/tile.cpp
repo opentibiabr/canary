@@ -1196,9 +1196,11 @@ void Tile::removeThing(Thing* thing, uint32_t count) {
 		} else {
 			std::vector<int32_t> oldStackPosVector;
 
-			auto spectators = Spectators().find<Player>(getPosition(), true);
+			auto spectators = Spectators().find<Creature>(getPosition(), true);
 			for (Creature* spectator : spectators) {
-				oldStackPosVector.push_back(getStackposOfItem(spectator->getPlayer(), item));
+				if (Player* tmpPlayer = spectator->getPlayer()) {
+					oldStackPosVector.push_back(getStackposOfItem(spectator->getPlayer(), item));
+				}
 			}
 
 			item->setParent(nullptr);
@@ -1426,8 +1428,7 @@ Thing* Tile::getThing(size_t index) const {
 }
 
 void Tile::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t link /*= LINK_OWNER*/) {
-	auto spectators = Spectators().find<Player>(getPosition(), true);
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(getPosition(), true)) {
 		spectator->getPlayer()->postAddNotification(thing, oldParent, index, LINK_NEAR);
 	}
 
@@ -1484,7 +1485,7 @@ void Tile::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32
 		onUpdateTile(spectators);
 	}
 
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : spectators) {
 		spectator->getPlayer()->postRemoveNotification(thing, newParent, index, LINK_NEAR);
 	}
 

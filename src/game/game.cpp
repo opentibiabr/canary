@@ -891,8 +891,10 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/) {
 
 	std::vector<int32_t> oldStackPosVector;
 
-	auto spectators = Spectators().find<Player>(tile->getPosition(), true);
-	for (Creature* spectator : spectators) {
+	auto spectators = Spectators().find<Creature>(tile->getPosition(), true);
+	auto playersSpectators = spectators.filter<Player>();
+
+	for (auto spectator : playersSpectators) {
 		if (const auto player = spectator->getPlayer()) {
 			oldStackPosVector.push_back(player->canSeeCreature(creature) ? tile->getStackposOfCreature(player, creature) : -1);
 		}
@@ -904,14 +906,14 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/) {
 
 	// send to client
 	size_t i = 0;
-	for (Creature* spectator : spectators) {
-		if (Player* player = spectator->getPlayer()) {
+	for (const auto spectator : playersSpectators) {
+		if (const auto player = spectator->getPlayer()) {
 			player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
 		}
 	}
 
 	// event method
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : spectators) {
 		spectator->onRemoveCreature(creature, isLogout);
 	}
 
@@ -928,7 +930,7 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/) {
 
 	removeCreatureCheck(creature);
 
-	for (Creature* summon : creature->summons) {
+	for (const auto summon : creature->summons) {
 		summon->setSkillLoss(false);
 		removeCreature(summon);
 	}
@@ -3734,10 +3736,8 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		item->removeAttribute(ItemAttribute_t::NAME);
 	}
 
-	auto spectators = Spectators().find<Player>(pos, true);
-
 	// Send to client
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(pos, true)) {
 		spectator->getPlayer()->sendUpdateTileItem(tile, pos, item);
 	}
 }
@@ -5581,8 +5581,7 @@ bool Game::internalCreatureTurn(Creature* creature, Direction dir) {
 	creature->setDirection(dir);
 
 	// Send to client
-	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(creature->getPosition(), true)) {
 		spectator->getPlayer()->sendCreatureTurn(creature);
 	}
 	return true;
@@ -5709,8 +5708,7 @@ void Game::changeSpeed(Creature* creature, int32_t varSpeedDelta) {
 	creature->setSpeed(varSpeed);
 
 	// send to clients
-	auto spectators = Spectators().find<Player>(creature->getPosition());
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(creature->getPosition())) {
 		spectator->getPlayer()->sendChangeSpeed(creature, creature->getStepSpeed());
 	}
 }
@@ -5719,8 +5717,7 @@ void Game::setCreatureSpeed(Creature* creature, int32_t speed) {
 	creature->setBaseSpeed(static_cast<uint16_t>(speed));
 
 	// send creature speed to client
-	auto spectators = Spectators().find<Player>(creature->getPosition());
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(creature->getPosition())) {
 		spectator->getPlayer()->sendChangeSpeed(creature, creature->getStepSpeed());
 	}
 }
@@ -5765,33 +5762,28 @@ void Game::internalCreatureChangeOutfit(Creature* creature, const Outfit_t &outf
 	}
 
 	// send to clients
-	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(creature->getPosition(), true)) {
 		spectator->getPlayer()->sendCreatureChangeOutfit(creature, outfit);
 	}
 }
 
 void Game::internalCreatureChangeVisible(Creature* creature, bool visible) {
 	// send to clients
-	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(creature->getPosition(), true)) {
 		spectator->getPlayer()->sendCreatureChangeVisible(creature, visible);
 	}
 }
 
 void Game::changeLight(const Creature* creature) {
 	// send to clients
-	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
-
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(creature->getPosition(), true)) {
 		spectator->getPlayer()->sendCreatureLight(creature);
 	}
 }
 
 void Game::updateCreatureIcon(const Creature* creature) {
 	// send to clients
-	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(creature->getPosition(), true)) {
 		spectator->getPlayer()->sendCreatureIcon(creature);
 	}
 }
@@ -5802,8 +5794,7 @@ void Game::reloadCreature(const Creature* creature) {
 		return;
 	}
 
-	auto spectators = Spectators().find<Player>(creature->getPosition());
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(creature->getPosition())) {
 		spectator->getPlayer()->reloadCreature(creature);
 	}
 }
@@ -5813,20 +5804,17 @@ void Game::sendSingleSoundEffect(const Position &pos, SoundEffect_t soundId, Cre
 		return;
 	}
 
-	auto spectators = Spectators().find<Player>(pos);
-	for (Creature* spectator : spectators) {
-		if (Player* tmpPlayer = spectator->getPlayer()) {
-			SourceEffect_t source = SourceEffect_t::CREATURES;
-			if (!actor || actor->getNpc()) {
-				source = SourceEffect_t::GLOBAL;
-			} else if (actor == spectator) {
-				source = SourceEffect_t::OWN;
-			} else if (actor->getPlayer()) {
-				source = SourceEffect_t::OTHERS;
-			}
-
-			tmpPlayer->sendSingleSoundEffect(pos, soundId, source);
+	for (const auto spectator : Spectators().find<Player>(pos)) {
+		SourceEffect_t source = SourceEffect_t::CREATURES;
+		if (!actor || actor->getNpc()) {
+			source = SourceEffect_t::GLOBAL;
+		} else if (actor == spectator) {
+			source = SourceEffect_t::OWN;
+		} else if (actor->getPlayer()) {
+			source = SourceEffect_t::OTHERS;
 		}
+
+		spectator->getPlayer()->sendSingleSoundEffect(pos, soundId, source);
 	}
 }
 
@@ -5836,8 +5824,7 @@ void Game::sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundEff
 		return;
 	}
 
-	auto spectators = Spectators().find<Player>(pos);
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(pos)) {
 		SourceEffect_t source = SourceEffect_t::CREATURES;
 		if (!actor || actor->getNpc()) {
 			source = SourceEffect_t::GLOBAL;
@@ -6327,51 +6314,46 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			message.primary.value = realHealthChange;
 			message.primary.color = TEXTCOLOR_PASTELRED;
 
-			auto spectators = Spectators().find<Player>(targetPos);
-			for (Creature* spectator : spectators) {
-				Player* tmpPlayer = spectator->getPlayer();
-
-				if (!tmpPlayer) {
-					continue;
-				}
-
-				if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
-					ss.str({});
-					ss << "You heal " << target->getNameDescription() << " for " << damageString;
-					message.type = MESSAGE_HEALED;
-					message.text = ss.str();
-				} else if (tmpPlayer == targetPlayer) {
-					ss.str({});
-					if (!attacker) {
-						ss << "You were healed";
-					} else if (targetPlayer == attackerPlayer) {
-						ss << "You heal yourself";
-					} else {
-						ss << "You were healed by " << attacker->getNameDescription();
-					}
-					ss << " for " << damageString;
-					message.type = MESSAGE_HEALED;
-					message.text = ss.str();
-				} else {
-					if (spectatorMessage.empty()) {
+			for (const auto spectator : Spectators().find<Player>(targetPos)) {
+				if (const auto tmpPlayer = spectator->getPlayer()) {
+					if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
+						ss.str({});
+						ss << "You heal " << target->getNameDescription() << " for " << damageString;
+						message.type = MESSAGE_HEALED;
+						message.text = ss.str();
+					} else if (tmpPlayer == targetPlayer) {
 						ss.str({});
 						if (!attacker) {
-							ss << ucfirst(target->getNameDescription()) << " was healed";
+							ss << "You were healed";
+						} else if (targetPlayer == attackerPlayer) {
+							ss << "You heal yourself";
 						} else {
-							ss << ucfirst(attacker->getNameDescription()) << " healed ";
-							if (attacker == target) {
-								ss << (targetPlayer ? (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "herself" : "himself") : "itself");
-							} else {
-								ss << target->getNameDescription();
-							}
+							ss << "You were healed by " << attacker->getNameDescription();
 						}
 						ss << " for " << damageString;
-						spectatorMessage = ss.str();
+						message.type = MESSAGE_HEALED;
+						message.text = ss.str();
+					} else {
+						if (spectatorMessage.empty()) {
+							ss.str({});
+							if (!attacker) {
+								ss << ucfirst(target->getNameDescription()) << " was healed";
+							} else {
+								ss << ucfirst(attacker->getNameDescription()) << " healed ";
+								if (attacker == target) {
+									ss << (targetPlayer ? (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "herself" : "himself") : "itself");
+								} else {
+									ss << target->getNameDescription();
+								}
+							}
+							ss << " for " << damageString;
+							spectatorMessage = ss.str();
+						}
+						message.type = MESSAGE_HEALED_OTHERS;
+						message.text = spectatorMessage;
 					}
-					message.type = MESSAGE_HEALED_OTHERS;
-					message.text = spectatorMessage;
+					tmpPlayer->sendTextMessage(message);
 				}
-				tmpPlayer->sendTextMessage(message);
 			}
 		}
 	} else {
@@ -6997,9 +6979,8 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage &
 			message.primary.value = realManaChange;
 			message.primary.color = TEXTCOLOR_MAYABLUE;
 
-			auto spectators = Spectators().find<Player>(targetPos);
-			for (Creature* spectator : spectators) {
-				Player* tmpPlayer = spectator->getPlayer();
+			for (const auto spectator : Spectators().find<Player>(targetPos)) {
+				const auto tmpPlayer = spectator->getPlayer();
 
 				if (!tmpPlayer) {
 					continue;
@@ -7096,9 +7077,8 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage &
 		message.primary.value = manaLoss;
 		message.primary.color = TEXTCOLOR_BLUE;
 
-		auto spectators = Spectators().find<Player>(targetPos);
-		for (Creature* spectator : spectators) {
-			Player* tmpPlayer = spectator->getPlayer();
+		for (const auto spectator : Spectators().find<Player>(targetPos)) {
+			const auto tmpPlayer = spectator->getPlayer();
 
 			if (!tmpPlayer) {
 				continue;
@@ -7179,12 +7159,11 @@ void Game::addPlayerMana(const Player* target) {
 }
 
 void Game::addPlayerVocation(const Player* target) {
-	if (Party* party = target->getParty()) {
+	if (const auto party = target->getParty()) {
 		party->updatePlayerVocation(target);
 	}
 
-	auto spectators = Spectators().find<Player>(target->getPosition(), true);
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(target->getPosition(), true)) {
 		spectator->getPlayer()->sendPlayerVocation(target);
 	}
 }
@@ -7550,14 +7529,8 @@ void Game::updatePlayerHelpers(Player* player) {
 		return;
 	}
 
-	uint16_t helpers = player->getHelpers();
-
-	auto spectators = Spectators().find<Player>(player->getPosition(), true);
-	for (Creature* spectator : spectators) {
-		if (!spectator) {
-			continue;
-		}
-
+	const uint16_t helpers = player->getHelpers();
+	for (const auto spectator : Spectators().find<Player>(player->getPosition(), true)) {
 		spectator->getPlayer()->sendCreatureHelpers(player->getID(), helpers);
 	}
 }
@@ -8019,12 +7992,11 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
 	auto spectators = Spectators().find<Player>(player->getPosition(), true);
 	spectators.insert(npc);
 	internalCreatureSay(player, TALKTYPE_SAY, "hi", false, &spectators);
-	spectators = spectators.filter<Npc>();
 
 	if (npc->getSpeechBubble() == SPEECHBUBBLE_TRADE) {
-		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "trade", false, &spectators);
+		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "trade", false, &spectators.filter<Npc>());
 	} else {
-		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "sail", false, &spectators);
+		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "sail", false, &spectators.filter<Npc>());
 	}
 }
 
@@ -8923,9 +8895,8 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 		item->removeAttribute(ItemAttribute_t::NAME);
 	}
 
-	auto spectators = Spectators().find<Player>(pos, true);
 	// Send to client
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(pos, true)) {
 		spectator->getPlayer()->sendUpdateTileItem(tile, pos, item);
 	}
 }
@@ -9287,8 +9258,7 @@ void Game::sendUpdateCreature(const Creature* creature) {
 		return;
 	}
 
-	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(creature->getPosition(), true)) {
 		spectator->getPlayer()->sendUpdateCreature(creature);
 	}
 }

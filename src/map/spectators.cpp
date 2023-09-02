@@ -54,10 +54,11 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 #endif
 		} else {
 			for (const auto creature : list) {
-				if (centerPos.x - creature->getPosition().x >= minRangeX
-					&& centerPos.y - creature->getPosition().y >= minRangeY
-					&& centerPos.x - creature->getPosition().x <= maxRangeX
-					&& centerPos.y - creature->getPosition().y <= maxRangeY) {
+				const auto &specPos = creature->getPosition();
+				if (centerPos.x - specPos.x >= minRangeX
+					&& centerPos.y - specPos.y >= minRangeY
+					&& centerPos.x - specPos.x <= maxRangeX
+					&& centerPos.y - specPos.y <= maxRangeY) {
 #ifdef SPECTATORS_USE_HASHSET
 					creatures.emplace(creature);
 #else

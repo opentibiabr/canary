@@ -7992,11 +7992,12 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
 	auto spectators = Spectators().find<Player>(player->getPosition(), true);
 	spectators.insert(npc);
 	internalCreatureSay(player, TALKTYPE_SAY, "hi", false, &spectators);
+	auto npcsSpectators = spectators.filter<Npc>();
 
 	if (npc->getSpeechBubble() == SPEECHBUBBLE_TRADE) {
-		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "trade", false, &spectators.filter<Npc>());
+		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "trade", false, &npcsSpectators);
 	} else {
-		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "sail", false, &spectators.filter<Npc>());
+		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "sail", false, &npcsSpectators);
 	}
 }
 

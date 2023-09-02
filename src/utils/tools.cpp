@@ -303,7 +303,7 @@ std::string toPascalCase(const std::string &str) {
 				result += std::toupper(ch);
 				capitalizeNext = false;
 			} else {
-				result += std::tolower(ch);
+				result += ch; // Keep the character as is.
 			}
 		}
 	}

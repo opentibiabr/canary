@@ -42,6 +42,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", ALLOW_BLOCK_SPAWN);
 	registerEnumIn(L, "configKeys", CLASSIC_ATTACK_SPEED);
 	registerEnumIn(L, "configKeys", REMOVE_WEAPON_AMMO);
+	registerEnumIn(L, "configKeys", REMOVE_WEAPON_WITH_BREAK_CHANCE);
 	registerEnumIn(L, "configKeys", REMOVE_WEAPON_CHARGES);
 	registerEnumIn(L, "configKeys", REMOVE_POTION_CHARGES);
 	registerEnumIn(L, "configKeys", WEATHER_RAIN);

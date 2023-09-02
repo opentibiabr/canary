@@ -21,6 +21,7 @@ pzLocked = 60 * 1000
 removeChargesFromRunes = true
 removeChargesFromPotions = true
 removeWeaponAmmunition = true
+removeWeaponWithBreakChance = true
 removeWeaponCharges = true
 timeToDecreaseFrags = 24 * 60 * 60 * 1000
 whiteSkullTime = 15 * 60 * 1000

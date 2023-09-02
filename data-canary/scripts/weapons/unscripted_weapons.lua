@@ -5106,6 +5106,8 @@ local weapons = {
 	}
 }
 
+local removeWeaponWithBreakChance = configManager.getBoolean(configKeys.REMOVE_WEAPON_WITH_BREAK_CHANCE)
+
 for _, w in ipairs(weapons) do
 	local weapon = Weapon(w.type)
 	weapon:id(w.itemid)
@@ -5113,7 +5115,7 @@ for _, w in ipairs(weapons) do
 	if (w.action) then
 		weapon:action(w.action)
 	end
-	if (w.breakchance) then
+	if removeWeaponWithBreakChance and (w.breakchance) then
 		weapon:breakChance(w.breakchance)
 	end
 	if (w.level) then

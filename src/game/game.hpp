@@ -198,9 +198,9 @@ public:
 
 	ReturnValue internalTeleport(Thing* thing, const Position &newPos, bool pushMove = true, uint32_t flags = 0);
 
-	bool internalCreatureTurn(Creature* creature, Direction dir);
+	bool internalCreatureTurn(Creature* creature, Direction dir) const;
 
-	bool internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, Spectators* spectatorsPtr = nullptr, const Position* pos = nullptr);
+	bool internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, const Spectators* spectatorsPtr = nullptr, const Position* pos = nullptr);
 
 	ObjectCategory_t getObjectCategory(const Item* item);
 
@@ -647,10 +647,10 @@ private:
 	std::set<uint32_t> influencedMonsters;
 	void checkImbuements();
 	bool playerSaySpell(Player* player, SpeakClasses type, const std::string &text);
-	void playerWhisper(Player* player, const std::string &text);
+	void playerWhisper(Player* player, const std::string &text) const;
 	bool playerYell(Player* player, const std::string &text);
 	bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
-	void playerSpeakToNpc(Player* player, const std::string &text);
+	void playerSpeakToNpc(Player* player, const std::string &text) const;
 	std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f);
 
 	/**

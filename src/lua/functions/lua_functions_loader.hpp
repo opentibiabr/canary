@@ -193,7 +193,7 @@ public:
 	}
 
 	template <class T>
-	static void pushUserdata(lua_State* L, std::shared_ptr<T> value) {
+	static void pushUserdata(lua_State* L, const std::shared_ptr<T> value) {
 		// This is basically malloc from C++ point of view.
 		auto userData = static_cast<std::shared_ptr<T>*>(lua_newuserdata(L, sizeof(std::shared_ptr<T>)));
 		// Copy constructor, bumps ref count.

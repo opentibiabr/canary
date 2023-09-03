@@ -28,13 +28,15 @@ class Spectators {
 public:
 	static void clearCache();
 
-	template <typename T, typename std::enable_if_t<std::is_same_v<Creature, T> || std::is_same_v<Player, T>>* = nullptr>
-	Spectators find(const Position &centerPos, bool multifloor = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0) {
+	template <typename T>
+		requires std::is_same_v<Creature, T> || std::is_same_v<Player, T>
+	Spectators &find(const Position &centerPos, bool multifloor = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0) {
 		constexpr bool onlyPlayers = std::is_same_v<T, Player>;
 		return find(centerPos, multifloor, onlyPlayers, minRangeX, maxRangeX, minRangeY, maxRangeY);
 	}
 
-	template <typename T, typename std::enable_if_t<std::is_base_of_v<Creature, T>>* = nullptr>
+	template <typename T>
+		requires std::is_base_of_v<Creature, T>
 	Spectators filter();
 
 	bool contains(const Creature* creature) const;
@@ -50,7 +52,9 @@ public:
 #endif
 	}
 
-	void insert(Creature* creature);
+	Spectators &join(const Spectators &anotherSpectators);
+	Spectators &insert(Creature* creature);
+	Spectators &insertAll(const SpectatorList &list);
 
 	bool empty() const {
 		return creatures.empty();
@@ -70,33 +74,31 @@ public:
 	}
 
 private:
-	Spectators find(const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
+	Spectators &find(const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
 	void update();
 
 	SpectatorList creatures;
 	bool needUpdate = false;
 };
 
-template <typename T, typename std::enable_if<std::is_base_of_v<Creature, T>>::type*>
+template <typename T>
+	requires std::is_base_of_v<Creature, T>
 Spectators Spectators::filter() {
 	update();
 	auto specs = Spectators();
 	for (const auto &c : creatures) {
-		bool insert = false;
 		if constexpr (std::is_same_v<T, Player>) {
-			insert = c->getPlayer() != nullptr;
+			if (c->getPlayer() != nullptr) {
+				specs.insert(c);
+			}
 		} else if constexpr (std::is_same_v<T, Monster>) {
-			insert = c->getMonster() != nullptr;
+			if (c->getMonster() != nullptr) {
+				specs.insert(c);
+			}
 		} else if constexpr (std::is_same_v<T, Npc>) {
-			insert = c->getNpc() != nullptr;
-		}
-
-		if (insert) {
-#ifdef SPECTATORS_USE_HASHSET
-			specs.creatures.emplace(c);
-#else
-			specs.creatures.emplace_back(c);
-#endif
+			if (c->getNpc() != nullptr) {
+				specs.insert(c);
+			}
 		}
 	}
 

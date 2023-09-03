@@ -2270,7 +2270,7 @@ public:
 		SpeakClasses type,
 		const std::string &text,
 		bool ghostMode,
-		Spectators* spectatorsPtr = nullptr,
+		const Spectators* spectatorsPtr = nullptr,
 		const Position* pos = nullptr
 	);
 

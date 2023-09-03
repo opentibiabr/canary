@@ -5471,11 +5471,11 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string &
 	return false;
 }
 
-void Game::playerWhisper(Player* player, const std::string &text) {
+void Game::playerWhisper(Player* player, const std::string &text) const {
 	auto spectators = Spectators().find<Player>(player->getPosition(), false, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_Y, MAP_MAX_CLIENT_VIEW_PORT_Y);
 
 	// send to client
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : spectators) {
 		if (const auto spectatorPlayer = spectator->getPlayer()) {
 			if (!Position::areInRange<1, 1>(player->getPosition(), spectatorPlayer->getPosition())) {
 				spectatorPlayer->sendCreatureSay(player, TALKTYPE_WHISPER, "pspsps");
@@ -5486,7 +5486,7 @@ void Game::playerWhisper(Player* player, const std::string &text) {
 	}
 
 	// event method
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : spectators) {
 		spectator->onCreatureSay(player, TALKTYPE_WHISPER, text);
 	}
 }
@@ -5537,7 +5537,7 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string &r
 	return true;
 }
 
-void Game::playerSpeakToNpc(Player* player, const std::string &text) {
+void Game::playerSpeakToNpc(Player* player, const std::string &text) const {
 	if (player == nullptr) {
 		g_logger().error("[Game::playerSpeakToNpc] - Player is nullptr");
 		return;
@@ -5570,7 +5570,7 @@ bool Game::isSightClear(const Position &fromPos, const Position &toPos, bool flo
 	return map.isSightClear(fromPos, toPos, floorCheck);
 }
 
-bool Game::internalCreatureTurn(Creature* creature, Direction dir) {
+bool Game::internalCreatureTurn(Creature* creature, Direction dir) const {
 	if (creature->getDirection() == dir) {
 		return false;
 	}
@@ -5587,7 +5587,7 @@ bool Game::internalCreatureTurn(Creature* creature, Direction dir) {
 	return true;
 }
 
-bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, Spectators* spectatorsPtr /* = nullptr*/, const Position* pos /* = nullptr*/) {
+bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, const Spectators* spectatorsPtr /* = nullptr*/, const Position* pos /* = nullptr*/) {
 	if (text.empty()) {
 		return false;
 	}
@@ -5804,14 +5804,15 @@ void Game::sendSingleSoundEffect(const Position &pos, SoundEffect_t soundId, Cre
 		return;
 	}
 
+	using enum SourceEffect_t;
 	for (const auto spectator : Spectators().find<Player>(pos)) {
-		SourceEffect_t source = SourceEffect_t::CREATURES;
+		SourceEffect_t source = CREATURES;
 		if (!actor || actor->getNpc()) {
-			source = SourceEffect_t::GLOBAL;
+			source = GLOBAL;
 		} else if (actor == spectator) {
-			source = SourceEffect_t::OWN;
+			source = OWN;
 		} else if (actor->getPlayer()) {
-			source = SourceEffect_t::OTHERS;
+			source = OTHERS;
 		}
 
 		spectator->getPlayer()->sendSingleSoundEffect(pos, soundId, source);
@@ -5824,14 +5825,15 @@ void Game::sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundEff
 		return;
 	}
 
+	using enum SourceEffect_t;
 	for (const auto spectator : Spectators().find<Player>(pos)) {
-		SourceEffect_t source = SourceEffect_t::CREATURES;
+		SourceEffect_t source = CREATURES;
 		if (!actor || actor->getNpc()) {
-			source = SourceEffect_t::GLOBAL;
+			source = GLOBAL;
 		} else if (actor == spectator) {
-			source = SourceEffect_t::OWN;
+			source = OWN;
 		} else if (actor->getPlayer()) {
-			source = SourceEffect_t::OTHERS;
+			source = OTHERS;
 		}
 
 		spectator->getPlayer()->sendDoubleSoundEffect(pos, mainSoundEffect, source, secondarySoundEffect, source);

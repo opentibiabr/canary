@@ -429,7 +429,6 @@ void Tile::onUpdateTileItem(Item* oldItem, const ItemType &oldType, Item* newIte
 	const Position &cylinderMapPos = getPosition();
 
 	auto spectators = Spectators().find<Creature>(cylinderMapPos, true);
-	;
 
 	// send to client
 	for (Creature* spectator : spectators) {

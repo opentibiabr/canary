@@ -25,8 +25,9 @@ void Spectators::update() {
 
 	needUpdate = false;
 #ifndef SPECTATORS_USE_HASHSET
-	std::sort(creatures.begin(), creatures.end());
-	creatures.erase(std::unique(creatures.begin(), creatures.end()), creatures.end());
+	std::ranges::sort(creatures);
+	const auto [f, l] = std::ranges::unique(creatures);
+	creatures.erase(f, l);
 #endif
 }
 
@@ -171,7 +172,7 @@ bool Spectators::contains(const Creature* creature) const {
 #ifdef SPECTATORS_USE_HASHSET
 	return creatures.contains(creature);
 #else
-	return std::find(creatures.begin(), creatures.end(), creature) != creatures.end();
+	return std::ranges::find(creatures.begin(), creatures.end(), creature) != creatures.end();
 #endif
 }
 
@@ -180,7 +181,7 @@ bool Spectators::erase(const Creature* creature) {
 #ifdef SPECTATORS_USE_HASHSET
 	return creatures.erase(creature) > 0;
 #else
-	const auto &it = std::find(creatures.begin(), creatures.end(), creature);
+	const auto &it = std::ranges::find(creatures.begin(), creatures.end(), creature);
 	if (it != creatures.end()) {
 		creatures.erase(it);
 		return true;

@@ -17,9 +17,8 @@ class Monster;
 class Npc;
 struct Position;
 
-// #define SPECTATORS_USE_HASHSET
-
 #ifdef SPECTATORS_USE_HASHSET
+// it is slower by 51~99% in certain cases
 using SpectatorList = phmap::flat_hash_set<Creature*>;
 #else
 using SpectatorList = std::vector<Creature*>;
@@ -29,13 +28,13 @@ class Spectators {
 public:
 	static void clearCache();
 
-	template <typename T, typename std::enable_if<std::is_same<Creature, T>::value || std::is_same<Player, T>::value>::type* = nullptr>
+	template <typename T, typename std::enable_if_t<std::is_same_v<Creature, T> || std::is_same_v<Player, T>>* = nullptr>
 	Spectators find(const Position &centerPos, bool multifloor = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0) {
-		const bool onlyPlayers = std::is_same_v<T, Player>;
+		constexpr bool onlyPlayers = std::is_same_v<T, Player>;
 		return find(centerPos, multifloor, onlyPlayers, minRangeX, maxRangeX, minRangeY, maxRangeY);
 	}
 
-	template <typename T, typename std::enable_if<std::is_base_of<Creature, T>::value>::type* = nullptr>
+	template <typename T, typename std::enable_if_t<std::is_base_of_v<Creature, T>>* = nullptr>
 	Spectators filter();
 
 	bool contains(const Creature* creature) const;
@@ -78,12 +77,21 @@ private:
 	bool needUpdate = false;
 };
 
-template <typename T, typename std::enable_if<std::is_base_of<Creature, T>::value>::type*>
+template <typename T, typename std::enable_if<std::is_base_of_v<Creature, T>>::type*>
 Spectators Spectators::filter() {
 	update();
 	auto specs = Spectators();
 	for (const auto &c : creatures) {
-		if (std::is_same_v<T, Player> && c->getPlayer() || std::is_same_v<T, Monster> && c->getMonster() || std::is_same_v<T, Npc> && c->getNpc()) {
+		bool insert = false;
+		if constexpr (std::is_same_v<T, Player>) {
+			insert = c->getPlayer() != nullptr;
+		} else if constexpr (std::is_same_v<T, Monster>) {
+			insert = c->getMonster() != nullptr;
+		} else if constexpr (std::is_same_v<T, Npc>) {
+			insert = c->getNpc() != nullptr;
+		}
+
+		if (insert) {
 #ifdef SPECTATORS_USE_HASHSET
 			specs.creatures.emplace(c);
 #else

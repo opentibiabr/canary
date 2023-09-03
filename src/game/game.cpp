@@ -6144,32 +6144,34 @@ void Game::handleHazardSystemAttack(CombatDamage &damage, Player* player, const 
 	}
 }
 
-void Game::notifySpectators(Spectators &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster) {
-	if (!spectators.empty()) {
-		for (Creature* spectator : spectators) {
-			if (!spectator) {
-				continue;
-			}
-
-			const auto tmpPlayer = spectator->getPlayer();
-			if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
-				continue;
-			}
-
-			std::stringstream ss;
-			ss << ucfirst(targetMonster->getNameDescription()) << " has dodged";
-			if (tmpPlayer == attackerPlayer) {
-				ss << " your attack.";
-				attackerPlayer->sendCancelMessage(ss.str());
-				ss << " (Hazard)";
-				attackerPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
-			} else {
-				ss << " an attack by " << attackerPlayer->getName() << ". (Hazard)";
-				tmpPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
-			}
-		}
-		addMagicEffect(targetPos, CONST_ME_DODGE);
+void Game::notifySpectators(Spectators &spectators, const Position &targetPos, const Player* attackerPlayer, const Monster* targetMonster) {
+	if (spectators.empty()) {
+		return;
 	}
+
+	for (const auto spectator : spectators) {
+		if (!spectator) {
+			continue;
+		}
+
+		const auto tmpPlayer = spectator->getPlayer();
+		if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
+			continue;
+		}
+
+		std::stringstream ss;
+		ss << ucfirst(targetMonster->getNameDescription()) << " has dodged";
+		if (tmpPlayer == attackerPlayer) {
+			ss << " your attack.";
+			attackerPlayer->sendCancelMessage(ss.str());
+			ss << " (Hazard)";
+			attackerPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
+		} else {
+			ss << " an attack by " << attackerPlayer->getName() << ". (Hazard)";
+			tmpPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
+		}
+	}
+	addMagicEffect(targetPos, CONST_ME_DODGE);
 }
 
 // Wheel of destiny combat helpers

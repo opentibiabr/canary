@@ -414,7 +414,7 @@ public:
 
 	// Hazard combat helpers
 	void handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker);
-	void notifySpectators(Spectators &spectators, const Position &targetPos, Player* attackerPlayer, Monster* targetMonster);
+	void notifySpectators(Spectators &spectators, const Position &targetPos, const Player* attackerPlayer, const Monster* targetMonster);
 
 	// Wheel of destiny combat helpers
 	void applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, const Creature* target);

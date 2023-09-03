@@ -11,7 +11,7 @@
 
 #include "pch.hpp"
 
-#include "creatures/players/account/account.hpp"
+#include "account/account.hpp"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.hpp"
 

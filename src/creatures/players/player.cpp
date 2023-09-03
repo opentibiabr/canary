@@ -2965,7 +2965,10 @@ bool Player::removeVIP(uint32_t vipGuid) {
 		return false;
 	}
 
-	IOLoginData::removeVIPEntry(accountNumber, vipGuid);
+	if (account) {
+		IOLoginData::removeVIPEntry(account->getID(), vipGuid);
+	}
+
 	return true;
 }
 
@@ -2981,10 +2984,14 @@ bool Player::addVIP(uint32_t vipGuid, const std::string &vipName, VipStatus_t st
 		return false;
 	}
 
-	IOLoginData::addVIPEntry(accountNumber, vipGuid, "", 0, false);
+	if (account) {
+		IOLoginData::addVIPEntry(account->getID(), vipGuid, "", 0, false);
+	}
+
 	if (client) {
 		client->sendVIP(vipGuid, vipName, "", 0, false, status);
 	}
+
 	return true;
 }
 
@@ -3002,7 +3009,10 @@ bool Player::editVIP(uint32_t vipGuid, const std::string &description, uint32_t 
 		return false; // player is not in VIP
 	}
 
-	IOLoginData::editVIPEntry(accountNumber, vipGuid, description, icon, notify);
+	if (account) {
+		IOLoginData::editVIPEntry(account->getID(), vipGuid, description, icon, notify);
+	}
+
 	return true;
 }
 
@@ -5240,12 +5250,11 @@ bool Player::isPremium() const {
 		return true;
 	}
 
-	return premiumDays > 0 || premiumLastDay > getTimeNow();
-}
+	if (!account) {
+		return false;
+	}
 
-void Player::setPremiumDays(uint32_t v) {
-	premiumDays = v;
-	sendBasicData();
+	return account->getPremiumRemainingDays() > 0 || account->getPremiumLastDay() > getTimeNow();
 }
 
 void Player::setTibiaCoins(int32_t v) {
@@ -7670,21 +7679,6 @@ std::unique_ptr<PlayerWheel> &Player::wheel() {
 
 const std::unique_ptr<PlayerWheel> &Player::wheel() const {
 	return m_wheelPlayer;
-}
-
-// Account interface
-error_t Player::SetAccountInterface(account::Account* account) {
-	if (account == nullptr) {
-		return account::ERROR_NULLPTR;
-	}
-
-	account_ = account;
-	return account::ERROR_NO;
-}
-
-error_t Player::GetAccountInterface(account::Account* account) {
-	account = account_;
-	return account::ERROR_NO;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

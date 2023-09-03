@@ -37,7 +37,7 @@
 #include "lua/scripts/scripts.hpp"
 #include "lua/modules/modules.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
-#include "creatures/players/account/account.hpp"
+#include "account/account.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "creatures/npcs/npcs.hpp"
@@ -826,7 +826,7 @@ ReturnValue Game::getPlayerByNameWildcard(const std::string &s, Player*&player) 
 
 Player* Game::getPlayerByAccount(uint32_t acc) {
 	for (const auto &it : players) {
-		if (it.second->getAccount() == acc) {
+		if (it.second->getAccountId() == acc) {
 			return it.second;
 		}
 	}
@@ -8140,6 +8140,11 @@ bool checkCanInitCreateMarketOffer(const Player* player, uint8_t type, const Ite
 		return false;
 	}
 
+	if (!player->getAccount()) {
+		offerStatus << "Failed to load player account";
+		return false;
+	}
+
 	if (!player->isInMarket()) {
 		offerStatus << "Failed to load market for player " << player->getName();
 		return false;
@@ -8221,17 +8226,14 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			account::Account account(player->getAccount());
-			account.LoadAccountDB();
-			uint32_t transferableCoins;
-			account.GetTransferableCoins(&transferableCoins);
+			auto [transferableCoins, result] = player->getAccount()->getCoins(account::CoinType::TRANSFERABLE);
 
 			if (amount > transferableCoins) {
 				offerStatus << "Amount is greater than coins for player " << player->getName();
 				return;
 			}
 
-			account.RemoveTransferableCoins(static_cast<uint32_t>(amount));
+			player->getAccount()->removeCoins(account::CoinType::TRANSFERABLE, static_cast<uint32_t>(amount));
 		} else {
 			if (!removeOfferItems(*player, *depotLocker, it, amount, tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -8290,7 +8292,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter) {
 	Player* player = getPlayerByID(playerId);
-	if (!player) {
+	if (!player || !player->getAccount()) {
 		return;
 	}
 
@@ -8319,9 +8321,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			account::Account account;
-			account.LoadAccountDB(player->getAccount());
-			account.AddTransferableCoins(offer.amount);
+			player->getAccount()->addCoins(account::CoinType::TRANSFERABLE, offer.amount);
 		} else if (it.stackable) {
 			uint16_t tmpAmount = offer.amount;
 			while (tmpAmount > 0) {
@@ -8375,7 +8375,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount) {
 	std::ostringstream offerStatus;
 	Player* player = getPlayerByID(playerId);
-	if (!player) {
+	if (!player || !player->getAccount()) {
 		offerStatus << "Failed to load player";
 		return;
 	}
@@ -8428,23 +8428,34 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 		}
 
+		if (!buyerPlayer->getAccount()) {
+			player->sendTextMessage(MESSAGE_MARKET, "Cannot accept offer.");
+			return;
+		}
+
 		if (player == buyerPlayer || player->getAccount() == buyerPlayer->getAccount()) {
 			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
 			return;
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			account::Account account;
-			account.LoadAccountDB(player->getAccount());
-			uint32_t transferableCoins;
-			account.GetTransferableCoins(&transferableCoins);
+			auto [transferableCoins, error] = player->getAccount()->getCoins(account::CoinType::TRANSFERABLE);
+
+			if (error != account::ERROR_NO) {
+				offerStatus << "Failed to load transferable coins for player " << player->getName();
+				return;
+			}
+
 			if (amount > transferableCoins) {
 				offerStatus << "Amount is greater than coins";
 				return;
 			}
 
-			account.RemoveTransferableCoins(amount);
-			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount, "Sold on Market");
+			player->getAccount()->removeCoins(
+				account::CoinType::TRANSFERABLE,
+				amount,
+				"Sold on Market"
+			);
 		} else {
 			if (!removeOfferItems(*player, *depotLocker, it, amount, offer.tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -8468,10 +8479,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		player->setBankBalance(player->getBankBalance() + totalPrice);
 
 		if (it.id == ITEM_STORE_COIN) {
-			account::Account account;
-			account.LoadAccountDB(buyerPlayer->getAccount());
-			account.AddTransferableCoins(amount);
-			account.RegisterCoinsTransaction(account::COIN_ADD, amount, "Purchased on Market");
+			buyerPlayer->getAccount()->addCoins(account::CoinType::TRANSFERABLE, amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -8546,10 +8554,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			account::Account account;
-			account.LoadAccountDB(player->getAccount());
-			account.AddTransferableCoins(amount);
-			account.RegisterCoinsTransaction(account::COIN_ADD, amount, "Purchased on Market");
+			player->getAccount()->addCoins(account::CoinType::TRANSFERABLE, amount, "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -8602,9 +8607,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
 		if (it.id == ITEM_STORE_COIN) {
-			account::Account account;
-			account.LoadAccountDB(sellerPlayer->getAccount());
-			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount, "Sold on Market");
+			player->getAccount()->removeCoins(account::CoinType::TRANSFERABLE, amount, "Sold on Market");
 		}
 
 		if (it.id != ITEM_STORE_COIN) {

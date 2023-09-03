@@ -12,6 +12,7 @@
 #include <string>
 #include <utility>
 
+#include "test_injection.hpp"
 #include "lib/di/container.hpp"
 
 namespace di = boost::di;
@@ -26,10 +27,19 @@ class InMemoryLogger : public Logger {
 	public:
 		mutable std::vector<LogEntry> logs;
 
-		static di::extension::injector<> &install(di::extension::injector<> &injector) {
+		InMemoryLogger() = default;
+		InMemoryLogger(const InMemoryLogger &) {}
+		InMemoryLogger(const InMemoryLogger &&) {}
+
+		static di::extension::injector<> & install(di::extension::injector<> &injector) {
 			injector.install(di::bind<Logger>.to<InMemoryLogger>().in(di::singleton));
 			return injector;
-        }
+		}
+
+		InMemoryLogger &reset() {
+			logs.clear();
+			return *this;
+		}
 
 		bool hasLogEntry(const std::string& lvl, const std::string& expectedMsg) const {
 			for (const auto& entry : logs) {
@@ -66,8 +76,9 @@ class InMemoryLogger : public Logger {
 			}
 			return {"", ""}; // Return empty pair for out-of-bounds. Alternatively, you could throw an exception.
 		}
+};
 
-		void clearLogs() {
-			logs.clear();
-		}
+template <>
+struct TestInjection<Logger> {
+    using type = InMemoryLogger;
 };

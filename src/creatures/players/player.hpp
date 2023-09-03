@@ -548,13 +548,6 @@ public:
 	void switchGhostMode() {
 		ghostMode = !ghostMode;
 	}
-
-	uint32_t getAccount() const {
-		return accountNumber;
-	}
-	account::AccountType getAccountType() const {
-		return accountType;
-	}
 	uint32_t getLevel() const {
 		return level;
 	}
@@ -580,11 +573,10 @@ public:
 	}
 	bool isPremium() const;
 	uint32_t getPremiumDays() const {
-		return premiumDays;
+		return account->getPremiumRemainingDays();
 	}
-	void setPremiumDays(uint32_t v);
 	time_t getPremiumLastDay() const {
-		return premiumLastDay;
+		return account->getPremiumLastDay();
 	}
 
 	bool isVip() const {
@@ -1999,15 +1991,33 @@ public:
 
 	bool canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay = 500);
 
-	// Interfaces
-	// Account
-	error_t SetAccountInterface(account::Account* account);
-	error_t GetAccountInterface(account::Account* account);
-
 	void sendMessageDialog(const std::string &message) const {
 		if (client) {
 			client->sendMessageDialog(message);
 		}
+	}
+
+	// Account
+	bool setAccount(uint32_t accountId) {
+		if (account) {
+			g_logger().warn("Account was already set!");
+			return true;
+		}
+
+		account = std::make_shared<account::Account>(accountId);
+		return account::ERROR_NO == account->load();
+	}
+
+	account::AccountType getAccountType() const {
+		return account ? account->getAccountType() : account::AccountType::ACCOUNT_TYPE_NORMAL;
+	}
+
+	uint32_t getAccountId() const {
+		return account ? account->getID() : 0;
+	}
+
+	std::shared_ptr<account::Account> getAccount() const {
+		return account;
 	}
 
 	// Prey system
@@ -2657,7 +2667,6 @@ private:
 	uint32_t walkTaskEvent = 0;
 	uint32_t MessageBufferTicks = 0;
 	uint32_t lastIP = 0;
-	uint32_t accountNumber = 0;
 	uint32_t guid = 0;
 	uint32_t loyaltyPoints = 0;
 	uint8_t isDailyReward = DAILY_REWARD_NOTCOLLECTED;
@@ -2668,8 +2677,6 @@ private:
 	int32_t varStats[STAT_LAST + 1] = {};
 	int32_t shopCallback = -1;
 	int32_t MessageBufferCount = 0;
-	uint32_t premiumDays = 0;
-	time_t premiumLastDay = 0;
 	int32_t bloodHitCount = 0;
 	int32_t shieldBlockCount = 0;
 	int8_t offlineTrainingSkill = SKILL_NONE;
@@ -2737,7 +2744,6 @@ private:
 	TradeState_t tradeState = TRADE_NONE;
 	FightMode_t fightMode = FIGHTMODE_ATTACK;
 	Faction_t faction = FACTION_PLAYER;
-	account::AccountType accountType = account::AccountType::ACCOUNT_TYPE_NORMAL;
 	QuickLootFilter_t quickLootFilter;
 	VipStatus_t statusVipList = VIPSTATUS_ONLINE;
 
@@ -2853,7 +2859,7 @@ private:
 
 	std::mutex quickLootMutex;
 
-	account::Account* account_;
+	std::shared_ptr<account::Account> account;
 	bool online = true;
 
 	bool hasQuiverEquipped() const;

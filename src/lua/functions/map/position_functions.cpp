@@ -167,7 +167,7 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	if (!spectators.empty()) {
 		Game::addMagicEffect(spectators, position, magicEffect);
 	} else {
-		g_game().addMagicEffect(position, magicEffect);
+		Game::addMagicEffect(position, magicEffect);
 	}
 
 	pushBoolean(L, true);
@@ -195,7 +195,7 @@ int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
 	if (!spectators.empty()) {
 		Game::removeMagicEffect(spectators, position, magicEffect);
 	} else {
-		g_game().removeMagicEffect(position, magicEffect);
+		Game::removeMagicEffect(position, magicEffect);
 	}
 
 	pushBoolean(L, true);
@@ -223,7 +223,7 @@ int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	if (!spectators.empty()) {
 		Game::addDistanceEffect(spectators, position, positionEx, distanceEffect);
 	} else {
-		g_game().addDistanceEffect(position, positionEx, distanceEffect);
+		Game::addDistanceEffect(position, positionEx, distanceEffect);
 	}
 
 	pushBoolean(L, true);
@@ -236,7 +236,7 @@ int PositionFunctions::luaPositionSendSingleSoundEffect(lua_State* L) {
 	SoundEffect_t soundEffect = getNumber<SoundEffect_t>(L, 2);
 	Creature* actor = getCreature(L, 3);
 
-	g_game().sendSingleSoundEffect(position, soundEffect, actor);
+	Game::sendSingleSoundEffect(position, soundEffect, actor);
 	pushBoolean(L, true);
 	return 1;
 }
@@ -248,7 +248,7 @@ int PositionFunctions::luaPositionSendDoubleSoundEffect(lua_State* L) {
 	SoundEffect_t secondarySoundEffect = getNumber<SoundEffect_t>(L, 3);
 	Creature* actor = getCreature(L, 4);
 
-	g_game().sendDoubleSoundEffect(position, mainSoundEffect, secondarySoundEffect, actor);
+	Game::sendDoubleSoundEffect(position, mainSoundEffect, secondarySoundEffect, actor);
 	pushBoolean(L, true);
 	return 1;
 }

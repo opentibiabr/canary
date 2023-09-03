@@ -173,9 +173,9 @@ bool Weapon::useFist(Player* player, Creature* target) {
 void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier, int32_t cleavePercent) const {
 	if (player) {
 		if (params.soundCastEffect == SoundEffect_t::SILENCE) {
-			g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
+			Game::sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
 		} else {
-			g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
+			Game::sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
 		}
 	}
 
@@ -233,8 +233,8 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Tile* tile) const {
 		executeUseWeapon(player, var);
 	} else {
 		Combat::postCombatEffects(player, player->getPosition(), tile->getPosition(), params);
-		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
-		g_game().sendSingleSoundEffect(tile->getPosition(), SoundEffect_t::PHYSICAL_RANGE_MISS, player);
+		Game::addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+		Game::sendSingleSoundEffect(tile->getPosition(), SoundEffect_t::PHYSICAL_RANGE_MISS, player);
 	}
 	onUsedWeapon(player, item, tile);
 }

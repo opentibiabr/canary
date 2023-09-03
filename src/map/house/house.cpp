@@ -180,8 +180,8 @@ bool House::kickPlayer(Player* player, Player* target) {
 
 	Position oldPosition = target->getPosition();
 	if (g_game().internalTeleport(target, getEntryPosition()) == RETURNVALUE_NOERROR) {
-		g_game().addMagicEffect(oldPosition, CONST_ME_POFF);
-		g_game().addMagicEffect(getEntryPosition(), CONST_ME_TELEPORT);
+		Game::addMagicEffect(oldPosition, CONST_ME_POFF);
+		Game::addMagicEffect(getEntryPosition(), CONST_ME_TELEPORT);
 	}
 	return true;
 }

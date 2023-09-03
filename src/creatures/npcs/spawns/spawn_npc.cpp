@@ -229,7 +229,7 @@ void SpawnNpc::scheduleSpawnNpc(uint32_t spawnId, spawnBlockNpc_t &sb, uint16_t 
 	if (interval <= 0) {
 		spawnNpc(spawnId, sb.npcType, sb.pos, sb.direction);
 	} else {
-		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
+		Game::addMagicEffect(sb.pos, CONST_ME_TELEPORT);
 		g_scheduler().addEvent(1400, std::bind(&SpawnNpc::scheduleSpawnNpc, this, spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL));
 	}
 }

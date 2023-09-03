@@ -57,6 +57,44 @@ public:
 		return inject<Game>();
 	}
 
+	static std::string getTradeErrorDescription(ReturnValue ret, Item* item);
+
+	static void setCreatureSpeed(Creature* creature, int32_t speed); // setCreatureSpeed
+
+	static void changeSpeed(Creature* creature, int32_t varSpeedDelta);
+	static void changePlayerSpeed(Player &player, int32_t varSpeedDelta);
+	static void changeLight(const Creature* creature);
+
+	static bool internalCreatureTurn(Creature* creature, Direction dir);
+	static bool internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, const Spectators* spectatorsPtr = nullptr, const Position* pos = nullptr);
+	static void internalCreatureChangeOutfit(Creature* creature, const Outfit_t &oufit);
+	static void internalCreatureChangeVisible(Creature* creature, bool visible);
+	static void internalGetPosition(Item* item, Position &pos, uint8_t &stackpos);
+
+	static void reloadCreature(const Creature* creature);
+
+	static void updateCreatureIcon(const Creature* creature);
+	static void updatePlayerShield(Player* player);
+	static void updateCreatureType(Creature* creature);
+	static void updateCreatureWalkthrough(const Creature* creature);
+
+	static void addCreatureHealth(const Creature* target);
+	static void addCreatureHealth(Spectators &spectators, const Creature* target);
+	static void addPlayerMana(const Player* target);
+	static void addPlayerVocation(const Player* target);
+	static void addMagicEffect(const Position &pos, uint16_t effect);
+	static void addMagicEffect(Spectators &spectators, const Position &pos, uint16_t effect);
+	static void addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect);
+	static void addDistanceEffect(Spectators &spectators, const Position &fromPos, const Position &toPos, uint16_t effect);
+
+	static void removeMagicEffect(const Position &pos, uint16_t effect);
+	static void removeMagicEffect(Spectators &spectators, const Position &pos, uint16_t effect);
+
+	static void sendSingleSoundEffect(const Position &pos, SoundEffect_t soundId, Creature* actor = nullptr);
+	static void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundEffect, SoundEffect_t secondarySoundEffect, Creature* actor = nullptr);
+
+	void sendOfflineTrainingDialog(Player* player) const;
+
 	void resetMonsters() const;
 	void resetNpcs() const;
 
@@ -101,9 +139,6 @@ public:
 
 	Cylinder* internalGetCylinder(Player* player, const Position &pos);
 	Thing* internalGetThing(Player* player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type);
-	static void internalGetPosition(Item* item, Position &pos, uint8_t &stackpos);
-
-	static std::string getTradeErrorDescription(ReturnValue ret, Item* item);
 
 	Creature* getCreatureByID(uint32_t id);
 
@@ -117,7 +152,7 @@ public:
 
 	Player* getPlayerByID(uint32_t id, bool allowOffline = false);
 
-	Player* getPlayerByName(const std::string &s, bool allowOffline = false);
+	Player* getPlayerByName(const std::string &s, bool allowOffline = false) const;
 
 	Player* getPlayerByGUID(const uint32_t &guid);
 
@@ -198,19 +233,12 @@ public:
 
 	ReturnValue internalTeleport(Thing* thing, const Position &newPos, bool pushMove = true, uint32_t flags = 0);
 
-	static bool internalCreatureTurn(Creature* creature, Direction dir);
-
-	static bool internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, const Spectators* spectatorsPtr = nullptr, const Position* pos = nullptr);
-
 	ObjectCategory_t getObjectCategory(const Item* item);
 
 	uint64_t getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, bool buyPrice) const;
 
 	void loadPlayersRecord();
 	void checkPlayersRecord();
-
-	static void sendSingleSoundEffect(const Position &pos, SoundEffect_t soundId, Creature* actor = nullptr);
-	static void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundEffect, SoundEffect_t secondarySoundEffect, Creature* actor = nullptr);
 
 	void sendGuildMotd(uint32_t playerId);
 	void kickPlayer(uint32_t playerId, bool displayEffect);
@@ -316,7 +344,7 @@ public:
 	void playerLootAllCorpses(Player* player, const Position &pos, bool lootAllCorpses);
 	void playerSetLootContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos);
 	void playerClearLootContainer(uint32_t playerId, ObjectCategory_t category);
-	;
+
 	void playerOpenLootContainer(uint32_t playerId, ObjectCategory_t category);
 	void playerSetQuickLootFallback(uint32_t playerId, bool fallback);
 	void playerQuickLootBlackWhitelist(uint32_t playerId, QuickLootFilter_t filter, const std::vector<uint16_t> itemIds);
@@ -326,7 +354,6 @@ public:
 	void playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint8_t tier);
 	void playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, uint8_t tier, uint8_t type);
 	void playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position &pos);
-	void playerMoveThingFromDepotSearch(Player* player, uint16_t itemId, uint8_t tier, uint8_t count, const Position &fromPos, const Position &toPos, bool allItems = false);
 
 	void playerRequestAddVip(uint32_t playerId, const std::string &name);
 	void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);
@@ -360,7 +387,7 @@ public:
 	void playerOpenWheel(uint32_t playerId, uint32_t ownerId);
 	void playerSaveWheel(uint32_t playerId, NetworkMessage &msg);
 
-	void updatePlayerHelpers(Player* player) const;
+	void updatePlayerHelpers(const Player* player) const;
 
 	void cleanup();
 	void shutdown();
@@ -384,20 +411,7 @@ public:
 	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
 	bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor);
 
-	static void changeSpeed(Creature* creature, int32_t varSpeedDelta);
-	static void setCreatureSpeed(Creature* creature, int32_t speed); // setCreatureSpeed
-	static void changePlayerSpeed(Player &player, int32_t varSpeedDelta);
-	static void internalCreatureChangeOutfit(Creature* creature, const Outfit_t &oufit);
-	static void internalCreatureChangeVisible(Creature* creature, bool visible);
-	static void changeLight(const Creature* creature);
-	static void reloadCreature(const Creature* creature);
-
-	static void updateCreatureIcon(const Creature* creature);
-	static void updatePlayerShield(Player* player);
-	static void updateCreatureType(Creature* creature);
-	static void updateCreatureWalkthrough(const Creature* creature);
-
-	void updateCreatureSkull(const Creature* player);
+	void updateCreatureSkull(const Creature* player) const;
 
 	GameState_t getGameState() const;
 	void setGameState(GameState_t newState);
@@ -415,8 +429,8 @@ public:
 	void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t &color, uint16_t &effect);
 
 	// Hazard combat helpers
-	void handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker);
-	void notifySpectators(Spectators &spectators, const Position &targetPos, const Player* attackerPlayer, const Monster* targetMonster);
+	static void handleHazardSystemAttack(CombatDamage &damage, Player* player, const Monster* monster, bool isPlayerAttacker);
+	static void notifySpectators(Spectators &spectators, const Position &targetPos, const Player* attackerPlayer, const Monster* targetMonster);
 
 	// Wheel of destiny combat helpers
 	void applyWheelOfDestinyHealing(CombatDamage &damage, Player* attackerPlayer, const Creature* target);
@@ -436,18 +450,6 @@ public:
 	int32_t calculateLeechAmount(const int32_t &realDamage, const uint16_t &skillAmount, int targetsAffected) const;
 	bool combatChangeMana(Creature* attacker, Creature* target, CombatDamage &damage);
 
-	// Animation help functions
-	static void addCreatureHealth(const Creature* target);
-	static void addCreatureHealth(Spectators &spectators, const Creature* target);
-	static void addPlayerMana(const Player* target);
-	static void addPlayerVocation(const Player* target);
-	static void addMagicEffect(const Position &pos, uint16_t effect);
-	static void addMagicEffect(Spectators &spectators, const Position &pos, uint16_t effect);
-	static void removeMagicEffect(const Position &pos, uint16_t effect);
-	static void removeMagicEffect(Spectators &spectators, const Position &pos, uint16_t effect);
-	static void addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect);
-	static void addDistanceEffect(Spectators &spectators, const Position &fromPos, const Position &toPos, uint16_t effect);
-
 	int32_t getLightHour() const {
 		return lightHour;
 	}
@@ -465,8 +467,6 @@ public:
 	void incrementMotdNum() {
 		motdNum++;
 	}
-
-	void sendOfflineTrainingDialog(Player* player);
 
 	const std::map<uint16_t, std::map<uint8_t, uint64_t>> &getItemsPrice() const {
 		return itemsPriceMap;
@@ -644,15 +644,24 @@ public:
 	const std::unique_ptr<IOWheel> &getIOWheel() const;
 
 private:
+	static constexpr int32_t DAY_LENGTH_SECONDS = 3600;
+	static constexpr int32_t LIGHT_DAY_LENGTH = 1440;
+	static constexpr int32_t LIGHT_LEVEL_DAY = 250;
+	static constexpr int32_t LIGHT_LEVEL_NIGHT = 40;
+	static constexpr int32_t SUNSET = 1050;
+	static constexpr int32_t SUNRISE = 360;
+
 	std::map<uint32_t, int32_t> forgeMonsterEventIds;
 	std::set<uint32_t> fiendishMonsters;
 	std::set<uint32_t> influencedMonsters;
+
 	void checkImbuements();
-	bool playerSaySpell(Player* player, SpeakClasses type, const std::string &text);
-	void playerWhisper(Player* player, const std::string &text) const;
-	bool playerYell(Player* player, const std::string &text);
-	bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
-	void playerSpeakToNpc(Player* player, const std::string &text) const;
+	static bool playerSaySpell(Player* player, SpeakClasses type, const std::string &text);
+	static void playerWhisper(Player* player, const std::string &text);
+	static bool playerYell(Player* player, const std::string &text);
+	static void playerSpeakToNpc(Player* player, const std::string &text);
+
+	bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text) const;
 	std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f);
 
 	/**
@@ -782,13 +791,6 @@ private:
 	phmap::flat_hash_set<Tile*> tilesToClean;
 
 	ModalWindow offlineTrainingWindow { std::numeric_limits<uint32_t>::max(), "Choose a Skill", "Please choose a skill:" };
-
-	static constexpr int32_t DAY_LENGTH_SECONDS = 3600;
-	static constexpr int32_t LIGHT_DAY_LENGTH = 1440;
-	static constexpr int32_t LIGHT_LEVEL_DAY = 250;
-	static constexpr int32_t LIGHT_LEVEL_NIGHT = 40;
-	static constexpr int32_t SUNSET = 1050;
-	static constexpr int32_t SUNRISE = 360;
 
 	bool isDay = false;
 	bool browseField = false;

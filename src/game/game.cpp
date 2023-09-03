@@ -50,11 +50,11 @@
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, Creature* source) {
 		if (blockType == BLOCK_DEFENSE) {
-			g_game().addMagicEffect(targetPos, CONST_ME_POFF);
+			Game::addMagicEffect(targetPos, CONST_ME_POFF);
 		} else if (blockType == BLOCK_ARMOR) {
-			g_game().addMagicEffect(targetPos, CONST_ME_BLOCKHIT);
+			Game::addMagicEffect(targetPos, CONST_ME_BLOCKHIT);
 		} else if (blockType == BLOCK_DODGE) {
-			g_game().addMagicEffect(targetPos, CONST_ME_DODGE);
+			Game::addMagicEffect(targetPos, CONST_ME_DODGE);
 		} else if (blockType == BLOCK_IMMUNITY) {
 			uint8_t hitEffect = 0;
 			switch (combatType) {
@@ -82,11 +82,11 @@ namespace InternalGame {
 					break;
 				}
 			}
-			g_game().addMagicEffect(targetPos, hitEffect);
+			Game::addMagicEffect(targetPos, hitEffect);
 		}
 
 		if (blockType != BLOCK_NONE) {
-			g_game().sendSingleSoundEffect(targetPos, SoundEffect_t::NO_DAMAGE, source);
+			Game::sendSingleSoundEffect(targetPos, SoundEffect_t::NO_DAMAGE, source);
 		}
 	}
 
@@ -765,7 +765,7 @@ Npc* Game::getNpcByName(const std::string &s) {
 	return nullptr;
 }
 
-Player* Game::getPlayerByName(const std::string &s, bool loadTmp /* = false */) {
+Player* Game::getPlayerByName(const std::string &s, bool loadTmp /* = false */) const {
 	if (s.empty()) {
 		return nullptr;
 	}
@@ -5471,7 +5471,7 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string &
 	return false;
 }
 
-void Game::playerWhisper(Player* player, const std::string &text) const {
+void Game::playerWhisper(Player* player, const std::string &text) {
 	auto spectators = Spectators().find<Player>(player->getPosition(), false, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_Y, MAP_MAX_CLIENT_VIEW_PORT_Y);
 
 	// send to client
@@ -5511,7 +5511,7 @@ bool Game::playerYell(Player* player, const std::string &text) {
 	return true;
 }
 
-bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text) {
+bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text) const {
 	Player* toPlayer = getPlayerByName(receiver);
 	if (!toPlayer) {
 		player->sendTextMessage(MESSAGE_FAILURE, "A player with this name is not online.");
@@ -5537,7 +5537,7 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string &r
 	return true;
 }
 
-void Game::playerSpeakToNpc(Player* player, const std::string &text) const {
+void Game::playerSpeakToNpc(Player* player, const std::string &text) {
 	if (player == nullptr) {
 		g_logger().error("[Game::playerSpeakToNpc] - Player is nullptr");
 		return;
@@ -5549,8 +5549,7 @@ void Game::playerSpeakToNpc(Player* player, const std::string &text) const {
 		return;
 	}
 
-	auto spectators = Spectators().find<Creature>(player->getPosition()).filter<Npc>();
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Creature>(player->getPosition()).filter<Npc>()) {
 		spectator->getNpc()->onCreatureSay(player, TALKTYPE_PRIVATE_PN, text);
 	}
 
@@ -7373,7 +7372,7 @@ void Game::updateCreatureWalkthrough(const Creature* creature) {
 	}
 }
 
-void Game::updateCreatureSkull(const Creature* creature) {
+void Game::updateCreatureSkull(const Creature* creature) const {
 	if (getWorldType() != WORLD_TYPE_PVP) {
 		return;
 	}
@@ -7520,7 +7519,7 @@ void Game::playerInviteToParty(uint32_t playerId, uint32_t invitedId) {
 	party->invitePlayer(*invitedPlayer);
 }
 
-void Game::updatePlayerHelpers(Player* player) const {
+void Game::updatePlayerHelpers(const Player* player) const {
 	if (!player) {
 		return;
 	}
@@ -8669,7 +8668,7 @@ void Game::forceRemoveCondition(uint32_t creatureId, ConditionType_t conditionTy
 	creature->removeCondition(conditionType, conditionId, true);
 }
 
-void Game::sendOfflineTrainingDialog(Player* player) {
+void Game::sendOfflineTrainingDialog(Player* player) const {
 	if (!player) {
 		return;
 	}

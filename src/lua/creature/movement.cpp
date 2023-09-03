@@ -530,7 +530,7 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, Player
 		}
 
 		if (it.abilities->speed != 0) {
-			g_game().changePlayerSpeed(*player, it.abilities->speed);
+			Game::changePlayerSpeed(*player, it.abilities->speed);
 		}
 
 		player->addConditionSuppressions(it.abilities->conditionSuppressions);
@@ -623,7 +623,7 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, Play
 		}
 
 		if (it.abilities->speed != 0) {
-			g_game().changePlayerSpeed(*player, -it.abilities->speed);
+			Game::changePlayerSpeed(*player, -it.abilities->speed);
 		}
 
 		player->removeConditionSuppressions();

@@ -210,7 +210,7 @@ void Creature::onWalk(Direction &dir) {
 			if (r < DIRECTION_DIAGONAL_MASK) {
 				dir = static_cast<Direction>(r);
 			}
-			g_game().internalCreatureSay(this, TALKTYPE_MONSTER_SAY, "Hicks!", false);
+			Game::internalCreatureSay(this, TALKTYPE_MONSTER_SAY, "Hicks!", false);
 		}
 	}
 }
@@ -701,7 +701,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 			}
 		}
 
-		g_game().addMagicEffect(getPosition(), CONST_ME_POFF);
+		Game::addMagicEffect(getPosition(), CONST_ME_POFF);
 	} else {
 		Item* splash;
 		switch (getRace()) {
@@ -787,7 +787,7 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = tru
 	}
 
 	if (sendHealthChange && oldHealth != health) {
-		g_game().addCreatureHealth(this);
+		Game::addCreatureHealth(this);
 	}
 	if (health <= 0) {
 		g_dispatcher().addTask(std::bind(&Game::executeDeath, &g_game(), getID()));
@@ -1211,7 +1211,7 @@ bool Creature::setMaster(Creature* newMaster, bool reloadCreature /* = false*/) 
 		setFollowCreature(nullptr);
 		setDropLoot(false);
 		setSkillLoss(false);
-		g_game().reloadCreature(this);
+		Game::reloadCreature(this);
 	}
 	if (newMaster) {
 		incrementReferenceCounter();
@@ -1669,7 +1669,7 @@ void Creature::turnToCreature(Creature* creature) {
 			dir = DIRECTION_SOUTH;
 		}
 	}
-	g_game().internalCreatureTurn(this, dir);
+	Game::internalCreatureTurn(this, dir);
 }
 
 bool Creature::isLostSummon() const {
@@ -1686,7 +1686,7 @@ void Creature::handleLostSummon(bool teleportSummons) {
 	} else {
 		g_game().removeCreature(this, true);
 	}
-	g_game().addMagicEffect(getPosition(), CONST_ME_POFF);
+	Game::addMagicEffect(getPosition(), CONST_ME_POFF);
 }
 
 int32_t Creature::getReflectPercent(CombatType_t combatType, bool useCharges /*= false*/) const {

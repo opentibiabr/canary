@@ -616,7 +616,7 @@ void ProtocolGame::logout(bool displayEffect, bool forced) {
 
 	displayEffect = displayEffect && !player->isRemoved() && player->getHealth() > 0 && !player->isInGhostMode();
 	if (displayEffect) {
-		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		Game::addMagicEffect(player->getPosition(), CONST_ME_POFF);
 	}
 
 	sendSessionEndInformation(forced ? SESSION_END_FORCECLOSE : SESSION_END_LOGOUT);

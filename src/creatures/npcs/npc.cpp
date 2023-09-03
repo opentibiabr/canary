@@ -195,7 +195,7 @@ void Npc::onThinkSound(uint32_t interval) {
 
 		if (!npcType->info.soundVector.empty() && (npcType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
 			auto index = uniform_random(0, npcType->info.soundVector.size() - 1);
-			g_game().sendSingleSoundEffect(this->getPosition(), npcType->info.soundVector[index], this);
+			Game::sendSingleSoundEffect(this->getPosition(), npcType->info.soundVector[index], this);
 		}
 	}
 }
@@ -491,9 +491,9 @@ void Npc::onThinkYell(uint32_t interval) {
 			const voiceBlock_t &vb = npcType->info.voiceVector[index];
 
 			if (vb.yellText) {
-				g_game().internalCreatureSay(this, TALKTYPE_YELL, vb.text, false);
+				Game::internalCreatureSay(this, TALKTYPE_YELL, vb.text, false);
 			} else {
-				g_game().internalCreatureSay(this, TALKTYPE_SAY, vb.text, false);
+				Game::internalCreatureSay(this, TALKTYPE_SAY, vb.text, false);
 			}
 		}
 	}

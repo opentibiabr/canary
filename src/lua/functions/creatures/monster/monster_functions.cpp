@@ -462,7 +462,7 @@ int MonsterFunctions::luaMonsterSetForgeStack(lua_State* L) {
 			? static_cast<uint8_t>(stack)
 			: 0 // don't show the stack for fiendish
 	));
-	g_game().updateCreatureIcon(monster);
+	Game::updateCreatureIcon(monster);
 	g_game().sendUpdateCreature(monster);
 	return 1;
 }

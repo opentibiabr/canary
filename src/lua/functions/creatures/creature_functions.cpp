@@ -286,7 +286,7 @@ int CreatureFunctions::luaCreatureReload(lua_State* L) {
 		return 1;
 	}
 
-	g_game().reloadCreature(creature);
+	Game::reloadCreature(creature);
 	pushBoolean(L, true);
 	return 1;
 }
@@ -331,7 +331,7 @@ int CreatureFunctions::luaCreatureSetLight(lua_State* L) {
 	light.color = getNumber<uint8_t>(L, 2);
 	light.level = getNumber<uint8_t>(L, 3);
 	creature->setCreatureLight(light);
-	g_game().changeLight(creature);
+	Game::changeLight(creature);
 	pushBoolean(L, true);
 	return 1;
 }
@@ -357,7 +357,7 @@ int CreatureFunctions::luaCreatureSetSpeed(lua_State* L) {
 	}
 
 	int32_t speed = getNumber<int32_t>(L, 2);
-	g_game().setCreatureSpeed(creature, speed);
+	Game::setCreatureSpeed(creature, speed);
 	pushBoolean(L, true);
 	return 1;
 }
@@ -383,7 +383,7 @@ int CreatureFunctions::luaCreatureChangeSpeed(lua_State* L) {
 	}
 
 	int32_t delta = getNumber<int32_t>(L, 2);
-	g_game().changeSpeed(creature, delta);
+	Game::changeSpeed(creature, delta);
 	pushBoolean(L, true);
 	return 1;
 }
@@ -456,7 +456,7 @@ int CreatureFunctions::luaCreatureSetDirection(lua_State* L) {
 	// creature:setDirection(direction)
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (creature) {
-		pushBoolean(L, g_game().internalCreatureTurn(creature, getNumber<Direction>(L, 2)));
+		pushBoolean(L, Game::internalCreatureTurn(creature, getNumber<Direction>(L, 2)));
 	} else {
 		lua_pushnil(L);
 	}
@@ -483,7 +483,7 @@ int CreatureFunctions::luaCreatureSetHealth(lua_State* L) {
 	}
 
 	creature->health = std::min<int32_t>(getNumber<uint32_t>(L, 2), creature->healthMax);
-	g_game().addCreatureHealth(creature);
+	Game::addCreatureHealth(creature);
 
 	Player* player = creature->getPlayer();
 	if (player) {
@@ -535,7 +535,7 @@ int CreatureFunctions::luaCreatureSetMaxHealth(lua_State* L) {
 
 	creature->healthMax = getNumber<uint32_t>(L, 2);
 	creature->health = std::min<int32_t>(creature->health, creature->healthMax);
-	g_game().addCreatureHealth(creature);
+	Game::addCreatureHealth(creature);
 
 	Player* player = creature->getPlayer();
 	if (player) {
@@ -550,7 +550,7 @@ int CreatureFunctions::luaCreatureSetHiddenHealth(lua_State* L) {
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (creature) {
 		creature->setHiddenHealth(getBoolean(L, 2));
-		g_game().addCreatureHealth(creature);
+		Game::addCreatureHealth(creature);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -626,7 +626,7 @@ int CreatureFunctions::luaCreatureSetOutfit(lua_State* L) {
 		}
 
 		creature->defaultOutfit = outfit;
-		g_game().internalCreatureChangeOutfit(creature, creature->defaultOutfit);
+		Game::internalCreatureChangeOutfit(creature, creature->defaultOutfit);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -775,14 +775,14 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 	if (!pushMovement) {
 		if (oldPosition.x == position.x) {
 			if (oldPosition.y < position.y) {
-				g_game().internalCreatureTurn(creature, DIRECTION_SOUTH);
+				Game::internalCreatureTurn(creature, DIRECTION_SOUTH);
 			} else {
-				g_game().internalCreatureTurn(creature, DIRECTION_NORTH);
+				Game::internalCreatureTurn(creature, DIRECTION_NORTH);
 			}
 		} else if (oldPosition.x > position.x) {
-			g_game().internalCreatureTurn(creature, DIRECTION_WEST);
+			Game::internalCreatureTurn(creature, DIRECTION_WEST);
 		} else if (oldPosition.x < position.x) {
-			g_game().internalCreatureTurn(creature, DIRECTION_EAST);
+			Game::internalCreatureTurn(creature, DIRECTION_EAST);
 		}
 	}
 	pushBoolean(L, true);
@@ -824,9 +824,9 @@ int CreatureFunctions::luaCreatureSay(lua_State* L) {
 	}
 
 	if (position.x != 0) {
-		pushBoolean(L, g_game().internalCreatureSay(creature, type, text, ghost, &spectators, &position));
+		pushBoolean(L, Game::internalCreatureSay(creature, type, text, ghost, &spectators, &position));
 	} else {
-		pushBoolean(L, g_game().internalCreatureSay(creature, type, text, ghost, &spectators));
+		pushBoolean(L, Game::internalCreatureSay(creature, type, text, ghost, &spectators));
 	}
 	return 1;
 }

@@ -179,7 +179,7 @@ bool Condition::executeCondition(Creature* creature, int32_t interval) {
 	}
 
 	if (creature && tickSound != SoundEffect_t::SILENCE) {
-		g_game().sendSingleSoundEffect(creature->getPosition(), tickSound, creature);
+		Game::sendSingleSoundEffect(creature->getPosition(), tickSound, creature);
 	}
 
 	return true;
@@ -370,7 +370,7 @@ void ConditionGeneric::addCondition(Creature* creature, const Condition* addCond
 		setTicks(addCondition->getTicks());
 
 		if (creature && addSound != SoundEffect_t::SILENCE) {
-			g_game().sendSingleSoundEffect(creature->getPosition(), addSound, creature);
+			Game::sendSingleSoundEffect(creature->getPosition(), addSound, creature);
 		}
 	}
 }
@@ -686,7 +686,7 @@ void ConditionAttributes::updateBuffs(Creature* creature) {
 		}
 	}
 	if (creature->getMonster() && needUpdate) {
-		g_game().updateCreatureIcon(creature);
+		Game::updateCreatureIcon(creature);
 	}
 }
 
@@ -739,7 +739,7 @@ void ConditionAttributes::endCondition(Creature* creature) {
 	}
 
 	if (creature->getMonster() && needUpdateIcons) {
-		g_game().updateCreatureIcon(creature);
+		Game::updateCreatureIcon(creature);
 	}
 
 	if (disableDefense) {
@@ -1661,7 +1661,7 @@ bool ConditionDamage::doDamage(Creature* creature, int32_t healthChange) {
 
 	if (!creature->isAttackable() || Combat::canDoCombat(attacker, creature, damage.primary.type != COMBAT_HEALING) != RETURNVALUE_NOERROR) {
 		if (!creature->isInGhostMode() && !creature->getNpc()) {
-			g_game().addMagicEffect(creature->getPosition(), CONST_ME_POFF);
+			Game::addMagicEffect(creature->getPosition(), CONST_ME_POFF);
 		}
 		return false;
 	}
@@ -1671,7 +1671,7 @@ bool ConditionDamage::doDamage(Creature* creature, int32_t healthChange) {
 	}
 
 	if (creature && tickSound != SoundEffect_t::SILENCE) {
-		g_game().sendSingleSoundEffect(creature->getPosition(), tickSound, creature);
+		Game::sendSingleSoundEffect(creature->getPosition(), tickSound, creature);
 	}
 
 	return g_game().combatChangeHealth(attacker, creature, damage);
@@ -2151,7 +2151,7 @@ bool ConditionSpeed::startCondition(Creature* creature) {
 		speedDelta = uniform_random(min, max);
 	}
 
-	g_game().changeSpeed(creature, speedDelta);
+	Game::changeSpeed(creature, speedDelta);
 	return true;
 }
 
@@ -2160,7 +2160,7 @@ bool ConditionSpeed::executeCondition(Creature* creature, int32_t interval) {
 }
 
 void ConditionSpeed::endCondition(Creature* creature) {
-	g_game().changeSpeed(creature, -speedDelta);
+	Game::changeSpeed(creature, -speedDelta);
 }
 
 void ConditionSpeed::addCondition(Creature* creature, const Condition* addCondition) {
@@ -2191,7 +2191,7 @@ void ConditionSpeed::addCondition(Creature* creature, const Condition* addCondit
 
 	int32_t newSpeedChange = (speedDelta - oldSpeedDelta);
 	if (newSpeedChange != 0) {
-		g_game().changeSpeed(creature, newSpeedChange);
+		Game::changeSpeed(creature, newSpeedChange);
 	}
 }
 
@@ -2221,13 +2221,13 @@ bool ConditionInvisible::startCondition(Creature* creature) {
 		return false;
 	}
 
-	g_game().internalCreatureChangeVisible(creature, false);
+	Game::internalCreatureChangeVisible(creature, false);
 	return true;
 }
 
 void ConditionInvisible::endCondition(Creature* creature) {
 	if (!creature->isInvisible()) {
-		g_game().internalCreatureChangeVisible(creature, true);
+		Game::internalCreatureChangeVisible(creature, true);
 	}
 }
 
@@ -2277,7 +2277,7 @@ bool ConditionOutfit::startCondition(Creature* creature) {
 		return false;
 	}
 
-	g_game().internalCreatureChangeOutfit(creature, outfit);
+	Game::internalCreatureChangeOutfit(creature, outfit);
 	return true;
 }
 
@@ -2286,7 +2286,7 @@ bool ConditionOutfit::executeCondition(Creature* creature, int32_t interval) {
 }
 
 void ConditionOutfit::endCondition(Creature* creature) {
-	g_game().internalCreatureChangeOutfit(creature, creature->getDefaultOutfit());
+	Game::internalCreatureChangeOutfit(creature, creature->getDefaultOutfit());
 }
 
 void ConditionOutfit::addCondition(Creature* creature, const Condition* addCondition) {
@@ -2311,7 +2311,7 @@ void ConditionOutfit::addCondition(Creature* creature, const Condition* addCondi
 			setOutfit(conditionOutfit.outfit);
 		}
 
-		g_game().internalCreatureChangeOutfit(creature, outfit);
+		Game::internalCreatureChangeOutfit(creature, outfit);
 	}
 }
 
@@ -2327,7 +2327,7 @@ bool ConditionLight::startCondition(Creature* creature) {
 	internalLightTicks = 0;
 	lightChangeInterval = ticks / lightInfo.level;
 	creature->setCreatureLight(lightInfo);
-	g_game().changeLight(creature);
+	Game::changeLight(creature);
 	return true;
 }
 
@@ -2341,7 +2341,7 @@ bool ConditionLight::executeCondition(Creature* creature, int32_t interval) {
 		if (creatureLightInfo.level > 0) {
 			--creatureLightInfo.level;
 			creature->setCreatureLight(creatureLightInfo);
-			g_game().changeLight(creature);
+			Game::changeLight(creature);
 		}
 	}
 
@@ -2350,7 +2350,7 @@ bool ConditionLight::executeCondition(Creature* creature, int32_t interval) {
 
 void ConditionLight::endCondition(Creature* creature) {
 	creature->setNormalCreatureLight();
-	g_game().changeLight(creature);
+	Game::changeLight(creature);
 }
 
 void ConditionLight::addCondition(Creature* creature, const Condition* condition) {
@@ -2363,7 +2363,7 @@ void ConditionLight::addCondition(Creature* creature, const Condition* condition
 		lightChangeInterval = ticks / lightInfo.level;
 		internalLightTicks = 0;
 		creature->setCreatureLight(lightInfo);
-		g_game().changeLight(creature);
+		Game::changeLight(creature);
 	}
 }
 

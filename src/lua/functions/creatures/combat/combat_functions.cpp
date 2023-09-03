@@ -182,7 +182,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 				result = combat->doCombat(creature, variant.pos);
 			} else {
 				combat->postCombatEffects(creature, creature->getPosition(), variant.pos);
-				g_game().addMagicEffect(variant.pos, CONST_ME_POFF);
+				Game::addMagicEffect(variant.pos, CONST_ME_POFF);
 			}
 			break;
 		}

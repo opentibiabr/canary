@@ -197,9 +197,9 @@ int NpcFunctions::luaNpcSay(lua_State* L) {
 	}
 
 	if (position.x != 0) {
-		pushBoolean(L, g_game().internalCreatureSay(npc, type, text, ghost, &spectators, &position));
+		pushBoolean(L, Game::internalCreatureSay(npc, type, text, ghost, &spectators, &position));
 	} else {
-		pushBoolean(L, g_game().internalCreatureSay(npc, type, text, ghost, &spectators));
+		pushBoolean(L, Game::internalCreatureSay(npc, type, text, ghost, &spectators));
 	}
 	return 1;
 }
@@ -439,7 +439,7 @@ int NpcFunctions::luaNpcTurn(lua_State* L) {
 	// npc:turn(direction)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (npc) {
-		g_game().internalCreatureTurn(npc, getNumber<Direction>(L, 2));
+		Game::internalCreatureTurn(npc, getNumber<Direction>(L, 2));
 	}
 	return 0;
 }

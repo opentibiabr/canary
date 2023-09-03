@@ -120,7 +120,7 @@ bool BedItem::trySleep(Player* player) {
 			wakeUp(nullptr);
 		}
 
-		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		Game::addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
 	}
 	return true;
@@ -150,7 +150,7 @@ bool BedItem::sleep(Player* player) {
 	g_game().map.moveCreature(*player, *getTile());
 
 	// display 'Zzzz'/sleep effect
-	g_game().addMagicEffect(player->getPosition(), CONST_ME_SLEEP);
+	Game::addMagicEffect(player->getPosition(), CONST_ME_SLEEP);
 
 	// logout player after he sees himself walk onto the bed and it change id
 	g_scheduler().addEvent(SCHEDULER_MINTICKS, std::bind(&ProtocolGame::logout, player->client, false, false));
@@ -182,7 +182,7 @@ void BedItem::wakeUp(Player* player) {
 			}
 		} else {
 			regeneratePlayer(player);
-			g_game().addCreatureHealth(player);
+			Game::addCreatureHealth(player);
 		}
 	}
 

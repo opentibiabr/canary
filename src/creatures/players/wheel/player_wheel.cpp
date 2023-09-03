@@ -83,7 +83,6 @@ namespace {
 		{ 43949, "wheel.scroll.extended", 13 },
 		{ 43950, "wheel.scroll.advanced", 20 },
 	};
-
 } // namespace
 
 PlayerWheel::PlayerWheel(Player &initPlayer) :
@@ -1080,7 +1079,7 @@ void PlayerWheel::reloadPlayerData() {
 	m_player.sendStats();
 	m_player.sendBasicData();
 	sendGiftOfLifeCooldown();
-	g_game().reloadCreature(&m_player);
+	Game::reloadCreature(&m_player);
 }
 
 void PlayerWheel::registerPlayerBonusData() {
@@ -1222,7 +1221,7 @@ void PlayerWheel::registerPlayerBonusData() {
 
 	if (m_player.getHealth() > m_player.getMaxHealth()) {
 		m_player.health = std::min<int32_t>(m_player.getMaxHealth(), m_player.healthMax);
-		g_game().addCreatureHealth(&m_player);
+		Game::addCreatureHealth(&m_player);
 	}
 
 	if (m_player.getMana() > m_player.getMaxMana()) {
@@ -1826,7 +1825,7 @@ void PlayerWheel::checkGiftOfLife() {
 	giftDamage.primary.value = (m_player.getMaxHealth() * getGiftOfLifeValue()) / 100;
 	giftDamage.primary.type = COMBAT_HEALING;
 	m_player.sendTextMessage(MESSAGE_EVENT_ADVANCE, "That was close! Fortunately, your were saved by the Gift of Life.");
-	g_game().addMagicEffect(m_player.getPosition(), CONST_ME_WATER_DROP);
+	Game::addMagicEffect(m_player.getPosition(), CONST_ME_WATER_DROP);
 	g_game().combatChangeHealth(&m_player, &m_player, giftDamage);
 	// Condition cooldown reduction
 	uint16_t reductionTimer = 60000;
@@ -2042,7 +2041,7 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 			}
 			m_player.sendSkills();
 			m_player.sendStats();
-			g_game().reloadCreature(&m_player);
+			Game::reloadCreature(&m_player);
 		}
 		return;
 	}

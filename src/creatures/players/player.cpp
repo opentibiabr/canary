@@ -95,7 +95,7 @@ bool Player::setVocation(uint16_t vocId) {
 	vocation = voc;
 
 	updateRegeneration();
-	g_game().addPlayerVocation(this);
+	Game::addPlayerVocation(this);
 	return true;
 }
 
@@ -738,7 +738,7 @@ void Player::setVarStats(stats_t stat, int32_t modifier) {
 			if (getHealth() > getMaxHealth()) {
 				Creature::changeHealth(getMaxHealth() - getHealth());
 			} else {
-				g_game().addCreatureHealth(this);
+				Game::addCreatureHealth(this);
 			}
 			break;
 		}
@@ -747,7 +747,7 @@ void Player::setVarStats(stats_t stat, int32_t modifier) {
 			if (getMana() > getMaxMana()) {
 				Creature::changeMana(getMaxMana() - getMana());
 			} else {
-				g_game().addPlayerMana(this);
+				Game::addPlayerMana(this);
 			}
 			break;
 		}
@@ -1703,7 +1703,7 @@ void Player::onChangeZone(ZoneType_t zone) {
 
 		if (!group->access && isMounted()) {
 			dismount();
-			g_game().internalCreatureChangeOutfit(this, defaultOutfit);
+			Game::internalCreatureChangeOutfit(this, defaultOutfit);
 			wasMounted = true;
 		}
 	} else {
@@ -1716,7 +1716,7 @@ void Player::onChangeZone(ZoneType_t zone) {
 	updateImbuementTrackerStats();
 	wheel()->onThink(true);
 	wheel()->sendGiftOfLifeCooldown();
-	g_game().updateCreatureWalkthrough(this);
+	Game::updateCreatureWalkthrough(this);
 	sendIcons();
 	g_events().eventPlayerOnChangeZone(this, zone);
 
@@ -2163,7 +2163,7 @@ void Player::removeMessageBuffer() {
 
 void Player::drainHealth(Creature* attacker, int32_t damage) {
 	if (PLAYER_SOUND_HEALTH_CHANGE >= static_cast<uint32_t>(uniform_random(1, 100))) {
-		g_game().sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_BARK : SoundEffect_t::HUMAN_MALE_BARK, this);
+		Game::sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_BARK : SoundEffect_t::HUMAN_MALE_BARK, this);
 	}
 
 	Creature::drainHealth(attacker, damage);
@@ -2319,9 +2319,9 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText /* = fa
 
 		updateBaseSpeed();
 		setBaseSpeed(getBaseSpeed());
-		g_game().changeSpeed(this, 0);
-		g_game().addCreatureHealth(this);
-		g_game().addPlayerMana(this);
+		Game::changeSpeed(this, 0);
+		Game::addCreatureHealth(this);
+		Game::addPlayerMana(this);
 
 		if (party) {
 			party->updateSharedExperience();
@@ -2405,9 +2405,9 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 		updateBaseSpeed();
 		setBaseSpeed(getBaseSpeed());
 
-		g_game().changeSpeed(this, 0);
-		g_game().addCreatureHealth(this);
-		g_game().addPlayerMana(this);
+		Game::changeSpeed(this, 0);
+		Game::addCreatureHealth(this);
+		Game::addPlayerMana(this);
 
 		if (party) {
 			party->updateSharedExperience();
@@ -2573,7 +2573,7 @@ uint32_t Player::getIP() const {
 void Player::death(Creature* lastHitCreature) {
 	loginPosition = town->getTemplePosition();
 
-	g_game().sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_DEATH : SoundEffect_t::HUMAN_MALE_DEATH, this);
+	Game::sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_DEATH : SoundEffect_t::HUMAN_MALE_DEATH, this);
 	if (skillLoss) {
 		uint8_t unfairFightReduction = 100;
 		int playerDmg = 0;
@@ -2782,8 +2782,8 @@ void Player::death(Creature* lastHitCreature) {
 
 		health = healthMax;
 		g_game().internalTeleport(this, getTemplePosition(), true);
-		g_game().addCreatureHealth(this);
-		g_game().addPlayerMana(this);
+		Game::addCreatureHealth(this);
+		Game::addPlayerMana(this);
 		onThink(EVENT_CREATURE_THINK_INTERVAL);
 		onIdleStatus();
 		sendStats();
@@ -4368,7 +4368,7 @@ void Player::updateItemsLight(bool internal /*=false*/) {
 		itemsLight = maxLight;
 
 		if (!internal) {
-			g_game().changeLight(this);
+			Game::changeLight(this);
 		}
 	}
 }
@@ -4725,7 +4725,7 @@ void Player::changeMana(int32_t manaChange) {
 	if (!hasFlag(PlayerFlags_t::HasInfiniteMana)) {
 		Creature::changeMana(manaChange);
 	}
-	g_game().addPlayerMana(this);
+	Game::addPlayerMana(this);
 	sendStats();
 }
 
@@ -5670,7 +5670,7 @@ bool Player::toggleMount(bool mount) {
 		setCurrentMount(currentMount->id);
 
 		if (currentMount->speed != 0) {
-			g_game().changeSpeed(this, currentMount->speed);
+			Game::changeSpeed(this, currentMount->speed);
 		}
 	} else {
 		if (!isMounted()) {
@@ -5680,7 +5680,7 @@ bool Player::toggleMount(bool mount) {
 		dismount();
 	}
 
-	g_game().internalCreatureChangeOutfit(this, defaultOutfit);
+	Game::internalCreatureChangeOutfit(this, defaultOutfit);
 	lastToggleMount = OTSYS_TIME();
 	return true;
 }
@@ -5723,7 +5723,7 @@ bool Player::untameMount(uint8_t mountId) {
 	if (getCurrentMount() == mountId) {
 		if (isMounted()) {
 			dismount();
-			g_game().internalCreatureChangeOutfit(this, defaultOutfit);
+			Game::internalCreatureChangeOutfit(this, defaultOutfit);
 		}
 
 		setCurrentMount(0);
@@ -5754,7 +5754,7 @@ bool Player::hasMount(const std::shared_ptr<Mount> mount) const {
 void Player::dismount() {
 	const auto mount = g_game().mounts.getMountByID(getCurrentMount());
 	if (mount && mount->speed > 0) {
-		g_game().changeSpeed(this, -mount->speed);
+		Game::changeSpeed(this, -mount->speed);
 	}
 
 	defaultOutfit.lookMount = 0;
@@ -6163,7 +6163,7 @@ void Player::addItemImbuementStats(const Imbuement* imbuement) {
 
 	// Add imbuement speed
 	if (imbuement->speed != 0) {
-		g_game().changeSpeed(this, imbuement->speed);
+		Game::changeSpeed(this, imbuement->speed);
 	}
 
 	// Add imbuement capacity
@@ -6202,7 +6202,7 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 
 	// Remove imbuement speed
 	if (imbuement->speed != 0) {
-		g_game().changeSpeed(this, -imbuement->speed);
+		Game::changeSpeed(this, -imbuement->speed);
 	}
 
 	// Remove imbuement capacity
@@ -6479,7 +6479,7 @@ void Player::triggerMomentum() {
 			++it;
 		}
 		if (triggered) {
-			g_game().addMagicEffect(getPosition(), CONST_ME_HOURGLASS);
+			Game::addMagicEffect(getPosition(), CONST_ME_HOURGLASS);
 			sendTextMessage(MESSAGE_ATTENTION, "Momentum was triggered.");
 		}
 	}

@@ -984,7 +984,7 @@ int PlayerFunctions::luaPlayerSetMaxMana(lua_State* L) {
 	if (player) {
 		player->manaMax = getNumber<int32_t>(L, 2);
 		player->mana = std::min<int32_t>(player->mana, player->manaMax);
-		g_game().addPlayerMana(player);
+		Game::addPlayerMana(player);
 		player->sendStats();
 		pushBoolean(L, true);
 	} else {
@@ -3800,7 +3800,7 @@ int PlayerFunctions::luaPlayerReloadData(lua_State* L) {
 	player->sendStats();
 	player->sendBasicData();
 	player->wheel()->sendGiftOfLifeCooldown();
-	g_game().reloadCreature(player);
+	Game::reloadCreature(player);
 	pushBoolean(L, true);
 	return 1;
 }

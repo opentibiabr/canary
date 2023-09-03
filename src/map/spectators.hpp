@@ -24,6 +24,8 @@ using SpectatorList = phmap::flat_hash_set<Creature*>;
 using SpectatorList = std::vector<Creature*>;
 #endif
 
+using SpectatorsCache = phmap::flat_hash_map<Position, std::pair<SpectatorList, SpectatorList>>;
+
 class Spectators {
 public:
 	static void clearCache();
@@ -75,6 +77,7 @@ public:
 
 private:
 	Spectators &find(const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
+	bool checkCache(const SpectatorsCache &cache, bool onlyPlayers, const Position &centerPos, bool checkDistance, bool multifloor, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY);
 	void update();
 
 	SpectatorList creatures;

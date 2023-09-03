@@ -760,7 +760,7 @@ void Monster::onThink(uint32_t interval) {
 		if (challengeMeleeDuration <= 0) {
 			challengeMeleeDuration = 0;
 			targetDistance = mType->info.targetDistance;
-			g_game().updateCreatureIcon(this);
+			Game::updateCreatureIcon(this);
 		}
 	}
 
@@ -1040,9 +1040,9 @@ void Monster::onThinkDefense(uint32_t interval) {
 			if (summon) {
 				if (g_game().placeCreature(summon, getPosition(), false, summonBlock.force)) {
 					summon->setMaster(this, true);
-					g_game().addMagicEffect(getPosition(), CONST_ME_MAGIC_BLUE);
-					g_game().addMagicEffect(summon->getPosition(), CONST_ME_TELEPORT);
-					g_game().sendSingleSoundEffect(summon->getPosition(), SoundEffect_t::MONSTER_SPELL_SUMMON, this);
+					Game::addMagicEffect(getPosition(), CONST_ME_MAGIC_BLUE);
+					Game::addMagicEffect(summon->getPosition(), CONST_ME_TELEPORT);
+					Game::sendSingleSoundEffect(summon->getPosition(), SoundEffect_t::MONSTER_SPELL_SUMMON, this);
 				} else {
 					delete summon;
 				}
@@ -1069,9 +1069,9 @@ void Monster::onThinkYell(uint32_t interval) {
 			const voiceBlock_t &vb = mType->info.voiceVector[index];
 
 			if (vb.yellText) {
-				g_game().internalCreatureSay(this, TALKTYPE_MONSTER_YELL, vb.text, false);
+				Game::internalCreatureSay(this, TALKTYPE_MONSTER_YELL, vb.text, false);
 			} else {
-				g_game().internalCreatureSay(this, TALKTYPE_MONSTER_SAY, vb.text, false);
+				Game::internalCreatureSay(this, TALKTYPE_MONSTER_SAY, vb.text, false);
 			}
 		}
 	}
@@ -1088,7 +1088,7 @@ void Monster::onThinkSound(uint32_t interval) {
 
 		if (!mType->info.soundVector.empty() && (mType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
 			int64_t index = uniform_random(0, static_cast<int64_t>(mType->info.soundVector.size() - 1));
-			g_game().sendSingleSoundEffect(this->getPosition(), mType->info.soundVector[index], this);
+			Game::sendSingleSoundEffect(this->getPosition(), mType->info.soundVector[index], this);
 		}
 	}
 }
@@ -1129,7 +1129,7 @@ void Monster::pushItems(Tile* tile, const Direction &nextDirection) {
 		}
 	}
 	if (removeCount > 0) {
-		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+		Game::addMagicEffect(tile->getPosition(), CONST_ME_POFF);
 	}
 }
 
@@ -1175,7 +1175,7 @@ void Monster::pushCreatures(Tile* tile) {
 		}
 
 		if (removeCount > 0) {
-			g_game().addMagicEffect(tile->getPosition(), CONST_ME_BLOCKHIT);
+			Game::addMagicEffect(tile->getPosition(), CONST_ME_BLOCKHIT);
 		}
 	}
 }
@@ -1870,7 +1870,7 @@ void Monster::death(Creature*) {
 	onIdleStatus();
 
 	if (mType) {
-		g_game().sendSingleSoundEffect(this->getPosition(), mType->info.deathSound, this);
+		Game::sendSingleSoundEffect(this->getPosition(), mType->info.deathSound, this);
 	}
 }
 
@@ -1986,7 +1986,7 @@ void Monster::updateLookDirection() {
 			}
 		}
 	}
-	g_game().internalCreatureTurn(this, newDir);
+	Game::internalCreatureTurn(this, newDir);
 }
 
 void Monster::dropLoot(Container* corpse, Creature*) {
@@ -2032,7 +2032,7 @@ void Monster::drainHealth(Creature* attacker, int32_t damage) {
 void Monster::changeHealth(int32_t healthChange, bool sendHealthChange /* = true*/) {
 	if (mType && !mType->info.soundVector.empty() && mType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100))) {
 		auto index = uniform_random(0, mType->info.soundVector.size() - 1);
-		g_game().sendSingleSoundEffect(this->getPosition(), mType->info.soundVector[index], this);
+		Game::sendSingleSoundEffect(this->getPosition(), mType->info.soundVector[index], this);
 	}
 
 	// In case a player with ignore flag set attacks the monster
@@ -2072,7 +2072,7 @@ bool Monster::changeTargetDistance(int32_t distance, uint32_t duration /* = 1200
 	targetDistance = distance;
 
 	if (shouldUpdate) {
-		g_game().updateCreatureIcon(this);
+		Game::updateCreatureIcon(this);
 	}
 	return true;
 }
@@ -2121,12 +2121,12 @@ void Monster::configureForgeSystem() {
 	if (monsterForgeClassification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
 		setForgeStack(15);
 		setIcon(CreatureIcon(CreatureIconModifications_t::Fiendish, 0 /* don't show stacks on fiends */));
-		g_game().updateCreatureIcon(this);
+		Game::updateCreatureIcon(this);
 	} else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER) {
 		auto stack = static_cast<uint16_t>(normal_random(1, 5));
 		setForgeStack(stack);
 		setIcon(CreatureIcon(CreatureIconModifications_t::Influenced, stack));
-		g_game().updateCreatureIcon(this);
+		Game::updateCreatureIcon(this);
 	}
 
 	// Change health based in stacks
@@ -2152,7 +2152,7 @@ void Monster::clearFiendishStatus() {
 	healthMax = mType->info.healthMax * mType->getHealthMultiplier();
 
 	clearIcon();
-	g_game().updateCreatureIcon(this);
+	Game::updateCreatureIcon(this);
 	g_game().sendUpdateCreature(this);
 }
 

@@ -18,8 +18,8 @@ void Spectators::clearCache() {
 	playersCache.clear();
 }
 
-void Spectators::update() {
-	if (!needUpdate) {
+void Spectators::update() noexcept {
+	if (!needUpdate || creatures.empty()) {
 		return;
 	}
 
@@ -44,10 +44,9 @@ bool Spectators::checkCache(const SpectatorsCache &cache, bool onlyPlayers, cons
 			if (centerPos.x - specPos.x >= minRangeX
 				&& centerPos.y - specPos.y >= minRangeY
 				&& centerPos.x - specPos.x <= maxRangeX
-				&& centerPos.y - specPos.y <= maxRangeY) {
-				if (!onlyPlayers || creature->getPlayer()) {
-					insert(creature);
-				}
+				&& centerPos.y - specPos.y <= maxRangeY
+				&& (!onlyPlayers || creature->getPlayer())) {
+				insert(creature);
 			}
 		}
 	} else {
@@ -57,7 +56,7 @@ bool Spectators::checkCache(const SpectatorsCache &cache, bool onlyPlayers, cons
 	return true;
 }
 
-Spectators &Spectators::find(const Position &centerPos, bool multifloor, bool onlyPlayers, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY) {
+Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onlyPlayers, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY) {
 	if (!creatures.empty()) {
 		needUpdate = true;
 	}
@@ -70,7 +69,7 @@ Spectators &Spectators::find(const Position &centerPos, bool multifloor, bool on
 	const bool canCache = minRangeX == -MAP_MAX_VIEW_PORT_X && maxRangeX == MAP_MAX_VIEW_PORT_X && minRangeY == -MAP_MAX_VIEW_PORT_Y && maxRangeY == MAP_MAX_VIEW_PORT_Y;
 
 	if (onlyPlayers) {
-		// check on players cache
+		// check players cache
 		if (checkCache(playersCache, true, centerPos, !canCache, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY)) {
 			return *this;
 		}
@@ -110,17 +109,17 @@ Spectators &Spectators::find(const Position &centerPos, bool multifloor, bool on
 	const int_fast32_t max_x = centerPos.x + maxRangeX;
 
 	const int_fast16_t minoffset = centerPos.getZ() - maxRangeZ;
-	const int_fast32_t x1 = std::min<uint32_t>(0xFFFF, std::max<int32_t>(0, (min_x + minoffset)));
-	const int_fast32_t y1 = std::min<uint32_t>(0xFFFF, std::max<int32_t>(0, (min_y + minoffset)));
+	const int_fast32_t x1 = std::min<int_fast32_t>(0xFFFF, std::max<int32_t>(0, (min_x + minoffset)));
+	const int_fast32_t y1 = std::min<int_fast32_t>(0xFFFF, std::max<int32_t>(0, (min_y + minoffset)));
 
 	const int_fast16_t maxoffset = centerPos.getZ() - minRangeZ;
-	const int_fast32_t x2 = std::min<uint32_t>(0xFFFF, std::max<int32_t>(0, (max_x + maxoffset)));
-	const int_fast32_t y2 = std::min<uint32_t>(0xFFFF, std::max<int32_t>(0, (max_y + maxoffset)));
+	const int_fast32_t x2 = std::min<int_fast32_t>(0xFFFF, std::max<int32_t>(0, (max_x + maxoffset)));
+	const int_fast32_t y2 = std::min<int_fast32_t>(0xFFFF, std::max<int32_t>(0, (max_y + maxoffset)));
 
-	const int32_t startx1 = x1 - (x1 % FLOOR_SIZE);
-	const int32_t starty1 = y1 - (y1 % FLOOR_SIZE);
-	const int32_t endx2 = x2 - (x2 % FLOOR_SIZE);
-	const int32_t endy2 = y2 - (y2 % FLOOR_SIZE);
+	const int_fast32_t startx1 = x1 - (x1 % FLOOR_SIZE);
+	const int_fast32_t starty1 = y1 - (y1 % FLOOR_SIZE);
+	const int_fast32_t endx2 = x2 - (x2 % FLOOR_SIZE);
+	const int_fast32_t endy2 = y2 - (y2 % FLOOR_SIZE);
 
 	const auto startLeaf = g_game().map.getQTNode(startx1, starty1);
 	const QTreeLeafNode* leafS = startLeaf;
@@ -167,8 +166,8 @@ Spectators &Spectators::find(const Position &centerPos, bool multifloor, bool on
 	insertAll(spectators);
 
 	if (canCache) {
-		auto &hashmap = onlyPlayers ? playersCache : creaturesCache;
-		auto &[floors, floor] = hashmap.try_emplace(centerPos).first->second;
+		auto &cache = onlyPlayers ? playersCache : creaturesCache;
+		auto &[floors, floor] = cache.try_emplace(centerPos).first->second;
 		auto &spectatorsCache = (multifloor ? floors : floor);
 
 #ifdef SPECTATORS_USE_HASHSET
@@ -181,38 +180,42 @@ Spectators &Spectators::find(const Position &centerPos, bool multifloor, bool on
 	return *this;
 }
 
-Spectators &Spectators::join(const Spectators &anotherSpectators) {
-	insertAll(anotherSpectators.creatures);
+Spectators Spectators::insert(Creature* creature) {
+	if (creature) {
+#ifdef SPECTATORS_USE_HASHSET
+		creatures.emplace(creature);
+#else
+		creatures.emplace_back(creature);
+#endif
+	}
 	return *this;
 }
 
-Spectators &Spectators::insert(Creature* creature) {
+Spectators Spectators::insertAll(const SpectatorList &list) {
+	if (!list.empty()) {
 #ifdef SPECTATORS_USE_HASHSET
-	creatures.emplace(creature);
+		creatures.insert(list.begin(), list.end());
 #else
-	creatures.emplace_back(creature);
-#endif
-	return *this;
-}
+		creatures.insert(creatures.end(), list.begin(), list.end());
 
-Spectators &Spectators::insertAll(const SpectatorList &list) {
-#ifdef SPECTATORS_USE_HASHSET
-	creatures.insert(list.begin(), list.end());
-#else
-	creatures.insert(creatures.end(), list.begin(), list.end());
 #endif
+	}
 	return *this;
 }
 
 bool Spectators::contains(const Creature* creature) const {
 #ifdef SPECTATORS_USE_HASHSET
-	return creatures.contains(creature);
+	return creature && creatures.contains(creature);
 #else
-	return std::ranges::find(creatures.begin(), creatures.end(), creature) != creatures.end();
+	return creature && std::ranges::find(creatures.begin(), creatures.end(), creature) != creatures.end();
 #endif
 }
 
 bool Spectators::erase(const Creature* creature) {
+	if (!creature) {
+		return false;
+	}
+
 	update();
 #ifdef SPECTATORS_USE_HASHSET
 	return creatures.erase(creature) > 0;

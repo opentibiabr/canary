@@ -18,7 +18,7 @@ class Npc;
 struct Position;
 
 #ifdef SPECTATORS_USE_HASHSET
-// it is slower by 51~99% in certain cases
+// it's 3~5x slower
 using SpectatorList = phmap::flat_hash_set<Creature*>;
 #else
 using SpectatorList = std::vector<Creature*>;
@@ -32,7 +32,7 @@ public:
 
 	template <typename T>
 		requires std::is_same_v<Creature, T> || std::is_same_v<Player, T>
-	Spectators &find(const Position &centerPos, bool multifloor = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0) {
+	Spectators find(const Position &centerPos, bool multifloor = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0) {
 		constexpr bool onlyPlayers = std::is_same_v<T, Player>;
 		return find(centerPos, multifloor, onlyPlayers, minRangeX, maxRangeX, minRangeY, maxRangeY);
 	}
@@ -54,31 +54,33 @@ public:
 #endif
 	}
 
-	Spectators &join(const Spectators &anotherSpectators);
-	Spectators &insert(Creature* creature);
-	Spectators &insertAll(const SpectatorList &list);
+	Spectators insert(Creature* creature);
+	Spectators insertAll(const SpectatorList &list);
+	Spectators join(const Spectators &anotherSpectators) {
+		return insertAll(anotherSpectators.creatures);
+	}
 
-	bool empty() const {
+	bool empty() const noexcept {
 		return creatures.empty();
 	}
 
-	size_t size() const {
+	size_t size() const noexcept {
 		return creatures.size();
 	}
 
-	auto begin() {
+	auto begin() noexcept {
 		update();
 		return creatures.begin();
 	}
 
-	auto end() {
+	auto end() noexcept {
 		return creatures.end();
 	}
 
 private:
-	Spectators &find(const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
+	Spectators find(const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
 	bool checkCache(const SpectatorsCache &cache, bool onlyPlayers, const Position &centerPos, bool checkDistance, bool multifloor, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY);
-	void update();
+	void update() noexcept;
 
 	SpectatorList creatures;
 	bool needUpdate = false;

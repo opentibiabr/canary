@@ -249,7 +249,7 @@ bool Party::removeInvite(Player &player, bool removeFromPlayer /* = true*/) {
 	if (empty()) {
 		disband();
 	} else {
-		for (Player* member : memberList) {
+		for (const auto member : memberList) {
 			g_game().updatePlayerHelpers(member);
 		}
 
@@ -289,7 +289,7 @@ bool Party::invitePlayer(Player &player) {
 
 	inviteList.push_back(&player);
 
-	for (Player* member : memberList) {
+	for (const auto member : memberList) {
 		g_game().updatePlayerHelpers(member);
 	}
 

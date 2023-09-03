@@ -156,7 +156,7 @@ public:
 
 	Player* getPlayerByGUID(const uint32_t &guid);
 
-	ReturnValue getPlayerByNameWildcard(const std::string &s, Player*&player);
+	ReturnValue getPlayerByNameWildcard(const std::string &s, Player*&player) const;
 
 	Player* getPlayerByAccount(uint32_t acc);
 
@@ -771,9 +771,6 @@ private:
 	std::vector<uint16_t> registeredMagicEffects;
 	std::vector<uint16_t> registeredDistanceEffects;
 	std::vector<uint16_t> registeredLookTypes;
-
-	size_t lastBucket = 0;
-	size_t lastImbuedBucket = 0;
 
 	WildcardTreeNode wildcardTree { false };
 

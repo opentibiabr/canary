@@ -798,7 +798,7 @@ Player* Game::getPlayerByGUID(const uint32_t &guid) {
 	return nullptr;
 }
 
-ReturnValue Game::getPlayerByNameWildcard(const std::string &s, Player*&player) {
+ReturnValue Game::getPlayerByNameWildcard(const std::string &s, Player*&player) const {
 	size_t strlen = s.length();
 	if (strlen == 0 || strlen > 20) {
 		return RETURNVALUE_PLAYERWITHTHISNAMEISNOTONLINE;

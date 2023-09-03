@@ -250,7 +250,7 @@ private:
 	void onAddTileItem(Item* item);
 	void onUpdateTileItem(Item* oldItem, const ItemType &oldType, Item* newItem, const ItemType &newType);
 	void onRemoveTileItem(Spectators &spectators, const std::vector<int32_t> &oldStackPosVector, Item* item);
-	void onUpdateTile(Spectators &spectators);
+	void onUpdateTile(Spectators &spectators) const;
 
 	void setTileFlags(const Item* item);
 	void resetTileFlags(const Item* item);

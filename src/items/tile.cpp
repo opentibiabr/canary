@@ -523,12 +523,10 @@ void Tile::onRemoveTileItem(Spectators &spectators, const std::vector<int32_t> &
 	}
 }
 
-void Tile::onUpdateTile(Spectators &spectators) {
-	const Position &cylinderMapPos = getPosition();
-
+void Tile::onUpdateTile(Spectators &spectators) const {
 	// send to clients
 	for (Creature* spectator : spectators) {
-		spectator->getPlayer()->sendUpdateTile(this, cylinderMapPos);
+		spectator->getPlayer()->sendUpdateTile(this, getPosition());
 	}
 }
 

@@ -5570,7 +5570,7 @@ bool Game::isSightClear(const Position &fromPos, const Position &toPos, bool flo
 	return map.isSightClear(fromPos, toPos, floorCheck);
 }
 
-bool Game::internalCreatureTurn(Creature* creature, Direction dir) const {
+bool Game::internalCreatureTurn(Creature* creature, Direction dir) {
 	if (creature->getDirection() == dir) {
 		return false;
 	}
@@ -5613,8 +5613,8 @@ bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std:
 	}
 
 	// send to client
-	for (Creature* spectator : spectators) {
-		if (Player* tmpPlayer = spectator->getPlayer()) {
+	for (const auto spectator : spectators) {
+		if (const auto tmpPlayer = spectator->getPlayer()) {
 			if (!ghostMode || tmpPlayer->canSeeCreature(creature)) {
 				tmpPlayer->sendCreatureSay(creature, type, text, pos);
 			}
@@ -5622,7 +5622,7 @@ bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std:
 	}
 
 	// event method
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : spectators) {
 		spectator->onCreatureSay(creature, type, text);
 		if (creature != spectator) {
 			g_events().eventCreatureOnHear(spectator, creature, text, type);
@@ -7178,8 +7178,8 @@ void Game::addMagicEffect(const Position &pos, uint16_t effect) {
 }
 
 void Game::addMagicEffect(Spectators &spectators, const Position &pos, uint16_t effect) {
-	for (Creature* spectator : spectators) {
-		if (Player* tmpPlayer = spectator->getPlayer()) {
+	for (const auto spectator : spectators) {
+		if (const auto tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendMagicEffect(pos, effect);
 		}
 	}
@@ -7191,8 +7191,8 @@ void Game::removeMagicEffect(const Position &pos, uint16_t effect) {
 }
 
 void Game::removeMagicEffect(Spectators &spectators, const Position &pos, uint16_t effect) {
-	for (Creature* spectator : spectators) {
-		if (const Player* tmpPlayer = spectator->getPlayer()) {
+	for (const auto spectator : spectators) {
+		if (const auto tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->removeMagicEffect(pos, effect);
 		}
 	}
@@ -7204,8 +7204,8 @@ void Game::addDistanceEffect(const Position &fromPos, const Position &toPos, uin
 }
 
 void Game::addDistanceEffect(Spectators &spectators, const Position &fromPos, const Position &toPos, uint16_t effect) {
-	for (Creature* spectator : spectators) {
-		if (Player* tmpPlayer = spectator->getPlayer()) {
+	for (const auto spectator : spectators) {
+		if (const auto tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect);
 		}
 	}
@@ -7367,9 +7367,8 @@ void Game::broadcastMessage(const std::string &text, MessageClasses type) const 
 
 void Game::updateCreatureWalkthrough(const Creature* creature) {
 	// send to clients
-	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
-	for (Creature* spectator : spectators) {
-		auto tmpPlayer = spectator->getPlayer();
+	for (const auto spectator : Spectators().find<Player>(creature->getPosition(), true)) {
+		const auto tmpPlayer = spectator->getPlayer();
 		tmpPlayer->sendCreatureWalkthrough(creature, tmpPlayer->canWalkthroughEx(creature));
 	}
 }
@@ -7379,15 +7378,13 @@ void Game::updateCreatureSkull(const Creature* creature) {
 		return;
 	}
 
-	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(creature->getPosition(), true)) {
 		spectator->getPlayer()->sendCreatureSkull(creature);
 	}
 }
 
 void Game::updatePlayerShield(Player* player) {
-	auto spectators = Spectators().find<Player>(player->getPosition(), true);
-	for (Creature* spectator : spectators) {
+	for (const auto spectator : Spectators().find<Player>(player->getPosition(), true)) {
 		spectator->getPlayer()->sendCreatureShield(player);
 	}
 }
@@ -7523,7 +7520,7 @@ void Game::playerInviteToParty(uint32_t playerId, uint32_t invitedId) {
 	party->invitePlayer(*invitedPlayer);
 }
 
-void Game::updatePlayerHelpers(Player* player) {
+void Game::updatePlayerHelpers(Player* player) const {
 	if (!player) {
 		return;
 	}
@@ -9256,7 +9253,7 @@ void Game::createLuaItemsOnMap() {
 	}
 }
 
-void Game::sendUpdateCreature(const Creature* creature) {
+void Game::sendUpdateCreature(const Creature* creature) const {
 	if (!creature) {
 		return;
 	}

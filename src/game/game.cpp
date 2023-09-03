@@ -7411,16 +7411,11 @@ void Game::updateCreatureType(Creature* creature) {
 	// send to clients
 	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
 	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
-		for (Creature* spectator : spectators) {
-			Player* player = spectator->getPlayer();
-			if (masterPlayer == player) {
-				player->sendCreatureType(creature, CREATURETYPE_SUMMON_PLAYER);
-			} else {
-				player->sendCreatureType(creature, creatureType);
-			}
+		for (const auto spectator : spectators) {
+			spectator->getPlayer()->sendCreatureType(creature, masterPlayer == spectator ? CREATURETYPE_SUMMON_PLAYER : creatureType);
 		}
 	} else {
-		for (Creature* spectator : spectators) {
+		for (const auto spectator : spectators) {
 			spectator->getPlayer()->sendCreatureType(creature, creatureType);
 		}
 	}

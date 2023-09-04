@@ -48,6 +48,15 @@ namespace account {
 		 */
 		error_t removeCoins(const CoinType &type, const uint32_t &amount, const std::string &detail = "REMOVE Coins");
 
+		/**
+		 * @brief Registers a coin transaction.
+		 *
+		 * @param type Type of the coin
+		 * @param amount Amount of coins to be added
+		 * @param detail Detail of the transaction
+		 */
+		void registerCoinTransaction(const CoinTransactionType &transactionType, const CoinType &type, const uint32_t &amount, const std::string &detail);
+
 		/***************************************************************************
 		 * Account Load/Save
 		 **************************************************************************/

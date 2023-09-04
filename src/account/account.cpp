@@ -146,7 +146,7 @@ namespace account {
 			logger.error(
 				"Failed to register transaction: 'account:[{}], transaction "
 				"type:[{}], coins:[{}], coin type:[{}], description:[{}]",
-				m_account.id, static_cast<uint8_t>(CoinTransactionType::ADD), amount, static_cast<uint8_t>(type), detail
+				m_account.id, static_cast<uint8_t>(transactionType), amount, static_cast<uint8_t>(type), detail
 			);
 		}
 	}

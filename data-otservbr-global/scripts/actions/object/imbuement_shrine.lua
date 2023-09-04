@@ -13,5 +13,5 @@ function imbuement.onUse(player, item, fromPosition, target, toPosition, isHotke
 	return true
 end
 
-imbuement:id(25060, 25061, 25175, 25182, 25183)
+imbuement:id(25060, 25061, 25174, 25175, 25182, 25183, 24964)
 imbuement:register()

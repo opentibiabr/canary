@@ -33,6 +33,10 @@ local function copyContainerItem(originalContainer, newContainer)
 	for i = 0, originalContainer:getSize() - 1 do
 		local originalItem = originalContainer:getItem(i)
 		local newItem = Game.createItem(originalItem.itemid, originalItem.type)
+		if not newItem then
+			Spdlog.error("[questSystem1.copyContainerItem] failed to create item " .. originalItem.itemid)
+			return false
+		end
 		newItem:setActionId(originalItem:getActionId())
 		newItem:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, originalItem:getAttribute(ITEM_ATTRIBUTE_DESCRIPTION))
 

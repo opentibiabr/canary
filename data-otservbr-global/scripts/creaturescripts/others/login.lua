@@ -23,7 +23,7 @@ local playerLogin = CreatureEvent("PlayerLogin")
 function playerLogin.onLogin(player)
 	local items = {
 		{ 3003, 1 },
-		{ 3031, 3 }
+		{ 3457, 1 }
 	}
 	if player:getLastLoginSaved() == 0 then
 		player:sendOutfitWindow()

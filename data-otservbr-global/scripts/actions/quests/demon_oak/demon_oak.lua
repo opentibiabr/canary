@@ -71,15 +71,14 @@ function demonOak.onUse(player, item, fromPosition, target, toPosition, isHotkey
 
 	local spectators, hasMonsters = Game.getSpectators(DEMON_OAK_POSITION, false, false, 9, 9, 6, 6), false
 	for i = 1, #spectators do
-		if spectators[i]:isMonster() then
+		if spectators[i]:isMonster() and not spectators[i]:getMaster() then
 			hasMonsters = true
 			break
 		end
 	end
 
 	local isDefeated = totalProgress == (#config.demonOakIds * (config.waves + 1))
-	if (config.killAllBeforeCut or isDefeated)
-			and hasMonsters then
+	if (config.killAllBeforeCut or isDefeated) and hasMonsters then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You need to kill all monsters first.')
 		return true
 	end

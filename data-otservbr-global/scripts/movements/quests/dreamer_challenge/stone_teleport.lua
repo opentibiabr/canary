@@ -6,7 +6,7 @@ local config = {
 	{ position = Position(32875, 32264, 14), itemId = 2101, transformId = 2097 }
 }
 
-stoneTeleport = MoveEvent()
+local stoneTeleport = MoveEvent()
 
 function stoneTeleport.onStepIn(creature, item, position, fromPosition)
 	local player = creature:getPlayer()
@@ -29,5 +29,5 @@ function stoneTeleport.onStepIn(creature, item, position, fromPosition)
 end
 
 stoneTeleport:type("stepin")
-stoneTeleport:aid(9031)
+stoneTeleport:position(Position(32881, 32270, 14))
 stoneTeleport:register()

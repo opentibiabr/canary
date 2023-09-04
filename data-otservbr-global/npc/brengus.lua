@@ -154,6 +154,7 @@ npcConfig.shop = {
 	{ itemName = "tarsal arrow", clientId = 14251, buy = 6 },
 	{ itemName = "throwing knife", clientId = 3298, buy = 25 },
 	{ itemName = "throwing star", clientId = 3287, buy = 42 },
+	{ itemName = "tribal mask", clientId = 3403, buy = 250 },
 	{ itemName = "tusk shield", clientId = 3443, sell = 850 },
 	{ itemName = "two handed sword", clientId = 3265, buy = 950 },
 	{ itemName = "viking helmet", clientId = 3367, buy = 265 },

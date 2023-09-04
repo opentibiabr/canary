@@ -20,6 +20,31 @@ auto databaseTest(Database &db, const std::function<void(void)> &load) {
 	};
 }
 
+void createAccount(Database &db) {
+	db.executeQuery(
+		"INSERT INTO `accounts` "
+		"(`id`, `name`, `email`, `password`, `type`, `premdays`, `lastday`, `premdays_purchased`, `creation`) "
+		"VALUES(111, 'test', '@test', '', 3, 11, 1293912, 11, 42183281)"
+	);
+
+	db.executeQuery(fmt::format(
+		"INSERT INTO `account_sessions` (`id`, `account_id`, `expires`) "
+		"VALUES ('{}', 111, 1337)",
+		transformToSHA1("test")
+	));
+}
+
+void assertAccountLoad(account::AccountInfo acc) {
+	expect(eq(acc.id, 111));
+	expect(eq(acc.accountType, AccountType::ACCOUNT_TYPE_SENIORTUTOR));
+	expect(eq(acc.premiumRemainingDays, 11));
+	expect(eq(acc.premiumLastDay, 1293912));
+	expect(eq(acc.players.size(), 0));
+	expect(eq(acc.oldProtocol, false));
+	expect(eq(acc.premiumDaysPurchased, 11));
+	expect(approx(acc.creationTime, 42183281, 60 * 60 * 1000));
+}
+
 int main() {
 	struct DbConfig {
 	public:
@@ -45,60 +70,35 @@ int main() {
 	test("AccountRepositoryDB::loadByID") = databaseTest(db, [&db] {
 		InMemoryLogger logger{};
 		AccountRepositoryDB accRepo{db, logger};
+		createAccount(db);
 
 		AccountInfo acc{};
-		accRepo.loadByID(1, acc);
-
-		expect(eq(acc.id, 1));
-		expect(eq(acc.accountType, AccountType::ACCOUNT_TYPE_GOD));
-		expect(eq(acc.premiumRemainingDays, 0));
-		expect(eq(acc.premiumLastDay, 0));
-		expect(eq(acc.players.size(), 6));
-		expect(eq(acc.oldProtocol, false));
+		accRepo.loadByID(111, acc);
+		assertAccountLoad(acc);
 		expect(eq(acc.sessionExpires, 0));
-		expect(eq(acc.premiumDaysPurchased, 0));
-		expect(approx(acc.creationTime, getTimeNow(), 60 * 60 * 1000));
 	});
 
 	test("AccountRepositoryDB::loadByEmail") = databaseTest(db, [&db] {
 		InMemoryLogger logger {};
 		AccountRepositoryDB accRepo { db, logger };
+		createAccount(db);
 
 		AccountInfo acc {};
-		accRepo.loadByEmail("@god", acc);
-
-		expect(eq(acc.id, 1));
-		expect(eq(acc.accountType, AccountType::ACCOUNT_TYPE_GOD));
-		expect(eq(acc.premiumRemainingDays, 0));
-		expect(eq(acc.premiumLastDay, 0));
-		expect(eq(acc.players.size(), 6));
-		expect(eq(acc.oldProtocol, false));
+		accRepo.loadByEmail("@test", acc);
+		assertAccountLoad(acc);
 		expect(eq(acc.sessionExpires, 0));
-		expect(eq(acc.premiumDaysPurchased, 0));
-		expect(approx(acc.creationTime, getTimeNow(), 60 * 60 * 1000));
 	});
 
 	test("AccountRepositoryDB::loadBySession") = databaseTest(db, [&db] {
 		InMemoryLogger logger {};
 		AccountRepositoryDB accRepo { db, logger };
-		db.executeQuery(fmt::format(
-			"INSERT INTO `account_sessions` (`id`, `account_id`, `expires`) "
-			"VALUES ('{}', 1, 1337)",
-			transformToSHA1("test")
-		));
+		createAccount(db);
 
 		AccountInfo acc {};
 		accRepo.loadBySession("test", acc);
 
-		expect(eq(acc.id, 1));
-		expect(eq(acc.accountType, AccountType::ACCOUNT_TYPE_GOD));
-		expect(eq(acc.premiumRemainingDays, 0));
-		expect(eq(acc.premiumLastDay, 0));
-		expect(eq(acc.players.size(), 6));
-		expect(eq(acc.oldProtocol, false));
+		assertAccountLoad(acc);
 		expect(eq(acc.sessionExpires, 1337));
-		expect(eq(acc.premiumDaysPurchased, 1337));
-		expect(approx(acc.creationTime, getTimeNow(), 60 * 60 * 1000));
 	});
 
 	test("AccountRepositoryDB load sets premium day purchased = remaining days, if needed") = databaseTest(db, [&db] {

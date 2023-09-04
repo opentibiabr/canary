@@ -188,7 +188,7 @@ local towns = {
 	}
 }
 
-local defaultTown = TOWNS_LIST.VENORE
+local defaultTown = TOWNS_LIST.THAIS
 local townNames = { all = "", free = "", premium = "" }
 
 -- Function to build town names strings and adds additional data to sailable/premium towns about
@@ -322,7 +322,7 @@ keywordHandler:addKeyword({ "ship" }, StdModule.say,
 	{
 		npcHandler = npcHandler,
 		text = "She's pretty, isn't she? Will ship you safely to any port. Though a young landlubber such as you should \z
-	consider to travel to Venore first. The travel is for free. Just once though! You have to ask for a {passage}."
+	consider to travel to Thais first. The travel is for free. Just once though! You have to ask for a {passage}."
 	})
 keywordHandler:addKeyword({ "mainland" }, StdModule.say,
 	{

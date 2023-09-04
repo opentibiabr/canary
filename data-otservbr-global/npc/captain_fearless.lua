@@ -78,7 +78,6 @@ addTravelKeyword('svargrond', 150, Position(32341, 31108, 6))
 addTravelKeyword('liberty bay', 180, Position(32285, 32892, 6))
 addTravelKeyword('yalahar', 185, Position(32816, 31272, 6), function(player) return player:getStorageValue(Storage.SearoutesAroundYalahar.Venore) ~= 1 and player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) < 5 end)
 addTravelKeyword('ankrahmun', 150, Position(33092, 32883, 6))
-addTravelKeyword('travora', 1000, Position(32055, 32368, 6))
 addTravelKeyword('issavi', 130, Position(33900, 31463, 6))
 
 -- Darashia

@@ -679,7 +679,7 @@ void IOLoginDataLoad::loadPlayerVip(Player* player, DBResult_ptr result) {
 
 	Database &db = Database::getInstance();
 	std::ostringstream query;
-	query << "SELECT `player_id` FROM `account_viplist` WHERE `account_id` = " << player->getAccount();
+	query << "SELECT `player_id` FROM `account_viplist` WHERE `account_id` = " << player->getAccountId();
 	if ((result = db.storeQuery(query.str()))) {
 		do {
 			player->addVIPInternal(result->getNumber<uint32_t>("player_id"));

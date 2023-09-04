@@ -2990,7 +2990,7 @@ void ProtocolGame::parseMarketBrowse(NetworkMessage &msg) {
 
 	if ((oldProtocol && browseId == MARKETREQUEST_OWN_OFFERS_OLD) || (!oldProtocol && browseId == MARKETREQUEST_OWN_OFFERS)) {
 		addGameTask(&Game::playerBrowseMarketOwnOffers, player->getID());
-	} else if ((oldProtocol && browseId == MARKETREQUEST_OWN_HISTORY) || (!oldProtocol && browseId == MARKETREQUEST_OWN_HISTORY_OLD)) {
+	} else if ((oldProtocol && browseId == MARKETREQUEST_OWN_HISTORY_OLD) || (!oldProtocol && browseId == MARKETREQUEST_OWN_HISTORY)) {
 		addGameTask(&Game::playerBrowseMarketOwnHistory, player->getID());
 	} else if (!oldProtocol) {
 		uint16_t itemId = msg.get<uint16_t>();

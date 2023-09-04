@@ -3678,7 +3678,7 @@ int PlayerFunctions::luaPlayerGetLoyaltyBonus(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetLoyaltyPoints(lua_State* L) {
 	// player:getLoyaltyPoints()
-	Player* player = getUserdata<Player>(L, 1);
+	const auto &player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;

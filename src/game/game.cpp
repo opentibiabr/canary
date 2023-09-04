@@ -8231,7 +8231,8 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 				return;
 			}
 
-			player->getAccount()->removeCoins(account::CoinType::TRANSFERABLE, static_cast<uint32_t>(amount));
+			// Do not register a transaction for coins creating an offer
+			player->getAccount()->removeCoins(account::CoinType::TRANSFERABLE, static_cast<uint32_t>(amount), "");
 		} else {
 			if (!removeOfferItems(*player, *depotLocker, it, amount, tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -8319,7 +8320,8 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			player->getAccount()->addCoins(account::CoinType::TRANSFERABLE, offer.amount);
+			// Do not register a transaction for coins upon cancellation
+			player->getAccount()->addCoins(account::CoinType::TRANSFERABLE, offer.amount, "");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = offer.amount;
 			while (tmpAmount > 0) {
@@ -8605,7 +8607,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
 		if (it.id == ITEM_STORE_COIN) {
-			player->getAccount()->removeCoins(account::CoinType::TRANSFERABLE, amount, "Sold on Market");
+			sellerPlayer->getAccount()->registerCoinTransaction(account::CoinTransactionType::REMOVE, account::CoinType::TRANSFERABLE, amount, "Sold on Market");
 		}
 
 		if (it.id != ITEM_STORE_COIN) {

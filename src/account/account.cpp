@@ -101,13 +101,7 @@ namespace account {
 			return ERROR_STORAGE;
 		}
 
-		if (!accountRepository.registerCoinsTransaction(m_account.id, CoinTransactionType::ADD, amount, type, detail)) {
-			logger.error(
-				"Failed to register transaction: 'account:[{}], transaction "
-				"type:[{}], coins:[{}], coin type:[{}], description:[ADD Coins]",
-				m_account.id, static_cast<uint8_t>(CoinTransactionType::ADD), amount, static_cast<uint8_t>(type)
-			);
-		}
+		registerCoinTransaction(CoinTransactionType::ADD, type, amount, detail);
 
 		return ERROR_NO;
 	}
@@ -136,15 +130,27 @@ namespace account {
 			return ERROR_STORAGE;
 		}
 
-		if (!accountRepository.registerCoinsTransaction(m_account.id, CoinTransactionType::REMOVE, amount, type, detail)) {
-			logger.error(
-				"Failed to register transaction: 'account:[{}], transaction "
-				"type:[{}], coins:[{}], coin type:[{}], description:[REMOVE Coins]",
-				m_account.id, static_cast<uint8_t>(CoinTransactionType::REMOVE), amount, static_cast<uint8_t>(type)
-			);
-		}
+		registerCoinTransaction(CoinTransactionType::REMOVE, type, amount, detail);
 
 		return ERROR_NO;
+	}
+
+	void Account::registerCoinTransaction(const CoinTransactionType &transactionType, const CoinType &type, const uint32_t &amount, const std::string &detail) {
+		if (!m_accLoaded) {
+			return;
+		}
+
+		if (detail.empty()) {
+			return;
+		}
+
+		if (!accountRepository.registerCoinsTransaction(m_account.id, transactionType, amount, type, detail)) {
+			logger.error(
+				"Failed to register transaction: 'account:[{}], transaction "
+				"type:[{}], coins:[{}], coin type:[{}], description:[{}]",
+				m_account.id, static_cast<uint8_t>(transactionType), amount, static_cast<uint8_t>(type), detail
+			);
+		}
 	}
 
 	std::string Account::getPassword() {

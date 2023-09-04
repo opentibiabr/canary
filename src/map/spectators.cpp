@@ -31,8 +31,15 @@ void Spectators::update() noexcept {
 
 bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onlyPlayers, const Position &centerPos, bool checkDistance, bool multifloor, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY) {
 	const auto &list = multifloor || !specData.floor ? specData.multiFloor : specData.floor;
+
 	if (!list) {
 		return false;
+	}
+
+	if (!multifloor && !specData.floor) {
+		// Check the distance if the request was only from the corresponding Z (centerPos),
+		// but the cache containing spectators from all floors will be used.
+		checkDistance = true;
 	}
 
 	if (checkDistance) {
@@ -42,6 +49,7 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 				&& centerPos.y - specPos.y >= minRangeY
 				&& centerPos.x - specPos.x <= maxRangeX
 				&& centerPos.y - specPos.y <= maxRangeY
+				&& (multifloor || specPos.z == centerPos.z)
 				&& (!onlyPlayers || creature->getPlayer())) {
 				insert(creature);
 			}

@@ -1,8 +1,8 @@
-local mType = Game.createMonsterType("Essence Of Malice")
+local mType = Game.createMonsterType("Essence of Malice")
 local monster = {}
 
-monster.description = "Essence Of Malice"
-monster.experience = 4600
+monster.description = "Essence of Malice"
+monster.experience = 150000
 monster.outfit = {
 	lookType = 351,
 	lookHead = 0,
@@ -13,8 +13,14 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 25000
-monster.maxHealth = 25000
+monster.bosstiary = {
+	bossRaceId = 1487,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.CultsOfTibia.Humans.BossTimer,
+}
+
+monster.health = 250000
+monster.maxHealth = 250000
 monster.race = "undead"
 monster.corpse = 10445
 monster.speed = 160
@@ -23,12 +29,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 4000,
 	chance = 5
-}
-
-monster.bosstiary = {
-	bossRaceId = 1487,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.CultsOfTibia.Humans.BossTimer
 }
 
 monster.strategiesTarget = {
@@ -53,19 +53,21 @@ monster.flags = {
 	runHealth = 366,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 4,
+	color = 119,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Your demised will please me!", yell = false },
+	{ text = "You will suffer!", yell = false },
 }
 
 monster.loot = {
@@ -101,20 +103,21 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 35,
-	armor = 35
+	armor = 35,
+	--	mitigation = ???,
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
-	{ type = COMBAT_EARTHDAMAGE, percent = -30 },
-	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -50 },
+	{ type = COMBAT_EARTHDAMAGE, percent = -50 },
+	{ type = COMBAT_FIREDAMAGE, percent = -50 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 20 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_ICEDAMAGE, percent = 50 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -50 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

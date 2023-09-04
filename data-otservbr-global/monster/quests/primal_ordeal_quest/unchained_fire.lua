@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Unchained Fire")
 local monster = {}
 
-monster.description = "a unchained fire"
+monster.description = "an unchained fire"
 monster.experience = 0
 monster.outfit = {
 	lookType = 242,
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 17500
-monster.maxHealth = 17500
+monster.health = 30000
+monster.maxHealth = 30000
 monster.race = "fire"
 monster.corpse = 0
 monster.speed = 238
@@ -47,12 +47,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 5,
-	color = 0
+	color = 206,
 }
 
 monster.voices = {
@@ -61,14 +61,15 @@ monster.voices = {
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1700 },
-	{ name = "unchained fire beam", interval = 3700, chance = 38, minDamage = -775, maxDamage = -1300 },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -750, maxDamage = -1700 },
+	{ name = "unchained fire beam", interval = 3100, chance = 38, minDamage = -1000, maxDamage = -1750 },
 	{ name = "unchained fire explosion", interval = 5100, chance = 35, minDamage = -900, maxDamage = -1400 },
 }
 
 monster.defenses = {
 	defense = 30,
-	armor = 30
+	armor = 30,
+	mitigation = 1.60,
 }
 
 monster.elements = {
@@ -81,7 +82,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

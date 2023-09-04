@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Iks Churrascan")
 local monster = {}
 
 monster.description = "an iks churrascan"
-monster.experience = 1250
+monster.experience = 0
 monster.outfit = {
 	lookType = 1587,
 	lookHead = 0,
@@ -22,7 +22,7 @@ monster.Bestiary = {
 	SecondUnlock = 500,
 	CharmsPoints = 25,
 	Stars = 3,
-	Occurrence = 1,
+	Occurrence = 2,
 	Locations = "Iksupan"
 }
 
@@ -30,7 +30,7 @@ monster.health = 1520
 monster.maxHealth = 1520
 monster.race = "blood"
 monster.corpse = 42061
-monster.speed = 120
+monster.speed = 105
 monster.manaCost = 0
 
 monster.changeTarget = {
@@ -49,7 +49,7 @@ monster.flags = {
 	convinceable = false,
 	pushable = false,
 	rewardBoss = false,
-	illusionable = true,
+	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
 	staticAttackChance = 90,
@@ -59,18 +59,18 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Gnahrgh!", yell = false }
+	{ text = "Gnahrgh!", yell = false },
 }
 
 monster.loot = {
@@ -92,6 +92,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 25,
 	armor = 36,
+	mitigation = 1.32,
 }
 
 monster.elements = {
@@ -104,7 +105,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {

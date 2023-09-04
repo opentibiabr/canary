@@ -13,6 +13,12 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 403,
+	bossRace = RARITY_BANE
+}
+
+
 monster.health = 25850
 monster.maxHealth = 25850
 monster.race = "blood"
@@ -23,11 +29,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8
-}
-
-monster.bosstiary = {
-	bossRaceId = 403,
-	bossRace = RARITY_BANE
 }
 
 monster.strategiesTarget = {
@@ -43,7 +44,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -52,14 +53,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -70,7 +71,7 @@ monster.voices = {
 	{ text = "No man can defeat me!", yell = false },
 	{ text = "Your puny skills are no match for me.", yell = false },
 	{ text = "I smell your fear.", yell = false },
-	{ text = "Delicious!", yell = false }
+	{ text = "Delicious!", yell = false },
 }
 
 monster.loot = {
@@ -131,6 +132,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 65,
 	armor = 70,
+	--	mitigation = ???,
 	{ name = "combat", interval = 1000, chance = 11, type = COMBAT_HEALING, minDamage = 400, maxDamage = 900, effect = CONST_ME_MAGIC_GREEN, target = false }
 }
 
@@ -141,10 +143,10 @@ monster.elements = {
 	{ type = COMBAT_FIREDAMAGE, percent = 98 },
 	{ type = COMBAT_LIFEDRAIN, percent = 100 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = -305 },
+	{ type = COMBAT_DROWNDAMAGE, percent = -205 },
 	{ type = COMBAT_ICEDAMAGE, percent = 98 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 95 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 98 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 98 },
 }
 
 monster.immunities = {

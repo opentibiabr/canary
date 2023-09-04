@@ -61,21 +61,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Ranat Ulderek!", yell = false },
-	{ text = "Orc buta bana!", yell = false },
 	{ text = "Ikem rambo zambo!", yell = false },
-	{ text = "Fetchi Maruk Buta", yell = false }
+	{ text = "Orc buta bana!", yell = false },
+	{ text = "Ranat Ulderek!", yell = false },
+	{ text = "Futchi maruk buta!", yell = false },
 }
 
 monster.loot = {
@@ -111,7 +111,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 35,
-	armor = 35,
+	armor = 28,
+	mitigation = 1.46,
 	{ name = "invisible", interval = 2000, chance = 5, effect = CONST_ME_MAGIC_BLUE }
 }
 
@@ -125,7 +126,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {

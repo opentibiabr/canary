@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Infernatil")
 local monster = {}
 
 monster.description = "Infernatil"
-monster.experience = 85000
+monster.experience = 30000
 monster.outfit = {
 	lookType = 35,
 	lookHead = 0,
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 160000
-monster.maxHealth = 160000
+monster.health = 110000
+monster.maxHealth = 110000
 monster.race = "fire"
 monster.corpse = 4097
 monster.speed = 330
@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -72,7 +72,7 @@ monster.voices = {
 	{ text = "ASHES TO ASHES!", yell = true },
 	{ text = "YOU WILL ALL BURN!", yell = true },
 	{ text = "THE DAY OF RECKONING IS AT HAND!", yell = true },
-	{ text = "BOW TO THE POWER OF THE RUTHLESS SEVEN!", yell = true }
+	{ text = "BOW TO THE POWER OF THE RUTHLESS SEVEN!", yell = true },
 }
 
 monster.loot = {
@@ -150,6 +150,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 150,
 	armor = 165,
+	--	mitigation = ???,
 	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_HEALING, minDamage = 5000, maxDamage = 10000, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "combat", interval = 1000, chance = 25, type = COMBAT_HEALING, minDamage = 2000, maxDamage = 3000, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 1000, chance = 10, speedChange = 1800, effect = CONST_ME_MAGIC_RED, target = false, duration = 4000 }
@@ -157,15 +158,15 @@ monster.defenses = {
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
-	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 100 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_FIREDAMAGE, percent = 100 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

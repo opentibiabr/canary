@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Grand Commander Soeren")
 local monster = {}
 
 monster.description = "Grand Commander Soeren"
-monster.experience = 10000
+monster.experience = 12000
 monster.outfit = {
 	lookType = 1071,
 	lookHead = 57,
@@ -11,6 +11,11 @@ monster.outfit = {
 	lookFeet = 105,
 	lookAddons = 2,
 	lookMount = 0
+}
+
+monster.bosstiary = {
+	bossRaceId = 1582,
+	bossRace = RARITY_BANE,
 }
 
 monster.health = 17000
@@ -27,11 +32,6 @@ monster.events = {
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8
-}
-
-monster.bosstiary = {
-	bossRaceId = 1582,
-	bossRace = RARITY_BANE
 }
 
 monster.strategiesTarget = {
@@ -55,17 +55,23 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
+}
+
+monster.events = {
+	"GrandCommanderSoerenDeath"
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Flinch even once, and I will crush every fiber within you!", yell = false },
+	{ text = "The Falcon reigns supreme!", yell = false },
 }
 
 monster.loot = {
@@ -92,20 +98,21 @@ monster.attacks = {
 monster.defenses = {
 	defense = 50,
 	armor = 82,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 200, maxDamage = 650, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 50 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
-	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 50 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 50 },
+	{ type = COMBAT_FIREDAMAGE, percent = 50 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_ICEDAMAGE, percent = 50 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -25 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
 monster.immunities = {

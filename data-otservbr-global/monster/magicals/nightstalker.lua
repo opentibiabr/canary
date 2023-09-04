@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Nightstalker")
 local monster = {}
 
-monster.description = "a nightstalker"
+monster.description = "a Nightstalker"
 monster.experience = 500
 monster.outfit = {
 	lookType = 320,
@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -78,7 +78,7 @@ monster.voices = {
 	{ text = "I've been in the shadow under your bed last night.", yell = false },
 	{ text = "You never know what hides in the night.", yell = false },
 	{ text = "I remember your face - and I know where you sleep.", yell = false },
-	{ text = "Only the sweetest and cruelest dreams for you, my love.", yell = false }
+	{ text = "Only the sweetest and cruelest dreams for you, my love.", yell = false },
 }
 
 monster.loot = {
@@ -99,12 +99,13 @@ monster.loot = {
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90, condition = { type = CONDITION_POISON, totalDamage = 80, interval = 4000 } },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -60, maxDamage = -170, range = 7, effect = CONST_ME_HOLYAREA, target = true },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = -600, effect = CONST_ME_SLEEP, target = true, duration = 15000 }
+	{ name = "nightstalker paralyze", interval = 2000, chance = 15, range = 7, target = true },
 }
 
 monster.defenses = {
 	defense = 15,
-	armor = 15,
+	armor = 40,
+	mitigation = 1.18,
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 240, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 	{ name = "invisible", interval = 2000, chance = 10, effect = CONST_ME_YELLOW_RINGS },
 	{ name = "outfit", interval = 5000, chance = 10, target = false, duration = 4000, outfitMonster = "nightstalker" },
@@ -125,7 +126,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {

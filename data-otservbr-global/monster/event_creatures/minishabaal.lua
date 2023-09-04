@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 3500
-monster.maxHealth = 3500
+monster.health = 6000
+monster.maxHealth = 6000
 monster.race = "blood"
 monster.corpse = 6363
 monster.speed = 350
@@ -38,7 +38,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -47,14 +47,14 @@ monster.flags = {
 	runHealth = 350,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -67,17 +67,18 @@ monster.summon = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "I had Princess Lumelia as breakfast!", yell = false },
+	{ text = "I had Princess Lumelia as breakfast", yell = false },
 	{ text = "Naaa-Nana-Naaa-Naaa!", yell = false },
 	{ text = "My brother will come and get you for this!", yell = false },
 	{ text = "Get them Fluffy!", yell = false },
-	{ text = "He He He!", yell = false },
-	{ text = "Pftt, Ferumbras such an upstart!", yell = false },
-	{ text = "My dragon is not that old, it's just second hand!", yell = false },
-	{ text = "My other dragon is a red one!", yell = false },
-	{ text = "When I am big I want to become the ruthless eighth!", yell = false },
-	{ text = "WHERE'S FLUFFY?", yell = false },
-	{ text = "Muahaha!", yell = false }
+	{ text = "He He He", yell = false },
+	{ text = "Pftt, Ferumbras such an upstart.", yell = false },
+	{ text = "My dragon is not that old, it's just second hand.", yell = false },
+	{ text = "My other dragon is a red one.", yell = false },
+	{ text = "When I am big I want to become the ruthless eighth.", yell = false },
+	{ text = "Muahaha!", yell = false },
+	{ text = "WHERE'S FLUFFY?", yell = true },
+	{ text = "COME HERE FLUFFY", yell = true },
 }
 
 monster.loot = {
@@ -106,6 +107,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 25,
 	armor = 25,
+	mitigation = 1.60,
 	{ name = "combat", interval = 1000, chance = 50, type = COMBAT_HEALING, minDamage = 155, maxDamage = 255, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 1000, chance = 12, speedChange = 320, effect = CONST_ME_MAGIC_RED, target = false, duration = 4000 },
 	{ name = "invisible", interval = 4000, chance = 50, effect = CONST_ME_MAGIC_RED }
@@ -121,11 +123,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

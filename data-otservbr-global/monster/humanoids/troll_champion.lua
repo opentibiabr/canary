@@ -32,7 +32,7 @@ monster.maxHealth = 75
 monster.race = "blood"
 monster.corpse = 861
 monster.speed = 69
-monster.manaCost = 340
+monster.manaCost = 350
 
 monster.changeTarget = {
 	interval = 4000,
@@ -60,12 +60,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -75,7 +75,7 @@ monster.voices = {
 	{ text = "Grrrr", yell = false },
 	{ text = "Whaaaz up!?", yell = false },
 	{ text = "Gruntz!", yell = false },
-	{ text = "Groar", yell = false }
+	{ text = "Groar", yell = false },
 }
 
 monster.loot = {
@@ -90,14 +90,14 @@ monster.loot = {
 	{ name = "bunch of troll hair", chance = 3000 },
 	{ name = "trollroot", chance = 750 }
 }
-
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 }
 }
 
 monster.defenses = {
 	defense = 20,
-	armor = 20
+	armor = 10,
+	mitigation = 0.28,
 }
 
 monster.elements = {
@@ -110,7 +110,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {

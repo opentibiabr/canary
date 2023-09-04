@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 1011,
+	bossRace = RARITY_NEMESIS,
+}
+
 monster.health = 322000
 monster.maxHealth = 322000
 monster.race = "fire"
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 2000,
 	chance = 25
-}
-
-monster.bosstiary = {
-	bossRaceId = 1011,
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -52,26 +52,27 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "FIRST I'LL OBLITERATE YOU THEN I BURN THIS PRISON DOWN!!", yell = false },
+	{ text = "FIRST I'LL OBLITERATE YOU THEN I BURN THIS PRISON DOWN!!", yell = true },
 	{ text = "I'M TOO HOT FOR YOU TO HANDLE!", yell = true },
-	{ text = "FREEDOM FOR PRINCESS", yell = true },
-	{ text = "THE POWER OF HIS INTERNAL FIRE RENEWS OMRAFIR!", yell = true },
+	{ text = "FREEDOM FOR THE PRINCES!", yell = true },
 	{ text = "OMRAFIR INHALES DEEPLY!", yell = true },
 	{ text = "OMRAFIR BREATHES INFERNAL FIRE", yell = true },
-	{ text = "I WILL RULE WHEN THE NEW ORDER IS ESTABLISHED!", yell = true }
+	{ text = "THE POWER OF HIS INTERNAL FIRE RENEWS OMRAFIR!", yell = true },
+	{ text = "I WILL RULE WHEN THE NEW ORDER IS ESTABLISHED!", yell = true },
+	{ text = "INFERNATIL! COME HERE AND FIGHT ME YOU COWARD!", yell = true },
 }
 
 monster.loot = {
@@ -121,6 +122,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 165,
 	armor = 155,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 22, type = COMBAT_HEALING, minDamage = 440, maxDamage = 800, target = false },
 	{ name = "omrafir summon", interval = 2000, chance = 50, target = false },
 	{ name = "omrafir healing 2", interval = 2000, chance = 20, target = false }
@@ -131,12 +133,12 @@ monster.elements = {
 	{ type = COMBAT_ENERGYDAMAGE, percent = 50 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 50 },
 	{ type = COMBAT_FIREDAMAGE, percent = 100 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 50 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 50 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 50 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
 monster.immunities = {

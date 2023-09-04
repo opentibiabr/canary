@@ -13,8 +13,13 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 33000
-monster.maxHealth = 33000
+monster.bosstiary = {
+	bossRaceId = 774,
+	bossRace = RARITY_BANE,
+}
+
+monster.health = 35000
+monster.maxHealth = 35000
 monster.race = "blood"
 monster.corpse = 13800
 monster.speed = 280
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 2000,
 	chance = 50
-}
-
-monster.bosstiary = {
-	bossRaceId = 774,
-	bossRace = RARITY_BANE
 }
 
 monster.strategiesTarget = {
@@ -54,19 +54,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "JN OBU!!", yell = false },
-	{ text = "QJELL KEJH!!", yell = false }
+	{ text = "QJELL KEJH!!", yell = true },
+	{ text = "JN OBU!!", yell = true },
 }
 
 monster.loot = {
@@ -87,6 +87,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 40,
 	armor = 40,
+	--	mitigation = ???,
 	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_HEALING, minDamage = 800, maxDamage = 2200, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -100,7 +101,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 60 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 60 },
 }
 
 monster.immunities = {

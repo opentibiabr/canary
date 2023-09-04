@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Mean Lost Soul")
 local monster = {}
 
-monster.description = "Mean Lost Soul"
+monster.description = "a mean lost soul"
 monster.experience = 5580
 monster.outfit = {
 	lookType = 1268,
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -96,7 +96,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 40,
-	armor = 82
+	armor = 80,
+	mitigation = 2.31,
 }
 
 monster.elements = {
@@ -109,7 +110,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

@@ -50,14 +50,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -67,14 +67,14 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "platinum coin", chance = 10000, maxCount = 5 },
-	{ name = "ivory comb", chance = 83330 },
-	{ name = "skull coin", chance = 66666 },
-	{ name = "moonstone", chance = 33333, maxCount = 2 },
-	{ name = "diamond", chance = 8300 },
-	{ name = "machete", chance = 8300 },
-	{ name = "pair of nightmare boots", chance = 8300 },
-	{ name = "skull staff", chance = 8300 },
-	{ name = "warrior's axe", chance = 8300 },
+	{ name = "ivory comb", chance = 1000 },
+	{ name = "skull coin", chance = 1000 },
+	{ name = "moonstone", chance = 1000, maxCount = 2 },
+	{ name = "diamond", chance = 100 },
+	{ name = "machete", chance = 400 },
+	{ name = "pair of nightmare boots", chance = 200 },
+	{ name = "skull staff", chance = 400 },
+	{ name = "warrior's axe", chance = 400 },
 	{ name = "death toll", chance = 150 },
 	{ name = "silver hand mirror", chance = 150 },
 	{ id = 3039, chance = 150, maxCount = 2 } -- red gem
@@ -91,6 +91,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 40,
 	armor = 82
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -103,7 +104,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

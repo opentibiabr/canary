@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 466,
+	bossRace = RARITY_NEMESIS,
+}
+
 monster.health = 500000
 monster.maxHealth = 500000
 monster.race = "undead"
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8
-}
-
-monster.bosstiary = {
-	bossRaceId = 466,
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -52,14 +52,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 6,
+	color = 198,
 }
 
 monster.voices = {
@@ -73,7 +73,8 @@ monster.voices = {
 	{ text = "Muahahahaha!", yell = false },
 	{ text = "I've come to avenge all those mutilated pumpkins!", yell = false },
 	{ text = "Wait until I get you!", yell = false },
-	{ text = "Fear the spirit of Halloween!", yell = false }
+	{ text = "Fear the spirit of Halloween!", yell = false },
+	{ text = "You, my little mouse, are doomed.", yell = false },
 }
 
 monster.loot = {
@@ -105,6 +106,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 60,
 	armor = 60,
+	mitigation = 1.00,
 	{ name = "combat", interval = 4000, chance = 15, type = COMBAT_HEALING, minDamage = 2000, maxDamage = 2900, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -118,7 +120,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

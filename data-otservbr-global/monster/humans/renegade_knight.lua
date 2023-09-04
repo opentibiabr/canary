@@ -31,7 +31,7 @@ monster.maxHealth = 1450
 monster.race = "blood"
 monster.corpse = 22020
 monster.speed = 135
-monster.manaCost = 390
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
@@ -62,22 +62,22 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "I'll teach you a lesson!", yell = false },
+	{ text = "Feel my steel!", yell = false },
 	{ text = "Take this!", yell = false },
 	{ text = "Let's see how good you are!", yell = false },
-	{ text = "Feel my steel!", yell = false },
-	{ text = "A challenge at last!", yell = false }
+	{ text = "A challenge at last!", yell = false },
 }
 
 monster.loot = {
@@ -102,13 +102,13 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "renegade knight", interval = 2000, chance = 30, target = false },
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 10, maxDamage = -175 }
 }
 
 monster.defenses = {
 	defense = 50,
-	armor = 35,
+	armor = 38,
+	mitigation = 1.46,
 	{ name = "combat", interval = 4000, chance = 25, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -122,11 +122,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 50 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

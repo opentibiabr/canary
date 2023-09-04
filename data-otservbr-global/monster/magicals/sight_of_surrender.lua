@@ -63,21 +63,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "BOW LOW!", yell = false },
-	{ text = "FEEL THE TRUE MEANING OF VANQUISH!", yell = false },
-	{ text = "HAHAHAHA DO YOU WANT TO AMUSE YOUR MASTER?", yell = false },
-	{ text = "NOW YOU WILL SURRENDER!", yell = false }
+	{ text = "BOW LOW!", yell = true },
+	{ text = "FEEL THE TRUE MEANING OF VANQUISH!", yell = true },
+	{ text = "HAHAHAHA DO YOU WANT TO AMUSE YOUR MASTER?", yell = true },
+	{ text = "NOW YOU WILL SURRENDER!", yell = true },
 }
 
 monster.loot = {
@@ -102,7 +102,7 @@ monster.loot = {
 	{ name = "green crystal splinter", chance = 30000, maxCount = 5 },
 	{ name = "brown crystal splinter", chance = 30410, maxCount = 5 },
 	{ name = "blue crystal splinter", chance = 40000, maxCount = 5 },
-	{ name = "cluster of solace", chance = 1800 },
+	{ name = "cluster of solace", chance = 11800 },
 	{ name = "sight of surrender's eye", chance = 100000 },
 	{ name = "broken visor", chance = 100000 },
 	{ id = 20208, chance = 460 } -- string of mending
@@ -116,7 +116,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 70,
-	armor = 70,
+	armor = 92,
+	mitigation = 2.31,
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_HEALING, minDamage = 550, maxDamage = 1100, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 520, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 }
 }
@@ -131,7 +132,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 40 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 20 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 },
 }
 
 monster.immunities = {

@@ -1,7 +1,7 @@
-local mType = Game.createMonsterType("Wrath Of The Emperor")
+local mType = Game.createMonsterType("Wrath of the Emperor")
 local monster = {}
 
-monster.description = "Wrath Of The Emperor"
+monster.description = "Wrath of the Emperor"
 monster.experience = 600
 monster.outfit = {
 	lookType = 351,
@@ -38,7 +38,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -47,14 +47,14 @@ monster.flags = {
 	runHealth = 366,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -67,10 +67,10 @@ monster.summon = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "YOU DON'T EVEN UNDERSTAND WHOM YOU ARE SERVING!", yell = false },
-	{ text = "FLEE AND NEVER RETURN!", yell = false },
-	{ text = "YOU HAVE BEEN USED AND FOOLED!", yell = false },
-	{ text = "I WILL STOP YOU ONCE AND FOR ALL!", yell = false }
+	{ text = "YOU DON'T EVEN UNDERSTAND WHOM YOU ARE SERVING!", yell = true },
+	{ text = "FLEE AND NEVER RETURN!", yell = true },
+	{ text = "YOU HAVE BEEN USED AND FOOLED!", yell = true },
+	{ text = "I WILL STOP YOU ONCE AND FOR ALL!", yell = true },
 }
 
 monster.loot = {
@@ -87,25 +87,26 @@ monster.attacks = {
 monster.defenses = {
 	defense = 35,
 	armor = 45
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = -10 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = -5 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = -10 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
-	{ type = COMBAT_FIREDAMAGE, percent = 10 },
+	{ type = COMBAT_FIREDAMAGE, percent = 60 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 50 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -15 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = false },
+	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }
 }
 

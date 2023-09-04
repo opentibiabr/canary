@@ -91,7 +91,7 @@ registerMonsterType.bosstiary = function(mtype, mask)
 		mtype:bossRace(mask.bosstiary.bossRace, bossClass)
 		local storage = mask.bosstiary.storageCooldown
 		if storage == nil then
-			Spdlog.warn(string.format("Bosstiary boss '%s has no cooldown defined.", mtype:name()))
+			logger.debug("[registerMonsterType.bosstiary] - Monster: {} has no cooldown defined.", mtype:name())
 		elseif storage ~= false then
 			mtype:bossStorageCooldown(storage)
 		end

@@ -1,6 +1,7 @@
 local bossDeath = CreatureEvent("BossDeath")
 
 function bossDeath.onDeath(creature, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
+	if not corpse then return true end
 	-- Deny summons and players
 	if not creature or creature:isPlayer() or creature:getMaster() then
 		return true

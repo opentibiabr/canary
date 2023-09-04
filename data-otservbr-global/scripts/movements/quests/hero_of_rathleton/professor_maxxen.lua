@@ -70,7 +70,7 @@ function professorMaxxen.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 	if Game.getStorageValue(GlobalStorage.HeroRathleton.ThirdMachines) < 8 then
-		player:say("No energy enough to use this teleport!", TALKTYPE_MONSTER_SAY, false, nil, position)
+		player:say("Not enough energy to use this teleport!", TALKTYPE_MONSTER_SAY, false, nil, position)
 		player:teleportTo(Position(33661, 32058, 15))
 		position:sendMagicEffect(CONST_ME_TELEPORT)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

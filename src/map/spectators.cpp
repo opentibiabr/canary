@@ -37,8 +37,7 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 	}
 
 	if (!multifloor && !specData.floor) {
-		// Check the distance if the request was only from the corresponding Z (centerPos),
-		// but the cache containing spectators from all floors will be used.
+		// Force check the distance of creatures as we only need to pick up creatures from the Floor(centerPos.z)
 		checkDistance = true;
 	}
 
@@ -62,10 +61,6 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 }
 
 Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onlyPlayers, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY) {
-	if (!creatures.empty()) {
-		needUpdate = true;
-	}
-
 	minRangeX = (minRangeX == 0 ? -MAP_MAX_VIEW_PORT_X : -minRangeX);
 	maxRangeX = (maxRangeX == 0 ? MAP_MAX_VIEW_PORT_X : maxRangeX);
 	minRangeY = (minRangeY == 0 ? -MAP_MAX_VIEW_PORT_Y : -minRangeY);
@@ -76,13 +71,13 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	if (cacheFound) {
 		auto &cache = it->second;
 		if (minRangeX < cache.minRangeX || maxRangeX > cache.maxRangeX || minRangeY < cache.minRangeY || maxRangeY > cache.maxRangeY) {
-			// Cache again with new range
+			// recache with new range
 			cache.minRangeX = minRangeX = std::min<int32_t>(minRangeX, cache.minRangeX);
 			cache.minRangeY = minRangeY = std::min<int32_t>(minRangeY, cache.minRangeY);
 			cache.maxRangeX = maxRangeX = std::max<int32_t>(maxRangeX, cache.maxRangeX);
 			cache.maxRangeY = maxRangeY = std::max<int32_t>(maxRangeY, cache.maxRangeY);
 		} else {
-			// checks if the cache is empty, as there is a possibility that there are no viewers in the cache.
+			// checks if the cache is empty, as there is a possibility that there are no spectators in the cache.
 			if (cache.isEmpty()) {
 				return *this;
 			}
@@ -95,7 +90,7 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 					return *this;
 				}
 
-				// check in the cache that contain all the creatures
+				// if there is no player cache, look for players in the creatures cache.
 				if (checkCache(cache.creatures, true, centerPos, true, multifloor, minRangeX, maxRangeX, minRangeY, maxRangeY)) {
 					return *this;
 				}
@@ -175,14 +170,14 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 				}
 				leafE = leafE->leafE;
 			} else {
-				leafE = g_game().map.getQTNode(nx + FLOOR_SIZE, ny);
+				leafE = g_game().map.getQTNode(static_cast<uint16_t>(nx + FLOOR_SIZE), static_cast<uint16_t>(ny));
 			}
 		}
 
 		if (leafS) {
 			leafS = leafS->leafS;
 		} else {
-			leafS = g_game().map.getQTNode(startx1, ny + FLOOR_SIZE);
+			leafS = g_game().map.getQTNode(static_cast<uint16_t>(startx1), static_cast<uint16_t>(ny + FLOOR_SIZE));
 		}
 	}
 
@@ -190,20 +185,22 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	auto &cache = cacheFound ? it->second : spectatorsCache.emplace(centerPos, SpectatorsCache { .minRangeX = minRangeX, .maxRangeX = maxRangeX, .minRangeY = minRangeY, .maxRangeY = maxRangeY }).first->second;
 
 	if (spectators.size() > 0) {
+		needUpdate = creatures.size() > 1;
+
 		insertAll(spectators);
 
-		auto &CreaturesCache = onlyPlayers ? cache.players : cache.creatures;
-		auto &spectatorsCache = (multifloor ? CreaturesCache.multiFloor : CreaturesCache.floor);
-		if (spectatorsCache) {
-			spectatorsCache->clear();
+		auto &creaturesCache = onlyPlayers ? cache.players : cache.creatures;
+		auto &creatureList = (multifloor ? creaturesCache.multiFloor : creaturesCache.floor);
+		if (creatureList) {
+			creatureList->clear();
 		} else {
-			spectatorsCache = std::make_unique<SpectatorList>();
+			creatureList = std::make_unique<SpectatorList>();
 		}
 
 #ifdef SPECTATORS_USE_HASHSET
-		spectatorsCache->insert(spectators.begin(), spectators.end());
+		creatureList->insert(spectators.begin(), spectators.end());
 #else
-		spectatorsCache->insert(spectatorsCache->end(), spectators.begin(), spectators.end());
+		creatureList->insert(creatureList->end(), spectators.begin(), spectators.end());
 #endif
 	}
 

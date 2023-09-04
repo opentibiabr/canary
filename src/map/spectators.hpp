@@ -42,8 +42,6 @@ struct SpectatorsCache {
 	}
 };
 
-using SpectatorsHashMap = phmap::flat_hash_map<Position, SpectatorsCache>;
-
 class Spectators {
 public:
 	static void clearCache();

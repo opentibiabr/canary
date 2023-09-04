@@ -130,15 +130,17 @@ namespace account {
 			return ERROR_STORAGE;
 		}
 
-		if (!detail.empty()) {
-			registerCoinTransaction(CoinTransactionType::REMOVE, type, amount, detail);
-		}
+		registerCoinTransaction(CoinTransactionType::REMOVE, type, amount, detail);
 
 		return ERROR_NO;
 	}
 
 	void Account::registerCoinTransaction(const CoinTransactionType &transactionType, const CoinType &type, const uint32_t &amount, const std::string &detail) {
 		if (!m_accLoaded) {
+			return;
+		}
+
+		if (detail.empty()) {
 			return;
 		}
 

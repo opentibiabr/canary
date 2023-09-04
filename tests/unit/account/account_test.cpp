@@ -400,6 +400,26 @@ suite<"account"> accountTest = [] {
 		expect(eq(accountRepository.coinsTransactions_[1].size(), 1) >> fatal);
 	};
 
+	test("Account::registerCoinTransaction does nothing if detail is empty") = [&injectionFixture] {
+		auto [accountRepository] = injectionFixture.get<AccountRepository>();
+
+		Account acc { 1 };
+		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
+		expect(eq(acc.load(), Errors::ERROR_NO));
+		accountRepository.setCoins(1, CoinType::COIN, 1);
+
+		expect(eq(acc.addCoins(CoinType::COIN, 100, ""), Errors::ERROR_NO));
+		expect(eq(acc.removeCoins(CoinType::COIN, 80, ""), Errors::ERROR_NO));
+
+		expect(eq(std::get<0>(acc.getCoins(CoinType::COIN)), 21));
+		expect(eq(std::get<1>(acc.getCoins(CoinType::COIN)), Errors::ERROR_NO));
+
+		acc.registerCoinTransaction(CoinTransactionType::ADD, CoinType::COIN, 100, "");
+		acc.registerCoinTransaction(CoinTransactionType::REMOVE, CoinType::COIN, 100, "");
+
+		expect(eq(accountRepository.coinsTransactions_.size(), 0));
+	};
+
 	test("Account::getPassword returns empty string if not yet loaded") = [] {
 		expect(eq(Account { 1 }.getPassword(), std::string { "" }));
 	};

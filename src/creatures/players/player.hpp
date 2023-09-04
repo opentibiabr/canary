@@ -2225,7 +2225,7 @@ public:
 		return nullptr;
 	}
 
-	uint16_t getLoyaltyPoints() const {
+	uint32_t getLoyaltyPoints() const {
 		return loyaltyPoints;
 	}
 

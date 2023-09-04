@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Usurper Commander")
 local monster = {}
 
 monster.description = "an usurper commander"
-monster.experience = 0
+monster.experience = 7200
 monster.outfit = {
 	lookType = 1317,
 	lookHead = 40,
@@ -13,28 +13,15 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.events = {
-	"usurperCommanderDeath"
-}
-
-monster.health = 15200
-monster.maxHealth = 15200
+monster.health = 8500
+monster.maxHealth = 8500
 monster.race = "blood"
 monster.corpse = 0
 monster.speed = 125
+monster.manaCost = 0
 
 monster.faction = FACTION_LIONUSURPERS
 monster.enemyFactions = { FACTION_LION, FACTION_PLAYER }
-monster.targetPreferPlayer = true
-
-monster.summon = {
-	maxSummons = 6,
-	summons = {
-		{ name = "hardened usurper archer", chance = 0, interval = 600000, count = 2 },
-		{ name = "hardened usurper warlock", chance = 0, interval = 600000, count = 2 },
-		{ name = "hardened usurper knight", chance = 0, interval = 600000, count = 2 }
-	}
-}
 
 monster.changeTarget = {
 	interval = 4000,
@@ -43,6 +30,10 @@ monster.changeTarget = {
 
 monster.strategiesTarget = {
 	nearest = 100,
+}
+
+monster.events = {
+	"usurperCommanderDeath"
 }
 
 monster.flags = {
@@ -62,25 +53,27 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
+}
+
+monster.summon = {
+	maxSummons = 5,
+	summons = {
+		{ name = "hardened usurper archer", chance = 0, interval = 600000, count = 2 },
+		{ name = "hardened usurper warlock", chance = 0, interval = 600000, count = 2 },
+		{ name = "hardened usurper knight", chance = 0, interval = 600000, count = 2 }
+	}
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "This town is ours now!", yell = false },
-	{ text = "You don't deserv Bounac!", yell = false },
-	{ text = "My power is fueled by a just cause!", yell = false },
-	{ text = "This will be the last thing you witness!", yell = false },
-	{ text = "Change of guard! High time ...!", yell = false },
-	{ text = "Do you really think you can stand?", yell = false },
-	{ text = "'Holding breath'", yell = false },
-	{ text = "Die in the flames of true righteousness.", yell = false }
+	{ text = "FORMATION!", yell = true },
 }
 
 monster.loot = {
@@ -97,19 +90,20 @@ monster.attacks = {
 monster.defenses = {
 	defense = 86,
 	armor = 86
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 35 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 1 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
-	{ type = COMBAT_FIREDAMAGE, percent = 10 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 20 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 15 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -15 }
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 1 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -1 },
 }
 
 monster.immunities = {

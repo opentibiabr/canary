@@ -2,9 +2,15 @@ local mType = Game.createMonsterType("Realityquake")
 local monster = {}
 
 monster.description = "Realityquake"
-monster.experience = 80000
+monster.experience = 20000
 monster.outfit = {
 	lookTypeEx = 1949
+}
+
+monster.bosstiary = {
+	bossRaceId = 1218,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = 14325,
 }
 
 monster.health = 110000
@@ -17,12 +23,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 3000,
 	chance = 20
-}
-
-monster.bosstiary = {
-	bossRaceId = 1218,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = 14325
 }
 
 monster.strategiesTarget = {
@@ -47,9 +47,9 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true
 }
 
 monster.events = {
@@ -58,7 +58,7 @@ monster.events = {
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -104,6 +104,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 100,
 	armor = 100,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, radius = 8, effect = CONST_ME_POFF, target = false }
 }
 
@@ -117,7 +118,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

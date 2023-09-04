@@ -13,8 +13,13 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 15000
-monster.maxHealth = 15000
+monster.bosstiary = {
+	bossRaceId = 1579,
+	bossRace = RARITY_BANE,
+}
+
+monster.health = 18000
+monster.maxHealth = 18000
 monster.race = "blood"
 monster.corpse = 28733
 monster.speed = 105
@@ -27,11 +32,6 @@ monster.events = {
 monster.changeTarget = {
 	interval = 3000,
 	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 1579,
-	bossRace = RARITY_BANE
 }
 
 monster.strategiesTarget = {
@@ -55,17 +55,23 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
+}
+
+monster.events = {
+	"GrandChaplainGaunderDeath"
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Witness the might of The Order of the Falcon!", yell = false },
+	{ text = "Suffer, for you are disobedient!", yell = false },
 }
 
 monster.loot = {
@@ -99,21 +105,22 @@ monster.attacks = {
 monster.defenses = {
 	defense = 50,
 	armor = 82,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 200, maxDamage = 550, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 1000, chance = 10, speedChange = 220, effect = CONST_ME_POFF, target = false, duration = 5000 }
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 55 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 15 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 15 },
-	{ type = COMBAT_FIREDAMAGE, percent = 15 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 80 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 50 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 50 },
+	{ type = COMBAT_FIREDAMAGE, percent = 50 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 15 },
-	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 40 }
+	{ type = COMBAT_ICEDAMAGE, percent = 50 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
 monster.immunities = {

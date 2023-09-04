@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -83,7 +83,7 @@ monster.voices = {
 	{ text = "Back in the evil business!", yell = false },
 	{ text = "This prison break will have casualties!", yell = false },
 	{ text = "At last someone to hurt", yell = false },
-	{ text = "No one will imprison me again!", yell = false }
+	{ text = "No one will imprison me again!", yell = false },
 }
 
 monster.loot = {
@@ -110,7 +110,7 @@ monster.loot = {
 	{ name = "great mana potion", chance = 18000, maxCount = 2 },
 	{ name = "ultimate health potion", chance = 20500, maxCount = 3 },
 	{ name = "small topaz", chance = 9300, maxCount = 5 },
-	{ name = "cluster of solace", chance = 550 }
+	{ name = "cluster of solace", chance = 4550 }
 }
 
 monster.attacks = {
@@ -124,7 +124,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 40,
-	armor = 40,
+	armor = 49,
+	mitigation = 1.60,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 250, maxDamage = 425, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -138,7 +139,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -6 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 30 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 30 },
 }
 
 monster.immunities = {

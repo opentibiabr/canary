@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 0,
-	Locations = "Demonwar Crypt (teleporter before vampire shield quest)."
+	Locations = "Demonwar Crypt teleporter before vampire shield quest."
 }
 
 monster.health = 1500
@@ -62,22 +62,22 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "DEATH TO THE SHABURAK!", yell = false },
-	{ text = "GREEN WILL RULE!", yell = false },
-	{ text = "ONLY WE ARE TRUE DEMONS!", yell = false },
-	{ text = "RED IS MAD!", yell = false },
-	{ text = "WE RULE!", yell = false }
+	{ text = "DEATH TO THE SHABURAK!", yell = true },
+	{ text = "GREEN WILL RULE!", yell = true },
+	{ text = "ONLY WE ARE TRUE DEMONS!", yell = true },
+	{ text = "RED IS MAD!", yell = true },
+	{ text = "WE RULE!", yell = true },
 }
 
 monster.loot = {
@@ -107,7 +107,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 35,
+	mitigation = 1.04,
 }
 
 monster.elements = {
@@ -120,7 +121,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 60 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {

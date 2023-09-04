@@ -13,6 +13,12 @@ monster.outfit = {
 	lookMount = 0
 }
 
+monster.bosstiary = {
+	bossRaceId = 887,
+	bossRace = RARITY_ARCHFOE,
+	storageCooldown = Storage.BigfootBurden.BossWarzone3,
+}
+
 monster.health = 340000
 monster.maxHealth = 340000
 monster.race = "blood"
@@ -23,12 +29,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 5000,
 	chance = 10
-}
-
-monster.bosstiary = {
-	bossRaceId = 887,
-	bossRace = RARITY_ARCHFOE,
-	storageCooldown = Storage.BigfootBurden.BossWarzone3
 }
 
 monster.strategiesTarget = {
@@ -44,7 +44,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = false,
@@ -53,26 +53,26 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "*** STEALTH ***", yell = false },
-	{ text = "*** TIME ***", yell = false },
-	{ text = "*** IMPORTANT ***", yell = false },
-	{ text = "*** BRAINS *** SMALL ***", yell = false },
-	{ text = "*** DEATH ***", yell = false },
-	{ text = "*** FIRE *** HOME *** VICTORY ***", yell = false },
-	{ text = "*** EXISTENCE *** FUTILE ***", yell = false }
+	{ text = "*** STEALTH ***", yell = true },
+	{ text = "*** TIME ***", yell = true },
+	{ text = "*** IMPORTANT ***", yell = true },
+	{ text = "*** BRAINS *** SMALL ***", yell = true },
+	{ text = "*** DEATH ***", yell = true },
+	{ text = "*** FIRE *** HOME *** VICTORY ***", yell = true },
+	{ text = "*** EXISTENCE *** FUTILE ***", yell = true },
 }
 
 monster.loot = {
@@ -97,13 +97,14 @@ monster.attacks = {
 monster.defenses = {
 	defense = 20,
 	armor = 15,
+	--	mitigation = ???,
 	{ name = "combat", interval = 1000, chance = 1, type = COMBAT_HEALING, minDamage = 0, maxDamage = 300000, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "combat", interval = 5000, chance = 30, type = COMBAT_HEALING, minDamage = 1000, maxDamage = 1000, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "invisible", interval = 2000, chance = 25, effect = CONST_ME_MAGIC_BLUE }
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 10 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 15 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
 	{ type = COMBAT_FIREDAMAGE, percent = 15 },
@@ -112,7 +113,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 15 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 },
 }
 
 monster.immunities = {

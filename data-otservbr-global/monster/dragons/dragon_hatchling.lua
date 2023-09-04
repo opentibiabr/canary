@@ -24,7 +24,7 @@ monster.Bestiary = {
 	Stars = 3,
 	Occurrence = 0,
 	Locations = "Thais Dragon Lair, beneath Fenrock, Darashia Dragon Lair, Venore Dragon Lair, \z
-		Edron Dragon Lair, Dragonblaze Peaks, Krailos Steppe. Also summoned by Lizard Dragon Priests."
+	Edron Dragon Lair, Dragonblaze Peaks, Krailos Steppe. Also summoned by Lizard Dragon Priests."
 }
 
 monster.health = 380
@@ -61,28 +61,28 @@ monster.flags = {
 	runHealth = 20,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = true,
+	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Fchu?", yell = false },
-	{ text = "Rooawwrr", yell = false }
+	{ text = "Rooawwrr", yell = false },
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 67500, maxCount = 55 },
-	{ name = "dragon ham", chance = 61000 },
-	{ name = "health potion", chance = 400 },
-	{ name = "dragon's tail", chance = 4300 }
+	{ name = "gold coin", chance = 95540, maxCount = 50 },
+	{ name = "dragon ham", chance = 83040 },
+	{ name = "dragon's tail", chance = 3570 },
+	{ name = "health potion", chance = 470 },
 }
 
 monster.attacks = {
@@ -93,7 +93,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 10,
-	armor = 10,
+	armor = 15,
+	mitigation = 0.78,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 8, maxDamage = 33, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -107,7 +108,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

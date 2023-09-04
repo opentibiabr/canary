@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Energized Raging Mage")
 local monster = {}
 
-monster.description = "an energized raging mage"
+monster.description = "energized raging mage"
 monster.experience = 0
 monster.outfit = {
 	lookType = 423,
@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 5,
+	color = 65,
 }
 
 monster.summon = {
@@ -68,9 +68,9 @@ monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Behold the all permeating powers I draw from this gate!!", yell = false },
-	{ text = "ENERGY!!", yell = false },
-	{ text = "I FEEL, I FEEEEEL... OMNIPOTENCE!!", yell = false },
-	{ text = "MWAAAHAHAAA!! NO ONE!! NO ONE CAN DEFEAT MEEE!!!", yell = false }
+	{ text = "ENERGY!!", yell = true },
+	{ text = "I FEEL, I FEEEEEL... OMNIPOTENCE!!", yell = true },
+	{ text = "MWAAAHAHAAA!! NO ONE!! NO ONE CAN DEFEAT MEEE!!!", yell = true },
 }
 
 monster.loot = {
@@ -87,7 +87,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 35,
-	armor = 35,
+	armor = 30,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 155, maxDamage = 200, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -101,11 +102,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

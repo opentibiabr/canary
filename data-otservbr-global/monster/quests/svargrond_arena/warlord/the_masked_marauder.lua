@@ -48,13 +48,13 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnFire = true,
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -63,7 +63,7 @@ monster.voices = {
 	{ text = "Didn't you leave your house door open?", yell = false },
 	{ text = "Oops, your shoelaces are open!", yell = false },
 	{ text = "Look! It's Ferumbras behind you!", yell = false },
-	{ text = "Stop! I give up!", yell = false }
+	{ text = "Stop! I give up!", yell = false },
 }
 
 monster.loot = {
@@ -77,6 +77,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 35,
 	armor = 25,
+	--	mitigation = ???,
 	{ name = "combat", interval = 1000, chance = 50, type = COMBAT_HEALING, minDamage = 75, maxDamage = 125, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -90,11 +91,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -1 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

@@ -31,7 +31,7 @@ monster.maxHealth = 1700
 monster.race = "blood"
 monster.corpse = 22023
 monster.speed = 140
-monster.manaCost = 390
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
@@ -62,22 +62,22 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "I will end this now!", yell = false },
-	{ text = "I've seen orcs tougher than you!", yell = false },
-	{ text = "Your gods won't help you!", yell = false },
 	{ text = "Is that the best, you can throw at me?", yell = false },
-	{ text = "You'll make a fine trophy!", yell = false }
+	{ text = "I've seen orcs tougher than you!", yell = false },
+	{ text = "I will end this now!", yell = false },
+	{ text = "Your gods won't help you!", yell = false },
+	{ text = "You'll make a fine trophy!", yell = false },
 }
 
 monster.loot = {
@@ -106,7 +106,6 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "vile grandmaster", interval = 2000, chance = 15, target = false },
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 10, maxDamage = -260 },
 	-- bleed
 	{ name = "condition", type = CONDITION_BLEEDING, interval = 2000, chance = 20, minDamage = -150, maxDamage = -225, radius = 4, shootEffect = CONST_ANI_THROWINGKNIFE, target = true }
@@ -114,7 +113,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 50,
-	armor = 35,
+	armor = 40,
+	mitigation = 1.48,
 	{ name = "combat", interval = 4000, chance = 15, type = COMBAT_HEALING, minDamage = 220, maxDamage = 280, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -128,11 +128,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 50 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

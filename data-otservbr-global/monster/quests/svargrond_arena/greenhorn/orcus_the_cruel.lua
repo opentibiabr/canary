@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Orcus the Cruel")
 local monster = {}
 
-monster.description = "Orcus the cruel"
+monster.description = "Orcus the Cruel"
 monster.experience = 280
 monster.outfit = {
 	lookType = 59,
@@ -48,18 +48,20 @@ monster.flags = {
 	healthHidden = false,
 	isBlockable = false,
 	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnFire = true,
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Ocrus will rule!", yell = false },
+	{ text = "I'll kill you slow and painful.", yell = false },
 }
 
 monster.loot = {
@@ -73,6 +75,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 40,
 	armor = 39
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -85,11 +88,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = true },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

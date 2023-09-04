@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Usurper Knight")
 local monster = {}
 
-monster.description = "a usurper knight"
+monster.description = "an usurper knight"
 monster.experience = 6900
 monster.outfit = {
 	lookType = 1316,
@@ -31,6 +31,7 @@ monster.maxHealth = 8200
 monster.race = "blood"
 monster.corpse = 33977
 monster.speed = 130
+monster.manaCost = 0
 
 monster.faction = FACTION_LIONUSURPERS
 monster.enemyFactions = { FACTION_LION, FACTION_PLAYER }
@@ -61,25 +62,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "This town is ours now!", yell = false },
-	{ text = "You don't deserv Bounac!", yell = false },
-	{ text = "My power is fueled by a just cause!", yell = false },
-	{ text = "This will be the last thing you witness!", yell = false },
-	{ text = "Change of guard! High time ...!", yell = false },
 	{ text = "Do you really think you can stand?", yell = false },
-	{ text = "'Holding breath'", yell = false },
-	{ text = "Die in the flames of true righteousness.", yell = false }
+	{ text = "You don't deserve Bounac!", yell = false },
 }
 
 monster.loot = {
@@ -107,6 +103,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 86,
 	armor = 83,
+	mitigation = 2.40,
 	{ name = "combat", interval = 4000, chance = 40, type = COMBAT_HEALING, minDamage = 200, maxDamage = 550, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -120,7 +117,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 15 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -15 },
 }
 
 monster.immunities = {

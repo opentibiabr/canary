@@ -1,4 +1,4 @@
-local mType = Game.createMonsterType("starving wolf")
+local mType = Game.createMonsterType("Starving Wolf")
 local monster = {}
 
 monster.description = "a starving wolf"
@@ -57,14 +57,14 @@ monster.flags = {
 	runHealth = 8,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -72,7 +72,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Gaarrrrrr", yell = false },
 	{ text = "Gnoorrr", yell = false },
-	{ text = "Yoooohhuuuu!", yell = false }
+	{ text = "Yoooohhuuuu!", yell = false },
 }
 
 monster.loot = {
@@ -87,7 +87,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 10,
-	armor = 10,
+	armor = 2,
+	mitigation = 0.33,
 	{ name = "effect", interval = 2000, chance = 10, radius = 1, effect = CONST_ME_YELLOW_RINGS, target = false }
 }
 
@@ -101,11 +102,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -5 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

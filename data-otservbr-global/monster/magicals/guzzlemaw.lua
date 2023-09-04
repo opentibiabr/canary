@@ -63,12 +63,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -102,7 +102,7 @@ monster.loot = {
 	{ name = "brown crystal splinter", chance = 12000, maxCount = 2 },
 	{ name = "red crystal fragment", chance = 7600 },
 	{ id = 16279, chance = 12000 }, -- crystal rubbish
-	{ name = "cluster of solace", chance = 920 },
+	{ name = "cluster of solace", chance = 8920 },
 	{ name = "frazzle tongue", chance = 15000 },
 	{ name = "frazzle skin", chance = 14000 }
 }
@@ -119,7 +119,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 50,
-	armor = 50,
+	armor = 74,
+	mitigation = 2.31,
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 250, maxDamage = 425, effect = CONST_ME_HITBYPOISON, target = false }
 }
 
@@ -133,7 +134,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 10 },
 }
 
 monster.immunities = {

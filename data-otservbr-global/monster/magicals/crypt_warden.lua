@@ -62,17 +62,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "You set foot on forbidden ground? Outrageous!", yell = false },
+	{ text = "Let the deceased rest in peace!", yell = false },
+	{ text = "Sacrilege!", yell = false },
 }
 
 monster.loot = {
@@ -97,7 +100,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 84,
-	armor = 84
+	armor = 84,
+	mitigation = 2.31,
 }
 
 monster.elements = {
@@ -110,11 +114,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 25 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -35 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -35 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = true },
+	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

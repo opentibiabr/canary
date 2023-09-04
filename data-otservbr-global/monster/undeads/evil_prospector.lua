@@ -1,8 +1,8 @@
 local mType = Game.createMonsterType("Evil Prospector")
 local monster = {}
 
-monster.description = "Evil Prospector"
-monster.experience = 7500
+monster.description = "an evil prospector"
+monster.experience = 9000
 monster.outfit = {
 	lookType = 1268,
 	lookHead = 0,
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Barren Drift."
+	Locations = "Barren Drift"
 }
 
 monster.health = 8500
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -94,7 +94,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 40,
-	armor = 100
+	armor = 100,
+	mitigation = 2.81,
 }
 
 monster.elements = {
@@ -107,7 +108,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 35 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {

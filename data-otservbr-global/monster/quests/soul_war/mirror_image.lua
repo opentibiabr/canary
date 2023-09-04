@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Mirror Image")
 local monster = {}
 
 monster.description = "a mirror image"
-monster.experience = 0
+monster.experience = 27000
 monster.outfit = {
 	lookType = 136,
 	lookHead = 76,
@@ -49,21 +49,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Delusional!", yell = false },
-	{ text = "I'll be your worst nightmare", yell = true },
-	{ text = "The mirrors can't contain the night.", yell = true },
-	{ text = "What a lovely reflection.", yell = true }
+	{ text = "I'll be your worst nightmare", yell = false },
+	{ text = "The mirrors can't contain the night.", yell = false },
+	{ text = "What a lovely reflection.", yell = false },
 }
 
 monster.loot = {
@@ -79,20 +79,21 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 75,
-	armor = 100
+	armor = 0,
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 1 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
-	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = -1 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_ICEDAMAGE, percent = 1 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 1 },
+	{ type = COMBAT_DEATHDAMAGE, percent = -1 },
 }
 
 monster.immunities = {

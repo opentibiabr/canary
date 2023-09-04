@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 2,
+	color = 35,
 }
 
 monster.voices = {
@@ -72,7 +72,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Clank! Clank!", yell = false },
 	{ text = "Clap!", yell = false },
-	{ text = "Crrrk! Crrrk!", yell = false }
+	{ text = "Crrrk! Crrrk!", yell = false },
 }
 
 monster.loot = {
@@ -98,7 +98,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 50,
-	armor = 50
+	armor = 85,
+	mitigation = 0.99,
 }
 
 monster.elements = {
@@ -111,7 +112,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

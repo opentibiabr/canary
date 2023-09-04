@@ -21,9 +21,9 @@ monster.Bestiary = {
 	FirstUnlock = 100,
 	SecondUnlock = 1000,
 	CharmsPoints = 50,
-	Stars = 5,
+	Stars = 4,
 	Occurrence = 0,
-	Locations = "Court of Winter, Dream Labyrinth."
+	Locations = "Court of Summer, Dream Labyrinth."
 }
 
 monster.health = 5300
@@ -62,19 +62,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Is this real life?", yell = false },
-	{ text = "Weeeuuu weeeuuu!!!", yell = false }
+	{ text = "Weeeuuu weeeuuu!!!", yell = false },
 }
 
 monster.loot = {
@@ -107,7 +107,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 20,
-	armor = 70
+	armor = 76,
+	mitigation = 2.11,
 }
 
 monster.reflects = {
@@ -119,12 +120,12 @@ monster.elements = {
 	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
 	{ type = COMBAT_FIREDAMAGE, percent = 40 },
-	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -25 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

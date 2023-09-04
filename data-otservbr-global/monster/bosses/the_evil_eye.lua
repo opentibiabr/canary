@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("The Evil Eye")
 local monster = {}
 
-monster.description = "the Evil Eye"
+monster.description = "The Evil Eye"
 monster.experience = 750
 monster.outfit = {
 	lookType = 210,
@@ -11,6 +11,11 @@ monster.outfit = {
 	lookFeet = 0,
 	lookAddons = 0,
 	lookMount = 0
+}
+
+monster.bosstiary = {
+	bossRaceId = 210,
+	bossRace = RARITY_NEMESIS,
 }
 
 monster.health = 1200
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8
-}
-
-monster.bosstiary = {
-	bossRaceId = 210,
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -49,14 +49,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -71,13 +71,16 @@ monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Inferior creatures, bow before my power!", yell = false },
-	{ text = "653768764!", yell = false }
+	{ text = "653768764!", yell = false },
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 45 }, -- gold coin
-	{ id = 5898, chance = 5000 }, -- bonelord eye
-	{ id = 3031, chance = 80000, maxCount = 90 } -- gold coin
+	{ id = 5898, chance = 100000 }, -- bonelord eye
+	{ name = "gold coin", chance = 100000, maxCount = 100 },
+	{ name = "gold coin", chance = 100000, maxCount = 100 },
+	{ name = "gold coin", chance = 100000, maxCount = 29 },
+	{ name = "bonelord shield", chance = 13640 },
+	{ name = "bonelord helmet", chance = 500 },
 }
 
 monster.attacks = {
@@ -96,6 +99,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 23,
 	armor = 19,
+	--	mitigation = ???,
 	{ name = "combat", interval = 1000, chance = 9, type = COMBAT_HEALING, minDamage = 1, maxDamage = 219, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -108,12 +112,12 @@ monster.elements = {
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
-	{ type = COMBAT_HOLYDAMAGE, percent = -20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_HOLYDAMAGE, percent = -1 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

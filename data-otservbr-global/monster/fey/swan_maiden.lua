@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 1,
-	Locations = "Feyrist Meadows."
+	Locations = "Feyrist Meadows"
 }
 
 monster.health = 800
@@ -31,7 +31,7 @@ monster.maxHealth = 800
 monster.race = "blood"
 monster.corpse = 25831
 monster.speed = 117
-monster.manaCost = 450
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
@@ -62,21 +62,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Are you stalking me? You will bitterly regret this!", yell = false },
 	{ text = "Nightmarish monster! This dream is not meant for you!", yell = false },
 	{ text = "You won't steal my robe! Back off!", yell = false },
-	{ text = "You are not allowed to lay eyes on me in this shape!", yell = false }
+	{ text = "You are not allowed to lay eyes on me in this shape!", yell = false },
+	{ text = "Are you stalking me? You will bitterly regret this!", yell = false },
 }
 
 monster.loot = {
@@ -110,6 +110,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 54,
 	armor = 54,
+	mitigation = 1.18,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 85, maxDamage = 105, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -123,11 +124,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 50 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 50 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

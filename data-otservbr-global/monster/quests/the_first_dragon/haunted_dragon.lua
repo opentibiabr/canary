@@ -16,14 +16,14 @@ monster.outfit = {
 monster.raceId = 1376
 monster.Bestiary = {
 	class = "Dragon",
-	race = BESTY_RACE_DRAGON,
+
 	toKill = 2500,
 	FirstUnlock = 100,
 	SecondUnlock = 1000,
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 2,
-	Locations = "The First Dragon's Lair, fourth floor."
+	Locations = "The First Dragons Lair, fourth floor."
 }
 
 monster.health = 6500
@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -110,7 +110,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 40,
-	armor = 40,
+	armor = 58,
+	mitigation = 1.60,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 200, maxDamage = 250, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -121,10 +122,10 @@ monster.elements = {
 	{ type = COMBAT_FIREDAMAGE, percent = 20 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 50 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -40 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

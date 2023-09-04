@@ -363,6 +363,7 @@ bool ConfigManager::load() {
 	boolean[TOGGLE_WHEELSYSTEM] = getGlobalBoolean(L, "wheelSystemEnabled", true);
 	integer[WHEEL_POINTS_PER_LEVEL] = getGlobalNumber(L, "wheelPointsPerLevel", 1);
 
+	boolean[PARTY_AUTO_SHARE_EXPERIENCE] = getGlobalBoolean(L, "partyAutoShareExperience", true);
 	boolean[PARTY_SHARE_LOOT_BOOSTS] = getGlobalBoolean(L, "partyShareLootBoosts", true);
 	floating[PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR] = getGlobalFloat(L, "partyShareLootBoostsDimishingFactor", 0.7f);
 	integer[TIBIADROME_CONCOCTION_COOLDOWN] = getGlobalNumber(L, "tibiadromeConcoctionCooldown", 24 * 60 * 60);

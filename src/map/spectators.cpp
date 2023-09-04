@@ -109,17 +109,17 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	const int_fast32_t max_x = centerPos.x + maxRangeX;
 
 	const int_fast16_t minoffset = centerPos.getZ() - maxRangeZ;
-	const int_fast32_t x1 = std::min<int_fast32_t>(0xFFFF, std::max<int32_t>(0, (min_x + minoffset)));
-	const int_fast32_t y1 = std::min<int_fast32_t>(0xFFFF, std::max<int32_t>(0, (min_y + minoffset)));
+	const int_fast32_t x1 = std::min<int_fast32_t>(0xFFFF, std::max<int_fast32_t>(0, (min_x + minoffset)));
+	const int_fast32_t y1 = std::min<int_fast32_t>(0xFFFF, std::max<int_fast32_t>(0, (min_y + minoffset)));
 
 	const int_fast16_t maxoffset = centerPos.getZ() - minRangeZ;
-	const int_fast32_t x2 = std::min<int_fast32_t>(0xFFFF, std::max<int32_t>(0, (max_x + maxoffset)));
-	const int_fast32_t y2 = std::min<int_fast32_t>(0xFFFF, std::max<int32_t>(0, (max_y + maxoffset)));
+	const int_fast32_t x2 = std::min<int_fast32_t>(0xFFFF, std::max<int_fast32_t>(0, (max_x + maxoffset)));
+	const int_fast32_t y2 = std::min<int_fast32_t>(0xFFFF, std::max<int_fast32_t>(0, (max_y + maxoffset)));
 
-	const int_fast32_t startx1 = x1 - (x1 % FLOOR_SIZE);
-	const int_fast32_t starty1 = y1 - (y1 % FLOOR_SIZE);
-	const int_fast32_t endx2 = x2 - (x2 % FLOOR_SIZE);
-	const int_fast32_t endy2 = y2 - (y2 % FLOOR_SIZE);
+	const uint_fast16_t startx1 = x1 - (x1 % FLOOR_SIZE);
+	const uint_fast16_t starty1 = y1 - (y1 % FLOOR_SIZE);
+	const uint_fast16_t endx2 = x2 - (x2 % FLOOR_SIZE);
+	const uint_fast16_t endy2 = y2 - (y2 % FLOOR_SIZE);
 
 	const auto startLeaf = g_game().map.getQTNode(startx1, starty1);
 	const QTreeLeafNode* leafS = startLeaf;
@@ -128,9 +128,9 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	SpectatorList spectators;
 	spectators.reserve(std::max<uint8_t>(MAP_MAX_VIEW_PORT_X, MAP_MAX_VIEW_PORT_Y));
 
-	for (int_fast32_t ny = starty1; ny <= endy2; ny += FLOOR_SIZE) {
+	for (uint_fast16_t ny = starty1; ny <= endy2; ny += FLOOR_SIZE) {
 		leafE = leafS;
-		for (int_fast32_t nx = startx1; nx <= endx2; nx += FLOOR_SIZE) {
+		for (uint_fast16_t nx = startx1; nx <= endx2; nx += FLOOR_SIZE) {
 			if (leafE) {
 				const auto &node_list = (onlyPlayers ? leafE->player_list : leafE->creature_list);
 				for (const auto creature : node_list) {
@@ -139,7 +139,7 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 						continue;
 					}
 
-					int_fast16_t offsetZ = Position::getOffsetZ(centerPos, cpos);
+					const int_fast16_t offsetZ = Position::getOffsetZ(centerPos, cpos);
 					if ((min_y + offsetZ) > cpos.y || (max_y + offsetZ) < cpos.y || (min_x + offsetZ) > cpos.x || (max_x + offsetZ) < cpos.x) {
 						continue;
 					}

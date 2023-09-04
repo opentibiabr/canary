@@ -64,7 +64,8 @@ public:
 		return creatures.empty();
 	}
 
-	size_t size() const noexcept {
+	size_t size() noexcept {
+		update();
 		return creatures.size();
 	}
 

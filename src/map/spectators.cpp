@@ -185,7 +185,7 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	auto &cache = cacheFound ? it->second : spectatorsCache.emplace(centerPos, SpectatorsCache { .minRangeX = minRangeX, .maxRangeX = maxRangeX, .minRangeY = minRangeY, .maxRangeY = maxRangeY }).first->second;
 
 	if (spectators.size() > 0) {
-		needUpdate = creatures.size() > 1;
+		needUpdate = !creatures.empty();
 
 		insertAll(spectators);
 

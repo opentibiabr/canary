@@ -88,7 +88,7 @@ monster.loot = {
 	{ id = 238, chance = 10000, maxCount = 100 }, -- great mana potion
 	{ id = 7642, chance = 10000, maxCount = 100 }, -- great spirit potion
 	{ id = 20063, chance = 2000, maxCount = 3 }, -- dream matter
-	{ id = 20062, chance = 2000, maxCount = 14 }, -- cluster of solace
+	{ id = 20062, chance = 12000, maxCount = 14 }, -- cluster of solace
 	{ id = 3041, chance = 10000, maxCount = 2 }, -- blue gem
 	{ id = 16122, chance = 10000, maxCount = 10 }, -- green crystal splinter
 	{ id = 16120, chance = 10000, maxCount = 15 }, -- violet crystal shard

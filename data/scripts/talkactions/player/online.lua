@@ -1,29 +1,51 @@
 local maxPlayersPerMessage = 10
 local playersOnline = TalkAction("!online")
 
+local function formatOnlineEntry(player)
+	return ("%s [%d|%s]"):format(player:getName(), player:getLevel(), player:vocationAbbrev())
+end
+
 function playersOnline.onSay(player, words, param)
 	local hasAccess = player:getGroup():getAccess()
 	local players = Game.getPlayers()
-	local onlineList = {}
+	local onlineList = {
+		Training = {},
+		Idle = {},
+		Active = {},
+	}
 
 	for _, targetPlayer in ipairs(players) do
 		if hasAccess or not targetPlayer:isInGhostMode() then
-			table.insert(onlineList, ("%s [%d]"):format(targetPlayer:getName(), targetPlayer:getLevel()))
+			if onExerciseTraining[targetPlayer:getId()] then
+				table.insert(onlineList.Training, targetPlayer)
+			elseif targetPlayer:getIdleTime() >= 5 * 60 * 1000 then
+				table.insert(onlineList.Idle, targetPlayer)
+			else
+				table.insert(onlineList.Active, targetPlayer)
+			end
 		end
 	end
 
-	local playersOnlineList = #onlineList
-	player:sendTextMessage(MESSAGE_ATTENTION, ("%d players online!"):format(playersOnlineList))
+	local onlineCount = #onlineList.Training + #onlineList.Idle + #onlineList.Active
+	player:sendTextMessage(MESSAGE_ATTENTION, ("%d players online | Training: %d | Idle: %d | Active: %s"):format(onlineCount, #onlineList.Training, #onlineList.Idle, #onlineList.Active))
 
-	local listPlayers
-	for i = 1, playersOnlineList, maxPlayersPerMessage do
-		local j = math.min(i + maxPlayersPerMessage - 1, playersOnlineList)
-		local msg = table.concat(onlineList, ", ", i, j) .. "."
-		listPlayers = table.concat(onlineList, "\n", i, j)
-		player:sendTextMessage(MESSAGE_ATTENTION, msg)
+	for category, list in pairs(onlineList) do
+		if #list > 0 then
+			local prefix = category .. ": "
+			while #list > 0 do
+				local msg = {}
+				for _ = 1, maxPlayersPerMessage do
+					local targetPlayer = list[1]
+					if targetPlayer then
+						table.insert(msg, formatOnlineEntry(targetPlayer))
+						table.remove(list, 1)
+					end
+				end
+				player:sendTextMessage(MESSAGE_ATTENTION, prefix .. table.concat(msg, ", "))
+				prefix = ""
+			end
+		end
 	end
-
-	player:popupFYI("~ Players Online ~\n\n" .. listPlayers)
 	return true
 end
 

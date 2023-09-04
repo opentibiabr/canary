@@ -1,4 +1,4 @@
-local mType = Game.createMonsterType("Memory Of A Yalahari")
+local mType = Game.createMonsterType("Memory of a Yalahari")
 local monster = {}
 
 monster.description = "a memory of a yalahari"
@@ -12,6 +12,7 @@ monster.outfit = {
 	lookAddons = 0,
 	lookMount = 0
 }
+
 
 monster.health = 3540
 monster.maxHealth = 3540
@@ -44,26 +45,19 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Welcome to Yalahar, outsider.", yell = false },
-	{ text = "Hail Yalahar.", yell = false },
-	{ text = "You can learn a lot from us.", yell = false },
-	{ text = "Our wisdom and knowledge are unequalled in this world.", yell = false },
-	{ text = "That knowledge would overburden your fragile mind.", yell = false },
-	{ text = "I wouldn't expect you to understand.", yell = false },
-	{ text = "One day Yalahar will return to its former glory.", yell = false }
 }
 
 monster.loot = {
@@ -80,26 +74,27 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 0,
-	armor = 0
+	armor = 0,
+	mitigation = 1.30,
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 100 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
 	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = false },
+	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }
 }
 

@@ -57,14 +57,14 @@ monster.flags = {
 	runHealth = 30,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -72,7 +72,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Leave this place... save yourself...", yell = false },
 	{ text = "The dark ones.. must be stopped... unholy, twisted, EVIL!", yell = false },
-	{ text = "No... don't go further stranger... danger lies in every step...", yell = false }
+	{ text = "No... don't go further stranger... danger lies in every step...", yell = false },
 }
 
 monster.loot = {
@@ -87,7 +87,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 15,
+	armor = 10,
+	mitigation = 0.51,
 	{ name = "invisible", interval = 2000, chance = 5, effect = CONST_ME_MAGIC_BLUE }
 }
 
@@ -101,7 +102,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

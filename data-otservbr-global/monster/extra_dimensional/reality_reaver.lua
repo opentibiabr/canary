@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Otherworld."
+	Locations = "Otherworld"
 }
 
 monster.health = 3900
@@ -62,18 +62,18 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Ssshhh!", yell = false }
+	{ text = "Ssshhh!", yell = false },
 }
 
 monster.loot = {
@@ -111,7 +111,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 50,
-	armor = 50,
+	armor = 51,
+	mitigation = 1.76,
 	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_POFF },
 	{ name = "speed", interval = 2000, chance = 10, speedChange = 380, effect = CONST_ME_HITAREA, target = false, duration = 8000 }
 }
@@ -126,7 +127,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 5 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 5 },
 }
 
 monster.immunities = {

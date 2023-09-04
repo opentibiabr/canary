@@ -30,5 +30,5 @@ function mawhawk.onThink(interval, lastExecution)
 	return true
 end
 
-mawhawk:interval(14399999)
+mawhawk:interval(10 * 60 * 60 * 1000) -- spawns every 10 hours
 mawhawk:register()

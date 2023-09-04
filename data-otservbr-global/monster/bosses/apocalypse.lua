@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Apocalypse")
 local monster = {}
 
 monster.description = "Apocalypse"
-monster.experience = 550000
+monster.experience = 30000
 monster.outfit = {
 	lookType = 12,
 	lookHead = 38,
@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.health = 160000
-monster.maxHealth = 160000
+monster.health = 125000
+monster.maxHealth = 125000
 monster.race = "fire"
 monster.corpse = 6068
 monster.speed = 350
@@ -49,12 +49,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -63,7 +63,7 @@ monster.voices = {
 	{ text = "BOW TO THE POWER OF THE RUTHLESS SEVEN!", yell = true },
 	{ text = "DESTRUCTION!", yell = true },
 	{ text = "CHAOS!", yell = true },
-	{ text = "DEATH TO ALL!", yell = true }
+	{ text = "DEATH TO ALL!", yell = true },
 }
 
 monster.loot = {
@@ -119,6 +119,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 145,
 	armor = 188,
+	--	mitigation = ???,
 	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_HEALING, minDamage = 1000, maxDamage = 3000, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "speed", interval = 2000, chance = 8, speedChange = 480, effect = CONST_ME_MAGIC_RED, target = false, duration = 6000 }
 }
@@ -131,9 +132,9 @@ monster.elements = {
 	{ type = COMBAT_LIFEDRAIN, percent = 100 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 1 },
 }
 
 monster.immunities = {

@@ -15,6 +15,8 @@ function PrettyString(tbl, indent)
 			toprint = toprint .. "\"" .. v .. "\",\n"
 		elseif (type(v) == "table") then
 			toprint = toprint .. PrettyString(v, indent + 2) .. ",\n"
+		elseif (type(v) == "userdata") then
+			toprint = toprint .. "\"" .. tostring(v) .. "\",\n"
 		else
 			toprint = toprint .. "\"" .. tostring(v) .. "\",\n"
 		end
@@ -56,46 +58,28 @@ function getTitle(uid)
 	return false
 end
 
-function getHours(seconds)
-	return math.floor((seconds / 60) / 60)
-end
-
-function getMinutes(seconds)
-	return math.floor(seconds / 60)
-end
-
-function getSeconds(seconds)
-	return seconds % 60
-end
-
-function getTime(seconds)
-	local hours, minutes = getHours(seconds), getMinutes(seconds)
-	if (minutes > 59) then
-		minutes = minutes - hours * 60
-	end
-
-	if (minutes < 10) then
-		minutes = "0" .. minutes
-	end
-
-	return hours .. ":" .. minutes .. "h"
-end
-
-function getTimeInWords(secs)
+function getTimeInWords(secsParam)
+	local secs = tonumber(secsParam)
 	local hours, minutes, seconds = getHours(secs), getMinutes(secs), getSeconds(secs)
-	if (minutes > 59) then
-		minutes = minutes - hours * 60
-	end
-
 	local timeStr = ''
 
-	if hours > 1 then
-		timeStr = hours .. ' hours '
-	elseif hours == 1 then
-		timeStr = hours .. ' hour '
+	if hours > 0 then
+		timeStr = hours .. (hours > 1 and ' hours' or ' hour')
 	end
 
-	timeStr = timeStr .. minutes .. ' minutes and ' .. seconds .. ' seconds.'
+	if minutes > 0 then
+		if timeStr ~= '' then
+			timeStr = timeStr .. ', '
+		end
+		timeStr = timeStr .. minutes .. (minutes > 1 and ' minutes' or ' minute')
+	end
+
+	if seconds > 0 then
+		if timeStr ~= '' then
+			timeStr = timeStr .. ' and '
+		end
+		timeStr = timeStr .. seconds .. (seconds > 1 and ' seconds' or ' second')
+	end
 
 	return timeStr
 end
@@ -734,6 +718,11 @@ function isInRange(pos, fromPos, toPos)
 			and pos.y <= toPos.y and pos.z <= toPos.z
 end
 
+function isInRangeIgnoreZ(pos, fromPos, toPos)
+	return pos.x >= fromPos.x and pos.y >= fromPos.y
+			and pos.z >= fromPos.z and pos.x <= toPos.x
+end
+
 function isNumber(str)
 	return tonumber(str) ~= nil
 end
@@ -980,6 +969,31 @@ function SetInfluenced(monsterType, monster, player, influencedLevel)
 	end
 	Game.addInfluencedMonster(monster)
 	monster:setForgeStack(influencedLevel)
+end
+
+function getHours(seconds)
+	return math.floor((seconds / 60) / 60)
+end
+
+function getMinutes(seconds)
+	return math.floor(seconds / 60) % 60
+end
+
+function getSeconds(seconds)
+	return seconds % 60
+end
+
+function getTime(seconds)
+	local hours, minutes = getHours(seconds), getMinutes(seconds)
+	if (minutes > 59) then
+		minutes = minutes - hours * 60
+	end
+
+	if (minutes < 10) then
+		minutes = "0" .. minutes
+	end
+
+	return hours .. ":" .. minutes .. "h"
 end
 
 function ReloadDataEvent(cid)

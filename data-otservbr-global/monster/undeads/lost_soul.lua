@@ -17,14 +17,13 @@ monster.raceId = 283
 monster.Bestiary = {
 	class = "Undead",
 	race = BESTY_RACE_UNDEAD,
-	toKill = 2500,
-	FirstUnlock = 100,
-	SecondUnlock = 1000,
-	CharmsPoints = 50,
-	Stars = 4,
+	toKill = 1000,
+	FirstUnlock = 50,
+	SecondUnlock = 500,
+	CharmsPoints = 25,
+	Stars = 3,
 	Occurrence = 0,
-	Locations = "Pits of Inferno, Formorgar Mines, Helheim, \z
-		Roshamuul Prison and in The Arcanum (Part of the Inquisition quest)."
+	Locations = "Pits of Inferno, Formorgar Mines, Helheim, Roshamuul Prison and in The Arcanum Part of the Inquisition quest, Oramond Fury Dungeon"
 }
 
 monster.health = 5800
@@ -60,20 +59,20 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Forgive Meee!", yell = false },
 	{ text = "Mouuuurn meeee!", yell = false },
-	{ text = "Help meee!", yell = false }
+	{ text = "Forgive Meee!", yell = false },
+	{ text = "Help meee!", yell = false },
 }
 
 monster.loot = {
@@ -109,7 +108,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 30,
-	armor = 30
+	armor = 28,
+	mitigation = 1.60,
 }
 
 monster.elements = {
@@ -122,7 +122,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 50 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -25 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

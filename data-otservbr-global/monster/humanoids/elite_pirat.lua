@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Elite Pirat")
 local monster = {}
 
-monster.description = "a elite pirat"
+monster.description = "an elite pirat"
 monster.experience = 18000
 monster.outfit = {
 	lookType = 534,
@@ -11,19 +11,6 @@ monster.outfit = {
 	lookFeet = 0,
 	lookAddons = 0,
 	lookMount = 0
-}
-
-monster.raceId = 917
-monster.Bestiary = {
-	class = "Humanoid",
-	race = BESTY_RACE_HUMANOID,
-	toKill = 1000,
-	FirstUnlock = 50,
-	SecondUnlock = 500,
-	CharmsPoints = 25,
-	Stars = 3,
-	Occurrence = 0,
-	Locations = "The Wreckoning"
 }
 
 monster.health = 20000
@@ -60,21 +47,19 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = true,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Squeak! Squeak!", yell = false },
-	{ text = "sniff", yell = false }
 }
 
 monster.loot = {
@@ -102,19 +87,20 @@ monster.attacks = {
 monster.defenses = {
 	defense = 15,
 	armor = 15
+	--	mitigation = ???,
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = -110 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 30 },
-	{ type = COMBAT_EARTHDAMAGE, percent = -130 },
-	{ type = COMBAT_FIREDAMAGE, percent = 30 },
-	{ type = COMBAT_LIFEDRAIN, percent = 30 },
-	{ type = COMBAT_MANADRAIN, percent = 30 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 30 },
-	{ type = COMBAT_ICEDAMAGE, percent = 20 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 30 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 30 }
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 100 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

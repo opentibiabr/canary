@@ -23,8 +23,8 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Infernatil's Throneroom The Inquisition Quest Area, Hellgorge, \z
-		Roshamuul Prison, Chyllfroest, Oramond Dungeon, The Extension Site and under the Asura Palace."
+	Locations = "Pits of Inferno (Infernatil's Throneroom), The Inquisition Quest Area, Hellgorge, \z
+	Roshamuul Prison, Chyllfroest, Oramond Dungeon, The Extension Site and Asura Vaults."
 }
 
 monster.health = 7500
@@ -61,20 +61,20 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
+	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 3,
+	color = 206,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "GROOOOWL!", yell = false }
+	{ text = "GROOOOWL!", yell = true },
 }
 
 monster.loot = {
@@ -131,6 +131,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 40,
 	armor = 60,
+	mitigation = 2.75,
 	{ name = "speed", interval = 2000, chance = 15, speedChange = 320, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_HEALING, minDamage = 220, maxDamage = 425, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
@@ -145,7 +146,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

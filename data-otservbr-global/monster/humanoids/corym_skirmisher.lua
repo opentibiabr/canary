@@ -32,7 +32,7 @@ monster.maxHealth = 450
 monster.race = "blood"
 monster.corpse = 17446
 monster.speed = 100
-monster.manaCost = 0
+monster.manaCost = 695
 
 monster.changeTarget = {
 	interval = 4000,
@@ -63,19 +63,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Squeak! Squeak!", yell = false },
-	{ text = "<sniff> <sniff> <sniff>", yell = false }
+	{ text = "<sniff> <sniff> <sniff>", yell = false },
 }
 
 monster.loot = {
@@ -101,7 +101,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 25,
+	mitigation = 0.96,
 }
 
 monster.elements = {
@@ -114,13 +115,13 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 20 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = true },
+	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = true },
+	{ type = "invisible", condition = false },
 	{ type = "bleed", condition = false }
 }
 

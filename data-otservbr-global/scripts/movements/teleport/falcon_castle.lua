@@ -12,7 +12,6 @@ local teleports = {
 			{ x = 33298, y = 31289, z = 9 },
 			{ x = 33297, y = 31289, z = 9 }
 		},
-		timer = Storage.TheSecretLibrary.TheOrderOfTheFalcon.OberonTimer,
 		destination = Position(33363, 31342, 9)
 	}
 }

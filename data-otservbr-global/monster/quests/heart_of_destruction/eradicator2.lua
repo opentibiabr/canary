@@ -86,7 +86,7 @@ monster.loot = {
 	{ id = 16120, chance = 8000, maxCount = 3 }, -- violet crystal shard
 	{ id = 23535, chance = 8000 }, -- energy bar
 	{ id = 23520, chance = 8000 }, -- plasmatic lightning
-	{ id = 23518, chance = 8000 }, -- spark sphere
+	{ id = 23516, chance = 8000 }, -- instable proto matter
 	{ id = 22721, chance = 100000 }, -- gold token
 	{ id = 23509, chance = 100000 }, -- mysterious remains
 	{ id = 23510, chance = 100000 }, -- odd organ

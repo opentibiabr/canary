@@ -31,7 +31,7 @@ monster.health = 150
 monster.maxHealth = 150
 monster.race = "venom"
 monster.corpse = 6062
-monster.speed = 39
+monster.speed = 0
 monster.manaCost = 0
 
 monster.changeTarget = {
@@ -60,12 +60,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -90,6 +90,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 0,
 	armor = 12,
+	mitigation = 0.86,
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 8, maxDamage = 16, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -103,7 +104,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

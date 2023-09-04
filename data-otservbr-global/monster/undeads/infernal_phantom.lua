@@ -98,9 +98,6 @@ monster.loot = {
 	{ id = 34109, chance = 20 }, -- bag you desire
 }
 
--- TODO: monster-abilities
---monster.attacks = {
---}
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -800 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -950, maxDamage = -1300, range = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },

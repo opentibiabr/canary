@@ -64,12 +64,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -81,7 +81,7 @@ monster.voices = {
 	{ text = "Are you ready to rock?", yell = false },
 	{ text = "Feel my gentle kiss of death.", yell = false },
 	{ text = "That's what I call easy listening!", yell = false },
-	{ text = "IIIIEEEeeeeeehhhHHHH!", yell = true }
+	{ text = "IIIIEEEeeeeeehhhHHHH!", yell = false },
 }
 
 monster.loot = {
@@ -119,6 +119,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 25,
 	armor = 25,
+	mitigation = 1.74,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 120, maxDamage = 190, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -132,7 +133,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -25 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 100 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {

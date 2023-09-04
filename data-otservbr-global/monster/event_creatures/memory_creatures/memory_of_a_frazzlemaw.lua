@@ -1,4 +1,4 @@
-local mType = Game.createMonsterType("Memory Of A Frazzlemaw")
+local mType = Game.createMonsterType("Memory of a Frazzlemaw")
 local monster = {}
 
 monster.description = "a memory of a frazzlemaw"
@@ -12,6 +12,7 @@ monster.outfit = {
 	lookAddons = 0,
 	lookMount = 0
 }
+
 
 monster.health = 3770
 monster.maxHealth = 3770
@@ -49,21 +50,17 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Mwaaaahnducate youuuuuu *gurgle*, mwaaah!", yell = false },
-	{ text = "Mwaaahgod! Overmwaaaaah! *gurgle*", yell = false },
-	{ text = "MMMWAHMWAHMWAHMWAAAAH!", yell = false },
-	{ text = "Mmmwhamwhamwhah, mwaaah!", yell = false }
 }
 
 monster.loot = {
@@ -93,20 +90,21 @@ monster.attacks = {
 monster.defenses = {
 	defense = 30,
 	armor = 30,
+	mitigation = 1.40,
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 250, maxDamage = 425, effect = CONST_ME_HITBYPOISON, target = false }
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 10 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 15 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 20 },
-	{ type = COMBAT_FIREDAMAGE, percent = 10 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 5 },
-	{ type = COMBAT_HOLYDAMAGE, percent = -10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

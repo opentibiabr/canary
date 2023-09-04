@@ -7,7 +7,6 @@ for i = 5, 10 do
 	local condition = Condition(CONDITION_ATTRIBUTES)
 	condition:setParameter(CONDITION_PARAM_TICKS, 15000)
 	condition:setParameter(CONDITION_PARAM_SKILL_MELEEPERCENT, i)
-	condition:setParameter(CONDITION_PARAM_SKILL_FISTPERCENT, i)
 
 	local condition2 = Condition(CONDITION_PARALYZE)
 	condition2:setParameter(CONDITION_PARAM_TICKS, 20000)

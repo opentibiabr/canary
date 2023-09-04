@@ -31,6 +31,8 @@ function Container:addLoot(loot)
 			if item.text and item.text ~= "" then
 				tmpItem:setText(item.text)
 			end
+		else
+			Spdlog.warn(("Container:addLoot: failed to add item: %s"):format(ItemType(itemId):getName()))
 		end
 
 		::continue::

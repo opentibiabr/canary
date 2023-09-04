@@ -65,7 +65,6 @@ end
 
 addTravelKeyword('thais', 150, Position(32311, 32210, 6))
 addTravelKeyword('krailos', 180, Position(33493, 31712, 6))
-addTravelKeyword('travora', 1000, Position(32055, 32368, 6))
 addTravelKeyword('issavi', 130, Position(33902, 31462, 6))
 
 -- Kick

@@ -38,7 +38,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = false,
+	rewardBoss = true,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = true,
@@ -47,14 +47,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -73,13 +73,18 @@ monster.voices = {
 	{ text = "The ultimate will finally consume this unworthy existence!", yell = false },
 	{ text = "My masters and I will tear down barriers and join the ultimate in its realm!", yell = false },
 	{ text = "The power of the Yalahari will all be mine!", yell = false },
-	{ text = "He who has returned from beyond has taught me secrets you can't even grasp!", yell = false },
-	{ text = "You can't hope to penetrate my shields!", yell = false },
-	{ text = "Do you really think you could beat me?", yell = false },
 	{ text = "We will open the rift for a new time to come!", yell = false },
+	{ text = "He who has returned from beyond has taught me secrets you can't even grasp!", yell = false },
 	{ text = "The end of times has come!", yell = false },
 	{ text = "The great machinator will make his entrance soon!", yell = false },
-	{ text = "You might scratch my shields but they will never break!", yell = false }
+	{ text = "You might scratch my shields but they will never break!", yell = false },
+	{ text = "You can't hope to penetrate my shields!", yell = false },
+	{ text = "Do you really think you could beat me?", yell = false },
+	{ text = "Even without Yalahari shields, I'm still invincible!", yell = false },
+	{ text = "Creation must be undone! We will join the ultimate in the annihiliverse!", yell = false },
+	{ text = "The rift is tearing at me, I can't control it much longer ... Master, where are you?", yell = false },
+	{ text = "Even gods are HIS pawns and HE laughs about creation! And you are trying to stop his minions?", yell = false },
+	{ text = "Don't you understand? Gods, Yalarahi, Humans we are all doing HIS bidding all the time!", yell = false },
 }
 
 monster.loot = {
@@ -95,6 +100,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 65,
 	armor = 40,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_HEALING, minDamage = 400, maxDamage = 900, effect = CONST_ME_MAGIC_GREEN, target = false }
 }
 
@@ -108,7 +114,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 15 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 15 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 15 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 15 },
 }
 
 monster.immunities = {

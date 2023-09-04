@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Mad Mage")
 local monster = {}
 
-monster.description = "a mad mage"
+monster.description = "mad mage"
 monster.experience = 1800
 monster.outfit = {
 	lookType = 394,
@@ -11,6 +11,11 @@ monster.outfit = {
 	lookFeet = 0,
 	lookAddons = 0,
 	lookMount = 0
+}
+
+monster.bosstiary = {
+	bossRaceId = 703,
+	bossRace = RARITY_BANE,
 }
 
 monster.health = 2500
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 5000,
 	chance = 30
-}
-
-monster.bosstiary = {
-	bossRaceId = 703,
-	bossRace = RARITY_BANE
 }
 
 monster.strategiesTarget = {
@@ -52,14 +52,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 4,
+	color = 204,
 }
 
 monster.summon = {
@@ -74,7 +74,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "Did it not come to your mind that I placed them here for a reason?", yell = false },
 	{ text = "Now I have to create new servants! Do you want to spread this pest beyond these safe walls?", yell = false },
-	{ text = "What have you done!", yell = false }
+	{ text = "What have you done!", yell = false },
 }
 
 monster.loot = {
@@ -109,6 +109,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 20,
 	armor = 20,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 35, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -122,7 +123,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Squidgy Slime")
 local monster = {}
 
-monster.description = "a slime"
+monster.description = "a squidgy slime"
 monster.experience = 55
 monster.outfit = {
 	lookType = 19,
@@ -19,11 +19,11 @@ monster.Bestiary = {
 	race = BESTY_RACE_SLIME,
 	toKill = 500,
 	FirstUnlock = 25,
-	SecondUnlock = 50,
+	SecondUnlock = 250,
 	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 2,
-	Locations = "Horestis Tomb."
+	Locations = "Horestis Tomb during one of the states of The Mummys Curse World Change."
 }
 
 monster.health = 150
@@ -62,12 +62,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -80,7 +80,7 @@ monster.summon = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Blubb", yell = false }
+	{ text = "Blubb", yell = false },
 }
 
 monster.loot = {
@@ -92,7 +92,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 3,
+	mitigation = 0.25,
 }
 
 monster.elements = {
@@ -105,13 +106,13 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = false },
+	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }
 }
 

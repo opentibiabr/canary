@@ -153,7 +153,7 @@ npcConfig.shop = {
 	{ itemName = "red crystal fragment", clientId = 16126, sell = 800 },
 	{ itemName = "red rose", clientId = 3658, sell = 10 },
 	{ itemName = "ruby necklace", clientId = 3016, buy = 3560 },
-	{ itemName = "shimmering beatles", clientId = 25693, sell = 150 },
+	{ itemName = "shimmering beetles", clientId = 25693, sell = 150 },
 	{ itemName = "silver goblet", clientId = 5806, buy = 3000 },
 	{ itemName = "skull coin", clientId = 32583, sell = 12000 },
 	{ itemName = "sling herb", clientId = 3738, sell = 10 },

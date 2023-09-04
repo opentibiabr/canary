@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 2,
-	Locations = "Second floor Glooth Underground Factory, east side during the Minotaurs raid."
+	Locations = "Second floor Glooth Underground Factory, east side during the Oramond Minotaurs raid."
 }
 
 monster.health = 1850
@@ -57,21 +57,21 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
+	canWalkOnEnergy = true,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "For the victory!", yell = false },
-	{ text = "We will crush the enemy!", yell = false }
+	{ text = "We will crush the enemy!", yell = false },
 }
 
 monster.loot = {
@@ -88,7 +88,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 20,
-	armor = 20
+	armor = 40,
+	mitigation = 1.76,
 }
 
 monster.elements = {
@@ -101,11 +102,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -10 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = -10 }
+	{ type = COMBAT_DEATHDAMAGE, percent = -10 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

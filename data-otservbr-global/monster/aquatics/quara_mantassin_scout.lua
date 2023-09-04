@@ -17,10 +17,10 @@ monster.raceId = 242
 monster.Bestiary = {
 	class = "Aquatic",
 	race = BESTY_RACE_AQUATIC,
-	toKill = 1000,
-	FirstUnlock = 50,
-	SecondUnlock = 500,
-	CharmsPoints = 25,
+	toKill = 500,
+	FirstUnlock = 25,
+	SecondUnlock = 250,
+	CharmsPoints = 15,
 	Stars = 2,
 	Occurrence = 0,
 	Locations = "Malada, Water Elemental Cave near Port Hope, Hrodmir Quara Scout Caves, Quara Grotto, Oramond."
@@ -46,7 +46,7 @@ monster.flags = {
 	summonable = false,
 	attackable = true,
 	hostile = true,
-	convinceable = false,
+	convinceable = true,
 	pushable = false,
 	rewardBoss = false,
 	illusionable = false,
@@ -59,19 +59,19 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 2,
+	color = 35,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "Shrrrr", yell = false },
 	{ text = "Zuerk Pachak!", yell = false },
-	{ text = "Shrrrr", yell = false }
 }
 
 monster.loot = {
@@ -91,7 +91,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 7
+	armor = 7,
+	mitigation = 0.56,
 }
 
 monster.elements = {
@@ -101,16 +102,16 @@ monster.elements = {
 	{ type = COMBAT_FIREDAMAGE, percent = 100 },
 	{ type = COMBAT_LIFEDRAIN, percent = 100 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
-	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = true },
+	{ type = "invisible", condition = false },
 	{ type = "bleed", condition = false }
 }
 

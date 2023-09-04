@@ -463,10 +463,6 @@ function Player:onReportRuleViolation(targetName, reportType, reportReason, comm
 end
 
 function Player:onReportBug(message, position, category)
-	if self:getAccountType() == ACCOUNT_TYPE_NORMAL then
-		return false
-	end
-
 	local name = self:getName()
 	local file = io.open(string.format("%s/reports/bugs/%s/report.txt", CORE_DIRECTORY, name), "a")
 

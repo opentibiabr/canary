@@ -31,7 +31,7 @@ monster.maxHealth = 205
 monster.race = "blood"
 monster.corpse = 6017
 monster.speed = 170
-monster.manaCost = 220
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 5000,
@@ -59,12 +59,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -77,7 +77,7 @@ monster.summon = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Who is lunch NOW?", yell = false }
+	{ text = "Who is lunch NOW?", yell = false },
 }
 
 monster.loot = {
@@ -91,7 +91,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 35,
-	armor = 30,
+	armor = 17,
+	mitigation = 0.51,
 	{ name = "speed", interval = 1000, chance = 40, speedChange = 380, effect = CONST_ME_ENERGYHIT, target = false, duration = 8000 },
 	{ name = "invisible", interval = 2000, chance = 30, effect = CONST_ME_MAGIC_BLUE }
 }
@@ -106,7 +107,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

@@ -50,7 +50,7 @@ function deepTerror.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 	if Game.getStorageValue(GlobalStorage.HeroRathleton.FirstMachines) < 8 then
-		player:say("No energy enough to use this teleport!", TALKTYPE_MONSTER_SAY, false, nil, position)
+		player:say("Not enough energy to use this teleport!", TALKTYPE_MONSTER_SAY, false, nil, position)
 		player:teleportTo(Position(33724, 31951, 14))
 		position:sendMagicEffect(CONST_ME_TELEPORT)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

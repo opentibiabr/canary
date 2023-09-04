@@ -13,27 +13,15 @@ monster.outfit = {
 	lookMount = 0
 }
 
-monster.events = {
-	"lionCommanderDeath"
-}
-
-monster.health = 15200
-monster.maxHealth = 15200
+monster.health = 8500
+monster.maxHealth = 8500
 monster.race = "blood"
 monster.corpse = 0
 monster.speed = 125
+monster.manaCost = 0
 
 monster.faction = FACTION_LION
 monster.enemyFactions = { FACTION_LIONUSURPERS }
-
-monster.summon = {
-	maxSummons = 6,
-	summons = {
-		{ name = "lion archer", chance = 0, interval = 600000, count = 2 },
-		{ name = "lion knight", chance = 0, interval = 600000, count = 2 },
-		{ name = "lion warlock", chance = 0, interval = 600000, count = 2 }
-	}
-}
 
 monster.changeTarget = {
 	interval = 4000,
@@ -61,17 +49,26 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
+}
+
+monster.summon = {
+	maxSummons = 6,
+	summons = {
+		{ name = "lion archer", chance = 0, interval = 600000, count = 2 },
+		{ name = "lion knight", chance = 0, interval = 600000, count = 2 },
+		{ name = "lion warlock", chance = 0, interval = 600000, count = 2 }
+	}
 }
 
 monster.voices = {
 	interval = 5000,
-	chance = 0
+	chance = 10,
 }
 
 monster.loot = {
@@ -88,6 +85,7 @@ monster.attacks = {
 monster.defenses = {
 	defense = 86,
 	armor = 86
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -100,7 +98,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

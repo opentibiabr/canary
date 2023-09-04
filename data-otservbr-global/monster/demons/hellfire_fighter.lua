@@ -60,12 +60,12 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 5,
+	color = 212,
 }
 
 monster.voices = {
@@ -87,11 +87,12 @@ monster.loot = {
 	{ name = "fire axe", chance = 440 },
 	{ name = "soul orb", chance = 12150 },
 	{ name = "demonic essence", chance = 14500 },
-	{ name = "magma legs", chance = 730 },
-	{ name = "magma coat", chance = 470 },
+	{ name = "magma legs", chance = 682 },
+	{ name = "magma coat", chance = 380 },
 	{ name = "fiery heart", chance = 9570 },
 	{ name = "piece of hellfire armor", chance = 5060 },
-	{ id = 12600, chance = 670 } -- coal
+	{ id = 12600, chance = 670 }, -- coal
+	{ name = "eternal flames", chance = 380 },
 }
 
 monster.attacks = {
@@ -104,7 +105,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 35,
-	armor = 35
+	armor = 62,
+	mitigation = 1.60,
 }
 
 monster.elements = {
@@ -117,7 +119,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -25 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 20 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 20 },
 }
 
 monster.immunities = {

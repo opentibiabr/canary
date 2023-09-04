@@ -60,14 +60,14 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = true,
-	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnEnergy = false,
+	canWalkOnFire = false,
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
@@ -75,7 +75,7 @@ monster.voices = {
 	chance = 10,
 	{ text = "To arms, sisters!", yell = false },
 	{ text = "Feel the wrath of mother forest!", yell = false },
-	{ text = "By the power of Greenskull!", yell = false }
+	{ text = "By the power of Greenskull!", yell = false },
 }
 
 monster.loot = {
@@ -98,7 +98,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 20,
-	armor = 20
+	armor = 19,
+	mitigation = 0.80,
 }
 
 monster.elements = {
@@ -111,7 +112,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 40 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 40 },
 }
 
 monster.immunities = {

@@ -30,5 +30,5 @@ function preceptorLazare.onThink(interval, lastExecution)
 	return true
 end
 
-preceptorLazare:interval(900000)
+preceptorLazare:interval(15 * 60 * 1000)
 preceptorLazare:register()

@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Scar Tribe Shaman")
 local monster = {}
 
-monster.description = "an scar tribe shaman"
+monster.description = "a scar tribe shaman"
 monster.experience = 85
 monster.outfit = {
 	lookType = 6,
@@ -12,6 +12,7 @@ monster.outfit = {
 	lookAddons = 0,
 	lookMount = 0
 }
+
 
 monster.health = 115
 monster.maxHealth = 115
@@ -37,21 +38,21 @@ monster.flags = {
 	pushable = false,
 	rewardBoss = false,
 	illusionable = true,
-	canPushItems = false,
+	canPushItems = true,
 	canPushCreatures = false,
 	staticAttackChance = 90,
 	targetDistance = 4,
 	runHealth = 15,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
+	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.summon = {
@@ -85,7 +86,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 11,
-	armor = 4,
+	armor = 6,
+	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_HEALING, minDamage = 25, maxDamage = 35, effect = CONST_ME_MAGIC_BLUE, target = false }
 }
 
@@ -99,13 +101,13 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = false },
+	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }
 }
 

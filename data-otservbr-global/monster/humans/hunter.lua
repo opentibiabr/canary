@@ -61,21 +61,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Guess who we're hunting, hahaha!", yell = false },
 	{ text = "Guess who we are hunting!", yell = false },
+	{ text = "Guess who we're hunting, hahaha!", yell = false },
 	{ text = "Bullseye!", yell = false },
-	{ text = "You'll make a nice trophy!", yell = false }
+	{ text = "You'll make a nice trophy!", yell = false },
 }
 
 monster.loot = {
@@ -90,7 +90,7 @@ monster.loot = {
 	{ id = 3449, chance = 5360, maxCount = 3 }, -- burst arrow
 	{ name = "orange", chance = 20300, maxCount = 2 },
 	{ name = "roll", chance = 11370, maxCount = 2 },
-	{ name = "sniper gloves", chance = 610 },
+	{ name = "sniper gloves", chance = 540 },
 	{ name = "slingshot", chance = 120 },
 	{ id = 7394, chance = 190 }, -- wolf trophy
 	{ id = 7397, chance = 520 }, -- deer trophy
@@ -105,7 +105,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 15,
-	armor = 15
+	armor = 8,
+	mitigation = 0.25,
 }
 
 monster.elements = {
@@ -118,7 +119,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 20 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

@@ -31,7 +31,7 @@ monster.maxHealth = 450
 monster.race = "blood"
 monster.corpse = 6065
 monster.speed = 190
-monster.manaCost = 670
+monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
@@ -59,21 +59,21 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = false
+	canWalkOnPoison = false,
 }
 
 monster.light = {
-	level = 0,
-	color = 0
+	level = 2,
+	color = 35,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Gaaahhh!", yell = false },
-	{ text = "Gluh! Gluh!", yell = false },
+	{ text = "Boohaa!", yell = false },
 	{ text = "Tssss!", yell = false },
-	{ text = "Boohaa!", yell = false }
+	{ text = "Gluh! Gluh!", yell = false },
+	{ text = "Gaaahhh!", yell = false },
 }
 
 monster.loot = {
@@ -87,6 +87,7 @@ monster.loot = {
 }
 
 monster.attacks = {
+monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -150, effect = CONST_ME_DRAWBLOOD, condition = { type = CONDITION_POISON, totalDamage = 20, interval = 4000 } },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -50, maxDamage = -90, radius = 3, effect = CONST_ME_HITAREA, target = false },
 	{ name = "quara constrictor freeze", interval = 2000, chance = 10, target = false },
@@ -96,7 +97,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 20,
-	armor = 14
+	armor = 14,
+	mitigation = 0.94,
 }
 
 monster.elements = {
@@ -109,7 +111,7 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 100 },
 	{ type = COMBAT_ICEDAMAGE, percent = 100 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {

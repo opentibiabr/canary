@@ -1,7 +1,7 @@
 local mType = Game.createMonsterType("Percht")
 local monster = {}
 
-monster.description = "an percht"
+monster.description = "a percht"
 monster.experience = 600
 monster.outfit = {
 	lookType = 1161,
@@ -23,7 +23,7 @@ monster.Bestiary = {
 	CharmsPoints = 25,
 	Stars = 3,
 	Occurrence = 2,
-	Locations = "Percht Island."
+	Locations = "Percht Island"
 }
 
 monster.health = 620
@@ -59,35 +59,27 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Krikik krikik!", yell = false },
-	{ text = "Shzzzp shzzzp shzzp!", yell = false }
+	{ text = "Shzzzp shzzzp shzzp!", yell = false },
 }
 
 monster.loot = {
 	{ name = "gold coin", chance = 100000, maxCount = 60 },
 	{ name = "fireworks capsule", chance = 12360 },
 	{ name = "percht horns", chance = 9790 },
-	{ name = "grainy fireworks powder", chance = 6640 },
 	{ name = "broken bell", chance = 5390 },
-	{ name = "versicolour fireworks powder", chance = 4220 },
 	{ id = 30325, chance = 3190 }, -- dark bell
-	{ name = "green fireworks powder", chance = 2790 },
-	{ name = "purple fireworks powder", chance = 2090 },
-	{ name = "turquoise fireworks powder", chance = 1980 },
-	{ name = "orange fireworks powder", chance = 1870 },
-	{ name = "yellow fireworks powder", chance = 1870 },
-	{ name = "red fireworks powder", chance = 1830 },
 	{ name = "magma amulet", chance = 1320 },
 	{ name = "magma coat", chance = 1320 },
 	{ name = "magma monocle", chance = 950 },
@@ -105,7 +97,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 40,
-	armor = 40
+	armor = 40,
+	mitigation = 0.83,
 }
 
 monster.elements = {
@@ -118,11 +111,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = -20 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }

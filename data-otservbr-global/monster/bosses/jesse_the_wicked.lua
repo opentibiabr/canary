@@ -1,7 +1,7 @@
-local mType = Game.createMonsterType("Jesse The Wicked")
+local mType = Game.createMonsterType("Jesse the Wicked")
 local monster = {}
 
-monster.description = "Jesse The Wicked"
+monster.description = "Jesse the Wicked"
 monster.experience = 180
 monster.outfit = {
 	lookType = 134,
@@ -11,6 +11,11 @@ monster.outfit = {
 	lookFeet = 113,
 	lookAddons = 3,
 	lookMount = 0
+}
+
+monster.bosstiary = {
+	bossRaceId = 763,
+	bossRace = RARITY_NEMESIS,
 }
 
 monster.health = 280
@@ -23,11 +28,6 @@ monster.manaCost = 0
 monster.changeTarget = {
 	interval = 4000,
 	chance = 5
-}
-
-monster.bosstiary = {
-	bossRaceId = 763,
-	bossRace = RARITY_NEMESIS
 }
 
 monster.strategiesTarget = {
@@ -52,20 +52,24 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "That banker never saw it coming!", yell = false }
+	{ text = "That banker never saw it coming!", yell = false },
+	{ text = "You will not take this gold from me!", yell = false },
+	{ text = "KEEP YOUR HANDS OFF THAT BAG!", yell = true },
+	{ text = "Kill him, men!", yell = false },
+	{ text = "Take from the rich, keep it for yourself. That's my motto.", yell = false },
 }
 
 monster.loot = {
@@ -79,7 +83,8 @@ monster.attacks = {
 
 monster.defenses = {
 	defense = 25,
-	armor = 25
+	armor = 25,
+	--	mitigation = ???,
 }
 
 monster.elements = {
@@ -92,13 +97,13 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 }
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{ type = "paralyze", condition = false },
+	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
-	{ type = "invisible", condition = false },
+	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false }
 }
 

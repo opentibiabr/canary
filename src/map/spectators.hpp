@@ -10,8 +10,8 @@
 #pragma once
 
 #include "pch.hpp"
+#include "creatures/creature.hpp"
 
-class Creature;
 class Player;
 class Monster;
 class Npc;
@@ -24,7 +24,25 @@ using SpectatorList = phmap::flat_hash_set<Creature*>;
 using SpectatorList = std::vector<Creature*>;
 #endif
 
-using SpectatorsCache = phmap::flat_hash_map<Position, std::pair<SpectatorList, SpectatorList>>;
+struct SpectatorsCache {
+	struct FloorData {
+		std::unique_ptr<SpectatorList> floor, multiFloor;
+	};
+
+	int32_t minRangeX { 0 };
+	int32_t maxRangeX { 0 };
+	int32_t minRangeY { 0 };
+	int32_t maxRangeY { 0 };
+
+	FloorData creatures;
+	FloorData players;
+
+	bool isEmpty() const noexcept {
+		return !creatures.multiFloor && !creatures.floor && !players.multiFloor && !players.floor;
+	}
+};
+
+using SpectatorsHashMap = phmap::flat_hash_map<Position, SpectatorsCache>;
 
 class Spectators {
 public:
@@ -79,8 +97,10 @@ public:
 	}
 
 private:
+	static phmap::flat_hash_map<Position, SpectatorsCache> spectatorsCache;
+
 	Spectators find(const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
-	bool checkCache(const SpectatorsCache &cache, bool onlyPlayers, const Position &centerPos, bool checkDistance, bool multifloor, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY);
+	bool checkCache(const SpectatorsCache::FloorData &specData, bool onlyPlayers, const Position &centerPos, bool checkDistance, bool multifloor, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY);
 	void update() noexcept;
 
 	SpectatorList creatures;

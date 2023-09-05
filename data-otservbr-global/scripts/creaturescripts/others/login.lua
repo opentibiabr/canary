@@ -269,6 +269,13 @@ function playerLogin.onLogin(player)
 		onExerciseTraining[player:getId()] = nil
 		player:setTraining(false)
 	end
+
+	-- check user won exercise weapon and send message
+	if not table.contains({ TOWNS_LIST.DAWNPORT, TOWNS_LIST.DAWNPORT_TUTORIAL }, player:getTown():getId()) then
+		if player:getStorageValue(tonumber(Storage.PlayerWeaponReward)) ~= 1 then
+			player:sendTextMessage(MESSAGE_LOGIN, "You can win an exercise weapon using command !reward")
+		end
+	end
 	return true
 end
 

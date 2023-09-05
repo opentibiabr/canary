@@ -10,7 +10,7 @@ function theCursedMedusa.onUse(player, item, fromPosition, target, toPosition, i
 	if (item.itemid == 21506) and (item.itemid == 10420) then
 		if (player:getStorageValue(Storage.TibiaTales.TheCursedCrystal.Oneeyedjoe) == 2) then
 			if not (((Player(player):getPosition().x - TCC_PILLARPETRIFIED.x) < 5) and ((Player(player):getPosition().x - TCC_PILLARPETRIFIED.x) > -5) and
-				((Player(player):getPosition().y - TCC_PILLARPETRIFIED.y) < 5) and ((Player(player):getPosition().y - TCC_PILLARPETRIFIED.y) > -5) and (Player(player):getPosition().z == TCC_PILLARPETRIFIED.z)) then
+						((Player(player):getPosition().y - TCC_PILLARPETRIFIED.y) < 5) and ((Player(player):getPosition().y - TCC_PILLARPETRIFIED.y) > -5) and (Player(player):getPosition().z == TCC_PILLARPETRIFIED.z)) then
 				return
 			end
 			player:setStorageValue(Storage.TibiaTales.TheCursedCrystal.Oneeyedjoe, 3)
@@ -31,7 +31,7 @@ function theCursedMedusa.onUse(player, item, fromPosition, target, toPosition, i
 		end
 		if (Player(player) == Player(Tile(topos):getTopCreature())) and (player:getStorageValue(Storage.TibiaTales.TheCursedCrystal.Oneeyedjoe) < 2) then
 			if not (((Player(player):getPosition().x - TCC_PILLARPETRIFIED.x) < 5) and ((Player(player):getPosition().x - TCC_PILLARPETRIFIED.x) > -5) and
-				((Player(player):getPosition().y - TCC_PILLARPETRIFIED.y) < 5) and ((Player(player):getPosition().y - TCC_PILLARPETRIFIED.y) > -5) and (Player(player):getPosition().z == TCC_PILLARPETRIFIED.z)) then
+						((Player(player):getPosition().y - TCC_PILLARPETRIFIED.y) < 5) and ((Player(player):getPosition().y - TCC_PILLARPETRIFIED.y) > -5) and (Player(player):getPosition().z == TCC_PILLARPETRIFIED.z)) then
 				return
 			end
 			player:setStorageValue(Storage.TibiaTales.TheCursedCrystal.Oneeyedjoe, 2)

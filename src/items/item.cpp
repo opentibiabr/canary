@@ -1006,8 +1006,8 @@ bool Item::canBeMoved() const {
 }
 
 void Item::checkDecayMapItemOnMove() {
-	if (getDuration() > 0 && getLoadedFromMap() && canBeMoved()) {
-		setLoadedFromMap(false);
+	if (getDuration() > 0 && isDecayDisabled() && canBeMoved()) {
+		decayDisabled = false;
 		startDecaying();
 	}
 }
@@ -3033,7 +3033,7 @@ void Item::addUniqueId(uint16_t uniqueId) {
 }
 
 bool Item::canDecay() const {
-	if (isRemoved()) {
+	if (isRemoved() || isDecayDisabled()) {
 		return false;
 	}
 

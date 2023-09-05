@@ -2004,7 +2004,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 	}
 
 	// Not remove item with decay loaded from map
-	if (!force && item->canDecay() && cylinder->getTile() && item->getLoadedFromMap()) {
+	if (!force && item->canDecay() && cylinder->getTile() && item->isLoadedFromMap()) {
 		g_logger().debug("Cannot remove item with id {}, name {}, on position {}", item->getID(), item->getName(), cylinder->getPosition().toString());
 		item->stopDecaying();
 		return RETURNVALUE_THISISIMPOSSIBLE;

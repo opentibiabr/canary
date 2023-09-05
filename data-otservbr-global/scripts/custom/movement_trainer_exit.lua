@@ -8,17 +8,6 @@ local function teleportToTemple(creature)
 end
 
 local trainerExit = MoveEvent()
-
-function trainerExit.onStepIn(creature, item, position, fromPosition)
-	teleportToTemple(creature)
-	return true
-end
-
-trainerExit:aid(40015)
-trainerExit:aid(4255)
-trainerExit:register()
-
-trainerExit = MoveEvent()
 function trainerExit.onStepIn(creature, item, position, fromPosition)
 	teleportToTemple(creature)
 	return true
@@ -31,4 +20,7 @@ local positions = {
 for index, position in pairs(positions) do
 	trainerExit:position(position)
 end
+
+trainerExit:aid(40015)
+trainerExit:aid(4255)
 trainerExit:register()

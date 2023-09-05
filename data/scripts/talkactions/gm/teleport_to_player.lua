@@ -10,6 +10,10 @@ function teleportToCreature.onSay(player, words, param)
 	local playerList = {}
 
 	for _, targetPlayer in ipairs(players) do
+		if targetPlayer:getName() == player:getName() then
+			goto continue
+		end
+
 		if not onlyActive then
 			table.insert(playerList, targetPlayer)
 		else
@@ -21,6 +25,7 @@ function teleportToCreature.onSay(player, words, param)
 				table.insert(playerList, targetPlayer)
 			end
 		end
+		:: continue ::
 	end
 
 	if #playerList == 0 then

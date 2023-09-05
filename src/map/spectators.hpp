@@ -26,7 +26,8 @@ using SpectatorList = std::vector<Creature*>;
 
 struct SpectatorsCache {
 	struct FloorData {
-		std::unique_ptr<SpectatorList> floor, multiFloor;
+		std::unique_ptr<SpectatorList> floor;
+		std::unique_ptr<SpectatorList> multiFloor
 	};
 
 	int32_t minRangeX { 0 };

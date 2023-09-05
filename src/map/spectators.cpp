@@ -139,7 +139,7 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	const uint_fast16_t endx2 = x2 - (x2 % FLOOR_SIZE);
 	const uint_fast16_t endy2 = y2 - (y2 % FLOOR_SIZE);
 
-	const auto startLeaf = g_game().map.getQTNode(startx1, starty1);
+	const auto startLeaf = g_game().map.getQTNode(static_cast<uint16_t>(startx1), static_cast<uint16_t>(starty1));
 	const QTreeLeafNode* leafS = startLeaf;
 	const QTreeLeafNode* leafE;
 

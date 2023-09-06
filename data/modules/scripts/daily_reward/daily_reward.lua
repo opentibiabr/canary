@@ -240,8 +240,10 @@ DailyReward.loadDailyReward = function(playerId, target)
 		return false
 	end
 
-	if target ~= 0 then
-		target = REWARD_FROM_PANEL
+	if target == REWARD_FROM_SHRINE then -- if you receive 0 (shrine) send 1
+		target = 1
+	else
+		target = 0 -- if you receive 1 (panel) send 0
 	end
 
 	player:sendCollectionResource(ClientPackets.JokerResource, player:getJokerTokens())
